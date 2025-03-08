@@ -316,11 +316,10 @@ class proc_track_db_t
 {
   using db_t = std::unordered_map<unsigned, std::vector<proc_tracker_t*>>;
 
-  player_t* m_player;
   db_t      m_db;
 
 public:
-  proc_track_db_t( player_t* p ) : m_player( p )
+  proc_track_db_t( player_t* /* p */ )
   { }
 
   virtual ~proc_track_db_t()
@@ -1266,10 +1265,6 @@ public:
 
     // TWW Trackers
     proc_t* tempest_awakening_storms;
-    proc_t* lively_totems;
-
-    // Bug trackers
-    proc_t* hot_hand_duration;
   } proc;
 
   // Class Specializations
@@ -5353,12 +5348,14 @@ struct lava_lash_t : public shaman_attack_t
   molten_weapon_dot_t* mw_dot;
   unsigned max_spread_targets;
 
+  stats::proc_tracker_t* proc_lively_totems;
+
   lava_lash_t( shaman_t* player, util::string_view options_str ) :
     shaman_attack_t( "lava_lash", player, player->talent.lava_lash ),
     mw_dot( nullptr ),
-    max_spread_targets( as<unsigned>( p()->talent.molten_assault->effectN( 2 ).base_value() ) )
+    max_spread_targets( as<unsigned>( p()->talent.molten_assault->effectN( 2 ).base_value() ) ),
+    proc_lively_totems( nullptr )
   {
-    check_spec( SHAMAN_ENHANCEMENT );
     school = SCHOOL_FIRE;
     // Add a 12 yard radius to support Flame Shock spreading in 11.0
     radius = 12.0;
@@ -5385,6 +5382,16 @@ struct lava_lash_t : public shaman_attack_t
     if ( p()->talent.reactivity.ok() && p()->action.reactivity )
     {
       add_child( p()->action.reactivity );
+    }
+  }
+
+  void init_finished() override
+  {
+    shaman_attack_t::init_finished();
+
+    if ( p()->talent.lively_totems.ok() )
+    {
+      proc_lively_totems = p()->tracker.register_proc( p()->talent.lively_totems, this );
     }
   }
 
@@ -5453,7 +5460,7 @@ struct lava_lash_t : public shaman_attack_t
       // 2024-07-10: Searing Totem death seems to be delayed from basically nothing to approximately
       // 850ms. Makes it possible to get an extra searing bolt if the timing is right.
       p()->pet.searing_totem.spawn( timespan_t::from_seconds( 8.0 + rng().range( 0.85 ) ) );
-      p()->proc.lively_totems->occur();
+      proc_lively_totems->occur();
     }
   }
 
@@ -14207,10 +14214,6 @@ void shaman_t::init_procs()
   proc.reset_swing_mw            = get_proc( "Maelstrom Weapon Swing Reset" );
 
   proc.tempest_awakening_storms = get_proc( "Awakened Storms w/ Tempest");
-
-  proc.lively_totems = get_proc( "Lively Totems" );
-
-  proc.hot_hand_duration = get_proc( "Hot Hand duration clip" );
 }
 
 // shaman_t::init_uptimes ====================================================
