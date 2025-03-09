@@ -55,10 +55,10 @@ void havoc( player_t* p )
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* fs = p->get_action_priority_list( "fs" );
   action_priority_list_t* fs_cooldown = p->get_action_priority_list( "fs_cooldown" );
-  action_priority_list_t* ar_cooldown = p->get_action_priority_list( "ar_cooldown" );
   action_priority_list_t* fs_meta = p->get_action_priority_list( "fs_meta" );
   action_priority_list_t* fs_opener = p->get_action_priority_list( "fs_opener" );
   action_priority_list_t* ar = p->get_action_priority_list( "ar" );
+  action_priority_list_t* ar_cooldown = p->get_action_priority_list( "ar_cooldown" );
   action_priority_list_t* ar_fel_barrage = p->get_action_priority_list( "ar_fel_barrage" );
   action_priority_list_t* ar_meta = p->get_action_priority_list( "ar_meta" );
   action_priority_list_t* ar_opener = p->get_action_priority_list( "ar_opener" );
@@ -66,7 +66,8 @@ void havoc( player_t* p )
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=trinket1_steroids,value=trinket.1.is.improvised_seaforium_pacemaker" );
   precombat->add_action( "variable,name=trinket2_steroids,value=trinket.2.is.improvised_seaforium_pacemaker" );
-  precombat->add_action( "variable,name=tier33_4piece,value=(buff.initiative.up|!talent.initiative)&(buff.necessary_sacrifice.up|set_bonus.thewarwithin_season_2_4pc)", "Tier 33 tier set check for trinket lineups withs Necessary Sacrifice" );
+  precombat->add_action( "variable,name=trinket1_crit,value=trinket.1.is.mad_queens_mandate|trinket.1.is.junkmaestros_mega_magnet|trinket.1.is.geargrinders_spare_keys|trinket.1.is.ravenous_honey_buzzer|trinket.1.is.grim_codex", "Blacklist for trinkets to hold trinket cooldowns for Initiative and Necessary Strike line-up outside standard trinket implementation" );
+  precombat->add_action( "variable,name=trinket2_crit,value=trinket.2.is.mad_queens_mandate|trinket.2.is.junkmaestros_mega_magnet|trinket.2.is.geargrinders_spare_keys|trinket.2.is.ravenous_honey_buzzer|trinket.2.is.grim_codex" );
   precombat->add_action( "variable,name=rg_ds,default=0,op=reset" );
   precombat->add_action( "sigil_of_flame" );
   precombat->add_action( "immolation_aura" );
@@ -76,6 +77,8 @@ void havoc( player_t* p )
   default_->add_action( "retarget_auto_attack,line_cd=1,target_if=min:debuff.burning_wound.remains,if=talent.burning_wound&talent.demon_blades&active_dot.burning_wound<(spell_targets>?3)", "Spread Burning Wounds for uptime in multitarget scenarios" );
   default_->add_action( "retarget_auto_attack,line_cd=1,target_if=min:!target.is_boss,if=talent.burning_wound&talent.demon_blades&active_dot.burning_wound=(spell_targets>?3)" );
   default_->add_action( "variable,name=fury_gen,op=set,value=talent.demon_blades*(1%(2.6*attack_haste)*((talent.demonsurge&buff.metamorphosis.up)*3+12))+buff.immolation_aura.stack*6+buff.tactical_retreat.up*10", "Fury generated per second" );
+  default_->add_action( "variable,name=tier33_4piece,value=(buff.initiative.up|!talent.initiative)&(buff.necessary_sacrifice.up|!set_bonus.thewarwithin_season_2_4pc)", "Tier 33 tier set check for trinket lineups withs Necessary Sacrifice" );
+  default_->add_action( "variable,name=double_on_use,value=!equipped.signet_of_the_priory&!equipped.house_of_cards|(trinket.1.is.house_of_cards|trinket.1.is.signet_of_the_priory)&trinket.1.cooldown.remains>20|(trinket.2.is.house_of_cards|trinket.2.is.signet_of_the_priory)&trinket.2.cooldown.remains>20", "Double on use trinket holding for using a stat cooldown trinket and an on use damage trinket" );
   default_->add_action( "run_action_list,name=ar,if=hero_tree.aldrachi_reaver", "Separate actionlists for each hero tree" );
   default_->add_action( "run_action_list,name=fs,if=hero_tree.felscarred" );
 
@@ -104,9 +107,7 @@ void havoc( player_t* p )
   fs_cooldown->add_action( "metamorphosis,if=(cooldown.blade_dance.remains&(buff.metamorphosis.up&cooldown.eye_beam.remains&(!talent.essence_break|debuff.essence_break.up|talent.shattered_destiny|hero_tree.felscarred)&buff.fel_barrage.down&(raid_event.adds.in>40|(raid_event.adds.remains>8|!talent.fel_barrage)&active_enemies>2)|!talent.chaotic_transformation|fight_remains<30)&(buff.inner_demon.down&(!talent.restless_hunter|prev_gcd.1.death_sweep)))&(talent.inertia|talent.essence_break)&(hero_tree.aldrachi_reaver|(buff.demonsurge_death_sweep.down&buff.metamorphosis.up|buff.metamorphosis.remains<gcd.max)&(buff.demonsurge_annihilation.down))&time>15" );
   fs_cooldown->add_action( "potion,if=fight_remains<35|buff.metamorphosis.up|debuff.essence_break.up" );
   fs_cooldown->add_action( "invoke_external_buff,name=power_infusion,if=buff.metamorphosis.up|fight_remains<=20" );
-
-  ar_cooldown->add_action( "variable,name=special_trinket,op=set,value=equipped.mad_queens_mandate|equipped.treacherous_transmitter|equipped.skardyns_grace|equipped.signet_of_the_priory|equipped.junkmaestros_mega_magnet|equipped.geargrinders_spare_keys|equipped.mister_locknstalk|equipped.ravenous_honey_buzzer" );
-
+  fs_cooldown->add_action( "variable,name=special_trinket,op=set,value=equipped.mad_queens_mandate|equipped.treacherous_transmitter|equipped.skardyns_grace|equipped.signet_of_the_priory|equipped.junkmaestros_mega_magnet|equipped.geargrinders_spare_keys|equipped.mister_locknstalk|equipped.ravenous_honey_buzzer" );
   fs_cooldown->add_action( "use_item,name=mad_queens_mandate,if=((!talent.initiative|buff.initiative.up|time>5)&(buff.metamorphosis.remains>5|buff.metamorphosis.down)&(trinket.1.is.mad_queens_mandate&(trinket.2.cooldown.duration<10|trinket.2.cooldown.remains>10|!trinket.2.has_buff.any)|trinket.2.is.mad_queens_mandate&(trinket.1.cooldown.duration<10|trinket.1.cooldown.remains>10|!trinket.1.has_buff.any))&fight_remains>120|fight_remains<10&fight_remains<buff.metamorphosis.remains)&debuff.essence_break.down|fight_remains<5" );
   fs_cooldown->add_action( "use_item,name=treacherous_transmitter,if=!equipped.mad_queens_mandate|equipped.mad_queens_mandate&(trinket.1.is.mad_queens_mandate&trinket.1.cooldown.remains>fight_remains|trinket.2.is.mad_queens_mandate&trinket.2.cooldown.remains>fight_remains)|fight_remains>25" );
   fs_cooldown->add_action( "use_item,name=skardyns_grace,if=(!equipped.mad_queens_mandate|fight_remains>25|trinket.2.is.skardyns_grace&trinket.1.cooldown.remains>fight_remains|trinket.1.is.skardyns_grace&trinket.2.cooldown.remains>fight_remains|trinket.1.cooldown.duration<10|trinket.2.cooldown.duration<10)&buff.metamorphosis.up" );
@@ -127,7 +128,7 @@ void havoc( player_t* p )
   fs_meta->add_action( "annihilation,if=(hero_tree.felscarred&buff.demonsurge_annihilation.up&talent.restless_hunter)&(cooldown.eye_beam.remains<gcd.max*3&cooldown.blade_dance.remains|cooldown.metamorphosis.remains<gcd.max*3)" );
   fs_meta->add_action( "felblade,if=buff.inertia_trigger.up&talent.inertia&debuff.essence_break.down&cooldown.metamorphosis.remains&(!hero_tree.felscarred|cooldown.eye_beam.remains)&(cooldown.blade_dance.remains<=5.5&(talent.essence_break&cooldown.essence_break.remains<=0.5|!talent.essence_break|cooldown.essence_break.remains>=buff.inertia_trigger.remains&cooldown.blade_dance.remains<=4.5&(cooldown.blade_dance.remains|cooldown.blade_dance.remains<=0.5))|buff.metamorphosis.remains<=5.5+talent.shattered_destiny*2)" );
   fs_meta->add_action( "fel_rush,if=buff.inertia_trigger.up&talent.inertia&debuff.essence_break.down&cooldown.metamorphosis.remains&(!hero_tree.felscarred|cooldown.eye_beam.remains)&(active_enemies>2|hero_tree.felscarred)&(cooldown.felblade.remains&cooldown.essence_break.remains<=0.6)" );
-  fs_meta->add_action( "annihilation,if=buff.inner_demon.up&cooldown.blade_dance.remains&(cooldown.eye_beam.remains<gcd.max*3|cooldown.metamorphosis.remains<gcd.max*3)", "|cooldown.felblade.remains&buff.metamorphosis.remains<=5.6-talent.shattered_destiny*gcd.max*2)" );
+  fs_meta->add_action( "annihilation,if=buff.inner_demon.up&cooldown.blade_dance.remains&(cooldown.eye_beam.remains<gcd.max*3|cooldown.metamorphosis.remains<gcd.max*3)" );
   fs_meta->add_action( "essence_break,if=fury>20&(cooldown.metamorphosis.remains>10|cooldown.blade_dance.remains<gcd.max*2)&(buff.inertia_trigger.down|buff.inertia.up&buff.inertia.remains>=gcd.max*3|!talent.inertia)&buff.out_of_range.remains<gcd.max&(!talent.shattered_destiny|cooldown.eye_beam.remains>4)&(!hero_tree.felscarred|active_enemies>1|cooldown.metamorphosis.remains>5&cooldown.eye_beam.remains)&(!buff.cycle_of_hatred.stack=3|buff.initiative.up)|fight_remains<5" );
   fs_meta->add_action( "sigil_of_doom,if=cooldown.blade_dance.remains&debuff.essence_break.down&(cooldown.eye_beam.remains>=20|cooldown.eye_beam.remains<=gcd.max)&(!talent.student_of_suffering|buff.demonsurge_sigil_of_doom.up)" );
   fs_meta->add_action( "immolation_aura,if=buff.demonsurge.up&debuff.essence_break.down&buff.demonsurge_consuming_fire.up&cooldown.blade_dance.remains>=gcd.max&cooldown.eye_beam.remains>=gcd.max&fury.deficit>10+variable.fury_gen" );
@@ -163,7 +164,7 @@ void havoc( player_t* p )
   fs_opener->add_action( "annihilation" );
   fs_opener->add_action( "demons_bite" );
 
-  ar->add_action( "variable,name=rg_inc,op=set,value=buff.rending_strike.down&buff.glaive_flurry.up&cooldown.blade_dance.up&gcd.remains=0|variable.rg_inc&prev_gcd.1.death_sweep", "Aldrachi Reaver" );
+  ar->add_action( "variable,name=rg_inc,op=set,value=buff.rending_strike.down&buff.glaive_flurry.up&cooldown.blade_dance.up&gcd.remains=0|variable.rg_inc&prev_gcd.1.death_sweep" );
   ar->add_action( "pick_up_fragment,use_off_gcd=1,if=fury<=90" );
   ar->add_action( "variable,name=fel_barrage,op=set,value=talent.fel_barrage&(cooldown.fel_barrage.remains<gcd.max*7&(active_enemies>=desired_targets+raid_event.adds.count|raid_event.adds.in<gcd.max*7|raid_event.adds.in>90)&(cooldown.metamorphosis.remains|active_enemies>2)|buff.fel_barrage.up)&!(active_enemies=1&!raid_event.adds.exists)" );
   ar->add_action( "chaos_strike,if=buff.rending_strike.up&buff.glaive_flurry.up&(variable.rg_ds=2|active_enemies>2)&time>10" );
@@ -176,7 +177,7 @@ void havoc( player_t* p )
   ar->add_action( "run_action_list,name=ar_fel_barrage,if=variable.fel_barrage&raid_event.adds.up" );
   ar->add_action( "immolation_aura,if=active_enemies>2&talent.ragefire&(!talent.fel_barrage|cooldown.fel_barrage.remains>recharge_time)&debuff.essence_break.down&(buff.metamorphosis.down|buff.metamorphosis.remains>5)" );
   ar->add_action( "immolation_aura,if=active_enemies>2&talent.ragefire&raid_event.adds.up&raid_event.adds.remains<15&raid_event.adds.remains>5&debuff.essence_break.down" );
-  ar->add_action( "vengeful_retreat,use_off_gcd=1,if=talent.initiative&(cooldown.eye_beam.remains>15&gcd.remains<0.3|gcd.remains<0.2&cooldown.eye_beam.remains<=gcd.remains&cooldown.metamorphosis.remains>10)&(!talent.student_of_suffering|cooldown.sigil_of_flame.remains)&time>10&(!variable.trinket1_steroids&!variable.trinket2_steroids|variable.trinket1_steroids&(trinket.1.stat.any.remains<gcd.max*3|trinket.1.cooldown.remains>20)|variable.trinket2_steroids&(trinket.2.stat.any.remains<gcd.max*3|trinket.2.cooldown.remains>20|talent.shattered_destiny))&(cooldown.metamorphosis.remains|hero_tree.aldrachi_reaver)&time>20&(!talent.inertia&buff.unbound_chaos.down|buff.inertia_trigger.down&buff.metamorphosis.down)" );
+  ar->add_action( "vengeful_retreat,use_off_gcd=1,if=talent.initiative&(cooldown.eye_beam.remains>15&gcd.remains<0.3|gcd.remains<0.2&cooldown.eye_beam.remains<=gcd.remains&cooldown.metamorphosis.remains>10)&(!variable.trinket1_steroids&!variable.trinket2_steroids|variable.trinket1_steroids&(trinket.1.stat.any.cooldown_remains<gcd.max*3|trinket.1.stat.any.cooldown_remains>30)|variable.trinket2_steroids&(trinket.2.stat.any.cooldown_remains<gcd.max*3|trinket.2.stat.any.cooldown_remains>30))&time>20&(!talent.inertia&buff.unbound_chaos.down|buff.inertia_trigger.down&buff.metamorphosis.down)" );
   ar->add_action( "run_action_list,name=ar_fel_barrage,if=variable.fel_barrage|!talent.demon_blades&talent.fel_barrage&(buff.fel_barrage.up|cooldown.fel_barrage.up)&buff.metamorphosis.down" );
   ar->add_action( "felblade,if=!talent.inertia&active_enemies=1&buff.unbound_chaos.up&buff.initiative.up&debuff.essence_break.down&buff.metamorphosis.down" );
   ar->add_action( "felblade,if=buff.inertia_trigger.up&talent.inertia&cooldown.eye_beam.remains<=0.5&(cooldown.metamorphosis.remains&talent.looks_can_kill|active_enemies>1)" );
@@ -185,19 +186,18 @@ void havoc( player_t* p )
   ar->add_action( "immolation_aura,if=talent.a_fire_inside&talent.burning_wound&full_recharge_time<gcd.max*2&(raid_event.adds.in>full_recharge_time|active_enemies>desired_targets)" );
   ar->add_action( "immolation_aura,if=active_enemies>desired_targets&(active_enemies>=desired_targets+raid_event.adds.count|raid_event.adds.in>full_recharge_time)" );
   ar->add_action( "immolation_aura,if=fight_remains<15&cooldown.blade_dance.remains&talent.ragefire" );
-  ar->add_action( "eye_beam,if=(cooldown.blade_dance.remains<7|raid_event.adds.up)&(!variable.trinket1_steroids&!variable.trinket2_steroids|variable.trinket1_steroids&(trinket.1.stat.any.remains<gcd.max*3|trinket.1.cooldown.remains>20)|variable.trinket2_steroids&(trinket.2.stat.any.remains<gcd.max*3|trinket.2.cooldown.remains>20))|fight_remains<10" );
+  ar->add_action( "eye_beam,if=(cooldown.blade_dance.remains<7|raid_event.adds.up)&(!variable.trinket1_steroids&!variable.trinket2_steroids|variable.trinket1_steroids&(trinket.1.stat.any.cooldown_remains<gcd.max*3|trinket.1.stat.any.cooldown_remains>30)|variable.trinket2_steroids&(trinket.2.stat.any.cooldown_remains<gcd.max*3|trinket.2.stat.any.cooldown_remains>30))|fight_remains<10" );
   ar->add_action( "blade_dance,if=cooldown.eye_beam.remains>=gcd.max*3&buff.rending_strike.down" );
   ar->add_action( "chaos_strike,if=buff.rending_strike.up" );
-  ar->add_action( "felblade,if=buff.metamorphosis.down&fury.deficit>40&action.felblade.cooldown_react&!buff.inertia_trigger.down" );
+  ar->add_action( "sigil_of_flame,if=active_enemies>3|debuff.essence_break.down" );
+  ar->add_action( "felblade,if=fury.deficit>=40+variable.fury_gen*0.5&!buff.inertia_trigger.up" );
   ar->add_action( "glaive_tempest,if=active_enemies>=desired_targets+raid_event.adds.count|raid_event.adds.in>10" );
-  ar->add_action( "sigil_of_flame,if=active_enemies>3|buff.out_of_range.down" );
   ar->add_action( "chaos_strike,if=debuff.essence_break.up" );
-  ar->add_action( "felblade,if=(buff.out_of_range.down|fury.deficit>40)&!buff.inertia_trigger.up" );
-  ar->add_action( "throw_glaive,if=active_enemies>1&talent.furious_throws" );
-  ar->add_action( "sigil_of_flame,if=buff.out_of_range.down&debuff.essence_break.down" );
+  ar->add_action( "throw_glaive,if=active_enemies>1&talent.furious_throws&(!talent.screaming_brutality|charges=2|full_recharge_time<cooldown.blade_dance.remains)" );
   ar->add_action( "chaos_strike,if=cooldown.eye_beam.remains>gcd.max*2|fury>80" );
+  ar->add_action( "felblade,if=active_enemies=1&!talent.a_fire_inside&debuff.essence_break.down" );
   ar->add_action( "immolation_aura,if=raid_event.adds.in>full_recharge_time|active_enemies>desired_targets&active_enemies>2" );
-  ar->add_action( "sigil_of_flame,if=buff.out_of_range.down&debuff.essence_break.down&!talent.student_of_suffering&(!talent.fel_barrage|cooldown.fel_barrage.remains>25|(active_enemies=1&!raid_event.adds.exists))" );
+  ar->add_action( "sigil_of_flame,if=buff.out_of_range.down&debuff.essence_break.down&(!talent.fel_barrage|cooldown.fel_barrage.remains>25|active_enemies=1&!raid_event.adds.exists)" );
   ar->add_action( "demons_bite" );
   ar->add_action( "throw_glaive,if=buff.unbound_chaos.down&recharge_time<cooldown.eye_beam.remains&debuff.essence_break.down&(cooldown.eye_beam.remains>8|charges_fractional>1.01)&buff.out_of_range.down&active_enemies>1" );
   ar->add_action( "fel_rush,if=buff.unbound_chaos.down&recharge_time<cooldown.eye_beam.remains&debuff.essence_break.down&(cooldown.eye_beam.remains>8|charges_fractional>1.01)&active_enemies>1" );
@@ -207,18 +207,19 @@ void havoc( player_t* p )
   ar_cooldown->add_action( "metamorphosis,if=(cooldown.blade_dance.remains&((prev_gcd.1.death_sweep|prev_gcd.2.death_sweep|prev_gcd.3.death_sweep|buff.metamorphosis.up&buff.metamorphosis.remains<gcd.max)&cooldown.eye_beam.remains&(!talent.essence_break|debuff.essence_break.up|talent.shattered_destiny)&buff.fel_barrage.down&(raid_event.adds.in>40|(raid_event.adds.remains>8|!talent.fel_barrage)&active_enemies>2)|!talent.chaotic_transformation|fight_remains<30)&(buff.inner_demon.down&(buff.rending_strike.down|!talent.restless_hunter|prev_gcd.1.death_sweep)))&(talent.inertia|talent.essence_break)&time>15" );
   ar_cooldown->add_action( "potion,if=fight_remains<35|(buff.metamorphosis.up|debuff.essence_break.up)&time>10" );
   ar_cooldown->add_action( "invoke_external_buff,name=power_infusion,if=buff.metamorphosis.up|fight_remains<=20" );
-  ar_cooldown->add_action( "variable,name=special_trinket,op=set,value=equipped.mad_queens_mandate|equipped.treacherous_transmitter|equipped.skardyns_grace|equipped.signet_of_the_priory|equipped.junkmaestros_mega_magnet|equipped.geargrinders_spare_keys|equipped.mister_locknstalk|equipped.ravenous_honey_buzzer" );
+  ar_cooldown->add_action( "variable,name=special_trinket,op=set,value=equipped.mad_queens_mandate|equipped.treacherous_transmitter|equipped.skardyns_grace|equipped.signet_of_the_priory|equipped.junkmaestros_mega_magnet|equipped.geargrinders_spare_keys|equipped.mister_locknstalk|equipped.ravenous_honey_buzzer|equipped.grim_codex" );
   ar_cooldown->add_action( "use_item,name=mad_queens_mandate,if=((!talent.initiative|buff.initiative.up|time>5)&(buff.metamorphosis.remains>5|buff.metamorphosis.down)&(trinket.1.is.mad_queens_mandate&(trinket.2.cooldown.duration<10|trinket.2.cooldown.remains>10|!trinket.2.has_buff.any)|trinket.2.is.mad_queens_mandate&(trinket.1.cooldown.duration<10|trinket.1.cooldown.remains>10|!trinket.1.has_buff.any))&fight_remains>120|fight_remains<10&fight_remains<buff.metamorphosis.remains)&debuff.essence_break.down|fight_remains<5" );
   ar_cooldown->add_action( "use_item,name=treacherous_transmitter,if=!equipped.mad_queens_mandate|equipped.mad_queens_mandate&(trinket.1.is.mad_queens_mandate&trinket.1.cooldown.remains>fight_remains|trinket.2.is.mad_queens_mandate&trinket.2.cooldown.remains>fight_remains)|fight_remains>25" );
   ar_cooldown->add_action( "use_item,name=skardyns_grace,if=(!equipped.mad_queens_mandate|fight_remains>25|trinket.2.is.skardyns_grace&trinket.1.cooldown.remains>fight_remains|trinket.1.is.skardyns_grace&trinket.2.cooldown.remains>fight_remains|trinket.1.cooldown.duration<10|trinket.2.cooldown.duration<10)&buff.metamorphosis.up" );
-  ar_cooldown->add_action( "use_item,name=house_of_cards,if=cooldown.eye_beam.up|buff.metamorphosis.up|fight_remains<20" );
-  ar_cooldown->add_action( "use_item,name=signet_of_the_priory,if=time<20&(!talent.inertia|buff.inertia.up)|(buff.metamorphosis.up&cooldown.essence_break.up|fight_remains<20)&time>20|fight_remains<20" );
-  ar_cooldown->add_action( "use_item,name=junkmaestros_mega_magnet,if=variable.tier33_4piece|fight_remains<10" );
-  ar_cooldown->add_action( "use_item,name=geargrinders_spare_keys,if=variable.tier33_4piece|fight_remains<10" );
+  ar_cooldown->add_action( "use_item,name=house_of_cards,if=(cooldown.eye_beam.up|buff.metamorphosis.up)|fight_remains<20" );
+  ar_cooldown->add_action( "use_item,name=signet_of_the_priory,if=time<20&(!talent.inertia|buff.inertia.up)|buff.metamorphosis.up&time>20|fight_remains<20" );
+  ar_cooldown->add_action( "use_item,name=junkmaestros_mega_magnet,if=variable.tier33_4piece&variable.double_on_use|fight_remains<10" );
+  ar_cooldown->add_action( "use_item,name=geargrinders_spare_keys,if=variable.tier33_4piece&variable.double_on_use|fight_remains<10" );
+  ar_cooldown->add_action( "use_item,name=grim_codex,if=variable.tier33_4piece&variable.double_on_use|fight_remains<10" );
   ar_cooldown->add_action( "use_item,name=ravenous_honey_buzzer,if=(variable.tier33_4piece&(buff.inertia.down&(cooldown.essence_break.remains&debuff.essence_break.down|!talent.essence_break))&(trinket.1.is.ravenous_honey_buzzer&(trinket.2.cooldown.duration<10|trinket.2.cooldown.remains>10|!trinket.2.has_buff.any)|trinket.2.is.ravenous_honey_buzzer&(trinket.1.cooldown.duration<10|trinket.1.cooldown.remains>10|!trinket.1.has_buff.any))&fight_remains>120|fight_remains<10&fight_remains<buff.metamorphosis.remains)|fight_remains<5" );
   ar_cooldown->add_action( "do_treacherous_transmitter_task,if=cooldown.eye_beam.remains>15|cooldown.eye_beam.remains<5|fight_remains<20|buff.metamorphosis.up" );
-  ar_cooldown->add_action( "use_item,slot=trinket1,if=((cooldown.eye_beam.remains<gcd.max&active_enemies>1|buff.metamorphosis.up)&(raid_event.adds.in>trinket.1.cooldown.duration-15|raid_event.adds.remains>8)|!trinket.1.has_buff.any|fight_remains<25)&!trinket.1.is.skardyns_grace&!trinket.1.is.mad_queens_mandate&!trinket.1.is.treacherous_transmitter&(!variable.special_trinket|trinket.2.cooldown.remains>20)" );
-  ar_cooldown->add_action( "use_item,slot=trinket2,if=((cooldown.eye_beam.remains<gcd.max&active_enemies>1|buff.metamorphosis.up)&(raid_event.adds.in>trinket.2.cooldown.duration-15|raid_event.adds.remains>8)|!trinket.2.has_buff.any|fight_remains<25)&!trinket.2.is.skardyns_grace&!trinket.2.is.mad_queens_mandate&!trinket.2.is.treacherous_transmitter&(!variable.special_trinket|trinket.1.cooldown.remains>20)" );
+  ar_cooldown->add_action( "use_item,slot=trinket1,if=((cooldown.eye_beam.remains<gcd.max&active_enemies>1|buff.metamorphosis.up)&(raid_event.adds.in>trinket.1.cooldown.duration-15|raid_event.adds.remains>8)|!trinket.1.has_buff.any|fight_remains<25)&!trinket.1.is.mister_locknstalk&!variable.trinket1_crit&!trinket.1.is.skardyns_grace&!trinket.1.is.treacherous_transmitter&(!variable.special_trinket|trinket.2.cooldown.remains>20)" );
+  ar_cooldown->add_action( "use_item,slot=trinket2,if=((cooldown.eye_beam.remains<gcd.max&active_enemies>1|buff.metamorphosis.up)&(raid_event.adds.in>trinket.2.cooldown.duration-15|raid_event.adds.remains>8)|!trinket.2.has_buff.any|fight_remains<25)&!trinket.2.is.mister_locknstalk&!variable.trinket2_crit&!trinket.2.is.skardyns_grace&!trinket.2.is.treacherous_transmitter&(!variable.special_trinket|trinket.1.cooldown.remains>20)" );
   ar_cooldown->add_action( "the_hunt,if=debuff.essence_break.down&(active_enemies>=desired_targets+raid_event.adds.count|raid_event.adds.in>90)&(debuff.reavers_mark.up|!hero_tree.aldrachi_reaver)&buff.reavers_glaive.down&(buff.metamorphosis.remains>5|buff.metamorphosis.down)&(!talent.initiative|buff.initiative.up|time>5)&time>5&(!talent.inertia&buff.unbound_chaos.down|buff.inertia_trigger.down)" );
   ar_cooldown->add_action( "sigil_of_spite,if=debuff.essence_break.down&(debuff.reavers_mark.remains>=2-talent.quickened_sigils|!hero_tree.aldrachi_reaver)&cooldown.blade_dance.remains&time>15" );
 
@@ -255,7 +256,7 @@ void havoc( player_t* p )
   ar_meta->add_action( "immolation_aura,if=charges=2&active_enemies>1&debuff.essence_break.down" );
   ar_meta->add_action( "annihilation,if=buff.inner_demon.up&(cooldown.eye_beam.remains<gcd.max*3&cooldown.blade_dance.remains|cooldown.metamorphosis.remains<gcd.max*3)" );
   ar_meta->add_action( "essence_break,if=time<20&buff.thrill_of_the_fight_damage.remains>gcd.max*4&buff.metamorphosis.remains>=gcd.max*2&cooldown.metamorphosis.up&cooldown.death_sweep.remains<=gcd.max&buff.inertia.up" );
-  ar_meta->add_action( "essence_break,if=fury>20&(cooldown.blade_dance.remains<gcd.max*3|cooldown.blade_dance.up)&(buff.unbound_chaos.down&!talent.inertia|buff.inertia.up)&buff.out_of_range.remains<gcd.max&(!talent.shattered_destiny|cooldown.eye_beam.remains>4)&(!hero_tree.felscarred|active_enemies>1|cooldown.metamorphosis.remains>5&cooldown.eye_beam.remains)|fight_remains<10" );
+  ar_meta->add_action( "essence_break,if=fury>20&(cooldown.blade_dance.remains<gcd.max*3|cooldown.blade_dance.up)&(buff.unbound_chaos.down&!talent.inertia|buff.inertia.up)&buff.out_of_range.remains<gcd.max&(!talent.shattered_destiny|cooldown.eye_beam.remains>4)|fight_remains<10" );
   ar_meta->add_action( "death_sweep" );
   ar_meta->add_action( "eye_beam,if=debuff.essence_break.down&buff.inner_demon.down" );
   ar_meta->add_action( "glaive_tempest,if=debuff.essence_break.down&(cooldown.blade_dance.remains>gcd.max*2|fury>60)&(active_enemies>=desired_targets+raid_event.adds.count|raid_event.adds.in>10)" );
@@ -263,7 +264,7 @@ void havoc( player_t* p )
   ar_meta->add_action( "throw_glaive,if=talent.soulscar&talent.furious_throws&active_enemies>1&debuff.essence_break.down&(charges=2|full_recharge_time<cooldown.blade_dance.remains)" );
   ar_meta->add_action( "annihilation,if=cooldown.blade_dance.remains|fury>60|soul_fragments.total>0|buff.metamorphosis.remains<5&cooldown.felblade.up" );
   ar_meta->add_action( "sigil_of_flame,if=buff.metamorphosis.remains>5&buff.out_of_range.down" );
-  ar_meta->add_action( "felblade,if=(buff.out_of_range.down|fury.deficit>40)&action.felblade.cooldown_react" );
+  ar_meta->add_action( "felblade,if=fury.deficit>40&!buff.inertia_trigger.up" );
   ar_meta->add_action( "sigil_of_flame,if=debuff.essence_break.down&buff.out_of_range.down" );
   ar_meta->add_action( "immolation_aura,if=buff.out_of_range.down&recharge_time<(cooldown.eye_beam.remains<?buff.metamorphosis.remains)&(active_enemies>=desired_targets+raid_event.adds.count|raid_event.adds.in>full_recharge_time)" );
   ar_meta->add_action( "annihilation" );
