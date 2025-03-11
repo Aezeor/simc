@@ -493,8 +493,9 @@ void unholy( player_t* p )
 
   cleave->add_action( "any_dnd,if=!death_and_decay.ticking", "Cleave" );
   cleave->add_action( "death_coil,if=!variable.pooling_runic_power" );
-  cleave->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=!variable.pop_wounds&debuff.festering_wound.stack<4|buff.festering_scythe.react" );
-  cleave->add_action( "festering_strike,target_if=max:debuff.festering_wound.stack,if=cooldown.apocalypse.remains<variable.apoc_timing&debuff.festering_wound.stack<4" );
+  cleave->add_action( "wound_spender,if=buff.vampiric_strike.react" );
+  cleave->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=!buff.vampiric_strike.react&!variable.pop_wounds&debuff.festering_wound.stack<2|buff.festering_scythe.react" );
+  cleave->add_action( "festering_strike,target_if=max:debuff.festering_wound.stack,if=cooldown.apocalypse.remains<variable.apoc_timing&debuff.festering_wound.stack<1" );
   cleave->add_action( "wound_spender,if=variable.pop_wounds" );
 
   racials->add_action( "arcane_torrent,if=runic_power<20&rune<2", "Racials" );
