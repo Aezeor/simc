@@ -219,14 +219,16 @@ void marksmanship( player_t* p )
   cds->add_action( "potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<31" );
 
   st->add_action( "volley,if=!talent.double_tap" );
-  st->add_action( "rapid_fire,if=hero_tree.sentinel&buff.lunar_storm_ready.up|talent.bulletstorm&buff.bulletstorm.down" );
+  st->add_action( "rapid_fire,if=hero_tree.sentinel&buff.lunar_storm_ready.up" );
   st->add_action( "trueshot,if=variable.trueshot_ready" );
+  st->add_action( "explosive_shot,if=(talent.precision_detonation&set_bonus.thewarwithin_season_2_4pc&buff.precise_shots.down&buff.lock_and_load.up)|(!talent.precision_detonation&active_enemies>1)" );
+  st->add_action( "aimed_shot,if=talent.precision_detonation&set_bonus.thewarwithin_season_2_4pc&buff.precise_shots.down&buff.lock_and_load.up" );
   st->add_action( "volley,if=talent.double_tap&buff.double_tap.down" );
   st->add_action( "black_arrow,if=talent.headshot&buff.precise_shots.up|!talent.headshot&buff.razor_fragments.up" );
   st->add_action( "kill_shot,if=talent.headshot&buff.precise_shots.up|!talent.headshot&buff.razor_fragments.up" );
+  st->add_action( "multishot,if=active_enemies>1&!talent.aspect_of_the_hydra&(talent.symphonic_arsenal|talent.small_game_hunter)&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)" );
   st->add_action( "arcane_shot,if=buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)" );
   st->add_action( "rapid_fire,if=!hero_tree.sentinel|buff.lunar_storm_cooldown.remains>cooldown%3" );
-  st->add_action( "explosive_shot,if=talent.precision_detonation&set_bonus.thewarwithin_season_2_4pc&buff.precise_shots.down&buff.lock_and_load.up" );
   st->add_action( "aimed_shot,if=buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up" );
   st->add_action( "explosive_shot,if=!set_bonus.thewarwithin_season_2_4pc" );
   st->add_action( "black_arrow,if=!talent.headshot" );
@@ -286,14 +288,16 @@ void marksmanship_ptr( player_t* p )
   cds->add_action( "potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<31" );
 
   st->add_action( "volley,if=!talent.double_tap" );
-  st->add_action( "rapid_fire,if=hero_tree.sentinel&buff.lunar_storm_ready.up|talent.bulletstorm&buff.bulletstorm.down" );
+  st->add_action( "rapid_fire,if=hero_tree.sentinel&buff.lunar_storm_ready.up" );
   st->add_action( "trueshot,if=variable.trueshot_ready" );
+  st->add_action( "explosive_shot,if=(talent.precision_detonation&set_bonus.thewarwithin_season_2_4pc&buff.precise_shots.down&buff.lock_and_load.up)|(!talent.precision_detonation&active_enemies>1)" );
+  st->add_action( "aimed_shot,if=talent.precision_detonation&set_bonus.thewarwithin_season_2_4pc&buff.precise_shots.down&buff.lock_and_load.up" );
   st->add_action( "volley,if=talent.double_tap&buff.double_tap.down" );
   st->add_action( "black_arrow,if=talent.headshot&buff.precise_shots.up|!talent.headshot&buff.razor_fragments.up" );
   st->add_action( "kill_shot,if=talent.headshot&buff.precise_shots.up|!talent.headshot&buff.razor_fragments.up" );
+  st->add_action( "multishot,if=active_enemies>1&!talent.aspect_of_the_hydra&(talent.symphonic_arsenal|talent.small_game_hunter)&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)" );
   st->add_action( "arcane_shot,if=buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)" );
   st->add_action( "rapid_fire,if=!hero_tree.sentinel|buff.lunar_storm_cooldown.remains>cooldown%3" );
-  st->add_action( "explosive_shot,if=talent.precision_detonation&set_bonus.thewarwithin_season_2_4pc&buff.precise_shots.down&buff.lock_and_load.up" );
   st->add_action( "aimed_shot,if=buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up" );
   st->add_action( "explosive_shot,if=!set_bonus.thewarwithin_season_2_4pc" );
   st->add_action( "black_arrow,if=!talent.headshot" );
