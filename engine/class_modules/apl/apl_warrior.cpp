@@ -102,7 +102,7 @@ void fury( player_t* p )
   thane->add_action( "bloodbath" );
   thane->add_action( "onslaught,if=talent.tenderize" );
   thane->add_action( "rampage" );
-  thane->add_action( "bloodthirst,if=talent.vicious_contempt&target.health.pct<35&buff.bloodcraze.stack>=2|!dot.ravager.remains&buff.bloodcraze.stack>=3|active_enemies>=6" );
+  thane->add_action( "bloodthirst,if=talent.vicious_contempt&target.health.pct<35&buff.bloodcraze.stack>=2|!buff.ravager.up&buff.bloodcraze.stack>=3|active_enemies>=6" );
   thane->add_action( "raging_blow" );
   thane->add_action( "execute,if=talent.ashen_juggernaut" );
   thane->add_action( "thunder_blast" );
@@ -212,7 +212,7 @@ void arms( player_t* p )
   colossus_execute->add_action( "execute,if=buff.juggernaut.remains<=gcd&talent.juggernaut" );
   colossus_execute->add_action( "skullsplitter,if=rage<40" );
   colossus_execute->add_action( "demolish,if=debuff.colossus_smash.up" );
-  colossus_execute->add_action( "mortal_strike,if=debuff.executioners_precision.stack=2&!dot.ravager.remains|!talent.executioners_precision|talent.battlelord&debuff.executioners_precision.stack>0" );
+  colossus_execute->add_action( "mortal_strike,if=debuff.executioners_precision.stack=2&!buff.ravager.up|!talent.executioners_precision|talent.battlelord&debuff.executioners_precision.stack>0" );
   colossus_execute->add_action( "overpower,if=rage<90" );
   colossus_execute->add_action( "execute,if=rage>=40&talent.executioners_precision" );
   colossus_execute->add_action( "overpower" );
@@ -290,7 +290,7 @@ void arms( player_t* p )
   slayer_execute->add_action( "bladestorm,if=(debuff.executioners_precision.stack=2&(debuff.colossus_smash.remains>4|cooldown.colossus_smash.remains>15))|!talent.executioners_precision" );
   slayer_execute->add_action( "skullsplitter,if=rage<=40" );
   slayer_execute->add_action( "overpower,if=buff.martial_prowess.stack<2&buff.opportunist.up&talent.opportunist&(talent.bladestorm|talent.ravager&rage<85)" );
-  slayer_execute->add_action( "mortal_strike,if=dot.rend.remains<2|debuff.executioners_precision.stack=2&!dot.ravager.remains" );
+  slayer_execute->add_action( "mortal_strike,if=dot.rend.remains<2|debuff.executioners_precision.stack=2&!buff.ravager.up" );
   slayer_execute->add_action( "overpower,if=rage<=40&buff.martial_prowess.stack<2&talent.fierce_followthrough" );
   slayer_execute->add_action( "execute" );
   slayer_execute->add_action( "overpower" );
