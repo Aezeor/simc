@@ -6092,14 +6092,6 @@ void noggenfogger_ultimate_deluxe( special_effect_t& effect )
         proxy->add_child( this );
     }
 
-    // Pet melee attacks seem to still scale with aura 380 and 531
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double m = melee_attack_t::composite_da_multiplier( s );
-      m *= this->player->cast_pet()->owner->composite_player_pet_damage_multiplier( s, player->type == PLAYER_GUARDIAN );
-      return m;
-    }
-
     double composite_target_multiplier( player_t* p ) const override
     {
       double m = melee_attack_t::composite_target_multiplier( p );
