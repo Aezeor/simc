@@ -3343,12 +3343,12 @@ void darkmoon_deck_symbiosis( special_effect_t& effect )
       self_damage = create_proc_action<generic_proc_t>( "symbiosis_self", e, 455537 );
 
       // We don't want this counted towards our dps
-      // Might need to be changed.
+      // TODO: confirm this can trigger damage taken procs
+      // TODO: confirm this cannot trigger damage done procs
       self_damage->stats->type = stats_e::STATS_NEUTRAL;
-
-      self_damage->callbacks  = true;
-      self_damage->target     = player;
-      self_damage_pct         = self_damage->data().effectN( 1 ).percent();
+      self_damage->caster_callbacks = false;
+      self_damage->target = player;
+      self_damage_pct = self_damage->data().effectN( 1 ).percent();
     }
 
     void start_symbiosis()
@@ -6521,7 +6521,7 @@ void amorphous_relic( special_effect_t& effect )
                            }
                          } );
 
-  effect.player->register_on_combat_state_callback( [ haste_buff, crit_buff, periodic ]( player_t* p, bool c ) {
+  effect.player->register_on_combat_state_callback( [ periodic ]( player_t* p, bool c ) {
     if ( !c )
       periodic->expire();
     else
