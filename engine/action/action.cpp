@@ -347,6 +347,8 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     aoe(),
     dual(),
     callbacks( true ),
+    caster_callbacks( true ),
+    target_callbacks( true ),
     suppress_caster_procs(),
     suppress_target_procs(),
     enable_proc_from_suppressed(),
@@ -1848,7 +1850,7 @@ void action_t::execute()
       execute_action->execute();
     }
 
-    if ( callbacks )
+    if ( callbacks && caster_callbacks )
     {
       // Proc generic abilities on execute.
       proc_types pt;

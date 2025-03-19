@@ -3688,15 +3688,13 @@ void player_t::init_assessors()
 
   // Generic actor callbacks
   assessor_out_damage.add( assessor::CALLBACKS, [this]( result_amount_type, action_state_t* state ) {
-    if ( !state->action->callbacks )
+    if ( state->action->callbacks && state->action->caster_callbacks )
     {
-      return assessor::CONTINUE;
+      proc_types pt   = state->proc_type();
+      proc_types2 pt2 = state->impact_proc_type2();
+      if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
+        trigger_callbacks( pt, pt2, state->action, state );
     }
-
-    proc_types pt   = state->proc_type();
-    proc_types2 pt2 = state->impact_proc_type2();
-    if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
-      trigger_callbacks( pt, pt2, state->action, state );
 
     return assessor::CONTINUE;
   } );
@@ -7897,8 +7895,8 @@ void player_t::do_damage( action_state_t* incoming_state )
   }
 
   // New callback system; proc abilities on incoming events.
-  // TODO: How to express action causing/not causing incoming callbacks?
-  if ( incoming_state->action && incoming_state->action->callbacks && !incoming_state->action->suppress_target_procs )
+  if ( incoming_state->action && incoming_state->action->callbacks && incoming_state->action->target_callbacks &&
+       !incoming_state->action->suppress_target_procs )
   {
     proc_types pt = incoming_state->proc_type();
     if ( pt != PROC1_INVALID )
