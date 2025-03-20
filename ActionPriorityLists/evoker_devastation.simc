@@ -77,7 +77,7 @@ actions.aoe+=/shattering_star,target_if=max:target.health.pct,if=(cooldown.drago
 actions.aoe+=/dragonrage,target_if=max:target.time_to_die,if=target.time_to_die>=32|active_enemies>=3&target.time_to_die>=15|fight_remains<30
 # Cast Fire Breath DS optimization: Only cast if current fight will last 8s+ or encounter ends in less than 30s
 actions.aoe+=/call_action_list,name=fb,if=(!talent.dragonrage|buff.dragonrage.up|cooldown.dragonrage.remains>variable.dr_prep_time_aoe|!talent.animosity|talent.flame_siphon)&(target.time_to_die>=8|talent.mass_disintegrate)
-# Cast DB if not in DR and not going to overflow essence.
+actions.aoe+=/call_action_list,name=es,if=(!talent.dragonrage|buff.dragonrage.up|cooldown.dragonrage.remains>variable.dr_prep_time_aoe|!talent.animosity)&(!buff.jackpot.up|!set_bonus.tww2_4pc|talent.mass_disintegrate)
 actions.aoe+=/deep_breath,if=!buff.dragonrage.up&essence.deficit>3
 # Send SS when it doesn't overflow EB, without vigor send on CD  BaumChange 3: Save SS for Engulf - +20k in 5T
 actions.aoe+=/shattering_star,target_if=max:target.health.pct,if=(buff.essence_burst.stack<buff.essence_burst.max_stack&talent.arcane_vigor|talent.eternitys_span&active_enemies<=3|set_bonus.tww2_4pc&buff.jackpot.stack<2)&(!talent.engulf|cooldown.engulf.remains<4|cooldown.engulf.charges>0)
@@ -119,10 +119,8 @@ actions.fb+=/fire_breath,empower_to=4,target_if=max:target.health.pct
 actions.green=emerald_blossom
 actions.green+=/verdant_embrace
 
-# Eternity Surge logic. Play around blazing shards if outside of DR. DS optimization: Only cast if current fight will last 8s+ or encounter ends in less than 30s  BaumChange ST #1: Pruned some of the duplicate conditions and added the var ES_Send_Threshold for testing
-actions.st=call_action_list,name=es,if=(!talent.dragonrage|variable.next_dragonrage>variable.dr_prep_time_st|!talent.animosity|talent.mass_disintegrate)&(!set_bonus.tww2_4pc|!buff.jackpot.up|variable.es_send_threshold<=cooldown.fire_breath.remains|talent.mass_disintegrate)&(!talent.power_swell|buff.power_swell.remains<=gcd.max)
 # ST Action List, it's a mess, but it's getting better!
-actions.st+=/use_item,name=kharnalex_the_first_light,if=!buff.dragonrage.up&debuff.shattering_star_debuff.down&raid_event.movement.in>6
+actions.st=use_item,name=kharnalex_the_first_light,if=!buff.dragonrage.up&debuff.shattering_star_debuff.down&raid_event.movement.in>6
 # Movement Logic, Time spiral logic might need some tweaking
 actions.st+=/hover,use_off_gcd=1,if=raid_event.movement.in<6&!buff.hover.up&gcd.remains>=0.5
 # Tip second FB if not playing font of magic, otherwise tip ES.
