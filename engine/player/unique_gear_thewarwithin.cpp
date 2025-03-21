@@ -6313,6 +6313,7 @@ void noggenfogger_ultimate_deluxe( special_effect_t& effect )
 
   // Name is currently typod in spell data, might need fixed if the data name changes.
   effect.execute_action = create_proc_action<noggenfogger_ultimate_deluxe_t>( "noggenfogger_utimate_deluxe", effect );
+  effect.has_use_damage_override = true;
 }
 
 // Ratfang Toxin
