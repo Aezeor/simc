@@ -2247,7 +2247,7 @@ struct mending_the_cracks_heal_t : public algari_concodance_pet_heal_t
     name_str_reporting = "mending_the_cracks";
     background         = true;
     aoe                = 5;
-    base_td            = e.driver()->effectN( 10 ).average( e );
+    base_td            = e.driver()->effectN( 2 ).average( e ) / 5;
   }
 };
 
