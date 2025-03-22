@@ -568,6 +568,7 @@ public:
     proc_t* wild_call;
     proc_t* wild_instincts;
     proc_t* dire_command;
+    proc_t* bear_without_lftf;
 
     proc_t* deathblow;
 
@@ -1926,6 +1927,9 @@ struct bear_t final : public dire_critter_t
   {
     dire_critter_t::summon( duration );
     
+    if ( !o()->buffs.lead_from_the_front->check() )
+      o()->procs.bear_without_lftf->occur();
+
     buffs.bear_summon->trigger( -1, buffs.bear_summon->default_value + ( o()->buffs.lead_from_the_front->check() ? o()->talents.lead_from_the_front_buff->effectN( 3 ).percent() : 0 ) );
 
     if ( actions.rend_flesh )
@@ -8943,6 +8947,9 @@ void hunter_t::init_procs()
 
   if ( talents.wild_call.ok() )
     procs.wild_call = get_proc( "Wild Call" );
+
+  if ( talents.lead_from_the_front.ok() )
+    procs.bear_without_lftf = get_proc( "Bear without Lead From the Front" );
   
   if ( talents.deathblow.ok() )
     procs.deathblow = get_proc( "Deathblow" );
