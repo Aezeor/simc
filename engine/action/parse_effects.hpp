@@ -24,7 +24,8 @@ enum parse_flag_e : uint16_t
   // internal flags that should not be used in parse_effects()
   VALUE_OVERRIDE    = 0x0100,
   AFFECTED_OVERRIDE = 0x0200,
-  MANUAL_ENTRY      = 0x0400
+  MANUAL_ENTRY      = 0x0400,
+  VALUE_FUNCTION    = 0x0800
 };
 
 enum parse_callback_e
@@ -365,6 +366,7 @@ struct parse_base_t
                         is_detected_v<detect_value_func, U> )
     {
       pack.data.value_func = std::move( mod );
+      pack.data.type |= VALUE_FUNCTION;
     }
     else if constexpr ( ( std::is_convertible_v<T, std::function<bool()>> ||
                           std::is_convertible_v<T, std::function<bool( const action_t*, const action_state_t* )>> ) &&
