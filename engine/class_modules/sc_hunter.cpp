@@ -4484,14 +4484,11 @@ struct kill_shot_base_t : hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    if ( !background )
-    {
-      p()->buffs.deathblow->cancel();
-      p()->buffs.razor_fragments->cancel();
+    p()->buffs.deathblow->cancel();
+    p()->buffs.razor_fragments->cancel();
 
-      if ( p()->talents.headshot.ok() )
-        p()->consume_precise_shots();
-    }
+    if ( p()->talents.headshot.ok() )
+      p()->consume_precise_shots();
   }
 
   void impact( action_state_t* s ) override
@@ -4630,7 +4627,7 @@ struct bursting_shot_t : public hunter_ranged_attack_t
 
 // Black Arrow (Dark Ranger) =========================================================
 
-struct black_arrow_base_t : public kill_shot_base_t
+struct black_arrow_t final : public kill_shot_base_t
 {
   struct black_arrow_dot_t : public hunter_ranged_attack_t
   {
@@ -4694,47 +4691,21 @@ struct black_arrow_base_t : public kill_shot_base_t
     }
   };
 
-  black_arrow_dot_t* black_arrow_dot = nullptr;
-  bleak_powder_t* bleak_powder = nullptr;
-  black_arrow_dot_t* dot;
-
-  black_arrow_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ) : kill_shot_base_t( n, p, s ),
-    dot( p->get_background_action<black_arrow_dot_t>( "black_arrow_dot" ) )
-  {
-    impact_action = dot;
-
-    if ( p->talents.bleak_powder.ok() )
-      bleak_powder = p->get_background_action<bleak_powder_t>( "bleak_powder" );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    kill_shot_base_t::impact( s );
-
-    if ( bleak_powder && ( p()->buffs.trick_shots->check() || p()->buffs.beast_cleave->check() ) && p()->cooldowns.bleak_powder->up() )
-    {
-      bleak_powder->execute_on_target( s->target );
-      p()->cooldowns.bleak_powder->start();
-    }
-  }
-};
-
-struct black_arrow_t final : public black_arrow_base_t
-{
   // Withering Fire (Dark Ranger) =========================================================
-  struct withering_fire_t final : black_arrow_base_t
+  struct withering_fire_t final : hunter_ranged_attack_t
   {
-    withering_fire_t( util::string_view n, hunter_t* p ) : black_arrow_base_t( n, p, p->talents.withering_fire_black_arrow )
+    black_arrow_dot_t* dot;
+
+    withering_fire_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.withering_fire_black_arrow ),
+      dot( p->get_background_action<black_arrow_dot_t>( "black_arrow_dot" ) )
     {
       background = dual = true;
-    }
-
-    // Ignore Kill Shot target count mods
-    int n_targets() const override
-    {
-      return 1;
+      impact_action = dot;
     }
   };
+
+  bleak_powder_t* bleak_powder = nullptr;
+  black_arrow_dot_t* dot;
 
   struct
   {
@@ -4745,15 +4716,21 @@ struct black_arrow_t final : public black_arrow_base_t
   double lower_health_threshold_pct;
   double upper_health_threshold_pct;
 
-  black_arrow_t( hunter_t* p, util::string_view options_str ) : black_arrow_base_t( "black_arrow", p, p->talents.black_arrow_spell ),
+  black_arrow_t( hunter_t* p, util::string_view options_str ) : kill_shot_base_t( "black_arrow", p, p->talents.black_arrow_spell ),
     lower_health_threshold_pct( data().effectN( 2 ).base_value() ),
-    upper_health_threshold_pct( data().effectN( 3 ).base_value() )
+    upper_health_threshold_pct( data().effectN( 3 ).base_value() ),
+    dot( p->get_background_action<black_arrow_dot_t>( "black_arrow_dot" ) )
   {
     parse_options( options_str );
+
+    impact_action = dot;
 
     add_child( dot );
     if ( dot->shadow_surge )
       add_child( dot->shadow_surge );
+
+    if ( p->talents.bleak_powder.ok() )
+      bleak_powder = p->get_background_action<bleak_powder_t>( "bleak_powder" );
 
     if ( p->talents.withering_fire.ok() )
     {
@@ -4765,7 +4742,7 @@ struct black_arrow_t final : public black_arrow_base_t
 
   void execute() override
   {
-    black_arrow_base_t::execute();
+    kill_shot_base_t::execute();
 
     if ( rng().roll( p()->talents.ebon_bowstring->effectN( 1 ).percent() ) )
       p()->trigger_deathblow( true );
@@ -4797,7 +4774,13 @@ struct black_arrow_t final : public black_arrow_base_t
 
   void impact( action_state_t* s ) override
   {
-    black_arrow_base_t::impact( s );
+    kill_shot_base_t::impact( s );
+
+    if ( bleak_powder && ( p()->buffs.trick_shots->check() || p()->buffs.beast_cleave->check() ) && p()->cooldowns.bleak_powder->up() )
+    {
+      bleak_powder->execute_on_target( s->target );
+      p()->cooldowns.bleak_powder->start();
+    }
 
     // The chance is not in spell data and is hardcoded into the tooltip
     if ( p()->talents.banshees_mark.ok() && rng().roll( 0.25 ) && p()->cooldowns.banshees_mark->up() )
