@@ -20,7 +20,7 @@ actions+=/lights_judgment
 
 # COOLDOWNS ACTIONLIST
 actions.cds=blood_fury,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault
-actions.cds+=/invoke_external_buff,name=power_infusion,if=(buff.coordinated_assault.up&buff.coordinated_assault.remains>7&!buff.power_infusion.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault)
+actions.cds+=/invoke_external_buff,name=power_infusion,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault
 actions.cds+=/harpoon,if=prev.kill_command
 actions.cds+=/ancestral_call,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault
 actions.cds+=/fireblood,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault
