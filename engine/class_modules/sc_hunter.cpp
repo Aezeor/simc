@@ -1953,7 +1953,8 @@ struct bear_t final : public dire_critter_t
 
     buffs.bear_summon = make_buff( this, "bear_summon", o()->talents.howl_of_the_pack_leader_bear_buff )
       ->set_default_value_from_effect( 1 )
-      ->apply_affecting_aura( o()->specs.beast_mastery_hunter );
+      ->apply_affecting_aura( o()->specs.beast_mastery_hunter )
+      ->apply_affecting_aura( o()->specs.survival_hunter );
   }
 
   const bear_td_t* find_target_data( const player_t* target ) const override
@@ -4749,7 +4750,7 @@ struct black_arrow_t final : public kill_shot_base_t
 
     if ( p->talents.withering_fire.ok() )
     {
-      withering_fire.count = as<int>( p->talents.withering_fire->effectN( 3 ).base_value() );
+      withering_fire.count = as<int>( p->talents.withering_fire->effectN( 3 ).base_value() + p->specs.beast_mastery_hunter->effectN( 13 ).base_value() );
       withering_fire.action = p->get_background_action<withering_fire_t>( "black_arrow_withering_fire" );
       add_child( withering_fire.action );
     }
@@ -5529,7 +5530,7 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
 
     if ( p()->talents.phantom_pain.ok() )
     {
-      double replicate_amount = p()->talents.phantom_pain->effectN( 1 ).percent();
+      double replicate_amount = p()->talents.phantom_pain->effectN( 1 ).percent() + p()->specs.marksmanship_hunter->effectN( 15 ).percent();
       for ( player_t* t : sim->target_non_sleeping_list )
       {
         if ( t->is_enemy() && !t->demise_event && t != s->target )
@@ -8873,6 +8874,7 @@ void hunter_t::create_buffs()
   buffs.howl_of_the_pack_leader_cooldown = 
     make_buff( this, "howl_of_the_pack_leader_cooldown", talents.howl_of_the_pack_leader_cooldown_buff )
       ->apply_affecting_aura( talents.better_together )
+      ->apply_affecting_aura( specs.survival_hunter )
       ->set_stack_change_callback(
         [ this ]( buff_t*, int, int cur ) {
           if ( cur == 0 )
