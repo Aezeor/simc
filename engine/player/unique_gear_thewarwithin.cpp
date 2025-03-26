@@ -6285,6 +6285,16 @@ void noggenfogger_ultimate_deluxe( special_effect_t& effect )
       use_auto_attack             = true;
     }
 
+    void update_stats() override
+    {
+      unique_gear_pet_t::update_stats();
+      // TODO: Needs more testing to see if its just haste and attack speed that this no longer scales with. 
+      current_pet_stats.composite_melee_auto_attack_speed = 1.0;
+      current_pet_stats.composite_spell_cast_speed        = 1.0;
+      current_pet_stats.composite_melee_haste             = 1.0;
+      current_pet_stats.composite_spell_haste             = 1.0;
+    }
+
     attack_t* create_auto_attack() override
     {
       auto a                = new auto_attack_melee_t( this, effect, "main_hand", parent_action );
