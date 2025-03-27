@@ -1930,7 +1930,7 @@ struct bear_t final : public dire_critter_t
   {
     dire_critter_t::summon( duration );
     
-    if ( !o()->buffs.lead_from_the_front->check() )
+    if ( !o()->buffs.lead_from_the_front->check() && o()->talents.lead_from_the_front->ok() )
       o()->procs.bear_without_lftf->occur();
 
     buffs.bear_summon->trigger( -1, buffs.bear_summon->default_value + ( o()->buffs.lead_from_the_front->check() ? o()->talents.lead_from_the_front_buff->effectN( 3 ).percent() : 0 ) );
