@@ -8039,7 +8039,7 @@ void force_of_magma( special_effect_t& effect )
 void vile_contamination( special_effect_t& effect )
 {
   auto dot     = create_proc_action<generic_proc_t>( "vile_contamination", effect, effect.trigger() );
-  dot->base_td = effect.driver()->effectN( 1 ).average( effect );
+  dot->base_td += effect.driver()->effectN( 1 ).average( effect );
   // Setting a reasonably high non 0 duration so the DoT works as expected. Data contains no duration resulting in it
   // never applying.
   dot->dot_duration = 300_s;
