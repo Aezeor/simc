@@ -566,7 +566,8 @@ void twilight_devastation( special_effect_t& effect )
   struct twilight_devastation_t : public generic_proc_t
   {
     double current_mult;
-    twilight_devastation_t( const special_effect_t& e ) : generic_proc_t( e, "twilight_devastation", e.driver() ), current_mult( 1.0 )
+    twilight_devastation_t( const special_effect_t& e )
+      : generic_proc_t( e, "twilight_devastation", e.player->find_spell( 1225040 ) ), current_mult( 1.0 )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.player );
       base_multiplier *= role_mult( e.player, e.player->find_spell( 1233223 ) );
@@ -590,14 +591,14 @@ void twilight_devastation( special_effect_t& effect )
 
     void impact( action_state_t* s ) override
     {
-      if( ( s->chain_target + 1 ) % 2 == 0 )
+      if ( ( s->chain_target + 1 ) % 2 == 0 )
         current_mult *= 0.5;
 
       generic_proc_t::impact( s );
     }
   };
 
-  auto damage         = create_proc_action<twilight_devastation_t>( "twilight_devastation", effect );
+  auto damage = create_proc_action<twilight_devastation_t>( "twilight_devastation", effect );
 
   effect.execute_action = damage;
   effect.spell_id       = effect.player->find_spell( 1225038 )->id();
