@@ -7375,32 +7375,38 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   debuffs.reavers_mark =
       make_buff( *this, "reavers_mark", p.hero_spec.reavers_mark )
           ->set_default_value_from_effect( 1 )
+          ->modify_default_value( p.spec.havoc_demon_hunter->effectN( 15 ).base_value() )
           ->set_max_stack( 2 )
           ->set_refresh_behavior( buff_refresh_behavior::DURATION )
           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-          ->set_stack_change_callback( [ &p ]( buff_t* b, int, int new_ ) {
-            if ( !new_ )
-            {
-              if ( p.active.wounded_quarry )
+          ->set_stack_change_callback(
+              [ &p ]( buff_t* b, int, int new_ )
+
               {
-                p.sim->print_debug( "{} triggers Wounded Quarry because Reaver's Mark was removed from target {}: {}",
-                                    p.name(), p.last_reavers_mark_applied->name(), p.wounded_quarry_accumulator );
-                p.active.wounded_quarry->execute_on_target( p.last_reavers_mark_applied, p.wounded_quarry_accumulator );
-              }
-              p.wounded_quarry_accumulator = 0.0;
-              p.proc.wounded_quarry_accumulator_reset->occur();
-              p.cooldown.wounded_quarry_trigger_icd->reset( false );
-            }
-            else
-            {
-              if ( p.last_reavers_mark_applied && p.last_reavers_mark_applied != b->player &&
-                   p.get_target_data( p.last_reavers_mark_applied )->debuffs.reavers_mark->check() )
-              {
-                p.get_target_data( p.last_reavers_mark_applied )->debuffs.reavers_mark->expire();
-              }
-              p.last_reavers_mark_applied = b->player;
-            }
-          } );
+                if ( !new_ )
+                {
+                  if ( p.active.wounded_quarry )
+                  {
+                    p.sim->print_debug(
+                        "{} triggers Wounded Quarry because Reaver's Mark was removed from target {}: {}", p.name(),
+                        p.last_reavers_mark_applied->name(), p.wounded_quarry_accumulator );
+                    p.active.wounded_quarry->execute_on_target( p.last_reavers_mark_applied,
+                                                                p.wounded_quarry_accumulator );
+                  }
+                  p.wounded_quarry_accumulator = 0.0;
+                  p.proc.wounded_quarry_accumulator_reset->occur();
+                  p.cooldown.wounded_quarry_trigger_icd->reset( false );
+                }
+                else
+                {
+                  if ( p.last_reavers_mark_applied && p.last_reavers_mark_applied != b->player &&
+                       p.get_target_data( p.last_reavers_mark_applied )->debuffs.reavers_mark->check() )
+                  {
+                    p.get_target_data( p.last_reavers_mark_applied )->debuffs.reavers_mark->expire();
+                  }
+                  p.last_reavers_mark_applied = b->player;
+                }
+              } );
 
   dots.sigil_of_flame = target->get_dot( "sigil_of_flame", &p );
   dots.sigil_of_doom  = target->get_dot( "sigil_of_doom", &p );
