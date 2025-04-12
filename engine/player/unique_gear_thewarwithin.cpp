@@ -716,8 +716,7 @@ void twisted_appendage( special_effect_t& effect )
         return new twisted_appendage_pet_t( e, mind_flay, appendage );
       } );
       appendage_spawner.set_default_duration( summon_spell->duration() );
-      add_child( appendage );
-      appendage->add_child( mind_flay );
+      add_child( mind_flay );
     }
 
     void execute() override
@@ -727,7 +726,6 @@ void twisted_appendage( special_effect_t& effect )
     }
   };
 
-  // Name is currently typod in spell data, might need fixed if the data name changes.
   effect.execute_action = create_proc_action<twisted_appendage_t>( "twisted_appendage", effect );
   effect.spell_id       = effect.player->find_spell( 1227300 )->id();
   new dbc_proc_callback_t( effect.player, effect );
