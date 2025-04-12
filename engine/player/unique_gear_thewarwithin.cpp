@@ -677,58 +677,84 @@ void twisted_appendage( special_effect_t& effect )
   if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
     return;
 
+  struct mind_flay_t : public spell_t
+  {
+    mind_flay_t( std::string_view n, pet_t* p, const spell_data_t* s, std::string_view options_str, action_t* a,
+                 int driver_id )
+      : spell_t( n, p, s )
+    {
+      base_td = p->find_spell( driver_id )->effectN( 1 ).average( p->owner );
+      base_td_multiplier *= role_mult( p->owner, p->owner->find_spell( 1233392 ) );
+      name_str_reporting = "mind_flay";
+
+      channeled = true;
+
+      auto proxy = a;
+      auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
+
+      parse_options( options_str );
+    }
+  };
+
   struct twisted_appendage_pet_t : unique_gear_pet_t
   {
-    action_t* mind_flay;
-
-    twisted_appendage_pet_t( const special_effect_t& e, action_t* damage = nullptr, action_t* parent = nullptr )
-      : unique_gear_pet_t( "twisted_appendage", e, &parent->data() ), mind_flay( damage )
+    int driver_id;
+    twisted_appendage_pet_t( const special_effect_t& e, int og_driver = 0, action_t* parent = nullptr )
+      : unique_gear_pet_t( "twisted_appendage", e, &parent->data() ), driver_id( og_driver )
     {
       parent_action       = parent;
       use_auto_attack     = false;
       base_movement_speed = 0.0;
     }
 
-    void arise() override
+    void init_action_list() override
     {
-      unique_gear_pet_t::arise();
-      mind_flay->execute_on_target( owner->target );
+      unique_gear_pet_t::init_action_list();
+
+      // Default "auto-pilot" pet APL (if everything is left on auto-cast)
+      action_priority_list_t* def = get_action_priority_list( "default" );
+      def->add_action( "mind_flay" );
+    }
+
+    action_t* create_action( std::string_view name, std::string_view options_str ) override
+    {
+      if ( name == "mind_flay" )
+        return new mind_flay_t( name, this, find_spell( 1227303 ), options_str, parent_action, driver_id );
+
+      return unique_gear_pet_t::create_action( name, options_str );
     }
   };
 
-  struct twisted_appendage_t : public generic_proc_t
+  struct twisted_appendage_cb_t : public dbc_proc_callback_t
   {
     spawner::pet_spawner_t<twisted_appendage_pet_t> appendage_spawner;
 
-    twisted_appendage_t( const special_effect_t& e )
-      : generic_proc_t( e, "twisted_appendage", e.driver() ), appendage_spawner( "twisted_appendage", e.player )
+    twisted_appendage_cb_t( special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ), appendage_spawner( "twisted_appendage", e.player )
     {
-      auto summon_spell = e.player->find_spell( 1227301 );
-      auto appendage    = new action_t( action_e::ACTION_OTHER, "twisted_appendage_summon", e.player, summon_spell );
-      appendage->name_str_reporting = "Summon";
+      auto summon_spell      = e.player->find_spell( 1227301 );
+      auto appendage         = new action_t( action_e::ACTION_OTHER, "twisted_appendage", e.player, summon_spell );
+      int original_driver_id = e.driver()->id();
 
-      auto mind_flay     = create_proc_action<generic_proc_t>( "twisted_appendage_mind_flay", e, 1227303 );
-      mind_flay->base_td = e.driver()->effectN( 1 ).average( e.player );
-      mind_flay->base_td_multiplier *= role_mult( e.player, e.player->find_spell( 1227294 ) );
-      mind_flay->name_str_reporting = "mind_flay";
-
-      appendage_spawner.set_creation_callback( [ &e, mind_flay, appendage ]( player_t* ) {
-        return new twisted_appendage_pet_t( e, mind_flay, appendage );
+      appendage_spawner.set_creation_callback( [ &e, appendage, original_driver_id ]( player_t* ) {
+        return new twisted_appendage_pet_t( e, original_driver_id, appendage );
       } );
       appendage_spawner.set_default_duration( summon_spell->duration() );
-      add_child( mind_flay );
+
+      e.spell_id = 1227300;
     }
 
-    void execute() override
+    void execute( action_t*, action_state_t* ) override
     {
-      generic_proc_t::execute();
       appendage_spawner.spawn();
     }
   };
 
-  effect.execute_action = create_proc_action<twisted_appendage_t>( "twisted_appendage", effect );
-  effect.spell_id       = effect.player->find_spell( 1227300 )->id();
-  new dbc_proc_callback_t( effect.player, effect );
+  new twisted_appendage_cb_t( effect );
 }
 
 // Rune of the Void Ritual
