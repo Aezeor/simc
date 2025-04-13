@@ -656,7 +656,7 @@ void echoing_void( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_trigger_function(
       new_driver->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ ticking_buff ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* s ) {
+      [ ticking_buff ]( const dbc_proc_callback_t*, action_t*, const action_state_t* ) {
         return !ticking_buff->up();
       } );
 
@@ -776,7 +776,7 @@ void void_ritual( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_trigger_function(
       effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ buff ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* s ) { return !buff->up(); } );
+      [ buff ]( const dbc_proc_callback_t*, action_t*, const action_state_t* ) { return !buff->up(); } );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -7011,7 +7011,7 @@ void amorphous_relic( special_effect_t& effect )
                            }
                          } );
 
-  effect.player->register_on_combat_state_callback( [ periodic ]( player_t* p, bool c ) {
+  effect.player->register_on_combat_state_callback( [ periodic ]( player_t*, bool c ) {
     if ( !c )
       periodic->expire();
     else
