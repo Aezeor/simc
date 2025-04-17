@@ -4519,8 +4519,19 @@ struct kill_shot_base_t : hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    p()->buffs.deathblow->cancel();
-    p()->buffs.razor_fragments->cancel();
+    // TODO 17/4/25: if a cast that would consume an existing Deathblow is queued after a cast that triggers a new one, the new Deathblow is saved;
+    // this can be handled by having Deathblow's activated flag set false and using trigger() to force it to increment after the buff delay,
+    // which would occur after the queued execute. Here though we have to make sure we don't cancel the delayed increment when modeling that bug(?)
+    if ( p()->bugs )
+    {
+      p()->buffs.deathblow->expire();
+      p()->buffs.razor_fragments->expire();
+    }
+    else
+    {
+      p()->buffs.deathblow->cancel();
+      p()->buffs.razor_fragments->cancel();
+    }
 
     if ( p()->talents.headshot.ok() )
       p()->consume_precise_shots();
@@ -5731,20 +5742,8 @@ struct aimed_shot_t : public aimed_shot_base_t
       precise_shot_stacks++;
     p()->buffs.precise_shots->increment( precise_shot_stacks );
 
-    // TODO 3/3/25: If Deathblow triggers from an Aimed Shot that has a Kill Shot queued after it that would consume an existing Deathblow, the new Deathblow is saved.
     if ( rng().roll( deathblow.chance ) )
-    {
-      if ( p()->buffs.deathblow->check() )
-      {
-        make_event( sim, sim->queue_lag.mean * 2, [ this ]() {
-          p()->trigger_deathblow();
-        } );
-      }
-      else
-      {
-        p()->trigger_deathblow();
-      }
-    }
+      p()->trigger_deathblow();
 
     auto tl = target_list();
     if ( aspect_of_the_hydra && tl.size() > 1 )
