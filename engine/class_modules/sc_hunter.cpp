@@ -4582,7 +4582,7 @@ struct kill_shot_base_t : hunter_ranged_attack_t
   {
     return hunter_ranged_attack_t::target_ready( candidate_target ) &&
       ( candidate_target -> health_percentage() <= health_threshold_pct
-        || p() -> buffs.deathblow -> check() );
+        || p()->buffs.deathblow->may_react() );
   }
 
   double action_multiplier() const override
@@ -4835,7 +4835,7 @@ struct black_arrow_t final : public kill_shot_base_t
       ( candidate_target->health_percentage() <= lower_health_threshold_pct ||
         ( p()->bugs && candidate_target->health_percentage() >= upper_health_threshold_pct ) ||
         ( p()->talents.the_bell_tolls.ok() && candidate_target->health_percentage() >= upper_health_threshold_pct ) ||
-        p()->buffs.deathblow->check() );
+        p()->buffs.deathblow->may_react() );
   }
 };
 
@@ -8523,6 +8523,7 @@ void hunter_t::create_buffs()
   buffs.deathblow =
     make_buff( this, "deathblow", talents.deathblow_buff )
       ->set_activated( false );
+  buffs.deathblow->reactable = true;
 
   // Marksmanship Tree
 
