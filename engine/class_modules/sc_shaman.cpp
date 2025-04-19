@@ -995,7 +995,7 @@ public:
   std::vector<std::tuple<simple_sample_data_t, simple_sample_data_t>> flowing_spirits_procs;
 
   /// Molten Thunder 11.1
-  double molten_thunder_chance;
+  unsigned molten_thunder_procs;
 
   /// Generic proc tracking
   stats::proc_track_db_t tracker;
@@ -6026,29 +6026,31 @@ struct sundering_t : public shaman_attack_t
     p()->trigger_earthsurge( execute_state );
 
     // Calculate multiplier to start proc chain
-    if ( p()->molten_thunder_chance == -1.0 )
+    auto molten_thunder_chance = 0.0;
+    if ( p()->talent.molten_thunder.ok() )
     {
-      p()->molten_thunder_chance = p()->talent.molten_thunder->effectN( 2 ).percent();
-      p()->molten_thunder_chance += p()->talent.molten_thunder->effectN( 3 ).percent() *
+      molten_thunder_chance = p()->talent.molten_thunder->effectN( 2 ).percent();
+      molten_thunder_chance += p()->talent.molten_thunder->effectN( 3 ).percent() *
         std::min( num_targets_hit,
           as<int>( p()->talent.molten_thunder->effectN( 4 ).base_value() ) );
+        
+      molten_thunder_chance *= std::pow( 0.5, p()->molten_thunder_procs );
     }
 
-    sim->print_debug( "{} molten_thunder chance={}", player->name(),
-      p()->molten_thunder_chance );
+    sim->print_debug( "{} molten_thunder chance={}", player->name(), molten_thunder_chance );
 
-    if ( p()->rng().roll( p()->molten_thunder_chance ) )
+    if ( p()->rng().roll( molten_thunder_chance ) )
     {
       cooldown->reset( true );
       molten_thunder->occur();
 
       // Proc success, cut chance in half
-      p()->molten_thunder_chance *= 0.5;
+      p()->molten_thunder_procs++;
     }
     // Proc failure, reset chance on next go
     else
     {
-      p()->molten_thunder_chance = -1.0;
+      p()->molten_thunder_procs = 0U;
     }
   }
 
@@ -15281,9 +15283,8 @@ void shaman_t::reset()
 
   active_flowing_spirits_proc = 0U;
 
-  molten_thunder_chance = -1.0;
+  molten_thunder_procs = 0U;
 }
-
 
 // shaman_t::merge ==========================================================
 
