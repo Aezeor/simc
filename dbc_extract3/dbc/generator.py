@@ -1537,6 +1537,16 @@ class SpellDataGenerator(DataGenerator):
          # 11.1.5
          1225040, # Twilight Devastation Enchant
          1227303, # Twisted Appendage Enchant
+         # 11.1.7
+         1236109, 1236110, 1236140, # Charged Bolts
+         1236118, 1236122, 1236141, # Cauterizing Bolts
+         1236142, 1236272, # Critical Chain
+         1236144, 1236273, 1236936, # Spark Burst
+         1236146, 1236275, 1236938, # Static Charge
+         1236148, 1236276, 1236937, 1236961, # Electric Current
+         1236161, 1236277, # Charged Touch
+         1236165, 1236278, 1236993, # Energy Shield
+         1236169, 1236279, # Charged Crystal
         ),
 
         # Warrior:
