@@ -8268,6 +8268,28 @@ void evoker_t::init_finished()
           allied_major_cds[ p ] = buff_t::find( p, "arcane_surge" );
       }
     }
+    else if ( p->type == DRUID )
+    {
+      if ( p->specialization() == DRUID_BALANCE )
+      {
+        if ( ST( p, "Incarnation: Chosen of Elune" ) )
+        {
+          allied_major_cds[ p ] = buff_t::find( p, "incarnation_chosen_of_elune" );
+        }
+        else
+        {
+          if ( ST( p, "Celestial Alignment" ) )
+            allied_major_cds[ p ] = buff_t::find( p, "celestial_alignment" );
+        }
+      }
+    }
+    else if ( p->type == SHAMAN )
+    {
+      if ( ST( p, "Ascendance" ) && p->specialization() != SHAMAN_RESTORATION )
+      {
+        allied_major_cds[ p ] = buff_t::find( p, "ascendance" );
+      }
+    }
     else if ( p->type == HUNTER )
     {
       if ( p->specialization() == HUNTER_MARKSMANSHIP )
