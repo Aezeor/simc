@@ -119,9 +119,9 @@ talents=CwPAAAAAAAAAAAAAAAAAAAAAAAAzMjZMDDzYmZmphZmZGzYAAAAAAAAAMzMzwYwMAgZzMMbz
 head=cauldron_champions_crown,id=229253,bonus_id=11996/10356/11960/6652/12176/1533/10255/10878,gem_id=213743,enchant_id=7933
 neck=strapped_rescuekeg,id=221060,bonus_id=4786/3176/11996/8781,gem_id=213497/213497
 shoulders=cauldron_champions_screamplate,id=229251,bonus_id=11996/10356/11962/6652/1533/10255
-back=consecrated_cloak,id=222817,bonus_id=12043/9631/9633/8902/8793/12040/10520/8960,crafted_stats=32/36
+back=consecrated_cloak,id=222817,bonus_id=12043/9631/9633/8902/8793/12040/11304/8960,crafted_stats=32/36
 chest=cauldron_champions_ribcage,id=229256,bonus_id=11996/10356/11958/6652/1533/10255,enchant=crystalline_radiance_3
-wrists=everforged_vambraces,id=222435,bonus_id=12043/9631/9633/8902/8793/12040/10520/8960/10878,gem_id=213497,crafted_stats=32/36
+wrists=everforged_vambraces,id=222435,bonus_id=12043/9631/9633/8902/8793/12040/11304/8960/10878,gem_id=213497,crafted_stats=32/36
 hands=cauldron_champions_fistguards,id=229254,bonus_id=11996/10356/11959/6652/1533/10255
 waist=coinoperated_girdle,id=228886,bonus_id=11996/10356/6652/12176/1533/10255/10878,gem_id=213497
 legs=galvanized_oxxein_legguards,id=178800,bonus_id=4786/9993/11996,enchant=stormbound_armor_kit_3
@@ -145,9 +145,9 @@ talents=CwPAAAAAAAAAAAAAAAAAAAAAAAAzMjZMDDzYmZmphZmZGzYAAAAAAAAAMzMzwYMmBAMbmhZZ
 head=cauldron_champions_crown,id=229253,bonus_id=11996/10356/11960/6652/12176/1533/10255/10878,gem_id=213743,enchant_id=7933
 neck=strapped_rescuekeg,id=221060,bonus_id=4786/3176/11996/8781,gem_id=213497/213497
 shoulders=cauldron_champions_screamplate,id=229251,bonus_id=11996/10356/11962/6652/1533/10255
-back=consecrated_cloak,id=222817,bonus_id=12043/9631/9633/8902/8793/12040/10520/8960,crafted_stats=32/36
+back=consecrated_cloak,id=222817,bonus_id=12043/9631/9633/8902/8793/12040/11304/8960,crafted_stats=32/36
 chest=cauldron_champions_ribcage,id=229256,bonus_id=11996/10356/11958/6652/1533/10255,enchant=crystalline_radiance_3
-wrists=everforged_vambraces,id=222435,bonus_id=12043/9631/9633/8902/8793/12040/10520/8960/10878,gem_id=213497,crafted_stats=32/36
+wrists=everforged_vambraces,id=222435,bonus_id=12043/9631/9633/8902/8793/12040/11304/8960/10878,gem_id=213497,crafted_stats=32/36
 hands=cauldron_champions_fistguards,id=229254,bonus_id=11996/10356/11959/6652/1533/10255
 waist=coinoperated_girdle,id=228886,bonus_id=11996/10356/6652/12176/1533/10255/10878,gem_id=213497
 legs=galvanized_oxxein_legguards,id=178800,bonus_id=4786/9993/11996,enchant=stormbound_armor_kit_3
