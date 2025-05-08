@@ -6885,18 +6885,19 @@ void mugs_moxie_jug( special_effect_t& effect )
                        ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) )
                        ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
-  auto buff_driver      = new special_effect_t( effect.player );
-  buff_driver->name_str = util::tokenize_fn( effect.driver()->effectN( 1 ).trigger()->name_cstr() );
-  buff_driver->spell_id = effect.driver()->effectN( 1 ).trigger_spell_id();
-  buff_driver->proc_flags2_ = PF2_ALL_HIT;
+  auto buff_driver          = new special_effect_t( effect.player );
+  buff_driver->name_str     = util::tokenize_fn( effect.driver()->effectN( 1 ).trigger()->name_cstr() );
+  buff_driver->spell_id     = effect.driver()->effectN( 1 ).trigger_spell_id();
+  buff_driver->proc_flags2_ = PF2_ALL_HIT | PF2_ALL_CAST | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
   buff_driver->custom_buff  = crit_buff;
   effect.player->special_effects.push_back( buff_driver );
 
   auto second_proc = new dbc_proc_callback_t( effect.player, *buff_driver );
   second_proc->activate_with_buff( crit_buff, true );
 
-  effect.proc_flags2_ = PF2_ALL_HIT;
-  effect.custom_buff   = crit_buff;
+  effect.proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL;
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_ALL_CAST | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL | PF2_LANDED;
+  effect.custom_buff  = crit_buff;
   new dbc_proc_callback_t( effect.player, effect );
 }
 
