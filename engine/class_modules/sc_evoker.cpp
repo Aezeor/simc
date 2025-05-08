@@ -327,6 +327,8 @@ struct simplified_player_t : public player_t
 
   bool has_hasted_gcds;
   double haste_modifier;
+  double execute_threshold;
+  double execute_amount;
 
   struct bob_settings_t
   {
@@ -357,39 +359,52 @@ struct simplified_player_t : public player_t
 
     double scaling_factor;
 
+    double execute_mod;
+
+    double execute_threshold;
+
     std::vector<bob_buff_t> buffs;
   };
 
   // Options
   struct options_t
   {
-    int item_level = 672;
+    int item_level = 675;
     std::string variant = "default";
   } option;
   
   std::map<std::string, bob_settings_t> bob_settings = {
-      { "default", { ROLE_SPELL, 12.1,  true, 1.5_s, 0.40, -1, 8, 1, 0.0, 20000.0, 0.0011, {} } }, // 250.9k
-      { "tank",    { ROLE_TANK,   6.1,  true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, {} } },      // 157.4k
-      { "healer",  { ROLE_HEAL,   1.8,  true, 1.5_s, 0.25, -1, 5, 1, 0.0, 20000.0, 0.0011, {} } },      // 78k
-      { "shadow",  { ROLE_SPELL,  7.5, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, {       // 244.8k
+      { "default", { ROLE_SPELL, 12.3,  true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, 0.1, 0.2, {} } }, // 250.9k
+      { "tank",    { ROLE_TANK,   6.1,  true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, 0, 0, {} } },      // 157.4k
+      { "healer",  { ROLE_HEAL,   1.8,  true, 1.5_s, 0.25, -1, 5, 1, 0.0, 20000.0, 0.0011, 0, 0, {} } },      // 78k
+      { "shadow",  { ROLE_SPELL,  7.06,  true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011,  0.1, 0.35, {       // 244.8k
           { "two_mins_cds",           0.3,  40_s, 120_s, 3_s, bob_buff_type_e::BUFF_HASTE },
           { "one_mins_cds",           0.3,  15_s,  60_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
           { "one_mins_cds_lingering", 0.25, 30_s,  60_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
           { "two_mins_cds_two",       0.3,  65_s, 120_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE  } } } },
-      { "bm",      { ROLE_SPELL,      6.9,  true, 1.5_s, 0.4,  -1, 8, 1, 0.5, 14000.0, 0.0011, {              // 243.5k
+      { "bm",      { ROLE_SPELL,      7.155,  true, 1.5_s, 0.45,  -1, 8, 1, 0.5, 14000.0, 0.0011, 0, 0, {              // 243.5k
           { "two_mins_cds",           0.3,   20_s, 120_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE  },
           { "two_mins_cds_lingering", 0.15,  30_s, 120_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE  },
           { "30s_cds",                0.35,  15_s, 18_s , 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE  },
           { "30s_cds_two",            0.08,   4_s, 18_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE  },
           { "30s_cds_three",          0.06,   8_s, 18_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE  } } } },
-      { "assa",    { ROLE_SPELL, 5.17, false,   1_s, 0.5,  -1, 8, 1, 0.8, 11100.0, 0.0011, {              // 234.6k
+      { "assa",    { ROLE_SPELL, 5.15, false,   1_s, 0.5,  -1, 8, 1, 0.8, 11100.0, 0.0011, 0.25, 0.35, {              // 234.6k
           { "two_mins_cds", 0.9 , 20_s, 120_s, 6_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE  },
           { "one_mins_cds", 0.65, 14_s,  60_s, 8_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE  } } } },
-      { "unh",     { ROLE_SPELL, 7.0,  true, 1.5_s, 0.4,  -1, 8, 1, 0.0, 18000.0, 0.0011, {             // 251.4k
+      { "unh",     { ROLE_SPELL, 7.3,  true, 1.5_s, 0.5,  -1, 8, 1, 0.0, 18000.0, 0.0011, 0.05, 0.35, {             // 251.4k
           { "90s_cds",      1.1, 20_s,  90_s, 7_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE  },
           { "45s_cds",      0.6, 20_s,  45_s, 8_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE  } } } },
-      { "dk_frost",{ ROLE_SPELL,  7.55,  true, 1.5_s, 0.4,  -1, 8, 1, 0.0, 13900.0, 0.0011, {             // 262.4k
-          { "breath_of_sindragosa",  0.45,  20_s, 45_s*3, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE  },
+      { "arcane",  { ROLE_SPELL,  5.06, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, 0.15, 0.35, {       // 244.8k
+          { "haste_buff",             0.2,  120_s, 120_s, 2_s, bob_buff_type_e::BUFF_HASTE },
+          { "80s_cds",                0.8,   12_s,  80_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+          { "80s_cds_gcd",            0.3,  1.5_s,  80_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+          { "40s_cds",                1.0,   10_s,  40_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+          { "40s_cds_gcd",            0.4,  1.5_s,  40_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+          { "40s_cds_gcd_two",        0.4,  1.5_s,  40_s, 7_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+          { "80s_cds_lingering",      0.5,   20_s,  80_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE }
+      } } },
+      { "dk_frost",{ ROLE_SPELL,  7.83,  true, 1.5_s, 0.45,  -1, 8, 1, 0.0, 13900.0, 0.0011, 0.05, 0.35, {             // 262.4k
+          { "breath_of_sindragosa",  0.45, 20_s, 45_s*3,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE  },
           { "empower_rune_weapon",   0.2,  20_s,  135_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE  },
           { "pillar_of_frost",       0.4,  12_s,   45_s,  2_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE  },
           { "reapers_mark",          0.75,  6_s,   45_s,  4_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE  },
@@ -399,7 +414,12 @@ struct simplified_player_t : public player_t
   };
 
   simplified_player_t( sim_t* sim, std::string_view name, race_e r = RACE_HUMAN )
-    : player_t( sim, PLAYER_SIMPLIFIED, name, r ), damage_buffs(), has_hasted_gcds( true ), haste_modifier( 0.0 )
+    : player_t( sim, PLAYER_SIMPLIFIED, name, r ),
+      damage_buffs(),
+      has_hasted_gcds( true ),
+      haste_modifier( 0.0 ),
+      execute_threshold( 0.0 ),
+      execute_amount( 0.0 )
   {
     resource_regeneration = regen_type::DISABLED;
 
@@ -480,6 +500,8 @@ struct simplified_player_t : public player_t
     role = get_variant_settings().role;
     has_hasted_gcds = get_variant_settings().hasted_gcds;
     haste_modifier  = get_variant_settings().haste_modifier;
+    execute_threshold = get_variant_settings().execute_threshold;
+    execute_amount    = get_variant_settings().execute_mod;
   }
 
   void init_defence()
@@ -541,6 +563,16 @@ struct simplified_player_t : public player_t
       may_crit                               = true;
 
       set_action_stats( settings, p );
+    }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      double m = spell_t::composite_target_multiplier( t );
+
+      if ( t->resources.pct( RESOURCE_HEALTH ) <= p()->execute_threshold )
+        m *= 1 + p()->execute_amount;
+
+      return m;
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -659,7 +691,7 @@ struct simplified_player_t : public player_t
     int item_level = option.item_level;
 
     std::map<slot_e, std::string> default_items = {
-        { SLOT_HEAD,      fmt::format( ",id=195476,ilevel={},gem_id=213743", item_level ) },
+        { SLOT_HEAD,      fmt::format( ",id=195476,ilevel={},gem_id=213743,enchant_id=7927", item_level ) },
         { SLOT_NECK,      fmt::format( ",id=207163,ilevel={},gem_id=213482/213458", item_level ) },
         { SLOT_SHOULDERS, fmt::format( ",id=193637,ilevel={}", item_level ) },
         { SLOT_BACK,      fmt::format( ",id=195482,ilevel={}", item_level ) },
@@ -670,9 +702,7 @@ struct simplified_player_t : public player_t
         { SLOT_LEGS,      fmt::format( ",id=193759,ilevel={},enchant=sunset_spellthread_3", item_level ) },
         { SLOT_FEET,      fmt::format( ",id=207139,ilevel={}", item_level ) },
         { SLOT_FINGER_1,  fmt::format( ",id=207159,ilevel={},gem_id=213494/213494,enchant=radiant_mastery_3", item_level ) },
-        { SLOT_FINGER_2,
-          fmt::format( ",id=228411,gem_id={}/{}/{},bonus_id=12025/1511,enchant=radiant_mastery_3",
-                                      228638, 228639, 228646 ) }, 
+        { SLOT_FINGER_2,  fmt::format( ",id=231265,ilevel={},gem_id=213494/213494,enchant=radiant_mastery_3", item_level ) }, 
         { SLOT_TRINKET_1, fmt::format( ",id=153816,ilevel={}", item_level ) },
         { SLOT_TRINKET_2, fmt::format( ",id=153819,ilevel={}", item_level ) },
         { SLOT_MAIN_HAND, fmt::format( ",id=202565,ilevel={}", item_level ) },
@@ -8135,14 +8165,14 @@ void evoker_t::create_pets()
       option.force_clutchmates = "yes";
       close_as_clutchmates     = true;
 
-      bobs = { { "Bob BM", "bm" }, { "Bob Shadow", "shadow" }, { "Bob Tank", "tank" }, { "Bob Healer", "healer" } };
+      bobs = { { "Bob Arcane", "arcane" }, { "Bob Shadow", "shadow" }, { "Bob Tank", "tank" }, { "Bob Healer", "healer" } };
     }
     else
     {
       option.force_clutchmates = "no";
       close_as_clutchmates     = false;
 
-      bobs = { { "Bob BM", "bm" }, { "Bob Shadow", "shadow" }, { "Bob", "default" }, { "Bob2", "default" } };
+      bobs = { { "Bob BM", "bm" }, { "Bob Shadow", "shadow" }, { "Bob Arcane", "arcane" }, { "Bob Flat", "default" } };
     }
 
     for ( auto& pair : bobs )
