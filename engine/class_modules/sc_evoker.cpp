@@ -887,6 +887,7 @@ struct evoker_t : public player_t
   // !!!===========================================================================!!!
   vector_with_callback<player_t*> allies_with_my_ebon;
   vector_with_callback<player_t*> allies_with_my_prescience;
+  vector_with_callback<player_t*> allies_with_my_shifting_sands;
   vector_with_callback<buff_t*> allied_thread_of_fate_buffs;
   mutable std::vector<buff_t*> allied_ebons_on_me;
   std::map<player_t*, buff_t*> allied_major_cds;
@@ -7784,8 +7785,17 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
   buffs.thread_of_fate = make_buff_fallback<thread_of_fate_buff_t>( is_ally, *this, "thread_of_fate" );
 
-  buffs.shifting_sands = make_buff_fallback<e_buff_t>( is_ally, *this, "shifting_sands",
-                                                       evoker->find_spell( 413984 ) );
+  buffs.shifting_sands = make_buff_fallback<e_buff_t>( is_ally, *this, "shifting_sands", evoker->find_spell( 413984 ) )
+                             ->set_stack_change_callback( [ evoker, target ]( buff_t* b, int old, int _new ) {
+                               if ( _new )
+                               {
+                                 evoker->allies_with_my_shifting_sands.push_back( target );
+                               }
+                               else
+                               {
+                                 evoker->allies_with_my_shifting_sands.find_and_erase_unordered( target );
+                               }
+                               } );
   if ( is_ally )
   {
     buffs.shifting_sands->set_default_value( 0.0 )
@@ -7917,6 +7927,7 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
   : player_t( sim, EVOKER, name, r ),
     allies_with_my_ebon(),
     allies_with_my_prescience(),
+    allies_with_my_shifting_sands(),
     allied_thread_of_fate_buffs(),
     allied_ebons_on_me(),
     allied_major_cds(),
@@ -9364,6 +9375,7 @@ void evoker_t::reset()
   allies_with_my_ebon.clear_without_callbacks();
   allies_with_my_prescience.clear_without_callbacks();
   allied_thread_of_fate_buffs.clear_without_callbacks();
+  allies_with_my_shifting_sands.clear_without_callbacks();
   allied_ebons_on_me.clear();
   last_scales_target = nullptr;
   was_empowering = false;
@@ -9622,6 +9634,8 @@ std::unique_ptr<expr_t> evoker_t::create_expression( std::string_view expr_str )
         return make_fn_expr( "prescience_buffs", [ this ] { return allies_with_my_prescience.size(); } );
       if ( util::str_compare_ci( splits[ 1 ], "ebon_buffs" ) )
         return make_fn_expr( "ebon_buffs", [ this ] { return allies_with_my_ebon.size(); } );
+      if ( util::str_compare_ci( splits[ 1 ], "shifting_buffs" ) )
+        return make_fn_expr( "shifting_buffs", [ this ] { return allies_with_my_shifting_sands.size(); } );
       if ( util::str_compare_ci( splits[ 1 ], "scales_up" ) )
         return make_fn_expr( "scales_up", [ this ] {
           return last_scales_target != nullptr &&
