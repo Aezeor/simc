@@ -191,7 +191,7 @@ actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_b
 actions.trinkets+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains|trinket.2.is.spymasters_web|trinket.2.cooldown.duration=0)&(!variable.trinket_1_ogcd_cast)&(variable.next_dragonrage>20|!talent.dragonrage|!variable.trinket_2_buffs|trinket.2.is.spymasters_web&(buff.spymasters_report.stack<5|fight_remains>=130+variable.next_dragonrage))
 actions.trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|trinket.1.is.spymasters_web|trinket.1.cooldown.duration=0)&(!variable.trinket_2_ogcd_cast)&(variable.next_dragonrage>20|!talent.dragonrage|!variable.trinket_1_buffs|trinket.1.is.spymasters_web&(buff.spymasters_report.stack<5|fight_remains>=130+variable.next_dragonrage))
 
-head=sanitized_scraphood,id=228859,bonus_id=1808,ilevel=684,gem_id=213743
+head=sanitized_scraphood,id=228859,bonus_id=1808,ilevel=684,gem_id=213743,enchant_id=7933
 neck=semicharmed_amulet,id=228841,bonus_id=8781,ilevel=684,gem_id=213467/213467
 shoulders=opulent_treasurescales_gleaming_mantle,id=229278,ilevel=684
 back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/12043/12040/1485/8790/11303/8960,ilevel=681,enchant=chant_of_winged_grace_3,crafted_stats=32/49
