@@ -76,7 +76,7 @@ trinket2=house_of_cards,id=230027,bonus_id=10356/1533
 main_hand=remixed_ignition_saber,id=228895,bonus_id=10356/1533,enchant=rune_of_razorice
 off_hand=charged_slicer,id=222451,bonus_id=12043/9631/9633/8902/12040/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=49/32
 
-save="TWW2_Death_Knight_Frost_Deathbringer.simc"
+save="TWW2_Death_Knight_Frost.simc"
 
 deathknight="TWW2_Death_Knight_Frost_Rider"
 spec=frost
@@ -104,7 +104,7 @@ trinket2=house_of_cards,id=230027,bonus_id=10356/1533
 main_hand=remixed_ignition_saber,id=228895,bonus_id=10356/1533,enchant=rune_of_razorice
 off_hand=charged_slicer,id=222451,bonus_id=12043/9631/9633/8902/12040/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=49/32
 
-save="TWW2_Death_Knight_Frost.simc"
+save="TWW2_Death_Knight_Frost_Rider.simc"
 
 deathknight="TWW2_Death_Knight_Unholy_Rider"
 spec=unholy
