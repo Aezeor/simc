@@ -5364,6 +5364,15 @@ struct mutilate_t : public rogue_attack_t
 
   bool has_amount_result() const override
   { return true; }
+
+  bool ready() override
+  {
+    // Blindside overrides Mutilate with Ambush in the action bar when the buff is present
+    if ( p()->buffs.blindside->check() )
+      return false;
+
+    return rogue_attack_t::ready();
+  }
 };
 
 // Roll the Bones ===========================================================
