@@ -130,7 +130,7 @@ actions.sf_filler+=/phoenix_flames
 actions.sf_filler+=/scorch,if=scorch_execute.active
 actions.sf_filler+=/fireball
 
-head=aspectral_emissarys_crystalline_cowl,id=229343,bonus_id=11996/10356/11960/6652/12176/1579/10255,ilevel=684,gem_id=213743
+head=aspectral_emissarys_crystalline_cowl,id=229343,bonus_id=11996/10356/11960/6652/12176/1579/10255,ilevel=684,gem_id=213743,enchant_id=7927
 neck=amulet_of_earthen_craftsmanship,id=215136,bonus_id=10421/10520/9633/8902/10879/10396/9627/10222/8792,ilevel=681,gem_id=213455/213485
 shoulders=aspectral_emissarys_arcane_vents,id=229341,bonus_id=11996/10356/11962/6652/1579/10255,ilevel=684
 back=consecrated_cloak,id=222817,bonus_id=11304/8960,ilevel=681,enchant_id=7403,crafted_stats=36/40

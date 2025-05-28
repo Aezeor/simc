@@ -161,7 +161,7 @@ actions.sunfury+=/arcane_explosion,if=buff.arcane_charge.stack<2&active_enemies>
 actions.sunfury+=/arcane_blast
 actions.sunfury+=/arcane_barrage
 
-head=aspectral_emissarys_crystalline_cowl,id=229343,ilevel=684,gem_id=213743
+head=aspectral_emissarys_crystalline_cowl,id=229343,ilevel=684,gem_id=213743,enchant_id=7933
 neck=semicharmed_amulet,id=228841,ilevel=684,gem_id=213494/213455
 shoulders=aspectral_emissarys_arcane_vents,id=229341,ilevel=684
 back=trashmasters_mantle,id=168970,ilevel=684,enchant_id=7415
