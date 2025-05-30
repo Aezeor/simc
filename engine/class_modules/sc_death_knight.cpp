@@ -13857,6 +13857,7 @@ void death_knight_t::init_blizzard_action_list()
     quiet = true;
     return;
   }
+
   if ( main_hand_weapon.group() == WEAPON_2H && off_hand_weapon.type != WEAPON_NONE )
   {
     if ( !quiet )
@@ -13864,12 +13865,14 @@ void death_knight_t::init_blizzard_action_list()
     quiet = true;
     return;
   }
-  action_priority_list_t* pre_c = get_action_priority_list( "precombat" );
-  if ( specialization() == DEATH_KNIGHT_UNHOLY )
-    pre_c->add_action( "raise_dead" );
+
   action_priority_list_t* default_ = get_action_priority_list( "default" );
   default_->add_action( "auto_attack" );  // Add before generating the other actions so its always the highest priority
   player_t::init_blizzard_action_list();
+
+  action_priority_list_t* pre_c = get_action_priority_list( "precombat" );
+  if (specialization() == DEATH_KNIGHT_UNHOLY)
+    pre_c->add_action( "raise_dead" );
 
   action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
 
@@ -13877,18 +13880,18 @@ void death_knight_t::init_blizzard_action_list()
   {
     case DEATH_KNIGHT_BLOOD:
       cooldowns->add_action( "vampiric_blood" );
-      cooldowns->add_action( "tombstone", "if=buff.bone_shield.stack>5");
+      cooldowns->add_action( "tombstone,if=buff.bone_shield.stack>5" );
       cooldowns->add_action( "abomination_limb" );
       break;
     case DEATH_KNIGHT_FROST:
-      cooldowns->add_action( "breath_of_sindragosa", "if=runic_power>60" );
+      cooldowns->add_action( "breath_of_sindragosa,if=runic_power>60" );
       cooldowns->add_action( "empower_rune_weapon" );
       cooldowns->add_action( "abomination_limb" );
       break;
     case DEATH_KNIGHT_UNHOLY:
       cooldowns->add_action( "raise_abomination" );
       cooldowns->add_action( "army_of_the_dead" );
-      cooldowns->add_action( "summon_gargoyle", "if=runic_power>30");
+      cooldowns->add_action( "summon_gargoyle,if=runic_power>30" );
       cooldowns->add_action( "abomination_limb" );
       break;
     default:
@@ -13906,14 +13909,14 @@ std::string death_knight_t::parse_assisted_combat_rule( const assisted_combat_ru
 // death_knight_t::blizzard_apl_action_replace ================================
 std::string death_knight_t::blizzard_apl_action_replace( std::string options )
 {
-  switch (specialization())
+  switch ( specialization() )
   {
     case DEATH_KNIGHT_BLOOD:
       break;
     case DEATH_KNIGHT_FROST:
       break;
     case DEATH_KNIGHT_UNHOLY:
-      if (options.find( "talent.clawing_shadows" ) != std::string::npos)
+      if ( options.find( "talent.clawing_shadows" ) != std::string::npos )
         return "clawing_shadows";
       break;
     default:
@@ -13936,7 +13939,7 @@ void death_knight_t::parse_assisted_combat_step( const assisted_combat_step_data
       options += options.empty() ? rule_str : "&" + rule_str;
   }
 
-  // This is kinda ugly, maybe find a better way to do this? 
+  // This is kinda ugly, maybe find a better way to do this?
   if ( !options.empty() )
   {
     std::string name = blizzard_apl_action_replace( options );
@@ -13970,7 +13973,8 @@ std::vector<std::string> death_knight_t::action_names_from_spell_id( unsigned in
         spell_id = talent.blood.heart_strike->id();
         break;
       case DEATH_KNIGHT_FROST:
-        spell_id = talent.frost.frost_strike->id();  // Yes, Frost Strike replaces Rune Strike as Frost. Makes no sense to me either.
+        spell_id = talent.frost.frost_strike
+                       ->id();  // Yes, Frost Strike replaces Rune Strike as Frost. Makes no sense to me either.
         break;
       case DEATH_KNIGHT_UNHOLY:
         spell_id = talent.unholy.festering_strike->id();
