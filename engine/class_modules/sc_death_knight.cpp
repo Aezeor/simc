@@ -22,6 +22,8 @@
 #include "class_modules/apl/apl_death_knight.hpp"
 #include "player/pet_spawner.hpp"
 
+#include <regex>
+
 #include "simulationcraft.hpp"
 
 namespace
@@ -1777,6 +1779,7 @@ public:
   void parse_assisted_combat_step( const assisted_combat_step_data_t& step, action_priority_list_t* assisted_combat ) override;
   std::string parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule, const assisted_combat_step_data_t& step ) const override;
   std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
+  std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self ) const override;
   void init_rng() override;
   void init_base_stats() override;
   void init_scaling() override;
@@ -1860,6 +1863,7 @@ public:
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
   double psuedo_random_p_from_c( double c );
   double pseudo_random_c_from_p( double p );
+  std::string blizzard_apl_action_replace( std::string options );
   // Rider of the Apocalypse
   int get_random_rider();
   void summon_rider( timespan_t duration, bool random );
@@ -13893,21 +13897,60 @@ std::string death_knight_t::parse_assisted_combat_rule( const assisted_combat_ru
   return player_t::parse_assisted_combat_rule( rule, step );
 }
 
+// death_knight_t::blizzard_apl_action_replace ================================
+std::string death_knight_t::blizzard_apl_action_replace( std::string options )
+{
+  switch (specialization())
+  {
+    case DEATH_KNIGHT_BLOOD:
+      break;
+    case DEATH_KNIGHT_FROST:
+      break;
+    case DEATH_KNIGHT_UNHOLY:
+      if (options.find( "talent.clawing_shadows" ) != std::string::npos)
+        return "clawing_shadows";
+      break;
+    default:
+      break;
+  }
+
+  return "";
+}
+
 // death_knight_t::parse_assisted_combat_step ===============================
 void death_knight_t::parse_assisted_combat_step( const assisted_combat_step_data_t& step,
                                                  action_priority_list_t* assisted_combat )
 {
-  //if ( ( step.spell_id == talent.unholy.scourge_strike->id() ||
-  //       step.spell_id == talent.unholy.scourge_strike->effectN( 3 ).trigger()->id() ) &&
-  //     talent.unholy.clawing_shadows.ok() )
-  //{
-  //  assisted_combat_step_data_t step_copy = step;                                 // Make a copy to modify
-  //  step_copy.spell_id                    = talent.unholy.clawing_shadows->id();  // Use Clawing Shadows spell ID
+  std::string options = "";
+  std::string rule_str;
+  for ( const auto& rule : assisted_combat_rule_data_t::data( step.id, is_ptr() ) )
+  {
+    std::string rule_str = parse_assisted_combat_rule( rule, step );
+    if ( !rule_str.empty() )
+      options += options.empty() ? rule_str : "&" + rule_str;
+  }
 
-  //  return player_t::parse_assisted_combat_step( step_copy, assisted_combat );
-  //}
+  // This is kinda ugly, maybe find a better way to do this? 
+  if ( !options.empty() )
+  {
+    std::string name = blizzard_apl_action_replace( options );
+    if ( name != "" )
+    {
+      assisted_combat->add_action( name + ",if=" + options );
+      return;
+    }
+  }
 
-  return player_t::parse_assisted_combat_step( step, assisted_combat );
+  for ( const auto& name : action_names_from_spell_id( step.spell_id ) )
+  {
+    if ( !name.empty() )
+    {
+      if ( options.empty() )
+        assisted_combat->add_action( name );
+      else
+        assisted_combat->add_action( name + ",if=" + options );
+    }
+  }
 }
 
 // death_knight_t::action_names_from_spell_id ===============================
@@ -13931,17 +13974,16 @@ std::vector<std::string> death_knight_t::action_names_from_spell_id( unsigned in
     }
   }
 
-  // This is incredibly ugly, and not the proper way to do this at all.
-  // 
-  // TODO: Figure out why the parse_assisted_combat_step() function is not functioning right and remove
-  // this hack.
-  if ( spell_id == talent.unholy.scourge_strike->id() || spell_id == talent.unholy.clawing_shadows->id() )
-  {
-    std::vector<std::string> names = { "wound_spender" };
-    return names;
-  }
-
   return player_t::action_names_from_spell_id( spell_id );
+}
+
+std::string death_knight_t::aura_expr_from_spell_id( unsigned int spell_id, bool on_self ) const
+{
+  std::string aura_expr = player_t::aura_expr_from_spell_id( spell_id, on_self );
+  if ( aura_expr == "debuff.reapers_mark" )
+    aura_expr.append( "_debuff" );
+
+  return aura_expr;
 }
 
 // death_knight_t::init_scaling =============================================
