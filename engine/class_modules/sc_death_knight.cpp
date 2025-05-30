@@ -13982,8 +13982,8 @@ std::vector<std::string> death_knight_t::action_names_from_spell_id( unsigned in
         spell_id = talent.blood.heart_strike->id();
         break;
       case DEATH_KNIGHT_FROST:
-        spell_id = talent.frost.frost_strike
-                       ->id();  // Yes, Frost Strike replaces Rune Strike as Frost. Makes no sense to me either.
+        spell_id = talent.frost.obliterate
+                       ->id();  // Seems they use Obliterate as a replacement for Rune Strike rather than Frost Strike
         break;
       case DEATH_KNIGHT_UNHOLY:
         spell_id = talent.unholy.festering_strike->id();
