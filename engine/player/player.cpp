@@ -3511,7 +3511,7 @@ std::string player_t::parse_assisted_combat_rule( const assisted_combat_rule_dat
         // TODO: Are there any other types of passives to check here?
         // TODO: What happens when Blizzard uses an aura here like they did with Mind Flay: Insanity?
       }
-      return ""; // no check necessary because simc actions are filtered out of the spell is not known
+      return ""; // no check necessary because simc actions are filtered out if the spell is not known
     case SPELL_ON_COOLDOWN:
       assert( v2 == 0 && v3 == 0 );
       if ( v1 )
@@ -3524,7 +3524,7 @@ std::string player_t::parse_assisted_combat_rule( const assisted_combat_rule_dat
       return ""; // no check necessary because simc actions are not ready unless their cooldown is ready
     case TARGET_DISTANCE_LESS:
       assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "target.distance<{}", v1 );
+      return fmt::format( "target.distance<={}", v1 );
     case TARGET_DISTANCE_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "target.distance>{}", v1 );
