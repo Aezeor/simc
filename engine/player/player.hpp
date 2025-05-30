@@ -701,6 +701,7 @@ struct player_t : public actor_t
 
   bool active_during_iteration;
   const spell_data_t* spec_spell;
+  const spell_data_t* single_button_assistant;
   const spelleffect_data_t* _mastery; // = find_mastery_spell( specialization() ) -> effectN( 1 );
   player_stat_cache_t cache;
   auto_dispose<std::vector<action_variable_t*>> variables;

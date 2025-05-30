@@ -1172,6 +1172,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     passive_values(),
     active_during_iteration( false ),
     spec_spell( spell_data_t::nil() ),
+    single_button_assistant( spell_data_t::nil() ),
     _mastery( &spelleffect_data_t::nil() ),
     cache( this ),
     resource_regeneration( regen_type::STATIC ),
@@ -3125,8 +3126,10 @@ void player_t::init_spells()
     const spell_data_t* s = find_mastery_spell( specialization() );
     if ( s->ok() )
       _mastery = &( s->effectN( 1 ) );
-  }
 
+    if ( sim->dbc->wowv() >= wowv_t{ 11, 1, 7 } )
+      single_button_assistant = find_specialization_spell( "Single-Button Assistant" );
+  }
 }
 
 void player_t::init_gains()
