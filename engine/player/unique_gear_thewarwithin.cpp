@@ -10594,11 +10594,8 @@ void static_charge( special_effect_t& effect )
       activate_with_buff( buff );
     }
 
-    void execute( action_t* action, action_state_t* state ) override
+    void execute( action_t*, action_state_t* ) override
     {
-      if ( state && state->target->is_sleeping() )
-        return;
-
       buff->decrement();
     }
   };
@@ -10617,9 +10614,7 @@ void static_charge( special_effect_t& effect )
   special_effect_t* decrement_stack = new special_effect_t( effect.player );
   decrement_stack->spell_id         = stat_buff->id();
   decrement_stack->name_str         = util::tokenize_fn( stat_buff->name_cstr() );
-  decrement_stack->proc_flags_      = stat_buff->proc_flags();
   decrement_stack->proc_flags2_     = PF2_ALL_HIT;
-  decrement_stack->proc_chance_     = stat_buff->proc_chance();
   decrement_stack->cooldown_        = stat_buff->internal_cooldown();
   effect.player->special_effects.push_back( decrement_stack );
 
