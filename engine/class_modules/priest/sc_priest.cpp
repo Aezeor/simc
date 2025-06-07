@@ -4239,16 +4239,6 @@ void priest_t::init_blizzard_action_list()
     case PRIEST_HOLY:
       break;
     case PRIEST_SHADOW:
-      // Since we use different actions for empowered fillers compared to base we need to add a fallback case at the end
-      // of the apl. If the apl just has mind_spike it will not cast if mind_spike_insanity is up
-      if ( talents.shadow.mind_spike.enabled() )
-      {
-        default_->add_action( "mind_spike_insanity" );
-      }
-      else
-      {
-        default_->add_action( "mind_flay_insanity" );
-      }
       break;
     default:
       break;
@@ -4390,6 +4380,16 @@ std::vector<std::string> priest_t::action_names_from_spell_id( unsigned int spel
   if ( spell_id == 15407 && talents.shadow.mind_spike.enabled() )  // Mind Flay
   {
     spell_id = talents.shadow.mind_spike->id();
+  }
+
+  if ( spell_id == 15407 )
+  {
+    return { "mind_flay_insanity", "mind_flay" };
+  }
+
+  if ( spell_id == 73510 )
+  {
+    return { "mind_spike_insanity", "mind_spike" };
   }
 
   return player_t::action_names_from_spell_id( spell_id );
