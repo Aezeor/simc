@@ -1200,6 +1200,7 @@ public:
 
     buff_t* awakening_storms;
     buff_t* totemic_rebound;
+    buff_t* surging_totem;
 
     // Restoration
     buff_t* spirit_walk;
@@ -10514,6 +10515,7 @@ struct surging_totem_t : public spell_totem_pet_t
     o()->buff.whirling_fire->expire();
     o()->buff.whirling_earth->expire();
     o()->buff.totemic_rebound->expire();
+    o()->buff.surging_totem->expire();
   }
 };
 
@@ -10528,6 +10530,7 @@ struct surging_totem_spell_t : public shaman_totem_t<spell_totem_pet_t, shaman_s
   {
     shaman_totem_t<spell_totem_pet_t, shaman_spell_t>::execute();
 
+    p()->buff.surging_totem->trigger();
     p()->buff.amplification_core->trigger();
     p()->buff.whirling_air->trigger();
     p()->buff.whirling_fire->trigger();
@@ -13901,8 +13904,6 @@ void shaman_t::create_buffs()
           ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, TWW1, B4 ) );
 
   buff.jackpot = make_buff( this, "jackpot", find_spell( 1218612 ) );
-      
-
   rppm.jackpot = get_rppm( "jackpot", find_spell( 1215675 ) );
 
   buff.primordial_wave = make_buff( this, "primordial_wave", find_spell( 327164 ) )
@@ -13944,6 +13945,9 @@ void shaman_t::create_buffs()
 
   buff.totemic_rebound = make_buff( this, "totemic_rebound", find_spell( 458269 ) )
     ->set_default_value_from_effect( 1 );
+
+  buff.surging_totem = make_buff( this, "surging_totem", find_spell( 1221347 ) )
+    ->set_trigger_spell( talent.surging_totem );
 
   buff.flametongue_weapon = make_buff( this, "flametongue_weapon", find_class_spell( "Flametongue Weapon") );
 
@@ -14799,7 +14803,7 @@ void shaman_t::init_action_list_enhancement()
     single->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack>=9" );
     single->add_action( "chain_lightning,if=buff.maelstrom_weapon.stack>=9&!buff.primordial_storm.up&cooldown.ascendance.remains<23&buff.tempest.up&talent.tempest_strikes.enabled" );
     single->add_action( "lava_lash,if=(buff.hot_hand.up&(buff.ashen_catalyst.stack=buff.ashen_catalyst.max_stack))|(dot.flame_shock.remains<=2&!talent.voltaic_blaze.enabled&talent.molten_assault.enabled)|(talent.lashing_flames.enabled&(debuff.lashing_flames.down))" );
-    single->add_action( "crash_lightning,if=(buff.doom_winds.up&buff.electrostatic_wager.stack>1)|buff.electrostatic_wager.stack>8" ); 
+    single->add_action( "crash_lightning,if=(buff.doom_winds.up&buff.electrostatic_wager.stack>1)|buff.electrostatic_wager.stack>8" );
     single->add_action( "stormstrike,if=buff.doom_winds.up|buff.stormblast.stack>0" );
     single->add_action( "crash_lightning,if=talent.unrelenting_storms.enabled&talent.alpha_wolf.enabled&alpha_wolf_min_remains=0" );
     single->add_action( "lava_lash,if=buff.hot_hand.up" );

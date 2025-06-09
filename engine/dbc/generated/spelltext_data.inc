@@ -1,5 +1,5 @@
 // Spell text, wow build 11.1.5.61265
-static const std::array<spelltext_data_t, 27319> __spelltext_data { {
+static const std::array<spelltext_data_t, 27320> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27203,6 +27203,7 @@ static const std::array<spelltext_data_t, 27319> __spelltext_data { {
   { 1221091, "Increase the minimum item level of Liberation of Undermine set gloves or shoulder armor to $s3 in Arenas and Battlegrounds. ", 0, 0 },
   { 1221151, "$@spelldesc1219102", 0, 0 },
   { 1221246, "$@spelldesc196884", 0, 0 },
+  { 1221348, "Summon your Surging Totem nearby.", 0, 0 },
   { 1221386, "$@spelldesc360966", "$@auracaster has a $s2% increased chance to critically strike this target$?s378962[ and their critical strikes deal $378962s2% increased damage.][.]", 0 },
   { 1221429, 0, "You now flip on every jump! Yay!", 0 },
   { 1222234, "Once per week, attune yourself to the energies of the targeted Undermine raid boss and gain the following aura:\r\n\r\n$@spellicon472535$@spellname472535\r\nIncrease your Versatility by $472535s1 when fighting the targeted raid boss. This effect lasts the entire week.\r\n", 0, 0 },
