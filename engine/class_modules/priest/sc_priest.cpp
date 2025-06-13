@@ -4295,7 +4295,7 @@ parsed_assisted_combat_rule_t priest_t::parse_assisted_combat_rule( const assist
   // vampiric touch action checks if shadow crash is available
   if ( rule.condition_type == AURA_MISSING_PLAYER && rule.condition_value_1 == 1243723 )
   {
-    return { "(!talent.whispering_shadows|!cooldown.shadow_crash.up)" };
+    return { "(!action.shadow_crash.in_flight|!talent.whispering_shadows)" };
   }
 
   // instead of checking for hidden void blast buff we check for entropic rift
@@ -4330,6 +4330,11 @@ std::string priest_t::blizzard_apl_action_replace( std::string options )
       if ( options.find( "mind_flay_insanity" ) != std::string::npos )
       {
         return "mind_flay_insanity";
+      }
+      // void_eruption into void_bolt
+      if ( options.find( "buff.voidform.up" ) != std::string::npos )
+      {
+        return "void_bolt";
       }
       break;
     default:
