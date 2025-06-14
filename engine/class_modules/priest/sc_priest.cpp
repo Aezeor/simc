@@ -4270,7 +4270,7 @@ void priest_t::init_blizzard_action_list()
   cooldowns->add_action( "potion" );
 
   // check setting to see if cooldowns should be added
-  if ( options.blizzard_action_list_cooldowns )
+  if ( use_cds_with_blizzard_action_list )
   {
     cooldowns->add_action( "blood_fury" );
     cooldowns->add_action( "berserking" );
@@ -4547,7 +4547,6 @@ void priest_t::create_options()
                          0.0, 1.0 ) );
   add_option( opt_float( "priest.synergistic_brewterializer_barrel_hit_chance",
                          options.synergistic_brewterializer_barrel_hit_chance, 0.0, 1.0 ) );
-  add_option( opt_bool( "priest.blizzard_action_list_cooldowns", options.blizzard_action_list_cooldowns ) );
 }
 
 std::string priest_t::create_profile( save_e type )
