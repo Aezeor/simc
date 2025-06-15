@@ -29,8 +29,12 @@ struct holy_word_sanctify_t final : public priest_heal_t
     : priest_heal_t( "holy_word_sanctify", p, p.talents.holy.holy_word_sanctify )
   {
     parse_options( options_str );
+
     harmful      = false;
     holy_mastery = true;
+
+    if ( data().ok() )
+      aoe = as<int>( data().effectN( 2 ).base_value() );
   }
 
   double cost() const override
