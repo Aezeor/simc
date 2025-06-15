@@ -4394,6 +4394,12 @@ std::vector<std::string> priest_t::action_names_from_spell_id( unsigned int spel
     spell_id = talents.shadow.mind_spike->id();
   }
 
+  if ( spell_id == 8092 && specialization() == PRIEST_HOLY )
+    return { "holy_fire" };
+
+  if ( spell_id == 585 && specialization() == PRIEST_DISCIPLINE )
+    return { "void_blast", "smite" };
+
   if ( spell_id == 15407 )
   {
     return { "mind_flay_insanity", "mind_flay" };
