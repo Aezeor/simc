@@ -8373,6 +8373,22 @@ parsed_assisted_combat_rule_t evoker_t::parse_assisted_combat_rule( const assist
   {
     return { "buff.mass_disintegrate_stacks.up" };
   }
+  if ( rule.condition_type == AURA_ON_TARGET && rule.condition_value_1 == 361500 )
+  {
+    return { "dot.living_flame_damage.ticking" };
+  }
+  if ( rule.condition_type == AURA_MISSING_TARGET && rule.condition_value_1 == 361500 )
+  {
+    return { "!dot.living_flame_damage.ticking" };
+  }
+  if ( rule.condition_type == AURA_ON_TARGET && rule.condition_value_1 == 357209 )
+  {
+    return { "dot.fire_breath_damage.ticking" };
+  }
+  if ( rule.condition_type == AURA_MISSING_TARGET && rule.condition_value_1 == 357209 )
+  {
+    return { "!dot.fire_breath_damage.ticking" };
+  }
 
   //if ( rule.condition_type == AURA_ON_PLAYER && rule.condition_value_1 == 410089 )
   //{
