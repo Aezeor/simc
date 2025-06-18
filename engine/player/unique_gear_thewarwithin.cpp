@@ -10503,6 +10503,7 @@ void charged_bolts( special_effect_t& effect )
 
     void bump( int stacks, double val ) override
     {
+      buff_t::bump( stacks, val );
       player_t* target = player->target;
 
       if (sim->target_non_sleeping_list.size() > 1)
