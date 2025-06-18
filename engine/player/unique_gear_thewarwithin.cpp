@@ -10497,6 +10497,16 @@ void charged_bolts( special_effect_t& effect )
         damage->execute_on_target( target );
       };
     }
+
+    void bump( int stacks, double val ) override
+    {
+      player_t* target = player->target;
+
+      if (sim->target_non_sleeping_list.size() > 1)
+        target = sim->target_non_sleeping_list[ rng().range( sim->target_non_sleeping_list.size() ) ];
+
+      damage->execute_on_target( target );
+    }
   };
 
   const spell_data_t* driver  = effect.player->find_spell( titan_disc_effect_e::CHARGED_BOLTS );
