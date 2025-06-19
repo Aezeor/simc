@@ -15802,10 +15802,6 @@ private:
   death_knight_t& p;
 };
 
-namespace live_death_knight {
-  #include "class_modules/sc_death_knight_live.inc"
-}
-
 // DEATH_KNIGHT MODULE INTERFACE ============================================
 
 struct death_knight_module_t : public module_t
@@ -15816,19 +15812,9 @@ struct death_knight_module_t : public module_t
 
   player_t* create_player( sim_t* sim, std::string_view name, race_e r = RACE_NONE ) const override
   {
-    // TODO 11.2 Remove PTR check
-    if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
-    {
-      auto p              = new death_knight_t( sim, name, r );
-      p->report_extension = std::unique_ptr<player_report_extension_t>( new death_knight_report_t( *p ) );
-      return p;
-    }
-    else 
-    {
-      auto p              = new live_death_knight::death_knight_t( sim, name, r );
-      p->report_extension = std::unique_ptr<player_report_extension_t>( new live_death_knight::death_knight_report_t( *p ) );
-      return p;
-    }
+    auto p              = new death_knight_t( sim, name, r );
+    p->report_extension = std::unique_ptr<player_report_extension_t>( new death_knight_report_t( *p ) );
+    return p;
   }
 
   void static_init() const override
@@ -15877,8 +15863,3 @@ struct death_knight_module_t : public module_t
 
 }  // UNNAMED NAMESPACE
 
-const module_t* module_t::death_knight()
-{
-  static death_knight_module_t m;
-  return &m;
-}
