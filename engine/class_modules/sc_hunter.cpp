@@ -659,7 +659,6 @@ public:
     spell_data_ptr_t surging_shots;
     spell_data_ptr_t master_marksman;
     spell_data_ptr_t master_marksman_bleed;
-    spell_data_ptr_t quickdraw;
 
     spell_data_ptr_t improved_deathblow;
     spell_data_ptr_t obsidian_arrowhead;
@@ -690,7 +689,6 @@ public:
 
     spell_data_ptr_t improved_streamline;
     spell_data_ptr_t focused_aim;
-    spell_data_ptr_t killer_mark;
     spell_data_ptr_t bulletstorm;
     spell_data_ptr_t bulletstorm_buff;
     spell_data_ptr_t tensile_bowstring;
@@ -5400,11 +5398,6 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
   {
     double am = hunter_ranged_attack_t::action_multiplier();
 
-    // TODO 20/1/25: Aimed Shots that are mid cast when Lock and Load triggers
-    // are affected by the Quickdraw bonus without consuming it
-    if ( p()->buffs.lock_and_load->check() )
-      am *= 1 + p()->talents.quickdraw->effectN( 1 ).percent();
-
     return am;
   }
 
@@ -5440,12 +5433,6 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
   double composite_target_crit_chance( player_t* target ) const override
   {
     double c = hunter_ranged_attack_t::composite_target_crit_chance( target );
-
-    if ( p()->talents.killer_mark.ok() && td( target )->debuffs.spotters_mark->check() )
-      c += p()->talents.killer_mark->effectN( 1 ).percent();
-
-    if ( p()->talents.killer_mark.ok() && td( target )->debuffs.ohnahran_winds->check() )
-      c += p()->talents.killer_mark->effectN( 1 ).percent();
 
     return c;
   }
@@ -8061,7 +8048,6 @@ void hunter_t::init_spells()
     talents.surging_shots                     = find_talent_spell( talent_tree::SPECIALIZATION, "Surging Shots", HUNTER_MARKSMANSHIP );
     talents.master_marksman                   = find_talent_spell( talent_tree::SPECIALIZATION, "Master Marksman", HUNTER_MARKSMANSHIP );
     talents.master_marksman_bleed             = talents.master_marksman.ok() ? find_spell( 269576 ) : spell_data_t::not_found();
-    talents.quickdraw                         = find_talent_spell( talent_tree::SPECIALIZATION, "Quickdraw", HUNTER_MARKSMANSHIP );
 
     talents.improved_deathblow                = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Deathblow", HUNTER_MARKSMANSHIP );
     talents.obsidian_arrowhead                = find_talent_spell( talent_tree::SPECIALIZATION, "Obsidian Arrowhead", HUNTER_MARKSMANSHIP );
@@ -8092,7 +8078,6 @@ void hunter_t::init_spells()
 
     talents.improved_streamline               = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Streamline", HUNTER_MARKSMANSHIP );
     talents.focused_aim                       = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Aim", HUNTER_MARKSMANSHIP );
-    talents.killer_mark                       = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Mark", HUNTER_MARKSMANSHIP );
     talents.bulletstorm                       = find_talent_spell( talent_tree::SPECIALIZATION, "Bulletstorm", HUNTER_MARKSMANSHIP );
     talents.bulletstorm_buff                  = talents.bulletstorm.ok() ? find_spell( 389020 ) : spell_data_t::not_found();
     talents.tensile_bowstring                 = find_talent_spell( talent_tree::SPECIALIZATION, "Tensile Bowstring", HUNTER_MARKSMANSHIP );
