@@ -618,9 +618,7 @@ struct death_knight_td_t : public actor_target_data_t
     propagate_const<buff_t*> mark_of_blood;
 
     // Frost
-    propagate_const<buff_t*> piercing_chill;
     propagate_const<buff_t*> everfrost;
-    propagate_const<buff_t*> chill_streak;
 
     // Unholy
     propagate_const<buff_t*> festering_wound;
@@ -749,7 +747,6 @@ public:
 
     // Frost
     propagate_const<buff_t*> breath_of_sindragosa;
-    propagate_const<buff_t*> cold_heart;
     propagate_const<buff_t*> gathering_storm;
     propagate_const<buff_t*> inexorable_assault;
     propagate_const<buff_t*> empower_rune_weapon;
@@ -854,7 +851,6 @@ public:
         enduring_strength_icd;  // internal cooldown that prevents several procs on the same dual-wield attacl
     propagate_const<cooldown_t*> pillar_of_frost;
     propagate_const<cooldown_t*> frostwyrms_fury;
-    propagate_const<cooldown_t*> chill_streak;
     propagate_const<cooldown_t*> empower_rune_weapon;
     propagate_const<cooldown_t*> frostscythe;
 
@@ -912,7 +908,6 @@ public:
     action_t* frost_strike_offhand;
     action_t* frost_strike_sb_main;
     action_t* frost_strike_sb_offhand;
-    action_t* chill_streak_damage;
     propagate_const<action_t*> icy_death_torrent_damage;
     action_t* hyperpyrexia_damage;
     propagate_const<action_t*> frostscythe_proc;
@@ -967,7 +962,6 @@ public:
     propagate_const<gain_t*> breath_of_sindragosa;
     propagate_const<gain_t*> empower_rune_weapon;
     propagate_const<gain_t*> frost_fever;  // RP generation per tick
-    propagate_const<gain_t*> horn_of_winter;
     propagate_const<gain_t*> frigid_executioner;  // Rune refund chance
     propagate_const<gain_t*> murderous_efficiency;
     propagate_const<gain_t*> obliteration;
@@ -1168,10 +1162,7 @@ public:
       // Row 4
       player_talent_t unleashed_frenzy;
       player_talent_t runic_command;
-      player_talent_t improved_frost_strike;
-      player_talent_t improved_rime;
       // Row 5
-      player_talent_t improved_obliterate;
       player_talent_t glacial_advance;
       player_talent_t pillar_of_frost;
       player_talent_t frostscythe;
@@ -1179,25 +1170,17 @@ public:
       // Row 6
       player_talent_t rage_of_the_frozen_champion;
       player_talent_t frigid_executioner;
-      player_talent_t cold_heart;
-      player_talent_t horn_of_winter;
       player_talent_t enduring_strength;
-      player_talent_t icecap;
-      player_talent_t frostwhelps_aid;
       player_talent_t empower_rune_weapon;
-      player_talent_t chill_streak;
       // Row 7
       player_talent_t murderous_efficiency;
       player_talent_t inexorable_assault;
       player_talent_t frostwyrms_fury;
       player_talent_t gathering_storm;
       player_talent_t cryogenic_chamber;
-      player_talent_t enduring_chill;
-      player_talent_t piercing_chill;
       // Row 8
       player_talent_t bonegrinder;
       player_talent_t smothering_offense;
-      player_talent_t absolute_zero;
       player_talent_t avalanche;
       player_talent_t icebreaker;
       // Row 9
@@ -1208,7 +1191,6 @@ public:
       // Row 10
       player_talent_t arctic_assault;
       player_talent_t the_long_winter;
-      player_talent_t shattered_frost;
       player_talent_t breath_of_sindragosa;
     } frost;
 
@@ -1391,7 +1373,6 @@ public:
     const spell_data_t* runic_empowerment_gain;
     const spell_data_t* murderous_efficiency_gain;
     const spell_data_t* rage_of_the_frozen_champion;  // RP generation spell
-    const spell_data_t* piercing_chill_debuff;
     const spell_data_t* runic_empowerment_chance;
     const spell_data_t* gathering_storm_buff;
     const spell_data_t* inexorable_assault_buff;
@@ -1401,19 +1382,15 @@ public:
     const spell_data_t* frostwhelps_aid_buff;
     const spell_data_t* inexorable_assault_damage;
     const spell_data_t* breath_of_sindragosa_rune_gen;
-    const spell_data_t* cold_heart_damage;
-    const spell_data_t* chill_streak_damage;
     const spell_data_t* death_strike_offhand;
     const spell_data_t* frostwyrms_fury_damage;
     const spell_data_t* glacial_advance_damage;
     const spell_data_t* avalanche_damage;
-    const spell_data_t* frostwhelps_aid_damage;
     const spell_data_t* enduring_strength_cooldown;
     const spell_data_t* frost_strike_2h;
     const spell_data_t* frost_strike_mh;
     const spell_data_t* frost_strike_oh;
     const spell_data_t* obliteration_gains;
-    const spell_data_t* shattered_frost;
     const spell_data_t* icy_death_torrent_damage;
     const spell_data_t* cryogenic_chamber_damage;
     const spell_data_t* cryogenic_chamber_buff;
@@ -1681,9 +1658,6 @@ public:
     propagate_const<proc_t*> fw_sudden_doom;
     propagate_const<proc_t*> fw_death;
 
-    // Chill Streak related procs
-    propagate_const<proc_t*> enduring_chill;  // Extra bounces given by Enduring Chill
-
     // Decomposition
     propagate_const<proc_t*> decomposition;
 
@@ -1764,7 +1738,6 @@ public:
     cooldown.enduring_strength_icd  = get_cooldown( "enduring_strength" );
     cooldown.mind_freeze            = get_cooldown( "mind_freeze" );
     cooldown.frostwyrms_fury        = get_cooldown( "frostwyrms_fury" );
-    cooldown.chill_streak           = get_cooldown( "chill_streak" );
     cooldown.empower_rune_weapon    = get_cooldown( "empower_rune_weapon" );
     cooldown.frostscythe            = get_cooldown( "frostscythe" );
     cooldown.soul_reaper            = get_cooldown( "soul_reaper" );
@@ -1891,7 +1864,6 @@ public:
   void trigger_killing_machine( bool predictable, proc_t* proc, proc_t* wasted_proc );
   void consume_killing_machine( proc_t* proc, timespan_t total_delay );
   void trigger_runic_empowerment( double rpcost );
-  void chill_streak_bounce( player_t& target );
   // Unholy
   void trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
   void burst_festering_wound( player_t* target, unsigned n = 1, proc_t* action = nullptr, bool apoc = false );
@@ -1899,7 +1871,6 @@ public:
                                  bool death_trigger = false );
   void trigger_bursting_sores( player_t* target, unsigned n = 1 );
   // Start the repeated stacking of buffs, called at combat start
-  void start_cold_heart();
   void start_inexorable_assault();
   // On-target-death triggers
   void trigger_festering_wound_death( player_t* );
@@ -7679,133 +7650,13 @@ private:
 
 // Chains of Ice ============================================================
 
-// Cold Heart damage
-struct cold_heart_damage_t final : public death_knight_spell_t
-{
-  cold_heart_damage_t( std::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->spell.cold_heart_damage )
-  {
-    background = true;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = death_knight_spell_t::action_multiplier();
-
-    m *= p()->buffs.cold_heart->check();
-
-    return m;
-  }
-};
-
 struct chains_of_ice_t final : public death_knight_spell_t
 {
   chains_of_ice_t( death_knight_t* p, std::string_view options_str )
     : death_knight_spell_t( "chains_of_ice", p, p->spec.chains_of_ice )
   {
     parse_options( options_str );
-    cold_heart = get_action<cold_heart_damage_t>( "cold_heart", p );
   }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    if ( p()->buffs.cold_heart->check() )
-    {
-      cold_heart->execute_on_target( target );
-      p()->buffs.cold_heart->expire();
-    }
-  }
-
-private:
-  propagate_const<action_t*> cold_heart;
-};
-
-// Chill Streak =============================================================
-
-struct chill_streak_damage_t final : public death_knight_spell_t
-{
-  chill_streak_damage_t( std::string_view n, death_knight_t* p )
-    : death_knight_spell_t( n, p, p->spell.chill_streak_damage ),
-      max_bounces( 0 ),
-      enduring_chill_chance( 0 ),
-      current( 0 )
-  {
-    background = proc     = true;
-    max_bounces           = as<int>( p->talent.frost.chill_streak->effectN( 1 ).base_value() );
-    enduring_chill_chance = p->talent.frost.enduring_chill->effectN( 1 ).percent();
-  }
-
-  void execute() override
-  {
-    // Setting a variable min travel time to more accurately emulate in game variance
-    min_travel_time = rng().gauss( p()->options.average_cs_travel_time, 0.2 );
-    death_knight_spell_t::execute();
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    if ( state->target->is_player() )
-    {
-      state->result_raw = state->result_amount = state->result_total = 0;
-    }
-    death_knight_spell_t::impact( state );
-    current++;
-
-    if ( !state->action->result_is_hit( state->result ) )
-    {
-      return;
-    }
-
-    if ( p()->talent.frost.enduring_chill.ok() && rng().roll( enduring_chill_chance ) &&
-         p()->sim->target_non_sleeping_list.size() != 1 )
-    {
-      current--;
-      p()->procs.enduring_chill->occur();
-    }
-
-    auto td = get_td( state->target );
-
-    if ( current < max_bounces )
-    {
-      td->debuff.chill_streak->trigger();
-    }
-
-    if ( p()->talent.frost.piercing_chill.ok() )
-    {
-      td->debuff.piercing_chill->trigger();
-    }
-  }
-
-private:
-  int max_bounces;
-  double enduring_chill_chance;
-
-public:
-  int current;
-};
-
-struct chill_streak_t final : public death_knight_spell_t
-{
-  chill_streak_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_spell_t( "chill_streak", p, p->talent.frost.chill_streak ),
-      damage( get_action<chill_streak_damage_t>( "chill_streak_damage", p ) )
-  {
-    parse_options( options_str );
-    add_child( damage );
-    impact_action = damage;
-    aoe           = 0;
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-    debug_cast<chill_streak_damage_t*>( damage )->current = 0;
-  }
-
-private:
-  action_t* damage;
 };
 
 // Consumption ==============================================================
@@ -9135,42 +8986,14 @@ struct frostwyrms_fury_t final : public death_knight_spell_t
 
 // Frost Strike =============================================================
 
-struct shattered_frost_t final : public death_knight_melee_attack_t
-{
-  shattered_frost_t( std::string_view n, death_knight_t* p )
-    : death_knight_melee_attack_t( n, p, p->spell.shattered_frost )
-  {
-    background          = true;
-    aoe                 = -1;
-    reduced_aoe_targets = as<int>( data().effectN( 2 ).base_value() );
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    death_knight_melee_attack_t::available_targets( tl );
-
-    auto it = range::find( tl, target );
-    if ( it != tl.end() )
-    {
-      tl.erase( it );
-    }
-
-    return tl.size();
-  }
-};
-
 struct frost_strike_strike_t final : public death_knight_melee_attack_t
 {
   frost_strike_strike_t( std::string_view n, death_knight_t* p, weapon_t* w, const spell_data_t* s,
                          bool shattering_blade )
-    : death_knight_melee_attack_t( n, p, s ), sb( shattering_blade ), shattered_frost( nullptr )
+    : death_knight_melee_attack_t( n, p, s ), sb( shattering_blade )
   {
     background = special = true;
     weapon               = w;
-    if ( p->talent.frost.shattered_frost.ok() )
-    {
-      shattered_frost = get_action<shattered_frost_t>( "shattered_frost", p );
-    }
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -9190,11 +9013,6 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
   void impact( action_state_t* s ) override
   {
     death_knight_melee_attack_t::impact( s );
-    if ( p()->talent.frost.shattered_frost->ok() && s->result_amount > 0 && sb && weapon->slot == SLOT_MAIN_HAND )
-    {
-      shattered_frost->execute_on_target(
-          s->target, s->result_amount * p()->talent.frost.shattered_frost->effectN( 1 ).percent() );
-    }
 
     if ( p()->talent.frost.hyperpyrexia->ok() && s->result_amount > 0 &&
          p()->rng().roll( p()->talent.frost.hyperpyrexia->proc_chance() ) )
@@ -9207,8 +9025,6 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
 public:
   bool sb;
 
-private:
-  action_t* shattered_frost;
 };
 
 struct frost_strike_t final : public death_knight_melee_attack_t
@@ -9254,10 +9070,6 @@ struct frost_strike_t final : public death_knight_melee_attack_t
         }
       }
 
-      if ( p->talent.frost.shattered_frost.ok() )
-      {
-        add_child( get_action<shattered_frost_t>( "shattered_frost", p ) );
-      }
     }
   }
 
@@ -9672,29 +9484,6 @@ struct heart_strike_bloodied_blade_t : public death_knight_melee_attack_t
 private:
   vampiric_strike_blood_t* vampiric_strike;
   double vampiric_strike_cost;
-};
-
-// Horn of Winter ===========================================================
-
-struct horn_of_winter_t final : public death_knight_spell_t
-{
-  horn_of_winter_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_spell_t( "horn_of_winter", p, p->talent.frost.horn_of_winter )
-  {
-    parse_options( options_str );
-    harmful = false;
-    target  = p;
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    p()->resource_gain( RESOURCE_RUNIC_POWER, data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
-                        p()->gains.horn_of_winter, this );
-
-    p()->replenish_rune( as<unsigned int>( data().effectN( 1 ).base_value() ), p()->gains.horn_of_winter );
-  }
 };
 
 // Howling Blast ============================================================
@@ -10219,22 +10008,6 @@ struct outbreak_t final : public death_knight_spell_t
 };
 
 // Pillar of Frost ==========================================================
-struct frostwhelps_aid_t final : public death_knight_spell_t
-{
-  frostwhelps_aid_t( std::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->spell.frostwhelps_aid_damage )
-  {
-    aoe        = -1;
-    background = true;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    death_knight_spell_t::impact( s );
-    p()->buffs.frostwhelps_aid->trigger();
-  }
-};
-
 struct pillar_of_frost_t final : public death_knight_spell_t
 {
   pillar_of_frost_t( death_knight_t* p, std::string_view options_str )
@@ -10244,21 +10017,11 @@ struct pillar_of_frost_t final : public death_knight_spell_t
 
     harmful = false;
     target  = p;
-
-    if ( p->talent.frost.frostwhelps_aid.ok() )
-    {
-      whelp = get_action<frostwhelps_aid_t>( "frostwhelps_aid", p );
-      add_child( whelp );
-    }
   }
 
   void execute() override
   {
     death_knight_spell_t::execute();
-    if ( p()->talent.frost.frostwhelps_aid.ok() )
-    {
-      whelp->execute();
-    }
 
     p()->buffs.pillar_of_frost->trigger();
   }
@@ -12150,67 +11913,6 @@ void death_knight_t::start_inexorable_assault()
   } );
 }
 
-// Launches the repeting event for the cold heart talent
-void death_knight_t::start_cold_heart()
-{
-  if ( !talent.frost.cold_heart.ok() )
-  {
-    return;
-  }
-
-  buffs.cold_heart->trigger( buffs.cold_heart->max_stack() );
-
-  // Cold Heart keeps ticking out of combat and when it's at max stacks
-  // We solve that by picking a random point at which the buff starts ticking
-  timespan_t first = timespan_t::from_millis(
-      rng().range( 0, as<int>( talent.frost.cold_heart->effectN( 1 ).period().total_millis() ) ) );
-
-  make_event( *sim, first, [ this ]() {
-    buffs.cold_heart->trigger();
-    make_repeating_event( *sim, talent.frost.cold_heart->effectN( 1 ).period(),
-                          [ this ]() { buffs.cold_heart->trigger(); } );
-  } );
-}
-
-void death_knight_t::chill_streak_bounce( player_t& t )
-{
-  struct cs_bounce_t : public event_t
-  {
-    player_t* t;
-    death_knight_t* dk;
-
-    cs_bounce_t( death_knight_t* dk, player_t* target ) : event_t( *dk, 0_ms ), t( target ), dk( dk )
-    {
-    }
-
-    const char* name() const override
-    {
-      return "chill_streak_bounce";
-    }
-
-    void execute() override
-    {
-      vector_with_callback<player_t*> target_list = dk->sim->target_non_sleeping_list;
-      if ( target_list.size() == 1 )
-      {
-        target_list.push_back( dk );
-      }
-
-      for ( const auto target : target_list )
-      {
-        if ( target != t )
-        {
-          dk->background_actions.chill_streak_damage->set_target( target );
-          dk->background_actions.chill_streak_damage->schedule_execute();
-          return;
-        }
-      }
-    }
-  };
-
-  make_event<cs_bounce_t>( *sim, this, &t );
-}
-
 int death_knight_t::get_random_rider()
 {
   int n = static_cast<int>( rng().range( 0, rider_of_the_apocalypse::ALL_RIDERS ) );
@@ -12800,11 +12502,6 @@ void death_knight_t::create_actions()
       }
     }
 
-    if ( talent.frost.chill_streak.ok() )
-    {
-      background_actions.chill_streak_damage = get_action<chill_streak_damage_t>( "chill_streak_damage", this );
-    }
-
     if ( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B4 ) )
     {
       background_actions.frostscythe_proc = get_action<frostscythe_proc_t>( "frostscythe_proc", this );
@@ -12876,8 +12573,6 @@ action_t* death_knight_t::create_action( std::string_view name, std::string_view
   // Frost Actions
   if ( name == "breath_of_sindragosa" )
     return new breath_of_sindragosa_t( this, options_str );
-  if ( name == "chill_streak" )
-    return new chill_streak_t( this, options_str );
   if ( name == "empower_rune_weapon" )
     return new empower_rune_weapon_t( this, options_str );
   if ( name == "frost_strike" )
@@ -12888,8 +12583,6 @@ action_t* death_knight_t::create_action( std::string_view name, std::string_view
     return new frostwyrms_fury_t( this, options_str );
   if ( name == "glacial_advance" )
     return new glacial_advance_t( this, options_str );
-  if ( name == "horn_of_winter" )
-    return new horn_of_winter_t( this, options_str );
   if ( name == "howling_blast" )
     return new howling_blast_t( this, options_str );
   if ( name == "obliterate" )
@@ -13473,10 +13166,7 @@ void death_knight_t::init_spells()
   // Row 4
   talent.frost.unleashed_frenzy      = find_talent_spell( talent_tree::SPECIALIZATION, "Unleashed Frenzy" );
   talent.frost.runic_command         = find_talent_spell( talent_tree::SPECIALIZATION, "Runic Command" );
-  talent.frost.improved_frost_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Frost Strike" );
-  talent.frost.improved_rime         = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Rime" );
   // Row 5
-  talent.frost.improved_obliterate = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Obliterate" );
   talent.frost.glacial_advance     = find_talent_spell( talent_tree::SPECIALIZATION, "Glacial Advance" );
   talent.frost.pillar_of_frost     = find_talent_spell( talent_tree::SPECIALIZATION, "Pillar of Frost" );
   talent.frost.frostscythe         = find_talent_spell( talent_tree::SPECIALIZATION, "Frostscythe" );
@@ -13485,25 +13175,17 @@ void death_knight_t::init_spells()
   talent.frost.rage_of_the_frozen_champion =
       find_talent_spell( talent_tree::SPECIALIZATION, "Rage of the Frozen Champion" );
   talent.frost.frigid_executioner  = find_talent_spell( talent_tree::SPECIALIZATION, "Frigid Executioner" );
-  talent.frost.cold_heart          = find_talent_spell( talent_tree::SPECIALIZATION, "Cold Heart" );
-  talent.frost.horn_of_winter      = find_talent_spell( talent_tree::SPECIALIZATION, "Horn of Winter" );
   talent.frost.enduring_strength   = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Strength" );
-  talent.frost.icecap              = find_talent_spell( talent_tree::SPECIALIZATION, "Icecap" );
-  talent.frost.frostwhelps_aid     = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwhelp's Aid" );
   talent.frost.empower_rune_weapon = find_talent_spell( talent_tree::SPECIALIZATION, "Empower Rune Weapon" );
-  talent.frost.chill_streak        = find_talent_spell( talent_tree::SPECIALIZATION, "Chill Streak" );
   // Row 7
   talent.frost.murderous_efficiency = find_talent_spell( talent_tree::SPECIALIZATION, "Murderous Efficiency" );
   talent.frost.inexorable_assault   = find_talent_spell( talent_tree::SPECIALIZATION, "Inexorable Assault" );
   talent.frost.frostwyrms_fury      = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwyrm's Fury" );
   talent.frost.gathering_storm      = find_talent_spell( talent_tree::SPECIALIZATION, "Gathering Storm" );
   talent.frost.cryogenic_chamber    = find_talent_spell( talent_tree::SPECIALIZATION, "Cryogenic Chamber" );
-  talent.frost.enduring_chill       = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Chill" );
-  talent.frost.piercing_chill       = find_talent_spell( talent_tree::SPECIALIZATION, "Piercing Chill" );
   // Row 8
   talent.frost.bonegrinder        = find_talent_spell( talent_tree::SPECIALIZATION, "Bonegrinder" );
   talent.frost.smothering_offense = find_talent_spell( talent_tree::SPECIALIZATION, "Smothering Offense" );
-  talent.frost.absolute_zero      = find_talent_spell( talent_tree::SPECIALIZATION, "Absolute Zero" );
   talent.frost.avalanche          = find_talent_spell( talent_tree::SPECIALIZATION, "Avalanche" );
   talent.frost.icebreaker         = find_talent_spell( talent_tree::SPECIALIZATION, "Icebreaker" );
   // Row 9
@@ -13514,7 +13196,6 @@ void death_knight_t::init_spells()
   // Row 10
   talent.frost.arctic_assault       = find_talent_spell( talent_tree::SPECIALIZATION, "Arctic Assault" );
   talent.frost.the_long_winter      = find_talent_spell( talent_tree::SPECIALIZATION, "The Long Winter" );
-  talent.frost.shattered_frost      = find_talent_spell( talent_tree::SPECIALIZATION, "Shattered Frost" );
   talent.frost.breath_of_sindragosa = find_talent_spell( talent_tree::SPECIALIZATION, "Breath of Sindragosa" );
 
   //////// Unholy
@@ -13706,20 +13387,15 @@ void death_knight_t::spell_lookups()
   spell.bonegrinder_crit_buff       = conditional_spell_lookup( talent.frost.bonegrinder.ok(), 377101 );
   spell.bonegrinder_frost_buff      = conditional_spell_lookup( talent.frost.bonegrinder.ok(), 377103 );
   spell.enduring_strength_buff      = conditional_spell_lookup( talent.frost.enduring_strength.ok(), 377195 );
-  spell.frostwhelps_aid_buff        = conditional_spell_lookup( talent.frost.frostwhelps_aid.ok(), 377253 );
   spell.inexorable_assault_damage   = conditional_spell_lookup( talent.frost.inexorable_assault.ok(), 253597 );
   spell.breath_of_sindragosa_rune_gen = conditional_spell_lookup( talent.frost.breath_of_sindragosa.ok(), 303753 );
-  spell.cold_heart_damage             = conditional_spell_lookup( talent.frost.cold_heart.ok(), 281210 );
-  spell.chill_streak_damage           = conditional_spell_lookup( talent.frost.chill_streak.ok(), 204167 );
   spell.death_strike_offhand =
       conditional_spell_lookup( talent.death_strike.ok() && off_hand_weapon.type != WEAPON_NONE, 66188 );
   spell.frostwyrms_fury_damage = conditional_spell_lookup( talent.frost.frostwyrms_fury.ok(), 279303 );
   spell.glacial_advance_damage =
       conditional_spell_lookup( talent.frost.glacial_advance.ok() || talent.frost.arctic_assault.ok(), 195975 );
   spell.avalanche_damage           = conditional_spell_lookup( talent.frost.avalanche.ok(), 207150 );
-  spell.frostwhelps_aid_damage     = conditional_spell_lookup( talent.frost.frostwhelps_aid.ok(), 377245 );
   spell.enduring_strength_cooldown = conditional_spell_lookup( talent.frost.enduring_strength.ok(), 377192 );
-  spell.piercing_chill_debuff      = conditional_spell_lookup( talent.frost.piercing_chill.ok(), 377359 );
   spell.obliteration_gains         = conditional_spell_lookup( talent.frost.obliteration.ok(), 281327 );
   spell.frost_strike_2h =
       conditional_spell_lookup( talent.frost.frost_strike.ok() && main_hand_weapon.group() == WEAPON_2H, 325464 );
@@ -13727,7 +13403,6 @@ void death_knight_t::spell_lookups()
       conditional_spell_lookup( talent.frost.frost_strike.ok() && main_hand_weapon.group() == WEAPON_1H, 222026 );
   spell.frost_strike_oh =
       conditional_spell_lookup( talent.frost.frost_strike.ok() && off_hand_weapon.type != WEAPON_NONE, 66196 );
-  spell.shattered_frost          = conditional_spell_lookup( talent.frost.shattered_frost.ok(), 455996 );
   spell.icy_death_torrent_damage = conditional_spell_lookup( talent.frost.icy_death_torrent.ok(), 439539 );
   spell.cryogenic_chamber_damage = conditional_spell_lookup( talent.frost.cryogenic_chamber.ok(), 456371 );
   spell.cryogenic_chamber_buff   = conditional_spell_lookup( talent.frost.cryogenic_chamber.ok(), 456370 );
@@ -14164,24 +13839,9 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
                           ->apply_affecting_aura( p.talent.unholy_bond );
   }
 
-  debuff.piercing_chill =
-      make_debuff( p.talent.frost.piercing_chill.ok(), *this, "piercing_chill", p.spell.piercing_chill_debuff )
-          ->set_default_value_from_effect( 1 );
-
   debuff.everfrost =
       make_debuff( p.talent.frost.everfrost.ok(), *this, "everfrost", p.talent.frost.everfrost->effectN( 1 ).trigger() )
           ->set_default_value( p.talent.frost.everfrost->effectN( 1 ).percent() );
-
-  debuff.chill_streak =
-      make_buff_fallback( p.talent.frost.chill_streak.ok(), *this, "chill_streak", p.spell.chill_streak_damage )
-          ->set_quiet( true )
-          ->set_expire_callback( [ & ]( buff_t*, int, timespan_t d ) {
-            // Chill streak doesnt bounce if the target dies before the debuff expires
-            if ( d == timespan_t::zero() )
-            {
-              p.chill_streak_bounce( target );
-            }
-          } );
 
   // Unholy
   debuff.festering_wound =
@@ -14589,9 +14249,6 @@ void death_knight_t::create_buffs()
   buffs.breath_of_sindragosa = make_fallback<breath_of_sindragosa_buff_t>(
       talent.frost.breath_of_sindragosa.ok(), this, "breath_of_sindragosa", talent.frost.breath_of_sindragosa );
 
-  buffs.cold_heart = make_fallback( talent.frost.cold_heart.ok(), this, "cold_heart",
-                                    talent.frost.cold_heart->effectN( 1 ).trigger() );
-
   buffs.gathering_storm =
       make_fallback( talent.frost.gathering_storm.ok(), this, "gathering_storm", spell.gathering_storm_buff )
           ->set_trigger_spell( talent.frost.gathering_storm )
@@ -14683,9 +14340,9 @@ void death_knight_t::create_buffs()
       make_fallback( talent.frost.enduring_strength.ok(), this, "enduring_strength", spell.enduring_strength_buff )
           ->set_default_value( spell.enduring_strength_buff->effectN( 1 ).percent() );
 
-  buffs.frostwhelps_aid =
-      make_fallback( talent.frost.frostwhelps_aid.ok(), this, "frostwhelps_aid", spell.frostwhelps_aid_buff )
-          ->set_default_value( spell.frostwhelps_aid_buff->effectN( 1 ).base_value() );
+  //buffs.frostwhelps_aid =
+  //    make_fallback( talent.frost.frostwhelps_aid.ok(), this, "frostwhelps_aid", spell.frostwhelps_aid_buff )
+  //        ->set_default_value( spell.frostwhelps_aid_buff->effectN( 1 ).base_value() );
 
   buffs.unleashed_frenzy = make_fallback( talent.frost.unleashed_frenzy.ok(), this, "unleashed_frenzy",
                                           talent.frost.unleashed_frenzy->effectN( 1 ).trigger() )
@@ -14811,7 +14468,6 @@ void death_knight_t::init_gains()
   gains.breath_of_sindragosa        = get_gain( "Breath of Sindragosa" );
   gains.empower_rune_weapon         = get_gain( "Empower Rune Weapon" );
   gains.frost_fever                 = get_gain( "Frost Fever" );
-  gains.horn_of_winter              = get_gain( "Horn of Winter" );
   gains.murderous_efficiency        = get_gain( "Murderous Efficiency" );
   gains.obliteration                = get_gain( "Obliteration" );
   gains.rage_of_the_frozen_champion = get_gain( "Rage of the Frozen Champion" );
@@ -14876,8 +14532,6 @@ void death_knight_t::init_procs()
   procs.fw_death         = get_proc( "Festering Wound Burst by Target Death" );
   procs.fw_wound_spender = get_proc( "Festering Wound Burst by Wound Spender" );
   procs.fw_sudden_doom   = get_proc( "Festering Wound Burst by Sudden Doom" );
-
-  procs.enduring_chill = get_proc( "Enduring Chill extra bounces" );
 
   procs.decomposition = get_proc( "Decomposition" );
 
@@ -15414,7 +15068,6 @@ void death_knight_t::arise()
 {
   player_t::arise();
   start_inexorable_assault();
-  start_cold_heart();
 
   if ( talent.rider.a_feast_of_souls.ok() )
   {
@@ -15534,7 +15187,6 @@ void death_knight_action_t<Base>::apply_action_effects()
     parse_effects( p()->buffs.luck_of_the_draw, effect_mask_t( false ).enable( 5 ) );
 
   // Frost
-  parse_effects( p()->buffs.rime, p()->talent.frost.improved_rime );
   parse_effects( p()->buffs.gathering_storm );
   parse_effects( p()->buffs.killing_machine );
   parse_effects( p()->mastery.frozen_heart );
@@ -15601,7 +15253,6 @@ void death_knight_action_t<Base>::apply_target_effects()
   // Frost
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::everfrost ),
                         p()->talent.frost.everfrost->effectN( 1 ).trigger(), p()->talent.frost.everfrost );
-  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::piercing_chill ), p()->spell.piercing_chill_debuff );
 
   // Unholy
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::death_rot ), p()->spell.death_rot_debuff );
@@ -15664,7 +15315,6 @@ void death_knight_t::parse_player_effects()
     parse_effects( spec.frost_death_knight );
     parse_effects( spec.frost_death_knight_2 );
     parse_effects( buffs.empower_rune_weapon, talent.frost.empower_rune_weapon );
-    parse_effects( buffs.frostwhelps_aid, talent.frost.frostwhelps_aid );
     parse_effects( buffs.bonegrinder_frost, talent.frost.bonegrinder );
     parse_effects( buffs.bonegrinder_crit, talent.frost.bonegrinder );
     parse_effects( buffs.enduring_strength, talent.frost.enduring_strength );
@@ -15783,12 +15433,8 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.blood.rapid_decomposition );
 
   // Frost
-  action.apply_affecting_aura( talent.frost.improved_frost_strike );
-  action.apply_affecting_aura( talent.frost.improved_obliterate );
   action.apply_affecting_aura( talent.frost.frigid_executioner );
   action.apply_affecting_aura( talent.frost.biting_cold );
-  action.apply_affecting_aura( talent.frost.absolute_zero );
-  action.apply_affecting_aura( talent.frost.icecap );
   if ( spec.might_of_the_frozen_wastes->ok() && main_hand_weapon.group() == WEAPON_2H )
   {
     action.apply_affecting_aura( spec.might_of_the_frozen_wastes );
