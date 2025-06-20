@@ -1659,6 +1659,10 @@ public:
 
     // Decomposition
     propagate_const<proc_t*> decomposition;
+    
+    // Visceral Strength RP spender procs
+    propagate_const<proc_t*> coil_vs;
+    propagate_const<proc_t*> epi_vs;
 
     // San'layn procs
     propagate_const<proc_t*> blood_beast;
@@ -6902,7 +6906,7 @@ struct dark_transformation_t : public death_knight_spell_t
 {
   int winning_streak_stacks;
 
-  dark_transformation_t( std::string_view n, death_knight_t* p, std::string_view options_str )
+  dark_transformation_t( std::string_view n, death_knight_t* p, std::string_view options_str = "" )
     : death_knight_spell_t( n, p, p->talent.unholy.dark_transformation ), winning_streak_stacks( 0 )
   {
     harmful = false;
@@ -9987,6 +9991,10 @@ struct outbreak_t final : public death_knight_spell_t
     if ( p()->buffs.visceral_strength_unholy->check() )
     {
       p()->last_cast_rp_spender->execute_on_target( target );
+      if ( p()->last_cast_rp_spender == p()->background_actions.death_coil_damage )
+        p()->procs.coil_vs->occur();
+      else
+        p()->procs.epi_vs->occur();
       p()->buffs.visceral_strength_unholy->expire();
     }
   }
@@ -14511,6 +14519,9 @@ void death_knight_t::init_procs()
   procs.fw_death         = get_proc( "Festering Wound Burst by Target Death" );
   procs.fw_wound_spender = get_proc( "Festering Wound Burst by Wound Spender" );
   procs.fw_sudden_doom   = get_proc( "Festering Wound Burst by Sudden Doom" );
+
+  procs.coil_vs = get_proc( "Coils cast by Visceral Strength Proc" );
+  procs.epi_vs  = get_proc( "Epidemic cast by Visceral Strength Proc" );
 
   procs.decomposition = get_proc( "Decomposition" );
 
