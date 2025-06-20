@@ -183,7 +183,8 @@ enum demonsurge_ability
   FEL_DESOLATION,
   ABYSSAL_GAZE,
   ANNIHILATION,
-  DEATH_SWEEP
+  DEATH_SWEEP,
+  TWW3
 };
 
 const std::vector<demonsurge_ability> demonsurge_havoc_abilities{
@@ -214,6 +215,8 @@ std::string demonsurge_ability_name( demonsurge_ability ability )
       return "demonsurge_annihilation";
     case demonsurge_ability::DEATH_SWEEP:
       return "demonsurge_death_sweep";
+    case demonsurge_ability::TWW3:
+      return "demonsurge_tww3";
     default:
       return "demonsurge_unknown";
   }
@@ -333,6 +336,8 @@ public:
     buff_t* winning_streak;
     buff_t* winning_streak_residual;
     buff_t* necessary_sacrifice;
+    buff_t* tww3_demon_soul;
+    buff_t* scarred_strikes;
   } buff;
 
   // Talents
@@ -540,7 +545,7 @@ public:
 
     struct felscarred_talents_t
     {
-      player_talent_t demonsurge;  // partially implemented
+      player_talent_t demonsurge;
 
       player_talent_t wave_of_debilitation;  // No Implementation
       player_talent_t pursuit_of_angriness;
@@ -734,12 +739,20 @@ public:
     const spell_data_t* tww2_havoc_4pc;
     const spell_data_t* tww2_vengeance_2pc;
     const spell_data_t* tww2_vengeance_4pc;
+    const spell_data_t* tww3_aldrachi_2pc;
+    const spell_data_t* tww3_aldrachi_4pc;
+    const spell_data_t* tww3_felscarred_2pc;
+    const spell_data_t* tww3_felscarred_4pc;
 
     // Auxilliary
     const spell_data_t* tww1_havoc_4pc_buff;
     const spell_data_t* tww1_vengeance_4pc_buff;
     const spell_data_t* winning_streak_residual_buff;
     const spell_data_t* necessary_sacrifice_buff;
+    const spell_data_t* demon_soul_havoc_buff;
+    const spell_data_t* demon_soul_vengeance_buff;
+    const spell_data_t* demon_soul_buff;
+    const spell_data_t* scarred_strikes;
   } set_bonuses;
 
   // Mastery Spells
@@ -1042,7 +1055,7 @@ public:
   void spawn_soul_fragment( soul_fragment, unsigned = 1, bool = false );
   void spawn_soul_fragment( soul_fragment, unsigned, player_t* target, bool = false );
   void trigger_demonic();
-  void trigger_demonsurge( demonsurge_ability );
+  void trigger_demonsurge( demonsurge_ability, bool = true );
   double get_target_reach() const
   {
     return options.target_reach >= 0 ? options.target_reach : sim->target->combat_reach;
@@ -1471,7 +1484,7 @@ struct soul_fragment_t
 
     if ( is_type( soul_fragment::EMPOWERED_DEMON ) )
     {
-      dh->buff.empowered_demon_soul->trigger();
+      dh->buff.tww3_demon_soul->trigger();
     }
     else if ( is_type( soul_fragment::GREATER_DEMON ) )
     {
@@ -1732,6 +1745,13 @@ public:
     if ( p->talent.aldrachi_reaver.reavers_mark->ok() )
     {
       affected_by.reavers_mark = ab::data().affected_by( p->hero_spec.reavers_mark->effectN( 1 ) );
+      ab::apply_affecting_aura( p->set_bonuses.tww3_aldrachi_2pc );
+    }
+
+    // Fel-scarred
+    if ( p->talent.felscarred.demonsurge->ok() )
+    {
+      ab::apply_affecting_aura( p->set_bonuses.tww3_felscarred_2pc );
     }
   }
 
@@ -1780,14 +1800,9 @@ public:
     ab::parse_effects( p()->buff.exergy );
     ab::parse_effects( p()->buff.inertia );
     ab::parse_effects( p()->buff.restless_hunter );
-    ab::parse_effects( p()->buff.tww1_havoc_4pc );
-    ab::parse_effects( p()->buff.winning_streak );
-    ab::parse_effects( p()->buff.winning_streak_residual );
 
     // Vengeance
     ab::parse_effects( p()->buff.soul_furnace_damage_amp );
-    ab::parse_effects( p()->buff.tww1_vengeance_4pc );
-    ab::parse_effects( p()->buff.luck_of_the_draw );
 
     // Aldrachi Reaver
     ab::parse_effects( p()->buff.warblades_hunger );
@@ -1826,6 +1841,15 @@ public:
     ab::parse_effects( p()->buff.demonsurge_demonic );
     ab::parse_effects( p()->buff.demonsurge_hardcast );
     ab::parse_effects( p()->buff.demonsurge );
+
+    // Tier sets
+    ab::parse_effects( p()->buff.tww1_havoc_4pc );
+    ab::parse_effects( p()->buff.tww1_vengeance_4pc );
+    ab::parse_effects( p()->buff.winning_streak );
+    ab::parse_effects( p()->buff.winning_streak_residual );
+    ab::parse_effects( p()->buff.luck_of_the_draw );
+    ab::parse_effects( p()->buff.tww3_demon_soul );
+    ab::parse_effects( p()->buff.scarred_strikes );
   }
 
   void apply_debuff_effects()
@@ -2238,9 +2262,13 @@ struct art_of_the_glaive_trigger_t : public BASE
     {
       second_ability = !BASE::p()->buff.glaive_flurry->up();
 
+      int first_ability_amount  = 1 + BASE::p()->set_bonuses.tww3_aldrachi_4pc->effectN( 3 ).base_value();
+      int second_ability_amount = 1 + BASE::p()->talent.aldrachi_reaver.reavers_mark->effectN( 2 ).base_value() +
+                                  BASE::p()->set_bonuses.tww3_aldrachi_4pc->effectN( 3 ).base_value();
       if ( BASE::p()->talent.aldrachi_reaver.reavers_mark->ok() )
       {
-        BASE::td( BASE::target )->debuffs.reavers_mark->trigger( second_ability ? 2 : 1 );
+        BASE::td( BASE::target )
+            ->debuffs.reavers_mark->trigger( second_ability ? second_ability_amount : first_ability_amount );
       }
 
       BASE::p()->buff.rending_strike->expire();
@@ -3020,8 +3048,7 @@ struct eye_beam_base_t : public demon_hunter_spell_t
 
 struct abyssal_gaze_t : public demonsurge_trigger_t<demonsurge_ability::ABYSSAL_GAZE, eye_beam_base_t>
 {
-  abyssal_gaze_t( demon_hunter_t* p )
-    : base_t( "abyssal_gaze", p, p->hero_spec.abyssal_gaze, "" )
+  abyssal_gaze_t( demon_hunter_t* p ) : base_t( "abyssal_gaze", p, p->hero_spec.abyssal_gaze, "" )
   {
   }
 };
@@ -3032,10 +3059,13 @@ struct eye_beam_t : public eye_beam_base_t
   double abyssal_gaze_cost;
 
   eye_beam_t( demon_hunter_t* p, util::string_view options_str )
-    : eye_beam_base_t( "eye_beam", p, p->talent.havoc.eye_beam, options_str ), abyssal_gaze( nullptr ), abyssal_gaze_cost( 0 )
+    : eye_beam_base_t( "eye_beam", p, p->talent.havoc.eye_beam, options_str ),
+      abyssal_gaze( nullptr ),
+      abyssal_gaze_cost( 0 )
   {
-    if ( p->talent.felscarred.demonic_intensity->ok() ) {
-      abyssal_gaze = new abyssal_gaze_t( p );
+    if ( p->talent.felscarred.demonic_intensity->ok() )
+    {
+      abyssal_gaze      = new abyssal_gaze_t( p );
       abyssal_gaze_cost = abyssal_gaze->data().cost( POWER_FURY );
       add_child( abyssal_gaze );
     }
@@ -4955,6 +4985,7 @@ struct auto_attack_damage_t : public burning_blades_trigger_t<demon_hunter_attac
     // Class Passives
     m *= 1.0 + p()->spec.havoc_demon_hunter->effectN( 8 ).percent();
     m *= 1.0 + p()->spec.vengeance_demon_hunter->effectN( 10 ).percent();
+    m *= 1.0 + p()->set_bonuses.tww3_aldrachi_2pc->effectN( 4 ).percent();
 
     return m;
   }
@@ -7148,10 +7179,25 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
           s++;
         }
       }
+
+      if ( p()->set_bonuses.tww3_felscarred_2pc->ok() )
+      {
+        p()->buff.scarred_strikes->trigger();
+      }
     }
 
     if ( s > 0 )
       base_t::execute( s, value, duration );
+  }
+
+  void expire_override( int stacks, timespan_t remaining_duration ) override
+  {
+    demon_hunter_buff_t::expire_override( stacks, remaining_duration );
+
+    if ( p()->buff.scarred_strikes->up() )
+    {
+      p()->buff.scarred_strikes->expire();
+    }
   }
 };
 
@@ -7251,6 +7297,12 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     if ( p()->talent.felscarred.enduring_torment->ok() )
     {
       p()->buff.enduring_torment->expire();
+    }
+
+    if ( p()->set_bonuses.tww3_felscarred_4pc->ok() )
+    {
+      p()->spawn_soul_fragment( soul_fragment::EMPOWERED_DEMON );
+      p()->trigger_demonsurge( demonsurge_ability::TWW3, false );
     }
   }
 
@@ -7573,7 +7625,8 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
               p.last_reavers_mark_applied = b->player;
             }
           } )
-          ->modify_default_value( p.spec.havoc_demon_hunter->effectN( 15 ).percent() );
+          ->modify_default_value( p.spec.havoc_demon_hunter->effectN( 15 ).percent() )
+          ->apply_affecting_aura( p.set_bonuses.tww3_aldrachi_4pc );
 
   dots.sigil_of_flame = target->get_dot( "sigil_of_flame", &p );
   dots.sigil_of_doom  = target->get_dot( "sigil_of_doom", &p );
@@ -7992,6 +8045,9 @@ void demon_hunter_t::create_buffs()
   buff.winning_streak_residual =
       make_buff( this, "winning_streak_residual", set_bonuses.winning_streak_residual_buff )->set_chance( 1.01 );
   buff.necessary_sacrifice = make_buff( this, "necessary_sacrifice", set_bonuses.necessary_sacrifice_buff );
+
+  buff.tww3_demon_soul = make_buff( this, "tww3_demon_soul", set_bonuses.demon_soul_buff );
+  buff.scarred_strikes = make_buff( this, "scarred_strikes", set_bonuses.scarred_strikes )->set_quiet( true );
 }
 
 struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
@@ -8860,14 +8916,18 @@ void demon_hunter_t::init_spells()
 
   // Set Bonus Items ========================================================
 
-  set_bonuses.tww1_havoc_2pc     = sets->set( DEMON_HUNTER_HAVOC, TWW1, B2 );
-  set_bonuses.tww1_havoc_4pc     = sets->set( DEMON_HUNTER_HAVOC, TWW1, B4 );
-  set_bonuses.tww1_vengeance_2pc = sets->set( DEMON_HUNTER_VENGEANCE, TWW1, B2 );
-  set_bonuses.tww1_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, TWW1, B4 );
-  set_bonuses.tww2_havoc_2pc     = sets->set( DEMON_HUNTER_HAVOC, TWW2, B2 );
-  set_bonuses.tww2_havoc_4pc     = sets->set( DEMON_HUNTER_HAVOC, TWW2, B4 );
-  set_bonuses.tww2_vengeance_2pc = sets->set( DEMON_HUNTER_VENGEANCE, TWW2, B2 );
-  set_bonuses.tww2_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, TWW2, B4 );
+  set_bonuses.tww1_havoc_2pc      = sets->set( DEMON_HUNTER_HAVOC, TWW1, B2 );
+  set_bonuses.tww1_havoc_4pc      = sets->set( DEMON_HUNTER_HAVOC, TWW1, B4 );
+  set_bonuses.tww1_vengeance_2pc  = sets->set( DEMON_HUNTER_VENGEANCE, TWW1, B2 );
+  set_bonuses.tww1_vengeance_4pc  = sets->set( DEMON_HUNTER_VENGEANCE, TWW1, B4 );
+  set_bonuses.tww2_havoc_2pc      = sets->set( DEMON_HUNTER_HAVOC, TWW2, B2 );
+  set_bonuses.tww2_havoc_4pc      = sets->set( DEMON_HUNTER_HAVOC, TWW2, B4 );
+  set_bonuses.tww2_vengeance_2pc  = sets->set( DEMON_HUNTER_VENGEANCE, TWW2, B2 );
+  set_bonuses.tww2_vengeance_4pc  = sets->set( DEMON_HUNTER_VENGEANCE, TWW2, B4 );
+  set_bonuses.tww3_aldrachi_2pc   = spell_data_t::not_found();
+  set_bonuses.tww3_aldrachi_4pc   = find_spell( 1236360 ); // spell_data_t::not_found();
+  set_bonuses.tww3_felscarred_2pc = spell_data_t::not_found();
+  set_bonuses.tww3_felscarred_4pc = spell_data_t::not_found();
 
   // Set Bonus Auxilliary ===================================================
 
@@ -8878,6 +8938,11 @@ void demon_hunter_t::init_spells()
       set_bonuses.tww2_havoc_4pc->ok() ? find_spell( 1220706 ) : spell_data_t::not_found();
   set_bonuses.necessary_sacrifice_buff =
       set_bonuses.tww2_havoc_4pc->ok() ? find_spell( 1217055 ) : spell_data_t::not_found();
+  set_bonuses.demon_soul_havoc_buff     = conditional_spell_lookup( set_bonuses.tww3_felscarred_4pc->ok(), 1238676 );
+  set_bonuses.demon_soul_vengeance_buff = conditional_spell_lookup( set_bonuses.tww3_felscarred_4pc->ok(), 1238675 );
+  set_bonuses.demon_soul_buff           = specialization() == DEMON_HUNTER_HAVOC ? set_bonuses.demon_soul_havoc_buff
+                                                                                 : set_bonuses.demon_soul_vengeance_buff;
+  set_bonuses.scarred_strikes           = conditional_spell_lookup( set_bonuses.tww3_felscarred_2pc->ok(), 1238462 );
 
   // Spell Initialization ===================================================
 
@@ -8965,7 +9030,8 @@ void demon_hunter_t::init_spells()
   }
 }
 
-void demon_hunter_t::init_blizzard_action_list() {
+void demon_hunter_t::init_blizzard_action_list()
+{
   action_priority_list_t* default_ = get_action_priority_list( "default" );
   default_->add_action( "auto_attack" );  // Add before generating the other actions so its always the highest priority
   player_t::init_blizzard_action_list();
@@ -8975,10 +9041,10 @@ void demon_hunter_t::init_blizzard_action_list() {
   switch ( specialization() )
   {
     case DEMON_HUNTER_HAVOC:
-      cooldowns->add_action("metamorphosis");
+      cooldowns->add_action( "metamorphosis" );
       break;
     case DEMON_HUNTER_VENGEANCE:
-      cooldowns->add_action("metamorphosis");
+      cooldowns->add_action( "metamorphosis" );
       break;
     default:
       break;
@@ -9905,11 +9971,14 @@ void demon_hunter_t::trigger_demonic()
 
 // demon_hunter_t::trigger_demonsurge =============================================
 
-void demon_hunter_t::trigger_demonsurge( demonsurge_ability ability )
+void demon_hunter_t::trigger_demonsurge( demonsurge_ability ability, bool check_buff )
 {
-  if ( active.demonsurge && buff.demonsurge_abilities[ ability ]->up() )
+  if ( active.demonsurge && ( !check_buff || buff.demonsurge_abilities[ ability ]->up() ) )
   {
-    buff.demonsurge_abilities[ ability ]->expire();
+    if ( check_buff )
+    {
+      buff.demonsurge_abilities[ ability ]->expire();
+    }
     make_event<delayed_execute_event_t>(
         *sim, this, active.demonsurge, target,
         timespan_t::from_millis( hero_spec.demonsurge_trigger->effectN( 1 ).misc_value1() ) );
