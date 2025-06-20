@@ -11372,23 +11372,25 @@ void runeforge::sanguination( special_effect_t& effect )
       : heal_t( "rune_of_sanguination", p, effect.driver()->effectN( 1 ).trigger() )
     {
       background                      = true;
+      harmful                         = false;
       tick_pct_heal                   = data().effectN( 1 ).percent();
       const spell_data_t* unholy_bond = p->find_talent_spell( talent_tree::CLASS, "Unholy Bond" );
       tick_pct_heal *= 1.0 + unholy_bond->effectN( 1 ).percent();
       // Sated-type debuff, for simplicity the debuff's duration is used as a simple cooldown in simc
       cooldown->duration = p->find_spell( 326809 )->duration();
+      target             = p;
     }
   };
 
-  const double health_threshold = effect.driver()->effectN( 1 ).base_value();
   effect.player->callbacks.register_callback_trigger_function(
       effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ effect, health_threshold ]( const dbc_proc_callback_t*, action_t*, const action_state_t* ) {
-        return effect.player->health_percentage() > health_threshold;
+      [ effect ]( const dbc_proc_callback_t*, action_t*, const action_state_t* ) {
+        return effect.player->health_percentage() > effect.driver()->effectN( 1 ).base_value();
       } );
 
   effect.proc_flags2_   = PF2_ALL_HIT;
   effect.execute_action = get_action<sanguination_heal_t>( "rune_of_sanguination", effect.player, effect );
+  effect.cooldown_     = effect.player->find_spell( 326809 )->duration();
   new dbc_proc_callback_t( effect.player, effect );
 }
 
