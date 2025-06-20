@@ -10685,6 +10685,7 @@ struct legion_of_souls_damage_t : public death_knight_spell_t
     : death_knight_spell_t( n, p, s ), wounds_applied( 0 ), max_wounds( 0 )
   {
     background          = true;
+    aoe                 = -1;
     reduced_aoe_targets = p->talent.unholy.legion_of_souls->effectN( 4 ).base_value();
     max_wounds          = as<int>( p->talent.unholy.legion_of_souls->effectN( 3 ).base_value() );
   }
