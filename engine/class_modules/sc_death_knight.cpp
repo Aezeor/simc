@@ -8482,8 +8482,7 @@ struct empower_rune_weapon_projectile_t final : public death_knight_spell_t
   empower_rune_weapon_projectile_t( std::string_view name, death_knight_t* p )
     : death_knight_spell_t( name, p, p->talent.frost.empower_rune_weapon->effectN( 1 ).trigger() )
   {
-    background = true;
-    target     = p;
+    background = quiet = true;
   }
   void impact( action_state_t* s) override
   {
