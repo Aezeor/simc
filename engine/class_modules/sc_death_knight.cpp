@@ -10782,6 +10782,16 @@ struct legion_of_souls_t : public death_knight_spell_t
       legion_of_souls_damage_t* damage_action = debug_cast<legion_of_souls_damage_t*>( damage );
       damage_action->set_wounds_applied( target, 0 );
     }
+
+    p()->buffs.death_and_decay->trigger();
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    death_knight_spell_t::last_tick( d );
+
+    if ( !p()->in_death_and_decay() )
+      p()->buffs.death_and_decay->expire();
   }
 
 private:
