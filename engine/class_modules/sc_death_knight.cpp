@@ -10692,7 +10692,7 @@ struct unholy_assault_t final : public death_knight_melee_attack_t
 struct legion_of_souls_damage_t : public death_knight_spell_t
 {
   legion_of_souls_damage_t( std::string_view n, death_knight_t* p, const spell_data_t* s )
-    : death_knight_spell_t( n, p, s ), wounds_applied( 0 ), max_wounds( 0 )
+    : death_knight_spell_t( n, p, s ), wounds_applied{ true }, max_wounds( 0 )
   {
     background          = true;
     aoe                 = -1;
@@ -10713,8 +10713,6 @@ struct legion_of_souls_damage_t : public death_knight_spell_t
   {
     if ( wounds_applied[ target ] != nullptr )
       return *wounds_applied[ target ];
-
-    int* wounds = new int;
 
     wounds_applied[ target ] = new int;
     *wounds_applied[ target ] = 0;
