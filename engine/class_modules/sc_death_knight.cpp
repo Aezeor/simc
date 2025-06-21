@@ -910,6 +910,7 @@ public:
     propagate_const<action_t*> icy_death_torrent_damage;
     action_t* hyperpyrexia_damage;
     propagate_const<action_t*> frostscythe_proc;
+    propagate_const<action_t*> erw_projectile;
 
     // Unholy
     propagate_const<action_t*> bursting_sores;
@@ -1158,6 +1159,7 @@ public:
       player_talent_t howling_blast;
       // Row 3
       player_talent_t killing_machine;
+      player_talent_t empower_rune_weapon;
       player_talent_t everfrost;
       // Row 4
       player_talent_t unleashed_frenzy;
@@ -1170,7 +1172,6 @@ public:
       player_talent_t rage_of_the_frozen_champion;
       player_talent_t frigid_executioner;
       player_talent_t enduring_strength;
-      player_talent_t empower_rune_weapon;
       player_talent_t frostwyrms_fury;
       // Row 7
       player_talent_t murderous_efficiency;
@@ -1396,6 +1397,8 @@ public:
     const spell_data_t* cryogenic_chamber_buff;
     const spell_data_t* rime_buff;
     const spell_data_t* hyperpyrexia_damage;
+    const spell_data_t* empower_rune_weapon_projectile;
+    const spell_data_t* empower_rune_weapon_buff;
     // Tier Sets
     const spell_data_t* icy_vigor;
     const spell_data_t* winning_streak_frost;
@@ -1624,6 +1627,7 @@ public:
     propagate_const<proc_t*> km_from_obliteration_ga;  // Glacial Advance during Obliteration
     propagate_const<proc_t*> km_from_obliteration_sr;  // Soul Reaper during Obliteration
     propagate_const<proc_t*> km_from_grim_reaper;
+    propagate_const<proc_t*> km_from_erw;
 
     // Killing machine refreshed by
     propagate_const<proc_t*> km_from_crit_aa_wasted;
@@ -1632,6 +1636,7 @@ public:
     propagate_const<proc_t*> km_from_obliteration_ga_wasted;  // Glacial Advance during Obliteration
     propagate_const<proc_t*> km_from_obliteration_sr_wasted;  // Soul Reaper during Obliteration
     propagate_const<proc_t*> km_from_grim_reaper_wasted;
+    propagate_const<proc_t*> km_from_erw_wasted;
 
     // Razorice applied by
     propagate_const<proc_t*> razorice_from_arctic_assault;
@@ -8472,29 +8477,43 @@ private:
 };
 
 // Empower Rune Weapon ======================================================
+struct empower_rune_weapon_projectile_t final : public death_knight_spell_t
+{
+  empower_rune_weapon_projectile_t( std::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->talent.frost.empower_rune_weapon->effectN( 1 ).trigger() )
+  {
+    background = true;
+    target     = p;
+  }
+  void impact( action_state_t* s) override
+  {
+    death_knight_spell_t::impact( s );
+    p()->buffs.empower_rune_weapon->trigger();
+  }
+};
+
 struct empower_rune_weapon_t final : public death_knight_spell_t
 {
   empower_rune_weapon_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_spell_t( "empower_rune_weapon", p, p->talent.frost.empower_rune_weapon )
+    : death_knight_spell_t( "empower_rune_weapon", p, p->talent.frost.empower_rune_weapon ), projectile( p->background_actions.erw_projectile )
   {
     parse_options( options_str );
 
-    harmful = false;
-    target  = p;
-
-    // Buff handles the ticking, this one just triggers the buff
-    dot_duration = base_tick_time = 0_ms;
-    cooldown->charges =
-        1;  // Data appears to be messed up since they removed the class tree version, lists as 0 charges
-    cooldown->duration = p->talent.frost.empower_rune_weapon->charge_cooldown();
-  }
+    if ( data().ok() )
+    {
+      // add_child( projectile );
+    }
+ }
 
   void execute() override
   {
     death_knight_spell_t::execute();
 
-    //p()->buffs.empower_rune_weapon->trigger();
+    make_event<delayed_execute_event_t>( *sim, p(), projectile, execute_state->target, 200_ms );
   }
+
+private:
+  propagate_const<action_t *> projectile;
 };
 
 // Epidemic =================================================================
@@ -12536,6 +12555,11 @@ void death_knight_t::create_actions()
       {
         background_actions.hyperpyrexia_damage = get_action<hyperpyrexia_damage_t>( "hyperpyrexia", this );
       }
+      if ( talent.frost.empower_rune_weapon.ok() )
+      {
+        background_actions.erw_projectile =
+            get_action<empower_rune_weapon_projectile_t>( "empower_rune_weapon_projectile", this );
+      }
     }
 
     if ( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B4 ) )
@@ -13199,6 +13223,7 @@ void death_knight_t::init_spells()
   talent.frost.howling_blast = find_talent_spell( talent_tree::SPECIALIZATION, "Howling Blast" );
   // Row 3
   talent.frost.killing_machine = find_talent_spell( talent_tree::SPECIALIZATION, "Killing Machine" );
+  talent.frost.empower_rune_weapon = find_talent_spell( talent_tree::SPECIALIZATION, "Empower Rune Weapon" );
   talent.frost.everfrost       = find_talent_spell( talent_tree::SPECIALIZATION, "Everfrost" );
   // Row 4
   talent.frost.unleashed_frenzy = find_talent_spell( talent_tree::SPECIALIZATION, "Unleashed Frenzy" );
@@ -13213,7 +13238,6 @@ void death_knight_t::init_spells()
       find_talent_spell( talent_tree::SPECIALIZATION, "Rage of the Frozen Champion" );
   talent.frost.frigid_executioner  = find_talent_spell( talent_tree::SPECIALIZATION, "Frigid Executioner" );
   talent.frost.enduring_strength   = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Strength" );
-  talent.frost.empower_rune_weapon = find_talent_spell( talent_tree::SPECIALIZATION, "Empower Rune Weapon" );
   // Row 7
   talent.frost.murderous_efficiency = find_talent_spell( talent_tree::SPECIALIZATION, "Murderous Efficiency" );
   talent.frost.inexorable_assault   = find_talent_spell( talent_tree::SPECIALIZATION, "Inexorable Assault" );
@@ -13446,6 +13470,7 @@ void death_knight_t::spell_lookups()
   spell.cryogenic_chamber_buff   = conditional_spell_lookup( talent.frost.cryogenic_chamber.ok(), 456370 );
   spell.rime_buff                = conditional_spell_lookup( spec.rime->ok(), 59052 );
   spell.hyperpyrexia_damage      = conditional_spell_lookup( talent.frost.hyperpyrexia.ok(), 458169 );
+  spell.empower_rune_weapon_buff = conditional_spell_lookup( talent.frost.empower_rune_weapon.ok(), 1230959 );
   // Tier Sets
   spell.icy_vigor            = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW1, B4 ), 457189 );
   spell.winning_streak_frost = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B2 ), 1217897 );
@@ -14309,18 +14334,17 @@ void death_knight_t::create_buffs()
 
   buffs.empower_rune_weapon =
       make_fallback( talent.frost.empower_rune_weapon.ok(), this, "empower_rune_weapon",
-                     talent.frost.empower_rune_weapon )
-          ->set_tick_zero( true )
-          ->set_cooldown( 0_ms )
-          ->set_period( talent.frost.empower_rune_weapon->effectN( 1 ).period() )
-          ->set_default_value_from_effect( 3 )
-          ->set_refresh_behavior( buff_refresh_behavior::TICK )
-          ->set_tick_behavior( buff_tick_behavior::REFRESH )
-          ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-            replenish_rune( as<unsigned int>( b->data().effectN( 1 ).base_value() ), gains.empower_rune_weapon );
-            resource_gain( RESOURCE_RUNIC_POWER, b->data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
-                           gains.empower_rune_weapon );
+                     spell.empower_rune_weapon_buff )
+          ->set_stack_change_callback( [ this ]( buff_t* buff, int old_, int new_ ) {
+            if ( new_ > 0 && old_ == 0 )
+            {
+              resource_gain( RESOURCE_RUNIC_POWER, buff->data().effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+                             gains.empower_rune_weapon, background_actions.erw_projectile );
+              trigger_killing_machine( true, procs.km_from_erw, procs.km_from_erw_wasted );
+              buff->expire();
+            }
           } );
+
 
   buffs.pillar_of_frost = make_fallback<pillar_of_frost_buff_t>( talent.frost.pillar_of_frost.ok(), this,
                                                                  "pillar_of_frost", talent.frost.pillar_of_frost );
@@ -14534,6 +14558,7 @@ void death_knight_t::init_procs()
   procs.km_from_obliteration_ga = get_proc( "Killing Machine: Glacial Advance" );
   procs.km_from_obliteration_sr = get_proc( "Killing Machine: Soul Reaper" );
   procs.km_from_grim_reaper     = get_proc( "Killing Machine: Grim Reaper" );
+  procs.km_from_erw             = get_proc( "Killing Machine: Empower Rune Weapon" ); 
 
   procs.km_from_crit_aa_wasted         = get_proc( "Killing Machine wasted: Critical auto attacks" );
   procs.km_from_obliteration_fs_wasted = get_proc( "Killing Machine wasted: Frost Strike" );
@@ -14541,6 +14566,7 @@ void death_knight_t::init_procs()
   procs.km_from_obliteration_ga_wasted = get_proc( "Killing Machine wasted: Glacial Advance" );
   procs.km_from_obliteration_sr_wasted = get_proc( "Killing Machine wasted: Soul Reaper" );
   procs.km_from_grim_reaper_wasted     = get_proc( "Killing Machine wasted: Grim Reaper" );
+  procs.km_from_erw_wasted             = get_proc( "Killing Machine wasted: Empower Rune Weapon" );
 
   procs.razorice_from_arctic_assault  = get_proc( "Razorice from Arctic Assault" );
   procs.razorice_from_avalanche       = get_proc( "Razorice from Avalanche" );
@@ -15363,7 +15389,6 @@ void death_knight_t::parse_player_effects()
   {
     parse_effects( spec.frost_death_knight );
     parse_effects( spec.frost_death_knight_2 );
-    parse_effects( buffs.empower_rune_weapon, talent.frost.empower_rune_weapon );
     parse_effects( buffs.bonegrinder_frost, talent.frost.bonegrinder );
     parse_effects( buffs.bonegrinder_crit, talent.frost.bonegrinder );
     parse_effects( buffs.frozen_dominion, talent.frost.frozen_dominion );
