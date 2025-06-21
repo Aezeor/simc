@@ -1,5 +1,5 @@
 // Spell text, wow build 11.2.0.61476
-static const std::array<spelltext_data_t, 27998> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 28000> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27241,6 +27241,7 @@ static const std::array<spelltext_data_t, 27998> __ptr_spelltext_data { {
   { 1224856, "Your harmful spells and abilities have a chance to grant you a Void Fragment. Slaying an enemy guarantees a Void Fragment. Upon collecting $s4 Fragments, you absorb their void energy, increasing your Mastery by $s1 for $1224918d.", 0, 0 },
   { 1224870, "Your harmful spells and abilities have a chance to fracture the enemy's soul, dealing ${$s1*$<rolemult>} Shadow damage over $1225149d. If a fractured enemy dies, you absorb their lingering energy, increasing your Versatility by $s2 for $1225151d.\r\n", 0, 0 },
   { 1224902, "You are one of the devout. Up to $s2 allies within $a yd of you gain $s1 health every $t sec.", 0, 0 },
+  { 1224916, 0, "Void-Touched fragments collected from enemies.", 0 },
   { 1224918, 0, "Increases Mastery Rating by $w1.", 0 },
   { 1224959, "|cnDARKYELLOW_FONT_COLOR:$@spelldesc1229185|r\r\n\r\n$?pc132221[$@spelldesc456525][$@spelldesc455680]", 0, 0 },
   { 1224961, "|cnDARKYELLOW_FONT_COLOR:$@spelldesc1229186|r\r\n\r\n$?pc132222[$@spelldesc456525][$@spelldesc455680]", 0, 0 },
@@ -27801,6 +27802,7 @@ static const std::array<spelltext_data_t, 27998> __ptr_spelltext_data { {
   { 1237196, "$@spelldesc450615", "$w1 Flurry Strikes charged, released on your next attack.", 0 },
   { 1237269, "$@spelldesc431695", "Haste, movement speed, and cooldown recovery rate increased by $s1%.", "Bronze" },
   { 1237591, "$@spelldesc369939", 0, 0 },
+  { 1237615, "$@spelldesc1236397", "The damage of your next $?c1[Mind Blast][Void Torrent] is increased by $w1%.", 0 },
   { 1237777, "The powers of your Reshii Wraps also reduce Cosmic damage taken by $1237859s2% for $1237859d or until $s1 damage has been prevented.", 0, 0 },
   { 1237859, "$@spelldesc1237777", "Cosmic damage taken reduced by $w2% until ${$w1} damage has been prevented.", 0 },
   { 1237891, "$@spelldesc1226311", 0, 0 },
