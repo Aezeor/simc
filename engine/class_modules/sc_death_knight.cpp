@@ -1162,6 +1162,8 @@ public:
       player_talent_t frostscythe;
       player_talent_t everfrost;
       // Row 4
+      player_talent_t arctic_assault;
+      player_talent_t runic_overflow;
       player_talent_t unleashed_frenzy;
       player_talent_t runic_command;
       // Row 5
@@ -1189,7 +1191,6 @@ public:
       player_talent_t shattering_blade;
       player_talent_t hyperpyrexia;
       // Row 10
-      player_talent_t arctic_assault;
       player_talent_t the_long_winter;
       player_talent_t breath_of_sindragosa;
     } frost;
@@ -13429,6 +13430,8 @@ void death_knight_t::init_spells()
   talent.frost.frostscythe         = find_talent_spell( talent_tree::SPECIALIZATION, "Frostscythe" );
   talent.frost.everfrost       = find_talent_spell( talent_tree::SPECIALIZATION, "Everfrost" );
   // Row 4
+  talent.frost.arctic_assault = find_talent_spell( talent_tree::SPECIALIZATION, "Arctic Assault" );
+  talent.frost.runic_overflow   = find_talent_spell( talent_tree::SPECIALIZATION, "Runic Overflow" );
   talent.frost.unleashed_frenzy = find_talent_spell( talent_tree::SPECIALIZATION, "Unleashed Frenzy" );
   talent.frost.runic_command    = find_talent_spell( talent_tree::SPECIALIZATION, "Runic Command" );
   // Row 5
@@ -13457,7 +13460,6 @@ void death_knight_t::init_spells()
   talent.frost.shattering_blade  = find_talent_spell( talent_tree::SPECIALIZATION, "Shattering Blade" );
   talent.frost.hyperpyrexia      = find_talent_spell( talent_tree::SPECIALIZATION, "Hyperpyrexia" );
   // Row 10
-  talent.frost.arctic_assault       = find_talent_spell( talent_tree::SPECIALIZATION, "Arctic Assault" );
   talent.frost.the_long_winter      = find_talent_spell( talent_tree::SPECIALIZATION, "The Long Winter" );
   talent.frost.breath_of_sindragosa = find_talent_spell( talent_tree::SPECIALIZATION, "Breath of Sindragosa" );
 
@@ -15725,6 +15727,7 @@ void death_knight_t::apply_affecting_auras( action_t& action )
     action.apply_affecting_aura( spec.might_of_the_frozen_wastes );
   }
   action.apply_affecting_aura( sets->set( DEATH_KNIGHT_FROST, TWW1, B2 ) );
+  action.apply_affecting_aura( talent.frost.runic_overflow );
 
   // Unholy
   action.apply_affecting_aura( talent.unholy.ebon_fever );
