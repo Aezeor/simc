@@ -244,6 +244,7 @@ public:
     propagate_const<buff_t*> last_shadowy_apparition_crit;
     propagate_const<buff_t*> call_of_the_void;
     propagate_const<buff_t*> overburdened_mind;
+    propagate_const<buff_t*> shattered_psyche;
 
     // Tier Sets
     propagate_const<buff_t*> gathering_shadows;
@@ -1308,13 +1309,19 @@ public:
       {
         parse_effects( p().buffs.dark_evangelism, p().talents.shadow.dark_evangelism );
         parse_effects( p().buffs.devoured_pride );  // Spell Direct and Periodic amount
+        parse_effects( p().buffs.mind_melt,
+                       p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
+        parse_effects( p().buffs.unfurling_darkness );
+      }
+      if ( p().sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+      {
+        parse_effects( p().buffs.shattered_psyche,
+                       p().talents.shadow.shattered_psyche );  // Mind Blast critical strike chance
       }
 
       parse_effects( p().buffs.dark_ascension, effect_mask_t( true ).disable( 4 ), IGNORE_STACKS,  // Skip E4 for AM
-                     p().talents.archon.perfected_form );                  // Buffs non-periodic spells
-      parse_effects( p().buffs.mind_melt, p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
+                     p().talents.archon.perfected_form );  // Buffs non-periodic spells
       parse_effects( p().buffs.screams_of_the_void, p().talents.shadow.screams_of_the_void );
-      parse_effects( p().buffs.unfurling_darkness );
 
       if ( p().talents.shadow.ancient_madness.enabled() )
       {

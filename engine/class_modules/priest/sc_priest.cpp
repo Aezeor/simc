@@ -183,6 +183,11 @@ public:
       priest().buffs.mind_melt->expire();
     }
 
+    if ( priest().talents.shadow.shattered_psyche.enabled() && priest().buffs.shattered_psyche->check() )
+    {
+      priest().buffs.shattered_psyche->expire();
+    }
+
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B2 ) )
     {
       priest().buffs.gathering_shadows->trigger();
@@ -208,7 +213,7 @@ public:
 
     return priest().buffs.insidious_ire->check();
   }
-    
+
   double recharge_multiplier( const cooldown_t& c ) const override
   {
     auto m = base_t::recharge_multiplier( c );
@@ -4137,7 +4142,6 @@ void priest_t::init_background_actions()
   background_actions.entropic_rift        = new actions::spells::entropic_rift_t( *this );
   background_actions.entropic_rift_damage = new actions::spells::entropic_rift_damage_t( *this );
   background_actions.collapsing_void      = new actions::spells::collapsing_void_damage_t( *this );
-
 
   if ( talents.discipline.divine_aegis.enabled() )
   {

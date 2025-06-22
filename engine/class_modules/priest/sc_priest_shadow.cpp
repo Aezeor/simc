@@ -55,6 +55,11 @@ struct mind_flay_base_t : public priest_spell_t
     {
       priest().trigger_psychic_link( d->state );
     }
+
+    if ( priest().talents.shadow.shattered_psyche.enabled() )
+    {
+      priest().buffs.shattered_psyche->trigger();
+    }
   }
 
   void last_tick( dot_t* d ) override
@@ -2410,6 +2415,10 @@ void priest_t::create_buffs_shadow()
     buffs.overburdened_mind = make_buff( this, "overburdened_mind", talents.shadow.overburdened_mind )
                                   ->set_default_value_from_effect( 1 )
                                   ->add_invalidate( CACHE_HASTE );
+
+    buffs.shattered_psyche =
+        make_buff( this, "shattered_psyche", talents.shadow.shattered_psyche->effectN( 2 ).trigger() )
+            ->set_default_value_from_effect( 1 );
   }
 
   // Tier Sets
