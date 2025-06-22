@@ -7156,10 +7156,7 @@ struct apocalypse_t final : public death_knight_melee_attack_t
     assert( td && "apocalypse impacting without any target data" );  // td should should exist because the debuff is a
     // condition of target_ready()
 
-    // Currently bugged, always acts as if it popped 4 festering wounds, even if there are less on the target.
-    int n_wounds = num_wounds;
-    if ( !p()->bugs )
-      n_wounds = std::min( num_wounds, td->debuff.festering_wound->check() );
+    int n_wounds = std::min( num_wounds, td->debuff.festering_wound->check() );
 
     p()->burst_festering_wound( state->target, n_wounds, p()->procs.fw_apocalypse, true );
     p()->pets.apoc_ghouls.spawn( num_wounds );
