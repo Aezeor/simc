@@ -754,7 +754,6 @@ public:
     buff_t* pillar_of_frost;
     propagate_const<buff_t*> remorseless_winter;
     propagate_const<buff_t*> rime;
-    propagate_const<buff_t*> unleashed_frenzy;
     propagate_const<buff_t*> bonegrinder_crit;
     propagate_const<buff_t*> bonegrinder_frost;
     propagate_const<buff_t*> enduring_strength_builder;
@@ -1165,11 +1164,11 @@ public:
       player_talent_t arctic_assault;
       player_talent_t runic_overflow;
       player_talent_t frostbound_will;
-      player_talent_t unleashed_frenzy;
       player_talent_t runic_command;
-      // Row 5
-      player_talent_t pillar_of_frost;
       player_talent_t biting_cold;
+      // Row 5
+      player_talent_t runic_strikes;
+      player_talent_t pillar_of_frost;
       // Row 6
       player_talent_t rage_of_the_frozen_champion;
       player_talent_t frigid_executioner;
@@ -7806,9 +7805,6 @@ struct breath_of_sindragosa_t final : public death_knight_spell_t
 
     p()->background_actions.breath_of_sindragosa_tick->execute_on_target( target );
 
-    if ( p()->talent.frost.unleashed_frenzy.ok() )
-      p()->buffs.unleashed_frenzy->trigger();
-
     if ( p()->talent.icy_talons.ok() )
       p()->buffs.icy_talons->trigger();
   }
@@ -9367,10 +9363,6 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
     // Currently does not trigger Obliteration rune generation
     if ( is_arctic_assault )
     {
-      if ( p()->talent.frost.unleashed_frenzy.ok() )
-      {
-        p()->buffs.unleashed_frenzy->trigger();
-      }
       if ( p()->talent.icy_talons.ok() )
       {
         p()->buffs.icy_talons->trigger();
@@ -11658,11 +11650,6 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
       buffs.icy_talons->trigger();
     }
 
-    if ( talent.frost.unleashed_frenzy.ok() )
-    {
-      buffs.unleashed_frenzy->trigger();
-    }
-
     if ( talent.rider.fury_of_the_horsemen.ok() )
     {
       if ( pets.whitemane.active_pet() != nullptr )
@@ -13439,12 +13426,12 @@ void death_knight_t::init_spells()
   talent.frost.arctic_assault = find_talent_spell( talent_tree::SPECIALIZATION, "Arctic Assault" );
   talent.frost.runic_overflow   = find_talent_spell( talent_tree::SPECIALIZATION, "Runic Overflow" );
   talent.frost.frostbound_will  = find_talent_spell( talent_tree::SPECIALIZATION, "Frostbound Will" );
-  talent.frost.unleashed_frenzy = find_talent_spell( talent_tree::SPECIALIZATION, "Unleashed Frenzy" );
   talent.frost.runic_command    = find_talent_spell( talent_tree::SPECIALIZATION, "Runic Command" );
+  talent.frost.biting_cold      = find_talent_spell( talent_tree::SPECIALIZATION, "Biting Cold" );
   // Row 5
+  talent.frost.runic_strikes       = find_talent_spell( talent_tree::SPECIALIZATION, "Runic Strikes" );
   talent.frost.pillar_of_frost     = find_talent_spell( talent_tree::SPECIALIZATION, "Pillar of Frost" );
   talent.frost.frostwyrms_fury     = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwyrm's Fury" );
-  talent.frost.biting_cold         = find_talent_spell( talent_tree::SPECIALIZATION, "Biting Cold" );
   // Row 6
   talent.frost.rage_of_the_frozen_champion =
       find_talent_spell( talent_tree::SPECIALIZATION, "Rage of the Frozen Champion" );
@@ -14621,11 +14608,6 @@ void death_knight_t::create_buffs()
       make_fallback( talent.frost.frozen_dominion.ok(), this, "frozen_dominion", spell.frozen_dominion_buff )
           ->set_default_value( spell.frozen_dominion_buff->effectN( 1 ).base_value() );
 
-  buffs.unleashed_frenzy = make_fallback( talent.frost.unleashed_frenzy.ok(), this, "unleashed_frenzy",
-                                          talent.frost.unleashed_frenzy->effectN( 1 ).trigger() )
-                               ->set_cooldown( talent.frost.unleashed_frenzy->internal_cooldown() )
-                               ->set_default_value( talent.frost.unleashed_frenzy->effectN( 1 ).percent() );
-
   buffs.cryogenic_chamber = make_fallback<cryogenic_chamber_buff_t>(
       talent.frost.cryogenic_chamber.ok(), this, "cryogenic_chamber", spell.cryogenic_chamber_buff );
 
@@ -15620,7 +15602,6 @@ void death_knight_t::parse_player_effects()
     parse_effects( buffs.bonegrinder_crit, talent.frost.bonegrinder );
     parse_effects( buffs.frozen_dominion, talent.frost.frozen_dominion );
     parse_effects( buffs.enduring_strength, talent.frost.enduring_strength );
-    parse_effects( buffs.unleashed_frenzy, talent.frost.unleashed_frenzy );
     parse_effects( buffs.icy_vigor );
     parse_effects( buffs.swift_and_painful );
   }
@@ -15743,6 +15724,7 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   }
   action.apply_affecting_aura( sets->set( DEATH_KNIGHT_FROST, TWW1, B2 ) );
   action.apply_affecting_aura( talent.frost.runic_overflow );
+  action.apply_affecting_aura( talent.frost.runic_strikes );
 
   // Unholy
   action.apply_affecting_aura( talent.unholy.ebon_fever );
