@@ -249,7 +249,6 @@ public:
     propagate_const<buff_t*> light_weaving;
     propagate_const<buff_t*> darkflame_embers;
     propagate_const<buff_t*> darkflame_shroud;
-    propagate_const<buff_t*> deaths_torment;
     propagate_const<buff_t*> devouring_chorus;
     propagate_const<buff_t*> darkness_from_light;
 
@@ -1297,11 +1296,6 @@ public:
         {
           parse_effects( p().buffs.ancient_madness, effect_mask_t( false ).enable( 3 ), USE_DEFAULT );  // Enable E3
         }
-      }
-
-      if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T31, B4 ) )
-      {
-        parse_effects( p().buffs.deaths_torment );
       }
 
       if ( p().sets->has_set_bonus( PRIEST_SHADOW, TWW1, B4 ) )

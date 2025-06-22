@@ -662,16 +662,6 @@ struct shadow_word_pain_t final : public priest_spell_t
     execute();
   }
 
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    if ( casted )
-    {
-      p().buffs.deaths_torment->expire();
-    }
-  }
-
   void impact( action_state_t* s ) override
   {
     // Trigger Cauterizing Shadows if you refreshed with less than 5 seconds
@@ -1805,59 +1795,18 @@ struct shadow_weaving_t final : public priest_spell_t
   }
 };
 
-struct shadow_crash_data
-{
-  double deaths_torment_mult = 1.0;
-};
-
-struct shadow_crash_state_t : public priest_action_state_t<shadow_crash_data>
-{
-protected:
-  using ab = priest_action_state_t<shadow_crash_data>;
-
-public:
-  shadow_crash_state_t( action_t* a, player_t* t ) : ab( a, t )
-  {
-  }
-
-  double composite_da_multiplier() const override
-  {
-    return ab::composite_da_multiplier() * deaths_torment_mult;
-  }
-};
-
 // ==========================================================================
 // Shadow Crash
 // TODO: Refactor this so we can just use reduced_aoe_targets
 // ==========================================================================
 struct shadow_crash_damage_t final : public priest_spell_t
 {
-protected:
-  using state_t = shadow_crash_state_t;
-  using ab      = priest_spell_t;
-
-public:
   double parent_targets = 1;
 
   shadow_crash_damage_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
   {
     background                 = true;
     affected_by_shadow_weaving = true;
-  }
-
-  action_state_t* new_state() override
-  {
-    return new state_t( this, target );
-  }
-
-  state_t* cast_state( action_state_t* s )
-  {
-    return static_cast<state_t*>( s );
-  }
-
-  const state_t* cast_state( const action_state_t* s ) const
-  {
-    return static_cast<const state_t*>( s );
   }
 
   double action_da_multiplier() const override
@@ -1950,20 +1899,13 @@ struct shadow_crash_dots_t final : public priest_spell_t
 
 struct shadow_crash_base_t : public priest_spell_t
 {
-protected:
-  using state_t = shadow_crash_state_t;
-  using ab      = priest_spell_t;
-
-public:
   double insanity_gain;
   propagate_const<shadow_crash_dots_t*> shadow_crash_dots;
-  double torment_mult;
 
   shadow_crash_base_t( priest_t& p, util::string_view options_str, std::string_view name, const spell_data_t* s )
     : priest_spell_t( name, p, s ),
       insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) ),
-      shadow_crash_dots( new shadow_crash_dots_t( p, data().missile_speed(), s ) ),
-      torment_mult( p.buffs.deaths_torment->data().effectN( 2 ).percent() )
+      shadow_crash_dots( new shadow_crash_dots_t( p, data().missile_speed(), s ) )
   {
     parse_options( options_str );
 
@@ -1976,27 +1918,6 @@ public:
   timespan_t travel_time() const override
   {
     return timespan_t::from_seconds( data().missile_speed() );
-  }
-
-  action_state_t* new_state() override
-  {
-    return new state_t( this, target );
-  }
-
-  state_t* cast_state( action_state_t* s )
-  {
-    return static_cast<state_t*>( s );
-  }
-
-  const state_t* cast_state( const action_state_t* s ) const
-  {
-    return static_cast<const state_t*>( s );
-  }
-
-  void snapshot_state( action_state_t* s, result_amount_type rt ) override
-  {
-    ab::snapshot_state( s, rt );
-    cast_state( s )->deaths_torment_mult = 1 + p().buffs.deaths_torment->check() * torment_mult;
   }
 };
 
@@ -2018,25 +1939,18 @@ struct shadow_crash_t final : public shadow_crash_base_t
   {
     priest_spell_t::execute();
 
-    if ( priest().talents.shadow.whispering_shadows.enabled() )
+    if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } || priest().talents.shadow.whispering_shadows.enabled() )
     {
       shadow_crash_dots->execute();
     }
-
-    p().buffs.deaths_torment->expire();
   }
 
   void impact( action_state_t* s ) override
   {
     if ( shadow_crash_damage )
     {
-      state_t* state             = shadow_crash_damage->cast_state( shadow_crash_damage->get_state() );
-      state->target              = s->target;
-      state->deaths_torment_mult = cast_state( s )->deaths_torment_mult;
-      shadow_crash_damage->snapshot_state( state, shadow_crash_damage->amount_type( state ) );
-
       shadow_crash_damage->parent_targets = s->n_targets;
-      shadow_crash_damage->schedule_execute( state );
+      shadow_crash_damage->schedule_execute();
     }
 
     priest_spell_t::impact( s );
@@ -2479,8 +2393,6 @@ void priest_t::create_buffs_shadow()
   buffs.darkflame_shroud =
       make_buff( this, "darkflame_shroud", find_spell( 410871 ) )->set_default_value_from_effect( 1 );
 
-  buffs.deaths_torment = make_buff( this, "deaths_torment", find_spell( 423726 ) );
-
   buffs.devouring_chorus = make_buff_fallback( sets->has_set_bonus( PRIEST_SHADOW, TWW1, B4 ), this, "devouring_chorus",
                                                sets->set( PRIEST_SHADOW, TWW1, B4 )->effectN( 1 ).trigger() )
                                ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
@@ -2535,8 +2447,12 @@ void priest_t::init_spells_shadow()
   talents.shadow.mind_flay_insanity        = ST( "Mind Flay: Insanity" );
   talents.shadow.mind_flay_insanity_spell  = find_spell( 391403 );  // Not linked to talent, actual dmg spell
   // Row 5
-  talents.shadow.shadow_crash         = find_talent_spell( 125983 );  // targeted at a location
-  talents.shadow.shadow_crash_target  = find_talent_spell( 103813 );  // targeted at a specific target
+  talents.shadow.shadow_crash = sim->dbc->wowv() >= wowv_t{ 11, 2, 0 }
+                                    ? find_talent_spell( 133524 )
+                                    : find_talent_spell( 125983 );  // targeted at a location
+  talents.shadow.shadow_crash_target = sim->dbc->wowv() >= wowv_t{ 11, 2, 0 }
+                                           ? find_talent_spell( 133378 )
+                                           : find_talent_spell( 103813 );  // targeted at a specific target
   talents.shadow.unfurling_darkness   = ST( "Unfurling Darkness" );
   talents.shadow.void_eruption        = ST( "Void Eruption" );
   talents.shadow.void_eruption_damage = find_spell( 228360 );
