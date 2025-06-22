@@ -4061,6 +4061,12 @@ void priest_t::create_buffs()
                           resource_gain( RESOURCE_INSANITY, b->current_value, gains.ascension_tww3_2pc );
                         } );
 
+  if ( tww3_spells.archon_2pc->ok() )
+  {
+    buffs.ascension->base_buff_duration -= 1_ms;
+    buffs.ascension->buff_period -= 1_ms;
+  }
+
   buffs.overflowing_void = make_buff_fallback( tww3_spells.voidweaver_4pc_buff->ok(), this, "overflowing_void",
                                                tww3_spells.voidweaver_4pc_buff )->set_default_value( 0 );
 
