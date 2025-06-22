@@ -14355,7 +14355,7 @@ void death_knight_t::create_buffs()
       make_fallback( talent.sanlayn.vampiric_strike.ok(), this, "essence_of_the_blood_queen",
                      spell.essence_of_the_blood_queen_buff )
           ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-          ->set_default_value( options.tww3_4pc ? spell.tww3_2pc_san->effectN( 1 ).base_value() / 10 : 0 );
+          ->set_default_value( options.tww3_2pc ? spell.tww3_2pc_san->effectN( 1 ).base_value() / 10 : 0 );
 
   buffs.gift_of_the_sanlayn = make_fallback<gift_of_the_sanlayn_buff_t>(
       talent.sanlayn.gift_of_the_sanlayn.ok(), this, "gift_of_the_sanlayn", spell.gift_of_the_sanlayn_buff );
