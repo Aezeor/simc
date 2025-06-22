@@ -1,5 +1,5 @@
 // Spell text, wow build 11.2.0.61476
-static const std::array<spelltext_data_t, 28000> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 28003> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27557,6 +27557,7 @@ static const std::array<spelltext_data_t, 28000> __ptr_spelltext_data { {
   { 1233155, "$@spelldesc1229197", "Brann's hat decreases the enemy's damage dealt by $w1%.", 0 },
   { 1233162, "$@spelldesc1213551", "$@spelldesc1213551", 0 },
   { 1233223, "Apply Greater Rune of Twilight Devastation to a helm. \r\n\r\nAllows your attacks to have a chance to trigger a beam of Twilight Devastation, dealing up to ${$<rolemult>*$ec1s1*$s2} Shadow damage to enemies in front of you. \r\n\r\nCannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2. ", 0, 0 },
+  { 1233351, "$@spelldesc1230301", "$@auracaster's Frostscythe will deal additional Shadowfrost damage to you.", 0 },
   { 1233355, "Apply Lesser Rune of the Echoing Void to a helm.\r\n\r\nYour damaging abilities build the Echoing Void. Each time it builds, Echoing Void has a chance to collapse, dealing ${$<rolemult>*$ec1s1} Shadow damage to all nearby enemies every $1225887t1 sec until no stacks remain. \r\n\r\nCannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.", 0, 0 },
   { 1233375, "Apply Lesser Rune of Infinite Stars to a helm. \r\n\r\nYour spells and abilities have a chance to strike a nearby enemy with an Infinite Star, dealing ${$<rolemult>*$ec1s1} Arcane damage and increasing their damage taken from your Infinite Stars by ${$<rolemult>*$ec1s2}, stacking up to $1227218u times before resetting. \r\n\r\nCannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.", 0, 0 },
   { 1233384, "Your attacks have a high chance to charge the Arcanocore. At $1240896u charges, deploy a sentinel to arcanoblast your target for ${$s1*$<rolemult>} Arcane damage split between nearby enemies. Recover $s2 charges if only one enemy is struck.\r\n\r\n$@spelldesc1240903", 0, 0 },
@@ -27798,6 +27799,7 @@ static const std::array<spelltext_data_t, 28000> __ptr_spelltext_data { {
   { 1237033, "$@spelldesc1236135", 0, 0 },
   { 1237086, "Create a soulbound Mythic dungeon item appropriate for your loot specialization ($@lootspec) during The War Within Season 3.", 0, 0 },
   { 1237128, "$@spelldesc377668", 0, 0 },
+  { 1237172, "Causes each of your Virulent Plagues to flare up, dealing $s1 Shadow damage to the infected enemy, and an additional $s2 Shadow damage to all other enemies near them.", 0, 0 },
   { 1237173, "$@spelldesc1226311", 0, 0 },
   { 1237196, "$@spelldesc450615", "$w1 Flurry Strikes charged, released on your next attack.", 0 },
   { 1237269, "$@spelldesc431695", "Haste, movement speed, and cooldown recovery rate increased by $s1%.", "Bronze" },
@@ -27856,6 +27858,7 @@ static const std::array<spelltext_data_t, 28000> __ptr_spelltext_data { {
   { 1239356, "An unholy arrow that deals $s1 Shadow damage. When consuming Sudden Doom, your Death Coil commands your archer to fire an additional Blighted Arrow at $194916s1% effectiveness. Epidemic will instead cause Blighted Arrow to ricochet and hit up to $1239385s2 additional targets.", 0, 0 },
   { 1239385, "$@spelldesc1239356", "Next Blighted Arrow hits $w1 additional targets.", 0 },
   { 1239401, "$@spelldesc1235360", 0, 0 },
+  { 1239422, "$@spelldesc1239356", "Next Blighted Arrow fires again at $194916s1% effectiveness.", 0 },
   { 1239442, "$@spelldesc1236377", 0, 0 },
   { 1239443, "$@spelldesc1236377", 0, 0 },
   { 1239510, "$@spelldesc1236417", 0, 0 },
@@ -28007,7 +28010,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_ho
 } };
 
 // Spell description variables, wow build 11.2.0.61476
-static const std::array<spelldesc_vars_data_t, 668> __ptr_spelldesc_vars_data { {
+static const std::array<spelldesc_vars_data_t, 669> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -28652,6 +28655,7 @@ static const std::array<spelldesc_vars_data_t, 668> __ptr_spelldesc_vars_data { 
   { 1227294, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1233152, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   { 1233223, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
+  { 1233351, "$dmg=${$o1}" },
   { 1233355, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1233375, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1233384, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },

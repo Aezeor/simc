@@ -619,6 +619,7 @@ struct death_knight_td_t : public actor_target_data_t
 
     // Frost
     propagate_const<buff_t*> everfrost;
+    propagate_const<buff_t*> frostreaper;
 
     // Unholy
     propagate_const<buff_t*> festering_wound;
@@ -909,6 +910,7 @@ public:
     action_t* hyperpyrexia_damage;
     propagate_const<action_t*> frostscythe_proc;
     propagate_const<action_t*> erw_projectile;
+    propagate_const<action_t*> frostreaper;
 
     // Unholy
     propagate_const<action_t*> bursting_sores;
@@ -1168,6 +1170,7 @@ public:
       player_talent_t biting_cold;
       // Row 5
       player_talent_t runic_strikes;
+      player_talent_t frostreaper;
       player_talent_t pillar_of_frost;
       // Row 6
       player_talent_t rage_of_the_frozen_champion;
@@ -1399,6 +1402,8 @@ public:
     const spell_data_t* hyperpyrexia_damage;
     const spell_data_t* empower_rune_weapon_projectile;
     const spell_data_t* empower_rune_weapon_buff;
+    const spell_data_t* frostreaper_debuff;
+    const spell_data_t* frostreaper_damage;
     // Tier Sets
     const spell_data_t* icy_vigor;
     const spell_data_t* winning_streak_frost;
@@ -1568,6 +1573,7 @@ public:
     real_ppm_t* carnage;
     real_ppm_t* blood_beast;
     real_ppm_t* tww1_fdk_4pc;
+    real_ppm_t* frostreaper;
   } rppm;
 
   // Pets and Guardians
@@ -9045,6 +9051,13 @@ private:
 };
 
 // Frostscythe ==============================================================
+struct frostreaper_t : public death_knight_spell_t
+{
+  frostreaper_t( std::string_view n, death_knight_t* p ) : death_knight_spell_t( n, p, p->spell.frostreaper_damage )
+  {
+    background = true;
+  }
+};
 
 struct frostscythe_base_t : public death_knight_melee_attack_t
 {
@@ -9056,6 +9069,12 @@ struct frostscythe_base_t : public death_knight_melee_attack_t
     weapon              = &( player->main_hand_weapon );
     aoe                 = -1;
     reduced_aoe_targets = data().effectN( 5 ).base_value();
+
+    if ( p->talent.frost.frostreaper.ok() )
+    {
+      frostreaper = p->background_actions.frostreaper;
+      add_child( frostreaper );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -9075,6 +9094,11 @@ struct frostscythe_base_t : public death_knight_melee_attack_t
     {
       p()->buffs.enduring_strength_builder->trigger();
       p()->cooldown.enduring_strength_icd->start();
+    }
+
+    if ( p()->talent.frost.frostreaper.ok() && get_td( s->target )->debuff.frostreaper->up() )
+    {
+      frostreaper->execute_on_target( s->target );
     }
   }
 
@@ -9101,6 +9125,7 @@ struct frostscythe_base_t : public death_knight_melee_attack_t
 
 private:
   propagate_const<action_t*> inexorable_assault;
+  propagate_const<action_t*> frostreaper;
 };
 
 struct frostscythe_t : public frostscythe_base_t
@@ -9908,26 +9933,7 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
     may_miss             = false;
     weapon               = w;
 
-    // To support Cleaving strieks affecting Obliterate in Dragonflight:
-    // - obliterate damage spells have gained a value of 1 in their chain target data
-    // - the death and decay buff now has an effect that modifies obliterate's chain target with a value of 0
-    // - cleaving strikes increases the aforementionned death and decay buff effect by 1
-    cleaving_strikes_targets = data().effectN( 1 ).chain_target() +
-                               as<int>( p->spell.dnd_buff->effectN( 4 ).base_value() ) +
-                               as<int>( p->talent.cleaving_strikes->effectN( 2 ).base_value() );
-
     inexorable_assault = get_action<inexorable_assault_damage_t>( "inexorable_assault", p );
-  }
-
-  int n_targets() const override
-  {
-    if ( p()->buffs.death_and_decay->up() )
-    {
-      if ( p()->talent.cleaving_strikes.ok() )
-        return cleaving_strikes_targets;
-    }
-
-    return death_knight_melee_attack_t::n_targets();
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -9978,6 +9984,27 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
       p()->cooldown.inexorable_assault_icd->start();
     }
 
+    if ( p()->talent.frost.frostreaper->ok() && p()->rppm.frostreaper->trigger() )
+    {
+      auto td = get_td( state->target );
+      td->debuff.frostreaper->trigger();
+
+      std::vector<player_t*>& current_targets = target_list();
+      int chains_remaining                    = p()->spell.frostreaper_debuff->effectN( 1 ).chain_target() - 1;
+      for ( auto t : current_targets )
+      {
+        if ( chains_remaining == 0 )
+        {
+          break;
+        }
+        if ( t != state->target )
+        {
+          get_td( t )->debuff.frostreaper->trigger();
+          --chains_remaining;
+        }
+      }
+    }
+
     if ( p()->talent.rider.trollbanes_icy_fury.ok() && td->debuff.chains_of_ice_trollbane_slow->check() &&
          p()->pets.trollbane.active_pet() != nullptr )
     {
@@ -10003,7 +10030,6 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
 
 private:
   propagate_const<action_t*> inexorable_assault;
-  int cleaving_strikes_targets;
 };
 
 struct obliterate_t final : public death_knight_melee_attack_t
@@ -10118,7 +10144,7 @@ struct obliterate_t final : public death_knight_melee_attack_t
     if ( p()->buffs.killing_machine->up() )
     {
       p()->consume_killing_machine( p()->procs.killing_machine_oblit, total_delay );
-    }
+    }    
   }
 
   // Allow on-cast procs
@@ -12748,16 +12774,20 @@ void death_knight_t::create_actions()
       {
         background_actions.hyperpyrexia_damage = get_action<hyperpyrexia_damage_t>( "hyperpyrexia", this );
       }
-      if ( talent.frost.empower_rune_weapon.ok() )
-      {
-        background_actions.erw_projectile =
-            get_action<empower_rune_weapon_projectile_t>( "empower_rune_weapon_projectile", this );
-      }
     }
 
     if ( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B4 ) )
     {
       background_actions.frostscythe_proc = get_action<frostscythe_proc_t>( "frostscythe_proc", this );
+    }
+    if ( talent.frost.empower_rune_weapon.ok() )
+    {
+      background_actions.erw_projectile =
+          get_action<empower_rune_weapon_projectile_t>( "empower_rune_weapon_projectile", this );
+    }
+    if ( talent.frost.frostreaper.ok() )
+    {
+      background_actions.frostreaper = get_action<frostreaper_t>( "frostreaper", this );
     }
   }
 
@@ -13222,6 +13252,7 @@ void death_knight_t::init_rng()
   rppm.carnage      = get_rppm( "carnage", talent.blood.carnage );
   rppm.blood_beast  = get_rppm( "blood_beast", talent.sanlayn.the_blood_is_life );
   rppm.tww1_fdk_4pc = get_rppm( "tww1_fdk_4pc", sets->set( DEATH_KNIGHT_FROST, TWW1, B4 ) );
+  rppm.frostreaper  = get_rppm( "frostreaper", talent.frost.frostreaper );
 }
 
 // death_knight_t::init_base ================================================
@@ -13430,6 +13461,7 @@ void death_knight_t::init_spells()
   talent.frost.biting_cold      = find_talent_spell( talent_tree::SPECIALIZATION, "Biting Cold" );
   // Row 5
   talent.frost.runic_strikes       = find_talent_spell( talent_tree::SPECIALIZATION, "Runic Strikes" );
+  talent.frost.frostreaper         = find_talent_spell( talent_tree::SPECIALIZATION, "Frostreaper" );
   talent.frost.pillar_of_frost     = find_talent_spell( talent_tree::SPECIALIZATION, "Pillar of Frost" );
   talent.frost.frostwyrms_fury     = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwyrm's Fury" );
   // Row 6
@@ -13669,6 +13701,8 @@ void death_knight_t::spell_lookups()
   spell.rime_buff                = conditional_spell_lookup( spec.rime->ok(), 59052 );
   spell.hyperpyrexia_damage      = conditional_spell_lookup( talent.frost.hyperpyrexia.ok(), 458169 );
   spell.empower_rune_weapon_buff = conditional_spell_lookup( talent.frost.empower_rune_weapon.ok(), 1230959 );
+  spell.frostreaper_debuff       = conditional_spell_lookup( talent.frost.frostreaper.ok(), 1233351 );
+  spell.frostreaper_damage       = conditional_spell_lookup( talent.frost.frostreaper.ok(), 1233619 );
   // Tier Sets
   spell.icy_vigor            = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW1, B4 ), 457189 );
   spell.winning_streak_frost = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B2 ), 1217897 );
@@ -14115,6 +14149,8 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
   debuff.everfrost =
       make_debuff( p.talent.frost.everfrost.ok(), *this, "everfrost", p.talent.frost.everfrost->effectN( 1 ).trigger() )
           ->set_default_value( p.talent.frost.everfrost->effectN( 1 ).percent() );
+
+  debuff.frostreaper = make_debuff( p.talent.frost.frostreaper.ok(), *this, "frostreaper", p.spell.frostreaper_debuff );
 
   // Unholy
   debuff.festering_wound =
