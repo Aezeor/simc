@@ -12321,12 +12321,12 @@ double death_knight_t::tick_damage_over_time( timespan_t duration, const dot_t* 
   return total_damage;
 }
 
-void death_knight_t::trigger_infliction_of_sorrow( player_t* target, bool is_vampiric )
+void death_knight_t::trigger_infliction_of_sorrow( player_t* t, bool is_vampiric )
 {
   if ( !is_vampiric && !buffs.infliction_of_sorrow->check() )
     return;
 
-  auto base_td    = get_target_data( target );
+  auto base_td    = get_target_data( t );
   auto disease_td = specialization() == DEATH_KNIGHT_BLOOD ? base_td->dot.blood_plague : base_td->dot.virulent_plague;
   double disease_remaining_damage = 0;
   double mod                      = 0;
@@ -12341,19 +12341,19 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target, bool is_vam
     timespan_t extension = timespan_t::from_seconds( talent.sanlayn.infliction_of_sorrow->effectN( 3 ).base_value() );
     mod                  = modified_spell.infliction_of_sorrow->effectN( 2 ).percent();
 
-    if (options.tww3_2pc)
+    if ( options.tww3_2pc && t == target )
       extension += spell.tww3_2pc_san->effectN( 2 ).time_value();
     if ( disease_td->is_ticking() )
     {
       disease_td->adjust_duration( extension );
       if ( talent.unholy.decomposition.ok() )
       {
-        base_td->debuff.decomposition->extend_duration( target, extension );
+        base_td->debuff.decomposition->extend_duration( t, extension );
       }
     }
     if ( disease_remaining_damage > 0 )
     {
-      background_actions.infliction_of_sorrow->execute_on_target( target, disease_remaining_damage * mod );
+      background_actions.infliction_of_sorrow->execute_on_target( t, disease_remaining_damage * mod );
     }
   }
   if ( buffs.infliction_of_sorrow->check() )
@@ -12374,7 +12374,7 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target, bool is_vam
     }
     if ( disease_remaining_damage > 0 )
     {
-      background_actions.infliction_of_sorrow->execute_on_target( target, disease_remaining_damage * mod );
+      background_actions.infliction_of_sorrow->execute_on_target( t, disease_remaining_damage * mod );
       if ( specialization() == DEATH_KNIGHT_UNHOLY && talent.sanlayn.visceral_strength.ok() )
         buffs.visceral_strength_unholy->trigger();
     }
