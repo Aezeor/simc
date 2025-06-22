@@ -155,7 +155,7 @@ public:
   mind_blast_base_t( priest_t& p, util::string_view options_str, const spell_data_t* s )
     : priest_spell_t( s->name_cstr(), p, s ),
       child_expiation( nullptr ),
-      void_blast_cdr( p.talents.voidweaver.void_blast->effectN(3).percent() )
+      void_blast_cdr( p.find_spell( 450404 )->effectN( 3 ).percent() )
   {
     parse_options( options_str );
     affected_by_shadow_weaving = true;
