@@ -1177,13 +1177,13 @@ public:
       player_talent_t gathering_storm;
       // Row 6
       player_talent_t howling_blades;
+      player_talent_t inexorable_assault;
+      player_talent_t enduring_strength;
       player_talent_t rage_of_the_frozen_champion;
       player_talent_t frigid_executioner;
-      player_talent_t enduring_strength;
       player_talent_t frostwyrms_fury;
       // Row 7
       player_talent_t murderous_efficiency;
-      player_talent_t inexorable_assault;
       player_talent_t frozen_dominion;
       player_talent_t cryogenic_chamber;
       // Row 8
@@ -5711,8 +5711,11 @@ struct pillar_of_frost_buff_t final : public death_knight_buff_t
   void trigger_enduring_strength()
   {
     p()->buffs.enduring_strength->trigger();
-    p()->buffs.enduring_strength->extend_duration( p(), p()->talent.frost.enduring_strength->effectN( 2 ).time_value() *
-                                                            p()->buffs.enduring_strength_builder->stack() );
+    auto max_duration_extension = p()->talent.frost.enduring_strength->effectN( 4 ).time_value();
+    p()->buffs.enduring_strength->extend_duration(
+        p(), std::max( p()->talent.frost.enduring_strength->effectN( 2 ).time_value() *
+                           p()->buffs.enduring_strength_builder->stack(),
+                       max_duration_extension ) );
     p()->buffs.enduring_strength_builder->expire();
   }
 
@@ -13548,10 +13551,10 @@ void death_knight_t::init_spells()
   talent.frost.frostwyrms_fury = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwyrm's Fury" );
   // Row 6
   talent.frost.howling_blades = find_talent_spell( talent_tree::SPECIALIZATION, "Howling Blades" );
+  talent.frost.enduring_strength = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Strength" );
   talent.frost.rage_of_the_frozen_champion =
       find_talent_spell( talent_tree::SPECIALIZATION, "Rage of the Frozen Champion" );
   talent.frost.frigid_executioner = find_talent_spell( talent_tree::SPECIALIZATION, "Frigid Executioner" );
-  talent.frost.enduring_strength  = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Strength" );
   // Row 7
   talent.frost.murderous_efficiency = find_talent_spell( talent_tree::SPECIALIZATION, "Murderous Efficiency" );
   talent.frost.inexorable_assault   = find_talent_spell( talent_tree::SPECIALIZATION, "Inexorable Assault" );
