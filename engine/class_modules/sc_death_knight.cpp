@@ -1717,8 +1717,6 @@ public:
     double average_cs_travel_time      = 0.4;
     timespan_t first_ams_cast          = 20_s;
     double horsemen_ams_absorb_percent = 0.6;
-    bool tww3_2pc                      = false;
-    bool tww3_4pc                      = false;
   } options;
 
   // Runes
@@ -5913,6 +5911,42 @@ struct gift_of_the_sanlayn_buff_t final : public death_knight_buff_t
   }
 };
 
+// Essence of the Blood Queen ===============================================
+struct essence_of_the_blood_queen_buff_t final : public death_knight_buff_t
+{
+  essence_of_the_blood_queen_buff_t( death_knight_t* p, std::string_view name, const spell_data_t* spell )
+    : death_knight_buff_t( p, name, spell ), gift_idx( 0 )
+  {
+    set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+    set_default_value( p->sets->set( HERO_SANLAYN, TWW3, B2 )->effectN( 1 ).base_value() / 10 );
+    gift_idx = p->specialization() == DEATH_KNIGHT_UNHOLY ? 7 : 8;
+  }
+
+  // Override the value of the buff to properly capture Essence of the Blood Queens's buff behavior
+  double value() override
+  {
+    double v = death_knight_buff_t::value();
+
+    if ( p()->buffs.gift_of_the_sanlayn->check() )
+      v *= 1.0 + p()->spell.gift_of_the_sanlayn_buff->effectN( gift_idx ).percent();
+
+    return v;
+  }
+
+  double check_value() const override
+  {
+    double v = death_knight_buff_t::check_value();
+
+    if ( p()->buffs.gift_of_the_sanlayn->check() )
+      v *= 1.0 + p()->spell.gift_of_the_sanlayn_buff->effectN( gift_idx ).percent();
+
+    return v;
+  }
+
+private:
+  int gift_idx;
+};
+
 // Death and Decay ==========================================================
 struct death_and_decay_buff_t : public death_knight_buff_t
 {
@@ -7196,12 +7230,12 @@ struct apocalypse_t final : public death_knight_melee_attack_t
     if ( p()->pets.ghoul_pet.active_pet() == nullptr )
       p()->pets.ghoul_pet.spawn();
 
-    if ( p()->options.tww3_2pc && p()->talent.rider.riders_champion.ok() )
+    if ( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B2 ) && p()->talent.rider.riders_champion.ok() )
     {
       action_t* whitemane = p()->pet_summon.summon_whitemane;
       debug_cast<summon_rider_t*>( whitemane )->duration =
           timespan_t::from_seconds( p()->spell.tww3_2pc_rider->effectN( 2 ).base_value() );
-      debug_cast<summon_rider_t*>( whitemane )->random   = false;
+      debug_cast<summon_rider_t*>( whitemane )->random = false;
       whitemane->execute();
     }
 
@@ -8365,8 +8399,7 @@ struct death_coil_damage_t final : public death_knight_spell_t
       }
     }
 
-    if ( p()->buffs.dark_transformation->up() && p()->talent.unholy.eternal_agony.ok() &&
-         ( !p()->bugs || !p()->talent.unholy.apocalypse ) )
+    if ( p()->buffs.dark_transformation->up() && p()->talent.unholy.eternal_agony.ok() )
     {
       p()->buffs.dark_transformation->extend_duration( p(), ea_duration );
     }
@@ -8446,7 +8479,7 @@ struct death_coil_t final : public death_knight_spell_t
       p()->buffs.winning_streak_unholy->expire();
     }
 
-    if ( p()->options.tww3_4pc && p()->pets.whitemane.active_pet() != nullptr )
+    if ( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) && p()->pets.whitemane.active_pet() != nullptr )
       p()->pets.whitemane.active_pet()->death_coil->execute_on_target( target );
   }
 };
@@ -8842,8 +8875,7 @@ struct epidemic_t final : public death_knight_spell_t
 
     p()->last_cast_rp_spender = impact_action;
 
-    if ( p()->buffs.dark_transformation->up() && p()->talent.unholy.eternal_agony.ok() &&
-         ( !p()->bugs || !p()->talent.unholy.apocalypse ) )
+    if ( p()->buffs.dark_transformation->up() && p()->talent.unholy.eternal_agony.ok() )
     {
       p()->buffs.dark_transformation->extend_duration(
           p(), timespan_t::from_seconds( p()->talent.unholy.eternal_agony->effectN( 1 ).base_value() ) );
@@ -8885,7 +8917,7 @@ struct epidemic_t final : public death_knight_spell_t
       p()->buffs.winning_streak_unholy->expire();
     }
 
-    if ( p()->options.tww3_4pc && p()->pets.whitemane.active_pet() != nullptr )
+    if ( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) && p()->pets.whitemane.active_pet() != nullptr )
       p()->pets.whitemane.active_pet()->epidemic->execute();
   }
 
@@ -11016,14 +11048,8 @@ struct unholy_assault_t final : public death_knight_melee_attack_t
   void impact( action_state_t* s ) override
   {
     death_knight_melee_attack_t::impact( s );
-    if ( !p()->bugs )
-    {
-      p()->burst_festering_wound( s->target, as<int>( p()->talent.unholy.unholy_assault->effectN( 3 ).base_value() ),
+    p()->trigger_festering_wound( s, as<int>( p()->talent.unholy.unholy_assault->effectN( 3 ).base_value() ),
                                   p()->procs.fw_unholy_assault );
-    }
-    else
-      p()->trigger_festering_wound( s, as<int>( p()->talent.unholy.unholy_assault->effectN( 3 ).base_value() ),
-                                    p()->procs.fw_unholy_assault );
   }
 };
 
@@ -11842,8 +11868,6 @@ void death_knight_t::create_options()
   add_option(
       opt_timespan( "deathknight.first_ams_cast", options.first_ams_cast, timespan_t::zero(), timespan_t::max() ) );
   add_option( opt_float( "deathknight.horsemen_ams_absorb_percent", options.horsemen_ams_absorb_percent, 0.0, 1.0 ) );
-  add_option( opt_bool( "deathknight.tww3_2pc", options.tww3_2pc ) );
-  add_option( opt_bool( "deathknight.tww3_4pc", options.tww3_4pc ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
@@ -12408,7 +12432,7 @@ void death_knight_t::trigger_whitemanes_famine( player_t* main_target )
 
       std::rotate( undeath_tl.begin(), undeath_tl.begin() + 1, undeath_tl.end() );
 
-      if ( options.tww3_2pc )
+      if ( specialization() == DEATH_KNIGHT_UNHOLY && sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B2 ) )
       {
         player_t* next_target = tl[ 0 ];
         auto next_td          = get_target_data( next_target );
@@ -12486,7 +12510,7 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* t, bool is_vampiric
     timespan_t extension = timespan_t::from_seconds( talent.sanlayn.infliction_of_sorrow->effectN( 3 ).base_value() );
     mod                  = modified_spell.infliction_of_sorrow->effectN( 2 ).percent();
 
-    if ( options.tww3_2pc && t == target )
+    if ( sets->has_set_bonus( HERO_SANLAYN, TWW3, B2 ) && t == target )
       extension += spell.tww3_2pc_san->effectN( 2 ).time_value();
     if ( disease_td->is_ticking() )
     {
@@ -12558,7 +12582,7 @@ void death_knight_t::trigger_sanlayn_execute_talents( bool is_vampiric )
     {
       buffs.vampiric_strike->expire();
     }
-    if ( options.tww3_4pc )
+    if ( sets->has_set_bonus( HERO_SANLAYN, TWW3, B4 ) )
     {
       if ( specialization() == DEATH_KNIGHT_UNHOLY && pets.ghoul_pet.active_pet() != nullptr )
         pets.ghoul_pet.active_pet()->blood_rush->trigger();
@@ -13277,7 +13301,7 @@ void death_knight_t::create_pets()
   {
     pets.blood_beast.set_creation_callback( []( death_knight_t* p ) { return new pets::blood_beast_pet_t( p ); } );
     timespan_t bb_dur = spell.blood_beast_summon->duration();
-    if ( options.tww3_4pc )
+    if ( sets->has_set_bonus( HERO_SANLAYN, TWW3, B4 ) )
       bb_dur += spell.tww3_4pc_san->effectN( 1 ).time_value();
     pets.blood_beast.set_default_duration( bb_dur );
     pets.blood_beast.set_max_pets( 1 );
@@ -13922,7 +13946,7 @@ void death_knight_t::spell_lookups()
   spell.visceral_strength_unholy_buff = conditional_spell_lookup(
       talent.sanlayn.visceral_strength.ok() && specialization() == DEATH_KNIGHT_UNHOLY, 1234532 );
   spell.bloodsoaked_ground_buff = conditional_spell_lookup( talent.sanlayn.bloodsoaked_ground.ok(), 434034 );
-  spell.blood_rush              = conditional_spell_lookup( options.tww3_4pc, 1236822 );
+  spell.blood_rush              = conditional_spell_lookup( sets->has_set_bonus( HERO_SANLAYN, TWW3, B4 ), 1236822 );
 
   // Deathbringer Spells
   spell.reapers_mark_debuff          = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 434765 );
@@ -13946,13 +13970,13 @@ void death_knight_t::spell_lookups()
   spell.swift_and_painful_buff      = conditional_spell_lookup( talent.deathbringer.swift_and_painful.ok(), 469169 );
 
   // Placeholder
-  spell.tww3_2pc_rider = conditional_spell_lookup( options.tww3_2pc, 1236355 );
-  spell.tww3_4pc_rider = conditional_spell_lookup( options.tww3_4pc, 1236356 );
-  spell.tww3_2pc_san = conditional_spell_lookup( options.tww3_2pc, 1236259 );
-  spell.tww3_4pc_san = conditional_spell_lookup( options.tww3_4pc, 1236260 );
+  spell.tww3_2pc_rider = conditional_spell_lookup( sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B2 ), 1236355 );
+  spell.tww3_4pc_rider = conditional_spell_lookup( sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ), 1236356 );
+  spell.tww3_2pc_san = conditional_spell_lookup( sets->has_set_bonus( HERO_SANLAYN, TWW3, B2 ), 1236259 );
+  spell.tww3_4pc_san = conditional_spell_lookup( sets->has_set_bonus( HERO_SANLAYN, TWW3, B4 ), 1236260 );
   // DB 1236996 exists as the 8s crit buff, 1236992 also exists, but is just a dummy 3s spell
-  spell.tww3_2pc_db = conditional_spell_lookup( options.tww3_2pc, 1236253 );
-  spell.tww3_4pc_db = conditional_spell_lookup( options.tww3_4pc, 1236254 );
+  spell.tww3_2pc_db = conditional_spell_lookup( sets->has_set_bonus( HERO_DEATHBRINGER, TWW3, B2 ), 1236253 );
+  spell.tww3_4pc_db = conditional_spell_lookup( sets->has_set_bonus( HERO_DEATHBRINGER, TWW3, B4 ), 1236254 );
 
 
   // Pet abilities
@@ -14522,11 +14546,9 @@ void death_knight_t::create_buffs()
           ->set_default_value( spell.rune_carved_plates_magical_buff->effectN( 1 ).base_value() / 1000 );
 
   // San'layn
-  buffs.essence_of_the_blood_queen =
-      make_fallback( talent.sanlayn.vampiric_strike.ok(), this, "essence_of_the_blood_queen",
-                     spell.essence_of_the_blood_queen_buff )
-          ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-          ->set_default_value( options.tww3_2pc ? spell.tww3_2pc_san->effectN( 1 ).base_value() / 10 : 0 );
+    buffs.essence_of_the_blood_queen = make_fallback<essence_of_the_blood_queen_buff_t>(
+        talent.sanlayn.vampiric_strike.ok(), this, "essence_of_the_blood_queen",
+        spell.essence_of_the_blood_queen_buff );
 
   buffs.gift_of_the_sanlayn = make_fallback<gift_of_the_sanlayn_buff_t>(
       talent.sanlayn.gift_of_the_sanlayn.ok(), this, "gift_of_the_sanlayn", spell.gift_of_the_sanlayn_buff );
@@ -15749,7 +15771,7 @@ void death_knight_action_t<Base>::apply_target_effects()
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::rotten_touch ), p()->spell.rotten_touch_debuff );
 
   // Rider of the Apocalypse
-  if( p()->options.tww3_4pc )
+  if( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) )
     parse_target_effects( d_fn( &death_knight_td_t::dots_t::undeath, false ), p()->pet_spell.undeath_dot, p()->spell.tww3_4pc_rider );
 
   // Deathbringer
@@ -15946,8 +15968,7 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   // Rider of the Apocalypse
   action.apply_affecting_aura( talent.rider.mawsworn_menace );
   action.apply_affecting_aura( talent.rider.hungering_thirst );
-  if ( options.tww3_2pc )
-    action.apply_affecting_aura( spell.tww3_2pc_rider );
+  action.apply_affecting_aura( sets->set( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B2 ) );
 
   // San'layn
   if ( talent.unholy.clawing_shadows.ok() )
