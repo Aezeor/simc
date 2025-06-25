@@ -5890,6 +5890,8 @@ struct gift_of_the_sanlayn_buff_t final : public death_knight_buff_t
     set_default_value_from_effect( idx );
     set_duration( 0_ms );  // Handled by DT and VB
     add_invalidate( CACHE_HASTE );
+    if ( p->sets->has_set_bonus( HERO_SANLAYN, TWW3, B2 ) )
+      add_invalidate( CACHE_MASTERY );
     set_expire_callback( [ p ]( buff_t*, int, timespan_t ) {
       p->buffs.vampiric_strike->expire();
       if ( p->talent.sanlayn.infliction_of_sorrow.ok() )
