@@ -3906,7 +3906,8 @@ struct fire_breath_t : public empowered_charge_spell_t
       
       apply_affecting_aura( p->talent.flameshaper.fulminous_roar );
 
-      dot_dur_per_emp *= 1 + p->talent.flameshaper.fulminous_roar->effectN( 2 ).percent();
+      if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+        dot_dur_per_emp *= 1 + p->talent.flameshaper.fulminous_roar->effectN( 2 ).percent();
 
       if ( p->talent.chronowarden.afterimage.enabled() )
       {
