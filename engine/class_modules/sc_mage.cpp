@@ -2607,12 +2607,11 @@ struct arcane_mage_spell_t : public mage_spell_t
 
   double arcane_charge_multiplier( bool arcane_barrage = false ) const
   {
-    double base = p()->buffs.arcane_charge->data().effectN( arcane_barrage ? 2 : 1 ).percent();
+    double per_charge = p()->buffs.arcane_charge->data().effectN( arcane_barrage ? 2 : 1 ).percent();
+    per_charge += p()->cache.mastery() * p()->spec.savant->effectN( arcane_barrage ? 3 : 2 ).mastery_value();
+    per_charge *= 1.0 + p()->talents.prodigious_savant->effectN( arcane_barrage ? 2 : 1 ).percent();
 
-    double mastery = p()->cache.mastery() * p()->spec.savant->effectN( arcane_barrage ? 3 : 2 ).mastery_value();
-    mastery *= 1.0 + p()->talents.prodigious_savant->effectN( arcane_barrage ? 2 : 1 ).percent();
-
-    return 1.0 + p()->buffs.arcane_charge->check() * ( base + mastery );
+    return 1.0 + p()->buffs.arcane_charge->check() * per_charge;
   }
 
   void execute() override
