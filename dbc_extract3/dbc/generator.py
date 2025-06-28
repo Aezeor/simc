@@ -1978,6 +1978,7 @@ class SpellDataGenerator(DataGenerator):
           ( 445507, 0 ), # Trollbane Obliterate
           ( 445508, 0 ), # Nazgrim Scourge Strike Phys
           ( 445509, 0 ), # Nazgrim Scourge Strike Shadow
+          ( 1237388, 0 ), # Trollbane Frostscythe
           # San'layn
           ( 434144, 0 ), # Infliction in Sorrow Damage
           ( 434246, 0 ), # Blood Eruption

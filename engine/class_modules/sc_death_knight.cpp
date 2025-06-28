@@ -1570,6 +1570,7 @@ public:
     const spell_data_t* whitemane_epidemic;
     const spell_data_t* mograine_heart_strike;
     const spell_data_t* trollbane_obliterate;
+    const spell_data_t* trollbane_frostscythe;
     const spell_data_t* nazgrim_scourge_strike_phys;
     const spell_data_t* nazgrim_scourge_strike_shadow;
     // San'layn Blood Beast Spells
@@ -4662,6 +4663,26 @@ struct trollbane_pet_t final : public horseman_pet_t
     }
   };
 
+  struct obliterate_background_trollbane_t final : public horseman_melee_t
+  {
+    obliterate_background_trollbane_t( std::string_view name, horseman_pet_t* p )
+      : horseman_melee_t( p, name, p->dk()->pet_spell.trollbane_obliterate )
+    {
+      base_multiplier    = dk()->spell.tww3_4pc_rider->effectN( 1 ).percent();
+      cooldown->duration = 0_ms;  // Ignore the cooldown for the background casts
+    }
+  };
+
+  struct frostscythe_trollbane_t final : horseman_melee_t
+  {
+    frostscythe_trollbane_t( std::string_view name, horseman_pet_t* p )
+      : horseman_melee_t( p, name, p->dk()->pet_spell.trollbane_frostscythe )
+    {
+      aoe = -1;
+      reduced_aoe_targets = data().effectN( 5 ).base_value();
+    }
+  };
+
   trollbane_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "trollbane" )
   {
     npc_id                      = owner->spell.summon_trollbane->effectN( 1 ).misc_value1();
@@ -4687,6 +4708,17 @@ struct trollbane_pet_t final : public horseman_pet_t
 
     return horseman_pet_t::create_action( name, options_str );
   }
+
+  void create_actions() override
+  {
+    death_knight_pet_t::create_actions();
+    obliterate  = new obliterate_background_trollbane_t( "obliterate_tww3_4pc", this );
+    frostscythe = new frostscythe_trollbane_t( "frostscythe_tww3_4pc", this );
+  }
+
+public:
+  obliterate_background_trollbane_t* obliterate;
+  frostscythe_trollbane_t* frostscythe;
 };
 
 // ==========================================================================
@@ -9585,6 +9617,10 @@ struct frostscythe_t : public frostscythe_base_t
     {
       p()->buffs.empower_rune_weapon->expire();
     }
+
+    if ( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) &&
+         p()->pets.trollbane.active_pet() != nullptr )
+      p()->pets.trollbane.active_pet()->frostscythe->execute_on_target( target );
   }
 
   double runic_power_generation_multiplier( const action_state_t* state ) const override
@@ -10602,9 +10638,14 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
 
     const death_knight_td_t* td = get_td( target );
     // Obliterate does not list razorice in it's list of affecting spells, so debuff does not get applied automatically.
-    if ( td && p()->spec.frostreaper->ok() && get_school() == SCHOOL_FROST )
+    if ( p()->spec.frostreaper->ok() && get_school() == SCHOOL_FROST )
     {
       m *= 1.0 + td->debuff.razorice->check_stack_value();
+    }
+    if ( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) &&
+         td->debuff.chains_of_ice_trollbane_slow->check() )
+    {
+      m *= 1.0 + p()->sets->set( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 )->effectN( 4 ).percent();
     }
 
     return m;
@@ -10766,6 +10807,10 @@ struct obliterate_t final : public death_knight_melee_attack_t
     {
       p()->buffs.empower_rune_weapon->expire();
     }
+
+    if ( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) &&
+         p()->pets.trollbane.active_pet() != nullptr )
+      p()->pets.trollbane.active_pet()->obliterate->execute_on_target( target );
   }
 
   double runic_power_generation_multiplier( const action_state_t* state ) const override
@@ -10886,6 +10931,15 @@ struct pillar_of_frost_t final : public death_knight_spell_t
     if ( p()->talent.frost.frozen_dominion->ok() )
     {
       p()->background_actions.frozen_dominion_remorseless_winter->execute();
+    }
+
+    if ( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B2 ) )
+    {
+      action_t* trollbane = p()->pet_summon.summon_trollbane;
+      debug_cast<summon_rider_t*>( trollbane )->duration =
+          timespan_t::from_seconds( p()->spell.tww3_2pc_rider->effectN( 1 ).base_value() );
+      debug_cast<summon_rider_t*>( trollbane )->random = false;
+      trollbane->execute();
     }
   }
 
@@ -14570,6 +14624,8 @@ void death_knight_t::spell_lookups()
   pet_spell.whitemane_epidemic            = conditional_spell_lookup( talent.rider.riders_champion.ok(), 1237172 );
   pet_spell.mograine_heart_strike         = conditional_spell_lookup( talent.rider.riders_champion.ok(), 445504 );
   pet_spell.trollbane_obliterate          = conditional_spell_lookup( talent.rider.riders_champion.ok(), 445507 );
+  pet_spell.trollbane_frostscythe = conditional_spell_lookup(
+      talent.rider.riders_champion.ok() && sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B2 ), 1237388 );
   pet_spell.nazgrim_scourge_strike_phys   = conditional_spell_lookup( talent.rider.riders_champion.ok(), 445508 );
   pet_spell.nazgrim_scourge_strike_shadow = conditional_spell_lookup( talent.rider.riders_champion.ok(), 445509 );
   // San'layn Pet Spells
@@ -16459,7 +16515,7 @@ void death_knight_t::apply_affecting_auras( buff_t& buff )
   buff.apply_affecting_aura( talent.unholy.ghoulish_frenzy );
 
   // Rider of the Apocalypse
-  buff.apply_affecting_aura( talent.rider.mawsworn_menace );
+  buff.apply_affecting_aura( talent.rider.mawsworn_menace );  
 
   // San'layn
   buff.apply_affecting_aura( talent.sanlayn.frenzied_bloodthirst );
