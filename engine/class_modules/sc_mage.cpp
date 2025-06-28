@@ -10045,10 +10045,10 @@ public:
       .modifier( 47.0 )
       .verification_value( 50.0 );
 
-    hotfix::register_spell( "Mage", "2018-12-28", "Manually set Arcane Orb's travel speed.", 153626 )
+    hotfix::register_spell( "Mage", "2025-06-28", "Manually set Arcane Orb's travel speed.", 153626 )
       .field( "prj_speed" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 20.0 )
+      .modifier( 30.0 )
       .verification_value( 0.0 );
   }
 
