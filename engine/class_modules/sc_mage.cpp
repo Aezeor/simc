@@ -91,8 +91,7 @@ enum class ae_type
 enum class ao_type
 {
   NORMAL,
-  ORB_BARRAGE,
-  SPELLFROST
+  ORB_BARRAGE
 };
 
 enum class meteor_type
@@ -293,7 +292,6 @@ public:
     action_t* meteorite;
     action_t* pet_freeze;
     action_t* pet_water_jet;
-    action_t* spellfrost_arcane_orb;
     action_t* splinter;
     action_t* splinter_dot;
     action_t* splinter_recall;
@@ -398,7 +396,6 @@ public:
 
 
     // Spellslinger
-    buff_t* spellfrost_teachings;
     buff_t* unerring_proficiency;
 
 
@@ -432,6 +429,7 @@ public:
   struct cooldowns_t
   {
     cooldown_t* arcane_echo;
+    cooldown_t* arcane_orb;
     cooldown_t* blast_wave;
     cooldown_t* combustion;
     cooldown_t* comet_storm;
@@ -526,7 +524,6 @@ public:
   struct accumulated_rngs_t
   {
     accumulated_rng_t* pyromaniac;
-    accumulated_rng_t* spellfrost_teachings;
   } accumulated_rng;
 
   // Sample data
@@ -3416,8 +3413,8 @@ struct ignite_t final : public residual_action::residual_periodic_action_t<spell
 
 struct arcane_orb_bolt_t final : public arcane_mage_spell_t
 {
-  arcane_orb_bolt_t( std::string_view n, mage_t* p, ao_type type ) :
-    arcane_mage_spell_t( n, p, p->find_spell( type == ao_type::SPELLFROST ? 463357 : 153640 ) )
+  arcane_orb_bolt_t( std::string_view n, mage_t* p ) :
+    arcane_mage_spell_t( n, p, p->find_spell( 153640 ) )
   {
     background = proc = true;
     affected_by.savant = true;
@@ -3434,15 +3431,6 @@ struct arcane_orb_bolt_t final : public arcane_mage_spell_t
 
     if ( result_is_hit( s->result ) && p()->talents.controlled_instincts.ok() )
       get_td( s->target )->debuffs.controlled_instincts->trigger();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = arcane_mage_spell_t::action_multiplier();
-
-    am *= 1.0 + p()->buffs.spellfrost_teachings->check_value();
-
-    return am;
   }
 };
 
@@ -3470,15 +3458,12 @@ struct arcane_orb_t final : public arcane_mage_spell_t
       case ao_type::ORB_BARRAGE:
         bolt_name = "orb_barrage_arcane_orb_bolt";
         break;
-      case ao_type::SPELLFROST:
-        bolt_name = "spellfrost_arcane_orb_bolt";
-        break;
       default:
         assert( false );
         break;
     }
 
-    impact_action = get_action<arcane_orb_bolt_t>( bolt_name, p, type );
+    impact_action = get_action<arcane_orb_bolt_t>( bolt_name, p );
     add_child( impact_action );
 
     if ( type != ao_type::NORMAL )
@@ -5330,15 +5315,6 @@ struct frozen_orb_bolt_t final : public frost_mage_spell_t
 
     if ( hit_any_target )
       p()->trigger_fof( p()->talents.fingers_of_frost->effectN( 2 ).percent(), proc_fof );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = frost_mage_spell_t::action_multiplier();
-
-    am *= 1.0 + p()->buffs.spellfrost_teachings->check_value();
-
-    return am;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -7287,13 +7263,8 @@ struct splinter_t final : public mage_spell_t
       }
     }
 
-    if ( p()->accumulated_rng.spellfrost_teachings->trigger() )
-    {
-      p()->cooldowns.frozen_orb->reset( true );
-      if ( p()->action.spellfrost_arcane_orb && p()->target )
-        p()->action.spellfrost_arcane_orb->execute_on_target( p()->target );
-      p()->buffs.spellfrost_teachings->trigger();
-    }
+    auto cd = p()->specialization() == MAGE_FROST ? p()->cooldowns.frozen_orb : p()->cooldowns.arcane_orb;
+    cd->adjust( -p()->talents.spellfrost_teachings->effectN( p()->specialization() == MAGE_FROST ? 2 : 1 ).time_value(), false );
   }
 
   timespan_t travel_time() const override
@@ -7674,6 +7645,7 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
 {
   // Cooldowns
   cooldowns.arcane_echo        = get_cooldown( "arcane_echo_icd"  );
+  cooldowns.arcane_orb         = get_cooldown( "arcane_orb"       );
   cooldowns.blast_wave         = get_cooldown( "blast_wave"       );
   cooldowns.combustion         = get_cooldown( "combustion"       );
   cooldowns.comet_storm        = get_cooldown( "comet_storm"      );
@@ -7829,9 +7801,6 @@ void mage_t::create_actions()
 
   if ( talents.excess_frost.ok() )
     action.excess_ice_nova = get_action<ice_nova_t>( "excess_ice_nova", this, "", true );
-
-  if ( specialization() == MAGE_ARCANE && talents.spellfrost_teachings.ok() )
-    action.spellfrost_arcane_orb = get_action<arcane_orb_t>( "spellfrost_arcane_orb", this, "", ao_type::SPELLFROST );
 
   if ( talents.excess_fire.ok() )
     action.frostfire_burst = get_action<frostfire_burst_t>( "frostfire_burst", this );
@@ -8605,9 +8574,6 @@ void mage_t::create_buffs()
 
 
   // Spellslinger
-  buffs.spellfrost_teachings = make_buff( this, "spellfrost_teachings", find_spell( 458411 ) )
-                                 ->set_default_value_from_effect( specialization() == MAGE_FROST ? 3 : 1 )
-                                 ->set_chance( talents.spellfrost_teachings.ok() );
   buffs.unerring_proficiency = make_buff( this, "unerring_proficiency", find_spell( specialization() == MAGE_FROST ? 444976 : 444981 ) )
                                  ->set_default_value_from_effect( 1 )
                                  ->set_chance( talents.unerring_proficiency.ok() );
@@ -8790,11 +8756,6 @@ void mage_t::init_rng()
   rppm.arcane_jackpot = get_rppm( "arcane_jackpot", sets->set( MAGE_ARCANE, TWW2, B2 ) );
   // Accumulated RNG is also not present in the game data.
   accumulated_rng.pyromaniac = get_accumulated_rng( "pyromaniac", talents.pyromaniac.ok() ? 0.00605 : 0.0 );
-
-  // TODO: get some actual data and confirm that they're still using accumulated RNG
-  // and these values are accurate
-  double sft_step = 6.2009e-4; // averages to 2% proc chance
-  accumulated_rng.spellfrost_teachings = get_accumulated_rng( "spellfrost_teachings", talents.spellfrost_teachings.ok() ? sft_step : 0.0 );
 }
 
 void mage_t::init_finished()
