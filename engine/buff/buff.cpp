@@ -3830,6 +3830,13 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
         {
           direct_mod.labels.push_back( e.misc_value2() );
         }
+        else if ( direct_mod.multiplier == 1.0 )
+        {
+          sim->print_debug( "{} no existing direct effect value of {}, setting direct value to match",
+                            *this, ( multiplier == 0.0 ? e.percent() : multiplier ), direct_mod.multiplier );
+          set_direct_mod( spell, idx, multiplier );
+          direct_mod.labels.push_back( e.misc_value2() );
+        }
         else
         {
           sim->print_debug( "{} ignoring label modifier of {} due to not matching existing direct effect value of {}",
@@ -3843,6 +3850,13 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
 
         if ( periodic_mod.multiplier == 1.0 + ( multiplier == 0.0 ? e.percent() : multiplier ) )
         {
+          periodic_mod.labels.push_back( e.misc_value2() );
+        }
+        else if ( periodic_mod.multiplier == 1.0 )
+        {
+          sim->print_debug( "{} no existing periodic effect value of {}, setting periodic value to match",
+                            *this, ( multiplier == 0.0 ? e.percent() : multiplier ), periodic_mod.multiplier );
+          set_periodic_mod( spell, idx, multiplier );
           periodic_mod.labels.push_back( e.misc_value2() );
         }
         else

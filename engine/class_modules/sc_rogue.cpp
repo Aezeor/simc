@@ -9569,7 +9569,7 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
                                    ( p()->get_target_data( mark_target )->debuffs.deathstalkers_mark->check() <=
                                      p()->spell.darkest_night_buff->effectN( 3 ).base_value() ) );
   if ( !darkest_night_bug && p()->get_target_data( mark_target )->debuffs.deathstalkers_mark->check() &&
-       cast_state( state )->get_combo_points() >= as<int>( p()->talent.deathstalker.deathstalkers_mark->effectN( 2 ).base_value() ) )
+       ( ignore_cp || cast_state( state )->get_combo_points() >= as<int>( p()->talent.deathstalker.deathstalkers_mark->effectN( 2 ).base_value() ) ) )
   {
     p()->get_target_data( mark_target )->debuffs.deathstalkers_mark->decrement();
     p()->buffs.deathstalkers_mark->trigger();
