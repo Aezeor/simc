@@ -5104,7 +5104,8 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
           s->result_amount * p()->modified_spell.pact_of_the_sanlayn->effectN( 1 ).percent();
     }
 
-    if ( p()->talent.deathbringer.reapers_mark.ok() && this->data().id() != p()->spell.reapers_mark_explosion->id() &&
+    if ( p()->talent.deathbringer.reapers_mark.ok() && s->result_raw != 0 && 
+         this->data().id() != p()->spell.reapers_mark_explosion->id() &&
          this->data().id() != 66198 /* Obliterate offhand does not count */ &&
          this->data().id() != p()->spell.hyperpyrexia_damage->id() &&
          this->data().id() != p()->spell.icy_death_torrent_damage->id() )
@@ -5115,10 +5116,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
         if ( this->get_school() == SCHOOL_SHADOWFROST ||
              ( p()->buffs.dark_talons_shadowfrost->check() &&
                // death strike is counted as shadowfrost, but the school remains physical to keep bloodshot functional
-               ( this->data().id() == p()->talent.death_strike->id() ||
-                 // 5/8/25 when dark talons is active, it will treat all sources of frost/shadow damage as if they
-                 // are shadowfrost
-                 ( p()->bugs && dbc::has_common_school( this->get_school(), SCHOOL_SHADOWFROST ) ) ) ) )
+               ( this->data().id() == p()->talent.death_strike->id() ) ) )
         {
           if ( p()->talent.deathbringer.bind_in_darkness->ok() )
           {
@@ -9197,6 +9195,7 @@ struct empower_rune_weapon_projectile_t final : public death_knight_spell_t
     : death_knight_spell_t( name, p, p->talent.frost.empower_rune_weapon->effectN( 1 ).trigger() )
   {
     background = quiet = true;
+    harmful = false;
   }
   void impact( action_state_t* s) override
   {
