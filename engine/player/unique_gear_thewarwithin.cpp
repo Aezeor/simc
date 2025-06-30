@@ -8415,9 +8415,8 @@ void screams_of_a_forgotten_sky( special_effect_t& effect )
       actions.push_back( anzuq );
       actions.push_back( anshuul );
 
-      proxy->add_child( anxoth );
-      proxy->add_child( anzuq );
-      proxy->add_child( anshuul );
+      for ( auto a : actions )
+        proxy->add_child( a );
     }
 
     void execute( action_t*, action_state_t* s ) override
@@ -8428,6 +8427,53 @@ void screams_of_a_forgotten_sky( special_effect_t& effect )
   };
 
   new screams_of_a_forgotten_sky_cb_t( effect );
+}
+
+// Eradicating Arcanocore
+// 1233384 Driver
+// 1240896 Stacking Buff
+// 1241899 Delay Spell/Area Trigger
+// 1240916 Damage
+// 1241847 Unknown Dummy: 6 yard radius, maybe random visual location?
+void eradicating_arcanocore( special_effect_t& effect )
+{
+  struct eradicating_arcanocore_t final : public generic_aoe_proc_t
+  {
+    buff_t* stacking_buff;
+    int st_stacks;
+
+    eradicating_arcanocore_t( const special_effect_t& e, buff_t* stacking )
+      : generic_aoe_proc_t( e, "eradicating_arcanoblast", e.player->find_spell( 1240916 ), true ),
+        stacking_buff( stacking ),
+        st_stacks( 0 )
+    {
+      travel_delay = e.player->find_spell( 1241899 )->duration().total_seconds();
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
+
+      st_stacks = as<int>( e.driver()->effectN( 2 ).base_value() );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      if ( player->sim->target_non_sleeping_list.size() == 1 )
+        stacking_buff->trigger( st_stacks );
+
+      generic_aoe_proc_t::impact( s );
+    }
+  };
+
+  auto buff = create_buff<buff_t>( effect.player, "eradicating_arcanoblast", effect.player->find_spell( 1240896 ) )
+                  ->set_expire_at_max_stack( true );
+  auto damage = create_proc_action<eradicating_arcanocore_t>( "eradicating_arcanocore", effect, buff );
+
+  buff->set_expire_callback( [ damage ]( buff_t* b, int, timespan_t d ) {
+    if ( !b->source->sim->canceled )
+      damage->execute();
+  } );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Weapons
@@ -11466,6 +11512,7 @@ void register_special_effects()
   register_special_effect( 1232802, items::arazs_ritual_forge );
   register_special_effect( 1234714, items::astral_antenna );
   register_special_effect( 1235272, items::screams_of_a_forgotten_sky );
+  register_special_effect( 1233384, items::eradicating_arcanocore );
 
   // Weapons
   register_special_effect( 443384, items::fateweaved_needle );

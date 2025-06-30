@@ -1,5 +1,5 @@
 // Spell text, wow build 11.2.0.61703
-static const std::array<spelltext_data_t, 28022> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 28024> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27900,6 +27900,7 @@ static const std::array<spelltext_data_t, 28022> __ptr_spelltext_data { {
   { 1240891, "Ilyssa places a Sigil of Chains at their current target's location that activates after ${$s1/2}.1 sec.\r\n\r\nAll players are pulled to its center and snared, reducing movement speed by $1223624s1% for $1223624d.", 0, 0 },
   { 1240896, "$@spelldesc1233384", "Unleashing the $@spellname1233384 upon reaching $u charges.", 0 },
   { 1240903, "Damage increased by $s1% per additional enemy, up to ${$s1*$s2}%.", "$@spelldesc1240903", 0 },
+  { 1240916, "$@spelldesc1233384", 0, 0 },
   { 1241059, "A strong herbal brew that coalesces purified chi escaping your body into a celestial guard, absorbing $s2% of incoming damage, up to $<absorb> total.\r\n\r\nPurifying Stagger damage increases absorption by up to $322510s1%.", "Absorbs $s2~% of incoming damage, up to $w1 total.", 0 },
   { 1241097, "Healing Spheres now heal over $1241109d, and their healing is increased by up to $s1% based on your missing health.", 0, 0 },
   { 1241109, "$@spelldesc1241097", "Healing for $w1 every $t sec.", 0 },
@@ -27920,6 +27921,7 @@ static const std::array<spelltext_data_t, 28022> __ptr_spelltext_data { {
   { 1241777, "$@spelldesc1242162", "Inflicting $s1 Arcane damage every $t1 sec.", 0 },
   { 1241778, "$@spelldesc1242162", 0, 0 },
   { 1241806, 0, "Critical Strike increased by $w1.", 0 },
+  { 1241847, "$@spelldesc1233384", 0, 0 },
   { 1241871, "$@spelldesc53271", 0, "Command Pet Ability" },
   { 1241991, "Portalmaster Halsan places a timebomb that explodes after $d sending out a wave, inflicting $1242033s3 Arcane damage every $1242033t3 sec, reducing haste by $1242033s1%, and reducing movement speed by $1242033s2% for $1242033d. ", 0, 0 },
   { 1242033, "$@spelldesc1241991", 0, 0 },
