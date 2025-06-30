@@ -3881,6 +3881,50 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
   return this;
 }
 
+damage_buff_t* damage_buff_t::apply_dynamic_buff_multiplier( buff_t* buff )
+{
+  auto parse_dynamic_buff_multiplier_for_mod = [ this, buff ]( damage_buff_modifier_t& mod ) {
+    
+    if ( !mod.s_data || !mod.s_data->ok() )
+      return false;
+
+    for ( const spelleffect_data_t& effect : buff->data().effects() )
+    {
+      if ( !effect.ok() || effect.type() != E_APPLY_AURA )
+        continue;
+
+      if ( ( effect.subtype() == A_ADD_PCT_MODIFIER && mod.s_data->affected_by( effect ) ) ||
+           ( effect.subtype() == A_ADD_PCT_LABEL_MODIFIER && mod.s_data->affected_by_label( effect ) ) )
+      {
+        if ( effect.property_type() == P_EFFECTS )
+        {
+          mod.dynamic_buff_multipliers.push_back( { buff, effect.percent() } );
+          sim->print_debug( "{} damage buff registering dynamic buff multiplier {} of {}%", *this, *buff, effect.base_value() );
+          return true;
+        }
+        else if ( mod.effect_idx >= 1 && mod.effect_idx <= 5 )
+        {
+          constexpr property_type_t effect_types[] = { P_EFFECT_1, P_EFFECT_2, P_EFFECT_3, P_EFFECT_4, P_EFFECT_5 };
+          if ( effect.property_type() == effect_types[ mod.effect_idx - 1 ] )
+          {
+            mod.dynamic_buff_multipliers.push_back( { buff, effect.percent() } );
+            sim->print_debug( "{} damage buff registering dynamic buff multiplier {} of {}%", *this, *buff, effect.base_value() );
+            return true;
+          }
+        }
+      }
+    }
+  };
+
+  parse_dynamic_buff_multiplier_for_mod( direct_mod );
+  parse_dynamic_buff_multiplier_for_mod( periodic_mod );
+  parse_dynamic_buff_multiplier_for_mod( auto_attack_mod );
+  if ( parse_dynamic_buff_multiplier_for_mod( crit_chance_mod ) )
+    buff->add_invalidate( CACHE_CRIT_CHANCE );
+
+  return this;
+}
+
 damage_buff_t* damage_buff_t::apply_mod_affecting_effect( damage_buff_modifier_t& mod, const spelleffect_data_t& effect )
 {
   if ( !mod.s_data || !mod.s_data->ok() )
@@ -4036,4 +4080,20 @@ bool damage_buff_t::is_affecting_crit_chance( const spell_data_t* s )
   }
 
   return false;
+}
+
+double damage_buff_t::get_mod_multiplier( const damage_buff_modifier_t& mod ) const
+{
+  double multiplier = mod.multiplier;
+
+  // Iterate over dynamic buff multipliers, check they are currently active, and apply if they are
+  for ( const std::pair<buff_t*, double>& dynamic_buff_multiplier : mod.dynamic_buff_multipliers )
+  {
+    if ( dynamic_buff_multiplier.first->check() )
+    {
+      multiplier *= 1.0 + dynamic_buff_multiplier.second;
+    }
+  }
+
+  return multiplier;
 }
