@@ -7091,7 +7091,7 @@ struct frostfire_burst_t final : public mage_spell_t
   {
     mage_spell_t::execute();
     p()->cooldowns.phoenix_flames->adjust( -1000 * p()->talents.excess_fire->effectN( 2 ).time_value() );
-    p()->trigger_brain_freeze( 1.0, p()->procs.brain_freeze_excess_fire, 0_ms );
+    p()->trigger_brain_freeze( p()->talents.excess_fire->effectN( 3 ).percent(), p()->procs.brain_freeze_excess_fire, 0_ms );
   }
 };
 
