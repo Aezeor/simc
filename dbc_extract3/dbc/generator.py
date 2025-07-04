@@ -1659,6 +1659,8 @@ class SpellDataGenerator(DataGenerator):
             ( 1238903, 0),          # Masterwork (TWW3 Lightsmith 4p)
             ( 1239091, 0),          # Lesser Weapon (TWW3 Lightsmith 4p)
             ( 1239002, 0),          # Lesser Bulwark (TWW3 Lightsmith 4p)
+            ( 1239282, 0),          # Lesser Weapon Damage (TWW3 Lightsmith 4p)
+            ( 1239276, 0),          # Lesser Weapon Healing (TWW3 Lightsmith 4p)
         ),
 
         # Hunter:
