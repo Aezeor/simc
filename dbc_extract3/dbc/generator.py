@@ -2570,6 +2570,7 @@ class SpellDataGenerator(DataGenerator):
           ( 442204, 0 ), # Breath of Eons
           ( 1236949, 0 ), # TWW3 Set Disintegrate
           ( 1236970, 0 ), # TWW3 Set Pyre
+          ( 1236943, 0 ), # TWW3 Set Deep Breath on Pet
           # Chronowarden
           ( 431583, 0 ), # Chrono Flame
           ( 431620, 0 ), # Upheaval Dot
