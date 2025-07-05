@@ -5481,6 +5481,19 @@ struct glacial_spike_t final : public frost_mage_spell_t
     am *= 1.0 + p()->cache.mastery() * p()->spec.icicles_2->effectN( 3 ).mastery_value()
               + icicle_coef / spell_power_mod.direct;
 
+    // In game, this actually consists of two separate multipliers. That is, instead
+    // of just doing
+    //
+    //   am *= 1.0 + icicles2_part + icicles1_part
+    //
+    // it's something like
+    //
+    //   am *= 1.0 + icicles2_part;
+    //   am *= 1.0 + icicles1_part / ( 1.0 + icicles2_part );
+    //
+    // Not really relevant for Frost GS, but it does matter for Fire GS where the
+    // first multiplier isn't present.
+
     am *= 1.0 + p()->buffs.wintertide->check_stack_value();
 
     return am;
