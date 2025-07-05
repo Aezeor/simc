@@ -8691,7 +8691,7 @@ void perfidious_projector( special_effect_t& effect )
   effect.execute_action = dot;
 }
 
-// Incorporeal Warpclap
+// Incorporeal Warpclaw
 // 1243118 Driver
 // 1243133 Damage
 void incorporeal_warpclaw( special_effect_t& effect )
@@ -9714,6 +9714,7 @@ void ethereal_reaping( special_effect_t& effect )
   missile->impact_action = damage;
 
   effect.execute_action = missile;
+  effect.rppm_modifier_ = 1.0 + effect.player->passive_values.reshii_grace;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -9785,6 +9786,11 @@ void ethereal_energy( special_effect_t& effect )
       effect.spell_id = spell_id;
       break;
   }
+}
+
+void reshii_grace( special_effect_t& effect )
+{
+  effect.player->passive_values.reshii_grace = effect.driver()->effectN( 1 ).percent();
 }
 
 }  // namespace items
@@ -11773,6 +11779,7 @@ void register_special_effects()
   register_special_effect( 457683, items::sureki_zealots_insignia );
   register_special_effect( 1214161, items::the_jastor_diamond );
   register_special_effect( 1217091, items::ethereal_energy ); // Reshii Wraps equip driver
+  register_special_effect( 1235409, items::reshii_grace ); // Reshii Grace boot effects
 
   // Sets
   register_special_effect( 444067, sets::void_reapers_contract );    // kye'veza's cruel implements trinket
