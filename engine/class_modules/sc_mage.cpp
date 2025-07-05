@@ -4689,7 +4689,7 @@ struct fireball_t final : public fire_mage_spell_t
         const auto* set = p->sets->set( HERO_FROSTFIRE, TWW3, B2 );
         // TODO: The ignite multiplier part of the set bonus doesn't work
         base_ignite_multiplier = set->effectN( 1 ).percent();
-        base_multiplier *= 1.0 + set->effectN( 3 ).percent();
+        base_dd_multiplier *= 1.0 + set->effectN( 3 ).percent();
       }
     }
 
@@ -5166,7 +5166,7 @@ struct frostbolt_t final : public frost_mage_spell_t
       if ( p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B2 ) )
       {
         triggers.ignite_2pc = true;
-        base_multiplier *= 1.0 + p->sets->set( HERO_FROSTFIRE, TWW3, B2 )->effectN( 4 ).percent();
+        base_dd_multiplier *= 1.0 + p->sets->set( HERO_FROSTFIRE, TWW3, B2 )->effectN( 4 ).percent();
       }
     }
     enable_calculate_on_impact( frostfire ? 468655 : 228597 );
