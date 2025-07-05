@@ -5512,7 +5512,10 @@ struct glacial_spike_t final : public frost_mage_spell_t
     }
 
     if ( p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B4 ) )
+    {
       pyroblast_4pc = get_action<pyroblast_4pc_t>( "pyroblast_4pc", p );
+      add_child( pyroblast_4pc );
+    }
   }
 
   void init_finished() override
@@ -6590,7 +6593,10 @@ struct pyroblast_t final : public hot_streak_spell_t
       pyromaniac_action = get_action<pyroblast_pyromaniac_t>( "pyroblast_pyromaniac", p );
 
     if ( p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B4 ) )
+    {
       glacial_spike_4pc = get_action<glacial_spike_4pc_t>( "glacial_spike_4pc", p );
+      add_child( glacial_spike_4pc );
+    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
