@@ -4544,7 +4544,7 @@ struct whitemane_pet_t final : public horseman_pet_t
       background              = true;
       aoe                     = 20;
       attack_power_mod.direct = 0;
-      impact_action           = get_action<epidemic_whitemane_main_t>( "epidemic", p );
+      impact_action           = get_action<epidemic_whitemane_main_t>( "epidemic_main", p );
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -4624,7 +4624,7 @@ struct whitemane_pet_t final : public horseman_pet_t
   void create_actions() override
   {
     death_knight_pet_t::create_actions();
-    epidemic = new epidemic_whitemane_t( "epidemic_main", this );
+    epidemic = new epidemic_whitemane_t( "epidemic", this );
     death_coil = new death_coil_whitemane_background_t( "death_coil_tww3_4pc", this );
   }
 
