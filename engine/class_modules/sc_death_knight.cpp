@@ -16257,9 +16257,8 @@ void death_knight_t::parse_player_effects()
   // Rider of the Apocalypse
   auto mograines_might_mask = effect_mask_t( true );
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
-  {
     mograines_might_mask.disable( 4 );
-  }
+
   parse_effects( buffs.mograines_might, talent.rider.mograines_might, mograines_might_mask );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::chains_of_ice_trollbane_damage ),
                         pet_spell.trollbanes_chains_of_ice_debuff );
@@ -16348,9 +16347,8 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   // Frost
   action.apply_affecting_aura( talent.frost.biting_cold );
   if ( spec.might_of_the_frozen_wastes->ok() && main_hand_weapon.group() == WEAPON_2H )
-  {
     action.apply_affecting_aura( spec.might_of_the_frozen_wastes );
-  }
+
   action.apply_affecting_aura( sets->set( DEATH_KNIGHT_FROST, TWW1, B2 ) );
   action.apply_affecting_aura( talent.frost.runic_overflow );
   action.apply_affecting_aura( talent.frost.frostreaper );

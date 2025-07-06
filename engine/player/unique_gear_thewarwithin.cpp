@@ -8820,6 +8820,34 @@ void incorporeal_essence_gorger( special_effect_t& effect )
   effect.execute_action = create_proc_action<incorporeal_essence_gorger_t>( "incorporeal_essencegorger", effect );
 }
 
+// Void-Touched Fragment
+// 1224856 Driver
+// 1224918 Mastery Buff
+// 1224917 on Death Trigger
+// 1224916 Stacking Buff
+void voidtouched_fragment( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  auto stat_buff =
+      create_buff<stat_buff_t>( effect.player, "voidtouched_fragment", effect.player->find_spell( 1224918 ) )
+          ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+  auto stacking_buff =
+      create_buff<buff_t>( effect.player, "voidtouched_fragment_stacking", effect.player->find_spell( 1224916 ) )
+          ->set_expire_callback( [ stat_buff ]( buff_t*, int, timespan_t ) { stat_buff->trigger(); } )
+          ->set_expire_at_max_stack( true );
+
+  effect.player->register_on_kill_callback( [ &effect, stacking_buff ]( player_t* ) {
+    if ( !effect.player->sim->event_mgr.canceled )
+      stacking_buff->trigger();
+  } );
+
+  effect.custom_buff = stacking_buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 
 // 443384 driver
@@ -11873,6 +11901,7 @@ void register_special_effects()
   register_special_effect( 1243118, items::incorporeal_warpclaw );
   register_special_effect( 1245148, items::mind_fracturing_odium );
   register_special_effect( 1244410, items::incorporeal_essence_gorger );
+  register_special_effect( 1224856, items::voidtouched_fragment );
 
   // Weapons
   register_special_effect( 443384, items::fateweaved_needle );

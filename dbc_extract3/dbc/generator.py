@@ -1561,6 +1561,7 @@ class SpellDataGenerator(DataGenerator):
          1244448, 1244444, # Perfidious Projector
          1243133, # Incorporeal Warpclap
          1245643, # Mind-Fracturing Odium 
+         1224916, 1224917, 1224918, # Void-Touched Fragment
         ),
 
         # Warrior:
