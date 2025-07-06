@@ -9331,6 +9331,13 @@ struct frostscythe_t : public frostscythe_base_t
     if ( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) &&
          p()->pets.trollbane.active_pet() != nullptr )
       p()->pets.trollbane.active_pet()->frostscythe->execute_on_target( target );
+
+    if ( p()->buffs.exterminate->up() )
+    {
+      p()->buffs.exterminate->decrement();
+      make_event<delayed_execute_event_t>( *sim, p(), p()->background_actions.exterminate, execute_state->target,
+                                           500_ms );
+    }
   }
 
   double runic_power_generation_multiplier( const action_state_t* state ) const override
