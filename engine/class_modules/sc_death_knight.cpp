@@ -11475,7 +11475,8 @@ struct desecrate_damage_t : public death_knight_spell_t
     death_knight_spell_t::impact( s );
     death_knight_td_t* td = get_td( s->target );
     unsigned int wound_count =
-        rng().range( as<unsigned int>( p()->spell.desecrate_action->effectN( 1 ).base_value() ) + 1 );
+        rng().range( as<unsigned int>( p()->spell.desecrate_action->effectN( 1 ).base_value() ),
+                     as<unsigned int>( p()->spell.desecrate_action->effectN( 1 ).base_value() ) + 1 );
     if ( td->debuff.festering_wound->check() )
       p()->burst_festering_wound( s->target, wound_count, p()->procs.fw_desecreate_consume );
     else
