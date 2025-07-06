@@ -9510,6 +9510,8 @@ struct frostbane_t final : public death_knight_spell_t
     make_event<delayed_execute_event_t>( *sim, p(), frostbane_strike, target, 200_ms );
     make_event<delayed_execute_event_t>( *sim, p(), frostbane_strike, target, 250_ms );
     p()->buffs.frostbane->expire();
+
+    p()->buffs.rime->trigger();
   }
 
 private:
