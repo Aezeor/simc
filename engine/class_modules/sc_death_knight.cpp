@@ -9263,11 +9263,13 @@ struct frostscythe_t : public frostscythe_base_t
   {
     double m = frostscythe_base_t::runic_power_generation_multiplier( state );
 
-    // 11.2 TODO it is probably not intended that this is a -100% mod
+    // The way this works in spell data: ERW has effects modified by Obliteration, which in turn modify the actions
+    // We do not have automated parsing for energize, so manually zero the cost.
+    // 11.2 TODO in game behavior is that Obliterate COSTS 8 rp, but this will be painful to implement
     if ( p()->talent.frost.obliteration.ok() && p()->buffs.pillar_of_frost->check() &&
          p()->buffs.empower_rune_weapon->check() )
     {
-      m *= 1.0 + p()->talent.frost.obliteration->effectN( 1 ).trigger()->effectN( 3 ).percent();
+      m = 0;
     }
 
     return m;
@@ -10459,10 +10461,12 @@ struct obliterate_t final : public death_knight_melee_attack_t
   {
     double m = death_knight_melee_attack_t::runic_power_generation_multiplier( state );
 
-    // 11.2 TODO it is probably not intended that this is a -100% mod
+    // The way this works in spell data: ERW has effects modified by Obliteration, which in turn modify the actions
+    // We do not have automated parsing for energize, so manually zero the cost.
+    // 11.2 TODO in game behavior is that Obliterate COSTS 8 rp, but this will be painful to implement 
     if ( p()->talent.frost.obliteration.ok() && p()->buffs.pillar_of_frost->check() && p()->buffs.empower_rune_weapon->check() )
     {
-      m *= 1.0 + p()->talent.frost.obliteration->effectN( 1 ).trigger()->effectN( 3 ).percent();
+      m = 0;
     }
 
     return m;
