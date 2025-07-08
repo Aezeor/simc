@@ -12312,10 +12312,8 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
     return;
   }
 
-  proc->occur();
-
   // Killing Machine is consumed shortly after casting Obliterate.
-  make_event( sim, total_delay, [ this, aa_action ] {
+  make_event( sim, total_delay, [ this, aa_action, proc ] {
     const int decrement_count = talent.frost.killing_streak.ok() ? buffs.killing_machine->check() : 1;
     buffs.killing_machine->decrement( decrement_count );
 
@@ -12346,6 +12344,7 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
 
     for ( int i = decrement_count; i > 0; --i )
     {
+      proc->occur();
       if ( talent.frost.arctic_assault.ok() )
       {
         // Arctic Assault fires on a delay after consuming Killing Machine.
