@@ -2518,6 +2518,10 @@ struct death_knight_pet_t : public pet_t
 
     m *= 1.0 + grave_mastery->check_value();
 
+    if ( dk()->mastery.dreadblade->ok() )
+      m *= 1.0 + dk()->mastery.dreadblade->effectN( 6 ).percent() +
+           ( dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * dk()->composite_mastery() / 100 );
+
     return m;
   }
 
@@ -4917,8 +4921,13 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
   bool hasted_gcd;
   double rp_per_tick;
 
+  struct
+  {
+    bool mastery_dreadblade_crit_bonus;
+  } affected_by;
+
   death_knight_action_t( std::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() )
-    : action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false ), rp_per_tick( 0 )
+    : action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false ), rp_per_tick( 0 ), affected_by{ false }
   {
     this->may_glance = false;
     if ( this->cooldown->duration > 0_s )
@@ -4980,6 +4989,8 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
         this->not_a_proc = true;
       }
     }
+
+    affected_by.mastery_dreadblade_crit_bonus = p->mastery.dreadblade->ok() && this->data().affected_by( p->mastery.dreadblade->effectN( 5 ) );
   }
 
   std::string full_name() const
@@ -5027,6 +5038,17 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
     }
 
     return amount;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    auto cd = action_base_t::composite_crit_damage_bonus_multiplier();
+
+    if ( p()->mastery.dreadblade->ok() && affected_by.mastery_dreadblade_crit_bonus )
+      cd *= 1.0 + p()->mastery.dreadblade->effectN( 5 ).percent() +
+            ( p()->mastery.dreadblade->effectN( 5 ).sp_coeff() * p()->composite_mastery() / 100 );
+
+    return cd;
   }
 
   void init() override
@@ -16041,7 +16063,8 @@ void death_knight_action_t<Base>::apply_action_effects()
   parse_effects( p()->buffs.sudden_doom, p()->talent.unholy.harbinger_of_doom );
   parse_effects( p()->buffs.plaguebringer, p()->talent.unholy.plaguebringer );
   parse_effects( p()->buffs.commander_of_the_dead, p()->talent.unholy.commander_of_the_dead );
-  parse_effects( p()->mastery.dreadblade );
+  // Dont parse effect 5 and 6 due to the way this effect works. Manually handled where necessaray.
+  parse_effects( p()->mastery.dreadblade, effect_mask_t( true ).disable( 5, 6 ) );
   parse_effects( p()->buffs.winning_streak_unholy, [ & ]( double v ) {
     v *= 0.1;  // Divides by 10 in spell data
     if ( p()->buffs.dark_transformation->check() )
@@ -16320,7 +16343,6 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.unholy.plague_mastery );
   action.apply_affecting_aura( talent.unholy.grave_mastery );
   action.apply_affecting_aura( talent.unholy.desecrate );
-  action.apply_affecting_aura( mastery.dreadblade );
 
   // Rider of the Apocalypse
   action.apply_affecting_aura( talent.rider.mawsworn_menace );
