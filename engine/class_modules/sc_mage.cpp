@@ -3749,6 +3749,9 @@ struct arcane_blast_t final : public dematerialize_spell_t
       p()->buffs.presence_of_mind->decrement();
 
     consume_nether_precision( target );
+
+    if ( p()->sets->has_set_bonus( HERO_SPELLSLINGER, TWW3, B2 ) )
+      p()->buffs.arcane_harmony->trigger( as<int>( p()->sets->set( HERO_SPELLSLINGER, TWW3, B2 )->effectN( 5 ).base_value() ) );
   }
 
   double action_multiplier() const override
@@ -5775,6 +5778,9 @@ struct ice_lance_t final : public custom_state_spell_t<frost_mage_spell_t, ice_l
     // fired. If target dies, Icicles stop.
     if ( !p()->talents.glacial_spike.ok() )
       p()->trigger_icicle( target, true );
+
+    if ( rng().roll( p()->sets->set( HERO_SPELLSLINGER, TWW3, B2 )->effectN( 7 ).percent() ) )
+      trigger_cold_front( as<int>( p()->sets->set( HERO_SPELLSLINGER, TWW3, B2 )->effectN( 6 ).base_value() ) );
   }
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
