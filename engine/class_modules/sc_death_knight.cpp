@@ -7279,7 +7279,7 @@ struct dark_transformation_t : public death_knight_spell_t
     if ( p()->talent.unholy.unholy_pact.ok() )
       p()->buffs.unholy_pact->trigger();
 
-    if ( p()->talent.unholy.commander_of_the_dead.ok() )
+    if ( p()->talent.unholy.commander_of_the_dead.ok() && !p()->bugs )
       p()->buffs.commander_of_the_dead->trigger();
 
     if ( p()->talent.unholy.unholy_blight.ok() )
