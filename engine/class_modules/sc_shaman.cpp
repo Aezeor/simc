@@ -1308,6 +1308,8 @@ public:
     cooldown_t* flowing_spirit;
     cooldown_t* stormblast; // Stormblast ICD custom implementation
     cooldown_t* arc_discharge;
+
+    cooldown_t* tww3_enh_4pc_icd; // Elemental Overflow ICD for presumably consuming the buff
   } cooldown;
 
   // Expansion-specific Legendaries
@@ -1784,6 +1786,7 @@ public:
     cooldown.flowing_spirit     = get_cooldown( "flowing_spirit" );
     cooldown.stormblast         = get_cooldown( "stormblast_icd" );
     cooldown.arc_discharge      = get_cooldown( "arc_discharge" );
+    cooldown.tww3_enh_4pc_icd   = get_cooldown( "elemental_overflow" );
 
     melee_mh      = nullptr;
     melee_oh      = nullptr;
@@ -5519,7 +5522,7 @@ struct lava_lash_t : public shaman_attack_t
       proc_lively_totems->occur();
     }
 
-    if ( p()->buff.tww3_enh_4pc->up() )
+    if ( p()->cooldown.tww3_enh_4pc_icd->up() && p()->buff.tww3_enh_4pc->up() )
     {
       auto delay = rng().gauss( 500_ms, 33_ms );
       sim->print_debug( "{} triggering enhancement tww3 4 piece set bonus on {}, delay={}",
@@ -5532,6 +5535,7 @@ struct lava_lash_t : public shaman_attack_t
         p()->action.tww3_lava_lash->execute_on_target( t );
       } );
       p()->buff.tww3_enh_4pc->decrement();
+      p()->cooldown.tww3_enh_4pc_icd->start( p()->buff.tww3_enh_4pc->data().internal_cooldown() );
     }
   }
 
