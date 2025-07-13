@@ -8788,7 +8788,8 @@ void mind_fracturing_odium( special_effect_t& effect )
     {
       if( !decrementing )
         stacking->trigger();
-      if ( stacking->at_max_stacks() )
+      // Check for stat even though not required to remove refreshes from report to avoid confusion.
+      if ( stacking->at_max_stacks() && !stat->check() )
       {
         decrementing = true;
         stat->trigger();
