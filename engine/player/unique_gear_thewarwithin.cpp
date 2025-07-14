@@ -9516,20 +9516,33 @@ void shadow_quake( special_effect_t& effect )
 // Voidglass Shards
 // 1235136 Driver
 // 1238693 Damage
+// TODO: implement Absorb if it ever matters in sims rather than fizzling
 void voidglass_shards( special_effect_t& effect )
 {
   if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
     return;
 
-  action_t* damage =
-      create_proc_action<generic_proc_t>( "voidglass_shards", effect, effect.player->find_spell( 1238693 ) );
+  struct voidglass_shards_cb_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
 
-  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
-  damage->base_multiplier *= role_mult( effect );
+    voidglass_shards_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), damage( nullptr )
+    {
+      damage = create_proc_action<generic_proc_t>( "voidglass_shards", e, 1238693 );
+      damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e );
+      damage->base_multiplier *= role_mult( e );
+    }
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      // Implementing as a 50/50 split between damage and absorb for now, need more data to confirm
+      if ( rng().roll( 0.5 ) )
+        return;
 
-  effect.execute_action = damage;
+      damage->execute_on_target( s->target );
+    }
+  };
 
-  new dbc_proc_callback_t( effect.player, effect );
+  new voidglass_shards_cb_t( effect );
 }
 
 // Armor
