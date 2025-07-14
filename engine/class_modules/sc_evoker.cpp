@@ -4777,7 +4777,8 @@ struct eruption_t : public essence_spell_t
     std::vector<player_t*>& tl = target_list();
     const int tl_size          = as<int>( tl.size() );
 
-    return std::min( mass_eruption_max_targets, tl_size );
+    return std::min( mass_eruption_max_targets + as<int>( p()->buff.draconic_inspiration->check_stack_value() ),
+                     tl_size );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -4791,7 +4792,8 @@ struct eruption_t : public essence_spell_t
                     p()->talent.ricocheting_pyroclast->effectN( 1 ).percent();
     }
 
-    if ( p()->buff.mass_eruption_stacks->check() && !is_overlord )
+    if ( p()->buff.mass_eruption_stacks->check() && !is_overlord &&
+         mass_eruption_targets() < mass_eruption_max_targets )
     {
       da *= 1 + ( mass_eruption_max_targets - mass_eruption_targets() ) * mass_eruption_mult;
     }
