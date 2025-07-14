@@ -1898,6 +1898,7 @@ public:
   void trigger_flowing_spirits( action_t* action );
   void trigger_lively_totems( const action_state_t* state );
   void trigger_tww3_totemic_enh_2pc( const action_state_t* state );
+  void trigger_tww3_totemic_enh_4pc( const action_state_t* state );
 
   // Legendary
   void trigger_legacy_of_the_frost_witch( const action_state_t* state, unsigned consumed_stacks );
@@ -5522,21 +5523,7 @@ struct lava_lash_t : public shaman_attack_t
       proc_lively_totems->occur();
     }
 
-    if ( p()->cooldown.tww3_enh_4pc_icd->up() && p()->buff.tww3_enh_4pc->up() )
-    {
-      auto delay = rng().gauss( 500_ms, 33_ms );
-      sim->print_debug( "{} triggering enhancement tww3 4 piece set bonus on {}, delay={}",
-        player->name(), execute_state->target->name(), delay );
-      make_event( sim, delay, [ t = execute_state->target, this ]() {
-        if ( t->is_sleeping() )
-        {
-          return;
-        }
-        p()->action.tww3_lava_lash->execute_on_target( t );
-      } );
-      p()->buff.tww3_enh_4pc->decrement();
-      p()->cooldown.tww3_enh_4pc_icd->start( p()->buff.tww3_enh_4pc->data().internal_cooldown() );
-    }
+    p()->trigger_tww3_totemic_enh_4pc( execute_state );
   }
 
   void impact( action_state_t* state ) override
@@ -7409,6 +7396,7 @@ struct fire_nova_t : public shaman_spell_t
 
     p()->trigger_lively_totems( execute_state );
     p()->trigger_whirling_fire( execute_state );
+    p()->trigger_tww3_totemic_enh_4pc( execute_state );
   }
 
   void impact( action_state_t* state ) override
@@ -14121,6 +14109,32 @@ void shaman_t::trigger_tww3_totemic_enh_2pc( const action_state_t* state )
 
   sim->print_debug( "{} triggering tww3 totemic enhancement 2pc set bonus", this->name() );
   action.tww3_primordial_storm->execute_on_target( state->target );
+}
+
+void shaman_t::trigger_tww3_totemic_enh_4pc( const action_state_t* state )
+{
+  if ( !sets->has_set_bonus( HERO_TOTEMIC, TWW3, B4) )
+  {
+    return;
+  }
+
+  if ( cooldown.tww3_enh_4pc_icd->down() || !buff.tww3_enh_4pc->up() )
+  {
+    return;
+  }
+
+  auto delay = rng().gauss( 500_ms, 33_ms );
+  sim->print_debug( "{} triggering enhancement tww3 4 piece set bonus on {}, delay={}",
+    name(), state->target->name(), delay );
+  make_event( sim, delay, [ t = state->target, this ]() {
+    if ( t->is_sleeping() )
+    {
+      return;
+    }
+    action.tww3_lava_lash->execute_on_target( t );
+  } );
+  buff.tww3_enh_4pc->decrement();
+  cooldown.tww3_enh_4pc_icd->start( buff.tww3_enh_4pc->data().internal_cooldown() );
 }
 
 // shaman_t::init_buffs =====================================================
