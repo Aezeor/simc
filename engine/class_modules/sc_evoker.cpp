@@ -3343,9 +3343,11 @@ struct emerald_blossom_t : public essence_heal_t
   action_t *heal, *panacea, *virtual_heal;
 
   timespan_t extend_ebon;
+  double motes_chance;
 
   emerald_blossom_t( evoker_t* p, std::string_view options_str )
-    : essence_heal_t( "emerald_blossom", p, p->spec.emerald_blossom, options_str )
+    : essence_heal_t( "emerald_blossom", p, p->spec.emerald_blossom, options_str ),
+      motes_chance( p->talent.motes_of_possibility->proc_chance() )
   {
     harmful      = false;
     heal         = p->get_secondary_action<emerald_blossom_heal_t>( "emerald_blossom_heal" );
@@ -3439,6 +3441,11 @@ struct emerald_blossom_t : public essence_heal_t
 
     if ( p()->talent.panacea.ok() )
       panacea->execute_on_target( p() );
+
+    if ( p()->talent.dream_of_spring.ok() && p()->talent.motes_of_possibility.ok() && rng().roll( motes_chance ) )
+    {
+      p()->spawn_mote_of_possibility();
+    }
   }
 };
 
