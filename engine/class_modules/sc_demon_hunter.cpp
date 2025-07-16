@@ -656,6 +656,7 @@ public:
     const spell_data_t* tactical_retreat_buff;
     const spell_data_t* unbound_chaos_buff;
     const spell_data_t* cycle_of_hatred_buff;
+    const spell_data_t* furious_throws_damage;
 
     // Vengeance
     const spell_data_t* vengeance_demon_hunter;
@@ -6479,8 +6480,9 @@ struct throw_glaive_t : public demon_hunter_attack_t
   {
     glaive_source source;
 
-    throw_glaive_damage_t( util::string_view name, demon_hunter_t* p, glaive_source source = glaive_source::THROWN )
-      : base_t( name, p, p->spell.throw_glaive->effectN( 1 ).trigger() ), source( source )
+    throw_glaive_damage_t( util::string_view name, demon_hunter_t* p, glaive_source source = glaive_source::THROWN,
+                           const spell_data_t* spell = nullptr )
+      : base_t( name, p, spell ? spell : p->spell.throw_glaive->effectN( 1 ).trigger() ), source( source )
     {
       background = dual = true;
       radius            = 10.0;
@@ -6574,18 +6576,19 @@ struct throw_glaive_t : public demon_hunter_attack_t
       {
         case glaive_source::SCREAMING_BRUTALITY_SLASH_PROC_THROW:
           furious_throws = p->get_background_action<throw_glaive_damage_t>(
-              "throw_glaive_furious_throws_sb_slash_proc_throw", source );
+              "throw_glaive_furious_throws_sb_slash_proc_throw", source, p->spec.furious_throws_damage );
           break;
         case glaive_source::SCREAMING_BRUTALITY_BLADE_DANCE_THROW:
-          furious_throws =
-              p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws_sb_bd_throw", source );
+          furious_throws = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws_sb_bd_throw",
+                                                                            source, p->spec.furious_throws_damage );
           break;
         case glaive_source::SCREAMING_BRUTALITY_DEATH_SWEEP_THROW:
-          furious_throws =
-              p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws_sb_ds_throw", source );
+          furious_throws = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws_sb_ds_throw",
+                                                                            source, p->spec.furious_throws_damage );
           break;
         default:
-          furious_throws = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws", source );
+          furious_throws = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws", source,
+                                                                            p->spec.furious_throws_damage );
           break;
       }
 
@@ -8866,6 +8869,7 @@ void demon_hunter_t::init_spells()
   spec.tactical_retreat_buff = talent.havoc.tactical_retreat->ok() ? find_spell( 389890 ) : spell_data_t::not_found();
   spec.unbound_chaos_buff    = talent.havoc.unbound_chaos->ok() ? find_spell( 347462 ) : spell_data_t::not_found();
   spec.cycle_of_hatred_buff  = conditional_spell_lookup( talent.havoc.cycle_of_hatred->ok(), 1214887 );
+  spec.furious_throws_damage = conditional_spell_lookup( talent.havoc.furious_throws->ok(), 393035 );
 
   spec.demon_spikes_buff  = find_spell( 203819 );
   spec.fiery_brand_debuff = talent.vengeance.fiery_brand->ok() ? find_spell( 207771 ) : spell_data_t::not_found();
