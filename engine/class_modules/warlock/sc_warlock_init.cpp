@@ -508,6 +508,12 @@ namespace warlock
     tier.spliced_destro_jackpot = find_spell( 1217798 );
     tier.demonfire_flurry = find_spell( 1217731 );
 
+    // Manaforge omega
+    if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+    {
+      tier.sh_tww3_rampaging_demonic_soul = find_spell( 1239689 );
+    }
+
     // Initialize some default values for pet spawners
     warlock_pet_list.infernals.set_default_duration( talents.summon_infernal_main->duration() );
     warlock_pet_list.overfiends.set_default_duration( talents.summon_overfiend->duration() );
@@ -1011,6 +1017,7 @@ namespace warlock
   {
     gains.feast_of_souls = get_gain( "feast_of_souls" );
     gains.shadow_of_death = get_gain( "shadow_of_death" );
+    gains.rampaging_demonic_soul = get_gain( "rampaging_demonic_soul" );
   }
 
   void warlock_t::init_procs()

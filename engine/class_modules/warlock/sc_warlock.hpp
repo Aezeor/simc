@@ -175,6 +175,8 @@ public:
 
     spawner::pet_spawner_t<pets::diabolist::diabolic_imp_t, warlock_t> diabolic_imps;
 
+    spawner::pet_spawner_t<pets::soul_harvester::rampaging_demonic_soul_t, warlock_t> demonic_souls;
+
     pets_t( warlock_t* w );
   } warlock_pet_list;
 
@@ -607,6 +609,9 @@ public:
     const spell_data_t* spliced_destro_jackpot;
     const spell_data_t* demonfire_flurry; // Procs Demonfire bolts on Jackpot proc
 
+    // Soul Harvester
+    const spell_data_t* sh_tww3_rampaging_demonic_soul;
+
   } tier;
 
   // Cooldowns - Used for accessing cooldowns outside of their respective actions, such as reductions/resets
@@ -719,6 +724,7 @@ public:
     // Soul Harvester
     gain_t* feast_of_souls;
     gain_t* shadow_of_death;
+    gain_t* rampaging_demonic_soul; // Only with TWW3 4pc
   } gains;
 
   // Procs
