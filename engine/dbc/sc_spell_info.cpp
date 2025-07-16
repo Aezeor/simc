@@ -1737,7 +1737,20 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
 
   if ( e->misc_value2() != 0 )
   {
-    if ( e->subtype() == A_ADD_PCT_LABEL_MODIFIER || e->subtype() == A_ADD_FLAT_LABEL_MODIFIER )
+    if ( e->subtype() == A_MOD_TOTAL_STAT_PERCENTAGE )
+    {
+      auto misc2 = e->misc_value2();
+      size_t idx = 0;
+      while ( misc2 )
+      {
+        if ( misc2 & 0b1 )
+          tokens.emplace_back( fmt::format( "Stat: {}", util::stat_type_abbrev( static_cast<stat_e>( idx + 1 ) ) ) );
+
+        misc2 >>= 1;
+        idx++;
+      }
+    }
+    else if ( e->subtype() == A_ADD_PCT_LABEL_MODIFIER || e->subtype() == A_ADD_FLAT_LABEL_MODIFIER )
     {
       tokens.emplace_back( fmt::format( "Misc Value 2: {} (Label)", e->misc_value2() ) );
     }
