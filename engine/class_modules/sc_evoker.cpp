@@ -1517,7 +1517,7 @@ struct evoker_t : public player_t
 namespace pets
 {
 // ==========================================================================
-// Base Death Knight Pet Action
+// Base Evoker Pet Action
 // ==========================================================================
 
 template <typename T_PET, typename Base>
@@ -1650,6 +1650,17 @@ struct evoker_pet_t : public pet_t
   {
     return nullptr;
   }
+
+  
+  //const evoker_td_t* find_target_data( const player_t* target ) const override
+  //{
+  //  return evoker()->find_target_data( target );
+  //}
+
+  //evoker_td_t* get_target_data( player_t* target ) const override
+  //{
+  //  return evoker()->get_target_data( target );
+  //}
 
   void arise() override
   {
@@ -10888,6 +10899,10 @@ double evoker_t::get_molten_embers_multiplier( player_t* target, bool recalculat
 template <class T_PET, class Base>
 void pets::pet_action_t<T_PET, Base>::apply_pet_action_effects()
 {
+  parse_effects( evoker()->spec.augmentation );
+  parse_effects( evoker()->spec.devastation );
+  parse_effects( evoker()->buff.ebon_might_self_buff );
+  parse_effects( evoker()->talent.spellweavers_dominance );
 }
 
 template <class T_PET, class Base>
