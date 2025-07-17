@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61981 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.62049 PTR
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -16411,7 +16411,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1095708)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.33 | Target: Self (1)
 Description      : When you spend extra Energy on Ferocious Bite, the extra damage is increased by $s1%.
 
 
@@ -21236,7 +21236,7 @@ Effects          :
 #6 (id=1233040)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 #7 (id=1233041)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 65 | Scaled Value: 65 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Base Value: 160 | Scaled Value: 160 | PvP Coefficient: 0.33 | Target: Self (1)
 Description      : $?c1[Starfire][Thrash] damage increased by $?c1[$s1][$s2]%. $?c1[Gaining Astral Power with Starfire][Thrash] has a $?c1[$s4][$s6]% chance to launch a Starsurge at a victim at $?c1[$s5][$s7]% effectiveness.
 
 Name             : Druid Elune's Chosen 11.2 Class Set 4pc (id=1236333) [Spell Family (7), Passive, Hidden] 

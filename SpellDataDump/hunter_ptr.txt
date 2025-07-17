@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61981 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.62049 PTR
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -1586,6 +1586,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Kill Shot (53351), Tar Trap (135299), Steel Trap (162480), Steel Trap (162487), Cobra Shot (193455), Explosive Shot (212680), Barbed Shot (217200), Frenzy (217207), High Explosive Trap (236777), Multi-Shot (257620), Explosive Shot (269850), Frenzy (272790), Frenzy (272795), Kill Shot (320976), Implosive Trap (462033), Black Arrow (466930)
                    Family Flags: 11, 12, 36, 73, 78, 86
+#7 (id=1257982)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Misc Value 2: 5078 (Label) | Target: Self (1)
+                   Affected Spells (Label): Bleak Powder (467914), Bleak Powder (472084)
 Description      : Increases the damage done by your pets by ${$s1}.1% and the damage of your shots and traps by ${$s5}.1%.
 
 Name             : Steady Shot (id=77443) [Spell Family (9)] 
@@ -2171,7 +2174,7 @@ Requires weapon  : Bow, Gun, Crossbow
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2, #4), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #3, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2, #5), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #3, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2)
 Triggered By     : Barrage (120360)
 Family Flags     : 55, 106, 119, 121
 Attributes       : Uses Ranged Slot (1), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Treat as Area Effect (175), Do Not Auto Select Target with Initiates Combat (220), Allow Cast While Channeling (308), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
@@ -2480,25 +2483,25 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179698)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267617), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Killer Companion (378955), Spearhead (378957), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Shadow Surge (444269), Sentinel (450412), Lunar Storm (450883), Symphonic Arsenal (451194), Lunar Storm (453398), Lunar Storm (457978), Spearhead (459690), Merciless Blow (459870), Rapid Fire (460496), Black Arrow (466930), Bleak Powder (467914), Black Arrow (468037), Boar Charge (471936), Boar Charge (471938), Rend Flesh (471999), Bleak Powder (472084), Merciless Blow (1217375), Lunar Storm (1217459), Poisoned Barbs (1217549), Spearhead (1221386)
                    Family Flags: 106
 #2 (id=191138)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267617), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Killer Companion (378955), Spearhead (378957), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Shadow Surge (444269), Sentinel (450412), Lunar Storm (450883), Symphonic Arsenal (451194), Lunar Storm (453398), Lunar Storm (457978), Spearhead (459690), Merciless Blow (459870), Rapid Fire (460496), Black Arrow (466930), Bleak Powder (467914), Black Arrow (468037), Boar Charge (471936), Boar Charge (471938), Rend Flesh (471999), Bleak Powder (472084), Merciless Blow (1217375), Lunar Storm (1217459), Poisoned Barbs (1217549), Spearhead (1221386)
                    Family Flags: 106
 #3 (id=191139)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-#4 (id=191140)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+#4 (id=191140)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+#5 (id=191141)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Barrage (120361)
                    Family Flags: 119
-#5 (id=191141)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#6 (id=1032354)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Volley (260243), Volley (260247)
                    Family Flags: 34
-#6 (id=1032354)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #7 (id=1097992)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Kill Shot (53351), Kill Shot (320976), Black Arrow (466930)
@@ -2545,17 +2548,17 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179699)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+                   Base Value: -4 | Scaled Value: -4 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267617), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Killer Companion (378955), Spearhead (378957), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Shadow Surge (444269), Sentinel (450412), Lunar Storm (450883), Symphonic Arsenal (451194), Lunar Storm (453398), Lunar Storm (457978), Spearhead (459690), Merciless Blow (459870), Rapid Fire (460496), Black Arrow (466930), Bleak Powder (467914), Black Arrow (468037), Boar Charge (471936), Boar Charge (471938), Rend Flesh (471999), Bleak Powder (472084), Merciless Blow (1217375), Lunar Storm (1217459), Poisoned Barbs (1217549), Spearhead (1221386)
                    Family Flags: 106
 #2 (id=191134)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 6 | Scaled Value: 6 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -4 | Scaled Value: -4 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267617), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Killer Companion (378955), Spearhead (378957), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Shadow Surge (444269), Sentinel (450412), Lunar Storm (450883), Symphonic Arsenal (451194), Lunar Storm (453398), Lunar Storm (457978), Spearhead (459690), Merciless Blow (459870), Rapid Fire (460496), Black Arrow (466930), Bleak Powder (467914), Black Arrow (468037), Boar Charge (471936), Boar Charge (471938), Rend Flesh (471999), Bleak Powder (472084), Merciless Blow (1217375), Lunar Storm (1217459), Poisoned Barbs (1217549), Spearhead (1221386)
                    Family Flags: 106
 #3 (id=191135)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+                   Base Value: -4 | Scaled Value: -4 | Target: Self (1)
 #4 (id=191136)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 22 | Scaled Value: 22 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
 #5 (id=191137)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Target: Self (1)
 #6 (id=260887)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
@@ -3794,6 +3797,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.4 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Bursting Shot (186387), Wind Arrow (191043), Bursting Shot (224729), Bursting Shot (238559), Rapid Fire (257044), Serpent Sting (259491), Volley (260243), Volley (260247), Serpent Sting (271788), Resonating Arrow (308495), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Coordinated Assault (361738), Death Chakram (361756), Wailing Arrow (392058), Wailing Arrow (392060), Shadow Surge (444269), Sentinel (450412), Lunar Storm (450883), Symphonic Arsenal (451194), Black Arrow (466930), Black Arrow (468037), Black Arrow (468572), Lunar Storm (1217459)
                    Family Flags: 5, 14, 17, 34, 70, 74, 76, 91, 93, 99, 118, 119
+#5 (id=1258291)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.4 | Misc Value 2: 5078 (Label) | Target: Self (1)
+                   Affected Spells (Label): Bleak Powder (467914), Bleak Powder (472084)
 Description      : Range of all your ranged abilities is increased by ${$s1}.1% and damage of all abilities increased by ${$s2}.1%.
 Tooltip          : Range increased by $w1%.
 Focus spending abilites deal $s2% increased damage.
@@ -5923,7 +5929,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 52
                  : 292
-Affecting Spells : Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#5), Mastery: Sniper Training (193468 effects: #1, #2, #4), Roar of the Seven Lions (207318 effect#1), Unnatural Causes (459529 effect#1)
+Affecting Spells : Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#6), Mastery: Sniper Training (193468 effects: #1, #2, #4), Roar of the Seven Lions (207318 effect#1), Unnatural Causes (459529 effect#1)
 Family Flags     : 1, 34, 121
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Allow Aura While Dead (116), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -5941,7 +5947,7 @@ Spell Type       : Ranged
 Range            : 100 yards
 Labels           : 16: Class Spells
                  : 292
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2, #5), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #2, #4), Bullseye (204090 effect#1), Roar of the Seven Lions (207318 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Unnatural Causes (459529 effect#1), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2, #6), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #2, #4), Bullseye (204090 effect#1), Roar of the Seven Lions (207318 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Unnatural Causes (459529 effect#1), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2)
 Family Flags     : 34, 106
 Attributes       : Is Ability (4), Allow Cast While Dead (23), Initiates Combat (Enables Auto-Attack) (41), Ignore Line of Sight (66), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
@@ -15728,7 +15734,7 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-                 : 5078: Soul Drinker (469638 effect#3), Hunter Dark Ranger 11.2 Class Set 2pc (1236370 effect#2)
+                 : 5078: Mastery: Master of Beasts (76657 effect#7), Mastery: Sniper Training (193468 effect#5), Soul Drinker (469638 effect#3), Hunter Dark Ranger 11.2 Class Set 2pc (1236370 effect#2)
 Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2)
 Family Flags     : 106
 Attributes       : Not a Proc (105), Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
@@ -16589,7 +16595,7 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-                 : 5078: Soul Drinker (469638 effect#3), Hunter Dark Ranger 11.2 Class Set 2pc (1236370 effect#2)
+                 : 5078: Mastery: Master of Beasts (76657 effect#7), Mastery: Sniper Training (193468 effect#5), Soul Drinker (469638 effect#3), Hunter Dark Ranger 11.2 Class Set 2pc (1236370 effect#2)
 Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2)
 Family Flags     : 106
 Attributes       : Not a Proc (105), Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)

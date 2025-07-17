@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61981 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.62049 PTR
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -98,7 +98,7 @@ Family Flags     : 8, 54
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Requires Main-Hand Weapon (106), Spell Haste Affects Periodic (173), Do Not Chain To Crowd-Controlled Targets (200), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=280)      : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.346 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.391 | Mechanic: Bleed | Target: Enemy (6)
 #2 (id=281)      : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Enemy (6)
 #3 (id=282)      : Energize Power (30)
@@ -745,7 +745,7 @@ Effects          :
 #1 (id=1920)     : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 #2 (id=99543)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.036 | PvP Coefficient: 0.715 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.15 | PvP Coefficient: 0.715 | Target: Enemy (6)
 #3 (id=715089)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 Description      : Instantly attacks for $s2 Physical damage.
@@ -1046,7 +1046,7 @@ Effects          :
 #1 (id=6243)     : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=136652)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Base Value: 45 | Scaled Value: 45 | Target: Self (1)
 #3 (id=180823)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 #4 (id=181788)   : Apply Aura (6) | Dummy (4)
@@ -1232,7 +1232,7 @@ Effects          :
 #1 (id=17065)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=99544)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.036 | PvP Coefficient: 0.715 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.15 | PvP Coefficient: 0.715 | Target: Enemy (6)
 #3 (id=715088)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 Description      : Instantly attacks for $s2 Physical damage.
@@ -1378,7 +1378,7 @@ Family Flags     : 35, 54
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), No Proc Equip Requirement (97), Not a Proc (105), Requires Main-Hand Weapon (106), Can Proc From Procs (122), No Helpful Threat (131), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=22420)    : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.4 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.416 | Target: Enemy (6)
 #2 (id=22421)    : Apply Aura (6) | Add Flat Modifier (107): Spell Proc Chance (18)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 18 | Target: Self (1)
                    Affected Spells: Deadly Poison (2823), Crippling Poison (3408), Numbing Poison (5761), Wound Poison (8679), Leeching Poison (108211), Instant Poison (315584), Atrophic Poison (381637), Amplifying Poison (381664)
@@ -1552,7 +1552,7 @@ Labels           : 16: Class Spells
 Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell
 Affecting Spells : Nightstalker (130493 effect#1), Marked for Death (137619 effect#1), Deeper Stratagem (193531 effects: #1, #4), Tight Spender (381621 effect#1), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Devious Stratagem (394321 effects: #1, #4), Fazed (441224 effect#5), Disorienting Strikes (441274 effect#1), Flawless Form (441326 effects: #1, #2), Sanguine Stratagem (457512 effects: #1, #4)
 Family Flags     : 55
-Attributes       : Is Ability (4), Not Shapeshifted (16), No Immunities (29), No Aura Cancel (31), Is Channelled (34), Is Self Channelled (38), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), Name in Channel Bar (61), PvP Enabling (96), Requires Main-Hand Weapon (106), Force Display Castbar (155), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Delay Combat Timer During Cast (211), Haste Affects Duration (273), Reset cooldown upon ending an encounter (333), Allow Defense While Channeling (338), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
+Attributes       : Is Ability (4), Not Shapeshifted (16), No Immunities (29), No Aura Cancel (31), Is Channelled (34), Is Self Channelled (38), Initiates Combat (Enables Auto-Attack) (41), Name in Channel Bar (61), PvP Enabling (96), Requires Main-Hand Weapon (106), Force Display Castbar (155), Extra Initial Period (169), Spell Haste Affects Periodic (173), Delay Combat Timer During Cast (211), Haste Affects Duration (273), Reset cooldown upon ending an encounter (333), Allow Defense While Channeling (338), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Channel Interrupt: Action (2)
 Effects          :
 #1 (id=44062)    : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
@@ -2530,7 +2530,7 @@ Family Flags     : 54, 81
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Do Not Display Range (126), Extra Initial Period (169), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=150471)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.329176 | Radius: 0 - 10 yards | Mechanic: Bleed | Target: At Self (22) -> Enemy in Area (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.3 | Radius: 0 - 10 yards | Mechanic: Bleed | Target: At Self (22) -> Enemy in Area (15)
 #2 (id=715792)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Radius: 0 - 10 yards | Target: At Self (22) -> Enemy in Area (15)
 #3 (id=819852)   : Dummy (3)
@@ -2772,11 +2772,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179720)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+                   Base Value: 16 | Scaled Value: 16 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Serrated Bone Spike (385424), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Serrated Bone Spike (394036), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Caustic Spatter (421979), Sanguine Blades (423193), Envenomous Explosion (426581), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Coup de Grace (441776), Coup de Grace (450743), Fatebound Coin (Tails) (452538), Fatebound Coin (452559), Corrupt the Blood (457133), Deathstalker's Mark (457157), Clear the Witnesses (457179), Hunt Them Down (457193), Singular Focus (457236), Lucky Coin (461818), Fatal Intent (461984), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Killing Spree (463781), Dispatch (467059), Echoing Reprimand (470672), Corrupt the Blood (1225168), Killing Spree (1235074), Killing Spree (1235097), Killing Spree (1235100), Killing Spree (1248603), Killing Spree (1248604)
                    Family Flags: 54
 #2 (id=191056)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 6 | Scaled Value: 6 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 16 | Scaled Value: 16 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Serrated Bone Spike (385424), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Serrated Bone Spike (394036), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Caustic Spatter (421979), Sanguine Blades (423193), Envenomous Explosion (426581), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Coup de Grace (441776), Coup de Grace (450743), Fatebound Coin (Tails) (452538), Fatebound Coin (452559), Corrupt the Blood (457133), Deathstalker's Mark (457157), Clear the Witnesses (457179), Hunt Them Down (457193), Singular Focus (457236), Lucky Coin (461818), Fatal Intent (461984), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Killing Spree (463781), Dispatch (467059), Echoing Reprimand (470672), Corrupt the Blood (1225168), Killing Spree (1235074), Killing Spree (1235097), Killing Spree (1235100), Killing Spree (1248603), Killing Spree (1248604)
                    Family Flags: 54
 #3 (id=191057)   : Apply Aura (6) | Modify Pet Damage Done% (429)
@@ -2814,7 +2814,7 @@ Effects          :
                    Affected Spells: Ambush (8676), Ambush (385897), Ambush (430023)
                    Family Flags: 9
 #18 (id=1100195) : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 16 | Scaled Value: 16 | Target: Self (1)
+                   Base Value: 26 | Scaled Value: 26 | Target: Self (1)
 #19 (id=1179476) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 12 | Misc Value 2: 4049 (Label) | Target: Self (1)
                    Affected Spells (Label): Death's Arrival (454433)
@@ -2881,7 +2881,7 @@ Effects          :
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Serrated Bone Spike (385424), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Serrated Bone Spike (394036), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Caustic Spatter (421979), Sanguine Blades (423193), Envenomous Explosion (426581), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Coup de Grace (441776), Coup de Grace (450743), Fatebound Coin (Tails) (452538), Fatebound Coin (452559), Corrupt the Blood (457133), Deathstalker's Mark (457157), Clear the Witnesses (457179), Hunt Them Down (457193), Singular Focus (457236), Lucky Coin (461818), Fatal Intent (461984), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Killing Spree (463781), Dispatch (467059), Echoing Reprimand (470672), Corrupt the Blood (1225168), Killing Spree (1235074), Killing Spree (1235097), Killing Spree (1235100), Killing Spree (1248603), Killing Spree (1248604)
                    Family Flags: 54
 #22 (id=1114363) : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 28 | Scaled Value: 28 | Target: Self (1)
+                   Base Value: 38 | Scaled Value: 38 | Target: Self (1)
 #23 (id=1114364) : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Target: Self (1)
 #24 (id=1114386) : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
@@ -2889,11 +2889,11 @@ Effects          :
                    Affected Spells: Leeching Poison (108211)
                    Family Flags: 73
 #25 (id=1119096) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rupture (1943), Rupture (360826), Rupture (394031)
                    Family Flags: 20
 #26 (id=1228129) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Ambush (8676), Ambush (385897), Ambush (430023)
                    Family Flags: 9
 
@@ -6059,7 +6059,7 @@ Family Flags     : 44, 54
 Attributes       : Is Ability (4), Do Not Sheath (18), Do Not Display Range (126), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=805458)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.19 | Radius: 0 - 10 yards | Target: At Self (22) -> Enemy in Area (15)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.211 | Radius: 0 - 10 yards | Target: At Self (22) -> Enemy in Area (15)
 #2 (id=805481)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=806748)   : Dummy (3)
@@ -6091,7 +6091,7 @@ Family Flags     : 44, 54
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), Ignore Combat Timer (156), No Attack Dodge (247), No Attack Parry (248), No Attack Block (256), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=805486)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.19 | Radius: 0 - 10 yards | Target: At Self (22) -> Enemy in Area (15)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.211 | Radius: 0 - 10 yards | Target: At Self (22) -> Enemy in Area (15)
 Description      : $@spelldesc319175
 
 Name             : Mastery: Potent Assassin (desc=Rank 2) (id=319473) [Spell Family (8), Passive] 
@@ -8334,7 +8334,7 @@ Family Flags     : 8, 54
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Allow While Stealthed (37), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Requires Main-Hand Weapon (106), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=898195)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.346 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.391 | Mechanic: Bleed | Target: Enemy (6)
 #2 (id=898196)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Enemy (6)
 Description      : $@spelldesc360194
@@ -13210,7 +13210,7 @@ Effects          :
 #2 (id=1166348)  : Apply Aura (6) | Dummy (4)
                    Base Value: 7 | Scaled Value: 7 | Target: Self (1)
 #3 (id=1166349)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
+                   Base Value: 65 | Scaled Value: 65 | Target: Self (1)
 Description      : $?a137036[Blade Flurry damage is increased by $s1%]?s200758[Your auto-attacks, Backstab, Shadowstrike, and Eviscerate also strike up to $s2 additional nearby targets for $s3% of normal damage][Your auto-attacks, Backstab, Shadowstrike, and Eviscerate also strike up to $s2 additional nearby targets for $s3% of normal damage] while Flawless Form is active.
 
 Name             : No Scruples (id=441398) [Spell Family (8), Passive] 
@@ -14591,7 +14591,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
                  : 5175: Death's Study (1239231 effect#2), Death's Study (1239232 effect#2)
-                 : 5176: Death's Study (1239231 effect#3), Death's Study (1239232 effect#3)
+                 : 5176: Death's Study (1239231 effect#3), Death's Study (1239231 effect#4), Death's Study (1239232 effect#3), Death's Study (1239232 effect#4)
 Triggered By     : Momentum of Despair (457067)
 Attributes       : Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
@@ -14795,7 +14795,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
                  : 5175: Death's Study (1239231 effect#2), Death's Study (1239232 effect#2)
-                 : 5176: Death's Study (1239231 effect#3), Death's Study (1239232 effect#3)
+                 : 5176: Death's Study (1239231 effect#3), Death's Study (1239231 effect#4), Death's Study (1239232 effect#3), Death's Study (1239232 effect#4)
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1162160)  : Apply Aura (6) | Modify Damage Done% (79)
@@ -14819,7 +14819,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
                  : 3022
-                 : 5176: Death's Study (1239231 effect#3), Death's Study (1239232 effect#3)
+                 : 5176: Death's Study (1239231 effect#3), Death's Study (1239231 effect#4), Death's Study (1239232 effect#3), Death's Study (1239232 effect#4)
 Attributes       : No Aura Cancel (31), Aura Points On Client (268)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
@@ -16449,6 +16449,9 @@ Effects          :
 #3 (id=1237129)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.33 | Misc Value: 12 | Misc Value 2: 5176 (Label) | Target: Self (1)
                    Affected Spells (Label): Momentum of Despair (457115), Lingering Darkness (457273), Darkest Night (457280)
+#4 (id=1258284)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.33 | Misc Value: 23 | Misc Value 2: 5176 (Label) | Target: Self (1)
+                   Affected Spells (Label): Momentum of Despair (457115), Lingering Darkness (457273), Darkest Night (457280)
 Description      : $@spelldesc1236400
 Tooltip          : Deathstalker effects increased by $w1%.
 
@@ -16474,6 +16477,9 @@ Effects          :
                    Affected Spells (Label): Follow the Blood (457068), Momentum of Despair (457115), Deathstalker's Mark (457160), Symbolic Victory (457167), Lingering Darkness (457273)
 #3 (id=1237125)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.34 | Misc Value: 12 | Misc Value 2: 5176 (Label) | Target: Self (1)
+                   Affected Spells (Label): Momentum of Despair (457115), Lingering Darkness (457273), Darkest Night (457280)
+#4 (id=1258303)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.34 | Misc Value: 23 | Misc Value 2: 5176 (Label) | Target: Self (1)
                    Affected Spells (Label): Momentum of Despair (457115), Lingering Darkness (457273), Darkest Night (457280)
 Description      : $@spelldesc1236400
 Tooltip          : Deathstalker effects increased by $w1%.

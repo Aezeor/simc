@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61981 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.62049 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -13058,7 +13058,7 @@ Effects          :
                    Affected Spells (Label): Demonsurge (452416), Demonsurge (453323), Demonsurge (1238696)
 Description      : Entering demon form now immediately induces a Demonsurge and shatters a demon soul fragment that grants $?a212613[$1238675s1%][$1238676s1%] increased damage for $?a212613[$1238675d][$1238676d].
 
-Name             : Scarred Strikes (id=1238462) [Spell Family (107), Hidden] 
+Name             : Scarred Strikes (id=1238462) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -13068,7 +13068,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 295
                  : 5061
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Disable Aura While Dead (226), Aura Points On Client (268)
+Attributes       : No Aura Cancel (31), Disable Aura While Dead (226), Aura Points On Client (268)
 Effects          :
 #1 (id=1235645)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.33 | Target: Self (1)
