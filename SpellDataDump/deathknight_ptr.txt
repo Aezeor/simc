@@ -15082,6 +15082,21 @@ Effects          :
                    Affected Spells (Label): Icy Talons (194879)
 Description      : $@spelldesc436687
 
+Name             : Grim Reaper (id=443761) [Spell Family (15), Hidden] 
+Class            : Death Knight
+School           : Shadowfrost
+Spell Type       : None
+Range            : 50000 yards
+Duration         : 180 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+                 : 3022
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), DoT Stacking Rule (103), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
+Effects          :
+#1 (id=1139862)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+
 Name             : Rider's Champion (id=444005) [Spell Family (15), Passive] 
 Talent Entry     : Rider of the Apocalypse (Frost, Unholy) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
 Class            : Death Knight
