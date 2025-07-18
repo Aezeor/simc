@@ -16162,10 +16162,10 @@ void death_knight_t::apply_effect_modifying_effects()
   switch ( specialization() )
   {
     case DEATH_KNIGHT_BLOOD:
-      tww3_infliction_mask.disable( 3, 4 );
+      tww3_infliction_mask.disable( 1, 3 );
       break;
     case DEATH_KNIGHT_UNHOLY:
-      tww3_infliction_mask.disable( 1, 2 );
+      tww3_infliction_mask.disable( 2, 4 );
       break;
     default:
       break;
