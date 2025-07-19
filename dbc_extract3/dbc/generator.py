@@ -1975,6 +1975,7 @@ class SpellDataGenerator(DataGenerator):
           ( 1232346, 0 ), # Desecrate Damage
           ( 1239422, 0 ), # Blighted Arrow Coil Buff
           ( 1233351, 0), # Frostreaper debuff
+          ( 1252004, 0), # Apocalypse script
           # Rider of the Apocalypse
           ( 444505, 0 ), # Mograines Might Buff
           ( 444826, 0 ), # Trollbanes Chains of Ice Main
