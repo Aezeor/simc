@@ -4729,7 +4729,6 @@ struct trollbane_pet_t final : public horseman_pet_t
       base_multiplier     = dk()->spell.tww3_4pc_rider->effectN( 1 ).percent();
       aoe = -1;
       reduced_aoe_targets = data().effectN( 5 ).base_value();
-      parse_effects( dk()->mastery.frozen_heart );
     }
   };
 
@@ -16107,6 +16106,9 @@ void pets::pet_action_t<T_PET, Base>::apply_pet_action_effects()
 
   // Don't auto parse coag, since there is some snapshot behavior when the weapon dies
   // parse_effects( dk()->buffs.coagulopathy );
+
+  // Frost
+  parse_effects( dk()->mastery.frozen_heart );
 
   // Unholy
   parse_effects( dk()->buffs.unholy_assault );
