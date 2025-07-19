@@ -16137,6 +16137,8 @@ void pets::pet_action_t<T_PET, Base>::apply_pet_action_effects()
       [ & ]( double v ) {
         if ( dk()->spec.blood_death_knight->ok() )
           v += dk()->spec.blood_death_knight->effectN( 19 ).percent();
+        if ( dk()->spec.unholy_death_knight->ok() )
+          v += dk()->spec.unholy_death_knight->effectN( 21 ).percent();
         if ( dk()->buffs.gift_of_the_sanlayn->check() )
           v *= 1.0 + dk()->buffs.gift_of_the_sanlayn->check_value();
         return v;
