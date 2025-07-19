@@ -11479,7 +11479,7 @@ struct legion_of_souls_t : public death_knight_spell_t
       rider_duration = p->spell.apocalypse_now_data->duration();
     }
 
-    if ( p->talent.unholy.magus_of_the_dead.ok() )
+    if ( p->talent.unholy.magus_of_the_dead.ok() && !p->talent.unholy.raise_abomination.ok() )
     {
       p->pets.army_magus.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
     }
