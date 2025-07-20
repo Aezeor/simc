@@ -489,7 +489,7 @@ double warlock_t::composite_mastery() const
   double m = player_t::composite_mastery();
 
   if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && talents.master_summoner.ok() )
-    m += talents.master_summoner->effectN( 1 ).base_value();
+    m += talents.master_summoner->effectN( 3 ).base_value();
 
   return m;
 }
