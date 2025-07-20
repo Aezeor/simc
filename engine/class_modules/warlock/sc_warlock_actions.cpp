@@ -597,7 +597,7 @@ using namespace helpers;
           m *= 1.0 + p()->hero.touch_of_rancora->effectN( 2 ).percent();
       }
 
-      if( demonology() && affected_by.master_summoner )
+      if( demonology() && p()->talents.master_summoner.ok() && affected_by.master_summoner )
         m *= 1.0 + p()->talents.master_summoner->effectN( 2 ).percent();
 
       return m;
