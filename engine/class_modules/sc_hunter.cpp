@@ -3238,6 +3238,7 @@ struct ravenous_leap_t : public hunter_pet_attack_t<fenryr_t>
   ravenous_leap_t( fenryr_t* p ) : hunter_pet_attack_t( "ravenous_leap", p, p->find_spell( 459753 ) )
   {
     background = true;
+    dire_beast_chance = -1;
   }
 };
 
@@ -3250,6 +3251,7 @@ struct rend_flesh_t : public hunter_pet_attack_t<bear_t>
     envenomed_fangs_t( bear_t* p ) : hunter_pet_attack_t( "envenomed_fangs", p, p->o()->talents.envenomed_fangs_spell )
     {
       background = true;
+      dire_beast_chance = -1;
     }
   };
   
@@ -5365,9 +5367,7 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 
 struct laceration_t : public residual_bleed_base_t
 {
-  laceration_t( hunter_t* p ) : residual_bleed_base_t( "laceration", p, p->talents.laceration_bleed ) {
-    dire_beast_chance = -1;
-  }
+  laceration_t( hunter_t* p ) : residual_bleed_base_t( "laceration", p, p->talents.laceration_bleed ) {}
 };
 
 // Barbed Shot (Empowered) (The War Within Season 2 2 Piece Set Bonus) ==============
