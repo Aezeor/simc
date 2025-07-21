@@ -73,6 +73,7 @@ enum flag_e : uint32_t
   THRASHING    = 0x00100000,  // thrashing claws talent
   STACKED      = 0x00200000,  // bear tww2 4pc
   JACKPOT      = 0x00400000,  // owl tww2 2pc
+  ECHO         = 0x00800000,  // dotc tww3 4pc
   // free casts
   APEX         = 0x01000000,  // apex predators's craving
   TOOTHANDCLAW = 0x02000000,  // tooth and claw talent
@@ -807,6 +808,10 @@ struct druid_t final : public parse_player_effects_t
     buff_t* ursine_potential;          // wildpower surge
     buff_t* ursine_potential_counter;  // wildpower surge
     buff_t* wildshape_mastery;
+
+    // Hero sets
+    buff_t* ravage_rampage;  // TWW3 DOTC 2pc
+    buff_t* preparing_to_strike;  // TWW3 DOTC 4pc
 
     // Helper pointers
     buff_t* clearcasting;  // clearcasting_cat or clearcasting_tree
@@ -2372,6 +2377,7 @@ struct ravage_base_t : public BASE
 
     BASE::p()->buff.killing_strikes->trigger( this );
     BASE::p()->buff.ruthless_aggression->trigger( this );
+    BASE::p()->buff.ravage_rampage->trigger( this );
   }
 };
 
@@ -2749,7 +2755,7 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     if ( p->specialization() == DRUID_BALANCE || p->specialization() == DRUID_RESTORATION )
       ap_type = attack_power_type::NO_WEAPON;
 
-    if ( data().ok() )
+    if ( data().ok() && !has_flag( flag_e::ECHO ) )
     {
       // effect data missing stack suppress flag for effect #2, manually override
       snapshots.bloodtalons =  parse_persistent_effects( p->buff.bloodtalons, IGNORE_STACKS, DECREMENT_BUFF );
@@ -3566,6 +3572,54 @@ struct shooting_stars_buff_t final : public druid_buff_t
     }
   }
 };
+
+// DOTC TWW3 4pc ============================================================
+struct preparing_to_strike_buff_t final : public druid_buff_t
+{
+  action_t* ravage_action = nullptr;
+  player_t* ravage_target = nullptr;
+  double energy_mod = 0.0;
+  int combo_points = 0;
+  bool bloodtalons = false;
+  bool coiled_to_spring = false;
+
+  preparing_to_strike_buff_t( druid_t* p ) : base_t( p, "preparing_to_strike", p->find_spell( 1236342 ) )
+  {
+    set_chance( p->sets->set( HERO_DRUID_OF_THE_CLAW, TWW3, B4 )->effectN( 1 ).percent() );
+  }
+
+  bool trigger_echo( action_t* a, player_t* t, double energy = 0.0, int cp = 0, bool bt = false, bool coiled = false )
+  {
+    assert( a && t );
+
+    if ( !t->is_active() || check() || !trigger() )
+      return false;
+
+    ravage_action = a;
+    ravage_target = t;
+    energy_mod = energy;
+    combo_points = cp;
+    bloodtalons = bt;
+    coiled_to_spring = coiled;
+
+    return true;
+  }
+
+  void expire_override( int s, timespan_t d ) override
+  {
+    assert( ravage_action && ravage_target );
+
+    if ( ravage_target->is_active() )
+      ravage_action->execute_on_target( ravage_target );
+
+    ravage_action = nullptr;
+    ravage_target = nullptr;
+    energy_mod = 0.0;
+    combo_points = 0;
+    bloodtalons = false;
+    coiled_to_spring = false;
+  }
+};
 }  // end namespace buffs
 
 namespace pets
@@ -3806,11 +3860,12 @@ namespace cat_attacks
 {
 struct cat_finisher_data_t
 {
+  double energy_mul = 1.0;
   int combo_points = 0;
 
-  void sc_format_to( const cat_finisher_data_t& data, fmt::format_context::iterator out )
+  friend void sc_format_to( const cat_finisher_data_t& data, fmt::format_context::iterator out )
   {
-    fmt::format_to( out, "combo_points={}", data.combo_points );
+    fmt::format_to( out, "combo_points={} energy_mul={}", data.combo_points, data.energy_mul );
   }
 };
 
@@ -3932,6 +3987,11 @@ public:
     return cast_state( s )->combo_points;
   }
 
+  double energy_mul( const action_state_t* s ) const
+  {
+    return cast_state( s )->energy_mul;
+  }
+
   // used during state snapshot
   virtual int _combo_points() const
   {
@@ -3976,6 +4036,11 @@ public:
     }
   }
 
+  virtual int consumed_combo_points() const
+  {
+    return _combo_points();
+  }
+
   void consume_resource() override
   {
     base_t::consume_resource();
@@ -3983,7 +4048,7 @@ public:
     if ( background || !hit_any_target )
       return;
 
-    auto consumed = _combo_points();
+    auto consumed = consumed_combo_points();
 
     if ( p()->talent.soul_of_the_forest_cat.ok() )
     {
@@ -4570,20 +4635,9 @@ struct feral_frenzy_t final : public cat_attack_t
 // Ferocious Bite ===========================================================
 struct ferocious_bite_base_t : public cat_finisher_t
 {
-  struct rampant_ferocity_data_t
-  {
-    int combo_points = 0;
-    double energy_mul = 0.0;
-
-    void sc_format_to( const rampant_ferocity_data_t& data, fmt::format_context::iterator out )
-    {
-      fmt::format_to( out, "combo_points={} energy_mul={}", data.combo_points, data.energy_mul );
-    }
-  };
-
   struct rampant_ferocity_t final : public cat_attack_t
   {
-    using state_t = druid_action_state_t<rampant_ferocity_data_t>;
+    using state_t = druid_action_state_t<cat_finisher_data_t>;
 
     rampant_ferocity_t( druid_t* p, std::string_view n ) : cat_attack_t( n, p, p->find_spell( 391710 ) )
     {
@@ -4623,7 +4677,7 @@ struct ferocious_bite_base_t : public cat_finisher_t
     {
       auto state = cast_state( s );
 
-      return cat_attack_t::composite_da_multiplier( s ) * state->combo_points * ( 1.0 + state->energy_mul );
+      return cat_attack_t::composite_da_multiplier( s ) * state->combo_points * state->energy_mul;
     }
   };
 
@@ -4672,12 +4726,17 @@ struct ferocious_bite_base_t : public cat_finisher_t
     return cat_finisher_t::ready();
   }
 
-  void execute() override
+  double get_excess_energy() const
   {
     // Incarn does affect the additional energy consumption.
     double _max_used = max_excess_energy * ( 1.0 + p()->buff.incarnation_cat->check_value() );
 
-    excess_energy = std::min( _max_used, ( p()->resources.current[ RESOURCE_ENERGY ] - cost() ) );
+    return std::min( _max_used, ( p()->resources.current[ RESOURCE_ENERGY ] - cost() ) );
+  }
+
+  void execute() override
+  {
+    excess_energy = get_excess_energy();
     
     cat_finisher_t::execute();
   }
@@ -4728,14 +4787,19 @@ struct ferocious_bite_base_t : public cat_finisher_t
     return is_free() ? 1.0 : ( excess_energy / max_excess_energy * ( 1.0 + saber_jaws_mul ) );
   }
 
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
+  {
+    cast_state( s )->energy_mul = 1.0 + energy_modifier( s );
+
+    cat_finisher_t::snapshot_state( s, rt );
+  }
+
   double composite_da_multiplier( const action_state_t* s ) const override
   {
-    auto dam = cat_finisher_t::composite_da_multiplier( s );
-    auto energy_mul = 1.0 + energy_modifier( s );
     // base spell coeff is for 5CP, so we reduce if lower than 5.
     auto combo_mul = cp( s ) / p()->resources.max[ RESOURCE_COMBO_POINT ];
 
-    return dam * energy_mul * combo_mul;
+    return cat_finisher_t::composite_da_multiplier( s ) * energy_mul( s ) * combo_mul;
   }
 };
 
@@ -4751,12 +4815,57 @@ struct ferocious_bite_t final : public ferocious_bite_base_t
     }
   };
 
+  struct ravage_ferocious_bite_echo_t final : public ravage_base_t<ferocious_bite_base_t, use_dot_list_t<cat_attack_t>>
+  {
+    double eff_mul;
+
+    ravage_ferocious_bite_echo_t( druid_t* p, std::string_view n, flag_e f )
+      : base_t( n, p, p->find_spell( 441591 ), f ),
+        eff_mul( p->sets->set( HERO_DRUID_OF_THE_CLAW, TWW3, B4 )->effectN( 2 ).base_value() )
+    {
+      proc = true;
+      name_str_reporting = "Echo";
+
+      // snapshots are not parsed for ECHO in cat_attack_t, so manually parse tiger's fury
+      parse_effects( p->buff.tigers_fury, p->talent.carnivorous_instinct, p->talent.tigers_tenacity );
+    }
+
+    buffs::preparing_to_strike_buff_t* echo_buff() const
+    {
+      return debug_cast<buffs::preparing_to_strike_buff_t*>( p()->buff.preparing_to_strike );
+    }
+
+    double energy_modifier( const action_state_t* ) const override
+    {
+      return echo_buff()->energy_mod;
+    }
+
+    int _combo_points() const override
+    {
+      return echo_buff()->combo_points;
+    }
+
+    double composite_persistent_multiplier( const action_state_t* s ) const override
+    {
+      auto pers = base_t::composite_persistent_multiplier( s );
+
+      if ( echo_buff()->bloodtalons )
+        pers *= 1.0 + p()->buff.bloodtalons->data().effectN( 1 ).percent();
+
+      if ( echo_buff()->coiled_to_spring )
+        pers *= 1.0 + p()->buff.coiled_to_spring->data().effectN( 1 ).percent();
+
+      return pers;
+    }
+  };
+
   struct big_winner_t final : public cat_attack_t
   {
     big_winner_t( druid_t* p ) : cat_attack_t( "big_winner", p, p->find_spell( 1217245 ) ) {}
   };
 
   ravage_ferocious_bite_t* ravage = nullptr;
+  ravage_ferocious_bite_echo_t* ravage_echo = nullptr;
   action_t* big_winner = nullptr;
 
   DRUID_ABILITY( ferocious_bite_t, ferocious_bite_base_t, "ferocious_bite", p->find_class_spell( "Ferocious Bite" ) )
@@ -4765,6 +4874,12 @@ struct ferocious_bite_t final : public ferocious_bite_base_t
     {
       ravage = p->get_secondary_action<ravage_ferocious_bite_t>( "ravage_" + name_str, f );
       add_child( ravage );
+
+      if ( auto set = p->sets->set( HERO_DRUID_OF_THE_CLAW, TWW3, B4 ); set->ok() )
+      {
+        ravage_echo = p->get_secondary_action<ravage_ferocious_bite_echo_t>( "ravage_echo_" + name_str, flag_e::ECHO );
+        add_child( ravage_echo );
+      }
     }
 
     if ( !has_flag( flag_e::APEX ) && !p->buff.big_winner->is_fallback )
@@ -4797,8 +4912,21 @@ struct ferocious_bite_t final : public ferocious_bite_base_t
 
     if ( ravage && p()->buff.ravage_fb->check() )
     {
+      // saberjaws is not applied, so duplicate energy_modifier()
+      auto _ene = get_excess_energy() / max_excess_energy;
+      auto _cp = _combo_points();
+      auto _bt = p()->buff.bloodtalons->check();
+      auto _c2s = p()->buff.coiled_to_spring->check();
+
       ravage->execute_on_target( target );
       p()->buff.ravage_fb->expire( this );
+
+      if ( ravage_echo )
+      {
+        debug_cast<buffs::preparing_to_strike_buff_t*>( p()->buff.preparing_to_strike )
+          ->trigger_echo( ravage_echo, target, _ene, _cp, _bt, _c2s );
+      }
+
       return;
     }
 
@@ -5715,7 +5843,8 @@ struct maul_t final : public maul_base_t
     ravage_maul_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->find_spell( 441605 ), f ) {}
   };
 
-  action_t* ravage = nullptr;
+  ravage_maul_t* ravage = nullptr;
+  ravage_maul_t* ravage_echo = nullptr;
 
   DRUID_ABILITY( maul_t, maul_base_t, "maul", p->talent.maul )
   {
@@ -5723,6 +5852,15 @@ struct maul_t final : public maul_base_t
     {
       ravage = p->get_secondary_action<ravage_maul_t>( "ravage_" + name_str, f );
       add_child( ravage );
+
+      if ( auto set = p->sets->set( HERO_DRUID_OF_THE_CLAW, TWW3, B4 ); set->ok() )
+      {
+        ravage_echo =  p->get_secondary_action<ravage_maul_t>( "ravage_echo_" + name_str, flag_e::ECHO );
+        ravage_echo->proc = true;
+        ravage_echo->name_str_reporting = "Echo";
+        ravage_echo->base_multiplier = set->effectN( 3 ).percent();
+        add_child( ravage_echo );
+      }
     }
   }
 
@@ -5741,6 +5879,13 @@ struct maul_t final : public maul_base_t
     {
       ravage->execute_on_target( target );
       p()->buff.ravage_maul->expire( this );
+
+      if ( ravage_echo )
+      {
+        debug_cast<buffs::preparing_to_strike_buff_t*>( p()->buff.preparing_to_strike )
+          ->trigger_echo( ravage_echo, target );
+      }
+
       return;
     }
 
@@ -11547,6 +11692,20 @@ void druid_t::create_buffs()
   buff.wildshape_mastery =
     make_fallback( talent.wildshape_mastery.ok(), this, "wildshape_mastery", find_spell( 441685 ) );
 
+  // Hero sets
+  auto dotc_tww3_2pc = sets->set( HERO_DRUID_OF_THE_CLAW, TWW3, B2 );
+  buff.ravage_rampage =
+    make_fallback( dotc_tww3_2pc->ok(), this, "ravage_rampage", find_trigger( dotc_tww3_2pc ).trigger() )
+      ->set_default_value_from_effect_type( A_HASTE_ALL )
+      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+      ->set_trigger_spell( dotc_tww3_2pc );
+  assert( buff.ravage_rampage->data().effectN( 1 ).base_value() ==
+          buff.ravage_rampage->data().effectN( 2 ).base_value() );
+
+  buff.preparing_to_strike = make_fallback<preparing_to_strike_buff_t>(
+    sets->has_set_bonus( HERO_DRUID_OF_THE_CLAW, TWW3, B4 ), this, "preparing_to_strike" );
+
   for ( auto b : buff_list )
     if ( b->data().ok() )
       apply_affecting_auras( *b );
@@ -14410,7 +14569,11 @@ void druid_t::parse_action_effects( action_t* action )
   _a->parse_effects( mastery.razor_claws );
   _a->parse_effects( buff.apex_predators_craving );
   _a->parse_effects( buff.berserk_cat );
-  _a->parse_effects( buff.coiled_to_spring, EXPIRE_BUFF );
+
+  // dotc tww3 4pc echo snapshots coiled to spring, which is handled in the action snapshot_internal
+  if ( !dynamic_cast<druid_action_data_t*>( action )->has_flag( flag_e::ECHO ) )
+    _a->parse_effects( buff.coiled_to_spring, EXPIRE_BUFF );
+
   _a->parse_effects( buff.incarnation_cat );
   _a->parse_effects( buff.predator, USE_CURRENT );
   _a->parse_effects( buff.predatory_swiftness, EXPIRE_BUFF );
