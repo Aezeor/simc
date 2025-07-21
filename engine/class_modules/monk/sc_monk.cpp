@@ -200,12 +200,8 @@ void monk_action_t<Base>::apply_buff_effects()
 
   // Conduit of the Celestials
   parse_effects( p()->buff.august_dynasty, EXPIRE_BUFF );
-  /*
-   * Heart of the Jade Serpent:
-   *  - priority: celestial > coc_2pc = normal
-   *  - if a higher priority hotjs is applied than the current, disable current hotjs
-   */
-  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr );
+  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr,
+                 [ & ] { return !p()->buff.heart_of_the_jade_serpent_cdr_celestial->check(); } );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial );
   parse_effects( p()->tier.tww3.coc_2pc_heart_of_the_jade_serpent );
   parse_effects( p()->buff.jade_sanctuary );
@@ -803,11 +799,6 @@ struct monk_snapshot_stats_t : public snapshot_stats_t
   void execute() override
   {
     snapshot_stats_t::execute();
-
-    // auto *monk                                              = debug_cast<monk_t *>( player );
-    // monk->stagger->sample_data->buffed_base_value           = monk->stagger->base_value();
-    // monk->stagger->sample_data->buffed_percent_player_level = monk->stagger->percent( monk->level() );
-    // monk->stagger->sample_data->buffed_percent_target_level = monk->stagger->percent( target->level() );
   }
 };
 
@@ -1239,7 +1230,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
     may_combo_strike       = true;
     trigger_jadefire_stomp = true;
     sef_ability            = actions::sef_ability_e::SEF_TIGER_PALM;
-    cast_during_sck        = player->specialization() != MONK_WINDWALKER;
+    cast_during_sck        = true;
 
     if ( p->specialization() == MONK_WINDWALKER )
       energize_amount = p->baseline.windwalker.aura->effectN( 4 ).base_value();
@@ -1499,9 +1490,7 @@ struct rising_sun_kick_dmg_t : public overwhelming_force_t<monk_melee_attack_t>
   {
     ww_mastery = true;
 
-    if ( p->specialization() == MONK_WINDWALKER )
-      ap_type = attack_power_type::WEAPON_BOTH;
-
+    ap_type    = attack_power_type::WEAPON_BOTH;
     background = dual = true;
     may_crit          = true;
   }
@@ -1565,7 +1554,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     may_combo_strike       = true;
     sef_ability            = actions::sef_ability_e::SEF_RISING_SUN_KICK;
     ap_type                = attack_power_type::NONE;
-    cast_during_sck        = player->specialization() != MONK_WINDWALKER;
+    cast_during_sck        = true;
     trigger_jadefire_stomp = true;
 
     attack_power_mod.direct = 0;
@@ -1757,14 +1746,13 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
       tier_tww2_opportunistic_strike( false )
   {
     parse_options( options_str );
-    if ( p->specialization() == MONK_WINDWALKER )
-      ap_type = attack_power_type::WEAPON_BOTH;
 
+    ap_type                = attack_power_type::WEAPON_BOTH;
     sef_ability            = actions::sef_ability_e::SEF_BLACKOUT_KICK;
     ww_mastery             = true;
     may_combo_strike       = true;
     trigger_jadefire_stomp = true;
-    cast_during_sck        = p->specialization() != MONK_WINDWALKER;
+    cast_during_sck        = true;
 
     apply_affecting_aura( p->talent.brewmaster.fluidity_of_motion );
     apply_affecting_aura( p->talent.brewmaster.shadowboxing_treads );
@@ -2061,8 +2049,7 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
     dual = background   = true;
     aoe                 = -1;
     reduced_aoe_targets = p->baseline.monk.spinning_crane_kick->effectN( 1 ).base_value();
-
-    ap_type = attack_power_type::WEAPON_BOTH;
+    ap_type             = attack_power_type::WEAPON_BOTH;
 
     parse_effects( p->talent.windwalker.crane_vortex );
 
@@ -2449,7 +2436,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     interrupt_auto_attack = false;
     channeled             = false;
     may_combo_strike      = true;
-    cast_during_sck       = false;
+    cast_during_sck       = true;
 
     spell_power_mod.direct = 0.0;
 
@@ -2621,7 +2608,7 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
     apply_affecting_effect( p->talent.windwalker.communion_with_wind->effectN( 1 ) );
 
     may_combo_strike = true;
-    cast_during_sck  = false;
+    cast_during_sck  = true;
     cooldown->hasted = false;
     trigger_gcd      = data().gcd();
 
@@ -3201,7 +3188,7 @@ struct leg_sweep_t : public monk_melee_attack_t
     parse_options( options_str );
     ignore_false_positive = true;
     may_miss = may_block = may_dodge = may_parry = false;
-    cast_during_sck                              = player->specialization() != MONK_WINDWALKER;
+    cast_during_sck                              = true;
 
     radius += p->talent.monk.tiger_tail_sweep->effectN( 1 ).base_value();
   }
@@ -3315,6 +3302,9 @@ struct slicing_winds_t : public monk_melee_attack_t
     parse_options( options_str );
 
     execute_action = new damage_t( player );
+
+    // override gcd as we are not properly handling it as an empowered channel
+    trigger_gcd = timespan_t::from_millis( 1400 );
   }
 
   void execute() override
@@ -3540,7 +3530,7 @@ struct roll_t : public monk_spell_t
     : monk_spell_t( player, "roll",
                     ( player->talent.monk.chi_torpedo->ok() ? spell_data_t::not_found() : player->baseline.monk.roll ) )
   {
-    cast_during_sck = player->specialization() != MONK_WINDWALKER;
+    cast_during_sck = true;
 
     parse_options( options_str );
 
@@ -3569,7 +3559,7 @@ struct chi_torpedo_t : public monk_spell_t
   {
     parse_options( options_str );
 
-    cast_during_sck = player->specialization() != MONK_WINDWALKER;
+    cast_during_sck = true;
   }
 
   void execute() override
@@ -3927,7 +3917,7 @@ struct fortifying_brew_t : brew_t<monk_spell_t>
     : brew_t<monk_spell_t>( p, "fortifying_brew", p->talent.monk.fortifying_brew.find_override_spell() ),
       absorb( p->talent.conduit_of_the_celestials.niuzaos_protection->ok() ? new niuzaos_protection_t( p ) : nullptr )
   {
-    cast_during_sck = player->specialization() != MONK_WINDWALKER;
+    cast_during_sck = true;
 
     parse_options( options_str );
 
@@ -4156,7 +4146,7 @@ struct diffuse_magic_t : public monk_spell_t
     : monk_spell_t( p, "diffuse_magic", p->talent.monk.diffuse_magic )
   {
     parse_options( options_str );
-    cast_during_sck = player->specialization() != MONK_WINDWALKER;
+    cast_during_sck = true;
     harmful         = false;
     base_dd_min     = 0;
     base_dd_max     = 0;
@@ -4251,7 +4241,7 @@ struct xuen_spell_t : public monk_spell_t
   {
     parse_options( options_str );
 
-    cast_during_sck = false;
+    cast_during_sck = true;
     // Specifically set for 10.1 class trinket
     harmful  = true;
     gcd_type = gcd_haste_type::NONE;
@@ -4857,7 +4847,7 @@ struct jadefire_stomp_t : public monk_spell_t
   {
     parse_options( options_str );
     may_combo_strike = true;
-    cast_during_sck  = player->specialization() != MONK_WINDWALKER;
+    cast_during_sck  = true;
     gcd_type         = gcd_haste_type::NONE;  // Need to define this manually for some reason
 
     damage = new jadefire_stomp_damage_t( p );
@@ -5026,6 +5016,8 @@ struct vivify_t : public monk_heal_t
 
     spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
     base_execute_time += p->talent.monk.vivacious_vivification->effectN( 1 ).time_value();
+
+    cast_during_sck = false;
   }
 
   double cost_pct_multiplier() const override
@@ -5153,7 +5145,7 @@ struct expel_harm_t : monk_heal_t
   {
     parse_options( options_str );
     may_combo_strike = false;
-    cast_during_sck  = player->specialization() != MONK_WINDWALKER;
+    cast_during_sck  = true;
     if ( player->talent.windwalker.combat_wisdom->ok() )
       background = true;
 
@@ -6686,6 +6678,67 @@ void monk_t::collect_resource_timeline_information()
   // stagger->sample_data->effectiveness.add( sim->current_time(), stagger->percent( target->level() ) );
 }
 
+bool monk_t::validate_actor()
+{
+  if ( specialization() == MONK_MISTWEAVER )
+  {
+    if ( !quiet )
+      sim->error( "Mistweaver Monk for {} is not currently supported.", *this );
+    return false;
+  }
+
+  if ( main_hand_weapon.type == WEAPON_NONE )
+  {
+    if ( !quiet )
+      sim->error( "{} has no weapon equipped at the Main-Hand slot.", *this );
+    return false;
+  }
+
+  if ( main_hand_weapon.group() == WEAPON_2H && off_hand_weapon.group() == WEAPON_1H )
+  {
+    if ( !quiet )
+      sim->error( "{} both a 1-hand and 2-hand weapon equipped at once.", *this );
+    return false;
+  }
+
+  if ( specialization() == MONK_WINDWALKER &&
+       range::contains( player_sub_trees, static_cast<unsigned>( HERO_CONDUIT_OF_THE_CELESTIALS ) ) )
+  {
+    auto count =
+        range::count_if( player_traits, [ is_ptr = is_ptr() ]( std::tuple<talent_tree, unsigned, unsigned> entry ) {
+          if ( std::get<talent_tree>( entry ) != talent_tree::HERO )
+            return false;
+          const trait_data_t *trait = trait_data_t::find( std::get<1>( entry ), is_ptr );
+          if ( !trait )
+            return false;
+          return static_cast<hero_talent_e>( trait->id_sub_tree ) == HERO_CONDUIT_OF_THE_CELESTIALS;
+        } );
+
+    // Report without counting the hidden talent that activates the subtree
+    count -= 1;
+    if ( count < 10 )
+    {
+      sim->error(
+          "Invalid Conduit of the Celestials Hero Talent tree, possibly low level. Found {} talents, expected 10.",
+          count );
+      return false;
+    }
+  }
+
+  switch ( specialization() )
+  {
+    case MONK_BREWMASTER:
+    case MONK_MISTWEAVER:
+    case MONK_WINDWALKER:
+      return true;
+    default:
+      sim->error( "No specialization was selected for {}.", *this );
+      return false;
+  }
+
+  return false;
+}
+
 bool monk_t::validate_fight_style( fight_style_e style ) const
 {
   if ( specialization() == MONK_BREWMASTER )
@@ -7984,7 +8037,7 @@ void monk_t::create_buffs()
                           "heart_of_the_jade_serpent_cdr", find_spell( 443421 ) )
           ->apply_affecting_aura( baseline.windwalker.aura_3 )
           ->set_expire_callback(
-              [ & ]( buff_t *, int, timespan_t remains ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
+              [ & ]( buff_t *, int, timespan_t ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
 
   buff.heart_of_the_jade_serpent_cdr_celestial =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
@@ -7995,7 +8048,7 @@ void monk_t::create_buffs()
               buff.heart_of_the_jade_serpent_cdr->expire();
           } )
           ->set_expire_callback(
-              [ & ]( buff_t *, int, timespan_t remains ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
+              [ & ]( buff_t *, int, timespan_t ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
 
   buff.heart_of_the_jade_serpent_stack_mw =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
@@ -8156,11 +8209,12 @@ void monk_t::create_buffs()
       make_buff_fallback( tier.tww3.coc_2pc->ok(), this, "heart_of_the_jade_serpent_tww3_tier",
                           tier.tww3.coc_2pc_heart_of_the_jade_serpent_data )
           ->set_expire_callback(
-              [ & ]( buff_t *, int, timespan_t remains ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
+              [ & ]( buff_t *, int, timespan_t ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
 
   tier.tww3.coc_4pc_jade_serpents_blessing =
       make_buff_fallback( tier.tww3.coc_4pc->ok(), this, "jade_serpents_blessing_tww3_tier",
-                          tier.tww3.coc_4pc_jade_serpents_blessing_data );
+                          tier.tww3.coc_4pc_jade_serpents_blessing_data )
+          ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
   // SPM
   tier.tww3.spm_2pc_flurry_charge = make_buff_fallback( tier.tww3.spm_2pc->ok(), this, "flurry_charge_tww3_tier",
