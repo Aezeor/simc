@@ -812,7 +812,6 @@ public:
     propagate_const<buff_t*> visceral_strength_unholy;
 
     // Deathbringer
-    propagate_const<buff_t*> reapers_mark_grim_reaper;
     propagate_const<buff_t*> bind_in_darkness;
     propagate_const<buff_t*> dark_talons_shadowfrost;
     propagate_const<buff_t*> dark_talons_icy_talons;
@@ -14438,7 +14437,6 @@ void death_knight_t::spell_lookups()
   // Deathbringer Spells
   spell.reapers_mark_debuff          = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 434765 );
   spell.reapers_mark_explosion       = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 436304 );
-  spell.reapers_mark_grim_reaper     = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 443761 );
   spell.wave_of_souls_damage         = conditional_spell_lookup( talent.deathbringer.wave_of_souls.ok(), 435802 );
   spell.wave_of_souls_debuff         = conditional_spell_lookup( talent.deathbringer.wave_of_souls.ok(), 443404 );
   spell.bind_in_darkness_buff        = conditional_spell_lookup( talent.deathbringer.bind_in_darkness.ok(), 443532 );
@@ -14887,19 +14885,6 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
             if ( !p.sim->event_mgr.canceled )
               p.reapers_mark_explosion_wrapper( buff->player, buff->source, stacks );
           } )
-          ->set_tick_callback( [ & ]( buff_t* buff, int, timespan_t ) {
-            // 5/7/24 the 35% appears to be in a server script
-            // the explosion is triggering anytime the target is below 35%, if the hidden grim reaper buff is down,
-            // instantly popping fresh marks trigger is on a one second dummy periodic, giving a slight window to
-            // acquire stacks
-            size_t targets = p.sim->target_non_sleeping_list.size();
-            if ( !p.buffs.reapers_mark_grim_reaper->check() && targets == 1 && buff->player->health_percentage() < 35 )
-            {
-              p.sim->print_debug( "reapers_mark go boom" );
-              p.buffs.reapers_mark_grim_reaper->trigger();
-              make_event( p.sim, 0_ms, [ buff ]() { buff->expire(); } );
-            }
-          } )
           ->set_stack_change_callback( [ & ]( buff_t*, int, int new_ ) {
             if ( p.talent.deathbringer.reaper_of_souls.ok() && new_ == 1 )
             {
@@ -15001,10 +14986,6 @@ void death_knight_t::create_buffs()
 
   // Deathbringer
   buffs.empowered_soul           = make_fallback( sets->has_set_bonus( HERO_DEATHBRINGER, TWW3, B4 ), this, "empowered_soul", spell.tww3_4pc_db->effectN( 3 ).trigger() );
-
-  buffs.reapers_mark_grim_reaper = make_fallback( talent.deathbringer.grim_reaper.ok(), this,
-                                                  "reapers_mark_grim_reaper", spell.reapers_mark_grim_reaper )
-                                       ->set_quiet( true );
 
   buffs.bind_in_darkness =
       make_fallback( talent.deathbringer.bind_in_darkness.ok(), this, "bind_in_darkness", spell.bind_in_darkness_buff )
