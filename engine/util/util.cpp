@@ -2823,20 +2823,7 @@ const char* util::specialization_string( specialization_e spec )
   return "Unknown";
 }
 
-// hero_tree_string ====================================================
-std::string util::hero_talent_string( hero_talent_e hero_tree )
-{
-  for ( const auto& entry : __trait_sub_tree_data )
-  {
-    if ( hero_tree == static_cast<hero_talent_e>( std::get<0>( entry ) ) )
-      return std::get<1>( entry );
-  }
-
-  return "unknown";
-}
-
-
-// parse_position_type ======================================================
+// parse_specialization type ================================================
 
 specialization_e util::parse_specialization_type( util::string_view name )
 {
@@ -2847,15 +2834,6 @@ specialization_e util::parse_specialization_type( util::string_view name )
   }
 
   return SPEC_NONE;
-}
-
-hero_talent_e util::parse_hero_talent_type( util::string_view name )
-{
-  for ( const auto& entry : __trait_sub_tree_data )
-    if ( util::str_compare_ci( name, tokenize_fn( std::get<std::string>( entry ) ) ) )
-      return static_cast<hero_talent_e>( std::get<0>( entry ) );
-
-  return HERO_NONE;
 }
 
 // parse_item_quality =======================================================

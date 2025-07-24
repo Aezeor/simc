@@ -850,7 +850,7 @@ bool parse_set_bonus( sim_t* sim, std::string_view, std::string_view value )
 
   if ( p->sets->new_parse_set_bonus_option( value, set_bonus, bonus, enabled, spec, hero ) )
   {
-    p->sets->set_bonus_spec_data [ set_bonus ][ composite_idx( spec, hero ) ][ bonus].overridden = enabled;
+    p->sets->set_bonus_spec_data[ set_bonus ][ composite_idx( spec, hero ) ][ bonus ].overridden = enabled;
     return true;
   }
 
