@@ -8845,6 +8845,9 @@ struct empower_rune_weapon_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+    reduced_aoe_targets         = 1.0;
+    full_amount_targets         = 1;
+
     internal_cooldown->duration = min_gcd;
     min_gcd = trigger_gcd = 0_ms;    
  }
