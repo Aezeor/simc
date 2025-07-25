@@ -12995,6 +12995,32 @@ Effects          :
 Description      : $@spelldesc262624
 Tooltip          : Increases physical damage dealt from your abilities by $s1%.
 
+Name             : Stormkeeper (id=392714) [Spell Family (11), Passive, Hidden] 
+Class            : Shaman
+School           : Nature
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 292
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1031134)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2074 (Category) | Target: Self (1)
+Description      : $@spelltooltip191634
+
+Name             : Stormkeeper (id=392763) [Spell Family (11), Passive, Hidden] 
+Class            : Shaman
+School           : Nature
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 292
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
+Effects          :
+#1 (id=1031215)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2074 (Category) | Target: Self (1)
+Description      : $@spelltooltip191634
+
 Name             : Healing Stream Totem (id=392915) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=4, col=1, max_rank=1, req_points=0, override="Healing Stream Totem" (id=5394)]
 Class            : Shaman
