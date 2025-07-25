@@ -5599,15 +5599,16 @@ struct inexorable_assault_damage_t final : public death_knight_spell_t
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
+    // first stack is decremented by the consuming action, handle extra stacks here
     double m = death_knight_spell_t::composite_da_multiplier( s );
 
-    int stacks = p()->buffs.inexorable_assault->stack();
+    int extra_stacks = p()->buffs.inexorable_assault->stack();
 
     p()->buffs.inexorable_assault->decrement( as<int>(p()->talent.frost.inexorable_assault->effectN( 1 ).base_value()) - 1 );
 
-    int stacks_consumed = stacks - p()->buffs.inexorable_assault->stack();
+    int extra_stacks_consumed = extra_stacks - p()->buffs.inexorable_assault->stack();
 
-    m *= 1 + stacks_consumed;
+    m *= 1 + extra_stacks_consumed;
 
     return m;
   }
@@ -5802,7 +5803,7 @@ struct pillar_of_frost_buff_t final : public death_knight_buff_t
     p()->buffs.enduring_strength->trigger();
     auto max_duration_extension = p()->talent.frost.enduring_strength->effectN( 4 ).time_value();
     p()->buffs.enduring_strength->extend_duration(
-        p(), std::max( p()->talent.frost.enduring_strength->effectN( 2 ).time_value() *
+        p(), std::min( p()->talent.frost.enduring_strength->effectN( 2 ).time_value() *
                            p()->buffs.enduring_strength_builder->stack(),
                        max_duration_extension ) );
     p()->buffs.enduring_strength_builder->expire();
@@ -9281,7 +9282,7 @@ struct frostscythe_base_t : public death_knight_melee_attack_t
     }
 
     if ( p()->talent.frost.enduring_strength.ok() && p()->buffs.pillar_of_frost->up() &&
-         p()->cooldown.enduring_strength_icd->is_ready() )
+         p()->cooldown.enduring_strength_icd->is_ready() && s->result == RESULT_CRIT )
     {
       p()->buffs.enduring_strength_builder->trigger();
       p()->cooldown.enduring_strength_icd->start();
