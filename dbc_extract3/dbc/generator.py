@@ -1563,6 +1563,7 @@ class SpellDataGenerator(DataGenerator):
          1245643, # Mind-Fracturing Odium
          1224916, 1224917, 1224918, # Void-Touched Fragment
          1235633, # Soulbinder's Embrace
+         1246637, 1246649, 1246851, # Chaotic Nethergate
         ),
 
         # Warrior:

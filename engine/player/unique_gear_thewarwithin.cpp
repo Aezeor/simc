@@ -9276,6 +9276,83 @@ void alldevouring_nucleus( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// chaotic nethergate
+// 1244008 driver
+// 1246637 damage
+// 1246649 unknown
+// 1246837 coeff
+//  e1: damage
+//  e2: heal
+//  e3: period
+//  e4: heal target cap
+// 1246851 heal
+void chaotic_nethergate( special_effect_t& effect )
+{
+  unsigned coeff_id = 1246837;
+  auto coeff = find_special_effect( effect.player, coeff_id );
+  assert( coeff && "Chaotic Nethergate missing coeff effect" );
+
+  struct chaotic_nethergate_t : public generic_proc_t
+  {
+    struct chaotic_nethergate_damage_t : public generic_aoe_proc_t
+    {
+      action_t* heal;
+      double heal_amount;
+      int cap;
+
+      chaotic_nethergate_damage_t( const special_effect_t& e, const spell_data_t* data )
+        : generic_aoe_proc_t( e, "chaotic_nethergate_damage", 1246637 ),
+          heal_amount( data->effectN( 2 ).average( e ) ),
+          cap( as<int>( data->effectN( 4 ).base_value() ) )
+      {
+        base_dd_min = base_dd_max = data->effectN( 1 ).average( e );
+        dual = true;
+        split_aoe_damage = false;
+        name_str_reporting = "chaotic_nethergate";
+
+        heal = create_proc_action<generic_heal_t>( "chaotic_nethergate_heal", e, "chaotic_nethergate_heal", 1246851 );
+        heal->name_str_reporting = "chaotic_nethergate";
+      }
+
+      void execute() override
+      {
+        generic_aoe_proc_t::execute();
+
+        heal->base_dd_min = heal->base_dd_max = heal_amount * std::min( num_targets_hit, cap );
+        heal->execute();
+      }
+    };
+
+    ground_aoe_params_t params;
+
+    chaotic_nethergate_t( const special_effect_t& e, const spell_data_t* data )
+      : generic_proc_t( e, "chaotic_nethergate", e.driver() )
+    {
+      auto damage = create_proc_action<chaotic_nethergate_damage_t>( "chaotic_nethergate_damage", e, data );
+      damage->stats = stats;
+
+      params.pulse_time( timespan_t::from_seconds( data->effectN( 3 ).base_value() ) )
+        .duration( e.driver()->duration() )
+        .action( damage );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+
+      params
+        .start_time( timespan_t::min() )  // reset start time
+        .target( target )
+        .x( player->x_position )
+        .y( player->y_position );
+
+      make_event<ground_aoe_event_t>( *sim, player, params );
+    }
+  };
+
+  effect.execute_action = create_proc_action<chaotic_nethergate_t>( "chaotic_nethergate", effect, coeff->driver() );
+}
+
 // Weapons
 
 // 443384 driver
@@ -12322,6 +12399,8 @@ void register_special_effects()
   register_special_effect( 1231220, items::veiling_mana_shroud );
   register_special_effect( 1231217, DISABLED_EFFECT );  // veiling mana shroud
   register_special_effect( 1235500, items::alldevouring_nucleus );
+  register_special_effect( 1244008, items::chaotic_nethergate );
+  register_special_effect( 1246837, DISABLED_EFFECT );  // chaotic nethergate
   reset_version_check();
 
   // Weapons
