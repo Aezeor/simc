@@ -2482,7 +2482,7 @@ struct bloodseeker_vine_rng_t : public proc_rng_t
   bloodseeker_vine_rng_t( std::string_view n, player_t* p ) : proc_rng_t( rng_type, n, p ) {}
 
   int trigger() override { return 0; }
-  void reset( reset_type_e /* reset_type */) override { count = 0.0; }
+  void reset( reset_type_e ) override { count = 0.0; }
 
   bool trigger( double scale, unsigned shift, double bonus )
   {
@@ -2504,7 +2504,7 @@ template <typename BASE>
 struct trigger_thriving_growth_t : public BASE
 {
 protected:
-  target_specific_t<bloodseeker_vine_rng_t> vine_rng;
+  bloodseeker_vine_rng_t vine_rng;
   double vine_scale = 0.0;
   double vine_bonus = 0.0;
   unsigned vine_shift = 0;
@@ -2513,7 +2513,7 @@ protected:
 
 public:
   trigger_thriving_growth_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f ), vine_rng( false )
+    : BASE( n, p, s, f ), vine_rng( "bloodseeker_vine", p )
   {
     if ( p->sets->has_set_bonus( HERO_WILDSTALKER, TWW3, B2 ) )
       vine_bonus = 0.17;  // TODO: wild ass guess, results in ~38.5% more executes
@@ -2526,21 +2526,8 @@ public:
     if ( !vine_scale )
       return;
 
-    auto& _rng = vine_rng[ d->target ];
-    if ( !_rng )
-    {
-      _rng = BASE::p()->template get_rng<bloodseeker_vine_rng_t>( fmt::format( "bloodseeker_vine_{}", d->target->actor_index ) );
-      d->target->register_on_demise_callback( BASE::p(), [ _rng ]( player_t* ) { _rng->reset( reset_type_e::COMBAT ); } );
-    }
-
-    if ( _rng->trigger( vine_scale, vine_shift, vine_bonus ) )
-    {
+    if ( vine_rng.trigger( vine_scale, vine_shift, vine_bonus ) )
       BASE::p()->active.bloodseeker_vines->execute_on_target( d->target );
-
-      for ( auto e : vine_rng.get_entries() )
-        if ( e )
-          e->reset( reset_type_e::COMBAT );
-    }
   }
 };
 
