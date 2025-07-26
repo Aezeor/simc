@@ -1330,7 +1330,10 @@ struct druid_t final : public parse_player_effects_t
   bool validate_actor() override;
   void init_absorb_priority() override;
   void init_action_list() override;
+  void init_blizzard_action_list() override;
   std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self = true ) const override;
+  parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t&,
+                                                            const assisted_combat_step_data_t& ) const override;
   void init_base_stats() override;
   void init_stats() override;
   void init_gains() override;
@@ -13399,13 +13402,57 @@ void druid_t::init_action_list()
   player_t::init_action_list();
 }
 
-// druid_t::aura_expr_from_spell_id ====================================================
+// druid_t::init_blizzard_action_list =======================================
+void druid_t::init_blizzard_action_list()
+{
+  auto def = get_action_priority_list( "default" );
+  auto cd = get_action_priority_list( "cooldowns" );
+
+  if ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN )
+    def->add_action( "auto_attack" );
+
+  player_t::init_blizzard_action_list();
+
+  cd->add_action( "use_items" );
+
+  if ( specialization() == DRUID_BALANCE )
+  {
+    cd->add_action( "celestial_alignment,if=!buff.celestial_alignment.up" );
+    cd->add_action( "incarnation,if=!buff.incarnation.up" );
+  }
+  else if ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN )
+  {
+    cd->add_action( "berserk" );
+    cd->add_action( "incarnation" );
+  }
+
+  cd->add_action( "convoke_the_spirits" );
+}
+
+// druid_t::aura_expr_from_spell_id =========================================
 std::string druid_t::aura_expr_from_spell_id( unsigned int spell_id, bool on_self ) const
 {
   if ( spell_id == 252752 && on_self )
     return "buff.apex_predators_craving";
 
   return player_t::aura_expr_from_spell_id( spell_id, on_self );
+}
+
+// druid_t::parse_assisted_combat_rule ======================================
+parsed_assisted_combat_rule_t druid_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                                                   const assisted_combat_step_data_t& step ) const
+{
+  if ( ( rule.condition_type == PLAYER_AURA_APPLICATION_GREATER ||
+         rule.condition_type == PLAYER_AURA_APPLICATION_LESS ) &&
+       ( rule.condition_value_1 == 326053 || rule.condition_value_1 == 326055 ) )
+  {
+    auto op = rule.condition_type == PLAYER_AURA_APPLICATION_GREATER ? ">=" : "<=";
+    auto expr = rule.condition_value_1 == 326053 ? "eclipse.starfire_counter" : "eclipse.wrath_counter";
+
+    return fmt::format( "{}{}{}", expr, op, rule.condition_value_2 );
+  }
+
+  return player_t::parse_assisted_combat_rule( rule, step );
 }
 
 // druid_t::reset ===========================================================
