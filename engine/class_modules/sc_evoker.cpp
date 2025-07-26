@@ -13,6 +13,11 @@
 
 #include "simulationcraft.hpp"
 
+
+#ifndef IS_TWW_S3_CHECK
+#define IS_TWW_S3_CHECK ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+#endif  // !IS_TWW_S3_CHECK
+
 namespace
 {
 // ==========================================================================
@@ -381,10 +386,6 @@ struct simplified_player_t : public player_t
     std::string variant = "default";
   } option;
 
-  #ifndef IS_S3_CHECK
-  #define IS_S3_CHECK ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
-  #endif  // !IS_S3_CHECK
-
   std::map<std::string, bob_settings_t> bob_settings_s3 =  {
       { "default",
         { ROLE_SPELL, 15.4, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, 0.1, 0.2, {} } },
@@ -474,7 +475,7 @@ struct simplified_player_t : public player_t
       } } },
   };
 
-  std::map<std::string, bob_settings_t> bob_settings = IS_S3_CHECK ? bob_settings_s3 : bob_settings_s2;
+  std::map<std::string, bob_settings_t> bob_settings = IS_TWW_S3_CHECK ? bob_settings_s3 : bob_settings_s2;
 
   simplified_player_t( sim_t* sim, std::string_view name, race_e r = RACE_HUMAN )
     : player_t( sim, PLAYER_SIMPLIFIED, name, r ),
@@ -2415,7 +2416,11 @@ public:
 
     if ( p()->talent.chronowarden.temporal_burst.enabled() )
     {
-      parse_effects( p()->buff.temporal_burst );
+      auto chrono_mask = effect_mask_t( true );
+      if ( !p()->sets->has_set_bonus( HERO_CHRONOWARDEN, TWW3, B4 ) )
+        chrono_mask.disable( 15 );
+
+      parse_effects( p()->buff.temporal_burst, chrono_mask );
     }
 
     if ( p()->talent.flameshaper.burning_adrenaline.enabled() )
@@ -7755,6 +7760,9 @@ public:
 
   double composite_crit_chance( const action_state_t* s ) const override
   {
+    if ( IS_TWW_S3_CHECK )
+      return base::composite_crit_chance( s );
+
     if ( p( s )->bugs && p( s )->option.simulate_bombardments && ( player != p( s ) || force_external ) )
       return p( s )->option.simulate_bombardments_fixed_crit;
     // Currently scales with target Crit Chance
@@ -7763,6 +7771,9 @@ public:
 
   double composite_crit_chance_multiplier( const action_state_t* s ) const override
   {
+    if ( IS_TWW_S3_CHECK )
+      return base::composite_crit_chance( s );
+
     // Currently scales with target Crit Chance
     return p( s )->bugs ? spell_t::composite_crit_chance_multiplier() : base::composite_crit_chance( s );
   }
@@ -7773,18 +7784,34 @@ public:
 
     if ( evoker )
     {
+      auto td = evoker->get_target_data( t );
+
       if ( !evoker->bugs || player == evoker && !force_external )
       {
-        auto td = evoker->get_target_data( t );
-
-        if ( td && td->debuffs.melt_armor->check() )
-        {
-          tm *= 1 + td->debuffs.melt_armor->check_value();
-        }
-
         if ( td && evoker->talent.molten_embers.enabled() && td->dots.fire_breath->is_ticking() )
         {
           tm *= evoker->get_molten_embers_multiplier( t );
+        }
+
+        if ( !IS_TWW_S3_CHECK )
+        {
+          if ( td && td->debuffs.melt_armor->check() )
+          {
+            tm *= 1 + td->debuffs.melt_armor->check_value();
+          }
+
+          if ( evoker->talent.scalecommander.might_of_the_black_dragonflight->ok() )
+          {
+            tm *= 1 + evoker->talent.scalecommander.might_of_the_black_dragonflight->effectN( 1 ).percent();
+          }
+        }
+      }
+
+      if ( IS_TWW_S3_CHECK )
+      {
+        if ( td && td->debuffs.melt_armor->check() )
+        {
+          tm *= 1 + td->debuffs.melt_armor->check_value();
         }
 
         if ( evoker->talent.scalecommander.might_of_the_black_dragonflight->ok() )
