@@ -13342,9 +13342,14 @@ void druid_t::init_special_effects()
 
       void execute( action_t*, action_state_t* s ) override
       {
-        if ( s->result_amount )
+        auto amount =
+          s->result_type == result_amount_type::HEAL_DIRECT || s->result_type == result_amount_type::HEAL_OVER_TIME
+            ? s->result_total
+            : s->result_amount;
+
+        if ( amount )
         {
-          p()->buff.dryad->current_value += s->result_amount * mul;
+          p()->buff.dryad->current_value += amount * mul;
 
           auto cap = p()->cache.intellect() * 25.0;  // not in spell data, per blue post
           if ( p()->buff.dryad->current_value > cap )
