@@ -552,6 +552,8 @@ struct druid_t final : public parse_player_effects_t
   {
     std::vector<dot_t*> moonfire;
     std::vector<dot_t*> sunfire;
+    std::vector<dot_t*> rake;
+    std::vector<dot_t*> rip;
     std::vector<dot_t*> thrash_bear;
     std::vector<dot_t*> dreadful_wound;
   } dot_lists;
@@ -2484,10 +2486,10 @@ struct bloodseeker_vine_rng_t : public proc_rng_t
   int trigger() override { return 0; }
   void reset( reset_type_e ) override { count = 0.0; }
 
-  bool trigger( double scale, unsigned shift, double bonus )
+  bool trigger( double scale, unsigned shift, double bonus, double mult )
   {
     count += scale;
-    auto chance = std::max( 0.0, 0.6 - std::pow( 1.13, scale * shift - count ) + bonus );
+    auto chance = std::max( 0.0, 0.6 - std::pow( 1.13, scale * shift - count ) + bonus ) * mult;
     auto result = player->rng().roll( chance );
 
     if ( player->sim->debug )
@@ -2507,6 +2509,7 @@ protected:
   bloodseeker_vine_rng_t vine_rng;
   double vine_scale = 0.0;
   double vine_bonus = 0.0;
+  double aoe_scale;
   unsigned vine_shift = 0;
 
   using base_t = trigger_thriving_growth_t<BASE>;
@@ -2515,6 +2518,11 @@ public:
   trigger_thriving_growth_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
     : BASE( n, p, s, f ), vine_rng( "bloodseeker_vine", p )
   {
+    if ( p->is_ptr() )
+      aoe_scale = p->talent.thriving_growth->effectN( 7 ).percent() * 0.5;
+    else
+      aoe_scale = 0.375;
+
     if ( p->sets->has_set_bonus( HERO_WILDSTALKER, TWW3, B2 ) )
       vine_bonus = 0.16;  // TODO: wild ass guess, results in ~36.6% more executes
   }
@@ -2526,7 +2534,26 @@ public:
     if ( !vine_scale )
       return;
 
-    if ( vine_rng.trigger( vine_scale, vine_shift, vine_bonus ) )
+    size_t extra = 0;
+    size_t total_dots = 0;
+    size_t num_rake = BASE::p()->dot_lists.rake.size();
+    size_t num_rip = BASE::p()->dot_lists.rip.size();
+
+    if ( num_rake > 1 )
+    {
+      extra += num_rake - 1;
+      total_dots += num_rake;
+    }
+
+    if ( num_rip > 1 )
+    {
+      extra += num_rip - 1;
+      total_dots += num_rip;
+    }
+
+    double mult = !total_dots ? 1.0 : 1.0 / total_dots;
+
+    if ( vine_rng.trigger( vine_scale + aoe_scale * extra, vine_shift, vine_bonus, mult ) )
       BASE::p()->active.bloodseeker_vines->execute_on_target( d->target );
   }
 };
@@ -5077,7 +5104,7 @@ struct maim_t final : public cat_finisher_t
 // Rake =====================================================================
 struct rake_t final : public use_fluid_form_t<CAT_FORM, trigger_call_of_the_elder_druid_t<cp_generator_t>>
 {
-  struct rake_bleed_t final : public trigger_thriving_growth_t<trigger_waning_twilight_t<cat_attack_t>>
+  struct rake_bleed_t final : public trigger_thriving_growth_t<use_dot_list_t<trigger_waning_twilight_t<cat_attack_t>>>
   {
     rake_bleed_t( druid_t* p, std::string_view n, flag_e f, rake_t* r ) : base_t( n, p, find_trigger( r ).trigger(), f )
     {
@@ -5086,6 +5113,7 @@ struct rake_t final : public use_fluid_form_t<CAT_FORM, trigger_call_of_the_elde
       form_mask = 0;
 
       dot_name = "rake";
+      dot_list = &p->dot_lists.rake;
       vine_scale = p->talent.thriving_growth->effectN( 2 ).percent();
     }
   };
@@ -5174,7 +5202,7 @@ struct rake_t final : public use_fluid_form_t<CAT_FORM, trigger_call_of_the_elde
 };
 
 // Rip ======================================================================
-struct rip_t final : public trigger_thriving_growth_t<trigger_waning_twilight_t<cat_finisher_t>>
+struct rip_t final : public trigger_thriving_growth_t<use_dot_list_t<trigger_waning_twilight_t<cat_finisher_t>>>
 {
   struct tear_t final : public druid_residual_action_t<cat_attack_t, true>
   {
@@ -5193,6 +5221,7 @@ struct rip_t final : public trigger_thriving_growth_t<trigger_waning_twilight_t<
     apex_pct( find_trigger( p->talent.apex_predators_craving ).percent() * 0.1 )
   {
     dot_name = "rip";
+    dot_list = &p->dot_lists.rip;
     vine_scale = p->talent.thriving_growth->effectN( 1 ).percent();
     vine_shift = 1;
 
@@ -12698,12 +12727,18 @@ bool druid_t::validate_actor()
     if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE || sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE ||
          sim->desired_targets > 1 )
     {
-      sim->error( "The effect of multipler targets on Bloodseeker Vines is unknown. Results will be incorrect." );
+      sim->error( "****** UNRELIABLE SIM ****** UNRELIABLE SIM ****** UNRELIABLE SIM ******" );
+      sim->error( "!! The effect of multiple targets on Bloodseeker Vines is unknown.    !!" );
+      sim->error( "!! Results will be incorrect.                                         !!" );
+      sim->error( "****** UNRELIABLE SIM ****** UNRELIABLE SIM ****** UNRELIABLE SIM ******" );
     }
 
     if ( sets->has_set_bonus( HERO_WILDSTALKER, TWW3, B2 ) )
     {
-      sim->error( "The benefit from 2pc bonus of TWW Season 3 set for Wildstalker is unknown. Results will be incorrect." );
+      sim->error( "****** UNRELIABLE SIM ****** UNRELIABLE SIM ****** UNRELIABLE SIM ******" );
+      sim->error( "!! The effect of 11.2 Wildstalker 2-piece set bonus is unknown.       !!" );
+      sim->error( "!! Results will be incorrect.                                         !!" );
+      sim->error( "****** UNRELIABLE SIM ****** UNRELIABLE SIM ****** UNRELIABLE SIM ******" );
     }
   }
 
