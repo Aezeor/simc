@@ -14825,7 +14825,7 @@ void shaman_t::init_rng()
   rng_obj.flowing_spirits = get_shuffled_rng( "flowing_spirits",
     options.flowing_spirits_procs, options.flowing_spirits_total );
 
-  if ( options.use_new_dre )
+  if ( talent.deeply_rooted_elements.ok() && options.use_new_dre )
   {
     auto n_dre_draws = options.n_dre_draws != -1 ? as<unsigned>( options.n_dre_draws ) : 0U;
     auto max_dre_draw = 0;
