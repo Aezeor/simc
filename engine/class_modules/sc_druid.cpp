@@ -13573,16 +13573,8 @@ double druid_t::resource_regen_per_second( resource_e r ) const
 {
   double reg = player_t::resource_regen_per_second( r );
 
-  if ( r == RESOURCE_MANA )
-  {
-    if ( specialization() == DRUID_BALANCE && form == MOONKIN_FORM )
-      reg *= ( 1.0 + buff.moonkin_form->data().effectN( 5 ).percent() ) / cache.spell_haste();
-  }
-  else if ( r == RESOURCE_ENERGY )
-  {
-    if ( buff.savage_fury->check() )
-      reg *= 1.0 + buff.savage_fury->data().effectN( 2 ).percent();
-  }
+  if ( r == RESOURCE_ENERGY && buff.savage_fury->check() )
+    reg *= 1.0 + buff.savage_fury->data().effectN( 2 ).percent();
 
   return reg;
 }

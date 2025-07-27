@@ -1683,8 +1683,9 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
   if ( e->chain_target() != 0 )
     tokens.emplace_back( fmt::format( "Chain Multiplier: {}", e->chain_multiplier() ) );
 
-  if ( e->type() == E_ENERGIZE || ( e->type() == E_APPLY_AURA && ( e->subtype() == A_MOD_INCREASE_RESOURCE ||
-                                                                   e->subtype() == A_MOD_MAX_RESOURCE ) ) )
+  if ( e->type() == E_ENERGIZE ||
+       ( e->type() == E_APPLY_AURA && ( e->subtype() == A_MOD_INCREASE_RESOURCE || e->subtype() == A_MOD_MAX_RESOURCE ||
+                                        e->subtype() == A_MOD_POWER_REGEN_PERCENT ) ) )
   {
     tokens.emplace_back( fmt::format( "Resource: {}", util::resource_type_string( util::translate_power_type(
                                                         static_cast<power_e>( e->misc_value1() ) ) ) ) );
