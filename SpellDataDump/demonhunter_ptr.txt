@@ -438,7 +438,7 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=271491)   : Apply Aura (6) | Modify Power Regen (110)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 17 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Resource: fury | Target: Self (1)
 
 Name             : Metamorphosis (id=187827) [Spell Family (107)] 
 Replaces         : Metamorphosis (id=191427)

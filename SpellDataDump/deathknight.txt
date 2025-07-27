@@ -1239,7 +1239,7 @@ Family Flags     : 102
 Attributes       : No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=43775)    : Apply Aura (6) | Modify Power Regen (110)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 5 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Resource: rune | Target: Self (1)
 #2 (id=98767)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=1013385)  : Apply Aura (6) | Dummy (4)

@@ -3309,7 +3309,7 @@ Labels           : 16: Class Spells
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=982393)   : Apply Aura (6) | Modify Power Regen (110)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 19 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Resource: essence | Target: Self (1)
 Description      : $@spelldesc376138
 Tooltip          : Essence regeneration rate increased by $w1%.
 
@@ -4833,7 +4833,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1001968)  : Apply Aura (6) | Modify Power Regen (110)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 19 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Resource: essence | Target: Self (1)
 Description      : Essence regenerates $s1% faster.
 
 Name             : Forger of Mountains (id=375528) [Spell Family (224), Passive] 
@@ -5461,7 +5461,7 @@ Labels           : 16: Class Spells
 Attributes       : No Aura Cancel (31), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1004197)  : Apply Aura (6) | Modify Power Regen (110)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 19 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Resource: essence | Target: Self (1)
 Description      : $@spelldesc370839
 Tooltip          : Essence regeneration rate increased by $w1%.
 

@@ -3757,7 +3757,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=283373)   : Apply Aura (6) | Modify Power Regen (110)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Resource: mana | Target: Self (1)
 Description      : You regenerate mana $s1% faster.
 
 Name             : Benediction (id=193157) [Spell Family (6), Passive, Hidden] 

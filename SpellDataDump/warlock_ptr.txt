@@ -4875,7 +4875,7 @@ Duration         : Aura (infinite)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not Shapeshifted (16), Allow While Mounted (24), Allow While Sitting (27), No Threat (42), No Aura Icon (60), Allow Cast While Casting (135), No Aura Log (202), Aura Points On Client (268), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=311012)   : Apply Aura (6) | Modify Power Regen (110)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self (1)
+                   Base Value: -100 | Scaled Value: -100 | Resource: mana | Target: Self (1)
 Description      : $@spelldesc980
 
 Name             : Thal'kiel's Consumption (desc=Artifact) (id=211714) [Spell Family (5)] 
