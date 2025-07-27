@@ -9735,8 +9735,7 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    // Killing Machine glacial advcances trigger Unleashed Frenzy without spending Runic Power
-    // Currently does not trigger Obliteration rune generation
+    // Killing Machine glacial advcances currently does not trigger Obliteration rune generation
     if ( is_arctic_assault )
     {
       if ( p()->talent.icy_talons.ok() )
@@ -10102,7 +10101,7 @@ struct howling_blades_t final : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
-    if ( p()->rng().roll( p()->talent.frost.howling_blades->effectN( 1 ).base_value() / 100 ) )
+    if ( p()->rng().roll( p()->talent.frost.howling_blades->effectN( 1 ).percent() ) )
     {
       p()->trigger_killing_machine( false, p()->procs.km_from_howling_blades,
                                     p()->procs.km_from_howling_blades_wasted );
@@ -10708,9 +10707,6 @@ struct pillar_of_frost_t final : public death_knight_spell_t
       trollbane->execute();
     }
   }
-
-private:
-  propagate_const<action_t*> whelp;
 };
 
 // Raise Dead ===============================================================
@@ -14639,8 +14635,7 @@ void death_knight_t::init_blizzard_action_list()
       cooldowns->add_action( "raise_dead" );
       break;
     case DEATH_KNIGHT_FROST:
-      cooldowns->add_action( "breath_of_sindragosa,if=runic_power>60" );
-      cooldowns->add_action( "empower_rune_weapon" );
+      cooldowns->add_action( "breath_of_sindragosa" );
       break;
     case DEATH_KNIGHT_UNHOLY:
       cooldowns->add_action( "raise_abomination" );
@@ -14813,7 +14808,7 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
   }
   if ( !debuff.razorice )
   {
-    debuff.razorice = make_debuff( p.talent.frost.avalanche->ok() || 
+    debuff.razorice = make_debuff( p.spec.glacial_advance->ok() || p.talent.frost.avalanche->ok() || 
                                        p.talent.frost.arctic_assault->ok(),
                                    *this, "razorice", p.spell.razorice_debuff )
                           ->set_default_value_from_effect( 1 )
