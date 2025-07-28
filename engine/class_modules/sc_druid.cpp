@@ -5974,13 +5974,6 @@ struct maul_base_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
     if ( p()->buff.tooth_and_claw->check() )
       td( s->target )->debuff.tooth_and_claw->trigger();
   }
-
-  void execute() override
-  {
-    base_t::execute();
-
-    p()->buff.vicious_cycle_mangle->trigger( this );
-  }
 };
 
 struct maul_t final : public maul_base_t
@@ -6037,6 +6030,8 @@ struct maul_t final : public maul_base_t
     }
 
     maul_base_t::execute();
+
+    p()->buff.vicious_cycle_mangle->trigger( this );
   }
 };
 
