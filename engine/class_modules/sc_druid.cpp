@@ -4610,19 +4610,32 @@ struct bloodseeker_vines_t final : public cat_attack_t
   {
     cat_attack_t::trigger_dot( s );
 
-    // execute() instead of trigger() to avoid proc delay, and add 1ms to ensure final tick is buffed
-    td( s->target )->debuff.bloodseeker_vines->execute( 1, buff_t::DEFAULT_VALUE(), dot_duration + 1_ms );
+    int stacks = 1;
 
-    // TODO: can this trigger itself? what about spread from killed target?
+    // execute() instead of trigger() to avoid proc delay, and add 1ms to ensure final tick is buffed
     if ( rng().roll( twin_pct ) && orig_dur == dot_duration )
     {
-      const auto& tl = target_list();
-      // TODO: determine if this can hit same target if other targets are available
-      auto exclude = target_list().size() > 1 ? s->target : nullptr;
-
-      if ( auto tar = p()->get_smart_target( tl, &druid_td_t::dots_t::bloodseeker_vines, exclude ) )
-        execute_on_target( tar );
+      if ( target_list().size() > 1 )
+      {
+        if ( auto tar = p()->get_smart_target( target_list(), &druid_td_t::dots_t::bloodseeker_vines, s->target ) )
+        {
+          auto state_ = get_state( s );
+          state_->target = tar;
+          cat_attack_t::trigger_dot( state_ );
+          td( tar )->debuff.bloodseeker_vines->execute( 1, buff_t::DEFAULT_VALUE(), dot_duration + 1_ms );
+        }
+        else
+        {
+          stacks = 2;
+        }
+      }
+      else
+      {
+        stacks = 2;
+      }
     }
+
+    td( s->target )->debuff.bloodseeker_vines->execute( stacks, buff_t::DEFAULT_VALUE(), dot_duration + 1_ms );
   }
 
   void tick( dot_t* d ) override
