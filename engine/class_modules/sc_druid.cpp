@@ -4865,7 +4865,7 @@ struct ferocious_bite_base_t : public cat_finisher_t
     if ( p()->talent.sabertooth.ok() )
       td( s->target )->debuff.sabertooth->trigger( this, cp( s ) );
 
-    if ( p()->active.bursting_growth )
+    if ( p()->active.bursting_growth && td( s->target )->dots.bloodseeker_vines->is_ticking() )
       p()->active.bursting_growth->execute_on_target( s->target );
 
     if ( rampant_ferocity && s->result_amount > 0 )
