@@ -9765,11 +9765,15 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
       }
     }
 
-    const int other_targets = execute_state->n_targets - targets_max_razorice;
-    // 11.2 TODO find actual proc chance
-    // This is a very dumb formula that is only here to emulate a very high proc chance when 3+ targets have 5 stacks
-    if ( p()->rng().roll( std::min( .10 * other_targets + .275 * targets_max_razorice, .95 ) ) )
-      p()->buffs.frostbane->trigger();    
+    if ( execute_state && p()->talent.frost.frostbane )
+    {
+      const int other_targets = execute_state->n_targets - targets_max_razorice;
+      // 11.2 TODO find actual proc chance
+      // This is a very dumb formula that is only here to emulate a very high proc chance when 3+ targets have 5 stacks
+      if ( p()->rng().roll( std::min( .10 * other_targets + .275 * targets_max_razorice, .95 ) ) )
+        p()->buffs.frostbane->trigger();    
+    }
+    
   }
 
   void impact( action_state_t* state ) override
