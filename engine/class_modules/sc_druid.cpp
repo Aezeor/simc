@@ -3246,11 +3246,13 @@ public:
 // Bear Form ================================================================
 struct bear_form_buff_t final : public druid_buff_t, public swap_melee_t
 {
+  gain_t* shapeshifting;
   double rage_gain;
 
   bear_form_buff_t( druid_t* p )
     : base_t( p, "bear_form", p->find_class_spell( "Bear Form" ) ),
       swap_melee_t( p ),
+      shapeshifting( p->get_gain( "Shapeshifting" ) ),
       rage_gain( find_effect( p->find_spell( 17057 ), E_ENERGIZE ).resource( RESOURCE_RAGE ) )
   {
     add_invalidate( CACHE_ARMOR );
@@ -3268,7 +3270,7 @@ struct bear_form_buff_t final : public druid_buff_t, public swap_melee_t
 
     swap_melee( p()->caster_melee_attack, p()->caster_form_weapon );
 
-    p()->resource_loss( RESOURCE_RAGE, p()->resources.current[ RESOURCE_RAGE ] );
+    p()->resource_loss( RESOURCE_RAGE, p()->resources.current[ RESOURCE_RAGE ], shapeshifting );
     p()->recalculate_resource_max( RESOURCE_HEALTH );
 
     p()->buff.rage_of_the_sleeper->expire();
