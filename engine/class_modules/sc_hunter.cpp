@@ -4349,9 +4349,6 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
         for ( auto pet : p() -> pets.cotw_stable_pet.active_pets() )
           pet->actions.thundering_hooves->execute();
       }
-
-      if ( p()->talents.shrapnel_shot.ok() )
-        p()->buffs.lock_and_load->trigger();
     }
 
     void impact( action_state_t* s ) override
@@ -4465,6 +4462,9 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
     
     p()->cooldowns.wildfire_bomb->adjust( -grenade_juggler_reduction );
     p()->buffs.bombardier->decrement();
+
+    if ( p()->talents.shrapnel_shot.ok() )
+      p()->buffs.lock_and_load->trigger();
   }
 
   double cost_pct_multiplier() const override
