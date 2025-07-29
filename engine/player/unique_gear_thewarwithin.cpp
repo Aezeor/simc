@@ -9040,6 +9040,8 @@ void essence_hunters_eyeglass( special_effect_t& effect )
 
   effect.custom_buff = buff;
 
+  effect.proc_flags2_ = PF2_CRIT;
+
   new dbc_proc_callback_t( effect.player, effect );
 }
 
