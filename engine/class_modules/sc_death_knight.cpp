@@ -12213,11 +12213,13 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     if ( action )
       base_rp_cost = action->base_costs[ RESOURCE_RUNIC_POWER ];
 
+    double calc_rp_cost = std::max( base_rp_cost, actual_amount );
+
     // 2020-12-16 - Melekus: Based on testing with both Frost Strike and Breath of Sindragosa during Hypothermic
     // Presence, RE is using the ability's base cost for its proc chance calculation, just like Runic Corruption
     // 2025-07-28 If an ability costs more than its base_cost, RE takes the higher cost.
-    trigger_runic_empowerment( std::max( base_rp_cost, actual_amount ) );
-    trigger_runic_corruption( procs.rp_runic_corruption, base_rp_cost, false );
+    trigger_runic_empowerment( calc_rp_cost );
+    trigger_runic_corruption( procs.rp_runic_corruption, calc_rp_cost, false );
 
     if ( talent.unholy.summon_gargoyle.ok() )
     {
@@ -12226,7 +12228,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
       // Free Death Coils are still handled in the action
       for ( auto& gargoyle : pets.gargoyle )
       {
-        gargoyle->increase_power( base_rp_cost );
+        gargoyle->increase_power( calc_rp_cost );
       }
     }
 
@@ -12238,13 +12240,13 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     if ( talent.rider.fury_of_the_horsemen.ok() )
     {
       if ( pets.whitemane.active_pet() != nullptr )
-        extend_rider( amount, pets.whitemane.active_pet() );
+        extend_rider( calc_rp_cost, pets.whitemane.active_pet() );
       if ( pets.mograine.active_pet() != nullptr )
-        extend_rider( amount, pets.mograine.active_pet() );
+        extend_rider( calc_rp_cost, pets.mograine.active_pet() );
       if ( pets.nazgrim.active_pet() != nullptr )
-        extend_rider( amount, pets.nazgrim.active_pet() );
+        extend_rider( calc_rp_cost, pets.nazgrim.active_pet() );
       if ( pets.trollbane.active_pet() != nullptr )
-        extend_rider( amount, pets.trollbane.active_pet() );
+        extend_rider( calc_rp_cost, pets.trollbane.active_pet() );
     }
 
     // Effects that only trigger if resources were spent
