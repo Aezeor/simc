@@ -2254,6 +2254,11 @@ struct renew_t final : public priest_heal_t
     {
       priest().cooldowns.power_word_shield->adjust( train_of_thought_cdr );
     }
+
+    if ( priest().buffs.twist_of_fate_heal_ally_fake->check() )
+    {
+      priest().buffs.twist_of_fate->trigger();
+    }
   }
 
   void impact( action_state_t* s ) override
