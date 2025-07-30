@@ -645,6 +645,8 @@ struct druid_t final : public parse_player_effects_t
     // Hero sets
     action_t* starsurge_tww3;          // EC TWW3 2pc
     action_t* dryad_tww3;              // KOTG TWW3 2pc proxy
+    action_t* dryad_tww3_starfall_1;
+    action_t* dryad_tww3_Starfall_2;
     action_t* bloodseeker_vines_tww3;  // WS TWW3 2pc TF proc
     action_t* bursting_growth_tww3;    // WS TWW3 4pc
   } active;
@@ -1532,8 +1534,8 @@ struct dryad_t final : public pet_t
     }
   };
 
+  action_t* starfall_action;
   buff_t* starfall_buff;
-  action_t* starfall;
   unsigned starsurge_count = 0;
 
   dryad_t( druid_t* p ) : pet_t( p->sim, p, "Dryad", true, true )
@@ -1545,16 +1547,9 @@ struct dryad_t final : public pet_t
 
   druid_t* o() { return static_cast<druid_t*>( owner ); }
 
-  void arise() override
-  {
-    pet_t::arise();
-
-    starfall->execute();
-    starsurge_count = 0;
-  }
-
+  void arise() override;
+  void demise() override;
   void create_buffs() override;
-  void create_actions() override;
   action_t* create_action( std::string_view n, std::string_view opt ) override;
 };
 
@@ -8789,9 +8784,8 @@ struct starfall_t final : public ap_spender_t
   timespan_t dot_ext = 0_ms;
   timespan_t max_ext = 0_ms;
 
-  DRUID_ABILITY_C( starfall_t, base_t, "starfall", p->spec.starfall, const spell_data_t* damage_spell = nullptr,
-                   buff_t* b = nullptr ),
-    buff( b ? b : p->buff.starfall ),
+  DRUID_ABILITY_C( starfall_t, base_t, "starfall", p->spec.starfall, const spell_data_t* damage_spell = nullptr ),
+    buff( p->buff.starfall ),
     dot_ext( timespan_t::from_seconds( p->talent.aetherial_kindling->effectN( 1 ).base_value() ) ),
     max_ext( timespan_t::from_seconds( p->talent.aetherial_kindling->effectN( 2 ).base_value() ) )
   {
@@ -10229,31 +10223,44 @@ struct stacked_deck_t : public action_t
 
 namespace pets
 {
+void dryad_t::arise()
+{
+  pet_t::arise();
+
+  starsurge_count = 0;
+
+  auto one = static_cast<spells::starfall_t*>( o()->active.dryad_tww3_starfall_1 );
+  auto two = static_cast<spells::starfall_t*>( o()->active.dryad_tww3_Starfall_2 );
+
+  assert( !one->buff || !two->buff );
+
+  if ( !one->buff )
+  {
+    starfall_action = one;
+    one->buff = starfall_buff;
+    one->execute();
+  }
+  else if ( !two->buff )
+  {
+    starfall_action = two;
+    two->buff = starfall_buff;
+    two->execute();
+  }
+}
+
+void dryad_t::demise()
+{
+  pet_t::demise();
+
+  static_cast<spells::starfall_t*>( starfall_action )->buff = nullptr;
+}
+
 void dryad_t::create_buffs()
 {
   pet_t::create_buffs();
 
   starfall_buff = make_buff( actor_pair_t( this, owner ), "starfall", find_spell( 1236607 ) )
     ->set_freeze_stacks( true );
-}
-
-void dryad_t::create_actions()
-{
-  pet_t::create_actions();
-
-  auto a = new spells::starfall_t( o(), "dryad_starfall", find_spell( 1236607 ), flag_e::NONE, find_spell( 1236613 ),
-                                   starfall_buff );
-  a->background = a->proc = true;
-  a->hail_dur = 0_ms;
-  a->name_str_reporting = "starfall";
-
-  // manually init since this is created on the owner during runtime
-  a->init();
-  a->driver->init();
-  a->driver->damage->init();
-
-  o()->active.dryad_tww3->add_child( a );
-  starfall = a;
 }
 
 action_t* dryad_t::create_action( std::string_view n, std::string_view opt )
@@ -12481,6 +12488,26 @@ void druid_t::create_actions()
       if ( sets->has_set_bonus( HERO_KEEPER_OF_THE_GROVE, TWW3, B2 ) )
       {
         active.dryad_tww3 = get_secondary_action<dryad_tww3_t>( "dryad" );
+
+        auto one = get_secondary_action<starfall_t>( "dryad_starfall_1", find_spell( 1236607 ), flag_e::NONE,
+                                                     find_spell( 1236613 ) );
+        one->background = one->proc = true;
+        one->buff = nullptr;
+        one->hail_dur = 0_ms;
+        one->name_str_reporting = "starfall";
+
+        auto two = get_secondary_action<starfall_t>( "dryad_starfall_2", find_spell( 1236607 ), flag_e::NONE,
+                                                     find_spell( 1236613 ) );
+        two->background = two->proc = true;
+        two->buff = nullptr;
+        two->hail_dur = 0_ms;
+        two->name_str_reporting = "starfall";
+
+        one->replace_stats( two );
+        active.dryad_tww3->add_child( one );
+
+        active.dryad_tww3_starfall_1 = one;
+        active.dryad_tww3_Starfall_2 = two;
       }
       break;
 
