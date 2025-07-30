@@ -5854,7 +5854,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     if ( lock_and_loaded )
     {
       p()->buffs.lock_and_load->decrement();
-      p()->cooldowns.explosive_shot->adjust( p()->talents.magnetic_gunpowder->effectN( 2 ).time_value() );
+      p()->cooldowns.explosive_shot->adjust( -p()->talents.magnetic_gunpowder->effectN( 2 ).time_value() );
     }
 
     // The Explosive Shot can trigger Lock and Load with Shrapnel Shot.
