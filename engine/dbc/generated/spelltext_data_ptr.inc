@@ -1,5 +1,5 @@
 // Spell text, wow build 11.2.0.62253
-static const std::array<spelltext_data_t, 28024> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 28027> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28024,6 +28024,9 @@ static const std::array<spelltext_data_t, 28024> __ptr_spelltext_data { {
   { 1251951, "Corrupts the ground targeted by the Death Knight, causing Shadow damage every sec that targets remain in the area for $43265d.", 0, 0 },
   { 1252024, "$@spelldesc1236336", "$?c1[The damage of your next Starsurge is increased by $w1 and it splashes $w2% of its damage done to nearby enemies, reduced beyond $w4 targets.][The healing of your next Swiftmend is increased by $w1 and it splashes $w3% of its healing done to nearby allies, reduced beyond $w4 targets.]", 0 },
   { 1252096, "$@spelldesc1236422", "Thunder Blast damage increased by $w1%.", 0 },
+  { 1254904, "The powers of your Reshii Wraps are triggered $s1% more frequently.", 0, 0 },
+  { 1254905, "The powers of your Reshii Wraps are triggered $s1% more frequently.", 0, 0 },
+  { 1254906, "The powers of your Reshii Wraps are triggered $s1% more frequently.", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 11.2.0.62253

@@ -10426,17 +10426,19 @@ void the_jastor_diamond( special_effect_t& effect )
 
 double reshii_wraps_rppm( special_effect_t& effect )
 {
-  unsigned reshii_grace_id = 1235409;
+  // 50%, 40%, 30%, 20%
+  static constexpr std::array<unsigned, 4> aura_ids = { 1235409, 1254905, 1254904, 1254906 };
 
-  if ( find_special_effect( effect.player, reshii_grace_id ) )
+  for ( auto id : aura_ids )
   {
-    return effect.player->dbc->real_ppm_modifier( effect.driver()->id(), effect.player,
-                                                  effect.item ? effect.item->item_level() : 0, reshii_grace_id );
+    if ( auto reshii_grace = find_special_effect( effect.player, id ) )
+    {
+      return effect.player->dbc->real_ppm_modifier(
+        effect.driver()->id(), effect.player, effect.item->item_level(), id );
+    }
   }
-  else
-  {
-    return effect.rppm_modifier();
-  }
+
+  return effect.rppm_modifier();
 }
 
 // Reshii Wraps: Ethereal Reaping
@@ -12539,7 +12541,10 @@ void register_special_effects()
   register_special_effect( 1214161, items::the_jastor_diamond );
   set_min_version( wowv_t( 11, 2, 0 ) );
   register_special_effect( 1217091, items::ethereal_energy ); // Reshii Wraps equip driver
-  register_special_effect( 1235409, DISABLED_EFFECT ); // Reshii Grace boot effects
+  register_special_effect( 1254906, DISABLED_EFFECT ); // Reshii Grace 20%
+  register_special_effect( 1254904, DISABLED_EFFECT ); // Reshii Grace 30%
+  register_special_effect( 1254905, DISABLED_EFFECT ); // Reshii Grace 50%
+  register_special_effect( 1235409, DISABLED_EFFECT ); // Reshii Grace 50%
   reset_version_check();
 
   // Sets
