@@ -9143,21 +9143,26 @@ void evoker_t::create_pets()
   player_t::create_pets();
 
   pets.commando_pet.set_max_pets( 4 );
+
   if ( sets->has_set_bonus( HERO_SCALECOMMANDER, TWW3, B2 ) )
   {
     timespan_t duration =
         timespan_t::from_seconds( sets->set( HERO_SCALECOMMANDER, TWW3, B2 )->effectN( 1 ).base_value() );
 
-    if ( sets->has_set_bonus( HERO_SCALECOMMANDER, TWW3, B4 ) )
-    {
-      duration += sets->set( HERO_SCALECOMMANDER, TWW3, B4 )->effectN( 2 ).time_value();
-    }
-
-    // This just doesn't work ingame lmao
-    /*if ( specialization() == EVOKER_AUGMENTATION )
+    if ( specialization() == EVOKER_AUGMENTATION )
     {
       duration *= 1 + spec.augmentation->effectN( 20 ).percent();
-    }*/
+    }
+
+    if ( sets->has_set_bonus( HERO_SCALECOMMANDER, TWW3, B4 ) )
+    {
+      auto added_duration = sets->set( HERO_SCALECOMMANDER, TWW3, B4 )->effectN( 2 ).time_value();
+      if ( specialization() == EVOKER_AUGMENTATION )
+      {
+        added_duration *= 1 + spec.augmentation->effectN( 21 ).percent();
+      }
+      duration += added_duration;
+    }
 
     pets.commando_pet.set_default_duration( duration );
   }
