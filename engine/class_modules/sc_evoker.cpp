@@ -9178,14 +9178,42 @@ void evoker_t::create_pets()
       option.force_clutchmates = "yes";
       close_as_clutchmates     = true;
 
-      bobs = { { "Bob Arcane", "arcane" }, { "Bob Shadow", "shadow" }, { "Bob Tank", "tank" }, { "Bob Healer", "healer" } };
+      if ( IS_TWW_S3_CHECK )
+      {
+        bobs = { { "Bob Flat", "default" },
+                 { "Bob Shadow", "shadow" },
+                 { "Bob Tank", "tank" },
+                 { "Bob Healer", "healer" } };
+      }
+      else
+      {
+        bobs = { { "Bob Arcane", "arcane" },
+                 { "Bob Shadow", "shadow" },
+                 { "Bob Tank", "tank" },
+                 { "Bob Healer", "healer" } };
+      }
     }
     else
     {
       option.force_clutchmates = "no";
       close_as_clutchmates     = false;
 
-      bobs = { { "Bob BM", "bm" }, { "Bob Shadow", "shadow" }, { "Bob Arcane", "arcane" }, { "Bob Flat", "default" } };
+      if ( IS_TWW_S3_CHECK )
+      {
+        bobs = { { "Bob Shadow1", "shadow" },
+                 { "Bob Shadow2", "shadow" },
+                 { "Bob Flat1", "default" },
+                 { "Bob Flat2", "default" } };
+      }
+      else
+      {
+        bobs = {
+            { "Bob BM", "bm" },
+            { "Bob Shadow", "shadow" },
+            { "Bob Arcane", "arcane" },
+            { "Bob Flat", "default" } };
+      }
+
     }
 
     for ( auto& pair : bobs )
