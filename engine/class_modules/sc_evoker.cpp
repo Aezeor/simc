@@ -8940,7 +8940,10 @@ void evoker_t::init_action_list()
       evoker_apl::preservation( this );
       break;
     case EVOKER_AUGMENTATION:
-      evoker_apl::augmentation( this );
+      if ( IS_TWW_S3_CHECK )
+        evoker_apl::augmentation_ptr( this );
+      else
+        evoker_apl::augmentation( this );
       break;
     default:
       evoker_apl::no_spec( this );
