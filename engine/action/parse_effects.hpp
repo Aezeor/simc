@@ -973,9 +973,9 @@ public:
   {
     for ( const auto& data : vec )
     {
-      _player->sim->print_debug( "action-effects: non-damage action {} ({}) removing {} entry from {} ({}#{})",
-                                 BASE::name(), BASE::id, vec_name, data.eff->spell()->name_cstr(), data.eff->spell_id(),
-                                 data.eff->index() );
+      BASE::sim->print_debug( "action-effects: non-damage action {} ({}) removing {} entry from {} ({}#{})",
+                              BASE::name(), BASE::id, vec_name, data.eff->spell()->name_cstr(), data.eff->spell_id(),
+                              data.eff->index() );
     }
 
     vec.clear();
