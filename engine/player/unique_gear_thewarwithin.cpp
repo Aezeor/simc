@@ -8443,7 +8443,7 @@ void arazs_ritual_forge( special_effect_t& effect )
 
 // Astral Antenna
 // 1234714 Driver
-// 1239640 Area Trigger? Has a Heartbeat proc flag and full driver data oddly
+// 1239640 Orb Buff
 // 1239641 Buff
 // TODO: Investigate the area trigger, see if has importance for sims
 void astral_antenna( special_effect_t& effect )
@@ -8452,7 +8452,17 @@ void astral_antenna( special_effect_t& effect )
                   ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) )
                   ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
-  effect.custom_buff = buff;
+  auto orb = create_buff<buff_t>( effect.player, "astral_antenna_orb", effect.player->find_spell( 1239640 ) )
+                 ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                 ->set_stack_change_callback( [ buff ]( buff_t* b, int old_, int new_ ) {
+                   if ( new_ )
+                     make_event( *b->source->sim, b->source->rng().range( 500_ms, 3500_ms ), [ b, buff ] {
+                       buff->trigger();
+                       b->decrement();
+                     } );
+                 } );
+
+  effect.custom_buff = orb;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
