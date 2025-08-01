@@ -359,7 +359,6 @@ void vengeance( player_t* p )
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* ar = p->get_action_priority_list( "ar" );
-  action_priority_list_t* ar_execute = p->get_action_priority_list( "ar_execute" );
   action_priority_list_t* externals = p->get_action_priority_list( "externals" );
   action_priority_list_t* fel_dev = p->get_action_priority_list( "fel_dev" );
   action_priority_list_t* fel_dev_prep = p->get_action_priority_list( "fel_dev_prep" );
@@ -367,10 +366,6 @@ void vengeance( player_t* p )
   action_priority_list_t* fs_execute = p->get_action_priority_list( "fs_execute" );
   action_priority_list_t* meta_prep = p->get_action_priority_list( "meta_prep" );
   action_priority_list_t* metamorphosis = p->get_action_priority_list( "metamorphosis" );
-  action_priority_list_t* rg_overflow = p->get_action_priority_list( "rg_overflow" );
-  action_priority_list_t* rg_prep = p->get_action_priority_list( "rg_prep" );
-  action_priority_list_t* rg_sequence = p->get_action_priority_list( "rg_sequence" );
-  action_priority_list_t* rg_sequence_filler = p->get_action_priority_list( "rg_sequence_filler" );
 
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=single_target,value=spell_targets.spirit_bomb=1" );
@@ -394,66 +389,32 @@ void vengeance( player_t* p )
   default_->add_action( "run_action_list,name=ar,if=hero_tree.aldrachi_reaver" );
   default_->add_action( "run_action_list,name=fs,if=hero_tree.felscarred" );
 
-  ar->add_action( "variable,name=spb_threshold,op=setif,condition=talent.fiery_demise&dot.fiery_brand.ticking,value=(variable.single_target*5)+(variable.small_aoe*5)+(variable.big_aoe*4),value_else=(variable.single_target*5)+(variable.small_aoe*5)+(variable.big_aoe*4)" );
-  ar->add_action( "variable,name=can_spb,op=setif,condition=talent.spirit_bomb,value=soul_fragments>=variable.spb_threshold,value_else=0" );
-  ar->add_action( "variable,name=can_spb_soon,op=setif,condition=talent.spirit_bomb,value=soul_fragments.total>=variable.spb_threshold,value_else=0" );
-  ar->add_action( "variable,name=can_spb_one_gcd,op=setif,condition=talent.spirit_bomb,value=(soul_fragments.total+variable.num_spawnable_souls)>=variable.spb_threshold,value_else=0" );
-  ar->add_action( "variable,name=double_rm_remains,op=setif,condition=(variable.double_rm_expires-time)>0,value=variable.double_rm_expires-time,value_else=0" );
-  ar->add_action( "variable,name=trigger_overflow,op=set,value=0,if=!buff.glaive_flurry.up&!buff.rending_strike.up&!prev_gcd.1.reavers_glaive" );
-  ar->add_action( "variable,name=rg_enhance_cleave,op=setif,condition=variable.trigger_overflow|(spell_targets.spirit_bomb>=4)|(fight_remains<10|target.time_to_die<10),value=1,value_else=0" );
-  ar->add_action( "variable,name=souls_before_next_rg_sequence,value=soul_fragments.total+buff.art_of_the_glaive.stack" );
-  ar->add_action( "variable,name=souls_before_next_rg_sequence,op=add,value=(1.1*(1+raw_haste_pct))*(variable.double_rm_remains-(action.reavers_glaive.execute_time+action.fracture.execute_time+action.soul_cleave.execute_time+gcd.remains+(0.5*gcd.max)))" );
-  ar->add_action( "variable,name=souls_before_next_rg_sequence,op=add,value=3+talent.soul_sigils,if=cooldown.sigil_of_spite.remains<(variable.double_rm_remains-gcd.max-(2-talent.soul_sigils))" );
-  ar->add_action( "variable,name=souls_before_next_rg_sequence,op=add,value=3,if=cooldown.soul_carver.remains<(variable.double_rm_remains-gcd.max)" );
-  ar->add_action( "variable,name=souls_before_next_rg_sequence,op=add,value=3,if=cooldown.soul_carver.remains<(variable.double_rm_remains-gcd.max-3)" );
-  ar->add_action( "use_item,slot=trinket1,if=!trinket.1.is.tome_of_lights_devotion&(!variable.trinket_1_buffs|(variable.trinket_1_buffs&((buff.rending_strike.up&buff.glaive_flurry.up)|(prev_gcd.1.reavers_glaive)|(buff.thrill_of_the_fight_damage.remains>8)|(buff.reavers_glaive.up&cooldown.the_hunt.remains<5))))" );
-  ar->add_action( "use_item,slot=trinket2,if=!trinket.2.is.tome_of_lights_devotion&(!variable.trinket_2_buffs|(variable.trinket_2_buffs&((buff.rending_strike.up&buff.glaive_flurry.up)|(prev_gcd.1.reavers_glaive)|(buff.thrill_of_the_fight_damage.remains>8)|(buff.reavers_glaive.up&cooldown.the_hunt.remains<5))))" );
+  ar->add_action( "use_item,slot=trinket1,if=!trinket.1.is.tome_of_lights_devotion&(!variable.trinket_1_buffs|(variable.trinket_1_buffs&((buff.metamorphosis.up)|(buff.metamorphosis.up&cooldown.metamorphosis.remains<10)|(cooldown.metamorphosis.remains>trinket.1.cooldown.duration)|(variable.trinket_2_buffs&trinket.2.cooldown.remains<cooldown.metamorphosis.remains))))" );
+  ar->add_action( "use_item,slot=trinket2,if=!trinket.2.is.tome_of_lights_devotion&(!variable.trinket_2_buffs|(variable.trinket_2_buffs&((buff.metamorphosis.up)|(buff.metamorphosis.up&cooldown.metamorphosis.remains<10)|(cooldown.metamorphosis.remains>trinket.2.cooldown.duration)|(variable.trinket_1_buffs&trinket.1.cooldown.remains<cooldown.metamorphosis.remains))))" );
   ar->add_action( "use_item,name=tome_of_lights_devotion,if=buff.inner_resilience.up" );
   ar->add_action( "potion,use_off_gcd=1,if=(buff.rending_strike.up&buff.glaive_flurry.up)|prev_gcd.1.reavers_glaive" );
   ar->add_action( "call_action_list,name=externals,if=(buff.rending_strike.up&buff.glaive_flurry.up)|prev_gcd.1.reavers_glaive" );
-  ar->add_action( "run_action_list,name=rg_sequence,if=buff.glaive_flurry.up|buff.rending_strike.up|prev_gcd.1.reavers_glaive" );
-  ar->add_action( "metamorphosis,use_off_gcd=1,if=time<5|cooldown.fel_devastation.remains>=20" );
+  ar->add_action( "metamorphosis,use_off_gcd=1,if=!buff.metamorphosis.up" );
+  ar->add_action( "fel_devastation,use_off_gcd=1,if=!buff.rending_strike.up&!buff.glaive_flurry.up" );
+  ar->add_action( "soul_cleave,if=!buff.rending_strike.up&buff.glaive_flurry.up", "Always Soul Cleave if Rending Strike isn't up and Glaive Flurry is" );
+  ar->add_action( "fracture,if=buff.glaive_flurry.up", "Spend Rending Strike or generate Fury for empowered Soul Cleave" );
+  ar->add_action( "shear,if=buff.glaive_flurry.up", "Spend Rending Strike or generate Fury for empowered Soul Cleave" );
+  ar->add_action( "reavers_glaive,if=!buff.rending_strike.up&!buff.glaive_flurry.up" );
   ar->add_action( "the_hunt,if=!buff.reavers_glaive.up&(buff.art_of_the_glaive.stack+soul_fragments.total)<20" );
-  ar->add_action( "spirit_bomb,if=variable.can_spb&(soul_fragments.inactive>2|prev_gcd.1.sigil_of_spite|prev_gcd.1.soul_carver|(spell_targets.spirit_bomb>=4&talent.fallout&cooldown.immolation_aura.remains<gcd.max))" );
-  ar->add_action( "immolation_aura,if=(spell_targets.spirit_bomb>=4)|(!buff.reavers_glaive.up|(variable.double_rm_remains>((action.reavers_glaive.execute_time+action.fracture.execute_time+action.soul_cleave.execute_time+gcd.remains+(0.5*gcd.max))+gcd.max)))" );
-  ar->add_action( "sigil_of_flame,if=(talent.ascending_flame|(!prev_gcd.1.sigil_of_flame&dot.sigil_of_flame.remains<(4-talent.quickened_sigils)))&(!buff.reavers_glaive.up|(variable.double_rm_remains>((action.reavers_glaive.execute_time+action.fracture.execute_time+action.soul_cleave.execute_time+gcd.remains+(0.5*gcd.max))+gcd.max)))" );
-  ar->add_action( "run_action_list,name=rg_overflow,if=buff.reavers_glaive.up&!(spell_targets.spirit_bomb>=4)&debuff.reavers_mark.up&(variable.double_rm_remains>(action.reavers_glaive.execute_time+action.fracture.execute_time+action.soul_cleave.execute_time+gcd.remains+(0.5*gcd.max)))&(!buff.thrill_of_the_fight_damage.up|(buff.thrill_of_the_fight_damage.remains<(action.reavers_glaive.execute_time+action.fracture.execute_time+action.soul_cleave.execute_time+gcd.remains+(0.5*gcd.max))))&((variable.double_rm_remains-(action.reavers_glaive.execute_time+action.fracture.execute_time+action.soul_cleave.execute_time+gcd.remains+(0.5*gcd.max)))>(action.reavers_glaive.execute_time+action.fracture.execute_time+action.soul_cleave.execute_time+gcd.remains+(0.5*gcd.max)))&((variable.souls_before_next_rg_sequence>=20)|(variable.double_rm_remains>((action.reavers_glaive.execute_time+action.fracture.execute_time+action.soul_cleave.execute_time+gcd.remains+(0.5*gcd.max))+cooldown.the_hunt.remains+action.the_hunt.execute_time)))" );
-  ar->add_action( "call_action_list,name=ar_execute,if=(fight_remains<10|target.time_to_die<10)" );
-  ar->add_action( "soul_cleave,if=!buff.reavers_glaive.up&(variable.double_rm_remains<=(execute_time+(action.reavers_glaive.execute_time+action.fracture.execute_time+action.soul_cleave.execute_time+gcd.remains+(0.5*gcd.max))))&(soul_fragments<3&((buff.art_of_the_glaive.stack+soul_fragments)>=20))" );
-  ar->add_action( "spirit_bomb,if=!buff.reavers_glaive.up&(variable.double_rm_remains<=(execute_time+(action.reavers_glaive.execute_time+action.fracture.execute_time+action.soul_cleave.execute_time+gcd.remains+(0.5*gcd.max))))&((buff.art_of_the_glaive.stack+soul_fragments)>=20)" );
-  ar->add_action( "bulk_extraction,if=!buff.reavers_glaive.up&(variable.double_rm_remains<=(execute_time+(action.reavers_glaive.execute_time+action.fracture.execute_time+action.soul_cleave.execute_time+gcd.remains+(0.5*gcd.max))))&((buff.art_of_the_glaive.stack+(spell_targets>?5))>=20)" );
-  ar->add_action( "reavers_glaive,if=(fury+(variable.rg_enhance_cleave*25)+(talent.keen_engagement*20))>=30&((!buff.thrill_of_the_fight_attack_speed.up|(variable.double_rm_remains<=(action.reavers_glaive.execute_time+action.fracture.execute_time+action.soul_cleave.execute_time+gcd.remains+(0.5*gcd.max))))|(spell_targets.spirit_bomb>=4))&!(buff.rending_strike.up|buff.glaive_flurry.up)" );
-  ar->add_action( "call_action_list,name=rg_prep,if=!(fury+(variable.rg_enhance_cleave*25)+(talent.keen_engagement*20))>=30&((!buff.thrill_of_the_fight_attack_speed.up|(variable.double_rm_remains<=(action.reavers_glaive.execute_time+action.fracture.execute_time+action.soul_cleave.execute_time+gcd.remains+(0.5*gcd.max))))|(spell_targets.spirit_bomb>=4))" );
-  ar->add_action( "fiery_brand,if=(!talent.fiery_demise&active_dot.fiery_brand=0)|(talent.down_in_flames&(full_recharge_time<gcd.max))|(talent.fiery_demise&active_dot.fiery_brand=0&(buff.reavers_glaive.up|cooldown.the_hunt.remains<5|buff.art_of_the_glaive.stack>=15|buff.thrill_of_the_fight_damage.remains>5))" );
-  ar->add_action( "sigil_of_spite,if=buff.thrill_of_the_fight_damage.up|(fury>=80&(variable.can_spb|variable.can_spb_soon))|((soul_fragments.total+buff.art_of_the_glaive.stack+((1.1*(1+raw_haste_pct))*(variable.double_rm_remains-(action.reavers_glaive.execute_time+action.fracture.execute_time+action.soul_cleave.execute_time+gcd.remains+(0.5*gcd.max)))))<20)" );
-  ar->add_action( "spirit_bomb,if=variable.can_spb" );
-  ar->add_action( "felblade,if=(variable.can_spb|variable.can_spb_soon)&fury<40" );
-  ar->add_action( "vengeful_retreat,use_off_gcd=1,if=(variable.can_spb|variable.can_spb_soon)&fury<40&!cooldown.felblade.up&talent.unhindered_assault" );
-  ar->add_action( "fracture,if=(variable.can_spb|variable.can_spb_soon|variable.can_spb_one_gcd)&fury<40" );
-  ar->add_action( "soul_carver,if=buff.thrill_of_the_fight_damage.up|((soul_fragments.total+buff.art_of_the_glaive.stack+((1.1*(1+raw_haste_pct))*(variable.double_rm_remains-(action.reavers_glaive.execute_time+action.fracture.execute_time+action.soul_cleave.execute_time+gcd.remains+(0.5*gcd.max)))))<20)" );
-  ar->add_action( "fel_devastation,if=!buff.metamorphosis.up&((variable.double_rm_remains>((action.reavers_glaive.execute_time+action.fracture.execute_time+action.soul_cleave.execute_time+gcd.remains+(0.5*gcd.max))+2))|(spell_targets.spirit_bomb>=4))&((action.fracture.full_recharge_time<(2+gcd.max))|(!variable.single_target&buff.thrill_of_the_fight_damage.up))" );
-  ar->add_action( "felblade,if=cooldown.fel_devastation.remains<gcd.max&fury<50" );
-  ar->add_action( "vengeful_retreat,use_off_gcd=1,if=cooldown.fel_devastation.remains<gcd.max&fury<50&!cooldown.felblade.up&talent.unhindered_assault" );
-  ar->add_action( "fracture,if=cooldown.fel_devastation.remains<gcd.max&fury<50" );
-  ar->add_action( "fracture,if=(full_recharge_time<gcd.max)|buff.metamorphosis.up|variable.can_spb|variable.can_spb_soon|buff.warblades_hunger.stack>=5" );
-  ar->add_action( "soul_cleave,if=soul_fragments>=1" );
+  ar->add_action( "fiery_brand,if=talent.fiery_demise&!dot.fiery_brand.ticking" );
+  ar->add_action( "soul_carver,if=!talent.fiery_demise|(talent.fiery_demise&dot.fiery_brand.ticking)" );
+  ar->add_action( "sigil_of_spite,if=!talent.fiery_demise|(talent.fiery_demise&dot.fiery_brand.ticking)" );
+  ar->add_action( "immolation_aura,if=talent.fallout", "Immolation Aura is one of our best generators if Fallout is talented" );
   ar->add_action( "bulk_extraction,if=spell_targets>=3" );
+  ar->add_action( "sigil_of_flame" );
   ar->add_action( "fracture" );
+  ar->add_action( "spirit_bomb,if=spell_targets>=12" );
   ar->add_action( "soul_cleave" );
-  ar->add_action( "shear" );
+  ar->add_action( "immolation_aura" );
   ar->add_action( "felblade" );
+  ar->add_action( "vengeful_retreat,if=talent.unhindered_assault" );
   ar->add_action( "throw_glaive" );
-
-  ar_execute->add_action( "metamorphosis,use_off_gcd=1" );
-  ar_execute->add_action( "reavers_glaive,if=(fury+(variable.rg_enhance_cleave*25)+(talent.keen_engagement*20))>=30&!(buff.rending_strike.up|buff.glaive_flurry.up)" );
-  ar_execute->add_action( "call_action_list,name=rg_prep,if=buff.reavers_glaive.up&!(fury+(variable.rg_enhance_cleave*25)+(talent.keen_engagement*20))>=30" );
-  ar_execute->add_action( "the_hunt,if=!buff.reavers_glaive.up" );
-  ar_execute->add_action( "bulk_extraction,if=spell_targets>=3&buff.art_of_the_glaive.stack>=20" );
-  ar_execute->add_action( "sigil_of_flame" );
-  ar_execute->add_action( "fiery_brand" );
-  ar_execute->add_action( "sigil_of_spite" );
-  ar_execute->add_action( "soul_carver" );
-  ar_execute->add_action( "fel_devastation" );
+  ar->add_action( "shear" );
 
   externals->add_action( "invoke_external_buff,name=symbol_of_hope" );
   externals->add_action( "invoke_external_buff,name=power_infusion" );
@@ -580,32 +541,6 @@ void vengeance( player_t* p )
   metamorphosis->add_action( "soul_cleave,if=!variable.dont_soul_cleave&!(variable.big_aoe&(variable.can_spburst|variable.can_spburst_soon))" );
   metamorphosis->add_action( "felblade" );
   metamorphosis->add_action( "fracture,if=!prev_gcd.1.fracture" );
-
-  rg_overflow->add_action( "variable,name=trigger_overflow,op=set,value=1" );
-  rg_overflow->add_action( "variable,name=rg_enhance_cleave,op=set,value=1" );
-  rg_overflow->add_action( "reavers_glaive,if=(fury+(variable.rg_enhance_cleave*25)+(talent.keen_engagement*20))>=30&!buff.rending_strike.up&!buff.glaive_flurry.up" );
-  rg_overflow->add_action( "call_action_list,name=rg_prep,if=!(fury+(variable.rg_enhance_cleave*25)+(talent.keen_engagement*20))>=30" );
-
-  rg_prep->add_action( "felblade" );
-  rg_prep->add_action( "vengeful_retreat,use_off_gcd=1,if=!cooldown.felblade.up&talent.unhindered_assault" );
-  rg_prep->add_action( "sigil_of_flame" );
-  rg_prep->add_action( "immolation_aura" );
-  rg_prep->add_action( "fracture" );
-
-  rg_sequence->add_action( "variable,name=double_rm_expires,value=time+action.fracture.execute_time+20,if=!buff.glaive_flurry.up&buff.rending_strike.up" );
-  rg_sequence->add_action( "call_action_list,name=rg_sequence_filler,if=(fury<30&((!variable.rg_enhance_cleave&buff.glaive_flurry.up&buff.rending_strike.up)|(variable.rg_enhance_cleave&!buff.rending_strike.up)))|(action.fracture.charges_fractional<1&((variable.rg_enhance_cleave&buff.rending_strike.up&buff.glaive_flurry.up)|(!variable.rg_enhance_cleave&!buff.glaive_flurry.up)))" );
-  rg_sequence->add_action( "fracture,if=((variable.rg_enhance_cleave&buff.rending_strike.up&buff.glaive_flurry.up)|(!variable.rg_enhance_cleave&!buff.glaive_flurry.up))" );
-  rg_sequence->add_action( "shear,if=((variable.rg_enhance_cleave&buff.rending_strike.up&buff.glaive_flurry.up)|(!variable.rg_enhance_cleave&!buff.glaive_flurry.up))" );
-  rg_sequence->add_action( "soul_cleave,if=((!variable.rg_enhance_cleave&buff.glaive_flurry.up&buff.rending_strike.up)|(variable.rg_enhance_cleave&!buff.rending_strike.up))" );
-
-  rg_sequence_filler->add_action( "felblade" );
-  rg_sequence_filler->add_action( "fracture,if=!buff.rending_strike.up" );
-  rg_sequence_filler->add_action( "wait,sec=0.1,if=action.fracture.charges_fractional>=0.8&((variable.rg_enhance_cleave&buff.rending_strike.up&buff.glaive_flurry.up)|(!variable.rg_enhance_cleave&!buff.glaive_flurry.up))" );
-  rg_sequence_filler->add_action( "sigil_of_flame" );
-  rg_sequence_filler->add_action( "sigil_of_spite" );
-  rg_sequence_filler->add_action( "soul_carver" );
-  rg_sequence_filler->add_action( "fel_devastation" );
-  rg_sequence_filler->add_action( "throw_glaive" );
 }
 //vengeance_apl_end
 
