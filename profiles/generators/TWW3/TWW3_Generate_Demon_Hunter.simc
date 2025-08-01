@@ -79,7 +79,7 @@ off_hand=everforged_longsword,id=222440,bonus_id=11300/8790,ilevel=720,enchant_i
 
 save=TWW3_Demon_Hunter_Vengeance.simc
 
-demonhunter="TWW3_Demon_Hunter_Vengeance_Alrachi_Reaver"
+demonhunter="TWW3_Demon_Hunter_Vengeance_Aldrachi_Reaver"
 level=80
 race=night_elf
 spec=vengeance
@@ -104,4 +104,4 @@ trinket2=tome_of_lights_devotion,id=219309,ilevel=723
 main_hand=sonic_kaboomerang,id=234491,ilevel=723,enchant_id=7460
 off_hand=everforged_longsword,id=222440,bonus_id=11300/8790,ilevel=720,enchant_id=7439
 
-save=TWW3_Demon_Hunter_Vengeance_Alrachi_Reaver.simc
+save=TWW3_Demon_Hunter_Vengeance_Aldrachi_Reaver.simc
