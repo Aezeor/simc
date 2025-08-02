@@ -1287,6 +1287,7 @@ public:
   void        copy_from( player_t* source ) override;
   std::string create_profile( save_e stype ) override;
   void        init_action_list() override;
+  void        init_blizzard_action_list() override;
   std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
   parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                             const assisted_combat_step_data_t& step ) const override;
@@ -10290,6 +10291,7 @@ std::vector<std::string> rogue_t::action_names_from_spell_id( unsigned int spell
 }
 
 // rogue_t::action_names_from_spell_id ====================================================
+
 parsed_assisted_combat_rule_t rogue_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                                    const assisted_combat_step_data_t& step ) const
 {
@@ -10322,6 +10324,29 @@ parsed_assisted_combat_rule_t rogue_t::parse_assisted_combat_rule( const assiste
     return "action.coup_de_grace.ready";
 
   return player_t::parse_assisted_combat_rule( rule, step );
+}
+
+// rogue_t::init_blizzard_action_list =====================================================
+
+void rogue_t::init_blizzard_action_list()
+{
+  player_t::init_blizzard_action_list();
+
+  if ( use_cds_with_blizzard_action_list )
+  {
+    action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
+
+    switch ( specialization() )
+    {
+      case ROGUE_OUTLAW:
+        cooldowns->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up" );
+        cooldowns->add_action( "vanish" );
+        cooldowns->add_action( "keep_it_rolling,if=rtb_buffs>=4" );
+        break;
+      default:
+        break;
+    }
+  }
 }
 
 // rogue_t::create_action  ==================================================
