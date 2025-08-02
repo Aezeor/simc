@@ -2511,10 +2511,11 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
       } );
 
       auto id_entry = trait_obj->id_trait_node_entry;
-      auto entry = std::make_tuple( tree, id_entry, std::min( ranks, trait_obj->max_ranks ) );
 
       if ( it != player->player_traits.end() )
       {
+        auto entry = std::make_tuple( tree, id_entry, std::min( ranks, trait_obj->max_ranks ) );
+
         if ( std::get<2>( *it ) != std::get<2>( entry ) )
         {
           player->sim->print_log( "Overwriting talent {} ({}), rank {} -> {}", trait_obj->name, id_entry,
@@ -2523,23 +2524,25 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
 
         *it = entry;
       }
-      else
+      else if ( ranks )
       {
+        auto entry = std::make_tuple( tree, id_entry, std::min( ranks, trait_obj->max_ranks ) );
+
         player->player_traits.push_back( entry );
         player->sim->print_debug( "{} adding {} talent {}", *player, util::talent_tree_string( tree ),
                                   trait_obj->name );
-      }
 
-      if ( tree == talent_tree::HERO )
-      {
-        player->player_sub_traits.push_back( id_entry );
-
-        if( !player->player_sub_trees.count( trait_obj->id_sub_tree ) )
+        if ( tree == talent_tree::HERO )
         {
-          player->player_sub_trees.insert( trait_obj->id_sub_tree );
-          player->sim->print_debug( "{} activating sub tree {} ({})", *player,
-                                    trait_data_t::get_hero_tree_name( trait_obj->id_sub_tree, player->is_ptr() ),
-                                    trait_obj->id_sub_tree );
+          player->player_sub_traits.push_back( id_entry );
+
+          if ( !player->player_sub_trees.count( trait_obj->id_sub_tree ) )
+          {
+            player->player_sub_trees.insert( trait_obj->id_sub_tree );
+            player->sim->print_debug( "{} activating sub tree {} ({})", *player,
+                                      trait_data_t::get_hero_tree_name( trait_obj->id_sub_tree, player->is_ptr() ),
+                                      trait_obj->id_sub_tree );
+          }
         }
       }
     }
