@@ -3489,7 +3489,6 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     {
       background = true;
       repeating  = true;
-      parse_effects( p->blighted_arrow_aoe_buff );
     }
 
     void schedule_execute( action_state_t* state ) override
@@ -3503,8 +3502,16 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     void execute() override
     {
       was_instant = false;
+
+      if ( pet()->blighted_arrow_aoe_buff->check() )
+        aoe = pet()->blighted_arrow_aoe_buff->data().effectN( 1 ).base_value();
+      else
+        aoe = 0;
+
       pet_spell_t::execute();
+
       pet()->blighted_arrow_aoe_buff->decrement();
+
       if ( pet()->blighted_arrow_st_buff->check() )
       {
         was_instant = true;
