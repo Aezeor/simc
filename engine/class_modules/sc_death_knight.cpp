@@ -16146,6 +16146,8 @@ void pets::pet_action_t<T_PET, Base>::apply_pet_action_effects()
 
   // Frost
   parse_effects( dk()->mastery.frozen_heart );
+  parse_effects( dk()->buffs.remorseless_winter, dk()->talent.cleaving_strikes );  // Affects Trollbane's Frostscythe
+  parse_effects( dk()->buffs.frozen_dominion_remorseless_winter, dk()->talent.cleaving_strikes );
 
   // Unholy
   parse_effects( dk()->buffs.unholy_assault );
@@ -16153,7 +16155,7 @@ void pets::pet_action_t<T_PET, Base>::apply_pet_action_effects()
 
   // Rider of the Apocalypse
   parse_effects( dk()->buffs.mograines_might );
-  parse_effects( dk()->buffs.a_feast_of_souls );
+  parse_effects( dk()->buffs.a_feast_of_souls ); 
   auto tww3_rider_mask = effect_mask_t( true );
   switch ( dk()->specialization() )
   {
