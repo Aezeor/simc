@@ -2904,7 +2904,8 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
       }
       else
       {
-        player->sim->print_debug( "{} adding {} talent {}", *player, util::talent_tree_string( _tree ), trait->name );
+        player->sim->print_debug( "{} adding {} talent {} ({})", *player, util::talent_tree_string( _tree ),
+                                  trait->name, trait->id_trait_node_entry );
       }
     }
   }
