@@ -6098,8 +6098,8 @@ struct windstrike_t : public stormstrike_base_t
     {
       action_t* spell = nullptr;
 
-      // On PTR (11.2), Tempest overrides the TI primer completely
-      if ( p()->dbc->ptr && p()->buff.tempest->check() )
+      // On 11.2, Tempest overrides the TI primer completely
+      if ( p()->buff.tempest->check() )
       {
         spell = p()->action.tempest_ti;
       }
@@ -11347,17 +11347,8 @@ struct tempest_t : public shaman_spell_t
 
     if ( this->exec_type == spell_variant::THORIMS_INVOCATION )
     {
-      // On PTR (11.2), Tempest is allowed to consume up to 10 charges
-      if ( p()->dbc->ptr )
-      {
-        mw_stacks = std::min( mw_stacks,
-          as<int>( this->p()->talent.thorims_invocation->effectN( 6 ).base_value() ) );
-      }
-      else
-      {
-        mw_stacks = std::min( mw_stacks,
-          as<int>( this->p()->talent.thorims_invocation->effectN( 1 ).base_value() ) );
-      }
+      mw_stacks = std::min( mw_stacks,
+        as<int>( this->p()->talent.thorims_invocation->effectN( 6 ).base_value() ) );
     }
 
     return mw_stacks;
