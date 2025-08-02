@@ -566,6 +566,7 @@ public:
   {
     bool brain_freeze_active;
     bool fingers_of_frost_active;
+    bool grant_fingers_of_frost;
     timespan_t gained_full_icicles;
     bool had_low_mana;
     bool trigger_ff_empowerment;
@@ -5368,6 +5369,8 @@ struct frost_nova_t final : public mage_spell_t
 
 struct frozen_orb_bolt_t final : public frost_mage_spell_t
 {
+  proc_t* proc_fof_initial = nullptr;
+
   frozen_orb_bolt_t( std::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 84721 ) )
   {
@@ -5382,6 +5385,7 @@ struct frozen_orb_bolt_t final : public frost_mage_spell_t
   void init_finished() override
   {
     proc_fof = p()->get_proc( "Fingers of Frost from Frozen Orb Tick" );
+    proc_fof_initial = p()->get_proc( "Fingers of Frost from Frozen Orb Initial Impact" );
     frost_mage_spell_t::init_finished();
   }
 
@@ -5391,6 +5395,12 @@ struct frozen_orb_bolt_t final : public frost_mage_spell_t
 
     if ( hit_any_target )
     {
+      if ( p()->bugs && p()->state.grant_fingers_of_frost )
+      {
+        p()->trigger_fof( 1.0, proc_fof_initial );
+        p()->state.grant_fingers_of_frost = false;
+      }
+
       p()->trigger_fof( p()->talents.fingers_of_frost->effectN( 2 ).percent(), proc_fof );
 
       double chance = p()->sets->set( HERO_SPELLSLINGER, TWW3, B4 )->effectN( 2 ).percent();
@@ -5450,6 +5460,7 @@ struct frozen_orb_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
+    p()->state.grant_fingers_of_frost = true;
     p()->buffs.permafrost_lances->trigger();
     if ( !background ) p()->buffs.freezing_rain->trigger();
   }
@@ -5457,7 +5468,9 @@ struct frozen_orb_t final : public frost_mage_spell_t
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
-    p()->trigger_fof( 1.0, proc_fof );
+
+    if ( !p()->bugs )
+      p()->trigger_fof( 1.0, proc_fof );
 
     int pulse_count = 20;
     timespan_t pulse_time = 0.5_s;
