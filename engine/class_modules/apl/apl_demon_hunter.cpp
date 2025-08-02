@@ -403,12 +403,13 @@ void vengeance( player_t* p )
   ar->add_action( "the_hunt,if=!buff.reavers_glaive.up&(buff.art_of_the_glaive.stack+soul_fragments.total)<20" );
   ar->add_action( "fiery_brand,if=talent.fiery_demise&!dot.fiery_brand.ticking" );
   ar->add_action( "soul_carver,if=!talent.fiery_demise|(talent.fiery_demise&dot.fiery_brand.ticking)" );
-  ar->add_action( "sigil_of_spite,if=!talent.fiery_demise|(talent.fiery_demise&dot.fiery_brand.ticking)" );
+  ar->add_action( "sigil_of_spite" );
   ar->add_action( "immolation_aura,if=talent.fallout", "Immolation Aura is one of our best generators if Fallout is talented" );
   ar->add_action( "bulk_extraction,if=spell_targets>=3" );
+  ar->add_action( "fracture,if=buff.metamorphosis.up" );
   ar->add_action( "sigil_of_flame" );
   ar->add_action( "fracture" );
-  ar->add_action( "spirit_bomb,if=spell_targets>=12" );
+  ar->add_action( "spirit_bomb,if=spell_targets>=12&soul_fragments>=4" );
   ar->add_action( "soul_cleave" );
   ar->add_action( "immolation_aura" );
   ar->add_action( "felblade" );

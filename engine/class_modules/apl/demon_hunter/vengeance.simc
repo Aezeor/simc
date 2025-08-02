@@ -39,13 +39,14 @@ actions.ar+=/reavers_glaive,if=!buff.rending_strike.up&!buff.glaive_flurry.up
 actions.ar+=/the_hunt,if=!buff.reavers_glaive.up&(buff.art_of_the_glaive.stack+soul_fragments.total)<20
 actions.ar+=/fiery_brand,if=talent.fiery_demise&!dot.fiery_brand.ticking
 actions.ar+=/soul_carver,if=!talent.fiery_demise|(talent.fiery_demise&dot.fiery_brand.ticking)
-actions.ar+=/sigil_of_spite,if=!talent.fiery_demise|(talent.fiery_demise&dot.fiery_brand.ticking)
+actions.ar+=/sigil_of_spite
 # Immolation Aura is one of our best generators if Fallout is talented
 actions.ar+=/immolation_aura,if=talent.fallout
 actions.ar+=/bulk_extraction,if=spell_targets>=3
+actions.ar+=/fracture,if=buff.metamorphosis.up
 actions.ar+=/sigil_of_flame
 actions.ar+=/fracture
-actions.ar+=/spirit_bomb,if=spell_targets>=12
+actions.ar+=/spirit_bomb,if=spell_targets>=12&soul_fragments>=4
 actions.ar+=/soul_cleave
 actions.ar+=/immolation_aura
 actions.ar+=/felblade
