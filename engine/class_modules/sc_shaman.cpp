@@ -13818,7 +13818,7 @@ void shaman_t::trigger_whirling_fire( const action_state_t* state )
     return;
   }
 
-  if ( !buff.whirling_fire->check() || buff.whirling_fire->cooldown->down() )
+  if ( !buff.whirling_fire->check() )
   {
     return;
   }
