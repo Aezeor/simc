@@ -2971,6 +2971,8 @@ struct base_ghoul_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::init_base_stats();
 
+    ready_type = ready_e::READY_TRIGGER;
+
     resources.base[ RESOURCE_ENERGY ]                  = 100;
     resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
   }
@@ -3016,18 +3018,15 @@ struct base_ghoul_pet_t : public death_knight_pet_t
       return time_to_move();
 
     double energy = resources.current[ RESOURCE_ENERGY ];
+
+    // Cheapest Ability need 40 Energy
+    if ( energy >= 40 )
+      return death_knight_pet_t::available();
+
     timespan_t time_to_next =
         timespan_t::from_seconds( ( 40 - energy ) / resource_regen_per_second( RESOURCE_ENERGY ) );
 
-    // Cheapest Ability need 40 Energy
-    if ( energy > 40 )
-    {
-      return 100_ms;
-    }
-    else
-    {
-      return std::max( time_to_next, 100_ms );
-    }
+    return std::max( time_to_next, death_knight_pet_t::available() );
   }
 };
 
@@ -3219,15 +3218,15 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     action_priority_list_t* def = get_action_priority_list( "default" );
     if ( dk()->talent.unholy.dark_transformation.ok() )
     {
-      def->add_action( "sweeping_claws" );
-      def->add_action( "claw,if=energy>70" );
+      def->add_action( "gnaw" );
       def->add_action( "monstrous_blow" );
-      def->add_action( "Gnaw" );
+      def->add_action( "sweeping_claws" );
+      def->add_action( "claw" );
     }
     else
     {
-      def->add_action( "claw,if=energy>70" );
-      def->add_action( "Gnaw" );
+      def->add_action( "gnaw" );
+      def->add_action( "claw" );
     }
   }
 
