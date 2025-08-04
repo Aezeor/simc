@@ -10266,26 +10266,27 @@ std::vector<std::string> rogue_t::action_names_from_spell_id( unsigned int spell
   auto splits = util::string_split( util::tokenize_fn( name ), "_" );
   auto fragment = !splits.empty() ? splits[ 0 ] : "";
 
-  std::string type = "";
+  std::string poison_type = "";
   switch ( spell_id )
   {
   case 2823:   // deadly poison
   case 315584: // instant poison
   case 381664: // amplifying poison
   case 8679:   // wound poison
-    type = "lethal";
+    poison_type = "lethal";
     break;
   case 381637: // atrophic poison
   case 3408:   // crippling poison
   case 5761:   // numbing poison
-    type = "nonlethal";
+    poison_type = "nonlethal";
     break;
   default:
     break;
   }
 
-  if ( !type.empty() )
-    return { fmt::format( "apply_poison,{}={}", type, fragment ) };
+  // Just return nothing for apply_poison for now because the conditions are nonsense
+  if ( !poison_type.empty() )
+    return {}; // return { fmt::format( "apply_poison,{}={}", type, fragment ) };
 
   if ( spell_id == 196819 && specialization() == ROGUE_OUTLAW )
     return { "dispatch", "coup_de_grace" };
@@ -10293,6 +10294,9 @@ std::vector<std::string> rogue_t::action_names_from_spell_id( unsigned int spell
     return { "eviscerate", "coup_de_grace" };
   if ( spell_id == 196819 && specialization() == ROGUE_ASSASSINATION )
     return { "envenom", "coup_de_grace" };
+
+  if ( spell_id == 1752 && specialization() == ROGUE_ASSASSINATION )
+    return { "mutilate" };
 
   return player_t::action_names_from_spell_id( spell_id );
 }
@@ -10321,6 +10325,16 @@ parsed_assisted_combat_rule_t rogue_t::parse_assisted_combat_rule( const assiste
     }
   }
 
+  if ( rule.condition_type == COMBO_POINTS_GREATER )
+    return fmt::format( "effective_combo_points>={}", rule.condition_value_1 );
+
+  if ( rule.condition_type == COMBO_POINTS_LESS )
+    return fmt::format( "effective_combo_points<={}", rule.condition_value_1 );
+
+  // Stealth + Vanish checks
+  if ( rule.condition_type == AURA_ON_PLAYER && ( rule.condition_value_1 == 1784 || rule.condition_value_1 == 115191 || rule.condition_value_1 == 11327 ) )
+    return { "stealthed.basic", "Generic stealth check replacement expression for multiple buff checks", true, false };
+
   if ( rule.condition_type == AURA_ON_PLAYER && rule.condition_value_1 == 51667 )
     return { "1", "Checks if the automatically learned passive Cut to the Chase is known. Assumed to be strictly true." };
 
@@ -10339,15 +10353,23 @@ void rogue_t::init_blizzard_action_list()
 {
   player_t::init_blizzard_action_list();
 
+  // Replacement for Blizzard's nonsensical apply_poison logic
+  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
+  precombat->add_action( "apply_poison" );
+
   if ( use_cds_with_blizzard_action_list )
   {
     action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
 
     switch ( specialization() )
     {
+      case ROGUE_ASSASSINATION:
+        cooldowns->add_action( "vanish,if=!stealthed.all" );
+        cooldowns->add_action( "deathmark,if=!talent.kingsbane|cooldown.kingsbane.ready" );
+        break;
       case ROGUE_OUTLAW:
         cooldowns->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up" );
-        cooldowns->add_action( "vanish" );
+        cooldowns->add_action( "vanish,if=!stealthed.all" );
         cooldowns->add_action( "keep_it_rolling,if=rtb_buffs>=4" );
         break;
       default:
