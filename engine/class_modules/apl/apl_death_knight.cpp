@@ -261,10 +261,10 @@ void frost( player_t* p )
   single_target->add_action( "howling_blast,if=buff.rime.react&talent.frostbound_will" );
   single_target->add_action( "frost_strike,target_if=max:(talent.shattering_blade&debuff.razorice.react=5),if=debuff.razorice.react=5&talent.shattering_blade&!variable.rp_pooling" );
   single_target->add_action( "howling_blast,if=buff.rime.react" );
-  single_target->add_action( "frost_strike,if=!talent.shattering_blade&!variable.rp_pooling" );
+  single_target->add_action( "frost_strike,if=!talent.shattering_blade&!variable.rp_pooling&runic_power.deficit<30" );
   single_target->add_action( "obliterate,if=buff.killing_machine.react&!variable.rune_pooling" );
-  single_target->add_action( "obliterate,if=!variable.rune_pooling&!(talent.obliteration&buff.pillar_of_frost.up)" );
   single_target->add_action( "frost_strike,if=!variable.rp_pooling" );
+  single_target->add_action( "obliterate,if=!variable.rune_pooling&!(talent.obliteration&buff.pillar_of_frost.up)" );
   single_target->add_action( "howling_blast,if=!buff.killing_machine.react&(talent.obliteration&buff.pillar_of_frost.up)" );
 
   aoe->add_action( "frostscythe,if=(buff.killing_machine.react=2|(buff.killing_machine.react&rune>=3))&active_enemies>=variable.frostscythe_prio", "Aoe Rotation" );
