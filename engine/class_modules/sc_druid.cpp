@@ -2506,6 +2506,37 @@ struct ravage_base_t : public BASE
 
 // community testing (~257k ticks) memorial
 // https://docs.google.com/spreadsheets/d/1lPDhmfqe03G_eFetGJEbSLbXMcfkzjhzyTaQ8mdxADM/edit?gid=385734241
+
+/* Dev Notes:
+Whenever an event occurs that can trigger Bloodseeker Vines or Symbiotic Blooms occurs, an amount is added to an
+accumulator. That amount is initialized by a value in the Thriving Growth spell, modified by the number of DoTs or HoTs
+that are active so chance doesn't grow linearly with number of targets in AOE, and randomized. When the accumulator is
+greater than 1000, an instance of Bloodseeker Vines or Symbiotic Blooms is generated and the accumulator is reduced by
+1000. Thriving Growth Parameters in SpellID 439528:
+
+100 - Rip tick accumulator initial value
+135 - Rake tick accumulator initial value
+85 - Wild Growth tick accumulator initial value
+155 - Regrowth tick accumulator initial value
+155 - Efflorescence tick accumulator initial value
+62 - Bloodseeker Vines inverse growth coefficient * 100
+75 - Symbiotic Blooms inverse growth coefficient * 100
+The formula for the amount added by a triggering event is:
+
+Aura Accumulator Initial Value / (Number of Active Auras) ^ (Inverse Coefficient)
+
+Efflorescence works slightly differently - its accumulator value is just divided by the number of targets healed.
+
+These formulas causes it to behave similarly to the chance for Apex Predator’s Craving to proc, where each additional
+affected target provides a smaller increase than the one before. For example, if you have 4 Rips active, the amount
+accumulated per damage tick is 100 / (4 ^ 0.62), or 42. Since you have 4 Rips ticking, you’ll accumulate 168 in the time
+you’d accumulate 100 with just one Rip active.
+
+The calculated amount of every event is then randomized by multiplying its value by a random value between 0 and 2.
+Finally, it is added to the accumulator. There is no bad luck protection or delay before another growth can occur.
+
+The 11.2 Set Bonus works by multiplying the accumulator initial values by 1 + the set bonus chance.
+*/
 struct thriving_growth_rng_t : public proc_rng_t
 {
   static constexpr rng_type_e rng_type = RNG_CUSTOM;
@@ -2560,7 +2591,7 @@ struct thriving_growth_rng_t : public proc_rng_t
     if ( r_type == reset_type_e::COMBAT )
       count -= threshold;
     else
-      count = 0.0;
+      count = player->rng().range( threshold );  // accumulator seems to never reset, so randomize each start
   }
 
   int _calculate( const coeffs_t& c, action_state_t* s )
@@ -2608,7 +2639,8 @@ template <typename BASE>
 struct trigger_thriving_growth_t : public BASE
 {
 protected:
-  thriving_growth_rng_t* _rng = nullptr;
+  thriving_growth_rng_t* vine_rng = nullptr;
+  thriving_growth_rng_t* bloom_rng = nullptr;
 
   using base_t = trigger_thriving_growth_t<BASE>;
 
@@ -2617,15 +2649,31 @@ public:
     : BASE( n, p, s, f )
   {
     if ( p->talent.thriving_growth.ok() )
-      _rng = p->get_rng<thriving_growth_rng_t>( "thriving_growth" );
+    {
+      vine_rng = p->get_rng<thriving_growth_rng_t>( "bloodseeker_vines" );
+      // bloom_rng = p->get_rng<thriving_growth_rng_t>( "symbiotic_blooms" ); NYI
+    }
   }
 
   void tick( dot_t* d ) override
   {
     BASE::tick( d );
 
-    if ( _rng )
-      _rng->trigger( d->state );
+    switch ( d->state->result_type )
+    {
+      case result_amount_type::DMG_DIRECT:
+      case result_amount_type::DMG_OVER_TIME:
+        if ( vine_rng )
+          vine_rng->trigger( d->state );
+        break;
+      case result_amount_type::HEAL_DIRECT:
+      case result_amount_type::HEAL_OVER_TIME:
+        if ( bloom_rng )
+          bloom_rng->trigger( d->state );
+        break;
+      default:
+        break;
+    }
   }
 };
 
