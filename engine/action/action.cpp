@@ -706,6 +706,8 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
     aoe = spell_data.max_targets();
 
   const auto spell_powers = spell_data.powers();
+  bool require_spec_aura = false;
+
   if ( spell_powers.size() == 1 && spell_powers.front().aura_id() == 0 )
   {
     resource_current = spell_powers.front().resource();
@@ -720,6 +722,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
             it != spell_powers.end() )
   {
     resource_current = it->resource();
+    require_spec_aura = true;
   }
   else
   {
@@ -728,6 +731,9 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
 
   for ( const spellpower_data_t& pd : spell_powers )
   {
+    if ( require_spec_aura && pd.aura_id() != player->spec_spell->id() )
+      continue;
+
     if ( pd._cost != 0 )
       base_costs[ pd.resource() ] = pd.cost();
     else
