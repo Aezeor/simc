@@ -43,7 +43,7 @@ struct monk_pet_t : public pet_t
 };
 struct storm_earth_and_fire_pet_t;
 struct xuen_pet_t;
-namespace  // niuzao
+namespace niuzao // niuzao
 {
 struct niuzao_pet_t : public monk_pet_t
 {
@@ -1384,12 +1384,12 @@ public:
   {
     std::array<pets::storm_earth_and_fire_pet_t *, (int)pets::sef_pet_e::SEF_PET_MAX> sef;
     spawner::pet_spawner_t<pet_t, monk_t> xuen;
-    spawner::pet_spawner_t<pets::niuzao_pet_t, monk_t> niuzao;
+    spawner::pet_spawner_t<pets::niuzao::niuzao_pet_t, monk_t> niuzao;
     spawner::pet_spawner_t<pet_t, monk_t> yulon;
     spawner::pet_spawner_t<pet_t, monk_t> chiji;
     spawner::pet_spawner_t<pet_t, monk_t> white_tiger_statue;
     spawner::pet_spawner_t<pet_t, monk_t> fury_of_xuen_tiger;
-    spawner::pet_spawner_t<pets::niuzao_pet_t, monk_t> call_to_arms_niuzao;
+    spawner::pet_spawner_t<pets::niuzao::niuzao_pet_t, monk_t> call_to_arms_niuzao;
 
     pet_t *bron;
 

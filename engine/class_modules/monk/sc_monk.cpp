@@ -4045,7 +4045,7 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
     p()->buff.pretense_of_instability->trigger();
     p()->active_actions.special_delivery->execute();
 
-    pets::niuzao_pet_t *pet = nullptr;
+    pets::niuzao::niuzao_pet_t *pet = nullptr;
     if ( p()->buff.invoke_niuzao->check() && !p()->buff.call_to_arms_invoke_niuzao->check() )
       pet = p()->pets.niuzao.active_pet();
     if ( p()->buff.call_to_arms_invoke_niuzao->check() && !p()->buff.invoke_niuzao->check() )
@@ -8547,7 +8547,7 @@ void monk_t::init_special_effects()
         } );
 
   if ( talent.master_of_harmony.balanced_stratagem->ok() )
-    create_proc_callback( { talent.master_of_harmony.balanced_stratagem } )
+    create_proc_callback( { talent.master_of_harmony.balanced_stratagem.spell() } )
         ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
                                               [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
                                                 return state->action->school != SCHOOL_NONE;
@@ -8594,7 +8594,7 @@ void monk_t::init_special_effects()
     create_proc_callback( { tier.tww2.brm_2pc, static_cast<proc_flag>( 0ull ), PF2_ALL_HIT } );
 
   if ( talent.mistweaver.dance_of_chiji.ok() )
-    create_proc_callback( { talent.mistweaver.dance_of_chiji } )
+    create_proc_callback( { talent.mistweaver.dance_of_chiji.spell() } )
         ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
           buff.dance_of_chiji_mw->increment();  // increment is used to not incur the rppm side affects
           proc.dance_of_chiji->occur();

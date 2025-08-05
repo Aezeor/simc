@@ -1277,7 +1277,7 @@ public:
 // ==========================================================================
 // Niuzao Pet
 // ==========================================================================
-namespace
+namespace niuzao
 {
 struct melee_t : public pet_melee_t
 {
@@ -1363,14 +1363,14 @@ action_t *niuzao_pet_t::create_action( std::string_view name, std::string_view o
 
 }  // namespace
 
-struct invoke_niuzao_pet_t : public niuzao_pet_t
+struct invoke_niuzao_pet_t : public niuzao::niuzao_pet_t
 {
   invoke_niuzao_pet_t( monk_t *player ) : niuzao_pet_t( "invoke_niuzao_the_black_ox", player )
   {
   }
 };
 
-struct call_to_arms_niuzao_pet_t : public niuzao_pet_t
+struct call_to_arms_niuzao_pet_t : public niuzao::niuzao_pet_t
 {
   call_to_arms_niuzao_pet_t( monk_t *player ) : niuzao_pet_t( "call_to_arms_niuzao_the_black_ox", player )
   {

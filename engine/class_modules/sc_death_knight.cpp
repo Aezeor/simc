@@ -3518,7 +3518,7 @@ struct risen_skulker_pet_t : public death_knight_pet_t
       was_instant = false;
 
       if ( pet()->blighted_arrow_aoe_buff->check() )
-        aoe = pet()->blighted_arrow_aoe_buff->data().effectN( 1 ).base_value();
+        aoe = as<int>( pet()->blighted_arrow_aoe_buff->data().effectN( 1 ).base_value() );
       else
         aoe = 0;
 
@@ -11654,7 +11654,7 @@ struct desecrate_t : public death_knight_spell_t
 
 private:
   action_t* damage;
-  event_t* dnd_event;
+  [[maybe_unused]] event_t* dnd_event;
 };
 
 // ==========================================================================
