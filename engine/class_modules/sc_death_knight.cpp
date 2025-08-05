@@ -2518,6 +2518,16 @@ struct death_knight_pet_t : public pet_t
     return 0;
   }
 
+  double composite_mastery_value() const override
+  {
+    return dk()->composite_mastery_value();
+  }
+
+  double composite_mastery() const override
+  {
+    return dk()->composite_mastery();
+  }
+
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override
   {
     double m = current.crit_damage_multiplier;
@@ -4749,7 +4759,6 @@ struct trollbane_pet_t final : public horseman_pet_t
       aoe = -1;
       reduced_aoe_targets = data().effectN( 5 ).base_value();
       background          = true;
-      _player = dk();
     }
   };
 
@@ -16022,6 +16031,8 @@ void death_knight_t::invalidate_cache( cache_e c )
     case CACHE_MASTERY:
       if ( specialization() == DEATH_KNIGHT_BLOOD )
         player_t::invalidate_cache( CACHE_ATTACK_POWER );
+      for ( auto& pet : dk_active_pets )
+        pet->invalidate_cache( c );
       break;
     case CACHE_STRENGTH:
       if ( spell.bone_shield->ok() )
