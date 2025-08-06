@@ -84,29 +84,29 @@ off_hand=geezles_coercive_voltohmmeter,id=234493,bonus_id=12361,enchant_id=7460,
 
 save=TWW3_Rogue_Outlaw.simc
 
-# rogue="TWW3_Rogue_Subtlety"
-# level=80
-# race=maghar_orc
-# role=attack
-# position=back
-# spec=subtlety
-# talents=CUQAAAAAAAAAAAAAAAAAAAAAAAAM2mBAAAAAgZZMWmGzYMmxYMjHYmZmhxsNMzMbbzMjZmZAjlZbAAAAYGMAGzmhBGYW0CtYDG
+rogue="TWW3_Rogue_Subtlety"
+level=80
+race=maghar_orc
+role=attack
+position=back
+spec=subtlety
+talents=CUQAAAAAAAAAAAAAAAAAAAAAAAAM2mBAAAAAALjZWmGzsMGzYMMMzMzwY2mlZMjtZmxMzMGwysNAAAAmZwAYMbGGYgZRL0iNYA
 
-# head=spectral_gamblers_damned_visage,id=229289,bonus_id=1808,ilevel=684,gem_id=213743,enchant_id=7927
-# neck=flickering_glowtorc,id=221103,bonus_id=8781,ilevel=684,gem_id=213473/213473
-# shoulders=spectral_gamblers_bladed_mantle,id=229287,ilevel=684
-# back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/8794/10520/8960,ilevel=681
-# chest=spectral_gamblers_vest,id=229292,ilevel=684,enchant_id=7364
-# wrists=hustlers_anteuppers,id=228885,bonus_id=1808,ilevel=684,gem_id=213473
-# hands=enforcers_sticky_fingers,id=228863,ilevel=684
-# waist=competitors_battle_cord,id=228856,bonus_id=1808,ilevel=684,gem_id=213473
-# legs=spectral_gamblers_pantaloons,id=229288,ilevel=684,enchant_id=7601
-# feet=runebranded_kickers,id=219327,bonus_id=10421/9633/8902/8794/10520/8960,ilevel=681
-# finger1=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=684,gem_id=213473/213473,enchant_id=7352
-# finger2=ritual_bone_band,id=178870,bonus_id=8781,ilevel=684,gem_id=213473/213473,enchant_id=7352
-# trinket1=house_of_cards,id=230027,ilevel=684
-# trinket2=improvised_seaforium_pacemaker,id=232541,bonus_id=1520/12376/11964
-# main_hand=pyrotechnic_needledropper,id=228897,ilevel=684,enchant_id=7463
-# off_hand=pyrotechnic_needledropper,id=228897,ilevel=684,enchant_id=7463
+head=,id=237664,bonus_id=12676/1533/12361/1808,gem_id=213743
+neck=,id=215136,bonus_id=10421/9633/8902/12053/12050/1485/10520/8960/8781,gem_id=213497/213497,crafted_stats=49/40
+shoulder=,id=237552,bonus_id=1533/12361/12239
+back=,id=235499,bonus_id=9893/12239,gem_id=238046
+chest=,id=237667,bonus_id=12676/1533/12361,enchant_id=7364
+wrist=,id=219334,bonus_id=10421/9633/8902/12053/12050/1485/1808/10520/8960,gem_id=213497,crafted_stats=49/40
+hands=,id=237665,bonus_id=12675/1533/12361
+waist=,id=237557,bonus_id=1533/12361/12239/1808,gem_id=213497
+legs=,id=237663,bonus_id=12676/1533/12361,enchant=stormbound_armor_kit_3
+feet=,id=243306,bonus_id=1533/12361/12239/13504
+finger1=,id=221141,bonus_id=3215/12361/12239/8781,enchant=radiant_versatility_3,gem_id=213497/213497
+finger2=,id=237567,bonus_id=1533/12361/12239/8781,enchant=radiant_versatility_3,gem_id=213497/213497
+trinket1=,id=242395,bonus_id=1533/12361/12239
+trinket2=,id=242396,bonus_id=1533/12361/12239
+main_hand=,id=237740,bonus_id=1533/12361/12239,enchant=stonebound_artistry_3
+off_hand=,id=237729,bonus_id=1533/12361/12239,enchant=oathsworns_tenacity_3
 
-# save=TWW3_Rogue_Subtlety.simc
+save=TWW3_Rogue_Subtlety.simc
