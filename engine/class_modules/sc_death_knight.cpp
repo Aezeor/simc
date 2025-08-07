@@ -4998,6 +4998,8 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
   propagate_const<gain_t*> gain;
   bool hasted_gcd;
   double rp_per_tick;
+  std::vector<player_effect_t> runic_power_multiplier_effects;
+  std::vector<player_effect_t> runic_power_flat_effects;
 
   struct
   {
@@ -5010,7 +5012,11 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
   } affected_by;
 
   death_knight_action_t( std::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() )
-    : action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false ), rp_per_tick( 0 ), affected_by{ false, false }
+    : action_base_t( n, p, s ),
+      gain( nullptr ),
+      hasted_gcd( false ),
+      rp_per_tick( 0 ),
+      affected_by{ false, false }
   {
     this->may_glance = false;
     if ( this->cooldown->duration > 0_s )
@@ -5107,31 +5113,132 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
     return p()->get_target_data( t );
   }
 
+  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& tmp, double& val_mul,
+                                                   std::string& str, bool& flat, bool force,
+                                                   const pack_t<player_effect_t>& pack ) override
+  {
+    if ( ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER ) &&
+         ( action_base_t::data().affected_by_all( eff ) || force ) )
+    {
+      switch ( eff.misc_value1() )
+      {
+        case P_EFFECT_1:
+          if ( action_base_t::data().effectN( 1 ).type() == E_ENERGIZE &&
+               action_base_t::data().effectN( 1 ).misc_value1() == POWER_RUNIC_POWER )
+          {
+            str = "runic power multiplier";
+            return &runic_power_multiplier_effects;
+          }
+          break;
+        case P_EFFECT_2:
+          if ( action_base_t::data().effectN( 2 ).type() == E_ENERGIZE &&
+               action_base_t::data().effectN( 2 ).misc_value1() == POWER_RUNIC_POWER )
+          {
+            str = "runic power multiplier";
+            return &runic_power_multiplier_effects;
+          }
+          break;
+        case P_EFFECT_3:
+          if ( action_base_t::data().effectN( 3 ).type() == E_ENERGIZE &&
+               action_base_t::data().effectN( 3 ).misc_value1() == POWER_RUNIC_POWER )
+          {
+            str = "runic power multiplier";
+            return &runic_power_multiplier_effects;
+          }
+          break;
+        case P_EFFECT_4:
+          if ( action_base_t::data().effectN( 4 ).type() == E_ENERGIZE &&
+               action_base_t::data().effectN( 4 ).misc_value1() == POWER_RUNIC_POWER )
+          {
+            str = "runic power multiplier";
+            return &runic_power_multiplier_effects;
+          }
+          break;
+        case P_EFFECT_5:
+          if ( action_base_t::data().effectN( 5 ).type() == E_ENERGIZE &&
+               action_base_t::data().effectN( 5 ).misc_value1() == POWER_RUNIC_POWER )
+          {
+            str = "runic power multiplier";
+            return &runic_power_multiplier_effects;
+          }
+          break;
+      }
+    }
+
+    else if ( ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER ) &&
+              ( action_base_t::data().affected_by_all( eff ) || force ) )
+    {
+      flat = true;
+
+      switch ( eff.misc_value1() )
+      {
+        case P_EFFECT_1:
+          if ( action_base_t::data().effectN( 1 ).type() == E_ENERGIZE &&
+               action_base_t::data().effectN( 1 ).misc_value1() == POWER_RUNIC_POWER )
+          {
+            str = "runic power mod flat";
+            return &runic_power_flat_effects;
+          }
+          break;
+        case P_EFFECT_2:
+          if ( action_base_t::data().effectN( 2 ).type() == E_ENERGIZE &&
+               action_base_t::data().effectN( 2 ).misc_value1() == POWER_RUNIC_POWER )
+          {
+            str = "runic power mod flat";
+            return &runic_power_flat_effects;
+          }
+          break;
+        case P_EFFECT_3:
+          if ( action_base_t::data().effectN( 3 ).type() == E_ENERGIZE &&
+               action_base_t::data().effectN( 3 ).misc_value1() == POWER_RUNIC_POWER )
+          {
+            str = "runic power mod flat";
+            return &runic_power_flat_effects;
+          }
+          break;
+        case P_EFFECT_4:
+          if ( action_base_t::data().effectN( 4 ).type() == E_ENERGIZE &&
+               action_base_t::data().effectN( 4 ).misc_value1() == POWER_RUNIC_POWER )
+          {
+            str = "runic power mod flat";
+            return &runic_power_flat_effects;
+          }
+          break;
+        case P_EFFECT_5:
+          if ( action_base_t::data().effectN( 5 ).type() == E_ENERGIZE &&
+               action_base_t::data().effectN( 5 ).misc_value1() == POWER_RUNIC_POWER )
+          {
+            str = "runic power mod flat";
+            return &runic_power_flat_effects;
+          }
+          break;
+      }
+    }
+
+    return action_base_t::get_effect_vector( eff, tmp, val_mul, str, flat, force, pack );
+  }
+
+
+  size_t total_effects_count() override
+  {
+    return action_base_t::total_effects_count() + runic_power_multiplier_effects.size() + runic_power_flat_effects.size();
+  }
+
+  void print_parsed_custom_type( report::sc_html_stream& os ) override
+  {
+    action_base_t::print_parsed_custom_type( os );
+
+    action_base_t::template print_parsed_type<base_t>( os, &base_t::runic_power_multiplier_effects, "RP Gen Multiplier" );
+    action_base_t::template print_parsed_type<base_t>( os, &base_t::runic_power_flat_effects, "RP Gen Modifier" );
+  }
+
+
   virtual double runic_power_generation_multiplier( const action_state_t* state ) const
   {
     double m = 1.0;
 
-    // The way this works in spell data: ERW has effects modified by -100% mods from Obliteration
-
-    // Obliterate actions
-    if ( p()->buffs.empower_rune_weapon->check() && affected_by.erw_energize_reduction_4 )
-    {
-      m *= p()->buffs.empower_rune_weapon->data().effectN( 4 ).percent();
-    }
-    if ( p()->buffs.exterminate->check() && affected_by.exterminate_energize_reduction_3 )
-    {
-      m *= std::abs( p()->buffs.exterminate->data().effectN( 3 ).percent() );
-    }
-
-    // Frostscythe actions
-    if ( p()->buffs.empower_rune_weapon->check() && affected_by.erw_energize_reduction_3 )
-    {
-      m *= p()->buffs.empower_rune_weapon->data().effectN( 3 ).percent();
-    }
-    if ( p()->buffs.exterminate->check() && affected_by.exterminate_energize_reduction_4 )
-    {
-      m *= std::abs( p()->buffs.exterminate->data().effectN( 4 ).percent() );
-    }
+    for ( const auto& i : runic_power_multiplier_effects )
+      m *= 1.0 + base_t::get_effect_value( i );
 
     return m;
   }
@@ -5153,6 +5260,9 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
   double composite_energize_amount( const action_state_t* s ) const override
   {
     double amount = action_base_t::composite_energize_amount( s );
+
+    for ( const auto& i : runic_power_flat_effects )
+      amount += 1.0 + base_t::get_effect_value( i );
 
     if ( this->energize_resource_() == RESOURCE_RUNIC_POWER )
     {
