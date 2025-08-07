@@ -1,4 +1,4 @@
-demonhunter="TWW3_Demon_Hunter_Havoc_Aldrachi_Reaver"
+demonhunter="TWW3_Demon_Hunter_Havoc"
 level=80
 race=blood_elf
 spec=havoc
@@ -23,7 +23,7 @@ trinket2=,id=190652,ilevel=723
 main_hand=,id=185778,enchant_id=7442,ilevel=723
 off_hand=,id=222441,bonus_id=10222/11300/8960/8790,enchant_id=7439,enchant=stormriders_fury_3,ilevel=720
 
-save=TWW3_Demon_Hunter_Havoc_Aldrachi_Reaver.simc
+save=TWW3_Demon_Hunter_Havoc.simc
 
 demonhunter="TWW3_Demon_Hunter_Havoc_Fel-Scarred"
 level=80
