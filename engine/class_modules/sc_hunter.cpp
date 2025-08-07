@@ -7064,7 +7064,7 @@ struct kill_command_t: public hunter_spell_t
       }
     }
 
-    if ( rng().roll( dire_command.chance ) )
+    if ( p()->actions.dire_beast && rng().roll( dire_command.chance ) )
     {
       p() -> actions.dire_beast -> execute();
       p() -> procs.dire_command -> occur();
