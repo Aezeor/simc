@@ -57,9 +57,9 @@ void beast_mastery( player_t* p )
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* cds = p->get_action_priority_list( "cds" );
+  action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
   action_priority_list_t* drcleave = p->get_action_priority_list( "drcleave" );
   action_priority_list_t* drst = p->get_action_priority_list( "drst" );
-  action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
   action_priority_list_t* st = p->get_action_priority_list( "st" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
@@ -72,7 +72,7 @@ void beast_mastery( player_t* p )
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "call_action_list,name=drst,if=talent.black_arrow&(active_enemies<2|!talent.beast_cleave&active_enemies<3)" );
   default_->add_action( "call_action_list,name=drcleave,if=talent.black_arrow&(active_enemies>2|talent.beast_cleave&active_enemies>1)" );
-  default_->add_action( "call_action_list,name=st,if=!talent.black_arrow&(active_enemies<2|!talent.beast_cleave&active_enemies<3)" );
+  default_->add_action( "call_action_list,name=st,if=!talent.black_arrow&(active_enemies<2|!talent.beast_cleave&active_enemies>2)" );
   default_->add_action( "call_action_list,name=cleave,if=!talent.black_arrow&(active_enemies>2|talent.beast_cleave&active_enemies>1)" );
 
   cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up|cooldown.bestial_wrath.remains<30)|fight_remains<16" );
@@ -82,43 +82,42 @@ void beast_mastery( player_t* p )
   cds->add_action( "fireblood,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<9" );
   cds->add_action( "potion,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<31" );
 
-  drcleave->add_action( "bestial_wrath" );
-  drcleave->add_action( "kill_shot,if=buff.withering_fire.up|pet.main.buff.beast_cleave.remains<gcd" );
-  drcleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd" );
-  drcleave->add_action( "multishot,if=pet.main.buff.beast_cleave.down&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)" );
-  drcleave->add_action( "kill_shot" );
-  drcleave->add_action( "call_of_the_wild" );
-  drcleave->add_action( "bloodshed" );
-  drcleave->add_action( "explosive_shot,if=talent.thundering_hooves" );
-  drcleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=charges_fractional>=cooldown.kill_command.charges_fractional" );
-  drcleave->add_action( "kill_command" );
-  drcleave->add_action( "cobra_shot,if=focus.time_to_max<gcd*2|!talent.multishot" );
-  drcleave->add_action( "explosive_shot" );
-
-  drst->add_action( "kill_shot" );
-  drst->add_action( "bloodshed" );
-  drst->add_action( "call_of_the_wild" );
-  drst->add_action( "bestial_wrath,if=cooldown.call_of_the_wild.remains>20|!talent.call_of_the_wild" );
-  drst->add_action( "kill_command,if=prev.black_arrow&buff.withering_fire.up" );
-  drst->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd|charges_fractional>=cooldown.kill_command.charges_fractional" );
-  drst->add_action( "kill_command" );
-  drst->add_action( "cobra_shot" );
-
-  cleave->add_action( "bestial_wrath,target_if=min:dot.barbed_shot.remains,if=buff.howl_of_the_pack_leader_cooldown.remains-buff.lead_from_the_front.duration<buff.lead_from_the_front.duration%gcd*0.5|!set_bonus.tww3_4pc" );
+  cleave->add_action( "bestial_wrath,if=buff.howl_of_the_pack_leader_cooldown.remains-buff.lead_from_the_front.duration<buff.lead_from_the_front.duration%gcd*0.5|!set_bonus.tww3_4pc" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd|charges_fractional>=cooldown.kill_command.charges_fractional|talent.call_of_the_wild&cooldown.call_of_the_wild.ready|howl_summon.ready&full_recharge_time<8" );
+  cleave->add_action( "bloodshed" );
   cleave->add_action( "multishot,if=pet.main.buff.beast_cleave.down&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)" );
   cleave->add_action( "call_of_the_wild" );
-  cleave->add_action( "bloodshed" );
   cleave->add_action( "explosive_shot,if=talent.thundering_hooves" );
   cleave->add_action( "kill_command" );
   cleave->add_action( "cobra_shot,if=focus.time_to_max<gcd*2|buff.hogstrider.stack>3|!talent.multishot" );
 
+  drcleave->add_action( "kill_shot" );
+  drcleave->add_action( "bestial_wrath,if=cooldown.call_of_the_wild.remains>20|!talent.call_of_the_wild" );
+  drcleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd" );
+  drcleave->add_action( "bloodshed" );
+  drcleave->add_action( "multishot,if=pet.main.buff.beast_cleave.down&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)" );
+  drcleave->add_action( "call_of_the_wild" );
+  drcleave->add_action( "explosive_shot,if=talent.thundering_hooves" );
+  drcleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=charges_fractional>=cooldown.kill_command.charges_fractional" );
+  drcleave->add_action( "kill_command" );
+  drcleave->add_action( "cobra_shot,if=focus.time_to_max<gcd*2" );
+  drcleave->add_action( "explosive_shot" );
+
+  drst->add_action( "kill_shot" );
+  drst->add_action( "bestial_wrath,if=cooldown.call_of_the_wild.remains>20|!talent.call_of_the_wild" );
+  drst->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd" );
+  drst->add_action( "bloodshed" );
+  drst->add_action( "call_of_the_wild" );
+  drst->add_action( "kill_command" );
+  drst->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains" );
+  drst->add_action( "cobra_shot" );
+
   st->add_action( "bestial_wrath,if=buff.howl_of_the_pack_leader_cooldown.remains-buff.lead_from_the_front.duration<buff.lead_from_the_front.duration%gcd*0.5|!set_bonus.tww3_4pc" );
-  st->add_action( "barbed_shot,if=full_recharge_time<gcd" );
+  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd" );
   st->add_action( "call_of_the_wild" );
   st->add_action( "bloodshed" );
-  st->add_action( "kill_command,if=charges_fractional>=cooldown.barbed_shot.charges_fractional" );
-  st->add_action( "barbed_shot" );
+  st->add_action( "kill_command,if=charges_fractional>=cooldown.barbed_shot.charges_fractional&!(buff.lead_from_the_front.remains>gcd&buff.lead_from_the_front.remains<gcd*2&!howl_summon.ready&full_recharge_time>gcd)" );
+  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains" );
   st->add_action( "cobra_shot" );
 
   trinkets->add_action( "variable,name=buff_sync_ready,value=talent.call_of_the_wild&(prev_gcd.1.call_of_the_wild)|talent.bloodshed&(prev_gcd.1.bloodshed)|(!talent.call_of_the_wild&!talent.bloodshed)&(buff.bestial_wrath.up|cooldown.bestial_wrath.remains_guess<5)" );
@@ -136,9 +135,9 @@ void beast_mastery_ptr( player_t* p )
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* cds = p->get_action_priority_list( "cds" );
+  action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
   action_priority_list_t* drcleave = p->get_action_priority_list( "drcleave" );
   action_priority_list_t* drst = p->get_action_priority_list( "drst" );
-  action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
   action_priority_list_t* st = p->get_action_priority_list( "st" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
@@ -151,7 +150,7 @@ void beast_mastery_ptr( player_t* p )
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "call_action_list,name=drst,if=talent.black_arrow&(active_enemies<2|!talent.beast_cleave&active_enemies<3)" );
   default_->add_action( "call_action_list,name=drcleave,if=talent.black_arrow&(active_enemies>2|talent.beast_cleave&active_enemies>1)" );
-  default_->add_action( "call_action_list,name=st,if=!talent.black_arrow&(active_enemies<2|!talent.beast_cleave&active_enemies<3)" );
+  default_->add_action( "call_action_list,name=st,if=!talent.black_arrow&(active_enemies<2|!talent.beast_cleave&active_enemies>2)" );
   default_->add_action( "call_action_list,name=cleave,if=!talent.black_arrow&(active_enemies>2|talent.beast_cleave&active_enemies>1)" );
 
   cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up|cooldown.bestial_wrath.remains<30)|fight_remains<16" );
@@ -161,43 +160,42 @@ void beast_mastery_ptr( player_t* p )
   cds->add_action( "fireblood,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<9" );
   cds->add_action( "potion,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<31" );
 
-  drcleave->add_action( "bestial_wrath" );
-  drcleave->add_action( "kill_shot,if=buff.withering_fire.up|pet.main.buff.beast_cleave.remains<gcd" );
-  drcleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd" );
-  drcleave->add_action( "multishot,if=pet.main.buff.beast_cleave.down&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)" );
-  drcleave->add_action( "kill_shot" );
-  drcleave->add_action( "call_of_the_wild" );
-  drcleave->add_action( "bloodshed" );
-  drcleave->add_action( "explosive_shot,if=talent.thundering_hooves" );
-  drcleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=charges_fractional>=cooldown.kill_command.charges_fractional" );
-  drcleave->add_action( "kill_command" );
-  drcleave->add_action( "cobra_shot,if=focus.time_to_max<gcd*2|!talent.multishot" );
-  drcleave->add_action( "explosive_shot" );
-
-  drst->add_action( "kill_shot" );
-  drst->add_action( "bloodshed" );
-  drst->add_action( "call_of_the_wild" );
-  drst->add_action( "bestial_wrath,if=cooldown.call_of_the_wild.remains>20|!talent.call_of_the_wild" );
-  drst->add_action( "kill_command,if=prev.black_arrow&buff.withering_fire.up" );
-  drst->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd|charges_fractional>=cooldown.kill_command.charges_fractional" );
-  drst->add_action( "kill_command" );
-  drst->add_action( "cobra_shot" );
-
-  cleave->add_action( "bestial_wrath,target_if=min:dot.barbed_shot.remains,if=buff.howl_of_the_pack_leader_cooldown.remains-buff.lead_from_the_front.duration<buff.lead_from_the_front.duration%gcd*0.5|!set_bonus.tww3_4pc" );
+  cleave->add_action( "bestial_wrath,if=buff.howl_of_the_pack_leader_cooldown.remains-buff.lead_from_the_front.duration<buff.lead_from_the_front.duration%gcd*0.5|!set_bonus.tww3_4pc" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd|charges_fractional>=cooldown.kill_command.charges_fractional|talent.call_of_the_wild&cooldown.call_of_the_wild.ready|howl_summon.ready&full_recharge_time<8" );
+  cleave->add_action( "bloodshed" );
   cleave->add_action( "multishot,if=pet.main.buff.beast_cleave.down&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)" );
   cleave->add_action( "call_of_the_wild" );
-  cleave->add_action( "bloodshed" );
   cleave->add_action( "explosive_shot,if=talent.thundering_hooves" );
   cleave->add_action( "kill_command" );
   cleave->add_action( "cobra_shot,if=focus.time_to_max<gcd*2|buff.hogstrider.stack>3|!talent.multishot" );
 
+  drcleave->add_action( "kill_shot" );
+  drcleave->add_action( "bestial_wrath,if=cooldown.call_of_the_wild.remains>20|!talent.call_of_the_wild" );
+  drcleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd" );
+  drcleave->add_action( "bloodshed" );
+  drcleave->add_action( "multishot,if=pet.main.buff.beast_cleave.down&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)" );
+  drcleave->add_action( "call_of_the_wild" );
+  drcleave->add_action( "explosive_shot,if=talent.thundering_hooves" );
+  drcleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=charges_fractional>=cooldown.kill_command.charges_fractional" );
+  drcleave->add_action( "kill_command" );
+  drcleave->add_action( "cobra_shot,if=focus.time_to_max<gcd*2" );
+  drcleave->add_action( "explosive_shot" );
+
+  drst->add_action( "kill_shot" );
+  drst->add_action( "bestial_wrath,if=cooldown.call_of_the_wild.remains>20|!talent.call_of_the_wild" );
+  drst->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd" );
+  drst->add_action( "bloodshed" );
+  drst->add_action( "call_of_the_wild" );
+  drst->add_action( "kill_command" );
+  drst->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains" );
+  drst->add_action( "cobra_shot" );
+
   st->add_action( "bestial_wrath,if=buff.howl_of_the_pack_leader_cooldown.remains-buff.lead_from_the_front.duration<buff.lead_from_the_front.duration%gcd*0.5|!set_bonus.tww3_4pc" );
-  st->add_action( "barbed_shot,if=full_recharge_time<gcd" );
+  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd" );
   st->add_action( "call_of_the_wild" );
   st->add_action( "bloodshed" );
-  st->add_action( "kill_command,if=charges_fractional>=cooldown.barbed_shot.charges_fractional" );
-  st->add_action( "barbed_shot" );
+  st->add_action( "kill_command,if=charges_fractional>=cooldown.barbed_shot.charges_fractional&!(buff.lead_from_the_front.remains>gcd&buff.lead_from_the_front.remains<gcd*2&!howl_summon.ready&full_recharge_time>gcd)" );
+  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains" );
   st->add_action( "cobra_shot" );
 
   trinkets->add_action( "variable,name=buff_sync_ready,value=talent.call_of_the_wild&(prev_gcd.1.call_of_the_wild)|talent.bloodshed&(prev_gcd.1.bloodshed)|(!talent.call_of_the_wild&!talent.bloodshed)&(buff.bestial_wrath.up|cooldown.bestial_wrath.remains_guess<5)" );
