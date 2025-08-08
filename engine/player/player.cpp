@@ -10200,6 +10200,7 @@ struct use_items_t : public action_t
   std::vector<use_item_t*> use_actions;  // List of proxy use_item_t actions to execute
   std::vector<slot_e> priority_slots;    // Slot priority, or custom slots to check
   bool custom_slots;                     // Custom slots= parameter passed. Only check priority_slots.
+  bool check_existing = true;            // Ignore a slot if a matching use_item already exists for it
 
   use_items_t( player_t* player, util::string_view options_str ) :
     action_t( ACTION_USE, "use_items", player ),
@@ -10214,6 +10215,7 @@ struct use_items_t : public action_t
 
     add_option( opt_func( "slots", std::bind( &use_items_t::parse_slots, this, std::placeholders::_1,
                                               std::placeholders::_2, std::placeholders::_3 ) ) );
+    add_option( opt_bool( "check_existing", check_existing ) );
 
     parse_options( options_str );
   }
@@ -10353,77 +10355,86 @@ struct use_items_t : public action_t
 
     // Remove any slots from the slot list that have custom use item actions. Note that this search
     // looks for use_item,slot=X.
-    range::for_each( use_item_actions, [&slot_order]( const use_item_t* action ) {
-      slot_e slot = util::parse_slot_type( action->item_slot );
-      if ( slot == SLOT_INVALID )
-      {
-        return;
-      }
+    if ( check_existing )
+    {
+      range::for_each( use_item_actions, [ &slot_order ]( const use_item_t* action ) {
+        slot_e slot = util::parse_slot_type( action->item_slot );
+        if ( slot == SLOT_INVALID )
+        {
+          return;
+        }
 
-      auto it = range::find( slot_order, slot );
-      if ( it != slot_order.end() )
-      {
-        slot_order.erase( it );
-      }
-    } );
+        auto it = range::find( slot_order, slot );
+        if ( it != slot_order.end() )
+        {
+          slot_order.erase( it );
+        }
+      } );
+    }
 
     // Remove any slots from the list, where the actor has an item equipped, and corresponding a
     // use_item,name=X action for the item.
-    range::for_each( use_item_actions, [this, &slot_order]( const use_item_t* action ) {
-      if ( action->item_name.empty() )
-      {
-        return;
-      }
-
-      // As precombat /use_item,name=X are only used once, don't remove them.
-      if ( action->action_list && action->action_list->name_str == "precombat" && action->action )
-        return;
-
-      // Find out if the item is worn
-      auto it = range::find_if( player->items, [ action ]( const item_t& item ) {
-        return util::str_compare_ci( item.name(), action->item_name );
-      } );
-
-      // Worn item, remove slot if necessary
-      if ( it != player->items.end() )
-      {
-        auto slot_it = range::find( slot_order, it->slot );
-        if ( slot_it != slot_order.end() )
+    if ( check_existing )
+    {
+      range::for_each( use_item_actions, [ this, &slot_order ]( const use_item_t* action ) {
+        if ( action->item_name.empty() )
         {
-          slot_order.erase( slot_it );
+          return;
         }
-      }
-    } );
+
+        // As precombat /use_item,name=X are only used once, don't remove them.
+        if ( action->action_list && action->action_list->name_str == "precombat" && action->action )
+          return;
+
+        // Find out if the item is worn
+        auto it = range::find_if( player->items, [ action ]( const item_t& item ) {
+          return util::str_compare_ci( item.name(), action->item_name );
+        } );
+
+        // Worn item, remove slot if necessary
+        if ( it != player->items.end() )
+        {
+          auto slot_it = range::find( slot_order, it->slot );
+          if ( slot_it != slot_order.end() )
+          {
+            slot_order.erase( slot_it );
+          }
+        }
+      } );
+    }
 
     // Remove any slots from the list, where the actor has an item equipped, and corresponding a
     // use_item,effect_name=X action for the item.
-    range::for_each( use_item_actions, [this, &slot_order]( const use_item_t* action ) {
-      if ( action->effect_name.empty() )
-      {
-        return;
-      }
-
-      // As precombat /use_item,effect_name=X are only used once, don't remove them.
-      if ( action->action_list && action->action_list->name_str == "precombat" && action->action )
-        return;
-
-      // Find out if the item is worn
-      auto it = range::find_if( player->items, [ action ]( const item_t& item ) {
-        return item.has_use_special_effect() &&
-               util::str_compare_ci( item.special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE )->name(),
-                                     action->effect_name );
-      } );
-
-      // Worn item, remove slot if necessary
-      if ( it != player->items.end() )
-      {
-        auto slot_it = range::find( slot_order, it->slot );
-        if ( slot_it != slot_order.end() )
+    if ( check_existing )
+    {
+      range::for_each( use_item_actions, [ this, &slot_order ]( const use_item_t* action ) {
+        if ( action->effect_name.empty() )
         {
-          slot_order.erase( slot_it );
+          return;
         }
-      }
-    } );
+
+        // As precombat /use_item,effect_name=X are only used once, don't remove them.
+        if ( action->action_list && action->action_list->name_str == "precombat" && action->action )
+          return;
+
+        // Find out if the item is worn
+        auto it = range::find_if( player->items, [ action ]( const item_t& item ) {
+          return item.has_use_special_effect() &&
+                 util::str_compare_ci( item.special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE )->name(),
+                                       action->effect_name );
+        } );
+
+        // Worn item, remove slot if necessary
+        if ( it != player->items.end() )
+        {
+          auto slot_it = range::find( slot_order, it->slot );
+          if ( slot_it != slot_order.end() )
+          {
+            slot_order.erase( slot_it );
+          }
+        }
+      } );
+    }
 
     // Create use_item actions for each remaining slot, if the user has an on-use item in that slot.
     // Note that this only looks at item-sourced on-use actions (e.g., no engineering addons).
