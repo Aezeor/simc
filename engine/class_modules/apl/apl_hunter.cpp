@@ -252,8 +252,8 @@ void marksmanship( player_t* p )
   st->add_action( "trueshot,if=variable.trueshot_ready&buff.double_tap.down" );
   st->add_action( "steady_shot,if=(talent.black_arrow|bugs)&focus+cast_regen<focus.max&action.aimed_shot.in_flight&!buff.deathblow.react&buff.trueshot.down&cooldown.trueshot.remains", "Sentinel only seems to like it due to the Precise Shots gcd bug." );
   st->add_action( "rapid_fire,if=talent.lunar_storm&buff.lunar_storm_cooldown.down", "Sentinel" );
-  st->add_action( "kill_shot,if=!talent.black_arrow&(talent.headshot&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)|!talent.headshot&buff.razor_fragments.up)", "Sentinel" );
-  st->add_action( "kill_shot,if=talent.black_arrow&(!talent.headshot|talent.headshot&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down))", "Dark Ranger" );
+  st->add_action( "kill_shot,if=talent.headshot&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)|!talent.headshot&buff.razor_fragments.up", "Sentinel" );
+  st->add_action( "black_arrow,if=!talent.headshot|talent.headshot&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)", "Dark Ranger" );
   st->add_action( "arcane_shot,if=buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)" );
   st->add_action( "aimed_shot,if=(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&full_recharge_time<action.rapid_fire.execute_time+cast_time&(!talent.bulletstorm|buff.bulletstorm.up)&talent.windrunner_quiver" );
   st->add_action( "rapid_fire" );
@@ -262,14 +262,14 @@ void marksmanship( player_t* p )
   st->add_action( "steady_shot" );
 
   cleave->add_action( "explosive_shot,if=talent.precision_detonation&action.aimed_shot.in_flight&(buff.trueshot.down|!talent.windrunner_quiver)", "################# 2 targets (2+ without trickshots)" );
-  cleave->add_action( "kill_shot,if=talent.black_arrow&buff.precise_shots.up&buff.moving_target.down&variable.trueshot_ready" );
+  cleave->add_action( "black_arrow,if=buff.precise_shots.up&buff.moving_target.down&variable.trueshot_ready" );
   cleave->add_action( "volley,if=(talent.double_tap&buff.double_tap.down|!talent.aspect_of_the_hydra)&(buff.precise_shots.down|buff.moving_target.up)" );
   cleave->add_action( "rapid_fire,if=talent.bulletstorm&buff.bulletstorm.down&(!talent.double_tap|buff.double_tap.up|!talent.aspect_of_the_hydra&buff.trick_shots.remains>execute_time)&(buff.precise_shots.down|buff.moving_target.up|!talent.volley)" );
   cleave->add_action( "volley,if=!talent.double_tap&(buff.precise_shots.down|buff.moving_target.up)" );
   cleave->add_action( "trueshot,if=variable.trueshot_ready&(buff.double_tap.down|!talent.volley)&(buff.lunar_storm_ready.down|!talent.double_tap|!talent.volley)&(buff.precise_shots.down|buff.moving_target.up|!talent.volley)" );
   cleave->add_action( "rapid_fire,if=talent.lunar_storm&buff.lunar_storm_cooldown.down&(buff.precise_shots.down|buff.moving_target.up|cooldown.volley.remains&cooldown.trueshot.remains|!talent.volley)", "Sentinel" );
-  cleave->add_action( "kill_shot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=!talent.black_arrow&(talent.headshot&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)|!talent.headshot&buff.razor_fragments.up)", "Sentinel" );
-  cleave->add_action( "kill_shot,target_if=min:dot.black_arrow_dot.ticking|max_prio_damage,if=talent.black_arrow&(talent.headshot&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)|!talent.headshot&buff.razor_fragments.up)", "Dark Ranger" );
+  cleave->add_action( "kill_shot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=talent.headshot&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)|!talent.headshot&buff.razor_fragments.up", "Sentinel" );
+  cleave->add_action( "black_arrow,target_if=min:dot.black_arrow_dot.ticking|max_prio_damage,if=talent.headshot&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)|!talent.headshot&buff.razor_fragments.up", "Dark Ranger" );
   cleave->add_action( "multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)&!talent.aspect_of_the_hydra&(talent.symphonic_arsenal|talent.small_game_hunter)" );
   cleave->add_action( "arcane_shot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)" );
   cleave->add_action( "aimed_shot,target_if=max:debuff.spotters_mark.up,if=(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&full_recharge_time<action.rapid_fire.execute_time+cast_time&(!talent.bulletstorm|buff.bulletstorm.up)&talent.windrunner_quiver" );
@@ -277,7 +277,7 @@ void marksmanship( player_t* p )
   cleave->add_action( "aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up" );
   cleave->add_action( "rapid_fire" );
   cleave->add_action( "explosive_shot,if=talent.precision_detonation|buff.trueshot.down" );
-  cleave->add_action( "kill_shot,if=talent.black_arrow&!talent.headshot" );
+  cleave->add_action( "black_arrow,if=!talent.headshot" );
   cleave->add_action( "steady_shot" );
 
   trickshots->add_action( "explosive_shot,if=talent.precision_detonation&action.aimed_shot.in_flight&buff.trueshot.down&(!talent.shrapnel_shot|buff.lock_and_load.down)", "################ 3+ target (with trickshot)" );
@@ -285,7 +285,7 @@ void marksmanship( player_t* p )
   trickshots->add_action( "rapid_fire,if=talent.bulletstorm&buff.bulletstorm.down&buff.trick_shots.remains>execute_time" );
   trickshots->add_action( "rapid_fire,if=hero_tree.sentinel&buff.lunar_storm_cooldown.down&buff.trick_shots.remains>execute_time", "Sentinel" );
   trickshots->add_action( "steady_shot,if=talent.black_arrow&focus+cast_regen<focus.max&action.aimed_shot.in_flight&!buff.deathblow.react&buff.trueshot.down&cooldown.trueshot.remains", "Dark Ranger" );
-  trickshots->add_action( "kill_shot,if=talent.black_arrow&(!talent.headshot|buff.precise_shots.up|buff.trick_shots.down)", "Dark Ranger" );
+  trickshots->add_action( "black_arrow,if=!talent.headshot|buff.precise_shots.up|buff.trick_shots.down", "Dark Ranger" );
   trickshots->add_action( "multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target,if=buff.precise_shots.up&buff.moving_target.down|buff.trick_shots.down" );
   trickshots->add_action( "trueshot,if=variable.trueshot_ready&buff.double_tap.down" );
   trickshots->add_action( "volley,if=buff.double_tap.down&(!talent.salvo|!talent.precision_detonation|(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up))" );

@@ -8013,6 +8013,7 @@ action_t* hunter_t::create_action( util::string_view name, util::string_view opt
   if ( name == "auto_shot"             ) return new   actions::auto_attack_t( this, options_str );
   if ( name == "barbed_shot"           ) return new            barbed_shot_t( this, options_str );
   if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
+  if ( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
   if ( name == "bloodshed"             ) return new              bloodshed_t( this, options_str );
   if ( name == "bursting_shot"         ) return new          bursting_shot_t( this, options_str );
   if ( name == "butchery"              ) return new               butchery_t( this, options_str );
@@ -8049,12 +8050,12 @@ action_t* hunter_t::create_action( util::string_view name, util::string_view opt
       return new arcane_shot_t( this, options_str );
   }
 
-  if ( name == "kill_shot" || name == "black_arrow" )
+  if ( name == "kill_shot" )
   {
-    if ( talents.black_arrow.ok() )
-      return new black_arrow_t( this, options_str );
-    else 
+    if ( !talents.black_arrow.ok() || specialization() == HUNTER_MARKSMANSHIP )
       return new kill_shot_t( this, options_str );
+    else
+      return new black_arrow_t( this, options_str );
   }
 
   if ( name == "raptor_strike" || name == "mongoose_bite" || name == "raptor_bite" || name == "mongoose_strike" )
@@ -9318,6 +9319,11 @@ parsed_assisted_combat_rule_t hunter_t::parse_assisted_combat_rule( const assist
 
 std::vector<std::string> hunter_t::action_names_from_spell_id( unsigned int spell_id ) const
 {
+  if ( spell_id == 53351 && specialization() != HUNTER_SURVIVAL )
+  {
+    return { "kill_shot", "black_arrow" };
+  }
+
   return player_t::action_names_from_spell_id( spell_id );
 }
 
