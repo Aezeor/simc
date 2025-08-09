@@ -4416,7 +4416,8 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
   {
     dot_t* dot = td( s->target )->dots.explosive_shot;
 
-    if ( dot->is_ticking() )
+    bool refresh = dot->is_ticking();
+    if ( refresh )
     {
       if ( !explosion->pre_execute_state )
         explosion->pre_execute_state = explosion->get_state();
@@ -4426,24 +4427,17 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
       // - an existing dot applied by a normal cast being detonated by a cast with an effectiveness bonus
       // There is no way to test if a competing effectiveness bonus would be combined, overwritten, or would carry on to the last_tick(),
       // so just use the effectiveness bonus if it exists then clear the bonus from the dot state.
-      // For Precision Detonation, a detonation from an Aimed Shot cast alongside an Explosive Shot with bonus effectiveness that itself 
-      // detonates an existing dot before the Aimed Shot impact will result in both detonations having a bonus.
-      // For that case, delay updating the dot state and clearing the effectiveness bonus until after the Aimed Shot would hit.
       if ( s->action->snapshot_flags & STATE_MUL_PERSISTENT )
         dot->state->persistent_multiplier = s->persistent_multiplier;
 
       explosion->pre_execute_state->copy_state( dot->state );
       explosion->execute_on_target( s->target );
-
-      // Based on their travel times, about 200ms should always give Aimed Shot a chance to hit if cast alongside the Explosive Shot.
-      make_event( sim, 200_ms, [ this, dot ]()
-        {
-          if ( dot->is_ticking() )
-            update_state( dot->state, dot->state->result_type );
-        } );
     }
 
     hunter_ranged_attack_t::impact( s );
+
+    if ( refresh )
+      update_state( dot->state, dot->state->result_type );
   }
 
   void tick( dot_t* ) override
@@ -4475,6 +4469,9 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
       p()->buffs.lock_and_load->trigger();
       p()->cooldowns.aimed_shot->reset( false );
     }
+
+    if ( p()->talents.precision_detonation->ok() )
+      p()->buffs.streamline->trigger();
   }
 
   double cost_pct_multiplier() const override
