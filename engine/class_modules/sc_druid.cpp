@@ -15871,7 +15871,7 @@ struct druid_module_t final : public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 2.5778 )
       .verification_value( 2.4319 );
-    hotfix::register_effect( "Druid", "8-11-2025", "Shred damage increased by 5%", 1136153, hotfix::HOTFIX_FLAG_PTR )
+    hotfix::register_effect( "Druid", "8-11-2025", "Shred damage increased by 5%", 1859, hotfix::HOTFIX_FLAG_PTR )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 1.848 )
