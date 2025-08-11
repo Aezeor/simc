@@ -1221,13 +1221,39 @@ struct tigers_ferocity_t : public monk_melee_attack_t
 
 struct harmonic_surge_t : public monk_spell_t
 {
+  template <typename TBase>
+  struct impact_t : TBase
+  {
+    impact_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
+      : TBase( player, name, spell_data )
+    {
+      unsigned offset = 0;
+
+      if ( spell_data->effectN( 1 ).type() == E_SCHOOL_DAMAGE )
+        offset += 0;
+      if ( spell_data->effectN( 1 ).type() == E_HEAL )
+        offset += 1;
+
+      if ( player->specialization() == MONK_BREWMASTER )
+        offset += 1;
+      if ( player->specialization() == MONK_MISTWEAVER )
+        offset += 2;
+
+      assert( offset != 0 );
+
+      if ( const spelleffect_data_t &effect = player->tier.tww3.moh_2pc->effectN( offset ); effect.ok() )
+        add_parse_entry( da_multiplier_effects ).set_value( effect.percent() - 1.0 ).set_eff( &effect );
+    }
+  };
+
   action_t *damage;
   action_t *heal;
 
   harmonic_surge_t( monk_t *player )
     : monk_spell_t( player, "harmonic_surge", spell_data_t::nil() ),
-      damage( new monk_spell_t( player, "harmonic_surge_damage", player->tier.tww3.moh_2pc_harmonic_surge_damage ) ),
-      heal( new monk_heal_t( player, "harmonic_surge_heal", player->tier.tww3.moh_2pc_harmonic_surge_heal ) )
+      damage( new impact_t<monk_spell_t>( player, "harmonic_surge_damage",
+                                          player->tier.tww3.moh_2pc_harmonic_surge_damage ) ),
+      heal( new impact_t<monk_heal_t>( player, "harmonic_surge_heal", player->tier.tww3.moh_2pc_harmonic_surge_heal ) )
   {
   }
 
