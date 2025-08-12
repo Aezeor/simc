@@ -3756,6 +3756,13 @@ void harvesters_edict( special_effect_t& effect )
         damage->execute();
     } );
 
+  // adjust rppm if harvester's interdiction (455819) is equipped
+  if ( find_special_effect( effect.player, 455819 ) )
+  {
+    effect.rppm_modifier_ =
+      effect.player->dbc->real_ppm_modifier( effect.driver()->id(), effect.player, effect.item->item_level(), 455819 );
+  }
+
   new dbc_proc_callback_t( effect.player, effect );
 }
 
@@ -9668,6 +9675,12 @@ void harvesters_interdiction( special_effect_t& effect )
   dot->base_multiplier *= role_mult( effect );
 
   effect.execute_action = dot;
+  // adjust rppm if harvester's edict (451055) is equipped
+  if ( find_special_effect( effect.player, 451055 ) )
+  {
+    effect.rppm_modifier_ =
+      effect.player->dbc->real_ppm_modifier( effect.driver()->id(), effect.player, effect.item->item_level(), 451055 );
+  }
 
   new dbc_proc_callback_t( effect.player, effect );
 }
