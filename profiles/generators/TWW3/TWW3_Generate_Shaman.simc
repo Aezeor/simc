@@ -89,7 +89,7 @@ race=goblin
 spec=enhancement
 role=attack
 position=back
-talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMDmZGjtZmZGsMzYbYAAAAAAAAAALA2MjhNyCMDDNYBAWmMzYssYmZmhZmZMsMzMNMGGmBAYMA
+talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMDmZGjtZmZGsNzYbYAAAAAAAAAALA2MjhNyCMDDNYBAWmMzYssYmZmhZmZMsMzMNMGGmBAYMA
 
 head=aspect_of_channeled_fury,id=237637,ilevel=723,gem_id=213743
 neck=duskblazes_desperation,id=237569,ilevel=723,gem_id=213470/213470
