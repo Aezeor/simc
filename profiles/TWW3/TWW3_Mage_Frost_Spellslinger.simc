@@ -1,11 +1,11 @@
-mage="TWW3_Mage_Frost_Frostfire"
+mage="TWW3_Mage_Frost_Spellslinger"
 source=default
 spec=frost
 level=80
 race=tauren
 role=spell
 position=ranged_back
-talents=CAEAAAAAAAAAAAAAAAAAAAAAAYGbmtZwMMmFDmZGNGzMmhhZmZYmZmZmxMzMzMzMDMzyMNzsNLAAAoFAAAAAAMAAAAAAAAA
+talents=CAEAAAAAAAAAAAAAAAAAAAAAAYGbmtZwMMmFDmZGNGzMmhhZmZYmZmZmxMzMzMmZwMQAAgZmtlllZm2AAAAAAwAAAAAAAAA
 
 # Default consumables
 potion=tempered_potion_3
@@ -213,32 +213,33 @@ actions.ss_st+=/frostbolt
 actions.ss_st+=/call_action_list,name=movement
 
 head=augurs_ephemeral_widebrim,id=237718,ilevel=723,gem_id=213743
-neck=chrysalis_of_sundered_souls,id=237568,ilevel=723,gem_id=213494/213455
+neck=sin_stained_pendant,id=178827,ilevel=723,gem_id=213494/213455
 shoulders=augurs_ephemeral_orbs_of_power,id=237716,ilevel=723
-back=reshii_wraps,id=235499,bonus_id=9893/12239,gem_id=238045
-chest=zealous_wardens_raiment,id=221126,ilevel=723,enchant_id=7364
-wrists=consecrated_cuffs,id=222815,bonus_id=11109/8960/8795,ilevel=720,gem_id=213470,enchant_id=7397,crafted_stats=36/40
-hands=augurs_ephemeral_mitts,id=237719,ilevel=723
-waist=forgeweavers_journal_holster,id=237538,ilevel=723,gem_id=213485
+back=reshii_wraps,id=235499,bonus_id=9893/12239,gem_id=238045,enchant_id=7409
+chest=augurs_ephemeral_habiliments,id=237721,ilevel=723,enchant_id=7364
+wrists=consecrated_cuffs,id=222815,bonus_id=11109/8960/8794,ilevel=720,gem_id=213470,enchant_id=7397,crafted_stats=36/40
+hands=augurs_ephemeral_mitts,id=237719,bonus_id=4786/1533/12361
+waist=forgeweavers_journal_holster,id=237538,bonus_id=4800/4786/523/1533/12361,gem_id=213485
 legs=augurs_ephemeral_trousers,id=237717,ilevel=723,enchant_id=7531
 feet=interlopers_silken_striders,id=243305,bonus_id=13504,ilevel=723,enchant_id=7418
-finger1=signet_of_collapsing_stars,id=185813,ilevel=723,gem_id=213512/213470,enchant_id=7352
-finger2=logic_gate_alpha,id=237567,ilevel=723,gem_id=213485/213485,enchant_id=7352
+finger1=logic_gate_alpha,id=237567,bonus_id=4800/4786/1533/12361/8781,gem_id=213497/213497,enchant_id=7346
+finger2=radiant_necromancers_band,id=221200,bonus_id=8781,ilevel=723,gem_id=213497/213497,enchant_id=7346
 trinket1=diamantine_voidcore,id=242392,ilevel=723
-trinket2=azhiccaran_parapodia,id=242497,bonus_id=4786/3215/12361
-main_hand=voidglass_sovereigns_blade,id=237735,bonus_id=4800/4786/1533/12361,enchant_id=7448
-off_hand=vagabonds_torch,id=222566,bonus_id=11300/8960/8795,ilevel=720
+trinket2=azhiccaran_parapodia,id=242497,ilevel=723
+main_hand=voidglass_kris,id=237728,bonus_id=4800/4786/1533/12361,enchant_id=7448
+off_hand=vagabonds_torch,id=222566,bonus_id=11300/8960/8794,ilevel=720
 
 # Gear Summary
 # gear_ilvl=723.06
-# gear_stamina=663349
+# gear_stamina=663144
 # gear_intellect=97727
-# gear_crit_rating=13897
-# gear_haste_rating=18767
-# gear_mastery_rating=7218
-# gear_versatility_rating=18631
+# gear_crit_rating=11347
+# gear_haste_rating=19910
+# gear_mastery_rating=20529
+# gear_versatility_rating=6873
+# gear_leech_rating=1020
 # gear_speed_rating=1250
 # gear_armor=25542
-# set_bonus=name=thewarwithin_season_3,pc=2,hero_tree=frostfire,enable=1
-# set_bonus=name=thewarwithin_season_3,pc=4,hero_tree=frostfire,enable=1
+# set_bonus=name=thewarwithin_season_3,pc=2,hero_tree=spellslinger,enable=1
+# set_bonus=name=thewarwithin_season_3,pc=4,hero_tree=spellslinger,enable=1
 # set_bonus=shards_of_the_void_2pc=1
