@@ -2358,19 +2358,25 @@ public:
 
   void update_ready( timespan_t cd ) override
   {
-    auto diff = 0_ms;
+    auto _diff = 0_ms;
 
-    // cooldown starts at max diff
     if ( max_diff > 0_ms && cd == timespan_t::min() && BASE::cooldown_duration() > 0_ms &&
          ( BASE::cooldown->charges == BASE::cooldown->current_charge ) )
     {
-      diff = std::min( max_diff, BASE::sim->current_time() - BASE::cooldown->ready );
+      // cooldown starts at max diff
+      auto _last = BASE::cooldown->charges > 1 ? BASE::cooldown->last_charged : BASE::cooldown->ready;
+      if ( _last <= 0_ms )
+        _diff = max_diff;
+      else
+        _diff = std::min( max_diff, BASE::sim->current_time() - _last );
+
+      BASE::sim->print_debug( "Control of the Dream: {} last_used={} adjust={}", *this, _last, _diff );
     }
 
     BASE::update_ready( cd );
 
-    if ( diff > 0_ms )
-      BASE::cooldown->adjust( -diff, false );
+    if ( _diff > 0_ms )
+      BASE::cooldown->adjust( -_diff, false );
   }
 };
 
@@ -14155,20 +14161,27 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name )
       { "force_of_nature", "incarnation_chosen_of_elune", "celestial_alignment", "convoke_the_spirits" }
     };
 
-    if ( talent.control_of_the_dream.ok() && splits.size() == 3 && dbc->ptr &&
+    if ( talent.control_of_the_dream.ok() && splits.size() == 3 &&
          util::str_compare_ci( splits[ 0 ], "cooldown" ) &&
          util::str_compare_ci( splits[ 2 ], "duration" ) &&
          range::any_of( control_cooldowns, [ s = splits[ 1 ] ]( std::string_view cd ) {
            return util::str_compare_ci( s, cd );
          } ) )
     {
-      if ( auto _cd = get_cooldown( splits[ 1 ] ); _cd && _cd->charges == _cd->current_charge )
+      if ( auto cd = get_cooldown( splits[ 1 ] ); cd && cd->charges == cd->current_charge )
       {
         timespan_t max_diff = timespan_t::from_seconds( talent.control_of_the_dream->effectN( 1 ).base_value() );
 
-        return make_fn_expr( name, [ _cd, max_diff, this ] {
-          auto dur = cooldown_t::cooldown_duration( _cd );
-          auto diff = std::min( max_diff, sim->current_time() - _cd->ready );
+        return make_fn_expr( name, [ cd, max_diff, this ] {
+          auto dur = cooldown_t::cooldown_duration( cd );
+          auto last = cd->charges > 1 ? cd->last_charged : cd->ready;
+          auto diff = 0_ms;
+
+          if ( last <= 0_ms )
+            diff = max_diff;
+          else if ( auto cur = sim->current_time(); cur > last )
+            diff = std::min( max_diff, cur - last );
+
           assert( dur - diff > 0_ms );
           return dur - diff;
         } );
