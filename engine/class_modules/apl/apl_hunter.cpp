@@ -258,7 +258,7 @@ void marksmanship( player_t* p )
   drst->add_action( "aimed_shot,if=buff.trueshot.up&buff.precise_shots.down|buff.lock_and_load.up&buff.moving_target.up" );
   drst->add_action( "rapid_fire,if=!buff.deathblow.react" );
   drst->add_action( "trueshot,if=variable.trueshot_ready&buff.double_tap.down&buff.deathblow.down" );
-  drst->add_action( "arcane_shot,if=buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)&buff.deathblow.down" );
+  drst->add_action( "arcane_shot,if=buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)" );
   drst->add_action( "aimed_shot,if=buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up" );
   drst->add_action( "explosive_shot,if=talent.shrapnel_shot&buff.lock_and_load.down" );
   drst->add_action( "steady_shot" );

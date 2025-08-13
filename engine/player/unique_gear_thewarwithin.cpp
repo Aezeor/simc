@@ -3756,6 +3756,13 @@ void harvesters_edict( special_effect_t& effect )
         damage->execute();
     } );
 
+  // adjust rppm if harvester's interdiction (455819) is equipped
+  if ( find_special_effect( effect.player, 455819 ) )
+  {
+    effect.rppm_modifier_ =
+      effect.player->dbc->real_ppm_modifier( effect.driver()->id(), effect.player, effect.item->item_level(), 455819 );
+  }
+
   new dbc_proc_callback_t( effect.player, effect );
 }
 
@@ -9668,6 +9675,12 @@ void harvesters_interdiction( special_effect_t& effect )
   dot->base_multiplier *= role_mult( effect );
 
   effect.execute_action = dot;
+  // adjust rppm if harvester's edict (451055) is equipped
+  if ( find_special_effect( effect.player, 451055 ) )
+  {
+    effect.rppm_modifier_ =
+      effect.player->dbc->real_ppm_modifier( effect.driver()->id(), effect.player, effect.item->item_level(), 451055 );
+  }
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -10030,54 +10043,18 @@ void voidglass_shards( special_effect_t& effect )
       damage = create_proc_action<generic_proc_t>( "voidglass_shards", e, 1238693 );
       damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e );
       damage->base_multiplier *= role_mult( e );
-
-      // the chance for a proc to be damage vs shield seems to depend on spec. some spec have a high chance (90%) to
-      // proc damage, whilst other spec have low (10%) chance. this will need to be confirmed and re-test per spec
-      // once 11.2 is live
-      switch ( e.player->specialization() )
-      {
-        // high (~90%)
-        case EVOKER_DEVASTATION:
-        case MAGE_FIRE:
-        case MAGE_FROST:
-        case SHAMAN_ELEMENTAL:
-        case WARLOCK_AFFLICTION:
-        case WARLOCK_DEMONOLOGY:  damage_chance = 0.90; break;
-        // mid-high (~66%)
-        case EVOKER_AUGMENTATION: damage_chance = 0.66; break;
-        // medium (~50%)
-        case MAGE_ARCANE:
-        case WARLOCK_DESTRUCTION: damage_chance = 0.50; break;
-        // mid-low (~33%)
-        case DRUID_BALANCE:
-        case PRIEST_SHADOW:       damage_chance = 0.33; break;
-        // low chance (~10%)
-        case DRUID_RESTORATION:   damage_chance = 0.10; break;
-        default:                  damage_chance = 0.00; break;
-      }
-
-      std::string _msg;
-
-      if ( damage_chance )
-        _msg = "Simc is using an unreliable estimate.";
-      else
-        _msg = "is disabled in SimC for this spec.";
-
-      e.player->sim->error( "The chance for Shards of the Void to proc damage vs shield for {} is unknown and {}",
-                            util::specialization_string( e.player->specialization() ), _msg );
     }
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( action_t* a, action_state_t* s ) override
     {
-      if ( rng().roll( damage_chance ) )
-      {
-        if ( !s->target->is_enemy() )
-          damage->execute_on_target( listener->target );
-        else
-          damage->execute_on_target( s->target );
-      }
+      if ( !a->harmful )
+        return;
+
+      damage->execute_on_target( s->target );
     }
   };
+
+  effect.proc_flags2_ = PF2_ALL_HIT;
 
   new voidglass_shards_cb_t( effect );
 }
