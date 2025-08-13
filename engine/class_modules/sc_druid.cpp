@@ -15488,9 +15488,9 @@ void druid_t::parse_action_effects( action_t* action )
   _a->parse_effects( buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ), EXPIRE_BUFF );
 
   // dot damage is buffed via script so copy da_mult entries to ta_mult
-  // thrash damage buff always applies
   _a->parse_effects( spec.elunes_favored, &_a->ta_multiplier_effects, effect_mask_t( false ).enable( 1 ) );
-  _a->parse_effects( spec.elunes_favored, effect_mask_t( false ).enable( 3, 4 ) );
+  // always buffs thrash dot damage
+  _a->parse_effects( spec.elunes_favored, effect_mask_t( false ).enable( 4 ) );
 
   // dot damage is buffed via script so copy da_mult entries to ta_mult
   // value is set on talent via script
