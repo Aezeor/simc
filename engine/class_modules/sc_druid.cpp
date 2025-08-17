@@ -13355,6 +13355,12 @@ void druid_t::init_special_effects()
 
       void trigger( action_t* a, action_state_t* s ) override
       {
+        if ( !s->target->is_enemy() )
+        {
+          listener->sim->error( "{} Moonless Night attempting to trigger on {} from {}.", *listener, *s->target, *a );
+          listener->sim->cancel();
+        }
+
         if ( !s->result_amount || !p()->get_target_data( s->target )->dots.moonfire->is_ticking() )
           return;
 
