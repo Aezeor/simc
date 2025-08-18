@@ -491,10 +491,17 @@ std::unique_ptr<expr_t> set_bonus_t::create_expression( const player_t*, util::s
     throw std::invalid_argument( fmt::format( "Cannot parse set bonus '{}'.", type ) );
   }
 
-  bool state =
-    tier != SET_BONUS_NONE && range::any_of( set_bonus_spec_data[ tier ], [ bonus ]( const auto& bonus_type ) {
-      return bonus_type[ bonus ].spell->id() > 0;
-    } );
+  bool state = false;
+
+  for ( const auto& bonus_type : set_bonus_spec_data[ tier ] )
+  {
+    if ( bonus_type[ bonus ].spell->id() > 0 &&
+         ( hero == HERO_NONE || bonus_type[ bonus ].bonus->trait_sub_tree == static_cast<int>( hero ) ) )
+    {
+      state = true;
+      break;
+    }
+  }
 
   return expr_t::create_constant( type, static_cast<double>( state ) );
 }
