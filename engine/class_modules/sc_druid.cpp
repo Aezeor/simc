@@ -3505,6 +3505,23 @@ struct incarnation_bear_buff_t final : public berserk_bear_buff_base_t
   }
 };
 
+// Bloodtalons ==============================================================
+struct bloodtalons_buff_t final : public druid_buff_t
+{
+  bloodtalons_buff_t( druid_t* p ) : base_t( p, "bloodtalons", p->find_spell( 145152 ) )
+  {}
+
+  void decrement( int s, double v )
+  {
+    if ( cooldown->down() )
+      return;
+
+    base_t::decrement( s, v );
+
+    cooldown->start();
+  }
+};
+
 // Bloodtalons Tracking Buff ================================================
 struct bt_dummy_buff_t final : public druid_buff_t
 {
@@ -11838,7 +11855,7 @@ void druid_t::create_buffs()
         resource_gain( RESOURCE_COMBO_POINT, cp, gain );
       } );
 
-  buff.bloodtalons     = make_fallback( talent.bloodtalons.ok(), this, "bloodtalons", find_spell( 145152 ) );
+  buff.bloodtalons     = make_fallback<bloodtalons_buff_t>( talent.bloodtalons.ok(), this, "bloodtalons" );
   buff.bt_rake         = make_fallback<bt_dummy_buff_t>( talent.bloodtalons.ok(), this, "bt_rake" );
   buff.bt_shred        = make_fallback<bt_dummy_buff_t>( talent.bloodtalons.ok(), this, "bt_shred" );
   buff.bt_swipe        = make_fallback<bt_dummy_buff_t>( talent.bloodtalons.ok(), this, "bt_swipe" );
