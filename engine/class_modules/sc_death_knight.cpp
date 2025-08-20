@@ -3562,12 +3562,12 @@ struct risen_skulker_pet_t : public death_knight_pet_t
 
       pet_spell_t::execute();
 
-      pet()->blighted_arrow_aoe_buff->decrement();
+      pet()->blighted_arrow_aoe_buff->consume( this, 1 );
 
       if ( pet()->blighted_arrow_st_buff->check() )
       {
         was_instant = true;
-        pet()->blighted_arrow_st_buff->decrement();
+        pet()->blighted_arrow_st_buff->consume( this, 1 );
       }
     }
 
@@ -3625,8 +3625,10 @@ struct risen_skulker_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::create_buffs();
 
-    blighted_arrow_aoe_buff = make_buff( this, "blighted_arrow_aoe", dk()->pet_spell.blighted_arrow_aoe_buff );
-    blighted_arrow_st_buff  = make_buff( this, "blighted_arrow_st", dk()->pet_spell.blighted_arrow_st_buff );
+    blighted_arrow_aoe_buff = make_buff( this, "blighted_arrow_aoe", dk()->pet_spell.blighted_arrow_aoe_buff )
+                                  ->set_consume_all_stacks( false );
+    blighted_arrow_st_buff = make_buff( this, "blighted_arrow_st", dk()->pet_spell.blighted_arrow_st_buff )
+                                 ->set_consume_all_stacks( false );
   }
 
   void create_actions() override
@@ -8678,7 +8680,7 @@ struct death_coil_damage_t final : public death_knight_spell_t
       p()->trigger_vampiric_strike_proc( execute_state->target );
     }
 
-    p()->buffs.sudden_doom->decrement();
+    p()->buffs.sudden_doom->consume( this, 1 );
   }
 
   void impact( action_state_t* state ) override
@@ -9171,7 +9173,7 @@ struct epidemic_t final : public death_knight_spell_t
     if ( p()->buffs.sudden_doom->check() )
     {
       sd = true;
-      p()->buffs.sudden_doom->decrement();
+      p()->buffs.sudden_doom->consume( this, 1 );
       if ( p()->talent.unholy.all_will_serve.ok() && p()->pets.risen_skulker.active_pet() != nullptr )
       {
         pets::risen_skulker_pet_t* skulker = p()->pets.risen_skulker.active_pet();
@@ -15529,7 +15531,8 @@ void death_knight_t::create_buffs()
 
   buffs.sudden_doom = make_fallback( talent.unholy.sudden_doom.ok(), this, "sudden_doom",
                                      talent.unholy.sudden_doom->effectN( 1 ).trigger() )
-                          ->set_trigger_spell( talent.unholy.sudden_doom );
+                          ->set_trigger_spell( talent.unholy.sudden_doom )
+                          ->set_consume_all_stacks( false );
 
   buffs.unholy_assault =
       make_fallback( talent.unholy.unholy_assault.ok(), this, "unholy_assault", talent.unholy.unholy_assault )
