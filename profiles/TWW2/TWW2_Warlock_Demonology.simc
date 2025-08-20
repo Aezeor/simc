@@ -78,7 +78,7 @@ actions+=/demonbolt,target_if=min:debuff.doom.remains,if=buff.demonic_core.stack
 actions+=/demonic_strength,if=pet.demonic_tyrant.active&active_enemies>1
 actions+=/bilescourge_bombers,if=active_enemies>1
 actions+=/hand_of_guldan,if=demonic_art&soul_shard>=3
-actions+=/implosion,if=active_enemies>3&set_bonus.tww2_4pc&buff.wild_imps.stack>7&!buff.demonic_core.react&!prev_gcd.1.implosion|!set_bonus.tww2_4pc&active_enemies>2&two_cast_imps>2&!prev_gcd.1.implosion&variable.impl
+actions+=/implosion,if=cooldown.summon_demonic_tyrant.remains_expected>10&(active_enemies>3&set_bonus.tww2_4pc&buff.wild_imps.stack>7&!buff.demonic_core.react&!prev_gcd.1.implosion|!set_bonus.tww2_4pc&active_enemies>2&two_cast_imps>2&!prev_gcd.1.implosion&variable.impl)
 actions+=/ruination
 actions+=/demonbolt,target_if=(!debuff.doom.up),if=soul_shard<4&buff.demonic_core.stack>=3&talent.doom
 actions+=/demonbolt,if=soul_shard<4&buff.demonic_core.stack>=3&!talent.doom
