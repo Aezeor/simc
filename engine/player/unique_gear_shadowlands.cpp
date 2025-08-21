@@ -2173,6 +2173,7 @@ void miniscule_mailemental_in_an_envelope( special_effect_t& effect )
     {
       base_dd_min = e.driver()->effectN( 1 ).min( e.item );
       base_dd_max = e.driver()->effectN( 1 ).max( e.item );
+      base_multiplier = role_mult( e );
     }
   };
 
