@@ -12894,41 +12894,33 @@ void death_knight_t::start_inexorable_assault()
 
 int death_knight_t::get_random_rider()
 {
-  int n = static_cast<int>( rng().range( 1, rider_of_the_apocalypse::ALL_RIDERS ) );
-
   // If all riders are active, dont bother running the rest of the function, no random riders can be spawned.
   if ( pets.mograine.active_pet() != nullptr && pets.nazgrim.active_pet() != nullptr &&
        pets.trollbane.active_pet() != nullptr && pets.whitemane.active_pet() != nullptr )
     return rider_of_the_apocalypse::NONE;
 
-  if ( n == last_summoned_rider )
-  {
-    n = get_random_rider();
-  }
-  switch ( n )
-  {
-    case rider_of_the_apocalypse::MOGRAINE:
-      if ( pets.mograine.active_pet() != nullptr )
-        n = get_random_rider();
-      break;
-    case rider_of_the_apocalypse::NAZGRIM:
-      if ( pets.nazgrim.active_pet() != nullptr )
-        n = get_random_rider();
-      break;
-    case rider_of_the_apocalypse::TROLLBANE:
-      if ( pets.trollbane.active_pet() != nullptr )
-        n = get_random_rider();
-      break;
-    case rider_of_the_apocalypse::WHITEMANE:
-      if ( pets.whitemane.active_pet() != nullptr )
-        n = get_random_rider();
-      break;
-  }
+  std::vector<rider_of_the_apocalypse> available_riders;
+  available_riders.reserve( rider_of_the_apocalypse::ALL_RIDERS );
+
+  if ( pets.mograine.active_pet() == nullptr && last_summoned_rider != rider_of_the_apocalypse::MOGRAINE )
+    available_riders.push_back( rider_of_the_apocalypse::MOGRAINE );
+
+  if ( pets.nazgrim.active_pet() == nullptr && last_summoned_rider != rider_of_the_apocalypse::NAZGRIM )
+    available_riders.push_back( rider_of_the_apocalypse::NAZGRIM );
+
+  if ( pets.trollbane.active_pet() == nullptr && last_summoned_rider != rider_of_the_apocalypse::TROLLBANE )
+    available_riders.push_back( rider_of_the_apocalypse::TROLLBANE );
+
+  if ( pets.whitemane.active_pet() == nullptr && last_summoned_rider != rider_of_the_apocalypse::WHITEMANE )
+    available_riders.push_back( rider_of_the_apocalypse::WHITEMANE );
+
+
+  rider_of_the_apocalypse n = rng().range( available_riders );
   last_summoned_rider = n;
   return n;
 }
 
-void death_knight_t::summon_rider( timespan_t duration, bool random )
+void death_knight_t::summon_rider(  timespan_t duration, bool random )
 {
   int n = 0;
   if ( random )
