@@ -217,21 +217,23 @@ void marksmanship( player_t* p )
   action_priority_list_t* drst = p->get_action_priority_list( "drst" );
   action_priority_list_t* sentst = p->get_action_priority_list( "sentst" );
   action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
-  action_priority_list_t* trickshots = p->get_action_priority_list( "trickshots" );
+  action_priority_list_t* drtrickshots = p->get_action_priority_list( "drtrickshots" );
+  action_priority_list_t* senttrickshots = p->get_action_priority_list( "senttrickshots" );
 
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "summon_pet,if=talent.unbreakable_bond" );
   precombat->add_action( "aimed_shot,if=active_enemies<3|talent.black_arrow&talent.headshot" );
   precombat->add_action( "steady_shot" );
 
-  default_->add_action( "variable,name=trueshot_ready,value=!talent.bullseye|fight_remains>cooldown.trueshot.duration+buff.trueshot.duration|buff.bullseye.stack=buff.bullseye.max_stack|fight_remains<25", "Hold the final Trueshot for Bullseye stacks if necessary." );
+  default_->add_action( "variable,name=trueshot_ready,value=!talent.bullseye|fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack|fight_remains<25", "Hold the final Trueshot for Bullseye stacks if necessary." );
   default_->add_action( "auto_shot" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "call_action_list,name=trinkets" );
-  default_->add_action( "call_action_list,name=trickshots,if=active_enemies>2&talent.trick_shots" );
+  default_->add_action( "call_action_list,name=drtrickshots,if=active_enemies>2&talent.trick_shots&hero_tree.dark_ranger" );
+  default_->add_action( "call_action_list,name=senttrickshots,if=active_enemies>2&talent.trick_shots&hero_tree.sentinel" );
   default_->add_action( "call_action_list,name=cleave,if=active_enemies>1" );
-  default_->add_action( "call_action_list,name=drst,if=active_enemies=1&talent.black_arrow" );
-  default_->add_action( "call_action_list,name=sentst,if=active_enemies=1&!talent.black_arrow" );
+  default_->add_action( "call_action_list,name=drst,if=active_enemies=1&hero_tree.dark_ranger" );
+  default_->add_action( "call_action_list,name=sentst,if=active_enemies=1&hero_tree.sentinel" );
 
   cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.trueshot.remains>12|fight_remains<13" );
   cds->add_action( "berserking,if=buff.trueshot.up|fight_remains<13" );
@@ -241,35 +243,36 @@ void marksmanship( player_t* p )
   cds->add_action( "lights_judgment,if=buff.trueshot.down" );
   cds->add_action( "potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<31" );
 
-  trinkets->add_action( "use_item,name=unyielding_netherprism,if=buff.latent_energy.stack>7&(buff.trueshot.remains>13|buff.latent_energy.stack=18|fight_remains<25)" );
-  trinkets->add_action( "use_items,slots=trinket1:trinket2,if=!this_trinket.is.unyielding_prism&(!this_trinket.has_use_buff|buff.trueshot.up|cooldown.trueshot.remains>30)" );
+  trinkets->add_action( "use_items,slots=trinket1:trinket2,if=!this_trinket.has_use_buff|buff.trueshot.remains>13|cooldown.trueshot.remains>45" );
+  trinkets->add_action( "use_item,name=unyielding_netherprism,if=buff.latent_energy.stack>5&(buff.trueshot.remains>13|buff.latent_energy.stack=18|fight_remains<25)" );
 
-  drst->add_action( "explosive_shot,if=talent.precision_detonation&buff.lock_and_load.down&cooldown.aimed_shot.charges<1&buff.trueshot.down", "########## 1 target" );
+  drst->add_action( "explosive_shot,if=talent.precision_detonation&buff.lock_and_load.down&cooldown.aimed_shot.charges_fractional<=1.1&buff.trueshot.down", "1 target" );
   drst->add_action( "volley,if=buff.double_tap.down&(!raid_event.adds.exists|raid_event.adds.in>cooldown)" );
-  drst->add_action( "steady_shot,if=focus+cast_regen<focus.max&action.aimed_shot.in_flight&!action.black_arrow.cooldown_react&buff.trueshot.down&cooldown.trueshot.remains" );
-  drst->add_action( "black_arrow,if=!talent.headshot|talent.headshot&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)" );
+  drst->add_action( "steady_shot,if=focus+cast_regen<focus.max&action.aimed_shot.in_flight&!action.black_arrow.cooldown_react&buff.trueshot.down&cooldown.trueshot.remains", "Queue Steady Shot after Aimed Shot if a Deathblow hasn't already been up long enough to be reacted to." );
+  drst->add_action( "trueshot,if=variable.trueshot_ready&buff.double_tap.down&!action.black_arrow.cooldown_react&(!talent.bulletstorm|buff.bulletstorm.up)" );
+  drst->add_action( "black_arrow,if=talent.headshot&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)|!talent.headshot" );
   drst->add_action( "aimed_shot,if=buff.trueshot.up&buff.precise_shots.down|buff.lock_and_load.up&buff.moving_target.up" );
   drst->add_action( "rapid_fire,if=!buff.deathblow.react" );
-  drst->add_action( "trueshot,if=variable.trueshot_ready&buff.double_tap.down&!buff.deathblow.react&cooldown.aimed_shot.charges>0" );
+  drst->add_action( "trueshot,if=variable.trueshot_ready&buff.double_tap.down&!buff.deathblow.react" );
   drst->add_action( "arcane_shot,if=buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)" );
   drst->add_action( "aimed_shot,if=buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up" );
   drst->add_action( "explosive_shot,if=talent.shrapnel_shot&buff.lock_and_load.down" );
   drst->add_action( "steady_shot" );
 
-  sentst->add_action( "explosive_shot,if=talent.precision_detonation&action.aimed_shot.in_flight&buff.trueshot.down" );
+  sentst->add_action( "explosive_shot,if=talent.shrapnel_shot&buff.lock_and_load.down&cooldown.aimed_shot.charges_fractional<=1.1&buff.trueshot.down" );
   sentst->add_action( "volley,if=buff.double_tap.down&(!raid_event.adds.exists|raid_event.adds.in>cooldown)" );
-  sentst->add_action( "trueshot,if=variable.trueshot_ready&buff.double_tap.down" );
-  sentst->add_action( "steady_shot,if=(talent.black_arrow|bugs)&focus+cast_regen<focus.max&action.aimed_shot.in_flight&!buff.deathblow.react&buff.trueshot.down&cooldown.trueshot.remains", "Queue Steady Shot after Aimed Shot if a Deathblow hasn't already been up long enough to be reacted to. Sentinel only seems to like this due to the Precise Shots gcd bug." );
   sentst->add_action( "rapid_fire,if=talent.lunar_storm&buff.lunar_storm_cooldown.down" );
+  sentst->add_action( "trueshot,if=variable.trueshot_ready&buff.double_tap.down&(!talent.bulletstorm|buff.bulletstorm.up)" );
   sentst->add_action( "kill_shot,if=talent.headshot&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)|!talent.headshot&buff.razor_fragments.up" );
+  sentst->add_action( "aimed_shot,if=buff.trueshot.up&buff.precise_shots.down|buff.lock_and_load.up&buff.moving_target.up" );
+  sentst->add_action( "rapid_fire,if=!talent.no_scope|buff.precise_shots.down" );
   sentst->add_action( "arcane_shot,if=buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)" );
-  sentst->add_action( "aimed_shot,if=(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&full_recharge_time<action.rapid_fire.execute_time+cast_time&(!talent.bulletstorm|buff.bulletstorm.up)&talent.windrunner_quiver", "Prioritize Aimed Shot a little higher when close to capping charges." );
   sentst->add_action( "rapid_fire" );
   sentst->add_action( "aimed_shot,if=buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up" );
   sentst->add_action( "explosive_shot,if=talent.precision_detonation|buff.trueshot.down" );
   sentst->add_action( "steady_shot" );
 
-  cleave->add_action( "explosive_shot,if=talent.precision_detonation&action.aimed_shot.in_flight&(buff.trueshot.down|!talent.windrunner_quiver)", "################# 2 targets (2+ without Trick Shots)" );
+  cleave->add_action( "explosive_shot,if=talent.precision_detonation&action.aimed_shot.in_flight&(buff.trueshot.down|!talent.windrunner_quiver)", "2 targets (2+ without Trick Shots)" );
   cleave->add_action( "black_arrow,if=buff.precise_shots.up&buff.moving_target.down&variable.trueshot_ready" );
   cleave->add_action( "volley,if=(talent.double_tap&buff.double_tap.down|!talent.aspect_of_the_hydra)&(buff.precise_shots.down|buff.moving_target.up)" );
   cleave->add_action( "rapid_fire,if=talent.bulletstorm&buff.bulletstorm.down&(!talent.double_tap|buff.double_tap.up|!talent.aspect_of_the_hydra&buff.trick_shots.remains>execute_time)&(buff.precise_shots.down|buff.moving_target.up|!talent.volley)" );
@@ -289,22 +292,36 @@ void marksmanship( player_t* p )
   cleave->add_action( "black_arrow,if=!talent.headshot" );
   cleave->add_action( "steady_shot" );
 
-  trickshots->add_action( "explosive_shot,if=talent.precision_detonation&action.aimed_shot.in_flight&buff.trueshot.down&(!talent.shrapnel_shot|buff.lock_and_load.down)", "################ 3+ targets (with Trick Shots)" );
-  trickshots->add_action( "volley,if=buff.double_tap.down&(!talent.shrapnel_shot|buff.lock_and_load.down)" );
-  trickshots->add_action( "rapid_fire,if=talent.bulletstorm&buff.bulletstorm.down&buff.trick_shots.remains>execute_time" );
-  trickshots->add_action( "rapid_fire,if=hero_tree.sentinel&buff.lunar_storm_cooldown.down&buff.trick_shots.remains>execute_time" );
-  trickshots->add_action( "steady_shot,if=talent.black_arrow&focus+cast_regen<focus.max&action.aimed_shot.in_flight&!buff.deathblow.react&buff.trueshot.down&cooldown.trueshot.remains", "Queue Steady Shot after Aimed Shot if a Deathblow hasn't already been up long enough to be reacted to." );
-  trickshots->add_action( "black_arrow,if=!talent.headshot|buff.precise_shots.up|buff.trick_shots.down" );
-  trickshots->add_action( "multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target,if=buff.precise_shots.up&buff.moving_target.down|buff.trick_shots.down", "Retarget to possibly spread an extra Spotter's Mark if able." );
-  trickshots->add_action( "trueshot,if=variable.trueshot_ready&buff.double_tap.down" );
-  trickshots->add_action( "volley,if=buff.double_tap.down&(!talent.salvo|!talent.precision_detonation|(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up))" );
-  trickshots->add_action( "aimed_shot,if=(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.trick_shots.up&buff.bulletstorm.up&full_recharge_time<gcd", "Prioritize Aimed Shot a little higher when close to capping charges." );
-  trickshots->add_action( "rapid_fire,if=buff.trick_shots.remains>execute_time&(!talent.black_arrow|buff.deathblow.down)&(!talent.no_scope|debuff.spotters_mark.down)&(talent.no_scope|buff.bulletstorm.down)" );
-  trickshots->add_action( "explosive_shot,if=talent.precision_detonation&talent.shrapnel_shot&buff.lock_and_load.down&(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)" );
-  trickshots->add_action( "aimed_shot,if=(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.trick_shots.up" );
-  trickshots->add_action( "explosive_shot,if=talent.precision_detonation&!talent.shrapnel_shot" );
-  trickshots->add_action( "steady_shot,if=(talent.lunar_storm&focus+cast_regen<focus.max)|talent.black_arrow" );
-  trickshots->add_action( "multishot,if=!talent.black_arrow" );
+  drtrickshots->add_action( "explosive_shot,if=talent.precision_detonation&action.aimed_shot.in_flight&buff.trueshot.down&(!talent.shrapnel_shot|buff.lock_and_load.down)", "3+ targets (with Trick Shots)" );
+  drtrickshots->add_action( "volley,if=buff.double_tap.down&(!talent.shrapnel_shot|buff.lock_and_load.down)" );
+  drtrickshots->add_action( "rapid_fire,if=talent.bulletstorm&buff.bulletstorm.down&buff.trick_shots.remains>execute_time" );
+  drtrickshots->add_action( "rapid_fire,if=hero_tree.sentinel&buff.lunar_storm_cooldown.down&buff.trick_shots.remains>execute_time" );
+  drtrickshots->add_action( "steady_shot,if=talent.black_arrow&focus+cast_regen<focus.max&action.aimed_shot.in_flight&!buff.deathblow.react&buff.trueshot.down&cooldown.trueshot.remains" );
+  drtrickshots->add_action( "black_arrow,if=!talent.headshot|buff.precise_shots.up|buff.trick_shots.down" );
+  drtrickshots->add_action( "multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target,if=buff.precise_shots.up&buff.moving_target.down|buff.trick_shots.down" );
+  drtrickshots->add_action( "trueshot,if=variable.trueshot_ready&buff.double_tap.down" );
+  drtrickshots->add_action( "volley,if=buff.double_tap.down&(!talent.salvo|!talent.precision_detonation|(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up))" );
+  drtrickshots->add_action( "aimed_shot,if=(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.trick_shots.up&buff.bulletstorm.up&full_recharge_time<gcd" );
+  drtrickshots->add_action( "rapid_fire,if=buff.trick_shots.remains>execute_time&(!talent.black_arrow|buff.deathblow.down)&(!talent.no_scope|debuff.spotters_mark.down)&(talent.no_scope|buff.bulletstorm.down)" );
+  drtrickshots->add_action( "explosive_shot,if=talent.precision_detonation&talent.shrapnel_shot&buff.lock_and_load.down&(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)" );
+  drtrickshots->add_action( "aimed_shot,if=(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.trick_shots.up" );
+  drtrickshots->add_action( "explosive_shot,if=talent.precision_detonation&!talent.shrapnel_shot" );
+  drtrickshots->add_action( "steady_shot,if=(talent.lunar_storm&focus+cast_regen<focus.max)|talent.black_arrow" );
+  drtrickshots->add_action( "multishot,if=!talent.black_arrow" );
+
+  senttrickshots->add_action( "explosive_shot,if=talent.shrapnel_shot&buff.lock_and_load.down&cooldown.aimed_shot.charges_fractional<=1.1&buff.trueshot.down" );
+  senttrickshots->add_action( "volley,if=buff.double_tap.down&(!talent.shrapnel_shot|buff.lock_and_load.down)" );
+  senttrickshots->add_action( "rapid_fire,if=buff.trick_shots.remains>execute_time&(talent.bulletstorm&buff.bulletstorm.down|buff.lunar_storm_cooldown.down)" );
+  senttrickshots->add_action( "multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target,if=buff.precise_shots.up&buff.moving_target.down|buff.trick_shots.down" );
+  senttrickshots->add_action( "trueshot,if=variable.trueshot_ready&buff.double_tap.down" );
+  senttrickshots->add_action( "volley,if=buff.double_tap.down&(!talent.salvo|!talent.precision_detonation|(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up))" );
+  senttrickshots->add_action( "aimed_shot,if=buff.trick_shots.remains>execute_time&(buff.trueshot.up&buff.precise_shots.down|buff.lock_and_load.up&buff.moving_target.up)" );
+  senttrickshots->add_action( "rapid_fire,if=buff.trick_shots.remains>execute_time" );
+  senttrickshots->add_action( "explosive_shot,if=talent.shrapnel_shot&buff.lock_and_load.down" );
+  senttrickshots->add_action( "aimed_shot,if=buff.trick_shots.remains>execute_time&(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)" );
+  senttrickshots->add_action( "explosive_shot,if=talent.precision_detonation&!talent.shrapnel_shot" );
+  senttrickshots->add_action( "steady_shot,if=focus+cast_regen<focus.max" );
+  senttrickshots->add_action( "multishot" );
 }
 //marksmanship_apl_end
 
