@@ -936,6 +936,7 @@ struct player_t : public actor_t
     player_option_t<std::string> alchemical_initial_penalty = "none";  // Initial penalty for Alchemical Chaos Flask
     bool incorporeal_essence_gorger_ethereal = false; // Whether or not to use lowest or highest (ethereal) secondary stat
     double astral_antenna_miss_chance = 0.0; // Chance to miss the astral antenna orbs due to movement
+    int screams_of_a_forgotten_sky_initial_stacks = 0;  // Initial debuff stacks for Scream of a Forgotten Sky
   } thewarwithin_opts;
 
 private:

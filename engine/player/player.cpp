@@ -13571,6 +13571,8 @@ void player_t::create_options()
                           thewarwithin_opts.alchemical_initial_penalty ) );
   add_option( opt_bool( "thewarwithin.incorporeal_essence_gorger_ethereal", thewarwithin_opts.incorporeal_essence_gorger_ethereal ) );
   add_option( opt_float( "thewarwithin.astral_antenna_miss_chance", thewarwithin_opts.astral_antenna_miss_chance, 0.0, 1.0 ) );
+  add_option( opt_int( "thewarwithin.screams_of_a_forgotten_sky_initial_stacks",
+                       thewarwithin_opts.screams_of_a_forgotten_sky_initial_stacks, 0, 99 ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

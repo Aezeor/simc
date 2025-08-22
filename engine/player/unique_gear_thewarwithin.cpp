@@ -8493,9 +8493,16 @@ void screams_of_a_forgotten_sky( special_effect_t& effect )
       : generic_proc_t( e, n, s ), debuff_stack_val( 0 ), on_death_val( 0 ), on_death( on_death )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
-      debuff_stack_val = e.driver()->effectN( 2 ).percent();
-      on_death_val = e.driver()->effectN( 3 ).average( e );
+      debuff_stack_val          = e.driver()->effectN( 2 ).percent();
+      on_death_val              = e.driver()->effectN( 3 ).average( e );
       base_multiplier *= role_mult( e );
+      if ( player->thewarwithin_opts.screams_of_a_forgotten_sky_initial_stacks > 0 )
+        for ( auto& t : sim->target_list )
+          if ( t->is_enemy() )
+            t->register_on_arise_callback( t, [ &, t ] {
+              if ( auto debuff = get_debuff( t ) )
+                debuff->trigger( player->thewarwithin_opts.screams_of_a_forgotten_sky_initial_stacks );
+            } );
     }
 
     double composite_target_multiplier( player_t* t ) const override
