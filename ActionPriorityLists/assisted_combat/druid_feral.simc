@@ -15,6 +15,7 @@ actions.assisted_combat+=/rake,if=buff.prowl.up
 actions.assisted_combat+=/primal_wrath,if=target.distance<=10&active_enemies>3&!dot.rip.ticking&combo_points>=5
 actions.assisted_combat+=/rip,if=!dot.rip.ticking&combo_points>=5
 actions.assisted_combat+=/ferocious_bite,if=combo_points>=5
+# (Overridden from '(buff.apex_predators_craving.up|buff.unknown_spell_252752.up)')
 actions.assisted_combat+=/ferocious_bite,if=buff.apex_predators_craving.up
 actions.assisted_combat+=/adaptive_swarm,if=buff.prowl.down
 actions.assisted_combat+=/feral_frenzy,if=combo_points<=1&buff.tigers_fury.up
