@@ -6032,8 +6032,13 @@ struct rapid_fire_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::last_tick( d );
 
     p()->consume_trick_shots();
-    p()->buffs.in_the_rhythm->trigger();
     p()->buffs.double_tap->expire();
+
+    //If a Rapid Fire is cancelled it does not trigger In The Rhythm
+    if ( d->ticks_left() == 0 )
+    {
+      p()->buffs.in_the_rhythm->trigger();
+    }
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
