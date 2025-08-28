@@ -3976,11 +3976,6 @@ void unique_gear::initialize_special_effect_2( special_effect_t* effect )
       new dbc_proc_callback_t( effect -> player, *effect );
     }
   }
-
-  // add name-matched buff to buff_list for apl expressions
-  auto b = buff_t::find( effect->player, effect->name() );
-  if ( b && !range::contains( effect->buff_list, b ) )
-    effect->buff_list.push_back( b );
 }
 
 void unique_gear::initialize_racial_effects( player_t* player )
@@ -4118,7 +4113,11 @@ struct item_buff_expr_t : public item_effect_expr_t
   {
     for ( auto e : effects )
     {
-      for ( auto b : e->buff_list )
+      auto _list = e->buff_list;  // make a copy
+      if ( auto _buff = buff_t::find( &player, e->name() ) )
+        _list.push_back( _buff );
+
+      for ( auto b : _list )
       {
         if ( buff_has_stat( b, s ) && ( !stacking || ( stacking && b->max_stack() > 1 ) ) )
         {
@@ -4140,7 +4139,11 @@ struct item_buff_exists_expr_t : public item_effect_expr_t
   {
     for ( auto e : effects )
     {
-      for ( auto b : e->buff_list )
+      auto _list = e->buff_list;  // make a copy
+      if ( auto _buff = buff_t::find( &player, e->name() ) )
+        _list.push_back( _buff );
+
+      for ( auto b : _list )
       {
         if ( buff_has_stat( b, s ) )
         {
