@@ -10539,7 +10539,7 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
     {
       m *= 1.0 + td->debuff.razorice->check_stack_value();
     }
-    if ( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) &&
+    if ( !p()->bugs && p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) &&
          td->debuff.chains_of_ice_trollbane_slow->check() )
     {
       m *= 1.0 + p()->sets->set( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 )->effectN( 4 ).percent();
