@@ -5451,8 +5451,10 @@ struct multishot_mm_t: public hunter_ranged_attack_t
 
     p()->consume_precise_shots();
 
+    // Delay this since secondary Aimed Shots can cleave with a Trick Shots from Volley, but will not be affected by a Trick Shots 
+    // from a queued Multi-Shot that might be executed before they are since they are delayed 10 ms.
     if ( ( p() -> talents.trick_shots.ok() && num_targets_hit >= p() -> talents.trick_shots -> effectN( 2 ).base_value() ) )
-      p() -> buffs.trick_shots -> trigger();
+      make_event( p()->sim, 10_ms, [ this ]() { p()->buffs.trick_shots->trigger(); } );
 
     p()->trigger_symphonic_arsenal();
   }
@@ -5713,6 +5715,18 @@ struct aimed_shot_t : public aimed_shot_base_t
       base_costs[ RESOURCE_FOCUS ] = 0;
       base_multiplier *= p->talents.aspect_of_the_hydra->effectN( 1 ).percent() + p->talents.light_ammo->effectN( 3 ).percent();
     }
+
+    void execute() override
+    {
+      aimed_shot_base_t::execute();
+
+      // Consumes Lock and Load without a benefit
+      if ( p()->buffs.lock_and_load->check() )
+      {
+        p()->buffs.lock_and_load->decrement();
+        p()->cooldowns.explosive_shot->adjust( -p()->talents.magnetic_gunpowder->effectN( 2 ).time_value() );
+      }
+    }
   };
 
   struct aimed_shot_double_tap_t : aimed_shot_base_t
@@ -5722,6 +5736,18 @@ struct aimed_shot_t : public aimed_shot_base_t
       background = dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
       base_multiplier *= p->talents.double_tap->effectN( 3 ).percent();
+    }
+
+    void execute() override
+    {
+      aimed_shot_base_t::execute();
+
+      // Consumes Lock and Load without a benefit
+      if ( p()->buffs.lock_and_load->check() )
+      {
+        p()->buffs.lock_and_load->decrement();
+        p()->cooldowns.explosive_shot->adjust( -p()->talents.magnetic_gunpowder->effectN( 2 ).time_value() );
+      }
     }
   };
 
@@ -5859,15 +5885,16 @@ struct aimed_shot_t : public aimed_shot_base_t
       p()->trigger_deathblow();
 
     auto tl = target_list();
+
+    // Delay these secondary shots since they can consume Moving Target or Lock and Load if either trigger off a queued cast.
     if ( aspect_of_the_hydra && tl.size() > 1 )
-      aspect_of_the_hydra->execute_on_target( tl[ 1 ] );
+      make_event( p()->sim, 10_ms, [ this, tl ]() { aspect_of_the_hydra->execute_on_target( tl[ 1 ] ); } );
 
     if ( double_tap && p()->buffs.double_tap->up() )
     {
-      double_tap->execute_on_target( target );
-      
+      make_event( p()->sim, 10_ms, [ this ]() { double_tap->execute_on_target( target ); } );
       if ( aspect_of_the_hydra && tl.size() > 1 )
-        aspect_of_the_hydra->execute_on_target( tl[ 1 ] );
+        make_event( p()->sim, 10_ms, [ this, tl ]() { aspect_of_the_hydra->execute_on_target( tl[ 1 ] ); } );
 
       p()->buffs.double_tap->expire();
     }
