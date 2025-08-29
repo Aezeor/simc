@@ -8982,6 +8982,22 @@ struct starfire_base_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
 
   void schedule_travel( action_state_t* s ) override
   {
+    // for precombat we hack it to advance eclipse and manually energize 100ms later to get around the eclipse stack
+    // reset & AP capping on combat start. this must be done in starfire_base_t as opposed to starfire_t as it's
+    // possible to get an umbral proc from 2x wrath resulting in umbral shunt during execute().
+    if ( is_precombat && energize_resource_() == RESOURCE_ASTRAL_POWER )
+    {
+      starfire_base_t::base_t::schedule_travel( s );
+
+      make_event( *sim, 100_ms, [ this ]() {
+        p()->eclipse_handler.cast_starfire();
+        p()->resource_gain( RESOURCE_ASTRAL_POWER, composite_energize_amount( execute_state ),
+                            energize_gain( execute_state ) );
+      } );
+
+      return;
+    }
+
     // eclipse is handled after cast but before impact
     if ( !has_flag( flag_e::FREE_PROCS ) && s->chain_target == 0 )
       p()->eclipse_handler.cast_starfire();
@@ -9024,24 +9040,24 @@ struct starfire_t final : public umbral_embrace_t<eclipse_e::LUNAR, starfire_bas
       energize_type = action_energize::NONE;
   }
 
-  void schedule_travel( action_state_t* s ) override
+  void execute() override
   {
-    // for precombat we hack it to advance eclipse and manually energize 100ms later to get around the eclipse stack
-    // reset & AP capping on combat start
-    if ( is_precombat && energize_resource_() == RESOURCE_ASTRAL_POWER )
+    // 2x wrath in precombat can enter eclipse and results in an umbral starfire followup also in precombat. as umbral
+    // in a shared secondary action we need to set & reset the appropriate values here.
+    if ( is_precombat && umbral )
     {
-      starfire_base_t::base_t::schedule_travel( s );
+      umbral->is_precombat = true;
+      umbral->energize_type = action_energize::NONE;
 
-      make_event( *sim, 100_ms, [ this ]() {
-        p()->eclipse_handler.cast_starfire();
-        p()->resource_gain( RESOURCE_ASTRAL_POWER, composite_energize_amount( execute_state ),
-                            energize_gain( execute_state ) );
-      } );
+      base_t::execute();
 
-      return;
+      umbral->is_precombat = false;
+      umbral->energize_type = action_energize::ON_HIT;
     }
-
-    base_t::schedule_travel( s );
+    else
+    {
+      base_t::execute();
+    }
   }
 };
 
