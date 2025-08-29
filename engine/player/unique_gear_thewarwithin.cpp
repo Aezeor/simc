@@ -9528,9 +9528,12 @@ void nexuskings_command( special_effect_t& effect )
     bound->set_max_stack( 20 );
   }
 
-  // always get a debuff every 30s regardless of combat
+  // start precombat with a stack of the debuff
+  effect.player->register_precombat_begin( bound );
+
+  // debuff is wiped on pull, gain a debuff every 30s during combat
   effect.player->register_combat_begin( [ bound, dur = effect.driver()->effectN( 1 ).period() ]( player_t* ) {
-    bound->trigger();
+    bound->expire();
     make_event( *bound->sim, bound->rng().range( 0_ms, dur ), [ bound, dur ] {
       bound->trigger();
       make_repeating_event( *bound->sim, dur, [ bound ] { bound->trigger(); } );
