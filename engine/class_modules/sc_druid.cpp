@@ -562,13 +562,15 @@ struct druid_t final : public parse_player_effects_t
     std::vector<dot_t*> efflorescence;
   } dot_lists;
 
-  // buffs that delay application/removal if certain spells are queued after
-  struct queued_buffs_t
+  // delays and sequencing issues that happen if certain spells are spell queued
+  struct spell_queued_t
   {
     bool blooming_infusion_damage = false;
     bool blooming_infusion_damage_expire = false;
     bool gathering_moonlight = false;
-  } queued_buffs;
+    player_t* starsurge_ec_tww3 = nullptr;
+    bool starsurge_ec_tww3_split = false;
+  } spell_queued;
   // !!!==========================================================================!!!
 
   // Options
@@ -656,7 +658,7 @@ struct druid_t final : public parse_player_effects_t
     action_t* treants_of_the_moon_mf;
 
     // Hero sets
-    action_t* starsurge_tww3;          // EC TWW3 2pc
+    action_t* starsurge_ec_tww3;       // EC TWW3 2pc
     action_t* dryad_tww3;              // KOTG TWW3 2pc proxy
     action_t* dryad_tww3_starfall_1;
     action_t* dryad_tww3_Starfall_2;
@@ -6310,6 +6312,7 @@ struct thrash_bear_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
   };
 
   double fc_pct;
+  double ec_tww3_chance = 0.0;
 
   DRUID_ABILITY( thrash_bear_t, base_t, "thrash_bear",
                  p->apply_override( p->talent.thrash, p->spec.bear_form_override ) ),
@@ -6324,6 +6327,9 @@ struct thrash_bear_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
 
     if ( p->specialization() == DRUID_GUARDIAN )
       name_str_reporting = "thrash";
+
+    if ( p->active.starsurge_ec_tww3 && p->specialization() == DRUID_BALANCE )
+      ec_tww3_chance = p->sets->set( HERO_ELUNES_CHOSEN, TWW3, B2 )->effectN( 6 ).percent();
   }
 
   void execute() override
@@ -6333,11 +6339,11 @@ struct thrash_bear_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
     if ( rng().roll( fc_pct ) )
       make_event( *sim, 500_ms, [ this ]() { p()->active.thrash_bear_flashing->execute_on_target( target ); } );
 
-    if ( p()->active.starsurge_tww3 && hit_any_target )
+    if ( hit_any_target && rng().roll( ec_tww3_chance ) )
     {
       // technically thrash target order is random, and the starsurge procs on first target hit. simc does not randomize
       // order of thrash targets so we instead randomize the starsurge target
-      p()->active.starsurge_tww3->execute_on_target( rng().range( target_list() ) );
+      p()->active.starsurge_ec_tww3->execute_on_target( rng().range( target_list() ) );
     }
   }
 
@@ -6839,8 +6845,8 @@ struct regrowth_t final : public trigger_thriving_growth_t<use_dot_list_t<druid_
     p()->buff.blooming_infusion_damage_counter->trigger( this );
     if ( p()->buff.blooming_infusion_damage_counter->at_max_stacks() )
     {
-      if ( !proc && !background && !is_precombat )
-        p()->queued_buffs.blooming_infusion_damage = true;
+      if ( !proc && !background && !is_precombat && time_to_execute > 0_ms )
+        p()->spell_queued.blooming_infusion_damage = true;
       else
         p()->buff.blooming_infusion_damage->trigger();
     }
@@ -7561,6 +7567,82 @@ public:
     else
     {
       BASE::execute();
+    }
+  }
+};
+
+template <typename BASE>
+struct trigger_ec_tww3_starsurge_splash_t : public BASE
+{
+private:
+  struct starsurge_ec_tww3_splash_t final : public druid_residual_action_t<druid_spell_t>
+  {
+    starsurge_ec_tww3_splash_t( druid_t* p ) : base_t( "starsurge_ec_tww3_splash", p, p->find_spell( 1236917 ) )
+    {
+      background = proc = true;
+      name_str_reporting = "Splash";
+
+      auto set = p->sets->set( HERO_ELUNES_CHOSEN, TWW3, B4 );
+      aoe = as<int>( set->effectN( 1 ).base_value() );
+
+      if ( p->specialization() == DRUID_BALANCE )
+        residual_mul = set->effectN( 2 ).percent();
+      else if ( p->specialization() == DRUID_GUARDIAN )
+        residual_mul = set->effectN( 3 ).percent();
+    }
+
+    void init() override
+    {
+      base_t::init();
+
+      if ( p()->active.starsurge_ec_tww3 )
+        p()->active.starsurge_ec_tww3->add_child( this );
+    }
+
+    std::vector<player_t*>& target_list() const override
+    {
+      auto& tl = splash_target_list();
+
+      // hits random targets
+      rng().shuffle( tl.begin(), tl.end() );
+
+      return tl;
+    }
+
+    timespan_t distance_targeting_travel_time( action_state_t* s ) const override
+    {
+      auto distance = target->get_player_distance( *s->target );
+      distance += s->target->height;
+
+      auto time = distance / travel_speed;
+
+      if ( sim->travel_variance )
+        time = rng().gauss( time, sim->travel_variance );
+
+      return timespan_t::from_seconds( std::max( 0.0, time ) ) + 1_ms;
+    }
+  };
+
+  starsurge_ec_tww3_splash_t* splash = nullptr;
+
+public:
+  using base_t = trigger_ec_tww3_starsurge_splash_t<BASE>;
+
+  trigger_ec_tww3_starsurge_splash_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
+    : BASE( n, p, s, f )
+  {
+    if ( p->sets->has_set_bonus( HERO_ELUNES_CHOSEN, TWW3, B4 ) )
+      splash = p->get_secondary_action<starsurge_ec_tww3_splash_t>( "starsurge_ec_tww3_splash" );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    BASE::impact( s );
+
+    if ( BASE::p()->spell_queued.starsurge_ec_tww3_split && splash && !splash->splash_target_list( s->target ).empty() )
+    {
+      BASE::p()->spell_queued.starsurge_ec_tww3_split = false;
+      splash->execute_on_target( s->target, s->result_amount );
     }
   }
 };
@@ -8902,6 +8984,7 @@ struct starfire_base_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
   double smolder_mul;
   double sotf_mul;
   unsigned sotf_cap;
+  double ec_tww3_chance = 0.0;
 
   starfire_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
     : base_t( n, p, s, f ),
@@ -8957,6 +9040,9 @@ struct starfire_base_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
         .set_value( eff.percent() )
         .set_eff( &eff );
     }
+
+    if ( p->active.starsurge_ec_tww3 && p->specialization() == DRUID_BALANCE )
+      ec_tww3_chance = p->sets->set( HERO_ELUNES_CHOSEN, TWW3, B2 )->effectN( 4 ).percent();
   }
 
   double sotf_multiplier( const action_state_t* s ) const
@@ -9017,8 +9103,13 @@ struct starfire_base_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
   double gain_energize_resource( resource_e rt, double a, gain_t* g ) override
   {
     auto ret = base_t::gain_energize_resource( rt, a, g );
-    if ( ret && p()->active.starsurge_tww3 )
-      p()->active.starsurge_tww3->execute_on_target( target );
+    if ( ret && rng().roll( ec_tww3_chance ) )
+    {
+      if ( time_to_execute > 0_ms )
+        p()->spell_queued.starsurge_ec_tww3 = target;
+      else
+        p()->active.starsurge_ec_tww3->execute_on_target( target );
+    }
 
     return ret;
   }
@@ -9071,7 +9162,7 @@ struct starfire_t final : public umbral_embrace_t<eclipse_e::LUNAR, starfire_bas
 };
 
 // Starsurge ================================================================
-struct starsurge_offspec_t : public trigger_call_of_the_elder_druid_t<druid_spell_t>
+struct starsurge_offspec_t : public trigger_ec_tww3_starsurge_splash_t<trigger_call_of_the_elder_druid_t<druid_spell_t>>
 {
   DRUID_ABILITY( starsurge_offspec_t, base_t, "starsurge", p->talent.starsurge )
   {
@@ -9094,7 +9185,7 @@ struct starsurge_offspec_t : public trigger_call_of_the_elder_druid_t<druid_spel
   {}
 };
 
-struct starsurge_base_t : public ap_spender_t
+struct starsurge_base_t : public trigger_ec_tww3_starsurge_splash_t<ap_spender_t>
 {
   struct goldrinns_fang_t final : public druid_spell_t
   {
@@ -9156,36 +9247,6 @@ struct starsurge_base_t : public ap_spender_t
 template <typename BASE>
 struct starsurge_ec_tww3_t final : public BASE
 {
-  struct starsurge_splash_t final : public druid_residual_action_t<druid_spell_t>
-  {
-    starsurge_splash_t( druid_t* p ) : base_t( "starsurge_splash", p, p->find_spell( 1236917 ) )
-    {
-      background = proc = true;
-      name_str_reporting = "Splash";
-
-      auto set = p->sets->set( HERO_ELUNES_CHOSEN, TWW3, B4 );
-      aoe = as<int>( set->effectN( 1 ).base_value() );
-
-      if ( p->specialization() == DRUID_BALANCE )
-        residual_mul = set->effectN( 2 ).percent();
-      else if ( p->specialization() == DRUID_GUARDIAN )
-        residual_mul = set->effectN( 3 ).percent();
-    }
-
-    std::vector<player_t*>& target_list() const override
-    {
-      auto& tl = splash_target_list();
-
-      // hits random targets
-      rng().shuffle( tl.begin(), tl.end() );
-
-      return tl;
-    }
-  };
-
-  starsurge_splash_t* splash = nullptr;
-  double chance = 0.0;
-
   starsurge_ec_tww3_t( druid_t* p, const spell_data_t* s ) : BASE( "starsurge_tww3", p, s, flag_e::TWW3SET )
   {
     BASE::proc = true;
@@ -9194,23 +9255,11 @@ struct starsurge_ec_tww3_t final : public BASE
     auto set = p->sets->set( HERO_ELUNES_CHOSEN, TWW3, B2 );
 
     if ( p->specialization() == DRUID_BALANCE )
-    {
-      chance = set->effectN( 4 ).percent();
       BASE::base_multiplier = set->effectN( 5 ).percent();
-    }
     else if ( p->specialization() == DRUID_GUARDIAN )
-    {
-      chance = set->effectN( 6 ).percent();
       BASE::base_multiplier = set->effectN( 7 ).percent();
-    }
 
     BASE::internal_cooldown->duration = set->internal_cooldown();
-
-    if ( p->sets->has_set_bonus( HERO_ELUNES_CHOSEN, TWW3, B4 ) )
-    {
-      splash = p->get_secondary_action<starsurge_splash_t>( "starsurge_splash" );
-      BASE::add_child( splash );
-    }
   }
 
   void execute() override
@@ -9218,19 +9267,9 @@ struct starsurge_ec_tww3_t final : public BASE
     if ( !BASE::target || !BASE::target->is_active() || BASE::internal_cooldown->down() )
       return;
 
-    if ( BASE::rng().roll( chance ) )
-    {
-      BASE::execute();
-      BASE::p()->queued_buffs.gathering_moonlight = true;
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    BASE::impact( s );
-
-    if ( splash && !splash->splash_target_list( s->target ).empty() )
-      splash->execute_on_target( s->target, s->result_amount );
+    BASE::execute();
+    BASE::p()->spell_queued.gathering_moonlight = true;
+    BASE::p()->spell_queued.starsurge_ec_tww3_split = true;
   }
 };
 
@@ -12643,7 +12682,7 @@ void druid_t::create_actions()
     case DRUID_BALANCE:
       if ( sets->has_set_bonus( HERO_ELUNES_CHOSEN, TWW3, B2 ) )
       {
-        active.starsurge_tww3 =
+        active.starsurge_ec_tww3 =
           get_secondary_action<starsurge_ec_tww3_t<starsurge_base_t>>( "starsurge_tww3", find_spell( 78674 ) );
       }
       if ( sets->has_set_bonus( HERO_KEEPER_OF_THE_GROVE, TWW3, B2 ) )
@@ -12663,12 +12702,6 @@ void druid_t::create_actions()
         two->hail_dur = 0_ms;
         two->name_str_reporting = "starfall";
 
-/*        one->replace_stats( two );
-        two->driver->stats = one->stats;
-        two->driver->damage->stats = one->stats;
-        range::erase_remove( one->stats->action_list, two->driver->damage );
-        one->stats->action_list.push_back( two->driver->damage );*/
-
         active.dryad_tww3->add_child( one );
 
         active.dryad_tww3_starfall_1 = one;
@@ -12682,7 +12715,7 @@ void druid_t::create_actions()
     case DRUID_GUARDIAN:
       if ( sets->has_set_bonus( HERO_ELUNES_CHOSEN, TWW3, B2 ) )
       {
-        active.starsurge_tww3 =
+        active.starsurge_ec_tww3 =
           get_secondary_action<starsurge_ec_tww3_t<starsurge_offspec_t>>( "starsurge_tww3", find_spell( 197626 ) );
       }
       break;
@@ -12727,9 +12760,9 @@ void druid_t::create_actions()
   find_parent( active.jackpot_mushroom, "sunseeker_mushroom" );
 
   if ( specialization() == DRUID_BALANCE )
-    find_parent( active.starsurge_tww3, "starfire" );
+    find_parent( active.starsurge_ec_tww3, "starfire" );
   else if ( specialization() == DRUID_GUARDIAN )
-    find_parent( active.starsurge_tww3, "thrash_bear" );
+    find_parent( active.starsurge_ec_tww3, "thrash_bear" );
 }
 
 // Default Consumables ======================================================
@@ -13730,7 +13763,7 @@ void druid_t::reset()
   dot_lists.rip.clear();
   dot_lists.thrash_bear.clear();
   dot_lists.dreadful_wound.clear();
-  queued_buffs = {};
+  spell_queued = {};
 }
 
 // druid_t::merge ===========================================================
@@ -15282,9 +15315,9 @@ action_t* druid_t::execute_action()
 
   if ( a && a->type != ACTION_OTHER && a->type != ACTION_CALL && a->type != ACTION_SEQUENCE )
   {
-    if ( queued_buffs.gathering_moonlight )
+    if ( spell_queued.gathering_moonlight )
     {
-      queued_buffs.gathering_moonlight = false;
+      spell_queued.gathering_moonlight = false;
 
       if ( a->id == 202770 )  // fury of elune
         make_event( *sim, [ this ] { buff.gathering_moonlight->trigger(); } );
@@ -15292,24 +15325,24 @@ action_t* druid_t::execute_action()
         buff.gathering_moonlight->trigger();
     }
 
-    if ( queued_buffs.blooming_infusion_damage )
+    if ( spell_queued.blooming_infusion_damage )
     {
-      queued_buffs.blooming_infusion_damage = false;
+      spell_queued.blooming_infusion_damage = false;
 
-      if ( a->id == 190984 || a->id == 194153 ) // wrath, starfire
+      if ( a->id == 190984 || a->id == 194153 )  // wrath, starfire
         make_event( *sim, [ this ] { buff.blooming_infusion_damage->trigger(); } );
       else
         buff.blooming_infusion_damage->trigger();
     }
 
-    if ( queued_buffs.blooming_infusion_damage_expire )
+    if ( spell_queued.blooming_infusion_damage_expire )
     {
-      queued_buffs.blooming_infusion_damage_expire = false;
+      spell_queued.blooming_infusion_damage_expire = false;
 
-      if ( a->id == 190984 || a->id == 194153 ) // wrath, starfire
+      if ( a->id == 190984 || a->id == 194153 )  // wrath, starfire
       {
         make_event( *sim, [ this, a ] {
-          queued_buffs.blooming_infusion_damage_expire = false;
+          spell_queued.blooming_infusion_damage_expire = false;
           buff.blooming_infusion_damage->consume( a );
         } );
       }
@@ -15317,6 +15350,22 @@ action_t* druid_t::execute_action()
       {
         buff.blooming_infusion_damage->consume( a );
       }
+    }
+
+    if ( spell_queued.starsurge_ec_tww3 )
+    {
+      if ( a->id == 78674 )  // starsurge
+      {
+        make_event( *sim, [ this, t = spell_queued.starsurge_ec_tww3 ] {
+          active.starsurge_ec_tww3->execute_on_target( t );
+        } );
+      }
+      else
+      {
+        active.starsurge_ec_tww3->execute_on_target( spell_queued.starsurge_ec_tww3 );
+      }
+
+      spell_queued.starsurge_ec_tww3 = nullptr;
     }
   }
 
@@ -15623,8 +15672,8 @@ void druid_t::parse_action_effects( action_t* action )
 
   // Hero talents
   _a->parse_effects( buff.blooming_infusion_damage, [ action, this ]( action_state_t* ) {
-    if ( !action->proc && !action->background && !action->is_precombat )
-      queued_buffs.blooming_infusion_damage_expire = true;
+    if ( !action->proc && !action->background && !action->is_precombat && action->time_to_execute > 0_ms )
+      spell_queued.blooming_infusion_damage_expire = true;
     else
       buff.blooming_infusion_damage->consume( action );
   } );
