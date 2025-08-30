@@ -9137,6 +9137,7 @@ void soulbinders_embrace( special_effect_t& effect )
 
   auto damage = create_proc_action<generic_aoe_proc_t>( "soulbinders_embrace", effect, 1235633 );
   damage->base_dd_min = damage->base_dd_max = equip_data->effectN( 2 ).average( effect );
+  damage->split_aoe_damage = false;
 
   effect.execute_action = damage;
 }
