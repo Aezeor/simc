@@ -11,6 +11,23 @@
 #include "player/stats.hpp"
 #include "util/io.hpp"
 
+// forward declarations
+struct parse_effects_t;
+
+// local aliases
+namespace
+{
+using parse_cb_t = std::function<void( action_state_t* )>;
+template <typename T> using detect_simple = decltype( T::simple );
+template <typename T> using detect_buff = decltype( T::buff );
+template <typename T> using detect_func = decltype( T::func );
+template <typename T> using detect_value_func = decltype( T::value_func );
+template <typename T> using detect_use_stacks = decltype( T::use_stacks );
+template <typename T> using detect_type = decltype( T::type );
+template <typename T> using detect_value = decltype( T::value );
+template <typename T> using detect_idx = decltype( T::idx );
+}
+
 enum parse_flag_e : uint16_t
 {
   USE_DATA          = 0x0000,
@@ -82,6 +99,8 @@ struct player_effect_t
 
   player_effect_t& set_idx( uint32_t i )
   { idx = i; simple = false; return *this; }
+
+  player_effect_t& add_parse_callback( parse_effects_t*, parse_callback_e, parse_cb_t );
 
   player_effect_t& set_eff( const spelleffect_data_t* e )
   { eff = e; return *this; }
@@ -272,20 +291,6 @@ struct affect_list_t
   affect_list_t& remove_spell( int32_t s, Ts... ss )
   { remove_spell( s ); return remove_spell( ss... ); }
 };
-
-// local aliases
-namespace
-{
-using parse_cb_t = std::function<void( action_state_t* )>;
-template <typename T> using detect_simple = decltype( T::simple );
-template <typename T> using detect_buff = decltype( T::buff );
-template <typename T> using detect_func = decltype( T::func );
-template <typename T> using detect_value_func = decltype( T::value_func );
-template <typename T> using detect_use_stacks = decltype( T::use_stacks );
-template <typename T> using detect_type = decltype( T::type );
-template <typename T> using detect_value = decltype( T::value );
-template <typename T> using detect_idx = decltype( T::idx );
-}
 
 // used to store values from parameter pack recursion of parse_effect/parse_target_effects
 template <typename U, typename = std::enable_if_t<std::is_default_constructible_v<U>>>
@@ -739,6 +744,8 @@ public:
   double get_effect_value( const target_effect_t&, actor_target_data_t* ) const;
 
   virtual bool can_force( const spelleffect_data_t& ) const { return true; }
+
+  friend player_effect_t& player_effect_t::add_parse_callback( parse_effects_t*, parse_callback_e, parse_cb_t );
 };
 
 struct parse_player_effects_t : public player_t, public parse_effects_t
