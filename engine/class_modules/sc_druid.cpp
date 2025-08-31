@@ -159,69 +159,6 @@ struct druid_td_t final : public actor_target_data_t
   int hots_ticking() const;
 };
 
-struct snapshot_counter_t
-{
-  simple_sample_data_t execute;
-  simple_sample_data_t tick;
-  simple_sample_data_t waste;
-  std::vector<buff_t*> buffs;
-  const sim_t* sim;
-  stats_t* stats;
-  bool is_snapped = false;
-
-  snapshot_counter_t( player_t* p, stats_t* s, buff_t* b )
-    : execute(), tick(), waste(), sim( p->sim ), stats( s )
-  {
-    buffs.push_back( b );
-  }
-
-  bool check_all()
-  {
-    double n_up = 0;
-
-    for ( const auto& b : buffs )
-      if ( b->check() )
-        n_up++;
-
-    if ( n_up == 0 )
-    {
-      is_snapped = false;
-      return false;
-    }
-
-    waste.add( n_up - 1 );
-    is_snapped = true;
-    return true;
-  }
-
-  void add_buff( buff_t* b ) { buffs.push_back( b ); }
-
-  void count_execute()
-  {
-    // Skip iteration 0 for non-debug, non-log sims
-    if ( sim->current_iteration == 0 && sim->iterations > sim->threads && !sim->debug && !sim->log )
-      return;
-
-    execute.add( check_all() );
-  }
-
-  void count_tick()
-  {
-    // Skip iteration 0 for non-debug, non-log sims
-    if ( sim->current_iteration == 0 && sim->iterations > sim->threads && !sim->debug && !sim->log )
-      return;
-
-    tick.add( is_snapped );
-  }
-
-  void merge( const snapshot_counter_t& other )
-  {
-    execute.merge( other.execute );
-    tick.merge( other.tick );
-    waste.merge( other.waste );
-  }
-};
-
 struct druid_action_data_t  // variables that need to be accessed from action_t* pointer
 {
   // various action flags
@@ -440,7 +377,6 @@ struct druid_t final : public parse_player_effects_t
 {
   form_e form = form_e::NO_FORM;  // Active druid form
   eclipse_handler_t eclipse_handler;
-  std::vector<std::unique_ptr<snapshot_counter_t>> counters;  // counters for snapshot tracking
   std::vector<std::tuple<unsigned, unsigned, timespan_t, timespan_t, double>> prepull_swarm;
   std::vector<player_t*> swarm_targets;
 
@@ -1283,7 +1219,6 @@ struct druid_t final : public parse_player_effects_t
   void reset() override;
   void precombat_init() override;
   void combat_begin() override;
-  void merge( player_t& other ) override;
   void analyze( sim_t& ) override;
   timespan_t available() const override;
   double composite_armor() const override;
@@ -2876,9 +2811,6 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
 
   std::vector<player_effect_t> persistent_periodic_effects;
   std::vector<player_effect_t> persistent_direct_effects;
-  snapshot_counter_t* bt_counter = nullptr;
-  snapshot_counter_t* tf_counter = nullptr;
-  snapshot_counter_t* sa_counter = nullptr;
 
   cat_attack_t( std::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(), flag_e f = flag_e::NONE )
     : base_t( n, p, s, f ), snapshots()
@@ -2969,43 +2901,6 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     return false;
   }
 
-  snapshot_counter_t* get_counter( buff_t* buff )
-  {
-    auto st = stats;
-    while ( st->parent )
-    {
-      if ( !st->parent->action_list.front()->harmful )
-        return nullptr;
-      st = st->parent;
-    }
-
-    for ( const auto& c : p()->counters )
-      if ( c->stats == st)
-        for ( const auto& b : c->buffs )
-          if ( b == buff )
-            return c.get();
-
-    return p()->counters.emplace_back( std::make_unique<snapshot_counter_t>( p(), st, buff ) ).get();
-  }
-
-  void init() override
-  {
-    base_t::init();
-
-    if ( data().ok() || has_flag( flag_e::AUTOATTACK ) )
-    {
-      if ( snapshots.bloodtalons && p()->talent.bloodtalons.ok() )
-        bt_counter = get_counter( p()->buff.bloodtalons );
-
-      if ( snapshots.tigers_fury && p()->talent.tigers_fury.ok() )
-        tf_counter = get_counter( p()->buff.tigers_fury );
-
-      if ( snapshots.sudden_ambush && p()->talent.sudden_ambush.ok() )
-        sa_counter = get_counter( p()->buff.sudden_ambush );
-
-    }
-  }
-
   size_t total_effects_count() override
   {
     return base_t::total_effects_count() + persistent_periodic_effects.size() + persistent_direct_effects.size();
@@ -3034,39 +2929,12 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     base_t::trigger_dot( s );
   }
 
-  void tick( dot_t* d ) override
-  {
-    base_t::tick( d );
-
-    if ( snapshots.bloodtalons && bt_counter )
-      bt_counter->count_tick();
-
-    if ( snapshots.tigers_fury && tf_counter )
-      tf_counter->count_tick();
-
-    if ( snapshots.sudden_ambush && sa_counter )
-      sa_counter->count_tick();
-  }
-
   void execute() override
   {
     base_t::execute();
 
-    if ( hit_any_target )
-    {
-      if ( snapshots.bloodtalons && bt_counter )
-        bt_counter->count_execute();
-
-      if ( snapshots.tigers_fury && tf_counter )
-        tf_counter->count_execute();
-
-      if ( snapshots.sudden_ambush && sa_counter )
-        sa_counter->count_execute();
-    }
-    else
-    {
+    if ( !hit_any_target )
       player->resource_gain( RESOURCE_ENERGY, last_resource_cost * 0.80, p()->gain.energy_refund );
-    }
 
     if ( harmful )
     {
@@ -13631,6 +13499,7 @@ void druid_t::reset()
   spell_queued = {};
 }
 
+/*
 // druid_t::merge ===========================================================
 void druid_t::merge( player_t& other )
 {
@@ -13641,6 +13510,7 @@ void druid_t::merge( player_t& other )
   for ( size_t i = 0; i < counters.size(); i++ )
     counters[ i ]->merge( *od.counters[ i ] );
 }
+*/
 
 void druid_t::analyze( sim_t& s )
 {
@@ -15454,19 +15324,9 @@ void druid_t::parse_player_effects()
 /* Report Extension Class
  * Here you can define class specific report extensions/overrides
  */
-class druid_report_t : public player_report_extension_t
+class druid_report_t final : public player_report_extension_t
 {
-private:
-  struct feral_counter_data_t
-  {
-    action_t* action = nullptr;
-    double tf_exec = 0.0;
-    double tf_tick = 0.0;
-    double bt_exec = 0.0;
-    double bt_tick = 0.0;
-    double sa_exec = 0.0;
-    double sa_tick = 0.0;
-  };
+  druid_t& p;
 
 public:
   druid_report_t( druid_t& player ) : p( player ) {}
@@ -15475,146 +15335,11 @@ public:
   {
     os << R"(<div class="player-section custom_section">)";
 
-    if ( p.specialization() == DRUID_FERAL )
-      feral_snapshot_table( os );
-
     p.parsed_effects_html( os );
     modified_spell_data_t::parsed_effects_html( os, *p.sim, p.modified_spells );
 
     os << "</div>\n";
   }
-
-  void feral_parse_counter( snapshot_counter_t* counter, feral_counter_data_t& data )
-  {
-    if ( range::contains( counter->buffs, p.buff.tigers_fury ) )
-    {
-      data.tf_exec += counter->execute.mean();
-
-      if ( counter->tick.count() )
-        data.tf_tick += counter->tick.mean();
-      else
-        data.tf_tick += counter->execute.mean();
-    }
-    else if ( range::contains( counter->buffs, p.buff.bloodtalons ) )
-    {
-      data.bt_exec += counter->execute.mean();
-
-      if ( counter->tick.count() )
-        data.bt_tick += counter->tick.mean();
-      else
-        data.bt_tick += counter->execute.mean();
-    }
-    else if ( range::contains( counter->buffs, p.buff.sudden_ambush ) )
-    {
-      data.sa_exec += counter->execute.mean();
-
-      if ( counter->tick.count() )
-        data.sa_tick += counter->tick.mean();
-      else
-        data.sa_tick += counter->execute.mean();
-    }
-  }
-
-  void feral_snapshot_table( report::sc_html_stream& os )
-  {
-    // Write header
-    os << R"(<h3 class="toggle open">Snapshot Table</h3><div class="toggle-content"><table class="sc sort even">)"
-       << R"(<thead><tr><th></th><th colspan="2">Tiger's Fury</th>)";
-
-    if ( p.talent.bloodtalons.ok() )
-      os << R"(<th colspan="2">Bloodtalons</th>)";
-
-    if ( p.talent.sudden_ambush.ok() )
-      os << R"(<th colspan="2">Sudden Ambush</th>)";
-
-    os << "</tr>\n";
-
-    os << "<tr>\n"
-       << R"(<th class="toggle-sort left" data-sortdir="asc" data-sorttype="alpha">Ability</th>)"
-       << R"(<th class="toggle-sort">Execute</th><th class="toggle-sort">Benefit</th>)";
-
-    if ( p.talent.bloodtalons.ok() )
-      os << R"(<th class="toggle-sort">Execute</th><th class="toggle-sort">Benefit</th>)";
-
-    if ( p.talent.sudden_ambush.ok() )
-      os << R"(<th class="toggle-sort">Execute</th><th class="toggle-sort">Benefit</th>)";
-
-    os << "</tr></thead>\n";
-
-    std::vector<feral_counter_data_t> data_list;
-
-    // Compile and Write Contents
-    for ( size_t i = 0; i < p.counters.size(); i++ )
-    {
-      auto counter = p.counters[ i ].get();
-      feral_counter_data_t data;
-
-      for ( const auto& a : counter->stats->action_list )
-      {
-        if ( a->s_data->ok() )
-        {
-          data.action = a;
-          break;
-        }
-      }
-
-      if ( !data.action )
-        data.action = counter->stats->action_list.front();
-
-      // We can change the action's reporting name here since we shouldn't need to access it again later in the report
-      std::string suf = "_convoke";
-      if ( suf.size() <= data.action->name_str.size() &&
-           std::equal( suf.rbegin(), suf.rend(), data.action->name_str.rbegin() ) )
-      {
-        data.action->name_str_reporting += "Convoke";
-      }
-
-      feral_parse_counter( counter, data );
-
-      // since the BT counter is created immediately following the TF counter for the same stat in
-      // cat_attacks_t::init(), check the next counter and add in the data if it's for the same stat
-      if ( i + 1 < p.counters.size() )
-      {
-        auto next_counter = p.counters[ i + 1 ].get();
-
-        if ( counter->stats == next_counter->stats )
-        {
-          feral_parse_counter( next_counter, data );
-          i++;
-        }
-      }
-
-      if ( data.tf_exec + data.tf_tick + data.bt_exec + data.bt_tick + data.sa_exec + data.sa_tick == 0.0 )
-        continue;
-
-      data_list.push_back( std::move( data ) );
-    }
-
-    range::sort( data_list, []( const feral_counter_data_t& l, const feral_counter_data_t& r ) {
-      return l.action->name_str < r.action->name_str;
-    } );
-
-    for ( const auto& data : data_list )
-    {
-      os.format( R"(<tr class="right"><td class="left">{}</td><td>{:.2f}%</td><td>{:.2f}%</td>)",
-                 report_decorators::decorated_action( *data.action ), data.tf_exec * 100, data.tf_tick * 100 );
-
-      if ( p.talent.bloodtalons.ok() )
-        os.format( "<td>{:.2f}%</td><td>{:.2f}%</td>", data.bt_exec * 100, data.bt_tick * 100 );
-
-      if ( p.talent.sudden_ambush.ok() )
-        os.format( "<td>{:.2f}%</td><td>{:.2f}%</td>", data.sa_exec * 100, data.sa_tick * 100 );
-
-      os << "</tr>\n";
-    }
-
-    // Write footer
-    os << "</table>\n"
-       << "</div>\n";
-  }
-
-private:
-  druid_t& p;
 };
 
 // DRUID MODULE INTERFACE ===================================================
