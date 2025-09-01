@@ -3723,7 +3723,6 @@ void hunter_t::trigger_spotters_mark( player_t* target, bool force )
 
 double hunter_t::calculate_tip_of_the_spear_value( double tip_bonus ) const
 {
-  tip_bonus += talents.better_together->effectN( 3 ).percent();
 
   if ( talents.flankers_advantage.ok() )
   {
@@ -3731,6 +3730,9 @@ double hunter_t::calculate_tip_of_the_spear_value( double tip_bonus ) const
     double ratio = std::min( cache.attack_crit_chance(), talents.flankers_advantage->effectN( 5 ).percent() ) / talents.flankers_advantage->effectN( 5 ).percent();
     tip_bonus += tip_bonus * ratio;
   }
+
+  //Better Together is seemingly unaffected by Flanker's Advantage bonus
+  tip_bonus += talents.better_together->effectN( 3 ).percent();
 
   if ( buffs.relentless_primal_ferocity->check() )
     tip_bonus *= 1 + talents.relentless_primal_ferocity_buff->effectN( 2 ).percent();
