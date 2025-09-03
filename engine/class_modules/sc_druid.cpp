@@ -4096,15 +4096,17 @@ struct adaptive_swarm_t final : public cat_attack_t
 {
   struct adaptive_swarm_state_t final : public cat_attack_t::state_t
   {
+    using base_t = cat_attack_t::state_t;
+
     double range = 0.0;
     int stacks = 0;
     bool jump = false;
 
-    adaptive_swarm_state_t( action_t* a, player_t* t ) : cat_attack_t::state_t( a, t ) {}
+    adaptive_swarm_state_t( action_t* a, player_t* t ) : base_t( a, t ) {}
 
     void initialize() override
     {
-      action_state_t::initialize();
+      base_t::initialize();
 
       range = 0.0;
       stacks = as<int>( static_cast<druid_t*>( action->player )->talent.adaptive_swarm->effectN( 1 ).base_value() );
@@ -4113,7 +4115,7 @@ struct adaptive_swarm_t final : public cat_attack_t
 
     void copy_state( const action_state_t* s ) override
     {
-      action_state_t::copy_state( s );
+      base_t::copy_state( s );
       auto s_ = static_cast<const adaptive_swarm_state_t*>( s );
 
       range = s_->range;
@@ -4123,7 +4125,7 @@ struct adaptive_swarm_t final : public cat_attack_t
 
     std::ostringstream& debug_str( std::ostringstream& s ) override
     {
-      action_state_t::debug_str( s );
+      base_t::debug_str( s );
 
       s << " range=" << range;
       s << " swarm_stacks=" << stacks;
@@ -4334,7 +4336,7 @@ struct adaptive_swarm_t final : public cat_attack_t
     double composite_persistent_multiplier( const action_state_t* s ) const override
     {
       // jumped swarm does not snapshot TF
-      return swarm_state( s )->jump ? 1.0 : adaptive_swarm_base_t::composite_persistent_multiplier( s );
+      return swarm_state( s )->jump ? 1.0 : damage_swarm_t::composite_persistent_multiplier( s );
     }
   };
 
