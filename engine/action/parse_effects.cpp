@@ -90,7 +90,9 @@ std::string parse_cb_str( parse_callback_e type )
 
 player_effect_t& player_effect_t::add_parse_callback( parse_effects_t* base, parse_callback_e type, parse_cb_t fn )
 {
-  idx |= 1U << ( base->callback_list[ type ].size() + 8 * static_cast<unsigned>( type ) );
+  uint32_t mask = 1U << ( base->callback_list[ type ].size() + 8 * static_cast<unsigned>( type ) );
+  idx |= mask;
+  base->callback_mask[ type ] |= mask;
   base->callback_list[ type ].push_back( std::move( fn ) );
   simple = false;
   return *this;
@@ -1409,9 +1411,11 @@ void parse_action_base_t::parse_callback_function( pack_t<player_effect_t>& pack
 
   // set values on main pack, to be propagated to all copies
   pack.callback[ pack.callback_type ] = std::move( cb );
+
   // this is set BEFORE the callback is added to the vector, so the idx will be 1bit left of size()
-  pack.data.idx |=
-    1U << ( callback_list[ pack.callback_type ].size() + 8 * static_cast<unsigned>( pack.callback_type ) );
+  uint32_t mask = 1U << ( callback_list[ pack.callback_type ].size() + 8 * static_cast<unsigned>( pack.callback_type ) );
+  pack.data.idx |= mask;
+  callback_mask[ pack.callback_type ] |= mask;
 }
 
 void parse_action_base_t::parse_callback_function( pack_t<player_effect_t>& pack, parse_flag_e type )
