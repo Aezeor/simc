@@ -4889,9 +4889,10 @@ struct ferocious_bite_base_t : public cp_spender_t
       if ( !splash_list.empty() )
       {
         rampant_ferocity->snapshot_and_execute( s, false, [ this ]( const action_state_t* from, action_state_t* to ) {
-          auto state = debug_cast<rampant_ferocity_t*>( rampant_ferocity )->cast_state( to );
+          auto state = rampant_ferocity->cast_state( to );
           state->combo_points = cast_state( from )->combo_points;
-          state->energy_mul = 1.0 + ( energy_modifier( from, false ) * rf_energy_mod_pct );
+          // rampant ferocity from free bites have 0.0 energy mod (unlike free bites themselves which get 1.0)
+          state->energy_mul = 1.0 + ( rf_energy_mod_pct * ( is_free() ? 0.0 : energy_modifier( from, false ) ) );
         } );
       }
     }
