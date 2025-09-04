@@ -272,49 +272,29 @@ struct vampiric_embrace_t final : public priest_spell_t
 struct shadowy_apparition_state_t : public action_state_t
 {
   double number_spawned;
-  bool buffed_by_darkflame_shroud;
-  double darkflame_shroud_mult;
 
-  shadowy_apparition_state_t( action_t* a, player_t* t )
-    : action_state_t( a, t ),
-      number_spawned( 1.0 ),
-      buffed_by_darkflame_shroud( false ),
-      darkflame_shroud_mult( t->find_spell( 410871 )->effectN( 1 ).percent() )
+  shadowy_apparition_state_t( action_t* a, player_t* t ) : action_state_t( a, t ), number_spawned( 1.0 )
   {
   }
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
   {
     action_state_t::debug_str( s );
-    fmt::print( s, " number_spawned={}, buffed_by_darkflame_shroud={}", number_spawned, buffed_by_darkflame_shroud );
+    fmt::print( s, " number_spawned={}", number_spawned );
     return s;
   }
 
   void initialize() override
   {
     action_state_t::initialize();
-    number_spawned             = 1.0;
-    buffed_by_darkflame_shroud = false;
+    number_spawned = 1.0;
   }
 
   void copy_state( const action_state_t* o ) override
   {
     action_state_t::copy_state( o );
-    auto other_sa_state        = debug_cast<const shadowy_apparition_state_t*>( o );
-    number_spawned             = other_sa_state->number_spawned;
-    buffed_by_darkflame_shroud = other_sa_state->buffed_by_darkflame_shroud;
-  }
-
-  double composite_da_multiplier() const override
-  {
-    double m = action_state_t::composite_da_multiplier();
-
-    if ( buffed_by_darkflame_shroud )
-    {
-      m *= 1 + darkflame_shroud_mult;
-    }
-
-    return m;
+    auto other_sa_state = debug_cast<const shadowy_apparition_state_t*>( o );
+    number_spawned      = other_sa_state->number_spawned;
   }
 };
 
@@ -441,9 +421,6 @@ public:
     s->number_spawned = vts;
 
     snapshot_state( s, amount_type( s ) );
-
-    // Darkflame Shroud buffs Apparitions as they spawn, not on hit
-    s->buffed_by_darkflame_shroud = priest().buffs.darkflame_shroud->check();
 
     proc->occur();
 
@@ -880,12 +857,6 @@ struct devouring_plague_t final : public priest_spell_t
   {
     double m = priest_spell_t::composite_persistent_multiplier( s );
 
-    // Spelldata does not have data for Devouring Plague so apply_buff_effects does not work with DP
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B2 ) && priest().buffs.gathering_shadows->check() )
-    {
-      m *= 1 + priest().buffs.gathering_shadows->check_stack_value();
-    }
-
     // Dummy effect that is hard-coded to 20
     if ( priest().buffs.mind_devourer->check() )
     {
@@ -913,12 +884,6 @@ struct devouring_plague_t final : public priest_spell_t
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
-
-    // Benefit Tracking
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B2 ) )
-    {
-      priest().buffs.gathering_shadows->up();
-    }
 
     priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_dp );
 
@@ -957,16 +922,6 @@ struct devouring_plague_t final : public priest_spell_t
       priest().buffs.tww3_archon_4pc->trigger();
     }
 
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B2 ) )
-    {
-      priest().buffs.gathering_shadows->expire();
-    }
-
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B4 ) )
-    {
-      priest().buffs.dark_reveries->trigger();
-    }
-
     if ( priest().talents.shadow.void_eruption.enabled() && priest().buffs.voidform->up() )
     {
       priest().buffs.voidform->extend_duration(
@@ -976,11 +931,6 @@ struct devouring_plague_t final : public priest_spell_t
     if ( priest().talents.shadow.screams_of_the_void.enabled() )
     {
       priest().buffs.screams_of_the_void->trigger();
-    }
-
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B4 ) )
-    {
-      priest().buffs.darkflame_embers->trigger();
     }
 
     if ( priest().talents.voidweaver.collapsing_void.enabled() )
@@ -2328,10 +2278,6 @@ void priest_t::create_buffs_shadow()
                              ->set_cooldown( 0_s )
                              ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  // BUG: Tracking buff for bugged Tormented Spirits crit handling
-  buffs.last_shadowy_apparition_crit =
-      make_buff( this, "last_shadowy_apparition_crit" )->set_quiet( true )->set_duration( 0_s )->set_max_stack( 1 );
-
   // Idol of Y'Shaarj
   buffs.call_of_the_void = make_buff( this, "call_of_the_void", talents.shadow.call_of_the_void )
                                ->set_default_value_from_effect( 1 )
@@ -2373,33 +2319,6 @@ void priest_t::create_buffs_shadow()
                               } );
 
   // Tier Sets
-  // 393684 -> 394961
-  buffs.gathering_shadows =
-      make_buff( this, "gathering_shadows", sets->set( PRIEST_SHADOW, T29, B2 )->effectN( 1 ).trigger() )
-          ->set_default_value_from_effect( 1 );
-  // 393685 -> 394963
-  buffs.dark_reveries =
-      make_buff<stat_buff_t>( this, "dark_reveries", sets->set( PRIEST_SHADOW, T29, B4 )->effectN( 1 ).trigger() )
-          ->add_invalidate( CACHE_HASTE )
-          ->set_default_value_from_effect( 1 );
-
-  // TODO: Wire up spell data, split into helper function.
-  auto darkflame_embers  = find_spell( 409502 );
-  buffs.darkflame_embers = make_buff( this, "darkflame_embers", darkflame_embers )
-                               ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-                               ->set_stack_change_callback( [ this ]( buff_t* b, int old, int ) {
-                                 if ( old == b->max_stack() )
-                                 {
-                                   buffs.darkflame_shroud->trigger();
-                                 }
-                               } );
-
-  if ( darkflame_embers->ok() )
-    buffs.darkflame_embers->set_expire_at_max_stack( true );  // Avoid sim warning
-
-  buffs.darkflame_shroud =
-      make_buff( this, "darkflame_shroud", find_spell( 410871 ) )->set_default_value_from_effect( 1 );
-
   buffs.devouring_chorus = make_buff_fallback( sets->has_set_bonus( PRIEST_SHADOW, TWW1, B4 ), this, "devouring_chorus",
                                                sets->set( PRIEST_SHADOW, TWW1, B4 )->effectN( 1 ).trigger() )
                                ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
@@ -2744,7 +2663,7 @@ void priest_t::trigger_shadow_weaving( action_state_t* s )
   background_actions.shadow_weaving->trigger( s->target, s->result_amount );
 }
 
-// Helper function to refresh talbadars buff
+// Helper function to refresh insidious ire buff
 void priest_t::refresh_insidious_ire_buff( action_state_t* s )
 {
   if ( !talents.shadow.insidious_ire.enabled() )

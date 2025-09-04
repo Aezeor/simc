@@ -231,7 +231,6 @@ public:
     propagate_const<buff_t*> surge_of_insanity;
     propagate_const<buff_t*> mind_flay_insanity;
     propagate_const<buff_t*> dark_ascension;
-    propagate_const<buff_t*> last_shadowy_apparition_crit;
     propagate_const<buff_t*> call_of_the_void;
     propagate_const<buff_t*> overburdened_mind;
     propagate_const<buff_t*> shattered_psyche;
@@ -240,11 +239,7 @@ public:
     propagate_const<buff_t*> vision_of_nzoth;
 
     // Tier Sets
-    propagate_const<buff_t*> gathering_shadows;
-    propagate_const<buff_t*> dark_reveries;
     propagate_const<buff_t*> light_weaving;
-    propagate_const<buff_t*> darkflame_embers;
-    propagate_const<buff_t*> darkflame_shroud;
     propagate_const<buff_t*> devouring_chorus;
     propagate_const<buff_t*> darkness_from_light;
     propagate_const<buff_t*> ascension;         // TWW3 Archon Set 2pc
@@ -376,9 +371,9 @@ public:
       // Row 5
       player_talent_t shadowy_insight;
       player_talent_t voidtouched;
+      player_talent_t dark_ascension;
       player_talent_t void_eruption;
       const spell_data_t* void_eruption_damage;
-      player_talent_t dark_ascension;
       player_talent_t mental_decay;
       player_talent_t shattered_psyche;
       player_talent_t shadow_crash;
@@ -800,7 +795,6 @@ public:
     propagate_const<proc_t*> shadowy_apparition_swp;
     propagate_const<proc_t*> shadowy_apparition_dp;
     propagate_const<proc_t*> shadowy_apparition_mb;
-    propagate_const<proc_t*> shadowy_apparition_msi;
     propagate_const<proc_t*> shadowy_apparition_mfi;
     propagate_const<proc_t*> mind_devourer;
     propagate_const<proc_t*> void_tendril;
@@ -809,14 +803,11 @@ public:
     propagate_const<proc_t*> shadowy_insight_overflow;
     propagate_const<proc_t*> shadowy_insight_missed;
     propagate_const<proc_t*> thing_from_beyond;
-    propagate_const<proc_t*> idol_of_nzoth_swp;
-    propagate_const<proc_t*> idol_of_nzoth_vt;
     propagate_const<proc_t*> mind_flay_insanity_wasted;
     propagate_const<proc_t*> void_torrent_ticks_no_mastery;
     propagate_const<proc_t*> mindgames_casts_no_mastery;
     propagate_const<proc_t*> inescapable_torment_missed_mb;
     propagate_const<proc_t*> inescapable_torment_missed_swd;
-    propagate_const<proc_t*> shadowy_apparition_crit;
     propagate_const<proc_t*> depth_of_shadows;
     // Holy
     propagate_const<proc_t*> divine_favor_chastise;
@@ -902,10 +893,6 @@ public:
     // Option whether or not to start with higher than 0 Insanity based on talents
     // Only takes into account if you have not overriden initial_resource=insanity=X to something greater than 0
     bool init_insanity = true;
-
-    // Forces Idol of Y'Shaarj to give a particular buff for every cast
-    // default, pride, anger, despair, fear (NYI), violence
-    std::string forced_yshaarj_type = "default";
 
     double twist_of_fate_heal_rppm                = 0.0;
     timespan_t twist_of_fate_heal_duration_mean   = 2_s;
@@ -1040,7 +1027,6 @@ public:
   double generate_insanity( double num_amount, gain_t* g, action_t* action );
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
   void trigger_inescapable_torment( player_t* target, bool echo = false, double mod = 1.0 );
-  void trigger_idol_of_yshaarj( player_t* target );
   void trigger_idol_of_cthun( action_state_t* );
   void trigger_atonement( action_state_t*, double );
   void trigger_divine_aegis( action_state_t* );

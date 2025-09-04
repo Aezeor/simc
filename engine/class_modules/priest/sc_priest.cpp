@@ -186,11 +186,6 @@ public:
       priest().buffs.shattered_psyche->expire();
     }
 
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B2 ) )
-    {
-      priest().buffs.gathering_shadows->trigger();
-    }
-
     if ( priest().buffs.shadowy_insight->check() )
     {
       priest().buffs.shadowy_insight->decrement();
@@ -2841,7 +2836,6 @@ void priest_t::create_procs()
   procs.shadowy_apparition_dp          = get_proc( "Shadowy Apparition from Devouring Plague" );
   procs.shadowy_apparition_mb          = get_proc( "Shadowy Apparition from Mind Blast" );
   procs.shadowy_apparition_mfi         = get_proc( "Shadowy Apparition from Mind Flay: Insanity" );
-  procs.shadowy_apparition_msi         = get_proc( "Shadowy Apparition from Mind Spike: Insanity" );
   procs.mind_devourer                  = get_proc( "Mind Devourer free Devouring Plague proc" );
   procs.void_tendril                   = get_proc( "Void Tendril proc from Idol of C'Thun" );
   procs.void_lasher                    = get_proc( "Void Lasher proc from Idol of C'Thun" );
@@ -2849,14 +2843,11 @@ void priest_t::create_procs()
   procs.shadowy_insight_overflow       = get_proc( "Shadowy Insight procs lost to overflow" );
   procs.shadowy_insight_missed         = get_proc( "Shadowy Insight procs not consumed" );
   procs.thing_from_beyond              = get_proc( "Thing from Beyond procs" );
-  procs.idol_of_nzoth_swp              = get_proc( "Idol of N'Zoth procs from Shadow Word: Pain" );
-  procs.idol_of_nzoth_vt               = get_proc( "Idol of N'Zoth procs from Vampiric Touch" );
   procs.mind_flay_insanity_wasted      = get_proc( "Mind Flay: Insanity casts that did not channel for full ticks" );
   procs.void_torrent_ticks_no_mastery  = get_proc( "Void Torrent ticks without full Mastery value" );
   procs.mindgames_casts_no_mastery     = get_proc( "Mindgames casts without full Mastery value" );
   procs.inescapable_torment_missed_mb  = get_proc( "Inescapable Torment expired when Mind Blast was ready" );
   procs.inescapable_torment_missed_swd = get_proc( "Inescapable Torment expired when Shadow Word: Death was ready" );
-  procs.shadowy_apparition_crit        = get_proc( "Shadowy Apparitions that dealt 100% more damage" );
   procs.depth_of_shadows               = get_proc( "Depth of Shadows spawns of your main pet" );
   // Holy
   procs.divine_favor_chastise = get_proc( "Smite procs Holy Fire via Divine Favor: Chastise" );
@@ -3091,11 +3082,6 @@ void priest_t::assess_damage( school_e school, result_amount_type dtype, action_
 double priest_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
-
-  if ( sets->has_set_bonus( PRIEST_SHADOW, T29, B4 ) && buffs.dark_reveries->check() )
-  {
-    h *= 1.0 / ( 1.0 + buffs.dark_reveries->current_value );
-  }
 
   if ( buffs.call_of_the_void->check() )
   {
@@ -4544,7 +4530,6 @@ void priest_t::create_options()
   // Default is 2, minimum of 1 bounce per second, maximum of 1 bounce per 12 seconds (prayer of mending's cooldown)
   add_option( opt_float( "priest.prayer_of_mending_bounce_rate", options.prayer_of_mending_bounce_rate, 1, 12 ) );
   add_option( opt_bool( "priest.init_insanity", options.init_insanity ) );
-  add_option( opt_string( "priest.forced_yshaarj_type", options.forced_yshaarj_type ) );
   add_option( opt_float( "priest.twist_of_fate_heal_rppm", options.twist_of_fate_heal_rppm, 0, 120 ) );
   add_option( opt_timespan( "priest.twist_of_fate_heal_duration_mean", options.twist_of_fate_heal_duration_mean, 0_s,
                             timespan_t::max() ) );
