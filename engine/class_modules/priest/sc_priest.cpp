@@ -181,11 +181,6 @@ public:
   {
     priest_spell_t::execute();
 
-    if ( priest().talents.shadow.mind_melt.enabled() && priest().buffs.mind_melt->check() )
-    {
-      priest().buffs.mind_melt->expire();
-    }
-
     if ( priest().talents.shadow.shattered_psyche.enabled() && priest().buffs.shattered_psyche->check() )
     {
       priest().buffs.shattered_psyche->expire();
@@ -848,15 +843,8 @@ struct halo_t final : public priest_spell_t
           priest().buffs.surge_of_light->trigger( 1, 0, 1 );
           break;
         case PRIEST_SHADOW:
-          // You get a full buff of MSI or MFI and keep Surge of Insanity state intact
-          if ( priest().talents.shadow.mind_spike.enabled() )
-          {
-            priest().buffs.mind_spike_insanity->trigger();
-          }
-          else
-          {
-            priest().buffs.mind_flay_insanity->trigger();
-          }
+          // You get a full buff of MFI and keep Surge of Insanity state intact
+          priest().buffs.mind_flay_insanity->trigger();
           SC_FALLTHROUGH;
         default:
           break;
@@ -4038,7 +4026,6 @@ void priest_t::apply_affecting_auras_late( action_t& action )
   action.apply_affecting_aura( talents.mental_agility );
 
   // Shadow Talents
-  action.apply_affecting_aura( talents.shadow.malediction );  // Void Torrent CDR
   action.apply_affecting_aura( talents.shadow.mastermind );
   action.apply_affecting_aura( talents.shadow.mental_decay );
   action.apply_affecting_aura( talents.shadow.instilled_doubt );
@@ -4339,11 +4326,6 @@ std::string priest_t::blizzard_apl_action_replace( std::string options )
       {
         return "void_blast";
       }
-      // ensure we use mind_spike_insanity action instead of mind_spike
-      if ( options.find( "mind_spike_insanity" ) != std::string::npos )
-      {
-        return "mind_spike_insanity";
-      }
       // ensure we use mind_flay_insanity action instead of mind_flay
       if ( options.find( "mind_flay_insanity" ) != std::string::npos )
       {
@@ -4429,11 +4411,6 @@ void priest_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
 
 std::vector<std::string> priest_t::action_names_from_spell_id( unsigned int spell_id ) const
 {
-  if ( spell_id == 15407 && talents.shadow.mind_spike.enabled() )  // Mind Flay
-  {
-    spell_id = talents.shadow.mind_spike->id();
-  }
-
   if ( spell_id == 8092 && specialization() == PRIEST_HOLY )
     return { "holy_fire" };
 
@@ -4443,11 +4420,6 @@ std::vector<std::string> priest_t::action_names_from_spell_id( unsigned int spel
   if ( spell_id == 15407 )
   {
     return { "mind_flay_insanity", "mind_flay" };
-  }
-
-  if ( spell_id == 73510 )
-  {
-    return { "mind_spike_insanity", "mind_spike" };
   }
 
   return player_t::action_names_from_spell_id( spell_id );

@@ -220,8 +220,6 @@ public:
     propagate_const<buff_t*> shadowform_state;  // Dummy buff to track whether player entered Shadowform initially
     propagate_const<buff_t*> void_torrent;
     propagate_const<buff_t*> voidform;
-    propagate_const<buff_t*> unfurling_darkness;
-    propagate_const<buff_t*> unfurling_darkness_cd;  // Blizzard uses a buff to track the ICD
     propagate_const<buff_t*> ancient_madness;
     propagate_const<buff_t*> mind_devourer;
     propagate_const<buff_t*> shadowy_insight;
@@ -230,14 +228,8 @@ public:
     propagate_const<buff_t*> thing_from_beyond;
     propagate_const<buff_t*> screams_of_the_void;
     propagate_const<buff_t*> idol_of_yoggsaron;
-    propagate_const<buff_t*> devoured_pride;
-    propagate_const<buff_t*> devoured_despair;
-    propagate_const<buff_t*> devoured_anger;
-    propagate_const<buff_t*> dark_evangelism;
-    propagate_const<buff_t*> mind_melt;
     propagate_const<buff_t*> surge_of_insanity;
     propagate_const<buff_t*> mind_flay_insanity;
-    propagate_const<buff_t*> mind_spike_insanity;
     propagate_const<buff_t*> dark_ascension;
     propagate_const<buff_t*> last_shadowy_apparition_crit;
     propagate_const<buff_t*> call_of_the_void;
@@ -381,17 +373,14 @@ public:
       player_talent_t mind_flay_insanity;
       const spell_data_t* mind_flay_insanity_spell;
       player_talent_t surge_of_insanity;
-      const spell_data_t* mind_spike_insanity_spell;
       // Row 5
       player_talent_t shadowy_insight;
       player_talent_t voidtouched;
-      player_talent_t unfurling_darkness;
       player_talent_t void_eruption;
       const spell_data_t* void_eruption_damage;
       player_talent_t dark_ascension;
       player_talent_t mental_decay;
       player_talent_t shattered_psyche;
-      player_talent_t mind_spike;
       player_talent_t shadow_crash;
       player_talent_t shadow_crash_target;
       // Row 6
@@ -399,9 +388,7 @@ public:
       player_talent_t dark_thoughts;
       player_talent_t maddening_touch;
       const spell_data_t* maddening_touch_insanity;
-      player_talent_t whispering_shadows;
       player_talent_t ancient_madness;
-      player_talent_t mind_melt;
       player_talent_t phantom_menace;
       player_talent_t dark_evangelism;
       player_talent_t descending_darkness;
@@ -422,18 +409,12 @@ public:
       player_talent_t screams_of_the_void;
       player_talent_t tormented_spirits;
       player_talent_t insidious_ire;
-      player_talent_t malediction;
       player_talent_t void_volley;
       const spell_data_t* void_volley_buff;
       const spell_data_t* void_volley_missile;
       const spell_data_t* void_volley_damage;
       // Row 10
       player_talent_t idol_of_yshaarj;
-      const spell_data_t* devoured_pride;
-      const spell_data_t* devoured_despair;
-      const spell_data_t* devoured_anger;
-      const spell_data_t* devoured_fear;
-      const spell_data_t* devoured_violence;
       const spell_data_t* call_of_the_void;
       const spell_data_t* overburdened_mind;
       player_talent_t idol_of_nzoth;
@@ -1770,7 +1751,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     if ( affected_by_shadow_weaving )
     {
-      // Guarding against Unfurling Darkness, it does not get the mastery benefit
       unsigned int spell_id = id;
       if ( ignores_automatic_mastery )
       {
