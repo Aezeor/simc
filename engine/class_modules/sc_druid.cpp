@@ -232,7 +232,7 @@ struct benefit_tracker_t
     { "None", "Solar", "Lunar", "Both" }
   };
 
-  template <tracker_e T>
+  template <tracker_e T, typename U = void>
   static constexpr decltype( auto ) get_type_list()
   {
     if constexpr ( T == tracker_e::SNAPSHOT_TRACKER )
@@ -240,7 +240,7 @@ struct benefit_tracker_t
     else if constexpr ( T == tracker_e::ECLIPSE_TRACKER )
       return eclipse_list;
     else
-      static_assert( static_false<T>, "Invalid tracker type." );
+      static_assert( static_false<U>, "Invalid tracker type." );
   }
 
   template <tracker_e T>
