@@ -3180,20 +3180,6 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
     }
   }
 
-  highchart::chart_t scaling_plot( highchart::build_id( p, "scaling_plot" ), *p.sim );
-  if ( chart::generate_scaling_plot( scaling_plot, p, p.sim->scaling->scaling_metric ) )
-  {
-    os << scaling_plot.to_target_div();
-    p.sim->add_chart_data( scaling_plot );
-  }
-
-  highchart::chart_t reforge_plot( highchart::build_id( p, "reforge_plot" ), *p.sim );
-  if ( chart::generate_reforge_plot( reforge_plot, p ) )
-  {
-    os << reforge_plot.to_target_div();
-    p.sim->add_chart_data( reforge_plot );
-  }
-
   for ( const auto& timeline : p.collected_data.stat_timelines )
   {
     if ( timeline.timeline.mean() == 0 )
@@ -3210,6 +3196,32 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
 
   os << "</div>\n"
      << "</div>\n";
+}
+
+void print_html_player_plots( report::sc_html_stream& os, const player_t& p, const player_processed_report_information_t& )
+{
+  if ( !range::any_of( p.dps_plot_data, []( const auto& data ) { return !data.empty(); } ) )
+    return;
+
+  os << R"(<div class="player-section"><h3 class="toggle open">Plots</h3><div class="toggle-content">)";
+
+  highchart::chart_t scaling_plot( highchart::build_id( p, "scaling_plot" ), *p.sim );
+  scaling_plot.width_ = 1165;
+  if ( chart::generate_scaling_plot( scaling_plot, p, p.sim->scaling->scaling_metric ) )
+  {
+    os << scaling_plot.to_target_div();
+    p.sim->add_chart_data( scaling_plot );
+  }
+
+  highchart::chart_t reforge_plot( highchart::build_id( p, "reforge_plot" ), *p.sim );
+  reforge_plot.width_ = 1165;
+  if ( chart::generate_reforge_plot( reforge_plot, p ) )
+  {
+    os << reforge_plot.to_target_div();
+    p.sim->add_chart_data( reforge_plot );
+  }
+
+  os << "</div></div>\n";
 }
 
 void print_html_player_buff_spelldata( report::sc_html_stream& os, const buff_t& b, const spell_data_t& data,
@@ -4855,6 +4867,8 @@ void print_html_player_( report::sc_html_stream& os, const player_t& p )
   print_html_player_scale_factors( os, p, p.report_information );
 
   print_html_player_charts( os, p, p.report_information );
+
+  print_html_player_plots( os, p, p.report_information );
 
   print_html_player_abilities( os, p );
 

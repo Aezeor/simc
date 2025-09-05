@@ -26,6 +26,7 @@ public:
   stat_e current_plot_stat;
   int num_plot_stats, remaining_plot_stats, remaining_plot_points;
   bool dps_plot_positive, dps_plot_negative;
+  bool dps_plot_display_delta;
 
   plot_t( sim_t* s );
   void analyze();

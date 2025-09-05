@@ -9,13 +9,14 @@
 #include "dbc/dbc.hpp"
 #include "player/gear_stats.hpp"
 #include "player/pet.hpp"
-#include "player/player_scaling.hpp"
 #include "player/player.hpp"
+#include "player/player_scaling.hpp"
 #include "player/scaling_metric_data.hpp"
 #include "player/stats.hpp"
 #include "report/color.hpp"
 #include "report/decorators.hpp"
 #include "report/highchart.hpp"
+#include "sim/plot.hpp"
 #include "sim/profileset.hpp"
 #include "sim/reforge_plot.hpp"
 #include "sim/sim.hpp"
@@ -26,7 +27,6 @@
 #include <clocale>
 #include <cmath>
 #include <utility>
-
 
 using namespace js;
 
@@ -1477,7 +1477,9 @@ bool chart::generate_scaling_plot( highchart::chart_t& chart, const player_t& p,
   double max_dps = 0;
   double min_dps = std::numeric_limits<double>::max();
 
-  for ( const auto& plot_data_list : p.dps_plot_data )
+  const auto& source = p.sim->plot->dps_plot_display_delta ? p.dps_plot_delta_data : p.dps_plot_data;
+
+  for ( const auto& plot_data_list : source )
   {
     for ( const auto& plot_data : plot_data_list )
     {
@@ -1511,9 +1513,8 @@ bool chart::generate_scaling_plot( highchart::chart_t& chart, const player_t& p,
 
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    const std::vector<plot_data_t>& pd = p.dps_plot_data[ i ];
-    // Odds of metric value being 0 is pretty far, so lets just use that to
-    // determine if we need to plot the stat or not
+    const std::vector<plot_data_t>& pd = source[ i ];
+    // Odds of metric value being 0 is pretty far, so lets just use that to determine if we need to plot the stat or not
     if ( pd.empty() )
     {
       continue;
@@ -1529,9 +1530,7 @@ bool chart::generate_scaling_plot( highchart::chart_t& chart, const player_t& p,
 
     for ( const auto& pdata : pd )
     {
-      data.emplace_back(
-          pdata.plot_step,
-          util::round( pdata.value, p.sim->report_precision ) );
+      data.emplace_back( pdata.plot_step, util::round( pdata.value, p.sim->report_precision ) );
     }
 
     chart.add_simple_series( "", {}, util::stat_type_abbrev( i ), data );

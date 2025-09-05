@@ -35,7 +35,8 @@ plot_t::plot_t( sim_t* s )
     remaining_plot_stats( 0 ),
     remaining_plot_points( 0 ),
     dps_plot_positive( false ),
-    dps_plot_negative( false )
+    dps_plot_negative( false ),
+    dps_plot_display_delta( false )
 {
   create_options();
 }
@@ -206,6 +207,13 @@ void plot_t::analyze_stats()
           data.error = scaling_data.stddev * sim->confidence_estimator;
         }
         data.plot_step = j * dps_plot_step;
+
+        if ( dps_plot_display_delta )
+        {
+          auto diff = p->dps_plot_data[ i ].empty() ? 0.0 : data.value - p->dps_plot_data[ i ].back().value;
+          p->dps_plot_delta_data[ i ].emplace_back( data.plot_step, diff, data.error );
+        }
+
         p->dps_plot_data[ i ].push_back( data );
       }
 
@@ -269,4 +277,5 @@ void plot_t::create_options()
   sim->add_option( opt_bool( "dps_plot_debug", dps_plot_debug ) );
   sim->add_option( opt_bool( "dps_plot_positive", dps_plot_positive ) );
   sim->add_option( opt_bool( "dps_plot_negative", dps_plot_negative ) );
+  sim->add_option( opt_bool( "dps_plot_display_delta", dps_plot_display_delta ) );
 }
