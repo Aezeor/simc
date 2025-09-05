@@ -64,18 +64,17 @@ actions.drst+=/explosive_shot,if=talent.shrapnel_shot&buff.lock_and_load.down
 actions.drst+=/steady_shot
 
 # 3+ targets (with Trick Shots)
-actions.drtrickshots=explosive_shot,if=talent.precision_detonation&buff.trueshot.down&(!talent.shrapnel_shot|buff.lock_and_load.down)
-actions.drtrickshots+=/volley,if=buff.double_tap.down&(!talent.shrapnel_shot|buff.lock_and_load.down)
+actions.drtrickshots=explosive_shot,if=talent.precision_detonation&buff.trueshot.down&(!talent.shrapnel_shot|buff.lock_and_load.down&(cooldown.aimed_shot.charges_fractional<=1.1|talent.focused_aim))
+actions.drtrickshots+=/volley,if=buff.double_tap.down&(!talent.shrapnel_shot|!talent.salvo|buff.lock_and_load.down)
+actions.drtrickshots+=/black_arrow,if=buff.trick_shots.down|!talent.headshot|buff.precise_shots.up
 actions.drtrickshots+=/rapid_fire,if=buff.trick_shots.remains>execute_time&talent.bulletstorm&buff.bulletstorm.down
-actions.drtrickshots+=/steady_shot,if=variable.buffer_deathblow&buff.trueshot.down&cooldown.trueshot.remains
-actions.drtrickshots+=/black_arrow,if=!talent.headshot|buff.precise_shots.up|buff.trick_shots.down
-actions.drtrickshots+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target,if=buff.precise_shots.up&buff.moving_target.down|buff.trick_shots.down
 actions.drtrickshots+=/trueshot,if=variable.trueshot_ready&buff.double_tap.down
-actions.drtrickshots+=/volley,if=buff.double_tap.down&(!talent.salvo|!talent.precision_detonation|(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up))
+actions.drtrickshots+=/steady_shot,if=variable.buffer_deathblow&buff.trueshot.down
+actions.drtrickshots+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target,if=buff.trick_shots.down|buff.precise_shots.up&(buff.moving_target.down|debuff.spotters_mark.down)
 actions.drtrickshots+=/aimed_shot,if=buff.trick_shots.remains>cast_time&(buff.trueshot.up&buff.precise_shots.down|buff.lock_and_load.up&buff.moving_target.up)
-actions.drtrickshots+=/rapid_fire,if=buff.trick_shots.remains>execute_time&!buff.deathblow.react&(talent.no_scope|talent.double_tap)
-actions.drtrickshots+=/explosive_shot,if=talent.shrapnel_shot&buff.lock_and_load.down&(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)
+actions.drtrickshots+=/rapid_fire,if=buff.trick_shots.remains>execute_time&(talent.no_scope|talent.bulletstorm&buff.bulletstorm.down)
 actions.drtrickshots+=/aimed_shot,if=buff.trick_shots.remains>cast_time&(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)
+actions.drtrickshots+=/explosive_shot,if=talent.shrapnel_shot&buff.lock_and_load.down&cooldown.aimed_shot.charges_fractional<=1.1
 actions.drtrickshots+=/steady_shot
 
 actions.sentcleave=explosive_shot,if=talent.precision_detonation&action.aimed_shot.in_flight&(buff.trueshot.down|!talent.windrunner_quiver)
@@ -107,17 +106,16 @@ actions.sentst+=/aimed_shot,if=buff.precise_shots.down|debuff.spotters_mark.up&b
 actions.sentst+=/explosive_shot,if=talent.precision_detonation|buff.trueshot.down
 actions.sentst+=/steady_shot
 
-actions.senttrickshots=explosive_shot,if=talent.shrapnel_shot&buff.lock_and_load.down&cooldown.aimed_shot.charges_fractional<=1.1&buff.trueshot.down
-actions.senttrickshots+=/volley,if=buff.double_tap.down&(!talent.shrapnel_shot|buff.lock_and_load.down)
+actions.senttrickshots=explosive_shot,if=talent.shrapnel_shot&buff.trueshot.down&buff.lock_and_load.down&cooldown.aimed_shot.charges_fractional<=1.1
+actions.senttrickshots+=/volley,if=buff.double_tap.down&(!talent.shrapnel_shot|!talent.salvo|buff.lock_and_load.down)
 actions.senttrickshots+=/rapid_fire,if=buff.trick_shots.remains>execute_time&(talent.bulletstorm&buff.bulletstorm.down|buff.lunar_storm_cooldown.down)
-actions.senttrickshots+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target,if=buff.precise_shots.up&buff.moving_target.down|buff.trick_shots.down
+actions.senttrickshots+=/kill_shot,if=talent.headshot&buff.trick_shots.up&buff.razor_fragments.up&buff.precise_shots.up
+actions.senttrickshots+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target,if=buff.trick_shots.down|buff.precise_shots.up&(buff.moving_target.down|debuff.spotters_mark.down)
 actions.senttrickshots+=/trueshot,if=variable.trueshot_ready&buff.double_tap.down
-actions.senttrickshots+=/volley,if=buff.double_tap.down&(!talent.salvo|!talent.precision_detonation|(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up))
-actions.senttrickshots+=/aimed_shot,if=buff.trick_shots.remains>execute_time&(buff.trueshot.up&buff.precise_shots.down|buff.lock_and_load.up&buff.moving_target.up)
+actions.senttrickshots+=/aimed_shot,if=buff.trick_shots.remains>cast_time&(buff.trueshot.up&buff.precise_shots.down|buff.lock_and_load.up&buff.moving_target.up)
 actions.senttrickshots+=/rapid_fire,if=buff.trick_shots.remains>execute_time
-actions.senttrickshots+=/explosive_shot,if=talent.shrapnel_shot&buff.lock_and_load.down
-actions.senttrickshots+=/aimed_shot,if=buff.trick_shots.remains>execute_time&(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)
-actions.senttrickshots+=/explosive_shot,if=talent.precision_detonation&!talent.shrapnel_shot
+actions.senttrickshots+=/aimed_shot,if=buff.trick_shots.remains>cast_time&(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)
+actions.senttrickshots+=/explosive_shot
 actions.senttrickshots+=/steady_shot,if=focus+cast_regen<focus.max
 actions.senttrickshots+=/multishot
 
