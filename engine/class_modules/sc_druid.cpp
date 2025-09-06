@@ -574,7 +574,7 @@ struct druid_t final : public parse_player_effects_t
   struct spell_queued_t
   {
     bool blooming_infusion_damage = false;
-    bool blooming_infusion_damage_expire = false;
+    action_t* blooming_infusion_damage_expire = nullptr;
     bool gathering_moonlight = false;
     player_t* starsurge_ec_tww3 = nullptr;
     bool starsurge_ec_tww3_split = false;
@@ -1747,7 +1747,13 @@ public:
 
   bool can_trigger( action_t* a ) const override
   {
-    assert( dynamic_cast<druid_action_data_t*>( a ) && "Non Druid action passed to Druid buff can_trigger." );
+#ifndef NDEBUG
+    if ( !dynamic_cast<druid_action_data_t*>( a ) )
+    {
+      Base::sim->error( SEVERE, "{} passing non-druid {} to {} can_trigger.", *Base::player, *a, *this );
+      Base::sim->cancel();
+    }
+#endif
 
     if ( Base::is_fallback || !a->data().ok() || !Base::get_trigger_data()->ok() )
       return false;
@@ -15135,18 +15141,19 @@ action_t* druid_t::execute_action()
 
     if ( spell_queued.blooming_infusion_damage_expire )
     {
-      spell_queued.blooming_infusion_damage_expire = false;
+      auto prev_action = spell_queued.blooming_infusion_damage_expire;
+      spell_queued.blooming_infusion_damage_expire = nullptr;
 
       if ( a->id == 190984 || a->id == 194153 )  // wrath, starfire
       {
         make_event( *sim, [ this, a ] {
-          spell_queued.blooming_infusion_damage_expire = false;
+          spell_queued.blooming_infusion_damage_expire = nullptr;
           buff.blooming_infusion_damage->consume( a );
         } );
       }
       else
       {
-        buff.blooming_infusion_damage->consume( a );
+        buff.blooming_infusion_damage->consume( prev_action );
       }
     }
 
@@ -15471,7 +15478,7 @@ void druid_t::parse_action_effects( action_t* action )
   // Hero talents
   _a->parse_effects( buff.blooming_infusion_damage, [ action, this ]( action_state_t* ) {
     if ( !action->proc && !action->background && !action->is_precombat && action->time_to_execute > 0_ms )
-      spell_queued.blooming_infusion_damage_expire = true;
+      spell_queued.blooming_infusion_damage_expire = action;
     else
       buff.blooming_infusion_damage->consume( action );
   } );
