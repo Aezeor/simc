@@ -4939,6 +4939,14 @@ struct ferocious_bite_base_t : public cp_spender_t
       loser_pct = 0.0;
   }
 
+  void init_finished() override
+  {
+    cp_spender_t::init_finished();
+
+    if ( max_energy )
+      p()->resource_thresholds.push_back( maximum_energy() );
+  }
+
   double maximum_energy() const
   {
     double req = base_costs[ RESOURCE_ENERGY ] + max_excess_energy;
