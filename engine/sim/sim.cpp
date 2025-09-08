@@ -875,6 +875,25 @@ bool parse_maximize_reporting( sim_t*             sim,
   return true;
 }
 
+bool parse_report_merged_stats( sim_t* sim, std::string_view, std::string_view value )
+{
+  static constexpr std::string_view valid_stats[] = { "dps", "dpspct", "count", "critpct" };
+
+  auto splits = util::string_split<std::string_view>( value, ",:/|" );
+  for ( auto str : splits )
+  {
+    if ( !range::contains( valid_stats, str ) )
+    {
+      throw std::invalid_argument(
+        fmt::format( "Invalid report_merged_stats '{}', valid stats are: {}.", str, fmt::join( valid_stats, "," ) ) );
+    }
+  }
+
+  sim->report_merged_stats = util::string_join( splits, "," );
+
+  return true;
+}
+
 /**
  * Parse threads option, and if equal or lower than 0, adjust
  * the number of threads to the number of cpu cores minus the absolute value given as a thread option.
@@ -1529,6 +1548,7 @@ sim_t::sim_t()
     report_targets( 1 ),
     report_details( 1 ),
     report_raw_abilities( 1 ),
+    report_merged_stats( "dps,dpspct" ),
     full_damage_sources_chart( false ),
     report_rng( 0 ),
     hosted_html( 0 ),
@@ -3863,6 +3883,7 @@ void sim_t::create_options()
   add_option( opt_bool( "report_targets", report_targets ) );
   add_option( opt_bool( "report_details", report_details ) );
   add_option( opt_bool( "report_raw_abilities", report_raw_abilities ) );
+  add_option( opt_func( "report_merged_stats", parse_report_merged_stats) );
   add_option( opt_bool( "full_damage_sources_chart", full_damage_sources_chart ) );
   add_option( opt_bool( "report_rng", report_rng ) );
   add_option( opt_int( "statistics_level", statistics_level ) );
