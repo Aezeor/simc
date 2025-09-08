@@ -567,6 +567,14 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
              rowspan, s.num_executes.pretty_mean(),
              rowspan, s.total_intervals.pretty_mean() );
 
+  // Execute time & time percent
+  auto total_time = s.player != actor || s.background ? 0.0 : s.total_time.total_seconds();
+  std::string time_str = total_time ? fmt::format( "{:.1Lf}s&#160;/&#160;{:.1Lf}%", total_time,
+                                                   total_time * 100 / p.sim->max_time.total_seconds() )
+                                    : "0.0s";
+
+  os.format( R"(<td{}>{}</td>)", rowspan, time_str );
+
   // Skip the rest of this for abilities that do no damage
   if ( s.compound_amount > 0 )
   {
@@ -4080,7 +4088,7 @@ void output_player_damage_summary( report::sc_html_stream& os, const player_t& a
     return;
 
   // Number of static columns in table
-  const int static_columns = 5;
+  static constexpr int static_columns = 6;
   // Number of dynamically changing columns
   int n_optional_columns = 6;
 
@@ -4098,6 +4106,7 @@ void output_player_damage_summary( report::sc_html_stream& os, const player_t& a
   sorttable_help_header( os, "DPS%", "help-dps-pct" );
   sorttable_help_header( os, "Execute", "help-execute" );
   sorttable_help_header( os, "Interval", "help-interval", SORT_FLAG_ASC );
+  sorttable_help_header( os, "Total Time", "help-total-time" );
   sorttable_help_header( os, "DPE", "help-dpe" );
   sorttable_help_header( os, "DPET", "help-dpet" );
   // Optional columns begin here
