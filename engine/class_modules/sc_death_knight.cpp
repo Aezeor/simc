@@ -14626,7 +14626,7 @@ void death_knight_t::init_action_list()
   if ( main_hand_weapon.type == WEAPON_NONE )
   {
     if ( !quiet )
-      sim->errorf( "Player %s has no weapon equipped at the Main-Hand slot.", name() );
+      throw sc_invalid_player_argument( fmt::format( "Player {} has no weapon equipped in the Main-Hand slot.", name() ) );
     quiet = true;
     return;
   }
@@ -14634,7 +14634,7 @@ void death_knight_t::init_action_list()
   if ( main_hand_weapon.group() == WEAPON_2H && off_hand_weapon.type != WEAPON_NONE )
   {
     if ( !quiet )
-      sim->errorf( "Player %s has an Off-Hand weapon equipped with a 2h.", name() );
+      throw sc_invalid_player_argument( fmt::format( "Player {} has an Off-Hand weapon equipped with a 2h.", name() ) );
     quiet = true;
     return;
   }
