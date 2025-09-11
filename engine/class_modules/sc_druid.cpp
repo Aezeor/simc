@@ -7984,9 +7984,7 @@ struct fury_of_elune_t final : public trigger_moonlight_suffusion_t<druid_spell_
       if ( p->talent.the_eternal_moon.ok() )
       {
         auto power = p->specialization() == DRUID_GUARDIAN ? POWER_RAGE : POWER_ASTRAL_POWER;
-        const auto& eff = find_effect( this, E_ENERGIZE, A_MAX, power );
-
-        energize_amount = eff.resource();
+        energize_amount = find_effect( this, E_ENERGIZE, A_MAX, power ).resource();
       }
       else
       {
@@ -12254,10 +12252,10 @@ void druid_t::create_buffs()
     ->set_cooldown( 0_ms );
   if ( talent.bounteous_bloom.ok() )
   {
-    const auto& bb_eff = find_effect( buff.bounteous_bloom, E_APPLY_AREA_AURA_PET, A_PERIODIC_ENERGIZE );
-    buff.bounteous_bloom->set_default_value( bb_eff.resource() / bb_eff.period().total_seconds() )
+    auto bb_eff = &find_effect( buff.bounteous_bloom, E_APPLY_AREA_AURA_PET, A_PERIODIC_ENERGIZE );
+    buff.bounteous_bloom->set_default_value( bb_eff->resource() / bb_eff->period().total_seconds() )
       ->set_tick_callback(
-        [ ap = bb_eff.resource(),
+        [ ap = bb_eff->resource(),
           g = get_gain( "Bounteous Bloom" ),
           this ]
         ( buff_t* b, int, timespan_t ) {

@@ -39,7 +39,7 @@ class dbc_t;
 // 50: simulation iteration runtime error
 // 51: simulation stuck
 // 60: network error
-// 51: report output error
+// 61: report output error
 
 struct sc_exception : public std::exception
 {

@@ -5388,7 +5388,7 @@ struct absorb_brew_t : public brew_t<monk_absorb_t>
 
     if ( p()->sets->has_set_bonus( HERO_MASTER_OF_HARMONY, TWW3, B4 ) )
       p()->tier.tww3.moh_2pc_harmonic_surge_buff->trigger(
-          p()->sets->set( HERO_MASTER_OF_HARMONY, TWW3, B4 )->effectN( 1 ).base_value() );
+          as<int>( p()->sets->set( HERO_MASTER_OF_HARMONY, TWW3, B4 )->effectN( 1 ).base_value() ) );
   }
 };
 

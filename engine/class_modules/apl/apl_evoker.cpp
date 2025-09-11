@@ -160,7 +160,7 @@ void devastation( player_t* p )
 //devastation_apl_end
 
 //devastation_ptr_apl_start
-void devastation_ptr( player_t* p )
+void devastation_ptr( player_t* )
 {
 }
 //devastation_ptr_apl_end

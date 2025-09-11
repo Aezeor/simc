@@ -2758,13 +2758,13 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
     gains(),
     benefits(),
     procs(),
+    sample_data(),
     background_actions(),
     active_items(),
     allies_with_atonement(),
     state(),
     pets( *this ),
-    options(),
-    sample_data()
+    options()
 {
   create_cooldowns();
   create_gains();

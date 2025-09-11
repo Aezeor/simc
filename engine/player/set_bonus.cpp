@@ -531,7 +531,6 @@ bool set_bonus_t::parse_set_bonus_option( util::string_view opt_str, set_bonus_t
 
   auto set_name_long = opt_str.substr( 0, opt_str.size() - split.back().size() - 1 );
   auto set_name_short = std::string( split.front() );
-  set_bonus_type_e last_tier_set = SET_BONUS_NONE;
 
   auto set_bonuses = item_set_bonus_t::data( actor->dbc->ptr );
 

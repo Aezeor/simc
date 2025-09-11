@@ -87,20 +87,23 @@ def replace_file(outputFile, tempFile):
 
 # Write the c++ spec apl method to file
 def write_apl_method (tempFile, specString, subaplList, aplList):
-    tempFile.write(f"void {specString}( player_t* p )\n{{\n")
-    for sublist in subaplList:
-        if (sublist == "default"):
-            tempFile.write(f"  action_priority_list_t* {sublist}_ = p->get_action_priority_list( \"{sublist}\" );\n")
-        else:
-            tempFile.write(f"  action_priority_list_t* {sublist} = p->get_action_priority_list( \"{sublist}\" );\n")
-    tempFile.write("\n")
-    current_list = aplList[0].split('->', 1)[0]
-    for action in aplList:
-        if not action.startswith(current_list + '->'):
-            tempFile.write("\n")
-            current_list = action.split('->', 1)[0]
-        tempFile.write(action + "\n")
-    tempFile.write("}")
+    if not len(aplList):
+        tempFile.write(f"void {specString}( player_t* )\n{{\n}}")
+    else:
+        tempFile.write(f"void {specString}( player_t* p )\n{{\n")
+        for sublist in subaplList:
+            if (sublist == "default"):
+                tempFile.write(f"  action_priority_list_t* {sublist}_ = p->get_action_priority_list( \"{sublist}\" );\n")
+            else:
+                tempFile.write(f"  action_priority_list_t* {sublist} = p->get_action_priority_list( \"{sublist}\" );\n")
+        tempFile.write("\n")
+        current_list = aplList[0].split('->', 1)[0]
+        for action in aplList:
+            if not action.startswith(current_list + '->'):
+                tempFile.write("\n")
+                current_list = action.split('->', 1)[0]
+            tempFile.write(action + "\n")
+        tempFile.write("}")
 
 # Usage: 'ConvertAPL.py -i <inputfile> -o <outputfile> -s <specstring>'
 def main(argv):
