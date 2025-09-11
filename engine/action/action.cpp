@@ -1031,7 +1031,17 @@ void action_t::parse_options( util::string_view options_str )
   }
   catch ( const std::exception& )
   {
-    std::throw_with_nested( sc_invalid_apl_argument( fmt::format( "{}", *this ) ) );
+    try
+    {
+      std::throw_with_nested( sc_invalid_apl_argument( fmt::format( "{}", *this ) ) );
+    }
+    catch ( const std::exception& )
+    {
+      // action_t constructors are not exception-safe, so toss into the queue instead of throwing
+      sim->cancel();
+      AUTO_LOCK( sim->exception_mutex );
+      sim->exception_queue.push_back( std::current_exception() );
+    }
   }
 }
 

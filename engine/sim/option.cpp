@@ -757,9 +757,9 @@ void option_db_t::parse_token( util::string_view token )
     std::string actual_name;
     io::ifstream input;
     open_file( input, auto_path, parsed_token, actual_name );
-    if ( ! input.is_open() )
+    if ( !input.is_open() )
     {
-      throw std::invalid_argument( fmt::format("Unexpected parameter '{}'. Expected format: name=value", parsed_token) );
+      throw sc_network_error( fmt::format( "Unable to open input parameter file '{}'.", parsed_token ) );
     }
     parse_file( input );
     return;
@@ -792,9 +792,9 @@ void option_db_t::parse_token( util::string_view token )
     std::string actual_name;
     io::ifstream input;
     open_file( input, auto_path, value, actual_name );
-    if ( ! input.is_open() )
+    if ( !input.is_open() )
     {
-      throw std::invalid_argument( fmt::format("Unable to open input parameter file '{}'.", value) );
+      throw sc_network_error( fmt::format("Unable to open input parameter file '{}'.", value) );
     }
     else
     {

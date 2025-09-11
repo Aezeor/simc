@@ -2948,7 +2948,7 @@ void sim_t::init()
 
   init_time = chrono::elapsed(start_time);
 
-  if ( canceled )
+  if ( canceled && !rethrow_exception_queue() )
   {
     throw std::runtime_error( fmt::format( "Canceled ({})", thread_index ) );
   }
@@ -3357,7 +3357,7 @@ bool sim_t::execute()
     auto merge_final_action = gsl::finally( [ & ]() {
       merge();
       // Rethrow accumulated exceptions from threads
-      if ( rethrow_exception_queue() )
+      if ( !children.empty() && rethrow_exception_queue() )
         success = false;
     } );
 
