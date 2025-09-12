@@ -625,19 +625,6 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
 
   if ( p.sim->report_details )
   {
-    // TODO: Transitional; Highcharts
-    std::string timeline_stat_aps_str;
-    if ( !s.timeline_aps_chart.empty() )
-    {
-      timeline_stat_aps_str = "<img src=\"" + s.timeline_aps_chart + "\" alt=\"" +
-        ( s.type == STATS_DMG ? "DPS" : "HPS" ) + " Timeline Chart\" />\n";
-    }
-    std::string aps_distribution_str;
-    if ( !s.aps_distribution_chart.empty() )
-    {
-      aps_distribution_str = "<img src=\"" + s.aps_distribution_chart + "\" alt=\"" +
-        ( s.type == STATS_DMG ? "DPS" : "HPS" ) + " Distribution Chart\" />\n";
-    }
     os << "<tr class=\"details hide\">\n"
        << "<td colspan=\"" << ( n_columns > 0 ? ( 7 + n_columns ) : 3 ) << "\" class=\"filler\">\n";
 
