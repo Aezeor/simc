@@ -1719,10 +1719,14 @@ void sim_t::cancel()
   if ( canceled )
     return;
 
-  if ( current_iteration >= 0 )
-    error( "\nSimulation has been canceled after {} iterations! (thread={})\n", current_iteration + 1, thread_index );
-  else
-    error( "\nSimulation has been canceled during player setup! (thread={})\n", thread_index );
+  // check if there're exceptions in queue to display more detailed message
+  if ( exception_queue.empty() && ( !parent || parent->exception_queue.empty() ) )
+  {
+    if ( current_iteration >= 0 )
+      error( "Simulation has been canceled after {} iterations! (thread={})", current_iteration + 1, thread_index );
+    else
+      error( "Simulation has been canceled during player setup! (thread={})", thread_index );
+  }
 
   work_queue->flush();
 
