@@ -1904,6 +1904,7 @@ public:
   void summon_rider( timespan_t duration, bool random );
   void extend_rider( double amount, pets::horseman_pet_t* rider );
   void trigger_whitemanes_famine( player_t* target );
+  void spread_undeath( death_knight_td_t* main_td, player_t* main_target, player_t* new_target );
   void sort_undeath_targets( std::vector<player_t*> tl );
   void start_a_feast_of_souls();
   // San'layn
@@ -3256,9 +3257,9 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     dark_transformation_gain = get_gain( "Dark Transformation" );
   }
 
-  void demise() override
+  void dismiss( bool expired = false ) override
   {
-    base_ghoul_pet_t::demise();
+    base_ghoul_pet_t::dismiss( expired );
     if ( dk()->buffs.dark_transformation->check() )
       dk()->buffs.dark_transformation->expire();
   }
@@ -12342,15 +12343,8 @@ void death_knight_t::analyze( sim_t& s )
 void death_knight_t::trigger_soul_reaper_death( player_t* target )
 {
   // Don't pollute results at the end-of-iteration deaths of everyone
-  if ( sim->event_mgr.canceled )
-  {
+  if ( sim->event_mgr.canceled || !talent.soul_reaper.ok() )
     return;
-  }
-
-  if ( !talent.soul_reaper.ok() )
-  {
-    return;
-  }
 
   if ( get_target_data( target )->dot.soul_reaper->is_ticking() ||
        ( get_target_data( target )->dot.soul_reaper_reaper_of_souls->is_ticking() ) )
@@ -12367,9 +12361,7 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
 {
   // Don't pollute results at the end-of-iteration deaths of everyone
   if ( sim->event_mgr.canceled || !spec.festering_wound->ok() )
-  {
     return;
-  }
 
   const death_knight_td_t* td = get_target_data( target );
   if ( !td )
@@ -12410,15 +12402,8 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
 void death_knight_t::trigger_virulent_plague_death( player_t* target )
 {
   // Don't pollute results at the end-of-iteration deaths of everyone
-  if ( sim->event_mgr.canceled )
-  {
+  if ( sim->event_mgr.canceled || !get_target_data( target )->dot.virulent_plague->is_ticking() )
     return;
-  }
-
-  if ( !get_target_data( target )->dot.virulent_plague->is_ticking() )
-  {
-    return;
-  }
 
   // Schedule an execute for Virulent Eruption
   background_actions.virulent_eruption->schedule_execute();
@@ -12443,14 +12428,10 @@ unsigned death_knight_t::replenish_rune( unsigned n, gain_t* gain )
   {
     rune_t* rune = _runes.first_depleted_rune();
     if ( !rune )
-    {
       rune = _runes.first_regenerating_rune();
-    }
 
     if ( !rune && gain )
-    {
       gain->add( RESOURCE_RUNE, 0, 1 );
-    }
     else if ( rune )
     {
       rune->fill_rune( gain );
@@ -12472,19 +12453,13 @@ void death_knight_t::trigger_killing_machine( bool predictable, proc_t* proc, pr
   buffs.killing_machine->trigger();
 
   if ( predictable )
-  {
     buffs.killing_machine->predict();
-  }
 
   // Use procs to track sources and wastes
   if ( !wasted )
-  {
     proc->occur();
-  }
   else
-  {
     wasted_proc->occur();
-  }
 }
 
 void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_delay, action_t* aa_action )
@@ -12492,9 +12467,7 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
   // Killing Machine is consumed shortly after casting Obliterate.
   make_event( sim, total_delay, [ this, aa_action, proc ] {
     if ( !buffs.killing_machine->check() )
-    {
       return;
-    }
 
     const int decrement_count = talent.frost.killing_streak.ok() ? buffs.killing_machine->check() : 1;
     buffs.killing_machine->decrement( decrement_count );
@@ -12583,6 +12556,7 @@ void death_knight_t::trigger_runic_corruption( proc_t* proc, double rpcost, doub
 {
   if ( !spec.unholy_death_knight->ok() && death_trigger == false )
     return;
+
   double proc_chance = 0.0;
 
   // Use the overriden chance if there's one and RP cost is 0
@@ -12599,9 +12573,7 @@ void death_knight_t::trigger_runic_corruption( proc_t* proc, double rpcost, doub
 void death_knight_t::trigger_festering_wound( const action_state_t* state, unsigned n, proc_t* proc )
 {
   if ( !state->action->result_is_hit( state->result ) )
-  {
     return;
-  }
 
   get_target_data( state->target )->debuff.festering_wound->trigger( n );
   while ( n-- > 0 )
@@ -12648,9 +12620,7 @@ void death_knight_t::trigger_bursting_sores( player_t* target, unsigned n )
 
   // Don't bother creating the event if n is 0, the target has no wounds, or is scheduled to demise
   if ( !talent.unholy.bursting_sores.ok() || sim->event_mgr.canceled )
-  {
     return;
-  }
 
   make_event<bs_event_t>( *sim, this, target, n );
 }
@@ -12723,9 +12693,7 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n, proc_t
 
   // Don't bother creating the event if n is 0, the target has no wounds, or is scheduled to demise
   if ( !spec.festering_wound->ok() || !n || !td || !td->debuff.festering_wound->check() || target->demise_event )
-  {
     return;
-  }
 
   make_event<fs_burst_t>( *sim, this, target, n, proc, ss_crit );
 }
@@ -12755,14 +12723,14 @@ void death_knight_t::sudden_doom_execute_effects( bool coil )
 
 void death_knight_t::sudden_doom_impact_effects( action_state_t* state, bool coil )
 {
-  if ( coil )
-  {
-    burst_festering_wound( state->target, as<unsigned>( talent.unholy.sudden_doom->effectN( 3 ).base_value() ),
-                           procs.fw_sudden_doom );
+  if ( !coil )
+    return;
 
-    if ( talent.unholy.rotten_touch.ok() )
-      get_target_data( state->target )->debuff.rotten_touch->trigger();
-  }
+  burst_festering_wound( state->target, as<unsigned>( talent.unholy.sudden_doom->effectN( 3 ).base_value() ),
+                         procs.fw_sudden_doom );
+
+  if ( talent.unholy.rotten_touch.ok() )
+    get_target_data( state->target )->debuff.rotten_touch->trigger();
 }
 
 void death_knight_t::unholy_rp_execute_effects( bool sd, bool coil )
@@ -12806,9 +12774,7 @@ void death_knight_t::unholy_rp_impact_effects( action_state_t* state, bool sd, b
 void death_knight_t::start_inexorable_assault()
 {
   if ( !talent.frost.inexorable_assault.ok() )
-  {
     return;
-  }
 
   buffs.inexorable_assault->trigger( buffs.inexorable_assault->max_stack() );
 
@@ -12906,15 +12872,15 @@ void death_knight_t::extend_rider( double amount, pets::horseman_pet_t* rider )
   timespan_t duration = timespan_t::from_seconds( talent.rider.fury_of_the_horsemen->effectN( 3 ).base_value() );
   double limit        = threshold * max_time;
 
-  if ( rider->rp_spent < limit )
+  if ( rider->rp_spent >= limit )
+    return;
+
+  rider->rp_spent += amount;
+  rider->current_pool += amount;
+  if ( rider->current_pool >= threshold )
   {
-    rider->rp_spent += amount;
-    rider->current_pool += amount;
-    if ( rider->current_pool >= threshold )
-    {
-      rider->current_pool -= threshold;
-      rider->adjust_duration( duration );
-    }
+    rider->current_pool -= threshold;
+    rider->adjust_duration( duration );
   }
 }
 
@@ -12933,64 +12899,46 @@ void death_knight_t::trigger_whitemanes_famine( player_t* main_target )
 
   td->dot.undeath->increment( as<int>( pet_spell.undeath_dot->effectN( 3 ).base_value() ) );
 
-  if ( sim->target_non_sleeping_list.size() > 1 )
-  {
-    std::vector<player_t*> tl = undeath_tl;
-    auto it                   = range::find( tl, main_target );
-    if ( it != tl.end() )
-    {
-      tl.erase( it );
-    }
+  if ( sim->target_non_sleeping_list.size() == 1 )
+    return;
 
-    player_t* undeath_target = tl[ 0 ];
+  std::vector<player_t*> tl = undeath_tl;
+  range::erase_remove( tl, [ main_target ]( player_t* t ) { return t == main_target; } );
+  spread_undeath( td, main_target, tl[ 0 ] );
 
-    auto undeath_td = get_target_data( undeath_target );
+  if ( specialization() == DEATH_KNIGHT_UNHOLY && sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B2 ) )
+    spread_undeath( td, main_target, tl[ 1 ] );
+}
 
-    if ( undeath_td->dot.undeath->is_ticking() )
-    {
-      undeath_td->dot.undeath->increment( as<int>( pet_spell.undeath_dot->effectN( 3 ).base_value() ) );
-    }
-    else
-    {
-      td->dot.undeath->copy( undeath_target, DOT_COPY_CLONE );
-    }
+void death_knight_t::spread_undeath( death_knight_td_t* main_td, player_t* main_target, player_t* new_target )
+{
+  death_knight_td_t* td = get_target_data( new_target );
 
-    std::rotate( undeath_tl.begin(), undeath_tl.begin() + 1, undeath_tl.end() );
+  if ( td->dot.undeath->is_ticking() )
+    td->dot.undeath->increment( as<int>( pet_spell.undeath_dot->effectN( 3 ).base_value() ) );
+  else
+    main_td->dot.undeath->copy( new_target, DOT_COPY_CLONE );
 
-    if ( specialization() == DEATH_KNIGHT_UNHOLY && sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B2 ) )
-    {
-      player_t* next_target = tl[ 0 ];
-      auto next_td          = get_target_data( next_target );
-
-      if ( next_td->dot.undeath->is_ticking() )
-      {
-        next_td->dot.undeath->increment( as<int>( pet_spell.undeath_dot->effectN( 3 ).base_value() ) );
-      }
-      else
-      {
-        td->dot.undeath->copy( next_target, DOT_COPY_CLONE );
-      }
-    }
-  }
+  std::rotate( undeath_tl.begin(), undeath_tl.begin() + 1, undeath_tl.end() );
 }
 
 void death_knight_t::start_a_feast_of_souls()
 {
-  double threshold  = talent.rider.a_feast_of_souls->effectN( 1 ).base_value();
-  timespan_t period = talent.rider.a_feast_of_souls->effectN( 1 ).period();
-  timespan_t first  = timespan_t::from_millis( rng().range( 0, as<int>( period.total_millis() ) ) );
+  unsigned threshold = as<unsigned>( talent.rider.a_feast_of_souls->effectN( 1 ).base_value() );
+  timespan_t period  = talent.rider.a_feast_of_souls->effectN( 1 ).period();
+  timespan_t first   = timespan_t::from_millis( rng().range( 0, as<int>( period.total_millis() ) ) );
 
   make_event( *sim, first, [ this, threshold, period ]() {
-    if ( active_riders >= threshold && !buffs.a_feast_of_souls->check() )
+    if ( !buffs.a_feast_of_souls->check() && active_riders >= threshold )
     {
       buffs.a_feast_of_souls->trigger();
     }
     make_repeating_event( *sim, period, [ this, threshold ]() {
-      if ( active_riders >= threshold && !buffs.a_feast_of_souls->check() )
+      if ( !buffs.a_feast_of_souls->check() && active_riders >= threshold )
       {
         buffs.a_feast_of_souls->trigger();
       }
-      if ( active_riders < threshold && buffs.a_feast_of_souls->check() )
+      if ( buffs.a_feast_of_souls->check() && active_riders < threshold )
       {
         buffs.a_feast_of_souls->expire();
       }
@@ -13104,26 +13052,26 @@ void death_knight_t::trigger_vampiric_strike_proc( player_t* target )
 
 void death_knight_t::trigger_sanlayn_execute_talents( bool is_vampiric )
 {
-  if ( is_vampiric )
-  {
-    background_actions.vampiric_strike_heal->execute();
-    buffs.essence_of_the_blood_queen->trigger();
-    if ( !buffs.gift_of_the_sanlayn->check() )
-    {
-      buffs.vampiric_strike->expire();
-    }
-    if ( sets->has_set_bonus( HERO_SANLAYN, TWW3, B4 ) )
-    {
-      if ( specialization() == DEATH_KNIGHT_UNHOLY && pets.ghoul_pet.active_pet() != nullptr )
-        pets.ghoul_pet.active_pet()->blood_rush->trigger();
+  if ( !is_vampiric )
+    return;
 
-      else if ( specialization() == DEATH_KNIGHT_BLOOD )
-      {
-        if ( pets.dancing_rune_weapon_pet.active_pet() != nullptr )
-          pets.dancing_rune_weapon_pet.active_pet()->blood_rush->trigger();
-        if ( pets.everlasting_bond_pet.active_pet() != nullptr )
-          pets.everlasting_bond_pet.active_pet()->blood_rush->trigger();
-      }
+  background_actions.vampiric_strike_heal->execute();
+  buffs.essence_of_the_blood_queen->trigger();
+  if ( !buffs.gift_of_the_sanlayn->check() )
+  {
+    buffs.vampiric_strike->expire();
+  }
+  if ( sets->has_set_bonus( HERO_SANLAYN, TWW3, B4 ) )
+  {
+    if ( specialization() == DEATH_KNIGHT_UNHOLY && pets.ghoul_pet.active_pet() != nullptr )
+      pets.ghoul_pet.active_pet()->blood_rush->trigger();
+
+    else if ( specialization() == DEATH_KNIGHT_BLOOD )
+    {
+      if ( pets.dancing_rune_weapon_pet.active_pet() != nullptr )
+        pets.dancing_rune_weapon_pet.active_pet()->blood_rush->trigger();
+      if ( pets.everlasting_bond_pet.active_pet() != nullptr )
+        pets.everlasting_bond_pet.active_pet()->blood_rush->trigger();
     }
   }
 }
@@ -13131,31 +13079,24 @@ void death_knight_t::trigger_sanlayn_execute_talents( bool is_vampiric )
 void death_knight_t::trigger_reapers_mark_death( player_t* target )
 {
   // Don't pollute results at the end-of-iteration deaths of everyone
-  if ( sim->event_mgr.canceled )
-  {
+  if ( sim->event_mgr.canceled || !talent.deathbringer.reapers_mark.ok() )
     return;
-  }
-
-  if ( !talent.deathbringer.reapers_mark.ok() )
-  {
-    return;
-  }
 
   buff_t* reapers_mark = get_target_data( target )->debuff.reapers_mark;
 
-  if ( reapers_mark->check() )
+  if ( !reapers_mark->check() )
+    return;
+
+  for ( auto& new_target : target->sim->target_non_sleeping_list )
   {
-    for ( auto& new_target : target->sim->target_non_sleeping_list )
+    if ( new_target != target )
     {
-      if ( new_target != target )
-      {
-        sim->print_debug(
-            "Target {} died while affected by reapers_mark with {} stacks with {} duration left, jumping to target {}.",
-            target->name(), reapers_mark->check(), reapers_mark->remains(), new_target->name() );
-        get_target_data( new_target )->debuff.reapers_mark->trigger( reapers_mark->check(), reapers_mark->remains() );
-        reapers_mark->cancel();
-        return;
-      }
+      sim->print_debug(
+          "Target {} died while affected by reapers_mark with {} stacks with {} duration left, jumping to target {}.",
+          target->name(), reapers_mark->check(), reapers_mark->remains(), new_target->name() );
+      get_target_data( new_target )->debuff.reapers_mark->trigger( reapers_mark->check(), reapers_mark->remains() );
+      reapers_mark->cancel();
+      return;
     }
   }
 }
@@ -13205,18 +13146,13 @@ void death_knight_t::drw_action_execute( pets::dancing_rune_weapon_pet_t* drw, d
 
 void death_knight_t::trigger_drw_action( drw_actions action )
 {
-  if ( specialization() != DEATH_KNIGHT_BLOOD || !talent.blood.dancing_rune_weapon.ok() )
-    return;
-
-  if ( pets.dancing_rune_weapon_pet.active_pet() == nullptr )
+  if ( specialization() != DEATH_KNIGHT_BLOOD || !talent.blood.dancing_rune_weapon.ok() ||
+       pets.dancing_rune_weapon_pet.active_pet() == nullptr )
     return;
 
   drw_action_execute( pets.dancing_rune_weapon_pet.active_pet(), action );
 
-  if ( !talent.blood.everlasting_bond.ok() )
-    return;
-
-  if ( pets.everlasting_bond_pet.active_pet() == nullptr )
+  if ( !talent.blood.everlasting_bond.ok() || pets.everlasting_bond_pet.active_pet() == nullptr )
     return;
 
   drw_action_execute( pets.everlasting_bond_pet.active_pet(), action );
@@ -13224,6 +13160,9 @@ void death_knight_t::trigger_drw_action( drw_actions action )
 
 double death_knight_t::psuedo_random_p_from_c( double c )
 {
+  if ( c <= 0 )
+    return 0.0;
+
   double p_proc_on_n       = 0;
   double p_proc_by_n       = 0;
   double sum_n_p_proc_on_n = 0;
@@ -13241,6 +13180,9 @@ double death_knight_t::psuedo_random_p_from_c( double c )
 
 double death_knight_t::pseudo_random_c_from_p( double p )
 {
+  if ( p <= 0 )
+    return 0.0;
+
   double c_upper = p;
   double c_lower = 0;
   double c_mid;
@@ -13271,26 +13213,23 @@ double death_knight_t::pseudo_random_c_from_p( double p )
 const spell_data_t* death_knight_t::conditional_spell_lookup( bool fn, int id )
 {
   if ( !fn )
-  {
     return spell_data_t::not_found();
-  }
 
   return find_spell( id );
 }
 
 modified_spell_data_t* death_knight_t::get_modified_spell( const spell_data_t* s )
 {
-  if ( s && s->ok() )
-  {
-    for ( auto& m : modified_spells )
-      if ( m->_spell.id() == s->id() )
-        return m;
+  if ( !s || !s->ok() )
+    return modified_spell_data_t::nil();
 
-    return modified_spells.emplace_back( new modified_spell_data_t( s ) );
-  }
+  for ( auto& m : modified_spells )
+    if ( m->_spell.id() == s->id() )
+      return m;
 
-  return modified_spell_data_t::nil();
+  return modified_spells.emplace_back( new modified_spell_data_t( s ) );
 }
+
 // ==========================================================================
 // Death Knight Character Definition
 // ==========================================================================
