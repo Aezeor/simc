@@ -9305,9 +9305,8 @@ bool demon_hunter_t::validate_fight_style( fight_style_e style ) const
 #ifdef NDEBUG
   if ( style == FIGHT_STYLE_DUNGEON_SLICE && !options.enable_dungeon_slice )
   {
-    sim->error( SEVERE,
-                "Dungeon Slice is disabled for Demon Hunter. To force enable, use enable_dungeon_slice=1 option." );
-    sim->cancel();
+    throw sc_invalid_fight_style(
+      "Dungeon Slice is disabled for Demon Hunter. To force enable, use enable_dungeon_slice=1 option." );
   }
 #endif
 

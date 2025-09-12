@@ -596,10 +596,7 @@ public:
         {
           range::fill( entries, FAIL );
           position = entries.begin();
-          player->sim->error( "{} unable to find success card position for dre_deck_rng_t",
-            player->name() );
-          player->sim->cancel();
-          player->sim->cancel_iteration();
+          throw sc_runtime_error( fmt::format( "{} unable to find success card position for dre_deck_rng_t.", *player ) );
           return;
         }
       } while ( as<int>( end_distance + rng_idx ) <= m_max_draw || !gap );

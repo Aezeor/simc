@@ -9283,10 +9283,14 @@ void hunter_t::init_action_list()
     const weapon_e type = main_hand_weapon.type;
     if ( type != WEAPON_BOW && type != WEAPON_CROSSBOW && type != WEAPON_GUN )
     {
-      sim -> error( "Player {} does not have a proper weapon type at the Main Hand slot: {}.",
-                    name(), util::weapon_subclass_string( items[ main_hand_weapon.slot ].parsed.data.item_subclass ) );
-      if ( specialization() != HUNTER_SURVIVAL )
-        sim -> cancel();
+      auto _msg =
+        fmt::format( "{} does not have a proper weapon type at the Main Hand slot: {}.", *this,
+                     util::weapon_subclass_string( items[ main_hand_weapon.slot ].parsed.data.item_subclass ) );
+
+      if ( specialization() == HUNTER_SURVIVAL )
+        sim->error( _msg );
+      else
+        throw sc_initialization_error( _msg );
     }
   }
 
