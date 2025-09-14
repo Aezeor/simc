@@ -534,7 +534,6 @@ struct simplified_player_t : public player_t
   {
     player_t::init_defense();
 
-    collected_data.health_changes_tmi.collect = false;
     collected_data.health_changes.collect     = false;
   }
 
