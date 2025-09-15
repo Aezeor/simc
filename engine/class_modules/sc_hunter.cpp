@@ -484,7 +484,6 @@ public:
     buff_t* beast_cleave; 
     buff_t* serpentine_rhythm;
     buff_t* serpentine_blessing;
-    buff_t* a_murder_of_crows;
     buff_t* huntmasters_call;
     buff_t* summon_fenryr;
     buff_t* summon_hati;
@@ -773,8 +772,6 @@ public:
     spell_data_ptr_t dire_beast;
     spell_data_ptr_t dire_beast_summon;
 
-    spell_data_ptr_t a_murder_of_crows;
-    spell_data_ptr_t a_murder_of_crows_dot;
     spell_data_ptr_t savagery;
     spell_data_ptr_t bestial_wrath;
     spell_data_ptr_t dire_command;
@@ -896,6 +893,7 @@ public:
     spell_data_ptr_t ebon_bowstring;
 
     spell_data_ptr_t banshees_mark;
+    spell_data_ptr_t a_murder_of_crows_dot;
     spell_data_ptr_t bleak_powder;
     spell_data_ptr_t bleak_powder_spell;
     spell_data_ptr_t umbral_reach;
@@ -7135,16 +7133,6 @@ struct kill_command_t: public hunter_spell_t
         p()->trigger_deathblow();
     }
 
-    if ( p() -> talents.a_murder_of_crows.ok() )
-    {
-      p() -> buffs.a_murder_of_crows -> trigger();
-      if ( p() -> buffs.a_murder_of_crows -> at_max_stacks() )
-      {
-        p() -> actions.a_murder_of_crows -> execute_on_target( target );
-        p() -> buffs.a_murder_of_crows -> expire();
-      }
-    }
-
     p()->cooldowns.wildfire_bomb->adjust( -wildfire_infusion_reduction );
     p()->buffs.mongoose_fury->extend_duration( p(), bloody_claws_extension );
 
@@ -8356,8 +8344,6 @@ void hunter_t::init_spells()
     talents.dire_beast                        = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Beast", HUNTER_BEAST_MASTERY );
     talents.dire_beast_summon                 = find_spell( 219199 );
 
-    talents.a_murder_of_crows                 = find_talent_spell( talent_tree::SPECIALIZATION, "A Murder of Crows", HUNTER_BEAST_MASTERY );
-    talents.a_murder_of_crows_dot             = talents.a_murder_of_crows.ok() ? find_spell( 131894 ) : spell_data_t::not_found();
     talents.savagery                          = find_talent_spell( talent_tree::SPECIALIZATION, "Savagery", HUNTER_BEAST_MASTERY );
     talents.bestial_wrath                     = find_talent_spell( talent_tree::SPECIALIZATION, "Bestial Wrath", HUNTER_BEAST_MASTERY );
     talents.dire_command                      = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Command", HUNTER_BEAST_MASTERY );
@@ -8492,8 +8478,7 @@ void hunter_t::init_spells()
     talents.ebon_bowstring = find_talent_spell( talent_tree::HERO, "Ebon Bowstring" );
 
     talents.banshees_mark = find_talent_spell( talent_tree::HERO, "Banshee's Mark" );
-    if ( !talents.a_murder_of_crows.ok() )
-      talents.a_murder_of_crows_dot = talents.banshees_mark.ok() ? find_spell( 131894 ) : spell_data_t::not_found();
+    talents.a_murder_of_crows_dot = talents.banshees_mark.ok() ? find_spell( 131894 ) : spell_data_t::not_found();
     talents.bleak_powder  = find_talent_spell( talent_tree::HERO, "Bleak Powder" );
     talents.bleak_powder_spell = talents.bleak_powder.ok() ? ( specialization() == HUNTER_MARKSMANSHIP ? find_spell( 467914 ) : find_spell( 472084 ) ) : spell_data_t::not_found();
     talents.umbral_reach = find_talent_spell( talent_tree::HERO, "Umbral Reach" );
@@ -8675,7 +8660,7 @@ void hunter_t::create_actions()
   if ( talents.laceration.ok() )
     actions.laceration = new attacks::laceration_t( this );
   
-  if ( talents.a_murder_of_crows.ok() || talents.banshees_mark.ok() )
+  if ( talents.banshees_mark.ok() )
     actions.a_murder_of_crows = new spells::a_murder_of_crows_t( this );
 
   if ( talents.howl_of_the_pack_leader.ok() )
@@ -8865,9 +8850,6 @@ void hunter_t::create_buffs()
     make_buff( this, "serpentine_blessing", find_spell( 468704 ) )
     -> set_default_value_from_effect( 1 )
     -> set_chance( talents.serpentine_rhythm.ok() );
-
-  buffs.a_murder_of_crows = 
-    make_buff( this, "a_murder_of_crows", talents.a_murder_of_crows->effectN( 1 ).trigger() );
 
   buffs.huntmasters_call = 
     make_buff( this, "huntmasters_call", find_spell( 459731 ) );
