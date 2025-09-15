@@ -117,8 +117,11 @@ variable_t::variable_t( player_t* player, std::string_view options_str )
 
   if ( !var )
   {
-    player->variables.push_back( new action_variable_t( name_str, default_ ) );
-    var = player->variables.back();
+    var = new action_variable_t( name_str, default_ );
+    if ( sim->report_all_variables )
+      var->report = true;
+
+    player->variables.push_back( var );
   }
 
   if ( operation == OPERATION_REPORT )

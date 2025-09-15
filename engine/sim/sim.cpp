@@ -1521,6 +1521,7 @@ sim_t::sim_t()
     report_details( 1 ),
     report_merged_stats( "dps,dpspct" ),
     full_damage_sources_chart( false ),
+    report_all_variables( false ),
     report_rng( 0 ),
     hosted_html( 0 ),
     save_raid_summary( 0 ),
@@ -3868,6 +3869,7 @@ void sim_t::create_options()
   add_option( opt_bool( "report_details", report_details ) );
   add_option( opt_func( "report_merged_stats", parse_report_merged_stats) );
   add_option( opt_bool( "full_damage_sources_chart", full_damage_sources_chart ) );
+  add_option( opt_bool( "report_all_variables", report_all_variables ) );
   add_option( opt_bool( "report_rng", report_rng ) );
   add_option( opt_int( "statistics_level", statistics_level ) );
   add_option( opt_bool( "separate_stats_by_actions", separate_stats_by_actions ) );
