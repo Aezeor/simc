@@ -243,7 +243,7 @@ warlock_pet_td_t::warlock_pet_td_t( player_t* target, warlock_pet_t& p ) :
   actor_target_data_t( target, &p ), pet( p )
 {
   // TODO: Add Whiplash to base warlock data
-  debuff_whiplash = make_buff( *this, "whiplash", pet.o()->find_spell( 6360 ) )
+  debuff.whiplash = make_buff( *this, "whiplash", pet.o()->find_spell( 6360 ) )
                         ->set_default_value( pet.o()->find_spell( 6360 )->effectN( 2 ).percent() )
                         ->set_max_stack( pet.o()->find_spell( 6360 )->max_stacks() - 1 ); // Data erroneously has 11 as the maximum stack
 }
@@ -385,7 +385,7 @@ struct whiplash_t : public warlock_pet_spell_t
   {
     warlock_pet_spell_t::impact( s );
 
-    pet_td( s->target )->debuff_whiplash->trigger();
+    pet_td( s->target )->debuff.whiplash->trigger();
   }
 };
 
@@ -393,7 +393,7 @@ double sayaad_pet_t::composite_player_target_multiplier( player_t* target, schoo
 {
   double m = warlock_pet_t::composite_player_target_multiplier( target, school );
 
-  m *= 1.0 + get_target_data( target )->debuff_whiplash->check_stack_value();
+  m *= 1.0 + get_target_data( target )->debuff.whiplash->check_stack_value();
 
   return m;
 }

@@ -100,7 +100,7 @@ struct warlock_td_t : public actor_target_data_t
   int count_affliction_dots( bool ) const;
 };
 
-// utility to create target_effect_t compatible functions from death_knight_td_t member references
+// utility to create target_effect_t compatible functions from warlock_td_t member references
 template <typename T>
 static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
 {

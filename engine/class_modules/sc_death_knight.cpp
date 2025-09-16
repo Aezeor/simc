@@ -2784,7 +2784,14 @@ struct pet_action_t : public parse_action_effects_t<Base>
   pet_action_t( T_PET* p, std::string_view name, const spell_data_t* spell = spell_data_t::nil() )
     : action_base_t( name, p, spell )
   {
-    this->special = this->may_crit = true;
+    this->special = true;
+
+    if ( !this->data().flags( spell_attribute::SX_CANNOT_CRIT ) && this->harmful )
+      this->may_crit = true;
+
+    if ( this->data().flags( spell_attribute::SX_TICK_MAY_CRIT ) )
+      this->tick_may_crit = true;
+
     if ( this->data().ok() )
     {
       apply_pet_action_effects();

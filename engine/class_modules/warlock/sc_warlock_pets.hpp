@@ -6,6 +6,7 @@
 #define SC_WARLOCK_PETS_HPP
 
 #include "simulationcraft.hpp"
+#include "action/parse_effects.hpp"
 
 namespace warlock
 {
@@ -16,11 +17,51 @@ struct warlock_pet_t;
 
 struct warlock_pet_td_t : public actor_target_data_t
 {
-  propagate_const<buff_t*> debuff_whiplash;
+  struct debuffs_t
+  {
+    propagate_const<buff_t*> whiplash;
+  } debuff;
+
+  struct dots_t
+  {
+  } dot;
 
   warlock_pet_t& pet;
   warlock_pet_td_t( player_t*, warlock_pet_t& );
 };
+
+// utility to create target_effect_t compatible functions from warlock_pet_td_t member references
+template <typename T>
+static std::function<int( actor_target_data_t* )> pet_d_fn( T d, bool stack = true )
+{
+  if constexpr ( std::is_invocable_v<T, warlock_pet_td_t::debuffs_t> )
+  {
+    if ( stack )
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<warlock_pet_td_t*>( t )->debuff )->check();
+      };
+    else
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<warlock_pet_td_t*>( t )->debuff )->check() > 0;
+      };
+  }
+  else if constexpr ( std::is_invocable_v<T, warlock_pet_td_t::dots_t> )
+  {
+    if ( stack )
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<warlock_pet_td_t*>( t )->dot )->current_stack();
+      };
+    else
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<warlock_pet_td_t*>( t )->dot )->is_ticking();
+      };
+  }
+  else
+  {
+    static_assert( static_false<T>, "Not a valid member of warlock_pet_td_t" );
+    return nullptr;
+  }
+}
 
 struct warlock_pet_t : public pet_t
 {
@@ -147,17 +188,21 @@ protected:
 
 // Template for common warlock pet action code.
 template <class ACTION_BASE>
-struct warlock_pet_action_t : public ACTION_BASE
+struct warlock_pet_action_t : public parse_action_effects_t<ACTION_BASE>
 {
 private:
-  typedef ACTION_BASE ab;  // action base, eg. spell_t
+  typedef parse_action_effects_t<ACTION_BASE> ab;  // action base, eg. spell_t
 public:
   typedef warlock_pet_action_t base_t;
 
   warlock_pet_action_t( util::string_view n, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, p, s )
   {
-    ab::may_crit = true;
+    if ( !this->data().flags( spell_attribute::SX_CANNOT_CRIT ) && this->harmful )
+      this->may_crit = true;
+
+    if ( this->data().flags( spell_attribute::SX_TICK_MAY_CRIT ) )
+      this->tick_may_crit = true;
 
     // If pets are not reported separately, create single stats_t objects for the various pet
     // abilities.
@@ -175,6 +220,33 @@ public:
         }
       }
     }
+
+    if ( this->data().ok() )
+    {
+      apply_pet_action_effects();
+      if ( this->type == action_e::ACTION_SPELL || this->type == action_e::ACTION_ATTACK )
+      {
+        apply_pet_target_effects();
+      }
+    }
+  }
+
+  void apply_pet_action_effects()
+  {
+  }
+  void apply_pet_target_effects()
+  {
+  }
+
+  template <typename... Ts>
+  void parse_effects( Ts&&... args )
+  {
+    ab::parse_effects( std::forward<Ts>( args )... );
+  }
+  template <typename... Ts>
+  void parse_target_effects( Ts&&... args )
+  {
+    ab::parse_target_effects( std::forward<Ts>( args )... );
   }
 
   warlock_pet_t* p()
