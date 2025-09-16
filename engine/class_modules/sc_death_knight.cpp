@@ -1807,8 +1807,6 @@ public:
   void init_spells() override;
   void init_action_list() override;
   void init_blizzard_action_list() override;
-  void parse_assisted_combat_step( const assisted_combat_step_data_t& step,
-                                   action_priority_list_t* assisted_combat ) override;
   parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                             const assisted_combat_step_data_t& step ) const override;
   std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
@@ -1898,7 +1896,6 @@ public:
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
   double psuedo_random_p_from_c( double c );
   double pseudo_random_c_from_p( double p );
-  std::string blizzard_apl_action_replace( std::string options );
   // Rider of the Apocalypse
   int get_random_rider();
   void summon_rider( timespan_t duration, bool random );
@@ -14662,62 +14659,6 @@ parsed_assisted_combat_rule_t death_knight_t::parse_assisted_combat_rule(
   }
 
   return player_t::parse_assisted_combat_rule( rule, step );
-}
-
-// death_knight_t::blizzard_apl_action_replace ================================
-std::string death_knight_t::blizzard_apl_action_replace( std::string options )
-{
-  switch ( specialization() )
-  {
-    case DEATH_KNIGHT_BLOOD:
-      break;
-    case DEATH_KNIGHT_FROST:
-      break;
-    case DEATH_KNIGHT_UNHOLY:
-      break;
-    default:
-      break;
-  }
-
-  return "";
-}
-
-// death_knight_t::parse_assisted_combat_step ===============================
-void death_knight_t::parse_assisted_combat_step( const assisted_combat_step_data_t& step,
-                                                 action_priority_list_t* assisted_combat )
-{
-  std::string options = "";
-  std::string comment = "";
-  for ( const auto& rule : assisted_combat_rule_data_t::data( step.id, is_ptr() ) )
-  {
-    parsed_assisted_combat_rule_t rule_str = parse_assisted_combat_rule( rule, step );
-    if ( !rule_str.expr.empty() )
-      options += options.empty() ? rule_str.expr : "&" + rule_str.expr;
-    if ( !rule_str.comment.empty() )
-      comment += comment.empty() ? rule_str.comment : ", " + rule_str.comment;
-  }
-
-  // This is kinda ugly, maybe find a better way to do this?
-  if ( !options.empty() )
-  {
-    std::string name = blizzard_apl_action_replace( options );
-    if ( !name.empty() )
-    {
-      assisted_combat->add_action( name + ",can_have_one_button_penalty=1,if=" + options, comment );
-      return;
-    }
-  }
-
-  for ( const auto& name : action_names_from_spell_id( step.spell_id ) )
-  {
-    if ( !name.empty() )
-    {
-      if ( options.empty() )
-        assisted_combat->add_action( name + ",can_have_one_button_penalty=1", comment );
-      else
-        assisted_combat->add_action( name + ",can_have_one_button_penalty=1,if=" + options, comment );
-    }
-  }
 }
 
 // death_knight_t::action_names_from_spell_id ===============================
