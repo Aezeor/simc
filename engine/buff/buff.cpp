@@ -833,7 +833,7 @@ buff_t* buff_t::set_duration( timespan_t duration )
   }
 
   // Duration can affect refresh behavior, recheck after setting duration
-  if ( buff_duration() > timespan_t::zero() && !refresh_behavior_overridden )
+  if ( duration > timespan_t::zero() && !refresh_behavior_overridden )
     set_refresh_behavior( buff_refresh_behavior::NONE );
 
   return this;
