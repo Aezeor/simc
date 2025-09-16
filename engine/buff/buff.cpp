@@ -1146,9 +1146,17 @@ buff_t* buff_t::set_period( timespan_t period )
   // Recheck tick behaviour, which is dependent on buff_period.
   set_tick_behavior( tick_behavior );
 
+  if ( period == timespan_t::zero() && refresh_behavior == buff_refresh_behavior::TICK )
+  {
+    set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+    return this;
+  }
+
   // Tick behavior can affect refresh behavior, recheck refresh behavior once tick behavior has been set
-  if ( buff_duration() > timespan_t::zero() && !refresh_behavior_overridden )
-    set_refresh_behavior( buff_refresh_behavior::NONE );
+  source->register_init_finished_callback( [ this ]( player_t* ) {
+    if ( buff_duration() > timespan_t::zero() && !refresh_behavior_overridden )
+      set_refresh_behavior( buff_refresh_behavior::NONE );
+  } );
 
   return this;
 }
