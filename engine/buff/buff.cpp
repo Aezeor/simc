@@ -832,6 +832,10 @@ buff_t* buff_t::set_duration( timespan_t duration )
     base_buff_duration = timespan_t::zero();
   }
 
+  // Duration can affect refresh behavior, recheck after setting duration
+  if ( buff_duration() > timespan_t::zero() && !refresh_behavior_overridden )
+    set_refresh_behavior( buff_refresh_behavior::NONE );
+
   return this;
 }
 
@@ -1153,10 +1157,8 @@ buff_t* buff_t::set_period( timespan_t period )
   }
 
   // Tick behavior can affect refresh behavior, recheck refresh behavior once tick behavior has been set
-  source->register_init_finished_callback( [ this ]( player_t* ) {
-    if ( buff_duration() > timespan_t::zero() && !refresh_behavior_overridden )
-      set_refresh_behavior( buff_refresh_behavior::NONE );
-  } );
+  if ( buff_duration() > timespan_t::zero() && !refresh_behavior_overridden )
+    set_refresh_behavior( buff_refresh_behavior::NONE );
 
   return this;
 }
