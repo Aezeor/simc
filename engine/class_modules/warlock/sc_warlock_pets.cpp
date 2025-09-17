@@ -1974,7 +1974,6 @@ struct rift_shadow_bolt_t : public warlock_pet_spell_t
 
       // Double dips from whitelist+guardian aura
       base_dd_multiplier *= 1.0 + p->o()->talents.summoners_embrace->effectN( 1 ).percent();
-      base_dd_multiplier *= 1.0 + p->o()->warlock_base.destruction_warlock->effectN( 1 ).percent();
   }
 
   double composite_crit_damage_bonus_multiplier() const override
@@ -2060,7 +2059,6 @@ struct chaos_barrage_tick_t : public warlock_pet_spell_t
   
       // Double dips from whitelist+guardian aura
       base_dd_multiplier *= 1.0 + p->o()->talents.summoners_embrace->effectN( 1 ).percent();
-      base_dd_multiplier *= 1.0 + p->o()->warlock_base.destruction_warlock->effectN( 1 ).percent();
   }
 
   double composite_crit_damage_bonus_multiplier() const override
@@ -2142,7 +2140,6 @@ struct rift_chaos_bolt_t : public warlock_pet_spell_t
 
     // Double dips from whitelist+guardian aura
     base_dd_multiplier *= 1.0 + p->o()->talents.summoners_embrace->effectN( 1 ).percent();
-    base_dd_multiplier *= 1.0 + p->o()->warlock_base.destruction_warlock->effectN( 1 ).percent();
 
     if ( p->o()->talents.unstable_rifts.ok() )
     {
@@ -2367,16 +2364,12 @@ namespace diabolist
       {
         // Added in build: 11.2.0.62253: reduces Diab Demons Damage by 20% for Demonology
         m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 3 ).percent();
-        // Wicked Cleave is mistakenly whitelisted on Effect 1 for Demonology Aura, Double Dipping alongside effect 5.
-        m *= 1.0 + p()->o()->warlock_base.demonology_warlock->effectN( 1 ).percent();
       }
 
       if ( p()->o()->specialization() == WARLOCK_DESTRUCTION )
       {
         // Added in build 11.2.0.62253: Increases Diab Demons damage by 15% for Destruction, missing from Patch Notes.
         m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 4 ).percent();
-        // Destruction Aura Double Dips due to Diabolist Demon spells being whitelisted on effect 1.
-        m *= 1.0 + p()->o()->warlock_base.destruction_warlock->effectN( 1 ).percent();
         // Destruction Summoners Embrace also Double Dip due to the same fact.
         // Those two effects together is what made me believe the May 27 buff got applied.
         if ( p()->o()->talents.summoners_embrace.ok() )
@@ -2446,16 +2439,12 @@ namespace diabolist
       {
         // Added in build: 11.2.0.62253: reduces Diab Demons Damage by 20% for Demonology
         m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 3 ).percent();
-        // Wicked Cleave is mistakenly whitelisted on Effect 1 for Demonology Aura, Double Dipping alongside effect 5.
-        m *= 1.0 + p()->o()->warlock_base.demonology_warlock->effectN( 1 ).percent();
       }
 
       if ( p()->o()->specialization() == WARLOCK_DESTRUCTION )
       {
         // Added in build 11.2.0.62253: Increases Diab Demons damage by 15% for Destruction, missing from Patch Notes.
         m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 4 ).percent();
-        // Destruction Aura Double Dips due to Diabolist Demon spells being whitelisted on effect 1.
-        m *= 1.0 + p()->o()->warlock_base.destruction_warlock->effectN( 1 ).percent();
         // Destruction Summoners Embrace also Double Dip due to the same fact.
         // Those two effects together is what made me believe the May 27 buff got applied.
         if ( p()->o()->talents.summoners_embrace.ok() )
@@ -2546,16 +2535,12 @@ namespace diabolist
       {
         // Added in build: 11.2.0.62253: reduces Diab Demons Damage by 20% for Demonology
         m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 3 ).percent();
-        // Wicked Cleave is mistakenly whitelisted on Effect 1 for Demonology Aura, Double Dipping alongside effect 5.
-        m *= 1.0 + p()->o()->warlock_base.demonology_warlock->effectN( 1 ).percent();
       }
 
       if ( p()->o()->specialization() == WARLOCK_DESTRUCTION )
       {
         // Added in build 11.2.0.62253: Increases Diab Demons damage by 15% for Destruction, missing from Patch Notes.
         m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 4 ).percent();
-        // Destruction Aura Double Dips due to Diabolist Demon spells being whitelisted on effect 1.
-        m *= 1.0 + p()->o()->warlock_base.destruction_warlock->effectN( 1 ).percent();
         // Destruction Summoners Embrace also Double Dip due to the same fact.
         // Those two effects together is what made me believe the May 27 buff got applied.
         if ( p()->o()->talents.summoners_embrace.ok() )
@@ -2718,13 +2703,8 @@ struct soul_swipe_base_t : public warlock_pet_spell_t
     if ( p()->o()->bugs )
       m *= 1.0 + p()->o()->hero.wicked_reaping->effectN( 1 ).percent();
 
-    if ( p()->o()->specialization() == WARLOCK_DEMONOLOGY )
-    {
-      m *= 1.0 + p()->o()->warlock_base.demonology_warlock->effectN( 1 ).percent();
-    }
     if ( p()->o()->specialization() == WARLOCK_AFFLICTION )
     {
-      m *= 1.0 + p()->o()->warlock_base.affliction_warlock->effectN( 1 ).percent();
       // Oddly a scripted dummy effect. Needs to be double checked to be sure this actually works.
       m *= 1.0 + p()->o()->sets->set( HERO_SOUL_HARVESTER, TWW3, B2 )->effectN( 2 ).percent();
     }
