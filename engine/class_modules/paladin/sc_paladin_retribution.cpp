@@ -576,7 +576,7 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
   divine_storm_t( paladin_t* p, bool is_free, double mul ) :
     holy_power_consumer_t( "divine_storm", p, p->talents.divine_storm ),
-    tempest( nullptr )
+    tempest( nullptr ), echo( nullptr ), sunrise_echo( nullptr )
   {
     is_divine_storm = true;
     aoe = -1;
