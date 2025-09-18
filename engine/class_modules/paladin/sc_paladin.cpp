@@ -3967,6 +3967,16 @@ void paladin_t::init_base_stats()
   base.block += passives.paladin->effectN( 7 ).percent();
 }
 
+void paladin_t::init_initial_stats()
+{
+  player_t::init_initial_stats();
+
+  if ( options.min_mastery_rating > 0 && initial.stats.mastery_rating < options.min_mastery_rating )
+  {
+    quiet = true;
+  }
+}
+
 // paladin_t::reset =========================================================
 
 void paladin_t::reset()
@@ -5465,6 +5475,7 @@ void paladin_t::create_options()
   add_option( opt_int( "max_dg_heal_targets", options.max_dg_heal_targets, 0, 5 ) );
   add_option( opt_bool( "fake_solidarity", options.fake_solidarity ) );
   add_option( opt_float( "blessed_hammer_strikes", options.blessed_hammer_strikes, 1, 3 ) );
+  add_option( opt_int( "min_mastery_rating", options.min_mastery_rating ) );
 
   player_t::create_options();
 }

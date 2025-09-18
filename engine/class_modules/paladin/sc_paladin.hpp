@@ -810,6 +810,7 @@ public:
     int max_dg_heal_targets               = 5;
     bool fake_solidarity                  = true;
     double blessed_hammer_strikes          = 2.0;
+    int min_mastery_rating                = 0;
   } options;
   player_t* beacon_target;
 
@@ -835,6 +836,7 @@ public:
   virtual void init_scaling() override;
   virtual void create_buffs() override;
   virtual void init_special_effects() override;
+  virtual void init_initial_stats() override;
   virtual void init_rng() override;
   virtual void init_spells() override;
   virtual void init_action_list() override;
