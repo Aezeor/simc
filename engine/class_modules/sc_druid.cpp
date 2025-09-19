@@ -2957,6 +2957,10 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
 
     if ( p->talent.flourish.ok() )
       affected_by.flourish = find_effect( p->talent.flourish, this, A_ADD_PCT_MODIFIER, P_TICK_TIME ).ok();
+
+    // temporary manual fix until register_passive_effect_modifiers() can go core
+    apply_affecting_aura( p->talent.circle_of_life_and_death_bear );
+    apply_affecting_aura( p->talent.circle_of_life_and_death_cat );
   }
 
   virtual double harmony_multiplier( player_t* t ) const
