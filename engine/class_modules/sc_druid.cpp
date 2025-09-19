@@ -4575,8 +4575,6 @@ struct adaptive_swarm_t final : public cat_attack_t
     adaptive_swarm_heal_t( druid_t* p ) : healing_swarm_t( p, "adaptive_swarm_heal", p->spec.adaptive_swarm_heal )
     {
       quiet = heal = true;
-
-      parse_effect_period( data().effectN( 1 ) );
     }
 
     player_t* new_swarm_target( player_t* exclude ) const override
