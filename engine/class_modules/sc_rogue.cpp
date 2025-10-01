@@ -4182,7 +4182,7 @@ struct blade_flurry_t : public rogue_attack_t
       p()->cooldowns.blade_flurry->adjust( -precombat_seconds, false );
     }
 
-    timespan_t d = p()->buffs.blade_flurry->data().duration();
+    timespan_t d = p()->buffs.blade_flurry->buff_duration();
     if ( precombat_seconds > timespan_t::zero() && !p()->in_combat )
       d -= precombat_seconds;
 
@@ -6747,6 +6747,7 @@ struct doomblade_t : public residual_action::residual_periodic_action_t<spell_t>
     residual_action_t( name, p, p->spec.doomblade_debuff ), rogue( p )
   {
     dual = true;
+    apply_affecting_aura( p->talent.assassination.sudden_demise );
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -11603,7 +11604,7 @@ void rogue_t::init_spells()
   spec.replicating_shadows_tick = talent.subtlety.replicating_shadows->ok() ? find_spell( 394031 ) : spell_data_t::not_found();
   spec.secret_technique_attack = talent.subtlety.secret_technique->ok() ? find_spell( 280720 ) : spell_data_t::not_found();
   spec.secret_technique_clone_attack = talent.subtlety.secret_technique->ok() ? find_spell( 282449 ) : spell_data_t::not_found();
-  spec.shadowstrike_stealth_buff = spec.shadowstrike->ok() ? find_spell( 196911 ) : spell_data_t::not_found();
+  spec.shadowstrike_stealth_buff = spec.shadowstrike->ok() ? find_spell( 245623 ) : spell_data_t::not_found();
   spec.shadow_blades_attack = talent.subtlety.shadow_blades->ok() ? find_spell( 279043 ) : spell_data_t::not_found();
   spec.shadow_focus_buff = talent.subtlety.shadow_focus->ok() ? find_spell( 112942 ) : spell_data_t::not_found();
   spec.shadow_techniques_energize = spec.shadow_techniques->ok() ? find_spell( 196911 ) : spell_data_t::not_found();
