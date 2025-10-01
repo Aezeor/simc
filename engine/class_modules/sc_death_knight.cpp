@@ -3434,7 +3434,6 @@ struct gargoyle_pet_t : public death_knight_pet_t
     death_knight_pet_t::arise();
     timespan_t duration = 2.8_s;
     buffs.stunned->trigger( duration + rng().gauss<200, 25>() );
-    buffs.stunned->set_expire_callback( [ this ]( buff_t*, int, timespan_t d ) { reschedule_gargoyle(); } );
     stun();
     reschedule_gargoyle();
     // Gargoyle procs 2 stacks of this oddly, duplicate it here to emulate that
@@ -3442,6 +3441,11 @@ struct gargoyle_pet_t : public death_knight_pet_t
     {
       dk()->buffs.unholy_commander->trigger();
     }
+  }
+
+  void init_finished() override   {
+    death_knight_pet_t::init_finished();
+    buffs.stunned->set_expire_callback( [ this ]( buff_t*, int, timespan_t d ) { reschedule_gargoyle(); } );
   }
 
   void init_base_stats() override
