@@ -735,6 +735,9 @@ using namespace helpers;
 
       p()->warlock_pet_list.active = pet;
 
+      if ( is_precombat && pet->affected_by.demonic_inspiration && !pet->buffs.demonic_inspiration->check() )
+        pet->buffs.demonic_inspiration->trigger();
+
       if ( p()->buffs.grimoire_of_sacrifice->check() )
         p()->buffs.grimoire_of_sacrifice->expire();
     }
@@ -3087,7 +3090,7 @@ using namespace helpers;
 
         debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->queue_ds_felstorm();
 
-        internal_cooldown->start( 5_s * p()->composite_spell_haste() );
+        internal_cooldown->start( 5_s * active_pet->composite_spell_cast_speed() );
       }
     }
   };
