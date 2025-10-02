@@ -230,33 +230,6 @@ struct purge_the_wicked_t final : public priest_spell_t
       }
     }
 
-    void last_tick( dot_t* d ) override
-    {
-      if ( priest().talents.cauterizing_shadows.enabled() )
-      {
-        priest().trigger_cauterizing_shadows();
-      }
-
-      priest_spell_t::last_tick( d );
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      priest_spell_t::impact( s );
-
-      // Trigger Cauterizing Shadows if you refreshed with less than 5 seconds
-      if ( priest().talents.cauterizing_shadows.enabled() )
-      {
-        priest_td_t& td = get_td( s->target );
-
-        if ( td.dots.purge_the_wicked->remains() <
-             timespan_t::from_seconds( priest().talents.cauterizing_shadows->effectN( 1 ).base_value() ) )
-        {
-          priest().trigger_cauterizing_shadows();
-        }
-      }
-    }
-
     double composite_persistent_multiplier( const action_state_t* s ) const override
     {
       auto m = priest_spell_t::composite_persistent_multiplier( s );

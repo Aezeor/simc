@@ -578,8 +578,6 @@ struct void_flay_t final : public priest_pet_spell_t
     {
       p().o().trigger_atonement( s, composite_atonement_multiplier( s ) );
 
-      p().o().trigger_essence_devourer();
-
       if ( p().o().specialization() == PRIEST_SHADOW )
       {
         p().o().trigger_shadow_weaving( s );
@@ -775,8 +773,6 @@ struct fiend_melee_t : public priest_pet_melee_t
       }
 
       p().o().trigger_atonement( s, composite_atonement_multiplier( s ) );
-
-      p().o().trigger_essence_devourer();
 
       if ( p().o().talents.shadowfiend.enabled() || p().o().talents.shared.mindbender.enabled() )
       {

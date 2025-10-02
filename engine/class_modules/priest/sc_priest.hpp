@@ -74,10 +74,8 @@ struct vision_of_nzoth_t;
 
 namespace actions::heals
 {
-struct essence_devourer_t;
 struct atonement_t;
 struct divine_aegis_t;
-struct cauterizing_shadows_t;
 struct crystalline_reflection_heal_t;
 struct crystalline_reflection_damage_t;
 struct echo_of_light_t;
@@ -106,8 +104,6 @@ public:
   {
     propagate_const<buff_t*> schism;
     propagate_const<buff_t*> death_and_madness_debuff;
-    propagate_const<buff_t*> apathy;
-    propagate_const<buff_t*> psychic_horror;
     buff_t* atonement;
     propagate_const<buff_t*> resonant_energy;
     propagate_const<buff_t*> horrific_visions;
@@ -309,7 +305,6 @@ public:
     player_talent_t twins_of_the_sun_priestess;
     player_talent_t void_shield;
     player_talent_t sanlayn;
-    player_talent_t apathy;
     // Row 7
     player_talent_t unwavering_will;
     player_talent_t twist_of_fate;
@@ -323,14 +318,7 @@ public:
     const spell_data_t* halo_dmg_holy;
     const spell_data_t* halo_heal_shadow;
     const spell_data_t* halo_dmg_shadow;
-    player_talent_t divine_star;
-    const spell_data_t* divine_star_heal_holy;
-    const spell_data_t* divine_star_dmg_holy;
-    const spell_data_t* divine_star_heal_shadow;
-    const spell_data_t* divine_star_dmg_shadow;
     player_talent_t translucent_image;
-    player_talent_t cauterizing_shadows;
-    const spell_data_t* cauterizing_shadows_spell;
     // Row 9
     player_talent_t surge_of_light;
     const spell_data_t* surge_of_light_buff;
@@ -342,10 +330,6 @@ public:
     player_talent_t benevolence;
     player_talent_t power_word_life;
     player_talent_t angelic_bulwark;
-    player_talent_t essence_devourer;
-    const spell_data_t* essence_devourer_shadowfiend;
-    const spell_data_t* essence_devourer_mindbender;
-    player_talent_t void_shift;
     player_talent_t phantom_reach;
 
     struct
@@ -361,7 +345,6 @@ public:
       player_talent_t mental_fortitude;
       player_talent_t misery;
       player_talent_t last_word;
-      player_talent_t psychic_horror;
       // Row 4
       player_talent_t thought_harvester;
       player_talent_t psychic_link;
@@ -766,7 +749,6 @@ public:
     propagate_const<gain_t*> insanity_idol_of_cthun_mind_sear;
     propagate_const<gain_t*> hallucinations_power_word_shield;
     propagate_const<gain_t*> insanity_maddening_touch;
-    propagate_const<gain_t*> cauterizing_shadows_health;
     propagate_const<gain_t*> shield_discipline;
     propagate_const<gain_t*> ascension_tww3_2pc;
     propagate_const<gain_t*> insanity_dark_thoughts;
@@ -831,14 +813,12 @@ public:
     propagate_const<action_t*> searing_light;
     propagate_const<action_t*> light_eruption;
     propagate_const<actions::spells::burning_vehemence_t*> burning_vehemence;
-    propagate_const<actions::heals::essence_devourer_t*> essence_devourer;
     propagate_const<actions::heals::atonement_t*> atonement;
     propagate_const<actions::heals::divine_aegis_t*> divine_aegis;
     propagate_const<actions::spells::entropic_rift_damage_t*> entropic_rift_damage;
     propagate_const<actions::spells::entropic_rift_t*> entropic_rift;
     propagate_const<actions::spells::collapsing_void_damage_t*> collapsing_void;
     propagate_const<actions::spells::halo_t*> halo;
-    propagate_const<actions::heals::cauterizing_shadows_t*> cauterizing_shadows;
     propagate_const<actions::heals::crystalline_reflection_heal_t*> crystalline_reflection_heal;
     propagate_const<actions::heals::crystalline_reflection_damage_t*> crystalline_reflection_damage;
     propagate_const<action_t*> echo_of_light;
@@ -894,9 +874,6 @@ public:
     double twist_of_fate_heal_rppm                = 0.0;
     timespan_t twist_of_fate_heal_duration_mean   = 2_s;
     timespan_t twist_of_fate_heal_duration_stddev = 0.25_s;
-
-    // The amount of allies to assume for Cauterizing Shadows healing
-    int cauterizing_shadows_allies = 3;
 
     // Force enables Devour Matter if the talent is active for all casts of Shadow Word: Death
     bool force_devour_matter = false;
@@ -1035,13 +1012,11 @@ public:
   void trigger_idol_of_nzoth( player_t* target, int stacks );
   double shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
-  void trigger_essence_devourer();
   spawner::pet_spawner_t<pet_t, priest_t>& get_current_main_pet();
   // Stores the currently active Entropic Rift event
   void trigger_entropic_rift();
   void extend_entropic_rift();
   void expand_entropic_rift( int stacks = -1 );
-  void trigger_cauterizing_shadows();
   std::string blizzard_apl_action_replace( std::string options );
 
   std::vector<action_t*> secondary_action_list;

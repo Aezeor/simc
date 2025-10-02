@@ -466,16 +466,6 @@ struct shadow_word_pain_t final : public priest_spell_t
     return priest_spell_t::ready();
   }
 
-  void last_tick( dot_t* d ) override
-  {
-    if ( priest().talents.cauterizing_shadows.enabled() )
-    {
-      priest().trigger_cauterizing_shadows();
-    }
-
-    priest_spell_t::last_tick( d );
-  }
-
   void trigger( player_t* target )
   {
     background = true;
@@ -487,18 +477,6 @@ struct shadow_word_pain_t final : public priest_spell_t
 
   void impact( action_state_t* s ) override
   {
-    // Trigger Cauterizing Shadows if you refreshed with less than 5 seconds
-    if ( priest().talents.cauterizing_shadows.enabled() )
-    {
-      priest_td_t& td = get_td( s->target );
-
-      if ( td.dots.shadow_word_pain->remains() <
-           timespan_t::from_seconds( priest().talents.cauterizing_shadows->effectN( 1 ).base_value() ) )
-      {
-        priest().trigger_cauterizing_shadows();
-      }
-    }
-
     priest_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
@@ -1184,44 +1162,6 @@ struct void_eruption_t final : public priest_spell_t
     }
 
     return priest_spell_t::ready();
-  }
-};
-
-// ==========================================================================
-// Psychic Horror
-// ==========================================================================
-struct psychic_horror_t final : public priest_spell_t
-{
-  psychic_horror_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "psychic_horror", p, p.talents.shadow.psychic_horror )
-  {
-    parse_options( options_str );
-    may_miss = may_crit   = false;
-    ignore_false_positive = true;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-
-    if ( s->target->type == ENEMY_ADD || target->level() < sim->max_player_level + 3 )
-    {
-      priest_td_t& td = get_td( s->target );
-      td.buffs.psychic_horror->trigger();
-      s->target->buffs.stunned->trigger( data().duration() );
-      s->target->stun();
-    }
-  }
-
-  bool target_ready( player_t* candidate_target ) override
-  {
-    if ( !priest_spell_t::target_ready( candidate_target ) )
-      return false;
-
-    if ( target->type == ENEMY_ADD || target->level() < sim->max_player_level + 3 )
-      return true;
-
-    return false;
   }
 };
 
@@ -2316,7 +2256,6 @@ void priest_t::init_spells_shadow()
   talents.shadow.mental_fortitude = ST( "Mental Fortitude" );
   talents.shadow.misery           = ST( "Misery" );
   talents.shadow.last_word        = ST( "Last Word" );
-  talents.shadow.psychic_horror   = ST( "Psychic Horror" );
   // Row 4
   talents.shadow.thought_harvester        = ST( "Thought Harvester" );
   talents.shadow.psychic_link             = ST( "Psychic Link" );
@@ -2475,10 +2414,6 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
   if ( name == "silence" )
   {
     return new silence_t( *this, options_str );
-  }
-  if ( name == "psychic_horror" )
-  {
-    return new psychic_horror_t( *this, options_str );
   }
   if ( name == "vampiric_embrace" )
   {

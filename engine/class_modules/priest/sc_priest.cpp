@@ -279,11 +279,6 @@ public:
 
       priest().trigger_psychic_link( s );
 
-      if ( priest().talents.apathy.enabled() && s->result == RESULT_CRIT )
-      {
-        td.buffs.apathy->trigger();
-      }
-
       if ( priest().talents.shadow.dark_thoughts.enabled() && priest().buffs.shadowy_insight->check() )
       {
         priest().generate_insanity( priest().talents.shadow.dark_thoughts->effectN( 1 ).resource( RESOURCE_INSANITY ),
@@ -423,128 +418,6 @@ struct angelic_feather_t final : public priest_spell_t
 
     return priest_spell_t::target_ready( candidate_target );
   }
-};
-
-// ==========================================================================
-// Divine Star
-// Base Spell, used for both heal and damage spell.
-// ==========================================================================
-struct divine_star_spell_t final : public priest_spell_t
-{
-  propagate_const<divine_star_spell_t*> return_spell;
-
-  divine_star_spell_t( util::string_view n, priest_t& p, const spell_data_t* s, bool is_return_spell = false )
-    : priest_spell_t( n, p, s ),
-      return_spell( ( is_return_spell ? nullptr : new divine_star_spell_t( n, p, s, true ) ) )
-  {
-    aoe = -1;
-
-    proc = background          = true;
-    affected_by_shadow_weaving = true;
-    triggers_atonement         = true;
-
-    // This is not found in the affected spells for Dark Ascension, overriding it manually
-    force_effect( p.buffs.dark_ascension, 1 );
-    // This is not found in the affected spells for Shadow Covenant, overriding it manually
-    // Final two params allow us to override the 25% damage buff when twilight corruption is selected (25% -> 35%)
-    force_effect( p.buffs.shadow_covenant, 1, IGNORE_STACKS, USE_DEFAULT );
-  }
-
-  // Hits twice, but only if you are at the correct distance
-  // 24 yards or less for 2 hits, 28 yards or less for 1 hit
-  void execute() override
-  {
-    double distance;
-
-    distance = priest_spell_t::player->get_player_distance( *target );
-
-    if ( distance <= 28 )
-    {
-      priest_spell_t::execute();
-
-      if ( return_spell && distance <= 24 )
-      {
-        return_spell->execute();
-      }
-    }
-  }
-};
-
-struct divine_star_heal_t final : public priest_heal_t
-{
-  propagate_const<divine_star_heal_t*> return_spell;
-
-  divine_star_heal_t( util::string_view n, priest_t& p, const spell_data_t* s, bool is_return_spell = false )
-    : priest_heal_t( n, p, s ), return_spell( ( is_return_spell ? nullptr : new divine_star_heal_t( n, p, s, true ) ) )
-  {
-    aoe = -1;
-
-    reduced_aoe_targets = p.talents.divine_star->effectN( 1 ).base_value();
-
-    proc = background = true;
-    disc_mastery      = true;
-    holy_mastery      = true;
-  }
-
-  // Hits twice, but only if you are at the correct distance
-  // 24 yards or less for 2 hits, 28 yards or less for 1 hit
-  // As this is the heal - Always hit.
-  void execute() override
-  {
-    priest_heal_t::execute();
-
-    if ( return_spell )
-    {
-      return_spell->execute();
-    }
-
-    if ( priest().buffs.twist_of_fate_heal_ally_fake->check() )
-    {
-      priest().buffs.twist_of_fate->trigger();
-    }
-  }
-};
-
-struct divine_star_t final : public priest_spell_t
-{
-  divine_star_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "divine_star", p, p.talents.divine_star ),
-      _heal_spell_holy( new divine_star_heal_t( "divine_star_heal_holy", p, p.talents.divine_star_heal_holy ) ),
-      _dmg_spell_holy( new divine_star_spell_t( "divine_star_damage_holy", p, p.talents.divine_star_dmg_holy ) ),
-      _heal_spell_shadow( new divine_star_heal_t( "divine_star_heal_shadow", p, p.talents.divine_star_heal_shadow ) ),
-      _dmg_spell_shadow( new divine_star_spell_t( "divine_star_damage_shadow", p, p.talents.divine_star_dmg_shadow ) )
-  {
-    parse_options( options_str );
-
-    dot_duration = base_tick_time = timespan_t::zero();
-
-    add_child( _heal_spell_holy );
-    add_child( _dmg_spell_holy );
-    add_child( _heal_spell_shadow );
-    add_child( _dmg_spell_shadow );
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    if ( priest().specialization() == PRIEST_SHADOW || priest().buffs.shadow_covenant->check() )
-    {
-      _heal_spell_shadow->execute();
-      _dmg_spell_shadow->execute();
-    }
-    else
-    {
-      _heal_spell_holy->execute();
-      _dmg_spell_holy->execute();
-    }
-  }
-
-private:
-  action_t* _heal_spell_holy;
-  action_t* _dmg_spell_holy;
-  action_t* _heal_spell_shadow;
-  action_t* _dmg_spell_shadow;
 };
 
 // ==========================================================================
@@ -2387,22 +2260,6 @@ struct power_word_life_t final : public priest_heal_t
 };
 
 // ==========================================================================
-// Essence Devourer
-// ==========================================================================
-struct essence_devourer_t final : public priest_heal_t
-{
-  essence_devourer_t( priest_t& p )
-    : priest_heal_t( "essence_devourer", p,
-                     p.talents.shared.mindbender.enabled() && !p.talents.voidweaver.voidwraith.enabled()
-                         ? p.talents.essence_devourer_mindbender
-                         : p.talents.essence_devourer_shadowfiend )
-  {
-    harmful = false;
-    proc    = true;
-  }
-};
-
-// ==========================================================================
 // Atonement
 // ==========================================================================
 struct atonement_t final : public priest_heal_t
@@ -2506,25 +2363,6 @@ struct divine_aegis_t final : public priest_absorb_t
     stats->add_result( 0.0, s->result_total, result_amount_type::ABSORB, s->result, s->block_result, s->target );
   }
 };
-
-// ==========================================================================
-// Cauterizing Shadows
-// ==========================================================================
-struct cauterizing_shadows_t final : public priest_heal_t
-{
-  cauterizing_shadows_t( priest_t& p ) : priest_heal_t( "cauterizing_shadows", p, p.talents.cauterizing_shadows_spell )
-  {
-    harmful = false;
-
-    may_miss = callbacks = false;
-    background = proc = true;
-
-    // They use an additional multiplier instead of just using spell power for some reason
-    base_dd_multiplier =
-        priest().talents.cauterizing_shadows->effectN( 2 ).percent() * priest().options.cauterizing_shadows_allies;
-  }
-};
-
 }  // namespace heals
 
 }  // namespace actions
@@ -2644,10 +2482,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
 
   buffs.schism = make_buff( *this, "schism", p.talents.discipline.schism_debuff );
   buffs.death_and_madness_debuff = make_buff<buffs::death_and_madness_debuff_t>( *this );
-  buffs.apathy =
-      make_buff( *this, "apathy", p.talents.apathy->effectN( 1 ).trigger() )->set_default_value_from_effect( 1 );
 
-  buffs.psychic_horror = make_buff( *this, "psychic_horror", p.talents.shadow.psychic_horror )->set_cooldown( 0_s );
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 
   buffs.atonement = make_buff( *this, "atonement", p.talents.discipline.atonement_buff )
@@ -2762,7 +2597,6 @@ void priest_t::create_gains()
   gains.insanity_idol_of_cthun_mind_sear = get_gain( "Insanity Gained from Idol of C'thun Mind Sear's" );
   gains.hallucinations_power_word_shield = get_gain( "Insanity Gained from Power Word: Shield with Hallucinations" );
   gains.insanity_maddening_touch         = get_gain( "Maddening Touch" );
-  gains.cauterizing_shadows_health       = get_gain( "Health from Cauterizing Shadows" );
   gains.shield_discipline                = get_gain( "Shield Discipline" );
   gains.ascension_tww3_2pc               = get_gain( "Ascension" );
   gains.insanity_dark_thoughts           = get_gain( "Dark Thoughts" );
@@ -3234,10 +3068,6 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
   {
     return new halo_t( *this, options_str );
   }
-  if ( name == "divine_star" )
-  {
-    return new divine_star_t( *this, options_str );
-  }
   if ( name == "levitate" )
   {
     return new levitate_t( *this, options_str );
@@ -3325,12 +3155,6 @@ void priest_t::init_base_stats()
   // Divine Star gets two hits if used at or below 24yd, only 1 up to 28yd. 0 hits from 29-30yd
   if ( base.distance < 1 )
   {
-    // Divine Star gets two hits if used at or below 24yd, only 1 up to 28yd. 0 hits from 29-30yd
-    if ( talents.divine_star.enabled() )
-    {
-      base.distance = 24.0;
-    }
-
     // Bug: Halo is a few yards short
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/1225
     if ( talents.halo.enabled() )
@@ -3588,7 +3412,6 @@ void priest_t::init_spells()
   talents.twins_of_the_sun_priestess = CT( "Twins of the Sun Priestess" );
   talents.void_shield                = CT( "Void Shield" );
   talents.sanlayn                    = CT( "San'layn" );
-  talents.apathy                     = CT( "Apathy" );
   // Row 7
   talents.unwavering_will    = CT( "Unwavering Will" );
   talents.twist_of_fate      = CT( "Twist of Fate" );
@@ -3602,14 +3425,7 @@ void priest_t::init_spells()
   talents.halo_dmg_holy             = find_spell( 120696 );
   talents.halo_heal_shadow          = find_spell( 390971 );
   talents.halo_dmg_shadow           = find_spell( 390964 );
-  talents.divine_star               = CT( "Divine Star" );
-  talents.divine_star_heal_holy     = find_spell( 110745 );
-  talents.divine_star_dmg_holy      = find_spell( 122128 );
-  talents.divine_star_heal_shadow   = find_spell( 390981 );
-  talents.divine_star_dmg_shadow    = find_spell( 390845 );
   talents.translucent_image         = CT( "Translucent Image" );
-  talents.cauterizing_shadows       = CT( "Cauterizing Shadows" );
-  talents.cauterizing_shadows_spell = find_spell( 459992 );  // Hold sp coeff
   // Row 9
   talents.surge_of_light         = CT( "Surge of Light" );
   talents.surge_of_light_buff    = find_spell( 114255 );
@@ -3621,10 +3437,6 @@ void priest_t::init_spells()
   talents.benevolence                  = CT( "Benevolence" );
   talents.power_word_life              = CT( "Power Word: Life" );
   talents.angelic_bulwark              = CT( "Angelic Bulwark" );  // NYI
-  talents.essence_devourer             = CT( "Essence Devourer" );
-  talents.essence_devourer_shadowfiend = find_spell( 415673 );   // actual healing spell for Shadowfiend
-  talents.essence_devourer_mindbender  = find_spell( 415676 );   // actual healing spell for Mindbender
-  talents.void_shift                   = CT( "Void Shift" );     // NYI
   talents.phantom_reach                = CT( "Phantom Reach" );  // NYI
 
   // PvP Talents
@@ -3910,10 +3722,8 @@ void priest_t::init_background_actions()
   player_t::init_background_actions();
 
   background_actions.shadow_word_death   = new actions::spells::shadow_word_death_t( *this, 200_ms );
-  background_actions.essence_devourer    = new actions::heals::essence_devourer_t( *this );
   background_actions.atonement           = new actions::heals::atonement_t( *this );
   background_actions.halo                = new actions::spells::halo_t( *this, true );
-  background_actions.cauterizing_shadows = new actions::heals::cauterizing_shadows_t( *this );
 
   // Voidweaver
   background_actions.entropic_rift        = new actions::spells::entropic_rift_t( *this );
@@ -4425,7 +4235,6 @@ void priest_t::create_options()
                             timespan_t::max() ) );
   add_option( opt_timespan( "priest.twist_of_fate_heal_duration_stddev", options.twist_of_fate_heal_duration_stddev,
                             0_s, timespan_t::max() ) );
-  add_option( opt_int( "priest.cauterizing_shadows_allies", options.cauterizing_shadows_allies, 0, 3 ) );
   add_option( opt_bool( "priest.force_devour_matter", options.force_devour_matter ) );
   add_option( opt_float( "priest.entropic_rift_miss_percent", options.entropic_rift_miss_percent, 0.0, 1.0 ) );
   add_option( opt_float( "priest.entropic_rift_miss_percent_secondary", options.entropic_rift_miss_percent_secondary,
@@ -4521,14 +4330,6 @@ void priest_t::trigger_atonement( action_state_t* s, double mul )
 void priest_t::trigger_divine_aegis( action_state_t* s )
 {
   background_actions.divine_aegis->execute_on_target( s->target, s->result_amount );
-}
-
-void priest_t::trigger_essence_devourer()
-{
-  if ( !talents.essence_devourer.enabled() )
-    return;
-
-  background_actions.essence_devourer->execute();
 }
 
 void priest_t::spawn_idol_of_cthun( action_state_t* s )
@@ -4657,17 +4458,6 @@ void priest_t::extend_entropic_rift()
       buffs.darkening_horizon->trigger();
     }
   }
-}
-
-// Cauterizing Shadows Trigger
-void priest_t::trigger_cauterizing_shadows()
-{
-  if ( !talents.cauterizing_shadows.enabled() )
-  {
-    return;
-  }
-
-  background_actions.cauterizing_shadows->execute();
 }
 
 class priest_report_t final : public player_report_extension_t
