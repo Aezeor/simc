@@ -1,11 +1,9 @@
-// Rank class spells, wow build 11.2.0.63305
-static constexpr std::array<rank_class_spell_t, 48> __rank_spells_data { {
+// Rank class spells, wow build 12.0.0.63534
+static constexpr std::array<rank_class_spell_t, 43> __rank_spells_data { {
   {  2,   66,  358934,       0, "Aegis of Light"                    , "Rank 2" },
   { 10,  269,  322719,       0, "Afterlife"                         , "Rank 2" },
-  {  9,  265,  231792,       0, "Agony"                             , "Rank 2" },
   { 11,  104,  270100,       0, "Bear Form"                         , "Rank 2" },
   { 10,  269,  261916,       0, "Blackout Kick"                     , "Rank 2" },
-  { 10,  269,  261917,       0, "Blackout Kick"                     , "Rank 3" },
   { 12,  577,  320402,       0, "Blade Dance"                       , "Rank 2" },
   {  4,  260,  331851,       0, "Blade Flurry"                      , "Rank 2" },
   {  2,   66,  344172,       0, "Consecration"                      , "Rank 2" },
@@ -13,6 +11,7 @@ static constexpr std::array<rank_class_spell_t, 48> __rank_spells_data { {
   {  2,   66,  342348,       0, "Crusader Strike"                   , "Rank 2" },
   {  2,   70,  342348,       0, "Crusader Strike"                   , "Rank 2" },
   {  6,  252,  325554,       0, "Dark Transformation"               , "Rank 2" },
+  { 12,  581,  321028,       0, "Demon Spikes"                      , "Rank 2" },
   { 10,  269,  343731,       0, "Disable"                           , "Rank 2" },
   { 11,    0,  343238,       0, "Entangling Roots"                  , "Rank 2" },
   {  4,  261,  231716,       0, "Eviscerate"                        , "Rank 2" },
@@ -31,12 +30,10 @@ static constexpr std::array<rank_class_spell_t, 48> __rank_spells_data { {
   {  7,    0,  318044,       0, "Lightning Bolt"                    , "Rank 2" },
   {  2,   66,  317907,       0, "Mastery: Divine Bulwark"           , "Rank 2" },
   { 12,  581,  321299,       0, "Mastery: Fel Blood"                , "Rank 2" },
-  {  8,   64,  321684,       0, "Mastery: Icicles"                  , "Rank 2" },
   {  4,  259,  319473,       0, "Mastery: Potent Assassin"          , "Rank 2" },
   { 12,  581,  321067,       0, "Metamorphosis"                     , "Rank 2" },
   { 12,  581,  321068,       0, "Metamorphosis"                     , "Rank 2" },
   { 11,  102,  326646,       0, "Moonfire"                          , "Rank 2" },
-  { 12,  581,  321021,       0, "Soul Cleave"                       , "Rank 2" },
   {  9,  265,  231811,       0, "Soulstone"                         , "Rank 2" },
   {  9,  266,  231811,       0, "Soulstone"                         , "Rank 2" },
   {  9,  267,  231811,       0, "Soulstone"                         , "Rank 2" },
@@ -44,8 +41,6 @@ static constexpr std::array<rank_class_spell_t, 48> __rank_spells_data { {
   { 10,  268,  325095,       0, "Touch of Death"                    , "Rank 3" },
   { 10,  269,  325215,       0, "Touch of Death"                    , "Rank 3" },
   { 11,    0,  159456,       0, "Travel Form"                       , "Rank 2" },
-  {  9,  265,  231791,       0, "Unstable Affliction"               , "Rank 2" },
-  {  9,  265,  334315,       0, "Unstable Affliction"               , "Rank 3" },
   {  1,    0,  319158,       0, "Victory Rush"                      , "Rank 2" },
   {  2,   66,  315921,       0, "Word of Glory"                     , "Rank 2" },
 } };

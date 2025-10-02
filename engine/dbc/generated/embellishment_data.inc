@@ -1,5 +1,5 @@
-// Embellishment data, wow build 11.2.0.63305
-static constexpr std::array<embellishment_data_t, 32> __embellishment_data { {
+// Embellishment data, wow build 12.0.0.63534
+static constexpr std::array<embellishment_data_t, 40> __embellishment_data { {
   { "Armor Spikes", 8188, 147859 },
   { "Potion Absorption Inhibitor", 8175, 147812 },
   { "Alchemical Flavor Pocket", 8174, 147811 },
@@ -32,5 +32,13 @@ static constexpr std::array<embellishment_data_t, 32> __embellishment_data { {
   { "Dawnthread Lining", 11303, 187453 },
   { "Duskthread Lining", 11304, 187454 },
   { "Griftah's Heavy-Duty Embellishing Powder", 11941, 190239 },
+  { "Arcanoweave Lining", 12384, 208649 },
+  { "Sunfire Silk Lining", 12385, 208662 },
+  { "Devouring Banding", 12685, 212929 },
+  { "Blessed Pango Charm", 12686, 212930 },
+  { "Primal Spore Binding", 12687, 212945 },
+  { "Lucky Keychain", 12715, 213317 },
+  { "Prismatic Focusing Iris", 13453, 215077 },
+  { "Stabilizing Gemstone Bandolier", 13454, 215078 },
 } };
 

@@ -1,5 +1,5 @@
-// Item effects, wow build 11.2.0.63305
-static constexpr std::array<item_effect_t, 10146> __item_effect_data { {
+// Item effects, wow build 12.0.0.63534
+static constexpr std::array<item_effect_t, 10795> __item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -844,6 +844,8 @@ static constexpr std::array<item_effect_t, 10146> __item_effect_data { {
   { 203615, 474652,      0,   0,   1,    0,      -1,      -1 }, // Call Galefeather
   { 205124, 1217214,      0,   0,   0,    0,      -1,      -1 }, // C.H.E.T.T. List
   { 205125, 1219241,      0,   0,   7,    0,      -1,      -1 }, // C.H.E.T.T. List
+  { 206753, 1223471,      0,   0,   1,    0,      -1,      -1 }, // Treatise of the Council's Wisdom
+  { 206762, 1223600,      0,   0,   1,    0,      -1,      -1 }, // Skrog Tooth
   { 206859, 1223886,      0,   0,   1,    0,      -1,      -1 }, // Hallowed Tome of the Abbot
   { 206860, 1223899,      0,   0,   1,    0,      -1,      -1 }, // Hallowed Tome of the Zealot
   { 206861, 1223902,      0,   0,   1,    0,      -1,      -1 }, // Hallowed Tome of the Crusader
@@ -907,10 +909,108 @@ static constexpr std::array<item_effect_t, 10146> __item_effect_data { {
   { 207468, 1225232,      0,   0,   1,    0,      -1,      -1 }, // Excerpt on Dark Summons
   { 207469, 1225233,      0,   0,   1,    0,      -1,      -1 }, // Excerpt on Sacrificial Rituals
   { 207470, 1225234,      0,   0,   1,    0,      -1,      -1 }, // Excerpt on Prophetic Death
+  { 208649, 1229511,      0,   0,   6,    0,      -1,      -1 }, // Arcanoweave Lining
+  { 208662, 1241711,      0,   0,   6,    0,      -1,      -1 }, // Sunfire Silk Lining
+  { 212295, 1234416,      0,   0,   1,    0,      -1,      -1 }, // Volatile Magics
+  { 212364, 1234414,      0,   0,   1,    0,      -1,      -1 }, // Volatile Magics
+  { 212382, 1234413,      0,   0,   1,    0,      -1,      -1 }, // Volatile Magics
+  { 212383, 1234363,      0,   0,   1,    0,      -1,      -1 }, // Touch of Malice
+  { 212384, 1234398,      0,   0,   1,    0,      -1,      -1 }, // Terror from Below
+  { 212385, 1234433,      0,   0,   1,    0,      -1,      -1 }, // Highmountain Fortitude
+  { 212386, 1234428,      0,   0,   1,    0,      -1,      -1 }, // Souls of the Caw
+  { 212387, 1234426,      0,   0,   1,    0,      -1,      -1 }, // Arcane Aegis
+  { 212388, 1234418,      0,   0,   1,    0,      -1,      -1 }, // Temporal Retaliation
+  { 212929, 1244238,      0,   0,   1,    0,      -1,      -1 }, // Devouring Banding
+  { 212930, 1244243,      0,   0,   1,    0,      -1,      -1 }, // Blessed Pango Charm
+  { 212945, 1244276,      0,   0,   1,    0,      -1,      -1 }, // Primal Spore Binding
+  { 213044, 1245055,      0,   0,   1,    0,      -1,      -1 }, // Rot
+  { 213045, 1245054,      0,   0,   1,    0,      -1,      -1 }, // Hunt
+  { 213244, 1245965,      0,   0,   1,    0,      -1,      -1 }, // Blood
+  { 213245, 1245053,      0,   0,   1,    0,      -1,      -1 }, // Blood
+  { 213317, 1246298,      0,   0,   1,    0,      -1,      -1 }, // Lucky Keychain
+  { 213319, 1246299,      0,   0,   1,    0,      -1,      -1 }, // Lucky Keychain
+  { 213322, 1246308,      0,   0,   0,    0,      -1,      -1 }, // Kinetic Ankle Primers
+  { 213453, 1246309,      0,   0,   0,    0,      -1,      -1 }, // Soul Sear Matrix
+  { 213454, 1246312,      0,   0,   1,    0,      -1,      -1 }, // Meddy, Pocket-Sized
+  { 213707, 1248523,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213708, 1248525,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213709, 1248526,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213710, 1248527,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213711, 1248551,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213712, 1248532,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213713, 1248531,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213714, 1248529,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213715, 1248555,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213716, 1248554,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213717, 1248553,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213718, 1248552,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213719, 1248559,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213720, 1248558,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213721, 1248557,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213722, 1248556,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213723, 1248564,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213724, 1248562,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213725, 1248561,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213726, 1248560,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213727, 1248578,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213728, 1248577,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213729, 1248566,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213730, 1248565,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213731, 1248579,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213732, 1248580,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213733, 1248581,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213734, 1248582,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213735, 1248583,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213736, 1248584,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213737, 1248585,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213738, 1248586,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213739, 1248587,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213740, 1248588,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213741, 1248589,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213742, 1248590,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213743, 1248591,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213744, 1248592,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213745, 1248593,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 213746, 1248594,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 214272, 1250717,      0,   0,   5,    0,      -1,      -1 }, // Infinite Power
+  { 214327, 1250753,      0,   0,   5,    0,      -1,      -1 }, // Infinite Power
+  { 214328, 1250750,      0,   0,   5,    0,      -1,      -1 }, // Infinite Power
+  { 214329, 1250757,      0,   0,   5,    0,      -1,      -1 }, // Infinite Power
+  { 214331, 1250751,      0,   0,   5,    0,      -1,      -1 }, // Infinite Power
+  { 214332, 1250760,      0,   0,   5,    0,      -1,      -1 }, // Infinite Power
+  { 214333, 1250552,      0,   0,   1,    0,      -1,      -1 }, // Infinite Power
+  { 215077, 1251906,      0,   0,   1,    0,      -1,      -1 }, // Prismatic Focusing Iris
+  { 215078, 1251905,      0,   0,   1,    0,      -1,      -1 }, // Stabilizing Gemstone Bandolier
+  { 215497, 1234358,      0,   0,   1,    0,      -1,      -1 }, // I Am My Scars!
+  { 215532, 1253870,      0,   0,   1,    0,      -1,      -1 }, // Light's Vengeance
   { 215869, 1254906,      0,   0,   1,    0,      -1,      -1 }, // Reshii Grace
   { 215870, 1254904,      0,   0,   1,    0,      -1,      -1 }, // Reshii Grace
   { 215871, 1254905,      0,   0,   1,    0,      -1,      -1 }, // Reshii Grace
   { 215872, 1235409,      0,   0,   1,    0,      -1,      -1 }, // Reshii Grace
+  { 224298, 1258771,      0,   0,   1,    0,      -1,      -1 }, // Brewing Storm
+  { 224299, 1258770,      0,   0,   1,    0,      -1,      -1 }, // Brewing Storm
+  { 224300, 1258769,      0,   0,   1,    0,      -1,      -1 }, // Brewing Storm
+  { 224301, 1258768,      0,   0,   1,    0,      -1,      -1 }, // Brewing Storm
+  { 224964, 1259648,      0,   0,   0,    0,      -1,      -1 }, // Cloaker
+  { 225135, 1260254,      0,   0,   1,    0,      -1,      -1 }, // Griftah's Fool-Proof Embellishing Powder
+  { 225864, 1261812,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 225865, 1261818,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 225866, 1261817,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 225867, 1261816,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 225885, 1261971,      0,   0,   1,    0,      -1,      -1 }, // M0LL1, Atomic Anomaly
+  { 225886, 1261968,      0,   0,   1,    0,      -1,      -1 }, // B0P, Curator of Booms
+  { 225898, 1262072,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 225899, 1262071,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 225900, 1262070,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 225901, 1262069,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 225914, 1262113,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 225915, 1262186,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 225916, 1262188,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 225917, 1262189,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 225918, 1262268,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 225919, 1262270,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 225920, 1262271,      0,   0,   0,    0,      -1,      -1 }, // Adding
+  { 225921, 1262272,      0,   0,   0,    0,      -1,      -1 }, // Adding
   { 116155, 315277,      0,   2,   1,    0,      -1,      -1 }, // Strikethrough
   { 116221, 315529,      0,   2,   1,    0,      -1,      -1 }, // Masterful
   { 116222, 315530,      0,   2,   1,    0,      -1,      -1 }, // Masterful
@@ -982,6 +1082,10 @@ static constexpr std::array<item_effect_t, 10146> __item_effect_data { {
   { 139263, 358567,      0,   2,   1,    0,      -1,      -1 }, // Harsh Tutelage
   { 139264, 358569,      0,   2,   1,    0,      -1,      -1 }, // Harsh Tutelage
   { 139265, 358571,      0,   2,   1,    0,      -1,      -1 }, // Harsh Tutelage
+  { 213562, 1247568,      0,   2,   1,    0,      -1,      -1 }, // Drum of Renewed Bonds
+  { 213563, 1247569,      0,   2,   1,    0,      -1,      -1 }, // Drum of Renewed Bonds
+  { 213564, 1247570,      0,   2,   1,    0,      -1,      -1 }, // Drum of Renewed Bonds
+  { 213565, 1247571,      0,   2,   1,    0,      -1,      -1 }, // Drum of Renewed Bonds
   { 116156, 315281,      0,   3,   1,    0,      -1,      -1 }, // Strikethrough
   { 116157, 315282,      0,   4,   1,    0,      -1,      -1 }, // Strikethrough
   {      9,  17152,    647,   0,   2,    0,      -1,      -1 }, // Destiny
@@ -3081,6 +3185,7 @@ static constexpr std::array<item_effect_t, 10146> __item_effect_data { {
   {  12092,  92185,  56347,   0,   1,    0,      -1,      -1 }, // Lead Plating
   {  12093,  91140,  56351,   0,   1,    0,      -1,      -1 }, // Cleansing Tears
   {  12094,  92187,  56370,   0,   0, 1190,  180000,  180000 }, // Amazing Fortitude
+  { 218559, 1256126,  56370,   1,   1,    0,      -1,      -1 }, // Amazing Fortitude
   {  12095,  91144,  56377,   0,   1,    0,      -1,      -1 }, // Rainsong
   {  12096,  91365,  56393,   0,   1,    0,      -1,      -1 }, // Heartened
   {  12097,  92090,  56394,   0,   1,    0,      -1,      -1 }, // Grace
@@ -5989,7 +6094,6 @@ static constexpr std::array<item_effect_t, 10146> __item_effect_data { {
   {  27793, 205387, 128858,   3,   7,    0,      -1,      -1 }, // Scythe of Elune
   {  27130, 197886, 128860,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
   {  27131, 214843, 128860,   1,   1,    0,      -1,      -1 }, // Ashamane's Frenzy
-  {  28382, 212994, 128860,   3,   7,    0,      -1,      -1 }, // Retrieving the Fangs of Ashamane
   {  27136, 197886, 128861,   0,   1,    0,      -1,      -1 }, // 7.0 Artifacts - All Weapons - General Weapon Equipped Passive (CSA)
   {  27137, 212009, 128861,   1,   7,    0,      -1,      -1 }, // Titanstrike
   {  27440, 197344, 128861,   2,   1,    0,      -1,      -1 }, // Hati's Bond
@@ -7299,6 +7403,7 @@ static constexpr std::array<item_effect_t, 10146> __item_effect_data { {
   { 109301, 268546, 158225,   0,   1,    0,      -1,      -1 }, // Exposure
   { 109205, 265954, 158319,   0,   0,    0,      -1,      -1 }, // Touch of Gold
   { 109207, 266018, 158320,   0,   0,    0,      -1,      -1 }, // Touch of the Voodoo
+  { 226912, 1265990, 158320,   1,   1,    0,      -1,      -1 }, // Revitalizing Voodoo Totem
   { 109209, 267402, 158367,   0,   0,    0,      -1,      -1 }, // Noxious Venom Gland
   { 109431, 271054, 158368,   0,   0,    0,      -1,      -1 }, // Fangs of Intertwined Essence
   { 111398, 281723, 158371,   0,   1,    0,      -1,      -1 }, // Seabreeze
@@ -9683,6 +9788,7 @@ static constexpr std::array<item_effect_t, 10146> __item_effect_data { {
   { 187030, 395472, 222577,   1,   1,    0,      -1,      -1 }, // Cooking Gear Equipped (DNT)
   { 187026, 455772, 222578,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 187027, 395472, 222578,   1,   1,    0,      -1,      -1 }, // Cooking Gear Equipped (DNT)
+  { 213187, 1245621, 222650,   0,   1,    0,      -1,      -1 }, // Pigments of the Wind
   { 192984, 463610, 222653,   0,   1,    0,      -1,      -1 }, // Symbiosis
   { 190840, 463611, 222671,   0,   1,    0,      -1,      -1 }, // Vivacity
   { 190089, 463095, 222680,   0,   1,    0,      -1,      -1 }, // Ascendance
@@ -10027,9 +10133,12 @@ static constexpr std::array<item_effect_t, 10146> __item_effect_data { {
   { 205070, 454149, 235805,   0,   0,   11,       0,      -1 }, // Refreshment
   { 205073, 1218442, 235813,   0,   1,    0,      -1,      -1 }, // Machine Gob's Iron Grin
   { 205099, 457482, 235853,   0,   0,   11,       0,      -1 }, // Hearty Tier 4.2 Meal
+  { 205128, 1219187, 235919,   0,   0,   11,       0,      -1 }, // Refreshment
   { 205131, 1219294, 235984,   0,   0,    0,      -1,      -1 }, // Garbagemancer's Last Resort
   { 205132, 1219296, 235984,   1,   1,    0,      -1,      -1 }, // Garbagemancer's Last Resort
   { 205148, 443568, 236003,   1,   1,    0,      -1,      -1 }, // Fate Weaver
+  { 206176, 1233922, 236772,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209477, 1233913, 236772,   1,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
   { 207880, 1234212, 237394,   0,   1,    0,      -1,      -1 }, // One of the Devout
   { 207889, 1234212, 237403,   0,   1,    0,      -1,      -1 }, // One of the Devout
   { 207898, 1234212, 237411,   0,   1,    0,      -1,      -1 }, // One of the Devout
@@ -10042,6 +10151,13 @@ static constexpr std::array<item_effect_t, 10146> __item_effect_data { {
   { 210517, 1235136, 237728,   0,   1,    0,      -1,      -1 }, // Shards of the Void
   { 210518, 1235136, 237730,   0,   1,    0,      -1,      -1 }, // Shards of the Void
   { 210516, 1235136, 237735,   0,   1,    0,      -1,      -1 }, // Shards of the Void
+  { 206739, 1233922, 237746,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209888, 1233913, 237746,   1,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 206742, 240856, 237748,   0,   1,    0,      -1,      -1 }, // Flail Applicator
+  { 209887, 1233913, 237749,   0,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 206745, 1233922, 237749,   2,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 206771, 1223471, 237755,   0,   1,    0,      -1,      -1 }, // Treatise of the Council's Wisdom
+  { 206775, 1223600, 237771,   0,   1,    0,      -1,      -1 }, // Skrog Tooth
   { 207756, 1224456, 237775,   0,   1,    0,      -1,      -1 }, // Cut of the Curseblade
   { 207766, 1224457, 237776,   0,   1,    0,      -1,      -1 }, // Shadow Quake
   { 207767, 1224459, 237777,   0,   1,    0,      -1,      -1 }, // Shadowalker's Aegis
@@ -10058,11 +10174,64 @@ static constexpr std::array<item_effect_t, 10146> __item_effect_data { {
   { 207761, 1224456, 237788,   0,   1,    0,      -1,      -1 }, // Cut of the Curseblade
   { 207773, 1224456, 237789,   0,   1,    0,      -1,      -1 }, // Cut of the Curseblade
   { 207772, 1224458, 237790,   0,   1,    0,      -1,      -1 }, // Draining Essence
+  { 206921, 1234139, 237946,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206922, 1234151, 237947,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206923, 455727, 237948,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206925, 1234140, 237950,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206926, 1234152, 237951,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206927, 1234184, 237952,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206930, 455757, 238009,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206931, 395185, 238009,   1,   1,    0,      -1,      -1 }, // Herbalism Tool Equipped (DNT)
+  { 206932, 455768, 238010,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206933, 394872, 238010,   1,   1,    0,      -1,      -1 }, // Mining Tool Equipped (DNT)
+  { 206934, 455740, 238011,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206935, 395335, 238011,   1,   1,    0,      -1,      -1 }, // Skinning Tool Equipped (DNT)
+  { 206936, 455692, 238012,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206937, 395393, 238012,   1,   1,    0,      -1,      -1 }, // Leatherworking Tool Equipped (DNT)
+  { 206938, 455694, 238013,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206939, 395392, 238013,   1,   1,    0,      -1,      -1 }, // Blacksmithing Tool Equipped (DNT)
+  { 206940, 455698, 238014,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206941, 395185, 238014,   1,   1,    0,      -1,      -1 }, // Herbalism Tool Equipped (DNT)
+  { 206942, 455723, 238015,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206943, 394872, 238015,   1,   1,    0,      -1,      -1 }, // Mining Tool Equipped (DNT)
+  { 206944, 455771, 238016,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206945, 395335, 238016,   1,   1,    0,      -1,      -1 }, // Skinning Tool Equipped (DNT)
+  { 206946, 455754, 238017,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206947, 395393, 238017,   1,   1,    0,      -1,      -1 }, // Leatherworking Tool Equipped (DNT)
+  { 206948, 455782, 238018,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206949, 395392, 238018,   1,   1,    0,      -1,      -1 }, // Blacksmithing Tool Equipped (DNT)
   { 207392, 1224856, 238386,   0,   1,    0,      -1,      -1 }, // Void-Touched Fragment
   { 207401, 1224917, 238386,   1,   1,    0,      -1,      -1 }, // Void-Touched Fragment
   { 207396, 1224870, 238390,   0,   1,    0,      -1,      -1 }, // Soulbreaker's Sigil
   { 207399, 1223952, 238391,   0,   1,    0,      -1,      -1 }, // Devout
   { 207400, 1224902, 238391,   1,   1,    0,      -1,      -1 }, // Arathor Minister's Receptacle
+  { 207948, 265285, 239133,   1,   1,    0,      -1,      -1 }, // Infinity Blade
+  { 210055, 1234188, 239635,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 210056, 395473, 239635,   1,   1,    0,      -1,      -1 }, // Alchemy Gear Equipped (DNT)
+  { 210053, 1234180, 239636,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 210054, 395472, 239636,   1,   1,    0,      -1,      -1 }, // Cooking Gear Equipped (DNT)
+  { 210051, 1234176, 239637,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 210052, 395469, 239637,   1,   1,    0,      -1,      -1 }, // Enchanting Gear Equipped (DNT)
+  { 210049, 1234168, 239638,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 210050, 395476, 239638,   1,   1,    0,      -1,      -1 }, // Fishing Gear Equipped (DNT)
+  { 210047, 1234164, 239639,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 210048, 395478, 239639,   1,   1,    0,      -1,      -1 }, // Herbalism Gear Equipped (DNT)
+  { 210045, 1234140, 239640,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 210046, 395471, 239640,   1,   1,    0,      -1,      -1 }, // Tailoring Gear Equipped (DNT)
+  { 210043, 1234187, 239641,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 210044, 395473, 239641,   1,   1,    0,      -1,      -1 }, // Alchemy Gear Equipped (DNT)
+  { 210041, 1234179, 239642,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 210042, 395472, 239642,   1,   1,    0,      -1,      -1 }, // Cooking Gear Equipped (DNT)
+  { 210039, 1234175, 239643,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 210040, 395469, 239643,   1,   1,    0,      -1,      -1 }, // Enchanting Gear Equipped (DNT)
+  { 210037, 1234167, 239644,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 210038, 395476, 239644,   1,   1,    0,      -1,      -1 }, // Fishing Gear Equipped (DNT)
+  { 210035, 1234163, 239645,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 210036, 395478, 239645,   1,   1,    0,      -1,      -1 }, // Herbalism Gear Equipped (DNT)
+  { 210033, 1234139, 239646,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 210034, 395471, 239646,   1,   1,    0,      -1,      -1 }, // Tailoring Gear Equipped (DNT)
+  { 212515, 1241503, 239663,   0,   1,    0,      -1,      -1 }, // Sunfire Sash
+  { 212516, 1241227, 239664,   0,   1,    0,      -1,      -1 }, // Arcanoweave Cord
   { 208799, 1231065, 240171,   0,   1,    0,      -1,      -1 }, // Observer's Soul Fetters
   { 208800, 1230281, 240171,   1,   1,    0,      -1,      -1 }, // Observer's Soul Fetters
   { 208802, 1230285, 240171,   2,   0,    0,      -1,      -1 }, // Observer's Soul Fetters
@@ -10071,8 +10240,64 @@ static constexpr std::array<item_effect_t, 10146> __item_effect_data { {
   { 208926, 1231217, 240213,   0,   1,    0,      -1,      -1 }, // Veiling Mana Shroud
   { 208927, 1231220, 240213,   1,   1,    0,      -1,      -1 }, // Veiling Mana Ward
   { 209261, 1231665, 240214,   0,   1,    0,      -1,      -1 }, // Miniature Reshi Sandgarden
+  { 208795, 1251815, 241139,   0,   1,    0,      -1,      -1 }, // Thalassian Phoenix Torque
+  { 208797, 1251902, 241140,   1,   1,    0,      -1,      -1 }, // Signet of Azerothian Blessings
+  { 211403, 1236994, 241288,   0,   0,    0,      -1,      -1 }, // Potion of Recklessness
+  { 211397, 1236994, 241289,   0,   0,    0,      -1,      -1 }, // Potion of Recklessness
+  { 211505, 1236998, 241293,   0,   0,    0,      -1,      -1 }, // Draught of Rampant Abandon
+  { 212013, 1238443, 241296,   0,   0,    0,      -1,      -1 }, // Potion of Zealotry
+  { 211997, 1238443, 241297,   0,   0,    0,      -1,      -1 }, // Potion of Zealotry
+  { 211347, 1236616, 241308,   0,   0,    0,      -1,      -1 }, // Light Potion Stats
+  { 211346, 1236616, 241309,   0,   0,    0,      -1,      -1 }, // Light Potion Stats
+  { 210507, 1235057, 241320,   0,   0,    0,      -1,      -1 }, // Midnight Versatility Flask
+  { 210506, 1235057, 241321,   0,   0,    0,      -1,      -1 }, // Midnight Versatility Flask
+  { 210509, 1235108, 241322,   0,   0,    0,      -1,      -1 }, // Midnight Mastery Flask
+  { 210510, 1235108, 241323,   0,   0,    0,      -1,      -1 }, // Midnight Mastery Flask
+  { 210513, 1235110, 241324,   0,   0,    0,      -1,      -1 }, // Midnight Haste Flask
+  { 210514, 1235110, 241325,   0,   0,    0,      -1,      -1 }, // Midnight Haste Flask
+  { 210512, 1235111, 241326,   0,   0,    0,      -1,      -1 }, // Midnight Critical Strike Flask
+  { 210511, 1235111, 241327,   0,   0,    0,      -1,      -1 }, // Midnight Critical Strike Flask
+  { 208941, 432421, 241340,   0,   1,    0,      -1,      -1 }, // Algari Alchemist Stone
+  { 208942,  17619, 241340,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
   { 209286, 1231936, 242260,   0,   0,    0,      -1,      -1 }, // Arsenal: Children's Stormwind Guard Weapon Set
   { 209287, 1231938, 242265,   0,   0,    0,      -1,      -1 }, // Arsenal: Children's Orgrimmar Guard Weapon Set
+  { 211401, 1259657, 242272,   0,   0,   11,       0,      -1 }, // Quel'dorei Medley
+  { 211400, 1259656, 242273,   0,   0,   11,       0,      -1 }, // Blooming Feast
+  { 209642, 1232919, 242274,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209641, 1232917, 242275,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209640, 1232916, 242276,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209639, 1232915, 242277,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209638, 1232914, 242278,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209637, 1232913, 242279,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209636, 1232910, 242280,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209635, 1232909, 242281,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209634, 1232908, 242282,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209633, 1232907, 242283,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209632, 1232906, 242284,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209631, 1232905, 242285,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209630, 1232903, 242286,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209629, 1232902, 242287,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209465, 1232489, 242288,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209464, 1232488, 242289,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209466, 1232487, 242290,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209467, 1232486, 242291,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209627, 1232485, 242292,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209626, 1232484, 242293,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209628, 1219187, 242294,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209624, 1232483, 242295,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209623, 1232481, 242296,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209646, 1232928, 242298,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209644, 1232927, 242299,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209645, 1232926, 242300,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209643, 1232925, 242301,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209369, 1232257, 242302,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209368, 1232256, 242303,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209367, 1232253, 242304,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209366, 1232252, 242305,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209365, 1232251, 242306,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209364, 1232250, 242307,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209363, 1232249, 242308,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209362, 1232246, 242309,   0,   0,    0,      -1,      -1 }, // Refreshment
   { 210556, 1235218, 242391,   0,   1,    0,      -1,      -1 }, // Soulbinder's Embrace
   { 210588, 1235425, 242391,   1,   0,    0,      -1,      -1 }, // Soulbinder's Embrace
   { 209373, 1234996, 242392,   1,   1,    0,      -1,      -1 }, // Diamantine Voidcore
@@ -10097,14 +10322,266 @@ static constexpr std::array<item_effect_t, 10146> __item_effect_data { {
   { 212862, 1244029, 242494,   0,   0,    0,      -1,      -1 }, // Woven Fate
   { 212743, 1243118, 242495,   0,   1,    0,      -1,      -1 }, // Incorporeal Warpclaw
   { 212843, 1243818, 242497,   0,   1,    0,      -1,      -1 }, // Azhiccaran Parapodia
+  { 209461, 1232257, 242530,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209462, 1232257, 242531,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209463, 1232257, 242532,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209479, 196118, 242555,   1,   1,    0,      -1,      -1 },
+  { 209480, 1233922, 242555,   2,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209592, 1233913, 242555,   3,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209883, 1233922, 242556,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209884, 1233913, 242556,   1,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209485, 1233922, 242558,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209619, 1233913, 242558,   2,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209488, 1233922, 242559,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209876, 1233913, 242559,   1,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209491, 1233922, 242561,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209878, 1233913, 242561,   1,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209494, 1233922, 242562,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209875, 1233913, 242562,   1,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209497, 1233922, 242563,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209877, 1233913, 242563,   1,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209501, 1233922, 242564,   1,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209598, 1233913, 242564,   2,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209503, 190435, 242565,   0,   7,    0,      -1,      -1 }, // The Blades of the Fallen Prince
+  { 209506, 1233922, 242566,   2,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209618, 1233913, 242566,   3,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209508, 1233922, 242567,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209600, 1233913, 242567,   3,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209512, 1233922, 242568,   1,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209620, 1233913, 242568,   3,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209514, 1233922, 242569,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209879, 1233913, 242569,   1,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209517, 1233922, 242571,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209590, 1233913, 242571,   3,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209521, 1233922, 242573,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209594, 1233913, 242573,   3,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209524, 1233922, 242574,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209617, 1233913, 242574,   1,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209527, 1233922, 242575,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209528, 221441, 242575,   1,   1,    0,      -1,      -1 },
+  { 209595, 1233913, 242575,   4,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209531, 1233922, 242577,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209882, 1233913, 242577,   1,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209534, 1233922, 242578,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209881, 1233913, 242578,   1,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209537, 1233922, 242580,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209880, 1233913, 242580,   1,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209540, 1233922, 242581,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209616, 1233913, 242581,   3,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209543, 1233922, 242582,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209621, 1233913, 242582,   2,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209547, 1233922, 242583,   1,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209591, 1233913, 242583,   3,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209549, 240863, 242584,   0,   1,    0,      -1,      -1 }, // Flail Applicator
+  { 209550, 1233922, 242585,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209593, 1233913, 242585,   1,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209553, 1233922, 242587,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209596, 1233913, 242587,   4,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209557, 1233922, 242588,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209597, 1233913, 242588,   1,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209601, 1233913, 242591,   1,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209564, 1233922, 242591,   2,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209566, 1233922, 242593,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209599, 1233913, 242593,   2,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209569, 1233922, 242595,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209606, 1233913, 242595,   3,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209572, 1233922, 242596,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209605, 1233913, 242596,   3,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209575, 1233922, 242597,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209589, 1233913, 242597,   1,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209578, 1233922, 242598,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209604, 1233913, 242598,   3,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209581, 1233922, 242599,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209602, 1233913, 242599,   1,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209584, 1233922, 242600,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 209585, 222649, 242600,   1,   1,    0,      -1,      -1 }, // Thal'kiel Main Area Talk Buff
+  { 209603, 1233913, 242600,   4,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
+  { 209588, 205077, 242605,   4,   1,    0,      -1,      -1 }, // 1H Weapon Equipped Passive
   { 211229, 1233515, 242664,   0,   1,    0,      -1,      -1 }, // Durable Information Securing Container
   { 211234, 1236138, 242664,   1,   1,    0,      -1,      -1 }, // Durable Information Securing Container
   { 211235, 1233262, 242664,   2,   0,    0,      -1,      -1 }, // Durable Information Securing Container
   { 211236, 1236137, 242664,   3,   1,    0,      -1,      -1 }, // Durable Information Securing Container
+  { 209827, 1232919, 242746,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209828, 1232917, 242747,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209829, 1232916, 242748,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209830, 1232915, 242749,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209831, 1232914, 242750,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209832, 1232913, 242751,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209833, 1232910, 242752,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209834, 1232909, 242753,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209835, 1232908, 242754,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209836, 1232907, 242755,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209837, 1232906, 242756,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209838, 1232905, 242757,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209839, 1232903, 242758,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209840, 1232902, 242759,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209841, 1232489, 242760,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209842, 1232488, 242761,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209843, 1232487, 242762,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209844, 1232486, 242763,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209845, 1232485, 242764,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209846, 1232484, 242765,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209847, 1219187, 242766,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209848, 1232483, 242767,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209849, 1232481, 242768,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209850, 1232257, 242769,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209851, 1232256, 242770,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209852, 1232253, 242771,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209853, 1232252, 242772,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209854, 1232251, 242773,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209855, 1232250, 242774,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209856, 1232249, 242775,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 209857, 1233738, 242776,   0,   0,    0,      -1,      -1 }, // Hearty Refreshment
   { 209963, 1234022, 242867,   0,   1,    0,      -1,      -1 }, // Automatic Footbomb Dispenser
+  { 212704, 1234374, 243013,   0,   1,    0,      -1,      -1 }, // Storm Surger
+  { 212705, 1234376, 243013,   0,   1,    0,      -1,      -1 }, // Storm Surger
+  { 212706, 1234373, 243013,   0,   1,    0,      -1,      -1 }, // Storm Surger
+  { 212707, 1234375, 243013,   0,   1,    0,      -1,      -1 }, // Storm Surger
+  { 212708, 1234369, 243023,   0,   1,    0,      -1,      -1 }, // Arcane Ward
+  { 212709, 1234371, 243023,   0,   1,    0,      -1,      -1 }, // Arcane Ward
+  { 212710, 1234368, 243023,   0,   1,    0,      -1,      -1 }, // Arcane Ward
+  { 212711, 1234370, 243023,   0,   1,    0,      -1,      -1 }, // Arcane Ward
+  { 212294, 1234366, 243032,   0,   1,    0,      -1,      -1 }, // Touch of Malice
+  { 212293, 1234401, 243033,   0,   1,    0,      -1,      -1 }, // Terror from Below
+  { 212292, 1234286, 243034,   0,   1,    0,      -1,      -1 }, // Highmountain Fortitude
+  { 212291, 1234431, 243035,   0,   1,    0,      -1,      -1 }, // Souls of the Caw
+  { 212290, 1234426, 243036,   0,   1,    0,      -1,      -1 }, // Arcane Aegis
+  { 212289, 1234421, 243037,   0,   1,    0,      -1,      -1 }, // Temporal Retaliation
   { 210077, 1234338, 243051,   0,   0,    0,      -1,      -1 }, // Glyph of the Strix
   { 210642, 1235531, 243365,   0,   0,    0,      -1,      -1 }, // Maw of the Void
+  { 211334, 395398, 244174,   1,   1,    0,      -1,      -1 }, // Enchanting Tool Equipped (DNT)
+  { 211335, 1234173, 244175,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211336, 395398, 244175,   1,   1,    0,      -1,      -1 }, // Enchanting Tool Equipped (DNT)
+  { 211337, 1234174, 244176,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211338, 395398, 244176,   1,   1,    0,      -1,      -1 }, // Enchanting Tool Equipped (DNT)
+  { 211339, 1234174, 244177,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211340, 395398, 244177,   1,   1,    0,      -1,      -1 }, // Enchanting Tool Equipped (DNT)
+  { 211341, 462040, 244177,   2,   1,    0,      -1,      -1 }, // Runed Null Stone Rod
+  { 211419, 1237362, 244463,   0,   1,    0,      -1,      -1 }, // Murder Row Fleet Feet
+  { 211427, 1237608, 244472,   0,   1,    0,      -1,      -1 }, // Knight-Commander's Palisade
+  { 212033, 1239399, 244472,   1,   1,    0,      -1,      -1 }, // Knight-Commander's Palisade
+  { 211437, 1243903, 244601,   0,   1,    0,      -1,      -1 }, // Azerothian Power
+  { 211438, 1243876, 244602,   0,   1,    0,      -1,      -1 }, // Ranger-General's Call
+  { 211439, 1243871, 244605,   0,   1,    0,      -1,      -1 }, // Battle Fervor
+  { 211440, 1243883, 244606,   0,   1,    0,      -1,      -1 }, // Necrotic Hexweave
+  { 225016, 1259297, 244612,   0,   1,    0,      -1,      -1 }, // Murder Row Materials
+  { 225014, 1259297, 244613,   0,   1,    0,      -1,      -1 }, // Murder Row Materials
+  { 225015, 1259297, 244614,   0,   1,    0,      -1,      -1 }, // Murder Row Materials
+  { 211441, 455786, 244615,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211442, 395478, 244615,   1,   1,    0,      -1,      -1 }, // Herbalism Gear Equipped (DNT)
+  { 211443, 455744, 244616,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211444, 395477, 244616,   1,   1,    0,      -1,      -1 }, // Skinning Gear Equipped (DNT)
+  { 211445, 455744, 244617,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211446, 395477, 244617,   1,   1,    0,      -1,      -1 }, // Skinning Gear Equipped (DNT)
+  { 211447, 455691, 244618,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211448, 395470, 244618,   1,   1,    0,      -1,      -1 }, // Engineering Gear Equipped (DNT)
+  { 211449, 455781, 244619,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211450, 395474, 244619,   1,   1,    0,      -1,      -1 }, // Leatherworking Gear Equipped (DNT)
+  { 211451, 455688, 244620,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211452, 395473, 244620,   1,   1,    0,      -1,      -1 }, // Alchemy Gear Equipped (DNT)
+  { 211453, 455776, 244621,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211454, 395478, 244621,   1,   1,    0,      -1,      -1 }, // Herbalism Gear Equipped (DNT)
+  { 211455, 455747, 244622,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211456, 395477, 244622,   1,   1,    0,      -1,      -1 }, // Skinning Gear Equipped (DNT)
+  { 211457, 455747, 244623,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211458, 395477, 244623,   1,   1,    0,      -1,      -1 }, // Skinning Gear Equipped (DNT)
+  { 211459, 455710, 244624,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211460, 395470, 244624,   1,   1,    0,      -1,      -1 }, // Engineering Gear Equipped (DNT)
+  { 211461, 455780, 244625,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211462, 395474, 244625,   1,   1,    0,      -1,      -1 }, // Leatherworking Gear Equipped (DNT)
+  { 211463, 455763, 244626,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211464, 395473, 244626,   1,   1,    0,      -1,      -1 }, // Alchemy Gear Equipped (DNT)
+  { 211465, 455727, 244627,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211466, 395475, 244627,   1,   1,    0,      -1,      -1 }, // Blacksmithing Gear Equipped (DNT)
+  { 211467, 455724, 244628,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211468, 395475, 244628,   1,   1,    0,      -1,      -1 }, // Blacksmithing Gear Equipped (DNT)
+  { 211469, 455690, 244629,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211470, 395468, 244629,   1,   1,    0,      -1,      -1 }, // Jewelcrafting Gear Equipped (DNT)
+  { 211471, 455734, 244630,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211472, 395468, 244630,   1,   1,    0,      -1,      -1 }, // Jewelcrafting Gear Equipped (DNT)
+  { 214274, 1250529, 244679,   0,   1,    0,      -1,      -1 }, // Murder Row Fishhook
+  { 211521, 455730, 244707,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211522, 395396, 244707,   1,   1,    0,      -1,      -1 }, // Tailoring Tool Equipped (DNT)
+  { 211523, 455693, 244708,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211524, 395396, 244708,   1,   1,    0,      -1,      -1 }, // Tailoring Tool Equipped (DNT)
+  { 211525, 455691, 244709,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211526, 395470, 244709,   1,   1,    0,      -1,      -1 }, // Engineering Gear Equipped (DNT)
+  { 211527, 455710, 244710,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211528, 395470, 244710,   1,   1,    0,      -1,      -1 }, // Engineering Gear Equipped (DNT)
+  { 211529, 455779, 244711,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211530, 395369, 244711,   1,   1,    0,      -1,      -1 }, // Fishing Tool Equipped (DNT)
+  { 211531, 455702, 244712,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211532, 395369, 244712,   1,   1,    0,      -1,      -1 }, // Fishing Tool Equipped (DNT)
+  { 211533, 455739, 244713,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211534, 395399, 244713,   1,   1,    0,      -1,      -1 }, // Jewelcrafting Tool Equipped (DNT)
+  { 211535, 1234154, 244714,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211536, 395399, 244714,   1,   1,    0,      -1,      -1 }, // Jewelcrafting Tool Equipped (DNT)
+  { 211537, 455743, 244715,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211538, 441807, 244715,   1,   1,    0,      -1,      -1 }, // Hard Hat
+  { 211539, 394914, 244715,   2,   1,    0,      -1,      -1 }, // Mining Gear Equipped (DNT)
+  { 211540, 455729, 244716,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211541, 394914, 244716,   1,   1,    0,      -1,      -1 }, // Mining Gear Equipped (DNT)
+  { 211542, 441807, 244716,   2,   1,    0,      -1,      -1 }, // Hard Hat
+  { 211543, 455789, 244717,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211544, 395397, 244717,   1,   1,    0,      -1,      -1 }, // Engineering Tool Equipped (DNT)
+  { 211545, 455778, 244718,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211546, 395397, 244718,   1,   1,    0,      -1,      -1 }, // Engineering Tool Equipped (DNT)
+  { 211547, 455743, 244719,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211548, 394914, 244719,   1,   1,    0,      -1,      -1 }, // Mining Gear Equipped (DNT)
+  { 211549, 455729, 244720,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211550, 394914, 244720,   1,   1,    0,      -1,      -1 }, // Mining Gear Equipped (DNT)
+  { 211559, 1237933, 244788,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211560, 395369, 244788,   1,   1,    0,      -1,      -1 }, // Fishing Tool Equipped (DNT)
+  { 211561, 1237934, 244789,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211562, 395369, 244789,   1,   1,    0,      -1,      -1 }, // Fishing Tool Equipped (DNT)
+  { 211597, 455776, 244807,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211598, 395478, 244807,   1,   1,    0,      -1,      -1 }, // Herbalism Gear Equipped (DNT)
+  { 211599, 455747, 244808,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211600, 395477, 244808,   1,   1,    0,      -1,      -1 }, // Skinning Gear Equipped (DNT)
+  { 211601, 455747, 244809,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211602, 395477, 244809,   1,   1,    0,      -1,      -1 }, // Skinning Gear Equipped (DNT)
+  { 211603, 455710, 244810,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211604, 395470, 244810,   1,   1,    0,      -1,      -1 }, // Engineering Gear Equipped (DNT)
+  { 211605, 455780, 244811,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211606, 395474, 244811,   1,   1,    0,      -1,      -1 }, // Leatherworking Gear Equipped (DNT)
+  { 211607, 455763, 244812,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211608, 395473, 244812,   1,   1,    0,      -1,      -1 }, // Alchemy Gear Equipped (DNT)
+  { 211609, 455724, 244813,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211610, 395475, 244813,   1,   1,    0,      -1,      -1 }, // Blacksmithing Gear Equipped (DNT)
+  { 211611, 455734, 244814,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211612, 395468, 244814,   1,   1,    0,      -1,      -1 }, // Jewelcrafting Gear Equipped (DNT)
   { 211635, 1238016, 244828,   0,   1,    0,      -1,      -1 }, // Spellblade Sear
+  { 212118, 1244254, 245750,   0,   1,    0,      -1,      -1 }, // Void
+  { 212119, 336126, 245751,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
+  { 212120, 345229, 245752,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
+  { 212121, 345231, 245753,   0,   0, 1141,  120000,   20000 }, // Gladiator's Emblem
+  { 212131, 455731, 245775,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212132, 395400, 245775,   1,   1,    0,      -1,      -1 }, // Inscription Tool Equipped (DNT)
+  { 212133, 455708, 245776,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212134, 395400, 245776,   1,   1,    0,      -1,      -1 }, // Inscription Tool Equipped (DNT)
+  { 212135, 455716, 245777,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212136, 395394, 245777,   1,   1,    0,      -1,      -1 }, // Alchemy Tool Equipped (DNT)
+  { 212137, 455787, 245778,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212138, 395394, 245778,   1,   1,    0,      -1,      -1 }, // Alchemy Tool Equipped (DNT)
+  { 212139, 455738, 245779,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212140, 395472, 245779,   1,   1,    0,      -1,      -1 }, // Cooking Gear Equipped (DNT)
+  { 212141, 455772, 245780,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212142, 395472, 245780,   1,   1,    0,      -1,      -1 }, // Cooking Gear Equipped (DNT)
+  { 212153, 1245050, 245829,   0,   1,    0,      -1,      -1 }, // Hunt
+  { 212170, 1245051, 245846,   0,   1,    0,      -1,      -1 }, // Rot
+  { 212179, 1245001, 245855,   0,   1,    0,      -1,      -1 }, // Blood
+  { 212202, 1236616, 245897,   0,   0,    0,      -1,      -1 }, // Light Potion Stats
+  { 212203, 1236616, 245898,   0,   0,    0,      -1,      -1 }, // Light Potion Stats
+  { 212205, 1238443, 245900,   0,   0,    0,      -1,      -1 }, // Potion of Zealotry
+  { 212206, 1238443, 245901,   0,   0,    0,      -1,      -1 }, // Potion of Zealotry
+  { 212226, 1235057, 245926,   0,   0,    0,      -1,      -1 }, // Midnight Versatility Flask
+  { 212227, 1235057, 245927,   0,   0,    0,      -1,      -1 }, // Midnight Versatility Flask
+  { 212228, 1235111, 245928,   0,   0,    0,      -1,      -1 }, // Midnight Critical Strike Flask
+  { 212229, 1235111, 245929,   0,   0,    0,      -1,      -1 }, // Midnight Critical Strike Flask
+  { 212230, 1235110, 245930,   0,   0,    0,      -1,      -1 }, // Midnight Haste Flask
+  { 212231, 1235110, 245931,   0,   0,    0,      -1,      -1 }, // Midnight Haste Flask
+  { 212232, 1235108, 245932,   0,   0,    0,      -1,      -1 }, // Midnight Mastery Flask
+  { 212233, 1235108, 245933,   0,   0,    0,      -1,      -1 }, // Midnight Mastery Flask
   { 212252, 1233515, 245964,   0,   1,    0,      -1,      -1 }, // Durable Information Securing Container
   { 212253, 1236138, 245964,   1,   1,    0,      -1,      -1 }, // Durable Information Securing Container
   { 212254, 1233262, 245964,   2,   0,    0,      -1,      -1 }, // Durable Information Securing Container
@@ -10117,11 +10594,50 @@ static constexpr std::array<item_effect_t, 10146> __item_effect_data { {
   { 212261, 1236138, 245966,   1,   1,    0,      -1,      -1 }, // Durable Information Securing Container
   { 212262, 1233262, 245966,   2,   0,    0,      -1,      -1 }, // Durable Information Securing Container
   { 212263, 1236137, 245966,   3,   1,    0,      -1,      -1 }, // Durable Information Securing Container
+  { 212305, 1233922, 246013,   0,   1,    0,      -1,      -1 }, // [DNT] Remix Artifact Weapon
+  { 212306, 1233913, 246013,   1,  10,    0,      -1,      -1 }, // [DNT] Equip Artifact
   { 212361, 1240700, 246071,   0,   1,    0,      -1,      -1 }, // Mana-Seamster's Arcane-Needle
+  { 212371, 1234415, 246072,   0,   1,    0,      -1,      -1 }, // Volatile Magics
+  { 212372, 1234365, 246073,   0,   1,    0,      -1,      -1 }, // Touch of Malice
+  { 212373, 1234400, 246074,   0,   1,    0,      -1,      -1 }, // Terror from Below
+  { 212374, 1234435, 246075,   0,   1,    0,      -1,      -1 }, // Highmountain Fortitude
+  { 212375, 1234430, 246076,   0,   1,    0,      -1,      -1 }, // Souls of the Caw
+  { 212376, 1234425, 246077,   0,   1,    0,      -1,      -1 }, // Arcane Aegis
+  { 212377, 1234420, 246078,   0,   1,    0,      -1,      -1 }, // Temporal Retaliation
+  { 212365, 1234364, 246080,   0,   1,    0,      -1,      -1 }, // Touch of Malice
+  { 212366, 1234399, 246081,   0,   1,    0,      -1,      -1 }, // Terror from Below
+  { 212367, 1234434, 246082,   0,   1,    0,      -1,      -1 }, // Highmountain Fortitude
+  { 212368, 1234429, 246083,   0,   1,    0,      -1,      -1 }, // Souls of the Caw
+  { 212369, 1234424, 246084,   0,   1,    0,      -1,      -1 }, // Arcane Aegis
+  { 212370, 1234419, 246085,   0,   1,    0,      -1,      -1 }, // Temporal Retaliation
   { 212362, 1240695, 246086,   0,   0,    0,      -1,      -1 }, // Fate Weaver
   { 212363, 443568, 246086,   1,   1,    0,      -1,      -1 }, // Fate Weaver
+  { 213043, 1245050, 246304,   0,   1,    0,      -1,      -1 }, // Hunt
+  { 212498, 1245001, 246305,   0,   1,    0,      -1,      -1 }, // Blood
+  { 212954, 1245051, 246306,   0,   1,    0,      -1,      -1 }, // Rot
+  { 212504, 1244254, 246307,   1,   1,    0,      -1,      -1 }, // Void
   { 212543, 1242326, 246344,   0,   0,    0,      -1,      -1 }, // Cursed Stone Idol
   { 212544, 1241801, 246344,   1,   1,    0,      -1,      -1 }, // Cursed Stone Idol
+  { 212643, 1234140, 246514,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212644, 395471, 246514,   1,   1,    0,      -1,      -1 }, // Tailoring Gear Equipped (DNT)
+  { 212645, 1234164, 246515,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212646, 395478, 246515,   1,   1,    0,      -1,      -1 }, // Herbalism Gear Equipped (DNT)
+  { 212651, 1234188, 246521,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212652, 395473, 246521,   1,   1,    0,      -1,      -1 }, // Alchemy Gear Equipped (DNT)
+  { 212653, 1234180, 246522,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212654, 395472, 246522,   1,   1,    0,      -1,      -1 }, // Cooking Gear Equipped (DNT)
+  { 212655, 1234176, 246523,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212656, 395469, 246523,   1,   1,    0,      -1,      -1 }, // Enchanting Gear Equipped (DNT)
+  { 212665, 455698, 246533,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212666, 395185, 246533,   1,   1,    0,      -1,      -1 }, // Herbalism Tool Equipped (DNT)
+  { 212667, 455723, 246534,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212668, 394872, 246534,   1,   1,    0,      -1,      -1 }, // Mining Tool Equipped (DNT)
+  { 212669, 455771, 246535,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212670, 395335, 246535,   1,   1,    0,      -1,      -1 }, // Skinning Tool Equipped (DNT)
+  { 212671, 455754, 246536,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212672, 395393, 246536,   1,   1,    0,      -1,      -1 }, // Leatherworking Tool Equipped (DNT)
+  { 212673, 455782, 246537,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212674, 395392, 246537,   1,   1,    0,      -1,      -1 }, // Blacksmithing Tool Equipped (DNT)
   { 212821, 1221429, 246757,   0,   1,    0,      -1,      -1 }, // Feeling Lucky
   { 212822, 1221429, 246758,   0,   1,    0,      -1,      -1 }, // Feeling Lucky
   { 212823, 1221429, 246759,   0,   1,    0,      -1,      -1 }, // Feeling Lucky
@@ -10146,124 +10662,245 @@ static constexpr std::array<item_effect_t, 10146> __item_effect_data { {
   { 212965, 1244410, 246945,   0,   0,    0,      -1,      -1 }, // Incorporeal Essence-Gorger
   { 213449, 1247205, 246945,   1,   1,    0,      -1,      -1 }, // Incorporeal Essence-Gorger
   { 212967, 1244417, 246947,   0,   1,    0,      -1,      -1 }, // Twisted Mana Sprite
+  { 213463, 1247311, 248583,   0,   0,    0,      -1,      -1 }, // Drum of Renewed Bonds
+  { 225323, 1260627, 249339,   0,   1,    0,      -1,      -1 }, // Gloom-Spattered Dreadscale
+  { 225324, 1260633, 249339,   1,   0,    0,      -1,      -1 }, // Gloom-Spattered Dreadscale
+  { 224759, 1259103, 249340,   0,   1,    0,      -1,      -1 }, // Wraps of Cosmic Madness
+  { 224764, 1259153, 249340,   1,   0,    0,      -1,      -1 }, // Wraps of Cosmic Madness
+  { 224229, 1258535, 249341,   0,   1,    0,      -1,      -1 }, // Volatile Void Suffuser
+  { 213794, 1251822, 249342,   0,   1,    0,      -1,      -1 }, // Heart of Ancient Hunger
+  { 223502, 1256896, 249343,   0,   1,    0,      -1,      -1 }, // Gaze of the Alnseer
+  { 214777, 1251817, 249344,   0,   1,    0,      -1,      -1 }, // Light Company Guidon
+  { 225036, 1259633, 249344,   1,   0,    0,      -1,      -1 }, // Charge!
+  { 225136, 1260265, 249345,   0,   1,    0,      -1,      -1 }, // Ranger-Captain's Iridescent Insignia
+  { 225137, 1260266, 249345,   1,   0,    0,      -1,      -1 }, // Ranger-Captain's Iridescent Insignia
+  { 224807, 1259293, 249346,   0,   1,    0,      -1,      -1 }, // Vaelgor's Final Stare
+  { 225308, 1260459, 249346,   1,   0,    0,      -1,      -1 }, // Nullsight
+  { 213823, 1263310, 249386,   0,   0,    0,    5000,      -1 }, // Ghost Gear
+  { 220083, 1256790, 249805,   1,   1,    0,      -1,      -1 }, // Undreamt God's Oozing Vestige
+  { 225321, 1260592, 249806,   0,   1,    0,      -1,      -1 }, // Radiant Plume
+  { 226858, 1265805, 249806,   1,   0,    0,      -1,      -1 }, // Umbral Plume
+  { 214040, 1256391, 249807,   1,   1,    0,      -1,      -1 }, // The Eternal Egg
+  { 224144, 1258275, 249808,   0,   1,    0,      -1,      -1 }, // Litany of Lightblind Wrath
+  { 224145, 1258283, 249808,   1,   0,    0,      -1,      -1 }, // Beacon of Lightblind Wrath
+  { 224817, 1259314, 249809,   0,   1,    0,      -1,      -1 }, // Locus-Walker's Ribbon
+  { 224961, 1259518, 249810,   0,   1,    0,      -1,      -1 }, // Shadow of the Empyrean Requiem
+  { 224295, 1258672, 249811,   0,   1,    0,      -1,      -1 }, // Light of the Cosmic Crescendo
+  { 214264, 1250508, 250144,   1,   0,    0,      -1,      -1 }, // Emberwing Heatwave
+  { 214265, 1250527, 250214,   0,   1,    0,      -1,      -1 }, // Lightspire Core
+  { 214268, 1250533, 250215,   1,   0,    0,      -1,      -1 }, // Freightrunner's Flask
+  { 214269, 1250541, 250223,   0,   1,    0,      -1,      -1 }, // Echo of the Evercurse
+  { 214270, 1250546, 250224,   0,   1,    0,      -1,      -1 }, // Mindpiercer's Sigil
+  { 214273, 1250557, 250225,   0,   0,    0,      -1,      -1 }, // Void Execution Mandate
+  { 214278, 1250564, 250228,   0,   1,    0,      -1,      -1 }, // Xathuux's Last Roar
+  { 214279, 1250567, 250229,   0,   1,    0,      -1,      -1 }, // Nalorakk's Rage
+  { 214288, 1250580, 250238,   0,   0,    0,      -1,      -1 }, // Seed of the Devouring Wild
+  { 224845, 1259351, 250238,   1,   1,    0,      -1,      -1 }, // Seed of the Devouring Wild
+  { 214292, 1250582, 250241,   0,   1,    0,      -1,      -1 }, // Mark of Light
+  { 214293, 1250584, 250242,   0,   1,    0,      -1,      -1 }, // Jelly Replicator
+  { 214294, 1250587, 250243,   0,   0,    0,      -1,      -1 }, // The Binding Flame
+  { 214295, 1250588, 250244,   0,   1,    0,      -1,      -1 }, // Permafrost Reservoir
+  { 214296, 1250589, 250245,   0,   1,    0,      -1,      -1 }, // Crawling Plague
+  { 214297, 1254752, 250246,   1,   1,    0,      -1,      -1 }, // Refueling Orb
+  { 214298, 1250591, 250248,   1,   1,    0,      -1,      -1 }, // Glowcap Gift
+  { 214303, 1250596, 250253,   1,   1,    0,      -1,      -1 }, // Whisper of the Duskwraith
+  { 214304, 1263644, 250254,   1,   0,    0,      -1,      -1 }, // Seed of Radiant Hope
+  { 214305, 1254339, 250255,   1,   0,    0,      -1,      -1 }, // Unstable Felheart Crystal
+  { 214306, 1250599, 250256,   1,   1,    0,      -1,      -1 }, // Heart of Wind
+  { 214307, 1250601, 250257,   1,   1,    0,      -1,      -1 }, // Eye of the Drowning Void
+  { 214308, 1250602, 250258,   1,   1,    0,      -1,      -1 }, // Vessel of Souls
+  { 214309, 1250604, 250259,   1,   1,    0,      -1,      -1 }, // Sapling of the Dawnroot
+  { 214820, 1251903, 251073,   0,   0,    0,      -1,      -1 }, // Voidstone Barrier
+  { 215084, 1251904, 251513,   1,   1,    0,      -1,      -1 }, // Loa Worshiper's Band
+  { 215326, 1253043, 251774,   0,   0,    0,      -1,      -1 }, // Searching Crate
+  { 215327, 1253042, 251775,   0,   1,    0,      -1,      -1 }, // Empty Crate of Relics
+  { 215331, 1253110, 251782,   0,   1,    0,      -1,      -1 }, // Void-Infused Saptor's Paw
+  { 215332, 1253111, 251783,   0,   1,    0,      -1,      -1 }, // Fractured Amani Idol
+  { 215333, 1253112, 251784,   0,   1,    0,      -1,      -1 }, // Sylvan Wakrapuku
+  { 215334, 1253113, 251785,   0,   1,    0,      -1,      -1 }, // Void-Reaper's Libram
+  { 215335, 1253114, 251786,   0,   0,    0,      -1,      -1 }, // Ever-collapsing Void Fissure
+  { 215336, 1253115, 251787,   0,   0,    0,      -1,      -1 }, // Sealed Chaos Urn
+  { 215337, 1253116, 251788,   0,   1,    0,      -1,      -1 }, // Guide of Light
+  { 215338, 1253117, 251789,   0,   1,    0,      -1,      -1 }, // Consecrated Chalice
+  { 225097, 1259988, 251789,   1,   0,    0,      -1,      -1 }, // Consecrated Chalice
+  { 215339, 1253118, 251790,   0,   1,    0,      -1,      -1 }, // Desecrated Chalice
+  { 215340, 1253119, 251791,   0,   1,    0,      -1,      -1 }, // Gift of Light
+  { 215341, 1253120, 251792,   0,   1,    0,      -1,      -1 }, // Glorious Crusader's Keepsake
+  { 215342, 1253121, 251793,   0,   0,    0,      -1,      -1 }, // Spore Releasing Device
+  { 215343, 1253122, 251794,   0,   1,    0,      -1,      -1 }, // Gris-gris of Confidence
+  { 215382, 1253327, 251883,   0,   1,    0,      -1,      -1 }, // Looming Darkness
+  { 215383, 1253357, 251884,   0,   1,    0,      -1,      -1 }, // Umbral Sabre
+  { 215384, 1253359, 251885,   0,   1,    0,      -1,      -1 }, // Radiant Foil
+  { 215414, 1253360, 251886,   0,   0,    0,      -1,      -1 }, // Unstable Mana-Locket
+  { 215415, 1253547, 251934,   0,   1,    0,      -1,      -1 }, // Blessed Signet
+  { 215417, 1253549, 251935,   1,   0,    0,      -1,      -1 }, // Light's Righteous Arm
+  { 215418, 1253550, 251936,   0,   0,    0,      -1,      -1 }, // Nullified Quarterstaff
+  { 215419, 1253551, 251936,   1,   0,    0,      -1,      -1 }, // Nullified Quarterstaff
+  { 215505, 1234361, 251999,   0,   1,    0,      -1,      -1 }, // I Am My Scars!
+  { 215506, 1234360, 252000,   1,   1,    0,      -1,      -1 }, // I Am My Scars!
+  { 215507, 1234359, 252002,   1,   1,    0,      -1,      -1 }, // I Am My Scars!
+  { 215531, 1253869, 252018,   0,   1,    0,      -1,      -1 }, // Light's Vengeance
+  { 215530, 1253868, 252020,   0,   1,    0,      -1,      -1 }, // Light's Vengeance
+  { 215529, 1253867, 252021,   0,   1,    0,      -1,      -1 }, // Light's Vengeance
+  { 218497, 1255804, 252411,   0,   1,    0,      -1,      -1 }, // Radiant Sunstone
+  { 215813, 1254624, 252411,   1,   0,    0,      -1,      -1 }, // Radiant Blessing
+  { 215821, 1254638, 252418,   0,   0,    0,      -1,      -1 }, // Solar Core Igniter
+  { 224023, 1257989, 252418,   1,   1,    0,      -1,      -1 }, // Solar Core Igniter
+  { 215823, 1254640, 252420,   0,   1,    0,      -1,      -1 }, // Solarflare Prism
+  { 215824, 1254641, 252421,   0,   0,    0,      -1,      -1 }, // Rotting Globule
+  { 223938, 1257925, 252421,   1,   1,    0,      -1,      -1 }, // Rotting Globule
+  { 216268, 1255277, 252956,   0,   1,    0,      -1,      -1 }, // Aln-Bound Essence
+  { 216267, 1255278, 252957,   0,   1,    0,      -1,      -1 }, // Tangle of Vibrant Vines
+  { 224748, 345228, 255326,   0,   0,    0,      -1,      -1 }, // Gladiator's Badge
+  { 224749, 336126, 255327,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
+  { 224750, 345229, 255328,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
+  { 224751, 345231, 255329,   0,   0, 1141,  120000,   20000 }, // Gladiator's Emblem
+  { 224752, 336135, 255330,   0,   1,    0,      -1,      -1 }, // Adaptation
+  { 224754, 345228, 255613,   0,   0,    0,      -1,      -1 }, // Gladiator's Badge
+  { 224755, 345229, 255614,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
+  { 224756, 345231, 255615,   0,   0, 1141,  120000,   20000 }, // Gladiator's Emblem
+  { 224757, 336126, 255616,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
+  { 224758, 336135, 255617,   0,   1,    0,      -1,      -1 }, // Adaptation
+  { 224965, 1259659, 255845,   0,   0,   11,       0,      -1 }, // Silvermoon Parade
+  { 224966, 1259658, 255846,   0,   0,   11,       0,      -1 }, // Rootland Celebration
+  { 224967, 1232917, 255847,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 224968, 1232919, 255848,   0,   0,    0,      -1,      -1 }, // Refreshment
+  { 225134, 1260244, 256326,   0,   1,    0,      -1,      -1 }, // [DNT] Poison Dart Trinket
+  { 225861, 1261787, 257603,   0,   0,    0,      -1,      -1 }, // Create Weapon
+  { 226567, 455710, 259171,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 226568, 395470, 259171,   1,   1,    0,      -1,      -1 }, // Engineering Gear Equipped (DNT)
+  { 226571, 455729, 259173,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 226572, 394914, 259173,   1,   1,    0,      -1,      -1 }, // Mining Gear Equipped (DNT)
+  { 226573, 441807, 259173,   2,   1,    0,      -1,      -1 }, // Hard Hat
+  { 226576, 455729, 259175,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 226577, 394914, 259175,   1,   1,    0,      -1,      -1 }, // Mining Gear Equipped (DNT)
+  { 226580, 455693, 259177,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 226581, 395396, 259177,   1,   1,    0,      -1,      -1 }, // Tailoring Tool Equipped (DNT)
+  { 226584, 455702, 259179,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 226585, 395369, 259179,   1,   1,    0,      -1,      -1 }, // Fishing Tool Equipped (DNT)
+  { 226588, 455745, 259181,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 226589, 395399, 259181,   1,   1,    0,      -1,      -1 }, // Jewelcrafting Tool Equipped (DNT)
+  { 226592, 455778, 259183,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 226593, 395397, 259183,   1,   1,    0,      -1,      -1 }, // Engineering Tool Equipped (DNT)
+  { 226597, 455787, 259205,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 226598, 395394, 259205,   1,   1,    0,      -1,      -1 }, // Alchemy Tool Equipped (DNT)
+  { 226601, 455708, 259207,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 226602, 395400, 259207,   1,   1,    0,      -1,      -1 }, // Inscription Tool Equipped (DNT)
+  { 226605, 455772, 259209,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 226606, 395472, 259209,   1,   1,    0,      -1,      -1 }, // Cooking Gear Equipped (DNT)
+  { 226637, 1234184, 259230,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 226640, 1234152, 259232,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 226643, 1234140, 259234,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 226804, 1265127, 259477,   0,   1,    0,      -1,      -1 }, // Thriving Essence Sprig
+  { 226808, 1265336, 259896,   0,   0,    0,      -1,      -1 }, // Shield of the Guardian Tree
+  { 226856, 1265809, 260235,   0,   1,    0,      -1,      -1 }, // Umbral Plume
+  { 226859, 1265806, 260235,   1,   0,    0,      -1,      -1 }, // Radiant Plume
 } };
 
-static const std::array<uint16_t, 10146> __item_effect_id_index { {
-    984,   985,   986,   987,   988,   989,   990,   993,
-    994,   995,   996,   997,   998,   999,  1000,  1001,
-   1002,  1003,  1004,  1005,  1008,  1009,  1010,  1011,
-   1012,  1013,  1014,  1015,  1016,  1017,  1018,  1019,
-   1020,  1021,  1022,  1023,  1024,  1025,  1026,  1027,
-   1028,  1029,  1030,  1031,  1032,  1033,  1034,  1035,
-   1036,  1037,  1038,  1039,  1040,  1041,  1042,  1043,
-   1044,  1045,  1046,  1047,  1048,  1049,  1050,  1051,
-   1052,  1053,  1054,  1055,  1056,  1057,  1058,  1059,
-   1060,  1061,  1062,  1063,  1064,  1065,  1066,  1067,
-   1068,  1069,  1070,  1071,  1072,  1073,  1074,  1075,
-   1076,  1077,  1079,  1080,  1081,  1082,  1083,  1084,
-   1085,  1086,  1087,  1088,  1089,  1090,  1091,  1092,
-   1093,  1094,  1095,  1096,  1097,  1098,  1099,  1100,
-   1101,  1102,  1103,  1104,  1105,  1106,  1107,  1108,
-   1109,  1110,  1111,  1112,  1113,  1114,  1115,  1116,
-   1117,  1118,  1119,  1120,  1121,  1122,  1123,  1124,
-   1125,  1126,  1127,  1128,  1129,  1131,  1132,  1133,
-   1134,  1135,  1136,  1137,  1138,  1139,  1140,  1141,
-   1142,  1143,  1144,  1145,  1146,  1147,  1148,  1149,
-   1151,  1152,  1153,  1154,  1155,  1156,  1157,  1158,
-   1159,  1160,  1161,  1162,  1163,  1164,  1165,  1166,
-   1167,  1168,  1169,  1170,  1171,  1172,  1173,  1174,
-   1175,  1176,  1177,  1178,  1179,  1180,  1181,  1182,
-   1183,  1184,  1185,  1186,  1187,  1188,  1189,  1190,
-   1191,  1192,  1193,  1194,  1195,  1196,  1197,  1198,
-   1199,  1200,  1202,  1203,  1204,  1205,  1206,  1207,
-   1208,  1209,  1210,  1211,  1212,  1213,  1214,  1221,
-   1222,  1223,  1224,  1225,  1226,  1227,  1228,  1229,
-   1230,  1231,  1232,  1233,  1236,  1237,  1238,  1239,
-   1240,  1241,  1242,  1243,  1244,  1245,  1246,  1247,
-   1248,  1249,  1250,  1251,  1252,  1253,  1254,  1255,
-   1256,  1257,  1258,  1259,  1260,  1261,  1262,  1263,
-   1266,  1267,  1268,  1269,  1270,  1271,  1272,  1273,
-   1274,  1275,  1276,  1278,  1279,  1280,  1281,  1282,
-   1283,  1284,  1285,  1286,  1287,  1288,  1289,  1290,
-   1291,  1292,  1293,  1295,  1296,  1297,  1298,  1299,
-   1300,  1301,  1302,  1303,  1304,  1305,  1306,  1308,
-   1309,  1310,  1311,  1312,  1313,  1314,  1315,  1316,
-   1317,  1318,  1319,  1320,  1321,  1322,  1323,  1324,
-   1325,  1326,  1327,  1328,  1329,  1330,  1331,  1332,
-   1333,  1334,  1335,  1336,  1337,  1338,  1339,  1340,
-   1341,  1342,  1343,  1344,  1345,  1346,  1347,  1348,
-   1349,  1350,  1351,  1352,  1353,  1354,  1355,  1356,
-   1357,  1358,  1359,  1360,  1361,  1362,  1363,  1364,
-   1365,  1366,  1367,  1368,  1369,  1370,  1371,  1372,
-   1373,  1374,  1375,  1376,  1377,  1378,  1379,  1380,
-   1381,  1382,  1383,  1384,  1385,  1386,  1387,  1388,
-   1389,  1390,  1391,  1392,  1393,  1394,  1395,  1396,
-   1397,  1398,  1399,  1400,  1401,  1402,  1403,  1404,
-   1405,  1406,  1407,  1408,  1409,  1410,  1411,  1412,
+static const std::array<uint16_t, 10795> __item_effect_id_index { {
+   1088,  1089,  1090,  1091,  1092,  1093,  1094,  1097,
+   1098,  1099,  1100,  1101,  1102,  1103,  1104,  1105,
+   1106,  1107,  1108,  1109,  1112,  1113,  1114,  1115,
+   1116,  1117,  1118,  1119,  1120,  1121,  1122,  1123,
+   1124,  1125,  1126,  1127,  1128,  1129,  1130,  1131,
+   1132,  1133,  1134,  1135,  1136,  1137,  1138,  1139,
+   1140,  1141,  1142,  1143,  1144,  1145,  1146,  1147,
+   1148,  1149,  1150,  1151,  1152,  1153,  1154,  1155,
+   1156,  1157,  1158,  1159,  1160,  1161,  1162,  1163,
+   1164,  1165,  1166,  1167,  1168,  1169,  1170,  1171,
+   1172,  1173,  1174,  1175,  1176,  1177,  1178,  1179,
+   1180,  1181,  1183,  1184,  1185,  1186,  1187,  1188,
+   1189,  1190,  1191,  1192,  1193,  1194,  1195,  1196,
+   1197,  1198,  1199,  1200,  1201,  1202,  1203,  1204,
+   1205,  1206,  1207,  1208,  1209,  1210,  1211,  1212,
+   1213,  1214,  1215,  1216,  1217,  1218,  1219,  1220,
+   1221,  1222,  1223,  1224,  1225,  1226,  1227,  1228,
+   1229,  1230,  1231,  1232,  1233,  1235,  1236,  1237,
+   1238,  1239,  1240,  1241,  1242,  1243,  1244,  1245,
+   1246,  1247,  1248,  1249,  1250,  1251,  1252,  1253,
+   1255,  1256,  1257,  1258,  1259,  1260,  1261,  1262,
+   1263,  1264,  1265,  1266,  1267,  1268,  1269,  1270,
+   1271,  1272,  1273,  1274,  1275,  1276,  1277,  1278,
+   1279,  1280,  1281,  1282,  1283,  1284,  1285,  1286,
+   1287,  1288,  1289,  1290,  1291,  1292,  1293,  1294,
+   1295,  1296,  1297,  1298,  1299,  1300,  1301,  1302,
+   1303,  1304,  1306,  1307,  1308,  1309,  1310,  1311,
+   1312,  1313,  1314,  1315,  1316,  1317,  1318,  1325,
+   1326,  1327,  1328,  1329,  1330,  1331,  1332,  1333,
+   1334,  1335,  1336,  1337,  1340,  1341,  1342,  1343,
+   1344,  1345,  1346,  1347,  1348,  1349,  1350,  1351,
+   1352,  1353,  1354,  1355,  1356,  1357,  1358,  1359,
+   1360,  1361,  1362,  1363,  1364,  1365,  1366,  1367,
+   1370,  1371,  1372,  1373,  1374,  1375,  1376,  1377,
+   1378,  1379,  1380,  1382,  1383,  1384,  1385,  1386,
+   1387,  1388,  1389,  1390,  1391,  1392,  1393,  1394,
+   1395,  1396,  1397,  1399,  1400,  1401,  1402,  1403,
+   1404,  1405,  1406,  1407,  1408,  1409,  1410,  1412,
    1413,  1414,  1415,  1416,  1417,  1418,  1419,  1420,
    1421,  1422,  1423,  1424,  1425,  1426,  1427,  1428,
-   1429,  1430,  1431,  1434,  1435,  1436,  1437,  1438,
-   1439,  1442,  1443,  1444,  1445,  1448,  1449,  1450,
-   1451,  1452,  1453,  1454,  1455,  1456,  1457,  1458,
-   1459,  1460,  1461,  1462,  1463,  1464,  1465,  1466,
-   1467,  1468,  1469,  1471,  1472,  1473,  1474,  1475,
-   1476,  1477,  1478,  1479,  1480,  1481,  1482,  1485,
-   1486,  1487,  1488,  1489,  1492,  1495,  1496,  1497,
-   1498,  1499,  1500,  1501,  1502,  1503,  1504,  1505,
-   1506,  1507,  1508,  1509,  1510,  1511,  1512,  1513,
-   1514,  1515,  1516,  1517,  1518,  1519,  1520,  1521,
-   1522,  1523,  1524,  1525,  1526,  1527,  1528,  1529,
-   1530,  1531,  1532,  1533,  1535,  1536,  1537,  1538,
-   1539,  1540,  1541,  1542,  1543,  1544,  1545,  1546,
-   1547,  1548,  1549,  1550,  1551,  1552,  1553,  1554,
+   1429,  1430,  1431,  1432,  1433,  1434,  1435,  1436,
+   1437,  1438,  1439,  1440,  1441,  1442,  1443,  1444,
+   1445,  1446,  1447,  1448,  1449,  1450,  1451,  1452,
+   1453,  1454,  1455,  1456,  1457,  1458,  1459,  1460,
+   1461,  1462,  1463,  1464,  1465,  1466,  1467,  1468,
+   1469,  1470,  1471,  1472,  1473,  1474,  1475,  1476,
+   1477,  1478,  1479,  1480,  1481,  1482,  1483,  1484,
+   1485,  1486,  1487,  1488,  1489,  1490,  1491,  1492,
+   1493,  1494,  1495,  1496,  1497,  1498,  1499,  1500,
+   1501,  1502,  1503,  1504,  1505,  1506,  1507,  1508,
+   1509,  1510,  1511,  1512,  1513,  1514,  1515,  1516,
+   1517,  1518,  1519,  1520,  1521,  1522,  1523,  1524,
+   1525,  1526,  1527,  1528,  1529,  1530,  1531,  1532,
+   1533,  1534,  1535,  1538,  1539,  1540,  1541,  1542,
+   1543,  1546,  1547,  1548,  1549,  1552,  1553,  1554,
    1555,  1556,  1557,  1558,  1559,  1560,  1561,  1562,
    1563,  1564,  1565,  1566,  1567,  1568,  1569,  1570,
-   1571,  1572,  1575,  1576,  1577,  1578,  1579,  1580,
-   1581,  1582,  1583,  1584,  1585,  1586,  1587,  1588,
-   1589,  1590,  1591,  1592,  1593,  1594,  1595,  1596,
-   1597,  1598,  1599,  1600,  1601,  1602,  1603,  1604,
-   1605,  1606,  1607,  1608,  1609,  1610,  1611,  1612,
-   1613,  1614,  1615,  1616,  1617,  1618,  1619,  1620,
-   1621,  1622,  1623,  1624,  1625,  1626,  1627,  1628,
-   1629,  1630,  1631,  1632,  1633,  1634,  1635,  1636,
-   1637,  1638,  1639,  1640,  1641,  1642,  1643,  1644,
-   1645,  1646,  1647,  1648,  1649,  1650,  1651,  1652,
-   1653,  1654,  1655,  1656,  1657,  1658,  1659,  1660,
-   1661,  1662,  1663,  1664,  1665,  1666,  1667,  1668,
-   1669,  1670,  1671,  1672,  1673,  1674,  1675,  1676,
-   1677,  1678,  1679,  1680,  1681,  1682,  1683,  1684,
+   1571,  1572,  1573,  1575,  1576,  1577,  1578,  1579,
+   1580,  1581,  1582,  1583,  1584,  1585,  1586,  1589,
+   1590,  1591,  1592,  1593,  1596,  1599,  1600,  1601,
+   1602,  1603,  1604,  1605,  1606,  1607,  1608,  1609,
+   1610,  1611,  1612,  1613,  1614,  1615,  1616,  1617,
+   1618,  1619,  1620,  1621,  1622,  1623,  1624,  1625,
+   1626,  1627,  1628,  1629,  1630,  1631,  1632,  1633,
+   1634,  1635,  1636,  1637,  1639,  1640,  1641,  1642,
+   1643,  1644,  1645,  1646,  1647,  1648,  1649,  1650,
+   1651,  1652,  1653,  1654,  1655,  1656,  1657,  1658,
+   1659,  1660,  1661,  1662,  1663,  1664,  1665,  1666,
+   1667,  1668,  1669,  1670,  1671,  1672,  1673,  1674,
+   1675,  1676,  1679,  1680,  1681,  1682,  1683,  1684,
    1685,  1686,  1687,  1688,  1689,  1690,  1691,  1692,
    1693,  1694,  1695,  1696,  1697,  1698,  1699,  1700,
    1701,  1702,  1703,  1704,  1705,  1706,  1707,  1708,
-   1709,  1710,  1711,  1712,  1713,  1714,  1715,  1720,
-   1721,  1722,  1723,  1724,  1725,  1726,  1727,  1728,
-   1729,  1730,  1731,  1732,  1733,  1734,  1735,  1736,
-   1737,  1738,  1739,  1742,  1743,  1756,  1757,  1761,
-   1762,  1763,  1764,  1765,  1766,  1767,  1768,  1769,
-   1770,  1771,  1772,  1773,  1774,  1775,  1776,  1777,
-   1778,  1779,  1780,  1781,  1782,  1783,  1784,  1785,
-   1786,  1787,  1788,  1789,  1790,  1791,  1792,  1793,
-   1794,  1795,  1796,  1797,  1798,  1799,  1800,  1801,
-   1802,  1803,  1804,  1805,  1806,  1807,  1808,  1809,
-   1810,  1811,  1813,  1814,  1815,  1816,  1817,  1818,
-   1819,  1820,  1821,  1822,  1823,  1824,  1825,  1826,
-   1827,  1828,  1829,  1830,  1831,  1832,  1833,  1834,
-   1835,  1836,  1837,  1838,  1839,  1840,  1841,  1842,
-   1843,  1844,  1845,  1846,  1847,  1848,  1849,  1850,
-   1851,  1852,  1853,  1854,  1855,  1858,  1859,  1860,
-   1861,  1862,  1863,  1864,  1865,  1866,  1867,  1868,
-   1869,  1870,  1871,  1872,  1873,  1874,  1875,  1876,
-   1877,  1878,  1879,  1880,  1881,  1882,  1883,  1884,
-   1885,  1886,  1887,  1888,  1889,  1890,  1891,  1892,
-   1893,  1894,  1895,  1896,  1897,  1898,  1899,  1900,
-   1901,  1902,  1903,  1904,  1905,  1906,  1907,  1908,
-   1909,  1910,  1911,  1912,  1913,  1914,  1915,  1916,
-   1917,  1918,  1919,  1920,  1921,  1922,  1923,  1924,
-   1925,  1926,  1927,  1928,  1930,  1931,  1932,  1933,
-   1934,  1935,  1936,  1937,  1938,  1939,  1940,  1941,
-   1942,  1943,  1944,  1945,  1946,  1947,  1948,  1949,
-   1950,  1951,  1952,  1953,  1954,  1955,  1956,  1957,
-   1959,  1960,  1963,  1964,  1969,  1970,  1971,  1972,
+   1709,  1710,  1711,  1712,  1713,  1714,  1715,  1716,
+   1717,  1718,  1719,  1720,  1721,  1722,  1723,  1724,
+   1725,  1726,  1727,  1728,  1729,  1730,  1731,  1732,
+   1733,  1734,  1735,  1736,  1737,  1738,  1739,  1740,
+   1741,  1742,  1743,  1744,  1745,  1746,  1747,  1748,
+   1749,  1750,  1751,  1752,  1753,  1754,  1755,  1756,
+   1757,  1758,  1759,  1760,  1761,  1762,  1763,  1764,
+   1765,  1766,  1767,  1768,  1769,  1770,  1771,  1772,
+   1773,  1774,  1775,  1776,  1777,  1778,  1779,  1780,
+   1781,  1782,  1783,  1784,  1785,  1786,  1787,  1788,
+   1789,  1790,  1791,  1792,  1793,  1794,  1795,  1796,
+   1797,  1798,  1799,  1800,  1801,  1802,  1803,  1804,
+   1805,  1806,  1807,  1808,  1809,  1810,  1811,  1812,
+   1813,  1814,  1815,  1816,  1817,  1818,  1819,  1824,
+   1825,  1826,  1827,  1828,  1829,  1830,  1831,  1832,
+   1833,  1834,  1835,  1836,  1837,  1838,  1839,  1840,
+   1841,  1842,  1843,  1846,  1847,  1860,  1861,  1865,
+   1866,  1867,  1868,  1869,  1870,  1871,  1872,  1873,
+   1874,  1875,  1876,  1877,  1878,  1879,  1880,  1881,
+   1882,  1883,  1884,  1885,  1886,  1887,  1888,  1889,
+   1890,  1891,  1892,  1893,  1894,  1895,  1896,  1897,
+   1898,  1899,  1900,  1901,  1902,  1903,  1904,  1905,
+   1906,  1907,  1908,  1909,  1910,  1911,  1912,  1913,
+   1914,  1915,  1917,  1918,  1919,  1920,  1921,  1922,
+   1923,  1924,  1925,  1926,  1927,  1928,  1929,  1930,
+   1931,  1932,  1933,  1934,  1935,  1936,  1937,  1938,
+   1939,  1940,  1941,  1942,  1943,  1944,  1945,  1946,
+   1947,  1948,  1949,  1950,  1951,  1952,  1953,  1954,
+   1955,  1956,  1957,  1958,  1959,  1962,  1963,  1964,
+   1965,  1966,  1967,  1968,  1969,  1970,  1971,  1972,
    1973,  1974,  1975,  1976,  1977,  1978,  1979,  1980,
    1981,  1982,  1983,  1984,  1985,  1986,  1987,  1988,
    1989,  1990,  1991,  1992,  1993,  1994,  1995,  1996,
@@ -10271,1152 +10908,1245 @@ static const std::array<uint16_t, 10146> __item_effect_id_index { {
    2005,  2006,  2007,  2008,  2009,  2010,  2011,  2012,
    2013,  2014,  2015,  2016,  2017,  2018,  2019,  2020,
    2021,  2022,  2023,  2024,  2025,  2026,  2027,  2028,
-   2029,  2030,  2031,  2032,  2033,  2034,  2035,  2036,
-   2037,  2038,  2039,  2040,  2041,  2042,  2043,  2044,
-   2045,  2046,  2047,  2048,  2049,  2050,  2051,  2052,
-   2053,  2054,  2055,  2058,  2059,  2060,  2061,  2062,
-   2063,  2064,  2065,  2066,  2067,  2068,  2069,  2070,
-   2071,  2072,  2073,  2074,  2075,  2076,  2077,  2080,
-   2081,  2082,  2083,  2084,  2085,  2086,  2087,  2088,
-   2089,  2090,  2091,  2092,  2093,  2094,  2097,  2098,
-   2099,  2100,  2101,  2102,  2103,  2106,  2107,  2108,
+   2029,  2030,  2031,  2032,  2034,  2035,  2036,  2037,
+   2038,  2039,  2040,  2041,  2042,  2043,  2044,  2045,
+   2046,  2047,  2048,  2049,  2050,  2051,  2052,  2053,
+   2054,  2055,  2056,  2057,  2058,  2059,  2060,  2061,
+   2063,  2064,  2067,  2068,  2073,  2074,  2075,  2076,
+   2077,  2078,  2079,  2080,  2081,  2082,  2083,  2084,
+   2085,  2086,  2087,  2088,  2089,  2090,  2091,  2092,
+   2093,  2094,  2095,  2096,  2097,  2098,  2099,  2100,
+   2101,  2102,  2103,  2104,  2105,  2106,  2107,  2108,
    2109,  2110,  2111,  2112,  2113,  2114,  2115,  2116,
    2117,  2118,  2119,  2120,  2121,  2122,  2123,  2124,
    2125,  2126,  2127,  2128,  2129,  2130,  2131,  2132,
-   2135,  2136,  2137,  2138,  2139,  2140,  2141,  2142,
-   2143,  2144,  2145,  2146,  2147,  2148,  2149,  2150,
-   2151,  2152,  2153,  2154,  2155,  2156,  2157,  2158,
-   2159,  2160,  2161,  2162,  2163,  2164,  2165,  2166,
-   2167,  2168,  2169,  2170,  2171,  2172,  2173,  2175,
-   2176,  2177,  2178,  2179,  2180,  2181,  2182,  2183,
-   2184,  2185,  2186,  2187,  2188,  2189,  2190,  2191,
-   2192,  2193,  2194,  2195,  2196,  2197,  2198,  2199,
-   2200,  2201,  2202,  2203,  2204,  2205,  2208,  2209,
-   2210,  2211,  2212,  2213,  2214,  2215,  2216,  2217,
-   2218,  2219,  2220,  2221,  2222,  2223,  2224,  2225,
-   2226,  2227,  2228,  2229,  2230,  2231,  2232,  2233,
-   2234,  2235,  2236,  2237,  2238,  2239,  2240,  2241,
-   2242,  2243,  2244,  2245,  2246,  2247,  2248,  2249,
-   2250,  2251,  2252,  2253,  2254,  2257,  2258,  2259,
-   2260,  2261,  2262,  2263,  2264,  2265,  2266,  2267,
-   2268,  2269,  2270,  2271,  2272,  2273,  2274,  2275,
-   2276,  2277,  2278,  2279,  2280,  2281,  2282,  2283,
-   2284,  2285,  2286,  2287,  2290,  2291,  2292,  2293,
-   2294,  2295,  2296,  2297,  2298,  2299,  2300,  2301,
-   2302,  2303,  2304,  2305,  2306,  2307,  2308,  2309,
-   2310,  2311,  2312,  2313,  2314,  2315,  2316,  2317,
-   2318,  2319,  2320,  2321,  2322,  2323,  2324,  2325,
-   2326,  2327,  2328,  2329,  2330,  2331,  2332,  2333,
-   2334,  2335,  2336,  2337,  2338,  2339,  2340,  2341,
-   2342,  2343,  2344,  2345,  2346,  2347,  2348,  2349,
-   2350,  2351,  2352,  2353,  2354,  2355,  2356,  2357,
-   2358,  2359,  2360,  2361,  2362,  2363,  2364,  2365,
-   2366,  2367,  2368,  2369,  2370,  2371,  2372,  2373,
-   2374,  2375,  2376,  2377,  2378,  2379,  2380,  2381,
-   2382,  2383,  2384,  2385,  2386,  2387,  2388,  2389,
-   2390,  2391,  2392,  2393,  2394,  2395,  2396,  2397,
+   2133,  2134,  2135,  2136,  2137,  2138,  2139,  2140,
+   2141,  2142,  2143,  2144,  2145,  2146,  2147,  2148,
+   2149,  2150,  2151,  2152,  2153,  2154,  2155,  2156,
+   2157,  2158,  2159,  2162,  2163,  2164,  2165,  2166,
+   2167,  2168,  2169,  2170,  2171,  2172,  2173,  2174,
+   2175,  2176,  2177,  2178,  2179,  2180,  2181,  2184,
+   2185,  2186,  2187,  2188,  2189,  2190,  2191,  2192,
+   2193,  2194,  2195,  2196,  2197,  2198,  2201,  2202,
+   2203,  2204,  2205,  2206,  2207,  2210,  2211,  2212,
+   2213,  2214,  2215,  2216,  2217,  2218,  2219,  2220,
+   2221,  2222,  2223,  2224,  2225,  2226,  2227,  2228,
+   2229,  2230,  2231,  2232,  2233,  2234,  2235,  2236,
+   2239,  2240,  2241,  2242,  2243,  2244,  2245,  2246,
+   2247,  2248,  2249,  2250,  2251,  2252,  2253,  2254,
+   2255,  2256,  2257,  2258,  2259,  2260,  2261,  2262,
+   2263,  2264,  2265,  2266,  2267,  2268,  2269,  2270,
+   2271,  2272,  2273,  2274,  2275,  2276,  2277,  2279,
+   2280,  2281,  2282,  2283,  2284,  2285,  2286,  2287,
+   2288,  2289,  2290,  2291,  2292,  2293,  2294,  2295,
+   2296,  2297,  2298,  2299,  2300,  2301,  2302,  2303,
+   2304,  2305,  2306,  2307,  2308,  2309,  2312,  2313,
+   2314,  2315,  2316,  2317,  2318,  2319,  2320,  2321,
+   2322,  2323,  2324,  2325,  2326,  2327,  2328,  2329,
+   2330,  2331,  2332,  2333,  2334,  2335,  2336,  2337,
+   2338,  2339,  2340,  2341,  2342,  2343,  2344,  2345,
+   2346,  2347,  2348,  2349,  2350,  2351,  2352,  2353,
+   2354,  2355,  2356,  2357,  2358,  2361,  2362,  2363,
+   2364,  2365,  2366,  2367,  2368,  2369,  2370,  2371,
+   2372,  2373,  2374,  2375,  2376,  2377,  2378,  2379,
+   2380,  2381,  2382,  2383,  2384,  2385,  2386,  2387,
+   2388,  2389,  2390,  2391,  2394,  2395,  2396,  2397,
    2398,  2399,  2400,  2401,  2402,  2403,  2404,  2405,
    2406,  2407,  2408,  2409,  2410,  2411,  2412,  2413,
    2414,  2415,  2416,  2417,  2418,  2419,  2420,  2421,
    2422,  2423,  2424,  2425,  2426,  2427,  2428,  2429,
    2430,  2431,  2432,  2433,  2434,  2435,  2436,  2437,
-   2438,  2439,  2440,  2441,  2444,  2445,  2446,  2447,
-   2448,  2449,  2450,  2451,  2452,  2453,  2454,  2455,
-   2456,  2457,  2458,  2459,  2460,  2461,  2462,  2463,
-   2464,  2465,  2466,  2467,  2468,  2469,  2470,  2471,
-   2472,  2473,  2474,  2475,  2476,  2477,  2478,  2479,
-   2480,  2481,  2482,  2483,  2484,  2485,  2486,  2487,
-   2488,  2489,  2490,  2491,  2492,  2493,  2494,  2495,
-   2496,  2497,  2498,  2499,  2500,  2501,  2502,  2503,
-   2504,  2505,  2506,  2507,  2508,  2509,  2510,  2511,
-   2512,  2513,  2514,  2515,  2516,  2517,  2518,  2519,
-   2520,  2521,  2522,  2523,  2524,  2525,  2526,  2527,
-   2528,  2529,  2530,  2531,  2532,  2533,  2534,  2535,
-   2536,  2538,  2539,  2540,  2541,  2542,  2543,  2544,
-   2545,  2546,  2547,  2548,  2549,  2550,  2551,  2552,
-   2553,  2554,  2555,  2556,  2557,  2558,  2559,  2560,
-   2561,  2562,  2563,  2564,  2565,  2566,  2567,  2568,
-   2569,  2570,  2571,  2572,  2573,  2574,  2575,  2576,
-   2577,  2578,  2579,  2580,  2581,  2582,  2583,  2584,
-   2585,  2586,  2587,  2588,  2589,  2590,  2591,  2592,
-   2593,  2594,  2595,  2596,  2597,  2598,  2599,  2600,
-   2601,  2602,  2603,  2604,  2605,  2606,  2607,  2608,
-   2609,  2610,  2611,  2612,  2614,  2615,  2616,  2617,
-   2618,  2619,  2620,  2621,  2622,  2623,  2624,  2625,
-   2626,  2627,  2628,  2629,  2630,  2631,  2632,  2633,
-   2634,  2635,  2636,  2638,  2639,  2640,  2641,  2642,
-   2643,  2644,  2645,  2646,  2647,  2648,  2649,  2650,
-   2651,  2652,  2653,  2654,  2663,  2673,  2676,  2677,
-   2678,  2679,  2680,  2681,  2682,  2683,  2684,  2685,
-   2686,  2687,  2688,  2689,  2690,  2691,  2692,  2693,
-   2694,  2695,  2699,  2700,  2701,  2702,  2703,  2704,
+   2438,  2439,  2440,  2441,  2442,  2443,  2444,  2445,
+   2446,  2447,  2448,  2449,  2450,  2451,  2452,  2453,
+   2454,  2455,  2456,  2457,  2458,  2459,  2460,  2461,
+   2462,  2463,  2464,  2465,  2466,  2467,  2468,  2469,
+   2470,  2471,  2472,  2473,  2474,  2475,  2476,  2477,
+   2478,  2479,  2480,  2481,  2482,  2483,  2484,  2485,
+   2486,  2487,  2488,  2489,  2490,  2491,  2492,  2493,
+   2494,  2495,  2496,  2497,  2498,  2499,  2500,  2501,
+   2502,  2503,  2504,  2505,  2506,  2507,  2508,  2509,
+   2510,  2511,  2512,  2513,  2514,  2515,  2516,  2517,
+   2518,  2519,  2520,  2521,  2522,  2523,  2524,  2525,
+   2526,  2527,  2528,  2529,  2530,  2531,  2532,  2533,
+   2534,  2535,  2536,  2537,  2538,  2539,  2540,  2541,
+   2542,  2543,  2544,  2545,  2548,  2549,  2550,  2551,
+   2552,  2553,  2554,  2555,  2556,  2557,  2558,  2559,
+   2560,  2561,  2562,  2563,  2564,  2565,  2566,  2567,
+   2568,  2569,  2570,  2571,  2572,  2573,  2574,  2575,
+   2576,  2577,  2578,  2579,  2580,  2581,  2582,  2583,
+   2584,  2585,  2586,  2587,  2588,  2589,  2590,  2591,
+   2592,  2593,  2594,  2595,  2596,  2597,  2598,  2599,
+   2600,  2601,  2602,  2603,  2604,  2605,  2606,  2607,
+   2608,  2609,  2610,  2611,  2612,  2613,  2614,  2615,
+   2616,  2617,  2618,  2619,  2620,  2621,  2622,  2623,
+   2624,  2625,  2626,  2627,  2628,  2629,  2630,  2631,
+   2632,  2633,  2634,  2635,  2636,  2637,  2638,  2639,
+   2640,  2642,  2643,  2644,  2645,  2646,  2647,  2648,
+   2649,  2650,  2651,  2652,  2653,  2654,  2655,  2656,
+   2657,  2658,  2659,  2660,  2661,  2662,  2663,  2664,
+   2665,  2666,  2667,  2668,  2669,  2670,  2671,  2672,
+   2673,  2674,  2675,  2676,  2677,  2678,  2679,  2680,
+   2681,  2682,  2683,  2684,  2685,  2686,  2687,  2688,
+   2689,  2690,  2691,  2692,  2693,  2694,  2695,  2696,
+   2697,  2698,  2699,  2700,  2701,  2702,  2703,  2704,
    2705,  2706,  2707,  2708,  2709,  2710,  2711,  2712,
-   2713,  2714,  2715,  2716,  2717,  2718,  2719,  2720,
-   2721,  2722,  2723,  2724,  2725,  2726,  2727,  2728,
+   2713,  2714,  2715,  2716,  2718,  2719,  2720,  2721,
+   2722,  2723,  2724,  2725,  2726,  2727,  2728,  2729,
    2730,  2731,  2732,  2733,  2734,  2735,  2736,  2737,
-   2738,  2739,  2741,  2742,  2743,  2744,  2745,  2746,
-   2747,  2748,  2749,  2752,  2753,  2754,  2755,  2764,
-   2765,  2766,  2767,  2768,  2769,  2770,  2771,  2772,
-   2773,  2774,  2775,  2796,  2797,  2798,  2799,  2800,
-   2801,  2802,  2803,  2806,  2807,  2808,  2809,  2810,
-   2811,  2812,  2813,  2816,  2817,  2818,  2819,  2820,
-   2821,  2822,  2823,  2824,  2825,  2826,  2827,  2828,
-   2829,  2830,  2832,  2833,  2834,  2835,  2836,  2837,
-   2838,  2839,  2840,  2841,  2842,  2843,  2844,  2845,
-   2846,  2847,  2848,  2849,  2850,  2851,  2852,  2853,
-   2854,  2855,  2856,  2857,  2858,  2859,  2860,  2861,
-   2862,  2863,  2864,  2865,  2866,  2867,  2868,  2869,
-   2870,  2871,  2872,  2873,  2874,  2875,  2876,  2877,
-   2878,  2879,  2880,  2881,  2882,  2883,  2884,  2885,
-   2886,  2887,  2888,  2890,  2891,  2892,  2893,  2894,
-   2895,  2898,  2899,  2900,  2903,  2904,  2905,  2906,
-   2907,  2908,  2911,  2912,  2913,  2914,  2916,  2917,
-   2918,  2919,  2920,  2921,  2922,  2923,  2924,  2925,
-   2926,  2931,  2932,  2933,  2934,  2935,  2936,  2937,
-   2938,  2939,  2940,  2941,  2942,  2943,  2944,  2945,
-   2946,  2947,  2948,  2949,  2950,  2951,  2952,  2953,
-   2954,  2955,  2956,  2957,  2958,  2959,  2960,  2961,
-   2962,  2963,  2964,  2981,  2982,  2983,  2984,  2985,
-   2986,  2987,  2988,  2989,  2990,  2993,  2994,  2995,
-   2996,  2997,  2998,  2999,  3000,  3001,  3002,  3003,
-   3004,  3005,  3006,  3007,  3008,  3009,  3010,  3011,
-   3012,  3013,  3014,  3015,  3016,  3017,  3018,  3019,
-   3020,  3021,  3022,  3023,  3024,  3025,  3032,  3033,
-   3034,  3035,  3036,  3037,  3038,  3039,  3040,  3041,
+   2738,  2739,  2740,  2742,  2743,  2744,  2745,  2746,
+   2747,  2748,  2749,  2750,  2751,  2752,  2753,  2754,
+   2755,  2756,  2757,  2758,  2767,  2777,  2780,  2781,
+   2782,  2783,  2784,  2785,  2786,  2787,  2788,  2789,
+   2790,  2791,  2792,  2793,  2794,  2795,  2796,  2797,
+   2798,  2799,  2803,  2804,  2805,  2806,  2807,  2808,
+   2809,  2810,  2811,  2812,  2813,  2814,  2815,  2816,
+   2817,  2818,  2819,  2820,  2821,  2822,  2823,  2824,
+   2825,  2826,  2827,  2828,  2829,  2830,  2831,  2832,
+   2834,  2835,  2836,  2837,  2838,  2839,  2840,  2841,
+   2842,  2843,  2845,  2846,  2847,  2848,  2849,  2850,
+   2851,  2852,  2853,  2856,  2857,  2858,  2859,  2868,
+   2869,  2870,  2871,  2872,  2873,  2874,  2875,  2876,
+   2877,  2878,  2879,  2900,  2901,  2902,  2903,  2904,
+   2905,  2906,  2907,  2910,  2911,  2912,  2913,  2914,
+   2915,  2916,  2917,  2920,  2921,  2922,  2923,  2924,
+   2925,  2926,  2927,  2928,  2929,  2930,  2931,  2932,
+   2933,  2934,  2936,  2937,  2938,  2939,  2940,  2941,
+   2942,  2943,  2944,  2945,  2946,  2947,  2948,  2949,
+   2950,  2951,  2952,  2953,  2954,  2955,  2956,  2957,
+   2958,  2959,  2960,  2961,  2962,  2963,  2964,  2965,
+   2966,  2967,  2968,  2969,  2970,  2971,  2972,  2973,
+   2974,  2975,  2976,  2977,  2978,  2979,  2980,  2981,
+   2982,  2983,  2984,  2985,  2986,  2987,  2988,  2989,
+   2990,  2991,  2992,  2994,  2995,  2996,  2997,  2998,
+   2999,  3002,  3003,  3004,  3007,  3008,  3009,  3010,
+   3011,  3012,  3015,  3016,  3017,  3018,  3020,  3021,
+   3022,  3023,  3024,  3025,  3026,  3027,  3028,  3029,
+   3030,  3035,  3036,  3037,  3038,  3039,  3040,  3041,
    3042,  3043,  3044,  3045,  3046,  3047,  3048,  3049,
    3050,  3051,  3052,  3053,  3054,  3055,  3056,  3057,
    3058,  3059,  3060,  3061,  3062,  3063,  3064,  3065,
-   3066,  3069,  3070,  3071,  3072,  3073,  3074,  3075,
-   3076,  3077,  3078,  3079,  3080,  3081,  3082,  3083,
-   3084,  3085,  3086,  3087,  3088,  3089,  3090,  3091,
-   3092,  3093,  3096,  3097,  3098,  3099,  3100,  3101,
-   3102,  3103,  3104,  3105,  3106,  3107,  3108,  3109,
-   3110,  3111,  3112,  3113,  3114,  3115,  3116,  3117,
-   3118,  3119,  3120,  3121,  3122,  3123,  3124,  3125,
-   3126,  3127,  3130,  3133,  3134,  3135,  3138,  3139,
-   3140,  3141,  3142,  3143,  3144,  3145,  3146,  3147,
-   3148,  3149,  3150,  3151,  3152,  3155,  3156,  3157,
-   3158,  3159,  3160,  3161,  3162,  3163,  3164,  3165,
-   3166,  3167,  3168,  3169,  3170,  3171,  3172,  3173,
-   3174,  3175,  3176,  3177,  3178,  3179,  3180,  3181,
-   3182,  3183,  3184,  3185,  3186,  3187,  3188,  3189,
-   3190,  3191,  3192,  3193,  3194,  3195,  3196,  3197,
-   3198,  3199,  3200,  3201,  3202,  3203,  3204,  3205,
-   3206,  3207,  3208,  3209,  3210,  3211,  3212,  3213,
-   3214,  3215,  3216,  3217,  3218,  3219,  3220,  3221,
-   3222,  3223,  3224,  3225,  3226,  3227,  3228,  3229,
-   3230,  3231,  3232,  3233,  3234,  3235,  3236,  3237,
-   3238,  3239,  3240,  3241,  3242,  3243,  3244,  3245,
-   3246,  3247,  3248,  3249,  3250,  3251,  3252,  3253,
-   3254,  3255,  3256,  3257,  3258,  3259,  3260,  3261,
-   3262,  3263,  3266,  3267,  3268,  3269,  3270,  3271,
-   3272,  3273,  3274,  3275,  3276,  3277,  3278,  3279,
-   3280,  3281,  3282,  3283,  3284,  3285,  3286,  3287,
-   3288,  3289,  3290,  3291,  3292,  3293,  3294,  3295,
-   3296,  3301,  3304,  3305,  3306,  3307,  3308,  3311,
-   3312,  3313,  3314,  3315,  3316,  3317,  3318,  3319,
-   3320,  3321,  3322,  3323,  3324,  3325,  3326,  3327,
-   3328,  3329,  3330,  3331,  3332,  3333,  3334,  3335,
-   3336,  3337,  3338,  3351,  3352,  3353,  3354,  3355,
-   3356,  3357,  3358,  3359,  3360,  3361,  3362,  3363,
-   3364,  3365,  3366,  3367,  3370,  3371,  3372,  3375,
-   3376,  3377,  3378,  3379,  3380,  3381,  3382,  3383,
-   3384,  3387,  3388,  3389,  3392,  3393,  3394,  3395,
-   3396,  3397,  3398,  3399,  3400,  3401,  3402,  3403,
-   3405,  3406,  3407,  3408,  3409,  3414,  3419,  3420,
-   3421,  3422,  3423,  3424,  3425,  3426,  3427,  3428,
-   3429,  3430,  3431,  3432,  3433,  3434,  3435,  3436,
-   3437,  3438,  3439,  3440,  3441,  3442,  3443,  3444,
-   3445,  3446,  3447,  3448,  3449,  3450,  3451,  3452,
-   3453,  3454,  3455,  3456,  3457,  3458,  3459,  3460,
+   3066,  3067,  3068,  3085,  3086,  3087,  3088,  3089,
+   3090,  3091,  3092,  3093,  3094,  3097,  3098,  3099,
+   3100,  3101,  3102,  3103,  3104,  3105,  3106,  3107,
+   3108,  3109,  3110,  3111,  3112,  3113,  3114,  3115,
+   3116,  3117,  3118,  3119,  3120,  3121,  3122,  3123,
+   3124,  3125,  3126,  3127,  3128,  3129,  3136,  3137,
+   3138,  3139,  3140,  3141,  3142,  3143,  3144,  3145,
+   3146,  3147,  3148,  3149,  3150,  3151,  3152,  3153,
+   3154,  3155,  3156,  3157,  3158,  3159,  3160,  3161,
+   3162,  3163,  3164,  3165,  3166,  3167,  3168,  3169,
+   3170,  3173,  3174,  3175,  3176,  3177,  3178,  3179,
+   3180,  3181,  3182,  3183,  3184,  3186,  3187,  3188,
+   3189,  3190,  3191,  3192,  3193,  3194,  3195,  3196,
+   3197,  3198,  3201,  3202,  3203,  3204,  3205,  3206,
+   3207,  3208,  3209,  3210,  3211,  3212,  3213,  3214,
+   3215,  3216,  3217,  3218,  3219,  3220,  3221,  3222,
+   3223,  3224,  3225,  3226,  3227,  3228,  3229,  3230,
+   3231,  3232,  3235,  3238,  3239,  3240,  3243,  3244,
+   3245,  3246,  3247,  3248,  3249,  3250,  3251,  3252,
+   3253,  3254,  3255,  3256,  3257,  3260,  3261,  3262,
+   3263,  3264,  3265,  3266,  3267,  3268,  3269,  3270,
+   3271,  3272,  3273,  3274,  3275,  3276,  3277,  3278,
+   3279,  3280,  3281,  3282,  3283,  3284,  3285,  3286,
+   3287,  3288,  3289,  3290,  3291,  3292,  3293,  3294,
+   3295,  3296,  3297,  3298,  3299,  3300,  3301,  3302,
+   3303,  3304,  3305,  3306,  3307,  3308,  3309,  3310,
+   3311,  3312,  3313,  3314,  3315,  3316,  3317,  3318,
+   3319,  3320,  3321,  3322,  3323,  3324,  3325,  3326,
+   3327,  3328,  3329,  3330,  3331,  3332,  3333,  3334,
+   3335,  3336,  3337,  3338,  3339,  3340,  3341,  3342,
+   3343,  3344,  3345,  3346,  3347,  3348,  3349,  3350,
+   3351,  3352,  3353,  3354,  3355,  3356,  3357,  3358,
+   3359,  3360,  3361,  3362,  3363,  3364,  3365,  3366,
+   3367,  3368,  3371,  3372,  3373,  3374,  3375,  3376,
+   3377,  3378,  3379,  3380,  3381,  3382,  3383,  3384,
+   3385,  3386,  3387,  3388,  3389,  3390,  3391,  3392,
+   3393,  3394,  3395,  3396,  3397,  3398,  3399,  3400,
+   3401,  3406,  3409,  3410,  3411,  3412,  3413,  3416,
+   3417,  3418,  3419,  3420,  3421,  3422,  3423,  3424,
+   3425,  3426,  3427,  3428,  3429,  3430,  3431,  3432,
+   3433,  3434,  3435,  3436,  3437,  3438,  3439,  3440,
+   3441,  3442,  3443,  3456,  3457,  3458,  3459,  3460,
    3461,  3462,  3463,  3464,  3465,  3466,  3467,  3468,
-   3469,  3470,  3471,  3472,  3473,  3474,  3475,  3476,
-   3477,  3478,  3479,  3480,  3481,  3482,  3483,  3484,
-   3485,  3486,  3487,  3488,  3489,  3490,  3491,  3492,
-   3493,  3494,  3495,  3496,  3497,  3498,  3499,  3500,
-   3501,  3502,  3505,  3511,  3512,  3513,  3514,  3515,
-   3516,  3517,  3518,  3521,  3522,  3523,  3524,  3525,
+   3469,  3470,  3471,  3472,  3475,  3476,  3477,  3480,
+   3481,  3482,  3483,  3484,  3485,  3486,  3487,  3488,
+   3489,  3492,  3493,  3494,  3497,  3498,  3499,  3500,
+   3501,  3502,  3503,  3504,  3505,  3506,  3507,  3508,
+   3510,  3511,  3512,  3513,  3514,  3519,  3524,  3525,
    3526,  3527,  3528,  3529,  3530,  3531,  3532,  3533,
    3534,  3535,  3536,  3537,  3538,  3539,  3540,  3541,
    3542,  3543,  3544,  3545,  3546,  3547,  3548,  3549,
-   3550,  3551,  3552,  3553,  3558,  3561,  3562,  3563,
-   3564,  3565,  3566,  3567,  3568,  3569,  3570,  3571,
-   3572,  3573,  3574,  3575,  3576,  3577,  3578,  3579,
-   3580,  3581,  3582,  3583,  3584,  3585,  3586,  3587,
-   3588,  3589,  3590,  3591,  3592,  3593,  3594,  3595,
-   3596,  3597,  3598,  3599,  3600,  3601,  3602,  3603,
-   3604,  3605,  3606,  3607,  3608,  3609,  3610,  3611,
-   3612,  3613,  3614,  3615,  3616,  3617,  3618,  3619,
-   3620,  3621,  3622,  3623,  3624,  3625,  3626,  3627,
-   3628,  3629,  3630,  3631,  3632,  3633,  3634,  3635,
-   3636,  3637,  3638,  3639,  3640,  3641,  3642,  3643,
-   3644,  3645,  3646,  3647,  3648,  3649,  3650,  3651,
-   3652,  3653,  3656,  3657,  3658,  3659,  3660,  3661,
-   3662,  3663,  3664,  3665,  3666,  3667,  3668,  3669,
-   3670,  3671,  3674,  3675,  3676,  3677,  3678,  3679,
-   3680,  3681,  3682,  3683,  3684,  3685,  3686,  3687,
-   3688,  3689,  3690,  3691,  3692,  3693,  3694,  3696,
-   3697,  3698,  3699,  3700,  3701,  3702,  3703,  3704,
-   3705,  3706,  3707,  3708,  3709,  3710,  3711,  3712,
-   3713,  3714,  3715,  3716,  3717,  3718,  3719,  3720,
-   3721,  3722,  3723,  3724,  3725,  3726,  3727,  3728,
-   3729,  3730,  3731,  3732,  3733,  3734,  3735,  3736,
-   3737,  3738,  3739,  3740,  3741,  3742,  3743,  3744,
-   3745,  3746,  3747,  3748,  3749,  3750,  3751,  3752,
-   3753,  3754,  3755,  3756,  3757,  3758,  3759,  3760,
-   3761,  3762,  3763,  3764,  3765,  3766,  3767,  3768,
-   3769,  3770,  3771,  3772,  3773,  3774,  3775,  3776,
-   3777,  3778,  3779,  3780,  3781,  3782,  3783,  3784,
-   3786,  3787,  3788,  3789,  3790,  3791,  3792,  3793,
-   3794,  3795,  3796,  3797,  3798,  3799,  3800,  3801,
+   3550,  3551,  3552,  3553,  3554,  3555,  3556,  3557,
+   3558,  3559,  3560,  3561,  3562,  3563,  3564,  3565,
+   3566,  3567,  3568,  3569,  3570,  3571,  3572,  3573,
+   3574,  3575,  3576,  3577,  3578,  3579,  3580,  3581,
+   3582,  3583,  3584,  3585,  3586,  3587,  3588,  3589,
+   3590,  3591,  3592,  3593,  3594,  3595,  3596,  3597,
+   3598,  3599,  3600,  3601,  3602,  3603,  3604,  3605,
+   3606,  3607,  3610,  3616,  3617,  3618,  3619,  3620,
+   3621,  3622,  3623,  3626,  3627,  3628,  3629,  3630,
+   3631,  3632,  3633,  3634,  3635,  3636,  3637,  3638,
+   3639,  3640,  3641,  3642,  3643,  3644,  3645,  3646,
+   3647,  3648,  3649,  3650,  3651,  3652,  3653,  3654,
+   3655,  3656,  3657,  3658,  3663,  3666,  3667,  3668,
+   3669,  3670,  3671,  3672,  3673,  3674,  3675,  3676,
+   3677,  3678,  3679,  3680,  3681,  3682,  3683,  3684,
+   3685,  3686,  3687,  3688,  3689,  3690,  3691,  3692,
+   3693,  3694,  3695,  3696,  3697,  3698,  3699,  3700,
+   3701,  3702,  3703,  3704,  3705,  3706,  3707,  3708,
+   3709,  3710,  3711,  3712,  3713,  3714,  3715,  3716,
+   3717,  3718,  3719,  3720,  3721,  3722,  3723,  3724,
+   3725,  3726,  3727,  3728,  3729,  3730,  3731,  3732,
+   3733,  3734,  3735,  3736,  3737,  3738,  3739,  3740,
+   3741,  3742,  3743,  3744,  3745,  3746,  3747,  3748,
+   3749,  3750,  3751,  3752,  3753,  3754,  3755,  3756,
+   3757,  3758,  3761,  3762,  3763,  3764,  3765,  3766,
+   3767,  3768,  3769,  3770,  3771,  3772,  3773,  3774,
+   3775,  3776,  3779,  3780,  3781,  3782,  3783,  3784,
+   3785,  3786,  3787,  3788,  3789,  3790,  3791,  3792,
+   3793,  3794,  3795,  3796,  3797,  3798,  3799,  3801,
    3802,  3803,  3804,  3805,  3806,  3807,  3808,  3809,
    3810,  3811,  3812,  3813,  3814,  3815,  3816,  3817,
-   3818,  3820,  3821,  3822,  3823,  3824,  3825,  3826,
-   3827,  3828,  3829,  3830,  3831,  3832,  3833,  3834,
-   3835,  3836,  3837,  3838,  3839,  3840,  3841,  3842,
-   3843,  3844,  3845,  3849,  3850,  3851,  3852,  3853,
-   3854,  3855,  3856,  3857,  3858,  3859,  3860,  3861,
-   3862,  3863,  3864,  3865,  3866,  3867,  3870,  3871,
-   3872,  3873,  3874,  3875,  3876,  3877,  3878,  3879,
-   3880,  3881,  3882,  3883,  3884,  3885,  3886,  3887,
-   3888,  3889,  3890,  3891,  3892,  3893,  3894,  3895,
-   3896,  3897,  3898,  3899,  3900,  3901,  3902,  3903,
-   3904,  3905,  3906,  3907,  3908,  3909,  3910,  3911,
-   3912,  3913,  3914,  3915,  3916,  3917,  3918,  3919,
-   3920,  3921,  3922,  3923,  3924,  3925,  3926,  3927,
-   3928,  3929,  3930,  3931,  3932,  3933,  3940,  3941,
-   3942,  3943,  3944,  3945,  3946,  3947,  3948,  3949,
-   3950,  3951,  3952,  3953,  3954,  3955,  3956,  3957,
-   3958,  3959,  3960,  3961,  3962,  3963,  3964,  3965,
-   3966,  3967,  3968,  3969,  3970,  3971,  3972,  3973,
-   3974,  3975,  3976,  3977,  3978,  3979,  3980,  3981,
-   3982,  3983,  3984,  3985,  3986,  3987,  3988,  3989,
-   3990,  3991,  3992,  3993,  3994,  3995,  3996,  3997,
-   3998,  3999,  4000,  4001,  4002,  4003,  4004,  4005,
-   4006,  4007,  4008,  4009,  4010,  4011,  4012,  4013,
-   4014,  4015,  4016,  4017,  4018,  4019,  4020,  4021,
-   4022,  4023,  4024,  4025,  4026,  4030,  4031,  4032,
-   4033,  4034,  4035,  4036,  4037,  4038,  4039,  4040,
-   4041,  4042,  4043,  4044,  4045,  4046,  4047,  4048,
-   4049,  4050,  4051,  4052,  4053,  4054,  4055,  4056,
-   4057,  4058,  4059,  4060,  4061,  4062,  4063,  4064,
-   4065,  4066,  4067,  4068,  4075,  4078,  4079,  4080,
-   4081,  4082,  4083,  4084,  4085,  4086,  4087,  4088,
-   4089,  4090,  4091,  4092,  4093,  4094,  4095,  4096,
-   4097,  4098,  4099,  4100,  4101,  4102,  4103,  4104,
-   4105,  4106,  4107,  4108,  4109,  4110,  4111,  4112,
-   4115,  4116,  4117,  4118,  4119,  4120,  4121,  4122,
-   4123,  4124,  4125,  4126,  4127,  4128,  4135,  4136,
-   4137,  4138,  4139,  4142,  4149,  4150,  4151,  4152,
-   4153,  4154,  4155,  4156,  4157,  4158,  4159,  4160,
-   4161,  4164,  4165,  4166,  4167,  4168,  4169,  4170,
-   4171,  4172,  4173,  4174,  4175,  4176,  4177,  4178,
-   4179,  4180,  4181,  4182,  4183,  4184,  4185,  4188,
-   4189,  4190,  4191,  4192,  4193,  4194,  4195,  4196,
-   4197,  4198,  4199,  4200,  4201,  4202,  4203,  4204,
-   4205,  4206,  4207,  4208,  4209,  4210,  4211,  4212,
-   4213,  4214,  4215,  4216,  4217,  4218,  4219,  4220,
-   4221,  4222,  4223,  4224,  4225,  4226,  4227,  4228,
-   4229,  4230,  4231,  4232,  4233,  4234,  4235,  4236,
-   4237,  4238,  4239,  4240,  4241,  4242,  4243,  4244,
-   4245,  4246,  4247,  4248,  4249,  4250,  4251,  4252,
-   4253,  4254,  4255,  4256,  4257,  4258,  4259,  4260,
-   4261,  4262,  4263,  4269,  4270,  4271,  4272,  4273,
-   4274,  4275,  4276,  4277,  4278,  4279,  4280,  4281,
-   4282,  4283,  4286,  4287,  4288,  4289,  4290,  4291,
-   4292,  4293,  4294,  4295,  4296,  4297,  4298,  4299,
-   4300,  4301,  4302,  4303,  4304,  4305,  4306,  4307,
-   4308,  4309,  4310,  4311,  4312,  4313,  4314,  4315,
-   4316,  4317,  4318,  4319,  4320,  4321,  4322,  4323,
-   4324,  4325,  4326,  4327,  4328,  4329,  4330,  4331,
+   3818,  3819,  3820,  3821,  3822,  3823,  3824,  3825,
+   3826,  3827,  3828,  3829,  3830,  3831,  3832,  3833,
+   3834,  3835,  3836,  3837,  3838,  3839,  3840,  3841,
+   3842,  3843,  3844,  3845,  3846,  3847,  3848,  3849,
+   3850,  3851,  3852,  3853,  3854,  3855,  3856,  3857,
+   3858,  3859,  3860,  3861,  3862,  3863,  3864,  3865,
+   3866,  3867,  3868,  3869,  3870,  3871,  3872,  3873,
+   3874,  3875,  3876,  3877,  3878,  3879,  3880,  3881,
+   3882,  3883,  3884,  3885,  3886,  3887,  3888,  3889,
+   3891,  3892,  3893,  3894,  3895,  3896,  3897,  3898,
+   3899,  3900,  3901,  3902,  3903,  3904,  3905,  3906,
+   3907,  3908,  3909,  3910,  3911,  3912,  3913,  3914,
+   3915,  3916,  3917,  3918,  3919,  3920,  3921,  3922,
+   3923,  3925,  3926,  3927,  3928,  3929,  3930,  3931,
+   3932,  3933,  3934,  3935,  3936,  3937,  3938,  3939,
+   3940,  3941,  3942,  3943,  3944,  3945,  3946,  3947,
+   3948,  3949,  3950,  3954,  3955,  3956,  3957,  3958,
+   3959,  3960,  3961,  3962,  3963,  3964,  3965,  3966,
+   3967,  3968,  3969,  3970,  3971,  3972,  3975,  3976,
+   3977,  3978,  3979,  3980,  3981,  3982,  3983,  3984,
+   3985,  3986,  3987,  3988,  3989,  3990,  3991,  3992,
+   3993,  3994,  3995,  3996,  3997,  3998,  3999,  4000,
+   4001,  4002,  4003,  4004,  4005,  4006,  4007,  4008,
+   4009,  4010,  4011,  4012,  4013,  4014,  4015,  4016,
+   4017,  4018,  4019,  4020,  4021,  4022,  4023,  4024,
+   4025,  4026,  4027,  4028,  4029,  4030,  4031,  4032,
+   4033,  4034,  4035,  4036,  4037,  4038,  4045,  4046,
+   4047,  4048,  4049,  4050,  4051,  4052,  4053,  4054,
+   4055,  4056,  4057,  4058,  4059,  4060,  4061,  4062,
+   4063,  4064,  4065,  4066,  4067,  4068,  4069,  4070,
+   4071,  4072,  4073,  4074,  4075,  4076,  4077,  4078,
+   4079,  4080,  4081,  4082,  4083,  4084,  4085,  4086,
+   4087,  4088,  4089,  4090,  4091,  4092,  4093,  4094,
+   4095,  4096,  4097,  4098,  4099,  4100,  4101,  4102,
+   4103,  4104,  4105,  4106,  4107,  4108,  4109,  4110,
+   4111,  4112,  4113,  4114,  4115,  4116,  4117,  4118,
+   4119,  4120,  4121,  4122,  4123,  4124,  4125,  4126,
+   4127,  4128,  4129,  4130,  4131,  4135,  4136,  4137,
+   4138,  4139,  4140,  4141,  4142,  4143,  4144,  4145,
+   4146,  4147,  4148,  4149,  4150,  4151,  4152,  4153,
+   4154,  4155,  4156,  4157,  4158,  4159,  4160,  4161,
+   4162,  4163,  4164,  4165,  4166,  4167,  4168,  4169,
+   4170,  4171,  4172,  4173,  4180,  4183,  4184,  4185,
+   4186,  4187,  4188,  4189,  4190,  4191,  4192,  4193,
+   4194,  4195,  4196,  4197,  4198,  4199,  4200,  4201,
+   4202,  4203,  4204,  4205,  4206,  4207,  4208,  4209,
+   4210,  4211,  4212,  4213,  4214,  4215,  4216,  4217,
+   4220,  4221,  4222,  4223,  4224,  4225,  4226,  4227,
+   4228,  4229,  4230,  4231,  4232,  4233,  4240,  4241,
+   4242,  4243,  4244,  4247,  4254,  4255,  4256,  4257,
+   4258,  4259,  4260,  4261,  4262,  4263,  4264,  4265,
+   4266,  4269,  4270,  4271,  4272,  4273,  4274,  4275,
+   4276,  4277,  4278,  4279,  4280,  4281,  4282,  4283,
+   4284,  4285,  4286,  4287,  4288,  4289,  4290,  4293,
+   4294,  4295,  4296,  4297,  4298,  4299,  4300,  4301,
+   4302,  4303,  4304,  4305,  4306,  4307,  4308,  4309,
+   4310,  4311,  4312,  4313,  4314,  4315,  4316,  4317,
+   4318,  4319,  4320,  4321,  4322,  4323,  4324,  4325,
+   4326,  4327,  4328,  4329,  4330,  4331,  4332,  4333,
    4334,  4335,  4336,  4337,  4338,  4339,  4340,  4341,
    4342,  4343,  4344,  4345,  4346,  4347,  4348,  4349,
-   4350,  4351,  4352,  4353,  4354,  4355,  4356,  4359,
-   4360,  4361,  4362,  4363,  4364,  4365,  4366,  4367,
-   4368,  4369,  4370,  4371,  4372,  4373,  4374,  4375,
-   4376,  4377,  4380,  4381,  4382,  4383,  4384,  4385,
-   4386,  4387,  4388,  4389,  4390,  4391,  4392,  4393,
-   4394,  4395,  4396,  4397,  4398,  4401,  4402,  4403,
-   4404,  4405,  4406,  4407,  4408,  4409,  4410,  4411,
-   4412,  4413,  4414,  4415,  4416,  4417,  4418,  4419,
-   4422,  4423,  4424,  4425,  4426,  4427,  4428,  4429,
-   4430,  4431,  4432,  4433,  4434,  4435,  4436,  4437,
-   4438,  4439,  4440,  4441,  4442,  4443,  4444,  4445,
-   4446,  4447,  4448,  4449,  4450,  4451,  4452,  4453,
-   4454,  4455,  4456,  4457,  4458,  4459,  4460,  4461,
-   4462,  4463,  4464,  4465,  4466,  4467,  4468,  4469,
-   4470,  4471,  4472,  4473,  4474,  4475,  4476,  4477,
-   4478,  4479,  4480,  4481,  4482,  4483,  4484,  4485,
-   4486,  4487,  4488,  4489,  4490,  4491,  4492,  4493,
-   4494,  4495,  4496,  4497,  4498,  4499,  4500,  4501,
-   4502,  4503,  4504,  4505,  4506,  4507,  4508,  4509,
-   4510,  4511,  4512,  4513,  4514,  4515,  4516,  4517,
-   4518,  4519,  4520,  4521,  4522,  4523,  4524,  4525,
-   4526,  4527,  4528,  4529,  4530,  4531,  4532,  4533,
-   4534,  4535,  4536,  4537,  4538,  4539,  4540,  4541,
-   4542,  4543,  4544,  4545,  4546,  4547,  4548,  4549,
-   4550,  4551,  4552,  4553,  4554,  4555,  4556,  4557,
-   4558,  4559,  4560,  4561,  4562,  4563,  4564,  4565,
-   4566,  4567,  4568,  4569,  4570,  4571,  4572,  4573,
-   4574,  4575,  4576,  4577,  4578,  4579,  4580,  4581,
-   4582,  4583,  4584,  4585,  4586,  4587,  4588,  4589,
-   4590,  4591,  4592,  4593,  4594,  4595,  4596,  4597,
-   4598,  4599,  4600,  4601,  4602,  4603,  4604,  4605,
-   4606,  4607,  4608,  4609,  4610,  4611,  4612,  4613,
-   4614,  4615,  4616,  4617,  4618,  4619,  4620,  4621,
-   4622,  4623,  4624,  4625,  4626,  4627,  4632,  4634,
-   4635,  4650,  4651,  4652,  4653,  4654,  4655,  4656,
-   4657,  4658,  4659,  4660,  4661,  4662,  4663,  4664,
-   4665,  4666,  4667,  4668,  4669,  4670,  4671,  4672,
-   4673,  4674,  4675,  4676,  4677,  4678,  4679,  4680,
-   4681,  4682,  4683,  4684,  4685,  4686,  4687,  4688,
-   4689,  4690,  4691,  4692,  4693,  4694,  4695,  4696,
-   4697,  4698,  4699,  4700,  4701,  4702,  4703,  4704,
-   4705,  4706,  4707,  4708,  4709,  4710,  4711,  4712,
-   4713,  4714,  4715,  4716,  4717,  4718,  4719,  4720,
-   4721,  4722,  4723,  4724,  4725,  4726,  4727,  4728,
-   4729,  4730,  4731,  4732,  4733,  4734,  4735,  4736,
-   4737,  4738,  4739,  4740,  4741,  4742,  4743,  4744,
-   4749,  4750,  4751,  4752,  4753,  4755,  4756,  4757,
-   4758,  4759,  4760,  4770,  4771,  4772,  4775,  4776,
-   4777,  4778,  4779,  4780,  4781,  4782,  4785,  4788,
-   4792,  4807,  4808,  4809,  4812,  4813,  4819,  4822,
-   4826,  4841,  4842,  4843,  4846,  4847,  4850,  4853,
-   4857,  4872,  4873,  4874,  4877,  4878,  4881,  4884,
-   4888,  4903,  4904,  4905,  4908,  4909,  4910,  4911,
-   4912,  4913,  4914,  4915,  4916,  4917,  4918,  4919,
-   4920,  4921,  4922,  4923,  4924,  4925,  4926,  4927,
-   4928,  4929,  4930,  4931,  4932,  4937,  4938,  4939,
-   4940,  4959,  4960,  4961,  4962,  4963,  4964,  4965,
-   4966,  4967,  4968,  4969,  4970,  4971,  4972,  4973,
-   4974,  4643,  4799,  4833,  4864,  4895,  4786,  4820,
-   4851,  4882,  4640,  4795,  4829,  4860,  4891,  4639,
-   4796,  4830,  4861,  4892,  4631,  4797,  4831,  4862,
-   4893,  4637,  4790,  4824,  4855,  4886,  4629,  4783,
-   4817,  4848,  4879,  4641,  4801,  4835,  4866,  4897,
-   4645,  4803,  4837,  4868,  4899,  4647,  4805,  4839,
-   4870,  4901,  4975,  4976,  4977,  4978,  4979,  4980,
-   4981,  4982,  4983,  4984,  4985,  4986,  4987,  4988,
-   4989,  4990,  4991,  4992,  4993,  4994,  4995,  4996,
-   4997,  4998,  4999,  5000,  4941,  4942,  5003,  5004,
-   5006,  5007,  5008,  2929,  2930,  5010,  1006,  1007,
-   1215,  1216,  1217,  1218,  1219,  1220,  1234,  1235,
-   1264,  1265,  1432,  1433,  1440,  1441,  1446,  1447,
-   1483,  1484,  1493,  1494,  1573,  1740,  1741,  1744,
-   1745,  1746,  1747,  1748,  1749,  1750,  1751,  1752,
-   1753,  1754,  1755,  1758,  1759,  1760,  1965,  1966,
-   1967,  1968,  2056,  2057,  2095,  2096,  2104,  2105,
-   2255,  2256,  2655,  2656,  2657,  2658,  2659,  2660,
-   2661,  2662,  2696,  2697,  2750,  2751,  2756,  2757,
-   2758,  2759,  2760,  2761,  2762,  2763,  2776,  2777,
-   2778,  2779,  2780,  2781,  2782,  2783,  2784,  2785,
-   2786,  2787,  2788,  2789,  2790,  2791,  2792,  2793,
-   2794,  2795,  2814,  2815,  2896,  2897,  2901,  2902,
-   2909,  2910,  2991,  2992,  3030,  3031,  3297,  3298,
-   3299,  3300,  3339,  3340,  3341,  3342,  3343,  3344,
-   3345,  3346,  3347,  3348,  3349,  3350,  3410,  3411,
-   3503,  3504,  3506,  3507,  3508,  3509,  3510,  3519,
-   3520,  3785,  3868,  3869,  3936,  3937,  3938,  3939,
-   4162,  4163,  4284,  4285,  4745,  4746,  4810,  4811,
-   4815,  4816,  4844,  4845,  4875,  4876,  4906,  4907,
-   5011,  5012,  5013,  5014,  5015,  5028,  5029,  5001,
-   5005,  5009,  5035,  5038,  5039,  5040,  5042,  5044,
-   5046,  5048,  5050,  5051,  5058,  5059,  5060,  5061,
-   5062,  5063,  5065,  5069,  5068,  5067,  5057,  5052,
-   5053,  5054,  5055,  5056,  5070,  4943,  4944,  4947,
-   4948,  4950,  4951,  4953,  4954,  4956,  4957,  5002,
-   5071,  5072,  5073,  5074,  5075,  5076,  4945,  4949,
-   4952,  4955,  4958,  5077,  5078,  5079,  4821,  5030,
-   4633,  4852,  4787,  4883,  4834,  5043,  4644,  4865,
-   4800,  4896,  4836,  5045,  4642,  4867,  4802,  4898,
-   4838,  5047,  4646,  4869,  4804,  4900,  4825,  5066,
-   4638,  4856,  4791,  4887,  4818,  5016,  4630,  4849,
-   4784,  4880,  4840,  5049,  4648,  4871,  4806,  4902,
-   4823,  5064,  4628,  4854,  4789,  4885,  4827,  5036,
-   4636,  4858,  4793,  4889,  4832,  5041,  4649,  4863,
-   4798,  4894,  5080,  5081,  5082,  5083,  5086,  5087,
-   5088,  5089,  5090,  5091,  5092,  5093,  5095,  5098,
-   5101,  5102,  5103,  5104,  5105,  5106,  5107,  5108,
-   5109,  5110,  5111,  5112,  5113,  5114,  5115,  5116,
-   5117,  5118,  5119,  5120,  5121,  5122,  5123,  5124,
-   5125,  5126,  5127,  5128,  5129,  5130,  5131,  5132,
-   5133,  5134,  5135,  5136,  5137,  5138,  5139,  5140,
-   5141,  5142,  5143,  5144,  5145,  5146,  5147,  5148,
-   5149,  5150,  5151,  5152,  5153,  5154,  5155,  5156,
-   5157,  5158,  5159,  5160,  5161,  5162,  5163,  5164,
-   5165,  5166,  5167,  5168,  5169,  5190,  5191,  5192,
-   5193,  5194,  5195,  5196,  5197,  5198,  5199,  5200,
-   5031,  5032,  5033,  5034,  5025,  5026,  5027,  5017,
-   5018,  5019,  5020,  5021,  5022,  5023,  5024,  5201,
-   5202,  5203,  5204,  5205,  5206,  5207,  5208,  5209,
-   5210,  5211,  5212,  5213,  5214,  5215,  5216,  5217,
-   5218,  5219,  5220,  5221,  5222,  5223,  5224,  5225,
-   5226,  5227,  5228,  5229,  5230,  5231,  5232,  5233,
-   5234,  4264,  4265,  4266,  4267,  4268,  5235,  5241,
-   5242,  5243,  5244,  5245,  5246,  5247,  5248,  5249,
-   5250,  5251,  5252,  5253,  5256,  5257,  5258,  5259,
-   5260,  5261,  5262,  5263,  5264,  5265,  5266,  5267,
-   5268,  5269,  5270,  5271,  5272,  5273,  5274,  5275,
-   5276,  5277,  5278,  5279,  5280,  5281,  5282,  5283,
-   5284,  5285,  5286,  5287,  5288,  5289,  5290,  5291,
-   5292,  5293,  5294,  5295,  5296,  5297,  5298,  5299,
-   5300,  5301,  5302,  5303,  5304,  5305,  5306,  5307,
-   5308,  5310,  5311,  5312,  5313,  5314,  5315,  5316,
-   5318,  5319,  5320,  5321,  5322,  5323,  5324,  5325,
-   5326,  5327,  5328,  5329,  5330,  5331,  5332,  5333,
-   5334,  5335,  5336,  5337,  5338,  5339,  5340,  5341,
-   5342,  5343,  5344,  5345,  5346,  5347,  5348,  5349,
-   5350,  5351,  5352,  5353,  5354,  5355,  5356,  5357,
-   5358,  5360,  5361,  5362,  5363,  5364,  5365,  5366,
-   5367,  5368,  5369,  5370,  5371,  5372,  5373,  5374,
-   5375,  5376,  5377,  5403,  5404,  5405,  5406,  5407,
-   5408,  5409,  5410,  5411,  5412,  5413,  5414,  5416,
-   5417,  5418,  5420,  5421,  5422,  5423,  5424,  5425,
-   5426,  5427,  5428,  5429,  5430,  5431,  5432,  5433,
-   5434,  5435,  5436,  5437,  5438,  5439,  5440,  5441,
-   5442,  5443,  5444,  5445,  5446,  5447,  5448,  5449,
-   5450,  5451,  5452,  5453,  5454,  5455,  5456,  5457,
-   5458,  5460,  5096,  5094,  5173,  5171,  5172,  5174,
-   5170,  5183,  5181,  5180,  5182,  5184,  5179,  5177,
-   5176,  5178,  5175,  5188,  5189,  5185,  5186,  5187,
-   5237,  5236,  5239,  5461,  5240,  5238,  5359,  5084,
-   5085,  5459,  5099,  5100,  5097,  5387,  5397,  5391,
-   5389,  5385,  5383,  5401,  5399,  5395,  5393,  5462,
-   5463,  5464,  5465,  5466,  5467,  5468,  5469,  5470,
-   5471,  5472,  5473,  5474,  5475,  5476,  5477,  5478,
-   5479,  5480,  5481,  5482,  5483,  5484,  5485,  5486,
-   5487,  5488,  5489,  5490,  5491,  5492,  5493,  5494,
-   5495,  5496,  5497,  5498,  5499,  5500,  5501,  5502,
-   5503,  5504,  5505,  5506,  5507,  5508,  5509,  5510,
-   5511,  5512,  5513,  5514,  5515,  5516,  5517,  5518,
-   5519,  5520,  5521,  5380,  5382,  5379,  5378,  5381,
-   5388,  5392,  5386,  5384,  5390,  5398,  5402,  5396,
-   5394,  5400,  1470,  5522,  5523,  5528,  5529,  5530,
+   4350,  4351,  4352,  4353,  4354,  4355,  4356,  4357,
+   4358,  4359,  4360,  4361,  4362,  4363,  4364,  4365,
+   4366,  4367,  4368,  4374,  4375,  4376,  4377,  4378,
+   4379,  4380,  4381,  4382,  4383,  4384,  4385,  4386,
+   4387,  4388,  4391,  4392,  4393,  4394,  4395,  4396,
+   4397,  4398,  4399,  4400,  4401,  4402,  4403,  4404,
+   4405,  4406,  4407,  4408,  4409,  4410,  4411,  4412,
+   4413,  4414,  4415,  4416,  4417,  4418,  4419,  4420,
+   4421,  4422,  4423,  4424,  4425,  4426,  4427,  4428,
+   4429,  4430,  4431,  4432,  4433,  4434,  4435,  4436,
+   4439,  4440,  4441,  4442,  4443,  4444,  4445,  4446,
+   4447,  4448,  4449,  4450,  4451,  4452,  4453,  4454,
+   4455,  4456,  4457,  4458,  4459,  4460,  4461,  4464,
+   4465,  4466,  4467,  4468,  4469,  4470,  4471,  4472,
+   4473,  4474,  4475,  4476,  4477,  4478,  4479,  4480,
+   4481,  4482,  4485,  4486,  4487,  4488,  4489,  4490,
+   4491,  4492,  4493,  4494,  4495,  4496,  4497,  4498,
+   4499,  4500,  4501,  4502,  4503,  4506,  4507,  4508,
+   4509,  4510,  4511,  4512,  4513,  4514,  4515,  4516,
+   4517,  4518,  4519,  4520,  4521,  4522,  4523,  4524,
+   4527,  4528,  4529,  4530,  4531,  4532,  4533,  4534,
+   4535,  4536,  4537,  4538,  4539,  4540,  4541,  4542,
+   4543,  4544,  4545,  4546,  4547,  4548,  4549,  4550,
+   4551,  4552,  4553,  4554,  4555,  4556,  4557,  4558,
+   4559,  4560,  4561,  4562,  4563,  4564,  4565,  4566,
+   4567,  4568,  4569,  4570,  4571,  4572,  4573,  4574,
+   4575,  4576,  4577,  4578,  4579,  4580,  4581,  4582,
+   4583,  4584,  4585,  4586,  4587,  4588,  4589,  4590,
+   4591,  4592,  4593,  4594,  4595,  4596,  4597,  4598,
+   4599,  4600,  4601,  4602,  4603,  4604,  4605,  4606,
+   4607,  4608,  4609,  4610,  4611,  4612,  4613,  4614,
+   4615,  4616,  4617,  4618,  4619,  4620,  4621,  4622,
+   4623,  4624,  4625,  4626,  4627,  4628,  4629,  4630,
+   4631,  4632,  4633,  4634,  4635,  4636,  4637,  4638,
+   4639,  4640,  4641,  4642,  4643,  4644,  4645,  4646,
+   4647,  4648,  4649,  4650,  4651,  4652,  4653,  4654,
+   4655,  4656,  4657,  4658,  4659,  4660,  4661,  4662,
+   4663,  4664,  4665,  4666,  4667,  4668,  4669,  4670,
+   4671,  4672,  4673,  4674,  4675,  4676,  4677,  4678,
+   4679,  4680,  4681,  4682,  4683,  4684,  4685,  4686,
+   4687,  4688,  4689,  4690,  4691,  4692,  4693,  4694,
+   4695,  4696,  4697,  4698,  4699,  4700,  4701,  4702,
+   4703,  4704,  4705,  4706,  4707,  4708,  4709,  4710,
+   4711,  4712,  4713,  4714,  4715,  4716,  4717,  4718,
+   4719,  4720,  4721,  4722,  4723,  4724,  4725,  4726,
+   4727,  4728,  4729,  4730,  4731,  4732,  4737,  4739,
+   4740,  4755,  4756,  4757,  4758,  4759,  4760,  4761,
+   4762,  4763,  4764,  4765,  4766,  4767,  4768,  4769,
+   4770,  4771,  4772,  4773,  4774,  4775,  4776,  4777,
+   4778,  4779,  4780,  4781,  4782,  4783,  4784,  4785,
+   4786,  4787,  4788,  4789,  4790,  4791,  4792,  4793,
+   4794,  4795,  4796,  4797,  4798,  4799,  4800,  4801,
+   4802,  4803,  4804,  4805,  4806,  4807,  4808,  4809,
+   4810,  4811,  4812,  4813,  4814,  4815,  4816,  4817,
+   4818,  4819,  4820,  4821,  4822,  4823,  4824,  4825,
+   4826,  4827,  4828,  4829,  4830,  4831,  4832,  4833,
+   4834,  4835,  4836,  4837,  4838,  4839,  4840,  4841,
+   4842,  4843,  4844,  4845,  4846,  4847,  4848,  4849,
+   4854,  4855,  4856,  4857,  4858,  4860,  4861,  4862,
+   4863,  4864,  4865,  4875,  4876,  4877,  4880,  4881,
+   4882,  4883,  4884,  4885,  4886,  4887,  4890,  4893,
+   4897,  4912,  4913,  4914,  4917,  4918,  4924,  4927,
+   4931,  4946,  4947,  4948,  4951,  4952,  4955,  4958,
+   4962,  4977,  4978,  4979,  4982,  4983,  4986,  4989,
+   4993,  5008,  5009,  5010,  5013,  5014,  5015,  5016,
+   5017,  5018,  5019,  5020,  5021,  5022,  5023,  5024,
+   5025,  5026,  5027,  5028,  5029,  5030,  5031,  5032,
+   5033,  5034,  5035,  5036,  5037,  5042,  5043,  5044,
+   5045,  5064,  5065,  5066,  5067,  5068,  5069,  5070,
+   5071,  5072,  5073,  5074,  5075,  5076,  5077,  5078,
+   5079,  4748,  4904,  4938,  4969,  5000,  4891,  4925,
+   4956,  4987,  4745,  4900,  4934,  4965,  4996,  4744,
+   4901,  4935,  4966,  4997,  4736,  4902,  4936,  4967,
+   4998,  4742,  4895,  4929,  4960,  4991,  4734,  4888,
+   4922,  4953,  4984,  4746,  4906,  4940,  4971,  5002,
+   4750,  4908,  4942,  4973,  5004,  4752,  4910,  4944,
+   4975,  5006,  5080,  5081,  5082,  5083,  5084,  5085,
+   5086,  5087,  5088,  5089,  5090,  5091,  5092,  5093,
+   5094,  5095,  5096,  5097,  5098,  5099,  5100,  5101,
+   5102,  5103,  5104,  5105,  5046,  5047,  5108,  5109,
+   5111,  5112,  5113,  3033,  3034,  5115,  1110,  1111,
+   1319,  1320,  1321,  1322,  1323,  1324,  1338,  1339,
+   1368,  1369,  1536,  1537,  1544,  1545,  1550,  1551,
+   1587,  1588,  1597,  1598,  1677,  1844,  1845,  1848,
+   1849,  1850,  1851,  1852,  1853,  1854,  1855,  1856,
+   1857,  1858,  1859,  1862,  1863,  1864,  2069,  2070,
+   2071,  2072,  2160,  2161,  2199,  2200,  2208,  2209,
+   2359,  2360,  2759,  2760,  2761,  2762,  2763,  2764,
+   2765,  2766,  2800,  2801,  2854,  2855,  2860,  2861,
+   2862,  2863,  2864,  2865,  2866,  2867,  2880,  2881,
+   2882,  2883,  2884,  2885,  2886,  2887,  2888,  2889,
+   2890,  2891,  2892,  2893,  2894,  2895,  2896,  2897,
+   2898,  2899,  2918,  2919,  3000,  3001,  3005,  3006,
+   3013,  3014,  3095,  3096,  3134,  3135,  3402,  3403,
+   3404,  3405,  3444,  3445,  3446,  3447,  3448,  3449,
+   3450,  3451,  3452,  3453,  3454,  3455,  3515,  3516,
+   3608,  3609,  3611,  3612,  3613,  3614,  3615,  3624,
+   3625,  3890,  3973,  3974,  4041,  4042,  4043,  4044,
+   4267,  4268,  4389,  4390,  4850,  4851,  4915,  4916,
+   4920,  4921,  4949,  4950,  4980,  4981,  5011,  5012,
+   5116,  5117,  5118,  5119,  5120,  5133,  5134,  5106,
+   5110,  5114,  5140,  5143,  5144,  5145,  5147,  5149,
+   5151,  5153,  5155,  5156,  5163,  5164,  5165,  5166,
+   5167,  5168,  5170,  5174,  5173,  5172,  5162,  5157,
+   5158,  5159,  5160,  5161,  5175,  5048,  5049,  5052,
+   5053,  5055,  5056,  5058,  5059,  5061,  5062,  5107,
+   5176,  5177,  5178,  5179,  5180,  5181,  5050,  5054,
+   5057,  5060,  5063,  5182,  5183,  5184,  4926,  5135,
+   4738,  4957,  4892,  4988,  4939,  5148,  4749,  4970,
+   4905,  5001,  4941,  5150,  4747,  4972,  4907,  5003,
+   4943,  5152,  4751,  4974,  4909,  5005,  4930,  5171,
+   4743,  4961,  4896,  4992,  4923,  5121,  4735,  4954,
+   4889,  4985,  4945,  5154,  4753,  4976,  4911,  5007,
+   4928,  5169,  4733,  4959,  4894,  4990,  4932,  5141,
+   4741,  4963,  4898,  4994,  4937,  5146,  4754,  4968,
+   4903,  4999,  5185,  5186,  5187,  5188,  5191,  5192,
+   5193,  5194,  5195,  5196,  5197,  5198,  5200,  5203,
+   5206,  5207,  5208,  5209,  5210,  5211,  5212,  5213,
+   5214,  5215,  5216,  5217,  5218,  5219,  5220,  5221,
+   5222,  5223,  5224,  5225,  5226,  5227,  5228,  5229,
+   5230,  5231,  5232,  5233,  5234,  5235,  5236,  5237,
+   5238,  5239,  5240,  5241,  5242,  5243,  5244,  5245,
+   5246,  5247,  5248,  5249,  5250,  5251,  5252,  5253,
+   5254,  5255,  5256,  5257,  5258,  5259,  5260,  5261,
+   5262,  5263,  5264,  5265,  5266,  5267,  5268,  5269,
+   5270,  5271,  5272,  5273,  5274,  5295,  5296,  5297,
+   5298,  5299,  5300,  5301,  5302,  5303,  5304,  5305,
+   5136,  5137,  5138,  5139,  5130,  5131,  5132,  5122,
+   5123,  5124,  5125,  5126,  5127,  5128,  5129,  5306,
+   5307,  5308,  5309,  5310,  5311,  5312,  5313,  5314,
+   5315,  5316,  5317,  5318,  5319,  5320,  5321,  5322,
+   5323,  5324,  5325,  5326,  5327,  5328,  5329,  5330,
+   5331,  5332,  5333,  5334,  5335,  5336,  5337,  5338,
+   5339,  4369,  4370,  4371,  4372,  4373,  5340,  5346,
+   5347,  5348,  5349,  5350,  5351,  5352,  5353,  5354,
+   5355,  5356,  5357,  5358,  5361,  5362,  5363,  5364,
+   5365,  5366,  5367,  5368,  5369,  5370,  5371,  5372,
+   5373,  5374,  5375,  5376,  5377,  5378,  5379,  5380,
+   5381,  5382,  5383,  5384,  5385,  5386,  5387,  5388,
+   5389,  5390,  5391,  5392,  5393,  5394,  5395,  5396,
+   5397,  5398,  5399,  5400,  5401,  5402,  5403,  5404,
+   5405,  5406,  5407,  5408,  5409,  5410,  5411,  5412,
+   5413,  5415,  5416,  5417,  5418,  5419,  5420,  5421,
+   5423,  5424,  5425,  5426,  5427,  5428,  5429,  5430,
+   5431,  5432,  5433,  5434,  5435,  5436,  5437,  5438,
+   5439,  5440,  5441,  5442,  5443,  5444,  5445,  5446,
+   5447,  5448,  5449,  5450,  5451,  5452,  5453,  5454,
+   5455,  5456,  5457,  5458,  5459,  5460,  5461,  5462,
+   5463,  5465,  5466,  5467,  5468,  5469,  5470,  5471,
+   5472,  5473,  5474,  5475,  5476,  5477,  5478,  5479,
+   5480,  5481,  5482,  5508,  5509,  5510,  5511,  5512,
+   5513,  5514,  5515,  5516,  5517,  5518,  5519,  5521,
+   5522,  5523,  5525,  5526,  5527,  5528,  5529,  5530,
    5531,  5532,  5533,  5534,  5535,  5536,  5537,  5538,
-   5539,  5541,  5542,  5543,  5544,  5545,  5546,  5547,
-   5548,  5549,  5550,  5551,  5552,  5553,  5554,  5555,
-   5556,  5557,  5558,  5559,  5560,  5561,  5562,  5563,
-   5564,  5565,  5566,  5567,  5568,  5569,  5570,  5571,
-   5572,  5573,  5574,  5575,  5576,  5577,  5578,  5579,
-   5580,  5581,  5582,  5583,  5584,  5585,  5586,  5587,
-   5588,  5589,  5590,  5591,  5592,  5593,  5594,  5595,
-   5596,  5597,  5598,  5599,  5600,  4933,  4934,  4935,
-   4936,  5601,  5602,  5603,  5604,  5605,  5606,  5608,
-   5610,  5612,  5614,  5615,  5616,  5617,  5618,  5619,
-   5620,  5621,  5622,  5623,  5624,  5625,  5626,  5632,
-   5628,  5631,  5629,  5627,  5630,  5633,  5634,  5635,
-   5636,  5607,  5613,  5611,  5609,  1277,  5645,  5646,
-   5647,  5650,  5651,  5653,  5654,  5656,  5657,  5659,
-   5660,  5661,  5662,  5663,  5648,  5652,  5655,  5658,
-   5667,  5668,  5669,  5670,  5671,  5672,  5673,  5674,
-   5675,  5676,  5677,  5678,  5679,  5680,  5681,  5682,
-   5683,  5684,  5685,  5686,  5687,  5688,  5689,  5690,
-   5691,  5692,  5693,  5694,  5695,  5696,  5697,  5664,
-   5665,  5666,  5698,  5699,  5700,  5701,  5702,  5703,
-   5704,  5705,  5706,  5707,  5708,  5709,  5710,  5711,
-   5712,  5714,  5715,  5717,  5718,  5720,  5721,  5723,
-   5724,  5726,  5727,  5728,  5729,  5730,  5731,  5732,
-   5733,  5734,  5735,  5736,  5737,  5738,  5739,  5740,
-   5741,  5742,  5743,  5744,  5745,  5746,  5747,  5748,
-   5749,  5750,  5751,  5752,  5753,  5754,  5755,  5756,
-   5757,  5758,  5759,  5760,  5761,  5762,  5763,  5764,
-   5765,  5766,  5767,  5768,  5769,  5770,  5771,  5772,
-   5773,  5774,  5775,  5776,  5777,  5778,  5779,  5780,
-   5781,  5782,  5783,  5784,  5785,  5786,  5787,  5788,
-   5789,  5790,  5791,  5792,  5793,  5794,  5795,  5796,
-   5797,  5798,  5799,  5800,  5801,  5802,  5803,  5804,
-   5805,  5806,  5807,  5808,  5809,  5810,  5811,  5812,
-   5813,  5814,  5815,  5816,  5817,  5818,  5819,  5820,
-   5821,  5822,  5823,  5824,  5825,  5826,  5827,  5828,
-   5829,  5830,  5831,  5832,  5833,  5834,  5835,  5836,
-   5849,  5850,  5851,  5852,  1534,  5853,  5854,  5855,
-   5856,  5858,  5859,  5860,  5861,  5862,  5863,  5864,
-   5865,  5866,  5719,  5722,  5713,  5716,  5725,  5867,
-   5868,  5869,  5870,  5871,  5872,  5873,  5874,  5875,
-   5876,  5877,  5878,  5879,  5880,  5881,  5882,  5883,
-   5884,  5885,  5886,  5887,  5888,  5889,  5890,  5891,
-   5892,  5893,  5894,  5895,  5896,  5897,  5898,  5899,
-   5900,  5901,  5902,  5903,  5907,  5908,  5909,  5910,
-   5911,  5912,  5913,  5914,  5915,  5919,  5920,  5921,
-   5922,  5857,  5923,  5934,  5935,  5904,  5942,  5945,
-   5524,  5946,  5948,  5950,  5952,  5947,  6059,  6060,
-   6061,  6062,  6063,  6064,  6065,  6066,  6067,  6068,
-   6069,  6070,  6071,  6072,  1961,  1962,  2972,  6073,
-   6074,  6075,  6076,  6077,  6078,  6079,  6080,  6081,
-   6082,  6083,  6084,  6085,  6105,  5961,  6057,  5525,
-   6108,  6109,  6110,  6111,  2637,  6112,  6113,  6114,
-   6115,  6119,  6120,  6121,  6122,  6123,  6124,  6125,
-   6127,  6128,  6129,  6130,  6131,  6132,  6133,  6134,
-   6138,  6139,  6140,  6141,  6142,  6143,  6146,  6147,
-   6148,  6149,  6150,  6151,  5936,  5937,  5928,  5929,
-   6153,  5939,  5940,  5905,  5906,  5981,  5982,  5984,
-   5985,  5987,  5988,  5964,  5965,  5931,  5932,  5990,
-   5991,  5974,  5975,  5954,  5955,  5916,  5917,  5962,
-   5963,  5993,  5994,  6041,  6042,  6038,  6039,  6044,
-   6045,  5967,  5968,  5526,  6000,  6001,  5971,  5972,
-   5977,  5978,  6003,  6004,  6007,  6008,  5943,  5944,
-   6035,  6036,  5958,  5959,  6032,  6033,  6050,  6051,
-   6053,  6054,  6047,  6029,  6030,  6026,  6027,  6155,
-   6046,  6168,  5966,  6170,  6171,  5938,  6172,  5976,
-   6175,  6176,  6177,  6178,  6179,  6180,  6181,  6182,
-   6183,  6184,  6185,  6186,  6187,  6188,  6189,  6190,
-   6191,  6192,  6193,  6194,  6195,  6196,  6197,  6198,
-   6199,  6200,  6201,  6202,  6203,  6204,  6205,  6206,
-   6207,  6208,  6209,  6210,  6211,  6212,  6213,  6214,
-   6215,  6216,  6217,  6218,  6219,  6220,  6221,  6222,
-   6223,  6224,  6225,  6226,  6227,  6164,  6103,  6228,
-   6229,  6230,  6231,  6232,  5979,  5930,  5941,  5933,
-   5992,  5918,  5969,  6002,  5973,  6005,  6052,  6028,
-   6009,  6242,  6243,  6174,  6173,  6244,  6245,  6246,
-   6248,  6249,  5925,  6250,  6251,  6252,  6106,  5956,
-   5983,  5986,  6031,  6034,  6256,  6257,  6258,  6259,
-   6260,  6261,  6262,  6263,  6264,  6265,  6266,  6267,
-   6268,  6269,  6270,  6271,  6272,  6273,  6274,  6275,
-   6276,  6277,  6278,  6279,  6280,  6281,  6282,  6283,
-   6284,  6285,  6286,  6287,  6288,  6289,  6290,  6291,
-   6292,  6293,  6294,  6295,  6296,  6297,  6298,  6299,
-   6300,  6301,  6302,  6303,  6304,  6305,  6306,  6307,
-   6308,  6309,  6310,  6311,  6312,  6313,  6314,  6315,
-   6316,  6317,  6318,  6319,  5926,  4762,  4763,  5996,
-   2665,  4131,  4134,  4132,  4133,  2537,  2667,  2666,
-   4764,  3846,  2668,  4765,  4113,  4766,  2804,  2669,
-   4767,  4768,  2805,  2670,  2613,  2672,  4769,  4027,
-   3847,  3848,  2671,  2889,  2675,  2674,  4761,  2664,
-   6325,  6326,  5997,  5998,  5927,  5989,  6329,  6330,
-   6332,  6333,  6334,  6335,  6336,  6337,  6338,  6339,
-   6340,  6341,  6342,  6343,  6345,  6346,  6348,  6349,
-   6350,  6353,  6354,  6355,  6356,  6357,  6358,  6361,
-   6362,  6363,  6364,  6365,  6366,  6367,  6369,  6370,
-   6371,  6372,  6377,  6378,  6380,  6381,  6382,  6383,
-   6384,  6385,  6387,  6388,  6389,  6390,  6394,  6396,
-   6397,  6398,  6399,  6401,  6402,  6403,  6404,  6406,
-   6407,  6408,  6409,  6410,  6411,  6412,  6413,  6414,
-   6416,  6417,  6418,  6419,  6422,  6423,  6424,  6137,
-   6425,  6055,  6426,  6427,  3695,  2740,  6428,  6118,
-   6429,  6430,  6431,  6432,  6433,  6434,  6435,  6436,
-   6437,  6438,  6347,  6439,  6440,  6441,  6442,  6443,
-   6359,  6460,  6247,  6375,  6400,  6483,  6484,  6485,
-   6486,  6487,  6488,  6489,  6490,  6368,  6126,  6491,
-   6492,  6493,  6494,  6495,  6496,  6497,  6498,  6499,
-   6500,  6444,  6391,  6327,  6501,  6502,  6503,  6234,
-   6465,  6351,  6241,  6504,  6323,  6239,  6240,  6447,
-   6117,  6445,  6449,  6116,  6452,  6505,  6450,  6420,
-   6328,  6466,  6462,  6463,  6415,  6470,  6154,  6453,
-   6236,  6237,  6473,  6480,  6455,  6477,  6506,  6507,
-   6508,  5995,  6446,  6393,  6405,  6006,  6464,  6468,
-   6379,  6472,  6474,  6475,  6238,  6481,  6458,  6459,
-   6322,  6451,  6467,  6454,  6482,  6478,  6448,  6456,
-   6107,  6476,  6461,  6324,  6479,  6235,  1812,  6509,
-   6152,  6471,  5970,  6510,  6386,  6331,  6511,  6512,
-   6513,  6514,  6515,  6043,  6136,  6352,  6421,  6392,
-   6516,  6048,  6517,  6518,  6519,  6520,  6521,  6522,
-   6523,  6524,  6525,  6526,  6527,  6528,  6529,  6530,
-   6531,  6532,  6533,  6534,  6535,  6536,  6537,  6538,
-   6539,  6540,  6541,  6542,  6543,  6544,  6545,  6546,
-   6049,  6547,  6548,  6549,  6550,  6551,  6552,  4114,
-   6553,  5980,  6100,  6104,  6102,  6101,  6099,  6098,
-   6097,  6096,  6095,  6093,  6092,  6561,  6563,  6565,
-   6567,  6056,  6568,  6569,  6570,  6571,  6572,  6376,
-   5957,  6469,  6395,  6573,  6574,  6575,  6576,  6577,
-   6578,  6579,  6581,  6582,  6583,  6584,  6585,  6587,
-   6588,  6589,  6590,  6591,  6592,  6593,  6594,  6595,
-   6596,  6597,  6598,  6599,  6600,  6601,  6602,  6603,
-   6604,  6605,  6606,  6607,  6608,  6609,  6610,  6611,
-   6612,  6613,  6614,  6615,  6616,  6617,  6618,  6619,
-   6620,  6621,  6622,  6623,  6624,  6625,  6626,  6627,
-   6628,  6629,  6630,  6631,  6632,  6374,  6037,  5960,
-   6040,  6633,  5640,  6165,  6167,  6166,  6158,  6162,
-   6160,  6156,  6634,  6557,  6555,  6560,  5540,  6554,
-   6556,  6558,  6559,  6635,  6639,  6640,  6321,  6320,
-   6163,  6161,  6159,  6157,  6091,  6090,  6089,  6088,
-   6087,  6086,  6058,  6025,  6024,  6023,  6022,  6021,
-   6020,  6019,  6018,  6017,  6016,  6015,  6014,  6013,
-   6012,  6011,  6010,  5848,  5847,  5846,  5845,  5844,
-   5843,  5842,  5841,  5840,  5839,  5838,  5837,  5644,
-   5643,  5642,  5641,  5639,  5638,  5637,  6637,  6638,
-   5527,  6641,  6253,  6254,  6255,  6233,  5949,  5953,
-   5951,  6642,  6580,  6662,  6645,  6644,  6667,  6668,
-   6647,  6653,  6648,  6652,  6655,  6649,  6646,  6650,
-   6643,  6669,  6670,  6671,  6672,  6673,  6674,  6675,
-   6676,  6677,  6678,  6679,  6680,  6681,  6682,  6683,
-   6684,  6685,  6686,  6687,  6688,  6689,  6690,  6691,
-   6692,  6693,  6694,  6695,  6696,  6697,  6698,  6699,
-   6700,  6701,  6702,  6703,  6704,  6705,  6706,  6707,
-   6708,  6709,  6710,  6711,  6712,  6713,  6714,  6715,
-   6716,  6717,  6718,  6719,  6720,  6721,  6722,  6723,
-   6724,  6725,  6726,  6727,  6728,  6729,  6730,  6663,
-   6660,  6665,  6666,  6731,  6564,  6562,  6566,  6732,
-   6651,  6733,  6734,  6735,  6664,  6736,  6737,  6738,
-   6636,  6659,  6661,  6656,  6657,  6658,  6739,  6740,
-   6741,  6742,  6743,  6744,  6745,  6746,  6747,  6748,
-   6749,  6750,  6751,  6752,  6753,  6754,  6755,  6756,
-   6757,  6758,  6759,  6760,  6761,  6763,  6764,  6768,
-   6769,  6770,  6771,  6772,  6773,  6774,  6775,  6776,
-   6777,  6778,  6779,  6766,  6780,  6781,  6782,  6783,
-   6784,  6785,  6787,  6789,  6765,  6767,  6790,  6792,
-   6794,  6796,  6798,  6799,  6800,  6801,  6791,  6802,
-   6803,  6807,  6808,  6809,  6810,  6811,  6812,  6813,
-   6814,  6815,  6816,  6817,  6818,  6819,  6820,  6821,
-   6822,  6823,  6824,  6825,  6826,  6827,  6828,  6829,
-   6830,  6831,  6832,  6833,  6834,  6835,  6836,  6837,
-   6838,  6839,  6840,  6841,  6842,  6843,  6844,  6845,
+   5539,  5540,  5541,  5542,  5543,  5544,  5545,  5546,
+   5547,  5548,  5549,  5550,  5551,  5552,  5553,  5554,
+   5555,  5556,  5557,  5558,  5559,  5560,  5561,  5562,
+   5563,  5565,  5201,  5199,  5278,  5276,  5277,  5279,
+   5275,  5288,  5286,  5285,  5287,  5289,  5284,  5282,
+   5281,  5283,  5280,  5293,  5294,  5290,  5291,  5292,
+   5342,  5341,  5344,  5566,  5345,  5343,  5464,  5189,
+   5190,  5564,  5204,  5205,  5202,  5492,  5502,  5496,
+   5494,  5490,  5488,  5506,  5504,  5500,  5498,  5567,
+   5568,  5569,  5570,  5571,  5572,  5573,  5574,  5575,
+   5576,  5577,  5578,  5579,  5580,  5581,  5582,  5583,
+   5584,  5585,  5586,  5587,  5588,  5589,  5590,  5591,
+   5592,  5593,  5594,  5595,  5596,  5597,  5598,  5599,
+   5600,  5601,  5602,  5603,  5604,  5605,  5606,  5607,
+   5608,  5609,  5610,  5611,  5612,  5613,  5614,  5615,
+   5616,  5617,  5618,  5619,  5620,  5621,  5622,  5623,
+   5624,  5625,  5626,  5485,  5487,  5484,  5483,  5486,
+   5493,  5497,  5491,  5489,  5495,  5503,  5507,  5501,
+   5499,  5505,  1574,  5627,  5628,  5633,  5634,  5635,
+   5636,  5637,  5638,  5639,  5640,  5641,  5642,  5643,
+   5644,  5646,  5647,  5648,  5649,  5650,  5651,  5652,
+   5653,  5654,  5655,  5656,  5657,  5658,  5659,  5660,
+   5661,  5662,  5663,  5664,  5665,  5666,  5667,  5668,
+   5669,  5670,  5671,  5672,  5673,  5674,  5675,  5676,
+   5677,  5678,  5679,  5680,  5681,  5682,  5683,  5684,
+   5685,  5686,  5687,  5688,  5689,  5690,  5691,  5692,
+   5693,  5694,  5695,  5696,  5697,  5698,  5699,  5700,
+   5701,  5702,  5703,  5704,  5705,  5038,  5039,  5040,
+   5041,  5706,  5707,  5708,  5709,  5710,  5711,  5713,
+   5715,  5717,  5719,  5720,  5721,  5722,  5723,  5724,
+   5725,  5726,  5727,  5728,  5729,  5730,  5731,  5737,
+   5733,  5736,  5734,  5732,  5735,  5738,  5739,  5740,
+   5741,  5712,  5718,  5716,  5714,  1381,  5750,  5751,
+   5752,  5755,  5756,  5758,  5759,  5761,  5762,  5764,
+   5765,  5766,  5767,  5768,  5753,  5757,  5760,  5763,
+   5772,  5773,  5774,  5775,  5776,  5777,  5778,  5779,
+   5780,  5781,  5782,  5783,  5784,  5785,  5786,  5787,
+   5788,  5789,  5790,  5791,  5792,  5793,  5794,  5795,
+   5796,  5797,  5798,  5799,  5800,  5801,  5802,  5769,
+   5770,  5771,  5803,  5804,  5805,  5806,  5807,  5808,
+   5809,  5810,  5811,  5812,  5813,  5814,  5815,  5816,
+   5817,  5819,  5820,  5822,  5823,  5825,  5826,  5828,
+   5829,  5831,  5832,  5833,  5834,  5835,  5836,  5837,
+   5838,  5839,  5840,  5841,  5842,  5843,  5844,  5845,
+   5846,  5847,  5848,  5849,  5850,  5851,  5852,  5853,
+   5854,  5855,  5856,  5857,  5858,  5859,  5860,  5861,
+   5862,  5863,  5864,  5865,  5866,  5867,  5868,  5869,
+   5870,  5871,  5872,  5873,  5874,  5875,  5876,  5877,
+   5878,  5879,  5880,  5881,  5882,  5883,  5884,  5885,
+   5886,  5887,  5888,  5889,  5890,  5891,  5892,  5893,
+   5894,  5895,  5896,  5897,  5898,  5899,  5900,  5901,
+   5902,  5903,  5904,  5905,  5906,  5907,  5908,  5909,
+   5910,  5911,  5912,  5913,  5914,  5915,  5916,  5917,
+   5918,  5919,  5920,  5921,  5922,  5923,  5924,  5925,
+   5926,  5927,  5928,  5929,  5930,  5931,  5932,  5933,
+   5934,  5935,  5936,  5937,  5938,  5939,  5940,  5941,
+   5954,  5955,  5956,  5957,  1638,  5958,  5959,  5960,
+   5961,  5963,  5964,  5965,  5966,  5967,  5968,  5969,
+   5970,  5971,  5824,  5827,  5818,  5821,  5830,  5972,
+   5973,  5974,  5975,  5976,  5977,  5978,  5979,  5980,
+   5981,  5982,  5983,  5984,  5985,  5986,  5987,  5988,
+   5989,  5990,  5991,  5992,  5993,  5994,  5995,  5996,
+   5997,  5998,  5999,  6000,  6001,  6002,  6003,  6004,
+   6005,  6006,  6007,  6008,  6012,  6013,  6014,  6015,
+   6016,  6017,  6018,  6019,  6020,  6024,  6025,  6026,
+   6027,  5962,  6028,  6039,  6040,  6009,  6047,  6050,
+   5629,  6051,  6053,  6055,  6057,  6052,  6163,  6164,
+   6165,  6166,  6167,  6168,  6169,  6170,  6171,  6172,
+   6173,  6174,  6175,  6176,  2065,  2066,  3076,  6177,
+   6178,  6179,  6180,  6181,  6182,  6183,  6184,  6185,
+   6186,  6187,  6188,  6189,  6209,  6066,  6161,  5630,
+   6212,  6213,  6214,  6215,  2741,  6216,  6217,  6218,
+   6219,  6223,  6224,  6225,  6226,  6227,  6228,  6229,
+   6231,  6232,  6233,  6234,  6235,  6236,  6237,  6238,
+   6242,  6243,  6244,  6245,  6246,  6247,  6250,  6251,
+   6252,  6253,  6254,  6255,  6041,  6042,  6033,  6034,
+   6257,  6044,  6045,  6010,  6011,  6086,  6087,  6089,
+   6090,  6092,  6093,  6069,  6070,  6036,  6037,  6094,
+   6095,  6079,  6080,  6059,  6060,  6021,  6022,  6067,
+   6068,  6097,  6098,  6145,  6146,  6142,  6143,  6148,
+   6149,  6072,  6073,  5631,  6104,  6105,  6076,  6077,
+   6082,  6083,  6107,  6108,  6111,  6112,  6048,  6049,
+   6139,  6140,  6063,  6064,  6136,  6137,  6154,  6155,
+   6157,  6158,  6151,  6133,  6134,  6130,  6131,  6259,
+   6150,  6272,  6071,  6274,  6275,  6043,  6276,  6081,
+   6279,  6280,  6281,  6282,  6283,  6284,  6285,  6286,
+   6287,  6288,  6289,  6290,  6291,  6292,  6293,  6294,
+   6295,  6296,  6297,  6298,  6299,  6300,  6301,  6302,
+   6303,  6304,  6305,  6306,  6307,  6308,  6309,  6310,
+   6311,  6312,  6313,  6314,  6315,  6316,  6317,  6318,
+   6319,  6320,  6321,  6322,  6323,  6324,  6325,  6326,
+   6327,  6328,  6329,  6330,  6331,  6268,  6207,  6332,
+   6333,  6334,  6335,  6336,  6084,  6035,  6046,  6038,
+   6096,  6023,  6074,  6106,  6078,  6109,  6156,  6132,
+   6113,  6346,  6347,  6278,  6277,  6348,  6349,  6350,
+   6352,  6353,  6030,  6354,  6355,  6356,  6210,  6061,
+   6088,  6091,  6135,  6138,  6360,  6361,  6362,  6363,
+   6364,  6365,  6366,  6367,  6368,  6369,  6370,  6371,
+   6372,  6373,  6374,  6375,  6376,  6377,  6378,  6379,
+   6380,  6381,  6382,  6383,  6384,  6385,  6386,  6387,
+   6388,  6389,  6390,  6391,  6392,  6393,  6394,  6395,
+   6396,  6397,  6398,  6399,  6400,  6401,  6402,  6403,
+   6404,  6405,  6406,  6407,  6408,  6409,  6410,  6411,
+   6412,  6413,  6414,  6415,  6416,  6417,  6418,  6419,
+   6420,  6421,  6422,  6423,  6031,  4867,  4868,  6100,
+   2769,  4236,  4239,  4237,  4238,  2641,  2771,  2770,
+   4869,  3951,  2772,  4870,  4218,  4871,  2908,  2773,
+   4872,  4873,  2909,  2774,  2717,  2776,  4874,  4132,
+   3952,  3953,  2775,  2993,  2779,  2778,  4866,  2768,
+   6429,  6430,  6101,  6102,  6032,  6433,  6434,  6436,
+   6437,  6438,  6439,  6440,  6441,  6442,  6443,  6444,
+   6445,  6446,  6447,  6449,  6450,  6452,  6453,  6454,
+   6457,  6458,  6459,  6460,  6461,  6462,  6465,  6466,
+   6467,  6468,  6469,  6470,  6471,  6473,  6474,  6475,
+   6476,  6481,  6482,  6484,  6485,  6486,  6487,  6488,
+   6489,  6491,  6492,  6493,  6494,  6498,  6500,  6501,
+   6502,  6503,  6505,  6506,  6507,  6508,  6510,  6511,
+   6512,  6513,  6514,  6515,  6516,  6517,  6518,  6520,
+   6521,  6522,  6523,  6526,  6527,  6528,  6241,  6529,
+   6159,  6530,  6531,  3800,  2844,  6532,  6222,  6533,
+   6534,  6535,  6536,  6537,  6538,  6539,  6540,  6541,
+   6542,  6451,  6543,  6544,  6545,  6546,  6547,  6463,
+   6564,  6351,  6479,  6504,  6587,  6588,  6589,  6590,
+   6591,  6592,  6593,  6594,  6472,  6230,  6595,  6596,
+   6597,  6598,  6599,  6600,  6601,  6602,  6603,  6604,
+   6548,  6495,  6431,  6605,  6606,  6607,  6338,  6569,
+   6455,  6345,  6608,  6427,  6343,  6344,  6551,  6221,
+   6549,  6553,  6220,  6556,  6609,  6554,  6524,  6432,
+   6570,  6566,  6567,  6519,  6574,  6258,  6557,  6340,
+   6341,  6577,  6584,  6559,  6581,  6610,  6611,  6612,
+   6099,  6550,  6497,  6509,  6110,  6568,  6572,  6483,
+   6576,  6578,  6579,  6342,  6585,  6562,  6563,  6426,
+   6555,  6571,  6558,  6586,  6582,  6552,  6560,  6211,
+   6580,  6565,  6428,  6583,  6339,  1916,  6613,  6256,
+   6575,  6075,  6614,  6490,  6435,  6615,  6616,  6617,
+   6618,  6619,  6147,  6240,  6456,  6525,  6496,  6620,
+   6152,  6621,  6622,  6623,  6624,  6625,  6626,  6627,
+   6628,  6629,  6630,  6631,  6632,  6633,  6634,  6635,
+   6636,  6637,  6638,  6639,  6640,  6641,  6642,  6643,
+   6644,  6645,  6646,  6647,  6648,  6649,  6650,  6153,
+   6651,  6652,  6653,  6654,  6655,  6656,  4219,  6657,
+   6085,  6204,  6208,  6206,  6205,  6203,  6202,  6201,
+   6200,  6199,  6197,  6196,  6665,  6667,  6669,  6671,
+   6160,  6672,  6673,  6674,  6675,  6676,  6480,  6062,
+   6573,  6499,  6677,  6678,  6679,  6680,  6681,  6682,
+   6683,  6685,  6686,  6687,  6688,  6689,  6691,  6692,
+   6693,  6694,  6695,  6696,  6697,  6698,  6699,  6700,
+   6701,  6702,  6703,  6704,  6705,  6706,  6707,  6708,
+   6709,  6710,  6711,  6712,  6713,  6714,  6715,  6716,
+   6717,  6718,  6719,  6720,  6721,  6722,  6723,  6724,
+   6725,  6726,  6727,  6728,  6729,  6730,  6731,  6732,
+   6733,  6734,  6735,  6736,  6478,  6141,  6065,  6144,
+   6737,  5745,  6269,  6271,  6270,  6262,  6266,  6264,
+   6260,  6738,  6661,  6659,  6664,  5645,  6658,  6660,
+   6662,  6663,  6739,  6743,  6744,  6425,  6424,  6267,
+   6265,  6263,  6261,  6195,  6194,  6193,  6192,  6191,
+   6190,  6162,  6129,  6128,  6127,  6126,  6125,  6124,
+   6123,  6122,  6121,  6120,  6119,  6118,  6117,  6116,
+   6115,  6114,  5953,  5952,  5951,  5950,  5949,  5948,
+   5947,  5946,  5945,  5944,  5943,  5942,  5749,  5748,
+   5747,  5746,  5744,  5743,  5742,  6741,  6742,  5632,
+   6745,  6357,  6358,  6359,  6337,  6054,  6058,  6056,
+   6746,  6684,  6766,  6749,  6748,  6771,  6772,  6751,
+   6757,  6752,  6756,  6759,  6753,  6750,  6754,  6747,
+   6773,  6774,  6775,  6776,  6777,  6778,  6779,  6780,
+   6781,  6782,  6783,  6784,  6785,  6786,  6787,  6788,
+   6789,  6790,  6791,  6792,  6793,  6794,  6795,  6796,
+   6797,  6798,  6799,  6800,  6801,  6802,  6803,  6804,
+   6805,  6806,  6807,  6808,  6809,  6810,  6811,  6812,
+   6813,  6814,  6815,  6816,  6817,  6818,  6819,  6820,
+   6821,  6822,  6823,  6824,  6825,  6826,  6827,  6828,
+   6829,  6830,  6831,  6832,  6833,  6834,  6767,  6764,
+   6769,  6770,  6835,  6668,  6666,  6670,  6836,  6755,
+   6837,  6838,  6839,  6768,  6840,  6841,  6842,  6740,
+   6763,  6765,  6760,  6761,  6762,  6843,  6844,  6845,
    6846,  6847,  6848,  6849,  6850,  6851,  6852,  6853,
    6854,  6855,  6856,  6857,  6858,  6859,  6860,  6861,
-   6862,  6863,  6864,  6865,  6866,  6867,  6868,  6869,
-   6870,  6871,  6872,  6873,  6874,  6875,  6876,  6877,
-   6878,  6805,  6804,  6806,  6883,  6884,  6885,  6886,
-   6887,  6888,  6889,  6890,  6891,  6892,  6893,  6894,
-   6654,  6920,  6921,  3026,  3027,  3028,  3029,  5924,
-   5999,  6094,  6882,  6879,  6881,  6922,  6880,  6898,
-   6908,  6914,  6902,  6903,  6896,  6904,  6895,  6897,
-   6915,  6909,  6905,  6906,  6907,  6910,  6916,  6911,
-   6917,  6899,  6918,  6919,  6900,  6912,  2915,  6923,
-   6924,  6925,  6926,  6927,  6928,  6929,  6930,  6931,
-   6932,  6933,  6934,  6935,  6936,  6937,  6938,  6939,
-   6940,  6941,  6942,  6943,  6944,  6945,  6946,  6947,
-   6948,  6949,  6950,  6951,  6952,  6953,  6954,  6955,
-   6956,  6957,  6958,  6959,  6960,  6961,  6962,  6963,
-   6964,  6965,  6966,  6967,  6968,  6969,  6970,  6971,
-   6972,  6973,  6974,  6975,  6976,  6977,  6978,  6979,
-   6980,  6981,  6982,  6983,  6984,  6985,  6986,  6987,
-   6988,  6989,  6990,  6991,  6992,  6993,  6994,  6995,
-   6996,  6997,  6998,  6999,  7000,  7001,  7002,  7003,
-   7004,  7005,  7006,  7007,  7008,  7009,  7010,  7011,
-   7012,  7013,  7014,  7015,  7016,  7017,  7018,  7019,
-   7020,  7021,  7022,  7023,  7024,  7025,  7026,  7027,
-   7028,  7029,  7030,  7031,  7033,  7038,  7039,  7040,
-   7041,  7042,  6144,  6145,  7043,  7044,  7046,  7047,
-   7048,  7049,  7050,  7051,  7052,  7037,  7032,  7036,
-   7035,  7034,  6913,  7053,  7056,  4378,  4379,  4420,
-   4421,  7057,  7059,  7060,  2979,  2980,  2967,  2968,
-   2975,  2976,  2971,  2977,  2978,  2965,  2966,  2973,
-   2974,  2969,  2970,  7062,  7072,  7061,  7073,  7074,
-   7075,  7076,  7077,  7079,  7080,  7081,  7082,  7083,
-   7058,  7084,  7085,  7086,  7087,  7088,  7089,  7090,
-   7091,  7092,  7093,  7094,  7095,  7096,  7097,  7098,
-   7099,  7100,  7101,  7102,  7103,  7104,  7105,  7106,
-   7107,  7108,  7109,  7110,  7111,  7112,  7113,  7114,
-   7115,  7116,  7117,  7118,  7119,  7120,  7121,  7122,
-   7078,  7123,  7124,  7125,  7126,  7127,  7128,  7129,
-   7130,  7131,  7132,  7133,  7134,  7135,  7136,  7137,
-   7139,  7140,  7141,  7143,  7144,  7145,  7146,  7148,
-   7150,  7151,  7152,  7154,  7156,  7157,  7158,  7159,
-   7160,  7161,  6901,  7055,  7054,  2442,  2443,  7066,
-   7071,  7063,  7065,  7067,  6586,  7064,  7190,  7191,
-   7192,  7193,  7194,  7196,  7197,  7199,  7200,  7201,
-   7202,  7203,  7204,  7205,  7183,  7184,  7185,  7181,
-   7182,  7179,  7180,  7206,  7207,  7208,  7209,  7210,
-   7169,  7175,  7177,  7162,  7178,  7163,  7164,  7166,
-   7167,  7188,  7173,  7174,  7170,  7171,  7172,  7187,
-   7070,  7069,  7068,  7213,  7214,  7215,  7216,  7217,
-   7218,  7219,  7220,  7221,  7186,  7224,  7225,  7189,
-   7168,  7165,  7226,  7176,  7227,  7228,  7229,  7230,
-   7231,  7232,  7233,  7234,  7235,  7236,  7237,  7238,
-   7239,  7240,  7241,  7242,  7243,  7244,  7245,  7246,
-   3934,  3935,  4143,  4144,  4145,  4146,  1716,  1717,
-    991,   992,  4069,  4070,  4129,  4130,  4071,  4072,
-   4073,  4074,  4076,  4077,  4773,  4774,  7257,  7258,
-   7259,  7260,  7261,  7262,  7263,  7264,  7265,  7266,
-   7267,  7268,  7269,  7270,  7271,  7272,  7273,  7274,
-   7275,  2288,  2289,  2078,  2079,  7277,  7278,  7276,
-   2927,  2928,  3128,  3129,  3131,  3132,  3302,  3303,
-   3368,  3369,  3373,  3374,  3067,  3068,  3094,  3095,
-   3559,  3560,  3136,  3137,  3309,  3310,  3153,  3154,
-   3556,  3557,  3554,  3555,  4357,  4358,  4332,  4333,
-   4399,  4400,  1718,  1719,  1856,  1857,  3385,  3386,
-   3390,  3391,  2206,  2207,  2133,  2134,  3672,  3673,
-   3415,  3416,  3417,  3418,  3412,  3413,  4747,  4748,
-   4186,  4187,  3264,  3265,  4147,  4148,  4140,  4141,
-   1929,  7279,  7280,  7281,  7282,  7198,  7315,  7316,
-   7317,  7318,  7319,  7320,  7321,  7322,  7297,  7310,
-   7298,  7302,  7299,  7344,  7335,  7330,  7311,  7312,
-   7313,  7314,  7352,  7353,  7354,  7253,  7254,  7305,
-   7255,  7251,  7303,  7252,  7304,  7307,  7308,  7309,
-   7292,  7293,  7294,  7295,  7296,  7290,  7291,  7339,
-   7340,  7329,  7336,  7343,  7342,  7346,  7356,  7357,
-   7358,  7359,  7360,  7338,  7326,  7361,  7362,  7334,
-   7337,  7332,  7333,  7300,  7345,  7327,  7341,  7347,
-   7348,  7256,  7247,  7248,  7249,  7250,  7377,  7378,
-   7287,  7289,  7288,  7284,  7286,  7285,  7306,  7379,
-   7380,  7381,  7382,  7383,  7384,  7385,  7386,  7387,
-   7388,  7389,  7390,  7391,  7392,  7393,  7420,  7421,
-   7418,  7419,  7283,  7370,  7371,  7368,  7374,  7375,
-   7367,  7369,  7376,  7372,  7373,  7404,  7403,  7405,
-   7422,  7423,  7424,  7425,  7407,  7406,  7408,  7410,
-   7409,  7411,  7413,  7412,  7414,  7395,  7394,  7396,
-   7398,  7397,  7399,  7401,  7426,  7416,  7415,  7417,
-   7400,  7402,  7427,  7428,  7429,  7430,  7363,  7364,
-   7365,  7366,  7351,  7431,  7432,  7436,  7355,  6360,
-   6135,  7149,  7138,  6786,  7437,  7147,  6169,  6762,
-   7153,  7155,  6793,  6797,  6795,  6344,  7195,  6373,
-   7142,  6788,  7331,  7349,  7350,  7301,  7323,  7325,
-   7324,  7434,  7433,  7435,  2831,  3819,  7441,  7442,
-   7443,  7444,  7445,  7446,  7447,  7448,  7454,  7472,
-   7473,  7474,  7475,  7476,  7477,  7478,  7479,  7482,
-   5309,  5317,  7328,  7486,  7487,  7488,  7489,  7490,
-   7491,  7492,  7493,  7494,  7495,  7496,  7497,  7499,
-   7500,  7501,  7502,  7503,  7504,  7505,  7455,  7458,
-   7459,  7506,  7507,  7465,  7460,  7467,  7462,  7463,
-   7464,  7461,  7453,  7468,  7466,  7508,  7469,  7509,
-   7510,  7511,  7512,  7471,  7457,  7456,  7513,  7514,
-   7515,  7516,  7517,  7518,  7519,  7520,  7521,  7522,
-   7452,  7498,  7451,  7470,  7449,  7523,  7524,  7525,
-   7484,  7483,  7485,  7450,  7526,  7528,  7529,  7530,
-   7531,  7532,  7533,  7534,  7535,  7536,  7537,  7538,
-   7539,  7540,  7541,  7527,  7546,  7547,  7548,  7549,
-   7550,  7552,  7553,  7554,  7555,  7556,  7557,  7579,
-   7599,  7600,  7601,  7602,  7580,  7583,  7543,  7584,
-   7582,  7544,  7545,  7585,  7592,  7581,  7591,  7597,
-   7596,  7589,  7593,  7588,  7542,  7587,  7603,  7586,
-   7594,  7595,  7558,  7605,  7604,  7606,  7590,  7611,
-   7612,  7613,  7614,  7615,  7616,  7618,  7619,  7620,
-   7621,  7622,  7623,  7624,  7598,  7625,  7626,  7627,
-   7628,  7629,  7630,  7631,  7632,  7633,  7634,  7635,
-   7636,  7637,  7638,  7639,  7640,  7641,  7642,  7643,
-   7644,  7645,  7646,  7647,  7617,  7675,  7676,  7690,
-   7694,  7680,  7689,  7691,  7648,  7695,  7696,  7697,
-   7698,  7699,  7700,  7678,  7681,  7682,  7677,  7693,
-   7679,  7701,  7702,  7703,  7704,  7730,  7731,  7732,
-   7733,  7734,  7735,  7736,  7737,  7738,  7739,  7683,
-   7672,  7674,  7688,  7673,  7712,  7692,  7722,  7744,
-   7745,  7578,  7573,  7568,  7563,  7574,  7569,  7559,
-   7564,  7740,  7741,  7575,  7570,  7565,  7560,  7746,
-   7747,  7748,  7749,  7571,  7576,  7566,  7561,  7577,
-   7572,  7567,  7562,  7742,  7743,  7750,  7751,  7752,
-   7753,  7754,  7755,  7756,  7757,  7729,  7707,  7708,
-   7726,  7721,  7705,  7706,  7714,  7709,  7608,  7758,
-   7759,  7684,  7685,  7686,  7687,  7609,  7760,  7761,
-   7762,  7763,  7710,  7668,  7670,  7607,  7610,  7711,
-   7716,  7717,  7718,  7671,  7720,  7715,  7764,  7765,
-   7766,  7767,  7768,  7769,  7770,  7771,  7727,  7728,
-   7772,  7773,  7774,  7666,  7667,  7775,  7776,  7777,
-   7778,  7779,  7780,  7781,  7782,  7783,  7660,  7661,
-   7664,  7665,  7662,  7663,  7652,  7653,  7658,  7659,
-   7656,  7657,  7654,  7655,  7650,  7651,  7784,  7785,
-   7786,  7787,  7788,  7789,  7793,  7794,  7795,  7796,
-   7803,  7805,  7806,  7807,  7808,  7809,  7810,  7811,
-   7812,  7813,  7814,  7815,  7816,  7724,  7725,  7719,
-   7551,  7480,  7481,  7713,  7723,  7669,  7817,  7818,
-   7819,  7820,  7821,  7822,  7823,  7824,  7825,  7826,
-   7827,  7828,  7829,  7830,  7831,  7832,  7833,  7834,
-   7804,  7801,  7802,  7799,  7800,  7797,  7798,  7790,
-   7791,  7792,  7835,  7836,  7837,  7838,  7839,  7840,
-   7841,  7842,  7843,  7844,  7845,  7846,  7847,  7848,
-   7849,  7850,  7851,  7852,  7853,  7854,  7855,  7856,
-   7857,  7858,  7859,  7860,  7861,  7862,  7863,  7864,
-   7865,  7866,  7867,  7868,  7869,  7870,  7871,  7872,
-   7873,  7874,  7875,  7876,  7877,  7878,  7879,  7880,
-   7881,  7888,  7889,  7887,  7882,  7885,  7883,  7884,
-   7886,  7890,  7891,  7892,  7893,  7894,  7895,  7896,
-   7897,  7898,  7899,  7900,  7901,  7919,  7920,  7921,
-   7923,  7922,  7925,  7926,  7927,  7928,  7929,  7930,
-   7931,  7932,  7933,  7934,  7935,  7936,  7937,  7938,
-   7939,  7940,  7941,  7942,  7944,  7943,  7945,  7946,
-   7948,  7949,  7947,  7950,  7951,  7952,  7953,  7954,
-    911,   982,   983,  7955,  7957,  7958,   912,   913,
-    914,   915,   916,   917,   918,   919,   920,   921,
-    922,   923,   924,   925,   926,   927,   928,   929,
-    930,  7956,     0,     1,     2,     3,     4,     5,
-      6,     7,     8,     9,    10,    11,    12,    13,
-     14,  7962,  7961,  7960,  7959,    15,    16,   931,
-    932,   933,   934,   935,   936,   937,   938,   939,
-    940,   941,   942,   943,   944,   945,   946,   947,
-    948,   949,   950,   951,   952,   953,   954,   955,
-    956,   957,   958,   959,   960,   961,   962,   963,
-    964,   965,   966,   967,    17,  7977,  7978,  7979,
-   7980,  7981,  7982,  7910,  7912,  7916,  7914,  7906,
-   7904,  7902,  7983,  7924,    18,    19,  7966,  7967,
-   7965,    20,    21,    22,    23,    24,    25,    26,
-     27,    28,    29,  7917,  8030,  8031,  8032,  8033,
-   8034,    30,  7915,  7963,  7969,  7964,  8026,  8023,
-   8021,  8022,  8027,  7907,  7905,  7903,  7908,  7909,
-   8024,  8042,   968,   969,   970,   971,  7995,  7996,
-   8046,   972,   973,   974,   975,  7991,    31,    32,
-     33,    34,    35,    36,    37,    38,    39,    40,
-     41,    42,    43,  7913,  7911,    44,  7998,    45,
-     46,    47,    48,    49,    50,    51,    52,    53,
-   8047,    54,    55,    56,    57,    58,    59,    60,
-     61,    62,    63,    64,    65,    66,    67,    68,
-     69,    70,    71,    72,    73,    74,  8045,  8048,
-   8050,  7972,  7970,  8051,  8052,  7971,  7984,    75,
-   8058,  8056,  8057,  7968,    76,    77,    78,    79,
-     80,    81,    82,    83,    84,    85,    86,    87,
-     88,    89,    90,    91,    92,    93,    94,    95,
-     96,    97,    98,    99,   100,   101,   102,   103,
-   8059,  8061,  8062,  8053,  8054,  7973,  8063,   104,
-    105,   106,   107,   108,   109,   110,   111,   112,
-    113,   114,   115,   116,   117,   118,   119,   120,
-    121,   122,   123,   124,   125,   126,   127,   128,
-    129,   130,   131,   132,   133,   134,   135,   136,
-   8064,   137,   138,   139,   140,   141,   142,   143,
-    144,   145,   146,  8065,   147,   148,   149,   150,
-    151,   152,   153,   154,   155,   156,   157,   158,
-    159,   160,   161,   162,   163,   164,   165,  8066,
-    166,   167,   168,   169,   170,   171,   172,   173,
-    174,   175,   176,   177,  8067,  8070,  8072,   178,
-    179,   180,   181,   182,   183,   184,   185,   186,
-    187,   188,   189,   190,   191,   192,   193,  8068,
-   8071,  8074,  8029,  8028,  8073,   194,   195,   196,
-    197,   198,   199,   200,   201,  8075,   202,   203,
-    204,   205,   206,   207,   208,   209,   210,   211,
-    212,   213,   214,   215,   216,   217,   218,   219,
-    220,  8077,   221,   222,   223,  8043,   224,   225,
-    226,  8080,  8081,   227,  8020,  8019,  8017,  8018,
-   8082,  8083,  8084,  8085,  8015,  8016,  8013,  8014,
-   8011,  8012,  7974,  8055,  8079,  8098,  7918,  8109,
-   8110,  8111,  8112,  8113,  8114,  8115,  8116,  8117,
-   8097,  8108,  8105,  8106,  8118,  8119,  8120,  8088,
-   8089,  8076,  8101,  8103,  8107,  8121,  8104,  8122,
-   8123,  8090,  8093,  8094,  8086,  8087,  8091,  7976,
-   7988,  7989,  7975,  7985,  7986,  8092,  8095,  8102,
-   8099,  8100,  8000,  7997,  8096,  8040,  8041,  8035,
-   8039,  8036,  8037,  8038,  7992,  7993,  7994,  8002,
-   8003,  8001,  7999,  8004,  8008,  8009,  8005,  8006,
-   8007,  8010,  8049,   228,   229,  8069,  8060,  8124,
-   8078,  8125,  8025,  8126,  8127,  8128,  8129,  8130,
-   8131,  8132,  8133,  8134,  8136,  8137,  8139,  8140,
-   8141,  8142,  8143,  8144,  8146,  8149,  8145,  8150,
-   8153,  8148,  8147,  8154,  8156,  8157,  8159,  8151,
-   8152,  8172,  8175,  8177,  8178,  8180,  8182,  8183,
-   8185,  8186,  8187,  8189,  8190,  8191,  8192,  8193,
-   8194,  8196,  8171,  8198,   230,  8163,   231,   232,
-    233,   234,   235,   236,   237,   238,   239,   240,
-    241,   242,   243,   244,   245,   246,   247,  8199,
-   8200,  8201,  8202,  8203,  8204,  8205,  8206,  8207,
-   8208,  8209,  8210,  8162,  8161,  8211,  8197,  8195,
-   8173,   248,   249,   250,  8212,   251,   252,   253,
-    254,   255,  8213,  8184,  8174,   256,   257,   258,
-    259,   260,   261,   262,   263,   264,   265,   266,
-    267,   268,   269,  8214,  8176,   270,  8188,   271,
-    272,   273,   274,   275,   276,   277,   278,   279,
-    280,  8166,  8165,  8168,  8135,  8138,  7987,  7990,
-   8215,  8181,   281,   976,  8216,   977,   978,   979,
-    980,   981,  8155,  8158,  8170,  8164,  8217,  8218,
-   8219,  8220,  1958,  6457,  8169,  8167,  8179,  8221,
-    282,   283,   284,  8222,  8223,  8224,  8225,  8226,
-   8227,  8228,  8229,   285,   286,   287,   288,   289,
-    290,   291,   292,   293,   294,   295,   296,   297,
-    298,   299,   300,   301,  8230,  8231,  8232,  8236,
-   8258,  8259,  8260,  8261,  8262,  8264,  8265,  8266,
-   8267,  8268,  8269,  8270,  8271,  8272,  8263,   302,
-    303,  8273,  8274,   304,   305,   306,   307,   308,
-   8275,  8276,  8277,  8239,  8240,   309,   310,  8237,
-   5649,   311,   312,   313,   314,   315,  8278,  8279,
-   8280,  8281,  8282,  8283,  8284,  8285,  8286,  8287,
-   8288,  8289,  8290,  8291,  8292,  8293,  8294,  8295,
-   8296,  8297,  8298,  8299,  8300,  8301,   316,  8308,
-   8257,  8255,  8253,  8252,  8249,  8250,  8309,  8251,
-   8248,  8310,  8311,  8312,  8313,  8325,  8324,  8323,
-   8322,  8321,  8320,  8319,  8318,  8317,  8316,  8315,
-   8314,  8330,   317,   318,   319,   320,   321,   322,
-    323,   324,   325,   326,   327,   328,  8331,  8332,
-   8246,  8244,  8245,  8243,  8241,  8242,  8238,  8302,
-   8333,  8334,  8233,  8234,  8303,  8304,  8305,  8306,
-   8335,   329,  8336,  8337,  8247,  8256,  8338,  8254,
-   8307,  8235,   330,   331,  8326,  8329,  8327,  8388,
-   8389,  8390,  8412,  8413,  8414,  8409,  8410,  8411,
-   8406,  8407,  8408,  8376,  8377,  8378,  8403,  8404,
-   8405,  8391,  8392,  8393,  8394,  8395,  8396,  8373,
-   8379,  8397,  8370,  8398,  8399,  8371,  8372,  8382,
-   8383,  8384,  8420,  8421,  8422,  8423,  8424,  8425,
-   8415,   332,   333,   334,  8417,  8400,  8402,  8401,
-   8427,   335,   336,  8380,  8381,  8428,  8429,  8430,
-   8431,  8432,  8433,  8434,  8435,  8436,  8437,  8438,
-    337,   338,  8439,  8440,  8441,  8442,  8443,  8444,
-    339,   340,  8328,   341,  8416,   342,   343,   344,
-   8348,  8374,  8375,  8385,  8387,  8386,  8445,  8448,
-   8484,  8537,  8447,  8584,  8446,  8451,  8452,  8450,
-   8449,  8608,  8609,  8610,  8611,  8470,  8503,  8476,
-   8480,  8469,  8467,  8589,  8591,  8592,  8593,  8594,
-   8596,  8597,  8599,  8600,  8601,  8603,  8606,  8607,
-   8605,   345,   346,  8517,  8477,  8504,  8505,  8463,
-   8464,  8625,  8465,  8466,  8626,  8627,  8474,  8475,
-   8482,  8483,  8628,  8573,  8574,  8620,   347,  8619,
-   8577,  8578,   348,  8653,  8575,  8576,  8654,  8652,
-   8548,  8630,  8631,  8632,  8633,  8634,  8635,  8636,
-   8637,  8638,  8639,  8640,  8641,  8642,  8643,  8644,
-   8645,  8646,  8647,  8648,  8546,  8549,  8550,  8551,
-   8579,  8582,  8657,  8656,  8649,  8650,  8651,  8688,
-   8518,  8629,   349,   350,   351,   352,   353,   354,
-   8612,  8613,  8660,  8655,  8558,  8690,  8691,  8692,
-   8693,  8694,  8696,  8697,  8560,  8570,  8698,  8699,
-   8552,  8572,  8700,  8565,  8567,  8568,  8563,  8701,
-   8556,  8559,  8702,  8703,   355,   356,   357,  8704,
-   8665,  8666,  8662,  8663,  8547,  8689,  8569,  8555,
-   8557,  8661,  8602,  8705,   358,   359,   360,   361,
-    362,   363,   364,  8581,  8618,  8564,  8507,  8512,
-   8526,  8510,   365,  8710,   366,  8711,  8561,  8562,
-   8712,  8713,  8583,   367,  8714,  8544,  8553,  8566,
-   8715,  8716,  8717,  8718,  8719,  8720,  8721,  8722,
-   8571,  8339,  8723,  8724,  8706,  8681,  8674,  8358,
-   8670,  8614,  8585,  8368,  8366,  8364,  8362,  8360,
-   8356,  8708,  8683,  8676,  8672,  8616,  8587,  8418,
-   8354,  8352,  8346,  8343,  8341,  8725,  8535,  8519,
-   8461,  8350,  8493,  8497,  8456,  8533,  8495,  8679,
-   8499,  8345,  8459,  8542,  8668,  8686,  8458,  8351,
-   8529,  8539,  8501,  8491,  8726,  8727,  8728,  8730,
-   8731,  8732,  8545,  8580,  8729,  8733,  8735,  8736,
-   8737,  8738,  8739,  8740,  8734,  8741,  8742,  8743,
-   8744,  8745,  8746,  8747,   368,  8468,  8471,  8472,
-   8473,  8479,  8481,  8508,  8511,  8522,  8506,  8523,
-   8513,  8509,  8748,  8749,  8750,  8751,  8752,  8753,
-   8590,  8621,  8623,  8598,  8595,  8369,  8340,  8680,
-   8678,  8687,  8685,  8622,  8624,  8604,  8755,  8756,
-   8757,  8758,  8759,  8342,  8367,  8673,  8671,  8344,
-   8365,  8349,  8361,  8419,  8363,  8347,  8359,  8353,
-   8355,  8357,  8586,  8588,  8682,  8684,  8677,  8675,
-   8707,  8709,  8617,  8615,  8754,  8488,  8498,  8667,
-   8669,  8454,  8460,  8541,  8543,  8538,  8540,  8521,
-   8536,  8490,  8502,  8514,  8534,  8515,  8532,  8485,
-   8492,  8524,  8530,  8527,  8528,  8455,  8462,  8520,
-   8525,  8489,  8500,  8486,  8487,  8494,  8496,  8453,
-   8457,  2698,  7649,  8044,  8426,  8763,  8554,  8658,
-   8659,  8764,  8765,  8766,  8767,   369,   370,   371,
-    372,   373,   374,   375,   376,   377,   378,   379,
-    380,   381,   382,   383,   384,   385,   386,   387,
-    388,   389,   390,   391,   392,   393,   394,   395,
-    396,   397,   398,   399,   400,   401,   402,   403,
-    404,   405,   406,   407,   408,   409,   410,   411,
-   8160,  1078,  5254,  5255,  7222,  7223,  4028,  4029,
-    412,   413,   414,   415,   416,   417,   418,   419,
-    420,   421,   422,   423,   424,   425,   426,   427,
-    428,   429,   430,   431,   432,   433,   434,   435,
-    436,  7211,  7212,  2729,  3654,  3655,  7438,  7439,
-   7440,  8478,   437,   438,   439,  8768,  8769,  8770,
-    440,   441,   442,  8771,  1294,  3404,  1574,  5419,
-   5415,  1201,  4754,  4794,  4814,  4828,  4859,  4890,
-   5037,  1130,  8772,   443,   444,   445,   446,   447,
-    448,  8773,   449,   450,   451,   452,   453,   454,
-    455,   456,   457,   458,   459,   460,   461,   462,
-    463,   464,   465,   466,   467,   468,   469,   470,
-    471,   472,   473,   474,   475,   476,   477,   478,
-    479,   480,   481,   482,   483,   484,   485,   486,
-    487,   488,   489,   490,   491,   492,   493,   494,
-    495,   496,   497,   498,   499,  8789,  8790,  8791,
-   8792,  8793,  8794,  8795,  8796,  8797,  8798,  8799,
-   8800,  8801,  8802,  8803,  8804,  8805,  8806,  8807,
-   8808,  8809,  8810,  8811,  8812,  8813,  8814,  8815,
-   8816,  8817,  8818,  8819,  8820,  8821,  8822,  8823,
-   8824,  8825,  8826,  8827,  8828,   500,  8829,  8830,
-   8762,   501,   502,   503,   504,   505,  8761,   506,
-    507,   508,   509,   510,   511,   512,   513,   514,
-    515,   516,   517,   518,   519,  8760,  8781,  8782,
-   8785,  8786,   520,   521,   522,   523,  8783,  8831,
-   8832,  8787,  8788,  8784,  8779,  8833,  8834,  8835,
-   8836,  8837,  8838,  8839,  8840,  8841,  8842,  8843,
-   8844,  8845,  8846,  8847,  8848,  8873,  8874,  8875,
-   8876,  8879,  8878,  8880,  8664,  8695,   524,   525,
-   8851,  8872,  8849,  8867,  8868,  8869,  8870,  8871,
-   8861,  8862,  8863,  8864,  8865,  8866,  8853,  8854,
-   8855,  8856,  8857,  8858,  8859,  8860,  8850,  8852,
-   8881,  8883,  8884,  8885,  8882,   526,  8886,  8888,
-   8889,  8890,  8891,  8892,  8893,  8894,  8895,  8896,
-   8780,  8897,  8899,   527,  8900,  8902,  8903,  8905,
-   8906,  8907,  8909,  8901,  8898,  8877,  8904,  8911,
-    528,  8910,  8908,  8913,  8912,  8914,  8915,  8916,
-   8917,  8918,  8919,  8920,  8921,  8923,  8777,  8778,
-   8776,  8774,  8775,  8924,  8925,  8922,  8926,  8927,
-   8928,  8929,  8887,   529,   530,  8930,  8931,  8932,
-   8933,  8934,  8935,  8936,  8937,  8938,  8939,  8940,
-    531,  8941,  1307,  8946,  8947,  8948,  8949,  8950,
-   9007,  9009,  9011,  9012,  9014,  9016,  9017,  9019,
-   9020,  9024,  9025,  9027,  9028,  9029,  9030,  9031,
-   9032,  9050,  9051,  9052,  9053,  9054,  9055,  9056,
-   9061,  9066,  9057,  9058,  9062,  9080,  9081,  9063,
-   9064,  9082,  9083,  2174,  7045,  9084,  9085,  9086,
-   9087,  9088,  9059,  9089,  9090,  9091,  9092,  9093,
-   9094,  9095,  9096,  9097,  9098,  9099,  9100,  9101,
-   9060,  9102,  9103,  9104,  9105,  9065,  9106,  9107,
-    532,  8944,  9110,  9111,  9112,  9108,  9078,  9074,
-   9113,  9114,  9109,  9121,  8966,  8965,  8971,  8983,
-   8957,  8982,  8963,  8976,  8959,  8970,  8951,  8974,
-   8969,  8958,  8953,  9003,  9000,  8993,  9001,  8991,
-   8990,  9002,  8999,  8989,  8988,  9022,  8960,  8962,
-   9026,  9018,  9013,  8945,  9021,  9015,  9010,  9008,
-   8955,  8961,  8972,  8975,  8964,  8956,  8973,  8968,
-   8978,  8954,  9023,  9006,  9005,  9004,  8998,  8997,
-   8996,  8995,  8987,  8986,  8985,  9076,  9075,  9079,
-   9077,  9123,  9124,  8942,  8943,   533,  8984,  8952,
-   8980,  8967,  8977,  8981,  8979,  8994,  8992,  9130,
-   9131,  9132,  9133,  9134,  9135,  9136,  9137,  9138,
-   9139,  9140,  9141,  9142,  9143,  9144,  9145,  9146,
-   9147,  9148,  9149,  9150,  9151,  9152,  9153,  9154,
-   9155,  9156,  9157,  9158,  9159,  9160,  9161,  9162,
-   9163,  9164,  9165,  9166,  9046,  9041,  9042,  9044,
-   9045,  9033,  9034,  9039,  9040,  9035,  9047,  9172,
-   9173,  9174,  9175,  9176,  9048,  9038,  9126,  9127,
-   9036,  9125,  9177,  9178,  9179,  9180,  9181,  9043,
-   9037,  9119,  9117,  9183,  9184,  9118,  9185,  9186,
-   9167,  9171,  9168,  9170,  9169,  9115,  9182,  9187,
-   9188,  9189,  9190,  9120,  9191,  9116,  9072,  9071,
-   9073,  9069,  9067,  9070,  9193,  9194,  9197,  9198,
-   9200,  9201,  9202,  9203,  9204,  9205,  9206,  9207,
-    534,  9208,  9209,  9210,  9211,  9212,  9213,  9214,
-   9215,  9216,  9217,  9049,  9218,  9219,  9220,  9221,
-   9199,  9128,  9129,  9224,  9225,  9226,  9227,  9068,
-   9192,  9228,  9229,  9230,  9231,  9195,  9235,  9234,
-   9232,  9233,  9236,   535,   536,  9237,  9238,  9239,
-   4946,  9240,   537,   538,  9196,   539,   540,  9122,
-   9241,  9242,  9243,  9244,  9245,  9246,  9247,  9250,
-   9249,  9248,  9251,  9252,  9253,  9254,  9255,  9256,
-   9257,  9258,  9259,  9260,  9261,  9262,  9263,  9264,
-   9265,  9266,  9267,  9268,  9269,  9222,  9223,   541,
-    542,   543,   544,   545,   546,  9294,  9295,  9297,
-   9298,   547,   548,   549,   550,   551,   552,   553,
-    554,   555,   556,   557,   558,   559,   560,   561,
-    562,   563,   564,   565,   566,   567,   568,   569,
-    570,   571,   572,   573,  9299,  9300,  9301,  9302,
-   9303,  9304,  9305,  9306,  9307,  9308,  9309,  9310,
-   9311,  9312,  9313,   574,  9314,  9315,  9316,   575,
-    576,   577,  9318,  9319,  9320,  9321,  9322,  9323,
-   9324,   578,   579,   580,   581,   582,   583,   584,
-    585,   586,   587,   588,   589,   590,  9328,  9329,
-   9330,  9331,  9332,  9333,  9334,  9335,  9336,  9337,
-   9338,  9339,   591,   592,   593,   594,  9341,  9342,
-   9343,  9344,  9345,  9346,   595,   596,   597,   598,
-   9348,  9349,  9350,  9351,  9296,  9317,  9415,   599,
-    600,   601,   602,   603,   604,   605,   606,  9419,
-   9422,  9424,  9425,  9426,  9427,  9428,  9429,  9430,
-   9431,  9435,  9436,  9438,  9439,  9440,  9441,  9442,
-    607,   608,   609,   610,   611,   612,  9432,  9433,
-   9446,  9447,  9448,  9449,  9450,  9451,  9452,  9453,
-   9454,  9455,   613,   614,   615,   616,   617,   618,
-    619,   620,   621,   622,   623,   624,   625,   626,
-    627,   628,   629,   630,   631,   632,   633,   634,
-   9457,   635,   636,  9434,   637,   638,   639,   640,
-   9458,   641,  9459,  9473,  9468,  9467,  9469,  9462,
-   9470,  9471,  9463,  9465,  9464,  9466,  9474,  9460,
-   9475,  9476,  9477,  9461,  9472,  9478,  9437,  9479,
-   9480,  9481,   642,   643,   644,   645,   646,   647,
-    648,   649,   650,   651,   652,   653,   654,   655,
-    656,   657,   658,   659,   660,   661,   662,  9285,
-   9286,  9287,  9288,  9325,  9326,  9347,  9416,  9456,
-   9289,  9290,  9291,  9292,  9293,  9443,  9327,  9340,
-   9417,  9445,  9483,  9482,  9484,   663,   664,   665,
-    666,  9485,  9486,  9487,  9488,  9489,  9490,  9491,
-   9492,  9493,  9494,  9495,  9496,  9497,  9498,   667,
-    668,   669,   670,  9499,  9500,  9501,  9502,  9540,
-   9504,  9505,  9506,  9507,  9508,  9510,  9511,   671,
-    672,  9513,  9514,  9515,  9517,  9518,  9520,  9521,
-   9522,  9524,  9525,  9526,  9528,  9529,  9530,  9531,
-   9533,  9534,  9536,  9537,  9538,  9539,   673,  9541,
-   9542,  9543,   674,   675,   676,   677,   678,   679,
-    680,  9282,   681,   682,  9547,  9549,  9551,  9553,
-   9555,  9557,  9558,  9559,  9560,  9561,  9562,  9563,
-   9564,  9565,  9566,  9567,  9568,  9569,  9571,  9572,
-   9573,  9575,  9576,  9577,  9578,   683,  9579,  9580,
-   9581,  9276,  9272,  9273,  9582,  9585,  9586,  9587,
-   9588,  9583,   684,  9584,  9278,  9279,   685,  9589,
-    686,   687,  9591,  9592,   688,  9593,  9594,  9270,
-   9271,  9590,  9595,  9274,  9275,  9280,  9281,  9544,
-   9596,  9600,  9601,  9602,  9603,  9503,  9509,  9532,
-   9606,  9607,  9608,  9609,  9612,  9613,  9614,  9615,
-   9616,  9617,  9618,  9619,  9620,  9621,  9625,  9626,
-   9628,  9629,  9630,  9631,  9634,  9635,   689,   690,
-   9789,  9790,  9791,  9535,  9527,  9794,  9519,  9523,
-   9795,  9796,  9797,  9798,  9800,  1150,  9686,  9719,
-   9720,  9721,  9722,  9755,  9802,  9803,  9804,   691,
-    692,   693,   694,  9805,  9806,  9636,  9637,  9638,
-   9639,  9640,  9641,  9277,  9807,  9808,   695,   696,
-   9642,  9643,  9644,   697,  9687,  9688,  9689,  9690,
-   9691,  9692,  9693,  9694,  9695,  9696,  9697,  9698,
-   9699,  9700,  9701,  9702,  9703,  9704,  9705,  9706,
-   9707,  9708,  9709,  9710,  9711,  9712,  9716,  9718,
-   9723,  9724,  9725,  9726,  9727,  9728,  9729,  9730,
-   9731,  9732,  9733,  9734,  9735,  9736,  9737,  9738,
-   9739,  9740,  9741,  9742,  9743,  9744,  9745,  9746,
-   9747,  9748,  9749,  9750,  9751,  9752,  9753,  9754,
-   9809,  9810,   698,   699,  9284,  9813,  9815,  1490,
-    700,   701,   702,   703,  9820,  9821,  9822,  9823,
-   9814,  9816,  9817,  9819,  1491,  9784,  9780,  9788,
-   9787,  9818,  9824,   704,  9283,  9444,  9829,  9830,
-   9831,  9833,  9834,  9835,  9836,  9837,  9838,  9839,
-   9840,  9841,  9757,  9842,  9843,  9812,  9781,  9785,
-   9799,   705,  9599,  9782,  9786,  9844,  9681,  9682,
-   9679,  9680,  9764,  9556,  9765,  9675,  9677,  9678,
-   9570,  9676,  9670,  9655,  9668,  9766,  9776,  9760,
-   9767,  9423,  9772,  9761,  9552,  9610,  9770,  9758,
-   9546,  9768,  9759,  9604,  9645,  9658,  9420,  9418,
-   9671,  9673,  9421,  9574,  9654,  9554,  9652,  9667,
-   9665,  9622,  9632,  9647,  9660,  9548,  9779,  9550,
-   9649,  9662,  9762,  9651,  9778,  9664,  9774,  9792,
-   9845,   706,   707,   708,   709,   710,   711,   712,
-    713,   714,   715,   716,   717,   718,   719,   720,
-    721,   722,   723,   724,   725,   726,   727,   728,
-    729,   730,   731,   732,   733,   734,   735,   736,
-    737,   738,   739,   740,   741,   742,   743,   744,
-    745,   746,   747,   748,   749,   750,   751,   752,
-    753,   754,   755,   756,   757,  9598,  9846,  9783,
-   9847,  9793,  9713,  9714,  9715,  9717,  9825,  9771,
-   9769,  9777,  9756,   758,   759,  9826,  9827,  9828,
-   9623,  9627,  9624,  9848,   760,   761,   762,  9849,
-   9850,  9674,  9672,  9669,  9661,  9663,  9666,  9659,
-   9656,  9653,  9648,  9646,  9650,  9775,  9851,  9611,
-   9763,  9811,  9369,   763,  9773,  9597,  9512,  9801,
-   9516,  9853,  9866,  9868,  9870,  9872,  9874,  9876,
-   9860,  9862,  9864,  9854,  9856,  9858,  9685,  9545,
-    764,  9633,  9352,  9353,  9354,  9355,  9356,  9357,
-   9358,  9359,  9360,  9361,  9362,  9363,  9364,  9365,
-   9366,  9367,  9368,  9370,  9371,  9372,  9373,  9374,
-   9375,  9376,  9377,  9378,  9379,  9380,  9381,  9382,
-   9383,  9384,  9385,  9386,  9387,  9388,  9389,  9390,
-   9391,  9393,  9392,  9394,  9395,  9396,  9397,  9398,
-   9399,  9400,  9401,  9402,  9403,  9404,  9405,  9406,
-   9407,  9408,  9409,  9410,  9411,  9412,  9413,  9414,
-    765,   766,   767,   768,  9885,  9886,  9887,  9888,
-   9889,  9890,  9891,  9892,  9893,  9894,  9657,  9895,
-   9896,  9897,  9898,  9899,  9900,  9901,  9684,  9920,
-   9921,  9922,  9923,  9924,  9925,  9926,  9927,  9928,
-   9929,  9902,  9930,  9852,  9931,  9932,  9933,  8516,
-   8531,  9936,  9937,  9938,  9939,  9940,  9941,  9942,
-   9943,  9944,  9945,  9946,  9947,  9949,  9955,  9956,
-   9957,  9958,  9951,  9950,  9952,  9917,  9953,  9954,
-   9948,  9907,  9908,  9960,  9961,  9962,  9909,  9915,
-   9916,  9963,  9964,  9965,  9910,  9966,  9970,  9972,
-   9973,  9968,  9683,  9905,  9906,  9903,  9904,  9881,
-   9883,  9880,  9882,  9879,  9975,  9911,  9914,   769,
-    770,   771,   772,  9976,  9978,  9979,  9977,  9980,
-   9981,  9982,  9983,  9984,  9985,   773,   774,   775,
-    776,  9884,  9986,   777,  9987,  9988,  9989,   778,
-   9990,   779,   780,   781,  9991,   782,  9992,   783,
-    784,   785,   786,   787,   788,   789,   790,   791,
-    792,   793,   794,   795,   796,   797,   798,   799,
-    800,   801,   802,   803,   804,   805,   806,   807,
-    808,   809,   810,   811,   812,   813,   814,   815,
-    816,   817,   818,   819,   820,   821,   822,   823,
-    824,   825,   826,   827,   828,   829,   830,   831,
-    832,   833,   834,   835,   836,   837,   838,   839,
-    840,   841,  9995,  9996,  9997,  9999, 10001, 10002,
-  10003, 10004, 10005, 10006,  9934,  9998, 10000, 10007,
-   9605,  9959, 10008, 10009,  9935, 10010,  9912,  9913,
-   9993,  9994, 10011, 10012, 10013, 10014, 10015, 10016,
-  10017, 10018, 10019, 10020, 10021, 10022, 10023,  9918,
-   9919, 10024, 10025, 10026,  9967,   842,   843, 10027,
-  10028,  9974, 10029,  9969,  9971,  9878,  9873,  9875,
-   9877,  9871,  9869,  9867,  9859,  9857,  9855,  9865,
-   9863,  9861,   844,   845,   846,   847,  9832, 10036,
-  10034, 10035, 10058, 10060, 10061, 10062, 10059,   848,
-    849,   850,   851,   852,   853,   854,   855,   856,
+   6862,  6863,  6864,  6865,  6867,  6868,  6872,  6873,
+   6874,  6875,  6876,  6877,  6878,  6879,  6880,  6881,
+   6882,  6883,  6870,  6884,  6885,  6886,  6887,  6888,
+   6889,  6891,  6893,  6869,  6871,  6894,  6896,  6898,
+   6900,  6902,  6903,  6904,  6905,  6895,  6906,  6907,
+   6911,  6912,  6913,  6914,  6915,  6916,  6917,  6918,
+   6919,  6920,  6921,  6922,  6923,  6924,  6925,  6926,
+   6927,  6928,  6929,  6930,  6931,  6932,  6933,  6934,
+   6935,  6936,  6937,  6938,  6939,  6940,  6941,  6942,
+   6943,  6944,  6945,  6946,  6947,  6948,  6949,  6950,
+   6951,  6952,  6953,  6954,  6955,  6956,  6957,  6958,
+   6959,  6960,  6961,  6962,  6963,  6964,  6965,  6966,
+   6967,  6968,  6969,  6970,  6971,  6972,  6973,  6974,
+   6975,  6976,  6977,  6978,  6979,  6980,  6981,  6982,
+   6909,  6908,  6910,  6987,  6988,  6989,  6990,  6991,
+   6992,  6993,  6994,  6995,  6996,  6997,  6998,  6758,
+   7024,  7025,  3130,  3131,  3132,  3133,  6029,  6103,
+   6198,  6986,  6983,  6985,  7026,  6984,  7002,  7012,
+   7018,  7006,  7007,  7000,  7008,  6999,  7001,  7019,
+   7013,  7009,  7010,  7011,  7014,  7020,  7015,  7021,
+   7003,  7022,  7023,  7004,  7016,  3019,  7027,  7028,
+   7029,  7030,  7031,  7032,  7033,  7034,  7035,  7036,
+   7037,  7038,  7039,  7040,  7041,  7042,  7043,  7044,
+   7045,  7046,  7047,  7048,  7049,  7050,  7051,  7052,
+   7053,  7054,  7055,  7056,  7057,  7058,  7059,  7060,
+   7061,  7062,  7063,  7064,  7065,  7066,  7067,  7068,
+   7069,  7070,  7071,  7072,  7073,  7074,  7075,  7076,
+   7077,  7078,  7079,  7080,  7081,  7082,  7083,  7084,
+   7085,  7086,  7087,  7088,  7089,  7090,  7091,  7092,
+   7093,  7094,  7095,  7096,  7097,  7098,  7099,  7100,
+   7101,  7102,  7103,  7104,  7105,  7106,  7107,  7108,
+   7109,  7110,  7111,  7112,  7113,  7114,  7115,  7116,
+   7117,  7118,  7119,  7120,  7121,  7122,  7123,  7124,
+   7125,  7126,  7127,  7128,  7129,  7130,  7131,  7132,
+   7133,  7134,  7135,  7137,  7142,  7143,  7144,  7145,
+   7146,  6248,  6249,  7147,  7148,  7150,  7151,  7152,
+   7153,  7154,  7155,  7156,  7141,  7136,  7140,  7139,
+   7138,  7017,  7157,  7160,  4483,  4484,  4525,  4526,
+   7161,  7163,  7164,  3083,  3084,  3071,  3072,  3079,
+   3080,  3075,  3081,  3082,  3069,  3070,  3077,  3078,
+   3073,  3074,  7166,  7176,  7165,  7177,  7178,  7179,
+   7180,  7181,  7183,  7184,  7185,  7186,  7187,  7162,
+   7188,  7189,  7190,  7191,  7192,  7193,  7194,  7195,
+   7196,  7197,  7198,  7199,  7200,  7201,  7202,  7203,
+   7204,  7205,  7206,  7207,  7208,  7209,  7210,  7211,
+   7212,  7213,  7214,  7215,  7216,  7217,  7218,  7219,
+   7220,  7221,  7222,  7223,  7224,  7225,  7226,  7182,
+   7227,  7228,  7229,  7230,  7231,  7232,  7233,  7234,
+   7235,  7236,  7237,  7238,  7239,  7240,  7241,  7243,
+   7244,  7245,  7247,  7248,  7249,  7250,  7252,  7254,
+   7255,  7256,  7258,  7260,  7261,  7262,  7263,  7264,
+   7265,  7005,  7159,  7158,  2546,  2547,  7170,  7175,
+   7167,  7169,  7171,  6690,  7168,  7294,  7295,  7296,
+   7297,  7298,  7300,  7301,  7303,  7304,  7305,  7306,
+   7307,  7308,  7309,  7287,  7288,  7289,  7285,  7286,
+   7283,  7284,  7310,  7311,  7312,  7313,  7314,  7273,
+   7279,  7281,  7266,  7282,  7267,  7268,  7270,  7271,
+   7292,  7277,  7278,  7274,  7275,  7276,  7291,  7174,
+   7173,  7172,  7317,  7318,  7319,  7320,  7321,  7322,
+   7323,  7324,  7325,  7290,  7328,  7329,  7293,  7272,
+   7269,  7330,  7280,  7331,  7332,  7333,  7334,  7335,
+   7336,  7337,  7338,  7339,  7340,  7341,  7342,  7343,
+   7344,  7345,  7346,  7347,  7348,  7349,  7350,  4039,
+   4040,  4248,  4249,  4250,  4251,  1820,  1821,  1095,
+   1096,  4174,  4175,  4234,  4235,  4176,  4177,  4178,
+   4179,  4181,  4182,  4878,  4879,  7361,  7362,  7363,
+   7364,  7365,  7366,  7367,  7368,  7369,  7370,  7371,
+   7372,  7373,  7374,  7375,  7376,  7377,  7378,  7379,
+   2392,  2393,  2182,  2183,  7381,  7382,  7380,  3031,
+   3032,  3233,  3234,  3236,  3237,  3407,  3408,  3473,
+   3474,  3478,  3479,  3171,  3172,  3199,  3200,  3664,
+   3665,  3241,  3242,  3414,  3415,  3258,  3259,  3661,
+   3662,  3659,  3660,  4462,  4463,  4437,  4438,  4504,
+   4505,  1822,  1823,  1960,  1961,  3490,  3491,  3495,
+   3496,  2310,  2311,  2237,  2238,  3777,  3778,  3520,
+   3521,  3522,  3523,  3517,  3518,  4852,  4853,  4291,
+   4292,  3369,  3370,  4252,  4253,  4245,  4246,  2033,
+   7383,  7384,  7385,  7386,  7302,  7420,  7421,  7422,
+   7423,  7424,  7425,  7426,  7427,  7401,  7415,  7402,
+   7407,  7404,  7449,  7440,  7435,  7416,  7417,  7418,
+   7419,  7457,  7458,  7459,  7357,  7358,  7410,  7359,
+   7355,  7408,  7356,  7409,  7412,  7413,  7414,  7396,
+   7397,  7398,  7399,  7400,  7394,  7395,  7444,  7445,
+   7434,  7441,  7448,  7447,  7451,  7461,  7462,  7463,
+   7464,  7465,  7443,  7431,  7466,  7467,  7439,  7442,
+   7437,  7438,  7405,  7450,  7432,  7446,  7452,  7453,
+   7360,  7351,  7352,  7353,  7354,  7482,  7483,  7391,
+   7393,  7392,  7388,  7390,  7389,  7411,  7484,  7485,
+   7486,  7487,  7488,  7489,  7490,  7491,  7492,  7493,
+   7494,  7495,  7496,  7497,  7498,  7525,  7526,  7523,
+   7524,  7387,  7475,  7476,  7473,  7479,  7480,  7472,
+   7474,  7481,  7477,  7478,  7509,  7508,  7510,  7527,
+   7528,  7529,  7530,  7512,  7511,  7513,  7515,  7514,
+   7516,  7518,  7517,  7519,  7500,  7499,  7501,  7503,
+   7502,  7504,  7506,  7531,  7521,  7520,  7522,  7505,
+   7507,  7532,  7533,  7534,  7535,  7468,  7469,  7470,
+   7471,  7456,  7536,  7537,  7541,  7460,  6464,  6239,
+   7253,  7242,  6890,  7542,  7251,  6273,  6866,  7257,
+   7259,  6897,  6901,  6899,  6448,  7299,  6477,  7246,
+   6892,  7436,  7454,  7455,  7406,  7428,  7430,  7429,
+   7539,  7538,  7540,  2935,  3924,  7546,  7547,  7548,
+   7549,  7550,  7551,  7552,  7553,  7559,  7577,  7578,
+   7579,  7580,  7581,  7582,  7583,  7584,  7587,  5414,
+   5422,  7433,  7591,  7592,  7593,  7594,  7595,  7596,
+   7597,  7598,  7599,  7600,  7601,  7602,  7604,  7605,
+   7606,  7607,  7608,  7609,  7610,  7560,  7563,  7564,
+   7611,  7612,  7570,  7565,  7572,  7567,  7568,  7569,
+   7566,  7558,  7573,  7571,  7613,  7574,  7614,  7615,
+   7616,  7617,  7576,  7562,  7561,  7618,  7619,  7620,
+   7621,  7622,  7623,  7624,  7625,  7626,  7627,  7557,
+   7603,  7556,  7575,  7554,  7628,  7629,  7630,  7589,
+   7588,  7590,  7555,  7631,  7633,  7634,  7635,  7636,
+   7637,  7638,  7639,  7640,  7641,  7642,  7643,  7644,
+   7645,  7646,  7632,  7651,  7652,  7653,  7654,  7655,
+   7657,  7658,  7659,  7660,  7661,  7662,  7684,  7704,
+   7705,  7706,  7707,  7685,  7688,  7648,  7689,  7687,
+   7649,  7650,  7690,  7697,  7686,  7696,  7702,  7701,
+   7694,  7698,  7693,  7647,  7692,  7708,  7691,  7699,
+   7700,  7663,  7710,  7709,  7711,  7695,  7716,  7717,
+   7718,  7719,  7720,  7721,  7723,  7724,  7725,  7726,
+   7727,  7728,  7729,  7703,  7730,  7731,  7732,  7733,
+   7734,  7735,  7736,  7737,  7738,  7739,  7740,  7741,
+   7742,  7743,  7744,  7745,  7746,  7747,  7748,  7749,
+   7750,  7751,  7752,  7722,  7780,  7781,  7795,  7799,
+   7785,  7794,  7796,  7753,  7800,  7801,  7802,  7803,
+   7804,  7805,  7783,  7786,  7787,  7782,  7798,  7784,
+   7806,  7807,  7808,  7809,  7835,  7836,  7837,  7838,
+   7839,  7840,  7841,  7842,  7843,  7844,  7788,  7777,
+   7779,  7793,  7778,  7817,  7797,  7827,  7849,  7850,
+   7683,  7678,  7673,  7668,  7679,  7674,  7664,  7669,
+   7845,  7846,  7680,  7675,  7670,  7665,  7851,  7852,
+   7853,  7854,  7676,  7681,  7671,  7666,  7682,  7677,
+   7672,  7667,  7847,  7848,  7855,  7856,  7857,  7858,
+   7859,  7860,  7861,  7862,  7834,  7812,  7813,  7831,
+   7826,  7810,  7811,  7819,  7814,  7713,  7863,  7864,
+   7789,  7790,  7791,  7792,  7714,  7865,  7866,  7867,
+   7868,  7815,  7773,  7775,  7712,  7715,  7816,  7821,
+   7822,  7823,  7776,  7825,  7820,  7869,  7870,  7871,
+   7872,  7873,  7874,  7875,  7876,  7832,  7833,  7877,
+   7878,  7879,  7771,  7772,  7880,  7881,  7882,  7883,
+   7884,  7885,  7886,  7887,  7888,  7765,  7766,  7769,
+   7770,  7767,  7768,  7757,  7758,  7763,  7764,  7761,
+   7762,  7759,  7760,  7755,  7756,  7889,  7890,  7891,
+   7892,  7893,  7894,  7898,  7899,  7900,  7901,  7908,
+   7910,  7911,  7912,  7913,  7914,  7915,  7916,  7917,
+   7918,  7919,  7920,  7921,  7829,  7830,  7824,  7656,
+   7585,  7586,  7818,  7828,  7774,  7922,  7923,  7924,
+   7925,  7926,  7927,  7928,  7929,  7930,  7931,  7932,
+   7933,  7934,  7935,  7936,  7937,  7938,  7939,  7909,
+   7906,  7907,  7904,  7905,  7902,  7903,  7895,  7896,
+   7897,  7940,  7941,  7942,  7943,  7944,  7945,  7946,
+   7947,  7948,  7949,  7950,  7951,  7952,  7953,  7954,
+   7955,  7956,  7957,  7958,  7959,  7960,  7961,  7962,
+   7963,  7964,  7965,  7966,  7967,  7968,  7969,  7970,
+   7971,  7972,  7973,  7974,  7975,  7976,  7977,  7978,
+   7979,  7980,  7981,  7982,  7983,  7984,  7985,  7986,
+   7993,  7994,  7992,  7987,  7990,  7988,  7989,  7991,
+   7995,  7996,  7997,  7998,  7999,  8000,  8001,  8002,
+   8003,  8004,  8005,  8006,  8024,  8025,  8026,  8028,
+   8027,  8030,  8031,  8032,  8033,  8034,  8035,  8036,
+   8037,  8038,  8039,  8040,  8041,  8042,  8043,  8044,
+   8045,  8046,  8047,  8049,  8048,  8050,  8051,  8053,
+   8054,  8052,  8055,  8056,  8057,  8058,  8059,  1011,
+   1086,  1087,  8060,  8062,  8063,  1012,  1013,  1014,
+   1015,  1016,  1017,  1018,  1019,  1020,  1021,  1022,
+   1023,  1024,  1025,  1026,  1027,  1028,  1029,  1030,
+   8061,     0,     1,     2,     3,     4,     5,     6,
+      7,     8,     9,    10,    11,    12,    13,    14,
+   8067,  8066,  8065,  8064,    15,    16,  1031,  1032,
+   1033,  1034,  1035,  1036,  1037,  1038,  1039,  1040,
+   1041,  1042,  1043,  1044,  1045,  1046,  1047,  1048,
+   1049,  1050,  1051,  1052,  1053,  1054,  1055,  1056,
+   1057,  1058,  1059,  1060,  1061,  1062,  1063,  1064,
+   1065,  1066,  1067,    17,  8082,  8083,  8084,  8085,
+   8086,  8087,  8015,  8017,  8021,  8019,  8011,  8009,
+   8007,  8088,  8029,    18,    19,  8071,  8072,  8070,
+     20,    21,    22,    23,    24,    25,    26,    27,
+     28,    29,  8022,  8135,  8136,  8137,  8138,  8139,
+     30,  8020,  8068,  8074,  8069,  8131,  8128,  8126,
+   8127,  8132,  8012,  8010,  8008,  8013,  8014,  8129,
+   8147,  1068,  1069,  1070,  1071,  8100,  8101,  8151,
+   1072,  1073,  1074,  1075,  8096,    31,    32,    33,
+     34,    35,    36,    37,    38,    39,    40,    41,
+     42,    43,  8018,  8016,    44,  8103,    45,    46,
+     47,    48,    49,    50,    51,    52,    53,  8152,
+     54,    55,    56,    57,    58,    59,    60,    61,
+     62,    63,    64,    65,    66,    67,    68,    69,
+     70,    71,    72,    73,    74,  8150,  8153,  8155,
+   8077,  8075,  8156,  8157,  8076,  8089,    75,  8163,
+   8161,  8162,  8073,    76,    77,    78,    79,    80,
+     81,    82,    83,    84,    85,    86,    87,    88,
+     89,    90,    91,    92,    93,    94,    95,    96,
+     97,    98,    99,   100,   101,   102,   103,  8164,
+   8166,  8167,  8158,  8159,  8078,  8168,   104,   105,
+    106,   107,   108,   109,   110,   111,   112,   113,
+    114,   115,   116,   117,   118,   119,   120,   121,
+    122,   123,   124,   125,   126,   127,   128,   129,
+    130,   131,   132,   133,   134,   135,   136,  8169,
+    137,   138,   139,   140,   141,   142,   143,   144,
+    145,   146,  8170,   147,   148,   149,   150,   151,
+    152,   153,   154,   155,   156,   157,   158,   159,
+    160,   161,   162,   163,   164,   165,  8171,   166,
+    167,   168,   169,   170,   171,   172,   173,   174,
+    175,   176,   177,  8172,  8175,  8177,   178,   179,
+    180,   181,   182,   183,   184,   185,   186,   187,
+    188,   189,   190,   191,   192,   193,  8173,  8176,
+   8179,  8134,  8133,  8178,   194,   195,   196,   197,
+    198,   199,   200,   201,  8180,   202,   203,   204,
+    205,   206,   207,   208,   209,   210,   211,   212,
+    213,   214,   215,   216,   217,   218,   219,   220,
+   8182,   221,   222,   223,  8148,   224,   225,   226,
+   8185,  8186,   227,  8125,  8124,  8122,  8123,  8187,
+   8188,  8189,  8190,  8120,  8121,  8118,  8119,  8116,
+   8117,  8079,  8160,  8184,  8203,  8023,  8214,  8215,
+   8216,  8217,  8218,  8219,  8220,  8221,  8222,  8202,
+   8213,  8210,  8211,  8223,  8224,  8225,  8193,  8194,
+   8181,  8206,  8208,  8212,  8226,  8209,  8227,  8228,
+   8195,  8198,  8199,  8191,  8192,  8196,  8081,  8093,
+   8094,  8080,  8090,  8091,  8197,  8200,  8207,  8204,
+   8205,  8105,  8102,  8201,  8145,  8146,  8140,  8144,
+   8141,  8142,  8143,  8097,  8098,  8099,  8107,  8108,
+   8106,  8104,  8109,  8113,  8114,  8110,  8111,  8112,
+   8115,  8154,   228,   229,  8174,  8165,  8229,  8183,
+   8230,  8130,  8231,  8232,  8233,  8234,  8235,  8236,
+   8237,  8238,  8239,  8241,  8242,  8244,  8245,  8246,
+   8247,  8248,  8249,  8251,  8254,  8250,  8255,  8258,
+   8253,  8252,  8259,  8261,  8262,  8264,  8256,  8257,
+   8277,  8280,  8282,  8283,  8285,  8287,  8288,  8290,
+   8291,  8292,  8294,  8295,  8296,  8297,  8298,  8299,
+   8301,  8276,  8303,   230,  8268,   231,   232,   233,
+    234,   235,   236,   237,   238,   239,   240,   241,
+    242,   243,   244,   245,   246,   247,  8304,  8305,
+   8306,  8307,  8308,  8309,  8310,  8311,  8312,  8313,
+   8314,  8315,  8267,  8266,  8316,  8302,  8300,  8278,
+    248,   249,   250,  8317,   251,   252,   253,   254,
+    255,  8318,  8289,  8279,   256,   257,   258,   259,
+    260,   261,   262,   263,   264,   265,   266,   267,
+    268,   269,  8319,  8281,   270,  8293,   271,   272,
+    273,   274,   275,   276,   277,   278,   279,   280,
+   8271,  8270,  8273,  8240,  8243,  8092,  8095,  8320,
+   8286,   281,  1076,  8321,  1077,  1078,  1079,  1080,
+   1081,  8260,  8263,  8275,  8269,  8322,  8323,  8324,
+   8325,  2062,  6561,  8274,  8272,  8284,  8326,   282,
+    283,   284,  8327,  8328,  8329,  8330,  8331,  8332,
+   8333,  8334,   285,   286,   287,   288,   289,   290,
+    291,   292,   293,   294,   295,   296,   297,   298,
+    299,   300,   301,  8335,  8336,  8337,  8341,  8363,
+   8364,  8365,  8366,  8367,  8369,  8370,  8371,  8372,
+   8373,  8374,  8375,  8376,  8377,  8368,   302,   303,
+   8378,  8379,   304,   305,   306,   307,   308,  8380,
+   8381,  8382,  8344,  8345,   309,   310,  8342,  5754,
+    311,   312,   313,   314,   315,  8383,  8384,  8385,
+   8386,  8387,  8388,  8389,  8390,  8391,  8392,  8393,
+   8394,  8395,  8396,  8397,  8398,  8399,  8400,  8401,
+   8402,  8403,  8404,  8405,  8406,   316,  8413,  8362,
+   8360,  8358,  8357,  8354,  8355,  8414,  8356,  8353,
+   8415,  8416,  8417,  8418,  8430,  8429,  8428,  8427,
+   8426,  8425,  8424,  8423,  8422,  8421,  8420,  8419,
+   8435,   317,   318,   319,   320,   321,   322,   323,
+    324,   325,   326,   327,   328,  8436,  8437,  8351,
+   8349,  8350,  8348,  8346,  8347,  8343,  8407,  8438,
+   8439,  8338,  8339,  8408,  8409,  8410,  8411,  8440,
+    329,  8441,  8442,  8352,  8361,  8443,  8359,  8412,
+   8340,   330,   331,  8431,  8434,  8432,  8493,  8494,
+   8495,  8517,  8518,  8519,  8514,  8515,  8516,  8511,
+   8512,  8513,  8481,  8482,  8483,  8508,  8509,  8510,
+   8496,  8497,  8498,  8499,  8500,  8501,  8478,  8484,
+   8502,  8475,  8503,  8504,  8476,  8477,  8487,  8488,
+   8489,  8525,  8526,  8527,  8528,  8529,  8530,  8520,
+    332,   333,   334,  8522,  8505,  8507,  8506,  8532,
+    335,   336,  8485,  8486,  8533,  8534,  8535,  8536,
+   8537,  8538,  8539,  8540,  8541,  8542,  8543,   337,
+    338,  8544,  8545,  8546,  8547,  8548,  8549,   339,
+    340,  8433,   341,  8521,   342,   343,   344,  8453,
+   8479,  8480,  8490,  8492,  8491,  8550,  8553,  8589,
+   8642,  8552,  8689,  8551,  8556,  8557,  8555,  8554,
+   8713,  8714,  8715,  8716,  8575,  8608,  8581,  8585,
+   8574,  8572,  8694,  8696,  8697,  8698,  8699,  8701,
+   8702,  8704,  8705,  8706,  8708,  8711,  8712,  8710,
+    345,   346,  8622,  8582,  8609,  8610,  8568,  8569,
+   8730,  8570,  8571,  8731,  8732,  8579,  8580,  8587,
+   8588,  8733,  8678,  8679,  8725,   347,  8724,  8682,
+   8683,   348,  8758,  8680,  8681,  8759,  8757,  8653,
+   8735,  8736,  8737,  8738,  8739,  8740,  8741,  8742,
+   8743,  8744,  8745,  8746,  8747,  8748,  8749,  8750,
+   8751,  8752,  8753,  8651,  8654,  8655,  8656,  8684,
+   8687,  8762,  8761,  8754,  8755,  8756,  8793,  8623,
+   8734,   349,   350,   351,   352,   353,   354,  8717,
+   8718,  8765,  8760,  8663,  8795,  8796,  8797,  8798,
+   8799,  8801,  8802,  8665,  8675,  8803,  8804,  8657,
+   8677,  8805,  8670,  8672,  8673,  8668,  8806,  8661,
+   8664,  8807,  8808,   355,   356,   357,  8809,  8770,
+   8771,  8767,  8768,  8652,  8794,  8674,  8660,  8662,
+   8766,  8707,  8810,   358,   359,   360,   361,   362,
+    363,   364,  8686,  8723,  8669,  8612,  8617,  8631,
+   8615,   365,  8815,   366,  8816,  8666,  8667,  8817,
+   8818,  8688,   367,  8819,  8649,  8658,  8671,  8820,
+   8821,  8822,  8823,  8824,  8825,  8826,  8827,  8676,
+   8444,  8828,  8829,  8811,  8786,  8779,  8463,  8775,
+   8719,  8690,  8473,  8471,  8469,  8467,  8465,  8461,
+   8813,  8788,  8781,  8777,  8721,  8692,  8523,  8459,
+   8457,  8451,  8448,  8446,  8830,  8640,  8624,  8566,
+   8455,  8598,  8602,  8561,  8638,  8600,  8784,  8604,
+   8450,  8564,  8647,  8773,  8791,  8563,  8456,  8634,
+   8644,  8606,  8596,  8831,  8832,  8833,  8835,  8836,
+   8837,  8650,  8685,  8834,  8838,  8840,  8841,  8842,
+   8843,  8844,  8845,  8839,  8846,  8847,  8848,  8849,
+   8850,  8851,  8852,   368,  8573,  8576,  8577,  8578,
+   8584,  8586,  8613,  8616,  8627,  8611,  8628,  8618,
+   8614,  8853,  8854,  8855,  8856,  8857,  8858,  8695,
+   8726,  8728,  8703,  8700,  8474,  8445,  8785,  8783,
+   8792,  8790,  8727,  8729,  8709,  8860,  8861,  8862,
+   8863,  8864,  8447,  8472,  8778,  8776,  8449,  8470,
+   8454,  8466,  8524,  8468,  8452,  8464,  8458,  8460,
+   8462,  8691,  8693,  8787,  8789,  8782,  8780,  8812,
+   8814,  8722,  8720,  8859,  8593,  8603,  8772,  8774,
+   8559,  8565,  8646,  8648,  8643,  8645,  8626,  8641,
+   8595,  8607,  8619,  8639,  8620,  8637,  8590,  8597,
+   8629,  8635,  8632,  8633,  8560,  8567,  8625,  8630,
+   8594,  8605,  8591,  8592,  8599,  8601,  8558,  8562,
+   2802,  7754,  8149,  8531,  8868,  8659,  8763,  8764,
+   8869,  8870,  8871,  8872,   369,   370,   371,   372,
+    373,   374,   375,   376,   377,   378,   379,   380,
+    381,   382,   383,   384,   385,   386,   387,   388,
+    389,   390,   391,   392,   393,   394,   395,   396,
+    397,   398,   399,   400,   401,   402,   403,   404,
+    405,   406,   407,   408,   409,   410,   411,  8265,
+   1182,  5359,  5360,  7326,  7327,  4133,  4134,   412,
+    413,   414,   415,   416,   417,   418,   419,   420,
+    421,   422,   423,   424,   425,   426,   427,   428,
+    429,   430,   431,   432,   433,   434,   435,   436,
+   7315,  7316,  2833,  3759,  3760,  7543,  7544,  7545,
+   8583,   437,   438,   439,  8873,  8874,  8875,   440,
+    441,   442,  8876,  1398,  3509,  1678,  5524,  5520,
+   1305,  4859,  4899,  4919,  4933,  4964,  4995,  5142,
+   1234,  8877,   443,   444,   445,   446,   447,   448,
+   8878,   449,   450,   451,   452,   453,   454,   455,
+    456,   457,   458,   459,   460,   461,   462,   463,
+    464,   465,   466,   467,   468,   469,   470,   471,
+    472,   473,   474,   475,   476,   477,   478,   479,
+    480,   481,   482,   483,   484,   485,   486,   487,
+    488,   489,   490,   491,   492,   493,   494,   495,
+    496,   497,   498,   499,  8894,  8895,  8896,  8897,
+   8898,  8899,  8900,  8901,  8902,  8903,  8904,  8905,
+   8906,  8907,  8908,  8909,  8910,  8911,  8912,  8913,
+   8914,  8915,  8916,  8917,  8918,  8919,  8920,  8921,
+   8922,  8923,  8924,  8925,  8926,  8927,  8928,  8929,
+   8930,  8931,  8932,  8933,   500,  8934,  8935,  8867,
+    501,   502,   503,   504,   505,  8866,   506,   507,
+    508,   509,   510,   511,   512,   513,   514,   515,
+    516,   517,   518,   519,  8865,  8886,  8887,  8890,
+   8891,   520,   521,   522,   523,  8888,  8936,  8937,
+   8892,  8893,  8889,  8884,  8938,  8939,  8940,  8941,
+   8942,  8943,  8944,  8945,  8946,  8947,  8948,  8949,
+   8950,  8951,  8952,  8953,  8978,  8979,  8980,  8981,
+   8984,  8983,  8985,  8769,  8800,   524,   525,  8956,
+   8977,  8954,  8972,  8973,  8974,  8975,  8976,  8966,
+   8967,  8968,  8969,  8970,  8971,  8958,  8959,  8960,
+   8961,  8962,  8963,  8964,  8965,  8955,  8957,  8986,
+   8988,  8989,  8990,  8987,   526,  8991,  8993,  8994,
+   8995,  8996,  8997,  8998,  8999,  9000,  9001,  8885,
+   9002,  9004,   527,  9005,  9007,  9008,  9010,  9011,
+   9012,  9014,  9006,  9003,  8982,  9009,  9016,   528,
+   9015,  9013,  9018,  9017,  9019,  9020,  9021,  9022,
+   9023,  9024,  9025,  9026,  9028,  8882,  8883,  8881,
+   8879,  8880,  9029,  9030,  9027,  9031,  9032,  9033,
+   9034,  8992,   529,   530,  9035,  9036,  9037,  9038,
+   9039,  9040,  9041,  9042,  9043,  9044,  9045,   531,
+   9046,  1411,  9051,  9052,  9053,  9054,  9055,  9112,
+   9114,  9116,  9117,  9119,  9121,  9122,  9124,  9125,
+   9129,  9130,  9132,  9133,  9134,  9135,  9136,  9137,
+   9155,  9156,  9157,  9158,  9159,  9160,  9161,  9166,
+   9171,  9162,  9163,  9167,  9185,  9186,  9168,  9169,
+   9187,  9188,  2278,  7149,  9189,  9190,  9191,  9192,
+   9193,  9164,  9194,  9195,  9196,  9197,  9198,  9199,
+   9200,  9201,  9202,  9203,  9204,  9205,  9206,  9165,
+   9207,  9208,  9209,  9210,  9170,  9211,  9212,   532,
+   9049,  9215,  9216,  9217,  9213,  9183,  9179,  9218,
+   9219,  9214,  9226,  9071,  9070,  9076,  9088,  9062,
+   9087,  9068,  9081,  9064,  9075,  9056,  9079,  9074,
+   9063,  9058,  9108,  9105,  9098,  9106,  9096,  9095,
+   9107,  9104,  9094,  9093,  9127,  9065,  9067,  9131,
+   9123,  9118,  9050,  9126,  9120,  9115,  9113,  9060,
+   9066,  9077,  9080,  9069,  9061,  9078,  9073,  9083,
+   9059,  9128,  9111,  9110,  9109,  9103,  9102,  9101,
+   9100,  9092,  9091,  9090,  9181,  9180,  9184,  9182,
+   9228,  9229,  9047,  9048,   533,  9089,  9057,  9085,
+   9072,  9082,  9086,  9084,  9099,  9097,  9235,  9236,
+   9237,  9238,  9239,  9240,  9241,  9242,  9243,  9244,
+   9245,  9246,  9247,  9248,  9249,  9250,  9251,  9252,
+   9253,  9254,  9255,  9256,  9257,  9258,  9259,  9260,
+   9261,  9262,  9263,  9264,  9265,  9266,  9267,  9268,
+   9269,  9270,  9271,  9151,  9146,  9147,  9149,  9150,
+   9138,  9139,  9144,  9145,  9140,  9152,  9277,  9278,
+   9279,  9280,  9281,  9153,  9143,  9231,  9232,  9141,
+   9230,  9282,  9283,  9284,  9285,  9286,  9148,  9142,
+   9224,  9222,  9288,  9289,  9223,  9290,  9291,  9272,
+   9276,  9273,  9275,  9274,  9220,  9287,  9292,  9293,
+   9294,  9295,  9225,  9296,  9221,  9177,  9176,  9178,
+   9174,  9172,  9175,  9298,  9299,  9302,  9303,  9305,
+   9306,  9307,  9308,  9309,  9310,  9311,  9312,   534,
+   9313,  9314,  9315,  9316,  9317,  9318,  9319,  9320,
+   9321,  9322,  9154,  9323,  9324,  9325,  9326,  9304,
+   9233,  9234,  9329,  9330,  9331,  9332,  9173,  9297,
+   9333,  9334,  9335,  9336,  9300,  9340,  9339,  9337,
+   9338,  9341,   535,   536,  9342,  9343,  9344,  5051,
+   9345,   537,   538,  9301,   539,   540,  9227,  9346,
+   9347,  9348,  9349,  9350,  9351,  9352,  9355,  9354,
+   9353,  9356,  9357,  9358,  9359,  9360,  9361,  9362,
+   9363,  9364,  9365,  9366,  9367,  9368,  9369,  9370,
+   9371,  9372,  9373,  9374,  9327,  9328,   541,   542,
+    543,   544,   545,   546,  9399,  9400,  9402,  9403,
+    547,   548,   549,   550,   551,   552,   553,   554,
+    555,   556,   557,   558,   559,   560,   561,   562,
+    563,   564,   565,   566,   567,   568,   569,   570,
+    571,   572,   573,  9404,  9405,  9406,  9407,  9408,
+   9409,  9410,  9411,  9412,  9413,  9414,  9415,  9416,
+   9417,  9418,   574,  9419,  9420,  9421,   575,   576,
+    577,  9423,  9424,  9425,  9426,  9427,  9428,  9429,
+    578,   579,   580,   581,   582,   583,   584,   585,
+    586,   587,   588,   589,   590,  9433,  9434,  9435,
+   9436,  9437,  9438,  9439,  9440,  9441,  9442,  9443,
+   9444,   591,   592,   593,   594,  9446,  9447,  9448,
+   9449,  9450,  9451,   595,   596,   597,   598,  9453,
+   9454,  9455,  9456,  9401,  9422,  9520,   599,   600,
+    601,   602,   603,   604,   605,   606,  9524,  9527,
+   9529,  9530,  9531,  9532,  9533,  9534,  9535,  9536,
+   9540,  9541,  9543,  9544,  9545,  9546,  9547,   607,
+    608,   609,   610,   611,   612,  9537,  9538,  9551,
+   9552,  9553,  9554,  9555,  9556,  9557,  9558,  9559,
+   9560,   613,   614,   615,   616,   617,   618,   619,
+    620,   621,   622,   623,   624,   625,   626,   627,
+    628,   629,   630,   631,   632,   633,   634,  9562,
+    635,   636,  9539,   637,   638,   639,   640,  9563,
+    641,  9564,  9578,  9573,  9572,  9574,  9567,  9575,
+   9576,  9568,  9570,  9569,  9571,  9579,  9565,  9580,
+   9581,  9582,  9566,  9577,  9583,  9542,  9584,  9585,
+   9586,   642,   643,   644,   645,   646,   647,   648,
+    649,   650,   651,   652,   653,   654,   655,   656,
+    657,   658,   659,   660,   661,   662,  9390,  9391,
+   9392,  9393,  9430,  9431,  9452,  9521,  9561,  9394,
+   9395,  9396,  9397,  9398,  9548,  9432,  9445,  9522,
+   9550,  9588,  9587,  9589,   663,   664,   665,   666,
+   9590,  9591,  9592,  9593,  9594,  9595,  9596,  9597,
+   9598,  9599,  9600,  9601,  9602,  9603,   667,   668,
+    669,   670,  9604,  9605,  9606,  9607,  9645,  9609,
+   9610,  9611,  9612,  9613,  9615,  9616,   671,   672,
+   9618,  9619,  9620,  9622,  9623,  9625,  9626,  9627,
+   9629,  9630,  9631,  9633,  9634,  9635,  9636,  9638,
+   9639,  9641,  9642,  9643,  9644,   673,  9646,  9647,
+   9648,   674,   675,   676,   677,   678,   679,   680,
+   9387,   681,   682,  9652,  9654,  9656,  9658,  9660,
+   9662,  9663,  9664,  9665,  9666,  9667,  9668,  9669,
+   9670,  9671,  9672,  9673,  9674,  9676,  9677,  9678,
+   9680,  9681,  9682,  9683,   683,  9684,  9685,  9686,
+   9381,  9377,  9378,  9687,  9690,  9691,  9692,  9693,
+   9688,   684,  9689,  9383,  9384,   685,  9694,   686,
+    687,  9696,  9697,   688,  9698,  9699,  9375,  9376,
+   9695,  9700,  9379,  9380,  9385,  9386,  9649,  9701,
+   9705,  9706,  9707,  9708,  9608,  9614,  9637,  9711,
+   9712,  9713,  9714,  9717,  9718,  9719,  9720,  9721,
+   9722,  9723,  9724,  9725,  9726,  9730,  9731,  9733,
+   9734,  9735,  9736,  9739,  9740,   689,   690,  9895,
+   9896,  9897,  9640,  9632,  9900,  9624,  9628,  9901,
+   9902,  9903,  9904,  9906,  1254,  9792,  9825,  9826,
+   9827,  9828,  9861,  9908,  9909,  9910,   691,   692,
+    693,   694,  9911,  9912,  9741,  9742,  9743,  9744,
+   9745,  9746,  9382,  9913,  9914,   695,   696,  9747,
+   9748,  9749,   697,  9793,  9794,  9795,  9796,  9797,
+   9798,  9799,  9800,  9801,  9802,  9803,  9804,  9805,
+   9806,  9807,  9808,  9809,  9810,  9811,  9812,  9813,
+   9814,  9815,  9816,  9817,  9818,  9822,  9824,  9829,
+   9830,  9831,  9832,  9833,  9834,  9835,  9836,  9837,
+   9838,  9839,  9840,  9841,  9842,  9843,  9844,  9845,
+   9846,  9847,  9848,  9849,  9850,  9851,  9852,  9853,
+   9854,  9855,  9856,  9857,  9858,  9859,  9860,  9915,
+   9916,   698,   699,  9389,  9919,  9921,  1594,   700,
+    701,   702,   703,  9926,  9927,  9928,  9929,  9920,
+   9922,  9923,  9925,  1595,  9890,  9886,  9894,  9893,
+   9924,  9930,   704,  9388,  9549,  9935,  9936,  9937,
+   9939,  9940,  9941,  9942,  9943,  9944,  9945,  9946,
+   9947,  9863,  9948,  9949,  9918,  9887,  9891,  9905,
+    705,  9704,  9888,  9892,  9950,  9786,  9787,  9784,
+   9785,  9870,  9661,  9871,  9780,  9782,  9783,  9675,
+   9781,  9775,  9760,  9773,  9872,  9882,  9866,  9873,
+   9528,  9878,  9867,  9657,  9715,  9876,  9864,  9651,
+   9874,  9865,  9709,  9750,  9763,  9525,  9523,  9776,
+   9778,  9526,  9679,  9759,  9659,  9757,  9772,  9770,
+   9727,  9737,  9752,  9765,  9653,  9885,  9655,  9754,
+   9767,  9868,  9756,  9884,  9769,  9880,  9898,  9951,
+    706,   707,   708,   709,   710,   711,   712,   713,
+    714,   715,   716,   717,   718,   719,   720,   721,
+    722,   723,   724,   725,   726,   727,   728,   729,
+    730,   731,   732,   733,   734,   735,   736,   737,
+    738,   739,   740,   741,   742,   743,   744,   745,
+    746,   747,   748,   749,   750,   751,   752,   753,
+    754,   755,   756,   757,  9703,  9952,  9889,  9953,
+   9899,  9819,  9820,  9821,  9823,  9931,  9877,  9875,
+   9883,  9862,   758,   759,  9932,  9933,  9934,  9728,
+   9732,  9729,  9954,   760,   761,   762,  9955,  9956,
+   9779,  9777,  9774,  9766,  9768,  9771,  9764,  9761,
+   9758,  9753,  9751,  9755,  9881,  9957,  9716,  9869,
+   9917,  9474,   763,  9879,  9702,  9617,  9907,  9621,
+   9959,  9972,  9974,  9976,  9978,  9980,  9982,  9966,
+   9968,  9970,  9960,  9962,  9964,  9791,  9650,   764,
+   9738,  9457,  9458,  9459,  9460,  9461,  9462,  9463,
+   9464,  9465,  9466,  9467,  9468,  9469,  9470,  9471,
+   9472,  9473,  9475,  9476,  9477,  9478,  9479,  9480,
+   9481,  9482,  9483,  9484,  9485,  9486,  9487,  9488,
+   9489,  9490,  9491,  9492,  9493,  9494,  9495,  9496,
+   9498,  9497,  9499,  9500,  9501,  9502,  9503,  9504,
+   9505,  9506,  9507,  9508,  9509,  9510,  9511,  9512,
+   9513,  9514,  9515,  9516,  9517,  9518,  9519,   765,
+    766,   767,   768,  9991,  9992,  9993,  9994,  9995,
+   9996,  9997,  9998,  9999, 10000,  9762, 10001, 10002,
+  10003, 10004, 10005, 10006, 10007,  9790, 10026, 10027,
+  10028, 10029, 10030, 10031, 10032, 10033, 10034, 10035,
+  10008, 10036,  9958, 10037, 10038, 10039,  8621,  8636,
+  10042, 10043, 10044, 10045, 10046, 10047, 10048, 10049,
+  10050, 10051, 10052, 10053, 10055, 10061, 10062, 10063,
+  10064, 10057, 10056, 10058, 10023, 10059, 10060, 10054,
+  10013, 10014, 10066, 10067, 10068, 10015, 10021, 10022,
+  10069, 10070, 10071, 10016, 10072, 10076, 10078, 10079,
+  10074,  9789, 10011, 10012, 10009, 10010,  9987,  9989,
+   9986,  9988,  9985, 10081, 10017, 10020,   769,   770,
+    771,   772, 10082, 10084, 10085, 10083, 10086, 10087,
+  10088, 10089, 10090, 10091,   773,   774,   775,   776,
+   9990, 10092,   777, 10093, 10094, 10095,   778, 10096,
+    779,   780,   781, 10097,   782, 10098,   783,   784,
+    785,   786,   787,   788,   789,   790,   791,   792,
+    793,   794,   795,   796,   797,   798,   799,   800,
+    801,   802,   803,   804,   805,   806,   807,   808,
+    809,   810,   811,   812,   813,   814,   815,   816,
+    817,   818,   819,   820,   821,   822,   823,   824,
+    825,   826,   827,   828,   829,   830,   831,   832,
+    833,   834,   835,   836,   837,   838,   839,   840,
+    841, 10101, 10102, 10103, 10105, 10107, 10108, 10109,
+  10110, 10111, 10112, 10040, 10104, 10106, 10113,  9710,
+  10065, 10114, 10115, 10041, 10116, 10018, 10019, 10099,
+  10100, 10117, 10118, 10119, 10120, 10121, 10122, 10123,
+  10124, 10125, 10126, 10127, 10128, 10129, 10024, 10025,
+  10130, 10131, 10132, 10073,   842,   843, 10133, 10134,
+  10135, 10080, 10136, 10075, 10137, 10077,  9984,  9979,
+   9981,  9983,  9977,  9975,  9973,  9965,  9963,  9961,
+   9971,  9969,  9967, 10151, 10153, 10155,   844,   845,
+  10156, 10157,   846,   847,   848,   849,  9938, 10145,
+  10174, 10175, 10176, 10177, 10178, 10179, 10180, 10181,
+  10182, 10183, 10184, 10185, 10186, 10187, 10188, 10189,
+  10190, 10191, 10192, 10193, 10194, 10195, 10196, 10197,
+  10198, 10199, 10143, 10144, 10200, 10202, 10203, 10204,
+  10201,   850,   851,   852,   853,   854,   855,   856,
     857,   858,   859,   860,   861,   862,   863,   864,
     865,   866,   867,   868,   869,   870,   871,   872,
     873,   874,   875,   876,   877,   878,   879,   880,
     881,   882,   883,   884,   885,   886,   887,   888,
     889,   890,   891,   892,   893,   894,   895,   896,
-    897,   898,   899,   900,   901,   902,   903, 10038,
-    904,   905,   906, 10042, 10049, 10048, 10054, 10053,
-  10055, 10046, 10047, 10043, 10044, 10052, 10051, 10050,
-  10045, 10057, 10056, 10037, 10030, 10031, 10032, 10033,
-  10063, 10064, 10065, 10066, 10067, 10068, 10069, 10070,
-  10071, 10072, 10075, 10077, 10076, 10085, 10087, 10088,
-  10078, 10080, 10081, 10101, 10102, 10079, 10041, 10039,
-  10040, 10073, 10086, 10084, 10082, 10083, 10074, 10091,
-  10103, 10089, 10090, 10097, 10098, 10099, 10100, 10092,
-  10104, 10105, 10106, 10107, 10108, 10109, 10110, 10111,
-  10112, 10113, 10114, 10115, 10116, 10117, 10118, 10119,
-  10120, 10121, 10095, 10093, 10122, 10123, 10124, 10125,
-  10126, 10127, 10128, 10129, 10130, 10131, 10132, 10133,
-  10096, 10134, 10136, 10094, 10138, 10139, 10140, 10141,
-  10143, 10145, 10142, 10137, 10135, 10144,   907,   908,
-    909,   910,
+    897,   898,   899,   900,   901,   902,   903,   904,
+    905, 10147,   906,   907,   908, 10158, 10165, 10164,
+  10170, 10169, 10171, 10162, 10163, 10159, 10160, 10168,
+  10167, 10166, 10161, 10173, 10172, 10146, 10139, 10140,
+  10141, 10142, 10205,   909,   910, 10240, 10241, 10232,
+  10233, 10234, 10235, 10236, 10237, 10238, 10257, 10258,
+  10239, 10259, 10260, 10297, 10296, 10295, 10294, 10293,
+  10292, 10291, 10290, 10300, 10302, 10322, 10323, 10324,
+  10278, 10277, 10279, 10280, 10301, 10310, 10312, 10313,
+  10138, 10325, 10326, 10330, 10332, 10334, 10336, 10338,
+  10340, 10342, 10343, 10345, 10347, 10349, 10351, 10353,
+  10355, 10357, 10358, 10360, 10362, 10364, 10366, 10368,
+  10370, 10372, 10373, 10375, 10377, 10380, 10381, 10383,
+  10385, 10387, 10389, 10391, 10393, 10394, 10396, 10388,
+  10352, 10371, 10327, 10374, 10354, 10359, 10376, 10378,
+  10341, 10382, 10346, 10379, 10392, 10395, 10390, 10386,
+  10384, 10367, 10356, 10344, 10331, 10348, 10369, 10285,
+  10284, 10282, 10281, 10283, 10276, 10275, 10274, 10273,
+  10272, 10271, 10270, 10269, 10268, 10267, 10266, 10265,
+  10264, 10263, 10289, 10287, 10288, 10286, 10303, 10305,
+  10306, 10401, 10402, 10403, 10404, 10405, 10406, 10407,
+  10408, 10409, 10410, 10411, 10412, 10413, 10414, 10415,
+  10416, 10417, 10418, 10419, 10420, 10421, 10422, 10423,
+  10424, 10425, 10426, 10427, 10428, 10429, 10430, 10431,
+  10337, 10333, 10339, 10335, 10350, 10365, 10363, 10361,
+  10328, 10329, 10154, 10152, 10432, 10228, 10229, 10226,
+  10227, 10224, 10225, 10222, 10223, 10220, 10221, 10218,
+  10219, 10216, 10217, 10214, 10215, 10212, 10213, 10210,
+  10211, 10208, 10209, 10206, 10207, 10447, 10304, 10250,
+  10249, 10251, 10252, 10256, 10255, 10253, 10254, 10150,
+  10148, 10149, 10298, 10311, 10309, 10307, 10308, 10299,
+  10316, 10448, 10314, 10315, 10397, 10398, 10399, 10400,
+  10449, 10450, 10451, 10452, 10453, 10454, 10455, 10456,
+  10248, 10247, 10243, 10262, 10261, 10242, 10457, 10458,
+  10460, 10461, 10462, 10463, 10467, 10468, 10469, 10470,
+  10471, 10472, 10473, 10474, 10475, 10476, 10477, 10478,
+  10479, 10480, 10481, 10482, 10483, 10484, 10485, 10486,
+  10487, 10488, 10489, 10490, 10491, 10492, 10493, 10494,
+  10495, 10496, 10497, 10498, 10317, 10244, 10500, 10501,
+  10502, 10503, 10504, 10505, 10506, 10507, 10508, 10509,
+  10510, 10511, 10512, 10513, 10514, 10515, 10516, 10517,
+  10518, 10519, 10520, 10521, 10522, 10523, 10524, 10525,
+  10526, 10527, 10528, 10529, 10530, 10531, 10532, 10533,
+  10534, 10535, 10536, 10537, 10538, 10539, 10540, 10541,
+  10542, 10543, 10544, 10545, 10546, 10547, 10548, 10549,
+  10550, 10246, 10245, 10459, 10551, 10552, 10553, 10554,
+  10555, 10556, 10557, 10558, 10559, 10560, 10561, 10562,
+  10563, 10564, 10565, 10566, 10567, 10568, 10569, 10570,
+  10571, 10572, 10573, 10574, 10575, 10576, 10577, 10578,
+  10579, 10580, 10581, 10582, 10583, 10584, 10585, 10586,
+  10587, 10588, 10589, 10590, 10591, 10592, 10593, 10446,
+  10445, 10444, 10443, 10442, 10441,   911, 10594, 10595,
+  10596, 10610, 10611,   912, 10604, 10605, 10606, 10607,
+  10608, 10609, 10597, 10598, 10599, 10600, 10601, 10602,
+  10603,   913,   914,   915,   916,   917,   918,   919,
+  10613, 10615, 10230, 10231, 10616, 10617, 10618, 10619,
+  10620, 10621, 10622, 10623, 10624, 10625, 10626, 10627,
+  10628, 10629, 10630, 10631, 10632, 10633, 10634, 10635,
+  10636, 10637, 10433, 10434, 10435, 10436, 10437, 10438,
+  10439, 10440, 10320, 10318, 10638, 10639, 10640, 10641,
+  10642, 10643, 10644, 10645, 10646, 10647, 10648, 10649,
+  10321, 10650, 10652, 10319,   920,   921,   922, 10614,
+  10654, 10655, 10656, 10657, 10659, 10661, 10612,   923,
+    924,  9788,   925,   926,   927,   928,   929, 10658,
+  10653, 10651, 10660,   930,   931, 10662,  1082,  1083,
+   1084,  1085,   932,   933,   934,   935,   936,   937,
+    938,   939,   940,   941,   942,   943,   944,   945,
+    946,   947,   948,   949,   950,   951,   952,   953,
+    954,   955,   956,   957,   958,   959,   960,   961,
+    962,   963,   964,   965,   966,   967,   968,   969,
+    970,   971, 10668, 10676, 10680, 10686, 10687, 10688,
+  10689, 10690,   972, 10691, 10499, 10692, 10693, 10694,
+  10696, 10697, 10698, 10699, 10700, 10701, 10702, 10703,
+  10704, 10705, 10706, 10707, 10708, 10709,   973,   974,
+    975,   976,   977,   978, 10670, 10710,   979,   980,
+  10711, 10712, 10713, 10714, 10715, 10716, 10717, 10718,
+  10719, 10720, 10721, 10723, 10724, 10725, 10726, 10727,
+  10728, 10729, 10730, 10731, 10732, 10733, 10734, 10735,
+    981, 10736, 10737, 10738, 10741, 10740, 10739,   982,
+  10743, 10744, 10746, 10747,   983,   984,   985,   986,
+  10750, 10749, 10742,  3185, 10677, 10669, 10748, 10745,
+  10681, 10682, 10667, 10685,   987,   988,   989,   990,
+  10751, 10752, 10753, 10754, 10755, 10756, 10757, 10758,
+  10759, 10760, 10665, 10666, 10674, 10683, 10695, 10684,
+    991, 10761, 10762, 10763, 10764, 10465, 10466, 10464,
+  10671, 10722, 10765,   992, 10672, 10673, 10675, 10678,
+  10663, 10664, 10766,   993,   994,   995,   996,   997,
+    998,   999,  1000,  1001,  1002,  1003,  1004,  1005,
+   1006,  1007,  1008,  1009,  1010, 10767, 10768, 10769,
+  10770, 10771, 10772, 10773, 10774, 10775, 10776, 10777,
+  10778, 10779, 10780, 10781, 10782, 10783, 10784, 10785,
+  10786, 10787, 10788, 10789, 10790, 10791, 10792, 10793,
+  10679, 10794,  7403,
 } };
 
