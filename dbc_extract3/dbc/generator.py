@@ -2655,7 +2655,7 @@ class SpellDataGenerator(DataGenerator):
         (  265,  266,  267,   0 ), # Warlock
         (  268,  270,  269,   0 ), # Monk
         (  102,  103,  104, 105 ), # Druid
-        (  577,  581,    0,   0 ), # Demon Hunter
+        (  577,  581, 1480,   0 ), # Demon Hunter
         ( 1467, 1468, 1473,   0 ), # Evoker
     ]
 
@@ -3521,7 +3521,7 @@ class SpellDataGenerator(DataGenerator):
         for id in id_keys:
             spell = self.db('SpellName')[id]
 
-            # Unused hotfix IDs: 1, 2, 5, 6, 7
+            # Unused hotfix IDs: 1, 2, 5, 6, 7, 54
             # MAX hotfix id: 58
             hotfix = HotfixDataRecord()
             power_count = 0
@@ -3552,8 +3552,9 @@ class SpellDataGenerator(DataGenerator):
             fields += [ u'%#.8x' % ids.get(id, { 'mask_class' : 0, 'mask_race': 0 })['mask_class'] ]
 
             scaling_entry = spell.get_link('scaling')
-            fields += scaling_entry.field('max_scaling_level', 'min_scaling_level', 'scale_from_ilevel')
-            hotfix.add(scaling_entry, ('max_scaling_level', 8), ('min_scaling_level', 53), ('scale_from_ilevel', 54))
+            fields += scaling_entry.field('max_scaling_level', 'min_scaling_level')
+            fields += [ u'0' ] # TODO: placeholder for spell_data_t::_scale_from_ilevel, remove later
+            hotfix.add(scaling_entry, ('max_scaling_level', 8), ('min_scaling_level', 53))
 
             level_entry = spell.get_link('level')
 

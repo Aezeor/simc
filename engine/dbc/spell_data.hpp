@@ -425,7 +425,7 @@ struct spell_data_t
   unsigned    _class_mask;         // Class mask for spell
   int         _max_scaling_level;  // Max scaling level(?), 0 == no restrictions, otherwise min( player_level, max_scaling_level )
   int         _min_scaling_level;
-  int         _scale_from_ilevel;  // Forces ilevel scaling at this ilevel, overrides any spell attributes
+  int         _scale_from_ilevel;  // TODO: placeholder, remove later
   // SpellLevels.dbc
   unsigned    _spell_level;        // Spell learned on level. NOTE: Only accurate for "class abilities"
   unsigned    _max_level;          // Maximum level for scaling
