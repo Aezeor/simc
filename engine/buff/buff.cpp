@@ -705,7 +705,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
   constant = ( constant_behavior == buff_constant_behavior::ALWAYS_CONSTANT );
 
   // Set Buff duration
-  set_duration( base_buff_duration );
+  set_duration( timespan_t::min() );
 
   // Set Buff Cooldown
   set_cooldown( timespan_t::min() );
@@ -820,7 +820,10 @@ buff_t* buff_t::set_duration( timespan_t duration )
   {
     if ( data().ok() )
     {
-      base_buff_duration = data().duration();
+      if ( source )
+        base_buff_duration = source->get_passive_value( data(), "duration" );
+      else
+        base_buff_duration = data().duration();
     }
     else
     {
@@ -1118,8 +1121,9 @@ buff_t* buff_t::modify_cooldown( timespan_t duration )
 buff_t* buff_t::set_period( timespan_t period )
 {
   if ( period > timespan_t::zero() )
+  {
     buff_period = period;
-
+  }
   else
   {
     for ( size_t i = 1; i <= s_data->effect_count(); i++ )
@@ -1138,7 +1142,10 @@ buff_t* buff_t::set_period( timespan_t period )
         case A_PERIODIC_DUMMY:
         case A_PERIODIC_TRIGGER_SPELL:
         {
-          buff_period = e.period();
+          if ( source )
+            buff_period = source->get_passive_value( e, "period" );
+          else
+            buff_period = e.period();
           if ( !refresh_behavior_overridden && buff_duration() > timespan_t::zero() )
           {
             if ( data().flags( spell_attribute::SX_REFRESH_EXTENDS_DURATION ) )
@@ -1500,7 +1507,17 @@ buff_t* buff_t::set_name_reporting( std::string_view n )
   return this;
 }
 
-buff_t* buff_t::apply_affecting_aura( const spell_data_t* spell )
+// Applies a modifier from -99 to infinity that controls how fast the buff functions.
+// Values less than -99 will be rounded to -99, which seems to match in-game behavior where
+// auras with a time modifier effect of -100 actually only apply a 100x slowdown, and not a total pause.
+// It's intended to modify real time duration and tickrate, without affecting the apparent duration
+// as used for things like pandemic refresh behavior.
+// Currently, this only modifies the duration of the buff, moving its expiration closer or
+// further out. The "apparent" duration is lost (but recoverable), since remains() returns the
+// real-time duration. The tickrate is un-adjusted, since it is currently based on the real-time duration.
+// None of these limitations particularly matter for current usecases, but if you're looking at using this, be
+// aware there may be more work required to support your usecase.
+buff_t* buff_t::apply_time_rate_modifier( const spell_data_t* spell )
 {
   if ( !spell->ok() || !s_data->ok() )
     return this;
@@ -1509,303 +1526,34 @@ buff_t* buff_t::apply_affecting_aura( const spell_data_t* spell )
 
   for ( const spelleffect_data_t& effect : spell->effects() )
   {
-    apply_affecting_effect( effect );
-  }
+    if ( !effect.ok() || effect.type() != E_APPLY_AURA || ignore_time_modifier )
+      continue;
 
-  return this;
-}
-
-buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
-{
-  if ( !effect.ok() || effect.type() != E_APPLY_AURA )
-    return this;
-
-  if ( !data().affected_by_all( effect ) )
-    return this;
-
-  if ( sim->debug )
-  {
-    const spell_data_t& spell = *effect.spell();
-    std::string desc_str;
-    const auto& spell_text = player->dbc->spell_text( spell.id() );
-    if ( spell_text.rank() )
-      desc_str = fmt::format( " (desc={})", spell_text.rank() );
-    if ( sim->debug )
+    if ( effect.subtype() == A_MOD_TIME_RATE )
     {
-      sim->print_debug( "{} {} is affected by effect {} ({}{} (id={}) - effect #{})", *player, *this, effect.id(),
-                        spell.name_cstr(), desc_str, spell.id(), effect.spell_effect_num() + 1 );
+      if ( !data().affected_by( effect ) )
+        continue;
     }
-  }
-
-  auto apply_flat_effect_modifier = [ this ]( const spelleffect_data_t& effect ) {
-    assert( default_value_effect_idx > 0 && default_value_effect_idx <= s_data->effect_count() );
-    // Fetch the default multiplier from the current effect to multiply the flat value before applying
-    // Ensures the flat modifier is 'calibrated' to the multiplier used in the default value correctly
-    auto prev = default_value;
-    modify_default_value( effect.base_value() * default_value_effect_multiplier );
-    sim->print_debug( "{} default effect modified by {} to {} (was {})",
-                      *this, effect.base_value() * default_value_effect_multiplier, default_value, prev );
-  };
-
-  auto apply_flat_modifier = [ this, apply_flat_effect_modifier ]( const spelleffect_data_t& effect ) {
-    switch ( effect.misc_value1() )
+    else if ( effect.subtype() == A_MOD_TIME_RATE_BY_SPELL_LABEL )
     {
-      case P_DURATION:
-        modify_duration( effect.time_value() );
-        sim->print_debug( "{} duration modified by {}", *this, effect.time_value() );
-        break;
-
-      case P_COOLDOWN:
-        if ( cooldown->duration > timespan_t::zero() ) // Don't modify if cooldown is disabled
-        {
-          modify_cooldown( effect.time_value() );
-          sim->print_debug( "{} cooldown duration modified by {} to {}", *this, effect.time_value(), cooldown->duration );
-        }
-        break;
-
-      case P_PROC_COOLDOWN:
-        if ( internal_cooldown && internal_cooldown->duration > 0_ms )
-        {
-          set_internal_cooldown( internal_cooldown->duration + effect.time_value() );
-          sim->print_debug( "{} internal cooldown duration modified by {} to {}", *this, effect.time_value(),
-                            internal_cooldown->duration );
-        }
-        break;
-
-      case P_STACK:
-        modify_initial_stack( as<int>( effect.base_value() ) );
-        sim->print_debug( "{} initial stacks modified by {} to {}", *this, effect.base_value(), initial_stack() );
-        break;
-
-      case P_MAX_STACKS:
-        modify_max_stack( as<int>( effect.base_value() ) );
-        sim->print_debug( "{} maximum stacks modified by {} to {}", *this, effect.base_value(), max_stack() );
-        break;
-
-      case P_TICK_TIME:
-        modify_period( effect.time_value() );
-        sim->print_debug( "{} tick period modified by {} to {}", *this, effect.time_value(), buff_period );
-        break;
-
-      case P_EFFECT_1:
-        if ( default_value_effect_idx == 1 )
-          apply_flat_effect_modifier( effect );
-        break;
-
-      case P_EFFECT_2:
-        if ( default_value_effect_idx == 2 )
-          apply_flat_effect_modifier( effect );
-        break;
-
-      case P_EFFECT_3:
-        if ( default_value_effect_idx == 3 )
-          apply_flat_effect_modifier( effect );
-        break;
-
-      case P_EFFECT_4:
-        if ( default_value_effect_idx == 4 )
-          apply_flat_effect_modifier( effect );
-        break;
-
-      case P_EFFECT_5:
-        if ( default_value_effect_idx == 5 )
-          apply_flat_effect_modifier( effect );
-        break;
-
-      default:
-        break;
+      if ( !data().affected_by_label( effect ) )
+        continue;
     }
-  };
-
-  auto apply_percent_effect_modifier = [ this ]( const spelleffect_data_t& effect ) {
-    assert( default_value_effect_idx > 0 && default_value_effect_idx <= s_data->effect_count() );
-    auto prev = default_value;
-    set_default_value( default_value * ( 1.0 + effect.percent() ), default_value_effect_idx );
-    sim->print_debug( "{} default effect modified by {}% to {} (was {})",
-                      *this, effect.percent(), default_value, prev );
-  };
-
-  // Applies a modifier from -99 to infinity that controls how fast the buff functions.
-  // Values less than -99 will be rounded to -99, which seems to match in-game behavior where
-  // auras with a time modifier effect of -100 actually only apply a 100x slowdown, and not a total pause.
-  // It's intended to modify real time duration and tickrate, without affecting the apparent duration
-  // as used for things like pandemic refresh behavior.
-  // Currently, this only modifies the duration of the buff, moving its expiration closer or
-  // further out. The "apparent" duration is lost (but recoverable), since remains() returns the
-  // real-time duration. The tickrate is un-adjusted, since it is currently based on the real-time duration.
-  // None of these limitations particularly matter for current usecases, but if you're looking at using this, be
-  // aware there may be more work required to support your usecase.
-  auto apply_time_modifier_duration = [ this ]( const spelleffect_data_t& effect )
-  {
-    if ( ignore_time_modifier )
-      return this;
+    else
+    {
+      continue;
+    }
 
     auto mul = 1.0 / ( 1.0 + std::max( effect.percent(), -0.99 ) ); // Limit slow down to 100x slower
 
     base_time_duration_multiplier = base_time_duration_multiplier * mul;
 
-    return this;
-  };
-
-  auto apply_percent_modifier = [ this, apply_percent_effect_modifier ]( const spelleffect_data_t& effect ) {
-    switch ( effect.misc_value1() )
+    if ( sim->debug )
     {
-      case P_DURATION:
-        set_duration_multiplier( buff_duration_multiplier *= 1.0 + effect.percent() );
-        sim->print_debug( "{} duration modified by {}%", *this, effect.base_value() );
-        break;
-
-      case P_COOLDOWN:
-        // TODO: Should buffs support a base_recharge_multiplier?
-        // base_recharge_multiplier *= 1 + effect.percent();
-        //if ( base_recharge_multiplier <= 0 )
-        //  set_cooldown( timespan_t::zero() );
-        //sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
-        break;
-
-      case P_TICK_TIME:
-        set_period( buff_period * ( 1.0 + effect.percent() ) );
-        sim->print_debug ( "{} tick time modified by {}%", *this, effect.base_value() );
-        break;
-
-      case P_EFFECT_1:
-        if ( default_value_effect_idx == 1 )
-          apply_percent_effect_modifier( effect );
-        break;
-
-      case P_EFFECT_2:
-        if ( default_value_effect_idx == 2 )
-          apply_percent_effect_modifier( effect );
-        break;
-
-      case P_EFFECT_3:
-        if ( default_value_effect_idx == 3 )
-          apply_percent_effect_modifier( effect );
-        break;
-
-      case P_EFFECT_4:
-        if ( default_value_effect_idx == 4 )
-          apply_percent_effect_modifier( effect );
-        break;
-
-      case P_EFFECT_5:
-        if ( default_value_effect_idx == 5 )
-          apply_percent_effect_modifier( effect );
-        break;
-
-      default:
-        break;
-    }
-  };
-
-  if ( data().affected_by( effect ) )
-  {
-    switch ( effect.subtype() )
-    {
-      case A_ADD_FLAT_MODIFIER:
-        apply_flat_modifier( effect );
-        break;
-
-      case A_ADD_PCT_MODIFIER:
-        apply_percent_modifier( effect );
-        break;
-
-      default:
-        break;
+      sim->print_debug( "{} {} time rate modified by {} to {} from {} ({}) eff#{}", *source, *this, mul,
+                        base_time_duration_multiplier, spell->name_cstr(), spell->id(), effect.index() + 1 );
     }
   }
-  else if ( data().affected_by_label( effect ) )
-  {
-    switch ( effect.subtype() )
-    {
-      case A_ADD_FLAT_LABEL_MODIFIER:
-        apply_flat_modifier( effect );
-        break;
-
-      case A_ADD_PCT_LABEL_MODIFIER:
-        apply_percent_modifier( effect );
-        break;
-
-      case A_MOD_TIME_RATE_BY_SPELL_LABEL:
-        apply_time_modifier_duration( effect );
-        break;
-
-      default:
-        break;
-    }
-  }
-  else if ( data().affected_by_category( effect ) )
-  {
-    switch ( effect.subtype() )
-    {
-      case A_MODIFY_CATEGORY_COOLDOWN:
-        if ( cooldown->duration > timespan_t::zero() )
-        {
-          set_cooldown( cooldown->duration += effect.time_value() );
-          sim->print_debug( "{} cooldown duration modified by {}", *this, effect.time_value() );
-        }
-        break;
-
-      case A_MOD_MAX_CHARGES:
-        cooldown->charges += as<int>( effect.base_value() );
-        sim->print_debug( "{} cooldown charges modified by {}", *this, as<int>( effect.base_value() ) );
-        break;
-
-      case A_HASTED_CATEGORY:
-        cooldown->hasted = true;
-        sim->print_debug( "{} cooldown set to hasted", *this );
-        break;
-
-      case A_MOD_RECHARGE_TIME_CATEGORY:
-        if ( cooldown->duration > timespan_t::zero() )
-        {
-          set_cooldown( cooldown->duration += effect.time_value() );
-          sim->print_debug( "{} cooldown recharge time modified by {}", *this, effect.time_value() );
-        }
-        break;
-
-      case A_MOD_RECHARGE_TIME_PCT_CATEGORY:
-        // TODO: Should buffs support a base_recharge_multiplier?
-        //base_recharge_multiplier *= 1 + effect.percent();
-        //if ( base_recharge_multiplier <= 0 )
-        //  set_cooldown( timespan_t::zero() );
-        //sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  return this;
-}
-
-buff_t* buff_t::apply_affecting_conduit( const conduit_data_t& conduit, int effect_num )
-{
-  assert( effect_num == -1 || effect_num > 0 );
-
-  if ( !conduit.ok() )
-    return this;
-
-  for ( size_t i = 1; i <= conduit->effect_count(); i++ )
-  {
-    if ( effect_num == -1 || as<size_t>( effect_num ) == i )
-      apply_affecting_conduit_effect( conduit, i );
-    else
-      apply_affecting_effect( conduit->effectN( i ) );
-  }
-
-  return this;
-}
-
-buff_t* buff_t::apply_affecting_conduit_effect( const conduit_data_t& conduit, size_t effect_num )
-{
-  if ( !conduit.ok() )
-    return this;
-
-  spelleffect_data_t effect = conduit->effectN( effect_num );
-  effect._base_value = conduit.value();
-  apply_affecting_effect( effect );
 
   return this;
 }
@@ -2532,12 +2280,14 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
     {
       if ( !player->is_sleeping() )
       {
-        sim->print_log( "{} refreshes {} (value={}, duration={}, time_duration_multiplier={})", *player, buff_display_name, current_value, d, get_time_duration_multiplier() );
+        sim->print_log( "{} refreshes {} (value={:.7g}, duration={}, time_duration_multiplier={:.7g})", *player,
+                        buff_display_name, current_value, d, get_time_duration_multiplier() );
       }
     }
     else
     {
-      sim->print_log( "Raid refreshes {} (value={}, duration={}, time_duration_multiplier={})", buff_display_name, current_value, d, get_time_duration_multiplier() );
+      sim->print_log( "Raid refreshes {} (value={:.7g}, duration={}, time_duration_multiplier={:.7g})",
+                      buff_display_name, current_value, d, get_time_duration_multiplier() );
     }
   }
 }
@@ -2912,12 +2662,14 @@ void buff_t::aura_gain()
     {
       if ( !player->is_sleeping() )
       {
-        sim->print_log( "{} gains {} (value={}, time_duration_multiplier={})", *player, buff_display_name, current_value, get_time_duration_multiplier() );
+        sim->print_log( "{} gains {} (value={:.7g}, time_duration_multiplier={:.7g})", *player, buff_display_name,
+                        current_value, get_time_duration_multiplier() );
       }
     }
     else
     {
-      sim->print_log( "Raid gains {} (value={}, time_duration_multiplier={})", buff_display_name, current_value, get_time_duration_multiplier() );
+      sim->print_log( "Raid gains {} (value={:.7g}, time_duration_multiplier={:.7g})", buff_display_name, current_value,
+                      get_time_duration_multiplier() );
     }
   }
 }
@@ -3725,7 +3477,7 @@ double absorb_buff_t::consume( double amount, action_state_t* state )
 
   current_value -= amount;
 
-  sim->print_debug( "{} {} absorbs {} (remaining: {})", *player, *this, amount, current_value );
+  sim->print_debug( "{} {} absorbs {:.6f} (remaining: {:.7g})", *player, *this, amount, current_value );
 
   absorb_used( amount, state ? state->action->player : nullptr );
 
@@ -4066,19 +3818,6 @@ damage_buff_t* damage_buff_t::apply_mod_affecting_effect( damage_buff_modifier_t
   // For now, just assume the side-by-side label modifiers are correct. May need to split out in the future
 
   return this;
-}
-
-buff_t* damage_buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
-{
-  if ( !effect.ok() || effect.type() != E_APPLY_AURA )
-    return this;
-
-  apply_mod_affecting_effect( direct_mod, effect );
-  apply_mod_affecting_effect( periodic_mod, effect );
-  apply_mod_affecting_effect( auto_attack_mod, effect );
-  apply_mod_affecting_effect( crit_chance_mod, effect );
-
-  return buff_t::apply_affecting_effect( effect );
 }
 
 damage_buff_t* damage_buff_t::set_buff_mod( damage_buff_modifier_t& mod, double multiplier )

@@ -22,6 +22,7 @@
 #include "player/player_event.hpp"
 #include "player/stats.hpp"
 #include "sim/cooldown.hpp"
+#include "sim/cooldown_waste_data.hpp"
 #include "sim/event.hpp"
 #include "sim/expressions.hpp"
 #include "sim/proc.hpp"
@@ -433,10 +434,10 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     base_hit(),
     base_crit(),
     crit_chance_multiplier( 1.0 ),
+    base_crit_bonus(),
     crit_bonus_multiplier( 1.0 ),
-    crit_bonus(),
     base_dd_adder(),
-    base_ta_adder(),
+    base_td_adder(),
     weapon_multiplier( 0.0 ),
     chain_multiplier( 1.0 ),
     chain_bonus_damage(),
@@ -524,7 +525,6 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
   if ( data().ok() )
   {
     parse_spell_data( data() );
-    player->apply_affecting_auras(*this);
   }
 
   if ( s_data == spell_data_t::not_found() )
@@ -634,7 +634,9 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   school            = spell_data.get_school_type();
 
   // non-abilities have hasted gcd by default
-  if ( !spell_data.flags( spell_attribute::SX_ABILITY ) && !spell_data.flags( spell_attribute::SX_RANGED_ABILITY ) )
+  if ( ( !spell_data.flags( spell_attribute::SX_ABILITY ) &&
+         !spell_data.flags( spell_attribute::SX_RANGED_ABILITY ) ) ||
+       player->get_passive_value( spell_data, "hasted_gcd" )[ 1 ] )
   {
     // use actor's primary stat to determine attack or spell haste
     if ( player->convert_hybrid_stat( STAT_STR_AGI_INT ) == STAT_INTELLECT )
@@ -698,34 +700,42 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   {
     cooldown->duration = spell_data.charge_cooldown();
     cooldown->charges  = spell_data.charges();
+
     if ( spell_data.internal_cooldown() > timespan_t::zero() )
-    {
       internal_cooldown->duration = spell_data.internal_cooldown();
-    } else if ( spell_data.cooldown() > timespan_t::zero() )
-    {
+    else if ( spell_data.cooldown() > timespan_t::zero() )
       internal_cooldown->duration = spell_data.cooldown();
-    }
   }
   else if ( spell_data.cooldown() > timespan_t::zero() )
   {
     cooldown->duration = spell_data.cooldown();
   }
 
+  if ( cooldown->duration != 0_ms && player->get_passive_value( spell_data, "hasted_cooldown" )[ 1 ] )
+    cooldown->hasted = true;
+
   // -1 is uncapped, <-1 is "unknown", 1 is 'limit 1'
   if ( spell_data.max_targets() == -1 || spell_data.max_targets() > 1 )
     aoe = spell_data.max_targets();
 
   const auto spell_powers = spell_data.powers();
+  unsigned primary;
   bool require_spec_aura = false;
 
   if ( spell_powers.size() == 1 && spell_powers.front().aura_id() == 0 )
   {
     resource_current = spell_powers.front().resource();
+    primary = spell_powers.front().id();
   }
   // Find the first power entry without a aura id
   else if ( auto it = range::find( spell_powers, 0U, &spellpower_data_t::aura_id ); it != spell_powers.end() )
   {
     resource_current = it->resource();
+    primary = it->id();
+
+    // check if any remaining entries have an aura
+    if ( range::contains( spell_powers, player->spec_spell->id(), &spellpower_data_t::aura_id ) )
+      require_spec_aura = true;
   }
   // If all entries have an aura, find the one matching the spec aura
   else if ( auto it = range::find( spell_powers, player->spec_spell->id(), &spellpower_data_t::aura_id );
@@ -741,21 +751,54 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
 
   for ( const spellpower_data_t& pd : spell_powers )
   {
-    if ( require_spec_aura && pd.aura_id() != player->spec_spell->id() )
+    if ( pd.id() != primary && require_spec_aura && pd.aura_id() != player->spec_spell->id() )
       continue;
 
-    if ( pd._cost != 0 )
-      base_costs[ pd.resource() ] = pd.cost();
-    else
-      base_costs[ pd.resource() ] = floor( pd.cost() * player->resources.base[ pd.resource() ] );
+    auto cost_array = player->get_passive_value( pd, "cost" );
+
+    if ( pd._cost != 0 || pd._pct_cost == 0 )
+    {
+      base_costs[ pd.resource() ] = cost_array;
+    }
+    else  // use _pct_cost
+    {
+      base_costs[ pd.resource() ] = floor( pd.cost() * player->resources.base[ pd.resource() ] * cost_array[ 2 ] );
+    }
 
     secondary_costs[ pd.resource() ] = pd.max_cost();
 
     if ( pd._cost_per_tick != 0 )
-      base_costs_per_tick[ pd.resource() ] = pd.cost_per_tick();
+    {
+      base_costs_per_tick[ pd.resource() ] = ( pd.cost_per_tick() + cost_array[ 1 ] ) * cost_array[ 2 ];
+    }
+    else if ( pd._pct_cost_per_tick != 0 )
+    {
+      base_costs_per_tick[ pd.resource() ] =
+        floor( pd.cost_per_tick() * player->resources.base[ pd.resource() ] * cost_array[ 2 ] );
+    }
     else
-      base_costs_per_tick[ pd.resource() ] = floor( pd.cost_per_tick() * player->resources.base[ pd.resource() ] );
+    {
+      base_costs_per_tick[ pd.resource() ] = 0.0;
+    }
   }
+
+  // handle parsed base damage modifiers
+  auto base_dd_mod = player->get_passive_value( spell_data, "base_dd" );
+  base_dd_adder += base_dd_mod[ 1 ];
+  base_dd_multiplier *= base_dd_mod[ 2 ];
+
+  auto base_td_mod = player->get_passive_value( spell_data, "base_td" );
+  base_td_adder += base_td_mod[ 1 ];
+  base_td_multiplier *= base_td_mod[ 2 ];
+
+  // handle parsed crit modifiers
+  auto crit_mod = player->get_passive_value( spell_data, "crit" );
+  base_crit += crit_mod[ 1 ];
+  crit_chance_multiplier *= crit_mod[ 2 ];
+
+  auto crit_bonus_mod = player->get_passive_value( spell_data, "crit_bonus" );
+  base_crit_bonus += crit_bonus_mod[ 1 ];
+  crit_bonus_multiplier *= crit_bonus_mod[ 2 ];
 
   for ( const spelleffect_data_t& ed : spell_data.effects() )
   {
@@ -812,8 +855,8 @@ void action_t::parse_effect_period( const spelleffect_data_t& spelleffect_data )
 {
   if ( spelleffect_data.period() > timespan_t::zero() )
   {
-    base_tick_time = spelleffect_data.period();
-    dot_duration   = spelleffect_data.spell()->duration();
+    base_tick_time = player->get_passive_value( spelleffect_data, "period" );
+    dot_duration   = player->get_passive_value( *spelleffect_data.spell(), "duration" );
   }
 }
 
@@ -833,6 +876,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
   if ( spelleffect_data.chain_target() > 1 )
   {
     aoe = spelleffect_data.chain_target();
+    chain_multiplier = spelleffect_data.chain_multiplier();
   }
 
   switch ( spelleffect_data.type() )
@@ -1117,7 +1161,7 @@ bool action_t::verify_actor_weapon() const
 double action_t::base_cost() const
 {
   resource_e cr = current_resource();
-  double c = base_costs[ cr ].base;
+  double c = base_costs[ cr ].value();
 
   if ( secondary_costs[ cr ] != 0 )
   {
@@ -1136,16 +1180,14 @@ double action_t::cost() const
     return 0;
 
   auto cr = current_resource();
+  if ( cr == resource_e::RESOURCE_NONE )
+    return 0;
+
   const auto& bc = base_costs[ cr ];
   auto mul = bc.pct_mul * cost_pct_multiplier();
 
   if ( mul <= 0 )
-  {
-    if ( sim->debug )
-      sim->out_debug.print( "{} action_t::cost: cost=FREE resource={}", *this, cr );
-
     return 0;
-  }
 
   auto base = bc.base;
   auto add = bc.flat_add + cost_flat_modifier();
@@ -1354,20 +1396,22 @@ timespan_t action_t::travel_time() const
 
 double action_t::total_crit_bonus( const action_state_t* state ) const
 {
-  double crit_multiplier_buffed = composite_player_critical_multiplier( state );
+  double damage_from_crit_multiplier = composite_player_critical_multiplier( state );
 
-  double base_crit_bonus = crit_bonus;
+  double base_bonus = base_crit_bonus;
   if ( sim->pvp_mode )
-    base_crit_bonus += sim->pvp_rules->effectN( 3 ).percent();
+    base_bonus += sim->pvp_rules->effectN( 3 ).percent();
 
-  double damage_bonus = composite_crit_damage_bonus_multiplier() * composite_target_crit_damage_bonus_multiplier( state->target );
+  // applies only to bonus from crit
+  double bonus_mult =
+    composite_crit_damage_bonus_multiplier() * composite_target_crit_damage_bonus_multiplier( state->target );
 
-  double bonus = ( ( 1.0 + base_crit_bonus ) * crit_multiplier_buffed - 1.0 ) * damage_bonus;
+  double bonus = ( ( 1.0 + base_bonus ) * damage_from_crit_multiplier - 1.0 ) * bonus_mult;
 
   if ( sim->debug )
   {
-    sim->print_debug( "{} crit_bonus for {}: total={} base={} mult_buffed={} damage_bonus_mult={}", *player, *this,
-                      bonus, crit_bonus, crit_multiplier_buffed, damage_bonus );
+    sim->print_debug( "{} crit_bonus for {}: total={:.7g} base={:.7g} bonus_mult={:.7g} total_damage_mult={:.7g}",
+                      *player, *this, bonus, base_bonus, bonus_mult, damage_from_crit_multiplier );
   }
 
   return bonus;
@@ -1385,10 +1429,11 @@ double action_t::calculate_weapon_damage( double attack_power ) const
   double power_damage     = weapon_speed.total_seconds() * weapon_power_mod * attack_power;
   double total_dmg        = dmg + power_damage;
 
-  sim->print_debug("{} weapon damage for {}: base=({} to {}) total={} weapon_damage={} bonus_damage={} multiplier={} "
-      "speed={} power_damage={} ap={}",
-      *player, *this, weapon->min_dmg, weapon->max_dmg, total_dmg, dmg, weapon->bonus_dmg, capm,
-      weapon_speed, power_damage, attack_power );
+  sim->print_debug(
+    "{} weapon damage for {}: base=({:.7g} to {:.7g}) total={:.6f} weapon_damage={:.7g} bonus_damage={:.7g} "
+    "multiplier={:.7g} speed={} power_damage={:.7g} ap={:.7g}",
+    *player, *this, weapon->min_dmg, weapon->max_dmg, total_dmg, dmg, weapon->bonus_dmg, capm, weapon_speed,
+    power_damage, attack_power );
 
   return total_dmg;
 }
@@ -1430,11 +1475,11 @@ double action_t::calculate_tick_amount( action_state_t* state, double dot_multip
   if ( sim->debug )
   {
     sim->print_debug(
-        "{} tick amount for {} on {}: amount={} initial_amount={} base={} bonus={} s_mod={} s_power={} a_mod={} "
-        "a_power={} mult={}, tick_mult={}",
-        *player, *this, *state->target, amount, init_tick_amount, base_ta( state ), bonus_ta( state ),
-        spell_tick_power_coefficient( state ), state->composite_spell_power(), attack_tick_power_coefficient( state ),
-        state->composite_attack_power(), state->composite_ta_multiplier(), dot_multiplier );
+      "{} tick amount for {} on {}: amount={:.6f} initial_amount={:.6f} base={:.7g} bonus={:.7g} s_mod={:.7g} "
+      "s_power={:.7g} a_mod={:.7g} a_power={:.7g} mult={:.7g}, tick_mult={:.7g}",
+      *player, *this, *state->target, amount, init_tick_amount, base_ta( state ), bonus_ta( state ),
+      spell_tick_power_coefficient( state ), state->composite_spell_power(), attack_tick_power_coefficient( state ),
+      state->composite_attack_power(), state->composite_ta_multiplier(), dot_multiplier );
   }
 
   return amount;
@@ -1569,12 +1614,12 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
   if ( sim->debug )
   {
     sim->print_debug(
-        "{} direct amount for {}: amount={} initial_amount={} weapon={} base={} s_mod={} s_power={} "
-        "a_mod={} a_power={} mult={} w_mult={} w_slot_mod={} bonus_da={}",
-        *player, *this, amount, state->result_raw, weapon_amount, base_direct_amount,
-        spell_direct_power_coefficient( state ), state->composite_spell_power(),
-        attack_direct_power_coefficient( state ), state->composite_attack_power(), state->composite_da_multiplier(),
-        weapon_multiplier, weapon_slot_modifier, bonus_da( state ) );
+      "{} direct amount for {}: amount={:.6f} initial_amount={:.6f} weapon={:.7g} base={:.7g} s_mod={:.7g} "
+      "s_power={:.7g} a_mod={:.7g} a_power={:.7g} mult={:.7g} w_mult={:.7g} w_slot_mod={:.7g} bonus_da={:.7g}",
+      *player, *this, amount, state->result_raw, weapon_amount, base_direct_amount,
+      spell_direct_power_coefficient( state ), state->composite_spell_power(), attack_direct_power_coefficient( state ),
+      state->composite_attack_power(), state->composite_da_multiplier(), weapon_multiplier, weapon_slot_modifier,
+      bonus_da( state ) );
   }
 
   // Record total amount to state
@@ -5424,11 +5469,6 @@ void action_t::html_customsection( report::sc_html_stream& os )
           type_str = spell_info::effect_property_str( eff );
           val_str = fmt::format( "{:.1f}%", val * 100 );
           break;
-        case A_MODIFY_SCHOOL:
-          op_str = "SET";
-          type_str = spell_info::effect_subtype_str( eff );
-          val_str = util::school_type_string( eff->school_type() );
-          break;
         default:
           op_str = "SET";
           type_str = spell_info::effect_subtype_str( eff );
@@ -5449,600 +5489,6 @@ void action_t::html_customsection( report::sc_html_stream& os )
     os << "</table>\n"
         << "</div>\n";
   }
-}
-
-void action_t::apply_affecting_aura( const spell_data_t* spell, const spell_data_t* modifier )
-{
-  if ( !spell->ok() )
-  {
-    return;
-  }
-
-  assert( ( spell->flags( SX_PASSIVE ) || spell->duration() < 0_ms ) && "only passive spells should be affecting actions." );
-
-  for ( const spelleffect_data_t& effect : spell->effects() )
-  {
-    const spelleffect_data_t* mod = nullptr;
-
-    if ( modifier && modifier->ok() )
-    {
-      for ( const auto& m_eff : modifier->effects() )
-      {
-        if ( m_eff.type() != E_APPLY_AURA )
-          continue;
-
-        switch ( m_eff.subtype() )
-        {
-          case A_ADD_FLAT_MODIFIER:
-          case A_ADD_PCT_MODIFIER:
-            if ( spell->affected_by( m_eff ) )
-              break;
-            else
-              continue;
-          case A_ADD_FLAT_LABEL_MODIFIER:
-          case A_ADD_PCT_LABEL_MODIFIER:
-            if ( spell->affected_by_label( m_eff ) )
-              break;
-            else
-              continue;
-          default:
-            continue;
-        }
-
-        switch ( m_eff.property_type() )
-        {
-          case P_EFFECT_1: if ( effect.index() == 0 ) break; else continue;
-          case P_EFFECT_2: if ( effect.index() == 1 ) break; else continue;
-          case P_EFFECT_3: if ( effect.index() == 2 ) break; else continue;
-          case P_EFFECT_4: if ( effect.index() == 3 ) break; else continue;
-          case P_EFFECT_5: if ( effect.index() == 4 ) break; else continue;
-          default:         continue;
-        }
-
-        mod = &m_eff;
-        break;
-      }
-    }
-
-    apply_affecting_effect( effect, mod );
-  }
-}
-
-void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const spelleffect_data_t* modifier )
-{
-  struct modified_effect_value_t
-  {
-    const spelleffect_data_t& effect;
-    double value;
-
-    modified_effect_value_t( const spelleffect_data_t& eff ) : effect( eff ), value( eff.base_value() ) {}
-
-    double base_value() const
-    { return value; }
-
-    double percent() const
-    { return value * ( 1 / 100.0 ); }
-
-    timespan_t time_value() const
-    { return timespan_t::from_millis( value ); }
-
-    double resource( resource_e type ) const
-    { return base_value() * effect.resource_multiplier( type ); }
-
-    property_type_t property_type() const
-    { return effect.property_type(); }
-  };
-
-  if ( !effect.ok() || effect.type() != E_APPLY_AURA )
-    return;
-
-  if ( !data().affected_by_all( effect ) )
-  {
-    return;
-  }
-
-  double value_ = 0;
-
-  if ( sim->debug )
-  {
-    const spell_data_t& spell = *effect.spell();
-    std::string desc_str;
-    const auto& spell_text = player->dbc->spell_text( spell.id() );
-    if ( spell_text.rank() )
-      desc_str = fmt::format( " (desc={})", spell_text.rank() );
-
-    sim->print_debug( "{} {} is affected by effect {} ({}{} (id={}) - effect #{})", *player, *this, effect.id(),
-                      spell.name_cstr(), desc_str, spell.id(), effect.spell_effect_num() + 1 );
-  }
-
-  // Applies "Spell Effect N" auras if they directly affect damage auras
-  auto apply_effect_n_multiplier = [ &value_, this ]( const modified_effect_value_t& effect, unsigned n ) {
-    if ( is_direct_damage_effect( data().effectN( n ) ) )
-    {
-      base_dd_multiplier *= 1 + effect.percent();
-      sim->print_debug( "{} base_dd_multiplier modified by {}% to {}", *this, effect.base_value(), base_dd_multiplier );
-      value_ = effect.percent();
-    }
-    else if ( is_periodic_damage_effect( data().effectN( n ) ) )
-    {
-      base_td_multiplier *= 1 + effect.percent();
-      sim->print_debug( "{} base_td_multiplier modified by {}% to {}", *this, effect.base_value(), base_td_multiplier );
-      value_ = effect.percent();
-    }
-  };
-
-  // Applies "Flat Modifier" and "Flat Modifier w/ Label" auras
-  auto apply_flat_modifier = [ &value_, this ]( const modified_effect_value_t& effect ) {
-    switch ( effect.property_type() )
-    {
-      case P_DURATION:
-        if ( base_tick_time > timespan_t::zero() )
-        {
-          dot_duration += effect.time_value();
-          sim->print_debug( "{} duration modified by {}", *this, effect.time_value() );
-          value_ = effect.base_value();
-        }
-        if ( ground_aoe_duration > timespan_t::zero() )
-        {
-          ground_aoe_duration += effect.time_value();
-          sim->print_debug( "{} ground aoe duration modified by {}", *this, effect.time_value() );
-          value_ = effect.base_value();
-        }
-        break;
-
-      case P_CAST_TIME:
-        base_execute_time += effect.time_value();
-        sim->print_debug( "{} cast time modified by {}", *this, effect.time_value() );
-        value_ = effect.base_value();
-        break;
-
-      case P_RANGE:
-        range += effect.base_value();
-        sim->print_debug( "{} range modified by {}", *this, effect.base_value() );
-        value_ = effect.base_value();
-        break;
-
-      case P_CRIT:
-        base_crit += effect.percent();
-        sim->print_debug( "{} base crit modified by {}", *this, effect.percent() );
-        value_ = effect.percent();
-        break;
-
-      case P_COOLDOWN:
-        if ( cooldown->action == this )
-        {
-          if ( data().charge_cooldown() > 0_ms )
-          {
-            internal_cooldown->duration += effect.time_value();
-            if ( internal_cooldown->duration < timespan_t::zero() )
-              internal_cooldown->duration = timespan_t::zero();
-            sim->print_debug( "{} internal cooldown duration modified by {} to {} (due to being a charge cooldown)",
-                              *this, effect.time_value(), internal_cooldown->duration );
-          }
-          else
-          {
-            cooldown->duration += effect.time_value();
-            if ( cooldown->duration < timespan_t::zero() )
-              cooldown->duration = timespan_t::zero();
-            sim->print_debug( "{} cooldown duration modified by {} to {}", *this, effect.time_value(), cooldown->duration );
-          }
-          value_ = effect.base_value();
-        }
-        break;
-
-      case P_RESOURCE_COST_1:
-        base_costs[ resource_current ] += effect.resource( current_resource() );
-        sim->print_debug( "{} base resource cost for resource {} (1) modified by {}", *this, resource_current,
-                          effect.resource( current_resource() ) );
-        value_ = effect.resource( current_resource() );
-        break;
-
-      case P_RESOURCE_COST_2:
-      {
-        if ( data().powers().size() < 2 )
-          break;
-        // Resource Cost 1 is actually the second resource as it's Zero Indexed.
-        resource_e resource = data().powers()[ 1 ].resource();
-        base_costs[ resource ] += effect.resource( resource );
-        sim->print_debug( "{} base resource cost for resource {} (2) modified by {}", *this, resource,
-                          effect.resource( resource ) );
-        value_ = effect.resource( resource );
-        break;
-      }
-
-      case P_RESOURCE_COST_3:
-      {
-        if ( data().powers().size() < 3 )
-          break;
-        // Resource Cost 2 is actually the third resource as it's Zero Indexed.
-        resource_e resource = data().powers()[ 2 ].resource();
-        base_costs[ resource ] += effect.resource( resource );
-        sim->print_debug( "{} base resource cost for resource {} (3) modified by {}", *this, resource,
-                          effect.resource( resource ) );
-        value_ = effect.resource( resource );
-        break;
-      }
-
-      case P_CHAIN_TARGETS:
-        assert( !( aoe == -1 || ( effect.base_value() < 0 && effect.base_value() > aoe ) ) );
-        if ( aoe > 0 )
-        {
-          aoe += as<int>( effect.base_value() );
-          sim->print_debug( "{} max target count modified by {} to {}", *this, effect.base_value(), aoe );
-        }
-        else if( aoe == 0 )
-        {
-          // This behavior depends on if the any effect has chain_targets of 1 defined in spell data or not
-          // A bit roundabout, but we skip storing this in action_t::parse_effect_data() if it is only 1 
-          bool has_chain_target = range::any_of( data().effects(), []( const spelleffect_data_t& effect ) {
-            return effect.chain_target() == 1;
-          } );
-          aoe = as<int>( has_chain_target ) + as<int>( effect.base_value() );
-          sim->print_debug( "{} max target count modified by {} to {}", *this, effect.base_value() - !has_chain_target, aoe );
-        }
-        value_ = effect.base_value();
-        break;
-
-      case P_CHAIN_MULTIPLIER:
-        chain_multiplier += effect.percent();
-        sim->print_debug( "{} chain target multiplier modified by {} to {}", *this, effect.percent(), chain_multiplier );
-        value_ = effect.percent();
-        break;
-
-      case P_GCD:
-        trigger_gcd += effect.time_value();
-        sim->print_debug( "{} trigger_gcd modified by {} to {}", *this, effect.time_value(), trigger_gcd );
-        value_ = effect.base_value();
-        break;
-
-      case P_MAX_STACKS:
-        if ( has_periodic_damage_effect( data() ) )
-        {
-          dot_max_stack += as<int>( effect.base_value() );
-          sim->print_debug( "{} dot_max_stack modified by {} to {}", *this, effect.base_value(), dot_max_stack );
-          value_ = effect.base_value();
-        }
-        break;
-
-      case P_TICK_TIME:
-        base_tick_time += effect.time_value();
-        sim->print_debug( "{} base tick time modified by {} to {}", *this, effect.time_value(), base_tick_time );
-        value_ = effect.base_value();
-        if ( base_tick_time < 0_ms )
-        {
-          sim->print_debug( "WARNING: base tick time below 0ms!" );
-          base_tick_time = 0_ms;
-        }
-        break;
-
-      default:
-        break;
-    }
-  };
-
-  // Applies "Percent Modifier" and "Percent Modifier w/ Label" auras
-  auto apply_percent_modifier = [ &value_, this ]( const modified_effect_value_t& effect ) {
-    switch ( effect.property_type() )
-    {
-      case P_GENERIC:
-        base_dd_multiplier *= 1.0 + effect.percent();
-        sim->print_debug( "{} base_dd_multiplier modified by {}%", *this, effect.base_value() );
-        value_ = effect.percent();
-        break;
-
-      case P_SPELL_POWER:
-        sim->print_debug( "{} spell_power modified by {}%", *this, effect.base_value() );
-        base_dd_multiplier *= 1.0 + effect.percent();
-        base_td_multiplier *= 1.0 + effect.percent();
-        value_ = effect.percent();
-        break;
-
-      case P_DURATION:
-        if ( base_tick_time > timespan_t::zero() )
-        {
-          dot_duration *= 1.0 + effect.percent();
-          sim->print_debug( "{} duration modified by {}%", *this, effect.base_value() );
-          value_ = effect.percent();
-        }
-        if ( ground_aoe_duration > timespan_t::zero() )
-        {
-          ground_aoe_duration *= 1.0 + effect.percent();
-          sim->print_debug( "{} ground aoe duration modified by {}%", *this, effect.base_value() );
-          value_ = effect.percent();
-        }
-        break;
-
-      case P_RADIUS:
-        radius *= 1.0 + effect.percent();
-        sim->print_debug( "{} radius modified by {}%", *this, effect.base_value() );
-        value_ = effect.percent();
-        break;
-
-      case P_COOLDOWN:
-        if ( data().charge_cooldown() <= 0_ms )
-        {
-          base_recharge_multiplier *= 1.0 + effect.percent();
-          if ( base_recharge_multiplier <= 0 )
-            cooldown->duration = timespan_t::zero();
-          sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
-          value_ = effect.percent();
-        }
-        break;
-
-      case P_RESOURCE_COST_1:
-        base_costs[ resource_current ] *= 1.0 + effect.percent();
-        sim->print_debug( "{} base resource cost for resource {} (1) modified by {}%", *this, resource_current,
-                          effect.base_value() );
-        value_ = effect.percent();
-        break;
-
-      case P_RESOURCE_COST_2:
-      {
-        if ( data().powers().size() < 2 )
-          break;
-        // Zero Indexed, this is the second cost.
-        resource_e resource = data().powers()[ 1 ].resource();
-        base_costs[ resource ] *= 1.0 + effect.percent();
-        sim->print_debug( "{} base resource cost for resource {} (2) modified by {}%", *this, resource,
-                          effect.base_value() );
-        value_ = effect.percent();
-        break;
-      }
-
-      case P_RESOURCE_COST_3:
-      {
-        if ( data().powers().size() < 3 )
-          break;
-        // Zero Indexed, this is the third cost.
-        resource_e resource = data().powers()[ 2 ].resource();
-        base_costs[ resource ] *= 1.0 + effect.percent();
-        sim->print_debug( "{} base resource cost for resource {} (3) modified by {}%", *this, resource,
-                          effect.base_value() );
-        value_ = effect.percent();
-        break;
-      }
-
-      case P_CHAIN_MULTIPLIER:
-        chain_multiplier *= 1.0 + effect.percent();
-        sim->print_debug( "{} chain target multiplier modified by {}% to {}", *this, effect.base_value(), chain_multiplier );
-        value_ = effect.percent();
-        break;
-
-      case P_TICK_TIME:
-        if ( base_tick_time > timespan_t::zero() )
-        {
-          base_tick_time *= 1.0 + effect.percent();
-          sim->print_debug( "{} base tick time modified by {}%", *this, effect.base_value() );
-        }
-        value_ = effect.percent();
-        break;
-
-      case P_TICK_DAMAGE:
-        base_td_multiplier *= 1.0 + effect.percent();
-        sim->print_debug( "{} base_td_multiplier modified by {}%", *this, effect.base_value() );
-        value_ = effect.percent();
-        break;
-
-      case P_CRIT_BONUS:
-        crit_bonus_multiplier *= 1.0 + effect.percent();
-        sim->print_debug( "{} critical bonus multiplier modified by {}%", *this, effect.base_value() );
-        value_ = effect.percent();
-        break;
-
-      case P_CRIT:
-        crit_chance_multiplier *= 1.0 + effect.percent();
-        sim->print_debug( "{} critical strike chance multiplier modified by {}%", *this, effect.base_value() );
-        value_ = effect.percent();
-        break;
-
-      case P_CAST_TIME:
-        base_execute_time *= 1 + effect.percent();
-        sim->print_debug( "{} cast time modified by {}% to {}", *this, effect.base_value(), base_execute_time );
-        value_ = effect.percent();
-        break;
-
-      case P_GCD:
-        trigger_gcd *= 1.0 + effect.percent();
-        if ( trigger_gcd < timespan_t::zero() )
-          trigger_gcd = timespan_t::zero();
-        sim->print_debug( "{} trigger_gcd modified by {}% to {}", *this, effect.base_value(), trigger_gcd );
-        value_ = effect.percent();
-        break;
-
-      default:
-        break;
-    }
-  };
-
-  auto m_effect = modified_effect_value_t( effect );
-  if ( modifier && modifier->ok() )
-  {
-    if ( modifier->subtype() == A_ADD_FLAT_MODIFIER || modifier->subtype() == A_ADD_FLAT_LABEL_MODIFIER )
-      m_effect.value += modifier->base_value();
-    else if ( modifier->subtype() == A_ADD_PCT_MODIFIER || modifier->subtype() == A_ADD_PCT_LABEL_MODIFIER)
-      m_effect.value *= 1 + modifier->percent();
-  }
-
-  // Standard Affected-by Auras
-  if ( data().affected_by( effect ) )
-  {
-    switch ( effect.subtype() )
-    {
-      case A_HASTED_GCD:
-        switch ( data().dmg_class() )
-        {
-          case SPELL_TYPE_NONE:
-          case SPELL_TYPE_MAGIC:
-            gcd_type = gcd_haste_type::SPELL_CAST_SPEED;
-            sim->print_debug( "{} gcd type set to spell_cast_speed", *this );
-            break;
-          case SPELL_TYPE_MELEE:
-          case SPELL_TYPE_RANGED:
-            gcd_type = gcd_haste_type::ATTACK_HASTE;
-            sim->print_debug( "{} gcd type set to attack_haste", *this );
-            break;
-          default: break;
-        }
-        value_ = 1;
-        break;
-
-      case A_HASTED_COOLDOWN:
-        cooldown->hasted = true;
-        sim->print_debug( "{} cooldown set to hasted", *this );
-        value_ = 1;
-        break;
-
-      case A_MODIFY_SCHOOL:
-        set_school( effect.school_type() );
-        value_ = effect.misc_value1();
-        break;
-
-      case A_ADD_FLAT_MODIFIER:
-        apply_flat_modifier( m_effect );
-        break;
-
-      case A_ADD_PCT_MODIFIER:
-        apply_percent_modifier( m_effect );
-        break;
-
-      default:
-        break;
-    }
-  }
-  // Label-based Auras
-  else if ( data().affected_by_label( effect ) )
-  {
-    switch ( effect.subtype() )
-    {
-      case A_ADD_FLAT_LABEL_MODIFIER:
-        apply_flat_modifier( m_effect );
-        break;
-
-      case A_ADD_PCT_LABEL_MODIFIER:
-        apply_percent_modifier( m_effect );
-        switch ( effect.property_type() )
-        {
-          case P_EFFECT_1:
-            apply_effect_n_multiplier( m_effect, 1 );
-            break;
-
-          default:
-            break;
-        }
-        break;
-
-      default:
-        break;
-    }
-  }
-  // Category-based Auras
-  else if ( data().affected_by_category( effect ) )
-  {
-    switch ( effect.subtype() )
-    {
-      case A_MODIFY_CATEGORY_COOLDOWN:
-        if ( cooldown->action == this )
-        {
-          if ( data().charge_cooldown() > 0_ms )
-          {
-            internal_cooldown->duration += m_effect.time_value();
-            if ( internal_cooldown->duration < timespan_t::zero() )
-              internal_cooldown->duration = timespan_t::zero();
-            sim->print_debug( "{} internal cooldown duration modified by {} to {} (due to being a charge cooldown)",
-                              *this, m_effect.time_value(), internal_cooldown->duration );
-          }
-          else
-          {
-            cooldown->duration += m_effect.time_value();
-            if ( cooldown->duration < timespan_t::zero() )
-              cooldown->duration = timespan_t::zero();
-            sim->print_debug( "{} cooldown duration modified by {} to {}", *this, m_effect.time_value(),
-                              cooldown->duration );
-          }
-          value_ = m_effect.base_value();
-        }
-        break;
-
-      case A_MOD_MAX_CHARGES:
-        if ( cooldown->action == this && data().charge_cooldown() > 0_ms )
-        {
-          cooldown->charges += as<int>( m_effect.base_value() );
-          sim->print_debug( "{} cooldown charges modified by {}", *this, as<int>( m_effect.base_value() ) );
-          value_ = m_effect.base_value();
-        }
-        break;
-
-      case A_HASTED_CATEGORY:
-        cooldown->hasted = true;
-        sim->print_debug( "{} cooldown set to hasted", *this );
-        value_ = 1;
-        break;
-
-      case A_MOD_RECHARGE_TIME_CATEGORY:
-        if ( cooldown->action == this )
-        {
-          if ( data().charge_cooldown() <= 0_ms )
-          {
-            sim->print_debug( "{} cooldown recharge time modifier ({}) ignored due to not being a charge cooldown",
-                              *this, m_effect.time_value() );
-          }
-          else
-          {
-            cooldown->duration += m_effect.time_value();
-            if ( cooldown->duration < timespan_t::zero() )
-              cooldown->duration = timespan_t::zero();
-            sim->print_debug( "{} cooldown recharge time modified by {}", *this, m_effect.time_value() );
-          }
-          value_ = m_effect.base_value();
-        }
-        break;
-
-      case A_MOD_RECHARGE_TIME_PCT_CATEGORY:
-        if ( data().charge_cooldown() > 0_ms )
-        {
-          base_recharge_multiplier *= 1 + m_effect.percent();
-          if ( base_recharge_multiplier <= 0 )
-          {
-            cooldown->duration = timespan_t::zero();
-          }
-          sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, m_effect.base_value() );
-          value_ = m_effect.percent();
-        }
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  if ( value_ )
-    affecting_list.emplace_back( &effect, value_ );
-}
-
-void action_t::apply_affecting_conduit( const conduit_data_t& conduit, int effect_num )
-{
-  assert( effect_num == -1 || effect_num > 0 );
-
-  if ( !conduit.ok() )
-    return;
-
-  for ( size_t i = 1; i <= conduit->effect_count(); i++ )
-  {
-    if ( effect_num == -1 || as<size_t>( effect_num ) == i )
-      apply_affecting_conduit_effect( conduit, i );
-    else
-      apply_affecting_effect( conduit->effectN( i ) );
-  }
-}
-
-void action_t::apply_affecting_conduit_effect( const conduit_data_t& conduit, size_t effect_num )
-{
-  if ( !conduit.ok() )
-    return;
-
-  spelleffect_data_t effect = conduit->effectN( effect_num );
-  effect._base_value = conduit.value();
-  apply_affecting_effect( effect );
 }
 
 void action_t::execute_on_target( player_t* t, double amount )
