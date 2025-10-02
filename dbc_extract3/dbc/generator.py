@@ -1,6 +1,7 @@
 import sys, os, re, types, html.parser, urllib, datetime, signal, json, pathlib, csv, logging, io, fnmatch, traceback, binascii, time
 
 from collections import defaultdict
+from operator import itemgetter
 
 import dbc.db, dbc.data, dbc.parser, dbc.file
 
@@ -5345,11 +5346,12 @@ class CharacterLoadoutGenerator(DataGenerator):
 
     def generate(self, data = None):
         # assume target mythic ilevel is highest heroic dungeon find minium ilevel + 5 * 13
-        _ilevels = [e.heroic_lfg_dungeon_min_gear for e in self.db('MythicPlusSeason').values()]
-        _ilevels.sort(reverse=True)
+        _ilevels = [(e.id_expansion, e.heroic_lfg_dungeon_min_gear) for e in self.db('MythicPlusSeason').values()]
+        _ilevels.sort(key=itemgetter(0, 1), reverse=True)
         self._out.write('static constexpr int {}MYTHIC_TARGET_ITEM_LEVEL = {};\n\n'.format(
             self._options.prefix and ('%s_' % self._options.prefix.upper()) or '',
-            _ilevels[0] + 5 * 13))
+            265)) # hardcoded for now
+            # _ilevels[0][1] + 5 * 13))
 
         self.output_header(
             header = 'Character Loadout data',
