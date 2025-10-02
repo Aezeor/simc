@@ -339,7 +339,7 @@ public:
     {
       player_talent_t vengeful_retreat;
       player_talent_t felblade;
-      player_talent_t voidblade; // NYI
+      player_talent_t voidblade;        // NYI
       player_talent_t sigil_of_misery;  // NYI
 
       player_talent_t vengeful_bonds;  // No Implementation
@@ -348,7 +348,7 @@ public:
       player_talent_t improved_sigil_of_misery;
 
       player_talent_t bouncing_glaives;
-      player_talent_t imprison;               // No Implementation
+      player_talent_t imprison;           // No Implementation
       player_talent_t charred_warblades;  // NYI Vengeance
 
       player_talent_t chaos_nova;
@@ -362,7 +362,7 @@ public:
       player_talent_t blazing_path;
       player_talent_t swallowed_anger;
       player_talent_t aura_of_pain;
-      player_talent_t live_by_the_glaive;    // NYI
+      player_talent_t live_by_the_glaive;  // NYI
 
       player_talent_t pursuit;
       player_talent_t soul_rending;
@@ -384,51 +384,51 @@ public:
 
     struct devourer_talents_t
     {
-      player_talent_t void_ray; // NYI
+      player_talent_t void_ray;  // NYI
 
-      player_talent_t soul_immolation; // NYI
-      player_talent_t predators_thirst; // NYI
+      player_talent_t soul_immolation;   // NYI
+      player_talent_t predators_thirst;  // NYI
 
-      player_talent_t tempered_soul; // NYI
-      player_talent_t spontaneous_immolation; // NYI
-      player_talent_t void_metamorphosis; // NYI
-      player_talent_t feast_of_souls; // NYI
+      player_talent_t tempered_soul;           // NYI
+      player_talent_t spontaneous_immolation;  // NYI
+      player_talent_t void_metamorphosis;      // NYI
+      player_talent_t feast_of_souls;          // NYI
 
-      player_talent_t scythes_embrace; // NYI
-      player_talent_t duty_eternal; // NYI
-      player_talent_t entropy; // NYI
-      player_talent_t moment_of_craving; // NYI
+      player_talent_t scythes_embrace;    // NYI
+      player_talent_t duty_eternal;       // NYI
+      player_talent_t entropy;            // NYI
+      player_talent_t moment_of_craving;  // NYI
 
-      player_talent_t sunder; // NYI
-      player_talent_t second_helping; // NYI
-      player_talent_t waste_not; // NYI
-      player_talent_t soulshaper; // NYI
+      player_talent_t sunder;          // NYI
+      player_talent_t second_helping;  // NYI
+      player_talent_t waste_not;       // NYI
+      player_talent_t soulshaper;      // NYI
 
-      player_talent_t focused_ray; // NYI
-      player_talent_t collapsing_star; // NYI
-      player_talent_t sweet_suffering; // NYI
-      player_talent_t voidpurge; // NYI
+      player_talent_t focused_ray;      // NYI
+      player_talent_t collapsing_star;  // NYI
+      player_talent_t sweet_suffering;  // NYI
+      player_talent_t voidpurge;        // NYI
 
-      player_talent_t hungering_slash; // NYI
-      player_talent_t voidrage; // NYI
-      player_talent_t dark_ultimatum; // NYI
-      player_talent_t beckon; // NYI
-      player_talent_t voidglare_boon; // NYI
+      player_talent_t hungering_slash;  // NYI
+      player_talent_t voidrage;         // NYI
+      player_talent_t dark_ultimatum;   // NYI
+      player_talent_t beckon;           // NYI
+      player_talent_t voidglare_boon;   // NYI
 
-      player_talent_t voidstep; // NYI
-      player_talent_t up_close; // NYI
-      player_talent_t impending_apocalypse; // NYI
-      player_talent_t rolling_torment; // NYI
-      player_talent_t improved_reap; // NYI
+      player_talent_t voidstep;              // NYI
+      player_talent_t up_close;              // NYI
+      player_talent_t impending_apocalypse;  // NYI
+      player_talent_t rolling_torment;       // NYI
+      player_talent_t improved_reap;         // NYI
 
-      player_talent_t devourers_bite; // NYI
-      player_talent_t star_fragments; // NYI
-      player_talent_t calamitous; // NYI
+      player_talent_t devourers_bite;  // NYI
+      player_talent_t star_fragments;  // NYI
+      player_talent_t calamitous;      // NYI
 
-      player_talent_t the_hunt; // NYI
-      player_talent_t emptiness; // NYI
-      player_talent_t soul_glutton; // NYI
-      player_talent_t eradicate; // NYI
+      player_talent_t the_hunt;      // NYI
+      player_talent_t emptiness;     // NYI
+      player_talent_t soul_glutton;  // NYI
+      player_talent_t eradicate;     // NYI
     } devourer;
 
     struct havoc_talents_t
@@ -570,25 +570,25 @@ public:
 
     struct annihilator_talents_t
     {
-      player_talent_t voidfall; // NYI
+      player_talent_t voidfall;  // NYI
 
-      player_talent_t swift_erasure; // NYI
-      player_talent_t meteoric_rise; // NYI
-      player_talent_t catastrophe; // NYI
-      player_talent_t phase_shift; // NYI
+      player_talent_t swift_erasure;  // NYI
+      player_talent_t meteoric_rise;  // NYI
+      player_talent_t catastrophe;    // NYI
+      player_talent_t phase_shift;    // NYI
 
-      player_talent_t path_to_oblivion; // NYI
-      player_talent_t state_of_matter; // NYI
-      player_talent_t mass_acceleration; // NYI
-      player_talent_t doomsayer; // NYI
-      player_talent_t celestial_echoes; // NYI
+      player_talent_t path_to_oblivion;   // NYI
+      player_talent_t state_of_matter;    // NYI
+      player_talent_t mass_acceleration;  // NYI
+      player_talent_t doomsayer;          // NYI
+      player_talent_t celestial_echoes;   // NYI
 
-      player_talent_t final_hour; // NYI
-      player_talent_t meteoric_fall; // NYI
-      player_talent_t dark_matter; // NYI
-      player_talent_t otherworldly_focus; // NYI
+      player_talent_t final_hour;          // NYI
+      player_talent_t meteoric_fall;       // NYI
+      player_talent_t dark_matter;         // NYI
+      player_talent_t otherworldly_focus;  // NYI
 
-      player_talent_t world_killer; // NYI
+      player_talent_t world_killer;  // NYI
     } annihilator;
 
     struct felscarred_talents_t
@@ -1530,8 +1530,8 @@ struct soul_fragment_t
     timespan_t delay = get_travel_time();
 
     action_t* consume_action = nullptr;
-    action_t* heal_action =
-        is_type( soul_fragment::ANY_GREATER ) ? dh->active.consume_soul_greater_heal : dh->active.consume_soul_lesser_heal;
+    action_t* heal_action = is_type( soul_fragment::ANY_GREATER ) ? dh->active.consume_soul_greater_heal
+                                                                  : dh->active.consume_soul_lesser_heal;
     switch ( type )
     {
       case soul_fragment::EMPOWERED_DEMON:
@@ -2278,7 +2278,7 @@ struct art_of_the_glaive_trigger_t : public BASE
 
       int first_ability_amount = 1;
       int second_ability_amount =
-        1 + as<int>( BASE::p()->talent.aldrachi_reaver.reavers_mark->effectN( 2 ).base_value() );
+          1 + as<int>( BASE::p()->talent.aldrachi_reaver.reavers_mark->effectN( 2 ).base_value() );
       if ( BASE::p()->talent.aldrachi_reaver.reavers_mark->ok() )
       {
         BASE::td( BASE::target )
@@ -8820,69 +8820,104 @@ void demon_hunter_t::init_spells()
   // Talents ================================================================
 
   talent.demon_hunter.vengeful_retreat = find_talent_spell( talent_tree::CLASS, "Vengeful Retreat" );
-  talent.demon_hunter.blazing_path     = find_talent_spell( talent_tree::CLASS, "Blazing Path" );
+  talent.demon_hunter.felblade         = find_talent_spell( talent_tree::CLASS, "Felblade" );
+  talent.demon_hunter.voidblade        = find_talent_spell( talent_tree::CLASS, "Voidblade" );
   talent.demon_hunter.sigil_of_misery  = find_talent_spell( talent_tree::CLASS, "Sigil of Misery" );
 
-  talent.demon_hunter.unrestrained_fury     = find_talent_spell( talent_tree::CLASS, "Unrestrained Fury" );
-  talent.demon_hunter.imprison              = find_talent_spell( talent_tree::CLASS, "Imprison" );
-  talent.demon_hunter.shattered_restoration = find_talent_spell( talent_tree::CLASS, "Shattered Restoration" );
-
   talent.demon_hunter.vengeful_bonds           = find_talent_spell( talent_tree::CLASS, "Vengeful Bonds" );
-  talent.demon_hunter.improved_disrupt         = find_talent_spell( talent_tree::CLASS, "Improved Disrupt" );
-  talent.demon_hunter.bouncing_glaives         = find_talent_spell( talent_tree::CLASS, "Bouncing Glaives" );
-  talent.demon_hunter.consume_magic            = find_talent_spell( talent_tree::CLASS, "Consume Magic" );
+  talent.demon_hunter.unrestrained_fury        = find_talent_spell( talent_tree::CLASS, "Unrestrained Fury" );
+  talent.demon_hunter.shattered_restoration    = find_talent_spell( talent_tree::CLASS, "Shattered Restoration" );
   talent.demon_hunter.improved_sigil_of_misery = find_talent_spell( talent_tree::CLASS, "Improved Sigil of Misery" );
 
-  talent.demon_hunter.pursuit           = find_talent_spell( talent_tree::CLASS, "Pursuit" );
-  talent.demon_hunter.disrupting_fury   = find_talent_spell( talent_tree::CLASS, "Disrupting Fury" );
-  talent.demon_hunter.felblade          = find_talent_spell( talent_tree::CLASS, "Felblade" );
-  talent.demon_hunter.swallowed_anger   = find_talent_spell( talent_tree::CLASS, "Swallowed Anger" );
-  talent.demon_hunter.charred_warblades = find_talent_spell( talent_tree::CLASS, "Charred Warblades" );
+  talent.demon_hunter.bouncing_glaives  = find_talent_spell( talent_tree::CLASS, "Bouncing Glaives" );
+  talent.demon_hunter.imprison          = find_talent_spell( talent_tree::CLASS, "Imprison" );
+  talent.demon_hunter.charred_warblades = find_talent_spell( talent_tree::CLASS, "Charred Warglaives" );
 
-  talent.demon_hunter.felfire_haste          = find_talent_spell( talent_tree::CLASS, "Felfire Haste" );
+  talent.demon_hunter.chaos_nova       = find_talent_spell( talent_tree::CLASS, "Chaos Nova" );
+  talent.demon_hunter.improved_disrupt = find_talent_spell( talent_tree::CLASS, "Improved Disrupt" );
+  talent.demon_hunter.consume_magic    = find_talent_spell( talent_tree::CLASS, "Consume Magic" );
+  talent.demon_hunter.aldrachi_design  = find_talent_spell( talent_tree::CLASS, "Aldrachi Design" );
+
   talent.demon_hunter.master_of_the_glaive   = find_talent_spell( talent_tree::CLASS, "Master of the Glaive" );
   talent.demon_hunter.champion_of_the_glaive = find_talent_spell( talent_tree::CLASS, "Champion of the Glaive" );
+  talent.demon_hunter.disrupting_fury        = find_talent_spell( talent_tree::CLASS, "Disrupting Fury" );
+  talent.demon_hunter.blazing_path           = find_talent_spell( talent_tree::CLASS, "Blazing Path" );
+  talent.demon_hunter.swallowed_anger        = find_talent_spell( talent_tree::CLASS, "Swallowed Anger" );
   talent.demon_hunter.aura_of_pain           = find_talent_spell( talent_tree::CLASS, "Aura of Pain" );
-  talent.demon_hunter.precise_sigils         = find_talent_spell( talent_tree::CLASS, "Precise Sigils" );
-  talent.demon_hunter.lost_in_darkness       = find_talent_spell( talent_tree::CLASS, "Lost in Darkness" );
+  talent.demon_hunter.live_by_the_glaive     = find_talent_spell( talent_tree::CLASS, "Live by the Glaive" );
 
-  talent.demon_hunter.chaos_nova      = find_talent_spell( talent_tree::CLASS, "Chaos Nova" );
-  talent.demon_hunter.soul_rending    = find_talent_spell( talent_tree::CLASS, "Soul Rending" );
-  talent.demon_hunter.infernal_armor  = find_talent_spell( talent_tree::CLASS, "Infernal Armor" );
-  talent.demon_hunter.aldrachi_design = find_talent_spell( talent_tree::CLASS, "Aldrachi Design" );
+  talent.demon_hunter.pursuit          = find_talent_spell( talent_tree::CLASS, "Pursuit" );
+  talent.demon_hunter.soul_rending     = find_talent_spell( talent_tree::CLASS, "Soul Rending" );
+  talent.demon_hunter.infernal_armor   = find_talent_spell( talent_tree::CLASS, "Infernal Armor" );
+  talent.demon_hunter.lost_in_darkness = find_talent_spell( talent_tree::CLASS, "Lost in Darkness" );
 
-  talent.demon_hunter.chaos_fragments      = find_talent_spell( talent_tree::CLASS, "Chaos Fragments" );
+  talent.demon_hunter.felfire_haste        = find_talent_spell( talent_tree::CLASS, "Felfire Haste" );
   talent.demon_hunter.illidari_knowledge   = find_talent_spell( talent_tree::CLASS, "Illidari Knowledge" );
-  talent.demon_hunter.demonic              = find_talent_spell( talent_tree::CLASS, "Demonic" );
+  talent.demon_hunter.guile                = find_talent_spell( talent_tree::CLASS, "Guile" );
   talent.demon_hunter.will_of_the_illidari = find_talent_spell( talent_tree::CLASS, "Will of the Illidari" );
-  talent.demon_hunter.live_by_the_glaive   = find_talent_spell( talent_tree::CLASS, "Live by the Glaive" );
 
   talent.demon_hunter.internal_struggle = find_talent_spell( talent_tree::CLASS, "Internal Struggle" );
   talent.demon_hunter.darkness          = find_talent_spell( talent_tree::CLASS, "Darkness" );
-  talent.demon_hunter.soul_sigils       = find_talent_spell( talent_tree::CLASS, "Soul Sigils" );
-  talent.demon_hunter.quickened_sigils  = find_talent_spell( talent_tree::CLASS, "Quickened Sigils" );
 
   talent.demon_hunter.erratic_felheart = find_talent_spell( talent_tree::CLASS, "Erratic Felheart" );
   talent.demon_hunter.long_night       = find_talent_spell( talent_tree::CLASS, "Long Night" );
   talent.demon_hunter.pitch_black      = find_talent_spell( talent_tree::CLASS, "Pitch Black" );
-  talent.demon_hunter.rush_of_chaos    = find_talent_spell( talent_tree::CLASS, "Rush of Chaos" );
-  talent.demon_hunter.demon_muzzle     = find_talent_spell( talent_tree::CLASS, "Demon Muzzle" );
-  talent.demon_hunter.flames_of_fury   = find_talent_spell( talent_tree::CLASS, "Flames of Fury" );
 
-  talent.demon_hunter.collective_anguish = find_talent_spell( talent_tree::CLASS, "Collective Anguish" );
-  talent.demon_hunter.the_hunt           = find_talent_spell( talent_tree::CLASS, "The Hunt" );
-  talent.demon_hunter.sigil_of_spite     = find_talent_spell( talent_tree::CLASS, "Sigil of Spite" );
+  // Devourer Talents
+
+  talent.devourer.void_ray = find_talent_spell( talent_tree::SPECIALIZATION, "Void Ray" );
+
+  talent.devourer.soul_immolation  = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Immolation" );
+  talent.devourer.predators_thirst = find_talent_spell( talent_tree::SPECIALIZATION, "Predator's Thirst" );
+
+  talent.devourer.tempered_soul          = find_talent_spell( talent_tree::SPECIALIZATION, "Tempered Soul" );
+  talent.devourer.spontaneous_immolation = find_talent_spell( talent_tree::SPECIALIZATION, "Spontaneous Immolation" );
+  talent.devourer.void_metamorphosis     = find_talent_spell( talent_tree::SPECIALIZATION, "Void Metamorphosis" );
+  talent.devourer.feast_of_souls         = find_talent_spell( talent_tree::SPECIALIZATION, "Feast of Souls" );
+
+  talent.devourer.scythes_embrace   = find_talent_spell( talent_tree::SPECIALIZATION, "Scythe's Embrace" );
+  talent.devourer.duty_eternal      = find_talent_spell( talent_tree::SPECIALIZATION, "Duty Eternal" );
+  talent.devourer.entropy           = find_talent_spell( talent_tree::SPECIALIZATION, "Entropy" );
+  talent.devourer.moment_of_craving = find_talent_spell( talent_tree::SPECIALIZATION, "Moment of Craving" );
+
+  talent.devourer.sunder         = find_talent_spell( talent_tree::SPECIALIZATION, "Sunder" );
+  talent.devourer.second_helping = find_talent_spell( talent_tree::SPECIALIZATION, "Second Helping" );
+  talent.devourer.waste_not      = find_talent_spell( talent_tree::SPECIALIZATION, "Waste Not" );
+  talent.devourer.soulshaper     = find_talent_spell( talent_tree::SPECIALIZATION, "Soulshaper" );
+
+  talent.devourer.focused_ray     = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Ray" );
+  talent.devourer.collapsing_star = find_talent_spell( talent_tree::SPECIALIZATION, "Collapsing Star" );
+  talent.devourer.sweet_suffering = find_talent_spell( talent_tree::SPECIALIZATION, "Sweet Suffering" );
+  talent.devourer.voidpurge       = find_talent_spell( talent_tree::SPECIALIZATION, "Voidpurge" );
+
+  talent.devourer.hungering_slash = find_talent_spell( talent_tree::SPECIALIZATION, "Hungering Slash" );
+  talent.devourer.voidrage        = find_talent_spell( talent_tree::SPECIALIZATION, "Voidrage" );
+  talent.devourer.dark_ultimatum  = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Ultimatum" );
+  talent.devourer.beckon          = find_talent_spell( talent_tree::SPECIALIZATION, "Beckon" );
+  talent.devourer.voidglare_boon  = find_talent_spell( talent_tree::SPECIALIZATION, "Voidglare Boon" );
+
+  talent.devourer.voidstep             = find_talent_spell( talent_tree::SPECIALIZATION, "Voidstep" );
+  talent.devourer.up_close             = find_talent_spell( talent_tree::SPECIALIZATION, "Up Close" );
+  talent.devourer.impending_apocalypse = find_talent_spell( talent_tree::SPECIALIZATION, "Impending Apocalypse" );
+  talent.devourer.rolling_torment      = find_talent_spell( talent_tree::SPECIALIZATION, "Rolling Torment" );
+  talent.devourer.improved_reap        = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Reap" );
+
+  talent.devourer.devourers_bite = find_talent_spell( talent_tree::SPECIALIZATION, "Devourer's Bite" );
+  talent.devourer.star_fragments = find_talent_spell( talent_tree::SPECIALIZATION, "Star Fragments" );
+  talent.devourer.calamitous     = find_talent_spell( talent_tree::SPECIALIZATION, "Calamitous" );
+
+  talent.devourer.the_hunt     = find_talent_spell( talent_tree::SPECIALIZATION, "The Hunt" );
+  talent.devourer.emptiness    = find_talent_spell( talent_tree::SPECIALIZATION, "Emptiness" );
+  talent.devourer.soul_glutton = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Glutton" );
+  talent.devourer.eradicate    = find_talent_spell( talent_tree::SPECIALIZATION, "Eradicate" );
 
   // Havoc Talents
 
   talent.havoc.eye_beam = find_talent_spell( talent_tree::SPECIALIZATION, "Eye Beam" );
 
-  talent.havoc.critical_chaos    = find_talent_spell( talent_tree::SPECIALIZATION, "Critical Chaos" );
-  talent.havoc.insatiable_hunger = find_talent_spell( talent_tree::SPECIALIZATION, "Insatiable Hunger" );
-  talent.havoc.demon_blades      = find_talent_spell( talent_tree::SPECIALIZATION, "Demon Blades" );
-  talent.havoc.burning_hatred    = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Hatred" );
+  talent.havoc.critical_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Critical Chaos" );
+  talent.havoc.burning_hatred = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Hatred" );
 
-  talent.havoc.improved_fel_rush     = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Fel Rush" );
   talent.havoc.dash_of_chaos         = find_talent_spell( talent_tree::SPECIALIZATION, "Dash of Chaos" );
   talent.havoc.improved_chaos_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Chaos Strike" );
   talent.havoc.first_blood           = find_talent_spell( talent_tree::SPECIALIZATION, "First Blood" );
@@ -8894,41 +8929,42 @@ void demon_hunter_t::init_spells()
   talent.havoc.deflecting_dance    = find_talent_spell( talent_tree::SPECIALIZATION, "Deflecting Dance" );
   talent.havoc.mortal_dance        = find_talent_spell( talent_tree::SPECIALIZATION, "Mortal Dance" );
 
-  talent.havoc.initiative             = find_talent_spell( talent_tree::SPECIALIZATION, "Initiative" );
-  talent.havoc.scars_of_suffering     = find_talent_spell( talent_tree::SPECIALIZATION, "Scars of Suffering" );
+  talent.havoc.initiative         = find_talent_spell( talent_tree::SPECIALIZATION, "Initiative" );
+  talent.havoc.scars_of_suffering = find_talent_spell( talent_tree::SPECIALIZATION, "Scars of Suffering" );
+  talent.havoc.demonic            = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic" );
+  talent.havoc.furious_throws     = find_talent_spell( talent_tree::SPECIALIZATION, "Furious Throws" );
+  talent.havoc.trail_of_ruin      = find_talent_spell( talent_tree::SPECIALIZATION, "Trail of Ruin" );
+
+  talent.havoc.tactical_retreat       = find_talent_spell( talent_tree::SPECIALIZATION, "Tactical Retreat" );
+  talent.havoc.blind_fury             = find_talent_spell( talent_tree::SPECIALIZATION, "Blind Fury" );
   talent.havoc.chaotic_transformation = find_talent_spell( talent_tree::SPECIALIZATION, "Chaotic Transformation" );
-  talent.havoc.furious_throws         = find_talent_spell( talent_tree::SPECIALIZATION, "Furious Throws" );
-  talent.havoc.trail_of_ruin          = find_talent_spell( talent_tree::SPECIALIZATION, "Trail of Ruin" );
-
-  talent.havoc.unbound_chaos     = find_talent_spell( talent_tree::SPECIALIZATION, "Unbound Chaos" );
-  talent.havoc.blind_fury        = find_talent_spell( talent_tree::SPECIALIZATION, "Blind Fury" );
-  talent.havoc.looks_can_kill    = find_talent_spell( talent_tree::SPECIALIZATION, "Looks Can Kill" );
-  talent.havoc.dancing_with_fate = find_talent_spell( talent_tree::SPECIALIZATION, "Dancing with Fate" );
-  talent.havoc.growing_inferno   = find_talent_spell( talent_tree::SPECIALIZATION, "Growing Inferno" );
-
-  talent.havoc.tactical_retreat     = find_talent_spell( talent_tree::SPECIALIZATION, "Tactical Retreat" );
-  talent.havoc.isolated_prey        = find_talent_spell( talent_tree::SPECIALIZATION, "Isolated Prey" );
-  talent.havoc.furious_gaze         = find_talent_spell( talent_tree::SPECIALIZATION, "Furious Gaze" );
-  talent.havoc.relentless_onslaught = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Onslaught" );
-  talent.havoc.burning_wound        = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Wound" );
+  talent.havoc.dancing_with_fate      = find_talent_spell( talent_tree::SPECIALIZATION, "Dancing with Fate" );
+  talent.havoc.growing_inferno        = find_talent_spell( talent_tree::SPECIALIZATION, "Growing Inferno" );
 
   talent.havoc.exergy          = find_talent_spell( talent_tree::SPECIALIZATION, "Exergy" );
   talent.havoc.inertia         = find_talent_spell( talent_tree::SPECIALIZATION, "Inertia" );
-  talent.havoc.chaos_theory    = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Theory" );
-  talent.havoc.restless_hunter = find_talent_spell( talent_tree::SPECIALIZATION, "Restless Hunter" );
-  talent.havoc.inner_demon     = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demon" );
+  talent.havoc.isolated_prey   = find_talent_spell( talent_tree::SPECIALIZATION, "Isolated Prey" );
+  talent.havoc.furious_gaze    = find_talent_spell( talent_tree::SPECIALIZATION, "Furious Gaze" );
   talent.havoc.serrated_glaive = find_talent_spell( talent_tree::SPECIALIZATION, "Serrated Glaive" );
-  talent.havoc.ragefire        = find_talent_spell( talent_tree::SPECIALIZATION, "Ragefire" );
+  talent.havoc.burning_wound   = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Wound" );
+
+  talent.havoc.unbound_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Unbound Chaos" );
+  talent.havoc.chaos_theory  = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Theory" );
+  talent.havoc.inner_demon   = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demon" );
+  talent.havoc.the_hunt      = find_talent_spell( talent_tree::SPECIALIZATION, "The Hunt" );
+
+  talent.havoc.relentless_onslaught = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Onslaught" );
+  talent.havoc.soulscar             = find_talent_spell( talent_tree::SPECIALIZATION, "Soulscar" );
+  talent.havoc.ragefire             = find_talent_spell( talent_tree::SPECIALIZATION, "Ragefire" );
 
   talent.havoc.know_your_enemy     = find_talent_spell( talent_tree::SPECIALIZATION, "Know Your Enemy" );
-  talent.havoc.glaive_tempest      = find_talent_spell( talent_tree::SPECIALIZATION, "Glaive Tempest" );
   talent.havoc.cycle_of_hatred     = find_talent_spell( talent_tree::SPECIALIZATION, "Cycle of Hatred" );
-  talent.havoc.soulscar            = find_talent_spell( talent_tree::SPECIALIZATION, "Soulscar" );
   talent.havoc.chaotic_disposition = find_talent_spell( talent_tree::SPECIALIZATION, "Chaotic Disposition" );
 
   talent.havoc.essence_break       = find_talent_spell( talent_tree::SPECIALIZATION, "Essence Break" );
-  talent.havoc.fel_barrage         = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Barrage" );
+  talent.havoc.glaive_tempest      = find_talent_spell( talent_tree::SPECIALIZATION, "Glaive Tempest" );
   talent.havoc.shattered_destiny   = find_talent_spell( talent_tree::SPECIALIZATION, "Shattered Destiny" );
+  talent.havoc.collective_anguish  = find_talent_spell( talent_tree::SPECIALIZATION, "Collective Anguish" );
   talent.havoc.screaming_brutality = find_talent_spell( talent_tree::SPECIALIZATION, "Screaming Brutality" );
   talent.havoc.a_fire_inside       = find_talent_spell( talent_tree::SPECIALIZATION, "A Fire Inside" );
 
@@ -8936,39 +8972,38 @@ void demon_hunter_t::init_spells()
 
   talent.vengeance.fel_devastation = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Devastation" );
 
-  talent.vengeance.frailty     = find_talent_spell( talent_tree::SPECIALIZATION, "Frailty" );
+  talent.vengeance.spirit_bomb      = find_talent_spell( talent_tree::SPECIALIZATION, "Spirit Bomb" );
   talent.vengeance.fiery_brand = find_talent_spell( talent_tree::SPECIALIZATION, "Fiery Brand" );
 
   talent.vengeance.perfectly_balanced_glaive =
       find_talent_spell( talent_tree::SPECIALIZATION, "Perfectly Balanced Glaive" );
-  talent.vengeance.deflecting_spikes = find_talent_spell( talent_tree::SPECIALIZATION, "Deflecting Spikes" );
+  talent.vengeance.quickened_sigils   = find_talent_spell( talent_tree::SPECIALIZATION, "Quickened Sigils" );
   talent.vengeance.ascending_flame   = find_talent_spell( talent_tree::SPECIALIZATION, "Ascending Flame" );
 
-  talent.vengeance.shear_fury       = find_talent_spell( talent_tree::SPECIALIZATION, "Shear Fury" );
-  talent.vengeance.fracture         = find_talent_spell( talent_tree::SPECIALIZATION, "Fracture" );
+  talent.vengeance.tempered_steel = find_talent_spell( talent_tree::SPECIALIZATION, "Tempered Steel" );
   talent.vengeance.calcified_spikes = find_talent_spell( talent_tree::SPECIALIZATION, "Calcified Spikes" );
   talent.vengeance.roaring_fire     = find_talent_spell( talent_tree::SPECIALIZATION, "Roaring Fire" );
   talent.vengeance.sigil_of_silence = find_talent_spell( talent_tree::SPECIALIZATION, "Sigil of Silence" );
   talent.vengeance.retaliation      = find_talent_spell( talent_tree::SPECIALIZATION, "Retaliation" );
-  talent.vengeance.meteoric_strikes = find_talent_spell( talent_tree::SPECIALIZATION, "Meteoric Strikes" );
+  talent.vengeance.felfire_fist      = find_talent_spell( talent_tree::SPECIALIZATION, "Felfire Fist" );
 
-  talent.vengeance.spirit_bomb      = find_talent_spell( talent_tree::SPECIALIZATION, "Spirit Bomb" );
-  talent.vengeance.feast_of_souls   = find_talent_spell( talent_tree::SPECIALIZATION, "Feast of Souls" );
+  talent.vengeance.sigil_of_spite   = find_talent_spell( talent_tree::SPECIALIZATION, "Sigil of Spite" );
   talent.vengeance.agonizing_flames = find_talent_spell( talent_tree::SPECIALIZATION, "Agonizing Flames" );
-  talent.vengeance.extended_spikes  = find_talent_spell( talent_tree::SPECIALIZATION, "Extended Spikes" );
+  talent.vengeance.feed_the_demon = find_talent_spell( talent_tree::SPECIALIZATION, "Feed the Demon" );
   talent.vengeance.burning_blood    = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Blood" );
-  talent.vengeance.soul_barrier     = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Barrier" );
-  talent.vengeance.bulk_extraction  = find_talent_spell( talent_tree::SPECIALIZATION, "Bulk Extraction" );
   talent.vengeance.revel_in_pain    = find_talent_spell( talent_tree::SPECIALIZATION, "Revel in Pain" );
 
-  talent.vengeance.void_reaver         = find_talent_spell( talent_tree::SPECIALIZATION, "Void Reaver" );
+  talent.vengeance.frailty   = find_talent_spell( talent_tree::SPECIALIZATION, "Frailty" );
+  talent.vengeance.feast_of_souls   = find_talent_spell( talent_tree::SPECIALIZATION, "Feast of Souls" );
   talent.vengeance.fallout             = find_talent_spell( talent_tree::SPECIALIZATION, "Fallout" );
   talent.vengeance.ruinous_bulwark     = find_talent_spell( talent_tree::SPECIALIZATION, "Ruinous Bulwark" );
   talent.vengeance.volatile_flameblood = find_talent_spell( talent_tree::SPECIALIZATION, "Volatile Flameblood" );
+  talent.vengeance.soul_barrier     = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Barrier" );
+  talent.vengeance.soul_sigils     = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Sigils" );
   talent.vengeance.fel_flame_fortification =
       find_talent_spell( talent_tree::SPECIALIZATION, "Fel Flame Fortification" );
 
-  talent.vengeance.soul_furnace    = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Furnace" );
+  talent.vengeance.void_reaver         = find_talent_spell( talent_tree::SPECIALIZATION, "Void Reaver" );
   talent.vengeance.painbringer     = find_talent_spell( talent_tree::SPECIALIZATION, "Painbringer" );
   talent.vengeance.sigil_of_chains = find_talent_spell( talent_tree::SPECIALIZATION, "Sigil of Chains" );
   talent.vengeance.fiery_demise    = find_talent_spell( talent_tree::SPECIALIZATION, "Fiery Demise" );
@@ -8981,7 +9016,7 @@ void demon_hunter_t::init_spells()
   talent.vengeance.cycle_of_binding = find_talent_spell( talent_tree::SPECIALIZATION, "Cycle of Binding" );
 
   talent.vengeance.vulnerability  = find_talent_spell( talent_tree::SPECIALIZATION, "Vulnerability" );
-  talent.vengeance.feed_the_demon = find_talent_spell( talent_tree::SPECIALIZATION, "Feed the Demon" );
+  talent.vengeance.vengeful_beast  = find_talent_spell( talent_tree::SPECIALIZATION, "Vengeful Beast" );
   talent.vengeance.charred_flesh  = find_talent_spell( talent_tree::SPECIALIZATION, "Charred Flesh" );
 
   talent.vengeance.soulcrush          = find_talent_spell( talent_tree::SPECIALIZATION, "Soulcrush" );
@@ -8989,7 +9024,6 @@ void demon_hunter_t::init_spells()
   talent.vengeance.last_resort        = find_talent_spell( talent_tree::SPECIALIZATION, "Last Resort" );
   talent.vengeance.darkglare_boon     = find_talent_spell( talent_tree::SPECIALIZATION, "Darkglare Boon" );
   talent.vengeance.down_in_flames     = find_talent_spell( talent_tree::SPECIALIZATION, "Down in Flames" );
-  talent.vengeance.illuminated_sigils = find_talent_spell( talent_tree::SPECIALIZATION, "Illuminated Sigils" );
 
   // Hero Talents ===========================================================
 
@@ -9012,6 +9046,27 @@ void demon_hunter_t::init_spells()
   talent.aldrachi_reaver.warblades_hunger  = find_talent_spell( talent_tree::HERO, "Warblade's Hunger" );
 
   talent.aldrachi_reaver.thrill_of_the_fight = find_talent_spell( talent_tree::HERO, "Thrill of the Fight" );
+
+  // Annihilator talents
+  talent.annihilator.voidfall = find_talent_spell( talent_tree::HERO, "Voidfall" );
+
+  talent.annihilator.swift_erasure = find_talent_spell( talent_tree::HERO, "Swift Erasure" );
+  talent.annihilator.meteoric_rise = find_talent_spell( talent_tree::HERO, "Meteoric Rise" );
+  talent.annihilator.catastrophe = find_talent_spell( talent_tree::HERO, "Catastrophe" );
+  talent.annihilator.phase_shift = find_talent_spell( talent_tree::HERO, "Phase Shift" );
+
+  talent.annihilator.path_to_oblivion = find_talent_spell( talent_tree::HERO, "Path to Oblivion" );
+  talent.annihilator.state_of_matter = find_talent_spell( talent_tree::HERO, "State of Matter" );
+  talent.annihilator.mass_acceleration = find_talent_spell( talent_tree::HERO, "Mass Acceleration" );
+  talent.annihilator.doomsayer = find_talent_spell( talent_tree::HERO, "Doomsayer" );
+  talent.annihilator.celestial_echoes = find_talent_spell( talent_tree::HERO, "Celestial Echoes" );
+
+  talent.annihilator.final_hour = find_talent_spell( talent_tree::HERO, "Final Hour" );
+  talent.annihilator.meteoric_fall = find_talent_spell( talent_tree::HERO, "Meteoric Fall" );
+  talent.annihilator.dark_matter = find_talent_spell( talent_tree::HERO, "Dark Matter" );
+  talent.annihilator.otherworldly_focus = find_talent_spell( talent_tree::HERO, "Otherworldly Focus" );
+
+  talent.annihilator.world_killer = find_talent_spell( talent_tree::HERO, "World Killer" );
 
   // Fel-Scarred talents
   talent.felscarred.demonsurge = find_talent_spell( talent_tree::HERO, "Demonsurge" );
