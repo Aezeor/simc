@@ -27,8 +27,6 @@
 #include "unique_gear_helper.hpp"
 #include "util/string_view.hpp"
 
-#include <regex>
-
 namespace unique_gear::thewarwithin
 {
 std::vector<unsigned> __tww_special_effect_ids;
@@ -60,54 +58,6 @@ void register_special_effect( std::initializer_list<unsigned> spell_ids, custom_
 {
   for ( auto id : spell_ids )
     register_special_effect( id, init_callback, fallback );
-}
-
-const spell_data_t* spell_from_spell_text( const special_effect_t& e )
-{
-  if ( auto desc = e.player->dbc->spell_text( e.spell_id ).desc() )
-  {
-    std::cmatch m;
-    std::regex r( R"(\$\?a)" + std::to_string( e.player->spec_spell->id() ) + R"(\[\$@spellname([0-9]+)\]\[\])" );
-    if ( std::regex_search( desc, m, r ) )
-    {
-      auto id = as<unsigned>( std::stoi( m.str( 1 ) ) );
-      auto spell = e.player->find_spell( id );
-
-      e.player->sim->print_debug( "parsed spell for special effect '{}': {} ({})", e.name(), spell->name_cstr(), id );
-      return spell;
-    }
-  }
-
-  return spell_data_t::nil();
-}
-
-template <typename T = stat_buff_t>
-void create_all_stat_buffs( const special_effect_t& effect, const spell_data_t* buff_data, double amount,
-                            std::function<void( stat_e, buff_t* )> add_fn, bool add_to_list = true )
-{
-  static_assert( std::is_base_of_v<stat_buff_t, T> );
-  auto buff_name = util::tokenize_fn( buff_data->name_cstr() );
-
-  for ( const auto& eff : buff_data->effects() )
-  {
-    if ( eff.type() != E_APPLY_AURA || eff.subtype() != A_MOD_RATING )
-      continue;
-
-    auto stats = util::translate_all_rating_mod( eff.misc_value1() );
-
-    std::vector<std::string_view> stat_strs;
-    range::transform( stats, std::back_inserter( stat_strs ), &util::stat_type_abbrev );
-
-    auto name = fmt::format( "{}_{}", buff_name, util::string_join( stat_strs, "_" ) );
-    auto buff = create_buff<T>( effect.player, name, buff_data )
-      ->add_stat( stats.front(), amount ? amount : eff.average( effect ) )
-      ->set_name_reporting( util::string_join( stat_strs ) );
-
-    add_fn( stats.front(), buff );
-
-    if ( add_to_list && !range::contains( effect.buff_list, buff ) )
-      effect.buff_list.push_back( buff );
-  }
 }
 
 // from item_naming.inc

@@ -51,7 +51,7 @@
 #include "player/spawner_base.hpp"
 #include "player/stats.hpp"
 #include "player/unique_gear.hpp"
-#include "player/unique_gear_thewarwithin.hpp"
+#include "player/unique_gear_midnight.hpp"
 #include "sim/benefit.hpp"
 #include "sim/cooldown.hpp"
 #include "sim/cooldown_waste_data.hpp"
@@ -2099,7 +2099,7 @@ void player_t::create_special_effects()
 
   if ( sim->enable_all_item_effects )
   {
-    for ( auto id : unique_gear::thewarwithin::__tww_special_effect_ids )
+    for ( auto id : unique_gear::midnight::__mid_special_effect_ids )
     {
       if ( unique_gear::find_special_effect( this, id ) )
         continue;
@@ -13173,6 +13173,7 @@ void player_t::copy_from( player_t* source )
   shadowlands_opts                  = source->shadowlands_opts;
   dragonflight_opts                 = source->dragonflight_opts;
   thewarwithin_opts                 = source->thewarwithin_opts;
+  midnight_opts                     = source->midnight_opts;
   load_default_gear                 = source->load_default_gear;
   load_default_talents              = source->load_default_talents;
   use_blizzard_action_list          = source->use_blizzard_action_list;
@@ -13725,6 +13726,8 @@ void player_t::create_options()
                         thewarwithin_opts.brand_of_ceaseless_ire_force_full_uptime ) );
   add_option( opt_bool( "thewarwithin.attuned_to_the_aether",
                         thewarwithin_opts.attuned_to_the_aether ) );
+
+  // Midnight options
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

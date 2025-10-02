@@ -951,6 +951,10 @@ struct player_t : public actor_t
     bool attuned_to_the_aether = false;
   } thewarwithin_opts;
 
+  struct midnight_opts_t
+  {
+  } midnight_opts;
+
 private:
   /// Flag to activate/deactive resource callback checks. Motivation: performance.
   bool has_active_resource_callbacks;

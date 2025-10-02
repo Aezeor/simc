@@ -664,6 +664,35 @@ BUFF* create_buff( player_t* p, const spell_data_t* s, ARGS&&... args )
   return create_buff<BUFF>( p, util::tokenize_fn( s->name_cstr() ), s, std::forward<ARGS>( args )... );
 }
 
+template <typename T = stat_buff_t>
+void create_all_stat_buffs( const special_effect_t& effect, const spell_data_t* buff_data, double amount,
+                            std::function<void( stat_e, buff_t* )> add_fn, bool add_to_list = true )
+{
+  static_assert( std::is_base_of_v<stat_buff_t, T> );
+  auto buff_name = util::tokenize_fn( buff_data->name_cstr() );
+
+  for ( const auto& eff : buff_data->effects() )
+  {
+    if ( eff.type() != E_APPLY_AURA || eff.subtype() != A_MOD_RATING )
+      continue;
+
+    auto stats = util::translate_all_rating_mod( eff.misc_value1() );
+
+    std::vector<std::string_view> stat_strs;
+    range::transform( stats, std::back_inserter( stat_strs ), &util::stat_type_abbrev );
+
+    auto name = fmt::format( "{}_{}", buff_name, util::string_join( stat_strs, "_" ) );
+    auto buff = create_buff<T>( effect.player, name, buff_data )
+      ->add_stat( stats.front(), amount ? amount : eff.average( effect ) )
+      ->set_name_reporting( util::string_join( stat_strs ) );
+
+    add_fn( stats.front(), buff );
+
+    if ( add_to_list && !range::contains( effect.buff_list, buff ) )
+      effect.buff_list.push_back( buff );
+  }
+}
+
 struct unique_gear_pet_t : public pet_t
 {
 protected:

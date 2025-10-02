@@ -538,6 +538,10 @@ struct sim_t : private sc_thread_t
   {
   } thewarwithin_opts;
 
+  struct midnight_opts
+  {
+  } midnight_opts;
+
   // Auras and De-Buffs
   auto_dispose<std::vector<buff_t*>> buff_list;
 

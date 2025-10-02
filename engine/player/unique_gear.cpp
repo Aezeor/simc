@@ -13,6 +13,7 @@
 #include "unique_gear_dragonflight.hpp"
 #include "unique_gear_shadowlands.hpp"
 #include "unique_gear_thewarwithin.hpp"
+#include "unique_gear_midnight.hpp"
 #include "util/util.hpp"
 
 #include <cctype>
@@ -3633,7 +3634,7 @@ void generic::enable_all_item_effects( special_effect_t& effect )
     {
       action_t::init();
 
-      for ( auto id : thewarwithin::__tww_special_effect_ids )
+      for ( auto id : midnight::__mid_special_effect_ids )
       {
         if ( auto eff = find_special_effect( player, id ) )
         {
@@ -4937,18 +4938,14 @@ void unique_gear::register_special_effects()
 {
   // Register legion special effects
   register_special_effects_legion();
-
   // Register azerite special effects
   azerite::register_azerite_powers();
-
   register_special_effects_bfa();
-
   shadowlands::register_special_effects();
   covenant::soulbinds::register_special_effects();
-
   dragonflight::register_special_effects();
-
   thewarwithin::register_special_effects();
+  midnight:: register_special_effects();
 
   /* Legacy Effects, pre-5.0 */
   register_special_effect( 45481,  "ProcOn/hit_45479Trigger"            ); /* Shattered Sun Pendant of Acumen */
@@ -5147,6 +5144,8 @@ action_t* unique_gear::create_action( player_t* player, util::string_view name, 
     return action;
   else if ( auto action = thewarwithin::create_action( player, name, options ) )
     return action;
+  else if ( auto action = midnight::create_action( player, name, options ) )
+    return action;
 
   return nullptr;
 }
@@ -5158,6 +5157,7 @@ void unique_gear::register_hotfixes()
   shadowlands::register_hotfixes();
   dragonflight::register_hotfixes();
   thewarwithin::register_hotfixes();
+  midnight::register_hotfixes();
 }
 
 void unique_gear::register_target_data_initializers( sim_t* sim )
@@ -5165,13 +5165,11 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
   register_target_data_initializers_legion( sim );
   register_target_data_initializers_bfa( sim );
   azerite::register_azerite_target_data_initializers( sim );
-
   shadowlands::register_target_data_initializers( *sim );
   covenant::soulbinds::register_target_data_initializers( sim );
-
   dragonflight::register_target_data_initializers( *sim );
-
   thewarwithin::register_target_data_initializers( *sim );
+  midnight::register_target_data_initializers( *sim );
 }
 
 special_effect_t* unique_gear::find_special_effect( player_t* actor, unsigned spell_id, special_effect_e type )
@@ -5363,4 +5361,23 @@ double unique_gear::role_mult( player_t* player, const spell_data_t* s_data )
 double unique_gear::role_mult( const special_effect_t& effect )
 {
   return role_mult( effect.player, effect.driver() );
+}
+
+const spell_data_t* unique_gear::spell_from_spell_text( const special_effect_t& e )
+{
+  if ( auto desc = e.player->dbc->spell_text( e.spell_id ).desc() )
+  {
+    std::cmatch m;
+    std::regex r( R"(\$\?a)" + std::to_string( e.player->spec_spell->id() ) + R"(\[\$@spellname([0-9]+)\]\[\])" );
+    if ( std::regex_search( desc, m, r ) )
+    {
+      auto id = as<unsigned>( std::stoi( m.str( 1 ) ) );
+      auto spell = e.player->find_spell( id );
+
+      e.player->sim->print_debug( "parsed spell for special effect '{}': {} ({})", e.name(), spell->name_cstr(), id );
+      return spell;
+    }
+  }
+
+  return spell_data_t::nil();
 }

@@ -142,6 +142,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\player\unique_gear.hpp" />
 		<ClInclude Include="..\engine\player\unique_gear_dragonflight.hpp" />
 		<ClInclude Include="..\engine\player\unique_gear_helper.hpp" />
+		<ClInclude Include="..\engine\player\unique_gear_midnight.hpp" />
 		<ClInclude Include="..\engine\player\unique_gear_shadowlands.hpp" />
 		<ClInclude Include="..\engine\player\unique_gear_thewarwithin.hpp" />
 		<ClInclude Include="..\engine\player\weapon.hpp" />
@@ -339,6 +340,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\player\unique_gear_dragonflight.cpp" />
 		<ClCompile Include="..\engine\player\unique_gear_helper.cpp" />
 		<ClCompile Include="..\engine\player\unique_gear_legion.cpp" />
+		<ClCompile Include="..\engine\player\unique_gear_midnight.cpp" />
 		<ClCompile Include="..\engine\player\unique_gear_shadowlands.cpp" />
 		<ClCompile Include="..\engine\player\unique_gear_thewarwithin.cpp" />
 		<ClCompile Include="..\engine\report\charts.cpp" />

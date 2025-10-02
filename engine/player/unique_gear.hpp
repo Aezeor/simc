@@ -89,4 +89,6 @@ bool has_role_mult( player_t*, const spell_data_t* spell = nullptr );
 bool has_role_mult( const special_effect_t& );
 double role_mult( player_t*, const spell_data_t* spell = nullptr );
 double role_mult( const special_effect_t& );
+
+const spell_data_t* spell_from_spell_text( const special_effect_t& );
 }  // namespace unique_gear
