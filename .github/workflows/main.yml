@@ -2,9 +2,9 @@ name: CI
 
 on:
   pull_request:
-    branches: [thewarwithin]
+    branches: [thewarwithin, midnight]
   push:
-    branches: [thewarwithin]
+    branches: [thewarwithin, midnight]
     paths-ignore:
       - "ActionPriorityLists/**"
       - "SpellDataDump/*.txt"
@@ -152,6 +152,7 @@ jobs:
 
   spec-test:
     needs: [ubuntu-clang-build]
+    if: github.ref_name == 'thewarwithin'
     uses: ./.github/workflows/spec_test.yml
     with:
       cache-key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
@@ -240,6 +241,7 @@ jobs:
 
   ubuntu-run:
     needs: [ubuntu-clang-build, ubuntu-gcc-build]
+    if: github.ref_name == 'thewarwithin'
     uses: ./.github/workflows/ubuntu_run.yml
     with:
       cache-sha: ${{ github.sha }}
@@ -254,6 +256,7 @@ jobs:
         run: make SANITIZE=1 -C engine debug -j 2
 
       - name: Smoke Test
+        if: github.ref_name == 'thewarwithin'
         run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
 
   windows-VS:
