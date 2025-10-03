@@ -901,6 +901,7 @@ public:
     propagate_const<action_t*> outbreak_aoe;
     propagate_const<action_t*> death_coil_damage;
     propagate_const<action_t*> epidemic_main;
+    propagate_const<action_t*> infected_claws;
   } background_actions;
 
   struct pet_summon_actions_t
@@ -1413,6 +1414,8 @@ public:
     const spell_data_t* superstrain_energize;
     const spell_data_t* clawing_shadows_buff;
     const spell_data_t* lesser_ghoul_buff;
+    const spell_data_t* infected_claws_dot;
+    const spell_data_t* infected_claws_driver;
 
     // Unholy Summon Spells
     const spell_data_t* summon_gargoyle;
@@ -2991,10 +2994,8 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
       pet_melee_attack_t<ghoul_pet_t>::impact( state );
 
       if ( triggers_infected_claws && dk()->talent.unholy.infected_claws.ok() &&
-           rng().roll( dk()->talent.unholy.infected_claws->effectN( 1 ).percent() ) )
-      {
-        // dk()->trigger_festering_wound( state, 1, dk()->procs.fw_infected_claws );
-      }
+           rng().roll( dk()->spell.infected_claws_driver->proc_chance() ) )
+        dk()->background_actions.infected_claws->execute_on_target( state->target );
     }
 
     bool ready() override
@@ -3193,6 +3194,14 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       : pet_melee_attack_t( p, "claw", p->dk()->pet_spell.army_claw )
     {
       parse_options( options_str );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      pet_melee_attack_t<lesser_ghoul_pet_t>::impact( s );
+
+      if ( dk()->talent.unholy.infected_claws.ok() && rng().roll( dk()->spell.infected_claws_driver->proc_chance() ) )
+        dk()->background_actions.infected_claws->execute_on_target( s->target );
     }
   };
 
@@ -6760,6 +6769,16 @@ struct frost_fever_t final : public death_knight_disease_t
 
 private:
   int rp_generation;
+};
+
+// Infected Claws =====================================================
+struct infected_claws_t final : public death_knight_disease_t
+{
+  infected_claws_t( std::string_view name, death_knight_t* p )
+    : death_knight_disease_t( name, p, p->spell.infected_claws_dot )
+  {
+    rolling_periodic = true;
+  }
 };
 
 // Virulent Plague ====================================================
@@ -12071,18 +12090,19 @@ void death_knight_t::create_actions()
   {
     if ( talent.unholy.outbreak.ok() )
     {
-      background_actions.outbreak_aoe    = get_action<outbreak_aoe_t>( "outbreak_aoe", this );
-      background_actions.virulent_plague = get_action<virulent_plague_t>( "virulent_plague", this );
+      background_actions.outbreak_aoe      = get_action<outbreak_aoe_t>( "outbreak_aoe", this );
+      background_actions.virulent_plague   = get_action<virulent_plague_t>( "virulent_plague", this );
       background_actions.virulent_eruption = get_action<virulent_eruption_t>( "virulent_eruption", this );
     }
 
     if ( spec.epidemic->ok() )
       background_actions.epidemic_main = get_action<epidemic_damage_main_t>( "epidemic_main", this );
 
-    if( talent.unholy.army_of_the_dead.ok() )
-    {
+    if ( talent.unholy.army_of_the_dead.ok() )
       pet_summon.army_ghoul = get_action<summon_army_of_the_dead_ghoul_t>( "army_ghoul", this );
-    }
+
+    if ( talent.unholy.infected_claws.ok() )
+      background_actions.infected_claws = get_action<infected_claws_t>( "infected_claws", this );
   }
 
   else if ( specialization() == DEATH_KNIGHT_FROST )
@@ -13116,6 +13136,8 @@ void death_knight_t::spell_lookups()
   spell.superstrain_energize            = conditional_spell_lookup( talent.unholy.superstrain.ok(), 1242078 );
   spell.clawing_shadows_buff            = conditional_spell_lookup( talent.unholy.clawing_shadows.ok(), 1241569 );
   spell.lesser_ghoul_buff               = conditional_spell_lookup( spec.festering_strike->ok(), 1255830 );
+  spell.infected_claws_dot              = conditional_spell_lookup( talent.unholy.infected_claws.ok(), 1241786 );
+  spell.infected_claws_driver           = conditional_spell_lookup( talent.unholy.infected_claws.ok(), 1241792 );
 
   // Unholy Summon Spells
   spell.summon_gargoyle     = conditional_spell_lookup( talent.unholy.summon_gargoyle.ok(), 49206 );
@@ -13471,6 +13493,7 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
   flag.razorice_consumed = false;
 
   // Unholy
+  dot.infected_claws = target.get_dot( "infected_claws", &p );
 
   // Apocalypse Death Knight Runeforge Debuffs
   debuff.apocalypse_death = make_debuff( true, *this, "death",
