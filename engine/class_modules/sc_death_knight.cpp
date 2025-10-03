@@ -175,6 +175,21 @@ enum runeforge_apocalypse
   MAX = 4
 };
 
+enum lesser_ghoul
+{
+  LESSER_DOOMED_BIDDING_COIL,
+  LESSER_DOOMED_BIDDING_EPIDEMIC,
+  LESSER_ARMY_OF_THE_DEAD,
+  LESSER_FESTERING_STRIKE
+};
+
+enum magus_of_the_dead
+{
+  MAGUS_DARK_TRANSFORMATION,
+  MAGUS_REANIMATION,
+  MAGUS_ARMY_OF_THE_DEAD
+};
+
 enum rider_of_the_apocalypse
 {
   NONE = 0,
@@ -911,6 +926,9 @@ public:
 
     // Unholy
     propagate_const<action_t*> army_ghoul;
+    propagate_const<action_t*> db_ghoul_coil;
+    propagate_const<action_t*> db_ghoul_epi;
+    propagate_const<action_t*> reanimation_magus;
 
     // San'layn
     propagate_const<action_t*> blood_beast;
@@ -1552,7 +1570,8 @@ public:
   {
     spawner::pet_spawner_t<pets::ghoul_pet_t, death_knight_t> ghoul_pet;
     spawner::pet_spawner_t<pets::lesser_ghoul_pet_t, death_knight_t> lesser_ghoul_army;
-    spawner::pet_spawner_t<pets::lesser_ghoul_pet_t, death_knight_t> lesser_ghoul_db;
+    spawner::pet_spawner_t<pets::lesser_ghoul_pet_t, death_knight_t> lesser_ghoul_db_coil;
+    spawner::pet_spawner_t<pets::lesser_ghoul_pet_t, death_knight_t> lesser_ghoul_db_epi;
     spawner::pet_spawner_t<pets::lesser_ghoul_pet_t, death_knight_t> lesser_ghoul_fs;
     spawner::pet_spawner_t<pets::gargoyle_pet_t, death_knight_t> gargoyle;
     spawner::pet_spawner_t<pets::risen_skulker_pet_t, death_knight_t> risen_skulker;
@@ -1572,7 +1591,8 @@ public:
     pets_t( death_knight_t* p )
       : ghoul_pet( "ghoul", p ),
         lesser_ghoul_army( "lesser_ghoul_army", p ),
-        lesser_ghoul_db( "lesser_ghoul_db", p ),
+        lesser_ghoul_db_coil( "lesser_ghoul_db_coil", p ),
+        lesser_ghoul_db_epi( "lesser_ghoul_db_epi", p ),
         lesser_ghoul_fs( "lesser_ghoul_fs", p ),
         gargoyle( "gargoyle", p ),
         risen_skulker( "risen_skulker", p ),
@@ -3289,7 +3309,11 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     {
       buff_t::expire_override( s, d );
       if ( !sim->event_mgr.canceled && d == timespan_t::zero() )
+      {
         pet()->putrefy->execute();
+        if ( dk()->talent.unholy.reanimation.ok() )
+          dk()->pet_summon.reanimation_magus->execute();
+      }
     }
   };
 
@@ -5551,24 +5575,43 @@ struct blood_beast_summon_t : public death_knight_summon_spell_t
   }
 };
 
-struct summon_lesser_fs_ghoul_t : public death_knight_summon_spell_t
+struct summon_lesser_ghoul_t : public death_knight_summon_spell_t
 {
-  summon_lesser_fs_ghoul_t( std::string_view n, death_knight_t* p )
-    : death_knight_summon_spell_t( n, p, p->spell.summon_lesser_ghoul )
+  summon_lesser_ghoul_t( std::string_view n, death_knight_t* p, lesser_ghoul type )
+    : death_knight_summon_spell_t( n, p, p->spell.summon_lesser_ghoul ), source( type )
   {
     background = true;
   }
+
   void execute() override
   {
     death_knight_summon_spell_t::execute();
-    p()->pets.lesser_ghoul_fs.spawn();
+    switch ( source )
+    {
+      case lesser_ghoul::LESSER_DOOMED_BIDDING_COIL:
+        p()->pets.lesser_ghoul_db_coil.spawn();
+        break;
+      case lesser_ghoul::LESSER_DOOMED_BIDDING_EPIDEMIC:
+        p()->pets.lesser_ghoul_db_epi.spawn();
+        break;
+      case lesser_ghoul::LESSER_FESTERING_STRIKE:
+        p()->pets.lesser_ghoul_fs.spawn();
+        break;
+      case lesser_ghoul::LESSER_ARMY_OF_THE_DEAD:
+        p()->pets.lesser_ghoul_army.spawn( duration );
+        set_duration( p()->pets.lesser_ghoul_army.duration() );
+        break;
+    }
   }
+
+private:
+  lesser_ghoul source;
 };
 
-struct summon_lesser_db_ghoul_t : public death_knight_summon_spell_t
+struct summon_magus_t : public death_knight_summon_spell_t
 {
-  summon_lesser_db_ghoul_t( std::string_view n, death_knight_t* p )
-    : death_knight_summon_spell_t( n, p, p->spell.summon_lesser_ghoul )
+  summon_magus_t( std::string_view n, death_knight_t* p, magus_of_the_dead type )
+    : death_knight_summon_spell_t( n, p, p->spell.summon_magus ), source( type )
   {
     background = true;
   }
@@ -5576,70 +5619,23 @@ struct summon_lesser_db_ghoul_t : public death_knight_summon_spell_t
   void execute() override
   {
     death_knight_summon_spell_t::execute();
-    p()->pets.lesser_ghoul_db.spawn();
-  }
-};
-
-struct summon_army_of_the_dead_ghoul_t : public death_knight_summon_spell_t
-{
-  summon_army_of_the_dead_ghoul_t( std::string_view n, death_knight_t* p )
-    : death_knight_summon_spell_t( n, p, p->spell.summon_army_ghoul )
-  {
-    background = true;
-  }
-
-  void execute() override
-  {
-    death_knight_summon_spell_t::execute();
-    p()->pets.lesser_ghoul_army.spawn( duration );
-    set_duration( p()->pets.lesser_ghoul_army.duration() );
-  }
-};
-
-struct summon_army_magus_t : public death_knight_summon_spell_t
-{
-  summon_army_magus_t( std::string_view n, death_knight_t* p )
-    : death_knight_summon_spell_t( n, p, p->spell.summon_magus )
-  {
-    background = true;
+    switch ( source )
+    {
+      case magus_of_the_dead::MAGUS_DARK_TRANSFORMATION:
+        p()->pets.dt_magus.spawn();
+        break;
+      case magus_of_the_dead::MAGUS_ARMY_OF_THE_DEAD:
+        p()->pets.army_magus.spawn( duration );
+        set_duration( p()->pets.army_magus.duration() );
+        break;
+      case magus_of_the_dead::MAGUS_REANIMATION:
+        p()->pets.reanimation_magus.spawn();
+        break;
+    }
   }
 
-  void execute() override
-  {
-    death_knight_summon_spell_t::execute();
-    p()->pets.army_magus.spawn( duration );
-    set_duration( p()->pets.army_magus.duration() );
-  }
-};
-
-struct summon_dt_magus_t : public death_knight_summon_spell_t
-{
-  summon_dt_magus_t( std::string_view n, death_knight_t* p )
-    : death_knight_summon_spell_t( n, p, p->spell.summon_magus )
-  {
-    background = true;
-  }
-
-  void execute() override
-  {
-    death_knight_summon_spell_t::execute();
-    p()->pets.dt_magus.spawn();
-  }
-};
-
-struct summon_reanimation_magus_t : public death_knight_summon_spell_t
-{
-  summon_reanimation_magus_t( std::string_view n, death_knight_t* p )
-    : death_knight_summon_spell_t( n, p, p->spell.summon_magus )
-  {
-    background = true;
-  }
-
-  void execute() override
-  {
-    death_knight_summon_spell_t::execute();
-    p()->pets.reanimation_magus.spawn();
-  }
+private:
+  magus_of_the_dead source;
 };
 
 struct summon_abomination_t : public death_knight_summon_spell_t
@@ -7372,7 +7368,7 @@ struct dark_transformation_t : public death_knight_spell_t
     if ( p->talent.unholy.magus_of_the_dead.ok() )
     {
       p->pets.dt_magus.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
-      summon_magus = get_action<summon_dt_magus_t>( "summon_dt_magus", p );
+      summon_magus = get_action<summon_magus_t>( "summon_dt_magus", p, magus_of_the_dead::MAGUS_DARK_TRANSFORMATION );
     }
   }
 
@@ -7415,7 +7411,7 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
 
     void execute() override
     {
-      summon_army_of_the_dead_ghoul_t* summon_ghoul_cast = debug_cast<summon_army_of_the_dead_ghoul_t*>( summon_ghoul );
+      summon_lesser_ghoul_t* summon_ghoul_cast = debug_cast<summon_lesser_ghoul_t*>( summon_ghoul );
       summon_ghoul_cast->set_duration( summon_duration );
       summon_ghoul->execute();
 
@@ -7458,7 +7454,7 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
     if ( p->talent.unholy.magus_of_the_dead.ok() )
     {
       p->pets.army_magus.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
-      summon_magus = get_action<summon_army_magus_t>( "summon_army_magus", p );
+      summon_magus = get_action<summon_magus_t>( "summon_army_magus", p, magus_of_the_dead::MAGUS_ARMY_OF_THE_DEAD );
     }
     if ( p->talent.unholy.raise_abomination.ok() )
     {
@@ -7560,7 +7556,7 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
 
     if ( p()->talent.unholy.magus_of_the_dead.ok() )
     {
-      summon_army_magus_t* summon_magus_cast = debug_cast<summon_army_magus_t*>( summon_magus );
+      summon_magus_t* summon_magus_cast = debug_cast<summon_magus_t*>( summon_magus );
       summon_magus_cast->set_duration( summon_duration );
       summon_magus->execute();
     }
@@ -8368,9 +8364,10 @@ struct death_coil_t final : public death_knight_spell_t
       add_child( get_action<coil_of_devastation_t>( "coil_of_devastation", p ) );
 
     if ( p->talent.unholy.doomed_bidding.ok() )
-    {
+      p->pets.lesser_ghoul_db_coil.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+
+    if ( p->talent.unholy.reanimation.ok() )
       p->pets.reanimation_magus.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
-    }
   }
 
   void execute() override
@@ -8720,6 +8717,9 @@ struct epidemic_t final : public death_knight_spell_t
 
     add_child( impact_action );
     add_child( impact_action->impact_action );
+
+    if ( p->talent.unholy.doomed_bidding.ok() )
+      p->pets.lesser_ghoul_db_epi.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -10462,7 +10462,7 @@ struct wound_spender_base_t : public death_knight_melee_attack_t
 {
   wound_spender_base_t( std::string_view name, death_knight_t* p, const spell_data_t* spell )
     : death_knight_melee_attack_t( name, p, spell ),
-      summon_ghoul( get_action<summon_lesser_fs_ghoul_t>( "summon_fs_ghoul", p ) )
+      summon_ghoul( get_action<summon_lesser_ghoul_t>( "summon_fs_ghoul", p, lesser_ghoul::LESSER_FESTERING_STRIKE ) )
   {
     weapon = &( player->main_hand_weapon );
   }
@@ -10533,7 +10533,7 @@ struct wound_spender_base_t : public death_knight_melee_attack_t
 
     if ( p()->buffs.lesser_ghoul_ready->check() )
     {
-      p()->buffs.lesser_ghoul_ready->decrement();
+      p()->buffs.lesser_ghoul_ready->consume( this, 1 );
       summon_ghoul->execute();
     }
 
@@ -11505,6 +11505,14 @@ void death_knight_t::sudden_doom_execute_effects( bool coil )
     else
       skulker->blighted_arrow_aoe_buff->trigger();
   }
+
+  if ( talent.unholy.doomed_bidding.ok() )
+  {
+    if ( coil )
+      pet_summon.db_ghoul_coil->execute();
+    else
+      pet_summon.db_ghoul_epi->execute();
+  }
 }
 
 void death_knight_t::sudden_doom_impact_effects( action_state_t* state, bool coil )
@@ -12099,10 +12107,22 @@ void death_knight_t::create_actions()
       background_actions.epidemic_main = get_action<epidemic_damage_main_t>( "epidemic_main", this );
 
     if ( talent.unholy.army_of_the_dead.ok() )
-      pet_summon.army_ghoul = get_action<summon_army_of_the_dead_ghoul_t>( "army_ghoul", this );
+      pet_summon.army_ghoul = get_action<summon_lesser_ghoul_t>( "army_ghoul", this, lesser_ghoul::LESSER_ARMY_OF_THE_DEAD );
 
     if ( talent.unholy.infected_claws.ok() )
       background_actions.infected_claws = get_action<infected_claws_t>( "infected_claws", this );
+
+    if ( talent.unholy.doomed_bidding.ok() )
+    {
+      pet_summon.db_ghoul_coil =
+          get_action<summon_lesser_ghoul_t>( "summon_coil_db_ghoul", this, lesser_ghoul::LESSER_DOOMED_BIDDING_COIL );
+      pet_summon.db_ghoul_epi = 
+          get_action<summon_lesser_ghoul_t>( "summon_epi_db_ghoul", this, lesser_ghoul::LESSER_DOOMED_BIDDING_EPIDEMIC );
+    }
+
+    if ( talent.unholy.reanimation.ok() )
+      pet_summon.reanimation_magus =
+          get_action<summon_magus_t>( "summon_reanimation_magus", this, magus_of_the_dead::MAGUS_REANIMATION );
   }
 
   else if ( specialization() == DEATH_KNIGHT_FROST )
@@ -12576,9 +12596,14 @@ void death_knight_t::create_pets()
     if ( talent.unholy.doomed_bidding.ok() )
     {
       timespan_t doomed_bidding_duration = spell.summon_lesser_ghoul->duration();
-      pets.lesser_ghoul_db.set_creation_callback(
-          []( death_knight_t* p ) { return new pets::lesser_ghoul_pet_t( p, "db_ghoul" ); } );
-      pets.lesser_ghoul_db.set_default_duration( doomed_bidding_duration );
+
+      pets.lesser_ghoul_db_coil.set_creation_callback(
+          []( death_knight_t* p ) { return new pets::lesser_ghoul_pet_t( p, "db_ghoul_coil" ); } );
+      pets.lesser_ghoul_db_coil.set_default_duration( doomed_bidding_duration );
+
+      pets.lesser_ghoul_db_epi.set_creation_callback(
+          []( death_knight_t* p ) { return new pets::lesser_ghoul_pet_t( p, "db_ghoul_epi" ); } );
+      pets.lesser_ghoul_db_epi.set_default_duration( doomed_bidding_duration );
     }
 
     if ( talent.unholy.reanimation.ok() )
@@ -14005,7 +14030,8 @@ void death_knight_t::create_buffs()
 
   buffs.lesser_ghoul_ready =
       make_fallback( spec.festering_strike->ok(), this, "lesser_ghoul_ready", spell.lesser_ghoul_buff )
-          ->set_max_stack( 8 );
+          ->set_max_stack( 8 )
+          ->disable_ticking( true );
 }
 
 // death_knight_t::init_gains ===============================================
