@@ -8395,7 +8395,6 @@ struct necrotic_coil_shadow_t final : public death_coil_damage_base_t
     : death_coil_damage_base_t( name, p, p->spell.necrotic_coil_shadow )
   {
     execute_action = get_action<necrotic_coil_physical_t>( "necrotic_coil_physical", p );
-    add_child( execute_action );
   }
 };
 
@@ -8427,6 +8426,8 @@ struct necrotic_coil_t final : public death_coil_base_t
     : death_coil_base_t( n, p, p->spell.necrotic_coil_action )
   {
     execute_action = get_action<necrotic_coil_shadow_t>( "necrotic_coil_shadow", p );
+    add_child( execute_action );
+    add_child( execute_action->execute_action );
   }
 };
 
@@ -8812,7 +8813,6 @@ struct graveyard_damage_main_t final : public epidemic_damage_base_t
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
 
     impact_action           = get_action<graveyard_damage_aoe_t>( "graveyard_aoe", p );
-    add_child( impact_action );
   }
 };
 
@@ -8880,6 +8880,7 @@ struct graveyard_t final : public epidemic_base_t
   {
     impact_action = get_action<graveyard_damage_main_t>( "graveyard_main", p );
     add_child( impact_action );
+    add_child( impact_action->impact_action );
   }
 };
 
@@ -13307,7 +13308,7 @@ void death_knight_t::spell_lookups()
   spell.forbidden_knowledge_buff     = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 1242223 );
   spell.forbidden_knowledge_energize = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 1256576 );
   spell.necrotic_coil_action         = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 1242174 );
-  spell.necrotic_coil_shadow         = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 1256567 );
+  spell.necrotic_coil_shadow         = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 1242178 );
   spell.necrotic_coil_physical       = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 1242172 );
   spell.graveyard_action             = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 383269 );
   spell.graveyard_damage             = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 383313 );
@@ -14761,6 +14762,7 @@ void death_knight_t::arise()
       dk_active_pets.reserve( 32 );
       // Add some extra space for cantrip item pets.
       active_pets.reserve( 36 );
+      active_lesser_ghouls.reserve( 24 );
       break;
     default:
       break;
