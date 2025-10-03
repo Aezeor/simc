@@ -3363,6 +3363,17 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     def->add_action( "claw" );
   }
 
+
+  double composite_melee_auto_attack_speed() const override
+  {
+    double haste = base_ghoul_pet_t::composite_melee_auto_attack_speed();
+
+    if ( dk()->talent.unholy.unholy_devotion.ok() && putrefy_buff->check() )
+      haste *= 1.0 / ( 1.0 + putrefy_buff->data().effectN( 2 ).percent() );
+
+    return haste;
+  }
+
   void create_buffs() override
   {
     base_ghoul_pet_t::create_buffs();
