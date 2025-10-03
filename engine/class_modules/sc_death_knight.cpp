@@ -788,6 +788,7 @@ public:
     propagate_const<buff_t*> festering_scythe;
     propagate_const<buff_t*> clawing_shadows;
     propagate_const<buff_t*> lesser_ghoul_ready;
+    propagate_const<buff_t*> forbidden_knowledge;
 
     // Rider of the Apocalypse
     propagate_const<buff_t*> a_feast_of_souls;
@@ -917,6 +918,7 @@ public:
     propagate_const<action_t*> death_coil_damage;
     propagate_const<action_t*> epidemic_main;
     propagate_const<action_t*> infected_claws;
+    propagate_const<action_t*> coil_of_devastation;
   } background_actions;
 
   struct pet_summon_actions_t
@@ -1435,6 +1437,13 @@ public:
     const spell_data_t* lesser_ghoul_buff;
     const spell_data_t* infected_claws_dot;
     const spell_data_t* infected_claws_driver;
+    const spell_data_t* forbidden_knowledge_buff;
+    const spell_data_t* forbidden_knowledge_energize;
+    const spell_data_t* necrotic_coil_action;
+    const spell_data_t* necrotic_coil_shadow;
+    const spell_data_t* necrotic_coil_physical;
+    const spell_data_t* graveyard_action;
+    const spell_data_t* graveyard_damage;
 
     // Unholy Summon Spells
     const spell_data_t* summon_gargoyle;
@@ -7593,6 +7602,17 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
       p()->summon_rider(
           p()->talent.rider.apocalypse_now->effectN( 2 ).time_value() - timespan_t::from_seconds( precombat_time ),
           false );
+
+    if ( p()->talent.unholy.forbidden_knowledge_1.ok() )
+      p()->buffs.forbidden_knowledge->trigger();
+
+    if ( p()->talent.unholy.forbidden_knowledge_2.ok() )
+    {
+      p()->resource_gain( RESOURCE_RUNIC_POWER,
+                          p()->spell.forbidden_knowledge_energize->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ), gain,
+                          this );
+      p()->buffs.lesser_ghoul_ready->trigger( as<int>( p()->talent.unholy.forbidden_knowledge_2->effectN( 2 ).base_value() ) );
+    }
   }
 
 private:
@@ -8286,10 +8306,10 @@ struct coil_of_devastation_t final : public residual_action::residual_periodic_a
   }
 };
 
-struct death_coil_damage_t final : public death_knight_spell_t
+struct death_coil_damage_base_t : public death_knight_spell_t
 {
-  death_coil_damage_t( std::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->spell.death_coil_damage ),
+  death_coil_damage_base_t( std::string_view name, death_knight_t* p, const spell_data_t* s )
+    : death_knight_spell_t( name, p, s ),
       coil_of_devastation( nullptr ),
       sudden_doom( false ),
       cod_mod( 0.0 ),
@@ -8300,7 +8320,7 @@ struct death_coil_damage_t final : public death_knight_spell_t
 
     if ( p->talent.unholy.coil_of_devastation.ok() )
     {
-      coil_of_devastation = get_action<coil_of_devastation_t>( "coil_of_devastation", p );
+      coil_of_devastation = p->background_actions.coil_of_devastation;
       cod_mod             = p->talent.unholy.coil_of_devastation->effectN( 1 ).percent();
     }
 
@@ -8361,10 +8381,59 @@ private:
   double reaping_mod;
 };
 
-struct death_coil_t final : public death_knight_spell_t
+struct necrotic_coil_physical_t final : public death_knight_spell_t
+{
+  necrotic_coil_physical_t( std::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->spell.necrotic_coil_physical )
+  {
+  }
+};
+
+struct necrotic_coil_shadow_t final : public death_coil_damage_base_t
+{
+  necrotic_coil_shadow_t( std::string_view name, death_knight_t* p )
+    : death_coil_damage_base_t( name, p, p->spell.necrotic_coil_shadow )
+  {
+    execute_action = get_action<necrotic_coil_physical_t>( "necrotic_coil_physical", p );
+    add_child( execute_action );
+  }
+};
+
+struct death_coil_damage_t final : public death_coil_damage_base_t
+{
+  death_coil_damage_t( std::string_view name, death_knight_t* p )
+    : death_coil_damage_base_t( name, p, p->spell.death_coil_damage )
+  {
+  }
+};
+
+struct death_coil_base_t : public death_knight_spell_t
+{
+  death_coil_base_t( std::string_view n, death_knight_t* p, const spell_data_t* s ) : death_knight_spell_t( n, p, s )
+  {
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    p()->last_cast_rp_spender = p()->background_actions.death_coil_damage;
+  }
+};
+
+struct necrotic_coil_t final : public death_coil_base_t
+{
+  necrotic_coil_t( std::string_view n, death_knight_t* p )
+    : death_coil_base_t( n, p, p->spell.necrotic_coil_action )
+  {
+    execute_action = get_action<necrotic_coil_shadow_t>( "necrotic_coil_shadow", p );
+  }
+};
+
+struct death_coil_t final : public death_coil_base_t
 {
   death_coil_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_spell_t( "death_coil", p, p->spec.death_coil )
+    : death_coil_base_t( "death_coil", p, p->spec.death_coil )
   {
     parse_options( options_str );
 
@@ -8372,21 +8441,16 @@ struct death_coil_t final : public death_knight_spell_t
     execute_action->stats = stats;
     stats->action_list.push_back( execute_action );
 
+    set_replacement_action( get_action<necrotic_coil_t>( "necrotic_coil", p ), p->buffs.forbidden_knowledge );
+
     if ( p->talent.unholy.coil_of_devastation.ok() )
-      add_child( get_action<coil_of_devastation_t>( "coil_of_devastation", p ) );
+      add_child( p->background_actions.coil_of_devastation );
 
     if ( p->talent.unholy.doomed_bidding.ok() )
       p->pets.lesser_ghoul_db_coil.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
 
     if ( p->talent.unholy.reanimation.ok() )
       p->pets.reanimation_magus.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    p()->last_cast_rp_spender = execute_action;
   }
 };
 
@@ -8683,7 +8747,6 @@ struct epidemic_damage_aoe_t final : public epidemic_damage_base_t
   {
     // Main is one target, aoe is the other targets, so we take 1 off the max targets
     aoe = aoe - 1;
-
     attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
   }
 
@@ -8701,6 +8764,28 @@ struct epidemic_damage_aoe_t final : public epidemic_damage_base_t
   }
 };
 
+struct graveyard_damage_aoe_t final : public epidemic_damage_base_t
+{
+  graveyard_damage_aoe_t( std::string_view name, death_knight_t* p )
+    : epidemic_damage_base_t( name, p, p->spell.graveyard_damage )
+  {
+    // Main is one target, aoe is the other targets, so we take 1 off the max targets
+    aoe                     = aoe - 1;
+    attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    death_knight_spell_t::available_targets( tl );
+    auto it = range::find( tl, target );
+    if ( it != tl.end() )
+    {
+      tl.erase( it );
+    }
+    return tl.size();
+  }
+};
+
 struct epidemic_damage_main_t final : public epidemic_damage_base_t
 {
   epidemic_damage_main_t( std::string_view name, death_knight_t* p )
@@ -8712,24 +8797,33 @@ struct epidemic_damage_main_t final : public epidemic_damage_base_t
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
 
     impact_action = get_action<epidemic_damage_aoe_t>( "epidemic_aoe", p );
+    add_child( impact_action );
   }
 };
 
-struct epidemic_t final : public death_knight_spell_t
+struct graveyard_damage_main_t final : public epidemic_damage_base_t
 {
-  epidemic_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_spell_t( "epidemic", p, p->spec.epidemic ),
+  graveyard_damage_main_t( std::string_view name, death_knight_t* p )
+    : epidemic_damage_base_t( name, p, p->spell.graveyard_damage )
+  {
+    // Ignore spelldata for max targets for the main spell, as it is single target only
+    aoe = 0;
+    // this spell has both coefficients in it, and it seems like it is reading #2, the aoe portion, instead of #1
+    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+
+    impact_action           = get_action<graveyard_damage_aoe_t>( "graveyard_aoe", p );
+    add_child( impact_action );
+  }
+};
+
+struct epidemic_base_t : public death_knight_spell_t
+{
+  epidemic_base_t( std::string_view n, death_knight_t* p, const spell_data_t* s )
+    : death_knight_spell_t( n, p, s ),
       custom_reduced_aoe_targets( 8.0 ),
       soft_cap_multiplier( 1.0 ),
       sd( false )
   {
-    parse_options( options_str );
-
-    impact_action = p->background_actions.epidemic_main;
-
-    add_child( impact_action );
-    add_child( impact_action->impact_action );
-
     if ( p->talent.unholy.doomed_bidding.ok() )
       p->pets.lesser_ghoul_db_epi.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
   }
@@ -8763,7 +8857,7 @@ struct epidemic_t final : public death_knight_spell_t
 
     death_knight_spell_t::execute();
 
-    p()->last_cast_rp_spender = impact_action;
+    p()->last_cast_rp_spender = p()->background_actions.epidemic_main;
     p()->unholy_rp_execute_effects( sd );
   }
 
@@ -8778,6 +8872,29 @@ private:
   double custom_reduced_aoe_targets;  // Not in spelldata
   double soft_cap_multiplier;
   bool sd;
+};
+
+struct graveyard_t final : public epidemic_base_t
+{
+  graveyard_t( std::string_view n, death_knight_t* p, const spell_data_t* s ) : epidemic_base_t( n, p, s )
+  {
+    impact_action = get_action<graveyard_damage_main_t>( "graveyard_main", p );
+    add_child( impact_action );
+  }
+};
+
+struct epidemic_t final : public epidemic_base_t
+{
+  epidemic_t( death_knight_t* p, std::string_view options_str ) : epidemic_base_t( "epidemic", p, p->spec.epidemic )
+  {
+    parse_options( options_str );
+    impact_action = p->background_actions.epidemic_main;
+
+    set_replacement_action( new graveyard_t( "graveyard", p, p->spell.graveyard_action ),
+                            p->buffs.forbidden_knowledge );
+
+    add_child( impact_action );
+  }
 };
 
 // Festering Strike and Scythe ==============================================
@@ -10255,6 +10372,10 @@ struct putrefy_t final : public death_knight_spell_t
       ghoul->putrefy_buff->trigger();
       return;
     }
+
+    if ( p()->talent.unholy.forbidden_knowledge_3.ok() && p()->buffs.forbidden_knowledge->check() )
+      p()->buffs.forbidden_knowledge->extend_duration(
+          p(), p()->talent.unholy.forbidden_knowledge_3->effectN( 1 ).time_value() );
   }
 };
 
@@ -10547,6 +10668,10 @@ struct wound_spender_base_t : public death_knight_melee_attack_t
     {
       p()->buffs.lesser_ghoul_ready->consume( this, 1 );
       summon_ghoul->execute();
+
+      if ( p()->talent.unholy.forbidden_knowledge_3.ok() && p()->buffs.forbidden_knowledge->check() )
+        p()->buffs.forbidden_knowledge->extend_duration(
+            p(), p()->talent.unholy.forbidden_knowledge_3->effectN( 1 ).time_value() );
     }
 
     p()->trigger_sanlayn_execute_talents( this->data().id() == p()->spell.vampiric_strike->id() );
@@ -12135,6 +12260,9 @@ void death_knight_t::create_actions()
     if ( talent.unholy.reanimation.ok() )
       pet_summon.reanimation_magus =
           get_action<summon_magus_t>( "summon_reanimation_magus", this, magus_of_the_dead::MAGUS_REANIMATION );
+
+    if ( talent.unholy.coil_of_devastation.ok() )
+      background_actions.coil_of_devastation = get_action<coil_of_devastation_t>( "coil_of_devastation", this );
   }
 
   else if ( specialization() == DEATH_KNIGHT_FROST )
@@ -12961,10 +13089,9 @@ void death_knight_t::init_spells()
   talent.unholy.raise_abomination = find_talent_spell( talent_tree::SPECIALIZATION, "Raise Abomination" );
   talent.unholy.summon_gargoyle   = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Gargoyle" );
   // Apex
-  // SYNTAX HERE??? THEY ALL SHARE A NAME
-  // talent.unholy.forbidden_knowledge_1 = find_talent_spell( talent_tree::SPECIALIZATION, "Forbidden Knowledge" );
-  // talent.unholy.forbidden_knowledge_2 = find_talent_spell( talent_tree::SPECIALIZATION, "Forbidden Knowledge" );
-  // talent.unholy.forbidden_knowledge_3 = find_talent_spell( talent_tree::SPECIALIZATION, "Forbidden Knowledge" );
+  talent.unholy.forbidden_knowledge_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1242158 );
+  talent.unholy.forbidden_knowledge_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1256565 );
+  talent.unholy.forbidden_knowledge_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1256566 );
 
   //////// Rider of the Apocalypse
   talent.rider.riders_champion        = find_talent_spell( talent_tree::HERO, "Rider's Champion" );
@@ -13176,6 +13303,14 @@ void death_knight_t::spell_lookups()
   spell.lesser_ghoul_buff               = conditional_spell_lookup( spec.festering_strike->ok(), 1255830 );
   spell.infected_claws_dot              = conditional_spell_lookup( talent.unholy.infected_claws.ok(), 1241786 );
   spell.infected_claws_driver           = conditional_spell_lookup( talent.unholy.infected_claws.ok(), 1241792 );
+  // Unholy Apex
+  spell.forbidden_knowledge_buff     = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 1242223 );
+  spell.forbidden_knowledge_energize = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 1256576 );
+  spell.necrotic_coil_action         = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 1242174 );
+  spell.necrotic_coil_shadow         = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 1256567 );
+  spell.necrotic_coil_physical       = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 1242172 );
+  spell.graveyard_action             = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 383269 );
+  spell.graveyard_damage             = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 383313 );
 
   // Unholy Summon Spells
   spell.summon_gargoyle     = conditional_spell_lookup( talent.unholy.summon_gargoyle.ok(), 49206 );
@@ -14045,6 +14180,9 @@ void death_knight_t::create_buffs()
       make_fallback( spec.festering_strike->ok(), this, "lesser_ghoul_ready", spell.lesser_ghoul_buff )
           ->set_max_stack( 8 )
           ->disable_ticking( true );
+
+  buffs.forbidden_knowledge = make_fallback( talent.unholy.forbidden_knowledge_1.ok(), this, "forbidden_knowledge",
+                                             spell.forbidden_knowledge_buff );
 }
 
 // death_knight_t::init_gains ===============================================
