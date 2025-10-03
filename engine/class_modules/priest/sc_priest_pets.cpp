@@ -289,47 +289,21 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
     {
       parse_effects( p().o().buffs.voidform, effect_mask_t( true ).disable( 3 ), IGNORE_STACKS );  // Skip E3 for AM
       parse_effects( p().o().buffs.shadowform );
-      // Buffs non-periodic spells
-      parse_effects( p().o().buffs.dark_ascension, effect_mask_t( true ).disable( 4 ), IGNORE_STACKS );  // Skip E4 for AM
     }
 
     if ( p().o().talents.shadow.ancient_madness.enabled() )
     {
       // We use DA or VF spelldata to construct Ancient Madness to use the correct spell pass-list
-      if ( p().o().talents.shadow.dark_ascension.enabled() )
-      {
-        parse_effects( p().o().buffs.ancient_madness, effect_mask_t( false ).enable( 4 ), USE_DEFAULT );  // Enable E4
-      }
-      else
-      {
-        parse_effects( p().o().buffs.ancient_madness, effect_mask_t( false ).enable( 3 ), USE_DEFAULT );  // Enable E3
-      }
+      parse_effects( p().o().buffs.ancient_madness, effect_mask_t( false ).enable( 3 ), USE_DEFAULT );  // Enable E3
     }
 
     if ( p().o().sets->has_set_bonus( PRIEST_SHADOW, TWW1, B4 ) )
     {
       parse_effects( p().o().buffs.devouring_chorus );
     }
-
-    // DISCIPLINE BUFF EFFECTS
-    if ( p().o().specialization() == PRIEST_DISCIPLINE )
-    {
-      parse_effects( p().o().buffs.shadow_covenant, IGNORE_STACKS, USE_DEFAULT );
-      // 280398 applies the buff to the correct spells, but does not contain the correct buff value
-      // (12% instead of 40%) So, override to use our provided default_value (40%) instead
-      parse_effects( p().o().buffs.sins_of_the_many, IGNORE_STACKS, USE_DEFAULT );
-    }
   }
   void apply_debuffs_effects()
   {
-    // using S = const spell_data_t*;
-    // DISCIPLINE DEBUFF EFFECTS
-    // Doesn't work on the pet ayy lmao
-    /*if ( p().o().specialization() == PRIEST_DISCIPLINE )
-    {
-        parse_target_effects( []( actor_target_data_t* t ) { return static_cast<priest_td_t*>( t
-    )->buffs.schism->check(); }, p().o().talents.discipline.schism_debuff );
-    }*/
   }
 
   priest_pet_t& p()
@@ -615,7 +589,7 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
     : base_fiend_pet_t( owner, name, fiend_type::Shadowfiend ),
       power_leech_insanity( o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY ) ),
       power_leech_mana( o().specialization() == PRIEST_SHADOW ? 0.0
-                                                              : o().talents.shadowfiend->effectN( 4 ).percent() / 10 )
+                                                              : o().talents.shared.shadowfiend->effectN( 4 ).percent() / 10 )
   {
     direct_power_mod = 0.408;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
 
@@ -633,7 +607,7 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
   }
   double insanity_gain() const override
   {
-    if ( o().talents.shadowfiend.enabled() )
+    if ( o().talents.shared.shadowfiend.enabled() )
     {
       return power_leech_insanity;
     }
@@ -774,7 +748,7 @@ struct fiend_melee_t : public priest_pet_melee_t
 
       p().o().trigger_atonement( s, composite_atonement_multiplier( s ) );
 
-      if ( p().o().talents.shadowfiend.enabled() || p().o().talents.shared.mindbender.enabled() )
+      if ( p().o().talents.shared.shadowfiend.enabled() || p().o().talents.shared.mindbender.enabled() )
       {
         if ( p().o().specialization() == PRIEST_SHADOW )
         {
@@ -1184,7 +1158,6 @@ void priest_t::trigger_inescapable_torment( player_t* target, bool echo, double 
   if ( get_current_main_pet().n_active_pets() > 0 )
   {
     auto extend = talents.shared.inescapable_torment->effectN( 2 ).time_value() * mod;
-    buffs.shadow_covenant->extend_duration( this, extend );
 
     for ( auto a_pet : get_current_main_pet() )
     {

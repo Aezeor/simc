@@ -92,7 +92,7 @@ public:
   {
     propagate_const<dot_t*> shadow_word_pain;
     propagate_const<dot_t*> vampiric_touch;
-    propagate_const<dot_t*> devouring_plague;
+    propagate_const<dot_t*> shadow_word_madness;
     propagate_const<dot_t*> mind_flay;
     propagate_const<dot_t*> mind_flay_insanity;
     propagate_const<dot_t*> void_torrent;
@@ -102,7 +102,6 @@ public:
 
   struct buffs_t
   {
-    propagate_const<buff_t*> schism;
     propagate_const<buff_t*> death_and_madness_debuff;
     buff_t* atonement;
     propagate_const<buff_t*> resonant_energy;
@@ -177,38 +176,26 @@ public:
     propagate_const<buff_t*> twist_of_fate_heal_self_fake;
     propagate_const<buff_t*> twist_of_fate_heal_ally_fake;
     propagate_const<buff_t*> twist_of_fate;
-    propagate_const<buff_t*> rhapsody;
-    propagate_const<buff_t*> rhapsody_timer;
     propagate_const<buff_t*> protective_light;
-    propagate_const<buff_t*> from_darkness_comes_light;
     propagate_const<buff_t*> death_and_madness_reset;
     propagate_const<buff_t*> vampiric_embrace;
-    propagate_const<buff_t*> words_of_the_pious;
     propagate_const<buff_t*> surge_of_light;
 
     // Discipline
     propagate_const<buff_t*> inner_focus;
     propagate_const<buff_t*> power_of_the_dark_side;
-    propagate_const<buff_t*> sins_of_the_many;
-    propagate_const<buff_t*> shadow_covenant;
     propagate_const<buff_t*> borrowed_time;
     propagate_const<buff_t*> revel_in_purity;
-    propagate_const<buff_t*> twilight_equilibrium_holy_amp;
-    propagate_const<buff_t*> twilight_equilibrium_shadow_amp;
     propagate_const<buff_t*> harsh_discipline;
     propagate_const<buff_t*> train_of_thought;
     propagate_const<buff_t*> wrath_unleashed;
     propagate_const<buff_t*> weal_and_woe;
-    propagate_const<buff_t*> rapture;
 
     // Holy
     propagate_const<buff_t*> apotheosis;
     propagate_const<buff_t*> empyreal_blaze;
-    propagate_const<buff_t*> divine_word;
     propagate_const<buff_t*> divine_favor_chastise;
     propagate_const<buff_t*> divine_image;
-    propagate_const<buff_t*> answered_prayers;
-    propagate_const<buff_t*> answered_prayers_timer;
 
     // Shadow
     propagate_const<buff_t*> dispersion;
@@ -226,7 +213,6 @@ public:
     propagate_const<buff_t*> idol_of_yoggsaron;
     propagate_const<buff_t*> surge_of_insanity;
     propagate_const<buff_t*> mind_flay_insanity;
-    propagate_const<buff_t*> dark_ascension;
     propagate_const<buff_t*> call_of_the_void;
     propagate_const<buff_t*> overburdened_mind;
     propagate_const<buff_t*> shattered_psyche;
@@ -258,158 +244,151 @@ public:
   {
     // Priest Tree
     // Row 1
-    player_talent_t renew;
-    player_talent_t dispel_magic;
-    player_talent_t shadowfiend;
-    // Row 2
-    player_talent_t prayer_of_mending;
     player_talent_t improved_flash_heal;
-    player_talent_t purify_disease;
-    player_talent_t psychic_voice;
-    player_talent_t shadow_word_death;
-    // Row 3
-    player_talent_t focused_mending;
+    player_talent_t angelic_feather;
+    player_talent_t mind_blast;
+    player_talent_t holy_fire;
+    // Row 2
     player_talent_t holy_nova;
     const spell_data_t* holy_nova_heal;
-    player_talent_t protective_light;
-    const spell_data_t* protective_light_buff;
-    player_talent_t from_darkness_comes_light;
-    player_talent_t angelic_feather;
-    player_talent_t phantasm;
-    player_talent_t death_and_madness;
-    const spell_data_t* death_and_madness_insanity;
-    const spell_data_t* death_and_madness_reset_buff;
-    // Row 4
-    player_talent_t spell_warding;
-    player_talent_t blessed_recovery;
-    player_talent_t rhapsody;
-    const spell_data_t* rhapsody_buff;
+    player_talent_t dispel_magic;
+    player_talent_t spiritual_guidance;
+    player_talent_t psychic_scream;
+    // Row 3
+    player_talent_t lightburst;
     player_talent_t leap_of_faith;
-    player_talent_t shackle_undead;
-    player_talent_t sheer_terror;
-    player_talent_t void_tendrils;
-    player_talent_t mind_control;
-    player_talent_t dominate_mind;
-    // Row 5
-    player_talent_t words_of_the_pious;
-    player_talent_t mass_dispel;
-    player_talent_t move_with_grace;
+    player_talent_t purify_disease;
     player_talent_t power_infusion;
-    player_talent_t vampiric_embrace;
-    player_talent_t sanguine_teachings;
-    player_talent_t tithe_evasion;
-    // Row 6
-    player_talent_t inspiration;
-    player_talent_t mental_agility;
-    player_talent_t body_and_soul;
-    player_talent_t twins_of_the_sun_priestess;
-    player_talent_t void_shield;
-    player_talent_t sanlayn;
-    // Row 7
-    player_talent_t unwavering_will;
-    player_talent_t twist_of_fate;
-    const spell_data_t* twist_of_fate_buff;
-    player_talent_t throes_of_pain;
-    // Row 8
-    player_talent_t angels_mercy;
-    player_talent_t binding_heals;
-    player_talent_t halo;
-    const spell_data_t* halo_heal_holy;
-    const spell_data_t* halo_dmg_holy;
-    const spell_data_t* halo_heal_shadow;
-    const spell_data_t* halo_dmg_shadow;
-    player_talent_t translucent_image;
-    // Row 9
+    player_talent_t painful_invocation;
+    player_talent_t sheer_terror;
+    player_talent_t petrifying_scream;
+    // Row 4
     player_talent_t surge_of_light;
     const spell_data_t* surge_of_light_buff;
-    player_talent_t lights_inspiration;
-    player_talent_t crystalline_reflection;
+    player_talent_t body_and_soul;
+    player_talent_t mass_dispel;
+    player_talent_t twins_of_the_sun_priestess;
+    player_talent_t strength_of_soul;
+    player_talent_t mind_control;
+    player_talent_t dominate_mind;
+    player_talent_t psychic_voice;
+    player_talent_t void_tendrils;
+    // Row 5
+    player_talent_t everlasting_light;
+    player_talent_t move_with_grace;
+    player_talent_t mental_agility;
+    player_talent_t twin_disciplines;
+    player_talent_t dark_enlightenment;
+    player_talent_t false_autonomy;
+    player_talent_t shackle_undead;
+    // Row 6
+    player_talent_t inspiration;
+    player_talent_t binding_heals;
+    player_talent_t shadow_word_death;
+    const spell_data_t* shadow_word_death_self_damage;
+    player_talent_t sanguine_teachings;
+    // Row 7
+    player_talent_t desperate_prayer;
+    player_talent_t twist_of_fate;
+    const spell_data_t* twist_of_fate_buff;
+    player_talent_t tithe_evasion;
+    player_talent_t fade;
+    // Row 8
+    player_talent_t angels_mercy;
+    player_talent_t protective_light;
+    const spell_data_t* protective_light_buff;
+    player_talent_t mindpierce;
+    player_talent_t spectral_illusion;
     player_talent_t improved_fade;
-    player_talent_t manipulation;
+    // Row 9
+    player_talent_t lights_inspiration;
+    player_talent_t unwavering_will;
+    player_talent_t spell_warding;
+    player_talent_t phantasm;
     // Row 10
-    player_talent_t benevolence;
-    player_talent_t power_word_life;
     player_talent_t angelic_bulwark;
+    player_talent_t benevolence;
+    player_talent_t focused_power;
     player_talent_t phantom_reach;
+    player_talent_t translucent_image;
+
+    struct
+    {
+      player_talent_t shadowfiend;
+      player_talent_t mindbender;
+      player_talent_t inescapable_torment;
+    } shared;
 
     struct
     {
       // Shadow Tree
       // Row 2
-      player_talent_t dispersion;
-      const spell_data_t* shadowy_apparition;  // Damage event
-      player_talent_t shadowy_apparitions;     // Passive effect
-      player_talent_t silence;
-      // Row 3
+      player_talent_t psychic_link;
+      player_talent_t misery;
       player_talent_t intangibility;
       player_talent_t mental_fortitude;
-      player_talent_t misery;
-      player_talent_t last_word;
-      // Row 4
+      // Row 3
       player_talent_t thought_harvester;
-      player_talent_t psychic_link;
-      player_talent_t mind_flay_insanity;
-      const spell_data_t* mind_flay_insanity_spell;
+      player_talent_t tentacle_slam;
+      const spell_data_t* shadowy_apparition;  // Damage event
+      player_talent_t shadowy_apparitions;     // Passive effect
+      // Row 4
+      player_talent_t tormenting_whispers;
+      player_talent_t descending_darkness;
       player_talent_t surge_of_insanity;
       // Row 5
       player_talent_t shadowy_insight;
       player_talent_t voidtouched;
-      player_talent_t dark_ascension;
-      player_talent_t void_eruption;
-      const spell_data_t* void_eruption_damage;
+      player_talent_t voidform;
+      const spell_data_t* void_volley;
+      const spell_data_t* void_volley_buff;
+      const spell_data_t* void_volley_missile;
+      const spell_data_t* void_volley_damage;
       player_talent_t mental_decay;
-      player_talent_t shattered_psyche;
-      player_talent_t shadow_crash;
-      player_talent_t shadow_crash_target;
       // Row 6
-      player_talent_t subservient_shadows;
       player_talent_t dark_thoughts;
       player_talent_t maddening_touch;
       const spell_data_t* maddening_touch_insanity;
+      player_talent_t improved_voidform;
       player_talent_t ancient_madness;
       player_talent_t phantom_menace;
       player_talent_t dark_evangelism;
-      player_talent_t descending_darkness;
+      player_talent_t shattered_psyche;
       // Row 7
+      player_talent_t subservient_shadows;
       player_talent_t mastermind;
       player_talent_t minds_eye;
       player_talent_t distorted_reality;
-      player_talent_t phantasmal_pathogen;
+      player_talent_t spectral_horrors;
       player_talent_t instilled_doubt;
       // Row 8
       player_talent_t deathspeaker;
+      player_talent_t death_and_madness;
+      const spell_data_t* death_and_madness_insanity;
+      const spell_data_t* death_and_madness_reset_buff;
       player_talent_t mind_devourer;
       player_talent_t auspicious_spirits;
-      player_talent_t void_torrent;
       // Row 9
       player_talent_t madness_weaving;
       player_talent_t deaths_torment;
       player_talent_t screams_of_the_void;
       player_talent_t tormented_spirits;
       player_talent_t insidious_ire;
-      player_talent_t void_volley;
-      const spell_data_t* void_volley_buff;
-      const spell_data_t* void_volley_missile;
-      const spell_data_t* void_volley_damage;
       // Row 10
       player_talent_t idol_of_yshaarj;
       const spell_data_t* call_of_the_void;
       const spell_data_t* overburdened_mind;
       player_talent_t idol_of_nzoth;
-      player_talent_t idol_of_yoggsaron;
-      player_talent_t idol_of_cthun;
       const spell_data_t* horrific_visions;        // enemy debuff
       const spell_data_t* horrific_vision_damage;  // 50 stack damage
       const spell_data_t* vision_of_nzoth_damage;  // 100 stack damage
       const spell_data_t* horrific_vision_buff;    // 50 stack buff
       const spell_data_t* vision_of_nzoth_buff;    // 100 stack buff
+      player_talent_t idol_of_yoggsaron;
+      player_talent_t idol_of_cthun;
+      // Apex
+      player_talent_t void_apparitions;
     } shadow;
-
-    struct
-    {
-      player_talent_t mindbender;
-      player_talent_t inescapable_torment;
-    } shared;
 
     struct
     {
@@ -427,62 +406,49 @@ public:
       player_talent_t pain_transformation;
       player_talent_t protector_of_the_frail;
       player_talent_t dark_indulgence;
-      player_talent_t schism;
-      const spell_data_t* schism_debuff;
+      player_talent_t encroaching_shadows;
       // Row 4
       player_talent_t bright_pupil;
       player_talent_t enduring_luminescence;
+      player_talent_t plea;
       player_talent_t shield_discipline;
-      player_talent_t luminous_barrier;
+      player_talent_t ultimate_penitence;
       player_talent_t power_word_barrier;
       player_talent_t painful_punishment;
-      player_talent_t malicious_intent;
-      // Row 5
-      player_talent_t purge_the_wicked;
-      player_talent_t encroaching_shadows;
-      player_talent_t evangelism;
-      player_talent_t rapture;
-      player_talent_t shadow_covenant;
-      const spell_data_t* shadow_covenant_buff;
-      const spell_data_t* dark_reprimand;
-      // Row 6
-      player_talent_t revel_in_purity;
       player_talent_t revel_in_darkness;
-      player_talent_t contrition;
+      // Row 5
+      player_talent_t holy_ray;
+      player_talent_t lenience;
+      player_talent_t shadow_tap;
+      // Row 6
+      player_talent_t purge_the_wicked;
       player_talent_t divine_procession;
-      player_talent_t exaltation;
       player_talent_t indemnity;
       player_talent_t pain_and_suffering;
-      player_talent_t twilight_corruption;
-      // Row
+      player_talent_t occultist;
+      // Row 7
       player_talent_t borrowed_time;
-      player_talent_t ultimate_penance;
+      player_talent_t evangelism;
       player_talent_t abyssal_reverie;
       // Row 8
-      player_talent_t train_of_thought;
       player_talent_t inner_focus;
       player_talent_t castigation;
-      player_talent_t overloaded_with_light;
-      player_talent_t lenience;
-      player_talent_t void_summoner;
+      player_talent_t shadow_mend;
       // Row 9
       player_talent_t divine_aegis;
       const spell_data_t* divine_aegis_buff;
       player_talent_t blaze_of_light;
-      player_talent_t heavens_wrath;
+      player_talent_t greater_smite;
+      player_talent_t weal_and_woe;
+      const spell_data_t* weal_and_woe_buff;
       player_talent_t harsh_discipline;
       const spell_data_t* harsh_discipline_buff;
       player_talent_t expiation;
-      // player_talent_t inescapable_torment; - Shared
       // Row 10
-      player_talent_t aegis_of_wrath;
       player_talent_t eternal_barrier;
-      player_talent_t weal_and_woe;
-      const spell_data_t* weal_and_woe_buff;
-      player_talent_t twilight_equilibrium;
-      const spell_data_t* twilight_equilibrium_holy_amp;
-      const spell_data_t* twilight_equilibrium_shadow_amp;
-      // player_talent_t mindbender; - Shared
+      player_talent_t inner_light;
+      // Apex
+      player_talent_t master_the_darkness;
     } discipline;
 
     struct
@@ -495,105 +461,106 @@ public:
       player_talent_t holy_word_chastise;
       // Row 3
       player_talent_t prayer_of_healing;
-      player_talent_t guardian_angel;
       player_talent_t restitution;
+      player_talent_t guardian_angel;
       player_talent_t censure;
       player_talent_t empyreal_blaze;
       const spell_data_t* empyreal_blaze_buff;
       // Row 4
-      player_talent_t prayer_circle;
+      player_talent_t prayerful_litany;
       player_talent_t cosmic_ripple;
       player_talent_t afterlife;
       player_talent_t voice_of_harmony;
-      player_talent_t searing_light;
       player_talent_t burning_vehemence;
       const spell_data_t* burning_vehemence_damage;
       // Row 5
-      player_talent_t everlasting_light;
-      player_talent_t holy_mending;
+      player_talent_t uplifting_words;
+      player_talent_t cosmic_wave;
       player_talent_t divine_hymn;
       player_talent_t enlightenment;
       player_talent_t benediction;
       // Row 6
-      player_talent_t prayerful_litany;
-      player_talent_t renewed_faith;
+      player_talent_t efficient_prayers;
+      player_talent_t healing_focus;
       player_talent_t seraphic_crescendo;
       player_talent_t gales_of_song;
-      player_talent_t symbol_of_hope;
       player_talent_t divine_service;
+      player_talent_t renewed_faith;
       // Row 7
-      player_talent_t crisis_management;
-      player_talent_t empowered_renew;
+      player_talent_t angelic_touch;
       player_talent_t apotheosis;
       player_talent_t prayers_of_the_virtuous;
       // Row 8
-      player_talent_t resonant_words;
+      player_talent_t dispersing_light;
+      player_talent_t trail_of_light;
       player_talent_t miracle_worker;
-      player_talent_t divinity;
       player_talent_t eternal_sanctity;
+      player_talent_t divinity;
       player_talent_t holy_celerity;
       player_talent_t say_your_prayers;
       // Row 9
-      player_talent_t trail_of_light;
-      player_talent_t dispersing_light;
+      player_talent_t crisis_management;
       player_talent_t light_of_the_naaru;
       player_talent_t light_in_the_darkness;
       player_talent_t prismatic_echoes;
       player_talent_t desperate_times;
-      player_talent_t epiphany;
+      player_talent_t radiant_plea;
       // Row 10
       player_talent_t lightweaver;
-      player_talent_t lightwell;
+      player_talent_t ultimate_serenity;
       player_talent_t divine_image;
       const spell_data_t* divine_image_buff;
       const spell_data_t* divine_image_summon;
       const spell_data_t* divine_image_searing_light;
       const spell_data_t* divine_image_light_eruption;
       player_talent_t lasting_words;
-      player_talent_t divine_word;
       const spell_data_t* divine_favor_chastise;
-      player_talent_t answered_prayers;
+      player_talent_t epiphany;
     } holy;
 
     struct
     {
+      player_talent_t halo;
+      const spell_data_t* halo_heal_holy;
+      const spell_data_t* halo_dmg_holy;
+      const spell_data_t* halo_heal_shadow;
+      const spell_data_t* halo_dmg_shadow;
+      player_talent_t perfected_form;
       player_talent_t power_surge;
       const spell_data_t* power_surge_buff;
-      player_talent_t perfected_form;
-      player_talent_t resonant_energy;
-      const spell_data_t* resonant_energy_shadow;
       player_talent_t manifested_power;
+      const spell_data_t* mind_flay_insanity;
+      const spell_data_t* mind_flay_insanity_spell;
       player_talent_t shock_pulse;
       player_talent_t incessant_screams;
       player_talent_t word_of_supremacy;
       player_talent_t heightened_alteration;
       player_talent_t empowered_surges;
+      player_talent_t ascendant_prayers;
       player_talent_t energy_compression;
       player_talent_t sustained_potency;
       const spell_data_t* sustained_potency_buff;
-      player_talent_t concentrated_infusion;
+      player_talent_t resonant_energy;
+      const spell_data_t* resonant_energy_shadow;
       player_talent_t energy_cycle;
       player_talent_t divine_halo;
     } archon;
 
     struct
     {
-      player_talent_t premonition;
+      player_talent_t guiding_light;
       player_talent_t preventive_measures;
       player_talent_t preemptive_care;
       player_talent_t waste_no_time;
-      player_talent_t miraculous_recovery;
       player_talent_t assured_safety;
       player_talent_t divine_feathers;
       player_talent_t save_the_day;
       player_talent_t forseen_circumstances;
       player_talent_t prophets_will;
       player_talent_t desperate_measures;
-      player_talent_t divine_providence;
+      player_talent_t prompt_prognosis;
+      player_talent_t piety;
       player_talent_t twinsight;
-      player_talent_t fatebender;
-      player_talent_t perfect_vision;
-      player_talent_t clairvoyance;
     } oracle;
 
     struct
@@ -631,22 +598,12 @@ public:
       const spell_data_t* mindgames_healing_reversal;
       const spell_data_t* mindgames_damage_reversal;
     } pvp;
-
-    // Shared
-    const spell_data_t* shining_force;
-
-    // Discipline
-    const spell_data_t* sins_of_the_many;  // assumes 0 atonement targets
   } talents;
 
   // Specialization Spells
   struct
   {
-    const spell_data_t* mind_blast;
     const spell_data_t* priest;  // General priest data
-    const spell_data_t* shadow_word_death_self_damage;
-    const spell_data_t* psychic_scream;
-    const spell_data_t* fade;
     const spell_data_t* levitate_buff;
 
     // Discipline
@@ -654,14 +611,10 @@ public:
     const spell_data_t* penance;
     const spell_data_t* penance_channel;
     const spell_data_t* penance_tick;
-    const spell_data_t* sins_of_the_many;
-    double sins_of_the_many_data[ 20 ] = { 0.2,   0.2,  0.2,   0.2,  0.2,   0.175,  0.15, 0.125,  0.1,     0.075,
-                                           0.055, 0.04, 0.025, 0.02, 0.015, 0.0125, 0.01, 0.0075, 0.00625, 0.005 };
     const spell_data_t* smite_t31;
 
     // Holy
     const spell_data_t* holy_priest;  // General holy data
-    const spell_data_t* holy_fire;
     const spell_data_t* echo_of_light;
 
     // Shadow
@@ -671,6 +624,11 @@ public:
     const spell_data_t* void_bolt;
     const spell_data_t* voidform;
     const spell_data_t* hallucinations;
+    const spell_data_t* dispersion;
+    const spell_data_t* silence;
+    const spell_data_t* vampiric_embrace;
+    const spell_data_t* renew;
+    const spell_data_t* prayer_of_mending;
   } specs;
 
   // DoT Spells
@@ -679,7 +637,7 @@ public:
     const spell_data_t* shadow_word_pain;
     const spell_data_t* vampiric_touch;
     const spell_data_t* holy_fire;
-    player_talent_t devouring_plague;
+    player_talent_t shadow_word_madness;
   } dot_spells;
 
   // Mastery Spells
@@ -744,7 +702,6 @@ public:
     propagate_const<gain_t*> shadowfiend;
     propagate_const<gain_t*> voidwraith;
     propagate_const<gain_t*> power_of_the_dark_side;
-    propagate_const<gain_t*> throes_of_pain;
     propagate_const<gain_t*> insanity_idol_of_cthun_mind_flay;
     propagate_const<gain_t*> insanity_idol_of_cthun_mind_sear;
     propagate_const<gain_t*> hallucinations_power_word_shield;
@@ -1006,7 +963,6 @@ public:
   void trigger_shadowy_apparitions( proc_t* proc );
   void trigger_psychic_link( action_state_t* );
   void trigger_shadow_weaving( action_state_t* );
-  void trigger_void_shield( double result_amount );
   void refresh_insidious_ire_buff( action_state_t* s );
   void spawn_thing_from_beyond();
   void trigger_idol_of_nzoth( player_t* target, int stacks );
@@ -1188,8 +1144,6 @@ public:
   {
     // GENERAL PRIEST BUFF EFFECTS
     parse_effects( p().buffs.twist_of_fate );
-    parse_effects( p().buffs.words_of_the_pious );  // Spell Direct amount for Smite and Holy Nova
-    parse_effects( p().buffs.rhapsody );
     parse_effects( p().buffs.surge_of_light, IGNORE_STACKS );
 
     // SHADOW BUFF EFFECTS
@@ -1201,21 +1155,7 @@ public:
       parse_effects( p().buffs.shattered_psyche );  // Mind Blast critical strike chance
 
       // Buffs non-periodic spells
-      parse_effects( p().buffs.dark_ascension, effect_mask_t( true ).disable( 4 ), IGNORE_STACKS );  // Skip E4 for AM
       parse_effects( p().buffs.screams_of_the_void );
-
-      if ( p().talents.shadow.ancient_madness.enabled() )
-      {
-        // We use DA or VF spelldata to construct Ancient Madness to use the correct spell pass-list
-        if ( p().talents.shadow.dark_ascension.enabled() )
-        {
-          parse_effects( p().buffs.ancient_madness, effect_mask_t( false ).enable( 4 ), USE_DEFAULT );  // Enable E4
-        }
-        else
-        {
-          parse_effects( p().buffs.ancient_madness, effect_mask_t( false ).enable( 3 ), USE_DEFAULT );  // Enable E3
-        }
-      }
 
       if ( p().sets->has_set_bonus( PRIEST_SHADOW, TWW1, B4 ) )
       {
@@ -1232,22 +1172,14 @@ public:
     // DISCIPLINE BUFF EFFECTS
     if ( p().specialization() == PRIEST_DISCIPLINE )
     {
-      parse_effects( p().buffs.shadow_covenant, IGNORE_STACKS, USE_DEFAULT );
       // 280398 applies the buff to the correct spells, but does not contain the correct buff value
       // (12% instead of 40%) So, override to use our provided default_value (40%) instead
-      parse_effects( p().buffs.sins_of_the_many, IGNORE_STACKS, USE_CURRENT );
-      parse_effects( p().buffs.twilight_equilibrium_shadow_amp );
-      parse_effects( p().buffs.twilight_equilibrium_holy_amp );
       parse_effects( p().buffs.light_weaving );
       parse_effects( p().buffs.weal_and_woe );
 
       if ( p().sets->has_set_bonus( PRIEST_DISCIPLINE, TWW1, B4 ) )
       {
         parse_effects( p().buffs.darkness_from_light );
-      }
-      if ( p().talents.discipline.rapture.enabled() )
-      {
-        parse_effects( p().buffs.rapture );
       }
     }
 
@@ -1267,12 +1199,6 @@ public:
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
   void apply_debuffs_effects()
   {
-    // DISCIPLINE DEBUFF EFFECTS
-    if ( p().specialization() == PRIEST_DISCIPLINE )
-    {
-      parse_target_effects( d_fn( &priest_td_t::buffs_t::schism, false ), p().talents.discipline.schism_debuff );
-    }
-
     // Archon
     if ( p().talents.archon.resonant_energy.enabled() )
     {
@@ -1579,23 +1505,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
   void execute() override
   {
     base_t::execute();
-    if ( priest().talents.discipline.twilight_equilibrium.enabled() )
-    {
-      // Mindbender (123040) and Shadowfiend (34433) don't apply this buff
-      // Non-harmful actions don't apply this buff
-      if ( school == SCHOOL_SHADOW && id != 34433 && id != 123040 && harmful && !background )
-      {
-        priest().buffs.twilight_equilibrium_holy_amp->trigger();
-        priest().buffs.twilight_equilibrium_shadow_amp->expire();
-      }
-      // Holy and Radiant (SCHOOL_HOLYFIRE) applies this buff
-      // Non-harmful actions don't apply this buff
-      if ( ( school == SCHOOL_HOLY || school == SCHOOL_HOLYFIRE ) && harmful && !background )
-      {
-        priest().buffs.twilight_equilibrium_shadow_amp->trigger();
-        priest().buffs.twilight_equilibrium_holy_amp->expire();
-      }
-    }
 
     if ( priest().talents.shadow.idol_of_nzoth.enabled() && idol_of_nzoth_execute_stacks > 0 )
     {
@@ -1683,10 +1592,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
   void assess_damage( result_amount_type type, action_state_t* s ) override
   {
     base_t::assess_damage( type, s );
-
-    if ( result_is_hit( s->result ) && priest().talents.void_shield.enabled() &&
-         priest().buffs.power_word_shield->check() )
-      priest().trigger_void_shield( s->result_amount * priest().talents.void_shield->effectN( 1 ).percent() );
 
     if ( aoe == 0 && result_is_hit( s->result ) && priest().buffs.vampiric_embrace->up() )
       trigger_vampiric_embrace( s );

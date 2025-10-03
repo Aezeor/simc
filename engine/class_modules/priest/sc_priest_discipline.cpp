@@ -57,7 +57,6 @@ struct power_word_radiance_t final : public priest_heal_t
 
     rng().shuffle( target_list.begin() + 1, target_list.end() );*/
 
-
     // Don't include pets for the ease of writing APLs
     if ( as<int>( sim->healing_no_pet_list.size() ) <= n_targets() )
     {
@@ -162,7 +161,6 @@ struct evangelism_t final : public priest_heal_t
     aoe              = -1;
   }
 
-  
   int num_targets() const override
   {
     return std::max( 1, as<int>( p().allies_with_atonement.size() ) );
@@ -229,15 +227,6 @@ struct purge_the_wicked_t final : public priest_spell_t
         trigger_power_of_the_dark_side();
       }
     }
-
-    double composite_persistent_multiplier( const action_state_t* s ) const override
-    {
-      auto m = priest_spell_t::composite_persistent_multiplier( s );
-
-      m *= 1 + p().buffs.twilight_equilibrium_holy_amp->check_value();
-
-      return m;
-    }
   };
 
   purge_the_wicked_t( priest_t& p, util::string_view options_str )
@@ -279,12 +268,7 @@ protected:
     penance_damage_t( priest_t& p, util::string_view n, const spell_data_t* s ) : priest_spell_t( n, p, s )
     {
       background = dual = direct_tick = tick_may_crit = may_crit = true;
-      dot_extension = priest().talents.discipline.painful_punishment->effectN( 1 ).time_value();
-
-      // This is not found in the affected spells for Shadow Covenant, overriding it manually
-      // Final two params allow us to override the 25% damage buff when twilight corruption is selected (25% -> 35%)
-      force_effect( p.buffs.shadow_covenant, 1, IGNORE_STACKS, USE_DEFAULT );
-
+      dot_extension      = priest().talents.discipline.painful_punishment->effectN( 1 ).time_value();
       triggers_atonement = true;
     }
 
@@ -323,7 +307,6 @@ protected:
 
 private:
   propagate_const<penance_damage_t*> damage;
-  timespan_t heavens_wrath_cdr;
   unsigned max_spread_targets;
   double default_bolts;
 
@@ -332,10 +315,7 @@ public:
                   const spell_data_t* s_tick )
     : priest_spell_t( name, p, s ),
       damage( new penance_damage_t( p, std::string( name ) + "_tick", s_tick ) ),
-      heavens_wrath_cdr(
-          timespan_t::from_seconds( -priest().talents.discipline.heavens_wrath->effectN( 1 ).base_value() ) ),
-      max_spread_targets( as<unsigned>( 1 + priest().talents.discipline.revel_in_purity->effectN( 2 ).base_value() +
-                                        priest().talents.discipline.revel_in_darkness->effectN( 2 ).base_value() ) )
+      max_spread_targets( as<unsigned>( 1 + priest().talents.discipline.revel_in_darkness->effectN( 2 ).base_value() ) )
   {
     cooldown = p.cooldowns.penance;
     if ( cooldown->duration != timespan_t::zero() )
@@ -405,15 +385,6 @@ public:
     ab::snapshot_state( s, rt );
     cast_state( s )->bolts         = as<int>( default_bolts + p().buffs.harsh_discipline->check_value() );
     cast_state( s )->snapshot_mult = 1.0 + priest().buffs.power_of_the_dark_side->check_value();
-
-    if ( ( dbc::get_school_mask( s->action->school ) & SCHOOL_MASK_SHADOW ) == SCHOOL_MASK_SHADOW )
-    {
-      cast_state( s )->snapshot_mult *= 1.0 + priest().buffs.twilight_equilibrium_shadow_amp->check_value();
-    }
-    else if ( ( dbc::get_school_mask( s->action->school ) & SCHOOL_MASK_HOLY ) == SCHOOL_MASK_HOLY )
-    {
-      cast_state( s )->snapshot_mult *= 1.0 + priest().buffs.twilight_equilibrium_holy_amp->check_value();
-    }
   }
 
   timespan_t tick_time( const action_state_t* s ) const override
@@ -436,11 +407,6 @@ public:
       if ( priest().talents.discipline.weal_and_woe.enabled() )
       {
         priest().buffs.weal_and_woe->trigger();
-      }
-
-      if ( priest().talents.discipline.heavens_wrath.enabled() )
-      {
-        priest().cooldowns.ultimate_penitence->adjust( heavens_wrath_cdr );
       }
 
       priest().expand_entropic_rift();
@@ -625,27 +591,6 @@ struct penance_t : public penance_base_t
 
   bool action_ready() override
   {
-    if ( p().buffs.shadow_covenant->check() )
-      return false;
-
-    return penance_base_t::action_ready();
-  }
-};
-
-struct dark_reprimand_t : public penance_base_t
-{
-  dark_reprimand_t( priest_t& p, util::string_view options_str )
-    : penance_base_t( p, "dark_reprimand", p.find_spell( 400169 ), p.talents.discipline.dark_reprimand,
-                      p.talents.discipline.dark_reprimand->effectN( 2 ).trigger() )
-  {
-    parse_options( options_str );
-  }
-
-  bool action_ready() override
-  {
-    if ( !p().buffs.shadow_covenant->check() )
-      return false;
-
     return penance_base_t::action_ready();
   }
 };
@@ -711,13 +656,13 @@ protected:
 
 public:
   ultimate_penitence_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "ultimate_penitence", p, p.talents.discipline.ultimate_penance )
+    : priest_spell_t( "ultimate_penitence", p, p.talents.discipline.ultimate_penitence )
   {
     parse_options( options_str );
     // Channel = 421434
     // Damage bolt = 421543
 
-    channel        = new ultimate_penitence_channel_t( p, stats );
+    channel = new ultimate_penitence_channel_t( p, stats );
     add_child( channel->damage );
   }
 
@@ -743,50 +688,6 @@ void priest_t::create_buffs_discipline()
 {
   buffs.power_of_the_dark_side =
       make_buff( this, "power_of_the_dark_side", talents.discipline.power_of_the_dark_side->effectN( 1 ).trigger() )
-          ->set_default_value_from_effect( 1, 0.01 );
-
-  buffs.shadow_covenant = make_buff( this, "shadow_covenant", talents.discipline.shadow_covenant_buff );
-
-  if ( talents.discipline.shadow_covenant.enabled() )
-  {
-    double scov_amp          = 0;
-    timespan_t scov_duration = 15_s;
-    if ( talents.shared.mindbender.enabled() )
-    {
-      scov_amp      = 0.1;
-      scov_duration = talents.shared.mindbender->duration();
-    }
-    else
-    {
-      scov_amp      = 0.25;
-      scov_duration = talents.shadowfiend->duration();
-    }
-    buffs.shadow_covenant->set_default_value( scov_amp );
-    buffs.shadow_covenant->set_duration( scov_duration );
-  }
-
-  buffs.rapture =
-      make_buff_fallback( talents.discipline.rapture.enabled(), this, "rapture", talents.discipline.rapture );
-
-  if ( talents.discipline.rapture.enabled() )
-  {
-    buffs.rapture->set_cooldown( 0_s );
-    buffs.rapture->set_reverse( true );
-  }
-
-  // 280391 has the correct 40% damage increase value, but does not apply it to any spells.
-  // 280398 applies the damage to the correct spells, but does not contain the correct value (12% instead of 40%).
-  // That 12% represents the damage REDUCTION taken from the 40% buff for each attonement that has been applied.
-  // TODO: Add support for atonement reductions
-  buffs.sins_of_the_many = make_buff( this, "sins_of_the_many", specs.sins_of_the_many )
-                               ->set_default_value( find_spell( 280391 )->effectN( 1 ).percent() );
-
-  buffs.twilight_equilibrium_holy_amp =
-      make_buff( this, "twilight_equilibrium_holy_amp", talents.discipline.twilight_equilibrium_holy_amp )
-          ->set_default_value_from_effect( 1, 0.01 );
-
-  buffs.twilight_equilibrium_shadow_amp =
-      make_buff( this, "twilight_equilibrium_shadow_amp", talents.discipline.twilight_equilibrium_shadow_amp )
           ->set_default_value_from_effect( 1, 0.01 );
 
   buffs.harsh_discipline = make_buff( this, "harsh_discipline", find_spell( 373183 ) )
@@ -838,69 +739,56 @@ void priest_t::init_spells_discipline()
   talents.discipline.pain_transformation    = ST( "Pain Transformation" );
   talents.discipline.protector_of_the_frail = ST( "Protector of the Frail" );
   talents.discipline.dark_indulgence        = ST( "Dark Indulgence" );
-  talents.discipline.schism                 = ST( "Schism" );
-  talents.discipline.schism_debuff          = find_spell( 214621 );
+  talents.discipline.encroaching_shadows    = ST( "Encroaching Shadows" );  // NYI
   // Row 4
   talents.discipline.bright_pupil          = ST( "Bright Pupil" );
   talents.discipline.enduring_luminescence = ST( "Enduring Luminescence" );
+  talents.discipline.plea                  = ST( "Plea" );  // NYI
   talents.discipline.shield_discipline     = ST( "Shield Discipline" );
-  talents.discipline.luminous_barrier      = ST( "Luminous Barrier" );
+  talents.discipline.ultimate_penitence    = ST( "Ultimate Penitence" );
   talents.discipline.power_word_barrier    = ST( "Power Word: Barrier" );
   talents.discipline.painful_punishment    = ST( "Painful Punishment" );
-  talents.discipline.malicious_intent      = ST( "Malicious Intent" );
+  talents.discipline.revel_in_darkness     = ST( "Revel in Darkness" );
   // Row 5
-  talents.discipline.purge_the_wicked     = ST( "Purge the Wicked" );
-  talents.discipline.encroaching_shadows  = ST( "Encroaching Shadows" );
-  talents.discipline.evangelism           = ST( "Evangelism" );
-  talents.discipline.rapture              = ST( "Rapture" );
-  talents.discipline.shadow_covenant      = ST( "Shadow Covenant" );
-  talents.discipline.shadow_covenant_buff = find_spell( 322105 );
-  talents.discipline.dark_reprimand       = find_spell( 373129 );
+  talents.discipline.holy_ray            = ST( "Holy Ray" );  // NYI
+  talents.discipline.lenience            = ST( "Lenience" );
+  talents.discipline.shadow_tap          = ST( "Shadow Tap" );  // NYI
+  talents.discipline.encroaching_shadows = ST( "Encroaching Shadows" );
   // Row 6
-  talents.discipline.revel_in_purity     = ST( "Revel in Purity" );
-  talents.discipline.revel_in_darkness   = ST( "Revel in Darkness" );
-  talents.discipline.contrition          = ST( "Contrition" );
-  talents.discipline.divine_procession   = ST( "Divine Procession" );
-  talents.discipline.exaltation          = ST( "Exaltation" );
-  talents.discipline.indemnity           = ST( "Indemnity" );
-  talents.discipline.pain_and_suffering  = ST( "Pain and Suffering" );
-  talents.discipline.twilight_corruption = ST( "Twilight Corruption" );  // 373065
-  // Row
-  talents.discipline.borrowed_time    = ST( "Borrowed Time" );
-  talents.discipline.ultimate_penance = ST( "Ultimate Penitence" );
-  talents.discipline.abyssal_reverie  = ST( "Abyssal Reverie" );
+  talents.discipline.purge_the_wicked   = ST( "Purge the Wicked" );
+  talents.discipline.divine_procession  = ST( "Divine Procession" );
+  talents.discipline.indemnity          = ST( "Indemnity" );
+  talents.discipline.pain_and_suffering = ST( "Pain and Suffering" );
+  talents.discipline.occultist          = ST( "Occultist" );  // NYI
+  // Row 7
+  talents.discipline.borrowed_time   = ST( "Borrowed Time" );
+  talents.discipline.evangelism      = ST( "Evangelism" );
+  talents.discipline.abyssal_reverie = ST( "Abyssal Reverie" );
   // Row 8
-  talents.discipline.train_of_thought      = ST( "Train of Thought" );
-  talents.discipline.inner_focus           = ST( "Inner Focus" );
-  talents.discipline.castigation           = ST( "Castigation" );
-  talents.discipline.overloaded_with_light = ST( "Overloded with Light" );
-  talents.discipline.lenience              = ST( "Lenience" );
-  talents.discipline.void_summoner         = ST( "Void Summoner" );
+  talents.discipline.inner_focus = ST( "Inner Focus" );
+  talents.discipline.castigation = ST( "Castigation" );
+  talents.discipline.shadow_mend = ST( "Shadow Mend" );  // NYI
   // Row 9
   talents.discipline.divine_aegis          = ST( "Divine Aegis" );
   talents.discipline.divine_aegis_buff     = find_spell( 47753 );
   talents.discipline.blaze_of_light        = ST( "Blaze of Light" );
-  talents.discipline.heavens_wrath         = ST( "Heaven's Wrath" );
+  talents.discipline.greater_smite         = ST( "Greater Smite" );  // NYI
+  talents.discipline.weal_and_woe          = ST( "Weal and Woe" );
+  talents.discipline.weal_and_woe_buff     = find_spell( 390787 );
   talents.discipline.harsh_discipline      = ST( "Harsh Discipline" );
   talents.discipline.harsh_discipline_buff = find_spell( 373183 );
   talents.discipline.expiation             = ST( "Expiation" );
-  // talents.discipline.inescapable_torment   = ST( "Inescapable Torment" ); - Shared Talent
   // Row 10
-  talents.discipline.aegis_of_wrath                  = ST( "Aegis of Wrath" );
-  talents.discipline.eternal_barrier                 = ST( "Eternal Barrier" );
-  talents.discipline.weal_and_woe                    = ST( "Weal and Woe" );
-  talents.discipline.weal_and_woe_buff               = find_spell( 390787 );
-  talents.discipline.twilight_equilibrium            = ST( "Twilight Equilibrium" );
-  talents.discipline.twilight_equilibrium_holy_amp   = find_spell( 390706 );
-  talents.discipline.twilight_equilibrium_shadow_amp = find_spell( 390707 );
-  // talents.discipline.mindbender                      = ST( "Mindbender" ); - Shared Talent
+  talents.discipline.eternal_barrier = ST( "Eternal Barrier" );
+  talents.discipline.inner_light     = ST( "Inner Light" );  // NYI
+  // Apex
+  talents.discipline.master_the_darkness = ST( "Master the Darkness" );  // NYI
 
   // General Spells
-  specs.sins_of_the_many = find_spell( 280398 );
-  specs.penance          = find_spell( 47540 );
-  specs.penance_channel  = find_spell( 47758 );   // Channel spell, triggered by 47540, executes 47666 every tick
-  specs.penance_tick     = find_spell( 47666 );   // Not triggered from 47540, only 47758
-  specs.smite_t31        = find_spell( 425529 );  // T31 Shadow Smite
+  specs.penance         = find_spell( 47540 );
+  specs.penance_channel = find_spell( 47758 );   // Channel spell, triggered by 47540, executes 47666 every tick
+  specs.penance_tick    = find_spell( 47666 );   // Not triggered from 47540, only 47758
+  specs.smite_t31       = find_spell( 425529 );  // T31 Shadow Smite
 }
 
 action_t* priest_t::create_action_discipline( util::string_view name, util::string_view options_str )
@@ -918,10 +806,6 @@ action_t* priest_t::create_action_discipline( util::string_view name, util::stri
   if ( name == "penance" )
   {
     return new penance_t( *this, options_str );
-  }
-  if ( name == "dark_reprimand" )
-  {
-    return new dark_reprimand_t( *this, options_str );
   }
   if ( name == "purge_the_wicked" )
   {
