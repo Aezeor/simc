@@ -10,11 +10,11 @@ namespace death_knight_apl
 
 std::string potion( const player_t* p )
 {
-  std::string frost_potion = ( p->true_level >= 71 ) ? "tempered_potion_3" : "elemental_potion_of_ultimate_power_3";
+  std::string frost_potion = ( p->true_level >= 81 ) ? "disabled" : "tempered_potion_3";
 
-  std::string unholy_potion = ( p->true_level >= 71 ) ? "tempered_potion_3" : "elemental_potion_of_ultimate_power_3";
+  std::string unholy_potion = ( p->true_level >= 81 ) ? "disabled" : "tempered_potion_3";
 
-  std::string blood_potion = ( p->true_level >= 71 ) ? "tempered_potion_3" : "elemental_potion_of_ultimate_power_3";
+  std::string blood_potion = ( p->true_level >= 81 ) ? "disabled" : "tempered_potion_3";
 
   switch ( p->specialization() )
   {
@@ -29,11 +29,11 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  std::string frost_flask = ( p->true_level >= 71 ) ? "flask_of_alchemical_chaos_3" : "iced_phial_of_corrupting_rage_3";
+  std::string frost_flask = ( p->true_level >= 81 ) ? "disabled" : "flask_of_alchemical_chaos_3";
 
-  std::string unholy_flask = ( p->true_level >= 71 ) ? "flask_of_alchemical_chaos_3" : "iced_phial_of_corrupting_rage_3";
+  std::string unholy_flask = ( p->true_level >= 81 ) ? "disabled" : "flask_of_alchemical_chaos_3";
 
-  std::string blood_flask = ( p->true_level >= 71 ) ? "flask_of_alchemical_chaos_3" : "iced_phial_of_corrupting_rage_3";
+  std::string blood_flask = ( p->true_level >= 81 ) ? "disabled" : "flask_of_alchemical_chaos_3";
 
   switch ( p->specialization() )
   {
@@ -52,17 +52,17 @@ std::string food( const player_t* p )
   std::string unholy_food;
   std::string blood_food;
 
-  if ( p->true_level >= 71 )
+  if ( p->true_level >= 81 )
+  {
+    frost_food = "disabled";
+    unholy_food = "disabled";
+    blood_food = "disabled";
+  }
+  else
   {
     frost_food = "feast_of_the_divine_day";
     unholy_food = "chippy_tea";
     blood_food = "beledars_bounty";
-  }
-  else
-  {
-    frost_food = "sizzling_seafood_medley";
-    unholy_food = "sizzling_seafood_medley";
-    blood_food = "great_cerulean_sea";
   }
 
   switch ( p->specialization() )
@@ -79,20 +79,20 @@ std::string food( const player_t* p )
 
 std::string rune( const player_t* p )
 {
-  return ( p->true_level >= 71 ) ? "crystallized" : "draconic";
+  return ( p->true_level >= 81 ) ? "disabled" : "crystallized";
 }
 
 std::string temporary_enchant( const player_t* p )
 {
-  std::string frost_temporary_enchant = ( p->true_level >= 71 )
-                                            ? "main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3"
-                                            : "main_hand:buzzing_rune_3/off_hand:buzzing_rune_3";
+  std::string frost_temporary_enchant = ( p->true_level >= 81 )
+                                            ? "main_hand:disabled/off_hand:disabled"
+                                            : "main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3";
 
   std::string unholy_temporary_enchant =
-      ( p->true_level >= 71 ) ? "main_hand:algari_mana_oil_3" : "main_hand:howling_rune_3";
+      ( p->true_level >= 81 ) ? "main_hand:disabled" : "main_hand:algari_mana_oil_3";
 
   std::string blood_temporary_enchant =
-      ( p->true_level >= 71 ) ? "main_hand:ironclaw_whetstone_3" : "main_hand:howling_rune_3";
+      ( p->true_level >= 81 ) ? "main_hand:disabled" : "main_hand:ironclaw_whetstone_3";
 
   switch ( p->specialization() )
   {
@@ -306,63 +306,29 @@ void unholy( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
-  action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
-  action_priority_list_t* aoe_burst = p->get_action_priority_list( "aoe_burst" );
-  action_priority_list_t* aoe_setup = p->get_action_priority_list( "aoe_setup" );
-  action_priority_list_t* cds = p->get_action_priority_list( "cds" );
-  action_priority_list_t* cds_aoe = p->get_action_priority_list( "cds_aoe" );
-  action_priority_list_t* cds_aoe_san = p->get_action_priority_list( "cds_aoe_san" );
-  action_priority_list_t* cds_cleave_san = p->get_action_priority_list( "cds_cleave_san" );
-  action_priority_list_t* cds_san = p->get_action_priority_list( "cds_san" );
-  action_priority_list_t* cds_shared = p->get_action_priority_list( "cds_shared" );
-  action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
-  action_priority_list_t* racials = p->get_action_priority_list( "racials" );
-  action_priority_list_t* san_fishing = p->get_action_priority_list( "san_fishing" );
-  action_priority_list_t* san_st = p->get_action_priority_list( "san_st" );
-  action_priority_list_t* san_trinkets = p->get_action_priority_list( "san_trinkets" );
-  action_priority_list_t* st = p->get_action_priority_list( "st" );
-  action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
-  action_priority_list_t* variables = p->get_action_priority_list( "variables" );
 
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "raise_dead" );
   precombat->add_action( "army_of_the_dead,precombat_time=2" );
-  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|trinket.1.is.treacherous_transmitter|trinket.1.is.unyielding_netherprism" );
-  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|trinket.2.is.treacherous_transmitter|trinket.2.is.unyielding_netherprism" );
-  precombat->add_action( "variable,name=trinket_1_duration,op=setif,value=trinket.1.is.treacherous_transmitter*15+trinket.1.is.funhouse_lens*15+trinket.1.is.signet_of_the_priory*20+trinket.1.is.unyielding_netherprism*20+trinket.1.is.cursed_stone_idol*16,value_else=trinket.1.proc.any_dps.duration,condition=trinket.1.is.treacherous_transmitter|trinket.1.is.funhouse_lens|trinket.1.is.signet_of_the_priory|trinket.1.is.unyielding_netherprism|trinket.1.is.cursed_stone_idol" );
-  precombat->add_action( "variable,name=trinket_2_duration,op=setif,value=trinket.2.is.treacherous_transmitter*15+trinket.2.is.funhouse_lens*15+trinket.2.is.signet_of_the_priory*20+trinket.2.is.unyielding_netherprism*20+trinket.2.is.cursed_stone_idol*16,value_else=trinket.2.proc.any_dps.duration,condition=trinket.2.is.treacherous_transmitter|trinket.2.is.funhouse_lens|trinket.2.is.signet_of_the_priory|trinket.2.is.unyielding_netherprism|trinket.2.is.cursed_stone_idol" );
+  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff" );
+  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff" );
+  precombat->add_action( "variable,name=trinket_1_duration,op=setif,value=0,value_else=trinket.1.proc.any_dps.duration,condition=0" );
+  precombat->add_action( "variable,name=trinket_2_duration,op=setif,value=0,value_else=trinket.2.proc.any_dps.duration,condition=0" );
   precombat->add_action( "variable,name=trinket_1_high_value,op=setif,value=2,value_else=1,condition=trinket.1.is.treacherous_transmitter" );
   precombat->add_action( "variable,name=trinket_2_high_value,op=setif,value=2,value_else=1,condition=trinket.2.is.treacherous_transmitter" );
-  precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(talent.apocalypse&trinket.1.cooldown.duration%%cooldown.apocalypse.duration=0|talent.dark_transformation&trinket.1.cooldown.duration%%cooldown.dark_transformation.duration=0)|trinket.1.is.treacherous_transmitter" );
-  precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(talent.apocalypse&trinket.2.cooldown.duration%%cooldown.apocalypse.duration=0|talent.dark_transformation&trinket.2.cooldown.duration%%cooldown.dark_transformation.duration=0)|trinket.2.is.treacherous_transmitter" );
+  precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&talent.dark_transformation&trinket.1.cooldown.duration%%cooldown.dark_transformation.duration=0" );
+  precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&talent.dark_transformation&trinket.2.cooldown.duration%%cooldown.dark_transformation.duration=0" );
   precombat->add_action( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs&(trinket.2.has_cooldown|!trinket.1.has_cooldown)|variable.trinket_2_buffs&((trinket.2.cooldown.duration%variable.trinket_2_duration)*(1.5+trinket.2.has_buff.strength)*(variable.trinket_2_sync)*(variable.trinket_2_high_value)*(1+((trinket.2.ilvl-trinket.1.ilvl)%100)))>((trinket.1.cooldown.duration%variable.trinket_1_duration)*(1.5+trinket.1.has_buff.strength)*(variable.trinket_1_sync)*(variable.trinket_1_high_value)*(1+((trinket.1.ilvl-trinket.2.ilvl)%100)))" );
   precombat->add_action( "variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs&trinket.2.ilvl>=trinket.1.ilvl" );
 
   default_->add_action( "auto_attack" );
-  default_->add_action( "call_action_list,name=variables", "Choose Action list to run" );
-  default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "army_of_the_dead" );
-  default_->add_action( "festering_strike,if=buff.lesser_ghoul.stack=0" );
-  default_->add_action( "scourge_strike,if=buff.lesser_ghoul.stack>=1" );
-  default_->add_action( "outbreak,if=dot.virulent_plague.refreshable|dot.dread_blight.refreshable" );
-  default_->add_action( "putrefy" );
-
-  trinkets->add_action( "do_treacherous_transmitter_task,use_off_gcd=1,if=buff.errant_manaforge_emission.up&(pet.apoc_ghoul.active|!talent.apocalypse&buff.dark_transformation.up)|buff.cryptic_instructions.up&(pet.apoc_ghoul.active|!talent.apocalypse&buff.dark_transformation.up)|buff.realigning_nexus_convergence_divergence.up&(pet.apoc_ghoul.active|!talent.apocalypse&buff.dark_transformation.up)", "Non-San'layn Trinkets" );
-  trinkets->add_action( "use_item,name=treacherous_transmitter,if=(variable.adds_remain|variable.st_planning)&cooldown.dark_transformation.remains<10" );
-  trinkets->add_action( "use_item,slot=trinket1,if=(variable.st_planning|variable.adds_remain)&(buff.latent_energy.stack>=8|!trinket.1.is.unyielding_netherprism)&variable.trinket_1_buffs&(variable.trinket_priority=1|!trinket.2.has_cooldown|trinket.2.cooldown.remains>20)&(!talent.apocalypse&buff.dark_transformation.up|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=variable.trinket_1_duration&pet.apoc_ghoul.remains>5)&(talent.army_of_the_dead&!talent.raise_abomination&pet.army_ghoul.active&pet.army_ghoul.remains>10|talent.raise_abomination&pet.abomination.active&pet.abomination.remains>10|talent.legion_of_souls&buff.legion_of_souls.up|!talent.raise_abomination&!talent.apocalypse&buff.dark_transformation.up|variable.trinket_2_buffs&trinket.2.cooldown.remains)|fight_remains<=variable.trinket_1_duration" );
-  trinkets->add_action( "use_item,slot=trinket2,if=(variable.st_planning|variable.adds_remain)&(buff.latent_energy.stack>=8|!trinket.2.is.unyielding_netherprism)&variable.trinket_2_buffs&(variable.trinket_priority=2|!trinket.1.has_cooldown|trinket.1.cooldown.remains>20)&(!talent.apocalypse&buff.dark_transformation.up|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=variable.trinket_2_duration&pet.apoc_ghoul.remains>5)&(talent.army_of_the_dead&!talent.raise_abomination&pet.army_ghoul.active&pet.army_ghoul.remains>10|talent.raise_abomination&pet.abomination.active&pet.abomination.remains>10|talent.legion_of_souls&buff.legion_of_souls.up|!talent.raise_abomination&!talent.apocalypse&buff.dark_transformation.up|variable.trinket_1_buffs&trinket.1.cooldown.remains)|fight_remains<=variable.trinket_2_duration" );
-  trinkets->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains|!trinket.2.has_cooldown|!talent.summon_gargoyle&!talent.army_of_the_dead&!talent.raise_abomination|!talent.summon_gargoyle&talent.army_of_the_dead&(!talent.raise_abomination&cooldown.army_of_the_dead.remains>20|talent.raise_abomination&cooldown.raise_abomination.remains>20)|!talent.summon_gargoyle&!talent.army_of_the_dead&!talent.raise_abomination&cooldown.dark_transformation.remains>20|talent.summon_gargoyle&cooldown.summon_gargoyle.remains>20&!pet.gargoyle.active)|fight_remains<15" );
-  trinkets->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|!trinket.1.has_cooldown|!talent.summon_gargoyle&!talent.army_of_the_dead&!talent.raise_abomination|!talent.summon_gargoyle&talent.army_of_the_dead&(!talent.raise_abomination&cooldown.army_of_the_dead.remains>20|talent.raise_abomination&cooldown.raise_abomination.remains>20)|!talent.summon_gargoyle&!talent.army_of_the_dead&!talent.raise_abomination&cooldown.dark_transformation.remains>20|talent.summon_gargoyle&cooldown.summon_gargoyle.remains>20&!pet.gargoyle.active)|fight_remains<15" );
-  trinkets->add_action( "use_item,slot=main_hand,if=(!variable.trinket_1_buffs&!variable.trinket_2_buffs|trinket.1.cooldown.remains&!variable.trinket_2_buffs|trinket.2.cooldown.remains&!variable.trinket_1_buffs|trinket.1.cooldown.remains&trinket.2.cooldown.remains)&(pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=18|!talent.apocalypse&buff.dark_transformation.up)&((trinket.1.cooldown.duration=90|trinket.2.cooldown.duration=90)|!talent.raise_abomination&!talent.army_of_the_dead|!talent.raise_abomination&talent.army_of_the_dead&pet.army_ghoul.active|talent.raise_abomination&pet.abomination.active)" );
-
-  variables->add_action( "variable,name=st_planning,op=setif,value=1,value_else=0,condition=active_enemies=1&(!raid_event.adds.exists|!raid_event.adds.in|raid_event.adds.in>15|raid_event.pull.has_boss&raid_event.adds.in>15)", "Variables" );
-  variables->add_action( "variable,name=adds_remain,op=setif,value=1,value_else=0,condition=active_enemies>=2&(!raid_event.adds.exists&fight_remains>6|raid_event.adds.exists&raid_event.adds.remains>6)" );
-  variables->add_action( "variable,name=apoc_timing,op=setif,value=5,value_else=2,condition=cooldown.apocalypse.remains<5&debuff.festering_wound.stack<4&cooldown.unholy_assault.remains>5" );
-  variables->add_action( "variable,name=pop_wounds,op=setif,value=1,value_else=0,condition=(cooldown.apocalypse.remains>variable.apoc_timing|!talent.apocalypse)&(debuff.festering_wound.stack>=1&cooldown.unholy_assault.remains<20&talent.unholy_assault&variable.st_planning|debuff.rotten_touch.up&debuff.festering_wound.stack>=1|debuff.festering_wound.stack>=4-pet.abomination.active)|fight_remains<5&debuff.festering_wound.stack>=1" );
-  variables->add_action( "variable,name=pooling_runic_power,op=setif,value=1,value_else=0,condition=cooldown.summon_gargoyle.remains>5&runic_power<40" );
-  variables->add_action( "variable,name=spend_rp,op=setif,value=1,value_else=0,condition=(!talent.rotten_touch|talent.rotten_touch&!debuff.rotten_touch.up|runic_power.deficit<20)&((talent.improved_death_coil&(active_enemies=2|talent.coil_of_devastation)|rune<3|pet.gargoyle.active|buff.sudden_doom.react|!variable.pop_wounds&debuff.festering_wound.stack>=4))" );
-  variables->add_action( "variable,name=san_coil_mult,op=setif,value=2,value_else=1,condition=buff.essence_of_the_blood_queen.stack>=4" );
-  variables->add_action( "variable,name=epidemic_targets,value=3+talent.improved_death_coil+(talent.frenzied_bloodthirst*variable.san_coil_mult)+(talent.hungering_thirst&talent.harbinger_of_doom&buff.sudden_doom.up)" );
+  default_->add_action( "outbreak,target_if=dot.virulent_plague.ticks_remain<3|dot.dread_plague.ticks_remain<3" );
+  default_->add_action( "death_coil,if=buff.sudden_doom.react" );
+  default_->add_action( "festering_strike,if=buff.lesser_ghoul_ready.stack=0" );
+  default_->add_action( "putrefy,if=lesser_ghoul.count>1" );
+  default_->add_action( "scourge_strike,if=buff.lesser_ghoul_ready.stack>=1" );
+  default_->add_action( "death_coil" );
 }
 //unholy_apl_end
 
