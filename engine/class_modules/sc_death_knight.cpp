@@ -1422,6 +1422,7 @@ public:
     const spell_data_t* ghoulish_frenzy_player;
     const spell_data_t* commander_of_the_dead;
     const spell_data_t* dark_transformation_damage;
+    const spell_data_t* dark_transformation_extend;
     const spell_data_t* epidemic_damage;
     const spell_data_t* outbreak_aoe;
     const spell_data_t* festering_scythe;
@@ -11524,8 +11525,8 @@ void death_knight_t::sudden_doom_impact_effects( action_state_t* state, bool coi
 void death_knight_t::unholy_rp_execute_effects( bool sd, bool coil )
 {
   if ( buffs.dark_transformation->up() )
-    // TODO CHECK EFFECT N buffs.dark_transformation->extend_duration(
-        // this, timespan_t::from_seconds( talent.unholy.dark_transformation->effectN( 1 ).base_value() ) );
+    buffs.dark_transformation->extend_duration(
+        this, timespan_t::from_seconds( spell.dark_transformation_extend->effectN( 1 ).base_value() ) );
 
   if ( talent.sanlayn.vampiric_strike.ok() && !buffs.gift_of_the_sanlayn->check() )
     trigger_vampiric_strike_proc( target );
@@ -13152,6 +13153,7 @@ void death_knight_t::spell_lookups()
   spell.ghoulish_frenzy_player          = conditional_spell_lookup( talent.unholy.ghoulish_frenzy.ok(), 377588 );
   spell.commander_of_the_dead           = conditional_spell_lookup( talent.unholy.commander_of_the_dead.ok(), 390260 );
   spell.dark_transformation_damage      = conditional_spell_lookup( talent.unholy.dark_transformation.ok(), 344955 );
+  spell.dark_transformation_extend      = conditional_spell_lookup( talent.unholy.dark_transformation.ok(), 63560 );
   spell.epidemic_damage                 = conditional_spell_lookup( spec.epidemic->ok(), 212739 );
   spell.outbreak_aoe                    = conditional_spell_lookup( talent.unholy.outbreak.ok(), 196780 );
   spell.festering_scythe                = conditional_spell_lookup( talent.unholy.festering_scythe.ok(), 458128 );
