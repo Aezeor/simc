@@ -324,6 +324,7 @@ void unholy( player_t* p )
   default_->add_action( "auto_attack" );
   default_->add_action( "army_of_the_dead" );
   default_->add_action( "outbreak,target_if=dot.virulent_plague.ticks_remain<3|dot.dread_plague.ticks_remain<3" );
+  default_->add_action( "dark_transformation" );
   default_->add_action( "death_coil,if=buff.sudden_doom.react" );
   default_->add_action( "festering_strike,if=buff.lesser_ghoul_ready.stack=0" );
   default_->add_action( "putrefy,if=lesser_ghoul.count>1" );

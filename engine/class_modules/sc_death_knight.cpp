@@ -3341,7 +3341,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
   void create_buffs() override
   {
     base_ghoul_pet_t::create_buffs();
-    putrefy_buff = make_buff<putrefy_buff_t>( this, "putrefy_buff", dk()->pet_spell.putrefy_buff );
+    putrefy_buff = make_buff<putrefy_buff_t>( this, "putrefy", dk()->pet_spell.putrefy_buff );
   }
 
   void create_actions() override
@@ -8812,14 +8812,12 @@ struct festering_strike_t final : public festering_base_t
     parse_options( options_str );
     if ( p->talent.unholy.festering_scythe.ok() )
       set_replacement_action( new festering_scythe_t( p ), p->buffs.festering_scythe );
-
-    p->pets.lesser_ghoul_fs.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
   }
 
   void execute() override
   {
     festering_base_t::execute();
-    int count = rng().range( data().effectN( 3 ).base_value(), data().effectN( 4 ).base_value() );
+    int count = rng().range( data().effectN( 3 ).base_value(), data().effectN( 4 ).base_value() + 1 );
     p()->buffs.lesser_ghoul_ready->trigger( count );
   }
 };
@@ -10535,7 +10533,7 @@ struct wound_spender_base_t : public death_knight_melee_attack_t
 
     if ( p()->buffs.lesser_ghoul_ready->check() )
     {
-      p()->buffs.lesser_ghoul_ready->consume( this );
+      p()->buffs.lesser_ghoul_ready->decrement();
       summon_ghoul->execute();
     }
 
@@ -10574,6 +10572,8 @@ struct scourge_strike_t final : public wound_spender_base_t
 
     if ( p->talent.sanlayn.vampiric_strike.ok() && !p->talent.unholy.clawing_shadows.ok() )
       set_replacement_action( new vampiric_strike_unholy_t( "vampiric_strike", p ), p->buffs.vampiric_strike );
+
+    p->pets.lesser_ghoul_fs.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
   }
 
   void execute() override
@@ -14004,7 +14004,8 @@ void death_knight_t::create_buffs()
       make_fallback( talent.unholy.clawing_shadows.ok(), this, "clawing_shadows", spell.clawing_shadows_buff );
 
   buffs.lesser_ghoul_ready =
-      make_fallback( spec.festering_strike->ok(), this, "lesser_ghoul_ready", spell.lesser_ghoul_buff );
+      make_fallback( spec.festering_strike->ok(), this, "lesser_ghoul_ready", spell.lesser_ghoul_buff )
+          ->set_max_stack( 8 );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -14693,6 +14694,8 @@ void death_knight_t::apply_target_action_effects( action_t* a, bool pet )
                                   talent.frost.everfrost->effectN( 1 ).trigger(), talent.frost.everfrost );
 
     // Unholy
+    action->parse_target_effects( d_fn( &death_knight_td_t::dots_t::dread_plague ), spell.dread_plague );
+    action->parse_target_effects( d_fn( &death_knight_td_t::dots_t::infected_claws ), spell.infected_claws_dot );
 
     // Rider of the Apocalypse
     if ( sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) )
@@ -14766,6 +14769,7 @@ void death_knight_t::parse_player_effects()
     parse_target_effects( d_fn( &death_knight_td_t::dots_t::frost_fever ), spell.frost_fever );
     parse_target_effects( d_fn( &death_knight_td_t::dots_t::blood_plague ), spell.blood_plague );
     parse_target_effects( d_fn( &death_knight_td_t::dots_t::dread_plague ), spell.dread_plague );
+    parse_target_effects( d_fn( &death_knight_td_t::dots_t::infected_claws ), spell.infected_claws_dot );
   }
 
   // Rider of the Apocalypse
