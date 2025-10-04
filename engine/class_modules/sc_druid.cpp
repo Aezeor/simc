@@ -15485,14 +15485,7 @@ struct druid_module_t final : public module_t
 
   void static_init() const override {}
 
-  void register_hotfixes() const override
-  {
-    hotfix::register_effect( "Druid", "", "Balance Druid aura does not increase Regrowth cost", 260777 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0 )
-      .verification_value( 47 );
-  }
+  void register_hotfixes() const override {}
 
   void combat_begin( sim_t* ) const override {}
   void combat_end( sim_t* ) const override {}

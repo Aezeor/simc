@@ -10979,11 +10979,6 @@ struct evoker_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Evoker", "2025-01-20", "Ebon Might is 5%", 1035393, hotfix::HOTFIX_FLAG_DEFAULT )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 5 )
-        .verification_value( 6.5 );
   }
 
   void combat_begin( sim_t* ) const override
