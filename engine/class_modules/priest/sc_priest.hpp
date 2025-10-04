@@ -210,7 +210,6 @@ public:
     propagate_const<buff_t*> thing_from_beyond;
     propagate_const<buff_t*> screams_of_the_void;
     propagate_const<buff_t*> idol_of_yoggsaron;
-    propagate_const<buff_t*> surge_of_insanity;
     propagate_const<buff_t*> mind_flay_insanity;
     propagate_const<buff_t*> call_of_the_void;
     propagate_const<buff_t*> overburdened_mind;
@@ -329,6 +328,7 @@ public:
       // Row 3
       player_talent_t thought_harvester;
       player_talent_t tentacle_slam;
+      const spell_data_t* tentacle_slam_damage;
       const spell_data_t* shadowy_apparition;  // Damage event
       player_talent_t shadowy_apparitions;     // Passive effect
       // Row 4
@@ -530,6 +530,7 @@ public:
       player_talent_t manifested_power;
       const spell_data_t* mind_flay_insanity;
       const spell_data_t* mind_flay_insanity_spell;
+      const spell_data_t* mind_flay_insanity_buff;
       player_talent_t shock_pulse;
       player_talent_t incessant_screams;
       player_talent_t word_of_supremacy;

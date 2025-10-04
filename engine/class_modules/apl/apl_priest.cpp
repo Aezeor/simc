@@ -60,8 +60,7 @@ void shadow( player_t* p )
   precombat->add_action( "arcane_torrent" );
   precombat->add_action( "use_item,name=aberrant_spellforge" );
   precombat->add_action( "halo,if=!fight_style.dungeonroute&!fight_style.dungeonslice&active_enemies<=4&(fight_remains>=120|active_enemies<=2)&!talent.power_surge" );
-  precombat->add_action( "tentacle_slam,if=raid_event.adds.in>=25&spell_targets.tentacle_slam<=12&!fight_style.dungeonslice" );
-  precombat->add_action( "vampiric_touch,if=!action.tentacle_slam.enabled|raid_event.adds.in<25|spell_targets.tentacle_slam>8|fight_style.dungeonslice" );
+  precombat->add_action( "vampiric_touch" );
 
   default_->add_action( "variable,name=holding_tentacle_slam,op=set,value=raid_event.adds.in<15" );
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>2" );
@@ -88,7 +87,7 @@ void shadow( player_t* p )
   cds->add_action( "invoke_external_buff,name=bloodlust,if=buff.power_infusion.up&fight_remains<120|fight_remains<=40" );
   // cds->add_action( "flash_heal,if=equipped.nexuskings_command&buff.oathbound.up&(!buff.boon_of_the_oathsworn.up|buff.boon_of_the_oathsworn.remains<3)&((talent.voidform&(buff.voidform.up|cooldown.voidform.up))|(talent.power_surge&cooldown.halo.up)|(talent.entropic_rift&cooldown.void_torrent.up))", "Use Flash Heal to proc Nexus-King's Command trinket" );
   cds->add_action( "power_infusion,if=(buff.voidform.up&(fight_remains<=80|fight_remains>=140)|active_allied_augmentations)&(!buff.power_infusion.up|set_bonus.tww2_4pc&buff.power_infusion.remains<=15)", "Sync Power Infusion with Voidform or Dark Ascension" );
-  // cds->add_action( "halo,if=talent.power_surge&(cooldown.mind_blast.charges=0|!cooldown.void_torrent.up|!talent.voidform|cooldown.voidform.remains>=gcd.max*4|buff.mind_devourer.up&talent.mind_devourer)", "Make sure Mindbender is active before popping Dark Ascension unless you have insignificant talent points or too many targets" );
+  cds->add_action( "halo,if=talent.power_surge&(cooldown.mind_blast.charges=0|!talent.voidform|cooldown.voidform.remains>=gcd.max*4|buff.mind_devourer.up&talent.mind_devourer)", "Make sure Mindbender is active before popping Dark Ascension unless you have insignificant talent points or too many targets" );
   cds->add_action( "voidform,if=((pet.fiend.active&cooldown.fiend.remains>=4)|(!talent.mindbender&!cooldown.fiend.up)|(active_enemies>2&!talent.inescapable_torment)|(!talent.shadowfiend&!talent.mindbender))&(cooldown.mind_blast.charges=0|time>15|buff.mind_devourer.up&talent.mind_devourer|buff.power_surge.up)", "Make sure Mindbender is active before popping Void Eruption and dump charges of Mind Blast if Mind Devourer is not active and you are not Archon" );
   cds->add_action( "call_action_list,name=trinkets" );
   cds->add_action( "desperate_prayer,if=health.pct<=75", "Use Desperate Prayer to heal up should Shadow Word: Death or other damage bring you below 75%" );
@@ -149,8 +148,7 @@ void shadow_ptr( player_t* p )
   precombat->add_action( "arcane_torrent" );
   precombat->add_action( "use_item,name=aberrant_spellforge" );
   precombat->add_action( "halo,if=!fight_style.dungeonroute&!fight_style.dungeonslice&active_enemies<=4&(fight_remains>=120|active_enemies<=2)&!talent.power_surge" );
-  precombat->add_action( "tentacle_slam,if=raid_event.adds.in>=25&spell_targets.tentacle_slam<=12&!fight_style.dungeonslice" );
-  precombat->add_action( "vampiric_touch,if=!action.tentacle_slam.enabled|raid_event.adds.in<25|spell_targets.tentacle_slam>8|fight_style.dungeonslice" );
+  precombat->add_action( "vampiric_touch" );
 
   default_->add_action( "variable,name=holding_tentacle_slam,op=set,value=raid_event.adds.in<15" );
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>2" );
@@ -177,7 +175,7 @@ void shadow_ptr( player_t* p )
   cds->add_action( "invoke_external_buff,name=bloodlust,if=buff.power_infusion.up&fight_remains<120|fight_remains<=40" );
   // cds->add_action( "flash_heal,if=equipped.nexuskings_command&buff.oathbound.up&(!buff.boon_of_the_oathsworn.up|buff.boon_of_the_oathsworn.remains<3)&((talent.voidform&(buff.voidform.up|cooldown.voidform.up))|(talent.power_surge&cooldown.halo.up)|(talent.entropic_rift&cooldown.void_torrent.up))", "Use Flash Heal to proc Nexus-King's Command trinket" );
   cds->add_action( "power_infusion,if=(buff.voidform.up&(fight_remains<=80|fight_remains>=140)|active_allied_augmentations)&(!buff.power_infusion.up|set_bonus.tww2_4pc&buff.power_infusion.remains<=15)", "Sync Power Infusion with Voidform or Dark Ascension" );
-  // cds->add_action( "halo,if=talent.power_surge&(cooldown.mind_blast.charges=0|!cooldown.void_torrent.up|!talent.voidform|cooldown.voidform.remains>=gcd.max*4|buff.mind_devourer.up&talent.mind_devourer)", "Make sure Mindbender is active before popping Dark Ascension unless you have insignificant talent points or too many targets" );
+  cds->add_action( "halo,if=talent.power_surge&(cooldown.mind_blast.charges=0|!talent.voidform|cooldown.voidform.remains>=gcd.max*4|buff.mind_devourer.up&talent.mind_devourer)", "Make sure Mindbender is active before popping Dark Ascension unless you have insignificant talent points or too many targets" );
   cds->add_action( "voidform,if=((pet.fiend.active&cooldown.fiend.remains>=4)|(!talent.mindbender&!cooldown.fiend.up)|(active_enemies>2&!talent.inescapable_torment)|(!talent.shadowfiend&!talent.mindbender))&(cooldown.mind_blast.charges=0|time>15|buff.mind_devourer.up&talent.mind_devourer|buff.power_surge.up)", "Make sure Mindbender is active before popping Void Eruption and dump charges of Mind Blast if Mind Devourer is not active and you are not Archon" );
   cds->add_action( "call_action_list,name=trinkets" );
   cds->add_action( "desperate_prayer,if=health.pct<=75", "Use Desperate Prayer to heal up should Shadow Word: Death or other damage bring you below 75%" );

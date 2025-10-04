@@ -651,7 +651,6 @@ struct halo_t final : public priest_spell_t
           priest().buffs.surge_of_light->trigger( 1, 0, 1 );
           break;
         case PRIEST_SHADOW:
-          // You get a full buff of MFI and keep Surge of Insanity state intact
           priest().buffs.mind_flay_insanity->trigger();
           SC_FALLTHROUGH;
         default:
@@ -3174,7 +3173,8 @@ void priest_t::init_spells()
   talents.archon.manifested_power         = HT( "Manifested Power" );
   talents.archon.mind_flay_insanity       = ST( "Mind Flay: Insanity" );
   talents.archon.mind_flay_insanity_spell = find_spell( 391403 );  // Not linked to talent, actual dmg spell
-  talents.archon.shock_pulse              = HT( "Shock Pulse" );   // NYI
+  talents.archon.mind_flay_insanity_buff  = find_spell( 391401 );
+  talents.archon.shock_pulse              = HT( "Shock Pulse" );  // NYI
   talents.archon.incessant_screams        = HT( "Incessant Screams" );
   talents.archon.word_of_supremacy        = HT( "Word of Supremacy" );
   talents.archon.heightened_alteration    = HT( "Heightened Alteration" );
@@ -3346,6 +3346,8 @@ void priest_t::create_buffs()
 
   buffs.sustained_potency = make_buff_fallback( talents.archon.sustained_potency.enabled(), this, "sustained_potency",
                                                 talents.archon.sustained_potency_buff );
+
+  buffs.mind_flay_insanity = make_buff( this, "mind_flay_insanity", talents.archon.mind_flay_insanity_buff );
 
   buffs.ascension =
       make_buff_fallback( sets->has_set_bonus( HERO_ARCHON, TWW3, B2 ), this, "ascension", tww3_spells.archon_2pc_buff )

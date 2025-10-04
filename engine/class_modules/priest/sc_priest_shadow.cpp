@@ -1483,6 +1483,13 @@ struct tentacle_slam_damage_t final : public priest_spell_t
     affected_by_shadow_weaving = true;
   }
 
+  // Hacked in until the base spell covers this
+  // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1371
+  timespan_t travel_time() const override
+  {
+    return timespan_t::from_seconds( 0.5 );
+  }
+
   double action_da_multiplier() const override
   {
     double m = priest_spell_t::action_da_multiplier();
@@ -1556,7 +1563,6 @@ struct tentacle_slam_dots_t final : public priest_spell_t
   // Copy travel time from parent spell
   timespan_t travel_time() const override
   {
-    // TODO: confirm this
     return timespan_t::from_seconds( missile_speed );
   }
 
@@ -1577,20 +1583,22 @@ struct tentacle_slam_base_t : public priest_spell_t
   tentacle_slam_base_t( priest_t& p, util::string_view options_str, std::string_view name, const spell_data_t* s )
     : priest_spell_t( name, p, s ),
       insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) ),
-      tentacle_slam_dots( new tentacle_slam_dots_t( p, data().missile_speed(), s ) )
+      tentacle_slam_dots( new tentacle_slam_dots_t( p, 0.5, s ) )
   {
     parse_options( options_str );
 
-    aoe    = -1;
-    radius = data().effectN( 1 ).radius();
-    range  = data().max_range();
+    aoe   = -1;
+    range = data().max_range();
+
+    // Assume you are in line of all targets
+    radius = priest().talents.shadow.tentacle_slam_damage->effectN( 1 ).radius_max();
   }
 
-  // Shadow Crash has fixed travel time
-  timespan_t travel_time() const override
-  {
-    return timespan_t::from_seconds( data().missile_speed() );
-  }
+  // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1371
+  // timespan_t travel_time() const override
+  // {
+  //   return timespan_t::from_seconds( data().missile_speed() );
+  // }
 };
 
 struct tentacle_slam_t final : public tentacle_slam_base_t
@@ -1601,7 +1609,8 @@ struct tentacle_slam_t final : public tentacle_slam_base_t
     : tentacle_slam_base_t( p, options_str, "tentacle_slam", p.talents.shadow.tentacle_slam ),
       tentacle_slam_damage( nullptr )
   {
-    tentacle_slam_damage = new tentacle_slam_damage_t( name_str + "_damage", p, data().effectN( 1 ).trigger() );
+    tentacle_slam_damage =
+        new tentacle_slam_damage_t( name_str + "_damage", p, priest().talents.shadow.tentacle_slam_damage );
     add_child( tentacle_slam_damage );
   }
 
@@ -1939,24 +1948,6 @@ void priest_t::create_buffs_shadow()
             }
           } ) );
 
-  // Custom buff to track how many stacks you are acquiring
-  buffs.surge_of_insanity = make_buff( this, "surge_of_insanity", talents.shadow.surge_of_insanity )
-                                ->set_duration( 0_s )
-                                ->set_stack_change_callback( [ this ]( buff_t* b, int, int _new ) {
-                                  if ( _new == b->max_stack() )
-                                  {
-                                    buffs.surge_of_insanity->expire();
-                                    buffs.mind_flay_insanity->trigger();
-                                  }
-                                } );
-
-  if ( talents.shadow.surge_of_insanity.enabled() )
-  {
-    buffs.surge_of_insanity->set_max_stack( as<int>( talents.shadow.surge_of_insanity->effectN( 3 ).base_value() ) );
-  }
-
-  buffs.mind_flay_insanity = make_buff( this, "mind_flay_insanity", find_spell( 391401 ) );
-
   // Idol of Y'Shaarj
   buffs.call_of_the_void = make_buff( this, "call_of_the_void", talents.shadow.call_of_the_void )
                                ->set_default_value_from_effect( 1 )
@@ -2038,10 +2029,11 @@ void priest_t::init_spells_shadow()
   talents.shadow.intangibility    = ST( "Intangibility" );
   talents.shadow.mental_fortitude = ST( "Mental Fortitude" );
   // Row 3
-  talents.shadow.thought_harvester   = ST( "Thought Harvester" );
-  talents.shadow.tentacle_slam       = ST( "Tentacle Slam" );
-  talents.shadow.shadowy_apparition  = find_spell( 148859 );
-  talents.shadow.shadowy_apparitions = ST( "Shadowy Apparitions" );
+  talents.shadow.thought_harvester    = ST( "Thought Harvester" );
+  talents.shadow.tentacle_slam        = ST( "Tentacle Slam" );
+  talents.shadow.tentacle_slam_damage = find_spell( 1227621 );
+  talents.shadow.shadowy_apparition   = find_spell( 148859 );
+  talents.shadow.shadowy_apparitions  = ST( "Shadowy Apparitions" );
   // Row 4
   talents.shadow.tormenting_whispers = ST( "Tormenting Whispers" );  // NYI
   talents.shadow.descending_darkness = ST( "Descending Darkness" );
