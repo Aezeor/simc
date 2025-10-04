@@ -977,6 +977,7 @@ public:
 
     // Unholy
     propagate_const<gain_t*> forbidden_knowledge;
+    propagate_const<gain_t*> superstrain;
 
     // Rider of the Apocalypse
     propagate_const<gain_t*> antimagic_shell_horsemen;  // RP from magic damage absorbed
@@ -6762,11 +6763,12 @@ struct dread_plague_t final : public death_knight_disease_t
       ticks_since_last_proc = 0;
     }
 
-    // Proc rate is a guess based on data. TODO: Verify
-    if ( p()->talent.unholy.superstrain.ok() && rng().roll( p()->spell.superstrain_energize->effectN( 2 ).percent() ) )
+    // Proc rate testing shows this at ~50% chance with limited testing. Assuming effect 2 divided by 10 is the chance
+    // for the time being. TODO: Test for longer... far longer
+    if ( p()->talent.unholy.superstrain.ok() && rng().roll( p()->spell.superstrain_energize->effectN( 2 ).base_value() / 10 ) )
       p()->resource_gain( RESOURCE_RUNIC_POWER,
                           p()->spell.superstrain_energize->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
-                          p()->gains.frost_fever, this );
+                          p()->gains.superstrain, this );
   }
 
 private:
@@ -14515,6 +14517,7 @@ void death_knight_t::init_gains()
 
   // Unholy
   gains.forbidden_knowledge = get_gain( "Forbidden Knowledge" );
+  gains.superstrain         = get_gain( "Superstrain" );
 
   // Rider of the Apocalypse
   gains.antimagic_shell_horsemen = get_gain( "Antimagic Shell Horsemen" );
