@@ -2541,7 +2541,9 @@ struct death_knight_pet_t : public pet_t
 
   void demise() override
   {
-    range::erase_remove( dk()->dk_active_pets, [ this ]( player_t* ) { return this; } );
+    auto it = range::find( dk()->dk_active_pets, this );
+    if ( it != dk()->dk_active_pets.end() )
+      dk()->dk_active_pets.erase( it );
     pet_t::demise();
   }
 
@@ -3311,7 +3313,10 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
 
   void demise() override
   {
-    range::erase_remove( dk()->active_lesser_ghouls, [ this ]( player_t* ) { return this; } );
+    auto it = range::find( dk()->active_lesser_ghouls, this );
+    if ( it != dk()->active_lesser_ghouls.end() )
+      dk()->active_lesser_ghouls.erase( it );
+
     base_ghoul_pet_t::demise();
   }
 
@@ -10352,6 +10357,7 @@ struct putrefy_damage_t final : public death_knight_spell_t
     background         = true;
     aoe                = -1;
     cooldown->duration = 0_ms;
+    name_str_reporting = "putrefy";
 
     if( p->talent.unholy.putrid_echoes.ok() )
       split_aoe_damage = true;
@@ -14647,9 +14653,8 @@ void death_knight_t::reset()
   km_proc_attempts             = 0;
   bone_shield_charges_consumed = 0;
   active_riders                = 0;
-  for ( auto& pet : dk_active_pets )
-    pet->dismiss();
   dk_active_pets.clear();
+  active_lesser_ghouls.clear();
 }
 
 // death_knight_t::assess_damage ============================================
