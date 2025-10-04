@@ -10413,6 +10413,9 @@ struct putrefy_t final : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
+    if ( p()->talent.unholy.unholy_aura.ok() )
+      p()->buffs.unholy_aura->trigger();
+
     for ( auto& ghoul : p()->active_lesser_ghouls )
     {
       if ( ghoul->putrefy_buff->check() )
@@ -10425,9 +10428,6 @@ struct putrefy_t final : public death_knight_spell_t
     if ( p()->talent.unholy.forbidden_knowledge_3.ok() && p()->buffs.forbidden_knowledge->check() )
       p()->buffs.forbidden_knowledge->extend_duration(
           p(), p()->talent.unholy.forbidden_knowledge_3->effectN( 1 ).time_value() );
-
-    if ( p()->talent.unholy.unholy_aura.ok() )
-      p()->buffs.unholy_aura->trigger();
   }
 
   bool ready() override
@@ -11984,31 +11984,24 @@ void death_knight_t::start_unholy_aura()
 
   make_event( *sim, first, [ this, period ]() {
     int ghouls = active_lesser_ghouls.size();
-    int diff   = ghouls - buffs.lesser_ghoul_mastery->check();
 
-    if ( diff == 0 )
-      return;
-
-    if ( diff > 0 )
-      buffs.lesser_ghoul_mastery->trigger( diff );
-    else
-      buffs.lesser_ghoul_mastery->decrement( diff );
+    buffs.lesser_ghoul_mastery->trigger( ghouls );
 
     make_repeating_event( *sim, period, [ this ]() {
       if ( active_lesser_ghouls.empty() )
         return;
 
       int ghouls = active_lesser_ghouls.size();
+      // Buff has a max stacks of 20, ensure it doesnt go above this
+      if( ghouls > 20 )
+        ghouls = 20;
       int stacks = buffs.lesser_ghoul_mastery->check();
       int diff   = ghouls - stacks;
 
       if ( diff == 0 )
         return;
 
-      if ( diff > 0 )
-        buffs.lesser_ghoul_mastery->trigger( diff );
-      else
-        buffs.lesser_ghoul_mastery->decrement( diff );
+      buffs.lesser_ghoul_mastery->bump( diff );
     } );
   } );
 }
@@ -13469,7 +13462,7 @@ void death_knight_t::spell_lookups()
   spell.lesser_ghoul_ticking            = conditional_spell_lookup( spec.festering_strike->ok(), 1255830 );
   spell.infected_claws_dot              = conditional_spell_lookup( talent.unholy.infected_claws.ok(), 1241786 );
   spell.infected_claws_driver           = conditional_spell_lookup( talent.unholy.infected_claws.ok(), 1241792 );
-  spell.virulent_plague_erupt          = conditional_spell_lookup( talent.unholy.outbreak.ok(), 1241167 );
+  spell.virulent_plague_erupt           = conditional_spell_lookup( talent.unholy.outbreak.ok(), 1241167 );
   spell.dread_plague_erupt              = conditional_spell_lookup( talent.unholy.outbreak.ok(), 1241171 );
   spell.ancient_runes_buff              = conditional_spell_lookup( talent.unholy.ancient_runes.ok(), 377591 );
   spell.unholy_aura_buff                = conditional_spell_lookup( talent.unholy.unholy_aura.ok(), 1244900 );
@@ -14353,8 +14346,9 @@ void death_knight_t::create_buffs()
 
   buffs.lesser_ghoul_mastery =
       make_fallback( talent.unholy.unholy_aura.ok(), this, "lesser_ghoul_mastery", spell.lesser_ghoul_counter )
-          ->set_default_value( talent.unholy.unholy_aura->effectN( 1 ).percent() / 10 )
-          ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+          ->set_default_value( talent.unholy.unholy_aura->effectN( 1 ).base_value() / 10 )
+          ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+          ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buffs.forbidden_knowledge = make_fallback( talent.unholy.forbidden_knowledge_1.ok(), this, "forbidden_knowledge",
                                              spell.forbidden_knowledge_buff );
