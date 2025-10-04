@@ -921,8 +921,10 @@ public:
     propagate_const<action_t*> coil_of_devastation;
     propagate_const<action_t*> virulent_plague_erupt;
     propagate_const<action_t*> dread_plague_erupt;
+    propagate_const<action_t*> dread_plague;
     propagate_const<action_t*> putrefy;
     propagate_const<action_t*> disease_cloud;
+    propagate_const<action_t*> rapid_variant;
   } background_actions;
 
   struct pet_summon_actions_t
@@ -1459,6 +1461,7 @@ public:
     const spell_data_t* disease_cloud_debuff;
     const spell_data_t* disease_cloud_area;
     const spell_data_t* contagion;
+    const spell_data_t* rapid_variant_damage;
 
     // Unholy Summon Spells
     const spell_data_t* summon_gargoyle;
@@ -1883,6 +1886,7 @@ public:
   // Unholy
   void trigger_runic_corruption( proc_t* proc, double rpcost, double override_chance = -1.0,
                                  bool death_trigger = false );
+  void trigger_rapid_variant( player_t* t );
   void sudden_doom_execute_effects( bool coil = false );
   void sudden_doom_impact_effects( action_state_t* state, bool coil = false );
   void unholy_rp_execute_effects( bool sd, bool coil = false );
@@ -6715,6 +6719,16 @@ private:
 };
 
 // Dread Plague ======================================================
+struct rapid_variant_t final : public death_knight_spell_t
+{
+  rapid_variant_t( std::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->spell.rapid_variant_damage )
+  {
+    background = true;
+    may_miss = may_dodge = may_parry = false;
+  }
+};
+
 struct dread_plague_erupt_t final : public death_knight_spell_t
 {
   dread_plague_erupt_t( std::string_view name, death_knight_t* p )
@@ -10340,8 +10354,7 @@ private:
 struct outbreak_t final : public death_knight_spell_t
 {
   outbreak_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_spell_t( "outbreak", p, p->talent.unholy.outbreak ),
-      dread_plague( get_action<dread_plague_t>( "dread_plague", p ) )
+    : death_knight_spell_t( "outbreak", p, p->talent.unholy.outbreak )
   {
     parse_options( options_str );
   }
@@ -10365,11 +10378,8 @@ struct outbreak_t final : public death_knight_spell_t
   {
     death_knight_spell_t::impact( s );
     p()->background_actions.outbreak_aoe->execute_on_target( s->target );
-    dread_plague->execute_on_target( s->target );
+    p()->background_actions.dread_plague->execute_on_target( s->target );
   }
-
-private:
-  action_t* dread_plague;
 };
 
 // Pillar of Frost ==========================================================
@@ -11806,6 +11816,25 @@ void death_knight_t::trigger_runic_corruption( proc_t* proc, double rpcost, doub
     proc->occur();
 }
 
+void death_knight_t::trigger_rapid_variant( player_t* t )
+{
+  if ( sim->target_non_sleeping_list.size() == 1 || sim->event_mgr.canceled )
+    return;
+
+  std::vector<player_t*> tl = background_actions.rapid_variant->target_list();
+
+  auto it = range::find( tl, t );
+  if ( it != tl.end() )
+    tl.erase( it );
+
+  std::sort( tl.begin(), tl.end(), [ this ]( player_t* a, player_t* b ) {
+    return a->resources.current[ RESOURCE_HEALTH ] < b->resources.current[ RESOURCE_HEALTH ];
+  } );
+
+  background_actions.rapid_variant->execute();
+  background_actions.dread_plague->execute_on_target( tl[ 0 ] );
+}
+
 void death_knight_t::sudden_doom_execute_effects( bool coil )
 {
   if ( talent.sanlayn.visceral_strength.ok() )
@@ -11993,7 +12022,7 @@ void death_knight_t::sort_undeath_targets( std::vector<player_t*> tl )
   undeath_tl = tl;
 
   std::sort( undeath_tl.begin(), undeath_tl.end(), [ this ]( player_t* a, player_t* b ) {
-    return get_target_data( a )->dot.undeath->current_stack() > get_target_data( b )->dot.undeath->current_stack();
+    return get_target_data( a )->dot.undeath->current_stack() < get_target_data( b )->dot.undeath->current_stack();
   } );
 }
 
@@ -12453,6 +12482,7 @@ void death_knight_t::create_actions()
     {
       background_actions.outbreak_aoe      = get_action<outbreak_aoe_t>( "outbreak_aoe", this );
       background_actions.virulent_plague   = get_action<virulent_plague_t>( "virulent_plague", this );
+      background_actions.dread_plague      = get_action<dread_plague_t>( "dread_plague", this );
     }
 
     if( talent.unholy.scourge_strike.ok() )
@@ -12491,6 +12521,9 @@ void death_knight_t::create_actions()
 
     if ( talent.unholy.raise_abomination.ok() )
       background_actions.disease_cloud = get_action<disease_cloud_t>( "disease_cloud", this );
+
+    if ( talent.unholy.rapid_variant.ok() )
+      background_actions.rapid_variant = get_action<rapid_variant_t>( "rapid_variant", this );
   }
 
   else if ( specialization() == DEATH_KNIGHT_FROST )
@@ -13544,6 +13577,7 @@ void death_knight_t::spell_lookups()
   spell.disease_cloud_debuff            = conditional_spell_lookup( talent.unholy.raise_abomination.ok(), 1244102 );
   spell.disease_cloud_area              = conditional_spell_lookup( talent.unholy.raise_abomination.ok(), 1244103 );
   spell.contagion                       = conditional_spell_lookup( talent.unholy.raise_abomination.ok(), 1241077 );
+  spell.rapid_variant_damage            = conditional_spell_lookup( talent.unholy.rapid_variant.ok(), 1242564 );
   // Unholy Apex
   spell.forbidden_knowledge_buff     = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 1242223 );
   spell.forbidden_knowledge_energize = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 1256576 );
@@ -14708,6 +14742,12 @@ void death_knight_t::activate()
       }
     } );
   }
+
+  if ( talent.unholy.rapid_variant.ok() )
+    register_on_kill_callback( [ this ]( player_t* t ) {
+      if ( get_target_data( t )->dot.dread_plague->is_ticking() )
+        trigger_rapid_variant( t );
+    } );
 }
 
 // death_knight_t::reset ====================================================
