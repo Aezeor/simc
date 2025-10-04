@@ -765,7 +765,7 @@ Affecting Spells : Light's Inspiration (373450 effects: #1, #2), Light Weaving (
 Family Flags     : 24
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Ignore Caster Modifiers (125), Ignore Healing Modifiers (219), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
-#1 (id=10552)    : Apply Aura (6) | Modify Max Health% (133)
+#1 (id=10552)    : Apply Aura (6) | Increase Health% (133)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #2 (id=332013)   : Direct Heal% (136)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
@@ -954,8 +954,8 @@ School           : Physical
 Spell Type       : None
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
-#1 (id=11588)    : Apply Aura (6) | Modify Max Resource% (132)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value 2: 0x8 | Target: Self (1)
+#1 (id=11588)    : Apply Aura (6) | Increase Resource% (132)
+                   Base Value: 5 | Scaled Value: 5 | Resource: mana | Misc Value 2: 0x8 | Target: Self (1)
 Description      : Maximum mana increased by $s1%.
 
 Name             : Arcane Resistance (desc=Racial Passive) (id=20592) [Passive] 

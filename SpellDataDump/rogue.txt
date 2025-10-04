@@ -3478,8 +3478,8 @@ School           : Physical
 Spell Type       : None
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
-#1 (id=214754)   : Apply Aura (6) | Modify Max Resource% (132)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Misc Value 2: 0x8 | Target: Self (1)
+#1 (id=214754)   : Apply Aura (6) | Increase Resource% (132)
+                   Base Value: 5 | Scaled Value: 5 | Resource: energy | Misc Value 2: 0x8 | Target: Self (1)
 Description      : Maximum energy increased by $s1%.
 
 Name             : Touch of Elune (desc=Racial Passive) (id=154748) [Passive] 

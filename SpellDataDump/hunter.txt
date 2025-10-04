@@ -5333,8 +5333,8 @@ School           : Physical
 Spell Type       : None
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
-#1 (id=341049)   : Apply Aura (6) | Modify Max Resource% (132)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 2 | Misc Value 2: 0x8 | Target: Self (1)
+#1 (id=341049)   : Apply Aura (6) | Increase Resource% (132)
+                   Base Value: 5 | Scaled Value: 5 | Resource: focus | Misc Value 2: 0x8 | Target: Self (1)
 Description      : Maximum focus increased by $s1%.
 
 Name             : Trailblazer (id=231390) [Spell Family (9)] 
@@ -7375,9 +7375,9 @@ Affecting Spells : Aspect of the Beast (191384 effects: #3, #4)
 Family Flags     : 18
 Attributes       : Passive (6), Do Not Log (8), Aura Unique (43), Do Not Display Range (126), Aura Points On Client (268)
 Effects          :
-#1 (id=708365)   : Apply Aura (6) | Modify Max Health% (133)
+#1 (id=708365)   : Apply Aura (6) | Increase Health% (133)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-#2 (id=708366)   : Apply Aura Owner in Area (143) | Modify Max Health% (133)
+#2 (id=708366)   : Apply Aura Owner in Area (143) | Increase Health% (133)
                    Base Value: 5 | Scaled Value: 5 | Radius: 100 yards | Target: Self (1)
 Description      : You and your pet gain $s1% increased maximum health.
 Tooltip          : Maximum health increased by $w2%.
@@ -13085,9 +13085,9 @@ Affecting Spells : Aspect of the Beast (191384 effects: #1, #2)
 Family Flags     : 60, 109
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Ignore Line of Sight (66), Can't Crit (93), Do Not Display Range (126), Ignore Healing Modifiers (219), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Cannot Lifesteal/Leech (424), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
-#1 (id=1023490)  : Apply Aura (6) | Modify Max Health% (133)
+#1 (id=1023490)  : Apply Aura (6) | Increase Health% (133)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-#2 (id=1023491)  : Apply Aura (6) | Modify Max Health% (133)
+#2 (id=1023491)  : Apply Aura (6) | Increase Health% (133)
                    Base Value: 20 | Scaled Value: 20 | Target: Master (27)
 #3 (id=1023492)  : Direct Heal% (136)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -13397,7 +13397,7 @@ Affecting Spells : Aspect of the Beast (191384 effects: #1, #2)
 Family Flags     : 60, 109
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Can't Crit (93), Do Not Display Range (126), Ignore Healing Modifiers (219), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Cannot Lifesteal/Leech (424), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
-#1 (id=1031552)  : Apply Aura (6) | Modify Max Health% (133)
+#1 (id=1031552)  : Apply Aura (6) | Increase Health% (133)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #2 (id=1031553)  : Direct Heal% (136)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -17642,7 +17642,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1194133)  : Apply Aura (6) | Modify Max Health% (133)
+#1 (id=1194133)  : Apply Aura (6) | Increase Health% (133)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Your Spotting Eagle gains the Tenacity specialization, granting you Endurance Training and Air Superiority.
 
@@ -19810,7 +19810,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1267045)  : Apply Aura (6) | Modify Max Health% (133)
+#1 (id=1267045)  : Apply Aura (6) | Increase Health% (133)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Your maximum health is increased by $s1%.
 

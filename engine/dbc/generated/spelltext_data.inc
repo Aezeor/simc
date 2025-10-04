@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.0.63534
-static constexpr std::array<spelltext_data_t, 29210> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 29216> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -12000,6 +12000,8 @@ static constexpr std::array<spelltext_data_t, 29210> __spelltext_data { {
   {  288839, "$@spelldesc288802", "Haste increased by $w1.", 0 },
   {  288841, "$@spelldesc288802", "Bond with a nearby ally every $t1 sec.", 0 },
   {  288843, "Stamina increased by $s1%.", 0, 0 },
+  {  288848, "Festering Strike no longer causes Scourge Strike to summon a Lesser Ghoul but instead causes it to deal $288849sw1 Shadow damage and heal you for ${$288849e1*100}% of that amount.", 0, "PvP Talent" },
+  {  288849, "$@spelldesc288848", 0, "PvP Talent" },
   {  288851, "Set up a rickety jukebox featuring Meerah's greatest hit!", 0, 0 },
   {  288853, "$@spelldesc1242608", 0, 0 },
   {  288865, "$@spelldesc288851", "Soothed by Meerah's sweet singing.", 0 },
@@ -27718,6 +27720,7 @@ static constexpr std::array<spelltext_data_t, 29210> __spelltext_data { {
   { 1242956, "Your haste is increased by $s1% while in Void Metamorphosis.", 0, 0 },
   { 1242974, "$@spelldesc1242975", "Increases the damage of your next Arcane Barrage by $s1%.$?a384858[\r\n\r\nArcane Barrage has a ${$s2*$384858s1 }% chance to also fire an Arcane Orb.][]", 0 },
   { 1242992, "Your and your minions' damaging spells and abilities periodically apply $@spellname1231982 to enemies. The infernal dreadlord summoned by $@spellname1237711 always critically strikes $@spellname1231982 enemies.\r\n\r\n$@spellicon1231982\r\n$@spellname1231982\r\nEvery $1231982t2 seconds, the targets bursts, damaging nearby enemies for |CFFffffff$s0%|R of damage taken over the last $1231982t2 seconds.\r\n\r\n\r\nDamage reduced beyond $1231982s3 targets.", "$@spellaura1245385", 0 },
+  { 1242998, 0, "Commanding $w1 lesser $lGhoul:Ghouls;.$?s377440[\r\nMastery increased by ${$W2*$mastery}.1%.\r\n][]", 0 },
   { 1243069, "$@spelldesc373280", "Witnessing nightmares from $@auracaster.", 0 },
   { 1243097, "Mastery increased by $s1%.\r\n\r\nVersatility increased by $s2%.", 0, 0 },
   { 1243104, "Haste increased by $s1%.\r\n\r\nCritical strike chance increased by $s2%.", 0, 0 },
@@ -28192,6 +28195,7 @@ static constexpr std::array<spelltext_data_t, 29210> __spelltext_data { {
   { 1250554, "$@spelldesc1250566", "Rushing Wind Kick is available!", 0 },
   { 1250557, "Mark your target for execution, increasing your Haste by $s3 for $d. While the target is marked, each of your attacks against them grants an additional $s2 Critical Strike, as the Void urges you to finish the kill, up to a maximum of ${$s2*$1263357u} Critical Strike.", "A mandate of execution has been placed upon your target, granting you $w3 Haste. Your strikes against your victim grant you stacking Critical Strike.", 0 },
   { 1250562, "Increases the critical strike chance of your Holy Word: Serenity$?a1246517[] [ and Holy Word: Sanctify] by $s1%.", 0, 0 },
+  { 1250563, "Your melee attacks have a chance to summon an elite Axethrower who hurls an axe at your target, inflicting ${$<rolemult>*$s1} Physical damage.", 0, 0 },
   { 1250564, "$@spelldesc1254331", 0, 0 },
   { 1250565, "Your healing spells critically strike for ${$s1+$s2}% of healing done instead of the usual $s2%.", 0, 0 },
   { 1250566, "After consuming Blackout Kick!, Rising Sun Kick has a $s1% chance to become Rushing Wind Kick.\r\n\r\n$@spellicon467307$@spellname467307:\r\n$@spelldesc467307", 0, 0 },
@@ -28426,6 +28430,7 @@ static constexpr std::array<spelltext_data_t, 29210> __spelltext_data { {
   { 1254194, "Combustion's cooldown is reduced by ${-$s1/1000} sec.", 0, 0 },
   { 1254210, "Increases Earth Shield healing by $s1%.", 0, 0 },
   { 1254251, "Reduces the cooldown of Riptide by ${$s1/-1000}.1 sec.", 0, 0 },
+  { 1254252, 0, "$?a288848[ Scourge Strike leeches $288849s1% of the target's maximum health.\r\n][Scourge Strike summons $s1 Lesser Ghoul.]", 0 },
   { 1254311, "Fireball always critically strikes when it damages an enemy below $s2% health.", 0, 0 },
   { 1254331, "$@spelldesc1254180\r\n\r\nDuring this time, each of your attacks increases your Critical Strike by an additional $s1, stacking up to a maximum of $u times.", "Critical Strike increased by $w1.", 0 },
   { 1254339, "Unleash the fel energy stored within the crystal, sacrificing $s1 of your health to infuse a target ally for $1255200d, absorbing $s2 damage.", "Absorbs $w2 damage.", 0 },
@@ -28457,6 +28462,7 @@ static constexpr std::array<spelltext_data_t, 29210> __spelltext_data { {
   { 1255278, "Your spells and abilities have a chance to unleash vibrant vines that surge toward your target. Enemies struck take $s2 nature damage over $1255357d. Allies are wrapped in protective flora, absorbing up to $s3 damage over $1255367d.", 0, 0 },
   { 1255357, 0, "Suffering $w1 Nature damage every $t1 sec.", 0 },
   { 1255367, 0, "Absorbing $w1 damage.", 0 },
+  { 1255379, "Hurl a massive hook toward your target, cleaving through enemies in its path and dealing ${$<rolemult>*$s2} Physical damage to each. When the hook crashes into the target, it inflicts ${$<rolemult>*$s1} Physical damage split among enemies within $1255298a1 yards.", 0, 0 },
   { 1255460, 0, "$pri increased by $w1.", 0 },
   { 1255504, 0, "Critical Strike increased by $w1.", 0 },
   { 1255768, "$@spelldesc1248866", 0, 0 },
@@ -29217,7 +29223,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix
 } };
 
 // Spell description variables, wow build 12.0.0.63534
-static constexpr std::array<spelldesc_vars_data_t, 708> __spelldesc_vars_data { {
+static constexpr std::array<spelldesc_vars_data_t, 710> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29900,6 +29906,7 @@ static constexpr std::array<spelldesc_vars_data_t, 708> __spelldesc_vars_data { 
   { 1249658, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   { 1250529, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1250533, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
+  { 1250563, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1250580, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1250582, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1250601, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
@@ -29913,6 +29920,7 @@ static constexpr std::array<spelldesc_vars_data_t, 708> __spelldesc_vars_data { 
   { 1253827, "$castigation=$?a193134[${1}][${0}]\r\n$harsh=$?a373183[${$373180s2}][${0}]\r\n$darkside=$?a198069[${1+($198069s1/100)}][${1}]\r\n$balanceofthings=$?a390706[${1+($390706s1/100)}][${1}]\r\n$penancedamage=${$47666s1*$<darkside>*$<balanceofthings>*(3+$<castigation>+$<harsh>)}\r\n$penancehealing=${$47750s1*$<darkside>*(3+$<castigation>+$<harsh>)}" },
   { 1253845, "$castigation=$?a193134[${1}][${0}]\r\n$harsh=$?a373183[${$373180s2}][${0}]\r\n$darkside=$?a198069[${1+($198069s1/100)}][${1}]\r\n$balanceofthings=$?a390706[${1+($390706s1/100)}][${1}]\r\n$penancedamage=${$47666s1*$<darkside>*$<balanceofthings>*(3+$<castigation>+$<harsh>)}\r\n$penancehealing=${$47750s1*$<darkside>*(3+$<castigation>+$<harsh>)}" },
   { 1254194, "$cdr=${$s1/1000}.1" },
+  { 1255379, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1256581, "$cap=${6}" },
   { 1258587, "$damageValue=${$1258587s1*($max($AP,$SP)*($1250003w25/100))}" },
   { 1258672, "$healingrolemult=$?a137008|a137006|a137007|a212612|a212613|a137013|a137011|a137010|a396186|a356809|a137015|a137016|a137017|a137021|a137019|a137020|a137023|a137025|a137028|a137027|a137033|a137037|a137036|a137035|a137040|a137041|a137043|a137044|a137046|a137049|a137050|a137048[${0.66}.2][${1}]" },

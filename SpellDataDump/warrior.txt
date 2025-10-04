@@ -860,7 +860,7 @@ Family Flags     : 11, 51
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), No Threat (42), No AutoCast (AI) (49), Can't Crit (93), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Aura Interrupt   : Enter World (22)
 Effects          :
-#1 (id=5787)     : Apply Aura (6) | Modify Max Health% (133)
+#1 (id=5787)     : Apply Aura (6) | Increase Health% (133)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #2 (id=725599)   : Direct Heal% (136)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -3392,8 +3392,8 @@ School           : Physical
 Spell Type       : None
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
-#1 (id=214756)   : Apply Aura (6) | Modify Max Resource% (132)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 1 | Misc Value 2: 0x8 | Target: Self (1)
+#1 (id=214756)   : Apply Aura (6) | Increase Resource% (132)
+                   Base Value: 5 | Scaled Value: 5 | Resource: rage | Misc Value 2: 0x8 | Target: Self (1)
 Description      : Maximum rage increased by $s1%.
 
 Name             : Touch of Elune (desc=Racial Passive) (id=154748) [Passive] 
@@ -4204,7 +4204,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #2 (id=801270)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
-#3 (id=801429)   : Apply Aura (6) | Modify Max Health% (133)
+#3 (id=801429)   : Apply Aura (6) | Increase Health% (133)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
 Description      : Your maximum health is increased by $s3% and every ${$s2/10} Rage you spend heals you for ${$s1/10}% of your maximum health.
 
@@ -9630,7 +9630,7 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Sp
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Allow While Invisible (78), Always Hit (114), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Aura Interrupt   : Leave World (19)
 Effects          :
-#1 (id=845675)   : Apply Aura (6) | Modify Max Health% (133)
+#1 (id=845675)   : Apply Aura (6) | Increase Health% (133)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #2 (id=845676)   : Apply Aura (6) | Modify Crit% (52)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)

@@ -7530,7 +7530,7 @@ bonus_id={ 13363 }, effects={ Infinite Power (id=1250757, index=0, type=no_delay
 bonus_id={ 13364 }, effects={ Infinite Power (id=1250751, index=0, type=no_delay_use) }
 bonus_id={ 13365 }, effects={ Infinite Power (id=1250760, index=0, type=no_delay_use) }
 bonus_id={ 13435 }, effects={ Infinite Power (id=1250552, index=0, type=equip) }
-bonus_id={ 13442 }, base_ilevel={ 242 }, quality={ rare }
+bonus_id={ 13442 }, quality={ rare }
 bonus_id={ 13443 }, quality={ epic }
 bonus_id={ 13444 }, quality={ epic }
 bonus_id={ 13445 }, quality={ epic }

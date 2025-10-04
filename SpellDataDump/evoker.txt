@@ -8425,7 +8425,7 @@ Labels           : 16: Class Spells
 Conduit Id       : 290 (values=4, 4.4, 4.8, 5.2, 5.6, 6, 6.4, 6.8, 7.2, 7.6, 8, 8.4, 8.8, 9.2, 9.6)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Hide Passive From Tooltip (451)
 Effects          :
-#1 (id=1021878)  : Apply Aura (6) | Modify Max Health% (133)
+#1 (id=1021878)  : Apply Aura (6) | Increase Health% (133)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 Description      : Increases your maximum health by |cFFFFFFFF${$s1}.1%|r.
 
@@ -9391,7 +9391,7 @@ Affecting Spells : Black Aspect's Favor (407254 effect#1)
 Family Flags     : 70
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Threat (42), Use Shapeshift Bar (68), Allow Aura While Dead (116), Allow Entering Arena (149), Extra Initial Period (169), Allow While Riding Vehicle (204), Disable Aura While Dead (226), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=1050107)  : Apply Aura (6) | Modify Max Health% (133)
+#1 (id=1050107)  : Apply Aura (6) | Increase Health% (133)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #2 (id=1050108)  : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -9435,7 +9435,7 @@ Family Flags     : 70
 Attributes       : No Threat (42), Do Not Display Range (126), Allow Entering Arena (149), Do Not Display Duration (170), No Target Duration Mod (225), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19)
 Effects          :
-#1 (id=1050155)  : Apply Aura (6) | Modify Max Health% (133)
+#1 (id=1050155)  : Apply Aura (6) | Increase Health% (133)
                    Base Value: 2 | Scaled Value: 2 | Target: Targeted Ally (21)
 Description      : $@spelldesc403264
 Tooltip          : Maximum health increased by $w1%.

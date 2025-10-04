@@ -2025,6 +2025,9 @@ class SpellDataGenerator(DataGenerator):
           # Tier TWW1
           ( 457506, 0 ), # Blood TWW1 set, Piledriver
           ( 1238673, 0 ), # Rune Carved Weapons
+          # Midnight
+          ( 1254252, 0 ), # Lesser Ghoul Ready Buff
+          ( 1242998, 0 ), # Lesser Ghoul Counter Buff
         ),
 
         # Shaman:

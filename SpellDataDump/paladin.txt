@@ -714,8 +714,8 @@ School           : Physical
 Spell Type       : None
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
-#1 (id=11588)    : Apply Aura (6) | Modify Max Resource% (132)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value 2: 0x8 | Target: Self (1)
+#1 (id=11588)    : Apply Aura (6) | Increase Resource% (132)
+                   Base Value: 5 | Scaled Value: 5 | Resource: mana | Misc Value 2: 0x8 | Target: Self (1)
 Description      : Maximum mana increased by $s1%.
 
 Name             : Arcane Resistance (desc=Racial Passive) (id=20592) [Passive] 
@@ -13078,7 +13078,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #10 (id=1033321) : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#11 (id=1033322) : Apply Aura (6) | Modify Max Health% (133)
+#11 (id=1033322) : Apply Aura (6) | Increase Health% (133)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #12 (id=1033323) : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -2 | Scaled Value: -2 | Misc Value: 0x7f | Target: Self (1)

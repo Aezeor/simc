@@ -1552,7 +1552,7 @@ Effects          :
                    Affected School(s): All
 #5 (id=1105558)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Target: Self (1)
-#6 (id=1255235)  : Apply Aura (6) | Modify Max Health% (133)
+#6 (id=1255235)  : Apply Aura (6) | Increase Health% (133)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Target: Self (1)
 Description      : Your skin becomes as tough as bark, reducing all damage you take by $s1%$?a301768[, increasing healing received by $301768s2%,][]$?a1250923[, increasing maximum health by $1250923s2%,][] and preventing damage from delaying your spellcasts. Lasts $d.
 
@@ -1616,7 +1616,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.25) | Misc Value: 31 | Misc Value 2: 0x7 | Target: Self (1)
 #3 (id=197236)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 125 | Scaled Value: 125 | Misc Value: 1 | Target: Self (1)
-#4 (id=223345)   : Apply Aura (6) | Modify Max Health% (133)
+#4 (id=223345)   : Apply Aura (6) | Increase Health% (133)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=232245)   : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
@@ -3589,7 +3589,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Mangle (33917)
                    Family Flags: 38
-#13 (id=1017645) : Apply Aura (6) | Modify Max Health% (133)
+#13 (id=1017645) : Apply Aura (6) | Increase Health% (133)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #14 (id=1118828) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -5393,7 +5393,7 @@ Proc Chance      : 100%
 Proc Flags       : Generic Heal Taken, Magic Heal Taken, Helpful Periodic Taken
 Attributes       : Passive (6), Do Not Log (8), Can Proc From Procs (122), Can Proc From Suppressed Target Procs (254), Mastery Affects Points (285), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=216520)   : Apply Aura (6) | Modify Max Health% (133)
+#1 (id=216520)   : Apply Aura (6) | Increase Health% (133)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.7 | Target: Self (1)
 #2 (id=345062)   : Apply Aura (6) | Modify Absorb% Received (422)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.7 | Target: Self (1)
@@ -6480,7 +6480,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.25) | Misc Value: 35 | Misc Value 2: 0x7 | Target: Self (1)
 #3 (id=290371)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 125 | Scaled Value: 125 | Misc Value: 1 | Target: Self (1)
-#4 (id=290372)   : Apply Aura (6) | Modify Max Health% (133)
+#4 (id=290372)   : Apply Aura (6) | Increase Health% (133)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=290503)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -11981,7 +11981,7 @@ Proc Chance      : 101%
 Triggered By     : Ursine Vigor (340540)
 Attributes       : Include In Advanced Combat Log (72), Aura Points On Client (268), Not In Spellbook Until Learned (269)
 Effects          :
-#1 (id=840534)   : Apply Aura (6) | Modify Max Health% (133)
+#1 (id=840534)   : Apply Aura (6) | Increase Health% (133)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=840535)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
@@ -16041,7 +16041,7 @@ Proc Chance      : 101%
 Triggered By     : Ursine Vigor (377842)
 Attributes       : Include In Advanced Combat Log (72), Aura Points On Client (268), Not In Spellbook Until Learned (269)
 Effects          :
-#1 (id=1033132)  : Apply Aura (6) | Modify Max Health% (133)
+#1 (id=1033132)  : Apply Aura (6) | Increase Health% (133)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1033133)  : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
@@ -17547,7 +17547,7 @@ Proc Chance      : 101%
 Triggered By     : Druid Guardian 10.1 Class Set 4pc (405515)
 Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268)
 Effects          :
-#1 (id=1072710)  : Apply Aura (6) | Modify Max Health% (133)
+#1 (id=1072710)  : Apply Aura (6) | Increase Health% (133)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : $@spelldesc405515
 Tooltip          : Maximum health increased by $s1%.
@@ -18585,8 +18585,8 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1113578)  : Apply Aura (6) | Modify Max Resource (418)
                    Base Value: 200 | Scaled Value: 200 | Resource: astral_power | Target: Self (1)
-#2 (id=1113580)  : Apply Aura (6) | Modify Mana Pool% (419)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+#2 (id=1113580)  : Apply Aura (6) | Modify Max Resource% (419)
+                   Base Value: 5 | Scaled Value: 5 | Resource: mana | Target: Self (1)
 Description      : Your maximum mana is increased by $s2%$?a137013[ and your maximum Astral Power is increased by ${$s1/10}][].
 
 Name             : Grove's Inspiration (id=429402) [Spell Family (7), Passive] 
@@ -24372,7 +24372,7 @@ Triggered By     : Bear Form (5487)
 Attributes       : Do Not Log (8), Do Not Sheath (18), No Threat (42), Reset cooldown upon ending an encounter (333), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
-#1 (id=1271791)  : Apply Aura (6) | Modify Max Health% (133)
+#1 (id=1271791)  : Apply Aura (6) | Increase Health% (133)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 1 | Target: Self (1)
 Description      : $@spelldesc1261867
 Tooltip          : Maximum health increased by $s1%.
