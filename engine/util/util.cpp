@@ -480,6 +480,8 @@ const char* util::race_type_string( race_e type )
     case RACE_DRACTHYR_HORDE:      return "dracthyr_horde";
     case RACE_EARTHEN_ALLIANCE:    return "earthen_alliance";
     case RACE_EARTHEN_HORDE:       return "earthen_horde";
+    case RACE_HARANIR_ALLIANCE:    return "haranir_alliance";
+    case RACE_HARANIR_HORDE:       return "haranir_horde";
     case RACE_MECHANICAL:          return "mechanical";
     case RACE_MAX:                 return "unknown";
     case RACE_UNKNOWN:             return "unknown";
@@ -506,10 +508,16 @@ const char* util::stats_type_string( stats_e type )
 
 race_e util::parse_race_type( util::string_view name )
 {
-  if ( name == "forsaken" ) return RACE_UNDEAD;
-  if ( name == "dracthyr" ) return RACE_DRACTHYR_HORDE;
-  if ( name == "earthen" )  return RACE_EARTHEN_HORDE;
-  if ( name == "earthen_dwarf" ) return RACE_EARTHEN_HORDE;
+  if ( name == "forsaken" )
+    return RACE_UNDEAD;
+  if ( name == "dracthyr" )
+    return RACE_DRACTHYR_HORDE;
+  if ( name == "earthen" )
+    return RACE_EARTHEN_HORDE;
+  if ( name == "earthen_dwarf" )
+    return RACE_EARTHEN_HORDE;
+  if ( name == "haranir" )
+    return RACE_HARANIR_HORDE;
 
   return parse_enum_with_default<race_e, RACE_NONE, RACE_MAX, RACE_UNKNOWN, race_type_string>( name );
 }
@@ -2025,36 +2033,38 @@ unsigned util::race_id( race_e race )
 {
   switch ( race )
   {
-    case RACE_NIGHT_ELF: return 4;
-    case RACE_HUMAN: return 1;
-    case RACE_GNOME: return 7;
-    case RACE_DWARF: return 3;
-    case RACE_DRAENEI: return 11;
-    case RACE_WORGEN: return 22;
-    case RACE_ORC: return 2;
-    case RACE_TROLL: return 8;
-    case RACE_UNDEAD: return 5;
-    case RACE_BLOOD_ELF: return 10;
-    case RACE_TAUREN: return 6;
-    case RACE_GOBLIN: return 9;
-    case RACE_PANDAREN: return 24;
-    case RACE_PANDAREN_ALLIANCE: return 25;
-    case RACE_PANDAREN_HORDE: return 26;
-    case RACE_NIGHTBORNE: return 27;
+    case RACE_NIGHT_ELF:           return 4;
+    case RACE_HUMAN:               return 1;
+    case RACE_GNOME:               return 7;
+    case RACE_DWARF:               return 3;
+    case RACE_DRAENEI:             return 11;
+    case RACE_WORGEN:              return 22;
+    case RACE_ORC:                 return 2;
+    case RACE_TROLL:               return 8;
+    case RACE_UNDEAD:              return 5;
+    case RACE_BLOOD_ELF:           return 10;
+    case RACE_TAUREN:              return 6;
+    case RACE_GOBLIN:              return 9;
+    case RACE_PANDAREN:            return 24;
+    case RACE_PANDAREN_ALLIANCE:   return 25;
+    case RACE_PANDAREN_HORDE:      return 26;
+    case RACE_NIGHTBORNE:          return 27;
     case RACE_HIGHMOUNTAIN_TAUREN: return 28;
-    case RACE_VOID_ELF: return 29;
+    case RACE_VOID_ELF:            return 29;
     case RACE_LIGHTFORGED_DRAENEI: return 30;
-    case RACE_DARK_IRON_DWARF: return 12;
-    case RACE_MAGHAR_ORC: return 14;
-    case RACE_ZANDALARI_TROLL: return 31;
-    case RACE_KUL_TIRAN: return 32;
-    case RACE_VULPERA: return 13;
-    case RACE_MECHAGNOME: return 15;
-    case RACE_DRACTHYR_ALLIANCE: return 17;
-    case RACE_DRACTHYR_HORDE: return 16;
-    case RACE_EARTHEN_ALLIANCE: return 19;
-    case RACE_EARTHEN_HORDE: return 18;
-    default: return 0;
+    case RACE_DARK_IRON_DWARF:     return 12;
+    case RACE_MAGHAR_ORC:          return 14;
+    case RACE_ZANDALARI_TROLL:     return 31;
+    case RACE_KUL_TIRAN:           return 32;
+    case RACE_VULPERA:             return 13;
+    case RACE_MECHAGNOME:          return 15;
+    case RACE_DRACTHYR_ALLIANCE:   return 17;
+    case RACE_DRACTHYR_HORDE:      return 16;
+    case RACE_EARTHEN_ALLIANCE:    return 19;
+    case RACE_EARTHEN_HORDE:       return 18;
+    case RACE_HARANIR_ALLIANCE:    return 21;
+    case RACE_HARANIR_HORDE:       return 20;
+    default:                       return 0;
   }
 }
 
@@ -2155,15 +2165,15 @@ race_e util::translate_race_id( int rid )
 {
   switch ( rid )
   {
-    case  1: return RACE_HUMAN;
-    case  2: return RACE_ORC;
-    case  3: return RACE_DWARF;
-    case  4: return RACE_NIGHT_ELF;
-    case  5: return RACE_UNDEAD;
-    case  6: return RACE_TAUREN;
-    case  7: return RACE_GNOME;
-    case  8: return RACE_TROLL;
-    case  9: return RACE_GOBLIN;
+    case 1:  return RACE_HUMAN;
+    case 2:  return RACE_ORC;
+    case 3:  return RACE_DWARF;
+    case 4:  return RACE_NIGHT_ELF;
+    case 5:  return RACE_UNDEAD;
+    case 6:  return RACE_TAUREN;
+    case 7:  return RACE_GNOME;
+    case 8:  return RACE_TROLL;
+    case 9:  return RACE_GOBLIN;
     case 10: return RACE_BLOOD_ELF;
     case 11: return RACE_DRAENEI;
     case 12: return RACE_DARK_IRON_DWARF;
@@ -2186,6 +2196,8 @@ race_e util::translate_race_id( int rid )
     case 70: return RACE_DRACTHYR_HORDE;
     case 84: return RACE_EARTHEN_HORDE;
     case 85: return RACE_EARTHEN_ALLIANCE;
+    case 86: return RACE_HARANIR_ALLIANCE;
+    case 91: return RACE_HARANIR_HORDE;
   }
 
   return RACE_NONE;
@@ -3568,6 +3580,7 @@ bool is_alliance( race_e race )
     case RACE_MECHAGNOME:
     case RACE_DRACTHYR_ALLIANCE:
     case RACE_EARTHEN_ALLIANCE:
+    case RACE_HARANIR_ALLIANCE:
       return true;
     default:
       return false;
@@ -3592,6 +3605,7 @@ bool is_horde( race_e race )
     case RACE_VULPERA:
     case RACE_DRACTHYR_HORDE:
     case RACE_EARTHEN_HORDE:
+    case RACE_HARANIR_HORDE:
       return true;
     default:
       return false;

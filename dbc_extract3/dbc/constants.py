@@ -119,7 +119,9 @@ RACE_INFO = [
   { 'id': 52, 'bit': 16, 'name': 'Dracthyr',           'skill': 2808 },
   { 'id': 70, 'bit': 15, 'name': 'Drachtyr',           'skill': 2808 },
   { 'id': 84, 'bit': 17, 'name': 'Earthen',            'skill': 2895 },
-  { 'id': 85, 'bit': 18, 'name': 'Earthen',            'skill': 2895 }
+  { 'id': 85, 'bit': 18, 'name': 'Earthen',            'skill': 2895 },
+  { 'id': 86, 'bit': 19, 'name': 'Haranir',            'skill': 2930 },
+  { 'id': 91, 'bit': 20, 'name': 'Haranir',            'skill':	2930 }
 ]
 
 CLASS_INFO = [

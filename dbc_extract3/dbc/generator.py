@@ -280,7 +280,7 @@ class DataGenerator(object):
                      'Undead', 'Tauren', 'Gnome', 'Troll',
                      'Goblin', 'Blood Elf', 'Draenei', 'Dark Iron Dwarf',
                      'Vulpera', 'Mag\'har Orc', 'Mechagnome', 'Dracthyr',
-                     None, 'Earthen', None, None,
+                     None, 'Earthen', None, 'Haranir',
                      None, 'Worgen', None, None,
                      None, 'Pandaren', 'Nightborne', 'Highmountain Tauren',
                      'Void Elf','Lightforged Draenei', 'Zandalari Troll', 'Kul Tiran' ]
@@ -290,8 +290,8 @@ class DataGenerator(object):
                      0x00000010, 0x00000020, 0x00000040, 0x00000080,  # undead tauren gnome troll
                      0x00000100, 0x00000200, 0x00000400, 0x00000800,  # goblin bloodelf draenei darkirondwarf
                      0x00001000, 0x00002000, 0x00004000, 0x00008000,  # vulpera magharorc mechagnome dracthyr(H)
-                     None,       0x00020000, None,       None,        # dracthyr(A) earthen(H) earthen(A) unused
-                     None,       0x00200000, None,       None,        # unused worgen unused pandaren(N)
+                     None,       0x00020000, None,       0x00080000,  # dracthyr(A) earthen(H) earthen(A) Haranir(H)
+                     0x00100000, 0x00200000, None,       None,        # Haranir(A) worgen unused pandaren(N)
                      None,       0x02000000, 0x04000000, 0x08000000,  # pandaren(A) pandaren(H) nightborne highmountaintauren
                      0x10000000, 0x20000000, 0x40000000, 0x80000000 ] # voidelf lightforgeddraenei zandalaritroll kultiran
     _pet_names   = [ None, 'Ferocity', 'Tenacity', None, 'Cunning' ]
@@ -2684,8 +2684,8 @@ class SpellDataGenerator(DataGenerator):
         (),        # Dracthyr (A)    0x00010000
         ( 2895 ),  # Earthen (H)     0x00020000
         (),        # Earthen (A)     0x00040000
-        (),
-        (),
+        ( 2930 ),  # Haranir (H)     0x00080000
+        (),        # Haranir (A)     0x00100000
         ( 789 ),   # Worgen          0x00200000
         (),        # Gilnean         0x00400000
         (),        # Pandaren (N)    0x00800000

@@ -1479,10 +1479,12 @@ void player_t::init_base_stats()
     base.avoidance                = 0.0;
 
     base.base_armor_multiplier    *= ( 1.0 + racials.titanwrought_frame->effectN( 1 ).percent() );
-    base.crit_damage_multiplier   *= ( 1.0 + racials.brawn->effectN( 1 ).percent() ) *
-                                     ( 1.0 + racials.might_of_the_mountain->effectN( 1 ).percent() );
+    base.crit_damage_multiplier   *= ( 1.0 + racials.brawn->effectN( 2 ).percent() ) *
+                                     ( 1.0 + racials.might_of_the_mountain->effectN( 2 ).percent() ) *
+                                     ( 1.0 + racials.lash_out->effectN( 1 ).percent() );
     base.crit_healing_multiplier  *= ( 1.0 + racials.brawn->effectN( 3 ).percent() ) *
-                                     ( 1.0 + racials.might_of_the_mountain->effectN( 3 ).percent() );
+                                     ( 1.0 + racials.might_of_the_mountain->effectN( 3 ).percent() ) *
+                                     ( 1.0 + racials.lash_out->effectN( 2 ).percent() );
 
     resources.base[ RESOURCE_HEALTH ] = dbc->health_base( type, level() );
     resources.base[ RESOURCE_MANA ]   = dbc->resource_base( type, level() );
@@ -2311,6 +2313,7 @@ std::vector<std::string> player_t::get_racial_actions()
   actions.emplace_back( "fireblood" );
   actions.emplace_back( "ancestral_call" );
   actions.emplace_back( "bag_of_tricks" );
+  actions.emplace_back( "thorn_bloom" );
 
   return actions;
 }
@@ -3200,6 +3203,8 @@ void player_t::init_spells()
   racials.azerite_surge         = find_racial_spell( "Azerite Surge" );
   racials.titanwrought_frame    = find_racial_spell( "Titan-Wrought Frame" );
   racials.holy_providence       = find_racial_spell( "Holy Providence" );
+  racials.lash_out              = find_racial_spell( "Lash Out" );
+  racials.subterranean_predator = find_racial_spell( "Subterranean Predator" );
 
   if ( is_player() )
   {
@@ -5646,6 +5651,11 @@ double player_t::composite_player_target_multiplier( player_t* t, school_e /* sc
 
   if ( t->race == RACE_ABERRATION && buffs.damage_to_aberrations && buffs.damage_to_aberrations->check() )
     m *= 1.0 + buffs.damage_to_aberrations->stack_value();
+
+  if ( t->race == RACE_ABERRATION || t->race == RACE_BEAST || t->race == RACE_ELEMENTAL && racials.subterranean_predator->ok() )
+  {
+    m *= 1.0 + racials.subterranean_predator->effectN( 2 ).percent();
+  }
 
   if ( buffs.wild_hunt_tactics )
   {
@@ -9660,6 +9670,94 @@ struct bag_of_tricks_t : public racial_spell_t
   }
 };
 
+// Thorn Bloom ==============================================================
+
+struct thorn_bloom_t : public racial_spell_t
+{
+  template <typename BASE>
+  struct thorn_bloom_trigger_t : BASE
+  {
+    using base_t = thorn_bloom_trigger_t<BASE>;
+
+    thorn_bloom_trigger_t( player_t* p, std::string_view n, const spell_data_t* s ) : BASE( n, p, s ) {}
+
+    double attack_direct_power_coefficient( const action_state_t* s ) const override
+    {
+      return s->composite_spell_power() > s->composite_attack_power() ? 0.0 : BASE::attack_direct_power_coefficient( s );
+    }
+
+    double spell_direct_power_coefficient( const action_state_t* s ) const override
+    {
+      return s->composite_spell_power() > s->composite_attack_power() ? BASE::spell_direct_power_coefficient( s ) : 0.0;
+    }
+
+    double attack_tick_power_coefficient( const action_state_t* s ) const override
+    {
+      return s->composite_spell_power() > s->composite_attack_power() ? 0.0 : BASE::attack_tick_power_coefficient( s );
+    }
+
+    double spell_tick_power_coefficient( const action_state_t* s ) const override
+    {
+      return s->composite_spell_power() > s->composite_attack_power() ? BASE::spell_tick_power_coefficient( s ): 0.0;
+    }
+  };
+
+  struct thorn_bloom_damage_t : public thorn_bloom_trigger_t<spell_t>
+  {
+    thorn_bloom_damage_t( player_t* p, const spell_data_t* s ) : base_t( p, "thorn_bloom_damage", s )
+    {
+      attack_power_mod.direct = 0.5;
+      spell_power_mod.direct = 0.5;
+      attack_power_mod.tick = 0.125;
+      spell_power_mod.tick = 0.125;
+
+      name_str_reporting = "Damage";
+    }
+  };
+
+  struct thorn_bloom_heal_t : public thorn_bloom_trigger_t<heal_t>
+  {
+    thorn_bloom_heal_t( player_t* p, const spell_data_t* s ) : base_t( p, "thorn_bloom_heal", s )
+    {
+      attack_power_mod.direct = 0.65;
+      spell_power_mod.direct = 0.65;
+      attack_power_mod.tick = 0.15;
+      spell_power_mod.tick = 0.15;
+
+      name_str_reporting = "Heal";
+    }
+  };
+
+  action_t* damage;
+  action_t* heal;
+
+  thorn_bloom_t( player_t* p, std::string_view opt_str ) :
+    racial_spell_t( p, "thorn_bloom", p->find_racial_spell( "Thorn Bloom" ) )
+  {
+    parse_options( opt_str );
+
+    damage = p->find_action( "thorn_bloom_damage" );
+    if ( !damage )
+      damage = new thorn_bloom_damage_t( p, data().effectN( 1 ).trigger() );
+
+    heal = p->find_action( "thorn_bloom_heal" );
+    if ( !heal )
+      heal = new thorn_bloom_damage_t( p, data().effectN( 2 ).trigger() );
+
+    add_child( damage );
+    add_child( heal );
+  }
+
+  void execute() override
+  {
+    racial_spell_t::execute();
+
+    // TODO: determine if these are ground targetted and should be ground_aoe instead
+    damage->execute_on_target( target );
+    heal->execute_on_target( target );
+  }
+};
+
 // Restart Sequence Action ==================================================
 
 struct restart_sequence_t : public action_t
@@ -11105,6 +11203,8 @@ action_t* player_t::create_action( util::string_view name, util::string_view opt
     return new stoneform_t( this, options_str );
   if ( name == "bag_of_tricks" )
     return new bag_of_tricks_t( this, options_str );
+  if ( name == "thorn_bloom" )
+    return new thorn_bloom_t( this, options_str );
 
   if ( name == "cancel_action" )
     return new cancel_action_t( this, options_str );

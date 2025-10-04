@@ -724,6 +724,8 @@ struct player_t : public actor_t
     const spell_data_t* azerite_surge;
     const spell_data_t* titanwrought_frame;
     const spell_data_t* holy_providence;
+    const spell_data_t* lash_out;
+    const spell_data_t* subterranean_predator;
   } racials;
 
   struct antumbra_t

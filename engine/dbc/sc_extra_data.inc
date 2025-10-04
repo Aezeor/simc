@@ -1773,8 +1773,8 @@ static constexpr stat_data_t __gt_race_stats[] =
   {   0,  0,  0,  0,  0 }, // Dracthyr - Alliance
   {   0,  0,  0,  0,  0 }, // Earthen - Horde
   {   0,  0,  0,  0,  0 }, // Earthen - Alliance
-  {   0,  0,  0,  0,  0 }, // Unused
-  {   0,  0,  0,  0,  0 }, // Unused
+  {   0,  0,  0,  0,  0 }, // Haranir - Horde
+  {   0,  0,  0,  0,  0 }, // Haranir - Alliance
   {   2,  1,  0, -3,  0 }, // Worgen
   {   0,  0,  0,  0,  0 }, // Unused
   {   0, -2,  2,  0,  0 }, // Pandaren

@@ -266,7 +266,7 @@ static constexpr std::array<util::string_view, 33> _race_strings { {
   "",
   "earthen",
   "",
-  "",
+  "haranir",
   "",
   "worgen",
   "",

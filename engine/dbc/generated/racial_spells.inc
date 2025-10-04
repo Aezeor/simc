@@ -1,5 +1,5 @@
 // Racial abilities, wow build 12.0.0.63534
-static constexpr std::array<racial_spell_entry_t, 174> __racial_spell_data { {
+static constexpr std::array<racial_spell_entry_t, 180> __racial_spell_data { {
   { 0x0000000000000001, 0x00003fff,  458619, "No Place Like Home"                 },
   { 0x0000000000000001, 0x00003fff,   20598, "The Human Spirit"                   },
   { 0x0000000000000001, 0x00003fff,   59752, "Will to Survive"                    },
@@ -117,6 +117,12 @@ static constexpr std::array<racial_spell_entry_t, 174> __racial_spell_data { {
   { 0x0000000000060000, 0x00003fff,  461063, "Quiet Contemplation"                },
   { 0x0000000000060000, 0x00003fff,  436340, "Titan-Wrought Frame"                },
   { 0x0000000000060000, 0x00003fff,  448924, "Wide-Eyed Wonder"                   },
+  { 0x0000000000180000, 0x00000000, 1238623, "Lash Out"                           },
+  { 0x0000000000180000, 0x00000000, 1238648, "One With Nature"                    },
+  { 0x0000000000180000, 0x00000000, 1260715, "Rootwalker"                         },
+  { 0x0000000000180000, 0x00000000, 1238686, "Rootwalking"                        },
+  { 0x0000000000180000, 0x00000000, 1238677, "Subterranean Predator"              },
+  { 0x0000000000180000, 0x00000000, 1237885, "Thorn Bloom"                        },
   { 0x0000000000200000, 0x000007df,   68976, "Aberration"                         },
   { 0x0000000000200000, 0x00000020,   68976, "Aberration"                         },
   { 0x0000000000200000, 0x00004000,   94293, "Altered Form"                       },

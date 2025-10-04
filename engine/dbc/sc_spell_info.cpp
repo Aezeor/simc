@@ -327,6 +327,7 @@ static constexpr auto _race_map = util::make_static_map<unsigned, std::string_vi
   { 14, "Mechagnome"          },
   { 15, "Dracthyr"            },
   { 17, "Earthen"             },
+  { 19, "Haranir"             },
   { 21, "Worgen"              },
   { 25, "Pandaren"            },
   { 26, "Nightborne"          },
