@@ -2466,6 +2466,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.8 | Radius: 12 yards | Target: At Ally in Area (31)
 #2 (id=889396)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Radius: 12 yards | Target: Self (1)
+                   Modified By: Bountiful Bloom (370886 effect#1)
 Description      : $@spelldesc355913
 
 Name             : Dream Breath (desc=Green) (id=355936) [Spell Family (224)] 
@@ -3139,6 +3140,7 @@ Aura Interrupt   : Mount (17)
 Effects          :
 #1 (id=893446)   : Apply Aura (6) | Modify AoE Damage Taken% (229)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
+                   Modified By: Nimble Flyer (441253 effect#1)
 #2 (id=893447)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #4 (id=893449)   : Apply Aura (6) | Replace Animation (Set) (312)
@@ -3538,8 +3540,10 @@ Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38
 Effects          :
 #1 (id=898191)   : Apply Aura (6) | Resistance (22) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Targeted Ally (21)
+                   Modified By: Evoker Augmentation 10.0 Class Set 2pc (415222 effect#1)
 #2 (id=1049581)  : Apply Aura (6) | Modify Base Resistance (142) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 1 | Target: Targeted Ally (21)
+                   Modified By: Evoker Augmentation 10.0 Class Set 2pc (415222 effect#2)
 Description      : Protect an ally with $?s406907[][$n ]explosive dragonscales, increasing their Armor by $<perc>% of your own.
 
 Melee attacks against the target cause 1 scale to explode, dealing $<dmg> Volcanic damage to enemies near them. This damage can only occur every few sec.
@@ -3945,6 +3949,7 @@ Attributes       : Not Shapeshifted (16), Allow Spell Reflection (224), Aura Poi
 Effects          :
 #1 (id=902036)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Targeted Enemy (6)
+                   Modified By: Protracted Talons (369909 effect#1)
 #2 (id=902037)   : School Damage (2): spellfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.63185 | PvP Coefficient: 1.68 | Radius: 0 - 6 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 #3 (id=1017809)  : Trigger Spell (64): Azure Strike
@@ -4140,6 +4145,7 @@ Effects          :
 #1 (id=903598)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Hardened Scales (441180 effect#1)
 #2 (id=903601)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 26 | Target: Self (1)
 #3 (id=1015125)  : Apply Aura (6) | Modify Casting Pushback (149)
@@ -4216,6 +4222,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.4 | Target: Targeted Ally (21)
 #2 (id=904257)   : Apply Aura (6) | Dummy (4)
                    Base Value: 70 | Scaled Value: 70 | Target: Targeted Ally (21)
+                   Modified By: Essence Burst (369299 effect#3), Time Lord (372527 effect#1), Golden Opportunity (432004 effect#1)
 Description      : Wrap an ally with temporal energy, healing them for $s1 and causing your next healing spell to cast an additional time on that ally at $s2% of normal healing. Essence spells cannot be Echoed.
 Tooltip          : When $@auracaster casts a healing spell, $w2% of the healing will be replicated.
 
@@ -4361,6 +4368,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.342 | Target: Targeted Ally (21)
 #2 (id=1003140)  : Apply Aura (6) | Modify Healing Taken% from Caster (504)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
+                   Modified By: Grace Period (376239 effect#1)
 #3 (id=1264301)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
@@ -4567,6 +4575,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.342 | Target: Targeted Ally (21)
 #2 (id=1003141)  : Apply Aura (6) | Modify Healing Taken% from Caster (504)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
+                   Modified By: Grace Period (376239 effect#1)
 #3 (id=1264321)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
@@ -4806,10 +4815,12 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355913), Disintegrate (356995), Echo (364343), Emerald Blossom (373766)
                    Family Flags: 6, 10, 11
+                   Modified By: Ignition Rush (408775 effect#1)
 #3 (id=1139070)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (6)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Echo (364343)
                    Family Flags: 11
+                   Modified By: Ignition Rush (408775 effect#2)
 Description      : $@spelldesc369297
 Tooltip          : Your next Echo, Emerald Blossom, or Disintegrate is free.
 
@@ -4904,9 +4915,11 @@ Effects          :
 #2 (id=1090165)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
+                   Modified By: Potent Mana (418101 effect#1)
 #3 (id=1090166)  : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
+                   Modified By: Potent Mana (418101 effect#2)
 Description      : Redirect your excess magic to a friendly healer for $d. When you cast an empowered spell, you restore ${$372571s1/100}.2% of their maximum mana per empower level. Limit 1.
 Tooltip          : $@auracaster is restoring mana to you when they cast an empowered spell.$?$w2>0[
 
@@ -8345,10 +8358,12 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Emerald Blossom (355916), Dream Breath (355941), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361500), Living Flame (361509), Azure Strike (362969), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Firestorm (369374), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Eruption (395160), Upheaval (396288), Defy Fate (404381), Spiritbloom (409894), Verdant Embrace (409895), Molten Blood (410651), Eruption (424428), Eruption (438653), Melt Armor (441172), Fire Breath (444249), Firestorm (456657), Insurance! (1215550), Insurance! (1215553), Essence Bomb (1236792), Essence Bomb (1236803), Disintegrate (1236949), Pyre (1236970), Merithra's Blessing (1256581), Unravel (1264379), Shattering Star (1265804), Azure Sweep (1265872), Twin Flame (1265980), Twin Flame (1265991)
                    Family Flags: 0, 1
+                   Modified By: Grandiose Boon (387198 effect#1), Unity (387431 effect#1)
 #2 (id=1021787)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Emerald Blossom (355916), Dream Breath (355941), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361500), Living Flame (361509), Azure Strike (362969), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Firestorm (369374), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Eruption (395160), Upheaval (396288), Defy Fate (404381), Spiritbloom (409894), Verdant Embrace (409895), Molten Blood (410651), Eruption (424428), Eruption (438653), Melt Armor (441172), Fire Breath (444249), Firestorm (456657), Insurance! (1215550), Insurance! (1215553), Essence Bomb (1236792), Essence Bomb (1236803), Disintegrate (1236949), Pyre (1236970), Merithra's Blessing (1256581), Unravel (1264379), Shattering Star (1265804), Azure Sweep (1265872), Twin Flame (1265980), Twin Flame (1265991)
                    Family Flags: 0, 1
+                   Modified By: Grandiose Boon (387198 effect#2), Unity (387431 effect#2)
 Description      : $@spelldesc387168
 
 Name             : Grandiose Boon (id=387198) [Spell Family (224), Passive, Hidden] 
@@ -8747,10 +8762,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Eruption (395160), Eruption (438653)
                    Family Flags: 54
+                   Modified By: Ignition Rush (408775 effect#1)
 #3 (id=1080154)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 21 | Target: Self (1)
                    Affected Spells: Eruption (395160), Eruption (438653)
                    Family Flags: 54
+                   Modified By: Ignition Rush (408775 effect#2)
 #4 (id=1084518)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 2 (34)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355913), Emerald Blossom (373766)
@@ -8759,6 +8776,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Eruption (395160), Eruption (438653)
                    Family Flags: 54
+                   Modified By: Ignition Rush (408775 effect#3)
 Description      : $@spelldesc396187
 Tooltip          : Your next Eruption $?s414969[or Emerald Blossom ][]costs no Essence.
 
@@ -8989,6 +9007,7 @@ Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter 
 Effects          :
 #1 (id=1035393)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 8 | Scaled Value: 8 | Radius: 0 - 100 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Modified By: Close as Clutchmates (396043 effect#1), Evoker Augmentation 10.1 Class Set 4pc (414878 effect#1), Duplicate (1259171 effect#2)
 #2 (id=1035394)  : Apply Aura (6) | Modify Stat With Support Triggers (540)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Radius: 0 - 100 yards | Target: at Self (18) -> At Ally in Area (31)
 #3 (id=1248097)  : Dummy (3)
@@ -9070,20 +9089,24 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Firestorm (369374), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Fire Breath (444249), Firestorm (456657), Essence Bomb (1236792), Disintegrate (1236949), Pyre (1236970), Unravel (1264379), Shattering Star (1265804), Azure Sweep (1265872), Twin Flame (1265980), Twin Flame (1265991)
                    Family Flags: 0
+                   Modified By: Close as Clutchmates (396043 effect#1), Duplicate (1259171 effect#2)
 #2 (id=1055269)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=1084345)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Fire Breath (357209), Full Belly (377087), Upheaval (396288), Fire Breath (444249)
                    Family Flags: 35, 58
+                   Modified By: Evoker Augmentation 10.1 Class Set 2pc (414877 effect#1)
 #4 (id=1084346)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Fire Breath (357209), Full Belly (377087), Upheaval (396288), Fire Breath (444249)
                    Family Flags: 35, 58
+                   Modified By: Evoker Augmentation 10.1 Class Set 2pc (414877 effect#2)
 #5 (id=1092313)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Firestorm (369374), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Fire Breath (444249), Firestorm (456657), Essence Bomb (1236792), Disintegrate (1236949), Pyre (1236970), Unravel (1264379), Shattering Star (1265804), Azure Sweep (1265872), Twin Flame (1265980), Twin Flame (1265991)
                    Family Flags: 0
+                   Modified By: Close as Clutchmates (396043 effect#2)
 Description      : $@spelldesc395152
 Tooltip          : Your Ebon Might is active on allies.
 Your damage done is increased by $w1%.
@@ -9253,6 +9276,7 @@ Effects          :
                    Base Value: 120 | Scaled Value: 120 (delta=0.2) | Misc Value: -20 | Radius: 0 - 2 yards | Mechanic: Knockback | Target: At Enemy (53) -> at Enemy in Area (16)
 #4 (id=1053498)  : Directional Knockback (144)
                    Base Value: 120 | Scaled Value: 120 (delta=0.2) | Mechanic: Knockback | Target: Targeted Enemy (6)
+                   Modified By: Tectonic Locus (408002 effect#2)
 #5 (id=1089232)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 2 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : $@spelldesc396286
@@ -9393,8 +9417,10 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Threat
 Effects          :
 #1 (id=1050107)  : Apply Aura (6) | Increase Health% (133)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Modified By: Black Aspect's Favor (407254 effect#1)
 #2 (id=1050108)  : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Black Aspect's Favor (407254 effect#1)
 Description      : Attune to Black magic, granting you and your $403208s2 nearest allies $s1% increased maximum health.
 Tooltip          : Maximum health increased by $w1%.
 
@@ -9416,8 +9442,10 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Threat
 Effects          :
 #1 (id=1050109)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Modified By: Bronze Aspect's Favor (407244 effect#1)
 #2 (id=1050160)  : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Bronze Aspect's Favor (407244 effect#1)
 Description      : Attune to Bronze magic, granting you and your $403208s2 nearest allies $s1% increased movement speed.
 Tooltip          : Movement speed increased by $w1%.
 
@@ -9437,6 +9465,7 @@ Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=1050155)  : Apply Aura (6) | Increase Health% (133)
                    Base Value: 2 | Scaled Value: 2 | Target: Targeted Ally (21)
+                   Modified By: Black Aspect's Favor (407254 effect#1)
 Description      : $@spelldesc403264
 Tooltip          : Maximum health increased by $w1%.
 
@@ -9456,6 +9485,7 @@ Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=1050156)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 10 | Scaled Value: 10 | Target: Targeted Ally (21)
+                   Modified By: Bronze Aspect's Favor (407244 effect#1)
 Description      : $@spelldesc403265
 Tooltip          : Movement speed increased by $w1%.
 
@@ -10460,6 +10490,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1073977)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Modified By: Clairvoyant (1250914 effect#2)
 Description      : Eruption has a $s1% chance to form a mote of diverted essence near you. Allies who comes in contact with the mote gain a random buff from your arsenal.
 
 Name             : Motes of Possibility (id=409274) [Spell Family (224)] 
@@ -10537,6 +10568,7 @@ Attributes       : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Displa
 Effects          :
 #1 (id=1074514)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.5 | Radius: 3 - 6 yards | Target: Front in Area (78) -> at Enemy in Area (16)
+                   Modified By: Close as Clutchmates (396043 effect#1)
 #2 (id=1075735)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Breath of Eons
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 409990 | Radius: 6 yards | Target: at Enemy in Area (16)
 Description      : $@spelldesc403631
@@ -12036,6 +12068,7 @@ Effects          :
 #1 (id=1104850)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.5 | Misc Value: 0x7f | Target: Current Target (25)
                    Affected School(s): All
+                   Modified By: Close as Clutchmates (396043 effect#1), Evoker Augmentation 10.1 Class Set 4pc (414878 effect#1), Duplicate (1259171 effect#2)
 #2 (id=1104851)  : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.5 | Misc Value: 0x7f | Target: Current Target (25)
                    Affected School(s): All
@@ -12514,6 +12547,7 @@ Attributes       : Can Proc From Procs (122), Do Not Display Range (126), Do Not
 Effects          :
 #1 (id=1119665)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Radius: 0 - 100 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Modified By: Master of Destiny (431846 effect#1)
 Description      : $@spelldesc431715
 Tooltip          : Abilities have a chance to echo at $s1% power.
 
@@ -16049,6 +16083,7 @@ Attributes       : Not Shapeshifted (16), Allow Spell Reflection (224), Aura Poi
 Effects          :
 #1 (id=1277893)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: Targeted Enemy (6)
+                   Modified By: Protracted Talons (369909 effect#1)
 #2 (id=1277894)  : School Damage (2): spellfrost | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.63185 | PvP Coefficient: 1.68 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : Concentrate azure energy into your tail and sweep to release pure magic upon an enemy and nearby targets for $s2 Spellfrost damage. Damage reduced beyond $s1 targets.

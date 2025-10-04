@@ -969,6 +969,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.27027 | PvP Coefficient: 1.3 | Target: Targeted Enemy (6)
 #2 (id=134420)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: chi | Target: Self (1)
+                   Modified By: Windwalker Monk (1258122 effect#1)
 #3 (id=281299)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Enemy (6)
 #4 (id=368223)   : Dummy (3)
@@ -1019,6 +1020,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.77 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
 #3 (id=728117)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000
+                   Modified By: Weapons of Order (310454 effect#8), Weapons of Order (1249625 effect#3)
 Description      : Kick with a blast of Chi energy, dealing $?s137025[${$s1*$<CAP>/$AP}][$s1] Physical damage.$?s261917[
 
 Reduces the cooldown of Rising Sun Kick and Fists of Fury by ${$m3/1000}.1 sec when used.][]$?s387638[
@@ -1420,6 +1422,7 @@ Attributes       : Passive (6), Allow While Mounted (24), Allow While Sitting (2
 Effects          :
 #1 (id=128720)   : Apply Aura (6) | Dummy (4)
                    Base Value: 113 | Scaled Value: 113 | Misc Value: 126 | Target: Self (1)
+                   Modified By: Fortifying Brew (120954 effect#5), High Tolerance (196737 effect#2)
 #2 (id=128724)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Misc Value 2: -10 | Target: Self (1)
                    Affected School(s): Physical
@@ -1531,6 +1534,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #2 (id=290332)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Targeted Ally (21)
+                   Modified By: Lotus Infusion (458431 effect#1)
 Description      : Surrounds the target with healing mists, restoring $119611o1 health over $119611d.
 
 If Renewing Mist heals a target past maximum health, it will travel to another injured ally within $119607A2 yds.$?a231606[
@@ -1581,6 +1585,7 @@ Effects          :
 #2 (id=1149950)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
+                   Modified By: Elusive Mists (388681 effect#3)
 #3 (id=1243160)  : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Soothing Mist (115175), Breath of Fire (115181), Fortifying Brew (115203), Energizing Elixir (115288), Mana Tea (115294), Revival (115310), Black Ox Brew (115399), Vivify (116670), Thunder Focus Tea (116680), Fists of Fury (117418), Crackling Jade Lightning (117952), Purifying Brew (119582), Renewing Mist (119611), Keg Smash (121253), Flying Serpent Kick (123586), Chi Burst (123986), Zen Pulse (124081), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Refreshing Jade Wind (162530), Rising Sun Kick (185099), Gust of Mists (191894), Eye of the Tiger (196608), Special Delivery (196733), Mana Tea (197908), Zen Pulse (198487), Soothing Mist (198533), Song of Chi-Ji (198898), Blackout Kick (205523), Soothing Mist (209525), Stomp (227291), Surging Mist (227344), Blackout Kick (228649), Chi Burst (261682), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Sunrise Technique (275673), Burst of Life (278564), Glory of the Dawn (288636), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Celestial Brew (322507), Exploding Keg (325153), Enveloping Breath (325209), Faeline Stomp (327264), Gust of Mists (328748), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Yu'lon's Whisper (337268), Chi Explosion (337342), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388201), Jadefire Stomp (388207), Overflowing Mists (388514), Zen Pulse (388609), Restoral (388615), Zen Pulse (388668), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Thunderfist (393566), Strike of the Windlord (395519), Strike of the Windlord (395521), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Press the Advantage (418360), Invigorating Mists (425804), Celestial Conduit (443038), Celestial Conduit (443039), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443272), Flight of the Red Crane (443611), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Whirling Dragon Punch (451767), Dual Threat (451839), Expel Harm (451968), Flurry of Xuen (452130), Courage of the White Tiger (457917), Chi Burst (461404), Rushing Wind Kick (468179), Glyph of Tiger Palm (468605), Insurance! (1215544), Insurance! (1215545), Slicing Winds (1217411), Renewing Mist (1238851), Harmonic Surge (1239442), Harmonic Surge (1239443), Celestial Infusion (1241059), Stomp (1242373), Jadefire Stomp (1248815), Spinning Crane Kick (1250999), Empty the Cellar (1262765), Celestial Flames (1263667)
@@ -1641,8 +1646,10 @@ Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Reset coo
 Effects          :
 #1 (id=128913)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Modified By: Ironshell Brew (388814 effect#1)
 #2 (id=1035050)  : Dummy (3)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.5 | Target: Self (1)
+                   Modified By: Ironshell Brew (388814 effect#2)
 Description      : $@spelldesc120954
 Variables        : $health=$?s322960[${$115203s1}][${$115203s1}]
 $damage=$?c1[${$115203s2*-1}][${$115203s2*-1}]
@@ -1689,6 +1696,7 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=129048)   : Apply Aura (6) | Periodic Energize Power (24): every 0.5 seconds | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 3 | Scaled Value: 3984.375 (coefficient=0.02125) | Target: Self (1)
+                   Modified By: Energizing Brew (422031 effect#2)
 #2 (id=1095450)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -40 | Scaled Value: -40 | Target: Self (1)
 Description      : Consumes 1 stack of Mana Tea per $t1 sec to restore $s1 Mana.
@@ -2007,6 +2015,7 @@ Effects          :
                    Base Value: 400 | Scaled Value: 400 | Target: Targeted Enemy (6)
 #3 (id=131039)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Hasty Provocation (328670 effect#1)
 Description      : $@spelldesc115546
 Tooltip          : Taunted. Movement speed increased by $s3%.
 
@@ -2189,6 +2198,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
+                   Modified By: Courageous Impulse (451495 effect#1)
 Description      : $@spelldesc137384
 Tooltip          : Your next Blackout Kick costs no Chi$?a451495[ and deals $w3% more damage][].
 
@@ -2560,6 +2570,7 @@ Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Allow Cla
 Effects          :
 #1 (id=137916)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Modified By: Mantra of Purity (451036 effect#1)
 #2 (id=1270290)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 Description      : Clears $s1% of your |CFFffffffStaggered|R damage, or a minimum of $s2% of your maximum health.
@@ -2601,6 +2612,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Awakened Jadefire (389325), Awakened Jadefire (389328), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Harmonic Surge (1239443)
                    Family Flags: 48, 102
+                   Modified By: Lotus Infusion (458431 effect#1)
 Description      : $@spelldesc115151
 Tooltip          : Restores $w1 health every $t1 sec.$?a448392[
 
@@ -3070,6 +3082,7 @@ Effects          :
 #2 (id=342380)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
+                   Modified By: Blackout Combo (228563 effect#2), Celestial Flames (325190 effect#1), Breath of the Cosmos (364415 effect#1)
 Description      : $@spelldesc115181
 Tooltip          : Burning for $w1 Fire damage every $t1 sec.  Dealing $w2% reduced damage to the Monk.
 
@@ -3444,6 +3457,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Targeted Ally (21)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Awakened Jadefire (389325), Awakened Jadefire (389328), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Harmonic Surge (1239443)
                    Family Flags: 48, 102
+                   Modified By: Mist Wrap (197900 effect#1)
 #3 (id=874900)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.992 | PvP Coefficient: 1.5 | Radius: 0 - 60 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
 Description      : Wraps the target in healing mists, healing for $o1 over $d, and increasing healing received from your other spells by $m2%. $?a388847[
@@ -4694,6 +4708,7 @@ Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Allow
 Effects          :
 #1 (id=287163)   : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Mastery: Elusive Brawler (117906 effect#1)
 Description      : $@spelldesc117906
 Tooltip          : Dodge chance increased by $w1%.
 
@@ -5409,6 +5424,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Enveloping Mist (124682), Surging Mist (227344), Enveloping Breath (325209), Enveloping Breath (358560)
                    Family Flags: 25, 79
+                   Modified By: Elusive Mists (388681 effect#3)
 Description      : Heals the target for $o1 over $d.
 
 While channeling, Effuse and Enveloping Mist are instant cast, and will heal the soothed target without breaking the Soothing Mist channel.
@@ -7932,6 +7948,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.2 | Target: Self (1)
 #2 (id=810237)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Modified By: Tea of Plenty (388524 effect#1), Mistweaver Monk (1258138 effect#15)
 Description      : Expel negative chi from your body, healing for $s1 and dealing $s2% of the amount healed as Nature damage to an enemy within $115129A1 yards.$?s322102[
 
 Draws in the positive chi of all your Healing Spheres to increase the healing of Expel Harm.][]$?s342928[
@@ -8085,6 +8102,7 @@ Attributes       : Passive (6), Unknown (454)
 Effects          :
 #1 (id=810265)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Fortifying Brew (120954 effect#5), High Tolerance (196737 effect#2)
 Description      : Niuzao's teachings allow you to shuffle during combat, increasing the effectiveness of your |CFFffffffStagger|R by $s1%.
 
 Shuffle is granted by attacking enemies with your Keg Smash, Blackout Kick, and Spinning Crane Kick.
@@ -8465,6 +8483,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.171 | Radius: 0 - 10 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
 #2 (id=845650)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
+                   Modified By: Mist Wrap (197900 effect#1)
 #3 (id=867662)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 10 | Scaled Value: 10 | Radius: 0 - 10 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Awakened Jadefire (389325), Awakened Jadefire (389328), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Harmonic Surge (1239443)
@@ -8674,6 +8693,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=818448)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 4 yards | Target: at Self (18) -> Back in Area (79)
+                   Modified By: Singularly Focused Jade (451573 effect#1)
 #2 (id=818681)   : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
 #3 (id=874755)   : Apply Aura (6) | Dummy (4)
@@ -10416,6 +10436,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.24 | Radius: 0 - 10 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
 #2 (id=893950)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
+                   Modified By: Mist Wrap (197900 effect#1)
 #3 (id=893951)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 5 | Scaled Value: 5 | Radius: 0 - 10 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Awakened Jadefire (389325), Awakened Jadefire (389328), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Harmonic Surge (1239443)
@@ -11838,12 +11859,14 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=1023715)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Radius: 0 - 4 yards | Target: at Self (18) -> Back in Area (79)
+                   Modified By: Singularly Focused Jade (451573 effect#1)
 #2 (id=1023716)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
 #3 (id=1023717)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #4 (id=1152252)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Modified By: Singularly Focused Jade (451573 effect#3)
 Description      : Strike the ground fiercely to expose a path of jade for $d$?a137025[ that increases your movement speed by $451943s1% while inside][], dealing $388207s1 Nature damage to $?a451573[$s1 enemy][up to $s1 enemies], and restoring $388207s2 health to $?a451573[$s1 ally][up to $s4 allies] within $388207a1 yds caught in the path.$?a137024[]?a137025[ Up to 5 enemies caught in the path][Stagger is $s3% more effective for $347480d against enemies caught in the path.]$?a137023[]?a137024[][ suffer an additional $388201s1 damage.]$?a137024[
 
 Your abilities have a $s2% chance of resetting the cooldown of Jadefire Stomp while fighting within the path.][]
@@ -16350,6 +16373,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.6 | Target: Targeted Ally (21)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Awakened Jadefire (389325), Awakened Jadefire (389328), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Harmonic Surge (1239443)
                    Family Flags: 48, 102
+                   Modified By: Lotus Infusion (458431 effect#1)
 Description      : $@spelldesc115151
 Tooltip          : Restores $w1 health every $t1 sec.
 
@@ -18457,6 +18481,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.2 | Target: Self (1)
 #2 (id=1152791)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Modified By: Tea of Plenty (388524 effect#1), Mistweaver Monk (1258138 effect#15)
 Description      : Expel negative chi from your body, healing for $s1 and dealing $s2% of the amount healed as Nature damage to an enemy within $115129A1 yards.$?s322102[
 
 Draws in the positive chi of all your Healing Spheres to increase the healing of Expel Harm.][]$?s342928[
@@ -20406,6 +20431,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Awakened Jadefire (389325), Awakened Jadefire (389328), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Harmonic Surge (1239443)
                    Family Flags: 48, 102
+                   Modified By: Lotus Infusion (458431 effect#1)
 Description      : $@spelldesc115151
 Tooltip          : Restores $w1 health every $t1 sec.$?a448392[
 
@@ -20939,6 +20965,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=1251982)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Radius: 0 - 4 yards | Target: at Self (18) -> Back in Area (79)
+                   Modified By: Singularly Focused Jade (451573 effect#1)
 Description      : $@spelldesc457974
 
 Name             : Jadefire Stomp (id=1248815) [Spell Family (53)] 

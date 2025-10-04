@@ -738,6 +738,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.0505 | PvP Coefficient: 1.3 | Target: Targeted Enemy (6)
 #3 (id=287985)   : Energize Power (30)
                    Base Value: 25 | Scaled Value: 25 (delta=0.4) | Resource: fury | Target: Self (1)
+                   Modified By: Metamorphosis (162264 effect#11)
 Description      : Quickly attack for $s2 Physical damage.
 
 |cFFFFFFFFGenerates $?a258876[${$m3+$258876s3} to ${$M3+$258876s4}][$m3 to $M3] Fury.|r
@@ -764,6 +765,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=270147)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Soul Rending (204909 effect#2)
 #4 (id=271791)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #5 (id=296790)   : Apply Aura (6) | Modify Versatility% (471)
@@ -1165,6 +1167,7 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 #3 (id=283617)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Soul Rending (204909 effect#2), Soul Rending (217996 effect#2)
 #4 (id=307168)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Fracture (263642)
@@ -1261,6 +1264,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 215725 | Target: Self (1)
 #4 (id=298879)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | Target: Self (1)
+                   Modified By: Lost in Darkness (389849 effect#2)
 #5 (id=305109)   : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 499 | Target: Self (1)
 #6 (id=320783)   : Update Player Phase (167)
@@ -1347,6 +1351,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 162264 | Target: Self (1)
 #3 (id=475700)   : Jump Charge (254)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 9 | Target: at Area (87)
+                   Modified By: Soul Rending (204909 effect#2)
 #4 (id=475701)   : Trigger Spell (64): Metamorphosis
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 201453 | Target: Self (1)
 Description      : Leap into the air and land with explosive force, dealing $200166s2 Chaos damage to enemies within 8 yds, and stunning them for $200166d. Players are Dazed for $247121d instead.
@@ -2139,6 +2144,7 @@ Effects          :
 #1 (id=300162)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -8 | Scaled Value: -8 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+                   Modified By: Viscous Ink (338682 effect#1)
 #2 (id=872124)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -8 | Scaled Value: -8 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
@@ -2327,6 +2333,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.633 | Target: Targeted Enemy (6)
 #2 (id=300626)   : Energize Power (30)
                    Base Value: 10 | Scaled Value: 10 | Resource: fury | Target: Self (1)
+                   Modified By: Demon Hunter Vengeance Class Set 2pc (393630 effect#2), Celestial Echoes (1253415 effect#1), Celestial Echoes (1256312 effect#1)
 Description      : Shears an enemy for $s1 Physical damage, and shatters $?a187827[two Lesser Soul Fragments][a Lesser Soul Fragment] from your target.
 
 |cFFFFFFFFGenerates $m2 Fury.|r
@@ -2414,6 +2421,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.185611 | PvP Coefficient: 1.3 | Target: Targeted Enemy (6)
 #2 (id=300652)   : Energize Power (30)
                    Base Value: 9.5 | Scaled Value: 9.5 (delta=0.526316) | Resource: fury | Target: Self (1)
+                   Modified By: Metamorphosis (162264 effect#10)
 Description      : $@spelldesc203555
 
 Name             : Demon Spikes (id=203819) [Spell Family (107)] 
@@ -2436,9 +2444,11 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 #2 (id=300915)   : Apply Aura (6) | Modify Armor by Primary Stat% (268)
                    Base Value: 75 | Scaled Value: 75 | Misc Value: 1 | Target: Self (1)
+                   Modified By: Mastery: Fel Blood (203747 effect#2)
 #3 (id=1277473)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Calcified Spikes (389720 effect#1)
 Description      : $@spelldesc203720
 Tooltip          : Armor increased by ${$W2*$AGI/100}.$?s321028[
 Parry chance increased by $w1%.][]$?s389720[
@@ -3897,6 +3907,7 @@ Effects          :
 #3 (id=315636)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Desperate Instincts (205411 effect#3)
 #4 (id=357029)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc198589
@@ -4013,6 +4024,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.2294 | PvP Coefficient: 1.2 | Target: Targeted Enemy (6)
 #3 (id=316326)   : Energize Power (30)
                    Base Value: 15 | Scaled Value: 15 | Resource: fury | Target: Self (1)
+                   Modified By: Duty Eternal (1246562 effect#2)
 Description      : $@spelldesc232893
 
 Name             : Master of the Glaive (id=213405) [Spell Family (107)] 
@@ -4797,17 +4809,21 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), DoT Stack
 Effects          :
 #1 (id=377041)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 8 | Scaled Value: 8 | Target: Targeted Enemy (6)
+                   Modified By: Soulcrush (389985 effect#1)
 #2 (id=377042)   : Trigger Spell (64): Frailty
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 391123 | Target: Self (1)
 #3 (id=1028369)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: -4 | Scaled Value: -4 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
+                   Modified By: Soulcrush (389985 effect#3)
 #4 (id=1028370)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 3 | Scaled Value: 3 | Target: Targeted Enemy (6)
                    Affected Spells: Chaos Nova (179057), Infernal Strike (189112), Eye Beam (198030), Vengeful Retreat (198813), Shear (203782), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Fracture (225919), Fracture (225921), Soul Cleave (228478), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922), Infernal Armor (273239), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323802), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), Throw Glaive (346665), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Eye Beam (391058), Demon Spikes (391159), Sigil of Flame (425672), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Blazing Nova (436899), Blazing Nova (436964), Reaver's Glaive (442294), Demonsurge (451266), Demonsurge (452416), Burning Blades (453177), Sigil of Doom (462030), Void Nova (1234195), Voidfall Meteor (1256306), World Killer (1256617), Catastrophe (1256667), Catastrophe (1256676), Meteor Shower (1264130)
                    Family Flags: 8, 70
+                   Modified By: Soulcrush (389985 effect#4)
 #5 (id=1039852)  : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
                    Base Value: 3 | Scaled Value: 3 | Target: Targeted Enemy (6)
+                   Modified By: Soulcrush (389985 effect#5)
 Description      : $@spelldesc247454
 Tooltip          : $@auracaster is healed for $w1% of all damage they deal to you.$?$w3!=0[
 Dealing $w3% reduced damage to $@auracaster.][]$?$w4!=0[
@@ -5348,8 +5364,10 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | Resource: fury | Target: Self (1)
 #4 (id=811734)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Agonizing Flames (207548 effect#1)
 #5 (id=821561)   : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
+                   Modified By: Infernal Armor (320331 effect#1)
 #6 (id=821562)   : Apply Aura (6) | Modify Spell School (220)
                    Base Value: 0 | Scaled Value: 0 | School: fire | Target: Self (1)
                    Affected Spells: Soul Cleave (228477), Soul Cleave (228478), Soul Sunder (452436)
@@ -5407,6 +5425,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Resource: fury | Target: Self (1)
 #4 (id=1042693)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+                   Modified By: Agonizing Flames (207548 effect#1)
 Description      : $@spelldesc258920
 
 Name             : Fel Barrage (id=258925) [Spell Family (107)] 
@@ -5527,12 +5546,14 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enab
 Effects          :
 #1 (id=706536)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Targeted Enemy (6)
+                   Modified By: Metamorphosis (187827 effect#9)
 #2 (id=706537)   : Trigger Spell (64): Fracture
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 225919
 #3 (id=706538)   : Trigger Spell (64): Fracture
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 150 | Trigger Spell: 225921
 #4 (id=706539)   : Energize Power (30)
                    Base Value: 25 | Scaled Value: 25 | Resource: fury | Target: Self (1)
+                   Modified By: Metamorphosis (187827 effect#4), Metamorphosis (187827 effect#10), Demon Hunter Vengeance Class Set 2pc (393630 effect#3), Celestial Echoes (1253415 effect#5), Celestial Echoes (1256312 effect#5)
 Description      : Rapidly slash your target for ${$225919sw1+$225921sw1} Physical damage, and shatter $s1 Lesser Soul Fragments from them.
 
 |cFFFFFFFFGenerates $s4 Fury.|r
@@ -5879,6 +5900,7 @@ Effects          :
 #1 (id=734062)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.5 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+                   Modified By: Viscous Ink (338682 effect#1)
 Description      : Your tattoos reduce magic damage taken by $s1%.
 
 Name             : Pterrordax Swoop (desc=Racial) (id=281954) 
@@ -11937,6 +11959,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Resource: fury | Target: Self (1)
 #4 (id=1107756)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+                   Modified By: Agonizing Flames (207548 effect#1)
 Description      : $@spelldesc258920
 
 Name             : Immolation Aura (id=427910) [Spell Family (107)] 
@@ -11959,6 +11982,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Resource: fury | Target: Self (1)
 #4 (id=1107764)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+                   Modified By: Agonizing Flames (207548 effect#1)
 Description      : $@spelldesc258920
 
 Name             : Immolation Aura (id=427911) [Spell Family (107)] 
@@ -11981,6 +12005,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Resource: fury | Target: Self (1)
 #4 (id=1107768)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+                   Modified By: Agonizing Flames (207548 effect#1)
 Description      : $@spelldesc258920
 
 Name             : Immolation Aura (id=427913) [Spell Family (107)] 
@@ -12008,8 +12033,10 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | Resource: fury | Target: Self (1)
 #4 (id=1107778)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Agonizing Flames (207548 effect#1)
 #5 (id=1107779)  : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
+                   Modified By: Infernal Armor (320331 effect#1)
 #6 (id=1107780)  : Apply Aura (6) | Modify Spell School (220)
                    Base Value: 0 | Scaled Value: 0 | School: fire | Target: Self (1)
                    Affected Spells: Soul Cleave (228477), Soul Cleave (228478), Soul Sunder (452436)
@@ -12055,8 +12082,10 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | Resource: fury | Target: Self (1)
 #4 (id=1107784)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Agonizing Flames (207548 effect#1)
 #5 (id=1107785)  : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
+                   Modified By: Infernal Armor (320331 effect#1)
 #6 (id=1107786)  : Apply Aura (6) | Modify Spell School (220)
                    Base Value: 0 | Scaled Value: 0 | School: fire | Target: Self (1)
                    Affected Spells: Soul Cleave (228477), Soul Cleave (228478), Soul Sunder (452436)
@@ -12102,8 +12131,10 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | Resource: fury | Target: Self (1)
 #4 (id=1107790)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Agonizing Flames (207548 effect#1)
 #5 (id=1107791)  : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
+                   Modified By: Infernal Armor (320331 effect#1)
 #6 (id=1107792)  : Apply Aura (6) | Modify Spell School (220)
                    Base Value: 0 | Scaled Value: 0 | School: fire | Target: Self (1)
                    Affected Spells: Soul Cleave (228477), Soul Cleave (228478), Soul Sunder (452436)
@@ -12144,6 +12175,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Resource: fury | Target: Self (1)
 #4 (id=1107796)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+                   Modified By: Agonizing Flames (207548 effect#1)
 Description      : $@spelldesc258920
 
 Name             : Immolation Aura (id=427917) [Spell Family (107)] 
@@ -14914,6 +14946,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 201453 | Target: Self (1)
 #3 (id=1217332)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Modified By: Soul Rending (204909 effect#2)
 Description      : |CFFffffffRequires $1225789u Souls|R
 
 You ascend to a higher state of being, substantially empowering your abilities$?a1242956[ and granting you $1217607s1% Haste][].
@@ -14942,6 +14975,7 @@ Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38
 Effects          :
 #1 (id=1201777)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Voidrage (1242956 effect#1)
 #2 (id=1201778)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=1201779)  : Apply Aura (6) | Modify Leech% (443)
@@ -14998,6 +15032,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 8 | Target: Targeted Enemy (6)
 #2 (id=1229372)  : Energize Power (30)
                    Base Value: 8 | Scaled Value: 8 | Resource: fury | Target: Self (1)
+                   Modified By: Celestial Echoes (1256312 effect#2)
 Description      : Devour the life essence of your target, dealing $s1 Cosmic damage. Reduces the cooldown of Reap by ${$1217607s14/1000}.1 sec.
 
 Castable while moving.
@@ -15376,10 +15411,13 @@ Attributes       : Passive (6), Can Proc From Procs (122), Do Not Log on Learn (
 Effects          :
 #1 (id=1218166)  : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+                   Modified By: Beckon (1242768 effect#1)
 #2 (id=1235664)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+                   Modified By: Void Metamorphosis (1217607 effect#10), Moment of Craving (1238495 effect#1)
 #3 (id=1271545)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Predator's Thirst (1215617 effect#2)
 Description      : Damaging an enemy has a $s1% chance to shatter a lesser soul fragment from them.
 
 $@spellicon1223412 $@spellname1223412:
@@ -16527,6 +16565,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4 | PvP Coefficient: 1.2 | Target: Targeted Enemy (6)
 #3 (id=1246444)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: fury | Target: Self (1)
+                   Modified By: Duty Eternal (1246562 effect#2)
 Description      : $@spelldesc1245412
 
 Name             : Cull (id=1245453) [Spell Family (107)] 
@@ -17018,6 +17057,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2385 | Misc Value 2: 0x7 | Target: Self (1)
 #4 (id=1256013)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | Target: Self (1)
+                   Modified By: Lost in Darkness (389849 effect#2)
 #5 (id=1256014)  : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 499 | Target: Self (1)
 #6 (id=1256015)  : Update Player Phase (167)

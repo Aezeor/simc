@@ -403,6 +403,7 @@ Attributes       : Allow Cast While Dead (23), No Threat (42), Allow Dead Target
 Effects          :
 #2 (id=170618)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60
+                   Modified By: Gorefiend's Resolve (389623 effect#1)
 Description      : $@spelldesc20707
 
 Name             : Firebolt (desc=Basic Attack) (id=3110) [Spell Family (5)] 
@@ -537,6 +538,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5420 | Target: at Area (87)
 #3 (id=291291)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Destructive Rapidity (1244928 effect#1)
 Description      : Calls down a rain of hellfire the target location, dealing ${$42223m1*8} Fire damage over $d to enemies in the area.
 
 |cFFFFFFFFThis spell is cast at a selected location.|r
@@ -561,6 +563,7 @@ Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Threat (42),
 Effects          :
 #1 (id=2047)     : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Flee | Target: Targeted Enemy (6)
+                   Modified By: Increased Fear Break Threshold (95677 effect#1)
 Description      : Strikes fear in the enemy, disorienting for $118699d. Damage may cancel the effect. Limit 1.$?a386648[
 
 $@spelldesc386648][]
@@ -1858,10 +1861,13 @@ Effects          :
 #2 (id=40332)    : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
+                   Modified By: Shadow of Nathreza (1261990 effect#2)
 #3 (id=889616)   : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
                    Base Value: 12 | Scaled Value: 12 | Target: Targeted Enemy (6)
+                   Modified By: Shadow of Nathreza (1261990 effect#3)
 #4 (id=889617)   : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380)
                    Base Value: 12 | Scaled Value: 12 | Target: Targeted Enemy (6)
+                   Modified By: Shadow of Nathreza (1261990 effect#4)
 #5 (id=1273044)  : Apply Aura (6) | Periodic Trigger Spell (23): Shadow of Nathreza every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1262710 | Target: Targeted Enemy (6)
 Description      : A ghostly soul haunts the target, dealing $s1 Shadow damage and increasing your damage dealt to the target by $s2% for $d.
@@ -2464,6 +2470,7 @@ Aura Interrupt   : Duel End (44)
 Effects          :
 #1 (id=68521)    : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | Target: Targeted Enemy (6)
+                   Modified By: Duplicitous Havoc (339890 effect#1), Gloom of Nathreza (429899 effect#2), Improved Havoc (1244460 effect#2)
 Description      : Marks a target with Havoc for $d, causing your single target spells to also strike the Havoc victim for $s1% of the damage dealt.
 Tooltip          : Spells cast by the Warlock also hit this target for $s1% of the damage dealt.
 
@@ -2730,6 +2737,7 @@ Attributes       : Not Shapeshifted (16), Allow Cast While Dead (23), No AutoCas
 Effects          :
 #2 (id=170616)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60
+                   Modified By: Gorefiend's Resolve (389623 effect#1)
 Description      : $@spelldesc20707
 
 Name             : The Codex of Xerrath (id=101508) [Spell Family (5), Passive] 
@@ -2872,6 +2880,7 @@ Effects          :
 #3 (id=114371)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Strength of Will (317138 effect#1)
 #4 (id=162716)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 9 | Target: Self (1)
 #5 (id=1148809)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Aura of Enfeeblement
@@ -3085,12 +3094,16 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29)
 Effects          :
 #1 (id=119566)   : Apply Aura Owner in Area (143) | Transfer Damage% (81)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | PvP Coefficient: 0.5 | Misc Value: 127 | Radius: 100 yards | Target: Self (1)
+                   Modified By: Soul Link (108415 effect#2)
 #2 (id=119569)   : Apply Aura Owner in Area (143) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Value Multiplier: 1 | Misc Value: 127 | Radius: 100 yards | Target: Self (1)
+                   Modified By: Fel Synergy (389367 effect#1)
 #3 (id=311358)   : Apply Aura Owner in Area (143) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Value Multiplier: 1 | Misc Value: 127 | Radius: 100 yards | Target: Self (1)
+                   Modified By: Fel Synergy (389367 effect#2)
 #4 (id=1041014)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Soul Link (108415 effect#3)
 Description      : $@spelldesc108415
 Tooltip          : $s1% of all damage taken is split with the Warlock's summoned demon.  
 The Warlock is healed for $s2% and your demon is healed for $s3% of all absorption granted by Soul Leech.
@@ -3109,8 +3122,10 @@ Attributes       : Do Not Sheath (18), No Threat (42), Can't Crit (93), Suppress
 Effects          :
 #1 (id=119567)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Soul Link (108415 effect#2)
 #2 (id=200376)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Active Pet (5)
+                   Modified By: Fel Synergy (389367 effect#1)
 Description      : $@spelldesc108446
 
 Name             : Grimoire of Service (id=108501) [Spell Family (5), Passive] 
@@ -3194,8 +3209,10 @@ Aura Interrupt   : Mount (17), Leave World (19), Swimming (33)
 Effects          :
 #1 (id=123718)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 0.25 | Target: Self (1)
+                   Modified By: Fiendish Stride (386110 effect#2)
 #2 (id=128744)   : Apply Aura (6) | Periodic Max Health% Damage (89)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+                   Modified By: Fiendish Stride (386110 effect#1)
 #3 (id=181888)   : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Target: Self (1)
 Description      : Increases your movement speed by $s1%, but also damages you for $s2% of your maximum health every $t2 sec. Movement impairing effects may not reduce you below $s3% of normal movement speed. Lasts $d.
@@ -4176,6 +4193,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Shadowburn (17877), Incinerate (29722), Chaos Bolt (116858), Incinerate (244670), Infernal Bolt (434506)
                    Family Flags: 7, 38, 45
+                   Modified By: Ashen Remains (339892 effect#1), Ashen Remains (387252 effect#1)
 Description      : $@spelldesc348
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.$?a339892[ 
 Damage taken by Chaos Bolt and Incinerate increased by $w2%.][]
@@ -5186,6 +5204,7 @@ Attributes       : Not Shapeshifted (16), No Aura Icon (60), No Aura Log (202), 
 Effects          :
 #1 (id=295242)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: at Area (87)
+                   Modified By: Duplicitous Havoc (339890 effect#1), Gloom of Nathreza (429899 effect#2), Improved Havoc (1244460 effect#2)
 #2 (id=329489)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5650 | Target: at Area (87)
 #3 (id=1074552)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Proc Cooldown (38)
@@ -5207,6 +5226,7 @@ Attributes       : Do Not Log (8), Allow While Stealthed (37), Suppress Caster P
 Effects          :
 #1 (id=295245)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
+                   Modified By: Duplicitous Havoc (339890 effect#1), Gloom of Nathreza (429899 effect#2), Improved Havoc (1244460 effect#2)
 Description      : $@spelldesc200546
 Tooltip          : Spells cast by the Warlock also hit this target for $80240s1% of the damage dealt.
 
@@ -6959,6 +6979,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 135002 | Misc Value 2: 0x109f | Radius: 5 yards | Target: Front Left of Self (44)
 #2 (id=830602)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: soul_shard | Target: Self (1)
+                   Modified By: Soulbound Tyrant (334585 effect#1)
 #3 (id=1107331)  : None (0)
                    Base Value: 10 | Scaled Value: 10
 #4 (id=1275199)  : Summon Guardian (28)
@@ -12981,6 +13002,7 @@ Attributes       : Do Not Sheath (18), No Threat (42), Can't Crit (93), Suppress
 Effects          :
 #1 (id=1025601)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
+                   Modified By: Soul Link (108415 effect#2)
 Description      : $@spelldesc389367
 
 Name             : Demonic Resilience (id=389590) [Spell Family (5), Passive, Hidden] 
@@ -15679,6 +15701,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Shadowburn (17877), Incinerate (29722), Chaos Bolt (116858), Incinerate (244670), Infernal Bolt (434506)
                    Family Flags: 7, 38, 45
+                   Modified By: Ashen Remains (339892 effect#1), Ashen Remains (387252 effect#1)
 Description      : $@spelldesc445468
 Tooltip          : Suffering $w1 Shadowflame damage every $t1 sec.$?a339892[ 
 Damage taken by Chaos Bolt and Incinerate increased by $w2%.][]
@@ -17528,6 +17551,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5420 | Target: At Enemy (53)
 #3 (id=1196683)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Destructive Rapidity (1244928 effect#1)
 Description      : Calls down a rain of hellfire upon your target, dealing ${$42223m1*8} Fire damage over $d to enemies in the area.
 
 |cFFFFFFFFThis spell is cast at your target.|r

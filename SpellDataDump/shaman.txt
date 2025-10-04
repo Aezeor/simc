@@ -93,11 +93,13 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Ally (21)
                    Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
                    Family Flags: 41
+                   Modified By: Embrace of Earth (338329 effect#1)
 #2 (id=756953)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #3 (id=1052535)  : Apply Aura (6) | Modify Damage Taken% (87) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
+                   Modified By: Earthen Harmony (382020 effect#3)
 Description      : Protects the target with an earthen shield, increasing your healing on them by $s1% and healing them for ${$379s1*(1+$s1/100)} when they take damage. This heal can only occur once every $?a462454[${$proccooldown+($462454s2/1000)}.1][$proccooldown] sec. $?a1217622[Lasts $d][Maximum $u charges].
 
 $?s383010[Earth Shield can only be placed on the Shaman and one other target at a time. The Shaman can have up to two Elemental Shields active on them.][Earth Shield can only be placed on one target at a time. Only one Elemental Shield can be active on the Shaman.]
@@ -572,6 +574,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 400 | Trigger Spell: 195573 | Target: Self (1)
 #4 (id=1160049)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 400 | Target: Self (1)
+                   Modified By: Elemental Assault (210853 effect#3)
 Description      : Energizes both your weapons with lightning and delivers a massive blow to your target, dealing a total of ${$32175sw1+$32176sw1} Physical damage.$?s210853[
 
 Stormstrike has a $s4% chance to generate $210853m2 $Lstack:stacks; of Maelstrom Weapon.][]
@@ -835,6 +838,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=332743)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30
+                   Modified By: Astral Protection (337964 effect#1)
 Description      : Allows you to resurrect yourself upon death with $21169s1% health and mana. This effect can occur only once every $s2 minutes.
 
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
@@ -1190,6 +1194,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 285452 | Target: Targeted Enemy (6)
 #2 (id=845772)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: maelstrom | Target: Self (1)
+                   Modified By: Lava Surge (77762 effect#2), Maelstrom (343725 effect#3)
 Description      : Hurls molten lava at the target, dealing $285452s1 Fire damage. Lava Burst will always critically strike if the target is affected by Flame Shock.$?a343725[
 
 |cFFFFFFFFGenerates $343725s3 Maelstrom.|r][]
@@ -1318,8 +1323,10 @@ Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=44554)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Self (1)
+                   Modified By: Therazane's Resilience (1217622 effect#5)
 #2 (id=44555)    : Apply Aura (6) | Restore Power (85) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 68.98976 (coefficient=0.526316) | PvP Coefficient: 1.75 | Target: Self (1)
+                   Modified By: Therazane's Resilience (1217622 effect#4)
 Description      : The caster is surrounded by globes of water, granting $s2 mana per 5 sec. When a melee attack hits the caster, the caster regains $?s382033[${($382033s5/100+1)*$52128s1}][$52128s1]% of their mana. This effect can only occur once every $?a462454[${$proccooldown+($462454s2/1000)}.1][$proccooldown] sec. 
 
 $?s383010[The Shaman can have up to two Elemental Shields active on them.][Only one of your Elemental Shields can be active on you at once.]
@@ -1339,6 +1346,7 @@ Attributes       : Do Not Sheath (18), Allow While Mounted (24), Allow While Sit
 Effects          :
 #1 (id=44556)    : Energize Power% (137)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.2 | Resource: mana | Target: Self (1)
+                   Modified By: Therazane's Resilience (1217622 effect#5)
 Description      : $@spelldesc52127
 
 Name             : Mirror Image (id=55342) [Spell Family (3)] 
@@ -1785,6 +1793,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Targeted Enemy (6)
 #3 (id=1033576)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Molten Assault (334033 effect#2)
 Description      : Charges your off-hand weapon with lava and burns your target, dealing $s1 Fire damage.
 
 Damage is increased by $s2% if your offhand weapon is imbued with Flametongue Weapon. $?s334033[Lava Lash will spread Flame Shock from your target to $s3 nearby targets.][]$?s334046[
@@ -1807,9 +1816,11 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Earthquake (61882), Earthquake (77478), Elemental Blast (117014), Elemental Blast Overload (120588), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192106), Lightning Shield (192109), Liquid Magma (192231), Frost Shock (196840), Lightning Rod (197568), Control of Lava (204395), Icefury (210714), Lightning Bolt (214815), Lightning Bolt Overload (214816), Icefury Overload (219271), Lightning Shield Overcharge (273323), Lightning Shield (273324), Lava Burst (285452), Lava Burst Overload (285466), Earthquake (298762), Earthquake Overload (298765), Lightning Lasso (305483), Lightning Lasso (305484), Lightning Lasso (305485), Flametongue Weapon (318038), Flametongue Weapon (319778), Earthquake (329801), Fire Nova (333977), Earthquake (336740), Lightning Shield (344174), Elemental Blast (344645), Earth Shock Overload (381725), Magma Eruption (383061), Tempest (452201), Searing Volley (458147), Earthquake (462620), Tempest Overload (463351), Flametongue Attack (467386), Flametongue Attack (467390), Flame Shock (470411)
                    Family Flags: 0, 1, 2, 3, 10, 20, 21, 28, 30, 31, 44, 45, 50, 60, 79, 83, 98, 107, 119, 121
+                   Modified By: Primordial Fury (378193 effect#1)
 #2 (id=830842)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Critical Bonus Multiplier (15)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 15 | Misc Value 2: 3924 (Label) | Target: Self (1)
                    Affected Spells (Label): Earthen Rage (170374), Earthen Rage (170379), Awakening Storms (455130), Thunderstrike (462763), Storm's Eye (1235840)
+                   Modified By: Primordial Fury (378193 effect#2)
 Description      : Your damaging $?a343190[and healing ][]critical strikes deal ${$m1+200}% damage $?a343190[or healing ][]instead of the usual 200%.
 
 Name             : Riptide (id=61295) [Spell Family (11)] 
@@ -2340,6 +2351,7 @@ Effects          :
                    Family Flags: 0, 1, 7, 8, 11, 39, 41, 44, 47, 51, 62, 80, 83, 84, 92, 98, 111
 #2 (id=289427)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Graceful Spirit (192088 effect#2)
 #3 (id=772568)   : Apply Aura (6) | Allow Casting while Moving For Spells (Label) (307)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 640 | Target: Self (1)
                    Affected Spells (Label): Azerite Essences (640)
@@ -2636,6 +2648,7 @@ Effects          :
 #1 (id=119326)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Astral Shift (263786 effect#1), Astral Bulwark (377933 effect#1)
 Description      : Shift partially into the elemental planes, taking $s1% less damage for $d.
 Tooltip          : Damage taken reduced by $w1%.
 
@@ -2667,6 +2680,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #4 (id=1258516)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Preeminence (462443 effect#3)
 Description      : Summons a totem at your feet for $d, which pulses every $t2 sec, healing all party or raid members within $114942A1 yards for $114942m1.
 
 Healing reduced beyond $s1 targets.
@@ -2785,6 +2799,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 232186 | Misc Value 2: 0x6 | Target: Self (1)
 #3 (id=129147)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Preeminence (462443 effect#2)
 #4 (id=305266)   : Apply Aura (6) | Modify Attack Power (104)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=375209)   : Apply Aura (6) | Resist Dispel (235)
@@ -2849,6 +2864,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 59349 | Misc Value 2: 0x6 | Target: Self (1)
 #3 (id=762230)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Preeminence (462443 effect#2)
 #4 (id=1103553)  : Apply Aura (6) | Modify Attack Power (104)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=1172234)  : Apply Aura (6) | Resist Dispel (235)
@@ -4071,6 +4087,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.875 | Misc Value: 18 | Target: Self (1)
 #2 (id=238583)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.4 | Target: Self (1)
+                   Modified By: Echo Chamber (382032 effect#1), Ascendance (1219480 effect#8)
 #3 (id=307793)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.76 | PvP Coefficient: 1.3 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ice Strike (342240), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Storm's Eye (1235840), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
@@ -4285,6 +4302,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #2 (id=829582)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
+                   Modified By: Overflowing Maelstrom (384149 effect#2)
 #3 (id=1276992)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Maelstrom Weapon (187881)
@@ -4321,13 +4339,16 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816), Tempest (452201)
                    Family Flags: 0, 1, 107
+                   Modified By: Maelstrom Weapon (187880 effect#5)
 #2 (id=811721)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816), Tempest (452201), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118)
                    Family Flags: 0, 1, 107, 125
+                   Modified By: Maelstrom Weapon (187880 effect#3), Focused Lightning (338322 effect#1)
 #3 (id=871486)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 983 (Label) | Target: Self (1)
                    Affected Spells (Label): Chain Harvest (320751), Chain Harvest (320752)
+                   Modified By: Maelstrom Weapon (187880 effect#4), Focused Lightning (338322 effect#2)
 Description      : $@spelldesc187880
 
 Name             : Maelstrom Weapon (id=187890) [Spell Family (11), Hidden] 
@@ -4402,10 +4423,12 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Targeted Enemy (6)
 #4 (id=1182047)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: maelstrom | Target: Self (1)
+                   Modified By: Maelstrom (343725 effect#11)
 #5 (id=1267945)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Earth Shock (8042), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Earthquake (61882), Earthquake (77478), Elemental Blast (117014), Elemental Blast Overload (120588), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816), Earthquake (298762), Earthquake Overload (298765), Earthquake (329801), Earthquake (336740), Elemental Blast (344645), Earth Shock Overload (381725), Tempest (452201), Earthquake (462620), Tempest Overload (463351)
                    Family Flags: 0, 1, 20, 63, 64, 83, 96, 98, 107, 108
+                   Modified By: Inferno Arc (1259047 effect#1)
 Description      : Sears the target with fire, causing $s1 Volcanic damage and then an additional $o2 Volcanic damage over $d.
 
 Flame Shock can be applied to a maximum of $I targets.$?a137039[][
@@ -4609,6 +4632,7 @@ Effects          :
                    Family Flags: 0
 #3 (id=1276341)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: maelstrom | Target: Self (1)
+                   Modified By: Stormwell (1264762 effect#2)
 Description      : Charge yourself with lightning, causing your next $n Lightning Bolts to deal $s2% more damage, and also causes your next $n Lightning Bolts or Chain Lightnings to be instant cast and trigger an Elemental Overload on every target.$?a1264762[
 
 |cFFFFFFFFGenerates $1264762s2 Maelstrom.|r][]
@@ -4852,10 +4876,12 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #3 (id=830114)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Modified By: Surging Shields (382033 effect#2)
 #4 (id=830115)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #5 (id=868289)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Modified By: Surging Shields (382033 effect#1)
 Description      : Surround yourself with a shield of lightning for $d.
 
 Melee attackers have a $h% chance to suffer $192109s1 Nature damage$?a137041[ and have a $s3% chance to generate a stack of Maelstrom Weapon]?a137040[ and have a $s4% chance to generate $s5 Maelstrom][].
@@ -4908,6 +4934,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 395349 | Target: at Area (87)
 #4 (id=1259741)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: maelstrom | Target: Self (1)
+                   Modified By: Maelstrom (343725 effect#13)
 Description      : Summons a totem at the target location that erupts dealing $383061s1 Fire damage and applying Flame Shock to $383061s2 enemies within $383061A1 yards. Continues hurling liquid magma at a random nearby target every $192226t1 sec for $d, dealing ${$192231s1*(1+($137040s3/100))} Fire damage to all enemies within $192223A1 yards.$?a343725[
 
 |cFFFFFFFFGenerates $343725s13 Maelstrom.|r][]
@@ -5107,6 +5134,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Targeted Enemy (6)
 #4 (id=1182039)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: maelstrom | Target: Self (1)
+                   Modified By: Maelstrom (343725 effect#10)
 Description      : Chills the target with frost, causing $s1 Frost damage and reducing the target's movement speed by $s2% for $d.$?a343725&a210714[
 
 |cFFFFFFFFGenerates ${$343725s10+$343725s7} Maelstrom.|r]?a343725[
@@ -6184,6 +6212,7 @@ Effects          :
                    Family Flags: 31
 #3 (id=845774)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: maelstrom | Target: Self (1)
+                   Modified By: Maelstrom (343725 effect#8), Primal Fracture (410018 effect#6)
 #4 (id=1173035)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 Description      : Hurls frigid ice at the target, dealing $s1 Frost damage and causing your next Frost Shock to deal $s2% increased damage, damage $s4 additional $Ltarget:targets;, and generate $343725s7 additional Maelstrom.
@@ -6434,6 +6463,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.28695 | PvP Coefficient: 0.89 | Target: Targeted Enemy (6)
 #2 (id=326662)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: maelstrom | Target: Self (1)
+                   Modified By: Maelstrom (343725 effect#9), Primal Fracture (410018 effect#7)
 Description      : Hurls frigid ice at the target, dealing $?a382032[${$s1*($382032s1+$168534s2)/100}][${$s1*$168534s2/100}] Frost damage.
 
 |cFFFFFFFFGenerates $s2 Maelstrom.|r
@@ -8330,6 +8360,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.38996 | Target: Targeted Enemy (6)
 #2 (id=845773)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: maelstrom | Target: Self (1)
+                   Modified By: Maelstrom (343725 effect#4)
 Description      : Hurls molten lava at the target, dealing $?a382032[${$s1*($382032s1+$168534s2)/100}][${$s1*$168534s2/100}] Fire damage. Lava Burst will always critically strike if the target is affected by Flame Shock.
 
 Generates $343725s4 Maelstrom.|r
@@ -9684,6 +9715,7 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | Trigger Spell: 327161 | Target: Current Target (25)
 #2 (id=871499)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | Target: Current Target (25)
+                   Modified By: Maelstrom (343725 effect#12)
 #3 (id=871500)   : Dummy (3)
                    Base Value: 80 | Scaled Value: 80 | Target: Current Target (25)
 #4 (id=871501)   : Dummy (3)
@@ -13507,11 +13539,13 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Ally (21)
                    Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
                    Family Flags: 41
+                   Modified By: Embrace of Earth (338329 effect#1)
 #2 (id=1015699)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #3 (id=1052536)  : Apply Aura (6) | Modify Damage Taken% (87) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
+                   Modified By: Earthen Harmony (382020 effect#3)
 Description      : $@spelldesc974
 Tooltip          : $?$w3!=0[Damage taken reduced by $w3%.
 
@@ -16074,6 +16108,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.105 | PvP Coefficient: 1.2 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 #2 (id=1158656)  : Dummy (3)
                    Base Value: 65 | Scaled Value: 65 | Target: Targeted Enemy (6)
+                   Modified By: Enhancement Shaman (137041 effect#17)
 #3 (id=1184273)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Calls down a tremendous lightning strike that deals $s1 Nature damage to your target and ${$m1*$m2/100} Nature damage to enemies within $A1 yds of your target. Damage reduced beyond $s3 targets.$?a383303[
@@ -19234,6 +19269,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1218125 | Target: Self (1)
 #2 (id=1202858)  : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.6666 | Trigger Spell: 1218125 | Target: Self (1)
+                   Modified By: Maelstrom (343725 effect#12)
 #3 (id=1206347)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Sundering transforms into a single use Primordial Storm for $1218125d after it is cast.
@@ -19486,6 +19522,7 @@ Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #3 (id=1205233)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Preeminence (462443 effect#2)
 #5 (id=1205235)  : Apply Aura (6) | Resist Dispel (235)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=1205236)  : Apply Aura (6) | Replace Animation (Set) (312)

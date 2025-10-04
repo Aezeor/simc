@@ -26,6 +26,7 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounte
 Effects          :
 #1 (id=195)      : Apply Aura Raid (65) | Modify Damage Taken% (87)
                    Base Value: -3 | Scaled Value: -3 | Misc Value: 0x7f | Radius: 40 yards | Target: Self (1)
+                   Modified By: Aura Mastery (31821 effect#1), Holy Bulwark (432496 effect#1), Sacred Weapon (432502 effect#1)
 #2 (id=803408)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Devotion Aura
                    Base Value: -3 | Scaled Value: -3 | Trigger Spell: 344218 | Target: Self (1)
 Description      : Party and raid members within $a1 yds are bolstered by their devotion, reducing damage taken by $s1%.
@@ -52,9 +53,11 @@ Effects          :
 #1 (id=211)      : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.75 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Shield of Vengeance (1261562 effect#1)
 #2 (id=1183800)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Inspired Guard (469439 effect#2)
 Description      : Reduces all damage you take by $s1% for $d. Usable while stunned.
 Tooltip          : Damage taken reduced by $w1%.$?a469439[
 
@@ -195,8 +198,10 @@ Effects          :
 #3 (id=263966)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Targeted Raid Member (57)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+                   Modified By: Echoing Blessings (339316 effect#4), Echoing Blessings (387801 effect#4)
 #4 (id=1184415)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Raid Member (57)
+                   Modified By: Blessed Calling (469770 effect#3)
 Description      : Blesses a party or raid member, granting immunity to Physical damage and harmful effects for $d.
 
 Cannot be used on a target with Forbearance. Causes Forbearance for $25771d.$?c2[
@@ -233,6 +238,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Targeted Ally (21)
 #3 (id=293300)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
+                   Modified By: Unbound Freedom (199325 effect#1), Unbound Freedom (305394 effect#1), Echoing Blessings (339316 effect#3), Echoing Blessings (387801 effect#3), Blessed Calling (469770 effect#2)
 Description      : Blesses a party or raid member, granting immunity to movement impairing effects $?s199325[and increasing movement speed by $199325m1% ][]for $d.
 Tooltip          : Immune to movement impairing effects. $?s199325[Movement speed increased by $199325m1%][]
 
@@ -353,8 +359,10 @@ Effects          :
 #4 (id=867794)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Raid Member (57)
                    Affected School(s): All
+                   Modified By: Echoing Blessings (339316 effect#5), Echoing Blessings (387801 effect#5)
 #5 (id=1183597)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Raid Member (57)
+                   Modified By: Blessed Calling (469770 effect#1)
 #6 (id=1183598)  : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Target: Targeted Raid Member (57)
 #7 (id=1183599)  : Dispel (38)
@@ -811,6 +819,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.1067 | Target: Targeted Enemy (6)
 #2 (id=714232)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: holy_power | Target: Self (1)
+                   Modified By: Boundless Judgment (405278 effect#4)
 #3 (id=1259264)  : School Damage (2): holy | Attributes: Chain from Initial Target (7), Enforce Line of Sight To Chain Targets (16)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.830025 | Radius: 0 - 12 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : Hurls a divine hammer that strikes an enemy for $<damage> $?s403664[Holystrike][Holy] damage. Only usable on enemies that have less than 20% health$?s326730[, or during Avenging Wrath][].
@@ -990,6 +999,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 412629 | Target: Self (1)
 #5 (id=1091896)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Radius (6)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 6 | Misc Value 2: 2747 (Label) | Target: Self (1) -> Self (1)
+                   Modified By: Divine Reach (469476 effect#5)
 #6 (id=1091898)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Misc Value 2: 2748 (Label) | Target: Self (1) -> Self (1)
 Description      : Empowers your chosen aura for $d.$?a344218[
@@ -1026,12 +1036,14 @@ Effects          :
                    Affected School(s): All
 #2 (id=21514)    : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Modified By: The Ardent Protector's Sanctum (337838 effect#1)
 #3 (id=728128)   : Apply Aura (6) | Absorb Overkill Damage From School (316)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: 0x14 | Target: Self (1)
                    Affected School(s): All
 #4 (id=1183798)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Inspired Guard (469439 effect#1)
 Description      : Reduces all damage you take by $s1% for $d.
 
 While Ardent Defender is active, the next attack that would otherwise kill you will instead bring you to $s2% of your maximum health.
@@ -1066,12 +1078,15 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Beacon of Light (53563), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Light of Dawn (85222), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Crusader Strike (132331), Eternal Flame (156322), Beacon of Faith (156910), Holy Shield (157122), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Holy Ritual (199423), Tyr's Deliverance (200654), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Glimmer of Light (287286), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Judgment (383991), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Execution Sentence (387200), Blessing of Winter (388012), Lightforged Blessing (403460), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Lightforged Blessing (407467), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Glimmer of Light (416619), Holy Reverberation (423377), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Dawnlight (431381), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun Sear (431415), Sun's Avatar (431911), Sun's Avatar (431939), Sacred Weapon (432616), Rite of Adjuration (433682), Hammer and Anvil (433717), Hammer and Anvil (433722), Divine Guidance (433807), Divine Guidance (433808), Sacred Weapon (441590), Sacred Word (447246), Forge's Reckoning (447258), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), Sun's Avatar (463075), Eye for an Eye (469311), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Hammer of Light (1235934), Lesser Bulwark (1239002), Lesser Weapon (1239276), Lesser Weapon (1239282), Hammer of Wrath (1241413), Beacon of the Savior (1244893), Execution Sentence (1260251), Light Within (1261160)
                    Family Flags: 46, 65
+                   Modified By: Holy Paladin (1258016 effect#8)
 #2 (id=21557)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Beacon of Light (53563), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Light of Dawn (85222), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Crusader Strike (132331), Eternal Flame (156322), Beacon of Faith (156910), Holy Shield (157122), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Holy Ritual (199423), Tyr's Deliverance (200654), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Glimmer of Light (287286), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Judgment (383991), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Execution Sentence (387200), Blessing of Winter (388012), Lightforged Blessing (403460), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Lightforged Blessing (407467), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Glimmer of Light (416619), Holy Reverberation (423377), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Dawnlight (431381), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun Sear (431415), Sun's Avatar (431911), Sun's Avatar (431939), Sacred Weapon (432616), Rite of Adjuration (433682), Hammer and Anvil (433717), Hammer and Anvil (433722), Divine Guidance (433807), Divine Guidance (433808), Sacred Weapon (441590), Sacred Word (447246), Forge's Reckoning (447258), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), Sun's Avatar (463075), Eye for an Eye (469311), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Hammer of Light (1235934), Lesser Bulwark (1239002), Lesser Weapon (1239276), Lesser Weapon (1239282), Hammer of Wrath (1241413), Beacon of the Savior (1244893), Execution Sentence (1260251), Light Within (1261160)
                    Family Flags: 46, 65
+                   Modified By: Holy Paladin (1258016 effect#9)
 #3 (id=479837)   : Apply Aura (6) | Modify Critical Strike% (290) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.25 | Target: Self (1)
+                   Modified By: Holy Paladin (1258016 effect#10)
 #4 (id=714298)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=723594)   : Apply Aura (6) | Modify Recharge Time% (Category) (454) | Attributes: Suppress Points Stacking (6)
@@ -1161,10 +1176,13 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounte
 Effects          :
 #1 (id=21964)    : Apply Aura Raid (65) | Increase Mounted Speed% (172)
                    Base Value: 20 | Scaled Value: 20 | Radius: 40 yards | Target: Self (1)
+                   Modified By: Aura Mastery (31821 effect#2), Holy Bulwark (432496 effect#1), Sacred Weapon (432502 effect#1)
 #3 (id=762279)   : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 33 | Radius: 40 yards | Target: Self (1)
+                   Modified By: Aura Mastery (31821 effect#2)
 #4 (id=803410)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Crusader Aura
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 344219 | Target: Self (1)
+                   Modified By: Aura Mastery (31821 effect#2)
 Description      : Increases mounted speed by $s1% for all party and raid members within $a1 yds.
 Tooltip          : Mounted speed increased by $w1%.$?$w5>0[
 Incoming fear duration reduced by $w5%.][]
@@ -1402,6 +1420,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=46334)    : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Modified By: Commanding Light (387781 effect#1)
 Description      : $@spelldesc53563
 Tooltip          : The paladin's healing spells cast on you also heal the Beacon of Light.
 
@@ -1442,6 +1461,7 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
                    Affected Spells: Flash of Light (19750)
                    Family Flags: 30
+                   Modified By: Inflorescence of the Sunwell (337777 effect#2)
 #2 (id=288923)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 45 | Scaled Value: 45 | Target: Self (1)
                    Affected Spells: Holy Light (82326)
@@ -1450,6 +1470,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Flash of Light (19750)
                    Family Flags: 30
+                   Modified By: Divine Revelations (275463 effect#2)
 #4 (id=1082791)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 250 | Scaled Value: 250 | Target: Self (1)
 #5 (id=1084305)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
@@ -2029,6 +2050,7 @@ Attributes       : Is Ability (4), Passive (6), Do Not Log (8), Allow Class Abil
 Effects          :
 #1 (id=86072)    : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 11 | Target: Self (1)
+                   Modified By: Inspiring Vanguard (393022 effect#2)
 Description      : When you avoid a melee attack or use $?S53595[Hammer of the Righteous]?S204019[Blessed Hammer][Crusader Strike], you have a $s1% chance to reset the remaining cooldown on Avenger's Shield$?S393022[ and increase your Strength by $393019s1% for $393019d.][.]
 
 $?a204023[Reduces the cooldown of Judgment by ${$204023s2/1000} sec.][]
@@ -2107,6 +2129,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Avenger's Shield (31935), Focused Enmity (378845)
                    Family Flags: 14
+                   Modified By: Inspiring Vanguard (393022 effect#2)
 Description      : $@spelldesc85043
 
 Name             : Word of Glory (id=85673) [Spell Family (10)] 
@@ -2897,11 +2920,13 @@ Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=171373)   : Apply Aura (6) | Dummy (4)
                    Base Value: 160 | Scaled Value: 160 | Target: Self (1)
+                   Modified By: Avenger's Valor (197561 effect#2), Avenger's Valor (290495 effect#2)
 #2 (id=1036754)  : Apply Aura (6) | Modify Armor by Primary Stat% (268)
                    Base Value: 160 | Scaled Value: 160 | Misc Value: -2 | Target: Self (1)
 #3 (id=1161066)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Paladin Protection 11.0 Class Set 2pc (453657 effect#2)
 Description      : $@spelldesc53600
 Tooltip          : Armor increased by $?c1[${$W1*$INT/100}][${$W1*$STR/100}].$?$W3<0[
 Damage taken reduced by $w3%.][]
@@ -3420,6 +3445,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.78 | Target: Targeted Ally (21)
 #3 (id=1169880)  : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.6
+                   Modified By: Retribution Paladin (1258011 effect#23)
 Description      : Heals an ally for $s2 and an additional $o1 over $d.
 
 Healing increased by $s3% when cast on self.
@@ -3909,6 +3935,7 @@ Aura Interrupt   : Leave World (19), Login (29)
 Effects          :
 #1 (id=265677)   : Apply Aura Raid (65) | Modify Attack Power (99)
                    Base Value: 0 | Scaled Value: 0 | Radius: 40 yards | Target: Self (1)
+                   Modified By: Retribution Aura (317906 effect#1), Holy Bulwark (432496 effect#1), Sacred Weapon (432502 effect#1)
 #2 (id=868379)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Retribution Aura
                    Base Value: 8 | Scaled Value: 8 | Trigger Spell: 344217 | Target: Self (1)
 #3 (id=1055980)  : Apply Aura (6) | Dummy (4)
@@ -3989,6 +4016,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.37769 | Target: Targeted Enemy (6)
 #2 (id=267536)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: holy_power | Target: Self (1)
+                   Modified By: Holy Blade (383342 effect#1)
 #3 (id=1051842)  : Trigger Spell (64): Blade of Justice
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 404358 | Target: Targeted Enemy (6)
 Description      : $?s403826[Pierce enemies][Pierce an enemy] with a blade of light, dealing $s1 Holy damage$?s403826[ to your target and $404358s1 Holy damage to nearby enemies.][.]
@@ -4055,9 +4083,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Denounce (2812), Shield of the Righteous (53600), Word of Glory (85673), Eternal Flame (156322), Afterimage (391309), Shield of the Righteous (415091), Eternal Flame (461432)
                    Family Flags: 52, 78, 89
+                   Modified By: Consecration (344172 effect#1)
 #3 (id=1248059)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Sanctuary (379021 effect#2)
 Description      : $@spelldesc26573
 Tooltip          : $?c1[Shield of the Righteous damage and Word of Glory healing increased by $w3%.]?c2[Hammer of the Righteous also causes a wave of light that hits all other enemies near the target.]?c3[Shield of the Righteous damage and Word of Glory healing increased by $w3%.][]
 
@@ -4758,6 +4788,7 @@ Effects          :
 #2 (id=1035079)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Targeted Raid Member (57)
                    Affected School(s): Physical
+                   Modified By: Echoing Blessings (387801 effect#6)
 Description      : Blesses a party or raid member, granting immunity to magical damage and harmful effects for $d.
 
 Cannot be used on a target with Forbearance. Causes Forbearance for $25771d.
@@ -4923,6 +4954,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=301459)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Consecrated Ground (204054 effect#2)
 Description      : $@spelldesc204054
 Tooltip          : Taking Holy damage every $26573t1 sec$?$w2<0[ and movement speed reduced by $w2%.][.]
 
@@ -5498,6 +5530,7 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Abilit
 Effects          :
 #1 (id=329035)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: holy_power | Target: Self (1)
+                   Modified By: Avenging Wrath (31884 effect#8), Sentinel (389539 effect#8), Boundless Judgment (405278 effect#1), Avenging Wrath (454351 effect#8)
 Description      : $@spelldesc20271
 
 Name             : Divine Steed (id=221883) [Spell Family (10)] 
@@ -5526,8 +5559,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
 #4 (id=331131)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
 #5 (id=762446)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442264 effect#3)
 #6 (id=762447)   : Apply Aura (6) | Mount Cosmetic Mount (487)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14584 | Target: Self (1)
 #7 (id=766091)   : Apply Aura (6) | Use Base Move Speed (191)
@@ -5563,8 +5598,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
 #4 (id=331136)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
 #5 (id=762449)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442264 effect#3)
 #6 (id=762450)   : Apply Aura (6) | Mount Cosmetic Mount (487)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 30501 | Target: Self (1)
 #7 (id=766090)   : Apply Aura (6) | Use Base Move Speed (191)
@@ -5600,8 +5637,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
 #4 (id=331140)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
 #5 (id=762451)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442264 effect#3)
 #6 (id=762452)   : Apply Aura (6) | Mount Cosmetic Mount (487)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 19085 | Target: Self (1)
 #7 (id=766089)   : Apply Aura (6) | Use Base Move Speed (191)
@@ -5637,8 +5676,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
 #4 (id=331144)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
 #5 (id=762454)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442264 effect#3)
 #6 (id=762455)   : Apply Aura (6) | Mount Cosmetic Mount (487)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 31368 | Target: Self (1)
 #7 (id=766088)   : Apply Aura (6) | Use Base Move Speed (191)
@@ -5953,6 +5994,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275), Hammer of Wrath (1241413)
                    Family Flags: 39
+                   Modified By: Avenging Wrath (384376 effect#4)
 #5 (id=741274)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #6 (id=1034545)  : Apply Aura (6) | Modify Mastery% (318) | Attributes: Suppress Points Stacking (6)
@@ -6150,8 +6192,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
 #4 (id=475684)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
 #5 (id=762457)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442264 effect#3)
 #6 (id=762458)   : Apply Aura (6) | Mount Cosmetic Mount (487)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 74151 | Target: Self (1)
 #7 (id=766087)   : Apply Aura (6) | Use Base Move Speed (191)
@@ -6187,8 +6231,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
 #4 (id=475688)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
 #5 (id=762459)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442264 effect#3)
 #6 (id=762460)   : Apply Aura (6) | Mount Cosmetic Mount (487)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 74149 | Target: Self (1)
 #7 (id=766086)   : Apply Aura (6) | Use Base Move Speed (191)
@@ -6224,8 +6270,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
 #4 (id=475692)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
 #5 (id=762462)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442264 effect#3)
 #6 (id=762463)   : Apply Aura (6) | Mount Cosmetic Mount (487)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 74150 | Target: Self (1)
 #7 (id=766085)   : Apply Aura (6) | Use Base Move Speed (191)
@@ -6261,8 +6309,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
 #4 (id=475696)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
 #5 (id=762464)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442264 effect#3)
 #6 (id=762465)   : Apply Aura (6) | Mount Cosmetic Mount (487)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 74148 | Target: Self (1)
 #7 (id=766083)   : Apply Aura (6) | Use Base Move Speed (191)
@@ -6546,6 +6596,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Misc Value: 5 | Trigger Spell: 403695 | Target: Self (1)
 #4 (id=1053555)  : Trigger Spell (64): Wake of Ashes
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Misc Value: 450 | Trigger Spell: 405345 | Target: Self (1)
+                   Modified By: Ashes to Dust (236106 effect#1)
 #5 (id=1053567)  : Trigger Spell (64): Wake of Ashes
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Misc Value: 900 | Trigger Spell: 405350 | Target: Self (1)
 Description      : Lash out at your enemies, dealing $s1 Radiant damage to all enemies within $a1 yds in front of you, and applying $@spellname403695, burning the targets for an additional ${$403695s2*($403695d/$403695t+1)} damage over $403695d.
@@ -7186,8 +7237,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
 #4 (id=730076)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
 #5 (id=762240)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442264 effect#3)
 #6 (id=762242)   : Apply Aura (6) | Mount Cosmetic Mount (487)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 85395 | Target: Self (1)
 #7 (id=766049)   : Apply Aura (6) | Use Base Move Speed (191)
@@ -7223,8 +7276,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
 #4 (id=730080)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
 #5 (id=762467)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442264 effect#3)
 #6 (id=762468)   : Apply Aura (6) | Mount Cosmetic Mount (487)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 85394 | Target: Self (1)
 #7 (id=766082)   : Apply Aura (6) | Use Base Move Speed (191)
@@ -7734,8 +7789,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
 #4 (id=762472)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
 #5 (id=762473)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442264 effect#3)
 #6 (id=762474)   : Apply Aura (6) | Mount Cosmetic Mount (487)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 90501 | Target: Self (1)
 #7 (id=766081)   : Apply Aura (6) | Use Base Move Speed (191)
@@ -8427,6 +8484,7 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounte
 Effects          :
 #1 (id=803397)   : Apply Aura Raid (65) | Modify Mechanic Duration% (Stacking) (232)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.67 | Misc Value: 26 | Radius: 40 yards | Target: Self (1)
+                   Modified By: Holy Bulwark (432496 effect#1), Sacred Weapon (432502 effect#1)
 #2 (id=803398)   : Apply Aura Raid (65) | Modify Mechanic Duration% (Stacking) (232)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.67 | Misc Value: 9 | Radius: 40 yards | Target: Self (1)
 #3 (id=868382)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Concentration Aura
@@ -8909,6 +8967,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 328506 | Target: Targeted Ally (21)
 #2 (id=823066)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
+                   Modified By: Equinox (355567 effect#2)
 #3 (id=834165)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Targeted Ally (21)
 #4 (id=840441)   : Trigger Spell (64): Blessing of the Seasons
@@ -8947,6 +9006,7 @@ Effects          :
 #2 (id=821028)   : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
+                   Modified By: Equinox (355567 effect#2)
 #3 (id=823067)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Targeted Ally (21)
 #4 (id=834166)   : Cancel Aura (164): Blessing of the Seasons
@@ -9013,6 +9073,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Targeted Ally (21)
 #2 (id=823058)   : Trigger Spell (64): Blessing of the Seasons
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 328278 | Target: Self (1)
+                   Modified By: Equinox (355567 effect#2)
 #3 (id=834162)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Targeted Ally (21)
 Description      : Bless an ally for $d, causing their attacks to have a $h% chance to deal $s1% additional damage as Holy.
@@ -9045,6 +9106,7 @@ Effects          :
                    Affected Spells (Label): Class Spells (16)
 #2 (id=821268)   : Apply Aura (6) | Modify Charge Cooldown Type Recharge Rate% (173)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 1 | Target: Targeted Ally (21)
+                   Modified By: Equinox (355567 effect#2)
 #3 (id=823063)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Targeted Ally (21)
 #4 (id=833967)   : Trigger Spell (64): Blessing of the Seasons
@@ -10458,6 +10520,7 @@ Effects          :
 #3 (id=894606)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Aegis of Light (358934 effect#1)
 Description      : Stamina increased by $s1%.
 
 Armor increased by $s2%.
@@ -10797,8 +10860,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
 #4 (id=903097)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
 #5 (id=903098)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442264 effect#3)
 #6 (id=903099)   : Apply Aura (6) | Mount Cosmetic Mount (487)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 104864 | Target: Self (1)
 #7 (id=903100)   : Apply Aura (6) | Use Base Move Speed (191)
@@ -13052,10 +13117,12 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Beacon of Light (53563), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Light of Dawn (85222), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Crusader Strike (132331), Eternal Flame (156322), Beacon of Faith (156910), Holy Shield (157122), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Holy Ritual (199423), Tyr's Deliverance (200654), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Glimmer of Light (287286), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Judgment (383991), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Execution Sentence (387200), Blessing of Winter (388012), Lightforged Blessing (403460), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Lightforged Blessing (407467), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Glimmer of Light (416619), Holy Reverberation (423377), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Dawnlight (431381), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun Sear (431415), Sun's Avatar (431911), Sun's Avatar (431939), Sacred Weapon (432616), Rite of Adjuration (433682), Hammer and Anvil (433717), Hammer and Anvil (433722), Divine Guidance (433807), Divine Guidance (433808), Sacred Weapon (441590), Sacred Word (447246), Forge's Reckoning (447258), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), Sun's Avatar (463075), Eye for an Eye (469311), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Hammer of Light (1235934), Lesser Bulwark (1239002), Lesser Weapon (1239276), Lesser Weapon (1239282), Hammer of Wrath (1241413), Beacon of the Savior (1244893), Execution Sentence (1260251), Light Within (1261160)
                    Family Flags: 46, 65
+                   Modified By: Avenging Wrath (384376 effect#1)
 #2 (id=1025851)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Beacon of Light (53563), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Light of Dawn (85222), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Crusader Strike (132331), Eternal Flame (156322), Beacon of Faith (156910), Holy Shield (157122), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Holy Ritual (199423), Tyr's Deliverance (200654), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Glimmer of Light (287286), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Judgment (383991), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Execution Sentence (387200), Blessing of Winter (388012), Lightforged Blessing (403460), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Lightforged Blessing (407467), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Glimmer of Light (416619), Holy Reverberation (423377), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Dawnlight (431381), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun Sear (431415), Sun's Avatar (431911), Sun's Avatar (431939), Sacred Weapon (432616), Rite of Adjuration (433682), Hammer and Anvil (433717), Hammer and Anvil (433722), Divine Guidance (433807), Divine Guidance (433808), Sacred Weapon (441590), Sacred Word (447246), Forge's Reckoning (447258), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), Sun's Avatar (463075), Eye for an Eye (469311), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Hammer of Light (1235934), Lesser Bulwark (1239002), Lesser Weapon (1239276), Lesser Weapon (1239282), Hammer of Wrath (1241413), Beacon of the Savior (1244893), Execution Sentence (1260251), Light Within (1261160)
                    Family Flags: 46, 65
+                   Modified By: Avenging Wrath (384376 effect#2)
 #3 (id=1026054)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Beacon of Light (53563), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Light of Dawn (85222), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Crusader Strike (132331), Eternal Flame (156322), Beacon of Faith (156910), Holy Shield (157122), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Holy Ritual (199423), Tyr's Deliverance (200654), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Glimmer of Light (287286), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Judgment (383991), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Execution Sentence (387200), Blessing of Winter (388012), Lightforged Blessing (403460), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Lightforged Blessing (407467), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Glimmer of Light (416619), Holy Reverberation (423377), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Dawnlight (431381), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun Sear (431415), Sun's Avatar (431911), Sun's Avatar (431939), Sacred Weapon (432616), Rite of Adjuration (433682), Hammer and Anvil (433717), Hammer and Anvil (433722), Divine Guidance (433807), Divine Guidance (433808), Sacred Weapon (441590), Sacred Word (447246), Forge's Reckoning (447258), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), Sun's Avatar (463075), Eye for an Eye (469311), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Hammer of Light (1235934), Lesser Bulwark (1239002), Lesser Weapon (1239276), Lesser Weapon (1239282), Hammer of Wrath (1241413), Beacon of the Savior (1244893), Execution Sentence (1260251), Light Within (1261160)
@@ -13064,6 +13131,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=1033316)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Modified By: Avenging Wrath (384376 effect#3)
 #6 (id=1033317)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=1033318)  : Apply Aura (6) | Ignore Aura State (262)
@@ -14118,6 +14186,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Radius: 14 yards | Target: Enemies in Cone to Targeted Enemy (104)
                    Affected Spells: Consecration (26573), Consecration (81297), Divine Hammer (198137), Consecration (243597), Consecration (387881), Consecration (419810)
                    Family Flags: 5, 25
+                   Modified By: Ashes to Dust (236106 effect#1)
 #5 (id=1144331)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2511 (Label) | Radius: 14 yards | Target: Enemies in Cone to Targeted Enemy (104)
                    Affected Spells (Label): Execution Sentence (343527), Expurgation (383346), Truth's Wake (403695), Dawnlight (431380), Sun Sear (431414), Templar Slash (447142)
@@ -14193,9 +14262,11 @@ Effects          :
 #1 (id=1051100)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Shield of Vengeance (1261562 effect#1)
 #2 (id=1183802)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Inspired Guard (469439 effect#2)
 Description      : Reduces all damage you take by $s1% for $d$?s1261562[ and casts Shield of Vengeance][]. Usable while stunned.
 Tooltip          : Damage taken reduced by $w1%.$?a469439[
 
@@ -18939,8 +19010,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
 #4 (id=1155855)  : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
 #5 (id=1155856)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442264 effect#3)
 #6 (id=1155857)  : Apply Aura (6) | Mount Cosmetic Mount (487)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 116418 | Target: Self (1)
 #7 (id=1155858)  : Apply Aura (6) | Use Base Move Speed (191)
@@ -18971,12 +19044,15 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Beacon of Light (53563), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Light of Dawn (85222), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Crusader Strike (132331), Eternal Flame (156322), Beacon of Faith (156910), Holy Shield (157122), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Holy Ritual (199423), Tyr's Deliverance (200654), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Glimmer of Light (287286), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Judgment (383991), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Execution Sentence (387200), Blessing of Winter (388012), Lightforged Blessing (403460), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Lightforged Blessing (407467), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Glimmer of Light (416619), Holy Reverberation (423377), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Dawnlight (431381), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun Sear (431415), Sun's Avatar (431911), Sun's Avatar (431939), Sacred Weapon (432616), Rite of Adjuration (433682), Hammer and Anvil (433717), Hammer and Anvil (433722), Divine Guidance (433807), Divine Guidance (433808), Sacred Weapon (441590), Sacred Word (447246), Forge's Reckoning (447258), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), Sun's Avatar (463075), Eye for an Eye (469311), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Hammer of Light (1235934), Lesser Bulwark (1239002), Lesser Weapon (1239276), Lesser Weapon (1239282), Hammer of Wrath (1241413), Beacon of the Savior (1244893), Execution Sentence (1260251), Light Within (1261160)
                    Family Flags: 46, 65
+                   Modified By: Holy Paladin (1258016 effect#8)
 #2 (id=1156817)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Beacon of Light (53563), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Light of Dawn (85222), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Crusader Strike (132331), Eternal Flame (156322), Beacon of Faith (156910), Holy Shield (157122), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Holy Ritual (199423), Tyr's Deliverance (200654), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Glimmer of Light (287286), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Judgment (383991), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Execution Sentence (387200), Blessing of Winter (388012), Lightforged Blessing (403460), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Lightforged Blessing (407467), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Glimmer of Light (416619), Holy Reverberation (423377), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Dawnlight (431381), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun Sear (431415), Sun's Avatar (431911), Sun's Avatar (431939), Sacred Weapon (432616), Rite of Adjuration (433682), Hammer and Anvil (433717), Hammer and Anvil (433722), Divine Guidance (433807), Divine Guidance (433808), Sacred Weapon (441590), Sacred Word (447246), Forge's Reckoning (447258), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), Sun's Avatar (463075), Eye for an Eye (469311), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Hammer of Light (1235934), Lesser Bulwark (1239002), Lesser Weapon (1239276), Lesser Weapon (1239282), Hammer of Wrath (1241413), Beacon of the Savior (1244893), Execution Sentence (1260251), Light Within (1261160)
                    Family Flags: 46, 65
+                   Modified By: Holy Paladin (1258016 effect#9)
 #3 (id=1156818)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.25 | Target: Self (1)
+                   Modified By: Holy Paladin (1258016 effect#10)
 #4 (id=1156819)  : Apply Aura (6) | Modify Auto Attack Critical Chance (334)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #5 (id=1156820)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
@@ -19065,6 +19141,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275), Hammer of Wrath (1241413)
                    Family Flags: 39
+                   Modified By: Avenging Wrath (384376 effect#4)
 #5 (id=1156864)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #6 (id=1156865)  : Apply Aura (6) | Modify Mastery% (318) | Attributes: Suppress Points Stacking (6)
@@ -19215,6 +19292,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Effects          :
 #1 (id=1164056)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Inflorescence of the Sunwell (337777 effect#2)
 Description      : $@spelldesc53576
 Tooltip          : Your next spell is empowered:
 
@@ -19781,6 +19859,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1177336)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Modified By: Commanding Light (387781 effect#1)
 Description      : $@spelldesc53563
 Tooltip          : The paladin's healing spells cast on you also heal the Beacon of Light.
 
@@ -21209,6 +21288,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.2375 | PvP Coefficient: 1.3 | Target: Targeted Enemy (6)
 #2 (id=1240402)  : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: holy_power | Target: Self (1)
+                   Modified By: Boundless Judgment (405278 effect#4)
 Description      : Hurls a divine hammer that strikes an enemy for $<damage> $?s403664[Holystrike][Holy] damage.
 
 |cFFFFFFFFGenerates $s2 Holy Power.
