@@ -31,6 +31,26 @@ struct mind_flay_base_t : public priest_spell_t
     idol_of_nzoth_tick_stacks  = 1;
   }
 
+  bool insidious_ire_active() const
+  {
+    if ( !priest().talents.shadow.insidious_ire.enabled() )
+      return false;
+
+    return priest().buffs.insidious_ire->check();
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_spell_t::composite_ta_multiplier( s );
+
+    if ( insidious_ire_active() )
+    {
+      m *= 1 + priest().talents.shadow.insidious_ire->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
@@ -752,7 +772,7 @@ struct shadow_word_madness_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_dp );
+    priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_swm );
 
     if ( result_is_hit( s->result ) )
     {
@@ -833,10 +853,9 @@ struct void_bolt_base_t : public priest_spell_t
   };
 
   void_bolt_extension_t* void_bolt_extension;
-  bool trigger_shadowy_apparitions;
 
   void_bolt_base_t( priest_t& p, util::string_view name, util::string_view options )
-    : priest_spell_t( name, p, p.specs.void_bolt ), void_bolt_extension( nullptr ), trigger_shadowy_apparitions( true )
+    : priest_spell_t( name, p, p.specs.void_bolt ), void_bolt_extension( nullptr )
   {
     parse_options( options );
 
@@ -865,11 +884,6 @@ struct void_bolt_base_t : public priest_spell_t
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
-
-    if ( trigger_shadowy_apparitions )
-    {
-      priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_vb );
-    }
 
     if ( void_bolt_extension )
     {

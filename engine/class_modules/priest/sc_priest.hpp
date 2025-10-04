@@ -729,7 +729,7 @@ public:
     // Shadow
     propagate_const<proc_t*> shadowy_apparition_vb;
     propagate_const<proc_t*> shadowy_apparition_swp;
-    propagate_const<proc_t*> shadowy_apparition_dp;
+    propagate_const<proc_t*> shadowy_apparition_swm;
     propagate_const<proc_t*> shadowy_apparition_mb;
     propagate_const<proc_t*> shadowy_apparition_mfi;
     propagate_const<proc_t*> mind_devourer;

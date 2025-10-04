@@ -235,11 +235,6 @@ public:
         }
       }
 
-      if ( priest().talents.shadow.shadowy_apparitions.enabled() )
-      {
-        priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_mb );
-      }
-
       priest().trigger_psychic_link( s );
 
       if ( priest().talents.shadow.dark_thoughts.enabled() && priest().buffs.shadowy_insight->check() )
@@ -2342,10 +2337,10 @@ void priest_t::create_procs()
   // Shadow - Talents
   procs.shadowy_apparition_vb          = get_proc( "Shadowy Apparition from Void Bolt" );
   procs.shadowy_apparition_swp         = get_proc( "Shadowy Apparition from Shadow Word: Pain" );
-  procs.shadowy_apparition_dp          = get_proc( "Shadowy Apparition from Devouring Plague" );
+  procs.shadowy_apparition_swm         = get_proc( "Shadowy Apparition from Shadow Word: Madness" );
   procs.shadowy_apparition_mb          = get_proc( "Shadowy Apparition from Mind Blast" );
   procs.shadowy_apparition_mfi         = get_proc( "Shadowy Apparition from Mind Flay: Insanity" );
-  procs.mind_devourer                  = get_proc( "Mind Devourer free Devouring Plague proc" );
+  procs.mind_devourer                  = get_proc( "Mind Devourer free Shadow Word: Madness proc" );
   procs.void_tendril                   = get_proc( "Void Tendril proc from Idol of C'Thun" );
   procs.void_lasher                    = get_proc( "Void Lasher proc from Idol of C'Thun" );
   procs.shadowy_insight                = get_proc( "Shadowy Insight procs" );
