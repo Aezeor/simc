@@ -6747,8 +6747,8 @@ struct dread_plague_t final : public death_knight_disease_t
     if ( p->talent.unholy.sudden_doom.ok() )
       sd_chance = p->pseudo_random_c_from_p( p->talent.unholy.sudden_doom->effectN( 2 ).percent() *
                                              ( 1 + p->talent.unholy.harbinger_of_doom->effectN( 2 ).percent() ) );
-
-    add_child( p->background_actions.rapid_variant );
+    if ( p->talent.unholy.rapid_variant.ok() )
+      add_child( p->background_actions.rapid_variant );
   }
 
   void tick( dot_t* d ) override
@@ -11823,18 +11823,26 @@ void death_knight_t::trigger_rapid_variant( player_t* t )
   if ( sim->target_non_sleeping_list.size() == 1 || sim->event_mgr.canceled )
     return;
 
-  std::vector<player_t*> tl = background_actions.rapid_variant->target_list();
-
-  auto it = range::find( tl, t );
-  if ( it != tl.end() )
-    tl.erase( it );
-
-  std::sort( tl.begin(), tl.end(), [ this ]( player_t* a, player_t* b ) {
-    return a->resources.current[ RESOURCE_HEALTH ] < b->resources.current[ RESOURCE_HEALTH ];
-  } );
+  std::vector<player_t*> tl;
+  for ( auto& tar : sim->target_non_sleeping_list )
+  {
+    if ( tar != t )
+      tl.push_back( tar );
+  }
 
   background_actions.rapid_variant->execute();
-  background_actions.dread_plague->execute_on_target( tl[ 0 ] );
+
+  std::sort( tl.begin(), tl.end(),
+             [ this ]( player_t* a, player_t* b ) { return a->current_health() < b->current_health(); } );
+
+  for ( auto& enemy : tl )
+  {
+    if ( enemy->is_sleeping() )
+      continue;
+
+    background_actions.rapid_variant->execute_on_target( enemy );
+    break;
+  }
 }
 
 void death_knight_t::sudden_doom_execute_effects( bool coil )
@@ -12480,6 +12488,9 @@ void death_knight_t::create_actions()
   // Unholy
   else if ( specialization() == DEATH_KNIGHT_UNHOLY )
   {
+    if ( talent.unholy.rapid_variant.ok() )
+      background_actions.rapid_variant = get_action<rapid_variant_t>( "rapid_variant", this );
+
     if ( talent.unholy.outbreak.ok() )
     {
       background_actions.outbreak_aoe      = get_action<outbreak_aoe_t>( "outbreak_aoe", this );
@@ -12523,9 +12534,6 @@ void death_knight_t::create_actions()
 
     if ( talent.unholy.raise_abomination.ok() )
       background_actions.disease_cloud = get_action<disease_cloud_t>( "disease_cloud", this );
-
-    if ( talent.unholy.rapid_variant.ok() )
-      background_actions.rapid_variant = get_action<rapid_variant_t>( "rapid_variant", this );
   }
 
   else if ( specialization() == DEATH_KNIGHT_FROST )
