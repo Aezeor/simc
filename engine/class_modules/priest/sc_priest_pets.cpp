@@ -291,12 +291,6 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
       parse_effects( p().o().buffs.shadowform );
     }
 
-    if ( p().o().talents.shadow.ancient_madness.enabled() )
-    {
-      // We use DA or VF spelldata to construct Ancient Madness to use the correct spell pass-list
-      parse_effects( p().o().buffs.ancient_madness, effect_mask_t( false ).enable( 3 ), USE_DEFAULT );  // Enable E3
-    }
-
     if ( p().o().sets->has_set_bonus( PRIEST_SHADOW, TWW1, B4 ) )
     {
       parse_effects( p().o().buffs.devouring_chorus );
@@ -588,8 +582,8 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
   shadowfiend_pet_t( priest_t* owner, util::string_view name = "shadowfiend" )
     : base_fiend_pet_t( owner, name, fiend_type::Shadowfiend ),
       power_leech_insanity( o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY ) ),
-      power_leech_mana( o().specialization() == PRIEST_SHADOW ? 0.0
-                                                              : o().talents.shared.shadowfiend->effectN( 4 ).percent() / 10 )
+      power_leech_mana(
+          o().specialization() == PRIEST_SHADOW ? 0.0 : o().talents.shared.shadowfiend->effectN( 4 ).percent() / 10 )
   {
     direct_power_mod = 0.408;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
 
@@ -1206,10 +1200,11 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
       {
         return cooldown->create_expression( splits[ 2 ] );
       }
-      throw sc_invalid_apl_argument( fmt::format( "Cannot find any cooldown with name '{}'.",
-                                                  talents.voidweaver.voidwraith.enabled() ? "voidwraith"
-                                                  : talents.shared.mindbender.enabled()   ? "mindbender"
-                                                                                          : "shadowfiend" ) );
+      throw sc_invalid_apl_argument(
+          fmt::format( "Cannot find any cooldown with name '{}'.",
+                       talents.voidweaver.voidwraith.enabled()
+                           ? "voidwraith"
+                           : talents.shared.mindbender.enabled() ? "mindbender" : "shadowfiend" ) );
     }
   }
 

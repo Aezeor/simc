@@ -203,7 +203,6 @@ public:
     propagate_const<buff_t*> shadowform_state;  // Dummy buff to track whether player entered Shadowform initially
     propagate_const<buff_t*> void_torrent;
     propagate_const<buff_t*> voidform;
-    propagate_const<buff_t*> ancient_madness;
     propagate_const<buff_t*> mind_devourer;
     propagate_const<buff_t*> shadowy_insight;
     propagate_const<absorb_buff_t*> mental_fortitude;

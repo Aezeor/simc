@@ -775,17 +775,12 @@ struct shadow_word_madness_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    if ( priest().talents.shadow.surge_of_insanity.enabled() )
-    {
-      priest().buffs.surge_of_insanity->trigger();
-    }
-
     if ( priest().sets->has_set_bonus( HERO_ARCHON, TWW3, B4 ) && priest().buffs.power_surge->check() )
     {
       priest().buffs.tww3_archon_4pc->trigger();
     }
 
-    if ( priest().talents.shadow.voidform.enabled() && priest().buffs.voidform->up() )
+    if ( priest().talents.shadow.ancient_madness.enabled() && priest().buffs.voidform->up() )
     {
       priest().buffs.voidform->extend_duration(
           &priest(), timespan_t::from_millis( priest().talents.shadow.voidform->effectN( 2 ).base_value() ) );
@@ -907,6 +902,7 @@ struct void_bolt_proc_t final : public void_bolt_base_t
   {
     cooldown->duration = 0_s;
     track_cd_waste     = false;
+    background         = true;
 
     base_multiplier *= effectiveness;
 
@@ -941,7 +937,6 @@ struct void_bolt_proc_t final : public void_bolt_base_t
 
 // ==========================================================================
 // Void Volley
-// buff - 1242171
 // missile - 1242173
 // damage - 1242189
 // ==========================================================================
@@ -1031,32 +1026,25 @@ struct void_volley_damage_aoe_t final : public priest_spell_t
   }
 };
 
-struct void_volley_t final : public priest_spell_t
+struct void_volley_base_t : public priest_spell_t
 {
-  bool casted;
   propagate_const<void_volley_damage_t*> void_volley_damage;
   propagate_const<void_volley_damage_aoe_t*> void_volley_damage_aoe;
 
-  void_volley_t( priest_t& p, bool _casted = false )
-    : priest_spell_t( "void_volley", p, p.talents.shadow.void_volley_missile ), void_volley_damage( nullptr )
+  void_volley_base_t( priest_t& p, std::string name )
+    : priest_spell_t( name, p, p.talents.shadow.void_volley_missile ), void_volley_damage( nullptr )
   {
-    casted                 = _casted;
     void_volley_damage     = new void_volley_damage_t( name_str + "_damage", p, p.talents.shadow.void_volley_damage );
     void_volley_damage_aoe = new void_volley_damage_aoe_t(
         name_str + "_damage_aoe", p, p.talents.shadow.void_volley_damage, data().effectN( 1 ).radius_max() );
     add_child( void_volley_damage );
     add_child( void_volley_damage_aoe );
 
-    // TODO: check this
-    if ( casted )
-    {
-      idol_of_nzoth_execute_stacks = 10;
-    }
-
-    may_miss = false;
+    idol_of_nzoth_execute_stacks = 10;
+    may_miss                     = false;
   }
 
-  void_volley_t( priest_t& p, util::string_view options_str ) : void_volley_t( p, true )
+  void_volley_base_t( priest_t& p, std::string name, util::string_view options_str ) : void_volley_base_t( p, name )
   {
     parse_options( options_str );
   }
@@ -1096,24 +1084,56 @@ struct void_volley_t final : public priest_spell_t
   }
 };
 
+// Base version you cast while in Voidform
+struct void_volley_t final : public void_volley_base_t
+{
+  void_volley_t( priest_t& p, util::string_view options ) : void_volley_base_t( p, "void_volley", options )
+  {
+  }
+};
+
+// Free version you get as you cast Voidform initially
+// TODO: merge this with the normal Void Volley action
+struct void_volley_voidform_t final : public void_volley_base_t
+{
+  void_volley_voidform_t( priest_t& p ) : void_volley_base_t( p, "void_volley_voidform" )
+  {
+    background         = true;
+    track_cd_waste     = false;
+    cooldown->duration = 0_s;
+
+    // 10/03/2025
+    // - Generates 10 Insanity
+    // - Procs Idol of C'Thun
+    // - Does not give Idol of N'Zoth stacks
+    idol_of_nzoth_execute_stacks = 0;
+  }
+};
+
 // ==========================================================================
 // Voidform
 // ==========================================================================
 struct voidform_t final : public priest_spell_t
 {
-  propagate_const<void_volley_t*> void_volley;
+  propagate_const<void_volley_voidform_t*> void_volley;
 
   voidform_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "voidform", p, p.talents.shadow.voidform ), void_volley( nullptr )
   {
     parse_options( options_str );
 
-    impact_action = void_volley;
-    add_child( impact_action );
-
+    void_volley = new void_volley_voidform_t( priest() );
+    add_child( void_volley );
     may_miss                     = false;
-    aoe                          = -1;
     idol_of_nzoth_execute_stacks = 10;
+
+    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1370
+    if ( priest().bugs || priest().talents.shadow.improved_voidform.enabled() )
+    {
+      energize_amount   = priest().bugs ? 60 : priest().talents.shadow.improved_voidform->effectN( 1 ).base_value();
+      energize_type     = action_energize::ON_CAST;
+      energize_resource = RESOURCE_INSANITY;
+    }
   }
 
   void execute() override
@@ -1121,6 +1141,8 @@ struct voidform_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.voidform->trigger();
+
+    void_volley->execute();
 
     if ( priest().buffs.sustained_potency->check() )
     {
@@ -1274,11 +1296,6 @@ struct idol_of_cthun_t final : public priest_spell_t
 
 //     priest().buffs.void_torrent->trigger();
 //     priest().buffs.overflowing_void->expire();
-
-//     if ( priest().talents.shadow.void_volley.enabled() )
-//     {
-//       priest().buffs.void_volley->trigger();
-//     }
 //   }
 
 //   void impact( action_state_t* s ) override
@@ -1691,11 +1708,6 @@ struct voidform_t final : public priest_buff_t<buff_t>
   {
     bool r = base_t::trigger( stacks, value, chance, duration );
 
-    if ( priest().talents.shadow.ancient_madness.enabled() )
-    {
-      priest().buffs.ancient_madness->trigger();
-    }
-
     priest().buffs.shadowform->expire();
 
     return r;
@@ -1794,35 +1806,6 @@ struct shadowy_insight_t final : public priest_buff_t<buff_t>
       return false;
 
     return priest_buff_t::trigger( stacks, value, chance, duration );
-  }
-};
-
-// ==========================================================================
-// Ancient Madness
-// ==========================================================================
-struct ancient_madness_t final : public priest_buff_t<buff_t>
-{
-  ancient_madness_t( priest_t& p, const spell_data_t* s ) : base_t( p, "ancient_madness", s )
-  {
-    if ( !data().ok() )
-      return;
-
-    // Since we are using data from VF/DA make sure the name in the report does not confuse people
-    s_data_reporting = p.talents.shadow.ancient_madness.spell();
-
-    if ( p.talents.shadow.voidform.enabled() )
-    {
-      set_period( p.specs.voidform->effectN( 4 ).period() );
-      set_duration( p.specs.voidform->duration() );
-    }
-
-    add_invalidate( CACHE_CRIT_CHANCE );
-    add_invalidate( CACHE_SPELL_CRIT_CHANCE );
-    set_reverse( true );
-    set_max_stack( 20 );
-    cooldown->duration = 0_s;
-
-    set_default_value( priest().talents.shadow.ancient_madness->effectN( 2 ).percent() / 10 );
   }
 };
 
@@ -1928,8 +1911,6 @@ void priest_t::create_buffs_shadow()
   buffs.dispersion       = make_buff<buffs::dispersion_t>( *this );
 
   // Talents
-  buffs.ancient_madness = make_buff<buffs::ancient_madness_t>( *this, specs.voidform );
-
   // buffs.void_torrent = make_buff<buffs::void_torrent_t>( *this );
 
   buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 373204 ) );
@@ -1993,9 +1974,6 @@ void priest_t::create_buffs_shadow()
   buffs.shattered_psyche =
       make_buff( this, "shattered_psyche", talents.shadow.shattered_psyche->effectN( 2 ).trigger() )
           ->set_default_value_from_effect( 1 );
-
-  buffs.void_volley = make_buff( this, "void_volley",
-                                 talents.shadow.void_volley_buff );  // tracking buff for when void volley is available
 
   buffs.horrific_vision = make_buff( this, "horrific_vision", talents.shadow.horrific_vision_buff )
                               ->set_default_value_from_effect( 1 )
@@ -2073,7 +2051,6 @@ void priest_t::init_spells_shadow()
   talents.shadow.voidtouched         = ST( "Voidtouched" );
   talents.shadow.voidform            = ST( "Voidform" );
   talents.shadow.void_volley         = ST( "Void Volley" );
-  talents.shadow.void_volley_buff    = find_spell( 1242171 );
   talents.shadow.void_volley_missile = find_spell( 1242173 );
   talents.shadow.void_volley_damage  = find_spell( 1242189 );
   talents.shadow.mental_decay        = ST( "Mental Decay" );
@@ -2081,8 +2058,8 @@ void priest_t::init_spells_shadow()
   talents.shadow.dark_thoughts            = ST( "Dark Thoughts" );
   talents.shadow.maddening_touch          = ST( "Maddening Touch" );
   talents.shadow.maddening_touch_insanity = find_spell( 391232 );
-  talents.shadow.improved_voidform        = ST( "Improved Voidform" );  // NYI
-  talents.shadow.ancient_madness          = ST( "Ancient Madness" );    // NYI
+  talents.shadow.improved_voidform        = ST( "Improved Voidform" );
+  talents.shadow.ancient_madness          = ST( "Ancient Madness" );
   talents.shadow.phantom_menace           = ST( "Phantom Menace" );
   talents.shadow.dark_evangelism          = ST( "Dark Evangelism" );
   talents.shadow.shattered_psyche         = ST( "Shattered Psyche" );
@@ -2190,10 +2167,6 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
   if ( name == "mind_flay_insanity" )
   {
     return new mind_flay_insanity_t( *this, options_str );
-  }
-  if ( name == "void_bolt" )
-  {
-    return new void_bolt_t( *this, options_str );
   }
   if ( name == "voidform" )
   {
