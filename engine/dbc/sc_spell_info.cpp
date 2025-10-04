@@ -3117,20 +3117,44 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     fmt::print( s, "Proc Flags       : {}\n", fmt::join( proc_str, ", " ) );
   }
 
+  std::array<std::vector<const spelleffect_data_t*>, 5> modified_by;
+
   if ( spell->class_family() > 0 )
   {
     auto affecting_effects = dbc.effects_affecting_spell( spell );
     if ( !affecting_effects.empty() )
     {
-      const auto spell_string = []( util::span<const spelleffect_data_t* const> effects ) {
+      auto check_modifying = [ & ]( const spelleffect_data_t* const eff ) {
+        if ( eff->subtype() != A_ADD_PCT_MODIFIER && eff->subtype() != A_ADD_FLAT_MODIFIER )
+          return;
+
+        if ( eff->property_type() == P_EFFECT_1 || eff->property_type() == P_EFFECTS )
+          modified_by[ 0 ].push_back( eff );
+        if ( eff->property_type() == P_EFFECT_2 || eff->property_type() == P_EFFECTS )
+          modified_by[ 1 ].push_back( eff );
+        if ( eff->property_type() == P_EFFECT_3 || eff->property_type() == P_EFFECTS )
+          modified_by[ 2 ].push_back( eff );
+        if ( eff->property_type() == P_EFFECT_4 || eff->property_type() == P_EFFECTS )
+          modified_by[ 3 ].push_back( eff );
+        if ( eff->property_type() == P_EFFECT_5 || eff->property_type() == P_EFFECTS )
+          modified_by[ 4 ].push_back( eff );
+      };
+
+      const auto spell_string = [ & ]( util::span<const spelleffect_data_t* const> effects ) {
         const spell_data_t* spell = effects.front()->spell();
         if ( effects.size() == 1 )
+        {
+          check_modifying( effects.front() );
           return fmt::format( "{} ({} effect#{})", spell->name_cstr(), spell->id(), effects.front()->index() + 1 );
+        }
 
         fmt::memory_buffer s;
         fmt::format_to( std::back_inserter( s ), "{} ({} effects: ", spell->name_cstr(), spell->id() );
         for ( size_t i = 0; i < effects.size(); i++ )
+        {
+          check_modifying( effects[ i ] );
           fmt::format_to( std::back_inserter( s ), "{}#{}", i == 0 ? "" : ", ", effects[ i ]->index() + 1 );
+        }
         fmt::format_to( std::back_inserter( s ), ")" );
         return to_string( s );
       };
@@ -3227,6 +3251,21 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   if ( !channel_int_str.empty() )
     s << "Channel Interrupt: " << wrap_join( channel_int_str, wrap ) << std::endl;
 
+  auto print_modified_by = [ & ]( const spelleffect_data_t& e ) {
+    if ( e.index() >= 5 || modified_by[ e.index() ].empty() )
+       return;
+
+    std::vector<std::string> modified_by_str;
+    for ( auto eff : modified_by[ e.index() ] )
+    {
+      modified_by_str.push_back(
+        fmt::format( "{} ({} effect#{})", eff->spell()->name_cstr(), eff->spell_id(), eff->index() + 1 ) );
+    }
+
+    if ( !modified_by_str.empty() )
+      fmt::print( s, "                   Modified By: {}\n", fmt::join( modified_by_str, ", " ) );
+  };
+
   s << "Effects          :" << std::endl;
   for ( const spelleffect_data_t& e : spell->effects() )
   {
@@ -3234,6 +3273,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       continue;
 
     spell_info::effect_to_str( dbc, spell, &e, s, level, wrap );
+    print_modified_by( e );
   }
 
   if ( spell_text.desc() )
