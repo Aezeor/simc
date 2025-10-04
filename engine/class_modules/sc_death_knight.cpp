@@ -1585,7 +1585,6 @@ public:
   {
     real_ppm_t* carnage;
     real_ppm_t* blood_beast;
-    real_ppm_t* tww1_fdk_4pc;
     real_ppm_t* frostreaper;
   } rppm;
 
@@ -3750,12 +3749,9 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   struct death_strike_t : public drw_action_t<melee_attack_t>
   {
     death_strike_t( std::string_view n, dancing_rune_weapon_pet_t* p )
-      : drw_action_t<melee_attack_t>( p, n, p->dk()->talent.death_strike ), tww2_blood_4pc_cleave_targets( 0 )
+      : drw_action_t<melee_attack_t>( p, n, p->dk()->talent.death_strike )
     {
     }
-
-  private:
-    int tww2_blood_4pc_cleave_targets;
   };
 
   struct heart_strike_t : public drw_action_t<melee_attack_t>
@@ -4702,8 +4698,8 @@ struct trollbane_pet_t final : public horseman_pet_t
   void create_actions() override
   {
     death_knight_pet_t::create_actions();
-    obliterate  = new obliterate_background_trollbane_t( "obliterate_tww3_4pc", this );
-    frostscythe = new frostscythe_trollbane_t( "frostscythe_tww3_4pc", this );
+    obliterate  = new obliterate_background_trollbane_t( "obliterate_let_terror_reign", this );
+    frostscythe = new frostscythe_trollbane_t( "frostscythe", this );
   }
 
 public:
@@ -7163,10 +7159,10 @@ struct reapers_mark_explosion_t final : public death_knight_spell_t
       p()->buffs.exterminate->trigger( exterminate_stacks );
     }
 
-    if ( p()->sets->has_set_bonus( HERO_DEATHBRINGER, TWW3, B2 ) )
-    {
-      p()->buffs.empowered_soul->trigger();
-    }
+    //if ( p()->sets->has_set_bonus( HERO_DEATHBRINGER, TWW3, B2 ) )
+    //{
+    //  p()->buffs.empowered_soul->trigger();
+    //}
   }
 
   void impact( action_state_t* state ) override
@@ -13038,7 +13034,6 @@ void death_knight_t::init_rng()
 
   rppm.carnage      = get_rppm( "carnage", talent.blood.carnage );
   rppm.blood_beast  = get_rppm( "blood_beast", talent.sanlayn.the_blood_is_life );
-  rppm.tww1_fdk_4pc = get_rppm( "tww1_fdk_4pc", sets->set( DEATH_KNIGHT_FROST, TWW1, B4 ) );
   rppm.frostreaper  = get_rppm( "frostreaper", talent.frost.frostreaper );
 }
 
@@ -13407,18 +13402,6 @@ void death_knight_t::init_spells()
     specialization() == DEATH_KNIGHT_BLOOD ? effect_mask_t( true ).disable( 1, 2, 3 )
                                            : effect_mask_t( true ).disable( 4, 5 ) );
 
-  register_passive_effect_mask( sets->set( HERO_SANLAYN, TWW3, B4 ),
-    specialization() == DEATH_KNIGHT_BLOOD ? effect_mask_t( true ).disable( 1, 3 )
-                                           : effect_mask_t( true ).disable( 2, 4 ) );
-
-  register_passive_effect_mask( sets->set( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B2 ),
-    specialization() == DEATH_KNIGHT_FROST ? effect_mask_t( true ).disable( 2, 4, 6 )
-                                           : effect_mask_t( true ).disable( 3, 5, 8 ) );
-
-  register_passive_effect_mask( sets->set( HERO_DEATHBRINGER, TWW3, B4 ),
-    specialization() == DEATH_KNIGHT_BLOOD ? effect_mask_t( true ).disable( 1, 4, 7 )
-                                           : effect_mask_t( true ).disable( 2, 5, 8 ) );
-
   if ( main_hand_weapon.group() != WEAPON_2H )
     deregister_passive_effects( spec.might_of_the_frozen_wastes );
 
@@ -13682,10 +13665,9 @@ void death_knight_t::spell_lookups()
   pet_spell.whitemane_epidemic             = conditional_spell_lookup( talent.rider.riders_champion.ok(), 1237172 );
   pet_spell.mograine_heart_strike          = conditional_spell_lookup( talent.rider.riders_champion.ok(), 445504 );
   pet_spell.trollbane_obliterate           = conditional_spell_lookup( talent.rider.riders_champion.ok(), 445507 );
-  pet_spell.trollbane_frostscythe          = conditional_spell_lookup(
-      talent.rider.riders_champion.ok() && sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B2 ), 1237388 );
-  pet_spell.nazgrim_scourge_strike_phys   = conditional_spell_lookup( talent.rider.riders_champion.ok(), 445508 );
-  pet_spell.nazgrim_scourge_strike_shadow = conditional_spell_lookup( talent.rider.riders_champion.ok(), 445509 );
+  pet_spell.trollbane_frostscythe          = conditional_spell_lookup( talent.rider.let_terror_reign.ok(), 1237388 );
+  pet_spell.nazgrim_scourge_strike_phys    = conditional_spell_lookup( talent.rider.riders_champion.ok(), 445508 );
+  pet_spell.nazgrim_scourge_strike_shadow  = conditional_spell_lookup( talent.rider.riders_champion.ok(), 445509 );
   // San'layn Pet Spells
   pet_spell.corrupted_blood = conditional_spell_lookup( talent.sanlayn.the_blood_is_life.ok(), 434574 );
   pet_spell.blood_eruption  = conditional_spell_lookup( talent.sanlayn.the_blood_is_life.ok(), 434246 );
@@ -15146,8 +15128,6 @@ void death_knight_t::apply_target_action_effects( action_t* a, bool pet )
     action->parse_target_effects( d_fn( &death_knight_td_t::dots_t::infected_claws ), spell.infected_claws_dot );
 
     // Rider of the Apocalypse
-    if ( sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) )
-      action->parse_target_effects( d_fn( &death_knight_td_t::dots_t::undeath, false ), pet_spell.undeath_dot );
 
     // Deathbringer
 
