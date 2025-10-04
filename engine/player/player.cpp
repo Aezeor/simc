@@ -15288,7 +15288,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           return false;
         SC_FALLTHROUGH;
       case A_MOD_MAX_MANA_PCT:
-        field = "mana_multiplier";
+        field = "max_mana";
         pct_val = modifying_eff.percent();
         break;
       case A_MOD_MANA_REGEN_PCT:
