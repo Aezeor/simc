@@ -1460,8 +1460,8 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { A_MOD_SPEED_ALWAYS,                      "Increase Movement Speed% (Stacking)"               },
   { A_MOD_MOUNTED_SPEED_ALWAYS,              "Increase Mount Speed% (Stacking)"                  },
   { A_MOD_RANGED_ATTACK_POWER_VERSUS,        "Modify Ranged Attack Power vs Race"                },
-  { A_MOD_INCREASE_ENERGY_PERCENT,           "Modify Max Resource%"                              },
-  { A_MOD_INCREASE_HEALTH_PERCENT,           "Modify Max Health%"                                },
+  { A_INCREASE_RESOURCE_PCT,                 "Increase Resource%"                                },
+  { A_INCREASE_HEALTH_PCT,                   "Increase Health%"                                  },
   { A_MOD_HEALING_DONE,                      "Modify Healing Power"                              },
   { A_MOD_HEALING_DONE_PERCENT,              "Modify Healing% Done"                              },
   { A_MOD_TOTAL_STAT_PERCENTAGE,             "Modify Total Stat%"                                },
@@ -1640,7 +1640,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { A_HASTED_COOLDOWN,                       "Hasted Cooldown Duration"                          },
   { A_HASTED_GCD,                            "Hasted Global Cooldown"                            },
   { A_MOD_MAX_RESOURCE,                      "Modify Max Resource"                               },
-  { A_MOD_MANA_POOL_PCT,                     "Modify Mana Pool%"                                 },
+  { A_MOD_MAX_RESOURCE_PCT,                  "Modify Max Resource%"                              },
   { A_MOD_BATTLEPET_EXP_PCT,                 "Modify Battlepet Experience Gained"                },
   { A_MOD_ABSORB_DONE_PERCENT,               "Modify Absorb% Done"                               },
   { A_MOD_ABSORB_RECEIVED_PERCENT,           "Modify Absorb% Received"                           },
@@ -2146,10 +2146,11 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     tokens.emplace_back( fmt::format( "Chain Multiplier: {}", e->chain_multiplier() ) );
 
   if ( e->type() == E_ENERGIZE || e->type() == E_ENERGIZE_PCT ||
-       ( e->type() == E_APPLY_AURA && 
-                                  ( e->subtype() == A_MOD_INCREASE_RESOURCE || e->subtype() == A_MOD_MAX_RESOURCE ||
-                                    e->subtype() == A_MOD_POWER_REGEN_PERCENT || e->subtype() == A_TRIGGER_SPELL_ON_POWER_AMOUNT || 
-                                    e->subtype() == A_TRIGGER_SPELL_ON_POWER_PCT ) ) )
+       ( e->type() == E_APPLY_AURA &&
+         ( e->subtype() == A_MOD_INCREASE_RESOURCE || e->subtype() == A_INCREASE_RESOURCE_PCT ||
+           e->subtype() == A_MOD_MAX_RESOURCE || e->subtype() == A_MOD_MAX_RESOURCE_PCT ||
+           e->subtype() == A_MOD_POWER_REGEN_PERCENT || e->subtype() == A_TRIGGER_SPELL_ON_POWER_AMOUNT ||
+           e->subtype() == A_TRIGGER_SPELL_ON_POWER_PCT ) ) )
   {
     tokens.emplace_back( fmt::format( "Resource: {}", util::resource_type_string( util::translate_power_type(
                                                         static_cast<power_e>( e->misc_value1() ) ) ) ) );

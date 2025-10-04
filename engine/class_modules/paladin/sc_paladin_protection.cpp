@@ -992,7 +992,7 @@ void paladin_t::target_mitigation( school_e school,
   // Divine Bulwark and consecration reduction
   if ( standing_in_consecration() && specialization() == PALADIN_PROTECTION )
   {
-    double reduction = spec.consecration_2->effectN( 1 ).percent()
+    double reduction = spells.consecration_buff->effectN( 3 ).percent()
     + cache.mastery() * mastery.divine_bulwark_2->effectN( 1 ).mastery_value();
     s->result_amount *= 1.0 + reduction;
   }
@@ -1318,6 +1318,7 @@ void paladin_t::init_spells_protection()
     spec.judgment_4 = find_rank_spell( "Judgment", "Rank 4" );
 
     spells.judgment_debuff = find_spell( 197277 );
+    spells.consecration_buff = find_spell( 188370 );
   }
 
   spec.shield_of_the_righteous = find_class_spell( "Shield of the Righteous" );

@@ -110,10 +110,6 @@ namespace warlock
     parse_all_passive_talents();
     parse_all_passive_sets();
     
-    parse_passive_effects( warlock_base.agony_2 );
-    parse_passive_effects( warlock_base.fel_firebolt_2 );
-    parse_passive_effects( talents.unstable_affliction_3 );
-
     if ( bugs ) // Mark of Perotharn is being applied twice in what appears to be a bug
       parse_passive_effects( hero.mark_of_perotharn, true );
   }
