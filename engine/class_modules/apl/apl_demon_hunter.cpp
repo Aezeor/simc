@@ -70,6 +70,8 @@ void devourer( player_t* p )
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
 
   precombat->add_action( "snapshot_stats" );
+
+  default_->add_action( "consume" );
 }
 //devourer_apl_end
 

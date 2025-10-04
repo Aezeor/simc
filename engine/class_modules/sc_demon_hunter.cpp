@@ -661,6 +661,7 @@ public:
 
     // Devourer
     const spell_data_t* devourer_demon_hunter;
+    const spell_data_t* consume;
 
     // Havoc
     const spell_data_t* havoc_demon_hunter;
@@ -4755,6 +4756,13 @@ struct consume_soul_t : public demon_hunter_spell_t
   }
 };
 
+struct consume_t : public demon_hunter_spell_t
+{
+  consume_t(demon_hunter_t* p, util::string_view o) : demon_hunter_spell_t( "consume", p, p->spec.consume, o )
+  {
+  }
+};
+
 }  // end namespace spells
 
 // ==========================================================================
@@ -7477,6 +7485,8 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new sigil_of_silence_t( this, options_str );
   if ( name == "sigil_of_chains" )
     return new sigil_of_chains_t( this, options_str );
+  if ( name == "consume" )
+    return new consume_t( this, options_str );
 
   using namespace actions::attacks;
 
@@ -8175,12 +8185,16 @@ void demon_hunter_t::init_spells()
       spec.metamorphosis        = find_specialization_spell( "Metamorphosis" );
       spec.metamorphosis_buff   = spec.metamorphosis;
       break;
+    case DEMON_HUNTER_DEVOURER:
+      spec.metamorphosis = find_specialization_spell( "Void Metamorphosis" );
+      spec.metamorphosis_buff = spec.metamorphosis->effectN( 1 ).trigger();
     default:
       break;
   }
 
   // Devourer Spells
   spec.devourer_demon_hunter = find_specialization_spell( "Devourer Demon Hunter" );
+  spec.consume = find_spell( 473662, DEMON_HUNTER_DEVOURER );
 
   // Havoc Spells
   spec.havoc_demon_hunter = find_specialization_spell( "Havoc Demon Hunter" );
@@ -8558,7 +8572,6 @@ void demon_hunter_t::init_spells()
       talent_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight, 442688 );
   hero_spec.thrill_of_the_fight_damage_buff_vengeance =
       talent_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight, 1227062 );
-  // TODO: MIDNIGHT - ADD DEVOURER
   switch ( specialization() )
   {
     case DEMON_HUNTER_HAVOC:
@@ -8568,6 +8581,7 @@ void demon_hunter_t::init_spells()
       hero_spec.thrill_of_the_fight_damage_buff = hero_spec.thrill_of_the_fight_damage_buff_vengeance;
       break;
     default:
+      hero_spec.thrill_of_the_fight_damage_buff = spell_data_t::not_found();
       break;
   }
 
@@ -8594,7 +8608,7 @@ void demon_hunter_t::init_spells()
     case DEMON_HUNTER_HAVOC:
       hero_spec.demonsurge_abilities = demonsurge_havoc_abilities;
       break;
-    case DEMON_HUNTER_VENGEANCE:
+    case DEMON_HUNTER_DEVOURER:
       hero_spec.demonsurge_abilities = demonsurge_vengeance_abilities;
       break;
     default:
@@ -8894,11 +8908,12 @@ role_e demon_hunter_t::primary_role() const
 
 std::string demon_hunter_t::default_flask() const
 {
-  // TODO: MIDNIGHT - ADD DEVOURER
   switch ( specialization() )
   {
     case DEMON_HUNTER_VENGEANCE:
       return demon_hunter_apl::flask_vengeance( this );
+    case DEMON_HUNTER_DEVOURER:
+      return demon_hunter_apl::flask_devourer( this );
     default:
       return demon_hunter_apl::flask_havoc( this );
   }
@@ -8915,11 +8930,12 @@ std::string demon_hunter_t::default_potion() const
 
 std::string demon_hunter_t::default_food() const
 {
-  // TODO: MIDNIGHT - ADD DEVOURER
   switch ( specialization() )
   {
     case DEMON_HUNTER_VENGEANCE:
       return demon_hunter_apl::food_vengeance( this );
+    case DEMON_HUNTER_DEVOURER:
+      return demon_hunter_apl::food_devourer( this );
     default:
       return demon_hunter_apl::food_havoc( this );
   }
@@ -8941,6 +8957,8 @@ std::string demon_hunter_t::default_temporary_enchant() const
   {
     case DEMON_HUNTER_VENGEANCE:
       return demon_hunter_apl::temporary_enchant_vengeance( this );
+    case DEMON_HUNTER_DEVOURER:
+      return demon_hunter_apl::temporary_enchant_devourer( this );
     default:
       return demon_hunter_apl::temporary_enchant_havoc( this );
   }
