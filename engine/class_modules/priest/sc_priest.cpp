@@ -277,13 +277,8 @@ public:
 
 struct mind_blast_t final : public mind_blast_base_t
 {
-  double mind_blast_insanity;
-
-  mind_blast_t( priest_t& p, util::string_view options_str )
-    : mind_blast_base_t( p, options_str, p.talents.mind_blast ),
-      mind_blast_insanity( p.specs.shadow_priest->effectN( 9 ).resource( RESOURCE_INSANITY ) )
+  mind_blast_t( priest_t& p, util::string_view options_str ) : mind_blast_base_t( p, options_str, p.talents.mind_blast )
   {
-    energize_amount = mind_blast_insanity;
   }
 
   // bool action_ready() override
