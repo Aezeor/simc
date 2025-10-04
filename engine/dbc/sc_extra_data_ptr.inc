@@ -126,7 +126,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Warrior TODO: 71-79
+  { // Warrior TODO: 1-79; 81-90
     // Agi = 0.69 of Primary
     // Int = 0.68 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -251,7 +251,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Paladin TODO: 71-79
+  { // Paladin TODO: 1-79; 81-90
     // Agi = 0.35 of Primary
     //    Str     Agi     Sta     Int     Spi
     {     17,      6,     62,     20,      0 },
@@ -375,7 +375,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Hunter
+  { // Hunter TODO: 1-79; 81-90
     // Str = 0.61 of Primary
     // Int = 0.82 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -500,7 +500,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Rogue TODO: 71-79
+  { // Rogue TODO: 1-79; 81-90
     // Str = 0.83 of Primary
     // Int = 0.68 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -583,7 +583,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {   7773,   9365,  42055,   6368,      0 },
     {   9630,  11603,  53685,   7890,      0 },
     {  11932,  14376,  68472,   9776,      0 },
-    {    132,    159,   2325,    108,      0 }, // 80
+    {     92,    132,   2325,    159,      0 }, // 80
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 },
@@ -625,7 +625,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Priest TODO: 71-79
+  { // Priest TODO: 1-79; 81-90
     // Str = 0.58 of Primary
     // Agi = 0.83 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -750,7 +750,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Death Knight TODO: 71-79
+  { // Death Knight TODO: 1-79; 81-90
     // Agi = 0.83 of Primary
     // Int = 0.54 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -875,7 +875,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Shaman
+  { // Shaman TODO: 1-79; 81-90
     // Str = 0.43 of Primary
     //    Str     Agi     Sta     Int     Spi
     {      7,     17,     50,     20,      0 },
@@ -999,7 +999,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Mage
+  { // Mage TODO: 1-79; 81-90
     // Str = 0.44 of Primary
     // Agi = 0.68 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -1124,7 +1124,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Warlock TODO: 71-79
+  { // Warlock TODO: 1-79; 81-90
     // Str = 0.38 of Primary
     // Agi = 0.77 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -1249,7 +1249,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Monk
+  { // Monk TODO: 1-79; 81-90
     // Str = 0.43 of Primary
     //    Str     Agi     Sta     Int     Spi
     {      7,     17,     62,     20,      0 },
@@ -1373,7 +1373,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Druid
+  { // Druid TODO: 1-79; 81-90
     // Str = 0.43 of Primary
     //    Str     Agi     Sta     Int     Spi
     {      7,     17,     62,     20,      0 },
@@ -1497,7 +1497,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Demon Hunter TODO: 71-79
+  { // Demon Hunter TODO: 1-79; 81-90
     // Str = 0.83 of Primary
     // Int = 0.68 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -1622,7 +1622,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Evoker
+  { // Evoker TODO: 1-79; 81-90
     // Str = 0.44 of Primary
     // Agi = 0.68 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -1843,12 +1843,12 @@ static double _ptr_gt_avoid_per_str_agi_by_level[120] =
   1/521.31082166, 1/549.70604345, 1/579.64809491, 1/611.22099661, 1/644.51371957, // 66-70
   1/798.55020760, 1/989.40076403, 1/1225.8638619, 1/1518.8409645, 1/1881.8383540, // 71-75
   1/2331.5905110, 1/2888.8320191, 1/3579.2530314, 1/4434.6805927, 1/49.081380402, // 76-80
-  1/5443.5962232, 1/5443.5962232, 1/5443.5962232, 1/5443.5962232, 1/5443.5962232, // 80-85
-  1/5443.5962232, 1/5443.5962232, 1/5443.5962232, 1/5443.5962232, 1/5443.5962232, // 85-90
-  1/5443.5962232, 1/5443.5962232, 1/5443.5962232, 1/5443.5962232, 1/5443.5962232, // 91-95
-  1/5443.5962232, 1/5443.5962232, 1/5443.5962232, 1/5443.5962232, 1/5443.5962232, // 96-100
-  1/5443.5962232, 1/5443.5962232, 1/5443.5962232, 1/5443.5962232, 1/5443.5962232, // 101-105
-  1/5443.5962232, 1/5443.5962232, 1/5443.5962232, 1/5443.5962232, 1/5443.5962232, // 106-110
-  1/5443.5962232, 1/5443.5962232, 1/5443.5962232, 1/5443.5962232, 1/5443.5962232, // 111-115
-  1/5443.5962232, 1/5443.5962232, 1/5443.5962232, 1/5443.5962232, 1/5443.5962232, // 116-120
+  1/49.081380402, 1/49.081380402, 1/49.081380402, 1/49.081380402, 1/49.081380402, // 80-85
+  1/49.081380402, 1/49.081380402, 1/49.081380402, 1/49.081380402, 1/49.081380402, // 85-90
+  1/49.081380402, 1/49.081380402, 1/49.081380402, 1/49.081380402, 1/49.081380402, // 91-95
+  1/49.081380402, 1/49.081380402, 1/49.081380402, 1/49.081380402, 1/49.081380402, // 96-100
+  1/49.081380402, 1/49.081380402, 1/49.081380402, 1/49.081380402, 1/49.081380402, // 101-105
+  1/49.081380402, 1/49.081380402, 1/49.081380402, 1/49.081380402, 1/49.081380402, // 106-110
+  1/49.081380402, 1/49.081380402, 1/49.081380402, 1/49.081380402, 1/49.081380402, // 111-115
+  1/49.081380402, 1/49.081380402, 1/49.081380402, 1/49.081380402, 1/49.081380402, // 116-120
 };
