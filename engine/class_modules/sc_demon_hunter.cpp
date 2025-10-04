@@ -659,6 +659,9 @@ public:
     const spell_data_t* sigil_of_misery;
     const spell_data_t* sigil_of_misery_debuff;
 
+    // Devourer
+    const spell_data_t* devourer_demon_hunter;
+
     // Havoc
     const spell_data_t* havoc_demon_hunter;
     const spell_data_t* annihilation;
@@ -8175,6 +8178,9 @@ void demon_hunter_t::init_spells()
     default:
       break;
   }
+
+  // Devourer Spells
+  spec.devourer_demon_hunter = find_specialization_spell( "Devourer Demon Hunter" );
 
   // Havoc Spells
   spec.havoc_demon_hunter = find_specialization_spell( "Havoc Demon Hunter" );
