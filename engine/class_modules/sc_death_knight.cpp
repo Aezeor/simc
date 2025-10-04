@@ -5296,6 +5296,17 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
     }
   }
 
+  double cost() const override
+  {
+    if ( !this->replacement_action )
+      return action_base_t::cost();
+
+    if ( this->always_replace || ( this->replacement_action_buff && this->replacement_action_buff->check() ) )
+      return this->replacement_action->cost();
+
+    return action_base_t::cost();
+  }
+
   bool ready() override
   {
     if ( !this->replacement_action )
@@ -5303,8 +5314,8 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
 
     if ( this->always_replace || ( this->replacement_action_buff && this->replacement_action_buff->check() ) )
       return this->replacement_action->ready();
-    else
-      return action_base_t::ready();
+
+    return action_base_t::ready();
   }
 
   void execute() override
@@ -8321,8 +8332,6 @@ struct death_coil_damage_base_t : public death_knight_spell_t
       reaping_hp( 0.0 ),
       reaping_mod( 0.0 )
   {
-    background = dual = true;
-
     if ( p->talent.unholy.coil_of_devastation.ok() )
     {
       coil_of_devastation = p->background_actions.coil_of_devastation;
@@ -8391,6 +8400,7 @@ struct necrotic_coil_physical_t final : public death_knight_spell_t
   necrotic_coil_physical_t( std::string_view name, death_knight_t* p )
     : death_knight_spell_t( name, p, p->spell.necrotic_coil_physical )
   {
+    background = true;
   }
 };
 
@@ -8399,6 +8409,7 @@ struct necrotic_coil_shadow_t final : public death_coil_damage_base_t
   necrotic_coil_shadow_t( std::string_view name, death_knight_t* p )
     : death_coil_damage_base_t( name, p, p->spell.necrotic_coil_shadow )
   {
+    background = true;
     execute_action = get_action<necrotic_coil_physical_t>( "necrotic_coil_physical", p );
   }
 };
@@ -8408,6 +8419,7 @@ struct death_coil_damage_t final : public death_coil_damage_base_t
   death_coil_damage_t( std::string_view name, death_knight_t* p )
     : death_coil_damage_base_t( name, p, p->spell.death_coil_damage )
   {
+    background = dual = true;
   }
 };
 
