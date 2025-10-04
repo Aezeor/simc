@@ -919,6 +919,7 @@ public:
     propagate_const<action_t*> epidemic_main;
     propagate_const<action_t*> infected_claws;
     propagate_const<action_t*> coil_of_devastation;
+    propagate_const<action_t*> virulent_plague_erupt;
   } background_actions;
 
   struct pet_summon_actions_t
@@ -968,6 +969,9 @@ public:
     propagate_const<gain_t*> rage_of_the_frozen_champion;
     propagate_const<gain_t*> runic_attenuation;
     propagate_const<gain_t*> runic_empowerment;
+
+    // Unholy
+    propagate_const<gain_t*> forbidden_knowledge;
 
     // Rider of the Apocalypse
     propagate_const<gain_t*> antimagic_shell_horsemen;  // RP from magic damage absorbed
@@ -1444,6 +1448,7 @@ public:
     const spell_data_t* necrotic_coil_physical;
     const spell_data_t* graveyard_action;
     const spell_data_t* graveyard_damage;
+    const spell_data_t* virulent_plague_erupt;
 
     // Unholy Summon Spells
     const spell_data_t* summon_gargoyle;
@@ -3266,7 +3271,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       {
         double dam = dk()->tick_damage_over_time( blightburst_dur, d );
         blightburst->execute_on_target( d->target, dam );
-        d->adjust_duration( -d->remains() );
+        d->adjust_duration( -blightburst_dur );
       }
     }
 
@@ -6799,13 +6804,13 @@ struct infected_claws_t final : public death_knight_disease_t
 };
 
 // Virulent Plague ====================================================
-struct virulent_eruption_t final : public death_knight_disease_t
+struct virulent_plague_erupt_t final : public death_knight_spell_t
 {
-  virulent_eruption_t( std::string_view n, death_knight_t* p )
-    : death_knight_disease_t( n, p, p->spell.virulent_erruption )
+  virulent_plague_erupt_t( std::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->spell.virulent_plague_erupt )
   {
-    split_aoe_damage = true;
-    aoe              = -1;
+    background = true;
+    may_miss = may_dodge = may_parry = false;
   }
 };
 
@@ -7609,7 +7614,7 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
     if ( p()->talent.unholy.forbidden_knowledge_2.ok() )
     {
       p()->resource_gain( RESOURCE_RUNIC_POWER,
-                          p()->spell.forbidden_knowledge_energize->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ), gain,
+                          p()->spell.forbidden_knowledge_energize->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ), p()->gains.forbidden_knowledge,
                           this );
       p()->buffs.lesser_ghoul_ready->trigger( as<int>( p()->talent.unholy.forbidden_knowledge_2->effectN( 2 ).base_value() ) );
     }
@@ -10633,6 +10638,7 @@ struct wound_spender_base_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::impact( state );
     auto td = get_td( state->target );
+    trigger_vp_effects( td );
 
     if ( p()->talent.rider.trollbanes_icy_fury.ok() && td->debuff.chains_of_ice_trollbane_slow->check() &&
          p()->pets.trollbane.active_pet() != nullptr )
@@ -10678,6 +10684,34 @@ struct wound_spender_base_t : public death_knight_melee_attack_t
     p()->trigger_sanlayn_execute_talents( this->data().id() == p()->spell.vampiric_strike->id() );
   }
 
+  void trigger_vp_effects( const death_knight_td_t* td )
+  {
+    if ( !td->dot.virulent_plague->is_ticking() )
+      return;
+
+    const dot_t* dot      = td->dot.virulent_plague;
+    action_state_t* state = dot->current_action->get_state( dot->state );
+    timespan_t dur        = dot->current_action->tick_time( state );
+    action_state_t::release( state );
+
+    if ( p()->talent.unholy.scourging.ok() )
+      dur += p()->talent.unholy.scourging->effectN( 1 ).time_value();
+
+    double mult = p()->talent.unholy.scourge_strike->effectN( 2 ).percent();
+    double dam  = p()->tick_damage_over_time( dur, td->dot.virulent_plague ) * mult;
+
+    p()->background_actions.virulent_plague_erupt->execute_on_target( td->target, dam );
+
+    for ( auto& target : p()->sim->target_non_sleeping_list )
+    {
+      if ( get_td( target )->dot.virulent_plague->is_ticking() )
+        continue;
+
+      td->dot.virulent_plague->copy( target, DOT_COPY_CLONE );
+      return;
+    }
+  }
+
 private:
   action_t* summon_ghoul;
 };
@@ -10712,6 +10746,8 @@ struct scourge_strike_t final : public wound_spender_base_t
       set_replacement_action( new vampiric_strike_unholy_t( "vampiric_strike", p ), p->buffs.vampiric_strike );
 
     p->pets.lesser_ghoul_fs.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+
+    add_child( p->background_actions.virulent_plague_erupt );
   }
 
   void execute() override
@@ -11685,6 +11721,15 @@ void death_knight_t::unholy_rp_impact_effects( action_state_t* state, bool sd, b
   if ( !state->action->result_is_hit( state->result ) )
     return;
 
+  death_knight_td_t* td     = get_target_data( state->target );
+  timespan_t extension_time = timespan_t::from_seconds( spec.death_coil->effectN( 3 ).base_value() );
+
+  if ( td->dot.dread_plague->is_ticking() )
+    td->dot.dread_plague->adjust_duration( extension_time );
+
+  if ( td->dot.virulent_plague->is_ticking() )
+    td->dot.virulent_plague->adjust_duration( extension_time );
+
   if ( sd )
     sudden_doom_impact_effects( state, coil );
 }
@@ -12238,8 +12283,10 @@ void death_knight_t::create_actions()
     {
       background_actions.outbreak_aoe      = get_action<outbreak_aoe_t>( "outbreak_aoe", this );
       background_actions.virulent_plague   = get_action<virulent_plague_t>( "virulent_plague", this );
-      background_actions.virulent_eruption = get_action<virulent_eruption_t>( "virulent_eruption", this );
     }
+
+    if( talent.unholy.scourge_strike.ok() )
+      background_actions.virulent_plague_erupt = get_action<virulent_plague_erupt_t>( "virulent_plague_erupt", this );
 
     if ( spec.epidemic->ok() )
       background_actions.epidemic_main = get_action<epidemic_damage_main_t>( "epidemic_main", this );
@@ -13304,6 +13351,7 @@ void death_knight_t::spell_lookups()
   spell.lesser_ghoul_buff               = conditional_spell_lookup( spec.festering_strike->ok(), 1255830 );
   spell.infected_claws_dot              = conditional_spell_lookup( talent.unholy.infected_claws.ok(), 1241786 );
   spell.infected_claws_driver           = conditional_spell_lookup( talent.unholy.infected_claws.ok(), 1241792 );
+  spell.virulent_plague_erupt          = conditional_spell_lookup( talent.unholy.outbreak.ok(), 1241167 );
   // Unholy Apex
   spell.forbidden_knowledge_buff     = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 1242223 );
   spell.forbidden_knowledge_energize = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 1256576 );
@@ -14217,6 +14265,7 @@ void death_knight_t::init_gains()
   gains.runic_empowerment           = get_gain( "Runic Empowerment" );
 
   // Unholy
+  gains.forbidden_knowledge = get_gain( "Forbidden Knowledge" );
 
   // Rider of the Apocalypse
   gains.antimagic_shell_horsemen = get_gain( "Antimagic Shell Horsemen" );
