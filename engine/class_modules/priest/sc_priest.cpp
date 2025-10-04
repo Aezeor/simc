@@ -2335,11 +2335,14 @@ void priest_t::create_procs()
       get_proc( "Power of the Dark Side from Dark Indulgence lost to overflow" );
   procs.expiation_lost_no_dot = get_proc( "Missed chance for expiation to consume a DoT" );
   // Shadow - Talents
-  procs.shadowy_apparition_vb          = get_proc( "Shadowy Apparition from Void Bolt" );
   procs.shadowy_apparition_swp         = get_proc( "Shadowy Apparition from Shadow Word: Pain" );
   procs.shadowy_apparition_swm         = get_proc( "Shadowy Apparition from Shadow Word: Madness" );
   procs.shadowy_apparition_mb          = get_proc( "Shadowy Apparition from Mind Blast" );
   procs.shadowy_apparition_mfi         = get_proc( "Shadowy Apparition from Mind Flay: Insanity" );
+  procs.shadowy_apparition_yshaarj     = get_proc( "Shadowy Apparition from Idol of Y'Shaarj" );
+  procs.shadowy_apparition_nzoth       = get_proc( "Shadowy Apparition from Idol of N'Zoth" );
+  procs.shadowy_apparition_yogg        = get_proc( "Shadowy Apparition from Idol of Yogg-Saron" );
+  procs.shadowy_apparition_cthun       = get_proc( "Shadowy Apparition from Idol of C'Thun" );
   procs.mind_devourer                  = get_proc( "Mind Devourer free Shadow Word: Madness proc" );
   procs.void_tendril                   = get_proc( "Void Tendril proc from Idol of C'Thun" );
   procs.void_lasher                    = get_proc( "Void Lasher proc from Idol of C'Thun" );
@@ -3970,6 +3973,11 @@ void priest_t::trigger_idol_of_cthun( action_state_t* s )
   if ( rppm.idol_of_cthun->trigger() )
   {
     spawn_idol_of_cthun( s );
+
+    if ( talents.shadow.void_apparitions_1.enabled() )
+    {
+      trigger_shadowy_apparitions( procs.shadowy_apparition_cthun );
+    }
   }
 }
 

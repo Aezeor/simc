@@ -2103,7 +2103,9 @@ void priest_t::init_spells_shadow()
   talents.shadow.idol_of_yoggsaron      = ST( "Idol of Yogg-Saron" );
   talents.shadow.idol_of_cthun          = ST( "Idol of C'Thun" );
   // Apex
-  talents.shadow.void_apparitions = ST( "Void Apparitions" );  // NYI
+  talents.shadow.void_apparitions_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1264096 );
+  talents.shadow.void_apparitions_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1264104 );  // NYI
+  talents.shadow.void_apparitions_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1264107 );  // NYI
 
   // General Spells
   specs.mind_flay      = find_specialization_spell( "Mind Flay" );
@@ -2391,6 +2393,10 @@ void priest_t::trigger_idol_of_nzoth( player_t* target, int stacks )
     {
       background_actions.horrific_vision->execute_on_target( target );
       buffs.horrific_vision->trigger();
+      if ( talents.shadow.void_apparitions_1.enabled() )
+      {
+        trigger_shadowy_apparitions( procs.shadowy_apparition_nzoth );
+      }
     }
     else if ( current_stacks < vision_of_nzoth_threshold && new_stacks >= vision_of_nzoth_threshold )
     {
@@ -2399,6 +2405,11 @@ void priest_t::trigger_idol_of_nzoth( player_t* target, int stacks )
 
       background_actions.vision_of_nzoth->execute_on_target( target );
       buffs.vision_of_nzoth->trigger();
+
+      if ( talents.shadow.void_apparitions_1.enabled() )
+      {
+        trigger_shadowy_apparitions( procs.shadowy_apparition_nzoth );
+      }
 
       int leftover_stacks = new_stacks - vision_of_nzoth_threshold;
       if ( leftover_stacks > 0 )
@@ -2416,6 +2427,11 @@ void priest_t::trigger_idol_of_nzoth( player_t* target, int stacks )
 void priest_t::spawn_thing_from_beyond()
 {
   pets.thing_from_beyond.spawn();
+
+  if ( talents.shadow.void_apparitions_1.enabled() )
+  {
+    trigger_shadowy_apparitions( procs.shadowy_apparition_yogg );
+  }
 }
 
 }  // namespace priestspace

@@ -386,7 +386,9 @@ public:
       player_talent_t idol_of_yoggsaron;
       player_talent_t idol_of_cthun;
       // Apex
-      player_talent_t void_apparitions;
+      player_talent_t void_apparitions_1;
+      player_talent_t void_apparitions_2;
+      player_talent_t void_apparitions_3;
     } shadow;
 
     struct
@@ -727,11 +729,14 @@ public:
     propagate_const<proc_t*> power_of_the_dark_side_dark_indulgence_overflow;
     propagate_const<proc_t*> expiation_lost_no_dot;
     // Shadow
-    propagate_const<proc_t*> shadowy_apparition_vb;
     propagate_const<proc_t*> shadowy_apparition_swp;
     propagate_const<proc_t*> shadowy_apparition_swm;
     propagate_const<proc_t*> shadowy_apparition_mb;
     propagate_const<proc_t*> shadowy_apparition_mfi;
+    propagate_const<proc_t*> shadowy_apparition_yshaarj;
+    propagate_const<proc_t*> shadowy_apparition_nzoth;
+    propagate_const<proc_t*> shadowy_apparition_yogg;
+    propagate_const<proc_t*> shadowy_apparition_cthun;
     propagate_const<proc_t*> mind_devourer;
     propagate_const<proc_t*> void_tendril;
     propagate_const<proc_t*> void_lasher;
@@ -1538,6 +1543,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
         if ( priest().rppm.idol_of_yshaarj->trigger() )
         {
           priest().buffs.call_of_the_void->trigger();
+
+          if ( priest().talents.shadow.void_apparitions_1.enabled() )
+          {
+            priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_yshaarj );
+          }
         }
       }
     }
