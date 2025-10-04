@@ -7606,7 +7606,7 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
       if ( p()->talent.unholy.raise_abomination.ok() )
         abomination_dur -= timespan_t::from_seconds( precombat_time );
 
-      if ( p()->talent.unholy.summon_gargoyle.ok() )\
+      if ( p()->talent.unholy.summon_gargoyle.ok() )
         gargoyle_dur -= timespan_t::from_seconds( precombat_time );
 
       // Adjust the cooldown based on the precombat time
