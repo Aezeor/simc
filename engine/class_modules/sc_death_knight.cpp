@@ -6747,6 +6747,8 @@ struct dread_plague_t final : public death_knight_disease_t
     if ( p->talent.unholy.sudden_doom.ok() )
       sd_chance = p->pseudo_random_c_from_p( p->talent.unholy.sudden_doom->effectN( 2 ).percent() *
                                              ( 1 + p->talent.unholy.harbinger_of_doom->effectN( 2 ).percent() ) );
+
+    add_child( p->background_actions.rapid_variant );
   }
 
   void tick( dot_t* d ) override
