@@ -11983,16 +11983,24 @@ void death_knight_t::start_unholy_aura()
   timespan_t first  = timespan_t::from_millis( rng().range( 0, as<int>( period.total_millis() ) ) );
 
   make_event( *sim, first, [ this, period ]() {
-    if ( active_lesser_ghouls.empty() )
+    int ghouls = active_lesser_ghouls.size();
+    int diff   = ghouls - buffs.lesser_ghoul_mastery->check();
+
+    if ( diff == 0 )
       return;
 
-    int ghouls = active_lesser_ghouls.size();
-
-    if ( !buffs.lesser_ghoul_mastery->up() )
-      buffs.lesser_ghoul_mastery->trigger( ghouls );
+    if ( diff > 0 )
+      buffs.lesser_ghoul_mastery->trigger( diff );
     else
-    {
-      int diff = ghouls - buffs.lesser_ghoul_mastery->check();
+      buffs.lesser_ghoul_mastery->decrement( diff );
+
+    make_repeating_event( *sim, period, [ this ]() {
+      if ( active_lesser_ghouls.empty() )
+        return;
+
+      int ghouls = active_lesser_ghouls.size();
+      int stacks = buffs.lesser_ghoul_mastery->check();
+      int diff   = ghouls - stacks;
 
       if ( diff == 0 )
         return;
@@ -12001,29 +12009,6 @@ void death_knight_t::start_unholy_aura()
         buffs.lesser_ghoul_mastery->trigger( diff );
       else
         buffs.lesser_ghoul_mastery->decrement( diff );
-    }
-
-    make_repeating_event( *sim, period, [ this ]() {
-      if ( active_lesser_ghouls.empty() )
-        return;
-
-      int ghouls = active_lesser_ghouls.size();
-
-      if ( !buffs.lesser_ghoul_mastery->up() )
-        buffs.lesser_ghoul_mastery->trigger( ghouls );
-      else
-      {
-        int stacks = buffs.lesser_ghoul_mastery->check();
-        int diff = ghouls - stacks;
-
-        if ( diff == 0 )
-          return;
-
-        if ( diff > 0 )
-          buffs.lesser_ghoul_mastery->trigger( diff );
-        else
-          buffs.lesser_ghoul_mastery->decrement( diff );
-      }
     } );
   } );
 }
