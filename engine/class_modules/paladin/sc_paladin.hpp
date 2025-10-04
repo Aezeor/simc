@@ -467,6 +467,8 @@ public:
     const spell_data_t* crusade;
     const spell_data_t* sentinel;
 
+    const spell_data_t* consecration_buff;
+
     struct
     {
       const spell_data_t* holy_bulwark;

@@ -3559,7 +3559,7 @@ struct incarnation_bear_buff_t final : public berserk_bear_buff_base_t
 
   incarnation_bear_buff_t( druid_t* p )
     : berserk_bear_buff_base_t( p, "incarnation_guardian_of_ursoc", p->spec.incarnation_bear ),
-      inc_mul( 1.0 + find_effect( p->spec.incarnation_bear, A_MOD_INCREASE_HEALTH_PERCENT ).percent() )
+      inc_mul( 1.0 + find_effect( p->spec.incarnation_bear, A_INCREASE_HEALTH_PCT ).percent() )
   {}
 
   void start( int s, double v, timespan_t d ) override
@@ -11450,11 +11450,7 @@ void druid_t::init_spells()
   parse_all_passive_sets();
 
   parse_passive_effects( spec.ashamanes_guidance );
-  parse_passive_effects( spec.astral_power );
-  parse_passive_effects( spec.bear_form_2 );
   parse_passive_effects( spec.cenarius_guidance );
-  parse_passive_effects( spec.moonfire_2 );
-  parse_passive_effects( spec.ursine_adept );
 }
 
 // druid_t::init_items ======================================================
@@ -11499,7 +11495,7 @@ void druid_t::init_base_stats()
     find_effect( talent.fount_of_strength, A_MOD_MAX_RESOURCE, POWER_ENERGY ).resource();
 
   resources.base_multiplier[ RESOURCE_MANA ] = 1.0 +
-    find_effect( talent.expansiveness, A_MOD_MANA_POOL_PCT ).percent();
+    find_effect( talent.expansiveness, A_MOD_MAX_RESOURCE_PCT ).percent();
 
   // only intially activate required resources. others will be dynamically activated depending on apl
   for ( auto r = RESOURCE_HEALTH; r < RESOURCE_MAX; r++ )

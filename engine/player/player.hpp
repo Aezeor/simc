@@ -974,10 +974,10 @@ private:
   std::unique_ptr<dbc_override_t> dbc_override_;
   struct modified_value_t
   {
-    unsigned id;
+    int id;
     int field_id;
     double orig, flat, pct;
-    modified_value_t( unsigned id, int field_id, double orig, double flat = 0.0, double pct = 1.0 )
+    modified_value_t( int id, int field_id, double orig, double flat = 0.0, double pct = 1.0 )
       : id( id ), field_id( field_id ), orig( orig ), flat( flat ), pct( pct )
     {}
 
@@ -986,6 +986,7 @@ private:
   std::vector<modified_value_t> passive_spell_modifiers_;
   std::vector<modified_value_t> passive_power_modifiers_;
   std::vector<modified_value_t> passive_effect_modifiers_;
+  // for player modifiers, id=field_type, field_id=misc_type, orig=0
   std::vector<modified_value_t> passive_player_modifiers_;
   std::vector<unsigned> registered_passive_spells_;
   std::vector<unsigned> deregistered_passive_spells_;
@@ -993,7 +994,7 @@ private:
   std::vector<std::pair<unsigned, std::vector<int>>> registered_affected_spell_list_;
 
   std::pair<modified_value_t, const modified_value_t&> add_passive_effect_modifier(
-    std::vector<modified_value_t>&, unsigned id, int field_id,
+    std::vector<modified_value_t>&, int id, int field_id,
     double orig_val, double flat_val, double pct_val );
   bool register_passive_effect( const spelleffect_data_t&, bool remove = false );
 
@@ -1016,10 +1017,12 @@ public:
   std::vector<std::string> _tmp_registered_passive_printout_tmp_;
   bool disable_class_spell_auto_cloning;
 
- // return { orig, flat, pct }
+  // return { orig, flat, pct }
   std::array<double, 3> get_passive_value( const spell_data_t&, std::string_view field, double mul = 1.0 ) const;
   std::array<double, 3> get_passive_value( const spellpower_data_t&, std::string_view field ) const;
   std::array<double, 3> get_passive_value( const spelleffect_data_t&, std::string_view field ) const;
+  // returns modified value, base_val if no modifications exist
+  double get_passive_player_value( double base_val, std::string_view field, int misc_type = 0 ) const;
   // clone a spell into the override dbc
   static const spell_data_t* clone_dbc_override_spell( const player_t* p, const spell_data_t* s );
 

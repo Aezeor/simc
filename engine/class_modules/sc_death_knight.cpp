@@ -13230,12 +13230,12 @@ void death_knight_t::init_spells()
     specialization() == DEATH_KNIGHT_BLOOD ? effect_mask_t( true ).disable( 1, 4, 7 )
                                            : effect_mask_t( true ).disable( 2, 5, 8 ) );
 
+  if ( main_hand_weapon.group() != WEAPON_2H )
+    deregister_passive_effects( spec.might_of_the_frozen_wastes );
+
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
-
-  if ( main_hand_weapon.group() == WEAPON_2H )
-    parse_passive_effects( spec.might_of_the_frozen_wastes );
 
   if ( talent.unholy.clawing_shadows.ok() )
     parse_passive_effects( spell.vampiric_strike_clawing_shadows );

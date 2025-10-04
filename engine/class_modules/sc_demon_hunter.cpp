@@ -7131,7 +7131,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
         add_invalidate( CACHE_LEECH );
         break;
       case DEMON_HUNTER_VENGEANCE:
-        set_default_value_from_effect_type( A_MOD_INCREASE_HEALTH_PERCENT );
+        set_default_value_from_effect_type( A_INCREASE_HEALTH_PCT );
         add_invalidate( CACHE_ARMOR );
         break;
       default:
@@ -8389,7 +8389,7 @@ void demon_hunter_t::init_spells()
   // Specialization =========================================================
 
   // General Passives
-  spell.all_demon_hunter       = dbc::get_class_passive( *this, SPEC_NONE );
+  spell.all_demon_hunter       = find_spell( dbc::get_class_aura_id( DEMON_HUNTER ) );
   spell.chaos_brand            = find_spell( 1490 );
   spell.critical_strikes       = find_spell( 221351 );
   spell.leather_specialization = find_specialization_spell( "Leather Specialization" );
@@ -8951,9 +8951,6 @@ void demon_hunter_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
-
-  parse_passive_effects( spec.immolation_aura_3 );
-  parse_passive_effects( spec.immolation_aura_cdr );
 
   // Spell Initialization ===================================================
 

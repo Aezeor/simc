@@ -3061,10 +3061,10 @@ void priest_t::init_spells()
   specs.vampiric_embrace  = find_specialization_spell( "Vampiric Embrace" );
 
   // Class passives
-  specs.priest            = dbc::get_class_passive( *this, SPEC_NONE );
-  specs.holy_priest       = dbc::get_class_passive( *this, PRIEST_HOLY );
-  specs.discipline_priest = dbc::get_class_passive( *this, PRIEST_DISCIPLINE );
-  specs.shadow_priest     = dbc::get_class_passive( *this, PRIEST_SHADOW );
+  specs.priest            = find_spell( dbc::get_class_aura_id( PRIEST ) );
+  specs.holy_priest       = find_specialization_spell( "Holy Priest" );
+  specs.discipline_priest = find_specialization_spell( "Discipline Priest" );
+  specs.shadow_priest     = find_specialization_spell( "Shadow Priest" );
 
   // DoT Spells
   dot_spells.shadow_word_pain    = find_class_spell( "Shadow Word: Pain" );

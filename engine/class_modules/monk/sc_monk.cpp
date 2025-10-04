@@ -7352,8 +7352,6 @@ void monk_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
-
-  parse_passive_effects( baseline.windwalker.blackout_kick_rank_2 );
 }
 
 void monk_t::init_background_actions()

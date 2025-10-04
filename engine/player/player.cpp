@@ -1487,24 +1487,10 @@ void player_t::init_base_stats()
     resources.base[ RESOURCE_HEALTH ] = dbc->health_base( type, level() );
     resources.base[ RESOURCE_MANA ]   = dbc->resource_base( type, level() );
 
+    resources.base_multiplier[ RESOURCE_MANA ] = get_passive_player_value( 1.0, "mana_multiplier" );
     // 1% of base mana as mana regen per second for all classes.
-    resources.base_regen_per_second[ RESOURCE_MANA ] = dbc->resource_base( type, level() ) * 0.01;
-
-    // Automatically parse mana regen and max mana modifiers from class passives.
-    for ( auto spell : dbc::class_passives( this ) )
-    {
-      for ( const spelleffect_data_t& effect : spell->effects() )
-      {
-        if ( effect.subtype() == A_MOD_MANA_REGEN_PCT )
-        {
-          resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + effect.percent();
-        }
-        if ( effect.subtype() == A_MOD_MAX_MANA_PCT || effect.subtype() == A_MOD_MANA_POOL_PCT )
-        {
-          resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + effect.percent();
-        }
-      }
-    }
+    resources.base_regen_per_second[ RESOURCE_MANA ] =
+      get_passive_player_value( dbc->resource_base( type, level() ) * 0.01, "mana_regen" );
 
     base.health_per_stamina = dbc->health_per_stamina( level() );
 
@@ -15030,12 +15016,16 @@ Since modifications are directly made onto the DBC (or pre-registered) it's not 
 construction to parse, but it is recommended you wait until various named class module spell_t pointer structs are
 populated by the end of `init_spells()`.
 
-player_t::get_passive_value( const spell_data_t&, string )
-player_t::get_passive_value( const spelleffect_data_t&, string )
-player_t::get_passive_value( const spellpower_data_t&, string )
+player_t::get_passive_value( const spell_data_t&, field )
+player_t::get_passive_value( const spelleffect_data_t&, field )
+player_t::get_passive_value( const spellpower_data_t&, field )
 These are used to get the final modified value from the modified DBC for the stat specified. Stat strings can be found
 in `field_type_map` in player.cpp. A 3-value array will be returned, representing `{ original, flat add, pct mult }`.
 Variables of type `parsed_value_t<T>` can directly be assigned this array.
+
+player_t::get_passive_player_value( base value, field[, misc type = 0]) will return player stat values. If no
+modifications exist, base value will be returns. Otherwise the modified value will be returned. Some player stat
+modifying effects have an associate misc type (such as resources) which can be passed as an optional argument.
 
 player_t::parse_all_class_passives() will automatically parse all class/spec auras, including additional ones added
 beyond the first. The table of auras can be found in `_class_passives` in `sc_const_data.cpp`.
@@ -15095,8 +15085,10 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { P_MAX_STACKS,                 "max_stack"         },  // 37
   { P_PROC_COOLDOWN,              "internal_cooldown" },  // 38
   { P_MAX_TARGETS,                "max_targets"       },  // 40
+  { A_MOD_MAX_MANA_PCT,           "max_mana"          },  // 178
   { A_MODIFY_SCHOOL,              "school"            },  // 220
   { A_MODIFY_CATEGORY_COOLDOWN,   "category_cooldown" },  // 341
+  { A_MOD_MANA_REGEN_PCT,         "mana_regen"        },  // 379
   { A_MOD_MAX_CHARGES,            "charges"           },  // 411
   { A_HASTED_COOLDOWN,            "hasted_cooldown"   },  // 416
   { A_HASTED_GCD,                 "hasted_gcd"        },  // 417
@@ -15176,6 +15168,23 @@ std::array<double, 3> player_t::get_passive_value( const spelleffect_data_t& eff
     return { it->orig, it->flat, it->pct };
 }
 
+double player_t::get_passive_player_value( double base_val, std::string_view field, int misc_type  ) const
+{
+  assert( !is_pet() || get_owner_or_self() != this );
+  if ( is_pet() )
+    return get_owner_or_self()->get_passive_player_value( base_val, field, misc_type );
+
+  auto id_type = get_type_from_field( field );
+
+  auto it = range::find_if( passive_player_modifiers_, [ id_type, misc_type ]( const auto& mod ) {
+    return mod.id == id_type && mod.field_id == misc_type;
+  } );
+  if ( it == passive_player_modifiers_.end() )
+    return base_val;
+  else
+    return ( base_val + it->flat ) * it->pct;
+}
+
 std::vector<const spell_data_t*> player_t::spells_affected_by_passive( const spelleffect_data_t& eff, bool& prop ) const
 {
   std::vector<const spell_data_t*> affected_spells;
@@ -15234,7 +15243,7 @@ std::vector<const spell_data_t*> player_t::spells_affected_by_passive( const spe
 }
 
 std::pair<player_t::modified_value_t, const player_t::modified_value_t&> player_t::add_passive_effect_modifier(
-  std::vector<player_t::modified_value_t>& modifiers, unsigned id, int field_id,
+  std::vector<player_t::modified_value_t>& modifiers, int id, int field_id,
   double orig_val, double flat_val, double pct_val )
 {
   auto it = range::find_if( modifiers, [ id, field_id ]( const auto& mod ) {
@@ -15264,7 +15273,51 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
   // find all affected spells
   auto affected_spells = spells_affected_by_passive( modifying_eff, property );
   if ( affected_spells.empty() )
-    return false;
+  {
+    // check player affecting subtypes
+    auto misc_type = modifying_eff.misc_value1();
+    std::string_view field;
+    double flat_val = 0.0;
+    double pct_val = 0.0;
+
+    switch ( modifying_eff.subtype() )
+    {
+      case A_INCREASE_RESOURCE_PCT:
+      case A_MOD_MAX_RESOURCE_PCT:
+        if ( misc_type != POWER_MANA )
+          return false;
+        SC_FALLTHROUGH;
+      case A_MOD_MAX_MANA_PCT:
+        field = "max_mana";
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_MANA_REGEN_PCT:
+        field = "mana_regen";
+        pct_val = modifying_eff.percent();
+        break;
+      default:
+        return false;
+    }
+
+    if ( remove )
+    {
+      flat_val = -flat_val;
+      pct_val = 1.0 / ( 1.0 + pct_val ) - 1.0;
+    }
+
+    auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( field ),
+                                                      misc_type, 0, flat_val, pct_val );
+
+    std::string _tmp_full_message_tmp_ = fmt::format(
+      "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
+      modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
+      remove ? "reverting" : "modifying", *this, field, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%",
+      now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat, now.pct * 100 );
+    sim->print_debug( "{}", _tmp_full_message_tmp_ );
+    _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
+
+    return true;
+  }
 
   for ( auto spell_ : affected_spells )
   {
@@ -15677,11 +15730,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         // re-register if necessary
         if ( deregister )
         {
-          if ( sim->debug )
-          {
-            sim->print_debug( "Re-register {} ({}) eff#{}", eff->spell()->name_cstr(), eff->spell()->id(),
-                              eff->index() + 1 );
-          }
+          sim->print_debug( "Re-register {} ({}) eff#{}", eff->spell()->name_cstr(), eff->spell()->id(),
+                            eff->index() + 1 );
 
           register_passive_effect( *eff );
         }
@@ -15699,21 +15749,13 @@ void player_t::parse_passive_effects( const spell_data_t* spell, bool force )
 
   if ( range::contains( registered_passive_spells_, spell->id() ) && !force )
   {
-    if ( sim->debug )
-    {
-      sim->print_debug( "Unable to register {} ({}), spell already registered.", spell->name_cstr(),
-                        spell->id() );
-    }
+    sim->error( "Unable to register {} ({}), spell already registered.", spell->name_cstr(), spell->id() );
     return;
   }
 
   if ( range::contains( deregistered_passive_spells_, spell->id() ) && !force )
   {
-    if ( sim->debug )
-    {
-      sim->print_debug( "Unable to register {} ({}), spell has been de-registered.", spell->name_cstr(),
-                        spell->id() );
-    }
+    sim->print_debug( "Unable to register {} ({}), spell has been de-registered.", spell->name_cstr(), spell->id() );
     return;
   }
 
@@ -15748,11 +15790,8 @@ void player_t::deregister_passive_effects( const spell_data_t* spell )
   if ( !spell || !spell->ok() || range::contains( deregistered_passive_spells_, spell->id() ) )
     return;
 
-  if ( sim->debug )
-  {
-    sim->print_debug( "De-registering {} ({}), all future parsing on this spell blocked.", spell->name_cstr(),
-                      spell->id() );
-  }
+  sim->print_debug( "De-registering {} ({}), all future parsing on this spell blocked.", spell->name_cstr(),
+                    spell->id() );
 
   deregistered_passive_spells_.push_back( spell->id() );
 
@@ -15798,8 +15837,17 @@ const spell_data_t* player_t::clone_dbc_override_spell( const player_t* p, const
 
 void player_t::parse_all_class_passives()
 {
-  for ( auto spell : dbc::class_passives( this ) )
-    parse_passive_effects( spell );
+  parse_passive_effects( find_spell( dbc::get_class_aura_id( type ) ) );
+
+  for ( const auto& spec_spell : specialization_spell_entry_t::data( dbc->ptr ) )
+  {
+    if ( spec_spell.specialization_id == static_cast<unsigned>( specialization() ) )
+    {
+      auto spell = find_spell( spec_spell.spell_id );
+      if ( spell->flags( SX_PASSIVE ) )
+        parse_passive_effects( find_spell( spec_spell.spell_id ) );
+    }
+  }
 }
 
 void player_t::parse_all_passive_talents()
@@ -15853,9 +15901,7 @@ void player_t::register_passive_effect_mask( const spell_data_t* spell, uint32_t
 
       if ( deregister )
       {
-        if ( sim->debug )
-          sim->print_debug( "De-register {} ({}) eff#{}", spell->name_cstr(), spell->id(), eff.index() + 1 );
-
+        sim->print_debug( "De-register {} ({}) eff#{}", spell->name_cstr(), spell->id(), eff.index() + 1 );
         register_passive_effect( eff, true );
       }
     }
@@ -15909,9 +15955,7 @@ void player_t::register_passive_affect_list( const spell_data_t* spell, const af
       {
         if ( deregister )
         {
-          if ( sim->debug )
-            sim->print_debug( "De-register {} ({}) eff#{}", spell->name_cstr(), spell->id(), idx );
-
+          sim->print_debug( "De-register {} ({}) eff#{}", spell->name_cstr(), spell->id(), idx );
           register_passive_effect( eff, true );
         }
 
@@ -15919,9 +15963,7 @@ void player_t::register_passive_affect_list( const spell_data_t* spell, const af
 
         if ( deregister )
         {
-          if ( sim->debug )
-            sim->print_debug( "Re-register {} ({}) eff#{}", spell->name_cstr(), spell->id(), idx );
-
+          sim->print_debug( "Re-register {} ({}) eff#{}", spell->name_cstr(), spell->id(), idx );
           register_passive_effect( eff );
         }
       }

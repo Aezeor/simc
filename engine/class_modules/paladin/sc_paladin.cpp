@@ -4636,8 +4636,6 @@ void paladin_t::init_spells()
   parse_all_passive_talents();
   parse_all_passive_sets();
 
-  parse_passive_effects( spec.consecration_3 );
-  parse_passive_effects( spec.improved_crusader_strike );
   parse_passive_effects( spells.judgment_2 );
 }
 
