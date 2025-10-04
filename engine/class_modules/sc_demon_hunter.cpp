@@ -8669,18 +8669,21 @@ void demon_hunter_t::init_spells()
   using namespace actions::spells;
   using namespace actions::heals;
 
-  active.consume_soul_greater =
+  if (specialization() != DEMON_HUNTER_DEVOURER)
+  {
+    active.consume_soul_greater =
       new consume_soul_t( this, "consume_soul_greater", spec.consume_soul_greater, soul_fragment::GREATER );
-  active.consume_soul_lesser =
-      new consume_soul_t( this, "consume_soul_lesser", spec.consume_soul_lesser, soul_fragment::LESSER );
-  active.consume_soul_greater_demon =
-      new consume_soul_t( this, "consume_soul_greater_demon", spec.consume_soul_greater, soul_fragment::GREATER_DEMON );
-  active.consume_soul_empowered_demon = new consume_soul_t( this, "consume_soul_empowered_demon",
-                                                            spec.consume_soul_greater, soul_fragment::EMPOWERED_DEMON );
-  active.consume_soul_greater_heal =
-      new consume_soul_heal_t( this, "consume_soul_greater_heal", spec.consume_soul_greater, soul_fragment::GREATER );
-  active.consume_soul_lesser_heal =
-      new consume_soul_heal_t( this, "consume_soul_lesser_heal", spec.consume_soul_lesser, soul_fragment::LESSER );
+    active.consume_soul_lesser =
+        new consume_soul_t( this, "consume_soul_lesser", spec.consume_soul_lesser, soul_fragment::LESSER );
+    active.consume_soul_greater_demon =
+        new consume_soul_t( this, "consume_soul_greater_demon", spec.consume_soul_greater, soul_fragment::GREATER_DEMON );
+    active.consume_soul_empowered_demon = new consume_soul_t( this, "consume_soul_empowered_demon",
+                                                              spec.consume_soul_greater, soul_fragment::EMPOWERED_DEMON );
+    active.consume_soul_greater_heal =
+        new consume_soul_heal_t( this, "consume_soul_greater_heal", spec.consume_soul_greater, soul_fragment::GREATER );
+    active.consume_soul_lesser_heal =
+        new consume_soul_heal_t( this, "consume_soul_lesser_heal", spec.consume_soul_lesser, soul_fragment::LESSER );
+  }
 
   active.burning_wound = get_background_action<burning_wound_t>( "burning_wound" );
 
