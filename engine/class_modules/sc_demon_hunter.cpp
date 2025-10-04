@@ -774,29 +774,8 @@ public:
   // Set Bonus effects
   struct set_bonuses_t
   {
-    const spell_data_t* tww1_havoc_2pc;
-    const spell_data_t* tww1_havoc_4pc;
-    const spell_data_t* tww1_vengeance_2pc;
-    const spell_data_t* tww1_vengeance_4pc;
-    const spell_data_t* tww2_havoc_2pc;
-    const spell_data_t* tww2_havoc_4pc;
-    const spell_data_t* tww2_vengeance_2pc;
-    const spell_data_t* tww2_vengeance_4pc;
-    const spell_data_t* tww3_aldrachi_2pc;
-    const spell_data_t* tww3_aldrachi_4pc;
-    const spell_data_t* tww3_felscarred_2pc;
-    const spell_data_t* tww3_felscarred_4pc;
 
     // Auxilliary
-    const spell_data_t* tww1_havoc_4pc_buff;
-    const spell_data_t* tww1_vengeance_4pc_buff;
-    const spell_data_t* winning_streak_residual_buff;
-    const spell_data_t* necessary_sacrifice_buff;
-    const spell_data_t* demon_soul_havoc_buff;
-    const spell_data_t* demon_soul_vengeance_buff;
-    const spell_data_t* demon_soul_buff;
-    const spell_data_t* scarred_strikes;
-    const spell_data_t* demonsurge_meta_trigger;
   } set_bonuses;
 
   // Mastery Spells
@@ -1173,37 +1152,6 @@ public:
 
 private:
   target_specific_t<demon_hunter_td_t> _target_data;
-};
-
-struct winning_streak_conversion_event_t : public event_t
-{
-  demon_hunter_t& dh;
-  winning_streak_conversion_event_t( demon_hunter_t* p, timespan_t delay ) : event_t( *p->sim, delay ), dh( *p )
-  {
-  }
-  const char* name() const override
-  {
-    return "winning_streak_conversion";
-  }
-
-  void execute() override
-  {
-    int residual_stacks = dh.buff.winning_streak_residual->stack();
-    int new_stacks      = dh.buff.winning_streak->stack();
-    dh.buff.winning_streak->expire();
-    dh.proc.winning_streak_drop_from_tww2_havoc_2pc->occur();
-
-    if ( new_stacks >= residual_stacks )
-    {
-      dh.buff.winning_streak_residual->expire();
-      dh.buff.winning_streak_residual->trigger( new_stacks + residual_stacks );
-    }
-    else
-    {
-      dh.proc.winning_streak_drop_wasted_from_tww2_havoc_2pc->occur();
-    }
-    dh.winning_streak_conversion_event = nullptr;
-  }
 };
 
 // Delayed Execute Event ====================================================
@@ -2411,37 +2359,6 @@ struct unbound_chaos_trigger_t : public BASE
     if ( can_trigger_unbound_chaos() )
     {
       BASE::p()->buff.unbound_chaos->trigger();
-    }
-  }
-};
-
-template <typename BASE>
-struct winning_streak_removal_trigger_t : public BASE
-{
-  using base_t = winning_streak_removal_trigger_t<BASE>;
-
-  timespan_t winning_streak_removal_delay;
-
-  winning_streak_removal_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
-    : BASE( n, p, s, o ), winning_streak_removal_delay( 0_ms )
-  {
-  }
-
-  void execute() override
-  {
-    BASE::execute();
-
-    if ( BASE::p()->set_bonuses.tww2_havoc_2pc->ok() && BASE::p()->buff.winning_streak->up() &&
-         BASE::rng().roll( BASE::p()->set_bonuses.tww2_havoc_2pc->effectN( 1 ).percent() ) )
-    {
-      // 2025-02-08 -- Winning Streak! residual keeps the highest value of stacks and won't refresh if the stacks on
-      //               the non-residual version are less than the stacks on the residual version.
-
-      // 2025-04-13 -- Winning Streak! removal seems to only happen after the triggering spell has finished dealing all
-      //               damage
-      event_t::cancel( BASE::p()->winning_streak_conversion_event );
-      BASE::p()->winning_streak_conversion_event =
-          make_event<winning_streak_conversion_event_t>( *BASE::sim, BASE::p(), winning_streak_removal_delay );
     }
   }
 };
@@ -4110,13 +4027,6 @@ struct metamorphosis_t : public demon_hunter_spell_t
       default:
         break;
     }
-
-    if ( p()->set_bonuses.tww3_felscarred_4pc->ok() )
-    {
-      p()->trigger_demonsurge(
-          demonsurge_ability::ENTER_META,
-          timespan_t::from_millis( p()->set_bonuses.demonsurge_meta_trigger->effectN( 1 ).misc_value1() ), false );
-    }
   }
 
   bool ready() override
@@ -4973,7 +4883,6 @@ struct auto_attack_damage_t : public burning_blades_trigger_t<demon_hunter_attac
     // Class Passives
     m *= 1.0 + p()->spec.havoc_demon_hunter->effectN( 8 ).percent();
     m *= 1.0 + p()->spec.vengeance_demon_hunter->effectN( 10 ).percent();
-    m *= 1.0 + p()->set_bonuses.tww3_aldrachi_2pc->effectN( 4 ).percent();
 
     return m;
   }
@@ -5114,8 +5023,7 @@ struct auto_attack_t : public demon_hunter_attack_t
 // Blade Dance =============================================================
 
 struct blade_dance_base_t
-  : public winning_streak_removal_trigger_t<
-        art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>>
+  : public art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>
 {
   struct trail_of_ruin_dot_t : public demon_hunter_spell_t
   {
@@ -5326,11 +5234,6 @@ struct blade_dance_base_t
     {
       dodge_buff->trigger();
     }
-
-    if ( p()->set_bonuses.tww1_havoc_4pc->ok() )
-    {
-      p()->buff.tww1_havoc_4pc->expire();
-    }
   }
 
   bool has_amount_result() const override
@@ -5344,7 +5247,6 @@ struct blade_dance_t : public blade_dance_base_t
   blade_dance_t( demon_hunter_t* p, util::string_view options_str )
     : blade_dance_base_t( "blade_dance", p, p->spec.blade_dance, options_str, nullptr )
   {
-    winning_streak_removal_delay = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
     if ( attacks.empty() )
     {
       attacks.push_back( p->get_background_action<blade_dance_damage_t>( "blade_dance_1", data().effectN( 2 ) ) );
@@ -5395,8 +5297,6 @@ struct death_sweep_t : public blade_dance_base_t
   death_sweep_t( demon_hunter_t* p, util::string_view options_str )
     : blade_dance_base_t( "death_sweep", p, p->spec.death_sweep, options_str, nullptr )
   {
-    winning_streak_removal_delay = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
-
     if ( attacks.empty() )
     {
       attacks.push_back( p->get_background_action<blade_dance_damage_t>( "death_sweep_1", data().effectN( 2 ) ) );
@@ -5483,8 +5383,7 @@ struct relentless_onslaught_t : public demon_hunter_spell_t
 // Chaos Strike =============================================================
 
 struct chaos_strike_base_t
-  : public winning_streak_removal_trigger_t<
-        art_of_the_glaive_trigger_t<art_of_the_glaive_ability::RENDING_STRIKE, demon_hunter_attack_t>>
+  : public art_of_the_glaive_trigger_t<art_of_the_glaive_ability::RENDING_STRIKE, demon_hunter_attack_t>
 {
   struct chaos_strike_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
   {
@@ -5589,10 +5488,6 @@ struct chaos_strike_base_t
                        util::string_view options_str = {} )
     : base_t( n, p, s, options_str ), from_onslaught( false ), tww1_reset_proc_chance( 0.0 )
   {
-    if ( p->set_bonuses.tww1_havoc_4pc->ok() )
-    {
-      tww1_reset_proc_chance = p->set_bonuses.tww1_havoc_4pc->effectN( 1 ).percent();
-    }
   }
 
   double cost() const override
@@ -5654,15 +5549,6 @@ struct chaos_strike_base_t
       make_event<delayed_execute_event_t>( *sim, p(), p()->active.inner_demon, target, 1.25_s );
       p()->buff.inner_demon->expire();
     }
-
-    // Note - cannot proc fury reduction buff if blade dance is not on cooldown
-    // 2024-09-06 -- Cannot proc if Blade Dance has less than 3s left on CD
-    if ( p()->set_bonuses.tww1_havoc_4pc->ok() && p()->cooldown.blade_dance->down() &&
-         p()->cooldown.blade_dance->remains() >= 3_s && p()->rng().roll( tww1_reset_proc_chance ) )
-    {
-      p()->buff.tww1_havoc_4pc->trigger();
-      p()->cooldown.blade_dance->reset( true );
-    }
   }
 
   bool has_amount_result() const override
@@ -5676,7 +5562,6 @@ struct chaos_strike_t : public chaos_strike_base_t
   chaos_strike_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = {} )
     : chaos_strike_base_t( name, p, p->spec.chaos_strike, options_str )
   {
-    winning_streak_removal_delay = timespan_t::from_millis( data().effectN( 3 ).misc_value1() + 1 );
     if ( attacks.empty() )
     {
       attacks.push_back( p->get_background_action<chaos_strike_damage_t>( fmt::format( "{}_damage_1", name ),
@@ -5724,7 +5609,6 @@ struct annihilation_t : public demonsurge_trigger_t<demonsurge_ability::ANNIHILA
   annihilation_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = {} )
     : base_t( name, p, p->spec.annihilation, options_str )
   {
-    winning_streak_removal_delay = timespan_t::from_millis( data().effectN( 3 ).misc_value1() + 1 );
     if ( attacks.empty() )
     {
       attacks.push_back( p->get_background_action<chaos_strike_damage_t>( fmt::format( "{}_damage_1", name ),
@@ -6249,18 +6133,6 @@ struct soul_cleave_base_t
 
     // Soul fragments consumed are capped for Soul Cleave
     p()->consume_soul_fragments( soul_fragment::ANY, true, static_cast<unsigned>( data().effectN( 3 ).base_value() ) );
-
-    // TWWBETA TOCHECK -- Is this flat % chance or something else (deck?)
-    if ( p()->set_bonuses.tww1_vengeance_2pc->ok() &&
-         p()->rng().roll( p()->set_bonuses.tww1_vengeance_2pc->effectN( 2 ).percent() ) )
-    {
-      unsigned soul_fragments_to_spawn = static_cast<unsigned>( data().effectN( 3 ).base_value() );
-      p()->spawn_soul_fragment( soul_fragment::LESSER, soul_fragments_to_spawn );
-      for ( unsigned i = 0; i < soul_fragments_to_spawn; i++ )
-      {
-        p()->proc.soul_fragment_from_vengeance_tww1_2pc->occur();
-      }
-    }
   }
 };
 
@@ -6791,12 +6663,6 @@ struct fury_of_the_aldrachi_t : public demon_hunter_attack_t
          !p()->buff.rending_strike->up() )
     {
       make_event<delayed_execute_event_t>( *sim, p(), p()->active.fury_of_the_aldrachi, target, 300_ms );
-      // with TWW3 tier set, it triggers 6 more times
-      if ( p()->set_bonuses.tww3_aldrachi_4pc->ok() )
-      {
-        make_event<delayed_execute_event_t>( *sim, p(), p()->active.fury_of_the_aldrachi, target, 300_ms );
-        make_event<delayed_execute_event_t>( *sim, p(), p()->active.fury_of_the_aldrachi, target, 300_ms );
-      }
     }
 
     for ( auto attack : attacks )
@@ -7090,11 +6956,6 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
           s++;
         }
       }
-
-      if ( p()->set_bonuses.tww3_felscarred_2pc->ok() )
-      {
-        p()->buff.scarred_strikes->trigger();
-      }
     }
 
     if ( s > 0 )
@@ -7168,11 +7029,6 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
           break;
       }
       p()->buff.demonsurge_demonic->trigger();
-
-      if ( p()->set_bonuses.tww3_felscarred_4pc->ok() )
-      {
-        p()->trigger_demonsurge( demonsurge_ability::ENTER_META, false );
-      }
     }
 
     const timespan_t extend_duration = p()->talent.havoc.demonic->effectN( 1 ).time_value();
@@ -7184,29 +7040,6 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     demon_hunter_buff_t<buff_t>::extend_duration_or_trigger( duration, player );
 
     p()->buff.inner_demon->trigger();
-
-    if ( p()->set_bonuses.tww2_havoc_4pc->ok() &&
-         ( p()->buff.winning_streak->up() || p()->buff.winning_streak_residual->up() ) )
-    {
-      // 2025-02-08 -- Necessary Sacrifice will not be triggered if the number of stacks on Winning Streak! is less than
-      //               the number of stacks on Necessary Sacrifice
-
-      int winning_streak_stacks      = p()->buff.winning_streak->stack() + p()->buff.winning_streak_residual->stack();
-      int necessary_sacrifice_stacks = p()->buff.necessary_sacrifice->stack();
-
-      if ( winning_streak_stacks >= necessary_sacrifice_stacks )
-      {
-        event_t::cancel( p()->winning_streak_conversion_event );
-        p()->buff.winning_streak->expire();
-        p()->buff.winning_streak_residual->expire();
-        p()->buff.necessary_sacrifice->expire();
-        p()->buff.necessary_sacrifice->trigger( winning_streak_stacks );
-      }
-      else
-      {
-        p()->proc.necessary_sacrifice_wasted_from_tww2_havoc_4pc->occur();
-      }
-    }
   }
 
   void start( int stacks, double value, timespan_t duration ) override
@@ -7312,28 +7145,6 @@ struct calcified_spikes_t : public demon_hunter_buff_t<buff_t>
   }
 };
 
-// TODO: Remove this
-struct luck_of_the_draw_buff_t : public demon_hunter_buff_t<buff_t>
-{
-  luck_of_the_draw_buff_t( demon_hunter_t* p )
-    : base_t( *p, "luck_of_the_draw", p->set_bonuses.tww2_vengeance_2pc->effectN( 1 ).trigger() )
-  {
-    base_t::set_default_value_from_effect_type( A_ADD_PCT_MODIFIER );
-  }
-
-  void bump( int stacks, double value ) override
-  {
-    buff_t::bump( stacks, value );
-
-    if ( p()->talent.havoc.the_hunt->ok() && p()->set_bonuses.tww2_vengeance_4pc->ok() &&
-         rng().roll( p()->set_bonuses.tww2_vengeance_4pc->effectN( 1 ).percent() ) )
-    {
-      p()->cooldown.the_hunt->reset( true );
-      p()->proc.the_hunt_reset_from_tww2_vengeance_4pc->occur();
-    }
-  }
-};
-
 }  // end namespace buffs
 
 // Namespace Actions post buffs
@@ -7432,25 +7243,6 @@ struct demon_hunter_proc_callback_t : public dbc_proc_callback_t
     return debug_cast<demon_hunter_t*>( listener );
   }
 };
-
-void tww2_vengeance_2pc( const special_effect_t& e )
-{
-  struct tww2_vengeance_2pc : demon_hunter_proc_callback_t
-  {
-    tww2_vengeance_2pc( const special_effect_t& e ) : demon_hunter_proc_callback_t( e )
-    {
-    }
-
-    void execute( action_t*, action_state_t* ) override
-    {
-      p()->buff.metamorphosis->trigger( p()->set_bonuses.tww2_vengeance_2pc->effectN( 1 ).time_value() );
-      p()->buff.luck_of_the_draw->trigger();
-      p()->proc.metamorphosis_from_tww2_vengeance_2pc->occur();
-    }
-  };
-
-  new tww2_vengeance_2pc( e );
-}
 
 // ==========================================================================
 // Targetdata Definitions
@@ -7927,27 +7719,6 @@ void demon_hunter_t::create_buffs()
   buff.demonsurge          = make_buff( this, "demonsurge", hero_spec.demonsurge_stacking_buff );
 
   // Set Bonus Items ========================================================
-
-  buff.tww1_havoc_4pc =
-      make_buff( this, "blade_rhapsody",
-                 set_bonuses.tww1_havoc_4pc->ok() ? set_bonuses.tww1_havoc_4pc_buff : spell_data_t::not_found() )
-          ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER );
-
-  buff.tww1_vengeance_4pc = make_buff( this, "soulfuse",
-                                       set_bonuses.tww1_vengeance_4pc->ok() ? set_bonuses.tww1_vengeance_4pc_buff
-                                                                            : spell_data_t::not_found() )
-                                ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
-
-  buff.luck_of_the_draw = make_buff<buffs::luck_of_the_draw_buff_t>( this );
-  buff.winning_streak =
-      make_buff( this, "winning_streak", set_bonuses.tww2_havoc_2pc->effectN( 1 ).trigger() )->set_chance( 1.01 );
-  buff.winning_streak_residual =
-      make_buff( this, "winning_streak_residual", set_bonuses.winning_streak_residual_buff )->set_chance( 1.01 );
-  buff.necessary_sacrifice = make_buff( this, "necessary_sacrifice", set_bonuses.necessary_sacrifice_buff );
-
-  buff.demon_soul_tww3 = make_buff( this, "demon_soul_tww3", set_bonuses.demon_soul_buff )
-                             ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
-  buff.scarred_strikes = make_buff( this, "scarred_strikes", set_bonuses.scarred_strikes )->set_quiet( true );
 }
 
 struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
@@ -8314,32 +8085,6 @@ void demon_hunter_t::init_resources( bool force )
 void demon_hunter_t::init_special_effects()
 {
   base_t::init_special_effects();
-
-  if ( set_bonuses.tww2_havoc_2pc->ok() )
-  {
-    auto set_data    = set_bonuses.tww2_havoc_2pc;
-    auto set         = new special_effect_t( this );
-    set->name_str    = set_data->name_cstr();
-    set->spell_id    = set_data->id();
-    set->type        = SPECIAL_EFFECT_EQUIP;
-    set->custom_buff = buff.winning_streak;
-    special_effects.push_back( set );
-
-    new demon_hunter_proc_callback_t( *set );
-  }
-
-  if ( set_bonuses.tww2_vengeance_2pc->ok() )
-  {
-    auto set_data     = set_bonuses.tww2_vengeance_2pc;
-    auto set          = new special_effect_t( this );
-    set->name_str     = set_data->name_cstr();
-    set->spell_id     = set_data->id();
-    set->type         = SPECIAL_EFFECT_EQUIP;
-    set->proc_flags2_ = PF2_ALL_HIT;
-    special_effects.push_back( set );
-
-    tww2_vengeance_2pc( *set );
-  }
 }
 
 // demon_hunter_t::init_rng =================================================
@@ -8905,41 +8650,7 @@ void demon_hunter_t::init_spells()
 
   // Set Bonus Items ========================================================
 
-  set_bonuses.tww1_havoc_2pc      = sets->set( DEMON_HUNTER_HAVOC, TWW1, B2 );
-  set_bonuses.tww1_havoc_4pc      = sets->set( DEMON_HUNTER_HAVOC, TWW1, B4 );
-  set_bonuses.tww1_vengeance_2pc  = sets->set( DEMON_HUNTER_VENGEANCE, TWW1, B2 );
-  set_bonuses.tww1_vengeance_4pc  = sets->set( DEMON_HUNTER_VENGEANCE, TWW1, B4 );
-  set_bonuses.tww2_havoc_2pc      = sets->set( DEMON_HUNTER_HAVOC, TWW2, B2 );
-  set_bonuses.tww2_havoc_4pc      = sets->set( DEMON_HUNTER_HAVOC, TWW2, B4 );
-  set_bonuses.tww2_vengeance_2pc  = sets->set( DEMON_HUNTER_VENGEANCE, TWW2, B2 );
-  set_bonuses.tww2_vengeance_4pc  = sets->set( DEMON_HUNTER_VENGEANCE, TWW2, B4 );
-  set_bonuses.tww3_aldrachi_2pc   = sets->set( HERO_ALDRACHI_REAVER, TWW3, B2 );
-  set_bonuses.tww3_aldrachi_4pc   = sets->set( HERO_ALDRACHI_REAVER, TWW3, B4 );
-  set_bonuses.tww3_felscarred_2pc = sets->set( HERO_FELSCARRED, TWW3, B2 );
-  set_bonuses.tww3_felscarred_4pc = sets->set( HERO_FELSCARRED, TWW3, B4 );
-
   // Set Bonus Auxilliary ===================================================
-
-  set_bonuses.tww1_havoc_4pc_buff          = conditional_spell_lookup( set_bonuses.tww1_havoc_4pc->ok(), 454628 );
-  set_bonuses.tww1_vengeance_4pc_buff      = conditional_spell_lookup( set_bonuses.tww1_vengeance_4pc->ok(), 454774 );
-  set_bonuses.winning_streak_residual_buff = conditional_spell_lookup( set_bonuses.tww2_havoc_4pc->ok(), 1220706 );
-  set_bonuses.necessary_sacrifice_buff     = conditional_spell_lookup( set_bonuses.tww2_havoc_4pc->ok(), 1217055 );
-  set_bonuses.demon_soul_havoc_buff        = conditional_spell_lookup( set_bonuses.tww3_felscarred_4pc->ok(), 1238676 );
-  set_bonuses.demon_soul_vengeance_buff    = conditional_spell_lookup( set_bonuses.tww3_felscarred_4pc->ok(), 1238675 );
-  set_bonuses.scarred_strikes              = conditional_spell_lookup( set_bonuses.tww3_felscarred_2pc->ok(), 1238462 );
-  set_bonuses.demonsurge_meta_trigger      = conditional_spell_lookup( set_bonuses.tww3_felscarred_4pc->ok(), 1238696 );
-
-  switch ( specialization() )
-  {
-    case DEMON_HUNTER_HAVOC:
-      set_bonuses.demon_soul_buff = set_bonuses.demon_soul_havoc_buff;
-      break;
-    case DEMON_HUNTER_VENGEANCE:
-      set_bonuses.demon_soul_buff = set_bonuses.demon_soul_vengeance_buff;
-      break;
-    default:
-      break;
-  }
 
   // Wounded Quarry (442808) is affected by Demon Hide.
   register_passive_affect_list( talent.havoc.demon_hide,
