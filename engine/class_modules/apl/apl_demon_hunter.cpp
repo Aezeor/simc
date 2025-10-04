@@ -11,6 +11,11 @@ std::string potion( const player_t* p )
   return ( p->true_level >= 71 ) ? "tempered_potion_3" : "elemental_potion_of_ultimate_power_3";
 }
 
+std::string flask_devourer( const player_t* p )
+{
+  return "flask_of_alchemical_chaos_3";
+}
+
 std::string flask_havoc( const player_t* p )
 {
   return ( p->true_level >= 71 ) ? "flask_of_alchemical_chaos_3" : "iced_phial_of_corrupting_rage_3";
@@ -19,6 +24,11 @@ std::string flask_havoc( const player_t* p )
 std::string flask_vengeance( const player_t* p )
 {
   return ( p->true_level >= 71 ) ? "flask_of_alchemical_chaos_3" : "iced_phial_of_corrupting_rage_3";
+}
+
+std::string food_devourer( const player_t* p )
+{
+  return "authentic_undermine_clam_chowder";
 }
 
 std::string food_havoc( const player_t* p )
@@ -36,6 +46,11 @@ std::string rune( const player_t* p )
   return ( p->true_level >= 71 ) ? "crystallized" : "draconic";
 }
 
+std::string temporary_enchant_devourer( const player_t* p )
+{
+  return "disabled";
+}
+
 std::string temporary_enchant_havoc( const player_t* p )
 {
   return ( p->true_level >= 71 ) ? "main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3"
@@ -47,6 +62,19 @@ std::string temporary_enchant_vengeance( const player_t* p )
   return ( p->true_level >= 71 ) ? "main_hand:ironclaw_whetstone_3/off_hand:ironclaw_whetstone_3"
                                  : "main_hand:buzzing_rune_3/off_hand:buzzing_rune_3";
 }
+
+//devourer_apl_start
+void devourer( player_t* p )
+{
+  action_priority_list_t* default_ = p->get_action_priority_list( "default" );
+  action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+
+  precombat->add_action( "snapshot_stats" );
+}
+//devourer_apl_end
+
+//devourer_ptr_apl_start
+//devourer_ptr_apl_end
 
 //havoc_apl_start
 void havoc( player_t* p )
@@ -92,12 +120,8 @@ void havoc( player_t* p )
   ar->add_action( "retarget_auto_attack,target_if=max:debuff.reavers_mark.remains" );
   ar->add_action( "pick_up_fragment,type=all,use_off_gcd=1,if=fury<=90" );
   ar->add_action( "variable,name=fel_barrage,op=set,value=talent.fel_barrage&(cooldown.fel_barrage.remains<gcd.max*7&(active_enemies>=desired_targets+raid_event.adds.count|raid_event.adds.in<gcd.max*7|raid_event.adds.in>90)&(cooldown.metamorphosis.remains|active_enemies>2)|buff.fel_barrage.up)&!(active_enemies=1&!raid_event.adds.exists)" );
-  ar->add_action(
-      "chaos_strike,target_if=max:target.health.pct,if=buff.rending_strike.up&buff.glaive_flurry.up&(variable.rg_ds=2|"
-      "active_enemies>1)&time>10&!debuff.reavers_mark.up" );
-  ar->add_action(
-      "annihilation,target_if=max:target.health.pct,if=buff.rending_strike.up&buff.glaive_flurry.up&(variable.rg_ds=2|"
-      "active_enemies>1)&!debuff.reavers_mark.up" );
+  ar->add_action( "chaos_strike,target_if=max:target.health.pct,if=buff.rending_strike.up&buff.glaive_flurry.up&(variable.rg_ds=2|active_enemies>1)&time>10&!debuff.reavers_mark.up" );
+  ar->add_action( "annihilation,target_if=max:target.health.pct,if=buff.rending_strike.up&buff.glaive_flurry.up&(variable.rg_ds=2|active_enemies>1)&!debuff.reavers_mark.up" );
   ar->add_action( "chaos_strike,target_if=max:debuff.reavers_mark.remains,if=buff.rending_strike.up&buff.glaive_flurry.up&(variable.rg_ds=2|active_enemies>1)&time>10&debuff.reavers_mark.remains" );
   ar->add_action( "annihilation,target_if=max:debuff.reavers_mark.remains,if=buff.rending_strike.up&buff.glaive_flurry.up&(variable.rg_ds=2|active_enemies>1)&debuff.reavers_mark.remains" );
   ar->add_action( "reavers_glaive,target_if=max:debuff.reavers_mark.remains,if=buff.glaive_flurry.down&buff.rending_strike.down&buff.thrill_of_the_fight_damage.remains<gcd.max*4+(variable.rg_ds=2)+(cooldown.the_hunt.remains<gcd.max*3)*3+(cooldown.eye_beam.remains<gcd.max*3&talent.shattered_destiny)*3&(variable.rg_ds=0|variable.rg_ds=1&cooldown.blade_dance.up|variable.rg_ds=2&cooldown.blade_dance.remains)&(buff.thrill_of_the_fight_damage.up|!prev_gcd.1.death_sweep|!variable.rg_inc)&active_enemies<3&!action.reavers_glaive.last_used<5&debuff.essence_break.down&(buff.metamorphosis.remains>2|cooldown.eye_beam.remains<10|fight_remains<10)&(variable.pull_remains>=10|fight_remains<=10)|fight_remains<=10" );

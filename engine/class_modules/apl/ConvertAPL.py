@@ -14,7 +14,7 @@ specList = ['blood', 'frost', 'unholy',  # Death Knight
             'retribution', 'protection', # Paladin
             'assassination', 'outlaw', 'subtlety', # Rogue
             'elemental', 'elemental_ptr', # Elemental Shaman
-            'havoc', 'vengeance', 'havoc_ptr', 'vengeance_ptr', # Demon Hunter
+            'devourer', 'devourer_ptr', 'havoc', 'vengeance', 'havoc_ptr', 'vengeance_ptr', # Demon Hunter
             'protection', 'fury', 'arms', # Warrior
            ]
 

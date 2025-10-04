@@ -1,0 +1,2 @@
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats

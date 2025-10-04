@@ -3,9 +3,10 @@ import sys
 sys.path.append(os.path.join(os.path.curdir, '..'))
 from ConvertAPL import main
 
-# TODO: MIDNIGHT - ADD DEVOURER
-
 if __name__ == '__main__':
+    print('Converting Devourer')
+    main(['-i', 'devourer.simc', '-o', os.path.join(os.path.curdir, '..', 'apl_demon_hunter.cpp'), '-s', 'devourer'])
+    # main(['-i', 'devourer_ptr.simc', '-o', os.path.join(os.path.curdir, '..', 'apl_demon_hunter.cpp'), '-s', 'devourer_ptr'])
     print('Converting Havoc')
     main(['-i', 'havoc.simc', '-o', os.path.join(os.path.curdir, '..', 'apl_demon_hunter.cpp'), '-s', 'havoc'])
     # main(['-i', 'havoc_ptr.simc', '-o', os.path.join(os.path.curdir, '..', 'apl_demon_hunter.cpp'), '-s', 'havoc_ptr'])

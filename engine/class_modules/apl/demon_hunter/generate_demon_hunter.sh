@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-# TODO: MIDNIGHT - ADD DEVOURER
+echo Converting Devourer
+py '../ConvertAPL.py' -i devourer.simc -o '../apl_demon_hunter.cpp' -s devourer
+#py '../ConvertAPL.py' -i devourer_ptr.simc -o '../apl_demon_hunter.cpp' -s devourer_ptr
 
 echo Converting Havoc
 py '../ConvertAPL.py' -i havoc.simc -o '../apl_demon_hunter.cpp' -s havoc
