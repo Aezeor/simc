@@ -662,6 +662,7 @@ public:
     // Devourer
     const spell_data_t* devourer_demon_hunter;
     const spell_data_t* consume;
+    const spell_data_t* voidblade;
 
     // Havoc
     const spell_data_t* havoc_demon_hunter;
@@ -4763,6 +4764,27 @@ struct consume_t : public demon_hunter_spell_t
   }
 };
 
+struct voidblade_t : public demon_hunter_spell_t
+{
+  struct voidblade_damage_t : public demon_hunter_spell_t
+  {
+    voidblade_damage_t( util::string_view name, demon_hunter_t* p ) : demon_hunter_spell_t( name, p, p->spec.voidblade )
+    {
+      background = dual               = true;
+      gain                            = p->get_gain( "voidblade" );
+    }
+  };
+
+  voidblade_t(demon_hunter_t* p, util::string_view o) : demon_hunter_spell_t( "voidblade", p, p->talent.demon_hunter.voidblade, o )
+  {
+    may_block               = false;
+    movement_directionality = movement_direction_type::TOWARDS;
+
+    execute_action        = p->get_background_action<voidblade_damage_t>( "voidblade_damage" );
+    execute_action->stats = stats;
+  }
+};
+
 }  // end namespace spells
 
 // ==========================================================================
@@ -7487,6 +7509,8 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new sigil_of_chains_t( this, options_str );
   if ( name == "consume" )
     return new consume_t( this, options_str );
+  if ( name == "voidblade" )
+    return new voidblade_t( this, options_str );
 
   using namespace actions::attacks;
 
@@ -8195,6 +8219,7 @@ void demon_hunter_t::init_spells()
   // Devourer Spells
   spec.devourer_demon_hunter = find_specialization_spell( "Devourer Demon Hunter" );
   spec.consume = find_spell( 473662, DEMON_HUNTER_DEVOURER );
+  spec.voidblade = find_spell( 1245414, DEMON_HUNTER_DEVOURER );
 
   // Havoc Spells
   spec.havoc_demon_hunter = find_specialization_spell( "Havoc Demon Hunter" );
