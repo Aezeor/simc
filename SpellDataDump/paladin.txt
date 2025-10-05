@@ -451,6 +451,7 @@ Attributes       : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (
 Effects          :
 #1 (id=10981)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.156 | Target: Targeted Ally (21)
+                   Modified By: Devout Spirit (319919 effect#1)
 Description      : Quickly heal a friendly target for $?$c1&$?a134735[${$s1*1}][$s1].
 
 Name             : Repentance (id=20066) [Spell Family (10)] 
@@ -723,7 +724,7 @@ Spell Type       : None
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=11588)    : Apply Aura (6) | Increase Resource% (132)
-                   Base Value: 5 | Scaled Value: 5 | Resource: mana | Misc Value 2: 0x8 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Resource: mana | Misc Value 2: 8 | Target: Self (1)
 Description      : Maximum mana increased by $s1%.
 
 Name             : Arcane Resistance (desc=Racial Passive) (id=20592) [Passive] 
@@ -944,7 +945,7 @@ Effects          :
 #2 (id=16533)    : Create Area Trigger (179)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 4488 | Target: at Area (87)
 #3 (id=81786)    : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 43499 | Misc Value 2: 0xbba | Target: at Self (18)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 43499 | Misc Value 2: 3002 | Target: at Self (18)
 Description      : Consecrates the land beneath you, causing $?s405289[${$<dmg>*1.05} Radiant][${$<dmg>*1.05} Holy] damage over $d to enemies who enter the area$?s204054[ and reducing their movement speed by $204054s2%.][.] Limit $s2.
 Tooltip          : Damage every $t1 sec.
 Variables        : $dmg=${$81297s1*$ceil($d/$t1)}
@@ -1034,11 +1035,12 @@ Effects          :
 #1 (id=21513)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.5 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Improved Ardent Defender (393114 effect#1)
 #2 (id=21514)    : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Modified By: The Ardent Protector's Sanctum (337838 effect#1)
 #3 (id=728128)   : Apply Aura (6) | Absorb Overkill Damage From School (316)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: 0x14 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: 20 | Target: Self (1)
                    Affected School(s): All
 #4 (id=1183798)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
@@ -1535,6 +1537,7 @@ Effects          :
                    Base Value: -90000000 | Scaled Value: -9e+07 | Target: Self (1)
 #2 (id=48274)    : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Modified By: Phantasmal Image (444784 effect#2)
 Description      : Creates $s2 copies of you nearby for $55342d, which cast spells and attack your enemies. While active, you generate significantly reduced threat.
 
 Taking direct damage will cause one of your images to dissipate
@@ -1565,15 +1568,15 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=51287)    : Apply Aura (6) | Override Spell Visual (403)
-                   Base Value: 121163 | Scaled Value: 121163 | Misc Value: 31884 | Misc Value 2: 0x1d94b | Target: Self (1)
+                   Base Value: 121163 | Scaled Value: 121163 | Misc Value: 31884 | Misc Value 2: 121163 | Target: Self (1)
 #2 (id=254790)   : Apply Aura (6) | Override Spell Visual (403)
-                   Base Value: 121163 | Scaled Value: 121163 | Misc Value: 31842 | Misc Value 2: 0x1d94b | Target: Self (1)
+                   Base Value: 121163 | Scaled Value: 121163 | Misc Value: 31842 | Misc Value 2: 121163 | Target: Self (1)
 #3 (id=364395)   : Apply Aura (6) | Override Spell Visual (403)
-                   Base Value: 121163 | Scaled Value: 121163 | Misc Value 2: 0x1d94b | Target: Self (1)
+                   Base Value: 121163 | Scaled Value: 121163 | Misc Value 2: 121163 | Target: Self (1)
 #4 (id=364396)   : Apply Aura (6) | Override Spell Visual (403)
-                   Base Value: 121163 | Scaled Value: 121163 | Misc Value 2: 0x1d94b | Target: Self (1)
+                   Base Value: 121163 | Scaled Value: 121163 | Misc Value 2: 121163 | Target: Self (1)
 #5 (id=1076305)  : Apply Aura (6) | Override Spell Visual (403)
-                   Base Value: 121163 | Scaled Value: 121163 | Misc Value 2: 0x1d94b | Target: Self (1)
+                   Base Value: 121163 | Scaled Value: 121163 | Misc Value 2: 121163 | Target: Self (1)
 Description      : Your Avenging Wrath depicts 4 wings.
 
 Name             : Winged Vengeance (id=58244) 
@@ -2261,7 +2264,7 @@ Attributes       : Not Shapeshifted (16), No Aura Cancel (31), No Threat (42), D
 Aura Interrupt   : Leave World (19), Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=88340)    : Apply Aura (6) | Change Model (56)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 46490 | Misc Value 2: 0x7 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 46490 | Misc Value 2: 7 | Target: Self (1)
 #2 (id=100215)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=102488)   : Apply Aura (6) | Modify Damage Taken% (87)
@@ -2567,6 +2570,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 122773 | Radius: 10 yards | Target: at Area (87)
 #2 (id=1080484)  : Apply Aura (6) | Periodic Energize Power (24): every 4 seconds
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 9 | Target: Self (1)
+                   Modified By: Paladin Holy 10.1 Class Set 4pc (405546 effect#6)
 Description      : Hurls a Light-infused hammer to the ground, dealing $114919s1 Holy damage to nearby enemies and healing up to 6 nearby allies for $119952s1, every $114918t1 sec for ${$122773d-1.5} sec.
 
 Name             : Holy Prism (id=114165) [Spell Family (10)] 
@@ -2829,7 +2833,7 @@ Triggered By     : Light's Hammer (114158)
 Attributes       : Is Ability (4), No Aura Icon (60), Ignore Line of Sight (66), Not In Spellbook Until Learned (269), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), No Summon Log (326), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=154587)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 59738 | Misc Value 2: 0xdb5 | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 59738 | Misc Value 2: 3509 | Target: at Area (87)
 #2 (id=1074247)  : Apply Aura (6) | Periodic Energize Power (24): every 4 seconds
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 9 | Target: Self (1)
 
@@ -2920,9 +2924,10 @@ Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=171373)   : Apply Aura (6) | Dummy (4)
                    Base Value: 160 | Scaled Value: 160 | Target: Self (1)
-                   Modified By: Avenger's Valor (197561 effect#2), Avenger's Valor (290495 effect#2)
+                   Modified By: Protection Paladin (137028 effect#18), Avenger's Valor (197561 effect#2), Avenger's Valor (290495 effect#2)
 #2 (id=1036754)  : Apply Aura (6) | Modify Armor by Primary Stat% (268)
                    Base Value: 160 | Scaled Value: 160 | Misc Value: -2 | Target: Self (1)
+                   Modified By: Protection Paladin (137028 effect#19)
 #3 (id=1161066)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -3131,7 +3136,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1663 (Category) | Target: Self (1)
                    Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779), Hammer of Wrath (1241413)
 #10 (id=726748)  : Apply Aura (6) | Override Spell Power per Attack Power% (366)
-                   Base Value: 101 | Scaled Value: 101 | Misc Value: 126 | Misc Value 2: 0x1 | Target: Self (1)
+                   Base Value: 101 | Scaled Value: 101 | Misc Value: 126 | Misc Value 2: 1 | Target: Self (1)
 #11 (id=726749)  : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
 #12 (id=726750)  : Apply Aura (6) | Modify Mana Regen% (379)
@@ -4233,7 +4238,7 @@ Triggered By     : Light of T'uure (208065)
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=288760)   : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 99904 | Misc Value 2: 0xe67 | Radius: 3 yards | Target: Right of Self (49)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 99904 | Misc Value 2: 3687 | Radius: 3 yards | Target: Right of Self (49)
 #2 (id=289218)   : Trigger Spell (64): Divine Image
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 196705 | Target: Self (1)
 Description      : $@spelldesc392988
@@ -4334,6 +4339,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Enemy (6)
                    Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Ancient Fury (86704), Divine Hammer (198137), Justicar's Vengeance (215661), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Shield of the Righteous (415091), Hammer of Light (427453), Hammer of Light (429826), Hammer of Light (1235934)
                    Family Flags: 25, 29, 44, 49, 52, 88, 112
+                   Modified By: Paladin Retribution 10.1 Class Set 4pc (405550 effect#1), Protection Paladin (137028 effect#16)
 #2 (id=368486)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc20271
@@ -5457,7 +5463,7 @@ Effects          :
 #4 (id=321881)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #5 (id=321882)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 260 | Scaled Value: 260 | PvP Coefficient: 0.77 | Misc Value: 127 | Misc Value 2: 0x1 | Target: Self (1)
+                   Base Value: 260 | Scaled Value: 260 | PvP Coefficient: 0.77 | Misc Value: 127 | Misc Value 2: 1 | Target: Self (1)
 #6 (id=321944)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #7 (id=321945)   : Apply Aura (6) | Ignore Aura State (262)
@@ -5556,7 +5562,7 @@ Effects          :
 #2 (id=331129)   : Apply Aura (6) | Increase Mounted Speed% (172)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=331130)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 230 | Target: Self (1)
 #4 (id=331131)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
@@ -5595,7 +5601,7 @@ Effects          :
 #2 (id=331134)   : Apply Aura (6) | Increase Mounted Speed% (172)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=331135)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 230 | Target: Self (1)
 #4 (id=331136)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
@@ -5634,7 +5640,7 @@ Effects          :
 #2 (id=331138)   : Apply Aura (6) | Increase Mounted Speed% (172)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=331139)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 230 | Target: Self (1)
 #4 (id=331140)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
@@ -5673,7 +5679,7 @@ Effects          :
 #2 (id=331142)   : Apply Aura (6) | Increase Mounted Speed% (172)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=331143)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 230 | Target: Self (1)
 #4 (id=331144)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
@@ -5922,6 +5928,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=349502)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Target: Self (1)
+                   Modified By: Protection Paladin (137028 effect#16)
 Description      : Judgment causes the target to take $s1% increased damage from your next Holy Power ability.
 
 Multiple applications may overlap.
@@ -6189,7 +6196,7 @@ Effects          :
 #2 (id=475682)   : Apply Aura (6) | Increase Mounted Speed% (172)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=475683)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 230 | Target: Self (1)
 #4 (id=475684)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
@@ -6228,7 +6235,7 @@ Effects          :
 #2 (id=475686)   : Apply Aura (6) | Increase Mounted Speed% (172)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=475687)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 230 | Target: Self (1)
 #4 (id=475688)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
@@ -6267,7 +6274,7 @@ Effects          :
 #2 (id=475690)   : Apply Aura (6) | Increase Mounted Speed% (172)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=475691)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 230 | Target: Self (1)
 #4 (id=475692)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
@@ -6306,7 +6313,7 @@ Effects          :
 #2 (id=475694)   : Apply Aura (6) | Increase Mounted Speed% (172)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=475695)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 230 | Target: Self (1)
 #4 (id=475696)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
@@ -6479,7 +6486,7 @@ Cooldown         : 600 seconds
 Attributes       : Ignore Caster Modifiers (125)
 Effects          :
 #1 (id=477708)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 129356 | Misc Value 2: 0x1036 | Radius: 0 - 3 yards | Target: at Self (18) -> Front of Self (47)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 129356 | Misc Value 2: 4150 | Radius: 0 - 3 yards | Target: at Self (18) -> Front of Self (47)
 Description      : Conjure up an Eldritch Grimoire, allowing you mail access for $d.
 
 Name             : Arcane Resistance (desc=Racial Passive) (id=255664) [Passive] 
@@ -6553,7 +6560,7 @@ Spell Type       : None
 Attributes       : Passive (6)
 Effects          :
 #1 (id=477718)   : Apply Aura (6) | Modify Casting Pushback (149)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 0xf | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 15 | Target: Self (1)
 Description      : Your spell casts are not delayed by taking damage. 
 
 Name             : Bull Rush (id=255723) 
@@ -6853,7 +6860,7 @@ Cooldown         : 1800 seconds
 Attributes       : Do Not Log (8), Only Outdoors (15), Do Not Sheath (18), Allow While Stealthed (37), No Aura Icon (60)
 Effects          :
 #1 (id=709245)   : Summon Guardian (28)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 143925 | Misc Value 2: 0x1173 | Radius: 0 - 5 yards | Target: at Ground (62) -> Front Right in Area (82)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 143925 | Misc Value 2: 4467 | Radius: 0 - 5 yards | Target: at Ground (62) -> Front Right in Area (82)
 Description      : While outdoors, summon a Mole Machine that tunnels through the earth.
 
 Name             : Fireblood (desc=Racial) (id=265226) [Hidden] 
@@ -6899,6 +6906,7 @@ Effects          :
 #3 (id=1148155)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effects (8)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 8 | Misc Value 2: 3502 (Label) | Target: Self (1)
                    Affected Spells (Label): Highlord's Judgment (449198)
+                   Modified By: Highlord's Wrath (404512 effect#3)
 #4 (id=1155709)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75 | Target: Self (1)
 Description      : Increases Holy damage done by ${$s1}.1%.
@@ -7234,7 +7242,7 @@ Effects          :
 #2 (id=730074)   : Apply Aura (6) | Increase Movement Speed% (171)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=730075)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 230 | Target: Self (1)
 #4 (id=730076)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
@@ -7273,7 +7281,7 @@ Effects          :
 #2 (id=730078)   : Apply Aura (6) | Increase Mounted Speed% (172)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=730079)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 230 | Target: Self (1)
 #4 (id=730080)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
@@ -7476,6 +7484,7 @@ Attributes       : Passive (6), Allow Aura While Dead (116), Not In Spellbook (1
 Effects          :
 #1 (id=750130)   : Apply Aura (6) | Proc Trigger Spell (42): Glimmer of Light
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 287280 | Target: Self (1)
+                   Modified By: Blessed Focus (414708 effect#1)
 #2 (id=1086085)  : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 #3 (id=1086086)  : Apply Aura (6) | Dummy (4)
@@ -7786,7 +7795,7 @@ Effects          :
 #2 (id=762470)   : Apply Aura (6) | Increase Mounted Speed% (172)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=762471)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 230 | Target: Self (1)
 #4 (id=762472)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
@@ -7941,7 +7950,7 @@ Cooldown         : 300 seconds
 Attributes       : Is Ability (4), No AutoCast (AI) (49)
 Effects          :
 #1 (id=794078)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161818 | Misc Value 2: 0xdcf | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161818 | Misc Value 2: 3535 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
 Description      : Change the contents of your Bag of Tricks. Now where did you put that...?
 
 Name             : Skeleton Pinkie (desc=Racial) (id=312890) 
@@ -7972,7 +7981,7 @@ Effects          :
 #3 (id=801605)   : Apply Aura (6) | Unknown(281)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4 | Target: Self (1)
 #4 (id=801638)   : Apply Aura (6) | Unknown(356)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0x166 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 358 | Target: Self (1)
 Description      : You function as a personal Blacksmithing Anvil, Cooking Fire, and Mining Forge. In addition, your limbs include every profession tool.
 
 Name             : Emergency Failsafe (desc=Racial Passive) (id=312916) [Passive] 
@@ -8112,7 +8121,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=795887)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 0x12aa | Radius: 3 yards | Target: Right of Self (49)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 4778 | Radius: 3 yards | Target: Right of Self (49)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -8127,7 +8136,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=795918)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 0x12aa | Radius: 3 yards | Target: Left of Self (50)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 4778 | Radius: 3 yards | Target: Left of Self (50)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -8180,7 +8189,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799002)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161974 | Misc Value 2: 0xf47 | Radius: 0 - 2 yards | Target: at Self (18) -> Back in Area (79)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161974 | Misc Value 2: 3911 | Radius: 0 - 2 yards | Target: at Self (18) -> Back in Area (79)
 
 Name             : Campfire (id=315335) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -8192,7 +8201,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799012)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161980 | Misc Value 2: 0xf47 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161980 | Misc Value 2: 3911 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
 
 Name             : Mount Changer (id=315357) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -8204,7 +8213,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799050)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 162001 | Misc Value 2: 0xf47 | Radius: 0 - 1 yards | Target: at Self (18) -> Right in Area (80)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 162001 | Misc Value 2: 3911 | Radius: 0 - 1 yards | Target: at Self (18) -> Right in Area (80)
 
 Name             : Judgment (desc=Rank 3) (id=315867) [Spell Family (10), Passive] 
 Class            : Holy Paladin, Protection Paladin, Retribution Paladin
@@ -8523,7 +8532,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809542)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47243 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47243 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -8540,7 +8549,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809559)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47244 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47244 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -8557,7 +8566,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809560)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 31216 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 31216 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -8574,7 +8583,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809572)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165167 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165167 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Mirror Image (id=321701) 
@@ -8590,7 +8599,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809579)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165169 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165169 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Glimmer of Light (id=325966) [Spell Family (10), Passive] 
@@ -8937,7 +8946,7 @@ Triggered By     : Blessing of Summer (328620)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Not In Spellbook Until Learned (269), Spellcast Override In Spellbook (310), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=820433)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Blessing of Autumn overrides Blessing of Summer
-                   Base Value: 328622 | Scaled Value: 328622 | Misc Value: 328620 | Misc Value 2: 0x3 | Target: Self (1)
+                   Base Value: 328622 | Scaled Value: 328622 | Misc Value: 328620 | Misc Value 2: 3 | Target: Self (1)
 Description      :  
 
 Name             : Blessing of Winter (desc=Night Fae) (id=328281) [Spell Family (10)] 
@@ -9129,7 +9138,7 @@ Triggered By     : Blessing of Winter (328281), Blessing of Spring (328282)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Not In Spellbook Until Learned (269), Spellcast Override In Spellbook (310), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=823062)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Blessing of Spring overrides Blessing of Summer
-                   Base Value: 328282 | Scaled Value: 328282 | Misc Value: 328620 | Misc Value 2: 0x3 | Target: Self (1)
+                   Base Value: 328282 | Scaled Value: 328282 | Misc Value: 328620 | Misc Value 2: 3 | Target: Self (1)
 Description      :  
 
 Name             : Blessing of the Seasons (desc=Night Fae) (id=329722) [Spell Family (10), Hidden] 
@@ -9145,7 +9154,7 @@ Triggered By     : Blessing of Autumn (328622)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Not In Spellbook Until Learned (269), Spellcast Override In Spellbook (310), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=823065)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Blessing of Winter overrides Blessing of Summer
-                   Base Value: 328281 | Scaled Value: 328281 | Misc Value: 328620 | Misc Value 2: 0x3 | Target: Self (1)
+                   Base Value: 328281 | Scaled Value: 328281 | Misc Value: 328620 | Misc Value 2: 3 | Target: Self (1)
 Description      :  
 
 Name             : Ashen Hallow (id=330382) [Spell Family (10), Hidden] 
@@ -9352,7 +9361,7 @@ Effects          :
 #1 (id=835935)   : Apply Aura (6) | Trigger Spell Based on Resource Amount (396): Blessing of Dawn
                    Base Value: 5 | Scaled Value: 5 | Resource: holy_power | Trigger Spell: 337747 | Target: Self (1)
 #2 (id=835936)   : Apply Aura (6) | Trigger Spell Based on Resource Amount (396): Blessing of Dusk
-                   Base Value: 0 | Scaled Value: 0 | Resource: holy_power | Misc Value 2: 0x1 | Trigger Spell: 337757 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Resource: holy_power | Misc Value 2: 1 | Trigger Spell: 337757 | Target: Self (1)
 Description      : When you reach $s1 Holy Power, you gain Blessing of Dawn. When you reach $s2 Holy Power, you gain Blessing of Dusk.
 
 $@spellicon337747$@spellname337747
@@ -10468,7 +10477,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=869718)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 175313 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 175313 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Hyper Organic Light Originator (id=351978) 
@@ -10482,7 +10491,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=882640)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 0x1422 | Radius: 3 yards | Target: Right of Self (49)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 5154 | Radius: 3 yards | Target: Right of Self (49)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -10497,7 +10506,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=882655)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 0x1422 | Radius: 3 yards | Target: Left of Self (50)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 5154 | Radius: 3 yards | Target: Left of Self (50)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -10552,7 +10561,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1938 (Category) | Target: Self (1)
                    Affected Spells (Category): Vanquisher's Hammer (328204)
 #2 (id=888846)   : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 37 | Misc Value 2: 0x4 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | Misc Value: 37 | Misc Value 2: 4 | Target: Self (1)
                    Affected Spells: Vanquisher's Hammer (328204)
                    Family Flags: 123
 #3 (id=888850)   : Apply Aura (6) | Add Flat Modifier (107): Spell Doses (31)
@@ -10619,7 +10628,7 @@ Attributes       : Aura Points On Client (268), Unknown (450)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=888768)   : Apply Aura (6) | Add Percent Modifier (108): Spell Proc Chance (18)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 18 | Misc Value 2: 0x64 | Target: Current Target (25)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 18 | Misc Value 2: 100 | Target: Current Target (25)
                    Affected Spells: Blessing of Winter (328281), Blessing of Spring (328282), Blessing of Summer (328620), Blessing of Autumn (328622)
                    Family Flags: 114
 #2 (id=888769)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
@@ -10750,6 +10759,7 @@ Attributes       : Not Shapeshifted (16), No Reflection (39), Show Mechanic as C
 Effects          :
 #1 (id=891606)   : Knock Back (98)
                    Base Value: 80 | Scaled Value: 80 | Misc Value: 150 | Radius: 15 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Modified By: Walloping Blow (387341 effect#1)
 #2 (id=1022082)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Radius: 15 yards | Mechanic: Snare | Target: Enemies in Cone to Targeted Enemy (104)
 Description      : With a powerful flap of your wings, knock away enemies in front of you.
@@ -10857,7 +10867,7 @@ Effects          :
 #2 (id=903095)   : Apply Aura (6) | Increase Movement Speed% (171)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=903096)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 230 | Target: Self (1)
 #4 (id=903097)   : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
@@ -11531,6 +11541,7 @@ Attributes       : Allow While Stealthed (37), Aura Points On Client (268), Allo
 Effects          :
 #1 (id=1007565)  : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 1 | Target: Self (1)
+                   Modified By: Protection Paladin (137028 effect#15)
 Description      : $?c2[Shield of the Righteous][Word of Glory] grants $s1% bonus armor for $d.
 Tooltip          : Armor increased by $w1%.
 
@@ -12249,6 +12260,7 @@ Effects          :
                    Base Value: -60000 | Scaled Value: -60000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Blessing of Sacrifice (6940)
                    Family Flags: 13
+                   Modified By: Holy Paladin (1258016 effect#23)
 Description      : Reduces the cooldown of Blessing of Sacrifice by ${$m1/-1000} sec.
 
 Name             : Improved Blessing of Protection (id=384909) [Spell Family (10), Passive] 
@@ -13406,7 +13418,7 @@ Labels           : 16: Class Spells
 Attributes       : No Aura Icon (60), Include In Advanced Combat Log (72), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1031612)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 198236 | Misc Value 2: 0x1580 | Radius: 3 yards | Target: at Radius in Area (91)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 198236 | Misc Value 2: 5504 | Radius: 3 yards | Target: at Radius in Area (91)
 #2 (id=1031613)  : Trigger Spell (64): Divine Image
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 405216 | Target: Self (1)
 Description      : $@spelldesc392988
@@ -13943,6 +13955,7 @@ Effects          :
 #1 (id=1049583)  : Immediate Cooldown Recharge (Category) (293)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2128 (Category) | Target: Self (1)
                    Affected Spells (Category): Blade of Justice (184575)
+                   Modified By: Light Within (1261113 effect#1)
 #2 (id=1052460)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Blade of Justice (184575), Expurgation (383344), Blade of Justice (404358)
@@ -13966,10 +13979,13 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1049636)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 5 | Scaled Value: 5 | Stat: Sta | Target: Self (1)
+                   Modified By: Holy Paladin (1258016 effect#20)
 #2 (id=1049637)  : Apply Aura (6) | Modify AoE Damage Taken% (229)
                    Base Value: -3 | Scaled Value: -3 | Misc Value: 127 | Target: Self (1)
+                   Modified By: Holy Paladin (1258016 effect#21)
 #3 (id=1052151)  : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 1 | Target: Self (1)
+                   Modified By: Protection Paladin (137028 effect#14), Holy Paladin (1258016 effect#22)
 Description      : Armor increased by $s3%, Stamina increased by $s1% and damage taken from area of effect attacks reduced by $s2%.
 
 Name             : Jurisdiction (id=402971) [Spell Family (10), Passive, Hidden] 
@@ -14452,6 +14468,7 @@ Effects          :
 #2 (id=1053584)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Radius: 50000 yards | Target: Raid in Area (56)
                    Affected School(s): All
+                   Modified By: Aura Mastery (31821 effect#3)
 #3 (id=1055960)  : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f | Radius: 50000 yards | Target: Raid in Area (56)
                    Affected School(s): All
@@ -14787,6 +14804,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Blade of Justice (184575), Expurgation (383344), Blade of Justice (404358)
                    Family Flags: 126
+                   Modified By: Light Within (1261113 effect#1)
 Description      : Your auto attacks have a $h% chance to reset the cooldown of Blade of Justice.
 
 Tooltip          : The cooldown of Blade of Justice has been reset$?s1261113[ and it deals $w1% increased damage.][.]
@@ -15427,11 +15445,11 @@ Effects          :
                    Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Crusader Strike (132331), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Tyr's Enforcer (378286), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Judgment (383991), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Execution Sentence (387200), Blessing of Winter (388012), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun's Avatar (431911), Sacred Weapon (432616), Hammer and Anvil (433717), Divine Guidance (433808), Forge's Reckoning (447258), Sun's Avatar (463075), Eye for an Eye (469311), Hammer of Light (1235934), Lesser Weapon (1239282), Hammer of Wrath (1241413), Execution Sentence (1260251), Light Within (1261160)
                    Family Flags: 65
 #3 (id=1079579)  : Apply Aura (6) | Unknown(649)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 6 | Misc Value 2: 0xa2a | Target: Self (1)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 6 | Misc Value 2: 2602 | Target: Self (1)
 #4 (id=1079580)  : Apply Aura (6) | Unknown(649)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 6 | Misc Value 2: 0xa2a | Target: Self (1)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 6 | Misc Value 2: 2602 | Target: Self (1)
 #5 (id=1079865)  : Apply Aura (6) | Unknown(648)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 5 | Misc Value 2: 0xa5f | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 5 | Misc Value 2: 2655 | Target: Self (1)
 #6 (id=1079866)  : Apply Aura (6) | Unknown(646)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Divine Protection (498), Divine Protection (403876)
@@ -15449,15 +15467,15 @@ Effects          :
                    Affected Spells: Eternal Flame (156322), Eternal Flame (461432)
                    Family Flags: 89
 #10 (id=1140345) : Apply Aura (6) | Unknown(648)
-                   Base Value: -5 | Scaled Value: -5 | Misc Value: 5 | Misc Value 2: 0xa24 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 5 | Misc Value 2: 2596 | Target: Self (1)
 #11 (id=1140346) : Apply Aura (6) | Unknown(646)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Avenging Wrath (31884), Avenging Wrath (454351)
                    Family Flags: 40
 #12 (id=1266255) : Apply Aura (6) | Unknown(648)
-                   Base Value: -5 | Scaled Value: -5 | Misc Value: 5 | Misc Value 2: 0xa45 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 5 | Misc Value 2: 2629 | Target: Self (1)
 #13 (id=1266256) : Apply Aura (6) | Unknown(648)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 6 | Misc Value 2: 0xa43 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 6 | Misc Value 2: 2627 | Target: Self (1)
 
 Name             : Aura Mastery (id=412629) [Spell Family (10), Hidden] 
 Class            : Paladin
@@ -15880,6 +15898,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow 
 Effects          :
 #1 (id=1083823)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Modified By: Blessed Focus (414708 effect#1)
 Description      : $@spelldesc325966
 
 Name             : Blessed Focus (id=414708) [Spell Family (10), Passive] 
@@ -16612,7 +16631,7 @@ Effects          :
                    Base Value: -30000 | Scaled Value: -30000 | Misc Value: 1182 (Category) | Target: Self (1)
                    Affected Spells (Category): PvP Trinket (42292), Honorable Medallion (195710), Gladiator's Medallion (336126), Gladiator's Fastidious Resolve (363117)
 #8 (id=1146482)  : Apply Aura (6) | Unknown(648)
-                   Base Value: 7 | Scaled Value: 7 | Misc Value: 6 | Misc Value 2: 0xa30 | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | Misc Value: 6 | Misc Value 2: 2608 | Target: Self (1)
 #9 (id=1150035)  : Apply Aura (6) | Unknown(647)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275), Hammer of Wrath (1241413)
@@ -16626,11 +16645,11 @@ Effects          :
                    Affected Spells: Crusader Strike (35395), Crusader Strike (132331)
                    Family Flags: 47
 #12 (id=1177914) : Apply Aura (6) | Unknown(649)
-                   Base Value: 67 | Scaled Value: 67 | Misc Value: 5 | Misc Value 2: 0xa2a | Target: Self (1)
+                   Base Value: 67 | Scaled Value: 67 | Misc Value: 5 | Misc Value 2: 2602 | Target: Self (1)
 #13 (id=1266315) : Apply Aura (6) | Unknown(649)
-                   Base Value: 67 | Scaled Value: 67 | Misc Value: 6 | Misc Value 2: 0xa2a | Target: Self (1)
+                   Base Value: 67 | Scaled Value: 67 | Misc Value: 6 | Misc Value 2: 2602 | Target: Self (1)
 #14 (id=1266316) : Apply Aura (6) | Unknown(649)
-                   Base Value: 67 | Scaled Value: 67 | Misc Value: 7 | Misc Value 2: 0xa2a | Target: Self (1)
+                   Base Value: 67 | Scaled Value: 67 | Misc Value: 7 | Misc Value 2: 2602 | Target: Self (1)
 Description      : Holy Paladin core passive
 
 Name             : Hammer of Light (id=429826) [Spell Family (10)] 
@@ -17065,8 +17084,10 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1119279)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Modified By: Retribution Paladin (1258011 effect#20), Holy Paladin (1258016 effect#29)
 #2 (id=1119280)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Modified By: Retribution Paladin (1258011 effect#21), Holy Paladin (1258016 effect#28)
 Description      : $?c1[Light of Dawn and Holy Shock have a $s1% chance to cast again at $s2% effectiveness.]?c3[Divine Storm and Hammer of Wrath have a $s1% chance to cast again at $s2% effectiveness.][]
 
 Name             : Gleaming Rays (id=431480) [Spell Family (10), Passive, Hidden] 
@@ -17099,6 +17120,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Shield of the Righteous (132403), Eternal Flame (156322), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Afterimage (391309), Shield of the Righteous (415091), Divine Storm (423593), Eternal Flame (461432)
                    Family Flags: 44, 52, 78, 82, 88, 89, 91, 107
+                   Modified By: Retribution Paladin (1258011 effect#22)
 #2 (id=1160964)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Eternal Flame (156322), Eternal Flame (461432)
@@ -17215,6 +17237,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #2 (id=1123101)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Modified By: Retribution Paladin (1258011 effect#18)
 #3 (id=1123102)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : When Empyrean Hammer critically strikes, $s2% of its damage is dealt to nearby enemies.
@@ -17261,6 +17284,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1119458)  : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+                   Modified By: Holy Paladin (1258016 effect#30)
 #2 (id=1119459)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : $@spelldesc431377
@@ -17646,6 +17670,7 @@ Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1121480)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
+                   Modified By: Retribution Paladin (1258011 effect#16)
 Description      : $@spelldesc432626
 Tooltip          : Haste increased by $w1%
 
@@ -17891,6 +17916,7 @@ Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1122075)  : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
+                   Modified By: Holy Paladin (1258016 effect#27)
 Description      : $@spelldesc433015
 Tooltip          : Damage and healing of your next $?s204019[Blessed Hammer]?s53595[Hammer of the Righteous][Crusader Strike] increased by $w1%.
 
@@ -17908,6 +17934,7 @@ Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1122231)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Modified By: Protection Paladin (137028 effect#20)
 #2 (id=1123462)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : For each Holy Power ability cast, your next Consecration deals $?a137029[$<holy>][$<prot>] damage or healing immediately, split across all enemies and allies.
@@ -18194,7 +18221,7 @@ Labels           : 16: Class Spells
 Attributes       : No Aura Icon (60), Include In Advanced Combat Log (72), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1123915)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 217194 | Misc Value 2: 0x16ce | Radius: 3 yards | Target: at Radius in Area (91)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 217194 | Misc Value 2: 5838 | Radius: 3 yards | Target: at Radius in Area (91)
 #2 (id=1123916)  : Trigger Spell (64): Blessing of the Forge
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 434255 | Target: Self (1)
 Description      : $@spelldesc433011
@@ -18596,6 +18623,7 @@ Attributes       : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1146197)  : Apply Aura (6) | Trigger Spell Based on Health% (468): Light of the Martyr
                    Base Value: 80 | Scaled Value: 80 | Misc Value: 1 | Trigger Spell: 447998 | Target: Self (1)
+                   Modified By: Bestow Light (448040 effect#1)
 #2 (id=1146198)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : While above $s1% health, Holy Shock's healing is increased $447988s1%, but creates a heal absorb on you for $s2% of the amount healed that prevents Beacon of Light from healing you until it has dissipated.
@@ -18618,6 +18646,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Holy Shock (25914)
                    Family Flags: 48
+                   Modified By: Bestow Light (448087 effect#1)
 Description      : $@spelldesc447985
 Tooltip          : Holy Shock healing increased by $w1%. This effect is canceled if brought below $447985s1% health.
 
@@ -18755,18 +18784,22 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75 | Target: Self (1)
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779), Boundless Judgment (383970), Judgment (383991), Hammer of Wrath (1241413)
                    Family Flags: 23
+                   Modified By: Mastery: Highlord's Judgment (267316 effect#3)
 #2 (id=1148149)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779), Boundless Judgment (383970), Judgment (383991), Hammer of Wrath (1241413)
                    Family Flags: 23
+                   Modified By: Mastery: Highlord's Judgment (267316 effect#3)
 #3 (id=1148160)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275), Hammer of Wrath (1241413)
                    Family Flags: 39
+                   Modified By: Mastery: Highlord's Judgment (267316 effect#3)
 #4 (id=1148161)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275), Hammer of Wrath (1241413)
                    Family Flags: 39
+                   Modified By: Mastery: Highlord's Judgment (267316 effect#3)
 Description      : Increases Holy damage done by ${$s1}.1%.
 
 Name             : Azerite Surge (id=451897) 
@@ -19007,7 +19040,7 @@ Effects          :
 #2 (id=1155853)  : Apply Aura (6) | Increase Mounted Speed% (172)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=1155854)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 230 | Target: Self (1)
 #4 (id=1155855)  : Server Side Script (77)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
@@ -20131,8 +20164,10 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1183790)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Modified By: Holy Paladin (1258016 effect#17)
 #2 (id=1183791)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
+                   Modified By: Holy Paladin (1258016 effect#18)
 Description      : Flash of Light $?c1[and Holy Light are][is] $s1% more effective on your allies and $s2% of the healing done also heals you.
 
 Name             : Selfless Healer (id=469435) [Spell Family (10)] 
@@ -21076,10 +21111,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Eternal Flame (156322), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Afterimage (391309), Shield of the Righteous (415091), Divine Storm (423593), Eternal Flame (461432)
                    Family Flags: 44, 52, 78, 82, 89, 91
+                   Modified By: Paladin Herald of the Sun 11.2 Class Set 4pc (1236384 effect#1)
 #2 (id=1233465)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Eternal Flame (156322), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Afterimage (391309), Shield of the Righteous (415091), Divine Storm (423593), Eternal Flame (461432)
                    Family Flags: 44, 52, 78, 82, 89, 91
+                   Modified By: Paladin Herald of the Sun 11.2 Class Set 4pc (1236384 effect#3)
 Description      : $@spelldesc1236383
 Tooltip          : Sun's Avatar remains active$?a1236384[ and the damage and healing of your Holy Power spenders is increased by $w1%][].
 
@@ -21541,6 +21578,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #2 (id=1245746)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Modified By: Beacon of the Savior (1245367 effect#1)
 #3 (id=1246355)  : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : While in combat, apply a Beacon of the Savior to the lowest health ally within $s1 yds that causes your direct healing on others to also heal that ally for $s2% of the amount healed.
@@ -21923,7 +21961,7 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1266223)  : Apply Aura (6) | Override Spell Power per Attack Power% (366)
-                   Base Value: 96 | Scaled Value: 96 | Misc Value: 126 | Misc Value 2: 0x1 | Target: Self (1)
+                   Base Value: 96 | Scaled Value: 96 | Misc Value: 126 | Misc Value 2: 1 | Target: Self (1)
 #2 (id=1266224)  : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 #3 (id=1266225)  : Apply Aura (6) | Hasted Cooldown Duration (416)
@@ -22019,7 +22057,7 @@ Effects          :
 #4 (id=1266275)  : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #5 (id=1266276)  : Apply Aura (6) | Modify Casting Pushback (149)
-                   Base Value: 70 | Scaled Value: 70 | Misc Value: 10 | Misc Value 2: 0x4 | Target: Self (1)
+                   Base Value: 70 | Scaled Value: 70 | Misc Value: 10 | Misc Value 2: 4 | Target: Self (1)
 #6 (id=1266277)  : Apply Aura (6) | Override Attack Power per Spell Power% (404)
                    Base Value: 104 | Scaled Value: 104 | Target: Self (1)
 #7 (id=1266278)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
@@ -22114,7 +22152,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1269224)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 253759 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 253759 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Execution Sentence (id=1260251) [Spell Family (10)] 
