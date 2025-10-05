@@ -2229,13 +2229,9 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     {
       tokens.emplace_back( fmt::format( "Misc Value 2: {} (Label)", e->misc_value2() ) );
     }
-    else if ( e->subtype() == A_SCHOOL_ABSORB || e->subtype() == A_MOD_PET_STAT )
-    {
-      tokens.emplace_back( fmt::format( "Misc Value 2: {}", e->misc_value2() ) );
-    }
     else
     {
-      tokens.emplace_back( fmt::format( "Misc Value 2: {:#x}", e->misc_value2() ) );
+      tokens.emplace_back( fmt::format( "Misc Value 2: {}", e->misc_value2() ) );
     }
   }
 
