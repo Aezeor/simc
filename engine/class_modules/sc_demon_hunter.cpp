@@ -950,7 +950,6 @@ public:
     spell_t* collective_anguish           = nullptr;
 
     // Devourer
-    spell_t* soul_immolation_energize = nullptr;
     spell_t* spontaneous_immolation = nullptr;
 
     // Havoc
@@ -4780,23 +4779,28 @@ struct voidblade_t : public demon_hunter_spell_t
   }
 };
 
-struct soul_immolation_energize_t : public demon_hunter_spell_t
-{
-  soul_immolation_energize_t( util::string_view n, demon_hunter_t* p )
-    : demon_hunter_spell_t( n, p, p->spec.soul_immolation_energize, "" )
-  {
-    may_miss = may_block = may_dodge = may_parry = callbacks = false;
-    background = dual = true;
-    energize_type     = action_energize::ON_CAST;
-  }
-};
-
 struct soul_immolation_t : public demon_hunter_spell_t
 {
-  soul_immolation_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o = "") : demon_hunter_spell_t( n, p, s, o )
+  struct soul_immolation_energize_t : public demon_hunter_spell_t
+  {
+    soul_immolation_energize_t( util::string_view n, demon_hunter_t* p )
+      : demon_hunter_spell_t( n, p, p->spec.soul_immolation_energize, "" )
+    {
+      may_miss = may_block = may_dodge = may_parry = callbacks = false;
+      background = dual = true;
+      energize_type     = action_energize::ON_CAST;
+      target = p;
+    }
+  };
+
+  spell_t* energize_action;
+
+  soul_immolation_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o = "") : demon_hunter_spell_t( n, p, s, o ), energize_action( nullptr )
   {
     // self damage doesn't count as DPS
     stats->type = stats_e::STATS_NEUTRAL;
+
+    energize_action = p->get_background_action<soul_immolation_energize_t>( "soul_immolation_energize" );
   }
 
   void execute() override
@@ -4815,7 +4819,7 @@ struct soul_immolation_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::tick( d );
 
-    p()->active.soul_immolation_energize->execute_on_target( p() );
+    energize_action->execute();
 
     // seems to spawn a soul fragment every other tick, starting with the first tick
     if ( d->current_tick % 2 == 0 )
@@ -8792,11 +8796,6 @@ void demon_hunter_t::init_spells()
 
   active.consume_soul_lesser =
         new consume_soul_t( this, "consume_soul_lesser", spec.consume_soul_lesser, soul_fragment::LESSER );
-
-  if ( talent.devourer.soul_immolation->ok() )
-  {
-    active.soul_immolation_energize = get_background_action<soul_immolation_energize_t>( "soul_immolation_energize" );
-  }
 
   if ( talent.devourer.spontaneous_immolation->ok())
   {
