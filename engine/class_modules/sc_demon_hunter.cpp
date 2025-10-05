@@ -74,8 +74,9 @@ public:
   void target_demise();
 };
 
-constexpr unsigned MAX_SOUL_FRAGMENTS      = 5;
-constexpr double VENGEFUL_RETREAT_DISTANCE = 20.0;
+constexpr unsigned MAX_SOUL_FRAGMENTS          = 5;
+constexpr unsigned DEVOURER_MAX_SOUL_FRAGMENTS = 10;
+constexpr double VENGEFUL_RETREAT_DISTANCE     = 20.0;
 
 enum class soul_fragment : unsigned
 {
@@ -1106,6 +1107,7 @@ public:
     return options.target_reach >= 0 ? options.target_reach : sim->target->combat_reach;
   }
   void parse_player_effects();
+  unsigned max_soul_fragments() const;
 
   // Secondary Action Tracking
 private:
@@ -4799,13 +4801,14 @@ struct soul_immolation_t : public demon_hunter_spell_t
       may_miss = may_block = may_dodge = may_parry = callbacks = false;
       background = dual = true;
       energize_type     = action_energize::ON_CAST;
-      target = p;
+      target            = p;
     }
   };
 
   spell_t* energize_action;
 
-  soul_immolation_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o = "") : demon_hunter_spell_t( n, p, s, o ), energize_action( nullptr )
+  soul_immolation_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o = "" )
+    : demon_hunter_spell_t( n, p, s, o ), energize_action( nullptr )
   {
     // self damage doesn't count as DPS
     stats->type = stats_e::STATS_NEUTRAL;
@@ -4819,10 +4822,10 @@ struct soul_immolation_t : public demon_hunter_spell_t
     demon_hunter_spell_t::execute();
   }
 
-  void impact(action_state_t* s) override
+  void impact( action_state_t* s ) override
   {
-    assert(s->target == p());
-    demon_hunter_spell_t::impact(s);
+    assert( s->target == p() );
+    demon_hunter_spell_t::impact( s );
   }
 
   void tick( dot_t* d ) override
@@ -7616,6 +7619,7 @@ void demon_hunter_t::create_buffs()
   buff.empowered_demon_soul = make_buff( this, "empowered_demon_soul", spell.demon_soul_empowered );
   buff.immolation_aura      = make_buff<buffs::immolation_aura_buff_t>( this );
   buff.metamorphosis        = make_buff<buffs::metamorphosis_buff_t>( this );
+  buff.soul_fragments       = make_buff( this, "soul_fragments", spec.soul_fragments_buff );
 
   // Devourer ===============================================================
 
@@ -7695,8 +7699,6 @@ void demon_hunter_t::create_buffs()
                          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                          ->disable_ticking( true );
-
-  buff.soul_fragments = make_buff( this, "soul_fragments", spec.soul_fragments_buff )->set_max_stack( 10 );
 
   buff.soul_barrier = make_buff<absorb_buff_t>( this, "soul_barrier", talent.vengeance.soul_barrier );
   buff.soul_barrier->set_absorb_source( get_stats( "soul_barrier" ) )
@@ -8182,14 +8184,14 @@ void demon_hunter_t::init_special_effects()
   base_t::init_special_effects();
 
   // Devourer
-  if ( talent.devourer.spontaneous_immolation->ok())
+  if ( talent.devourer.spontaneous_immolation->ok() )
   {
-    auto effect = new special_effect_t( this );
-    effect->name_str = "spontaneous_immolation";
-    effect->spell_id = talent.devourer.spontaneous_immolation->id();
-    effect->proc_chance_ = talent.devourer.spontaneous_immolation->effectN( 1 ).percent();
+    auto effect            = new special_effect_t( this );
+    effect->name_str       = "spontaneous_immolation";
+    effect->spell_id       = talent.devourer.spontaneous_immolation->id();
+    effect->proc_chance_   = talent.devourer.spontaneous_immolation->effectN( 1 ).percent();
     effect->execute_action = active.spontaneous_immolation;
-    special_effects.push_back(effect);
+    special_effects.push_back( effect );
 
     new demon_hunter_proc_callback_t( *effect );
   }
@@ -8272,6 +8274,7 @@ void demon_hunter_t::init_spells()
       spec.consume_soul_lesser  = spec.consume_soul_greater;
       spec.metamorphosis        = find_class_spell( "Metamorphosis" );
       spec.metamorphosis_buff   = spec.metamorphosis->effectN( 2 ).trigger();
+      spec.soul_fragments_buff  = spell_data_t::not_found();
       break;
     case DEMON_HUNTER_VENGEANCE:
       spell.throw_glaive        = find_specialization_spell( "Throw Glaive" );
@@ -8279,13 +8282,15 @@ void demon_hunter_t::init_spells()
       spec.consume_soul_lesser  = find_spell( 203794 );
       spec.metamorphosis        = find_specialization_spell( "Metamorphosis" );
       spec.metamorphosis_buff   = spec.metamorphosis;
+      spec.soul_fragments_buff  = find_spell( 203981, DEMON_HUNTER_VENGEANCE );
       break;
     case DEMON_HUNTER_DEVOURER:
       spell.throw_glaive        = find_class_spell( "Throw Glaive" );
       spec.consume_soul_greater = find_spell( 1223628 );
-      spec.consume_soul_lesser = find_spell( 1223628 );
-      spec.metamorphosis      = find_specialization_spell( "Void Metamorphosis" );
-      spec.metamorphosis_buff = spec.metamorphosis->effectN( 1 ).trigger();
+      spec.consume_soul_lesser  = find_spell( 1223628 );
+      spec.metamorphosis        = find_specialization_spell( "Void Metamorphosis" );
+      spec.metamorphosis_buff   = spec.metamorphosis->effectN( 1 ).trigger();
+      spec.soul_fragments_buff  = find_spell( 1245577, DEMON_HUNTER_DEVOURER );
     default:
       break;
   }
@@ -8319,13 +8324,12 @@ void demon_hunter_t::init_spells()
   // Vengeance Spells
   spec.vengeance_demon_hunter = find_specialization_spell( "Vengeance Demon Hunter" );
 
-  spec.demon_spikes        = find_specialization_spell( "Demon Spikes" );
-  spec.infernal_strike     = find_specialization_spell( "Infernal Strike" );
-  spec.soul_cleave         = find_specialization_spell( "Soul Cleave" );
-  spec.shear               = find_spell( 203782, DEMON_HUNTER_VENGEANCE );
-  spec.soul_cleave_2       = find_rank_spell( "Soul Cleave", "Rank 2" );
-  spec.riposte             = find_specialization_spell( "Riposte" );
-  spec.soul_fragments_buff = find_spell( 203981, DEMON_HUNTER_VENGEANCE );
+  spec.demon_spikes    = find_specialization_spell( "Demon Spikes" );
+  spec.infernal_strike = find_specialization_spell( "Infernal Strike" );
+  spec.soul_cleave     = find_specialization_spell( "Soul Cleave" );
+  spec.shear           = find_spell( 203782, DEMON_HUNTER_VENGEANCE );
+  spec.soul_cleave_2   = find_rank_spell( "Soul Cleave", "Rank 2" );
+  spec.riposte         = find_specialization_spell( "Riposte" );
 
   // Masteries ==============================================================
 
@@ -8805,11 +8809,12 @@ void demon_hunter_t::init_spells()
   }
 
   active.consume_soul_lesser =
-        new consume_soul_t( this, "consume_soul_lesser", spec.consume_soul_lesser, soul_fragment::LESSER );
+      new consume_soul_t( this, "consume_soul_lesser", spec.consume_soul_lesser, soul_fragment::LESSER );
 
-  if ( talent.devourer.spontaneous_immolation->ok())
+  if ( talent.devourer.spontaneous_immolation->ok() )
   {
-    active.spontaneous_immolation = get_background_action<soul_immolation_t>( "soul_immolation_spontaneous", spec.spontaneous_immolation_buff );
+    active.spontaneous_immolation =
+        get_background_action<soul_immolation_t>( "soul_immolation_spontaneous", spec.spontaneous_immolation_buff );
     active.spontaneous_immolation->cooldown->duration = 0_s;
   }
 
@@ -9750,7 +9755,7 @@ unsigned demon_hunter_t::get_total_soul_fragments( soul_fragment type_mask ) con
 {
   if ( type_mask == soul_fragment::ANY )
   {
-    return (unsigned)soul_fragments.size();
+    return static_cast<unsigned>( soul_fragments.size() );
   }
 
   return std::accumulate(
@@ -9771,10 +9776,12 @@ void demon_hunter_t::activate_soul_fragment( soul_fragment_t* frag )
     return;
   }
 
+  auto max_soul_frags = max_soul_fragments();
+
   if ( frag->type == soul_fragment::LESSER )
   {
     unsigned active_fragments = get_active_soul_fragments( frag->type );
-    if ( active_fragments > MAX_SOUL_FRAGMENTS )
+    if ( active_fragments > max_soul_frags )
     {
       // Find and delete the oldest active fragment of this type.
       for ( auto& it : soul_fragments )
@@ -9797,7 +9804,7 @@ void demon_hunter_t::activate_soul_fragment( soul_fragment_t* frag )
       }
     }
 
-    assert( get_active_soul_fragments( soul_fragment::LESSER ) <= MAX_SOUL_FRAGMENTS );
+    assert( get_active_soul_fragments( soul_fragment::LESSER ) <= max_soul_frags );
   }
 }
 
@@ -9916,6 +9923,23 @@ void demon_hunter_t::parse_player_effects()
 
   // Set Bonuses
   parse_effects( buff.necessary_sacrifice );
+}
+
+// demon_hunter_t::max_soul_fragments =============================================
+
+unsigned demon_hunter_t::max_soul_fragments() const
+{
+  switch ( specialization() )
+  {
+    case DEMON_HUNTER_DEVOURER:
+      return DEVOURER_MAX_SOUL_FRAGMENTS;
+    case DEMON_HUNTER_HAVOC:
+      return MAX_SOUL_FRAGMENTS;
+    case DEMON_HUNTER_VENGEANCE:
+      return MAX_SOUL_FRAGMENTS;
+    default:
+      return 0;
+  }
 }
 
 // demon_hunter_sigil_t::create_sigil_expression ==================================
