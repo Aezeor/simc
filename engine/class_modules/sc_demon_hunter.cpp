@@ -270,6 +270,7 @@ public:
     buff_t* metamorphosis;
 
     // Devourer
+    buff_t* reap;
 
     // Havoc
     buff_t* blind_fury;
@@ -661,6 +662,7 @@ public:
     const spell_data_t* metamorphosis_buff;
     const spell_data_t* sigil_of_misery;
     const spell_data_t* sigil_of_misery_debuff;
+    const spell_data_t* shattered_souls;
 
     // Devourer
     const spell_data_t* devourer_demon_hunter;
@@ -668,6 +670,9 @@ public:
     const spell_data_t* voidblade;
     const spell_data_t* soul_immolation_energize;
     const spell_data_t* spontaneous_immolation_buff;
+    const spell_data_t* reap;
+    const spell_data_t* reap_damage;
+    const spell_data_t* reap_energize;
 
     // Havoc
     const spell_data_t* havoc_demon_hunter;
@@ -4805,7 +4810,7 @@ struct soul_immolation_t : public demon_hunter_spell_t
     }
   };
 
-  spell_t* energize_action;
+  soul_immolation_energize_t* energize_action;
 
   soul_immolation_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o = "" )
     : demon_hunter_spell_t( n, p, s, o ), energize_action( nullptr )
@@ -4839,6 +4844,66 @@ struct soul_immolation_t : public demon_hunter_spell_t
     {
       p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
     }
+  }
+};
+
+struct reap_t : public demon_hunter_spell_t
+{
+  struct reap_damage_t : public demon_hunter_spell_t
+  {
+    reap_damage_t( util::string_view n, demon_hunter_t* p ) : demon_hunter_spell_t( n, p, p->spec.reap_damage, "" )
+    {
+    }
+  };
+
+  struct reap_energize_t : public demon_hunter_spell_t
+  {
+    reap_energize_t( util::string_view n, demon_hunter_t* p ) : demon_hunter_spell_t( n, p, p->spec.reap_energize, "" )
+    {
+      may_miss = may_block = may_dodge = may_parry = callbacks = false;
+      background = dual = true;
+      energize_type     = action_energize::ON_CAST;
+      target            = p;
+    }
+  };
+
+  reap_damage_t* damage_action;
+  reap_energize_t* energize_action;
+
+  reap_t( demon_hunter_t* p, util::string_view o ) : demon_hunter_spell_t( "reap", p, p->spec.reap, o ), damage_action( nullptr ), energize_action( nullptr )
+  {
+    damage_action         = p->get_background_action<reap_damage_t>( "reap_damage" );
+    damage_action->stats = stats;
+
+    if ( p->talent.devourer.scythes_embrace->ok() )
+    {
+      energize_action = p->get_background_action<reap_energize_t>( "reap_energize" );
+    }
+  }
+
+  void execute() override
+  {
+    if ( energize_action )
+    {
+      energize_action->execute();
+    }
+    p()->buff.reap->trigger();
+    demon_hunter_spell_t::execute();
+
+    unsigned souls_to_consume   = p()->spec.shattered_souls->effectN( 2 ).base_value();
+    unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume );
+
+    damage_action->set_target( target );
+    action_state_t* damage_state = damage_action->get_state();
+    damage_state->target = target;
+    damage_action->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
+
+    if ( p()->talent.devourer.soulshaper->ok() )
+    {
+      damage_state->da_multiplier *= 1.0 + fragments_consumed * p()->talent.devourer.soulshaper->effectN( 1 ).percent();
+    }
+
+    damage_action->schedule_execute( damage_state );
   }
 };
 
@@ -7570,6 +7635,8 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new voidblade_t( this, options_str );
   if ( name == "soul_immolation" )
     return new soul_immolation_t( "soul_immolation", this, talent.devourer.soul_immolation, options_str );
+  if ( name == "reap" )
+    return new reap_t( this, options_str );
 
   using namespace actions::attacks;
 
@@ -7622,6 +7689,8 @@ void demon_hunter_t::create_buffs()
   buff.soul_fragments       = make_buff( this, "soul_fragments", spec.soul_fragments_buff );
 
   // Devourer ===============================================================
+
+  buff.reap = make_buff( this, "reap", spec.reap );
 
   // Havoc ==================================================================
 
@@ -8275,6 +8344,7 @@ void demon_hunter_t::init_spells()
       spec.metamorphosis        = find_class_spell( "Metamorphosis" );
       spec.metamorphosis_buff   = spec.metamorphosis->effectN( 2 ).trigger();
       spec.soul_fragments_buff  = spell_data_t::not_found();
+      spec.shattered_souls      = find_spell( 178940 );
       break;
     case DEMON_HUNTER_VENGEANCE:
       spell.throw_glaive        = find_specialization_spell( "Throw Glaive" );
@@ -8282,7 +8352,8 @@ void demon_hunter_t::init_spells()
       spec.consume_soul_lesser  = find_spell( 203794 );
       spec.metamorphosis        = find_specialization_spell( "Metamorphosis" );
       spec.metamorphosis_buff   = spec.metamorphosis;
-      spec.soul_fragments_buff  = find_spell( 203981, DEMON_HUNTER_VENGEANCE );
+      spec.soul_fragments_buff  = find_spell( 203981 );
+      spec.shattered_souls      = find_spell( 178940 );
       break;
     case DEMON_HUNTER_DEVOURER:
       spell.throw_glaive        = find_class_spell( "Throw Glaive" );
@@ -8290,7 +8361,8 @@ void demon_hunter_t::init_spells()
       spec.consume_soul_lesser  = find_spell( 1223628 );
       spec.metamorphosis        = find_specialization_spell( "Void Metamorphosis" );
       spec.metamorphosis_buff   = spec.metamorphosis->effectN( 1 ).trigger();
-      spec.soul_fragments_buff  = find_spell( 1245577, DEMON_HUNTER_DEVOURER );
+      spec.soul_fragments_buff  = find_spell( 1245577 );
+      spec.shattered_souls      = find_spell( 1227619 );
     default:
       break;
   }
@@ -8299,8 +8371,11 @@ void demon_hunter_t::init_spells()
   spec.devourer_demon_hunter       = find_specialization_spell( "Devourer Demon Hunter" );
   spec.consume                     = find_spell( 473662, DEMON_HUNTER_DEVOURER );
   spec.voidblade                   = find_spell( 1245414, DEMON_HUNTER_DEVOURER );
-  spec.soul_immolation_energize    = find_spell( 1242475 );
-  spec.spontaneous_immolation_buff = find_spell( 1263610 );
+  spec.soul_immolation_energize    = find_spell( 1242475, DEMON_HUNTER_DEVOURER );
+  spec.spontaneous_immolation_buff = find_spell( 1263610, DEMON_HUNTER_DEVOURER );
+  spec.reap                        = find_spell( 1226019, DEMON_HUNTER_DEVOURER );
+  spec.reap_damage                 = find_spell( 1225823, DEMON_HUNTER_DEVOURER );
+  spec.reap_energize               = find_spell( 1261679, DEMON_HUNTER_DEVOURER );
 
   // Havoc Spells
   spec.havoc_demon_hunter = find_specialization_spell( "Havoc Demon Hunter" );
