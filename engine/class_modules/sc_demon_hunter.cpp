@@ -4755,6 +4755,16 @@ struct consume_t : public demon_hunter_spell_t
   consume_t( demon_hunter_t* p, util::string_view o ) : demon_hunter_spell_t( "consume", p, p->spec.consume, o )
   {
   }
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+
+    if ( p()->talent.devourer.predators_thirst->ok() )
+    {
+      p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
+    }
+  }
 };
 
 struct voidblade_t : public demon_hunter_spell_t
