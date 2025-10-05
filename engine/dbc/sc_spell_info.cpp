@@ -2911,6 +2911,31 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     }
   }
 
+  std::array<std::vector<const spelleffect_data_t*>, 5> modified_by;
+  auto check_modifying = [ & ]( const spelleffect_data_t* const eff ) {
+    switch ( eff->subtype() )
+    {
+      case A_ADD_FLAT_MODIFIER:
+      case A_ADD_PCT_MODIFIER:
+      case A_ADD_FLAT_LABEL_MODIFIER:
+      case A_ADD_PCT_LABEL_MODIFIER:
+        break;
+      default:
+        return;
+    }
+
+    switch ( eff->property_type() )
+    {
+      case P_EFFECT_1: modified_by[ 0 ].push_back( eff ); return;
+      case P_EFFECT_2: modified_by[ 1 ].push_back( eff ); return;
+      case P_EFFECT_3: modified_by[ 2 ].push_back( eff ); return;
+      case P_EFFECT_4: modified_by[ 3 ].push_back( eff ); return;
+      case P_EFFECT_5: modified_by[ 4 ].push_back( eff ); return;
+      case P_EFFECTS: range::for_each( modified_by, [ & ]( auto& v ) { v.push_back( eff ); } ); return;
+      default: return;
+    }
+  };
+
   bool first_label = true;
   for ( size_t i = 1, end = spell->label_count(); i <= end; ++i )
   {
@@ -2936,7 +2961,8 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     }
     else if ( !affecting_effects.empty() )
     {
-      s << ": " << wrap_concatenate( affecting_effects, []( const spelleffect_data_t* e ) {
+      s << ": " << wrap_concatenate( affecting_effects, [ & ]( const spelleffect_data_t* e ) {
+        check_modifying( e );
         return fmt::format( "{} ({} effect#{})", e->spell()->name_cstr(), e->spell()->id(), e->index() + 1 );
       }, wrap );
     }
@@ -3113,29 +3139,11 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     fmt::print( s, "Proc Flags       : {}\n", fmt::join( proc_str, ", " ) );
   }
 
-  std::array<std::vector<const spelleffect_data_t*>, 5> modified_by;
-
   if ( spell->class_family() > 0 )
   {
     auto affecting_effects = dbc.effects_affecting_spell( spell );
     if ( !affecting_effects.empty() )
     {
-      auto check_modifying = [ & ]( const spelleffect_data_t* const eff ) {
-        if ( eff->subtype() != A_ADD_PCT_MODIFIER && eff->subtype() != A_ADD_FLAT_MODIFIER )
-          return;
-
-        if ( eff->property_type() == P_EFFECT_1 || eff->property_type() == P_EFFECTS )
-          modified_by[ 0 ].push_back( eff );
-        if ( eff->property_type() == P_EFFECT_2 || eff->property_type() == P_EFFECTS )
-          modified_by[ 1 ].push_back( eff );
-        if ( eff->property_type() == P_EFFECT_3 || eff->property_type() == P_EFFECTS )
-          modified_by[ 2 ].push_back( eff );
-        if ( eff->property_type() == P_EFFECT_4 || eff->property_type() == P_EFFECTS )
-          modified_by[ 3 ].push_back( eff );
-        if ( eff->property_type() == P_EFFECT_5 || eff->property_type() == P_EFFECTS )
-          modified_by[ 4 ].push_back( eff );
-      };
-
       const auto spell_string = [ & ]( util::span<const spelleffect_data_t* const> effects ) {
         const spell_data_t* spell = effects.front()->spell();
         if ( effects.size() == 1 )
