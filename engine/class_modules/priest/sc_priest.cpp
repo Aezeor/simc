@@ -2719,6 +2719,16 @@ double priest_t::composite_attribute_multiplier( attribute_e attr ) const
     mul *= 1.0 + pwf_val + wof_val;
   }
 
+  if ( attr == ATTR_STAMINA && talents.strength_of_soul.enabled() )
+  {
+    mul *= talents.strength_of_soul->effectN( 1 ).percent();
+  }
+
+  if ( attr == ATTR_INTELLECT && talents.spiritual_guidance.enabled() )
+  {
+    mul *= 1.0 + talents.spiritual_guidance->effectN( 1 ).percent();
+  }
+
   return mul;
 }
 
@@ -3095,11 +3105,11 @@ void priest_t::init_spells()
   // Row 2
   talents.holy_nova          = CT( "Holy Nova" );
   talents.holy_nova_heal     = find_spell( 281265 );
-  talents.dispel_magic       = CT( "Dispel Magic" );        // NYI
-  talents.spiritual_guidance = CT( "Spiritual_Guidance" );  // NYI
+  talents.dispel_magic       = CT( "Dispel Magic" );  // NYI
+  talents.spiritual_guidance = CT( "Spiritual Guidance" );
   talents.psychic_scream     = CT( "Psychic Scream" );
   // Row 3
-  talents.lightburst         = CT( "Lightburst" );      // NYI
+  talents.lightburst         = CT( "Lightburst" );
   talents.leap_of_faith      = CT( "Leap of Faith" );   // NYI
   talents.purify_disease     = CT( "Purify Disease" );  // NYI
   talents.power_infusion     = CT( "Power Infusion" );
@@ -3112,9 +3122,9 @@ void priest_t::init_spells()
   talents.body_and_soul              = CT( "Body and Soul" );
   talents.mass_dispel                = CT( "Mass Dispel" );  // NYI
   talents.twins_of_the_sun_priestess = CT( "Twins of the Sun Priestess" );
-  talents.strength_of_soul           = CT( "Strength of Soul" );  // NYI
-  talents.mind_control               = CT( "Mind Control" );      // NYI
-  talents.dominate_mind              = CT( "Dominant Mind" );     // NYI
+  talents.strength_of_soul           = CT( "Strength of Soul" );
+  talents.mind_control               = CT( "Mind Control" );   // NYI
+  talents.dominate_mind              = CT( "Dominant Mind" );  // NYI
   talents.psychic_voice              = CT( "Psychic Voice" );
   talents.void_tendrils              = CT( "Void Tendrils" );  // NYI
   // Row 5
@@ -3665,7 +3675,7 @@ void priest_t::init_blizzard_action_list()
         break;
       case PRIEST_SHADOW:
         cooldowns->add_action( "use_items,if=buff.voidform.up" );
-        cooldowns->add_action( "void_eruption" );
+        cooldowns->add_action( "voidform" );
         cooldowns->add_action( "power_infusion,if=buff.voidform.up" );
         break;
       default:
@@ -3711,10 +3721,10 @@ std::string priest_t::blizzard_apl_action_replace( std::string options )
       {
         return "mind_flay_insanity";
       }
-      // void_eruption into void_bolt
+      // void_eruption into void_volley
       if ( options.find( "buff.voidform.up" ) != std::string::npos )
       {
-        return "void_bolt";
+        return "void_volley";
       }
       break;
     default:
