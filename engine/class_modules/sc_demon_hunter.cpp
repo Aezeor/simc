@@ -274,6 +274,7 @@ public:
     buff_t* reap;
     buff_t* feast_of_souls;
     buff_t* eradicate;
+    buff_t* moment_of_craving;
 
     // Havoc
     buff_t* blind_fury;
@@ -392,7 +393,7 @@ public:
       player_talent_t scythes_embrace;
       player_talent_t duty_eternal;
       player_talent_t entropy;            // NYI
-      player_talent_t moment_of_craving;  // NYI
+      player_talent_t moment_of_craving;
 
       player_talent_t sunder;  // NYI
       player_talent_t second_helping;
@@ -680,6 +681,7 @@ public:
     const spell_data_t* eradicate_damage;
     const spell_data_t* void_ray_tick;
     const spell_data_t* void_ray_tick_meta;
+    const spell_data_t* moment_of_craving_buff;
 
     // Havoc
     const spell_data_t* havoc_demon_hunter;
@@ -4922,6 +4924,13 @@ struct eradicate_t : public demon_hunter_spell_t
     p()->buff.eradicate->expire();
 
     double souls_to_consume     = p()->spec.shattered_souls->effectN( 2 ).base_value();
+    if ( p()->buff.moment_of_craving->up() )
+    {
+      souls_to_consume += p()->buff.moment_of_craving->check_value();
+    }
+
+    p()->sim->out_debug.printf( "%s can consume up to %.3f Soul Fragments with %s", p()->name(), souls_to_consume, name() );
+
     unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume );
 
     damage_action->set_target( target );
@@ -4935,6 +4944,8 @@ struct eradicate_t : public demon_hunter_spell_t
     }
 
     damage_action->schedule_execute( damage_state );
+
+    p()->buff.moment_of_craving->expire();
   }
 
   bool action_ready() override
@@ -4998,6 +5009,11 @@ struct reap_base_t : public demon_hunter_spell_t
     demon_hunter_spell_t::execute();
 
     double souls_to_consume     = p()->spec.shattered_souls->effectN( 2 ).base_value();
+    if ( p()->buff.moment_of_craving->up() )
+    {
+      souls_to_consume += p()->buff.moment_of_craving->check_value();
+    }
+
     unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume );
 
     damage_action->set_target( target );
@@ -5011,6 +5027,8 @@ struct reap_base_t : public demon_hunter_spell_t
     }
 
     damage_action->schedule_execute( damage_state );
+
+    p()->buff.moment_of_craving->expire();
   }
 };
 
@@ -5126,6 +5144,11 @@ struct void_ray_t : public demon_hunter_spell_t
       if ( p()->talent.devourer.eradicate->ok() )
       {
         p()->buff.eradicate->trigger();
+      }
+      if ( p()->talent.devourer.moment_of_craving->ok() )
+      {
+        p()->buff.moment_of_craving->trigger();
+        p()->cooldown.reap->reset( true );
       }
       if ( p()->talent.devourer.voidglare_boon->ok() )
       {
@@ -7933,6 +7956,8 @@ void demon_hunter_t::create_buffs()
                             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                             ->disable_ticking( true );
   buff.eradicate = make_buff( this, "eradicate", spec.eradicate_buff );
+  buff.moment_of_craving = make_buff( this, "moment_of_craving", spec.moment_of_craving_buff )
+    ->set_default_value_from_effect( 1 );
 
   // Havoc ==================================================================
 
@@ -8928,6 +8953,7 @@ void demon_hunter_t::init_spells()
   spec.eradicate_buff        = talent_spell_lookup( talent.devourer.eradicate, 1239524 );
   spec.void_ray_tick         = talent_spell_lookup( talent.devourer.void_ray, 1213649 );
   spec.void_ray_tick_meta    = talent_spell_lookup( talent.devourer.void_ray, 1214595 );
+  spec.moment_of_craving_buff    = talent_spell_lookup( talent.devourer.moment_of_craving, 1238495 );
 
   mastery.a_fire_inside = talent.havoc.a_fire_inside->effectN( 6 ).trigger();
 
