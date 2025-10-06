@@ -392,7 +392,7 @@ public:
 
       player_talent_t scythes_embrace;
       player_talent_t duty_eternal;
-      player_talent_t entropy;            // NYI
+      player_talent_t entropy;  // NYI
       player_talent_t moment_of_craving;
 
       player_talent_t sunder;  // NYI
@@ -400,7 +400,7 @@ public:
       player_talent_t waste_not;  // NYI
       player_talent_t soulshaper;
 
-      player_talent_t focused_ray;      // NYI
+      player_talent_t focused_ray;
       player_talent_t collapsing_star;  // NYI
       player_talent_t sweet_suffering;
       player_talent_t voidpurge;
@@ -4923,13 +4923,11 @@ struct eradicate_t : public demon_hunter_spell_t
     demon_hunter_spell_t::execute();
     p()->buff.eradicate->expire();
 
-    double souls_to_consume     = p()->spec.shattered_souls->effectN( 2 ).base_value();
+    double souls_to_consume = p()->spec.shattered_souls->effectN( 2 ).base_value();
     if ( p()->buff.moment_of_craving->up() )
     {
       souls_to_consume += p()->buff.moment_of_craving->check_value();
     }
-
-    p()->sim->out_debug.printf( "%s can consume up to %.3f Soul Fragments with %s", p()->name(), souls_to_consume, name() );
 
     unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume );
 
@@ -5008,7 +5006,7 @@ struct reap_base_t : public demon_hunter_spell_t
     p()->buff.reap->trigger();
     demon_hunter_spell_t::execute();
 
-    double souls_to_consume     = p()->spec.shattered_souls->effectN( 2 ).base_value();
+    double souls_to_consume = p()->spec.shattered_souls->effectN( 2 ).base_value();
     if ( p()->buff.moment_of_craving->up() )
     {
       souls_to_consume += p()->buff.moment_of_craving->check_value();
@@ -7956,8 +7954,8 @@ void demon_hunter_t::create_buffs()
                             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                             ->disable_ticking( true );
   buff.eradicate = make_buff( this, "eradicate", spec.eradicate_buff );
-  buff.moment_of_craving = make_buff( this, "moment_of_craving", spec.moment_of_craving_buff )
-    ->set_default_value_from_effect( 1 );
+  buff.moment_of_craving =
+      make_buff( this, "moment_of_craving", spec.moment_of_craving_buff )->set_default_value_from_effect( 1 );
 
   // Havoc ==================================================================
 
@@ -8945,15 +8943,15 @@ void demon_hunter_t::init_spells()
   spec.sigil_of_misery_debuff    = talent_spell_lookup( talent.demon_hunter.sigil_of_misery, 207685 );
 
   // Spec Background Spells
-  spec.feast_of_souls_buff   = talent_spell_lookup( talent.devourer.feast_of_souls, 1232310 );
-  spec.devourers_bite_debuff = talent_spell_lookup( talent.devourer.devourers_bite, 1241532 );
-  spec.void_metamorphosis    = talent_spell_lookup( talent.devourer.void_metamorphosis, 1217607 );
-  spec.eradicate             = talent_spell_lookup( talent.devourer.eradicate, 1225826 );
-  spec.eradicate_damage      = talent_spell_lookup( talent.devourer.eradicate, 1225827 );
-  spec.eradicate_buff        = talent_spell_lookup( talent.devourer.eradicate, 1239524 );
-  spec.void_ray_tick         = talent_spell_lookup( talent.devourer.void_ray, 1213649 );
-  spec.void_ray_tick_meta    = talent_spell_lookup( talent.devourer.void_ray, 1214595 );
-  spec.moment_of_craving_buff    = talent_spell_lookup( talent.devourer.moment_of_craving, 1238495 );
+  spec.feast_of_souls_buff    = talent_spell_lookup( talent.devourer.feast_of_souls, 1232310 );
+  spec.devourers_bite_debuff  = talent_spell_lookup( talent.devourer.devourers_bite, 1241532 );
+  spec.void_metamorphosis     = talent_spell_lookup( talent.devourer.void_metamorphosis, 1217607 );
+  spec.eradicate              = talent_spell_lookup( talent.devourer.eradicate, 1225826 );
+  spec.eradicate_damage       = talent_spell_lookup( talent.devourer.eradicate, 1225827 );
+  spec.eradicate_buff         = talent_spell_lookup( talent.devourer.eradicate, 1239524 );
+  spec.void_ray_tick          = talent_spell_lookup( talent.devourer.void_ray, 1213649 );
+  spec.void_ray_tick_meta     = talent_spell_lookup( talent.devourer.void_ray, 1214595 );
+  spec.moment_of_craving_buff = talent_spell_lookup( talent.devourer.moment_of_craving, 1238495 );
 
   mastery.a_fire_inside = talent.havoc.a_fire_inside->effectN( 6 ).trigger();
 
@@ -9732,6 +9730,16 @@ void demon_hunter_t::combat_begin()
   {
     resources.current[ RESOURCE_FURY ] = fury_cap;
     sim->print_debug( "Fury for {} capped at combat start to {} (was {})", *this, fury_cap, current_fury );
+  }
+
+  // Devourer spawns a Soul Fragment every 8s with Entropy talented
+  if ( talent.devourer.entropy->ok() )
+  {
+    timespan_t initial_delay = timespan_t::from_millis( rng().range( 0, 5250 ) );
+    make_event( sim, initial_delay, [ this ] {
+      make_repeating_event( sim, talent.devourer.entropy->effectN( 1 ).period(),
+                            [ this ] { spawn_soul_fragment( soul_fragment::LESSER, 1 ); } );
+    } );
   }
 }
 
