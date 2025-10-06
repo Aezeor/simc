@@ -45,6 +45,9 @@ public:
     buff_t* sigil_of_flame;
     buff_t* sigil_of_doom;
 
+    // Devourer
+    buff_t* devourers_bite;
+
     // Havoc
     buff_t* burning_wound;
     buff_t* essence_break;
@@ -380,9 +383,9 @@ public:
       player_talent_t soul_immolation;
       player_talent_t predators_thirst;
 
-      player_talent_t tempered_soul;           // NYI
+      player_talent_t tempered_soul;  // NYI
       player_talent_t spontaneous_immolation;
-      player_talent_t void_metamorphosis;      // NYI
+      player_talent_t void_metamorphosis;  // NYI
       player_talent_t feast_of_souls;
 
       player_talent_t scythes_embrace;
@@ -390,15 +393,15 @@ public:
       player_talent_t entropy;            // NYI
       player_talent_t moment_of_craving;  // NYI
 
-      player_talent_t sunder;          // NYI
+      player_talent_t sunder;  // NYI
       player_talent_t second_helping;
-      player_talent_t waste_not;       // NYI
+      player_talent_t waste_not;  // NYI
       player_talent_t soulshaper;
 
       player_talent_t focused_ray;      // NYI
       player_talent_t collapsing_star;  // NYI
       player_talent_t sweet_suffering;
-      player_talent_t voidpurge;        // NYI
+      player_talent_t voidpurge;  // NYI
 
       player_talent_t hungering_slash;  // NYI
       player_talent_t voidrage;         // NYI
@@ -665,6 +668,7 @@ public:
     const spell_data_t* reap_damage;
     const spell_data_t* reap_energize;
     const spell_data_t* feast_of_souls_buff;
+    const spell_data_t* devourers_bite_debuff;
 
     // Havoc
     const spell_data_t* havoc_demon_hunter;
@@ -1812,6 +1816,9 @@ public:
   void apply_debuff_effects()
   {
     // Shared
+
+    // Devourer
+    ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::devourers_bite ), p()->spec.devourers_bite_debuff );
 
     // Havoc
     ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::burning_wound ), p()->spec.burning_wound_debuff );
@@ -4764,6 +4771,16 @@ struct voidblade_t : public demon_hunter_spell_t
       background = dual = true;
       gain              = p->get_gain( "voidblade" );
     }
+
+    void impact( action_state_t* s ) override
+    {
+      demon_hunter_spell_t::impact( s );
+
+      if ( p()->talent.devourer.devourers_bite->ok() )
+      {
+        td( s->target )->debuffs.devourers_bite->trigger();
+      }
+    }
   };
 
   voidblade_t( demon_hunter_t* p, util::string_view o )
@@ -4872,7 +4889,7 @@ struct reap_t : public demon_hunter_spell_t
     p()->buff.reap->trigger();
     demon_hunter_spell_t::execute();
 
-    double souls_to_consume   = p()->spec.shattered_souls->effectN( 2 ).base_value();
+    double souls_to_consume     = p()->spec.shattered_souls->effectN( 2 ).base_value();
     unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume );
 
     damage_action->set_target( target );
@@ -7343,9 +7360,14 @@ struct demon_hunter_proc_callback_t : public dbc_proc_callback_t
 demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   : actor_target_data_t( target, &p ), dots( dots_t() ), debuffs( debuffs_t() )
 {
-  // TODO: MIDNIGHT - ADD DEVOURER
   switch ( p.specialization() )
   {
+    case DEMON_HUNTER_DEVOURER:
+      debuffs.devourers_bite = make_buff( *this, "devourers_bite", p.spec.devourers_bite_debuff )
+                                   ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                                   ->disable_ticking( true );
+      break;
     case DEMON_HUNTER_HAVOC:
       debuffs.essence_break = make_buff( *this, "essence_break", p.spec.essence_break_debuff )
                                   ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS )
@@ -8306,7 +8328,6 @@ void demon_hunter_t::init_spells()
   spec.reap                        = find_spell( 1226019, DEMON_HUNTER_DEVOURER );
   spec.reap_damage                 = find_spell( 1225823, DEMON_HUNTER_DEVOURER );
   spec.reap_energize               = find_spell( 1261679, DEMON_HUNTER_DEVOURER );
-  spec.feast_of_souls_buff         = find_spell( 1232310, DEMON_HUNTER_DEVOURER );
 
   // Havoc Spells
   spec.havoc_demon_hunter = find_specialization_spell( "Havoc Demon Hunter" );
@@ -8625,6 +8646,9 @@ void demon_hunter_t::init_spells()
   spec.sigil_of_misery_debuff    = talent_spell_lookup( talent.demon_hunter.sigil_of_misery, 207685 );
 
   // Spec Background Spells
+  spec.feast_of_souls_buff   = talent_spell_lookup( talent.devourer.feast_of_souls, 1232310 );
+  spec.devourers_bite_debuff = talent_spell_lookup( talent.devourer.devourers_bite, 1241532 );
+
   mastery.a_fire_inside = talent.havoc.a_fire_inside->effectN( 6 ).trigger();
 
   spec.burning_wound_debuff = talent.havoc.burning_wound->effectN( 1 ).trigger();
@@ -9565,15 +9589,15 @@ void demon_hunter_t::reset()
 {
   base_t::reset();
 
-  soul_fragment_pick_up           = nullptr;
-  frailty_driver                  = nullptr;
-  exit_melee_event                = nullptr;
-  next_fragment_spawn             = 0;
-  metamorphosis_health            = 0;
-  frailty_accumulator             = 0.0;
-  shattered_destiny_accumulator   = 0.0;
-  wounded_quarry_accumulator      = 0.0;
-  last_reavers_mark_applied       = nullptr;
+  soul_fragment_pick_up         = nullptr;
+  frailty_driver                = nullptr;
+  exit_melee_event              = nullptr;
+  next_fragment_spawn           = 0;
+  metamorphosis_health          = 0;
+  frailty_accumulator           = 0.0;
+  shattered_destiny_accumulator = 0.0;
+  wounded_quarry_accumulator    = 0.0;
+  last_reavers_mark_applied     = nullptr;
 
   for ( size_t i = 0; i < soul_fragments.size(); i++ )
   {
