@@ -662,6 +662,7 @@ public:
     // Devourer
     const spell_data_t* devourer_demon_hunter;
     const spell_data_t* consume;
+    const spell_data_t* devour;
     const spell_data_t* voidblade;
     const spell_data_t* soul_immolation_energize;
     const spell_data_t* spontaneous_immolation_buff;
@@ -670,6 +671,7 @@ public:
     const spell_data_t* reap_energize;
     const spell_data_t* feast_of_souls_buff;
     const spell_data_t* devourers_bite_debuff;
+    const spell_data_t* void_metamorphosis;
 
     // Havoc
     const spell_data_t* havoc_demon_hunter;
@@ -812,6 +814,9 @@ public:
     cooldown_t* sigil_of_misery;
     cooldown_t* metamorphosis;
     cooldown_t* throw_glaive;
+
+    // Devourer
+    cooldown_t* reap;
 
     // Havoc
     cooldown_t* blade_dance;
@@ -4754,9 +4759,10 @@ struct consume_soul_t : public demon_hunter_spell_t
   }
 };
 
-struct consume_t : public demon_hunter_spell_t
+struct consume_base_t : public demon_hunter_spell_t
 {
-  consume_t( demon_hunter_t* p, util::string_view o ) : demon_hunter_spell_t( "consume", p, p->spec.consume, o )
+  consume_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
+    : demon_hunter_spell_t( n, p, s, o )
   {
   }
 
@@ -4768,6 +4774,48 @@ struct consume_t : public demon_hunter_spell_t
     {
       p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
     }
+  }
+};
+
+struct devour_t : public consume_base_t
+{
+  timespan_t reap_cdr;
+
+  devour_t( demon_hunter_t* p ) : consume_base_t( "devour", p, p->spec.devour, "" )
+  {
+    reap_cdr = timespan_t::from_millis( p->spec.void_metamorphosis->effectN( 14 ).base_value() );
+  }
+
+  void execute() override
+  {
+    consume_base_t::execute();
+
+    p()->sim->out_debug.printf("%s adjusts Reap cooldown by %u", p()->name(), reap_cdr.total_millis());
+    p()->cooldown.reap->adjust( -reap_cdr );
+  }
+};
+
+struct consume_t : public consume_base_t
+{
+  devour_t* devour;
+
+  consume_t( demon_hunter_t* p, util::string_view o )
+    : consume_base_t( "consume", p, p->spec.consume, o ), devour( nullptr )
+  {
+    devour = new devour_t( p );
+    add_child( devour );
+  }
+
+  void execute() override
+  {
+    if ( !p()->buff.metamorphosis->up() )
+    {
+      devour->execute_on_target( target );
+      stats->add_execute( time_to_execute, target );
+      return;
+    }
+
+    consume_base_t::execute();
   }
 };
 
@@ -8331,6 +8379,7 @@ void demon_hunter_t::init_spells()
   // Devourer Spells
   spec.devourer_demon_hunter       = find_specialization_spell( "Devourer Demon Hunter" );
   spec.consume                     = find_spell( 473662, DEMON_HUNTER_DEVOURER );
+  spec.devour                      = find_spell( 1217610, DEMON_HUNTER_DEVOURER );
   spec.voidblade                   = find_spell( 1245414, DEMON_HUNTER_DEVOURER );
   spec.soul_immolation_energize    = find_spell( 1242475, DEMON_HUNTER_DEVOURER );
   spec.spontaneous_immolation_buff = find_spell( 1263610, DEMON_HUNTER_DEVOURER );
@@ -8657,6 +8706,7 @@ void demon_hunter_t::init_spells()
   // Spec Background Spells
   spec.feast_of_souls_buff   = talent_spell_lookup( talent.devourer.feast_of_souls, 1232310 );
   spec.devourers_bite_debuff = talent_spell_lookup( talent.devourer.devourers_bite, 1241532 );
+  spec.void_metamorphosis = talent_spell_lookup( talent.devourer.void_metamorphosis, 1217607 );
 
   mastery.a_fire_inside = talent.havoc.a_fire_inside->effectN( 6 ).trigger();
 
@@ -9152,6 +9202,9 @@ void demon_hunter_t::create_cooldowns()
   cooldown.sigil_of_misery = get_cooldown( "sigil_of_misery" );
   cooldown.throw_glaive    = get_cooldown( "throw_glaive" );
   cooldown.metamorphosis   = get_cooldown( "metamorphosis" );
+
+  // Devourer
+  cooldown.reap = get_cooldown( "reap" );
 
   // Havoc
   cooldown.blade_dance                               = get_cooldown( "blade_dance" );
