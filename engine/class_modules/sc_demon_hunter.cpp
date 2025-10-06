@@ -2970,7 +2970,7 @@ struct eye_beam_t : public eye_beam_base_t
     if ( p()->buff.demonsurge_hardcast->check() )
     {
       abyssal_gaze->execute_on_target( target );
-      stats->add_execute( 0_ms, target );
+      stats->add_execute( time_to_execute, target );
       return;
     }
 
@@ -3112,7 +3112,7 @@ struct fel_devastation_t : public fel_devastation_base_t
     if ( p()->buff.demonsurge_hardcast->check() )
     {
       fel_desolation->execute_on_target( target );
-      stats->add_execute( 0_ms, target );
+      stats->add_execute( time_to_execute, target );
       return;
     }
 
@@ -3571,7 +3571,7 @@ struct sigil_of_flame_t : public sigil_of_flame_base_t
     if ( p()->buff.demonsurge_hardcast->check() )
     {
       sigil_of_doom->execute_on_target( target );
-      stats->add_execute( 0_ms, target );
+      stats->add_execute( time_to_execute, target );
       return;
     }
 
@@ -4400,7 +4400,7 @@ struct spirit_bomb_t : public spirit_bomb_base_t
     if ( p()->buff.demonsurge_demonic->check() )
     {
       spirit_burst->execute_on_target( target );
-      stats->add_execute( 0_ms, target );
+      stats->add_execute( time_to_execute, target );
       return;
     }
 
@@ -6366,7 +6366,7 @@ struct soul_cleave_t : public soul_cleave_base_t
     if ( p()->buff.demonsurge_demonic->check() )
     {
       soul_sunder->execute_on_target( target );
-      stats->add_execute( 0_ms, target );
+      stats->add_execute( time_to_execute, target );
       return;
     }
 
