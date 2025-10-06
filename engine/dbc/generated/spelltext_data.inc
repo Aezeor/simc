@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.0.63534
-static constexpr std::array<spelltext_data_t, 29223> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 29236> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28152,6 +28152,19 @@ static constexpr std::array<spelltext_data_t, 29223> __spelltext_data { {
   { 1249625, "Chi costs are reduced by $s7 and Blackout Kick reduces the cooldown of affected abilities by an additional ${$s3/1000} sec.\r\n\r\nActivating Weapons of Order resets the remaining cooldown on Rising Sun Kick and grants $s9 Chi.", "Chi costs are reduced by $w7 and Blackout Kick reduces the cooldown of affected abilities by an additional ${$w3/1000} sec.$?w1>0[\r\n\r\nCritical strike chance increased by $w1%.][]", 0 },
   { 1249658, "Call upon Sindragosa's aid in battle for $d, continuously dealing ${$155166s2*$<CAP>/$AP} Frost damage every $t1 sec to enemies in a cone in front of you. Consuming Killing Machine or Rime increases the duration by ${$s3/1000}.1 sec. Deals reduced damage to secondary targets.\r\n\r\n|cFFFFFFFFGrants a charge of Empower Rune Weapon at the start and 2 Runes at the end.|r", "Continuously dealing Frost damage every $t1 sec to enemies in a cone in front of you.", 0 },
   { 1249752, "Waiting for energy to deal maximum Ferocious Bite damage.", 0, 0 },
+  { 1249753, "Your last ability to trigger Mastery: Combo Strikes was Rising Sun Kick.", "Your last ability to trigger Mastery: Combo Strikes was Rising Sun Kick.", 0 },
+  { 1249754, "Your last ability to trigger Mastery: Combo Strikes was Spinning Crane Kick.", "Your last ability to trigger Mastery: Combo Strikes was Spinning Crane Kick.", 0 },
+  { 1249756, "Your last ability to trigger Mastery: Combo Strikes was Tiger Palm.", "Your last ability to trigger Mastery: Combo Strikes was Tiger Palm.", 0 },
+  { 1249757, "Your last ability to trigger Mastery: Combo Strikes was Blackout Kick.", "Your last ability to trigger Mastery: Combo Strikes was Blackout Kick.", 0 },
+  { 1249758, "Your last ability to trigger Mastery: Combo Strikes was Fists of Fury.", "Your last ability to trigger Mastery: Combo Strikes was Fists of Fury.", 0 },
+  { 1249759, "Your last ability to trigger Mastery: Combo Strikes was Slicing Winds.", "Your last ability to trigger Mastery: Combo Strikes was Slicing Winds.", 0 },
+  { 1249762, "Your last ability to trigger Mastery: Combo Strikes was Storm, Earth, and Fire.", "Your last ability to trigger Mastery: Combo Strikes was Storm, Earth, and Fire.", 0 },
+  { 1249763, "Your last ability to trigger Mastery: Combo Strikes was Weapons of Order.", "Your last ability to trigger Mastery: Combo Strikes was Weapons of Order.", 0 },
+  { 1249764, "Your last ability to trigger Mastery: Combo Strikes was Crackling Jade Lightning.", "Your last ability to trigger Mastery: Combo Strikes was Crackling Jade Lightning.", 0 },
+  { 1249765, "Your last ability to trigger Mastery: Combo Strikes was Whirling Dragon Punch.", "Your last ability to trigger Mastery: Combo Strikes was Whirling Dragon Punch.", 0 },
+  { 1249766, "Your last ability to trigger Mastery: Combo Strikes was Whirling Dragon Punch.", "Your last ability to trigger Mastery: Combo Strikes was Whirling Dragon Punch.", 0 },
+  { 1249790, "Your last ability to trigger Mastery: Combo Strikes was Celestial Conduit.", "Your last ability to trigger Mastery: Combo Strikes was Celestial Conduit.", 0 },
+  { 1249791, "Your last ability to trigger Mastery: Combo Strikes was Touch of Death.", "Your last ability to trigger Mastery: Combo Strikes was Touch of Death.", 0 },
   { 1249802, "Garrote lasts ${$s1/1000} sec longer.", 0, 0 },
   { 1249809, "All damage you deal is increased by $1249810s1% while Deathmark is active.", 0, 0 },
   { 1249810, "$@spelldesc1249809", "Damage dealt increased by $w1% while your Deathmark is active.", 0 },
