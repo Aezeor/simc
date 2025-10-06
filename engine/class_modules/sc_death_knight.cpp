@@ -11883,16 +11883,30 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* t, bool is_vampiric
   if ( !is_vampiric && !buffs.infliction_of_sorrow->check() )
     return;
 
-  auto base_td    = get_target_data( t );
-  auto disease_td = specialization() == DEATH_KNIGHT_BLOOD ? base_td->dot.blood_plague : base_td->dot.virulent_plague;
+  auto base_td = get_target_data( t );
+  std::vector<dot_t*> disease_td = {};
+  disease_td.reserve( 2 );
   double disease_remaining_damage = 0;
   double mod                      = 0;
+  switch ( specialization() )
+  {
+    case DEATH_KNIGHT_BLOOD:
+      disease_td.push_back( base_td->dot.blood_plague );
+      break;
+    case DEATH_KNIGHT_UNHOLY:
+      disease_td.push_back( base_td->dot.dread_plague );
+      disease_td.push_back( base_td->dot.virulent_plague );
+      break;
+    default:
+      break;
+  }
 
-  disease_remaining_damage += tick_damage_over_time( disease_td->remains(), disease_td );
+  for ( auto& disease : disease_td )
+    disease_remaining_damage += tick_damage_over_time( disease->remains(), disease );
 
-  if ( disease_remaining_damage == 0 )
+  if ( disease_remaining_damage == 0 || disease_td.empty() )
     return;
-
+  
   if ( is_vampiric )
   {
     timespan_t extension = timespan_t::from_seconds( talent.sanlayn.infliction_of_sorrow->effectN( 3 ).base_value() );
@@ -11904,10 +11918,10 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* t, bool is_vampiric
       extension += talent.sanlayn.unending_misery->effectN( idx ).time_value();
     }
 
-    if ( disease_td->is_ticking() )
-    {
-      disease_td->adjust_duration( extension );
-    }
+    for ( auto& disease : disease_td )
+      if ( disease->is_ticking() )
+        disease->adjust_duration( extension );
+
     if ( disease_remaining_damage > 0 )
     {
       background_actions.infliction_of_sorrow->execute_on_target( t, disease_remaining_damage * mod );
@@ -11919,12 +11933,14 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* t, bool is_vampiric
     // mod = talent.sanlayn.infliction_of_sorrow->effectN( 1 ).percent();
     // However, the buff that is on the player still has 200% set, and in game testing shows the explosion to be 200%
     mod = talent.sanlayn.infliction_of_sorrow->effectN( 1 ).percent();
+    double consume_percent = talent.sanlayn.infliction_of_sorrow->effectN( 4 ).percent();
 
     buffs.infliction_of_sorrow->expire();
-    if ( disease_td->is_ticking() )
-    {
-      disease_td->cancel();
-    }
+
+    for ( auto& disease : disease_td )
+      if ( disease->is_ticking() )
+        disease->adjust_duration( -( disease->remains() * consume_percent ) );
+
     if ( disease_remaining_damage > 0 )
     {
       background_actions.infliction_of_sorrow->execute_on_target( t, disease_remaining_damage * mod );
