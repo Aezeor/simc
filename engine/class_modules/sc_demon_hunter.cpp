@@ -415,11 +415,11 @@ public:
       player_talent_t rolling_torment;       // NYI
       player_talent_t improved_reap;         // NYI
 
-      player_talent_t devourers_bite;  // NYI
+      player_talent_t devourers_bite;
       player_talent_t star_fragments;  // NYI
       player_talent_t calamitous;      // NYI
 
-      player_talent_t the_hunt;      // NYI
+      player_talent_t the_hunt;
       player_talent_t emptiness;     // NYI
       player_talent_t soul_glutton;  // NYI
       player_talent_t eradicate;     // NYI
