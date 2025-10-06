@@ -340,7 +340,7 @@ public:
     {
       player_talent_t vengeful_retreat;
       player_talent_t felblade;
-      player_talent_t voidblade;        // NYI
+      player_talent_t voidblade;
       player_talent_t sigil_of_misery;  // NYI
 
       player_talent_t vengeful_bonds;  // No Implementation
@@ -387,27 +387,27 @@ public:
     {
       player_talent_t void_ray;  // NYI
 
-      player_talent_t soul_immolation;   // NYI
-      player_talent_t predators_thirst;  // NYI
+      player_talent_t soul_immolation;
+      player_talent_t predators_thirst;
 
       player_talent_t tempered_soul;           // NYI
-      player_talent_t spontaneous_immolation;  // NYI
+      player_talent_t spontaneous_immolation;
       player_talent_t void_metamorphosis;      // NYI
-      player_talent_t feast_of_souls;          // NYI
+      player_talent_t feast_of_souls;
 
-      player_talent_t scythes_embrace;    // NYI
-      player_talent_t duty_eternal;       // NYI
+      player_talent_t scythes_embrace;
+      player_talent_t duty_eternal;
       player_talent_t entropy;            // NYI
       player_talent_t moment_of_craving;  // NYI
 
       player_talent_t sunder;          // NYI
-      player_talent_t second_helping;  // NYI
+      player_talent_t second_helping;
       player_talent_t waste_not;       // NYI
-      player_talent_t soulshaper;      // NYI
+      player_talent_t soulshaper;
 
       player_talent_t focused_ray;      // NYI
       player_talent_t collapsing_star;  // NYI
-      player_talent_t sweet_suffering;  // NYI
+      player_talent_t sweet_suffering;
       player_talent_t voidpurge;        // NYI
 
       player_talent_t hungering_slash;  // NYI
