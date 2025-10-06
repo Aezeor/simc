@@ -657,6 +657,7 @@ public:
     const spell_data_t* sigil_of_misery;
     const spell_data_t* sigil_of_misery_debuff;
     const spell_data_t* shattered_souls;
+    const spell_data_t* the_hunt;
 
     // Devourer
     const spell_data_t* devourer_demon_hunter;
@@ -4476,18 +4477,26 @@ struct the_hunt_t : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exe
       }
     };
 
-    // TODO: Use the correct The Hunt for Devourer
     the_hunt_damage_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->talent.havoc.the_hunt->effectN( 1 ).trigger() )
+      : demon_hunter_spell_t( name, p, p->spec.the_hunt->effectN( 1 ).trigger() )
     {
       dual          = true;
       impact_action = p->get_background_action<the_hunt_dot_t>( "the_hunt_dot" );
     }
+
+    void impact( action_state_t* s ) override
+    {
+      demon_hunter_spell_t::impact( s );
+
+      if ( s->chain_target == 0 && p()->talent.devourer.devourers_bite->ok() )
+      {
+        td( target )->debuffs.devourers_bite->trigger();
+      }
+    }
   };
 
-  // TODO: Use the correct The Hunt for Devourer
   the_hunt_t( demon_hunter_t* p, util::string_view options_str )
-    : base_t( "the_hunt", p, p->talent.havoc.the_hunt, options_str )
+    : base_t( "the_hunt", p, p->spec.the_hunt, options_str )
   {
     movement_directionality             = movement_direction_type::TOWARDS;
     impact_action                       = p->get_background_action<the_hunt_damage_t>( "the_hunt_damage" );
@@ -8651,10 +8660,9 @@ void demon_hunter_t::init_spells()
 
   mastery.a_fire_inside = talent.havoc.a_fire_inside->effectN( 6 ).trigger();
 
-  spec.burning_wound_debuff = talent.havoc.burning_wound->effectN( 1 ).trigger();
-  spec.chaos_theory_buff    = talent_spell_lookup( talent.havoc.chaos_theory, 390195 );
-  spec.demon_blades_damage =
-      spell_data_t::not_found();  // TODO: replace - talent.havoc.demon_blades->effectN( 1 ).trigger();
+  spec.burning_wound_debuff             = talent.havoc.burning_wound->effectN( 1 ).trigger();
+  spec.chaos_theory_buff                = talent_spell_lookup( talent.havoc.chaos_theory, 390195 );
+  spec.demon_blades_damage              = find_spell( 203796 );
   spec.essence_break_debuff             = talent_spell_lookup( talent.havoc.essence_break, 320338 );
   spec.eye_beam_damage                  = talent_spell_lookup( talent.havoc.eye_beam, 198030 );
   spec.furious_gaze_buff                = talent_spell_lookup( talent.havoc.furious_gaze, 343312 );
@@ -8672,8 +8680,8 @@ void demon_hunter_t::init_spells()
   spec.soulscar_debuff                  = talent_spell_lookup( talent.havoc.soulscar, 390181 );
   spec.tactical_retreat_buff            = talent_spell_lookup( talent.havoc.tactical_retreat, 389890 );
   spec.unbound_chaos_buff               = talent_spell_lookup( talent.havoc.unbound_chaos, 347462 );
-  spec.cycle_of_hatred_buff             = conditional_spell_lookup( talent.havoc.cycle_of_hatred->ok(), 1214887 );
-  spec.furious_throws_damage            = conditional_spell_lookup( talent.havoc.furious_throws->ok(), 393035 );
+  spec.cycle_of_hatred_buff             = talent_spell_lookup( talent.havoc.cycle_of_hatred, 1214887 );
+  spec.furious_throws_damage            = talent_spell_lookup( talent.havoc.furious_throws, 393035 );
 
   spec.demon_spikes_buff        = find_spell( 203819 );
   spec.fiery_brand_debuff       = talent_spell_lookup( talent.vengeance.fiery_brand, 207771 );
@@ -8690,6 +8698,21 @@ void demon_hunter_t::init_spells()
   spec.feast_of_souls_heal      = talent_spell_lookup( talent.vengeance.feast_of_souls, 207693 );
   spec.fel_devastation_2        = find_rank_spell( "Fel Devastation", "Rank 2" );
   spec.fel_devastation_heal     = talent_spell_lookup( talent.vengeance.fel_devastation, 212106 );
+
+  switch ( specialization() )
+  {
+    case DEMON_HUNTER_DEVOURER:
+      spec.the_hunt = talent.devourer.the_hunt;
+      break;
+    case DEMON_HUNTER_HAVOC:
+      spec.the_hunt = talent.havoc.the_hunt;
+      break;
+    case DEMON_HUNTER_VENGEANCE:
+      spec.the_hunt = spell_data_t::not_found();
+      break;
+    default:
+      break;
+  }
 
   // Hero spec background spells
   hero_spec.reavers_glaive           = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442294 );
