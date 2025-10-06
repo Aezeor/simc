@@ -1261,7 +1261,7 @@ public:
     buff_t* splintered_elements;
     buff_t* stormkeeper;
     buff_t* surge_of_power;
-    buff_t* wind_gust;  // Storm Elemental passive 263806
+    //buff_t* wind_gust;  // Storm Elemental passive 263806
     buff_t* fusion_of_elements_nature;
     buff_t* fusion_of_elements_fire;
     buff_t* storm_frenzy;
@@ -2577,10 +2577,10 @@ public:
                                         ab::data().affected_by( player->buff.lesser_fire_elemental->data().effectN( 4 ) );
     affected_by_elemental_unity_fe_ta = ab::data().affected_by( player->buff.fire_elemental->data().effectN( 5 ) ) ||
                                         ab::data().affected_by( player->buff.lesser_fire_elemental->data().effectN( 5 ) );
-    affected_by_elemental_unity_se_da = ab::data().affected_by( player->buff.storm_elemental->data().effectN( 4 ) ) ||
+    affected_by_elemental_unity_se_da = ab::data().affected_by( player->buff.storm_elemental->data().effectN( 3 ) ) ||
+                                        ab::data().affected_by( player->buff.lesser_storm_elemental->data().effectN( 3 ) );
+    affected_by_elemental_unity_se_ta = ab::data().affected_by( player->buff.storm_elemental->data().effectN( 4 ) ) ||
                                         ab::data().affected_by( player->buff.lesser_storm_elemental->data().effectN( 4 ) );
-    affected_by_elemental_unity_se_ta = ab::data().affected_by( player->buff.storm_elemental->data().effectN( 5 ) ) ||
-                                        ab::data().affected_by( player->buff.lesser_storm_elemental->data().effectN( 5 ) );
 
     affected_by_lightning_elemental_da = ab::data().affected_by( player->buff.fury_of_the_storms->data().effectN( 2 ) );
     affected_by_lightning_elemental_ta = ab::data().affected_by( player->buff.fury_of_the_storms->data().effectN( 3 ) );
@@ -4408,12 +4408,14 @@ struct storm_elemental_t : public primal_elemental_t
     }
   };
 
+  /* TBD: midnight remove
   struct wind_gust_t : public pet_spell_t<storm_elemental_t>
   {
     wind_gust_t( storm_elemental_t* player, util::string_view options )
       : super( player, "wind_gust", player->find_spell( 157331 ), options )
     { }
   };
+  */
 
   struct call_lightning_t : public pet_spell_t<storm_elemental_t>
   {
@@ -4465,7 +4467,9 @@ struct storm_elemental_t : public primal_elemental_t
       def->add_action( "stormfury,if=buff.call_lightning.remains>=10" );
     // }
     def->add_action( "call_lightning" );
+    /* TBD midnight remove
     def->add_action( "wind_gust" );
+    */
   }
 
   void create_buffs() override
@@ -4494,8 +4498,10 @@ struct storm_elemental_t : public primal_elemental_t
       return new stormfury_t( this, options_str );
     if ( name == "call_lightning" )
       return new call_lightning_t( this, options_str );
+    /* TBD midnight remove
     if ( name == "wind_gust" )
       return new wind_gust_t( this, options_str );
+    */
 
     return primal_elemental_t::create_action( name, options_str );
   }
@@ -4519,10 +4525,12 @@ struct storm_elemental_t : public primal_elemental_t
       o()->summon_lesser_elemental( type );
     }
 
+    /* TBD midnight remove
     if ( o()->pet.storm_elemental.n_active_pets() + o()->pet.lesser_storm_elemental.n_active_pets() == 0 )
     {
       o()->buff.wind_gust->expire();
     }
+    */
   }
 };
 
@@ -6494,7 +6502,9 @@ struct storm_elemental_t : public shaman_spell_t
     // 2022-03-04 hotfix: if you cast Storm Elemental again while having a Storm Elemental active, the Wind Gust buff
     // will be reset.
     // https://us.forums.blizzard.com/en/wow/t/elemental-shaman-class-tuning-march-8/1195446
+    /* TBD midnight remove
     p()->buff.wind_gust->expire();
+    */
 
     if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, TWW2, B2 ) ) {
       p()->buff.jackpot->trigger();
@@ -6932,10 +6942,12 @@ struct chain_lightning_t : public chained_base_t
     }
 
     // Storm Elemental Wind Gust passive buff trigger
+    /* TBD midnight remove
     if ( p()->buff.storm_elemental->check() || p()->buff.lesser_storm_elemental->check() )
     {
       p()->buff.wind_gust->trigger();
     }
+    */
 
     if ( num_targets_hit - 1 > 0 && p()->specialization() == SHAMAN_ENHANCEMENT )
     {
@@ -7885,10 +7897,12 @@ struct lightning_bolt_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     // Storm Elemental Wind Gust passive buff trigger
+    /* TBD midnight remove
     if ( p()->buff.storm_elemental->check() || p()->buff.lesser_storm_elemental->check() )
     {
       p()->buff.wind_gust->trigger();
     }
+    */
 
     if ( exec_type == spell_variant::NORMAL &&
          p()->specialization() == SHAMAN_ELEMENTAL )
@@ -14328,9 +14342,11 @@ void shaman_t::create_buffs()
   buff.master_of_the_elements = make_buff( this, "master_of_the_elements", talent.master_of_the_elements->effectN(1).trigger() )
           ->set_default_value( talent.master_of_the_elements->effectN( 2 ).percent() );
 
+  /* TBD midnight remove
   buff.wind_gust = make_buff( this, "wind_gust", find_spell( 263806 ) )
         ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
         ->set_default_value_from_effect_type( A_HASTE_ALL );
+  */
 
   buff.echoes_of_great_sundering = make_buff( this, "echoes_of_great_sundering",
     find_spell( 384088 ) )
