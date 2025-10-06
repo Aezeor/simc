@@ -672,6 +672,8 @@ public:
     const spell_data_t* feast_of_souls_buff;
     const spell_data_t* devourers_bite_debuff;
     const spell_data_t* void_metamorphosis;
+    const spell_data_t* cull;
+    const spell_data_t* cull_damage;
 
     // Havoc
     const spell_data_t* havoc_demon_hunter;
@@ -816,6 +818,7 @@ public:
     cooldown_t* throw_glaive;
 
     // Devourer
+    cooldown_t* consume;
     cooldown_t* reap;
 
     // Havoc
@@ -4764,6 +4767,7 @@ struct consume_base_t : public demon_hunter_spell_t
   consume_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
     : demon_hunter_spell_t( n, p, s, o )
   {
+    cooldown = p->cooldown.consume;
   }
 
   void execute() override
@@ -4790,7 +4794,7 @@ struct devour_t : public consume_base_t
   {
     consume_base_t::execute();
 
-    p()->sim->out_debug.printf("%s adjusts Reap cooldown by %u", p()->name(), reap_cdr.total_millis());
+    p()->sim->out_debug.printf( "%s adjusts Reap cooldown by %u", p()->name(), reap_cdr.total_millis() );
     p()->cooldown.reap->adjust( -reap_cdr );
   }
 };
@@ -4902,18 +4906,20 @@ struct soul_immolation_t : public demon_hunter_spell_t
   }
 };
 
-struct reap_t : public demon_hunter_spell_t
+struct reap_base_t : public demon_hunter_spell_t
 {
   struct reap_damage_t : public demon_hunter_spell_t
   {
-    reap_damage_t( util::string_view n, demon_hunter_t* p ) : demon_hunter_spell_t( n, p, p->spec.reap_damage, "" )
+    reap_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : demon_hunter_spell_t( n, p, s, "" )
     {
+      background = dual = true;
     }
   };
 
   struct reap_energize_t : public demon_hunter_spell_t
   {
-    reap_energize_t( util::string_view n, demon_hunter_t* p ) : demon_hunter_spell_t( n, p, p->spec.reap_energize, "" )
+    reap_energize_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s )
+      : demon_hunter_spell_t( n, p, s, "" )
     {
       may_miss = may_block = may_dodge = may_parry = callbacks = false;
       background = dual = true;
@@ -4925,15 +4931,18 @@ struct reap_t : public demon_hunter_spell_t
   reap_damage_t* damage_action;
   reap_energize_t* energize_action;
 
-  reap_t( demon_hunter_t* p, util::string_view o )
-    : demon_hunter_spell_t( "reap", p, p->spec.reap, o ), damage_action( nullptr ), energize_action( nullptr )
+  reap_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o,
+               const spell_data_t* damage_s, const spell_data_t* energize_s )
+    : demon_hunter_spell_t( n, p, s, o ), damage_action( nullptr ), energize_action( nullptr )
   {
-    damage_action        = p->get_background_action<reap_damage_t>( "reap_damage" );
+    cooldown = p->cooldown.reap;
+
+    damage_action        = p->get_background_action<reap_damage_t>( fmt::format("{}_damage", n), damage_s );
     damage_action->stats = stats;
 
     if ( p->talent.devourer.scythes_embrace->ok() )
     {
-      energize_action = p->get_background_action<reap_energize_t>( "reap_energize" );
+      energize_action = p->get_background_action<reap_energize_t>( fmt::format("{}_energize", n), energize_s );
     }
   }
 
@@ -4960,6 +4969,38 @@ struct reap_t : public demon_hunter_spell_t
     }
 
     damage_action->schedule_execute( damage_state );
+  }
+};
+
+struct cull_t : public reap_base_t
+{
+  cull_t( demon_hunter_t* p )
+    : reap_base_t( "cull", p, p->spec.cull, "", p->spec.cull_damage, p->spec.reap_energize )
+  {
+  }
+};
+
+struct reap_t : public reap_base_t
+{
+  cull_t* cull;
+
+  reap_t( demon_hunter_t* p, util::string_view o )
+    : reap_base_t( "reap", p, p->spec.reap, o, p->spec.reap_damage, p->spec.reap_energize )
+  {
+    cull = new cull_t( p );
+    add_child( cull );
+  }
+
+  void execute() override
+  {
+    if ( !p()->buff.metamorphosis->up() )
+    {
+      cull->execute_on_target( target );
+      stats->add_execute( time_to_execute, target );
+      return;
+    }
+
+    reap_base_t::execute();
   }
 };
 
@@ -8386,6 +8427,8 @@ void demon_hunter_t::init_spells()
   spec.reap                        = find_spell( 1226019, DEMON_HUNTER_DEVOURER );
   spec.reap_damage                 = find_spell( 1225823, DEMON_HUNTER_DEVOURER );
   spec.reap_energize               = find_spell( 1261679, DEMON_HUNTER_DEVOURER );
+  spec.cull                        = find_spell( 1245453, DEMON_HUNTER_DEVOURER );
+  spec.cull_damage                 = find_spell( 1245455, DEMON_HUNTER_DEVOURER );
 
   // Havoc Spells
   spec.havoc_demon_hunter = find_specialization_spell( "Havoc Demon Hunter" );
@@ -8706,7 +8749,7 @@ void demon_hunter_t::init_spells()
   // Spec Background Spells
   spec.feast_of_souls_buff   = talent_spell_lookup( talent.devourer.feast_of_souls, 1232310 );
   spec.devourers_bite_debuff = talent_spell_lookup( talent.devourer.devourers_bite, 1241532 );
-  spec.void_metamorphosis = talent_spell_lookup( talent.devourer.void_metamorphosis, 1217607 );
+  spec.void_metamorphosis    = talent_spell_lookup( talent.devourer.void_metamorphosis, 1217607 );
 
   mastery.a_fire_inside = talent.havoc.a_fire_inside->effectN( 6 ).trigger();
 
@@ -9204,6 +9247,7 @@ void demon_hunter_t::create_cooldowns()
   cooldown.metamorphosis   = get_cooldown( "metamorphosis" );
 
   // Devourer
+  cooldown.consume = get_cooldown( "consume" );
   cooldown.reap = get_cooldown( "reap" );
 
   // Havoc
