@@ -4926,7 +4926,7 @@ struct eradicate_t : public demon_hunter_spell_t
 
   eradicate_damage_t* damage_action;
 
-  eradicate_t( demon_hunter_t* p ) : demon_hunter_spell_t( "eradicate", p, p->spec.eradicate, "" )
+  eradicate_t( demon_hunter_t* p, util::string_view o ) : demon_hunter_spell_t( "eradicate", p, p->spec.eradicate, o )
   {
     damage_action        = p->get_background_action<eradicate_damage_t>( "eradicate_damage", p->spec.eradicate_damage );
     damage_action->stats = stats;
@@ -4952,6 +4952,16 @@ struct eradicate_t : public demon_hunter_spell_t
     }
 
     damage_action->schedule_execute( damage_state );
+  }
+
+  bool action_ready() override
+  {
+    if ( !p()->buff.eradicate->up() )
+    {
+      return false;
+    }
+
+    return demon_hunter_spell_t::action_ready();
   }
 };
 
@@ -4981,7 +4991,7 @@ struct reap_base_t : public demon_hunter_spell_t
   reap_energize_t* energize_action;
 
   reap_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o,
-               const spell_data_t* damage_s, const spell_data_t* energize_s )
+               const spell_data_t* damage_s, const spell_data_t* energize_s = nullptr )
     : demon_hunter_spell_t( n, p, s, o ), damage_action( nullptr ), energize_action( nullptr )
   {
     cooldown = p->cooldown.reap;
@@ -4989,7 +4999,7 @@ struct reap_base_t : public demon_hunter_spell_t
     damage_action        = p->get_background_action<reap_damage_t>( fmt::format( "{}_damage", n ), damage_s );
     damage_action->stats = stats;
 
-    if ( p->talent.devourer.scythes_embrace->ok() )
+    if ( p->talent.devourer.scythes_embrace->ok() && energize_s )
     {
       energize_action = p->get_background_action<reap_energize_t>( fmt::format( "{}_energize", n ), energize_s );
     }
@@ -5023,46 +5033,37 @@ struct reap_base_t : public demon_hunter_spell_t
 
 struct cull_t : public reap_base_t
 {
-  cull_t( demon_hunter_t* p ) : reap_base_t( "cull", p, p->spec.cull, "", p->spec.cull_damage, p->spec.reap_energize )
+  cull_t( demon_hunter_t* p, util::string_view o )
+    : reap_base_t( "cull", p, p->spec.cull, o, p->spec.cull_damage, p->spec.reap_energize )
   {
+  }
+
+  bool action_ready() override
+  {
+    if ( p()->buff.eradicate->up() || !p()->buff.metamorphosis->up() )
+    {
+      return false;
+    }
+
+    return reap_base_t::action_ready();
   }
 };
 
 struct reap_t : public reap_base_t
 {
-  cull_t* cull;
-  eradicate_t* eradicate;
-
   reap_t( demon_hunter_t* p, util::string_view o )
-    : reap_base_t( "reap", p, p->spec.reap, o, p->spec.reap_damage, p->spec.reap_energize ), eradicate( nullptr )
+    : reap_base_t( "reap", p, p->spec.reap, o, p->spec.reap_damage, p->spec.reap_energize )
   {
-    cull = new cull_t( p );
-    add_child( cull );
-
-    if ( p->talent.devourer.eradicate->ok() )
-    {
-      eradicate = new eradicate_t( p );
-      add_child( eradicate );
-    }
   }
 
-  void execute() override
+  bool action_ready() override
   {
-    if ( p()->buff.eradicate->up() )
+    if ( p()->buff.eradicate->up() || p()->buff.metamorphosis->up() )
     {
-      eradicate->execute_on_target( target );
-      stats->add_execute( time_to_execute, target );
-      return;
+      return false;
     }
 
-    if ( p()->buff.metamorphosis->up() )
-    {
-      cull->execute_on_target( target );
-      stats->add_execute( time_to_execute, target );
-      return;
-    }
-
-    reap_base_t::execute();
+    return reap_base_t::action_ready();
   }
 };
 
@@ -7880,6 +7881,10 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new voidblade_t( this, options_str );
   if ( name == "soul_immolation" )
     return new soul_immolation_t( "soul_immolation", this, talent.devourer.soul_immolation, options_str );
+  if ( name == "eradicate" )
+    return new eradicate_t( this, options_str );
+  if ( name == "cull" )
+    return new cull_t( this, options_str );
   if ( name == "reap" )
     return new reap_t( this, options_str );
   if ( name == "void_ray" )
