@@ -379,7 +379,7 @@ public:
 
     struct devourer_talents_t
     {
-      player_talent_t void_ray;  // NYI
+      player_talent_t void_ray;
 
       player_talent_t soul_immolation;
       player_talent_t predators_thirst;
@@ -678,6 +678,8 @@ public:
     const spell_data_t* eradicate;
     const spell_data_t* eradicate_buff;
     const spell_data_t* eradicate_damage;
+    const spell_data_t* void_ray_tick;
+    const spell_data_t* void_ray_tick_meta;
 
     // Havoc
     const spell_data_t* havoc_demon_hunter;
@@ -4915,7 +4917,8 @@ struct eradicate_t : public demon_hunter_spell_t
 {
   struct eradicate_damage_t : public demon_hunter_spell_t
   {
-    eradicate_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : demon_hunter_spell_t( n, p, s, "" )
+    eradicate_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s )
+      : demon_hunter_spell_t( n, p, s, "" )
     {
       background = dual = true;
     }
@@ -4923,8 +4926,7 @@ struct eradicate_t : public demon_hunter_spell_t
 
   eradicate_damage_t* damage_action;
 
-  eradicate_t( demon_hunter_t* p )
-    : demon_hunter_spell_t( "eradicate", p, p->spec.eradicate, "" )
+  eradicate_t( demon_hunter_t* p ) : demon_hunter_spell_t( "eradicate", p, p->spec.eradicate, "" )
   {
     damage_action        = p->get_background_action<eradicate_damage_t>( "eradicate_damage", p->spec.eradicate_damage );
     damage_action->stats = stats;
@@ -5061,6 +5063,124 @@ struct reap_t : public reap_base_t
     }
 
     reap_base_t::execute();
+  }
+};
+
+struct void_ray_t : public demon_hunter_spell_t
+{
+  struct void_ray_tick_t : public demon_hunter_spell_t
+  {
+    void_ray_tick_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : demon_hunter_spell_t( n, p, s )
+    {
+      background = dual = true;
+      aoe               = -1;
+    }
+
+    double action_multiplier() const override
+    {
+      double m = demon_hunter_spell_t::action_multiplier();
+
+      if ( p()->talent.devourer.focused_ray->ok() && targets_in_range_list( target_list() ).size() == 1 )
+      {
+        m *= 1.0 + p()->talent.devourer.focused_ray->effectN( 1 ).percent();
+      }
+
+      return m;
+    }
+
+    timespan_t execute_time() const override
+    {
+      // Void Beam is applied via a player aura and experiences aura delay in applying damage tick events
+      // Not a perfect implementation, but closer than the instant execution in current sims
+      return rng().gauss( p()->sim->default_aura_delay );
+    }
+
+    double cost() const override
+    {
+      // handled at the action level
+      return 0;
+    }
+  };
+
+  void_ray_tick_t* tick;
+  void_ray_tick_t* tick_meta;
+
+  void_ray_t( demon_hunter_t* p, util::string_view o )
+    : demon_hunter_spell_t( "void_ray", p, p->talent.devourer.void_ray, o )
+  {
+    may_miss            = false;
+    channeled           = true;
+    tick_on_application = false;
+
+    // stealing this from eye beam
+    ability_lag = p->world_lag;
+
+    tick        = p->get_background_action<void_ray_tick_t>( "void_ray_tick", p->spec.void_ray_tick );
+    tick->stats = stats;
+
+    tick_meta        = p->get_background_action<void_ray_tick_t>( "void_ray_tick_meta", p->spec.void_ray_tick_meta );
+    tick_meta->stats = stats;
+
+    // Add damage modifiers in eye_beam_tick_t, not here.
+  }
+
+  void init() override
+  {
+    demon_hunter_spell_t::init();
+
+    consume_per_tick_ = true;
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    demon_hunter_spell_t::last_tick( d );
+
+    // TODO: on end of Void Ray channel stuff
+
+    if ( d->current_tick < d->num_ticks() )
+    {
+    // TODO: on end of fully channeling Void Ray stuff
+    }
+  }
+
+  void execute() override
+  {
+    tick_action = p()->buff.metamorphosis->up() ? tick_meta : tick;
+
+    demon_hunter_spell_t::execute();
+  }
+
+  bool ready() override
+  {
+    // Void Ray requires 100 Fury to cast but doesn't cost 100 Fury
+    if ( p()->buff.metamorphosis->up() || p()->resource_available( RESOURCE_FURY, data().cost( POWER_FURY ) ) )
+    {
+      return demon_hunter_spell_t::ready();
+    }
+    return false;
+  }
+
+  double cost() const override
+  {
+    // Void Ray requires 100 Fury to cast but doesn't cost 100 Fury
+    return 0;
+  }
+
+  double cost_per_tick( resource_e r ) const override
+  {
+    if ( r != RESOURCE_FURY )
+    {
+      return demon_hunter_spell_t::cost_per_tick( r );
+    }
+
+    // Void Ray costs 5 Fury per tick outside of Meta, 0 in Meta
+    return p()->buff.metamorphosis->check() ? p()->spec.void_ray_tick_meta->cost( POWER_FURY )
+                                            : p()->spec.void_ray_tick->cost( POWER_FURY );
+  }
+
+  result_amount_type amount_type( const action_state_t*, bool ) const override
+  {
+    return result_amount_type::DMG_DIRECT;
   }
 };
 
@@ -7754,6 +7874,8 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new soul_immolation_t( "soul_immolation", this, talent.devourer.soul_immolation, options_str );
   if ( name == "reap" )
     return new reap_t( this, options_str );
+  if ( name == "void_ray" )
+    return new void_ray_t( this, options_str );
 
   using namespace actions::attacks;
 
@@ -8814,6 +8936,8 @@ void demon_hunter_t::init_spells()
   spec.eradicate             = talent_spell_lookup( talent.devourer.eradicate, 1225826 );
   spec.eradicate_damage      = talent_spell_lookup( talent.devourer.eradicate, 1225827 );
   spec.eradicate_buff        = talent_spell_lookup( talent.devourer.eradicate, 1239524 );
+  spec.void_ray_tick         = talent_spell_lookup( talent.devourer.void_ray, 1213649 );
+  spec.void_ray_tick_meta    = talent_spell_lookup( talent.devourer.void_ray, 1214595 );
 
   mastery.a_fire_inside = talent.havoc.a_fire_inside->effectN( 6 ).trigger();
 
