@@ -273,6 +273,7 @@ public:
     // Devourer
     buff_t* reap;
     buff_t* feast_of_souls;
+    buff_t* eradicate;
 
     // Havoc
     buff_t* blind_fury;
@@ -674,6 +675,9 @@ public:
     const spell_data_t* void_metamorphosis;
     const spell_data_t* cull;
     const spell_data_t* cull_damage;
+    const spell_data_t* eradicate;
+    const spell_data_t* eradicate_buff;
+    const spell_data_t* eradicate_damage;
 
     // Havoc
     const spell_data_t* havoc_demon_hunter;
@@ -4905,6 +4909,50 @@ struct soul_immolation_t : public demon_hunter_spell_t
   }
 };
 
+// eradicate is intentionally identical to reap_base_t implementations
+// without being parented by it because of subtle behavior differences.
+struct eradicate_t : public demon_hunter_spell_t
+{
+  struct eradicate_damage_t : public demon_hunter_spell_t
+  {
+    eradicate_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : demon_hunter_spell_t( n, p, s, "" )
+    {
+      background = dual = true;
+    }
+  };
+
+  eradicate_damage_t* damage_action;
+
+  eradicate_t( demon_hunter_t* p )
+    : demon_hunter_spell_t( "eradicate", p, p->spec.eradicate, "" )
+  {
+    damage_action        = p->get_background_action<eradicate_damage_t>( "eradicate_damage", p->spec.eradicate_damage );
+    damage_action->stats = stats;
+  }
+
+  void execute() override
+  {
+    p()->buff.reap->trigger();
+    demon_hunter_spell_t::execute();
+    p()->buff.eradicate->expire();
+
+    double souls_to_consume     = p()->spec.shattered_souls->effectN( 2 ).base_value();
+    unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume );
+
+    damage_action->set_target( target );
+    action_state_t* damage_state = damage_action->get_state();
+    damage_state->target         = target;
+    damage_action->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
+
+    if ( p()->talent.devourer.soulshaper->ok() )
+    {
+      damage_state->da_multiplier *= 1.0 + fragments_consumed * p()->talent.devourer.soulshaper->effectN( 1 ).percent();
+    }
+
+    damage_action->schedule_execute( damage_state );
+  }
+};
+
 struct reap_base_t : public demon_hunter_spell_t
 {
   struct reap_damage_t : public demon_hunter_spell_t
@@ -4936,12 +4984,12 @@ struct reap_base_t : public demon_hunter_spell_t
   {
     cooldown = p->cooldown.reap;
 
-    damage_action        = p->get_background_action<reap_damage_t>( fmt::format("{}_damage", n), damage_s );
+    damage_action        = p->get_background_action<reap_damage_t>( fmt::format( "{}_damage", n ), damage_s );
     damage_action->stats = stats;
 
     if ( p->talent.devourer.scythes_embrace->ok() )
     {
-      energize_action = p->get_background_action<reap_energize_t>( fmt::format("{}_energize", n), energize_s );
+      energize_action = p->get_background_action<reap_energize_t>( fmt::format( "{}_energize", n ), energize_s );
     }
   }
 
@@ -4973,8 +5021,7 @@ struct reap_base_t : public demon_hunter_spell_t
 
 struct cull_t : public reap_base_t
 {
-  cull_t( demon_hunter_t* p )
-    : reap_base_t( "cull", p, p->spec.cull, "", p->spec.cull_damage, p->spec.reap_energize )
+  cull_t( demon_hunter_t* p ) : reap_base_t( "cull", p, p->spec.cull, "", p->spec.cull_damage, p->spec.reap_energize )
   {
   }
 };
@@ -4982,16 +5029,30 @@ struct cull_t : public reap_base_t
 struct reap_t : public reap_base_t
 {
   cull_t* cull;
+  eradicate_t* eradicate;
 
   reap_t( demon_hunter_t* p, util::string_view o )
-    : reap_base_t( "reap", p, p->spec.reap, o, p->spec.reap_damage, p->spec.reap_energize )
+    : reap_base_t( "reap", p, p->spec.reap, o, p->spec.reap_damage, p->spec.reap_energize ), eradicate( nullptr )
   {
     cull = new cull_t( p );
     add_child( cull );
+
+    if ( p->talent.devourer.eradicate->ok() )
+    {
+      eradicate = new eradicate_t( p );
+      add_child( eradicate );
+    }
   }
 
   void execute() override
   {
+    if ( p()->buff.eradicate->up() )
+    {
+      eradicate->execute_on_target( target );
+      stats->add_execute( time_to_execute, target );
+      return;
+    }
+
     if ( p()->buff.metamorphosis->up() )
     {
       cull->execute_on_target( target );
@@ -7751,6 +7812,7 @@ void demon_hunter_t::create_buffs()
                             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                             ->disable_ticking( true );
+  buff.eradicate = make_buff( this, "eradicate", spec.eradicate_buff );
 
   // Havoc ==================================================================
 
@@ -8749,6 +8811,9 @@ void demon_hunter_t::init_spells()
   spec.feast_of_souls_buff   = talent_spell_lookup( talent.devourer.feast_of_souls, 1232310 );
   spec.devourers_bite_debuff = talent_spell_lookup( talent.devourer.devourers_bite, 1241532 );
   spec.void_metamorphosis    = talent_spell_lookup( talent.devourer.void_metamorphosis, 1217607 );
+  spec.eradicate             = talent_spell_lookup( talent.devourer.eradicate, 1225826 );
+  spec.eradicate_damage      = talent_spell_lookup( talent.devourer.eradicate, 1225827 );
+  spec.eradicate_buff        = talent_spell_lookup( talent.devourer.eradicate, 1239524 );
 
   mastery.a_fire_inside = talent.havoc.a_fire_inside->effectN( 6 ).trigger();
 
@@ -9247,7 +9312,7 @@ void demon_hunter_t::create_cooldowns()
 
   // Devourer
   cooldown.consume = get_cooldown( "consume" );
-  cooldown.reap = get_cooldown( "reap" );
+  cooldown.reap    = get_cooldown( "reap" );
 
   // Havoc
   cooldown.blade_dance                               = get_cooldown( "blade_dance" );
