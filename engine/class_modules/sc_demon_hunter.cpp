@@ -5137,8 +5137,12 @@ struct void_ray_t : public demon_hunter_spell_t
 
     // TODO: on end of Void Ray channel stuff
 
-    if ( d->current_tick < d->num_ticks() )
+    if ( d->current_tick == d->num_ticks() )
     {
+      if ( p()->talent.devourer.eradicate->ok() )
+      {
+        p()->buff.eradicate->trigger();
+      }
       if ( p()->talent.devourer.voidglare_boon->ok() )
       {
         p()->resource_gain( RESOURCE_FURY, p()->talent.devourer.voidglare_boon->effectN( 1 ).base_value(),
