@@ -4791,7 +4791,7 @@ struct devour_t : public consume_base_t
 {
   timespan_t reap_cdr;
 
-  devour_t( demon_hunter_t* p ) : consume_base_t( "devour", p, p->spec.devour, "" )
+  devour_t( demon_hunter_t* p, util::string_view o ) : consume_base_t( "devour", p, p->spec.devour, o )
   {
     reap_cdr = timespan_t::from_millis( p->spec.void_metamorphosis->effectN( 14 ).base_value() );
   }
@@ -4806,25 +4806,8 @@ struct devour_t : public consume_base_t
 
 struct consume_t : public consume_base_t
 {
-  devour_t* devour;
-
-  consume_t( demon_hunter_t* p, util::string_view o )
-    : consume_base_t( "consume", p, p->spec.consume, o ), devour( nullptr )
+  consume_t( demon_hunter_t* p, util::string_view o ) : consume_base_t( "consume", p, p->spec.consume, o )
   {
-    devour = new devour_t( p );
-    add_child( devour );
-  }
-
-  void execute() override
-  {
-    if ( p()->buff.metamorphosis->up() )
-    {
-      devour->execute_on_target( target );
-      stats->add_execute( time_to_execute, target );
-      return;
-    }
-
-    consume_base_t::execute();
   }
 };
 
@@ -7875,6 +7858,8 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new sigil_of_silence_t( this, options_str );
   if ( name == "sigil_of_chains" )
     return new sigil_of_chains_t( this, options_str );
+  if ( name == "devour" )
+    return new devour_t( this, options_str );
   if ( name == "consume" )
     return new consume_t( this, options_str );
   if ( name == "voidblade" )
