@@ -4811,7 +4811,7 @@ struct consume_t : public consume_base_t
 
   void execute() override
   {
-    if ( !p()->buff.metamorphosis->up() )
+    if ( p()->buff.metamorphosis->up() )
     {
       devour->execute_on_target( target );
       stats->add_execute( time_to_execute, target );
@@ -4992,7 +4992,7 @@ struct reap_t : public reap_base_t
 
   void execute() override
   {
-    if ( !p()->buff.metamorphosis->up() )
+    if ( p()->buff.metamorphosis->up() )
     {
       cull->execute_on_target( target );
       stats->add_execute( time_to_execute, target );
