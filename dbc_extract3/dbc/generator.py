@@ -2585,6 +2585,7 @@ class SpellDataGenerator(DataGenerator):
           ( 1221171, 2 ), # Collapsing Star Override
           ( 1214595, 2 ), # Void Ray Damage - Meta
           (  473671, 2 ), # Void Buildup - Meta Resource Spell
+          ( 1245455, 2 ), # Cull Damage
 
           # Annihilator
 
