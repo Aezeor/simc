@@ -271,6 +271,7 @@ public:
 
     // Devourer
     buff_t* reap;
+    buff_t* feast_of_souls;
 
     // Havoc
     buff_t* blind_fury;
@@ -673,6 +674,7 @@ public:
     const spell_data_t* reap;
     const spell_data_t* reap_damage;
     const spell_data_t* reap_energize;
+    const spell_data_t* feast_of_souls_buff;
 
     // Havoc
     const spell_data_t* havoc_demon_hunter;
@@ -1770,6 +1772,9 @@ public:
     // Shared
     ab::parse_effects( p()->buff.demon_soul );
     ab::parse_effects( p()->buff.empowered_demon_soul );
+
+    // Devourer
+    ab::parse_effects( p()->buff.feast_of_souls );
 
     // Havoc
     ab::parse_effects( p()->buff.exergy );
@@ -4738,8 +4743,9 @@ struct consume_soul_t : public demon_hunter_spell_t
     p()->buff.painbringer->trigger();
     p()->buff.art_of_the_glaive->trigger();
 
-    // Warblade's hunger currently applies an additional stack on first buff application
+    p()->buff.feast_of_souls->trigger();
 
+    // Warblade's hunger currently applies an additional stack on first buff application
     if ( !p()->buff.warblades_hunger->up() )
     {
       p()->buff.warblades_hunger->trigger();
@@ -4870,9 +4876,10 @@ struct reap_t : public demon_hunter_spell_t
   reap_damage_t* damage_action;
   reap_energize_t* energize_action;
 
-  reap_t( demon_hunter_t* p, util::string_view o ) : demon_hunter_spell_t( "reap", p, p->spec.reap, o ), damage_action( nullptr ), energize_action( nullptr )
+  reap_t( demon_hunter_t* p, util::string_view o )
+    : demon_hunter_spell_t( "reap", p, p->spec.reap, o ), damage_action( nullptr ), energize_action( nullptr )
   {
-    damage_action         = p->get_background_action<reap_damage_t>( "reap_damage" );
+    damage_action        = p->get_background_action<reap_damage_t>( "reap_damage" );
     damage_action->stats = stats;
 
     if ( p->talent.devourer.scythes_embrace->ok() )
@@ -4895,7 +4902,7 @@ struct reap_t : public demon_hunter_spell_t
 
     damage_action->set_target( target );
     action_state_t* damage_state = damage_action->get_state();
-    damage_state->target = target;
+    damage_state->target         = target;
     damage_action->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
 
     if ( p()->talent.devourer.soulshaper->ok() )
@@ -7690,7 +7697,11 @@ void demon_hunter_t::create_buffs()
 
   // Devourer ===============================================================
 
-  buff.reap = make_buff( this, "reap", spec.reap );
+  buff.reap           = make_buff( this, "reap", spec.reap );
+  buff.feast_of_souls = make_buff( this, "feast_of_souls", spec.feast_of_souls_buff )
+                            ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                            ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                            ->disable_ticking( true );
 
   // Havoc ==================================================================
 
@@ -8376,6 +8387,7 @@ void demon_hunter_t::init_spells()
   spec.reap                        = find_spell( 1226019, DEMON_HUNTER_DEVOURER );
   spec.reap_damage                 = find_spell( 1225823, DEMON_HUNTER_DEVOURER );
   spec.reap_energize               = find_spell( 1261679, DEMON_HUNTER_DEVOURER );
+  spec.feast_of_souls_buff         = find_spell( 1232310, DEMON_HUNTER_DEVOURER );
 
   // Havoc Spells
   spec.havoc_demon_hunter = find_specialization_spell( "Havoc Demon Hunter" );
