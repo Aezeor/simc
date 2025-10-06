@@ -1590,7 +1590,6 @@ public:
     player_talent_t lava_lash;
     // Row 3
     player_talent_t forceful_winds;
-    player_talent_t improved_maelstrom_weapon;
     player_talent_t molten_assault;
     // Row 4
     player_talent_t unruly_winds; // TODO: Spell data still has conduit scaling (prolly non-issue)
@@ -1952,7 +1951,6 @@ public:
   void trigger_hot_hand( const action_state_t* state );
   void trigger_lava_surge();
   void trigger_herald_of_the_storms();
-  void trigger_static_accumulation_refund( const action_state_t* state, int mw_stacks );
   void trigger_elemental_assault( const action_state_t* state );
   void trigger_tempest_strikes( const action_state_t* state );
   void trigger_stormflurry( const action_state_t* state );
@@ -2607,10 +2605,8 @@ public:
 
     if ( mw_affected_stacks && affected_by_maelstrom_weapon )
     {
-      double stack_value = this->p()->talent.improved_maelstrom_weapon->effectN( 1 ).percent() +
-                           this->p()->talent.raging_maelstrom->effectN( 2 ).percent();
-
-      mw_multiplier = stack_value * mw_affected_stacks;
+      mw_multiplier = this->p()->talent.maelstrom_weapon->effectN( 3 ).percent() *
+        mw_affected_stacks;
     }
 
     if ( this->sim->debug && mw_multiplier )
@@ -3703,11 +3699,11 @@ struct pet_action_t : public T_ACTION
         T_ACTION::data().affected_by( o()->buff.fire_elemental->data().effectN( 5 ) ) ||
         T_ACTION::data().affected_by( o()->buff.lesser_fire_elemental->data().effectN( 5 ) );
     affected_by_elemental_unity_se_da =
+        T_ACTION::data().affected_by( o()->buff.storm_elemental->data().effectN( 3 ) ) ||
+        T_ACTION::data().affected_by( o()->buff.lesser_storm_elemental->data().effectN( 3 ) );
+    affected_by_elemental_unity_se_ta =
         T_ACTION::data().affected_by( o()->buff.storm_elemental->data().effectN( 4 ) ) ||
         T_ACTION::data().affected_by( o()->buff.lesser_storm_elemental->data().effectN( 4 ) );
-    affected_by_elemental_unity_se_ta =
-        T_ACTION::data().affected_by( o()->buff.storm_elemental->data().effectN( 5 ) ) ||
-        T_ACTION::data().affected_by( o()->buff.lesser_storm_elemental->data().effectN( 5 ) );
 
     affected_by_lightning_elemental_da =
         T_ACTION::data().affected_by( o()->buff.fury_of_the_storms->data().effectN( 2 ) );
@@ -6605,8 +6601,6 @@ struct chained_base_t : public shaman_spell_t
       p()->sk_during_cast = false;
     }
 
-    p()->trigger_static_accumulation_refund( execute_state, mw_consumed_stacks );
-
     if ( targets_randomized )
     {
       target_cache.is_valid = false;
@@ -7683,7 +7677,6 @@ struct lightning_bolt_t : public shaman_spell_t
     }
 
     p()->trigger_herald_of_the_storms();
-    p()->trigger_static_accumulation_refund( execute_state, mw_consumed_stacks );
 
     if ( exec_type == spell_variant::NORMAL )
     {
@@ -8846,18 +8839,6 @@ public:
       default:
         assert( 0 );
         break;
-    }
-  }
-
-  int n_targets() const override
-  {
-    if ( p()->buff.whirling_earth->check() )
-    {
-      return as<int>( p()->buff.whirling_earth->data().effectN( 3 ).base_value() );
-    }
-    else
-    {
-      return shaman_spell_t::n_targets();
     }
   }
 
@@ -10797,8 +10778,6 @@ struct tempest_t : public shaman_spell_t
 
     shaman_spell_t::execute();
 
-    p()->trigger_static_accumulation_refund( execute_state, mw_consumed_stacks );
-
     if ( ( exec_type == spell_variant::NORMAL || exec_type == spell_variant::THORIMS_INVOCATION ) &&
          p()->specialization() == SHAMAN_ENHANCEMENT &&
          rng().roll( p()->talent.supercharge->effectN( 2 ).percent() ) )
@@ -12025,7 +12004,6 @@ void shaman_t::init_spells()
   talent.lava_lash = _ST( "Lava Lash" );
   // Row 3
   talent.forceful_winds = _ST( "Forceful Winds" );
-  talent.improved_maelstrom_weapon = _ST( "Improved Maelstrom Weapon" );
   talent.molten_assault = _ST( "Molten Assault" );
   // Row 4
   talent.unruly_winds = _ST( "Unruly Winds" );
@@ -12210,7 +12188,7 @@ void shaman_t::init_spells()
   spell.tww3_stormbringer_4pc = conditional_spell_lookup( sets->has_set_bonus( HERO_STORMBRINGER, TWW3, B4 ), 1236409 );
 
   // Misc spell-related init
-  max_active_flame_shock   = as<unsigned>( find_class_spell( "Flame Shock" )->max_targets() );
+  max_active_flame_shock   = as<unsigned>( find_spell( 470411 )->max_targets() );
 
   parse_player_effects_t::init_spells();
 
@@ -13000,21 +12978,6 @@ void shaman_t::trigger_herald_of_the_storms()
   }
 
   proc.herald_of_the_storms->occur();
-}
-
-void shaman_t::trigger_static_accumulation_refund( const action_state_t* state, int mw_stacks )
-{
-  if ( !talent.static_accumulation.ok() || mw_stacks == 0 )
-  {
-    return;
-  }
-
-  if ( !rng().roll( talent.static_accumulation->effectN( 2 ).percent() ) )
-  {
-    return;
-  }
-
-  generate_maelstrom_weapon( state, mw_stacks );
 }
 
 void shaman_t::trigger_elemental_assault( const action_state_t* state )
