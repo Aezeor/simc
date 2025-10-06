@@ -1553,14 +1553,23 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
 
     switch ( eff.misc_value1() )
     {
-      case P_CAST_TIME:       val_mul = 1.0;
-                              str = "cast time";   return &flat_execute_time_effects;
-      case P_TICK_TIME:       val_mul = 1.0;
-                              str = "tick time";   return &flat_tick_time_effects;
-      case P_CRIT:            str = "crit chance"; return &crit_chance_effects;
-      case P_RESOURCE_COST_1: val_mul = spelleffect_data_t::resource_multiplier( _action->current_resource() );
-                              str = "flat cost";   return &flat_cost_effects;
-      default:                return nullptr;
+      case P_CAST_TIME:
+        val_mul = 1.0;
+        str = "cast time";
+        return &flat_execute_time_effects;
+      case P_TICK_TIME:
+        val_mul = 1.0;
+        str = "tick time";
+        return &flat_tick_time_effects;
+      case P_CRIT:
+        str = "crit chance";
+        return &crit_chance_effects;
+      case P_RESOURCE_COST_1:
+        val_mul = power_type_data_t::multiplier( _action->current_resource(), _action->sim->dbc->ptr );
+        str = "flat cost";
+        return &flat_cost_effects;
+      default:
+        return nullptr;
     }
   }
   else if ( eff.subtype() == A_MOD_RECHARGE_TIME_PCT_CATEGORY )

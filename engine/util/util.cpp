@@ -1106,7 +1106,7 @@ school_e util::parse_school_type( util::string_view name )
   return parse_enum<school_e, SCHOOL_NONE, SCHOOL_MAX, school_type_string>( name );
 }
 
-resource_e util::translate_power_type( power_e pt )
+resource_e util::power_type_to_resource( power_e pt )
 {
   switch ( pt )
   {
@@ -1128,6 +1128,31 @@ resource_e util::translate_power_type( power_e pt )
     case POWER_PAIN:          return RESOURCE_PAIN;
     case POWER_ESSENCE:       return RESOURCE_ESSENCE;
     default:                  return RESOURCE_NONE;
+  }
+}
+
+power_e util::resource_to_power_type( resource_e resource_type )
+{
+  switch ( resource_type )
+  {
+    case RESOURCE_HEALTH:       return POWER_HEALTH;
+    case RESOURCE_MANA:         return POWER_MANA;
+    case RESOURCE_RAGE:         return POWER_RAGE;
+    case RESOURCE_FOCUS:        return POWER_FOCUS;
+    case RESOURCE_ENERGY:       return POWER_ENERGY;
+    case RESOURCE_RUNIC_POWER:  return POWER_RUNIC_POWER;
+    case RESOURCE_SOUL_SHARD:   return POWER_SOUL_SHARDS;
+    case RESOURCE_ASTRAL_POWER: return POWER_ASTRAL_POWER;
+    case RESOURCE_HOLY_POWER:   return POWER_HOLY_POWER;
+    case RESOURCE_MAELSTROM:    return POWER_MAELSTROM;
+    case RESOURCE_CHI:          return POWER_CHI;
+    case RESOURCE_INSANITY:     return POWER_INSANITY;
+    case RESOURCE_FURY:         return POWER_FURY;
+    case RESOURCE_PAIN:         return POWER_PAIN;
+    case RESOURCE_RUNE:         return POWER_RUNE;
+    case RESOURCE_COMBO_POINT:  return POWER_COMBO_POINT;
+    case RESOURCE_ESSENCE:      return POWER_ESSENCE;
+    default:                    return POWER_NONE;
   }
 }
 

@@ -2,10 +2,12 @@
 #include "spell_data.hpp"
 
 #include "generated/sc_spell_data.inc"
+#include "generated/power_type_data.inc"
 
 #include <array>
 #if SC_USE_PTR
 #include "generated/sc_spell_data_ptr.inc"
+#include "generated/power_type_data_ptr.inc"
 #endif
 
 #include "dbc/client_data.hpp"
@@ -28,12 +30,60 @@ util::span<const spelllabel_data_t> spelllabel_data_t::data( bool ptr )
 }
 
 // ==========================================================================
+// Power Type Data - PowerType.dbc
+// ==========================================================================
+
+util::span<const power_type_data_t> power_type_data_t::data( bool ptr )
+{
+  return SC_DBC_GET_DATA( __power_type_data, __ptr_power_type_data, ptr );
+}
+
+const power_type_data_t& power_type_data_t::find( power_e type, bool ptr )
+{
+  auto raw_type = static_cast<int>( type );
+  const auto __data = data( ptr );
+
+  assert( raw_type >= 0 && raw_type < __data.size() && "power_type_data_t: power_e type index out of bounds" );
+
+  return __data[ raw_type ];
+}
+
+const power_type_data_t& power_type_data_t::find( resource_e r, bool ptr )
+{
+  return find( util::resource_to_power_type( r ), ptr );
+}
+
+double power_type_data_t::divisor( power_e p, bool ptr )
+{
+  return find( p, ptr ).divisor();
+}
+
+double power_type_data_t::multiplier( power_e p, bool ptr )
+{
+  return 1.0 / divisor( p, ptr );
+}
+
+double power_type_data_t::multiplier( resource_e r, bool ptr )
+{
+  return multiplier( util::resource_to_power_type( r ), ptr );
+}
+
+// ==========================================================================
 // Spell Power Data - SpellPower.dbc
 // ==========================================================================
 
 resource_e spellpower_data_t::resource() const
 {
-  return util::translate_power_type( type() );
+  return util::power_type_to_resource( type() );
+}
+
+double spellpower_data_t::cost_divisor( bool pct ) const
+{
+#ifdef SC_USE_PTR
+  assert( power_type_data_t::divisor( type(), false ) ==
+          power_type_data_t::divisor( type(), true ) );
+#endif
+  return power_type_data_t::divisor( type() ) * ( pct ? 100.0 : 1.0 );
 }
 
 const spellpower_data_t& spellpower_data_t::find( unsigned id, bool ptr )
@@ -53,24 +103,30 @@ util::span<const spellpower_data_t> spellpower_data_t::data( bool ptr )
 
 resource_e spelleffect_data_t::resource_gain_type() const
 {
-  return util::translate_power_type( static_cast<power_e>( misc_value1() ) );
+  return util::power_type_to_resource( static_cast<power_e>( misc_value1() ) );
 }
 
-double spelleffect_data_t::resource_multiplier( resource_e resource_type )
+double spelleffect_data_t::resource( resource_e resource_type ) const
 {
-  switch ( resource_type )
-  {
-    case RESOURCE_RUNIC_POWER:
-    case RESOURCE_RAGE:
-    case RESOURCE_ASTRAL_POWER:
-    case RESOURCE_PAIN:
-    case RESOURCE_SOUL_SHARD:
-      return ( 1 / 10.0 );
-    case RESOURCE_INSANITY:
-      return ( 1 / 100.0 );
-    default:
-      return 1;
-  }
+#ifdef SC_USE_PTR
+  assert( power_type_data_t::multiplier( resource_type, false ) ==
+          power_type_data_t::multiplier( resource_type, true ) );
+#endif
+  return base_value() * power_type_data_t::multiplier( resource_type );
+}
+
+double spelleffect_data_t::resource() const
+{
+  return base_value() * resource_multiplier();
+}
+
+double spelleffect_data_t::resource_multiplier() const
+{
+#ifdef SC_USE_PTR
+  assert( power_type_data_t::multiplier( static_cast<power_e>( misc_value1() ), false ) ==
+          power_type_data_t::multiplier( static_cast<power_e>( misc_value1(), true ) ) );
+#endif
+  return power_type_data_t::multiplier( static_cast<power_e>( misc_value1() ) );
 }
 
 school_e spelleffect_data_t::school_type() const
@@ -450,7 +506,7 @@ double spelleffect_data_t::default_multiplier() const
         case A_MOD_MAX_RESOURCE:
         case A_MOD_INCREASE_RESOURCE:
         case A_PERIODIC_ENERGIZE:
-          return resource_multiplier( resource_gain_type() );
+          return resource_multiplier();
 
         case A_ADD_FLAT_MODIFIER:
         case A_ADD_FLAT_LABEL_MODIFIER:
@@ -471,7 +527,7 @@ double spelleffect_data_t::default_multiplier() const
             case P_RESOURCE_COST_1:
             case P_RESOURCE_COST_2:
             case P_RESOURCE_COST_3:
-              return resource_multiplier( resource_gain_type() );
+              return resource_multiplier();
 
             default:
               return 1.0;  // base_value
@@ -490,7 +546,7 @@ double spelleffect_data_t::default_multiplier() const
       }
 
     case E_ENERGIZE:
-      return resource_multiplier( resource_gain_type() );
+      return resource_multiplier();
 
     default:
       break;

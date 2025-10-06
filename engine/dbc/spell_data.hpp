@@ -49,6 +49,51 @@ struct spelllabel_data_t
 };
 
 // ==========================================================================
+// Power Type Data - PowerType.dbc
+// ==========================================================================
+
+struct power_type_data_t
+{
+  int _power_type;
+  const char* _name;
+  unsigned _initial;
+  unsigned _max;
+  double _divisor;
+  unsigned _regen_interrupt_time;
+  double _regen_combat;
+  double _regen_ooc;
+  unsigned _flags;
+
+  power_e type() const
+  { return static_cast<power_e>( _power_type ); }
+
+  const char* name_cstr() const
+  { return _name; }
+
+  unsigned base() const
+  { return _initial; }
+
+  unsigned max() const
+  { return _max; }
+
+  double divisor() const
+  { return _divisor; }
+
+  double regen_per_second( bool combat ) const
+  { return combat ? _regen_combat : _regen_ooc; }
+
+  bool hasted_regen() const
+  { return _flags & 0x400; }
+
+  static util::span<const power_type_data_t> data( bool ptr = false );
+  static const power_type_data_t& find( power_e, bool ptr = false );
+  static const power_type_data_t& find( resource_e, bool ptr = false );
+  static double divisor( power_e, bool ptr = false );
+  static double multiplier( power_e, bool ptr = false );
+  static double multiplier( resource_e, bool ptr = false );
+};
+
+// ==========================================================================
 // Spell Power Data - SpellPower.dbc
 // ==========================================================================
 
@@ -82,48 +127,16 @@ struct spellpower_data_t
   int raw_type() const
   { return _power_type; }
 
-  double cost_divisor( bool percentage ) const
-  {
-    switch ( type() )
-    {
-      case POWER_MANA:
-        return percentage ? 100.0 : 1.0;
-      case POWER_INSANITY:
-        return 100.0;
-      case POWER_RAGE:
-      case POWER_RUNIC_POWER:
-      case POWER_BURNING_EMBER:
-      case POWER_ASTRAL_POWER:
-      case POWER_PAIN:
-      case POWER_SOUL_SHARDS:
-        return 10.0;
-      case POWER_DEMONIC_FURY:
-        return percentage ? 0.1 : 1.0;  // X% of 1000 ("base" demonic fury) is X divided by 0.1
-      default:
-        return 1.0;
-    }
-  }
+  double cost_divisor( bool pct ) const;
 
   double cost() const
-  {
-    double cost = _cost != 0 ? _cost : _pct_cost;
-
-    return cost / cost_divisor( ! ( _cost != 0 ) );
-  }
+  { return _cost != 0 ? _cost / cost_divisor( false ) : _pct_cost / cost_divisor( true ); }
 
   double max_cost() const
-  {
-    double cost = _cost_max != 0 ? _cost_max : _pct_cost_max;
-
-    return cost / cost_divisor( ! ( _cost_max != 0 ) );
-  }
+  { return _cost_max != 0 ? _cost_max / cost_divisor( false ) : _pct_cost_max / cost_divisor( true ); }
 
   double cost_per_tick() const
-  {
-    double cost = _cost_per_tick != 0 ? _cost_per_tick : _pct_cost_per_tick;
-
-    return cost / cost_divisor( ! ( _cost_per_tick != 0 ) );
-  }
+  { return _cost_per_tick != 0 ? _cost_per_tick / cost_divisor( false ) : _pct_cost_per_tick / cost_divisor( true ); }
 
   static const spellpower_data_t& nil()
   { return dbc::nil<spellpower_data_t>; }
@@ -131,6 +144,7 @@ struct spellpower_data_t
   static const spellpower_data_t& find( unsigned id, bool ptr = false );
   static util::span<const spellpower_data_t> data( bool ptr = false );
   static util::span<const hotfix::client_hotfix_entry_t> hotfixes( const spellpower_data_t&, bool ptr );
+  static void link( bool ptr = false );
 
   bool override_field( util::string_view field, double value );
   double get_field( util::string_view field ) const;
@@ -229,13 +243,11 @@ struct spelleffect_data_t
 
   resource_e resource_gain_type() const;
 
-  static double resource_multiplier( resource_e resource_type );
+  double resource( resource_e resource_type ) const;
 
-  double resource( resource_e resource_type ) const
-  { return base_value() * resource_multiplier( resource_type ); }
+  double resource() const;
 
-  double resource() const
-  { return resource( resource_gain_type() ); }
+  double resource_multiplier() const;
 
   school_e school_type() const;
 

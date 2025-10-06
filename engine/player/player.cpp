@@ -1592,7 +1592,7 @@ void player_t::init_base_stats()
     resources.base_regen_per_second[ RESOURCE_MANA ] = dbc->resource_base( type, level() ) * 0.01;
     for ( auto power = POWER_HEALTH; power < POWER_MAX; power++ )
     {
-      resource_e resource = util::translate_power_type( power );
+      resource_e resource = util::power_type_to_resource( power );
       if ( resources.active_resource[ resource ] == false )
         continue;
 
@@ -5768,7 +5768,8 @@ double player_t::composite_player_target_multiplier( player_t* t, school_e /* sc
   if ( t->race == RACE_ABERRATION && buffs.damage_to_aberrations && buffs.damage_to_aberrations->check() )
     m *= 1.0 + buffs.damage_to_aberrations->stack_value();
 
-  if ( t->race == RACE_ABERRATION || t->race == RACE_BEAST || t->race == RACE_ELEMENTAL && racials.subterranean_predator->ok() )
+  if ( ( t->race == RACE_ABERRATION || t->race == RACE_BEAST || t->race == RACE_ELEMENTAL ) &&
+       racials.subterranean_predator->ok() )
   {
     m *= 1.0 + racials.subterranean_predator->effectN( 2 ).percent();
   }
@@ -15646,14 +15647,14 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     switch ( modifying_eff.subtype() )
     {
       case A_MOD_MAX_RESOURCE:
-        resource_type = util::translate_power_type( static_cast<power_e>( misc_type ) );
+        resource_type = util::power_type_to_resource( static_cast<power_e>( misc_type ) );
         field         = fmt::format( "max_{}", util::resource_type_string( resource_type ), subtype_str );
         flat_val      = modifying_eff.resource( resource_type );
         break;
       case A_INCREASE_RESOURCE_PCT:
       case A_MOD_MAX_RESOURCE_PCT:
         field = fmt::format(
-            "{}_multiplier", util::resource_type_string( util::translate_power_type( static_cast<power_e>( misc_type ) ) ),
+            "{}_multiplier", util::resource_type_string( util::power_type_to_resource( static_cast<power_e>( misc_type ) ) ),
             subtype_str );
         pct_val = modifying_eff.percent();
         break;
@@ -15667,7 +15668,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         break;
       case A_MOD_POWER_REGEN_PERCENT:
         field = fmt::format(
-            "{}_regen", util::resource_type_string( util::translate_power_type( static_cast<power_e>( misc_type ) ) ) );
+            "{}_regen", util::resource_type_string( util::power_type_to_resource( static_cast<power_e>( misc_type ) ) ) );
         pct_val = modifying_eff.percent();
         break;
       case A_MOD_MELEE_AUTO_ATTACK_SPEED:

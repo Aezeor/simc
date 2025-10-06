@@ -4505,6 +4505,35 @@ class ArmorLocationDataGenerator(DataGenerator):
 
         self.output_footer()
 
+class PowerTypeGenerator(DataGenerator):
+    def generate(self, data = None):
+        data = sorted(self.db('PowerType').values(), key = lambda e: e.type)
+
+        self.output_header(
+            header = 'Power types',
+            type = 'power_type_data_t',
+            array = 'power_type',
+            length = data[-1].type + 1 )
+
+        idx = 0
+        for entry in sorted(data, key = lambda e: e.type):
+            # pad missing power types so we can fast-access power_type_data via array index
+            while entry.type > idx:
+                self.output_record([ f'{idx:2d}', f'{'""':>20s}', f'{0:5d}', f'{0:5d}', f'{1:5.1f}', f'{0:5d}',
+                                     f'{0:6.1f}', f'{0:6.1f}', f'{0:#010x}' ])
+                idx += 1
+
+            fields = entry.field('type')
+            fields += ["{:>20s}".format(f'"{entry.name.capitalize()}"')]
+            fields += entry.field('default', 'max')
+            fields += ["{:5.1f}".format(entry.display_modifier)]
+            fields += entry.field('regen_interrupt_time', 'regen_combat', 'regen_ooc', 'flags')
+
+            self.output_record(fields)
+            idx += 1
+
+        self.output_footer()
+
 class GemPropertyDataGenerator(DataGenerator):
     def filter(self):
         return [

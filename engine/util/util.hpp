@@ -141,14 +141,16 @@ const char* talent_tree_string( talent_tree type );
 const char* trait_definition_op_string( trait_definition_op op );
 const char* error_level_string( error_level_e level );
 
-std::string rppm_scaling_string       ( unsigned );
+std::string rppm_scaling_string( unsigned );
 std::string profile_source_string( profile_source );
 
-uint32_t    school_type_component     ( school_e s_type, school_e c_type );
+uint32_t school_type_component( school_e s_type, school_e c_type );
 bool is_match_slot( slot_e slot );
-item_subclass_armor matching_armor_type ( player_e ptype );
-resource_e  translate_power_type      ( power_e );
-stat_e      power_type_to_stat        ( power_e );
+item_subclass_armor matching_armor_type( player_e ptype );
+
+resource_e power_type_to_resource( power_e );
+power_e resource_to_power_type( resource_e );
+stat_e power_type_to_stat( power_e );
 
 attribute_e parse_attribute_type ( util::string_view name );
 result_amount_type parse_dmg_type ( util::string_view name );

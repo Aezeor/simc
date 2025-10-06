@@ -1294,6 +1294,23 @@
       { "data_type": "h", "field": "unk_83", "elements": 4 }
     ]
   },
+  "PowerType": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "S", "field": "name_cost" },
+      { "data_type": "i", "field": "id" },
+      { "data_type": "b", "field": "type", "formats": { "cpp": "%2u" } },
+      { "data_type": "i", "field": "min" },
+      { "data_type": "i", "field": "max", "formats": { "cpp": "%5u" } },
+      { "data_type": "i", "field": "center" },
+      { "data_type": "i", "field": "default", "formats": { "cpp": "%5u" } },
+      { "data_type": "i", "field": "display_modifier" },
+      { "data_type": "i", "field": "regen_interrupt_time", "formats": { "cpp": "%5u" } },
+      { "data_type": "f", "field": "regen_ooc", "formats": { "cpp": "%6.1f" } },
+      { "data_type": "f", "field": "regen_combat", "formats": { "cpp": "%6.1f" } },
+      { "data_type": "i", "field": "flags", "formats": { "cpp": "%#.8x" } }
+    ]
+  },
   "RandPropPoints": {
     "fields": [
       { "data_type": "f", "field": "damage_replace_stat", "formats": { "cpp": "%#.8ff" } },

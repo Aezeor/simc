@@ -2153,7 +2153,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
            e->subtype() == A_MOD_POWER_REGEN_PERCENT || e->subtype() == A_TRIGGER_SPELL_ON_POWER_AMOUNT ||
            e->subtype() == A_TRIGGER_SPELL_ON_POWER_PCT ) ) )
   {
-    tokens.emplace_back( fmt::format( "Resource: {}", util::resource_type_string( util::translate_power_type(
+    tokens.emplace_back( fmt::format( "Resource: {}", util::resource_type_string( util::power_type_to_resource(
                                                         static_cast<power_e>( e->misc_value1() ) ) ) ) );
   }
   else if ( e->type() == E_APPLY_AURA && ( e->subtype() == A_MOD_STAT || e->subtype() == A_MOD_PERCENT_STAT ||
@@ -3490,7 +3490,7 @@ void spell_info::effect_to_xml( const dbc_t& dbc, const spell_data_t* spell, con
     else if ( e->type() == E_ENERGIZE || e->type() == E_ENERGIZE_PCT )
       node->add_parm(
           "misc_value_energize",
-          util::resource_type_string( util::translate_power_type( static_cast<power_e>( e->misc_value1() ) ) ) );
+          util::resource_type_string( util::power_type_to_resource( static_cast<power_e>( e->misc_value1() ) ) ) );
     else
       node->add_parm( "misc_value", e->misc_value1() );
   }

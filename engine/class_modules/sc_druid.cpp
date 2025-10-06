@@ -2061,7 +2061,7 @@ public:
     {
       const spelleffect_data_t& eff = e;
       if ( eff.type() == E_ENERGIZE &&
-           util::translate_power_type( static_cast<power_e>( eff.misc_value1() ) ) == ab::energize_resource )
+           util::power_type_to_resource( static_cast<power_e>( eff.misc_value1() ) ) == ab::energize_resource )
       {
         energize = &e;
         ab::energize_amount = energize->resource();
