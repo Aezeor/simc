@@ -384,7 +384,7 @@ public:
       player_talent_t soul_immolation;
       player_talent_t predators_thirst;
 
-      player_talent_t tempered_soul;  // NYI
+      player_talent_t tempered_soul;
       player_talent_t spontaneous_immolation;
       player_talent_t void_metamorphosis;  // NYI
       player_talent_t feast_of_souls;
@@ -402,7 +402,7 @@ public:
       player_talent_t focused_ray;      // NYI
       player_talent_t collapsing_star;  // NYI
       player_talent_t sweet_suffering;
-      player_talent_t voidpurge;  // NYI
+      player_talent_t voidpurge;
 
       player_talent_t hungering_slash;  // NYI
       player_talent_t voidrage;         // NYI
@@ -414,7 +414,7 @@ public:
       player_talent_t up_close;              // NYI
       player_talent_t impending_apocalypse;  // NYI
       player_talent_t rolling_torment;       // NYI
-      player_talent_t improved_reap;         // NYI
+      player_talent_t improved_reap;
 
       player_talent_t devourers_bite;
       player_talent_t star_fragments;  // NYI
