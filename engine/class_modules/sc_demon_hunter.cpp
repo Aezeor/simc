@@ -258,8 +258,6 @@ public:
 
   event_t* exit_melee_event;  // Event to disable melee abilities mid-VR.
 
-  event_t* winning_streak_conversion_event;
-
   // Buffs
   struct buffs_t
   {
@@ -323,14 +321,6 @@ public:
     buff_t* demonsurge;
 
     // Set Bonuses
-    buff_t* tww1_havoc_4pc;
-    buff_t* tww1_vengeance_4pc;
-    buff_t* luck_of_the_draw;
-    buff_t* winning_streak;
-    buff_t* winning_streak_residual;
-    buff_t* necessary_sacrifice;
-    buff_t* demon_soul_tww3;
-    buff_t* scarred_strikes;
   } buff;
 
   // Talents
@@ -916,17 +906,6 @@ public:
     std::unordered_map<demonsurge_ability, proc_t*> demonsurge_abilities;
 
     // Set Bonuses
-    proc_t* soul_fragment_from_vengeance_tww1_2pc;
-    proc_t* metamorphosis_from_tww2_vengeance_2pc;
-    proc_t* the_hunt_reset_from_tww2_vengeance_4pc;
-    proc_t* winning_streak_drop_from_tww2_havoc_2pc;
-    proc_t* winning_streak_drop_wasted_from_tww2_havoc_2pc;
-    proc_t* winning_streak_wasted_from_tww2_havoc_4pc;
-    proc_t* necessary_sacrifice_wasted_from_tww2_havoc_4pc;
-    proc_t* chaos_strike_in_immolation_aura;
-    proc_t* annihilation_in_immolation_aura;
-    proc_t* soul_cleave_in_immolation_aura;
-    proc_t* soul_sunder_in_immolation_aura;
   } proc;
 
   // RPPM objects
@@ -4752,11 +4731,7 @@ struct consume_soul_t : public demon_hunter_spell_t
     }
     p()->buff.warblades_hunger->trigger();
 
-    if ( type == soul_fragment::EMPOWERED_DEMON )
-    {
-      p()->buff.demon_soul_tww3->trigger();
-    }
-    else if ( type == soul_fragment::GREATER_DEMON )
+    if ( type == soul_fragment::GREATER_DEMON )
     {
       p()->buff.demon_soul->trigger();
     }
@@ -4897,7 +4872,7 @@ struct reap_t : public demon_hunter_spell_t
     p()->buff.reap->trigger();
     demon_hunter_spell_t::execute();
 
-    unsigned souls_to_consume   = p()->spec.shattered_souls->effectN( 2 ).base_value();
+    double souls_to_consume   = p()->spec.shattered_souls->effectN( 2 ).base_value();
     unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume );
 
     damage_action->set_target( target );
@@ -5752,16 +5727,6 @@ struct chaos_strike_t : public chaos_strike_base_t
 
     return chaos_strike_base_t::ready();
   }
-
-  void execute() override
-  {
-    chaos_strike_base_t::execute();
-
-    if ( !from_onslaught && p()->buff.immolation_aura->check() )
-    {
-      p()->proc.chaos_strike_in_immolation_aura->occur();
-    }
-  }
 };
 
 // Annihilation =============================================================
@@ -5798,16 +5763,6 @@ struct annihilation_t : public demonsurge_trigger_t<demonsurge_ability::ANNIHILA
     }
 
     return base_t::ready();
-  }
-
-  void execute() override
-  {
-    base_t::execute();
-
-    if ( !from_onslaught && p()->buff.immolation_aura->check() )
-    {
-      p()->proc.annihilation_in_immolation_aura->occur();
-    }
   }
 };
 
@@ -6303,16 +6258,6 @@ struct soul_sunder_t : public demonsurge_trigger_t<demonsurge_ability::SOUL_SUND
   soul_sunder_t( demon_hunter_t* p ) : base_t( "soul_sunder", p, p->hero_spec.soul_sunder, "" )
   {
   }
-
-  void execute() override
-  {
-    base_t::execute();
-
-    if ( p()->buff.immolation_aura->check() )
-    {
-      p()->proc.soul_sunder_in_immolation_aura->occur();
-    }
-  }
 };
 
 struct soul_cleave_t : public soul_cleave_base_t
@@ -6352,11 +6297,6 @@ struct soul_cleave_t : public soul_cleave_base_t
     }
 
     soul_cleave_base_t::execute();
-
-    if ( p()->buff.immolation_aura->check() )
-    {
-      p()->proc.soul_cleave_in_immolation_aura->occur();
-    }
   }
 };
 
@@ -7122,16 +7062,6 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
 
     if ( s > 0 )
       base_t::execute( s, value, duration );
-  }
-
-  void expire_override( int stacks, timespan_t remaining_duration ) override
-  {
-    demon_hunter_buff_t::expire_override( stacks, remaining_duration );
-
-    if ( p()->buff.scarred_strikes->up() )
-    {
-      p()->buff.scarred_strikes->expire();
-    }
   }
 };
 
@@ -8227,17 +8157,6 @@ void demon_hunter_t::init_procs()
   proc.demonsurge_abilities[ ENTER_META ] = get_proc( demonsurge_ability_name( ENTER_META ) );
 
   // Set Bonuses
-  proc.soul_fragment_from_vengeance_tww1_2pc          = get_proc( "soul_fragment_from_vengeance_tww1_2pc" );
-  proc.metamorphosis_from_tww2_vengeance_2pc          = get_proc( "metamorphosis_from_tww2_vengeance_2pc" );
-  proc.the_hunt_reset_from_tww2_vengeance_4pc         = get_proc( "the_hunt_reset_from_tww2_vengeance_4pc" );
-  proc.winning_streak_drop_from_tww2_havoc_2pc        = get_proc( "winning_streak_drop_from_tww2_havoc_2pc" );
-  proc.winning_streak_drop_wasted_from_tww2_havoc_2pc = get_proc( "winning_streak_drop_wasted_from_tww2_havoc_2pc" );
-  proc.winning_streak_wasted_from_tww2_havoc_4pc      = get_proc( "winning_streak_wasted_from_tww2_havoc_4pc" );
-  proc.necessary_sacrifice_wasted_from_tww2_havoc_4pc = get_proc( "necessary_sacrifice_wasted_from_tww2_havoc_4pc" );
-  proc.chaos_strike_in_immolation_aura                = get_proc( "chaos_strike_in_immolation_aura" );
-  proc.annihilation_in_immolation_aura                = get_proc( "annihilation_in_immolation_aura" );
-  proc.soul_cleave_in_immolation_aura                 = get_proc( "soul_cleave_in_immolation_aura" );
-  proc.soul_sunder_in_immolation_aura                 = get_proc( "soul_sunder_in_immolation_aura" );
 }
 
 // demon_hunter_t::init_uptimes =============================================
@@ -9649,7 +9568,6 @@ void demon_hunter_t::reset()
   soul_fragment_pick_up           = nullptr;
   frailty_driver                  = nullptr;
   exit_melee_event                = nullptr;
-  winning_streak_conversion_event = nullptr;
   next_fragment_spawn             = 0;
   metamorphosis_health            = 0;
   frailty_accumulator             = 0.0;
@@ -10009,7 +9927,6 @@ void demon_hunter_t::parse_player_effects()
   // Fel-scarred
 
   // Set Bonuses
-  parse_effects( buff.necessary_sacrifice );
 }
 
 // demon_hunter_t::max_soul_fragments =============================================
