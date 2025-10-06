@@ -408,7 +408,7 @@ public:
       player_talent_t voidrage;         // NYI
       player_talent_t dark_ultimatum;   // NYI
       player_talent_t beckon;           // NYI
-      player_talent_t voidglare_boon;   // NYI
+      player_talent_t voidglare_boon;
 
       player_talent_t voidstep;              // NYI
       player_talent_t up_close;              // NYI
@@ -856,6 +856,9 @@ public:
     // General
     gain_t* miss_refund;
     gain_t* immolation_aura;
+
+    // Devourer
+    gain_t* voidglare_boon;
 
     // Havoc
     gain_t* blind_fury;
@@ -5136,7 +5139,11 @@ struct void_ray_t : public demon_hunter_spell_t
 
     if ( d->current_tick < d->num_ticks() )
     {
-    // TODO: on end of fully channeling Void Ray stuff
+      if ( p()->talent.devourer.voidglare_boon->ok() )
+      {
+        p()->resource_gain( RESOURCE_FURY, p()->talent.devourer.voidglare_boon->effectN( 1 ).base_value(),
+                            p()->gain.voidglare_boon );
+      }
     }
   }
 
@@ -9457,6 +9464,7 @@ void demon_hunter_t::create_gains()
   gain.miss_refund = get_gain( "miss_refund" );
 
   // Devourer
+  gain.voidglare_boon = get_gain( "voidglare_boon" );
 
   // Havoc
   gain.blind_fury       = get_gain( "blind_fury" );
