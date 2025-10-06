@@ -4794,7 +4794,6 @@ struct devour_t : public consume_base_t
   {
     consume_base_t::execute();
 
-    p()->sim->out_debug.printf( "%s adjusts Reap cooldown by %u", p()->name(), reap_cdr.total_millis() );
     p()->cooldown.reap->adjust( -reap_cdr );
   }
 };
