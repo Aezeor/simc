@@ -259,12 +259,14 @@ struct player_t : public actor_t
 
     double spell_power_per_intellect, spell_power_per_attack_power, spell_crit_per_intellect;
     double attack_power_per_strength, attack_power_per_agility, attack_crit_per_agility, attack_power_per_spell_power;
-    double dodge_per_agility, parry_per_strength;
+    double dodge_per_agility, parry_per_strength, parry_rating_per_crit_rating;
     double health_per_stamina;
     std::array<double, SCHOOL_MAX> resource_reduction;
     double miss, dodge, parry, block;
-    double hit, expertise, leech, avoidance;
-    double spell_crit_chance, attack_crit_chance, block_reduction, mastery, versatility;
+    double hit, expertise, leech, avoidance, crit_avoidance;
+    double spell_crit_chance, attack_crit_chance, block_reduction;
+    double mastery, versatility, all_crit, all_haste;
+    double melee_haste, spell_haste, ranged_haste;
     double skill, skill_debuff, distance;
     double distance_to_move;
     double moving_away;
@@ -274,8 +276,19 @@ struct player_t : public actor_t
     rating_t rating;
 
     std::array<double, ATTRIBUTE_MAX> attribute_multiplier;
+    std::array<double, ATTRIBUTE_MAX> matching_armor_multiplier;
+    std::array<double, RATING_MAX> rating_multiplier;
     double spell_power_multiplier, attack_power_multiplier, base_armor_multiplier, armor_multiplier;
-    double crit_damage_multiplier, crit_healing_multiplier;
+    std::array<double, SCHOOL_MAX_PRIMARY> crit_damage_multiplier;
+    double crit_healing_multiplier;
+    double attack_speed_multiplier;
+    double healing_multiplier;
+    std::array<double, SCHOOL_MAX_PRIMARY> damage_multiplier;
+    double pet_damage_multiplier, guardian_damage_multiplier;
+    double absorb_multiplier, absorb_received_multiplier, healing_received_multiplier;
+    double armor_penetration;
+
+    double movement_speed, stacking_movement_speed_modifier, non_stacking_movement_speed_modifier;
     position_e position;
 
     friend void sc_format_to( const base_initial_current_t&, fmt::format_context::iterator );
@@ -283,9 +296,6 @@ struct player_t : public actor_t
   base, // Base values, from some database or overridden by user
   initial, // Base + Passive + Gear (overridden or items) + Player Enchants + Global Enchants
   current; // Current values, reset to initial before every iteration
-
-  /// Passive combat rating multipliers
-  rating_t passive_rating_multiplier;
 
   gear_stats_t passive; // Passive stats from various passive auras (and similar effects)
 
@@ -471,9 +481,7 @@ struct player_t : public actor_t
   // Scale Factors
   std::unique_ptr<player_scaling_t> scaling;
 
-  // Movement & Position
-  double base_movement_speed;
-  double passive_modifier; // _PASSIVE_ movement speed modifiers
+  // Position
   double x_position, y_position, default_x_position, default_y_position;
 
   struct consumables_t {
@@ -1317,7 +1325,7 @@ public:
   virtual double composite_crit_avoidance() const;
   virtual double composite_attack_power_multiplier() const;
   virtual double composite_spell_power_multiplier() const;
-  virtual double matching_gear_multiplier( attribute_e /* attr */ ) const { return 0; }
+  virtual double matching_gear_multiplier( attribute_e /* attr */ ) const;
   /// Player-wide school based multipliers
   virtual double composite_player_multiplier( school_e ) const;
   /// Persistent multipliers that are snapshot at the beginning of the spell application/execution
@@ -1330,13 +1338,11 @@ public:
   virtual double composite_player_pet_damage_multiplier( const action_state_t*, bool guardian ) const;
   virtual double composite_player_target_pet_damage_multiplier( player_t*, bool guardian ) const;
   virtual double composite_player_target_crit_chance( player_t* ) const;
-  virtual double composite_player_critical_damage_multiplier( const action_state_t* s ) const;
+  virtual double composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const;
   virtual double composite_player_critical_healing_multiplier() const;
   virtual double composite_player_target_armor( player_t* ) const;
-  virtual double composite_player_healing_received_multiplier() const
-  { return 1.0; }
-  virtual double composite_player_absorb_received_multiplier() const
-  { return 1.0; }
+  virtual double composite_player_healing_received_multiplier() const;
+  virtual double composite_player_absorb_received_multiplier() const;
   virtual double composite_mitigation_multiplier( school_e ) const;
   virtual double non_stacking_movement_modifier() const;
   virtual double stacking_movement_modifier() const;
@@ -1369,8 +1375,7 @@ public:
   { return composite_rating( RATING_EXPERTISE ); }
   virtual double composite_dodge_rating() const
   { return composite_rating( RATING_DODGE ); }
-  virtual double composite_parry_rating() const
-  { return composite_rating( RATING_PARRY ); }
+  virtual double composite_parry_rating() const;
   virtual double composite_block_rating() const
   { return composite_rating( RATING_BLOCK ); }
   virtual double composite_damage_versatility_rating() const

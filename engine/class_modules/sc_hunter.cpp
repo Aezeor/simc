@@ -1116,7 +1116,7 @@ public:
   double composite_spell_crit_chance() const override;
   double composite_rating_multiplier( rating_e ) const override;
   double composite_melee_auto_attack_speed() const override;
-  double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
+  double composite_player_critical_damage_multiplier( const action_state_t*, school_e ) const override;
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
@@ -1791,8 +1791,6 @@ struct dire_critter_t : public hunter_pet_t
   {
     double m = hunter_pet_t::composite_player_multiplier( school );
 
-    m *= 1 + o()->talents.dire_frenzy->effectN( 2 ).percent();
-
     if ( buffs.bestial_wrath->has_common_school( school ) )
       m *= 1 + buffs.bestial_wrath->check_value();
 
@@ -2118,11 +2116,11 @@ struct hunter_main_pet_base_t : public stable_pet_t
     return cc;
   }
 
-  double composite_player_critical_damage_multiplier( const action_state_t* s ) const override
+  double composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const override
   {
-    double m = stable_pet_t::composite_player_critical_damage_multiplier( s );
+    double m = stable_pet_t::composite_player_critical_damage_multiplier( s, school );
 
-    if ( buffs.piercing_fangs -> data().effectN( 1 ).has_common_school( s -> action -> school ) )
+    if ( buffs.piercing_fangs -> data().effectN( 1 ).has_common_school( school ) )
       m *= 1 + buffs.piercing_fangs -> check_value();
 
     return m;
@@ -2344,11 +2342,11 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     return m;
   }
 
-  double composite_player_critical_damage_multiplier( const action_state_t* s ) const override
+  double composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const override
   {
-    double m = hunter_main_pet_base_t::composite_player_critical_damage_multiplier( s );
+    double m = hunter_main_pet_base_t::composite_player_critical_damage_multiplier( s, school );
 
-    if ( buffs.spearhead->has_common_school( s->action->school ) )
+    if ( buffs.spearhead->has_common_school( school ) )
       m *= 1 + buffs.spearhead->check_value();
 
     return m;
@@ -8517,6 +8515,19 @@ void hunter_t::init_spells()
   cooldowns.no_mercy->duration = talents.no_mercy->internal_cooldown();
 
   // Register passives
+  register_passive_effect_mask( talents.better_together, 
+                                specialization() == HUNTER_BEAST_MASTERY
+                                                    ? effect_mask_t( true ).disable( 2, 4 )
+                                                    : effect_mask_t( true ).disable( 1, 3 ) );
+
+  register_passive_effect_mask( tier_set.tww_s3_pack_leader_2pc, 
+                                specialization() == HUNTER_BEAST_MASTERY
+                                                    ? effect_mask_t( true ).disable( 2 )
+                                                    : effect_mask_t( true ).disable( 1 ) );
+
+  deregister_passive_effects( talents.trigger_finger );
+  deregister_passive_effects( talents.penetrating_shots );
+
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
@@ -8531,23 +8542,14 @@ void hunter_t::init_base_stats()
       base.distance = 5;
   }
 
-  player_t::init_base_stats();
-
   base.attack_power_per_strength = 0;
   base.attack_power_per_agility  = 1;
   base.spell_power_per_intellect = 1;
 
   resources.base_regen_per_second[ RESOURCE_FOCUS ] = 5;
-  for ( auto spell : { specs.marksmanship_hunter, specs.survival_hunter, talents.pack_tactics } )
-  {
-    for ( const spelleffect_data_t& effect : spell -> effects() )
-    {
-      if ( effect.ok() && effect.type() == E_APPLY_AURA && effect.subtype() == A_MOD_POWER_REGEN_PERCENT )
-        resources.base_regen_per_second[ RESOURCE_FOCUS ] *= 1 + effect.percent();
-    }
-  }
 
-  resources.base[RESOURCE_FOCUS] = 100;
+  resources.base[ RESOURCE_FOCUS ] = 100;
+  player_t::init_base_stats();
 }
 
 void hunter_t::create_actions()
@@ -9486,9 +9488,6 @@ double hunter_t::composite_melee_crit_chance() const
 {
   double crit = player_t::composite_melee_crit_chance();
 
-  crit += specs.critical_strikes -> effectN( 1 ).percent();
-  crit += talents.keen_eyesight -> effectN( 1 ).percent();
-
   if ( buffs.trueshot->check() )
     crit += talents.trueshot->effectN( 4 ).percent();
 
@@ -9499,9 +9498,6 @@ double hunter_t::composite_spell_crit_chance() const
 {
   double crit = player_t::composite_spell_crit_chance();
 
-  crit += specs.critical_strikes->effectN( 1 ).percent();
-  crit += talents.keen_eyesight->effectN( 1 ).percent();
-
   if ( buffs.trueshot->check() )
     crit += talents.trueshot->effectN( 4 ).percent();
 
@@ -9511,17 +9507,6 @@ double hunter_t::composite_spell_crit_chance() const
 double hunter_t::composite_rating_multiplier( rating_e r ) const
 {
   double rm = player_t::composite_rating_multiplier( r );
-
-  switch ( r )
-  {
-    case RATING_MELEE_CRIT:
-    case RATING_RANGED_CRIT:
-    case RATING_SPELL_CRIT:
-      rm *= 1.0 + talents.serrated_tips -> effectN( 1 ).percent();
-      break;
-    default:
-      break;
-  }
 
   return rm;
 }
@@ -9550,11 +9535,11 @@ double hunter_t::composite_melee_auto_attack_speed() const
   return s;
 }
 
-double hunter_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
+double hunter_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
 {
-  double m = player_t::composite_player_critical_damage_multiplier( s );
+  double m = player_t::composite_player_critical_damage_multiplier( s, school );
 
-  if ( talents.penetrating_shots -> effectN( 1 ).has_common_school( s -> action -> school ) )
+  if ( talents.penetrating_shots -> effectN( 1 ).has_common_school( school ) )
     m *= 1.0 + talents.penetrating_shots -> effectN( 2 ).percent() * cache.attack_crit_chance();
 
   return m;
@@ -9589,10 +9574,6 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
   if ( mastery.master_of_beasts->ok() )
     m *= 1.0 + cache.mastery_value();
 
-  m *= 1 + spell_data_t::find_spelleffect( *specs.beast_mastery_hunter, E_APPLY_AURA, guardian ? A_MOD_GUARDIAN_DAMAGE_DONE : A_MOD_PET_DAMAGE_DONE ).percent();
-  m *= 1 + spell_data_t::find_spelleffect( *specs.survival_hunter, E_APPLY_AURA, guardian ? A_MOD_GUARDIAN_DAMAGE_DONE : A_MOD_PET_DAMAGE_DONE ).percent();
-  m *= 1 + spell_data_t::find_spelleffect( *specs.marksmanship_hunter, E_APPLY_AURA, guardian ? A_MOD_GUARDIAN_DAMAGE_DONE : A_MOD_PET_DAMAGE_DONE ).percent();
-
   if ( !guardian )
   {
     if ( mastery.spirit_bond->ok() )
@@ -9600,31 +9581,14 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
 
     if ( buffs.coordinated_assault->check() )
       m *= 1 + talents.coordinated_assault->effectN( 4 ).percent();
-    
-    m *= 1 + talents.training_expert->effectN( 1 ).percent();
 
     m *= 1 + buffs.summon_hati->check_value();
     m *= 1 + buffs.serpentine_blessing->check_value();
     m *= 1 + buffs.wyverns_cry->check_stack_value();
     m *= 1 + buffs.lead_from_the_front->check_value();
     m *= 1 + buffs.harmonize->check_value();
-
-    if ( talents.harmonize.ok() )
-      m *= 1 + talents.harmonize->effectN( 1 ).percent();
     
     m *= 1 + buffs.the_bell_tolls->check_stack_value();
-
-    if ( specialization() == HUNTER_BEAST_MASTERY )
-    {
-      m *= 1 + talents.better_together->effectN( 1 ).percent();
-      m *= 1 + tier_set.tww_s3_pack_leader_2pc->effectN( 1 ).percent();
-    }
-
-    if ( specialization() == HUNTER_SURVIVAL )
-    {
-      m *= 1 + talents.better_together->effectN( 2 ).percent();
-      m *= 1 + tier_set.tww_s3_pack_leader_2pc->effectN( 2 ).percent();
-    }
   }
 
   return m;
@@ -9727,10 +9691,7 @@ double hunter_t::resource_gain( resource_e type, double amount, gain_t* g, actio
 
 double hunter_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  if ( attr == ATTR_AGILITY )
-    return 0.05;
-
-  return 0;
+  return player_t::matching_gear_multiplier( attr );
 }
 
 double hunter_t::stacking_movement_modifier() const

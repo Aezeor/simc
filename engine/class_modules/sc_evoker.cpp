@@ -705,10 +705,9 @@ struct simplified_player_t : public player_t
   {
     // Become a Priest temporarily to steal its base stat initialisation.
     type = PRIEST;
+    base.spell_power_per_intellect = 1;
     player_t::init_base_stats();
     type = PLAYER_SIMPLIFIED;
-
-    base.spell_power_per_intellect = 1;
   }
 
   void init_items() override
@@ -9363,17 +9362,17 @@ void evoker_t::init_base_stats()
   if ( base.distance < 1 )
     base.distance = 25;
 
-  player_t::init_base_stats();
-
   // We need to check travel time during init_finished... So we have to initialise current.distance ourselves. Note to
   // self: Never play with prepull actions ever again.
   current.distance = base.distance;
 
   base.spell_power_per_intellect = 1.0;
 
-  resources.base[ RESOURCE_ESSENCE ] = 5 + find_spelleffect( talent.power_nexus, A_MOD_MAX_RESOURCE )->base_value();
+  resources.base[ RESOURCE_ESSENCE ] = 5;
   // TODO: confirm base essence regen. currently estimated at 1 per 5s base
-  resources.base_regen_per_second[ RESOURCE_ESSENCE ] = 0.2 * ( 1.0 + talent.innate_magic->effectN( 1 ).percent() );
+  resources.base_regen_per_second[ RESOURCE_ESSENCE ] = 0.2;
+
+  player_t::init_base_stats();
 }
 
 void evoker_t::init_background_actions()
@@ -10499,15 +10498,12 @@ std::unique_ptr<expr_t> evoker_t::create_expression( std::string_view expr_str )
 // Stat & Multiplier overrides ==============================================
 double evoker_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  return attr == ATTR_INTELLECT ? 0.05 : 0.0;
+  return player_t::matching_gear_multiplier( attr );
 }
 
 double evoker_t::composite_base_armor_multiplier() const
 {
   double a = player_t::composite_base_armor_multiplier();
-
-  if ( spec.tempered_scales )
-    a *= 1.0 + spec.tempered_scales->effectN( 1 ).percent();
 
   return a;
 }
@@ -10533,18 +10529,12 @@ double evoker_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double am = player_t::composite_attribute_multiplier( attr );
 
-  if ( attr == ATTR_STAMINA )
-    am *= 1.0 + talent.draconic_legacy->effectN( 1 ).percent();
-
   return am;
 }
 
 double evoker_t::composite_player_multiplier( school_e s ) const
 {
   double m = player_t::composite_player_multiplier( s );
-
-  if ( talent.instinctive_arcana.ok() && talent.instinctive_arcana->effectN( 1 ).has_common_school( s ) )
-    m *= 1 + talent.instinctive_arcana->effectN( 1 ).percent();
 
   return m;
 }
@@ -10811,19 +10801,6 @@ void evoker_t::apply_bombardments( player_t* target )
 double evoker_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
-
-  // Certain modifiers are only for Guardians, otherwise just give the Pet Modifier
-
-  if ( guardian )
-  {
-    m *= ( 1.0 + spec.augmentation->effectN( 7 ).percent() );
-    m *= ( 1.0 + spec.devastation->effectN( 7 ).percent() );
-  }
-  else
-  {
-    m *= ( 1.0 + spec.augmentation->effectN( 6 ).percent() );
-    m *= ( 1.0 + spec.devastation->effectN( 6 ).percent() );
-  }
 
   return m;
 }

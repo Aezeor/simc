@@ -3773,32 +3773,22 @@ void paladin_t::init_base_stats()
     base.distance = 5;
   }
 
-  player_t::init_base_stats();
-
   base.attack_power_per_agility  = 0.0;
   base.attack_power_per_strength = 1.0;
   base.spell_power_per_intellect = 1.0;
 
   // Boundless Conviction raises max holy power to 5
-  resources.base[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction->effectN( 1 ).base_value();
+  resources.base[ RESOURCE_HOLY_POWER ] = 3;
 
   // Ignore mana for non-holy
   if ( specialization() != PALADIN_HOLY )
   {
     resources.base[ RESOURCE_MANA ]                  = 0;
     resources.base_regen_per_second[ RESOURCE_MANA ] = 0;
+    resources.active_resource[ RESOURCE_MANA ]       = false;
   }
 
-  // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats().
-  // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
-  // Just need to add class- or spec-based modifiers here.
-  // add Sanctuary dodge
-  base.dodge += passives.sanctuary->effectN( 3 ).percent();
-  // add Sanctuary expertise
-  base.expertise += passives.sanctuary->effectN( 4 ).percent();
-
-  // Paladins gets +7% block from their class aura
-  base.block += passives.paladin->effectN( 7 ).percent();
+  player_t::init_base_stats();
 }
 
 void paladin_t::init_initial_stats()
@@ -4734,15 +4724,6 @@ double paladin_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  // This also seems likely to be a bug: the spelldata says Fire, but the tooltip says Radiant
-  if ( dbc::is_school( school, SCHOOL_FIRE ) )
-  {
-    if ( talents.burning_crusade->ok() )
-    {
-      m *= 1.0 + talents.burning_crusade->effectN( 2 ).percent();
-    }
-  }
-
   return m;
 }
 
@@ -4755,12 +4736,6 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
   // Protection gets increased stamina
   if ( attr == ATTR_STAMINA )
   {
-    if ( passives.aegis_of_light -> ok() )
-      m *= 1.0 + passives.aegis_of_light -> effectN( 1 ).percent();
-
-    if ( talents.sanctified_plates->ok() )
-      m *= 1.0 + talents.sanctified_plates->effectN( 1 ).percent();
-
     // This literally never gets triggered. Apparently, invalidating the Stamina cache doesn't recalculate Stamina?
     if ( buffs.redoubt->up() )
       m *= 1.0 + buffs.redoubt->stack_value();
@@ -4774,8 +4749,6 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
 
   if ( attr == ATTR_STRENGTH )
   {
-    if ( talents.seal_of_might->ok() )
-      m *= 1.0 + talents.seal_of_might->effectN( 1 ).percent();
     if ( buffs.redoubt->up() )
       // Applies to base str, gear str and buffs. So everything basically.
       m *= 1.0 + buffs.redoubt->stack_value();
@@ -4817,20 +4790,12 @@ double paladin_t::composite_mastery() const
 {
   double m = player_t::composite_mastery();
 
-  if ( talents.seal_of_might->ok() )
-  {
-    m += talents.seal_of_might->effectN( 2 ).base_value();
-  }
-
   return m;
 }
 
 double paladin_t::composite_spell_crit_chance() const
 {
   double h = player_t::composite_spell_crit_chance();
-
-  if ( talents.holy_aegis->ok() )
-    h += talents.holy_aegis->effectN( 1 ).percent();
 
   if ( buffs.avenging_wrath -> up() )
     h += buffs.avenging_wrath->get_crit_bonus();
@@ -4844,9 +4809,6 @@ double paladin_t::composite_spell_crit_chance() const
 double paladin_t::composite_melee_crit_chance() const
 {
   double h = player_t::composite_melee_crit_chance();
-
-  if ( talents.holy_aegis->ok() )
-    h += talents.holy_aegis->effectN( 1 ).percent();
 
   if ( buffs.avenging_wrath -> up() )
     h += buffs.avenging_wrath -> get_crit_bonus();
@@ -4862,12 +4824,6 @@ double paladin_t::composite_base_armor_multiplier() const
   double a = player_t::composite_base_armor_multiplier();
   if ( specialization() != PALADIN_PROTECTION )
     return a;
-
-  if ( passives.aegis_of_light -> ok() )
-    a *= 1.0 + passives.aegis_of_light -> effectN( 2 ).percent();
-
-  if ( talents.holy_aegis -> ok() )
-    a *= 1.0 + talents.holy_aegis -> effectN( 1 ).percent();
 
   if ( talents.sanctified_plates->ok() )
     a *= 1.0 + talents.sanctified_plates->effectN( 3 ).percent();
@@ -4929,9 +4885,6 @@ double paladin_t::composite_melee_haste() const
 double paladin_t::composite_melee_auto_attack_speed() const
 {
   double s = player_t::composite_melee_auto_attack_speed();
-
-  if ( talents.zealots_fervor->ok() )
-    s /= 1.0 + talents.zealots_fervor->effectN( 1 ).percent();
 
   return s;
 }
@@ -4999,7 +4952,6 @@ double paladin_t::composite_block() const
   double block_subject_to_dr = cache.mastery() * mastery.divine_bulwark->effectN( 1 ).mastery_value();
   double b                   = player_t::composite_block_dr( block_subject_to_dr );
 
-  b += talents.holy_shield->effectN( 1 ).percent();
   b += buffs.faith_in_the_light->value();
   b += buffs.barricade_of_faith->value();
   b += buffs.inner_light->value();
@@ -5011,7 +4963,7 @@ double paladin_t::composite_block() const
 double paladin_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
-  c += spec.protection_paladin->effectN( 8 ).percent();
+
   return c;
 }
 
@@ -5020,10 +4972,6 @@ double paladin_t::composite_crit_avoidance() const
 double paladin_t::composite_parry_rating() const
 {
   double p = player_t::composite_parry_rating();
-
-  // add Riposte
-  if ( passives.riposte->ok() )
-    p += composite_melee_crit_rating();
 
   return p;
 }
@@ -5073,9 +5021,6 @@ void paladin_t::invalidate_cache( cache_e c )
     player_t::invalidate_cache( CACHE_ATTACK_POWER );
   }
 
-  if ( c == CACHE_ATTACK_CRIT_CHANCE && passives.riposte->ok() )
-    player_t::invalidate_cache( CACHE_PARRY );
-
   if ( c == CACHE_MASTERY && mastery.divine_bulwark->ok() )
   {
     player_t::invalidate_cache( CACHE_BLOCK );
@@ -5093,26 +5038,7 @@ void paladin_t::invalidate_cache( cache_e c )
 
 double paladin_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  double mult = passives.plate_specialization->effectN( 1 ).percent();
-
-  switch ( specialization() )
-  {
-    case PALADIN_PROTECTION:
-      if ( attr == ATTR_STAMINA )
-        return mult;
-      break;
-    case PALADIN_RETRIBUTION:
-      if ( attr == ATTR_STRENGTH )
-        return mult;
-      break;
-    case PALADIN_HOLY:
-      if ( attr == ATTR_INTELLECT )
-        return mult;
-      break;
-    default:
-      break;
-  }
-  return 0.0;
+  return player_t::matching_gear_multiplier( attr );
 }
 
 // paladin_t::resource_gain =================================================

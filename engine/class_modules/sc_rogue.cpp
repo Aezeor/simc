@@ -944,7 +944,7 @@ public:
       player_talent_t blinding_powder;
       player_talent_t float_like_a_butterfly;
       player_talent_t sting_like_a_bee;
-      player_talent_t riposte;                  // No implementation
+      player_talent_t riposte;
       player_talent_t precision_shot;
 
       player_talent_t heavy_hitter;
@@ -9879,12 +9879,6 @@ double rogue_t::composite_attribute_multiplier( attribute_e a ) const
 {
   double am = player_t::composite_attribute_multiplier( a );
 
-  if ( a == ATTR_STAMINA )
-  {
-    // TOCHECK -- This may be a base attribute multiplier now
-    am *= 1.0 + talent.outlaw.combat_stamina->effectN( 1 ).percent();
-  }
-
   return am;
 }
 
@@ -9943,9 +9937,6 @@ double rogue_t::composite_melee_crit_chance() const
 {
   double crit = player_t::composite_melee_crit_chance();
 
-  crit += spell.critical_strikes->effectN( 1 ).percent();
-  crit += talent.rogue.lethality->effectN( 1 ).percent();
-
   if ( talent.subtlety.planned_execution->ok() && buffs.symbols_of_death->up() )
   {
     crit += talent.subtlety.planned_execution->effectN( 1 ).percent();
@@ -9959,9 +9950,6 @@ double rogue_t::composite_melee_crit_chance() const
 double rogue_t::composite_spell_crit_chance() const
 {
   double crit = player_t::composite_spell_crit_chance();
-
-  crit += spell.critical_strikes->effectN( 1 ).percent();
-  crit += talent.rogue.lethality->effectN( 1 ).percent();
 
   if ( talent.subtlety.planned_execution->ok() && buffs.symbols_of_death->up() )
   {
@@ -9977,8 +9965,6 @@ double rogue_t::composite_damage_versatility() const
 {
   double cdv = player_t::composite_damage_versatility();
 
-  cdv += talent.outlaw.thiefs_versatility->effectN( 1 ).percent();
-
   return cdv;
 }
 
@@ -9987,8 +9973,6 @@ double rogue_t::composite_damage_versatility() const
 double rogue_t::composite_heal_versatility() const
 {
   double chv = player_t::composite_heal_versatility();
-
-  chv += talent.outlaw.thiefs_versatility->effectN( 1 ).percent();
 
   return chv;
 }
@@ -10013,10 +9997,7 @@ double rogue_t::composite_leech() const
 
 double rogue_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  if ( attr == ATTR_AGILITY )
-    return spell.leather_specialization->effectN( 1 ).percent();
-
-  return 0.0;
+  return player_t::matching_gear_multiplier( attr );
 }
 
 // rogue_t::composite_player_multiplier =====================================
@@ -10047,10 +10028,6 @@ double rogue_t::composite_player_multiplier( school_e school ) const
 double rogue_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
-
-  m *= 1.0 + spec.assassination_rogue->effectN( 6 ).percent();
-  m *= 1.0 + spec.outlaw_rogue->effectN( 3 ).percent();
-  m *= 1.0 + spec.subtlety_rogue->effectN( 8 ).percent();
 
   return m;
 }
@@ -10927,26 +10904,14 @@ void rogue_t::init_base_stats()
   if ( base.distance < 1 )
     base.distance = 5;
 
-  player_t::init_base_stats();
-
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;
   base.spell_power_per_intellect = 1.0;
 
   resources.base[ RESOURCE_COMBO_POINT ] = 5;
-  resources.base[ RESOURCE_COMBO_POINT ] += talent.rogue.deeper_stratagem->effectN( 2 ).base_value();
-  resources.base[ RESOURCE_COMBO_POINT ] += talent.assassination.sanguine_stratagem->effectN( 2 ).base_value();
-  resources.base[ RESOURCE_COMBO_POINT ] += talent.outlaw.devious_stratagem->effectN( 2 ).base_value();
-  resources.base[ RESOURCE_COMBO_POINT ] += talent.subtlety.secret_stratagem->effectN( 2 ).base_value();
-
   resources.base[ RESOURCE_ENERGY ] = 100;
-  resources.base[ RESOURCE_ENERGY ] += talent.rogue.vigor->effectN( 1 ).base_value();
-  resources.base[ RESOURCE_ENERGY ] += talent.assassination.path_of_blood->effectN( 1 ).base_value();
-  resources.base[ RESOURCE_ENERGY ] += spec.assassination_rogue->effectN( 5 ).base_value();
 
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
-  resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + talent.outlaw.combat_potency->effectN( 1 ).percent();
-  resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + talent.rogue.vigor->effectN( 2 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.0 );
   min_gcd  = timespan_t::from_seconds( 1.0 );
@@ -10956,6 +10921,8 @@ void rogue_t::init_base_stats()
     ready_type = READY_TRIGGER;
     rogue_ready_trigger_threshold = ( specialization() == ROGUE_OUTLAW ) ? 20 : 25;
   }
+
+  player_t::init_base_stats();
 }
 
 // rogue_t::init_spells =====================================================

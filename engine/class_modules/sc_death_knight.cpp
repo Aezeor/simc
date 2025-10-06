@@ -1480,7 +1480,7 @@ public:
     const spell_data_t* infliction_of_sorrow_damage;
     const spell_data_t* infliction_of_sorrow_buff;
     const spell_data_t* blood_beast_summon;
-    const spell_data_t* vampiric_strike_clawing_shadows;
+    const spell_data_t* vampiric_strike_range;
     const spell_data_t* incite_terror_debuff;
     const spell_data_t* visceral_strength_buff;
     const spell_data_t* visceral_strength_unholy_buff;
@@ -2486,9 +2486,9 @@ struct death_knight_pet_t : public pet_t
     return dk()->composite_mastery();
   }
 
-  double composite_player_critical_damage_multiplier( const action_state_t* ) const override
+  double composite_player_critical_damage_multiplier( const action_state_t*, school_e school ) const override
   {
-    double m = current.crit_damage_multiplier;
+    double m = current.crit_damage_multiplier[ school ];
 
     m *= 1.0 + grave_mastery->check_value();
 
@@ -4803,7 +4803,6 @@ struct abomination_pet_t : public death_knight_pet_t
     affected_by_grave_mastery         = true;
     owner_coeff.ap_from_ap            = 3.12;
     resource_regeneration             = regen_type::DISABLED;
-    base_movement_speed               = 7.5;
 
     register_on_combat_state_callback( [ this ]( player_t* /* p */, bool in_combat ) {
       if ( in_combat && dk()->pets.abomination.active_pet() != nullptr )
@@ -12812,23 +12811,23 @@ void death_knight_t::init_base_stats()
   if ( base.distance < 1 )
     base.distance = 5;
 
-  player_t::init_base_stats();
-
   base.attack_power_per_strength = 1.0;
   base.attack_power_per_agility  = 0.0;
   base.spell_power_per_intellect = 1.0;
-  base.leech += talent.blood_scent->effectN( 1 ).percent();
 
   resources.base[ RESOURCE_RUNIC_POWER ] = 100;
-  resources.base[ RESOURCE_RUNIC_POWER ] += spec.blood_death_knight->effectN( 10 ).resource( RESOURCE_RUNIC_POWER );
-
-  if ( talent.blood.ossuary.ok() )
-    resources.base[ RESOURCE_RUNIC_POWER ] += talent.blood.ossuary->effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
-
-  if ( talent.frost.runic_command.ok() )
-    resources.base[ RESOURCE_RUNIC_POWER ] += talent.frost.runic_command->effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
 
   resources.base[ RESOURCE_RUNE ] = MAX_RUNES;
+  // only intially activate required resources.
+  for ( auto r = RESOURCE_HEALTH; r < RESOURCE_MAX; r++ )
+  {
+    if ( r == RESOURCE_RUNIC_POWER || r == RESOURCE_RUNE || r == RESOURCE_HEALTH )
+      resources.active_resource[ r ] = true;
+    else
+      resources.active_resource[ r ] = false;
+  }
+
+  player_t::init_base_stats();
 }
 
 // death_knight_t::init_spells ==============================================
@@ -13172,12 +13171,19 @@ void death_knight_t::init_spells()
   if ( main_hand_weapon.group() != WEAPON_2H )
     deregister_passive_effects( spec.might_of_the_frozen_wastes );
 
+  // Handle Rune Regen Rate effects manually due to the unique nature of runes
+  deregister_passive_effects( talent.frost.runic_command );
+  // Handled elsewhere
+  deregister_passive_effects( mastery.dreadblade );
+  deregister_passive_effects( mastery.blood_shield );
+  deregister_passive_effects( mastery.frozen_heart );
+
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
 
-  if ( talent.unholy.clawing_shadows.ok() )
-    parse_passive_effects( spell.vampiric_strike_clawing_shadows );
+  if ( specialization() == DEATH_KNIGHT_UNHOLY )
+    parse_passive_effects( spell.vampiric_strike_range );
 
   apply_effect_modifying_effects();
 }
@@ -13347,8 +13353,8 @@ void death_knight_t::spell_lookups()
   spell.infliction_of_sorrow_damage     = conditional_spell_lookup( talent.sanlayn.infliction_of_sorrow.ok(), 434144 );
   spell.infliction_of_sorrow_buff       = conditional_spell_lookup( talent.sanlayn.infliction_of_sorrow.ok(), 460049 );
   spell.blood_beast_summon              = conditional_spell_lookup( talent.sanlayn.the_blood_is_life.ok(), 434237 );
-  spell.vampiric_strike_clawing_shadows =
-      conditional_spell_lookup( talent.sanlayn.vampiric_strike.ok() && talent.unholy.clawing_shadows.ok(), 445669 );
+  spell.vampiric_strike_range =
+      conditional_spell_lookup( talent.sanlayn.vampiric_strike.ok() && spec.unholy_death_knight->ok(), 445669 );
   spell.incite_terror_debuff          = conditional_spell_lookup( talent.sanlayn.incite_terror.ok(), 458478 );
   spell.visceral_strength_buff        = conditional_spell_lookup( talent.sanlayn.visceral_strength.ok(),
                                                            specialization() == DEATH_KNIGHT_BLOOD ? 461130 : 434159 );
@@ -14539,9 +14545,6 @@ void death_knight_t::do_damage( action_state_t* state )
 
 void death_knight_t::target_mitigation( school_e school, result_amount_type type, action_state_t* state )
 {
-  if ( specialization() == DEATH_KNIGHT_BLOOD )
-    state->result_amount *= 1.0 + spec.blood_fortification->effectN( 2 ).percent();
-
   if ( buffs.icebound_fortitude->up() )
     state->result_amount *= 1.0 + buffs.icebound_fortitude->data().effectN( 3 ).percent();
 
@@ -14687,15 +14690,13 @@ stat_e death_knight_t::convert_hybrid_stat( stat_e s ) const
 inline double death_knight_t::runes_per_second() const
 {
   double rps = RUNE_REGEN_BASE_SEC / cache.attack_haste();
+
   // Runic corruption doubles rune regeneration speed
   if ( buffs.runic_corruption->check() )
-  {
     rps *= 1.0 + spell.runic_corruption->effectN( 1 ).percent();
-  }
+
   if ( talent.frost.runic_command->ok() )
-  {
     rps *= 1.0 + talent.frost.runic_command->effectN( 2 ).percent();
-  }
 
   return rps;
 }
@@ -14703,15 +14704,13 @@ inline double death_knight_t::runes_per_second() const
 inline double death_knight_t::rune_regen_coefficient() const
 {
   auto coeff = cache.attack_haste();
+
   // Runic corruption doubles rune regeneration speed
   if ( buffs.runic_corruption->check() )
-  {
     coeff /= 1.0 + spell.runic_corruption->effectN( 1 ).percent();
-  }
+
   if ( talent.frost.runic_command->ok() )
-  {
     coeff /= 1.0 + talent.frost.runic_command->effectN( 2 ).percent();
-  }
 
   return coeff;
 }
@@ -14856,6 +14855,7 @@ void death_knight_t::apply_target_action_effects( action_t* a, bool pet )
     // Unholy
     action->parse_target_effects( d_fn( &death_knight_td_t::dots_t::dread_plague ), spell.dread_plague );
     action->parse_target_effects( d_fn( &death_knight_td_t::dots_t::infected_claws ), spell.infected_claws_dot );
+    action->parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::disease_cloud ), spell.disease_cloud_debuff );
 
     // Rider of the Apocalypse
 
@@ -14869,16 +14869,9 @@ void death_knight_t::apply_target_action_effects( action_t* a, bool pet )
 void death_knight_t::parse_player_effects()
 {
   // Shared
-  parse_effects( spec.death_knight );
-  parse_effects( spec.death_knight_2 );
-  parse_effects( spec.plate_specialization );
   parse_effects( buffs.blood_draw );
   parse_effects( buffs.icy_talons, talent.icy_talons );
   parse_effects( buffs.rune_mastery );
-  parse_effects( talent.veteran_of_the_third_war );
-  parse_effects( talent.runic_protection );
-  parse_effects( talent.gloom_ward );
-  parse_effects( talent.unholy_momentum );
   parse_effects( buffs.antimagic_shell );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::brittle ), spell.brittle_debuff );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::apocalypse_war ), spell.apocalypse_war_debuff );
@@ -14886,10 +14879,6 @@ void death_knight_t::parse_player_effects()
   // Blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
-    parse_effects( spec.blood_death_knight );
-    parse_effects( spec.blood_death_knight_2 );
-    parse_effects( spec.blood_fortification );
-    parse_effects( spec.riposte );
     parse_effects( mastery.blood_shield );
     parse_effects( buffs.blood_shield );
     parse_effects( buffs.voracious );
@@ -14905,8 +14894,6 @@ void death_knight_t::parse_player_effects()
   // Frost
   if ( specialization() == DEATH_KNIGHT_FROST )
   {
-    parse_effects( spec.frost_death_knight );
-    parse_effects( spec.frost_death_knight_2 );
     parse_effects( buffs.bonegrinder_frost );
     parse_effects( buffs.bonegrinder_crit );
     parse_effects( buffs.frozen_dominion );
@@ -14917,14 +14904,13 @@ void death_knight_t::parse_player_effects()
   // Unholy
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
   {
-    parse_effects( spec.unholy_death_knight );
-    parse_effects( spec.unholy_death_knight_2 );
     parse_effects( mastery.dreadblade );
     parse_effects( buffs.ghoulish_frenzy );
 
     parse_target_effects( d_fn( &death_knight_td_t::dots_t::virulent_plague ), spell.virulent_plague );
     parse_target_effects( d_fn( &death_knight_td_t::dots_t::dread_plague ), spell.dread_plague );
     parse_target_effects( d_fn( &death_knight_td_t::dots_t::infected_claws ), spell.infected_claws_dot );
+    parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::disease_cloud ), spell.disease_cloud_debuff );
   }
 
   // Rider of the Apocalypse

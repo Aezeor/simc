@@ -4737,36 +4737,15 @@ void monk_t::parse_player_effects()
    */
 
   // class and spec shared auras
-  parse_effects( baseline.monk.aura );
-  parse_effects( baseline.monk.critical_strikes );
-  parse_effects( baseline.monk.two_hand_adjustment );
-  /*
-   * 2024-5-14: 2-Hand adjustment was demonstrated to not work for BrM.
-   * Requires confirmation from WW to verify this is correct for both specs.
-   */
-  if ( matching_gear )
-    parse_effects( baseline.monk.leather_specialization );
 
   // brewmaster player auras
-  parse_effects( baseline.brewmaster.aura );
-  parse_effects( baseline.brewmaster.aura_2 );
-  parse_effects( baseline.brewmaster.aura_3 );
-  parse_effects( baseline.brewmaster.aura_4 );
-  parse_effects( baseline.brewmaster.brewmasters_balance );
-  parse_effects( baseline.brewmaster.celestial_fortune );
+
+  // mistweaver player auras
 
   // windwalker player auras
-  parse_effects( baseline.windwalker.aura );
-  parse_effects( baseline.windwalker.aura_2 );
-  parse_effects( baseline.windwalker.aura_3 );
   parse_effects( buff.hit_combo, effect_mask_t( true ).disable( 4 ) );
 
   // class talent auras
-  parse_effects( talent.monk.grace_of_the_crane );
-  parse_effects( talent.monk.calming_presence );
-  parse_effects( talent.monk.ferocity_of_xuen );
-  parse_effects( talent.monk.chi_proficiency );
-  parse_effects( talent.monk.martial_instincts );
 
   // brewmaster talent auras
   parse_effects( buff.pretense_of_instability );
@@ -4807,8 +4786,6 @@ void monk_t::parse_player_effects()
   // TWW S2 Set Effects
 
   // TWW S3 Set Effects
-  parse_effects( tier.tww3.coc_4pc_jade_serpents_blessing );
-
   effect_mask_t em = tier.tww3.coc_4pc->ok() ? effect_mask_t( true ) : effect_mask_t( true ).disable( 8 );
   parse_effects( buff.heart_of_the_jade_serpent_cdr, em,
                  [ & ] { return !buff.heart_of_the_jade_serpent_cdr_celestial->check(); } );
@@ -5584,9 +5561,12 @@ void monk_t::init_background_actions()
 void monk_t::init_base_stats()
 {
   if ( base.distance < 1 )
-    base.distance = 5;
-
-  base_t::init_base_stats();
+  {
+    if ( specialization() == MONK_MISTWEAVER )
+      base.distance = 40;
+    else
+      base.distance = 5;
+  }
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 
@@ -5605,14 +5585,9 @@ void monk_t::init_base_stats()
         base.distance = 5;
       base.attack_power_per_agility     = 1.0;
       resources.base[ RESOURCE_ENERGY ] = 100;
-      resources.base[ RESOURCE_ENERGY ] += talent.windwalker.ascension->effectN( 3 ).base_value();
-      resources.base[ RESOURCE_ENERGY ] += talent.windwalker.inner_peace->effectN( 1 ).base_value();
       resources.base[ RESOURCE_MANA ] = 0;
       resources.base[ RESOURCE_CHI ]  = 4;
-      resources.base[ RESOURCE_CHI ] += baseline.windwalker.aura->effectN( 10 ).base_value();
-      resources.base[ RESOURCE_CHI ] += talent.windwalker.ascension->effectN( 1 ).base_value();
       resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10.0;
-      resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + talent.windwalker.ascension->effectN( 2 ).percent();
       resources.base_regen_per_second[ RESOURCE_MANA ] = 0;
       break;
     default:
@@ -5620,6 +5595,7 @@ void monk_t::init_base_stats()
   }
 
   resources.base_regen_per_second[ RESOURCE_CHI ] = 0;
+  base_t::init_base_stats();
 }
 
 void monk_t::init_scaling()
@@ -6532,8 +6508,6 @@ double monk_t::composite_dodge() const
 {
   double d = base_t::composite_dodge();
 
-  d += talent.monk.dance_of_the_wind->effectN( 1 ).percent();
-
   if ( specialization() == MONK_BREWMASTER )
     d += buff.elusive_brawler->current_stack * cache.mastery_value();
 
@@ -6546,8 +6520,6 @@ double monk_t::composite_dodge() const
 double monk_t::composite_player_target_armor( player_t *target ) const
 {
   double armor = player_t::composite_player_target_armor( target );
-
-  armor *= ( 1.0f - talent.shado_pan.martial_precision->effectN( 1 ).percent() );
 
   return armor;
 }

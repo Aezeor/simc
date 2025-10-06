@@ -646,6 +646,8 @@ public:
   virtual void debug_message( const target_effect_t& /* data */, std::string_view type_str, std::string_view val_str,
                               bool /* mastery */, const spell_data_t* s_data, size_t i ) = 0;
 
+  virtual void throw_passive_error( const spell_data_t* s ) = 0;
+
   double get_effect_value( const player_effect_t&, bool benefit = false ) const;
   double get_effect_value_full( const player_effect_t&, bool benefit ) const;
   double get_effect_value( const target_effect_t&, actor_target_data_t* ) const;
@@ -659,7 +661,6 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
 {
   std::vector<player_effect_t> auto_attack_speed_effects;
   std::vector<player_effect_t> attribute_multiplier_effects;
-  std::vector<player_effect_t> matching_armor_attribute_multiplier_effects;
   std::vector<player_effect_t> rating_multiplier_effects;
   std::vector<player_effect_t> versatility_effects;
   std::vector<player_effect_t> player_multiplier_effects;
@@ -702,7 +703,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   double composite_attack_power_multiplier() const override;
   double composite_melee_crit_chance() const override;
   double composite_spell_crit_chance() const override;
-  double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
+  double composite_player_critical_damage_multiplier( const action_state_t*, school_e ) const override;
   double composite_leech() const override;
   double composite_melee_expertise( const weapon_t* ) const override;
   double composite_crit_avoidance() const override;
@@ -714,7 +715,6 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   double composite_mastery() const override;
   double composite_parry_rating() const override;
   double composite_dodge() const override;
-  double matching_gear_multiplier( attribute_e ) const override;
   double composite_player_absorb_multiplier( const action_state_t* s ) const override;
   double composite_player_healing_received_multiplier() const override;
   double composite_player_absorb_received_multiplier() const override;
@@ -735,6 +735,8 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
                       size_t ) override;
   void debug_message( const target_effect_t&, std::string_view, std::string_view, bool, const spell_data_t*,
                       size_t ) override;
+
+  void throw_passive_error( const spell_data_t* s ) override;
 
   void parsed_effects_html( report::sc_html_stream& );
 
@@ -813,6 +815,8 @@ public:
                       size_t ) override;
   void debug_message( const target_effect_t&, std::string_view, std::string_view, bool, const spell_data_t*,
                       size_t ) override;
+
+  void throw_passive_error( const spell_data_t* s ) override;
 
   bool can_force( const spelleffect_data_t& ) const override;
 

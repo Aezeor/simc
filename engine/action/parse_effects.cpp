@@ -696,6 +696,12 @@ bool parse_effects_t::parse_effect( pack_t<U>& pack, size_t i, bool force )
     {
       tmp.simple = false;
     }
+
+    if ( tmp.simple && !tmp.buff  )
+    {
+      throw_passive_error( pack.spell );
+      return false;
+    }
   }
 
   if ( pack.copy )
@@ -893,12 +899,14 @@ double parse_player_effects_t::composite_spell_crit_chance() const
   return scc;
 }
 
-double parse_player_effects_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
+double parse_player_effects_t::composite_player_critical_damage_multiplier( const action_state_t* s,
+                                                                            school_e school ) const
 {
-  auto cdm = player_t::composite_player_critical_damage_multiplier( s );
+  auto cdm = player_t::composite_player_critical_damage_multiplier( s, school );
 
   for ( const auto& i : crit_bonus_effects )
-    cdm *= 1.0 + get_effect_value( i );
+    if ( i.opt_enum & dbc::get_school_mask( school ) )
+      cdm *= 1.0 + get_effect_value( i );
 
   return cdm;
 }
@@ -1041,19 +1049,6 @@ double parse_player_effects_t::composite_player_absorb_received_multiplier() con
   return ar;
 }
 
-double parse_player_effects_t::matching_gear_multiplier( attribute_e attr ) const
-{
-  double mg = player_t::matching_gear_multiplier( attr );
-
-  assert( attr != ATTRIBUTE_NONE && "ATTRIBUTE_NONE will be out of index" );
-
-  for ( const auto& i : matching_armor_attribute_multiplier_effects )
-    if ( i.opt_enum & ( 1 << ( attr - 1 ) ) )
-      mg += get_effect_value( i );
-
-  return mg;
-}
-
 double parse_player_effects_t::composite_player_target_multiplier( player_t* t, school_e school ) const
 {
   auto tm = player_t::composite_player_target_multiplier( t, school );
@@ -1131,18 +1126,7 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
 
     case A_MOD_TOTAL_STAT_PERCENTAGE:
       tmp.opt_enum = eff.misc_value2();
-      str = opt_strings::attributes_invalidate( tmp );
-
-      if ( eff.spell()->equipped_class() == ITEM_CLASS_ARMOR && eff.spell()->flags( SX_REQUIRES_EQUIPPED_ARMOR_TYPE ) )
-      {
-        auto type_bit = 1U << static_cast<unsigned>( util::matching_armor_type( type ) );
-        if ( eff.spell()->equipped_subclass_mask() == type_bit )
-        {
-          str += "|with matching armor";
-          return &matching_armor_attribute_multiplier_effects;
-        }
-      }
-
+      str          = opt_strings::attributes_invalidate( tmp );
       return &attribute_multiplier_effects;
 
     case A_MOD_RATING_MULTIPLIER:
@@ -1178,6 +1162,7 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
 
     case A_MOD_CRIT_DAMAGE_BONUS:
       str = "crit damage bonus";
+      tmp.opt_enum = eff.misc_value1();
       return &crit_bonus_effects;
 
     case A_MOD_DAMAGE_PERCENT_DONE:
@@ -1302,6 +1287,20 @@ void parse_player_effects_t::debug_message( const player_effect_t& data, std::st
   }
 }
 
+void parse_player_effects_t::throw_passive_error( const spell_data_t* s )
+{
+  if ( s->flags( SX_PASSIVE ) )
+    sim->error( TRIVIAL,
+                "Parse Effects: Spell `{}` ignored. Passive effects are applied automatically. Please remove this from "
+                "parse_effects().",
+                s->name_cstr() );
+  else
+    sim->error( TRIVIAL,
+                "Parse Effects: Spell `{}` was ignored due to being detected as a passive effect. If this is "
+                "incorrect, please report it.",
+                s->name_cstr() );
+}
+
 bool parse_player_effects_t::is_valid_target_aura( const spelleffect_data_t& eff ) const
 {
   if ( eff.type() == E_APPLY_AURA )
@@ -1371,7 +1370,6 @@ void parse_player_effects_t::parsed_effects_html( report::sc_html_stream& os )
 
     print_parsed_type( os, auto_attack_speed_effects, "Auto Attack Speed" );
     print_parsed_type( os, attribute_multiplier_effects, "Attribute Multiplier", &opt_strings::attributes );
-    print_parsed_type( os, matching_armor_attribute_multiplier_effects, "Matching Armor", &opt_strings::attributes );
     print_parsed_type( os, rating_multiplier_effects, "Rating Multiplier", &opt_strings::ratings );
     print_parsed_type( os, versatility_effects, "Versatility" );
     print_parsed_type( os, player_multiplier_effects, "Player Multiplier", &opt_strings::school );
@@ -1406,7 +1404,6 @@ size_t parse_player_effects_t::total_effects_count()
 {
   return auto_attack_speed_effects.size() +
          attribute_multiplier_effects.size() +
-         matching_armor_attribute_multiplier_effects.size() +
          rating_multiplier_effects.size() +
          versatility_effects.size() +
          player_multiplier_effects.size() +
@@ -1648,6 +1645,21 @@ void parse_action_base_t::debug_message( const player_effect_t& data, std::strin
     _action->sim->print_debug( "action-effects: {} {} modified by {} from {} ({}#{})", *_action, tok1, tok2,
                                s_data->name_cstr(), s_data->id(), i );
   }
+}
+
+void parse_action_base_t::throw_passive_error( const spell_data_t* s )
+{
+  if ( s->flags( SX_PASSIVE ) )
+    _action->sim->error(
+        TRIVIAL,
+        "Parse Effects: Spell `{}` ignored. Passive effects are applied automatically. Please remove this from "
+        "parse_effects().",
+        s->name_cstr() );
+  else
+    _action->sim->error( TRIVIAL,
+                         "Parse Effects: Spell `{}` was ignored due to being detected as a passive effect. If this is "
+                         "incorrect, please report it.",
+                         s->name_cstr() );
 }
 
 bool parse_action_base_t::is_valid_target_aura( const spelleffect_data_t& eff ) const

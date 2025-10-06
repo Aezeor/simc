@@ -11466,8 +11466,6 @@ void druid_t::init_base_stats()
   if ( base.distance < 1 )
     base.distance = specialization() == DRUID_BALANCE ? 40 : 5;
 
-  player_t::init_base_stats();
-
   switch ( specialization() )
   {
     case DRUID_BALANCE:
@@ -11477,25 +11475,11 @@ void druid_t::init_base_stats()
     default: break;
   }
 
-  // Passive Talents & Spells
-  auto crit = find_effect( find_specialization_spell( "Critical Strikes" ), A_MOD_ALL_CRIT_CHANCE ).percent();
-  base.spell_crit_chance  += crit;
-  base.attack_crit_chance += crit;
-  base.armor_multiplier   *= 1.0 + find_effect( talent.killer_instinct, A_MOD_BASE_RESISTANCE_PCT ).percent();
-
   // Resources
-  resources.base[ RESOURCE_RAGE ] = 100 +
-    find_effect( talent.fount_of_strength, A_MOD_INCREASE_RESOURCE, POWER_RAGE ).resource();
+  resources.base[ RESOURCE_RAGE ] = 100;
   resources.base[ RESOURCE_COMBO_POINT ] = 5;
-  resources.base[ RESOURCE_ASTRAL_POWER ] = 100 +
-    find_effect( talent.astral_communion, A_MOD_MAX_RESOURCE, POWER_ASTRAL_POWER ).resource() +
-    find_effect( talent.expansiveness, A_MOD_MAX_RESOURCE, POWER_ASTRAL_POWER ).resource();
-  resources.base[ RESOURCE_ENERGY ] = 100 +
-    find_effect( talent.tireless_energy, A_MOD_INCREASE_RESOURCE, POWER_ENERGY ).resource() +
-    find_effect( talent.fount_of_strength, A_MOD_MAX_RESOURCE, POWER_ENERGY ).resource();
-
-  resources.base_multiplier[ RESOURCE_MANA ] = 1.0 +
-    find_effect( talent.expansiveness, A_MOD_MAX_RESOURCE_PCT ).percent();
+  resources.base[ RESOURCE_ASTRAL_POWER ] = 100;
+  resources.base[ RESOURCE_ENERGY ] = 100;;
 
   // only intially activate required resources. others will be dynamically activated depending on apl
   for ( auto r = RESOURCE_HEALTH; r < RESOURCE_MAX; r++ )
@@ -11514,12 +11498,6 @@ void druid_t::init_base_stats()
 
   // Energy Regen
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
-  resources.base_regen_per_second[ RESOURCE_ENERGY ] *=
-    1.0 + find_effect( spec.feral_affinity, A_MOD_POWER_REGEN_PERCENT ).percent();
-  resources.base_regen_per_second[ RESOURCE_ENERGY ] *=
-    1.0 + find_effect( spec_spell, A_MOD_POWER_REGEN_PERCENT ).percent();
-  resources.base_regen_per_second[ RESOURCE_ENERGY ] *=
-    1.0 + find_effect( talent.tireless_energy, A_MOD_POWER_REGEN_PERCENT ).percent();
 
   if ( options.disable_ready_trigger )
     ready_type = ready_e::READY_POLL;
@@ -11527,6 +11505,8 @@ void druid_t::init_base_stats()
     ready_type = ready_e::READY_TRIGGER;
 
   base_gcd = 1.5_s;
+
+  player_t::init_base_stats();
 }
 
 void druid_t::init_stats()
@@ -15413,11 +15393,7 @@ void druid_t::parse_action_target_effects( action_t* action )
 
 void druid_t::parse_player_effects()
 {
-  parse_effects( spec_spell );
-  parse_effects( find_specialization_spell( "Leather Specialization" ) );
-
   parse_effects( mastery.natures_guardian_AP );
-  parse_effects( talent.ursocs_spirit );
   parse_effects( spec.bear_form_passive, [ this ] { return buff.bear_form->check(); } );
 
   if ( talent.lycaras_inspiration.ok() )

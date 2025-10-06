@@ -2638,20 +2638,6 @@ double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
 
-  // Certain modifiers are only for Guardians, otherwise just give the Pet Modifier
-
-  if ( guardian )
-  {
-    m *= ( 1.0 + specs.shadow_priest->effectN( 4 ).percent() );
-    m *= ( 1.0 + specs.discipline_priest->effectN( 15 ).percent() );
-    m *= ( 1.0 + talents.shadow.subservient_shadows->effectN( 1 ).percent() );
-  }
-  else
-  {
-    m *= ( 1.0 + specs.shadow_priest->effectN( 3 ).percent() );
-    m *= ( 1.0 + specs.discipline_priest->effectN( 3 ).percent() );
-  }
-
   // TWW1 Set Bonus for pet spells, this double dips with pet spells
   if ( buffs.devouring_chorus->check() )
   {
@@ -2698,11 +2684,6 @@ double priest_t::composite_player_target_multiplier( player_t* t, school_e schoo
 double priest_t::composite_leech() const
 {
   double l = player_t::composite_leech();
-
-  if ( talents.sanguine_teachings.enabled() )
-  {
-    l += talents.sanguine_teachings->effectN( 1 ).percent();
-  }
 
   return l;
 }
@@ -2766,12 +2747,7 @@ void priest_t::analyze( sim_t& sim )
 
 double priest_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  if ( attr == ATTR_INTELLECT )
-  {
-    return 0.05;
-  }
-
-  return 0.0;
+  return player_t::matching_gear_multiplier( attr );
 }
 
 action_t* priest_t::create_action( util::string_view name, util::string_view options_str )
@@ -2904,20 +2880,16 @@ void priest_t::init_base_stats()
     base.distance = std::max( base.distance, 40.00 );
   }
 
-  base_t::init_base_stats();
-
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 0.0;
   base.spell_power_per_intellect = 1.0;
 
-  if ( talents.holy.enlightenment.enabled() )
-    resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + talents.holy.enlightenment->effectN( 1 ).percent();
-
   if ( specialization() == PRIEST_SHADOW )
   {
-    resources.base[ RESOURCE_INSANITY ] =
-        100.0 + talents.shadow.voidtouched->effectN( 1 ).resource( RESOURCE_INSANITY );
+    resources.base[ RESOURCE_INSANITY ] = 100.0;
   }
+
+  base_t::init_base_stats();
 }
 
 void priest_t::init_resources( bool force )

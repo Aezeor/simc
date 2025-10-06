@@ -1034,7 +1034,6 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     base(),
     initial(),
     current(),
-    passive_rating_multiplier( 1.0 ),
     last_cast( 0_ms),
     // Defense Mechanics
     def_dr( diminishing_returns_constants_t() ),
@@ -1121,9 +1120,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     auto_attack_base_modifier( 0.0 ),
     auto_attack_multiplier( 1.0 ),
     scaling( ( !is_pet() || sim->report_pets_separately ) ? new player_scaling_t() : nullptr ),
-    // Movement & Position
-    base_movement_speed( 7.0 ),
-    passive_modifier( 0 ),
+    // Position
     x_position( 0.0 ),
     y_position( 0.0 ),
     default_x_position( std::numeric_limits<double>::lowest() ),
@@ -1270,6 +1267,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   attack_power_per_spell_power( 0 ),
   dodge_per_agility( 0 ),
   parry_per_strength( 0 ),
+  parry_rating_per_crit_rating( 0 ),
   health_per_stamina( 0 ),
   resource_reduction(),
   miss( 0 ),
@@ -1280,11 +1278,17 @@ player_t::base_initial_current_t::base_initial_current_t() :
   expertise( 0 ),
   leech( 0 ),
   avoidance( 0 ),
+  crit_avoidance( 0 ),
   spell_crit_chance(),
   attack_crit_chance(),
   block_reduction(),
-  mastery(),
+  mastery( 0 ),
   versatility( 0 ),
+  all_crit( 0 ),
+  all_haste( 1.0 ),
+  melee_haste( 1.0 ),
+  spell_haste( 1.0 ),
+  ranged_haste( 1.0 ),
   skill( 1.0 ),
   skill_debuff( 0.0 ),
   distance( 0 ),
@@ -1295,15 +1299,33 @@ player_t::base_initial_current_t::base_initial_current_t() :
   sleeping( false ),
   rating(),
   attribute_multiplier(),
+  matching_armor_multiplier(),
+  rating_multiplier(),
   spell_power_multiplier( 1.0 ),
   attack_power_multiplier( 1.0 ),
   base_armor_multiplier( 1.0 ),
   armor_multiplier( 1.0 ),
-  crit_damage_multiplier( 1.0 ),
+  crit_damage_multiplier(),
   crit_healing_multiplier( 1.0 ),
+  attack_speed_multiplier( 1.0 ),
+  healing_multiplier( 1.0 ),
+  damage_multiplier(),
+  pet_damage_multiplier( 1.0 ),
+  guardian_damage_multiplier( 1.0 ),
+  absorb_multiplier( 1.0 ),
+  absorb_received_multiplier( 1.0 ),
+  healing_received_multiplier( 1.0 ),
+  armor_penetration( 1.0 ),
+  movement_speed( 0 ),
+  stacking_movement_speed_modifier( 1.0 ),
+  non_stacking_movement_speed_modifier( 1.0 ),
   position( POSITION_BACK )
 {
   range::fill( attribute_multiplier, 1.0 );
+  range::fill( matching_armor_multiplier, 1.0 );
+  range::fill( rating_multiplier, 1.0 );
+  range::fill( crit_damage_multiplier, 1.0 );
+  range::fill( damage_multiplier, 1.0 );
 }
 
 void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_context::iterator out )
@@ -1318,6 +1340,7 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " attack_crit_per_agility={}", s.attack_crit_per_agility );
   fmt::format_to( out, " dodge_per_agility={}", s.dodge_per_agility );
   fmt::format_to( out, " parry_per_strength={}", s.parry_per_strength );
+  fmt::format_to( out, " parry_rating_per_crit_rating={}", s.parry_rating_per_crit_rating );
   fmt::format_to( out, " health_per_stamina={}", s.health_per_stamina );
   // resource_reduction
   fmt::format_to( out, " miss={}", s.miss );
@@ -1329,18 +1352,49 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " block_reduction={}", s.block_reduction );
   fmt::format_to( out, " mastery={}", s.mastery );
   fmt::format_to( out, " versatility={}", s.versatility );
+  fmt::format_to( out, " all_haste={}", s.all_haste );
+  fmt::format_to( out, " melee_haste={}", s.melee_haste );
+  fmt::format_to( out, " spell_haste={}", s.spell_haste );
+  fmt::format_to( out, " ranged_haste={}", s.ranged_haste );
   fmt::format_to( out, " leech={}", s.leech );
+  fmt::format_to( out, " expertise={}", s.expertise );
   fmt::format_to( out, " skill={}", s.skill );
   fmt::format_to( out, " distance={}", s.distance );
   fmt::format_to( out, " armor_coeff={}", s.armor_coeff );
   fmt::format_to( out, " sleeping={}", s.sleeping );
   // attribute_multiplier
+  for ( auto i : { ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT } )
+  {
+    fmt::format_to( out, " {}_multiplier={}", util::attribute_type_string( i ), s.attribute_multiplier[ i ] );
+    fmt::format_to( out, " matching_armor_{}_multiplier={}", util::attribute_type_string( i ),
+                    s.matching_armor_multiplier[ i ] );
+  }
+  // rating_multiplier
+  for ( auto i = RATING_BLOCK; i < RATING_MAX; i++ )
+    fmt::format_to( out, " {}_multiplier={}", util::rating_type_string( i ), s.rating_multiplier[ i ] );
+
   fmt::format_to( out, " spell_power_multiplier={}", s.spell_power_multiplier );
   fmt::format_to( out, " attack_power_multiplier={}", s.attack_power_multiplier );
   fmt::format_to( out, " base_armor_multiplier={}", s.base_armor_multiplier );
   fmt::format_to( out, " armor_multiplier={}", s.armor_multiplier );
-  fmt::format_to( out, " crit_damage_multiplier={}", s.crit_damage_multiplier );
+  for ( auto school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; ++school )
+  {
+    fmt::format_to( out, " {}_damage_multiplier={}", util::school_type_string( school ),
+                    s.damage_multiplier[ school ] );
+    fmt::format_to( out, " {}_crit_damage_multiplier={}", util::school_type_string( school ),
+                    s.crit_damage_multiplier[ school ] );
+  }
+  fmt::format_to( out, " healing_multiplier={}", s.healing_multiplier );
   fmt::format_to( out, " crit_healing_multiplier={}", s.crit_healing_multiplier );
+  fmt::format_to( out, " attack_speed_multiplier={}", s.attack_speed_multiplier );
+  fmt::format_to( out, " pet_damage_multiplier={}", s.pet_damage_multiplier );
+  fmt::format_to( out, " guardian_damage_multiplier={}", s.guardian_damage_multiplier );
+  fmt::format_to( out, " absorb_multiplier={}", s.absorb_multiplier );
+  fmt::format_to( out, " absorb_received_multiplier={}", s.absorb_received_multiplier );
+  fmt::format_to( out, " healing_received_multiplier={}", s.healing_received_multiplier );
+  fmt::format_to( out, " movement_speed={}_yards/s", s.movement_speed );
+  fmt::format_to( out, " stacking_movement_speed_modifier={}", s.stacking_movement_speed_modifier );
+  fmt::format_to( out, " non_stacking_movement_speed_modifier={}", s.non_stacking_movement_speed_modifier );
   fmt::format_to( out, " position={}", s.position );
 }
 
@@ -1452,19 +1506,35 @@ void player_t::init_base_stats()
     base.stats.attribute[ STAT_INTELLECT ] = dbc->race_base( race ).intellect + dbc->attribute_base( type, level() ).intellect;
     base.stats.attribute[ STAT_SPIRIT ]    = dbc->race_base( race ).spirit + dbc->attribute_base( type, level() ).spirit;
 
-    // heroic presence is treated like base stats, floored before adding in; tested 2014-07-20
-    base.stats.attribute[ STAT_STRENGTH ]  += util::floor( racials.heroic_presence->effectN( 1 ).average( this ) );
-    base.stats.attribute[ STAT_AGILITY ]   += util::floor( racials.heroic_presence->effectN( 2 ).average( this ) );
-    base.stats.attribute[ STAT_INTELLECT ] += util::floor( racials.heroic_presence->effectN( 3 ).average( this ) );
-    // Endurance seems to be using ceiling
-    base.stats.attribute[ STAT_STAMINA ]   += util::ceil( racials.endurance->effectN( 1 ).average( this ) );
+    // Passive Flat Stat Modifiers
+    for( auto stat : { STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT } )
+    {
+      base.stats.attribute[ stat ] = get_passive_player_value( base.stats.attribute[ stat ],
+                                                               fmt::format( "flat_{}", util::stat_type_string( stat ) ) );
+    }
 
-    base.spell_crit_chance        = dbc->spell_crit_base( type, level() ) +
-                                    racials.viciousness->effectN( 1 ).percent() +
-                                    racials.arcane_acuity->effectN( 1 ).percent();
-    base.attack_crit_chance       = dbc->melee_crit_base( type, level() ) +
-                                    racials.viciousness->effectN( 1 ).percent() +
-                                    racials.arcane_acuity->effectN( 1 ).percent();
+    // Passive Attribute Multipliers
+    for ( auto stat : { ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT } )
+    {
+      base.attribute_multiplier[ stat ] = get_passive_player_value(
+          base.attribute_multiplier[ stat ], fmt::format( "{}_multiplier", util::attribute_type_string( stat ) ) );
+      base.matching_armor_multiplier[ stat ] = get_passive_player_value(
+          base.matching_armor_multiplier[ stat ],
+          fmt::format( "matching_armor_{}_multiplier", util::attribute_type_string( stat ) ) );
+    }
+
+    for ( rating_e r = RATING_BLOCK; r < RATING_MAX; r++ )
+    {
+      // Rating Multipliers
+      base.rating_multiplier[ r ] = get_passive_player_value(
+          base.rating_multiplier[ r ], fmt::format( "{}_multiplier", util::rating_type_string( r ) ) );
+    }
+
+    // Core Stats
+    base.all_crit = dbc->all_crit_base( type, level() );
+    base.all_crit = get_passive_player_value( base.all_crit, "all_crit" );
+    base.spell_crit_chance        = get_passive_player_value( base.all_crit, "spell_crit" );
+    base.attack_crit_chance       = base.all_crit;
     if ( timeofday == DAY_TIME )
     {
       base.spell_crit_chance      += racials.touch_of_elune->effectN( 1 ).percent();
@@ -1472,33 +1542,78 @@ void player_t::init_base_stats()
     }
     base.spell_crit_per_intellect = dbc->spell_crit_scaling( type, level() );
     base.attack_crit_per_agility  = dbc->melee_crit_scaling( type, level() );
-    base.mastery                  = 8.0 + racials.awakened->effectN( 1 ).base_value();
-    base.versatility              = racials.mountaineer->effectN( 1 ).percent() +
-                                    racials.brush_it_off->effectN( 1 ).percent();
-    base.leech                    = 0.0;
+
+    base.mastery      = 8.0;
+    base.mastery      = get_passive_player_value( base.mastery, "mastery" );
+    base.versatility  = get_passive_player_value( base.versatility, "versatility" );
+    base.all_haste   /= get_passive_player_value( base.all_haste, "all_haste" );
+    base.melee_haste  = base.all_haste;
+    base.spell_haste  = base.all_haste;
+    base.ranged_haste = base.all_haste;
+
+    base.leech                    = get_passive_player_value( base.leech, "leech" );
     base.avoidance                = 0.0;
+    base.crit_avoidance           = get_passive_player_value( base.crit_avoidance, "crit_avoidance" );
 
-    base.base_armor_multiplier    *= ( 1.0 + racials.titanwrought_frame->effectN( 1 ).percent() );
-    base.crit_damage_multiplier   *= ( 1.0 + racials.brawn->effectN( 2 ).percent() ) *
-                                     ( 1.0 + racials.might_of_the_mountain->effectN( 2 ).percent() ) *
-                                     ( 1.0 + racials.lash_out->effectN( 1 ).percent() );
-    base.crit_healing_multiplier  *= ( 1.0 + racials.brawn->effectN( 3 ).percent() ) *
-                                     ( 1.0 + racials.might_of_the_mountain->effectN( 3 ).percent() ) *
-                                     ( 1.0 + racials.lash_out->effectN( 2 ).percent() );
+    base.base_armor_multiplier    = get_passive_player_value( base.base_armor_multiplier, "base_armor_multiplier" );
+    base.armor_multiplier         = get_passive_player_value( base.armor_multiplier, "armor_multiplier" );
 
+    for ( auto school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; ++school )
+    {
+      base.damage_multiplier[ school ] = get_passive_player_value(
+          base.damage_multiplier[ school ], fmt::format( "{}_damage_multiplier", util::school_type_string( school ) ) );
+      base.damage_multiplier[ school ] *=
+          get_passive_player_value( base.damage_multiplier[ school ], "all_damage_multiplier" );
+      base.crit_damage_multiplier[ school ] =
+          get_passive_player_value( base.crit_damage_multiplier[ school ],
+                                    fmt::format( "{}_crit_damage_multiplier", util::school_type_string( school ) ) );
+      base.crit_damage_multiplier[ school ] *=
+          get_passive_player_value( base.crit_damage_multiplier[ school ], "all_crit_damage_multiplier" );
+    }
+
+    base.crit_healing_multiplier  = get_passive_player_value( base.crit_healing_multiplier, "crit_heal_multiplier" );
+    base.attack_speed_multiplier /= get_passive_player_value( base.attack_speed_multiplier, "attack_speed" );
+    base.attack_power_multiplier = get_passive_player_value( base.attack_power_multiplier, "attack_power_multiplier" );
+    base.absorb_multiplier       = get_passive_player_value( base.absorb_multiplier, "absorb_multiplier" );
+    base.absorb_received_multiplier =
+        get_passive_player_value( base.absorb_received_multiplier, "absorb_received_multiplier" );
+    base.healing_received_multiplier =
+        get_passive_player_value( base.healing_received_multiplier, "healing_received_multiplier" );
+    base.healing_multiplier = get_passive_player_value( base.healing_multiplier, "healing_multiplier" );
+
+    // Base Pet Damage Modifiers
+    base.pet_damage_multiplier = get_passive_player_value( base.pet_damage_multiplier, "pet_damage_multiplier" );
+    base.guardian_damage_multiplier = get_passive_player_value( base.guardian_damage_multiplier, "guardian_damage_multiplier" );
+
+    // Resources
     resources.base[ RESOURCE_HEALTH ] = dbc->health_base( type, level() );
     resources.base[ RESOURCE_MANA ]   = dbc->resource_base( type, level() );
-
-    resources.base_multiplier[ RESOURCE_MANA ] = get_passive_player_value( 1.0, "mana_multiplier" );
     // 1% of base mana as mana regen per second for all classes.
-    resources.base_regen_per_second[ RESOURCE_MANA ] =
-      get_passive_player_value( dbc->resource_base( type, level() ) * 0.01, "mana_regen" );
+    resources.base_regen_per_second[ RESOURCE_MANA ] = dbc->resource_base( type, level() ) * 0.01;
+    for ( auto power = POWER_HEALTH; power < POWER_MAX; power++ )
+    {
+      resource_e resource = util::translate_power_type( power );
+      if ( resources.active_resource[ resource ] == false )
+        continue;
+
+      std::string res_str = util::resource_type_string( resource );
+      // Max Resource Modifiers
+      resources.base[ resource ] = get_passive_player_value( resources.base[ resource ], fmt::format( "max_{}", res_str ) );
+      // Passive Resource Multipliers
+      resources.base_multiplier[ resource ] =
+          get_passive_player_value( resources.base_multiplier[ resource ], fmt::format( "{}_multiplier", res_str ) );
+      // Passive Resource Regen Modifiers
+      resources.base_regen_per_second[ resource ] =
+          get_passive_player_value( resources.base_regen_per_second[ resource ], fmt::format( "{}_regen", res_str ) );
+    }
 
     base.health_per_stamina = dbc->health_per_stamina( level() );
 
     // players have a base 7.5% hit/exp
     base.hit       = 0.075;
     base.expertise = 0.075;
+    base.expertise = get_passive_player_value( base.expertise, "expertise" );
+    base.armor_penetration = get_passive_player_value( base.armor_penetration, "armor_penetration" );
 
     if ( base.distance < 1 )
       base.distance = 5;
@@ -1508,14 +1623,8 @@ void player_t::init_base_stats()
     sim->print_debug( "{} base armor coefficient set to {}.", *this, base.armor_coeff );
   }
 
-  // initialize sp->ap and ap->sp overrides for hybrid specs
-  if ( is_player() && spec_spell->ok() )
-  {
-    base.attack_power_per_spell_power =
-        spell_data_t::find_spelleffect( *spec_spell, E_APPLY_AURA, A_OVERRIDE_AP_PER_SP ).percent();
-    base.spell_power_per_attack_power =
-        spell_data_t::find_spelleffect( *spec_spell, E_APPLY_AURA, A_OVERRIDE_SP_PER_AP ).percent();
-  }
+  base.attack_power_per_spell_power = get_passive_player_value( base.attack_power_per_spell_power, "ap_per_sp" );
+  base.spell_power_per_attack_power = get_passive_player_value( base.spell_power_per_attack_power, "sp_per_ap" );
 
   // only certain classes get Agi->Dodge conversions, dodge_per_agility defaults to 0.00
   if ( type == MONK || type == DRUID || type == ROGUE || type == HUNTER || type == SHAMAN || type == DEMON_HUNTER )
@@ -1532,13 +1641,11 @@ void player_t::init_base_stats()
   base.miss = 0.03;
 
   // Dodge from base agility isn't affected by diminishing returns and is added here
-  if (base.dodge_per_agility > 0)
-  {
-    base.dodge += (dbc->race_base(race).agility + dbc->attribute_base(type, level()).agility) * base.dodge_per_agility;
-  }
+  if ( base.dodge_per_agility > 0 )
+    base.dodge +=
+        ( dbc->race_base( race ).agility + dbc->attribute_base( type, level() ).agility ) * base.dodge_per_agility;
 
-  // Night Elf dodge is additive
-  base.dodge += racials.quickness->effectN(1).percent();
+  base.dodge = get_passive_player_value( base.dodge, "dodge" );
 
   // Only Warriors and Paladins (and enemies) can block, defaults to 0
   if ( type == WARRIOR || type == PALADIN || type == ENEMY || type == TANK_DUMMY )
@@ -1546,19 +1653,26 @@ void player_t::init_base_stats()
     // Base block chance is 3%, increased in warriors' and paladins' class aura and protection warrior's spec aura
     // Further increased by mastery for both Protection specs
     base.block = 0.03;
+    base.block = get_passive_player_value( base.block, "block" );
 
-    // Set block reduction to 0 for warrior/paladin because it's computed in composite_block_reduction()
     switch ( type )
     {
-    case WARRIOR:
-    case PALADIN:
-      base.block_reduction = 0;
-      break;
-    default:
-      base.block_reduction = 0.30;
-      break;
+      case WARRIOR:
+      case PALADIN:
+        // Currently block reduction is 2.5x the armor value of the shield
+        if ( items[ SLOT_OFF_HAND ].dbc_inventory_type() == INVTYPE_SHIELD )
+          base.block_reduction = items[ SLOT_OFF_HAND ].stats.armor * 2.5;
+        else
+          base.block_reduction = 0;
+        break;
+      default:
+        base.block_reduction = 0.30;
+        break;
     }
   }
+
+  base.block_reduction = get_passive_player_value( base.block_reduction, "block_reduction" );
+  base.rating.block = get_passive_player_value( base.rating.block, "block_rating" );
 
   // Only certain classes can parry, and get 3% base parry, default is 0
   // Parry from base strength isn't affected by diminishing returns and is added here
@@ -1566,11 +1680,20 @@ void player_t::init_base_stats()
        type == DEMON_HUNTER || specialization() == SHAMAN_ENHANCEMENT  )
   {
     base.parry = 0.03 + ( dbc->race_base( race ).strength + dbc->attribute_base( type, level() ).strength ) * base.parry_per_strength;
+    base.parry = get_passive_player_value( base.parry, "parry" );
   }
   else if ( type == ENEMY || type == TANK_DUMMY )
   {
     base.parry = 0.03;
   }
+
+  base.parry_rating_per_crit_rating = get_passive_player_value( base.parry_rating_per_crit_rating, "parry_from_crit_rating" );
+
+  // Movement Speed
+  base.movement_speed = 7.0;  // yards per second
+  base.stacking_movement_speed_modifier = get_passive_player_value( base.stacking_movement_speed_modifier, "stacking_move_speed_modifier" );
+  base.non_stacking_movement_speed_modifier =
+      get_passive_player_value( base.non_stacking_movement_speed_modifier, "non_stacking_move_speed_modifier" );
 
   // Extract avoidance DR values from table in sc_extra_data.inc
   def_dr.horizontal_shift       = dbc->horizontal_shift( type );
@@ -1585,12 +1708,6 @@ void player_t::init_base_stats()
        ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
   {
     resources.base_multiplier[ RESOURCE_MANA ] *= 1.02;
-  }
-
-  // Expansive Mind
-  for ( auto& r : { RESOURCE_MANA, RESOURCE_RAGE, RESOURCE_ENERGY, RESOURCE_RUNIC_POWER, RESOURCE_FOCUS} )
-  {
-    resources.base_multiplier[ r ] *= 1.0 + racials.expansive_mind->effectN( 1 ).percent();
   }
 
   if ( primary_role() == ROLE_TANK )
@@ -1653,7 +1770,8 @@ void player_t::init_initial_stats()
     initial.stats += sim->enchant;
 
     // crit damage multiplier meta gems
-    initial.crit_damage_multiplier *= util::crit_multiplier( meta_gem );
+    for ( auto school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; ++school )
+      initial.crit_damage_multiplier[ school ] *= util::crit_multiplier( meta_gem );
   }
 
   initial.stats += total_gear;
@@ -4934,7 +5052,7 @@ double player_t::resource_regen_per_second( resource_e r ) const
 {
   double reg = resources.base_regen_per_second[ r ];
 
-  if ( r == RESOURCE_FOCUS || r == RESOURCE_ENERGY || r == RESOURCE_ESSENCE )
+  if ( r == RESOURCE_FOCUS || r == RESOURCE_ENERGY || r == RESOURCE_ESSENCE || r == RESOURCE_RUNE )
   {
     if ( reg )
     {
@@ -4972,6 +5090,8 @@ double player_t::composite_melee_haste() const
 
   h = 1.0 / ( 1.0 + h );
 
+  h *= current.melee_haste;
+
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
     for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_HASTE ] )
@@ -4982,9 +5102,6 @@ double player_t::composite_melee_haste() const
 
     if ( buffs.berserking->check() )
       h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
-
-    h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
-    h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
 
     if ( timeofday == NIGHT_TIME )
       h *= 1.0 / ( 1.0 + racials.touch_of_elune->effectN( 1 ).percent() );
@@ -4999,6 +5116,8 @@ double player_t::composite_melee_haste() const
 double player_t::composite_melee_auto_attack_speed() const
 {
   double h = composite_melee_haste();
+
+  h *= current.attack_speed_multiplier;
 
   if ( buffs.galeforce_striking && buffs.galeforce_striking->check() )
     h *= 1.0 / ( 1.0 + buffs.galeforce_striking->check_value() );
@@ -5273,6 +5392,16 @@ double player_t::composite_dodge() const
   return total_dodge;
 }
 
+double player_t::composite_parry_rating() const
+{
+  double r = composite_rating( RATING_PARRY );
+
+  if ( current.parry_rating_per_crit_rating > 0 )
+    r += composite_melee_crit_rating() * current.parry_rating_per_crit_rating;
+
+  return r;
+}
+
 double player_t::composite_parry() const
 {
   // Start with sources not subject to DR - base parry + parry from base strength (stored in current.parry).
@@ -5298,13 +5427,6 @@ double player_t::composite_block_reduction( action_state_t* ) const
 {
   double b = current.block_reduction;
 
-  // Players have a base block reduction = 0, enemies have a fixed 0.30 damage reduction on block
-  if ( b == 0 )
-  {
-    // The block reduction rating is equal to 2.5 times the equipped shield's armor rating
-    return items[ SLOT_OFF_HAND ].stats.armor * 2.5;
-  }
-
   return b;
 }
 
@@ -5315,7 +5437,7 @@ double player_t::composite_crit_block() const
 
 double player_t::composite_crit_avoidance() const
 {
-  return 0;
+  return current.crit_avoidance;
 }
 
 /**
@@ -5330,6 +5452,8 @@ double player_t::composite_spell_haste() const
 
   h = 1.0 / ( 1.0 + h );
 
+  h *= current.spell_haste;
+
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
     for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_HASTE ] )
@@ -5340,9 +5464,6 @@ double player_t::composite_spell_haste() const
 
     if ( buffs.berserking->check() )
       h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
-
-    h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
-    h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
 
     if ( timeofday == NIGHT_TIME )
       h *= 1.0 / ( 1.0 + racials.touch_of_elune->effectN( 1 ).percent() );
@@ -5418,6 +5539,11 @@ double player_t::composite_spell_power_multiplier() const
 
   // multiplier is rounded to 3 digits
   return std::round( current.spell_power_multiplier * 1000 ) * 0.001;
+}
+
+double player_t::matching_gear_multiplier( attribute_e a ) const
+{
+  return current.matching_armor_multiplier[ a ];
 }
 
 double player_t::composite_spell_crit_chance() const
@@ -5573,18 +5699,17 @@ double player_t::composite_total_corruption() const
 
 double player_t::composite_player_pet_damage_multiplier( const action_state_t*, bool guardian ) const
 {
-  double m = 1.0;
+  double m = guardian ? current.guardian_damage_multiplier : current.pet_damage_multiplier;
 
-  m *= 1.0 + racials.command->effectN(1).percent();
-
-  if (!guardian)
+  if ( !guardian )
   {
-    if (buffs.coldhearted && buffs.coldhearted->check())
+    if ( buffs.coldhearted && buffs.coldhearted->check() )
       m *= 1.0 + buffs.coldhearted->check_value();
 
     // By default effect 1 is used for the player modifier, effect 2 is for the pet modifier
-    if (buffs.battlefield_presence && buffs.battlefield_presence->check())
-      m *= 1.0 + (buffs.battlefield_presence->data().effectN(2).percent() * buffs.battlefield_presence->current_stack);
+    if ( buffs.battlefield_presence && buffs.battlefield_presence->check() )
+      m *= 1.0 +
+           ( buffs.battlefield_presence->data().effectN( 2 ).percent() * buffs.battlefield_presence->current_stack );
   }
 
   return m;
@@ -5597,39 +5722,30 @@ double player_t::composite_player_target_pet_damage_multiplier( player_t*, bool 
 
 double player_t::composite_player_multiplier( school_e school ) const
 {
-  double m = 1.0;
+  double m = current.damage_multiplier[ school ];
 
-  if ( buffs.legendary_aoe_ring && buffs.legendary_aoe_ring->check() )
-    m *= 1.0 + buffs.legendary_aoe_ring->default_value;
+  if ( buffs.legendary_aoe_ring && buffs.legendary_aoe_ring->has_common_school( school ) )
+    m *= 1.0 + buffs.legendary_aoe_ring->check_value();
 
-  if ( buffs.taste_of_mana && buffs.taste_of_mana->check() && school != SCHOOL_PHYSICAL )
-  {
-    m *= 1.0 + buffs.taste_of_mana->default_value;
-  }
+  if ( buffs.taste_of_mana && buffs.taste_of_mana->has_common_school( school ) )
+    m *= 1.0 + buffs.taste_of_mana->check_value();
 
-  if ( buffs.torrent_of_elements && buffs.torrent_of_elements->check() && school != SCHOOL_PHYSICAL )
-  {
-    m *= 1.0 + buffs.torrent_of_elements->default_value;
-  }
+  if ( buffs.torrent_of_elements && buffs.torrent_of_elements->has_common_school( school ) )
+    m *= 1.0 + buffs.torrent_of_elements->check_value();
 
   if ( buffs.damage_done && buffs.damage_done->check() )
-  {
     m *= 1.0 + buffs.damage_done->check_stack_value();
-  }
 
-  if ( school != SCHOOL_PHYSICAL )
-    m *= 1.0 + racials.magical_affinity->effectN( 1 ).percent();
-
-  if ( buffs.echo_of_eonar && buffs.echo_of_eonar->check() )
-    m *= 1 + buffs.echo_of_eonar->check_value();
+  if ( buffs.echo_of_eonar && buffs.echo_of_eonar->has_common_school( school ) )
+    m *= 1.0 + buffs.echo_of_eonar->check_value();
 
   if ( buffs.volatile_solvent_damage && buffs.volatile_solvent_damage->has_common_school( school ) )
     m *= 1.0 + buffs.volatile_solvent_damage->check_value();
 
-  if ( buffs.battlefield_presence && buffs.battlefield_presence->check() )
+  if ( buffs.battlefield_presence && buffs.battlefield_presence->has_common_school( school ) )
     m *= 1.0 + buffs.battlefield_presence->check_stack_value();
 
-  if ( buffs.coldhearted && buffs.coldhearted->check() )
+  if ( buffs.coldhearted && buffs.coldhearted->has_common_school( school ) )
     m *= 1.0 + buffs.coldhearted->check_value();
 
   if ( buffs.entropic_embrace && buffs.entropic_embrace->check() )
@@ -5699,9 +5815,7 @@ double player_t::composite_player_target_multiplier( player_t* t, school_e /* sc
 
 double player_t::composite_player_heal_multiplier( const action_state_t* ) const
 {
-  double m = 1.0;
-
-  m *= 1.0 + racials.holy_providence->effectN( 2 ).percent();
+  double m = current.healing_multiplier;
 
   if ( buffs.blessing_of_spring->check() )
     m *= 1.0 + buffs.blessing_of_spring->data().effectN( 1 ).percent();
@@ -5719,12 +5833,22 @@ double player_t::composite_player_th_multiplier( school_e /* school */ ) const
 
 double player_t::composite_player_absorb_multiplier( const action_state_t* ) const
 {
-  double m = 1.0;
+  double m = current.absorb_multiplier;
 
   if ( buffs.entropic_embrace && buffs.entropic_embrace->check() )
     m *= 1.0 + buffs.entropic_embrace->data().effectN( 4 ).percent();
 
   return m;
+}
+
+double player_t::composite_player_healing_received_multiplier() const
+{
+  return current.healing_received_multiplier;
+}
+
+double player_t::composite_player_absorb_received_multiplier() const
+{
+  return current.absorb_received_multiplier;
 }
 
 double player_t::composite_player_target_crit_chance( player_t* t ) const
@@ -5746,22 +5870,22 @@ double player_t::composite_player_target_crit_chance( player_t* t ) const
   return c;
 }
 
-double player_t::composite_player_critical_damage_multiplier( const action_state_t* /* s */ ) const
+double player_t::composite_player_critical_damage_multiplier( const action_state_t* /* s */, school_e school ) const
 {
-  double m = current.crit_damage_multiplier;
+  double m = current.crit_damage_multiplier[ school ];
 
-  if ( buffs.elemental_chaos_fire )
+  if ( buffs.elemental_chaos_fire && buffs.elemental_chaos_fire->has_common_school( school ) )
     m *= 1.0 + buffs.elemental_chaos_fire->check_value();
 
-  if ( buffs.incensed )
+  if ( buffs.incensed && buffs.incensed->has_common_school( school ) )
     m *= 1.0 + buffs.incensed->check_value();
 
   // Critical hit damage buff from R3 Blood of the Enemy major on-use
-  if ( buffs.seething_rage_essence )
+  if ( buffs.seething_rage_essence && buffs.seething_rage_essence->has_common_school( school ) )
     m *= 1.0 + buffs.seething_rage_essence->check_value();
 
   // Critical hit damage buff from follower themed Benthic boots
-  if ( buffs.fathom_hunter )
+  if ( buffs.fathom_hunter && buffs.fathom_hunter->has_common_school( school ) )
     m *= 1.0 + buffs.fathom_hunter->check_value();
 
   return m;
@@ -5783,7 +5907,7 @@ double player_t::composite_player_critical_healing_multiplier() const
  */
 double player_t::non_stacking_movement_modifier() const
 {
-  double speed = 0.0;
+  double speed = current.non_stacking_movement_speed_modifier;
 
   if ( !is_enemy() && type != HEALING_ENEMY )
   {
@@ -5826,12 +5950,10 @@ double player_t::non_stacking_movement_modifier() const
  */
 double player_t::stacking_movement_modifier() const
 {
-  double speed = passive_modifier;
+  double speed = current.stacking_movement_speed_modifier;
 
   // speed tertiary rating
   speed += composite_run_speed();
-
-  speed += racials.quickness->effectN( 2 ).percent();
 
   if ( buffs.windwalking_movement_aura )
     speed += buffs.windwalking_movement_aura->check_value();
@@ -5847,7 +5969,7 @@ double player_t::stacking_movement_modifier() const
 
 double player_t::composite_movement_speed() const
 {
-  double speed = base_movement_speed;
+  double speed = current.movement_speed;
 
   double non_stacking = non_stacking_movement_modifier();
 
@@ -5871,7 +5993,7 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
     return m;
 
   if ( ( true_level >= 27 ) && matching_gear )
-    m *= 1.0 + matching_gear_multiplier( attr );
+    m *= matching_gear_multiplier( attr );
 
   stat_pct_buff_type pct_type = STAT_PCT_BUFF_MAX;
   switch ( attr )
@@ -5912,7 +6034,7 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
 
 double player_t::composite_rating_multiplier( rating_e rating ) const
 {
-  double v = passive_rating_multiplier.get( rating );
+  double v = current.rating_multiplier[ rating ];
 
   switch ( rating )
   {
@@ -5921,24 +6043,16 @@ double player_t::composite_rating_multiplier( rating_e rating ) const
     case RATING_RANGED_HASTE:
       v *= 1.0 + passive_values.amplification_1;
       v *= 1.0 + passive_values.amplification_2;
-      v *= 1.0 + racials.the_human_spirit->effectN( 1 ).percent();
       break;
     case RATING_MASTERY:
       v *= 1.0 + passive_values.amplification_1;
       v *= 1.0 + passive_values.amplification_2;
-      v *= 1.0 + racials.the_human_spirit->effectN( 1 ).percent();
-      break;
-    case RATING_SPELL_CRIT:
-    case RATING_MELEE_CRIT:
-    case RATING_RANGED_CRIT:
-      v *= 1.0 + racials.the_human_spirit->effectN( 1 ).percent();
       break;
     case RATING_DAMAGE_VERSATILITY:
     case RATING_HEAL_VERSATILITY:
     case RATING_MITIGATION_VERSATILITY:
       v *= 1.0 + passive_values.amplification_1;
       v *= 1.0 + passive_values.amplification_2;
-      v *= 1.0 + racials.the_human_spirit->effectN( 1 ).percent();
       break;
     default:
       break;
@@ -6038,7 +6152,11 @@ double player_t::composite_player_vulnerability( school_e school ) const
 
 double player_t::composite_player_target_armor( player_t* t ) const
 {
-  return t->cache.armor();
+  double a = t->cache.armor();
+
+  a *= current.armor_penetration;
+
+  return a;
 }
 
 double player_t::composite_mitigation_multiplier( school_e /* school */ ) const
@@ -6111,6 +6229,11 @@ void player_t::invalidate_cache( cache_e c )
 
     case CACHE_BONUS_ARMOR:
       invalidate_cache( CACHE_ARMOR );
+      break;
+    
+    case CACHE_CRIT_CHANCE:
+      if( current.parry_rating_per_crit_rating > 0 )
+        invalidate_cache( CACHE_PARRY );
       break;
 
     case CACHE_ATTACK_CRIT_CHANCE:
@@ -15164,33 +15287,164 @@ this directly manipulates the DBC without any processing, it should be called be
 namespace
 {
 static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
-  { P_GENERIC,                    "base_dd"           },  // 0
-  { P_DURATION,                   "duration"          },  // 1
-  { P_RANGE,                      "max_range"         },  // 5
-  { P_RADIUS,                     "max_radius"        },  // 6
-  { P_CRIT,                       "crit"              },  // 7
-  { P_CAST_TIME,                  "cast_time"         },  // 10
-  { P_COOLDOWN,                   "cooldown"          },  // 11
-  { P_RESOURCE_COST_1,            "cost"              },  // 14
-  { P_CRIT_BONUS,                 "crit_bonus"        },  // 15
-  { P_CHAIN_TARGETS,              "chain_target"      },  // 17
-  { P_PROC_CHANCE,                "proc_chance"       },  // 18
-  { P_TICK_TIME,                  "period"            },  // 19
-  { P_CHAIN_MULTIPLIER,           "chain_multiplier"  },  // 20
-  { P_GCD,                        "gcd"               },  // 21
-  { P_TICK_DAMAGE,                "base_td"           },  // 22
-  { P_DOSES,                      "proc_charges"      },  // 31
-  { P_MAX_STACKS,                 "max_stack"         },  // 37
-  { P_PROC_COOLDOWN,              "internal_cooldown" },  // 38
-  { P_MAX_TARGETS,                "max_targets"       },  // 40
-  { A_MOD_MAX_MANA_PCT,           "max_mana"          },  // 178
-  { A_MODIFY_SCHOOL,              "school"            },  // 220
-  { A_MODIFY_CATEGORY_COOLDOWN,   "category_cooldown" },  // 341
-  { A_MOD_MANA_REGEN_PCT,         "mana_regen"        },  // 379
-  { A_MOD_MAX_CHARGES,            "charges"           },  // 411
-  { A_HASTED_COOLDOWN,            "hasted_cooldown"   },  // 416
-  { A_HASTED_GCD,                 "hasted_gcd"        },  // 417
-  { A_MOD_RECHARGE_TIME_CATEGORY, "charge_cooldown"   },  // 453
+  { P_GENERIC,                                "base_dd"                                   }, // 0
+  { P_DURATION,                               "duration"                                  }, // 1
+  { P_RANGE,                                  "max_range"                                 }, // 5
+  { P_RADIUS,                                 "max_radius"                                }, // 6
+  { P_CRIT,                                   "crit"                                      }, // 7
+  { P_CAST_TIME,                              "cast_time"                                 }, // 10
+  { P_COOLDOWN,                               "cooldown"                                  }, // 11
+  { P_RESOURCE_COST_1,                        "cost"                                      }, // 14
+  { P_CRIT_BONUS,                             "crit_bonus"                                }, // 15
+  { P_CHAIN_TARGETS,                          "chain_target"                              }, // 17
+  { P_PROC_CHANCE,                            "proc_chance"                               }, // 18
+  { P_TICK_TIME,                              "period"                                    }, // 19
+  { P_CHAIN_MULTIPLIER,                       "chain_multiplier"                          }, // 20
+  { P_GCD,                                    "gcd"                                       }, // 21
+  { P_TICK_DAMAGE,                            "base_td"                                   }, // 22
+  { A_MOD_STAT,                               "flat_strength"                             }, // 29
+  { A_MOD_STAT,                               "flat_agility"                              }, // 29
+  { A_MOD_STAT,                               "flat_stamina"                              }, // 29
+  { A_MOD_STAT,                               "flat_intellect"                            }, // 29
+  { A_MOD_STAT,                               "flat_spirit"                               }, // 29
+  { P_DOSES,                                  "proc_charges"                              }, // 31
+  { P_MAX_STACKS,                             "max_stack"                                 }, // 37
+  { P_PROC_COOLDOWN,                          "internal_cooldown"                         }, // 38
+  { P_MAX_TARGETS,                            "max_targets"                               }, // 40
+  { A_MOD_PARRY_PERCENT,                      "parry"                                     }, // 47
+  { A_MOD_DODGE_PERCENT,                      "dodge"                                     }, // 49
+  { A_MOD_CRITICAL_HEALING_AMOUNT,            "crit_heal_multiplier"                      }, // 50
+  { A_MOD_BLOCK_PERCENT,                      "block"                                     }, // 51
+  { A_MOD_SPELL_CRIT_CHANCE,                  "spell_crit"                                }, // 57
+  { A_MOD_DAMAGE_PERCENT_DONE,                "all_damage_multiplier"                     }, // 60
+  { A_MOD_DAMAGE_PERCENT_DONE,                "arcane_damage_multiplier"                  }, // 60
+  { A_MOD_DAMAGE_PERCENT_DONE,                "fire_damage_multiplier"                    }, // 60
+  { A_MOD_DAMAGE_PERCENT_DONE,                "frost_damage_multiplier"                   }, // 60
+  { A_MOD_DAMAGE_PERCENT_DONE,                "holy_damage_multiplier"                    }, // 60
+  { A_MOD_DAMAGE_PERCENT_DONE,                "nature_damage_multiplier"                  }, // 60
+  { A_MOD_DAMAGE_PERCENT_DONE,                "shadow_damage_multiplier"                  }, // 60
+  { A_MOD_DAMAGE_PERCENT_DONE,                "physical_damage_multiplier"                }, // 60
+  { A_MOD_RESISTANCE_PCT,                     "armor_multiplier"                          }, // 101
+  { A_MOD_POWER_REGEN_PERCENT,                "health_regen"                              }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "rage_regen"                                }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "astral_power_regen"                        }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "energy_regen"                              }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "focus_regen"                               }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "rune_regen"                                }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "soul_shard_regen"                          }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "holy_power_regen"                          }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "chi_regen"                                 }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "combo_points_regen"                        }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "maelstrom_regen"                           }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "fury_regen"                                }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "pain_regen"                                }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "insanity_regen"                            }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "essence_regen"                             }, // 110
+  { A_MOD_HEALING_RECEIVED_PCT,               "healing_received_multiplier"               }, // 118
+  { A_INCREASE_RESOURCE_PCT,                  "health_multiplier"                         }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "mana_multiplier"                           }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "rage_multiplier"                           }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "astral_power_multiplier"                   }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "energy_multiplier"                         }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "focus_multiplier"                          }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "rune_multiplier"                           }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "soul_shard_multiplier"                     }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "holy_power_multiplier"                     }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "chi_multiplier"                            }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "combo_points_multiplier"                   }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "maelstrom_multiplier"                      }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "fury_multiplier"                           }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "pain_multiplier"                           }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "insanity_multiplier"                       }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "essence_multiplier"                        }, // 119
+  { A_MOD_SPEED_ALWAYS,                       "stacking_move_speed_modifier"              }, // 129
+  { A_MOD_HEALING_DONE_PERCENT,               "healing_multiplier"                        }, // 136
+  { A_MOD_TOTAL_STAT_PERCENTAGE,              "strength_multiplier"                       }, // 137
+  { A_MOD_TOTAL_STAT_PERCENTAGE,              "agility_multiplier"                        }, // 137
+  { A_MOD_TOTAL_STAT_PERCENTAGE,              "stamina_multiplier"                        }, // 137
+  { A_MOD_TOTAL_STAT_PERCENTAGE,              "intellect_multiplier"                      }, // 137
+  { A_MOD_TOTAL_STAT_PERCENTAGE,              "spirit_multiplier"                         }, // 137
+  { A_MOD_TOTAL_STAT_PERCENTAGE,              "matching_armor_strength_multiplier"        }, // 137
+  { A_MOD_TOTAL_STAT_PERCENTAGE,              "matching_armor_agility_multiplier"         }, // 137
+  { A_MOD_TOTAL_STAT_PERCENTAGE,              "matching_armor_stamina_multiplier"         }, // 137
+  { A_MOD_TOTAL_STAT_PERCENTAGE,              "matching_armor_intellect_multiplier"       }, // 137
+  { A_MOD_TOTAL_STAT_PERCENTAGE,              "matching_armor_spirit_multiplier"          }, // 137
+  { A_MOD_BASE_RESISTANCE_PCT,                "base_armor_multiplier"                     }, // 142
+  { A_MOD_CRIT_DAMAGE_BONUS,                  "all_crit_damage_multiplier"                }, // 163
+  { A_MOD_CRIT_DAMAGE_BONUS,                  "arcane_crit_damage_multiplier"             }, // 163
+  { A_MOD_CRIT_DAMAGE_BONUS,                  "fire_crit_damage_multiplier"               }, // 163
+  { A_MOD_CRIT_DAMAGE_BONUS,                  "frost_crit_damage_multiplier"              }, // 163
+  { A_MOD_CRIT_DAMAGE_BONUS,                  "holy_crit_damage_multiplier"               }, // 163
+  { A_MOD_CRIT_DAMAGE_BONUS,                  "nature_crit_damage_multiplier"             }, // 163
+  { A_MOD_CRIT_DAMAGE_BONUS,                  "shadow_crit_damage_multiplier"             }, // 163
+  { A_MOD_CRIT_DAMAGE_BONUS,                  "physical_crit_damage_multiplier"           }, // 163
+  { A_MOD_ATTACK_POWER_PCT,                   "attack_power_multiplier",                  }, // 166
+  { A_MOD_SPEED_NOT_STACK,                    "non_stacking_move_speed_modifier"          }, // 171
+  { A_MOD_MAX_MANA_PCT,                       "mana_multiplier"                           }, // 178
+  { A_MOD_ATTACKER_MELEE_CRIT_CHANCE,         "crit_avoidance"                            }, // 187
+  { A_HASTE_ALL,                              "all_haste"                                 }, // 193
+  { A_MODIFY_SCHOOL,                          "school"                                    }, // 220
+  { A_MOD_EXPERTISE,                          "expertise"                                 }, // 240
+  { A_MOD_BLOCK_PCT,                          "block_reduction"                           }, // 272
+  { A_MOD_BLOCK_FLAT,                         "block_rating"                              }, // 274
+  { A_MOD_ALL_CRIT_CHANCE,                    "all_crit"                                  }, // 290
+  { A_MOD_MASTERY_PCT,                        "mastery"                                   }, // 318
+  { A_MODIFY_CATEGORY_COOLDOWN,               "category_cooldown"                         }, // 341
+  { A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED, "attack_speed"                              }, // 342
+  { A_OVERRIDE_SP_PER_AP,                     "sp_per_ap"                                 }, // 366
+  { A_MOD_MANA_REGEN_PCT,                     "mana_regen"                                }, // 379
+  { A_OVERRIDE_AP_PER_SP,                     "ap_per_sp"                                 }, // 404
+  { A_MOD_RATING_MULTIPLIER,                  "block_rating_multiplier"                   }, // 405
+  { A_MOD_RATING_MULTIPLIER,                  "dodge_rating_multiplier"                   }, // 405
+  { A_MOD_RATING_MULTIPLIER,                  "parry_rating_multiplier"                   }, // 405
+  { A_MOD_RATING_MULTIPLIER,                  "melee_hit_rating_multiplier"               }, // 405
+  { A_MOD_RATING_MULTIPLIER,                  "ranged_hit_rating_multiplier"              }, // 405
+  { A_MOD_RATING_MULTIPLIER,                  "spell_hit_rating_multiplier"               }, // 405
+  { A_MOD_RATING_MULTIPLIER,                  "melee_crit_rating_multiplier"              }, // 405
+  { A_MOD_RATING_MULTIPLIER,                  "ranged_crit_rating_multiplier"             }, // 405
+  { A_MOD_RATING_MULTIPLIER,                  "spell_crit_rating_multiplier"              }, // 405
+  { A_MOD_RATING_MULTIPLIER,                  "pvp_resilience_rating_multiplier"          }, // 405
+  { A_MOD_RATING_MULTIPLIER,                  "leech_rating_multiplier"                   }, // 405
+  { A_MOD_RATING_MULTIPLIER,                  "melee_haste_rating_multiplier"             }, // 405
+  { A_MOD_RATING_MULTIPLIER,                  "ranged_haste_rating_multiplier"            }, // 405
+  { A_MOD_RATING_MULTIPLIER,                  "spell_haste_rating_multiplier"             }, // 405
+  { A_MOD_RATING_MULTIPLIER,                  "expertise_rating_multiplier"               }, // 405
+  { A_MOD_RATING_MULTIPLIER,                  "mastery_rating_multiplier"                 }, // 405
+  { A_MOD_RATING_MULTIPLIER,                  "pvp_power_rating_multiplier"               }, // 405
+  { A_MOD_RATING_MULTIPLIER,                  "damage_versatility_rating_multiplier"      }, // 405
+  { A_MOD_RATING_MULTIPLIER,                  "heal_versatility_rating_multiplier"        }, // 405
+  { A_MOD_RATING_MULTIPLIER,                  "mitigation_versatility_rating_multiplier"  }, // 405
+  { A_MOD_RATING_MULTIPLIER,                  "speed_rating_multiplier"                   }, // 405
+  { A_MOD_RATING_MULTIPLIER,                  "avoidance_rating_multiplier"               }, // 405
+  { A_MOD_RATING_MULTIPLIER,                  "corruption_multiplier"                     }, // 405
+  { A_MOD_RATING_MULTIPLIER,                  "corruption_resistance_multiplier"          }, // 405
+  { A_MOD_MAX_CHARGES,                        "charges"                                   }, // 411
+  { A_HASTED_COOLDOWN,                        "hasted_cooldown"                           }, // 416
+  { A_HASTED_GCD,                             "hasted_gcd"                                }, // 417
+  { A_MOD_MAX_RESOURCE,                       "max_health"                                }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_mana"                                  }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_rage"                                  }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_focus"                                 }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_energy"                                }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_astral_power"                          }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_runic_power"                           }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_soul_shard"                            }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_holy_power"                            }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_chi"                                   }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_combo_points"                          }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_maelstrom"                             }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_fury"                                  }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_pain"                                  }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_insanity"                              }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_essence"                               }, // 418
+  { A_MOD_ABSORB_DONE_PERCENT,                "absorb_multiplier"                         }, // 421
+  { A_MOD_ABSORB_RECEIVED_PERCENT,            "absorb_received_multiplier"                }, // 422
+  { A_MOD_PET_DAMAGE_DONE,                    "pet_damage_multiplier"                     }, // 429
+  { A_MOD_LEECH_PERCENT,                      "leech"                                     }, // 443
+  { A_MOD_RECHARGE_TIME_CATEGORY,             "charge_cooldown"                           }, // 453
+  { A_MOD_PARRY_FROM_CRIT_RATING,             "parry_from_crit_rating"                    }, // 463
+  { A_MOD_VERSATILITY_PCT,                    "versatility"                               }, // 471
+  { A_MOD_GUARDIAN_DAMAGE_DONE,               "guardian_damage_multiplier"                }, // 531
 };
 
 std::string_view get_field_from_type( unsigned type )
@@ -15266,7 +15520,7 @@ std::array<double, 3> player_t::get_passive_value( const spelleffect_data_t& eff
     return { it->orig, it->flat, it->pct };
 }
 
-double player_t::get_passive_player_value( double base_val, std::string_view field, int misc_type  ) const
+double player_t::get_passive_player_value( double base_val, std::string_view field, int misc_type ) const
 {
   assert( !is_pet() || get_owner_or_self() != this );
   if ( is_pet() )
@@ -15363,6 +15617,14 @@ std::pair<player_t::modified_value_t, const player_t::modified_value_t&> player_
 
 bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff, bool remove )
 {
+  enum bitmap_type_e
+  {
+    BITMAP_NONE = -1,
+    BITMAP_ATTRIBUTE,
+    BITMAP_RATING,
+    BITMAP_SCHOOL,
+  };
+
   auto modifying_spell = modifying_eff.spell();
   auto sub_type = modifying_eff.subtype();
   auto success = false;
@@ -15375,23 +15637,204 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     // check player affecting subtypes
     auto misc_type = modifying_eff.misc_value1();
     std::string_view field;
+    std::string subtype_str = "";
+    bitmap_type_e bit_type = BITMAP_NONE;
+    resource_e resource_type;
     double flat_val = 0.0;
     double pct_val = 0.0;
 
     switch ( modifying_eff.subtype() )
     {
+      case A_MOD_MAX_RESOURCE:
+        resource_type = util::translate_power_type( static_cast<power_e>( misc_type ) );
+        field         = fmt::format( "max_{}", util::resource_type_string( resource_type ), subtype_str );
+        flat_val      = modifying_eff.resource( resource_type );
+        break;
       case A_INCREASE_RESOURCE_PCT:
       case A_MOD_MAX_RESOURCE_PCT:
-        if ( misc_type != POWER_MANA )
-          return false;
-        SC_FALLTHROUGH;
+        field = fmt::format(
+            "{}_multiplier", util::resource_type_string( util::translate_power_type( static_cast<power_e>( misc_type ) ) ),
+            subtype_str );
+        pct_val = modifying_eff.percent();
+        break;
       case A_MOD_MAX_MANA_PCT:
-        field = "max_mana";
+        field   = "mana_multiplier";
         pct_val = modifying_eff.percent();
         break;
       case A_MOD_MANA_REGEN_PCT:
-        field = "mana_regen";
+        field   = "mana_regen";
         pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_POWER_REGEN_PERCENT:
+        field = fmt::format(
+            "{}_regen", util::resource_type_string( util::translate_power_type( static_cast<power_e>( misc_type ) ) ) );
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_MELEE_AUTO_ATTACK_SPEED:
+      case A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED:
+        field   = "attack_speed";
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_TOTAL_STAT_PERCENTAGE:
+        // Stat type is in misc_value2
+        misc_type   = modifying_eff.misc_value2();
+        subtype_str = "multiplier";
+        bit_type    = BITMAP_ATTRIBUTE;
+        pct_val     = modifying_eff.percent();
+        break;
+      case A_MOD_RATING_MULTIPLIER:
+        subtype_str = "rating_multiplier";
+        bit_type    = BITMAP_RATING;
+        pct_val     = modifying_eff.percent();
+        break;
+      case A_MOD_VERSATILITY_PCT:
+        field    = "versatility";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_HASTE_ALL:
+        field   = "all_haste";
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_MASTERY_PCT:
+        field    = "mastery";
+        flat_val = modifying_eff.base_value();
+        break;
+      case A_MOD_ALL_CRIT_CHANCE:
+        field    = "all_crit";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_SPELL_CRIT_CHANCE:
+        field    = "spell_crit";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_CRIT_DAMAGE_BONUS:
+        misc_type   = modifying_eff.affected_schools();
+        subtype_str = "crit_damage_multiplier";
+        bit_type    = BITMAP_SCHOOL;
+        pct_val     = modifying_eff.percent();
+        break;
+      case A_MOD_CRITICAL_HEALING_AMOUNT:
+        field   = "crit_heal_multiplier";
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_DAMAGE_PERCENT_DONE:
+        misc_type   = modifying_eff.affected_schools();
+        subtype_str = "damage_multiplier";
+        bit_type    = BITMAP_SCHOOL;
+        pct_val     = modifying_eff.percent();
+        break;
+      case A_MOD_PET_DAMAGE_DONE:
+        field   = "pet_damage_multiplier";
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_GUARDIAN_DAMAGE_DONE:
+        field   = "guardian_damage_multiplier";
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_ATTACK_POWER_PCT:
+        field   = "attack_power_multiplier";
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_LEECH_PERCENT:
+        field    = "leech";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_EXPERTISE:
+        field    = "expertise";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_ATTACKER_MELEE_CRIT_CHANCE:
+        field    = "crit_avoidance";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_PARRY_PERCENT:
+        field    = "parry";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_BASE_RESISTANCE_PCT:
+        if ( misc_type & SCHOOL_MASK_PHYSICAL )
+        {
+          field   = "base_armor_multiplier";
+          pct_val = modifying_eff.percent();
+        }
+        else
+          return false;
+        break;
+      case A_MOD_RESISTANCE_PCT:
+        if ( misc_type & SCHOOL_MASK_PHYSICAL )
+        {
+          field   = "armor_multiplier";
+          pct_val = modifying_eff.percent();
+        }
+        else
+          return false;
+        break;
+      case A_MOD_DODGE_PERCENT:
+        field    = "dodge";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_ABSORB_DONE_PERCENT:
+        field   = "absorb_multiplier";
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_ABSORB_RECEIVED_PERCENT:
+        field   = "absorb_received_multiplier";
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_HEALING_RECEIVED_PCT:
+        field   = "healing_received_multiplier";
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_HEALING_DONE_PERCENT:
+        field   = "healing_multiplier";
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_STAT:
+        subtype_str = "flat"; 
+        bit_type    = BITMAP_ATTRIBUTE;
+        if ( modifying_eff.scaling_class() < 0 )
+          flat_val = modifying_eff.average( this );
+        else
+          flat_val = modifying_eff.base_value();
+        break;
+      case A_OVERRIDE_AP_PER_SP:
+        field    = "ap_per_sp";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_OVERRIDE_SP_PER_AP:
+        field    = "sp_per_ap";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_PARRY_FROM_CRIT_RATING:
+        field    = "parry_from_crit_rating";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_SPEED_ALWAYS:
+        field    = "stacking_move_speed_modifier";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_SPEED_NOT_STACK:
+        field    = "non_stacking_move_speed_modifier";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_BLOCK_FLAT:
+        field = "block_rating";
+        if ( modifying_eff.scaling_class() < 0 )
+          flat_val = modifying_eff.average( this );
+        else
+          flat_val = modifying_eff.base_value();
+        break;
+      case A_MOD_BLOCK_PCT:
+        field   = "block_reduction";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_BLOCK_PERCENT:
+        field   = "block";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_TARGET_ARMOR_PCT:
+        field   = "armor_penetration";
+        pct_val = -modifying_eff.percent();
         break;
       default:
         return false;
@@ -15401,6 +15844,111 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     {
       flat_val = -flat_val;
       pct_val = 1.0 / ( 1.0 + pct_val ) - 1.0;
+    }
+
+    switch ( bit_type )
+    {
+      case BITMAP_ATTRIBUTE:
+        for ( auto stat : { STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT } )
+        {
+          if ( misc_type & ( 1 << ( stat - 1 ) ) )
+          {
+            if ( modifying_eff.spell()->equipped_class() == ITEM_CLASS_ARMOR &&
+                 modifying_eff.spell()->flags( SX_REQUIRES_EQUIPPED_ARMOR_TYPE ) )
+            {
+              auto bit_type = 1U << static_cast<unsigned>( util::matching_armor_type( type ) );
+              if ( modifying_eff.spell()->equipped_subclass_mask() == bit_type )
+                field = fmt::format( "matching_armor_{}_{}", util::stat_type_string( stat ), subtype_str );
+              else
+                continue;
+            }
+            else
+              field = fmt::format( "{}_{}", util::stat_type_string( stat ), subtype_str );
+
+            if ( field.empty() )
+              continue;
+
+            auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( field ),
+                                                              stat, 0, flat_val, pct_val );
+            std::string _tmp_full_message_tmp_ = fmt::format(
+                "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] "
+                "now={:.7g}[{:.7g}/{:.7g}%])",
+                modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
+                remove ? "reverting" : "modifying", *this, field, flat_val ? flat_val : pct_val * 100,
+                flat_val ? "" : "%", now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat,
+                now.pct * 100 );
+            sim->print_debug( "{}", _tmp_full_message_tmp_ );
+            _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
+          }
+        }
+        return true;
+        break;
+      case BITMAP_RATING:
+        for ( rating_e i = RATING_BLOCK; i < RATING_MAX; i++ )
+        {
+          auto mod = util::rating_to_rating_mod( i );
+          if ( misc_type & mod )
+          {
+            field = fmt::format( "{}_{}", util::rating_type_string( i ), subtype_str );
+            if ( field.empty() )
+              continue;
+            auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( field ),
+                                                              i, 0, flat_val, pct_val );
+            std::string _tmp_full_message_tmp_ = fmt::format(
+                "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] "
+                "now={:.7g}[{:.7g}/{:.7g}%])",
+                modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
+                remove ? "reverting" : "modifying", *this, field, flat_val ? flat_val : pct_val * 100,
+                flat_val ? "" : "%", now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat,
+                now.pct * 100 );
+            sim->print_debug( "{}", _tmp_full_message_tmp_ );
+            _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
+          }
+        }
+        return true;
+        break;
+      case BITMAP_SCHOOL:
+        if ( misc_type == 0x7f )
+        {
+          field              = fmt::format( "all_{}", subtype_str );
+          auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( field ),
+                                                            misc_type, 0, flat_val, pct_val );
+          std::string _tmp_full_message_tmp_ = fmt::format(
+              "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] "
+              "now={:.7g}[{:.7g}/{:.7g}%])",
+              modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
+              remove ? "reverting" : "modifying", *this, field, flat_val ? flat_val : pct_val * 100,
+              flat_val ? "" : "%", now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat,
+              now.pct * 100 );
+          sim->print_debug( "{}", _tmp_full_message_tmp_ );
+          _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
+        }
+        else
+        {
+          for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX_PRIMARY; ++i )
+          {
+            if ( misc_type & dbc::get_school_mask( i ) )
+            {
+              field              = fmt::format( "{}_{}", util::school_type_string( i ), subtype_str );
+              auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( field ),
+                                                                i, 0, flat_val, pct_val );
+              std::string _tmp_full_message_tmp_ = fmt::format(
+                  "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] "
+                  "now={:.7g}[{:.7g}/{:.7g}%])",
+                  modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
+                  remove ? "reverting" : "modifying", *this, field, flat_val ? flat_val : pct_val * 100,
+                  flat_val ? "" : "%", now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat,
+                  now.pct * 100 );
+              sim->print_debug( "{}", _tmp_full_message_tmp_ );
+              _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
+            }
+          }
+        }
+        return true;
+        break;
+      case BITMAP_NONE:
+      default:
+        break;
     }
 
     auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( field ),
@@ -15873,7 +16421,7 @@ void player_t::parse_passive_effects( const spell_data_t* spell, bool force )
       continue;
 
     // filter out non-effect-modifying effects
-    if ( eff.type() != E_APPLY_AURA && eff.type() != E_APPLY_AREA_AURA_PARTY )
+    if ( eff.type() != E_APPLY_AURA && eff.type() != E_APPLY_AREA_AURA_PARTY && eff.type() != E_APPLY_AURA_PLAYER_AND_PET )
       continue;
 
     success = register_passive_effect( eff );
@@ -15903,7 +16451,7 @@ void player_t::deregister_passive_effects( const spell_data_t* spell )
         continue;
 
       // filter out non-effect-modifying effects
-      if ( eff.type() != E_APPLY_AURA && eff.type() != E_APPLY_AREA_AURA_PARTY )
+      if ( eff.type() != E_APPLY_AURA && eff.type() != E_APPLY_AREA_AURA_PARTY && eff.type() != E_APPLY_AURA_PLAYER_AND_PET )
         continue;
 
       register_passive_effect( eff, true );
@@ -15943,7 +16491,18 @@ void player_t::parse_all_class_passives()
     {
       auto spell = find_spell( spec_spell.spell_id );
       if ( spell->flags( SX_PASSIVE ) )
-        parse_passive_effects( find_spell( spec_spell.spell_id ) );
+        parse_passive_effects( spell );
+    }
+  }
+
+  for ( const auto& racial_spell : racial_spell_entry_t::data( dbc->ptr ) )
+  {
+    if ( static_cast<uint64_t>( 1U ) << ( util::race_id( race ) - 1 ) & racial_spell.mask_race &&
+         util::class_id_mask( type ) & racial_spell.mask_class )
+    {
+      auto spell = find_spell( racial_spell.spell_id );
+      if ( spell->flags( SX_PASSIVE ) )
+        parse_passive_effects( spell );
     }
   }
 }

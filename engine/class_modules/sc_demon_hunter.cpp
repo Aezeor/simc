@@ -1061,7 +1061,7 @@ public:
   double composite_melee_haste() const override;
   double composite_spell_haste() const override;
   double composite_player_multiplier( school_e ) const override;
-  double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
+  double composite_player_critical_damage_multiplier( const action_state_t*, school_e ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double stacking_movement_modifier() const override;
 
@@ -1596,9 +1596,6 @@ struct demon_hunter_pet_t : public pet_t
   double composite_player_multiplier( school_e school ) const override
   {
     double m = pet_t::composite_player_multiplier( school );
-
-    // Orc racial
-    m *= 1.0 + o().racials.command->effectN( 1 ).percent();
 
     return m;
   }
@@ -8390,22 +8387,14 @@ void demon_hunter_t::init_base_stats()
   if ( base.distance < 1 )
     base.distance = 5.0;
 
-  base_t::init_base_stats();
-
   resources.base[ RESOURCE_FURY ] = 100;
-  resources.base[ RESOURCE_FURY ] += talent.demon_hunter.unrestrained_fury->effectN( 1 ).base_value();
-  resources.base[ RESOURCE_FURY ] += talent.felscarred.untethered_fury->effectN( 1 ).base_value();
 
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;
   base.spell_power_per_intellect = 1.0;
 
-  // Avoidance diminishing Returns constants/conversions now handled in
-  // player_t::init_base_stats().
-  // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
-  // Just need to add class- or spec-based modifiers here.
-
   base_gcd = timespan_t::from_seconds( 1.5 );
+  base_t::init_base_stats();
 }
 
 // demon_hunter_t::init_procs ===============================================
@@ -9118,6 +9107,9 @@ void demon_hunter_t::init_spells()
   // Critical Chaos eff#2 (dummy script) overwrites the value of eff#1 (add flat: proc chance)
   register_passive_effect_mask( talent.havoc.critical_chaos, effect_mask_t( true ).disable( 1 ) );
 
+  // TODO: Check if this still behaves as described in `composite_player_critical_damage_multiplier`
+  deregister_passive_effects( talent.havoc.know_your_enemy );
+
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
@@ -9309,10 +9301,6 @@ void demon_hunter_t::invalidate_cache( cache_e c )
       }
       break;
     case CACHE_CRIT_CHANCE:
-      if ( spec.riposte->ok() )
-      {
-        invalidate_cache( CACHE_PARRY );
-      }
       break;
     case CACHE_RUN_SPEED:
       adjust_movement();
@@ -9580,9 +9568,9 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
 
 // demon_hunter_t::composite_player_critical_damage_multiplier ==============
 
-double demon_hunter_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
+double demon_hunter_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
 {
-  double m = base_t::composite_player_critical_damage_multiplier( s );
+  double m = base_t::composite_player_critical_damage_multiplier( s, school );
 
   if ( talent.havoc.know_your_enemy->ok() )
   {
@@ -9599,13 +9587,7 @@ double demon_hunter_t::composite_player_critical_damage_multiplier( const action
 
 double demon_hunter_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  if ( ( specialization() == DEMON_HUNTER_HAVOC && attr == ATTR_AGILITY ) ||
-       ( specialization() == DEMON_HUNTER_VENGEANCE && attr == ATTR_STAMINA ) )
-  {
-    return spell.leather_specialization->effectN( 1 ).percent();
-  }
-
-  return 0.0;
+  return base_t::matching_gear_multiplier( attr );
 }
 
 // demon_hunter_t::stacking_movement_modifier ===============================
@@ -10231,16 +10213,10 @@ void demon_hunter_t::trigger_demonsurge( demonsurge_ability ability, timespan_t 
 void demon_hunter_t::parse_player_effects()
 {
   // Shared
-  parse_effects( talent.demon_hunter.soul_rending );
-  parse_effects( talent.demon_hunter.aldrachi_design );
-  parse_effects( talent.demon_hunter.internal_struggle,
-                 talent.demon_hunter.internal_struggle->effectN( 1 ).base_value() );
-  parse_effects( spell.critical_strikes );
 
   // Havoc
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
-    parse_effects( talent.havoc.scars_of_suffering );
     parse_effects( buff.blur );
   }
 
@@ -10248,8 +10224,6 @@ void demon_hunter_t::parse_player_effects()
   if ( specialization() == DEMON_HUNTER_VENGEANCE )
   {
     parse_effects( buff.demon_spikes );
-    parse_effects( spec.riposte );
-    parse_effects( spec.thick_skin );
     parse_effects( mastery.fel_blood_rank_2 );
   }
 

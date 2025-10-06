@@ -980,7 +980,7 @@ public:
   stat_e convert_hybrid_stat( stat_e ) const override;
   double resource_regen_per_second( resource_e ) const override;
   double stacking_movement_modifier() const override;
-  double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
+  double composite_player_critical_damage_multiplier( const action_state_t*, school_e school ) const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
   double composite_player_target_pet_damage_multiplier( player_t*, bool ) const override;
@@ -8509,18 +8509,15 @@ void mage_t::init_base_stats()
   if ( base.distance < 1.0 )
     base.distance = 10.0;
 
-  player_t::init_base_stats();
-
   base.spell_power_per_intellect = 1.0;
-
-  // Mana Attunement
-  resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + find_spell( 121039 )->effectN( 1 ).percent();
 
   for ( auto rt = RESOURCE_RAGE; rt < RESOURCE_MAX; rt++ )
     resources.active_resource[ rt ] = false;
 
   if ( specialization() == MAGE_ARCANE )
     regen_caches[ CACHE_MASTERY ] = true;
+
+  player_t::init_base_stats();
 }
 
 void mage_t::create_buffs()
@@ -9046,7 +9043,8 @@ double mage_t::resource_regen_per_second( resource_e rt ) const
 
   if ( specialization() == MAGE_ARCANE && rt == RESOURCE_MANA )
   {
-    reg *= 1.0 + 0.01 * spec.arcane_mage->effectN( 4 ).average( this );
+    // TODO: Double check that this is applied properly in player_t::resource_regen_per_second()
+    // reg *= 1.0 + 0.01 * spec.arcane_mage->effectN( 4 ).average( this );
     reg *= 1.0 + cache.mastery() * spec.savant->effectN( 4 ).mastery_value();
     reg *= 1.0 + buffs.evocation->check_value();
     if ( buffs.enlightened->check() )
@@ -9090,11 +9088,9 @@ double mage_t::stacking_movement_modifier() const
   return ms;
 }
 
-double mage_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
+double mage_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
 {
-  double m = player_t::composite_player_critical_damage_multiplier( s );
-
-  school_e school = s->action->get_school();
+  double m = player_t::composite_player_critical_damage_multiplier( s, school );
 
   if ( buffs.fevered_incantation->has_common_school( school ) )
     m *= 1.0 + buffs.fevered_incantation->check_stack_value();
@@ -9117,10 +9113,6 @@ double mage_t::composite_player_multiplier( school_e school ) const
 double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
-
-  m *= 1.0 + spec.arcane_mage->effectN( guardian ? 6 : 3 ).percent();
-  m *= 1.0 + spec.fire_mage->effectN( guardian ? 4 : 3 ).percent();
-  m *= 1.0 + spec.frost_mage->effectN( guardian ? 5 : 3 ).percent();
 
   if ( !guardian )
   {
@@ -9148,22 +9140,6 @@ double mage_t::composite_rating_multiplier( rating_e r ) const
 {
   double rm = player_t::composite_rating_multiplier( r );
 
-  switch ( r )
-  {
-    case RATING_MELEE_CRIT:
-    case RATING_RANGED_CRIT:
-    case RATING_SPELL_CRIT:
-      rm *= 1.0 + talents.critical_mass->effectN( 2 ).percent();
-      break;
-    case RATING_MELEE_HASTE:
-    case RATING_RANGED_HASTE:
-    case RATING_SPELL_HASTE:
-      rm *= 1.0 + talents.winters_blessing->effectN( 2 ).percent();
-      break;
-    default:
-      break;
-  }
-
   return rm;
 }
 
@@ -9186,19 +9162,12 @@ double mage_t::composite_melee_crit_chance() const
 {
   double c = player_t::composite_melee_crit_chance();
 
-  c += talents.tome_of_rhonin->effectN( 1 ).percent();
-  c += talents.force_of_will->effectN( 1 ).percent();
-
   return c;
 }
 
 double mage_t::composite_spell_crit_chance() const
 {
   double c = player_t::composite_spell_crit_chance();
-
-  c += talents.tome_of_rhonin->effectN( 1 ).percent();
-  c += talents.critical_mass->effectN( 1 ).percent();
-  c += talents.force_of_will->effectN( 1 ).percent();
 
   if ( !buffs.combustion->check() && talents.fires_ire.ok() )
   {
@@ -9221,9 +9190,6 @@ double mage_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
 
-  h /= 1.0 + talents.tome_of_antonidas->effectN( 1 ).percent();
-  h /= 1.0 + talents.winters_blessing->effectN( 1 ).percent();
-
   return h;
 }
 
@@ -9231,18 +9197,12 @@ double mage_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
-  h /= 1.0 + talents.tome_of_antonidas->effectN( 1 ).percent();
-  h /= 1.0 + talents.winters_blessing->effectN( 1 ).percent();
-
   return h;
 }
 
 double mage_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  if ( attr == ATTR_INTELLECT )
-    return 0.05;
-
-  return 0.0;
+  return player_t::matching_gear_multiplier( attr );
 }
 
 void mage_t::reset()

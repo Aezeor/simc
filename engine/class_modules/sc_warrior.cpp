@@ -1435,12 +1435,23 @@ public:
 
     if ( ab::sim->log )
     {
+      // TODO: Sorry Arma, had to fix composite_player_critical_damage_multiplier - Tae
+      double player_critical_multiplier = 0.0;
+      double tmp;
+
+      for ( auto base_school : ab::base_schools )
+      {
+        tmp = p()->composite_player_critical_damage_multiplier( s, base_school );
+        if ( tmp > player_critical_multiplier )
+          player_critical_multiplier = tmp;
+      }
+
       ab::sim->out_debug.printf(
           "Strength: %4.4f, AP: %4.4f, Crit: %4.4f%%, Crit Dmg Mult: %4.4f,  Mastery: %4.4f%%, Haste: %4.4f%%, "
           "Versatility: %4.4f%%, Bonus Armor: %4.4f, Tick Multiplier: %4.4f, Direct Multiplier: %4.4f, Action "
           "Multiplier: %4.4f",
           p()->cache.strength(), p()->cache.attack_power() * p()->composite_attack_power_multiplier(),
-          p()->cache.attack_crit_chance() * 100, p()->composite_player_critical_damage_multiplier( s ),
+          p()->cache.attack_crit_chance() * 100, player_critical_multiplier,
           p()->cache.mastery_value() * 100, ( 1 / p()->cache.attack_haste() - 1 ) * 100,
           p()->cache.damage_versatility() * 100, p()->cache.bonus_armor(), s->composite_ta_multiplier(),
           s->composite_da_multiplier(), s->action->action_multiplier() );
@@ -1453,12 +1464,23 @@ public:
 
     if ( ab::sim->log )
     {
+      // TODO: Sorry Arma, had to fix composite_player_critical_damage_multiplier - Tae
+      double player_critical_multiplier = 0.0;
+      double tmp;
+
+      for ( auto base_school : ab::base_schools )
+      {
+        tmp = p()->composite_player_critical_damage_multiplier( d->state, base_school );
+        if ( tmp > player_critical_multiplier )
+          player_critical_multiplier = tmp;
+      }
+
       ab::sim->out_debug.printf(
           "Strength: %4.4f, AP: %4.4f, Crit: %4.4f%%, Crit Dmg Mult: %4.4f,  Mastery: %4.4f%%, Haste: %4.4f%%, "
           "Versatility: %4.4f%%, Bonus Armor: %4.4f, Tick Multiplier: %4.4f, Direct Multiplier: %4.4f, Action "
           "Multiplier: %4.4f",
           p()->cache.strength(), p()->cache.attack_power() * p()->composite_attack_power_multiplier(),
-          p()->cache.attack_crit_chance() * 100, p()->composite_player_critical_damage_multiplier( d->state ),
+          p()->cache.attack_crit_chance() * 100, player_critical_multiplier,
           p()->cache.mastery_value() * 100, ( 1 / p()->cache.attack_haste() - 1 ) * 100,
           p()->cache.damage_versatility() * 100, p()->cache.bonus_armor(), d->state->composite_ta_multiplier(),
           d->state->composite_da_multiplier(), d->state->action->action_ta_multiplier() );
@@ -3624,7 +3646,7 @@ struct charge_t : public warrior_attack_t
   timespan_t calc_charge_time( double distance )
   {
     return timespan_t::from_seconds( distance /
-      ( p()->base_movement_speed * ( 1 + p()->stacking_movement_modifier() + movement_speed_increase ) ) );
+      ( p()->current.movement_speed * ( 1 + p()->stacking_movement_modifier() + movement_speed_increase ) ) );
   }
 
   void execute() override
@@ -5168,7 +5190,7 @@ struct heroic_leap_t : public warrior_attack_t
     if ( p()->current.distance_to_move > 0 && !p()->buff.heroic_leap_movement->check() )
     {
       double speed = std::min( p()->current.distance_to_move, base_teleport_distance ) /
-                     ( p()->base_movement_speed * ( 1 + p()->stacking_movement_modifier() ) ) /
+                     ( p()->current.movement_speed * ( 1 + p()->stacking_movement_modifier() ) ) /
                      travel_time().total_seconds();
       p()->buff.heroic_leap_movement->trigger( 1, speed, 1, travel_time() );
     }
@@ -5274,7 +5296,7 @@ struct intervene_t : public warrior_attack_t
           1, movement_speed_increase, 1,
           timespan_t::from_seconds(
               p()->current.distance_to_move /
-              ( p()->base_movement_speed * ( 1 + p()->stacking_movement_modifier() + movement_speed_increase ) ) ) );
+              ( p()->current.movement_speed * ( 1 + p()->stacking_movement_modifier() + movement_speed_increase ) ) ) );
       p()->current.moving_away = 0;
     }
   }
@@ -6779,7 +6801,7 @@ struct shield_charge_t : public warrior_attack_t
   timespan_t calc_charge_time( double distance )
   {
     return timespan_t::from_seconds( distance /
-      ( p()->base_movement_speed * ( 1 + p()->stacking_movement_modifier() + movement_speed_increase ) ) );
+      ( p()->current.movement_speed * ( 1 + p()->stacking_movement_modifier() + movement_speed_increase ) ) );
   }
 
   void execute() override
@@ -8666,6 +8688,10 @@ void warrior_t::init_spells()
     specialization() == WARRIOR_FURY ? effect_mask_t( true ).disable( 3 )
                                      : effect_mask_t( true ) );
 
+  // Armor Handled Manually for ATTT
+  register_passive_effect_mask( talents.protection.armor_specialization, effect_mask_t( false ).enable( 1, 2 ) );
+  register_passive_effect_mask( talents.protection.focused_vigor, effect_mask_t( false ).enable( 2 ) );
+
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
@@ -8822,13 +8848,7 @@ void warrior_t::init_base_stats()
   if ( base.distance < 1 )
     base.distance = 5.0;
 
-  parse_player_effects_t::init_base_stats();
-
   resources.base[ RESOURCE_RAGE ] = 100;
-  if ( talents.warrior.overwhelming_rage->ok() )
-  {
-    resources.base[ RESOURCE_RAGE ] += find_spell( 382767 )->effectN( 1 ).base_value() / 10.0;
-  }
   resources.max[ RESOURCE_RAGE ]  = resources.base[ RESOURCE_RAGE ];
 
   base.attack_power_per_strength = 1.0;
@@ -8841,13 +8861,7 @@ void warrior_t::init_base_stats()
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 
-  resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1 + talents.protection.indomitable -> effectN( 3 ).percent();
-
-  // Warriors gets +7% block from their class aura
-  base.block += spec.warrior -> effectN( 7 ).percent();
-
-  // Protection Warriors have a +8% block chance in their spec aura
-  base.block += spec.protection_warrior -> effectN( 9 ).percent();
+  parse_player_effects_t::init_base_stats();
 }
 
 // warrior_t::merge ==========================================================
@@ -10187,18 +10201,6 @@ double warrior_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double m = parse_player_effects_t::composite_attribute_multiplier( attr );
 
-  if ( attr == ATTR_STRENGTH )
-  {
-    m *= 1.0 + talents.protection.focused_vigor->effectN( 1 ).percent();
-  }
-
-  // Protection has increased stamina from vanguard
-  if ( attr == ATTR_STAMINA )
-  {
-    m *= 1.0 + spec.vanguard -> effectN( 2 ).percent();
-    m *= 1.0 + talents.warrior.reinforced_plates -> effectN( 1 ).percent();
-  }
-
   return m;
 }
 
@@ -10206,17 +10208,7 @@ double warrior_t::composite_attribute_multiplier( attribute_e attr ) const
 
 double warrior_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  if ( ( attr == ATTR_STRENGTH ) && ( specialization() != WARRIOR_PROTECTION ) )
-  {
-    return 0.05;
-  }
-
-  if ( ( attr == ATTR_STAMINA ) && ( specialization() == WARRIOR_PROTECTION ) )
-  {
-    return 0.05;
-  }
-
-  return 0.0;
+  return parse_player_effects_t::matching_gear_multiplier( attr );
 }
 
 // warrior_t::composite_armor_multiplier ==========================================
@@ -10271,7 +10263,7 @@ double warrior_t::composite_bonus_armor() const
     auto current_str = util::floor( parse_player_effects_t::composite_attribute( ATTR_STRENGTH ) * parse_player_effects_t::composite_attribute_multiplier( ATTR_STRENGTH ) );
     // if there is anything else in warrior_t::composite_attribute_multiplier that applies to str, like focused_vigor for instance
     // it needs to be added here as well
-    ba += spec.vanguard -> effectN( 1 ).percent() * current_str * (1.0 + talents.protection.focused_vigor->effectN( 1 ).percent());
+    ba += spec.vanguard -> effectN( 1 ).percent() * current_str;
   }
 
   // If in the future if blizz changes behavior, and we want to go back to using the two caches, we can use the below code
@@ -10295,10 +10287,6 @@ double warrior_t::composite_block() const
     b += spell.shield_block_buff -> effectN( 1 ).percent();
   }
 
-  // Not affected by DR
-  if ( talents.protection.shield_specialization->ok() )
-    b += talents.protection.shield_specialization->effectN( 1 ).percent();
-
   return b;
 }
 
@@ -10313,11 +10301,6 @@ double warrior_t::composite_block_reduction( action_state_t* s ) const
     br *= 1.0 + buff.brace_for_impact -> check() * talents.protection.brace_for_impact->effectN( 1 ).trigger() -> effectN( 2 ).percent();
   }
 
-  if ( talents.protection.shield_specialization->ok() )
-  {
-      br += talents.protection.shield_specialization->effectN( 2 ).percent();
-  }
-
   return br;
 }
 
@@ -10327,11 +10310,6 @@ double warrior_t::composite_parry_rating() const
 {
   double p = parse_player_effects_t::composite_parry_rating();
 
-  // TODO: remove the spec check once riposte is pulled from spelldata
-  if ( spec.riposte -> ok() || specialization() == WARRIOR_PROTECTION )
-  {
-    p += warrior_t::composite_melee_crit_rating();
-  }
   return p;
 }
 
@@ -10392,8 +10370,6 @@ double warrior_t::composite_melee_crit_chance() const
 double warrior_t::composite_leech() const
 {
   double m = parse_player_effects_t::composite_leech();
-
-  m += talents.warrior.leeching_strikes->effectN( 1 ).percent();
 
   return m;
 }
@@ -10675,44 +10651,28 @@ void warrior_t::copy_from( player_t* source )
 
 void warrior_t::parse_player_effects()
 {
-  parse_effects( spec.warrior );
-  parse_effects( talents.warrior.wild_strikes );
   parse_effects( buff.wild_strikes, talents.warrior.wild_strikes );
-  parse_effects( talents.warrior.cruel_strikes );
   parse_effects( buff.battle_stance );
   parse_effects( buff.defensive_stance );
 
   if ( specialization() == WARRIOR_ARMS )
   {
-    parse_effects( spec.arms_warrior );
     parse_effects( buff.in_for_the_kill, USE_CURRENT );
     parse_effects( buff.pay_them_back );
-    parse_effects( talents.arms.critical_thinking );
-    parse_effects( talents.arms.valor_in_victory );
-    parse_effects( talents.arms.deft_experience, talents.arms.deft_experience->effectN( 1 ).base_value() );
   }
   else if ( specialization() == WARRIOR_FURY )
   {
-    parse_effects( spec.fury_warrior );
     parse_effects( buff.dancing_blades );
     parse_effects( buff.frenzy );
-    parse_effects( talents.fury.swift_strikes, effect_mask_t( false ).enable( 1 ) );
 
     if ( talents.fury.frenzied_enrage->ok() )
       parse_effects( buff.enrage, effect_mask_t( false ).enable( 1, 2 ) );
-
-    parse_effects( talents.fury.critical_thinking );
-    parse_effects( talents.fury.deft_experience );
   }
   else if ( specialization() == WARRIOR_PROTECTION )
   {
-    parse_effects( spec.protection_warrior );
     if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
       parse_effects( buff.battering_ram );
-    parse_effects( talents.protection.enduring_alacrity, effect_mask_t( false ).enable( 1, 2 ) );
     parse_effects( buff.into_the_fray );
-    // Str and armor are handled manually.
-    parse_effects( talents.protection.focused_vigor, effect_mask_t( false ).enable( 2 ) );
   }
 
   // Colossus
@@ -10720,7 +10680,6 @@ void warrior_t::parse_player_effects()
   // Slayer
 
   // Mountain Thane
-  parse_effects( talents.mountain_thane.steadfast_as_the_peaks );
 }
 
 /* Report Extension Class
