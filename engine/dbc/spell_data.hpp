@@ -79,6 +79,9 @@ struct power_type_data_t
   double divisor() const
   { return _divisor; }
 
+  timespan_t ooc_decay_grace_period() const
+  { return timespan_t::from_millis( _regen_interrupt_time ); }
+
   double regen_per_second( bool combat ) const
   { return combat ? _regen_combat : _regen_ooc; }
 
