@@ -4803,12 +4803,30 @@ struct devour_t : public consume_base_t
 
     p()->cooldown.reap->adjust( -reap_cdr );
   }
+
+  bool action_ready() override
+  {
+    if ( !p()->buff.metamorphosis->check() )
+    {
+      return false;
+    }
+    return consume_base_t::action_ready();
+  }
 };
 
 struct consume_t : public consume_base_t
 {
   consume_t( demon_hunter_t* p, util::string_view o ) : consume_base_t( "consume", p, p->spec.consume, o )
   {
+  }
+
+  bool action_ready() override
+  {
+    if ( p()->buff.metamorphosis->check() )
+    {
+      return false;
+    }
+    return consume_base_t::action_ready();
   }
 };
 
@@ -4947,7 +4965,7 @@ struct eradicate_t : public demon_hunter_spell_t
 
   bool action_ready() override
   {
-    if ( !p()->buff.eradicate->up() )
+    if ( !p()->buff.eradicate->check() )
     {
       return false;
     }
@@ -5038,7 +5056,7 @@ struct cull_t : public reap_base_t
 
   bool action_ready() override
   {
-    if ( p()->buff.eradicate->up() || !p()->buff.metamorphosis->up() )
+    if ( p()->buff.eradicate->check() || !p()->buff.metamorphosis->check() )
     {
       return false;
     }
@@ -5056,7 +5074,7 @@ struct reap_t : public reap_base_t
 
   bool action_ready() override
   {
-    if ( p()->buff.eradicate->up() || p()->buff.metamorphosis->up() )
+    if ( p()->buff.eradicate->check() || p()->buff.metamorphosis->check() )
     {
       return false;
     }
