@@ -1022,6 +1022,7 @@ public:
     double felblade_lockout_from_vengeful_retreat    = 0.6;
     bool enable_dungeon_slice                        = false;
     double soul_fragment_from_shattered_souls_chance = 0.4;
+    int entropy_starting_souls                       = -1;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -7592,6 +7593,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       case DEMON_HUNTER_DEVOURER:
         set_duration( timespan_t::zero() );
         set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+        disable_ticking( true );
         break;
       case DEMON_HUNTER_HAVOC:
         set_default_value_from_effect_type( A_HASTE_ALL );
@@ -8181,6 +8183,17 @@ void demon_hunter_t::activate()
   if ( specialization() == DEMON_HUNTER_DEVOURER )
   {
     register_on_combat_state_callback( [ this ]( player_t*, bool ) { devourer_fury_state.reschedule_drain(); } );
+
+    if ( talent.devourer.entropy.enabled() )
+    {
+      register_precombat_begin( [ this ]( player_t* ) {
+        int soul_fragments = options.entropy_starting_souls == -1
+                                 ? as<int>( talent.devourer.entropy->effectN( 2 ).base_value() )
+                                 : options.entropy_starting_souls;
+        if ( soul_fragments > 0 )
+          buff.void_metamorphosis_stack->trigger( soul_fragments );
+      } );
+    }
   }
 }
 
@@ -8210,7 +8223,9 @@ void demon_hunter_t::create_buffs()
   buff.eradicate = make_buff( this, "eradicate", spec.eradicate_buff );
   buff.moment_of_craving =
       make_buff( this, "moment_of_craving", spec.moment_of_craving_buff )->set_default_value_from_effect( 1 );
-  buff.void_metamorphosis_stack = make_buff( this, "void_metamorphosis_stack", spec.void_metamorphosis_stack );
+  buff.void_metamorphosis_stack = make_buff( this, "void_metamorphosis_stack", spec.void_metamorphosis_stack )
+                                      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                                      ->disable_ticking( true );
 
   // Havoc ==================================================================
 
@@ -8588,6 +8603,7 @@ void demon_hunter_t::create_options()
   add_option( opt_bool( "enable_dungeon_slice", options.enable_dungeon_slice ) );
   add_option( opt_float( "soul_fragment_from_shattered_souls_chance", options.soul_fragment_from_shattered_souls_chance,
                          0.0, 1.0 ) );
+  add_option( opt_int( "entropy_starting_souls",options.entropy_starting_souls, -1, 50 ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
