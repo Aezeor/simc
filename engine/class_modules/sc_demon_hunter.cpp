@@ -1027,6 +1027,7 @@ public:
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
 
   // overridden player_t init functions
+  void activate() override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
   void copy_from( player_t* source ) override;
   action_t* create_action( util::string_view name, util::string_view options ) override;
@@ -8173,6 +8174,16 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
   return base_t::create_action( name, options_str );
 }
 
+// demon_hunter_t::activate =========================================
+void demon_hunter_t::activate()
+{
+  base_t::activate();
+  if ( specialization() == DEMON_HUNTER_DEVOURER )
+  {
+    register_on_combat_state_callback( [ this ]( player_t*, bool ) { devourer_fury_state.reschedule_drain(); } );
+  }
+}
+
 // demon_hunter_t::create_buffs =============================================
 
 void demon_hunter_t::create_buffs()
@@ -10426,6 +10437,12 @@ double demon_hunter_t::fury_state_t::fury_drain_per_second( int stacks ) const
   {
     // Guess
     drain *= 0.4;
+  }
+
+  if ( !p()->in_combat )
+  {
+    // Guess, it's slow as all heck though.
+    drain *= 0.1;
   }
 
   if ( drain_stacks < 6 )
