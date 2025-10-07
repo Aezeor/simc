@@ -5288,6 +5288,8 @@ struct void_ray_t : public demon_hunter_spell_t
                             p()->gain.voidglare_boon );
       }
     }
+
+    p()->devourer_fury_state.reschedule_drain();
   }
 
   void execute() override
@@ -5295,6 +5297,7 @@ struct void_ray_t : public demon_hunter_spell_t
     tick_action = p()->buff.metamorphosis->up() ? tick_meta : tick;
 
     demon_hunter_spell_t::execute();
+    p()->devourer_fury_state.reschedule_drain();
   }
 
   bool ready() override
