@@ -91,7 +91,12 @@ double spellpower_data_t::cost_divisor( bool pct ) const
   assert( power_type_data_t::divisor( type(), false ) ==
           power_type_data_t::divisor( type(), true ) );
 #endif
-  return power_type_data_t::divisor( type() ) * ( pct ? 100.0 : 1.0 );
+  auto divisor = power_type_data_t::divisor( type() );
+
+  if ( !divisor )
+    divisor = 1.0;
+  
+  return divisor * ( pct ? 100.0 : 1.0 );
 }
 
 const spellpower_data_t& spellpower_data_t::find( unsigned id, bool ptr )

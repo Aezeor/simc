@@ -2527,6 +2527,15 @@ class SpellDataGenerator(DataGenerator):
           ( 439891, 0 ), ( 439893, 0 ), # strategic infusion
           # Hero sets
           ( 1236989, 0 ), # EC TWW3 4pc counter
+          # Midnight
+          ( 1233346, 1 ), # Solar Eclipse
+          ( 1236574, 4 ), ( 1264623, 4 ), ( 1264659, 4 ), # Dryad Tranquility
+          ( 1236647, 4 ), # Dryad Regrowth
+          ( 1244038, 2 ), ( 1244046, 2 ), ( 1244050, 2 ), # Flicker Clone
+          ( 1248419, 2 ), # Rake (unused?)
+          ( 1250913, 3 ), # Memory of Ysera heal
+          ( 1252994, 3 ), # Killing Blow (unused?)
+          ( 1264671, 1 ), ( 1264673, 1 ) # Starfall
         ),
         # Demon Hunter:
         (

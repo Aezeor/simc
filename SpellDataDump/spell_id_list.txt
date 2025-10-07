@@ -5104,7 +5104,7 @@ Druid
 1232285  Efflorescence
 1232897  Lycara's Inspiration
 1233272  Lunar Eclipse
-1233346 *Solar Eclipse
+1233346  Solar Eclipse
 1233353  Lunar Eclipse Override
 1236330  Druid Druid of the Claw 11.2 Class Set 4pc
 1236331  Druid Druid of the Claw 11.2 Class Set 2pc
@@ -5117,12 +5117,12 @@ Druid
 1236342  Preparing to Strike
 1236556  Dryad
 1236573  Tranquility
-1236574 *Tranquility
+1236574  Tranquility
 1236607  Starfall
 1236608  Starfall
 1236613  Starfall
 1236640  Starsurge
-1236647 *Regrowth
+1236647  Regrowth
 1236671  Ravage Rampage
 1236807  Dryad's Favor
 1236851  Dryad's Favor
@@ -5146,9 +5146,9 @@ Druid
 1243996  Frantic Frenzy
 1244004  Frantic Frenzy
 1244023  Frantic Frenzy
-1244038 *Flicker Clone
-1244046 *Flicker Clone
-1244050 *Flicker Clone
+1244038  Flicker Clone
+1244046  Flicker Clone
+1244050  Flicker Clone
 1244079  Frantic Frenzy
 1244258  Chomp
 1244286 *Everbloom
@@ -5171,10 +5171,10 @@ Druid
 1246126 *Call of Ohn'ahra
 1247530 *[DNT] Rootways - Portal
 1247532 *[DNT] Rootway Burst - Portal
-1248419 *Rake
+1248419  Rake
 1248712  Skyfire Heel
 1250906  Memory of Ysera
-1250913 *Memory of Ysera
+1250913  Memory of Ysera
 1250923  Ward of the Forest
 1251406  Persistence
 1251407  Persistence
@@ -5182,7 +5182,7 @@ Druid
 1251877  Gift of an Ancient Guardian
 1252024  Dryad's Favor
 1252871  Red Moon
-1252994 *Killing Blow
+1252994  Killing Blow
 1253035  Harnessed Rage
 1253461  Waking Nightmare
 1253462  Waking Nightmare
@@ -5233,12 +5233,12 @@ Druid
 1264376  Nature's Bounty
 1264614  Sylvan Beckoning
 1264618  Sylvan Beckoning
-1264623 *Tranquility
+1264623  Tranquility
 1264649  Intensity
-1264659 *Tranquility
+1264659  Tranquility
 1264664  Regrowth
-1264671 *Starfall
-1264673 *Starfall
+1264671  Starfall
+1264673  Starfall
 1264676  Starfall
 1264677  Starsurge
 1264680  Sylvan Beckoning

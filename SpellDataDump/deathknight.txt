@@ -5391,8 +5391,8 @@ School           : Physical
 Spell Type       : Melee
 Resource         : 1 Rune (5) (id=11004)
 Resource         : -15 Runic Power (6) (id=11005)
-Resource         : 0 - 10 Health (-2) (id=11006) w/ Blood for Blood (id=202846)
-Resource         : 0 - 3 Health (-2) (id=232320) w/ Blood for Blood (id=356456)
+Resource         : 0% - 10% Health (-2) (id=11006) w/ Blood for Blood (id=202846)
+Resource         : 0% - 3% Health (-2) (id=232320) w/ Blood for Blood (id=356456)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -6714,7 +6714,7 @@ School           : Physical
 Spell Type       : Melee
 Resource         : 1 Rune (5) (id=11550)
 Resource         : -15 Runic Power (6) (id=11551)
-Resource         : 0 - 10 Health (-2) (id=11552) w/ Blood for Blood (id=202846)
+Resource         : 0% - 10% Health (-2) (id=11552) w/ Blood for Blood (id=202846)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds

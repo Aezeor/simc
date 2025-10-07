@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.0.63534
-static constexpr std::array<spelltext_data_t, 29236> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 29245> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26927,6 +26927,7 @@ static constexpr std::array<spelltext_data_t, 29236> __spelltext_data { {
   { 1233271, "$@spelldesc1233109", 0, 0 },
   { 1233272, "Enter a Lunar Eclipse, empowering Starfire for $48518d.\r\n\r\n$?a429523[][Casting Wrath changes this to Solar Eclipse.\r\n\r\n]$@spellicon48518 $@spellname48518\r\nArcane spells deal $48518s1% additional damage and Starfire's damage is increased by $48518s3%.\r\n", 0, 0 },
   { 1233273, "$@spelldesc1233109", 0, 0 },
+  { 1233346, "Enter a Solar Eclipse, empowering Wrath for $48517d.\r\n\r\nCasting Starfire changes this to Lunar Eclipse.\r\n\r\n$@spellicon48517 $@spellname48517\r\nNature spells deal $48517s1% additional damage and Wrath damage is increased by $48517s3%.", 0, 0 },
   { 1233351, "$@spelldesc1230301", "$@auracaster's Frost Strike will deal additional Shadowfrost damage to you.", 0 },
   { 1233353, "$@spelldesc1239669", "Lunar Eclipse overriding Solar Eclipse.", 0 },
   { 1233355, "Apply Lesser Rune of the Echoing Void to a helm.\r\n\r\nYour damaging abilities build the Echoing Void. Each time it builds, Echoing Void has a chance to collapse, dealing ${$<rolemult>*$ec1s1} Shadow damage to all nearby enemies every $1225887t1 sec until no stacks remain. \r\n\r\nCannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.", 0, 0 },
@@ -27312,6 +27313,7 @@ static constexpr std::array<spelltext_data_t, 29236> __spelltext_data { {
   { 1236565, "$@spelldesc1236372", "Your Haste is increased by $s1%.", 0 },
   { 1236566, "$@spelldesc1236372", "Your critical strike chance is increased by $s1%.", 0 },
   { 1236573, "$@spelldesc740", "Heals $w2 damage every $t2 sec.", 0 },
+  { 1236574, "Heals all allies within $a2 yards for ${$1236573s1*5} over $d. Each heal heals the target for another $157982o2 over $157982d, stacking.\r\n\r\nHealing decreased beyond $s3 targets.", "Healing all allies within $a1 yards for $157982s1 every $t1 sec.", 0 },
   { 1236590, "Restores ${$s1-$s1%$s3} health and $s2 mana.", 0, 0 },
   { 1236600, "$@spelldesc1232721", 0, 0 },
   { 1236607, "Calls down waves of falling stars upon enemies within $1236608A1 yds, dealing ${$1236613s1*11} Astral damage over $d.", "Calling down falling stars on nearby enemies.", 0 },
@@ -27321,6 +27323,7 @@ static constexpr std::array<spelltext_data_t, 29236> __spelltext_data { {
   { 1236623, "Scan the environment highlighting Mislaid Curiosities for the rest of the delve.", 0, 0 },
   { 1236640, "Launch a surge of stellar energies at the target, dealing $s1 Astral damage.", 0, 0 },
   { 1236644, "$@spelldesc1236374", "Your next $?c2[Aimed Shot][Wildfire Bomb] deals Arcane damage and its damage is increased by $?c2[$s1][$s3]%.", 0 },
+  { 1236647, "Heals a friendly target for $s1 and another $o2 over $d.", "Heals $w2 every $t2 sec.", 0 },
   { 1236648, "Restores $s1 mana.", 0, 0 },
   { 1236652, "Drink to slow your falling speed for $d.", "Slowing fall speed.", 0 },
   { 1236671, "$@spelldesc1236331", "Haste increased by $w1%, critical strike chance increased by $w2%, and the damage your bleeds deal increased by $w3% for $d.", 0 },
@@ -28255,6 +28258,7 @@ static constexpr std::array<spelltext_data_t, 29236> __spelltext_data { {
   { 1250866, "Add the Twilight Reflections affix to a Mythic Keystone.", 0, 0 },
   { 1250897, "Increases the number of Wild Imps you can control by $s1 and their Haste by $s2%.", 0, 0 },
   { 1250906, "Heal for ${$s1/100}.1% of your maximum health each time you spend $s2 Rage.\r\n", 0, 0 },
+  { 1250913, "$spelldesc1250906\r\n", 0, 0 },
   { 1250914, "Motes of Possibility may now grant Prescience to allies and have a $s1% increased chance to activate.", 0, 0 },
   { 1250921, "Your Demonic Tyrant is equipped with armor forged within Antorus, increasing their armor by $1251000s1%. While summoned, your Demonic Tyrant now assaults enemies with powerful melee attacks.\r\n\r\n$@spellicon1264093 $@spellname1264093\r\n$@spelldesc1264093", 0, 0 },
   { 1250923, "Barkskin increases your maximum health by $s2%, but its duration is reduced by $s1%.\r\n", 0, 0 },
@@ -28344,6 +28348,7 @@ static constexpr std::array<spelltext_data_t, 29236> __spelltext_data { {
   { 1252966, "$@spelldesc1252943", 0, 0 },
   { 1252975, "$@spelldesc1242974", 0, 0 },
   { 1252976, "$@spelldesc1252943", "Your damaging attacks and abilities deal an additional $1252966s1 Fire damage.", 0 },
+  { 1252994, "Maul consumes up to $s1 more Rage to deal up to $s2% additional damage.", 0, 0 },
   { 1253014, "Increases Downpour healing by $s1%.", 0, 0 },
   { 1253035, "Mangle has $s3 additional $Lcharge:charges; and when Maul is cast at $s1 Rage or above its chance to activate Gore is increased by $s2%.", 0, 0 },
   { 1253042, "Proximity to holy relics has left some lingering power within the crate. Your spells and abilities have a chance to activate the latent energy, granting a random secondary stat boost for $71491d.", 0, 0 },
@@ -29067,8 +29072,12 @@ static constexpr std::array<spelltext_data_t, 29236> __spelltext_data { {
   { 1264613, "$@spelldesc1250541", "Haunted by the Evercurse, suffering $w1 Shadow damage every $t1.\r\n\r\nIf you die while haunted, the curse will transfer to a new victim and grow stronger.", 0 },
   { 1264614, "$?c1[Entering an Eclipse summons a Dryad to assist you for $1264618d, casting Starsurge dealing $1264677s1 astral damage and Starfall at $s2% effectiveness.][Your periodic heals have a chance to empower your next Swiftmend to summon a Dryad to assist you, casting Tranquility at $s1% effectiveness and Regrowth to heal $1264664s1 damage onto your lowest health ally.]", 0, 0 },
   { 1264618, "$@spelldesc1264614", "A dryad is assisting you!", 0 },
+  { 1264623, "Heals all allies within $a2 yards for ${$1236573s1*5} over $d.\r\n\r\nHealing decreased beyond $s3 targets.", "Healing all allies within $a1 yards for $157982s1 every $t1 sec.", 0 },
   { 1264649, "When Regrowth critically heals, it is ${$s1+200}% effective instead of the usual 200%.", 0, 0 },
+  { 1264659, "$@spelldesc1264623", 0, 0 },
   { 1264664, "Heals a friendly target for $s1.", 0, 0 },
+  { 1264671, "Calls down waves of falling stars upon enemies within $1236608A1 yds, dealing ${$1236613s1*11} Astral damage over $d.", "Calling down falling stars on nearby enemies.", 0 },
+  { 1264673, "$@spelldesc1264671", 0, 0 },
   { 1264676, "$@spelldesc1236607", 0, 0 },
   { 1264677, "Launch a surge of stellar energies at the target, dealing $s1 Astral damage.", 0, 0 },
   { 1264680, "$@spelldesc1264614", "Your next Swiftmend summons a Dryad to assist you!", 0 },
@@ -29243,7 +29252,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix
 } };
 
 // Spell description variables, wow build 12.0.0.63534
-static constexpr std::array<spelldesc_vars_data_t, 710> __spelldesc_vars_data { {
+static constexpr std::array<spelldesc_vars_data_t, 713> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29906,6 +29915,7 @@ static constexpr std::array<spelldesc_vars_data_t, 710> __spelldesc_vars_data { 
   { 1236108, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1236110, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1236369, "$cap=${($SP*4.5)*(1+$@versadmg)}" },
+  { 1236574, "$healing=$?s429400[${6*$157982s1}][${5*$157982s1}]" },
   { 1236607, "$damage=$?s429400[${11*$191037s1}][${9*$191037s1}]" },
   { 1237003, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1237004, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
@@ -29953,6 +29963,8 @@ static constexpr std::array<spelldesc_vars_data_t, 710> __spelldesc_vars_data { 
   { 1264147, "$cap=${5}" },
   { 1264330, "$cap=${5}" },
   { 1264376, "$NSmult=$?a132158[${1+$132158s2/100}][${1}]\r\n$CCmult=$?a16870[${1+$16870s2/100}][${1}]\r\n$mult=${$<NSmult>*$<CCmult>}" },
+  { 1264623, "$healing=$?s429400[${6*$157982s1}][${5*$157982s1}]" },
+  { 1264671, "$damage=$?s429400[${11*$191037s1}][${9*$191037s1}]" },
   { 1265924, "$baseAbsorb=${15*$AP}\r\n$fragmentAbsorb=${3*$AP}" },
 } };
 
