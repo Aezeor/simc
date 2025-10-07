@@ -13189,10 +13189,6 @@ void death_knight_t::init_spells()
 
   // Handle Rune Regen Rate effects manually due to the unique nature of runes
   deregister_passive_effects( talent.frost.runic_command );
-  // Handled elsewhere
-  deregister_passive_effects( mastery.dreadblade );
-  deregister_passive_effects( mastery.blood_shield );
-  deregister_passive_effects( mastery.frozen_heart );
 
   parse_all_class_passives();
   parse_all_passive_talents();

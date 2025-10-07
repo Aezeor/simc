@@ -24,6 +24,7 @@
 #include "dbc/dbc.hpp"
 #include "dbc/item_database.hpp"
 #include "dbc/item_set_bonus.hpp"
+#include "dbc/mastery_spells.hpp"
 #include "dbc/rank_spells.hpp"
 #include "dbc/specialization_spell.hpp"
 #include "dbc/temporary_enchant.hpp"
@@ -16486,9 +16487,12 @@ void player_t::parse_all_class_passives()
 {
   parse_passive_effects( find_spell( dbc::get_class_aura_id( type ) ) );
 
+  auto mastery_id = mastery_spell_entry_t::find( specialization(), dbc->ptr ).spell_id;
+
   for ( const auto& spec_spell : specialization_spell_entry_t::data( dbc->ptr ) )
   {
-    if ( spec_spell.specialization_id == static_cast<unsigned>( specialization() ) )
+    if ( spec_spell.specialization_id == static_cast<unsigned>( specialization() ) &&
+         spec_spell.spell_id != mastery_id )
     {
       auto spell = find_spell( spec_spell.spell_id );
       if ( spell->flags( SX_PASSIVE ) )
