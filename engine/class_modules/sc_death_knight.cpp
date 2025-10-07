@@ -6689,7 +6689,10 @@ struct dread_plague_erupt_t final : public death_knight_spell_t
 struct dread_plague_t final : public death_knight_disease_t
 {
   dread_plague_t( std::string_view name, death_knight_t* p )
-    : death_knight_disease_t( name, p, p->spell.dread_plague ), sd_chance( 0 ), ticks_since_last_proc( 0 )
+    : death_knight_disease_t( name, p, p->spell.dread_plague ),
+      sd_chance( 0 ),
+      ticks_since_last_proc( 0 ),
+      last_target( nullptr )
   {
     if ( p->talent.unholy.sudden_doom.ok() )
       sd_chance = p->pseudo_random_c_from_p( p->talent.unholy.sudden_doom->effectN( 2 ).percent() *
@@ -6698,15 +6701,19 @@ struct dread_plague_t final : public death_knight_disease_t
       add_child( p->background_actions.rapid_variant );
   }
 
-  void execute() override
+  void impact( action_state_t* s ) override
   {
-    death_knight_disease_t::execute();
-    for ( auto& t : sim->target_non_sleeping_list )
+    death_knight_disease_t::impact( s );
+    if ( !last_target )
+      last_target = s->target;
+
+    if ( s->target != last_target )
     {
-      auto td = get_td( t );
-      if ( t != target && td->dot.dread_plague->is_ticking() )
-        td->dot.dread_plague->cancel();
+      death_knight_td_t* td = get_td( last_target );
+      td->dot.dread_plague->cancel();
     }
+
+    last_target = s->target;
   }
 
   void tick( dot_t* d ) override
@@ -6722,7 +6729,8 @@ struct dread_plague_t final : public death_knight_disease_t
 
     // Proc rate testing shows this at ~50% chance with limited testing. Assuming effect 2 divided by 10 is the chance
     // for the time being. TODO: Test for longer... far longer
-    if ( p()->talent.unholy.superstrain.ok() && rng().roll( p()->spell.superstrain_energize->effectN( 2 ).base_value() / 10 ) )
+    if ( p()->talent.unholy.superstrain.ok() &&
+         rng().roll( p()->spell.superstrain_energize->effectN( 2 ).base_value() / 10 ) )
       p()->resource_gain( RESOURCE_RUNIC_POWER,
                           p()->spell.superstrain_energize->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
                           p()->gains.superstrain, this );
@@ -6731,6 +6739,7 @@ struct dread_plague_t final : public death_knight_disease_t
 private:
   double sd_chance;
   int ticks_since_last_proc;
+  player_t* last_target;
 };
 
 // Frost Fever =======================================================
