@@ -4482,14 +4482,13 @@ struct the_hunt_t : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exe
 {
   struct the_hunt_damage_t : public demon_hunter_spell_t
   {
-    // TODO: Use the correct The Hunt for Devourer
     struct the_hunt_dot_t : public demon_hunter_spell_t
     {
       the_hunt_dot_t( util::string_view name, demon_hunter_t* p )
-        : demon_hunter_spell_t( name, p, p->talent.havoc.the_hunt->effectN( 1 ).trigger()->effectN( 4 ).trigger() )
+        : demon_hunter_spell_t( name, p, p->spec.the_hunt->effectN( 1 ).trigger()->effectN( 4 ).trigger() )
       {
         dual = true;
-        aoe  = as<int>( p->talent.havoc.the_hunt->effectN( 2 ).trigger()->effectN( 1 ).base_value() );
+        aoe  = as<int>( p->spec.the_hunt->effectN( 2 ).trigger()->effectN( 1 ).base_value() );
       }
     };
 
