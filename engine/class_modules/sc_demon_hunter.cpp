@@ -2710,6 +2710,32 @@ struct frailty_heal_t : public demon_hunter_heal_t
 namespace spells
 {
 
+template <typename BASE>
+struct burning_blades_trigger_t : public BASE
+{
+  using base_t = burning_blades_trigger_t<BASE>;
+
+  burning_blades_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                            util::string_view o = {} )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    BASE::impact( s );
+
+    if ( !BASE::p()->talent.felscarred.burning_blades->ok() )
+      return;
+
+    if ( !action_t::result_is_hit( s->result ) )
+      return;
+
+    const double dot_damage = s->result_amount * BASE::p()->talent.felscarred.burning_blades->effectN( 2 ).percent();
+    residual_action::trigger( BASE::p()->active.burning_blades, s->target, dot_damage );
+  }
+};
+
 // Blur =====================================================================
 
 struct blur_t : public demon_hunter_spell_t
@@ -4918,10 +4944,10 @@ struct soul_immolation_t : public demon_hunter_spell_t
 // without being parented by it because of subtle behavior differences.
 struct eradicate_t : public demon_hunter_spell_t
 {
-  struct eradicate_damage_t : public demon_hunter_spell_t
+  struct eradicate_damage_t : public burning_blades_trigger_t<demon_hunter_spell_t>
   {
     eradicate_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s )
-      : demon_hunter_spell_t( n, p, s, "" )
+      : base_t( n, p, s, "" )
     {
       background = dual = true;
     }
@@ -4977,9 +5003,9 @@ struct eradicate_t : public demon_hunter_spell_t
 
 struct reap_base_t : public demon_hunter_spell_t
 {
-  struct reap_damage_t : public demon_hunter_spell_t
+  struct reap_damage_t : public burning_blades_trigger_t<demon_hunter_spell_t>
   {
-    reap_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : demon_hunter_spell_t( n, p, s, "" )
+    reap_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : base_t( n, p, s, "" )
     {
       background = dual = true;
     }
@@ -7662,6 +7688,33 @@ struct demon_hunter_proc_callback_t : public dbc_proc_callback_t
   }
 };
 
+struct shattered_souls_callback_t : public demon_hunter_proc_callback_t
+{
+  const spell_data_t* shattered_souls;
+
+  shattered_souls_callback_t( const special_effect_t& e ): demon_hunter_proc_callback_t( e )
+  {
+    shattered_souls = p()->spec.shattered_souls;
+  }
+
+  void execute(action_t* action, action_state_t* state) override
+  {
+    demon_hunter_proc_callback_t::execute(action, state);
+
+    if ( state->result_total <= 0 )
+    {
+      return;
+    }
+
+    double chance = shattered_souls->effectN( 1 ).percent();
+    if ( rng().roll( chance ) )
+    {
+      p()->sim->out_debug.printf( "%s proc-ed Shattered Souls with %s", p()->name(), action->name() );
+      p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
+    }
+  }
+};
+
 // ==========================================================================
 // Targetdata Definitions
 // ==========================================================================
@@ -8517,6 +8570,15 @@ void demon_hunter_t::init_special_effects()
   base_t::init_special_effects();
 
   // Devourer
+  if ( specialization() == DEMON_HUNTER_DEVOURER )
+  {
+    auto effect      = new special_effect_t( this );
+    effect->name_str = "shattered_souls";
+    effect->spell_id = spec.shattered_souls->id();
+    special_effects.push_back( effect );
+
+    new shattered_souls_callback_t( *effect );
+  }
   if ( talent.devourer.spontaneous_immolation->ok() )
   {
     auto effect            = new special_effect_t( this );
@@ -9057,7 +9119,6 @@ void demon_hunter_t::init_spells()
       break;
   }
 
-  hero_spec.burning_blades_debuff     = talent_spell_lookup( talent.felscarred.burning_blades, 453177 );
   hero_spec.student_of_suffering_buff = talent_spell_lookup( talent.felscarred.student_of_suffering, 453239 );
   hero_spec.monster_rising_buff       = talent_spell_lookup( talent.felscarred.monster_rising, 452550 );
   hero_spec.enduring_torment_buff     = talent_spell_lookup( talent.felscarred.enduring_torment, 453314 );
@@ -9073,6 +9134,18 @@ void demon_hunter_t::init_spells()
   hero_spec.sigil_of_doom_damage = talent_spell_lookup( talent.felscarred.demonic_intensity, 462030 );
   hero_spec.abyssal_gaze         = talent_spell_lookup( talent.felscarred.demonic_intensity, 452497 );
   hero_spec.fel_desolation       = talent_spell_lookup( talent.felscarred.demonic_intensity, 452486 );
+  switch (specialization())
+  {
+    case DEMON_HUNTER_HAVOC:
+      hero_spec.burning_blades_debuff = talent_spell_lookup( talent.felscarred.burning_blades, 453177 );
+      break;
+    case DEMON_HUNTER_DEVOURER:
+      hero_spec.burning_blades_debuff = talent_spell_lookup( talent.felscarred.burning_blades, 1245654 );
+      break;
+    default:
+      hero_spec.burning_blades_debuff = spell_data_t::not_found();
+      break;
+  }
 
   // TODO: MIDNIGHT - ADD DEVOURER
   switch ( specialization() )
