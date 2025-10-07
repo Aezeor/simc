@@ -1252,7 +1252,8 @@ public:
     {
       demon_hunter_t* dh;
       timespan_t delta;
-      drain_event_t( demon_hunter_t* p, timespan_t delta ) : event_t( *p, delta ), dh( p ), delta( delta )
+      drain_event_t( demon_hunter_t* p, timespan_t delta_time )
+        : event_t( *p, delta_time ), dh( p ), delta( delta_time )
       {
       }
 
