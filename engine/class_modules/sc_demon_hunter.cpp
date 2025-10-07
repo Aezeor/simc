@@ -425,7 +425,7 @@ public:
 
       player_talent_t the_hunt;
       player_talent_t emptiness;     // NYI
-      player_talent_t soul_glutton;  // NYI
+      player_talent_t soul_glutton;
       player_talent_t eradicate;     // NYI
     } devourer;
 
@@ -579,7 +579,7 @@ public:
       player_talent_t state_of_matter;    // NYI
       player_talent_t mass_acceleration;  // NYI
       player_talent_t doomsayer;          // NYI
-      player_talent_t celestial_echoes;   // NYI
+      player_talent_t celestial_echoes;
 
       player_talent_t final_hour;          // NYI
       player_talent_t meteoric_fall;       // NYI
