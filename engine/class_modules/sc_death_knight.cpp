@@ -6698,6 +6698,17 @@ struct dread_plague_t final : public death_knight_disease_t
       add_child( p->background_actions.rapid_variant );
   }
 
+  void execute() override
+  {
+    death_knight_disease_t::execute();
+    for ( auto& t : sim->target_non_sleeping_list )
+    {
+      auto td = get_td( t );
+      if ( t != target && td->dot.dread_plague->is_ticking() )
+        td->dot.dread_plague->cancel();
+    }
+  }
+
   void tick( dot_t* d ) override
   {
     death_knight_disease_t::tick( d );
@@ -8298,6 +8309,7 @@ struct necrotic_coil_shadow_t final : public death_coil_damage_base_t
     : death_coil_damage_base_t( name, p, p->spell.necrotic_coil_shadow )
   {
     background = true;
+    aoe = as<int>( p->talent.unholy.forbidden_knowledge_1->effectN( 2 ).base_value() );
   }
 };
 
@@ -8308,7 +8320,7 @@ struct necrotic_coil_physical_t final : public death_knight_spell_t
   {
     background = true;
     aoe = as<int>( p->talent.unholy.forbidden_knowledge_1->effectN( 2 ).base_value() );
-    impact_action = get_action<necrotic_coil_shadow_t>( "necrotic_coil_shadow", p );
+    execute_action = get_action<necrotic_coil_shadow_t>( "necrotic_coil_shadow", p );
   }
 };
 
@@ -8749,8 +8761,6 @@ struct epidemic_base_t : public death_knight_spell_t
       soft_cap_multiplier( 1.0 ),
       sd( false )
   {
-    if ( p->talent.unholy.doomed_bidding.ok() )
-      p->pets.lesser_ghoul_db_epi.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -8775,8 +8785,8 @@ struct epidemic_base_t : public death_knight_spell_t
     else
       soft_cap_multiplier = 1.0;
 
-    debug_cast<epidemic_damage_main_t*>( impact_action )->soft_cap_multiplier               = soft_cap_multiplier;
-    debug_cast<epidemic_damage_aoe_t*>( impact_action->impact_action )->soft_cap_multiplier = soft_cap_multiplier;
+    debug_cast<epidemic_damage_base_t*>( impact_action )->soft_cap_multiplier               = soft_cap_multiplier;
+    debug_cast<epidemic_damage_base_t*>( impact_action->impact_action )->soft_cap_multiplier = soft_cap_multiplier;
 
     sd = p()->buffs.sudden_doom->check();
 
@@ -8801,7 +8811,7 @@ private:
 
 struct graveyard_t final : public epidemic_base_t
 {
-  graveyard_t( std::string_view n, death_knight_t* p, const spell_data_t* s ) : epidemic_base_t( n, p, s )
+  graveyard_t( std::string_view n, death_knight_t* p ) : epidemic_base_t( n, p, p->spell.graveyard_action )
   {
     impact_action = get_action<graveyard_damage_main_t>( "graveyard_main", p );
     add_child( impact_action );
@@ -8816,10 +8826,12 @@ struct epidemic_t final : public epidemic_base_t
     parse_options( options_str );
     impact_action = p->background_actions.epidemic_main;
 
-    set_replacement_action( new graveyard_t( "graveyard", p, p->spell.graveyard_action ),
-                            p->buffs.forbidden_knowledge );
+    set_replacement_action( get_action<graveyard_t>( "graveyard", p ), p->buffs.forbidden_knowledge );
 
     add_child( impact_action );
+
+    if ( p->talent.unholy.doomed_bidding.ok() )
+      p->pets.lesser_ghoul_db_epi.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
   }
 };
 
@@ -10217,6 +10229,7 @@ struct outbreak_t final : public death_knight_spell_t
     : death_knight_spell_t( "outbreak", p, p->talent.unholy.outbreak )
   {
     parse_options( options_str );
+    aoe = 0;
   }
 
   void execute() override
@@ -10593,9 +10606,9 @@ struct remorseless_winter_t final : public remorseless_winter_base_t
 
 // Scourge Strike and Clawing Shadows =======================================
 
-struct wound_spender_base_t : public death_knight_melee_attack_t
+struct scourge_strike_base_t : public death_knight_melee_attack_t
 {
-  wound_spender_base_t( std::string_view name, death_knight_t* p, const spell_data_t* spell )
+  scourge_strike_base_t( std::string_view name, death_knight_t* p, const spell_data_t* spell )
     : death_knight_melee_attack_t( name, p, spell ),
       summon_ghoul( get_action<summon_lesser_ghoul_t>( "fs_ghoul", p, p->spell.summon_lesser_ghoul,
                                                        lesser_ghoul::LESSER_FESTERING_STRIKE ) )
@@ -10735,10 +10748,10 @@ private:
   action_t* summon_ghoul;
 };
 
-struct vampiric_strike_unholy_t : public wound_spender_base_t
+struct vampiric_strike_unholy_t : public scourge_strike_base_t
 {
   vampiric_strike_unholy_t( std::string_view n, death_knight_t* p )
-    : wound_spender_base_t( n, p, p->spell.vampiric_strike )
+    : scourge_strike_base_t( n, p, p->spell.vampiric_strike )
   {
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
     energize_amount         = std::fabs( data().powerN( 3 ).cost() );
@@ -10754,10 +10767,10 @@ struct vampiric_strike_unholy_t : public wound_spender_base_t
   }
 };
 
-struct scourge_strike_t final : public wound_spender_base_t
+struct scourge_strike_t final : public scourge_strike_base_t
 {
   scourge_strike_t( std::string_view n, death_knight_t* p, std::string_view options_str )
-    : wound_spender_base_t( n, p, p->talent.unholy.scourge_strike )
+    : scourge_strike_base_t( n, p, p->talent.unholy.scourge_strike )
   {
     parse_options( options_str );
 
@@ -10773,7 +10786,7 @@ struct scourge_strike_t final : public wound_spender_base_t
 
   void execute() override
   {
-    wound_spender_base_t::execute();
+    scourge_strike_base_t::execute();
     p()->trigger_sanlayn_execute_talents( false );
   }
 };
@@ -11842,7 +11855,8 @@ void death_knight_t::start_unholy_aura()
   make_event( *sim, first, [ this, period ]() {
     int ghouls = active_lesser_ghouls.size();
 
-    buffs.lesser_ghoul_mastery->trigger( ghouls );
+    if( ghouls > 0 )
+      buffs.lesser_ghoul_mastery->trigger( ghouls );
 
     make_repeating_event( *sim, period, [ this ]() {
       if ( active_lesser_ghouls.empty() )
