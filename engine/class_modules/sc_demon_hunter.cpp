@@ -685,6 +685,7 @@ public:
     const spell_data_t* void_ray_tick_meta;
     const spell_data_t* moment_of_craving_buff;
     const spell_data_t* void_buildup;
+    const spell_data_t* voidglare_boon_energize;
 
     // Havoc
     const spell_data_t* havoc_demon_hunter;
@@ -5037,7 +5038,6 @@ struct voidblade_t : public demon_hunter_spell_t
   }
 };
 
-
 struct void_buildup_t : public demon_hunter_spell_t
 {
   void_buildup_t( util::string_view n, demon_hunter_t* p ) : demon_hunter_spell_t( n, p, p->spec.void_buildup, "" )
@@ -5046,7 +5046,7 @@ struct void_buildup_t : public demon_hunter_spell_t
     background = dual = true;
     target            = p;
 
-    resource_current = RESOURCE_FURY;
+    resource_current            = RESOURCE_FURY;
     base_costs[ RESOURCE_FURY ] = -data().effectN( 1 ).resource( RESOURCE_FURY );
   }
 
@@ -5056,7 +5056,7 @@ struct void_buildup_t : public demon_hunter_spell_t
     // apply here as we will be calling this without executing the action for performance reasons.
     spell_t::consume_resource();
   }
-  };
+};
 
 struct soul_immolation_t : public demon_hunter_spell_t
 {
@@ -5285,9 +5285,10 @@ struct void_ray_t : public demon_hunter_spell_t
 
   void_ray_tick_t* tick;
   void_ray_tick_t* tick_meta;
+  demon_hunter_energize_t* voidglare_boon_energize;
 
   void_ray_t( demon_hunter_t* p, util::string_view o )
-    : demon_hunter_spell_t( "void_ray", p, p->talent.devourer.void_ray, o )
+    : demon_hunter_spell_t( "void_ray", p, p->talent.devourer.void_ray, o ), voidglare_boon_energize( nullptr )
   {
     may_miss            = false;
     channeled           = true;
@@ -5302,7 +5303,13 @@ struct void_ray_t : public demon_hunter_spell_t
     tick_meta        = p->get_background_action<void_ray_tick_t>( "void_ray_tick_meta", p->spec.void_ray_tick_meta );
     tick_meta->stats = stats;
 
-    // Add damage modifiers in eye_beam_tick_t, not here.
+    if ( p->talent.devourer.voidglare_boon->ok() )
+    {
+      voidglare_boon_energize =
+          p->get_background_action<demon_hunter_energize_t>( "voidglare_boon_energize", p->spec.voidglare_boon_energize );
+    }
+
+    // Add damage modifiers in voidray_tick_t, not here.
   }
 
   void init() override
@@ -5329,10 +5336,9 @@ struct void_ray_t : public demon_hunter_spell_t
         p()->buff.moment_of_craving->trigger();
         p()->cooldown.reap->reset( true );
       }
-      if ( p()->talent.devourer.voidglare_boon->ok() )
+      if ( voidglare_boon_energize )
       {
-        p()->resource_gain( RESOURCE_FURY, p()->talent.devourer.voidglare_boon->effectN( 1 ).base_value(),
-                            p()->gain.voidglare_boon );
+        voidglare_boon_energize->execute();
       }
     }
 
@@ -9176,16 +9182,17 @@ void demon_hunter_t::init_spells()
   spec.sigil_of_misery_debuff    = talent_spell_lookup( talent.demon_hunter.sigil_of_misery, 207685 );
 
   // Spec Background Spells
-  spec.feast_of_souls_buff    = talent_spell_lookup( talent.devourer.feast_of_souls, 1232310 );
-  spec.devourers_bite_debuff  = talent_spell_lookup( talent.devourer.devourers_bite, 1241532 );
-  spec.void_metamorphosis     = talent_spell_lookup( talent.devourer.void_metamorphosis, 1217607 );
-  spec.eradicate              = talent_spell_lookup( talent.devourer.eradicate, 1225826 );
-  spec.eradicate_damage       = talent_spell_lookup( talent.devourer.eradicate, 1225827 );
-  spec.eradicate_buff         = talent_spell_lookup( talent.devourer.eradicate, 1239524 );
-  spec.void_ray_tick          = talent_spell_lookup( talent.devourer.void_ray, 1213649 );
-  spec.void_ray_tick_meta     = talent_spell_lookup( talent.devourer.void_ray, 1214595 );
-  spec.moment_of_craving_buff = talent_spell_lookup( talent.devourer.moment_of_craving, 1238495 );
-  spec.void_buildup           = find_spell( 473671 );
+  spec.feast_of_souls_buff     = talent_spell_lookup( talent.devourer.feast_of_souls, 1232310 );
+  spec.devourers_bite_debuff   = talent_spell_lookup( talent.devourer.devourers_bite, 1241532 );
+  spec.void_metamorphosis      = talent_spell_lookup( talent.devourer.void_metamorphosis, 1217607 );
+  spec.eradicate               = talent_spell_lookup( talent.devourer.eradicate, 1225826 );
+  spec.eradicate_damage        = talent_spell_lookup( talent.devourer.eradicate, 1225827 );
+  spec.eradicate_buff          = talent_spell_lookup( talent.devourer.eradicate, 1239524 );
+  spec.void_ray_tick           = talent_spell_lookup( talent.devourer.void_ray, 1213649 );
+  spec.void_ray_tick_meta      = talent_spell_lookup( talent.devourer.void_ray, 1214595 );
+  spec.moment_of_craving_buff  = talent_spell_lookup( talent.devourer.moment_of_craving, 1238495 );
+  spec.void_buildup            = find_spell( 473671 );
+  spec.voidglare_boon_energize = talent_spell_lookup( talent.devourer.voidglare_boon, 1241922 );
 
   mastery.a_fire_inside = talent.havoc.a_fire_inside->effectN( 6 ).trigger();
 
