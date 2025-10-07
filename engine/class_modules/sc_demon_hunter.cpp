@@ -398,7 +398,7 @@ public:
 
       player_talent_t sunder;  // NYI
       player_talent_t second_helping;
-      player_talent_t waste_not;  // NYI
+      player_talent_t waste_not;
       player_talent_t soulshaper;
 
       player_talent_t focused_ray;
@@ -4946,8 +4946,7 @@ struct eradicate_t : public demon_hunter_spell_t
 {
   struct eradicate_damage_t : public burning_blades_trigger_t<demon_hunter_spell_t>
   {
-    eradicate_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s )
-      : base_t( n, p, s, "" )
+    eradicate_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : base_t( n, p, s, "" )
     {
       background = dual = true;
     }
@@ -7692,14 +7691,14 @@ struct shattered_souls_callback_t : public demon_hunter_proc_callback_t
 {
   const spell_data_t* shattered_souls;
 
-  shattered_souls_callback_t( const special_effect_t& e ): demon_hunter_proc_callback_t( e )
+  shattered_souls_callback_t( const special_effect_t& e ) : demon_hunter_proc_callback_t( e )
   {
     shattered_souls = p()->spec.shattered_souls;
   }
 
-  void execute(action_t* action, action_state_t* state) override
+  void execute( action_t* action, action_state_t* state ) override
   {
-    demon_hunter_proc_callback_t::execute(action, state);
+    demon_hunter_proc_callback_t::execute( action, state );
 
     if ( state->proc_type() == PROC1_PERIODIC || state->result_total <= 0 )
     {
@@ -7707,9 +7706,15 @@ struct shattered_souls_callback_t : public demon_hunter_proc_callback_t
     }
 
     double chance = shattered_souls->effectN( 1 ).percent();
+    if ( p()->talent.devourer.waste_not->ok() && ( action->data().id() == p()->spec.void_ray_tick->id() ||
+                                                   action->data().id() == p()->spec.void_ray_tick_meta->id() ) )
+    {
+      chance *= 1.0 + p()->talent.devourer.waste_not->effectN( 1 ).percent();
+    }
+
     if ( rng().roll( chance ) )
     {
-      p()->sim->out_debug.printf( "%s proc-ed Shattered Souls with %s", p()->name(), action->name() );
+      p()->sim->out_debug.printf( "%s proc-ed Shattered Souls with %s (%u) chance: %.3f", p()->name(), action->name(), action->data().id(), chance );
       p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
     }
   }
@@ -9133,7 +9138,7 @@ void demon_hunter_t::init_spells()
   hero_spec.sigil_of_doom_damage = talent_spell_lookup( talent.felscarred.demonic_intensity, 462030 );
   hero_spec.abyssal_gaze         = talent_spell_lookup( talent.felscarred.demonic_intensity, 452497 );
   hero_spec.fel_desolation       = talent_spell_lookup( talent.felscarred.demonic_intensity, 452486 );
-  switch (specialization())
+  switch ( specialization() )
   {
     case DEMON_HUNTER_HAVOC:
       hero_spec.burning_blades_debuff = talent_spell_lookup( talent.felscarred.burning_blades, 453177 );
