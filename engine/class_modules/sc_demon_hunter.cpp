@@ -4013,9 +4013,11 @@ struct metamorphosis_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::execute();
 
-    // TODO: MIDNIGHT - ADD DEVOURER
     switch ( p()->specialization() )
     {
+      case DEMON_HUNTER_DEVOURER:
+        p()->buff.metamorphosis->trigger();
+        break;
       case DEMON_HUNTER_HAVOC:
         for ( demonsurge_ability ability : p()->hero_spec.demonsurge_abilities )
         {
@@ -4070,13 +4072,13 @@ struct metamorphosis_t : public demon_hunter_spell_t
     }
   }
 
-  bool ready() override
+  bool action_ready() override
   {
-    // Not usable during the root effect of Stormeater's Boon
-    if ( p()->buffs.stormeaters_boon && p()->buffs.stormeaters_boon->check() )
+    if ( p()->specialization() == DEMON_HUNTER_DEVOURER && p()->buff.metamorphosis->up() )
+    {
       return false;
-
-    return demon_hunter_spell_t::ready();
+    }
+    return demon_hunter_spell_t::action_ready();
   }
 };
 
