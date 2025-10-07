@@ -392,7 +392,7 @@ public:
 
       player_talent_t scythes_embrace;
       player_talent_t duty_eternal;
-      player_talent_t entropy;  // NYI
+      player_talent_t entropy;
       player_talent_t moment_of_craving;
 
       player_talent_t sunder;  // NYI
@@ -408,11 +408,11 @@ public:
       player_talent_t hungering_slash;  // NYI
       player_talent_t voidrage;         // NYI
       player_talent_t dark_ultimatum;   // NYI
-      player_talent_t beckon;           // NYI
+      player_talent_t beckon;
       player_talent_t voidglare_boon;
 
       player_talent_t voidstep;              // NYI
-      player_talent_t up_close;              // NYI
+      player_talent_t up_close;
       player_talent_t impending_apocalypse;  // NYI
       player_talent_t rolling_torment;       // NYI
       player_talent_t improved_reap;
