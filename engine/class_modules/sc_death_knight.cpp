@@ -8292,22 +8292,23 @@ private:
   double reaping_mod;
 };
 
-struct necrotic_coil_physical_t final : public death_knight_spell_t
-{
-  necrotic_coil_physical_t( std::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->spell.necrotic_coil_physical )
-  {
-    background = true;
-  }
-};
-
 struct necrotic_coil_shadow_t final : public death_coil_damage_base_t
 {
   necrotic_coil_shadow_t( std::string_view name, death_knight_t* p )
     : death_coil_damage_base_t( name, p, p->spell.necrotic_coil_shadow )
   {
     background = true;
-    execute_action = get_action<necrotic_coil_physical_t>( "necrotic_coil_physical", p );
+  }
+};
+
+struct necrotic_coil_physical_t final : public death_knight_spell_t
+{
+  necrotic_coil_physical_t( std::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->spell.necrotic_coil_physical )
+  {
+    background = true;
+    aoe = as<int>( p->talent.unholy.forbidden_knowledge_1->effectN( 2 ).base_value() );
+    impact_action = get_action<necrotic_coil_shadow_t>( "necrotic_coil_shadow", p );
   }
 };
 
@@ -8339,7 +8340,7 @@ struct necrotic_coil_t final : public death_coil_base_t
   necrotic_coil_t( std::string_view n, death_knight_t* p )
     : death_coil_base_t( n, p, p->spell.necrotic_coil_action )
   {
-    execute_action = get_action<necrotic_coil_shadow_t>( "necrotic_coil_shadow", p );
+    execute_action = get_action<necrotic_coil_physical_t>( "necrotic_coil_physical", p );
     background = true;
     add_child( execute_action );
     add_child( execute_action->execute_action );
