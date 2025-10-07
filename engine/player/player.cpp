@@ -15638,8 +15638,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
   {
     // check player affecting subtypes
     auto misc_type = modifying_eff.misc_value1();
-    std::string_view field;
-    std::string subtype_str = "";
+    std::string field {};
+    std::string subtype_str {};
     bitmap_type_e bit_type = BITMAP_NONE;
     resource_e resource_type;
     double flat_val = 0.0;
