@@ -15362,7 +15362,6 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_MOD_POWER_REGEN_PERCENT,                "combo_points_regen"                        }, // 110
   { A_MOD_POWER_REGEN_PERCENT,                "maelstrom_regen"                           }, // 110
   { A_MOD_POWER_REGEN_PERCENT,                "fury_regen"                                }, // 110
-  { A_MOD_POWER_REGEN_PERCENT,                "pain_regen"                                }, // 110
   { A_MOD_POWER_REGEN_PERCENT,                "insanity_regen"                            }, // 110
   { A_MOD_POWER_REGEN_PERCENT,                "essence_regen"                             }, // 110
   { A_MOD_HEALING_RECEIVED_PCT,               "healing_received_multiplier"               }, // 118
@@ -15379,7 +15378,6 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_INCREASE_RESOURCE_PCT,                  "combo_points_multiplier"                   }, // 119
   { A_INCREASE_RESOURCE_PCT,                  "maelstrom_multiplier"                      }, // 119
   { A_INCREASE_RESOURCE_PCT,                  "fury_multiplier"                           }, // 119
-  { A_INCREASE_RESOURCE_PCT,                  "pain_multiplier"                           }, // 119
   { A_INCREASE_RESOURCE_PCT,                  "insanity_multiplier"                       }, // 119
   { A_INCREASE_RESOURCE_PCT,                  "essence_multiplier"                        }, // 119
   { A_MOD_SPEED_ALWAYS,                       "stacking_move_speed_modifier"              }, // 129
