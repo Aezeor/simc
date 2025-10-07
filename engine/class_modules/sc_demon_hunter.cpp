@@ -389,7 +389,7 @@ public:
 
       player_talent_t tempered_soul;
       player_talent_t spontaneous_immolation;
-      player_talent_t void_metamorphosis;  // NYI
+      player_talent_t void_metamorphosis;
       player_talent_t feast_of_souls;
 
       player_talent_t scythes_embrace;
@@ -424,9 +424,9 @@ public:
       player_talent_t calamitous;      // NYI
 
       player_talent_t the_hunt;
-      player_talent_t emptiness;     // NYI
+      player_talent_t emptiness;  // NYI
       player_talent_t soul_glutton;
-      player_talent_t eradicate;     // NYI
+      player_talent_t eradicate;  // NYI
     } devourer;
 
     struct havoc_talents_t
@@ -810,6 +810,8 @@ public:
   // Mastery Spells
   struct mastery_t
   {
+    // Devourer
+    const spell_data_t* monster_within;
     // Havoc
     const spell_data_t* a_fire_inside;
     const spell_data_t* demonic_presence;
@@ -1895,6 +1897,8 @@ public:
     // Shared
     ab::parse_effects( p()->buff.demon_soul );
     ab::parse_effects( p()->buff.empowered_demon_soul );
+    ab::parse_effects( p()->mastery.monster_within );
+    ab::parse_effects( p()->buff.metamorphosis, p()->mastery.monster_within );
 
     // Devourer
     ab::parse_effects( p()->buff.feast_of_souls );
@@ -4697,8 +4701,8 @@ struct the_hunt_t : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exe
   the_hunt_t( demon_hunter_t* p, util::string_view options_str )
     : base_t( "the_hunt", p, p->spec.the_hunt, options_str )
   {
-    movement_directionality             = movement_direction_type::TOWARDS;
-    impact_action                       = p->get_background_action<the_hunt_damage_t>( "the_hunt_damage" );
+    movement_directionality = movement_direction_type::TOWARDS;
+    impact_action           = p->get_background_action<the_hunt_damage_t>( "the_hunt_damage" );
     add_child( impact_action );
   }
 
@@ -5047,7 +5051,7 @@ struct voidblade_t : public demon_hunter_spell_t
     may_block               = false;
     movement_directionality = movement_direction_type::TOWARDS;
 
-    execute_action        = p->get_background_action<voidblade_damage_t>( "voidblade_damage" );
+    execute_action = p->get_background_action<voidblade_damage_t>( "voidblade_damage" );
     add_child( execute_action );
   }
 };
@@ -5124,7 +5128,7 @@ struct eradicate_t : public demon_hunter_spell_t
 
   eradicate_t( demon_hunter_t* p, util::string_view o ) : demon_hunter_spell_t( "eradicate", p, p->spec.eradicate, o )
   {
-    damage_action        = p->get_background_action<eradicate_damage_t>( "eradicate_damage", p->spec.eradicate_damage );
+    damage_action = p->get_background_action<eradicate_damage_t>( "eradicate_damage", p->spec.eradicate_damage );
     add_child( damage_action );
   }
 
@@ -5186,7 +5190,7 @@ struct reap_base_t : public demon_hunter_spell_t
   {
     cooldown = p->cooldown.reap;
 
-    damage_action        = p->get_background_action<reap_damage_t>( fmt::format( "{}_damage", n ), damage_s );
+    damage_action = p->get_background_action<reap_damage_t>( fmt::format( "{}_damage", n ), damage_s );
     add_child( damage_action );
 
     if ( p->talent.devourer.scythes_embrace->ok() && energize_s )
@@ -5311,10 +5315,10 @@ struct void_ray_t : public demon_hunter_spell_t
     // stealing this from eye beam
     ability_lag = p->world_lag;
 
-    tick        = p->get_background_action<void_ray_tick_t>( "void_ray_tick", p->spec.void_ray_tick );
+    tick = p->get_background_action<void_ray_tick_t>( "void_ray_tick", p->spec.void_ray_tick );
     add_child( tick );
 
-    tick_meta        = p->get_background_action<void_ray_tick_t>( "void_ray_tick_meta", p->spec.void_ray_tick_meta );
+    tick_meta = p->get_background_action<void_ray_tick_t>( "void_ray_tick_meta", p->spec.void_ray_tick_meta );
     add_child( tick_meta );
 
     if ( p->talent.devourer.voidglare_boon->ok() )
@@ -6425,7 +6429,7 @@ struct felblade_t : public inertia_trigger_t<demon_hunter_attack_t>
     may_block               = false;
     movement_directionality = movement_direction_type::TOWARDS;
 
-    execute_action        = p->get_background_action<felblade_damage_t>( "felblade_damage" );
+    execute_action = p->get_background_action<felblade_damage_t>( "felblade_damage" );
     add_child( execute_action );
 
     if ( p->specialization() == DEMON_HUNTER_HAVOC && p->talent.aldrachi_reaver.warblades_hunger->ok() )
@@ -6495,7 +6499,7 @@ struct fel_rush_t : public inertia_trigger_t<demon_hunter_attack_t>
     may_miss = may_dodge = may_parry = may_block = false;
     min_gcd                                      = trigger_gcd;
 
-    execute_action        = p->get_background_action<fel_rush_damage_t>( "fel_rush_damage" );
+    execute_action = p->get_background_action<fel_rush_damage_t>( "fel_rush_damage" );
     add_child( execute_action );
 
     // Fel Rush does damage in a further line than it moves you
@@ -6895,7 +6899,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
         break;
     }
 
-    execute_action        = damage;
+    execute_action = damage;
     add_child( execute_action );
 
     if ( source == glaive_source::SCREAMING_BRUTALITY_BLADE_DANCE_THROW ||
@@ -7137,7 +7141,7 @@ struct vengeful_retreat_t
   vengeful_retreat_t( demon_hunter_t* p, util::string_view options_str )
     : base_t( "vengeful_retreat", p, p->talent.demon_hunter.vengeful_retreat, options_str )
   {
-    execute_action        = p->get_background_action<vengeful_retreat_damage_t>( "vengeful_retreat_damage" );
+    execute_action = p->get_background_action<vengeful_retreat_damage_t>( "vengeful_retreat_damage" );
     add_child( execute_action );
 
     base_teleport_distance                        = VENGEFUL_RETREAT_DISTANCE;
@@ -8603,7 +8607,7 @@ void demon_hunter_t::create_options()
   add_option( opt_bool( "enable_dungeon_slice", options.enable_dungeon_slice ) );
   add_option( opt_float( "soul_fragment_from_shattered_souls_chance", options.soul_fragment_from_shattered_souls_chance,
                          0.0, 1.0 ) );
-  add_option( opt_int( "entropy_starting_souls",options.entropy_starting_souls, -1, 50 ) );
+  add_option( opt_int( "entropy_starting_souls", options.entropy_starting_souls, -1, 50 ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
@@ -8937,6 +8941,7 @@ void demon_hunter_t::init_spells()
 
   // Masteries ==============================================================
 
+  mastery.monster_within   = find_mastery_spell( DEMON_HUNTER_DEVOURER );
   mastery.demonic_presence = find_mastery_spell( DEMON_HUNTER_HAVOC );
   mastery.fel_blood        = find_mastery_spell( DEMON_HUNTER_VENGEANCE );
   mastery.fel_blood_rank_2 = find_rank_spell( "Mastery: Fel Blood", "Rank 2" );
@@ -10432,7 +10437,7 @@ void demon_hunter_t::fury_state_t::start()
   p()->buff.metamorphosis->trigger();
 
   p()->resource_gain( RESOURCE_FURY, 200.00, p()->gain.metamorphosis );
-  
+
   start_time = actor->sim->current_time();
   schedule_tick();
 }
@@ -10441,8 +10446,8 @@ void demon_hunter_t::fury_state_t::schedule_tick()
 {
   assert( !next_drain_event );
 
-  last_tick = actor->sim->current_time();
-  next_drain_event       = make_event<drain_event_t>( *actor->sim, actor, time_to_next_tick( drain_stacks ) );
+  last_tick        = actor->sim->current_time();
+  next_drain_event = make_event<drain_event_t>( *actor->sim, actor, time_to_next_tick( drain_stacks ) );
 }
 
 double demon_hunter_t::fury_state_t::fury_drain_per_second( int stacks ) const
@@ -10660,6 +10665,12 @@ void demon_hunter_t::trigger_demonsurge( demonsurge_ability ability, timespan_t 
 void demon_hunter_t::parse_player_effects()
 {
   // Shared
+
+  // Devourer
+  if ( specialization() == DEMON_HUNTER_DEVOURER )
+  {
+    parse_effects( buff.metamorphosis );
+  }
 
   // Havoc
   if ( specialization() == DEMON_HUNTER_HAVOC )
