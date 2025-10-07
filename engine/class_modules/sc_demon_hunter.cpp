@@ -1187,7 +1187,7 @@ public:
     demon_hunter_t* actor;
     double initial_drain   = 10.0;
     double drain_per_stack = 0.012;
-    
+
     fury_state_t( demon_hunter_t* a )
       : next_drain_event( nullptr ),
         actor( a ),
@@ -1221,7 +1221,7 @@ public:
     {
       return actor;
     }
-    
+
     demon_hunter_t* p() const
     {
       return actor;
@@ -1758,6 +1758,13 @@ public:
     bool reavers_mark = false;
   } affected_by;
 
+  // This action will trigger on every execute -- does not behave identically to execute_action
+  demon_hunter_action_t* execute_energize_action;
+  // This action will trigger on every impact -- does not behave identically to impact_action
+  demon_hunter_action_t* impact_energize_action;
+  // This action will trigger on every tick -- does not behave identically to tick_action
+  demon_hunter_action_t* tick_energize_action;
+
   void parse_affect_flags( const spell_data_t* spell, affect_flags& flags )
   {
     for ( const spelleffect_data_t& effect : spell->effects() )
@@ -1788,7 +1795,10 @@ public:
       track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
       cd_wasted_exec( nullptr ),
       cd_wasted_cumulative( nullptr ),
-      cd_wasted_iter( nullptr )
+      cd_wasted_iter( nullptr ),
+      execute_energize_action( nullptr ),
+      impact_energize_action( nullptr ),
+      tick_energize_action( nullptr )
   {
     ab::parse_options( o );
 
@@ -1856,6 +1866,15 @@ public:
       cd_wasted_iter =
           p()->template get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p()->cd_waste_iter );
     }
+
+    // Make sure background is set for triggered actions.
+    // Leads to double-readying of the player otherwise.
+    assert( ( !execute_energize_action || execute_energize_action->background ) &&
+            "Execute energize action needs to be set to background." );
+    assert( ( !tick_energize_action || tick_energize_action->background ) &&
+            "Tick energize action needs to be set to background." );
+    assert( ( !impact_energize_action || impact_energize_action->background ) &&
+            "Impact energize action needs to be set to background." );
   }
 
   // Intended for parsing effects from buffs that have an allowlist of abilities
@@ -2100,6 +2119,11 @@ public:
     ab::tick( d );
 
     accumulate_frailty( d->state );
+
+    if ( tick_energize_action )
+    {
+      tick_energize_action->execute();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -2111,6 +2135,21 @@ public:
       accumulate_frailty( s );
       trigger_chaos_brand( s );
       trigger_initiative( s );
+
+      if ( impact_energize_action )
+      {
+        impact_energize_action->execute();
+      }
+    }
+  }
+
+  void execute() override
+  {
+    ab::execute();
+
+    if ( execute_energize_action )
+    {
+      execute_energize_action->execute();
     }
   }
 
@@ -2546,6 +2585,18 @@ struct demon_hunter_spell_t : public wounded_quarry_accumulator_t<demon_hunter_a
                         util::string_view o = {} )
     : base_t( n, p, s, o )
   {
+  }
+};
+
+struct demon_hunter_energize_t : public demon_hunter_action_t<spell_t>
+{
+  demon_hunter_energize_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil() )
+    : base_t( n, p, s, "" )
+  {
+    may_miss = may_block = may_dodge = may_parry = callbacks = false;
+    background = dual = true;
+    energize_type     = action_energize::ON_CAST;
+    target            = p;
   }
 };
 
@@ -4897,9 +4948,8 @@ struct consume_base_t : public demon_hunter_spell_t
   {
     cooldown = p->cooldown.consume;
 
-    energize_type     = action_energize::ON_CAST;
-    energize_resource = p->spec.consume_energize->effectN( 1 ).resource_gain_type();
-    energize_amount   = p->spec.consume_energize->effectN( 1 ).resource( energize_resource );
+    execute_energize_action =
+        p->get_background_action<demon_hunter_energize_t>( "consume_energize", p->spec.consume_energize );
   }
 
   void execute() override
@@ -4920,7 +4970,6 @@ struct devour_t : public consume_base_t
   devour_t( demon_hunter_t* p, util::string_view o ) : consume_base_t( "devour", p, p->spec.devour, o )
   {
     reap_cdr = timespan_t::from_millis( p->spec.void_metamorphosis->effectN( 14 ).base_value() );
-    energize_amount += p->spec.devour->effectN( 2 ).resource( energize_resource );
   }
 
   void execute() override
@@ -4932,7 +4981,7 @@ struct devour_t : public consume_base_t
 
   bool action_ready() override
   {
-    if ( !p()->buff.metamorphosis->check() )
+    if ( p()->buff.metamorphosis->check() )
     {
       return false;
     }
@@ -5011,27 +5060,14 @@ struct void_buildup_t : public demon_hunter_spell_t
 
 struct soul_immolation_t : public demon_hunter_spell_t
 {
-  struct soul_immolation_energize_t : public demon_hunter_spell_t
-  {
-    soul_immolation_energize_t( util::string_view n, demon_hunter_t* p )
-      : demon_hunter_spell_t( n, p, p->spec.soul_immolation_energize, "" )
-    {
-      may_miss = may_block = may_dodge = may_parry = callbacks = false;
-      background = dual = true;
-      energize_type     = action_energize::ON_CAST;
-      target            = p;
-    }
-  };
-
-  soul_immolation_energize_t* energize_action;
-
   soul_immolation_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o = "" )
-    : demon_hunter_spell_t( n, p, s, o ), energize_action( nullptr )
+    : demon_hunter_spell_t( n, p, s, o )
   {
     // self damage doesn't count as DPS
     stats->type = stats_e::STATS_NEUTRAL;
 
-    energize_action = p->get_background_action<soul_immolation_energize_t>( "soul_immolation_energize" );
+    tick_energize_action = p->get_background_action<demon_hunter_energize_t>( "soul_immolation_energize",
+                                                                              p->spec.soul_immolation_energize );
   }
 
   void execute() override
@@ -5049,8 +5085,6 @@ struct soul_immolation_t : public demon_hunter_spell_t
   void tick( dot_t* d ) override
   {
     demon_hunter_spell_t::tick( d );
-
-    energize_action->execute();
 
     // seems to spawn a soul fragment every other tick, starting with the first tick
     if ( d->current_tick % 2 == 0 )
@@ -5130,24 +5164,11 @@ struct reap_base_t : public demon_hunter_spell_t
     }
   };
 
-  struct reap_energize_t : public demon_hunter_spell_t
-  {
-    reap_energize_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s )
-      : demon_hunter_spell_t( n, p, s, "" )
-    {
-      may_miss = may_block = may_dodge = may_parry = callbacks = false;
-      background = dual = true;
-      energize_type     = action_energize::ON_CAST;
-      target            = p;
-    }
-  };
-
   reap_damage_t* damage_action;
-  reap_energize_t* energize_action;
 
   reap_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o,
                const spell_data_t* damage_s, const spell_data_t* energize_s = nullptr )
-    : demon_hunter_spell_t( n, p, s, o ), damage_action( nullptr ), energize_action( nullptr )
+    : demon_hunter_spell_t( n, p, s, o ), damage_action( nullptr )
   {
     cooldown = p->cooldown.reap;
 
@@ -5156,16 +5177,13 @@ struct reap_base_t : public demon_hunter_spell_t
 
     if ( p->talent.devourer.scythes_embrace->ok() && energize_s )
     {
-      energize_action = p->get_background_action<reap_energize_t>( fmt::format( "{}_energize", n ), energize_s );
+      execute_energize_action =
+          p->get_background_action<demon_hunter_energize_t>( fmt::format( "{}_energize", n ), energize_s );
     }
   }
 
   void execute() override
   {
-    if ( energize_action )
-    {
-      energize_action->execute();
-    }
     p()->buff.reap->trigger();
     demon_hunter_spell_t::execute();
 
@@ -10357,8 +10375,7 @@ unsigned demon_hunter_t::get_total_soul_fragments( soul_fragment type_mask ) con
       [ &type_mask ]( unsigned acc, soul_fragment_t* frag ) { return acc + frag->is_type( type_mask ); } );
 }
 
-
- void demon_hunter_t::fury_state_t::start()
+void demon_hunter_t::fury_state_t::start()
 {
   assert( !next_drain_event );
 
@@ -10395,7 +10412,7 @@ double demon_hunter_t::fury_state_t::fury_drain_per_second( int stacks ) const
   return drain;
 }
 
-timespan_t demon_hunter_t::fury_state_t:: time_to_next_tick( int stacks ) const
+timespan_t demon_hunter_t::fury_state_t::time_to_next_tick( int stacks ) const
 {
   return 1.0_s / fury_drain_per_second( stacks );
 }
