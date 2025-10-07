@@ -348,6 +348,7 @@ public:
       player_talent_t charred_warblades;  // NYI Vengeance
 
       player_talent_t chaos_nova;
+      player_talent_t void_nova;
       player_talent_t improved_disrupt;
       player_talent_t consume_magic;
       player_talent_t aldrachi_design;
@@ -411,7 +412,7 @@ public:
       player_talent_t beckon;
       player_talent_t voidglare_boon;
 
-      player_talent_t voidstep;              // NYI
+      player_talent_t voidstep;  // NYI
       player_talent_t up_close;
       player_talent_t impending_apocalypse;  // NYI
       player_talent_t rolling_torment;       // NYI
@@ -8695,6 +8696,7 @@ void demon_hunter_t::init_spells()
   talent.demon_hunter.charred_warblades = find_talent_spell( talent_tree::CLASS, "Charred Warglaives" );
 
   talent.demon_hunter.chaos_nova       = find_talent_spell( talent_tree::CLASS, "Chaos Nova" );
+  talent.demon_hunter.void_nova        = find_talent_spell( talent_tree::CLASS, "Void Nova" );
   talent.demon_hunter.improved_disrupt = find_talent_spell( talent_tree::CLASS, "Improved Disrupt" );
   talent.demon_hunter.consume_magic    = find_talent_spell( talent_tree::CLASS, "Consume Magic" );
   talent.demon_hunter.aldrachi_design  = find_talent_spell( talent_tree::CLASS, "Aldrachi Design" );
