@@ -10129,6 +10129,7 @@ void demon_hunter_t::reset()
   }
 
   soul_fragments.clear();
+  devourer_fury_state.reset();
 }
 
 // demon_hunter_t::merge ==========================================================
