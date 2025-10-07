@@ -7701,7 +7701,7 @@ struct shattered_souls_callback_t : public demon_hunter_proc_callback_t
   {
     demon_hunter_proc_callback_t::execute(action, state);
 
-    if ( state->result_total <= 0 )
+    if ( state->proc_type() == PROC1_PERIODIC || state->result_total <= 0 )
     {
       return;
     }
