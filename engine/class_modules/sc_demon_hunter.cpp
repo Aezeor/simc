@@ -10430,9 +10430,7 @@ void demon_hunter_t::fury_state_t::drain()
   last_tick = p()->sim->current_time();
   drain_stacks++;
 
-  //p()->resource_loss( RESOURCE_FURY, p()->active.void_buildup->energize_amount, p()->gain.void_buildup, p()->active.void_buildup );
-
-  p()->active.void_buildup->stats->add_execute( last_tick, p() );
+  p()->active.void_buildup->stats->add_execute( 0_s, p() );
   p()->active.void_buildup->consume_resource();
 
   if ( p()->resources.current[ RESOURCE_FURY ] <= 0.0 )
