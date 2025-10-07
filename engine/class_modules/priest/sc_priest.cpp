@@ -161,8 +161,6 @@ public:
     {
       priest().trigger_entropic_rift();
     }
-
-    priest().buffs.darkness_from_light->expire();
   }
 
   bool insidious_ire_active() const
@@ -391,7 +389,7 @@ struct halo_spell_t final : public priest_spell_t
   {
     aoe        = -1;
     background = true;
-    radius     = data().max_range() + p.talents.archon.power_surge->effectN( 1 ).base_value();
+    radius     = data().max_range();
     range      = 0;
     travel_speed =
         radius / 2;  // These do not seem to match up to the animation, which would be 2.5s. TODO: Check later
@@ -471,7 +469,7 @@ struct halo_heal_t final : public priest_heal_t
   {
     aoe        = -1;
     background = true;
-    radius     = data().max_range() + p.talents.archon.power_surge->effectN( 1 ).base_value();
+    radius     = data().max_range();
     range      = 0;
     travel_speed =
         radius / 2;  // These do not seem to match up to the animation, which would be 2.5s. TODO: Check later
@@ -714,14 +712,12 @@ struct power_word_fortitude_t final : public priest_spell_t
 // ==========================================================================
 struct smite_base_t : public priest_spell_t
 {
-  timespan_t t31_2pc_extend;
   timespan_t divine_procession_extend;
   action_t* child_searing_light;
 
   smite_base_t( priest_t& p, util::string_view name, const spell_data_t* s, bool bg = false,
                 util::string_view options_str = {} )
     : priest_spell_t( name, p, s ),
-      t31_2pc_extend( priest().sets->set( PRIEST_DISCIPLINE, T31, B2 )->effectN( 1 ).time_value() ),
       divine_procession_extend( priest().talents.discipline.divine_procession->effectN( 1 ).time_value() ),
       child_searing_light( priest().background_actions.searing_light )
 
@@ -757,9 +753,6 @@ struct smite_base_t : public priest_spell_t
     if ( priest().talents.surge_of_light.enabled() )
       priest().buffs.surge_of_light->trigger();
 
-    if ( p().sets->has_set_bonus( PRIEST_DISCIPLINE, TWW1, B4 ) )
-      priest().buffs.darkness_from_light->trigger();
-
     if ( priest().talents.holy.holy_word_chastise.enabled() )
     {
       timespan_t chastise_cdr =
@@ -775,28 +768,6 @@ struct smite_base_t : public priest_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      if ( priest().sets->has_set_bonus( PRIEST_DISCIPLINE, T31, B2 ) )
-      {
-        if ( p().allies_with_atonement.size() > 0 )
-        {
-          /*auto it = *( std::min_element( p().allies_with_atonement.begin(), p().allies_with_atonement.end(),
-                                         [ this ]( player_t* a, player_t* b ) {
-                                           return a->health_percentage() < b->health_percentage() &&
-                                                  priest().find_target_data( b )->buffs.atonement->remains() < 30_s;
-                                         } ) );*/
-
-          auto idx = rng().range( 0U, as<unsigned>( p().allies_with_atonement.size() ) );
-
-          auto it = p().allies_with_atonement[ idx ];
-
-          auto atone = priest().find_target_data( it )->buffs.atonement;
-          if ( atone->remains() < 30_s )
-          {
-            atone->extend_duration( player, t31_2pc_extend );
-          }
-        }
-      }
-
       if ( priest().talents.discipline.divine_procession.enabled() )
       {
         if ( p().allies_with_atonement.size() > 0 )
@@ -833,11 +804,6 @@ struct smite_t final : public smite_base_t
   smite_t( priest_t& p, util::string_view options_str )
     : smite_base_t( p, "smite", p.find_class_spell( "Smite" ), false, options_str ), shadow_smite( nullptr )
   {
-    if ( p.sets->has_set_bonus( PRIEST_DISCIPLINE, T31, B4 ) )
-    {
-      shadow_smite = new smite_base_t( p, "smite_t31", priest().specs.smite_t31, true );
-      add_child( shadow_smite );
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -921,22 +887,8 @@ struct power_infusion_t final : public priest_spell_t
     // Trigger PI on the actor only if casting on itself
     if ( priest().options.self_power_infusion || priest().talents.twins_of_the_sun_priestess.enabled() )
     {
-      bool tww2_4pc = priest().sets->has_set_bonus( PRIEST_SHADOW, TWW2, B4 );
-      if ( tww2_4pc && player->buffs.power_infusion->check() )
-      {
-        timespan_t extend_amount =
-            std::min( player->buffs.power_infusion->buff_duration(), 30_s - player->buffs.power_infusion->remains() );
-        if ( extend_amount > 0_s )
-          player->buffs.power_infusion->extend_duration( player, extend_amount );
-
-        player->buffs.power_infusion->current_value = power_infusion_magnitude;
-        player->buffs.power_infusion->invalidate_cache();
-      }
-      else
-      {
-        player->buffs.power_infusion->trigger( 1, power_infusion_magnitude, -1,
-                                               player->buffs.power_infusion->buff_duration() );
-      }
+      player->buffs.power_infusion->trigger( 1, power_infusion_magnitude, -1,
+                                             player->buffs.power_infusion->buff_duration() );
     }
   }
 };
@@ -1947,12 +1899,6 @@ struct power_word_shield_t final : public priest_absorb_t
       m *= 1 + priest().buffs.weal_and_woe->data().effectN( 2 ).percent() * priest().buffs.weal_and_woe->check();
     }
 
-    if ( priest().buffs.darkness_from_light->check() )
-    {
-      m *= 1 + priest().buffs.darkness_from_light->data().effectN( 2 ).percent() *
-                   priest().buffs.darkness_from_light->check();
-    }
-
     return m;
   }
 
@@ -1970,11 +1916,6 @@ struct power_word_shield_t final : public priest_absorb_t
 
     priest_absorb_t::execute();
 
-    if ( priest().buffs.darkness_from_light->check() )
-    {
-      priest().buffs.darkness_from_light->expire();
-    }
-
     priest().buffs.weal_and_woe->expire();
   }
 
@@ -1991,11 +1932,6 @@ struct power_word_shield_t final : public priest_absorb_t
     {
       priest_td_t& td = get_td( s->target );
       td.buffs.atonement->trigger( atonement_duration );
-    }
-
-    if ( priest().sets->has_set_bonus( PRIEST_DISCIPLINE, T29, B2 ) )
-    {
-      priest().buffs.light_weaving->trigger();
     }
   }
 };
@@ -2638,12 +2574,6 @@ double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
 
-  // TWW1 Set Bonus for pet spells, this double dips with pet spells
-  if ( buffs.devouring_chorus->check() )
-  {
-    m *= ( 1.0 + buffs.devouring_chorus->check_stack_value() );
-  }
-
   return m;
 }
 
@@ -2836,10 +2766,6 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
   if ( name == "flash_heal" )
   {
     return new flash_heal_t( *this, options_str );
-  }
-  if ( name == "renew" )
-  {
-    return new renew_t( *this, options_str );
   }
   if ( name == "void_blast" )
   {
@@ -3086,8 +3012,8 @@ void priest_t::init_spells()
   talents.purify_disease     = CT( "Purify Disease" );  // NYI
   talents.power_infusion     = CT( "Power Infusion" );
   talents.painful_invocation = CT( "Painful Invocation" );
-  talents.sheer_terror       = CT( "Sheer Terror" );        // NYI
-  talents.petrifying_scream  = CT( "Petrifying Scream" );   // NYI
+  talents.sheer_terror       = CT( "Sheer Terror" );       // NYI
+  talents.petrifying_scream  = CT( "Petrifying Scream" );  // NYI
   // Row 4
   talents.surge_of_light             = CT( "Surge of Light" );
   talents.surge_of_light_buff        = find_spell( 114255 );
@@ -3908,7 +3834,6 @@ void priest_t::create_options()
       opt_float( "priest.crystalline_reflection_damage_mult", options.crystalline_reflection_damage_mult, 0.0, 1.0 ) );
   add_option( opt_bool( "priest.no_channel_macro_mfi", options.no_channel_macro_mfi ) );
   add_option( opt_bool( "priest.discipline_in_raid", options.discipline_in_raid ) );
-  add_option( opt_bool( "priest.shadow_tww2_4pc_insanity", options.shadow_tww2_4pc_insanity ) );
   add_option( opt_float( "priest.synergistic_brewterializer_tof_chance", options.synergistic_brewterializer_tof_chance,
                          0.0, 1.0 ) );
   add_option( opt_float( "priest.synergistic_brewterializer_barrel_hit_chance",

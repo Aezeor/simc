@@ -290,11 +290,6 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
       parse_effects( p().o().buffs.voidform, effect_mask_t( true ).disable( 3 ), IGNORE_STACKS );  // Skip E3 for AM
       parse_effects( p().o().buffs.shadowform );
     }
-
-    if ( p().o().sets->has_set_bonus( PRIEST_SHADOW, TWW1, B4 ) )
-    {
-      parse_effects( p().o().buffs.devouring_chorus );
-    }
   }
   void apply_debuffs_effects()
   {

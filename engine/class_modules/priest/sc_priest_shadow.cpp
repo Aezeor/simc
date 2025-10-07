@@ -808,11 +808,6 @@ struct shadow_word_madness_t final : public priest_spell_t
     {
       priest().buffs.mind_devourer->decrement();
     }
-
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, TWW1, B4 ) )
-    {
-      priest().buffs.devouring_chorus->trigger();
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -1921,13 +1916,6 @@ void priest_t::create_buffs_shadow()
   buffs.death_and_madness_reset =
       make_buff( this, "death_and_madness_reset", talents.shadow.death_and_madness_reset_buff )
           ->set_trigger_spell( talents.shadow.death_and_madness );
-
-  // Tier Sets
-  buffs.devouring_chorus = make_buff_fallback( sets->has_set_bonus( PRIEST_SHADOW, TWW1, B4 ), this, "devouring_chorus",
-                                               sets->set( PRIEST_SHADOW, TWW1, B4 )->effectN( 1 ).trigger() )
-                               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-                               ->set_default_value_from_effect( 1 );
-
 }  // namespace priestspace
 
 void priest_t::init_rng_shadow()

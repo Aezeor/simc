@@ -221,9 +221,6 @@ public:
     propagate_const<buff_t*> vision_of_nzoth;
 
     // Tier Sets
-    propagate_const<buff_t*> light_weaving;
-    propagate_const<buff_t*> devouring_chorus;
-    propagate_const<buff_t*> darkness_from_light;
     propagate_const<buff_t*> ascension;         // TWW3 Archon Set 2pc
     propagate_const<buff_t*> tww3_archon_4pc;   // TWW3 Archon Set 4pc helper
     propagate_const<buff_t*> overflowing_void;  // TWW3 VW Set 4pc
@@ -617,7 +614,6 @@ public:
     const spell_data_t* penance;
     const spell_data_t* penance_channel;
     const spell_data_t* penance_tick;
-    const spell_data_t* smite_t31;
 
     // Holy
     const spell_data_t* holy_priest;  // General holy data
@@ -866,8 +862,6 @@ public:
 
     // Controls whether Discipline is "in a raid" or not.
     bool discipline_in_raid = false;
-
-    bool shadow_tww2_4pc_insanity = true;
 
     // 30% Chance that a Fire Mage steals the proc because you are slow or you just dont hit it or it just bugs out.
     double synergistic_brewterializer_tof_chance = 0.7;
@@ -1176,31 +1170,12 @@ public:
 
       // Buffs non-periodic spells
       parse_effects( p().buffs.screams_of_the_void );
-
-      if ( p().sets->has_set_bonus( PRIEST_SHADOW, TWW1, B4 ) )
-      {
-        parse_effects( p().buffs.devouring_chorus );
-      }
-
-      if ( p().sets->has_set_bonus( PRIEST_SHADOW, TWW2, B4 ) )
-      {
-        parse_effects( ab::player->buffs.power_infusion,
-                       p().sets->set( PRIEST_SHADOW, TWW2, B4 )->effectN( 2 ).percent() );
-      }
     }
 
     // DISCIPLINE BUFF EFFECTS
     if ( p().specialization() == PRIEST_DISCIPLINE )
     {
-      // 280398 applies the buff to the correct spells, but does not contain the correct buff value
-      // (12% instead of 40%) So, override to use our provided default_value (40%) instead
-      parse_effects( p().buffs.light_weaving );
       parse_effects( p().buffs.weal_and_woe );
-
-      if ( p().sets->has_set_bonus( PRIEST_DISCIPLINE, TWW1, B4 ) )
-      {
-        parse_effects( p().buffs.darkness_from_light );
-      }
     }
 
     // HOLY BUFF EFFECTS

@@ -563,9 +563,6 @@ public:
     priest().buffs.power_of_the_dark_side->expire();
 
     priest().buffs.harsh_discipline->decrement();
-
-    if ( p().sets->has_set_bonus( PRIEST_DISCIPLINE, TWW1, B4 ) )
-      priest().buffs.darkness_from_light->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -701,11 +698,6 @@ void priest_t::create_buffs_discipline()
   }
 
   buffs.weal_and_woe = make_buff( this, "weal_and_woe", talents.discipline.weal_and_woe_buff );
-
-  // Discipline T29 2-piece bonus
-  buffs.light_weaving = make_buff( this, "light_weaving", find_spell( 394609 ) );
-
-  buffs.darkness_from_light = make_buff( this, "darkness_from_light", find_spell( 455033 ) );
 }
 
 void priest_t::init_rng_discipline()
@@ -788,7 +780,6 @@ void priest_t::init_spells_discipline()
   specs.penance         = find_spell( 47540 );
   specs.penance_channel = find_spell( 47758 );   // Channel spell, triggered by 47540, executes 47666 every tick
   specs.penance_tick    = find_spell( 47666 );   // Not triggered from 47540, only 47758
-  specs.smite_t31       = find_spell( 425529 );  // T31 Shadow Smite
 }
 
 action_t* priest_t::create_action_discipline( util::string_view name, util::string_view options_str )
