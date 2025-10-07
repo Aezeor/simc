@@ -4680,6 +4680,7 @@ struct the_hunt_t : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exe
     {
       dual          = true;
       impact_action = p->get_background_action<the_hunt_dot_t>( "the_hunt_dot" );
+      add_child( impact_action );
     }
 
     void impact( action_state_t* s ) override
@@ -4698,8 +4699,7 @@ struct the_hunt_t : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exe
   {
     movement_directionality             = movement_direction_type::TOWARDS;
     impact_action                       = p->get_background_action<the_hunt_damage_t>( "the_hunt_damage" );
-    impact_action->stats                = stats;
-    impact_action->impact_action->stats = stats;
+    add_child( impact_action );
   }
 
   void execute() override
@@ -5048,7 +5048,7 @@ struct voidblade_t : public demon_hunter_spell_t
     movement_directionality = movement_direction_type::TOWARDS;
 
     execute_action        = p->get_background_action<voidblade_damage_t>( "voidblade_damage" );
-    execute_action->stats = stats;
+    add_child( execute_action );
   }
 };
 
@@ -5125,7 +5125,7 @@ struct eradicate_t : public demon_hunter_spell_t
   eradicate_t( demon_hunter_t* p, util::string_view o ) : demon_hunter_spell_t( "eradicate", p, p->spec.eradicate, o )
   {
     damage_action        = p->get_background_action<eradicate_damage_t>( "eradicate_damage", p->spec.eradicate_damage );
-    damage_action->stats = stats;
+    add_child( damage_action );
   }
 
   void execute() override
@@ -5187,7 +5187,7 @@ struct reap_base_t : public demon_hunter_spell_t
     cooldown = p->cooldown.reap;
 
     damage_action        = p->get_background_action<reap_damage_t>( fmt::format( "{}_damage", n ), damage_s );
-    damage_action->stats = stats;
+    add_child( damage_action );
 
     if ( p->talent.devourer.scythes_embrace->ok() && energize_s )
     {
@@ -5312,10 +5312,10 @@ struct void_ray_t : public demon_hunter_spell_t
     ability_lag = p->world_lag;
 
     tick        = p->get_background_action<void_ray_tick_t>( "void_ray_tick", p->spec.void_ray_tick );
-    tick->stats = stats;
+    add_child( tick );
 
     tick_meta        = p->get_background_action<void_ray_tick_t>( "void_ray_tick_meta", p->spec.void_ray_tick_meta );
-    tick_meta->stats = stats;
+    add_child( tick_meta );
 
     if ( p->talent.devourer.voidglare_boon->ok() )
     {
@@ -6426,7 +6426,7 @@ struct felblade_t : public inertia_trigger_t<demon_hunter_attack_t>
     movement_directionality = movement_direction_type::TOWARDS;
 
     execute_action        = p->get_background_action<felblade_damage_t>( "felblade_damage" );
-    execute_action->stats = stats;
+    add_child( execute_action );
 
     if ( p->specialization() == DEMON_HUNTER_HAVOC && p->talent.aldrachi_reaver.warblades_hunger->ok() )
     {
@@ -6496,7 +6496,7 @@ struct fel_rush_t : public inertia_trigger_t<demon_hunter_attack_t>
     min_gcd                                      = trigger_gcd;
 
     execute_action        = p->get_background_action<fel_rush_damage_t>( "fel_rush_damage" );
-    execute_action->stats = stats;
+    add_child( execute_action );
 
     // Fel Rush does damage in a further line than it moves you
     base_teleport_distance                = execute_action->radius - 5;
@@ -6728,7 +6728,7 @@ struct soul_cleave_base_t
 
     execute_action =
         p->get_background_action<soul_cleave_damage_t>( name_str + "_damage", name_str, data().effectN( 2 ).trigger() );
-    execute_action->stats = stats;
+    add_child( execute_action );
 
     if ( p->spec.soul_cleave_2->ok() )
     {
@@ -6896,7 +6896,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
     }
 
     execute_action        = damage;
-    execute_action->stats = stats;
+    add_child( execute_action );
 
     if ( source == glaive_source::SCREAMING_BRUTALITY_BLADE_DANCE_THROW ||
          source == glaive_source::SCREAMING_BRUTALITY_DEATH_SWEEP_THROW )
@@ -7138,7 +7138,7 @@ struct vengeful_retreat_t
     : base_t( "vengeful_retreat", p, p->talent.demon_hunter.vengeful_retreat, options_str )
   {
     execute_action        = p->get_background_action<vengeful_retreat_damage_t>( "vengeful_retreat_damage" );
-    execute_action->stats = stats;
+    add_child( execute_action );
 
     base_teleport_distance                        = VENGEFUL_RETREAT_DISTANCE;
     movement_directionality                       = movement_direction_type::OMNI;
