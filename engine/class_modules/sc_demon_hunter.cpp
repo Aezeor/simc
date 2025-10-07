@@ -10356,9 +10356,9 @@ void demon_hunter_t::fury_state_t::reschedule_drain()
   if ( !next_drain_event )
     return;
 
-  double completed = next_drain_event->remains() / static_cast<drain_event_t*>( next_drain_event )->delta;
+  double percent_remaining = 1.0 - next_drain_event->remains() / static_cast<drain_event_t*>( next_drain_event )->delta;
 
-  auto new_time = time_to_next_tick( drain_stacks ) * completed;
+  auto new_time = time_to_next_tick( drain_stacks ) * percent_remaining;
 
   next_drain_event->reschedule( new_time );
 }
@@ -10368,6 +10368,7 @@ void demon_hunter_t::fury_state_t::stop()
   event_t::cancel( next_drain_event );
   drain_stacks = 0;
   start_time = last_tick = timespan_t::min();
+  p()->buff.metamorphosis->expire();
 }
 
 void demon_hunter_t::fury_state_t::reset()
