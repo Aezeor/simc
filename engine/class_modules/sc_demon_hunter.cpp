@@ -4991,7 +4991,7 @@ struct devour_t : public consume_base_t
 
   bool action_ready() override
   {
-    if ( p()->buff.metamorphosis->check() )
+    if ( !p()->buff.metamorphosis->check() )
     {
       return false;
     }
