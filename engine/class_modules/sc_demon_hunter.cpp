@@ -407,8 +407,8 @@ public:
       player_talent_t voidpurge;
 
       player_talent_t hungering_slash;  // NYI
-      player_talent_t voidrage;         // NYI
-      player_talent_t dark_ultimatum;   // NYI
+      player_talent_t voidrage;
+      player_talent_t dark_ultimatum;  // NYI
       player_talent_t beckon;
       player_talent_t voidglare_boon;
 
@@ -665,6 +665,7 @@ public:
     // Devourer
     const spell_data_t* devourer_demon_hunter;
     const spell_data_t* consume;
+    const spell_data_t* consume_energize;
     const spell_data_t* devour;
     const spell_data_t* voidblade;
     const spell_data_t* soul_immolation_energize;
@@ -4893,6 +4894,10 @@ struct consume_base_t : public demon_hunter_spell_t
     : demon_hunter_spell_t( n, p, s, o )
   {
     cooldown = p->cooldown.consume;
+
+    energize_type     = action_energize::ON_CAST;
+    energize_resource = p->spec.consume_energize->effectN( 1 ).resource_gain_type();
+    energize_amount   = p->spec.consume_energize->effectN( 1 ).resource( energize_resource );
   }
 
   void execute() override
@@ -4913,6 +4918,7 @@ struct devour_t : public consume_base_t
   devour_t( demon_hunter_t* p, util::string_view o ) : consume_base_t( "devour", p, p->spec.devour, o )
   {
     reap_cdr = timespan_t::from_millis( p->spec.void_metamorphosis->effectN( 14 ).base_value() );
+    energize_amount += p->spec.devour->effectN( 2 ).resource( energize_resource );
   }
 
   void execute() override
@@ -7812,7 +7818,8 @@ struct shattered_souls_callback_t : public demon_hunter_proc_callback_t
 
     if ( rng().roll( chance ) )
     {
-      p()->sim->out_debug.printf( "%s proc-ed Shattered Souls with %s (%u) chance: %.3f", p()->name(), action->name(), action->data().id(), chance );
+      p()->sim->out_debug.printf( "%s proc-ed Shattered Souls with %s (%u) chance: %.3f", p()->name(), action->name(),
+                                  action->data().id(), chance );
       p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
     }
   }
@@ -8663,7 +8670,7 @@ void demon_hunter_t::init_resources( bool force )
   if ( options.initial_fury > 0.0 )
     resources.current[ RESOURCE_FURY ] = options.initial_fury;
 
-  expected_max_health                = calculate_expected_max_health();
+  expected_max_health = calculate_expected_max_health();
 }
 
 // demon_hunter_t::init_special_effects =====================================
@@ -8799,6 +8806,7 @@ void demon_hunter_t::init_spells()
   // Devourer Spells
   spec.devourer_demon_hunter       = find_specialization_spell( "Devourer Demon Hunter" );
   spec.consume                     = find_spell( 473662, DEMON_HUNTER_DEVOURER );
+  spec.consume_energize            = find_spell( 1261710, DEMON_HUNTER_DEVOURER );
   spec.devour                      = find_spell( 1217610, DEMON_HUNTER_DEVOURER );
   spec.voidblade                   = find_spell( 1245414, DEMON_HUNTER_DEVOURER );
   spec.soul_immolation_energize    = find_spell( 1242475, DEMON_HUNTER_DEVOURER );
