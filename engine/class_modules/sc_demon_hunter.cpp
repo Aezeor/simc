@@ -1193,10 +1193,10 @@ public:
 
     fury_state_t( demon_hunter_t* a )
       : next_drain_event( nullptr ),
-        actor( a ),
-        drain_stacks( 0 ),
         start_time( timespan_t::min() ),
-        last_tick( timespan_t::min() )
+        last_tick( timespan_t::min() ),
+        drain_stacks( 0 ),
+        actor( a )
     {
     }
 
@@ -1248,6 +1248,8 @@ public:
 
     void start();
 
+    void schedule_tick();
+
     struct drain_event_t : public event_t
     {
       demon_hunter_t* dh;
@@ -1259,7 +1261,7 @@ public:
 
       const char* name() const override
       {
-        return "Void Buildup";
+        return "Void-Buildup";
       }
 
       void execute() override
@@ -10400,8 +10402,16 @@ void demon_hunter_t::fury_state_t::start()
   p()->buff.metamorphosis->trigger();
 
   p()->resource_gain( RESOURCE_FURY, 200.00, p()->gain.metamorphosis );
+  
+  start_time = actor->sim->current_time();
+  schedule_tick();
+}
 
-  start_time = last_tick = actor->sim->current_time();
+void demon_hunter_t::fury_state_t::schedule_tick()
+{
+  assert( !next_drain_event );
+
+  last_tick = actor->sim->current_time();
   next_drain_event       = make_event<drain_event_t>( *actor->sim, actor, time_to_next_tick( drain_stacks ) );
 }
 
@@ -10449,7 +10459,8 @@ void demon_hunter_t::fury_state_t::reschedule_drain()
 
 void demon_hunter_t::fury_state_t::stop()
 {
-  event_t::cancel( next_drain_event );
+  next_drain_event = nullptr;
+
   drain_stacks = 0;
   start_time = last_tick = timespan_t::min();
   p()->buff.metamorphosis->expire();
@@ -10457,6 +10468,7 @@ void demon_hunter_t::fury_state_t::stop()
 
 void demon_hunter_t::fury_state_t::reset()
 {
+  event_t::cancel( next_drain_event );
   stop();
 }
 
@@ -10479,8 +10491,9 @@ void demon_hunter_t::fury_state_t::drain()
       return;
     }
   }
-  event_t::cancel( next_drain_event );
-  next_drain_event = make_event<drain_event_t>( *p()->sim, p(), time_to_next_tick( drain_stacks ) );
+
+  next_drain_event = nullptr;
+  schedule_tick();
 }
 
 // demon_hunter_t::activate_soul_fragment ===================================
