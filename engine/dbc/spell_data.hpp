@@ -84,7 +84,7 @@ struct power_type_data_t
   { return timespan_t::from_millis( _regen_interrupt_time ); }
 
   double regen_per_second( bool combat ) const
-  { return combat ? _regen_combat : _regen_ooc; }
+  { return combat ? _regen_combat / divisor() : _regen_ooc / divisor(); }
 
   bool is_hasted_regen() const
   { return _flags & 0x400; }
