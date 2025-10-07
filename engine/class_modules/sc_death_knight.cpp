@@ -10667,9 +10667,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     auto td = get_td( state->target );
 
     trigger_disease_effects( state, td, td->dot.virulent_plague );
-
-    if ( p()->talent.unholy.scourging.ok() )
-      trigger_disease_effects( state, td, td->dot.dread_plague );
+    trigger_disease_effects( state, td, td->dot.dread_plague );
 
     if ( p()->talent.rider.trollbanes_icy_fury.ok() && td->debuff.chains_of_ice_trollbane_slow->check() &&
          p()->pets.trollbane.active_pet() != nullptr )
@@ -10724,7 +10722,8 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
       return;
 
     action_state_t* state = dot->current_action->get_state( dot->state );
-    timespan_t dur        = dot->current_action->tick_time( state );
+    timespan_t dur = 3_s;  // Not in data. Testing shows this to be the base 3 second tick time of our DoTs rather than
+                           // current tick time
     action_state_t::release( state );
 
     if ( p()->talent.unholy.scourging.ok() )
