@@ -231,6 +231,12 @@
       { "data_type": "B", "field": "unk_7"}
     ]
   },
+  "ChrClassesXPowerTypes" : {
+    "parent": "ChrClasses",
+    "fields": [
+      { "data_type": "b", "field": "type" }
+    ]
+  },
   "ChrSpecialization": {
     "fields": [
       { "data_type": "S", "field": "unk_4",      "formats": { } },

@@ -63,6 +63,7 @@ struct power_type_data_t
   double _regen_combat;
   double _regen_ooc;
   unsigned _flags;
+  unsigned _class_mask;
 
   power_e type() const
   { return static_cast<power_e>( _power_type ); }
@@ -85,8 +86,10 @@ struct power_type_data_t
   double regen_per_second( bool combat ) const
   { return combat ? _regen_combat : _regen_ooc; }
 
-  bool hasted_regen() const
+  bool is_hasted_regen() const
   { return _flags & 0x400; }
+
+  bool is_active_for_class( player_e type ) const;
 
   static util::span<const power_type_data_t> data( bool ptr = false );
   static const power_type_data_t& find( power_e, bool ptr = false );

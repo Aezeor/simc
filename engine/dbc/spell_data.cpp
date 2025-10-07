@@ -33,6 +33,11 @@ util::span<const spelllabel_data_t> spelllabel_data_t::data( bool ptr )
 // Power Type Data - PowerType.dbc
 // ==========================================================================
 
+bool power_type_data_t::is_active_for_class( player_e type ) const
+{
+  return _class_mask & util::class_id_mask( type );
+}
+
 util::span<const power_type_data_t> power_type_data_t::data( bool ptr )
 {
   return SC_DBC_GET_DATA( __power_type_data, __ptr_power_type_data, ptr );
