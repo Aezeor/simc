@@ -101,7 +101,7 @@ std::pair<const curve_point_t*, const curve_point_t*> dbc_t::curve_point( unsign
   return { lower_bound, upper_bound };
 }
 
-double item_database::curve_point_value( dbc_t& dbc, unsigned curve_id, double point_value )
+double item_database::curve_point_value( const dbc_t& dbc, unsigned curve_id, double point_value )
 {
   auto curve_data = dbc.curve_point( curve_id, point_value );
 
@@ -173,14 +173,54 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
 {
   switch ( entry.type )
   {
+    // recursively apply an item bonus list
+    case ITEM_BONUS_APPLY_BONUS:
+    {
+      auto item_bonuses = item.player->dbc->item_bonus( entry.value_1 );
+      for ( const auto& bonus : item_bonuses )
+        apply_item_bonus( item, bonus );
+      break;
+    }
+    // set item level using a constant and a curve, and then apply any relevant squishes
+    case ITEM_BONUS_SQUISH_CURVE:
+    {
+      item.parsed.data.level = as<int>( util::round( curve_point_value( *item.player->dbc, entry.value_1, entry.value_2 ) ) );
+      // TODO: In the future, multiple squish curves may need to be applied here and
+      // we can extract them from ItemSquishEra.db2. For now, only the midnight curve
+      // needs to be applied and only when value_3 is 1.
+      if ( entry.value_3 == 1 )
+        item.parsed.data.level = as<int>( util::round( curve_point_value( *item.player->dbc, SQUISH_CURVE_MIDNIGHT, item.parsed.data.level ) ) );
+      item.parsed.has_midnight_scaling = true;
+      break;
+    }
+    case ITEM_BONUS_SCALE_CONFIG:
+    case ITEM_BONUS_SCALE_CONFIG_2: // TODO: Does this second one do anything differently? It might be supposed to use the item's drop level.
+    {
+      const auto& scaling_entries = item_scaling_config_data_t::find( entry.value_1, item.player->dbc->ptr );
+      if ( scaling_entries.size() == 0 )
+        break;
+      const auto& scaling_entry = scaling_entries[ 0 ];
+      const auto& offset_entries = item_offset_curve_data_t::find( scaling_entry.item_offset_curve_id, item.player->dbc->ptr );
+      if ( offset_entries.size() == 0 )
+        break;
+      const auto& offset_entry = offset_entries[ 0 ];
+      item.parsed.data.level = as<int>( util::round( curve_point_value( *item.player->dbc, offset_entry.curve_id, scaling_entry.item_level ) ) );
+      item.parsed.data.level += offset_entry.offset;
+      item.parsed.data.req_level = scaling_entry.player_level;
+      item.parsed.has_midnight_scaling = true;
+      break;
+    }
     // Adjust ilevel, value is in 'value_1' field
     case ITEM_BONUS_ILEVEL:
+      // Starting with the Midnight expansion, the new types above seem to prevent other
+      // item level overrides from applying.
       // Blizzard has currently unknown means to disable adjust ilevel item bonus on
-      // items. Currently, disable them on when bonus IDs 7215 or 7250 are present.
+      // items. Currently, disable them only when bonus IDs 7215 or 7250 are present.
       // TODO: This appears to be happening because of some kind of priority system for
       // item bonuses where these are applied last, overriding any other ajustments.
       if ( range::find( item.parsed.bonus_id, 7215 ) != item.parsed.bonus_id.end() ||
-           range::find( item.parsed.bonus_id, 7250 ) != item.parsed.bonus_id.end() )
+           range::find( item.parsed.bonus_id, 7250 ) != item.parsed.bonus_id.end() ||
+           item.parsed.has_midnight_scaling )
       {
         break;
       }
@@ -192,9 +232,12 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       item.parsed.data.level += entry.value_1;
       break;
     case ITEM_BONUS_SET_ILEVEL_2:
+      // Starting with the Midnight expansion, the new types above seem to prevent other
+      // item level overrides from applying.
       // TODO: confirm if these ilevel adjust disable IDs also affect type 42 bonus ids
       if ( range::find( item.parsed.bonus_id, 7215 ) != item.parsed.bonus_id.end() ||
-           range::find( item.parsed.bonus_id, 7250 ) != item.parsed.bonus_id.end() )
+           range::find( item.parsed.bonus_id, 7250 ) != item.parsed.bonus_id.end() ||
+           item.parsed.has_midnight_scaling )
       {
         break;
       }
@@ -411,6 +454,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
     case ITEM_BONUS_ILEVEL_IN_PVP:
       if ( item.sim->pvp_mode )
       {
+        // TODO: Should this be disabled if Midnight scaling bonuses are present?
         item.parsed.data.level += entry.value_1;
       }
       break;
@@ -1176,6 +1220,55 @@ static int get_bonus_id_base_ilevel( util::span<const item_bonus_entry_t> entrie
   return 0;
 }
 
+static std::pair<int, int> get_midnight_scaling_values( const dbc_t& dbc, util::span<const item_bonus_entry_t> entries )
+{
+  int item_level = 0;
+  int player_level = 0;
+  for ( const auto& entry : entries )
+  {
+    if ( entry.type == ITEM_BONUS_SQUISH_CURVE )
+    {
+      int item_level = as<int>( util::round( item_database::curve_point_value( dbc, entry.value_1, entry.value_2 ) ) );
+      // TODO: In the future, multiple squish curves may need to be applied here and
+      // we can extract them from ItemSquishEra.db2. For now, only the midnight curve
+      // needs to be applied and only when value_3 is 1.
+      if ( entry.value_3 == 1 )
+        item_level = as<int>( util::round( item_database::curve_point_value( dbc, SQUISH_CURVE_MIDNIGHT, item_level ) ) );
+    }
+
+    if ( entry.type == ITEM_BONUS_SCALE_CONFIG || entry.type == ITEM_BONUS_SCALE_CONFIG_2 ) // TODO: Is ITEM_BONUS_SCALE_CONFIG_2 different?
+    {
+      const auto& scaling_entries = item_scaling_config_data_t::find( entry.value_1, dbc.ptr );
+      if ( scaling_entries.size() == 0 )
+        continue;
+      const auto& scaling_entry = scaling_entries[ 0 ];
+      const auto& offset_entries = item_offset_curve_data_t::find( scaling_entry.item_offset_curve_id, dbc.ptr );
+      if ( offset_entries.size() == 0 )
+        continue;
+      const auto& offset_entry = offset_entries[ 0 ];
+      item_level = as<int>( util::round( item_database::curve_point_value( dbc, offset_entry.curve_id, scaling_entry.item_level ) ) );
+      item_level += offset_entry.offset;
+      player_level = scaling_entry.player_level;
+    }
+  }
+
+  return { item_level, player_level };
+}
+
+static std::vector<int> get_recursive_bonus_ids( util::span<const item_bonus_entry_t> entries )
+{
+  std::vector<int> bonus_ids;
+  for ( auto& entry : entries )
+  {
+    if ( entry.type == ITEM_BONUS_APPLY_BONUS )
+    {
+      bonus_ids.push_back( entry.value_1 );
+    }
+  }
+
+  return bonus_ids;
+}
+
 static std::string get_bonus_id_quality( util::span<const item_bonus_entry_t> entries )
 {
   for ( auto& entry : entries )
@@ -1352,7 +1445,9 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
          e.type != ITEM_BONUS_SCALING_2 && e.type != ITEM_BONUS_SET_ILEVEL &&
          e.type != ITEM_BONUS_ADD_RANK && e.type != ITEM_BONUS_QUALITY &&
          e.type != ITEM_BONUS_ADD_ITEM_EFFECT && e.type != ITEM_BONUS_MOD_ITEM_STAT &&
-         e.type != ITEM_BONUS_SET_ILEVEL_2 )
+         e.type != ITEM_BONUS_SET_ILEVEL_2  && e.type != ITEM_BONUS_SQUISH_CURVE &&
+         e.type != ITEM_BONUS_SCALE_CONFIG && e.type != ITEM_BONUS_APPLY_BONUS &&
+         e.type != ITEM_BONUS_SCALE_CONFIG_2 )
     {
       continue;
     }
@@ -1376,11 +1471,18 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
     int ilevel = get_bonus_id_ilevel( entries );
     int sockets = get_bonus_id_sockets( entries );
     int base_ilevel = get_bonus_id_base_ilevel( entries );
+    auto midnight_scaling = get_midnight_scaling_values( dbc, entries );
+    auto recursive_bonus_ids = get_recursive_bonus_ids( entries );
     auto stats = get_bonus_id_stats( entries );
     std::pair< std::pair<int, double>, std::pair<int, double> > scaling = get_bonus_id_scaling( dbc, entries );
     auto power_index = get_bonus_power_index( entries );
     std::string item_effects = get_bonus_item_effect( entries, dbc );
     auto item_mod_stat = get_bonus_mod_stat( entries );
+    int req_level = 0;
+    if ( midnight_scaling.first )
+      base_ilevel = midnight_scaling.first;
+    if ( midnight_scaling.second )
+      req_level = midnight_scaling.second;
 
     std::vector<std::string> fields;
 
@@ -1388,6 +1490,11 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
     if ( base_ilevel != 0 )
     {
       fields.push_back( "base_ilevel={ " + util::to_string( base_ilevel ) + " }" );
+    }
+
+    if ( req_level != 0 )
+    {
+      fields.push_back( "req_ilevel={ " + util::to_string( req_level ) + " }" );
     }
 
     if ( ! desc.empty() )
@@ -1445,6 +1552,20 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
       str += util::to_string( scaling.second.second ) + " @plvl " + util::to_string( scaling.second.first );
       str += " }";
       fields.push_back( str );
+    }
+
+    if ( !recursive_bonus_ids.empty() )
+    {
+      std::string recursive_str = "recursive_bonus_ids={ ";
+      bool first_bonus = true;
+        for ( auto b : recursive_bonus_ids )
+        {
+          if ( !first_bonus )
+            recursive_str += ", ";
+          recursive_str += util::to_string( b );
+          first_bonus = false;
+        }
+      fields.push_back( recursive_str + " }" );
     }
 
     if ( !item_effects.empty() )

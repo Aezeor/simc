@@ -90,7 +90,11 @@ enum item_bonus_type
   ITEM_BONUS_ADD_ITEM_EFFECT = 23,
   ITEM_BONUS_MOD_ITEM_STAT   = 25,  // Modify item stat to type
   ITEM_BONUS_ILEVEL_IN_PVP   = 36,  // Item has a higher level in PvP context
-  ITEM_BONUS_SET_ILEVEL_2    = 42   // Used in some DF (10.0) crafted items
+  ITEM_BONUS_SET_ILEVEL_2    = 42,  // Used in some DF (10.0) crafted items
+  ITEM_BONUS_SQUISH_CURVE    = 48,
+  ITEM_BONUS_SCALE_CONFIG    = 49,
+  ITEM_BONUS_APPLY_BONUS     = 50,
+  ITEM_BONUS_SCALE_CONFIG_2  = 51
 };
 
 enum proc_types

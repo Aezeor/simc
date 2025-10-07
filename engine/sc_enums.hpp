@@ -82,6 +82,9 @@ constexpr auto DIMINISHING_RETURN_SECONDARY_CR_CURVE  = 21024u;
 constexpr auto DIMINISHING_RETURN_TERTIARY_CR_CURVE   = 21025u;
 constexpr auto DIMINISHING_RETURN_VERS_MITIG_CR_CURVE = 21035u;
 
+// Midnight curve from ItemSquishEra.db2
+constexpr auto SQUISH_CURVE_MIDNIGHT = 92181u;
+
 // Enable/Disable azerite effects
 enum class azerite_control
 {

@@ -81,7 +81,8 @@ item_t::parsed_input_t::parsed_input_t()
     initial_cd( timespan_t::zero() ),
     drop_level( 0 ),
     base_level_priority( std::numeric_limits<int>::max() ),
-    scaling_level_priority( std::numeric_limits<int>::max() )
+    scaling_level_priority( std::numeric_limits<int>::max() ),
+    has_midnight_scaling( false )
 {
   range::fill( stat_val, 0 );
   range::fill( gem_id, 0 );
@@ -2218,6 +2219,10 @@ bool item_t::download_item( item_t& item )
     const item_enchantment_data_t& bonus = item.player -> dbc->item_enchantment( item.parsed.data.id_socket_bonus );
     enchant::initialize_item_enchant( item, item.parsed.socket_bonus_stats, SPECIAL_EFFECT_SOURCE_SOCKET_BONUS, bonus );
   }
+
+  // Starting with the Midnight expansion, item squishes need to be applied to any old item in the game.
+  if ( !item.parsed.has_midnight_scaling )
+    item.parsed.data.level = as<int>( util::round( item_database::curve_point_value( *item.player->dbc, SQUISH_CURVE_MIDNIGHT, item.parsed.data.level ) ) );
 
   return success;
 }

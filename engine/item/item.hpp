@@ -121,6 +121,7 @@ struct item_t
     std::vector<unsigned>                            azerite_ids;
     std::vector<int>                                 crafted_stat_mod;
     unsigned                                         titan_disc_driver_id;
+    bool                                             has_midnight_scaling;
 
     // Priority state tracking for item bonuses
     int base_level_priority;
