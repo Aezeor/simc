@@ -941,7 +941,6 @@ public:
   void init_position() override;
   void init_procs() override;
   void init_special_effects() override;
-  void init_resources( bool ) override;
   void arise() override;
   void combat_begin() override;
   void init_rng() override;
@@ -8848,18 +8847,9 @@ void warrior_t::init_base_stats()
   if ( base.distance < 1 )
     base.distance = 5.0;
 
-  resources.base[ RESOURCE_RAGE ] = 100;
-  resources.max[ RESOURCE_RAGE ]  = resources.base[ RESOURCE_RAGE ];
-
   base.attack_power_per_strength = 1.0;
   base.attack_power_per_agility  = 0.0;
   base.spell_power_per_intellect = 1.0;
-
-  // Avoidance diminishing Returns constants/conversions now handled in parse_player_effects_t::init_base_stats().
-  // Base miss, dodge, parry, and block are set in parse_player_effects_t::init_base_stats().
-  // Just need to add class- or spec-based modifiers here.
-
-  base_gcd = timespan_t::from_seconds( 1.5 );
 
   parse_player_effects_t::init_base_stats();
 }
@@ -9658,17 +9648,6 @@ void warrior_t::init_procs()
   proc.battlelord_wasted   = get_proc( "Battlelord Mortal Strike reset wasted" );
   proc.delayed_auto_attack = get_proc( "delayed_auto_attack" );
   proc.tactician           = get_proc( "tactician" );
-}
-
-// warrior_t::init_resources ================================================
-
-void warrior_t::init_resources( bool force )
-{
-  parse_player_effects_t::init_resources( force );
-
-  resources.current[ RESOURCE_RAGE ] = 0;  // By default, simc sets all resources to full. However, Warriors cannot
-                                           // reliably start combat with more than 0 rage. This will also ensure that
-                                           // the 20-40 rage from Charge is not overwritten.
 }
 
 // warrior_t::default_potion ================================================

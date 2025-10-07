@@ -71,19 +71,19 @@ struct power_type_data_t
   const char* name_cstr() const
   { return _name; }
 
-  unsigned base() const
-  { return _initial; }
-
-  unsigned max() const
-  { return _max; }
-
   double divisor() const
   { return _divisor; }
+
+  double base() const
+  { return as<double>( _max ) / divisor(); }
+
+  double start() const
+  { return as<double>( _initial ) / divisor(); }
 
   timespan_t ooc_decay_grace_period() const
   { return timespan_t::from_millis( _regen_interrupt_time ); }
 
-  double regen_per_second( bool combat ) const
+  double regen_per_second( bool combat = true ) const
   { return combat ? _regen_combat / divisor() : _regen_ooc / divisor(); }
 
   bool is_hasted_regen() const

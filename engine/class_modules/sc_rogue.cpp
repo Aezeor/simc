@@ -10908,10 +10908,7 @@ void rogue_t::init_base_stats()
   base.attack_power_per_agility  = 1.0;
   base.spell_power_per_intellect = 1.0;
 
-  resources.base[ RESOURCE_COMBO_POINT ] = 5;
-  resources.base[ RESOURCE_ENERGY ] = 100;
-
-  resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
+  player_t::init_base_stats();
 
   base_gcd = timespan_t::from_seconds( 1.0 );
   min_gcd  = timespan_t::from_seconds( 1.0 );
@@ -10921,8 +10918,6 @@ void rogue_t::init_base_stats()
     ready_type = READY_TRIGGER;
     rogue_ready_trigger_threshold = ( specialization() == ROGUE_OUTLAW ) ? 20 : 25;
   }
-
-  player_t::init_base_stats();
 }
 
 // rogue_t::init_spells =====================================================
@@ -11913,7 +11908,8 @@ void rogue_t::init_resources( bool force )
 {
   player_t::init_resources( force );
 
-  resources.current[ RESOURCE_COMBO_POINT ] = options.initial_combo_points;
+  if ( options.initial_combo_points > 0.0 )
+    resources.current[ RESOURCE_COMBO_POINT ] = options.initial_combo_points;
 }
 
 // rogue_t::init_buffs ======================================================
@@ -13154,8 +13150,6 @@ bool rogue_t::stealthed( uint32_t stealth_mask ) const
 void rogue_t::arise()
 {
   player_t::arise();
-
-  resources.current[ RESOURCE_COMBO_POINT ] = 0;
 
   if ( talent.assassination.serrated_bone_spike->ok() )
   {

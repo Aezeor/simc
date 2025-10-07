@@ -685,8 +685,6 @@ namespace warlock
     base.attack_power_per_agility  = 0.0;
     base.spell_power_per_intellect = 1.0;
 
-    resources.base[ RESOURCE_SOUL_SHARD ] = 5;
-
     player_t::init_base_stats();
 
     if ( default_pet.empty() )
@@ -1212,7 +1210,8 @@ namespace warlock
   {
     player_t::init_resources( force );
 
-    resources.current[ RESOURCE_SOUL_SHARD ] = initial_soul_shards;
+    if ( initial_soul_shards > 0 )
+      resources.current[ RESOURCE_SOUL_SHARD ] = initial_soul_shards;
   }
 
   void warlock_t::init_action_list()

@@ -4412,7 +4412,6 @@ void item::stabilized_energy_pendant( special_effect_t& effect )
       break;
     case DEMON_HUNTER:
       effect.player -> resources.initial_multiplier[ RESOURCE_FURY ] *= value;
-      effect.player -> resources.initial_multiplier[ RESOURCE_PAIN ] *= value;
       break;
     case DRUID:
       effect.player -> resources.initial_multiplier[ RESOURCE_MANA ] *= value;

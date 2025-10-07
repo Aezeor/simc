@@ -223,9 +223,9 @@ enum rune_state
   STATE_FULL
 };
 
-const double RUNIC_POWER_DECAY_RATE = 1.0;
-const double RUNE_REGEN_BASE        = 10;
-const double RUNE_REGEN_BASE_SEC    = ( 1 / RUNE_REGEN_BASE );
+const double RUNIC_POWER_DECAY_RATE = -power_type_data_t::find( POWER_RUNIC_POWER ).regen_per_second( false );
+const double RUNE_REGEN_BASE_SEC    = power_type_data_t::find( POWER_RUNE ).regen_per_second();
+const double RUNE_REGEN_BASE        = ( 1 / RUNE_REGEN_BASE_SEC );
 
 const size_t MAX_RUNES              = 6;
 const size_t MAX_REGENERATING_RUNES = 3;
@@ -12830,18 +12830,6 @@ void death_knight_t::init_base_stats()
   base.attack_power_per_strength = 1.0;
   base.attack_power_per_agility  = 0.0;
   base.spell_power_per_intellect = 1.0;
-
-  resources.base[ RESOURCE_RUNIC_POWER ] = 100;
-
-  resources.base[ RESOURCE_RUNE ] = MAX_RUNES;
-  // only intially activate required resources.
-  for ( auto r = RESOURCE_HEALTH; r < RESOURCE_MAX; r++ )
-  {
-    if ( r == RESOURCE_RUNIC_POWER || r == RESOURCE_RUNE || r == RESOURCE_HEALTH )
-      resources.active_resource[ r ] = true;
-    else
-      resources.active_resource[ r ] = false;
-  }
 
   player_t::init_base_stats();
 }

@@ -505,12 +505,10 @@ enum resource_e
   RESOURCE_SOUL_SHARD,
   RESOURCE_ASTRAL_POWER,
   RESOURCE_HOLY_POWER,
-  /* Unknown_2, */
   RESOURCE_MAELSTROM,
   RESOURCE_CHI,
   RESOURCE_INSANITY,
   RESOURCE_FURY,
-  RESOURCE_PAIN,
   RESOURCE_RUNE,
   RESOURCE_COMBO_POINT,
   RESOURCE_ESSENCE,
@@ -1309,31 +1307,30 @@ enum save_e : unsigned
 
 enum power_e
 {
-  POWER_HEALTH        = -2,
-  POWER_MANA          = 0,
-  POWER_RAGE          = 1,
-  POWER_FOCUS         = 2,
-  POWER_ENERGY        = 3,
-  POWER_COMBO_POINT   = 4,
-  POWER_RUNE          = 5,
-  POWER_RUNIC_POWER   = 6,
-  POWER_SOUL_SHARDS   = 7,
-  POWER_ASTRAL_POWER  = 8,
-  POWER_HOLY_POWER    = 9,
-  // Not yet used (MoP Monk deprecated resource #1)
-  POWER_MAELSTROM     = 11,
-  POWER_CHI           = 12,
-  POWER_INSANITY      = 13,
-  POWER_BURNING_EMBER = 14,
-  POWER_DEMONIC_FURY  = 15,
-  // Not yet used?
-  POWER_FURY          = 17,
-  POWER_PAIN          = 18,
-  POWER_ESSENCE       = 19,
+  POWER_HEALTH         = -2,
+  POWER_MANA           = 0,
+  POWER_RAGE           = 1,
+  POWER_FOCUS          = 2,
+  POWER_ENERGY         = 3,
+  POWER_COMBO_POINT    = 4,
+  POWER_RUNE           = 5,
+  POWER_RUNIC_POWER    = 6,
+  POWER_SOUL_SHARDS    = 7,
+  POWER_ASTRAL_POWER   = 8,
+  POWER_HOLY_POWER     = 9,
+  // Alternate         = 10,
+  POWER_MAELSTROM      = 11,
+  POWER_CHI            = 12,
+  POWER_INSANITY       = 13,
+  // Unused            = 14,
+  // Unused            = 15,
+  POWER_ARCANE_CHARGES = 16,
+  POWER_FURY           = 17,
+  POWER_PAIN           = 18,
+  POWER_ESSENCE        = 19,
   // Helpers
   POWER_MAX,
-  POWER_NONE          = 0xFFFFFFFF,  // None.
-  POWER_OFFSET        = 2,
+  POWER_NONE          = 0xFFFFFFFF  // None.
 };
 
 // New stuff

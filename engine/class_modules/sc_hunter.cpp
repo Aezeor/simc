@@ -8546,9 +8546,6 @@ void hunter_t::init_base_stats()
   base.attack_power_per_agility  = 1;
   base.spell_power_per_intellect = 1;
 
-  resources.base_regen_per_second[ RESOURCE_FOCUS ] = 5;
-
-  resources.base[ RESOURCE_FOCUS ] = 100;
   player_t::init_base_stats();
 }
 

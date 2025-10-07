@@ -1587,25 +1587,53 @@ void player_t::init_base_stats()
     base.guardian_damage_multiplier = get_passive_player_value( base.guardian_damage_multiplier, "guardian_damage_multiplier" );
 
     // Resources
-    resources.base[ RESOURCE_HEALTH ] = dbc->health_base( type, level() );
-    resources.base[ RESOURCE_MANA ]   = dbc->resource_base( type, level() );
-    // 1% of base mana as mana regen per second for all classes.
-    resources.base_regen_per_second[ RESOURCE_MANA ] = dbc->resource_base( type, level() ) * 0.01;
-    for ( auto power = POWER_HEALTH; power < POWER_MAX; power++ )
+    for ( auto rt = RESOURCE_HEALTH; rt < RESOURCE_MAX; rt++ )
     {
-      resource_e resource = util::power_type_to_resource( power );
-      if ( resources.active_resource[ resource ] == false )
-        continue;
+      auto _data = power_type_data_t::find( rt, dbc->ptr );
 
-      std::string res_str = util::resource_type_string( resource );
+      // skip resources not active for class
+      if ( ( rt != RESOURCE_HEALTH && !_data.is_active_for_class( type ) ) || !resources.active_resource[ rt ] )
+      {
+        resources.active_resource[ rt ] = false;
+        continue;
+      }
+
+      std::string_view res_str = util::resource_type_string( rt );
+      double rt_base = 0.0;
+      double rt_regen = 0.0;
+      double rt_start = -1.0;  // -1 == start at computed max
+
+      switch ( rt )
+      {
+        case RESOURCE_HEALTH:
+          rt_base = dbc->health_base( type, level() );
+          break;
+        case RESOURCE_MANA:  // 1% of base mana as mana regen per second for all classes.
+          rt_base = dbc->resource_base( type, level() );
+          rt_regen = dbc->resource_base( type, level() ) * 0.01;
+          break;
+        case RESOURCE_RUNE:  // rune regeneration is handled in dk module
+          rt_base = _data.base();
+          break;
+        default:
+          rt_base = _data.base();
+          rt_regen = _data.regen_per_second();
+          if ( _data.start() != _data.base() )
+            rt_start = _data.start();
+          break;
+      }
+
       // Max Resource Modifiers
-      resources.base[ resource ] = get_passive_player_value( resources.base[ resource ], fmt::format( "max_{}", res_str ) );
+      resources.base[ rt ] = get_passive_player_value( rt_base, fmt::format( "max_{}", res_str ) );
       // Passive Resource Multipliers
-      resources.base_multiplier[ resource ] =
-          get_passive_player_value( resources.base_multiplier[ resource ], fmt::format( "{}_multiplier", res_str ) );
+      resources.base_multiplier[ rt ] =
+        get_passive_player_value( resources.base_multiplier[ rt ], fmt::format( "{}_multiplier", res_str ) );
       // Passive Resource Regen Modifiers
-      resources.base_regen_per_second[ resource ] =
-          get_passive_player_value( resources.base_regen_per_second[ resource ], fmt::format( "{}_regen", res_str ) );
+      resources.base_regen_per_second[ rt ] = get_passive_player_value( rt_regen, fmt::format( "{}_regen", res_str ) );
+      // Hasted regeneration
+      resources.hasted[ rt ] = _data.is_hasted_regen();
+      // Starting amount, the actual start-of-combat resource is min( computed_max, start_at )
+      resources.start_at[ rt ] = rt_start == -1.0 ? std::numeric_limits<double>::max() : rt_start;
     }
 
     base.health_per_stamina = dbc->health_per_stamina( level() );
@@ -5053,13 +5081,8 @@ double player_t::resource_regen_per_second( resource_e r ) const
 {
   double reg = resources.base_regen_per_second[ r ];
 
-  if ( r == RESOURCE_FOCUS || r == RESOURCE_ENERGY || r == RESOURCE_ESSENCE || r == RESOURCE_RUNE )
-  {
-    if ( reg )
-    {
-      reg *= ( 1.0 / cache.attack_haste() );
-    }
-  }
+  if ( resources.hasted[ r ] )
+    reg /= cache.attack_haste();
 
   return reg;
 }
@@ -15318,14 +15341,14 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_MOD_CRITICAL_HEALING_AMOUNT,            "crit_heal_multiplier"                      }, // 50
   { A_MOD_BLOCK_PERCENT,                      "block"                                     }, // 51
   { A_MOD_SPELL_CRIT_CHANCE,                  "spell_crit"                                }, // 57
-  { A_MOD_DAMAGE_PERCENT_DONE,                "all_damage_multiplier"                     }, // 60
-  { A_MOD_DAMAGE_PERCENT_DONE,                "arcane_damage_multiplier"                  }, // 60
-  { A_MOD_DAMAGE_PERCENT_DONE,                "fire_damage_multiplier"                    }, // 60
-  { A_MOD_DAMAGE_PERCENT_DONE,                "frost_damage_multiplier"                   }, // 60
-  { A_MOD_DAMAGE_PERCENT_DONE,                "holy_damage_multiplier"                    }, // 60
-  { A_MOD_DAMAGE_PERCENT_DONE,                "nature_damage_multiplier"                  }, // 60
-  { A_MOD_DAMAGE_PERCENT_DONE,                "shadow_damage_multiplier"                  }, // 60
-  { A_MOD_DAMAGE_PERCENT_DONE,                "physical_damage_multiplier"                }, // 60
+  { A_MOD_DAMAGE_PERCENT_DONE,                "all_damage_multiplier"                     }, // 79
+  { A_MOD_DAMAGE_PERCENT_DONE,                "arcane_damage_multiplier"                  }, // 79
+  { A_MOD_DAMAGE_PERCENT_DONE,                "fire_damage_multiplier"                    }, // 79
+  { A_MOD_DAMAGE_PERCENT_DONE,                "frost_damage_multiplier"                   }, // 79
+  { A_MOD_DAMAGE_PERCENT_DONE,                "holy_damage_multiplier"                    }, // 79
+  { A_MOD_DAMAGE_PERCENT_DONE,                "nature_damage_multiplier"                  }, // 79
+  { A_MOD_DAMAGE_PERCENT_DONE,                "shadow_damage_multiplier"                  }, // 79
+  { A_MOD_DAMAGE_PERCENT_DONE,                "physical_damage_multiplier"                }, // 79
   { A_MOD_RESISTANCE_PCT,                     "armor_multiplier"                          }, // 101
   { A_MOD_POWER_REGEN_PERCENT,                "health_regen"                              }, // 110
   { A_MOD_POWER_REGEN_PERCENT,                "rage_regen"                                }, // 110

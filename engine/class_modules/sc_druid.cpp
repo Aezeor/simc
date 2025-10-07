@@ -11475,38 +11475,20 @@ void druid_t::init_base_stats()
     default: break;
   }
 
-  // Resources
-  resources.base[ RESOURCE_RAGE ] = 100;
-  resources.base[ RESOURCE_COMBO_POINT ] = 5;
-  resources.base[ RESOURCE_ASTRAL_POWER ] = 100;
-  resources.base[ RESOURCE_ENERGY ] = 100;;
+  player_t::init_base_stats();
 
   // only intially activate required resources. others will be dynamically activated depending on apl
-  for ( auto r = RESOURCE_HEALTH; r < RESOURCE_MAX; r++ )
-  {
-    switch ( r )
-    {
-      case RESOURCE_ASTRAL_POWER: resources.active_resource[ r ] = specialization() == DRUID_BALANCE;     break;
-      case RESOURCE_COMBO_POINT:
-      case RESOURCE_ENERGY:       resources.active_resource[ r ] = specialization() == DRUID_FERAL;       break;
-      case RESOURCE_HEALTH:
-      case RESOURCE_RAGE:         resources.active_resource[ r ] = specialization() == DRUID_GUARDIAN;    break;
-      case RESOURCE_MANA:         resources.active_resource[ r ] = specialization() == DRUID_RESTORATION; break;
-      default:                    resources.active_resource[ r ] = false;                                 break;
-    }
-  }
-
-  // Energy Regen
-  resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
+  resources.active_resource[ RESOURCE_ASTRAL_POWER ] = specialization() == DRUID_BALANCE;
+  resources.active_resource[ RESOURCE_ENERGY ]       = specialization() == DRUID_FERAL;
+  resources.active_resource[ RESOURCE_COMBO_POINT ]  = specialization() == DRUID_FERAL;
+  resources.active_resource[ RESOURCE_HEALTH ]       = specialization() == DRUID_GUARDIAN;
+  resources.active_resource[ RESOURCE_RAGE ]         = specialization() == DRUID_GUARDIAN;
+  resources.active_resource[ RESOURCE_MANA ]         = specialization() == DRUID_RESTORATION;
 
   if ( options.disable_ready_trigger )
     ready_type = ready_e::READY_POLL;
   else if ( specialization() == DRUID_FERAL )
     ready_type = ready_e::READY_TRIGGER;
-
-  base_gcd = 1.5_s;
-
-  player_t::init_base_stats();
 }
 
 void druid_t::init_stats()
@@ -13031,12 +13013,9 @@ void druid_t::init_resources( bool force )
 {
   player_t::init_resources( force );
 
-  resources.current[ RESOURCE_RAGE ] = 0;
-  resources.current[ RESOURCE_COMBO_POINT ] = 0;
-
   if ( options.initial_astral_power == 0.0 && talent.natures_balance.ok() )
     resources.current[ RESOURCE_ASTRAL_POWER ] = talent.natures_balance->effectN( 2 ).base_value();
-  else
+  else if ( options.initial_astral_power > 0.0 )
     resources.current[ RESOURCE_ASTRAL_POWER ] = options.initial_astral_power;
 }
 

@@ -1005,7 +1005,6 @@ const char* util::resource_type_string( resource_e resource_type )
     case RESOURCE_COMBO_POINT:   return "combo_points";
     case RESOURCE_MAELSTROM:     return "maelstrom";
     case RESOURCE_FURY:          return "fury";
-    case RESOURCE_PAIN:          return "pain";
     case RESOURCE_INSANITY:      return "insanity";
     case RESOURCE_ESSENCE:       return "essence";
     default:                     return "unknown";
@@ -1031,7 +1030,6 @@ const char* util::resource_type_abbrev( resource_e resource_type )
     case RESOURCE_COMBO_POINT:   return "CP";
     case RESOURCE_MAELSTROM:     return "MS";
     case RESOURCE_FURY:          return "fury";
-    case RESOURCE_PAIN:          return "pain";
     case RESOURCE_INSANITY:      return "insanity";
     case RESOURCE_ESSENCE:       return "ess";
     default:                     return "unk";
@@ -1125,7 +1123,6 @@ resource_e util::power_type_to_resource( power_e pt )
     case POWER_INSANITY:      return RESOURCE_INSANITY;
     case POWER_MAELSTROM:     return RESOURCE_MAELSTROM;
     case POWER_FURY:          return RESOURCE_FURY;
-    case POWER_PAIN:          return RESOURCE_PAIN;
     case POWER_ESSENCE:       return RESOURCE_ESSENCE;
     default:                  return RESOURCE_NONE;
   }
@@ -1148,7 +1145,6 @@ power_e util::resource_to_power_type( resource_e resource_type )
     case RESOURCE_CHI:          return POWER_CHI;
     case RESOURCE_INSANITY:     return POWER_INSANITY;
     case RESOURCE_FURY:         return POWER_FURY;
-    case RESOURCE_PAIN:         return POWER_PAIN;
     case RESOURCE_RUNE:         return POWER_RUNE;
     case RESOURCE_COMBO_POINT:  return POWER_COMBO_POINT;
     case RESOURCE_ESSENCE:      return POWER_ESSENCE;

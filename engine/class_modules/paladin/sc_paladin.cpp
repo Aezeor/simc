@@ -3777,18 +3777,13 @@ void paladin_t::init_base_stats()
   base.attack_power_per_strength = 1.0;
   base.spell_power_per_intellect = 1.0;
 
-  // Boundless Conviction raises max holy power to 5
-  resources.base[ RESOURCE_HOLY_POWER ] = 3;
+  player_t::init_base_stats();
 
   // Ignore mana for non-holy
   if ( specialization() != PALADIN_HOLY )
   {
-    resources.base[ RESOURCE_MANA ]                  = 0;
-    resources.base_regen_per_second[ RESOURCE_MANA ] = 0;
-    resources.active_resource[ RESOURCE_MANA ]       = false;
+    resources.active_resource[ RESOURCE_MANA ] = false;
   }
-
-  player_t::init_base_stats();
 }
 
 void paladin_t::init_initial_stats()

@@ -8482,13 +8482,10 @@ void demon_hunter_t::init_base_stats()
   if ( base.distance < 1 )
     base.distance = 5.0;
 
-  resources.base[ RESOURCE_FURY ] = 100;
-
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;
   base.spell_power_per_intellect = 1.0;
 
-  base_gcd = timespan_t::from_seconds( 1.5 );
   base_t::init_base_stats();
 }
 
@@ -8559,7 +8556,9 @@ void demon_hunter_t::init_resources( bool force )
 {
   base_t::init_resources( force );
 
-  resources.current[ RESOURCE_FURY ] = options.initial_fury;
+  if ( options.initial_fury > 0.0 )
+    resources.current[ RESOURCE_FURY ] = options.initial_fury;
+
   expected_max_health                = calculate_expected_max_health();
 }
 

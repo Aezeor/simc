@@ -5520,33 +5520,22 @@ void monk_t::init_base_stats()
       base.distance = 5;
   }
 
-  base_gcd = timespan_t::from_seconds( 1.5 );
-
   switch ( specialization() )
   {
     case MONK_BREWMASTER:
-      base.attack_power_per_agility                      = 1.0;
-      resources.base[ RESOURCE_ENERGY ]                  = 100;
-      resources.base[ RESOURCE_MANA ]                    = 0;
-      resources.base[ RESOURCE_CHI ]                     = 0;
-      resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10.0;
-      resources.base_regen_per_second[ RESOURCE_MANA ]   = 0;
+      base.attack_power_per_agility              = 1.0;
+      resources.active_resource[ RESOURCE_MANA ] = false;
       break;
     case MONK_WINDWALKER:
       if ( base.distance < 1 )
         base.distance = 5;
       base.attack_power_per_agility     = 1.0;
-      resources.base[ RESOURCE_ENERGY ] = 100;
-      resources.base[ RESOURCE_MANA ] = 0;
-      resources.base[ RESOURCE_CHI ]  = 4;
-      resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10.0;
-      resources.base_regen_per_second[ RESOURCE_MANA ] = 0;
+      resources.active_resource[ RESOURCE_MANA ] = false;
       break;
     default:
       break;
   }
 
-  resources.base_regen_per_second[ RESOURCE_CHI ] = 0;
   base_t::init_base_stats();
 }
 

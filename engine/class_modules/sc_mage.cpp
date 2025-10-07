@@ -8455,6 +8455,9 @@ void mage_t::init_spells()
   // Flash freeze also affects glacial spike impact spell (228600)
   register_passive_affect_list( talents.flash_freeze, affect_list_t( 2 ).add_spell( 228600 ) );
 
+  // Arcane aura mana regen includes points per level adjustment, handled manually in mage_t::resource_regen_per_second
+  register_passive_effect_mask( spec.arcane_mage, effect_mask_t( true ).disable( 5 ) );
+
   register_passive_effect_mask( talents.elemental_affinity,
     specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 3 ) : effect_mask_t( false ).enable( 3 ) );
 
@@ -8510,9 +8513,6 @@ void mage_t::init_base_stats()
     base.distance = 10.0;
 
   base.spell_power_per_intellect = 1.0;
-
-  for ( auto rt = RESOURCE_RAGE; rt < RESOURCE_MAX; rt++ )
-    resources.active_resource[ rt ] = false;
 
   if ( specialization() == MAGE_ARCANE )
     regen_caches[ CACHE_MASTERY ] = true;
@@ -9043,8 +9043,7 @@ double mage_t::resource_regen_per_second( resource_e rt ) const
 
   if ( specialization() == MAGE_ARCANE && rt == RESOURCE_MANA )
   {
-    // TODO: Double check that this is applied properly in player_t::resource_regen_per_second()
-    // reg *= 1.0 + 0.01 * spec.arcane_mage->effectN( 4 ).average( this );
+    reg *= 1.0 + 0.01 * spec.arcane_mage->effectN( 5 ).average( this );
     reg *= 1.0 + cache.mastery() * spec.savant->effectN( 4 ).mastery_value();
     reg *= 1.0 + buffs.evocation->check_value();
     if ( buffs.enlightened->check() )

@@ -269,7 +269,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     gains(),
     procs(),
     rng_settings(),
-    initial_soul_shards( 3 ),
+    initial_soul_shards(),
     default_pet(),
     disable_auto_felstorm( false ),
     normalize_destruction_mastery( false ),

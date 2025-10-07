@@ -9368,10 +9368,6 @@ void evoker_t::init_base_stats()
 
   base.spell_power_per_intellect = 1.0;
 
-  resources.base[ RESOURCE_ESSENCE ] = 5;
-  // TODO: confirm base essence regen. currently estimated at 1 per 5s base
-  resources.base_regen_per_second[ RESOURCE_ESSENCE ] = 0.2;
-
   player_t::init_base_stats();
 }
 

@@ -12074,17 +12074,6 @@ void shaman_t::init_base_stats()
   base.attack_power_per_agility  = 1.0;
   base.spell_power_per_intellect = 1.0;
 
-  if ( specialization() == SHAMAN_ELEMENTAL )
-  {
-    resources.base[ RESOURCE_MAELSTROM ] = 100;
-  }
-
-  if ( specialization() == SHAMAN_RESTORATION )
-  {
-    resources.base[ RESOURCE_MANA ]               = 20000;
-    resources.initial_multiplier[ RESOURCE_MANA ] = 1.0;
-  }
-
   parse_player_effects_t::init_base_stats();
 }
 
