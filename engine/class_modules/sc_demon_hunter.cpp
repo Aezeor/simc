@@ -684,6 +684,7 @@ public:
     const spell_data_t* void_ray_tick;
     const spell_data_t* void_ray_tick_meta;
     const spell_data_t* moment_of_craving_buff;
+    const spell_data_t* void_buildup;
 
     // Havoc
     const spell_data_t* havoc_demon_hunter;
@@ -965,6 +966,7 @@ public:
 
     // Devourer
     spell_t* spontaneous_immolation = nullptr;
+    spell_t* void_buildup           = nullptr;
 
     // Havoc
     spell_t* burning_wound                                         = nullptr;
@@ -4985,6 +4987,27 @@ struct voidblade_t : public demon_hunter_spell_t
     execute_action->stats = stats;
   }
 };
+
+
+struct void_buildup_t : public demon_hunter_spell_t
+{
+  void_buildup_t( util::string_view n, demon_hunter_t* p ) : demon_hunter_spell_t( n, p, p->spec.void_buildup, "" )
+  {
+    may_miss = may_block = may_dodge = may_parry = callbacks = false;
+    background = dual = true;
+    target            = p;
+
+    resource_current = RESOURCE_FURY;
+    base_costs[ RESOURCE_FURY ] = -data().effectN( 1 ).resource( RESOURCE_FURY );
+  }
+
+  void consume_resource() override
+  {
+    // Bypass demon_hunter_spell_t::consume_resource as that does additional logic including refunds we do not wish to
+    // apply here as we will be calling this without executing the action for performance reasons.
+    spell_t::consume_resource();
+  }
+  };
 
 struct soul_immolation_t : public demon_hunter_spell_t
 {
@@ -9144,6 +9167,7 @@ void demon_hunter_t::init_spells()
   spec.void_ray_tick          = talent_spell_lookup( talent.devourer.void_ray, 1213649 );
   spec.void_ray_tick_meta     = talent_spell_lookup( talent.devourer.void_ray, 1214595 );
   spec.moment_of_craving_buff = talent_spell_lookup( talent.devourer.moment_of_craving, 1238495 );
+  spec.void_buildup           = find_spell( 473671 );
 
   mastery.a_fire_inside = talent.havoc.a_fire_inside->effectN( 6 ).trigger();
 
@@ -9370,6 +9394,11 @@ void demon_hunter_t::init_spells()
     active.spontaneous_immolation =
         get_background_action<soul_immolation_t>( "soul_immolation_spontaneous", spec.spontaneous_immolation_buff );
     active.spontaneous_immolation->cooldown->duration = 0_s;
+  }
+
+  if ( specialization() == DEMON_HUNTER_DEVOURER )
+  {
+    active.void_buildup = get_background_action<void_buildup_t>( "void_buildup" );
   }
 
   if ( talent.havoc.burning_wound->ok() )
@@ -10401,7 +10430,10 @@ void demon_hunter_t::fury_state_t::drain()
   last_tick = p()->sim->current_time();
   drain_stacks++;
 
-  p()->resource_loss( RESOURCE_FURY, 1.0, p()->gain.void_buildup );
+  //p()->resource_loss( RESOURCE_FURY, p()->active.void_buildup->energize_amount, p()->gain.void_buildup, p()->active.void_buildup );
+
+  p()->active.void_buildup->stats->add_execute( last_tick, p() );
+  p()->active.void_buildup->consume_resource();
 
   if ( p()->resources.current[ RESOURCE_FURY ] <= 0.0 )
   {
