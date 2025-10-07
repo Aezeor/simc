@@ -1266,6 +1266,9 @@ public:
 
       void execute() override
       {
+        // Nullptr the event here as we know it is no longer needed. This guarantees it is not touched in any code by
+        // accident
+        dh->devourer_fury_state.next_drain_event = nullptr;
         dh->devourer_fury_state.drain();
       }
     };
@@ -10459,8 +10462,6 @@ void demon_hunter_t::fury_state_t::reschedule_drain()
 
 void demon_hunter_t::fury_state_t::stop()
 {
-  next_drain_event = nullptr;
-
   drain_stacks = 0;
   start_time = last_tick = timespan_t::min();
   p()->buff.metamorphosis->expire();
@@ -10492,7 +10493,6 @@ void demon_hunter_t::fury_state_t::drain()
     }
   }
 
-  next_drain_event = nullptr;
   schedule_tick();
 }
 
