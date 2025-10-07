@@ -4519,7 +4519,7 @@ class PowerTypeGenerator(DataGenerator):
         for entry in sorted(data, key = lambda e: e.type):
             # pad missing power types so we can fast-access power_type_data via array index
             while entry.type > idx:
-                self.output_record([ f'{idx:2d}', f'{'""':>20s}', f'{0:5d}', f'{0:5d}', f'{1:5.1f}', f'{0:5d}',
+                self.output_record([ f'{idx:2d}', '{:>20s}'.format('""'), f'{0:5d}', f'{0:5d}', f'{1:5.1f}', f'{0:5d}',
                                      f'{0:6.1f}', f'{0:6.1f}', f'{0:#010x}', f'{0:#06x}' ])
                 idx += 1
 
@@ -5520,5 +5520,37 @@ class AssistedCombatRuleGenerator(DataGenerator):
 
         if not data:
             self.output_record('')
+
+        self.output_footer()
+
+class ItemScalingConfigGenerator(DataGenerator):
+    def generate(self, data = None):
+        data = self.db('ItemScalingConfig').values()
+
+        self.output_header(
+            header = 'Item Scaling Config data',
+            type = 'item_scaling_config_data_t',
+            array = 'item_scaling_config',
+            length = len(data) if data else 1)
+
+        for entry in data:
+            fields = entry.field('id', 'item_offset_curve_id', 'item_level', 'player_level')
+            self.output_record(fields)
+
+        self.output_footer()
+
+class ItemOffsetCurveGenerator(DataGenerator):
+    def generate(self, data = None):
+        data = self.db('ItemOffsetCurve').values()
+
+        self.output_header(
+            header = 'Item Offset Curve data',
+            type = 'item_offset_curve_data_t',
+            array = 'item_offset_curve',
+            length = len(data) if data else 1)
+
+        for entry in data:
+            fields = entry.field('id', 'id_curve', 'offset')
+            self.output_record(fields)
 
         self.output_footer()

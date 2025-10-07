@@ -883,6 +883,21 @@
       { "data_type": "I", "field": "inventory_type_mask"                 }
     ]
   },
+  "ItemOffsetCurve": {
+    "fields": [
+      { "data_type": "i", "field": "id_curve", "ref": "Curve", "format": { "cpp": "%6d" }  },
+      { "data_type": "i", "field": "offset" }
+    ]
+  },
+  "ItemScalingConfig": {
+    "fields": [
+      { "data_type": "i", "field": "item_offset_curve_id", "ref": "ItemOffsetCurve", "format": { "cpp": "%4d" }  },
+      { "data_type": "i", "field": "item_level" },
+      { "data_type": "i", "field": "player_level" },
+      { "data_type": "i", "field": "unk_3" },
+      { "data_type": "i", "field": "unk_4" }
+    ]
+  },
   "ItemSet": {
     "fields": [
       { "data_type": "S", "field": "name" },
