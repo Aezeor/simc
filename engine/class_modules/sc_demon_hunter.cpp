@@ -4105,7 +4105,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
     switch ( p()->specialization() )
     {
       case DEMON_HUNTER_DEVOURER:
-        p()->buff.metamorphosis->trigger();
+        p()->devourer_fury_state.start();
         break;
       case DEMON_HUNTER_HAVOC:
         for ( demonsurge_ability ability : p()->hero_spec.demonsurge_abilities )
@@ -7520,6 +7520,10 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     // TODO: MIDNIGHT - ADD DEVOURER
     switch ( p->specialization() )
     {
+      case DEMON_HUNTER_DEVOURER:
+        set_duration( timespan_t::zero() );
+        set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+        break;
       case DEMON_HUNTER_HAVOC:
         set_default_value_from_effect_type( A_HASTE_ALL );
         add_invalidate( CACHE_HASTE );
@@ -10316,6 +10320,10 @@ unsigned demon_hunter_t::get_total_soul_fragments( soul_fragment type_mask ) con
  void demon_hunter_t::fury_state_t::start()
 {
   assert( !next_drain_event );
+
+  p()->buff.metamorphosis->trigger();
+
+  p()->resource_gain( RESOURCE_FURY, 200.00, p()->gain.metamorphosis );
 
   start_time = last_tick = actor->sim->current_time();
   next_drain_event       = make_event<drain_event_t>( *actor->sim, actor, time_to_next_tick( drain_stacks ) );
