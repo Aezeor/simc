@@ -862,6 +862,7 @@ public:
 
     // Devourer
     gain_t* voidglare_boon;
+    gain_t* void_buildup;
 
     // Havoc
     gain_t* blind_fury;
@@ -1173,6 +1174,94 @@ public:
     entries.push_back( new T_DATA( name, T_CONTAINER() ) );
     return &( entries.back()->second );
   }
+
+  struct fury_state_t final
+  {
+    timespan_t start_time;
+    timespan_t last_tick;
+    event_t* next_drain_event;
+    int drain_stacks;
+    demon_hunter_t* actor;
+    double initial_drain   = 10.0;
+    double drain_per_stack = 0.012;
+    
+    fury_state_t( demon_hunter_t* a )
+      : next_drain_event( nullptr ),
+        actor( a ),
+        drain_stacks( 0 ),
+        start_time( timespan_t::min() ),
+        last_tick( timespan_t::min() )
+    {
+    }
+
+    timespan_t time_to_next_tick() const;
+
+    void init()
+
+    {
+      if ( p()->talent.devourer.soul_glutton.enabled() )
+
+      {
+        // This is negative and lowers something to 75% for some reason
+        initial_drain *= 1 - p()->talent.devourer.soul_glutton->effectN( 2 ).percent();
+        drain_per_stack *= 1 - p()->talent.devourer.soul_glutton->effectN( 2 ).percent();
+      }
+    }
+
+    void stop();
+
+    void reschedule_drain();
+
+    void reset();
+
+    demon_hunter_t* p()
+    {
+      return actor;
+    }
+    
+    demon_hunter_t* p() const
+    {
+      return actor;
+    }
+
+    double base_fury_drain_per_second( int stacks ) const
+    {
+      return initial_drain + drain_per_stack * stacks;
+    }
+
+    timespan_t base_time_to_next_tick( int stacks ) const
+    {
+      return timespan_t::from_seconds( 1.0 / ( base_fury_drain_per_second( stacks ) ) );
+    }
+
+    double fury_drain_per_second( int stacks ) const;
+
+    timespan_t time_to_next_tick( int stacks ) const;
+
+    void drain();
+
+    void start();
+
+    struct drain_event_t : public event_t
+    {
+      demon_hunter_t* dh;
+      timespan_t delta;
+      drain_event_t( demon_hunter_t* p, timespan_t delta ) : event_t( *p, delta ), dh( p ), delta( delta )
+      {
+      }
+
+      const char* name() const override
+      {
+        return "Void Buildup";
+      }
+
+      void execute() override
+      {
+        dh->devourer_fury_state.drain();
+      }
+    };
+
+  } devourer_fury_state;
 
 private:
   target_specific_t<demon_hunter_td_t> _target_data;
@@ -7857,7 +7946,8 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, util::string_view name, race_e r )
     proc(),
     active(),
     pets(),
-    options()
+    options(),
+    devourer_fury_state( this )
 {
   create_cooldowns();
   create_gains();
@@ -9343,6 +9433,11 @@ void demon_hunter_t::init_spells()
   {
     active.demonsurge = get_background_action<demonsurge_t>( "demonsurge" );
   }
+
+  if ( specialization() == DEMON_HUNTER_DEVOURER )
+  {
+    devourer_fury_state.init();
+  }
 }
 
 void demon_hunter_t::init_blizzard_action_list()
@@ -9581,6 +9676,7 @@ void demon_hunter_t::create_gains()
 
   // Devourer
   gain.voidglare_boon = get_gain( "voidglare_boon" );
+  gain.void_buildup   = get_gain( "void_buildup" );
 
   // Havoc
   gain.blind_fury       = get_gain( "blind_fury" );
@@ -10214,6 +10310,91 @@ unsigned demon_hunter_t::get_total_soul_fragments( soul_fragment type_mask ) con
   return std::accumulate(
       soul_fragments.begin(), soul_fragments.end(), 0,
       [ &type_mask ]( unsigned acc, soul_fragment_t* frag ) { return acc + frag->is_type( type_mask ); } );
+}
+
+
+ void demon_hunter_t::fury_state_t::start()
+{
+  assert( !next_drain_event );
+
+  start_time = last_tick = actor->sim->current_time();
+  next_drain_event       = make_event<drain_event_t>( *actor->sim, actor, time_to_next_tick( drain_stacks ) );
+}
+
+double demon_hunter_t::fury_state_t::fury_drain_per_second( int stacks ) const
+{
+  double drain = base_fury_drain_per_second( stacks );
+
+  if ( p()->channeling && p()->channeling->id == p()->talent.devourer.void_ray->id() )
+  {
+    // Guess
+    drain *= 0.4;
+  }
+
+  if ( drain_stacks < 6 )
+  {
+    // Slow after meta cast
+    drain *= 0.4;
+  }
+
+  if ( p()->executing && p()->executing->id == p()->talent.devourer.collapsing_star->id() )
+  {
+    // Guess
+    drain *= 0.4;
+  }
+
+  return drain;
+}
+
+timespan_t demon_hunter_t::fury_state_t:: time_to_next_tick( int stacks ) const
+{
+  return 1.0_s / fury_drain_per_second( stacks );
+}
+
+void demon_hunter_t::fury_state_t::reschedule_drain()
+{
+  if ( !next_drain_event )
+    return;
+
+  double completed = next_drain_event->remains() / static_cast<drain_event_t*>( next_drain_event )->delta;
+
+  auto new_time = time_to_next_tick( drain_stacks ) * completed;
+
+  next_drain_event->reschedule( new_time );
+}
+
+void demon_hunter_t::fury_state_t::stop()
+{
+  event_t::cancel( next_drain_event );
+  drain_stacks = 0;
+  start_time = last_tick = timespan_t::min();
+}
+
+void demon_hunter_t::fury_state_t::reset()
+{
+  stop();
+}
+
+void demon_hunter_t::fury_state_t::drain()
+{
+  last_tick = p()->sim->current_time();
+  drain_stacks++;
+
+  p()->resource_loss( RESOURCE_FURY, 1.0, p()->gain.void_buildup );
+
+  if ( p()->resources.current[ RESOURCE_FURY ] <= 0.0 )
+  {
+    bool cannot_end_meta = ( p()->channeling && p()->channeling->id == p()->talent.devourer.void_ray->id() ||
+                             p()->executing && p()->executing->id == p()->talent.devourer.collapsing_star->id() );
+
+    if ( !cannot_end_meta )
+    {
+      stop();
+      return;
+    }
+  }
+  event_t::cancel( next_drain_event );
+  next_drain_event = make_event<drain_event_t>( *p()->sim, p(), time_to_next_tick( drain_stacks ) );
 }
 
 // demon_hunter_t::activate_soul_fragment ===================================
