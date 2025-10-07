@@ -48,8 +48,10 @@ const power_type_data_t& power_type_data_t::find( power_e type, bool ptr )
   auto raw_type = static_cast<int>( type );
   const auto __data = data( ptr );
 
-  assert( raw_type >= 0 && raw_type < static_cast<int>( __data.size() ) &&
-          "power_type_data_t: power_e type index out of bounds" );
+  if ( raw_type < 0 || raw_type >= static_cast<int>( __data.size() ) )
+  {
+    return power_type_data_t::nil();
+  }
 
   return __data[ raw_type ];
 }

@@ -91,6 +91,9 @@ struct power_type_data_t
 
   bool is_active_for_class( player_e type ) const;
 
+  static const power_type_data_t& nil()
+  { return dbc::nil<power_type_data_t>;}
+
   static util::span<const power_type_data_t> data( bool ptr = false );
   static const power_type_data_t& find( power_e, bool ptr = false );
   static const power_type_data_t& find( resource_e, bool ptr = false );
