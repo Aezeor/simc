@@ -275,8 +275,12 @@ public:
     buff_t* feast_of_souls;
     buff_t* eradicate;
     buff_t* moment_of_craving;
+    buff_t* emptiness;
+    buff_t* collapsing_star_stack;
+    buff_t* collapsing_star_ready;
     buff_t* void_metamorphosis_stack;
     buff_t* rolling_torment;
+    buff_t* impending_apocalypse;
 
     // Havoc
     buff_t* blind_fury;
@@ -428,6 +432,10 @@ public:
       player_talent_t emptiness;  // NYI
       player_talent_t soul_glutton;
       player_talent_t eradicate;
+
+      player_talent_t midnight1;
+      player_talent_t midnight2;
+      player_talent_t midnight3;
     } devourer;
 
     struct havoc_talents_t
@@ -689,6 +697,12 @@ public:
     const spell_data_t* moment_of_craving_buff;
     const spell_data_t* void_buildup;
     const spell_data_t* voidglare_boon_energize;
+    const spell_data_t* collapsing_star_damage;
+    const spell_data_t* collapsing_star_spell;
+    const spell_data_t* collapsing_star_ready_buff;
+    const spell_data_t* collapsing_star_stacking_buff;
+    const spell_data_t* emptiness_buff;
+    const spell_data_t* impending_apocalypse_buff;
 
     // Havoc
     const spell_data_t* havoc_demon_hunter;
@@ -1904,6 +1918,7 @@ public:
     // Devourer
     ab::parse_effects( p()->buff.feast_of_souls );
     ab::parse_effects( p()->buff.rolling_torment, USE_DEFAULT );
+    ab::parse_effects( p()->buff.impending_apocalypse );
 
     // Havoc
     ab::parse_effects( p()->buff.exergy );
@@ -4947,6 +4962,17 @@ struct consume_soul_t : public demon_hunter_spell_t
     {
       p()->buff.void_metamorphosis_stack->trigger();
     }
+    else
+    {
+      if ( p()->talent.devourer.collapsing_star->ok() )
+      {
+        p()->buff.collapsing_star_stack->trigger();
+      }
+      if ( p()->talent.devourer.emptiness->ok() )
+      {
+        p()->buff.emptiness->trigger();
+      }
+    }
 
     // Warblade's hunger currently applies an additional stack on first buff application
     if ( !p()->buff.warblades_hunger->up() )
@@ -5408,6 +5434,75 @@ struct void_ray_t : public demon_hunter_spell_t
     return result_amount_type::DMG_DIRECT;
   }
 };
+
+struct collapsing_star_t : public demon_hunter_spell_t
+{
+  struct collapsing_star_damage_t : public demon_hunter_spell_t
+  {
+    collapsing_star_damage_t( std::string_view n, demon_hunter_t* p )
+      : demon_hunter_spell_t( n, p, p->spec.collapsing_star_damage )
+    {
+      background = dual = true;
+    }
+
+    double composite_crit_damage_bonus_multiplier() const
+    {
+      auto cm = demon_hunter_spell_t::composite_crit_damage_bonus_multiplier();
+
+      if ( p()->talent.devourer.midnight2->ok() )
+      {
+        cm += p()->talent.devourer.midnight2->effectN( 3 ).percent() * p()->cache.spell_crit_chance();
+      }
+
+      return cm;
+    }
+
+    void execute() override
+    {
+      demon_hunter_spell_t::execute();
+
+      if ( p()->talent.devourer.star_fragments->ok() )
+      {
+        unsigned fragments_to_spawn = as<unsigned>( p()->talent.devourer.star_fragments->effectN( 1 ).base_value() );
+        p()->spawn_soul_fragment( soul_fragment::LESSER, fragments_to_spawn );
+      }
+    }
+  };
+
+  collapsing_star_damage_t* damage_action;
+
+  collapsing_star_t( demon_hunter_t* p,util::string_view o )
+    : demon_hunter_spell_t( "collapsing_star", p, p->spec.collapsing_star_spell, o ), damage_action( nullptr )
+  {
+    damage_action = p->get_background_action<collapsing_star_damage_t>( "collapsing_star_damage" );
+    add_child( damage_action );
+  }
+
+  void execute() override
+  {
+    p()->buff.collapsing_star_ready->expire();
+    p()->buff.collapsing_star_stack->expire();
+    demon_hunter_spell_t::execute();
+
+    damage_action->execute_on_target( target );
+
+    if ( p()->talent.devourer.impending_apocalypse->ok() )
+    {
+      p()->buff.impending_apocalypse->trigger();
+    }
+  }
+
+  bool action_ready() override
+  {
+    if ( !p()->buff.collapsing_star_ready->check() )
+    {
+      return false;
+    }
+
+    return demon_hunter_spell_t::action_ready();
+  }
+};
+
 
 }  // end namespace spells
 
@@ -7673,6 +7768,14 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     {
       p()->buff.void_metamorphosis_stack->expire();
     }
+
+    if ( p()->talent.devourer.midnight3->ok() )
+    {
+      p()->buff.collapsing_star_ready->trigger();
+      p()->spawn_soul_fragment( soul_fragment::LESSER,
+                                as<unsigned int>( p()->talent.devourer.midnight3->effectN( 1 ).base_value() ) );
+    }
+
     if ( p()->talent.devourer.rolling_torment->ok() )
     {
       p()->buff.rolling_torment->trigger();
@@ -7706,6 +7809,11 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     {
       p()->buff.enduring_torment->trigger();
     }
+
+    p()->buff.collapsing_star_ready->expire();
+    p()->buff.collapsing_star_stack->expire();
+    p()->buff.emptiness->expire();
+    p()->buff.impending_apocalypse->expire();
 
     for ( demonsurge_ability ability : p()->hero_spec.demonsurge_abilities )
     {
@@ -7774,7 +7882,7 @@ struct calcified_spikes_t : public demon_hunter_buff_t<buff_t>
 struct rolling_torment_t : public demon_hunter_buff_t<buff_t>
 {
   rolling_torment_t( demon_hunter_t* p )
-    : base_t( *p, "rolling_torment_t", p->talent.devourer.rolling_torment->effectN( 2 ).trigger() )
+    : base_t( *p, "rolling_torment", p->talent.devourer.rolling_torment->effectN( 2 ).trigger() )
   {
     auto max_stacks    = std::max( 1, as<int>( data().duration() / 1_s ) );
     auto default_value = data().effectN( 1 ).percent() / max_stacks;
@@ -7785,6 +7893,24 @@ struct rolling_torment_t : public demon_hunter_buff_t<buff_t>
     set_max_stack( max_stacks );
     set_initial_stack( max_stacks );
     set_default_value( default_value );
+  }
+};
+
+struct collapsing_star_stacking_t : public demon_hunter_buff_t<buff_t>
+{
+  int trigger_threshold;
+  collapsing_star_stacking_t( demon_hunter_t* p )
+    : base_t( *p, "collapsing_star_stacking", p->spec.collapsing_star_stacking_buff ),
+      trigger_threshold( as<int>( p->talent.devourer.collapsing_star->effectN( 1 ).base_value() ) )
+  {
+    set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+
+    add_stack_change_callback( [ this ]( buff_t* b, int old, int new_ ) {
+      if ( new_ >= trigger_threshold && old < trigger_threshold )
+      {
+        this->p()->buff.collapsing_star_ready->trigger();
+      }
+    } );
   }
 };
 
@@ -7914,8 +8040,8 @@ struct shattered_souls_callback_t : public demon_hunter_proc_callback_t
 
     if ( rng().roll( chance ) )
     {
-      p()->sim->out_debug.printf( "%s proc-ed Shattered Souls with %s (%u) chance: %.3f", p()->name(), action->name(),
-                                  action->data().id(), chance );
+      p()->sim->print_debug( "{} proc-ed Shattered Souls with {} ({%u}}) chance: {:.3f}", p()->name(), action->name(),
+                             action->data().id(), chance );
       p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
     }
   }
@@ -8173,6 +8299,8 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new reap_t( this, options_str );
   if ( name == "void_ray" )
     return new void_ray_t( this, options_str );
+  if ( name == "collapsing_star" )
+    return new collapsing_star_t( this, options_str );
 
   using namespace actions::attacks;
 
@@ -8259,6 +8387,25 @@ void demon_hunter_t::create_buffs()
                                       ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
                                       ->disable_ticking( true );
   buff.rolling_torment = make_buff<buffs::rolling_torment_t>( this );
+
+  buff.emptiness = make_buff( this, "emptiness", spec.emptiness_buff )
+                       ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                       ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+
+  if ( spec.emptiness_buff->ok() )
+  {
+    buff.emptiness->set_default_value( talent.devourer.emptiness->effectN( 1 ).percent() /
+                                       spec.emptiness_buff->max_stacks() );
+  }
+
+  buff.impending_apocalypse = make_buff( this, "impending_apocalypse", spec.impending_apocalypse_buff )
+                                  ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                                  ->disable_ticking( true );
+
+  buff.collapsing_star_ready = make_buff( this, "collapsing_star_ready", spec.collapsing_star_ready_buff )
+                                   ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+
+  buff.collapsing_star_stack = make_buff<collapsing_star_stacking_t>( this );               
 
   // Havoc ==================================================================
 
@@ -9069,6 +9216,11 @@ void demon_hunter_t::init_spells()
   talent.devourer.emptiness    = find_talent_spell( talent_tree::SPECIALIZATION, "Emptiness" );
   talent.devourer.soul_glutton = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Glutton" );
   talent.devourer.eradicate    = find_talent_spell( talent_tree::SPECIALIZATION, "Eradicate" );
+  
+  // Devouer Apex Talents
+  talent.devourer.midnight1 = find_talent_spell( talent_tree::SPECIALIZATION, 1242486 );
+  talent.devourer.midnight2 = find_talent_spell( talent_tree::SPECIALIZATION, 1250088 );
+  talent.devourer.midnight3 = find_talent_spell( talent_tree::SPECIALIZATION, 1250094 );
 
   // Havoc Talents
 
@@ -9258,18 +9410,24 @@ void demon_hunter_t::init_spells()
   spec.sigil_of_misery_debuff    = talent_spell_lookup( talent.demon_hunter.sigil_of_misery, 207685 );
 
   // Spec Background Spells
-  spec.feast_of_souls_buff      = talent_spell_lookup( talent.devourer.feast_of_souls, 1232310 );
-  spec.devourers_bite_debuff    = talent_spell_lookup( talent.devourer.devourers_bite, 1241532 );
-  spec.void_metamorphosis       = talent_spell_lookup( talent.devourer.void_metamorphosis, 1217607 );
-  spec.void_metamorphosis_stack = talent_spell_lookup( talent.devourer.void_metamorphosis, 1225789 );
-  spec.eradicate                = talent_spell_lookup( talent.devourer.eradicate, 1225826 );
-  spec.eradicate_damage         = talent_spell_lookup( talent.devourer.eradicate, 1225827 );
-  spec.eradicate_buff           = talent_spell_lookup( talent.devourer.eradicate, 1239524 );
-  spec.void_ray_tick            = talent_spell_lookup( talent.devourer.void_ray, 1213649 );
-  spec.void_ray_tick_meta       = talent_spell_lookup( talent.devourer.void_ray, 1214595 );
-  spec.moment_of_craving_buff   = talent_spell_lookup( talent.devourer.moment_of_craving, 1238495 );
-  spec.void_buildup             = find_spell( 473671 );
-  spec.voidglare_boon_energize  = talent_spell_lookup( talent.devourer.voidglare_boon, 1241922 );
+  spec.feast_of_souls_buff           = talent_spell_lookup( talent.devourer.feast_of_souls, 1232310 );
+  spec.devourers_bite_debuff         = talent_spell_lookup( talent.devourer.devourers_bite, 1241532 );
+  spec.void_metamorphosis            = talent_spell_lookup( talent.devourer.void_metamorphosis, 1217607 );
+  spec.void_metamorphosis_stack      = talent_spell_lookup( talent.devourer.void_metamorphosis, 1225789 );
+  spec.eradicate                     = talent_spell_lookup( talent.devourer.eradicate, 1225826 );
+  spec.eradicate_damage              = talent_spell_lookup( talent.devourer.eradicate, 1225827 );
+  spec.eradicate_buff                = talent_spell_lookup( talent.devourer.eradicate, 1239524 );
+  spec.void_ray_tick                 = talent_spell_lookup( talent.devourer.void_ray, 1213649 );
+  spec.void_ray_tick_meta            = talent_spell_lookup( talent.devourer.void_ray, 1214595 );
+  spec.moment_of_craving_buff        = talent_spell_lookup( talent.devourer.moment_of_craving, 1238495 );
+  spec.void_buildup                  = find_spell( 473671 );
+  spec.voidglare_boon_energize       = talent_spell_lookup( talent.devourer.voidglare_boon, 1241922 );
+  spec.collapsing_star_damage        = talent_spell_lookup( talent.devourer.collapsing_star, 1221162 );
+  spec.collapsing_star_spell         = talent_spell_lookup( talent.devourer.collapsing_star, 1221150 );
+  spec.collapsing_star_ready_buff    = talent_spell_lookup( talent.devourer.collapsing_star, 1221171 );
+  spec.collapsing_star_stacking_buff = talent_spell_lookup( talent.devourer.collapsing_star, 1227702 );
+  spec.emptiness_buff                = talent_spell_lookup( talent.devourer.emptiness, 1242504 );
+  spec.impending_apocalypse_buff     = talent_spell_lookup( talent.devourer.impending_apocalypse, 1227338 );
 
   mastery.a_fire_inside = talent.havoc.a_fire_inside->effectN( 6 ).trigger();
 
