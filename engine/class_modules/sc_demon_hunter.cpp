@@ -408,28 +408,28 @@ public:
       player_talent_t soulshaper;
 
       player_talent_t focused_ray;
-      player_talent_t collapsing_star;  // NYI
+      player_talent_t collapsing_star;
       player_talent_t sweet_suffering;
       player_talent_t voidpurge;
 
       player_talent_t hungering_slash;  // NYI
       player_talent_t voidrage;
-      player_talent_t dark_ultimatum;  // NYI
+      player_talent_t dark_ultimatum;
       player_talent_t beckon;
       player_talent_t voidglare_boon;
 
       player_talent_t voidstep;  // NYI
       player_talent_t up_close;
-      player_talent_t impending_apocalypse;  // NYI
+      player_talent_t impending_apocalypse;
       player_talent_t rolling_torment;
       player_talent_t improved_reap;
 
       player_talent_t devourers_bite;
-      player_talent_t star_fragments;  // NYI
+      player_talent_t star_fragments;
       player_talent_t calamitous;      // NYI
 
       player_talent_t the_hunt;
-      player_talent_t emptiness;  // NYI
+      player_talent_t emptiness;
       player_talent_t soul_glutton;
       player_talent_t eradicate;
 
