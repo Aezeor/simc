@@ -2953,12 +2953,13 @@ class SpellDataGenerator(DataGenerator):
 
         _start = datetime.datetime.now()
 
+        # No longer in game, but kept for reference
         # First, get spells from talents. Pet and character class alike
-        for talent in TalentSet(self._options).get():
-            # These may now be pet talents
-            if talent.class_id > 0:
-                mask_class = util.class_mask(class_id=talent.class_id)
-                self.process_spell(talent.id_spell, ids, mask_class, 0, False)
+        # for talent in TalentSet(self._options).get():
+              # These may now be pet talents
+        #     if talent.class_id > 0:
+        #         mask_class = util.class_mask(class_id=talent.class_id)
+        #         self.process_spell(talent.id_spell, ids, mask_class, 0, False)
 
         # No longer in game, but kept for reference.
         # If MinorTalent.db2 is ever used again, make sure to double check the format json for any field changes.

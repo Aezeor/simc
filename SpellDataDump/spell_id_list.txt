@@ -194,7 +194,7 @@ Death Knight
 105646  *Item - Death Knight T13 DPS 4P Bonus
 106227  *Last Defender of Azeroth
 107116  *Howling Blast
-108194   Asphyxiate
+108194  *Asphyxiate
 108196  *Death Siphon
 108199   Gorefiend's Grasp
 108201  *Desecrated Ground
@@ -205,8 +205,8 @@ Death Knight
 113143  *Rise!
 114556   Purgatory
 115018  *Desecrated Ground
-115989   Unholy Blight
-115994   Unholy Blight
+115989  *Unholy Blight
+115994  *Unholy Blight
 116783  *Death Siphon
 116888   Shroud of Purgatory
 119975  *Conversion
@@ -381,13 +381,13 @@ Death Knight
 194878   Icy Talons
 194879   Icy Talons
 194907  *Sub-Zero
-194909   Frozen Pulse
+194909  *Frozen Pulse
 194910  *Without Remorse
 194911  *Biting Winds
 194912   Gathering Storm
 194913   Glacial Advance
 194916   All Will Serve
-194917   Pestilent Pustules
+194917  *Pestilent Pustules
 194918  *Blighted Rune Weapon
 194920  *Improved Icebound Fortitude
 195181   Bone Shield
@@ -396,7 +396,7 @@ Death Knight
 195292   Death's Caress
 195621   Frost Fever
 195679   Bloodworms
-195750   Frozen Pulse
+195750  *Frozen Pulse
 195757   Festering Wound
 195758  *Blighted Rune Weapon
 195975   Glacial Advance
@@ -473,9 +473,9 @@ Death Knight
 205750  *Bloodbolt
 205816   Rattlegore Bone Legplates
 206930   Heart Strike
-206931   Blooddrinker
+206931  *Blooddrinker
 206935  *Bloody Reprisal
-206940   Mark of Blood
+206940  *Mark of Blood
 206970   Tightening Grasp
 206974   Foul Bulwark
 206977  *Blood Mirror
@@ -484,7 +484,7 @@ Death Knight
 207060  *Freezing Fog
 207061   Murderous Efficiency
 207104   Runic Attenuation
-207126   Icecap
+207126  *Icecap
 207127   Hungering Rune Weapon
 207142   Avalanche
 207150   Avalanche
@@ -498,17 +498,17 @@ Death Knight
 207203   Frost Shield
 207230   Frostscythe
 207256   Obliteration
-207264   Bursting Sores
-207267   Bursting Sores
+207264  *Bursting Sores
+207267  *Bursting Sores
 207269   Ebon Fever
 207272   Infected Claws
-207289   Unholy Assault
+207289  *Unholy Assault
 207305  *Castigator
 207311   Clawing Shadows
 207313   Sludge Belcher
 207317   Epidemic
 207319  *Corpse Shield
-207321   Spell Eater
+207321  *Spell Eater
 207346  *Necrosis
 207349   Dark Arbiter
 207488  *Pinning Glare
@@ -598,13 +598,13 @@ Death Knight
 219780   March of the Damned Immunity
 219786   Ossuary
 219788   Ossuary
-219809   Tombstone
+219809  *Tombstone
 220143   Apocalypse
 221180   Army of the Dead
 221322   Runic Attenuation
 221562   Asphyxiate
 221620  *Deathlord's Might
-221699   Blood Tap
+221699  *Blood Tap
 221775  *Sanguinary Affinity
 222024   Obliterate
 222026   Frost Strike
@@ -744,7 +744,7 @@ Death Knight
 274071   Glacial Contagion
 274074   Glacial Contagion
 274081   Festermight
-274156   Consumption
+274156  *Consumption
 274373   Festermight
 274773  *Rune Strike
 274893   Consumption
@@ -764,8 +764,8 @@ Death Knight
 276049  *Corpse Explosion
 276051  *Corpse Explosion
 276079   Death's Reach
-276837   Army of the Damned
-277234   Pestilence
+276837  *Army of the Damned
+277234  *Pestilence
 278107   Val'kyr
 278114  *Remove Val'kyr
 278116  *Learn Val'kyr
@@ -795,9 +795,9 @@ Death Knight
 280440  *Army of the Dead
 280447   Army of the Dead
 281043  *Inexorable Assault
-281208   Cold Heart
-281209   Cold Heart
-281210   Cold Heart
+281208  *Cold Heart
+281209  *Cold Heart
+281210  *Cold Heart
 281214   Pillar of Frost
 281238   Obliteration
 281327   Obliteration
@@ -876,23 +876,23 @@ Death Knight
 317250  *Summon Gargoyle
 317610   Relish in Blood
 317614   Relish in Blood
-317776   Army of the Damned
+317776  *Army of the Damned
 317791   Shadow Bolt
 317792   Frostbolt
 317898   Blinding Sleet
-319230   Unholy Pact
-319232   Unholy Pact
-319233   Unholy Pact
-319236   Unholy Pact
-319238   Unholy Pact
-319240   Unholy Pact
-319243   Unholy Pact
-319245   Unholy Pact
-319248   Unholy Pact
-319249   Unholy Pact
-319255   Unholy Pact
+319230  *Unholy Pact
+319232  *Unholy Pact
+319233  *Unholy Pact
+319236  *Unholy Pact
+319238  *Unholy Pact
+319240  *Unholy Pact
+319243  *Unholy Pact
+319245  *Unholy Pact
+319248  *Unholy Pact
+319249  *Unholy Pact
+319255  *Unholy Pact
 319278  *Veteran of the Fourth War
-321995   Hypothermic Presence
+321995  *Hypothermic Presence
 323710   Abomination Limb
 323798   Abomination Limb
 323950   Abomination Limb
@@ -1084,7 +1084,7 @@ Death Knight
 356528  *Necrotic Wound
 356544  *Necrotic Wounds: Heal
 357030   Anti-Magic Zone
-358109   Cold Heart
+358109  *Cold Heart
 359011  *Shroud of Winter
 359098   Death Grip
 362181  *Might of Maldraxxus
@@ -1453,7 +1453,7 @@ Death Knight
 458264   Decomposition
 458478   Incite Terror
 458572   Bone Collector
-458687   Blooddrinker
+458687  *Blooddrinker
 458744  *Ossified Vitriol
 458745  *Ossified Vitriol
 458752   Carnage
@@ -1464,7 +1464,7 @@ Death Knight
 459733   Summon Fenryr
 459739   Summon Hati
 460049   Infliction of Sorrow
-460448   Unholy Blight
+460448  *Unholy Blight
 460499   Bloodied Blade
 460500   Bloodied Blade
 460501   Heart Strike
@@ -1624,7 +1624,7 @@ Death Knight
 1242274 *Lesser Ghoul Despawn
 1242283 *Reawakening
 1242289 *Reawakening
-1242294  Army of the Damned
+1242294 *Army of the Damned
 1242561  Rapid Variant
 1242564  Rapid Variant
 1242597  Blighted
@@ -1827,7 +1827,7 @@ Demon Hunter
 202120  *Deceiver's Fury
 202137   Sigil of Silence
 202138   Sigil of Chains
-202140   Sigil of Misery
+202140  *Sigil of Misery
 202387   Inner Demons
 202388   Inner Demons
 202443   Anguish
@@ -1844,7 +1844,7 @@ Demon Hunter
 203550   Blind Fury
 203551   Prepared
 203555   Demon Blades
-203556   Master of the Glaive
+203556  *Master of the Glaive
 203557   Felblade
 203650   Prepared
 203704  *Mana Break
@@ -1868,11 +1868,11 @@ Demon Hunter
 204257   Consume Soul
 204490   Sigil of Silence
 204497   Felblade
-204513   Sigil of Flame
+204513  *Sigil of Flame
 204596   Sigil of Flame
 204598   Sigil of Flame
 204834  *Sigil of Chains
-204841   Abyssal Strike
+204841  *Abyssal Strike
 204843   Sigil of Chains
 204909   Soul Rending
 205312  *Flames of Azzinoth
@@ -1899,7 +1899,7 @@ Demon Hunter
 206473  *Bloodlet
 206475  *Chaos Cleave
 206476   Exergy
-206477   Unleashed Power
+206477  *Unleashed Power
 206478   Demonic Appetite
 206649  *Eye of Leotheras
 206650  *Eye of Leotheras
@@ -1922,10 +1922,10 @@ Demon Hunter
 207528  *Unending Hatred
 207548   Agonizing Flames
 207549  *Pain Tolerance
-207550   Abyssal Strike
-207665   Sigil of Chains
-207666   Concentrated Sigils
-207682   Sigil of Silence
+207550  *Abyssal Strike
+207665  *Sigil of Chains
+207666  *Concentrated Sigils
+207682  *Sigil of Silence
 207684   Sigil of Misery
 207685   Sigil of Misery
 207690  *Bloodlet
@@ -2016,7 +2016,7 @@ Demon Hunter
 211796   Chaos Blades
 211797   Chaos Blades
 211813  *Throw Glaive
-211881   Fel Eruption
+211881  *Fel Eruption
 212084   Fel Devastation
 212105   Fel Devastation
 212106   Fel Devastation
@@ -2068,7 +2068,7 @@ Demon Hunter
 217735   Cloak of Fel Flames
 217741   Cloak of Fel Flames
 217832   Imprison
-217996   Soul Rending
+217996  *Soul Rending
 218386  *Activating Specialization
 218561  *Siphoned Power
 218612   Feed the Demon
@@ -2122,7 +2122,7 @@ Demon Hunter
 222826  *Chaos Nova
 224105  *Lord of Flames
 224509  *Frailty
-225084   Fel Eruption
+225084  *Fel Eruption
 225413   Painbringer
 225919   Fracture
 225921   Fracture
@@ -2230,8 +2230,8 @@ Demon Hunter
 258920   Immolation Aura
 258921   Immolation Aura
 258922   Immolation Aura
-258925   Fel Barrage
-258926   Fel Barrage
+258925  *Fel Barrage
+258926  *Fel Barrage
 259134  *Heavyweight [DNT]
 259153  *Boost 2.0 [DemonHunter|Havoc] - Set CD for Eye Beam for practice
 259181  *Boost 2.0 [DemonHunter|Havoc] - Advanced Combat B - Watcher
@@ -2301,7 +2301,7 @@ Demon Hunter
 320331   Infernal Armor
 320334   Infernal Armor
 320338   Essence Break
-320341   Bulk Extraction
+320341  *Bulk Extraction
 320342  *Consume Soul
 320343  *Consume Soul
 320361   Improved Disrupt
@@ -2338,7 +2338,7 @@ Demon Hunter
 321067   Metamorphosis
 321068   Metamorphosis
 321299   Mastery: Fel Blood
-321453   Demonic
+321453  *Demonic
 322826  *Felborn Shield
 322827  *Finely-Honed Bone Blades
 322828  *Demonglass Curio
@@ -2593,7 +2593,7 @@ Demon Hunter
 389846   Felfire Haste
 389847   Felfire Haste
 389849   Lost in Darkness
-389858   Sigil of Spite
+389858  *Sigil of Spite
 389860   Sigil of Spite
 389890   Tactical Retreat
 389958   Frailty
@@ -3343,14 +3343,14 @@ Druid
 50286    Starfall
 50322    Survival Instincts
 50334    Berserk
-50464    Nourish
+50464   *Nourish
 50769   *Revive
 51439   *Backlash
 51772   *Claw
 51972   *Tranquility
 52507   *Ragepaw's Presence
 52553   *Empowered Tree of Life
-52610    Savage Roar
+52610   *Savage Roar
 53008   *Glyph of Thorns
 53013   *Glyph of Wild Endurance
 53498   *Swipe
@@ -3378,7 +3378,7 @@ Druid
 61336    Survival Instincts
 61391    Typhoon
 61489   *Lifebloom
-62071    Savage Roar
+62071   *Savage Roar
 62971   *Glyph of Starsurge
 63241   *Tranquility
 63554   *Tranquility
@@ -3485,7 +3485,7 @@ Druid
 100855  *Tranquility
 102280  *Displacer Beast
 102342   Ironbark
-102351   Cenarion Ward
+102351  *Cenarion Ward
 102352   Cenarion Ward
 102359   Mass Entanglement
 102383   Wild Charge
@@ -3521,7 +3521,7 @@ Druid
 106899   Bear Form
 106951   Berserk
 107059   Glyph of the Ursol Chameleon
-108238   Renewal
+108238  *Renewal
 108291   Heart of the Wild
 108292   Heart of the Wild
 108293   Heart of the Wild
@@ -3568,9 +3568,9 @@ Druid
 132302  *Wild Charge
 132469   Typhoon
 133539  *Mark of the Wild
-135286   Tooth and Claw
-135288   Tooth and Claw
-135601   Tooth and Claw
+135286  *Tooth and Claw
+135288  *Tooth and Claw
+135601  *Tooth and Claw
 135700   Clearcasting
 135867  *Blade Sweep
 137009   Druid
@@ -3623,7 +3623,7 @@ Druid
 145108   Ysera's Gift
 145109   Ysera's Gift
 145110   Ysera's Gift
-145152   Bloodtalons
+145152  *Bloodtalons
 145153   Dream of Cenarius
 145162  *Dream of Cenarius
 145205   Efflorescence
@@ -3780,16 +3780,16 @@ Druid
 197073   Inner Peace
 197479  *Quicksilver
 197481  *Quicksilver
-197488   Balance Affinity
+197488  *Balance Affinity
 197490   Feral Affinity
 197491   Guardian Affinity
-197492   Restoration Affinity
+197492  *Restoration Affinity
 197524   Astral Influence
 197625   Moonkin Form
 197626   Starsurge
 197628   Starfire
-197630   Sunfire
-197632   Balance Affinity
+197630  *Sunfire
+197632  *Balance Affinity
 197692   Feral Overrides Passive
 197721   Flourish
 197911   Astral Power
@@ -3858,7 +3858,7 @@ Druid
 202360  *Blessing of the Ancients
 202384  *Dark Side of the Moon
 202386  *Twilight Glow
-202425   Warrior of Elune
+202425  *Warrior of Elune
 202426  *Solar Stabbing
 202430   Nature's Balance
 202433  *Scythe of the Stars
@@ -3904,8 +3904,8 @@ Druid
 203553  *Focused Growth
 203554  *Focused Growth
 203624  *Early Spring
-203651   Overgrowth
-203652   Overgrowth
+203651  *Overgrowth
+203652  *Overgrowth
 203709  *Gift of the Wild
 203953   Brambles
 203958   Brambles
@@ -3913,8 +3913,8 @@ Druid
 203962   Blood Frenzy
 203964   Galactic Guardian
 203965   Survival of the Fittest
-203974   Earthwarden
-203975   Earthwarden
+203974  *Earthwarden
+203975  *Earthwarden
 204012  *Guttural Roars
 204053   Rend and Tear
 204066   Lunar Beam
@@ -3927,8 +3927,8 @@ Druid
 207017  *Alpha Challenge
 207271   The Dark Titan's Advice
 207383   Abundance
-207385   Spring Blossoms
-207386   Spring Blossoms
+207385  *Spring Blossoms
+207386  *Spring Blossoms
 207523   Chatoyant Signet
 207640   Abundance
 207932   Tearstone of Elune
@@ -4044,7 +4044,7 @@ Druid
 216078  *Starting Area Marker (A)
 216079  *Starting Area Marker (H)
 217369  *Rake
-217615   Guardian Affinity
+217615  *Guardian Affinity
 218282  *Boost 2.0 [Druid|Feral] - Advanced Combat A - Watcher
 218283  *Boost 2.0 [Druid|Feral] - Advanced Combat B - Watcher
 218402  *Boost 2.0 [Monk|Wind] - Advanced Combat A - Watcher
@@ -4312,8 +4312,8 @@ Druid
 281493   The Curse of Restlessness
 281871   Fury of Elune
 285381   Primal Wrath
-285564   Scent of Blood
-285646   Scent of Blood
+285564  *Scent of Blood
+285646  *Scent of Blood
 287247   Autumn Leaves
 287251   Early Harvest
 287253   Early Harvest
@@ -4368,7 +4368,7 @@ Druid
 311930  *Solar Beam
 314330   Skull Bash
 316181  *Thorns of Aqir
-319439   Bloodtalons
+319439  *Bloodtalons
 319454   Call of the Elder Druid
 322117  *Coming Soon
 322442  *Thoughtstolen
@@ -6566,8 +6566,8 @@ Hunter
 118459   Beast Cleave
 118922   Posthaste
 119438  *Shoot
-120360   Barrage
-120361   Barrage
+120360  *Barrage
+120361  *Barrage
 120679   Dire Beast
 120694   Dire Beast
 120755  *Glaive Toss
@@ -6625,7 +6625,7 @@ Hunter
 131564  *Arcane Intensity
 131575  *Throw Rock
 131637  *A Murder of Crows
-131894   A Murder of Crows
+131894  *A Murder of Crows
 131900   A Murder of Crows
 131951  *A Murder of Crows
 131952  *A Murder of Crows
@@ -6869,15 +6869,15 @@ Hunter
 193468   Mastery: Sniper Training
 193530  *Aspect of the Wild
 193532   Scent of Blood
-193533   Steady Focus
-193534   Steady Focus
+193533  *Steady Focus
+193534  *Steady Focus
 193756  *Call Eagle Spirit
 194275  *Wyvern Hatchet Toss
 194284  *Shoot
 194296  *Marked for Punishment
 194306  *Bestial Fury
 194397  *Way of the Cobra
-194407   Spitting Cobra
+194407  *Spitting Cobra
 194430  *Shoot Plague
 194465  *Convalesce
 194507  *Convalesce
@@ -6920,7 +6920,7 @@ Hunter
 199518  *Improved Traps
 199523  *Farstrider
 199527  *True Aim
-199528   One with the Pack
+199528  *One with the Pack
 199530   Stomp
 199532   Killer Cobra
 199533  *Aspect of the Beast - NYI
@@ -7382,7 +7382,7 @@ Hunter
 257620   Multi-Shot
 257621   Trick Shots
 257622   Trick Shots
-257891   Spitting Cobra
+257891  *Spitting Cobra
 257944   Thrill of the Hunt
 257946   Thrill of the Hunt
 258374  *Trick Shots Aimed Shot Targeting
@@ -7396,11 +7396,11 @@ Hunter
 259387   Mongoose Bite
 259388   Mongoose Fury
 259390  *Disengage
-259391   Chakrams
-259396   Chakrams
+259391  *Chakrams
+259396  *Chakrams
 259398   Chakrams
 259489   Kill Command
-259491   Serpent Sting
+259491  *Serpent Sting
 259495   Wildfire Bomb
 259496   Wildfire Bomb
 259516   Flanking Strike
@@ -7409,11 +7409,11 @@ Hunter
 259587   Scorching Wildfire
 260221  *Guerrilla Tactics
 260224  *Pack Tactics
-260228   Careful Aim
+260228  *Careful Aim
 260230  *Volatile Mixture
 260231   Violent Reaction
 260240   Precise Shots
-260241   Hydra's Bite
+260241  *Hydra's Bite
 260242   Precise Shots
 260243   Volley
 260247   Volley
@@ -7424,19 +7424,19 @@ Hunter
 260286   Tip of the Spear
 260297  *Arctic Bola
 260309   Master Marksman
-260331   Birds of Prey
+260331  *Birds of Prey
 260347  *Swiftwind
-260367   Streamline
+260367  *Streamline
 260381  *Quickdraw
 260382  *Quickdraw
 260386  *Natural Mending
 260387  *Natural Mending
 260393   Lethal Shots
 260395   Lethal Shots
-260402   Double Tap
+260402  *Double Tap
 260404   Calling the Shots
-260420   Chakrams
-260426   Chakrams Missile
+260420  *Chakrams
+260426  *Chakrams Missile
 260440  *Primal Instincts
 260442  *Primal Instinct: Ferocity
 260443  *Primal Instinct: Rapidity
@@ -7499,9 +7499,9 @@ Hunter
 265189   Raptor Strike
 265888   Mongoose Bite
 265893  *Mongoose Bite
-265895   Terms of Engagement
-265896   Terms of Engagement
-265898   Terms of Engagement
+265895  *Terms of Engagement
+265896  *Terms of Engagement
+265898  *Terms of Engagement
 265941  *Waylay
 265942  *Crippling Chill
 265949  *Coming Soon
@@ -7512,16 +7512,16 @@ Hunter
 267104  *Primal Instinct: Ferocity
 267116   Animal Companion
 267133  *Primal Instinct: Rapidity
-267605   Chakrams
-267617   Chakrams
+267605  *Chakrams
+267617  *Chakrams
 267666   Chakrams
 267922  *Eternal Guardian
 267923  *Eternal Guardian
 267924  *Eternal Rest
-267933   Chakrams Missile
+267933  *Chakrams Missile
 268423  *Serpent Sting
-268501   Viper's Venom
-268552   Viper's Venom
+268501  *Viper's Venom
+268552  *Viper's Venom
 268877   Beast Cleave
 269256  *Raking Talons
 269343  *Seize the Initiative
@@ -7565,7 +7565,7 @@ Hunter
 271050   Volatile Bomb
 271615   Wildfire Infusion
 271625   Harpoon
-271788   Serpent Sting
+271788  *Serpent Sting
 272246  *Shoot
 272415  *Shoot
 272651   Command Pet
@@ -7633,7 +7633,7 @@ Hunter
 279636   Focused Fire
 279637   Focused Fire
 279701  *Shoot
-279797   Chakrams Missile
+279797  *Chakrams Missile
 279806   Primal Instincts
 279807   Primal Instincts
 279857  *Shoot
@@ -8074,7 +8074,7 @@ Hunter
 393774  *Sentinel's Perception
 393777  *Sentinel's Protection
 393933   War Orders
-393949   Poison Injection
+393949  *Poison Injection
 393952  *Careful Aim
 394298   Lethal Command
 394366   Find The Mark
@@ -8216,7 +8216,7 @@ Hunter
 459741  *Contagious Reagents
 459751  *Ravenous Leap
 459753   Ravenous Leap
-459759   A Murder of Crows
+459759  *A Murder of Crows
 459760  *A Murder of Crows
 459783   Penetrating Shots
 459794   Ammo Conservation
@@ -8607,7 +8607,7 @@ Mage
 1090    *Sleep
 1449     Arcane Explosion
 1459     Arcane Intellect
-1463     Incanter's Flow
+1463    *Incanter's Flow
 1953     Blink
 2120     Flamestrike
 2139     Counterspell
@@ -9227,7 +9227,7 @@ Mage
 105788  *Item - Mage T13 2P Bonus (Haste)
 105791  *Stolen Time
 107082  *Embrace of the Destroyer
-108839   Ice Floes
+108839  *Ice Floes
 108843   Blazing Speed
 108853   Fire Blast
 108978   Alter Time
@@ -9242,11 +9242,11 @@ Mage
 114923   Nether Tempest
 114954   Nether Tempest
 114956  *Nether Tempest
-116011   Rune of Power
-116014   Rune of Power
+116011  *Rune of Power
+116014  *Rune of Power
 116130  *Conjure Refreshment
 116136  *Conjure Refreshment
-116267   Incanter's Flow
+116267  *Incanter's Flow
 117216   Critical Mass
 117983  *Ride Like the Wind
 118483  *For Great Justice
@@ -9385,11 +9385,11 @@ Mage
 153596   Comet Storm
 153626   Arcane Orb
 153640   Arcane Orb
-155147   Overpowered
-155148   Kindling
-155149   Thermal Void
+155147  *Overpowered
+155148  *Kindling
+155149  *Thermal Void
 155158   Meteor Burn
-156150   Flowing Thoughts
+156150  *Flowing Thoughts
 157563  *Frost Nova
 157642   Pyrotechnics
 157644   Pyrotechnics
@@ -9602,14 +9602,14 @@ Mage
 203286  *Greater Pyroblast
 204342  *Frostbolt (Sarah test missile)
 204537  *Arcane Missiles
-205020   Pyromaniac
+205020  *Pyromaniac
 205021   Ray of Frost
 205022   Arcane Familiar
-205023   Conflagration
-205024   Lonely Winter
+205023  *Conflagration
+205024  *Lonely Winter
 205025   Presence of Mind
 205026   Firestarter
-205027   Bone Chilling
+205027  *Bone Chilling
 205028   Resonance
 205029   Flame On
 205030   Frozen Touch
@@ -9621,13 +9621,13 @@ Mage
 205039  *Erosion
 205159  *Crystalline Swords
 205160  *Crystalline Swords
-205345   Conflagration Flare Up
+205345  *Conflagration Flare Up
 205470   Flame Patch
 205472   Flame Patch
 205473   Icicles
 205590  *Caster Revamp - Precast Animation Test - Shaman
 205708   Chilled
-205766   Bone Chilling
+205766  *Bone Chilling
 206397   Zann'esu Journey
 206431  *Burst of Cold
 206432  *Burst of Cold
@@ -9663,8 +9663,8 @@ Mage
 210730  *Sloooow Down
 210732  *Sloooow Down
 210797   Crashing Storm
-210805   Time Anomaly
-210808   Time Anomaly!
+210805  *Time Anomaly
+210808  *Time Anomaly!
 210817  *Arcane Rebound
 210824   Touch of the Magi
 210833   Touch of the Magi
@@ -9762,7 +9762,7 @@ Mage
 225119   Arcane Assault
 226754  *Flame Orb
 226755  *Flame Orb
-226757   Conflagration
+226757  *Conflagration
 226852   Zann'esu Journey
 227481  *Scorched Earth
 228354   Flurry
@@ -9807,25 +9807,25 @@ Mage
 235116  *Portal: The Dalaran Spire (Teleport)
 235124  *Portal: Dalaran Spire
 235219   Cold Snap
-235224   Frigid Winds
+235224  *Frigid Winds
 235227   Ice Time
 235235   Frost Nova
 235297   Glacial Insulation
 235313   Blazing Barrier
 235314   Blazing Barrier
-235365   Blazing Soul
+235365  *Blazing Soul
 235450   Prismatic Barrier
 235463  *Mana Shield
 235470  *Mana Shield
 235553  *The Broken Shore (Teleport)
-235711   Chrono Shift
+235711  *Chrono Shift
 235870   Alexstrasza's Fury
 235940   Pyrotex Ignition Cloth
 236058   Frenetic Speed
 236060   Frenetic Speed
 236231  *Portal: Dalaran Spire
-236298   Chrono Shift
-236299   Chrono Shift
+236298  *Chrono Shift
+236299  *Chrono Shift
 236380   Norgannon's Foresight
 236457   Slipstream
 236628   Amplification
@@ -9897,7 +9897,7 @@ Mage
 253299  *Quick Thinker
 255360  *Cone of Cold
 255361  *Spellsteal
-257537   Ebonbolt
+257537  *Ebonbolt
 257538   Ebonbolt
 257541  *Phoenix Flames
 257542  *Phoenix Flames
@@ -9916,7 +9916,7 @@ Mage
 268475   Blast Wave
 268778  *Portal: Zuldazar
 268780  *Portal: Hall of Communion
-269644   Searing Touch
+269644  *Searing Touch
 269650   Pyroclasm
 269651   Pyroclasm
 269748   Ray of Frost
@@ -9974,8 +9974,8 @@ Mage
 277793  *Polymorph
 277902   Tunnel of Ice
 277904   Tunnel of Ice
-278309   Chain Reaction
-278310   Chain Reaction
+278309  *Chain Reaction
+278310  *Chain Reaction
 278496  *Portal Effect: Orgrimmar
 278536   Galvanizing Spark
 278537   Explosive Echo
@@ -10085,8 +10085,8 @@ Mage
 320926  *Art of the Blinkmage
 320927  *Clouded Diamond
 321329   Ring of Frost
-321358   Focus Magic
-321363   Focus Magic
+321358  *Focus Magic
+321363  *Focus Magic
 321387   Enlightened
 321388   Enlightened
 321390   Enlightened
@@ -10160,7 +10160,7 @@ Mage
 333315   Sun King's Blessing
 333373   Triune Ward
 333393   Grisly Icicle
-334180   Focus Magic
+334180  *Focus Magic
 334277   Alexstrasza's Fury
 336460   Unrelenting Cold
 336472   Shivering Core
@@ -10220,7 +10220,7 @@ Mage
 345977   Mirrors of Torment
 347402  *Alter Time
 347436  *Mirrors of Torment
-350269   Incanter's Ward
+350269  *Incanter's Ward
 351140   Meteor
 351635  *Chilled Damage OR Damage against Frozen Targets
 352278   Ice Wall
@@ -10791,7 +10791,7 @@ Mage
 1236209  Glacial Spike
 1236211  Glacial Spike
 1236212  Pyroblast
-1236231  Lesser Time Warp
+1236231 *Lesser Time Warp
 1238171 *Pyromastery
 1238187 *Pyromastery
 1241462  Arcane Pulse
@@ -10953,7 +10953,7 @@ Monk
 115180  *Dizzying Haze
 115181   Breath of Fire
 115203   Fortifying Brew
-115288   Energizing Elixir
+115288  *Energizing Elixir
 115294   Mana Tea
 115295  *Guard
 115308  *Ironskin Brew
@@ -11014,14 +11014,14 @@ Monk
 121283   Power Strikes
 121817   Combat Wisdom
 121948  *Charging Ox Wave
-122278   Dampen Harm
+122278  *Dampen Harm
 122280   Healing Elixir
-122281   Healing Elixir
+122281  *Healing Elixir
 122400  *Expel Harm
 122464  *Dematerialize
 122465  *Dematerialize
 122470   Touch of Karma
-122783   Diffuse Magic
+122783  *Diffuse Magic
 123033  *Healing Sphere
 123055  *Healing Sphere
 123149  *Item - Monk T14 Windwalker 2P Bonus
@@ -11221,8 +11221,8 @@ Monk
 196086  *Tornado Kick
 196087  *Tornado Kick
 196261  *Rapid Detox
-196607   Eye of the Tiger
-196608   Eye of the Tiger
+196607  *Eye of the Tiger
+196608  *Eye of the Tiger
 196720  *Keg Smash!
 196721  *Light Brewing
 196725   Refreshing Jade Wind
@@ -11246,7 +11246,7 @@ Monk
 197895   Focused Thunder
 197900   Mist Wrap
 197903  *Peace of Mind
-197908   Mana Tea
+197908  *Mana Tea
 197915   Lifecycles
 197916   Lifecycles
 197919   Lifecycles
@@ -11526,8 +11526,8 @@ Monk
 242390   Thunderfist
 242400  *Whispers of Shaohao
 242461   Ocean's Embrace
-242580   Spitfire
-242581   Spitfire
+242580  *Spitfire
+242581  *Spitfire
 243435  *Fortifying Brew
 243943  *Eerie Fermentation
 245013   Brewmaster's Balance
@@ -11560,13 +11560,13 @@ Monk
 261682   Chi Burst
 261683  *Tornado Kicks
 261715  *Rushing Jade Wind
-261767   Inner Strength
-261769   Inner Strength
+261767  *Inner Strength
+261769  *Inner Strength
 261916   Blackout Kick
 261917   Sharp Reflexes
-261947   Fist of the White Tiger
-261977   Fist of the White Tiger
-261978   Fist of the White Tiger
+261947  *Fist of the White Tiger
+261977  *Fist of the White Tiger
+261978  *Fist of the White Tiger
 262107  *Combo Breaker
 262112  *Wind Strikes
 262114  *Wind Strikes
@@ -11597,8 +11597,8 @@ Monk
 274774   Strength of Spirit
 274909   Rising Mist
 274912   Rising Mist
-274963   Upwelling
-274964   Upwelling
+274963  *Upwelling
+274964  *Upwelling
 275673   Sunrise Technique
 275892   Fit to Burst
 275893   Fit to Burst
@@ -12747,7 +12747,7 @@ Paladin
 10326    Turn Evil
 13819   *Summon Warhorse
 19750    Flash of Light
-20066    Repentance
+20066   *Repentance
 20271    Judgment
 20473    Holy Shock
 20925   *Sacred Shield
@@ -12993,7 +12993,7 @@ Paladin
 85499   *Speed of Light
 85673    Word of Glory
 85705   *Holy Power!
-85804    Selfless Healer
+85804   *Selfless Healer
 86657    Ancient Guardian
 86659    Guardian of Ancient Kings
 86678    Light of the Ancient Kings
@@ -13104,7 +13104,7 @@ Paladin
 105798  *Item - Paladin T13 Holy 4P Bonus (Holy Radiance)
 105800  *Item - Paladin T13 Protection 2P Bonus (Judgment)
 105805   Sanctuary
-105809   Holy Avenger
+105809  *Holy Avenger
 105820  *Item - Paladin T13 Retribution 4P Bonus (Zealotry)
 106226  *Last Defender of Azeroth
 109823   Nick of Time
@@ -13112,7 +13112,7 @@ Paladin
 114154   Unbreakable Spirit
 114158   Light's Hammer
 114165   Holy Prism
-114250   Selfless Healer
+114250  *Selfless Healer
 114852   Holy Prism
 114862  *Holy Prism
 114870  *Holy Prism
@@ -13202,7 +13202,7 @@ Paladin
 156988  *Uther's Insight
 157047   Saved by the Light
 157048  *Final Verdict
-157122   Holy Shield
+157122  *Holy Shield
 157128   Saved by the Light
 157131   Recently Saved by the Light
 161337  *Call to Arms
@@ -13241,7 +13241,7 @@ Paladin
 171114  *Strength of the Pack
 171427  *Item - Paladin WoD PvP Protection 4P Bonus
 171431  *Item - WoD PvP Set Bonus Tank PBAOE Target Finder
-171648   Sanctified Wrath
+171648  *Sanctified Wrath
 172320  *Seraphim
 172321  *Seraphim
 174333  *Divine Storm
@@ -13320,9 +13320,9 @@ Paladin
 183415  *Merciful Auras
 183416   Blessing of Dawn
 183435   Retribution Aura
-183778   Judgment of Light
+183778  *Judgment of Light
 183809  *Spirit of Retribution
-183811   Judgment of Light
+183811  *Judgment of Light
 183823  *Holy Flurry
 183824  *Holy Flurry
 183825  *Holy Flurry
@@ -13421,7 +13421,7 @@ Paladin
 196917   Light of the Martyr
 196923  *Fervent Martyr
 196926   Crusader's Might
-196941   Judgment of Light
+196941  *Judgment of Light
 197277   Judgment
 197446   Beacon of the Lightbringer
 197561   Avenger's Valor
@@ -13512,7 +13512,7 @@ Paladin
 201946  *Luremaster
 201952  *Way of the Flounder
 202390  *Crusader's Fire
-203316   Fires of Justice
+203316  *Fires of Justice
 203776   First Avenger
 203791  *Last Defender
 204013  *Blessing of Salvation
@@ -13538,8 +13538,8 @@ Paladin
 204940  *Hammer of Reckoning
 204979  *Jurisdiction
 204980  *Jurisdiction
-205191   Eye for an Eye
-205202   Eye for an Eye
+205191  *Eye for an Eye
+205202  *Eye for an Eye
 205228  *Consecration
 205273   Wake of Ashes
 205279  *Long Arm of the Law
@@ -13590,7 +13590,7 @@ Paladin
 209528  *Light of the Titans
 209539  *Light of the Titans
 209540  *Light of the Titans
-209785   Fires of Justice
+209785  *Fires of Justice
 210256  *Blessing of Sanctuary
 210291  *Merciful Auras
 210294   Divine Favor
@@ -13644,13 +13644,13 @@ Paladin
 214081  *Blade of Light
 214083   Wake of Ashes
 214135  *PH - Beacons Get Full Mastery Lightbringer Benefit
-214202   Rule of Law
+214202  *Rule of Law
 214222   Judgment
 214923  *Silver Touch
 214924  *Unrelenting Light
 215257  *Healing Storm
 215652  *Shield of Virtue
-215661   Justicar's Vengeance
+215661  *Justicar's Vengeance
 216008  *Divine Light
 216227  *Blazing Resolution
 216318   The Silver Hand
@@ -13689,7 +13689,7 @@ Paladin
 221886   Divine Steed
 221887   Divine Steed
 222648  *Virtues of the Light
-223306   Bestow Faith
+223306  *Bestow Faith
 223316  *Fervent Martyr
 223817   Divine Purpose
 223819   Divine Purpose
@@ -13711,8 +13711,8 @@ Paladin
 231663   Greater Judgment
 231665  *Avenger's Shield
 231667  *Radiant Onslaught
-231832   Blade of Wrath
-231843   Art of War
+231832  *Blade of Wrath
+231843  *Art of War
 231895   Avenging Wrath
 231996  *Glyph of the Trusted Steed
 232657  *Teleport: The Fel Hammer
@@ -13772,7 +13772,7 @@ Paladin
 247675  *Aura of Reckoning
 247676  *Reckoning
 247677  *Reckoning
-248033   Awakening
+248033  *Awakening
 248102   Pillars of Inmost Ligiht
 248103   Scarlet Inquisitor's Expurgation
 248289   Scarlet Inquisitor's Expurgation
@@ -13801,8 +13801,8 @@ Paladin
 267344  *Art of War
 267345  *Divine Storm
 267346  *Templar's Verdict
-267610   Righteous Verdict
-267611   Righteous Verdict
+267610  *Righteous Verdict
+267611  *Righteous Verdict
 267620  *Divine Vengeance
 267621  *Divine Vengeance
 267975  *Divine Vengeance
@@ -13810,9 +13810,9 @@ Paladin
 269245  *Righteous Bastion
 269262  *Zealotry
 269267  *Zealotry
-269569   Zeal
-269571   Zeal
-269937   Zeal
+269569  *Zeal
+269571  *Zeal
+269937  *Zeal
 270562  *Summon Darkforge Ram
 270564  *Summon Dawnforge Ram
 270596  *Zealotry
@@ -13870,7 +13870,7 @@ Paladin
 280189   Gallant Steed
 280373   Redoubt
 280375   Redoubt
-281178   Blade of Wrath
+281178  *Blade of Wrath
 281291   Pillars of Inmost Ligiht
 281465   Avenging Crusader
 281573   Chain of Thrayn
@@ -13934,7 +13934,7 @@ Paladin
 326732   Empyrean Power
 326733   Empyrean Power
 326734   Healing Hands
-327193   Moment of Glory
+327193  *Moment of Glory
 327225   First Avenger
 327510   Shining Light
 327977   Judgment
@@ -14074,7 +14074,7 @@ Paladin
 341741   Enkindled Spirit
 342348   Crusader Strike
 343527   Execution Sentence
-343618   Bestow Faith
+343618  *Bestow Faith
 343721   Final Reckoning
 343723  *Final Reckoning
 343724   Reckoning
@@ -14330,7 +14330,7 @@ Paladin
 393675   Paladin Retribution Class Set 2pc
 393677   Paladin Retribution Class Set 4pc
 393879   Gift of the Golden Val'kyr
-393899   Moment of Glory
+393899  *Moment of Glory
 394088   Avenging Crusader
 394101  *Divine Bulwark
 394454   Echoing Freedom
@@ -14445,7 +14445,7 @@ Paladin
 408383   Judgment of Justice
 408385   Crusading Strikes
 408386   Divine Auxiliary
-408394   Justicar's Vengeance
+408394  *Justicar's Vengeance
 408399   Heartfire
 408400   Heartfire
 408458   Divine Purpose
@@ -15198,7 +15198,7 @@ Priest
 63623   *Avoidance
 63733    Serendipity
 63760   *Greater Heal
-64044    Psychic Horror
+64044   *Psychic Horror
 64058   *Psychic Horror
 64129    Body and Soul
 64843    Divine Hymn
@@ -15291,7 +15291,7 @@ Priest
 108942   Phantasm
 108945   Angelic Bulwark
 108968   Void Shift
-109142   Twist of Fate
+109142  *Twist of Fate
 109186   Surge of Light
 109964   Spirit Shell
 110744   Divine Star
@@ -15336,7 +15336,7 @@ Priest
 123114  *Item - Priest T14 Shadow 2P Bonus
 123115  *Item - Priest T14 Shadow 4P Bonus
 123131  *CK TEST STATE FX
-123254   Twist of Fate
+123254  *Twist of Fate
 124433   Glyph of the Heavens
 125291  *Circle of Healing
 125293  *Greater Heal
@@ -15438,7 +15438,7 @@ Priest
 185909  *Insanity 2
 185910  *Insanity 3
 185911  *Insanity 4
-185916   Voidform
+185916  *Voidform
 186263   Shadow Mend
 186298  *Item - Priest T18 Holy 2P Bonus
 186367  *Prayer's Reprise
@@ -15463,7 +15463,7 @@ Priest
 193155   Enlightenment
 193157   Benediction
 193173  *Mania
-193195   Fortress of the Mind
+193195  *Fortress of the Mind
 193371  *Call to the Void
 193470  *Eternal Call to the Void
 193473   Mind Flay
@@ -15495,7 +15495,7 @@ Priest
 194230  *Sphere of Insanity
 194238  *Sphere of Insanity
 194249   Voidform
-194251   Insanity
+194251  *Insanity
 194384   Atonement
 194482  *Greater Heal
 194509   Power Word: Radiance
@@ -15592,7 +15592,7 @@ Priest
 199824  *Psyfiend
 199849  *Lingering Insanity
 199853  *Reaper of Souls
-199855   San'layn
+199855  *San'layn
 200128   Trail of Light
 200174   Mindbender
 200183   Apotheosis
@@ -15608,14 +15608,14 @@ Priest
 204197   Purge the Wicked
 204213   Purge the Wicked
 204215   Encroaching Shadows
-204263   Shining Force
+204263  *Shining Force
 204778  *Void Shield
 204883  *Circle of Healing
 205065   Void Torrent
 205084  *Void Terror
 205327  *Invigorating Shout
 205364   Dominate Mind
-205367   Dominant Mind
+205367  *Dominant Mind
 205448   Void Bolt
 206924  *PH - Serendipity Has Chance To Fully Reset CD
 206950  *PH Holy Words Trigger Serendipity On Other Holy Words
@@ -15677,7 +15677,7 @@ Priest
 214484   Cord of Maiev, Priestess of the Moon
 214576   Skjoldr, Sanctuary of Ivagont
 214620   Xalan the Feared's Clench
-214621   Mind Blast
+214621  *Mind Blast
 214633   Dejahna's Inspiration
 214694  *Phyrix's Embrace
 214925  *Forbidden Flame
@@ -15832,19 +15832,19 @@ Priest
 257473   Eonar's Verdant Embrace
 257474   Eonar's Verdant Embrace
 262861  *Improved Smite
-263165   Void Torrent
+263165  *Void Torrent
 263346  *Dark Void
 263656  *Shadow's Grasp
 263658  *Shadow's Grasp
-263716   Last Word
+263716  *Last Word
 264189  *Blessing of Kimbul
 264892  *Mind Flay
 265144  *Symbol of Hope
 265173  *Holy Word: Serenity
 265177  *Holy Word: Sanctify
 265202  *Holy Word: Salvation
-265258   Twist of Fate
-265259   Twist of Fate
+265258  *Twist of Fate
+265259  *Twist of Fate
 265314  *Power Infusion
 269555  *Torment of Torments
 269561  *Bindings of Fate
@@ -15945,7 +15945,7 @@ Priest
 288371   Searing Dialogue
 288606  *Exhume Magic
 288733   Intangibility
-289577   Void Torrent
+289577  *Void Torrent
 289655  *Sanctified Ground
 289657  *Sanctified Ground
 289666  *Greater Heal
@@ -15993,8 +15993,8 @@ Priest
 321189  *Dead Mawrat
 321291   Death and Madness
 321330  *Mind Flay
-321377   Prayer Circle
-321379   Prayer Circle
+321377  *Prayer Circle
+321379  *Prayer Circle
 321950  *Light's Caress
 321973   Death and Madness
 322098   Death and Madness
@@ -16114,10 +16114,10 @@ Priest
 341167   Mental Agility
 341240   Improved Voidform
 341263   Shadowy Apparition
-341273   Unfurling Darkness
-341282   Unfurling Darkness
-341291   Unfurling Darkness
-341374   Damnation
+341273  *Unfurling Darkness
+341282  *Unfurling Darkness
+341291  *Unfurling Darkness
+341374  *Damnation
 341491   Shadowy Apparitions
 341804   Measured Contemplation
 341824   Measured Contemplation
@@ -16160,8 +16160,8 @@ Priest
 344754   Mind Sear
 344838  *Lash of Insanity
 345122  *Reflective Shield
-345218   Hungering Void
-345219   Hungering Void
+345218  *Hungering Void
+345219  *Hungering Void
 345451   Guardian Faerie Fermata
 345452   Wrathful Faerie Fermata
 345453   Benevolent Faerie Fermata
@@ -17056,7 +17056,7 @@ Rogue
 108209   Shadow Focus
 108211   Leeching Poison
 108212  *Burst of Speed
-108216   Dirty Tricks
+108216  *Dirty Tricks
 108936  *Flying Shadow Kick
 109833  *Killing Spree (DND)
 109949   Fury of the Destroyer
@@ -17095,7 +17095,7 @@ Rogue
 129412  *Wound Poison
 129718  *Symbiotic Growth
 130493   Nightstalker
-131511   Sting Like a Bee
+131511  *Sting Like a Bee
 133541  *Swiftblade's Nod
 137034   Rogue
 137035   Subtlety Rogue
@@ -17103,7 +17103,7 @@ Rogue
 137037   Assassination Rogue
 137576  *Deadly Throw
 137593   Fortitude
-137619   Marked for Death
+137619  *Marked for Death
 138148  *Item - Rogue T15 2P Bonus
 138150  *Item - Rogue T15 4P Bonus
 138208  *Survivor's Bag
@@ -17112,7 +17112,7 @@ Rogue
 138243   Survivor's Bag
 138916  *Cloaked Step
 139341  *Smoke Bomb
-140149   Marked for Death
+140149  *Marked for Death
 140188  *Killing Spree (DND)
 140190  *Killing Spree (DND)
 140191  *Killing Spree (DND)
@@ -17248,8 +17248,8 @@ Rogue
 193549  *Shadowstep
 193595  *Shadow Walk
 193623  *Shadowplay
-193640   Elaborate Planning
-193641   Elaborate Planning
+193640  *Elaborate Planning
+193641  *Elaborate Planning
 194013  *Stalker's Handbook
 194125  *Self Slow
 194429  *Ambush
@@ -17258,7 +17258,7 @@ Rogue
 195627   Opportunity
 196819   Eviscerate
 196861   Iron Wire
-196864   Master Poisoner
+196864  *Master Poisoner
 196911   Shadow Techniques
 196912   Shadow Techniques
 196920  *Madness or Brilliance
@@ -17266,7 +17266,7 @@ Rogue
 196927  *Boarding Party
 196931  *Or By Crook
 196933  *High Explosives
-196937   Ghostly Strike
+196937  *Ghostly Strike
 196938   Quick Draw
 196945  *Shadowlord
 196948  *Shadowflight
@@ -17321,7 +17321,7 @@ Rogue
 199754  *Riposte
 200733   Airborne Irritant
 200758   Gloomblade
-200759   Soothing Darkness
+200759  *Soothing Darkness
 200778  *Tangled Shadow
 200780  *Expanded Technique
 200806   Sanguine Blades
@@ -17490,7 +17490,7 @@ Rogue
 238068  *Weak Point
 238102  *Dense Concoction
 238103  *Dreadblade's Vigor
-238104   Enveloping Shadows
+238104  *Enveloping Shadows
 238138  *Sinister Circulation
 238139  *Loaded Dice
 238140  *Feeding Frenzy
@@ -17555,15 +17555,15 @@ Rogue
 255544   Poison Bomb
 255545   Poison Bomb
 255546   Poison Bomb
-255909   Stinging Vulnerability
-255989   Master Assassin
+255909  *Stinging Vulnerability
+255989  *Master Assassin
 256148   Iron Wire
 256165   Blinding Powder
 256170   Loaded Dice
 256171   Loaded Dice
 256188   Retractable Hook
 256495  *Vendetta
-256735   Master Assassin
+256735  *Master Assassin
 257505   Shot in the Dark
 257506   Shot in the Dark
 257945  *Shadow Gestures
@@ -17573,8 +17573,8 @@ Rogue
 269308   Contaminant
 269512  *Death from Above
 269513  *Death from Above
-270061   Hidden Blades
-270070   Hidden Blades
+270061  *Hidden Blades
+270070  *Hidden Blades
 270627   Contaminant
 271877   Blade Rush
 271878   Blade Rush
@@ -17796,9 +17796,9 @@ Rogue
 341559   Stiletto Staccato
 341567   Perforated Veins
 341572   Perforated Veins
-343142   Dreadblades
-343143   Dreadblades
-343145   Dreadblades
+343142  *Dreadblades
+343143  *Dreadblades
+343145  *Dreadblades
 343160   Premeditation
 343173   Premeditation
 343203  *Ringing Doom
@@ -18301,7 +18301,7 @@ Rogue
 470669   Echoing Reprimand
 470671   Echoing Reprimand
 470672   Echoing Reprimand
-470676   Master Assassin
+470676  *Master Assassin
 470677   The First Dance
 470678   The First Dance
 470679   Deathmark
@@ -18684,7 +18684,7 @@ Shaman
 71984   *Healing Stream Totem
 71985   *Lesser Healing Wave
 73393   *Mana Stream Totem
-73685    Unleash Life
+73685   *Unleash Life
 73899    Primal Strike
 73903   *Earth Elemental Totem
 73920    Healing Rain
@@ -18755,7 +18755,7 @@ Shaman
 108273  *Windwalk Totem
 108280   Healing Tide Totem
 108281   Ancestral Guidance
-108283   Echo of the Elements
+108283  *Echo of the Elements
 108285  *Totemic Recall
 108287   Totemic Projection
 114049  *Ascendance
@@ -18868,7 +18868,7 @@ Shaman
 151231  *Spirit Link
 152830  *Corrupted Healing Totem Summon
 152833  *Corrupted Healing Totem Aura
-157154   High Tide
+157154  *High Tide
 157299   Storm Elemental
 157319   Primal Storm Elemental
 157331   Wind Gust
@@ -19011,8 +19011,8 @@ Shaman
 192088   Graceful Spirit
 192106   Lightning Shield
 192109   Lightning Shield
-192222   Liquid Magma Totem
-192231   Liquid Magma
+192222  *Liquid Magma Totem
+192231  *Liquid Magma
 192234  *Tempest
 192235  *Elemental Fusion
 192246   Crashing Storm
@@ -19053,8 +19053,8 @@ Shaman
 197619  *Sundering
 197745  *Lightning Bolt
 197992  *Landslide
-197995   Wellspring
-197997   Wellspring
+197995  *Wellspring
+197997  *Wellspring
 198067   Fire Elemental
 198103   Earth Elemental
 198117  *Wellspring
@@ -19084,8 +19084,8 @@ Shaman
 198506   Feral Spirit
 198735   Imbue the Elements
 198736   Unleash Doom
-198838   Earthen Wall Totem
-198839   Earthen Wall
+198838  *Earthen Wall Totem
+198839  *Earthen Wall
 199019   Earthen Might
 199022   Earthen Might
 199053   Unleash Lava
@@ -19094,13 +19094,13 @@ Shaman
 199107  *Doom Vortex
 199116  *Doom Vortex
 199121  *Doom Vortex
-200071   Undulation
+200071  *Undulation
 200072   Torrent
 200075   Deluge
 200076   Deluge
 200880  *Lava Burst
-201633   Earthen Wall
-201657   Earthen Wall
+201633  *Earthen Wall
+201657  *Earthen Wall
 201845   Stormsurge
 201846   Stormsurge
 201894  *Feral Kin - NYI
@@ -19166,11 +19166,11 @@ Shaman
 207360  *Queen's Decree
 207362  *Cumulative Upkeep
 207364  *Power of the Waves
-207399   Ancestral Protection Totem
+207399  *Ancestral Protection Totem
 207400   Ancestral Vigor
 207401   Ancestral Vigor
-207495   Ancestral Protection
-207498   Ancestral Protection
+207495  *Ancestral Protection
+207498  *Ancestral Protection
 207524  *Ghost in the Mist
 207527  *Ghost in the Mist
 207553  *Totemic Revival
@@ -19268,7 +19268,7 @@ Shaman
 215785   Hot Hand
 215802   Feral Lunge
 216170   Sundering
-216251   Undulation
+216251  *Undulation
 216366  *Earth's Resurgence
 216528   Waterspeaker's Blessing
 218558   Chain Lightning Overload
@@ -19412,7 +19412,7 @@ Shaman
 260881   Spirit Wolf
 260882   Spirit Wolf
 260890  *High Voltage
-260895   Unlimited Power
+260895  *Unlimited Power
 260896  *Electric Discharge
 260897  *Call the Thunder
 262395  *Totem Mastery
@@ -19455,7 +19455,7 @@ Shaman
 271852   Feral Spirit
 271924   Molten Weapon
 272095   Synergistic Growth
-272737   Unlimited Power
+272737  *Unlimited Power
 272978   Volcanic Lightning
 272980   Volcanic Lightning
 272981   Volcanic Lightning
@@ -19519,8 +19519,8 @@ Shaman
 279830   Igneous Potential
 280203   Pack Spirit
 280205   Pack Spirit
-280614   Flash Flood
-280615   Flash Flood
+280614  *Flash Flood
+280615  *Flash Flood
 285452   Lava Burst
 285466   Lava Burst Overload
 286949   Tectonic Thunder
@@ -19536,7 +19536,7 @@ Shaman
 287801   Thunderaan's Fury
 287802   Thunderaan's Fury
 288384   Spouting Spirits
-288675   High Tide
+288675  *High Tide
 289439   Frost Shock
 289874   Ride the Lightning
 290250  *Rain Dance
@@ -19591,7 +19591,7 @@ Shaman
 319773   Windfury Weapon
 319778   Flametongue Weapon
 319930   Stormblast
-320137   Stormkeeper
+320137  *Stormkeeper
 320674   Chain Harvest
 320746   Surge of Earth
 320747   Surge of Earth
@@ -19677,8 +19677,8 @@ Shaman
 334046   Lashing Flames
 334168   Lashing Flames
 334175  *Stormfury
-334195   Hailstorm
-334196   Hailstorm
+334195  *Hailstorm
+334196  *Hailstorm
 334294  *Flametongue Weapon
 334302  *Windfury Weapon
 334308   Chaining Storms
@@ -19742,8 +19742,8 @@ Shaman
 339185   Lavish Harvest
 339186   Tumbling Waves
 339187   Tumbling Waves
-342240   Ice Strike
-342243   Static Discharge
+342240  *Ice Strike
+342243  *Static Discharge
 343182  *Mana Tide Totem
 343190   Elemental Fury
 343198  *Hex
@@ -19926,7 +19926,7 @@ Shaman
 383018  *Stoneskin
 383019  *Tranquil Air Totem
 383020  *Tranquil Air
-383061   Magma Eruption
+383061  *Magma Eruption
 383222   Overflowing Shores
 383223   Overflowing Shores
 383235   Undercurrent
@@ -19942,7 +19942,7 @@ Shaman
 384149   Overflowing Maelstrom
 384352   Doom Winds
 384355   Elemental Weapons
-384357   Ice Strike
+384357  *Ice Strike
 384359  *Swirling Maelstrom
 384363   Converging Storms
 384405  *Primal Maelstrom
@@ -19987,7 +19987,7 @@ Shaman
 395129  *Tranquil Air
 395192   Mana Spring
 395197   Mana Spring
-395349   Magma Eruption
+395349  *Magma Eruption
 396006   Fury of the Storm
 396484  *Primordial Surge
 403529  *Waterfall
@@ -20210,10 +20210,10 @@ Shaman
 462993   Lesser Storm Elemental
 463351   Tempest Overload
 463638  *Elemental Blast
-463865   Undulation
-465022   Ancestral Protection
-465023   Ancestral Protection
-465024   Ancestral Protection
+463865  *Undulation
+465022  *Ancestral Protection
+465023  *Ancestral Protection
+465024  *Ancestral Protection
 465214  *Earthbind
 465717   Elemental Blast
 465843  *Whirling Water
@@ -20234,7 +20234,7 @@ Shaman
 467390   Flametongue Attack
 467442   Maelstrom Weapon
 467646  *Call of the Ancestors
-467665   Swelling Tide
+467665  *Swelling Tide
 467778   Lightning Conduit
 468226   Lightning Conduit
 468571   Herald of the Storms
@@ -20410,7 +20410,7 @@ Warlock
 172      Corruption
 265     *Area Death (TEST)
 348      Immolate
-603      Doom
+603     *Doom
 686      Shadow Bolt
 688      Summon Imp
 691      Summon Felhunter
@@ -20511,8 +20511,8 @@ Warlock
 32324   *Shadow Burst
 32327   *Spore Explosion
 32328   *Spore Eruption
-32388    Shadow Embrace
-32390    Shadow Embrace
+32388   *Shadow Embrace
+32390   *Shadow Embrace
 32554   *Mana Feed
 32707   *Incinerate
 32709   *Death Coil
@@ -20731,8 +20731,8 @@ Warlock
 112922  *Summon Abyssal
 112927  *Summon Terrorguard
 113136  *Incinerate
-113858   Dark Soul: Instability
-113860   Dark Soul: Misery
+113858  *Dark Soul: Instability
+113860  *Dark Soul: Misery
 113886   Demonic Gateway
 113890   Demonic Gateway
 113896   Demonic Gateway
@@ -20886,7 +20886,7 @@ Warlock
 188168  *Sudden Ember
 188857  *Demon Rush
 189209  *Item - Warlock WoD PvP Destruction 4P Bonus
-193318   Doom
+193318  *Doom
 193331   Call Dreadstalkers
 193332   Call Dreadstalkers
 193396  *Demonic Empowerment
@@ -20901,7 +20901,7 @@ Warlock
 196098  *Soul Harvest
 196099   Grimoire of Sacrifice
 196100   Grimoire of Sacrifice
-196102   Writhe in Agony
+196102  *Writhe in Agony
 196103   Absolute Corruption
 196105  *Contagion
 196204  *Tearing Time and Space
@@ -20930,8 +20930,8 @@ Warlock
 196364   Unstable Affliction
 196406   Backdraft
 196408   Fire and Brimstone
-196412   Eradication
-196414   Eradication
+196412  *Eradication
+196414  *Eradication
 196432  *Burning Hunger
 196447   Channel Demonfire
 196448   Channel Demonfire
@@ -20993,7 +20993,7 @@ Warlock
 205179   Phantom Singularity
 205180   Summon Darkglare
 205181  *Shadowflame
-205184   Roaring Blaze
+205184  *Roaring Blaze
 205196   Dreadbite
 205231   Eye Beam
 205246   Phantom Singularity
@@ -21097,8 +21097,8 @@ Warlock
 215223  *Demonic Durability
 215273  *Impish Incineration
 215279   Chaos Bolt
-215941   Soul Conduit
-215942   Soul Conduit
+215941  *Soul Conduit
+215942  *Soul Conduit
 216125  *Power Trip
 216412  *Misery
 216457  *Shard Instability
@@ -21249,10 +21249,10 @@ Warlock
 262031   Empowered Healthstone
 262080   Empowered Healthstone
 264000   Creeping Death
-264057   Soul Strike
+264057  *Soul Strike
 264078   Dreadlash
 264106  *Deathbolt
-264119   Summon Vilefiend
+264119  *Summon Vilefiend
 264130   Power Siphon
 264173   Demonic Core
 264178   Demonbolt
@@ -21267,7 +21267,7 @@ Warlock
 265339  *Imp Swarm
 265412  *Curse of Doom
 265469  *Doom
-265931   Conflagrate
+265931  *Conflagrate
 266030   Reverse Entropy
 266086   Rain of Chaos
 266087   Rain of Chaos
@@ -21276,15 +21276,15 @@ Warlock
 267102   Demonic Core
 267115   Flashover
 267170   Wicked Maw
-267171   Demonic Strength
+267171  *Demonic Strength
 267189  *Drain Life
-267211   Bilescourge Bombers
-267212   Bilescourge Bombers
-267213   Bilescourge Bombers
+267211  *Bilescourge Bombers
+267212  *Bilescourge Bombers
+267213  *Bilescourge Bombers
 267214   Sacrificed Souls
 267215   Demonic Consumption
-267216   Inner Demons
-267217   Nether Portal
+267216  *Inner Demons
+267217  *Nether Portal
 267218   Nether Portal
 267549   Soulfire
 267964   Soul Strike
@@ -21311,9 +21311,9 @@ Warlock
 270176   Demonic Core
 270215   Hand of Gul'dan
 270481   Demonfire
-270545   Inferno
-270548   Rain of Fire
-270557   Soul Strike
+270545  *Inferno
+270548  *Rain of Fire
+270557  *Soul Strike
 270569   Wicked Maw
 270647  *Meteoric Flare
 270999  *Corruption
@@ -21370,7 +21370,7 @@ Warlock
 281542  *Soul Link
 281592  *Soul Shard
 281870   Demonic Power
-282248   Bilescourge Bombers
+282248  *Bilescourge Bombers
 284256  *Curse of Shadows
 285933   Demon Armor
 287060   Baleful Invocation
@@ -21384,7 +21384,7 @@ Warlock
 289364   Pandemic Invocation
 289367   Pandemic Invocation
 289368   Pandemic Invocation
-290644   Conflagrate
+290644  *Conflagrate
 290645  *Soul Fire
 292485  *Sin and Punishment
 292813  *Sarah's Test 9.0 Missile
@@ -22028,10 +22028,10 @@ Warlock
 453105   Summoner's Embrace
 453172   Cunning Cruelty
 453176   Shadowbolt Volley
-453206   Shadow Embrace
+453206  *Shadow Embrace
 453233   Malevolent Visionary
 453518  *Shadowcaster
-453567   Doom
+453567  *Doom
 453568   Pact of the Ered'ruin
 453616   Doom Bolt
 453619  *Shadowtouched
@@ -22061,7 +22061,7 @@ Warlock
 455569  *Fiendish Oblation
 455572  *The Houndmaster's Gambit
 455576  *Blood Invocation
-455580   Doom
+455580  *Doom
 455585  *Doom Eternal
 455587  *Impending Doom
 455611  *The Houndmaster's Gambit
@@ -22523,7 +22523,7 @@ Warrior
 46276   *Ravager Taunt
 46315   *Mammoth Charge
 46917    Titan's Grip
-46924    Bladestorm
+46924   *Bladestorm
 46968    Shockwave
 47081   *Pummel
 47718   *Direbrew Charge
@@ -22681,7 +22681,7 @@ Warrior
 115993   Burning Anger
 116993  *Heroic Strike
 117313   Bloodthirst Heal
-118000   Dragon Roar
+118000  *Dragon Roar
 118038   Die by the Sword
 118779   Victory Rush
 122506  *Intervene
@@ -22914,8 +22914,8 @@ Warrior
 202163   Bounding Stride
 202166   Impending Victory
 202168   Impending Victory
-202224   Furious Charge
-202225   Furious Charge
+202224  *Furious Charge
+202225  *Furious Charge
 202288  *Renewed Fury
 202296  *Endless Rage
 202297  *Dauntless
@@ -22923,7 +22923,7 @@ Warrior
 202517  *Provoke
 202539  *Furious Slash
 202560   Best Served Cold
-202561   Never Surrender
+202561  *Never Surrender
 202572  *Vengeance
 202573  *Vengeance: Revenge
 202574  *Vengeance: Ignore Pain
@@ -23145,8 +23145,8 @@ Warrior
 248195   Precise Strikes
 248579  *Precise Strikes
 248580  *Shattered Defenses
-248621   In For The Kill
-248622   In For The Kill
+248621  *In For The Kill
+248622  *In For The Kill
 248625  *Shattered Defenses
 250392   Whirlwind
 250395  *Whirlwind
@@ -23167,7 +23167,7 @@ Warrior
 254339  *Stand Your Ground
 256215  *Taunt
 259679  *Whirlwind
-260643   Skullsplitter
+260643  *Skullsplitter
 260708   Sweeping Strikes
 260798   Execute
 261777  *Outrage
@@ -23183,7 +23183,7 @@ Warrior
 262161   Warbreaker
 262226  *Unbridled Wrath
 262227  *Unbridled Wrath
-262228   Deadly Calm
+262228  *Deadly Calm
 262231   War Machine
 262232   War Machine
 262304  *Deep Wounds
@@ -23213,7 +23213,7 @@ Warrior
 274570  *Breach
 275334   Punish
 275335   Punish
-275336   Unstoppable Force
+275336  *Unstoppable Force
 275338   Menace
 275339   Rumbling Earth
 275529   Test of Might
@@ -23272,8 +23272,8 @@ Warrior
 280746  *Barbarian
 280747  *Slaughterhouse
 280748  *Battle Trance
-280772   Siegebreaker
-280773   Siegebreaker
+280772  *Siegebreaker
+280773  *Siegebreaker
 280776   Sudden Death
 280849   Execute
 281000   Execute
@@ -23302,10 +23302,10 @@ Warrior
 307865   Spear of Bastion
 307871   Spear of Bastion
 314295  *Spearheads of Eternity
-314522   Deadly Calm
+314522  *Deadly Calm
 314582  *Taunt
 314654  *Spearheads of Eternity
-315720   Onslaught
+315720  *Onslaught
 315948  *Die by the Sword
 315955   Cleave
 315961   Dreadnaught
@@ -23439,11 +23439,11 @@ Warrior
 334993   Stalwart Guardian
 335010   Brutal Vitality
 335034   Inspiring Presence
-335070   Cruelty
+335070  *Cruelty
 335077   Frenzy
 335082   Frenzy
-335091   Seethe
-335092   Seethe
+335091  *Seethe
+335092  *Seethe
 335096   Bloodbath
 335097   Crushing Blow
 335098   Crushing Blow
@@ -23728,7 +23728,7 @@ Warrior
 388807  *Storm Wall
 388808   Storm Wall
 388903   Storm of Swords
-388933   Tenderize
+388933  *Tenderize
 389014  *Odyn's Fury Modifier
 389031  *Rend
 389306   Critical Thinking
@@ -23799,7 +23799,7 @@ Warrior
 394329  *Titanic Rage
 394352   Shattering Throw
 394354   Wrecking Throw
-396718   Onslaught
+396718  *Onslaught
 396749   Reckless Abandon
 396752   Crushing Blow
 397103   Defender's Aegis
@@ -23859,7 +23859,7 @@ Warrior
 425534   Fervid Bite
 426284   Finishing Wound
 426912  *Thunder Clap
-427040   Skullsplitter
+427040  *Skullsplitter
 427114  *Storm Bolt
 427413   Fervid Opposition
 429634   Colossal Might
