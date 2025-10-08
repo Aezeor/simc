@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.0.63534
-static constexpr std::array<spelltext_data_t, 29245> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 29251> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27781,6 +27781,7 @@ static constexpr std::array<spelltext_data_t, 29245> __spelltext_data { {
   { 1244007, "Taking damage has a chance to siphon chaos energies from the Twisting Nether granting you $s1  Leech for $1246543d1. Dropping below $s3% health will unleash the Harvester immediately granting you $s2 Leech for $1246545d. Can only occur every 120 sec.", 0, 0 },
   { 1244008, "Release the Nethergate, flooding your location with corrupted mana dealing $1246837s1 damage every $1246837s3 sec to enemies inside for $d and Heal for $1246837s2 per target hit up to $1246837s4 targets.\r\n", 0, 0 },
   { 1244019, "You are healed for $s1% of the damage dealt by Refining Fire.", 0, 0 },
+  { 1244021, "Your spells and abilities can beseech the World Trees for a fragment of their power, granting you $s1 of a random secondary stat for $1258885d.", 0, 0 },
   { 1244022, "$@spelldesc1244019", 0, 0 },
   { 1244023, "$@spelldesc1243807", 0, 0 },
   { 1244025, "Mirror Image's cooldown is reduced by ${-$s1/1000} sec.", 0, 0 },
@@ -28386,6 +28387,7 @@ static constexpr std::array<spelltext_data_t, 29245> __spelltext_data { {
   { 1253325, "@spelldesc462158", "$?e2[Critical Strike]?e3[Haste]?e4[Mastery]?e5[Versatility][Highest secondary stat] increased by $462158w2.", 0 },
   { 1253327, "Your damaging and healing abilities have a chance to activate Umbric's Channeling Focus, increasing your highest secondary stat by $s2 for 10 sec.", 0, 0 },
   { 1253357, "Your attacks and abilities have a high chance to deal $s1 additional Void damage and apply a Void Tear up to $1265823u times for $1265823d1.", 0, 0 },
+  { 1253358, "You apply twice as much Void Tears to current target.", 0, 0 },
   { 1253359, "Your attacks and abilities have a low chance to smite your target dealing $s1 additional Holy damage while purifying all Void Tears. Smite damage is increased by $s2 for each purified Void Tear.", 0, 0 },
   { 1253360, "Release its instability to you, dealing [A] void and holy damage to you and having a chance of granting [B] of your highest secondary stat or [B] of your lowest secondary stat. ([C]sec cooldown)\r\n", 0, 0 },
   { 1253377, "$?c2[Fel Devastation][Void Ray] damage increased by $s1%.\r\n\r\n$?c2[Fel Devastation][Fully channeling Void Ray] generates $?c2[$s4 lesser soul fragments over its duration][$s3 $Lstack:stacks; of Voidfall].", 0, 0 },
@@ -28602,7 +28604,11 @@ static constexpr std::array<spelltext_data_t, 29245> __spelltext_data { {
   { 1258843, "Lava Burst deals 25% additional damage.", 0, 0 },
   { 1258845, "$@spelldesc1243883", 0, 0 },
   { 1258862, "$@spelldesc462762", "Rooted in place.", 0 },
+  { 1258885, "$@spelldesc1244021", "Granted fleeting power by Teldrassil, the World Tree, increasing your Versatility by $w1.", 0 },
+  { 1258886, "$@spelldesc1244021", "Granted fleeting power by Nordrassil, the World Tree, increasing your Mastery by $w1.", 0 },
+  { 1258887, "$@spelldesc1244021", "Granted fleeting power by Amirdrassil, the World Tree, increasing your Haste by $w1.", 0 },
   { 1258889, "$@spellicon1258895 $@spellname1258895\r\nAll elemental damage is increased by an additional $s3%.\r\n\r\n$@spellicon462757 $@spellname462757\r\nIncreases the chance for Thunderstrikes to occur by $s2% and increases Thunderstrike damage by $s1%.", 0, 0 },
+  { 1258890, "$@spelldesc1244021", "Granted fleeting power by Shaladrassil, the World Tree, increasing your Critical Strike by $w1.", 0 },
   { 1258895, "All Elemental damage increased by $s1%.", 0, 0 },
   { 1258899, "Earth Shock, Elemental Blast, and Earthquake deal $s1% increased damage.", 0, 0 },
   { 1259001, "This talent is still forming in the Maelstrom. Check back later!", 0, 0 },

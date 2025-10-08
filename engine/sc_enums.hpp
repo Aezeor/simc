@@ -819,7 +819,7 @@ enum set_bonus_e
  * @brief Type safe tier enum.
  *
  * MUST correspond to the ordering in
- * dbc_extract/dbc/generator.py SetBonusGenerator::set_bonus_map
+ * dbc_extract/dbc/generator.py SetBonusListGenerator::set_bonus_map
  */
 enum set_bonus_type_e
 {
@@ -858,7 +858,12 @@ enum set_bonus_type_e
   TWW2,
   TWW3,
   TWW_SOTV,
-  SET_BONUS_MAX,
+  MID_MRM,
+  MID_RWR,
+  MID_TD,
+  MID_VB,
+  MID1,
+  SET_BONUS_MAX
 };
 
 enum meta_gem_e

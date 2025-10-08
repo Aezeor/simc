@@ -4242,6 +4242,31 @@ class SetBonusListGenerator(DataGenerator):
             'bonuses': [ 1960 ],
             'tier'   : 'TWW_SOTV'
         },
+        {
+            'name'   : 'murder_row_materials',
+            'bonuses': [ 1966 ],
+            'tier'   : 'MID_MRM'
+        },
+        {
+            'name'   : 'root_wardens_regalia',
+            'bonuses': [ 1967 ],
+            'tier'   : 'MID_RWR'
+        },
+        {
+            'name'   : 'torments_duality',
+            'bonuses': [ 1970 ],
+            'tier'   : 'MID_TD'
+        },
+        {
+            'name'   : 'voidlight_bindings',
+            'bonuses': [ 1971 ],
+            'tier'   : 'MID_VB'
+        },
+        {
+            'name'   : 'midnight_season_1',
+            'bonuses': [ 1978, 1979, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990 ],
+            'tier'   : 'MID1'
+        }
     ]
 
     @staticmethod
