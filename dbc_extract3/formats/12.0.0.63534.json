@@ -1599,8 +1599,8 @@
     "fields": [
       { "data_type": "S", "field": "category" },
       { "data_type": "i", "field": "flags" },
-      { "data_type": "B", "field": "uses_per_week" },
-      { "data_type": "b", "field": "charges" },
+      { "data_type": "i", "field": "uses_per_week" },
+      { "data_type": "i", "field": "charges" },
       { "data_type": "i", "field": "charge_cooldown" },
       { "data_type": "i", "field": "type_mask" }
     ]
@@ -1697,8 +1697,8 @@
   "SpellInterrupts": {
     "parent": "SpellName",
     "fields": [
-      { "data_type": "B", "field": "difficulty" },
-      { "data_type": "h", "field": "interrupt_flags" },
+      { "data_type": "H", "field": "difficulty" },
+      { "data_type": "I", "field": "interrupt_flags" },
       { "data_type": "I", "field": "aura_interrupt_flags", "elements": 2 },
       { "data_type": "I", "field": "channel_interrupt_flags", "elements": 2 }
     ]
