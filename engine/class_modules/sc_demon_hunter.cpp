@@ -5469,13 +5469,11 @@ struct collapsing_star_t : public demon_hunter_spell_t
     }
   };
 
-  collapsing_star_damage_t* damage_action;
-
   collapsing_star_t( demon_hunter_t* p,util::string_view o )
-    : demon_hunter_spell_t( "collapsing_star", p, p->spec.collapsing_star_spell, o ), damage_action( nullptr )
+    : demon_hunter_spell_t( "collapsing_star", p, p->spec.collapsing_star_spell, o )
   {
-    damage_action = p->get_background_action<collapsing_star_damage_t>( "collapsing_star_damage" );
-    add_child( damage_action );
+    execute_action = p->get_background_action<collapsing_star_damage_t>( "collapsing_star_damage" );
+    add_child( execute_action );
   }
 
   void execute() override
@@ -5483,8 +5481,6 @@ struct collapsing_star_t : public demon_hunter_spell_t
     p()->buff.collapsing_star_ready->expire();
     p()->buff.collapsing_star_stack->expire();
     demon_hunter_spell_t::execute();
-
-    damage_action->execute_on_target( target );
 
     if ( p()->talent.devourer.impending_apocalypse->ok() )
     {
