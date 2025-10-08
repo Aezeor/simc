@@ -1,4 +1,4 @@
-// Rank class spells, wow build 12.0.0.63534
+// Rank class spells, wow build 12.0.0.63724
 static constexpr std::array<rank_class_spell_t, 43> __rank_spells_data { {
   {  2,   66,  358934,       0, "Aegis of Light"                    , "Rank 2" },
   { 10,  269,  322719,       0, "Afterlife"                         , "Rank 2" },

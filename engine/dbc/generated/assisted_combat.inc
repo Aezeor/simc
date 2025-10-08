@@ -1,4 +1,4 @@
-// Assisted Combat Step data, wow build 12.0.0.63534
+// Assisted Combat Step data, wow build 12.0.0.63724
 static constexpr std::array<assisted_combat_step_data_t, 727> __assisted_combat_step_data { {
   {  3019, 62, 0, 382440 },
   {  3001, 62, 1, 30451 },
@@ -729,7 +729,7 @@ static constexpr std::array<assisted_combat_step_data_t, 727> __assisted_combat_
   { 11586, 1480, 9, 473662 },
 } };
 
-// Assisted Combat Rule data, wow build 12.0.0.63534
+// Assisted Combat Rule data, wow build 12.0.0.63724
 static constexpr std::array<assisted_combat_rule_data_t, 3311> __assisted_combat_rule_data { {
   {    32,     9, 0, 15, 703, 0, 0 },
   {  1480,     9, 1, 0, 0, 0, 0 },

@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.63534 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.63724 midnight-BETA
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -91,7 +91,7 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Combo on Block (Ma
 Effects          :
 #1 (id=372)      : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Ally (21)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Stormstream Totem (1267745), Stormswell (1268684)
                    Family Flags: 41
                    Modified By: Embrace of Earth (338329 effect#1)
 #2 (id=756953)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
@@ -123,7 +123,8 @@ GCD              : 1.5 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Earth Shield (974 effect#1), Healing Trance (60515 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #12), Elemental Shaman (137040 effect#15), Enhancement Shaman (137041 effect#19), Elemental Rebalancers (208777 effect#1), Jonat's Focus (210607 effect#1), Tidebringer (236502 effects: #1, #2), Ancestral Reach (263790 effect#1), Spiritwalker's Tidal Totem (335892 effects: #1, #2), Jonat's Natural Focus (335894 effect#1), Chains of Devastation (336737 effects: #1, #2), Elemental Fury (343190 effect#1), Heal the Soul (366779 effect#1), Nature's Swiftness (378081 effects: #1, #2, #4, #5), Nature's Fury (381655 effect#1), Flow of the Tides (382039 effect#2), Ancestral Reach (382732 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Stormweaver (410681 effects: #1, #2), Initial Shaman (417374 effects: #3, #4), Maelstrom Supremacy (443447 effect#2), Ancestral Swiftness (443454 effects: #1, #2, #4, #5, #6), Whirling Air (453409 effect#1), Surging Currents (454376 effect#1), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Coalescing Water (470076 effect#1), Fate Reversal (1219323 effect#1), Ancestral Wisdom (1238279 effects: #1, #2, #3, #4, #7), Calm Waters (1252841 effect#1), Restoration Shaman (1256945 effects: #1, #2)
+Affecting Spells : Earth Shield (974 effect#1), Healing Trance (60515 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #12), Elemental Shaman (137040 effect#15), Enhancement Shaman (137041 effect#19), Elemental Rebalancers (208777 effect#1), Jonat's Focus (210607 effect#1), Tidebringer (236502 effects: #1, #2), Ancestral Reach (263790 effect#1), Spiritwalker's Tidal Totem (335892 effects: #1, #2), Jonat's Natural Focus (335894 effect#1), Chains of Devastation (336737 effects: #1, #2), Elemental Fury (343190 effect#1), Heal the Soul (366779 effect#1), Nature's Swiftness (378081 effects: #1, #2, #4, #5), Nature's Fury (381655 effect#1), Flow of the Tides (382039 effect#2), Ancestral Reach (382732 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Raging Maelstrom (410681 effects: #1, #2), Initial Shaman (417374 effects: #3, #4), Maelstrom Supremacy (443447 effect#2), Ancestral Swiftness (443454 effects: #1, #2, #4, #5, #6), Whirling Air (453409 effect#1), Surging Currents (454376 effect#1), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Coalescing Water (470076 effect#1), Fate Reversal (1219323 effect#1), Ancestral Wisdom (1238279 effects: #1, #2, #3, #4, #7), Calm Waters (1252841 effect#1), Restoration Shaman (1256945 effects: #1, #2)
+Triggered By     : Raging Maelstrom (410681)
 Family Flags     : 8, 41
 Attributes       : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (217), Heal Prediction (280), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Chain by Most Hit (440)
 Effects          :
@@ -289,12 +290,12 @@ Spell Level      : 10
 GCD              : 1 seconds
 Duration         : 15 seconds
 Charges          : 0 (30 seconds cooldown)
-Category         : 1569 (Type 0x1): Totemic Surge (381867 effect#2), Water Totem Mastery (382030 effect#1), Healing Stream Totem (392915 effect#1), Healing Stream Totem (392916 effect#1)
+Category         : 1569 (Type 0x1): Totemic Surge (381867 effect#2), Water Totem Mastery (382030 effect#1), Healing Stream Totem (392915 effect#1), Healing Stream Totem (392916 effect#1), Stormstream Totem (1267089 effect#2), Stormstream Totem (1267089 effect#3)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 1658: Totemic Focus (382201 effect#2)
-Affecting Spells : Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Totemic Surge (381867 effect#1), Ancestral Wolf Affinity (382197 effect#1), Tidecaller's Guard (457496 effect#1), Ancestral Wisdom (1238279 effects: #2, #3, #4), Quickstream (1253099 effect#1)
+Affecting Spells : Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Totemic Surge (381867 effect#1), Ancestral Wolf Affinity (382197 effect#1), Tidecaller's Guard (457496 effect#1), Ancestral Wisdom (1238279 effects: #2, #3, #4), Quickstream (1253099 effect#1), Stormstream Totem (1267089 effect#1)
 Family Flags     : 6, 15, 19, 29
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Aura Icon (60), Can Be Multi Cast (229), Allow While Banished Aura State (299), Allow Class Ability Procs (416)
 Effects          :
@@ -320,7 +321,7 @@ Labels           : 16: Class Spells
                  : 1658: Totemic Focus (382201 effect#2)
 Proc Chance      : 100%
 Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
-Affecting Spells : Restoration Shaman (137039 effect#11), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Tidecaller's Guard (457496 effect#1)
+Affecting Spells : Restoration Shaman (137039 effect#11), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Tidecaller's Guard (457496 effect#1), Stormstream Totem (1267093 effect#1)
 Family Flags     : 13
 Attributes       : Can Proc From Procs (122), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow Class Ability Procs (416)
 Effects          :
@@ -410,7 +411,8 @@ Labels           : 16: Class Spells
                  : 292
                  : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1), Devout Spirit (319919 effect#1)
                  : 4639
-Affecting Spells : Earth Shield (974 effect#1), Healing Trance (60515 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #10), Elemental Shaman (137040 effect#14), Enhancement Shaman (137041 effect#18), Nobundo's Redemption (208764 effect#1), Elemental Rebalancers (208777 effect#1), Refreshing Waters (337974 effect#1), Swirling Currents (338340 effect#1), Elemental Fury (343190 effect#1), Nature's Swiftness (378081 effects: #1, #2, #4, #5), Refreshing Waters (378211 effect#1), Nature's Fury (381655 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Stormweaver (410681 effects: #1, #2), Initial Shaman (417374 effects: #3, #4), Ancestral Swiftness (443454 effects: #1, #2, #4, #5, #6), Whirling Air (453409 effect#1), Surging Currents (454376 effect#1), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Enhancement Shaman (1214207 effect#4), Fate Reversal (1219323 effect#1), Ancestral Wisdom (1238279 effects: #1, #2, #3, #4, #7), Restoration Shaman (1256945 effects: #1, #2, #9)
+Affecting Spells : Earth Shield (974 effect#1), Healing Trance (60515 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #10), Elemental Shaman (137040 effect#14), Enhancement Shaman (137041 effect#18), Nobundo's Redemption (208764 effect#1), Elemental Rebalancers (208777 effect#1), Refreshing Waters (337974 effect#1), Swirling Currents (338340 effect#1), Elemental Fury (343190 effect#1), Nature's Swiftness (378081 effects: #1, #2, #4, #5), Refreshing Waters (378211 effect#1), Nature's Fury (381655 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Raging Maelstrom (410681 effects: #1, #2), Initial Shaman (417374 effects: #3, #4), Ancestral Swiftness (443454 effects: #1, #2, #4, #5, #6), Whirling Air (453409 effect#1), Surging Currents (454376 effect#1), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Enhancement Shaman (1214207 effect#4), Fate Reversal (1219323 effect#1), Ancestral Wisdom (1238279 effects: #1, #2, #3, #4, #7), Restoration Shaman (1256945 effects: #1, #2, #9)
+Triggered By     : Raging Maelstrom (410681)
 Family Flags     : 7, 41
 Attributes       : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (217), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
@@ -1030,7 +1032,7 @@ Family Flags     : 39, 58, 76
 Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=21915)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.22007 | PvP Coefficient: 1.15 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.22007 | PvP Coefficient: 1.67 | Target: Targeted Enemy (6)
 #2 (id=172084)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc17364
@@ -1051,7 +1053,7 @@ Family Flags     : 39, 58, 76
 Attributes       : Is Ability (4), Do Not Sheath (18), Not a Proc (105), Requires Off-Hand Weapon (120), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=21916)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.22007 | PvP Coefficient: 1.15 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.22007 | PvP Coefficient: 1.67 | Target: Targeted Enemy (6)
 #2 (id=172085)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc17364
@@ -1464,7 +1466,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 1660: Totemic Focus (382201 effect#3), Spatial Paradox (406789 effect#12), Oversized Totems (445026 effect#1)
-Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #11), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #1, #2, #3), Earthsurge (457566 effect#1), Ancestral Wisdom (1238279 effects: #1, #2, #3, #4, #7), Restoration Shaman (1256945 effects: #1, #2)
+Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #11), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #1, #2, #3), Earthsurge (457566 effect#1), Ancestral Wisdom (1238279 effects: #1, #2, #3, #4, #7), Restoration Shaman (1256945 effects: #1, #2), Stormstream Totem (1267093 effect#1)
 Triggered By     : Healing Stream (5672)
 Family Flags     : 13, 41
 Attributes       : Allow While Sitting (27), No Threat (42), Exclude Caster (51), Ignore Line of Sight (66), Not an Action (92), Treat As Periodic (121), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
@@ -1644,6 +1646,7 @@ Cooldown         : 12 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
+                 : 5901
 Affecting Spells : Shaman Shock Range Bonus (32973 effect#1), Ancestral Wolf Affinity (382197 effect#1)
 Family Flags     : 59
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Always Hit (114), Taps immediately (215), Allow Class Ability Procs (416), Interrupts Current Cast (419)
@@ -2411,7 +2414,7 @@ Attributes       : Passive (6), Do Not Log (8), Mastery Affects Points (285), Al
 Effects          :
 #1 (id=68079)    : Apply Aura (6) | Modify Healing% Based on Target Health% (354)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3 | Misc Value: 2 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Gift of the Naaru (59547), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Gift of the Naaru (59547), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Stormstream Totem (1267745), Stormswell (1268684)
                    Family Flags: 41, 95
 #2 (id=92128)    : Apply Aura (6) | Dummy (4)
                    Base Value: 300 | Scaled Value: 300 | Target: Self (1)
@@ -2455,7 +2458,7 @@ Family Flags     : 41, 80
 Attributes       : Not Shapeshifted (16), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.46 | PvP Coefficient: 1.518 | Target: Chain Heal Ally (45)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.552 | PvP Coefficient: 1.518 | Target: Chain Heal Ally (45)
 Description      : An efficient wave of healing energy that restores $s1 of a friendly target’s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
@@ -2543,7 +2546,7 @@ Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=68406)    : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Ghost Wolf (2645), Searing Bolt (3606), Healing Surge (8004), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Hex (51514), Healing Stream Totem (52042), Lava Lash (60103), Riptide (61295), Earthquake (61882), Healing Rain (73920), Healing Rain (73921), Healing Wave (77472), Earthquake (77478), Healing Tide (114942), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Stormkeeper (191634), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Downpour (207778), Icefury (210714), Ancestral Vision (212048), Lightning Bolt (214815), Lightning Bolt Overload (214816), Feral Lunge (215802), Icefury Overload (219271), Tidebringer (236502), Stormfury (269005), Soothing Waters (273019), Lightning Shield (273324), Strength of Earth (273466), Serene Spirit (274416), Lightning Conduit (275394), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Rumbling Tremors (279556), Pack Spirit (280205), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Restorative Mists (294020), Earthquake (298762), Earthquake Overload (298765), Surge of Earth (320747), Chain Harvest (320751), Chain Harvest (320752), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328928), Fae Transfusion (328930), Earthquake (329801), Fire Nova (333977), Earthquake (336740), Ascendance (344548), Vesper Totem (356791), Acid Rain (378597), Earth Shock Overload (381725), Earthliving Weapon (382024), Overflowing Shores (383223), Doom Winds (384352), Tidal Reservoir (424464), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Earthquake (462620), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Storm's Eye (1235840), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Ghost Wolf (2645), Searing Bolt (3606), Healing Surge (8004), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Hex (51514), Healing Stream Totem (52042), Lava Lash (60103), Riptide (61295), Earthquake (61882), Healing Rain (73920), Healing Rain (73921), Healing Wave (77472), Earthquake (77478), Healing Tide (114942), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Stormkeeper (191634), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Downpour (207778), Icefury (210714), Ancestral Vision (212048), Lightning Bolt (214815), Lightning Bolt Overload (214816), Feral Lunge (215802), Icefury Overload (219271), Tidebringer (236502), Stormfury (269005), Soothing Waters (273019), Lightning Shield (273324), Strength of Earth (273466), Serene Spirit (274416), Lightning Conduit (275394), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Rumbling Tremors (279556), Pack Spirit (280205), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Restorative Mists (294020), Earthquake (298762), Earthquake Overload (298765), Surge of Earth (320747), Chain Harvest (320751), Chain Harvest (320752), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328928), Fae Transfusion (328930), Earthquake (329801), Fire Nova (333977), Earthquake (336740), Ascendance (344548), Vesper Totem (356791), Acid Rain (378597), Earth Shock Overload (381725), Earthliving Weapon (382024), Overflowing Shores (383223), Doom Winds (384352), Tidal Reservoir (424464), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Earthquake (462620), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Storm's Eye (1235840), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101), Stormstream Totem (1267745), Stormswell (1268684)
                    Family Flags: 0, 1, 7, 8, 11, 39, 41, 44, 47, 51, 62, 80, 83, 84, 92, 98, 111
 #2 (id=289427)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -2972,7 +2975,7 @@ Effects          :
 Description      : $@spelldesc1219480
 
 Name             : Ascendance (id=114051) [Spell Family (11)] 
-Talent Entry     : Enhancement [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=200, replace="Doom Winds" (id=384352)]
+Talent Entry     : Enhancement [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=200, replace="Doom Winds" (id=384352)]
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -3539,15 +3542,15 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179723)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 35 | Scaled Value: 35 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
+                   Base Value: 55 | Scaled Value: 55 | Target: Self (1)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Stormstream Totem (1267745), Stormswell (1268684)
                    Family Flags: 41
 #2 (id=191046)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 35 | Scaled Value: 35 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
+                   Base Value: 55 | Scaled Value: 55 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Stormstream Totem (1267745), Stormswell (1268684)
                    Family Flags: 41
 #3 (id=191047)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Coefficient (24)
-                   Base Value: 35 | Scaled Value: 35 | Misc Value: 24 | Misc Value 2: 5683 (Label) | Target: Self (1)
+                   Base Value: 55 | Scaled Value: 55 | Misc Value: 24 | Misc Value 2: 5683 (Label) | Target: Self (1)
                    Affected Spells (Label): Hydrobubble (444490)
 #4 (id=191048)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -3571,7 +3574,7 @@ Effects          :
                    Family Flags: 7
 #11 (id=883953)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
-                   Affected Spells: Healing Stream (5672), Healing Stream Totem (52042), Healing Stream (273847), Poison Cleansing (383014), Poison Cleansing (403922)
+                   Affected Spells: Healing Stream (5672), Healing Stream Totem (52042), Healing Stream (273847), Poison Cleansing (383014), Poison Cleansing (403922), Stormstream Totem (1267745), Stormstream Totem (1267765)
                    Family Flags: 13
 #12 (id=915672)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -3664,7 +3667,7 @@ Effects          :
                    Family Flags: 70
 #17 (id=1032430) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 80 | Scaled Value: 80 | Target: Self (1)
-                   Affected Spells: Healing Stream (5672), Healing Stream Totem (52042), Healing Stream (273847), Poison Cleansing (383014), Poison Cleansing (403922)
+                   Affected Spells: Healing Stream (5672), Healing Stream Totem (52042), Healing Stream (273847), Poison Cleansing (383014), Poison Cleansing (403922), Stormstream Totem (1267745), Stormstream Totem (1267765)
                    Family Flags: 13
 #18 (id=1040490) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 324 | Scaled Value: 324 | Target: Self (1)
@@ -3764,11 +3767,11 @@ Effects          :
                    Affected Spells: Tempest (452201)
                    Family Flags: 107
 #18 (id=1081070) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 371 | Scaled Value: 371 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
 #19 (id=1081071) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Chain Heal (1064)
                    Family Flags: 8
 #20 (id=1084897) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -3777,7 +3780,7 @@ Effects          :
                    Family Flags: 70
 #21 (id=1105021) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-                   Affected Spells: Healing Stream (5672), Healing Stream Totem (52042), Healing Stream (273847), Poison Cleansing (383014), Poison Cleansing (403922)
+                   Affected Spells: Healing Stream (5672), Healing Stream Totem (52042), Healing Stream (273847), Poison Cleansing (383014), Poison Cleansing (403922), Stormstream Totem (1267745), Stormstream Totem (1267765)
                    Family Flags: 13
 #22 (id=1123761) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -9 | Scaled Value: -9 | Target: Self (1)
@@ -3854,7 +3857,7 @@ Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143
 Effects          :
 #1 (id=199258)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Healing Stream (5672), Healing Stream Totem (52042), Healing Stream (273847), Poison Cleansing (383014), Poison Cleansing (403922)
+                   Affected Spells: Healing Stream (5672), Healing Stream Totem (52042), Healing Stream (273847), Poison Cleansing (383014), Poison Cleansing (403922), Stormstream Totem (1267745), Stormstream Totem (1267765)
                    Family Flags: 13
 Description      : Healing Stream Totem now heals two targets at once.
 
@@ -4311,24 +4314,24 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.4 | Target: Self (1)
                    Modified By: Echo Chamber (382032 effect#1), Ascendance (1219480 effect#8)
 #3 (id=307793)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.76 | PvP Coefficient: 1.3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.684 | PvP Coefficient: 1.3 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Storm's Eye (1235840), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
                    Family Flags: 39
 #4 (id=1172987)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.76 | PvP Coefficient: 1.3 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.684 | PvP Coefficient: 1.3 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Storm's Eye (1235840), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
                    Family Flags: 39
 #5 (id=1172988)  : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.76 | PvP Coefficient: 1.3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.684 | PvP Coefficient: 1.3 | Target: Self (1)
 #6 (id=1181697)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.76 | PvP Coefficient: 1.3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.684 | PvP Coefficient: 1.3 | Target: Self (1)
 Description      : All Elemental damage increased by ${$s3}.1%.
 
 Your Lightning Bolt,$?s454009[ Tempest,][] Lava Burst, and Chain Lightning casts have a ${$s1}.1% chance to trigger a second cast on the same target, dealing $s2% of normal damage and generating less Maelstrom.
 
 
 Name             : Earthen Rage (id=170374) [Spell Family (11), Passive] 
-Talent Entry     : Elemental [tree=spec, row=7, col=6, max_rank=1, req_points=8]
+Talent Entry     : Elemental [tree=spec, row=7, col=7, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -4621,7 +4624,7 @@ Labels           : 16: Class Spells
                  : 1207: Bottle of Swirling Maelstrom (329580 effect#1), Bottle of Swirling Maelstrom (329580 effect#2)
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting Spells : Maelstrom Weapon (187880 effects: #3, #4, #5), Focused Lightning (338322 effects: #1, #2)
+Affecting Spells : Maelstrom Weapon (187880 effects: #3, #4, #5), Focused Lightning (338322 effects: #1, #2), Raging Maelstrom (384143 effect#1)
 Family Flags     : 100
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
@@ -4671,7 +4674,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 4639
-Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effects: #4, #5, #13), Elemental Shaman (137040 effects: #1, #2, #20), Enhancement Shaman (137041 effects: #1, #2, #24), Storm Elemental (157299 effects: #3, #4), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Maelstrom Weapon (187881 effects: #1, #2), Flame Shock (188389 effect#5), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Crackling Surge (224127 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Ancestral Swiftness (443454 effects: #2, #3), Stormcaller (454021 effects: #1, #2), Arc Discharge (455097 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Storm Frenzy (462725 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #3, #4), Enhancement Shaman (1214207 effects: #1, #2, #6), Jackpot! (1218612 effect#1), Elemental Shaman (1231772 effects: #1, #2, #4), Shaman Stormbringer 11.2 Class Set 4pc (1236409 effects: #1, #2, #3, #4), Ancestral Wisdom (1238279 effects: #1, #7), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4, #11), Elemental Resonance (1258895 effect#1), Thunder Capacitor (1262635 effect#1), Storm Unleashed (1262761 effect#1), Natural Gift (1264691 effect#1)
+Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effects: #4, #5, #13), Elemental Shaman (137040 effects: #1, #2, #20), Enhancement Shaman (137041 effects: #1, #2, #24), Storm Elemental (157299 effects: #3, #4), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Maelstrom Weapon (187881 effects: #1, #2), Flame Shock (188389 effect#5), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Crackling Surge (224127 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Ancestral Swiftness (443454 effects: #2, #3), Stormcaller (454021 effects: #1, #2), Arc Discharge (455097 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Storm Frenzy (462695 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #3, #4), Enhancement Shaman (1214207 effects: #1, #2, #6), Jackpot! (1218612 effect#1), Elemental Shaman (1231772 effects: #1, #2, #4), Shaman Stormbringer 11.2 Class Set 4pc (1236409 effects: #1, #2, #3, #4), Ancestral Wisdom (1238279 effects: #1, #7), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4, #11), Elemental Resonance (1258895 effect#1), Thunder Capacitor (1262635 effect#1), Storm Unleashed (1262761 effect#1), Natural Gift (1264691 effect#1)
 Family Flags     : 0, 39, 56, 126
 Attributes       : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (217), Allow Class Ability Procs (416)
 Effects          :
@@ -4701,7 +4704,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 737
                  : 1406
-Affecting Spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5, #15, #16), Elemental Shaman (137040 effects: #1, #2, #22, #23), Enhancement Shaman (137041 effects: #1, #2, #10, #22, #23), Storm Elemental (157299 effects: #3, #4), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Elemental Bellows (184919 effects: #1, #2, #3), Fire Elemental (188592 effects: #2, #3, #4, #5), Molten Weapon (224125 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Lashing Flames (334168 effect#1), Skybreaker's Fiery Demise (336734 effect#3), Maelstrom (343725 effect#11), Flames of the Cauldron (378266 effects: #1, #2), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effects: #1, #2), Fire and Ice (382886 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Fire Elemental (462992 effects: #2, #3, #4, #5), Lesser Storm Elemental (462993 effects: #3, #4), Erupting Lava (468574 effects: #1, #4, #5), Enhancement Shaman (1214207 effects: #1, #2), Elemental Shaman (1231772 effects: #1, #2), Shaman Stormbringer 11.2 Class Set 4pc (1236409 effects: #1, #2, #3, #4), Ancestral Wisdom (1238279 effects: #1, #7), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4, #13, #14), Elemental Resonance (1258895 effect#1), Inferno Arc (1259047 effect#1), Natural Gift (1264691 effect#1)
+Affecting Spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5, #15, #16), Elemental Shaman (137040 effects: #1, #2, #22, #23), Enhancement Shaman (137041 effects: #1, #2, #10, #22, #23), Storm Elemental (157299 effects: #3, #4), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Elemental Bellows (184919 effects: #1, #2, #3), Fire Elemental (188592 effects: #2, #3, #4, #5), Molten Weapon (224125 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Lashing Flames (334168 effect#1), Skybreaker's Fiery Demise (336734 effect#3), Maelstrom (343725 effect#11), Flames of the Cauldron (378266 effects: #1, #2), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effects: #1, #2), Fire and Ice (382886 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Fire Elemental (462992 effects: #2, #3, #4, #5), Lesser Storm Elemental (462993 effects: #3, #4), Enhancement Shaman (1214207 effects: #1, #2), Elemental Shaman (1231772 effects: #1, #2), Shaman Stormbringer 11.2 Class Set 4pc (1236409 effects: #1, #2, #3, #4), Ancestral Wisdom (1238279 effects: #1, #7), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4, #13, #14), Elemental Resonance (1258895 effect#1), Inferno Arc (1259047 effect#1), Natural Gift (1264691 effect#1)
 Triggered By     : Flame Shock (470411)
 Family Flags     : 28, 39, 56, 103, 126
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Aura Is Debuff (26), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Aura Never Bounces (148), Limit N (165), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow during spell override (404), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
@@ -4770,7 +4773,7 @@ Category         : 85 (Type 0x0)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5, #14), Elemental Shaman (137040 effects: #1, #2, #11, #19), Enhancement Shaman (137041 effects: #1, #2, #25), Storm Elemental (157299 effects: #3, #4), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Maelstrom Weapon (187881 effects: #1, #2), Flame Shock (188389 effect#5), Stormkeeper (191634 effect#1), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Crackling Surge (224127 effects: #1, #2), Lightningburn (263792 effect#1), Tectonic Thunder (286976 effect#1), Chaining Storms (334308 effects: #1, #2), Chains of Devastation (336736 effects: #1, #2), Nature's Swiftness (378081 effects: #2, #3), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Crackling Thunder (409834 effect#2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Ancestral Swiftness (443454 effects: #2, #3), Stormcaller (454021 effects: #1, #2), Voltaic Surge (454919 effect#1), Arc Discharge (455097 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Storm Frenzy (462725 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #3, #4), Arc Discharge (470532 effects: #1, #2), Enhancement Shaman (1214207 effects: #1, #2, #7), Jackpot! (1218612 effect#1), Elemental Shaman (1231772 effects: #1, #2, #7), Shaman Stormbringer 11.2 Class Set 4pc (1236409 effects: #1, #2, #3, #4), Ancestral Wisdom (1238279 effects: #1, #7), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4), Elemental Resonance (1258895 effect#1), Thunder Capacitor (1262635 effect#1), Storm Unleashed (1262761 effect#1), Natural Gift (1264691 effect#1)
+Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5, #14), Elemental Shaman (137040 effects: #1, #2, #11, #19), Enhancement Shaman (137041 effects: #1, #2, #25), Storm Elemental (157299 effects: #3, #4), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Maelstrom Weapon (187881 effects: #1, #2), Flame Shock (188389 effect#5), Stormkeeper (191634 effect#1), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Crackling Surge (224127 effects: #1, #2), Lightningburn (263792 effect#1), Tectonic Thunder (286976 effect#1), Chaining Storms (334308 effects: #1, #2), Chains of Devastation (336736 effects: #1, #2), Nature's Swiftness (378081 effects: #2, #3), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Crackling Thunder (409834 effect#2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Ancestral Swiftness (443454 effects: #2, #3), Stormcaller (454021 effects: #1, #2), Voltaic Surge (454919 effect#1), Arc Discharge (455097 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Storm Frenzy (462695 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #3, #4), Arc Discharge (470532 effects: #1, #2), Enhancement Shaman (1214207 effects: #1, #2, #7), Jackpot! (1218612 effect#1), Elemental Shaman (1231772 effects: #1, #2, #7), Shaman Stormbringer 11.2 Class Set 4pc (1236409 effects: #1, #2, #3, #4), Ancestral Wisdom (1238279 effects: #1, #7), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4), Elemental Resonance (1258895 effect#1), Thunder Capacitor (1262635 effect#1), Storm Unleashed (1262761 effect#1), Natural Gift (1264691 effect#1)
 Family Flags     : 1, 39, 56, 126
 Attributes       : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (217), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Chain by Most Hit (440)
 Effects          :
@@ -4930,7 +4933,7 @@ Description      : Charge yourself with lightning, causing your next $n Lightnin
 Tooltip          : Your next Lightning Bolt will deal $s2% increased damage, and your next Lightning Bolt or Chain Lightning will be instant cast and cause an Elemental Overload to trigger on every target hit.
 
 Name             : Fury of the Storms (id=191717) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Elemental [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=100]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -4980,7 +4983,7 @@ Effects          :
 Description      : Inflicts $s1 Nature damage to up to $x enemies.
 
 Name             : Power of the Maelstrom (id=191861) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=6, col=3, max_rank=1, req_points=8]
+Talent Entry     : Elemental [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -5407,7 +5410,7 @@ Description      : $@spelldesc210689
 Tooltip          : Casting Shaman's Lightning Bolt and Chain Lightning also deal $210689s2% of their damage to the Lightning Rod.
 
 Name             : Sundering (id=197214) [Spell Family (11)] 
-Talent Entry     : Enhancement [tree=spec, row=8, col=4, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Flamestrike
 Spell Type       : Melee
@@ -6328,7 +6331,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow 
 Effects          :
 #1 (id=308982)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 10 | Scaled Value: 10 | Radius: 0 - 11 yards | Target: at Area (87) -> At Ally in Area (31)
-                   Affected Spells: Chain Heal (1064), Earthbind Totem (2484), Healing Stream Totem (5394), Healing Stream (5672), Healing Surge (8004), Tremor Totem (8143), Earthgrab Totem (51485), Healing Stream Totem (52042), Riptide (61295), Healing Wave (77472), Ascendance (114050), Ascendance (114051), Ascendance (114052), Healing Tide (114942), Storm Elemental (157299), Capacitor Totem (192058), Wind Rush Totem (192077), Downpour (207778), Healing Stream (273847), Ascendance (344548), Poison Cleansing Totem (383013), Poison Cleansing (383014), Poison Cleansing (403922), Surging Totem (444995), Downpour (462603), Lesser Storm Elemental (462993), Ascendance (467263), Ascendance (1219480)
+                   Affected Spells: Chain Heal (1064), Earthbind Totem (2484), Healing Stream Totem (5394), Healing Stream (5672), Healing Surge (8004), Tremor Totem (8143), Earthgrab Totem (51485), Healing Stream Totem (52042), Riptide (61295), Healing Wave (77472), Ascendance (114050), Ascendance (114051), Ascendance (114052), Healing Tide (114942), Storm Elemental (157299), Capacitor Totem (192058), Wind Rush Totem (192077), Downpour (207778), Healing Stream (273847), Ascendance (344548), Poison Cleansing Totem (383013), Poison Cleansing (383014), Poison Cleansing (403922), Surging Totem (444995), Downpour (462603), Lesser Storm Elemental (462993), Ascendance (467263), Ascendance (1219480), Stormstream Totem (1267068), Stormstream Totem (1267745), Stormstream Totem (1267765)
                    Family Flags: 7, 8, 13, 15, 33, 51, 68, 80, 94, 102, 110
 Description      : $@spelldesc208776
 Tooltip          : Taking $s1% more healing from the Shaman whose Healing Rain you are in.
@@ -6344,7 +6347,7 @@ Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Aren
 Effects          :
 #1 (id=311949)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Healing Stream Totem (5394), Healing Stream (5672), Healing Stream Totem (52042), Spirit Link Totem (98007), Spirit Link Totem (98008), Spirit Link (98020), Healing Tide Totem (108280), Healing Stream (273847), Spouting Spirits (279505), Spirit Link Totem (325174), Poison Cleansing (383014), Healing Stream Totem (392915), Healing Stream Totem (392916), Poison Cleansing (403922), Spouting Spirits (462384)
+                   Affected Spells: Healing Stream Totem (5394), Healing Stream (5672), Healing Stream Totem (52042), Spirit Link Totem (98007), Spirit Link Totem (98008), Spirit Link (98020), Healing Tide Totem (108280), Healing Stream (273847), Spouting Spirits (279505), Spirit Link Totem (325174), Poison Cleansing (383014), Healing Stream Totem (392915), Healing Stream Totem (392916), Poison Cleansing (403922), Spouting Spirits (462384), Stormstream Totem (1267068), Stormstream Totem (1267745), Stormstream Totem (1267765)
                    Family Flags: 6, 13, 113, 116
 Description      : Increases the duration of Healing Stream Totem, Healing Tide Totem, and Spirit Link Totem by $s1%.
 
@@ -6462,7 +6465,7 @@ Effects          :
 Description      : $@spelldesc192246
 
 Name             : Elemental Assault (id=210853) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=9, col=3, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=9, col=2, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -6684,7 +6687,7 @@ Range            : 30 yards
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#13), Elemental Shaman (137040 effect#20), Enhancement Shaman (137041 effect#24), Maelstrom Weapon (187881 effects: #1, #2), Flame Shock (188389 effect#5), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Ancestral Swiftness (443454 effects: #2, #3), Stormcaller (454021 effects: #1, #2), Arc Discharge (455097 effects: #1, #2), Storm Frenzy (462725 effects: #1, #2), Enhancement Shaman (1214207 effect#6), Jackpot! (1218612 effect#1), Elemental Shaman (1231772 effect#4), Restoration Shaman (1256945 effect#11), Thunder Capacitor (1262635 effect#1), Storm Unleashed (1262761 effect#1)
+Affecting Spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#13), Elemental Shaman (137040 effect#20), Enhancement Shaman (137041 effect#24), Maelstrom Weapon (187881 effects: #1, #2), Flame Shock (188389 effect#5), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Ancestral Swiftness (443454 effects: #2, #3), Stormcaller (454021 effects: #1, #2), Arc Discharge (455097 effects: #1, #2), Storm Frenzy (462695 effects: #1, #2), Enhancement Shaman (1214207 effect#6), Jackpot! (1218612 effect#1), Elemental Shaman (1231772 effect#4), Restoration Shaman (1256945 effect#11), Thunder Capacitor (1262635 effect#1), Storm Unleashed (1262761 effect#1)
 Family Flags     : 0
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
@@ -6701,7 +6704,7 @@ Range            : 30 yards
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#13), Elemental Shaman (137040 effect#20), Enhancement Shaman (137041 effect#24), Maelstrom Weapon (187881 effects: #1, #2), Flame Shock (188389 effect#5), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Ancestral Swiftness (443454 effects: #2, #3), Stormcaller (454021 effects: #1, #2), Arc Discharge (455097 effects: #1, #2), Storm Frenzy (462725 effects: #1, #2), Enhancement Shaman (1214207 effect#6), Jackpot! (1218612 effect#1), Elemental Shaman (1231772 effect#4), Restoration Shaman (1256945 effect#11), Thunder Capacitor (1262635 effect#1), Storm Unleashed (1262761 effect#1)
+Affecting Spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#13), Elemental Shaman (137040 effect#20), Enhancement Shaman (137041 effect#24), Maelstrom Weapon (187881 effects: #1, #2), Flame Shock (188389 effect#5), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Ancestral Swiftness (443454 effects: #2, #3), Stormcaller (454021 effects: #1, #2), Arc Discharge (455097 effects: #1, #2), Storm Frenzy (462695 effects: #1, #2), Enhancement Shaman (1214207 effect#6), Jackpot! (1218612 effect#1), Elemental Shaman (1231772 effect#4), Restoration Shaman (1256945 effect#11), Thunder Capacitor (1262635 effect#1), Storm Unleashed (1262761 effect#1)
 Family Flags     : 0
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
@@ -6877,19 +6880,19 @@ Family Flags     : 48
 Attributes       : No Aura Cancel (31), Do Not Display Range (126), Do Not Display Duration (170), Show Mechanic as Combat Text (213), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=335390)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Targeted Ally (21)
+                   Base Value: 5 | Scaled Value: 5 | Target: Targeted Ally (21)
                    Affected Spells: Elemental Blast (117014), Elemental Blast Overload (120588), Frost Shock (196840), Icefury (210714), Icefury Overload (219271), Primordial Frost (1218116)
                    Family Flags: 24
 #2 (id=1030541)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Targeted Ally (21)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Targeted Ally (21)
                    Affected Spells: Elemental Blast (117014), Elemental Blast Overload (120588), Frost Shock (196840), Icefury (210714), Icefury Overload (219271), Primordial Frost (1218116)
                    Family Flags: 24
 #3 (id=1200008)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Targeted Ally (21)
+                   Base Value: 5 | Scaled Value: 5 | Target: Targeted Ally (21)
                    Affected Spells: Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Windstrike (115357), Windstrike Off-Hand (115360), Sundering (197214), Alpha Wolf (198455), Feral Lunge (215802), Fire Nova (333977), Doom Winds (384352), Tremor (455622), Doom Winds (466772), Sundering (467283), Doom Winds (469270), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118)
                    Family Flags: 58
 #4 (id=1200009)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Targeted Ally (21)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Targeted Ally (21)
                    Affected Spells: Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Windstrike (115357), Windstrike Off-Hand (115360), Sundering (197214), Alpha Wolf (198455), Feral Lunge (215802), Fire Nova (333977), Doom Winds (384352), Tremor (455622), Doom Winds (466772), Sundering (467283), Doom Winds (469270), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118)
                    Family Flags: 58
 Description      : $@spelldesc262624
@@ -8775,7 +8778,7 @@ Spell Type       : Magic
 Duration         : 10 seconds
 Proc Chance      : 100%
 Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
-Affecting Spells : Restoration Shaman (137039 effect#11), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Tidecaller's Guard (457496 effect#1)
+Affecting Spells : Restoration Shaman (137039 effect#11), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Tidecaller's Guard (457496 effect#1), Stormstream Totem (1267093 effect#1)
 Family Flags     : 13
 Attributes       : Can Proc From Procs (122), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow Class Ability Procs (416)
 Effects          :
@@ -9883,7 +9886,7 @@ Effects          :
 Description      : $@spelldesc196840
 
 Name             : Ride the Lightning (id=289874) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=8, col=2, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -10623,6 +10626,7 @@ Tooltip          : Movement speed increased by $w2%.
 
 Name             : Flametongue Weapon (desc=Weapon Imbue) (id=318038) [Spell Family (11)] 
 Talent Entry     : Enhancement [tree=spec, row=2, col=2, max_rank=1, req_points=0]
+                 : Elemental [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Fire
 Spell Type       : None
@@ -10638,7 +10642,7 @@ Attributes       : Not Shapeshifted (16)
 Effects          :
 #1 (id=803601)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Imbue your $?s33757[off-hand ][]weapon with the element of Fire for $319778d, $?c2[causing each of your attacks to deal $10444s1 additional Fire damage]?c1[increasing the damage of your Fire spells by $382028s1%][].
+Description      : Imbue your $?s33757[off-hand ][]weapon with the element of Fire for $319778d$?c2[, causing each of your attacks to deal $10444s1 additional Fire damage]?c1[, increasing the damage of your Fire spells by ${$382028s1}.1%][].
 Tooltip          : $?c2[Each of your weapon attacks causes up to $10444s1 additional Fire damage]?c1[Fire spells deal  $382028s1% increased damage][].
 Variables        : $coeff=${0.0198}
 
@@ -12572,7 +12576,7 @@ Attributes       : Passive (6), Only In Spellbook Until Learned (240), Cooldown 
 Effects          :
 #1 (id=844810)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 15 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Stream (5672), Healing Surge (8004), Healing Stream Totem (52042), Healing Stream (273847), Poison Cleansing (383014), Poison Cleansing (403922)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Stream (5672), Healing Surge (8004), Healing Stream Totem (52042), Healing Stream (273847), Poison Cleansing (383014), Poison Cleansing (403922), Stormstream Totem (1267745), Stormstream Totem (1267765)
                    Family Flags: 7, 8, 13, 70
 #2 (id=875477)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Critical Bonus Multiplier (15)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 15 | Misc Value 2: 1176 (Label) | Target: Self (1)
@@ -13692,7 +13696,7 @@ Description      : Your next healing or damaging Nature spell $?a1246131[or Hex 
 Tooltip          : Your next healing or damaging Nature spell is instant cast and costs no mana.
 
 Name             : Primordial Fury (id=378193) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=5, col=4, max_rank=1, req_points=8]
+Talent Entry     : Elemental [tree=spec, row=5, col=3, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Elemental
 Spell Type       : None
@@ -13731,7 +13735,7 @@ Description      : Your Healing $?a137039[Wave][Surge] is $s1% more effective on
 
 
 Name             : Flames of the Cauldron (id=378266) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=5, col=6, max_rank=1, req_points=8]
+Talent Entry     : Elemental [tree=spec, row=5, col=5, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -13745,19 +13749,18 @@ Effects          :
                    Affected Spells: Flame Shock (188389), Flame Shock (470411)
                    Family Flags: 28
 #2 (id=1020424)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -1500 | Scaled Value: -1500 | Misc Value: 11 | Target: Self (1)
+                   Base Value: -2000 | Scaled Value: -2000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Flame Shock (188389), Flame Shock (470411)
                    Family Flags: 28
 #3 (id=1268048)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Cooldown (11)
-                   Base Value: -1500 | Scaled Value: -1500 | Misc Value: 11 | Misc Value 2: 4143 (Label) | Target: Self (1)
+                   Base Value: -2000 | Scaled Value: -2000 | Misc Value: 11 | Misc Value 2: 4143 (Label) | Target: Self (1)
                    Affected Spells (Label): Voltaic Blaze (470057), Voltaic Blaze (1259101)
 Description      : Reduces the cooldown of Flame Shock and Voltaic Blaze by ${$s2/-1000}.1 sec.
 
 Flame Shock deals damage ${100*(1/(1+$m1/100)-1)}% faster.
 
 Name             : Deeply Rooted Elements (id=378270) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=100, replace="Doom Winds" (id=384352)]
-                 : Elemental [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=100, replace="Doom Winds" (id=384352)]
                  : Restoration [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
@@ -13979,7 +13982,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1012631)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Stream (5672), Healing Surge (8004), Earth Shock (8042), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Restorative Mists (114083), Windlash (114089), Windlash Off-Hand (114093), Healing Tide (114942), Elemental Blast (117014), Elemental Blast Overload (120588), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192106), Lightning Shield (192109), Crash Lightning (195592), Deluge (200075), Downpour (207778), Lightning Bolt (214815), Lightning Bolt Overload (214816), Lightning Shield Overcharge (273323), Lightning Shield (273324), Healing Stream (273847), Restorative Mists (294020), Primordial Wave (326059), Lightning Shield (344174), Elemental Blast (344645), Earth Shock Overload (381725), Poison Cleansing (383014), Poison Cleansing (403922), Tempest (452201), Downpour (462603), Tempest Overload (463351), Flame Shock (470411), Primordial Storm (1218047), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Stream (5672), Healing Surge (8004), Earth Shock (8042), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Restorative Mists (114083), Windlash (114089), Windlash Off-Hand (114093), Healing Tide (114942), Elemental Blast (117014), Elemental Blast Overload (120588), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192106), Lightning Shield (192109), Crash Lightning (195592), Deluge (200075), Downpour (207778), Lightning Bolt (214815), Lightning Bolt Overload (214816), Lightning Shield Overcharge (273323), Lightning Shield (273324), Healing Stream (273847), Restorative Mists (294020), Primordial Wave (326059), Lightning Shield (344174), Elemental Blast (344645), Earth Shock Overload (381725), Poison Cleansing (383014), Poison Cleansing (403922), Tempest (452201), Downpour (462603), Tempest Overload (463351), Flame Shock (470411), Primordial Storm (1218047), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Stormstream Totem (1267745), Stormstream Totem (1267765)
                    Family Flags: 0, 1, 7, 8, 10, 13, 20, 25, 28, 33, 45, 51, 63, 64, 68, 70, 80, 85, 87, 94, 96, 97, 98, 106, 107, 108, 110
 #2 (id=1015761)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Critical Chance (7)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 7 | Misc Value 2: 1679 (Label) | Target: Self (1)
@@ -14019,7 +14022,7 @@ Description      : Maximum health increased by $s1%, and while you are at full h
 
 
 Name             : Swelling Maelstrom (id=381707) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Elemental [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -14090,7 +14093,7 @@ Effects          :
 Description      : Instantly shocks the target with concussive force, causing ${$381726s1/100*$s1*$168534s2/100} Nature damage.
 
 Name             : Mountains Will Fall (id=381726) [Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=9, col=2, max_rank=1, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -14151,7 +14154,7 @@ Effects          :
 Description      : $@spelldesc381761
 
 Name             : Searing Flames (id=381782) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=7, col=4, max_rank=1, req_points=8]
+Talent Entry     : Elemental [tree=spec, row=7, col=5, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -14182,7 +14185,7 @@ Effects          :
 Description      : $@spelldesc381782
 
 Name             : Totemic Surge (id=381867) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=1, req_points=23]
+Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=23]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -14193,11 +14196,11 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1012979)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Earthbind Totem (2484), Healing Stream Totem (5394), Tremor Totem (8143), Earthgrab Totem (51485), Spirit Link Totem (98008), Healing Tide Totem (108280), Capacitor Totem (192058), Wind Rush Totem (192077), Vesper Totem (324386), Poison Cleansing Totem (383013), Surging Totem (444995)
+                   Affected Spells: Earthbind Totem (2484), Healing Stream Totem (5394), Tremor Totem (8143), Earthgrab Totem (51485), Spirit Link Totem (98008), Healing Tide Totem (108280), Capacitor Totem (192058), Wind Rush Totem (192077), Vesper Totem (324386), Poison Cleansing Totem (383013), Surging Totem (444995), Stormstream Totem (1267068)
                    Family Flags: 29
 #2 (id=1014666)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1569 (Category) | Target: Self (1)
-                   Affected Spells (Category): Healing Stream Totem (5394)
+                   Affected Spells (Category): Healing Stream Totem (5394), Stormstream Totem (1267068)
 #3 (id=1014667)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1540 (Category) | Target: Self (1)
                    Affected Spells (Category): Spirit Link Totem (98008)
@@ -14364,7 +14367,6 @@ Description      : $@spelldesc382021
 Tooltip          : Heals $w1 every $t1 sec.
 
 Name             : Improved Flametongue Weapon (id=382027) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -14417,11 +14419,11 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1013223)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1569 (Category) | Target: Self (1)
-                   Affected Spells (Category): Healing Stream Totem (5394)
+                   Affected Spells (Category): Healing Stream Totem (5394), Stormstream Totem (1267068)
 Description      : Reduces the cooldown of Healing Stream Totem by ${$s1/-1000} sec.
 
 Name             : Echo Chamber (id=382032) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=7, col=3, max_rank=1, req_points=8]
+Talent Entry     : Elemental [tree=spec, row=7, col=4, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -14491,7 +14493,7 @@ Description      : Chain Heal bounces an additional time and casting Chain Heal 
 
 
 Name             : Surging Elements (id=382042) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=9, col=6, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -14578,7 +14580,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1013456)  : Apply Aura (6) | Modify Stance Mask (275)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Purge (370), Earthbind Totem (2484), Healing Stream Totem (5394), Tremor Totem (8143), Earthgrab Totem (51485), Cleanse Spirit (51886), Wind Shear (57994), Purify Spirit (77130), Spirit Link Totem (98008), Healing Tide Totem (108280), Capacitor Totem (192058), Wind Rush Totem (192077), Vesper Totem (324386), Greater Purge (378773), Poison Cleansing Totem (383013), Cleanse Spirit (440012), Surging Totem (444995)
+                   Affected Spells: Purge (370), Earthbind Totem (2484), Healing Stream Totem (5394), Tremor Totem (8143), Earthgrab Totem (51485), Cleanse Spirit (51886), Wind Shear (57994), Purify Spirit (77130), Spirit Link Totem (98008), Healing Tide Totem (108280), Capacitor Totem (192058), Wind Rush Totem (192077), Vesper Totem (324386), Greater Purge (378773), Poison Cleansing Totem (383013), Cleanse Spirit (440012), Surging Totem (444995), Stormstream Totem (1267068)
                    Family Flags: 29, 35, 59, 88, 109
 Description      : Cleanse Spirit, Wind Shear, Purge, and totem casts no longer cancel Ghost Wolf.
 
@@ -14597,10 +14599,10 @@ Effects          :
                    Affected Spells (Label): Earthbind Totem (2484), Earthgrab Totem (51485)
 #2 (id=1013877)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
                    Base Value: 3000 | Scaled Value: 3000 | Misc Value: 1 | Misc Value 2: 1658 (Label) | Target: Self (1)
-                   Affected Spells (Label): Healing Stream Totem (5394), Healing Stream (5672), Tremor Totem (8143), Wind Rush Totem (192077), Poison Cleansing Totem (383013), Poison Cleansing (383014)
+                   Affected Spells (Label): Healing Stream Totem (5394), Healing Stream (5672), Tremor Totem (8143), Wind Rush Totem (192077), Poison Cleansing Totem (383013), Poison Cleansing (383014), Stormstream Totem (1267068), Stormstream Totem (1267765)
 #3 (id=1013879)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Radius (6)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 6 | Misc Value 2: 1660 (Label) | Target: Self (1)
-                   Affected Spells (Label): Earthbind Totem (2484), Earthbind (3600), Searing Bolt (3606), Tremor Totem Effect (8146), Earthgrab Totem (51485), Healing Stream Totem (52042), Earthgrab (64695), Spirit Link Totem (98007), Spirit Link Totem (98008), Healing Tide (114942), Earthgrab (116943), Capacitor Totem (118905), Capacitor Totem (192058), Wind Rush Totem (192077), Poison Cleansing Totem (383013), Poison Cleansing (383014), Mana Spring (395197), Poison Cleansing (403922), Tremor (455622), Searing Volley (458147), Surging Bolt (458266), Surging Bolt (458267), Chain Heal (458357)
+                   Affected Spells (Label): Earthbind Totem (2484), Earthbind (3600), Searing Bolt (3606), Tremor Totem Effect (8146), Earthgrab Totem (51485), Healing Stream Totem (52042), Earthgrab (64695), Spirit Link Totem (98007), Spirit Link Totem (98008), Healing Tide (114942), Earthgrab (116943), Capacitor Totem (118905), Capacitor Totem (192058), Wind Rush Totem (192077), Poison Cleansing Totem (383013), Poison Cleansing (383014), Mana Spring (395197), Poison Cleansing (403922), Tremor (455622), Searing Volley (458147), Surging Bolt (458266), Surging Bolt (458267), Chain Heal (458357), Stormstream Totem (1267745)
 #4 (id=1164399)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Range (5)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Misc Value 2: 3795 (Label) | Target: Self (1)
                    Affected Spells (Label): Chain Heal (458357)
@@ -14883,7 +14885,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1658: Totemic Focus (382201 effect#2)
                  : 1660: Totemic Focus (382201 effect#3), Spatial Paradox (406789 effect#12), Oversized Totems (445026 effect#1)
-Affecting Spells : Restoration Shaman (137039 effect#11), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Tidecaller's Guard (457496 effect#1)
+Affecting Spells : Restoration Shaman (137039 effect#11), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Tidecaller's Guard (457496 effect#1), Stormstream Totem (1267093 effect#1)
 Family Flags     : 13
 Attributes       : Can Proc From Procs (122), Extra Initial Period (169), Allow Class Ability Procs (416)
 Effects          :
@@ -14977,11 +14979,11 @@ Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38
 Effects          :
 #1 (id=1015012)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Stormstream Totem (1267745), Stormswell (1268684)
                    Family Flags: 41
 #2 (id=1015013)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Stormstream Totem (1267745), Stormswell (1268684)
                    Family Flags: 41
 Description      : $@spelldesc382194
 Tooltip          : Healing increased by ${$W1}.1%.
@@ -15021,7 +15023,7 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Combo on Block (Ma
 Effects          :
 #1 (id=1015698)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Ally (21)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Stormstream Totem (1267745), Stormswell (1268684)
                    Family Flags: 41
                    Modified By: Embrace of Earth (338329 effect#1)
 #2 (id=1015699)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
@@ -15080,9 +15082,13 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1016544)  : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 37 | Target: Self (1)
-                   Affected Spells: Maelstrom Weapon (344179)
-                   Family Flags: 49
-Description      : Maelstrom Weapon can now stack $s1 additional times.
+                   Affected Spells: Maelstrom Weapon (187881), Maelstrom Weapon (344179)
+                   Family Flags: 49, 100
+#2 (id=1278869)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+Description      : Maelstrom Weapon can now stack $s1 additional times.
+
+Consuming Maelstrom Weapon causes your next Healing Surge or Chain Heal to gain $s2% of the benefits of Maelstrom Weapon based on the stacks consumed.
 
 Name             : Overflowing Maelstrom (id=384149) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Enhancement [tree=spec, row=5, col=3, max_rank=1, req_points=8]
@@ -15102,7 +15108,7 @@ Effects          :
 Description      : Lightning Bolt and Chain Lightning can consume up to $s1 Maelstrom Weapon stacks. 
 
 Name             : Doom Winds (id=384352) [Spell Family (11)] 
-Talent Entry     : Enhancement [tree=spec, row=8, col=3, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : Melee
@@ -15156,7 +15162,7 @@ Effects          :
 Description      : Each target hit by Crash Lightning increases the damage of your next Stormstrike by $198300s1%, up to a maximum of $198300u stacks.
 
 Name             : Static Accumulation (id=384411) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=9, col=4, max_rank=2, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=9, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(1, 2)]
                  : Effect#2 [op=set, values=(10, 20)]
 Class            : Shaman
@@ -15189,7 +15195,7 @@ Description      : $@spelldesc384411
 Tooltip          : Generating $384411s1 $lstack:stacks; of Maelstrom Weapon every $t1 sec.
 
 Name             : Thorim's Invocation (id=384444) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -15201,7 +15207,7 @@ Effects          :
 #1 (id=1017065)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #2 (id=1072487)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.7 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Target: Self (1)
 #3 (id=1123796)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #4 (id=1273320)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
@@ -15219,7 +15225,7 @@ Description      : Doom Winds and Deeply Rooted Elements last ${$s5/1000} sec lo
 During Doom Winds or Ascendance, Stormstrike and Crash Lightning consume up to $s1 Maelstrom Weapon to discharge a Lightning Bolt or Chain Lightning at $s2% effectiveness at your enemy, whichever you most recently used.
 
 Name             : Lightning Strikes (id=384450) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=9, col=2, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=9, col=1, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -15453,13 +15459,13 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Praetorian's Tidecallers (210604 effect#1), Tidecaller's Guard (457496 effect#1), Ancestral Wisdom (1238279 effects: #2, #3, #4), Quickstream (1253099 effect#1)
+Affecting Spells : Praetorian's Tidecallers (210604 effect#1), Tidecaller's Guard (457496 effect#1), Ancestral Wisdom (1238279 effects: #2, #3, #4), Quickstream (1253099 effect#1), Stormstream Totem (1267089 effect#1)
 Family Flags     : 6
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
 #1 (id=1031470)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1569 (Category) | Target: Self (1)
-                   Affected Spells (Category): Healing Stream Totem (5394)
+                   Affected Spells (Category): Healing Stream Totem (5394), Stormstream Totem (1267068)
 #2 (id=1031471)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2062 (Category) | Target: Self (1)
 Description      : $@spelltooltip5394
@@ -15472,13 +15478,13 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Praetorian's Tidecallers (210604 effect#1), Tidecaller's Guard (457496 effect#1), Ancestral Wisdom (1238279 effects: #2, #3, #4), Quickstream (1253099 effect#1)
+Affecting Spells : Praetorian's Tidecallers (210604 effect#1), Tidecaller's Guard (457496 effect#1), Ancestral Wisdom (1238279 effects: #2, #3, #4), Quickstream (1253099 effect#1), Stormstream Totem (1267089 effect#1)
 Family Flags     : 6
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
 #1 (id=1031472)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1569 (Category) | Target: Self (1)
-                   Affected Spells (Category): Healing Stream Totem (5394)
+                   Affected Spells (Category): Healing Stream Totem (5394), Stormstream Totem (1267068)
 #2 (id=1031473)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2062 (Category) | Target: Self (1)
 Description      : $@spelltooltip5394
@@ -15750,7 +15756,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 1660: Totemic Focus (382201 effect#3), Spatial Paradox (406789 effect#12), Oversized Totems (445026 effect#1)
-Affecting Spells : Restoration Shaman (137039 effect#11), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Tidecaller's Guard (457496 effect#1)
+Affecting Spells : Restoration Shaman (137039 effect#11), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Tidecaller's Guard (457496 effect#1), Stormstream Totem (1267093 effect#1)
 Triggered By     : Poison Cleansing (383014)
 Family Flags     : 13
 Attributes       : Ignore Line of Sight (66), Can Proc From Procs (122), Extra Initial Period (169), Allow Class Ability Procs (416)
@@ -16166,9 +16172,9 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
 Description      : Maelstrom Weapon no longer benefits Healing Surge or Chain Heal. Instead, consuming Maelstrom Weapon on a damage spell causes your next Healing Surge or Chain Heal to gain $s1% of the benefits of Maelstrom Weapon based on the stacks consumed. 
 
-Name             : Stormweaver (desc=PvP Talent) (id=410681) [Spell Family (11)] 
+Name             : Raging Maelstrom (id=410681) [Spell Family (11)] 
 Class            : Shaman
-School           : Physical
+School           : Nature
 Spell Type       : None
 Duration         : 30 seconds
 Labels           : 16: Class Spells
@@ -16188,7 +16194,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004)
                    Family Flags: 7, 8
-Description      : $@spelldesc410673
+#3 (id=1278867)  : Apply Aura (6) | Set Action Button Spell Count (408): Healing Surge
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 8004 | Target: Self (1)
+#4 (id=1278868)  : Apply Aura (6) | Set Action Button Spell Count (408): Chain Heal | Attributes: Suppress Points Stacking (6)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1064 | Target: Self (1)
+Description      : $@spelldesc384143
 Tooltip          : The cast time of your next Healing Surge or Chain Heal is reduced by $w1% and its healing is increased by $w2%.
 
 Name             : Maelstrom Weapon (id=412692) [Spell Family (11), Hidden] 
@@ -16245,11 +16255,11 @@ Effects          :
                    Family Flags: 39
 #3 (id=1088922)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Stormstream Totem (1267745), Stormswell (1268684)
                    Family Flags: 41
 #4 (id=1088923)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Stormstream Totem (1267745), Stormswell (1268684)
                    Family Flags: 41
 #5 (id=1088924)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -16806,7 +16816,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #7 (id=1175566)  : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
-Description      : $?a137040[Lightning Bolt, Lava Burst, Chain Lightning, Icefury, and Frost Shock casts have a $s2][Riptide has a $s1]% chance to call an Ancestor to your side for $445624d.
+Description      : $?a137040[Lightning Bolt, Lava Burst, Flame Shock, Voltaic Blaze, and Chain Lightning have a $s2][Riptide has a $s1]% chance to call an Ancestor to your side for $445624d.
 
 Name             : Final Calling (id=443446) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Farseer (Elemental, Restoration) [tree=hero, row=4, col=3, max_rank=1, req_points=1]
@@ -16893,13 +16903,13 @@ Labels           : 16: Class Spells
                  : 3022
                  : 3964: Heed My Call (443444 effect#2)
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Magic Hostile Spell
+Proc Flags       : Generic Heal, Magic Heal
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Display Range (126), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1139370)  : Apply Aura (6) | Dummy (4)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
                    Modified By: Heed My Call (443444 effect#2)
-Description      : $?a137040[Primordial Wave calls an Ancestor to your side for $445624d.][Casting Healing Stream Totem calls an Ancestor to your side for $s1 sec.]
+Description      : $?a137040[Stormkeeper calls an Ancestor to your side for $445624d.][Casting Healing Stream Totem calls an Ancestor to your side for $s1 sec.]
 
 Whenever you cast a healing or damaging spell, the Ancestor will cast a similar spell.
 
@@ -16917,7 +16927,7 @@ Effects          :
 #1 (id=1139371)  : Apply Aura (6) | Dummy (4)
                    Base Value: -5000 | Scaled Value: -5000 | Target: Self (1)
 #2 (id=1142670)  : Apply Aura (6) | Dummy (4)
-                   Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 0.6667 | Target: Self (1)
+                   Base Value: -2000 | Scaled Value: -2000 | Target: Self (1)
 Description      : When an Ancestor is called, they reduce the cooldown of $?a137040[Fire Elemental and Storm Elemental by ${$s1/-1000} sec.][Riptide by ${$s2/-1000} sec.]
 
 Name             : Ancestral Swiftness (id=443454) [Spell Family (11)] 
@@ -17086,7 +17096,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1141751)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Radius (6)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 6 | Misc Value 2: 1660 (Label) | Target: Self (1)
-                   Affected Spells (Label): Earthbind Totem (2484), Earthbind (3600), Searing Bolt (3606), Tremor Totem Effect (8146), Earthgrab Totem (51485), Healing Stream Totem (52042), Earthgrab (64695), Spirit Link Totem (98007), Spirit Link Totem (98008), Healing Tide (114942), Earthgrab (116943), Capacitor Totem (118905), Capacitor Totem (192058), Wind Rush Totem (192077), Poison Cleansing Totem (383013), Poison Cleansing (383014), Mana Spring (395197), Poison Cleansing (403922), Tremor (455622), Searing Volley (458147), Surging Bolt (458266), Surging Bolt (458267), Chain Heal (458357)
+                   Affected Spells (Label): Earthbind Totem (2484), Earthbind (3600), Searing Bolt (3606), Tremor Totem Effect (8146), Earthgrab Totem (51485), Healing Stream Totem (52042), Earthgrab (64695), Spirit Link Totem (98007), Spirit Link Totem (98008), Healing Tide (114942), Earthgrab (116943), Capacitor Totem (118905), Capacitor Totem (192058), Wind Rush Totem (192077), Poison Cleansing Totem (383013), Poison Cleansing (383014), Mana Spring (395197), Poison Cleansing (403922), Tremor (455622), Searing Volley (458147), Surging Bolt (458266), Surging Bolt (458267), Chain Heal (458357), Stormstream Totem (1267745)
 #2 (id=1164397)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Range (5)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 5 | Misc Value 2: 3795 (Label)
                    Affected Spells (Label): Chain Heal (458357)
@@ -17177,7 +17187,7 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
 #2 (id=1203217)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-Description      : Surging Totem $?a462110[heals for $s1% more][deals $s2% more damage] during Ascendance.
+Description      : Surging Totem $?a462110[heals for $s1% more][deals $s2% more damage] while Ascendance or Healing Tide Totem is active.
 
 Name             : Wind Barrier (id=445031) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Totemic (Enhancement, Restoration) [tree=hero, row=3, col=2, max_rank=1, req_points=1]
@@ -17286,7 +17296,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #4 (id=1176666)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 23 | Misc Value 2: 2626 (Label) | Target: Self (1)
-Description      : $?a137041[While Hot Hand is active Lava Lash shatters the earth, causing a Sundering at $s1% effectiveness.][Your Healing Stream Totems now also heals a second ally at $s3% effectiveness.]
+Description      : $?a137041[While Hot Hand is active Lava Lash shatters the earth, causing a Sundering at $s1% effectiveness.][Your Healing Stream Totems heals an additional ally at $s3% effectiveness.]
 
 Name             : Totemic Coordination (id=445036) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Totemic (Enhancement, Restoration) [tree=hero, row=4, col=3, max_rank=1, req_points=1, select_idx=100]
@@ -17315,7 +17325,7 @@ Class            : Shaman
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
-Duration         : 6 seconds
+Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -17369,7 +17379,7 @@ Name             : Call of the Ancestors (id=447244) [Spell Family (11)]
 Class            : Shaman
 School           : Nature
 Spell Type       : None
-Duration         : 6 seconds
+Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -17624,7 +17634,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 3022
-Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5), Elemental Shaman (137040 effects: #1, #2, #25), Enhancement Shaman (137041 effects: #1, #2, #17, #26), Storm Elemental (157299 effects: #3, #4), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Maelstrom Weapon (187881 effects: #1, #2), Flame Shock (188389 effect#5), Crackling Surge (224127 effects: #1, #2), Astral Bulwark (377933 effect#2), Nature's Swiftness (378081 effects: #1, #2), Planes Traveler (381647 effect#2), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Storm Frenzy (462725 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #3, #4), Enhancement Shaman (1214207 effects: #1, #2, #9), Jackpot! (1218612 effect#1), Elemental Shaman (1231772 effects: #1, #2, #9), Shaman Stormbringer 11.2 Class Set 4pc (1236409 effects: #1, #2, #3, #4), Ancestral Wisdom (1238279 effects: #1, #7), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4), Elemental Resonance (1258895 effect#1), Thunder Capacitor (1262635 effect#1), Storm Unleashed (1262761 effect#1), Natural Gift (1264691 effect#1)
+Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5), Elemental Shaman (137040 effects: #1, #2, #25), Enhancement Shaman (137041 effects: #1, #2, #17, #26), Storm Elemental (157299 effects: #3, #4), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Maelstrom Weapon (187881 effects: #1, #2), Flame Shock (188389 effect#5), Crackling Surge (224127 effects: #1, #2), Astral Bulwark (377933 effect#2), Nature's Swiftness (378081 effects: #1, #2), Planes Traveler (381647 effect#2), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Storm Frenzy (462695 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #3, #4), Enhancement Shaman (1214207 effects: #1, #2, #9), Jackpot! (1218612 effect#1), Elemental Shaman (1231772 effects: #1, #2, #9), Shaman Stormbringer 11.2 Class Set 4pc (1236409 effects: #1, #2, #3, #4), Ancestral Wisdom (1238279 effects: #1, #7), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4), Elemental Resonance (1258895 effect#1), Thunder Capacitor (1262635 effect#1), Storm Unleashed (1262761 effect#1), Natural Gift (1264691 effect#1)
 Family Flags     : 39, 56, 107, 126
 Attributes       : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (217)
 Effects          :
@@ -18284,7 +18294,7 @@ Effects          :
                    Base Value: 125 | Scaled Value: 125 | Target: Self (1)
 #2 (id=1177979)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
-Description      : $?a137041[Casting Sundering within $s2 yards of your Surging Totem causes it to create a Tremor at $s1% effectiveness at the target area.][Allies affected by your Earthen Wall Totem, Ancestral Protection Totem, and Earthliving effect receive $457566s1% increased healing from you.]
+Description      : $?a137041[Casting Sundering within $s2 yards of your Surging Totem causes it to create a Tremor at $s1% effectiveness at the target area.][Allies affected by your Earthliving effect receive $457566s1% increased healing from you.]
 
 Name             : Surging Totem (id=455593) [Spell Family (11), Hidden] 
 Class            : Shaman
@@ -18386,11 +18396,11 @@ Attributes       : Do Not Display Duration (170), Aura Points On Client (268)
 Effects          :
 #1 (id=1160528)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Searing Bolt (3606), Healing Surge (8004), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Healing Stream Totem (52042), Lava Lash (60103), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Earthquake (77478), Healing Tide (114942), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Downpour (207778), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Tidebringer (236502), Stormfury (269005), Soothing Waters (273019), Lightning Shield (273324), Strength of Earth (273466), Serene Spirit (274416), Lightning Conduit (275394), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Rumbling Tremors (279556), Pack Spirit (280205), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Restorative Mists (294020), Earthquake Overload (298765), Surge of Earth (320747), Chain Harvest (320751), Chain Harvest (320752), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328928), Fae Transfusion (328930), Fire Nova (333977), Ascendance (344548), Vesper Totem (356791), Acid Rain (378597), Earth Shock Overload (381725), Earthliving Weapon (382024), Overflowing Shores (383223), Doom Winds (384352), Tidal Reservoir (424464), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Storm's Eye (1235840), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Searing Bolt (3606), Healing Surge (8004), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Healing Stream Totem (52042), Lava Lash (60103), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Earthquake (77478), Healing Tide (114942), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Downpour (207778), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Tidebringer (236502), Stormfury (269005), Soothing Waters (273019), Lightning Shield (273324), Strength of Earth (273466), Serene Spirit (274416), Lightning Conduit (275394), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Rumbling Tremors (279556), Pack Spirit (280205), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Restorative Mists (294020), Earthquake Overload (298765), Surge of Earth (320747), Chain Harvest (320751), Chain Harvest (320752), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328928), Fae Transfusion (328930), Fire Nova (333977), Ascendance (344548), Vesper Totem (356791), Acid Rain (378597), Earth Shock Overload (381725), Earthliving Weapon (382024), Overflowing Shores (383223), Doom Winds (384352), Tidal Reservoir (424464), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Storm's Eye (1235840), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101), Stormstream Totem (1267745), Stormswell (1268684)
                    Family Flags: 39, 41
 #2 (id=1160529)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Searing Bolt (3606), Healing Surge (8004), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Healing Stream Totem (52042), Lava Lash (60103), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Earthquake (77478), Healing Tide (114942), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Downpour (207778), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Tidebringer (236502), Stormfury (269005), Soothing Waters (273019), Lightning Shield (273324), Strength of Earth (273466), Serene Spirit (274416), Lightning Conduit (275394), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Rumbling Tremors (279556), Pack Spirit (280205), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Restorative Mists (294020), Earthquake Overload (298765), Surge of Earth (320747), Chain Harvest (320751), Chain Harvest (320752), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328928), Fae Transfusion (328930), Fire Nova (333977), Ascendance (344548), Vesper Totem (356791), Acid Rain (378597), Earth Shock Overload (381725), Earthliving Weapon (382024), Overflowing Shores (383223), Doom Winds (384352), Tidal Reservoir (424464), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Storm's Eye (1235840), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Searing Bolt (3606), Healing Surge (8004), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Healing Stream Totem (52042), Lava Lash (60103), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Earthquake (77478), Healing Tide (114942), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Downpour (207778), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Tidebringer (236502), Stormfury (269005), Soothing Waters (273019), Lightning Shield (273324), Strength of Earth (273466), Serene Spirit (274416), Lightning Conduit (275394), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Rumbling Tremors (279556), Pack Spirit (280205), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Restorative Mists (294020), Earthquake Overload (298765), Surge of Earth (320747), Chain Harvest (320751), Chain Harvest (320752), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328928), Fae Transfusion (328930), Fire Nova (333977), Ascendance (344548), Vesper Totem (356791), Acid Rain (378597), Earth Shock Overload (381725), Earthliving Weapon (382024), Overflowing Shores (383223), Doom Winds (384352), Tidal Reservoir (424464), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Storm's Eye (1235840), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101), Stormstream Totem (1267745), Stormswell (1268684)
                    Family Flags: 39, 41
 Description      : $@spelldesc445029
 Tooltip          : Damage and healing increased by $w1%.
@@ -18481,17 +18491,17 @@ Attributes       : No Aura Icon (60), Allow Entering Arena (149), Aura Points On
 Effects          :
 #1 (id=1162726)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 3000 | Scaled Value: 3000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Healing Stream Totem (5394), Healing Stream (5672), Healing Stream Totem (52042), Healing Stream (273847), Poison Cleansing (383014), Healing Stream Totem (392915), Healing Stream Totem (392916), Poison Cleansing (403922)
+                   Affected Spells: Healing Stream Totem (5394), Healing Stream (5672), Healing Stream Totem (52042), Healing Stream (273847), Poison Cleansing (383014), Healing Stream Totem (392915), Healing Stream Totem (392916), Poison Cleansing (403922), Stormstream Totem (1267068), Stormstream Totem (1267745), Stormstream Totem (1267765)
                    Family Flags: 6, 13, 120
                    Modified By: Enhanced Imbues (462796 effect#6)
 #2 (id=1162727)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Stormstream Totem (1267745), Stormswell (1268684)
                    Family Flags: 41
                    Modified By: Enhanced Imbues (462796 effect#7)
 #3 (id=1162728)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Stormstream Totem (1267745), Stormswell (1268684)
                    Family Flags: 41
                    Modified By: Enhanced Imbues (462796 effect#8)
 Description      : $@spelldesc457481
@@ -18513,7 +18523,7 @@ Attributes       : Do Not Display Duration (170), Aura Points On Client (268)
 Effects          :
 #1 (id=1162873)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 15 | Scaled Value: 15 | Target: Targeted Ally (21)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Stormstream Totem (1267745), Stormswell (1268684)
                    Family Flags: 41
 Description      : $@spelldesc455590
 Tooltip          : Receiving $w1% increased healing from $@auracaster.
@@ -19172,7 +19182,7 @@ Description      : Causes the earth within $a1 yards of your target to tremble a
 |cFFFFFFFFThis spell is cast at your target.|r
 
 Name             : Storm Frenzy (id=462695) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=5, col=2, max_rank=1, req_points=8]
+Talent Entry     : Elemental [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -19183,33 +19193,15 @@ Proc Chance      : 101%
 Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1172723)  : Apply Aura (6) | Proc Trigger Spell (42)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Your next Chain Lightning$?s454009[, Tempest,][] or Lightning Bolt has $462725s1% reduced cast time after casting Earth Shock, Elemental Blast, or Earthquake. Can accumulate up to $462725u charges.
-
-Name             : Storm Frenzy (id=462725) [Spell Family (11)] 
-Class            : Shaman
-School           : Nature
-Spell Type       : None
-Duration         : 12 seconds
-Labels           : 16: Class Spells
-                 : 24: Shaman Spells
-                 : 292
-Stacks           : 2 maximum
-Proc Chance      : 101%
-Proc Flags       : Magic Hostile Spell
-Attributes       : Not In Spellbook (143), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
-Effects          :
-#1 (id=1172813)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 10 | Target: Self (1)
+#1 (id=1172723)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816), Tempest (452201)
                    Family Flags: 0, 1, 107
-#2 (id=1182449)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21) | Attributes: Suppress Points Stacking (6)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 21 | Target: Self (1)
+#2 (id=1280928)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 21 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816), Tempest (452201)
                    Family Flags: 0, 1, 107
-Description      : $@spelldesc462695
-Tooltip          : Reduces the cast time of your next Lightning Bolt$?s454009[, Tempest,][] or Chain Lightning by $s1%.
+Description      : Reduces the cast time of Lightning Bolt$?s454009[, Tempest,][] and Chain Lightning by $s1%.
 
 Name             : Thunderstrike Ward (id=462742) [Spell Family (11), Hidden] 
 Class            : Shaman
@@ -19438,7 +19430,7 @@ Effects          :
 Description      : $@spelldesc462817
 
 Name             : Fusion of Elements (id=462840) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=5, col=1, max_rank=1, req_points=8]
+Talent Entry     : Elemental [tree=spec, row=7, col=1, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -19446,54 +19438,12 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Cast Successful
+Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1173037)  : Apply Aura (6) | Proc Trigger Spell (42): Fusion of Elements
-                   Base Value: 60 | Scaled Value: 60 | Trigger Spell: 462841 | Target: Self (1)
-#2 (id=1173046)  : Apply Aura (6) | Proc Trigger Spell (42): Fusion of Elements
-                   Base Value: 60 | Scaled Value: 60 | Trigger Spell: 462843 | Target: Self (1)
-Description      : After casting Icefury, the next time you cast a damaging Nature and Fire spell, you additionally cast an Elemental Blast at your target at $s1% effectiveness.
-
-Name             : Fusion of Elements (id=462841) [Spell Family (11), Hidden] 
-Class            : Shaman
-School           : Physical
-Spell Type       : None
-Duration         : 20 seconds
-Labels           : 16: Class Spells
-                 : 24: Shaman Spells
-                 : 292
-Internal Cooldown: 1 seconds
-Proc Chance      : 101%
-Proc Flags       : Magic Hostile Spell
-Triggered By     : Fusion of Elements (462840)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
-Effects          :
-#1 (id=1173039)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Description      : $@spelldesc462840
-Tooltip          : After casting a damaging Nature$?a462841[ and a Fire][] spell, you additionally cast an Elemental Blast at your target.
-
-Name             : Fusion of Elements (id=462843) [Spell Family (11), Hidden] 
-Class            : Shaman
-School           : Physical
-Spell Type       : None
-Duration         : 20 seconds
-Labels           : 16: Class Spells
-                 : 24: Shaman Spells
-                 : 292
-Internal Cooldown: 1 seconds
-Proc Chance      : 101%
-Proc Flags       : Magic Hostile Spell
-Triggered By     : Fusion of Elements (462840)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
-Effects          :
-#1 (id=1173041)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Description      : $@spelldesc462840
-Tooltip          : After casting a damaging Fire$?a462841[ and a Nature][] spell, you additionally cast an Elemental Blast at your target.
+#1 (id=1173037)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
+Description      : Consuming Power of the Maelstrom additionally fires an Elemental Blast at your target at $s1% effectiveness.
 
 Name             : Skyfury (id=462854) [Spell Family (11)] 
 Class            : Shaman
@@ -19576,7 +19526,7 @@ Description      : While a Fire Elemental is active, your Fire damage dealt is i
 While a Storm Elemental is active, your Nature damage dealt is increased by $157299s4%.
 
 Name             : Everlasting Elements (id=462867) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Elemental [tree=spec, row=7, col=6, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -20001,7 +19951,7 @@ Description      : $@spelldesc467778
 Tooltip          : Movement speed increased by $w1%.
 
 Name             : Herald of the Storms (id=468571) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Elemental [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -20015,54 +19965,6 @@ Effects          :
                    Affected Spells: Stormkeeper (191634)
                    Family Flags: 111
 Description      : Reduces the cooldown of Stormkeeper by ${$s1/-1000} sec.
-
-Name             : Erupting Lava (id=468574) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=9, col=4, max_rank=1, req_points=20]
-Class            : Shaman
-School           : Fire
-Spell Type       : None
-Labels           : 16: Class Spells
-                 : 24: Shaman Spells
-                 : 292
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
-Effects          :
-#1 (id=1182356)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: 6000 | Scaled Value: 6000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Flame Shock (188389), Flame Shock (470411)
-                   Family Flags: 28
-#2 (id=1182431)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 3000 | Scaled Value: 3000 | Target: Self (1)
-#3 (id=1182432)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-#4 (id=1185812)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.5 | Target: Self (1)
-                   Affected Spells: Flame Shock (188389), Flame Shock (470411)
-                   Family Flags: 28
-#5 (id=1185813)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Flame Shock (188389), Flame Shock (470411)
-                   Family Flags: 28
-#6 (id=1268035)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 0.3 | Target: Self (1)
-Description      : Increases the duration of Flame Shock by ${$s1/1000} sec and its damage by $s4%.
-
-Lava Burst consumes up to ${$s2/1000} sec of Flame Shock, dealing the consumed damage at $s6% effectiveness.
-
-Lava Burst Overload also benefits from this effect, consuming up to ${$s2/1000*$s3/100}.1 sec of Flame Shock.
-
-Name             : Erupting Lava (id=468615) [Spell Family (11)] 
-Class            : Shaman
-School           : Firestorm
-Spell Type       : Magic
-Range            : 100 yards
-Labels           : 16: Class Spells
-                 : 24: Shaman Spells
-                 : 292
-Attributes       : Ignore Line of Sight (66), Do Not Display Range (126), Ignore Caster Damage Modifiers (221), Ignore Positive Damage Taken Modifiers (321), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1182436)  : School Damage (2): firestorm
-                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-Description      : $@spelldesc468574
 
 Name             : Charged Conduit (id=468625) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Elemental [tree=spec, row=10, col=1, max_rank=1, req_points=20]
@@ -20083,7 +19985,7 @@ Effects          :
 Description      : Increases the duration of Lightning Rod by ${$s1/1000} sec and its damage bonus by $s2%.
 
 Name             : Earthshatter (id=468626) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=7, col=1, max_rank=1, req_points=8]
+Talent Entry     : Elemental [tree=spec, row=7, col=2, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -20121,7 +20023,7 @@ Effects          :
 Description      : $@spelldesc384352
 
 Name             : Feral Spirit (id=469314) [Spell Family (11), Passive] 
-Talent Entry     : Enhancement [tree=spec, row=9, col=5, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=9, col=4, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -20296,7 +20198,7 @@ Cooldown         : 10 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-                 : 4143: Elemental Shaman (137040 effect#12), Elemental Shaman (137040 effect#26), Enhancement Shaman (137041 effect#30), Maelstrom (343725 effect#14), Flames of the Cauldron (378266 effect#3), Fire Nova (1260666 effect#1)
+                 : 4143: Elemental Shaman (137040 effect#12), Elemental Shaman (137040 effect#26), Enhancement Shaman (137041 effect#30), Maelstrom (343725 effect#14), Flames of the Cauldron (378266 effect#3), Fire Nova (1260666 effect#1), Improved Voltaic Blaze [NNF] (1269215 effect#1)
 Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #3, #4), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Crackling Surge (224127 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #3, #4), Enhancement Shaman (1214207 effects: #1, #2), Elemental Shaman (1231772 effects: #1, #2), Shaman Stormbringer 11.2 Class Set 4pc (1236409 effects: #1, #2, #3, #4), Ancestral Wisdom (1238279 effects: #1, #7), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4), Elemental Resonance (1258895 effect#1), Natural Gift (1264691 effect#1)
 Family Flags     : 39, 56, 126
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Ability Procs (416)
@@ -20347,7 +20249,7 @@ Proc Flags       : Magic Heal
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1184910)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 75 | Scaled Value: 75 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Riptide (61295)
                    Family Flags: 68
 Description      : $@spelldesc470076
@@ -20369,7 +20271,7 @@ Labels           : 16: Class Spells
                  : 737
                  : 1406
                  : 4639
-Affecting Spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5, #15, #16), Elemental Shaman (137040 effects: #1, #2, #22, #23), Enhancement Shaman (137041 effects: #1, #2, #10, #22, #23), Storm Elemental (157299 effects: #3, #4), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Elemental Bellows (184919 effects: #1, #2, #3), Fire Elemental (188592 effects: #2, #3, #4, #5), Molten Weapon (224125 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Lashing Flames (334168 effect#1), Skybreaker's Fiery Demise (336734 effect#3), Maelstrom (343725 effect#11), Flames of the Cauldron (378266 effects: #1, #2), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effects: #1, #2), Fire and Ice (382886 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Fire Elemental (462992 effects: #2, #3, #4, #5), Lesser Storm Elemental (462993 effects: #3, #4), Erupting Lava (468574 effects: #1, #4, #5), Enhancement Shaman (1214207 effects: #1, #2), Elemental Shaman (1231772 effects: #1, #2), Shaman Stormbringer 11.2 Class Set 4pc (1236409 effects: #1, #2, #3, #4), Ancestral Wisdom (1238279 effects: #1, #7), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4, #13, #14), Elemental Resonance (1258895 effect#1), Inferno Arc (1259047 effect#1), Natural Gift (1264691 effect#1)
+Affecting Spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5, #15, #16), Elemental Shaman (137040 effects: #1, #2, #22, #23), Enhancement Shaman (137041 effects: #1, #2, #10, #22, #23), Storm Elemental (157299 effects: #3, #4), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Elemental Bellows (184919 effects: #1, #2, #3), Fire Elemental (188592 effects: #2, #3, #4, #5), Molten Weapon (224125 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Lashing Flames (334168 effect#1), Skybreaker's Fiery Demise (336734 effect#3), Maelstrom (343725 effect#11), Flames of the Cauldron (378266 effects: #1, #2), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effects: #1, #2), Fire and Ice (382886 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Fire Elemental (462992 effects: #2, #3, #4, #5), Lesser Storm Elemental (462993 effects: #3, #4), Enhancement Shaman (1214207 effects: #1, #2), Elemental Shaman (1231772 effects: #1, #2), Shaman Stormbringer 11.2 Class Set 4pc (1236409 effects: #1, #2, #3, #4), Ancestral Wisdom (1238279 effects: #1, #7), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4, #13, #14), Elemental Resonance (1258895 effect#1), Inferno Arc (1259047 effect#1), Natural Gift (1264691 effect#1)
 Family Flags     : 28, 39, 56, 103, 126
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Aura Is Debuff (26), Initiates Combat (Enables Auto-Attack) (41), Aura Never Bounces (148), Limit N (165), Spell Haste Affects Periodic (173), Do Not Consume Resources (197), Periodic Can Crit (265), Aura Points On Client (268), Allow during spell override (404), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
@@ -20452,7 +20354,7 @@ Effects          :
                    Affected Spells: Earth Shield (379)
                    Family Flags: 70
 #6 (id=1213820)  : Apply Aura (6) | Unknown(647)
-                   Base Value: 67 | Scaled Value: 67 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0
 #7 (id=1213821)  : Apply Aura (6) | Unknown(647)
@@ -20702,7 +20604,7 @@ Effects          :
 Description      : Earth Shield and Water Shield no longer lose charges and are ${100+$s1}% effective.
 
 Name             : Primordial Storm (id=1218047) [Spell Family (11), Passive] 
-Talent Entry     : Enhancement [tree=spec, row=10, col=5, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -20980,7 +20882,7 @@ Effects          :
 #7 (id=1205237)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
 #8 (id=1205238)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.1667 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.3334 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Mastery: Elemental Overload (168534)
                    Family Flags: 14
 #9 (id=1205239)  : Apply Aura (6) | Dummy (4)
@@ -21457,19 +21359,19 @@ Triggered By     : Shaman Farseer 11.2 Class Set 4pc (1236407)
 Effects          :
 #1 (id=1235420)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.33 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Searing Bolt (3606), Healing Surge (8004), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Healing Stream Totem (52042), Lava Lash (60103), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Earthquake (77478), Healing Tide (114942), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Downpour (207778), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Tidebringer (236502), Stormfury (269005), Soothing Waters (273019), Lightning Shield (273324), Strength of Earth (273466), Serene Spirit (274416), Lightning Conduit (275394), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Rumbling Tremors (279556), Pack Spirit (280205), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Restorative Mists (294020), Earthquake Overload (298765), Surge of Earth (320747), Chain Harvest (320751), Chain Harvest (320752), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328928), Fae Transfusion (328930), Fire Nova (333977), Ascendance (344548), Vesper Totem (356791), Acid Rain (378597), Earth Shock Overload (381725), Earthliving Weapon (382024), Overflowing Shores (383223), Doom Winds (384352), Tidal Reservoir (424464), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Storm's Eye (1235840), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Searing Bolt (3606), Healing Surge (8004), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Healing Stream Totem (52042), Lava Lash (60103), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Earthquake (77478), Healing Tide (114942), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Downpour (207778), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Tidebringer (236502), Stormfury (269005), Soothing Waters (273019), Lightning Shield (273324), Strength of Earth (273466), Serene Spirit (274416), Lightning Conduit (275394), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Rumbling Tremors (279556), Pack Spirit (280205), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Restorative Mists (294020), Earthquake Overload (298765), Surge of Earth (320747), Chain Harvest (320751), Chain Harvest (320752), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328928), Fae Transfusion (328930), Fire Nova (333977), Ascendance (344548), Vesper Totem (356791), Acid Rain (378597), Earth Shock Overload (381725), Earthliving Weapon (382024), Overflowing Shores (383223), Doom Winds (384352), Tidal Reservoir (424464), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Storm's Eye (1235840), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101), Stormstream Totem (1267745), Stormswell (1268684)
                    Family Flags: 39, 41
 #2 (id=1235421)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 0.33 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Stream Totem (5394), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide Totem (108280), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Healing Stream Totem (392915), Healing Stream Totem (392916), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Stream Totem (5394), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide Totem (108280), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Healing Stream Totem (392915), Healing Stream Totem (392916), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Stormstream Totem (1267068), Stormstream Totem (1267745), Stormswell (1268684)
                    Family Flags: 6, 41, 51, 94, 113
 #3 (id=1235422)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 2 (34)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 0.33 | Misc Value: 34 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Stream Totem (5394), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide Totem (108280), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Healing Stream Totem (392915), Healing Stream Totem (392916), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Stream Totem (5394), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide Totem (108280), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Healing Stream Totem (392915), Healing Stream Totem (392916), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Stormstream Totem (1267068), Stormstream Totem (1267745), Stormswell (1268684)
                    Family Flags: 6, 41, 51, 94, 113
 #4 (id=1235423)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 3 (39)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 0.33 | Misc Value: 39 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Stream Totem (5394), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide Totem (108280), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Healing Stream Totem (392915), Healing Stream Totem (392916), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Stream Totem (5394), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide Totem (108280), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Healing Stream Totem (392915), Healing Stream Totem (392916), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Stormstream Totem (1267068), Stormstream Totem (1267745), Stormswell (1268684)
                    Family Flags: 6, 41, 51, 94, 113
 #5 (id=1235424)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 0.33 | Misc Value: 1536 (Category) | Target: Self (1)
@@ -21479,7 +21381,7 @@ Effects          :
                    Affected Spells (Category): Riptide (61295)
 #7 (id=1258184)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.33 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Searing Bolt (3606), Healing Surge (8004), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Healing Stream Totem (52042), Lava Lash (60103), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Earthquake (77478), Healing Tide (114942), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Downpour (207778), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Tidebringer (236502), Stormfury (269005), Soothing Waters (273019), Lightning Shield (273324), Strength of Earth (273466), Serene Spirit (274416), Lightning Conduit (275394), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Rumbling Tremors (279556), Pack Spirit (280205), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Restorative Mists (294020), Earthquake Overload (298765), Surge of Earth (320747), Chain Harvest (320751), Chain Harvest (320752), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328928), Fae Transfusion (328930), Fire Nova (333977), Ascendance (344548), Vesper Totem (356791), Acid Rain (378597), Earth Shock Overload (381725), Earthliving Weapon (382024), Overflowing Shores (383223), Doom Winds (384352), Tidal Reservoir (424464), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Storm's Eye (1235840), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Searing Bolt (3606), Healing Surge (8004), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Healing Stream Totem (52042), Lava Lash (60103), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Earthquake (77478), Healing Tide (114942), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Downpour (207778), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Tidebringer (236502), Stormfury (269005), Soothing Waters (273019), Lightning Shield (273324), Strength of Earth (273466), Serene Spirit (274416), Lightning Conduit (275394), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Rumbling Tremors (279556), Pack Spirit (280205), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Restorative Mists (294020), Earthquake Overload (298765), Surge of Earth (320747), Chain Harvest (320751), Chain Harvest (320752), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328928), Fae Transfusion (328930), Fire Nova (333977), Ascendance (344548), Vesper Totem (356791), Acid Rain (378597), Earth Shock Overload (381725), Earthliving Weapon (382024), Overflowing Shores (383223), Doom Winds (384352), Tidal Reservoir (424464), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Storm's Eye (1235840), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101), Stormstream Totem (1267745), Stormswell (1268684)
                    Family Flags: 39, 41
 Description      : $@spelldesc1236407
 Tooltip          : Damage and healing of your spells increased by $s1%.
@@ -21691,7 +21593,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 
 Name             : Storm Unleashed (id=1252373) [Spell Family (11), Passive] 
-Talent Entry     : Enhancement [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=11, col=3, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -21903,7 +21805,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1258624)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: -13 | Scaled Value: -13 | Misc Value: 19 | Target: Self (1)
-                   Affected Spells: Healing Stream Totem (5394), Healing Stream Totem (392915), Healing Stream Totem (392916)
+                   Affected Spells: Healing Stream Totem (5394), Healing Stream Totem (392915), Healing Stream Totem (392916), Stormstream Totem (1267068)
                    Family Flags: 6
 Description      : Healing Stream Totem heals ${100*(1/(1+$s1/100)-1)}% more often.
 
@@ -21949,11 +21851,11 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=1264711)  : Apply Aura (6) | Unknown(647)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Stormstream Totem (1267745), Stormswell (1268684)
                    Family Flags: 41
 #2 (id=1266430)  : Apply Aura (6) | Unknown(647)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Stormstream Totem (1267745), Stormswell (1268684)
                    Family Flags: 41
 #3 (id=1266431)  : Apply Aura (6) | Unknown(647)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -22036,7 +21938,7 @@ Description      : $@spelldesc462762
 Tooltip          : Rooted in place.
 
 Name             : Storm Infusion (id=1258889) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=7, col=2, max_rank=1, req_points=8]
+Talent Entry     : Elemental [tree=spec, row=7, col=3, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -22094,12 +21996,16 @@ Effects          :
 Description      : Earth Shock, Elemental Blast, and Earthquake deal $s1% increased damage.
 
 Name             : Coming Soon (id=1259001) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=8, col=2, max_rank=1, req_points=23]
+Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=1, req_points=23]
+                 : Generic [tree=class, row=8, col=2, max_rank=1, req_points=23]
                  : Generic [tree=class, row=10, col=3, max_rank=1, req_points=23]
-                 : Generic [tree=class, row=10, col=2, max_rank=1, req_points=23]
                  : Elemental [tree=spec, row=8, col=1, max_rank=1, req_points=20]
-                 : Elemental [tree=spec, row=6, col=1, max_rank=1, req_points=8]
-                 : Elemental [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+                 : Elemental [tree=spec, row=9, col=2, max_rank=1, req_points=20]
+                 : Elemental [tree=spec, row=9, col=4, max_rank=1, req_points=20]
+                 : Elemental [tree=spec, row=6, col=3, max_rank=1, req_points=8]
+                 : Elemental [tree=spec, row=11, col=3, max_rank=1, req_points=20]
+                 : Elemental [tree=spec, row=11, col=2, max_rank=2, req_points=20]
+                 : Elemental [tree=spec, row=11, col=1, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -22136,7 +22042,7 @@ Range            : 40 yards
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-                 : 4143: Elemental Shaman (137040 effect#12), Elemental Shaman (137040 effect#26), Enhancement Shaman (137041 effect#30), Maelstrom (343725 effect#14), Flames of the Cauldron (378266 effect#3), Fire Nova (1260666 effect#1)
+                 : 4143: Elemental Shaman (137040 effect#12), Elemental Shaman (137040 effect#26), Enhancement Shaman (137041 effect#30), Maelstrom (343725 effect#14), Flames of the Cauldron (378266 effect#3), Fire Nova (1260666 effect#1), Improved Voltaic Blaze [NNF] (1269215 effect#1)
 Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #3, #4), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Crackling Surge (224127 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #3, #4), Enhancement Shaman (1214207 effects: #1, #2), Elemental Shaman (1231772 effects: #1, #2), Shaman Stormbringer 11.2 Class Set 4pc (1236409 effects: #1, #2, #3, #4), Ancestral Wisdom (1238279 effects: #1, #7), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4), Elemental Resonance (1258895 effect#1), Natural Gift (1264691 effect#1)
 Family Flags     : 39, 56, 126
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Ability Procs (416)
@@ -22306,7 +22212,7 @@ Description      : $@spelldesc1236411
 Tooltip          : $?c2[Your next Lava Lash or Fire Nova][Chain Heal, Healing Wave, or Healing Surge] casts again at $w1% effectiveness.
 
 Name             : Thunder Capacitor (id=1262635) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=10, col=2, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=10, col=1, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -22324,7 +22230,7 @@ Effects          :
 Description      : Lightning Bolt and Chain Lightning deal $s1% increased damage and have a $s2% chance to refund the Maelstrom Weapon spent.
 
 Name             : Storm Unleashed (id=1262713) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=8, col=1, max_rank=1, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=11, col=1, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -22338,7 +22244,7 @@ Effects          :
 Description      : Each Maelstrom Weapon spent has a ${$s1/10}% chance to cause your next Crash Lightning to ignore its cooldown. The weapon enhancement effect of Crash Lightning may now overlap.
 
 Name             : Storm Unleashed (id=1262761) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=9, col=1, max_rank=2, req_points=20]
+Talent Entry     : Enhancement [tree=spec, row=11, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(8, 15)]
                  : Effect#2 [op=set, values=(10, 20)]
 Class            : Shaman
@@ -22538,4 +22444,190 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1276474)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Stormstream Totem (id=1267016) [Spell Family (11), Passive] 
+Talent Entry     : Restoration [tree=spec, row=11, col=1, max_rank=1, req_points=20]
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 292
+                 : 5671
+Proc Chance      : 100%
+Proc Flags       : Magic Heal
+Attributes       : Passive (6), Not In Spellbook (143)
+Effects          :
+#1 (id=1279761)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+#2 (id=1279762)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value 2: 5899 (Label) | Target: Self (1)
+                   Affected Spells (Label): Stormstream Totem (1267745)
+#3 (id=1279763)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+#4 (id=1279764)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+#5 (id=1280091)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+Description      : Riptide has a $s1% chance to upgrade your next Healing Stream Totem to Stormstream Totem which heals for $s2% more, heals $s3 additional $Lally:allies; at $s4% effectiveness, and heals $s5 injured allies for $1268684s1 healing when used.
+
+Name             : Stormstream Totem (id=1267068) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Spell Type       : Magic
+Resource         : 1.8% Base Mana (0) (id=312490) w/ Restoration Shaman (id=137039)
+Spell Level      : 10
+GCD              : 1 seconds
+Duration         : 15 seconds
+Charges          : 0 (30 seconds cooldown)
+Category         : 1569 (Type 0x1): Totemic Surge (381867 effect#2), Water Totem Mastery (382030 effect#1), Healing Stream Totem (392915 effect#1), Healing Stream Totem (392916 effect#1), Stormstream Totem (1267089 effect#2), Stormstream Totem (1267089 effect#3)
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 292
+                 : 1658: Totemic Focus (382201 effect#2)
+Affecting Spells : Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Totemic Surge (381867 effect#1), Ancestral Wolf Affinity (382197 effect#1), Tidecaller's Guard (457496 effect#1), Ancestral Wisdom (1238279 effects: #2, #3, #4), Quickstream (1253099 effect#1), Stormstream Totem (1267089 effect#1)
+Family Flags     : 6, 15, 19, 29
+Attributes       : Is Ability (4), Not Shapeshifted (16), No Aura Icon (60), Can Be Multi Cast (229), Allow While Banished Aura State (299), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1279855)  : Summon Guardian (28)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 256196 | Misc Value 2: 3402 | Target: Back Right of Self (42)
+Description      : Summons a totem at your feet that immediately heals TEMP injured allies for TEMP and additional heals TEMP injured allies within $52042A1 yards for $52042s1 every $5672t1 sec for $d.
+
+Name             : Stormstream Totem (id=1267089) [Spell Family (11)] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Duration         : 60 seconds
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 292
+                 : 5671
+Proc Chance      : 100%
+Proc Flags       : Generic Heal
+Attributes       : Not In Spellbook (143)
+Effects          :
+#1 (id=1279885)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
+                   Base Value: 1267068 | Scaled Value: 1267068 | Misc Value 2: 2 | Target: Self (1)
+                   Affected Spells: Healing Stream Totem (5394), Healing Stream Totem (392915), Healing Stream Totem (392916), Stormstream Totem (1267068)
+                   Family Flags: 6
+#2 (id=1279887)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1569 (Category) | Target: Self (1)
+                   Affected Spells (Category): Healing Stream Totem (5394), Stormstream Totem (1267068)
+#3 (id=1279888)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1569 (Category) | Target: Self (1)
+                   Affected Spells (Category): Healing Stream Totem (5394), Stormstream Totem (1267068)
+Description      : $@spelldesc1267016
+Tooltip          : Healing Stream Totem is upgraded to Stormstream Totem.
+
+Name             : Stormstream Totem (id=1267093) [Spell Family (11), Passive] 
+Talent Entry     : Restoration [tree=spec, row=11, col=2, max_rank=2, req_points=20]
+                 : Effect#1 [op=set, values=(30, 60)]
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 292
+                 : 5671
+Proc Chance      : 100%
+Proc Flags       : Magic Heal
+Attributes       : Passive (6), Not In Spellbook (143)
+Effects          :
+#1 (id=1279891)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Affected Spells: Healing Stream (5672), Healing Stream Totem (52042), Healing Stream (273847), Poison Cleansing (383014), Poison Cleansing (403922), Stormstream Totem (1267745), Stormstream Totem (1267765)
+                   Family Flags: 13
+Description      : Healing Stream and Stormstream Totem healing increased by $s1%.
+
+Name             : Stormstream Totem (id=1267120) [Spell Family (11), Passive] 
+Talent Entry     : Restoration [tree=spec, row=11, col=3, max_rank=1, req_points=20]
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 292
+                 : 5671
+Attributes       : Passive (6), Not In Spellbook (143)
+Effects          :
+#1 (id=1279939)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Stormstream Totem is usable for free and ignore its cooldown when available.
+
+Name             : Stormstream Totem (id=1267745) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Spell Type       : Magic
+Spell Level      : 1
+Range            : 100 yards
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 292
+                 : 1660: Totemic Focus (382201 effect#3), Spatial Paradox (406789 effect#12), Oversized Totems (445026 effect#1)
+                 : 5899: Stormstream Totem (1267016 effect#2)
+Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #11), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #1, #2, #3), Earthsurge (457566 effect#1), Ancestral Wisdom (1238279 effects: #1, #2, #3, #4, #7), Restoration Shaman (1256945 effects: #1, #2), Stormstream Totem (1267093 effect#1)
+Triggered By     : Stormstream Totem (1267765)
+Family Flags     : 13, 41
+Attributes       : Allow While Sitting (27), No Threat (42), Exclude Caster (51), Ignore Line of Sight (66), Not an Action (92), Treat As Periodic (121), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+Effects          :
+#1 (id=1280111)  : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.6768 | PvP Coefficient: 1.15 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
+Description      : Heals an injured nearby raid or party member.
+
+Name             : Stormstream Totem (id=1267765) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Spell Type       : Magic
+Spell Level      : 14
+Duration         : 15 seconds
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 292
+                 : 1658: Totemic Focus (382201 effect#2)
+Proc Chance      : 100%
+Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
+Affecting Spells : Restoration Shaman (137039 effect#11), Elemental Shaman (137040 effect#17), Enhancement Shaman (137041 effect#21), Rushing Streams (147074 effect#1), Elemental Rebalancers (208777 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Tidecaller's Guard (457496 effect#1), Stormstream Totem (1267093 effect#1)
+Family Flags     : 13
+Attributes       : Can Proc From Procs (122), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1280113)  : Apply Aura (6) | Periodic Trigger Spell (23): Stormstream Totem every 2 seconds
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1267745 | Target: Self (1)
+#2 (id=1280114)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1280115)  : Apply Aura (6) | Scale% (Stacking) (61)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc5394
+Tooltip          : Healing $?s147074[two injured party or raid members][an injured party or raid member] every $t1 sec.
+
+Name             : Stormswell (id=1268684) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Spell Type       : Magic
+Spell Level      : 1
+Range            : 100 yards
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 292
+Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Ancestral Wisdom (1238279 effects: #1, #2, #3, #4, #7), Restoration Shaman (1256945 effects: #1, #2)
+Family Flags     : 41
+Attributes       : Allow While Sitting (27), No Threat (42), Exclude Caster (51), Ignore Line of Sight (66), Not an Action (92), Treat As Periodic (121), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+Effects          :
+#1 (id=1280187)  : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3 | Target: Targeted Ally (21)
+Description      : $@spelldesc1267016
+
+Name             : Improved Voltaic Blaze [NNF] (id=1269215) [Spell Family (11), Passive, Hidden] 
+Talent Entry     : Elemental [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 292
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268)
+Effects          :
+#1 (id=1280934)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Cooldown (11)
+                   Base Value: -5000 | Scaled Value: -5000 | Misc Value: 11 | Misc Value 2: 4143 (Label) | Target: Self (1)
+                   Affected Spells (Label): Voltaic Blaze (470057), Voltaic Blaze (1259101)
+Description      : Voltaic Blaze's cooldown is reduced by ${$s1/-1000} sec.
 

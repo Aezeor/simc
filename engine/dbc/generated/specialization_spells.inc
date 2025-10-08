@@ -1,4 +1,4 @@
-// Talent tree specialization abilities, wow build 12.0.0.63534
+// Talent tree specialization abilities, wow build 12.0.0.63724
 static constexpr std::array<specialization_spell_entry_t, 608> __specialization_spell_data { {
   {  0,  535,  264656,      0, "Pathfinding"                       , 0 },
   {  0,  535,  264662,      0, "Endurance Training"                , 0 },
@@ -134,7 +134,7 @@ static constexpr std::array<specialization_spell_entry_t, 608> __specialization_
   {  3,  254,  462081,      0, "Marksmanship Hunter"               , 0 },
   {  3,  254,  466904,      0, "Harrier's Cry"                     , 0 },
   {  3,  254, 1217788,      0, "Manhunter"                         , 0 },
-  {  3,  254, 1219616,      0, "Eyes in the Sky"                   , 0 },
+  {  3,  254, 1219616,      0, "Spotter's Mark"                    , 0 },
   {  3,  254, 1229376,      0, "Single-Button Assistant"           , 0 },
   {  3,  254, 1256940,      0, "Marksmanship Hunter"               , 0 },
   {  3,  255,  137017,      0, "Survival Hunter"                   , 0 },
