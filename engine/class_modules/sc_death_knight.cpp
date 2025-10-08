@@ -10287,13 +10287,11 @@ struct pillar_of_frost_t final : public death_knight_spell_t
       p()->background_actions.frozen_dominion_remorseless_winter->execute();
     }
 
-    if ( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B2 ) && p()->talent.rider.riders_champion.ok() )
+
+    if ( p()->talent.rider.ride_or_die.ok() )
     {
-      action_t* trollbane = p()->pet_summon.summon_trollbane;
-      debug_cast<summon_rider_t*>( trollbane )->duration =
-          timespan_t::from_seconds( p()->talent.rider.ride_or_die->effectN( 1 ).base_value() );
-      debug_cast<summon_rider_t*>( trollbane )->random = false;
-      trollbane->execute();
+      timespan_t dur = timespan_t::from_seconds( p()->talent.rider.ride_or_die->effectN( 1 ).base_value() );
+      p()->summon_rider( dur, false, rider_of_the_apocalypse::TROLLBANE );
     }
   }
 };
@@ -10721,10 +10719,8 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     if ( !dot->is_ticking() )
       return;
 
-    action_state_t* state = dot->current_action->get_state( dot->state );
     timespan_t dur = 3_s;  // Not in data. Testing shows this to be the base 3 second tick time of our DoTs rather than
                            // current tick time
-    action_state_t::release( state );
 
     if ( p()->talent.unholy.scourging.ok() )
       dur = p()->talent.unholy.scourging->effectN( 1 ).time_value();
