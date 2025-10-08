@@ -585,7 +585,7 @@ unsigned spelleffect_data_t::affected_schools() const
     case A_MOD_HEALING_DONE_PERCENT:
     case A_MOD_DAMAGE_TO_CASTER:
     case A_MOD_DAMAGE_FROM_CASTER:
-    case A_MOD_CRIT_DAMAGE_BONUS:
+    case A_MOD_CRIT_DAMAGE_MULTIPLIER:
     case A_SCHOOL_ABSORB_OVERKILL:
     case A_MOD_IMMUNE_A_APPLY_SCHOOL:
     case A_MOD_DAMAGE_DONE_TO_CASTER_FROM_SCHOOL:

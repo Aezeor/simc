@@ -1480,7 +1480,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { A_MOD_STEALTH_LEVEL,                     "Modify Stealth Detection Level"                    },
   { A_MOD_HEALTH_REGEN_IN_COMBAT,            "Modify Health Regeneration Rate in Combat"         },
   { A_PET_DAMAGE_MULTI,                      "Modify Absorb% Done"                               },
-  { A_MOD_CRIT_DAMAGE_BONUS,                 "Modify Crit Damage Done%"                          },
+  { A_MOD_CRIT_DAMAGE_MULTIPLIER,            "Modify Crit Damage Done%"                          },
   { A_FORCE_BREATH_BAR,                      "Force Breath Bar"                                  },
   { A_MOD_ATTACK_POWER_PCT,                  "Modify Melee Attack Power%"                        },
   { A_MOD_RANGED_ATTACK_POWER_PCT,           "Modify Ranged Attack Power%"                       },
@@ -1503,7 +1503,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { A_MOD_MELEE_RANGED_HASTE,                "Modify Ranged and Melee Haste%"                    },
   { A_HASTE_ALL,                             "Modify All Haste%"                                 },
   { A_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE, "Modify Attacker Crit Chance"                   },
-  { A_PCT_RATING_ADDED_TO_RATING,            "% of Misc1 Rating Added to Misc2 Rating"           },
+  { A_PCT_RATING_ADDED_TO_RATING,            "Percent from Rating Added to Rating"               },
   { A_MOD_KILL_XP_PCT,                       "Modify Experience Gained from Kills"               },
   { A_FLY,                                   "Fly"                                               },
   { A_MOD_ATTACKER_MELEE_CRIT_DAMAGE,        "Modify Melee Crit Damage Taken from Attacker"      },
@@ -2177,6 +2177,11 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
 
     tokens.emplace_back( fmt::format( "Rating: {}", util::string_join( tmp ) ) );
   }
+  else if ( e->subtype() == A_PCT_RATING_ADDED_TO_RATING )
+  {
+    tokens.emplace_back(
+      fmt::format( "From Rating: {}", util::stat_type_abbrev( util::translate_rating_mod( e->misc_value1() ) ) ) );
+  }
   else if ( e->subtype() == A_MOD_MECHANIC_RESISTANCE || e->subtype() == A_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT )
   {
     tokens.emplace_back( fmt::format( "Mechanic: {}", mechanic_str( e->misc_value1() ) ) );
@@ -2227,6 +2232,11 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     else if ( e->subtype() == A_ADD_PCT_LABEL_MODIFIER || e->subtype() == A_ADD_FLAT_LABEL_MODIFIER )
     {
       tokens.emplace_back( fmt::format( "Misc Value 2: {} (Label)", e->misc_value2() ) );
+    }
+    else if ( e->subtype() == A_PCT_RATING_ADDED_TO_RATING )
+    {
+      tokens.emplace_back(
+        fmt::format( "To Rating: {}", util::stat_type_abbrev( util::translate_rating_mod( e->misc_value2() ) ) ) );
     }
     else
     {

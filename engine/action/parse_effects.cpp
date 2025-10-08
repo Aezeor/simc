@@ -1160,7 +1160,7 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
       invalidate( CACHE_CRIT_CHANCE );
       return &spell_crit_chance_effects;
 
-    case A_MOD_CRIT_DAMAGE_BONUS:
+    case A_MOD_CRIT_DAMAGE_MULTIPLIER:
       str = "crit damage bonus";
       tmp.opt_enum = eff.misc_value1();
       return &crit_bonus_effects;
