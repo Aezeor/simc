@@ -679,7 +679,6 @@ public:
     const spell_data_t* devour;
     const spell_data_t* voidblade;
     const spell_data_t* soul_immolation_energize;
-    const spell_data_t* spontaneous_immolation_buff;
     const spell_data_t* reap;
     const spell_data_t* reap_damage;
     const spell_data_t* reap_energize;
@@ -5106,13 +5105,13 @@ struct void_buildup_t : public demon_hunter_spell_t
 
 struct soul_immolation_t : public demon_hunter_spell_t
 {
-  soul_immolation_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o = "" )
-    : demon_hunter_spell_t( n, p, s, o )
+  soul_immolation_t( util::string_view n, demon_hunter_t* p, util::string_view o = "" )
+    : demon_hunter_spell_t( n, p, p->talent.devourer.soul_immolation, o )
   {
     // self damage doesn't count as DPS
     stats->type = stats_e::STATS_NEUTRAL;
 
-    tick_energize_action = p->get_background_action<demon_hunter_energize_t>( "soul_immolation_energize",
+    tick_energize_action = p->get_background_action<demon_hunter_energize_t>( fmt::format("{}_energize", name()),
                                                                               p->spec.soul_immolation_energize );
   }
 
@@ -8286,7 +8285,7 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
   if ( name == "voidblade" )
     return new voidblade_t( this, options_str );
   if ( name == "soul_immolation" )
-    return new soul_immolation_t( "soul_immolation", this, talent.devourer.soul_immolation, options_str );
+    return new soul_immolation_t( "soul_immolation", this, options_str );
   if ( name == "eradicate" )
     return new eradicate_t( this, options_str );
   if ( name == "cull" )
@@ -9075,7 +9074,6 @@ void demon_hunter_t::init_spells()
   spec.devour                      = find_spell( 1217610, DEMON_HUNTER_DEVOURER );
   spec.voidblade                   = find_spell( 1245414, DEMON_HUNTER_DEVOURER );
   spec.soul_immolation_energize    = find_spell( 1242475, DEMON_HUNTER_DEVOURER );
-  spec.spontaneous_immolation_buff = find_spell( 1263610, DEMON_HUNTER_DEVOURER );
   spec.reap                        = find_spell( 1226019, DEMON_HUNTER_DEVOURER );
   spec.reap_damage                 = find_spell( 1225823, DEMON_HUNTER_DEVOURER );
   spec.reap_energize               = find_spell( 1261679, DEMON_HUNTER_DEVOURER );
@@ -9648,7 +9646,7 @@ void demon_hunter_t::init_spells()
   if ( talent.devourer.spontaneous_immolation->ok() )
   {
     active.spontaneous_immolation =
-        get_background_action<soul_immolation_t>( "soul_immolation_spontaneous", spec.spontaneous_immolation_buff );
+        get_background_action<soul_immolation_t>( "soul_immolation_spontaneous" );
     active.spontaneous_immolation->cooldown->duration = 0_s;
   }
 
