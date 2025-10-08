@@ -8036,7 +8036,7 @@ struct shattered_souls_callback_t : public demon_hunter_proc_callback_t
 
     if ( rng().roll( chance ) )
     {
-      p()->sim->print_debug( "{} proc-ed Shattered Souls with {} ({%u}}) chance: {:.3f}", p()->name(), action->name(),
+      p()->sim->print_debug( "{} proc-ed Shattered Souls with {} ({}) chance: {:.3f}", p()->name(), action->name(),
                              action->data().id(), chance );
       p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
     }
