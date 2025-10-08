@@ -5366,6 +5366,7 @@ struct void_ray_t : public demon_hunter_spell_t
   void execute() override
   {
     tick_action = p()->buff.metamorphosis->up() ? tick_meta : tick;
+    cooldown->duration = p()->buff.metamorphosis->up() ? p()->spec.void_metamorphosis->effectN( 8 ).time_value() : p()->talent.devourer.void_ray->cooldown();
 
     demon_hunter_spell_t::execute();
     p()->devourer_fury_state.reschedule_drain();
