@@ -883,6 +883,51 @@ Effects          :
 Description      : Increases maximum health by $s1% for $d and instantly heals you for that amount.
 Tooltip          : Maximum health increased by $s1%.
 
+Name             : Howling Blade (desc=Rank 1) (id=13490) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Range            : 5 yards
+GCD              : 1.5 seconds
+Duration         : 30 seconds
+Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=5980)     : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: -98.31036 (coefficient=-0.75) | Target: Targeted Enemy (6)
+Description      : Reduces target's attack power by $s1 for $d.
+Tooltip          : Reduces attack power by $s1.
+
+Name             : Pummel (desc=Rank 1) (id=13491) [Spell Family (4)] 
+School           : Physical
+Spell Type       : Melee
+Resource         : 10 Rage (1) (id=508)
+Max Aura Level   : 49
+Range            : 5 yards
+GCD              : 1.5 seconds
+Duration         : 5 seconds
+Cooldown         : 10 seconds
+Category Cooldown: 10 seconds
+Stance Mask      : 0x00010000
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=5981)     : Interrupt Cast (68)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Targeted Enemy (6)
+#2 (id=5982)     : School Damage (2): physical | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 80.41395 (coefficient=0.286) | Target: Targeted Enemy (6)
+Description      : Pummel the target for $s2 damage and interrupt the spell being cast for $d.
+
+Name             : Cripple (desc=Rank 1) (id=18381) [Spell Family (4)] 
+School           : Physical
+Spell Type       : Magic
+Range            : 5 yards
+GCD              : 1.5 seconds
+Duration         : 30 seconds
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=9940)     : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: -148.973 (coefficient=-1.1365) | Target: Targeted Enemy (6)
+Description      : Reduces target enemy's attack power by $s1 for $d.
+Tooltip          : Reduced attack power.
+
 Name             : Berserker Rage (id=18499) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
@@ -908,6 +953,18 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 23 | Target: Self (1)
 Description      : Go berserk, removing and granting immunity to Fear, Sap, and some Incapacitate effects for $d.
 Tooltip          : Immune to Fear, Sap, and some Incapacitate effects.
+
+Name             : Savior's Sacrifice (id=18826) [Spell Family (4)] 
+School           : Physical
+Spell Type       : Magic
+Max Scaling Level: 20
+Duration         : 10 seconds
+Attributes       : Do Not Sheath (18), No School Immunities (90), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=10354)    : Apply Aura (6) | Resistance (22) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 15.4258 (coefficient=1.304) | Misc Value: 1 | Target: Self (1)
+Description      : Increases armor by $s1 for $d.
+Tooltip          : Increased armor.
 
 Name             : Devastate (id=20243) [Spell Family (4)] 
 Class            : Protection Warrior
@@ -1196,6 +1253,33 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Damage dealt by pets increased by $s1%.
 
+Name             : Hamstring Rage Reduction (id=22778) [Spell Family (4), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not in Mythic+ Mode (Challenge Mode) (368), Check Required Target Aura By Caster (382), Not In Proving Grounds (401)
+Effects          :
+#1 (id=12989)    : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14)
+                   Base Value: -30 | Scaled Value: -30 | SP Coefficient: 1 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Hamstring (1715)
+                   Family Flags: 1
+Description      : Reduces the rage cost of your Hamstring ability by $/10;s1.
+
+Name             : Spell Vulnerability (id=23605) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Range            : 5 yards
+GCD              : 1.5 seconds
+Duration         : 5 seconds
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=13887)    : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7e | Target: Targeted Enemy (6)
+                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+Description      : Spell damage taken by target increased by $s1% for $d.  Chance to fail for targets above level $ctrmax2067.
+Tooltip          : Increase spell damage taken by $s1%.
+
 Name             : Bloodthirst (id=23881) [Spell Family (4)] 
 Talent Entry     : Fury [tree=spec, row=1, col=1, max_rank=1, req_points=0]
 Class            : Warrior
@@ -1289,6 +1373,18 @@ Description      : Slams the target with your shield, causing $s1 Physical damag
 Devastate, Thunder Clap, Revenge, and Execute have a $231834s1% chance to reset the cooldown of Shield Slam.][]
 
 |cFFFFFFFFGenerates $/10;s3 Rage.|r
+
+Name             : Improved Hamstring (id=24428) [Spell Family (4), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=14670)    : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14)
+                   Base Value: -20 | Scaled Value: -20 | SP Coefficient: 1 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Hamstring (1715)
+                   Family Flags: 1
+Description      : Reduces the cost of your Hamstring ability by $/10;s1 rage points.
 
 Name             : Berserking (desc=Racial) (id=26297) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -1399,6 +1495,17 @@ Effects          :
 Description      : Victory Rush enabled.
 Tooltip          : $?s202168[Impending Victory costs no Rage.][Victory Rush is enabled.]
 
+Name             : Adamantine Shell (id=33479) [Spell Family (4)] 
+School           : Physical
+Spell Type       : Magic
+Duration         : 20 seconds
+Attributes       : Do Not Sheath (18), No School Immunities (90), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=23324)    : Apply Aura (6) | Resistance (22) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 193.3437 (coefficient=1.475) | Misc Value: 1 | Target: Self (1)
+Description      : Increases armor by $s1 for $d.
+Tooltip          : Increased armor.
+
 Name             : Victory Rush (id=34428) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
@@ -1419,6 +1526,45 @@ Effects          :
 Description      : Strikes the target, causing $s1 damage and healing you for $118779s1% of your maximum health.
 
 Only usable within $32216d after you kill an enemy that yields experience or honor.
+
+Name             : Temporal Rift (id=35353) [Spell Family (4)] 
+School           : Nature
+Spell Type       : Magic
+Max Aura Level   : 49
+Range            : 100 yards
+Max Targets      : 4
+Duration         : 10 seconds
+Category         : 49 (Type 0x0)
+Stance Mask      : 0x00010000
+Attributes       : No Redirection (35), No Reflection (39), Check Required Target Aura By Caster (382)
+Effects          :
+#2 (id=25527)    : Apply Aura (6) | Modify Melee Haste% (138)
+                   Base Value: -10 | Scaled Value: -10 | Target: Targeted Enemy (6)
+Description      : Encloses enemy in a temporal rift, increasing the time between their attacks by $s2% for $d.
+Tooltip          : Time between attacks increased by $s2%.
+
+Name             : Improved Battle Shout (id=37536) [Spell Family (4), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : Yellow Melee, Yellow Melee Taken, White Ranged, White Ranged Taken, Yellow Ranged, Yellow Ranged Taken, Generic Heal, Generic Heal Taken, Generic Hostile Spell, Generic Hostile Spell Taken, Magic Heal, Magic Heal Taken, Magic Hostile Spell, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=28062)    : Apply Aura (6) | Proc Trigger Spell (42): Solarian's Grace
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 8 | Trigger Spell: 58157 | Target: Self (1)
+Description      : Battle Shout grants you up to $58157s1 additional attack power.
+Tooltip          : Battle Shout grants you up to $58157s1 additional attack power.
+
+Name             : Warrior Tier 6 Trinket (id=40458) [Spell Family (4), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Proc Chance      : 25%
+Proc Flags       : Yellow Melee
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=31633)    : Apply Aura (6) | Proc Trigger Spell (42): Fire Blood
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 40459 | Target: Self (1)
+Description      : Your Mortal Strike, Bloodthirst, and Shield Slam attacks have a $h% chance to heal you for $40459s1 and grant $40459s2 Strength for $40459d.
 
 Name             : Whirlwind Off-Hand (id=44949) [Spell Family (4)] 
 Class            : Warrior
@@ -1670,6 +1816,18 @@ Effects          :
                    Affected Spells: Victory Rush (118779)
                    Family Flags: 81
 Description      : When your Victory Rush heals you, you grow slightly larger.
+
+Name             : Solarian's Grace (id=58157) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Duration         : 120 seconds
+Triggered By     : Improved Battle Shout (37536)
+Attributes       : Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=51473)    : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 96.14754 (coefficient=0.7335) | Misc Value: 8 | Target: Self (1)
+Description      : Battle Shout grants you up to $s1 additional attack power.
+Tooltip          : Battle Shout grants you up to $s1 additional attack power.
 
 Name             : Gushing Wound (id=58279) 
 Class            : Warrior
@@ -3830,6 +3988,27 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
 Description      : You have a ${$s1/100}.1% chance per Rage spent on attacks to reset the remaining cooldown on Overpower.
 
+Name             : Shield Mastery (id=184927) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 112
+Attributes       : Passive (6), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354), Use float values for scaling amounts (405)
+Effects          :
+#1 (id=268071)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: -3.217502 (coefficient=-0.024546) | Misc Value: 23 | Target: Self (1)
+                   Affected Spells: Shield Block (132404)
+                   Family Flags: 83
+#2 (id=268133)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 3.217502 (coefficient=0.024546) | Misc Value: 23 | Target: Self (1)
+                   Affected Spells: Ignore Pain (190456)
+                   Family Flags: 109
+#3 (id=268762)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 5.630562 (coefficient=0.042955) | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Odyn's Fury (385059)
+                   Family Flags: 103
+Description      : $?s137048[Shield Block now also reduces magic damage taken by $s1%. Ignore Pain now also increases your Armor by $s2%.][]$?s137048&s152276[ Shield Charge now increases Shield Slam, Revenge, and Heroic Strike damage by an additional $s3%.][]
+
 Name             : Reflective Plating (id=188672) [Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
@@ -3995,6 +4174,44 @@ Effects          :
 #1 (id=291486)   : Charge (96)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 93595 | Trigger Spell: 126664 | Target: Targeted Enemy (6)
 Description      : $@spelldesc100
+
+Name             : Sharpen Blade (desc=PvP Talent) (id=198817) [Spell Family (4)] 
+School           : Physical
+Spell Type       : Melee
+Duration         : Aura (infinite)
+Cooldown         : 30 seconds
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 118
+                 : 292
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee, Generic Hostile Spell
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Cooldown On Event (25), Allow While Sitting (27), Can Proc From Procs (122), Do Not Log on Learn (355)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Effects          :
+#1 (id=292277)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Affected Spells: Mortal Strike (12294), Mortal Strike (339385)
+                   Family Flags: 25
+Description      : When activated, your next Mortal Strike will deal $m1% increased damage and reduce healing taken by $198819m1% for $198819d.
+Tooltip          : Damage done by your next Mortal Strike increased by $m1%, and causes the target to take $198819m1% reduced healing for $198819d.
+
+Name             : Mortal Strike (desc=PvP Talent) (id=198819) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 4 seconds
+Labels           : 25: Warrior Spells
+                 : 118
+Proc Chance      : 101%
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Enemy Debuffs (426)
+Effects          :
+#1 (id=292280)   : Apply Aura (6) | Modify Healing Received% (118)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 0x7f | Target: Targeted Enemy (6)
+                   Affected School(s): All
+Description      : $@spelldesc198817
+Tooltip          : Healing effects received reduced by $w1%.
 
 Name             : Morale Killer (desc=PvP Talent) (id=199023) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -4188,6 +4405,54 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 163033 | Target: Self (1)
 Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
+
+Name             : Rage of the Valarjar (id=200845) [Spell Family (4), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Labels           : 81
+                 : 293
+Internal Cooldown: 15 seconds
+Proc Chance      : 10%
+Proc Flags       : Yellow Melee
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Do Not Display Range (126), Aura Points On Client (268), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=295754)   : Apply Aura (6) | Proc Trigger Spell (42): Berserking
+                   Base Value: 3 | Scaled Value: 3 | Trigger Spell: 200951 | Target: Self (1)
+Description      : Rampage and Execute have a chance to activate Berserking, increasing your attack speed and critical strike chance by $200953s1% every $200951t1 sec for $200951d.
+
+Name             : Berserking (id=200951) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 12 seconds
+Labels           : 81
+                 : 293
+Triggered By     : Rage of the Valarjar (200845)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=295900)   : Apply Aura (6) | Periodic Trigger Spell (23): Berserking every 1 seconds
+                   Base Value: 3 | Scaled Value: 3 | Trigger Spell: 200953 | Target: Self (1)
+Description      : $@spelldesc200845
+
+Name             : Berserking (id=200953) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 3 seconds
+Labels           : 81
+                 : 293
+Stacks           : 12 maximum
+Proc Chance      : 101%
+Triggered By     : Berserking (200951)
+Attributes       : No Aura Cancel (31), Do Not Display Range (126), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=295902)   : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+#2 (id=295903)   : Apply Aura (6) | Modify Critical Strike% (290)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+Description      : $@spelldesc200845
+Tooltip          : Attack speed and critical strike chance increased by $s1%.
 
 Name             : Rampage (id=201363) [Spell Family (4)] 
 Class            : Warrior
@@ -4594,6 +4859,21 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.189 | Radius: 12 yards | Target: Enemies in Cone to Targeted Enemy (104)
 Description      : $@spelldesc203524
 
+Name             : Archavon's Heavy Hand (id=205144) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 125
+                 : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=302849)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14)
+                   Base Value: -80 | Scaled Value: -80 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Mortal Strike (12294), Mortal Strike (339385)
+                   Family Flags: 25
+Description      : Mortal Strike costs ${$m2/-10} less Rage.
+
 Name             : Odyn's Fury (desc=Artifact) (id=205545) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
@@ -4672,6 +4952,132 @@ Effects          :
                    Base Value: 330325 | Scaled Value: 330325 | Misc Value: 317485 | Target: Self (1)
 Description      : $?a317320[Condemn][Execute] is usable on targets below $s2% health and its cooldown is reduced by ${$s3/1000}.1 sec.
 
+Name             : Ayala's Stone Heart (id=207767) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 125
+                 : 127
+                 : 187
+                 : 294
+Proc Chance      : 101%
+Real PPM         : 1.8 (Arms Warrior: 1.08)
+Proc Flags       : White Melee, Yellow Melee
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Aura Points On Client (268), Not in Battleground (284), Not In Arena (297), Spellcast Override In Spellbook (310), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=307360)   : Apply Aura (6) | Proc Trigger Spell (42): Stone Heart
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 225947 | Target: Self (1)
+Description      : Your attacks have a chance to make your next Execute cost no $?s12712[initial ][]Rage$?s12712[, consume no extra Rage,][] and be usable on any target, regardless of health level.
+
+Name             : Fujieda's Fury (id=207775) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 127
+                 : 187
+                 : 294
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=307370)   : Apply Aura (6) | Proc Trigger Spell (42): Fujieda's Fury
+                   Base Value: 2 | Scaled Value: 2 | Trigger Spell: 207776 | Target: Self (1)
+Description      : Bloodthirst increases all damage you deal and all healing you take by $207776s1% for $207776d, stacking up to $207776u times.
+
+Name             : Fujieda's Fury (id=207776) [Spell Family (4)] 
+School           : Physical
+Spell Type       : Magic
+Duration         : 10 seconds
+Labels           : 127
+                 : 187
+                 : 294
+Stacks           : 4 maximum
+Proc Chance      : 101%
+Triggered By     : Fujieda's Fury (207775)
+Attributes       : Do Not Sheath (18), Include In Advanced Combat Log (72), Aura Points On Client (268)
+Effects          :
+#1 (id=307371)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+#2 (id=340317)   : Apply Aura (6) | Modify Healing Received% (118)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Description      : $@spelldesc207775
+Tooltip          : All damage done increased by $s1%.
+All healing taken increased by $s2%.
+
+Name             : Ceann-Ar Rage (id=207779) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 127
+                 : 187
+                 : 294
+Proc Chance      : 100%
+Proc Flags       : Magic Heal Taken
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Can Proc From Procs (122), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=307376)   : Apply Aura (6) | Proc Trigger Spell (42): Ceann-Ar Rage
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 207780 | Target: Self (1)
+Description      : Gain ${$207780s1/10} Rage whenever you Enrage.
+
+Name             : Kakushan's Stormscale Gauntlets (id=207841) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 132
+                 : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=307460)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 207844 | Target: Self (1)
+Description      : $?s236279[Your auto attacks increase][Devastate increases] the damage done and Rage generated by your next Shield Slam or Thunder Clap by $207844s1%.
+
+Name             : Kakushan's Stormscale Gauntlets (id=207844) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 132
+                 : 187
+                 : 294
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee
+Triggered By     : Kakushan's Stormscale Gauntlets (207841)
+Attributes       : Do Not Sheath (18), Include In Advanced Combat Log (72), Aura Points On Client (268), Do Not Log Aura Refresh (291)
+Effects          :
+#1 (id=307464)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Affected Spells: Thunder Clap (6343), Shield Slam (23922), Thunder Blast (435222)
+                   Family Flags: 7, 41
+#2 (id=319717)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 4 (32)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 32 | Target: Self (1)
+                   Affected Spells: Thunder Clap (6343), Thunder Blast (435222)
+                   Family Flags: 7
+#3 (id=319718)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 3 (23)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 23 | Target: Self (1)
+                   Affected Spells: Shield Slam (23922)
+                   Family Flags: 41
+Description      : $@spelldesc207841
+Tooltip          : Damage done and Rage generated by Shield Slam or Thunder Clap increased by $s1%.
+
+Name             : Eye of the Twisting Nether (id=207994) [Spell Family (4), Passive] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 166
+                 : 167
+                 : 187
+                 : 294
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
+Attributes       : Passive (6), No Aura Icon (60), Include In Advanced Combat Log (72), Can Proc From Procs (122), Not In Arena or Rated Battleground (144), Allow Proc While Sitting (147), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=307693)   : Apply Player/Pet Aura (202) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Self (1)
+Description      : Damaging enemies with your Fire, Frost, or Nature abilities increases all damage you deal by ${$207995s1/10}.1% for $207995d. Each element adds a separate application.
+
 Name             : Colossus Smash (id=208086) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
@@ -4702,6 +5108,20 @@ Effects          :
 Description      : $@spelldesc167105
 Tooltip          : Taking $w1% additional damage from $@auracaster.
 
+Name             : Timeless Strategem (id=208091) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 25: Warrior Spells
+                 : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=307851)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 1211 (Category) | Target: Self (1)
+                   Affected Spells (Category): Heroic Leap (6544)
+Description      : Heroic Leap gains $s1 additional $Lcharge:charges;.
+
 Name             : Warpaint (id=208154) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Fury [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=100]
 Class            : Warrior
@@ -4717,6 +5137,53 @@ Effects          :
                    Affected Spells: Enrage (184362)
                    Family Flags: 58
 Description      : You take $s1% reduced damage while Enrage is active.
+
+Name             : Weight of the Earth (id=208177) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 125
+                 : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=307996)   : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 6 | Target: Self (1)
+                   Affected Spells: Heroic Leap (6544), Heroic Leap (52174)
+                   Family Flags: 61
+Description      : Heroic Leap's radius is increased by $s1% and all enemies damaged by your Heroic Leap are also affected by Colossus Smash.
+
+Name             : Mannoroth's Bloodletting Manacles (id=208908) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 125
+                 : 127
+                 : 132
+                 : 187
+                 : 294
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=309191)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+#2 (id=309192)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+Description      : You heal $s1% of maximum health for every $s2 Rage you spend.
+
+Name             : Revitalizing Rage (id=208909) [Spell Family (4)] 
+School           : Physical
+Spell Type       : Magic
+GCD              : 1.5 seconds
+Labels           : 127
+                 : 187
+                 : 294
+Attributes       : No Threat (42), Include In Advanced Combat Log (72), Can't Crit (93)
+Effects          :
+#1 (id=309193)   : Direct Heal% (136)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Description      : $@spelldesc208908
 
 Name             : Precise Strikes (id=209492) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -4813,6 +5280,40 @@ Effects          :
 Description      : $@spelldesc12294
 Tooltip          : Healing received reduced by $w1%.
 
+Name             : Battle Trance (desc=PvP Talent) (id=213857) [Spell Family (4), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 118
+                 : 292
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee, Generic Hostile Spell
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=317374)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+Description      : You go into a trance causing you to regenerate $213858m2% of your health and generate ${$213858m1/10} Rage every $213858t1 sec for $213858d after $?s383916[striking a target with Annihilator $s1 times.][using Raging Blow twice in a row on a target.]
+
+Attacking a new target with $?s383916[Annihilator][Raging Blow] will cancel this effect.
+
+Name             : Battle Trance (desc=PvP Talent) (id=213858) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Duration         : 18 seconds
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 118
+                 : 292
+Attributes       : Ignore Healing Modifiers (219), Aura Points On Client (268), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
+Effects          :
+#1 (id=317375)   : Apply Aura (6) | Periodic Energize Power (24): every 3 seconds
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 1 | Target: Self (1)
+#2 (id=317376)   : Apply Aura (6) | Periodic Heal% (20): every 3 seconds
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+Description      : $@spelldesc213857
+Tooltip          : Healing $w2% health and generating ${$w1/10} Rage every $t1 sec.
+
 Name             : Thunderstruck (desc=PvP Talent) (id=213913) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
@@ -4858,6 +5359,71 @@ Effects          :
 Description      : Spell Reflection reflects the next $s3 incoming spells cast on you and reflected spells deal $s1% extra damage to the attacker.
 
 Spell Reflection's cooldown is increased by ${$s2/1000} sec.
+
+Name             : The Walls Fell (id=215057) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 132
+                 : 187
+                 : 294
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=319397)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 4 | Scaled Value: 4 | Misc Value: 11 | Target: Self (1)
+#2 (id=370617)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 23 | Target: Self (1)
+                   Affected Spells: Shield Slam (23922)
+                   Family Flags: 41
+Description      : Shield Slam generates an additional ${$s2/10} Rage and reduces the remaining cooldown of Shield Wall by $s1 sec.
+
+Name             : Destiny Driver (id=215090) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 132
+                 : 187
+                 : 294
+Proc Chance      : 100%
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=319613)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+Description      : Intercepted attacks grant you and your Intercept target an absorb shield equal to $s1% of the damage done by the attack for $215157d.
+
+Name             : Naj'entus's Vertebrae (id=215096) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 125
+                 : 127
+                 : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=319621)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 14 | Target: Self (1)
+#2 (id=319622)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Description      : If Whirlwind hits $s1 or more enemies, it hits them $s2 additional time.
+
+Name             : Thundergod's Vigor (id=215176) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 132
+                 : 187
+                 : 294
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=319744)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 11 | Target: Self (1)
+Description      : Each enemy you hit with Thunder Clap reduces the remaining cooldown on Demoralizing Shout by $s1 sec.
 
 Name             : Trauma (id=215537) [Spell Family (4)] 
 Class            : Warrior
@@ -5066,6 +5632,88 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Current Target (25)
 Description      : $@spelldesc218826
 
+Name             : Raging Fury (id=222266) [Spell Family (4), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382), Use float values for scaling amounts (405)
+Effects          :
+#1 (id=331753)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Charge (100), Intervene (3411), Intervene (147833), Intercept (198304), Charge (198337), Deadly Calm (262228), Intervene (316531), Interpose (1244088), Interpose (1244091)
+                   Family Flags: 0, 30, 48
+Description      : Charge and Intercept generate $s1% more Rage.
+
+Name             : Bladestorm (id=222634) [Spell Family (4)] 
+School           : Physical
+Spell Type       : Melee
+GCD              : 1.5 seconds
+Velocity         : 10 yards/sec
+Duration         : 6 seconds
+Cooldown         : 60 seconds
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Immunity Purges Effect (47), Requires Main-Hand Weapon (106), Extra Initial Period (169), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Melee Haste Affects Periodic (278), Allow Defense While Channeling (338), Scales with Casting Item's Level (354), Periodic Refresh Extends Duration (436)
+Effects          :
+#1 (id=332442)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=332443)   : Apply Aura (6) | Creature Immunities (147)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1733 | Target: Self (1)
+#3 (id=332444)   : Apply Aura (6) | Disable Abilities (263)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Affected Spells: Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Shield Block (2565), Last Stand (12975), Shattering Throw (64382), Dragon Roar (118000), Condemn (330325), Condemn (330334), Wrecking Throw (384110), Shattering Throw (394352), Wrecking Throw (394354)
+                   Family Flags: 12, 13, 15, 17, 49, 51, 73, 84
+Description      : Become an unstoppable storm of destructive force, striking all targets within $50622A1 yards $?s23881[with both weapons for ${7*($225308m1+$225307m1)} Physical damage][for ${7*$225308m1} Physical damage] over $d.
+
+You are immune to movement impairing and loss of control effects, but can use defensive abilities and can avoid attacks.
+Tooltip          : Deal area damage every $t1 sec.
+Immune to crowd control.
+
+Name             : Stone Heart (id=225947) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Duration         : 10 seconds
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee
+Triggered By     : Ayala's Stone Heart (207767)
+Attributes       : Is Ability (4), No Immunities (29), No Threat (42), Floating Combat Text On Cast (198)
+Effects          :
+#1 (id=338945)   : Apply Aura (6) | Ignore Aura State (262)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Sudden Death (440474), Sudden Death (440592), Sudden Death (440598), Sudden Death (440600), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
+                   Family Flags: 29
+#2 (id=338946)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Sudden Death (440474), Sudden Death (440592), Sudden Death (440598), Sudden Death (440600), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
+                   Family Flags: 29
+Description      : $@spelldesc207767
+Tooltip          : Execute costs no Rage and can be used on any target.
+
+Name             : Naj'entus's Vertebrae (id=227201) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : 0.8 seconds
+Labels           : 125
+                 : 127
+                 : 187
+                 : 294
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Include In Advanced Combat Log (72)
+Effects          :
+#1 (id=341364)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self (1)
+Description      : $@spelldesc215096
+
+Name             : Naj'entus's Vertebrae (id=227203) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : 0.8 seconds
+Labels           : 125
+                 : 127
+                 : 187
+                 : 294
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Include In Advanced Combat Log (72)
+Effects          :
+#1 (id=341368)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self (1)
+Description      : $@spelldesc215096
+
 Name             : Bladestorm (id=227847) [Spell Family (4)] 
 Talent Entry     : Arms [tree=spec, row=9, col=4, max_rank=1, req_points=20]
                  : Fury [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=100]
@@ -5183,6 +5831,19 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1385 (Category) | Target: Self (1)
                    Affected Spells (Category): Shield Block (2565)
 Description      : Shield Block has ${$s1+1} charges.
+
+Name             : Gravity Spiral (id=235273) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=355617)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1671 (Category) | Target: Self (1)
+                   Affected Spells (Category): Evocation (12051)
+Description      : Evocation gains $s1 additional $Lcharge:charges;.
 
 Name             : Rampage (id=235622) 
 Class            : Warrior
@@ -5331,6 +5992,28 @@ Effects          :
 Description      : $@spelldesc198758
 Tooltip          : Knocked down.
 
+Name             : Rethu's Incessant Courage (id=241330) [Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 25: Warrior Spells
+                 : 26: Paladin Spells
+                 : 27: Death Knight Spells
+                 : 125
+                 : 127
+                 : 132
+                 : 144
+                 : 145
+                 : 146
+                 : 147
+                 : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Extra Initial Period (169), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=366178)   : Apply Aura (6) | Periodic Trigger Spell (23): Rethu's Incessant Courage every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 242601 | Target: Self (1)
+Description      : When an enemy is within $242601A1 yards of you, you heal for $242597s1% of your maximum health every $242597t1 sec. When no enemies are within $242601A1 yards of you, your movement speed is increased by $242599s1%.
+
 Name             : Item - Warrior T20 Fury 4P Bonus (id=242301) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
@@ -5345,6 +6028,56 @@ Effects          :
 #1 (id=367895)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Raging Blow increases the damage and healing of your next Bloodthirst by $?s215573[$242953s1%, stacking up to $242953u times.][$242952s1%, stacking up to $242952u times].
+
+Name             : Rethu's Incessant Courage (id=242597) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 25: Warrior Spells
+                 : 26: Paladin Spells
+                 : 27: Death Knight Spells
+                 : 125
+                 : 127
+                 : 132
+                 : 142
+                 : 143
+                 : 144
+                 : 145
+                 : 146
+                 : 147
+                 : 187
+                 : 289: Blood Death Knight (462061 effect#3), Vengeance Demon Hunter (462067 effect#3), Protection Warrior (462119 effect#3)
+                 : 294
+Attributes       : No Aura Cancel (31), Include In Advanced Combat Log (72), Ignore Healing Modifiers (219), Aura Points On Client (268), Do Not Log Full Overheal (323), Always Allow Negative Healing Percent Modifiers (442)
+Effects          :
+#1 (id=368358)   : Apply Aura (6) | Periodic Heal% (20): every 3 seconds
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Modified By: Blood Death Knight (462061 effect#3), Vengeance Demon Hunter (462067 effect#3), Protection Warrior (462119 effect#3)
+Description      : Rethu's Incessant Courage heals you for $s1% of your maximum health every $t1 sec.
+Tooltip          : Rethu's Incessant Courage heals you for $s1% of your maximum health every $t1 sec.
+
+Name             : Rethu's Incessant Courage (id=242599) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 25: Warrior Spells
+                 : 26: Paladin Spells
+                 : 27: Death Knight Spells
+                 : 125
+                 : 142
+                 : 143
+                 : 144
+                 : 145
+                 : 146
+                 : 147
+                 : 187
+                 : 294
+Attributes       : No Aura Cancel (31), Aura Points On Client (268)
+Effects          :
+#1 (id=368366)   : Apply Aura (6) | Increase Speed% (31)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+Description      : Rethu's Incessant Courage increases your movement speed by $s1%.
+Tooltip          : Rethu's Incessant Courage increases your movement speed by $s1%.
 
 Name             : Bloody Rage (id=242952) [Spell Family (4)] 
 Class            : Warrior
@@ -5385,6 +6118,129 @@ Effects          :
                    Family Flags: 42
 Description      : $@spelldesc242301
 Tooltip          : Damage and healing done by your next Bloodthirst increased by $s1%.
+
+Name             : Soul of the Battlelord (id=247611) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=463985)   : Apply Aura (6) | Grant Talent (224)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 21204 | Misc Value 2: 151650 | Target: Self (1)
+
+Name             : Soul of the Battlelord (id=247612) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=463986)   : Apply Aura (6) | Grant Talent (224)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22393 | Misc Value 2: 151650 | Target: Self (1)
+
+Name             : Soul of the Battlelord (id=247618) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=463992)   : Apply Aura (6) | Grant Talent (224)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22544 | Misc Value 2: 151650 | Target: Self (1)
+
+Name             : Ararat's Bloodmirrors (id=248117) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=464800)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1385 (Category) | Target: Self (1)
+                   Affected Spells (Category): Shield Block (2565)
+#2 (id=464809)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1692 (Category) | Target: Self (1)
+                   Affected Spells (Category): Spell Reflection (23920), Spell Reflection (335255)
+Description      : Shield Block and Spell Reflection gain $s1 additional charge.
+
+Name             : The Great Storm's Eye (id=248118) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=464801)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $?s152277[Ravager increases your movement speed by $248145s1% and your damage done by $248145s2% for $248145d, increasing periodically and stacking up to $248145u times.][Bladestorm increases your movement speed by $248142s1% and your damage done by $248142s2% for $248145d, increasing periodically and stacking up to $248145u times.]
+
+Name             : Valarjar Berserkers (id=248120) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=464803)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 32 | Target: Self (1)
+Description      : Rampage critical strikes against the primary target generate ${$248179s1/10} Rage.
+
+Name             : Tornado's Eye (id=248142) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Duration         : 6 seconds
+Labels           : 187
+                 : 294
+Stacks           : 6 maximum
+Proc Chance      : 101%
+Attributes       : Include In Advanced Combat Log (72)
+Aura Interrupt   : Change Talent (46)
+Effects          :
+#1 (id=464845)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+#2 (id=464846)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Description      : $@spelldesc248118
+Tooltip          : Movement speed increased by $s1%.
+Damage done increased by $s2%.
+
+Name             : Tornado's Eye (id=248145) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Duration         : 6 seconds
+Labels           : 187
+                 : 294
+Stacks           : 6 maximum
+Proc Chance      : 101%
+Attributes       : Include In Advanced Combat Log (72)
+Effects          :
+#1 (id=464849)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+#2 (id=464850)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Description      : $@spelldesc248118
+Tooltip          : Movement speed increased by $s1%.
+Damage done increased by $s2%.
+
+Name             : Valarjar Berserking (id=248179) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Labels           : 187
+                 : 294
+Attributes       : Include In Advanced Combat Log (72)
+Effects          :
+#1 (id=464897)   : Energize Power (30)
+                   Base Value: 60 | Scaled Value: 60 | Resource: rage | Target: Self (1)
+Description      : $@spelldesc248120
 
 Name             : Precise Strikes (id=248195) [Spell Family (4), Hidden] 
 Class            : Warrior
@@ -6206,6 +7062,26 @@ Effects          :
 Description      : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1.
 Tooltip          : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $w1.
 
+Name             : Deafening Crash (id=272824) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Azerite Power Id : 118
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=723960)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Deafening Crash
+                   Base Value: 2000 | Scaled Value: 2000 | Trigger Spell: 279006 | Target: Self (1)
+#2 (id=723961)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 646.8582 (coefficient=2.300614) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Affected Spells: Thunder Clap (6343), Thunder Blast (435222)
+                   Family Flags: 7
+#3 (id=752814)   : Dummy (3)
+                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+Description      : Thunder Clap deals an additional $s2 damage and extends the duration of your Demoralizing Shout on affected enemies by ${$s1/1000} sec, up to $s3 sec.
+
 Name             : Open Skies (desc=Racial Passive) (id=273216) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Mag'har Orc (0x2000)
@@ -6250,6 +7126,73 @@ Effects          :
 #4 (id=724671)   : Apply Aura (6) | Modify Debuff Duration% (245)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 3 | Target: Self (1)
 Description      : Reduces the duration of Poisons, Diseases, and Curses by $s1%.
+
+Name             : Gathering Storm (id=273409) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Azerite Power Id : 174
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=725007)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Gathering Storm | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 44.02705 (coefficient=0.335878) | PvP Coefficient: 0.5 | Trigger Spell: 273412 | Target: Self (1)
+#2 (id=725008)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+Description      : While $?s152277[Ravager is active][Bladestorming], every $?c2[$288131t1][$273414t1] sec you gain $s2% movement speed and $s1 Strength, stacking. Lasts $273415d.
+
+Name             : Gathering Storm (id=273412) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Proc Chance      : 100%
+Proc Flags       : Cast Successful
+Triggered By     : Gathering Storm (273409)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Can Proc from Suppressed Caster Procs (385), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=725014)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc273409
+
+Name             : Gathering Storm (id=273414) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : 6 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Extra Initial Period (169), Spell Haste Affects Periodic (173), Aura Points On Client (268), Haste Affects Duration (273), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=725016)   : Apply Aura (6) | Periodic Trigger Spell (23): Gathering Storm every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 273415 | Target: Self (1)
+Description      : $@spelldesc273409
+
+Name             : Gathering Storm (id=273415) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Duration         : 6 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Stacks           : 6 maximum
+Proc Chance      : 101%
+Triggered By     : Gathering Storm (273414), Gathering Storm (288131)
+Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=725017)   : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Str | Target: Self (1)
+#2 (id=725018)   : Apply Aura (6) | Increase Speed% (31)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc273409
+Tooltip          : Strength increased by $w1. Movement speed increased by $w2%.
 
 Name             : Ancestral Call (desc=Racial) (id=274738) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -6378,6 +7321,144 @@ Effects          :
                    Family Flags: 47
 Description      : Shockwave's range increased by $s3 yards and when it strikes at least $s1 targets its cooldown is reduced by $s2 sec.
 
+Name             : Test of Might (id=275529) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Azerite Power Id : 226
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=728612)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Test of Might | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 12.41725 (coefficient=0.09473) | PvP Coefficient: 0.5 | Trigger Spell: 275531 | Target: Self (1)
+#2 (id=728613)   : Dummy (3)
+                   Base Value: 10 | Scaled Value: 10
+Description      : When $?s262161[Warbreaker][Colossus Smash] expires, your Strength is increased by $s1 for every $s2 Rage you spent during $?s262161[Warbreaker][Colossus Smash]. Lasts $275540d.
+
+Name             : Test of Might (id=275531) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Internal Cooldown: 0.5 seconds
+Proc Chance      : 100%
+Proc Flags       : Cast Successful
+Triggered By     : Test of Might (275529)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=728616)   : Apply Aura (6) | Proc Trigger Spell (42): Test of Might
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 275532 | Target: Self (1)
+Description      : $@spelldesc275529
+
+Name             : Test of Might (id=275532) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : 10 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Triggered By     : Test of Might (275531)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Can Proc From Procs (122), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=728617)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc275529
+
+Name             : Test of Might (id=275540) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Duration         : 12 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=728628)   : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.7 | Stat: Str | Target: Self (1)
+Description      : $@spelldesc275529
+Tooltip          : Strength increased by $w1.
+
+Name             : Pulverizing Blows (id=275632) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Azerite Power Id : 229
+Triggered By     : Pulverizing Blows (275672)
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=728800)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Pulverizing Blows | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 583.0348 (coefficient=2.07362) | PvP Coefficient: 0.5 | Trigger Spell: 275670 | Target: Self (1)
+Description      : Raging Blow causes every strike of your next Rampage to deal an additional $s1 damage. Stacks up to $275672u times.
+
+Name             : Pulverizing Blows (id=275670) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Internal Cooldown: 0.5 seconds
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee
+Triggered By     : Pulverizing Blows (275632)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=728866)   : Apply Aura (6) | Proc Trigger Spell (42): Pulverizing Blows
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 275672 | Target: Self (1)
+Description      : $@spelldesc275632
+
+Name             : Pulverizing Blows (id=275672) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 12 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Stacks           : 5 maximum
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee
+Triggered By     : Pulverizing Blows (275670)
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=728868)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=728869)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 275632
+Description      : $@spelldesc275632
+Tooltip          : Every strike of your next Rampage will deal an additional $w1 damage.
+
+Name             : Pulverizing Blows (id=275689) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 1.5 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Attributes       : No Aura Icon (60), Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=728900)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Affected Spells: Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364), Rampage (218617), Rampage (1265579), Rampage (1265580), Rampage (1265581), Rampage (1265582)
+                   Family Flags: 108
+Description      : $@spelldesc275632
+
 Name             : Seismic Wave (id=277639) [Passive] 
 Class            : Warrior
 School           : Physical
@@ -6395,6 +7476,61 @@ Effects          :
 #2 (id=732932)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10
 Description      : Overpower causes a seismic wave that deals $s1 Physical damage to enemies in a $s2 yd line.
+
+Name             : Brace for Impact (id=278122) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee
+Triggered By     : Brace for Impact (277636)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=733645)   : Apply Aura (6) | Proc Trigger Spell (42): Brace for Impact
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 278124 | Target: Self (1)
+Description      : $@spelldesc277636
+
+Name             : Brace for Impact (id=278124) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 9 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Stacks           : 5 maximum
+Proc Chance      : 101%
+Triggered By     : Brace for Impact (278122)
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=733647)   : Apply Aura (6) | Add Block Value (274)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=733648)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Affected Spells: Shield Slam (23922)
+                   Family Flags: 41
+Description      : $@spelldesc277636
+Tooltip          : Block increased by $w1. Shield Slam damage increased by $w2.
+
+Name             : Infinite Fury (id=278130) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Triggered By     : Infinite Fury (277638)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=733655)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 278134 | Target: Self (1)
+Description      : $@spelldesc277638
 
 Name             : Seismic Wave (id=278495) [Spell Family (4), Hidden] 
 Class            : Warrior
@@ -6449,6 +7585,62 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: at Area (87)
 Description      : $@spelldesc277639
 
+Name             : Lord of War (id=278752) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Azerite Power Id : 435
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=734680)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Lord of War
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279202 | Target: Self (1)
+#2 (id=734681)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 16248 (coefficient=57.78759) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Affected Spells: Colossus Smash (167105), Colossus Smash (208086), Warbreaker (262161)
+                   Family Flags: 23, 62
+Description      : $?s262161[Warbreaker][Colossus Smash] deals an additional $s2 damage and generates ${$279203s1/10} Rage.
+
+Name             : Simmering Rage (id=278757) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Azerite Power Id : 437
+Triggered By     : Simmering Rage (278841)
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=734698)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Simmering Rage
+                   Base Value: 10 | Scaled Value: 10 | Trigger Spell: 278840 | Target: Self (1)
+#2 (id=734699)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 438.1385 (coefficient=1.558282) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Affected Spells: Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364), Rampage (218617), Rampage (1265579), Rampage (1265580), Rampage (1265581), Rampage (1265582)
+                   Family Flags: 108
+Description      : Rampage deals an additional ${$184367s1*$s2} damage and generates ${$s1/10} Rage per strike.
+
+Name             : Callous Reprisal (id=278760) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Azerite Power Id : 440
+Triggered By     : Callous Reprisal (278999)
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=734706)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Callous Reprisal
+                   Base Value: -50 | Scaled Value: -50 | Trigger Spell: 278991 | Target: Self (1)
+#2 (id=734707)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 724.481 (coefficient=2.576687) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Affected Spells: Revenge (6572), Revenge (1215174), Revenge (1264147)
+                   Family Flags: 10
+Description      : Revenge deals $s2 additional damage and reduces the damage enemies deal to you by ${-$s1/100}.1% for $278999d, stacking up to $278999u times.
+
 Name             : Iron Fortress (id=278765) [Passive] 
 Class            : Warrior
 School           : Physical
@@ -6465,6 +7657,139 @@ Effects          :
 #2 (id=734718)   : Apply Aura (6) | Add Block Value (274) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 83.89151 (coefficient=0.64) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Increases Block by $s2, and blocking an attack deals $s1 Physical damage to the attacker. Critical blocks deal double damage.
+
+Name             : Crushing Assault (id=278824) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Internal Cooldown: 3 seconds
+Proc Chance      : 101%
+Real PPM         : 1.5 (Haste multiplier)
+Proc Flags       : Yellow Melee
+Triggered By     : Crushing Assault (278751)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=734823)   : Apply Aura (6) | Proc Trigger Spell (42): Crushing Assault
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 278826 | Target: Self (1)
+Description      : $@spelldesc278751
+
+Name             : Crushing Assault (id=278826) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 10 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Triggered By     : Crushing Assault (278824)
+Attributes       : Do Not Display Range (126), Floating Combat Text On Cast (198), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=734827)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=734828)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Slam (1464)
+                   Family Flags: 21
+#3 (id=744144)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Whirlwind (1680), Whirlwind (190411)
+                   Family Flags: 54
+Description      : $@spelldesc278751
+Tooltip          : Slam deals $w1 additional damage, and costs ${$w2/10} less Rage.
+
+Name             : Simmering Rage (id=278840) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee
+Triggered By     : Simmering Rage (278757)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=734848)   : Apply Aura (6) | Proc Trigger Spell (42): Simmering Rage
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 278841 | Target: Self (1)
+Description      : $@spelldesc278757
+
+Name             : Simmering Rage (id=278841) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Triggered By     : Simmering Rage (278840)
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=734849)   : Energize Power (30)
+                   Base Value: 10 | Scaled Value: 10 | Resource: rage | Target: Self (1)
+#2 (id=734850)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 278757
+Description      : $@spelldesc278757
+
+Name             : Callous Reprisal (id=278991) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee
+Triggered By     : Callous Reprisal (278760)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=735092)   : Apply Aura (6) | Proc Trigger Spell (42): Callous Reprisal
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 278999 | Target: Self (1)
+Description      : $@spelldesc278760
+
+Name             : Callous Reprisal (id=278999) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 8 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Triggered By     : Callous Reprisal (278991)
+Attributes       : No Active Defense (21), Aura Is Debuff (26), No Redirection (35), No Reflection (39), Do Not Display Range (126), Aura Points On Client (268)
+Effects          :
+#1 (id=735103)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Enemy (6)
+                   Affected School(s): All
+#2 (id=735104)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 278760
+Description      : $@spelldesc278760
+Tooltip          : Damage dealt to the Warrior is reduced by ${-$W1}.1%.
+
+Name             : Deafening Crash (id=279006) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee
+Triggered By     : Deafening Crash (272824)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=735115)   : Apply Aura (6) | Proc Trigger Spell (42): Deafening Crash
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 272825 | Target: Self (1)
+Description      : $@spelldesc272824
 
 Name             : Iron Fortress (id=279141) [Spell Family (4), Hidden] 
 Class            : Warrior
@@ -6503,6 +7828,76 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc278765
 
+Name             : Bloodsport (id=279172) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Azerite Power Id : 177
+Triggered By     : Bloodsport (279194)
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=735376)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Bloodsport
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279193 | Target: Self (1)
+#2 (id=735377)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 114.5851 (coefficient=0.407533) | PvP Coefficient: 0.5 | Rating:  | Target: Self (1)
+#3 (id=735378)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 8624.774 (coefficient=30.67485) | PvP Coefficient: 0.5 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Ignore Pain (190456)
+                   Family Flags: 109
+Description      : Ignore Pain prevents $s3 additional damage, and grants you $s2 Leech for $279194d.
+
+Name             : Bloodsport (id=279193) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Proc Chance      : 100%
+Proc Flags       : Generic Heal
+Triggered By     : Bloodsport (279172)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=735414)   : Apply Aura (6) | Proc Trigger Spell (42): Bloodsport
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279194 | Target: Self (1)
+Description      : $@spelldesc279172
+
+Name             : Lord of War (id=279202) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Internal Cooldown: 0.5 seconds
+Proc Chance      : 100%
+Proc Flags       : Cast Successful
+Triggered By     : Lord of War (278752)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=735427)   : Apply Aura (6) | Proc Trigger Spell (42): Lord of War
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279203 | Target: Self (1)
+Description      : $@spelldesc278752
+
+Name             : Lord of War (id=279203) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Triggered By     : Lord of War (279202)
+Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=735428)   : Energize Power (30)
+                   Base Value: 100 | Scaled Value: 100 | Resource: rage | Target: Self (1)
+Description      : $@spelldesc278752
+
 Name             : Seasoned Soldier (id=279423) [Spell Family (4), Passive] 
 Class            : Arms Warrior
 School           : Physical
@@ -6519,6 +7914,23 @@ Effects          :
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 127 | Target: Self (1)
 Description      : Your auto attack critical strikes generate $s1% more Rage and damage taken from area of effect attacks reduced by $s2%.
 
+Name             : Reckless Flurry (id=279632) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Proc Chance      : 100%
+Proc Flags       : White Melee
+Triggered By     : Reckless Flurry (278758)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=736054)   : Apply Aura (6) | Proc Trigger Spell (42): Reckless Flurry
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 283810 | Target: Self (1)
+Description      : $@spelldesc278758
+
 Name             : Bolster (id=280001) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Protection [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Warrior
@@ -6534,6 +7946,44 @@ Effects          :
                    Affected Spells: Last Stand (12975)
                    Family Flags: 51
 Description      : Last Stand's cooldown is reduced by ${$s1/-1000} sec and it grants you the Shield Block effect for its duration.
+
+Name             : Moment of Glory (id=280209) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 378
+                 : 411
+Proc Chance      : 100%
+Proc Flags       : Generic Heal
+Triggered By     : Moment of Glory (280023)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=737611)   : Apply Aura (6) | Proc Trigger Spell (42): Moment of Glory
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 280210 | Target: Self (1)
+#2 (id=737612)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
+                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Rallying Cry (97462), Rallying Cry (97463)
+                   Family Flags: 68
+Description      : $@spelldesc280023
+
+Name             : Bury the Hatchet (id=280211) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 378
+                 : 411
+Proc Chance      : 101%
+Proc Flags       : Cast Successful
+Triggered By     : Bury the Hatchet (280128)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=737615)   : Apply Aura (6) | Proc Trigger Spell (42): Bury the Hatchet
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 280212 | Target: Self (1)
+Description      : $@spelldesc280128
 
 Name             : Meat Cleaver (id=280392) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Fury [tree=spec, row=5, col=4, max_rank=1, req_points=8]
@@ -6615,6 +8065,37 @@ Effects          :
 Description      : Attempt to finish off a wounded foe, causing ${$280849s1+$163558s1} Physical damage. Only usable on enemies that have less than 35% health.
 
 |cFFFFFFFFGenerates ${$m3/10} Rage.|r
+
+Name             : Legion Legendary - Increase Damage Done (id=280737) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=738464)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+#2 (id=740269)   : Apply Aura (6) | Modify Pet Damage Done% (429)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+Description      : Increases all damage done by $s1%.
+
+Name             : Legion Legendary - Increase Healing Done and Damage Done (id=280740) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=738467)   : Apply Aura (6) | Modify Healing% Done (136)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+#2 (id=738468)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Description      : Increases all healing done by $s1% and all damage done by $s2%.
 
 Name             : Siegebreaker (id=280772) [Spell Family (4)] 
 Class            : Warrior
@@ -6785,6 +8266,59 @@ Effects          :
 Description      : Reduces your falling speed for $d.
 Tooltip          : Falling speed reduced.
 
+Name             : Reckless Flurry (id=283810) [Spell Family (4)] 
+School           : Physical
+Spell Type       : Melee
+Range            : 10 yards
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Proc Chance      : 100%
+Proc Flags       : White Melee
+Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #1, #2), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Luck of the Draw! (1218163 effects: #1, #4), Arms Warrior (1256919 effects: #1, #2), Protection Warrior (1256935 effects: #1, #2), Fury Warrior (1257520 effects: #1, #2), Master Tactician (1261216 effect#1)
+Triggered By     : Reckless Flurry (279632)
+Family Flags     : 9
+Attributes       : No Attack Miss (249), Aura Points On Client (268)
+Effects          :
+#1 (id=744563)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+#2 (id=744564)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 278758
+Description      : $@spelldesc278758
+
+Name             : Bastion of Might (id=287377) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Azerite Power Id : 237
+Triggered By     : Bastion of Might (287379)
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=750325)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Bastion of Might | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 199.0072 (coefficient=1.518206) | PvP Coefficient: 0.5 | Trigger Spell: 287378 | Target: Self (1)
+Description      : Avatar increases your Mastery by $s1 for $287379d, and instantly grants you Ignore Pain.
+
+Name             : Bastion of Might (id=287378) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Proc Chance      : 100%
+Proc Flags       : Generic Heal
+Triggered By     : Bastion of Might (287377)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=750326)   : Apply Aura (6) | Proc Trigger Spell (42): Bastion of Might
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 287379 | Target: Self (1)
+Description      : $@spelldesc287377
+
 Name             : Haymaker (desc=Racial) (id=287712) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Kul Tiran (0x80000000)
@@ -6810,6 +8344,41 @@ Effects          :
 Description      : Wind up, then unleash your might upon your foe, dealing $<damage> Physical damage, stunning for $d, and knocking them back substantially. 
 Tooltip          : Stunned.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*0.75,$AP*0.75)*$pctD*(1+$@versadmg)}
+
+Name             : Unbridled Ferocity (id=288056) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Azerite Power Id : 119
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=751443)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Unbridled Ferocity
+                   Base Value: 4000 | Scaled Value: 4000 | Trigger Spell: 288060 | Target: Self (1)
+#2 (id=751444)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 438.1385 (coefficient=1.558282) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Affected Spells: Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364), Rampage (218617), Rampage (1265579), Rampage (1265580), Rampage (1265581), Rampage (1265582)
+                   Family Flags: 108
+Description      : Rampage deals an additional ${$184367s1*$s2} damage and has a $288060h% chance to grant you Recklessness for ${$s1/1000} sec.
+
+Name             : Unbridled Ferocity (id=288060) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Proc Chance      : 8%
+Proc Flags       : Yellow Melee
+Triggered By     : Unbridled Ferocity (288056)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=751448)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc288056
 
 Name             : Cold Steel, Hot Blood (id=288080) [Spell Family (4), Passive] 
 Class            : Warrior
@@ -6905,6 +8474,106 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 288080
 Description      : $@spelldesc288080
 Tooltip          : Bleeding for $w1 Physical damage every $t1 sec, and healing the Warrior for the same amount.
+
+Name             : Gathering Storm (id=288131) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : 4 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Extra Initial Period (169), Spell Haste Affects Periodic (173), Aura Points On Client (268), Haste Affects Duration (273), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=751541)   : Apply Aura (6) | Periodic Trigger Spell (23): Gathering Storm every 0.8 seconds
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 273415 | Target: Self (1)
+Description      : $@spelldesc273409
+
+Name             : Striking the Anvil (id=288452) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Azerite Power Id : 121
+Triggered By     : Striking the Anvil (288455)
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=752078)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 3622.405 (coefficient=12.88344) | PvP Coefficient: 0.5 | Target: Self (1)
+#2 (id=752079)   : Dummy (3)
+                   Base Value: 1500 | Scaled Value: 1500
+Description      : The Tactician effect improves your next Overpower, causing it to deal $s1 additional damage and reduce the remaining cooldown of Mortal Strike by ${$s2/1000}.1 sec.
+
+Name             : Striking the Anvil (id=288455) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 411
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=752082)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Affected Spells: Overpower (7384), Dreadnaught (315961)
+                   Family Flags: 2
+#2 (id=752083)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 288452
+Description      : $@spelldesc288452
+Tooltip          : Your next Overpower will deal $w1 additional damage and reduce the remaining cooldown of Mortal Strike by ${$288452s2/1000}.1 sec.
+
+Name             : Intimidating Presence (id=288642) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 378
+                 : 411
+Proc Chance      : 100%
+Proc Flags       : Generic Hostile Spell
+Triggered By     : Intimidating Presence (288641)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=752489)   : Apply Aura (6) | Proc Trigger Spell (42): Intimidating Presence
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 288644 | Target: Self (1)
+Description      : $@spelldesc288641
+
+Name             : Intimidating Presence (id=288653) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 15 seconds
+Labels           : 292
+                 : 374
+                 : 378
+                 : 411
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=752506)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+Description      : $@spelldesc288641
+Tooltip          : Next $w1 damage dealt will be absorbed.
+
+Name             : Intimidating Presence (id=288654) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 15 seconds
+Labels           : 292
+                 : 374
+                 : 378
+                 : 411
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Icon (60), Do Not Display Range (126), Not In Spellbook (143), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=752507)   : Apply Aura Friendly in Area (128) | Absorb Damage (69) | Attributes: Aura Points Stack (9)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Radius: 100 yards | Target: Self (1)
+Description      : $@spelldesc288641
 
 Name             : Rime of the Ancient Mariner (desc=Racial Passive) (id=291417) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -7189,6 +8858,21 @@ Effects          :
 #1 (id=787010)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | Target: at Area (87)
 Description      : $@spelldesc307865
+
+Name             : Elysian Might (id=311193) 
+School           : Physical
+Spell Type       : None
+Duration         : 8 seconds
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+Attributes       : Ignore Line of Sight (66), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=792015)   : Apply Aura (6) | Modify Crit Damage Done% (163)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.6 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Description      : $@spelldesc357996
+Tooltip          : Critical strike damage increased by $s1%.
 
 Name             : Fire Resistance (desc=Racial Passive) (id=312198) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -8895,6 +10579,23 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Intervene reduces damage taken by the target by |cFFFFFFFF$s1%|r.
 
+Name             : Safeguard (id=335198) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Spell Level      : 60
+Range            : 40 yards
+Duration         : 6 seconds
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269)
+Effects          :
+#1 (id=831655)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7f | Target: Targeted Ally (21)
+                   Affected School(s): All
+Description      : $@spelldesc335196
+Tooltip          : Damage taken reduced by $w1%.
+
 Name             : Leaper (id=335214) [Spell Family (4), Passive] 
 School           : Physical
 Spell Type       : None
@@ -9260,6 +10961,40 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20
 Description      : Rampage strikes have $s2% chance to reduce the remaining cooldown of your Recklessness and Enraged Regeneration by $s1 sec.
 
+Name             : Will of the Berserker (id=335594) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 931
+Attributes       : Passive (6), No Threat (42), Allow Aura While Dead (116), Allow While Riding Vehicle (204), Aura Points On Client (268)
+Effects          :
+#1 (id=832315)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+Description      : When Recklessness expires, your Critical Strike is increased by $335597s1% for $335597d. Your Raging Blow will refresh the duration of this effect.
+
+Name             : Will of the Berserker (id=335597) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Duration         : 12 seconds
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 931
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee
+Attributes       : Do Not Display Range (126), Aura Points On Client (268)
+Effects          :
+#1 (id=832319)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
+                   Base Value: 7 | Scaled Value: 7 | Misc Value: 7 | Target: Self (1)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Bloodbath (113344), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Sidearm (384391), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Shield Charge (385954), Rend (388539), Shattering Throw (394352), Wrecking Throw (394354), Onslaught (396718), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174), Ionizing Strike (1238042), Retaliation (1245365), Revenge (1264147), Rampage (1265579), Rampage (1265580), Rampage (1265581), Rampage (1265582)
+                   Family Flags: 9
+#2 (id=872313)   : Apply Aura (6) | Modify Auto Attack Critical Chance (334)
+                   Base Value: 7 | Scaled Value: 7 | Target: Self (1)
+Description      : $@spelldesc335594
+Tooltip          : Critical Strike increased by $w1%. Raging Blow refreshes this duration.
+
 Name             : Unbreakable Will (id=335629) [Spell Family (4), Passive] 
 School           : Physical
 Spell Type       : None
@@ -9275,6 +11010,23 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1929 (Category) | Target: Self (1)
                    Affected Spells (Category): Shield Wall (871)
 Description      : Shield Wall gains $s2 additional charge, and grants $s1% of its effect to all party members.
+
+Name             : Unbreakable Will (id=335635) [Spell Family (4)] 
+School           : Physical
+Spell Type       : Melee
+Range            : 100 yards
+Duration         : 8 seconds
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 931
+Attributes       : Is Ability (4), Do Not Sheath (18), No Threat (42), Exclude Caster (51), Aura Points On Client (268)
+Effects          :
+#1 (id=832366)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -25 | Scaled Value: -25 | Misc Value: 0x7f | Radius: 100 yards | Target: Party in Area (20)
+                   Affected School(s): All
+Description      : $@spelldesc335629
+Tooltip          : All damage taken reduced by $w1%.
 
 Name             : Reprisal (id=335718) [Spell Family (4), Passive] 
 School           : Physical
@@ -9329,6 +11081,36 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : If Whirlwind $?a137048[or Revenge ][]hits $s1 or more enemies, it hits them $s2 additional time for $?c1[${100+$s3}]?c2[${100+$s4}]?c3[${100+$335759s3}][100]% damage.
 
+Name             : Seismic Reverberation (id=335759) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : 0.8 seconds
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 931
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Include In Advanced Combat Log (72)
+Effects          :
+#1 (id=832565)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -25 | Scaled Value: -25 | Target: Self (1)
+                   Affected Spells: Revenge (6572), Revenge (1215174), Revenge (1264147)
+                   Family Flags: 10
+Description      : $@spelldesc335758
+
+Name             : Seismic Reverberation (id=335760) [Spell Family (4), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : 0.8 seconds
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 931
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Include In Advanced Combat Log (72)
+Effects          :
+#1 (id=832566)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self (1)
+Description      : $@spelldesc335758
+
 Name             : Conqueror's Banner (desc=Necrolord) (id=335931) 
 Class            : Warrior
 School           : Physical
@@ -9356,6 +11138,21 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
 Description      : $?s202168[Impending Victory][Victory Rush] heals you for |cFFFFFFFF$<val>%|r of the damage it dealt over $336642d.
 Variables        : $val=$?c3[${$s1*1.4}][${$s1}]
+
+Name             : Indelible Victory (id=336642) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Spell Level      : 60
+Duration         : 8 seconds
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Ignore Caster Healing Modifiers (312), Rolling Periodic (334), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
+Effects          :
+#1 (id=834160)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc336191
+Tooltip          : Healing for $w1 every $t1 sec.
 
 Name             : Condemn (desc=Venthyr) (id=337056) [Hidden] 
 Class            : Warrior
@@ -9507,6 +11304,22 @@ Effects          :
 #1 (id=838466)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Conqueror's Banner increases your Strength by |cFFFFFFFF$s1%|r.
+
+Name             : Veteran's Repute (id=339267) [Spell Family (4)] 
+School           : Shadow
+Spell Type       : None
+Spell Level      : 60
+Duration         : 30 seconds
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
+Aura Interrupt   : Leave World (19), Enter World (22)
+Effects          :
+#1 (id=838471)   : Apply Aura (6) | Modify Total Stat% (137)
+                   Base Value: 12 | Scaled Value: 12 | Stat: Str | Target: Self (1)
+Description      : $@spelldesc339265
+Tooltip          : Strength increased by $w1%.
 
 Name             : Harrowing Punishment (id=339370) [Spell Family (4), Passive, Hidden] 
 School           : Physical
@@ -9799,6 +11612,26 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self (1)
 Description      : $@spelldesc335274
 
+Name             : Merciless Bonegrinder (id=346574) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Spell Level      : 60
+Duration         : 9 seconds
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 999
+                 : 1147: Merciless Bonegrinder (335260 effect#1)
+Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (269)
+Effects          :
+#1 (id=873238)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Affected Spells: Whirlwind (1680), Whirlwind Off-Hand (44949), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Whirlwind (411547)
+                   Family Flags: 34
+                   Modified By: Merciless Bonegrinder (335260 effect#1)
+Description      : $@spelldesc335260
+Tooltip          : Whirlwind deals $w1% increased damage.
+
 Name             : Fueled by Violence (id=347213) [Spell Family (4), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
@@ -9815,6 +11648,20 @@ Effects          :
 #1 (id=874344)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : You are healed for |cFFFFFFFF${$s1}.1%|r of the damage dealt by Deep Wounds.
+
+Name             : Fueled by Violence (id=347214) [Spell Family (4)] 
+School           : Physical
+Spell Type       : Magic
+Spell Level      : 60
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 999
+Attributes       : No Aura Cancel (31), No Threat (42), Not an Action (92), Can't Crit (93), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268), Not In Spellbook Until Learned (269), Ignore Caster Healing Modifiers (312), Do Not Log Full Overheal (323), Don't close loot window (379), Allow during spell override (404), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=874345)   : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc347213
 
 Name             : Whirlwind (id=347360) [Spell Family (4)] 
 Class            : Warrior
@@ -9866,6 +11713,34 @@ Effects          :
 #1 (id=874568)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.182 | Radius: 0 - 8 yards | Target: at Self (18) -> at Enemy in Area (16)
 Description      : $@spelldesc1680
+
+Name             : Signet of Tormented Kings (id=347829) 
+School           : Physical
+Spell Type       : None
+Labels           : 25: Warrior Spells
+                 : 292
+                 : 931
+Attributes       : No Threat (42)
+Effects          :
+#1 (id=875444)   : Energize Power (30)
+                   Base Value: 200 | Scaled Value: 200 | Resource: rage | Target: Self (1)
+Description      : $@spelldesc335266
+
+Name             : Grisly Icicle (id=348007) [Spell Family (4)] 
+School           : Physical
+Spell Type       : Melee
+Range            : 50000 yards
+Duration         : 8 seconds
+Labels           : 16: Class Spells
+                 : 292
+                 : 931
+Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Suppress Caster Procs (112), Do Not Display Range (126), No Cast Log (128), No Caster Aura Icon (187), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Enforce Shapeshift Requirements (434)
+Effects          :
+#1 (id=875755)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x44 | Target: Targeted Enemy (6)
+                   Affected School(s): Arcane, Fire
+Description      : $@spelldesc333393
+Tooltip          : Damage taken from $@auracaster's Arcane and Fire spells increased by $s1%
 
 Name             : Repulsive Pennant (id=350605) [Spell Family (4)] 
 Class            : Warrior
@@ -10014,6 +11889,25 @@ Effects          :
                    Base Value: 3000 | Scaled Value: 3000 | Misc Value: 1 | Misc Value 2: 1283 (Label) | Target: Self (1)
                    Affected Spells (Label): Ancient Aftershock (343607)
 Description      : Ancient Aftershock's duration is increased by ${$s1/1000} sec and enemies hit take ${$354163s1o*3} Nature damage over $354163d, stacking $354163u times.
+
+Name             : Nature's Fury (id=354163) [Spell Family (4)] 
+School           : Nature
+Spell Type       : Melee
+Range            : 100 yards
+Duration         : 6 seconds
+Labels           : 25: Warrior Spells
+                 : 292
+                 : 931
+Stacks           : 6 maximum
+Proc Chance      : 101%
+Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #1, #2), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Luck of the Draw! (1218163 effects: #1, #4), Arms Warrior (1256919 effects: #1, #2), Protection Warrior (1256935 effects: #1, #2), Fury Warrior (1257520 effects: #1, #2), Master Tactician (1261216 effect#1)
+Family Flags     : 9
+Attributes       : DoT Stacking Rule (103), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Periodic Can Crit (265), Aura Points On Client (268)
+Effects          :
+#1 (id=886401)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.1383 | Target: Targeted Enemy (6)
+Description      : $@spelldesc354161
+Tooltip          : Taking $w1 Nature damage every $t1 sec.
 
 Name             : Wing Buffet (desc=Racial) (id=357214) [Spell Family (224)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -10557,6 +12451,30 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Radius: 40 yards | Target: Self (1)
 Description      : $@spelldesc351239
 Tooltip          : $?s351239[Your out-of-combat health regeneration is increased.][$@auracaster is increasing your out-of-combat health regeneration.]
+
+Name             : Time Spiral (id=375258) [Spell Family (4)] 
+Class            : Evoker
+School           : Arcane
+Spell Type       : None
+Range            : 100 yards
+Duration         : 10 seconds
+Labels           : 16: Class Spells
+                 : 292
+                 : 1216: Evoker Spells
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : Cast Successful
+Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Only On Player (104), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
+Effects          :
+#1 (id=1001548)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1211 (Category) | Target: Targeted Ally (21)
+                   Affected Spells (Category): Heroic Leap (6544)
+#2 (id=1001549)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1211 (Category) | Target: Targeted Ally (21)
+                   Affected Spells (Category): Heroic Leap (6544)
+Description      : $@spelldesc374968
+Tooltip          : May use Heroic Leap once, without incurring its cooldown.
 
 Name             : Champion's Spear (id=376079) [Spell Family (4)] 
 Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=23]
@@ -11603,6 +13521,45 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 Description      : Bloodthirst deals $s1% increased damage to enemies who are below $<threshold>% health.
 Variables        : $threshold=${35}
+
+Name             : Annihilator (id=383915) [Spell Family (4)] 
+School           : Physical
+Spell Type       : Melee
+Range            : 5 yards
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 881
+Stacks           : 1 maximum
+Proc Chance      : 100%
+Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #1, #2), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Siegebreaker (280773 effects: #1, #3), Glory (325787 effect#1), Cruelty (335070 effect#1), Will of the Berserker (335597 effect#1), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Luck of the Draw! (1218163 effects: #1, #4), Arms Warrior (1256919 effects: #1, #2), Protection Warrior (1256935 effects: #1, #2), Fury Warrior (1257520 effects: #1, #2), Master Tactician (1261216 effect#1)
+Triggered By     : Annihilator (383916)
+Family Flags     : 9, 101
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1016118)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.13225 | Target: Targeted Enemy (6)
+#2 (id=1016119)  : Energize Power (30)
+                   Base Value: 20 | Scaled Value: 20 | Resource: rage | Target: Self (1)
+                   Modified By: Recklessness (1719 effect#6)
+Description      : $@spelldesc383916
+Tooltip          : Every strike of your next Rampage will deal an additional $w3% damage.
+
+Name             : Annihilator (id=383916) [Spell Family (4), Passive] 
+School           : Physical
+Spell Type       : None
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+Proc Chance      : 100%
+Proc Flags       : White Melee
+Attributes       : Passive (6), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1016120)  : Apply Aura (6) | Proc Trigger Spell (42): Annihilator
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 383915 | Target: Self (1)
+Description      : Your auto-attacks deal an additional $383915s1 Physical damage and generate ${$383915s2/10} Rage.
 
 Name             : Cold Steel, Hot Blood (id=383959) [Spell Family (4), Passive] 
 Talent Entry     : Fury [tree=spec, row=6, col=2, max_rank=1, req_points=8]
@@ -13454,6 +15411,31 @@ Effects          :
                    Modified By: Recklessness (1719 effect#5)
 Description      : $@spelldesc400803
 
+Name             : Heaved Armament (id=401772) 
+School           : Physical
+Spell Type       : None
+Cast Time        : 1.5 seconds
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+Attributes       : Do Not Log (8), Not In Combat (Only Peaceful) (28), No AutoCast (AI) (49), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1047805)  : Apply Glyph (74)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1432
+Description      : $@spelldesc401773
+
+Name             : Glyph of the Heaved Armament (id=401773) [Spell Family (4), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1047806)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Your Heroic Throw now launches your main hand weapon.
+
 Name             : Chosen Identity (desc=Racial) (id=403617) [Hidden] 
 Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
 Race             : Dracthyr (0x18000)
@@ -13466,6 +15448,45 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow 
 Effects          :
 #1 (id=1050664)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+
+Name             : Truth's Wake (id=403695) [Spell Family (10)] 
+Class            : Paladin
+School           : Holyfire
+Spell Type       : Magic
+Spell Level      : 1
+Duration         : 9 seconds
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 2511: Burning Crusade (403026 effect#1), Truth's Wake (403695 effect#5)
+                 : 3460
+Proc Chance      : 101%
+Proc Flags       : Periodic Taken
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2, #11, #12), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #3, #4), Avenging Wrath (231895 effects: #1, #2), Ashes to Dust (236106 effect#1), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Radiant Decree (384052 effect#1), Sentinel (389539 effects: #1, #2, #3), Paladin Retribution Class Set 2pc (393675 effects: #1, #2), Luminous Force (394550 effect#1), Retribution Paladin (412314 effects: #1, #2), Initial Paladin (417383 effects: #1, #2), Hammer of Light (427441 effect#1), Holy Paladin (428076 effects: #3, #4), Paladin Retribution 11.0 Class Set 2pc (453655 effects: #2, #3), Avenging Wrath (454351 effects: #1, #2), Avenging Wrath (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Luck of the Draw! (1218114 effects: #1, #2), Protection Paladin (1256936 effects: #1, #2)
+Triggered By     : Wake of Ashes (255937)
+Family Flags     : 27, 65, 68
+Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Unknown (465)
+Effects          :
+#1 (id=1050802)  : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
+                   Base Value: -50 | Scaled Value: -50 | Radius: 14 yards | Mechanic: Snare | Target: Enemies in Cone to Targeted Enemy (104)
+#2 (id=1050803)  : Apply Aura (6) | Periodic Damage (3): holyfire every 3 seconds
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.6528 | Radius: 14 yards | Target: Enemies in Cone to Targeted Enemy (104)
+#3 (id=1144192)  : Apply Aura (6) | Ignore Armor% (345)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.544 | Radius: 14 yards | Target: Enemies in Cone to Targeted Enemy (104)
+#4 (id=1144330)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 30 | Scaled Value: 30 | Radius: 14 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Affected Spells: Consecration (26573), Consecration (81297), Divine Hammer (198137), Consecration (243597), Consecration (387881), Consecration (419810)
+                   Family Flags: 5, 25
+                   Modified By: Ashes to Dust (236106 effect#1)
+#5 (id=1144331)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 2511 (Label) | Radius: 14 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Affected Spells (Label): Execution Sentence (343527), Expurgation (383346), Truth's Wake (403695), Dawnlight (431380), Sun Sear (431414), Templar Slash (447142)
+#6 (id=1191610)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 2587 (Label) | Radius: 14 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Affected Spells (Label): Consecration (81297), Divine Hammer (198137), Empyrean Hammer (431398)
+Description      : Burns the targets for an additional $o2 Radiant damage over $d, and slows them by $s1%.
+
+Tooltip          : $?(s403696)[Burning for $w2 damage every $t2 sec and movement speed reduced by $s1%.] [Movement speed reduced by $s1%.]
 
 Name             : Warrior Arms 10.1 Class Set 2pc (id=405577) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -13636,6 +15657,36 @@ Effects          :
 #1 (id=1054784)  : Apply Aura (6) | Unknown(352)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Enables Worgen to switch between Worgen and Human forms.
+
+Name             : Chaotic Blades (id=408122) [Spell Family (4)] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+Proc Chance      : 101%
+Real PPM         : 1
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
+Attributes       : No Aura Cancel (31), No Aura Icon (60), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=1072068)  : Apply Aura (6) | Proc Trigger Spell (42): Call to Chaos
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 403382 | Target: Self (1)
+Description      : $@spelldesc403385
+Tooltip          : Your debuffs and harmful periodic spells and abilities have a chance to grant you $s1 $pri for $403386d.
+
+Name             : Elementium Pocket Anvil (id=408513) [Spell Family (4)] 
+School           : Shadowflame
+Spell Type       : None
+Range            : 8 yards
+Duration         : Aura (infinite)
+Internal Cooldown: 0.1 seconds
+Proc Chance      : 101%
+Real PPM         : 2 (Haste multiplier)
+Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
+Attributes       : Allow Cast While Dead (23), No Aura Icon (60), Allow Dead Target (64), Allow Aura While Dead (116), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=1072691)  : Apply Aura (6) | Proc Trigger Spell (42)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc401303
 
 Name             : Merciless Assault (id=409983) [Spell Family (4)] 
 Class            : Warrior
@@ -18163,6 +20214,84 @@ Effects          :
                    Base Value: 1264147 | Scaled Value: 1264147 | Misc Value: 6572 | Misc Value 2: 2 | Target: Self (1)
 Description      : Revenge deals $1264147s1 Physical damage to all enemies in front of you. Deals reduced damge beyond $<cap> targets.
 Variables        : $cap=${5}
+
+Name             : Warrior Arms 12.0 Class Set 2pc (id=1264875) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276482)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Warrior Arms 12.0 Class Set 4pc (id=1264876) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276483)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Warrior Fury 12.0 Class Set 2pc (id=1264877) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276484)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Warrior Fury 12.0 Class Set 4pc (id=1264878) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276485)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Warrior Protection 12.0 Class Set 2pc (id=1264879) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276486)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Warrior Protection 12.0 Class Set 4pc (id=1264880) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276487)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
 
 Name             : Scent of Blood (id=1265355) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Fury [tree=spec, row=6, col=3, max_rank=1, req_points=8]

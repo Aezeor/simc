@@ -7412,6 +7412,22 @@ Effects          :
                    Modified By: Devastation Evoker (356809 effect#16), Preservation Evoker (356810 effect#16)
 Description      : Your healing done and healing received are increased by $s1%.
 
+Name             : Full Belly (id=377087) [Spell Family (224)] 
+School           : Physical
+Spell Type       : Magic
+Range            : 40 yards
+Duration         : 600 seconds
+Affecting Spells : Devastation Evoker (356809 effects: #23, #24), Temporal Compression (362877 effect#2), Heat Wave (375725 effects: #1, #2), Lifeforce Mender (376179 effect#2), Evoker Devastation Class Set 2pc (393642 effect#1), Ebon Might (395296 effects: #3, #4), Evoker Devastation 10.1 Class Set 4pc (405519 effects: #1, #2), Imminent Destruction (405652 effect#1), Expanded Lungs (444845 effect#1), Fulminous Roar (1218447 effect#1), Unshakable (1239581 effects: #1, #2), Devastation Evoker (1256943 effect#5)
+Family Flags     : 35
+Attributes       : Allow While Mounted (24), Allow While Stealthed (37), Suppress Caster Procs (112), Allow While Riding Vehicle (204), Ignore Caster Damage Modifiers (221), Allow Cast While Channeling (308), Ignore Caster Healing Modifiers (312), Ignore Caster Absorb Modifiers (370), Don't close loot window (379), Do Not Consume Aura Stack On Proc (428)
+Effects          :
+#1 (id=1004733)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 25 | Scaled Value: 25 | Trigger Spell: 357209 | Target: Self (1)
+                   Affected Spells: Fire Breath (357209), Full Belly (377087), Fire Breath (444249)
+                   Family Flags: 35
+Description      : When Obtained: Gorge on the remains of a Wild Argali.
+Tooltip          : Increases the damage of Fire Breath by $s1%.
+
 Name             : Spark of Insight (id=377099) [Spell Family (224), Passive] 
 Talent Entry     : Preservation [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Evoker
@@ -10436,6 +10452,21 @@ $radiusII=${6}
 $radiusIII=${9}
 $radiusIV=${12}
 
+Name             : Chaotic Dragonrage (id=408127) [Spell Family (224)] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+Proc Chance      : 101%
+Real PPM         : 1
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Attributes       : No Aura Cancel (31), No Aura Icon (60), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=1072076)  : Apply Aura (6) | Proc Trigger Spell (42): Call to Chaos
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 403382 | Target: Self (1)
+Description      : $@spelldesc403385
+Tooltip          : Your debuffs and harmful periodic spells and abilities have a chance to grant you $s1 $pri for $403386d.
+
 Name             : Bestow Weyrnstone (desc=Bronze) (id=408233) [Spell Family (224)] 
 Talent Entry     : Augmentation [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Evoker
@@ -12089,6 +12120,20 @@ Effects          :
 Description      : $@spelldesc395152
 Tooltip          : Damage and healing done increased by $s1%.
 
+Name             : Fragile Echoes (id=429020) [Spell Family (224), Hidden] 
+School           : Shadow
+Spell Type       : None
+Range            : 100 yards
+Duration         : Aura (infinite)
+Labels           : 3959: Item Effects
+Proc Chance      : 100%
+Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=1112845)  : Apply Aura (6) | Proc Trigger Spell (42): Fragile Echo
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 215267 | Target: Self (1)
+Description      : $@spelldesc215266
+
 Name             : Warp (desc=Bronze) (id=429459) 
 Class            : Evoker
 School           : Arcane
@@ -12194,6 +12239,23 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc359565
 Tooltip          : Your next Disintegrate or Pyre costs no Essence.
+
+Name             : Empowered Soaring (desc=Racial Passive) (id=430846) [Spell Family (224), Passive, Hidden] 
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 292
+                 : 1216: Evoker Spells
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1118135)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Your Soar is empowered after co-opting new flight techniques from the dragons of the Dragon Isles.
+
+Soar is now equivalent to dragonriding, granting access to vigor and all dragonriding abilities. 
+
+
 
 Name             : Pyre (desc=Red) (id=431151) 
 Class            : Evoker
@@ -12666,6 +12728,22 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
                    Modified By: Temporal Burst (431698 effect#14)
 Description      : Empower spells send up to $s1 Chrono Flames to your targets.
+
+Name             : Sun's Avatar (id=431910) [Spell Family (10)] 
+Class            : Paladin
+School           : Holyfire
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 292
+                 : 1216: Evoker Spells
+Attributes       : No Aura Cancel (31), No Aura Icon (60), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1120106)  : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
+                   Base Value: 15 | Scaled Value: 15 | Target: Targeted Ally (21) -> Self (1)
+Description      : $@spelldesc431425
+Tooltip          : Linked with an ally, causing $431911s1 damage to enemies or $431911s2 healing to allies who touch the link.
 
 Name             : Time Convergence (desc=Bronze) (id=431984) [Spell Family (224), Passive] 
 Talent Entry     : Chronowarden (Preservation) [tree=hero, row=4, col=1, max_rank=1, req_points=1, select_idx=200]
@@ -14126,6 +14204,57 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.134 | PvP Coefficient: 0.7 | Radius: 2 - 30 yards | Target: Front of Self (47) -> Enemies in Cone to Targeted Enemy (104)
 Description      : $@spelldesc357208
 Tooltip          : Burning for $w2 Fire damage every $t2 sec.$?$W3=1[ Silenced.][]
+
+Name             : Aberrant Spellforge (id=452037) [Spell Family (224), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 3959: Item Effects
+Proc Chance      : 101%
+Proc Flags       : Generic Hostile Spell, Magic Hostile Spell, Periodic
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Item Spell In PvP (13), Allow Cast While Dead (23), No Aura Icon (60), Allow Dead Target (64), Allow Aura While Dead (116), Can Proc From Procs (122), Extra Initial Period (169), No Aura Log (202), Aura Points On Client (268)
+Aura Interrupt   : Change Specialization (38)
+Effects          :
+#1 (id=1152918)  : Apply Aura (6) | Proc Trigger Spell (42)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=1153189)  : Apply Aura (6) | Periodic Dummy (226): every 15 seconds
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc445593
+
+Name             : Aberrant Spellforge (id=452059) [Spell Family (224), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 3959: Item Effects
+Proc Chance      : 101%
+Proc Flags       : Generic Hostile Spell, Magic Hostile Spell, Periodic
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Item Spell In PvP (13), Allow Cast While Dead (23), No Aura Icon (60), Allow Dead Target (64), Allow Aura While Dead (116), Can Proc From Procs (122), Extra Initial Period (169), No Aura Log (202), Aura Points On Client (268)
+Aura Interrupt   : Change Specialization (38)
+Effects          :
+#1 (id=1152953)  : Apply Aura (6) | Proc Trigger Spell (42)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=1153200)  : Apply Aura (6) | Periodic Dummy (226): every 15 seconds
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc445593
+
+Name             : Aberrant Spellforge (id=452062) [Spell Family (224), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 3959: Item Effects
+Proc Chance      : 101%
+Proc Flags       : Generic Hostile Spell, Magic Hostile Spell, Periodic
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Item Spell In PvP (13), Allow Cast While Dead (23), No Aura Icon (60), Allow Dead Target (64), Allow Aura While Dead (116), Can Proc From Procs (122), Extra Initial Period (169), No Aura Log (202), Aura Points On Client (268)
+Aura Interrupt   : Change Specialization (38)
+Effects          :
+#1 (id=1152957)  : Apply Aura (6) | Proc Trigger Spell (42)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=1153201)  : Apply Aura (6) | Periodic Dummy (226): every 15 seconds
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc445593
 
 Name             : Evoker Augmentation 11.0 Class Set 4pc (id=453671) [Spell Family (224), Passive, Hidden] 
 Class            : Evoker
@@ -15995,6 +16124,84 @@ Effects          :
 #1 (id=1275699)  : School Damage (2): spellfrost | Attributes: Area Effects Use Target Radius (17), Damage Only Affects Absorbs (26)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3 | PvP Coefficient: 0.7 | Radius: 2 - 30 yards | Target: Front of Self (47) -> Enemies in Cone to Targeted Enemy (104)
 Description      : $@spelldesc1264378
+
+Name             : Evoker Augmentation 12.0 Class Set 2pc (id=1264819) [Spell Family (224), Passive, Hidden] 
+Class            : Evoker
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 292
+                 : 1216: Evoker Spells
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276425)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Evoker Augmentation 12.0 Class Set 4pc (id=1264820) [Spell Family (224), Passive, Hidden] 
+Class            : Evoker
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 292
+                 : 1216: Evoker Spells
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276426)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Evoker Devastation 12.0 Class Set 2pc (id=1264821) [Spell Family (224), Passive, Hidden] 
+Class            : Evoker
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 292
+                 : 1216: Evoker Spells
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276428)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Evoker Devastation 12.0 Class Set 4pc (id=1264822) [Spell Family (224), Passive, Hidden] 
+Class            : Evoker
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 292
+                 : 1216: Evoker Spells
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276429)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Evoker Preservation 12.0 Class Set 2pc (id=1264823) [Spell Family (224), Passive, Hidden] 
+Class            : Evoker
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 292
+                 : 1216: Evoker Spells
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276430)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Evoker Preservation 12.0 Class Set 4pc (id=1264824) [Spell Family (224), Passive, Hidden] 
+Class            : Evoker
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 292
+                 : 1216: Evoker Spells
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276431)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
 
 Name             : Shattering Stars (id=1265802) [Spell Family (224), Passive] 
 Talent Entry     : Devastation [tree=spec, row=7, col=4, max_rank=1, req_points=8]

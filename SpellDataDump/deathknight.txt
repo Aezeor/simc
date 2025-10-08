@@ -2389,6 +2389,29 @@ Description      : Engrave your weapon with a rune that increases Armor by $6215
 
 Modifying your rune requires a Runeforge in Ebon Hold.
 
+Name             : Bonus Runic Power (desc=Rank 1) (id=62458) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Velocity         : 1 yards/sec
+Triggered By     : Chains of Ice Runic Power (62459)
+Attributes       : Do Not Log (8), Do Not Sheath (18), No Threat (42), Not in Mythic+ Mode (Challenge Mode) (368), Not In Proving Grounds (401)
+Effects          :
+#1 (id=56497)    : Energize Power (30)
+                   Base Value: 10 | Scaled Value: 10 | Resource: runic_power | Target: Self (1)
+Description      : Gain ${$m1/10} Runic Power.
+
+Name             : Chains of Ice Runic Power (desc=Rank 3) (id=62459) [Spell Family (15), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
+Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Can Proc From Procs (122), Not in Mythic+ Mode (Challenge Mode) (368), Check Required Target Aura By Caster (382), Not In Proving Grounds (401)
+Effects          :
+#1 (id=56500)    : Apply Aura (6) | Proc Trigger Spell (42): Bonus Runic Power
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Trigger Spell: 62458 | Target: Self (1)
+Description      : Your Chains of Ice ability now generates an additional ${$62458m1/10} Runic Power.
+
 Name             : Basic Attack Focus Cost Modifier (id=62762) [Spell Family (17), Passive, Hidden] 
 Class            : Hunter, Death Knight
 School           : Physical
@@ -2584,6 +2607,19 @@ Effects          :
 #1 (id=71811)    : Directional Knock (138)
                    Base Value: 75 | Scaled Value: 75 | Misc Value: 200 | Target: Self (1)
 Description      : Activates your rocket belt to jump forward.  Other effects which slow the rate of falling cannot be used within $79636d after using this ability.
+
+Name             : Soul Fragment (id=71905) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Duration         : 60 seconds
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=65632)    : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 12.19049 (coefficient=0.093) | Stat: Str | Target: Self (1)
+Description      : Gained a Soul Fragment, granting $s1 strength each.  When $u Soul Fragments are accumulated, they will release, triggering Chaos Bane.  Lasts $d.
+Tooltip          : Strength Increased by $w1.
 
 Name             : Mastery: Master of Beasts (id=76657) [Spell Family (9), Passive] 
 Class            : Beast Mastery Hunter, Death Knight
@@ -3230,6 +3266,21 @@ Effects          :
 #1 (id=99112)    : Apply Aura (6) | Unknown(352)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Enables Worgens to switch between human and Worgan forms
+
+Name             : Sight Beyond Sight (id=95061) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Range            : 50000 yards
+Cast Time        : 1 seconds
+GCD              : 1.5 seconds
+Duration         : 60 seconds
+Cooldown         : 10 seconds
+Attributes       : Not Shapeshifted (16), Is Channelled (34), Toggle Far Sight (45), No AutoCast (AI) (49), Ignore Line of Sight (66), Not In Arena or Rated Battleground (144), No Summon Log (326), Visible only to caster (conversations only) (343)
+Effects          :
+#1 (id=100364)   : Summon Guardian (28)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 51347 | Misc Value 2: 1362 | Radius: 100 yards | Target: at Area (87)
+Description      : Allows you to see far into the distance.
+Tooltip          : Allows you to see far into the distance.  Right-Click on the buff icon to switch back and forth between Sight Beyond Sight and normal vision.
 
 Name             : Void-Touched (id=97821) 
 Class            : Death Knight
@@ -4301,6 +4352,34 @@ Effects          :
 Description      : $@spelldesc49998
 Tooltip          : Recently used Death Strike.
 
+Name             : Unholy Coil (id=184897) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 112
+Attributes       : Passive (6), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354), Use float values for scaling amounts (405)
+Effects          :
+#1 (id=268037)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 4.290002 (coefficient=0.032728) | Misc Value: 127 | Target: Self (1)
+#2 (id=269050)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 4.290002 (coefficient=0.032728) | Target: Self (1)
+                   Affected Spells: Marrowrend (195182)
+                   Family Flags: 117
+Description      : Marrowrend deals $s2% increased damage, and heals you for $s1% of damage dealt.
+
+Name             : Wandering Plague (id=184983) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 112
+Proc Chance      : 100%
+Proc Flags       : Periodic
+Attributes       : Passive (6), Allow Aura While Dead (116), Can Proc From Procs (122), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354), Use float values for scaling amounts (405)
+Effects          :
+#1 (id=268168)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 4.188677 (coefficient=0.031955) | Misc Value: 127 | Target: Self (1)
+Description      : Your disease ticks have a $s1% chance to trigger Wandering Plague, dealing the same damage again to the target and all other enemies within $184899A1 yards, split evenly.
+
 Name             : Death and Decay (id=188290) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
@@ -5232,6 +5311,19 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: At Enemy (53)
 Description      : $@spelldesc42650
 
+Name             : Rot and Wither (desc=PvP Talent) (id=202727) [Spell Family (15), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Labels           : 27: Death Knight Spells
+                 : 118
+Proc Chance      : 100%
+Proc Flags       : Periodic
+Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Do Not Log on Learn (355)
+Effects          :
+#1 (id=298897)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+Description      : Your $?s315442[Death's Due][Death and Decay] rots enemies each time it deals damage, absorbing healing equal to $s1% of damage dealt.
+
 Name             : Blood for Blood (desc=PvP Talent) (id=202846) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 School           : Physical
@@ -5261,6 +5353,81 @@ Effects          :
                    Affected Spells: Howling Blast (49184), Howling Blast (237680)
                    Family Flags: 33
 Description      : The critical strike chance of your Howling Blast increased by $m1%, but it no longer deals area of effect damage.
+
+Name             : Chill Streak (desc=PvP Talent) (id=204160) [Spell Family (15)] 
+School           : Nature
+Spell Type       : Magic
+Spell Level      : 13
+Range            : 40 yards
+GCD              : 1.5 seconds
+Cooldown         : 45 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 118
+                 : 292
+Attributes       : Allow While Sitting (27), No Reflection (39), Do Not Reset Combat Timers (81), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=301304)   : Dummy (3)
+                   Base Value: 9 | Scaled Value: 9 | Target: Targeted Enemy (6)
+Description      : Deals up to $204167s2% of the target's total health in Frost damage and reduces their movement speed by $204206m2% for $204206d.
+
+Chill Streak bounces up to $m1 times between closest targets within $204165A1 yards.
+
+Name             : Chill Streak (desc=PvP Talent) (id=204165) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Spell Level      : 1
+Range            : 50000 yards
+Max Targets      : 1
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 118
+                 : 292
+                 : 1616: Death Knight Frost 10.2 Class Set 2pc (422852 effect#1)
+Attributes       : Wearer Casts Proc Trigger (11), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Do Not Display Range (126), Allow Proc While Sitting (147), Aura Never Bounces (148), Limit N (165), AI Doesn't Face Target (179), Always AOE Line of Sight (186), Not an Attack (194), Vehicle Immunity Category (218), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=301314)   : Server Side Script (77)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 6 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+
+Name             : Chill Streak (desc=PvP Talent) (id=204167) [Spell Family (15)] 
+School           : Frost
+Spell Type       : Magic
+Range            : 50000 yards
+Velocity         : 20 yards/sec
+Duration         : 0.3 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 118
+                 : 292
+                 : 881
+                 : 1615
+Affecting Spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Unholy Assault (207289 effects: #4, #5), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Luck of the Draw! (1218601 effects: #1, #2), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2)
+Family Flags     : 43, 120
+Attributes       : Do Not Sheath (18), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), No Aura Icon (60), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Allow Aura While Dead (116), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow Proc While Sitting (147), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), No Aura Log (202), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=301316)   : School Damage (2): frost
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.1507 | Target: Targeted Enemy (6)
+#2 (id=301317)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+Description      : $@spelldesc305392
+
+Name             : Chilled (desc=PvP Talent) (id=204206) [Spell Family (15)] 
+School           : Frost
+Spell Type       : Magic
+Spell Level      : 10
+Range            : 50000 yards
+Duration         : 4 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 118
+                 : 292
+Mechanic         : Snare
+Attributes       : Do Not Log (8), Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Do Not Display Range (126), Not In Spellbook (143), Show Mechanic as Combat Text (213), Aura Points On Client (268), Don't Cancel When All Effects are Disabled (353), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=301378)   : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: -70 | Scaled Value: -70 | Target: Targeted Enemy (6)
+Description      : $@spelldesc204160
+Tooltip          : Movement speed reduced by $w1%.
 
 Name             : Crystalline Swords (id=205164) [Spell Family (15)] 
 Class            : Death Knight
@@ -5344,6 +5511,34 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 24207 | Misc Value 2: 3772 | Target: Random in Area (86)
 Description      : $@spelldesc42650
 
+Name             : Toravon's Whiteout Bindings (id=205658) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 143
+                 : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=303882)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+Description      : While Pillar of Frost is active, you deal $s1% increased Frost damage.
+
+Name             : Toravon's Whiteout Bindings (id=205659) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 143
+                 : 187
+                 : 294
+Attributes       : No Aura Icon (60), Include In Advanced Combat Log (72)
+Aura Interrupt   : Leave World (19)
+Effects          :
+#1 (id=303885)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.333333 | Misc Value: 0x510 | Target: Self (1)
+                   Affected School(s): Frost
+Description      : $@spelldesc205658
+
 Name             : Red Thirst (id=205723) [Spell Family (15), Passive] 
 Talent Entry     : Blood [tree=spec, row=9, col=6, max_rank=1, req_points=20]
 Class            : Death Knight
@@ -5383,6 +5578,23 @@ Effects          :
 #3 (id=726131)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 Description      : Reduces the cooldown of Anti-Magic Shell by ${$s1/-1000} sec and increases its duration and amount absorbed by $s2%.
+
+Name             : Rattlegore Bone Legplates (id=205816) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 142
+                 : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=304135)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=370865)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Bone Shield (195181)
+                   Family Flags: 38
+Description      : Bone Shield grants an additional $s2% armor and increases your maximum Runic Power by ${$216140s1/10}.
 
 Name             : Heart Strike (id=206930) [Spell Family (15)] 
 Talent Entry     : Blood [tree=spec, row=1, col=1, max_rank=1, req_points=0, replace="Rune Strike" (id=316239)]
@@ -5497,6 +5709,26 @@ Effects          :
 #1 (id=306061)   : Direct Heal (10)
                    Base Value: 0.0026 | Scaled Value: 0.0026 | Target: Targeted Ally (21)
 Description      : $@spelldesc206940
+
+Name             : Tremble Before Me (id=206961) 
+School           : Shadow
+Spell Type       : None
+Range            : 50000 yards
+Duration         : 3 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 117
+                 : 292
+Proc Chance      : 101%
+Mechanic         : Flee
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+Attributes       : Fail on all targets immune (85), Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Aura Interrupt   : Damage (Script) (27)
+Effects          :
+#1 (id=306090)   : Apply Aura (6) | Stun (12)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Flee | Target: Targeted Enemy (6)
+Description      : $@spelldesc206960
+Tooltip          : Cowering in fear.
 
 Name             : Will of the Necropolis (id=206967) [Passive] 
 Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=2, req_points=23]
@@ -5647,6 +5879,36 @@ Effects          :
                    Family Flags: 21
 Description      : Reduces Pillar of Frost cooldown by ${$s1/-1000} sec.
 Variables        : $cd=${$m1/10}
+
+Name             : Hungering Rune Weapon (id=207127) [Spell Family (15)] 
+School           : Physical
+Spell Type       : Melee
+Spell Level      : 1
+GCD              : 1.5 seconds
+Velocity         : 4 yards/sec
+Duration         : 12 seconds
+Cooldown         : 1 seconds
+Charges          : 2 (30 seconds cooldown)
+Category         : 1614 (Type 0x1): Seal of Necrofantasia (212216 effect#1), Seal of Necrofantasia (212216 effect#2), Strive for Perfection (296320 effect#5), Strive for Perfection (299367 effect#5), Strive for Perfection (299369 effect#5), Benevolent Faerie (327710 effect#5), Accelerated Cold (337822 effect#2), Benevolent Faerie Fermata (345453 effect#5), Haunted Mask (356968 effect#5), Empower Rune Weapon (392962 effect#1), Empower Rune Weapon (392963 effect#1)
+Category Flags   : Reset Charges on Encounter End (4)
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 117
+                 : 292
+Affecting Spells : Accelerated Cold (337822 effect#1)
+Family Flags     : 14
+Attributes       : Do Not Sheath (18), No Threat (42), Extra Initial Period (169), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=306338)   : Apply Aura (6) | Periodic Energize Power (24): every 1.5 seconds
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 5 | Target: Self (1)
+#2 (id=306339)   : Apply Aura (6) | Periodic Energize Power (24): every 1.5 seconds
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 6 | Target: Self (1)
+#3 (id=473502)   : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Modified By: Accelerated Cold (337822 effect#1)
+Description      : Empower your rune weapon, gaining $s1 $LRune:Runes; and ${$m2/10} Runic Power instantly and every $t1 sec, and granting $s3% haste, for $d.
+Tooltip          : Gaining $s1 $LRune:Runes; and ${$m2/10} Runic Power and every $t1 sec.
+Haste increased by $s3%.
 
 Name             : Avalanche (id=207142) [Spell Family (15), Passive] 
 Talent Entry     : Frost [tree=spec, row=8, col=4, max_rank=1, req_points=20]
@@ -6088,6 +6350,66 @@ The Val'kyr gains $211947s1% increased damage for every $s5 Runic Power you spen
 
 |cFFFFFFFFGenerates ${$s6/10} Runic Power.|r
 
+Name             : Draugr, Girdle of the Everlasting King (id=208161) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 144
+                 : 187
+                 : 294
+Proc Chance      : 30%
+Proc Flags       : Yellow Melee
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=307965)   : Apply Aura (6) | Proc Trigger Spell (42): Draugr, Girdle of the Everlasting King
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 224166 | Target: Self (1)
+Description      : Festering Strike has a $h% chance to refund $224166m1 $Lrune:runes;.
+
+Name             : Service of Gorefiend (id=208706) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 142
+                 : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=308874)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+Description      : Heart Strike reduces the remaining cooldown on Vampiric Blood by $s1 seconds.
+
+Name             : Lesson of Razuvious (id=208713) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 144
+                 : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=308885)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 6 | Target: Self (1)
+Description      : Scourge Strike has a chance to burst an additional 1-$m1 Festering Wounds.
+
+Name             : Koltira's Newfound Will (id=208782) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 143
+                 : 187
+                 : 294
+Proc Chance      : 15%
+Proc Flags       : Yellow Melee
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=308992)   : Apply Aura (6) | Proc Trigger Spell (42): Koltira's Newfound Will
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 208783 | Target: Self (1)
+#2 (id=473709)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | Trigger Spell: 208783 | Target: Self (1)
+                   Affected Spells: Obliterate (49020), Obliterate Off-Hand (66198), Obliterate (222024), Obliterate (325461), Obliterate (1264082), Obliterate Off-Hand (1264083), Obliterate (1264084)
+                   Family Flags: 49
+Description      : Obliterate deals $s2% more damage and has a $h% chance to refund $208783m1 $Lrune:runes;.
+
 Name             : Koltira's Newfound Will (id=208783) [Spell Family (15)] 
 School           : Physical
 Spell Type       : None
@@ -6100,6 +6422,63 @@ Effects          :
 #1 (id=308993)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: rune | Target: Self (1)
 Description      : $@spelldesc208782
+
+Name             : Uvanimor, the Unbeautiful (id=208786) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Range            : 100 yards
+Labels           : 144
+                 : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=308998)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | Target: Active Pet (5)
+Description      : Your $?s207313[abomination's][ghoul's] melee attacks have a $s1% chance to activate 1 of your runes.
+
+Name             : Uvanimor, the Unbeautiful (id=208800) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Labels           : 144
+                 : 187
+                 : 294
+Attributes       : Include In Advanced Combat Log (72)
+Effects          :
+#1 (id=309017)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Resource: rune | Target: Self (1)
+Description      : $@spelldesc208786
+
+Name             : Shackles of Bryndaor (id=209228) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 142
+                 : 187
+                 : 294
+Proc Chance      : 101%
+Proc Flags       : Yellow Melee Taken, Generic Heal Taken, Magic Heal Taken
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Can Proc From Procs (122), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=309662)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 1 | Target: Self (1)
+#2 (id=309665)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 1 | Target: Self (1)
+Description      : Death Strike refunds $s1% of Runic Power spent if it heals you for more than $s2% of your maximum health.
+
+Name             : Shackles of Bryndaor (id=209232) [Spell Family (15)] 
+School           : Physical
+Spell Type       : Magic
+Labels           : 142
+                 : 143
+                 : 144
+                 : 187
+                 : 294
+Attributes       : Do Not Sheath (18), Include In Advanced Combat Log (72), Aura Points On Client (268)
+Effects          :
+#1 (id=309670)   : Energize Power (30)
+                   Base Value: 0 | Scaled Value: 0 | Resource: runic_power | Target: Self (1)
+Description      : $@spelldesc209228
 
 Name             : Heartbreaker (id=210738) 
 Class            : Death Knight
@@ -6116,6 +6495,23 @@ Effects          :
 #1 (id=312175)   : Energize Power (30)
                    Base Value: 20 | Scaled Value: 20 | Resource: runic_power | Target: Self (1)
 Description      : $@spelldesc206930
+
+Name             : Acherus Drapes (id=210852) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 142
+                 : 143
+                 : 144
+                 : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=312324)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Anti-Magic Shell (48707), Anti-Magic Shell (444740), Anti-Magic Shell (444741), Lesser Anti-Magic Shell (454863)
+                   Family Flags: 17
+Description      : Increases the duration of Anti-Magic Shell by $s1% and any damage it absorbs heals you.
 
 Name             : Remorseless Winter (desc=Talent) (id=211793) [Spell Family (15)] 
 Class            : Death Knight
@@ -6194,6 +6590,23 @@ Effects          :
 #1 (id=314162)   : Summon Pet (56)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 106848 | Misc Value 2: 1 | Radius: 0 - 5 yards | Target: at Self (18) -> at Radius in Area (91)
 Description      : $@spelldesc46584
+
+Name             : Seal of Necrofantasia (id=212216) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 143
+                 : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=314592)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1614 (Category) | Target: Self (1)
+                   Affected Spells (Category): Empower Rune Weapon (47568), Hungering Rune Weapon (207127)
+#2 (id=314593)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 1614 (Category)
+                   Affected Spells (Category): Empower Rune Weapon (47568), Hungering Rune Weapon (207127)
+Description      : $?s207127[Hungering Rune Weapon][Empower Rune Weapon] gains $s1 additional $Lcharge:charges; and recharges $s2% faster.
 
 Name             : Dark Arbiter (id=212412) [Spell Family (15), Hidden] 
 Class            : Death Knight
@@ -6313,6 +6726,71 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.09377 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : $@spelldesc207317
 
+Name             : Lanathel's Lament (id=212974) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 142
+                 : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=315911)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
+Description      : You deal $212975s1% more damage and receive $212975s2% more healing while standing in your Death and Decay.
+
+Name             : Lanathel's Lament (id=212975) [Spell Family (15)] 
+School           : Physical
+Spell Type       : Magic
+Duration         : Aura (infinite)
+Labels           : 142
+                 : 187
+                 : 294
+Attributes       : Do Not Sheath (18), Include In Advanced Combat Log (72), Aura Points On Client (268)
+Effects          :
+#1 (id=315912)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+#2 (id=315913)   : Apply Aura (6) | Modify Healing Received% (118)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Description      : $@spelldesc212974
+Tooltip          : Damage dealt increased by $s1%.
+Healing received increased by $s2%.
+
+Name             : Tak'theritrix's Command (id=215068) [Spell Family (15), Passive] 
+School           : Shadow
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 144
+                 : 187
+                 : 294
+Proc Chance      : 101%
+Proc Flags       : Magic Heal
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=319410)   : Apply Aura (6) | Proc Trigger Spell (42): Tak'theritrix's Command
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 215074 | Target: Self (1)
+Description      : Dark Transformation also empowers your $?s207349[Dark Arbiter][Gargoyle] and Army of the Dead for $215069d, increasing their damage by $215069s1%.
+
+Name             : Tak'theritrix's Command (id=215069) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 30 seconds
+Labels           : 144
+                 : 187
+                 : 294
+Attributes       : Include In Advanced Combat Log (72), Allow Aura While Dead (116), Do Not Display Range (126)
+Effects          :
+#1 (id=319411)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Current Target (25)
+                   Affected School(s): All
+#2 (id=319412)   : Apply Aura (6) | Scale% (Stacking) (61)
+                   Base Value: 15 | Scaled Value: 15 | Target: Current Target (25)
+Description      : $@spelldesc215068
+Tooltip          : All damage done increased by $s1%.
+
 Name             : Epidemic (id=215969) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
@@ -6333,6 +6811,33 @@ Effects          :
 #2 (id=328301)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.09377 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : $@spelldesc207317
+
+Name             : Perseverance of the Ebon Martyr (id=216059) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 143
+                 : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=321361)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+Description      : Howling Blast deals $s1% increased damage to enemies recently damaged by your Remorseless Winter.
+
+Name             : Rattlegore Bone Legplates (id=216140) [Spell Family (15), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 142
+                 : 187
+                 : 294
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Include In Advanced Combat Log (72)
+Effects          :
+#1 (id=321489)   : Apply Aura (6) | Modify Max Resource (418)
+                   Base Value: 600 | Scaled Value: 600 | Resource: runic_power | Target: Self (1)
+Description      : $@spelldesc205816
+Tooltip          : Increases maximum Runic Power by $s1.
 
 Name             : Fel Rip (id=216950) [Spell Family (15)] 
 Class            : Death Knight
@@ -6629,6 +7134,20 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.897313 | PvP Coefficient: 2 | Target: Targeted Enemy (6)
 Description      : $@spelldesc49143
 
+Name             : Pestilence Trigger (id=223032) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Duration         : 90 seconds
+Labels           : 100
+                 : 293
+Proc Chance      : 100%
+Proc Flags       : Killing Blow
+Triggered By     : Apocalypse (214839)
+Attributes       : Do Not Log (8), No Aura Cancel (31), No Aura Icon (60), Do Not Display Duration (170), No Aura Log (202), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=333196)   : Apply Aura (6) | Proc Trigger Spell (42): Diseased
+                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 215406 | Target: Self (1)
+
 Name             : Wraith Walk (id=223804) [Spell Family (15), Hidden] 
 Class            : Death Knight
 School           : Physical
@@ -6692,6 +7211,19 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Targeted Enemy (6)
 Description      : $@spelldesc223829
 Tooltip          : The next $w1 healing received will be absorbed.
+
+Name             : Draugr, Girdle of the Everlasting King (id=224166) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Labels           : 144
+                 : 187
+                 : 294
+Triggered By     : Draugr, Girdle of the Everlasting King (208161)
+Attributes       : Include In Advanced Combat Log (72)
+Effects          :
+#1 (id=335447)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Resource: rune | Target: Self (1)
+Description      : $@spelldesc208782
 
 Name             : Consumption (id=224685) [Spell Family (15)] 
 Class            : Death Knight
@@ -6807,6 +7339,121 @@ Effects          :
 Description      : $@spelldesc223829
 Tooltip          : The next $w1 healing received will be absorbed.
 
+Name             : Death March (id=235556) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee, Yellow Ranged, Magic Hostile Spell, Periodic
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=355994)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 11 | Target: Self (1)
+#2 (id=370867)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Affected Spells: Death Coil (47541), Death Coil (47632), Death Coil (47633), Death Strike (49998), Death Strike Off-Hand (66188), Necrotic Coil (1242174)
+                   Family Flags: 4, 13
+Description      : Death Strike and Death Coil deal $s2% increased damage and reduce the remaining cooldown of $?s152280[Defile][Death and Decay] by ${$s1/10}.1 sec.
+
+Name             : Skullflower's Haemostasis (id=235558) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 142
+                 : 187
+                 : 294
+Internal Cooldown: 0.5 seconds
+Proc Chance      : 101%
+Proc Flags       : Yellow Melee, Magic Hostile Spell
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=355998)   : Apply Aura (6) | Proc Trigger Spell (42): Haemostasis
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 235559 | Target: Self (1)
+Description      : Blood Boil increases the damage and healing done by your next Death Strike by $235559s1%. Stacks up to $235559u times.
+
+Name             : Haemostasis (id=235559) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 142
+                 : 187
+                 : 294
+Stacks           : 5 maximum
+Proc Chance      : 101%
+Proc Flags       : Yellow Melee, Magic Hostile Spell
+Triggered By     : Skullflower's Haemostasis (235558)
+Attributes       : Include In Advanced Combat Log (72)
+Aura Interrupt   : Change Specialization (38)
+Effects          :
+#1 (id=355999)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.4 | Target: Self (1)
+                   Affected Spells: Death Strike (45470), Death Strike (49998), Death Strike Off-Hand (66188), Lifeblood (1264304)
+                   Family Flags: 4, 66
+Description      : $@spelldesc235558
+Tooltip          : Damage and healing done by your next Death Strike increased by $s1%.
+
+Name             : Chilled Heart (id=235592) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=356045)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Every $t1 sec, gain a stack of Cold Heart, causing your next Chains of Ice to deal $248397s1 Shadowfrost damage. Stacks up to $235599u times.
+
+If Chains of Ice is used when you have $235599u stacks of Cold Heart, the target will also be stunned in a block of ice for $248406d.
+
+Name             : Cold Heart (id=235599) [Spell Family (15)] 
+School           : Shadowfrost
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 187
+                 : 294
+Stacks           : 20 maximum
+Proc Chance      : 101%
+Proc Flags       : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
+Attributes       : Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297)
+Aura Interrupt   : Change Specialization (38)
+Effects          :
+#1 (id=356057)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.25 | Target: Self (1)
+Description      : $@spelldesc235592
+Tooltip          : Your next Chains of Ice will deal $248397s1 Shadowfrost damage.
+
+Name             : Consort's Cold Core (id=235605) [Spell Family (15), Passive] 
+School           : Frost
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=356071)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Frostwyrm's Fury (279302), Frostwhelp's Indignation (287321)
+                   Family Flags: 46
+Description      : Frostwyrm's Fury has $s1% reduced cooldown and Freezes all enemies hit for $235612d.
+
+Name             : Frost Breath (id=235612) [Spell Family (15)] 
+School           : Frost
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 3 seconds
+Labels           : 99
+                 : 293
+Mechanic         : Stun
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Suppress Caster Procs (112), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Aura Unique Per Caster (189), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=356089)   : Apply Aura (6) | Stun (12)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+Description      : Freezes enemies for $d.
+Tooltip          : Frozen.
+
 Name             : Howling Blast (id=237680) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
@@ -6825,6 +7472,78 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.093615 | PvP Coefficient: 1.3 | Radius: 0 - 10 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc49184
 
+Name             : Rethu's Incessant Courage (id=241330) [Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 25: Warrior Spells
+                 : 26: Paladin Spells
+                 : 27: Death Knight Spells
+                 : 125
+                 : 127
+                 : 132
+                 : 144
+                 : 145
+                 : 146
+                 : 147
+                 : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Extra Initial Period (169), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=366178)   : Apply Aura (6) | Periodic Trigger Spell (23): Rethu's Incessant Courage every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 242601 | Target: Self (1)
+Description      : When an enemy is within $242601A1 yards of you, you heal for $242597s1% of your maximum health every $242597t1 sec. When no enemies are within $242601A1 yards of you, your movement speed is increased by $242599s1%.
+
+Name             : Rethu's Incessant Courage (id=242597) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 25: Warrior Spells
+                 : 26: Paladin Spells
+                 : 27: Death Knight Spells
+                 : 125
+                 : 127
+                 : 132
+                 : 142
+                 : 143
+                 : 144
+                 : 145
+                 : 146
+                 : 147
+                 : 187
+                 : 289: Blood Death Knight (462061 effect#3), Vengeance Demon Hunter (462067 effect#3), Protection Warrior (462119 effect#3)
+                 : 294
+Attributes       : No Aura Cancel (31), Include In Advanced Combat Log (72), Ignore Healing Modifiers (219), Aura Points On Client (268), Do Not Log Full Overheal (323), Always Allow Negative Healing Percent Modifiers (442)
+Effects          :
+#1 (id=368358)   : Apply Aura (6) | Periodic Heal% (20): every 3 seconds
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Modified By: Blood Death Knight (462061 effect#3), Vengeance Demon Hunter (462067 effect#3), Protection Warrior (462119 effect#3)
+Description      : Rethu's Incessant Courage heals you for $s1% of your maximum health every $t1 sec.
+Tooltip          : Rethu's Incessant Courage heals you for $s1% of your maximum health every $t1 sec.
+
+Name             : Rethu's Incessant Courage (id=242599) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 25: Warrior Spells
+                 : 26: Paladin Spells
+                 : 27: Death Knight Spells
+                 : 125
+                 : 142
+                 : 143
+                 : 144
+                 : 145
+                 : 146
+                 : 147
+                 : 187
+                 : 294
+Attributes       : No Aura Cancel (31), Aura Points On Client (268)
+Effects          :
+#1 (id=368366)   : Apply Aura (6) | Increase Speed% (31)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+Description      : Rethu's Incessant Courage increases your movement speed by $s1%.
+Tooltip          : Rethu's Incessant Courage increases your movement speed by $s1%.
+
 Name             : Death Grip (id=243487) [Spell Family (15), Hidden] 
 Class            : Death Knight
 School           : Physical
@@ -6839,6 +7558,115 @@ Effects          :
 #1 (id=369991)   : Directional Knock (138)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Target: Targeted Enemy (6)
 Description      : $@spelldesc49576
+
+Name             : Soul of the Deathlord (id=247518) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=377158)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Gain one of the following talents based on your specialization:
+
+|cFFFFFFFFBlood:|r Foul Bulwark
+|cFFFFFFFFFrost:|r Gathering Storm
+|cFFFFFFFFUnholy:|r Bursting Sores
+
+Name             : Soul of the Deathlord (id=247523) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=377163)   : Apply Aura (6) | Grant Talent (224)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 19221 | Misc Value 2: 151640 | Target: Self (1)
+
+Name             : Soul of the Deathlord (id=247524) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=377164)   : Apply Aura (6) | Grant Talent (224)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22531 | Misc Value 2: 151640 | Target: Self (1)
+
+Name             : Soul of the Deathlord (id=247525) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=377165)   : Apply Aura (6) | Grant Talent (224)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22027 | Misc Value 2: 151640 | Target: Self (1)
+
+Name             : Soul of the Battlelord (id=247610) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=463984)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Gain one of the following talents based on your specialization:
+
+|cFFFFFFFFArms:|r Anger Management
+|cFFFFFFFFFury:|r Massacre
+|cFFFFFFFFProtection:|r Vengeance
+
+Name             : Soulflayer's Corruption (id=248066) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=464729)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Blood Plague (55078), Consumption (1263872)
+                   Family Flags: 57
+Description      : Blood Plague gains $s1% increased damage and healing.
+
+Name             : Cold Heart (id=248397) [Spell Family (15)] 
+School           : Shadowfrost
+Spell Type       : Magic
+Range            : 100 yards
+Labels           : 187
+                 : 294
+Attributes       : Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Display Range (126)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40)
+Effects          :
+#1 (id=465322)   : School Damage (2): shadowfrost
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21 | PvP Coefficient: 0.25 | Target: Targeted Enemy (6)
+Description      : $@spelldesc235592
+Tooltip          : Stunned.
+
+Name             : Cold Heart (id=248406) [Spell Family (15)] 
+School           : Frost
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 4 seconds
+Labels           : 187
+                 : 294
+Mechanic         : Stun
+Attributes       : Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Display Range (126), Ignore Caster Damage Modifiers (221)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40)
+Effects          :
+#1 (id=465340)   : Apply Aura (6) | Stun (12)
+                   Base Value: 1 | Scaled Value: 1 | Target: Targeted Enemy (6)
+Description      : $@spelldesc235592
+Tooltip          : Stunned.
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -7477,6 +8305,179 @@ Effects          :
 Description      : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1.
 Tooltip          : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $w1.
 
+Name             : Deep Cuts (id=272684) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Azerite Power Id : 106
+Triggered By     : Deep Cuts (272685)
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=723724)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 431.2386 (coefficient=1.533742) | PvP Coefficient: 0.5 | Target: Self (1)
+Description      : Heart Strike amplifies your Blood Plague on your primary target for $272685d, causing it to drain an additional $s1 health each time it drains.
+
+Name             : Deep Cuts (id=272685) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 15 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Attributes       : No Threat (42), Aura Points On Client (268)
+Effects          :
+#1 (id=723727)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+#2 (id=736267)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 272684
+Description      : $@spelldesc272684
+Tooltip          : Blood Plague drains an additional $w1 health each time it drains.
+
+Name             : Icy Citadel (id=272718) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Azerite Power Id : 108
+Triggered By     : Icy Citadel (272723)
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=723791)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Icy Citadel | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 170.1045 (coefficient=1.29771) | PvP Coefficient: 0.5 | Trigger Spell: 272719 | Target: Self (1)
+#2 (id=723792)   : Dummy (3)
+                   Base Value: 2000 | Scaled Value: 2000
+Description      : When Pillar of Frost expires, your Strength is increased by $s1 for $272723d. This effect lasts ${$s2/1000} sec longer for each Obliterate and Frostscythe critical strike during Pillar of Frost.
+
+Name             : Icy Citadel (id=272719) [Spell Family (15), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Proc Chance      : 100%
+Proc Flags       : Generic Heal
+Triggered By     : Icy Citadel (272718)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=723793)   : Apply Aura (6) | Proc Trigger Spell (42): Icy Citadel
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 272721 | Target: Self (1)
+Description      : $@spelldesc272718
+
+Name             : Icy Citadel (id=272721) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Duration         : 20 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Internal Cooldown: 0.5 seconds
+Stacks           : 20 maximum
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
+Triggered By     : Icy Citadel (272719)
+Attributes       : No Aura Cancel (31), Can Proc From Procs (122), Do Not Display Duration (170), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Do Not Consume Aura Stack On Proc (428)
+Effects          :
+#1 (id=723795)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=723796)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Description      : $@spelldesc272718
+Tooltip          : When Pillar of Frost expires, you will gain $w1 Strength for $<duration> sec.
+Variables        : $duration=${$272723d+(($w2-1)*$272718s~2/1000)}
+
+Name             : Icy Citadel (id=272723) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Duration         : 6 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=723800)   : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Str | Target: Self (1)
+#2 (id=723807)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 272718
+Description      : $@spelldesc272718
+Tooltip          : Strength increased by $w1.
+
+Name             : Bone Spike Graveyard (id=273088) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Azerite Power Id : 140
+Triggered By     : Bone Spike Graveyard (273089)
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=724416)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 2069.946 (coefficient=7.361964) | PvP Coefficient: 0.5 | Target: Self (1)
+#2 (id=724417)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 2587.433 (coefficient=9.202455) | PvP Coefficient: 0.5 | Target: Self (1)
+Description      : Casting $?s152280[Defile][Death and Decay] impales enemies with bone spikes, inflicting $s1 Physical damage and healing you for $s2 per enemy.
+
+Name             : Bone Spike Graveyard (id=273089) [Spell Family (15)] 
+School           : Physical
+Spell Type       : Melee
+Range            : 100 yards
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+                 : 881
+Affecting Spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Unholy Assault (207289 effects: #4, #5), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Luck of the Draw! (1218601 effects: #1, #2), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2)
+Family Flags     : 43
+Attributes       : Do Not Display Range (126), No Attack Dodge (247), No Attack Parry (248), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=724418)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+#2 (id=724419)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 273088
+Description      : $@spelldesc273088
+
+Name             : Bone Spike Graveyard (id=273090) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=724420)   : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc273088
+
+Name             : Latent Chill (id=273093) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Azerite Power Id : 141
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=724423)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 131.0805 (coefficient=1) | PvP Coefficient: 0.5 | Target: Self (1)
+#2 (id=724424)   : Dummy (3)
+                   Base Value: 3 | Scaled Value: 3
+Description      : Frost Strike deals an additional ${$s1+($s1/2)} damage if you have at least $s2 empty runes.
+
 Name             : Horrid Experimentation (id=273095) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Shadow
@@ -7709,6 +8710,76 @@ Effects          :
 Description      : $@spelldesc273953
 Tooltip          : Leech increased by $s1%.
 
+Name             : Marrowblood (id=274057) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Azerite Power Id : 197
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=726166)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 57.67541 (coefficient=0.44) | PvP Coefficient: 0.5 | Target: Self (1)
+Description      : Death Strike heals for an additional $s1 for each remaining charge of Bone Shield.
+
+Name             : Glacial Contagion (id=274070) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Triggered By     : Glacial Contagion (274074)
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=726180)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 1414.463 (coefficient=5.030674) | Trigger Spell: 274071 | Target: Self (1)
+#2 (id=726181)   : Dummy (3) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 470.9128 (coefficient=1.674847) | Target: Self (1)
+Description      : Your autoattacks have a chance to apply Glacial Contagion, dealing ${$s1*($274074d/$274074t1)} Frost damage over $274074d. Obliterate deals an additional $s2 damage to targets infected with Glacial Contagion.
+
+Name             : Glacial Contagion (id=274071) [Spell Family (15), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Proc Chance      : 100%
+Real PPM         : 2 (Haste multiplier)
+Proc Flags       : White Melee, Yellow Melee
+Triggered By     : Glacial Contagion (274070)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=726182)   : Apply Aura (6) | Proc Trigger Spell (42): Glacial Contagion
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 274074 | Target: Self (1)
+Description      : $@spelldesc274070
+
+Name             : Glacial Contagion (id=274074) [Spell Family (15)] 
+School           : Frost
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 14 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+                 : 881
+Affecting Spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Unholy Assault (207289 effects: #4, #5), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Luck of the Draw! (1218601 effects: #1, #2), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2)
+Triggered By     : Glacial Contagion (274071)
+Family Flags     : 43, 120
+Attributes       : Periodic Can Crit (265), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=726188)   : Apply Aura (6) | Periodic Damage (3): frost every 2 seconds
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+#2 (id=726189)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 274070
+Description      : $@spelldesc274070
+Tooltip          : Dealing $w1 Frost damage every $t1 sec.
+
 Name             : Festermight (id=274081) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
@@ -7915,6 +8986,60 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 275917
 Description      : $@spelldesc275917
 
+Name             : Harrowing Decay (id=275929) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Azerite Power Id : 244
+Triggered By     : Harrowing Decay (275931)
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=729285)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Harrowing Decay | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 526.1113 (coefficient=1.871166) | PvP Coefficient: 0.5 | Trigger Spell: 275930 | Target: Self (1)
+Description      : Death Coil infects the target with Harrowing Decay, dealing ${$s1*($275931d/$275931t1)} Shadow damage over $275931d.
+
+Name             : Harrowing Decay (id=275930) [Spell Family (15), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Proc Chance      : 100%
+Proc Flags       : Magic Hostile Spell
+Triggered By     : Harrowing Decay (275929)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=729286)   : Apply Aura (6) | Proc Trigger Spell (42): Harrowing Decay
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 275931 | Target: Self (1)
+Description      : $@spelldesc275929
+
+Name             : Harrowing Decay (id=275931) [Spell Family (15)] 
+School           : Shadow
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 4 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+                 : 881
+Affecting Spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Unholy Assault (207289 effects: #4, #5), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Luck of the Draw! (1218601 effects: #1, #2), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2)
+Triggered By     : Harrowing Decay (275930)
+Family Flags     : 43, 78
+Attributes       : Periodic Can Crit (265), Aura Points On Client (268), Rolling Periodic (334), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Periodic Refresh Extends Duration (436)
+Effects          :
+#1 (id=729287)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds | Attributes: Compute Points Only At Cast Time (15)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+#2 (id=729288)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 275929
+Description      : $@spelldesc275929
+Tooltip          : Dealing $w1 Shadow damage every $t1 sec.
+
 Name             : Harbinger of Doom (id=276023) [Spell Family (15), Passive] 
 Talent Entry     : Unholy [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Death Knight
@@ -8007,6 +9132,170 @@ Effects          :
                    Family Flags: 39
 Description      : Your Summon Gargoyle spell summons a Val'kyr instead of a Gargoyle.
 
+Name             : Eternal Rune Weapon (id=278479) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Azerite Power Id : 348
+Triggered By     : Eternal Rune Weapon (278543)
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=734194)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Eternal Rune Weapon | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 163.8506 (coefficient=1.25) | PvP Coefficient: 0.5 | Trigger Spell: 278534 | Target: Self (1)
+#2 (id=734195)   : Dummy (3) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+#3 (id=734342)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+Description      : Dancing Rune Weapon grants you $s1 Strength, and each rune spent increases its duration by ${$s2/10}.1 sec, up to a maximum of $s3 sec.
+
+Name             : Killer Frost (id=278480) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Azerite Power Id : 346
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=734196)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Killer Frost | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 650.3079 (coefficient=2.312883) | PvP Coefficient: 0.5 | Trigger Spell: 278603 | Target: Self (1)
+#2 (id=734501)   : Dummy (3)
+                   Base Value: 15 | Scaled Value: 15
+Description      : Frost Strike deals $s1 additional damage with each hit and has a $s2% chance on critical strikes to grant Killing Machine.
+
+Name             : Cankerous Wounds (id=278482) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Azerite Power Id : 350
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=734199)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 5174.864 (coefficient=18.40491) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Affected Spells: Festering Strike (85948), Festering Scythe (458128), Festering Strike (1240994)
+                   Family Flags: 73
+#2 (id=734200)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+Description      : Festering Strike deals $s1 additional damage and has a $s2% increased chance of applying 3 Festering Wounds.
+
+Name             : Bones of the Damned (id=278484) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Azerite Power Id : 349
+Triggered By     : Bones of the Damned (279503)
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=734204)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Bones of the Damned | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 55.0538 (coefficient=0.42) | PvP Coefficient: 0.5 | Trigger Spell: 279502 | Target: Self (1)
+#2 (id=734205)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+Description      : Marrowrend has a chance to grant an extra charge of Bone Shield. Bone Shield increases your Armor by $s1. 
+
+Name             : Frozen Tempest (id=278487) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Azerite Power Id : 347
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=734208)   : Dummy (3)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+#2 (id=734209)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 379.49 (coefficient=1.349693) | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Remorseless Winter (196771), Remorseless Winter (211793)
+                   Family Flags: 126
+#3 (id=735829)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 379.49 (coefficient=1.349693) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Affected Spells: Remorseless Winter (196771), Remorseless Winter (211793)
+                   Family Flags: 126
+Description      : Remorseless Winter deals an additional $s2 damage. The first time Remorseless Winter deals damage to $s1 different enemies, you gain Rime.
+
+Name             : Last Surprise (id=278489) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Azerite Power Id : 351
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=734211)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 3356.168 (coefficient=11.93654) | PvP Coefficient: 0.5 | Target: Self (1)
+#2 (id=1026898)  : Dummy (3)
+                   Base Value: 33 | Scaled Value: 33 | Target: Self (1)
+Description      : When your ghouls expire, they explode in viscera dealing $s1 Shadow damage to nearby enemies. 
+
+Name             : Eternal Rune Weapon (id=278534) [Spell Family (15), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Internal Cooldown: 1 seconds
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Triggered By     : Eternal Rune Weapon (278479)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=734297)   : Apply Aura (6) | Proc Trigger Spell (42): Eternal Rune Weapon
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 278543 | Target: Self (1)
+Description      : $@spelldesc278479
+
+Name             : Eternal Rune Weapon (id=278543) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 8 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Proc Chance      : 101%
+Proc Flags       : White Melee, Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Triggered By     : Eternal Rune Weapon (278534)
+Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=734315)   : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Str | Target: Self (1)
+#2 (id=734316)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 278479
+Description      : $@spelldesc278479
+Tooltip          : Strength increased by $w1.
+
+Name             : Killer Frost (id=278603) [Spell Family (15), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee
+Triggered By     : Killer Frost (278480)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=734430)   : Apply Aura (6) | Proc Trigger Spell (42): Killing Machine
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 51124 | Target: Self (1)
+Description      : $@spelldesc274070
+
 Name             : Frostwyrm's Fury (id=279302) [Spell Family (15)] 
 Talent Entry     : Frost [tree=spec, row=7, col=3, max_rank=1, req_points=8]
 Class            : Death Knight
@@ -8051,6 +9340,41 @@ Effects          :
 Description      : $@spelldesc279302
 Tooltip          : Movement speed slowed by $s2%.
 
+Name             : Bones of the Damned (id=279502) [Spell Family (15), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee
+Triggered By     : Bones of the Damned (278484)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=735814)   : Apply Aura (6) | Proc Trigger Spell (42): Bones of the Damned
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279503 | Target: Self (1)
+Description      : $@spelldesc278484
+
+Name             : Bones of the Damned (id=279503) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Duration         : 30 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Triggered By     : Bones of the Damned (279502)
+Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=735815)   : Apply Aura (6) | Resistance (22)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
+#2 (id=735816)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 278484 | Target: Self (1)
+Description      : $@spelldesc278484
+Tooltip          : Armor increased by $w1.
+
 Name             : Last Surprise (id=279606) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
@@ -8064,6 +9388,81 @@ Effects          :
 #1 (id=736016)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Self (18) -> at Enemy in Area (16)
 Description      : When your ghouls expire, they explode in viscera dealing $s1 Shadow damage to nearby enemies. 
+
+Name             : Runic Barrier (id=280010) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 378
+                 : 394
+Azerite Power Id : 201
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=737261)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Runic Barrier
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 280132 | Target: Self (1)
+#2 (id=737262)   : Dummy (3)
+                   Base Value: 6 | Scaled Value: 6
+#3 (id=737448)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 35702.43 (coefficient=126.9792) | PvP Coefficient: 0.2 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Anti-Magic Shell (48707), Anti-Magic Shell (444740), Anti-Magic Shell (444741), Lesser Anti-Magic Shell (454863)
+                   Family Flags: 17
+Description      : Anti-Magic Shell absorbs $s3 additional damage and its duration is increased to $s2 seconds.
+
+Name             : March of the Damned (id=280011) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 378
+                 : 394
+Azerite Power Id : 465
+Triggered By     : March of the Damned (280149)
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=737263)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): March of the Damned | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 127.4376 (coefficient=0.972209) | PvP Coefficient: 0.2 | Trigger Spell: 280143 | Target: Self (1)
+#2 (id=737264)   : Dummy (3)
+                   Base Value: 40 | Scaled Value: 40
+Description      : When you use Death's Advance, gain $s1 Speed for $280149d. The cooldown of Death's Advance is reduced to $s2 seconds.
+
+Name             : Runic Barrier (id=280132) [Spell Family (15), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 378
+                 : 394
+Triggered By     : Runic Barrier (280010)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=737455)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
+                   Base Value: 1000 | Scaled Value: 1000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Anti-Magic Shell (48707), Anti-Magic Shell (444740), Anti-Magic Shell (444741), Lesser Anti-Magic Shell (454863)
+                   Family Flags: 17
+Description      : $@spelldesc280010
+
+Name             : March of the Damned (id=280143) [Spell Family (15), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 378
+                 : 394
+Proc Chance      : 101%
+Proc Flags       : Cast Successful
+Triggered By     : March of the Damned (280011)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=737468)   : Apply Aura (6) | Proc Trigger Spell (42): March of the Damned
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 280149 | Target: Self (1)
+#2 (id=737474)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -5000 | Scaled Value: -5000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Death's Advance (48265), Death's Messenger (440447), Death Charge (444347), Price of Progress (1233429)
+                   Family Flags: 123
+Description      : $@spelldesc280011
 
 Name             : Army of the Dead (desc=PvP Talent) (id=280447) [Spell Family (15)] 
 Class            : Death Knight
@@ -8538,6 +9937,79 @@ Description      : Wind up, then unleash your might upon your foe, dealing $<dam
 Tooltip          : Stunned.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*0.75,$AP*0.75)*$pctD*(1+$@versadmg)}
 
+Name             : Magus of the Dead (id=288417) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Azerite Power Id : 109
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=752014)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 2501.184 (coefficient=8.895705) | PvP Coefficient: 0.5 | Target: Self (1)
+Description      : Apocalypse and Army of the Dead additionally summon a Magus of the Dead for $288544d who hurls Frostbolts and Shadow Bolts at your foes, dealing $s1 damage each. 
+
+Name             : Cold Hearted (id=288424) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 378
+                 : 394
+Azerite Power Id : 549
+Triggered By     : Cold Hearted (288426)
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=752031)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Cold Hearted | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 6899.819 (coefficient=24.53988) | PvP Coefficient: 0.2 | Trigger Spell: 288425 | Target: Self (1)
+#2 (id=752032)   : Dummy (3)
+                   Base Value: 15 | Scaled Value: 15
+Description      : Icebound Fortitude heals for $s1 every sec and its cooldown is reduced by $s2 seconds.
+
+Name             : Cold Hearted (id=288425) [Spell Family (15), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 378
+                 : 394
+Proc Chance      : 101%
+Proc Flags       : Cast Successful
+Triggered By     : Cold Hearted (288424)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=752033)   : Apply Aura (6) | Proc Trigger Spell (42): Cold Hearted
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 288426 | Target: Self (1)
+#2 (id=752036)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -15000 | Scaled Value: -15000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Icebound Fortitude (48792)
+                   Family Flags: 20
+#3 (id=756182)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -5000 | Scaled Value: -5000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Lichborne (49039), Lichborne (50397)
+                   Family Flags: 36
+Description      : $@spelldesc288424
+
+Name             : Magus of the Dead (id=288544) [Spell Family (15)] 
+School           : Shadow
+Spell Type       : None
+Duration         : 20 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+Affecting Spells : Outnumber (1241705 effect#1)
+Family Flags     : 96
+Attributes       : No Threat (42), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=752223)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8.5 yards | Target: Back of Self (48)
+#2 (id=752224)   : Summon Guardian (28)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 148797 | Misc Value 2: 3772 | Target: Random in Area (86)
+Description      : $@spelldesc288417
+
 Name             : Shadow Bolt (id=288546) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
@@ -8627,6 +10099,81 @@ Effects          :
 #1 (id=752829)   : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 149555 | Misc Value 2: 4567 | Radius: 3 yards | Target: Front Left of Self (44)
 Description      : $@spelldesc1242608
+
+Name             : Bloody Runeblade (id=289339) [Spell Family (15), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Azerite Power Id : 243
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=753644)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Bloody Runeblade
+                   Base Value: 4 | Scaled Value: 4 | Trigger Spell: 289347 | Target: Self (1)
+#2 (id=753654)   : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 198.642 (coefficient=1.51542) | PvP Coefficient: 0.5 | Target: Self (1)
+Description      : When Crimson Scourge activates, you gain $s2 Haste for $289349d, and immediately gain ${$289348m3/10} Runic Power.
+
+Name             : Bloody Runeblade (id=289347) [Spell Family (15), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Internal Cooldown: 10 seconds
+Proc Chance      : 101%
+Proc Flags       : Generic Heal, Magic Heal
+Triggered By     : Bloody Runeblade (289339)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=753653)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+Description      : $@spelldesc289339
+
+Name             : Bloody Runeblade (id=289348) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Attributes       : Aura Points On Client (268)
+Effects          :
+#1 (id=753657)   : Energize Power (30)
+                   Base Value: 50 | Scaled Value: 50 | Resource: runic_power | Target: Self (1)
+Description      : $@spelldesc289339
+
+Name             : Bloody Runeblade (id=289349) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Duration         : 5 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 394
+Attributes       : Aura Points On Client (268)
+Effects          :
+#1 (id=753658)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
+Description      : $@spelldesc289339
+Tooltip          : Haste increased by $w1.
+
+Name             : Magus of the Dead (id=290187) [Spell Family (15), Hidden] 
+School           : Shadow
+Spell Type       : None
+Duration         : 30 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=755188)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc288417
 
 Name             : Disease Cloud (id=290577) 
 Class            : Death Knight
@@ -8963,6 +10510,29 @@ Effects          :
 #1 (id=780238)   : Energize Power% (137)
                    Base Value: 0 | Scaled Value: 0 | Resource: focus | Target: Self (1)
 Description      : $@spelldesc296321
+
+Name             : Chill Streak (id=305392) [Spell Family (15)] 
+School           : Frost
+Spell Type       : Magic
+Resource         : 1 Rune (5) (id=265395)
+Resource         : -10 Runic Power (6) (id=265689)
+Range            : 40 yards
+GCD              : 1.5 seconds
+Cooldown         : 45 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 118
+                 : 292
+                 : 2899: Death Knight Frost 10.2 Class Set 4pc (422853 effect#1)
+Stance Mask      : 0x01000000
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Reflection (39), Do Not Reset Combat Timers (81), Allow While Not Shapeshifted (caster form) (83), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=782554)   : Dummy (3)
+                   Base Value: 9 | Scaled Value: 9 | Target: Targeted Enemy (6)
+                   Modified By: Death Knight Frost 10.2 Class Set 4pc (422853 effect#1)
+Description      : Deals $204167s4 Frost damage to the target and reduces their movement speed by $204206m2% for $204206d.
+
+Chill Streak bounces up to $m1 times between closest targets within $204165A1 yards.
 
 Name             : Swarming Mist (desc=Venthyr) (id=311648) [Spell Family (15)] 
 Class            : Death Knight
@@ -10935,6 +12505,16 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 1 | Target: Self (1)
 Description      : Death Strike refunds $s1% of Runic Power spent if it heals you for more than $s2% of your maximum health.
 
+Name             : Bryndaor's Might (id=334502) [Spell Family (15)] 
+School           : Physical
+Spell Type       : Magic
+Labels           : 931
+Attributes       : Do Not Sheath (18), Include In Advanced Combat Log (72), Aura Points On Client (268)
+Effects          :
+#1 (id=830481)   : Energize Power (30)
+                   Base Value: 0 | Scaled Value: 0 | Resource: runic_power | Target: Self (1)
+Description      : $@spelldesc334501
+
 Name             : Crimson Rune Weapon (id=334525) [Spell Family (15), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
@@ -10946,6 +12526,18 @@ Effects          :
 #2 (id=880874)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Dancing Rune Weapon generates $s2 Bone Shield charges. When a charge of Bone Shield is consumed, the cooldown of Dancing Rune Weapon is reduced by ${$s1/-1000} sec. Additionally, when Dancing Rune Weapon fades, your Rune regeneration rate is increased by $334526s1% for $334526d.
+
+Name             : Crimson Rune Weapon (id=334526) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Duration         : 10 seconds
+Labels           : 931
+Attributes       : Include In Advanced Combat Log (72)
+Effects          :
+#1 (id=830517)   : Apply Aura (6) | Modify Power Regen (110)
+                   Base Value: 40 | Scaled Value: 40 | Resource: rune | Target: Self (1)
+Description      : $@spelldesc334525
+Tooltip          : Rune recharge rate increased by $s1%.
 
 Name             : Vampiric Aura (id=334547) [Spell Family (15), Passive, Hidden] 
 School           : Physical
@@ -11033,6 +12625,32 @@ Effects          :
                    Family Flags: 46
 Description      : Frostwyrm's Fury has $s1% reduced cooldown and Freezes all enemies hit for $334693d.
 
+Name             : Absolute Zero (id=334693) [Spell Family (15)] 
+School           : Frost
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 3 seconds
+Labels           : 931
+Mechanic         : Stun
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Suppress Caster Procs (112), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Aura Unique Per Caster (189), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=830774)   : Apply Aura (6) | Stun (12)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+Description      : Freezes enemies for $d.
+Tooltip          : Frozen.
+
+Name             : Grip of the Everlasting (id=334722) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Duration         : 3 seconds
+Labels           : 931
+Attributes       : Can Proc From Procs (122), Can Proc from Suppressed Caster Procs (385)
+Effects          :
+#1 (id=830827)   : Apply Aura (6) | Dummy (4)
+                   Base Value: -25000 | Scaled Value: -25000 | Target: Self (1)
+Description      : For $d after casting Death Grip, you may cast the spell a second time without regard for its cooldown.
+Tooltip          : Able to cast an additional Death Grip.
+
 Name             : Grip of the Everlasting (id=334724) [Spell Family (15), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
@@ -11068,6 +12686,19 @@ Effects          :
 #1 (id=831016)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Your attacks have a chance to summon a Super Zombie that shambles forward and explodes, dealing $?a137007[${((100+$77515m1)/100*$334851s1)}][$334851s1] Shadow damage and applying a Festering Wound to all nearby enemies. Deals reduced damage beyond $334851s2 targets.
+
+Name             : Necroblast (id=334851) [Spell Family (15)] 
+School           : Shadow
+Spell Type       : Magic
+Labels           : 931
+Attributes       : Allow Cast While Dead (23), Allow Aura While Dead (116), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=831038)   : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.575 | Radius: 0 - 8 yards | Target: at Self (18) -> at Enemy in Area (16)
+#2 (id=831084)   : Dummy (3)
+                   Base Value: 8 | Scaled Value: 8
+Description      : Deals $s1 Shadow damage to enemies within $A1 yards.
+Tooltip          : Deals $s1 Shadow damage to enemies within $A1 yards.
 
 Name             : Frenzied Monstrosity (id=334888) [Spell Family (15), Passive] 
 School           : Physical
@@ -11152,6 +12783,21 @@ Effects          :
 #2 (id=831631)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : You and your minions gain $?a137008[$s2%][$335180s1%] Haste while you are inside your Death and Decay and enemies damaged by your Death and Decay have a chance to cower in place for $206961d.
+
+Name             : Death Turf (id=335180) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : Aura (infinite)
+Labels           : 931
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Attributes       : No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Aura Points On Client (268)
+Effects          :
+#1 (id=831628)   : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+Description      : $@spelldesc335177
+Tooltip          : Haste increased by $w1%.
 
 Name             : Abomination Limb (id=335486) [Spell Family (15)] 
 Class            : Death Knight
@@ -11336,6 +12982,27 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
 Description      : Obliterate increases the damage of your next Frost Strike by |cFFFFFFFF${$s1}.1%|r, stacks up to $337936u times.
 
+Name             : Eradicating Blow (id=337936) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Spell Level      : 60
+Duration         : 10 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+                 : 999
+Stacks           : 2 maximum
+Proc Chance      : 101%
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=836215)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Affected Spells: Frost Strike (49143), Frost Strike Off-Hand (66196), Frost Strike (222026), Frost Strike (325464), Frostbane (1228443)
+                   Family Flags: 34, 110
+Description      : $@spelldesc337934
+Tooltip          : Frost Strike damage increased by $w1%.
+
 Name             : Blood Bond (id=337957) [Spell Family (15), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
@@ -11353,6 +13020,20 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 Description      : Rune Tap heals you and your party for |cFFFFFFFF${$s1}.1%|r of your maximum health.
 
+Name             : Blood Bond (id=337960) 
+School           : Shadow
+Spell Type       : None
+Spell Level      : 60
+Range            : 100 yards
+Labels           : 27: Death Knight Spells
+                 : 292
+                 : 999
+Attributes       : Do Not Sheath (18), No Aura Icon (60), Include In Advanced Combat Log (72), Can't Crit (93), Ignore Caster Modifiers (125), Ignore Healing Modifiers (219), Aura Points On Client (268), Not In Spellbook Until Learned (269), Always Allow Negative Healing Percent Modifiers (442)
+Effects          :
+#1 (id=836256)   : Direct Heal% (136)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 40 yards | Target: Party in Area (20)
+Description      : $@spelldesc337957
+
 Name             : Hardened Bones (id=337972) [Spell Family (15), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
@@ -11369,6 +13050,23 @@ Effects          :
 #1 (id=836271)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
 Description      : While Lichborne is active the damage you take is reduced by |cFFFFFFFF${$s1}.1%|r.
+
+Name             : Hardened Bones (id=337973) [Spell Family (15)] 
+School           : Shadow
+Spell Type       : None
+Spell Level      : 60
+Duration         : 10 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+                 : 999
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=836274)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Description      : $@spelldesc337972
+Tooltip          : Damage taken reduced by $w1% while Lichborne is active.
 
 Name             : Embrace Death (id=337980) [Spell Family (15), Passive, Hidden] 
 School           : Physical
@@ -11403,6 +13101,27 @@ Effects          :
 #1 (id=836294)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : Remorseless Winter deals |cFFFFFFFF${$s1}.1%|r increased damage to enemies it hits, stacking up to $337989u times.
+
+Name             : Everfrost (id=337989) [Spell Family (15)] 
+School           : Frost
+Spell Type       : None
+Spell Level      : 60
+Range            : 100 yards
+Duration         : 8 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+                 : 999
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Attributes       : Aura Is Debuff (26), DoT Stacking Rule (103), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Do Not Consume Aura Stack On Proc (428)
+Effects          :
+#1 (id=836296)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Affected Spells: Remorseless Winter (196771), Remorseless Winter (211793)
+                   Family Flags: 126
+Description      : $@spelldesc337988
+Tooltip          : Damage taken from Remorseless Winter increased by $w1%.
 
 Name             : Fleeting Wind (id=338089) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
@@ -11455,6 +13174,23 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Target: Self (1)
 Description      : Death Grip slows enemy movement speed by |cFFFFFFFF${$s1*-1}.1%|r for $338312d.
 
+Name             : Unending Grip (id=338312) [Spell Family (15)] 
+School           : Shadow
+Spell Type       : None
+Spell Level      : 60
+Range            : 50000 yards
+Duration         : 3 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+                 : 999
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=836820)   : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Snare | Target: Targeted Enemy (6)
+Description      : $@spelldesc338311
+Tooltip          : Movement speed reduced by $w1%.
+
 Name             : Insatiable Appetite (id=338330) [Spell Family (15), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
@@ -11492,6 +13228,24 @@ Effects          :
                    Affected Spells: Dancing Rune Weapon (81256), Dance of Midnight (1264407)
                    Family Flags: 74
 Description      : Increases the duration of Dancing Rune Weapon by ${$s2/1000} sec and while active, your parries increase your maximum health by |cFFFFFFFF${$s1}.1%|r, stacking up to $338438u times for $338438d.
+
+Name             : Meat Shield (id=338438) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Spell Level      : 60
+Duration         : 15 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+                 : 999
+Stacks           : 2 maximum
+Proc Chance      : 101%
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=837038)   : Apply Aura (6) | Increase Health% (133)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+Description      : $@spelldesc338435
+Tooltip          : Maximum Health increased by ${$w1}.1%.
 
 Name             : Unleashed Frenzy (id=338492) [Spell Family (15), Passive, Hidden] 
 School           : Physical
@@ -11545,6 +13299,27 @@ Effects          :
 #1 (id=837208)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Blood Boil increases the damage enemies take from your Blood Plague by |cFFFFFFFF${$s1}.1%|r for $338523d, stacks up to $338523u times.
+
+Name             : Debilitating Malady (id=338523) [Spell Family (15)] 
+School           : Shadow
+Spell Type       : None
+Spell Level      : 60
+Range            : 100 yards
+Duration         : 6 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+                 : 999
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Attributes       : Aura Is Debuff (26), DoT Stacking Rule (103), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Do Not Consume Aura Stack On Proc (428)
+Effects          :
+#1 (id=837216)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Affected Spells: Blood Plague (55078), Consumption (1263872)
+                   Family Flags: 57
+Description      : $@spelldesc338516
+Tooltip          : Damage taken from Blood Plague increased by ${$W1}.1%.
 
 Name             : Convocation of the Dead (id=338553) [Spell Family (15), Passive, Hidden] 
 School           : Physical
@@ -11693,6 +13468,16 @@ Effects          :
                    Family Flags: 3
 Description      : Obliterate has a $s1% increased chance to trigger Rime and Howling Blast generates ${$341725s1/10} Runic Power while Rime is active.
 
+Name             : Rage of the Frozen Champion (id=341725) [Spell Family (15)] 
+School           : Physical
+Spell Type       : Magic
+Labels           : 931
+Attributes       : Do Not Sheath (18), Include In Advanced Combat Log (72), Aura Points On Client (268)
+Effects          :
+#1 (id=842306)   : Energize Power (30)
+                   Base Value: 120 | Scaled Value: 120 | Resource: runic_power | Target: Self (1)
+Description      : $@spelldesc341724
+
 Name             : Soul Reaper (id=343294) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadowfrost
@@ -11741,6 +13526,23 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.0592 | PvP Coefficient: 1.75 | Target: Targeted Enemy (6)
 Description      : $@spelldesc343294
 
+Name             : Rot and Wither (desc=PvP Talent) (id=343713) [Spell Family (15)] 
+School           : Shadowstorm
+Spell Type       : None
+Range            : 100 yards
+Duration         : 10 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 118
+                 : 292
+Proc Chance      : 101%
+Attributes       : Do Not Display Range (126), Aura Points On Client (268)
+Effects          :
+#1 (id=845740)   : Apply Aura (6) | Absorb Healing (301) | Attributes: Aura Points Stack (9)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Targeted Enemy (6)
+Description      : $@spelldesc202727
+Tooltip          : The next $w1 healing received will be absorbed.
+
 Name             : Apocalypse (id=343758) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
@@ -11788,6 +13590,16 @@ Effects          :
 #2 (id=869781)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : $@spelldesc63560
+
+Name             : Gorefiend's Domination (id=350914) [Spell Family (15)] 
+School           : Physical
+Spell Type       : Magic
+Labels           : 931
+Attributes       : Do Not Sheath (18), Include In Advanced Combat Log (72), Aura Points On Client (268)
+Effects          :
+#1 (id=880875)   : Energize Power (30)
+                   Base Value: 450 | Scaled Value: 450 | Resource: runic_power | Target: Self (1)
+Description      : $@spelldesc334580
 
 Name             : Hyper Organic Light Originator (id=351978) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -11874,6 +13686,20 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : When Swarming Mist ends it deals $353720s1 Shadow damage to $353720i nearby enemies, healing you for ${$353720e*100}% of the damage dealt. The damage is increased by $353729s1% for every $s1 Runic Power spent while Swarming Mist was active.
 
+Name             : Insatiable Hunger (id=353720) [Spell Family (15)] 
+School           : Shadow
+Spell Type       : Magic
+Max Targets      : 5
+Labels           : 931
+                 : 1274: Insatiable Hunger (353729 effect#1)
+Attributes       : Allow Cast While Dead (23), Allow Aura While Dead (116), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=885673)   : Health Leech (9)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 0.25 | AP Coefficient: 0.8642 | Radius: 0 - 10 yards | Target: at Self (18) -> at Enemy in Area (16)
+#2 (id=885674)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5
+Description      : $@spelldesc353699
+
 Name             : Final Sentence (id=353822) [Spell Family (15), Hidden] 
 School           : Physical
 Spell Type       : None
@@ -11886,6 +13712,25 @@ Effects          :
                    Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
 Description      : When Shackle the Unworthy is applied to an enemy, instantly gain a Rune and your damage is increased by $353823s2%, stacking up to ${$353823s2*$353823u}% for $353823d.
 
+
+Name             : Final Sentence (id=353823) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Labels           : 931
+Stacks           : 5 maximum
+Proc Chance      : 101%
+Attributes       : Include In Advanced Combat Log (72), Aura Points On Client (268)
+Effects          :
+#1 (id=885851)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Resource: rune | Target: Self (1)
+#2 (id=885853)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 4 | Scaled Value: 4 | Misc Value: 0x31 | Target: Self (1)
+                   Affected School(s): Frost, Shadow, Physical
+#3 (id=892253)   : Apply Aura (6) | Modify Pet Damage Done% (429)
+                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+Description      : $@spelldesc353822
+Tooltip          : Damage increased by $w2%.
 
 Name             : Rampant Transference (id=353882) [Spell Family (15), Hidden] 
 School           : Physical
@@ -12930,6 +14775,30 @@ Effects          :
 Description      : $@spelldesc206970
 
 Tooltip          : Silenced.
+
+Name             : Time Spiral (id=375226) [Spell Family (15)] 
+Class            : Evoker
+School           : Arcane
+Spell Type       : None
+Range            : 100 yards
+Duration         : 10 seconds
+Labels           : 16: Class Spells
+                 : 292
+                 : 1216: Evoker Spells
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : Cast Successful
+Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Only On Player (104), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
+Effects          :
+#1 (id=1001492)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1941 (Category) | Target: Targeted Ally (21)
+                   Affected Spells (Category): Death's Advance (48265), Death Charge (444347)
+#2 (id=1001493)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1941 (Category) | Target: Targeted Ally (21)
+                   Affected Spells (Category): Death's Advance (48265), Death Charge (444347)
+Description      : $@spelldesc374968
+Tooltip          : May use Death's Advance once, without incurring its cooldown.
 
 Name             : Runic Command (id=376251) [Spell Family (15), Passive, Hidden] 
 Talent Entry     : Frost [tree=spec, row=4, col=4, max_rank=2, req_points=0]
@@ -14948,6 +16817,21 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Enables Worgen to switch between Worgen and Human forms.
 
+Name             : Debilitating Disease (id=408089) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+Proc Chance      : 101%
+Real PPM         : 1
+Proc Flags       : Periodic
+Attributes       : No Aura Cancel (31), No Aura Icon (60), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=1072012)  : Apply Aura (6) | Proc Trigger Spell (42): Call to Suffering
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 403386 | Target: Self (1)
+Description      : $@spelldesc403385
+Tooltip          : Your debuffs and harmful periodic spells and abilities have a chance to grant you $s1 $pri for $403386d.
+
 Name             : Vampiric Strength (id=408356) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
@@ -15037,6 +16921,21 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : $@spelldesc405503
 Tooltip          : Mastery increased by $s1%.
+
+Name             : Elementium Pocket Anvil (id=408538) [Spell Family (15)] 
+School           : Shadowflame
+Spell Type       : None
+Range            : 8 yards
+Duration         : Aura (infinite)
+Internal Cooldown: 0.1 seconds
+Proc Chance      : 101%
+Real PPM         : 2 (Haste multiplier)
+Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
+Attributes       : Allow Cast While Dead (23), No Aura Icon (60), Allow Dead Target (64), Allow Aura While Dead (116), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=1072733)  : Apply Aura (6) | Proc Trigger Spell (42)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc401303
 
 Name             : Frostwyrm's Fury (id=410790) [Spell Family (15)] 
 Class            : Death Knight
@@ -19164,6 +21063,40 @@ Effects          :
 Description      : $@spelldesc455397
 Tooltip          : Empowering Festering Strike.
 
+Name             : Summon Fenryr (id=459733) [Spell Family (15)] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 23: Hunter Spells
+                 : 292
+Triggered By     : Summon Fenryr (459735)
+Attributes       : No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202)
+Effects          :
+#1 (id=1166758)  : Summon Guardian (28)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 228224 | Misc Value 2: 6019 | Target: Left of Self (50)
+#2 (id=1166759)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc459730
+
+Name             : Summon Hati (id=459739) [Spell Family (15)] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 23: Hunter Spells
+                 : 292
+Triggered By     : Summon Hati (459738)
+Attributes       : No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202)
+Effects          :
+#1 (id=1166772)  : Summon Guardian (28)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 228226 | Misc Value 2: 6019 | Target: Left of Self (50)
+#2 (id=1166773)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc459730
+
 Name             : Infliction of Sorrow (id=460049) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
@@ -19714,6 +21647,31 @@ Description      : $@spelldesc1215992
 Tooltip          : Damage increased by $s1%.$?a1215993[
 
 Death Strike costs ${-$S5/10} less Runic Power and strikes $m4 additional nearby $Ltarget:targets;.][]
+
+Name             : Luck of the Draw! (id=1219012) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Duration         : 10 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+                 : 295
+Triggered By     : Demon Hunter Vengeance 11.1 Class Set 2pc (1215990)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1204391)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Affected Spells: Chaos Nova (179057), Infernal Strike (189112), Vengeful Retreat (198813), Shear (203782), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Fracture (225919), Fracture (225921), Soul Cleave (228478), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922), Infernal Armor (273239), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323802), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), Throw Glaive (346665), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Eye Beam (391058), Demon Spikes (391159), Sigil of Flame (425672), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Blazing Nova (436899), Blazing Nova (436964), Reaver's Glaive (442294), Demonsurge (451266), Demonsurge (452416), Burning Blades (453177), Sigil of Doom (462030), Void Nova (1234195), Voidfall Meteor (1256306), World Killer (1256617), Catastrophe (1256667), Catastrophe (1256676), Meteor Shower (1264130)
+                   Family Flags: 70
+#2 (id=1204392)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Chaos Nova (179057), Infernal Strike (189112), Vengeful Retreat (198813), Shear (203782), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Fracture (225919), Fracture (225921), Soul Cleave (228478), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922), Infernal Armor (273239), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323802), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), Throw Glaive (346665), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Eye Beam (391058), Demon Spikes (391159), Sigil of Flame (425672), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Blazing Nova (436899), Blazing Nova (436964), Reaver's Glaive (442294), Demonsurge (451266), Demonsurge (452416), Burning Blades (453177), Sigil of Doom (462030), Void Nova (1234195), Voidfall Meteor (1256306), World Killer (1256617), Catastrophe (1256667), Catastrophe (1256676), Meteor Shower (1264130)
+                   Family Flags: 70
+#3 (id=1204393)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
+Description      : $@spelldesc1215990
+Tooltip          : Damage increased by $s1%.
 
 Name             : Shadow and Flame (id=1221634) [Spell Family (15)] 
 Class            : Death Knight
@@ -22871,6 +24829,21 @@ Effects          :
 Description      : $@spelldesc1264296
 Tooltip          : Healing for $w1 health every $t sec.
 
+Name             : Dark Minion (id=1264345) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Spell Level      : 1
+Range            : 40 yards
+Duration         : 20 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+Attributes       : No Threat (42), No Aura Icon (60), Allow Dead Target (64), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1275651)  : Summon Guardian (28)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 255153 | Misc Value 2: 6550 | Radius: 0 - 5 yards | Target: at Self (18) -> Back Left in Area (84)
+
 Name             : Dance of Midnight (id=1264351) [Spell Family (15), Passive] 
 Talent Entry     : Blood [tree=spec, row=10, col=1, max_rank=1, req_points=20]
 Class            : Death Knight
@@ -23015,6 +24988,78 @@ Effects          :
                    Family Flags: 24
 Description      : $@spelldesc1264506
 Tooltip          : Your next Heart Strike is free and deals $s1% increased damage.
+
+Name             : Death Knight Blood 12.0 Class Set 2pc (id=1264799) [Spell Family (15), Passive, Hidden] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 292
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276393)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Death Knight Blood 12.0 Class Set 4pc (id=1264800) [Spell Family (15), Passive, Hidden] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 292
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276394)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Death Knight Frost 12.0 Class Set 2pc (id=1264801) [Spell Family (15), Passive, Hidden] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 292
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276395)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Death Knight Frost 12.0 Class Set 4pc (id=1264802) [Spell Family (15), Passive, Hidden] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 292
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276396)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Death Knight Unholy 12.0 Class Set 2pc (id=1264803) [Spell Family (15), Passive, Hidden] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 292
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276397)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Death Knight Unholy 12.0 Class Set 4pc (id=1264804) [Spell Family (15), Passive, Hidden] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 292
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276398)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
 
 Name             : Unending Misery (id=1265543) [Spell Family (15), Passive, Hidden] 
 Talent Entry     : San'layn (Blood, Unholy) [tree=hero, row=4, col=1, max_rank=1, req_points=1]

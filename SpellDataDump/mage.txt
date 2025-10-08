@@ -617,6 +617,301 @@ Description      : Your target burns for an additional ${$s1}.1% over $12654d of
 
 Fire Blast causes your Ignites to spread to $s5 nearby $Lenemy:enemies;.][]
 
+Name             : Fireball (id=13438) [Spell Family (3)] 
+School           : Fire
+Spell Type       : Magic
+Resource         : 45 Base Mana (0) (id=500)
+Range            : 35 yards
+Cast Time        : 2 seconds
+GCD              : 1.5 seconds
+Duration         : 6 seconds
+Proc Chance      : 101%
+Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=5948)     : School Damage (2): fire | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 488.9505 (coefficient=1.739) | Target: Targeted Enemy (6)
+#2 (id=5949)     : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 36.55179 (coefficient=0.13) | Target: Targeted Enemy (6)
+Description      : Hurls a fiery ball that causes $s1 Fire damage and an additional $o2 damage over $d.
+Tooltip          : $s2 Fire damage every $t2 sec.
+
+Name             : Frostbolt (id=13439) [Spell Family (3)] 
+School           : Frost
+Spell Type       : Magic
+Resource         : 25 Base Mana (0) (id=501)
+Max Aura Level   : 49
+Range            : 30 yards
+Cast Time        : 1.5 seconds
+GCD              : 1.5 seconds
+Velocity         : 28 yards/sec
+Duration         : 5 seconds
+Proc Chance      : 101%
+Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=5950)     : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Targeted Enemy (6)
+#2 (id=5951)     : School Damage (2): frost | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 181.2969 - 271.9453 (coefficient=0.806, delta=0.4) | Target: Targeted Enemy (6)
+Description      : Launches a bolt of frost at the enemy causing $s2 Frost damage and slowing movement speed by $s1% for $d.
+Tooltip          : Movement slowed by $s1%.
+
+Name             : Blazing Emblem (desc=Rank 1) (id=13744) [Spell Family (3)] 
+School           : Fire
+Spell Type       : Magic
+Resource         : 195 Base Mana (0) (id=513)
+Range            : 30 yards
+GCD              : 1.5 seconds
+Duration         : 15 seconds
+Attributes       : Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=6142)     : Apply Aura (6) | Damage Taken (14) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: -292.9767 (coefficient=-1.042) | Misc Value: 0x4 | Target: Self (1)
+                   Affected School(s): Fire
+#2 (id=6143)     : Apply Aura (6) | Resistance (22) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 585.6722 (coefficient=2.083) | Misc Value: 4 | Target: Self (1)
+Description      : Increases Fire resistance by $s2 and reduces all Fire damage taken by up to $s1 for $d.
+Tooltip          : Increased Fire resistance and reduces fire damage taken.
+
+Name             : Frost Blast (id=16407) [Spell Family (3)] 
+School           : Frost
+Spell Type       : Magic
+Resource         : 80 Base Mana (0) (id=655)
+Range            : 30 yards
+GCD              : 1.5 seconds
+Cooldown         : 8 seconds
+Category Cooldown: 8 seconds
+Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=8140)     : School Damage (2): frost | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 401.7886 (coefficient=1.429) | Target: Targeted Enemy (6)
+Description      : Blasts a target for $s1 Frost damage.
+
+Name             : Fireball (id=16415) [Spell Family (3)] 
+School           : Fire
+Spell Type       : Magic
+Resource         : 45 Base Mana (0) (id=661)
+Range            : 35 yards
+Cast Time        : 2 seconds
+GCD              : 1.5 seconds
+Duration         : 8 seconds
+Proc Chance      : 101%
+Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=8150)     : School Damage (2): fire | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 1687.004 - 2061.894 (coefficient=6.66666, delta=0.2) | Target: Targeted Enemy (6)
+#2 (id=8151)     : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 84.35029 (coefficient=0.3) | Target: Targeted Enemy (6)
+Description      : Hurls a fiery ball that causes $s1 Fire damage and an additional $o2 damage over $d.
+Tooltip          : $s2 Fire damage every $t2 sec.
+
+Name             : Searing Blast (id=16454) [Spell Family (3)] 
+School           : Fire
+Spell Type       : Magic
+Resource         : 80 Base Mana (0) (id=665)
+Range            : 30 yards
+GCD              : 1.5 seconds
+Duration         : 30 seconds
+Cooldown         : 8 seconds
+Category Cooldown: 8 seconds
+Proc Chance      : 101%
+Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=8185)     : School Damage (2): fire | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 527.1893 (coefficient=1.875) | Target: Targeted Enemy (6)
+#2 (id=8186)     : Apply Aura (6) | Damage Taken (14) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 88.00547 (coefficient=0.313) | Misc Value: 0x4 | Target: Targeted Enemy (6)
+                   Affected School(s): Fire
+Description      : Blasts a target for $s1 Fire damage and increases damage done to target by Fire spells by up to $s2 for $d1.
+
+Name             : Felstriker (id=16551) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Range            : 5 yards
+Duration         : 3 seconds
+Triggered By     : Felstriker (265083)
+Attributes       : No Aura Icon (60)
+Effects          :
+#1 (id=8265)     : Apply Aura (6) | Modify Crit% (52)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+Description      : All attacks are guaranteed to be critical strikes for the next $d.
+
+Name             : Dispel Magic (id=16908) [Spell Family (3)] 
+School           : Arcane
+Spell Type       : Magic
+Max Aura Level   : 49
+Range            : 30 yards
+GCD              : 1.5 seconds
+Cooldown         : 8 seconds
+Category Cooldown: 8 seconds
+Attributes       : Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=8593)     : Dispel (38)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1 | Misc Value: 1 | Target: Targeted Enemy (6)
+Description      : Dispels a magic effect on the current foe.
+
+Name             : Chilled (id=16927) [Spell Family (3)] 
+School           : Frost
+Spell Type       : Magic
+Max Aura Level   : 49
+Range            : 30 yards
+Duration         : 5 seconds
+Attributes       : Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=8608)     : Apply Aura (6) | Modify Melee Haste% (138)
+                   Base Value: -25 | Scaled Value: -25 | Target: Targeted Enemy (6)
+#2 (id=8609)     : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: -30 | Scaled Value: -30 | Mechanic: Snare | Target: Targeted Enemy (6)
+Description      : Target's movement slowed by $s2% and increasing the time between attacks by $s1% for $d.
+Tooltip          : Movement slowed by $s2% and the time between attacks increased by $s1%.
+
+Name             : Fireball (id=18082) [Spell Family (3)] 
+School           : Fire
+Spell Type       : Magic
+Resource         : 45 Base Mana (0) (id=745)
+Range            : 35 yards
+Cast Time        : 2 seconds
+GCD              : 1.5 seconds
+Duration         : 6 seconds
+Proc Chance      : 101%
+Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=9686)     : School Damage (2): fire | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 850.0049 - 1092.863 (coefficient=3.455, delta=0.25) | Target: Targeted Enemy (6)
+#2 (id=9687)     : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 51.17251 (coefficient=0.182) | Target: Targeted Enemy (6)
+Description      : Hurls a fiery ball that causes $s1 Fire damage and an additional $o2 damage over $d.
+Tooltip          : $s2 Fire damage every $t2 sec.
+
+Name             : Firebolt (id=18083) [Spell Family (3)] 
+School           : Fire
+Spell Type       : Magic
+Resource         : 80 Base Mana (0) (id=746)
+Range            : 30 yards
+GCD              : 1.5 seconds
+Cooldown         : 8 seconds
+Category Cooldown: 8 seconds
+Triggered By     : Galgann's Firehammer (248274)
+Attributes       : Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=9688)     : School Damage (2): fire | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 5117.519 - 7288.587 (coefficient=22.06176, delta=0.35) | Target: Targeted Enemy (6)
+Description      : $@spelldesc248274
+
+Name             : Arcane Blast (id=18091) [Spell Family (3)] 
+School           : Arcane
+Spell Type       : Magic
+Range            : 30 yards
+GCD              : 1.5 seconds
+Cooldown         : 8 seconds
+Category Cooldown: 8 seconds
+Triggered By     : Archeus (265025)
+Attributes       : Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=9697)     : School Damage (2): arcane | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 1194.962 (coefficient=4.25) | Target: Targeted Enemy (6)
+Description      : Blasts a target for $s1 Arcane damage.
+
+Name             : Frost Blast (id=18092) [Spell Family (3)] 
+School           : Frost
+Spell Type       : Magic
+Range            : 30 yards
+GCD              : 1.5 seconds
+Cooldown         : 8 seconds
+Category Cooldown: 8 seconds
+Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=9698)     : School Damage (2): frost | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 894.6754 (coefficient=3.182) | Target: Targeted Enemy (6)
+Description      : Blasts a target for $s1 Frost damage.
+
+Name             : Fireball (id=18199) [Spell Family (3)] 
+School           : Fire
+Spell Type       : Magic
+Resource         : 45 Base Mana (0) (id=761)
+Range            : 35 yards
+Cast Time        : 2 seconds
+GCD              : 1.5 seconds
+Duration         : 6 seconds
+Proc Chance      : 101%
+Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=9806)     : School Damage (2): fire | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 1312.116 - 1687.006 (coefficient=5.333333, delta=0.25) | Target: Targeted Enemy (6)
+#2 (id=9807)     : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 93.72245 (coefficient=0.333333) | Target: Targeted Enemy (6)
+Description      : Hurls a fiery ball that causes $s1 Fire damage and an additional $o2 damage over $d.
+Tooltip          : $s2 Fire damage every $t2 sec.
+
+Name             : Frost Blast (id=18204) [Spell Family (3)] 
+School           : Frost
+Spell Type       : Magic
+Resource         : 80 Base Mana (0) (id=762)
+Range            : 30 yards
+GCD              : 1.5 seconds
+Cooldown         : 8 seconds
+Category Cooldown: 8 seconds
+Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=9813)     : School Damage (2): frost | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 1616.812 - 1787.003 (coefficient=6.053, delta=0.1) | Target: Targeted Enemy (6)
+Description      : Blasts a target for $s1 Frost damage.
+
+Name             : Frost Blast (id=18276) [Spell Family (3)] 
+School           : Frost
+Spell Type       : Magic
+Range            : 30 yards
+Triggered By     : Darrowspike (265174)
+Attributes       : Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=9883)     : School Damage (2): frost | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 973.4024 (coefficient=3.462) | Target: Targeted Enemy (6)
+Description      : Blasts a target for $s1 Frost damage.
+
+Name             : Frost Blast (id=18398) [Spell Family (3)] 
+School           : Frost
+Spell Type       : Magic
+Resource         : 80 Base Mana (0) (id=774)
+Range            : 30 yards
+GCD              : 1.5 seconds
+Cooldown         : 8 seconds
+Category Cooldown: 8 seconds
+Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=9957)     : School Damage (2): frost | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 341.8999 (coefficient=1.216) | Target: Targeted Enemy (6)
+Description      : Blasts a target for $s1 Frost damage.
+
+Name             : Fireball (id=18796) [Spell Family (3)] 
+School           : Fire
+Spell Type       : Magic
+Range            : 35 yards
+GCD              : 1.5 seconds
+Duration         : 6 seconds
+Proc Chance      : 101%
+Triggered By     : Fiery War Axe (265000)
+Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=10322)    : School Damage (2): fire | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 1893.315 - 2409.674 (coefficient=7.652, delta=0.24) | Target: Targeted Enemy (6)
+#2 (id=10323)    : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 97.84634 (coefficient=0.348) | Target: Targeted Enemy (6)
+Description      : Hurls a fiery ball that causes $s1 Fire damage and an additional $o2 damage over $d.
+Tooltip          : $s2 Fire damage every $t2 sec.
+
+Name             : Frost Blast (id=19260) [Spell Family (3)] 
+School           : Frost
+Spell Type       : Magic
+Resource         : 80 Base Mana (0) (id=792)
+Range            : 30 yards
+GCD              : 1.5 seconds
+Cooldown         : 8 seconds
+Category Cooldown: 8 seconds
+Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=10564)    : School Damage (2): frost | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 1322.225 - 2068.095 (coefficient=6.029, delta=0.44) | Target: Targeted Enemy (6)
+Description      : Blasts a target for $s1 Frost damage.
+
 Name             : War Stomp (desc=Racial) (id=20549) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Tauren (0x20)
@@ -857,6 +1152,68 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Rating: Crit, Haste, Mastery, Vers | Target: Self (1)
 Description      : You gain $s1% more of all secondary stats (Haste, Critical Strike, Mastery, Versatility) from all sources.
 
+Name             : Frost Blast (id=20869) [Spell Family (3)] 
+School           : Frost
+Spell Type       : Magic
+Range            : 30 yards
+GCD              : 1.5 seconds
+Cooldown         : 8 seconds
+Category Cooldown: 8 seconds
+Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=11803)    : School Damage (2): frost | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 1240.512 (coefficient=4.412) | Target: Targeted Enemy (6)
+Description      : Blasts a target for $s1 Frost damage.
+
+Name             : Arcane Blast (id=20883) [Spell Family (3)] 
+School           : Arcane
+Spell Type       : Magic
+Resource         : 80 Base Mana (0) (id=896)
+Range            : 30 yards
+GCD              : 1.5 seconds
+Cooldown         : 8 seconds
+Category Cooldown: 8 seconds
+Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=11815)    : School Damage (2): arcane | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 702.9191 (coefficient=2.5) | Target: Targeted Enemy (6)
+Description      : Blasts a target for $s1 Arcane damage.
+
+Name             : Fireball (id=21159) [Spell Family (3)] 
+School           : Fire
+Spell Type       : Magic
+Range            : 35 yards
+Duration         : 8 seconds
+Proc Chance      : 101%
+Triggered By     : Sulfuron Hammer (265240)
+Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=11979)    : School Damage (2): fire | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 596.947 - 729.6019 (coefficient=2.359, delta=0.2) | Target: Targeted Enemy (6)
+#2 (id=11980)    : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 28.96027 (coefficient=0.103) | Target: Targeted Enemy (6)
+Description      : Hurls a fiery ball that causes $s1 Fire damage and an additional $o2 damage over $d.
+Tooltip          : $s2 Fire damage every $t2 sec.
+
+Name             : Fireball (id=21162) [Spell Family (3)] 
+School           : Fire
+Spell Type       : Magic
+Resource         : 45 Base Mana (0) (id=904)
+Range            : 35 yards
+Cast Time        : 2 seconds
+GCD              : 1.5 seconds
+Duration         : 10 seconds
+Labels           : 1379
+Proc Chance      : 101%
+Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=11983)    : School Damage (2): fire | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 1666.846 - 2037.256 (coefficient=6.587, delta=0.2) | Target: Targeted Enemy (6)
+#2 (id=11984)    : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 91.66065 (coefficient=0.326) | Target: Targeted Enemy (6)
+Description      : Hurls a fiery ball that causes $s1 Fire damage and an additional $o2 damage over $d.
+Tooltip          : $s2 Fire damage every $t2 sec.
+
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -869,6 +1226,83 @@ Effects          :
 #2 (id=1038628)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Damage dealt by pets increased by $s1%.
+
+Name             : Firebolt (id=23267) [Spell Family (3)] 
+School           : Fire
+Spell Type       : Magic
+Resource         : 80 Base Mana (0) (id=964)
+Range            : 30 yards
+GCD              : 1.5 seconds
+Cooldown         : 8 seconds
+Category Cooldown: 8 seconds
+Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=13540)    : School Damage (2): fire | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 247.5048 - 352.5069 (coefficient=1.067, delta=0.35) | Target: Targeted Enemy (6)
+Description      : Blasts a target for $s1 Fire damage.
+
+Name             : Chaos Fire (id=24389) [Spell Family (3)] 
+School           : Fire
+Spell Type       : Magic
+Duration         : 60 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
+Proc Flags       : Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Attributes       : Is Ability (4), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=14615)    : Energize Power (30) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 1092.294 (coefficient=8.333) | SP Coefficient: 1 | Resource: mana | Target: Self (1)
+#2 (id=14616)    : Apply Aura (6) | Damage Done (13) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 436.8913 (coefficient=3.333) | SP Coefficient: 1 | Misc Value: 0x4 | Target: Self (1)
+                   Affected School(s): Fire
+Description      : Restores $s1 mana and increases the spell power of your next Fire spell by $s2.  Effect lasts for $d.
+Tooltip          : Spell power of your next Fire spell increased by $s2.
+
+Name             : Frosty Zap (id=24392) [Spell Family (3), Passive, Hidden] 
+School           : Frost
+Spell Type       : None
+Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=14620)    : Apply Aura (6) | Unknown(109)
+                   Base Value: 6 | Scaled Value: 6 | SP Coefficient: 1 | Trigger Spell: 24405 | Target: Self (1)
+                   Affected Spells: Frostbolt (116), Frostbolt (228597), Glacial Spike (228600), Frostfire Bolt (431044), Frostfire Bolt (468655)
+                   Family Flags: 5
+#2 (id=14621)    : Dummy (3)
+                   Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1
+Description      : Your Frostbolt spells have a $s1% chance to restore $24405s2 mana when cast.
+
+Name             : Icy Energy (id=24405) [Spell Family (3), Hidden] 
+School           : Frost
+Spell Type       : None
+Triggered By     : Frosty Zap (24392)
+Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=14638)    : Energize Power (30) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 218.5112 (coefficient=1.667) | SP Coefficient: 1 | Resource: mana | Target: Self (1)
+
+Name             : Improved Counterspell (id=24429) [Spell Family (3), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=14671)    : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -2000 | Scaled Value: -2000 | SP Coefficient: 1 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Frostbolt (116), Counterspell (2139), Frostbolt (228597), Glacial Spike (228600), Frostfire Bolt (431044), Frostfire Bolt (468655)
+                   Family Flags: 5, 14
+Description      : Reduces the cooldown of Counterspell by $/1000;s1 sec.
+
+Name             : Arcane Potency (id=24544) [Spell Family (3)] 
+School           : Arcane
+Spell Type       : Magic
+Duration         : 20 seconds
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=14741)    : Apply Aura (6) | Damage Done (13) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 708.49 (coefficient=5.405) | SP Coefficient: 1 | Misc Value: 0x40 | Target: Self (1)
+                   Affected School(s): Arcane
+Description      : Increases arcane spell power by $s1 for $d.
+Tooltip          : Increases arcane spell power by $s1.
 
 Name             : Berserking (desc=Racial) (id=26297) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -883,6 +1317,19 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Increases your haste by $s1% for $d.
 Tooltip          : Haste increased by $s1%.
+
+Name             : Persistent Shield (id=26467) [Spell Family (3)] 
+School           : Physical
+Spell Type       : Magic
+Duration         : 30 seconds
+Proc Chance      : 100%
+Proc Flags       : Magic Heal
+Attributes       : Is Ability (4), Can Proc From Procs (122)
+Effects          :
+#1 (id=16416)    : Apply Aura (6) | Proc Trigger Spell (42): Dummy Trigger
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 13567 | Target: Self (1)
+Description      : Your magical heals provide the target with a shield that absorbs damage for up to 15% of the amount healed for $d. This effect becomes less powerful at higher levels.
+Tooltip          : Provides damage absorption on heal.
 
 Name             : Arcane Torrent (desc=Racial) (id=28730) 
 Class            : Mage, Warlock
@@ -1136,6 +1583,17 @@ Effects          :
 Description      : Increases your Intellect by $s1 for $d.
 Tooltip          : Intellect increased by $w1.
 
+Name             : Recurring Power (id=34749) [Spell Family (3), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Proc Chance      : 100%
+Proc Flags       : Magic Hostile Spell
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=24803)    : Apply Aura (6) | Proc Trigger Spell (42): Recurring Power
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 34747 | Target: Self (1)
+Description      : Grants $34747s1 increased spell power for $34747d when one of your spells is resisted.
+
 Name             : Arcane Charge (id=36032) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -1188,6 +1646,51 @@ Increases the mana cost of Arcane Blast by $36032w2%$?{$w5<0}[, and reduces the 
 
 Increases the number of targets hit by Arcane Barrage for 50% damage by $36032w3.
 
+Name             : World Breaker (id=36111) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Range            : 5 yards
+Duration         : 4 seconds
+Stacks           : 2 initial, 2 maximum
+Proc Chance      : 100%
+Proc Flags       : White Melee, Yellow Melee
+Attributes       : No Aura Icon (60), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=26425)    : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 1474.655 (coefficient=11.25) | Rating: Crit | Target: Self (1)
+Description      : Increases the critical strike of your next attack made within 4 seconds by 900.
+
+Name             : Mana Surge (id=37445) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Cooldown         : 15 seconds
+Category         : 1141 (Type 0x0)
+Category Cooldown: 15 seconds
+Stacks           : 2 maximum
+Proc Chance      : 101%
+Attributes       : Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=27956)    : Apply Aura (6) | Damage Done (13) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 393.2415 (coefficient=3) | Misc Value: 0x7e | Target: Self (1)
+                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+#2 (id=27957)    : Apply Aura (6) | Modify Healing Power (135) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 393.2415 (coefficient=3) | Misc Value: 126 | Target: Self (1)
+Description      : Spell damage increased by up to $s1.
+Tooltip          : Spell damage increased by up to $s1.
+
+Name             : Improved Mana Gems (id=37447) [Spell Family (3), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=27959)    : Apply Aura (6) | Add Percent Modifier (108): Spell Effects (8)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 8 | Target: Self (1)
+                   Family Flags: 40
+#2 (id=27960)    : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 5497
+Description      : You gain $s1% more mana when you use a mana gem.  In addition, using a mana gem grants you $37445s1 spell power for $37445d.
+
 Name             : Hypothermia (id=41425) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
@@ -1204,6 +1707,18 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : As a side-effect of exposure to intense cold, the caster cannot Ice Block or Ice Cold again for $d.
 Tooltip          : $?a414659[Cannot cast Ice Cold][Cannot be made invulnerable by Ice Block].
+
+Name             : Reduced Blink GCD (id=44301) [Spell Family (3), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not in Mythic+ Mode (Challenge Mode) (368), Check Required Target Aura By Caster (382), Not In Proving Grounds (401)
+Effects          :
+#1 (id=36187)    : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
+                   Base Value: -500 | Scaled Value: -500 | SP Coefficient: 1 | Misc Value: 21 | Target: Self (1)
+                   Affected Spells: Blink (1953), Blink (119415), Shimmer (212653), Homebrewed Blink Vial (457733), Artisanal Blink Trap (1247690)
+                   Family Flags: 16
+Description      : Reduces the global cooldown triggered by Blink by ${$m1/-1000}.1 sec.
 
 Name             : Arcane Barrage (id=44425) [Spell Family (3)] 
 Replaces         : Fire Blast (id=319836)
@@ -1772,6 +2287,32 @@ Effects          :
                    Base Value: 90 | Scaled Value: 90
 Description      : Removes all stun effects. $?s195710[This effect shares a 90 sec cooldown with other similar effects.][]
 
+Name             : Dying Curse (id=60493) [Spell Family (3), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Internal Cooldown: 45 seconds
+Proc Chance      : 15%
+Proc Flags       : Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=54194)    : Apply Aura (6) | Proc Trigger Spell (42): Dying Curse
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 60494 | Target: Self (1)
+Description      : Your spells have a chance to increase your spell power by $60494s1 for $60494d1.
+
+Name             : Blessing of Ancient Kings (id=64411) [Spell Family (3)] 
+School           : Physical
+Spell Type       : Magic
+Duration         : 15 seconds
+Proc Chance      : 100%
+Proc Flags       : Magic Heal, Periodic, Helpful Periodic
+Triggered By     : Val'anyr Hammer of Ancient Kings - Equip Effect (64415)
+Attributes       : Is Ability (4), Can Proc From Procs (122), Can Proc from Suppressed Caster Procs (385)
+Effects          :
+#1 (id=58653)    : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Your magical heals provide the target with a shield that absorbs damage equal to 15% of the amount healed for $d.
+Tooltip          : Provides damage absorption on heal.
+
 Name             : Stoneform (desc=Racial) (id=65116) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Dwarf (0x4)
@@ -2263,6 +2804,25 @@ Effects          :
 #1 (id=99112)    : Apply Aura (6) | Unknown(352)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Enables Worgens to switch between human and Worgan forms
+
+Name             : Frostbolt (id=96089) [Spell Family (3)] 
+School           : Frost
+Spell Type       : Magic
+Max Scaling Level: 13
+Range            : 35 yards
+Cast Time        : 1.5 seconds
+GCD              : 1.5 seconds
+Velocity         : 28 yards/sec
+Duration         : 9 seconds
+Proc Chance      : 101%
+Attributes       : Not Shapeshifted (16), Show Mechanic as Combat Text (213)
+Effects          :
+#1 (id=101964)   : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: -40 | Scaled Value: -40 | Mechanic: Snare | Target: Targeted Enemy (6)
+#2 (id=101965)   : School Damage (2): frost | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 3.149597 (coefficient=1.55) | Target: Targeted Enemy (6)
+Description      : Launches a bolt of frost at the enemy, causing $s2 Frost damage and slowing movement speed by $s1% for $d.
+Tooltip          : Movement slowed by $s1%.
 
 Name             : Dummy 5.0 Talent (id=102052) 
 Class            : Warrior, Paladin, Mage
@@ -2845,6 +3405,23 @@ Effects          :
 #1 (id=160591)   : Knock Back (98)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: -250 | Target: Self (1)
 
+Name             : Conjure Familiar (desc=Glyph) (id=126578) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Cast Time        : 3 seconds
+GCD              : 1.5 seconds
+Cooldown         : 60 seconds
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+Affecting Spells : Ice Floes (108839 effect#1)
+Family Flags     : 30
+Attributes       : Allow Item Spell In PvP (13), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=160854)   : Create Item (157)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 43118 | Target: Self (1)
+Description      : Conjures a familiar stone, containing either an Arcane, Fiery, or Icy Familiar.
+
 Name             : Alter Time (id=127140) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -3171,6 +3748,40 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 6.5 - 8 yards | Target: at Area (87)
 Description      : $@spelldesc113724
 
+Name             : Frostbolt (id=144251) [Spell Family (3)] 
+School           : Frost
+Spell Type       : Magic
+Resource         : 25 Base Mana (0) (id=8708)
+Max Aura Level   : 49
+Range            : 30 yards
+Cast Time        : 1.5 seconds
+GCD              : 1.5 seconds
+Velocity         : 28 yards/sec
+Duration         : 5 seconds
+Proc Chance      : 101%
+Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=193650)   : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Targeted Enemy (6)
+#2 (id=193651)   : School Damage (2): frost | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 244.5034 - 366.7551 (coefficient=1.087, delta=0.4) | Target: Targeted Enemy (6)
+Description      : Launches a bolt of frost at the enemy causing $s2 Frost damage and slowing movement speed by $s1% for $d.
+Tooltip          : Movement slowed by $s1%.
+
+Name             : Frost Blast (id=144254) [Spell Family (3)] 
+School           : Frost
+Spell Type       : Magic
+Resource         : 80 Base Mana (0) (id=8709)
+Range            : 30 yards
+GCD              : 1.5 seconds
+Cooldown         : 8 seconds
+Category Cooldown: 8 seconds
+Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=193654)   : School Damage (2): frost | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 602.5423 (coefficient=2.143) | Target: Targeted Enemy (6)
+Description      : Blasts a target for $s1 Frost damage.
+
 Name             : Arcane Missiles (id=145435) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -3196,6 +3807,18 @@ Effects          :
 #1 (id=198243)   : Apply Aura Pet (174) | Scale% (Stacking) (61)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 11 | Radius: 100 yards | Target: Self (1)
 Description      : Reduces the size of your Water Elemental by $s1%.
+
+Name             : Enduring Elixir of Wisdom (id=146939) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Duration         : 3600 seconds
+Attributes       : No Aura Cancel (31), Aura Unique (43), Allow Aura While Dead (116), Cannot Be Stolen (134), Aura Is Buff (140), Allow Entering Arena (149), Extra Initial Period (169), Allow Aura On Level Scale (444)
+Effects          :
+#1 (id=198820)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+Description      : Experience gained from killing monsters and completing quests increased by $s1%. This item can only be used by players of level $ctrmax2067 and below. Lasts $d.
+Tooltip          : Experience gained from killing monsters and completing quests increased by $s1%.
 
 Name             : Glyph of the Unbound Elemental (desc=Frost) (id=146976) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
@@ -3835,6 +4458,28 @@ Effects          :
 #2 (id=228499)   : Apply Aura (6) | Modify Stat Bonus% (467)
                    Base Value: -100 | Scaled Value: -100 | Stat: Agi | Target: Self (1)
 
+Name             : Refreshment (id=167152) 
+School           : Physical
+Spell Type       : None
+Spell Level      : 1
+Duration         : 20 seconds
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 197
+                 : 209
+                 : 292
+Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Can't Crit (93), Ignore Healing Modifiers (219), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442)
+Aura Interrupt   : Standing (18), Swimming (33)
+Effects          :
+#1 (id=236295)   : Apply Aura (6) | Periodic Power% Regen (21)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+#2 (id=236296)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+#3 (id=464354)   : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+Description      : Restores $o3% health and $o1% Mana over $d. Must remain seated while drinking.
+Tooltip          : Restores $w3% health and $w1% Mana per second.
+
 Name             : Meteor Burn (id=175396) [Hidden] 
 Class            : Mage
 School           : Fire
@@ -3900,6 +4545,41 @@ Effects          :
 Description      : $@spelldesc134732
 Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
 Damage taken increased by $w2.][]
+
+Name             : Wild Arcanist (id=184903) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 112
+Attributes       : Passive (6), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354), Use float values for scaling amounts (405)
+Effects          :
+#1 (id=268043)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: -4.021811 (coefficient=-0.030682) | Misc Value: 32 | Target: Self (1)
+                   Affected Spells: Arcane Surge (365362)
+                   Family Flags: 51
+#2 (id=268118)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: -4.021811 (coefficient=-0.030682) | Misc Value: 33 | Target: Self (1)
+                   Affected Spells: Arcane Surge (365362)
+                   Family Flags: 51
+#3 (id=271754)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 4.021811 (coefficient=0.030682) | Misc Value: 23 | Target: Self (1)
+                   Affected Spells: Arcane Surge (365362)
+                   Family Flags: 51
+Description      : Arcane Power also increases the damage and reduces the cast time and global cooldown of Arcane Blast by $s1%.
+
+Name             : Shatterlance (id=185058) [Spell Family (3), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : 0.9 seconds
+Labels           : 112
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268)
+Effects          :
+#1 (id=268314)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Affected Spells: Ice Lance (30455), Ice Lance (228598)
+                   Family Flags: 17, 104
+Description      : $@spelldesc184905
+Tooltip          : Ice Lance damage increased by $w1%.
 
 Name             : Rule of Threes (id=187292) [Spell Family (3), Hidden] 
 Class            : Mage
@@ -4294,6 +4974,19 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
 Description      : Removes all movement impairing effects and all effects which cause loss of control of your character while in PvP combat.
 
+Name             : Netherwind Armor (desc=PvP Talent) (id=198062) [Spell Family (3), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 118
+                 : 292
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=291089)   : Apply Aura (6) | Modify Attacker Crit Chance (197)
+                   Base Value: -10 | Scaled Value: -10 | Target: Self (1)
+Description      : Reduces the chance you will suffer a critical strike by $m1%.
+
 Name             : Kleptomania (desc=PvP Talent) (id=198100) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -4324,6 +5017,33 @@ Effects          :
 Description      : Unleash a flurry of disruptive magic onto your target, stealing a beneficial magic effect every ${$t2}.1 sec for $d.
 
 Castable while moving, but movement speed is reduced by $s3% while channeling.
+
+Name             : Ice Form (desc=PvP Talent) (id=198144) [Spell Family (3)] 
+School           : Frost
+Spell Type       : Magic
+Spell Level      : 18
+Duration         : 12 seconds
+Cooldown         : 60 seconds
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 118
+                 : 292
+                 : 690: Major Cooldowns
+Affecting Spells : Thermal Void (155149 effect#2)
+Family Flags     : 46
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
+Effects          :
+#1 (id=291202)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Affected Spells: Frostbolt (116), Frostbolt (228597), Glacial Spike (228600), Frostfire Bolt (431044), Frostfire Bolt (468655)
+                   Family Flags: 5
+#2 (id=291203)   : Apply Aura (6) | Creature Immunities (147)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1808 | Target: Self (1)
+#3 (id=291204)   : Apply Aura (6) | Mechanic Immunity (77)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self (1)
+Description      : Your body turns into Ice, increasing your Frostbolt damage done by $m1% and granting immunity to stun and knockback effects. Lasts $d.
+Tooltip          : Frostbolt damage done increased by $m1%. Immune to stun and knockback effects.
 
 Name             : Crushing Jets (desc=PvP Talent) (id=198146) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
@@ -4834,6 +5554,121 @@ Effects          :
 Description      : $@spelldesc205027
 Tooltip          : Spell damage done increased by ${$W1}.1%.
 
+Name             : Zann'esu Journey (id=206397) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 136
+                 : 187
+                 : 294
+Proc Chance      : 101%
+Proc Flags       : Magic Heal, Magic Hostile Spell
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=305237)   : Apply Aura (6) | Proc Trigger Spell (42): Zann'esu Journey
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 226852 | Target: Self (1)
+Description      : Flurry increases the damage of your next Blizzard by $226852s1%, stacking up to $226852u times.
+
+Name             : Belo'vir's Final Stand (id=207277) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 134
+                 : 136
+                 : 137
+                 : 187
+                 : 294
+Proc Chance      : 100%
+Proc Flags       : Magic Heal
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Can Proc From Procs (122), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=306557)   : Apply Aura (6) | Proc Trigger Spell (42): Belo'vir's Final Stand
+                   Base Value: 20 | Scaled Value: 20 | Trigger Spell: 207283 | Target: Self (1)
+Description      : After casting $?s212653[Shimmer][Blink], you gain an absorb shield equal to $s1% of your maximum health for $207283d.
+
+Name             : Darckli's Dragonfire Diadem (id=207547) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 137
+                 : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=306950)   : Apply Aura (6) | Add Flat Modifier (107): Spell Radius (6)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 6 | Target: Self (1)
+                   Affected Spells: Dragon's Breath (31661)
+                   Family Flags: 23
+#2 (id=338876)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Affected Spells: Dragon's Breath (31661)
+                   Family Flags: 23
+Description      : Increases Dragon's Breath's damage by $s2% and range by $s1 yards.
+
+Name             : Shard of the Exodar (id=207970) [Spell Family (3), Passive] 
+School           : Arcane
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 134
+                 : 136
+                 : 137
+                 : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=307649)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
+Description      : Your Time Warp does not cause Temporal Displacement on yourself and is not affected by Temporal Displacement or similar effects on yourself.
+
+Name             : Rhonin's Assaulting Armwraps (id=208080) [Spell Family (3), Passive] 
+School           : Arcane
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 134
+                 : 187
+                 : 294
+Proc Chance      : 18%
+Proc Flags       : Magic Hostile Spell
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=307834)   : Apply Aura (6) | Proc Trigger Spell (42): Rhonin's Assaulting Armwraps
+                   Base Value: 18 | Scaled Value: 18 | Trigger Spell: 208081 | Target: Self (1)
+Description      : Arcane Missiles has a $s1% chance to make your next Arcane Blast cast within $208081d cost no mana.
+
+Name             : Rhonin's Assaulting Armwraps (id=208081) [Spell Family (3)] 
+School           : Arcane
+Spell Type       : Magic
+Duration         : 6 seconds
+Labels           : 134
+                 : 187
+                 : 294
+Proc Chance      : 100%
+Proc Flags       : Generic Hostile Spell, Magic Hostile Spell, Periodic
+Triggered By     : Rhonin's Assaulting Armwraps (208080)
+Attributes       : Do Not Sheath (18), Include In Advanced Combat Log (72), Aura Points On Client (268)
+Effects          :
+#1 (id=307835)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
+                   Base Value: -1000 | Scaled Value: -1000 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Arcane Blast (30451)
+                   Family Flags: 29
+Description      : $@spelldesc208080
+Tooltip          : Your next Arcane Blast costs no mana.
+
+Name             : Koralon's Burning Touch (id=208099) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 137
+                 : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=307865)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+#2 (id=358809)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 350 | Scaled Value: 350 | Target: Self (1)
+Description      : Scorch deals $s2% increased damage and is a guaranteed Critical Strike against enemies below $s1% health.
+
 Name             : Ray of Frost (id=208141) [Spell Family (3), Hidden] 
 Class            : Mage
 School           : Frost
@@ -4859,6 +5694,121 @@ Effects          :
 Description      : $@spelldesc205021
 Tooltip          : Ray of Frost's damage increased by $s1%.
 Ray of Frost's snare increased by $s2%.
+
+Name             : Lady Vashj's Grasp (id=208146) [Spell Family (3), Passive] 
+School           : Frost
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 136
+                 : 187
+                 : 294
+Proc Chance      : 100%
+Proc Flags       : Magic Heal
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=307932)   : Apply Aura (6) | Proc Trigger Spell (42): Lady Vashj's Grasp
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 208147 | Target: Self (1)
+Description      : While Icy Veins is active, you gain $208147m1 $Lcharge:charges; of Fingers of Frost every $208147t1 sec.
+
+Name             : Norgannon's Foresight (id=208215) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Labels           : 187
+                 : 294
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
+Proc Flags       : Cast Ended
+Triggered By     : Norgannon's Foresight (208213)
+Attributes       : Include In Advanced Combat Log (72), Do Not Log Aura Refresh (291)
+Effects          :
+#1 (id=308053)   : Apply Aura (6) | Cast while Moving (377)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Your next non-instant cast spell is castable while moving.
+Tooltip          : Next non-instant cast spell castable while moving.
+
+Name             : Mystic Kilt of the Rune Master (id=209280) [Spell Family (3), Passive] 
+School           : Arcane
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 134
+                 : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=309743)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+Description      : Arcane Barrage grants you $s1% of your maximum mana per Arcane Charge spent.
+
+Name             : Mystic Kilt of the Rune Master (id=209302) [Spell Family (3)] 
+School           : Arcane
+Spell Type       : None
+Labels           : 134
+                 : 187
+                 : 294
+Attributes       : Include In Advanced Combat Log (72), Aura Points On Client (268)
+Effects          :
+#1 (id=309775)   : Energize Power% (137)
+                   Base Value: 0 | Scaled Value: 0 | Resource: mana | Target: Self (1)
+Description      : $@spelldesc209280
+
+Name             : Cord of Infinity (id=209311) [Spell Family (3), Passive] 
+School           : Arcane
+Spell Type       : None
+Labels           : 134
+                 : 187
+                 : 294
+Proc Chance      : 100%
+Proc Flags       : Magic Hostile Spell
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=309786)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : |cFF808080Each time Arcane Missiles hits an enemy, the damage of your next Mark of Aluneth is increased by ${$209316s1/10}.1%. This effect stacks.|r
+
+Name             : Cord of Infinity (id=209316) [Spell Family (3)] 
+School           : Arcane
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 134
+                 : 187
+                 : 294
+Stacks           : 100 maximum
+Proc Chance      : 101%
+Attributes       : Include In Advanced Combat Log (72), Aura Points On Client (268)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Effects          :
+#1 (id=309793)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+Description      : $@spelldesc209311
+Tooltip          : Damage of next Mark of Aluneth increased by ${$s1/10}.1%.
+
+Name             : Marquee Bindings of the Sun King (id=209450) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 137
+                 : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=309996)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+Description      : After consuming Hot Streak, there is a $s1% chance that your next non-instant Pyroblast cast within $209455d deals $209455s1% additional damage.
+
+Name             : Kael'thas's Ultimate Ability (id=209455) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Labels           : 137
+                 : 187
+                 : 294
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), Include In Advanced Combat Log (72), Allow While Invisible (78), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
+Effects          :
+#1 (id=310001)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 300 | Scaled Value: 300 | Misc Value: 7 | Target: Self (1)
+Description      : $@spelldesc209450
+Tooltip          : Increases the damage of your next non-instant Pyroblast by $s1%.
 
 Name             : Arcane Linguist (id=210086) [Spell Family (3), Passive] 
 Class            : Mage
@@ -4944,6 +5894,23 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 6845 | Target: At Enemy (53) -> at Area (87)
 Description      : Creates a runic prison at the target's location, slowing enemy movement speed by ${$211056s1/-1}%, inflicting ${$211088s1*6} Arcane damage over $d, and then detonating for Arcane damage equal to $s1% of your maximum mana.
 
+
+Name             : Crashing Storm (id=210797) [Spell Family (3)] 
+Class            : Shaman
+School           : Nature
+Spell Type       : Magic
+Spell Level      : 1
+Range            : 100 yards
+Duration         : 6 seconds
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 117
+                 : 292
+Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Always Show Ground Texture (190), Periodic Can Crit (265), Aura Points On Client (268), Caster Death Cancels Persistent Area Auras (347), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
+Effects          :
+#1 (id=312254)   : Create Area Trigger (179)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 6826 | Radius: 4 yards | Target: Front of Self (47)
+Description      : $@spelldesc192246
 
 Name             : Time Anomaly (desc=PvP Talent) (id=210805) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
@@ -5063,6 +6030,37 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.4 | Radius: 0 - 6 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : Deals $s1 Arcane damage to enemies within $A1 yds.
 
+Name             : Immolation (id=211893) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Duration         : 60 seconds
+Labels           : 108
+                 : 293
+Internal Cooldown: 1 seconds
+Stacks           : 1 initial, 4 maximum
+Proc Chance      : 100%
+Proc Flags       : Killing Blow
+Triggered By     : Immolation (211918)
+Attributes       : Do Not Log (8), No Immunities (29), No Aura Cancel (31), No Aura Icon (60), Ignore Line of Sight (66), Always Hit (114), Do Not Display Duration (170), No Aura Log (202), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
+Aura Interrupt   : Leave World (19), Enter World (22)
+Effects          :
+#1 (id=313971)   : Apply Aura (6) | Proc Trigger Spell (42): Burned to a Crisp
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 211812 | Target: Self (1)
+Description      : Immolates the corpse of your foes.
+Tooltip          : Immolates the corpse of your foes.
+
+Name             : Immolation (id=211918) [Spell Family (3), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Labels           : 108
+                 : 293
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Immunities (29), No Aura Cancel (31), No Aura Icon (60), Ignore Line of Sight (66), Always Hit (114), Do Not Display Duration (170), No Aura Log (202), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
+Effects          :
+#1 (id=314007)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 211893 | Target: Self (1)
+Description      : Grants the Phoenix's Flames ability, which hurls destructive fire at all enemies near your target.
+Tooltip          : Immolates the corpse of your foes.
+
 Name             : Vengeance Demon Hunter (id=212613) [Spell Family (107), Passive, Hidden] 
 Class            : Vengeance Demon Hunter, Mage
 School           : Physical
@@ -5163,6 +6161,21 @@ Description      : Teleports you $A1 yds forward, unless something is in the way
 Gain a shield that absorbs $382289s1% of your maximum health for $382290d after you Shimmer.][]
 Tooltip          : Shimmering.
 
+Name             : Dalaran Brilliance (id=212660) 
+School           : Arcane
+Spell Type       : None
+Range            : 40 yards
+Duration         : 300 seconds
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), No Threat (42), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=315374)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Take on the mark of the Kirin Tor.
+Tooltip          : Representing the Kirin Tor.
+
 Name             : Cone of Cold (id=212792) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
@@ -5197,6 +6210,40 @@ Effects          :
 #1 (id=318257)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc199786
+
+Name             : Magtheridon's Might (id=214403) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 136
+                 : 187
+                 : 294
+Proc Chance      : 101%
+Proc Flags       : Magic Hostile Spell
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=318379)   : Apply Aura (6) | Proc Trigger Spell (42): Magtheridon's Might
+                   Base Value: 10 | Scaled Value: 10 | Trigger Spell: 214404 | Target: Self (1)
+Description      : Your Ice Lance increases the damage of your Ice Lances by $214404s1% for $214404d, stacking up to $214404u times.
+
+Name             : Magtheridon's Might (id=214404) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Duration         : 8 seconds
+Labels           : 136
+                 : 187
+                 : 294
+Stacks           : 6 maximum
+Proc Chance      : 101%
+Triggered By     : Magtheridon's Might (214403)
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), Include In Advanced Combat Log (72), Allow While Invisible (78), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
+Effects          :
+#1 (id=318381)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Affected Spells: Ice Lance (30455), Ice Lance (228598)
+                   Family Flags: 17
+Description      : $@spelldesc214403
+Tooltip          : Ice Lance damage increased by $s1%.
 
 Name             : Ebonbolt (desc=Artifact) (id=214634) [Spell Family (3)] 
 Class            : Mage
@@ -5376,6 +6423,25 @@ Effects          :
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc205023
 Tooltip          : Deals $w1 Fire damage every $t1 sec.
+
+Name             : Zann'esu Journey (id=226852) [Spell Family (3)] 
+School           : Frost
+Spell Type       : None
+Duration         : 30 seconds
+Labels           : 17: Mage Spells
+                 : 187
+                 : 294
+Stacks           : 5 maximum
+Proc Chance      : 101%
+Proc Flags       : Magic Hostile Spell, Periodic
+Triggered By     : Zann'esu Journey (206397)
+Attributes       : Include In Advanced Combat Log (72), Aura Points On Client (268)
+Aura Interrupt   : Change Specialization (38)
+Effects          :
+#1 (id=340635)   : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (9)
+                   Base Value: 35 | Scaled Value: 35 | Target: Self (1)
+Description      : $@spelldesc206397
+Tooltip          : Increases the damage of your next Blizzard by $s1%.
 
 Name             : Flurry (id=228354) [Spell Family (3)] 
 Class            : Mage
@@ -5619,6 +6685,22 @@ Effects          :
                    Family Flags: 1
 Description      : Fire Blast always deals a critical strike.
 
+Name             : Norgannon's Foresight (id=234797) [Spell Family (3), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : 6 seconds
+Labels           : 187
+                 : 294
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Sitting (27), No Aura Cancel (31), Not an Action (92), Allow Class Ability Procs (416)
+Aura Interrupt   : Moving (3), Change Specialization (38), Change Talent (46), Change Glyph (47)
+Effects          :
+#1 (id=354877)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc208213
+Tooltip          : You recently moved.
+
+Stay still in order to gain Norgannon's Foresight.
+
 Name             : Cold Snap (id=235219) [Spell Family (3)] 
 Talent Entry     : Frost [tree=spec, row=4, col=2, max_rank=1, req_points=0, select_idx=100]
 Class            : Mage
@@ -5680,6 +6762,51 @@ Effects          :
 #10 (id=1206969) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Misc Value: 12
 Description      : All of your snare effects reduce the target's movement speed by an additional $s1%.
+
+Name             : Ice Time (id=235227) [Spell Family (3), Passive] 
+School           : Frost
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=355550)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Your Frozen Orb explodes into a Frost Nova that deals $235235s1 damage.
+
+Name             : Frost Nova (id=235235) [Spell Family (3)] 
+School           : Frost
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 8 seconds
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+Proc Chance      : 100%
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
+Affecting Spells : Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #3, #4), Lonely Winter (205024 effects: #1, #2), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Improved Frost Nova (343183 effect#1), Arcane Surge (365362 effects: #1, #2), Time Manipulation (387807 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Elemental Affinity (431067 effect#1), Spellfire Sphere (448604 effects: #1, #2), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Clarity (1216178 effects: #1, #2), Rollin' Hot (1219035 effects: #1, #2), Flame Quills (1236145 effects: #1, #2, #3, #4), Charm of Aegwynn (1244105 effect#1), Spherical Sorcery (1247525 effects: #1, #2), Dualcasting Adept (1248014 effect#2), Arcane Mage (1256909 effects: #1, #2), Fire Mage (1256911 effects: #1, #2), Frost Mage (1256913 effects: #1, #2), Hand of Frost (1263263 effects: #1, #2)
+Family Flags     : 3, 6
+Attributes       : Not Shapeshifted (16), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Heartbeat Resist (30), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Always Cast As Unit (73), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Active Threat (94), Can Proc From Procs (122), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Aura Bounce Fails Spell (157), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), No Cooldown On Tooltip (192), Allow While Riding Vehicle (204), Show Mechanic as Combat Text (213), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+Aura Interrupt   : Leave World (19), Enter World (22)
+Effects          :
+#1 (id=355560)   : School Damage (2): frost
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.5 | Radius: 12 yards | Target: at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
+#2 (id=355561)   : Apply Aura (6) | Root (Respects Threat Table) (455)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 12 yards | Mechanic: Root | Target: at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
+Description      : Blasts enemies within $A1 yds of you for $s1 Frost damage and freezes them in place for $d. Damage may interrupt the freeze effect.
+Tooltip          : Frozen in place.
+Variables        : $arctic1=$?s31674[${1.01}][${1}]
+$arctic2=$?s31675[${1.02}][${$<arctic1>}]
+$arctic3=$?s31676[${1.03}][${$<arctic2>}]
+$arctic4=$?s31677[${1.04}][${$<arctic3>}]
+$arctic5=$?s31678[${1.05}][${$<arctic4>}]
+$piercing1=$?s11151[${1.02}][${1}]
+$piercing2=$?s12952[${1.04}][${$<piercing1>}]
+$piercing3=$?s12953[${1.06}][${$<piercing2>}]
+$mult=${$<arctic5>*$<piercing3>}
 
 Name             : Glacial Insulation (id=235297) [Spell Family (3), Passive] 
 Class            : Mage
@@ -5857,6 +6984,21 @@ Effects          :
                    Family Flags: 23
 Description      : Dragon's Breath always critically strikes, deals $s2% increased critical strike damage, and contributes to Hot Streak. 
 
+Name             : Pyrotex Ignition Cloth (id=235940) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+Proc Chance      : 100%
+Proc Flags       : Magic Hostile Spell
+Attributes       : Passive (6), Not In Spellbook (143), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=356640)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 9 | Scaled Value: 9 | Target: Self (1)
+Description      : Phoenix Flames reduces the remaining cooldown on Combustion by $s1 sec.
+
 Name             : Frenetic Speed (id=236058) [Spell Family (3), Passive] 
 Talent Entry     : Fire [tree=spec, row=7, col=1, max_rank=1, req_points=8]
 Class            : Mage
@@ -5918,6 +7060,22 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Targeted Enemy (6)
 Description      : $@spelldesc235711
 Tooltip          : Movement speed slowed by $s1%.
+
+Name             : Norgannon's Foresight (id=236380) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 187
+                 : 294
+Attributes       : Include In Advanced Combat Log (72), Do Not Log Aura Refresh (291)
+Aura Interrupt   : Leave World (19)
+Effects          :
+#1 (id=357399)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
+                   Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444966), Volatile Magic (444967), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Pyroblast (1236212), Arcane Pulse (1241462), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863)
+                   Family Flags: 3
+Description      : $@spelldesc236373
+Tooltip          : Your spells may be castable while moving.
 
 Name             : Slipstream (id=236457) [Spell Family (3), Passive] 
 Talent Entry     : Arcane [tree=spec, row=5, col=2, max_rank=1, req_points=8, select_idx=200]
@@ -6006,6 +7164,76 @@ Effects          :
 Description      : $@spelldesc238126
 Tooltip          : Aluneth will echo your next Arcane Explosion.
 
+Name             : The Night's Dichotomy (id=241334) [Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 17: Mage Spells
+                 : 18: Priest Spells
+                 : 19: Warlock Spells
+                 : 128
+                 : 134
+                 : 136
+                 : 137
+                 : 139
+                 : 140
+                 : 141
+                 : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Extra Initial Period (169), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=366182)   : Apply Aura (6) | Periodic Trigger Spell (23): The Night's Dichotomy every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 242600 | Target: Self (1)
+Description      : When an enemy is within $242600A1 yards of you, you conceal yourself in the shadows, reducing damage taken by $241836s1% and increasing movement speed by $241836s2%. When no enemies are within $242600A1 yards of you, Celumbra's starlight heals you for $241835s1% of your maximum health every $241835t1 sec.
+
+Name             : Starlight of Celumbra (id=241835) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 17: Mage Spells
+                 : 18: Priest Spells
+                 : 19: Warlock Spells
+                 : 128
+                 : 134
+                 : 136
+                 : 137
+                 : 139
+                 : 140
+                 : 141
+                 : 187
+                 : 294
+Attributes       : Do Not Sheath (18), No Aura Cancel (31), Include In Advanced Combat Log (72), Ignore Caster Modifiers (125), Do Not Display Range (126), Ignore Healing Modifiers (219), Aura Points On Client (268), Do Not Log Full Overheal (323), Always Allow Negative Healing Percent Modifiers (442)
+Effects          :
+#1 (id=367185)   : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Description      : The Starlight of Celumbra heals you for $s1% of your maximum health every $t1 sec. 
+Tooltip          : The Starlight of Celumbra heals you for $s1% of your maximum health every $t1 sec.
+
+Name             : Shadow of Celumbra (id=241836) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 17: Mage Spells
+                 : 18: Priest Spells
+                 : 19: Warlock Spells
+                 : 128
+                 : 134
+                 : 136
+                 : 137
+                 : 139
+                 : 140
+                 : 141
+                 : 187
+                 : 294
+Attributes       : No Aura Cancel (31)
+Effects          :
+#1 (id=367189)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -5 | Scaled Value: -5 | Target: Self (1)
+#2 (id=368340)   : Apply Aura (6) | Increase Speed% (31)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+Description      : The Shadow of Celumbra reduces your damage taken by $s1% and increases your movement speed by $s2%.
+Tooltip          : The Shadow of Celumbra reduces your damage taken by $s1% and increases your movement speed by $s2%.
+
 Name             : Arcane Missiles (id=243313) 
 Class            : Mage
 School           : Arcane
@@ -6041,6 +7269,67 @@ Effects          :
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc44457
 Tooltip          : Causes $w1 Fire damage every $t1 sec. After $d, the target explodes, causing $w2 Fire damage to the target and all other enemies within $44461A2 yards.
+
+Name             : Soul of the Archmage (id=247553) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=463897)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Gain one of the following talents based on your specialization:
+
+|cFFFFFFFFArcane:|r Amplification
+|cFFFFFFFFFire:|r Flame On
+|cFFFFFFFFFrost:|r Frozen Touch
+
+Name             : Soul of the Archmage (id=247554) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=463900)   : Apply Aura (6) | Grant Talent (224)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22458 | Misc Value 2: 151642 | Target: Self (1)
+
+Name             : Soul of the Archmage (id=247555) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=463902)   : Apply Aura (6) | Grant Talent (224)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22450 | Misc Value 2: 151642 | Target: Self (1)
+
+Name             : Soul of the Archmage (id=247556) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=463903)   : Apply Aura (6) | Grant Talent (224)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22452 | Misc Value 2: 151642 | Target: Self (1)
+
+Name             : Arcane Barrage Procs Arcane Orb (id=248098) [Spell Family (3), Passive] 
+School           : Arcane
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=464775)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+Description      : Arcane Barrage has a $s1% chance per Arcane Charge consumed to launch an Arcane Orb in front of you.
 
 Name             : Contained Infernal Core (id=248099) [Spell Family (3), Passive] 
 Class            : Mage
@@ -6752,6 +8041,17 @@ Effects          :
 Description      : $@spelldesc264354
 Tooltip          : The cost of your next Arcane Blast or Arcane Missiles is reduced by $s1%.
 
+Name             : Frost Blast (id=265175) [Spell Family (3)] 
+School           : Frost
+Spell Type       : Magic
+Range            : 30 yards
+Triggered By     : Bonechill Hammer (265176)
+Attributes       : Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=709147)   : School Damage (2): frost | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 973.4024 (coefficient=3.462) | Target: Targeted Enemy (6)
+Description      : Blasts a target for $s1 Frost damage.
+
 Name             : Fireblood (desc=Racial) (id=265221) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Dark Iron Dwarf (0x800)
@@ -7032,6 +8332,186 @@ Description      : Frozen Orb makes Blizzard instant cast.
 
 Blizzard damage increased by $s2%.
 
+Name             : Arcane Pummeling (id=270669) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Azerite Power Id : 88
+Triggered By     : Arcane Pummeling (270670)
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=720338)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Arcane Pummeling | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 421.7515 (coefficient=1.5) | PvP Coefficient: 0.5 | Trigger Spell: 270671 | Target: Self (1)
+#2 (id=748104)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+Description      : Clearcasting procs $s2% more often, and each wave of a Clearcast Arcane Missiles deals $s1 more damage than the previous.
+
+Name             : Arcane Pummeling (id=270670) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Duration         : 3 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Triggered By     : Arcane Pummeling (270671)
+Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=720339)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Affected Spells: Arcane Missiles (7268)
+                   Family Flags: 21
+#2 (id=721427)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 270669
+Description      : $@spelldesc270669
+Tooltip          : Arcane Missiles does an additional $w1 damage.
+
+Name             : Arcane Pummeling (id=270671) [Spell Family (3), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Proc Chance      : 100%
+Proc Flags       : Cast Ended
+Triggered By     : Arcane Pummeling (270669)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=720340)   : Apply Aura (6) | Proc Trigger Spell (42): Arcane Pummeling
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 270670 | Target: Self (1)
+Description      : $@spelldesc270669
+
+Name             : Cooled Hearthing (desc=Guild Perk) (id=271431) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6)
+Effects          :
+#1 (id=721681)   : Apply Aura (6) | Modify Cooldown Time (Category) (341)
+                   Base Value: -300000 | Scaled Value: -300000 | Misc Value: 1176 (Category) | Target: Self (1)
+Description      : Reduces the cooldown on your Hearthstone by ${$m1/-60000} minutes.
+
+Name             : Coming Soon (id=271464) [Spell Family (3), Passive, Hidden] 
+Talent Entry     : Subtlety [tree=spec, row=10, col=1, max_rank=2, req_points=20]
+                 : Subtlety [tree=spec, row=9, col=1, max_rank=1, req_points=20]
+                 : Subtlety [tree=spec, row=8, col=1, max_rank=2, req_points=20]
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 292
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=721737)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : There is a new talent hiding in the shadows!
+
+Name             : Flames of Alacrity (id=272932) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Azerite Power Id : 128
+Triggered By     : Flames of Alacrity (272934)
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=724148)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Flames of Alacrity | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 108.0846 (coefficient=0.824567) | PvP Coefficient: 0.5 | Trigger Spell: 272933 | Target: Self (1)
+Description      : Enhanced Pyrotechnics grants an additional $s1 Haste. 
+
+Name             : Flames of Alacrity (id=272933) [Spell Family (3), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Proc Chance      : 100%
+Proc Flags       : Magic Heal Taken
+Triggered By     : Flames of Alacrity (272932)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=724150)   : Apply Aura (6) | Proc Trigger Spell (42): Flames of Alacrity
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 272934 | Target: Self (1)
+Description      : $@spelldesc272932
+
+Name             : Flames of Alacrity (id=272934) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Triggered By     : Flames of Alacrity (272933)
+Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=724151)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
+#2 (id=724152)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 272932
+Description      : $@spelldesc272932
+Tooltip          : Increases haste by $w1.
+
+Name             : Packed Ice (id=272968) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Azerite Power Id : 132
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=724230)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Packed Ice | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 1748.863 (coefficient=6.22) | PvP Coefficient: 0.5 | Trigger Spell: 272969 | Target: Self (1)
+Description      : Ice Lance deals an additional $s1 damage to enemies recently damaged by your Frozen Orb.
+
+Name             : Packed Ice (id=272969) [Spell Family (3), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Proc Chance      : 100%
+Proc Flags       : Magic Hostile Spell
+Triggered By     : Packed Ice (272968)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=724231)   : Apply Aura (6) | Proc Trigger Spell (42): Packed Ice
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 272970 | Target: Self (1)
+Description      : $@spelldesc272968
+
+Name             : Packed Ice (id=272970) [Spell Family (3)] 
+School           : Physical
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 4 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Triggered By     : Packed Ice (272969)
+Attributes       : Aura Is Debuff (26), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=724232)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+Description      : $@spelldesc272968
+Tooltip          : The Mage's Ice Lances will deal increased damage to you.
+
 Name             : Open Skies (desc=Racial Passive) (id=273216) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Mag'har Orc (0x2000)
@@ -7076,6 +8556,206 @@ Effects          :
 #4 (id=724671)   : Apply Aura (6) | Modify Debuff Duration% (245)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 3 | Target: Self (1)
 Description      : Reduces the duration of Poisons, Diseases, and Curses by $s1%.
+
+Name             : Brain Storm (id=273326) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Azerite Power Id : 167
+Triggered By     : Brain Storm (273330)
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=724859)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Brain Storm | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 15.40943 (coefficient=0.117557) | PvP Coefficient: 0.5 | Trigger Spell: 273327 | Target: Self (1)
+Description      : Evocation grants $288466s1 Arcane $lCharge:Charges;, and while channeling Evocation, your Intellect is increased by $s1 every $273329t1 sec. Lasts $273330d.
+
+Name             : Brain Storm (id=273327) [Spell Family (3), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Proc Chance      : 100%
+Proc Flags       : Cast Successful
+Triggered By     : Brain Storm (273326)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Can Proc from Suppressed Caster Procs (385), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=724860)   : Apply Aura (6) | Proc Trigger Spell (42): Brain Storm
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 273329 | Target: Self (1)
+#2 (id=752097)   : Apply Aura (6) | Proc Trigger Spell (42): Brain Storm
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 288466 | Target: Self (1)
+Description      : $@spelldesc273326
+
+Name             : Brain Storm (id=273329) [Spell Family (3), Hidden] 
+School           : Arcane
+Spell Type       : None
+Duration         : 6 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Triggered By     : Brain Storm (273327)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Extra Initial Period (169), Spell Haste Affects Periodic (173), Aura Points On Client (268), Haste Affects Duration (273), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=724862)   : Apply Aura (6) | Periodic Trigger Spell (23): Brain Storm every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 273330 | Target: Self (1)
+Description      : $@spelldesc273326
+
+Name             : Brain Storm (id=273330) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Duration         : 30 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Stacks           : 6 maximum
+Proc Chance      : 101%
+Triggered By     : Brain Storm (273329)
+Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=724863)   : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Int | Target: Self (1)
+#2 (id=724864)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 273326
+Description      : $@spelldesc273326
+Tooltip          : Intellect increased by $w1.
+
+Name             : Preheat (id=273331) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=724865)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 2494.285 (coefficient=8.871165) | Trigger Spell: 273332 | Target: Self (1)
+Description      : Scorch increases the damage the target takes from your Fire Blast by $s1 for $273333d.
+
+Name             : Preheat (id=273332) [Spell Family (3), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Proc Chance      : 100%
+Proc Flags       : Magic Hostile Spell
+Triggered By     : Preheat (273331)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=724867)   : Apply Aura (6) | Proc Trigger Spell (42): Preheat
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 273333 | Target: Self (1)
+Description      : $@spelldesc273331
+
+Name             : Preheat (id=273333) [Spell Family (3)] 
+School           : Physical
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 30 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Triggered By     : Preheat (273332)
+Attributes       : Aura Is Debuff (26), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=724868)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+Description      : $@spelldesc273331
+Tooltip          : The Mage's Fire Blast will deal increased damage to you.
+
+Name             : Eldritch Warding (id=274379) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 378
+                 : 416
+Azerite Power Id : 205
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=726666)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 16228.38 (coefficient=57.7178) | PvP Coefficient: 0.2 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Ice Barrier (11426), Blazing Barrier (235313), Prismatic Barrier (235450), Merely a Setback (449336), Merely a Setback (1246023)
+                   Family Flags: 32, 68, 94
+Description      : Your Ice Barrier, Blazing Barrier, and Prismatic Barrier absorb $s1 additional damage.
+
+Name             : Arcane Pressure (id=274594) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Azerite Power Id : 214
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=727008)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 4155.416 (coefficient=14.77914) | PvP Coefficient: 0.5 | Target: Self (1)
+#2 (id=727009)   : Dummy (3)
+                   Base Value: 35 | Scaled Value: 35
+Description      : Arcane Barrage deals an additional $s1 damage per Arcane Charge against targets below $s2% health.
+
+Name             : Blaster Master (id=274596) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Azerite Power Id : 215
+Triggered By     : Blaster Master (274598)
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=727013)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Blaster Master | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 105.1634 (coefficient=0.802281) | PvP Coefficient: 0.5 | Trigger Spell: 274597 | Target: Self (1)
+Description      : Fire Blast increases your Mastery by $s1 for 3 sec. This effect stacks.
+
+Name             : Blaster Master (id=274597) [Spell Family (3), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Proc Chance      : 100%
+Proc Flags       : Magic Hostile Spell
+Triggered By     : Blaster Master (274596)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=727015)   : Apply Aura (6) | Proc Trigger Spell (42): Blaster Master
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 274598 | Target: Self (1)
+Description      : $@spelldesc273331
+
+Name             : Blaster Master (id=274598) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Duration         : 3 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Triggered By     : Blaster Master (274597)
+Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=727016)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
+#2 (id=727017)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 274596
+Description      : $@spelldesc274596
+Tooltip          : Mastery increased by $w1.
 
 Name             : Ancestral Call (desc=Racial) (id=274738) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -7139,6 +8819,76 @@ Effects          :
 Description      : $@spelldesc79684
 Tooltip          : Your next Arcane Missiles costs no mana and deals $s2% additional damage.
 
+Name             : Trailing Embers (id=277656) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Azerite Power Id : 376
+Triggered By     : Trailing Embers (277703)
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=732956)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 458.838 (coefficient=1.631902) | PvP Coefficient: 0.5 | Target: Self (1)
+Description      : Pyroblast burns enemies between you and the target for ${$s1*(1+$277703d/$277703t1)} Fire damage over $277703d.
+
+Name             : Tunnel of Ice (id=277663) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Azerite Power Id : 379
+Triggered By     : Tunnel of Ice (277904)
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=732964)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Tunnel of Ice | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 653.7578 (coefficient=2.325153) | PvP Coefficient: 0.5 | Trigger Spell: 277902 | Target: Self (1)
+Description      : Frostbolt increases the damage of Frostbolt by $s1, stacking up to $277904u times. This effect is reset if you cast Frostbolt at a different enemy.
+
+Name             : Trailing Embers (id=277700) [Spell Family (3)] 
+School           : Fire
+Spell Type       : None
+Range            : 100 yards
+Duration         : 4 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=733027)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+#2 (id=733037)   : Create Area Trigger (179)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14516 | Target: at Self (18)
+Description      : $@spelldesc277656
+
+Name             : Trailing Embers (id=277703) [Spell Family (3)] 
+School           : Fire
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 6 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Affecting Spells : Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #3, #4), Lonely Winter (205024 effects: #1, #2), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Spellfire Sphere (448604 effects: #1, #2), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Clarity (1216178 effects: #1, #2), Rollin' Hot (1219035 effects: #1, #2), Flame Quills (1236145 effects: #1, #2, #3, #4), Charm of Aegwynn (1244105 effect#1), Spherical Sorcery (1247525 effects: #1, #2), Arcane Mage (1256909 effects: #1, #2), Fire Mage (1256911 effects: #1, #2), Frost Mage (1256913 effects: #1, #2), Hand of Frost (1263263 effects: #1, #2)
+Family Flags     : 3
+Attributes       : Do Not Display Range (126), Extra Initial Period (169), Periodic Can Crit (265), Aura Points On Client (268), Periodic Refresh Extends Duration (436)
+Effects          :
+#1 (id=733030)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
+#2 (id=733031)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 277656
+                   Modified By: Rollin' Hot (1219035 effect#2)
+Description      : $@spelldesc277656
+
+Tooltip          : Suffering $w1 Fire damage every $t1 sec.
+
 Name             : Clearcasting (id=277726) [Spell Family (3), Hidden] 
 Class            : Mage
 School           : Physical
@@ -7164,6 +8914,47 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Arcane Missiles (5143)
                    Family Flags: 11
+
+Name             : Tunnel of Ice (id=277902) [Spell Family (3), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Internal Cooldown: 0.5 seconds
+Proc Chance      : 100%
+Proc Flags       : Magic Hostile Spell
+Triggered By     : Tunnel of Ice (277663)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=733325)   : Apply Aura (6) | Proc Trigger Spell (42): Tunnel of Ice
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 277904 | Target: Self (1)
+Description      : $@spelldesc277663
+
+Name             : Tunnel of Ice (id=277904) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 300 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Triggered By     : Tunnel of Ice (277902)
+Attributes       : Do Not Display Duration (170), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=733327)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Affected Spells: Frostbolt (116), Frostbolt (228597), Glacial Spike (228600), Frostfire Bolt (431044), Frostfire Bolt (468655)
+                   Family Flags: 5
+#2 (id=733328)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 277663
+Description      : $@spelldesc277663
+Tooltip          : Frostbolt damage increased by $w1.
 
 Name             : Chain Reaction (id=278309) [Spell Family (3), Passive] 
 Class            : Mage
@@ -7196,6 +8987,224 @@ Effects          :
                    Family Flags: 17
 Description      : $@spelldesc278309
 Tooltip          : Ice Lance damage increased by $278309s1%.
+
+Name             : Galvanizing Spark (id=278536) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Azerite Power Id : 374
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=734300)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Galvanizing Spark
+                   Base Value: 8 | Scaled Value: 8 | Trigger Spell: 279080 | Target: Self (1)
+#2 (id=734301)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
+                   Base Value: 50 | Scaled Value: 336.3662 (coefficient=1.196319) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Affected Spells: Arcane Blast (30451)
+                   Family Flags: 29
+Description      : Arcane Blast deals an additional $s2 damage and has a $s1% chance to generate a second Arcane Charge.
+
+Name             : Explosive Echo (id=278537) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Azerite Power Id : 375
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=734302)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+#2 (id=734303)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
+                   Base Value: 3 | Scaled Value: 852.1277 (coefficient=3.030675) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Affected Spells: Arcane Explosion (1449), Time and Space (240689), Arcane Explosion (414381), Arcane Explosion (461508)
+                   Family Flags: 12
+#3 (id=734304)   : Dummy (3)
+                   Base Value: 10 | Scaled Value: 10
+#4 (id=734305)   : Dummy (3) | Scaling Class: Replace Primary (-8)
+                   Base Value: 50 | Scaled Value: 5790.674 (coefficient=20.59509) | PvP Coefficient: 0.5
+Description      : Arcane Explosion deals an additional $s2 damage. When it damages at least $s1 targets, it has a $s3% chance to deal an additional $s4 Arcane damage to them.
+
+Name             : Duplicative Incineration (id=278538) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Azerite Power Id : 377
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=734306)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Duplicative Incineration
+                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 279084 | Target: Self (1)
+#2 (id=734307)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
+                   Base Value: 20 | Scaled Value: 1103.971 (coefficient=3.92638) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Affected Spells: Fireball (133), Frostfire Bolt (431044), Frostfire Bolt (468655)
+                   Family Flags: 0
+Description      : Fireball deals an additional $s2 damage, and has a $s1% chance to launch a second Fireball.
+
+Name             : Firemind (id=278539) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Azerite Power Id : 378
+Triggered By     : Firemind (279715)
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=734308)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 19.79315 (coefficient=0.151) | PvP Coefficient: 0.5 | Target: Self (1)
+#2 (id=734309)   : Dummy (3)
+                   Base Value: 3 | Scaled Value: 3
+Description      : Consuming Hot Streak grants you $s1 Intellect for $279715d. This effect stacks up to $s2 times.
+
+Name             : Whiteout (id=278541) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Azerite Power Id : 380
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=734311)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=734312)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5
+#3 (id=735803)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 631.3335 (coefficient=2.245399) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Affected Spells: Ice Lance (30455), Ice Lance (228598)
+                   Family Flags: 17
+Description      : Ice Lance deals an additional $s3 damage and reduces the cooldown of Frozen Orb by ${$s2/10}.1 sec.
+
+Name             : Frigid Grasp (id=278542) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Azerite Power Id : 381
+Triggered By     : Frigid Grasp (279684)
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=734313)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Frigid Grasp | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 210.129 (coefficient=1.603053) | PvP Coefficient: 0.5 | Trigger Spell: 279685 | Target: Self (1)
+Description      : Icy Veins grants you a charge of Fingers of Frost and increases your Intellect by $s1 for $279684d.
+
+Name             : Galvanizing Spark (id=279080) [Spell Family (3), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Proc Chance      : 8%
+Proc Flags       : Magic Hostile Spell
+Triggered By     : Galvanizing Spark (278536)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Can Proc from Suppressed Caster Procs (385), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=735256)   : Apply Aura (6) | Proc Trigger Spell (42): Galvanizing Spark
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279081 | Target: Self (1)
+Description      : $@spelldesc278536
+
+Name             : Galvanizing Spark (id=279081) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Triggered By     : Galvanizing Spark (279080)
+Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=735257)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Resource: none | Target: Self (1)
+Description      : $@spelldesc278536
+Tooltip          : Grants one Arcane Charge.
+
+Name             : Duplicative Incineration (id=279084) [Spell Family (3), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Proc Chance      : 5%
+Proc Flags       : Magic Hostile Spell
+Triggered By     : Duplicative Incineration (278538)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=735262)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc278538
+
+Name             : Frigid Grasp (id=279684) [Spell Family (3)] 
+School           : Physical
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 20 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Triggered By     : Frigid Grasp (279685)
+Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=736130)   : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Int | Target: Self (1)
+#2 (id=736131)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 278542
+Description      : $@spelldesc278542
+Tooltip          : Intellect increased by $w1.
+
+Name             : Frigid Grasp (id=279685) [Spell Family (3), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Proc Chance      : 100%
+Proc Flags       : Magic Heal
+Triggered By     : Frigid Grasp (278542)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=736132)   : Apply Aura (6) | Proc Trigger Spell (42): Frigid Grasp
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279684 | Target: Self (1)
+#2 (id=736133)   : Apply Aura (6) | Proc Trigger Spell (42): Fingers of Frost
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 44544 | Target: Self (1)
+Description      : $@spelldesc278542
+
+Name             : Firemind (id=279715) [Spell Family (3)] 
+School           : Fire
+Spell Type       : None
+Duration         : 12 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=736183)   : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Int | Target: Self (1)
+#2 (id=736184)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 278539
+Description      : $@spelldesc278539
+Tooltip          : Increases Intellect by $w1.
 
 Name             : Glacial Assault (id=279854) [Spell Family (3), Passive] 
 Class            : Mage
@@ -7251,6 +9260,37 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279854
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc279854
+
+Name             : Cauterizing Blink (id=280173) [Spell Family (3), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 378
+                 : 416
+Proc Chance      : 101%
+Proc Flags       : Cast Successful
+Triggered By     : Cauterizing Blink (280015)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=737539)   : Apply Aura (6) | Proc Trigger Spell (42): Cauterizing Blink
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 280177 | Target: Self (1)
+Description      : $@spelldesc280015
+
+Name             : Cord of Infinity (id=281263) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 49
+Labels           : 187
+                 : 294
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=739569)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Affected Spells: Arcane Missiles (7268)
+                   Family Flags: 21
+Description      : Increases damage done by Arcane Missiles by $s1%.
 
 Name             : Reverberate (id=281482) [Spell Family (3), Passive] 
 Talent Entry     : Arcane [tree=spec, row=5, col=1, max_rank=1, req_points=8]
@@ -7347,6 +9387,192 @@ Effects          :
 Description      : Wind up, then unleash your might upon your foe, dealing $<damage> Physical damage, stunning for $d, and knocking them back substantially. 
 Tooltip          : Stunned.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*0.75,$AP*0.75)*$pctD*(1+$@versadmg)}
+
+Name             : Quick Thinking (id=288121) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 378
+                 : 416
+Azerite Power Id : 546
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=751526)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Quick Thinking
+                   Base Value: 50 | Scaled Value: 50 | Trigger Spell: 288125 | Target: Self (1)
+#2 (id=751527)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
+                   Base Value: 5 | Scaled Value: 9452.753 (coefficient=33.61963) | PvP Coefficient: 0.2 | Target: Self (1)
+#3 (id=751528)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
+                   Base Value: 5 | Scaled Value: 1890.551 (coefficient=6.723927) | PvP Coefficient: 0.2 | Target: Self (1)
+#4 (id=751529)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
+                   Base Value: 5 | Scaled Value: 2835.826 (coefficient=10.08589) | PvP Coefficient: 0.2 | Target: Self (1)
+Description      : Your instant cast damaging spells heal you for $?C1[$s2]?C2[$s3][$s4].
+
+Name             : Quick Thinking (id=288125) [Spell Family (3), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 378
+                 : 416
+Proc Chance      : 101%
+Proc Flags       : Generic Hostile Spell, Magic Hostile Spell, Periodic
+Triggered By     : Quick Thinking (288121)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=751534)   : Apply Aura (6) | Dummy (4)
+                   Base Value: -15000 | Scaled Value: -15000 | Misc Value: 11 | Target: Self (1)
+Description      : $@spelldesc288121
+
+Name             : Quick Thinking (id=288126) [Spell Family (3)] 
+School           : Arcane
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 378
+                 : 416
+Attributes       : Ignore Healing Modifiers (219), Aura Points On Client (268), Always Allow Negative Healing Percent Modifiers (442)
+Effects          :
+#1 (id=751535)   : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc288121
+
+Name             : Flash Freeze (id=288164) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Azerite Power Id : 170
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=751603)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Flash Freeze
+                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 288204 | Target: Self (1)
+#2 (id=751604)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
+                   Base Value: 5 | Scaled Value: 1547.285 (coefficient=5.503068) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Affected Spells: Icicle (148022), Icicles (1246832)
+                   Family Flags: 115
+Description      : Each of your Icicles deals $s2 additional damage, and when an Icicle deals damage you have a $s1% chance to gain the Fingers of Frost effect.
+
+Name             : Flash Freeze (id=288204) [Spell Family (3), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Proc Chance      : 5%
+Proc Flags       : Generic Hostile Spell, Magic Hostile Spell, Periodic
+Triggered By     : Flash Freeze (288164)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=751668)   : Apply Aura (6) | Proc Trigger Spell (42): Fingers of Frost
+                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 44544 | Target: Self (1)
+Description      : $@spelldesc288164
+
+Name             : Brain Storm (id=288460) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=752089)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Resource: none | Target: Self (1)
+Description      : $@spelldesc273326
+Tooltip          : Grants one Arcane Charge.
+
+Name             : Brain Storm (id=288466) [Spell Family (3), Hidden] 
+School           : Arcane
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Triggered By     : Brain Storm (273327)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=752096)   : Energize Power (30)
+                   Base Value: 2 | Scaled Value: 2 | Resource: none | Target: Self (1)
+Description      : $@spelldesc273326
+
+Name             : Wildfire (id=288755) [Spell Family (3), Passive] 
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Azerite Power Id : 168
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=752674)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Wildfire
+                   Base Value: 4 | Scaled Value: 4 | Trigger Spell: 288795 | Target: Self (1)
+#2 (id=752737)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 1131.57 (coefficient=4.02454) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Affected Spells: Pyroblast (11366), Pyroblast (460475), Pyroblast (1236212), Pyroblast (1262863)
+                   Family Flags: 22
+Description      : Pyroblast deals $s2 additional damage. When you activate Combustion, you gain $288800s1 Critical Strike, and up to $288803I nearby allies gain $288803s1 Critical Strike for $288800d.
+
+Name             : Wildfire (id=288795) [Spell Family (3), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Proc Chance      : 101%
+Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Triggered By     : Wildfire (288755)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=752738)   : Apply Aura (6) | Proc Trigger Spell (42): Wildfire
+                   Base Value: 50 | Scaled Value: 50 | Trigger Spell: 288800 | Target: Self (1)
+Description      : $@spelldesc288755
+
+Name             : Wildfire (id=288800) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Max Scaling Level: 50
+Duration         : 10 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Triggered By     : Wildfire (288795)
+Attributes       : Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=752743)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 47.62655 (coefficient=2.469453) | Rating: Crit | Target: Self (1)
+#2 (id=752747)   : Trigger Spell (64): Wildfire
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 288803 | Target: Self (1)
+Description      : $@spelldesc288755
+Tooltip          : Critical Strike increased by $w1.
+
+Name             : Wildfire (id=288803) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Max Scaling Level: 50
+Max Targets      : 4
+Velocity         : 40 yards/sec
+Duration         : 10 seconds
+Labels           : 292
+                 : 374
+                 : 375
+                 : 416
+Triggered By     : Wildfire (288800)
+Attributes       : Exclude Caster (51), Allow Cast While Casting (135), Not On Player Controlled NPC (168), Aura Points On Client (268), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=752746)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 5.953327 (coefficient=0.308682) | Rating: Crit | Radius: 0 - 40 yards | Target: Source (22) -> Ally in Area (30)
+Description      : $@spelldesc288755
+Tooltip          : Critical Strike increased by $w1.
 
 Name             : Frozen Orb (id=289308) [Spell Family (3)] 
 Class            : Mage
@@ -8714,6 +10940,25 @@ Effects          :
 Description      : $@spelldesc327284
 Tooltip          : Your next Frostbolt or Flurry will also cast a Frozen Orb at your target.
 
+Name             : Temporal Warp (id=327355) 
+School           : Arcane
+Spell Type       : None
+Duration         : 40 seconds
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+                 : 615
+                 : 931
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Ignore Line of Sight (66), Allow Low Level Buff (67), Not In Arena or Rated Battleground (144), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Aura Points On Client (268), Not In Arena (297), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Effects          :
+#1 (id=818803)   : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+#2 (id=818804)   : Apply Aura (6) | Scale% (Stacking) (61)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+Description      : $@spelldesc327351
+Tooltip          : Haste increased by $w1%.
+
 Name             : Freezing Winds (id=327364) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
@@ -8860,6 +11105,20 @@ Effects          :
 Description      : $@spelldesc327489
 Tooltip          : Your next Hot Streak, Brain Freeze or Clearcasting will not be consumed.
 
+Name             : Glacial Fragments (id=327498) [Spell Family (3)] 
+School           : Frost
+Spell Type       : Magic
+Range            : 100 yards
+Labels           : 931
+Affecting Spells : Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #3, #4), Lonely Winter (205024 effects: #1, #2), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Spellfire Sphere (448604 effects: #1, #2), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Clarity (1216178 effects: #1, #2), Rollin' Hot (1219035 effects: #1, #2), Flame Quills (1236145 effects: #1, #2, #3, #4), Charm of Aegwynn (1244105 effect#1), Spherical Sorcery (1247525 effects: #1, #2), Arcane Mage (1256909 effects: #1, #2), Fire Mage (1256911 effects: #1, #2), Frost Mage (1256913 effects: #1, #2), Hand of Frost (1263263 effects: #1, #2)
+Family Flags     : 3
+Attributes       : Ignore Line of Sight (66), Include In Advanced Combat Log (72), Always AOE Line of Sight (186), Use Spell Base Level For Scaling (332)
+Effects          :
+#1 (id=818996)   : School Damage (2): frost
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.4 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
+Description      : $@spelldesc327492
+
 Name             : Slick Ice (id=327508) [Spell Family (3), Passive] 
 School           : Physical
 Spell Type       : None
@@ -8871,6 +11130,31 @@ Effects          :
 #1 (id=819011)   : Apply Aura (6) | Proc Trigger Spell (42): Slick Ice
                    Base Value: 75 | Scaled Value: 75 | Trigger Spell: 327511 | Target: Self (1)
 Description      : While Icy Veins is active, each Frostbolt you cast reduces the cast time of Frostbolt by $327509s1% and increases its damage by $327509s2%, stacking up to $327509u times.
+
+Name             : Slick Ice (id=327509) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Duration         : 60 seconds
+Labels           : 931
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Triggered By     : Slick Ice (327511)
+Attributes       : Include In Advanced Combat Log (72), Do Not Display Duration (170)
+Effects          :
+#1 (id=819012)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+                   Base Value: -2 | Scaled Value: -2 | Misc Value: 10 | Target: Self (1)
+                   Affected Spells: Frostbolt (116), Glacial Spike (199786), Frostfire Bolt (431044)
+                   Family Flags: 57
+#2 (id=819013)   : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21)
+                   Base Value: -2 | Scaled Value: -2 | Misc Value: 21 | Target: Self (1)
+                   Affected Spells: Frostbolt (116), Glacial Spike (199786), Frostfire Bolt (431044)
+                   Family Flags: 57
+#3 (id=874424)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Affected Spells: Frostbolt (116), Frostbolt (228597), Glacial Spike (228600), Frostfire Bolt (431044), Frostfire Bolt (468655)
+                   Family Flags: 5
+Description      : $@spelldesc327508
+Tooltip          : Cast time of Frostbolt reduced by $s1% and its damage is increased by $s2%.
 
 Name             : Slick Ice (id=327511) [Spell Family (3), Hidden] 
 School           : Physical
@@ -8940,6 +11224,31 @@ Effects          :
 #1 (id=827867)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 Description      : Evocation grants $332929s1 $LArcane Charge:Charges;, and while channeling Evocation, your Intellect is increased by $332934s1% every $12051t2 sec. Lasts $332934d.
+
+Name             : Siphon Storm (id=332929) [Spell Family (3)] 
+School           : Arcane
+Spell Type       : None
+Labels           : 931
+Attributes       : Aura Points On Client (268)
+Effects          :
+#1 (id=827868)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Resource: none | Target: Self (1)
+Description      : $@spelldesc332928
+
+Name             : Siphon Storm (id=332934) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Duration         : 30 seconds
+Labels           : 931
+Stacks           : 6 maximum
+Proc Chance      : 101%
+Attributes       : Aura Points On Client (268)
+Aura Interrupt   : Change Specialization (38)
+Effects          :
+#1 (id=827876)   : Apply Aura (6) | Modify Total Stat% (137)
+                   Base Value: 2 | Scaled Value: 2 | Stat: Int | Target: Self (1)
+Description      : $@spelldesc332928
+Tooltip          : Intellect increased by $s1%
 
 Name             : Fevered Incantation (id=333030) [Spell Family (3), Passive] 
 School           : Fire
@@ -9295,6 +11604,24 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.67 | Target: Self (1)
 Description      : While Combustion is active, your Fire Blast grants you |cFFFFFFFF${$s1}.1% |r increased Fire damage for $336832d, stacking up to $336832u times.
 
+Name             : Infernal Cascade (id=336832) [Spell Family (3)] 
+School           : Fire
+Spell Type       : None
+Spell Level      : 60
+Duration         : 5 seconds
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+Stacks           : 2 maximum
+Proc Chance      : 101%
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=834489)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x4 | Target: Self (1)
+                   Affected School(s): Fire
+Description      : $@spelldesc336821
+Tooltip          : Fire Damage increased by $w1%.
+
 Name             : Master Flame (id=336852) [Spell Family (3), Passive, Hidden] 
 School           : Fire
 Spell Type       : None
@@ -9498,6 +11825,19 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 32 | Target: Self (1)
 Description      : Your Barriers heal you for |cFFFFFFFF$s1%|r of the damage absorbed.
 
+Name             : Diverted Energy (id=337137) 
+School           : Arcane
+Spell Type       : None
+Spell Level      : 60
+Labels           : 17: Mage Spells
+                 : 292
+                 : 999
+Attributes       : Do Not Sheath (18), No Aura Icon (60), Include In Advanced Combat Log (72), Can't Crit (93), Ignore Caster Modifiers (125), Ignore Healing Modifiers (219), Aura Points On Client (268), Not In Spellbook Until Learned (269), Always Allow Negative Healing Percent Modifiers (442)
+Effects          :
+#1 (id=834952)   : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc337136
+
 Name             : Magi's Brand (id=337192) [Spell Family (3), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
@@ -9545,6 +11885,19 @@ Effects          :
 #1 (id=835158)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : Your Arcane Barrage has a |cFFFFFFFF${$s1/10}.1%|r chance to grant $337244s1 Arcane Charges.
+
+Name             : Artifice of the Archmage (id=337244) [Spell Family (3)] 
+School           : Arcane
+Spell Type       : None
+Spell Level      : 60
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=835166)   : Energize Power (30)
+                   Base Value: 2 | Scaled Value: 2 | Resource: none | Target: Self (1)
+Description      : $@spelldesc337240
 
 Name             : Incantation of Swiftness (id=337275) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
@@ -10044,6 +12397,32 @@ Effects          :
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
+Name             : Ice Wall (desc=PvP Talent) (id=352278) [Spell Family (3)] 
+School           : Frost
+Spell Type       : None
+Resource         : 8% Base Mana (0) (id=232298)
+Spell Level      : 60
+Range            : 30 yards
+Cast Time        : 1.5 seconds
+GCD              : 1.5 seconds
+Duration         : 15 seconds
+Cooldown         : 90 seconds
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+                 : 1327: Elemental Affinity (431067 effect#6)
+Attributes       : No Aura Icon (60), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Do Not Log on Learn (355), Cheap Missile AOI (374), Face Destination (395), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=883068)   : Summon Guardian (28)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 178819 | Misc Value 2: 5168 | Radius: 0.1 yards | Target: Front in Area (78)
+#2 (id=884242)   : Transition through Door (50)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 368620 | Target: at Area (87)
+#3 (id=884244)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+#4 (id=884245)   : Dummy (3)
+                   Base Value: 30 | Scaled Value: 30
+Description      : Conjures an Ice Wall $s3 yards long that obstructs line of sight. The wall has $s4% of your maximum health and lasts up to $d.
+
 Name             : Evoker (id=353167) [Spell Family (224), Passive, Hidden] 
 Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
 Race             : Dracthyr (0x18000)
@@ -10060,6 +12439,31 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1204992)  : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2281 (Category) | Target: Self (1)
+
+Name             : Harmonic Echo (id=354186) [Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 17: Mage Spells
+                 : 931
+Triggered By     : Harmonic Echo (364853)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=886440)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+Description      : Damage dealt to enemies affected by Radiant Spark's vulnerability echo to your current enemy target and ${$354189i-1} nearby enemies for $s1% of the damage dealt.
+
+Name             : Harmonic Echo (id=354189) [Spell Family (3)] 
+School           : Arcane
+Spell Type       : Magic
+Range            : 100 yards
+Max Targets      : 5
+Labels           : 931
+Attributes       : Allow Cast While Dead (23), Can't Crit (93), Not a Proc (105), Allow Aura While Dead (116), Ignore Caster Damage Modifiers (221), Bypass Visibility Check (320), Ignore Positive Damage Taken Modifiers (321), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=886443)   : School Damage (2): arcane
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Radius: 0 - 10 yards | Target: at Target (63) -> at Enemy in Area (16)
+Description      : $@spelldesc354186
 
 Name             : Death's Fathom (id=354294) [Spell Family (3), Hidden] 
 School           : Physical
@@ -10412,6 +12816,20 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Enemies hit by Comet Storm take $363544s1% increased damage from your Frost Spells, up to ${$363544s1*$363544u}% for $363544d.
 
+Name             : Harmonic Echo (id=364853) [Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Labels           : 17: Mage Spells
+                 : 931
+Stacks           : 2 maximum
+Proc Chance      : 101%
+Triggered By     : Unity (364852)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=905249)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Harmonic Echo
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 354186 | Target: Self (1)
+Description      : $@spelldesc354186
+
 Name             : Sinful Delight (id=364854) [Spell Family (3), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
@@ -10645,6 +13063,36 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Radius: 40 yards | Target: Self (1)
 Description      : $@spelldesc351239
 Tooltip          : $?s351239[Your out-of-combat health regeneration is increased.][$@auracaster is increasing your out-of-combat health regeneration.]
+
+Name             : Time Spiral (id=375240) [Spell Family (3)] 
+Class            : Evoker
+School           : Arcane
+Spell Type       : None
+Range            : 100 yards
+Duration         : 10 seconds
+Labels           : 16: Class Spells
+                 : 292
+                 : 1216: Evoker Spells
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : Cast Successful
+Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Only On Player (104), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
+Effects          :
+#1 (id=1001521)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1446 (Category) | Target: Targeted Ally (21)
+                   Affected Spells (Category): Blink (1953)
+#2 (id=1001522)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1446 (Category) | Target: Targeted Ally (21)
+                   Affected Spells (Category): Blink (1953)
+#3 (id=1001523)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1632 (Category) | Target: Targeted Ally (21)
+                   Affected Spells (Category): Shimmer (212653)
+#4 (id=1001524)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1632 (Category) | Target: Targeted Ally (21)
+                   Affected Spells (Category): Shimmer (212653)
+Description      : $@spelldesc374968
+Tooltip          : May use $?s212653[Shimmer][Blink] once, without incurring its cooldown.
 
 Name             : Surge Forward (desc=Racial) (id=376743) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -11819,6 +14267,24 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 376744 | Target: Self (1)
 Description      : $@spelldesc376744
 
+Name             : Temporal Warp (id=386540) 
+School           : Arcane
+Spell Type       : None
+Duration         : 40 seconds
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+                 : 615
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Ignore Line of Sight (66), Allow Low Level Buff (67), Not In Arena or Rated Battleground (144), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Aura Points On Client (268), Not In Arena (297), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Effects          :
+#1 (id=1020710)  : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+#2 (id=1020711)  : Apply Aura (6) | Scale% (Stacking) (61)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+Description      : $@spelldesc327351
+Tooltip          : Haste increased by $w1%.
+
 Name             : Freezing Cold (id=386763) [Spell Family (3), Passive] 
 Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Mage
@@ -11956,6 +14422,24 @@ Effects          :
 Description      : Each time your $?a137021[Arcane Barrage]?a137019[Fireball]?a137020[Frostbolt][Arcane Barrage, Fireball, or Frostbolt] fails to critically strike, it gains $s1% increased critical strike chance.
 
 Critical strike bonus is removed when the affected spell critically strikes.
+
+Name             : Demon Hunter Havoc Class Set 4pc (id=393629) [Spell Family (107), Passive, Hidden] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Max Aura Level   : 79
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+                 : 295
+                 : 2317
+Proc Chance      : 101%
+Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1032714)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+Description      : Chaos Strike and Blade Dance have a $s1% chance to increase damage you deal by $394934s1% for $394934d. Chaos Strike and Blade Dance critical strikes increase this chance to ${$s1*2}%.
 
 Name             : Mage Arcane Class Set 2pc (id=393653) [Spell Family (3), Passive] 
 Class            : Mage
@@ -12120,6 +14604,29 @@ Effects          :
 Description      : $@spelldesc386763
 Tooltip          : Movement speed reduced by $w1%
 
+Name             : Seething Chaos (id=394934) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Shadow
+Spell Type       : None
+Range            : 100 yards
+Duration         : 6 seconds
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+                 : 2317
+Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Cannot Be Stolen (134), Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1034997)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), Chaos Nova (344867), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Throw Glaive (393035), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Metamorphosis - Alex S Copy (418583), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Blazing Nova (436899), Blazing Nova (436964), Reaver's Glaive (442294), Demonsurge (451266), Demonsurge (452416), Burning Blades (453177), Sigil of Doom (462030), Void Nova (1234195), Essence Break (1245759), Catastrophe (1256667), Catastrophe (1256676)
+                   Family Flags: 16
+#2 (id=1034998)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), Chaos Nova (344867), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Throw Glaive (393035), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Metamorphosis - Alex S Copy (418583), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Blazing Nova (436899), Blazing Nova (436964), Reaver's Glaive (442294), Demonsurge (451266), Demonsurge (452416), Burning Blades (453177), Sigil of Doom (462030), Void Nova (1234195), Essence Break (1245759), Catastrophe (1256667), Catastrophe (1256676)
+                   Family Flags: 16
+Description      : $@spelldesc393629
+Tooltip          : Damage increased by $s1%.
+
 Name             : Touch of Ice (id=394994) [Spell Family (3)] 
 Class            : Mage
 School           : Physical
@@ -12163,6 +14670,21 @@ Effects          :
                    Family Flags: 47
 Description      : $@spelldesc393654
 Tooltip          : Arcane Barrage critical strike chance increased by $s1%.
+
+Name             : Icebind (id=397252) [Spell Family (3)] 
+School           : Frost
+Spell Type       : None
+Spell Level      : 1
+Duration         : 6 seconds
+Cooldown         : 45 seconds
+Affecting Spells : Time Manipulation (387807 effect#1), Elemental Affinity (431067 effect#1)
+Triggered By     : Icebind (373239)
+Family Flags     : 70
+Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), No Initial Threat (86), No Aura Log (202), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
+Effects          :
+#1 (id=1111702)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 0.1 seconds
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+Description      : $@spelldesc373239
 
 Name             : Chosen Identity (desc=Racial) (id=403617) [Hidden] 
 Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
@@ -12344,6 +14866,21 @@ Effects          :
 #1 (id=1054784)  : Apply Aura (6) | Unknown(352)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Enables Worgen to switch between Worgen and Human forms.
+
+Name             : Chaotic Arcane (id=408126) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+Proc Chance      : 101%
+Real PPM         : 1
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
+Attributes       : No Aura Cancel (31), No Aura Icon (60), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=1072075)  : Apply Aura (6) | Proc Trigger Spell (42): Call to Chaos
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 403382 | Target: Self (1)
+Description      : $@spelldesc403385
+Tooltip          : Your debuffs and harmful periodic spells and abilities have a chance to grant you $s1 $pri for $403386d.
 
 Name             : Charring Embers (id=408665) [Spell Family (3)] 
 Class            : Mage
@@ -15008,6 +17545,57 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | PvP Coefficient: 0.7 | Radius: 2 - 30 yards | Target: Front of Self (47) -> Enemies in Cone to Targeted Enemy (104)
 Description      : $@spelldesc436344
 
+Name             : Aberrant Spellforge (id=452063) [Spell Family (3), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 3959: Item Effects
+Proc Chance      : 101%
+Proc Flags       : Generic Hostile Spell, Magic Hostile Spell, Periodic
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Item Spell In PvP (13), Allow Cast While Dead (23), No Aura Icon (60), Allow Dead Target (64), Allow Aura While Dead (116), Can Proc From Procs (122), Extra Initial Period (169), No Aura Log (202), Aura Points On Client (268)
+Aura Interrupt   : Change Specialization (38)
+Effects          :
+#1 (id=1152958)  : Apply Aura (6) | Proc Trigger Spell (42)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=1153198)  : Apply Aura (6) | Periodic Dummy (226): every 15 seconds
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc445593
+
+Name             : Aberrant Spellforge (id=452068) [Spell Family (3), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 3959: Item Effects
+Proc Chance      : 101%
+Proc Flags       : Generic Hostile Spell, Magic Hostile Spell, Periodic
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Item Spell In PvP (13), Allow Cast While Dead (23), No Aura Icon (60), Allow Dead Target (64), Allow Aura While Dead (116), Can Proc From Procs (122), Extra Initial Period (169), No Aura Log (202), Aura Points On Client (268)
+Aura Interrupt   : Change Specialization (38)
+Effects          :
+#1 (id=1152963)  : Apply Aura (6) | Proc Trigger Spell (42)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=1153199)  : Apply Aura (6) | Periodic Dummy (226): every 15 seconds
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc445593
+
+Name             : Aberrant Spellforge (id=452071) [Spell Family (3), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 3959: Item Effects
+Proc Chance      : 101%
+Proc Flags       : Generic Hostile Spell, Magic Hostile Spell, Periodic
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Item Spell In PvP (13), Allow Cast While Dead (23), No Aura Icon (60), Allow Dead Target (64), Allow Aura While Dead (116), Can Proc From Procs (122), Extra Initial Period (169), No Aura Log (202), Aura Points On Client (268)
+Aura Interrupt   : Change Specialization (38)
+Effects          :
+#1 (id=1152966)  : Apply Aura (6) | Proc Trigger Spell (42)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=1153197)  : Apply Aura (6) | Periodic Dummy (226): every 15 seconds
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc445593
+
 Name             : Eureka (id=452198) [Spell Family (3), Passive] 
 Talent Entry     : Arcane [tree=spec, row=9, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=mul, values=(1, 2)]
@@ -15529,6 +18117,22 @@ Effects          :
 #1 (id=1162774)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Arcane Surge's damage is increased by an additional $s1% based on your mana spent.
+
+Name             : Homebrewed Blink Vial (id=457733) [Spell Family (3)] 
+School           : Arcane
+Spell Type       : Magic
+Cooldown         : 300 seconds
+Labels           : 292
+Affecting Spells : Reduced Blink GCD (44301 effect#1)
+Family Flags     : 16
+Attributes       : Not Shapeshifted (16), No Threat (42), Immunity Purges Effect (47), No Aura Icon (60), Cannot Be Stolen (134), No Client Fail While Stunned, Fleeing, Confused (244), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1163201)  : Leap (29)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 6 yards | Target: Self (1) -> at Radius (73)
+Description      : Teleports you $A1 yds or until reaching an obstacle in a random direction.
+
+Only usable in delves and outdoors in Khaz Algar.
+Tooltip          : Blinking.
 
 Name             : Molten Fury (id=457803) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Fire [tree=spec, row=9, col=6, max_rank=1, req_points=20]
@@ -16099,6 +18703,50 @@ Effects          :
 #2 (id=1184805)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 Description      : $?c1[Casting Touch of the Magi conjures $s1 Arcane Splinters][Glacial Spike conjures $s2 additional Frost Splinters].
+
+Name             : Searing Blast (id=470633) [Spell Family (3)] 
+School           : Fire
+Spell Type       : Magic
+Range            : 30 yards
+Proc Chance      : 101%
+Triggered By     : Searing Dagger (470634)
+Attributes       : Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=1186113)  : School Damage (2): fire | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 21538.75 (coefficient=76.60466) | Target: Targeted Enemy (6)
+#2 (id=1186116)  : Trigger Spell (64): Searing Dagger
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 470636 | Target: Self (1)
+Description      : $@spelldesc470634
+
+Name             : Searing Strike (id=470635) [Spell Family (3)] 
+School           : Fire
+Spell Type       : Magic
+Range            : 30 yards
+Proc Chance      : 101%
+Triggered By     : Searing Dagger (470636)
+Attributes       : Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1186117)  : School Damage (2): fire | Scaling Class: Replace Primary (-8)
+                   Base Value: 0 | Scaled Value: 2153.86 (coefficient=7.660411) | Target: Targeted Enemy (6)
+Description      : $@spelldesc470634
+
+Name             : Recall (desc=Bronze) (id=471078) [Spell Family (3), Hidden] 
+Class            : Evoker
+School           : Arcane
+Spell Type       : None
+Range            : 100 yards
+Duration         : 10 seconds
+Labels           : 16: Class Spells
+                 : 292
+                 : 1216: Evoker Spells
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Allow Class Ability Procs (416), Unknown (467)
+Effects          :
+#1 (id=1187084)  : Summon Guardian (28)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 233557 | Misc Value 2: 5338 | Target: at Self (18)
+#2 (id=1187089)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc371806
+Tooltip          : Able to travel back in time to your takeoff location.
 
 Name             : Spellfrost Teachings (id=471742) [Spell Family (3)] 
 Class            : Mage
@@ -17709,6 +20357,23 @@ Effects          :
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc1216953
 
+Name             : Artisanal Blink Trap (id=1247690) [Spell Family (3)] 
+School           : Arcane
+Spell Type       : Magic
+Range            : 50000 yards
+Duration         : 2 seconds
+Labels           : 292
+Affecting Spells : Reduced Blink GCD (44301 effect#1)
+Family Flags     : 16
+Attributes       : Aura Is Debuff (26), Immunity Purges Effect (47), No Client Fail While Stunned, Fleeing, Confused (244)
+Effects          :
+#1 (id=1250075)  : Leap (29)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: Targeted Enemy (6) -> Unknown(151)
+#2 (id=1250694)  : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: 50 | Scaled Value: 50 | Mechanic: Snare | Target: Targeted Enemy (6)
+Description      : $@spelldesc1247687
+Tooltip          : Slowed by 50%.
+
 Name             : Master Lancer (id=1247729) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Frost [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Mage
@@ -19307,6 +21972,84 @@ Effects          :
 #1 (id=1275253)  : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.5 | Radius: 0 - 6 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc1253304
+
+Name             : Mage Arcane 12.0 Class Set 2pc (id=1264832) [Spell Family (3), Passive, Hidden] 
+Class            : Mage
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276439)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Mage Arcane 12.0 Class Set 4pc (id=1264833) [Spell Family (3), Passive, Hidden] 
+Class            : Mage
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276440)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Mage Fire 12.0 Class Set 2pc (id=1264834) [Spell Family (3), Passive, Hidden] 
+Class            : Mage
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276441)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Mage Fire 12.0 Class Set 4pc (id=1264835) [Spell Family (3), Passive, Hidden] 
+Class            : Mage
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276442)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Mage Frost 12.0 Class Set 2pc (id=1264836) [Spell Family (3), Passive, Hidden] 
+Class            : Mage
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276443)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Mage Frost 12.0 Class Set 4pc (id=1264837) [Spell Family (3), Passive, Hidden] 
+Class            : Mage
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+                 : 5829
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1276444)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
 
 Name             : Permafrost Bauble (id=1265517) [Spell Family (3), Passive] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20]
