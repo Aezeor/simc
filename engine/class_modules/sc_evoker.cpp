@@ -1000,6 +1000,7 @@ struct evoker_t : public player_t
     action_t* volatility_dragonrage;
     action_t* enkindle;
     action_t* essence_bomb; // FS TWW3 4pc
+    action_t* twin_flame;  // FS
   } action;
 
   // Buffs
@@ -2464,7 +2465,7 @@ public:
 
   void handle_consume_flame( dot_t* dot, timespan_t duration, double multiplier )
   {
-    if ( p()->talent.flameshaper.consume_flame.ok() || !p()->background_actions.consume_flame )
+    if ( !p()->talent.flameshaper.consume_flame.ok() || !p()->background_actions.consume_flame )
       return;
 
     if ( dot && dot->is_ticking() )
@@ -2520,6 +2521,10 @@ struct essence_base_t : public BASE
       {
         for ( int i = 0; i < BASE::p()->buff.inner_flame->check(); i++ )
           BASE::p()->action.essence_bomb->execute_on_target( BASE::execute_state->target );
+      }
+      if ( BASE::p()->talent.flameshaper.twin_flame.ok() && BASE::execute_state )
+      {
+        BASE::p()->action.twin_flame->execute_on_target( BASE::execute_state->target );
       }
       if ( BASE::p()->talent.momentum_shift.ok() )
       {
@@ -7019,7 +7024,18 @@ struct essence_bomb_t : public evoker_spell_t
     aoe = -1;
     reduced_aoe_targets = 5;
   }
+};
 
+struct twin_flame_t : public evoker_spell_t
+{
+  twin_flame_t( evoker_t* p ) : evoker_spell_t( "twin_flame", p, p->talent.flameshaper.twin_flame_damage_spell )
+  {
+    background = true;
+
+    aoe = p->talent.flameshaper.fire_torrent.enabled()
+              ? 0
+              : 1 + as<int>( p->talent.flameshaper.fire_torrent->effectN( 1 ).base_value() );
+  }
 };
 
 struct bombardments_damage_t : public evoker_external_action_t<spell_t>
@@ -9246,6 +9262,11 @@ void evoker_t::create_actions()
   if ( sets->has_set_bonus( HERO_FLAMESHAPER, TWW3, B4 ) )
   {
     action.essence_bomb = get_secondary_action<essence_bomb_t>( "essence_bomb" );
+  }
+
+  if ( talent.flameshaper.twin_flame.enabled() )
+  {
+    action.twin_flame = get_secondary_action<twin_flame_t>( "twin_flame" );
   }
 
   player_t::create_actions();

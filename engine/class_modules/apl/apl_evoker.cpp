@@ -8,26 +8,32 @@ namespace evoker_apl
 
 std::string potion( const player_t* p )
 {
+  return "disabled";
   return ( p->true_level > 79 ) ? "tempered_potion_3" : "elemental_potion_of_ultimate_power_3";
 }
 
 std::string flask( const player_t* p )
 {
+  return "disabled";
   return ( p->true_level > 79 ) ? "flask_of_alchemical_chaos_3" : "iced_phial_of_corrupting_rage_3";
 }
 
 std::string food( const player_t* p )
 {
+  return "disabled";
   return ( p->true_level > 79 ) ? "feast_of_the_divine_day" : "fated_fortune_cookie";
 }
 
 std::string rune( const player_t* p )
 {
+  return "disabled";
   return ( p->true_level > 79 ) ? "crystallized" : "draconic";
 }
 
 std::string temporary_enchant( const player_t* p )
 {
+  return "disabled";
+
   switch ( p->specialization() )
   {
     case EVOKER_AUGMENTATION:
