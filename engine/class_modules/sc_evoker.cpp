@@ -2355,7 +2355,7 @@ public:
 
     if ( p()->talent.azure_sweep.enabled() )
     {
-      parse_effects( p()->buff.azure_sweep, CONSUME_BUFF | IGNORE_STACKS );
+      parse_effects( p()->buff.azure_sweep, CONSUME_BUFF );
     }
   }
 
