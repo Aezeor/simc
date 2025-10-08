@@ -2490,6 +2490,7 @@ class SpellDataGenerator(DataGenerator):
           ( 1214595, 2 ), # Void Ray Damage - Meta
           (  473671, 2 ), # Void Buildup - Meta Resource Spell
           ( 1245455, 2 ), # Cull Damage
+          ( 1266301, 2 ), # Consume Soul Heal
 
           # Annihilator
 

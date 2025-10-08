@@ -3141,7 +3141,7 @@ Demon Hunter
 1266123  World Killer
 1266127  Voidfall Meteor
 1266296  Focused Ire
-1266301 *Consume Soul
+1266301  Consume Soul
 1266307  Demonic Resilience
 1266316  Burn It Out
 1266318 *Unfettered
