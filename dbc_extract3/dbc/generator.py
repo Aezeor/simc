@@ -2411,131 +2411,23 @@ class SpellDataGenerator(DataGenerator):
         ),
 
         # Druid:
-        ( (  93402, 1, True ), # Sunfire
-          ( 106996, 1, True ), # Astral Storm
-          ( 112071, 1, True ), # Celestial Alignment
-          ( 122114, 1, True ), # Chosen of Elune
-          ( 122283, 0, True ),
-          ( 110807, 0, True ),
-          ( 112997, 0, True ),
-          ( 150017, 5 ),       # Rake for Treants
-          ( 124991, 0 ), ( 124988, 0 ), # Nature's Vigil
-          ( 155627, 2 ),       # Lunar Inspiration
-          ( 155625, 2 ),       # Lunar Inspiration Moonfire
-          ( 145152, 2 ),       # Bloodtalons buff
-          ( 135597, 3 ),       # Tooth and Claw absorb buff
-          ( 155784, 3 ),       # Primal Tenacity buff
-          ( 137542, 0 ),       # Displacer Beast buff
-          ( 155777, 4 ),       # Germination Rejuvenation
-          ( 157228, 1 ),       # Owlkin Frenzy
-          ( 202461, 1 ),       # Stellar Drift mobility buff
-          ( 202771, 1 ),       # Half Moon artifact power
-          ( 202768, 1 ),       # Full Moon artifact power
-          ( 203001, 1 ),       # Goldrinn's Fang, Spirit of Goldrinn artifact power
-          ( 203958, 3 ),       # Brambles (talent) damage spell
-          ( 210721, 2 ),       # Shredded Wounds (Fangs of Ashamane artifact passive)
-          ( 210713, 2 ),       # Ashamane's Rake (Fangs of Ashamane artifact trait spell)
-          ( 210705, 2 ),       # Ashamane's Rip (Fangs of Ashamane artifact trait spell)
-          ( 210649, 2 ),       # Feral Instinct (Fangs of Ashamane artifact trait)
-          ( 213557, 2 ),       # Protection of Ashamane ICD (Fangs of Ashamane artifact trait)
-          ( 211547, 1 ), ( 281871, 1 ), # Fury of Elune
-          ( 106829, 0 ), ( 48629, 0 ), # Bear/Cat form swipe/thrash replacement
-          ( 106899, 0 ), ( 106840, 0 ), # Bear/Cat form stampeding roar replacement
-          ( 209406, 1 ),       # Oneth's Intuition buff
-          ( 209407, 1 ),       # Oneth's Overconfidence buff
-          ( 213666, 1 ),       # Echoing Stars artifact spell
-          ( 69369,  2 ),       # Predatory Swiftness buff
-          ( 227034, 3 ),       # Nature's Guardian heal
-          ( 272873, 1 ),       # Streaking Star (azerite) damage spell
-          ( 274282, 1 ),       # Half Moon
-          ( 274283, 1 ),       # Full Moon
-          ( 279641, 1 ),       # Lunar Shrapnel Azerite Trait
-          ( 279729, 1 ),       # Solar Empowerment
-          ( 276026, 2 ),       # Iron Jaws, Feral Azerite Power
-          ( 289314, 3 ),       # Burst of Savagery Azerite Trait
-          ( 289315, 3 ),       # Burst of Savagery Azerite Trait buff
-          ( 305497, 0 ), ( 305496, 0 ), # Thorns pvp talent
-
-          # Shadowlands Legendary
-          ( 338825, 1 ),       # Primordial Arcanic Pulsar buff
-          ( 339943, 1 ),       # Runecarve #3 Nature crit buff
-          ( 339946, 1 ),       # Runecarve #3 Arcane crit buff
-          ( 339797, 1 ),       # Oneth's Clear Vision (free starsurge)
-          ( 339800, 1 ),       # Oneth's Perception (free starfall)
-          ( 345048, 3 ),       # Ursoc's Fury Remembered absorb buff
-          ( 340060, 0 ),       # Lycara's Fleeting Glimpse coming soon buff
-          # 9.1 Legendary
-          ( 354805, 0 ), ( 354802, 0 ), ( 354815, 0 ), ( 354345, 0 ), # Kindred Affinity (kyrian)
-
-          # Shadowlands Covenant
-          ( 326446, 0, True ), # Kyrian Empower Bond on DPS
-          ( 326462, 0, True ), # Kyrian Empower Bond on Tank
-          ( 326647, 0, True ), # Kyrian Empower Bond on Healer
-          ( 338142, 0, True ), # Kyrian Lone Empowerment
-
-          ( 340720, 1 ), ( 340708, 1 ), ( 340706, 1 ), ( 340719, 1 ), # balance potency conduits
-          ( 340682, 2 ), ( 340688, 2 ), ( 340694, 2 ), ( 340705, 2 ), # feral potency conduits
-          ( 340552, 3 ), ( 340609, 3 ), # guardian potency conduits
-          ( 341378, 0 ), ( 341447, 0 ), ( 341446, 0 ), ( 341383, 0 ), # convenant potency conduits
-
-          ( 365640, 1 ), # tier 28 balance 2pc foe damage spell
-          ( 367907, 1 ), # tier 28 balance 2pc foe energize spell
-          ( 365476, 1 ), ( 365478, 1 ), # tier 28 balance 2pc ground effect spell
-
-          # Dragonflight
-          ( 340546, 0 ), # Tireless Pursuit buff
-          ( 378989, 0 ), ( 378990, 0 ), ( 378991, 0 ), ( 378992, 0 ), # Lycara's Teachings buffs
-          ( 395336, 0 ), ( 378987, 0 ), ( 400202, 0 ), ( 400204, 0 ), # Protector of the Pack
+        (
+          ( 48629, 0 ), ( 106840, 0 ), # Cat Form override
+          ( 106829, 0 ), ( 106899, 0 ), # Bear Form override
           # Balance
-          ( 188046, 1 ), # Denizen of the Dream pet attack
-          ( 394049, 1 ), ( 394050, 1 ), # Balance of All Things
-          ( 393942, 1 ), ( 393944, 1 ), # Starweaver
-          ( 395022, 1 ), # Incarnation unknown spell
-          ( 393961, 1 ), # Primordial Arcanic Pulsar counter buff
-          ( 394103, 1 ), ( 394106, 1 ), ( 394108, 1 ), ( 394111, 1 ), # Sundered Firmament
-          ( 395110, 1 ), # Parting Skies Sundered Firmament tracker buff
-          ( 393869, 1 ), # Lunar Shrapnel damage
-          ( 393957, 1 ), # Waning Twilight
-          ( 424248, 1 ), # Balance T31 2pc buff
-          # Feral
-          ( 391710, 2 ), # Ferocious Frenzy damage
-          ( 391786, 2 ), # Tear Open Wounds damage
-          ( 393617, 2 ), # Primal Claws energize
-          ( 405069, 2 ), ( 405191, 2 ), # Overflowing Power
-          # Guardian
-          ( 370602, 3 ), # Elune's Favored heal
-          ( 372505, 3 ), # Ursoc's Fury absorb
-          ( 372019, 3 ), # Vicious Cycle mangle buff
-          ( 279555, 3 ), # Layered Mane buff
-          ( 395942, 3 ), # 2t29 Mangle AoE
-          ( 400360, 3 ), # Moonless Night
-          ( 425441, 3 ), ( 425448, 3 ), # Blazing Thorns (4t31)
-
-          # The War Within
-          # Class
-          # Balance
-          ( 1236851, 1 ), # Balance S3 2pc Dryad's Favor Starsurge cleave
-          ( 1236640, 1 ), # Balance S3 2pc Dryad Starsurge
-          ( 1236607, 1 ), # Balance S3 2pc Dryad Starfall buff
-          ( 1236613, 1 ), # Balance S3 2pc Dryad Starfall spell
-          # Feral
-          # Guardian
-          # Restoration
-          # Hero talents
-          ( 425217, 0 ), ( 425219, 0 ), # boundless moonlight
-          ( 441585, 0 ), ( 441602, 0 ), # ravage
-          ( 439891, 0 ), ( 439893, 0 ), # strategic infusion
-          # Hero sets
-          ( 1236989, 0 ), # EC TWW3 4pc counter
-          # Midnight
+          ( 188046, 1 ), # Fey Missile
+          ( 274282, 1 ), # Half Moon
           ( 1233346, 1 ), # Solar Eclipse
-          ( 1236574, 4 ), ( 1264623, 4 ), ( 1264659, 4 ), # Dryad Tranquility
-          ( 1236647, 4 ), # Dryad Regrowth
+          ( 1264671, 1 ), ( 1264673, 1 ), # Dryad Starfall?
+          # Feral
           ( 1244038, 2 ), ( 1244046, 2 ), ( 1244050, 2 ), # Flicker Clone
           ( 1248419, 2 ), # Rake (unused?)
+          # Guardian
           ( 1250913, 3 ), # Memory of Ysera heal
           ( 1252994, 3 ), # Killing Blow (unused?)
-          ( 1264671, 1 ), ( 1264673, 1 ) # Starfall
+          # Restoration
+          ( 1236574, 4 ), ( 1264623, 4 ), ( 1264659, 4 ), # Dryad Tranquility
+          ( 1236647, 4 ), # Dryad Regrowth
         ),
         # Demon Hunter:
         (

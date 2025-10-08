@@ -1691,12 +1691,12 @@ Death Knight
 1264407  Dance of Midnight
 1264506  Dance of Midnight
 1264568  Dance of Midnight
-1264799 *Death Knight Blood 12.0 Class Set 2pc
-1264800 *Death Knight Blood 12.0 Class Set 4pc
-1264801 *Death Knight Frost 12.0 Class Set 2pc
-1264802 *Death Knight Frost 12.0 Class Set 4pc
-1264803 *Death Knight Unholy 12.0 Class Set 2pc
-1264804 *Death Knight Unholy 12.0 Class Set 4pc
+1264799  Death Knight Blood 12.0 Class Set 2pc
+1264800  Death Knight Blood 12.0 Class Set 4pc
+1264801  Death Knight Frost 12.0 Class Set 2pc
+1264802  Death Knight Frost 12.0 Class Set 4pc
+1264803  Death Knight Unholy 12.0 Class Set 2pc
+1264804  Death Knight Unholy 12.0 Class Set 4pc
 1265384 *Frostwyrm's Fury
 1265543  Unending Misery
 1265547  Thrill of Blood
@@ -3121,12 +3121,12 @@ Demon Hunter
 1264128  Meteor Shower
 1264129  Meteor Shower
 1264130  Meteor Shower
-1264805 *Demon Hunter Havoc 12.0 Class Set 2pc
-1264807 *Demon Hunter Havoc 12.0 Class Set 4pc
-1264808 *Demon Hunter Vengeance 12.0 Class Set 2pc
-1264809 *Demon Hunter Vengeance 12.0 Class Set 4pc
-1264881 *Demon Hunter Devourer 12.0 Class Set 2pc
-1264882 *Demon Hunter Devourer 12.0 Class Set 4pc
+1264805  Demon Hunter Havoc 12.0 Class Set 2pc
+1264807  Demon Hunter Havoc 12.0 Class Set 4pc
+1264808  Demon Hunter Vengeance 12.0 Class Set 2pc
+1264809  Demon Hunter Vengeance 12.0 Class Set 4pc
+1264881  Demon Hunter Devourer 12.0 Class Set 2pc
+1264882  Demon Hunter Devourer 12.0 Class Set 4pc
 1265751  Felfire Fist
 1265759  Felfire Fist
 1265768  Doomsayer
@@ -3541,7 +3541,7 @@ Druid
 117679   Incarnation
 118283  *Ursol's Vortex
 120560  *Rake
-122114   Chosen of Elune
+122114  *Chosen of Elune
 122307   Frenzied Regeneration
 123082  *Item - Druid T14 Balance 2P Bonus
 123083  *Item - Druid T14 Balance 4P Bonus
@@ -3552,9 +3552,9 @@ Druid
 123088  *Item - Druid T14 Restoration 2P Bonus
 123089  *Item - Druid T14 Restoration 4P Bonus
 123648  *Shock
-124974   Nature's Vigil
-124988   Nature's Vigil
-124991   Nature's Vigil
+124974  *Nature's Vigil
+124988  *Nature's Vigil
+124991  *Nature's Vigil
 125099  *Rake
 126615  *Nettleskin
 127797   Ursol's Vortex
@@ -3873,9 +3873,9 @@ Druid
 202737  *Blessing of Elune
 202739  *Blessing of An'she
 202767  *New Moon
-202768   Half Moon
+202768  *Half Moon
 202770   Fury of Elune
-202771   Full Moon
+202771  *Full Moon
 202790  *Pouncing Strikes
 202794  *Pouncing Strikes Charge Effect
 202808  *Primal Vitality
@@ -3886,7 +3886,7 @@ Druid
 202940  *Moon and Stars
 202941  *Moon and Stars
 202996  *Power of Goldrinn
-203001   Goldrinn's Fang
+203001  *Goldrinn's Fang
 203018  *Touch of the Moon
 203019  *Scion of the Night Sky
 203116  *Blood Trauma
@@ -3973,12 +3973,12 @@ Druid
 210583  *Ashamane's Energy
 210590  *Attuned to Nature
 210593  *Tear the Flesh
-210631   Feral Instinct
+210631  *Feral Instinct
 210637  *Sharpened Claws
 210638  *Hardened Roots
-210649   Feral Instinct
-210650   Protection of Ashamane
-210655   Protection of Ashamane
+210649  *Feral Instinct
+210650  *Protection of Ashamane
+210655  *Protection of Ashamane
 210663  *Scent of Blood
 210664  *Scent of Blood
 210666  *Open Wounds
@@ -3987,8 +3987,8 @@ Druid
 210676  *Shadow Thrash
 210686  *Shadow Thrash
 210687  *Shadow Thrash
-210702   Ashamane's Bite
-210705   Ashamane's Rip
+210702  *Ashamane's Bite
+210705  *Ashamane's Rip
 210706   Gore
 210722   Ashamane's Frenzy
 210723   Ashamane's Frenzy
@@ -4013,7 +4013,7 @@ Druid
 213121  *Power of the Archdruid
 213150  *Rooted
 213200  *Freedom of the Herd
-213557   Protection of Ashamane
+213557  *Protection of Ashamane
 213630  *Moonfang
 213645  *Moonfang
 213672  *Touch of the Moon
@@ -4027,7 +4027,7 @@ Druid
 213771   Swipe
 213797  *Starsurge
 213826  *Ferocious Bite
-214274   Protection of Ashamane
+214274  *Protection of Ashamane
 214508  *Echoing Stars
 214514  *Skywrath
 214519  *Echoing Stars
@@ -4067,7 +4067,7 @@ Druid
 223954  *Rake
 224066  *Moonfire
 224392  *Mark of Shifting
-224435   Ashamane's Rip
+224435  *Ashamane's Rip
 224706   The Emerald Dreamcatcher
 225298   Fragile Echoes
 225766   Temporal Shift
@@ -4302,7 +4302,7 @@ Druid
 279649   Nature's Balance
 279652   Nature's Balance
 279709   Starlord
-279729   Wrath
+279729  *Wrath
 279778   Grove Tending
 279779   Grove Tending
 279793   Grove Tending
@@ -4380,10 +4380,10 @@ Druid
 325748   Adaptive Swarm
 326228   Natural Wisdom
 326434   Kindred Spirits
-326446   Empower Bond
-326462   Empower Bond
+326446  *Empower Bond
+326462  *Empower Bond
 326646   Moonfire
-326647   Empower Bond
+326647  *Empower Bond
 326967   Kindred Spirits
 327022   Kindred Empowerment
 327037   Kindred Protection
@@ -4459,7 +4459,7 @@ Druid
 338018  *Lone Protection
 338035  *Lone Meditation
 338041  *Lone Spirit
-338142   Lone Empowerment
+338142  *Lone Empowerment
 338411   Kindred Empowerment
 338525   Kindred Empowerment
 338608   Oath of the Elder Druid
@@ -4611,9 +4611,9 @@ Druid
 370701   Fury of Nature
 370704   Fury of Nature
 371982   After the Wildfire
-371999   Vicious Cycle
-372015   Vicious Cycle
-372019   Vicious Cycle
+371999  *Vicious Cycle
+372015  *Vicious Cycle
+372019  *Vicious Cycle
 372152   Dream of Cenarius
 372505   Ursoc's Fury
 372567   Twin Moonfire
@@ -4631,8 +4631,8 @@ Druid
 377835   Front of the Pack
 377842   Ursine Vigor
 377847   Well-Honed Instincts
-378986   Protector of the Pack
-378987   Protector of the Pack
+378986  *Protector of the Pack
+378987  *Protector of the Pack
 378988   Lycara's Teachings
 378989   Lycara's Teachings
 378990   Lycara's Teachings
@@ -4664,7 +4664,7 @@ Druid
 390772   Pouncing Strikes
 390864   Wild Slashes
 390902   Carnivorous Instinct
-391037   Primal Claws
+391037  *Primal Claws
 391045   Dreadful Bleeding
 391078   Raging Fury
 391140  *Frenzied Assault
@@ -4678,8 +4678,8 @@ Druid
 391709   Rampant Ferocity
 391710   Rampant Ferocity
 391722   Sabertooth
-391785   Tear Open Wounds
-391786   Tear Open Wounds
+391785  *Tear Open Wounds
+391786  *Tear Open Wounds
 391872   Tiger's Tenacity
 391873   Tiger's Tenacity
 391874   Tiger's Tenacity
@@ -4728,7 +4728,7 @@ Druid
 393418   Cenarius' Guidance
 393427   Flashing Claws
 393611   Ursoc's Endurance
-393617   Primal Claws
+393617  *Primal Claws
 393618   Reinforced Fur
 393632   Druid Balance Class Set 2pc
 393633   Druid Balance Class Set 4pc
@@ -4746,12 +4746,12 @@ Druid
 393942   Starweaver's Warp
 393944   Starweaver's Weft
 393954   Rattle the Stars
-393956   Waning Twilight
-393957   Waning Twilight
+393956  *Waning Twilight
+393957  *Waning Twilight
 393958  *Nature's Grace
 393959  *Nature's Grace
-393960   Primordial Arcanic Pulsar
-393961   Primordial Arcanic Pulsar
+393960  *Primordial Arcanic Pulsar
+393961  *Primordial Arcanic Pulsar
 393991   Elune's Guidance
 394013   Incarnation: Chosen of Elune
 394046   Power of Goldrinn
@@ -4778,7 +4778,7 @@ Druid
 395022   Celestial Alignment
 395110   Parting Skies
 395172  *Cat's Curiosity
-395336   Protector of the Pack
+395336  *Protector of the Pack
 395942   Swiping Mangle
 395944   Overpowering Aura
 396425   Well-Honed Instincts
@@ -4787,8 +4787,8 @@ Druid
 400129   Forestwalk
 400140   Incessant Tempest
 400142   Gale Winds
-400202   Protector of the Pack
-400204   Protector of the Pack
+400202  *Protector of the Pack
+400204  *Protector of the Pack
 400222  *Thorns of Iron
 400223  *Thorns of Iron
 400254   Raze
@@ -4877,7 +4877,7 @@ Druid
 424588   Minor Moon
 425206   Boundless Moonlight
 425217   Boundless Moonlight
-425219   Boundless Moonlight
+425219  *Boundless Moonlight
 425402  *Dream Thorns
 425407   Dream Thorns
 425441   Blazing Thorns
@@ -5121,7 +5121,7 @@ Druid
 1236607  Starfall
 1236608  Starfall
 1236613  Starfall
-1236640  Starsurge
+1236640 *Starsurge
 1236647  Regrowth
 1236671  Ravage Rampage
 1236807  Dryad's Favor
@@ -5243,14 +5243,14 @@ Druid
 1264677  Starsurge
 1264680  Sylvan Beckoning
 1264776  Dryad's Dance
-1264810 *Druid Balance 12.0 Class Set 2pc
-1264811 *Druid Balance 12.0 Class Set 4pc
-1264812 *Druid Feral 12.0 Class Set 2pc
-1264813 *Druid Feral 12.0 Class Set 4pc
-1264815 *Druid Guardian 12.0 Class Set 2pc
-1264816 *Druid Guardian 12.0 Class Set 4pc
-1264817 *Druid Restoration 12.0 Class Set 2pc
-1264818 *Druid Restoration 12.0 Class Set 4pc
+1264810  Druid Balance 12.0 Class Set 2pc
+1264811  Druid Balance 12.0 Class Set 4pc
+1264812  Druid Feral 12.0 Class Set 2pc
+1264813  Druid Feral 12.0 Class Set 4pc
+1264815  Druid Guardian 12.0 Class Set 2pc
+1264816  Druid Guardian 12.0 Class Set 4pc
+1264817  Druid Restoration 12.0 Class Set 2pc
+1264818  Druid Restoration 12.0 Class Set 4pc
 1264899  Spirit of the Thicket
 1264905  Spirit of the Thicket
 1264911  Spirit of the Thicket
@@ -6080,12 +6080,12 @@ Evoker
 1264365  Ashes in Motion
 1264378  Unravel
 1264379  Unravel
-1264819 *Evoker Augmentation 12.0 Class Set 2pc
-1264820 *Evoker Augmentation 12.0 Class Set 4pc
-1264821 *Evoker Devastation 12.0 Class Set 2pc
-1264822 *Evoker Devastation 12.0 Class Set 4pc
-1264823 *Evoker Preservation 12.0 Class Set 2pc
-1264824 *Evoker Preservation 12.0 Class Set 4pc
+1264819  Evoker Augmentation 12.0 Class Set 2pc
+1264820  Evoker Augmentation 12.0 Class Set 4pc
+1264821  Evoker Devastation 12.0 Class Set 2pc
+1264822  Evoker Devastation 12.0 Class Set 4pc
+1264823  Evoker Preservation 12.0 Class Set 2pc
+1264824  Evoker Preservation 12.0 Class Set 4pc
 1265378 *Flamebane
 1265802  Shattering Stars
 1265804  Shattering Star
@@ -8572,12 +8572,12 @@ Hunter
 1264783  Lethal Barbs
 1264792  Wyvern's Gaze
 1264797  Hoof and Blade
-1264825 *Hunter Beast Mastery 12.0 Class Set 2pc
-1264826 *Hunter Beast Mastery 12.0 Class Set 4pc
-1264828 *Hunter Marksmanship 12.0 Class Set 2pc
-1264829 *Hunter Marksmanship 12.0 Class Set 4pc
-1264830 *Hunter Beast Survival 12.0 Class Set 2pc
-1264831 *Hunter Beast Survival 12.0 Class Set 4pc
+1264825  Hunter Beast Mastery 12.0 Class Set 2pc
+1264826  Hunter Beast Mastery 12.0 Class Set 4pc
+1264828  Hunter Marksmanship 12.0 Class Set 2pc
+1264829  Hunter Marksmanship 12.0 Class Set 4pc
+1264830  Hunter Beast Survival 12.0 Class Set 2pc
+1264831  Hunter Beast Survival 12.0 Class Set 4pc
 1264902  Moonlight Chakram
 1264903  Radiant Edge
 1264904  Twilight Requiem
@@ -10905,12 +10905,12 @@ Mage
 1262981  Hand of Frost
 1263249  Hand of Frost
 1263263  Hand of Frost
-1264832 *Mage Arcane 12.0 Class Set 2pc
-1264833 *Mage Arcane 12.0 Class Set 4pc
-1264834 *Mage Fire 12.0 Class Set 2pc
-1264835 *Mage Fire 12.0 Class Set 4pc
-1264836 *Mage Frost 12.0 Class Set 2pc
-1264837 *Mage Frost 12.0 Class Set 4pc
+1264832  Mage Arcane 12.0 Class Set 2pc
+1264833  Mage Arcane 12.0 Class Set 4pc
+1264834  Mage Fire 12.0 Class Set 2pc
+1264835  Mage Fire 12.0 Class Set 4pc
+1264836  Mage Frost 12.0 Class Set 2pc
+1264837  Mage Frost 12.0 Class Set 4pc
 1265517  Permafrost Bauble
 
 Monk
@@ -12716,12 +12716,12 @@ Monk
 1263641  Celestial Flames
 1263661  Celestial Flames
 1263667  Celestial Flames
-1264838 *Monk Brewmaster 12.0 Class Set 2pc
-1264839 *Monk Brewmaster 12.0 Class Set 4pc
-1264840 *Monk Mistweaver 12.0 Class Set 2pc
-1264841 *Monk Mistweaver 12.0 Class Set 4pc
-1264842 *Monk Windwalker12.0 Class Set 2pc
-1264843 *Monk Windwalker12.0 Class Set 4pc
+1264838  Monk Brewmaster 12.0 Class Set 2pc
+1264839  Monk Brewmaster 12.0 Class Set 4pc
+1264840  Monk Mistweaver 12.0 Class Set 2pc
+1264841  Monk Mistweaver 12.0 Class Set 4pc
+1264842  Monk Windwalker12.0 Class Set 2pc
+1264843  Monk Windwalker12.0 Class Set 4pc
 1265129  Bring Me Another
 1265133  Empty Barrel
 1265138  Bring Me Another
@@ -14851,12 +14851,12 @@ Paladin
 1263920  Born in Sunlight
 1263963 *Walk Into Light
 1264050  Born in Sunlight
-1264844 *Paladin Holy 12.0 Class Set 2pc
-1264845 *Paladin Holy 12.0 Class Set 4pc
-1264846 *Paladin Protection 12.0 Class Set 2pc
-1264847 *Paladin Protection 12.0 Class Set 4pc
-1264848 *Paladin Retribution 12.0 Class Set 2pc
-1264849 *Paladin Retribution 12.0 Class Set 4pc
+1264844  Paladin Holy 12.0 Class Set 2pc
+1264845  Paladin Holy 12.0 Class Set 4pc
+1264846  Paladin Protection 12.0 Class Set 2pc
+1264847  Paladin Protection 12.0 Class Set 4pc
+1264848  Paladin Retribution 12.0 Class Set 2pc
+1264849  Paladin Retribution 12.0 Class Set 4pc
 1265541  Fear No Evil
 1265549  Brought to Light
 1265595  Brought to Light
@@ -16811,12 +16811,12 @@ Priest
 1264175  Void Apparition
 1264176  Void Apparition
 1264177  Void Bolt
-1264850 *Priest Discipline 12.0 Class Set 2pc
-1264851 *Priest Discipline 12.0 Class Set 4pc
-1264852 *Priest Holy 12.0 Class Set 2pc
-1264853 *Priest Holy 12.0 Class Set 4pc
-1264854 *Priest Shadow 12.0 Class Set 2pc
-1264855 *Priest Shadow 12.0 Class Set 4pc
+1264850  Priest Discipline 12.0 Class Set 2pc
+1264851  Priest Discipline 12.0 Class Set 4pc
+1264852  Priest Holy 12.0 Class Set 2pc
+1264853  Priest Holy 12.0 Class Set 4pc
+1264854  Priest Shadow 12.0 Class Set 2pc
+1264855  Priest Shadow 12.0 Class Set 4pc
 
 Rogue
 53       Backstab
@@ -18406,12 +18406,12 @@ Rogue
 1264397  Lashe Macabre
 1264521  Find Weakness
 1264764  Shuriken Tornado
-1264856 *Rogue Assassination 12.0 Class Set 2pc
-1264857 *Rogue Assassination 12.0 Class Set 4pc
-1264858 *Rogue Outlaw 12.0 Class Set 2pc
-1264859 *Rogue Outlaw 12.0 Class Set 4pc
-1264860 *Rogue Subtlety 12.0 Class Set 2pc
-1264861 *Rogue Subtlety 12.0 Class Set 4pc
+1264856  Rogue Assassination 12.0 Class Set 2pc
+1264857  Rogue Assassination 12.0 Class Set 4pc
+1264858  Rogue Outlaw 12.0 Class Set 2pc
+1264859  Rogue Outlaw 12.0 Class Set 4pc
+1264860  Rogue Subtlety 12.0 Class Set 2pc
+1264861  Rogue Subtlety 12.0 Class Set 4pc
 1265385  Implacable
 1265386  Implacable
 1265387  Implacable
@@ -20398,12 +20398,12 @@ Shaman
 1264688  Descending Skies
 1264691  Natural Gift
 1264762  Stormwell
-1264862 *Shaman Elemental 12.0 Class Set 2pc
-1264863 *Shaman Elemental 12.0 Class Set 4pc
-1264864 *Shaman Enhancement 12.0 Class Set 2pc
-1264865 *Shaman Enhancement 12.0 Class Set 4pc
-1264866 *Shaman Restoration 12.0 Class Set 2pc
-1264867 *Shaman Restoration 12.0 Class Set 4pc
+1264862  Shaman Elemental 12.0 Class Set 2pc
+1264863  Shaman Elemental 12.0 Class Set 4pc
+1264864  Shaman Enhancement 12.0 Class Set 2pc
+1264865  Shaman Enhancement 12.0 Class Set 4pc
+1264866  Shaman Restoration 12.0 Class Set 2pc
+1264867  Shaman Restoration 12.0 Class Set 4pc
 
 Warlock
 126      Eye of Kilrogg
@@ -22266,12 +22266,12 @@ Warlock
 1264561  Lurking Soulkeeper
 1264584  Lurking Soulkeeper
 1264592  Lurking Soulkeeper
-1264869 *Warlock Affliction 12.0 Class Set 2pc
-1264870 *Warlock Affliction 12.0 Class Set 4pc
-1264871 *Warlock Demonology 12.0 Class Set 2pc
-1264872 *Warlock Demonology 12.0 Class Set 4pc
-1264873 *Warlock Destruction 12.0 Class Set 2pc
-1264874 *Warlock Destruction 12.0 Class Set 4pc
+1264869  Warlock Affliction 12.0 Class Set 2pc
+1264870  Warlock Affliction 12.0 Class Set 4pc
+1264871  Warlock Demonology 12.0 Class Set 2pc
+1264872  Warlock Demonology 12.0 Class Set 4pc
+1264873  Warlock Destruction 12.0 Class Set 2pc
+1264874  Warlock Destruction 12.0 Class Set 4pc
 1265770  Embers of Nihilam
 1265772  Embers of Nihilam
 1265774  Embers of Nihilam
@@ -24067,12 +24067,12 @@ Warrior
 1264147  Revenge
 1264149  I Can Do This All Day [NYI]
 1264330  Sweeping Revenge
-1264875 *Warrior Arms 12.0 Class Set 2pc
-1264876 *Warrior Arms 12.0 Class Set 4pc
-1264877 *Warrior Fury 12.0 Class Set 2pc
-1264878 *Warrior Fury 12.0 Class Set 4pc
-1264879 *Warrior Protection 12.0 Class Set 2pc
-1264880 *Warrior Protection 12.0 Class Set 4pc
+1264875  Warrior Arms 12.0 Class Set 2pc
+1264876  Warrior Arms 12.0 Class Set 4pc
+1264877  Warrior Fury 12.0 Class Set 2pc
+1264878  Warrior Fury 12.0 Class Set 4pc
+1264879  Warrior Protection 12.0 Class Set 2pc
+1264880  Warrior Protection 12.0 Class Set 4pc
 1265355  Scent of Blood
 1265356  Unslaked Thirst
 1265357  Rampaging Ruin
