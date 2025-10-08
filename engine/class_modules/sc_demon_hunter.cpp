@@ -426,7 +426,7 @@ public:
 
       player_talent_t devourers_bite;
       player_talent_t star_fragments;
-      player_talent_t calamitous;      // NYI
+      player_talent_t calamitous;  // NYI
 
       player_talent_t the_hunt;
       player_talent_t emptiness;
@@ -662,8 +662,10 @@ public:
   struct spec_t
   {
     // General
-    const spell_data_t* consume_soul_greater;
-    const spell_data_t* consume_soul_lesser;
+    const spell_data_t* consume_soul_greater_energize;
+    const spell_data_t* consume_soul_greater_heal;
+    const spell_data_t* consume_soul_lesser_energize;
+    const spell_data_t* consume_soul_lesser_heal;
     const spell_data_t* demonic_wards;
     const spell_data_t* metamorphosis;
     const spell_data_t* metamorphosis_buff;
@@ -720,8 +722,6 @@ public:
     const spell_data_t* chaos_strike_refund;
     const spell_data_t* chaos_theory_buff;
     const spell_data_t* demon_blades_damage;
-    const spell_data_t* demonic_appetite;
-    const spell_data_t* demonic_appetite_fury;
     const spell_data_t* essence_break_debuff;
     const spell_data_t* eye_beam_damage;
     const spell_data_t* fel_rush_damage;
@@ -973,15 +973,13 @@ public:
   struct actives_t
   {
     // General
-    spell_t* consume_soul_greater         = nullptr;
-    spell_t* consume_soul_lesser          = nullptr;
-    spell_t* consume_soul_greater_demon   = nullptr;
-    spell_t* consume_soul_empowered_demon = nullptr;
-    heal_t* consume_soul_greater_heal     = nullptr;
-    heal_t* consume_soul_lesser_heal      = nullptr;
-    spell_t* immolation_aura              = nullptr;
-    spell_t* immolation_aura_initial      = nullptr;
-    spell_t* collective_anguish           = nullptr;
+    heal_t* consume_soul_greater         = nullptr;
+    heal_t* consume_soul_lesser          = nullptr;
+    heal_t* consume_soul_greater_demon   = nullptr;
+    heal_t* consume_soul_empowered_demon = nullptr;
+    spell_t* immolation_aura             = nullptr;
+    spell_t* immolation_aura_initial     = nullptr;
+    spell_t* collective_anguish          = nullptr;
 
     // Devourer
     spell_t* spontaneous_immolation = nullptr;
@@ -1495,7 +1493,7 @@ struct soul_fragment_t
 
   timespan_t get_travel_time( bool activation = false ) const
   {
-    double velocity = dh->spec.consume_soul_greater->missile_speed();
+    double velocity = dh->spec.consume_soul_greater_heal->missile_speed();
     if ( ( activation && consume_on_activation ) || velocity == 0 )
       return timespan_t::zero();
 
@@ -1613,14 +1611,12 @@ struct soul_fragment_t
     activate = make_event<fragment_activate_t>( *dh->sim, this );
   }
 
-  void consume( bool heal = true, bool instant = false )
+  void consume( bool instant = false )
   {
     assert( active() );
     timespan_t delay = get_travel_time();
 
     action_t* consume_action = nullptr;
-    action_t* heal_action    = is_type( soul_fragment::ANY_GREATER ) ? dh->active.consume_soul_greater_heal
-                                                                     : dh->active.consume_soul_lesser_heal;
     switch ( type )
     {
       case soul_fragment::EMPOWERED_DEMON:
@@ -1635,7 +1631,10 @@ struct soul_fragment_t
       case soul_fragment::GREATER:
         consume_action = dh->active.consume_soul_greater;
         break;
+      default:
+        break;
     }
+    assert( consume_action != nullptr );
 
     if ( instant || delay == 0_s )
     {
@@ -1644,17 +1643,6 @@ struct soul_fragment_t
     else
     {
       make_event<delayed_execute_event_t>( *dh->sim, dh, consume_action, dh, delay );
-    }
-    if ( heal && dh->specialization() != DEMON_HUNTER_DEVOURER )
-    {
-      if ( instant || delay == 0_s )
-      {
-        heal_action->execute();
-      }
-      else
-      {
-        make_event<delayed_execute_event_t>( *dh->sim, dh, heal_action, dh, delay );
-      }
     }
 
     dh->buff.soul_fragments->decrement();
@@ -1791,11 +1779,11 @@ public:
   } affected_by;
 
   // This action will trigger on every execute -- does not behave identically to execute_action
-  demon_hunter_action_t* execute_energize_action;
+  action_t* execute_energize_action;
   // This action will trigger on every impact -- does not behave identically to impact_action
-  demon_hunter_action_t* impact_energize_action;
+  action_t* impact_energize_action;
   // This action will trigger on every tick -- does not behave identically to tick_action
-  demon_hunter_action_t* tick_energize_action;
+  action_t* tick_energize_action;
 
   void parse_affect_flags( const spell_data_t* spell, affect_flags& flags )
   {
@@ -2612,7 +2600,7 @@ struct demon_hunter_heal_t : public demon_hunter_action_t<heal_t>
     : base_t( n, p, s, o )
   {
     harmful = false;
-    set_target( p );
+    target = p;
   }
 };
 
@@ -2634,6 +2622,7 @@ struct demon_hunter_energize_t : public demon_hunter_action_t<spell_t>
     background = dual = true;
     energize_type     = action_energize::ON_CAST;
     target            = p;
+    harmful           = false;
   }
 };
 
@@ -2736,13 +2725,13 @@ namespace heals
 
 // Consume Soul =============================================================
 
-struct consume_soul_heal_t : public demon_hunter_heal_t
+struct consume_soul_t : public demon_hunter_heal_t
 {
   const soul_fragment type;
   const spell_data_t* vengeance_heal;
   const timespan_t vengeance_heal_interval;
 
-  consume_soul_heal_t( demon_hunter_t* p, util::string_view n, const spell_data_t* s, soul_fragment t )
+  consume_soul_t( demon_hunter_t* p, util::string_view n, const spell_data_t* s, soul_fragment t )
     : demon_hunter_heal_t( n, p, s ),
       type( t ),
       vengeance_heal( p->find_specialization_spell( 203783 ) ),
@@ -2750,18 +2739,30 @@ struct consume_soul_heal_t : public demon_hunter_heal_t
   {
     may_miss   = false;
     background = true;
+    target     = p;
+
+    bool is_greater = ( soul_fragment::ANY_GREATER & type ) == type;
+    switch ( p->specialization() )
+    {
+      case DEMON_HUNTER_DEVOURER:
+        impact_energize_action = p->get_background_action<demon_hunter_energize_t>(
+            fmt::format( "{}_energize", n ),
+            is_greater ? p->spec.consume_soul_greater_energize : p->spec.consume_soul_lesser_energize );
+        break;
+      case DEMON_HUNTER_HAVOC:
+        impact_energize_action = p->get_background_action<demon_hunter_energize_t>(
+            fmt::format( "{}_energize", n ),
+            is_greater ? p->spec.consume_soul_greater_energize : p->spec.consume_soul_lesser_energize );
+        break;
+      default:
+        break;
+    }
   }
 
   double calculate_heal( const action_state_t* ) const
   {
     switch ( p()->specialization() )
     {
-      case DEMON_HUNTER_DEVOURER:
-        // Devourer always heals for the same percentage of HP, regardless of the soul type consumed
-        return player->resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent();
-      case DEMON_HUNTER_HAVOC:
-        // Havoc always heals for the same percentage of HP, regardless of the soul type consumed
-        return player->resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent();
       case DEMON_HUNTER_VENGEANCE:
         if ( type == soul_fragment::LESSER )
         {
@@ -2779,20 +2780,89 @@ struct consume_soul_heal_t : public demon_hunter_heal_t
     return 0.0;
   }
 
+  // this is for devourer/havoc
+  double composite_pct_heal( const action_state_t* s ) const override
+  {
+    double pct = demon_hunter_heal_t::composite_pct_heal( s );
+
+    if ( p()->talent.demon_hunter.shattered_restoration->ok() )
+    {
+      pct *= 1.0 + p()->talent.demon_hunter.shattered_restoration->effectN( 1 ).percent();
+    }
+
+    return pct;
+  }
+
+  // this is for vengeance
   double base_da_min( const action_state_t* s ) const override
   {
-    return calculate_heal( s );
+    double base_heal = calculate_heal( s );
+    if ( p()->talent.demon_hunter.shattered_restoration->ok() )
+    {
+      base_heal *= 1.0 + p()->talent.demon_hunter.shattered_restoration->effectN( 1 ).percent();
+    }
+    return base_heal;
   }
 
+  // this is for vengeance
   double base_da_max( const action_state_t* s ) const override
   {
-    return calculate_heal( s );
+    double base_heal = calculate_heal( s );
+    if ( p()->talent.demon_hunter.shattered_restoration->ok() )
+    {
+      base_heal *= 1.0 + p()->talent.demon_hunter.shattered_restoration->effectN( 1 ).percent();
+    }
+    return base_heal;
   }
 
-  // Handled in the delayed consume event, not the heal action
+  // Handled in the delayed consume event
   timespan_t travel_time() const override
   {
     return 0_s;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    demon_hunter_heal_t::impact( s );
+
+    if ( p()->talent.vengeance.feed_the_demon->ok() )
+    {
+      timespan_t duration =
+          timespan_t::from_seconds( p()->talent.vengeance.feed_the_demon->effectN( 1 ).base_value() / 100 );
+      p()->cooldown.demon_spikes->adjust( -duration );
+    }
+
+    p()->buff.painbringer->trigger();
+    p()->buff.art_of_the_glaive->trigger();
+
+    p()->buff.feast_of_souls->trigger();
+    if ( !p()->buff.metamorphosis->up() )
+    {
+      p()->buff.void_metamorphosis_stack->trigger();
+    }
+    else
+    {
+      if ( p()->talent.devourer.collapsing_star->ok() )
+      {
+        p()->buff.collapsing_star_stack->trigger();
+      }
+      if ( p()->talent.devourer.emptiness->ok() )
+      {
+        p()->buff.emptiness->trigger();
+      }
+    }
+
+    // Warblade's hunger currently applies an additional stack on first buff application
+    if ( !p()->buff.warblades_hunger->up() )
+    {
+      p()->buff.warblades_hunger->trigger();
+    }
+    p()->buff.warblades_hunger->trigger();
+
+    if ( type == soul_fragment::GREATER_DEMON )
+    {
+      p()->buff.demon_soul->trigger();
+    }
   }
 };
 
@@ -4919,82 +4989,6 @@ struct demonsurge_t : public demon_hunter_spell_t
   }
 };
 
-struct consume_soul_t : public demon_hunter_spell_t
-{
-  struct demonic_appetite_energize_t : public demon_hunter_spell_t
-  {
-    demonic_appetite_energize_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->spec.demonic_appetite_fury )
-    {
-      may_miss = may_block = may_dodge = may_parry = callbacks = false;
-      background = quiet = dual = true;
-      energize_type             = action_energize::ON_CAST;
-    }
-  };
-
-  const soul_fragment type;
-
-  consume_soul_t( demon_hunter_t* p, util::string_view n, const spell_data_t* s, soul_fragment t )
-    : demon_hunter_spell_t( n, p, s ), type( t )
-  {
-    may_miss   = false;
-    background = true;
-
-    if ( p->specialization() == DEMON_HUNTER_HAVOC )
-    {
-      execute_action = p->get_background_action<demonic_appetite_energize_t>( "demonic_appetite_fury" );
-    }
-  }
-
-  // Handled in the delayed consume event
-  timespan_t travel_time() const override
-  {
-    return 0_s;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    if ( p()->talent.vengeance.feed_the_demon->ok() )
-    {
-      timespan_t duration =
-          timespan_t::from_seconds( p()->talent.vengeance.feed_the_demon->effectN( 1 ).base_value() / 100 );
-      p()->cooldown.demon_spikes->adjust( -duration );
-    }
-
-    p()->buff.painbringer->trigger();
-    p()->buff.art_of_the_glaive->trigger();
-
-    p()->buff.feast_of_souls->trigger();
-    if ( !p()->buff.metamorphosis->up() )
-    {
-      p()->buff.void_metamorphosis_stack->trigger();
-    }
-    else
-    {
-      if ( p()->talent.devourer.collapsing_star->ok() )
-      {
-        p()->buff.collapsing_star_stack->trigger();
-      }
-      if ( p()->talent.devourer.emptiness->ok() )
-      {
-        p()->buff.emptiness->trigger();
-      }
-    }
-
-    // Warblade's hunger currently applies an additional stack on first buff application
-    if ( !p()->buff.warblades_hunger->up() )
-    {
-      p()->buff.warblades_hunger->trigger();
-    }
-    p()->buff.warblades_hunger->trigger();
-
-    if ( type == soul_fragment::GREATER_DEMON )
-    {
-      p()->buff.demon_soul->trigger();
-    }
-  }
-};
-
 struct consume_base_t : public demon_hunter_spell_t
 {
   consume_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
@@ -5119,7 +5113,7 @@ struct soul_immolation_t : public demon_hunter_spell_t
     // self damage doesn't count as DPS
     stats->type = stats_e::STATS_NEUTRAL;
 
-    tick_energize_action = p->get_background_action<demon_hunter_energize_t>( fmt::format("{}_energize", name()),
+    tick_energize_action = p->get_background_action<demon_hunter_energize_t>( fmt::format( "{}_energize", name() ),
                                                                               p->spec.soul_immolation_energize );
   }
 
@@ -5179,7 +5173,7 @@ struct eradicate_t : public demon_hunter_spell_t
       souls_to_consume += p()->buff.moment_of_craving->check_value();
     }
 
-    unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume );
+    unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, true, souls_to_consume );
 
     damage_action->set_target( target );
     action_state_t* damage_state = damage_action->get_state();
@@ -5476,7 +5470,7 @@ struct collapsing_star_t : public demon_hunter_spell_t
     }
   };
 
-  collapsing_star_t( demon_hunter_t* p,util::string_view o )
+  collapsing_star_t( demon_hunter_t* p, util::string_view o )
     : demon_hunter_spell_t( "collapsing_star", p, p->spec.collapsing_star_spell, o )
   {
     execute_action = p->get_background_action<collapsing_star_damage_t>( "collapsing_star_damage" );
@@ -5505,7 +5499,6 @@ struct collapsing_star_t : public demon_hunter_spell_t
     return demon_hunter_spell_t::action_ready();
   }
 };
-
 
 }  // end namespace spells
 
@@ -8408,7 +8401,7 @@ void demon_hunter_t::create_buffs()
   buff.collapsing_star_ready = make_buff( this, "collapsing_star_ready", spec.collapsing_star_ready_buff )
                                    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
-  buff.collapsing_star_stack = make_buff<collapsing_star_stacking_t>( this );               
+  buff.collapsing_star_stack = make_buff<collapsing_star_stacking_t>( this );
 
   // Havoc ==================================================================
 
@@ -8986,7 +8979,7 @@ void demon_hunter_t::init_rng()
       break;
     case DEMON_HUNTER_HAVOC:
       rppm.felblade         = get_rppm( "felblade", spell.felblade_reset_havoc );
-      rppm.demonic_appetite = get_rppm( "demonic_appetite", spec.demonic_appetite );
+      rppm.demonic_appetite = get_rppm( "demonic_appetite", spec.consume_soul_lesser_heal );
       break;
     case DEMON_HUNTER_VENGEANCE:
       rppm.felblade = get_rppm( "felblade", spell.felblade_reset_vengeance );
@@ -9046,66 +9039,70 @@ void demon_hunter_t::init_spells()
   switch ( specialization() )
   {
     case DEMON_HUNTER_HAVOC:
-      spell.throw_glaive        = find_class_spell( "Throw Glaive" );
-      spec.consume_soul_greater = find_spell( 178963 );
-      spec.consume_soul_lesser  = spec.consume_soul_greater;
-      spec.metamorphosis        = find_class_spell( "Metamorphosis" );
-      spec.metamorphosis_buff   = spec.metamorphosis->effectN( 2 ).trigger();
-      spec.soul_fragments_buff  = spell_data_t::not_found();
-      spec.shattered_souls      = find_spell( 178940 );
+      spell.throw_glaive                 = find_class_spell( "Throw Glaive" );
+      spec.consume_soul_greater_heal     = find_spell( 178963 );
+      spec.consume_soul_greater_energize = spec.consume_soul_greater_heal->effectN( 2 ).trigger();
+      spec.consume_soul_lesser_heal      = find_spell( 206478, DEMON_HUNTER_HAVOC );
+      spec.consume_soul_lesser_energize  = spec.consume_soul_lesser_heal->effectN( 2 ).trigger();
+      spec.metamorphosis                 = find_class_spell( "Metamorphosis" );
+      spec.metamorphosis_buff            = spec.metamorphosis->effectN( 2 ).trigger();
+      spec.soul_fragments_buff           = spell_data_t::not_found();
+      spec.shattered_souls               = find_spell( 178940 );
       break;
     case DEMON_HUNTER_VENGEANCE:
-      spell.throw_glaive        = find_specialization_spell( "Throw Glaive" );
-      spec.consume_soul_greater = find_spell( 210042 );
-      spec.consume_soul_lesser  = find_spell( 203794 );
-      spec.metamorphosis        = find_specialization_spell( "Metamorphosis" );
-      spec.metamorphosis_buff   = spec.metamorphosis;
-      spec.soul_fragments_buff  = find_spell( 203981 );
-      spec.shattered_souls      = find_spell( 178940 );
+      spell.throw_glaive                 = find_specialization_spell( "Throw Glaive" );
+      spec.consume_soul_greater_heal     = find_spell( 210042 );
+      spec.consume_soul_greater_energize = spell_data_t::not_found();
+      spec.consume_soul_lesser_heal      = find_spell( 203794 );
+      spec.consume_soul_lesser_energize  = spell_data_t::not_found();
+      spec.metamorphosis                 = find_specialization_spell( "Metamorphosis" );
+      spec.metamorphosis_buff            = spec.metamorphosis;
+      spec.soul_fragments_buff           = find_spell( 203981 );
+      spec.shattered_souls               = find_spell( 178940 );
       break;
     case DEMON_HUNTER_DEVOURER:
-      spell.throw_glaive        = find_class_spell( "Throw Glaive" );
-      spec.consume_soul_greater = find_spell( 1223628 );
-      spec.consume_soul_lesser  = find_spell( 1223628 );
-      spec.metamorphosis        = find_specialization_spell( "Void Metamorphosis" );
-      spec.metamorphosis_buff   = spec.metamorphosis->effectN( 1 ).trigger();
-      spec.soul_fragments_buff  = find_spell( 1245577 );
-      spec.shattered_souls      = find_spell( 1227619 );
+      spell.throw_glaive                 = find_class_spell( "Throw Glaive" );
+      spec.consume_soul_greater_heal     = find_spell( 1266301 );
+      spec.consume_soul_greater_energize = find_spell( 1223628 );
+      spec.consume_soul_lesser_heal      = find_spell( 1266301 );
+      spec.consume_soul_lesser_energize  = find_spell( 1223628 );
+      spec.metamorphosis                 = find_specialization_spell( "Void Metamorphosis" );
+      spec.metamorphosis_buff            = spec.metamorphosis->effectN( 1 ).trigger();
+      spec.soul_fragments_buff           = find_spell( 1245577 );
+      spec.shattered_souls               = find_spell( 1227619 );
     default:
       break;
   }
 
   // Devourer Spells
-  spec.devourer_demon_hunter       = find_specialization_spell( "Devourer Demon Hunter" );
-  spec.consume                     = find_spell( 473662, DEMON_HUNTER_DEVOURER );
-  spec.consume_energize            = find_spell( 1261710, DEMON_HUNTER_DEVOURER );
-  spec.devour                      = find_spell( 1217610, DEMON_HUNTER_DEVOURER );
-  spec.voidblade                   = find_spell( 1245414, DEMON_HUNTER_DEVOURER );
-  spec.soul_immolation_energize    = find_spell( 1242475, DEMON_HUNTER_DEVOURER );
-  spec.reap                        = find_spell( 1226019, DEMON_HUNTER_DEVOURER );
-  spec.reap_damage                 = find_spell( 1225823, DEMON_HUNTER_DEVOURER );
-  spec.reap_energize               = find_spell( 1261679, DEMON_HUNTER_DEVOURER );
-  spec.cull                        = find_spell( 1245453, DEMON_HUNTER_DEVOURER );
-  spec.cull_damage                 = find_spell( 1245455, DEMON_HUNTER_DEVOURER );
+  spec.devourer_demon_hunter    = find_specialization_spell( "Devourer Demon Hunter" );
+  spec.consume                  = find_spell( 473662, DEMON_HUNTER_DEVOURER );
+  spec.consume_energize         = find_spell( 1261710, DEMON_HUNTER_DEVOURER );
+  spec.devour                   = find_spell( 1217610, DEMON_HUNTER_DEVOURER );
+  spec.voidblade                = find_spell( 1245414, DEMON_HUNTER_DEVOURER );
+  spec.soul_immolation_energize = find_spell( 1242475, DEMON_HUNTER_DEVOURER );
+  spec.reap                     = find_spell( 1226019, DEMON_HUNTER_DEVOURER );
+  spec.reap_damage              = find_spell( 1225823, DEMON_HUNTER_DEVOURER );
+  spec.reap_energize            = find_spell( 1261679, DEMON_HUNTER_DEVOURER );
+  spec.cull                     = find_spell( 1245453, DEMON_HUNTER_DEVOURER );
+  spec.cull_damage              = find_spell( 1245455, DEMON_HUNTER_DEVOURER );
 
   // Havoc Spells
   spec.havoc_demon_hunter = find_specialization_spell( "Havoc Demon Hunter" );
 
-  spec.annihilation          = find_spell( 201427, DEMON_HUNTER_HAVOC );
-  spec.blade_dance           = find_specialization_spell( "Blade Dance" );
-  spec.blade_dance_2         = find_rank_spell( "Blade Dance", "Rank 2" );
-  spec.blur                  = find_specialization_spell( "Blur" );
-  spec.chaos_strike          = find_specialization_spell( "Chaos Strike" );
-  spec.chaos_strike_fury     = find_spell( 193840, DEMON_HUNTER_HAVOC );
-  spec.chaos_strike_refund   = find_spell( 197125, DEMON_HUNTER_HAVOC );
-  spec.death_sweep           = find_spell( 210152, DEMON_HUNTER_HAVOC );
-  spec.demons_bite           = find_spell( 162243, DEMON_HUNTER_HAVOC );
-  spec.fel_rush              = find_specialization_spell( "Fel Rush" );
-  spec.fel_rush_damage       = find_spell( 192611, DEMON_HUNTER_HAVOC );
-  spec.immolation_aura_3     = find_rank_spell( "Immolation Aura", "Rank 3" );
-  spec.fel_eruption          = find_specialization_spell( "Fel Eruption" );
-  spec.demonic_appetite      = find_spell( 206478, DEMON_HUNTER_HAVOC );
-  spec.demonic_appetite_fury = find_spell( 210041, DEMON_HUNTER_HAVOC );
+  spec.annihilation        = find_spell( 201427, DEMON_HUNTER_HAVOC );
+  spec.blade_dance         = find_specialization_spell( "Blade Dance" );
+  spec.blade_dance_2       = find_rank_spell( "Blade Dance", "Rank 2" );
+  spec.blur                = find_specialization_spell( "Blur" );
+  spec.chaos_strike        = find_specialization_spell( "Chaos Strike" );
+  spec.chaos_strike_fury   = find_spell( 193840, DEMON_HUNTER_HAVOC );
+  spec.chaos_strike_refund = find_spell( 197125, DEMON_HUNTER_HAVOC );
+  spec.death_sweep         = find_spell( 210152, DEMON_HUNTER_HAVOC );
+  spec.demons_bite         = find_spell( 162243, DEMON_HUNTER_HAVOC );
+  spec.fel_rush            = find_specialization_spell( "Fel Rush" );
+  spec.fel_rush_damage     = find_spell( 192611, DEMON_HUNTER_HAVOC );
+  spec.immolation_aura_3   = find_rank_spell( "Immolation Aura", "Rank 3" );
+  spec.fel_eruption        = find_specialization_spell( "Fel Eruption" );
 
   // Vengeance Spells
   spec.vengeance_demon_hunter = find_specialization_spell( "Vengeance Demon Hunter" );
@@ -9218,7 +9215,7 @@ void demon_hunter_t::init_spells()
   talent.devourer.emptiness    = find_talent_spell( talent_tree::SPECIALIZATION, "Emptiness" );
   talent.devourer.soul_glutton = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Glutton" );
   talent.devourer.eradicate    = find_talent_spell( talent_tree::SPECIALIZATION, "Eradicate" );
-  
+
   // Devouer Apex Talents
   talent.devourer.midnight1 = find_talent_spell( talent_tree::SPECIALIZATION, 1242486 );
   talent.devourer.midnight2 = find_talent_spell( talent_tree::SPECIALIZATION, 1250088 );
@@ -9631,27 +9628,18 @@ void demon_hunter_t::init_spells()
   using namespace actions::spells;
   using namespace actions::heals;
 
-  if ( specialization() != DEMON_HUNTER_DEVOURER )
-  {
-    active.consume_soul_greater =
-        new consume_soul_t( this, "consume_soul_greater", spec.consume_soul_greater, soul_fragment::GREATER );
-    active.consume_soul_greater_demon   = new consume_soul_t( this, "consume_soul_greater_demon",
-                                                              spec.consume_soul_greater, soul_fragment::GREATER_DEMON );
-    active.consume_soul_empowered_demon = new consume_soul_t(
-        this, "consume_soul_empowered_demon", spec.consume_soul_greater, soul_fragment::EMPOWERED_DEMON );
-    active.consume_soul_greater_heal =
-        new consume_soul_heal_t( this, "consume_soul_greater_heal", spec.consume_soul_greater, soul_fragment::GREATER );
-    active.consume_soul_lesser_heal =
-        new consume_soul_heal_t( this, "consume_soul_lesser_heal", spec.consume_soul_lesser, soul_fragment::LESSER );
-  }
-
   active.consume_soul_lesser =
-      new consume_soul_t( this, "consume_soul_lesser", spec.consume_soul_lesser, soul_fragment::LESSER );
+      new consume_soul_t( this, "consume_soul_lesser", spec.consume_soul_lesser_heal, soul_fragment::LESSER );
+  active.consume_soul_greater =
+      new consume_soul_t( this, "consume_soul_greater", spec.consume_soul_greater_heal, soul_fragment::GREATER );
+  active.consume_soul_greater_demon = new consume_soul_t(
+      this, "consume_soul_greater_demon", spec.consume_soul_greater_heal, soul_fragment::GREATER_DEMON );
+  active.consume_soul_empowered_demon = new consume_soul_t(
+      this, "consume_soul_empowered_demon", spec.consume_soul_greater_heal, soul_fragment::EMPOWERED_DEMON );
 
   if ( talent.devourer.spontaneous_immolation->ok() )
   {
-    active.spontaneous_immolation =
-        get_background_action<soul_immolation_t>( "soul_immolation_spontaneous" );
+    active.spontaneous_immolation = get_background_action<soul_immolation_t>( "soul_immolation_spontaneous" );
     active.spontaneous_immolation->cooldown->duration = 0_s;
   }
 
@@ -10733,7 +10721,7 @@ void demon_hunter_t::activate_soul_fragment( soul_fragment_t* frag )
   // If we spawn a fragment with this flag, instantly consume it
   if ( frag->consume_on_activation )
   {
-    frag->consume( true, true );
+    frag->consume( true );
     return;
   }
 
