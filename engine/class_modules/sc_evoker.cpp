@@ -1406,6 +1406,7 @@ struct evoker_t : public player_t
     propagate_const<proc_t*> destroyers_scarred_wards;
     propagate_const<proc_t*> tww2_4pc;
     propagate_const<proc_t*> hoarded_power;
+    propagate_const<proc_t*> essence_well;
   } proc;
 
   // RPPMs
@@ -4263,6 +4264,15 @@ struct fire_breath_t : public empowered_charge_spell_t
           {
             p()->get_target_data( a )->buffs.infernos_blessing->trigger();
           }
+        }
+      }
+
+      if ( p()->talent.flameshaper.essence_well.enabled() )
+      {
+        if ( rng().roll( p()->talent.flameshaper.essence_well->effectN( 1 ).percent() ) )
+        {
+          p()->buff.essence_burst->trigger();
+          p()->proc.essence_well->occur();
         }
       }
     }
@@ -8797,6 +8807,7 @@ void evoker_t::init_procs()
   proc.destroyers_scarred_wards              = get_proc( "Evoker Devastation 11.0 Class Set 4pc" );
   proc.tww2_4pc                              = get_proc( "Essence Bursts from TWW Season 2 4pc" );
   proc.hoarded_power                         = get_proc( "Hoarded Power" );
+  proc.essence_well                          = get_proc( "Essence Well" );
 }
 
 void evoker_t::init_base_stats()
