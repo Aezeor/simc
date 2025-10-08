@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 12.0.0.63724
-static constexpr std::array<item_name_description_t, 1018> __item_name_description_data { {
+// Item name descriptions, wow build 12.0.0.63534
+static constexpr std::array<item_name_description_t, 1017> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -1017,6 +1017,5 @@ static constexpr std::array<item_name_description_t, 1018> __item_name_descripti
   { 14363, "Horde"                                       },
   { 14364, "Alliance"                                    },
   { 14365, "Vendors and Rares"                           },
-  { 14366, "Housing Dye Pigment"                         },
 } };
 
