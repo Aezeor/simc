@@ -276,6 +276,7 @@ public:
     buff_t* eradicate;
     buff_t* moment_of_craving;
     buff_t* void_metamorphosis_stack;
+    buff_t* rolling_torment;
 
     // Havoc
     buff_t* blind_fury;
@@ -416,7 +417,7 @@ public:
       player_talent_t voidstep;  // NYI
       player_talent_t up_close;
       player_talent_t impending_apocalypse;  // NYI
-      player_talent_t rolling_torment;       // NYI
+      player_talent_t rolling_torment;
       player_talent_t improved_reap;
 
       player_talent_t devourers_bite;
@@ -426,7 +427,7 @@ public:
       player_talent_t the_hunt;
       player_talent_t emptiness;  // NYI
       player_talent_t soul_glutton;
-      player_talent_t eradicate;  // NYI
+      player_talent_t eradicate;
     } devourer;
 
     struct havoc_talents_t
@@ -1902,6 +1903,7 @@ public:
 
     // Devourer
     ab::parse_effects( p()->buff.feast_of_souls );
+    ab::parse_effects( p()->buff.rolling_torment, USE_DEFAULT );
 
     // Havoc
     ab::parse_effects( p()->buff.exergy );
@@ -5365,8 +5367,9 @@ struct void_ray_t : public demon_hunter_spell_t
 
   void execute() override
   {
-    tick_action = p()->buff.metamorphosis->up() ? tick_meta : tick;
-    cooldown->duration = p()->buff.metamorphosis->up() ? p()->spec.void_metamorphosis->effectN( 8 ).time_value() : p()->talent.devourer.void_ray->cooldown();
+    tick_action        = p()->buff.metamorphosis->up() ? tick_meta : tick;
+    cooldown->duration = p()->buff.metamorphosis->up() ? p()->spec.void_metamorphosis->effectN( 8 ).time_value()
+                                                       : p()->talent.devourer.void_ray->cooldown();
 
     demon_hunter_spell_t::execute();
     p()->devourer_fury_state.reschedule_drain();
@@ -7660,12 +7663,19 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
   {
     demon_hunter_buff_t<buff_t>::start( stacks, value, duration );
 
-    p()->buff.void_metamorphosis_stack->expire();
-
     if ( p()->specialization() == DEMON_HUNTER_VENGEANCE )
     {
       p()->metamorphosis_health = p()->max_health() * value;
       p()->stat_gain( STAT_MAX_HEALTH, p()->metamorphosis_health, (gain_t*)nullptr, (action_t*)nullptr, true );
+    }
+
+    if ( p()->talent.devourer.void_metamorphosis->ok() )
+    {
+      p()->buff.void_metamorphosis_stack->expire();
+    }
+    if ( p()->talent.devourer.rolling_torment->ok() )
+    {
+      p()->buff.rolling_torment->trigger();
     }
 
     if ( p()->talent.felscarred.monster_rising->ok() )
@@ -7758,6 +7768,23 @@ struct calcified_spikes_t : public demon_hunter_buff_t<buff_t>
 {
   calcified_spikes_t( demon_hunter_t* p ) : base_t( *p, "calcified_spikes", p->spec.calcified_spikes_buff )
   {
+  }
+};
+
+struct rolling_torment_t : public demon_hunter_buff_t<buff_t>
+{
+  rolling_torment_t( demon_hunter_t* p )
+    : base_t( *p, "rolling_torment_t", p->talent.devourer.rolling_torment->effectN( 2 ).trigger() )
+  {
+    auto max_stacks    = std::max( 1, as<int>( data().duration() / 1_s ) );
+    auto default_value = data().effectN( 1 ).percent() / max_stacks;
+
+    // 2025-10-07 -- seems to only decrement half speed atm for w/e reason
+    set_period( 2_s );
+    set_reverse( true );
+    set_max_stack( max_stacks );
+    set_initial_stack( max_stacks );
+    set_default_value( default_value );
   }
 };
 
@@ -8231,6 +8258,7 @@ void demon_hunter_t::create_buffs()
   buff.void_metamorphosis_stack = make_buff( this, "void_metamorphosis_stack", spec.void_metamorphosis_stack )
                                       ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
                                       ->disable_ticking( true );
+  buff.rolling_torment = make_buff<buffs::rolling_torment_t>( this );
 
   // Havoc ==================================================================
 
