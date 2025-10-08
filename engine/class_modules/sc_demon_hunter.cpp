@@ -1501,9 +1501,12 @@ struct soul_fragment_t
 
     if ( activation )
     {
-      // TODO: MIDNIGHT - ADD DEVOURER
       switch ( dh->specialization() )
       {
+        case DEMON_HUNTER_DEVOURER:
+          // 2025-10-08 -- Recent testing appears to show a roughly 0.23s activation time for Vengeance
+          //               with some slight variance
+          return dh->rng().gauss<230, 70>();
         case DEMON_HUNTER_HAVOC:
           // 2023-06-26 -- Recent testing appears to show a roughly fixed 1s activation time for Havoc
           return 1_s;
@@ -1557,11 +1560,13 @@ struct soul_fragment_t
   void set_position()
   {
     // Base position is up to 15 yards to the front right or front left for Vengeance, 9.5 yards for Havoc
-    // TODO: MIDNIGHT - ADD DEVOURER
     double distance = 0;
     double dist;
     switch ( dh->specialization() )
     {
+      case DEMON_HUNTER_DEVOURER:
+        distance = 4.6066;
+        break;
       case DEMON_HUNTER_HAVOC:
         distance = 4.6066;
         break;
@@ -1829,9 +1834,10 @@ public:
   {
     ab::parse_options( o );
 
-    // TODO: MIDNIGHT - ADD DEVOURER
     switch ( p->specialization() )
     {
+      case DEMON_HUNTER_DEVOURER:
+        break;
       case DEMON_HUNTER_HAVOC:
         // Affect Flags
         parse_affect_flags( p->mastery.a_fire_inside, affected_by.a_fire_inside );
@@ -2748,9 +2754,11 @@ struct consume_soul_heal_t : public demon_hunter_heal_t
 
   double calculate_heal( const action_state_t* ) const
   {
-    // TODO: MIDNIGHT - ADD DEVOURER
     switch ( p()->specialization() )
     {
+      case DEMON_HUNTER_DEVOURER:
+        // Devourer always heals for the same percentage of HP, regardless of the soul type consumed
+        return player->resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent();
       case DEMON_HUNTER_HAVOC:
         // Havoc always heals for the same percentage of HP, regardless of the soul type consumed
         return player->resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent();
@@ -3935,7 +3943,6 @@ struct immolation_aura_t : public demon_hunter_spell_t
       gain = p->get_gain( "immolation_aura_tick" );
       if ( !initial )
       {
-        // TODO: MIDNIGHT - ADD DEVOURER
         switch ( p->specialization() )
         {
           case DEMON_HUNTER_HAVOC:
@@ -4051,7 +4058,6 @@ struct immolation_aura_t : public demon_hunter_spell_t
     dot_duration = timespan_t::zero();
     set_target( p );  // Does not require a hostile target
 
-    // TODO: MIDNIGHT - ADD DEVOURER
     switch ( p->specialization() )
     {
       case DEMON_HUNTER_HAVOC:
@@ -4135,9 +4141,10 @@ struct metamorphosis_t : public demon_hunter_spell_t
     may_miss     = false;
     dot_duration = timespan_t::zero();
 
-    // TODO: MIDNIGHT - ADD DEVOURER
     switch ( p->specialization() )
     {
+      case DEMON_HUNTER_DEVOURER:
+        break;
       case DEMON_HUNTER_HAVOC:
         base_teleport_distance  = data().max_range();
         movement_directionality = movement_direction_type::OMNI;
@@ -4171,9 +4178,10 @@ struct metamorphosis_t : public demon_hunter_spell_t
 
   timespan_t travel_time() const override
   {
-    // TODO: MIDNIGHT - ADD DEVOURER
     switch ( p()->specialization() )
     {
+      case DEMON_HUNTER_DEVOURER:
+        return timespan_t::zero();
       case DEMON_HUNTER_HAVOC:
         return min_gcd;
       case DEMON_HUNTER_VENGEANCE:
@@ -7685,7 +7693,6 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     buff_period   = timespan_t::zero();
     tick_behavior = buff_tick_behavior::NONE;
 
-    // TODO: MIDNIGHT - ADD DEVOURER
     switch ( p->specialization() )
     {
       case DEMON_HUNTER_DEVOURER:
@@ -7721,9 +7728,10 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 
     if ( !p()->buff.metamorphosis->up() )
     {
-      // TODO: MIDNIGHT - ADD DEVOURER
       switch ( p()->specialization() )
       {
+        case DEMON_HUNTER_DEVOURER:
+          break;
         case DEMON_HUNTER_HAVOC:
           p()->buff.demonsurge_abilities[ demonsurge_ability::ANNIHILATION ]->trigger();
           p()->buff.demonsurge_abilities[ demonsurge_ability::DEATH_SWEEP ]->trigger();
@@ -8489,7 +8497,6 @@ void demon_hunter_t::create_buffs()
 
   buff.reavers_glaive = make_buff( this, "reavers_glaive", hero_spec.reavers_glaive_buff )->set_quiet( true );
 
-  // TODO: MIDNIGHT - ADD DEVOURER
   double art_of_the_glaive_buff_value = 0;
   switch ( specialization() )
   {
@@ -8973,9 +8980,10 @@ void demon_hunter_t::init_rng()
   // RPPM objects
 
   // General
-  // TODO: MIDNIGHT - ADD DEVOURER
   switch ( specialization() )
   {
+    case DEMON_HUNTER_DEVOURER:
+      break;
     case DEMON_HUNTER_HAVOC:
       rppm.felblade         = get_rppm( "felblade", spell.felblade_reset_havoc );
       rppm.demonic_appetite = get_rppm( "demonic_appetite", spec.demonic_appetite );
@@ -9536,7 +9544,6 @@ void demon_hunter_t::init_spells()
       break;
   }
 
-  // TODO: MIDNIGHT - ADD DEVOURER
   switch ( specialization() )
   {
     case DEMON_HUNTER_HAVOC:
@@ -9551,7 +9558,6 @@ void demon_hunter_t::init_spells()
 
   if ( talent.aldrachi_reaver.art_of_the_glaive->ok() )
   {
-    // TODO: MIDNIGHT - ADD DEVOURER
     switch ( specialization() )
     {
       case DEMON_HUNTER_HAVOC:
@@ -9569,7 +9575,6 @@ void demon_hunter_t::init_spells()
     hero_spec.reavers_glaive_buff = spell_data_t::not_found();
   }
 
-  // TODO: MIDNIGHT - ADD DEVOURER
   switch ( specialization() )
   {
     case DEMON_HUNTER_HAVOC:
@@ -9746,9 +9751,10 @@ void demon_hunter_t::init_blizzard_action_list()
 
   action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
 
-  // TODO: MIDNIGHT - ADD DEVOURER
   switch ( specialization() )
   {
+    case DEMON_HUNTER_DEVOURER:
+      break;
     case DEMON_HUNTER_HAVOC:
       cooldowns->add_action( "metamorphosis" );
       break;
@@ -9833,9 +9839,9 @@ void demon_hunter_t::invalidate_cache( cache_e c )
 
 resource_e demon_hunter_t::primary_resource() const
 {
-  // TODO: MIDNIGHT - ADD DEVOURER
   switch ( specialization() )
   {
+    case DEMON_HUNTER_DEVOURER:
     case DEMON_HUNTER_HAVOC:
     case DEMON_HUNTER_VENGEANCE:
       return RESOURCE_FURY;
@@ -9848,9 +9854,10 @@ resource_e demon_hunter_t::primary_resource() const
 
 role_e demon_hunter_t::primary_role() const
 {
-  // TODO: MIDNIGHT - ADD DEVOURER
   switch ( specialization() )
   {
+    case DEMON_HUNTER_DEVOURER:
+      return ROLE_SPELL;
     case DEMON_HUNTER_HAVOC:
       return ROLE_ATTACK;
     case DEMON_HUNTER_VENGEANCE:
@@ -9908,7 +9915,6 @@ std::string demon_hunter_t::default_rune() const
 
 std::string demon_hunter_t::default_temporary_enchant() const
 {
-  // TODO: MIDNIGHT - ADD DEVOURER
   switch ( specialization() )
   {
     case DEMON_HUNTER_VENGEANCE:
@@ -10361,9 +10367,12 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
   }
 
   const demon_hunter_td_t* td = get_target_data( s->action->player );
-  // TODO: MIDNIGHT - ADD DEVOURER
   switch ( specialization() )
   {
+    case DEMON_HUNTER_DEVOURER:
+      s->result_amount *= 1.0 + buff.blur->value();
+
+      break;
     case DEMON_HUNTER_HAVOC:
       s->result_amount *= 1.0 + buff.blur->value();
 
