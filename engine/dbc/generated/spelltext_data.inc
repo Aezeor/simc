@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.0.63724
-static constexpr std::array<spelltext_data_t, 28987> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28991> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -10753,6 +10753,7 @@ static constexpr std::array<spelltext_data_t, 28987> __spelltext_data { {
   {  276211, "$@spelldesc276202", "Stamina increased by $w1.", 0 },
   {  276214, "Eat to give your attacks a chance to grant $274375s1 Versatility for $274375d.\r\n", "Your attacks have a chance to grant you $274375s1 Versatility for $274375d.", 0 },
   {  276743, "$@spelldesc79684", "Your next Arcane Missiles costs no mana and deals $s2% additional damage.", "PvP Talent" },
+  {  276837, "Apocalypse's cooldown is reduced by ${$s3/-1000} sec. Additionally, $?s207317[Death Coil and Epidemic reduce][Death Coil reduces] the cooldown of Army of the Dead by $<cd2> sec.", 0, 0 },
   {  276970, "Grants the effect of a flask based on your class and talents.  Lasts $92725d and persists through death.", 0, 0 },
   {  276972, "Creates a cauldron that raid members can use to gain the benefit of a flask appropriate to their class and talents.   Cauldron has 30 uses and lasts for $d.", 0, 0 },
   {  277029, "$@spelldesc980", 0, 0 },
@@ -13502,6 +13503,7 @@ static constexpr std::array<spelltext_data_t, 28987> __spelltext_data { {
   {  317706, "$@spelldesc2645\r\n", 0, 0 },
   {  317741, "Crush the flower and release the mind-easing scents, reducing the rate at which your mount becomes fatigued while flying.", "Reduced fatigue while flying.", 0 },
   {  317742, "Give the carrot to your mount, restoring all fatigue.", 0, 0 },
+  {  317776, "$@spelldesc276837", 0, 0 },
   {  317791, "Deals $s1 Shadow damage.", 0, 0 },
   {  317792, "Deals $s1 Frost damage and reduces their movement speed by $s2% for $d.", "Movement speed reduced by $w2%.", 0 },
   {  317795, "Increases the size of your backpack by $s1 slots.", "Increases the size of your backpack by $s1 slots.", "Racial Passive" },
@@ -27304,6 +27306,7 @@ static constexpr std::array<spelltext_data_t, 28987> __spelltext_data { {
   { 1242230, "$@spelldesc461287", 0, 0 },
   { 1242247, "$?(s1237711|s1251045|s1233775|s1233577|s1233181)&!s1237711[|CFFff0000$@spelldesc1247808|R\r\n\r\n][]|CFFe6cc80Artifact Ability|R\r\n\r\nCall forth a subjugated infernal dreadlord for $1237711d that periodically strikes enemies with $@spellname1237721. \r\n\r\n$@spellname1237721\r\n$@spelldesc1237721", 0, 0 },
   { 1242270, "$@spelldesc322740", "Invoke Niuzao, the Black Ox may be cast again to cause a Mighty Stomp", 0 },
+  { 1242294, "$@spelldesc276837", 0, 0 },
   { 1242326, "Channel for $1241801s5 sec to invoke the wrath of the idol, increasing your Critical Strike by $1241801s1 for $1241806d. The force slams the earth, dealing $1241801s2 Nature damage to all nearby enemies and increasing Critical Strike by $1241801s3 per enemy hit, up to a maximum of $1241801s4.", 0, 0 },
   { 1242344, "Manaforge Omega's energy empowers your weapon enchantments, improving their effects by $s1% while inside its walls. Runeforging effects are increased by $s2%.", "Weapon enchantment effects increased by $w1%. Runeforging effects increased by $w2%.", 0 },
   { 1242345, "$@spelldesc1242344", 0, 0 },
@@ -28968,6 +28971,7 @@ static constexpr std::array<spelltext_data_t, 28987> __spelltext_data { {
   { 1268884, "Each Succulent Soul consumed has an increasing chance to unleash the Demonic Soul within you, enabling it to assault your enemies for $1269042d.\r\n\r\n$@spellicon1269049 $@spellname1269049\r\n$@spelldesc1269049", 0, 0 },
   { 1268889, "Increases your Mastery by 4%.\r\n\r\nThis effect is doubled while the demonic entity is aiding you in combat.", 0, 0 },
   { 1268903, "Increases the duration of Manifested Avarice by 5 sec and increases the damage of Soul Swipe by 10%.", 0, 0 },
+  { 1268917, "$spelldesc377440", "Mastery increased by ${$377440s1}.1%", 0 },
   { 1268932, "Damaging attacks that expend Shadow Techniques to generate combo points have a $s1% chance per stack expended to create a Shadow Clone that repeats the attack for $s2% of normal damage as Shadow.", 0, 0 },
   { 1268936, "Shadow Clones have a $s1% chance to trigger Shadow Techniques' effect.", 0, 0 },
   { 1268939, "After using an attack that generates combo points, if you have $s1 or more stacks of Shadow Techniques, your next damaging finishing move will expend them to generate combo points up to your max.\r\n\r\nShadow damage increased by $s2%.", 0, 0 },
@@ -28994,7 +28998,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix
 } };
 
 // Spell description variables, wow build 12.0.0.63724
-static constexpr std::array<spelldesc_vars_data_t, 701> __spelldesc_vars_data { {
+static constexpr std::array<spelldesc_vars_data_t, 702> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29199,6 +29203,7 @@ static constexpr std::array<spelldesc_vars_data_t, 701> __spelldesc_vars_data { 
   {  273488, "$spec=${1+$137037s1/100}.2\r\n$vers=${1+$@versadmg}.2\r\n$mastery=${1+$76803s1/100}.2\r\n$assassinationMastery=${$<spec>*$<vers>*$<mastery>}.2\r\n$assassinationNoMastery=${$<spec>*$<vers>}.2\r\n" },
   {  275773, "$shield=${($SPS*$231644s1/100)*(1+$@versadmg)}" },
   {  276123, "$minDuration=${$276124s1/1000}\r\n$maxDuration=${$276131s1/1000}" },
+  {  276837, "$cd1=${$s1/10}\r\n$cd2=${$s2/10}" },
   {  278505, "$radius=${11}" },
   {  278531, "$damage=${$s2*(1+($257044d/$257044t2))}" },
   {  278666, "$spec=${1+$137037s1/100}.2\r\n$vers=${1+$@versadmg}.2\r\n$mastery=${1+$76803s1/100}.2\r\n$assassinationMastery=${$<spec>*$<vers>*$<mastery>}.2\r\n$assassinationNoMastery=${$<spec>*$<vers>}.2\r\n" },

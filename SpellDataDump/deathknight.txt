@@ -8527,7 +8527,7 @@ Labels           : 16: Class Spells
                  : 690: Major Cooldowns
                  : 881
 Stance Mask      : 0x01000000
-Affecting Spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Luck of the Draw! (1218601 effects: #1, #2), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2)
+Affecting Spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Army of the Damned (276837 effect#3), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Luck of the Draw! (1218601 effects: #1, #2), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2)
 Family Flags     : 43, 56, 78, 127
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
@@ -8664,6 +8664,30 @@ Effects          :
 Description      : Increases the range of Death Grip by $s1 yds.
 
 Killing an enemy that yields experience or honor resets the cooldown of Death Grip.
+
+Name             : Army of the Damned (id=276837) [Spell Family (15), Passive] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Spell Level      : 1
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+Proc Chance      : 100%
+Proc Flags       : Magic Heal, Magic Hostile Spell
+Attributes       : Is Ability (4), Passive (6), Do Not Log (8), Not In Spellbook (143), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=731638)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+#2 (id=731639)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#3 (id=1026288)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -45000 | Scaled Value: -45000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Apocalypse (275699)
+                   Family Flags: 56
+Description      : Apocalypse's cooldown is reduced by ${$s3/-1000} sec. Additionally, $?s207317[Death Coil and Epidemic reduce][Death Coil reduces] the cooldown of Army of the Dead by $<cd2> sec.
+Variables        : $cd1=${$s1/10}
+$cd2=${$s2/10}
 
 Name             : Val'kyr (desc=Unholy) (id=278107) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
@@ -10750,6 +10774,24 @@ Effects          :
 #2 (id=802874)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Resource: runic_power | Target: Self (1)
 Description      : $@spelldesc317610
+
+Name             : Army of the Damned (id=317776) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadow
+Spell Type       : None
+Duration         : 20 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+Affecting Spells : Outnumber (1241705 effect#1)
+Family Flags     : 96
+Attributes       : No Threat (42), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=803145)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8.5 yards | Target: Back of Self (48)
+#2 (id=803146)   : Summon Guardian (28)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 163366 | Misc Value 2: 5763 | Target: Random in Area (86)
+Description      : $@spelldesc276837
 
 Name             : Shadow Bolt (id=317791) [Spell Family (15)] 
 Class            : Death Knight
@@ -22663,7 +22705,7 @@ Attributes       : Passive (6), No Aura Cancel (31), No Aura Icon (60), Not In S
 Effects          :
 #1 (id=1240845)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 4000 | Scaled Value: 4000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Army of the Dead (42651), Army of the Dead (221180), Lesser Ghoul (275430), Army of the Dead (280447), Magus of the Dead (288544)
+                   Affected Spells: Army of the Dead (42651), Army of the Dead (221180), Lesser Ghoul (275430), Army of the Dead (280447), Magus of the Dead (288544), Army of the Damned (317776), Army of the Damned (1242294)
                    Family Flags: 96
 Description      : Your Lesser Ghouls serve you for ${$s1/1000} sec longer.
 
@@ -22939,6 +22981,23 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1244516 | Target: Self (1)
 Description      : $@spelldesc1242158
 Tooltip          : Empowered with Lich powers Necrotic Coil and Legion of Souls.
+
+Name             : Army of the Damned (id=1242294) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadow
+Spell Type       : None
+Range            : 100 yards
+Duration         : 10 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+Affecting Spells : Outnumber (1241705 effect#1)
+Family Flags     : 96
+Attributes       : No Threat (42), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1241761)  : Summon Guardian (28)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 163366 | Misc Value 2: 5763 | Target: at Area (87)
+Description      : $@spelldesc276837
 
 Name             : Rapid Variant (id=1242561) [Spell Family (15), Passive] 
 Talent Entry     : Unholy [tree=spec, row=5, col=3, max_rank=1, req_points=8]
@@ -24722,4 +24781,21 @@ Effects          :
 #1 (id=1279804)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1267028
+
+Name             : Unholy Aura (id=1268917) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadow
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+Stacks           : 20 maximum
+Proc Chance      : 101%
+Attributes       : Allow Aura While Dead (116), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1280474)  : Apply Aura (6) | Modify Mastery% (318)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+Description      : $spelldesc377440
+Tooltip          : Mastery increased by ${$377440s1}.1%
 

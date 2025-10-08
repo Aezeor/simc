@@ -783,10 +783,11 @@ public:
     propagate_const<buff_t*> commander_of_the_dead;
     propagate_const<buff_t*> clawing_shadows;
     propagate_const<buff_t*> lesser_ghoul_ready;
-    propagate_const<buff_t*> lesser_ghoul_mastery;
+    propagate_const<buff_t*> lesser_ghoul_counter;
     propagate_const<buff_t*> forbidden_knowledge;
     propagate_const<buff_t*> ancient_runes;
     propagate_const<buff_t*> unholy_aura;
+    propagate_const<buff_t*> unholy_aura_mastery;
 
     // Rider of the Apocalypse
     propagate_const<buff_t*> a_feast_of_souls;
@@ -1450,6 +1451,7 @@ public:
     const spell_data_t* disease_cloud_area;
     const spell_data_t* contagion;
     const spell_data_t* rapid_variant_damage;
+    const spell_data_t* unholy_aura_mastery_buff;
 
     // Unholy Summon Spells
     const spell_data_t* summon_gargoyle;
@@ -1877,7 +1879,6 @@ public:
   void sudden_doom_impact_effects( action_state_t* state, bool coil = false );
   void unholy_rp_execute_effects( bool sd, bool coil = false );
   void unholy_rp_impact_effects( action_state_t* state, bool sd, bool coil = false );
-  void start_unholy_aura();
   // Start the repeated stacking of buffs, called at combat start
   void start_inexorable_assault();
 
@@ -4018,6 +4019,18 @@ struct magus_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::init_base_stats();
     owner_coeff.ap_from_ap = 0.6154731;
+  }
+
+  void arise() override
+  {
+    death_knight_pet_t::arise();
+    dk()->buffs.unholy_aura_mastery->trigger();
+  }
+
+  void demise() override
+  {
+    death_knight_pet_t::demise();
+    dk()->buffs.unholy_aura_mastery->decrement();
   }
 
   void init_action_list() override
@@ -11848,39 +11861,6 @@ void death_knight_t::start_a_feast_of_souls()
   } );
 }
 
-void death_knight_t::start_unholy_aura()
-{
-  if ( !talent.unholy.unholy_aura.ok() )
-    return;
-
-  timespan_t period = spell.lesser_ghoul_ticking->effectN( 1 ).period();
-  timespan_t first  = timespan_t::from_millis( rng().range( 0, as<int>( period.total_millis() ) ) );
-
-  make_event( *sim, first, [ this, period ]() {
-    int ghouls = active_lesser_ghouls.size();
-
-    if( ghouls > 0 )
-      buffs.lesser_ghoul_mastery->trigger( ghouls );
-
-    make_repeating_event( *sim, period, [ this ]() {
-      if ( active_lesser_ghouls.empty() )
-        return;
-
-      int ghouls = active_lesser_ghouls.size();
-      // Buff has a max stacks of 20, ensure it doesnt go above this
-      if( ghouls > 20 )
-        ghouls = 20;
-      int stacks = buffs.lesser_ghoul_mastery->check();
-      int diff   = ghouls - stacks;
-
-      if ( diff == 0 )
-        return;
-
-      buffs.lesser_ghoul_mastery->bump( diff );
-    } );
-  } );
-}
-
 double death_knight_t::tick_damage_over_time( timespan_t duration, const dot_t* dot ) const
 {
   if ( !dot->is_ticking() )
@@ -13334,6 +13314,7 @@ void death_knight_t::spell_lookups()
   spell.disease_cloud_area              = conditional_spell_lookup( talent.unholy.raise_abomination.ok(), 1244103 );
   spell.contagion                       = conditional_spell_lookup( talent.unholy.raise_abomination.ok(), 1241077 );
   spell.rapid_variant_damage            = conditional_spell_lookup( talent.unholy.rapid_variant.ok(), 1242564 );
+  spell.unholy_aura_mastery_buff        = conditional_spell_lookup( talent.unholy.unholy_aura.ok(), 1268917 );
   // Unholy Apex
   spell.forbidden_knowledge_buff     = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 1242223 );
   spell.forbidden_knowledge_energize = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 1256576 );
@@ -14189,11 +14170,8 @@ void death_knight_t::create_buffs()
       make_fallback( spec.festering_strike->ok(), this, "lesser_ghoul_ready", spell.lesser_ghoul_buff )
           ->set_name_reporting( "lesser_ghoul" );
 
-  buffs.lesser_ghoul_mastery =
-      make_fallback( talent.unholy.unholy_aura.ok(), this, "lesser_ghoul_mastery", spell.lesser_ghoul_counter )
-          ->set_default_value( talent.unholy.unholy_aura->effectN( 1 ).base_value() / 10 )
-          ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-          ->add_invalidate( CACHE_MASTERY )
+  buffs.lesser_ghoul_counter =
+      make_fallback( talent.unholy.unholy_aura.ok(), this, "lesser_ghoul_counter", spell.lesser_ghoul_counter )
           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buffs.forbidden_knowledge = make_fallback( talent.unholy.forbidden_knowledge_1.ok(), this, "forbidden_knowledge",
@@ -14210,6 +14188,12 @@ void death_knight_t::create_buffs()
                           ->set_default_value_from_effect_type( A_HASTE_ALL )
                           ->add_invalidate( CACHE_HASTE )
                           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+
+  buffs.unholy_aura_mastery =
+      make_fallback( talent.unholy.unholy_aura.ok(), this, "unholy_aura_mastery", spell.unholy_aura_mastery_buff )
+          ->set_default_value( talent.unholy.unholy_aura->effectN( 1 ).base_value() )
+          ->add_invalidate( CACHE_MASTERY )
+          ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -14742,9 +14726,6 @@ void death_knight_t::arise()
 
   if ( talent.rider.a_feast_of_souls.ok() )
     start_a_feast_of_souls();
-
-  if ( talent.unholy.unholy_aura.ok() )
-    start_unholy_aura();
 
   // Reserve space in the vector based on the maximum number of pets that can be active at once.
   switch( specialization() )

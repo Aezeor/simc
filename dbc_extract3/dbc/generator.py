@@ -2031,6 +2031,8 @@ class SpellDataGenerator(DataGenerator):
           # Midnight
           ( 1254252, 0 ), # Lesser Ghoul Ready Buff
           ( 1242998, 0 ), # Lesser Ghoul Counter Buff
+          ( 1242294, 0 ), # Summon Magus Spell
+          ( 1268917, 0 ), # Unholy Aura Mastery Buff
         ),
 
         # Shaman:

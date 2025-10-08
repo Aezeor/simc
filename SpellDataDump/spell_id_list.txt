@@ -765,7 +765,7 @@ Death Knight
 276049  *Corpse Explosion
 276051  *Corpse Explosion
 276079   Death's Reach
-276837  *Army of the Damned
+276837   Army of the Damned
 277234  *Pestilence
 278107   Val'kyr
 278114  *Remove Val'kyr
@@ -877,7 +877,7 @@ Death Knight
 317250  *Summon Gargoyle
 317610   Relish in Blood
 317614   Relish in Blood
-317776  *Army of the Damned
+317776   Army of the Damned
 317791   Shadow Bolt
 317792   Frostbolt
 317898   Blinding Sleet
@@ -1625,7 +1625,7 @@ Death Knight
 1242274 *Lesser Ghoul Despawn
 1242283 *Reawakening
 1242289 *Reawakening
-1242294 *Army of the Damned
+1242294  Army of the Damned
 1242561  Rapid Variant
 1242564  Rapid Variant
 1242597  Blighted
@@ -1725,7 +1725,7 @@ Death Knight
 1267028  Blood Bond
 1267032  Blood Bond
 1267044  Blood Bond
-1268917 *Unholy Aura
+1268917  Unholy Aura
 
 Demon Hunter
 1490     Chaos Brand
