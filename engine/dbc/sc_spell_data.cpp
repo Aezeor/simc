@@ -325,28 +325,6 @@ util::string_view data_type_str( expr_data_e type )
   return "unknown";
 }
 
-unsigned class_str_to_mask( util::string_view str )
-{
-  for ( const auto& info : _class_info )
-  {
-    if ( util::str_compare_ci( info.name, str ) )
-      return info.mask;
-  }
-
-  return 0;
-}
-
-unsigned class_str_to_family( util::string_view str )
-{
-  for ( const auto& info : _class_info )
-  {
-    if ( util::str_compare_ci( info.name, str ) )
-      return info.spell_family;
-  }
-
-  return 0;
-}
-
 uint64_t race_str_to_mask( util::string_view str )
 {
   int race_id = -1;
@@ -840,33 +818,6 @@ struct spell_class_expr_t : public spell_list_expr_t
 {
   spell_class_expr_t( dbc_t& dbc, expr_data_e type ) : spell_list_expr_t( dbc, "class", type ) { }
 
-  // returns true for spells that should check spell class family
-  bool check_spell_class_family( const spell_data_t& spell ) const
-  {
-    auto check_spell = []( unsigned spell_id, bool ptr ) {
-      // conduit spells are safe to match by spell family
-      const auto& conduit = conduit_entry_t::find_by_spellid( spell_id, ptr );
-      if ( conduit.spell_id && conduit.spell_id == spell_id )
-        return true;
-
-      // legendary spells are safe to match by spell family
-      const auto legendary = runeforge_legendary_entry_t::find_by_spellid( spell_id, ptr );
-      return !legendary.empty();
-    };
-
-    if ( check_spell( spell.id(), dbc.ptr ) )
-      return true;
-
-    // Also sub-spells of eligible drivers, only search one level deep
-    for ( auto driver_spell : spell.drivers() )
-    {
-      if ( check_spell( driver_spell->id(), dbc.ptr ) )
-        return true;
-    }
-
-    return false;
-  }
-
   std::vector<uint32_t> operator==( const spell_data_expr_t& other ) const override
   {
     // Other types will not be allowed, e.g. you cannot do class=list
@@ -877,28 +828,37 @@ struct spell_class_expr_t : public spell_list_expr_t
     if ( data_type == DATA_SPELL && util::str_compare_ci( other.result_str, "none" ) )
     {
       return filter_spells( [ & ]( const spell_data_t& spell ) {
-        return !( spell.class_mask() & 0b1111111111111 ) &&
-               ( !check_spell_class_family( spell ) ||
-                 !range::contains( _class_info, spell.class_family(), &class_info_t::spell_family ) );
+        for ( const auto& info : _class_info )
+        {
+          if ( range::contains( spell.labels(), info.spell_label, &spelllabel_data_t::label ) ||
+               spell.class_family() == info.spell_family || spell.class_mask() & info.mask )
+          {
+            return false;
+          }
+        }
+        return true;
       } );
     }
 
-    const uint32_t class_mask = class_str_to_mask( other.result_str );
+    auto it = range::find_if( _class_info, [ & ]( const auto& info ) {
+      return util::str_compare_ci( other.result_str, info.name );
+    } );
+    if ( it == _class_info.end() )
+      return {};
 
     if ( data_type == DATA_TALENT )
     {
-      return filter_talents( [&]( const trait_data_t& talent ) {
-          auto class_ = util::translate_class_id( talent.id_class );
-          auto talent_class_mask = util::class_id_mask( class_ );
-          return talent_class_mask & class_mask;
-        } );
+      return filter_talents( [ mask = it->mask ]( const auto& talent ) {
+        auto class_ = util::translate_class_id( talent.id_class );
+        auto talent_class_mask = util::class_id_mask( class_ );
+        return talent_class_mask & mask;
+      } );
     }
 
-    const unsigned class_family = class_str_to_family( other.result_str );
-    return filter_spells( [&]( const spell_data_t& spell ) {
-        return ( spell.class_mask() & class_mask ) ||
-               ( spell.class_family() == class_family && check_spell_class_family( spell ) );
-      } );
+    return filter_spells( [ label = it->spell_label, family = it->spell_family, mask = it->mask ]( const auto& spell ) {
+      return range::contains( spell.labels(), label, &spelllabel_data_t::label ) || spell.class_family() == family ||
+             spell.class_mask() & mask;
+    } );
   }
 
   std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) const override
@@ -907,22 +867,25 @@ struct spell_class_expr_t : public spell_list_expr_t
     if ( other.result_tok != expression::TOK_STR )
       return {};
 
-    const uint32_t class_mask = class_str_to_mask( other.result_str );
+    auto it = range::find_if( _class_info, [ & ]( const auto& info ) {
+      return util::str_compare_ci( other.result_str, info.name );
+    } );
+    if ( it == _class_info.end() )
+      return {};
 
     if ( data_type == DATA_TALENT )
     {
-      return filter_talents( [&]( const trait_data_t& talent ) {
-          auto class_ = util::translate_class_id( talent.id_class );
-          auto talent_class_mask = util::class_id_mask( class_ );
-          return ( talent_class_mask & class_mask ) == 0;
-        } );
+      return filter_talents( [ mask = it->mask ]( const auto& talent ) {
+        auto class_ = util::translate_class_id( talent.id_class );
+        auto talent_class_mask = util::class_id_mask( class_ );
+        return ( talent_class_mask & mask ) == 0;
+      } );
     }
 
-    const unsigned class_family = class_str_to_family( other.result_str );
-    return filter_spells( [&]( const spell_data_t& spell ) {
-        return ( spell.class_mask() & class_mask ) == 0 &&
-               !( spell.class_family() == class_family && check_spell_class_family( spell ) );
-      } );
+    return filter_spells( [ label = it->spell_label, family = it->spell_family, mask = it->mask ]( const auto& spell ) {
+      return !range::contains( spell.labels(), label, &spelllabel_data_t::label ) && spell.class_family() != family &&
+             ( spell.class_mask() & mask ) == 0;
+    } );
   }
 };
 
