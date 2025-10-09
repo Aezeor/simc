@@ -3016,6 +3016,9 @@ struct empowered_charge_t : public empowered_base_t<BASE>
                    "Empowered release spell must be dervied from empowered_release_spell_t." );
 
     release_spell             = ab::p()->template get_secondary_action<T>( n );
+    
+    ab::add_child( release_spell );
+
     release_spell->stats      = ab::stats;
     release_spell->background = false;
   }
@@ -4518,6 +4521,7 @@ struct eternity_surge_t : public empowered_charge_spell_t
     : base_t( "eternity_surge", p, p->talent.eternity_surge, options_str )
   {
     create_release_spell<eternity_surge_damage_t>( "eternity_surge_damage" );
+    add_child( release_spell );
 
     if ( empower_to == EMPOWER_MAX && p->option.eternity_surge_default_rank > 0 )
     {
