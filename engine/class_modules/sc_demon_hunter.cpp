@@ -3134,11 +3134,9 @@ struct soul_cleave_heal_t : public demon_hunter_heal_t
     }
   };
 
-  soul_cleave_heal_t( util::string_view name, demon_hunter_t* p, std::basic_string<char> reporting_name )
-    : demon_hunter_heal_t( name, p, p->spec.soul_cleave )
+  soul_cleave_heal_t( util::string_view name, demon_hunter_t* p ) : demon_hunter_heal_t( name, p, p->spec.soul_cleave )
   {
-    background = dual  = true;
-    name_str_reporting = reporting_name;
+    background = dual = true;
 
     // Clear out the costs since this is just a copy of the damage spell
     base_costs.fill( 0 );
@@ -4767,17 +4765,16 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
 
 // Spirit Bomb ==============================================================
 
-struct spirit_bomb_base_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
+struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
 {
   struct spirit_bomb_damage_t : public demon_hunter_spell_t
   {
-    spirit_bomb_damage_t( util::string_view name, demon_hunter_t* p, std::basic_string<char> reporting_name )
+    spirit_bomb_damage_t( util::string_view name, demon_hunter_t* p )
       : demon_hunter_spell_t( name, p, p->spec.spirit_bomb_damage )
     {
       background = dual   = true;
       aoe                 = -1;
       reduced_aoe_targets = p->talent.vengeance.spirit_bomb->effectN( 3 ).base_value();
-      name_str_reporting  = reporting_name;
     }
 
     void impact( action_state_t* s ) override
@@ -4813,13 +4810,13 @@ struct spirit_bomb_base_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
   spirit_bomb_damage_t* damage;
   unsigned max_fragments_consumed;
 
-  spirit_bomb_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view options_str )
-    : base_t( n, p, s, options_str ),
+  spirit_bomb_t( demon_hunter_t* p, util::string_view options_str )
+    : base_t( "spirit_bomb", p, p->talent.vengeance.spirit_bomb, options_str ),
       max_fragments_consumed( static_cast<unsigned>( data().effectN( 2 ).base_value() ) )
   {
     may_miss = proc = callbacks = false;
 
-    damage        = p->get_background_action<spirit_bomb_damage_t>( name_str + "damage", name_str );
+    damage        = p->get_background_action<spirit_bomb_damage_t>( "spirit_bomb_damage" );
     damage->stats = stats;
 
     if ( !p->active.frailty_heal )
@@ -4852,53 +4849,6 @@ struct spirit_bomb_base_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
       return false;
 
     return base_t::ready();
-  }
-};
-
-struct spirit_burst_t : public demonsurge_trigger_t<demonsurge_ability::SPIRIT_BURST, spirit_bomb_base_t>
-{
-  spirit_burst_t( demon_hunter_t* p ) : base_t( "spirit_burst", p, p->hero_spec.spirit_burst, "" )
-  {
-  }
-};
-
-struct spirit_bomb_t : public spirit_bomb_base_t
-{
-  spirit_burst_t* spirit_burst;
-  double spirit_burst_cost;
-
-  spirit_bomb_t( demon_hunter_t* p, util::string_view options_str )
-    : spirit_bomb_base_t( "spirit_bomb", p, p->talent.vengeance.spirit_bomb, options_str ),
-      spirit_burst( nullptr ),
-      spirit_burst_cost( 0 )
-  {
-    if ( p->talent.felscarred.demonsurge->ok() )
-    {
-      spirit_burst      = new spirit_burst_t( p );
-      spirit_burst_cost = spirit_burst->data().cost( POWER_FURY );
-      add_child( spirit_burst );
-    }
-  }
-
-  double cost() const override
-  {
-    if ( p()->buff.demonsurge_demonic->check() )
-    {
-      return spirit_burst_cost;
-    }
-    return spirit_bomb_base_t::cost();
-  }
-
-  void execute() override
-  {
-    if ( p()->buff.demonsurge_demonic->check() )
-    {
-      spirit_burst->execute_on_target( target );
-      stats->add_execute( time_to_execute, target );
-      return;
-    }
-
-    spirit_bomb_base_t::execute();
   }
 };
 
@@ -7023,18 +6973,15 @@ struct inner_demon_t : public demon_hunter_spell_t
 
 // Soul Cleave ==============================================================
 
-struct soul_cleave_base_t
-  : public voidfall_spending_trigger_t<
-        art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>>
+struct soul_cleave_t : public voidfall_spending_trigger_t<
+                           art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>>
 {
   struct soul_cleave_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
   {
-    soul_cleave_damage_t( util::string_view name, demon_hunter_t* p, std::basic_string<char> reporting_name,
-                          const spell_data_t* s )
+    soul_cleave_damage_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
       : burning_blades_trigger_t( name, p, s )
     {
-      dual               = true;
-      name_str_reporting = reporting_name;
+      background = dual = true;
     }
 
     void impact( action_state_t* s ) override
@@ -7063,20 +7010,19 @@ struct soul_cleave_base_t
 
   heals::soul_cleave_heal_t* heal;
 
-  soul_cleave_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s,
-                      util::string_view options_str = {} )
-    : base_t( n, p, s, options_str ), heal( nullptr )
+  soul_cleave_t( demon_hunter_t* p, util::string_view options_str = {} )
+    : base_t( "soul_cleave", p, p->spec.soul_cleave, options_str ), heal( nullptr )
   {
     may_miss = may_dodge = may_parry = may_block = false;
     attack_power_mod.direct = 0;  // This parent action deals no damage, parsed data is for the heal
 
     execute_action =
-        p->get_background_action<soul_cleave_damage_t>( name_str + "_damage", name_str, data().effectN( 2 ).trigger() );
+        p->get_background_action<soul_cleave_damage_t>( "soul_cleave_damage", data().effectN( 2 ).trigger() );
     add_child( execute_action );
 
     if ( p->spec.soul_cleave_2->ok() )
     {
-      heal = p->get_background_action<heals::soul_cleave_heal_t>( name_str + "_heal", name_str );
+      heal = p->get_background_action<heals::soul_cleave_heal_t>( "soul_cleave_heal" );
     }
 
     if ( p->talent.vengeance.void_reaver->ok() && !p->active.frailty_heal )
@@ -7106,53 +7052,6 @@ struct soul_cleave_base_t
 
     // Soul fragments consumed are capped for Soul Cleave
     p()->consume_soul_fragments( soul_fragment::ANY, true, static_cast<unsigned>( data().effectN( 3 ).base_value() ) );
-  }
-};
-
-struct soul_sunder_t : public demonsurge_trigger_t<demonsurge_ability::SOUL_SUNDER, soul_cleave_base_t>
-{
-  soul_sunder_t( demon_hunter_t* p ) : base_t( "soul_sunder", p, p->hero_spec.soul_sunder, "" )
-  {
-  }
-};
-
-struct soul_cleave_t : public soul_cleave_base_t
-{
-  soul_sunder_t* soul_sunder;
-  double soul_sunder_cost;
-
-  soul_cleave_t( demon_hunter_t* p, util::string_view options_str )
-    : soul_cleave_base_t( "soul_cleave", p, p->spec.soul_cleave, options_str ),
-      soul_sunder( nullptr ),
-      soul_sunder_cost( 0 )
-  {
-    if ( p->talent.felscarred.demonsurge->ok() )
-    {
-      soul_sunder      = new soul_sunder_t( p );
-      soul_sunder_cost = soul_sunder->data().cost( POWER_FURY );
-      add_child( soul_sunder );
-    }
-  }
-
-  double cost() const override
-  {
-    if ( p()->buff.demonsurge_demonic->check() )
-    {
-      return soul_sunder_cost;
-    }
-    return soul_cleave_base_t::cost();
-  }
-
-  void execute() override
-  {
-    if ( p()->buff.demonsurge_demonic->check() )
-    {
-      soul_sunder->execute_on_target( target );
-      stats->add_execute( time_to_execute, target );
-      return;
-    }
-
-    soul_cleave_base_t::execute();
   }
 };
 
