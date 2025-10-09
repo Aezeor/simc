@@ -606,13 +606,13 @@ public:
 
       player_talent_t path_to_oblivion;   // NYI
       player_talent_t state_of_matter;    // NYI
-      player_talent_t mass_acceleration;  // NYI
+      player_talent_t mass_acceleration;
       player_talent_t doomsayer;          // NYI
       player_talent_t celestial_echoes;
 
       player_talent_t final_hour;
-      player_talent_t meteoric_fall;       // NYI
-      player_talent_t dark_matter;         // NYI
+      player_talent_t meteoric_fall;  // NYI
+      player_talent_t dark_matter;    // NYI
       player_talent_t otherworldly_focus;
 
       player_talent_t world_killer;  // NYI
@@ -889,6 +889,7 @@ public:
 
     // Vengeance
     cooldown_t* demon_spikes;
+    cooldown_t* spirit_bomb;
     cooldown_t* fel_devastation;
     cooldown_t* sigil_of_chains;
     cooldown_t* sigil_of_silence;
@@ -1037,7 +1038,7 @@ public:
 
     // Annihilator
     spell_t* voidfall_meteor = nullptr;
-    spell_t* catastrophe = nullptr;
+    spell_t* catastrophe     = nullptr;
 
     // Fel-scarred
     action_t* burning_blades = nullptr;
@@ -2716,7 +2717,7 @@ struct catastrophe_trigger_t : public BASE
   using base_t = catastrophe_trigger_t<BASE>;
 
   catastrophe_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
-                            util::string_view o = {} )
+                         util::string_view o = {} )
     : BASE( n, p, s, o )
   {
   }
@@ -2733,6 +2734,44 @@ struct catastrophe_trigger_t : public BASE
 
     const double dot_damage = s->result_amount * BASE::p()->talent.annihilator.catastrophe->effectN( 1 ).percent();
     residual_action::trigger( BASE::p()->active.catastrophe, s->target, dot_damage );
+  }
+};
+
+template <typename BASE>
+struct mass_acceleration_trigger_t : public BASE
+{
+  using base_t = mass_acceleration_trigger_t<BASE>;
+
+  mass_acceleration_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                               util::string_view o = {} )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    if ( !BASE::p()->talent.annihilator.mass_acceleration->ok() )
+      return;
+
+    if ( !BASE::p()->buff.voidfall_spending->up() )
+    {
+      BASE::p()->buff.voidfall_building->trigger(
+          as<int>( BASE::p()->talent.annihilator.mass_acceleration->effectN( 1 ).base_value() ) );
+    }
+
+    switch ( BASE::p()->specialization() )
+    {
+      case DEMON_HUNTER_DEVOURER:
+        BASE::p()->cooldown.reap->reset( true );
+        break;
+      case DEMON_HUNTER_VENGEANCE:
+        BASE::p()->cooldown.spirit_bomb->reset( true );
+        break;
+      default:
+        break;
+    }
   }
 };
 
@@ -4304,7 +4343,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
 // Metamorphosis ============================================================
 
-struct metamorphosis_t : public demon_hunter_spell_t
+struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t>
 {
   struct metamorphosis_impact_t : public demon_hunter_spell_t
   {
@@ -4320,7 +4359,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
   timespan_t gcd_lag;
 
   metamorphosis_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "metamorphosis", p, p->spec.metamorphosis ), landing_distance( 0.0 )
+    : base_t( "metamorphosis", p, p->spec.metamorphosis ), landing_distance( 0.0 )
   {
     add_option( opt_float( "landing_distance", landing_distance, 0.0, 40.0 ) );
     parse_options( options_str );
@@ -4360,7 +4399,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
   {
     gcd_lag = rng().gauss( sim->gcd_lag );
     min_gcd = 1_s + gcd_lag;
-    demon_hunter_spell_t::schedule_execute( s );
+    base_t::schedule_execute( s );
   }
 
   timespan_t travel_time() const override
@@ -4380,7 +4419,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
 
   void execute() override
   {
-    demon_hunter_spell_t::execute();
+    base_t::execute();
 
     switch ( p()->specialization() )
     {
@@ -4447,7 +4486,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
     {
       return false;
     }
-    return demon_hunter_spell_t::action_ready();
+    return base_t::action_ready();
   }
 };
 
@@ -4736,7 +4775,8 @@ struct spirit_bomb_base_t : public demon_hunter_spell_t
         // etc until reaching 0 benefit
         auto num_target_reduction_percent =
             p()->talent.annihilator.otherworldly_focus->effectN( 2 ).percent() * ( s->n_targets - 1 );
-        m *= 1.0 + std::max(0.0, p()->talent.annihilator.otherworldly_focus->effectN( 1 ).percent() - num_target_reduction_percent );
+        m *= 1.0 + std::max( 0.0, p()->talent.annihilator.otherworldly_focus->effectN( 1 ).percent() -
+                                      num_target_reduction_percent );
       }
 
       return m;
@@ -5615,7 +5655,8 @@ struct collapsing_star_t : public demon_hunter_spell_t
         // etc until reaching 0 benefit
         auto num_target_reduction_percent =
             p()->talent.annihilator.otherworldly_focus->effectN( 2 ).percent() * ( s->n_targets - 1 );
-        m *= 1.0 + std::max(0.0, p()->talent.annihilator.otherworldly_focus->effectN( 1 ).percent() - num_target_reduction_percent );
+        m *= 1.0 + std::max( 0.0, p()->talent.annihilator.otherworldly_focus->effectN( 1 ).percent() -
+                                      num_target_reduction_percent );
       }
 
       return m;
@@ -5665,8 +5706,7 @@ struct collapsing_star_t : public demon_hunter_spell_t
 
 struct voidfall_meteor_t : public catastrophe_trigger_t<demon_hunter_spell_t>
 {
-  voidfall_meteor_t( util::string_view n, demon_hunter_t* p )
-    : base_t( n, p, p->hero_spec.voidfall_meteor_damage )
+  voidfall_meteor_t( util::string_view n, demon_hunter_t* p ) : base_t( n, p, p->hero_spec.voidfall_meteor_damage )
   {
   }
 
@@ -5682,7 +5722,8 @@ struct voidfall_meteor_t : public catastrophe_trigger_t<demon_hunter_spell_t>
       // etc until reaching 0 benefit
       auto num_target_reduction_percent =
           p()->talent.annihilator.otherworldly_focus->effectN( 2 ).percent() * ( s->n_targets - 1 );
-      m *= 1.0 + std::max(0.0, p()->talent.annihilator.otherworldly_focus->effectN( 1 ).percent() - num_target_reduction_percent );
+      m *= 1.0 + std::max( 0.0, p()->talent.annihilator.otherworldly_focus->effectN( 1 ).percent() -
+                                    num_target_reduction_percent );
     }
 
     return m;
@@ -9752,7 +9793,7 @@ void demon_hunter_t::init_spells()
   hero_spec.voidfall_building_buff   = talent_spell_lookup( talent.annihilator.voidfall, 1256301 );
   hero_spec.voidfall_spending_buff   = talent_spell_lookup( talent.annihilator.voidfall, 1256302 );
   hero_spec.voidfall_final_hour_buff = talent_spell_lookup( talent.annihilator.final_hour, 1256322 );
-  switch (specialization())
+  switch ( specialization() )
   {
     case DEMON_HUNTER_DEVOURER:
       hero_spec.catastrophe_dot = talent_spell_lookup( talent.annihilator.catastrophe, 1256676 );
@@ -10208,6 +10249,7 @@ void demon_hunter_t::create_cooldowns()
 
   // Vengeance
   cooldown.demon_spikes            = get_cooldown( "demon_spikes" );
+  cooldown.spirit_bomb             = get_cooldown( "demon_spikes" );
   cooldown.sigil_of_chains         = get_cooldown( "sigil_of_chains" );
   cooldown.sigil_of_silence        = get_cooldown( "sigil_of_silence" );
   cooldown.fel_devastation         = get_cooldown( "fel_devastation" );
