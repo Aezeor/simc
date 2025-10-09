@@ -5232,6 +5232,7 @@ struct eradicate_t : public voidfall_spending_trigger_t<demon_hunter_spell_t>
     eradicate_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : base_t( n, p, s, "" )
     {
       background = dual = true;
+      aoe               = -1;
     }
   };
 
@@ -5530,7 +5531,9 @@ struct collapsing_star_t : public demon_hunter_spell_t
     collapsing_star_damage_t( std::string_view n, demon_hunter_t* p )
       : demon_hunter_spell_t( n, p, p->spec.collapsing_star_damage )
     {
-      background = dual = true;
+      background = dual   = true;
+      aoe                 = -1;
+      reduced_aoe_targets = p->spec.collapsing_star_spell->effectN( 1 ).base_value();
     }
 
     double composite_crit_damage_bonus_multiplier() const
