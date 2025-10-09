@@ -613,7 +613,7 @@ public:
       player_talent_t final_hour;
       player_talent_t meteoric_fall;       // NYI
       player_talent_t dark_matter;         // NYI
-      player_talent_t otherworldly_focus;  // NYI
+      player_talent_t otherworldly_focus;
 
       player_talent_t world_killer;  // NYI
     } annihilator;
@@ -4723,6 +4723,24 @@ struct spirit_bomb_base_t : public demon_hunter_spell_t
         td( s->target )->debuffs.frailty->trigger();
       }
     }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = demon_hunter_spell_t::composite_da_multiplier( s );
+
+      if ( p()->talent.annihilator.otherworldly_focus->ok() )
+      {
+        // 1 target is always effect 1 %
+        // 2 target is effect 1 % - effect 2 %
+        // 3 target is effect 1 % - (effect 2 % * 2)
+        // etc until reaching 0 benefit
+        auto num_target_reduction_percent =
+            p()->talent.annihilator.otherworldly_focus->effectN( 2 ).percent() * ( s->n_targets - 1 );
+        m *= 1.0 + std::max(0.0, p()->talent.annihilator.otherworldly_focus->effectN( 1 ).percent() - num_target_reduction_percent );
+      }
+
+      return m;
+    }
   };
 
   spirit_bomb_damage_t* damage;
@@ -5585,6 +5603,24 @@ struct collapsing_star_t : public demon_hunter_spell_t
       return cm;
     }
 
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = demon_hunter_spell_t::composite_da_multiplier( s );
+
+      if ( p()->talent.annihilator.otherworldly_focus->ok() )
+      {
+        // 1 target is always effect 1 %
+        // 2 target is effect 1 % - effect 2 %
+        // 3 target is effect 1 % - (effect 2 % * 2)
+        // etc until reaching 0 benefit
+        auto num_target_reduction_percent =
+            p()->talent.annihilator.otherworldly_focus->effectN( 2 ).percent() * ( s->n_targets - 1 );
+        m *= 1.0 + std::max(0.0, p()->talent.annihilator.otherworldly_focus->effectN( 1 ).percent() - num_target_reduction_percent );
+      }
+
+      return m;
+    }
+
     void execute() override
     {
       demon_hunter_spell_t::execute();
@@ -5632,6 +5668,24 @@ struct voidfall_meteor_t : public catastrophe_trigger_t<demon_hunter_spell_t>
   voidfall_meteor_t( util::string_view n, demon_hunter_t* p )
     : base_t( n, p, p->hero_spec.voidfall_meteor_damage )
   {
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = demon_hunter_spell_t::composite_da_multiplier( s );
+
+    if ( p()->talent.annihilator.otherworldly_focus->ok() )
+    {
+      // 1 target is always effect 1 %
+      // 2 target is effect 1 % - effect 2 %
+      // 3 target is effect 1 % - (effect 2 % * 2)
+      // etc until reaching 0 benefit
+      auto num_target_reduction_percent =
+          p()->talent.annihilator.otherworldly_focus->effectN( 2 ).percent() * ( s->n_targets - 1 );
+      m *= 1.0 + std::max(0.0, p()->talent.annihilator.otherworldly_focus->effectN( 1 ).percent() - num_target_reduction_percent );
+    }
+
+    return m;
   }
 };
 
