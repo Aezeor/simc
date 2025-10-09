@@ -604,10 +604,10 @@ public:
       player_talent_t catastrophe;  // NYI
       player_talent_t phase_shift;  // NYI
 
-      player_talent_t path_to_oblivion;   // NYI
-      player_talent_t state_of_matter;    // NYI
+      player_talent_t path_to_oblivion;  // NYI
+      player_talent_t state_of_matter;   // NYI
       player_talent_t mass_acceleration;
-      player_talent_t doomsayer;          // NYI
+      player_talent_t doomsayer;  // NYI
       player_talent_t celestial_echoes;
 
       player_talent_t final_hour;
@@ -2645,10 +2645,6 @@ struct voidfall_building_trigger_t : public BASE
     if ( !BASE::p()->talent.annihilator.voidfall->ok() )
       return;
 
-    // can't build voidfall while spending voidfall
-    if ( BASE::p()->buff.voidfall_spending->up() )
-      return;
-
     if ( !BASE::rng().roll( BASE::p()->talent.annihilator.voidfall->effectN( 3 ).percent() ) )
       return;
 
@@ -2675,13 +2671,12 @@ struct voidfall_spending_trigger_t : public BASE
     if ( !BASE::p()->talent.annihilator.voidfall->ok() )
       return;
 
-    // can't build voidfall while spending voidfall
     if ( !BASE::p()->buff.voidfall_spending->up() )
       return;
 
-    BASE::p()->active.voidfall_meteor->execute_on_target( BASE::target );
-
     BASE::p()->buff.voidfall_spending->decrement();
+
+    BASE::p()->active.voidfall_meteor->execute_on_target( BASE::target );
   }
 };
 
@@ -2755,11 +2750,8 @@ struct mass_acceleration_trigger_t : public BASE
     if ( !BASE::p()->talent.annihilator.mass_acceleration->ok() )
       return;
 
-    if ( !BASE::p()->buff.voidfall_spending->up() )
-    {
-      BASE::p()->buff.voidfall_building->trigger(
-          as<int>( BASE::p()->talent.annihilator.mass_acceleration->effectN( 1 ).base_value() ) );
-    }
+    BASE::p()->buff.voidfall_building->trigger(
+        as<int>( BASE::p()->talent.annihilator.mass_acceleration->effectN( 1 ).base_value() ) );
 
     switch ( BASE::p()->specialization() )
     {
@@ -5566,7 +5558,7 @@ struct void_ray_t : public demon_hunter_spell_t
         voidglare_boon_energize->execute();
       }
 
-      if ( p()->talent.annihilator.meteoric_rise->ok() && !p()->buff.voidfall_spending->up() )
+      if ( p()->talent.annihilator.meteoric_rise->ok() )
       {
         p()->buff.voidfall_building->trigger();
       }
@@ -8129,6 +8121,51 @@ struct collapsing_star_stacking_t : public demon_hunter_buff_t<buff_t>
   }
 };
 
+struct voidfall_building_buff_t : public demon_hunter_buff_t<buff_t>
+{
+  voidfall_building_buff_t( demon_hunter_t* p ) : base_t( *p, "voidfall_building", p->hero_spec.voidfall_building_buff )
+  {
+    disable_ticking( true );
+    expire_at_max_stack = true;
+  }
+
+  void increment( int stacks, double value, timespan_t duration ) override
+  {
+    // can't gain building while spending is up
+    if ( p()->buff.voidfall_spending->up() )
+    {
+      return;
+    }
+
+    base_t::increment( stacks, value, duration );
+  }
+
+  void expire(timespan_t d) override
+  {
+    int stacks = current_stack;
+
+    base_t::expire(d);
+
+    p()->buff.voidfall_spending->trigger( stacks );
+    p()->buff.voidfall_final_hour->trigger( stacks );
+  }
+};
+
+struct voidfall_spending_buff_t : public demon_hunter_buff_t<buff_t>
+{
+  voidfall_spending_buff_t( demon_hunter_t* p ) : base_t( *p, "voidfall_spending", p->hero_spec.voidfall_spending_buff )
+  {
+    disable_ticking( true );
+  }
+
+  void decrement( int stacks, double value ) override
+  {
+    base_t::decrement( stacks, value );
+
+    p()->buff.voidfall_final_hour->trigger( stacks );
+  }
+};
+
 }  // end namespace buffs
 
 // Namespace Actions post buffs
@@ -8766,30 +8803,8 @@ void demon_hunter_t::create_buffs()
 
   // Annihilator ============================================================
 
-  buff.voidfall_building = make_buff( this, "voidfall_building", hero_spec.voidfall_building_buff )
-                               ->set_stack_change_callback( [ this ]( buff_t* b, int old, int new_ ) {
-                                 if ( new_ < old )
-                                 {
-                                   buff.voidfall_final_hour->trigger( old - new_ );
-                                 }
-                                 else if ( old < new_ )
-                                 {
-                                   if ( new_ != b->max_stack() )
-                                     return;
-                                   make_event( *sim, 0_ms, [ b, this ]() {
-                                     b->expire();
-                                     buff.voidfall_spending->trigger( b->max_stack() );
-                                   } );
-                                 }
-                               } )
-                               ->disable_ticking( true );
-  buff.voidfall_spending = make_buff( this, "voidfall_spending", hero_spec.voidfall_spending_buff )
-                               ->set_stack_change_callback( [ this ]( buff_t* b, int old, int new_ ) {
-                                 if ( new_ >= old )
-                                   return;
-                                 buff.voidfall_final_hour->trigger();
-                               } )
-                               ->disable_ticking( true );
+  buff.voidfall_building   = make_buff<voidfall_building_buff_t>( this );
+  buff.voidfall_spending   = make_buff<voidfall_spending_buff_t>( this );
   buff.voidfall_final_hour = make_buff( this, "voidfall_final_hour", hero_spec.voidfall_final_hour_buff )
                                  ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
