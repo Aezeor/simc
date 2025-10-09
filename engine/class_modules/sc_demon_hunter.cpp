@@ -8282,10 +8282,11 @@ stat_e demon_hunter_t::convert_hybrid_stat( stat_e s ) const
   {
     case STAT_STR_AGI_INT:
     case STAT_AGI_INT:
-    case STAT_STR_AGI:
-      return STAT_AGILITY;
+      return specialization() == DEMON_HUNTER_DEVOURER ? STAT_INTELLECT : STAT_AGILITY;
     case STAT_STR_INT:
-      return STAT_NONE;
+      return specialization() == DEMON_HUNTER_DEVOURER ? STAT_INTELLECT : STAT_NONE;
+    case STAT_STR_AGI:
+      return specialization() == DEMON_HUNTER_DEVOURER ? STAT_NONE : STAT_AGILITY;
     case STAT_SPIRIT:
       return STAT_NONE;
     case STAT_BONUS_ARMOR:
