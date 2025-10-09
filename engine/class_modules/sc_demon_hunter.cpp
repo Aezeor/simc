@@ -37,6 +37,8 @@ public:
 
     // Vengeance
     dot_t* fiery_brand;
+
+    // Annihilator
   } dots;
 
   struct debuffs_t
@@ -819,6 +821,7 @@ public:
     const spell_data_t* voidfall_building_buff;
     const spell_data_t* voidfall_spending_buff;
     const spell_data_t* voidfall_final_hour_buff;
+    const spell_data_t* catastrophe_dot;
 
     // Fel-scarred
     const spell_data_t* burning_blades_debuff;
@@ -1034,6 +1037,7 @@ public:
 
     // Annihilator
     spell_t* voidfall_meteor = nullptr;
+    spell_t* catastrophe = nullptr;
 
     // Fel-scarred
     action_t* burning_blades = nullptr;
@@ -2703,6 +2707,32 @@ struct burning_blades_trigger_t : public BASE
 
     const double dot_damage = s->result_amount * BASE::p()->talent.felscarred.burning_blades->effectN( 1 ).percent();
     residual_action::trigger( BASE::p()->active.burning_blades, s->target, dot_damage );
+  }
+};
+
+template <typename BASE>
+struct catastrophe_trigger_t : public BASE
+{
+  using base_t = catastrophe_trigger_t<BASE>;
+
+  catastrophe_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                            util::string_view o = {} )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    BASE::impact( s );
+
+    if ( !BASE::p()->talent.annihilator.catastrophe->ok() )
+      return;
+
+    if ( !action_t::result_is_hit( s->result ) )
+      return;
+
+    const double dot_damage = s->result_amount * BASE::p()->talent.annihilator.catastrophe->effectN( 1 ).percent();
+    residual_action::trigger( BASE::p()->active.catastrophe, s->target, dot_damage );
   }
 };
 
@@ -5597,11 +5627,25 @@ struct collapsing_star_t : public demon_hunter_spell_t
   }
 };
 
-struct voidfall_meteor_t : public demon_hunter_spell_t
+struct voidfall_meteor_t : public catastrophe_trigger_t<demon_hunter_spell_t>
 {
   voidfall_meteor_t( util::string_view n, demon_hunter_t* p )
-    : demon_hunter_spell_t( n, p, p->hero_spec.voidfall_meteor_damage )
+    : base_t( n, p, p->hero_spec.voidfall_meteor_damage )
   {
+  }
+};
+
+struct catastrophe_t : public residual_action::residual_periodic_action_t<demon_hunter_spell_t>
+{
+  catastrophe_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->hero_spec.catastrophe_dot )
+  {
+    dual = true;
+  }
+
+  void init() override
+  {
+    base_t::init();
+    update_flags = 0;  // Snapshots on refresh, does not update dynamically
   }
 };
 
@@ -9654,6 +9698,18 @@ void demon_hunter_t::init_spells()
   hero_spec.voidfall_building_buff   = talent_spell_lookup( talent.annihilator.voidfall, 1256301 );
   hero_spec.voidfall_spending_buff   = talent_spell_lookup( talent.annihilator.voidfall, 1256302 );
   hero_spec.voidfall_final_hour_buff = talent_spell_lookup( talent.annihilator.final_hour, 1256322 );
+  switch (specialization())
+  {
+    case DEMON_HUNTER_DEVOURER:
+      hero_spec.catastrophe_dot = talent_spell_lookup( talent.annihilator.catastrophe, 1256676 );
+      break;
+    case DEMON_HUNTER_VENGEANCE:
+      hero_spec.catastrophe_dot = talent_spell_lookup( talent.annihilator.catastrophe, 1256667 );
+      break;
+    default:
+      hero_spec.catastrophe_dot = spell_data_t::not_found();
+      break;
+  }
 
   hero_spec.student_of_suffering_buff = talent_spell_lookup( talent.felscarred.student_of_suffering, 453239 );
   hero_spec.monster_rising_buff       = talent_spell_lookup( talent.felscarred.monster_rising, 452550 );
@@ -9861,6 +9917,10 @@ void demon_hunter_t::init_spells()
   if ( talent.annihilator.voidfall->ok() )
   {
     active.voidfall_meteor = get_background_action<voidfall_meteor_t>( "voidfall_meteor" );
+  }
+  if ( talent.annihilator.catastrophe->ok() )
+  {
+    active.catastrophe = get_background_action<catastrophe_t>( "catastrophe" );
   }
 
   if ( talent.felscarred.burning_blades->ok() )
