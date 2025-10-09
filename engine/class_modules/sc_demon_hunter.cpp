@@ -594,10 +594,10 @@ public:
 
     struct annihilator_talents_t
     {
-      player_talent_t voidfall;  // NYI
+      player_talent_t voidfall;
 
-      player_talent_t swift_erasure;  // NYI
-      player_talent_t meteoric_rise;  // NYI
+      player_talent_t swift_erasure;
+      player_talent_t meteoric_rise;
       player_talent_t catastrophe;    // NYI
       player_talent_t phase_shift;    // NYI
 
@@ -5468,6 +5468,11 @@ struct void_ray_t : public demon_hunter_spell_t
       if ( voidglare_boon_energize )
       {
         voidglare_boon_energize->execute();
+      }
+
+      if ( p()->talent.annihilator.meteoric_rise->ok() && !p()->buff.voidfall_spending->up() )
+      {
+        p()->buff.voidfall_building->trigger();
       }
     }
 
