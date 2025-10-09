@@ -1875,6 +1875,7 @@ public:
   void trigger_runic_corruption( proc_t* proc, double rpcost, double override_chance = -1.0,
                                  bool death_trigger = false );
   void trigger_rapid_variant( player_t* t );
+  void extend_unholy_disease( dot_t* d, timespan_t duration );
   void sudden_doom_execute_effects( bool coil = false );
   void sudden_doom_impact_effects( action_state_t* state, bool coil = false );
   void unholy_rp_execute_effects( bool sd, bool coil = false );
@@ -11620,6 +11621,16 @@ void death_knight_t::trigger_rapid_variant( player_t* t )
   }
 }
 
+void death_knight_t::extend_unholy_disease( dot_t* d, timespan_t duration )
+{
+  timespan_t max_dur = 36_s; // Not in Data
+  timespan_t current_dur = d->remains();
+  if( ( current_dur + duration ) > max_dur)
+    d->adjust_duration( max_dur - current_dur );
+  else
+    d->adjust_duration( duration );
+}
+
 void death_knight_t::sudden_doom_execute_effects( bool coil )
 {
   if ( talent.sanlayn.visceral_strength.ok() )
@@ -11679,10 +11690,10 @@ void death_knight_t::unholy_rp_impact_effects( action_state_t* state, bool sd, b
   timespan_t extension_time = timespan_t::from_seconds( spec.death_coil->effectN( 3 ).base_value() );
 
   if ( td->dot.dread_plague->is_ticking() )
-    td->dot.dread_plague->adjust_duration( extension_time );
+    extend_unholy_disease( td->dot.dread_plague, extension_time );
 
   if ( td->dot.virulent_plague->is_ticking() )
-    td->dot.virulent_plague->adjust_duration( extension_time );
+    extend_unholy_disease( td->dot.virulent_plague, extension_time );
 
   if ( sd )
     sudden_doom_impact_effects( state, coil );
@@ -11918,8 +11929,22 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* t, bool is_vampiric
     }
 
     for ( auto& disease : disease_td )
+    {
       if ( disease->is_ticking() )
-        disease->adjust_duration( extension );
+      {
+        switch ( specialization() )
+        {
+          case DEATH_KNIGHT_BLOOD:
+            disease->adjust_duration( extension );
+            break;
+          case DEATH_KNIGHT_UNHOLY:
+            extend_unholy_disease( disease, extension );
+            break;
+          default:
+            break;
+        }
+      }
+    }
 
     if ( disease_remaining_damage > 0 )
     {
