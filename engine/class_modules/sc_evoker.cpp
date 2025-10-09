@@ -5179,7 +5179,7 @@ struct deep_breath_t : public evoker_spell_t
     {
       if ( p()->talent.scalecommander.command_squadron.enabled())
       {
-        p()->pets.commando_pet.spawn( 4_s );
+        p()->pets.commando_pet.spawn( 4_s, 2 );
       }
 
       evoker_spell_t::execute();
@@ -6849,7 +6849,7 @@ struct breath_of_eons_t : public evoker_spell_t
     {
       if ( p()->talent.scalecommander.command_squadron.enabled() )
       {
-        p()->pets.commando_pet.spawn( 4_s );
+        p()->pets.commando_pet.spawn( 4_s, 2 );
       }
 
       evoker_spell_t::execute();
