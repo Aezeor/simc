@@ -601,8 +601,8 @@ public:
 
       player_talent_t swift_erasure;
       player_talent_t meteoric_rise;
-      player_talent_t catastrophe;  // NYI
-      player_talent_t phase_shift;  // NYI
+      player_talent_t catastrophe;
+      player_talent_t phase_shift;
 
       player_talent_t path_to_oblivion;  // NYI
       player_talent_t state_of_matter;   // NYI
@@ -2688,7 +2688,7 @@ struct meteoric_fall_trigger_t : public BASE
   using base_t = meteoric_fall_trigger_t<BASE>;
 
   meteoric_fall_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
-                               util::string_view o = {} )
+                           util::string_view o = {} )
     : BASE( n, p, s, o )
   {
   }
@@ -8161,6 +8161,7 @@ struct voidfall_building_buff_t : public demon_hunter_buff_t<buff_t>
 {
   voidfall_building_buff_t( demon_hunter_t* p ) : base_t( *p, "voidfall_building", p->hero_spec.voidfall_building_buff )
   {
+    base_t::set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
     disable_ticking( true );
     expire_at_max_stack = true;
   }
@@ -8176,11 +8177,11 @@ struct voidfall_building_buff_t : public demon_hunter_buff_t<buff_t>
     base_t::increment( stacks, value, duration );
   }
 
-  void expire(timespan_t d) override
+  void expire( timespan_t d ) override
   {
     int stacks = current_stack;
 
-    base_t::expire(d);
+    base_t::expire( d );
 
     p()->buff.voidfall_spending->trigger( stacks );
     p()->buff.voidfall_final_hour->trigger( stacks );
@@ -8201,11 +8202,11 @@ struct voidfall_spending_buff_t : public demon_hunter_buff_t<buff_t>
     p()->buff.voidfall_final_hour->trigger( stacks );
   }
 
-  void expire(timespan_t d) override
+  void expire( timespan_t d ) override
   {
     int stacks = check();
 
-    base_t::expire(d);
+    base_t::expire( d );
 
     p()->buff.voidfall_final_hour->trigger( stacks );
   }
@@ -8851,6 +8852,7 @@ void demon_hunter_t::create_buffs()
   buff.voidfall_building   = make_buff<voidfall_building_buff_t>( this );
   buff.voidfall_spending   = make_buff<voidfall_spending_buff_t>( this );
   buff.voidfall_final_hour = make_buff( this, "voidfall_final_hour", hero_spec.voidfall_final_hour_buff )
+                                 ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
                                  ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                  ->disable_ticking( true );
@@ -10759,6 +10761,12 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
       break;
     default:
       break;
+  }
+
+  if ( talent.annihilator.phase_shift->ok() )
+  {
+    s->result_amount *= 1.0 + buff.voidfall_building->check_stack_value();
+    s->result_amount *= 1.0 + buff.voidfall_final_hour->check_stack_value();
   }
 }
 
