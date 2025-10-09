@@ -7041,8 +7041,8 @@ struct soul_cleave_base_t
     {
       base_t::impact( s );
 
-      // Soul Cleave can apply Frailty if Void Reaver is talented
-      if ( result_is_hit( s->result ) && p()->talent.vengeance.void_reaver->ok() )
+      // Soul Cleave can apply Frailty if Frailty is talented
+      if ( result_is_hit( s->result ) && p()->talent.vengeance.frailty->ok() )
       {
         td( s->target )->debuffs.frailty->trigger();
       }
@@ -8379,7 +8379,6 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
       debuffs.frailty  = make_buff( *this, "frailty", p.spec.frailty_debuff )
                             ->set_default_value_from_effect( 1 )
                             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                            ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                             ->disable_ticking( true );
       break;
     default:
@@ -10756,7 +10755,7 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
 
       if ( td->debuffs.frailty->check() && talent.vengeance.void_reaver->ok() )
       {
-        s->result_amount *= 1.0 + spec.frailty_debuff->effectN( 3 ).percent() * td->debuffs.frailty->check();
+        s->result_amount *= 1.0 + spec.frailty_debuff->effectN( 3 ).percent();
       }
       break;
     default:
