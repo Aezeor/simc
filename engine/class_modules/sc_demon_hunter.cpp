@@ -2674,9 +2674,44 @@ struct voidfall_spending_trigger_t : public BASE
     if ( !BASE::p()->buff.voidfall_spending->up() )
       return;
 
+    BASE::p()->sim->print_debug( "{} triggering Voidfall spending", BASE::p()->name() );
+
     BASE::p()->buff.voidfall_spending->decrement();
 
     BASE::p()->active.voidfall_meteor->execute_on_target( BASE::target );
+  }
+};
+
+template <typename BASE>
+struct meteoric_fall_trigger_t : public BASE
+{
+  using base_t = meteoric_fall_trigger_t<BASE>;
+
+  meteoric_fall_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                               util::string_view o = {} )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    if ( !BASE::p()->talent.annihilator.meteoric_fall->ok() )
+      return;
+
+    if ( !BASE::p()->buff.voidfall_spending->at_max_stacks() )
+      return;
+
+    BASE::p()->sim->print_debug( "{} triggering Meteoric Fall", BASE::p()->name() );
+
+    int stacks = BASE::p()->buff.voidfall_spending->stack();
+    BASE::p()->buff.voidfall_spending->expire();
+
+    for ( int i = 0; i < stacks; ++i )
+    {
+      BASE::p()->active.voidfall_meteor->execute_on_target( BASE::target );
+    }
   }
 };
 
@@ -4732,7 +4767,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
 
 // Spirit Bomb ==============================================================
 
-struct spirit_bomb_base_t : public demon_hunter_spell_t
+struct spirit_bomb_base_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
 {
   struct spirit_bomb_damage_t : public demon_hunter_spell_t
   {
@@ -4779,7 +4814,7 @@ struct spirit_bomb_base_t : public demon_hunter_spell_t
   unsigned max_fragments_consumed;
 
   spirit_bomb_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view options_str )
-    : demon_hunter_spell_t( n, p, s, options_str ),
+    : base_t( n, p, s, options_str ),
       max_fragments_consumed( static_cast<unsigned>( data().effectN( 2 ).base_value() ) )
   {
     may_miss = proc = callbacks = false;
@@ -4795,7 +4830,7 @@ struct spirit_bomb_base_t : public demon_hunter_spell_t
 
   void execute() override
   {
-    demon_hunter_spell_t::execute();
+    base_t::execute();
 
     // Soul fragments consumed are capped for Spirit Bomb
     const int fragments_consumed = p()->consume_soul_fragments( soul_fragment::ANY, true, max_fragments_consumed );
@@ -4811,12 +4846,12 @@ struct spirit_bomb_base_t : public demon_hunter_spell_t
     }
   }
 
-  bool ready() override
+  bool action_ready() override
   {
     if ( p()->get_active_soul_fragments() < 1 )
       return false;
 
-    return demon_hunter_spell_t::ready();
+    return base_t::ready();
   }
 };
 
@@ -5310,7 +5345,7 @@ struct soul_immolation_t : public demon_hunter_spell_t
 
 // eradicate is intentionally identical to reap_base_t implementations
 // without being parented by it because of subtle behavior differences.
-struct eradicate_t : public voidfall_spending_trigger_t<demon_hunter_spell_t>
+struct eradicate_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<demon_hunter_spell_t>>
 {
   struct eradicate_damage_t : public burning_blades_trigger_t<demon_hunter_spell_t>
   {
@@ -5370,7 +5405,7 @@ struct eradicate_t : public voidfall_spending_trigger_t<demon_hunter_spell_t>
   }
 };
 
-struct reap_base_t : public voidfall_spending_trigger_t<demon_hunter_spell_t>
+struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<demon_hunter_spell_t>>
 {
   struct reap_damage_t : public burning_blades_trigger_t<demon_hunter_spell_t>
   {
@@ -8162,6 +8197,15 @@ struct voidfall_spending_buff_t : public demon_hunter_buff_t<buff_t>
   void decrement( int stacks, double value ) override
   {
     base_t::decrement( stacks, value );
+
+    p()->buff.voidfall_final_hour->trigger( stacks );
+  }
+
+  void expire(timespan_t d) override
+  {
+    int stacks = check();
+
+    base_t::expire(d);
 
     p()->buff.voidfall_final_hour->trigger( stacks );
   }
