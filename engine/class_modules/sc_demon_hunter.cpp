@@ -4848,7 +4848,7 @@ struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
     if ( p()->get_active_soul_fragments() < 1 )
       return false;
 
-    return base_t::ready();
+    return base_t::action_ready();
   }
 };
 
