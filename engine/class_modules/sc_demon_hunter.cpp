@@ -9209,9 +9209,10 @@ void demon_hunter_t::init_special_effects()
   // Devourer
   if ( specialization() == DEMON_HUNTER_DEVOURER )
   {
-    auto effect      = new special_effect_t( this );
-    effect->name_str = "shattered_souls";
-    effect->spell_id = spec.shattered_souls->id();
+    auto effect          = new special_effect_t( this );
+    effect->name_str     = "shattered_souls";
+    effect->spell_id     = spec.shattered_souls->id();
+    effect->proc_flags2_ = PF2_ALL_HIT;
     special_effects.push_back( effect );
 
     new shattered_souls_callback_t( *effect );
