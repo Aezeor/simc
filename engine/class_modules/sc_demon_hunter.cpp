@@ -762,7 +762,7 @@ public:
     const spell_data_t* demon_spikes;
     const spell_data_t* infernal_strike;
     const spell_data_t* soul_cleave;
-    const spell_data_t* shear;
+    const spell_data_t* fracture;
 
     const spell_data_t* demonic_wards_2;
     const spell_data_t* demonic_wards_3;
@@ -6697,8 +6697,7 @@ struct fracture_t : public felblade_trigger_t<
 
   fracture_damage_t *mh, *oh;
 
-  // TODO: use new Fracture container spell
-  fracture_t( demon_hunter_t* p, util::string_view o ) : base_t( "fracture", p, spell_data_t::not_found(), o )
+  fracture_t( demon_hunter_t* p, util::string_view o ) : base_t( "fracture", p, p->spec.fracture, o )
   {
     int number_of_soul_fragments_to_spawn = as<int>( data().effectN( 1 ).base_value() );
     // divide the number in 2 as half come from main hand, half come from offhand.
@@ -9123,7 +9122,7 @@ void demon_hunter_t::init_spells()
   spec.demon_spikes    = find_specialization_spell( "Demon Spikes" );
   spec.infernal_strike = find_specialization_spell( "Infernal Strike" );
   spec.soul_cleave     = find_specialization_spell( "Soul Cleave" );
-  spec.shear           = find_spell( 203782, DEMON_HUNTER_VENGEANCE );
+  spec.fracture           = find_spell( 263642, DEMON_HUNTER_VENGEANCE );
   spec.soul_cleave_2   = find_rank_spell( "Soul Cleave", "Rank 2" );
   spec.riposte         = find_specialization_spell( "Riposte" );
 
