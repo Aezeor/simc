@@ -3451,25 +3451,22 @@ struct eye_beam_t : public eye_beam_base_t
 
 // Fel Devastation ==========================================================
 
-struct fel_devastation_base_t : public demon_hunter_spell_t
+struct fel_devastation_t : public demon_hunter_spell_t
 {
   struct fel_devastation_tick_t : public demon_hunter_spell_t
   {
-    fel_devastation_tick_t( util::string_view name, demon_hunter_t* p, std::string reporting_name,
-                            const spell_data_t* s )
-      : demon_hunter_spell_t( name, p, s )
+    fel_devastation_tick_t( util::string_view name, demon_hunter_t* p )
+      : demon_hunter_spell_t( name, p, p->talent.vengeance.fel_devastation->effectN( 1 ).trigger() )
     {
-      background = dual  = true;
-      aoe                = -1;
-      name_str_reporting = reporting_name;
+      background = dual = true;
+      aoe               = -1;
     }
   };
 
   heals::fel_devastation_heal_t* heal;
-  bool benefits_from_dgb_cdr;
 
-  fel_devastation_base_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
-    : demon_hunter_spell_t( name, p, s, o ), heal( nullptr ), benefits_from_dgb_cdr( true )
+  fel_devastation_t( demon_hunter_t* p, util::string_view o )
+    : demon_hunter_spell_t( "fel_devastation", p, p->talent.vengeance.fel_devastation, o ), heal( nullptr )
   {
     may_miss            = false;
     channeled           = true;
@@ -3484,11 +3481,10 @@ struct fel_devastation_base_t : public demon_hunter_spell_t
 
     if ( p->spec.fel_devastation_2->ok() )
     {
-      heal = p->get_background_action<heals::fel_devastation_heal_t>( name_str + "_heal" );
+      heal = p->get_background_action<heals::fel_devastation_heal_t>( "fel_devastation_heal" );
     }
 
-    tick_action =
-        p->get_background_action<fel_devastation_tick_t>( name_str + "_tick", name_str, data().effectN( 1 ).trigger() );
+    tick_action        = p->get_background_action<fel_devastation_tick_t>( "fel_devastation_tick" );
     tick_action->stats = stats;
   }
 
@@ -3521,12 +3517,9 @@ struct fel_devastation_base_t : public demon_hunter_spell_t
       double maximum_fury_refund = p()->talent.vengeance.darkglare_boon->effectN( 4 ).base_value();
       double fury_refund         = rng().range( minimum_fury_refund, maximum_fury_refund );
 
-      if ( benefits_from_dgb_cdr )
-      {
-        p()->sim->print_debug( "{} rolled {}s of CDR on {} from Darkglare Boon", *p(), cdr_reduction.total_seconds(),
-                               name_str );
-        p()->cooldown.fel_devastation->adjust( -cdr_reduction );
-      }
+      p()->sim->print_debug( "{} rolled {}s of CDR on {} from Darkglare Boon", *p(), cdr_reduction.total_seconds(),
+                             name_str );
+      p()->cooldown.fel_devastation->adjust( -cdr_reduction );
       p()->resource_gain( RESOURCE_FURY, fury_refund, p()->gain.darkglare_boon );
     }
   }
@@ -3539,55 +3532,6 @@ struct fel_devastation_base_t : public demon_hunter_spell_t
     }
 
     demon_hunter_spell_t::tick( d );
-  }
-};
-
-struct fel_desolation_t : public demonsurge_trigger_t<demonsurge_ability::FEL_DESOLATION, fel_devastation_base_t>
-{
-  fel_desolation_t( demon_hunter_t* p ) : base_t( "fel_desolation", p, p->hero_spec.fel_desolation, "" )
-  {
-    // 2024-07-07 -- Fel Desolation doesn't benefit from DGB CDR
-    benefits_from_dgb_cdr = !p->bugs;
-  }
-};
-
-struct fel_devastation_t : public fel_devastation_base_t
-{
-  fel_desolation_t* fel_desolation;
-  double fel_desolation_cost;
-
-  fel_devastation_t( demon_hunter_t* p, util::string_view options_str )
-    : fel_devastation_base_t( "fel_devastation", p, p->talent.vengeance.fel_devastation, options_str ),
-      fel_desolation( nullptr ),
-      fel_desolation_cost( 0 )
-  {
-    if ( p->talent.felscarred.demonic_intensity->ok() )
-    {
-      fel_desolation      = new fel_desolation_t( p );
-      fel_desolation_cost = fel_desolation->data().cost( POWER_FURY );
-      add_child( fel_desolation );
-    }
-  }
-
-  double cost() const override
-  {
-    if ( p()->buff.demonsurge_hardcast->check() )
-    {
-      return fel_desolation_cost;
-    }
-    return fel_devastation_base_t::cost();
-  }
-
-  void execute() override
-  {
-    if ( p()->buff.demonsurge_hardcast->check() )
-    {
-      fel_desolation->execute_on_target( target );
-      stats->add_execute( time_to_execute, target );
-      return;
-    }
-
-    fel_devastation_base_t::execute();
   }
 };
 
