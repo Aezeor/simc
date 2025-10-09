@@ -1255,6 +1255,8 @@ public:
       }
     }
 
+    void clear_state();
+
     void stop();
 
     void reschedule_drain();
@@ -2643,7 +2645,8 @@ struct voidfall_building_trigger_t : public BASE
     if ( !BASE::rng().roll( BASE::p()->talent.annihilator.voidfall->effectN( 3 ).percent() ) )
       return;
 
-    BASE::p()->buff.voidfall_building->trigger( BASE::p()->talent.annihilator.voidfall->effectN( 1 ).base_value() );
+    BASE::p()->buff.voidfall_building->trigger(
+        as<int>( BASE::p()->talent.annihilator.voidfall->effectN( 1 ).base_value() ) );
   }
 };
 
@@ -5256,7 +5259,8 @@ struct eradicate_t : public voidfall_spending_trigger_t<demon_hunter_spell_t>
       souls_to_consume += p()->buff.moment_of_craving->check_value();
     }
 
-    unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, true, souls_to_consume );
+    unsigned fragments_consumed =
+        p()->consume_soul_fragments( soul_fragment::LESSER, true, as<unsigned int>( souls_to_consume ) );
 
     damage_action->set_target( target );
     action_state_t* damage_state = damage_action->get_state();
@@ -5323,7 +5327,8 @@ struct reap_base_t : public voidfall_spending_trigger_t<demon_hunter_spell_t>
       souls_to_consume += p()->buff.moment_of_craving->check_value();
     }
 
-    unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume );
+    unsigned fragments_consumed =
+        p()->consume_soul_fragments( soul_fragment::LESSER, false, as<unsigned int>( souls_to_consume ) );
 
     damage_action->set_target( target );
     action_state_t* damage_state = damage_action->get_state();
@@ -7880,6 +7885,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     p()->buff.collapsing_star_stack->expire();
     p()->buff.emptiness->expire();
     p()->buff.impending_apocalypse->expire();
+    p()->devourer_fury_state.clear_state();
 
     for ( demonsurge_ability ability : p()->hero_spec.demonsurge_abilities )
     {
@@ -8839,6 +8845,18 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
   else if ( name_str == "cooldown.bd_ds_shared.remains" )
   {
     return this->cooldown.blade_dance->create_expression( "remains" );
+  }
+  else if ( util::str_compare_ci( name_str, "void_metamorphosis_base_drain_ps" ) )
+  {
+    return make_fn_expr( name_str, [ this ]() {
+      return devourer_fury_state.base_fury_drain_per_second( devourer_fury_state.drain_stacks );
+    } );
+  }
+  else if ( util::str_compare_ci( name_str, "void_metamorphosis_drain_ps" ) )
+  {
+    return make_fn_expr( name_str, [ this ]() {
+      return devourer_fury_state.fury_drain_per_second( devourer_fury_state.drain_stacks );
+    } );
   }
 
   return player_t::create_expression( name_str );
@@ -10780,13 +10798,25 @@ void demon_hunter_t::fury_state_t::reschedule_drain()
 
   auto new_time = time_to_next_tick( drain_stacks ) * percent_remaining;
 
-  next_drain_event->reschedule( new_time );
+  if ( new_time < next_drain_event->remains() )
+  {
+    event_t::cancel( next_drain_event );
+    next_drain_event = make_event<drain_event_t>( *actor->sim, actor, new_time );
+  }
+  else
+  {
+    next_drain_event->reschedule( new_time );
+  }
+}
+
+void demon_hunter_t::fury_state_t::clear_state()
+{
+  drain_stacks = 0;
+  start_time = last_tick = timespan_t::min();
 }
 
 void demon_hunter_t::fury_state_t::stop()
 {
-  drain_stacks = 0;
-  start_time = last_tick = timespan_t::min();
   p()->buff.metamorphosis->expire();
 }
 
