@@ -8020,6 +8020,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     p()->buff.collapsing_star_stack->expire();
     p()->buff.emptiness->expire();
     p()->buff.impending_apocalypse->expire();
+    event_t::cancel( p()->devourer_fury_state.next_drain_event );
     p()->devourer_fury_state.clear_state();
 
     for ( demonsurge_ability ability : p()->hero_spec.demonsurge_abilities )
