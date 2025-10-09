@@ -321,6 +321,10 @@ public:
     buff_t* art_of_the_glaive_second_rending_strike;
     buff_t* art_of_the_glaive_second_glaive_flurry;
 
+    // Annihilator
+    buff_t* voidfall_building;
+    buff_t* voidfall_spending;
+
     // Fel-scarred
     buff_t* monster_rising;
     buff_t* student_of_suffering;
@@ -809,6 +813,11 @@ public:
     const spell_data_t* thrill_of_the_fight_damage_buff;
     double wounded_quarry_proc_rate;
 
+    // Annihilator
+    const spell_data_t* voidfall_meteor_damage;
+    const spell_data_t* voidfall_building_buff;
+    const spell_data_t* voidfall_spending_buff;
+
     // Fel-scarred
     const spell_data_t* burning_blades_debuff;
     const spell_data_t* enduring_torment_buff;
@@ -1020,6 +1029,9 @@ public:
     attack_t* preemptive_strike    = nullptr;
     attack_t* warblades_hunger     = nullptr;
     attack_t* wounded_quarry       = nullptr;
+
+    // Annihilator
+    spell_t* voidfall_meteor = nullptr;
 
     // Fel-scarred
     action_t* burning_blades = nullptr;
@@ -2606,6 +2618,89 @@ struct wounded_quarry_accumulator_t : public BASE
   }
 };
 
+template <typename BASE>
+struct voidfall_building_trigger_t : public BASE
+{
+  using base_t = voidfall_building_trigger_t<BASE>;
+
+  voidfall_building_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                      util::string_view o = {} )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    if ( !BASE::p()->talent.annihilator.voidfall->ok() )
+      return;
+
+    // can't build voidfall while spending voidfall
+    if ( BASE::p()->buff.voidfall_spending->up() )
+      return;
+
+    if ( !BASE::rng().roll( BASE::p()->talent.annihilator.voidfall->effectN( 3 ).percent() ) )
+      return;
+
+    BASE::p()->buff.voidfall_building->trigger( BASE::p()->talent.annihilator.voidfall->effectN( 1 ).base_value() );
+  }
+};
+
+template <typename BASE>
+struct voidfall_spending_trigger_t : public BASE
+{
+  using base_t = voidfall_spending_trigger_t<BASE>;
+
+  voidfall_spending_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                      util::string_view o = {} )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    if ( !BASE::p()->talent.annihilator.voidfall->ok() )
+      return;
+
+    // can't build voidfall while spending voidfall
+    if ( !BASE::p()->buff.voidfall_spending->up() )
+      return;
+
+    BASE::p()->active.voidfall_meteor->execute_on_target( BASE::target );
+
+    BASE::p()->buff.voidfall_spending->decrement();
+  }
+};
+
+template <typename BASE>
+struct burning_blades_trigger_t : public BASE
+{
+  using base_t = burning_blades_trigger_t<BASE>;
+
+  burning_blades_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                            util::string_view o = {} )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    BASE::impact( s );
+
+    if ( !BASE::p()->talent.felscarred.burning_blades->ok() )
+      return;
+
+    if ( !action_t::result_is_hit( s->result ) )
+      return;
+
+    const double dot_damage = s->result_amount * BASE::p()->talent.felscarred.burning_blades->effectN( 1 ).percent();
+    residual_action::trigger( BASE::p()->active.burning_blades, s->target, dot_damage );
+  }
+};
+
 struct demon_hunter_heal_t : public demon_hunter_action_t<heal_t>
 {
   demon_hunter_heal_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
@@ -2974,32 +3069,6 @@ struct frailty_heal_t : public demon_hunter_heal_t
 
 namespace spells
 {
-
-template <typename BASE>
-struct burning_blades_trigger_t : public BASE
-{
-  using base_t = burning_blades_trigger_t<BASE>;
-
-  burning_blades_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
-                            util::string_view o = {} )
-    : BASE( n, p, s, o )
-  {
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    BASE::impact( s );
-
-    if ( !BASE::p()->talent.felscarred.burning_blades->ok() )
-      return;
-
-    if ( !action_t::result_is_hit( s->result ) )
-      return;
-
-    const double dot_damage = s->result_amount * BASE::p()->talent.felscarred.burning_blades->effectN( 2 ).percent();
-    residual_action::trigger( BASE::p()->active.burning_blades, s->target, dot_damage );
-  }
-};
 
 // Blur =====================================================================
 
@@ -5002,10 +5071,10 @@ struct demonsurge_t : public demon_hunter_spell_t
   }
 };
 
-struct consume_base_t : public demon_hunter_spell_t
+struct consume_base_t : public voidfall_building_trigger_t<demon_hunter_spell_t>
 {
   consume_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
-    : demon_hunter_spell_t( n, p, s, o )
+    : base_t( n, p, s, o )
   {
     cooldown = p->cooldown.consume;
 
@@ -5015,7 +5084,7 @@ struct consume_base_t : public demon_hunter_spell_t
 
   void execute() override
   {
-    demon_hunter_spell_t::execute();
+    base_t::execute();
 
     if ( p()->talent.devourer.predators_thirst->ok() )
     {
@@ -5156,7 +5225,7 @@ struct soul_immolation_t : public demon_hunter_spell_t
 
 // eradicate is intentionally identical to reap_base_t implementations
 // without being parented by it because of subtle behavior differences.
-struct eradicate_t : public demon_hunter_spell_t
+struct eradicate_t : public voidfall_spending_trigger_t<demon_hunter_spell_t>
 {
   struct eradicate_damage_t : public burning_blades_trigger_t<demon_hunter_spell_t>
   {
@@ -5168,7 +5237,7 @@ struct eradicate_t : public demon_hunter_spell_t
 
   eradicate_damage_t* damage_action;
 
-  eradicate_t( demon_hunter_t* p, util::string_view o ) : demon_hunter_spell_t( "eradicate", p, p->spec.eradicate, o )
+  eradicate_t( demon_hunter_t* p, util::string_view o ) : base_t( "eradicate", p, p->spec.eradicate, o )
   {
     damage_action = p->get_background_action<eradicate_damage_t>( "eradicate_damage", p->spec.eradicate_damage );
     add_child( damage_action );
@@ -5177,7 +5246,7 @@ struct eradicate_t : public demon_hunter_spell_t
   void execute() override
   {
     p()->buff.reap->trigger();
-    demon_hunter_spell_t::execute();
+    base_t::execute();
     p()->buff.eradicate->expire();
 
     double souls_to_consume = p()->spec.shattered_souls->effectN( 2 ).base_value();
@@ -5210,11 +5279,11 @@ struct eradicate_t : public demon_hunter_spell_t
       return false;
     }
 
-    return demon_hunter_spell_t::action_ready();
+    return base_t::action_ready();
   }
 };
 
-struct reap_base_t : public demon_hunter_spell_t
+struct reap_base_t : public voidfall_spending_trigger_t<demon_hunter_spell_t>
 {
   struct reap_damage_t : public burning_blades_trigger_t<demon_hunter_spell_t>
   {
@@ -5228,7 +5297,7 @@ struct reap_base_t : public demon_hunter_spell_t
 
   reap_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o,
                const spell_data_t* damage_s, const spell_data_t* energize_s = nullptr )
-    : demon_hunter_spell_t( n, p, s, o ), damage_action( nullptr )
+    : base_t( n, p, s, o ), damage_action( nullptr )
   {
     cooldown = p->cooldown.reap;
 
@@ -5245,7 +5314,7 @@ struct reap_base_t : public demon_hunter_spell_t
   void execute() override
   {
     p()->buff.reap->trigger();
-    demon_hunter_spell_t::execute();
+    base_t::execute();
 
     double souls_to_consume = p()->spec.shattered_souls->effectN( 2 ).base_value();
     if ( p()->buff.moment_of_craving->up() )
@@ -5513,6 +5582,13 @@ struct collapsing_star_t : public demon_hunter_spell_t
   }
 };
 
+struct voidfall_meteor_t : public demon_hunter_spell_t
+{
+  voidfall_meteor_t( util::string_view n, demon_hunter_t* p ) : demon_hunter_spell_t( n, p, p->hero_spec.voidfall_meteor_damage )
+  {
+  }
+};
+
 }  // end namespace spells
 
 // ==========================================================================
@@ -5521,32 +5597,6 @@ struct collapsing_star_t : public demon_hunter_spell_t
 
 namespace attacks
 {
-
-template <typename BASE>
-struct burning_blades_trigger_t : public BASE
-{
-  using base_t = burning_blades_trigger_t<BASE>;
-
-  burning_blades_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
-                            util::string_view o = {} )
-    : BASE( n, p, s, o )
-  {
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    BASE::impact( s );
-
-    if ( !BASE::p()->talent.felscarred.burning_blades->ok() )
-      return;
-
-    if ( !action_t::result_is_hit( s->result ) )
-      return;
-
-    const double dot_damage = s->result_amount * BASE::p()->talent.felscarred.burning_blades->effectN( 1 ).percent();
-    residual_action::trigger( BASE::p()->active.burning_blades, s->target, dot_damage );
-  }
-};
 
 template <typename BASE>
 struct soulscar_trigger_t : public BASE
@@ -6792,7 +6842,7 @@ struct inner_demon_t : public demon_hunter_spell_t
 // Soul Cleave ==============================================================
 
 struct soul_cleave_base_t
-  : public art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>
+  : public voidfall_spending_trigger_t<art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>>
 {
   struct soul_cleave_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
   {
@@ -8556,6 +8606,21 @@ void demon_hunter_t::create_buffs()
       make_buff( this, "art_of_the_glaive_second_rending_strike", talent.aldrachi_reaver.art_of_the_glaive )
           ->set_duration( buff.glaive_flurry->buff_duration() );
 
+  // Annihilator ============================================================
+
+  buff.voidfall_building = make_buff( this, "voidfall_building", hero_spec.voidfall_building_buff )
+                               ->set_stack_change_callback( [ this ]( buff_t* b, int old, int new_ ) {
+                                 if ( new_ <= old )
+                                   return;
+                                 if ( new_ != b->max_stack() )
+                                   return;
+                                 make_event( *sim, 0_ms, [b, this]() {
+                                   b->expire();
+                                   buff.voidfall_spending->trigger( b->max_stack() );
+                                 } );
+                               } );
+  buff.voidfall_spending = make_buff( this, "voidfall_spending", hero_spec.voidfall_spending_buff );
+
   // Fel-scarred ============================================================
 
   buff.enduring_torment = make_buff( this, "enduring_torment", hero_spec.enduring_torment_buff )
@@ -9122,7 +9187,7 @@ void demon_hunter_t::init_spells()
   spec.demon_spikes    = find_specialization_spell( "Demon Spikes" );
   spec.infernal_strike = find_specialization_spell( "Infernal Strike" );
   spec.soul_cleave     = find_specialization_spell( "Soul Cleave" );
-  spec.fracture           = find_spell( 263642, DEMON_HUNTER_VENGEANCE );
+  spec.fracture        = find_spell( 263642, DEMON_HUNTER_VENGEANCE );
   spec.soul_cleave_2   = find_rank_spell( "Soul Cleave", "Rank 2" );
   spec.riposte         = find_specialization_spell( "Riposte" );
 
@@ -9538,6 +9603,10 @@ void demon_hunter_t::init_spells()
       break;
   }
 
+  hero_spec.voidfall_meteor_damage = talent_spell_lookup( talent.annihilator.voidfall, 1256305 );
+  hero_spec.voidfall_building_buff = talent_spell_lookup( talent.annihilator.voidfall, 1256301 );
+  hero_spec.voidfall_spending_buff = talent_spell_lookup( talent.annihilator.voidfall, 1256302 );
+
   hero_spec.student_of_suffering_buff = talent_spell_lookup( talent.felscarred.student_of_suffering, 453239 );
   hero_spec.monster_rising_buff       = talent_spell_lookup( talent.felscarred.monster_rising, 452550 );
   hero_spec.enduring_torment_buff     = talent_spell_lookup( talent.felscarred.enduring_torment, 453314 );
@@ -9739,6 +9808,11 @@ void demon_hunter_t::init_spells()
   if ( talent.aldrachi_reaver.wounded_quarry->ok() )
   {
     active.wounded_quarry = get_background_action<wounded_quarry_t>( "wounded_quarry" );
+  }
+
+  if ( talent.annihilator.voidfall->ok() )
+  {
+    active.voidfall_meteor = get_background_action<voidfall_meteor_t>( "voidfall_meteor" );
   }
 
   if ( talent.felscarred.burning_blades->ok() )
@@ -10890,6 +10964,10 @@ void demon_hunter_t::parse_player_effects()
 
   // Aldrachi Reaver
   parse_effects( buff.thrill_of_the_fight_attack_speed );
+
+  // Annihilator
+  parse_effects( buff.voidfall_building );
+  parse_effects( buff.voidfall_spending );
 
   // Fel-scarred
 
