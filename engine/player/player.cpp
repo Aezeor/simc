@@ -1624,12 +1624,15 @@ void player_t::init_base_stats()
       }
 
       // Max Resource Modifiers
-      resources.base[ rt ] = get_passive_player_value( rt_base, fmt::format( "max_{}", res_str ) );
+      resources.base[ rt ] =
+          get_passive_player_value( rt_base, fmt::format( "max_{}", res_str ), util::resource_to_power_type( rt ) );
       // Passive Resource Multipliers
       resources.base_multiplier[ rt ] =
-        get_passive_player_value( resources.base_multiplier[ rt ], fmt::format( "{}_multiplier", res_str ) );
+          get_passive_player_value( resources.base_multiplier[ rt ], fmt::format( "{}_multiplier", res_str ),
+                                    util::resource_to_power_type( rt ) );
       // Passive Resource Regen Modifiers
-      resources.base_regen_per_second[ rt ] = get_passive_player_value( rt_regen, fmt::format( "{}_regen", res_str ) );
+      resources.base_regen_per_second[ rt ] =
+          get_passive_player_value( rt_regen, fmt::format( "{}_regen", res_str ), util::resource_to_power_type( rt ) );
       // Hasted regeneration
       resources.hasted[ rt ] = _data.is_hasted_regen();
       // Starting amount, the actual start-of-combat resource is min( computed_max, start_at )
