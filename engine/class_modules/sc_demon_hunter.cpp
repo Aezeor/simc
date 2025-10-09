@@ -346,19 +346,20 @@ public:
 
       player_talent_t vengeful_bonds;  // No Implementation
       player_talent_t unrestrained_fury;
-      player_talent_t shattered_restoration;  // NYI Vengeance
+      player_talent_t shattered_restoration;
       player_talent_t improved_sigil_of_misery;
 
       player_talent_t bouncing_glaives;
       player_talent_t imprison;           // No Implementation
-      player_talent_t charred_warblades;  // NYI Vengeance
+      player_talent_t charred_warblades;  // NYI
 
       player_talent_t chaos_nova;
-      player_talent_t void_nova;
+      player_talent_t void_nova;  // NYI
       player_talent_t improved_disrupt;
       player_talent_t consume_magic;
       player_talent_t aldrachi_design;
 
+      player_talent_t focused_ire;  // No Implementation
       player_talent_t master_of_the_glaive;
       player_talent_t champion_of_the_glaive;
       player_talent_t disrupting_fury;
@@ -369,20 +370,32 @@ public:
 
       player_talent_t pursuit;
       player_talent_t soul_rending;
+      player_talent_t felfire_haste;  // NYI
       player_talent_t infernal_armor;
+      player_talent_t burn_it_out;       // No Implementation
+      player_talent_t soul_cleanse;      // No Implementation
       player_talent_t lost_in_darkness;  // No Implementation
 
-      player_talent_t felfire_haste;  // NYI
       player_talent_t illidari_knowledge;
+      player_talent_t felbound;
       player_talent_t guile;
-      player_talent_t will_of_the_illidari;  // NYI Vengeance
+      player_talent_t will_of_the_illidari;  // NYI
 
       player_talent_t internal_struggle;
-      player_talent_t darkness;  // No Implementation
+      player_talent_t furious;
+      player_talent_t remorseless;
+      player_talent_t first_in_last_out;  // NYI
 
       player_talent_t erratic_felheart;
-      player_talent_t long_night;   // No Implementation
-      player_talent_t pitch_black;  // No Implementation
+      player_talent_t final_breath;   // NYI
+      player_talent_t darkness;       // No Implementation
+      player_talent_t demon_muzzle;   // No Implementation
+      player_talent_t soul_splitter;  // NYI
+
+      player_talent_t wings_of_wrath;  // No Implementation
+      player_talent_t long_night;      // No Implementation
+      player_talent_t pitch_black;     // No Implementation
+      player_talent_t demonic_resilience;
     } demon_hunter;
 
     struct devourer_talents_t
@@ -2600,7 +2613,7 @@ struct demon_hunter_heal_t : public demon_hunter_action_t<heal_t>
     : base_t( n, p, s, o )
   {
     harmful = false;
-    target = p;
+    target  = p;
   }
 };
 
@@ -9143,6 +9156,7 @@ void demon_hunter_t::init_spells()
   talent.demon_hunter.consume_magic    = find_talent_spell( talent_tree::CLASS, "Consume Magic" );
   talent.demon_hunter.aldrachi_design  = find_talent_spell( talent_tree::CLASS, "Aldrachi Design" );
 
+  talent.demon_hunter.focused_ire            = find_talent_spell( talent_tree::CLASS, "Master of the Glaive" );
   talent.demon_hunter.master_of_the_glaive   = find_talent_spell( talent_tree::CLASS, "Master of the Glaive" );
   talent.demon_hunter.champion_of_the_glaive = find_talent_spell( talent_tree::CLASS, "Champion of the Glaive" );
   talent.demon_hunter.disrupting_fury        = find_talent_spell( talent_tree::CLASS, "Disrupting Fury" );
@@ -9153,20 +9167,32 @@ void demon_hunter_t::init_spells()
 
   talent.demon_hunter.pursuit          = find_talent_spell( talent_tree::CLASS, "Pursuit" );
   talent.demon_hunter.soul_rending     = find_talent_spell( talent_tree::CLASS, "Soul Rending" );
+  talent.demon_hunter.felfire_haste    = find_talent_spell( talent_tree::CLASS, "Felfire Haste" );
   talent.demon_hunter.infernal_armor   = find_talent_spell( talent_tree::CLASS, "Infernal Armor" );
+  talent.demon_hunter.burn_it_out      = find_talent_spell( talent_tree::CLASS, "Burn It Out" );
+  talent.demon_hunter.soul_cleanse     = find_talent_spell( talent_tree::CLASS, "Soul Cleanse" );
   talent.demon_hunter.lost_in_darkness = find_talent_spell( talent_tree::CLASS, "Lost in Darkness" );
 
-  talent.demon_hunter.felfire_haste        = find_talent_spell( talent_tree::CLASS, "Felfire Haste" );
   talent.demon_hunter.illidari_knowledge   = find_talent_spell( talent_tree::CLASS, "Illidari Knowledge" );
+  talent.demon_hunter.felbound             = find_talent_spell( talent_tree::CLASS, "Felbound" );
   talent.demon_hunter.guile                = find_talent_spell( talent_tree::CLASS, "Guile" );
   talent.demon_hunter.will_of_the_illidari = find_talent_spell( talent_tree::CLASS, "Will of the Illidari" );
 
   talent.demon_hunter.internal_struggle = find_talent_spell( talent_tree::CLASS, "Internal Struggle" );
+  talent.demon_hunter.furious           = find_talent_spell( talent_tree::CLASS, "Furious" );
+  talent.demon_hunter.remorseless       = find_talent_spell( talent_tree::CLASS, "Remorseless" );
   talent.demon_hunter.darkness          = find_talent_spell( talent_tree::CLASS, "Darkness" );
 
   talent.demon_hunter.erratic_felheart = find_talent_spell( talent_tree::CLASS, "Erratic Felheart" );
-  talent.demon_hunter.long_night       = find_talent_spell( talent_tree::CLASS, "Long Night" );
-  talent.demon_hunter.pitch_black      = find_talent_spell( talent_tree::CLASS, "Pitch Black" );
+  talent.demon_hunter.final_breath     = find_talent_spell( talent_tree::CLASS, "Final Breath" );
+  talent.demon_hunter.darkness         = find_talent_spell( talent_tree::CLASS, "Darkness" );
+  talent.demon_hunter.demon_muzzle     = find_talent_spell( talent_tree::CLASS, "Demon Muzzle" );
+  talent.demon_hunter.soul_splitter    = find_talent_spell( talent_tree::CLASS, "Soul Splitter" );
+
+  talent.demon_hunter.wings_of_wrath     = find_talent_spell( talent_tree::CLASS, "Wings of Wrath" );
+  talent.demon_hunter.long_night         = find_talent_spell( talent_tree::CLASS, "Long Night" );
+  talent.demon_hunter.pitch_black        = find_talent_spell( talent_tree::CLASS, "Pitch Black" );
+  talent.demon_hunter.demonic_resilience = find_talent_spell( talent_tree::CLASS, "Demonic Resilience" );
 
   // Devourer Talents
 
