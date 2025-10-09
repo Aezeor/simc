@@ -324,6 +324,7 @@ public:
     // Annihilator
     buff_t* voidfall_building;
     buff_t* voidfall_spending;
+    buff_t* voidfall_final_hour;
 
     // Fel-scarred
     buff_t* monster_rising;
@@ -598,8 +599,8 @@ public:
 
       player_talent_t swift_erasure;
       player_talent_t meteoric_rise;
-      player_talent_t catastrophe;    // NYI
-      player_talent_t phase_shift;    // NYI
+      player_talent_t catastrophe;  // NYI
+      player_talent_t phase_shift;  // NYI
 
       player_talent_t path_to_oblivion;   // NYI
       player_talent_t state_of_matter;    // NYI
@@ -607,7 +608,7 @@ public:
       player_talent_t doomsayer;          // NYI
       player_talent_t celestial_echoes;
 
-      player_talent_t final_hour;          // NYI
+      player_talent_t final_hour;
       player_talent_t meteoric_fall;       // NYI
       player_talent_t dark_matter;         // NYI
       player_talent_t otherworldly_focus;  // NYI
@@ -817,6 +818,7 @@ public:
     const spell_data_t* voidfall_meteor_damage;
     const spell_data_t* voidfall_building_buff;
     const spell_data_t* voidfall_spending_buff;
+    const spell_data_t* voidfall_final_hour_buff;
 
     // Fel-scarred
     const spell_data_t* burning_blades_debuff;
@@ -2626,7 +2628,7 @@ struct voidfall_building_trigger_t : public BASE
   using base_t = voidfall_building_trigger_t<BASE>;
 
   voidfall_building_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
-                      util::string_view o = {} )
+                               util::string_view o = {} )
     : BASE( n, p, s, o )
   {
   }
@@ -2656,7 +2658,7 @@ struct voidfall_spending_trigger_t : public BASE
   using base_t = voidfall_spending_trigger_t<BASE>;
 
   voidfall_spending_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
-                      util::string_view o = {} )
+                               util::string_view o = {} )
     : BASE( n, p, s, o )
   {
   }
@@ -5597,7 +5599,8 @@ struct collapsing_star_t : public demon_hunter_spell_t
 
 struct voidfall_meteor_t : public demon_hunter_spell_t
 {
-  voidfall_meteor_t( util::string_view n, demon_hunter_t* p ) : demon_hunter_spell_t( n, p, p->hero_spec.voidfall_meteor_damage )
+  voidfall_meteor_t( util::string_view n, demon_hunter_t* p )
+    : demon_hunter_spell_t( n, p, p->hero_spec.voidfall_meteor_damage )
   {
   }
 };
@@ -6855,7 +6858,8 @@ struct inner_demon_t : public demon_hunter_spell_t
 // Soul Cleave ==============================================================
 
 struct soul_cleave_base_t
-  : public voidfall_spending_trigger_t<art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>>
+  : public voidfall_spending_trigger_t<
+        art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>>
 {
   struct soul_cleave_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
   {
@@ -8624,16 +8628,32 @@ void demon_hunter_t::create_buffs()
 
   buff.voidfall_building = make_buff( this, "voidfall_building", hero_spec.voidfall_building_buff )
                                ->set_stack_change_callback( [ this ]( buff_t* b, int old, int new_ ) {
-                                 if ( new_ <= old )
+                                 if ( new_ < old )
+                                 {
+                                   buff.voidfall_final_hour->trigger( old - new_ );
+                                 }
+                                 else if ( old < new_ )
+                                 {
+                                   if ( new_ != b->max_stack() )
+                                     return;
+                                   make_event( *sim, 0_ms, [ b, this ]() {
+                                     b->expire();
+                                     buff.voidfall_spending->trigger( b->max_stack() );
+                                   } );
+                                 }
+                               } )
+                               ->disable_ticking( true );
+  buff.voidfall_spending = make_buff( this, "voidfall_spending", hero_spec.voidfall_spending_buff )
+                               ->set_stack_change_callback( [ this ]( buff_t* b, int old, int new_ ) {
+                                 if ( new_ >= old )
                                    return;
-                                 if ( new_ != b->max_stack() )
-                                   return;
-                                 make_event( *sim, 0_ms, [b, this]() {
-                                   b->expire();
-                                   buff.voidfall_spending->trigger( b->max_stack() );
-                                 } );
-                               } );
-  buff.voidfall_spending = make_buff( this, "voidfall_spending", hero_spec.voidfall_spending_buff );
+                                 buff.voidfall_final_hour->trigger();
+                               } )
+                               ->disable_ticking( true );
+  buff.voidfall_final_hour = make_buff( this, "voidfall_final_hour", hero_spec.voidfall_final_hour_buff )
+                                 ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                                 ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                                 ->disable_ticking( true );
 
   // Fel-scarred ============================================================
 
@@ -9629,9 +9649,10 @@ void demon_hunter_t::init_spells()
       break;
   }
 
-  hero_spec.voidfall_meteor_damage = talent_spell_lookup( talent.annihilator.voidfall, 1256305 );
-  hero_spec.voidfall_building_buff = talent_spell_lookup( talent.annihilator.voidfall, 1256301 );
-  hero_spec.voidfall_spending_buff = talent_spell_lookup( talent.annihilator.voidfall, 1256302 );
+  hero_spec.voidfall_meteor_damage   = talent_spell_lookup( talent.annihilator.voidfall, 1256305 );
+  hero_spec.voidfall_building_buff   = talent_spell_lookup( talent.annihilator.voidfall, 1256301 );
+  hero_spec.voidfall_spending_buff   = talent_spell_lookup( talent.annihilator.voidfall, 1256302 );
+  hero_spec.voidfall_final_hour_buff = talent_spell_lookup( talent.annihilator.final_hour, 1256322 );
 
   hero_spec.student_of_suffering_buff = talent_spell_lookup( talent.felscarred.student_of_suffering, 453239 );
   hero_spec.monster_rising_buff       = talent_spell_lookup( talent.felscarred.monster_rising, 452550 );
@@ -11006,6 +11027,7 @@ void demon_hunter_t::parse_player_effects()
   // Annihilator
   parse_effects( buff.voidfall_building );
   parse_effects( buff.voidfall_spending );
+  parse_effects( buff.voidfall_final_hour );
 
   // Fel-scarred
 
