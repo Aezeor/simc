@@ -15047,6 +15047,7 @@ public:
     {
       html_rune_waste( os );
     }
+    os << "<div class=\"clear\"></div>\n";
     os << "</div>\n";
   }
 
