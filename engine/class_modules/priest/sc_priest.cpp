@@ -152,11 +152,6 @@ public:
       priest().buffs.shattered_psyche->expire();
     }
 
-    if ( priest().buffs.shadowy_insight->check() )
-    {
-      priest().buffs.shadowy_insight->decrement();
-    }
-
     if ( priest().specialization() == PRIEST_DISCIPLINE && priest().talents.voidweaver.entropic_rift.enabled() )
     {
       priest().trigger_entropic_rift();
@@ -259,12 +254,31 @@ public:
     return priest_spell_t::execute_time();
   }
 
-  // Called as a part of action execute
   void update_ready( timespan_t cd_duration ) override
   {
-    priest().buffs.voidform->up();  // Benefit tracking
+    // Decrementing a stack of shadowy insight will consume a max charge. Consuming a max charge loses you a current
+    // charge. Therefore update_ready needs to not be called in that case.
+    if ( priest().buffs.shadowy_insight->up() )
+    {
+      priest().buffs.shadowy_insight->decrement();
+    }
+    else
+    {
+      priest_spell_t::update_ready( cd_duration );
+    }
+  }
 
-    priest_spell_t::update_ready( cd_duration );
+  void reset() override
+  {
+    // Reset max charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
+    // buffs up. Do this before calling reset as that will also reset the cooldown.
+    if ( priest().specialization() == PRIEST_SHADOW )
+    {
+      cooldown->charges =
+          data().charges() + as<int>( priest().talents.shadow.shadowy_insight->effectN( 1 ).base_value() );
+    }
+
+    priest_spell_t::reset();
   }
 };
 
@@ -274,15 +288,15 @@ struct mind_blast_t final : public mind_blast_base_t
   {
   }
 
-  // bool action_ready() override
-  // {
-  //   if ( ( p().buffs.entropic_rift->check() ||
-  //          ( p().channeling && p().channeling->id == p().talents.shadow.void_torrent->id() ) ) &&
-  //        p().talents.voidweaver.void_blast.enabled() && priest().specialization() == PRIEST_SHADOW )
-  //     return false;
+  bool action_ready() override
+  {
+    if ( ( p().buffs.entropic_rift->check() ||
+           ( p().channeling && p().channeling->id == p().talents.voidweaver.void_torrent->id() ) ) &&
+         p().talents.voidweaver.void_blast.enabled() && priest().specialization() == PRIEST_SHADOW )
+      return false;
 
-  //   return mind_blast_base_t::action_ready();
-  // }
+    return mind_blast_base_t::action_ready();
+  }
 
   void execute() override
   {
@@ -326,16 +340,16 @@ struct void_blast_shadow_t final : public mind_blast_base_t
     }
   }
 
-  // bool action_ready() override
-  // {
-  //   bool can_cast = ( p().buffs.entropic_rift->check() ||
-  //                     ( p().channeling && p().channeling->id == p().talents.shadow.void_torrent->id() ) );
+  bool action_ready() override
+  {
+    bool can_cast = ( p().buffs.entropic_rift->check() ||
+                      ( p().channeling && p().channeling->id == p().talents.voidweaver.void_torrent->id() ) );
 
-  //   if ( !can_cast || !p().talents.voidweaver.void_blast.enabled() || priest().specialization() != PRIEST_SHADOW )
-  //     return false;
+    if ( !can_cast || !p().talents.voidweaver.void_blast.enabled() || priest().specialization() != PRIEST_SHADOW )
+      return false;
 
-  //   return mind_blast_base_t::action_ready();
-  // }
+    return mind_blast_base_t::action_ready();
+  }
 };
 
 // ==========================================================================
@@ -1596,7 +1610,7 @@ struct entropic_rift_damage_t final : public priest_spell_t
 
 struct entropic_rift_t final : public priest_spell_t
 {
-  entropic_rift_t( priest_t& p ) : priest_spell_t( "entropic_rift", p, p.talents.voidweaver.entropic_rift )
+  entropic_rift_t( priest_t& p ) : priest_spell_t( "entropic_rift", p, p.talents.voidweaver.entropic_rift_object )
   {
     min_travel_time = 3;
   }
@@ -3082,6 +3096,7 @@ void priest_t::init_spells()
   talents.archon.word_of_supremacy        = HT( "Word of Supremacy" );
   talents.archon.heightened_alteration    = HT( "Heightened Alteration" );
   talents.archon.empowered_surges         = HT( "Empowered Surges" );
+  talents.archon.spiritwell               = HT( "Spiritwell" );
   talents.archon.energy_compression       = HT( "Energy Compression" );
   talents.archon.sustained_potency        = HT( "Sustained Potency" );
   talents.archon.sustained_potency_buff   = find_spell( 454002 );
@@ -3106,29 +3121,33 @@ void priest_t::init_spells()
   talents.oracle.twinsight             = HT( "Twinsight" );              // NYI
 
   // Voidweaver Hero Talents (Discipline/Shadow)
-  talents.voidweaver.entropic_rift          = HT( "Entropic Rift" );
-  talents.voidweaver.entropic_rift_aoe      = find_spell( 450193 );  // Contains AoE radius info
-  talents.voidweaver.entropic_rift_damage   = find_spell( 447448 );  // Contains damage coeff
-  talents.voidweaver.entropic_rift_driver   = find_spell( 459314 );  // Contains damage coeff
-  talents.voidweaver.entropic_rift_object   = find_spell( 447445 );  // Contains spell radius
-  talents.voidweaver.no_escape              = HT( "No Escape" );     // NYI
+  talents.voidweaver.void_torrent           = HT( "Void Torrent" );   // Shadow Only
+  talents.voidweaver.entropic_rift          = HT( "Entropic Rift" );  // Discipline Only
+  talents.voidweaver.entropic_rift_aoe      = find_spell( 450193 );   // Contains AoE radius info
+  talents.voidweaver.entropic_rift_damage   = find_spell( 447448 );   // Contains damage coeff
+  talents.voidweaver.entropic_rift_driver   = find_spell( 459314 );   // Contains damage coeff
+  talents.voidweaver.entropic_rift_object   = find_spell( 447445 );   // Contains spell radius
+  talents.voidweaver.no_escape              = HT( "No Escape" );      // NYI
   talents.voidweaver.dark_energy            = HT( "Dark Energy" );
   talents.voidweaver.void_blast             = HT( "Void Blast" );
   talents.voidweaver.void_blast_shadow      = find_spell( 450983 );
   talents.voidweaver.void_blast_disc        = find_spell( 450215 );
   talents.voidweaver.inner_quietus          = HT( "Inner Quietus" );
+  talents.voidweaver.voidheart              = HT( "Voidheart" );
+  talents.voidweaver.voidheart_buff         = find_spell( 449887 );
   talents.voidweaver.devour_matter          = HT( "Devour Matter" );
   talents.voidweaver.void_empowerment       = HT( "Void Empowerment" );
   talents.voidweaver.void_empowerment_buff  = find_spell( 450140 );
-  talents.voidweaver.darkening_horizon      = find_talent_spell( 125982 );  // Entry id for Darkening Horizon
+  talents.voidweaver.darkening_horizon      = HT( "Darkening Horizon" );
   talents.voidweaver.depth_of_shadows       = HT( "Depth of Shadows" );
   talents.voidweaver.voidwraith             = HT( "Voidwraith" );
   talents.voidweaver.voidwraith_spell       = find_spell( 451235 );
-  talents.voidweaver.voidheart              = HT( "Voidheart" );
-  talents.voidweaver.voidheart_buff         = find_spell( 449887 );  // Voidheart Buff
+  talents.voidweaver.touch_of_the_void      = HT( "Touch of the Void" );
+  talents.voidweaver.quickened_pulse        = HT( "Quickened Pulse" );
   talents.voidweaver.void_infusion          = HT( "Void Infusion" );
   talents.voidweaver.void_leech             = HT( "Void Leech" );          // NYI
   talents.voidweaver.embrace_the_shadow     = HT( "Embrace the Shadow" );  // NYI
+  talents.voidweaver.overwhelming_shadows   = HT( "Overwhelming Shadows" );
   talents.voidweaver.collapsing_void        = HT( "Collapsing Void" );
   talents.voidweaver.collapsing_void_damage = find_spell( 448405 );
 
@@ -3175,10 +3194,11 @@ void priest_t::create_buffs()
   buffs.voidheart = make_buff( this, "voidheart", talents.voidweaver.voidheart_buff )
                         ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   // Tracking buff for the APL
-  buffs.entropic_rift = make_buff_fallback( talents.voidweaver.entropic_rift.ok(), this, "entropic_rift",
-                                            talents.voidweaver.entropic_rift_driver );
+  buffs.entropic_rift =
+      make_buff_fallback( talents.voidweaver.entropic_rift.ok() || talents.voidweaver.void_torrent.ok(), this,
+                          "entropic_rift", talents.voidweaver.entropic_rift_driver );
 
-  if ( talents.voidweaver.entropic_rift.ok() )
+  if ( talents.voidweaver.entropic_rift.ok() || talents.voidweaver.void_torrent.ok() )
   {
     buffs.entropic_rift->set_refresh_behavior( buff_refresh_behavior::DURATION )
         ->set_tick_zero( false )
@@ -3876,7 +3896,7 @@ void priest_t::demise()
 // Idol of C'Thun Talent Trigger
 void priest_t::trigger_idol_of_cthun( action_state_t* s )
 {
-  if ( !talents.shadow.idol_of_cthun.enabled() )
+  if ( !talents.shadow.idol_of_cthun.enabled() && !talents.shadow.void_apparitions_3.enabled() )
     return;
 
   if ( rppm.idol_of_cthun->trigger() )

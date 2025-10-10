@@ -529,6 +529,11 @@ struct shadow_word_pain_t final : public priest_spell_t
       return false;
     }
 
+    if ( priest().specialization() == PRIEST_SHADOW && priest().talents.shadow.misery.enabled() )
+    {
+      return false;
+    }
+
     return priest_spell_t::ready();
   }
 
@@ -1104,132 +1109,125 @@ struct idol_of_cthun_t final : public priest_spell_t
 // ==========================================================================
 // Void Torrent (Talent)
 // ==========================================================================
-// struct void_torrent_t final : public priest_spell_t
-// {
-//   double insanity_gain;
+struct void_torrent_t final : public priest_spell_t
+{
+  double insanity_gain;
 
-//   void_torrent_t( priest_t& p, util::string_view options_str )
-//     : priest_spell_t( "void_torrent", p, p.talents.shadow.void_torrent ),
-//       insanity_gain( p.talents.shadow.void_torrent->effectN( 3 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY
-//       ) )
-//   {
-//     parse_options( options_str );
+  void_torrent_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "void_torrent", p, p.talents.voidweaver.void_torrent ),
+      insanity_gain(
+          p.talents.voidweaver.void_torrent->effectN( 3 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY ) )
+  {
+    parse_options( options_str );
 
-//     may_crit                   = false;
-//     channeled                  = true;
-//     use_off_gcd                = true;
-//     tick_zero                  = true;
-//     dot_duration               = data().duration();
-//     affected_by_shadow_weaving = true;
-//     idol_of_nzoth_tick_stacks  = 2;
+    may_crit                   = false;
+    channeled                  = true;
+    use_off_gcd                = true;
+    tick_zero                  = true;
+    dot_duration               = data().duration();
+    affected_by_shadow_weaving = true;
+    idol_of_nzoth_tick_stacks  = 2;
 
-//     // Getting insanity from the trigger spell data, base spell doesn't have it
-//     energize_type     = action_energize::NONE;
-//     energize_resource = RESOURCE_INSANITY;
-//     energize_amount   = insanity_gain;
-//   }
+    // Getting insanity from the trigger spell data, base spell doesn't have it
+    energize_type     = action_energize::NONE;
+    energize_resource = RESOURCE_INSANITY;
+    energize_amount   = insanity_gain;
+  }
 
-//   bool usable_moving() const override
-//   {
-//     if ( priest().talents.voidweaver.dark_energy.enabled() )
-//     {
-//       return true;
-//     }
+  bool usable_moving() const override
+  {
+    if ( priest().talents.voidweaver.dark_energy.enabled() )
+    {
+      return true;
+    }
 
-//     return priest_spell_t::usable_moving();
-//   }
+    return priest_spell_t::usable_moving();
+  }
 
-//   void tick( dot_t* d ) override
-//   {
-//     priest_spell_t::tick( d );
+  void tick( dot_t* d ) override
+  {
+    priest_spell_t::tick( d );
 
-//     if ( priest().shadow_weaving_active_dots( target, id ) < 3.0 )
-//     {
-//       priest().procs.void_torrent_ticks_no_mastery->occur();
-//     }
+    if ( priest().shadow_weaving_active_dots( target, id ) < 3.0 )
+    {
+      priest().procs.void_torrent_ticks_no_mastery->occur();
+    }
 
-//     if ( priest().talents.shadow.psychic_link.enabled() )
-//     {
-//       priest().trigger_psychic_link( d->state );
-//     }
+    if ( priest().talents.shadow.psychic_link.enabled() )
+    {
+      priest().trigger_psychic_link( d->state );
+    }
 
-//     priest().trigger_idol_of_cthun( d->state );
-//   }
+    priest().trigger_idol_of_cthun( d->state );
+  }
 
-//   bool insidious_ire_active() const
-//   {
-//     if ( !priest().talents.shadow.insidious_ire.enabled() )
-//       return false;
+  bool insidious_ire_active() const
+  {
+    if ( !priest().talents.shadow.insidious_ire.enabled() )
+      return false;
 
-//     return priest().buffs.insidious_ire->check();
-//   }
+    return priest().buffs.insidious_ire->check();
+  }
 
-//   double composite_ta_multiplier( const action_state_t* s ) const override
-//   {
-//     double m = priest_spell_t::composite_ta_multiplier( s );
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_spell_t::composite_ta_multiplier( s );
 
-//     if ( insidious_ire_active() )
-//     {
-//       m *= 1 + priest().talents.shadow.insidious_ire->effectN( 1 ).percent();
-//     }
+    if ( insidious_ire_active() )
+    {
+      m *= 1 + priest().talents.shadow.insidious_ire->effectN( 1 ).percent();
+    }
 
-//     return m;
-//   }
+    return m;
+  }
 
-//   double composite_persistent_multiplier( const action_state_t* s ) const override
-//   {
-//     double m = priest_spell_t::composite_persistent_multiplier( s );
+  double composite_persistent_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_spell_t::composite_persistent_multiplier( s );
 
-//     if ( priest().buffs.overflowing_void->check() )
-//     {
-//       m *= 1 + priest().buffs.overflowing_void->check_value();
-//     }
+    // tww3 set bonus
+    if ( priest().buffs.overflowing_void->check() )
+    {
+      m *= 1 + priest().buffs.overflowing_void->check_value();
+    }
 
-//     return m;
-//   }
+    return m;
+  }
 
-//   void last_tick( dot_t* d ) override
-//   {
-//     priest().buffs.void_torrent->expire();
+  void last_tick( dot_t* d ) override
+  {
+    priest().buffs.void_torrent->expire();
 
-//     [[maybe_unused]] timespan_t channeled_time = dot_duration - d->remains();
+    priest().buffs.entropic_rift->extend_duration(
+        player, priest().buffs.entropic_rift->buff_duration() - priest().buffs.entropic_rift->remains() );
 
-//     if ( priest().talents.voidweaver.entropic_rift.enabled() )
-//     {
-//       priest().buffs.entropic_rift->extend_duration(
-//           player, priest().buffs.entropic_rift->buff_duration() - priest().buffs.entropic_rift->remains() );
-//     }
+    if ( priest().talents.voidweaver.voidheart.enabled() )
+    {
+      priest().buffs.voidheart->extend_duration(
+          player, priest().buffs.voidheart->buff_duration() - priest().buffs.voidheart->remains() );
+    }
 
-//     if ( priest().talents.voidweaver.voidheart.enabled() )
-//     {
-//       priest().buffs.voidheart->extend_duration(
-//           player, priest().buffs.voidheart->buff_duration() - priest().buffs.voidheart->remains() );
-//     }
+    priest_spell_t::last_tick( d );
+  }
 
-//     priest_spell_t::last_tick( d );
-//   }
+  void execute() override
+  {
+    // Spawn this before Void Torrent so that we get the damage bonus
+    priest().trigger_entropic_rift();
 
-//   void execute() override
-//   {
-//     // Spawn this before Void Torrent so that we get the damage bonus
-//     if ( priest().talents.voidweaver.entropic_rift.enabled() )
-//     {
-//       priest().trigger_entropic_rift();
-//     }
+    priest_spell_t::execute();
 
-//     priest_spell_t::execute();
+    priest().buffs.void_torrent->trigger();
+    priest().buffs.overflowing_void->expire();
+  }
 
-//     priest().buffs.void_torrent->trigger();
-//     priest().buffs.overflowing_void->expire();
-//   }
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
 
-//   void impact( action_state_t* s ) override
-//   {
-//     priest_spell_t::impact( s );
-
-//     priest().spawn_idol_of_cthun( s );
-//   }
-// };
+    priest().spawn_idol_of_cthun( s );
+  }
+};
 
 // ==========================================================================
 // Psychic Link
@@ -1774,22 +1772,22 @@ struct dispersion_t final : public priest_buff_t<buff_t>
 // Void Torrent
 // Has a fixed gain for Insanity that is not tied to the ticks of the spell
 // ==========================================================================
-// struct void_torrent_t : public priest_buff_t<buff_t>
-// {
-//   void_torrent_t( priest_t& p ) : base_t( p, "void_torrent", p.talents.shadow.void_torrent->effectN( 3 ).trigger() )
-//   {
-//     set_default_value_from_effect( 1 );
-//     set_tick_zero( 1 );
+struct void_torrent_t : public priest_buff_t<buff_t>
+{
+  void_torrent_t( priest_t& p ) : base_t( p, "void_torrent", p.talents.voidweaver.void_torrent->effectN( 3 ).trigger() )
+  {
+    set_default_value_from_effect( 1 );
+    set_tick_zero( 1 );
 
-//     auto eff      = &data().effectN( 1 );
-//     auto insanity = eff->resource( RESOURCE_INSANITY );
-//     auto gain     = p.get_gain( "void_torrent" );
+    auto eff      = &data().effectN( 1 );
+    auto insanity = eff->resource( RESOURCE_INSANITY );
+    auto gain     = p.get_gain( "void_torrent" );
 
-//     set_tick_callback( [ insanity, gain, this ]( buff_t*, int, timespan_t ) {
-//       player->resource_gain( RESOURCE_INSANITY, insanity, gain );
-//     } );
-//   }
-// };
+    set_tick_callback( [ insanity, gain, this ]( buff_t*, int, timespan_t ) {
+      player->resource_gain( RESOURCE_INSANITY, insanity, gain );
+    } );
+  }
+};
 
 }  // namespace buffs
 
@@ -1839,7 +1837,7 @@ void priest_t::create_buffs_shadow()
   buffs.dispersion       = make_buff<buffs::dispersion_t>( *this );
 
   // Talents
-  // buffs.void_torrent = make_buff<buffs::void_torrent_t>( *this );
+  buffs.void_torrent = make_buff<buffs::void_torrent_t>( *this );
 
   buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 373204 ) );
 
@@ -1989,7 +1987,6 @@ void priest_t::init_spells_shadow()
   talents.shadow.death_and_madness_reset_buff = find_spell( 390628 );
   talents.shadow.mind_devourer                = ST( "Mind Devourer" );
   talents.shadow.auspicious_spirits           = ST( "Auspicious Spirits" );
-  // talents.shadow.void_torrent                 = ST( "Void Torrent" );
   // Row 9
   talents.shadow.madness_weaving     = ST( "Madness Weaving" );
   talents.shadow.deaths_torment      = ST( "Death's Torment" );
@@ -2049,10 +2046,10 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
   {
     return new tentacle_slam_t( *this, options_str );
   }
-  // if ( name == "void_torrent" )
-  // {
-  //   return new void_torrent_t( *this, options_str );
-  // }
+  if ( name == "void_torrent" )
+  {
+    return new void_torrent_t( *this, options_str );
+  }
   if ( name == "shadow_word_pain" )
   {
     return new shadow_word_pain_t( *this, options_str );
@@ -2118,7 +2115,7 @@ void priest_t::init_background_actions_shadow()
     background_actions.psychic_link = new actions::spells::psychic_link_t( *this );
   }
 
-  if ( talents.shadow.idol_of_cthun.enabled() )
+  if ( talents.shadow.idol_of_cthun.enabled() || talents.shadow.void_apparitions_3.enabled() )
   {
     background_actions.idol_of_cthun = new actions::spells::idol_of_cthun_t( *this );
   }
@@ -2132,7 +2129,7 @@ void priest_t::init_background_actions_shadow()
 
   background_actions.shadow_word_pain = new actions::spells::shadow_word_pain_t( *this );
 
-  if ( talents.shadow.idol_of_nzoth.enabled() )
+  if ( talents.shadow.idol_of_nzoth.enabled() || talents.shadow.void_apparitions_3.enabled() )
   {
     background_actions.horrific_vision = new actions::spells::horrific_vision_t( *this );
     background_actions.vision_of_nzoth = new actions::spells::vision_of_nzoth_t( *this );
@@ -2245,6 +2242,11 @@ void priest_t::refresh_insidious_ire_buff( action_state_t* s )
 
 void priest_t::trigger_horrific_vision( player_t* target )
 {
+  if ( !talents.shadow.idol_of_nzoth.enabled() && !talents.shadow.void_apparitions_3.enabled() )
+  {
+    return;
+  }
+
   background_actions.horrific_vision->execute_on_target( target );
   buffs.horrific_vision->trigger();
   if ( talents.shadow.void_apparitions_1.enabled() )
@@ -2255,6 +2257,11 @@ void priest_t::trigger_horrific_vision( player_t* target )
 
 void priest_t::trigger_vision_of_nzoth( player_t* target )
 {
+  if ( !talents.shadow.idol_of_nzoth.enabled() && !talents.shadow.void_apparitions_3.enabled() )
+  {
+    return;
+  }
+
   background_actions.vision_of_nzoth->execute_on_target( target );
   buffs.vision_of_nzoth->trigger();
 

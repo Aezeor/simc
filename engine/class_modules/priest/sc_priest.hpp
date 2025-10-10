@@ -539,6 +539,7 @@ public:
       player_talent_t word_of_supremacy;
       player_talent_t heightened_alteration;
       player_talent_t empowered_surges;
+      player_talent_t spiritwell;
       player_talent_t ascendant_prayers;
       player_talent_t energy_compression;
       player_talent_t sustained_potency;
@@ -568,7 +569,8 @@ public:
 
     struct
     {
-      player_talent_t entropic_rift;
+      player_talent_t void_torrent;   // shadow only
+      player_talent_t entropic_rift;  // discipline only
       const spell_data_t* entropic_rift_aoe;
       const spell_data_t* entropic_rift_damage;
       const spell_data_t* entropic_rift_driver;
@@ -579,6 +581,8 @@ public:
       const spell_data_t* void_blast_shadow;
       const spell_data_t* void_blast_disc;
       player_talent_t inner_quietus;
+      player_talent_t voidheart;
+      const spell_data_t* voidheart_buff;
       player_talent_t devour_matter;
       player_talent_t void_empowerment;
       const spell_data_t* void_empowerment_buff;
@@ -586,11 +590,12 @@ public:
       player_talent_t depth_of_shadows;
       player_talent_t voidwraith;
       const spell_data_t* voidwraith_spell;
-      player_talent_t voidheart;
-      const spell_data_t* voidheart_buff;
+      player_talent_t touch_of_the_void;
+      player_talent_t quickened_pulse;
       player_talent_t void_infusion;
       player_talent_t void_leech;
       player_talent_t embrace_the_shadow;
+      player_talent_t overwhelming_shadows;
       player_talent_t collapsing_void;
       const spell_data_t* collapsing_void_damage;
     } voidweaver;
