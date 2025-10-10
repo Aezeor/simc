@@ -174,47 +174,50 @@ static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
 
 enum demonsurge_ability
 {
-  SOUL_SUNDER,
-  SPIRIT_BURST,
+  DEVOUR,
+  CULL,
+  THE_HUNT,
+  VOIDBLADE,
+  HUNGERING_SLASH,
   SIGIL_OF_DOOM,
   CONSUMING_FIRE,
-  FEL_DESOLATION,
   ABYSSAL_GAZE,
   ANNIHILATION,
-  DEATH_SWEEP,
-  ENTER_META
+  DEATH_SWEEP
 };
 
 const std::vector<demonsurge_ability> demonsurge_havoc_abilities{
     demonsurge_ability::SIGIL_OF_DOOM, demonsurge_ability::CONSUMING_FIRE, demonsurge_ability::ABYSSAL_GAZE,
     demonsurge_ability::ANNIHILATION, demonsurge_ability::DEATH_SWEEP };
 
-const std::vector<demonsurge_ability> demonsurge_vengeance_abilities{
-    demonsurge_ability::SOUL_SUNDER, demonsurge_ability::SPIRIT_BURST, demonsurge_ability::SIGIL_OF_DOOM,
-    demonsurge_ability::CONSUMING_FIRE, demonsurge_ability::FEL_DESOLATION };
+const std::vector<demonsurge_ability> demonsurge_devourer_abilities{
+    demonsurge_ability::DEVOUR, demonsurge_ability::CULL, demonsurge_ability::THE_HUNT, demonsurge_ability::VOIDBLADE,
+    demonsurge_ability::HUNGERING_SLASH };
 
 std::string demonsurge_ability_name( demonsurge_ability ability )
 {
   switch ( ability )
   {
-    case demonsurge_ability::SOUL_SUNDER:
-      return "demonsurge_soul_sunder";
-    case demonsurge_ability::SPIRIT_BURST:
-      return "demonsurge_spirit_burst";
+    case demonsurge_ability::DEVOUR:
+      return "demonsurge_devour";
+    case demonsurge_ability::CULL:
+      return "demonsurge_cull";
+    case demonsurge_ability::THE_HUNT:
+      return "demonsurge_the_hunt";
+    case demonsurge_ability::VOIDBLADE:
+      return "demonsurge_voidblade";
+    case demonsurge_ability::HUNGERING_SLASH:
+      return "demonsurge_hungering_slash";
     case demonsurge_ability::SIGIL_OF_DOOM:
       return "demonsurge_sigil_of_doom";
     case demonsurge_ability::CONSUMING_FIRE:
       return "demonsurge_consuming_fire";
-    case demonsurge_ability::FEL_DESOLATION:
-      return "demonsurge_fel_desolation";
     case demonsurge_ability::ABYSSAL_GAZE:
       return "demonsurge_abyssal_gaze";
     case demonsurge_ability::ANNIHILATION:
       return "demonsurge_annihilation";
     case demonsurge_ability::DEATH_SWEEP:
       return "demonsurge_death_sweep";
-    case demonsurge_ability::ENTER_META:
-      return "demonsurge_enter_meta";
     default:
       return "demonsurge_unknown";
   }
@@ -828,8 +831,8 @@ public:
     const spell_data_t* enduring_torment_buff;
     const spell_data_t* monster_rising_buff;
     const spell_data_t* student_of_suffering_buff;
-    const spell_data_t* demonsurge_demonic_buff;
-    const spell_data_t* demonsurge_hardcast_buff;
+    const spell_data_t* demonsurge_demonsurge_buff;
+    const spell_data_t* demonsurge_demonic_intensity_buff;
     const spell_data_t* demonsurge_damage;
     const spell_data_t* demonsurge_stacking_buff;
     const spell_data_t* demonsurge_trigger;
@@ -877,6 +880,7 @@ public:
     // Devourer
     cooldown_t* consume;
     cooldown_t* reap;
+    cooldown_t* voidblade;
 
     // Havoc
     cooldown_t* blade_dance;
@@ -4393,7 +4397,21 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
     switch ( p()->specialization() )
     {
       case DEMON_HUNTER_DEVOURER:
+        for ( demonsurge_ability ability : p()->hero_spec.demonsurge_abilities )
+        {
+          p()->buff.demonsurge_abilities[ ability ]->trigger();
+        }
+        p()->buff.demonsurge_demonic->trigger();
+        p()->buff.demonsurge_hardcast->trigger();
+        p()->buff.demonsurge->expire();
+
         p()->devourer_fury_state.start();
+
+        if ( p()->talent.felscarred.violent_transformation->ok() )
+        {
+          p()->cooldown.voidblade->reset( true );
+          p()->cooldown.the_hunt->reset( true );
+        }
         break;
       case DEMON_HUNTER_HAVOC:
         for ( demonsurge_ability ability : p()->hero_spec.demonsurge_abilities )
@@ -4429,20 +4447,7 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
         }
         break;
       case DEMON_HUNTER_VENGEANCE:
-        for ( demonsurge_ability ability : p()->hero_spec.demonsurge_abilities )
-        {
-          p()->buff.demonsurge_abilities[ ability ]->trigger();
-        }
-        p()->buff.demonsurge_demonic->trigger();
-        p()->buff.demonsurge_hardcast->trigger();
         p()->buff.metamorphosis->trigger();
-        p()->buff.demonsurge->expire();
-
-        if ( p()->talent.felscarred.violent_transformation->ok() )
-        {
-          p()->cooldown.fel_devastation->reset( false );
-          p()->cooldown.sigil_of_flame->reset( false, -1 );
-        }
         break;
       default:
         break;
@@ -7818,8 +7823,6 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
           p()->buff.demonsurge_abilities[ demonsurge_ability::DEATH_SWEEP ]->trigger();
           break;
         case DEMON_HUNTER_VENGEANCE:
-          p()->buff.demonsurge_abilities[ demonsurge_ability::SOUL_SUNDER ]->trigger();
-          p()->buff.demonsurge_abilities[ demonsurge_ability::SPIRIT_BURST ]->trigger();
           break;
         default:
           break;
@@ -8745,8 +8748,8 @@ void demon_hunter_t::create_buffs()
     buff.demonsurge_abilities[ ability ] = make_buff( this, demonsurge_ability_name( ability ), spell_data_t::nil() );
   }
 
-  buff.demonsurge_demonic  = make_buff( this, "demonsurge_demonic", hero_spec.demonsurge_demonic_buff );
-  buff.demonsurge_hardcast = make_buff( this, "demonsurge_hardcast", hero_spec.demonsurge_hardcast_buff );
+  buff.demonsurge_demonic  = make_buff( this, "demonsurge_demonic", hero_spec.demonsurge_demonsurge_buff );
+  buff.demonsurge_hardcast = make_buff( this, "demonsurge_hardcast", hero_spec.demonsurge_demonic_intensity_buff );
   buff.demonsurge          = make_buff( this, "demonsurge", hero_spec.demonsurge_stacking_buff );
 
   // Set Bonus Items ========================================================
@@ -9080,7 +9083,6 @@ void demon_hunter_t::init_procs()
   {
     proc.demonsurge_abilities[ ability ] = get_proc( demonsurge_ability_name( ability ) );
   }
-  proc.demonsurge_abilities[ ENTER_META ] = get_proc( demonsurge_ability_name( ENTER_META ) );
 
   // Set Bonuses
 }
@@ -9711,15 +9713,14 @@ void demon_hunter_t::init_spells()
       break;
   }
 
-  hero_spec.student_of_suffering_buff = talent_spell_lookup( talent.felscarred.student_of_suffering, 453239 );
-  hero_spec.monster_rising_buff       = talent_spell_lookup( talent.felscarred.monster_rising, 452550 );
-  hero_spec.enduring_torment_buff     = talent_spell_lookup( talent.felscarred.enduring_torment, 453314 );
-  hero_spec.demonsurge_demonic_buff   = talent_spell_lookup( talent.felscarred.demonsurge, 452435 );
-  hero_spec.demonsurge_hardcast_buff  = talent_spell_lookup( talent.felscarred.demonic_intensity, 452489 );
-  hero_spec.demonsurge_damage         = talent_spell_lookup( talent.felscarred.demonsurge, 452416 );
-  hero_spec.demonsurge_stacking_buff  = talent_spell_lookup( talent.felscarred.demonic_intensity, 452416 );
-  hero_spec.demonsurge_trigger        = talent_spell_lookup( talent.felscarred.demonsurge, 453323 );
-  hero_spec.soul_sunder               = talent_spell_lookup( talent.felscarred.demonsurge, 452436 );
+  hero_spec.student_of_suffering_buff  = talent_spell_lookup( talent.felscarred.student_of_suffering, 453239 );
+  hero_spec.monster_rising_buff        = talent_spell_lookup( talent.felscarred.monster_rising, 452550 );
+  hero_spec.enduring_torment_buff      = talent_spell_lookup( talent.felscarred.enduring_torment, 453314 );
+  hero_spec.demonsurge_demonsurge_buff = talent_spell_lookup( talent.felscarred.demonsurge, 452435 );
+  hero_spec.demonsurge_damage          = talent_spell_lookup( talent.felscarred.demonsurge, 452416 );
+  hero_spec.demonsurge_stacking_buff   = talent_spell_lookup( talent.felscarred.demonic_intensity, 452416 );
+  hero_spec.demonsurge_trigger         = talent_spell_lookup( talent.felscarred.demonsurge, 453323 );
+  hero_spec.soul_sunder                = talent_spell_lookup( talent.felscarred.demonsurge, 452436 );
   hero_spec.spirit_burst =
       conditional_spell_lookup( talent.vengeance.spirit_bomb->ok() && talent.felscarred.demonsurge->ok(), 452437 );
   hero_spec.sigil_of_doom        = talent_spell_lookup( talent.felscarred.demonic_intensity, 452490 );
@@ -9728,11 +9729,13 @@ void demon_hunter_t::init_spells()
   hero_spec.fel_desolation       = talent_spell_lookup( talent.felscarred.demonic_intensity, 452486 );
   switch ( specialization() )
   {
-    case DEMON_HUNTER_HAVOC:
-      hero_spec.burning_blades_debuff = talent_spell_lookup( talent.felscarred.burning_blades, 453177 );
-      break;
     case DEMON_HUNTER_DEVOURER:
-      hero_spec.burning_blades_debuff = talent_spell_lookup( talent.felscarred.burning_blades, 1245654 );
+      hero_spec.burning_blades_debuff             = talent_spell_lookup( talent.felscarred.burning_blades, 1245654 );
+      hero_spec.demonsurge_demonic_intensity_buff = talent_spell_lookup( talent.felscarred.demonic_intensity, 1245496 );
+      break;
+    case DEMON_HUNTER_HAVOC:
+      hero_spec.burning_blades_debuff             = talent_spell_lookup( talent.felscarred.burning_blades, 453177 );
+      hero_spec.demonsurge_demonic_intensity_buff = talent_spell_lookup( talent.felscarred.demonic_intensity, 452489 );
       break;
     default:
       hero_spec.burning_blades_debuff = spell_data_t::not_found();
@@ -9745,7 +9748,7 @@ void demon_hunter_t::init_spells()
       hero_spec.demonsurge_abilities = demonsurge_havoc_abilities;
       break;
     case DEMON_HUNTER_DEVOURER:
-      hero_spec.demonsurge_abilities = demonsurge_vengeance_abilities;
+      hero_spec.demonsurge_abilities = demonsurge_devourer_abilities;
       break;
     default:
       break;
@@ -10140,8 +10143,9 @@ void demon_hunter_t::create_cooldowns()
   cooldown.metamorphosis   = get_cooldown( "metamorphosis" );
 
   // Devourer
-  cooldown.consume = get_cooldown( "consume" );
-  cooldown.reap    = get_cooldown( "reap" );
+  cooldown.consume   = get_cooldown( "consume" );
+  cooldown.reap      = get_cooldown( "reap" );
+  cooldown.voidblade = get_cooldown( "voidblade" );
 
   // Havoc
   cooldown.blade_dance                               = get_cooldown( "blade_dance" );
@@ -11056,11 +11060,6 @@ void demon_hunter_t::trigger_demonsurge( demonsurge_ability ability, timespan_t 
     }
     proc.demonsurge_abilities[ ability ]->occur();
     make_event<delayed_execute_event_t>( *sim, this, active.demonsurge, target, delay );
-    if ( ability == ENTER_META )
-    {
-      make_event( *sim, timespan_t::from_millis( delay.total_millis() + 1 ),
-                  [ this ] { spawn_soul_fragment( soul_fragment::EMPOWERED_DEMON ); } );
-    }
   }
 }
 
