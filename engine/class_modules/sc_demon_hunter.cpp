@@ -5208,8 +5208,12 @@ struct void_buildup_t : public demon_hunter_spell_t
 
 struct soul_immolation_t : public demon_hunter_spell_t
 {
-  soul_immolation_t( util::string_view n, demon_hunter_t* p, util::string_view o = "" )
-    : demon_hunter_spell_t( n, p, p->talent.devourer.soul_immolation, o )
+  soul_immolation_t( util::string_view n, demon_hunter_t* p, bool spontaneous = false, util::string_view o = "" )
+    : demon_hunter_spell_t( n, p,
+                            spontaneous                                      ? p->talent.devourer.soul_immolation
+                            : p->talent.devourer.spontaneous_immolation.ok() ? spell_data_t::not_found()
+                                                                             : p->talent.devourer.soul_immolation,
+                            o )
   {
     // self damage doesn't count as DPS
     stats->type = stats_e::STATS_NEUTRAL;
@@ -8437,7 +8441,7 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
   if ( name == "voidblade" )
     return new voidblade_t( this, options_str );
   if ( name == "soul_immolation" )
-    return new soul_immolation_t( "soul_immolation", this, options_str );
+    return new soul_immolation_t( "soul_immolation", this, false, options_str );
   if ( name == "eradicate" )
     return new eradicate_t( this, options_str );
   if ( name == "cull" )
@@ -9132,6 +9136,7 @@ void demon_hunter_t::init_special_effects()
     effect->name_str       = "spontaneous_immolation";
     effect->spell_id       = talent.devourer.spontaneous_immolation->id();
     effect->proc_chance_   = talent.devourer.spontaneous_immolation->effectN( 1 ).percent();
+    effect->proc_flags2_   = PF2_CAST_GENERIC | PF2_CAST_DAMAGE;
     effect->execute_action = active.spontaneous_immolation;
     special_effects.push_back( effect );
 
@@ -9843,7 +9848,7 @@ void demon_hunter_t::init_spells()
 
   if ( talent.devourer.spontaneous_immolation->ok() )
   {
-    active.spontaneous_immolation = get_background_action<soul_immolation_t>( "soul_immolation_spontaneous" );
+    active.spontaneous_immolation = get_background_action<soul_immolation_t>( "soul_immolation_spontaneous", true );
     active.spontaneous_immolation->cooldown->duration = 0_s;
   }
 
