@@ -718,42 +718,22 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   if ( spell_data.max_targets() == -1 || spell_data.max_targets() > 1 )
     aoe = spell_data.max_targets();
 
-  const auto spell_powers = spell_data.powers();
-  unsigned primary;
-  bool require_spec_aura = false;
+  for ( const auto& pd : spell_data.powers() )
+  {
+    if ( pd.aura_id() != 0 )  // check aura if exists
+    {
+      auto aura_spell = player->find_specialization_spell( pd.aura_id() );
+      if ( !aura_spell->ok() || !aura_spell->flags( SX_PASSIVE ) )
+        aura_spell = player->find_talent_spell( talent_tree::CLASS, pd.aura_id() );
+      if ( !aura_spell->ok() || !aura_spell->flags( SX_PASSIVE ) )
+        aura_spell = player->find_talent_spell( talent_tree::SPECIALIZATION, pd.aura_id() );
+      if ( !aura_spell->ok() || !aura_spell->flags( SX_PASSIVE ) )
+        aura_spell = player->find_talent_spell( talent_tree::HERO, pd.aura_id() );
+      if ( !aura_spell->ok() || !aura_spell->flags( SX_PASSIVE ) )
+        continue;
+    }
 
-  if ( spell_powers.size() == 1 && spell_powers.front().aura_id() == 0 )
-  {
-    resource_current = spell_powers.front().resource();
-    primary = spell_powers.front().id();
-  }
-  // Find the first power entry without a aura id
-  else if ( auto it = range::find( spell_powers, 0U, &spellpower_data_t::aura_id ); it != spell_powers.end() )
-  {
-    resource_current = it->resource();
-    primary = it->id();
-
-    // check if any remaining entries have an aura
-    if ( range::contains( spell_powers, player->spec_spell->id(), &spellpower_data_t::aura_id ) )
-      require_spec_aura = true;
-  }
-  // If all entries have an aura, find the one matching the spec aura
-  else if ( auto it = range::find( spell_powers, player->spec_spell->id(), &spellpower_data_t::aura_id );
-            it != spell_powers.end() )
-  {
-    resource_current = it->resource();
-    require_spec_aura = true;
-  }
-  else
-  {
-    sim->print_debug( "{} could not determine resource for {}.", *player, *this );
-  }
-
-  for ( const spellpower_data_t& pd : spell_powers )
-  {
-    if ( pd.id() != primary && require_spec_aura && pd.aura_id() != player->spec_spell->id() )
-      continue;
-
+    // no aura at all, or we have a matching aura
     auto cost_array = player->get_passive_value( pd, "cost" );
 
     if ( pd._cost != 0 || pd._pct_cost == 0 )
@@ -780,6 +760,9 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
     {
       base_costs_per_tick[ pd.resource() ] = 0.0;
     }
+
+    // TODO: parse more than one powers for an action
+    break;
   }
 
   // handle parsed base damage modifiers
