@@ -985,7 +985,18 @@ private:
   std::vector<modified_value_t> passive_effect_modifiers_;
   // for player modifiers, id=field_type, field_id=misc_type, orig=0
   std::vector<modified_value_t> passive_player_modifiers_;
-  std::vector<unsigned> registered_passive_spells_;
+
+  enum parse_source_e
+  {
+    PARSE_SOURCE_MANUAL,
+    PARSE_SOURCE_CLASS,
+    PARSE_SOURCE_SPEC,
+    PARSE_SOURCE_RACIAL,
+    PARSE_SOURCE_TALENT,
+    PARSE_SOURCE_SET,
+  };
+  std::vector<std::pair<unsigned, parse_source_e>> registered_passive_spells_;
+
   std::vector<unsigned> deregistered_passive_spells_;
   std::vector<unsigned> registered_effect_ignore_list_;
   std::vector<std::pair<unsigned, std::vector<int>>> registered_affected_spell_list_;
@@ -995,8 +1006,11 @@ private:
     double orig_val, double flat_val, double pct_val );
   bool register_passive_effect( const spelleffect_data_t&, bool remove = false );
 
+  // reporting
+  std::map<std::string, std::map<int, std::vector<const spelleffect_data_t*>>> reporting_effects_player;
+
 protected:
-  void parse_passive_effects( const spell_data_t*, bool force = false );
+  void parse_passive_effects( const spell_data_t*, bool force = false, parse_source_e source = PARSE_SOURCE_MANUAL );
   // remove any existing parses and prevent future parsing
   void deregister_passive_effects( const spell_data_t* );
   void parse_all_class_passives();
@@ -1022,6 +1036,9 @@ public:
   double get_passive_player_value( double base_val, std::string_view field, int misc_type = 0 ) const;
   // clone a spell into the override dbc
   static const spell_data_t* clone_dbc_override_spell( const player_t* p, const spell_data_t* s );
+
+  void print_parsed_effects( report::sc_html_stream& ) const;
+  virtual void print_custom_parsed_effects( report::sc_html_stream& ) const {}
 
   player_t( sim_t* sim, player_e type, util::string_view name, race_e race_e );
   ~player_t() override;

@@ -1832,6 +1832,8 @@ public:
   // Create Profile options
   std::string create_profile( save_e ) override;
 
+  void print_custom_parsed_effects( report::sc_html_stream& ) const override;
+
   // Death Knight specific methods
   // Rune related methods
   double runes_per_second() const;
@@ -5126,7 +5128,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
   }
 
 
-  size_t total_effects_count() override
+  size_t total_effects_count() const override
   {
     return action_base_t::total_effects_count() + runic_power_multiplier_effects.size() + runic_power_flat_effects.size();
   }
@@ -11411,6 +11413,13 @@ std::string death_knight_t::create_profile( save_e type )
   return profile_str;
 }
 
+void death_knight_t::print_custom_parsed_effects( report::sc_html_stream& os ) const
+{
+  parse_player_effects_t::print_custom_parsed_effects( os );
+  modified_spell_data_t::parsed_effects_html( os, *sim, modified_spells );
+}
+
+
 // death_knight_t::datacollection_begin ===========================================
 
 void death_knight_t::datacollection_begin()
@@ -15038,9 +15047,6 @@ public:
     {
       html_rune_waste( os );
     }
-    os << "<div class=\"clear\"></div>\n";
-    p.parsed_effects_html( os );
-    modified_spell_data_t::parsed_effects_html( os, *p.sim, p.modified_spells );
     os << "</div>\n";
   }
 

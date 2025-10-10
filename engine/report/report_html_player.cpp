@@ -3608,6 +3608,8 @@ void print_html_player_custom_section( report::sc_html_stream& os, const player_
 
   os << "</table></div></div></div>";
 
+  p.print_parsed_effects( os );
+
   if ( p.report_extension )
     p.report_extension->html_customsection( os );
 }

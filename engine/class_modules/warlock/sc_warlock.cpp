@@ -973,11 +973,7 @@ public:
   {}
 
   void html_customsection( report::sc_html_stream& os ) override
-  {
-    os << R"(<div class="player-section custom_section">)";
-    p.parsed_effects_html( os );
-    os << "</div>\n";
-  }
+  {}
 
 private:
   warlock_t& p;

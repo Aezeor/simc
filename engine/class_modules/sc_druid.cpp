@@ -1412,6 +1412,7 @@ struct druid_t final : public parse_player_effects_t
   void copy_from( player_t* ) override;
   void moving() override;
   action_t* execute_action() override;
+  void print_custom_parsed_effects( report::sc_html_stream& ) const override;
 
   // utility functions
   void init_beast_weapon( weapon_t&, double );
@@ -2130,7 +2131,7 @@ public:
     return pers;
   }
 
-  size_t total_effects_count() override
+  size_t total_effects_count() const override
   {
     return ab::total_effects_count() + persistent_multiplier_effects.size();
   }
@@ -3161,7 +3162,7 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     return false;
   }
 
-  size_t total_effects_count() override
+  size_t total_effects_count() const override
   {
     return base_t::total_effects_count() + persistent_periodic_effects.size() + persistent_direct_effects.size();
   }
@@ -10490,8 +10491,6 @@ struct druid_melee_t : public Base
     p->parse_action_target_effects( this );
 
     // Auto attack mods
-    ab::parse_effects( p->spec_spell );
-    ab::parse_effects( p->talent.killer_instinct );
     ab::parse_effects( p->buff.tigers_fury );
 
     // 7.00 PPM via community testing (~368k auto attacks)
@@ -15146,6 +15145,12 @@ action_t* druid_t::execute_action()
   return a;
 }
 
+void druid_t::print_custom_parsed_effects( report::sc_html_stream& os ) const
+{
+  parse_player_effects_t::print_custom_parsed_effects( os );
+  modified_spell_data_t::parsed_effects_html( os, *sim, modified_spells );
+}
+
 // ==========================================================================
 // DBC/Spell data based auto-parsing
 // ==========================================================================
@@ -15407,9 +15412,6 @@ public:
   void html_customsection( report::sc_html_stream& os ) override
   {
     os << R"(<div class="player-section custom_section">)";
-
-    p.parsed_effects_html( os );
-    modified_spell_data_t::parsed_effects_html( os, *p.sim, p.modified_spells );
 
     benefit_tracker_t::print_table<SNAPSHOT_TRACKER>( &p, os, "Snapshot Tracker" );
     benefit_tracker_t::print_table<ECLIPSE_TRACKER>( &p, os, "Eclipse Tracker" );

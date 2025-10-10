@@ -53,6 +53,7 @@
 #include "player/stats.hpp"
 #include "player/unique_gear.hpp"
 #include "player/unique_gear_midnight.hpp"
+#include "report/decorators.hpp"
 #include "sim/benefit.hpp"
 #include "sim/cooldown.hpp"
 #include "sim/cooldown_waste_data.hpp"
@@ -1523,10 +1524,8 @@ void player_t::init_base_stats()
     {
       base.attribute_multiplier[ attr ] =
         get_passive_player_value( base.attribute_multiplier[ attr ], "attribute_multiplier", attr );
-
-      // matchign armor multipliers have flipped misc_type
       base.matching_armor_multiplier[ attr ] =
-        get_passive_player_value( base.matching_armor_multiplier[ attr ], "attribute_multiplier", -attr );
+        get_passive_player_value( base.matching_armor_multiplier[ attr ], "armor_type_multiplier", attr );
     }
 
     for ( auto rating = static_cast<rating_e>( 0 ); rating < RATING_MAX; ++rating )
@@ -1607,6 +1606,7 @@ void player_t::init_base_stats()
       }
 
       double rt_base = 0.0;
+      double rt_mul = 1.0;
       double rt_regen = 0.0;
       double rt_start = -1.0;  // -1 == start at computed max
 
@@ -1630,17 +1630,10 @@ void player_t::init_base_stats()
           break;
       }
 
-      auto power_type = util::resource_to_power_type( rt );
-
-      // Max Resource Modifiers
-      resources.base[ rt ] = get_passive_player_value( rt_base, "max_resource", power_type );
-      // Passive Resource Multipliers
-      resources.base_multiplier[ rt ] =
-        get_passive_player_value( resources.base_multiplier[ rt ], "resource_multiplier", power_type );
-      // Passive Resource Regen Modifiers
-      resources.base_regen_per_second[ rt ] = get_passive_player_value( rt_regen, "resource_regen", power_type );
-      // Hasted regeneration
-      resources.hasted[ rt ] = _data.is_hasted_regen();
+      resources.base[ rt ]                  = get_passive_player_value( rt_base, "resource_max", rt );
+      resources.base_multiplier[ rt ]       = get_passive_player_value( rt_mul, "resource_multiplier", rt );
+      resources.base_regen_per_second[ rt ] = get_passive_player_value( rt_regen, "resource_regen", rt );
+      resources.hasted[ rt ]                = _data.is_hasted_regen();
       // Starting amount, the actual start-of-combat resource is min( computed_max, start_at )
       resources.start_at[ rt ] = rt_start == -1.0 ? std::numeric_limits<double>::max() : rt_start;
     }
@@ -1665,14 +1658,14 @@ void player_t::init_base_stats()
   base.spell_power_per_attack_power = get_passive_player_value( base.spell_power_per_attack_power, "sp_per_ap" );
 
   // only certain classes get Agi->Dodge conversions, dodge_per_agility defaults to 0.00
+  // exact values given by Blizzard, only have L90-L100 data
   if ( type == MONK || type == DRUID || type == ROGUE || type == HUNTER || type == SHAMAN || type == DEMON_HUNTER )
-    base.dodge_per_agility =
-        dbc->avoid_per_str_agi_by_level( level() ) / 100.0;  // exact values given by Blizzard, only have L90-L100 data
+    base.dodge_per_agility = dbc->avoid_per_str_agi_by_level( level() ) / 100.0;
 
   // only certain classes get Str->Parry conversions, parry_per_strength defaults to 0.00
+  // exact values given by Blizzard, only have L90-L100 data
   if ( type == PALADIN || type == WARRIOR || type == DEATH_KNIGHT )
-    base.parry_per_strength =
-        dbc->avoid_per_str_agi_by_level( level() ) / 100.0;  // exact values given by Blizzard, only have L90-L100 data
+    base.parry_per_strength = dbc->avoid_per_str_agi_by_level( level() ) / 100.0;
 
   // All classes get 3% dodge and miss
   base.dodge = 0.03;
@@ -1680,8 +1673,10 @@ void player_t::init_base_stats()
 
   // Dodge from base agility isn't affected by diminishing returns and is added here
   if ( base.dodge_per_agility > 0 )
+  {
     base.dodge +=
-        ( dbc->race_base( race ).agility + dbc->attribute_base( type, level() ).agility ) * base.dodge_per_agility;
+      ( dbc->race_base( race ).agility + dbc->attribute_base( type, level() ).agility ) * base.dodge_per_agility;
+  }
 
   base.dodge = get_passive_player_value( base.dodge, "dodge" );
 
@@ -1710,7 +1705,6 @@ void player_t::init_base_stats()
   }
 
   base.block_reduction = get_passive_player_value( base.block_reduction, "block_reduction" );
-  base.rating.block = get_passive_player_value( base.rating.block, "block_rating" );
 
   // Only certain classes can parry, and get 3% base parry, default is 0
   // Parry from base strength isn't affected by diminishing returns and is added here
@@ -1729,9 +1723,10 @@ void player_t::init_base_stats()
 
   // Movement Speed
   base.movement_speed = 7.0;  // yards per second
-  base.stacking_movement_speed_modifier = get_passive_player_value( base.stacking_movement_speed_modifier, "stacking_move_speed_modifier" );
+  base.stacking_movement_speed_modifier =
+    get_passive_player_value( base.stacking_movement_speed_modifier, "stacking_move_speed_modifier" );
   base.non_stacking_movement_speed_modifier =
-      get_passive_player_value( base.non_stacking_movement_speed_modifier, "non_stacking_move_speed_modifier" );
+    get_passive_player_value( base.non_stacking_movement_speed_modifier, "non_stacking_move_speed_modifier" );
 
   // Extract avoidance DR values from table in sc_extra_data.inc
   def_dr.horizontal_shift       = dbc->horizontal_shift( type );
@@ -1756,6 +1751,9 @@ void player_t::init_base_stats()
   }
 
   sim->print_debug( "{} generic base stats: {}", *this, base );
+
+  // Set auto attack modifiers here, even though they're on player_t instead of base stats
+  auto_attack_multiplier = get_passive_player_value( auto_attack_multiplier, "auto_attack_multiplier" );
 }
 
 /**
@@ -15309,7 +15307,7 @@ this directly manipulates the DBC without any processing, it should be called be
 */
 namespace
 {
-static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
+static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { P_GENERIC,                                "base_dd"                          },  // 0
   { P_DURATION,                               "duration"                         },  // 1
   { P_RANGE,                                  "max_range"                        },  // 5
@@ -15327,7 +15325,7 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { P_TICK_DAMAGE,                            "base_td"                          },  // 22
   { A_MOD_STAT,                               "attribute_value"                  },  // 29
   { P_DOSES,                                  "proc_charges"                     },  // 31
-  { A_MOD_INCREASE_RESOURCE,                  "max_resource"                     },  // 35
+  { A_MOD_INCREASE_RESOURCE,                  "resource_max"                     },  // 35
   { P_MAX_STACKS,                             "max_stack"                        },  // 37
   { P_PROC_COOLDOWN,                          "internal_cooldown"                },  // 38
   { P_MAX_TARGETS,                            "max_targets"                      },  // 40
@@ -15345,6 +15343,7 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_INCREASE_RESOURCE_PCT,                  "resource_multiplier"              },  // 132
   { A_MOD_HEALING_DONE_PERCENT,               "healing_multiplier"               },  // 136
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "attribute_multiplier"             },  // 137
+  { -(int)A_MOD_TOTAL_STAT_PERCENTAGE,        "armor_type_multiplier"            },  // -137
   { A_MOD_BASE_RESISTANCE_PCT,                "base_armor_multiplier"            },  // 142
   { A_MOD_CRIT_DAMAGE_MULTIPLIER,             "crit_damage_multiplier"           },  // 163
   { A_MOD_ATTACK_POWER_PCT,                   "attack_power_multiplier",         },  // 166
@@ -15355,20 +15354,21 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_MODIFY_SCHOOL,                          "school"                           },  // 220
   { A_MOD_EXPERTISE,                          "expertise"                        },  // 240
   { A_MOD_BLOCK_PCT,                          "block_reduction"                  },  // 272
-  { A_MOD_BLOCK_FLAT,                         "block_value"                      },  // 274
   { A_MOD_ALL_CRIT_CHANCE,                    "all_crit"                         },  // 290
   { A_MOD_MASTERY_PCT,                        "mastery"                          },  // 318
   { A_MOD_MELEE_AUTO_ATTACK_SPEED,            "attack_speed"                     },  // 319
+  { A_APPLY_HASTED_GCD_LABEL,                 "hasted_gcd"                       },  // 320
   { A_MODIFY_CATEGORY_COOLDOWN,               "category_cooldown"                },  // 341
   { A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED, "attack_speed"                     },  // 342
-  { A_OVERRIDE_SP_PER_AP,                     "sp_per_ap"                        },  // 366
+  { A_MOD_AUTO_ATTACK_PCT,                    "auto_attack_multiplier"           },  // 344
+  { A_OVERRIDE_SP_PER_AP,                     "spell_power_per_attack_power"     },  // 366
   { A_MOD_MANA_REGEN_PCT,                     "resource_regen"                   },  // 379
-  { A_OVERRIDE_AP_PER_SP,                     "ap_per_sp"                        },  // 404
+  { A_OVERRIDE_AP_PER_SP,                     "attack_power_per_spell_power"     },  // 404
   { A_MOD_RATING_MULTIPLIER,                  "rating_multiplier"                },  // 405
   { A_MOD_MAX_CHARGES,                        "charges"                          },  // 411
   { A_HASTED_COOLDOWN,                        "hasted_cooldown"                  },  // 416
   { A_HASTED_GCD,                             "hasted_gcd"                       },  // 417
-  { A_MOD_MAX_RESOURCE,                       "max_resource"                     },  // 418
+  { A_MOD_MAX_RESOURCE,                       "resource_max"                     },  // 418
   { A_MOD_MAX_RESOURCE_PCT,                   "resource_multiplier"              },  // 419
   { A_MOD_ABSORB_DONE_PERCENT,                "absorb_multiplier"                },  // 421
   { A_MOD_ABSORB_RECEIVED_PERCENT,            "absorb_received_multiplier"       },  // 422
@@ -15377,49 +15377,60 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_MOD_RECHARGE_TIME_CATEGORY,             "charge_cooldown"                  },  // 453
   { A_MOD_PARRY_FROM_CRIT_RATING,             "parry_from_crit_rating"           },  // 463
   { A_MOD_VERSATILITY_PCT,                    "versatility"                      },  // 471
+  { A_MOD_AUTO_ATTACK_DAMAGE_PCT,             "auto_attack_multiplier"           },  // 530
   { A_MOD_GUARDIAN_DAMAGE_DONE,               "guardian_damage_multiplier"       },  // 531
 };
 
-enum misc_expansion_e
-{
-  MISC_EXPANSION_NONE = -1,
-  LIST_ATTR,
-  BITMAP_ATTR,
-  BITMAP_RATING,
-  BITMAP_SCHOOL,
-};
-
-struct misc_expansion_t
-{
-  int id;
-  misc_expansion_e type;
-  std::function<std::string_view( int )> formatter;
-};
-
-std::string_view attr_formatter( int type )
+std::string attr_formatter( int type )
 {
   return util::attribute_type_string( static_cast<attribute_e>( type ) );
 }
 
-std::string_view rating_formatter( int type )
+std::string rating_formatter( int type )
 {
   return util::rating_type_string( static_cast<rating_e>( type ) );
 }
 
-std::string_view school_formatter( int type )
+std::string school_formatter( int type )
 {
   return type == -1 ? "all" : util::school_type_string( static_cast<school_e>( type ) );
 }
 
-static const misc_expansion_t misc_expansion_map[] = {
-  { A_MOD_STAT,                   LIST_ATTR,     &attr_formatter   },
-  { A_MOD_TOTAL_STAT_PERCENTAGE,  BITMAP_ATTR,   &attr_formatter   },
-  { A_MOD_RATING_MULTIPLIER,      BITMAP_RATING, &rating_formatter },
-  { A_MOD_CRIT_DAMAGE_MULTIPLIER, BITMAP_SCHOOL, &school_formatter },
-  { A_MOD_DAMAGE_PERCENT_DONE,    BITMAP_SCHOOL, &school_formatter },
+std::string resource_formatter( int type )
+{
+  return util::resource_type_string( static_cast<resource_e>( type ) );
+}
+
+enum misc_expansion_e
+{
+  MISC_EXPANSION_NONE = -1,
+  MISC_TYPE_RESOURCE,
+  MISC_LIST_ATTR,
+  MISC_BITMAP_ATTR,
+  MISC_BITMAP_RATING,
+  MISC_BITMAP_SCHOOL,
 };
 
-std::string_view get_field_from_type( unsigned type )
+struct misc_expansion_t
+{
+  std::string_view field;
+  misc_expansion_e type;
+  std::function<std::string( int )> formatter;
+};
+
+static const std::array<misc_expansion_t, 9> misc_expansion_map = { {
+  { "attribute_value",        MISC_LIST_ATTR,     &attr_formatter     },
+  { "attribute_multiplier",   MISC_BITMAP_ATTR,   &attr_formatter     },
+  { "armor_type_multiplier",  MISC_BITMAP_ATTR,   &attr_formatter     },
+  { "rating_multiplier",      MISC_BITMAP_RATING, &rating_formatter   },
+  { "crit_damage_multiplier", MISC_BITMAP_SCHOOL, &school_formatter   },
+  { "damage_multiplier",      MISC_BITMAP_SCHOOL, &school_formatter   },
+  { "resource_max",           MISC_TYPE_RESOURCE, &resource_formatter },
+  { "resource_multiplier",    MISC_TYPE_RESOURCE, &resource_formatter },
+  { "resource_regen",         MISC_TYPE_RESOURCE, &resource_formatter },
+} };
+
+std::string_view get_field_from_type( int type )
 {
   for ( auto [ t, f ] : field_type_map )
     if ( t == type )
@@ -15428,7 +15439,7 @@ std::string_view get_field_from_type( unsigned type )
   return {};
 }
 
-unsigned get_type_from_field( std::string_view field )
+int get_type_from_field( std::string_view field )
 {
   for ( auto [ t, f ] : field_type_map )
     if ( f == field )
@@ -15515,28 +15526,29 @@ std::vector<const spell_data_t*> player_t::spells_affected_by_passive( const spe
 
   switch ( eff.subtype() )
   {
-    case A_ADD_FLAT_MODIFIER:
-    case A_ADD_PCT_MODIFIER:
+    case A_ADD_FLAT_MODIFIER:  // 107
+    case A_ADD_PCT_MODIFIER:  // 108
       prop = true;
       SC_FALLTHROUGH;
-    case A_MODIFY_SCHOOL:
-    case A_HASTED_COOLDOWN:
-    case A_HASTED_GCD:
+    case A_MODIFY_SCHOOL:  // 220
+    case A_HASTED_COOLDOWN:  // 416
+    case A_HASTED_GCD:  // 417
       affected_spells = dbc->effect_affects_spells( eff.spell()->class_family(), &eff );
       break;
-    case A_ADD_FLAT_LABEL_MODIFIER:
-    case A_ADD_PCT_LABEL_MODIFIER:
+    case A_ADD_PCT_LABEL_MODIFIER:  // 218
+    case A_ADD_FLAT_LABEL_MODIFIER:  // 219
+    case A_APPLY_HASTED_GCD_LABEL:  // 320
     {
       auto span_ = dbc->spells_by_label( eff.misc_value2() );
       affected_spells.assign( span_.begin(), span_.end() );
       prop = true;
       break;
     }
-    case A_MODIFY_CATEGORY_COOLDOWN:
-    case A_MOD_MAX_CHARGES:
-    case A_MOD_RECHARGE_TIME_CATEGORY:
-    case A_MOD_RECHARGE_TIME_PCT_CATEGORY:
-    case A_HASTED_CATEGORY:
+    case A_MODIFY_CATEGORY_COOLDOWN:  // 341
+    case A_MOD_MAX_CHARGES:  // 411
+    case A_MOD_RECHARGE_TIME_CATEGORY:  // 453
+    case A_MOD_RECHARGE_TIME_PCT_CATEGORY:  // 454
+    case A_HASTED_CATEGORY:  // 457
     {
       auto span_ = dbc->spells_by_category( eff.misc_value1() );
       affected_spells.assign( span_.begin(), span_.end() );
@@ -15600,79 +15612,93 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
   {
     // check player affecting subtypes
     auto misc_type = modifying_eff.misc_value1();
-    std::string id_type;
-    std::string field;
+    std::string id_field;
     double flat_val = 0.0;
     double pct_val = 0.0;
 
     switch ( sub_type )
     {
       // special handling
-      case A_MOD_TOTAL_STAT_PERCENTAGE:
-        misc_type = modifying_eff.misc_value2();  // Stat type is in misc_value2
-        pct_val = modifying_eff.percent();
+      case A_MOD_STAT:  // 29
+        // parse scaling value if necessary
+        flat_val = modifying_eff.scaling_class() < 0 ? modifying_eff.average( this ) : modifying_eff.base_value();
         break;
-      case A_MOD_MAX_MANA_PCT:
-      case A_MOD_MANA_REGEN_PCT:
-        misc_type = POWER_MANA;  // hardcode to mana
-        pct_val = modifying_eff.percent();
-        break;
-      case A_MOD_INCREASE_RESOURCE:
-      case A_MOD_MAX_RESOURCE:
+      case A_MOD_INCREASE_RESOURCE: // 35
+      case A_MOD_MAX_RESOURCE:  // 418
+        misc_type = util::power_type_to_resource( static_cast<power_e>( modifying_eff.misc_value1() ) );
         flat_val = modifying_eff.resource();  // resource divisor adjusted value
         break;
-      case A_MOD_RESISTANCE_PCT:
-      case A_MOD_BASE_RESISTANCE_PCT:
+      case A_MOD_RESISTANCE_PCT:  // 101
+      case A_MOD_BASE_RESISTANCE_PCT:  // 142
         if ( ( misc_type & SCHOOL_MASK_PHYSICAL ) == 0 )  // only parse armor
           return false;
         pct_val = modifying_eff.percent();
         break;
-      case A_MOD_STAT:  // parse scaling value if necessary
-      case A_MOD_BLOCK_FLAT:
-        flat_val = modifying_eff.scaling_class() < 0 ? modifying_eff.average( this ) : modifying_eff.base_value();
+      case A_MOD_TOTAL_STAT_PERCENTAGE:  // 137
+        if ( modifying_spell->equipped_class() == ITEM_CLASS_ARMOR &&
+             modifying_spell->flags( SX_REQUIRES_EQUIPPED_ARMOR_TYPE ) )
+        {
+          auto armor_bit = 1U << static_cast<unsigned>( util::matching_armor_type( type ) );
+          if ( ( modifying_spell->equipped_subclass_mask() & armor_bit ) == 0 )
+            return false;
+
+          id_field = "armor_type_multiplier";
+        }
+
+        misc_type = modifying_eff.misc_value2();  // Stat type is in misc_value2
+        pct_val = modifying_eff.percent();
         break;
-      case A_MOD_TARGET_ARMOR_PCT:  // reversed value
-        pct_val = -modifying_eff.percent();
+      case A_MOD_MAX_MANA_PCT:  // 178
+      case A_MOD_MANA_REGEN_PCT:  // 379
+        misc_type = RESOURCE_MANA;  // hardcode to mana
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_TARGET_ARMOR_PCT:  // 280
+        pct_val = -modifying_eff.percent();  // reversed value
         break;
 
       // percent multipliers
-      case A_INCREASE_RESOURCE_PCT:
-      case A_MOD_MAX_RESOURCE_PCT:
-      case A_MOD_POWER_REGEN_PERCENT:
-      case A_MOD_MELEE_AUTO_ATTACK_SPEED:
-      case A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED:
-      case A_HASTE_ALL:
-      case A_MOD_CRIT_DAMAGE_MULTIPLIER:
-      case A_MOD_CRITICAL_HEALING_AMOUNT:
-      case A_MOD_DAMAGE_PERCENT_DONE:
-      case A_MOD_PET_DAMAGE_DONE:
-      case A_MOD_GUARDIAN_DAMAGE_DONE:
-      case A_MOD_ATTACK_POWER_PCT:
-      case A_MOD_RATING_MULTIPLIER:
-      case A_MOD_ABSORB_DONE_PERCENT:
-      case A_MOD_ABSORB_RECEIVED_PERCENT:
-      case A_MOD_HEALING_RECEIVED_PCT:
-      case A_MOD_HEALING_DONE_PERCENT:
+      case A_MOD_POWER_REGEN_PERCENT:  // 110
+      case A_INCREASE_RESOURCE_PCT:  // 132
+      case A_MOD_MAX_RESOURCE_PCT:  // 419
+        misc_type = util::power_type_to_resource( static_cast<power_e>( modifying_eff.misc_value1() ) );
+        SC_FALLTHROUGH;
+      case A_MOD_CRITICAL_HEALING_AMOUNT:  // 50
+      case A_MOD_DAMAGE_PERCENT_DONE:  // 79
+      case A_MOD_HEALING_RECEIVED_PCT:  // 118
+      case A_MOD_HEALING_DONE_PERCENT:  // 136
+      case A_MOD_CRIT_DAMAGE_MULTIPLIER:  // 163
+      case A_MOD_ATTACK_POWER_PCT:  // 166
+      case A_HASTE_ALL:  // 193
+      case A_MOD_MELEE_AUTO_ATTACK_SPEED:  // 319
+      case A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED:  // 342
+      case A_MOD_AUTO_ATTACK_PCT:  // 344
+      case A_MOD_RATING_MULTIPLIER:  // 405
+      case A_MOD_ABSORB_DONE_PERCENT:  // 421
+      case A_MOD_ABSORB_RECEIVED_PERCENT:  // 422
+      case A_MOD_PET_DAMAGE_DONE:  // 429
+      case A_MOD_AUTO_ATTACK_DAMAGE_PCT:  // 530
+      case A_MOD_GUARDIAN_DAMAGE_DONE:  // 531
         pct_val = modifying_eff.percent();
         break;
 
       // flat modifiers
-      case A_MOD_LEECH_PERCENT:
-      case A_MOD_EXPERTISE:
-      case A_MOD_ATTACKER_MELEE_CRIT_CHANCE:
-      case A_MOD_PARRY_PERCENT:
-      case A_MOD_MASTERY_PCT:
-      case A_MOD_ALL_CRIT_CHANCE:
-      case A_MOD_SPELL_CRIT_CHANCE:
-      case A_MOD_VERSATILITY_PCT:
-      case A_MOD_DODGE_PERCENT:
-      case A_OVERRIDE_AP_PER_SP:
-      case A_OVERRIDE_SP_PER_AP:
-      case A_MOD_PARRY_FROM_CRIT_RATING:
-      case A_MOD_SPEED_ALWAYS:
-      case A_MOD_SPEED_NOT_STACK:
-      case A_MOD_BLOCK_PCT:
-      case A_MOD_BLOCK_PERCENT:
+      case A_MOD_PARRY_PERCENT:  // 47
+      case A_MOD_DODGE_PERCENT:  // 49
+      case A_MOD_BLOCK_PERCENT:  // 51
+      case A_MOD_SPELL_CRIT_CHANCE:  // 57
+      case A_MOD_SPEED_ALWAYS:  // 129
+      case A_MOD_SPEED_NOT_STACK:  // 171
+      case A_MOD_ATTACKER_MELEE_CRIT_CHANCE:  // 187
+      case A_MOD_EXPERTISE:  // 240
+      case A_MOD_BLOCK_PCT:  // 272
+      case A_MOD_ALL_CRIT_CHANCE:  // 290
+      case A_MOD_MASTERY_PCT:  // 318
+      case A_OVERRIDE_SP_PER_AP:  // 366
+      case A_OVERRIDE_AP_PER_SP:  // 404
+      case A_MOD_VERSATILITY_PCT:  // 417
+      case A_MOD_LEECH_PERCENT:  // 443
+      case A_MOD_PARRY_FROM_CRIT_RATING:  // 463
         flat_val = modifying_eff.percent();
         break;
 
@@ -15680,10 +15706,13 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         return false;
     }
 
-    if ( id_type.empty() )
-      id_type = get_field_from_type( sub_type );
+    if ( !flat_val && !pct_val )
+      return false;
 
-    assert( !id_type.empty() && "subtype not found in field_type_map!" );
+    if ( id_field.empty() )
+      id_field = get_field_from_type( sub_type );
+
+    assert( !id_field.empty() && "subtype not found in field_type_map!" );
 
     if ( remove )
     {
@@ -15691,9 +15720,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       pct_val = 1.0 / ( 1.0 + pct_val ) - 1.0;
     }
 
-    auto do_debug = [ &, this ]( std::string id_str, const misc_expansion_t* misc_e, int field_type, const auto& prev,
-                                 const auto& now ) {
-      std::string field_str = !misc_e ? id_str : fmt::format( "{}_{}", misc_e->formatter( field_type ), id_str );
+    auto do_debug = [ & ]( std::string type_str, int type, const auto& prev, const auto& now ) {
+      std::string field_str = type_str.empty() ? id_field : fmt::format( "{}_{}", type_str, id_field );
       std::string _tmp_full_message_tmp_ = fmt::format(
         "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
         modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
@@ -15703,13 +15731,34 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
     };
 
-    // check for misc_value expansion
-    for ( const auto& misc_e : misc_expansion_map )
-    {
-      if ( misc_e.id != sub_type )
-        continue;
+    auto add_reporting = [ & ]( int type ) {
+      if ( sim->parent || sim->profileset_enabled || sim->report_details == 0 || sim->html_file_str.empty() )
+        return;
 
-      if ( misc_e.type == LIST_ATTR )
+      if ( remove )
+        range::erase_remove( reporting_effects_player[ id_field ][ type ], &modifying_eff );
+      else
+        reporting_effects_player[ id_field ][ type ].push_back( &modifying_eff );
+    };
+
+    auto id_type = get_type_from_field( id_field );
+
+    // check for misc_value expansion
+    auto m_it = range::find( misc_expansion_map, id_field, &misc_expansion_t::field );
+    if ( m_it == misc_expansion_map.end() )
+    {
+      // no expansion needed, default handling
+      auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, id_type, 0, 0, flat_val, pct_val );
+
+      do_debug( "", 0, prev, now );
+      add_reporting( 0 );
+
+      return true;
+    }
+
+    switch ( m_it->type )
+    {
+      case MISC_LIST_ATTR:
       {
         std::vector<attribute_e> attr_list;
 
@@ -15723,67 +15772,58 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         for ( auto attr : attr_list )
         {
           auto attr_int = static_cast<int>( attr );
-          auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( id_type ),
-                                                            attr_int, 0, flat_val, pct_val );
+          auto [ prev, now ] =
+            add_passive_effect_modifier( passive_player_modifiers_, id_type, attr_int, 0, flat_val, pct_val );
 
-          do_debug( id_type, &misc_e, attr_int, prev, now );
+          do_debug( m_it->formatter( attr_int ), attr_int, prev, now );
+          add_reporting( attr_int );
         }
 
         return true;
       }
-      else if ( misc_e.type == BITMAP_ATTR )
+      case MISC_BITMAP_ATTR:
       {
-        bool matching_armor = modifying_spell->equipped_class() == ITEM_CLASS_ARMOR &&
-                              modifying_spell->flags( SX_REQUIRES_EQUIPPED_ARMOR_TYPE );
-        if ( matching_armor )
-        {
-          auto armor_bit = 1U << static_cast<unsigned>( util::matching_armor_type( type ) );
-          if ( ( modifying_spell->equipped_subclass_mask() & armor_bit ) == 0 )
-            return false;
-        }
-
         for ( auto attr : { ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT } )
         {
           if ( misc_type & ( 1 << ( attr - 1 ) ) )
           {
-            // flip sign for matching armor
-            auto attr_int = static_cast<int>( attr ) * ( matching_armor ? -1 : 1 );
-            auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( id_type ),
-                                                              attr_int, 0, flat_val, pct_val );
+            auto attr_int = static_cast<int>( attr );
+            auto [ prev, now ] =
+              add_passive_effect_modifier( passive_player_modifiers_, id_type, attr_int, 0, flat_val, pct_val );
 
-            if ( matching_armor )
-              do_debug( id_type + "_matching_armor", &misc_e, -attr_int, prev, now );
-            else
-              do_debug( id_type, &misc_e, attr_int, prev, now );
+            do_debug( m_it->formatter( attr_int ), attr_int, prev, now );
+            add_reporting( attr_int );
           }
         }
 
         return true;
       }
-      else if ( misc_e.type == BITMAP_RATING )
+      case MISC_BITMAP_RATING:
       {
         for ( auto rating = static_cast<rating_e>( 0 ); rating < RATING_MAX; ++rating )
         {
           if ( misc_type & util::rating_to_rating_mod( rating ) )
           {
             auto rating_int = static_cast<int>( rating );
-            auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( id_type ),
-                                                              rating_int, 0, flat_val, pct_val );
+            auto [ prev, now ] =
+              add_passive_effect_modifier( passive_player_modifiers_, id_type, rating_int, 0, flat_val, pct_val );
 
-            do_debug( id_type, &misc_e, rating_int, prev, now );
+            do_debug( m_it->formatter( rating_int ), rating_int, prev, now );
+            add_reporting( rating_int );
           }
         }
 
         return true;
       }
-      else if ( misc_e.type == BITMAP_SCHOOL )
+      case MISC_BITMAP_SCHOOL:
       {
         if ( ( misc_type & 0x7F ) == 0x7F )  // special handling for all schools
         {
-          auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( id_type ),
-                                                            -1, 0, flat_val, pct_val );
+          auto [ prev, now ] =
+            add_passive_effect_modifier( passive_player_modifiers_, id_type, -1, 0, flat_val, pct_val );
 
-          do_debug( id_type, &misc_e, -1, prev, now );
+          do_debug( "all", -1, prev, now );
+          add_reporting( -1 );
 
           return true;
         }
@@ -15793,30 +15833,30 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           if ( misc_type & dbc::get_school_mask( school ) )
           {
             auto school_int = static_cast<int>( school );
-            auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( id_type ),
-                                                              school_int, 0, flat_val, pct_val );
+            auto [ prev, now ] =
+              add_passive_effect_modifier( passive_player_modifiers_, id_type, school_int, 0, flat_val, pct_val );
 
-            do_debug( id_type, &misc_e, misc_type, prev, now );
+            do_debug( m_it->formatter( school_int ), school_int, prev, now );
+            add_reporting( school_int );
           }
         }
 
         return true;
       }
-      else
+      case MISC_TYPE_RESOURCE:
       {
+        auto [ prev, now ] =
+          add_passive_effect_modifier( passive_player_modifiers_, id_type, misc_type, 0, flat_val, pct_val );
+
+        do_debug( m_it->formatter( misc_type ), misc_type, prev, now );
+        add_reporting( misc_type );
+
+        return true;
+      }
+      default:
         assert( false && "Invalid misc_exanpsion_map entry" );
         return false;
-      }
     }
-
-    // no expansion needed, default handling
-
-    auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( id_type ),
-                                                      misc_type, 0, flat_val, pct_val );
-
-    do_debug( id_type, nullptr, 0, prev, now );
-
-    return true;
   }
 
   for ( auto spell_ : affected_spells )
@@ -16205,7 +16245,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           continue;
 
         // if the effect's spell has already been registered, de-register, modify, then re-register
-        bool deregister = range::contains( registered_passive_spells_, eff->spell()->id() );
+        bool deregister = range::contains( registered_passive_spells_, eff->spell()->id(),
+                                           &std::pair<unsigned, parse_source_e>::first );
         if ( deregister )
         {
           if ( sim->debug )
@@ -16244,24 +16285,25 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
   return success;
 }
 
-void player_t::parse_passive_effects( const spell_data_t* spell, bool force )
+void player_t::parse_passive_effects( const spell_data_t* spell, bool force, parse_source_e source )
 {
   if ( !spell || !spell->ok() )
     return;
 
-  if ( range::contains( registered_passive_spells_, spell->id() ) && !force )
+  if ( !force &&
+       range::contains( registered_passive_spells_, spell->id(), &std::pair<unsigned, parse_source_e>::first ) )
   {
     sim->error( "Unable to register {} ({}), spell already registered.", spell->name_cstr(), spell->id() );
     return;
   }
 
-  if ( range::contains( deregistered_passive_spells_, spell->id() ) && !force )
+  if ( !force && range::contains( deregistered_passive_spells_, spell->id() ) )
   {
     sim->print_debug( "Unable to register {} ({}), spell has been de-registered.", spell->name_cstr(), spell->id() );
     return;
   }
 
-  if ( !spell->flags( SX_PASSIVE ) && !force )
+  if ( !force && !spell->flags( SX_PASSIVE ) )
   {
     sim->error( "Unable to register {} ({}), spell is not passive.", spell->name_cstr(), spell->id() );
     return;
@@ -16276,15 +16318,15 @@ void player_t::parse_passive_effects( const spell_data_t* spell, bool force )
     if ( range::contains( registered_effect_ignore_list_, eff.id() ) )
       continue;
 
-    // filter out non-effect-modifying effects
+    // filter out non-aura applications
     if ( eff.type() != E_APPLY_AURA && eff.type() != E_APPLY_AREA_AURA_PARTY && eff.type() != E_APPLY_AURA_PLAYER_AND_PET )
       continue;
 
-    success = register_passive_effect( eff );
+    success = register_passive_effect( eff ) ? true : success;
   }
 
   if ( success )
-    registered_passive_spells_.push_back( spell->id() );
+    registered_passive_spells_.emplace_back( spell->id(), source );
 }
 
 void player_t::deregister_passive_effects( const spell_data_t* spell )
@@ -16297,7 +16339,7 @@ void player_t::deregister_passive_effects( const spell_data_t* spell )
 
   deregistered_passive_spells_.push_back( spell->id() );
 
-  if ( range::contains( registered_passive_spells_, spell->id() ) )
+  if ( range::contains( registered_passive_spells_, spell->id(), &std::pair<unsigned, parse_source_e>::first ) )
   {
     // go thru all the effects on the modifying spell
     for ( const auto& eff : spell->effects() )
@@ -16307,13 +16349,14 @@ void player_t::deregister_passive_effects( const spell_data_t* spell )
         continue;
 
       // filter out non-effect-modifying effects
-      if ( eff.type() != E_APPLY_AURA && eff.type() != E_APPLY_AREA_AURA_PARTY && eff.type() != E_APPLY_AURA_PLAYER_AND_PET )
+      if ( eff.type() != E_APPLY_AURA && eff.type() != E_APPLY_AREA_AURA_PARTY &&
+           eff.type() != E_APPLY_AURA_PLAYER_AND_PET )
         continue;
 
       register_passive_effect( eff, true );
     }
 
-    range::erase_remove( registered_passive_spells_, spell->id() );
+    range::erase_remove( registered_passive_spells_, [ id = spell->id() ]( const auto& e ) { return e.first == id; } );
   }
 }
 
@@ -16339,7 +16382,7 @@ const spell_data_t* player_t::clone_dbc_override_spell( const player_t* p, const
 
 void player_t::parse_all_class_passives()
 {
-  parse_passive_effects( find_spell( dbc::get_class_aura_id( type ) ) );
+  parse_passive_effects( find_spell( dbc::get_class_aura_id( type ) ), false, PARSE_SOURCE_CLASS );
 
   auto mastery_id = mastery_spell_entry_t::find( specialization(), dbc->ptr ).spell_id;
 
@@ -16350,7 +16393,7 @@ void player_t::parse_all_class_passives()
     {
       auto spell = find_spell( spec_spell.spell_id );
       if ( spell->flags( SX_PASSIVE ) )
-        parse_passive_effects( spell );
+        parse_passive_effects( spell, false, PARSE_SOURCE_SPEC );
     }
   }
 
@@ -16361,7 +16404,7 @@ void player_t::parse_all_class_passives()
     {
       auto spell = find_spell( racial_spell.spell_id );
       if ( spell->flags( SX_PASSIVE ) )
-        parse_passive_effects( spell );
+        parse_passive_effects( spell, false, PARSE_SOURCE_RACIAL );
     }
   }
 }
@@ -16377,7 +16420,7 @@ void player_t::parse_all_passive_talents()
     if ( !obj.ok() || !obj.spell()->ok() || !obj.spell()->flags( SX_PASSIVE ) )
       continue;
 
-    parse_passive_effects( obj.spell() );
+    parse_passive_effects( obj.spell(), false, PARSE_SOURCE_TALENT );
   }
 }
 
@@ -16387,7 +16430,7 @@ void player_t::parse_all_passive_sets()
     for ( const auto& bonus : type )
       for ( const auto& data : bonus )
         if ( data.enabled && range::contains( sets->current_sets, data.bonus->enum_id ) )
-          parse_passive_effects( data.spell );
+          parse_passive_effects( data.spell, false, PARSE_SOURCE_SET );
 }
 
 void player_t::register_passive_effect_mask( const spell_data_t* spell, uint32_t mask )
@@ -16395,7 +16438,8 @@ void player_t::register_passive_effect_mask( const spell_data_t* spell, uint32_t
   if ( !spell || !spell->ok() || !mask )
     return;
 
-  bool deregister = range::contains( registered_passive_spells_, spell->id() );
+  bool deregister =
+    range::contains( registered_passive_spells_, spell->id(), &std::pair<unsigned, parse_source_e>::first );
 
   if ( sim->debug )
   {
@@ -16429,7 +16473,8 @@ void player_t::register_passive_affect_list( const spell_data_t* spell, const af
   if ( !spell || !spell->ok() || mod.idx.empty() || ( mod.spell.empty() && mod.label.empty() && mod.family.empty() ) )
     return;
 
-  bool deregister = range::contains( registered_passive_spells_, spell->id() );
+  bool deregister =
+    range::contains( registered_passive_spells_, spell->id(), &std::pair<unsigned, parse_source_e>::first );
 
   if ( sim->debug )
   {
@@ -16485,4 +16530,86 @@ void player_t::register_passive_affect_list( const spell_data_t* spell, const af
       }
     }
   }
+}
+
+void player_t::print_parsed_effects( report::sc_html_stream& os ) const
+{
+  if ( !sim->report_details )
+    return;
+
+  os << R"(<div class="player-section parsed_effects">)"
+     << R"(<h3 class="toggle">Parsed Player Effects</h3>)"
+     << R"(<div class="toggle-content hide">)";
+
+  os << R"(<table class="sc left even"><thead><tr><th colspan="2" class="left">Passive Effects</th>)"
+     << "<th>Spell</th><th>ID</th><th>#</th><th>Value</th><th>Source</th></tr></thead>\n";
+
+  for ( const auto& [ field, misc_list ] : reporting_effects_player )
+  {
+    auto m_it = range::find( misc_expansion_map, field, &misc_expansion_t::field );
+    bool has_misc = m_it != misc_expansion_map.end();
+
+    auto rows = range::accumulate( misc_list, 0, []( const auto& m ) { return m.second.size(); } );
+    bool row_open = true;
+
+    os.format( R"(<tr><td colspan="{}" rowspan="{}" class="dark">{}</td>)", has_misc ? "1" : "2", rows,
+               util::inverse_tokenize( field ) );
+
+    for ( const auto& [ misc, eff_list ] : misc_list )
+    {
+      if ( eff_list.empty() )
+        continue;
+
+      if ( has_misc )
+      {
+        auto m_rows = eff_list.size();
+
+        if ( !row_open )
+        {
+          row_open = true;
+          os << "<tr>";
+        }
+
+        os.format( R"(<td rowspan="{}" class="dark">{}</td>)", m_rows,
+                   util::inverse_tokenize( m_it->formatter( misc ) ) );
+      }
+
+      for ( auto eff : eff_list )
+      {
+        if ( !row_open )
+          os << "<tr>";
+
+        auto spell = eff->spell();
+        std::string source;
+        auto it = range::find( registered_passive_spells_, spell->id(), &std::pair<unsigned, parse_source_e>::first );
+        if ( it != registered_passive_spells_.end() )
+        {
+          switch ( it->second )
+          {
+            case PARSE_SOURCE_MANUAL: source = "Manual"; break;
+            case PARSE_SOURCE_CLASS:  source = "Class Aura"; break;
+            case PARSE_SOURCE_SPEC:   source = "Spec Spell"; break;
+            case PARSE_SOURCE_RACIAL: source = "Racial"; break;
+            case PARSE_SOURCE_TALENT: source = "Talent"; break;
+            case PARSE_SOURCE_SET:    source = "Set Bonus"; break;
+            default:                  source = "ERROR"; break;
+          }
+        }
+
+        os.format(
+          R"(<td>{}</td><td class="right">{}</td><td class="right">{}</td><td class="right">{:.1f}{}</td><td>{}</td>)",
+          report_decorators::decorated_spell_data( sim, spell ), spell->id(), eff->index() + 1, eff->base_value(),
+          eff->default_multiplier() == 0.01 ? "%" : "", source );
+
+        os << "</tr>";
+        row_open = false;
+      }
+    }
+  }
+
+  os << "</table>\n";
+
+  print_custom_parsed_effects( os );
+
+  os << "</div></div>\n";
 }

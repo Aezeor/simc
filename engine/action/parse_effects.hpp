@@ -744,16 +744,16 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
 
   void throw_passive_error( const spell_data_t* s ) override;
 
-  void parsed_effects_html( report::sc_html_stream& );
+  void print_custom_parsed_effects( report::sc_html_stream& ) const override;
 
-  virtual size_t total_effects_count();
+  virtual size_t total_effects_count() const;
 
-  virtual void print_parsed_custom_type( report::sc_html_stream& ) {}
+  virtual void print_parsed_custom_type( report::sc_html_stream& ) const {}
 
   template <typename U>
   void print_parsed_type( report::sc_html_stream& os, const std::vector<U>& entries, std::string_view n,
                           const std::function<std::string( uint32_t )>& note_fn = nullptr,
-                          const std::function<std::string( double )>& val_str_fn = nullptr )
+                          const std::function<std::string( double )>& val_str_fn = nullptr ) const
   {
     auto c = entries.size();
     if ( !c )
@@ -832,7 +832,7 @@ public:
 
   virtual void print_parsed_custom_type( report::sc_html_stream& ) {}
 
-  virtual size_t total_effects_count();
+  virtual size_t total_effects_count() const;
 
   template <typename W = parse_action_base_t, typename V>
   void print_parsed_type( report::sc_html_stream& os, V vector_ptr, std::string_view n,

@@ -553,12 +553,9 @@ void modified_spell_data_t::parsed_effects_html( report::sc_html_stream& os, con
 {
   if ( entries.size() )
   {
-    os << "<h3 class=\"toggle\">Modified Spell Data</h3>"
-       << "<div class=\"toggle-content hide\">"
-       << "<table class=\"sc even left\">\n";
-
-    os << "<thead><tr>"
-       << "<th>Spell</th>"
+    os << R"(<table class="sc even left">)"
+       << "<thead><tr>"
+       << R"(<th class="left">Dynamic Data</th>)"
        << "<th>ID</th>"
        << "<th>#</th>"
        << "<th>Effect</th>"
@@ -573,8 +570,7 @@ void modified_spell_data_t::parsed_effects_html( report::sc_html_stream& os, con
     for ( auto m_data : entries )
       m_data->print_parsed_spell( os, sim );
 
-    os << "</table>\n"
-       << "</div>\n";
+    os << "</table>\n";
   }
 }
 
@@ -1346,16 +1342,13 @@ void parse_player_effects_t::debug_message( const target_effect_t&, std::string_
                     s_data->name_cstr(), s_data->id(), i );
 }
 
-void parse_player_effects_t::parsed_effects_html( report::sc_html_stream& os )
+void parse_player_effects_t::print_custom_parsed_effects( report::sc_html_stream& os ) const
 {
   if ( total_effects_count() )
   {
-    os << "<h3 class=\"toggle\">Player Effects</h3>"
-       << "<div class=\"toggle-content hide\">"
-       << "<table class=\"sc left even\">\n";
-
-    os << "<thead><tr>"
-       << "<th>Type</th>"
+    os << R"(<table class="sc even left">)"
+       << "<thead><tr>"
+       << R"(<th class="left">Dynamic Effects</th>)"
        << "<th>Spell</th>"
        << "<th>ID</th>"
        << "<th>#</th>"
@@ -1368,39 +1361,38 @@ void parse_player_effects_t::parsed_effects_html( report::sc_html_stream& os )
       return fmt::format( "{:.1f}%", v * mastery_coefficient() * 100 );
     };
 
+    print_parsed_type( os, absorb_multiplier_effects, "Absorb Multiplier" );
+    print_parsed_type( os, absorb_received_mult_effects, "Absorb Received Multiplier" );
+    print_parsed_type( os, attack_power_multiplier_effects, "Attack Power Multiplier" );
+    print_parsed_type( os, armor_multiplier_effects, "Armor Multiplier" );
     print_parsed_type( os, auto_attack_speed_effects, "Auto Attack Speed" );
     print_parsed_type( os, attribute_multiplier_effects, "Attribute Multiplier", &opt_strings::attributes );
-    print_parsed_type( os, rating_multiplier_effects, "Rating Multiplier", &opt_strings::ratings );
-    print_parsed_type( os, versatility_effects, "Versatility" );
-    print_parsed_type( os, player_multiplier_effects, "Player Multiplier", &opt_strings::school );
-    print_parsed_type( os, pet_multiplier_effects, "Pet Multiplier", &opt_strings::pet_type );
-    print_parsed_type( os, attack_power_multiplier_effects, "Attack Power Multiplier" );
-    print_parsed_type( os, crit_chance_effects, "Crit Chance" );
-    print_parsed_type( os, spell_crit_chance_effects, "Spell Crit Chance" );
-    print_parsed_type( os, crit_bonus_effects, "Crit Damage Bonus" );
-    print_parsed_type( os, leech_effects, "Leech" );
-    print_parsed_type( os, expertise_effects, "Expertise" );
-    print_parsed_type( os, crit_avoidance_effects, "Crit Avoidance" );
-    print_parsed_type( os, parry_effects, "Parry" );
     print_parsed_type( os, base_armor_multiplier_effects, "Base Armor Multiplier" );
-    print_parsed_type( os, armor_multiplier_effects, "Armor Multiplier" );
-    print_parsed_type( os, haste_effects, "Haste" );
-    print_parsed_type( os, mastery_effects, "Mastery", nullptr, mastery_val );
-    print_parsed_type( os, parry_rating_from_crit_effects, "Parry Rating from Crit" );
+    print_parsed_type( os, crit_avoidance_effects, "Crit Avoidance" );
+    print_parsed_type( os, crit_chance_effects, "Crit Chance" );
+    print_parsed_type( os, crit_bonus_effects, "Crit Damage Bonus" );
     print_parsed_type( os, dodge_effects, "Dodge" );
-    print_parsed_type( os, absorb_multiplier_effects, "Absorb Multiplier" );
+    print_parsed_type( os, expertise_effects, "Expertise" );
+    print_parsed_type( os, haste_effects, "Haste" );
     print_parsed_type( os, healing_received_effects, "Healing Received" );
-    print_parsed_type( os, absorb_received_mult_effects, "Absorb Received Multiplier" );
+    print_parsed_type( os, leech_effects, "Leech" );
+    print_parsed_type( os, mastery_effects, "Mastery", nullptr, mastery_val );
+    print_parsed_type( os, parry_effects, "Parry" );
+    print_parsed_type( os, parry_rating_from_crit_effects, "Parry Rating from Crit" );
+    print_parsed_type( os, pet_multiplier_effects, "Pet Multiplier", &opt_strings::pet_type );
+    print_parsed_type( os, player_multiplier_effects, "Player Multiplier", &opt_strings::school );
+    print_parsed_type( os, rating_multiplier_effects, "Rating Multiplier", &opt_strings::ratings );
+    print_parsed_type( os, spell_crit_chance_effects, "Spell Crit Chance" );
     print_parsed_type( os, target_multiplier_effects, "Target Multiplier", &opt_strings::school );
     print_parsed_type( os, target_pet_multiplier_effects, "Target Pet Multiplier", &opt_strings::pet_type );
+    print_parsed_type( os, versatility_effects, "Versatility" );
     print_parsed_custom_type( os );
 
-    os << "</table>\n"
-       << "</div>\n";
+    os << "</table>\n";
   }
 }
 
-size_t parse_player_effects_t::total_effects_count()
+size_t parse_player_effects_t::total_effects_count() const
 {
   return auto_attack_speed_effects.size() +
          attribute_multiplier_effects.size() +
@@ -1854,7 +1846,7 @@ void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os )
   }
 }
 
-size_t parse_action_base_t::total_effects_count()
+size_t parse_action_base_t::total_effects_count() const
 {
   return ta_multiplier_effects.size() +
          da_multiplier_effects.size() +

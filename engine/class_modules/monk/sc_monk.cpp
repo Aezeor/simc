@@ -6861,9 +6861,6 @@ public:
   void html_customsection( report::sc_html_stream &os ) override
   {
     monk_bugreport( os );
-    os << "<div class=\"player-section\">\n";
-    p.parsed_effects_html( os );
-    os << "</div>\n";
   }
 
 private:

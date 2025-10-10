@@ -8726,34 +8726,6 @@ void warrior_t::init_spells()
   active.fatality         = nullptr;
   active.slayers_strike   = nullptr;
 
-  // AA Mods Not Handled by affecting_aura
-  if ( specialization() == WARRIOR_FURY )
-  {
-  auto_attack_multiplier *= 1.0 + spec.fury_warrior->effectN( 4 ).percent();
-  }
-  if ( specialization() == WARRIOR_ARMS )
-  {
-    auto_attack_multiplier *= 1.0 + spec.arms_warrior->effectN( 6 ).percent();
-  }
-  if ( specialization() == WARRIOR_FURY && main_hand_weapon.group() == WEAPON_1H &&
-             off_hand_weapon.group() == WEAPON_1H && talents.fury.single_minded_fury->ok() )
-  {
-    auto_attack_multiplier *= 1.0 + talents.fury.single_minded_fury->effectN( 4 ).percent();  // TODO double check this in game
-    auto_attack_multiplier *= 1.0 + talents.fury.single_minded_fury->effectN( 5 ).percent();
-  }
-  if ( specialization() == WARRIOR_FURY && talents.warrior.dual_wield_specialization->ok() )
-  {
-  auto_attack_multiplier *= 1.0 + talents.warrior.dual_wield_specialization->effectN( 3 ).percent();
-  }
-  if ( specialization() == WARRIOR_ARMS && talents.warrior.two_handed_weapon_specialization->ok() ) 
-  {
-    auto_attack_multiplier *= 1.0 + talents.warrior.two_handed_weapon_specialization->effectN( 3 ).percent();
-  }
-  if ( specialization() == WARRIOR_PROTECTION && talents.warrior.one_handed_weapon_specialization->ok() )
-  {
-    auto_attack_multiplier *= 1.0 + talents.warrior.one_handed_weapon_specialization->effectN( 3 ).percent();
-  }
-
   // Cooldowns
   cooldown.avatar         = get_cooldown( "avatar" );
   cooldown.recklessness   = get_cooldown( "recklessness" );
@@ -10760,7 +10732,6 @@ public:
 
       os << "<div class=\"clear\"></div>\n";
     }
-    p.parsed_effects_html( os );
     os << "\t\t\t\t\t</div>\n";
   }
 
