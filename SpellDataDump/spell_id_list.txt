@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.0.63724
+Class Spell ID List, wow build 12.0.0.63728
 
 Death Knight
 3714     Path of Frost
@@ -3044,7 +3044,7 @@ Demon Hunter
 1245455  Cull
 1245470 *Reaper's Toll
 1245483  Pierce the Veil
-1245496 *Demonsurge
+1245496  Demonsurge
 1245498 *Netherstream
 1245511  Demonsurge
 1245514  Demonsurge
