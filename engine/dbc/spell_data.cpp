@@ -87,7 +87,7 @@ resource_e spellpower_data_t::resource() const
 
 double spellpower_data_t::cost_divisor( bool pct ) const
 {
-#ifdef SC_USE_PTR
+#if SC_USE_PTR == 1
   assert( power_type_data_t::divisor( type(), false ) ==
           power_type_data_t::divisor( type(), true ) );
 #endif
@@ -121,7 +121,7 @@ resource_e spelleffect_data_t::resource_gain_type() const
 
 double spelleffect_data_t::resource( resource_e resource_type ) const
 {
-#ifdef SC_USE_PTR
+#if SC_USE_PTR == 1
   assert( power_type_data_t::multiplier( resource_type, false ) ==
           power_type_data_t::multiplier( resource_type, true ) );
 #endif
@@ -135,7 +135,7 @@ double spelleffect_data_t::resource() const
 
 double spelleffect_data_t::resource_multiplier() const
 {
-#ifdef SC_USE_PTR
+#if SC_USE_PTR == 1
   assert( power_type_data_t::multiplier( static_cast<power_e>( misc_value1() ), false ) ==
           power_type_data_t::multiplier( static_cast<power_e>( misc_value1(), true ) ) );
 #endif

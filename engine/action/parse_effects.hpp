@@ -400,7 +400,7 @@ struct modified_spelleffect_t
 
   double resource( resource_e r, const action_t* a = nullptr, const action_state_t* s = nullptr ) const
   {
-  #ifdef SC_USE_PTR
+  #if SC_USE_PTR == 1
     assert( power_type_data_t::multiplier( r, false ) ==
             power_type_data_t::multiplier( r, true ) );
   #endif
