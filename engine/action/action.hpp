@@ -28,7 +28,6 @@ struct action_state_t;
 struct spell_data_t;
 struct cooldown_t;
 struct cooldown_waste_data_t;
-class conduit_data_t;
 struct dot_t;
 struct buff_t;
 struct event_t;
@@ -350,7 +349,7 @@ public:
 
   /// Cost of using the ability.
   std::array<parsed_value_t<double>, RESOURCE_MAX> base_costs;
-  
+
   /// Maximum amount of additional resource that can be expended.
   std::array<double, RESOURCE_MAX> max_base_costs;
 

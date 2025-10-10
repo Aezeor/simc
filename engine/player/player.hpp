@@ -42,7 +42,6 @@ struct actor_target_data_t;
 struct attack_t;
 class azerite_essence_t;
 class azerite_power_t;
-class conduit_data_t;
 class dbc_t;
 class dbc_override_t;
 struct benefit_t;
@@ -87,9 +86,6 @@ namespace report {
 }
 namespace js {
   struct JsonOutput;
-}
-namespace covenant {
-  class covenant_state_t;
 }
 
 /* Player Report Extension
@@ -246,9 +242,6 @@ struct player_t : public actor_t
 
   /// Azerite essence state object
   std::unique_ptr<azerite::azerite_essence_state_t> azerite_essence;
-
-  /// Covenant state object
-  std::unique_ptr<covenant::covenant_state_t> covenant;
 
   // TODO: FIXME, these stats should not be increased by scale factor deltas
   struct base_initial_current_t
@@ -574,27 +567,6 @@ struct player_t : public actor_t
     buff_t* focus_magic; // Mage talent
     buff_t* power_infusion; // Priest spell
     buff_t* rallying_cry; // Warrior spell
-
-    // 9.0 class covenant buffs
-    buff_t* blessing_of_summer; // Night Fae Paladin spell
-    buff_t* blessing_of_autumn; // Night Fae Paladin spell
-    buff_t* blessing_of_winter; // Night Fae Paladin spell
-    buff_t* blessing_of_spring; // Night Fae Paladin spell
-    buff_t* conquerors_banner; // Necrolord Warrior spell
-
-    // 9.0 Soulbinds
-    buff_t* wild_hunt_tactics;  // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
-    buff_t* volatile_solvent_humanoid; // necrolord/marileth - humanoid (mastery) buff
-    buff_t* volatile_solvent_stats; // necrolord/marileth - beast (primary) and dragonkin (crit) buffs
-    buff_t* volatile_solvent_damage; // necrolord/marileth - elemental (magic) and giant (physical) % damage done buffs
-    buff_t* battlefield_presence; // venthyr/draven - damage increase buff based on number of enemies
-    buff_t* emenis_magnificent_skin; //necrolord/emeni - buff applied when using fleshcraft that increases max health
-    buff_t* trembling_pustules; //necrolord/emeni - buff applied when using fleshcraft that increases procs Pustule Eruption damage
-    buff_t* hold_your_ground; //venthyr/draven - stamina % buff when standing still
-    buff_t* waking_bone_breastplate; //necrolord/heirmir - max health % buff when near 3 or more enemies
-
-    // 9.1 Soulbinds
-    buff_t* wild_hunt_strategem_tracking; //night_fae/korayn - tracking buff to allow procs of wild_hunt_strategem on enemy targets
 
     // 9.0 Runecarves
     buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving
@@ -1124,10 +1096,6 @@ public:
   azerite_essence_t find_azerite_essence( unsigned power_id ) const;
 
   item_runeforge_t find_runeforge_legendary( util::string_view name, bool tokenized = false, bool force_unity = false ) const;
-
-  conduit_data_t find_conduit_spell( util::string_view name ) const;
-  const spell_data_t* find_soulbind_spell( util::string_view name ) const;
-  const spell_data_t* find_covenant_spell( util::string_view name ) const;
 
   const spell_data_t* find_racial_spell( util::string_view name, race_e r = RACE_NONE ) const;
   const spell_data_t* find_class_spell( util::string_view name, specialization_e s = SPEC_NONE ) const;

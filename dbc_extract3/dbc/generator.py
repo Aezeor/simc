@@ -8,7 +8,7 @@ import dbc.db, dbc.data, dbc.parser, dbc.file
 from dbc import constants, util
 from dbc.constants import Class
 from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet
-from dbc.filter import SoulbindAbilitySet, CovenantAbilitySet, RenownRewardSet, TalentSet, TemporaryEnchantItemSet
+from dbc.filter import TalentSet, TemporaryEnchantItemSet
 from dbc.filter import PermanentEnchantItemSet, ExpectedStatModSet, TraitSet, EmbellishmentSet, CharacterLoadoutSet
 from dbc.filter import TraitLoadoutSet
 
@@ -2365,13 +2365,6 @@ class SpellDataGenerator(DataGenerator):
           ( 1249987, 3 ), # Rushing Wind Kick
 
 
-          # Covenant
-          ( 325217, 0 ), # Necrolord Bonedust Brew damage
-          ( 325218, 0 ), # Necrolord Bonedust Brew heal
-          ( 328296, 0 ), # Necrolord Bonedust Chi Refund
-          ( 342330, 0 ), # Necrolord Bonedust Brew Grounding Breath Buff
-          ( 394514, 0 ), # Necrolord Bonedust Brew Attenuation Buff
-
           # Shadowland Legendaries
           ( 337342, 3 ), # Jade Ignition Damage
           ( 337482, 3 ), # Pressure Point Buff
@@ -3284,18 +3277,6 @@ class SpellDataGenerator(DataGenerator):
 
         # Soulbind trees abilities
         for spell_id in SoulbindAbilitySet(self._options).ids():
-            self.process_spell(spell_id, ids, 0, 0)
-
-        # Covenant abilities
-        for spell_id in CovenantAbilitySet(self._options).ids():
-            self.process_spell(spell_id, ids, 0, 0)
-
-        # Souldbind conduits
-        for spell_id in ConduitSet(self._options).ids():
-            self.process_spell(spell_id, ids, 0, 0)
-
-        # Renown rewards
-        for spell_id in RenownRewardSet(self._options).ids():
             self.process_spell(spell_id, ids, 0, 0)
 
         # Explicitly add Shadowlands legendaries
@@ -4974,121 +4955,6 @@ class RankSpellGenerator(DataGenerator):
             fields += spell_text.field('rank')
 
             self.output_record(fields)
-
-        self.output_footer()
-
-class ConduitGenerator(DataGenerator):
-    def filter(self):
-        return ConduitSet(self._options).get()
-
-    def generate(self, data=None):
-        data.sort(key = lambda v: v[1])
-
-        self.output_header(
-                header = 'Conduits',
-                type = 'conduit_entry_t',
-                array = 'conduit',
-                length = len(data))
-
-        for spell, conduit_id in data:
-            fields = ['{:3d}'.format(conduit_id),]
-            fields += spell.field('id', 'name')
-
-            self.output_record(fields)
-
-        self.output_footer()
-
-        # Generate spell_id-based index
-        conduit_index = list((v[0].id, index) for index, v in enumerate(data))
-
-        self.output_id_index(
-            index = [ index for _, index in sorted(conduit_index) ],
-            array = 'conduit_spell')
-
-
-class ConduitRankGenerator(DataGenerator):
-    def generate(self, data=None):
-        data = list(filter(lambda v: v.ref('id_spell').id > 0, self.db('SoulbindConduitRank').values()))
-
-        self.output_header(
-                header = 'Conduit ranks',
-                type = 'conduit_rank_entry_t',
-                array = 'conduit_rank',
-                length = len(data))
-
-        for conduit_rank in sorted(data, key = lambda v: (v.id_parent, v.rank)):
-            fields = conduit_rank.field('id_parent', 'rank', 'id_spell', 'spell_mod')
-
-            self.output_record(fields)
-
-        self.output_footer()
-
-class SoulbindAbilityGenerator(DataGenerator):
-    def filter(self):
-        return SoulbindAbilitySet(self._options).get()
-
-    def generate(self, data=None):
-        data.sort(key = lambda v: v[0].id_spell)
-
-        self.output_header(
-                header = 'Soulbind abilities',
-                type = 'soulbind_ability_entry_t',
-                array = 'soulbind_ability',
-                length = len(data))
-
-        for garr_talent, soulbind in data:
-            fields = garr_talent.ref('id_spell').field('id')
-            fields += soulbind.field('id_covenant')
-            fields += garr_talent.parent_record().field('id')
-            fields += garr_talent.ref('id_spell').field('name')
-
-            self.output_record(fields)
-
-        self.output_footer()
-
-class CovenantAbilityGenerator(DataGenerator):
-    def filter(self):
-        return CovenantAbilitySet(self._options).get()
-
-    def generate(self, data=None):
-        data.sort(key = lambda v: v.ref('id_spell').name)
-
-        self.output_header(
-                header = 'Covenant abilities',
-                type = 'covenant_ability_entry_t',
-                array = 'covenant_ability',
-                length = len(data))
-
-        for entry in data:
-            class_id = util.class_id(family = entry.ref('id_spell').child_ref('SpellClassOptions').family)
-
-            fields = ['{:2d}'.format(class_id > -1 and class_id or 0)]
-            fields += entry.ref('id_covenant_preview').field('id_covenant')
-            fields += entry.field('ability_type')
-            fields += entry.ref('id_spell').field('id', 'name')
-
-            self.output_record(fields)
-
-        self.output_footer()
-
-class RenownRewardGenerator(DataGenerator):
-    def filter(self):
-        return RenownRewardSet(self._options).get()
-
-    def generate(self, data=None):
-        data.sort(key = lambda v: (v.id_covenant, v.level, v.id_spell))
-
-        self.output_header(
-                header = 'Renown reward abilities',
-                type = 'renown_reward_entry_t',
-                array = 'renown_reward_ability',
-                length = len(data))
-
-        for entry in data:
-            fields = entry.field('id_covenant', 'level')
-            fields += entry.ref('id_spell').field('id', 'name')
-
-            self.output_record(fields, comment = entry.ref('id_covenant').name)
 
         self.output_footer()
 

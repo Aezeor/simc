@@ -29,16 +29,10 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* condensed_lifeforce;
     buff_t* focused_resolve;
     // Shadowlands
-    buff_t* adversary;                   // venthyr/nadjia/dauntless duelist debuff
-    buff_t* plagueys_preemptive_strike;  // necro/marileth
     buff_t* sinful_revelation;           // enchant
     buff_t* putrid_burst;                // darkmoon deck: putrescence
-    buff_t* dream_delver;                // nightfae/dreamweaver/dream delver debuff
-    buff_t* soulglow_spectrometer;       // kyrian/mikanikos soulglow spectrometer debuff
     buff_t* scouring_touch;              // Shard of Dyz
     buff_t* exsanguinated;               // Shard of Bek
-    buff_t* kevins_wrath;                // Marileth Kevin's Oozeling Kevin's Wrath debuff
-    buff_t* wild_hunt_strategem;         // night_fae/korayn/ wild hunt strategem debuff
     buff_t* remnants_despair;            // Soulwarped Seal of Menethil DK ring
     // Dragonflight
     // The War Within

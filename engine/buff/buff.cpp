@@ -10,7 +10,6 @@
 #include "dbc/dbc.hpp"
 #include "dbc/item_database.hpp"
 #include "dbc/spell_data.hpp"
-#include "player/covenant.hpp"
 #include "player/expansion_effects.hpp"
 #include "player/player.hpp"
 #include "player/stats.hpp"
@@ -123,7 +122,7 @@ struct fn_const_buff_expr_t final : public buff_expr_t
   {
     return coerce( fn( buff() ) );
   }
-  
+
   bool is_constant() override
   {
     return is_const_fn( buff() );
@@ -340,7 +339,7 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
     using Fn = decltype(fn);
     return std::make_unique<fn_buff_expr_t<std::decay_t<Fn>>>(
             n, buff_name, action, static_buff, std::forward<Fn>( fn ) );
-  };  
+  };
   auto make_const_buff_expr = [buff_name, action, static_buff]( util::string_view n, auto&& fn, auto&& is_const_fn ) {
     using Fn = decltype(fn);
     using Fn_const = decltype(is_const_fn);
@@ -452,9 +451,9 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
   }
   else if ( type == "at_max_stacks" )
   {
-    return make_buff_expr( "buff_at_max_stacks", 
-      []( buff_t* buff ) { 
-        return buff->at_max_stacks(); 
+    return make_buff_expr( "buff_at_max_stacks",
+      []( buff_t* buff ) {
+        return buff->at_max_stacks();
       } );
   }
   else if ( type == "value" )
@@ -497,7 +496,7 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
 
       double evaluate() override
       { return buff()->stack_react(); }
-      
+
       bool is_constant() override
       {
         return buff()->default_chance == 0;
@@ -526,7 +525,7 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
 
       double evaluate() override
       { return 100.0 * buff()->stack_react() / buff()->max_stack(); }
-      
+
       bool is_constant() override
       {
         return buff()->default_chance == 0;
@@ -2097,7 +2096,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
 
   if ( value == DEFAULT_VALUE() )
     value = default_value;
-  
+
 #ifndef NDEBUG
   if ( stack_behavior != buff_stack_behavior::ASYNCHRONOUS && current_stack != 0 )
   {
@@ -3293,7 +3292,7 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
     if ( old_stack != current_stack )
     {
       if ( sim->buff_stack_uptime_timeline )
-        update_stack_uptime_array( sim->current_time(), old_stack ); 
+        update_stack_uptime_array( sim->current_time(), old_stack );
 
       last_stack_change = sim->current_time();
 
@@ -3594,16 +3593,6 @@ damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name, const spel
   }
 }
 
-damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell, const conduit_data_t& conduit )
-  : buff_t( q, name, spell, nullptr ),
-  is_stacking( true )
-{
-  if ( conduit.ok() )
-  {
-    parse_spell_data( spell, conduit.percent() );
-  }
-}
-
 damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell, double talent_value )
   : buff_t( q, name, spell, nullptr ),
   is_stacking( true )
@@ -3743,7 +3732,7 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
 damage_buff_t* damage_buff_t::apply_dynamic_buff_multiplier( buff_t* buff )
 {
   auto parse_dynamic_buff_multiplier_for_mod = [ this, buff ]( damage_buff_modifier_t& mod ) {
-    
+
     if ( !mod.s_data || !mod.s_data->ok() )
       return false;
 

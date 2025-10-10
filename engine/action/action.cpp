@@ -14,7 +14,6 @@
 #include "dbc/sc_spell_info.hpp"
 #include "player/action_priority_list.hpp"
 #include "player/actor_target_data.hpp"
-#include "player/covenant.hpp"
 #include "player/expansion_effects.hpp"  // try to implement leyshocks_grand_compilation as a callback
 #include "player/pet.hpp"
 #include "player/player.hpp"
@@ -5363,7 +5362,7 @@ player_t* action_t::select_target_if_target()
 
   player_t* original_target = target;
   player_t* proposed_target = nullptr;
-    
+
   double max_ = -std::numeric_limits<double>::infinity();
   double min_ = std::numeric_limits<double>::infinity();
 

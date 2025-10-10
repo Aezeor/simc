@@ -360,14 +360,6 @@ struct sim_t : private sc_thread_t
   {
     /// Global enable/disable shadowlands systems
     bool enabled = false;
-    /// Chance to catch each expelled sorrowful memory to extend the buff duration
-    /// TODO: Set this to a reasonable value
-    double combat_meditation_extend_chance = 1.0;
-    /// Number of nearby allies & enemies for the pointed courage soulbind
-    unsigned pointed_courage_nearby = 3;
-    /// Number of nearby allies when you proc lead by example,
-    /// the default value of -1 adjusts to 2 for ranged position and 4 for front/back position
-    int lead_by_example_nearby = -1;
     /// Number of Stone Legionnaires in party (Stone Legion Heraldry trinket)
     unsigned stone_legionnaires_in_party = 0;
     /// Number of Crimson Choir in party (Cabalist's Effigy trinket)
@@ -376,10 +368,6 @@ struct sim_t : private sc_thread_t
     timespan_t memory_of_past_sins_precast = 0_s;
     /// Chance for each target to be hit by a Judgment of the Arbiter arc
     double judgment_of_the_arbiter_arc_chance = 0.0;
-    /// Type of corpse used for Volatile Solvent. Accepts corpse type string or buff string
-    /// Corpse type: "humanoid", "beast", "dragonkin", "elemental", "giant"
-    /// Buff type: "mastery", "primary", "crit", "magic", "physical"
-    std::string volatile_solvent_type = "mastery";
     // Overrides the Unbound Changeling trinket to the given version.
     // The versions are given by the "all", "crit", "haste", and "mastery"
     // strings. Anything else will result in the item's bonus IDs being
@@ -393,37 +381,14 @@ struct sim_t : private sc_thread_t
     timespan_t retarget_shadowgrasp_totem = 0_s;
     /// Sets the chance for the Inscrutable Quantum Device to give no stat buff outside Bloodlust
     double iqd_stat_fail_chance = 0.0;
-    /// Sets chance that the actor gets the killing blow when a target demises for Thrill Seeker stacks
-    /// The default value of -1.0 adjusts to 1/20 for most sims, and 1/4 for DungeonSlice sims
-    double thrill_seeker_killing_blow_chance = -1.0;
-    /// Percentage of default duration for the damage portion of Wild Hunt Tactics to use.
-    double wild_hunt_tactics_duration_multiplier = 1.0;
-    /// Chance bonded hearts will heal a member of the other covenants when grove invigoration procs
-    double bonded_hearts_other_covenant_chance = 1.0;
-    // Stat buff provided by Theotar's Party Favors soulbind (The Mad Duke's Tea buffs)
-    // Buff Types: "primary", "haste", "crit", "versatility"
-    std::string party_favor_type = "random";
-    // Battlefield Presence enemy count override
-    // Defaults to -1 to have the sim constantly adjust the value based on number of enemies in the sim
-    int battlefield_presence_enemies = -1;
     /// Number of allies applying Shattered Psyche stacks to the enemy.
     unsigned shattered_psyche_allies = 0;
     /// Seconds before combat to apply the Shattered Psyche buff to the player.
     timespan_t salvaged_fusion_amplifier_precast = 0_s;
     /// Fraction of the time that the player is above the health threshold for Titanic Ocular Gland.
     double titanic_ocular_gland_worthy_chance = 1.0;
-    /// Sets the chance that the player successfully faces their Doubt to get the Newfound Resolve buff.
-    double newfound_resolve_success_chance = 1.0;
-    /// Sets the default delay that the player waits before facing their Doubt.
-    /// This is disabled if the APL creates the "newfound_resolve" action.
-    timespan_t newfound_resolve_default_delay = 4_s;
-    double newfound_resolve_delay_relstddev = 0.2;
-    /// Seconds between damage/healing triggers for the Pustule Eruption soulbind, has a minimum 1s ICD
-    timespan_t pustule_eruption_interval = 1_s;
     /// Chance that the player will pickup Shredded Soul orb left by Ebonsoul Vise
     double shredded_soul_pickup_chance = 1.0;
-    /// Sets the average number of times per minute that the Valiant Strikes soulbind will attempt to heal a player.
-    double valiant_strikes_heal_rate = 1.0;
     /// Type stat gained from So'leah's Secret Technique
     /// Buff type: "mastery", "haste", "crit", "versatility"
     std::string soleahs_secret_technique_type = "haste";
@@ -431,27 +396,18 @@ struct sim_t : private sc_thread_t
     timespan_t shadowed_orb_of_torment_precombat_channel = 0_ms;
     /// How often does the player fall below 20% HP for Reactive Defense Matrix?
     timespan_t reactive_defense_matrix_interval = 0_ms;
-    /// Percentage of default duration for Field of Blossoms.
-    double field_of_blossoms_duration_multiplier = 1.0;
     /// Modifier for Cruciform Veinripper to control uptime. When set to 0, proc rate is not affected.
     double cruciform_veinripper_proc_rate = 0.0;
     /// Modifier for Cruciform Veinripper to control uptime for tanks. When set to 0, proc rate is not affected unless position=front, in which case 0.4 is used.
     double cruciform_veinripper_in_front_rate = 0.0;
-    /// How many pustules to generate during pre-combat, as events before the pull will normally remove a few
-    unsigned int precombat_pustules = 9;
     // Prevents Soul Ignite from being used a second time to trigger the
     // AoE early. This results in the highest possible damage and the
     // player can alternatively trigger it early by canceling the buff.
     bool disable_soul_igniter_second_use = true;
     /// Disables the execute effect of Inscrutable Quantum Device since it is avoidable in game
     bool disable_iqd_execute = false;
-    // Better Together Override
-    // Defaults active
-    bool better_together_ally = true;
     bool enable_rune_words = false;
     bool enable_domination_gems = false;
-    // fleshcraft cancel delay from the_first_sigil
-    timespan_t the_first_sigil_fleshcraft_cancel_time = 50_ms;
     // Earthbreaker's Impact weak points triggered
     unsigned int earthbreakers_impact_weak_points = 3;
     // Grim Eclipse Dot Duration override
@@ -460,14 +416,6 @@ struct sim_t : private sc_thread_t
     double grim_eclipse_buff_duration_multiplier = 0.9;
     // Automatically break the Chains of Domination trinket at maximum
     bool chains_of_domination_auto_break = true;
-    // First Strike proc period
-    double first_strike_chance = 0.0;
-    // First Strike proc chance when the period is set
-    timespan_t first_strike_period = 5_s;
-    // Expected uptime of Adaptive Armor Fragment
-    double adaptive_armor_fragment_uptime = 0.5;
-    /// Percentage of default duration for Soothing Shade.
-    double soothing_shade_duration_multiplier = 1.0;
   } shadowlands_opts;
 
   struct dragonflight_opt_t

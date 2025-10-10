@@ -13,7 +13,6 @@
 #include "item/item.hpp"
 #include "player/action_priority_list.hpp"
 #include "player/action_variable.hpp"
-#include "player/covenant.hpp"
 #include "player/pet.hpp"
 #include "player/pet_spawner.hpp"
 #include "player/stats.hpp"
@@ -24,8 +23,6 @@
 #include "util/io.hpp"
 #include "unique_gear.hpp"
 #include "unique_gear_helper.hpp"
-
-#include <dbc/covenant_data.hpp>
 
 namespace unique_gear::shadowlands
 {
@@ -73,20 +70,6 @@ struct SL_proc_spell_t : public proc_spell_t
   SL_proc_spell_t( const special_effect_t& e ) : proc_spell_t( e ) {}
 
   SL_proc_spell_t( util::string_view n, player_t* p, const spell_data_t* s ) : proc_spell_t( n, p, s ) {}
-
-  void init() override
-  {
-    proc_spell_t::init();
-
-    auto ep = player->find_soulbind_spell( "Exacting Preparation" );
-    for ( const auto& eff : ep->effects() )
-    {
-      if ( data().affected_by_label( eff ) )
-      {
-        base_multiplier *= 1.0 + eff.percent();
-      }
-    }
-  }
 };
 
 namespace consumables
@@ -1964,7 +1947,7 @@ void forbidden_necromantic_tome( special_effect_t& effect )  // NYI: Battle Rezz
     buff = make_buff<stat_buff_t>( effect.player, "forbidden_knowledge", effect.player -> find_spell( 356029 ))
            ->add_stat( STAT_CRIT_RATING, effect.driver() ->effectN( 1 ).average( effect.item ) );
 
-    
+
     effect.custom_buff = buff;
     new forbidden_necromantic_tome_callback_t( effect.player, effect );
   }
@@ -2248,7 +2231,7 @@ void titanic_ocular_gland( special_effect_t& effect )
     {
       if ( ( *worthy_buffs )[ stat ]->check() )
       {
-        // The Worthy buff will update to a different stat if that stat becomes higher. 
+        // The Worthy buff will update to a different stat if that stat becomes higher.
         // TODO: The buff only changes if the other stat is actually higher, otherwise the previous highest stat is used.
         if ( max_stat != stat || !worthy )
         {
@@ -2744,11 +2727,11 @@ void soleahs_secret_technique( special_effect_t& effect )
   if ( util::str_compare_ci( opt_str, "none" ) )
     return;
 
-  auto val = effect.spell_id == 351926 
-      ? effect.player->find_spell( 351927 )->effectN( 1 ).average( effect.item ) 
+  auto val = effect.spell_id == 351926
+      ? effect.player->find_spell( 351927 )->effectN( 1 ).average( effect.item )
       : effect.player->find_spell( 368513 )->effectN( 1 ).average( effect.item );
   auto buff_spell = effect.spell_id == 351926
-                        ? effect.player->find_spell( 351952 ) 
+                        ? effect.player->find_spell( 351952 )
                         : effect.player->find_spell( 368512 );
 
   buff_t* buff;
@@ -3270,94 +3253,6 @@ void resonant_reservoir( special_effect_t& effect )
   effect.execute_action = create_proc_action<disintegration_halo_t>( "disintegration_halo", effect );
 }
 
-// This has a unique on-use depending on your covenant signature ability
-// Necrolord: Starts channeling a free Fleshcraft
-// Kyrian: Consumes a free charge of Phial of Serenity
-// Night Fae: Resets the cooldown of Soulshape
-// Venthyr: Resets the cooldown of Door of Shadows
-// TODO: use a separate fleshcraft_t action to trigger the effect so that the channel is cancelled correctly
-void the_first_sigil( special_effect_t& effect )
-{
-  if ( unique_gear::create_fallback_buffs( effect, { "the_first_sigil" } ) )
-    return;
-
-  auto buff = buff_t::find( effect.player, "the_first_sigil" );
-  if ( !buff )
-  {
-    buff = make_buff<stat_buff_t>( effect.player, "the_first_sigil", effect.player->find_spell( 367241 ) )
-               ->add_stat( STAT_VERSATILITY_RATING,
-                           effect.player->find_spell( 367241 )->effectN( 1 ).average( effect.item ) );
-  }
-
-  struct the_first_sigil_t : generic_proc_t
-  {
-    action_t* covenant_action;
-    cooldown_t* orig_cd;
-    cooldown_t* dummy_cd;
-
-    the_first_sigil_t( const special_effect_t& effect )
-      : generic_proc_t( effect, "the_first_sigil", effect.trigger() ),
-        covenant_action( nullptr ),
-        orig_cd( cooldown ),
-        dummy_cd( player->get_cooldown( "the_first_sigil_covenant" ) )
-    {
-    }
-
-    void init() override
-    {
-      proc_spell_t::init();
-      unsigned covenant_signature_id = 0;
-
-      // Find any covenant signature abilities in the action list
-      for ( const auto& e : covenant_ability_entry_t::data( player->dbc->ptr ) )
-      {
-        if ( e.class_id == 0 && e.ability_type == 1 &&
-             e.covenant_id == static_cast<unsigned>( player->covenant->type() ) )
-        {
-          covenant_signature_id = e.spell_id;
-          break;
-        }
-      }
-
-      for ( auto a : player->action_list )
-      {
-        if ( covenant_signature_id == a->data().id() )
-        {
-          covenant_action = a;
-          break;
-        }
-      }
-    }
-
-    void execute() override
-    {
-      if ( covenant_action )
-      {
-        // Night Fae's Soulshape (NYI) and Venthyr's Door of Shadows (NYI) CDs are Reset
-        if ( player->covenant->type() == covenant_e::NIGHT_FAE || player->covenant->type() == covenant_e::VENTHYR )
-        {
-          player->sim->print_debug( "{} resets cooldown of {} from the_first_sigil.", player->name(),
-                                    covenant_action->name() );
-          covenant_action->cooldown->reset( false );
-        }
-        // Necrolord's Fleshcraft and Kyrian's Phial of Serenity (NYI) cast a free use of the CD
-        if ( player->covenant->type() == covenant_e::NECROLORD || player->covenant->type() == covenant_e::KYRIAN )
-        {
-          player->sim->print_debug( "{} casts a free {} from the_first_sigil.", player->name(),
-                                    covenant_action->name() );
-          // TODO: don't alter the cooldown of Fleshcraft if it is off cooldown when we execute it
-          covenant_action->execute();
-          make_event( *sim, player->sim->shadowlands_opts.the_first_sigil_fleshcraft_cancel_time,
-                      [ this ] { covenant_action->cancel(); } );
-        }
-      }
-    }
-  };
-
-  effect.custom_buff    = buff;
-  effect.execute_action = create_proc_action<the_first_sigil_t>( "the_first_sigil", effect );
-}
-
 void cosmic_gladiators_resonator( special_effect_t& effect )
 {
   struct gladiators_resonator_damage_t : shadowlands_aoe_proc_t
@@ -3785,7 +3680,7 @@ void cache_of_acquired_treasures( special_effect_t& effect )
       {
         sword_buff->trigger();
       }
-      
+
       // resets to sword after on-use is triggered, rotate wand in front so sword will cycle in next after the cooldown recovers
       std::rotate( weapons.begin(), range::find( weapons, last ), weapons.end() );
     }
@@ -3894,7 +3789,7 @@ void earthbreakers_impact( special_effect_t& effect )
     void execute() override
     {
       proc_spell_t::execute();
-      
+
       // Assume roughly a 1s delay between stepping on the triggers, as they are relatively close
       for ( unsigned int i = 1; i <= player->sim->shadowlands_opts.earthbreakers_impact_weak_points; i++ )
       {
@@ -4110,7 +4005,7 @@ void chains_of_domination( special_effect_t& effect )
   callback->deactivate();
 
   auto proc = create_proc_action<chains_of_domination_t>( "chains_of_domination", effect, callback );
-  effect.execute_action = proc; 
+  effect.execute_action = proc;
 }
 
 // Weapons
@@ -4140,7 +4035,7 @@ void init_jaithys_the_prison_blade( special_effect_t& effect, int proc_id, int s
 {
   // When same item levels are dual-wielded, Jaithys currently combines damage and str buff
   // Dev confirmed this is a bug and all procs should be independent
-  action_t* harsh_tutelage_damage = create_proc_action<generic_proc_t>(  
+  action_t* harsh_tutelage_damage = create_proc_action<generic_proc_t>(
       "harsh_tutelage", effect, "harsh_tutelage" + std::to_string( rank ), proc_id );
 
   harsh_tutelage_damage->base_dd_min = effect.player->find_spell( spell_id )->effectN( 1 ).average( effect.item );
@@ -4181,7 +4076,7 @@ void jaithys_the_prison_blade_3( special_effect_t& effect )
 {
   init_jaithys_the_prison_blade( effect, 358568, 358567, 3 );
 }
-    
+
 void jaithys_the_prison_blade_4( special_effect_t& effect )
 {
   init_jaithys_the_prison_blade( effect, 358570, 358569, 4 );
@@ -4246,7 +4141,7 @@ void cruciform_veinripper(special_effect_t& effect)
     {
       assert( rppm );
       assert( s->target );
-      
+
       double proc_modifier = 1.0;
       if ( proc_modifier_override > 0.0 )
       {
@@ -4833,7 +4728,7 @@ void soulwarped_seal_of_menethil( special_effect_t& effect )
 
       // Below 70% HP, proc rate appears to be 2rppm
       double mod = 0.150;
-	  
+
       // Above 70% HP, proc rate appears to be the full 20rppm.
       if ( s -> target -> health_percentage() >= 70 )
 		mod = 1;
@@ -5187,7 +5082,7 @@ report::sc_html_stream& generate_report( const player_t& player, report::sc_html
             {
               rank = it->second;
               auto spell = item.player->find_spell( enchant_data.ench_prop[ i ] );
-              
+
               for ( auto& shard_type : shard_types )
               {
                 if ( spell->affected_by_label( shard_type.type_label ) )
@@ -5237,7 +5132,7 @@ report::sc_html_stream& generate_report( const player_t& player, report::sc_html
 std::unique_ptr<expr_t> create_expression( const player_t& player, util::string_view name_str )
 {
   auto splits = util::string_split<util::string_view>( name_str, "." );
-  
+
   if ( splits.size() < 2 )
   {
     return nullptr;
@@ -6047,7 +5942,6 @@ void register_special_effects()
     unique_gear::register_special_effect( 367930, items::scars_of_fraternal_strife, true );
     unique_gear::register_special_effect( 368203, items::architects_ingenuity_core, true );
     unique_gear::register_special_effect( 367236, items::resonant_reservoir );
-    unique_gear::register_special_effect( 367241, items::the_first_sigil, true );
     unique_gear::register_special_effect( 363481, items::cosmic_gladiators_resonator );
     unique_gear::register_special_effect( 367246, items::elegy_of_the_eternals );
     unique_gear::register_special_effect( 367336, items::bells_of_the_endless_feast );
@@ -6136,7 +6030,7 @@ void register_special_effects()
 action_t* create_action( player_t* player, util::string_view name, util::string_view options )
 {
   if ( util::str_compare_ci( name, "break_chains_of_domination" ) )  return new items::break_chains_of_domination_t( player, options );
-  
+
   return nullptr;
 }
 

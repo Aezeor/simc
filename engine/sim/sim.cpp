@@ -2979,7 +2979,7 @@ void sim_t::analyze()
     std::fflush( stdout );
   }
 
-  
+
   assert( iterations > 0 );
 
   // Run core analyze for all actor collected data before proceeding to full analysis. This is to prevent errors from
@@ -4051,15 +4051,15 @@ void sim_t::create_options()
 
   // Shadowlands
   add_option( opt_bool( "shadowlands.enabled", shadowlands_opts.enabled ) );
-  add_option( opt_float( "shadowlands.combat_meditation_extend_chance", shadowlands_opts.combat_meditation_extend_chance, 0.0, 1.0 ) );
-  add_option( opt_uint( "shadowlands.pointed_courage_nearby", shadowlands_opts.pointed_courage_nearby, 0, 3 ) );
-  add_option( opt_int( "shadowlands.lead_by_example_nearby", shadowlands_opts.lead_by_example_nearby, 0, 4 ) );
+  add_option( opt_obsoleted( "shadowlands.combat_meditation_extend_chance" ) );
+  add_option( opt_obsoleted( "shadowlands.pointed_courage_nearby" ) );
+  add_option( opt_obsoleted( "shadowlands.lead_by_example_nearby" ) );
   add_option( opt_uint( "shadowlands.stone_legionnaires_in_party", shadowlands_opts.stone_legionnaires_in_party, 0, 4 ) );
   add_option( opt_uint( "shadowlands.crimson_choir_in_party", shadowlands_opts.crimson_choir_in_party, 0, 4 ) );
   add_option( opt_timespan( "shadowlands.memory_of_past_sins_precast", shadowlands_opts.memory_of_past_sins_precast, 0_s, 30_s ) );
   add_option( opt_uint( "shadowlands.shattered_psyche_allies", shadowlands_opts.shattered_psyche_allies, 0, 4 ) );
   add_option( opt_float( "shadowlands.judgment_of_the_arbiter_arc_chance", shadowlands_opts.judgment_of_the_arbiter_arc_chance, 0.0, 1.0 ) );
-  add_option( opt_string( "shadowlands.volatile_solvent_type", shadowlands_opts.volatile_solvent_type ) );
+  add_option( opt_obsoleted( "shadowlands.volatile_solvent_type" ) );
   add_option( opt_bool( "shadowlands.disable_soul_igniter_second_use", shadowlands_opts.disable_soul_igniter_second_use ) );
   add_option( opt_string( "shadowlands.unbound_changeling_stat_type", shadowlands_opts.unbound_changeling_stat_type ) );
   add_option( opt_float( "shadowlands.anima_field_emitter_mean", shadowlands_opts.anima_field_emitter_mean, 0.0, std::numeric_limits<double>::max() ) );
@@ -4068,38 +4068,38 @@ void sim_t::create_options()
   add_option( opt_bool( "shadowlands.disable_iqd_execute", shadowlands_opts.disable_iqd_execute ) );
   add_option( opt_float( "shadowlands.gluttonous_spike_overheal_chance", shadowlands_opts.gluttonous_spike_overheal_chance, 0.0, 1.0 ) );
   add_option( opt_float( "shadowlands.iqd_stat_fail_chance", shadowlands_opts.iqd_stat_fail_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "shadowlands.thrill_seeker_killing_blow_chance", shadowlands_opts.thrill_seeker_killing_blow_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "shadowlands.wild_hunt_tactics_duration_multiplier", shadowlands_opts.wild_hunt_tactics_duration_multiplier ) );
-  add_option( opt_float( "shadowlands.bonded_hearts_other_covenant_chance", shadowlands_opts.bonded_hearts_other_covenant_chance, 0.0, 1.0 ) );
-  add_option( opt_string( "shadowlands.party_favor_type", shadowlands_opts.party_favor_type ) );
-  add_option( opt_int( "shadowlands.battlefield_presence_enemies", shadowlands_opts.battlefield_presence_enemies, 0, 3 ) );
-  add_option( opt_bool( "shadowlands.better_together_ally", shadowlands_opts.better_together_ally ) );
+  add_option( opt_obsoleted( "shadowlands.thrill_seeker_killing_blow_chance" ) );
+  add_option( opt_obsoleted( "shadowlands.wild_hunt_tactics_duration_multiplier" ) );
+  add_option( opt_obsoleted( "shadowlands.bonded_hearts_other_covenant_chance" ) );
+  add_option( opt_obsoleted( "shadowlands.party_favor_type" ) );
+  add_option( opt_obsoleted( "shadowlands.battlefield_presence_enemies" ) );
+  add_option( opt_obsoleted( "shadowlands.better_together_ally" ) );
   add_option( opt_timespan( "shadowlands.salvaged_fusion_amplifier_precast", shadowlands_opts.salvaged_fusion_amplifier_precast, 0_s, 20_s ) );
   add_option( opt_float( "shadowlands.titanic_ocular_gland_worthy_chance", shadowlands_opts.titanic_ocular_gland_worthy_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "shadowlands.newfound_resolve_success_chance", shadowlands_opts.newfound_resolve_success_chance, 0.0, 1.0 ) );
-  add_option( opt_timespan( "shadowlands.newfound_resolve_default_delay", shadowlands_opts.newfound_resolve_default_delay, 0_ms, timespan_t::max() ) );
-  add_option( opt_float( "shadowlands.newfound_resolve_delay_relstddev", shadowlands_opts.newfound_resolve_delay_relstddev, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_obsoleted( "shadowlands.newfound_resolve_success_chance" ) );
+  add_option( opt_obsoleted( "shadowlands.newfound_resolve_default_delay" ) );
+  add_option( opt_obsoleted( "shadowlands.newfound_resolve_delay_relstddev" ) );
   add_option( opt_bool( "shadowlands.enable_rune_words", shadowlands_opts.enable_rune_words ) );
   add_option( opt_bool( "shadowlands.enable_domination_gems", shadowlands_opts.enable_domination_gems ) );
-  add_option( opt_timespan( "shadowlands.pustule_eruption_interval", shadowlands_opts.pustule_eruption_interval, 1_s, timespan_t::max() ) );
+  add_option( opt_obsoleted( "shadowlands.pustule_eruption_interval" ) );
   add_option( opt_float( "shadowlands.shredded_soul_pickup_chance", shadowlands_opts.shredded_soul_pickup_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "shadowlands.valiant_strikes_heal_rate", shadowlands_opts.valiant_strikes_heal_rate, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_obsoleted( "shadowlands.valiant_strikes_heal_rate" ) );
   add_option( opt_string( "shadowlands.soleahs_secret_technique_type", shadowlands_opts.soleahs_secret_technique_type ) );
   add_option( opt_timespan( "shadowlands.shadowed_orb_of_torment_precombat_channel", shadowlands_opts.shadowed_orb_of_torment_precombat_channel, 0_ms, 42_s ) );
   add_option( opt_timespan( "shadowlands.reactive_defense_matrix_interval", shadowlands_opts.reactive_defense_matrix_interval, 0_ms, timespan_t::max() ) );
-  add_option( opt_uint( "shadowlands.precombat_pustules", shadowlands_opts.precombat_pustules, 1, 9 ) );
-  add_option( opt_float( "shadowlands.field_of_blossoms_duration_multiplier", shadowlands_opts.field_of_blossoms_duration_multiplier, 0.0, 1.0 ) );
+  add_option( opt_obsoleted( "shadowlands.precombat_pustules" ) );
+  add_option( opt_obsoleted( "shadowlands.field_of_blossoms_duration_multiplier" ) );
   add_option( opt_float( "shadowlands.cruciform_veinripper_proc_rate", shadowlands_opts.cruciform_veinripper_proc_rate, 0.0, 1.0) );
   add_option( opt_float( "shadowlands.cruciform_veinripper_in_front_rate", shadowlands_opts.cruciform_veinripper_in_front_rate, 0.0, 1.0 ) );
-  add_option( opt_timespan( "shadowlands.the_first_sigil_fleshcraft_cancel_time", shadowlands_opts.the_first_sigil_fleshcraft_cancel_time, 50_ms, timespan_t::from_seconds( 3 ) ) );
+  add_option( opt_obsoleted( "shadowlands.the_first_sigil_fleshcraft_cancel_time" ) );
   add_option( opt_uint( "shadowlands.earthbreakers_impact_weak_points", shadowlands_opts.earthbreakers_impact_weak_points, 0, 3 ) );
   add_option( opt_float( "shadowlands.grim_eclipse_dot_duration_multiplier", shadowlands_opts.grim_eclipse_dot_duration_multiplier, 0.0, 1.0 ) );
   add_option( opt_float( "shadowlands.grim_eclipse_buff_duration_multiplier", shadowlands_opts.grim_eclipse_buff_duration_multiplier, 0.0, 1.0 ) );
   add_option( opt_bool( "shadowlands.chains_of_domination_auto_break", shadowlands_opts.chains_of_domination_auto_break ) );
-  add_option( opt_float( "shadowlands.first_strike_chance", shadowlands_opts.first_strike_chance, 0.0, 1.0 ) );
-  add_option( opt_timespan( "shadowlands.first_strike_period", shadowlands_opts.first_strike_period, 1_s, timespan_t::max() ) );
-  add_option( opt_float( "shadowlands.adaptive_armor_fragment_uptime", shadowlands_opts.adaptive_armor_fragment_uptime, 0.0, 0.5 ) );
-  add_option( opt_float( "shadowlands.soothing_shade_duration_multiplier", shadowlands_opts.soothing_shade_duration_multiplier, 0.0, 1.0 ) );
+  add_option( opt_obsoleted( "shadowlands.first_strike_chance" ) );
+  add_option( opt_obsoleted( "shadowlands.first_strike_period" ) );
+  add_option( opt_obsoleted( "shadowlands.adaptive_armor_fragment_uptime" ) );
+  add_option( opt_obsoleted( "shadowlands.soothing_shade_duration_multiplier" ) );
 
   // Dragonflight
   add_option( opt_timespan( "dragonflight.darkmoon_deck_watcher_deplete", dragonflight_opts.darkmoon_deck_watcher_deplete, 0_ms, timespan_t::max() ) );

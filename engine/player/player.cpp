@@ -20,7 +20,6 @@
 #include "dbc/active_spells.hpp"
 #include "dbc/azerite.hpp"
 #include "dbc/character_loadout.hpp"
-#include "dbc/covenant_data.hpp"
 #include "dbc/dbc.hpp"
 #include "dbc/item_database.hpp"
 #include "dbc/item_set_bonus.hpp"
@@ -36,7 +35,6 @@
 #include "player/actor_target_data.hpp"
 #include "player/azerite_data.hpp"
 #include "player/consumable.hpp"
-#include "player/covenant.hpp"
 #include "player/ground_aoe.hpp"
 #include "player/instant_absorb.hpp"
 #include "player/pet.hpp"
@@ -48,7 +46,6 @@
 #include "player/sample_data_helper.hpp"
 #include "player/scaling_metric_data.hpp"
 #include "player/set_bonus.hpp"
-#include "player/soulbinds.hpp"
 #include "player/spawner_base.hpp"
 #include "player/stats.hpp"
 #include "player/unique_gear.hpp"
@@ -1160,7 +1157,6 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
   {
     azerite = azerite::create_state( this );
     azerite_essence = azerite::create_essence_state( this );
-    covenant = covenant::create_player_state( this );
     dbc_override_ = std::make_unique<dbc_override_t>( dbc_override );
     dbc_override = dbc_override_.get();
   }
@@ -2275,8 +2271,6 @@ void player_t::create_special_effects()
   // This means that any enabled azerite power that is not referenced in a class module will be
   // initialized here.
   azerite::initialize_azerite_powers( this );
-
-  covenant::soulbinds::initialize_soulbinds( this );
 
   // Once all special effects are first-phase initialized, do a pass to first-phase initialize any
   // potential fallback special effects for the actor.
@@ -4802,7 +4796,7 @@ void player_t::create_buffs()
   // Infinite-Stacking Buffs and De-Buffs for everyone
   buffs.stunned = make_buff( this, "stunned" )
     ->set_max_stack( 1 )
-    ->set_expire_callback( [ this ]( buff_t*, int, timespan_t d ) 
+    ->set_expire_callback( [ this ]( buff_t*, int, timespan_t d )
       {
         if ( !sim->event_mgr.canceled && d == timespan_t::zero() )
           trigger_ready();
@@ -5738,11 +5732,6 @@ double player_t::composite_player_pet_damage_multiplier( const action_state_t*, 
   {
     if ( buffs.coldhearted && buffs.coldhearted->check() )
       m *= 1.0 + buffs.coldhearted->check_value();
-
-    // By default effect 1 is used for the player modifier, effect 2 is for the pet modifier
-    if ( buffs.battlefield_presence && buffs.battlefield_presence->check() )
-      m *= 1.0 +
-           ( buffs.battlefield_presence->data().effectN( 2 ).percent() * buffs.battlefield_presence->current_stack );
   }
 
   return m;
@@ -5771,12 +5760,6 @@ double player_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.echo_of_eonar && buffs.echo_of_eonar->has_common_school( school ) )
     m *= 1.0 + buffs.echo_of_eonar->check_value();
-
-  if ( buffs.volatile_solvent_damage && buffs.volatile_solvent_damage->has_common_school( school ) )
-    m *= 1.0 + buffs.volatile_solvent_damage->check_value();
-
-  if ( buffs.battlefield_presence && buffs.battlefield_presence->has_common_school( school ) )
-    m *= 1.0 + buffs.battlefield_presence->check_stack_value();
 
   if ( buffs.coldhearted && buffs.coldhearted->has_common_school( school ) )
     m *= 1.0 + buffs.coldhearted->check_value();
@@ -5807,37 +5790,14 @@ double player_t::composite_player_target_multiplier( player_t* t, school_e /* sc
     m *= 1.0 + racials.subterranean_predator->effectN( 2 ).percent();
   }
 
-  if ( buffs.wild_hunt_tactics )
-  {
-    double health_threshold = 100.0 - ( 100.0 - buffs.wild_hunt_tactics->data().effectN( 5 ).base_value() ) *
-                                        sim->shadowlands_opts.wild_hunt_tactics_duration_multiplier;
-    // This buff is never triggered so use default_value.
-    if ( t->health_percentage() > health_threshold )
-    {
-      // WHS is triggered when you cast something that gets the damage benefit from WHT
-      if ( buffs.wild_hunt_strategem_tracking )
-      {
-        buffs.wild_hunt_strategem_tracking->trigger();
-      }
-
-      m *= 1.0 + buffs.wild_hunt_tactics->default_value;
-    }
-  }
-
   auto td = find_target_data( t );
   if ( td )
   {
     // Always created debuffs, TODO: move to target_specific_debuffs
     m *= 1.0 + td->debuff.condensed_lifeforce->check_value();
-    m *= 1.0 + td->debuff.adversary->check_value();
-    m *= 1.0 + td->debuff.plagueys_preemptive_strike->check_value();
     m *= 1.0 + td->debuff.sinful_revelation->check_value();
-    m *= 1.0 + td->debuff.dream_delver->check_stack_value();
-    m *= 1.0 + td->debuff.soulglow_spectrometer->check_stack_value();
     m *= 1.0 + td->debuff.scouring_touch->check_stack_value();
     m *= 1.0 + td->debuff.exsanguinated->check_value();
-    m *= 1.0 + td->debuff.kevins_wrath->check_value();
-    m *= 1.0 + td->debuff.wild_hunt_strategem->check_value();
 
     // target specific debuffs, MUST check for null
     if ( td->debuff.unwavering_focus )
@@ -5850,9 +5810,6 @@ double player_t::composite_player_target_multiplier( player_t* t, school_e /* sc
 double player_t::composite_player_heal_multiplier( const action_state_t* ) const
 {
   double m = current.healing_multiplier;
-
-  if ( buffs.blessing_of_spring->check() )
-    m *= 1.0 + buffs.blessing_of_spring->data().effectN( 1 ).percent();
 
   if ( buffs.entropic_embrace && buffs.entropic_embrace->check() )
     m *= 1.0 + buffs.entropic_embrace->data().effectN( 3 ).percent();
@@ -6264,7 +6221,7 @@ void player_t::invalidate_cache( cache_e c )
     case CACHE_BONUS_ARMOR:
       invalidate_cache( CACHE_ARMOR );
       break;
-    
+
     case CACHE_CRIT_CHANCE:
       if( current.parry_rating_per_crit_rating > 0 )
         invalidate_cache( CACHE_PARRY );
@@ -6461,25 +6418,12 @@ void player_t::combat_begin()
   };
 
   add_timed_buff_triggers( external_buffs.power_infusion, buffs.power_infusion );
-  add_timed_buff_triggers( external_buffs.conquerors_banner, buffs.conquerors_banner );
   add_timed_buff_triggers( external_buffs.rallying_cry, buffs.rallying_cry );
   add_timed_buff_triggers( external_buffs.pact_of_the_soulstalkers, buffs.pact_of_the_soulstalkers );
   add_timed_buff_triggers( external_buffs.boon_of_azeroth, buffs.boon_of_azeroth );
   add_timed_buff_triggers( external_buffs.boon_of_azeroth_mythic, buffs.boon_of_azeroth_mythic );
   add_timed_buff_triggers( external_buffs.tome_of_unstable_power, buffs.tome_of_unstable_power );
   add_timed_buff_triggers( external_buffs.potion_bomb_of_power, buffs.potion_bomb_of_power );
-
-  auto add_timed_blessing_triggers = [ add_timed_buff_triggers ]( const std::vector<timespan_t>& times, buff_t* buff,
-                                                                  timespan_t duration = timespan_t::min() ) {
-    add_timed_buff_triggers( times, buff, duration );
-  };
-
-  timespan_t summer_duration =
-    buffs.blessing_of_summer->buff_duration() * ( 1.0 + external_buffs.blessing_of_summer_duration_multiplier );
-  add_timed_blessing_triggers( external_buffs.blessing_of_summer, buffs.blessing_of_summer, summer_duration );
-  add_timed_blessing_triggers( external_buffs.blessing_of_autumn, buffs.blessing_of_autumn );
-  add_timed_blessing_triggers( external_buffs.blessing_of_winter, buffs.blessing_of_winter );
-  add_timed_blessing_triggers( external_buffs.blessing_of_spring, buffs.blessing_of_spring );
 
   // Trigger registered combat-begin functions
   for ( const auto& f : combat_begin_functions)
@@ -8850,9 +8794,6 @@ void player_t::assess_heal( school_e, result_amount_type, action_state_t* s )
   // and other effects based on raw healing.
   if ( buffs.guardian_spirit->up() )
     s->result_total *= 1.0 + buffs.guardian_spirit->data().effectN( 1 ).percent();
-
-  if ( buffs.blessing_of_spring->up() )
-    s->result_total *= 1.0 + buffs.blessing_of_spring->data().effectN( 2 ).percent();
 
   s->result_total *= composite_player_healing_received_multiplier();
 
@@ -11415,12 +11356,6 @@ action_t* player_t::create_action( util::string_view name, util::string_view opt
   if ( auto action = azerite::create_action( this, name, options_str ) )
     return action;
 
-  if ( auto action = covenant::create_action( this, name, options_str ) )
-    return action;
-
-  if ( auto action = covenant::soulbinds::create_action( this, name, options_str ) )
-    return action;
-
   return consumable::create_action( this, name, options_str );
 }
 
@@ -11770,36 +11705,6 @@ azerite_essence_t player_t::find_azerite_essence( util::string_view name, bool t
   return azerite_essence->get_essence( name, tokenized );
 }
 
-conduit_data_t player_t::find_conduit_spell( util::string_view name ) const
-{
-  if ( !covenant )
-  {
-    return {};
-  }
-
-  return covenant->get_conduit_ability( name );
-}
-
-const spell_data_t* player_t::find_soulbind_spell( util::string_view name ) const
-{
-  if ( !covenant )
-  {
-    return spell_data_t::not_found();
-  }
-
-  return covenant->get_soulbind_ability( name );
-}
-
-const spell_data_t* player_t::find_covenant_spell( util::string_view name ) const
-{
-  if ( !covenant )
-  {
-    return spell_data_t::not_found();
-  }
-
-  return covenant->get_covenant_ability( name );
-}
-
 item_runeforge_t player_t::find_runeforge_legendary( util::string_view name, bool tokenized, bool force_unity ) const
 {
   if ( !sim->shadowlands_opts.enabled )
@@ -11813,12 +11718,10 @@ item_runeforge_t player_t::find_runeforge_legendary( util::string_view name, boo
     return item_runeforge_t::nil();
   }
 
-  covenant_e cov_type = covenant->type();
   unsigned unity_bonus_id = 0;
   unsigned unity_spell_id = 0;
 
-  if ( force_unity || ( cov_type != covenant_e::DISABLED && cov_type != covenant_e::INVALID &&
-                        entries.front().covenant_id == static_cast<unsigned>( cov_type ) ) )
+  if ( force_unity )
   {
     auto unity_entries = runeforge_legendary_entry_t::find( "Unity", dbc->ptr );
     if ( !unity_entries.empty() )
@@ -12804,11 +12707,6 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     return azerite_essence->create_expression( splits );
   }
 
-  if ( splits[ 0 ] == "soulbind" || splits[ 0 ] == "conduit" || splits[ 0 ] == "covenant" )
-  {
-    return covenant->create_expression( splits );
-  }
-
   if ( splits[ 0 ] == "rune_word" || splits[ 0 ] == "hyperthread_wristwraps" )
   {
     return unique_gear::create_expression( *this, expression_str );
@@ -13128,24 +13026,6 @@ std::string player_t::create_profile( save_e stype )
       }
     }
 
-    if ( covenant )
-    {
-      if ( !covenant->covenant_option_str().empty() )
-      {
-        profile_str += covenant->covenant_option_str() + term;
-      }
-
-      if ( !covenant->soulbind_option_str().empty() )
-      {
-        profile_str += covenant->soulbind_option_str() + term;
-      }
-
-      if ( covenant->renown() > 0 )
-      {
-        profile_str += "renown=" + util::to_string( covenant->renown() ) + term;
-      }
-    }
-
     auto print_option = [ &profile_str, term ]( std::string_view n, auto option ) {
       if ( !option.is_default() )
       {
@@ -13435,11 +13315,6 @@ void player_t::copy_from( player_t* source )
   if ( azerite_essence )
   {
     azerite_essence -> copy_state( source -> azerite_essence );
-  }
-
-  if ( covenant )
-  {
-    covenant->copy_state( source->covenant );
   }
 
   if ( source->dbc_override_ )
@@ -13785,10 +13660,6 @@ void player_t::create_options()
   };
 
   add_option( opt_external_buff_times( "external_buffs.power_infusion", external_buffs.power_infusion ) );
-  add_option( opt_external_buff_times( "external_buffs.blessing_of_summer", external_buffs.blessing_of_summer ) );
-  add_option( opt_external_buff_times( "external_buffs.blessing_of_autumn", external_buffs.blessing_of_autumn ) );
-  add_option( opt_external_buff_times( "external_buffs.blessing_of_winter", external_buffs.blessing_of_winter ) );
-  add_option( opt_external_buff_times( "external_buffs.blessing_of_spring", external_buffs.blessing_of_spring ) );
   add_option( opt_external_buff_times( "external_buffs.conquerors_banner", external_buffs.conquerors_banner ) );
   add_option( opt_external_buff_times( "external_buffs.rallying_cry", external_buffs.rallying_cry ) );
   add_option( opt_external_buff_times( "external_buffs.pact_of_the_soulstalkers", external_buffs.pact_of_the_soulstalkers ) ); // 9.1 Kyrian Hunter Legendary
@@ -13798,23 +13669,7 @@ void player_t::create_options()
   add_option( opt_external_buff_times( "external_buffs.potion_bomb_of_power", external_buffs.potion_bomb_of_power ) );
 
   // Additional Options for Timed External Buffs
-  add_option( opt_func( "external_buffs.the_long_summer_rank", [ this ] ( sim_t*, std::string_view, std::string_view val )
-  {
-    unsigned rank = util::to_unsigned( val );
-    if ( rank <= 0 )
-      return true;
-
-    const auto &conduit = conduit_entry_t::find( "The Long Summer", dbc->ptr );
-    if ( conduit.id == 0 )
-      throw std::invalid_argument( "Conduit entry not found." );
-
-    const auto &rank_entry = conduit_rank_entry_t::find( conduit.id, rank - 1, dbc->ptr );
-    if ( rank_entry.conduit_id == 0 )
-      throw std::invalid_argument( "Invalid conduit rank." );
-
-    external_buffs.blessing_of_summer_duration_multiplier = 0.01 * rank_entry.value;
-    return true;
-  } ) );
+  add_option( opt_obsoleted( "external_buffs.the_long_summer_rank" ) );
   add_option(opt_int("external_buffs.tome_of_unstable_power_ilevel", external_buffs.tome_of_unstable_power_ilevel, 1, MAX_ILEVEL));
 
   // Player only options
@@ -13824,11 +13679,6 @@ void player_t::create_options()
       azerite.get(), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
     add_option( opt_func( "azerite_essences", std::bind( &azerite::azerite_essence_state_t::parse_azerite_essence,
       azerite_essence.get(), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
-
-    if ( covenant )
-    {
-      covenant->register_options( this );
-    }
 
     add_option( opt_func( "override.player.spell_data", [ this ]( sim_t*, std::string_view, std::string_view value ) {
       dbc_override_->parse( *dbc, value );

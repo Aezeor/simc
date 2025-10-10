@@ -14,7 +14,6 @@
 #include "interfaces/sc_js.hpp"
 #include "item/item.hpp"
 #include "player/azerite_data.hpp"
-#include "player/covenant.hpp"
 #include "player/player.hpp"
 #include "player/player_talent_points.hpp"
 #include "sc_enums.hpp"
@@ -56,7 +55,6 @@ struct player_spec_t
   std::string local_json_spec;
   std::string local_json_equipment;
   std::string local_json_media;
-  std::string local_json_soulbinds;
 };
 
 
@@ -619,49 +617,6 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
   }
 }
 
-void parse_soulbinds( player_t*            p,
-                      const player_spec_t& spec,
-                      const rapidjson::Value&   covenant_info,
-                      cache::behavior_e    caching )
-{
-  rapidjson::Document soulbinds_data;
-
-  if ( spec.local_json.empty() && spec.local_json_soulbinds.empty() )
-  {
-    std::string url;
-
-    if ( !covenant_info.HasMember( "soulbinds" ) )
-    {
-      return;
-    }
-
-    url = covenant_info[ "soulbinds" ][ "href" ].GetString();
-
-    try
-    {
-      download( p->sim, soulbinds_data, p->region_str, url + "&locale=en_US", caching );
-    }
-    catch(const std::exception&)
-    {
-      std::throw_with_nested(std::runtime_error(fmt::format("Unable to download soulbinds JSON from '{}'.", url )));
-    }
-  }
-  else if ( !spec.local_json_soulbinds.empty() )
-  {
-    try
-    {
-      parse_file( p->sim, spec.local_json_soulbinds, soulbinds_data );
-    }
-    catch(const std::exception&)
-    {
-      std::throw_with_nested( std::runtime_error( fmt::format( "Unable to parse soulbinds information JSON from '{}'.",
-        spec.local_json_soulbinds ) ) );
-    }
-  }
-
-  covenant::parse_blizzard_covenant_information( p, soulbinds_data );
-}
-
 void parse_media( player_t*            p,
                   const player_spec_t& spec,
                   const std::string&   url,
@@ -786,7 +741,7 @@ player_t* parse_player( sim_t*            sim,
 
   std::string class_name = util::player_type_string( util::translate_class_id( profile[ "character_class" ][ "id" ].GetUint() ) );
   race_e race = util::translate_race_id( profile[ "race" ][ "id" ].GetUint() );
-  
+
   auto player_type = util::parse_player_type( class_name );
   if (player_type == PLAYER_NONE)
   {
@@ -846,11 +801,6 @@ player_t* parse_player( sim_t*            sim,
   if ( profile.HasMember( "equipment" ) )
   {
     parse_items( p, player, profile[ "equipment" ][ "href" ].GetString(), caching );
-  }
-
-  if ( profile.HasMember( "covenant_progress" ) )
-  {
-    parse_soulbinds( p, player, profile[ "covenant_progress" ], caching );
   }
 
   if ( ! p -> server_str.empty() )
@@ -1203,7 +1153,6 @@ player_t* bcp_api::from_local_json( sim_t*             sim,
     opt_string( "spec", player_spec.local_json_spec ),
     opt_string( "equipment", player_spec.local_json_equipment ),
     opt_string( "media", player_spec.local_json_media ),
-    opt_string( "soulbinds", player_spec.local_json_soulbinds ),
   } };
 
   std::string options_str;

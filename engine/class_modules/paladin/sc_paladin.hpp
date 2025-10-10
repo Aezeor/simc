@@ -23,15 +23,6 @@ struct execution_sentence_debuff_t;
 }  // namespace buffs
 const int MAX_START_OF_COMBAT_HOLY_POWER = 1;
 
-enum season : unsigned int
-{
-  SUMMER      = 0,
-  AUTUMN      = 1,
-  WINTER      = 2,
-  SPRING      = 3,
-  NUM_SEASONS = 4,
-};
-
 enum armament : unsigned int
 {
   HOLY_BULWARK  = 0,
@@ -133,7 +124,6 @@ public:
 
     // Covenant stuff
     action_t* divine_toll;
-    action_t* seasons[ NUM_SEASONS ];
     action_t* divine_resonance;
 
     // talent stuff
@@ -374,7 +364,6 @@ public:
     cooldown_t* hammer_of_wrath;
     cooldown_t* wake_of_ashes;
 
-    cooldown_t* blessing_of_the_seasons;
     cooldown_t* holy_armaments;
     cooldown_t* ashen_hallow;  // Radiant Embers Legendary
 
@@ -563,7 +552,7 @@ public:
 
     // 20
     const spell_data_t* lightforged_blessing;
-    const spell_data_t* lead_the_charge; 
+    const spell_data_t* lead_the_charge;
     const spell_data_t* worthy_sacrifice;
     const spell_data_t* righteous_protection;
     const spell_data_t* holy_ritual;
@@ -815,7 +804,6 @@ public:
   } options;
   player_t* beacon_target;
 
-  season next_season;
   armament next_armament;
   lesser_armament next_lesser_armament;
   double radiant_glory_accumulator;

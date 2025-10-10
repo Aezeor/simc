@@ -7,7 +7,6 @@
 
 #include "dbc/racial_spells.hpp"
 #include "player/scaling_metric_data.hpp"
-#include "player/soulbinds.hpp"
 #include "sc_enums.hpp"
 #include "sim/expressions.hpp"
 #include "unique_gear_dragonflight.hpp"
@@ -4944,7 +4943,6 @@ void unique_gear::register_special_effects()
   azerite::register_azerite_powers();
   register_special_effects_bfa();
   shadowlands::register_special_effects();
-  covenant::soulbinds::register_special_effects();
   dragonflight::register_special_effects();
   thewarwithin::register_special_effects();
   midnight:: register_special_effects();
@@ -5168,7 +5166,6 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
   register_target_data_initializers_bfa( sim );
   azerite::register_azerite_target_data_initializers( sim );
   shadowlands::register_target_data_initializers( *sim );
-  covenant::soulbinds::register_target_data_initializers( sim );
   dragonflight::register_target_data_initializers( *sim );
   thewarwithin::register_target_data_initializers( *sim );
   midnight::register_target_data_initializers( *sim );

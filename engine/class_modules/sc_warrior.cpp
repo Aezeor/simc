@@ -14,8 +14,8 @@ namespace
 // ==========================================================================
 // Warrior
 // To Do: Clean up green text
-// Fury - 
-// Arms - 
+// Fury -
+// Arms -
 // ==========================================================================
 
 struct warrior_t;
@@ -284,11 +284,6 @@ public:
     buff_t* seeing_red_tracking;
     buff_t* violent_outburst;
 
-    // Covenant
-    buff_t* conquerors_banner;
-    buff_t* conquerors_frenzy;
-    buff_t* conquerors_mastery;
-
     // Colossus
     buff_t* colossal_might;
 
@@ -377,7 +372,6 @@ public:
     cooldown_t* tough_as_nails_icd;
     cooldown_t* thunder_clap;
     cooldown_t* warbreaker;
-    cooldown_t* conquerors_banner;
     cooldown_t* champions_spear;
     cooldown_t* berserkers_torment;
     cooldown_t* cold_steel_hot_blood_icd;
@@ -429,7 +423,6 @@ public:
     gain_t* valarjar_berserking;
     gain_t* lord_of_war;
     gain_t* simmering_rage;
-    gain_t* conquerors_banner;
 
     // TWW2 Tier
     gain_t* double_down;
@@ -889,12 +882,6 @@ public:
     } shared;
 
   } talents;
-
-  // Covenant Powers
-  struct covenant_t
-  {
-    const spell_data_t* conquerors_banner;
-  } covenant;
 
   struct warrior_options_t
   {
@@ -1580,8 +1567,8 @@ public:
         if ( ab::id == 190456 )  // Ignore pain can not trigger anger management for arms
           return;
 
-        cd_time_reduction /= p()->talents.arms.anger_management->effectN( 1 ).base_value();  
-                                                                                                                                                                       
+        cd_time_reduction /= p()->talents.arms.anger_management->effectN( 1 ).base_value();
+
         p()->cooldown.colossus_smash->adjust( timespan_t::from_seconds( cd_time_reduction ) );
         p()->cooldown.warbreaker->adjust( timespan_t::from_seconds( cd_time_reduction ) );
         p()->cooldown.bladestorm->adjust( timespan_t::from_seconds( cd_time_reduction ) );
@@ -1677,7 +1664,7 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
     if ( !special )  // Procs below only trigger on special attacks, not autos
       return;
 
-    if ( ( p()->talents.arms.sudden_death->ok() || p()->talents.fury.sudden_death->ok() || p()->talents.protection.sudden_death->ok() ) 
+    if ( ( p()->talents.arms.sudden_death->ok() || p()->talents.fury.sudden_death->ok() || p()->talents.protection.sudden_death->ok() )
            && p()->cooldown.sudden_death_icd->up() && p()->rppm.sudden_death->trigger() )
     {
       p()->buff.sudden_death->trigger();
@@ -5974,7 +5961,7 @@ struct odyns_fury_t : warrior_attack_t
     if ( p()->talents.fury.dancing_blades->ok() )
     {
       p()->buff.dancing_blades->trigger();
-    } 
+    }
 
     if ( p()->talents.fury.titanic_rage->ok() )
     {
@@ -7445,32 +7432,6 @@ struct wrecking_throw_t : public warrior_attack_t
   // add absorb shield bonus (are those even in SimC?)
 };
 
-// ==========================================================================
-// Covenant Abilities
-// ==========================================================================
-
-// Conquerors Banner=========================================================
-
-struct conquerors_banner_t : public warrior_spell_t
-{
-  conquerors_banner_t( warrior_t* p, util::string_view options_str )
-    : warrior_spell_t( "conquerors_banner", p, p->covenant.conquerors_banner )
-  {
-    parse_options( options_str );
-    energize_resource       = RESOURCE_NONE;
-    harmful = false;
-    target  = p;
-  }
-
-  void execute() override
-  {
-    warrior_spell_t::execute();
-
-    p()->buff.conquerors_banner->trigger();
-    p()->buff.conquerors_mastery->trigger();
-  }
-};
-
 // Champion's Spear==========================================================
 
 struct champions_spear_damage_t : public warrior_attack_t
@@ -8122,8 +8083,6 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
     return new cleave_t( this, options_str );
   if ( name == "colossus_smash" )
     return new colossus_smash_t( this, options_str );
-  if ( name == "conquerors_banner" )
-    return new conquerors_banner_t( this, options_str );
   if ( name == "defensive_stance" )
     return new defensive_stance_t( this, options_str );
   if ( name == "demoralizing_shout" )
@@ -8270,7 +8229,7 @@ void warrior_t::init_spells()
   spell.victory_rush            = find_class_spell( "Victory Rush" );
   spell.whirlwind               = find_class_spell( "Whirlwind" );
   spell.shield_block_buff       = find_spell( 132404 );
-  spell.concussive_blows_debuff = find_spell( 383116 ); 
+  spell.concussive_blows_debuff = find_spell( 383116 );
   spell.recklessness_buff       = find_spell( 1719 ); // lookup to allow Warlord to use Reck
 
   // Class Passives
@@ -8717,9 +8676,6 @@ void warrior_t::init_spells()
     talents.shared.dance_of_death = find_shared_talent( { &talents.arms.dance_of_death } );
   talents.shared.sudden_death = find_shared_talent( { &talents.arms.sudden_death, &talents.fury.sudden_death, &talents.protection.sudden_death } );
 
-  // Convenant Abilities
-  covenant.conquerors_banner     = find_covenant_spell( "Conqueror's Banner" );
-
   // Active spells
   active.deep_wounds_ARMS = nullptr;
   active.deep_wounds_PROT = nullptr;
@@ -8736,7 +8692,6 @@ void warrior_t::init_spells()
 
   cooldown.cleave                           = get_cooldown( "cleave" );
   cooldown.colossus_smash                   = get_cooldown( "colossus_smash" );
-  cooldown.conquerors_banner                = get_cooldown( "conquerors_banner" );
   cooldown.demoralizing_shout               = get_cooldown( "demoralizing_shout" );
   cooldown.thunderous_roar                  = get_cooldown( "thunderous_roar" );
   cooldown.enraged_regeneration             = get_cooldown( "enraged_regeneration" );
@@ -8765,8 +8720,8 @@ void warrior_t::init_spells()
   cooldown.storm_bolt                       = get_cooldown( "storm_bolt" );
   cooldown.sudden_death_icd                 = get_cooldown( "sudden_death" );
   cooldown.sudden_death_icd->duration =
-      specialization() == WARRIOR_FURY   ? talents.fury.sudden_death->internal_cooldown(): 
-      specialization() == WARRIOR_ARMS ? talents.arms.sudden_death->internal_cooldown() : 
+      specialization() == WARRIOR_FURY   ? talents.fury.sudden_death->internal_cooldown():
+      specialization() == WARRIOR_ARMS ? talents.arms.sudden_death->internal_cooldown() :
       talents.protection.sudden_death->internal_cooldown();
   cooldown.sudden_death_icd->duration       = talents.arms.sudden_death->internal_cooldown();
   cooldown.tough_as_nails_icd               = get_cooldown( "tough_as_nails" );
@@ -9117,7 +9072,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
 
   debuffs_executioners_precision = make_buff( *this, "executioners_precision", p.talents.arms.executioners_precision->effectN( 1 ).trigger() );
 
-  debuffs_fatal_mark = make_buff( *this, "fatal_mark" ) 
+  debuffs_fatal_mark = make_buff( *this, "fatal_mark" )
           ->set_duration( p.spell.fatal_mark_debuff->duration() )
           ->set_max_stack( p.spell.fatal_mark_debuff->max_stacks() );
 
@@ -9396,21 +9351,6 @@ void warrior_t::create_buffs()
   if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
     buff.best_served_cold = make_buff( this, "best_served_cold", find_spell( 1234772 ) );
 
-  // Covenant Abilities====================================================================================================
-
-  buff.conquerors_banner = make_buff( this, "conquerors_banner", covenant.conquerors_banner )
-    ->set_default_value_from_effect_type( A_PERIODIC_ENERGIZE )
-    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-    ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-      resource_gain( RESOURCE_RAGE, (specialization() == WARRIOR_FURY ? 6 : 4), gain.conquerors_banner );
-    } );
-
-  buff.conquerors_frenzy    = make_buff( this, "conquerors_frenzy", find_spell( 325862 ) )
-                               ->set_default_value( find_spell( 325862 )->effectN( 2 ).percent() )
-                               ->add_invalidate( CACHE_CRIT_CHANCE );
-
-  buff.conquerors_mastery = make_buff<stat_buff_t>( this, "conquerors_mastery", find_spell( 325862 ) );
-
   if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
   {
     buff.show_of_force = make_buff( this, "show_of_force", talents.protection.show_of_force -> effectN( 1 ).trigger() )
@@ -9509,8 +9449,8 @@ void warrior_t::init_rng()
     // The 20% benefit when you have best served cold is not in spelldata.  Just in the description of 202560 (Best Served Cold)
     rppm.revenge->set_modifier( rppm.revenge->get_modifier() + 0.20 );
   }
-  rppm.sudden_death     = get_rppm( "sudden death", specialization() == WARRIOR_FURY ? talents.fury.sudden_death : 
-                                                    specialization() == WARRIOR_ARMS ? talents.arms.sudden_death : 
+  rppm.sudden_death     = get_rppm( "sudden death", specialization() == WARRIOR_FURY ? talents.fury.sudden_death :
+                                                    specialization() == WARRIOR_ARMS ? talents.arms.sudden_death :
                                                     talents.protection.sudden_death );
   rppm.slayers_dominance = get_rppm( "slayers_dominance", talents.slayer.slayers_dominance );
   rppm.whirling_blade    = get_rppm( "whirling_blade", talents.protection.whirling_blade );
@@ -9567,7 +9507,6 @@ void warrior_t::init_gains()
   gain.battlelord                       = get_gain( "battlelord" );
   gain.bloodsurge                       = get_gain( "bloodsurge" );
   gain.charge                           = get_gain( "charge" );
-  gain.conquerors_banner                = get_gain( "conquerors_banner" );
   gain.critical_block                   = get_gain( "critical_block" );
   gain.execute                          = get_gain( "execute" );
   gain.frothing_berserker               = get_gain( "frothing_berserker" );
@@ -10132,7 +10071,7 @@ double warrior_t::composite_attribute( attribute_e attr ) const
 
   if ( attr == ATTR_STRENGTH )
   {
-    // Arma 2022 Nov 13 Note that unless we handle str manually in the armor calcs Attt for prot ends up looping here.  
+    // Arma 2022 Nov 13 Note that unless we handle str manually in the armor calcs Attt for prot ends up looping here.
     // As Str and armor are both looping in the stat cache
     // As we have it implemented properly in the armor calcs, this can be globally enabled.
     // get_attribute -> composite_attribute -> bonus_armor -> composite_bonus_armor -> strength -> get_attribute
@@ -10209,7 +10148,7 @@ double warrior_t::composite_bonus_armor() const
 
   if ( specialization() == WARRIOR_PROTECTION )
   {
-    // Pulls strength using the base player_t functions.  We call these directly to avoid using the warrior_t versions, as armor contribution from 
+    // Pulls strength using the base player_t functions.  We call these directly to avoid using the warrior_t versions, as armor contribution from
     // attt is calculated during composite_armor_multiplier
     auto current_str = util::floor( parse_player_effects_t::composite_attribute( ATTR_STRENGTH ) * parse_player_effects_t::composite_attribute_multiplier( ATTR_STRENGTH ) );
     // if there is anything else in warrior_t::composite_attribute_multiplier that applies to str, like focused_vigor for instance
@@ -10311,8 +10250,6 @@ double warrior_t::composite_melee_crit_chance() const
 {
   double c = parse_player_effects_t::composite_melee_crit_chance();
 
-  c += buff.conquerors_frenzy->check_value();
-
   return c;
 }
 
@@ -10333,7 +10270,7 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
   {
     bool do_not_double_rage = false;
 
-    do_not_double_rage      = ( g == gain.ceannar_rage || g == gain.valarjar_berserking || g == gain.simmering_rage || 
+    do_not_double_rage      = ( g == gain.ceannar_rage || g == gain.valarjar_berserking || g == gain.simmering_rage ||
                                   g == gain.frothing_berserker || g == gain.thorims_might );
 
     if ( !do_not_double_rage )  // FIXME: remove this horror after BFA launches, keep Simmering Rage
@@ -10763,8 +10700,7 @@ struct warrior_module_t : public module_t
 
   void init( player_t* p ) const override
   {
-        p->buffs.conquerors_banner = make_buff<stat_buff_t>( p, "conquerors_banner_external", p->find_spell( 325862 ) );
-        p->buffs.rallying_cry = make_buff<buffs::rallying_cry_t>( p );
+    p->buffs.rallying_cry = make_buff<buffs::rallying_cry_t>( p );
   }
   void combat_begin( sim_t* ) const override
   {

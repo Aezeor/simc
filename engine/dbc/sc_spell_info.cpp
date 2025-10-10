@@ -6,10 +6,8 @@
 #include "sc_spell_info.hpp"
 
 #include "dbc.hpp"
-#include "dbc/covenant_data.hpp"
 #include "dbc/item_set_bonus.hpp"
 #include "dbc/trait_data.hpp"
-#include "player/covenant.hpp"
 #include "util/static_map.hpp"
 #include "util/util.hpp"
 #include "util/xml.hpp"
@@ -2646,21 +2644,6 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     fmt::print( s, "Race             : {} (0x{:0x})\n", fmt::join( races, ", " ), spell->race_mask() );
   }
 
-  const auto& covenant_spell = covenant_ability_entry_t::find( spell->name_cstr(), dbc.ptr );
-  if ( covenant_spell.spell_id == spell->id() )
-  {
-    s << "Covenant         : ";
-    s << util::inverse_tokenize( util::covenant_type_string( static_cast<covenant_e>( covenant_spell.covenant_id ) ) );
-    s << std::endl;
-  }
-
-  const auto& soulbind_spell = soulbind_ability_entry_t::find( spell->id(), dbc.ptr );
-  if ( soulbind_spell.spell_id == spell->id() )
-  {
-    s << "Covenant         : ";
-    s << util::inverse_tokenize( util::covenant_type_string( static_cast<covenant_e>( soulbind_spell.covenant_id ) ) );
-    s << std::endl;
-  }
   std::string school_string = util::school_type_string( spell->get_school_type() );
   school_string[ 0 ] = std::toupper( school_string[ 0 ] );
   s << "School           : " << school_string << std::endl;
@@ -3116,25 +3099,6 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     const auto data = azerite_essence_power_entry_t::data_by_essence_id( spell->essence_id(), dbc.ptr );
 
     s << azerite_essence_str( spell, data );
-    s << std::endl;
-  }
-
-  const auto& conduit = conduit_entry_t::find_by_spellid( spell->id(), dbc.ptr );
-  if ( conduit.spell_id && conduit.spell_id == spell->id() )
-  {
-    s << "Conduit Id       : " << conduit.id;
-
-    auto ranks = conduit_rank_entry_t::find( conduit.id, dbc.ptr );
-    std::vector<std::string> rank_str;
-    range::for_each( ranks, [ &rank_str ]( const conduit_rank_entry_t& entry ) {
-      rank_str.emplace_back( fmt::format( "{}", entry.value ) );
-    } );
-
-    if ( !ranks.empty() )
-    {
-      fmt::print( s, " (values={})", fmt::join( rank_str, ", " ) );
-    }
-
     s << std::endl;
   }
 

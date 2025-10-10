@@ -368,10 +368,6 @@ struct flask_base_t : public dbc_consumable_base_t
     {
       double mul = 1.0;
 
-      auto ep = player->find_soulbind_spell( "Exacting Preparation" );
-      if ( ep->ok() )
-        mul *= 1.0 + ep->effectN( 1 ).percent();  // While all effects have the same value, effect#1 applies to flasks
-
       range::for_each( buff->stats, [ mul ]( stat_buff_t::buff_stat_t& s ) {
         s.amount *= mul;
       } );
@@ -433,25 +429,15 @@ struct potion_t : public dbc_consumable_base_t
 {
   timespan_t pre_pot_time;
   bool dynamic_prepot;
-  double dur_mod_low, dur_mod_high;  // multiplier for Refined Palate soulbind
 
   potion_t( player_t* p, util::string_view options_str )
     : dbc_consumable_base_t( p, "potion" ),
       pre_pot_time( 2_s ),
-      dynamic_prepot( false ),
-      dur_mod_low( 0.0 ),
-      dur_mod_high( 0.0 )
+      dynamic_prepot( false )
   {
     add_option( opt_timespan( "pre_pot_time", pre_pot_time ) );
     add_option( opt_bool( "dynamic_prepot", dynamic_prepot ) );
     parse_options( options_str );
-
-    auto refined = p->find_soulbind_spell( "Refined Palate" );
-    if ( refined->ok() )
-    {
-      dur_mod_low = refined->effectN( 1 ).percent();
-      dur_mod_high = refined->effectN( 2 ).percent();
-    }
 
     type = ITEM_SUBCLASS_POTION;
     cooldown = player->get_cooldown( "potion" );
@@ -570,13 +556,6 @@ struct potion_t : public dbc_consumable_base_t
     if ( consumable_buff )
     {
       timespan_t duration = consumable_buff->buff_duration();
-
-      // Adjust for Refined Palate soulbind
-      if ( dur_mod_low )
-      {
-        // TODO: is this really a simple uniform distribution?
-        duration *= 1.0 + rng().range( dur_mod_low, dur_mod_high );
-      }
 
       if ( !player->in_combat )
       {
@@ -764,9 +743,10 @@ struct food_t : public dbc_consumable_base_t
     return driver;
   }
 
-  // Initialize the food buff, and if it's a stat buff, apply epicurean on it for Pandaren and exacting preparation
-  // soulbind. On action-based or non-stat-buff food, these must be applied manually. Note that even if the food uses a
-  // custom initialization, if the resulting buff is a stat buff, modifiers will be automatically applied.
+  // Initialize the food buff, and if it's a stat buff, apply epicurean on it for Pandaren. On
+  // action-based or non-stat-buff food, these must be applied manually. Note that even if the food
+  // uses a custom initialization, if the resulting buff is a stat buff, modifiers will be
+  // automatically applied.
   void initialize_consumable() override
   {
     dbc_consumable_base_t::initialize_consumable();
@@ -782,11 +762,6 @@ struct food_t : public dbc_consumable_base_t
 
       if ( is_pandaren( player->race ) )
         mul *= 2.0;
-
-      // TODO: confirm if these two modifiers are multiplicative or additive
-      auto ep = player->find_soulbind_spell( "Exacting Preparation" );
-      if ( ep->ok() )
-        mul *= 1.0 + ep->effectN( 2 ).percent();  // While all effects have the same value, effect#2 applies to well fed
 
       range::for_each( buff->stats, [ mul ]( stat_buff_t::buff_stat_t& s ) {
         s.amount *= mul;

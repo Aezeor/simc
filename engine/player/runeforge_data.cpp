@@ -2,7 +2,6 @@
 
 #include "item/item.hpp"
 #include "player/player.hpp"
-#include "player/covenant.hpp"
 #include "dbc/dbc.hpp"
 #include "dbc/spell_data.hpp"
 
@@ -136,14 +135,6 @@ report::sc_html_stream& generate_report( const player_t& player, report::sc_html
     if ( s_data->ok() )
     {
       auto html_str = report_decorators::decorated_spell_data( *player.sim, s_data );
-      if ( util::str_compare_ci( entry.name, "Unity" ) )
-      {
-        auto cov = player.covenant->type();
-        if ( cov != covenant_e::DISABLED && cov != covenant_e::INVALID )
-        {
-          html_str.insert( html_str.find( "\">" ), "?covenant=" + std::to_string( static_cast<unsigned>( cov ) ) );
-        }
-      }
       legendary_str +=
           fmt::format( "<li class=\"nowrap\">{} ({})</li>\n", report_decorators::decorated_item( item ), html_str );
       return true;

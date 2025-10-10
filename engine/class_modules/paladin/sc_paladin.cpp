@@ -32,7 +32,6 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     talents( talents_t() ),
     options( options_t() ),
     beacon_target( nullptr ),
-    next_season( SUMMER ),
     next_armament( SACRED_WEAPON ),
     next_lesser_armament( LESSER_WEAPON ),
     radiant_glory_accumulator( 0.0 ),
@@ -79,7 +78,6 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.hammer_of_wrath  = get_cooldown( "hammer_of_wrath" );
   cooldowns.wake_of_ashes    = get_cooldown( "wake_of_ashes" );
 
-  cooldowns.blessing_of_the_seasons = get_cooldown( "blessing_of_the_seasons" );
   cooldowns.holy_armaments           = get_cooldown( "holy_armaments" );
 
   cooldowns.ret_aura_icd = get_cooldown( "ret_aura_icd" );
@@ -1757,161 +1755,6 @@ struct divine_toll_t : public paladin_spell_t
   }
 };
 
-// Blessing of Seasons
-
-struct blessing_of_summer_proc_t : public spell_t
-{
-  blessing_of_summer_proc_t( player_t* p ) : spell_t( "blessing_of_summer_proc", p, p->find_spell( 328123 ) )
-  {
-    may_dodge = may_parry = may_block = may_crit = callbacks = false;
-    background                                               = true;
-  }
-
-  void init() override
-  {
-    spell_t::init();
-    snapshot_flags &= STATE_NO_MULTIPLIER;
-  }
-};
-
-struct blessing_of_summer_t : public paladin_spell_t
-{
-  timespan_t buff_duration;
-
-  blessing_of_summer_t( paladin_t* p )
-    : paladin_spell_t( "blessing_of_summer", p, p->find_spell( 328620 ) ),
-      buff_duration( data().duration() )
-  {
-    harmful = false;
-
-    cooldown = p->cooldowns.blessing_of_the_seasons;
-  }
-
-  void execute() override
-  {
-    paladin_spell_t::execute();
-
-    player->buffs.blessing_of_summer->trigger( buff_duration );
-  }
-};
-
-struct blessing_of_autumn_t : public paladin_spell_t
-{
-  blessing_of_autumn_t( paladin_t* p ) : paladin_spell_t( "blessing_of_autumn", p, p->find_spell( 328622 ) )
-  {
-    harmful = false;
-
-    cooldown = p->cooldowns.blessing_of_the_seasons;
-  }
-
-  void execute() override
-  {
-    paladin_spell_t::execute();
-
-    player->buffs.blessing_of_autumn->trigger();
-  }
-};
-
-struct blessing_of_spring_t : public paladin_spell_t
-{
-  blessing_of_spring_t( paladin_t* p ) : paladin_spell_t( "blessing_of_spring", p, p->find_spell( 328282 ) )
-  {
-    harmful = false;
-
-    cooldown = p->cooldowns.blessing_of_the_seasons;
-  }
-
-  void execute() override
-  {
-    paladin_spell_t::execute();
-
-    player->buffs.blessing_of_spring->trigger();
-  }
-};
-
-template <typename Base, typename Player>
-struct blessing_of_winter_proc_t : public Base
-{
-private:
-  using ab = Base;  // action base, eg. spell_t
-public:
-  blessing_of_winter_proc_t( Player* p ) : ab( "blessing_of_winter_proc", p, p->find_spell( 328506 ) )
-  {
-    ab::callbacks              = false;
-    ab::background             = true;
-    ab::spell_power_mod.direct = ab::attack_power_mod.direct = ab::data().effectN( 2 ).percent();
-  }
-
-  // Uses max(AP, SP)
-  double attack_direct_power_coefficient( const action_state_t* s ) const override
-  {
-    if ( s->attack_power < s->spell_power )
-      return 0;
-
-    return ab::attack_direct_power_coefficient( s );
-  }
-
-  double spell_direct_power_coefficient( const action_state_t* s ) const override
-  {
-    if ( s->spell_power <= s->attack_power )
-      return 0;
-
-    return ab::spell_direct_power_coefficient( s );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = ab::action_multiplier();
-
-    return am;
-  }
-};
-
-struct blessing_of_winter_t : public paladin_spell_t
-{
-  blessing_of_winter_t( paladin_t* p ) : paladin_spell_t( "blessing_of_winter", p, p->find_spell( 328281 ) )
-  {
-    harmful = false;
-
-    cooldown = p->cooldowns.blessing_of_the_seasons;
-  }
-
-  void execute() override
-  {
-    paladin_spell_t::execute();
-
-    player->buffs.blessing_of_winter->trigger();
-  }
-};
-
-struct blessing_of_the_seasons_t : public paladin_spell_t
-{
-  blessing_of_the_seasons_t( paladin_t* p, util::string_view options_str )
-    : paladin_spell_t( "blessing_of_the_seasons", p, spell_data_t::nil() )
-  {
-    parse_options( options_str );
-
-    // we're keeping this around in case it's relevant to holy someday
-    background = true;
-
-    harmful = false;
-
-    cooldown           = p->cooldowns.blessing_of_the_seasons;
-  }
-
-  timespan_t execute_time() const override
-  {
-    return p()->active.seasons[ p()->next_season ]->execute_time();
-  }
-
-  void execute() override
-  {
-    paladin_spell_t::execute();
-    p()->active.seasons[ p()->next_season ]->execute();
-    p()->next_season = season( ( p()->next_season + 1 ) % NUM_SEASONS );
-  }
-};
-
 struct weapon_enchant_t : public paladin_spell_t
 {
   buff_t* enchant;
@@ -1960,7 +1803,7 @@ struct rite_of_sanctification_t : public weapon_enchant_t
     if ( p()->items[ SLOT_MAIN_HAND ].active() && p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant() > 0 )
     {
       sim->error( "Player {} has a temporary enchant {} on slot {}, disabling {}", p()->name(),
-                  p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant(), util::slot_type_string( SLOT_MAIN_HAND ), 
+                  p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant(), util::slot_type_string( SLOT_MAIN_HAND ),
                   name() );
     }
   }
@@ -1991,7 +1834,7 @@ struct rite_of_adjuration_t : public weapon_enchant_t
     if ( p()->items[ SLOT_MAIN_HAND ].active() && p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant() > 0 )
     {
       sim->error( "Player {} has a temporary enchant {} on slot {}, disabling {}", p()->name(),
-                  p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant(), util::slot_type_string( SLOT_MAIN_HAND ), 
+                  p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant(), util::slot_type_string( SLOT_MAIN_HAND ),
                   name() );
     }
   }
@@ -2216,7 +2059,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
        // 02.05.25 Fluttershy - If target has no Judgment Debuffs, Hammer of Light consumes one stack without damage increase
        bool removeStack = td( s->target )->debuff.judgment->stack() == 0;
        p()->trigger_greater_judgment( td( s->target ), removeStack );
-       
+
      }
    }
 };
@@ -2364,7 +2207,7 @@ void paladin_t::trigger_lights_deliverance()
        ( specialization() == PALADIN_RETRIBUTION && cooldowns.wake_of_ashes->up() ) )
     return;
 
-  if ( buffs.templar.hammer_of_light_ready->at_max_stacks() )  
+  if ( buffs.templar.hammer_of_light_ready->at_max_stacks() )
   return;
 
   buffs.templar.hammer_of_light_free->execute();
@@ -2412,7 +2255,7 @@ struct sacred_weapon_proc_damage_t : public paladin_spell_t
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = paladin_spell_t::composite_da_multiplier( s );
-    // If we're faking Solidarity, we double the amount 
+    // If we're faking Solidarity, we double the amount
     if ( p()->talents.lightsmith.solidarity->ok() && p()->options.fake_solidarity )
       m *= 1.0 + p()->buffs.lightsmith.fake_solidarity->stack();
     return m;
@@ -2460,7 +2303,7 @@ struct sacred_weapon_proc_heal_t : public paladin_heal_t
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = paladin_heal_t::composite_da_multiplier( s );
-    // If we're faking Solidarity, we double the amount 
+    // If we're faking Solidarity, we double the amount
     if ( p()->talents.lightsmith.solidarity->ok() && p()->options.fake_solidarity )
       m *= 1.0 + p()->buffs.lightsmith.fake_solidarity->stack();
     return m;
@@ -2801,7 +2644,7 @@ dbc_proc_callback_t* paladin_t::create_lesser_weapon_callback(paladin_t* source,
       fmt::format( "lesser_weapon_cb_{}_{}", source->name_str, target->name_str );
   lesser_weapon_effect->spell_id = 1239091;
   lesser_weapon_effect->type     = SPECIAL_EFFECT_EQUIP;
-  
+
 
   target->special_effects.push_back( lesser_weapon_effect );
   return new lesser_weapon_cb_t( target, source, *lesser_weapon_effect, index );
@@ -3647,11 +3490,6 @@ void paladin_t::create_actions()
         timespan_t::from_seconds( talents.judgment_of_light->effectN( 1 ).base_value() );
   }
 
-  active.seasons[ SUMMER ] = new blessing_of_summer_t( this );
-  active.seasons[ AUTUMN ] = new blessing_of_autumn_t( this );
-  active.seasons[ WINTER ] = new blessing_of_winter_t( this );
-  active.seasons[ SPRING ] = new blessing_of_spring_t( this );
-
   active.armament[ HOLY_BULWARK ]  = new holy_bulwark_t( this );
   active.armament[ SACRED_WEAPON ] = new sacred_weapon_t( this );
 
@@ -3722,8 +3560,6 @@ action_t* paladin_t::create_action( util::string_view name, util::string_view op
     return new retribution_aura_t( this, options_str );
   if ( name == "divine_toll" )
     return new divine_toll_t( this, options_str );
-  if ( name == "blessing_of_the_seasons" )
-    return new blessing_of_the_seasons_t( this, options_str );
   if ( name == "shield_of_the_righteous" )
     return new shield_of_the_righteous_t( this, options_str );
   if ( name == "word_of_glory" )
@@ -3810,7 +3646,6 @@ void paladin_t::reset()
   active_hallow_healing     = nullptr;
   active_aura         = nullptr;
 
-  next_season = SUMMER;
   next_armament = SACRED_WEAPON;
   next_lesser_armament = LESSER_WEAPON;
   radiant_glory_accumulator = 0.0;
@@ -4020,7 +3855,7 @@ void paladin_t::create_buffs()
                                          ->set_max_stack( 10 )
                                          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
-  buffs.templar.hammer_of_light_ready = 
+  buffs.templar.hammer_of_light_ready =
       make_buff( this, "hammer_of_light_ready", find_spell( 427441 ) )
           ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) { trigger_lights_deliverance();
         });
@@ -4054,7 +3889,7 @@ void paladin_t::create_buffs()
                                    if ( b->at_max_stacks() )
                                    {
                                      trigger_lights_deliverance();
-                                           } 
+                                           }
                                  } );
 
   buffs.templar.sacrosanct_crusade = new buffs::sacrosanct_crusade_t( this );
@@ -4079,7 +3914,7 @@ void paladin_t::create_buffs()
     ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
         active.suns_avatar_dmg->execute_on_target( target );
       });
-  
+
   buffs.herald_of_the_sun.solar_wrath = make_buff( this, "solar_wrath", find_spell( 1236972 ) )
                                           ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
                                               if ( !( buffs.crusade->up() || buffs.avenging_wrath->up() ) )
@@ -4102,7 +3937,7 @@ void paladin_t::create_buffs()
           }
         } );
   }
-  
+
 
   buffs.rising_wrath = make_buff( this, "rising_wrath", find_spell( 456700 ) )
     ->set_default_value_from_effect(1);
@@ -5239,7 +5074,6 @@ void paladin_t::combat_begin()
   }
 
   // evidently it resets to summer on combat start
-  next_season = SUMMER;
   next_armament = SACRED_WEAPON;
   next_lesser_armament = LESSER_WEAPON;
 
@@ -5465,18 +5299,6 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
     return std::make_unique<time_to_hpg_expr_t>( name_str, *this );
   }
 
-  struct next_season_expr_t : public paladin_expr_t
-  {
-    next_season_expr_t( util::string_view n, paladin_t& p ) : paladin_expr_t( n, p )
-    {
-    }
-
-    double evaluate() override
-    {
-      return paladin.next_season;
-    }
-  };
-
   struct next_armament_expr_t : public paladin_expr_t
   {
     next_armament_expr_t(util::string_view n, paladin_t& p) : paladin_expr_t(n, p)
@@ -5491,11 +5313,6 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
         return -1.0;
     }
   };
-
-  if ( splits[ 0 ] == "next_season" )
-  {
-    return std::make_unique<next_season_expr_t>( name_str, *this );
-  }
 
   if (splits[0] == "next_armament")
   {
@@ -5668,81 +5485,10 @@ struct paladin_module_t : public module_t
     p->buffs.beacon_of_light       = make_buff( p, "beacon_of_light", p->find_spell( 53563 ) );
     p->buffs.blessing_of_sacrifice = new buffs::blessing_of_sacrifice_t( p );
     p->debuffs.forbearance         = new buffs::forbearance_t( p, "forbearance" );
-
-    p->buffs.blessing_of_summer =
-        make_buff( p, "blessing_of_summer", p->find_spell( 328620 ) )->set_chance( 1.0 )->set_cooldown( 0_ms );
-    p->buffs.blessing_of_autumn = make_buff<buffs::blessing_of_autumn_t>( p );
-    p->buffs.blessing_of_winter = make_buff( p, "blessing_of_winter", p->find_spell( 328281 ) )->set_cooldown( 0_ms );
-    p->buffs.blessing_of_spring = make_buff( p, "blessing_of_spring", p->find_spell( 328282 ) )
-                                      ->set_cooldown( 0_ms )
-                                      ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
   }
 
   void create_actions(player_t* p) const override
   {
-    if (p->is_enemy() || p->type == HEALING_ENEMY || p->is_pet())
-      return;
-
-    // 9.0 Paladin Night Fae
-
-    // Only create these if the player sets the option to get the buff.
-    if ( !p->external_buffs.blessing_of_summer.empty() )
-    {
-      action_t* summer_proc = new blessing_of_summer_proc_t(p);
-      const spell_data_t* summer_data = p->find_spell(328620);
-
-      // This effect can proc on almost any damage, including many actions in simc that have callbacks = false.
-      // Using an assessor here will cause this to have the chance to proc on damage from any action.
-      p->assessor_out_damage.add(
-        assessor::CALLBACKS, [p, summer_proc, summer_data](result_amount_type, action_state_t* s) {
-          if (!(p->buffs.blessing_of_summer->up()))
-            return assessor::CONTINUE;
-
-          double proc_chance = summer_data->proc_chance();
-
-          if (s->action != summer_proc && s->result_total > 0.0 && p->buffs.blessing_of_summer->up() &&
-            summer_data->proc_flags() & (UINT64_C(1) << s->proc_type()) && p->rng().roll(proc_chance))
-          {
-            double da = s->result_amount * summer_data->effectN(1).percent();
-            make_event(p->sim, [t = s->target, summer_proc, da] {
-              summer_proc->set_target(t);
-              summer_proc->base_dd_min = summer_proc->base_dd_max = da;
-              summer_proc->execute();
-              });
-          }
-
-          return assessor::CONTINUE;
-        });
-    }
-
-    if (!p->external_buffs.blessing_of_winter.empty())
-    {
-      action_t* winter_proc;
-      if (p->type == PALADIN)
-        // Some Paladin auras affect this spell and are handled in paladin_spell_t.
-        winter_proc = new blessing_of_winter_proc_t<paladin_spell_t, paladin_t>(debug_cast<paladin_t*>(p));
-      else
-        winter_proc = new blessing_of_winter_proc_t<spell_t, player_t>(p);
-
-      auto winter_effect = new special_effect_t(p);
-      winter_effect->name_str = "blessing_of_winter_cb";
-      winter_effect->type = SPECIAL_EFFECT_EQUIP;
-      winter_effect->spell_id = 328281;
-      winter_effect->cooldown_ = p->find_spell(328281)->internal_cooldown();
-      winter_effect->execute_action = winter_proc;
-      p->special_effects.push_back(winter_effect);
-
-      auto winter_cb = new dbc_proc_callback_t(p, *winter_effect);
-      winter_cb->deactivate();
-      winter_cb->initialize();
-
-      p->buffs.blessing_of_winter->set_stack_change_callback([winter_cb](buff_t*, int, int new_) {
-        if (new_)
-          winter_cb->activate();
-        else
-          winter_cb->deactivate();
-        });
-    }
   }
 
   void register_hotfixes() const override

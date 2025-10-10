@@ -19,7 +19,7 @@ namespace {
 struct expiration_t : public event_t
 {
   pet_t& pet;
-  
+
   expiration_t( pet_t& p, timespan_t duration ) :
     event_t( p, duration ),
     pet( p )
@@ -118,29 +118,11 @@ double pet_t::composite_player_target_multiplier( player_t* t, school_e school )
 {
   double m = player_t::composite_player_target_multiplier( t, school );
 
-  // Same logic as in player_t::composite_player_target_multiplier() above
-  // As the Covenant buff isn't created on pets, we need to check the owner
-  // Testing shows this appears to work on all pets, even trinkets and such
-  if ( owner->buffs.wild_hunt_tactics )
-  {
-    double health_threshold = 100.0 - ( 100.0 - owner->buffs.wild_hunt_tactics->data().effectN( 5 ).base_value() ) *
-                                        sim->shadowlands_opts.wild_hunt_tactics_duration_multiplier;
-
-    if ( t->health_percentage() > health_threshold )
-      m *= 1.0 + owner->buffs.wild_hunt_tactics->default_value;
-  }
-
   if ( auto td = owner->find_target_data( t ) )
   {
     m *= 1.0 + td->debuff.condensed_lifeforce->check_value();
-    m *= 1 + td->debuff.adversary->check_value();
-    m *= 1 + td->debuff.plagueys_preemptive_strike->check_value();
-    m *= 1 + td->debuff.soulglow_spectrometer->check_stack_value();
     m *= 1.0 + td->debuff.scouring_touch->check_stack_value();
     m *= 1.0 + td->debuff.exsanguinated->check_value();
-    m *= 1.0 + td->debuff.kevins_wrath->check_value();
-    m *= 1.0 + td->debuff.wild_hunt_strategem->check_value();
-    m *= 1.0 + td->debuff.dream_delver->check_stack_value();
   }
 
   return m;
@@ -494,7 +476,7 @@ double pet_t::composite_melee_haste() const
   return current_pet_stats.composite_melee_haste;
 }
 
-void pet_t::adjust_auto_attack( gcd_haste_type ht ) 
+void pet_t::adjust_auto_attack( gcd_haste_type ht )
 {
   player_t::adjust_auto_attack( ht );
   current_auto_attack_speed = current_pet_stats.composite_melee_auto_attack_speed;

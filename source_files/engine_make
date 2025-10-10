@@ -62,7 +62,6 @@ SRC += \
     dbc$(PATHSEP)character_loadout.cpp \
     dbc$(PATHSEP)client_data.cpp \
     dbc$(PATHSEP)client_hotfix_entry.cpp \
-    dbc$(PATHSEP)covenant_data.cpp \
     dbc$(PATHSEP)embellishment_data.cpp \
     dbc$(PATHSEP)expected_stat.cpp \
     dbc$(PATHSEP)gem_data.cpp \
@@ -114,7 +113,6 @@ SRC += \
     player$(PATHSEP)actor_target_data.cpp \
     player$(PATHSEP)azerite_data.cpp \
     player$(PATHSEP)consumable.cpp \
-    player$(PATHSEP)covenant.cpp \
     player$(PATHSEP)darkmoon_deck.cpp \
     player$(PATHSEP)effect_callbacks.cpp \
     player$(PATHSEP)ground_aoe.cpp \
@@ -128,7 +126,6 @@ SRC += \
     player$(PATHSEP)rating.cpp \
     player$(PATHSEP)runeforge_data.cpp \
     player$(PATHSEP)set_bonus.cpp \
-    player$(PATHSEP)soulbinds.cpp \
     player$(PATHSEP)spawner_base.cpp \
     player$(PATHSEP)talent.cpp \
     player$(PATHSEP)target_specific.cpp \

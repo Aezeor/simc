@@ -8,7 +8,6 @@
 #include "dbc/temporary_enchant.hpp"
 #include "dbc/trait_data.hpp"
 #include "player/consumable.hpp"
-#include "player/covenant.hpp"
 #include "player/player_talent_points.hpp"
 #include "player/scaling_metric_data.hpp"
 #include "player/set_bonus.hpp"
@@ -2613,8 +2612,6 @@ std::string find_matching_decorator( const player_t& p, std::string_view n )
   if ( !spell->ok() ) spell = p.find_class_spell( n );
   if ( !spell->ok() ) spell = p.find_class_spell( n_token );
   if ( !spell->ok() ) spell = p.find_runeforge_legendary( n );
-  if ( !spell->ok() ) spell = p.find_conduit_spell( n );
-  if ( !spell->ok() ) spell = p.find_conduit_spell( n_token );
   if ( spell->ok() )
     return report_decorators::decorated_spell_data( *p.sim, spell );
 
@@ -3711,12 +3708,6 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
              util::encode_html( p.position_str ).c_str(),
              util::profile_source_string( p.profile_source_ ) );
 
-  if ( p.covenant && p.covenant->enabled() )
-  {
-    os.format( "<li><b>Covenant:</b> {}</li>\n",
-               util::inverse_tokenize( util::covenant_type_string( p.covenant->type() ) ) );
-  }
-
   os.format("</ul>\n");
 
   if ( !p.report_information.thumbnail_url.empty() )
@@ -3943,12 +3934,6 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
     if ( p.azerite )
     {
       p.azerite->generate_report( os );
-    }
-
-    // Covenant, Soulbinds, and Conduits
-    if ( p.covenant && p.covenant->enabled() )
-    {
-      p.covenant->generate_report( os );
     }
 
     // Runeforge Legendaries
