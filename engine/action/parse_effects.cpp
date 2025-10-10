@@ -147,6 +147,9 @@ void player_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
       notes.emplace_back( str );
   }
 
+  if ( !note.empty() )
+    notes.emplace_back( util::encode_html( note ) );
+
   range::for_each( notes, []( auto& s ) { s[ 0 ] = std::toupper( s[ 0 ] ); } );
 
   std::string val_str = val_str_fn ? val_str_fn( value )
@@ -197,6 +200,9 @@ void target_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
     if ( auto str = note_fn( opt_enum ); !str.empty() )
       notes.emplace_back( str );
   }
+
+  if ( !note.empty() )
+    notes.emplace_back( util::encode_html( note ) );
 
   range::for_each( notes, []( auto& s ) { s[ 0 ] = std::toupper( s[ 0 ] ); } );
 
@@ -314,6 +320,9 @@ void modified_spelleffect_t::print_parsed_line( report::sc_html_stream& os, cons
 
   if ( i.func )
     notes.emplace_back( "Conditional" );
+
+  if ( !i.note.empty() )
+    notes.emplace_back( util::encode_html( i.note ) );
 
   os.format(
     "<td>{}</td>"

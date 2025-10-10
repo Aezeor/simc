@@ -11,6 +11,8 @@
 #include "player/stats.hpp"
 #include "util/io.hpp"
 
+#include <string_view>
+
 // forward declarations
 struct parse_effects_t;
 
@@ -72,6 +74,8 @@ struct player_effect_t
   const spelleffect_data_t* eff = &spelleffect_data_t::nil();
   // optional enum identifier
   uint32_t opt_enum = UINT32_MAX;
+  // note for html report
+  std::string_view note;
 
   player_effect_t& set_buff( buff_t* b )
   { buff = b; return *this; }
@@ -108,6 +112,9 @@ struct player_effect_t
   player_effect_t& set_opt_enum( uint32_t o )
   { opt_enum = o; return *this; }
 
+  player_effect_t& set_note( std::string_view n )
+  { note = n; return *this; }
+
   bool operator==( const player_effect_t& other )
   {
     return simple == other.simple && buff == other.buff && value == other.value && use_stacks == other.use_stacks &&
@@ -132,6 +139,8 @@ struct target_effect_t
   double base_mastery = 0.0;
   const spelleffect_data_t* eff = &spelleffect_data_t::nil();
   uint32_t opt_enum = UINT32_MAX;
+  // note for html report
+  std::string_view note;
 
   target_effect_t& set_func( std::function<double( actor_target_data_t* )> f )
   { func = std::move( f ); return *this; }
@@ -150,6 +159,9 @@ struct target_effect_t
 
   target_effect_t& set_opt_enum( uint32_t o )
   { opt_enum = o; return *this; }
+
+  target_effect_t& set_note( std::string_view n )
+  { note = n; return *this; }
 
   bool operator==( const target_effect_t& other )
   {
@@ -172,6 +184,8 @@ struct modify_effect_t
   bool use_stacks = true;
   bool flat = false;
   const spelleffect_data_t* eff = &spelleffect_data_t::nil();
+  // note for html report
+  std::string_view note;
 
   modify_effect_t& set_buff( buff_t* b )
   { buff = b; return *this; }
@@ -190,6 +204,9 @@ struct modify_effect_t
 
   modify_effect_t& set_eff( const spelleffect_data_t* e )
   { eff = e; return *this; }
+
+  modify_effect_t& set_note( std::string_view n )
+  { note = n; return *this; }
 };
 
 // used to store values from parameter pack recursion of parse_effect/parse_target_effects
@@ -367,6 +384,10 @@ struct parse_base_t
     else if constexpr ( std::is_convertible_v<decltype( *std::declval<T>() ), const std::vector<U>> )
     {
       pack.copy = &( *mod );
+    }
+    else if constexpr ( std::is_constructible_v<std::string_view, std::decay_t<T>> )
+    {
+      pack.data.note = mod;
     }
     else
     {
