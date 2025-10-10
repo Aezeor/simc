@@ -7108,8 +7108,11 @@ struct throw_glaive_t : public demon_hunter_attack_t
     {
       if ( source == glaive_source::THROWN )
       {
-        resource_current            = RESOURCE_FURY;
-        base_costs[ RESOURCE_FURY ] = p->talent.havoc.furious_throws->effectN( 1 ).base_value();
+        resource_current = RESOURCE_FURY;
+      }
+      else
+      {
+        base_costs[ RESOURCE_FURY ] = 0;
       }
 
       switch ( source )
