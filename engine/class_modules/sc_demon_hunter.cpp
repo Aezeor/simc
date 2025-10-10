@@ -607,14 +607,14 @@ public:
       player_talent_t catastrophe;
       player_talent_t phase_shift;
 
-      player_talent_t path_to_oblivion;  // NYI
-      player_talent_t state_of_matter;   // NYI
+      player_talent_t path_to_oblivion;  // No Implementation
+      player_talent_t state_of_matter;   // No Implementation
       player_talent_t mass_acceleration;
       player_talent_t doomsayer;  // NYI
       player_talent_t celestial_echoes;
 
       player_talent_t final_hour;
-      player_talent_t meteoric_fall;  // NYI
+      player_talent_t meteoric_fall;
       player_talent_t dark_matter;    // NYI
       player_talent_t otherworldly_focus;
 
