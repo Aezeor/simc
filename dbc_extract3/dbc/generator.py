@@ -7,7 +7,7 @@ import dbc.db, dbc.data, dbc.parser, dbc.file
 
 from dbc import constants, util
 from dbc.constants import Class
-from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet
+from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet
 from dbc.filter import TalentSet, TemporaryEnchantItemSet
 from dbc.filter import PermanentEnchantItemSet, ExpectedStatModSet, TraitSet, EmbellishmentSet, CharacterLoadoutSet
 from dbc.filter import TraitLoadoutSet
@@ -3274,10 +3274,6 @@ class SpellDataGenerator(DataGenerator):
                 continue
 
             self.process_spell(effect.id_spell, ids, 0, 0, False)
-
-        # Soulbind trees abilities
-        for spell_id in SoulbindAbilitySet(self._options).ids():
-            self.process_spell(spell_id, ids, 0, 0)
 
         # Explicitly add Shadowlands legendaries
         for entry in self.db('RuneforgeLegendaryAbility').values():
