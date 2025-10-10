@@ -9212,7 +9212,7 @@ void demon_hunter_t::init_spells()
       spell.throw_glaive                 = find_class_spell( "Throw Glaive" );
       spec.consume_soul_greater_heal     = find_spell( 178963 );
       spec.consume_soul_greater_energize = spec.consume_soul_greater_heal->effectN( 2 ).trigger();
-      spec.consume_soul_lesser_heal      = find_spell( 206478, DEMON_HUNTER_HAVOC );
+      spec.consume_soul_lesser_heal      = find_spell( 228532 );
       spec.consume_soul_lesser_energize  = spec.consume_soul_lesser_heal->effectN( 2 ).trigger();
       spec.metamorphosis                 = find_class_spell( "Metamorphosis" );
       spec.metamorphosis_buff            = spec.metamorphosis->effectN( 2 ).trigger();
