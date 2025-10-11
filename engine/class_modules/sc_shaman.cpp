@@ -1064,8 +1064,8 @@ public:
       nullptr;  // required for Earthen Rage, whichs' ticks damage the most recently attacked target
   event_t* earthen_rage_event;
 
-  /// Legacy of the Frost Witch maelstrom stack counter
-  unsigned lotfw_counter;
+  /// Lightning Strikes counter
+  unsigned ls_counter;
 
   // Options
   bool raptor_glyph;
@@ -1302,6 +1302,7 @@ public:
     buff_t* stormblast;
 
     buff_t* primordial_storm;
+    buff_t* lightning_strikes;
 
     buff_t* tww2_enh_2pc; // Winning Streak!
     buff_t* tww2_enh_4pc; // Electrostatic Wager (visible buff)
@@ -1827,7 +1828,7 @@ public:
     : parse_player_effects_t( sim, SHAMAN, name, r ),
       lava_surge_during_lvb( false ),
       sk_during_cast(false),
-      lotfw_counter( 0U ),
+      ls_counter( 0U ),
       raptor_glyph( false ),
       dre_samples( "dre_tracker", false ),
       dre_uptime_samples( "dre_uptime_tracker", false ),
@@ -5428,6 +5429,11 @@ struct lava_lash_t : public shaman_attack_t
     }
 
     p()->trigger_tww3_totemic_enh_4pc( execute_state, p()->action.tww3_lava_lash );
+
+    if ( p()->buff.lightning_strikes->consume( this ) )
+    {
+      p()->generate_maelstrom_weapon( this, 1 );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -5798,6 +5804,11 @@ struct stormstrike_base_t : public shaman_attack_t
     }
 
     p()->trigger_awakening_storms( execute_state );
+
+    if ( p()->buff.lightning_strikes->consume( this ) )
+    {
+      p()->generate_maelstrom_weapon( this, 1 );
+    }
   }
 };
 
@@ -11332,11 +11343,6 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
     return make_ref_expr( splits[ 0 ], tempest_counter );
   }
 
-  if ( util::str_compare_ci( splits[ 0 ], "lotfw_mael_count" ) )
-  {
-    return make_ref_expr( splits[ 0 ], lotfw_counter );
-  }
-
   if ( util::str_compare_ci( splits[ 0 ], "windfury_chance" ) )
   {
     return make_fn_expr( splits[ 0 ], [ this ]() {
@@ -12726,6 +12732,16 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
     cooldown.lava_lash->adjust(
       timespan_t::from_seconds( -1.0 * stacks * talent.elemental_tempo->effectN( 3 ).base_value() / 1000.0 ) );
   }
+
+  if ( talent.lightning_strikes.ok() && stacks > 0 )
+  {
+    ls_counter += as<unsigned>( stacks );
+    if ( ls_counter >= as<unsigned>( talent.lightning_strikes->effectN( 2 ).base_value() ) )
+    {
+      ls_counter -= as<unsigned>( talent.lightning_strikes->effectN( 2 ).base_value() );
+      buff.lightning_strikes->trigger();
+    }
+  }
 }
 
 void shaman_t::trigger_maelstrom_gain( double maelstrom_gain, gain_t* gain )
@@ -13768,6 +13784,9 @@ void shaman_t::create_buffs()
 
   buff.primordial_storm = make_buff( this, "primordial_storm", talent.primordial_storm->effectN( 1 ).trigger() );
 
+  buff.lightning_strikes = make_buff( this, "lightning_strikes", find_spell( 384451 ) )
+    ->set_trigger_spell( talent.lightning_strikes );
+
   buff.tww2_enh_2pc = make_buff( this, "winning_streak", find_spell( 1218616 ) )
     ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, TWW2, B2 ) );
   buff.tww2_enh_4pc = make_buff( this, "electrostatic_wager", find_spell( 1223410 ) )
@@ -14115,6 +14134,8 @@ void shaman_t::apply_action_effects( parse_effects_t* a )
   eff::source_eff_builder_t( buff.doom_winds ).build( a );
   eff::source_eff_builder_t( buff.forceful_winds ).build( a );
   eff::source_eff_builder_t( buff.converging_storms ).build( a );
+  eff::source_eff_builder_t( buff.lightning_strikes ).build( a );
+
 /*eff::source_eff_builder_t( talent.enhanced_imbues )
     .set_state_fn( [ this ] { return buff.flametongue_weapon->check(); } )
     .set_effect_mask( effect_mask_t( false ).enable( 2 ) )
@@ -14894,7 +14915,7 @@ void shaman_t::reset()
       tempest_threshold - 1 );
   }
 
-  lotfw_counter = 0U;
+  ls_counter = 0U;
   dre_attempts = 0U;
   aws_counter                    = 0U;
   lava_surge_attempts_normalized = 0.0;
