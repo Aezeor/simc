@@ -4750,10 +4750,10 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
 
 struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
 {
-  struct spirit_bomb_damage_t : public demon_hunter_spell_t
+  struct spirit_bomb_damage_t : public dark_matter_trigger_t<demon_hunter_spell_t>
   {
     spirit_bomb_damage_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->spec.spirit_bomb_damage )
+      : base_t( name, p, p->spec.spirit_bomb_damage )
     {
       background = dual   = true;
       aoe                 = -1;
@@ -4762,7 +4762,7 @@ struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
 
     void impact( action_state_t* s ) override
     {
-      demon_hunter_spell_t::impact( s );
+      base_t::impact( s );
 
       if ( result_is_hit( s->result ) )
       {
@@ -4772,7 +4772,7 @@ struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
 
     double composite_da_multiplier( const action_state_t* s ) const override
     {
-      double m = demon_hunter_spell_t::composite_da_multiplier( s );
+      double m = base_t::composite_da_multiplier( s );
 
       if ( p()->talent.annihilator.otherworldly_focus->ok() )
       {
