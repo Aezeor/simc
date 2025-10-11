@@ -41,7 +41,6 @@
 #include "player/player_demise_event.hpp"
 #include "player/player_event.hpp"
 #include "player/player_scaling.hpp"
-#include "player/player_talent_points.hpp"
 #include "player/runeforge_data.hpp"
 #include "player/sample_data_helper.hpp"
 #include "player/scaling_metric_data.hpp"
@@ -1026,8 +1025,6 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     spell_queue_window( 400_ms ),
     dbc( new dbc_t(*(s->dbc)) ),
     dbc_override( sim->dbc_override.get() ),
-    // talent_points( new player_talent_points_t()),
-    talent_points( nullptr ),
     profession(),
     azerite( nullptr ),
     base(),

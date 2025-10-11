@@ -4,7 +4,6 @@
 // ==========================================================================
 
 #include "interfaces/sc_js.hpp"
-#include "player/player_talent_points.hpp"
 #include "rapidjson/document.h"
 #include "rapidjson/filewritestream.h"
 #include "rapidjson/prettywriter.h"
@@ -935,19 +934,6 @@ void profileset_fetch_output_data( const profileset::profile_output_data_t& outp
   if ( output_data.race() != RACE_NONE )
   {
     ovr[ "race" ] = util::race_type_string( output_data.race() );
-  }
-  if ( !output_data.talents().empty() )
-  {
-    const auto& talents = output_data.talents();
-    auto ovr_talents = ovr[ "talents" ].make_array();
-    for ( auto talent : talents )
-    {
-      auto ovr_talent = ovr_talents.add();
-      ovr_talent[ "tier" ] = talent->row();
-      ovr_talent[ "id" ] = talent->id();
-      ovr_talent[ "spell_id" ] = talent->spell_id();
-      ovr_talent[ "name" ] = talent->name_cstr();
-    }
   }
   if ( !output_data.gear().empty() )
   {

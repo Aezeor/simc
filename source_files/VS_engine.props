@@ -77,7 +77,6 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\dbc\spell_item_enchantment.hpp" />
 		<ClInclude Include="..\engine\dbc\spell_query\spell_data_expr.hpp" />
 		<ClInclude Include="..\engine\dbc\spelltext_data.hpp" />
-		<ClInclude Include="..\engine\dbc\talent_data.hpp" />
 		<ClInclude Include="..\engine\dbc\temporary_enchant.hpp" />
 		<ClInclude Include="..\engine\dbc\trait_data.hpp" />
 		<ClInclude Include="..\engine\dbc\wow_version.hpp" />
@@ -124,7 +123,6 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\player\player_resources.hpp" />
 		<ClInclude Include="..\engine\player\player_scaling.hpp" />
 		<ClInclude Include="..\engine\player\player_stat_cache.hpp" />
-		<ClInclude Include="..\engine\player\player_talent_points.hpp" />
 		<ClInclude Include="..\engine\player\rating.hpp" />
 		<ClInclude Include="..\engine\player\runeforge_data.hpp" />
 		<ClInclude Include="..\engine\player\sample_data_helper.hpp" />
@@ -291,7 +289,6 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\dbc\spell_data.cpp" />
 		<ClCompile Include="..\engine\dbc\spell_item_enchantment.cpp" />
 		<ClCompile Include="..\engine\dbc\spelltext_data.cpp" />
-		<ClCompile Include="..\engine\dbc\talent_data.cpp" />
 		<ClCompile Include="..\engine\dbc\temporary_enchant.cpp" />
 		<ClCompile Include="..\engine\dbc\trait_data.cpp" />
 		<ClCompile Include="..\engine\dbc\wow_version.cpp" />
@@ -321,7 +318,6 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\player\player_collected_data.cpp" />
 		<ClCompile Include="..\engine\player\player_event.cpp" />
 		<ClCompile Include="..\engine\player\player_stat_cache.cpp" />
-		<ClCompile Include="..\engine\player\player_talent_points.cpp" />
 		<ClCompile Include="..\engine\player\rating.cpp" />
 		<ClCompile Include="..\engine\player\runeforge_data.cpp" />
 		<ClCompile Include="..\engine\player\set_bonus.cpp" />

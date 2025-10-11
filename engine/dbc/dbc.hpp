@@ -28,7 +28,6 @@
 #include "dbc/spell_data.hpp"
 #include "dbc/spell_item_enchantment.hpp"
 #include "dbc/spelltext_data.hpp"
-#include "dbc/talent_data.hpp"
 #include "sc_enums.hpp"
 #include "specialization.hpp"
 #include "util/allocator.hpp"
@@ -402,10 +401,6 @@ public:
   const spellpower_data_t& power( unsigned power_id ) const
   { return spellpower_data_t::find( power_id, ptr ); }
 
-  // Always returns non-NULL.
-  const talent_data_t*           talent( unsigned talent_id ) const
-  { return find_by_id<talent_data_t>( talent_id ); }
-
   const dbc_item_data_t& item( unsigned item_id ) const
   { return dbc_item_data_t::find( item_id, ptr ); }
 
@@ -498,7 +493,6 @@ public:
   double   effect_bonus( unsigned effect_id, unsigned level ) const;
   double   effect_bonus( const spelleffect_data_t* effect, unsigned level ) const;
 
-  unsigned talent_ability_id( player_e c, specialization_e spec_id, util::string_view spell_name, bool tokenized = false ) const;
   unsigned class_ability_id( player_e c, specialization_e spec_id, util::string_view spell_name, bool tokenized = false ) const;
   unsigned pet_ability_id( player_e c, util::string_view spell_name, bool tokenized = false ) const;
   unsigned race_ability_id( player_e c, race_e r, util::string_view spell_name ) const;

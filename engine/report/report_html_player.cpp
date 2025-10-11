@@ -8,7 +8,6 @@
 #include "dbc/temporary_enchant.hpp"
 #include "dbc/trait_data.hpp"
 #include "player/consumable.hpp"
-#include "player/player_talent_points.hpp"
 #include "player/scaling_metric_data.hpp"
 #include "player/set_bonus.hpp"
 #include "player/unique_gear_shadowlands.hpp"

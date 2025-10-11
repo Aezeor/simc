@@ -71,7 +71,6 @@ struct spelleffect_data_t;
 struct stat_buff_t;
 struct stats_t;
 struct spell_data_t;
-struct player_talent_points_t;
 struct uptime_t;
 struct ground_aoe_params_t;
 namespace azerite {
@@ -220,10 +219,6 @@ struct player_t : public actor_t
 
   // Stat Timelines to Display
   std::vector<stat_e> stat_timelines;
-
-  // Obsolete grid/number based talent system
-  // Currently not created and will return nullptr
-  std::unique_ptr<player_talent_points_t> talent_points;
 
   // Player selected (trait entry id, rank) tuples
   std::vector<std::tuple<talent_tree, unsigned, unsigned>> player_traits;

@@ -8,7 +8,7 @@ import dbc.db, dbc.data, dbc.parser, dbc.file
 from dbc import constants, util
 from dbc.constants import Class
 from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet
-from dbc.filter import TalentSet, TemporaryEnchantItemSet
+from dbc.filter import TemporaryEnchantItemSet
 from dbc.filter import PermanentEnchantItemSet, ExpectedStatModSet, TraitSet, EmbellishmentSet, CharacterLoadoutSet
 from dbc.filter import TraitLoadoutSet
 
@@ -549,28 +549,6 @@ class SpecializationListGenerator(SpecializationEnumGenerator):
             self._out.write('  },\n')
 
         self._out.write('};\n\n')
-
-class TalentDataGenerator(DataGenerator):
-    def filter(self):
-        return TalentSet(self._options).get()
-
-    def generate(self, data = None):
-        self._out.write('// %d talents, wow build %s\n' % ( len(data), self._options.build ))
-        self._out.write('static std::array<talent_data_t, %d> __%s_data { {\n' % (
-            len(data), self.format_str( 'talent' ) ))
-
-        for talent in sorted(data, key=lambda v: v.id):
-            fields = talent.ref('id_spell').field('name')
-            fields += talent.field('id')
-            fields += [ '%#.2x' % 0 ]
-            fields += [ '%#.04x' % (util.class_mask(class_id=talent.class_id) or 0) ]
-            fields += talent.field('spec_id', 'col', 'row', 'id_spell', 'id_replace' )
-            # Pad struct with empty pointers for direct rank based spell data access
-            fields += [ ' 0' ]
-
-            self.output_record(fields)
-
-        self.output_footer()
 
 class ItemDataGenerator(DataGenerator):
     _item_blacklist = [
@@ -2948,31 +2926,6 @@ class SpellDataGenerator(DataGenerator):
         ids = { }
 
         _start = datetime.datetime.now()
-
-        # No longer in game, but kept for reference
-        # First, get spells from talents. Pet and character class alike
-        # for talent in TalentSet(self._options).get():
-              # These may now be pet talents
-        #     if talent.class_id > 0:
-        #         mask_class = util.class_mask(class_id=talent.class_id)
-        #         self.process_spell(talent.id_spell, ids, mask_class, 0, False)
-
-        # No longer in game, but kept for reference.
-        # If MinorTalent.db2 is ever used again, make sure to double check the format json for any field changes.
-        # Get all perks
-        # for _, perk_data in self.db('MinorTalent').items():
-        #    if self._options.build < 25600:
-        #        spell_id = perk_data.id_spell
-        #    else:
-        #        spell_id = perk_data.id_parent
-        #    if spell_id == 0:
-        #        continue
-        #
-        #    spec_data = self.db('ChrSpecialization')[perk_data.id_parent]
-        #    if spec_data.id == 0:
-        #        continue
-        #
-        #    self.process_spell(spell_id, ids, util.class_mask(class_id=spec_data.class_id), 0, False)
 
         # Get base skills from SkillLineAbility
         for ability in self.db('SkillLineAbility').values():

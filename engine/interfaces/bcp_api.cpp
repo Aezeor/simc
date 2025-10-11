@@ -15,7 +15,6 @@
 #include "item/item.hpp"
 #include "player/azerite_data.hpp"
 #include "player/player.hpp"
-#include "player/player_talent_points.hpp"
 #include "sc_enums.hpp"
 #include "sim/sim.hpp"
 #include "util/concurrency.hpp"

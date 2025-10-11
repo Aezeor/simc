@@ -58,7 +58,6 @@
 #include "player/player_stat_cache.hpp"
 #include "player/player_processed_report_information.hpp"
 #include "player/player_collected_data.hpp"
-#include "player/player_talent_points.hpp"
 #include "player/assessor.hpp"
 #include "player/action_variable.hpp"
 #include "player/player_scaling.hpp"

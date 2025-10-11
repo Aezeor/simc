@@ -25,8 +25,6 @@ struct sim_t;
 struct sim_control_t;
 struct player_t;
 class extended_sample_data_t;
-struct talent_data_t;
-
 
 namespace profileset
 {
@@ -209,7 +207,6 @@ public:
 class profile_output_data_t
 {
   race_e                                       m_race;
-  std::vector<const talent_data_t*>            m_talents;
   std::vector<profile_output_data_item_t>      m_gear;
 
   double    m_crit_rating,
@@ -242,12 +239,6 @@ public:
 
   profile_output_data_t& race( race_e v )
   { m_race = v; return *this; }
-
-  const std::vector<const talent_data_t*>& talents() const
-  { return m_talents; }
-
-  profile_output_data_t& talents( const std::vector<const talent_data_t*>& v )
-  { m_talents = v; return *this; }
 
   const std::vector<profile_output_data_item_t>& gear() const
   { return m_gear; }

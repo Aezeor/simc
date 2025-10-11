@@ -71,7 +71,6 @@ dbc/spell_data.hpp
 dbc/spell_item_enchantment.hpp
 dbc/spell_query/spell_data_expr.hpp
 dbc/spelltext_data.hpp
-dbc/talent_data.hpp
 dbc/temporary_enchant.hpp
 dbc/trait_data.hpp
 dbc/wow_version.hpp
@@ -118,7 +117,6 @@ player/player_processed_report_information.hpp
 player/player_resources.hpp
 player/player_scaling.hpp
 player/player_stat_cache.hpp
-player/player_talent_points.hpp
 player/rating.hpp
 player/runeforge_data.hpp
 player/sample_data_helper.hpp
@@ -285,7 +283,6 @@ dbc/specialization_spell.cpp
 dbc/spell_data.cpp
 dbc/spell_item_enchantment.cpp
 dbc/spelltext_data.cpp
-dbc/talent_data.cpp
 dbc/temporary_enchant.cpp
 dbc/trait_data.cpp
 dbc/wow_version.cpp
@@ -315,7 +312,6 @@ player/player.cpp
 player/player_collected_data.cpp
 player/player_event.cpp
 player/player_stat_cache.cpp
-player/player_talent_points.cpp
 player/rating.cpp
 player/runeforge_data.cpp
 player/set_bonus.cpp
