@@ -1302,6 +1302,7 @@ public:
 
     buff_t* primordial_storm;
     buff_t* lightning_strikes;
+    buff_t* surging_elements;
 
     buff_t* tww2_enh_2pc; // Winning Streak!
     buff_t* tww2_enh_4pc; // Electrostatic Wager (visible buff)
@@ -5946,6 +5947,12 @@ struct sundering_t : public shaman_attack_t
     shaman_attack_t::execute();
 
     p()->trigger_earthsurge( execute_state );
+
+    if ( p()->buff.surging_elements->trigger() )
+    {
+      p()->generate_maelstrom_weapon( this,
+        as<int>( p()->talent.surging_elements->effectN( 3 ).base_value() ) );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -12123,7 +12130,7 @@ void shaman_t::init_spells()
     specialization() == SHAMAN_ELEMENTAL ? effect_mask_t( false ).enable( 3, 4 )
                                          : effect_mask_t( false ).enable( 1, 2 ) );
 
-  deregister_passive_effects( talent.overcharge );
+  deregister_passive_spell( talent.overcharge );
 
   parse_all_class_passives();
   parse_all_passive_talents();
@@ -13714,7 +13721,7 @@ void shaman_t::create_buffs()
   buff.spirit_walk  = make_buff( this, "spirit_walk", talent.spirit_walk );
   buff.stormbringer = make_buff( this, "stormsurge", find_spell( 201846 ) );
   buff.maelstrom_weapon = make_buff( this, "maelstrom_weapon", find_spell( 344179 ) )
-    ->set_trigger_spell( talent.maelstrom_weapon );
+    ->set_chance( talent.maelstrom_weapon.ok() ? 1.0 : 0.0 );
   buff.static_accumulation = make_buff( this, "static_accumulation", find_spell( 384437 ) )
     ->set_default_value( talent.static_accumulation->effectN( 1 ).base_value() )
     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
@@ -13744,6 +13751,9 @@ void shaman_t::create_buffs()
 
   buff.lightning_strikes = make_buff( this, "lightning_strikes", find_spell( 384451 ) )
     ->set_trigger_spell( talent.lightning_strikes );
+
+  buff.surging_elements = make_buff( this, "surging_elements", find_spell( 382043 ) )
+    ->set_trigger_spell( talent.surging_elements );
 
   buff.tww2_enh_2pc = make_buff( this, "winning_streak", find_spell( 1218616 ) )
     ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, TWW2, B2 ) );
@@ -14075,6 +14085,7 @@ void shaman_t::apply_player_effects()
     .set_effect_mask( effect_mask_t( true ).disable( 2 ) )
     .build( this );
   eff::source_eff_builder_t( buff.ascendance ).build( this );
+  eff::source_eff_builder_t( buff.surging_elements ).build( this );
 }
 
 void shaman_t::apply_action_effects( parse_effects_t* a )
