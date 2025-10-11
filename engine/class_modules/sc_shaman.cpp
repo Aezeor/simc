@@ -37,7 +37,11 @@
 #include <string>
 #include <sstream>
 
-// TODO 11.1
+// TODO 12.0
+//
+// Enhancement
+// TODO-midnight-talent: Does Overcharge include target-based crit chance% debuffs?
+// TODO-midnight-talent: Do all nature damage benefit from Overcharge, or just "abilities"?
 
 namespace eff
 {
@@ -1523,6 +1527,7 @@ public:
     // Class tree
     // Row 1
     player_talent_t lava_burst;
+    player_talent_t lava_lash;
     player_talent_t chain_lightning;
     // Row 2
     player_talent_t earth_elemental;
@@ -1538,7 +1543,6 @@ public:
     player_talent_t spiritwalkers_grace;
     player_talent_t static_charge;
     player_talent_t guardians_cudgel; // TODO: NYI
-    player_talent_t flurry;
     // Row 5
     player_talent_t graceful_spirit; // TODO: Movement Speed
     player_talent_t natures_fury;
@@ -1570,47 +1574,58 @@ public:
     player_talent_t ancestral_wolf_affinity; // TODO: NYI
     player_talent_t elemental_blast;
     player_talent_t ascendance;
-    player_talent_t deeply_rooted_elements;
 
     // Enhancement
     // Row 1
-    player_talent_t stormstrike;
     player_talent_t maelstrom_weapon;
     // Row 2
     player_talent_t windfury_weapon;
-    player_talent_t lava_lash;
+    player_talent_t flametongue_weapon;
     // Row 3
     player_talent_t forceful_winds;
+    player_talent_t crash_lightning;
     player_talent_t molten_assault;
     // Row 4
-    player_talent_t unruly_winds; // TODO: Spell data still has conduit scaling (prolly non-issue)
+    player_talent_t unruly_winds;
     player_talent_t raging_maelstrom;
     player_talent_t ashen_catalyst;
     // Row 5
-    player_talent_t doom_winds;
-    player_talent_t sundering;
+    player_talent_t stormblast;
+    player_talent_t overcharge;
     player_talent_t overflowing_maelstrom;
-    player_talent_t fire_nova;
-    player_talent_t elemental_weapons;
+    player_talent_t flurry;
+    player_talent_t hot_hand;
     // Row 6
     player_talent_t storms_wrath;
-    player_talent_t crash_lightning;
-    player_talent_t stormflurry;
-    // Row 7
-    player_talent_t stormblast;
-    player_talent_t converging_storms;
-    player_talent_t hot_hand;
-    player_talent_t lashing_flames;
+    player_talent_t elemental_tempo;
     player_talent_t voltaic_blaze;
+    // Row 7
+    player_talent_t chaining_storms;
+    player_talent_t converging_storms;
+    player_talent_t stormflurry;
+    player_talent_t stormbind;
+    player_talent_t elemental_weapons;
+    player_talent_t fire_nova;
+    player_talent_t lashing_flames;
     // Row 8
-    player_talent_t feral_spirit;
+    player_talent_t ride_the_lightning;
+    player_talent_t doom_winds;
+    player_talent_t sundering;
     // Row 9
-    player_talent_t primal_maelstrom;
+    player_talent_t lightning_strikes;
     player_talent_t elemental_assault;
     player_talent_t static_accumulation;
+    player_talent_t feral_spirit;
+    player_talent_t surging_elements;
     // Row 10
-    player_talent_t primordial_storm;
+    player_talent_t thunder_capacitor;
+    player_talent_t deeply_rooted_elements;
     player_talent_t thorims_invocation;
+    player_talent_t primordial_storm;
+    // Row 11 (Keystone - Storm Unleashed)
+    player_talent_t storm_unleashed_1;
+    player_talent_t storm_unleashed_2;
+    player_talent_t storm_unleashed_3;
 
     // Elemental
 
@@ -2024,6 +2039,7 @@ public:
   double non_stacking_movement_modifier() const override;
   double stacking_movement_modifier() const override;
   double composite_player_multiplier( school_e school ) const override;
+  double composite_player_critical_damage_multiplier( const action_state_t* state, school_e school ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double composite_maelstrom_gain_coefficient( const action_state_t* /* state */ = nullptr ) const
   { return 1.0; }
@@ -11803,6 +11819,7 @@ void shaman_t::init_spells()
   // Class tree
   // Row 1
   talent.lava_burst      = _CT( "Lava Burst" );
+  talent.lava_lash       = _CT( "Lava Lash" );
   talent.chain_lightning = _CT( "Chain Lightning" );
   // Row 2
   talent.earth_elemental = _CT( "Earth Elemental" );
@@ -11847,50 +11864,81 @@ void shaman_t::init_spells()
   // Spec - Shared
   talent.ancestral_wolf_affinity = _ST( "Ancestral Wolf Affinity" );
   talent.elemental_blast         = _ST( "Elemental Blast" );
-  talent.ascendance              = _ST( "Ascendance" );
-  talent.deeply_rooted_elements  = _ST( "Deeply Rooted Elements" );
 
-  // Enhancement
-  // Row 1
-  talent.stormstrike = _ST( "Stormstrike" );
-  talent.maelstrom_weapon = _ST( "Maelstrom Weapon" );
-  // Row 2
-  talent.windfury_weapon = _ST( "Windfury Weapon" );
-  talent.lava_lash = _ST( "Lava Lash" );
-  // Row 3
-  talent.forceful_winds = _ST( "Forceful Winds" );
-  talent.molten_assault = _ST( "Molten Assault" );
-  // Row 4
-  talent.unruly_winds = _ST( "Unruly Winds" );
-  talent.raging_maelstrom = _ST( "Raging Maelstrom" );
-  talent.lashing_flames = _ST( "Lashing Flames" );
-  talent.ashen_catalyst = _ST( "Ashen Catalyst" );
-  // Row 5
-  talent.doom_winds = _ST( "Doom Winds" );
-  talent.sundering = _ST( "Sundering" );
-  talent.overflowing_maelstrom = _ST( "Overflowing Maelstrom" );
-  talent.fire_nova = _ST( "Fire Nova" );
-  talent.elemental_weapons = _ST( "Elemental Weapons" );
-  talent.flurry          = _ST( "Flurry" );
-  // Row 6
-  talent.storms_wrath = _ST( "Storm's Wrath" );
-  talent.crash_lightning = _ST( "Crash Lightning" );
-  talent.stormflurry = _ST( "Stormflurry" );
-  // Row 7
-  talent.stormblast = _ST( "Stormblast" );
-  talent.converging_storms = _ST( "Converging Storms" );
-  talent.hot_hand = _ST( "Hot Hand" );
-  talent.voltaic_blaze = _ST( "Voltaic Blaze" );
-  // Row 8
-  talent.feral_spirit = _ST( "Feral Spirit" );
-  // Row 9
-  talent.primal_maelstrom = _ST( "Primal Maelstrom" );
-  talent.elemental_assault = _ST( "Elemental Assault" );
-  talent.static_accumulation = _ST( "Static Accumulation" );
-  talent.flowing_spirits = _ST( "Flowing Spirits" );
-  // Row 10
-  talent.primordial_storm = _ST( "Primordial Storm" );
-  talent.thorims_invocation = _ST( "Thorim's Invocation" );
+  std::vector<std::pair<player_talent_t&, util::string_view>> spec_talents {
+    // Shared
+    { talent.ascendance,             "Ascendance"            },
+
+    // Elemental
+    // Row 1
+    // Row 2
+    // Row 3
+    // Row 4
+    // Row 5
+    // Row 6
+    // Row 7
+    // Row 8
+    // Row 9
+    // Row 10
+
+    // Enhancement
+    // Row 1
+    { talent.maelstrom_weapon,       "Maelstrom Weapon"       },
+    // Row 2
+    { talent.windfury_weapon,        "Windfury Weapon"        },
+    { talent.flametongue_weapon,     "Flametongue Weapon"     },
+    // Row 3
+    { talent.forceful_winds,         "Forceful Winds"         },
+    { talent.crash_lightning,        "Crash Lightning"        },
+    { talent.molten_assault,         "Molten Assault"         },
+    // Row 4
+    { talent.unruly_winds,           "Unruly Winds"           },
+    { talent.raging_maelstrom,       "Raging Maelstrom"       },
+    { talent.ashen_catalyst,         "Ashen Catalyst"         },
+    // Row 5
+    { talent.stormblast,             "Stormblast"             },
+    { talent.overcharge,             "Overcharge"             },
+    { talent.overflowing_maelstrom,  "Overflowing Maelstrom"  },
+    { talent.flurry,                 "Flurry"                 },
+    { talent.hot_hand,               "Hot Hand"               },
+    // Row 6
+    { talent.voltaic_blaze,          "Voltaic Blaze"          },
+    { talent.elemental_tempo,        "Elemental Tempo"        },
+    { talent.storms_wrath,           "Storm's Wrath"          },
+    // Row 7
+    { talent.chaining_storms,        "Chaining Storms"        },
+    { talent.stormflurry,            "Stormflurry"            },
+    { talent.stormbind,              "Stormbind"              },
+    { talent.elemental_weapons,      "Elemental Weapons"      },
+    { talent.fire_nova,              "Fire Nova"              },
+    { talent.lashing_flames,         "Lashing Flames"         },
+    // Row 8
+    { talent.ride_the_lightning,     "Ride the Lightning"     },
+    { talent.doom_winds,             "Doom Winds"             },
+    { talent.sundering,              "Sundering"              },
+    // Row 9
+    { talent.lightning_strikes,      "Lightning Strikes"      },
+    { talent.elemental_assault,      "Elemental Assault"      },
+    { talent.static_accumulation,    "Static Accumulation"    },
+    { talent.feral_spirit,           "Feral Spirit"           },
+    { talent.surging_elements,       "Surging Elements"       },
+    // Row 10
+    { talent.thunder_capacitor,      "Thunder Capacitor"      },
+    { talent.deeply_rooted_elements, "Deeply Rooted Elements" },
+    { talent.thorims_invocation,     "Thorim's Invocation"    },
+    { talent.primordial_storm,       "Primordial Storm"       },
+  };
+
+  // Initialize Specialization tree talents
+  for ( const auto& entry : spec_talents )
+  {
+    std::get<0>( entry ) = find_talent_spell( talent_tree::SPECIALIZATION, std::get<1>( entry ) );
+  }
+
+  // Enhancement keystones
+  talent.storm_unleashed_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1262713 );
+  talent.storm_unleashed_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1262761 );
+  talent.storm_unleashed_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1252373 );
 
   // Elemental
   // Row 1
@@ -12052,6 +12100,8 @@ void shaman_t::init_spells()
   register_passive_effect_mask( spell.tww3_stormbringer_4pc,
     specialization() == SHAMAN_ELEMENTAL ? effect_mask_t( false ).enable( 3, 4 )
                                          : effect_mask_t( false ).enable( 1, 2 ) );
+
+  deregister_passive_effects( talent.overcharge );
 
   parse_all_class_passives();
   parse_all_passive_talents();
@@ -14655,6 +14705,22 @@ double shaman_t::composite_player_multiplier( school_e school ) const
        talent.lightning_capacitor.ok() )
   {
     m *= 1.0 + talent.lightning_capacitor->effectN( 3 ).percent();
+  }
+
+  return m;
+}
+
+// shaman_t::composite_player_critical_damage_multiplier =====================
+
+double shaman_t::composite_player_critical_damage_multiplier( const action_state_t* state, school_e school ) const
+{
+  double m = parse_player_effects_t::composite_player_critical_damage_multiplier( state, school );
+
+  // TODO-midnight: May be "delayed" up to 1 second in game, implement?
+  // TODO-midnight: Do target-based multipliers work?
+  if ( talent.overcharge.ok() && dbc::is_school( SCHOOL_NATURE, school ) )
+  {
+    m *= 1.0 + talent.overcharge->effectN( 2 ).percent() * state->crit_chance;
   }
 
   return m;
