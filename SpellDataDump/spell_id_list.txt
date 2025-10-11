@@ -1006,36 +1006,36 @@ Death Knight
 335180   Death Turf
 335486   Abomination Limb
 335594   Will of the Berserker
-337381   Eternal Hunger
-337704   Chilled Resilience
-337705   Spirit Drain
-337764   Reinforced Shell
-337822   Accelerated Cold
-337884   Withering Plague
-337934   Eradicating Blow
-337936   Eradicating Blow
-337957   Blood Bond
-337972   Hardened Bones
-337973   Hardened Bones
-337980   Embrace Death
-337988   Everfrost
-337989   Everfrost
+337381  *Eternal Hunger
+337704  *Chilled Resilience
+337705  *Spirit Drain
+337764  *Reinforced Shell
+337822  *Accelerated Cold
+337884  *Withering Plague
+337934  *Eradicating Blow
+337936  *Eradicating Blow
+337957  *Blood Bond
+337972  *Hardened Bones
+337973  *Hardened Bones
+337980  *Embrace Death
+337988  *Everfrost
+337989  *Everfrost
 338089   Fleeting Wind
 338093   Fleeting Wind
-338311   Unending Grip
-338312   Unending Grip
-338330   Insatiable Appetite
-338435   Meat Shield
-338438   Meat Shield
-338492   Unleashed Frenzy
-338501   Unleashed Frenzy
-338516   Debilitating Malady
-338523   Debilitating Malady
-338553   Convocation of the Dead
-338566   Lingering Plague
-338628   Impenetrable Gloom
-338651   Brutal Grasp
-338664   Proliferation
+338311  *Unending Grip
+338312  *Unending Grip
+338330  *Insatiable Appetite
+338435  *Meat Shield
+338438  *Meat Shield
+338492  *Unleashed Frenzy
+338501  *Unleashed Frenzy
+338516  *Debilitating Malady
+338523  *Debilitating Malady
+338553  *Convocation of the Dead
+338566  *Lingering Plague
+338628  *Impenetrable Gloom
+338651  *Brutal Grasp
+338664  *Proliferation
 340725  *Engorged Limb
 340728  *Fatal Grasp
 340735  *Abomination Limb
@@ -1046,7 +1046,7 @@ Death Knight
 341098  *Death's Deliverance
 341100  *Death's Deliverance
 341340   Death's Due
-341344   Withering Ground
+341344  *Withering Ground
 341724   Rage of the Frozen Champion
 341725   Rage of the Frozen Champion
 343252  *Might of the Frozen Wastes
@@ -2445,31 +2445,31 @@ Demon Hunter
 337775   Fel Bombardment
 337819   Throw Glaive
 337849   Fel Bombardment
-338671   Fel Defender
-338682   Viscous Ink
-338793   Shattered Restoration
-338799   Felfire Haste
-338804   Felfire Haste
+338671  *Fel Defender
+338682  *Viscous Ink
+338793  *Shattered Restoration
+338799  *Felfire Haste
+338804  *Felfire Haste
 338834  *Consume Magic
-338835   Ravenous Consumption
-339048   Demonic Parole
-339051   Demonic Parole
-339149   Lost in Darkness
-339151   Relentless Onslaught
-339228   Dancing with Fate
+338835  *Ravenous Consumption
+339048  *Demonic Parole
+339051  *Demonic Parole
+339149  *Lost in Darkness
+339151  *Relentless Onslaught
+339228  *Dancing with Fate
 339229   Exposed Wound
-339230   Serrated Glaive
-339231   Growing Inferno
-339423   Soul Furnace
-339424   Soul Furnace
-339587   Demon Muzzle
-339589   Demon Muzzle
-339644   Roaring Fire
+339230  *Serrated Glaive
+339231  *Growing Inferno
+339423  *Soul Furnace
+339424  *Soul Furnace
+339587  *Demon Muzzle
+339589  *Demon Muzzle
+339644  *Roaring Fire
 339893   Elysian Decree
 339894   Elysian Decree
-339895   Repeat Decree
-340028   Increased Scrutiny
-340063   Brooding Pool
+339895  *Repeat Decree
+340028  *Increased Scrutiny
+340063  *Brooding Pool
 342817   Glaive Tempest
 342857   Glaive Tempest
 343006  *Unrestrained Fury
@@ -2482,7 +2482,7 @@ Demon Hunter
 343206   Improved Chaos Strike
 343207   Focused Cleave
 343311   Furious Gaze
-344358   Unnatural Malice
+344358  *Unnatural Malice
 344859   Demon's Bite
 344862   Chaos Strike
 344865   Fel Rush
@@ -4523,41 +4523,41 @@ Druid
 340056   Frenzied Assault
 340059   Lycara's Fleeting Glimpse
 340060   Lycara's Fleeting Glimpse
-340529   Tough as Bark
+340529  *Tough as Bark
 340540   Ursine Vigor
 340541   Ursine Vigor
-340543   Innate Resolve
-340545   Tireless Pursuit
-340546   Tireless Pursuit
-340549   Unstoppable Growth
-340550   Ready for Anything
-340552   Unchecked Aggression
+340543  *Innate Resolve
+340545  *Tireless Pursuit
+340546  *Tireless Pursuit
+340549  *Unstoppable Growth
+340550  *Ready for Anything
+340552  *Unchecked Aggression
 340553   Well-Honed Instincts
 340555   Well-Honed Instincts
 340556   Well-Honed Instincts
-340605   Layered Mane
-340609   Savage Combatant
-340613   Savage Combatant
-340616   Flash of Clarity
-340621   Floral Recycling
-340682   Taste for Blood
-340686   Incessant Hunter
-340688   Incessant Hunter
-340694   Sudden Ambush
-340698   Sudden Ambush
-340705   Carnivorous Instinct
-340706   Precise Alignment
-340708   Fury of the Skies
-340719   Umbral Intensity
-340720   Stellar Inspiration
-341280   Born Anew
-341378   Deep Allegiance
-341383   Endless Thirst
-341446   Conflux of Elements
-341447   Evolved Swarm
-341448   Born Anew
-341450   Front of the Pack
-341451   Born of the Wilds
+340605  *Layered Mane
+340609  *Savage Combatant
+340613  *Savage Combatant
+340616  *Flash of Clarity
+340621  *Floral Recycling
+340682  *Taste for Blood
+340686  *Incessant Hunter
+340688  *Incessant Hunter
+340694  *Sudden Ambush
+340698  *Sudden Ambush
+340705  *Carnivorous Instinct
+340706  *Precise Alignment
+340708  *Fury of the Skies
+340719  *Umbral Intensity
+340720  *Stellar Inspiration
+341280  *Born Anew
+341378  *Deep Allegiance
+341383  *Endless Thirst
+341446  *Conflux of Elements
+341447  *Evolved Swarm
+341448  *Born Anew
+341450  *Front of the Pack
+341451  *Born of the Wilds
 341982  *(DNT) Kindred Spirits
 343216   Berserk
 343223   Berserk
@@ -4765,7 +4765,7 @@ Druid
 393641   Druid Restoration Class Set 4pc
 393760   Umbral Embrace
 393763   Umbral Embrace
-393897   Tireless Pursuit
+393897  *Tireless Pursuit
 393903   Ursine Vigor
 393940   Starweaver
 393942   Starweaver's Warp
@@ -5671,16 +5671,16 @@ Evoker
 386405   Inner Radiance
 387168   Boon of the Covenants
 387169   Boon of the Covenants
-387198   Grandiose Boon
-387201   Spark of Savagery
-387202   Intense Awakening
-387222   Bronze Acceleration
-387225   Primal Fortitude
-387227   Inherent Resistance
-387228   Circle of Life
-387240   Graceful Stride
-387267   Natural Weapons
-387270   Legacy of Coldarra
+387198  *Grandiose Boon
+387201  *Spark of Savagery
+387202  *Intense Awakening
+387222  *Bronze Acceleration
+387225  *Primal Fortitude
+387227  *Inherent Resistance
+387228  *Circle of Life
+387240  *Graceful Stride
+387267  *Natural Weapons
+387270  *Legacy of Coldarra
 387341   Walloping Blow
 387344   Walloping Blow
 387350   Ouroboros
@@ -7849,43 +7849,43 @@ Hunter
 336904   Latent Poison Injectors
 336907   Butcher's Bone Fragments
 336908   Butcher's Bone Fragments
-339018   Enfeebled Mark
+339018  *Enfeebled Mark
 339059   Empowered Release
 339061   Empowered Release
-339109   Spirit Attunement
-339129   Necrotic Barrage
+339109  *Spirit Attunement
+339129  *Necrotic Barrage
 339154  *Shoot
-339264   Marksman's Advantage
-339284   Marksman's Advantage
-339377   Harmony of the Tortollan
-339399   Rejuvenating Wind
-339400   Rejuvenating Wind
-339459   Resilience of the Hunter
-339461   Resilience of the Hunter
-339495   Reversal of Fortune
-339558   Cheetah's Vigor
-339651   Tactical Retreat
-339654   Tactical Retreat
-339704   Ferocious Appetite
-339750   One With the Beast
-339920   Sharpshooter's Focus
+339264  *Marksman's Advantage
+339284  *Marksman's Advantage
+339377  *Harmony of the Tortollan
+339399  *Rejuvenating Wind
+339400  *Rejuvenating Wind
+339459  *Resilience of the Hunter
+339461  *Resilience of the Hunter
+339495  *Reversal of Fortune
+339558  *Cheetah's Vigor
+339651  *Tactical Retreat
+339654  *Tactical Retreat
+339704  *Ferocious Appetite
+339750  *One With the Beast
+339920  *Sharpshooter's Focus
 339924   Brutal Projectiles
 339928   Brutal Projectiles
 339929   Brutal Projectiles
-339973   Deadly Chain
-340033   Powerful Precision
-340876   Echoing Call
+339973  *Deadly Chain
+340033  *Powerful Precision
+340876  *Echoing Call
 341114  *Hardy
 341115  *Hardy
 341117  *Fleethoof
 341118  *Trample
 341222   Strength of the Pack
 341223   Strength of the Pack
-341246   Stinging Strike
-341350   Deadly Tandem
-341399   Flame Infusion
-341401   Flame Infusion
-341440   Bloodletting
+341246  *Stinging Strike
+341350  *Deadly Tandem
+341399  *Flame Infusion
+341401  *Flame Infusion
+341440  *Bloodletting
 341775  *Shoot Plague
 341864  *Dread Slug
 342049   Chimaera Shot
@@ -7916,7 +7916,7 @@ Hunter
 344353   Serenity Dust
 344572   Bestial Wrath
 346103  *Throw Spear
-346747   Ambuscade
+346747  *Ambuscade
 347827   Butcher's Bone Fragments
 347914  *Dire Beast
 347915  *Dire Beast
@@ -10198,34 +10198,34 @@ Mage
 333393   Grisly Icicle
 334180  *Focus Magic
 334277   Alexstrasza's Fury
-336460   Unrelenting Cold
-336472   Shivering Core
-336522   Icy Propulsion
-336569   Ice Bite
-336613   Winter's Protection
-336636   Flow of Time
-336777   Grounding Surge
-336821   Infernal Cascade
-336832   Infernal Cascade
-336852   Master Flame
-336873   Arcane Prodigy
+336460  *Unrelenting Cold
+336472  *Shivering Core
+336522  *Icy Propulsion
+336569  *Ice Bite
+336613  *Winter's Protection
+336636  *Flow of Time
+336777  *Grounding Surge
+336821  *Infernal Cascade
+336832  *Infernal Cascade
+336852  *Master Flame
+336873  *Arcane Prodigy
 336886   Nether Precision
 336889   Nether Precision
-336992   Discipline of the Grove
-336999   Gift of the Lich
-337058   Ire of the Ascended
+336992  *Discipline of the Grove
+336999  *Gift of the Lich
+337058  *Ire of the Ascended
 337087   Siphoned Malice
 337090   Siphoned Malice
-337123   Cryo-Freeze
-337136   Diverted Energy
-337192   Magi's Brand
+337123  *Cryo-Freeze
+337136  *Diverted Energy
+337192  *Magi's Brand
 337224   Flame Accretion
-337240   Artifice of the Archmage
-337244   Artifice of the Archmage
+337240  *Artifice of the Archmage
+337244  *Artifice of the Archmage
 337275   Incantation of Swiftness
-337293   Tempest Barrier
-337299   Tempest Barrier
-341325   Controlled Destruction
+337293  *Tempest Barrier
+337299  *Tempest Barrier
+341325  *Controlled Destruction
 341432  *Blink
 342130  *Rune of Power
 342172  *Rune of Power
@@ -11831,52 +11831,52 @@ Monk
 333917  *Shadowy Essence
 333926  *Shadowy Essence
 335913   Empowered Tiger Lightning
-336379   Harm Denial
-336452   Inner Fury
-336526   Calculated Strikes
-336598   Coordinated Offensive
-336602   Coordinated Offensive
-336616   Xuen's Bond
-336632   Grounding Breath
+336379  *Harm Denial
+336452  *Inner Fury
+336526  *Calculated Strikes
+336598  *Coordinated Offensive
+336602  *Coordinated Offensive
+336616  *Xuen's Bond
+336632  *Grounding Breath
 336637  *Grounding Breath
 336638  *Grounding Breath
-336773   Jade Bond
-336812   Resplendent Mist
-336853   Fortifying Ingredients
-336874   Fortifying Ingredients
-336884   Lingering Numbness
-336887   Lingering Numbness
-336890   Dizzying Tumble
-336891   Dizzying Tumble
-337078   Swift Transference
-337079   Swift Transference
-337084   Tumbling Technique
-337099   Rising Sun Revival
-337101   Rising Sun Revival
-337119   Scalding Brew
-337134   Celestial Effervescence
+336773  *Jade Bond
+336812  *Resplendent Mist
+336853  *Fortifying Ingredients
+336874  *Fortifying Ingredients
+336884  *Lingering Numbness
+336887  *Lingering Numbness
+336890  *Dizzying Tumble
+336891  *Dizzying Tumble
+337078  *Swift Transference
+337079  *Swift Transference
+337084  *Tumbling Technique
+337099  *Rising Sun Revival
+337101  *Rising Sun Revival
+337119  *Scalding Brew
+337134  *Celestial Effervescence
 337172   Ancient Teachings of the Monastery
 337201  *Legend of the Crane
 337209  *Font of Life
 337225   Yu'lon's Whisper
-337241   Nourishing Chi
-337242   Nourishing Chi
-337250   Evasive Stride
-337264   Walk with the Ox
+337241  *Nourishing Chi
+337242  *Nourishing Chi
+337250  *Evasive Stride
+337264  *Walk with the Ox
 337267   Yu'lon's Whisper
 337268   Yu'lon's Whisper
 337271  *Brawling Flame <NYI>
-337286   Strike with Clarity
+337286  *Strike with Clarity
 337288   Stormstout's Last Keg
 337290   Mighty Pour
 337291   The Emperor's Capacitor
 337292   Last Emperor's Capacitor
 337294   Roll Out
-337295   Bone Marrow Hops
+337295  *Bone Marrow Hops
 337296   Fatal Touch
 337298   Invoker's Delight
-337301   Imbued Reflections
-337303   Way of the Fae
+337301  *Imbued Reflections
+337303  *Way of the Fae
 337334   Keefer's Skyreach
 337340   Keefer's Skyreach
 337341   Skyreach Exhaustion
@@ -11898,7 +11898,7 @@ Monk
 338141   Charred Passions
 338321   Invoker's Delight
 339482  *Fallen Order
-342330   Grounding Breath
+342330  *Grounding Breath
 342444  *Bulging Brew
 342445  *Corrosive Carbonation
 342446  *Corrosive Carbonation
@@ -11949,7 +11949,7 @@ Monk
 344588  *Tattered Teachings
 344590  *Dowsing Rod
 344939  *Expel Harm
-345690   Xuen's Bond
+345690  *Xuen's Bond
 345714  *Fists of Fury
 345727   Faeline Stomp
 345829  *Predestination
@@ -12223,7 +12223,7 @@ Monk
 394110   Escape from Reality
 394112   Escape from Reality
 394123   Fatal Touch
-394514   Attenuation
+394514  *Attenuation
 394797   Brewmaster's Rhythm
 394923  *Fatal Flying Guillotine
 394944   Kicks of Flowing Momentum
@@ -14078,50 +14078,50 @@ Paladin
 337850   Reign of Endless Kings
 337851   Guardian of Ancient Kings
 337852   Reign of Ancient Kings
-338741   Divine Call
+338741  *Divine Call
 338748  *Divine Call
-338787   Shielding Words
-338788   Shielding Words
+338787  *Shielding Words
+338788  *Shielding Words
 339044   Avenging Wrath
 339114   Golden Path
 339119   Golden Path
 339124   Pure Concentration
-339268   Light's Barding
-339292   Wrench Evil
-339316   Echoing Blessings
-339321   Echoing Freedom
-339324   Echoing Protection
-339371   Expurgation
+339268  *Light's Barding
+339292  *Wrench Evil
+339316  *Echoing Blessings
+339321  *Echoing Freedom
+339324  *Echoing Protection
+339371  *Expurgation
 339374   Truth's Wake
 339376   Truth's Wake
 339518   Virtuous Command
-339531   Templar's Vindication
+339531  *Templar's Vindication
 339538   Templar's Verdict
-339570   Enkindled Spirit
+339570  *Enkindled Spirit
 339664   Virtuous Command
 339669   Virtuous Command
-339712   Resplendent Light
-339744   Resplendent Light
-339984   Focused Light
-339987   Untempered Dedication
-339990   Untempered Dedication
-340006   Vengeful Shock
-340007   Vengeful Shock
-340012   Punish the Guilty
-340023   Resolute Defender
+339712  *Resplendent Light
+339744  *Resplendent Light
+339984  *Focused Light
+339987  *Untempered Dedication
+339990  *Untempered Dedication
+340006  *Vengeful Shock
+340007  *Vengeful Shock
+340012  *Punish the Guilty
+340023  *Resolute Defender
 340030   Royal Decree
 340032   Blinded Fixation
 340147   Royal Decree
-340185   The Long Summer
+340185  *The Long Summer
 340192   Righteous Might
 340193   Righteous Might
 340203   Hallowed Discernment
-340212   Hallowed Discernment
+340212  *Hallowed Discernment
 340214   Hallowed Discernment
-340218   Ringing Clarity
+340218  *Ringing Clarity
 340458   Maraad's Dying Breath
 340459   Maraad's Dying Breath
-341741   Enkindled Spirit
+341741  *Enkindled Spirit
 342348   Crusader Strike
 343527   Execution Sentence
 343618  *Bestow Faith
@@ -16140,38 +16140,38 @@ Priest
 336509   Crystalline Reflection
 336897   Twins of the Sun Priestess
 337477   X'anshi, Return of Archbishop Benedictus
-337661   Translucent Image
-337662   Translucent Image
+337661  *Translucent Image
+337662  *Translucent Image
 337678   Move with Grace
-337707   Clear Mind
-337715   Charitable Soul
-337716   Charitable Soul
-337748   Light's Inspiration
-337749   Light's Inspiration
-337762   Power Unto Others
-337778   Shining Radiance
-337786   Pain Transformation
-337787   Pain Transformation
-337790   Exaltation
-337811   Lasting Spirit
-337891   Swift Penitence
-337914   Focused Mending
-337939   Focused Mending
-337947   Resonant Words
-337948   Resonant Words
-337954   Mental Recovery
-337956   Mental Recovery
-337966   Courageous Ascension
+337707  *Clear Mind
+337715  *Charitable Soul
+337716  *Charitable Soul
+337748  *Light's Inspiration
+337749  *Light's Inspiration
+337762  *Power Unto Others
+337778  *Shining Radiance
+337786  *Pain Transformation
+337787  *Pain Transformation
+337790  *Exaltation
+337811  *Lasting Spirit
+337891  *Swift Penitence
+337914  *Focused Mending
+337939  *Focused Mending
+337947  *Resonant Words
+337948  *Resonant Words
+337954  *Mental Recovery
+337956  *Mental Recovery
+337966  *Courageous Ascension
 337979   Festering Transfusion
 338207  *Health Potion
-338305   Fae Fermata
-338315   Shattered Perceptions
-338319   Haunting Apparitions
-338332   Mind Devourer
-338333   Mind Devourer
-338338   Rabid Shadows
-338342   Dissonant Echoes
-338345   Holy Oration
+338305  *Fae Fermata
+338315  *Shattered Perceptions
+338319  *Haunting Apparitions
+338332  *Mind Devourer
+338333  *Mind Devourer
+338338  *Rabid Shadows
+338342  *Dissonant Echoes
+338345  *Holy Oration
 341167   Mental Agility
 341240   Improved Voidform
 341263   Shadowy Apparition
@@ -16200,11 +16200,11 @@ Priest
 342415   Talbadar's Stratagem
 342416   Talbadar's Stratagem
 342901  *Unlimited Power Infusion
-343144   Dissonant Echoes
+343144  *Dissonant Echoes
 343290   Measured Contemplation
-343355   Void Bolt
+343355  *Void Bolt
 343690   Mastery: Shadow Weaving
-343764   Evasive Stride
+343764  *Evasive Stride
 343883  *Healing Surge
 343988   Move with Grace
 344467  *Unholy Nova
@@ -16223,10 +16223,10 @@ Priest
 345122  *Reflective Shield
 345218  *Hungering Void
 345219  *Hungering Void
-345451   Guardian Faerie Fermata
-345452   Wrathful Faerie Fermata
-345453   Benevolent Faerie Fermata
-345456   Wrathful Faerie Fermata
+345451  *Guardian Faerie Fermata
+345452  *Wrathful Faerie Fermata
+345453  *Benevolent Faerie Fermata
+345456  *Wrathful Faerie Fermata
 346111   Shadow Weaving
 346112   Shadow Weaving Pet Proc Passive
 346736  *Psychic Scream
@@ -17833,35 +17833,35 @@ Rogue
 341111   Akaari's Soul Fragment
 341134   The Rotten
 341202   Deathly Shadows
-341264   Reverberation
+341264  *Reverberation
 341272   Sudden Fractures
 341277   Serrated Bone Spike
-341309   Septic Shock
-341310   Lashing Scars
-341311   Nimble Fingers
-341312   Recuperator
+341309  *Septic Shock
+341310  *Lashing Scars
+341311  *Nimble Fingers
+341312  *Recuperator
 341529   Cloaked in Shadows
 341530   Cloaked in Shadows
-341531   Quick Decisions
+341531  *Quick Decisions
 341532   Fade to Nothing
 341533   Fade to Nothing
-341534   Rushed Setup
-341535   Prepared for All
-341536   Poisoned Katar
-341537   Well-Placed Steel
-341538   Maim, Mangle
-341539   Lethal Poisons
-341540   Triple Threat
+341534  *Rushed Setup
+341535  *Prepared for All
+341536  *Poisoned Katar
+341537  *Well-Placed Steel
+341538  *Maim, Mangle
+341539  *Lethal Poisons
+341540  *Triple Threat
 341541   Sinister Strike
-341542   Ambidexterity
-341543   Sleight of Hand
-341546   Count the Odds
+341542  *Ambidexterity
+341543  *Sleight of Hand
+341546  *Count the Odds
 341549   Deeper Daggers
 341550   Deeper Daggers
-341556   Planned Execution
-341559   Stiletto Staccato
-341567   Perforated Veins
-341572   Perforated Veins
+341556  *Planned Execution
+341559  *Stiletto Staccato
+341567  *Perforated Veins
+341572  *Perforated Veins
 343142  *Dreadblades
 343143  *Dreadblades
 343145  *Dreadblades
@@ -19790,36 +19790,36 @@ Shaman
 336739   Deeptremor Stone
 336740   Earthquake
 336741   Ancestral Reminder
-337964   Astral Protection
-337974   Refreshing Waters
-337981   Vital Accretion
-337984   Vital Accretion
+337964  *Astral Protection
+337974  *Refreshing Waters
+337981  *Vital Accretion
+337984  *Vital Accretion
 338033   Thunderous Paws
 338036   Thunderous Paws
-338042   Totemic Surge
-338048   Spiritual Resonance
-338054   Crippling Hex
-338055   Crippling Hex
-338131   High Voltage
-338252   Shake the Foundations
-338266   Shake the Foundations
-338303   Call of Flame
+338042  *Totemic Surge
+338048  *Spiritual Resonance
+338054  *Crippling Hex
+338055  *Crippling Hex
+338131  *High Voltage
+338252  *Shake the Foundations
+338266  *Shake the Foundations
+338303  *Call of Flame
 338307  *Earth and Sky
-338318   Unruly Winds
-338322   Focused Lightning
-338325   Chilled to the Core
-338329   Embrace of Earth
-338331   Magma Fist
-338339   Swirling Currents
-338340   Swirling Currents
-338343   Heavy Rainfall
-338344   Heavy Rainfall
-338346   Nature's Focus
-339182   Elysian Dirge
-339183   Essential Extraction
-339185   Lavish Harvest
-339186   Tumbling Waves
-339187   Tumbling Waves
+338318  *Unruly Winds
+338322  *Focused Lightning
+338325  *Chilled to the Core
+338329  *Embrace of Earth
+338331  *Magma Fist
+338339  *Swirling Currents
+338340  *Swirling Currents
+338343  *Heavy Rainfall
+338344  *Heavy Rainfall
+338346  *Nature's Focus
+339182  *Elysian Dirge
+339183  *Essential Extraction
+339185  *Lavish Harvest
+339186  *Tumbling Waves
+339187  *Tumbling Waves
 342240  *Ice Strike
 342243  *Static Discharge
 343182  *Mana Tide Totem
@@ -19835,7 +19835,7 @@ Shaman
 344478  *Surge of Earth
 344548   Ascendance
 344645   Elemental Blast
-345594   Pyroclastic Shock
+345594  *Pyroclastic Shock
 346052  *Guardian's Cudgel
 347348   Elemental Equilibrium
 347349   Elemental Equilibrium
@@ -20032,7 +20032,7 @@ Shaman
 384451   Lightning Strikes
 384669  *Overflowing Maelstrom
 385513  *Shake the Foundations
-385514   Shake the Foundations
+385514  *Shake the Foundations
 385923  *Flow of Power
 386374  *Fulmination!
 386443  *Rolling Magma
@@ -20712,7 +20712,7 @@ Warlock
 56244    Horrify
 56246    Glyph of Felguard
 56898   *Corruption
-58081    Kilrogg's Cunning
+58081   *Kilrogg's Cunning
 58083   *Eye of Kilrogg (DND)
 58094    Glyph of Soulwell
 58438   *Ignite
@@ -21592,38 +21592,38 @@ Warlock
 337169   Madness of the Azj'Aqir
 337170   Madness of the Azj'Aqir
 337272   Embers of the Diabolic Raiment
-339130   Fel Celerity
-339272   Resolute Barrier
-339282   Accrued Vitality
-339298   Accrued Vitality
-339379   Shade of Terror
-339411   Demonic Momentum
-339412   Demonic Momentum
-339455   Corrupting Leer
-339481   Rolling Agony
-339500   Focused Malignancy
-339576   Withering Bolt
-339578   Borne of Blood
-339656   Carnivorous Stalkers
-339673   Carnivorous Stalkers
+339130  *Fel Celerity
+339272  *Resolute Barrier
+339282  *Accrued Vitality
+339298  *Accrued Vitality
+339379  *Shade of Terror
+339411  *Demonic Momentum
+339412  *Demonic Momentum
+339455  *Corrupting Leer
+339481  *Rolling Agony
+339500  *Focused Malignancy
+339576  *Withering Bolt
+339578  *Borne of Blood
+339656  *Carnivorous Stalkers
+339673  *Carnivorous Stalkers
 339766   Tyrant's Soul
 339784   Tyrant's Soul
-339845   Fel Commando
-339848   Fel Commando
-339890   Duplicitous Havoc
+339845  *Fel Commando
+339848  *Fel Commando
+339890  *Duplicitous Havoc
 339892   Ashen Remains
-339896   Combusting Engine
+339896  *Combusting Engine
 339986   Combusting Engine
-340041   Infernal Brand
-340045   Infernal Brand
-340048   Infernal Brand
-340229   Soul Tithe
-340238   Soul Tithe
-340268   Fatal Decimation
-340316   Catastrophic Origin
-340348   Soul Eater
-340562   Diabolic Bloodstone
-340563   Diabolic Bloodstone
+340041  *Infernal Brand
+340045  *Infernal Brand
+340048  *Infernal Brand
+340229  *Soul Tithe
+340238  *Soul Tithe
+340268  *Fatal Decimation
+340316  *Catastrophic Origin
+340348  *Soul Eater
+340562  *Diabolic Bloodstone
+340563  *Diabolic Bloodstone
 342601   Ritual of Doom
 342824  *Mark of Borrowed Power
 342914   Fear
@@ -21647,12 +21647,12 @@ Warlock
 356344   Shard of Annihilation
 356362   Decaying Soul Satchel
 356641   Languishing Soul Detritus
-357888   Condensed Anima Sphere
-357902   Adaptive Armor Fragment
-357945   Condensed Anima Sphere
-357946   Condensed Anima Sphere
-357972   Adaptive Armor Fragment
-357973   Adaptive Armor Fragment
+357888  *Condensed Anima Sphere
+357902  *Adaptive Armor Fragment
+357945  *Condensed Anima Sphere
+357946  *Condensed Anima Sphere
+357972  *Adaptive Armor Fragment
+357973  *Adaptive Armor Fragment
 358861  *Cascading Horrors
 360953   Languishing Soul Detritus
 363950   Avatar of Destruction
@@ -23533,9 +23533,9 @@ Warrior
 334779   Collateral Damage
 334783   Collateral Damage
 334934   Ravager
-334993   Stalwart Guardian
-335010   Brutal Vitality
-335034   Inspiring Presence
+334993  *Stalwart Guardian
+335010  *Brutal Vitality
+335034  *Inspiring Presence
 335070  *Cruelty
 335077   Frenzy
 335082   Frenzy
@@ -23545,20 +23545,20 @@ Warrior
 335097   Crushing Blow
 335098   Crushing Blow
 335100   Crushing Blow
-335196   Safeguard
-335198   Safeguard
+335196  *Safeguard
+335198  *Safeguard
 335214   Leaper
 335225  *Iron Maiden
 335226  *Iron Maiden
 335229   Thunderlord
-335232   Ashen Juggernaut
-335234   Ashen Juggernaut
+335232  *Ashen Juggernaut
+335234  *Ashen Juggernaut
 335239   The Wall
-335242   Crash the Ramparts
-335250   Cacophonous Roar
+335242  *Crash the Ramparts
+335250  *Cacophonous Roar
 335253   Misshapen Mirror
 335255   Spell Reflection
-335260   Merciless Bonegrinder
+335260  *Merciless Bonegrinder
 335266   Signet of Tormented Kings
 335274   Battlelord
 335282   Unhinged
@@ -23578,23 +23578,23 @@ Warrior
 335758   Seismic Reverberation
 335759   Seismic Reverberation
 335760   Seismic Reverberation
-336191   Indelible Victory
-336642   Indelible Victory
-337154   Unnerving Focus
-337155   Unnerving Focus
-337162   Depths of Insanity
-337214   Hack and Slash
-337302   Vicious Contempt
-339259   Piercing Verdict
-339265   Veteran's Repute
-339267   Veteran's Repute
-339370   Harrowing Punishment
+336191  *Indelible Victory
+336642  *Indelible Victory
+337154  *Unnerving Focus
+337155  *Unnerving Focus
+337162  *Depths of Insanity
+337214  *Hack and Slash
+337302  *Vicious Contempt
+339259  *Piercing Verdict
+339265  *Veteran's Repute
+339267  *Veteran's Repute
+339370  *Harrowing Punishment
 339385   Mortal Strike
-339386   Mortal Combo
-339818   Show of Force
-339825   Show of Force
-339939   Destructive Reverberations
-339948   Disturb the Peace
+339386  *Mortal Combo
+339818  *Show of Force
+339825  *Show of Force
+339939  *Destructive Reverberations
+339948  *Disturb the Peace
 343258  *Final Chapter
 343607   Ancient Aftershock
 343626   Ancient Aftershock
@@ -23604,9 +23604,9 @@ Warrior
 343824  *Celestial Lasso
 346369   Battlelord
 346370   Battlelord
-346574   Merciless Bonegrinder
-347213   Fueled by Violence
-347214   Fueled by Violence
+346574  *Merciless Bonegrinder
+347213  *Fueled by Violence
+347214  *Fueled by Violence
 347335  *Shrieking Flagon
 347360   Whirlwind
 347362   Whirlwind Off-Hand
