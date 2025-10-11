@@ -330,6 +330,7 @@ public:
     buff_t* voidfall_building;
     buff_t* voidfall_spending;
     buff_t* voidfall_final_hour;
+    buff_t* dark_matter;
 
     // Fel-scarred
     buff_t* monster_rising;
@@ -615,7 +616,7 @@ public:
 
       player_talent_t final_hour;
       player_talent_t meteoric_fall;
-      player_talent_t dark_matter;    // NYI
+      player_talent_t dark_matter;
       player_talent_t otherworldly_focus;
 
       player_talent_t world_killer;  // NYI
@@ -825,6 +826,9 @@ public:
     const spell_data_t* voidfall_spending_buff;
     const spell_data_t* voidfall_final_hour_buff;
     const spell_data_t* catastrophe_dot;
+    const spell_data_t* dark_matter_buff;
+    const spell_data_t* meteor_shower_driver;
+    const spell_data_t* meteor_shower_damage;
 
     // Fel-scarred
     const spell_data_t* burning_blades_debuff;
@@ -1043,6 +1047,7 @@ public:
     // Annihilator
     spell_t* voidfall_meteor = nullptr;
     spell_t* catastrophe     = nullptr;
+    spell_t* meteor_shower   = nullptr;
 
     // Fel-scarred
     action_t* burning_blades = nullptr;
@@ -2806,6 +2811,32 @@ struct mass_acceleration_trigger_t : public BASE
   }
 };
 
+template <typename BASE>
+struct dark_matter_trigger_t : public BASE
+{
+  using base_t = dark_matter_trigger_t<BASE>;
+
+  dark_matter_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                         util::string_view o = {} )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    if ( !BASE::p()->talent.annihilator.dark_matter->ok() )
+      return;
+
+    if ( !BASE::p()->buff.dark_matter->up() )
+      return;
+
+    BASE::p()->buff.dark_matter->expire();
+    BASE::p()->active.meteor_shower->execute_on_target( BASE::target );
+  }
+};
+
 struct demon_hunter_heal_t : public demon_hunter_action_t<heal_t>
 {
   demon_hunter_heal_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
@@ -4407,6 +4438,8 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
 
         p()->devourer_fury_state.start();
 
+        p()->buff.dark_matter->trigger();
+
         if ( p()->talent.felscarred.violent_transformation->ok() )
         {
           p()->cooldown.voidblade->reset( true );
@@ -4448,6 +4481,7 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
         break;
       case DEMON_HUNTER_VENGEANCE:
         p()->buff.metamorphosis->trigger();
+        p()->buff.dark_matter->trigger();
         break;
       default:
         break;
@@ -5551,10 +5585,10 @@ struct void_ray_t : public demon_hunter_spell_t
 
 struct collapsing_star_t : public demon_hunter_spell_t
 {
-  struct collapsing_star_damage_t : public demon_hunter_spell_t
+  struct collapsing_star_damage_t : public dark_matter_trigger_t<demon_hunter_spell_t>
   {
     collapsing_star_damage_t( std::string_view n, demon_hunter_t* p )
-      : demon_hunter_spell_t( n, p, p->spec.collapsing_star_damage )
+      : base_t( n, p, p->spec.collapsing_star_damage )
     {
       background = dual   = true;
       aoe                 = -1;
@@ -5563,7 +5597,7 @@ struct collapsing_star_t : public demon_hunter_spell_t
 
     double composite_crit_damage_bonus_multiplier() const
     {
-      auto cm = demon_hunter_spell_t::composite_crit_damage_bonus_multiplier();
+      auto cm = base_t::composite_crit_damage_bonus_multiplier();
 
       if ( p()->talent.devourer.midnight2->ok() )
       {
@@ -5575,7 +5609,7 @@ struct collapsing_star_t : public demon_hunter_spell_t
 
     double composite_da_multiplier( const action_state_t* s ) const override
     {
-      double m = demon_hunter_spell_t::composite_da_multiplier( s );
+      double m = base_t::composite_da_multiplier( s );
 
       if ( p()->talent.annihilator.otherworldly_focus->ok() )
       {
@@ -5594,7 +5628,7 @@ struct collapsing_star_t : public demon_hunter_spell_t
 
     void execute() override
     {
-      demon_hunter_spell_t::execute();
+      base_t::execute();
 
       if ( p()->talent.devourer.star_fragments->ok() )
       {
@@ -5671,6 +5705,46 @@ struct catastrophe_t : public residual_action::residual_periodic_action_t<demon_
   {
     base_t::init();
     update_flags = 0;  // Snapshots on refresh, does not update dynamically
+  }
+};
+
+struct meteor_shower_t : public demon_hunter_spell_t
+{
+  struct meteor_shower_damage_t : public demon_hunter_spell_t
+  {
+    meteor_shower_damage_t( util::string_view n, demon_hunter_t* p )
+      : demon_hunter_spell_t( n, p, p->hero_spec.meteor_shower_damage )
+    {
+    }
+  };
+
+  meteor_shower_damage_t* damage;
+
+  meteor_shower_t( util::string_view n, demon_hunter_t* p )
+    : demon_hunter_spell_t( n, p, p->hero_spec.meteor_shower_driver )
+  {
+    damage = p->get_background_action<meteor_shower_damage_t>( fmt::format( "{}_damage", name() ) );
+  }
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+
+    ground_aoe_params_t::hasted_with hasted = p()->specialization() == DEMON_HUNTER_DEVOURER
+                                                  ? ground_aoe_params_t::SPELL_HASTE
+                                                  : ground_aoe_params_t::ATTACK_HASTE;
+    timespan_t duration = timespan_t::from_seconds( as<int>(p()->talent.annihilator.dark_matter->effectN( 1 ).base_value()) / 2 );
+    timespan_t pulse_time = duration / 10; // TODO: VERIFY
+
+    make_event<ground_aoe_event_t>( *sim, p(),
+                                    ground_aoe_params_t()
+                                        .target( target )
+                                        .x( target->x_position )
+                                        .y( target->y_position )
+                                        .pulse_time( pulse_time )
+                                        .hasted( hasted )
+                                        .duration( duration )
+                                        .action( damage ) );
   }
 };
 
@@ -8708,6 +8782,7 @@ void demon_hunter_t::create_buffs()
                                  ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                  ->disable_ticking( true );
+  buff.dark_matter = make_buff( this, "dark_matter", hero_spec.dark_matter_buff );
 
   // Fel-scarred ============================================================
 
@@ -9708,13 +9783,18 @@ void demon_hunter_t::init_spells()
   hero_spec.voidfall_building_buff   = talent_spell_lookup( talent.annihilator.voidfall, 1256301 );
   hero_spec.voidfall_spending_buff   = talent_spell_lookup( talent.annihilator.voidfall, 1256302 );
   hero_spec.voidfall_final_hour_buff = talent_spell_lookup( talent.annihilator.final_hour, 1256322 );
+  hero_spec.dark_matter_buff         = talent_spell_lookup( talent.annihilator.dark_matter, 1256308 );
   switch ( specialization() )
   {
     case DEMON_HUNTER_DEVOURER:
-      hero_spec.catastrophe_dot = talent_spell_lookup( talent.annihilator.catastrophe, 1256676 );
+      hero_spec.catastrophe_dot      = talent_spell_lookup( talent.annihilator.catastrophe, 1256676 );
+      hero_spec.meteor_shower_driver = talent_spell_lookup( talent.annihilator.dark_matter, 1264126 );
+      hero_spec.meteor_shower_damage = hero_spec.meteor_shower_driver->effectN( 2 ).trigger();
       break;
     case DEMON_HUNTER_VENGEANCE:
-      hero_spec.catastrophe_dot = talent_spell_lookup( talent.annihilator.catastrophe, 1256667 );
+      hero_spec.catastrophe_dot      = talent_spell_lookup( talent.annihilator.catastrophe, 1256667 );
+      hero_spec.meteor_shower_driver = talent_spell_lookup( talent.annihilator.dark_matter, 1264128 );
+      hero_spec.meteor_shower_damage = hero_spec.meteor_shower_driver->effectN( 2 ).trigger();
       break;
     default:
       hero_spec.catastrophe_dot = spell_data_t::not_found();
@@ -9932,6 +10012,10 @@ void demon_hunter_t::init_spells()
   if ( talent.annihilator.catastrophe->ok() )
   {
     active.catastrophe = get_background_action<catastrophe_t>( "catastrophe" );
+  }
+  if ( talent.annihilator.dark_matter->ok() )
+  {
+    active.meteor_shower = get_background_action<meteor_shower_t>( "meteor_shower" );
   }
 
   if ( talent.felscarred.burning_blades->ok() )
