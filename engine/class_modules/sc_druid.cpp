@@ -2136,7 +2136,7 @@ public:
     return ab::total_effects_count() + persistent_multiplier_effects.size();
   }
 
-  void print_parsed_custom_type( report::sc_html_stream& os ) override
+  void print_parsed_custom_type( report::sc_html_stream& os ) const override
   {
     ab::template print_parsed_type<base_t>( os, &base_t::persistent_multiplier_effects, "Snapshots" );
   }
@@ -3167,7 +3167,7 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     return base_t::total_effects_count() + persistent_periodic_effects.size() + persistent_direct_effects.size();
   }
 
-  void print_parsed_custom_type( report::sc_html_stream& os ) override
+  void print_parsed_custom_type( report::sc_html_stream& os ) const override
   {
     base_t::print_parsed_custom_type( os );
 

@@ -1798,7 +1798,7 @@ bool parse_action_base_t::check_affected_list( const std::vector<affect_list_t>&
   return true;
 }
 
-void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os )
+void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os ) const
 {
   size_t c = 0;
   for ( auto a : _action->stats->action_list )

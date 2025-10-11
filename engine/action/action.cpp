@@ -21,6 +21,7 @@
 #include "player/player_collected_data.hpp"
 #include "player/player_event.hpp"
 #include "player/stats.hpp"
+#include "report/decorators.hpp"
 #include "sim/cooldown.hpp"
 #include "sim/cooldown_waste_data.hpp"
 #include "sim/event.hpp"
@@ -5416,74 +5417,6 @@ timespan_t action_t::distance_targeting_travel_time( action_state_t* /*s*/ ) con
   return timespan_t::zero();
 }
 
-void action_t::html_customsection( report::sc_html_stream& os )
-{
-  // make a copy in case original list needs to be used later
-  auto entries = affecting_list;
-
-  for ( auto a : stats->action_list )
-    if ( a != this )
-      for ( const auto& entry : a->affecting_list )
-        if ( !range::contains( entries, entry ) )
-          entries.push_back( entry );
-
-  if ( entries.size() )
-  {
-    os << "<div>\n"
-        << "<h4>Affected By (Passive)</h4>\n"
-        << "<table class=\"details nowrap\" style=\"width:min-content\">\n";
-
-    os << "<tr>\n"
-        << "<th class=\"small\">Type</th>\n"
-        << "<th class=\"small\">Spell</th>\n"
-        << "<th class=\"small\">ID</th>\n"
-        << "<th class=\"small\">#</th>\n"
-        << "<th class=\"small\">+/%</th>\n"
-        << "<th class=\"small\">Value</th>\n"
-        << "</tr>\n";
-
-    for ( const auto& [ eff, val ] : entries )
-    {
-      std::string op_str;
-      std::string type_str;
-      std::string val_str;
-
-      switch ( eff->subtype() )
-      {
-        case A_ADD_FLAT_LABEL_MODIFIER:
-        case A_ADD_FLAT_MODIFIER:
-          op_str = "ADD";
-          type_str = spell_info::effect_property_str( eff );
-          val_str = fmt::format( "{:.3f}", val );
-          break;
-        case A_ADD_PCT_LABEL_MODIFIER:
-        case A_ADD_PCT_MODIFIER:
-          op_str = "PCT";
-          type_str = spell_info::effect_property_str( eff );
-          val_str = fmt::format( "{:.1f}%", val * 100 );
-          break;
-        default:
-          op_str = "SET";
-          type_str = spell_info::effect_subtype_str( eff );
-          val_str = fmt::format( "{:.3f}", val );
-          break;
-      }
-
-      os.format(
-        "<tr><td>{}</td><td>{}</td><td class=\"right\">{}</td><td class=\"right\">{}</td><td>{}</td><td class=\"right\">{}</td></tr>",
-        type_str,
-        eff->spell()->name_cstr(),
-        eff->spell()->id(),
-        eff->index() + 1,
-        op_str,
-        val_str );
-    }
-
-    os << "</table>\n"
-        << "</div>\n";
-  }
-}
-
 void action_t::execute_on_target( player_t* t, double amount )
 {
   assert( t );
@@ -5493,4 +5426,57 @@ void action_t::execute_on_target( player_t* t, double amount )
     base_dd_min = base_dd_max = amount;
 
   execute();
+}
+
+void action_t::print_parsed_effects( report::sc_html_stream& os ) const
+{
+  if ( !sim->report_details )
+    return;
+
+  std::map<std::string, std::vector<const spelleffect_data_t*>> affecting_list;
+  for ( auto a : stats->action_list )
+  {
+    for ( const auto& [ field, eff_list ] : player->reporting_effects_action[ a->data().id() ] )
+    {
+      for ( auto eff : eff_list )
+      {
+        auto& _list = affecting_list[ field ];
+        if ( !range::contains( _list, eff ) )
+          _list.push_back( eff );
+      }
+    }
+  }
+
+  if ( affecting_list.size() )
+  {
+    os << R"(<div><h4>Affected By (Passive)</h4><table class="details nowrap" style="width:min-content">)";
+
+    os << R"(<tr class="small"><th>Type</th><th>Spell</th><th>ID</th><th>#</th><th>Value</th><th>Source</th></tr>)";
+
+    for ( const auto& [ field, eff_list ] : affecting_list )
+    {
+      auto rows = eff_list.size();
+      bool row_open = true;
+
+      os.format( R"(<tr><td rowspan="{}" class="label">{}</td>)", rows, util::inverse_tokenize( field ) );
+
+      for ( auto eff : eff_list )
+      {
+        if ( !row_open )
+          os << "<tr>";
+
+        os.format(
+          R"(<td>{}</td><td class="right">{}</td><td class="right">{}</td><td class="right">{:.1f}{}</td><td>{}</td>)",
+          eff->spell()->name_cstr(), eff->spell()->id(), eff->index() + 1, eff->base_value(),
+          eff->default_multiplier() == 0.01 ? "%" : "", player->get_parsed_source( eff->spell()->id() ) );
+
+        os << "</tr>";
+        row_open = false;
+      }
+    }
+
+    os << "</table></div>\n";
+  }
+
+  print_custom_parsed_effects( os );
 }

@@ -849,16 +849,16 @@ public:
 
   bool check_affected_list( const std::vector<affect_list_t>&, const spelleffect_data_t&, bool& );
 
-  void parsed_effects_html( report::sc_html_stream& );
+  void parsed_effects_html( report::sc_html_stream& ) const;
 
-  virtual void print_parsed_custom_type( report::sc_html_stream& ) {}
+  virtual void print_parsed_custom_type( report::sc_html_stream& ) const {}
 
   virtual size_t total_effects_count() const;
 
   template <typename W = parse_action_base_t, typename V>
   void print_parsed_type( report::sc_html_stream& os, V vector_ptr, std::string_view n,
                           const std::function<std::string( uint32_t )>& note_fn = nullptr,
-                          const std::function<std::string( double )>& val_str_fn = nullptr )
+                          const std::function<std::string( double )>& val_str_fn = nullptr ) const
   {
     auto _this = dynamic_cast<W*>( _action );
     assert( _this );
@@ -1193,17 +1193,8 @@ public:
     return cd;
   }
 
-  void html_customsection( report::sc_html_stream& os ) override
+  void print_custom_parsed_effects( report::sc_html_stream& os ) const override
   {
-    os << "<div>\n";
-
-    BASE::html_customsection( os );
-
-    os << "</div>\n"
-       << "<div>\n";
-
-    parsed_effects_html( os );
-
-    os << "</div>\n";
+    parsed_effects_html( os ); 
   }
 };

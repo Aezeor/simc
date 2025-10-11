@@ -1006,9 +1006,6 @@ private:
     double orig_val, double flat_val, double pct_val );
   bool register_passive_effect( const spelleffect_data_t&, bool remove = false );
 
-  // reporting
-  std::map<std::string, std::map<int, std::vector<const spelleffect_data_t*>>> reporting_effects_player;
-
 protected:
   void parse_passive_effects( const spell_data_t*, bool force = false, parse_source_e source = PARSE_SOURCE_MANUAL );
   // remove any existing parses and prevent future parsing
@@ -1036,6 +1033,11 @@ public:
   double get_passive_player_value( double base_val, std::string_view field, int misc_type = 0 ) const;
   // clone a spell into the override dbc
   static const spell_data_t* clone_dbc_override_spell( const player_t* p, const spell_data_t* s );
+
+  // reporting
+  std::map<std::string, std::map<int, std::vector<const spelleffect_data_t*>>> reporting_effects_player;
+  std::map<int, std::map<std::string, std::vector<const spelleffect_data_t*>>> reporting_effects_action;
+  std::string_view get_parsed_source( unsigned ) const;
 
   void print_parsed_effects( report::sc_html_stream& ) const;
   virtual void print_custom_parsed_effects( report::sc_html_stream& ) const {}

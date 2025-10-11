@@ -490,9 +490,6 @@ public:
   /* The last time the action was executed */
   timespan_t last_used;
 
-  // Effects which affect this action applied via apply_affecting_auras()
-  std::vector<std::pair<const spelleffect_data_t*, double>> affecting_list;
-
   // Options
   struct options_t {
     /**
@@ -703,6 +700,9 @@ public:
   action_state_t* get_state( const action_state_t* = nullptr );
 
   void execute_on_target( player_t*, double = -1.0 );
+
+  void print_parsed_effects( report::sc_html_stream& ) const;
+  virtual void print_custom_parsed_effects( report::sc_html_stream& ) const {}
 
 private:
   friend struct action_state_t;
@@ -1112,7 +1112,7 @@ public:
 
   virtual double gain_energize_resource( resource_e resource_type, double amount, gain_t* g );
 
-  virtual void html_customsection( report::sc_html_stream& );
+  virtual void html_customsection( report::sc_html_stream& ) {}
 
   // ================
   // Static functions

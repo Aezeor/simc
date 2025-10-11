@@ -15312,7 +15312,7 @@ this directly manipulates the DBC without any processing, it should be called be
 namespace
 {
 static constexpr std::pair<int, std::string_view> field_type_map[] = {
-  { P_GENERIC,                                "base_dd"                          },  // 0
+  { P_GENERIC,                                "direct_damage"                    },  // 0
   { P_DURATION,                               "duration"                         },  // 1
   { P_RANGE,                                  "max_range"                        },  // 5
   { P_RADIUS,                                 "max_radius"                       },  // 6
@@ -15326,7 +15326,7 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { P_TICK_TIME,                              "period"                           },  // 19
   { P_CHAIN_MULTIPLIER,                       "chain_multiplier"                 },  // 20
   { P_GCD,                                    "gcd"                              },  // 21
-  { P_TICK_DAMAGE,                            "base_td"                          },  // 22
+  { P_TICK_DAMAGE,                            "periodic damage"                  },  // 22
   { A_MOD_STAT,                               "attribute_value"                  },  // 29
   { P_DOSES,                                  "proc_charges"                     },  // 31
   { A_MOD_INCREASE_RESOURCE,                  "resource_max"                     },  // 35
@@ -15379,6 +15379,7 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { A_MOD_PET_DAMAGE_DONE,                    "pet_damage_multiplier"            },  // 429
   { A_MOD_LEECH_PERCENT,                      "leech"                            },  // 443
   { A_MOD_RECHARGE_TIME_CATEGORY,             "charge_cooldown"                  },  // 453
+  { A_MOD_RECHARGE_TIME_PCT_CATEGORY,         "charge_cooldown"                  },  // 454
   { A_MOD_PARRY_FROM_CRIT_RATING,             "parry_from_crit_rating"           },  // 463
   { A_MOD_VERSATILITY_PCT,                    "versatility"                      },  // 471
   { A_MOD_AUTO_ATTACK_DAMAGE_PCT,             "auto_attack_multiplier"           },  // 530
@@ -15883,17 +15884,29 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     bool is_damage = false;  // only modifies E_SCHOOL_DAMAGE
     bool allow_zero = true;  // modify even if base dbc value is 0
 
-    auto do_debug = [ & ]( std::string msg ) {
-      std::string _tmp_full_message_tmp_ = fmt::format(
-        "{} ({}) eff#{} {} {} ({}) {}", modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
-        remove ? "reverting" : "modifying", spell->name_cstr(), spell->id(), msg );
-      sim->print_debug( "{}", _tmp_full_message_tmp_ );
-      _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
-    };
-
     switch ( sub_type )
     {
-      case A_MODIFY_CATEGORY_COOLDOWN:
+      case A_ADD_FLAT_MODIFIER:  // 107
+      case A_ADD_FLAT_LABEL_MODIFIER:  // 219
+        flat_val = modifying_eff.base_value();
+        break;
+      case A_ADD_PCT_MODIFIER:  // 108
+      case A_ADD_PCT_LABEL_MODIFIER:  // 218
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MODIFY_SCHOOL:  // 220
+        field = get_field_from_type( sub_type );
+        flat_val = modifying_eff.misc_value1();
+        break;
+      case A_APPLY_HASTED_GCD_LABEL:  // 320
+      case A_HASTED_COOLDOWN:  // 416
+      case A_HASTED_GCD:  // 417
+      case A_HASTED_CATEGORY:  // 457
+        is_dbc = false;
+        flat_val = 1.0;
+        field = get_field_from_type( sub_type );
+        break;
+      case A_MODIFY_CATEGORY_COOLDOWN:  // 341
         field = "category_cooldown";
         flat_val = modifying_eff.base_value();
         // if a spell has category_cooldown but no cooldown, category_cooldown value will be used for cooldown field.
@@ -15904,41 +15917,14 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           field_type2 = P_COOLDOWN;
         }
         break;
-      case A_MOD_MAX_CHARGES:
-        field = "charges";
+      case A_MOD_MAX_CHARGES:  // 411
+      case A_MOD_RECHARGE_TIME_CATEGORY:  // 453
         flat_val = modifying_eff.base_value();
+        field = get_field_from_type( sub_type );
         break;
-      case A_MOD_RECHARGE_TIME_CATEGORY:
-        field = "charge_cooldown";
-        flat_val = modifying_eff.base_value();
-        break;
-      case A_MOD_RECHARGE_TIME_PCT_CATEGORY:
-        field = "charge_cooldown";
+      case A_MOD_RECHARGE_TIME_PCT_CATEGORY:  // 454
         pct_val = modifying_eff.percent();
-        break;
-      case A_ADD_FLAT_MODIFIER:
-      case A_ADD_FLAT_LABEL_MODIFIER:
-        flat_val = modifying_eff.base_value();
-        break;
-      case A_ADD_PCT_MODIFIER:
-      case A_ADD_PCT_LABEL_MODIFIER:
-        pct_val = modifying_eff.percent();
-        break;
-      // special handling
-      case A_MODIFY_SCHOOL:
-        field = "school";
-        flat_val = modifying_eff.misc_value1();
-        break;
-      case A_HASTED_COOLDOWN:
-      case A_HASTED_CATEGORY:
-        field = "hasted_cooldown";
-        flat_val = 1.0;
-        is_dbc = false;
-        break;
-      case A_HASTED_GCD:
-        field = "hasted_gcd";
-        flat_val = 1.0;
-        is_dbc = false;
+        field = get_field_from_type( sub_type );
         break;
       default:
         continue;
@@ -15966,83 +15952,74 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         case P_EFFECT_5: eff_idx =  5; break;
         case P_EFFECTS:  eff_idx = -1; break;
         // spell_data_t modifiers
-        case P_DURATION:
+        case P_DURATION:  // 1
           if ( spell->_duration == -1 )
             continue;
           field = "duration";
           break;
-        case P_STACK:
+        case P_STACK:  // 4
           field = "proc_charges";
           field_type = P_DOSES;
           field2 = "max_stack";
           field_type2 = P_MAX_STACKS;
           break;
-        case P_COOLDOWN:
+        case P_COOLDOWN:  // 11
           if ( spell->_cooldown == 0 && flat_val < 0 )
             continue;
           field = "cooldown";
           break;
-        case P_PROC_CHANCE:
+        case P_PROC_CHANCE:  // 18
           if ( spell->_proc_chance == 101 )
             continue;
           allow_zero = false;
           SC_FALLTHROUGH;
-        case P_RANGE:
-        case P_CAST_TIME:
-        case P_GCD:
-        case P_DOSES:
-        case P_MAX_STACKS:
-        case P_PROC_COOLDOWN:
-        case P_MAX_TARGETS:
+        case P_RANGE:  // 5
+        case P_CAST_TIME:  // 10
+        case P_GCD:  // 21
+        case P_DOSES:  // 31
+        case P_MAX_STACKS:  // 37
+        case P_PROC_COOLDOWN:  // 38
+        case P_MAX_TARGETS:  // 40
           field = get_field_from_type( field_type );
           break;
         // spelleffect_data_t modifiers
-        case P_CHAIN_TARGETS:
-        case P_CHAIN_MULTIPLIER:
+        case P_CHAIN_TARGETS:  // 17
+        case P_CHAIN_MULTIPLIER:  // 20
           is_damage = true;
           eff_field = get_field_from_type( field_type );
           break;
-        case P_RADIUS:
-        case P_TICK_TIME:
+        case P_RADIUS:  // 6
+        case P_TICK_TIME:  // 19
           allow_zero = false;
           eff_field = get_field_from_type( field_type );
           break;
-        case P_COEFFICIENT:
+        case P_COEFFICIENT:  // 24
           eff_field = "sp_coefficient";
           eff_field2 = "ap_coefficient";
           allow_zero = false;
           break;
         // spellpower_data_t modifiers
-        case P_RESOURCE_COST_1:
+        case P_RESOURCE_COST_1:  // 14
           pow_idx_bit = 1U << 0;
           pow_field = "cost";
           break;
-        case P_RESOURCE_COST_2:
+        case P_RESOURCE_COST_2:  // 34
           pow_idx_bit = 1U << 1;
           pow_field = "cost";
           break;
-        case P_RESOURCE_COST_3:
+        case P_RESOURCE_COST_3:  // 39
           pow_idx_bit = 1U << 2;
           pow_field = "cost";
           break;
-        // action_t modifiers, these don't modify spell data so will require special handling later
-        case P_GENERIC:
-          field = "base_dd";
-          is_dbc = false;
-          break;
-        case P_TICK_DAMAGE:
-          field = "base_td";
-          is_dbc = false;
-          break;
-        case P_CRIT:
-          field = "crit";
+        // action_t modifiers, these don't modify spell data
+        case P_CRIT:  // 7
+        case P_CRIT_BONUS:  // 15
           flat_val *= 0.01;
+          SC_FALLTHROUGH;
+        case P_GENERIC:  // 0
+        case P_TICK_DAMAGE:  // 22
           is_dbc = false;
-          break;
-        case P_CRIT_BONUS:
-          field = "crit_bonus";
-          flat_val *= 0.01;
-          is_dbc = false;
+          field = get_field_from_type( field_type );
           break;
         default:
           continue;
@@ -16055,14 +16032,31 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       pct_val = 1.0 / ( 1.0 + pct_val ) - 1.0;
     }
 
+    auto do_debug = [ & ]( std::string msg ) {
+      std::string _tmp_full_message_tmp_ = fmt::format(
+        "{} ({}) eff#{} {} {} ({}) {}", modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
+        remove ? "reverting" : "modifying", spell->name_cstr(), spell->id(), msg );
+      sim->print_debug( "{}", _tmp_full_message_tmp_ );
+      _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
+    };
+
+    auto add_reporting = [ & ]( std::string field ) {
+      if ( sim->parent || sim->profileset_enabled || sim->report_details == 0 || sim->html_file_str.empty() )
+        return;
+
+      if ( remove )
+        range::erase_remove( reporting_effects_action[ spell->id() ][ field ], &modifying_eff );
+      else
+        reporting_effects_action[ spell->id() ][ field ].push_back( &modifying_eff );
+    };
+
     if ( !field.empty() )  // modify spell_data_t
     {
       auto id = as<int>( spell->id() );
       double now_val;
 
       // special cases
-      if ( sub_type == A_HASTED_GCD || sub_type == A_HASTED_COOLDOWN || sub_type == A_HASTED_CATEGORY ||
-           sub_type == A_MODIFY_SCHOOL )
+      if ( field == "school" || field == "hasted_gcd" || field == "hasted_cooldown" )
       {
         double prev_val;
         auto it = range::find_if( passive_spell_modifiers_, [ id, field_type ]( const auto& mod ) {
@@ -16095,6 +16089,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           sub_type == A_MODIFY_SCHOOL ? util::school_type_string( dbc::get_school_type( as<uint32_t>( now_val ) ) )
                                       : util::to_string( now_val ) ) );
 
+        add_reporting( field );
+
         if ( is_dbc )
           dbc_override_->register_spell( *dbc, id, field, now_val );
       }
@@ -16113,6 +16109,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
                                field, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", now.orig, prev.value(),
                                prev.flat, prev.pct * 100, now_val, now.flat, now.pct * 100 ) );
 
+        add_reporting( field );
+
         if ( is_dbc )
           dbc_override_->register_spell( *dbc, id, field, now_val );
 
@@ -16128,6 +16126,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           do_debug( fmt::format( "{} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
                                  field2, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", now2.orig,
                                  prev2.value(), prev2.flat, prev2.pct * 100, now_val2, now2.flat, now2.pct * 100 ) );
+
+          add_reporting( field );
 
           if ( is_dbc )
             dbc_override_->register_spell( *dbc, id, field2, now_val2 );
@@ -16165,6 +16165,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
             flat_pow ? "" : "%", now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat,
             now.pct * 100 ) );
 
+          add_reporting( fmt::format( "{} {}", util::resource_type_string( pow.resource() ), pow_field ) );
+
           dbc_override_->register_power( *dbc, id, pow_field, now.value() );
 
           if ( pow_field == "cost" )
@@ -16177,6 +16179,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
               do_debug( fmt::format( "pow#{} {} ({}) {} by {:.7g}{} (prev={:.7g} now={:.7g})", i + 1,
                                      util::resource_type_string( pow.resource() ), id, "cost_per_tick",
                                      flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", prev_val2, now_val2 ) );
+
+              add_reporting( fmt::format( "{} cost_per_tick", util::resource_type_string( pow.resource() ) ) );
 
               dbc_override_->register_power( *dbc, id, "cost_per_tick", now_val2 );
             }
@@ -16221,6 +16225,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         do_debug( fmt::format( "{} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
                                field_, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", now.orig, prev.value(),
                                prev.flat, prev.pct * 100, now.value(), now.flat, now.pct * 100 ) );
+
+        add_reporting( field_ );
 
         dbc_override_->register_effect( *dbc, id, field_, now.value() );
         success = true;
@@ -16536,6 +16542,28 @@ void player_t::register_passive_affect_list( const spell_data_t* spell, const af
   }
 }
 
+std::string_view player_t::get_parsed_source( unsigned spell_id ) const
+{
+  for ( auto [ id, source ] : registered_passive_spells_ )
+  {
+    if ( id == spell_id )
+    {
+      switch ( source )
+      {
+        case PARSE_SOURCE_MANUAL: return "Manual";
+        case PARSE_SOURCE_CLASS:  return "Class Aura";
+        case PARSE_SOURCE_SPEC:   return "Spec Spell";
+        case PARSE_SOURCE_RACIAL: return "Racial";
+        case PARSE_SOURCE_TALENT: return "Talent";
+        case PARSE_SOURCE_SET:    return "Set Bonus";
+        default:                  return "BAD_SOURCE";
+      }
+    }
+  }
+
+  return "NO_SOURCE";
+}
+
 void player_t::print_parsed_effects( report::sc_html_stream& os ) const
 {
   if ( !sim->report_details )
@@ -16583,27 +16611,10 @@ void player_t::print_parsed_effects( report::sc_html_stream& os ) const
         if ( !row_open )
           os << "<tr>";
 
-        auto spell = eff->spell();
-        std::string source;
-        auto it = range::find( registered_passive_spells_, spell->id(), &std::pair<unsigned, parse_source_e>::first );
-        if ( it != registered_passive_spells_.end() )
-        {
-          switch ( it->second )
-          {
-            case PARSE_SOURCE_MANUAL: source = "Manual"; break;
-            case PARSE_SOURCE_CLASS:  source = "Class Aura"; break;
-            case PARSE_SOURCE_SPEC:   source = "Spec Spell"; break;
-            case PARSE_SOURCE_RACIAL: source = "Racial"; break;
-            case PARSE_SOURCE_TALENT: source = "Talent"; break;
-            case PARSE_SOURCE_SET:    source = "Set Bonus"; break;
-            default:                  source = "ERROR"; break;
-          }
-        }
-
         os.format(
           R"(<td>{}</td><td class="right">{}</td><td class="right">{}</td><td class="right">{:.1f}{}</td><td>{}</td>)",
-          report_decorators::decorated_spell_data( sim, spell ), spell->id(), eff->index() + 1, eff->base_value(),
-          eff->default_multiplier() == 0.01 ? "%" : "", source );
+          report_decorators::decorated_spell_data( sim, eff->spell() ), eff->spell()->id(), eff->index() + 1,
+          eff->base_value(), eff->default_multiplier() == 0.01 ? "%" : "", get_parsed_source( eff->spell()->id() ) );
 
         os << "</tr>";
         row_open = false;

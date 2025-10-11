@@ -5133,7 +5133,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
     return action_base_t::total_effects_count() + runic_power_multiplier_effects.size() + runic_power_flat_effects.size();
   }
 
-  void print_parsed_custom_type( report::sc_html_stream& os ) override
+  void print_parsed_custom_type( report::sc_html_stream& os ) const override
   {
     action_base_t::print_parsed_custom_type( os );
 
