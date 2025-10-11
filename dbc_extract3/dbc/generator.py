@@ -4955,7 +4955,7 @@ class RankSpellGenerator(DataGenerator):
         return RankSpellSet(self._options).get()
 
     def generate(self, data = None):
-        data.sort(key = lambda v: (v[2].name, self.db('Spell')[v[2].id].rank, v[0], v[1], v[2].id))
+        data.sort(key = lambda v: (v[0], v[1], v[2].name, self.db('Spell')[v[2].id].rank))
 
         self.output_header(
                 header = 'Rank class spells',
