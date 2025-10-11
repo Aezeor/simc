@@ -1298,7 +1298,6 @@ public:
     buff_t* doom_winds;
     buff_t* ashen_catalyst;
 
-    buff_t* voltaic_blaze;
     buff_t* stormblast;
 
     buff_t* primordial_storm;
@@ -6797,11 +6796,6 @@ struct chain_lightning_t : public chained_base_t
       p()->trigger_arc_discharge( state );
     }
 
-    if ( state->chain_target == 0 && p()->specialization() == SHAMAN_ENHANCEMENT )
-    {
-      p()->buff.voltaic_blaze->trigger();
-    }
-
     if ( state->chain_target == 0 )
     {
       p()->trigger_totemic_rebound( state );
@@ -7729,12 +7723,6 @@ struct lightning_bolt_t : public shaman_spell_t
       }
 
       trigger_lightning_rod_debuff( state->target, lr_delay );
-    }
-
-    if ( state->chain_target == 0 &&
-         p()->specialization() == SHAMAN_ENHANCEMENT )
-    {
-      p()->buff.voltaic_blaze->trigger();
     }
   }
 
@@ -8928,8 +8916,6 @@ public:
   {
     shaman_spell_t::execute();
 
-    p()->buff.voltaic_blaze->decrement();
-
     if ( p()->buff.whirling_earth->check() )
     {
       p()->buff.whirling_earth->decrement();
@@ -8978,7 +8964,7 @@ public:
 
   bool ready() override
   {
-    if ( p()->buff.voltaic_blaze->check() )
+    if ( p()->talent.voltaic_blaze.ok() )
     {
       return false;
     }
@@ -10777,11 +10763,6 @@ struct tempest_t : public shaman_spell_t
     {
       trigger_lightning_rod_debuff( state->target );
     }
-
-    if ( state->chain_target == 0 && p()->specialization() == SHAMAN_ENHANCEMENT )
-    {
-      p()->buff.voltaic_blaze->trigger();
-    }
   }
 
   bool ready() override
@@ -10837,71 +10818,47 @@ struct tempest_t : public shaman_spell_t
 
 struct voltaic_blaze_t : public shaman_spell_t
 {
-  voltaic_blaze_t( shaman_t* player, util::string_view options_str = {} ) :
-    shaman_spell_t( "voltaic_blaze", player, player->find_spell( 470057 ) )
+  struct voltaic_blaze_damage_t : public shaman_spell_t
   {
-    parse_options( options_str );
-  }
-
-  double calculate_direct_amount( action_state_t* state ) const override
-  {
-    shaman_spell_t::calculate_direct_amount( state );
-
-    // Apparently in game, Whirling Earth only buffs the first Flame Shock target damage
-    if ( state->chain_target > 0 && p()->buff.whirling_earth->check() )
+    voltaic_blaze_damage_t( shaman_t* player ) :
+      shaman_spell_t( "voltaic_blaze_damage", player, player->find_spell( 1259101 ) )
     {
-      state->result_raw = floor( state->result_raw / ( 1.0 + p()->buff.whirling_earth->check_stack_value() ) );
-      state->result_total = floor( state->result_total / ( 1.0 + p()->buff.whirling_earth->check_stack_value() ) );
+      background = dual = true;
+      stats = player->get_stats( "voltaic_blaze" );
+      aoe = 1 + as<int>( player->talent.voltaic_blaze->effectN( 4 ).base_value() );
     }
 
-    return state->result_total;
-  }
+    double composite_target_crit_chance( player_t* /* t */ ) const override
+    { return 1.0; }
 
-  double action_da_multiplier() const override
+    void impact( action_state_t* state ) override
+    {
+      shaman_spell_t::impact( state );
+
+      make_event( *sim, [ t = state->target, p = p() ]() {
+        if ( t->is_sleeping() )
+        {
+          return;
+        }
+
+        p->trigger_secondary_flame_shock( t, spell_variant::NORMAL );
+      } );
+    }
+  };
+
+  voltaic_blaze_t( shaman_t* player, util::string_view options_str = {} ) :
+    shaman_spell_t( "voltaic_blaze", player, player->talent.voltaic_blaze )
   {
-    auto m = shaman_spell_t::action_da_multiplier();
+    parse_options( options_str );
 
-    m *= 1.0 + p()->buff.whirling_earth->stack_value();
-
-    return m;
+    impact_action = new voltaic_blaze_damage_t( player );
   }
 
   void execute() override
   {
     shaman_spell_t::execute();
 
-    if ( p()->buff.whirling_earth->check() )
-    {
-      p()->buff.whirling_earth->decrement();
-
-      p()->trigger_tww3_totemic_enh_2pc( execute_state );
-    }
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    shaman_spell_t::impact( state );
-
-    make_event( *sim, [ t = state->target, p = p() ]() {
-      if ( t->is_sleeping() )
-      {
-        return;
-      }
-
-      p->trigger_secondary_flame_shock( t, spell_variant::NORMAL );
-    } );
-
-    p()->generate_maelstrom_weapon( state, as<int>( data().effectN( 2 ).base_value() ) );
-  }
-
-  bool ready() override
-  {
-    if ( !p()->buff.voltaic_blaze->check() )
-    {
-      return false;
-    }
-
-    return shaman_spell_t::ready();
+    p()->generate_maelstrom_weapon( execute_state, as<int>( data().effectN( 2 ).base_value() ) );
   }
 };
 
@@ -13778,9 +13735,6 @@ void shaman_t::create_buffs()
 
   buff.windfury_weapon = make_buff( this, "windfury_weapon", find_spell( 319773 ) )
     ->set_trigger_spell( talent.windfury_weapon );
-
-  buff.voltaic_blaze = make_buff( this, "voltaic_blaze", find_spell( 470058 ) )
-    ->set_trigger_spell( talent.voltaic_blaze );
 
   buff.stormblast = make_buff( this, "stormblast", find_spell( 470466 ) )
     ->set_cooldown( 0_ms ) // Stormblast uses ICD for something else than applications
