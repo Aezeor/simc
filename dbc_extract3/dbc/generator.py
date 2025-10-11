@@ -1254,18 +1254,6 @@ class SpellDataGenerator(DataGenerator):
          330363, 330364, 330366, 330367, 330368, 330372, 330373, 330376, 330380,
          # Grim Codex Trinket
          345864,
-         # Soulbinds
-         321524, # Niya's Tools: Poison (night fae/niya)
-         320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
-         332525, 341163, 341165, 332526, # Bron's Call to Action (kyrian/mikanikos)
-         323491, 323498, 323502, 323504, 323506, # Volatile Solvent's different buff variations
-         344052, 344053, 344057, # Night Fae Stamina Passives
-         344068, 344069, 344070, # Venthyr Stamina Passives
-         344076, 344077, 344078, # Necrolord Stamina Passives
-         344087, 344089, 344091, # Kyrian Stamina Passives
-         354054, 354053, # Fatal Flaw vers/crit buffs (venthyr/nadjia)
-         351687, # Necrolord Bonesmith Heirmir Mnemonic Equipmen debuff
-         352520, # Marileth's Kevin's Ooozeling Kevin's Wrath damage spell
          # Cabalists Hymnal
          344820,
          # Empyreal Ordnance
@@ -1295,11 +1283,6 @@ class SpellDataGenerator(DataGenerator):
          336183,
          # Rotbriar Sprout
          329548,
-         # 9.1 Soulbinds
-         352881, # Bonded Hearts (night fae/niya)
-         352918, 358404, # Newfound Resolve (kyrian/pelagos)
-         352086, 352095, # Pustule Eruption (Necrolord/Emeni)
-         352938, 352940, 358379, # Soulglow Spectrometer (Kyrian/Mikanikos)
          # Miniscule Mailemental in an Envelope
          352542,
          # Tome of Monstrous Constructions
