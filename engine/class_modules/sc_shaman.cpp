@@ -2113,15 +2113,6 @@ public:
 // ==========================================================================
 //
 
-struct maelstrom_weapon_buff_t : public buff_t
-{
-  shaman_t* shaman;
-
-  maelstrom_weapon_buff_t( shaman_t* p ) :
-    buff_t( p, "maelstrom_weapon", p->find_spell( 344179 ) ), shaman( p )
-  {}
-};
-
 struct ascendance_buff_t : public buff_t
 {
   action_t* lava_burst;
@@ -2856,7 +2847,7 @@ public:
 
     if ( affected_by_maelstrom_weapon )
     {
-      mul *= 1.0 + this->p()->spell.maelstrom_weapon->effectN( 1 ).percent() * this->maelstrom_weapon_stacks();
+      mul *= 1.0 + this->p()->talent.maelstrom_weapon->effectN( 5 ).percent() * this->maelstrom_weapon_stacks();
     }
 
     return mul;
@@ -13769,7 +13760,8 @@ void shaman_t::create_buffs()
   buff.hot_hand = new hot_hand_buff_t( this );
   buff.spirit_walk  = make_buff( this, "spirit_walk", talent.spirit_walk );
   buff.stormbringer = make_buff( this, "stormsurge", find_spell( 201846 ) );
-  buff.maelstrom_weapon = new maelstrom_weapon_buff_t( this );
+  buff.maelstrom_weapon = make_buff( this, "maelstrom_weapon", find_spell( 344179 ) )
+    ->set_trigger_spell( talent.maelstrom_weapon );
   buff.static_accumulation = make_buff( this, "static_accumulation", find_spell( 384437 ) )
     ->set_default_value( talent.static_accumulation->effectN( 1 ).base_value() )
     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
