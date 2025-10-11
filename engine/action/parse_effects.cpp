@@ -159,7 +159,7 @@ void player_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
   os.format(
     "<td class=\"left\">{}</td>"
     "<td class=\"right\">{}</td>"
-    "<td class=\"right\">{}</td>"
+    "<td>#{}</td>"
     "<td class=\"right\">{}</td>"
     "<td>{}</td>"
     "<td>{}</td>"
@@ -213,7 +213,7 @@ void target_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
   os.format(
     "<td class=\"left\">{}</td>"
     "<td class=\"right\">{}</td>"
-    "<td class=\"right\">{}</td>"
+    "<td>#{}</td>"
     "<td class=\"right\">{}</td>"
     "<td>{}</td>"
     "<td>{}</td></tr>\n",
@@ -327,7 +327,7 @@ void modified_spelleffect_t::print_parsed_line( report::sc_html_stream& os, cons
   os.format(
     "<td>{}</td>"
     "<td class=\"right\">{}</td>"
-    "<td class=\"right\">{}</td>"
+    "<td>#{}</td>"
     "<td>{}</td>"
     "<td class=\"right\">{}</td>"
     "<td>{}</td></tr>\n",
@@ -365,7 +365,7 @@ void modified_spelleffect_t::print_parsed_line( report::sc_html_stream& os, cons
   os.format(
     "<td>{}</td>"
     "<td class=\"right\">{}</td>"
-    "<td class=\"right\">{}</td>"
+    "<td>#{}</td>"
     "<td>{}</td>"
     "<td class=\"right\">{}</td>"
     "<td>Passive</td></tr>\n",
@@ -415,7 +415,7 @@ void modified_spelleffect_t::print_parsed_effect( report::sc_html_stream& os, co
   }
 
   os.format(
-    "<td rowspan=\"{}\" class=\"dark right\">{}</td>"
+    "<td rowspan=\"{}\" class=\"dark\">#{}</td>"
     "<td rowspan=\"{}\" class=\"dark\">{}</td>\n",
     c, _eff.index() + 1,
     c, eff_str );
@@ -564,13 +564,11 @@ void modified_spell_data_t::parsed_effects_html( report::sc_html_stream& os, con
   {
     os << R"(<table class="sc even left">)"
        << "<thead><tr>"
-       << R"(<th class="left">Dynamic Data</th>)"
-       << "<th>ID</th>"
-       << "<th>#</th>"
-       << "<th>Effect</th>"
+       << R"(<th class="left">Dynamic Modified Spell</th>)"
+       << R"(<th colspan="2">ID</th>)"
+       << "<th>Effect Type</th>"
        << "<th>Modified By</th>"
-       << "<th>ID</th>"
-       << "<th>#</th>"
+       << R"(<th colspan="2">ID</th>)"
        << "<th>+/%</th>"
        << "<th>Value</th>"
        << "<th>Notes</th>"
@@ -1359,8 +1357,7 @@ void parse_player_effects_t::print_custom_parsed_effects( report::sc_html_stream
        << "<thead><tr>"
        << R"(<th class="left">Dynamic Effects</th>)"
        << "<th>Spell</th>"
-       << "<th>ID</th>"
-       << "<th>#</th>"
+       << R"(<th colspan="2">ID</th>)"
        << "<th>Value</th>"
        << "<th>Source</th>"
        << "<th>Notes</th>"
@@ -1814,8 +1811,7 @@ void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os ) cons
     os << "<tr>"
        << "<th class=\"small\">Type</th>"
        << "<th class=\"small\">Spell</th>"
-       << "<th class=\"small\">ID</th>"
-       << "<th class=\"small\">#</th>"
+       << "<th class=\"small\" colspan=\"2\">ID</th>"
        << "<th class=\"small\">Value</th>"
        << "<th class=\"small\">Source</th>"
        << "<th class=\"small\">Notes</th>"

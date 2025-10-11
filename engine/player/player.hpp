@@ -997,10 +997,14 @@ public:
   static const spell_data_t* clone_dbc_override_spell( const player_t* p, const spell_data_t* s );
 
   // reporting
-  std::map<std::string, std::map<int, std::vector<const spelleffect_data_t*>>> reporting_effects_player;
-  std::map<int, std::map<std::string, std::vector<const spelleffect_data_t*>>> reporting_effects_action;
+  // field, type, effect_list
+  std::map<std::string, std::map<int, std::vector<const spelleffect_data_t*>>> reporting_parse_player;
+  // spell_id, field, effect_list
+  std::map<unsigned, std::map<std::string, std::vector<const spelleffect_data_t*>>> reporting_parse_action;
+  // spell_id, effect_idx, effect_list
+  std::map<unsigned, std::map<unsigned, std::vector<const spelleffect_data_t*>>> reporting_parse_effect;
   std::string_view get_parsed_source( unsigned ) const;
-
+  
   void print_parsed_effects( report::sc_html_stream& ) const;
   virtual void print_custom_parsed_effects( report::sc_html_stream& ) const {}
 

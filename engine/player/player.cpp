@@ -25,6 +25,7 @@
 #include "dbc/item_set_bonus.hpp"
 #include "dbc/mastery_spells.hpp"
 #include "dbc/rank_spells.hpp"
+#include "dbc/sc_spell_info.hpp"
 #include "dbc/specialization_spell.hpp"
 #include "dbc/temporary_enchant.hpp"
 #include "dbc/trait_data.hpp"
@@ -15597,9 +15598,9 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         return;
 
       if ( remove )
-        range::erase_remove( reporting_effects_player[ id_field ][ type ], &modifying_eff );
+        range::erase_remove( reporting_parse_player[ id_field ][ type ], &modifying_eff );
       else
-        reporting_effects_player[ id_field ][ type ].push_back( &modifying_eff );
+        reporting_parse_player[ id_field ][ type ].push_back( &modifying_eff );
     };
 
     auto id_type = get_type_from_field( id_field );
@@ -15901,9 +15902,9 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         return;
 
       if ( remove )
-        range::erase_remove( reporting_effects_action[ spell->id() ][ field ], &modifying_eff );
+        range::erase_remove( reporting_parse_action[ spell->id() ][ field ], &modifying_eff );
       else
-        reporting_effects_action[ spell->id() ][ field ].push_back( &modifying_eff );
+        reporting_parse_action[ spell->id() ][ field ].push_back( &modifying_eff );
     };
 
     if ( !field.empty() )  // modify spell_data_t
@@ -16121,7 +16122,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
                               eff->index() + 1 );
           }
 
-          register_passive_effect( *eff, deregister );
+          register_passive_effect( *eff, true );
         }
 
         auto data_val = eff->base_value();
@@ -16132,6 +16133,14 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           fmt::format( "eff#{} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
                        eff->index() + 1, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", now.orig,
                        prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat, now.pct * 100 ) );
+
+        if ( !sim->parent && !sim->profileset_enabled && sim->report_details > 0 && !sim->html_file_str.empty() )
+        {
+          if ( remove )
+            range::erase_remove( reporting_parse_effect[ spell->id() ][ eff->index() + 1 ], &modifying_eff );
+          else
+            reporting_parse_effect[ spell->id() ][ eff->index() + 1 ].push_back( &modifying_eff );
+        }
 
         dbc_override_->register_effect( *dbc, id, "base_value", now.value() );
         success = true;
@@ -16459,9 +16468,9 @@ void player_t::print_parsed_effects( report::sc_html_stream& os ) const
      << R"(<div class="toggle-content hide">)";
 
   os << R"(<table class="sc left even"><thead><tr><th colspan="2" class="left">Passive Effects</th>)"
-     << "<th>Spell</th><th>ID</th><th>#</th><th>Value</th><th>Source</th></tr></thead>\n";
+     << R"(<th>Spell</th><th colspan="2">ID</th><th>Value</th><th>Source</th></tr></thead>)";
 
-  for ( const auto& [ field, misc_list ] : reporting_effects_player )
+  for ( const auto& [ field, misc_list ] : reporting_parse_player )
   {
     auto m_it = range::find( misc_expansion_map, field, &misc_expansion_t::field );
     bool has_misc = m_it != misc_expansion_map.end();
@@ -16496,12 +16505,86 @@ void player_t::print_parsed_effects( report::sc_html_stream& os ) const
         if ( !row_open )
           os << "<tr>";
 
-        os.format(
-          R"(<td>{}</td><td class="right">{}</td><td class="right">{}</td><td class="right">{:.1f}{}</td><td>{}</td>)",
-          report_decorators::decorated_spell_data( sim, eff->spell() ), eff->spell()->id(), eff->index() + 1,
-          eff->base_value(), eff->default_multiplier() == 0.01 ? "%" : "", get_parsed_source( eff->spell()->id() ) );
+        os.format( R"(<td>{}</td><td class="right">{}</td><td>#{}</td><td class="right">{:.1f}{}</td><td>{}</td>)",
+                   report_decorators::decorated_spell_data( sim, eff->spell() ), eff->spell()->id(), eff->index() + 1,
+                   eff->base_value(), eff->default_multiplier() == 0.01 ? "%" : "",
+                   get_parsed_source( eff->spell()->id() ) );
 
-        os << "</tr>";
+        os << "</tr>\n";
+        row_open = false;
+      }
+    }
+  }
+
+  os << "</table>\n";
+
+  os << R"(<table class="sc left even"><thead><tr><th class="left">Passive Modified Spell</th>)"
+     << R"(<th colspan="2">ID</th><th>Effect Type</th><th>Modified By</th><th colspan="2">ID</th>)"
+     << "<th>Value</th><th>Source</th></tr></thead>\n";
+
+  for ( const auto& [ spell_id, spell_indices ] : reporting_parse_effect )
+  {
+    auto spell = find_spell( spell_id );
+    auto rows = range::accumulate( spell_indices, 0, []( const auto& e ) { return e.second.size(); } );
+    bool row_open = true;
+
+    os.format( R"(<tr><td rowspan="{}" class="dark">{}</td><td rowspan="{}" class="dark right">{}</td>)", rows,
+               report_decorators::decorated_spell_data( sim, spell ), rows, spell_id );
+
+    for ( const auto& [ idx, eff_list ] : spell_indices )
+    {
+      auto spell_eff = spell->effectN( idx );
+      auto i_rows = eff_list.size();
+      std::string eff_str;
+
+      switch ( spell_eff.type() )
+      {
+        case E_APPLY_AURA:
+        case E_APPLY_AURA_PET:
+        case E_APPLY_AREA_AURA_PET:
+        case E_APPLY_AREA_AURA_PARTY:
+          switch ( spell_eff.subtype() )
+          {
+            case A_ADD_FLAT_MODIFIER:
+            case A_ADD_FLAT_LABEL_MODIFIER:
+              eff_str = fmt::format( "Flat {}", spell_info::effect_property_str( &spell_eff ) );
+              break;
+            case A_ADD_PCT_MODIFIER:
+            case A_ADD_PCT_LABEL_MODIFIER:
+              eff_str = fmt::format( "Percent {}", spell_info::effect_property_str( &spell_eff ) );
+              break;
+            default:
+              eff_str = spell_info::effect_subtype_str( &spell_eff );
+              break;
+          }
+          break;
+        default:
+          eff_str = spell_info::effect_type_str( &spell_eff );
+          break;
+      }
+
+      if ( !row_open )
+      {
+        row_open = true;
+        os << "<tr>";
+      }
+
+      os.format( R"(<td rowspan="{}" class="dark">#{}</td><td rowspan="{}" class="dark">{}</td>)", i_rows, idx, i_rows,
+                 eff_str );
+
+      for ( auto eff : eff_list )
+      {
+        std::string e_td_str = R"(class="right")";
+        bool is_pct = eff->subtype() == A_ADD_PCT_MODIFIER || eff->subtype() == A_ADD_PCT_LABEL_MODIFIER;
+
+        if ( !row_open )
+          os << "<tr>";
+
+        os.format( R"(<td>{}</td><td class="right">{}</td><td>#{}</td><td class="right">{:.1f}{}</td><td>{}</td>)",
+                   report_decorators::decorated_spell_data( sim, eff->spell() ), eff->spell()->id(), eff->index() + 1,
+                   eff->base_value(), is_pct ? "%" : "", get_parsed_source( eff->spell()->id() ) );
+
+        os << "</tr>\n";
         row_open = false;
       }
     }

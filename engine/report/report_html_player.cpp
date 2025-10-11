@@ -3595,7 +3595,7 @@ void print_html_player_custom_section( report::sc_html_stream& os, const player_
                                        const player_processed_report_information_t& /*ri*/ )
 {
   os << R"(<div class="player-section parsed_passives">)";
-  os << R"(<h3 class="toggle">Parsed Passive Effects</h3>)";
+  os << R"(<h3 class="toggle">!!!Parse Passive Debug Output!!!</h3>)";
   os << R"(<div class="toggle-content hide">)";
   os << R"(<div class="subsection force-wrap">)";
   os << "<table>\n";
