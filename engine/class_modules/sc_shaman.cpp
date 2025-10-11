@@ -6778,6 +6778,14 @@ struct chain_lightning_t : public chained_base_t
                                       as<int>( p()->talent.supercharge->effectN( 3 ).base_value() ) );
     }
 
+    // TODO-midnight-talent: Uniform RNG, or what?
+    if ( ( exec_type == spell_variant::NORMAL || exec_type == spell_variant::THORIMS_INVOCATION ) &&
+         rng().roll( p()->talent.thunder_capacitor->effectN( 2 ).percent() ) )
+    {
+      sim->print_debug( "{} procs thunder_capacitor", player->name() );
+      p()->generate_maelstrom_weapon( execute_state->action, mw_consumed_stacks );
+    }
+
     if ( exec_type == spell_variant::NORMAL )
     {
       p()->trigger_awakening_storms( execute_state );
@@ -7646,6 +7654,14 @@ struct lightning_bolt_t : public shaman_spell_t
     {
       p()->generate_maelstrom_weapon( execute_state->action,
                                       as<int>( p()->talent.supercharge->effectN( 3 ).base_value() ) );
+    }
+
+    // TODO-midnight-talent: Uniform RNG, or what?
+    if ( ( exec_type == spell_variant::NORMAL || exec_type == spell_variant::THORIMS_INVOCATION ) &&
+         rng().roll( p()->talent.thunder_capacitor->effectN( 2 ).percent() ) )
+    {
+      sim->print_debug( "{} procs thunder_capacitor", player->name() );
+      p()->generate_maelstrom_weapon( execute_state->action, mw_consumed_stacks );
     }
 
     p()->trigger_thunderstrike_ward( execute_state );
