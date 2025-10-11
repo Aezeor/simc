@@ -7388,8 +7388,7 @@ struct dark_transformation_damage_t final : public death_knight_spell_t
 struct dark_transformation_t : public death_knight_spell_t
 {
   dark_transformation_t( std::string_view n, death_knight_t* p, std::string_view options_str = "" )
-    : death_knight_spell_t( n, p, p->talent.unholy.dark_transformation ),
-      summon_magus( nullptr )
+    : death_knight_spell_t( n, p, p->talent.unholy.dark_transformation ), summon_magus( nullptr )
   {
     harmful = false;
     target  = p;
@@ -7409,6 +7408,11 @@ struct dark_transformation_t : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
+
+    p()->pets.ghoul_pet.active_pet()->resource_gain( RESOURCE_ENERGY,
+                                                     p()->talent.unholy.dark_transformation->effectN( 4 ).resource(),
+                                                     p()->pets.ghoul_pet.active_pet()->dark_transformation_gain, this );
+
     p()->buffs.dark_transformation->trigger();
 
     if ( p()->talent.unholy.commander_of_the_dead.ok() )
@@ -7425,6 +7429,14 @@ struct dark_transformation_t : public death_knight_spell_t
       timespan_t dur = timespan_t::from_seconds( p()->talent.rider.ride_or_die->effectN( 1 ).base_value() );
       p()->summon_rider( dur, rider_of_the_apocalypse::WHITEMANE );
     }
+  }
+
+  bool ready() override
+  {
+    if ( p()->pets.ghoul_pet.active_pet() == nullptr || p()->pets.ghoul_pet.active_pet()->is_sleeping() )
+      return false;
+
+    return death_knight_spell_t::ready();
   }
 
 private:
