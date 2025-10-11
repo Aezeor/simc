@@ -192,7 +192,8 @@ enum magus_of_the_dead
 
 enum rider_of_the_apocalypse
 {
-  NONE = 0,
+  NONE = -1,
+  RANDOM = 0,
   WHITEMANE = 1,
   TROLLBANE = 2,
   NAZGRIM = 3,
@@ -1700,7 +1701,7 @@ public:
 
   // Runes
   runes_t _runes;
-  int last_summoned_rider;
+  rider_of_the_apocalypse last_summoned_rider;
   auto_dispose<std::vector<modified_spell_data_t*>> modified_spells;
   std::vector<pets::death_knight_pet_t*> dk_active_pets;
   std::vector<pets::lesser_ghoul_pet_t*> active_lesser_ghouls;
@@ -1851,8 +1852,8 @@ public:
   double psuedo_random_p_from_c( double c );
   double pseudo_random_c_from_p( double p );
   // Rider of the Apocalypse
-  int get_random_rider();
-  void summon_rider( timespan_t duration, bool random, rider_of_the_apocalypse = rider_of_the_apocalypse::NONE );
+  rider_of_the_apocalypse get_random_rider();
+  void summon_rider( timespan_t duration, rider_of_the_apocalypse = rider_of_the_apocalypse::RANDOM );
   void extend_rider( double amount, pets::horseman_pet_t* rider );
   void trigger_whitemanes_famine( player_t* target );
   void spread_undeath( death_knight_td_t* main_td, player_t* main_target, player_t* new_target );
@@ -7422,7 +7423,7 @@ struct dark_transformation_t : public death_knight_spell_t
     if ( p()->talent.rider.ride_or_die.ok() )
     {
       timespan_t dur = timespan_t::from_seconds( p()->talent.rider.ride_or_die->effectN( 1 ).base_value() );
-      p()->summon_rider( dur, false, rider_of_the_apocalypse::WHITEMANE );
+      p()->summon_rider( dur, rider_of_the_apocalypse::WHITEMANE );
     }
   }
 
@@ -7633,7 +7634,7 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
     if ( p()->talent.rider.apocalypse_now.ok() )
       p()->summon_rider(
           p()->talent.rider.apocalypse_now->effectN( 2 ).time_value() - timespan_t::from_seconds( precombat_time ),
-          false );
+          rider_of_the_apocalypse::ALL_RIDERS );
 
     if ( p()->talent.unholy.forbidden_knowledge_1.ok() )
       p()->buffs.forbidden_knowledge->trigger();
@@ -9087,7 +9088,7 @@ struct frostwyrms_fury_damage_t : public death_knight_spell_t
 
     if ( p()->talent.rider.apocalypse_now.ok() )
     {
-      p()->summon_rider( p()->spell.apocalypse_now_data->duration(), false );
+      p()->summon_rider( p()->spell.apocalypse_now_data->duration(), rider_of_the_apocalypse::ALL_RIDERS );
     }
   }
 };
@@ -10308,7 +10309,7 @@ struct pillar_of_frost_t final : public death_knight_spell_t
     if ( p()->talent.rider.ride_or_die.ok() )
     {
       timespan_t dur = timespan_t::from_seconds( p()->talent.rider.ride_or_die->effectN( 1 ).base_value() );
-      p()->summon_rider( dur, false, rider_of_the_apocalypse::TROLLBANE );
+      p()->summon_rider( dur, rider_of_the_apocalypse::TROLLBANE );
     }
   }
 };
@@ -11259,7 +11260,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
 
     // Proc Chance does not appear to be in data, using testing data that is current as of 4/19/2024
     if ( talent.rider.riders_champion.ok() && rng().roll( 0.2 ) )
-      summon_rider( spell.summon_whitemane_2->duration(), true );
+      summon_rider( spell.summon_whitemane_2->duration() );
 
     if ( talent.unholy.ancient_runes.ok() )
       buffs.ancient_runes->trigger( static_cast<int>( action->base_costs[ RESOURCE_RUNE ] ) );
@@ -11722,7 +11723,7 @@ void death_knight_t::start_inexorable_assault()
   } );
 }
 
-int death_knight_t::get_random_rider()
+rider_of_the_apocalypse death_knight_t::get_random_rider()
 {
   // If all riders are active, dont bother running the rest of the function, no random riders can be spawned.
   if ( pets.mograine.active_pet() != nullptr && pets.nazgrim.active_pet() != nullptr &&
@@ -11750,13 +11751,15 @@ int death_knight_t::get_random_rider()
   return n;
 }
 
-void death_knight_t::summon_rider( timespan_t duration, bool random, rider_of_the_apocalypse rider )
+void death_knight_t::summon_rider( timespan_t duration, rider_of_the_apocalypse rider )
 {
-  int n = rider;
-  if ( random )
-    n = get_random_rider();
-  else if ( n == rider_of_the_apocalypse::NONE )
-    n = rider_of_the_apocalypse::ALL_RIDERS;
+  rider_of_the_apocalypse n = rider;
+  bool random               = false;
+  if ( n == rider_of_the_apocalypse::RANDOM )
+  {
+    random = true;
+    n      = get_random_rider();
+  }
 
   if ( n == rider_of_the_apocalypse::NONE )
     return;
