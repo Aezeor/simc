@@ -5865,18 +5865,18 @@ double player_t::composite_player_critical_damage_multiplier( const action_state
 {
   double m = current.crit_damage_multiplier[ school ];
 
-  if ( buffs.elemental_chaos_fire && buffs.elemental_chaos_fire->has_common_school( school ) )
+  if ( buffs.elemental_chaos_fire && buffs.elemental_chaos_fire->data().effectN( 2 ).has_common_school( school ) )
     m *= 1.0 + buffs.elemental_chaos_fire->check_value();
 
-  if ( buffs.incensed && buffs.incensed->has_common_school( school ) )
+  if ( buffs.incensed && buffs.incensed->data().effectN( 1 ).has_common_school( school ) )
     m *= 1.0 + buffs.incensed->check_value();
 
   // Critical hit damage buff from R3 Blood of the Enemy major on-use
-  if ( buffs.seething_rage_essence && buffs.seething_rage_essence->has_common_school( school ) )
+  if ( buffs.seething_rage_essence && buffs.seething_rage_essence->data().effectN( 1 ).has_common_school( school ) )
     m *= 1.0 + buffs.seething_rage_essence->check_value();
 
   // Critical hit damage buff from follower themed Benthic boots
-  if ( buffs.fathom_hunter && buffs.fathom_hunter->has_common_school( school ) )
+  if ( buffs.fathom_hunter && buffs.fathom_hunter->data().effectN( 1 ).has_common_school( school ) )
     m *= 1.0 + buffs.fathom_hunter->check_value();
 
   return m;
