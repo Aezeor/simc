@@ -767,7 +767,7 @@ constexpr int max_spec_index_ptr()
 #endif
 struct spec_index_map_t
 {
-  constexpr spec_index_map_t( bool ptr = false ) : data_{}
+  constexpr spec_index_map_t( [[maybe_unused]] bool ptr = false ) : data_{}
   {
     for ( int8_t& index : data_ )
       index = -1;
@@ -799,7 +799,7 @@ struct spec_index_map_t
 };
 } // anon namespace
 
-int dbc::spec_idx( specialization_e spec, bool ptr )
+int dbc::spec_idx( specialization_e spec, [[maybe_unused]] bool ptr )
 {
 #if SC_USE_PTR
   static constexpr spec_index_map_t spec_index_map;
@@ -821,7 +821,7 @@ private:
   std::array<int8_t, MAX_SPEC_CLASS> classes;
 
 public:
-  constexpr hero_tree_index_map_t( bool ptr = false ) : data{}, classes{}
+  constexpr hero_tree_index_map_t( [[maybe_unused]] bool ptr = false ) : data{}, classes{}
   {
     for ( int8_t& value : data )
       value = -1;
@@ -847,7 +847,7 @@ public:
 };
 }  // namespace
 
-int dbc::hero_idx( hero_tree_e hero_talent, bool ptr )
+int dbc::hero_idx( hero_tree_e hero_talent, [[maybe_unused]] bool ptr )
 {
 #if SC_USE_PTR
   static constexpr hero_tree_index_map_t hero_tree_index_map;
@@ -985,7 +985,7 @@ player_e dbc::get_class_from_spec( specialization_e spec )
   return PLAYER_NONE;
 }
 
-double dbc::item_level_squish( unsigned source_ilevel, bool ptr )
+double dbc::item_level_squish( unsigned source_ilevel, [[maybe_unused]] bool ptr )
 {
   if ( source_ilevel == 0 )
   {
@@ -1004,7 +1004,6 @@ double dbc::item_level_squish( unsigned source_ilevel, bool ptr )
     return __item_level_squish[ source_ilevel - 1 ];
   }
 #else
-  ( void ) ptr;
   assert( std::size( __item_level_squish ) >= source_ilevel );
   return __item_level_squish[ source_ilevel - 1 ];
 #endif

@@ -33,7 +33,7 @@ struct item_scaling_config_data_t
   int item_level;
   int player_level;
 
-  static util::span<const item_scaling_config_data_t> find( unsigned id, bool ptr );
+  static util::span<const item_scaling_config_data_t> find( int id, bool ptr );
   static util::span<const item_scaling_config_data_t> data( bool ptr );
 };
 
@@ -43,7 +43,7 @@ struct item_offset_curve_data_t
   int curve_id;
   int offset;
 
-  static util::span<const item_offset_curve_data_t> find( unsigned id, bool ptr );
+  static util::span<const item_offset_curve_data_t> find( int id, bool ptr );
   static util::span<const item_offset_curve_data_t> data( bool ptr );
 };
 

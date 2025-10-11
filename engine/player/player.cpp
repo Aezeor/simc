@@ -15725,7 +15725,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       pct_val = 1.0 / ( 1.0 + pct_val ) - 1.0;
     }
 
-    auto do_debug = [ & ]( std::string type_str, int type, const auto& prev, const auto& now ) {
+    auto do_debug = [ & ]( std::string type_str, const auto& prev, const auto& now ) {
       std::string field_str = type_str.empty() ? id_field : fmt::format( "{}_{}", type_str, id_field );
       std::string _tmp_full_message_tmp_ = fmt::format(
         "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
@@ -15755,7 +15755,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       // no expansion needed, default handling
       auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, id_type, 0, 0, flat_val, pct_val );
 
-      do_debug( "", 0, prev, now );
+      do_debug( "", prev, now );
       add_reporting( 0 );
 
       return true;
@@ -15780,7 +15780,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           auto [ prev, now ] =
             add_passive_effect_modifier( passive_player_modifiers_, id_type, attr_int, 0, flat_val, pct_val );
 
-          do_debug( m_it->formatter( attr_int ), attr_int, prev, now );
+          do_debug( m_it->formatter( attr_int ), prev, now );
           add_reporting( attr_int );
         }
 
@@ -15796,7 +15796,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
             auto [ prev, now ] =
               add_passive_effect_modifier( passive_player_modifiers_, id_type, attr_int, 0, flat_val, pct_val );
 
-            do_debug( m_it->formatter( attr_int ), attr_int, prev, now );
+            do_debug( m_it->formatter( attr_int ), prev, now );
             add_reporting( attr_int );
           }
         }
@@ -15813,7 +15813,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
             auto [ prev, now ] =
               add_passive_effect_modifier( passive_player_modifiers_, id_type, rating_int, 0, flat_val, pct_val );
 
-            do_debug( m_it->formatter( rating_int ), rating_int, prev, now );
+            do_debug( m_it->formatter( rating_int ), prev, now );
             add_reporting( rating_int );
           }
         }
@@ -15827,7 +15827,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           auto [ prev, now ] =
             add_passive_effect_modifier( passive_player_modifiers_, id_type, -1, 0, flat_val, pct_val );
 
-          do_debug( "all", -1, prev, now );
+          do_debug( "all", prev, now );
           add_reporting( -1 );
 
           return true;
@@ -15841,7 +15841,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
             auto [ prev, now ] =
               add_passive_effect_modifier( passive_player_modifiers_, id_type, school_int, 0, flat_val, pct_val );
 
-            do_debug( m_it->formatter( school_int ), school_int, prev, now );
+            do_debug( m_it->formatter( school_int ), prev, now );
             add_reporting( school_int );
           }
         }
@@ -15853,7 +15853,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         auto [ prev, now ] =
           add_passive_effect_modifier( passive_player_modifiers_, id_type, misc_type, 0, flat_val, pct_val );
 
-        do_debug( m_it->formatter( misc_type ), misc_type, prev, now );
+        do_debug( m_it->formatter( misc_type ), prev, now );
         add_reporting( misc_type );
 
         return true;

@@ -34,7 +34,7 @@ util::span<const item_scaling_config_data_t> item_scaling_config_data_t::data( b
   return SC_DBC_GET_DATA( __item_scaling_config_data, __ptr_item_scaling_config_data, ptr );
 }
 
-util::span<const item_scaling_config_data_t> item_scaling_config_data_t::find( unsigned id, bool ptr )
+util::span<const item_scaling_config_data_t> item_scaling_config_data_t::find( int id, bool ptr )
 {
   const auto __data = data( ptr );
 
@@ -52,7 +52,7 @@ util::span<const item_offset_curve_data_t> item_offset_curve_data_t::data( bool 
   return SC_DBC_GET_DATA( __item_offset_curve_data, __ptr_item_offset_curve_data, ptr );
 }
 
-util::span<const item_offset_curve_data_t> item_offset_curve_data_t::find( unsigned id, bool ptr )
+util::span<const item_offset_curve_data_t> item_offset_curve_data_t::find( int id, bool ptr )
 {
   const auto __data = data( ptr );
 
