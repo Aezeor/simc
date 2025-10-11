@@ -14,7 +14,6 @@
 #include "dbc/sc_spell_info.hpp"
 #include "player/action_priority_list.hpp"
 #include "player/actor_target_data.hpp"
-#include "player/expansion_effects.hpp"  // try to implement leyshocks_grand_compilation as a callback
 #include "player/pet.hpp"
 #include "player/player.hpp"
 #include "player/player_collected_data.hpp"
@@ -1920,11 +1919,6 @@ void action_t::execute()
 
   if ( pre_execute_state )
     action_state_t::release( pre_execute_state );
-
-  if ( data().id() )
-  {
-    expansion::bfa::trigger_leyshocks_grand_compilation( data().id(), player );
-  }
 
   // The rest of the execution depends on actually executing on target. Note that execute_state
   // can be nullptr if there are not valid targets to hit on.

@@ -539,12 +539,6 @@ struct player_t : public actor_t
     buff_t* galeforce_striking; // Gale-Force Striking weapon enchant
     buff_t* torrent_of_elements; // Torrent of Elements weapon enchant
 
-    // 8.0 - Leyshock's Grand Compendium stat buffs
-    buff_t* leyshock_crit;
-    buff_t* leyshock_haste;
-    buff_t* leyshock_mastery;
-    buff_t* leyshock_versa;
-
     // Azerite power
     buff_t* normalization_increase;
 

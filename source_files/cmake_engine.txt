@@ -102,7 +102,6 @@ player/azerite_data.hpp
 player/consumable.hpp
 player/darkmoon_deck.hpp
 player/effect_callbacks.hpp
-player/expansion_effects.hpp
 player/gear_stats.hpp
 player/ground_aoe.hpp
 player/instant_absorb.hpp

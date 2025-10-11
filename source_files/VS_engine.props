@@ -108,7 +108,6 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\player\consumable.hpp" />
 		<ClInclude Include="..\engine\player\darkmoon_deck.hpp" />
 		<ClInclude Include="..\engine\player\effect_callbacks.hpp" />
-		<ClInclude Include="..\engine\player\expansion_effects.hpp" />
 		<ClInclude Include="..\engine\player\gear_stats.hpp" />
 		<ClInclude Include="..\engine\player\ground_aoe.hpp" />
 		<ClInclude Include="..\engine\player\instant_absorb.hpp" />

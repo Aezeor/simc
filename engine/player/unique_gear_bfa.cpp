@@ -1034,19 +1034,18 @@ void items::bygone_bee_almanac( special_effect_t& effect )
 
 void items::leyshocks_grand_compilation( special_effect_t& effect )
 {
-  // Crit
-  effect.player->buffs.leyshock_crit =
-      create_buff<stat_buff_t>( effect.player, "precision_module", effect.player->find_spell( 281791 ), effect.item );
-  effect.player->buffs.leyshock_haste = create_buff<stat_buff_t>( effect.player, "iteration_capacitor",
-                                                                  effect.player->find_spell( 281792 ), effect.item );
-  effect.player->buffs.leyshock_mastery =
-      create_buff<stat_buff_t>( effect.player, "efficiency_widget", effect.player->find_spell( 281794 ), effect.item );
-  effect.player->buffs.leyshock_versa =
-      create_buff<stat_buff_t>( effect.player, "adaptive_circuit", effect.player->find_spell( 281795 ), effect.item );
+  [[maybe_unused]] auto leyshock_crit =
+    create_buff<stat_buff_t>( effect.player, "precision_module", effect.player->find_spell( 281791 ), effect.item );
+  [[maybe_unused]] auto leyshock_haste =
+    create_buff<stat_buff_t>( effect.player, "iteration_capacitor", effect.player->find_spell( 281792 ), effect.item );
+  [[maybe_unused]] auto leyshock_mastery =
+    create_buff<stat_buff_t>( effect.player, "efficiency_widget", effect.player->find_spell( 281794 ), effect.item );
+  [[maybe_unused]] auto leyshock_versa =
+    create_buff<stat_buff_t>( effect.player, "adaptive_circuit", effect.player->find_spell( 281795 ), effect.item );
 
-  // We don't need to make a special effect from this item at all, since it needs very special
-  // handling. Just going to use the callback to initialize the buffs.
-  effect.type = SPECIAL_EFFECT_NONE;
+  // TODO: if this ever becomes relevant, will need to implement specific buff handling routines into
+  // register_callback_trigger_function and register_callback_execute_function overrides in each class module's
+  // init_special_effects()
 }
 
 // Jes' Howler ==============================================================
@@ -6431,59 +6430,4 @@ void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
 }
 
 void unique_gear::register_hotfixes_bfa()
-{ }
-
-namespace expansion::bfa
-{
-static std::unordered_map<unsigned, stat_e> __ls_cb_map{{
-
-}};
-
-void register_leyshocks_trigger( unsigned spell_id, stat_e stat_buff )
-{
-  __ls_cb_map[ spell_id ] = stat_buff;
-}
-
-void trigger_leyshocks_grand_compilation( unsigned spell_id, player_t* actor )
-{
-  if ( !actor || !actor->buffs.leyshock_crit )
-  {
-    return;
-  }
-
-  auto it = __ls_cb_map.find( spell_id );
-  if ( it == __ls_cb_map.end() )
-  {
-    return;
-  }
-
-  trigger_leyshocks_grand_compilation( it->second, actor );
-}
-
-void trigger_leyshocks_grand_compilation( stat_e stat, player_t* actor )
-{
-  if ( !actor || !actor->buffs.leyshock_crit )
-  {
-    return;
-  }
-
-  switch ( stat )
-  {
-    case STAT_CRIT_RATING:
-      actor->buffs.leyshock_crit->trigger();
-      break;
-    case STAT_HASTE_RATING:
-      actor->buffs.leyshock_haste->trigger();
-      break;
-    case STAT_MASTERY_RATING:
-      actor->buffs.leyshock_mastery->trigger();
-      break;
-    case STAT_VERSATILITY_RATING:
-      actor->buffs.leyshock_versa->trigger();
-      break;
-    default:
-      break;
-  }
-}
-
-}  // namespace expansion
+{}

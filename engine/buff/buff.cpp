@@ -10,7 +10,6 @@
 #include "dbc/dbc.hpp"
 #include "dbc/item_database.hpp"
 #include "dbc/spell_data.hpp"
-#include "player/expansion_effects.hpp"
 #include "player/player.hpp"
 #include "player/stats.hpp"
 #include "player/target_specific.hpp"
@@ -1883,11 +1882,6 @@ void buff_t::execute( int stacks, double value, timespan_t duration )
     trigger_intervals.add( ( sim->current_time() - last_trigger ).total_seconds() );
   }
   last_trigger = sim->current_time();
-
-  if ( data().id() > 0 )
-  {
-    expansion::bfa::trigger_leyshocks_grand_compilation( data().id(), source );
-  }
 
   // For cases where the buff trigger hasn't been processed through buff_delay_t, or where buff_t::execute() is called
   // directly, default value remains -1, so it needs to get _resolve'd

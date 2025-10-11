@@ -69,7 +69,6 @@
 #include "player/pet.hpp"
 #include "player/stats.hpp"
 #include "player/action_priority_list.hpp"
-#include "player/expansion_effects.hpp"
 #include "player/unique_gear.hpp"
 #include "player/unique_gear_helper.hpp"
 #include "player/ground_aoe.hpp"

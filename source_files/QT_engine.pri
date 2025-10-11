@@ -104,7 +104,6 @@ HEADERS += engine/player/azerite_data.hpp
 HEADERS += engine/player/consumable.hpp
 HEADERS += engine/player/darkmoon_deck.hpp
 HEADERS += engine/player/effect_callbacks.hpp
-HEADERS += engine/player/expansion_effects.hpp
 HEADERS += engine/player/gear_stats.hpp
 HEADERS += engine/player/ground_aoe.hpp
 HEADERS += engine/player/instant_absorb.hpp
