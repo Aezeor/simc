@@ -16398,8 +16398,20 @@ const spell_data_t* player_t::clone_dbc_override_spell( const player_t* p, const
 
 void player_t::parse_all_class_passives()
 {
+  // class-wide passives
   parse_passive_effects( find_spell( dbc::get_class_aura_id( type ) ), false, PARSE_SOURCE_CLASS );
 
+  for ( const auto& rank_spell : rank_class_spell_t::data( dbc->ptr ) )
+  {
+    if ( rank_spell.class_id == util::class_id( type ) && rank_spell.spec_id == 0 )
+    {
+      auto spell = find_spell( rank_spell.spell_id );
+      if ( spell->flags( SX_PASSIVE ) )
+        parse_passive_effects( spell, false, PARSE_SOURCE_CLASS );
+    }
+  }
+
+  // spec passives
   auto mastery_id = mastery_spell_entry_t::find( specialization(), dbc->ptr ).spell_id;
 
   for ( const auto& spec_spell : specialization_spell_entry_t::data( dbc->ptr ) )
@@ -16413,6 +16425,7 @@ void player_t::parse_all_class_passives()
     }
   }
 
+  // racials
   for ( const auto& racial_spell : racial_spell_entry_t::data( dbc->ptr ) )
   {
     if ( static_cast<uint64_t>( 1U ) << ( util::race_id( race ) - 1 ) & racial_spell.mask_race &&
@@ -16557,7 +16570,7 @@ std::string_view player_t::get_parsed_source( unsigned spell_id ) const
       switch ( source )
       {
         case PARSE_SOURCE_MANUAL: return "Manual";
-        case PARSE_SOURCE_CLASS:  return "Class Aura";
+        case PARSE_SOURCE_CLASS:  return "Class Spell";
         case PARSE_SOURCE_SPEC:   return "Spec Spell";
         case PARSE_SOURCE_RACIAL: return "Racial";
         case PARSE_SOURCE_TALENT: return "Talent";

@@ -4620,8 +4620,6 @@ void paladin_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
-
-  parse_passive_effects( spells.judgment_2 );
 }
 
 // paladin_t::primary_role ==================================================
