@@ -1025,7 +1025,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                  "<li><span>energize_amount:</span>{:.1f}</li></ul></div>\n",
                  util::resource_type_string( a->current_resource() ),
                  a->base_costs[ a->current_resource() ],
-                 a->secondary_costs[ a->current_resource() ],
+                 a->max_base_costs[ a->current_resource() ],
                  a->energize_type,
                  a->energize_resource,
                  a->energize_amount );

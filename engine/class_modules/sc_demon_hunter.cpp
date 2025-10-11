@@ -3144,7 +3144,7 @@ struct soul_cleave_heal_t : public demon_hunter_heal_t
 
     // Clear out the costs since this is just a copy of the damage spell
     base_costs.fill( 0 );
-    secondary_costs.fill( 0 );
+    max_base_costs.fill( 0 );
 
     if ( p->talent.vengeance.feast_of_souls->ok() )
     {

@@ -424,7 +424,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     dot_max_stack( 1 ),
     dot_ignore_stack(),
     base_costs(),
-    secondary_costs(),
+    max_base_costs(),
     base_costs_per_tick(),
     base_dd_min(),
     base_dd_max(),
@@ -750,7 +750,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
         floor( pd.cost() * player->resources.base[ pd.resource() ] * cost_array[ 2 ] );
     }
 
-    secondary_costs[ pd.resource() ] = pd.max_cost();
+    max_base_costs[ pd.resource() ] = pd.max_cost();
 
     if ( pd._cost_per_tick != 0 )
     {
@@ -1148,9 +1148,9 @@ double action_t::base_cost() const
   resource_e cr = current_resource();
   double c = base_costs[ cr ].value();
 
-  if ( secondary_costs[ cr ] != 0 )
+  if ( max_base_costs[ cr ] != 0 )
   {
-    c += secondary_costs[ cr ];
+    c += max_base_costs[ cr ];
   }
 
   return c;
@@ -1186,7 +1186,7 @@ double action_t::cost() const
   // be modified but the 'max' cost cannot. There are currently no spells with secondary cost that gets their cost
   // modified so this assumption remains untested. Fix accordingly if it is proven incorrect in the future.
 
-  if ( auto sec = secondary_costs[ cr ] )
+  if ( auto sec = max_base_costs[ cr ] )
   {
     auto cur = player->resources.current[ cr ];
     if ( cur >= c )
@@ -1201,7 +1201,7 @@ double action_t::cost() const
   if ( sim->debug )
   {
     sim->out_debug.print( "{} action_t::cost: base={} add={} mul={} secondary_cost={} cost={} resource={}", *this, base,
-                          add, mul, secondary_costs[ cr ], c, cr );
+                          add, mul, max_base_costs[ cr ], c, cr );
   }
 
   return c;

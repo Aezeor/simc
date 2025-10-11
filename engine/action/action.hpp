@@ -352,7 +352,7 @@ public:
   std::array<parsed_value_t<double>, RESOURCE_MAX> base_costs;
   
   /// Maximum amount of additional resource that can be expended.
-  std::array<double, RESOURCE_MAX> secondary_costs;
+  std::array<double, RESOURCE_MAX> max_base_costs;
 
   /// Cost of using ability per periodic effect tick.
   std::array<double, RESOURCE_MAX> base_costs_per_tick;

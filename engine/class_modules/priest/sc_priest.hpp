@@ -1229,15 +1229,15 @@ public:
 
     double c = ( base + add ) * mul;
 
-    // For now, treat secondary cost as "maximum of player current resource, min + max cost". Entirely possible we need
+    // For now, treat max cost as "maximum of player current resource, min + max cost". Entirely possible we need
     // to add some additional functionality (such as an overridable method) to determine the cost, if the default
     // behavior is not universal.
 
-    // Also for now, cost reductions to base cost are assumed to not apply to secondary cost, such that the 'min' cost
-    // can be modified but the 'max' cost cannot. There are currently no spells with secondary cost that gets their cost
+    // Also for now, cost reductions to base cost are assumed to not apply to max cost, such that the 'min' cost
+    // can be modified but the 'max' cost cannot. There are currently no spells with max cost that gets their cost
     // modified so this assumption remains untested. Fix accordingly if it is proven incorrect in the future.
 
-    if ( auto sec = ab::secondary_costs[ cr ] )
+    if ( auto sec = ab::max_base_costs[ cr ] )
     {
       auto cur = ab::player->resources.current[ cr ];
       if ( cur >= c )
@@ -1252,7 +1252,7 @@ public:
     if ( ab::sim->debug )
     {
       ab::sim->out_debug.print( "{} action_t::cost: base={} add={} mul={} secondary_cost={} cost={} resource={}", *this,
-                                base, add, mul, ab::secondary_costs[ cr ], c, cr );
+                                base, add, mul, ab::max_base_costs[ cr ], c, cr );
     }
 
     return c;
