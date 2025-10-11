@@ -8838,6 +8838,7 @@ struct graveyard_t final : public epidemic_base_t
 {
   graveyard_t( std::string_view n, death_knight_t* p ) : epidemic_base_t( n, p, p->spell.graveyard_action )
   {
+    background = true;
     impact_action = get_action<graveyard_damage_main_t>( "graveyard_main", p );
     add_child( impact_action );
     add_child( impact_action->impact_action );
@@ -10732,7 +10733,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 
   void trigger_disease_effects( const action_state_t* s, const death_knight_td_t* td, dot_t* dot )
   {
-    if ( !dot->is_ticking() )
+    if ( !dot->is_ticking() || s->target->is_sleeping() )
       return;
 
     timespan_t dur = 3_s;  // Not in data. Testing shows this to be the base 3 second tick time of our DoTs rather than
@@ -10750,7 +10751,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 
     if ( dot == td->dot.virulent_plague )
     {
-      p()->background_actions.virulent_plague_erupt->execute_on_target( td->target, dam );
+      p()->background_actions.virulent_plague_erupt->execute_on_target( s->target, dam );
       for ( auto& target : target_list() )
       {
         if ( get_td( target )->dot.virulent_plague->is_ticking() )
@@ -10761,7 +10762,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
       }
     }
     else
-      p()->background_actions.dread_plague_erupt->execute_on_target( td->target, dam );
+      p()->background_actions.dread_plague_erupt->execute_on_target( s->target, dam );
   }
 
 private:
@@ -10800,14 +10801,7 @@ struct scourge_strike_t final : public scourge_strike_base_t
     p->pets.lesser_ghoul_fs.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
 
     add_child( p->background_actions.virulent_plague_erupt );
-    if ( p->talent.unholy.scourging.ok() )
-      add_child( p->background_actions.dread_plague_erupt );
-  }
-
-  void execute() override
-  {
-    scourge_strike_base_t::execute();
-    p()->trigger_sanlayn_execute_talents( false );
+    add_child( p->background_actions.dread_plague_erupt );
   }
 };
 
@@ -12283,11 +12277,11 @@ void death_knight_t::create_actions()
       background_actions.dread_plague      = get_action<dread_plague_t>( "dread_plague", this );
     }
 
-    if( talent.unholy.scourge_strike.ok() )
+    if ( talent.unholy.scourge_strike.ok() )
+    {
       background_actions.virulent_plague_erupt = get_action<virulent_plague_erupt_t>( "virulent_plague_erupt", this );
-
-    if( talent.unholy.scourging.ok() )
-      background_actions.dread_plague_erupt = get_action<dread_plague_erupt_t>( "dread_plague_erupt", this );
+      background_actions.dread_plague_erupt    = get_action<dread_plague_erupt_t>( "dread_plague_erupt", this );
+    }
 
     if ( spec.epidemic->ok() )
       background_actions.epidemic_main = get_action<epidemic_damage_main_t>( "epidemic_main", this );
