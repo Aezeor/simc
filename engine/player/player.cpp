@@ -1654,8 +1654,10 @@ void player_t::init_base_stats()
     sim->print_debug( "{} base armor coefficient set to {}.", *this, base.armor_coeff );
   }
 
-  base.attack_power_per_spell_power = get_passive_player_value( base.attack_power_per_spell_power, "ap_per_sp" );
-  base.spell_power_per_attack_power = get_passive_player_value( base.spell_power_per_attack_power, "sp_per_ap" );
+  base.attack_power_per_spell_power =
+    get_passive_player_value( base.attack_power_per_spell_power, "attack_power_per_spell_power" );
+  base.spell_power_per_attack_power =
+    get_passive_player_value( base.spell_power_per_attack_power, "spell_power_per_attack_power" );
 
   // only certain classes get Agi->Dodge conversions, dodge_per_agility defaults to 0.00
   // exact values given by Blizzard, only have L90-L100 data
@@ -15326,7 +15328,7 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { P_TICK_TIME,                              "period"                           },  // 19
   { P_CHAIN_MULTIPLIER,                       "chain_multiplier"                 },  // 20
   { P_GCD,                                    "gcd"                              },  // 21
-  { P_TICK_DAMAGE,                            "periodic damage"                  },  // 22
+  { P_TICK_DAMAGE,                            "periodic_damage"                  },  // 22
   { A_MOD_STAT,                               "attribute_value"                  },  // 29
   { P_DOSES,                                  "proc_charges"                     },  // 31
   { A_MOD_INCREASE_RESOURCE,                  "resource_max"                     },  // 35
@@ -15358,6 +15360,7 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { A_MODIFY_SCHOOL,                          "school"                           },  // 220
   { A_MOD_EXPERTISE,                          "expertise"                        },  // 240
   { A_MOD_BLOCK_PCT,                          "block_reduction"                  },  // 272
+  { A_MOD_TARGET_ARMOR_PCT,                   "armor_penetration"                },  // 280
   { A_MOD_ALL_CRIT_CHANCE,                    "all_crit"                         },  // 290
   { A_MOD_MASTERY_PCT,                        "mastery"                          },  // 318
   { A_MOD_MELEE_AUTO_ATTACK_SPEED,            "attack_speed"                     },  // 319
@@ -15380,6 +15383,7 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { A_MOD_LEECH_PERCENT,                      "leech"                            },  // 443
   { A_MOD_RECHARGE_TIME_CATEGORY,             "charge_cooldown"                  },  // 453
   { A_MOD_RECHARGE_TIME_PCT_CATEGORY,         "charge_cooldown"                  },  // 454
+  { A_HASTED_CATEGORY,                        "hasted_cooldown"                  },  // 457
   { A_MOD_PARRY_FROM_CRIT_RATING,             "parry_from_crit_rating"           },  // 463
   { A_MOD_VERSATILITY_PCT,                    "versatility"                      },  // 471
   { A_MOD_AUTO_ATTACK_DAMAGE_PCT,             "auto_attack_multiplier"           },  // 530
@@ -15441,6 +15445,7 @@ std::string_view get_field_from_type( int type )
     if ( t == type )
       return f;
 
+  throw sc_initialization_error( fmt::format( "Invalid parse type '{}', field not found.", type ) );
   return {};
 }
 
@@ -15450,6 +15455,7 @@ int get_type_from_field( std::string_view field )
     if ( f == field )
       return t;
 
+  throw sc_initialization_error( fmt::format( "Invalid parse field '{}', type not found.", field ) );
   return -1;
 }
 }
