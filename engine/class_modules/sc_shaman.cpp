@@ -4703,10 +4703,8 @@ struct crash_lightning_attack_t : public shaman_attack_t
   {
     weapon     = &( p->main_hand_weapon );
     background = true;
-    aoe        = -1;
+    split_aoe_damage = true;
     may_proc_ability_procs = false;
-    reduced_aoe_targets = 6.0;
-    full_amount_targets = 1;
   }
 
   void init() override
@@ -6168,10 +6166,7 @@ struct crash_lightning_t : public shaman_attack_t
 
     if ( result_is_hit( execute_state->result ) )
     {
-      if ( num_targets_hit > 1 )
-      {
-        p()->buff.crash_lightning->trigger();
-      }
+      p()->buff.crash_lightning->trigger();
 
       if ( p()->talent.converging_storms->ok() )
       {
