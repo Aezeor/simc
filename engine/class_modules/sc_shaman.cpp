@@ -2604,8 +2604,7 @@ public:
 
   double compute_mw_multiplier()
   {
-    if ( ( !this->p()->spec.maelstrom_weapon->ok() && !this->p()->talent.maelstrom_weapon.ok() ) ||
-      !affected_by_maelstrom_weapon )
+    if ( !this->p()->talent.maelstrom_weapon.ok() || !affected_by_maelstrom_weapon )
     {
       return 0.0;
     }
@@ -11677,7 +11676,7 @@ void shaman_t::create_special_effects()
 {
   parse_player_effects_t::create_special_effects();
 
-  if ( spec.maelstrom_weapon->ok() || talent.maelstrom_weapon->ok() )
+  if ( talent.maelstrom_weapon->ok() )
   {
     auto mw_effect = new special_effect_t( this );
     mw_effect->spell_id = talent.maelstrom_weapon->id();
@@ -11727,7 +11726,7 @@ void shaman_t::action_init_finished( action_t& action )
 
   // Enable Maelstrom Weapon proccing for selected abilities, if they
   // fulfill the basic conditions for the proc
-  if ( ( spec.maelstrom_weapon->ok() || talent.maelstrom_weapon.ok() ) && action.callbacks &&
+  if ( ( talent.maelstrom_weapon.ok() ) && action.callbacks &&
        get_mw_proc_state( action ) == mw_proc_state::DEFAULT && (
          // Auto-attacks (shaman-module convention to set mh to action id 1, oh to id 2)
          ( action.id == 1 || action.id == 2 ) ||
@@ -11849,7 +11848,6 @@ void shaman_t::init_spells()
   spec.enhancement_shaman = find_specialization_spell( 137041 );
   spec.enhancement_shaman2= find_specialization_spell( 1214207 );
   spec.stormbringer       = find_specialization_spell( "Stormsurge" );
-  spec.maelstrom_weapon   = find_specialization_spell( "Maelstrom Weapon" );
   spec.stormstrike        = find_specialization_spell( "Stormstrike" );
 
   // Restoration
@@ -12684,7 +12682,7 @@ void shaman_t::regenerate_flame_shock_dependent_target_list( const action_t* act
 
 void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks )
 {
-  if ( !spec.maelstrom_weapon->ok() && !talent.maelstrom_weapon.ok() )
+  if ( !talent.maelstrom_weapon.ok() )
   {
     return;
   }
@@ -12720,6 +12718,14 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
         sets->set( SHAMAN_ENHANCEMENT, TWW2, B4 )->effectN( 1 ).time_value() );
     }
   }
+
+  if ( talent.elemental_tempo.ok() && stacks > 0 )
+  {
+    cooldown.strike->adjust(
+      timespan_t::from_seconds( -1.0 * stacks * talent.elemental_tempo->effectN( 3 ).base_value() / 1000.0 ) );
+    cooldown.lava_lash->adjust(
+      timespan_t::from_seconds( -1.0 * stacks * talent.elemental_tempo->effectN( 3 ).base_value() / 1000.0 ) );
+  }
 }
 
 void shaman_t::trigger_maelstrom_gain( double maelstrom_gain, gain_t* gain )
@@ -12736,7 +12742,7 @@ void shaman_t::trigger_maelstrom_gain( double maelstrom_gain, gain_t* gain )
 
 void shaman_t::generate_maelstrom_weapon( const action_t* action, int stacks )
 {
-  if ( !spec.maelstrom_weapon->ok() && !talent.maelstrom_weapon.ok() )
+  if ( !talent.maelstrom_weapon.ok() )
   {
     return;
   }
@@ -15511,7 +15517,7 @@ public:
     }
 
     // Custom Class Section
-    if ( p.spec.maelstrom_weapon->ok() || p.talent.maelstrom_weapon.ok() )
+    if ( p.talent.maelstrom_weapon.ok() )
     {
       os << "\t\t\t\t<div class=\"player-section custom_section\">\n";
       os << "\t\t\t\t\t<h3 class=\"toggle open\">Maelstrom Weapon Details</h3>\n"
