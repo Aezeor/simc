@@ -2177,11 +2177,11 @@ public:
     tick_may_crit = spell->flags( SX_TICK_MAY_CRIT );
 
     // handle parsed base damage modifiers
-    auto base_dd_mod = player->get_passive_value( *spell, "base_dd" );
+    auto base_dd_mod = player->get_passive_value( *spell, "direct_damage" );
     base_dd_adder = base_dd_mod[ 1 ];
     base_dd_multiplier = base_dd_mod[ 2 ];
 
-    auto base_td_mod = player->get_passive_value( *spell, "base_td" );
+    auto base_td_mod = player->get_passive_value( *spell, "periodic_damage" );
     base_td_adder = base_td_mod[ 1 ];
     base_td_multiplier = base_td_mod[ 2 ];
 

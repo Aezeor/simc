@@ -734,32 +734,35 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
         continue;
     }
 
+    resource_current = pd.resource();
+
     // no aura at all, or we have a matching aura
     auto cost_array = player->get_passive_value( pd, "cost" );
 
     if ( pd._cost != 0 || pd._pct_cost == 0 )
     {
-      base_costs[ pd.resource() ] = cost_array;
+      base_costs[ resource_current ] = cost_array;
     }
     else  // use _pct_cost
     {
-      base_costs[ pd.resource() ] = floor( pd.cost() * player->resources.base[ pd.resource() ] * cost_array[ 2 ] );
+      base_costs[ resource_current ] =
+        floor( pd.cost() * player->resources.base[ resource_current ] * cost_array[ 2 ] );
     }
 
-    secondary_costs[ pd.resource() ] = pd.max_cost();
+    secondary_costs[ resource_current ] = pd.max_cost();
 
     if ( pd._cost_per_tick != 0 )
     {
-      base_costs_per_tick[ pd.resource() ] = ( pd.cost_per_tick() + cost_array[ 1 ] ) * cost_array[ 2 ];
+      base_costs_per_tick[ resource_current ] = ( pd.cost_per_tick() + cost_array[ 1 ] ) * cost_array[ 2 ];
     }
     else if ( pd._pct_cost_per_tick != 0 )
     {
-      base_costs_per_tick[ pd.resource() ] =
-        floor( pd.cost_per_tick() * player->resources.base[ pd.resource() ] * cost_array[ 2 ] );
+      base_costs_per_tick[ resource_current ] =
+        floor( pd.cost_per_tick() * player->resources.base[ resource_current ] * cost_array[ 2 ] );
     }
     else
     {
-      base_costs_per_tick[ pd.resource() ] = 0.0;
+      base_costs_per_tick[ resource_current ] = 0.0;
     }
 
     // TODO: parse more than one powers for an action
@@ -767,11 +770,11 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   }
 
   // handle parsed base damage modifiers
-  auto base_dd_mod = player->get_passive_value( spell_data, "base_dd" );
+  auto base_dd_mod = player->get_passive_value( spell_data, "direct_damage" );
   base_dd_adder += base_dd_mod[ 1 ];
   base_dd_multiplier *= base_dd_mod[ 2 ];
 
-  auto base_td_mod = player->get_passive_value( spell_data, "base_td" );
+  auto base_td_mod = player->get_passive_value( spell_data, "periodic_damage" );
   base_td_adder += base_td_mod[ 1 ];
   base_td_multiplier *= base_td_mod[ 2 ];
 
