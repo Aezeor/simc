@@ -5953,6 +5953,8 @@ struct sundering_t : public shaman_attack_t
       p()->generate_maelstrom_weapon( this,
         as<int>( p()->talent.surging_elements->effectN( 3 ).base_value() ) );
     }
+
+    p()->buff.primordial_storm->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -5960,6 +5962,16 @@ struct sundering_t : public shaman_attack_t
     shaman_attack_t::impact( s );
 
     td( s->target )->debuff.lashing_flames->trigger();
+  }
+
+  bool ready() override
+  {
+    if ( p()->buff.primordial_storm->check() )
+    {
+      return false;
+    }
+
+    return shaman_attack_t::ready();
   }
 };
 
@@ -10591,7 +10603,7 @@ struct primordial_storm_t : public shaman_spell_t
 
   bool ready() override
   {
-    if ( ! p()->buff.primordial_storm->check() )
+    if ( !p()->buff.primordial_storm->check() )
     {
       return false;
     }
@@ -13747,7 +13759,8 @@ void shaman_t::create_buffs()
     ->set_cooldown( 0_ms ) // Stormblast uses ICD for something else than applications
     ->set_trigger_spell( talent.stormblast );
 
-  buff.primordial_storm = make_buff( this, "primordial_storm", talent.primordial_storm->effectN( 1 ).trigger() );
+  buff.primordial_storm = make_buff( this, "primordial_storm",
+    talent.primordial_storm->effectN( 1 ).trigger() );
 
   buff.lightning_strikes = make_buff( this, "lightning_strikes", find_spell( 384451 ) )
     ->set_trigger_spell( talent.lightning_strikes );
