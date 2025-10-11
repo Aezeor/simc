@@ -11733,18 +11733,12 @@ rider_of_the_apocalypse death_knight_t::get_random_rider()
   std::vector<rider_of_the_apocalypse> available_riders;
   available_riders.reserve( rider_of_the_apocalypse::ALL_RIDERS );
 
-  if ( last_summoned_rider != rider_of_the_apocalypse::MOGRAINE )
-    available_riders.push_back( rider_of_the_apocalypse::MOGRAINE );
-
-  if ( last_summoned_rider != rider_of_the_apocalypse::NAZGRIM )
-    available_riders.push_back( rider_of_the_apocalypse::NAZGRIM );
-
-  if ( last_summoned_rider != rider_of_the_apocalypse::TROLLBANE )
-    available_riders.push_back( rider_of_the_apocalypse::TROLLBANE );
-
-  if ( last_summoned_rider != rider_of_the_apocalypse::WHITEMANE )
-    available_riders.push_back( rider_of_the_apocalypse::WHITEMANE );
-
+  for ( auto& rider : { rider_of_the_apocalypse::MOGRAINE, rider_of_the_apocalypse::NAZGRIM,
+                        rider_of_the_apocalypse::TROLLBANE, rider_of_the_apocalypse::WHITEMANE } )
+  {
+    if ( last_summoned_rider != rider )
+      available_riders.push_back( rider );
+  }
 
   rider_of_the_apocalypse n = rng().range( available_riders );
   last_summoned_rider = n;
