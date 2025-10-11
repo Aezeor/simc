@@ -13209,10 +13209,10 @@ void death_knight_t::init_spells()
                                            : effect_mask_t( true ).disable( 4, 5 ) );
 
   if ( main_hand_weapon.group() != WEAPON_2H )
-    deregister_passive_effects( spec.might_of_the_frozen_wastes );
+    deregister_passive_spell( spec.might_of_the_frozen_wastes );
 
   // Handle Rune Regen Rate effects manually due to the unique nature of runes
-  deregister_passive_effects( talent.frost.runic_command );
+  deregister_passive_spell( talent.frost.runic_command );
 
   parse_all_class_passives();
   parse_all_passive_talents();

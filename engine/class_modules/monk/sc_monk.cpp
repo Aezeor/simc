@@ -5440,8 +5440,8 @@ void monk_t::init_spells()
 
   // Register passives
   // Aura adjustments that are only visual on tooltip and don't actually have an effect
-  register_passive_effect_mask( baseline.brewmaster.aura, effect_mask_t( true ).disable( 27 ) );
-  register_passive_effect_mask( baseline.windwalker.aura_3, effect_mask_t( true ).disable( 4 ) );
+  deregister_passive_effect( baseline.brewmaster.aura->effectN( 27 ) );
+  deregister_passive_effect( baseline.windwalker.aura_3->effectN( 4 ) );
 
   register_passive_effect_mask( talent.shado_pan.efficient_training, specialization() == MONK_WINDWALKER
                                                                          ? effect_mask_t( true ).disable( 5 )

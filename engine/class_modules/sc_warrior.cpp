@@ -8603,24 +8603,24 @@ void warrior_t::init_spells()
 
   // Register passives
   if ( main_hand_weapon.group() != WEAPON_1H || off_hand_weapon.group() != WEAPON_1H )
-    deregister_passive_effects( talents.fury.single_minded_fury );
+    deregister_passive_spell( talents.fury.single_minded_fury );
 
   if ( main_hand_weapon.type == WEAPON_NONE || off_hand_weapon.type == WEAPON_NONE )
-    deregister_passive_effects( talents.warrior.dual_wield_specialization );
+    deregister_passive_spell( talents.warrior.dual_wield_specialization );
 
   if ( main_hand_weapon.group() != WEAPON_1H )
-    deregister_passive_effects( talents.warrior.one_handed_weapon_specialization );
+    deregister_passive_spell( talents.warrior.one_handed_weapon_specialization );
 
   if ( main_hand_weapon.group() != WEAPON_2H )
-    deregister_passive_effects( talents.warrior.two_handed_weapon_specialization );
+    deregister_passive_spell( talents.warrior.two_handed_weapon_specialization );
 
   // Flagged as passive, but requires enrage thus is dynamic
-  deregister_passive_effects( talents.fury.cruelty );
-  deregister_passive_effects( talents.fury.wrath_and_fury );
+  deregister_passive_spell( talents.fury.cruelty );
+  deregister_passive_spell( talents.fury.wrath_and_fury );
 
   // Non-scripted effects not active for fury
   if ( specialization() == WARRIOR_FURY )
-    deregister_passive_effects( talents.mountain_thane.thunder_blast );
+    deregister_passive_spell( talents.mountain_thane.thunder_blast );
 
   register_passive_effect_mask( talents.warrior.barbaric_training,
     specialization() == WARRIOR_ARMS   ? effect_mask_t( false ).enable( 1, 2 )

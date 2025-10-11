@@ -981,12 +981,13 @@ private:
 protected:
   void parse_passive_effects( const spell_data_t*, bool force = false, parse_source_e source = PARSE_SOURCE_MANUAL );
   // remove any existing parses and prevent future parsing
-  void deregister_passive_effects( const spell_data_t* );
+  void deregister_passive_spell( const spell_data_t* );
+  void deregister_passive_effect( const spelleffect_data_t& );
+  void register_passive_effect_mask( const spell_data_t*, uint32_t );
+  void register_passive_affect_list( const spell_data_t*, const affect_list_t& );
   void parse_all_class_passives();
   void parse_all_passive_talents();
   void parse_all_passive_sets();
-  void register_passive_effect_mask( const spell_data_t*, uint32_t );
-  void register_passive_affect_list( const spell_data_t*, const affect_list_t& );
   // directly override the values
   void register_passive_spell_override( const spell_data_t&, double value, std::string_view field );
   void register_passive_power_override( const spellpower_data_t&, double value, std::string_view field = "cost" );

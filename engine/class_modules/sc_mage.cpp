@@ -8452,7 +8452,7 @@ void mage_t::init_spells()
   register_passive_affect_list( talents.flash_freeze, affect_list_t( 2 ).add_spell( 228600 ) );
 
   // Arcane aura mana regen includes points per level adjustment, handled manually in mage_t::resource_regen_per_second
-  register_passive_effect_mask( spec.arcane_mage, effect_mask_t( true ).disable( 5 ) );
+  deregister_passive_effect( spec.arcane_mage->effectN( 5 ) );
 
   register_passive_effect_mask( talents.elemental_affinity,
     specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 3 ) : effect_mask_t( false ).enable( 3 ) );

@@ -88,7 +88,7 @@ namespace warlock
     // Register passives
     // TOCHECK: 2025-08-27 Currently Gloom of Nathreza talent is bugged for Destruction and does not work
     if ( destruction() && bugs )
-      register_passive_effect_mask( hero.gloom_of_nathreza, effect_mask_t( true ).disable( 2 ) );
+      deregister_passive_effect( hero.gloom_of_nathreza->effectN( 2 ) );
 
     register_passive_effect_mask( talents.socrethars_guile,
       affliction() ? effect_mask_t( false ).enable( 1, 4 ) : effect_mask_t( true ).disable( 1, 4 ) );

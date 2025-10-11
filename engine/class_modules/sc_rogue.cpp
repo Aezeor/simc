@@ -11481,10 +11481,10 @@ void rogue_t::init_spells()
   // Register passives ======================================================
 
   // Extra CP from improved ambush is reported separatedly and manually handled within the action
-  deregister_passive_effects( talent.rogue.improved_ambush );
+  deregister_passive_spell( talent.rogue.improved_ambush );
 
   // Corrupt the blood duration extension handled in action as rupture spell data has per CP duration
-  deregister_passive_effects( talent.deathstalker.corrupt_the_blood );
+  deregister_passive_spell( talent.deathstalker.corrupt_the_blood );
 
   // Veiltouched is scripted to apply to abilities affected by Dark Brew
   if ( talent.subtlety.dark_brew.ok() && talent.subtlety.veiltouched.ok() )

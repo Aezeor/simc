@@ -9822,10 +9822,10 @@ void demon_hunter_t::init_spells()
                                 affect_list_t( 1, 3 ).add_spell( hero_spec.wounded_quarry_damage->id() ) );
 
   // Critical Chaos eff#2 (dummy script) overwrites the value of eff#1 (add flat: proc chance)
-  register_passive_effect_mask( talent.havoc.critical_chaos, effect_mask_t( true ).disable( 1 ) );
+  deregister_passive_effect( talent.havoc.critical_chaos->effectN( 1 ) );
 
   // TODO: Check if this still behaves as described in `composite_player_critical_damage_multiplier`
-  deregister_passive_effects( talent.havoc.know_your_enemy );
+  deregister_passive_spell( talent.havoc.know_your_enemy );
 
   parse_all_class_passives();
   parse_all_passive_talents();

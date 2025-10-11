@@ -11435,7 +11435,7 @@ void druid_t::init_spells()
   register_passive_effect_mask( talent.circle_of_the_wild, circle_mask );
 
   // Appears to be some kind of normalization factor but in reverse, disabled via script
-  register_passive_effect_mask( talent.rattle_the_stars, effect_mask_t( true ).disable( 3 ) );
+  deregister_passive_effect( talent.rattle_the_stars->effectN( 3 ) );
 
   // Bear TWW1 4pc ignores eff#5 and eff#6 regardless of lunar calling
   register_passive_effect_mask( sets->set( DRUID_GUARDIAN, TWW1, B4 ), effect_mask_t( true ).disable( 5, 6 ) );

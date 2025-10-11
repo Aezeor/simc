@@ -15132,8 +15132,11 @@ those from the trait hash, manual talent strings, and enable_all_talents. player
 automatically parse all tier set bonuses for the current expansion. It is recommended you call these three functions for
 both convenience and to ensure that no errant effects are missed.
 
-player_t::deregister_passive_effects( const spell_data_t* ) will retroactively remove any existing parsing of the spell
+player_t::deregister_passive_spell( const spell_data_t* ) will retroactively remove any existing parsing of the spell
 and prevent all future parsing of the spell.
+
+player_t::deregister_passive_effect( const spelleffect_data_t& ) will retroactively remove any existing parsing of the
+effect and prevent all future parsing of the effect.
 
 player_t::register_passive_effect_mask( const spell_data_t*, effect_mask_t ) will allow you to filter out which effects
 to be parsed. It uses the same `effect_mask_t` syntax used in `parse_effects()`. This will retroactively adjust any
@@ -16182,7 +16185,11 @@ void player_t::parse_passive_effects( const spell_data_t* spell, bool force, par
   {
     // filter out ignore list
     if ( range::contains( registered_effect_ignore_list_, eff.id() ) )
+    {
+      sim->print_debug( "Skipping {} ({}) eff#{} ({}), effect has been de-registered.", spell->name_cstr(), spell->id(),
+                        eff.index() + 1, eff.id() );
       continue;
+    }
 
     // filter out non-aura applications
     if ( eff.type() != E_APPLY_AURA && eff.type() != E_APPLY_AREA_AURA_PARTY && eff.type() != E_APPLY_AURA_PLAYER_AND_PET )
@@ -16195,12 +16202,12 @@ void player_t::parse_passive_effects( const spell_data_t* spell, bool force, par
     registered_passive_spells_.emplace_back( spell->id(), source );
 }
 
-void player_t::deregister_passive_effects( const spell_data_t* spell )
+void player_t::deregister_passive_spell( const spell_data_t* spell )
 {
   if ( !spell || !spell->ok() || range::contains( deregistered_passive_spells_, spell->id() ) )
     return;
 
-  sim->print_debug( "De-registering {} ({}), all future parsing on this spell blocked.", spell->name_cstr(),
+  sim->print_debug( "De-registering {} ({}), current and all future parsing on this spell blocked.", spell->name_cstr(),
                     spell->id() );
 
   deregistered_passive_spells_.push_back( spell->id() );
@@ -16226,24 +16233,115 @@ void player_t::deregister_passive_effects( const spell_data_t* spell )
   }
 }
 
-void player_t::register_passive_spell_override( const spell_data_t& spell, double value, std::string_view field )
+void player_t::deregister_passive_effect( const spelleffect_data_t& effect )
 {
-  dbc_override_->register_spell( *dbc, spell.id(), field, value );
+  if ( !effect.ok() || range::contains( registered_effect_ignore_list_, effect.id() ) )
+    return;
+
+  bool deregister =
+    range::contains( registered_passive_spells_, effect.spell()->id(), &std::pair<unsigned, parse_source_e>::first );
+
+  sim->print_debug( "De-registering {} ({}) eff#{} ({}), current and all future parsing of this effect blocked.",
+                    effect.spell()->name_cstr(), effect.spell()->id(), effect.index() + 1, effect.id() );
+
+  registered_effect_ignore_list_.push_back( effect.id() );
+
+  if ( deregister )
+    register_passive_effect( effect, true );
 }
 
-void player_t::register_passive_power_override( const spellpower_data_t& power, double value, std::string_view field )
+void player_t::register_passive_effect_mask( const spell_data_t* spell, uint32_t mask )
 {
-  dbc_override_->register_power( *dbc, power.id(), field, value );
+  if ( !spell || !spell->ok() || !mask )
+    return;
+
+  bool deregister =
+    range::contains( registered_passive_spells_, spell->id(), &std::pair<unsigned, parse_source_e>::first );
+
+  std::vector<std::string> msg;
+  auto mask_ = mask;
+  for ( size_t i = 1; mask_ && i <= spell->effect_count(); mask_ >>= 1, i++ )
+    if ( mask_ & 1 )
+      msg.push_back( std::to_string( i ) );
+
+  sim->print_debug( "Registering {} ({}) effect_mask eff#{} ({:#b})", spell->name_cstr(), spell->id(),
+                    util::string_join( msg, "," ), mask );
+
+  for ( const auto& eff : spell->effects() )
+  {
+    if ( mask & ( 1U << eff.index() ) && !range::contains( registered_effect_ignore_list_, eff.id() ) )
+    {
+      registered_effect_ignore_list_.push_back( eff.id() );
+
+      if ( deregister )
+      {
+        sim->print_debug( "De-register {} ({}) eff#{} ({})", spell->name_cstr(), spell->id(), eff.index() + 1,
+                          eff.id() );
+        register_passive_effect( eff, true );
+      }
+    }
+  }
 }
 
-void player_t::register_passive_effect_override( const spelleffect_data_t& effect, double value, std::string_view field )
+void player_t::register_passive_affect_list( const spell_data_t* spell, const affect_list_t& mod )
 {
-  dbc_override_->register_effect( *dbc, effect.id(), field, value );
-}
+  if ( !spell || !spell->ok() || mod.idx.empty() || ( mod.spell.empty() && mod.label.empty() && mod.family.empty() ) )
+    return;
 
-const spell_data_t* player_t::clone_dbc_override_spell( const player_t* p, const spell_data_t* s )
-{
-  return p->dbc_override_->clone_spell( s, p->dbc->ptr );
+  bool deregister =
+    range::contains( registered_passive_spells_, spell->id(), &std::pair<unsigned, parse_source_e>::first );
+
+  std::vector<std::string> list_str;
+  if ( !mod.spell.empty() )
+    list_str.push_back( fmt::format( "spell={}", fmt::join( mod.spell, ", " ) ) );
+  if ( !mod.label.empty() )
+    list_str.push_back( fmt::format( "label={}", fmt::join( mod.label, ", " ) ) );
+  if ( !mod.family.empty() )
+    list_str.push_back( fmt::format( "family_flag={}", fmt::join( mod.family, ", " ) ) );
+
+  sim->print_debug( "Registering {} ({}) eff#{} affect_list ({})", spell->name_cstr(), spell->id(),
+                    fmt::join( mod.idx, "," ), fmt::join( list_str, ", " ) );
+
+  for ( auto idx : mod.idx )
+  {
+    if ( const auto& eff = spell->effectN( idx ); eff.ok() )
+    {
+      std::vector<int> list;
+
+      range::for_each( mod.spell, [ & ]( auto id ) {
+        list.push_back( id );
+      } );
+
+      range::for_each( mod.label, [ & ]( auto l ) {
+        range::for_each( dbc->spells_by_label( abs( l ) ), [ & ]( auto s ) {
+          list.push_back( as<int>( s->id() ) * ( l < 0 ? -1 : 1 ) );
+        } );
+      } );
+
+      range::for_each( mod.family, [ & ]( auto f ) {
+        range::for_each( dbc->family_flag_affects_spells( spell->class_family(), abs( f ) - 1 ), [ & ]( auto s ) {
+          list.push_back( as<int>( s->id() ) * ( f < 0 ? -1 : 1 ) );
+        } );
+      } );
+
+      if ( !list.empty() )
+      {
+        if ( deregister )
+        {
+          sim->print_debug( "De-register {} ({}) eff#{}", spell->name_cstr(), spell->id(), idx );
+          register_passive_effect( eff, true );
+        }
+
+        registered_affected_spell_list_.emplace_back( eff.id(), std::move( list ) );
+
+        if ( deregister )
+        {
+          sim->print_debug( "Re-register {} ({}) eff#{}", spell->name_cstr(), spell->id(), idx );
+          register_passive_effect( eff );
+        }
+      }
+    }
+  }
 }
 
 void player_t::parse_all_class_passives()
@@ -16312,103 +16410,24 @@ void player_t::parse_all_passive_sets()
           parse_passive_effects( data.spell, false, PARSE_SOURCE_SET );
 }
 
-void player_t::register_passive_effect_mask( const spell_data_t* spell, uint32_t mask )
+void player_t::register_passive_spell_override( const spell_data_t& spell, double value, std::string_view field )
 {
-  if ( !spell || !spell->ok() || !mask )
-    return;
-
-  bool deregister =
-    range::contains( registered_passive_spells_, spell->id(), &std::pair<unsigned, parse_source_e>::first );
-
-  if ( sim->debug )
-  {
-    std::vector<std::string> msg;
-    auto mask_ = mask;
-    for ( size_t i = 1; mask_ && i <= spell->effect_count(); mask_ >>= 1, i++ )
-      if ( mask_ & 1 )
-        msg.push_back( std::to_string( i ) );
-
-    sim->print_debug( "Registering {} ({}) effect_mask eff#{} ({:#b})", spell->name_cstr(), spell->id(),
-                      util::string_join( msg, "," ), mask );
-  }
-
-  for ( const auto& eff : spell->effects() )
-  {
-    if ( mask & ( 1U << eff.index() ) && !range::contains( registered_effect_ignore_list_, eff.id() ) )
-    {
-      registered_effect_ignore_list_.push_back( eff.id() );
-
-      if ( deregister )
-      {
-        sim->print_debug( "De-register {} ({}) eff#{}", spell->name_cstr(), spell->id(), eff.index() + 1 );
-        register_passive_effect( eff, true );
-      }
-    }
-  }
+  dbc_override_->register_spell( *dbc, spell.id(), field, value );
 }
 
-void player_t::register_passive_affect_list( const spell_data_t* spell, const affect_list_t& mod )
+void player_t::register_passive_power_override( const spellpower_data_t& power, double value, std::string_view field )
 {
-  if ( !spell || !spell->ok() || mod.idx.empty() || ( mod.spell.empty() && mod.label.empty() && mod.family.empty() ) )
-    return;
+  dbc_override_->register_power( *dbc, power.id(), field, value );
+}
 
-  bool deregister =
-    range::contains( registered_passive_spells_, spell->id(), &std::pair<unsigned, parse_source_e>::first );
+void player_t::register_passive_effect_override( const spelleffect_data_t& effect, double value, std::string_view field )
+{
+  dbc_override_->register_effect( *dbc, effect.id(), field, value );
+}
 
-  if ( sim->debug )
-  {
-    std::vector<std::string> list_str;
-    if ( !mod.spell.empty() )
-      list_str.push_back( fmt::format( "spell={}", fmt::join( mod.spell, ", " ) ) );
-    if ( !mod.label.empty() )
-      list_str.push_back( fmt::format( "label={}", fmt::join( mod.label, ", " ) ) );
-    if ( !mod.family.empty() )
-      list_str.push_back( fmt::format( "family_flag={}", fmt::join( mod.family, ", " ) ) );
-
-    sim->print_debug( "Registering {} ({}) eff#{} affect_list ({})", spell->name_cstr(), spell->id(),
-                      fmt::join( mod.idx, "," ), fmt::join( list_str, ", " ) );
-  }
-
-  for ( auto idx : mod.idx )
-  {
-    if ( const auto& eff = spell->effectN( idx ); eff.ok() )
-    {
-      std::vector<int> list;
-
-      range::for_each( mod.spell, [ & ]( auto id ) {
-        list.push_back( id );
-      } );
-
-      range::for_each( mod.label, [ & ]( auto l ) {
-        range::for_each( dbc->spells_by_label( abs( l ) ), [ & ]( auto s ) {
-          list.push_back( as<int>( s->id() ) * ( l < 0 ? -1 : 1 ) );
-        } );
-      } );
-
-      range::for_each( mod.family, [ & ]( auto f ) {
-        range::for_each( dbc->family_flag_affects_spells( spell->class_family(), abs( f ) - 1 ), [ & ]( auto s ) {
-          list.push_back( as<int>( s->id() ) * ( f < 0 ? -1 : 1 ) );
-        } );
-      } );
-
-      if ( !list.empty() )
-      {
-        if ( deregister )
-        {
-          sim->print_debug( "De-register {} ({}) eff#{}", spell->name_cstr(), spell->id(), idx );
-          register_passive_effect( eff, true );
-        }
-
-        registered_affected_spell_list_.emplace_back( eff.id(), std::move( list ) );
-
-        if ( deregister )
-        {
-          sim->print_debug( "Re-register {} ({}) eff#{}", spell->name_cstr(), spell->id(), idx );
-          register_passive_effect( eff );
-        }
-      }
-    }
-  }
+const spell_data_t* player_t::clone_dbc_override_spell( const player_t* p, const spell_data_t* s )
+{
+  return p->dbc_override_->clone_spell( s, p->dbc->ptr );
 }
 
 std::string_view player_t::get_parsed_source( unsigned spell_id ) const
