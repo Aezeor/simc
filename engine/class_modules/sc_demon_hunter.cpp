@@ -739,6 +739,7 @@ public:
     const spell_data_t* demons_bite;
     const spell_data_t* fel_rush;
     const spell_data_t* fel_eruption;
+    const spell_data_t* demonic_appetite;
 
     const spell_data_t* blade_dance_2;
     const spell_data_t* burning_wound_debuff;
@@ -4752,8 +4753,7 @@ struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
 {
   struct spirit_bomb_damage_t : public dark_matter_trigger_t<demon_hunter_spell_t>
   {
-    spirit_bomb_damage_t( util::string_view name, demon_hunter_t* p )
-      : base_t( name, p, p->spec.spirit_bomb_damage )
+    spirit_bomb_damage_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spec.spirit_bomb_damage )
     {
       background = dual   = true;
       aoe                 = -1;
@@ -5587,8 +5587,7 @@ struct collapsing_star_t : public demon_hunter_spell_t
 {
   struct collapsing_star_damage_t : public dark_matter_trigger_t<demon_hunter_spell_t>
   {
-    collapsing_star_damage_t( std::string_view n, demon_hunter_t* p )
-      : base_t( n, p, p->spec.collapsing_star_damage )
+    collapsing_star_damage_t( std::string_view n, demon_hunter_t* p ) : base_t( n, p, p->spec.collapsing_star_damage )
     {
       background = dual   = true;
       aoe                 = -1;
@@ -5733,8 +5732,9 @@ struct meteor_shower_t : public demon_hunter_spell_t
     ground_aoe_params_t::hasted_with hasted = p()->specialization() == DEMON_HUNTER_DEVOURER
                                                   ? ground_aoe_params_t::SPELL_HASTE
                                                   : ground_aoe_params_t::ATTACK_HASTE;
-    timespan_t duration = timespan_t::from_seconds( as<int>(p()->talent.annihilator.dark_matter->effectN( 1 ).base_value()) / 2 );
-    timespan_t pulse_time = duration / 10; // TODO: VERIFY
+    timespan_t duration =
+        timespan_t::from_seconds( as<int>( p()->talent.annihilator.dark_matter->effectN( 1 ).base_value() ) / 2 );
+    timespan_t pulse_time = duration / 10;  // TODO: VERIFY
 
     make_event<ground_aoe_event_t>( *sim, p(),
                                     ground_aoe_params_t()
@@ -9232,7 +9232,7 @@ void demon_hunter_t::init_rng()
       break;
     case DEMON_HUNTER_HAVOC:
       rppm.felblade         = get_rppm( "felblade", spell.felblade_reset_havoc );
-      rppm.demonic_appetite = get_rppm( "demonic_appetite", spec.consume_soul_lesser_heal );
+      rppm.demonic_appetite = get_rppm( "demonic_appetite", spec.demonic_appetite );
       break;
     case DEMON_HUNTER_VENGEANCE:
       rppm.felblade = get_rppm( "felblade", spell.felblade_reset_vengeance );
@@ -9356,6 +9356,7 @@ void demon_hunter_t::init_spells()
   spec.fel_rush_damage     = find_spell( 192611, DEMON_HUNTER_HAVOC );
   spec.immolation_aura_3   = find_rank_spell( "Immolation Aura", "Rank 3" );
   spec.fel_eruption        = find_specialization_spell( "Fel Eruption" );
+  spec.demonic_appetite    = find_spell( 206478, DEMON_HUNTER_HAVOC );
 
   // Vengeance Spells
   spec.vengeance_demon_hunter = find_specialization_spell( "Vengeance Demon Hunter" );
