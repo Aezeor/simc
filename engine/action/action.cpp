@@ -5437,7 +5437,7 @@ void action_t::print_parsed_effects( report::sc_html_stream& os ) const
   std::map<std::string, std::vector<const spelleffect_data_t*>> affecting_list;
   for ( auto a : stats->action_list )
   {
-    for ( const auto& [ field, eff_list ] : player->reporting_effects_action[ a->data().id() ] )
+    for ( const auto& [ field, eff_list ] : player->get_owner_or_self()->reporting_effects_action[ a->data().id() ] )
     {
       for ( auto eff : eff_list )
       {
@@ -5469,7 +5469,8 @@ void action_t::print_parsed_effects( report::sc_html_stream& os ) const
         os.format(
           R"(<td>{}</td><td class="right">{}</td><td class="right">{}</td><td class="right">{:.1f}{}</td><td>{}</td>)",
           eff->spell()->name_cstr(), eff->spell()->id(), eff->index() + 1, eff->base_value(),
-          eff->default_multiplier() == 0.01 ? "%" : "", player->get_parsed_source( eff->spell()->id() ) );
+            eff->default_multiplier() == 0.01 ? "%" : "",
+            player->get_owner_or_self()->get_parsed_source( eff->spell()->id() ) );
 
         os << "</tr>";
         row_open = false;
