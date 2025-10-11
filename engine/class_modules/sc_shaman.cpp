@@ -42,6 +42,7 @@
 // Enhancement
 // TODO-midnight-talent: Does Overcharge include target-based crit chance% debuffs?
 // TODO-midnight-talent: Do all nature damage benefit from Overcharge, or just "abilities"?
+// TODO-nidnight-talent: Ride the Lightning interactions with Arc Discharge, Thorim's etc?
 
 namespace eff
 {
@@ -728,7 +729,8 @@ enum class spell_variant : unsigned
   SURGE_OF_POWER,
   ARC_DISCHARGE,
   EARTHSURGE,
-  PRIMORDIAL_STORM
+  PRIMORDIAL_STORM,
+  RIDE_THE_LIGHTNING
 };
 
 enum class strike_variant : unsigned
@@ -970,6 +972,7 @@ static std::string action_name( util::string_view name, spell_variant t )
     case spell_variant::ARC_DISCHARGE: return fmt::format( "{}_ad", name );
     case spell_variant::EARTHSURGE: return fmt::format( "{}_es", name );
     case spell_variant::PRIMORDIAL_STORM: return fmt::format( "{}_ps", name );
+    case spell_variant::RIDE_THE_LIGHTNING: return fmt::format( "{}_rtl", name );
     default: return std::string( name );
   }
 }
@@ -987,6 +990,7 @@ static util::string_view exec_type_str( spell_variant t )
     case spell_variant::ARC_DISCHARGE: return "arc_discharge";
     case spell_variant::EARTHSURGE: return "earthsurge";
     case spell_variant::PRIMORDIAL_STORM: return "primordial_storm";
+    case spell_variant::RIDE_THE_LIGHTNING: return "ride_the_lightning";
     default: return "normal";
   }
 }
@@ -1124,6 +1128,9 @@ public:
     action_t* tempest_ti;
     action_t* chain_lightning_ti;
     action_t* chain_lightning_ps;
+    action_t* chain_lightning_ll_rtl;
+    action_t* chain_lightning_ss_rtl;
+    action_t* chain_lightning_ws_rtl;
     action_t* ti_trigger;
     action_t* flame_shock_asc;
     action_t* flame_shock_lmt;
@@ -1975,6 +1982,9 @@ public:
   void trigger_lively_totems( const action_state_t* state );
   void trigger_tww3_totemic_enh_2pc( const action_state_t* state );
   void trigger_tww3_totemic_enh_4pc( const action_state_t* state, action_t* trigger );
+
+  // Midnight Triggers
+  void trigger_ride_the_lightning( const action_state_t* state, action_t* trigger );
 
   // Legendary
   void trigger_elemental_equilibrium( const action_state_t* state );
@@ -5434,6 +5444,8 @@ struct lava_lash_t : public shaman_attack_t
       p()->action.crash_lightning_aoe->set_target( state->target );
       p()->action.crash_lightning_aoe->schedule_execute();
     }
+
+    p()->trigger_ride_the_lightning( state, p()->action.chain_lightning_ll_rtl );
   }
 
   void move_random_target( std::vector<player_t*>& in, std::vector<player_t*>& out ) const
@@ -5808,6 +5820,13 @@ struct stormstrike_t : public stormstrike_base_t
     }
   }
 
+  void impact( action_state_t* state ) override
+  {
+    stormstrike_base_t::impact( state );
+
+    p()->trigger_ride_the_lightning( execute_state, p()->action.chain_lightning_ss_rtl );
+  }
+
   bool ready() override
   {
     if ( p()->buff.ascendance->check() )
@@ -5895,6 +5914,14 @@ struct windstrike_t : public stormstrike_base_t
       spell->execute();
     }
   }
+
+  void impact( action_state_t* state ) override
+  {
+    stormstrike_base_t::impact( state );
+
+    p()->trigger_ride_the_lightning( execute_state, p()->action.chain_lightning_ws_rtl );
+  }
+
 };
 
 // Sundering Spell =========================================================
@@ -6506,8 +6533,20 @@ struct chained_base_t : public shaman_spell_t
 
 struct chain_lightning_t : public chained_base_t
 {
-  chain_lightning_t( shaman_t* player, spell_variant t = spell_variant::NORMAL, util::string_view options_str = {} )
-    : chained_base_t( player, "chain_lightning", t, player->talent.chain_lightning,
+  chain_lightning_t( shaman_t* player, util::string_view options_str ) :
+    chain_lightning_t( player, "chain_lightning", spell_variant::NORMAL, options_str )
+  { }
+
+  chain_lightning_t( shaman_t* player, spell_variant t ) :
+    chain_lightning_t( player, "chain_lightning", t, "" )
+  { }
+
+  chain_lightning_t( shaman_t* player, spell_variant t, util::string_view name_str ) :
+    chain_lightning_t( player, name_str, t, "" )
+  { }
+
+  chain_lightning_t( shaman_t* player, util::string_view name_str, spell_variant t, util::string_view options_str )
+    : chained_base_t( player, name_str, t, player->talent.chain_lightning,
         player->spec.maelstrom->effectN( 5 ).resource( RESOURCE_MAELSTROM ), options_str )
   {
     if ( player->mastery.elemental_overload->ok() )
@@ -6527,6 +6566,27 @@ struct chain_lightning_t : public chained_base_t
         if ( auto ws_action = p()->find_action( "windstrike" ) )
         {
           ws_action->add_child( this );
+        }
+        break;
+      }
+      case spell_variant::RIDE_THE_LIGHTNING:
+      {
+        background = true;
+        base_execute_time = 0_s;
+        base_costs[ RESOURCE_MANA ] = 0;
+        chain_multiplier *= 1.0 - p()->talent.ride_the_lightning->effectN( 1 ).percent();
+        base_multiplier *= p()->talent.ride_the_lightning->effectN( 2 ).percent();
+        if ( util::str_in_str_ci( name_str, "_ll" ) )
+        {
+          if ( auto a = p()->find_action( "lava_lash" ) ) { a->add_child( this ); }
+        }
+        else if ( util::str_in_str_ci( name_str, "_ss" ) )
+        {
+          if ( auto a = p()->find_action( "stormstrike" ) ) { a->add_child( this ); }
+        }
+        else if ( util::str_in_str_ci( name_str, "_ws" ) )
+        {
+          if ( auto a = p()->find_action( "windstrike" ) ) { a->add_child( this ); }
         }
         break;
       }
@@ -6612,6 +6672,11 @@ struct chain_lightning_t : public chained_base_t
       return false;
     }
 
+    if ( exec_type == spell_variant::RIDE_THE_LIGHTNING )
+    {
+      return false;
+    }
+
     return shaman_spell_t::benefit_from_maelstrom_weapon();
   }
 
@@ -6684,20 +6749,6 @@ struct chain_lightning_t : public chained_base_t
     if ( num_targets_hit - 1 > 0 && p()->specialization() == SHAMAN_ENHANCEMENT )
     {
       p()->buff.cl_crash_lightning->trigger( num_targets_hit );
-    }
-
-    if ( p()->talent.crash_lightning.ok() )
-    {
-      p()->cooldown.crash_lightning->adjust(
-          -( p()->talent.chain_lightning->effectN( 3 ).time_value() * num_targets_hit ) );
-
-      if ( sim->debug )
-      {
-        sim->print_debug( "{} reducing Crash Lightning cooldown by {}, remains={}",
-            p()->name(),
-            -( p()->talent.chain_lightning->effectN( 3 ).time_value() * num_targets_hit ),
-            p()->cooldown.crash_lightning->remains() );
-      }
     }
 
     p()->trigger_herald_of_the_storms();
@@ -11033,7 +11084,7 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
   if ( name == "lightning_bolt" )
     return new lightning_bolt_t( this, spell_variant::NORMAL, options_str );
   if ( name == "chain_lightning" )
-    return new chain_lightning_t( this, spell_variant::NORMAL, options_str );
+    return new chain_lightning_t( this, options_str );
   if ( name == "stormkeeper" )
     return new stormkeeper_t( this, options_str );
   if ( name == "wind_shear" )
@@ -11426,6 +11477,13 @@ void shaman_t::create_actions()
   {
     action.lightning_bolt_ps = new lightning_bolt_t( this, spell_variant::PRIMORDIAL_STORM );
     action.chain_lightning_ps = new chain_lightning_t( this, spell_variant::PRIMORDIAL_STORM );
+  }
+
+  if ( talent.ride_the_lightning.ok() )
+  {
+    action.chain_lightning_ll_rtl = new chain_lightning_t( this, spell_variant::RIDE_THE_LIGHTNING, "chain_lightning_ll" );
+    action.chain_lightning_ss_rtl = new chain_lightning_t( this, spell_variant::RIDE_THE_LIGHTNING, "chain_lightning_ss" );
+    action.chain_lightning_ws_rtl = new chain_lightning_t( this, spell_variant::RIDE_THE_LIGHTNING, "chain_lightning_ws" );
   }
 
   // Generic Actions
@@ -13429,6 +13487,16 @@ void shaman_t::trigger_tww3_totemic_enh_4pc( const action_state_t* state, action
   } );
   buff.tww3_enh_4pc->decrement();
   cooldown.tww3_enh_4pc_icd->start( buff.tww3_enh_4pc->data().internal_cooldown() );
+}
+
+void shaman_t::trigger_ride_the_lightning( const action_state_t* state, action_t* trigger )
+{
+  if ( !talent.ride_the_lightning.ok() )
+  {
+    return;
+  }
+
+  trigger->execute_on_target( state->target );
 }
 
 // shaman_t::init_buffs =====================================================
