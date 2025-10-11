@@ -2422,7 +2422,7 @@ public:
   stats::proc_tracker_t* proc_fs;
 
   bool affected_by_maelstrom_weapon = false;
-  int mw_consume_max_stack, mw_consumed_stacks, mw_affected_stacks;
+  int mw_consumed_stacks, mw_affected_stacks;
   // Maelstrom-consuming parent spell to inherit stacks from its cast
   action_t* mw_parent;
 
@@ -2456,7 +2456,7 @@ public:
       may_proc_flowing_spirits( false ),
       proc_fs( nullptr ),
       affected_by_maelstrom_weapon( false ),
-      mw_consume_max_stack( 0 ), mw_consumed_stacks( 0 ), mw_affected_stacks( 0 ),
+      mw_consumed_stacks( 0 ), mw_affected_stacks( 0 ),
       mw_parent( nullptr )
   {
     ab::may_crit = true;
@@ -2480,10 +2480,6 @@ public:
       affected_by_maelstrom_weapon = true;
     }
 
-    mw_consume_max_stack = std::max(
-        as<int>( this->p()->buff.maelstrom_weapon->data().max_stacks() ),
-        as<int>( this->p()->talent.overflowing_maelstrom->effectN( 1 ).base_value() )
-    );
     affected_by_stormkeeper_cast_time =
         ab::data().affected_by( player->find_spell( 191634 )->effectN( 1 ) );
     affected_by_stormkeeper_damage    =
@@ -2583,7 +2579,10 @@ public:
       return 0;
     }
 
-    auto mw_stacks = std::min( mw_consume_max_stack, this->p()->buff.maelstrom_weapon->check() );
+    auto mw_stacks = std::min(
+      as<int>( this->p()->spell.maelstrom_weapon->effectN( 2 ).base_value() ),
+      this->p()->buff.maelstrom_weapon->check()
+    );
 
     if ( this->exec_type == spell_variant::THORIMS_INVOCATION )
     {
@@ -10690,7 +10689,9 @@ struct tempest_t : public shaman_spell_t
       return 0;
     }
 
-    auto mw_stacks = std::min( mw_consume_max_stack, this->p()->buff.maelstrom_weapon->check() );
+    auto mw_stacks = std::min(
+      as<int>( this->p()->spell.maelstrom_weapon->effectN( 2 ).base_value() ),
+      this->p()->buff.maelstrom_weapon->check() );
 
     if ( this->exec_type == spell_variant::THORIMS_INVOCATION )
     {
