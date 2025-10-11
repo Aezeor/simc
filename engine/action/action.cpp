@@ -734,39 +734,37 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
         continue;
     }
 
-    resource_current = pd.resource();
+    if ( resource_current == RESOURCE_NONE )
+      resource_current = pd.resource();
 
     // no aura at all, or we have a matching aura
     auto cost_array = player->get_passive_value( pd, "cost" );
 
     if ( pd._cost != 0 || pd._pct_cost == 0 )
     {
-      base_costs[ resource_current ] = cost_array;
+      base_costs[ pd.resource() ] = cost_array;
     }
     else  // use _pct_cost
     {
-      base_costs[ resource_current ] =
-        floor( pd.cost() * player->resources.base[ resource_current ] * cost_array[ 2 ] );
+      base_costs[ pd.resource() ] =
+        floor( pd.cost() * player->resources.base[ pd.resource() ] * cost_array[ 2 ] );
     }
 
-    secondary_costs[ resource_current ] = pd.max_cost();
+    secondary_costs[ pd.resource() ] = pd.max_cost();
 
     if ( pd._cost_per_tick != 0 )
     {
-      base_costs_per_tick[ resource_current ] = ( pd.cost_per_tick() + cost_array[ 1 ] ) * cost_array[ 2 ];
+      base_costs_per_tick[ pd.resource() ] = ( pd.cost_per_tick() + cost_array[ 1 ] ) * cost_array[ 2 ];
     }
     else if ( pd._pct_cost_per_tick != 0 )
     {
-      base_costs_per_tick[ resource_current ] =
-        floor( pd.cost_per_tick() * player->resources.base[ resource_current ] * cost_array[ 2 ] );
+      base_costs_per_tick[ pd.resource() ] =
+        floor( pd.cost_per_tick() * player->resources.base[ pd.resource() ] * cost_array[ 2 ] );
     }
     else
     {
-      base_costs_per_tick[ resource_current ] = 0.0;
+      base_costs_per_tick[ pd.resource() ] = 0.0;
     }
-
-    // TODO: parse more than one powers for an action
-    break;
   }
 
   // handle parsed base damage modifiers
