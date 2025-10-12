@@ -150,9 +150,81 @@ void sunfire_silk_lining( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 1244238 driver
+// 1259213 rppm driver
+// 1259216 damage missile
+// 1259218 damage
+// 1259229 buff missile
+// 1259230 buff
 void devouring_banding( special_effect_t& effect )
 {
+  effect.player->sim->error( PLACEHOLDER, "devouring banding damage using driver() value instead of trigger() value" );
+  effect.player->sim->error( PLACEHOLDER, "devouring banding buff not doubled with two copies" );
 
+  auto proc_damage = effect.driver()->effectN( 1 ).average( effect );
+  // auto proc_damage = effect.trigger()->effectN( 1 ).average( effect );
+
+  if ( auto proc = effect.player->find_action( "devouring_bolt" ) )
+  {
+    // add damage from 2nd copy of embellishment
+    proc->base_dd_min += proc_damage;
+    proc->base_dd_max += proc_damage;
+
+    return;
+  }
+
+  struct seized_power_t : public generic_proc_t
+  {
+    std::unordered_map<stat_e, buff_t*> buffs;
+
+    seized_power_t( const special_effect_t& e ) : generic_proc_t( e, "seized_power", 1259229 )
+    {
+      quiet = true;
+
+      // TODO: adjust buff value increase with two copies
+      create_all_stat_buffs( e, data().effectN( 1 ).trigger(), 0, [ this ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
+    }
+
+    void impact( action_state_t* ) override
+    {
+      auto stat = util::highest_stat( player, secondary_ratings );
+      for ( auto [ s, b ] : buffs )
+      {
+        if ( s == stat )
+          b->trigger();
+        else
+          b->expire();
+      }
+    }
+  };
+
+  // effect.trigger() == 1259213
+  // ->effectN( 1 ).trigger() == 1259216
+  // ->effectN( 1 ).trigger() == 1259218
+  struct devouring_bolt_t : public generic_proc_t
+  {
+    devouring_bolt_t( const special_effect_t& e )
+      : generic_proc_t( e, "devouring_bolt_missile", e.trigger()->effectN( 1 ).trigger() )
+    {
+      dual = true;
+
+      impact_action = create_proc_action<generic_proc_t>( "devouring_bolt", e, data().effectN( 1 ).trigger() );
+      stats = impact_action->stats;  // report the damage only
+    }
+  };
+
+  auto damage = create_proc_action<devouring_bolt_t>( "devouring_bolt_missile", effect );
+  damage->base_dd_min += proc_damage;
+  damage->base_dd_max += proc_damage;
+  auto buff = create_proc_action<seized_power_t>( "seized_power", effect );
+
+  effect.spell_id = effect.trigger()->id();
+  effect.player->callbacks.register_callback_execute_function( effect.spell_id, [ damage, buff ]( auto, auto, auto s ) {
+    damage->execute_on_target( s->target );
+    buff->execute_on_target( s->target );
+  } );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void blessed_pango_charm( special_effect_t& effect )
