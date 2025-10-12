@@ -306,7 +306,7 @@ public:
   { return report_decorators::decorated_action( *action() ); }
 
   std::string decorated_source_str() const
-  { return report_decorators::decorated_spell_data( action()->sim, source() ); }
+  { return report_decorators::decorated_spell_data( *action()->sim, source() ); }
 
   const proc_t* proc() const
   { return m_proc; }
@@ -496,7 +496,7 @@ public:
         {
           os << fmt::format( R"(<td class="left" rowspan="{}">{}</td>)",
             sources.size() + 1,
-            report_decorators::decorated_spell_data( sources.front()->action()->sim,
+            report_decorators::decorated_spell_data( *sources.front()->action()->sim,
               entry.proc_spell() ) );
           first = false;
         }

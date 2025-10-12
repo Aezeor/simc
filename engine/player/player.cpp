@@ -16503,7 +16503,7 @@ void player_t::print_parsed_effects( report::sc_html_stream& os ) const
           os << "<tr>";
 
         os.format( R"(<td>{}</td><td class="right">{}</td><td>#{}</td><td class="right">{:.1f}{}</td><td>{}</td>)",
-                   report_decorators::decorated_spell_data( sim, eff->spell() ), eff->spell()->id(), eff->index() + 1,
+                   report_decorators::decorated_spell_data( *sim, eff->spell() ), eff->spell()->id(), eff->index() + 1,
                    eff->base_value(), eff->default_multiplier() == 0.01 ? "%" : "",
                    get_parsed_source( eff->spell()->id() ) );
 
@@ -16526,7 +16526,7 @@ void player_t::print_parsed_effects( report::sc_html_stream& os ) const
     bool row_open = true;
 
     os.format( R"(<tr><td rowspan="{}" class="dark">{}</td><td rowspan="{}" class="dark right">{}</td>)", rows,
-               report_decorators::decorated_spell_data( sim, spell ), rows, spell_id );
+               report_decorators::decorated_spell_data( *sim, spell ), rows, spell_id );
 
     for ( const auto& [ idx, eff_list ] : spell_indices )
     {
@@ -16578,7 +16578,7 @@ void player_t::print_parsed_effects( report::sc_html_stream& os ) const
           os << "<tr>";
 
         os.format( R"(<td>{}</td><td class="right">{}</td><td>#{}</td><td class="right">{:.1f}{}</td><td>{}</td>)",
-                   report_decorators::decorated_spell_data( sim, eff->spell() ), eff->spell()->id(), eff->index() + 1,
+                   report_decorators::decorated_spell_data( *sim, eff->spell() ), eff->spell()->id(), eff->index() + 1,
                    eff->base_value(), is_pct ? "%" : "", get_parsed_source( eff->spell()->id() ) );
 
         os << "</tr>\n";
