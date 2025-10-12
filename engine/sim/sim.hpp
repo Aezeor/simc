@@ -406,8 +406,6 @@ struct sim_t : private sc_thread_t
     bool disable_soul_igniter_second_use = true;
     /// Disables the execute effect of Inscrutable Quantum Device since it is avoidable in game
     bool disable_iqd_execute = false;
-    bool enable_rune_words = false;
-    bool enable_domination_gems = false;
     // Earthbreaker's Impact weak points triggered
     unsigned int earthbreakers_impact_weak_points = 3;
     // Grim Eclipse Dot Duration override

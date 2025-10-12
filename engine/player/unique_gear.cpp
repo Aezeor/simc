@@ -4524,12 +4524,6 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
 
   auto splits = util::string_split<util::string_view>( name_str, "." );
 
-  // Shards of Domination
-  if ( splits[ 0 ] == "rune_word" )
-  {
-    return shadowlands::items::shards_of_domination::create_expression( player, name_str );
-  }
-
   // Hyperthread Wristwraps
   if ( splits[ 0 ] == "hyperthread_wristwraps" )
   {

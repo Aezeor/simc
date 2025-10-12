@@ -75,13 +75,6 @@ void norgannons_sagacity( special_effect_t& );
 void sephuzs_proclamation( special_effect_t& );
 void third_eye_of_the_jailer( special_effect_t& );
 void vitality_sacrifice( special_effect_t& );
-// Shards of Domination
-namespace shards_of_domination
-{
-int rune_word_active( const player_t*, const spell_data_t*, spell_label );
-report::sc_html_stream& generate_report( const player_t&, report::sc_html_stream& );
-std::unique_ptr<expr_t> create_expression( const player_t&, util::string_view );
-}  // namespace shards_of_domination
 }  // namespace items
 
 void register_hotfixes();

@@ -2328,7 +2328,6 @@ void sim_t::init_fight_style()
       desired_targets = 1;
       max_time = timespan_t::from_seconds( 360.0 );
 
-      shadowlands_opts.enable_rune_words = false;
       ignore_invulnerable_targets = true;
 
       raid_events_str +=
@@ -4079,8 +4078,6 @@ void sim_t::create_options()
   add_option( opt_obsoleted( "shadowlands.newfound_resolve_success_chance" ) );
   add_option( opt_obsoleted( "shadowlands.newfound_resolve_default_delay" ) );
   add_option( opt_obsoleted( "shadowlands.newfound_resolve_delay_relstddev" ) );
-  add_option( opt_bool( "shadowlands.enable_rune_words", shadowlands_opts.enable_rune_words ) );
-  add_option( opt_bool( "shadowlands.enable_domination_gems", shadowlands_opts.enable_domination_gems ) );
   add_option( opt_obsoleted( "shadowlands.pustule_eruption_interval" ) );
   add_option( opt_float( "shadowlands.shredded_soul_pickup_chance", shadowlands_opts.shredded_soul_pickup_chance, 0.0, 1.0 ) );
   add_option( opt_obsoleted( "shadowlands.valiant_strikes_heal_rate" ) );

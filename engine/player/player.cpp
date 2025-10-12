@@ -5726,12 +5726,6 @@ double player_t::composite_player_pet_damage_multiplier( const action_state_t*, 
 {
   double m = guardian ? current.guardian_damage_multiplier : current.pet_damage_multiplier;
 
-  if ( !guardian )
-  {
-    if ( buffs.coldhearted && buffs.coldhearted->check() )
-      m *= 1.0 + buffs.coldhearted->check_value();
-  }
-
   return m;
 }
 
@@ -5758,9 +5752,6 @@ double player_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.echo_of_eonar && buffs.echo_of_eonar->has_common_school( school ) )
     m *= 1.0 + buffs.echo_of_eonar->check_value();
-
-  if ( buffs.coldhearted && buffs.coldhearted->has_common_school( school ) )
-    m *= 1.0 + buffs.coldhearted->check_value();
 
   if ( buffs.entropic_embrace && buffs.entropic_embrace->check() )
     m *= 1.0 + buffs.entropic_embrace->data().effectN( 1 ).percent();
@@ -12705,7 +12696,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     return azerite_essence->create_expression( splits );
   }
 
-  if ( splits[ 0 ] == "rune_word" || splits[ 0 ] == "hyperthread_wristwraps" )
+  if ( splits[ 0 ] == "hyperthread_wristwraps" )
   {
     return unique_gear::create_expression( *this, expression_str );
   }

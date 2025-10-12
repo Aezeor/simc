@@ -3938,9 +3938,6 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
     // Runeforge Legendaries
     runeforge::generate_report( p, os );
 
-    // Shards of Domination (9.1)
-    unique_gear::shadowlands::items::shards_of_domination::generate_report( p, os );
-
     // Professions
     if ( !p.professions_str.empty() )
     {

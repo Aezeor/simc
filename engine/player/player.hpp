@@ -564,9 +564,6 @@ struct player_t : public actor_t
     // 9.1 Legendary Buffs
     buff_t* pact_of_the_soulstalkers; // Kyrian Hunter Legendary
 
-    // 9.1 Shards of Domination
-    buff_t* coldhearted; // Shard of Cor
-
     // Trinkets
     buff_t* soleahs_secret_technique_external;
     buff_t* elegy_of_the_eternals_external;
