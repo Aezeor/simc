@@ -80,7 +80,7 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* sanctify;
     buff_t* eye_of_tyr;
     buff_t* crusaders_resolve;
-    buff_t* heartfire;  // T30 2p Prot
+    buff_t* heartfire;  // DF2 2p Prot
     buff_t* empyrean_hammer;
     buff_t* vanguard_of_justice;
     buff_t* holy_flames;
@@ -210,10 +210,10 @@ public:
     buff_t* inner_light;
     buff_t* inspiring_vanguard;
     buff_t* barricade_of_faith;
-    buff_t* ally_of_the_light;       // T29 2pc
-    buff_t* deflecting_light;        // T29 4pc
-    buff_t* sanctification;     // T31 2pc building
-    buff_t* sanctification_empower;  // T31 2pc consecration effect
+    buff_t* ally_of_the_light;       // DF1 2pc
+    buff_t* deflecting_light;        // DF1 4pc
+    buff_t* sanctification;     // DF3 2pc building
+    buff_t* sanctification_empower;  // DF3 2pc consecration effect
     buff_t* rising_wrath; // TWW1 4pc
     buff_t* heightened_wrath; // TWW1 4pc
     buff_t* luck_of_the_draw; // TWW2 2pc Protection
@@ -241,7 +241,7 @@ public:
     buff_t* judge_jury_and_executioner;
     buff_t* divine_hammer;
 
-    buff_t* echoes_of_wrath;  // T31 4pc
+    buff_t* echoes_of_wrath;  // DF3 4pc
 
     // TWW Hero Talents
     struct
@@ -1259,9 +1259,9 @@ public:
       this->affected_by.final_reckoning_st = this->data().affected_by( p->talents.final_reckoning->effectN( 3 ) );
       this->affected_by.final_reckoning_aoe = this->data().affected_by( p->talents.final_reckoning->effectN( 4 ) );
       this->affected_by.ret_t29_2p =
-          this->data().affected_by( p->sets->set( PALADIN_RETRIBUTION, T29, B2 )->effectN( 1 ) );
+          this->data().affected_by( p->sets->set( PALADIN_RETRIBUTION, DF1, B2 )->effectN( 1 ) );
       this->affected_by.ret_t29_4p =
-          this->data().affected_by( p->sets->set( PALADIN_RETRIBUTION, T29, B4 )->effectN( 1 ) );
+          this->data().affected_by( p->sets->set( PALADIN_RETRIBUTION, DF1, B4 )->effectN( 1 ) );
       this->affected_by.rise_from_ash =
           this->data().affected_by( p->find_spell( 454693 )->effectN( 1 ) );
 

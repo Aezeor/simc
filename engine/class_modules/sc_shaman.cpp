@@ -13678,12 +13678,12 @@ void shaman_t::init_items()
 
   if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
   {
-    sets->enable_set_bonus( specialization(), T31 , B2 );
+    sets->enable_set_bonus( specialization(), DF3 , B2 );
   }
 
   if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
   {
-    sets->enable_set_bonus( specialization(), T31 , B4 );
+    sets->enable_set_bonus( specialization(), DF3 , B4 );
   }
 }
 

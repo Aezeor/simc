@@ -3407,13 +3407,13 @@ void priest_t::init_items()
   switch ( specialization() )
   {
     case PRIEST_DISCIPLINE:
-      tier_to_enable = T31;
+      tier_to_enable = DF3;
       break;
     case PRIEST_HOLY:
-      tier_to_enable = T31;
+      tier_to_enable = DF3;
       break;
     case PRIEST_SHADOW:
-      tier_to_enable = T30;
+      tier_to_enable = DF2;
       break;
     default:
       return;

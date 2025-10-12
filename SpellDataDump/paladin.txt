@@ -185,7 +185,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Mechanic         : Invulnerable
-Affecting Spells : Uther's Guard (207558 effect#2), Echoing Blessings (339316 effect#4), Echoing Blessings (387801 effect#4), Blessed Calling (469770 effect#3)
+Affecting Spells : Uther's Guard (207558 effect#2), Echoing Blessings (387801 effect#4), Blessed Calling (469770 effect#3)
 Family Flags     : 7
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Immunity Purges Effect (47), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Fail on all targets immune (85), Remove Entering Arena (162), Vehicle Immunity Category (218), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Aura Interrupt   : Enter World (22)
@@ -198,7 +198,7 @@ Effects          :
 #3 (id=263966)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Targeted Raid Member (57)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
-                   Modified By: Echoing Blessings (339316 effect#4), Echoing Blessings (387801 effect#4)
+                   Modified By: Echoing Blessings (387801 effect#4)
 #4 (id=1184415)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Raid Member (57)
                    Modified By: Blessed Calling (469770 effect#3)
@@ -228,7 +228,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 219
                  : 292
-Affecting Spells : Unbound Freedom (199325 effect#1), Uther's Guard (207558 effect#2), Unbound Freedom (305394 effect#1), Echoing Blessings (339316 effect#3), Echoing Blessings (387801 effect#3), Blessed Calling (469770 effect#2)
+Affecting Spells : Unbound Freedom (199325 effect#1), Uther's Guard (207558 effect#2), Unbound Freedom (305394 effect#1), Echoing Blessings (387801 effect#3), Blessed Calling (469770 effect#2)
 Family Flags     : 4
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Immunity Purges Effect (47), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -238,7 +238,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Targeted Ally (21)
 #3 (id=293300)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
-                   Modified By: Unbound Freedom (199325 effect#1), Unbound Freedom (305394 effect#1), Echoing Blessings (339316 effect#3), Echoing Blessings (387801 effect#3), Blessed Calling (469770 effect#2)
+                   Modified By: Unbound Freedom (199325 effect#1), Unbound Freedom (305394 effect#1), Echoing Blessings (387801 effect#3), Blessed Calling (469770 effect#2)
 Description      : Blesses a party or raid member, granting immunity to movement impairing effects $?s199325[and increasing movement speed by $199325m1% ][]for $d.
 Tooltip          : Immune to movement impairing effects. $?s199325[Movement speed increased by $199325m1%][]
 
@@ -343,7 +343,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 2655
-Affecting Spells : Blessing of Sacrifice (200327 effect#1), Uther's Guard (207558 effect#2), Echoing Blessings (339316 effect#5), Sacrifice of the Just (384820 effect#1), Echoing Blessings (387801 effect#5), Blessed Calling (469770 effect#1)
+Affecting Spells : Blessing of Sacrifice (200327 effect#1), Uther's Guard (207558 effect#2), Sacrifice of the Just (384820 effect#1), Echoing Blessings (387801 effect#5), Blessed Calling (469770 effect#1)
 Family Flags     : 13
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Exclude Caster (51), Include In Advanced Combat Log (72), No Caster Aura Icon (187), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Ignore Target Absorb Modifiers (371), Hide Damage Absorb UI (380), Allow Class Ability Procs (416)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
@@ -358,7 +358,7 @@ Effects          :
 #4 (id=867794)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Raid Member (57)
                    Affected School(s): All
-                   Modified By: Echoing Blessings (339316 effect#5), Echoing Blessings (387801 effect#5)
+                   Modified By: Echoing Blessings (387801 effect#5)
 #5 (id=1183597)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Raid Member (57)
                    Modified By: Blessed Calling (469770 effect#1)
@@ -417,7 +417,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Mechanic         : Turn
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Affecting Spells : Wrench Evil (339292 effects: #1, #2), Wrench Evil (460720 effect#1), Stand Against Evil (469317 effect#2)
+Affecting Spells : Wrench Evil (460720 effect#1), Stand Against Evil (469317 effect#2)
 Family Flags     : 96
 Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Can Proc From Procs (122), Limit N (165), Taps immediately (215), Doesn't Reset Swing Timer if Instant (217), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Damage (Script) (27)
@@ -500,7 +500,7 @@ Category         : 2179 (Type 0x5): Avenging Wrath (31884 effect#5), Avenging Cr
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Protection Paladin (137028 effect#7), Judgment (214222 effect#1), Holy Shock (272906 effect#1), Focused Light (339984 effect#1), Divine Glimpse (387805 effect#1), Lightspark (394667 effect#1), Luminosity (431402 effect#1), Blessing of An'she (445204 effect#1), Holy Paladin (1258016 effect#1)
+Affecting Spells : Protection Paladin (137028 effect#7), Judgment (214222 effect#1), Holy Shock (272906 effect#1), Divine Glimpse (387805 effect#1), Lightspark (394667 effect#1), Luminosity (431402 effect#1), Blessing of An'she (445204 effect#1), Holy Paladin (1258016 effect#1)
 Family Flags     : 21
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Allow Class Ability Procs (416)
 Effects          :
@@ -861,7 +861,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 881
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2, #7), Holy Paladin (137029 effects: #3, #4), Judgment (214222 effect#1), Avenging Wrath (231895 effects: #1, #2), Holy Shock (272906 effect#1), Blessing of Dawn (337747 effects: #1, #2), Focused Light (339984 effect#1), Radiant Decree (383469 effect#3), Divine Glimpse (387805 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Lightspark (394667 effect#1), Retribution Paladin (412314 effects: #1, #2), Initial Paladin (417383 effects: #1, #2), Holy Paladin (428076 effects: #3, #4), Luminosity (431402 effect#1), Blessing of An'she (445204 effect#1), Avenging Wrath (454351 effects: #1, #2), Avenging Wrath (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Luck of the Draw! (1218114 effects: #1, #2), Protection Paladin (1256936 effects: #1, #2), Holy Paladin (1258016 effect#1)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2, #7), Holy Paladin (137029 effects: #3, #4), Judgment (214222 effect#1), Avenging Wrath (231895 effects: #1, #2), Holy Shock (272906 effect#1), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Divine Glimpse (387805 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Lightspark (394667 effect#1), Retribution Paladin (412314 effects: #1, #2), Initial Paladin (417383 effects: #1, #2), Holy Paladin (428076 effects: #3, #4), Luminosity (431402 effect#1), Blessing of An'she (445204 effect#1), Avenging Wrath (454351 effects: #1, #2), Avenging Wrath (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Luck of the Draw! (1218114 effects: #1, #2), Protection Paladin (1256936 effects: #1, #2), Holy Paladin (1258016 effect#1)
 Family Flags     : 21, 65
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), Ignore Line of Sight (66), Active Threat (94), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
@@ -879,7 +879,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 741: Healing Spells
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Tyr's Deliverance (200654 effect#2), Sacred Dawn (243174 effect#1), Holy Shock (272906 effect#1), Blessing of Dawn (337747 effects: #1, #2), Focused Light (339984 effect#1), Divine Glimpse (387805 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Lightspark (394667 effect#1), Paladin Holy 10.1 Class Set 2pc (405545 effect#1), Reclamation (415364 effect#2), Initial Paladin (417383 effects: #3, #4), Awestruck (417855 effect#1), Holy Paladin (428076 effects: #1, #2), Luminosity (431402 effect#1), Blessing of An'she (445204 effect#1), Light of the Martyr (447988 effect#1), Paladin Holy 11.0 Class Set 2pc (453658 effect#1), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Glorious Dawn (461246 effect#2), Beacon of the Savior (1244893 effect#3)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Tyr's Deliverance (200654 effect#2), Sacred Dawn (243174 effect#1), Holy Shock (272906 effect#1), Blessing of Dawn (337747 effects: #1, #2), Divine Glimpse (387805 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Lightspark (394667 effect#1), Paladin Holy 10.1 Class Set 2pc (405545 effect#1), Reclamation (415364 effect#2), Initial Paladin (417383 effects: #3, #4), Awestruck (417855 effect#1), Holy Paladin (428076 effects: #1, #2), Luminosity (431402 effect#1), Blessing of An'she (445204 effect#1), Light of the Martyr (447988 effect#1), Paladin Holy 11.0 Class Set 2pc (453658 effect#1), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Glorious Dawn (461246 effect#2), Beacon of the Savior (1244893 effect#3)
 Family Flags     : 46, 48
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), Ignore Line of Sight (66), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
@@ -1042,7 +1042,7 @@ School           : Holy
 Spell Type       : None
 Duration         : 20 seconds
 Cooldown         : 120 seconds
-Category         : 1550 (Type 0x0): Strive for Perfection (296320 effect#6), Strive for Perfection (299367 effect#6), Strive for Perfection (299369 effect#6), Benevolent Faerie (327710 effect#2), Benevolent Faerie Fermata (345453 effect#2), Haunted Mask (356968 effect#2)
+Category         : 1550 (Type 0x0): Strive for Perfection (296320 effect#6), Strive for Perfection (299367 effect#6), Strive for Perfection (299369 effect#6), Benevolent Faerie (327710 effect#2), Haunted Mask (356968 effect#2)
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -2501,7 +2501,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 2706: Spatial Paradox (406732 effect#11), Spatial Paradox (406789 effect#10)
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Protection Paladin (137028 effect#7), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Divine Purpose (223819 effects: #1, #2, #5, #6), Sacred Dawn (243174 effect#1), Breaking Dawn (278594 effect#3), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Enkindled Spirit (341741 effect#1), Dawn Will Come (364306 effect#2), Breaking Dawn (387879 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1), Unending Light (394709 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Luminosity (431402 effect#1), Gleaming Rays (431481 effect#1), Avenging Wrath (454351 effects: #1, #2), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1), Solar Wrath (1236972 effects: #1, #2), Beacon of the Savior (1244893 effect#3), Holy Paladin (1258016 effect#1)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Protection Paladin (137028 effect#7), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Divine Purpose (223819 effects: #1, #2, #5, #6), Sacred Dawn (243174 effect#1), Breaking Dawn (278594 effect#3), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Dawn Will Come (364306 effect#2), Breaking Dawn (387879 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1), Unending Light (394709 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Luminosity (431402 effect#1), Gleaming Rays (431481 effect#1), Avenging Wrath (454351 effects: #1, #2), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1), Solar Wrath (1236972 effects: #1, #2), Beacon of the Savior (1244893 effect#3), Holy Paladin (1258016 effect#1)
 Family Flags     : 46, 82
 Attributes       : Not Shapeshifted (16), Always Line of Sight (185), Allow Class Ability Procs (416)
 Effects          :
@@ -5157,7 +5157,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 741: Healing Spells
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Maraad's Dying Breath (234862 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Untempered Dedication (339990 effect#1), Maraad's Dying Breath (340459 effect#1), Maraad's Dying Breath (388019 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Beacon of the Savior (1244893 effect#3)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Maraad's Dying Breath (234862 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Maraad's Dying Breath (340459 effect#1), Maraad's Dying Breath (388019 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Beacon of the Savior (1244893 effect#3)
 Family Flags     : 46, 124
 Attributes       : Not Shapeshifted (16), Exclude Caster (51), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
@@ -5339,7 +5339,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 373
                  : 4638
-Affecting Spells : Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
+Affecting Spells : Steed of Glory (199542 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
 Effects          :
@@ -6023,7 +6023,7 @@ Labels           : 16: Class Spells
                  : 177
                  : 292
 Mechanic         : Invulnerable
-Affecting Spells : Uther's Guard (207558 effect#2), Echoing Blessings (339316 effect#4), Echoing Blessings (387801 effects: #4, #6), Blessed Calling (469770 effect#3)
+Affecting Spells : Uther's Guard (207558 effect#2), Echoing Blessings (387801 effects: #4, #6), Blessed Calling (469770 effect#3)
 Family Flags     : 7, 28
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Fail on all targets immune (85), Remove Entering Arena (162), Vehicle Immunity Category (218), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Aura Interrupt   : Enter World (22)
@@ -6043,7 +6043,6 @@ Shares a cooldown with Blessing of Protection.
 Tooltip          : Immune to magical damage and harmful effects.
 
 Name             : Blessed Hammer (id=204019) [Spell Family (10)] 
-Replaces         : Crusader Strike (id=35395)
 Talent Entry     : Protection [tree=spec, row=2, col=2, max_rank=1, req_points=0, select_idx=200, replace="Crusader Strike" (id=35395)]
 Class            : Paladin
 School           : Holy
@@ -6951,7 +6950,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 373
                  : 4638
-Affecting Spells : Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
+Affecting Spells : Steed of Glory (199542 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
 Effects          :
@@ -6990,7 +6989,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 373
                  : 4638
-Affecting Spells : Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
+Affecting Spells : Steed of Glory (199542 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
 Effects          :
@@ -7029,7 +7028,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 373
                  : 4638
-Affecting Spells : Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
+Affecting Spells : Steed of Glory (199542 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
 Effects          :
@@ -7068,7 +7067,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 373
                  : 4638
-Affecting Spells : Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
+Affecting Spells : Steed of Glory (199542 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
 Effects          :
@@ -7252,7 +7251,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Protection Paladin (137028 effect#7), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Divine Purpose (223819 effects: #1, #2, #5, #6), Sacred Dawn (243174 effect#1), Breaking Dawn (278594 effect#3), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Enkindled Spirit (341741 effect#1), Dawn Will Come (364306 effect#2), Breaking Dawn (387879 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1), Unending Light (394709 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Luminosity (431402 effect#1), Gleaming Rays (431481 effect#1), Avenging Wrath (454351 effects: #1, #2), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1), Solar Wrath (1236972 effects: #1, #2), Beacon of the Savior (1244893 effect#3), Holy Paladin (1258016 effect#1)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Protection Paladin (137028 effect#7), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Divine Purpose (223819 effects: #1, #2, #5, #6), Sacred Dawn (243174 effect#1), Breaking Dawn (278594 effect#3), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Dawn Will Come (364306 effect#2), Breaking Dawn (387879 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1), Unending Light (394709 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Luminosity (431402 effect#1), Gleaming Rays (431481 effect#1), Avenging Wrath (454351 effects: #1, #2), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1), Solar Wrath (1236972 effects: #1, #2), Beacon of the Savior (1244893 effect#3), Holy Paladin (1258016 effect#1)
 Family Flags     : 46, 82
 Attributes       : Not a Proc (105), Allow Class Ability Procs (416)
 Effects          :
@@ -7421,7 +7420,7 @@ School           : Holy
 Spell Type       : None
 Duration         : 27 seconds
 Cooldown         : 120 seconds
-Category         : 1550 (Type 0x0): Strive for Perfection (296320 effect#6), Strive for Perfection (299367 effect#6), Strive for Perfection (299369 effect#6), Benevolent Faerie (327710 effect#2), Benevolent Faerie Fermata (345453 effect#2), Haunted Mask (356968 effect#2)
+Category         : 1550 (Type 0x0): Strive for Perfection (296320 effect#6), Strive for Perfection (299367 effect#6), Strive for Perfection (299369 effect#6), Benevolent Faerie (327710 effect#2), Haunted Mask (356968 effect#2)
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -7970,7 +7969,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 373
                  : 4638
-Affecting Spells : Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
+Affecting Spells : Steed of Glory (199542 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
 Effects          :
@@ -8009,7 +8008,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 373
                  : 4638
-Affecting Spells : Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
+Affecting Spells : Steed of Glory (199542 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
 Effects          :
@@ -8048,7 +8047,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 373
                  : 4638
-Affecting Spells : Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
+Affecting Spells : Steed of Glory (199542 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
 Effects          :
@@ -8087,7 +8086,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 373
                  : 4638
-Affecting Spells : Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
+Affecting Spells : Steed of Glory (199542 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
 Effects          :
@@ -9300,7 +9299,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 373
                  : 4638
-Affecting Spells : Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
+Affecting Spells : Steed of Glory (199542 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
 Effects          :
@@ -9339,7 +9338,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 373
                  : 4638
-Affecting Spells : Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
+Affecting Spells : Steed of Glory (199542 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
 Effects          :
@@ -10207,7 +10206,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 373
                  : 4638
-Affecting Spells : Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
+Affecting Spells : Steed of Glory (199542 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
 Effects          :
@@ -10235,7 +10234,6 @@ Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage ta
 
 Name             : Divine Toll (desc=Kyrian) (id=304971) [Spell Family (10)] 
 Class            : Paladin
-Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
 Resource         : 15% Base Mana (0) (id=192315)
@@ -10695,7 +10693,6 @@ Description      : When you cast Word of Glory on someone other than yourself, i
 
 Name             : Ashen Hallow (desc=Venthyr) (id=316958) [Spell Family (10)] 
 Class            : Paladin
-Covenant         : Venthyr
 School           : Shadow
 Spell Type       : None
 Resource         : 20% Base Mana (0) (id=215309)
@@ -11292,7 +11289,6 @@ Description      : $@spelldesc328620
 
 Name             : Vanquisher's Hammer (desc=Necrolord) (id=328204) [Spell Family (10)] 
 Class            : Paladin
-Covenant         : Necrolord
 School           : Shadow
 Spell Type       : Magic
 Spell Level      : 48
@@ -11449,7 +11445,6 @@ Movement speed reduced by $w4%.
 
 Name             : Blessing of Summer (desc=Night Fae) (id=328620) [Spell Family (10)] 
 Class            : Paladin
-Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
 Resource         : 5% Base Mana (0) (id=215312)
@@ -11463,7 +11458,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 976: Covenant Spells
-                 : 1079: The Long Summer (340185 effect#1), Equinox (355567 effect#4)
+                 : 1079: Equinox (355567 effect#4)
 Category Cooldown: 45 seconds
 Proc Chance      : 40%
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -12020,61 +12015,6 @@ Effects          :
 Description      : $@spelldesc337850
 Tooltip          : Reign of Ancient Kings has ended and will not activate.
 
-Name             : Divine Call (id=338741) [Spell Family (10), Passive, Hidden] 
-School           : Physical
-Spell Type       : None
-Spell Level      : 60
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Proc Chance      : 101%
-Conduit Id       : 129 (values=48, 46, 44, 42, 40, 38, 36, 34, 32, 30, 28, 26, 24, 22, 20)
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
-Effects          :
-#1 (id=837581)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-#2 (id=837582)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : Divine Shield's remaining cooldown is reduced by $s2 sec when you take damage. This effect can only occur once every |cFFFFFFFF${$s1}.1 sec|r.
-
-Name             : Shielding Words (id=338787) [Spell Family (10), Passive, Hidden] 
-School           : Physical
-Spell Type       : None
-Spell Level      : 60
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Proc Chance      : 101%
-Conduit Id       : 133 (values=15, 16.5, 18, 19.5, 21, 22.5, 24, 25.5, 27, 28.5, 30, 31.5, 33, 34.5, 36)
-Proc Flags       : Generic Heal, Magic Heal
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
-Effects          :
-#1 (id=837642)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-#2 (id=837643)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Casting Word of Glory grants you a shield that prevents damage equal to |cFFFFFFFF${$s1}.1%|r of the healing done by Word of Glory. Lasts $338788d.
-
-Name             : Shielding Words (id=338788) [Spell Family (10)] 
-School           : Holy
-Spell Type       : None
-Spell Level      : 60
-Duration         : 10 seconds
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Attributes       : Can't Crit (93), Ignore Healing Modifiers (219), Aura Points On Client (268), Not In Spellbook Until Learned (269), Ignore Target Absorb Modifiers (371), Always Allow Negative Healing Percent Modifiers (442)
-Effects          :
-#1 (id=837645)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
-                   Affected School(s): All
-Description      : $@spelldesc338787
-Tooltip          : Absorbs $w1 damage.
-
 Name             : Avenging Wrath (id=339044) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
@@ -12101,7 +12041,6 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 999
-Conduit Id       : 141 (values=200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400, 420, 440, 460, 480)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=838188)   : Apply Aura (6) | Dummy (4)
@@ -12134,133 +12073,11 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 999
-Conduit Id       : 142 (values=20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=838200)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : Concentration Aura reduces the duration of incoming Fear effects on your allies by |cFFFFFFFF${$s1}.1%|r.
-
-Name             : Light's Barding (id=339268) [Spell Family (10), Passive, Hidden] 
-School           : Physical
-Spell Type       : None
-Spell Level      : 60
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Conduit Id       : 159 (values=50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120)
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
-Effects          :
-#1 (id=838472)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Divine Steed (190784), Divine Steed (221883), Divine Steed (221885), Divine Steed (221886), Divine Steed (221887), Divine Steed (254471), Divine Steed (254472), Divine Steed (254473), Divine Steed (254474), Divine Steed (276111), Divine Steed (276112), Divine Steed (294133), Divine Steed (363608), Divine Steed (453804)
-                   Family Flags: 36
-Description      : Divine Steed's duration is increased by |cFFFFFFFF${$s1}.1%|r.
-
-Name             : Wrench Evil (id=339292) [Spell Family (10), Passive, Hidden] 
-School           : Physical
-Spell Type       : None
-Spell Level      : 60
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Conduit Id       : 161 (values=-40, -44, -48, -52, -56, -60, -64, -68, -72, -76, -80, -84, -88, -92, -96)
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
-Effects          :
-#1 (id=838501)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Turn Evil (10326)
-                   Family Flags: 96
-#2 (id=838502)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Turn Evil (10326)
-                   Family Flags: 96
-Description      : Turn Evil's cast time is reduced by |cFFFFFFFF${-$s1}.1%|r, and its range is increased by $s2 yds.
-
-Name             : Echoing Blessings (id=339316) [Spell Family (10), Passive, Hidden] 
-School           : Physical
-Spell Type       : None
-Spell Level      : 60
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Conduit Id       : 163 (values=5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12)
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
-Effects          :
-#1 (id=838535)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -15 | Scaled Value: -15 | Misc Value: 10 | Target: Self (1)
-#2 (id=838536)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 8 | Misc Value: 5 | Target: Self (1)
-#3 (id=867795)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 23 | Target: Self (1)
-                   Affected Spells: Blessing of Freedom (1044)
-                   Family Flags: 4
-#4 (id=867796)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: -5 | Scaled Value: -5 | Misc Value: 23 | Target: Self (1)
-                   Affected Spells: Blessing of Protection (1022), Blessing of Spellwarding (204018)
-                   Family Flags: 7
-#5 (id=867797)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: -5 | Scaled Value: -5 | Misc Value: 32 | Target: Self (1)
-                   Affected Spells: Blessing of Sacrifice (6940)
-                   Family Flags: 13
-Description      : Blessing of Freedom increases the target's movement speed by |cFFFFFFFF${$s1}.1%|r. Blessing of Protection and Blessing of Sacrifice reduce the target's damage taken by |cFFFFFFFF${$s1}.1%|r. These effects linger for $339324d after the Blessing ends.
-
-Name             : Echoing Freedom (id=339321) [Spell Family (10)] 
-School           : Holy
-Spell Type       : None
-Spell Level      : 60
-Range            : 100 yards
-Duration         : 8 seconds
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (269)
-Effects          :
-#1 (id=838542)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
-                   Base Value: 15 | Scaled Value: 15 | Target: Targeted Ally (21)
-Description      : $@spelldesc339316
-Tooltip          : Movement speed increased by $w%.
-
-Name             : Echoing Protection (id=339324) [Spell Family (10)] 
-School           : Holy
-Spell Type       : None
-Spell Level      : 60
-Range            : 100 yards
-Duration         : 8 seconds
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Stacks           : 1 maximum
-Proc Chance      : 101%
-Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (269)
-Effects          :
-#1 (id=838547)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -15 | Scaled Value: -15 | Misc Value: 0x7f | Target: Targeted Ally (21)
-                   Affected School(s): All
-Description      : $@spelldesc339316
-Tooltip          : Damage taken reduced by $w%.
-
-Name             : Expurgation (id=339371) [Spell Family (10), Passive, Hidden] 
-School           : Physical
-Spell Type       : None
-Spell Level      : 60
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Proc Chance      : 100%
-Conduit Id       : 164 (values=32, 35.200001, 38.400002, 41.599998, 44.799999, 48, 51.200001, 54.400002, 57.599998, 60.799999, 64, 67.199997, 70.400002, 73.599998, 76.800003)
-Proc Flags       : Yellow Melee
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
-Effects          :
-#1 (id=838610)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Trigger Spell: 344067 | Target: Self (1)
-Description      : Your Blade of Justice critical hits cause the target to burn for |cFFFFFFFF${$s1}.1%|r of the damage dealt every $344067t1 sec for $344067d.
 
 Name             : Truth's Wake (id=339374) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
@@ -12272,7 +12089,6 @@ Labels           : 16: Class Spells
                  : 292
                  : 999
 Proc Chance      : 101%
-Conduit Id       : 167 (values=13, 14.3, 15.6, 16.9, 18.200001, 19.5, 20.799999, 22.1, 23.4, 24.700001, 26, 27.299999, 28.6, 29.9, 31.200001)
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
 Effects          :
@@ -12310,7 +12126,6 @@ Labels           : 16: Class Spells
                  : 292
                  : 999
 Proc Chance      : 101%
-Conduit Id       : 182 (values=8, 8.8, 9.6, 10.4, 11.2, 12, 12.8, 13.6, 14.4, 15.2, 16, 16.799999, 17.6, 18.4, 19.200001)
 Proc Flags       : Yellow Melee, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
 Effects          :
@@ -12319,25 +12134,6 @@ Effects          :
 #2 (id=838859)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : Judgment grants you Virtuous Command for $339664d, which causes your Templar's Verdict, Crusader Strike, Blade of Justice, and auto attacks to deal |cFFFFFFFF${$s1}.1%|r additional Holy damage.
-
-Name             : Templar's Vindication (id=339531) [Spell Family (10), Passive, Hidden] 
-School           : Physical
-Spell Type       : None
-Spell Level      : 60
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Proc Chance      : 101%
-Conduit Id       : 176 (values=30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60, 63, 66, 69, 72)
-Proc Flags       : Yellow Melee
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
-Effects          :
-#1 (id=838875)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-#2 (id=838876)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Description      : Templar's Verdict has a |cFFFFFFFF${$s1}.1%|r chance to strike again for $s2% of its damage.
 
 Name             : Templar's Verdict (id=339538) [Spell Family (10)] 
 Class            : Paladin
@@ -12357,23 +12153,6 @@ Effects          :
 #2 (id=838887)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : A powerful weapon strike that deals $s1 Holy damage.
-
-Name             : Enkindled Spirit (id=339570) [Spell Family (10), Passive, Hidden] 
-School           : Physical
-Spell Type       : None
-Spell Level      : 60
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Proc Chance      : 100%
-Conduit Id       : 177 (values=30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60, 63, 66, 69, 72)
-Proc Flags       : Cast Successful
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
-Effects          :
-#1 (id=838937)   : Apply Aura (6) | Trigger Spell with Value (231)
-                   Base Value: 40 | Scaled Value: 40 | Trigger Spell: 341741 | Target: Self (1)
-Description      : Aura Mastery increases the healing of your next $341741u Light of Dawns by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Virtuous Command (id=339664) [Spell Family (10)] 
 Class            : Paladin
@@ -12411,167 +12190,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc339518
 
-Name             : Resplendent Light (id=339712) [Spell Family (10), Passive, Hidden] 
-School           : Physical
-Spell Type       : None
-Spell Level      : 60
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Proc Chance      : 101%
-Conduit Id       : 184 (values=4, 4.4, 4.8, 5.2, 5.6, 6, 6.4, 6.8, 7.2, 7.6, 8, 8.4, 8.8, 9.2, 9.6)
-Proc Flags       : Magic Heal
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
-Effects          :
-#1 (id=839152)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 11 | Target: Self (1)
-#2 (id=839153)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 11 | Target: Self (1)
-#3 (id=839154)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 11 | Target: Self (1)
-Description      : Holy Light heals up to $s2 targets within $339744a1 yds for |cFFFFFFFF${$s1}.1%|r of its healing.
-
-Name             : Resplendent Light (id=339744) [Spell Family (10)] 
-School           : Holy
-Spell Type       : None
-Spell Level      : 60
-Range            : 100 yards
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Attributes       : Can't Crit (93), Ignore Healing Modifiers (219), Aura Points On Client (268), Not In Spellbook Until Learned (269), Always Allow Negative Healing Percent Modifiers (442)
-Effects          :
-#1 (id=839210)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
-Description      : $@spelldesc339712
-
-Name             : Focused Light (id=339984) [Spell Family (10), Passive, Hidden] 
-School           : Physical
-Spell Type       : None
-Spell Level      : 60
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Conduit Id       : 193 (values=5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12)
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
-Effects          :
-#1 (id=839569)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Holy Shock (20473), Holy Shock (25912), Holy Shock (25914)
-                   Family Flags: 21, 48
-Description      : Holy Shock's critical effect chance is increased by |cFFFFFFFF${$s1}.1%|r.
-
-Name             : Untempered Dedication (id=339987) [Spell Family (10), Passive, Hidden] 
-School           : Physical
-Spell Type       : None
-Spell Level      : 60
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Proc Chance      : 101%
-Conduit Id       : 194 (values=5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12)
-Proc Flags       : Magic Heal
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
-Effects          :
-#1 (id=839576)   : Apply Aura (6) | Proc Trigger Spell (42): Untempered Dedication
-                   Base Value: 15 | Scaled Value: 15 | Trigger Spell: 339990 | Target: Self (1)
-Description      : Light of the Martyr's damage and healing is increased by |cFFFFFFFF${$s1}.1%|r each time it is cast. This effect can stack up to $339990u times and lasts for $339990d.
-
-Name             : Untempered Dedication (id=339990) [Spell Family (10)] 
-School           : Holy
-Spell Type       : Melee
-Spell Level      : 60
-Duration         : 15 seconds
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Stacks           : 5 maximum
-Proc Chance      : 101%
-Triggered By     : Untempered Dedication (339987)
-Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (269)
-Effects          :
-#1 (id=839579)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Light of the Martyr (183998)
-                   Family Flags: 124
-Description      : $@spelldesc339987
-Tooltip          : Light of the Martyr damage and healing increased by $w%.
-
-Name             : Vengeful Shock (id=340006) [Spell Family (10), Passive, Hidden] 
-School           : Physical
-Spell Type       : None
-Spell Level      : 60
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Proc Chance      : 101%
-Conduit Id       : 195 (values=3, 3.3, 3.6, 3.9, 4.2, 4.5, 4.8, 5.1, 5.4, 5.7, 6, 6.3, 6.6, 6.9, 7.2)
-Proc Flags       : Generic Hostile Spell, Magic Hostile Spell
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
-Effects          :
-#1 (id=839599)   : Apply Aura (6) | Proc Trigger Spell (42): Vengeful Shock
-                   Base Value: 15 | Scaled Value: 15 | Trigger Spell: 340007 | Target: Self (1)
-Description      : Avenger's Shield causes your target to take |cFFFFFFFF${$s1}.1%|r increased Holy damage from you for $340007d.
-
-Name             : Vengeful Shock (id=340007) [Spell Family (10)] 
-School           : Holy
-Spell Type       : Magic
-Spell Level      : 60
-Range            : 100 yards
-Duration         : 5 seconds
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Stacks           : 1 maximum
-Proc Chance      : 101%
-Triggered By     : Vengeful Shock (340006)
-Attributes       : Aura Is Debuff (26), DoT Stacking Rule (103), Aura Points On Client (268), Not In Spellbook Until Learned (269)
-Effects          :
-#1 (id=839600)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Misc Value: 0x2 | Target: Targeted Enemy (6)
-                   Affected School(s): Holy
-Description      : $@spelldesc340006
-Tooltip          : Suffering $w1% more Holy damage.
-
-Name             : Punish the Guilty (id=340012) [Spell Family (10), Passive, Hidden] 
-School           : Physical
-Spell Type       : None
-Spell Level      : 60
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Conduit Id       : 196 (values=15, 16.5, 18, 19.5, 21, 22.5, 24, 25.5, 27, 28.5, 30, 31.5, 33, 34.5, 36)
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
-Effects          :
-#1 (id=839606)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 7 | Target: Self (1)
-Description      : Shield of the Righteous deals |cFFFFFFFF$s1%|r more damage to targets affected by Judgment.
-
-Name             : Resolute Defender (id=340023) [Spell Family (10), Passive, Hidden] 
-School           : Physical
-Spell Type       : None
-Spell Level      : 60
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Conduit Id       : 197 (values=1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2, 2.1, 2.2, 2.3, 2.4)
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
-Effects          :
-#1 (id=839622)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-#2 (id=872938)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 7 | Target: Self (1)
-Description      : Shield of the Righteous extends Ardent Defender's duration by $s2% and reduces its cooldown by |cFFFFFFFF${$s1}.1 sec|r.
-
 Name             : Royal Decree (id=340030) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
 School           : Physical
@@ -12581,7 +12199,6 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 999
-Conduit Id       : 209 (values=-15000, -16500, -18000, -19500, -21000, -22500, -24000, -25500, -27000, -28500, -30000, -31500, -33000, -34500, -36000)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=839630)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
@@ -12633,22 +12250,6 @@ Effects          :
 Description      : $@spelldesc340030
 Tooltip          : Word of Glory costs 0 Holy Power.
 
-Name             : The Long Summer (id=340185) [Spell Family (10), Passive, Hidden] 
-School           : Physical
-Spell Type       : None
-Spell Level      : 60
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Conduit Id       : 210 (values=25, 27.5, 30, 32.5, 35, 37.5, 40, 42.5, 45, 47.5, 50, 52.5, 55, 57.5, 60)
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
-Effects          :
-#1 (id=839911)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Duration (1)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 1 | Misc Value 2: 1079 (Label) | Target: Self (1)
-                   Affected Spells (Label): Blessing of Summer (328620)
-Description      : Blessing of Summer lasts |cFFFFFFFF${$s1}.1%|r longer.
-
 Name             : Righteous Might (id=340192) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
 School           : Physical
@@ -12659,7 +12260,6 @@ Labels           : 16: Class Spells
                  : 292
                  : 999
 Proc Chance      : 101%
-Conduit Id       : 213 (values=100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240)
 Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
 Effects          :
@@ -12703,21 +12303,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.55 | Radius: 20 yards | Target: at Enemy in Area (16)
 Description      : $@spelldesc316958
 
-Name             : Hallowed Discernment (id=340212) [Spell Family (10), Passive, Hidden] 
-School           : Physical
-Spell Type       : None
-Spell Level      : 60
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Conduit Id       : 215 (values=40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96)
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
-Effects          :
-#1 (id=839960)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Description      : Ashen Hallow strikes the lowest health ally and enemy within it an additional time for |cFFFFFFFF${$s1}.1%|r of its effect.
-
 Name             : Hallowed Discernment (id=340214) [Spell Family (10)] 
 Class            : Paladin
 School           : Shadow
@@ -12734,23 +12319,6 @@ Effects          :
 #1 (id=839962)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.42 | Radius: 20 yards | Target: At Ally in Area (31)
 Description      : $@spelldesc316958
-
-Name             : Ringing Clarity (id=340218) [Spell Family (10), Passive, Hidden] 
-School           : Physical
-Spell Type       : None
-Spell Level      : 60
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Conduit Id       : 216 (values=40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96)
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
-Effects          :
-#1 (id=839972)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-#2 (id=868309)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Description      : Divine Toll has a |cFFFFFFFF${$s1}.1%|r chance to cast up to $s2 extra $ltime:times; on the main target.
 
 Name             : Maraad's Dying Breath (id=340458) [Spell Family (10), Passive] 
 School           : Holy
@@ -12783,30 +12351,6 @@ Effects          :
                    Family Flags: 124
 Description      : $@spelldesc340458
 Tooltip          : Your next Light of the Martyr also heals your Beacon of Light and its healing is increased by $s1%.
-
-Name             : Enkindled Spirit (id=341741) [Spell Family (10)] 
-School           : Holy
-Spell Type       : None
-Spell Level      : 60
-Duration         : 60 seconds
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-                 : 999
-Internal Cooldown: 0.1 seconds
-Stacks           : 3 maximum
-Proc Chance      : 100%
-Proc Flags       : Cast Successful
-Triggered By     : Enkindled Spirit (339570)
-Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (269)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
-Effects          :
-#1 (id=842335)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-                   Affected Spells: Light of Dawn (85222), Light of Dawn (225311)
-                   Family Flags: 82
-Description      : $@spelldesc339570
-Tooltip          : Your Light of Dawn healing is increased by $w1%.
 
 Name             : Crusader Strike (desc=Rank 2) (id=342348) [Spell Family (10), Passive] 
 Class            : Protection Paladin, Retribution Paladin
@@ -12929,7 +12473,6 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 999
-Triggered By     : Expurgation (339371)
 Attributes       : Do Not Display Range (126), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Not In Spellbook Until Learned (269), Ignore Positive Damage Taken Modifiers (321)
 Effects          :
 #1 (id=868130)   : Apply Aura (6) | Periodic Damage (3): holy every 2 seconds
@@ -13343,7 +12886,7 @@ Cooldown         : 180 seconds
 Labels           : 219
                  : 292
                  : 588
-                 : 1425: Heavy Wingbeats (368838 effect#1), Natural Weapons (387267 effect#2), Walloping Blow (387341 effect#1), Flow State (390148 effect#8), Time Skip (404977 effect#4), Interwoven Threads (412713 effect#4), Temporal Burst (431698 effect#8), Temporal Cycle (1237269 effect#8)
+                 : 1425: Heavy Wingbeats (368838 effect#1), Walloping Blow (387341 effect#1), Flow State (390148 effect#8), Time Skip (404977 effect#4), Interwoven Threads (412713 effect#4), Temporal Burst (431698 effect#8), Temporal Cycle (1237269 effect#8)
 Attributes       : Not Shapeshifted (16), No Reflection (39), Show Mechanic as Combat Text (213), Area Effects Use Target Radius (328), Don't Cancel When All Effects are Disabled (353), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=891606)   : Knock Back (98)
@@ -13446,7 +12989,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 373
                  : 4638
-Affecting Spells : Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
+Affecting Spells : Steed of Glory (199542 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
 Effects          :
@@ -15758,7 +15301,7 @@ School           : Holy
 Spell Type       : None
 Duration         : 16 seconds
 Cooldown         : 120 seconds
-Category         : 1550 (Type 0x0): Strive for Perfection (296320 effect#6), Strive for Perfection (299367 effect#6), Strive for Perfection (299369 effect#6), Benevolent Faerie (327710 effect#2), Benevolent Faerie Fermata (345453 effect#2), Haunted Mask (356968 effect#2)
+Category         : 1550 (Type 0x0): Strive for Perfection (296320 effect#6), Strive for Perfection (299367 effect#6), Strive for Perfection (299369 effect#6), Benevolent Faerie (327710 effect#2), Haunted Mask (356968 effect#2)
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -21740,7 +21283,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 373
                  : 4638
-Affecting Spells : Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
+Affecting Spells : Steed of Glory (199542 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
 Effects          :

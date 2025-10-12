@@ -1556,10 +1556,10 @@ class SpellDataGenerator(DataGenerator):
             ( 195707, 0 ),          # Rage gain from taking hits
             ( 161798, 0 ),          # Riposte passive (turns crit rating into parry)
             ( 279142, 0 ),          # Iron Fortress damage (azerite)
-            ( 409983, 0 ),          # Merciless Assault (T30 Fury 4p)
+            ( 409983, 0 ),          # Merciless Assault (DF2 Fury 4p)
             ( 280776, 0 ),          # Sudden Death (Arms/Prot buff)
             ( 52437,  0 ),          # Sudden Death (Fury buff)
-            ( 425534, 0 ),          # T31 prot Fervid Bite
+            ( 425534, 0 ),          # DF3 prot Fervid Bite
             ( 385228, 0 ),          # Seismic Reverbration Arms WW
             ( 385233, 0 ),          # Seismic Reverbration Fury MH WW
             ( 385234, 0 ),          # Seismic Reverbration Fury OH WW
@@ -1613,10 +1613,10 @@ class SpellDataGenerator(DataGenerator):
             ( 384810, 0 ),          # Seal of Clarity buff
             ( 404140, 0 ),          # Blessed Hammers for Adjudication
             ( 387113, 0 ),          # ES
-            ( 425261, 0 ),          # Cleansing Flame (Damage - Prot T31 4pc)
-            ( 425262, 0 ),          # Cleansing Flame (Healing - Prot T31 4pc)
-            ( 423590, 0 ),          # Echoes of Wrath (Ret T31 4pc buff)
-            ( 423593, 0 ),          # Tempest of the Lightbringer triggered by T31 4pc
+            ( 425261, 0 ),          # Cleansing Flame (Damage - Prot DF3 4pc)
+            ( 425262, 0 ),          # Cleansing Flame (Healing - Prot DF3 4pc)
+            ( 423590, 0 ),          # Echoes of Wrath (Ret DF3 4pc buff)
+            ( 423593, 0 ),          # Tempest of the Lightbringer triggered by DF3 4pc
             # The War Within
             ( 433807 , 0),          # Divine Guidance healing
             ( 433808 , 0),          # Divine Guidance damage
@@ -1676,9 +1676,9 @@ class SpellDataGenerator(DataGenerator):
           ( 339928, 2 ), ( 339929, 2 ), # Brutal Projectiles (Conduit)
           ( 341223, 3 ), # Strength of the Pack (Conduit)
           ( 339061, 0 ), # Empowered Release (Conduit)
-          ( 363760, 1 ), # Killing Frenzy (T28 BM 4pc)
-          ( 363805, 3 ), # Mad Bombardier (T28 SV 4pc)
-          ( 394388, 3 ), # Bestial Barrage (T29 SV 4pc)
+          ( 363760, 1 ), # Killing Frenzy (SL3 BM 4pc)
+          ( 363805, 3 ), # Mad Bombardier (SL3 SV 4pc)
+          ( 394388, 3 ), # Bestial Barrage (DF1 SV 4pc)
           ( 378016, 0 ), # Latent Poison Injectors (talent dd action)
           ( 386875, 2 ), # Bombardment
           ( 164273, 2 ), # Lone Wolf buff
@@ -1754,8 +1754,8 @@ class SpellDataGenerator(DataGenerator):
             ( 345316, 0 ), ( 345390, 0 ), # Flagellation damage spells
             ( 185422, 0 ),          # Shadow Dance buff spell
             ( 350964, 0 ),          # Subtlety-specific Deathly Shadows legendary buff
-            ( 364234, 0 ), ( 364235, 0 ), ( 364556, 0 ), # T28 Outlaw 4pc Spells
-            ( 364668, 0 ),          # T28 Assassination debuff
+            ( 364234, 0 ), ( 364235, 0 ), ( 364556, 0 ), # SL3 Outlaw 4pc Spells
+            ( 364668, 0 ),          # SL3 Assassination debuff
             ( 385897, 0 ),          # Hidden Opportunity Ambush
             ( 386270, 0 ),          # Audacity buff
             ( 395424, 0 ),          # Improved Adrenaline Rush energize
@@ -1769,17 +1769,17 @@ class SpellDataGenerator(DataGenerator):
             ( 394758, 0 ),          # Flagellation talent persist buff
             ( 385948, 0 ), ( 385949, 0 ), ( 385951, 0 ), # Finality talent buffs
             ( 385960, 0 ), ( 386081, 0 ), # Lingering Shadow talent background spells
-            ( 393724, 0 ), ( 393725, 0 ), # T29 Assassination Set Bonus Spells
-            ( 393727, 0 ), ( 393728, 0 ), ( 394879, 0 ), ( 394888, 0 ), # T29 Outlaw Set Bonus Spells
-            ( 393729, 0 ), ( 393730, 0 ), # T29 Subtlety Set Bonus Spells
-            ( 409604, 0 ), ( 409605, 0 ), # T30 Outlaw Set Bonus Spells
-            ( 409483, 0 ),          # T30 Assassination Set Bonus Spells
+            ( 393724, 0 ), ( 393725, 0 ), # DF1 Assassination Set Bonus Spells
+            ( 393727, 0 ), ( 393728, 0 ), ( 394879, 0 ), ( 394888, 0 ), # DF1 Outlaw Set Bonus Spells
+            ( 393729, 0 ), ( 393730, 0 ), # DF1 Subtlety Set Bonus Spells
+            ( 409604, 0 ), ( 409605, 0 ), # DF2 Outlaw Set Bonus Spells
+            ( 409483, 0 ),          # DF2 Assassination Set Bonus Spells
             ( 413890, 0 ),          # Nightstalker background spell
             ( 424081, 0 ), ( 424066, 0 ), ( 424080, 0 ), # Underhanded Upper Hand background spells
             ( 421979, 0 ),          # Caustic Spatter damage spell
             ( 426595, 0 ),          # Shadow Techniques delayed CP energize
             ( 423193, 0 ),          # Exsanguinate residual damage spell
-            ( 424491, 0 ), ( 424492, 0 ), ( 424493, 0 ), # T31 Subtlety clone damage spells
+            ( 424491, 0 ), ( 424492, 0 ), ( 424493, 0 ), # DF3 Subtlety clone damage spells
             ( 429951, 0 ),          # Deft Maneuvers alternative Blade Flurry instant attack spell
             ( 381628, 0 ),          # Dragonflight Internal Bleeding talent spell
 
@@ -1842,7 +1842,7 @@ class SpellDataGenerator(DataGenerator):
             ( 196813, 5 ),          # Blessed Light (Divine Image legendary pet spell)
             ( 196816, 5 ),          # Tranquil Light (Divine Image legendary pet spell)
             ( 325315, 0 ),          # Ascended Blast heal
-            ( 394729, 0 ),          # Prayer Focus T29 2-set
+            ( 394729, 0 ),          # Prayer Focus DF1 2-set
             ( 393682, 0 ),          # Priest Holy Class Set 2-set
             ( 393683, 0 ),          # Priest Holy Class Set 4-set
             ( 394745, 0 ),          # Priest Holy Class Set 4-set buff
@@ -1918,12 +1918,12 @@ class SpellDataGenerator(DataGenerator):
           ( 377656, 0 ), # Heartrend Buff
           ( 377633, 0 ), # Leeching Strike
           ( 377642, 0 ), # Shattering Bone
-          ( 364197, 0 ), ( 366008, 0 ), ( 368938, 0 ), # T28 Endless Rune Waltz Blood Set Bonus
-          ( 363885, 0 ), ( 364173, 0 ), ( 363887, 0 ), ( 367954, 0 ), # T28 Harvest Time Unholy Set Bonus
-          ( 364384, 0 ), # T28 Arctic Assault Frost Set Bonus
-          ( 368690, 0 ), # T28 Remnant's Despair (DK ring) buff
-          ( 408368, 0 ), # T30 Wrath of the Frostwyrm Frost Set buff
-          ( 410790, 0 ), # T30 Wrath of the Frostwyrm FWF triggered from pillar
+          ( 364197, 0 ), ( 366008, 0 ), ( 368938, 0 ), # SL3 Endless Rune Waltz Blood Set Bonus
+          ( 363885, 0 ), ( 364173, 0 ), ( 363887, 0 ), ( 367954, 0 ), # SL3 Harvest Time Unholy Set Bonus
+          ( 364384, 0 ), # SL3 Arctic Assault Frost Set Bonus
+          ( 368690, 0 ), # SL3 Remnant's Despair (DK ring) buff
+          ( 408368, 0 ), # DF2 Wrath of the Frostwyrm Frost Set buff
+          ( 410790, 0 ), # DF2 Wrath of the Frostwyrm FWF triggered from pillar
           ( 196780, 0 ), # Outbreak Intermediate AoE spell
           ( 196782, 0 ), # Outbreak Intermediate AoE spell
           ( 281327, 0 ), # Obliteration Rune Generation Spell
@@ -1936,7 +1936,7 @@ class SpellDataGenerator(DataGenerator):
           ( 326801, 0 ), # Sanguination
           ( 326864, 0 ), # Spellwarding
           ( 326982, 0 ), # Unending Thirst
-          ( 425721, 0 ), # T31 Blood 2pc buff
+          ( 425721, 0 ), # DF3 Blood 2pc buff
           ( 377445, 0 ), # Unholy Aura debuff
           ( 1235391, 0 ), # Dark Transformation player buff
           ( 1250728, 0 ), # Mastery: Dreadblade pet crit buff
@@ -2106,8 +2106,8 @@ class SpellDataGenerator(DataGenerator):
           ( 384859, 0 ), ( 384860, 0 ),             # Orb Barrage
           ( 383783, 0 ),                            # Nether Precision
           ( 383882, 0 ),                            # Sun King's Blessing
-          ( 408763, 0 ),                            # Frost T30 2pc
-          ( 408673, 0 ), ( 408674, 0 ),             # Fire T30 4pc
+          ( 408763, 0 ),                            # Frost DF2 2pc
+          ( 408673, 0 ), ( 408674, 0 ),             # Fire DF2 4pc
           ( 414381, 0 ),                            # Concentrated Power AE
           ( 418735, 0 ),                            # Splintering Ray
           ( 419800, 0 ),                            # Intensifying Flame
@@ -2196,16 +2196,16 @@ class SpellDataGenerator(DataGenerator):
           ( 342997, 2 ),    # Grim Inquisitor's Dread Calling Buff 2
           ( 339986, 3 ),    # Hidden Combusting Engine Debuff
           ( 324540, 0 ),    # Malefic Rapture damage
-          ( 364322, 0 ),    # T28 - Calamitous Crescendo Buff
-          ( 364348, 0 ),    # T28 - Impending Ruin Buff
-          ( 364349, 0 ),    # T28 - Ritual of Ruin Buff
-          ( 364198, 0 ),    # T28 - Malicious Imp-Pact Summon
-          ( 364261, 0 ),    # T28 - Malicious Imp Doombolt
-          ( 364263, 0 ),    # T28 - Return Soul
-          ( 367679, 0 ),    # T28 - Summon Blasphemy
-          ( 367680, 0 ),    # T28 - Blasphemy
-          ( 367819, 0 ),    # T28 - Blasphemous Existence
-          ( 367831, 0 ),    # T28 - Deliberate Corruption
+          ( 364322, 0 ),    # SL3 - Calamitous Crescendo Buff
+          ( 364348, 0 ),    # SL3 - Impending Ruin Buff
+          ( 364349, 0 ),    # SL3 - Ritual of Ruin Buff
+          ( 364198, 0 ),    # SL3 - Malicious Imp-Pact Summon
+          ( 364261, 0 ),    # SL3 - Malicious Imp Doombolt
+          ( 364263, 0 ),    # SL3 - Return Soul
+          ( 367679, 0 ),    # SL3 - Summon Blasphemy
+          ( 367680, 0 ),    # SL3 - Blasphemy
+          ( 367819, 0 ),    # SL3 - Blasphemous Existence
+          ( 367831, 0 ),    # SL3 - Deliberate Corruption
           ( 387079, 0 ),    # Tormented Crescendo buff
           ( 387310, 0 ),    # Haunted Soul buff
           ( 390097, 0 ),    # Darkglare - Grim Reach
@@ -2225,11 +2225,11 @@ class SpellDataGenerator(DataGenerator):
           ( 387413, 0 ),    # Madness Rain of Fire aura
           ( 387414, 0 ),    # Madness Shadowburn aura
           ( 405681, 0 ),    # Immutable Hatred Damage Proc
-          ( 409890, 0 ),    # T30 - Channel Demonfire
+          ( 409890, 0 ),    # DF2 - Channel Demonfire
           ( 417282, 3 ),    # Crashing Chaos Buff 10.1.5
           ( 421970, 0 ),    # Ner'zhul's Volition Buff 10.2
-          ( 423874, 0 ),    # T31 - Flame Rift
-          ( 427285, 0 ),    # T31 - Dimensional Cinder
+          ( 423874, 0 ),    # DF3 - Flame Rift
+          ( 427285, 0 ),    # DF3 - Dimensional Cinder
           ( 438973, 0 ),    # Diabolist - Felseeker
           ( 434404, 0 ),    # Diabolist - Felseeker
           ( 438823, 0 ),    # Diabolic Bolt (pet spell)
@@ -2416,8 +2416,8 @@ class SpellDataGenerator(DataGenerator):
           ( 390195, 1 ), # Chaos Theory talent buff
           ( 390145, 1 ), # Inner Demon talent buff
           ( 391374, 1 ), ( 391378, 1 ), ( 393054, 1 ), ( 393055, 1 ), # First Blood Chaos spells
-          ( 393628, 1 ), ( 393629, 0 ), # T29 Set Bonus Spells
-          ( 408754, 1 ), # T30 4pc Seething Potential damage buff
+          ( 393628, 1 ), ( 393629, 0 ), # DF1 Set Bonus Spells
+          ( 408754, 1 ), # DF2 4pc Seething Potential damage buff
           ( 228532, 1 ), # Consume Lesser Soul heal
           ( 328953, 1 ), # Consume Demon Soul heal
           ( 328951, 1 ), # New Shattered Souls area trigger
@@ -2433,7 +2433,7 @@ class SpellDataGenerator(DataGenerator):
           ( 346504, 2 ), ( 346505, 2 ), # New Sigil of the Illidari Legendary fake Eye Beam spells
           ( 336640, 2 ), # Charred Flesh
           ( 203981, 2 ), # Soul Fragments
-          ( 409877, 2 ), # T30 4pc Recrimination buff
+          ( 409877, 2 ), # DF2 4pc Recrimination buff
           ( 428595, 2 ), # Illuminated Sigils
 
           # Devourer
@@ -2485,7 +2485,7 @@ class SpellDataGenerator(DataGenerator):
           ( 409632, 3 ), # Breath of Eons Damage
           ( 360828, 3 ), # Blistering Scales
           ( 410265, 3 ), # Inferno's Blessing
-          ( 424368, 3 ), # T31 4pc Buff Trembling Earth
+          ( 424368, 3 ), # DF3 4pc Buff Trembling Earth
           ( 409276, 3 ), # Motes of Possibility Buff
           # Flameshaper
           ( 444249, 0 ), # Firebreath copied by Travelling Flame
@@ -3885,121 +3885,50 @@ class SetBonusListGenerator(DataGenerator):
     # ====================================================================
     # NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
     set_bonus_map = [
-        # Legion Dungeon, March of the Legion
         {
-            'name'   : 'march_of_the_legion',
-            'bonuses': [ 1293 ],
-            'tier'   : 'T19_MOTL'
-        },
-        # Legion Dungeon, Journey Through Time
-        {
-            'name'   : 'journey_through_time',
-            'bonuses': [ 1294 ],
-            'tier'   : 'T19_JTT'
-        },
-        # Legion Dungeon, Cloth
-        {
-            'name'   : 'tier19p_cloth',
-            'bonuses': [ 1295 ],
-            'tier'   : 'T19_C'
-        },
-        # Legion Dungeon, Leather
-        {
-            'name'   : 'tier19p_leather',
-            'bonuses': [ 1296 ],
-            'tier'   : 'T19_L'
-        },
-        # Legion Dungeon, Mail
-        {
-            'name'   : 'tier19p_mail',
-            'bonuses': [ 1297 ],
-            'tier'   : 'T19_M'
-        },
-        # Legion Dungeon, Plate
-        {
-            'name'   : 'tier19p_plate',
-            'bonuses': [ 1298 ],
-            'tier'   : 'T19_P'
-        },
-        {
-            'name'   : 'waycrests_legacy',
-            'bonuses': [ 1439 ],
-            'tier'   : 'T21_WL'
-        },
-        {
-            'name'   : 'gift_of_the_loa',
-            'bonuses': [ 1442 ],
-            'tier'   : 'T23_GOTL'
-        },
-        {
-            'name'   : 'keepsakes',
-            'bonuses': [ 1443 ],
-            'tier'   : 'T23_KS'
-        },
-        {
-            'name'   : 'titanic_empowerment',
-            'bonuses': [ 1452 ],
-            'tier'   : 'T24_TE'
-        },
-        {
-            'name'   : 'hack_and_gore',
-            'bonuses': [ 1457 ],
-            'tier'   : 'T26_HG'
-        },
-        {
-            'name'   : 'tier28',
+            'name'   : 'shadowlands_season_3',
             'bonuses': [ 1496, 1497, 1498, 1499, 1500, 1501, 1502, 1503, 1504, 1505, 1506, 1507],
-            'tier'   : 'T28'
+            'tier'   : 'SL3'
         },
         {
-            'name'   : 'ripped_secrets',
-            'bonuses': [ 1508 ],
-            'tier'   : 'T28_RS'
-        },
-        {
-            'name'   : 'tier29',
+            'name'   : 'dragonflight_season_1',
             'bonuses': [ 1526, 1527, 1528, 1529, 1530, 1531, 1532, 1533, 1534, 1535, 1536, 1537, 1538 ],
-            'tier'   : 'T29'
+            'tier'   : 'DF1'
         },
         {
             'name'   : 'playful_spirits_fur',
             'bonuses': [ 1509 ],
-            'tier'   : 'T29_PSF'
+            'tier'   : 'DF_PSF'
         },
         {
             'name'   : 'horizon_striders_garments',
             'bonuses': [ 1510 ],
-            'tier'   : 'T29_HSG'
+            'tier'   : 'DF_HSG'
         },
         {
             'name'   : 'azureweave_vestments',
             'bonuses': [ 1516 ],
-            'tier'   : 'T29_AV'
+            'tier'   : 'DF_AV'
         },
         {
             'name'   : 'woven_chronocloth',
             'bonuses': [ 1515 ],
-            'tier'   : 'T29_WC'
+            'tier'   : 'DF_WC'
         },
         {
             'name'   : 'raging_tempests',
             'bonuses': [ 1521, 1523, 1524, 1525 ],
-            'tier'   : 'T29_RT'
+            'tier'   : 'DF_RT'
         },
         {
-            'name'   : 'tier30',
+            'name'   : 'dragonflight_season_2',
             'bonuses': [ 1540, 1541, 1542, 1543, 1544, 1545, 1546, 1547, 1548, 1549, 1550, 1551, 1552 ],
-            'tier'   : 'T30'
+            'tier'   : 'DF2'
         },
         {
-            'name'   : 'might_of_the_drogbar',
-            'bonuses': [ 1539 ],
-            'tier'   : 'T30_MOTD'
-        },
-        {
-            'name'   : 'tier31',
+            'name'   : 'dragonflight_season_3',
             'bonuses': [ 1557, 1558, 1559, 1560, 1561, 1562, 1563, 1564, 1565, 1566, 1567, 1568, 1569 ],
-            'tier'   : 'T31'
+            'tier'   : 'DF3'
         },
         {
             'name'   : 'dragonflight_season_4',

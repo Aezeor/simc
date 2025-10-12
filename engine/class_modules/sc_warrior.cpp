@@ -1219,7 +1219,7 @@ public:
                             p()->talents.warrior.champions_spear->effectN( 1 ).trigger() );
 
     // Arms
-    // Arms deep wounds spell data contains T30 2pc bonus, which is disabled/enabled via script.  Stored on effect 4 and 5, so we disable them.
+    // Arms deep wounds spell data contains DF2 2pc bonus, which is disabled/enabled via script.  Stored on effect 4 and 5, so we disable them.
     parse_target_effects( d_fn( &warrior_td_t::dots_deep_wounds ),
                           p()->spell.deep_wounds_arms, effect_mask_t( true ).disable( 4, 5 ),
                           p()->mastery.deep_wounds_ARMS );
@@ -8746,13 +8746,13 @@ void warrior_t::init_items()
   switch ( specialization() )
   {
     case WARRIOR_ARMS:
-      tier_to_enable = T29;
+      tier_to_enable = DF1;
       break;
     case WARRIOR_FURY:
-      tier_to_enable = T30;
+      tier_to_enable = DF2;
       break;
     case WARRIOR_PROTECTION:
-      tier_to_enable = T31;
+      tier_to_enable = DF3;
       break;
     default:
       return;

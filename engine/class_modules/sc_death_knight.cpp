@@ -716,7 +716,7 @@ public:
   unsigned int km_proc_attempts;               // critical auto attacks since the last KM proc
   unsigned int festering_wounds_target_count;  // cached value of the current number of enemies affected by FW
   unsigned int
-      bone_shield_charges_consumed;  // Counts how many bone shield charges have been consumed for T29 4pc blood
+      bone_shield_charges_consumed;  // Counts how many bone shield charges have been consumed for DF1 4pc blood
   unsigned int active_riders;        // Number of active Riders of the Apocalypse pets
 
   std::vector<player_t*> undeath_tl;

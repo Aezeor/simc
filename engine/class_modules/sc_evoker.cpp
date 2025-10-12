@@ -2313,11 +2313,11 @@ public:
     {
       parse_effects(
           p()->buff.ebon_might_self_buff, [ this ] { return p()->close_as_clutchmates; },
-          p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ), p()->spec.close_as_clutchmates );
+          p()->sets->set( EVOKER_AUGMENTATION, DF2, B2 ), p()->spec.close_as_clutchmates );
 
       parse_effects(
           p()->buff.ebon_might_self_buff, [ this ] { return !p()->close_as_clutchmates; },
-          p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ) );
+          p()->sets->set( EVOKER_AUGMENTATION, DF2, B2 ) );
     }
 
     if ( p()->talent.chronowarden.temporal_burst.enabled() )
@@ -2498,7 +2498,7 @@ struct essence_base_t : public BASE
     : BASE( n, p, s, o ),
       hoarded_pct( p->talent.hoarded_power->effectN( 1 ).percent() ),
       titanic_mul( p->talent.titanic_wrath->effectN( 1 ).percent() ),
-      obsidian_shards_mul( p->sets->set( EVOKER_DEVASTATION, T30, B2 )->effectN( 1 ).percent() ),
+      obsidian_shards_mul( p->sets->set( EVOKER_DEVASTATION, DF2, B2 )->effectN( 1 ).percent() ),
       enkindle_mul( p->talent.flameshaper.enkindle->effectN( 1 ).percent() ),
       master_of_destiny_duration(
           timespan_t::from_seconds( p->talent.chronowarden.master_of_destiny->effectN( 1 ).base_value() ) ),
@@ -2914,7 +2914,7 @@ struct empowered_release_t : public empowered_base_t<BASE>
     ab::gcd_type = gcd_haste_type::NONE;
 
     extend_tier29_4pc =
-        timespan_t::from_seconds( p->sets->set( EVOKER_DEVASTATION, T29, B4 )->effectN( 1 ).base_value() );
+        timespan_t::from_seconds( p->sets->set( EVOKER_DEVASTATION, DF1, B4 )->effectN( 1 ).base_value() );
   }
 
   empower_e empower_level( const action_state_t* s ) const
@@ -3626,7 +3626,7 @@ struct empowered_release_spell_t : public empowered_release_t<evoker_spell_t>
     else if ( spell_color == SPELL_RED )
       p()->buff.iridescence_red->trigger();
 
-    if ( rng().roll( p()->sets->set( EVOKER_DEVASTATION, T29, B4 )->effectN( 2 ).percent() ) )
+    if ( rng().roll( p()->sets->set( EVOKER_DEVASTATION, DF1, B4 )->effectN( 2 ).percent() ) )
     {
       if ( p()->buffs.bloodlust->check() )
         p()->buffs.bloodlust->extend_duration( p(), extend_tier29_4pc );
@@ -3700,7 +3700,7 @@ public:
     if ( !p->spec.ebon_might )
     {
       p->spec.ebon_might = std::make_unique<modified_spell_data_t>( data() );
-      p->spec.ebon_might->parse_effects( p->sets->set( EVOKER_AUGMENTATION, T30, B4 ) )
+      p->spec.ebon_might->parse_effects( p->sets->set( EVOKER_AUGMENTATION, DF2, B4 ) )
         ->parse_effects( p->spec.close_as_clutchmates, [ p = p ]( const action_t*, const action_state_t* ) {
           return p->close_as_clutchmates;
         } );
@@ -4658,7 +4658,7 @@ struct eruption_t : public essence_spell_t
 
     eruption_4pc_t( evoker_t* p, std::string_view n )
       : evoker_spell_t( n, p, p->find_spell( 424428 ) ),
-        extend_ebon( p->sets->set( EVOKER_AUGMENTATION, T31, B4 )->effectN( 1 ).time_value() * 100 )
+        extend_ebon( p->sets->set( EVOKER_AUGMENTATION, DF3, B4 )->effectN( 1 ).time_value() * 100 )
     {
       aoe              = -1;
       split_aoe_damage = true;
@@ -4754,7 +4754,7 @@ struct eruption_t : public essence_spell_t
     aoe              = -1;
     split_aoe_damage = true;
 
-    if ( p->sets->has_set_bonus( EVOKER_AUGMENTATION, T31, B4 ) )
+    if ( p->sets->has_set_bonus( EVOKER_AUGMENTATION, DF3, B4 ) )
     {
       t31_4pc_eruption = p->get_secondary_action<eruption_4pc_t>( name_str + "_4pc", name_str + "_4pc" );
       add_child( t31_4pc_eruption );
@@ -5926,7 +5926,7 @@ struct obsidian_shards_t : public residual_action::residual_periodic_action_t<ev
 
   obsidian_shards_t( evoker_t* p )
     : residual_action_t( "obsidian_shards", p, p->find_spell( 409776 ) ),
-      blazing_shards_mul( p->sets->set( EVOKER_DEVASTATION, T30, B4 )->effectN( 3 ).percent() )
+      blazing_shards_mul( p->sets->set( EVOKER_DEVASTATION, DF2, B4 )->effectN( 3 ).percent() )
   {
   }
 
@@ -6307,7 +6307,7 @@ struct dragonrage_t : public evoker_spell_t
 
     p()->buff.dragonrage->trigger();
 
-    if ( p()->sets->has_set_bonus( EVOKER_DEVASTATION, T31, B2 ) )
+    if ( p()->sets->has_set_bonus( EVOKER_DEVASTATION, DF3, B2 ) )
     {
       p()->buff.emerald_trance_stacking->trigger();
     }
@@ -6537,13 +6537,13 @@ public:
       }
     }
     
-    if ( p()->sets->has_set_bonus( EVOKER_AUGMENTATION, T31, B2 ) )
+    if ( p()->sets->has_set_bonus( EVOKER_AUGMENTATION, DF3, B2 ) )
     {
       p()->buff.t31_2pc_proc->expire();
       p()->buff.t31_2pc_stacks->trigger();
     }
 
-    if ( p()->sets->has_set_bonus( EVOKER_AUGMENTATION, T31, B4 ) )
+    if ( p()->sets->has_set_bonus( EVOKER_AUGMENTATION, DF3, B4 ) )
     {
       p()->buff.trembling_earth->trigger( as<int>( p()->allies_with_my_prescience.size() ) );
     }
@@ -8857,13 +8857,13 @@ void evoker_t::init_items()
   switch ( specialization() )
   {
     case EVOKER_PRESERVATION:
-      tier_to_enable = T29;
+      tier_to_enable = DF1;
       break;
     case EVOKER_AUGMENTATION:
-      tier_to_enable = T31;
+      tier_to_enable = DF3;
       break;
     case EVOKER_DEVASTATION:
-      tier_to_enable = T30;
+      tier_to_enable = DF2;
       break;
     default:
       return;
@@ -9247,7 +9247,7 @@ void evoker_t::create_actions()
   using namespace spells;
   using namespace heals;
 
-  if ( sets->has_set_bonus( EVOKER_DEVASTATION, T30, B2 ) )
+  if ( sets->has_set_bonus( EVOKER_DEVASTATION, DF2, B2 ) )
     action.obsidian_shards = get_secondary_action<obsidian_shards_t>( "obsidian_shards" );
 
   if ( talent.flameshaper.enkindle.ok() )
@@ -9349,7 +9349,7 @@ void evoker_t::create_buffs()
 
   // Devastation
   buff.blazing_shards =
-      MBF( sets->has_set_bonus( EVOKER_DEVASTATION, T30, B4 ), this, "blazing_shards", find_spell( 409848 ) );
+      MBF( sets->has_set_bonus( EVOKER_DEVASTATION, DF2, B4 ), this, "blazing_shards", find_spell( 409848 ) );
 
   buff.burnout = MBF( talent.burnout.ok(), this, "burnout", find_spell( 375802 ) )
                      ->set_cooldown( talent.burnout->internal_cooldown() )
@@ -9390,7 +9390,7 @@ void evoker_t::create_buffs()
   buff.iridescence_red->set_initial_stack( buff.iridescence_red->max_stack() );
 
   buff.limitless_potential =
-      MBF( sets->has_set_bonus( EVOKER_DEVASTATION, T29, B2 ), this, "limitless_potential", find_spell( 394402 ) )
+      MBF( sets->has_set_bonus( EVOKER_DEVASTATION, DF1, B2 ), this, "limitless_potential", find_spell( 394402 ) )
           ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
           ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 
@@ -9423,11 +9423,11 @@ void evoker_t::create_buffs()
 
 
   buff.emerald_trance_stacking =
-      MBF( sets->has_set_bonus( EVOKER_DEVASTATION, T31, B2 ), this, "emerald_trance_stacking", find_spell( 424155 ) )
+      MBF( sets->has_set_bonus( EVOKER_DEVASTATION, DF3, B2 ), this, "emerald_trance_stacking", find_spell( 424155 ) )
           ->set_duration( 0_s )
           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
-  if ( sets->has_set_bonus( EVOKER_DEVASTATION, T31, B4 ) )
+  if ( sets->has_set_bonus( EVOKER_DEVASTATION, DF3, B4 ) )
   {
     buff.emerald_trance_stacking->set_stack_change_callback( [ this ]( buff_t*, int old, int _new ) {
       if ( _new < old )
@@ -9438,7 +9438,7 @@ void evoker_t::create_buffs()
   }
 
   buff.emerald_trance =
-      MBF( sets->has_set_bonus( EVOKER_DEVASTATION, T31, B4 ), this, "emerald_trance", find_spell( 424402 ) )
+      MBF( sets->has_set_bonus( EVOKER_DEVASTATION, DF3, B4 ), this, "emerald_trance", find_spell( 424402 ) )
           ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
             buff.essence_burst->trigger();
             proc.emerald_trance->occur();
@@ -9466,14 +9466,14 @@ void evoker_t::create_buffs()
           ->set_default_value( 0 )
           ->set_freeze_stacks( true );
 
-  buff.t31_2pc_proc = MBF( sets->has_set_bonus( EVOKER_AUGMENTATION, T31, B2 ), this, "t31_2pc_proc",
-                           sets->set( EVOKER_AUGMENTATION, T31, B2 ) )
+  buff.t31_2pc_proc = MBF( sets->has_set_bonus( EVOKER_AUGMENTATION, DF3, B2 ), this, "t31_2pc_proc",
+                           sets->set( EVOKER_AUGMENTATION, DF3, B2 ) )
                           ->set_can_cancel( false )
                           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
                           ->set_default_value_from_effect( 1, 0.01 )
                           ->set_duration( 0_s );
 
-  buff.t31_2pc_stacks = MBF( sets->has_set_bonus( EVOKER_AUGMENTATION, T31, B2 ), this, "t31_2pc_stacks" )
+  buff.t31_2pc_stacks = MBF( sets->has_set_bonus( EVOKER_AUGMENTATION, DF3, B2 ), this, "t31_2pc_stacks" )
                             ->set_can_cancel( false )
                             ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
                             ->set_duration( 0_s )
@@ -9487,7 +9487,7 @@ void evoker_t::create_buffs()
                             } );
 
   buff.trembling_earth =
-      MBF( sets->has_set_bonus( EVOKER_AUGMENTATION, T31, B4 ), this, "trembling_earth", find_spell( 424368 ) )
+      MBF( sets->has_set_bonus( EVOKER_AUGMENTATION, DF3, B4 ), this, "trembling_earth", find_spell( 424368 ) )
           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
           ->set_cooldown( 0_s );
 

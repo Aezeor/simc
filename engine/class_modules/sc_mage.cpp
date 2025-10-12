@@ -4183,7 +4183,7 @@ struct arcane_surge_t final : public arcane_mage_spell_t
   {
     p()->trigger_splinter( target, as<int>( p()->talents.augury_abounds->effectN( 1 ).base_value() ) );
 
-    // Clear any existing surge buffs to trigger the T30 4pc buff.
+    // Clear any existing surge buffs to trigger the DF2 4pc buff.
     p()->buffs.arcane_surge->expire();
     timespan_t bonus_duration = p()->buffs.spellfire_sphere->check() * p()->buffs.spellfire_sphere->data().effectN( 5 ).time_value();
     timespan_t arcane_surge_duration = p()->buffs.arcane_surge->buff_duration() + bonus_duration;
