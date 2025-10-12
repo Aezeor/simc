@@ -42,6 +42,7 @@ struct player_stat_cache_t
   mutable std::array<bool, CACHE_MAX> valid;
   mutable std::array<bool, SCHOOL_MAX + 1> spell_power_valid, player_mult_valid, player_heal_mult_valid;
   mutable std::array<bool, static_cast<unsigned>( attack_power_type::NONE )> weapon_attack_power_valid;
+  mutable std::array<bool, 2> pet_damage_multiplier_valid;  // 0 = pet, 1 = guardian
   // 'valid'-states
 private:
   // cached values
@@ -62,6 +63,7 @@ private:
   mutable double _leech, _run_speed, _avoidance;
   mutable double _rppm_haste_coeff, _rppm_crit_coeff;
   mutable double _corruption, _corruption_resistance;
+  mutable std::array<double, 2> _pet_damage_multiplier;
 public:
   bool active; // runtime active-flag
   void invalidate_all();
@@ -107,6 +109,7 @@ public:
   double avoidance() const;
   double corruption() const;
   double corruption_resistance() const;
+  double pet_damage_multiplier( const action_state_t*, bool ) const;
   double rppm_haste_coeff() const;
   double rppm_crit_coeff() const;
 #else
@@ -145,5 +148,8 @@ public:
   double avoidance() const { return _player->composite_avoidance(); }
   double corruption() const { return _player->composite_corruption(); }
   double corruption_resistance() const { return _player->composite_corruption_resistance(); }
+  double player_multiplier( school_e s ) const { return _player->composite_player_multiplier( s ); }
+  double player_heal_multiplier( const action_state_t* s ) const { return _player->composite_player_heal_multiplier( s ); }
+  double pet_damage_multiplier( const action_state_t* s, bool guardian ) const { return _player->composite_pet_damage_multiplier( s, guardian ); }
 #endif
 };

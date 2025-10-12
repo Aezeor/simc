@@ -19,6 +19,7 @@ void player_stat_cache_t::invalidate_all()
   range::fill( player_mult_valid, false );
   range::fill( player_heal_mult_valid, false );
   range::fill( weapon_attack_power_valid, false );
+  range::fill( pet_damage_multiplier_valid, false );
 }
 
 /**
@@ -42,6 +43,14 @@ void player_stat_cache_t::invalidate( cache_e c )
 
     case CACHE_PLAYER_HEAL_MULTIPLIER:
       range::fill( player_heal_mult_valid, false );
+      break;
+
+    case CACHE_PET_DAMAGE_MULTIPLIER:
+      pet_damage_multiplier_valid[ 0 ] = false;
+      break;
+
+    case CACHE_GUARDIAN_DAMAGE_MULTIPLIER:
+      pet_damage_multiplier_valid[ 1 ] = false;
       break;
 
     default:
@@ -565,6 +574,19 @@ double player_stat_cache_t::player_heal_multiplier( const action_state_t* s ) co
   return _player_heal_mult[ sch ];
 }
 
+double player_stat_cache_t::pet_damage_multiplier( const action_state_t* s, bool guardian ) const
+{
+  unsigned idx = guardian ? 1 : 0;
+  if ( !active || !pet_damage_multiplier_valid[ idx ] )
+  {
+    pet_damage_multiplier_valid[ idx ] = true;
+    _pet_damage_multiplier[ idx ]      = player->composite_player_pet_damage_multiplier( s, guardian );
+  }
+  else
+    assert( _pet_damage_multiplier[ idx ] == player->composite_player_pet_damage_multiplier( s, guardian ) );
+  return _pet_damage_multiplier[ idx ];
+}
+
 #else
   // Passthrough cache stat functions for inactive cache
 double player_stat_cache_t::strength() const { return _player->strength(); }
@@ -601,4 +623,7 @@ double player_stat_cache_t::run_speed() const { return _player->composite_run_sp
 double player_stat_cache_t::avoidance() const { return _player->composite_avoidance(); }
 double player_stat_cache_t::corruption() const { return _player->composite_corruption(); }
 double player_stat_cache_t::corruption_resistance() const { return _player->composite_corruption_resistance(); }
+double player_stat_cache_t::player_multiplier( school_e s ) const { return _player->composite_player_multiplier( s ); }
+double player_stat_cache_t::player_heal_multiplier( const action_state_t* s ) const { return _player->composite_player_heal_multiplier( s ); }
+double player_stat_cache_t::pet_damage_multiplier( const action_state_t* s, bool guardian ) const { return _player->composite_pet_damage_multiplier( s, guardian ); }
 #endif
