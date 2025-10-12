@@ -616,7 +616,7 @@ public:
       player_talent_t path_to_oblivion;  // No Implementation
       player_talent_t state_of_matter;   // No Implementation
       player_talent_t mass_acceleration;
-      player_talent_t doomsayer;  // NYI
+      player_talent_t doomsayer;
       player_talent_t celestial_echoes;
 
       player_talent_t final_hour;
@@ -624,7 +624,7 @@ public:
       player_talent_t dark_matter;
       player_talent_t otherworldly_focus;
 
-      player_talent_t world_killer;  // NYI
+      player_talent_t world_killer;
     } annihilator;
 
     struct felscarred_talents_t
@@ -832,7 +832,7 @@ public:
     double wounded_quarry_proc_rate;
 
     // Annihilator
-    const spell_data_t* voidfall_meteor_damage;
+    const spell_data_t* voidfall_meteor;
     const spell_data_t* voidfall_building_buff;
     const spell_data_t* voidfall_spending_buff;
     const spell_data_t* voidfall_final_hour_buff;
@@ -842,6 +842,7 @@ public:
     const spell_data_t* meteor_shower_damage;
     const spell_data_t* doomsayer_in_combat_buff;
     const spell_data_t* doomsayer_out_of_combat_buff;
+    const spell_data_t* world_killer;
 
     // Fel-scarred
     const spell_data_t* burning_blades_debuff;
@@ -1062,6 +1063,7 @@ public:
     spell_t* voidfall_meteor = nullptr;
     spell_t* catastrophe     = nullptr;
     spell_t* meteor_shower   = nullptr;
+    spell_t* world_killer    = nullptr;
 
     // Fel-scarred
     action_t* burning_blades = nullptr;
@@ -2702,11 +2704,20 @@ struct voidfall_spending_trigger_t : public BASE
     if ( !BASE::p()->buff.voidfall_spending->up() )
       return;
 
+    int stacks = BASE::p()->buff.voidfall_spending->stack();
+
     BASE::p()->sim->print_debug( "{} triggering Voidfall spending", BASE::p()->name() );
 
     BASE::p()->buff.voidfall_spending->decrement();
 
-    BASE::p()->active.voidfall_meteor->execute_on_target( BASE::target );
+    if ( stacks != 1 )
+    {
+      BASE::p()->active.voidfall_meteor->execute_on_target( BASE::target );
+    }
+    else
+    {
+      BASE::p()->active.world_killer->execute_on_target( BASE::target );
+    }
   }
 };
 
@@ -2734,11 +2745,21 @@ struct meteoric_fall_trigger_t : public BASE
     BASE::p()->sim->print_debug( "{} triggering Meteoric Fall", BASE::p()->name() );
 
     int stacks = BASE::p()->buff.voidfall_spending->stack();
+    if ( BASE::p()->talent.annihilator.world_killer->ok() )
+    {
+      stacks -= 1;
+    }
+
     BASE::p()->buff.voidfall_spending->expire();
 
     for ( int i = 0; i < stacks; ++i )
     {
       BASE::p()->active.voidfall_meteor->execute_on_target( BASE::target );
+    }
+
+    if ( BASE::p()->talent.annihilator.world_killer->ok() )
+    {
+      BASE::p()->active.world_killer->execute_on_target( BASE::target );
     }
   }
 };
@@ -5764,29 +5785,74 @@ struct collapsing_star_t : public demon_hunter_spell_t
   }
 };
 
-struct voidfall_meteor_t : public catastrophe_trigger_t<demon_hunter_spell_t>
+struct voidfall_meteor_base_t : public demon_hunter_spell_t
 {
-  voidfall_meteor_t( util::string_view n, demon_hunter_t* p ) : base_t( n, p, p->hero_spec.voidfall_meteor_damage )
+  struct voidfall_meteor_damage_t : public catastrophe_trigger_t<demon_hunter_spell_t>
+  {
+    voidfall_meteor_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : base_t( n, p, s )
+    {
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = demon_hunter_spell_t::composite_da_multiplier( s );
+
+      if ( p()->talent.annihilator.otherworldly_focus->ok() )
+      {
+        // 1 target is always effect 1 %
+        // 2 target is effect 1 % - effect 2 %
+        // 3 target is effect 1 % - (effect 2 % * 2)
+        // etc until reaching 0 benefit
+        auto num_target_reduction_percent =
+            p()->talent.annihilator.otherworldly_focus->effectN( 2 ).percent() * ( s->n_targets - 1 );
+        m *= 1.0 + std::max( 0.0, p()->talent.annihilator.otherworldly_focus->effectN( 1 ).percent() -
+                                      num_target_reduction_percent );
+      }
+
+      return m;
+    }
+  };
+
+  voidfall_meteor_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s )
+    : demon_hunter_spell_t( n, p, s )
+  {
+    execute_action = p->get_background_action<voidfall_meteor_damage_t>( fmt::format( "{}_damage", name() ),
+                                                                         s->effectN( 2 ).trigger() );
+    execute_action->stats = stats;
+  }
+};
+
+struct voidfall_meteor_t : public voidfall_meteor_base_t
+{
+  voidfall_meteor_t( util::string_view n, demon_hunter_t* p )
+    : voidfall_meteor_base_t( n, p, p->hero_spec.voidfall_meteor )
+  {
+  }
+};
+
+struct world_killer_t : public voidfall_meteor_base_t
+{
+  world_killer_t( util::string_view n, demon_hunter_t* p ) : voidfall_meteor_base_t( n, p, p->hero_spec.world_killer )
   {
   }
 
-  double composite_da_multiplier( const action_state_t* s ) const override
+  void execute() override
   {
-    double m = demon_hunter_spell_t::composite_da_multiplier( s );
+    voidfall_meteor_base_t::execute();
 
-    if ( p()->talent.annihilator.otherworldly_focus->ok() )
+    switch ( p()->specialization() )
     {
-      // 1 target is always effect 1 %
-      // 2 target is effect 1 % - effect 2 %
-      // 3 target is effect 1 % - (effect 2 % * 2)
-      // etc until reaching 0 benefit
-      auto num_target_reduction_percent =
-          p()->talent.annihilator.otherworldly_focus->effectN( 2 ).percent() * ( s->n_targets - 1 );
-      m *= 1.0 + std::max( 0.0, p()->talent.annihilator.otherworldly_focus->effectN( 1 ).percent() -
-                                    num_target_reduction_percent );
+      case DEMON_HUNTER_DEVOURER:
+        p()->spawn_soul_fragment( soul_fragment::LESSER,
+                                  as<int>( p()->talent.annihilator.world_killer->effectN( 4 ).base_value() ) );
+        break;
+      case DEMON_HUNTER_VENGEANCE:
+        p()->cooldown.metamorphosis->adjust(
+            -timespan_t::from_seconds( as<int>( p()->talent.annihilator.world_killer->effectN( 3 ).base_value() ) ) );
+        break;
+      default:
+        break;
     }
-
-    return m;
   }
 };
 
@@ -5808,8 +5874,7 @@ struct meteor_shower_t : public demon_hunter_spell_t
 {
   struct meteor_shower_damage_t : public catastrophe_trigger_t<demon_hunter_spell_t>
   {
-    meteor_shower_damage_t( util::string_view n, demon_hunter_t* p )
-      : base_t( n, p, p->hero_spec.meteor_shower_damage )
+    meteor_shower_damage_t( util::string_view n, demon_hunter_t* p ) : base_t( n, p, p->hero_spec.meteor_shower_damage )
     {
     }
   };
@@ -10019,7 +10084,6 @@ void demon_hunter_t::init_spells()
       break;
   }
 
-  hero_spec.voidfall_meteor_damage       = talent_spell_lookup( talent.annihilator.voidfall, 1256305 );
   hero_spec.voidfall_building_buff       = talent_spell_lookup( talent.annihilator.voidfall, 1256301 );
   hero_spec.voidfall_spending_buff       = talent_spell_lookup( talent.annihilator.voidfall, 1256302 );
   hero_spec.voidfall_final_hour_buff     = talent_spell_lookup( talent.annihilator.final_hour, 1256322 );
@@ -10029,14 +10093,18 @@ void demon_hunter_t::init_spells()
   switch ( specialization() )
   {
     case DEMON_HUNTER_DEVOURER:
+      hero_spec.voidfall_meteor      = talent_spell_lookup( talent.annihilator.voidfall, 1256304 );
       hero_spec.catastrophe_dot      = talent_spell_lookup( talent.annihilator.catastrophe, 1256676 );
       hero_spec.meteor_shower_driver = talent_spell_lookup( talent.annihilator.dark_matter, 1264126 );
       hero_spec.meteor_shower_damage = hero_spec.meteor_shower_driver->effectN( 2 ).trigger();
+      hero_spec.world_killer         = talent_spell_lookup( talent.annihilator.dark_matter, 1256618 );
       break;
     case DEMON_HUNTER_VENGEANCE:
+      hero_spec.voidfall_meteor      = talent_spell_lookup( talent.annihilator.voidfall, 1256303 );
       hero_spec.catastrophe_dot      = talent_spell_lookup( talent.annihilator.catastrophe, 1256667 );
       hero_spec.meteor_shower_driver = talent_spell_lookup( talent.annihilator.dark_matter, 1264128 );
       hero_spec.meteor_shower_damage = hero_spec.meteor_shower_driver->effectN( 2 ).trigger();
+      hero_spec.world_killer         = talent_spell_lookup( talent.annihilator.dark_matter, 1256616 );
       break;
     default:
       hero_spec.catastrophe_dot = spell_data_t::not_found();
@@ -10258,6 +10326,10 @@ void demon_hunter_t::init_spells()
   if ( talent.annihilator.dark_matter->ok() )
   {
     active.meteor_shower = get_background_action<meteor_shower_t>( "meteor_shower" );
+  }
+  if ( talent.annihilator.world_killer->ok() )
+  {
+    active.world_killer = get_background_action<world_killer_t>( "world_killer" );
   }
 
   if ( talent.felscarred.burning_blades->ok() )
