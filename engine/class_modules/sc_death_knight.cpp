@@ -7404,6 +7404,12 @@ struct dark_transformation_t : public death_knight_spell_t
       p->pets.dt_magus.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
       summon_magus = get_action<summon_magus_t>( "dt_magus", p, magus_of_the_dead::MAGUS_DARK_TRANSFORMATION );
     }
+
+    if ( p->talent.sanlayn.the_blood_is_life.ok() )
+    {
+      p->pets.blood_beast.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+      add_child( p->background_actions.the_blood_is_life );
+    }
   }
 
   void execute() override
@@ -7517,6 +7523,7 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
       p->pets.abomination.set_creation_event_callback( pets::parent_pet_action_fn( summon_abomination ) );
       abomination_duration = p->spell.summon_abomination->duration();
       add_child( summon_abomination );
+      summon_abomination->add_child( p->background_actions.disease_cloud );
     }
     if ( p->talent.unholy.summon_gargoyle.ok() )
     {
@@ -8418,9 +8425,6 @@ struct death_coil_t final : public death_coil_base_t
 
     if ( p->talent.unholy.doomed_bidding.ok() )
       p->pets.lesser_ghoul_db_coil.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
-
-    if ( p->talent.unholy.reanimation.ok() )
-      p->pets.reanimation_magus.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
   }
 };
 
@@ -10406,6 +10410,8 @@ struct putrefy_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     add_child( p->background_actions.putrefy );
+    if ( p->talent.unholy.reanimation.ok() )
+      p->pets.reanimation_magus.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
   }
 
   void execute() override
@@ -10796,15 +10802,6 @@ struct vampiric_strike_unholy_t : public scourge_strike_base_t
   {
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
     energize_amount         = std::fabs( data().powerN( 3 ).cost() );
-
-    if ( p->talent.sanlayn.infliction_of_sorrow.ok() )
-      add_child( p->background_actions.infliction_of_sorrow );
-
-    if ( p->talent.sanlayn.the_blood_is_life.ok() )
-    {
-      p->pets.blood_beast.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
-      add_child( p->background_actions.the_blood_is_life );
-    }
   }
 };
 
@@ -10822,6 +10819,9 @@ struct scourge_strike_t final : public scourge_strike_base_t
 
     add_child( p->background_actions.virulent_plague_erupt );
     add_child( p->background_actions.dread_plague_erupt );
+
+    if ( p->talent.sanlayn.infliction_of_sorrow.ok() )
+      add_child( p->background_actions.infliction_of_sorrow );
   }
 };
 
