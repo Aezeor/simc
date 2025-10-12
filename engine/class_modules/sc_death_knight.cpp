@@ -3249,6 +3249,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       : buff_t( p, n, s )
     {
       set_duration( s->duration() + 1_s );
+      set_quiet( true );
     }
 
     lesser_ghoul_pet_t* pet() const
@@ -7512,15 +7513,17 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
     }
     if ( p->talent.unholy.raise_abomination.ok() )
     {
-      p->pets.abomination.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
       summon_abomination = get_action<summon_abomination_t>( "raise_abomination", p );
+      p->pets.abomination.set_creation_event_callback( pets::parent_pet_action_fn( summon_abomination ) );
       abomination_duration = p->spell.summon_abomination->duration();
+      add_child( summon_abomination );
     }
     if ( p->talent.unholy.summon_gargoyle.ok() )
     {
-      p->pets.gargoyle.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
       summon_gargoyle = get_action<summon_gargoyle_t>( "summon_gargoyle", p );
+      p->pets.gargoyle.set_creation_event_callback( pets::parent_pet_action_fn( summon_gargoyle ) );
       gargoyle_duration = p->spell.summon_gargoyle->duration();
+      add_child( summon_gargoyle );
     }
   }
 
@@ -8351,9 +8354,9 @@ struct necrotic_coil_shadow_t final : public death_coil_damage_base_t
   }
 };
 
-struct necrotic_coil_physical_t final : public death_knight_spell_t
+struct necrotic_coil_shadowstrike_t final : public death_knight_spell_t
 {
-  necrotic_coil_physical_t( std::string_view name, death_knight_t* p )
+  necrotic_coil_shadowstrike_t( std::string_view name, death_knight_t* p )
     : death_knight_spell_t( name, p, p->spell.necrotic_coil_physical )
   {
     background = true;
@@ -8390,7 +8393,7 @@ struct necrotic_coil_t final : public death_coil_base_t
   necrotic_coil_t( std::string_view n, death_knight_t* p )
     : death_coil_base_t( n, p, p->spell.necrotic_coil_action )
   {
-    execute_action = get_action<necrotic_coil_physical_t>( "necrotic_coil_physical", p );
+    execute_action = get_action<necrotic_coil_shadowstrike_t>( "necrotic_coil_shadowstrike", p );
     background = true;
     add_child( execute_action );
     add_child( execute_action->execute_action );
@@ -10269,6 +10272,9 @@ struct outbreak_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     aoe = 0;
+
+    add_child( p->background_actions.virulent_plague );
+    add_child( p->background_actions.dread_plague );
   }
 
   void execute() override
@@ -10399,6 +10405,7 @@ struct putrefy_t final : public death_knight_spell_t
     : death_knight_spell_t( "putrefy", p, p->talent.unholy.putrefy )
   {
     parse_options( options_str );
+    add_child( p->background_actions.putrefy );
   }
 
   void execute() override
