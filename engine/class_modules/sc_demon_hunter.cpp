@@ -6525,7 +6525,7 @@ struct chaos_strike_base_t
         p()->buff.warblades_hunger->expire();
       }
 
-      if ( result_is_hit( s->result ) && td( s->target )->debuffs.essence_break->up() )
+      if ( !may_refund && result_is_hit( s->result ) && td( s->target )->debuffs.essence_break->up() )
       {
         p()->active.essence_break_proc->execute_on_target( target );
       }
