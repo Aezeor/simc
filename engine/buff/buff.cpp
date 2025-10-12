@@ -1864,7 +1864,7 @@ bool buff_t::trigger( int stacks, double value, double chance, timespan_t durati
     if ( !delay.empty() )
     {
       auto it = range::find_if( delay, [ duration ]( const event_t* e ) {
-        return static_cast<const buff_delay_t*>( e )->duration == duration;
+        return debug_cast<const buff_delay_t*>( e )->duration == duration;
       } );
 
       if ( it != delay.end() )
@@ -2660,6 +2660,7 @@ void buff_t::cancel()
   {
     event_t::cancel( e );
   }
+  delay.clear();
 }
 
 void buff_t::predict()
@@ -2711,6 +2712,7 @@ void buff_t::reset()
   {
     event_t::cancel( e );
   }
+  delay.clear();
   event_t::cancel( expiration_delay );
   event_t::cancel( tick_event );
   cooldown->reset( false );
