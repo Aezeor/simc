@@ -787,7 +787,6 @@ public:
     const spell_data_t* fiery_brand_debuff;
     const spell_data_t* frailty_debuff;
     const spell_data_t* riposte;
-    const spell_data_t* soul_cleave_2;
     const spell_data_t* thick_skin;
     const spell_data_t* demon_spikes_buff;
     const spell_data_t* painbringer_buff;
@@ -2045,7 +2044,8 @@ public:
     {
       ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::frailty ), p()->spec.frailty_debuff,
                                 effect_mask_t( false ).enable( 4, 5 ),
-                                p()->talent.vengeance.vulnerability->effectN( 1 ).percent() );
+                                p()->talent.vengeance.vulnerability->effectN( 1 ).percent() +
+                                    p()->talent.vengeance.soulcrush->effectN( 4 ).percent() );
     }
 
     // Vengeance Demon Hunter's DF S2 tier set spell data is baked into Fiery Brand's spell data at effect #4.
@@ -3213,6 +3213,7 @@ struct soul_cleave_heal_t : public demon_hunter_heal_t
   soul_cleave_heal_t( util::string_view name, demon_hunter_t* p ) : demon_hunter_heal_t( name, p, p->spec.soul_cleave )
   {
     background = dual = true;
+    target            = p;
 
     // Clear out the costs since this is just a copy of the damage spell
     base_costs.fill( 0 );
@@ -3229,10 +3230,11 @@ struct soul_cleave_heal_t : public demon_hunter_heal_t
 
 struct frailty_heal_t : public demon_hunter_heal_t
 {
-  frailty_heal_t( demon_hunter_t* p ) : demon_hunter_heal_t( "frailty_heal", p, p->spec.frailty_heal )
+  frailty_heal_t( util::string_view n, demon_hunter_t* p ) : demon_hunter_heal_t( n, p, p->spec.frailty_heal )
   {
     background = true;
     may_crit   = false;
+    target     = p;
   }
 };
 
@@ -3953,11 +3955,6 @@ struct sigil_of_flame_base_t : public demon_hunter_spell_t
       energize_type     = action_energize::ON_CAST;
       energize_resource = RESOURCE_FURY;
       energize_amount   = p->spell.sigil_of_flame_fury->effectN( 1 ).resource();
-    }
-
-    if ( !p->active.frailty_heal )
-    {
-      p->active.frailty_heal = new heals::frailty_heal_t( p );
     }
 
     // Add damage modifiers in sigil_of_flame_damage_base_t, not here.
@@ -4811,7 +4808,8 @@ struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
     {
       base_t::impact( s );
 
-      if ( result_is_hit( s->result ) )
+      // Spirit Bomb can apply Frailty if Frailty is talented
+      if ( result_is_hit( s->result ) && p()->talent.vengeance.frailty->ok() )
       {
         td( s->target )->debuffs.frailty->trigger();
       }
@@ -4848,11 +4846,6 @@ struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
 
     damage        = p->get_background_action<spirit_bomb_damage_t>( "spirit_bomb_damage" );
     damage->stats = stats;
-
-    if ( !p->active.frailty_heal )
-    {
-      p->active.frailty_heal = new heals::frailty_heal_t( p );
-    }
   }
 
   void execute() override
@@ -7148,27 +7141,24 @@ struct soul_cleave_t : public voidfall_spending_trigger_t<
     }
   };
 
+  const spell_data_t* damage_spell;
+  soul_cleave_damage_t* damage;
   heals::soul_cleave_heal_t* heal;
+  unsigned max_fragments_consumed;
 
   soul_cleave_t( demon_hunter_t* p, util::string_view options_str = {} )
-    : base_t( "soul_cleave", p, p->spec.soul_cleave, options_str ), heal( nullptr )
+    : base_t( "soul_cleave", p, p->spec.soul_cleave, options_str ),
+      damage_spell( data().effectN( 2 ).trigger() ),
+      max_fragments_consumed( static_cast<unsigned>( data().effectN( 3 ).base_value() ) )
   {
     may_miss = may_dodge = may_parry = may_block = false;
     attack_power_mod.direct = 0;  // This parent action deals no damage, parsed data is for the heal
 
-    execute_action =
-        p->get_background_action<soul_cleave_damage_t>( "soul_cleave_damage", data().effectN( 2 ).trigger() );
-    add_child( execute_action );
+    damage = p->get_background_action<soul_cleave_damage_t>( "soul_cleave_damage", damage_spell );
+    add_child( damage );
 
-    if ( p->spec.soul_cleave_2->ok() )
-    {
-      heal = p->get_background_action<heals::soul_cleave_heal_t>( "soul_cleave_heal" );
-    }
+    heal = p->get_background_action<heals::soul_cleave_heal_t>( "soul_cleave_heal" );
 
-    if ( p->talent.vengeance.void_reaver->ok() && !p->active.frailty_heal )
-    {
-      p->active.frailty_heal = new heals::frailty_heal_t( p );
-    }
     // Add damage modifiers in soul_cleave_damage_t, not here.
   }
 
@@ -7176,22 +7166,17 @@ struct soul_cleave_t : public voidfall_spending_trigger_t<
   {
     base_t::execute();
 
-    if ( heal )
-    {
-      heal->set_target( player );
-      heal->execute();
-    }
-
-    // Soul Cleave applies a stack of Frailty to the primary target if Soulcrush is talented,
-    // doesn't need to hit.
-    if ( p()->talent.vengeance.soulcrush->ok() )
-    {
-      td( target )->debuffs.frailty->trigger(
-          timespan_t::from_seconds( p()->talent.vengeance.soulcrush->effectN( 2 ).base_value() ) );
-    }
+    heal->execute_on_target( player );
 
     // Soul fragments consumed are capped for Soul Cleave
-    p()->consume_soul_fragments( soul_fragment::ANY, true, static_cast<unsigned>( data().effectN( 3 ).base_value() ) );
+    const int fragments_consumed = p()->consume_soul_fragments( soul_fragment::ANY, true, max_fragments_consumed );
+    damage->set_target( target );
+    action_state_t* damage_state = damage->get_state();
+    damage_state->target         = target;
+    damage->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
+    damage_state->da_multiplier *= 1.0 + ( damage_spell->effectN( 3 ).percent() * fragments_consumed );
+    damage->schedule_execute( damage_state );
+    damage->execute_event->reschedule( timespan_t::from_millis( data().effectN( 2 ).misc_value1() ) );
   }
 };
 
@@ -9546,7 +9531,6 @@ void demon_hunter_t::init_spells()
   spec.infernal_strike = find_specialization_spell( "Infernal Strike" );
   spec.soul_cleave     = find_specialization_spell( "Soul Cleave" );
   spec.fracture        = find_spell( 263642, DEMON_HUNTER_VENGEANCE );
-  spec.soul_cleave_2   = find_rank_spell( "Soul Cleave", "Rank 2" );
   spec.riposte         = find_specialization_spell( "Riposte" );
 
   // Masteries ==============================================================
@@ -10175,6 +10159,10 @@ void demon_hunter_t::init_spells()
   if ( talent.vengeance.retaliation->ok() )
   {
     active.retaliation = get_background_action<retaliation_t>( "retaliation" );
+  }
+  if ( talent.vengeance.frailty->ok() )
+  {
+    active.frailty_heal = get_background_action<frailty_heal_t>( "frailty" );
   }
 
   if ( talent.aldrachi_reaver.fury_of_the_aldrachi->ok() )
