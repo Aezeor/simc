@@ -8944,7 +8944,6 @@ void demon_hunter_t::create_buffs()
   buff.painbringer = make_buff( this, "painbringer", spec.painbringer_buff )
                          ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
                          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                         ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                          ->disable_ticking( true );
 
   buff.soul_barrier = make_buff<absorb_buff_t>( this, "soul_barrier", talent.vengeance.soul_barrier );
@@ -10969,7 +10968,7 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
       s->result_amount *= 1.0 + spec.demonic_wards->effectN( 1 ).percent() +
                           spec.demonic_wards_2->effectN( 1 ).percent() + spec.demonic_wards_3->effectN( 1 ).percent();
 
-      s->result_amount *= 1.0 + buff.painbringer->check_stack_value();
+      s->result_amount *= 1.0 + buff.painbringer->check_value();
 
       s->result_amount *= 1.0 + buff.demon_spikes->check() * spec.demon_spikes_buff->effectN( 3 ).percent();
 
