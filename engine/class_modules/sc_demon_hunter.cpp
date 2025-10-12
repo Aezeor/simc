@@ -1134,8 +1134,6 @@ public:
   double composite_armor() const override;
   double composite_base_armor_multiplier() const override;
   double composite_armor_multiplier() const override;
-  double composite_melee_haste() const override;
-  double composite_spell_haste() const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_player_critical_damage_multiplier( const action_state_t*, school_e ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
@@ -7966,12 +7964,12 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
         disable_ticking( true );
         break;
       case DEMON_HUNTER_HAVOC:
-        set_default_value_from_effect_type( A_HASTE_ALL );
+        demon_hunter_buff_t::set_default_value_from_effect_type( A_HASTE_ALL );
         add_invalidate( CACHE_HASTE );
         add_invalidate( CACHE_LEECH );
         break;
       case DEMON_HUNTER_VENGEANCE:
-        set_default_value_from_effect_type( A_INCREASE_HEALTH_PCT );
+        demon_hunter_buff_t::set_default_value_from_effect_type( A_INCREASE_HEALTH_PCT );
         add_invalidate( CACHE_ARMOR );
         break;
       default:
@@ -10456,34 +10454,6 @@ double demon_hunter_t::composite_armor_multiplier() const
   return am;
 }
 
-// demon_hunter_t::composite_melee_haste  ===================================
-
-double demon_hunter_t::composite_melee_haste() const
-{
-  double mh = base_t::composite_melee_haste();
-
-  if ( specialization() == DEMON_HUNTER_HAVOC )
-  {
-    mh /= 1.0 + buff.metamorphosis->check_value();
-  }
-
-  return mh;
-}
-
-// demon_hunter_t::composite_spell_haste ====================================
-
-double demon_hunter_t::composite_spell_haste() const
-{
-  double sh = base_t::composite_spell_haste();
-
-  if ( specialization() == DEMON_HUNTER_HAVOC )
-  {
-    sh /= 1.0 + buff.metamorphosis->check_value();
-  }
-
-  return sh;
-}
-
 // demon_hunter_t::composite_player_multiplier ==============================
 
 double demon_hunter_t::composite_player_multiplier( school_e school ) const
@@ -11281,6 +11251,7 @@ void demon_hunter_t::parse_player_effects()
   // Havoc
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
+    parse_effects( buff.metamorphosis );
     parse_effects( buff.blur );
   }
 
