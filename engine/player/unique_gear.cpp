@@ -3637,7 +3637,7 @@ void generic::enable_all_item_effects( special_effect_t& effect )
 
       for ( auto id : midnight::__mid_special_effect_ids )
       {
-        if ( auto eff = find_special_effect( player, id ) )
+        if ( auto eff = find_special_effect( player, id, SPECIAL_EFFECT_USE ) )
         {
           if ( eff->custom_buff )
             buff_effects.push_back( eff );

@@ -132,17 +132,17 @@ void arcanoweave_lining( special_effect_t& effect )
 // 1230366 buff
 void sunfire_silk_lining( special_effect_t& effect )
 {
+  auto stat_amount = effect.driver()->effectN( 1 ).average( effect );
+
   if ( auto buff = buff_t::find( effect.player, "radiant_acumen" ) )
   {
     // add stat from 2nd copy of embellishment
-    debug_cast<stat_buff_t*>( buff )
-      ->add_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
-
+    debug_cast<stat_buff_t*>( buff )->add_stat_from_effect_type( A_MOD_STAT, stat_amount );
     return;
   }
 
   auto acumen = make_buff<stat_buff_t>( effect.player, "radiant_acumen", effect.trigger()->effectN( 1 ).trigger() )
-    ->add_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
+    ->add_stat_from_effect_type( A_MOD_STAT, stat_amount );
 
   effect.custom_buff = acumen;
   effect.spell_id = effect.trigger()->id();
@@ -158,7 +158,8 @@ void sunfire_silk_lining( special_effect_t& effect )
 // 1259230 buff
 void devouring_banding( special_effect_t& effect )
 {
-  effect.player->sim->error( PLACEHOLDER, "devouring banding damage using driver() value instead of trigger() value" );
+  effect.player->sim->error( PLACEHOLDER,
+    "devouring banding damage using effect driver value instead of rppm driver value" );
   effect.player->sim->error( PLACEHOLDER, "devouring banding buff not doubled with two copies" );
 
   auto proc_damage = effect.driver()->effectN( 1 ).average( effect );
@@ -227,9 +228,29 @@ void devouring_banding( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 1244243 driver
+// 1259060 coeff (real driver?)
+// 1259061 buff
 void blessed_pango_charm( special_effect_t& effect )
 {
+  effect.player->sim->error( PLACEHOLDER,
+    "blessed pango charm buff using coeff spell value instead of effect driver value" );
 
+  auto stat_amount = effect.player->find_spell( 1259060 )->effectN( 1 ).average( effect );
+
+  if ( auto buff = buff_t::find( effect.player, "favored_by_kulzi" ) )
+  {
+    // add stat from 2nd copy of embellishment
+    debug_cast<stat_buff_t*>( buff )->add_stat_from_effect_type( A_MOD_RATING, stat_amount );
+    return;
+  }
+
+  auto favored = make_buff<stat_buff_t>( effect.player, "favored_by_kulzi", effect.trigger() )
+    ->add_stat_from_effect_type( A_MOD_RATING, stat_amount );
+
+  effect.custom_buff = favored;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void primal_spore_binding( special_effect_t& effect )
