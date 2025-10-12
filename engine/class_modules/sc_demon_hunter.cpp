@@ -746,6 +746,7 @@ public:
     const spell_data_t* chaos_strike_fury;
     const spell_data_t* chaos_strike_refund;
     const spell_data_t* chaos_theory_buff;
+    const spell_data_t* demon_blades;
     const spell_data_t* demon_blades_damage;
     const spell_data_t* essence_break_debuff;
     const spell_data_t* eye_beam_damage;
@@ -5892,26 +5893,6 @@ struct auto_attack_damage_t : public burning_blades_trigger_t<demon_hunter_attac
     }
   }
 
-  void trigger_demon_blades( action_state_t* s )
-  {
-    if ( !result_is_hit( s->result ) )
-      return;
-
-    // TODO: Use the correct Demonblades value
-    if ( !rng().roll( 0 ) )
-      return;
-
-    p()->active.demon_blades->set_target( s->target );
-    p()->active.demon_blades->execute();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    base_t::impact( s );
-
-    trigger_demon_blades( s );
-  }
-
   void schedule_execute( action_state_t* s ) override
   {
     demon_hunter_attack_t::schedule_execute( s );
@@ -9217,6 +9198,18 @@ void demon_hunter_t::init_special_effects()
 
     new demon_hunter_proc_callback_t( *effect );
   }
+
+  // Havoc
+  if ( specialization() == DEMON_HUNTER_HAVOC )
+  {
+    auto effect      = new special_effect_t( this );
+    effect->name_str = "demon_blades";
+    effect->spell_id = spec.demon_blades->id();
+    effect->execute_action = active.demon_blades;
+    special_effects.push_back( effect );
+
+    new demon_hunter_proc_callback_t( *effect );
+  }
 }
 
 // demon_hunter_t::init_rng =================================================
@@ -9699,7 +9692,8 @@ void demon_hunter_t::init_spells()
 
   spec.burning_wound_debuff             = talent.havoc.burning_wound->effectN( 1 ).trigger();
   spec.chaos_theory_buff                = talent_spell_lookup( talent.havoc.chaos_theory, 390195 );
-  spec.demon_blades_damage              = find_spell( 203796 );
+  spec.demon_blades                     = find_spell( 203555, DEMON_HUNTER_HAVOC );
+  spec.demon_blades_damage              = spec.demon_blades->effectN( 1 ).trigger();
   spec.essence_break_debuff             = talent_spell_lookup( talent.havoc.essence_break, 320338 );
   spec.eye_beam_damage                  = talent_spell_lookup( talent.havoc.eye_beam, 198030 );
   spec.furious_gaze_buff                = talent_spell_lookup( talent.havoc.furious_gaze, 343312 );
