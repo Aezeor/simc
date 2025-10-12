@@ -505,7 +505,6 @@ public:
       player_talent_t chaos_theory;
       player_talent_t inner_demon;
       player_talent_t the_hunt;
-
       player_talent_t relentless_onslaught;
       player_talent_t soulscar;
       player_talent_t ragefire;
@@ -743,7 +742,6 @@ public:
     const spell_data_t* blur;
     const spell_data_t* chaos_strike;
     const spell_data_t* death_sweep;
-    const spell_data_t* demons_bite;
     const spell_data_t* fel_rush;
     const spell_data_t* fel_eruption;
     const spell_data_t* demonic_appetite;
@@ -968,7 +966,6 @@ public:
 
     // Havoc
     proc_t* demonic_appetite;
-    proc_t* demons_bite_in_meta;
     proc_t* chaos_strike_in_essence_break;
     proc_t* annihilation_in_essence_break;
     proc_t* blade_dance_in_essence_break;
@@ -9241,7 +9238,6 @@ void demon_hunter_t::init_procs()
 
   // Havoc
   proc.demonic_appetite                = get_proc( "demonic_appetite" );
-  proc.demons_bite_in_meta             = get_proc( "demons_bite_in_meta" );
   proc.chaos_strike_in_essence_break   = get_proc( "chaos_strike_in_essence_break" );
   proc.annihilation_in_essence_break   = get_proc( "annihilation_in_essence_break" );
   proc.blade_dance_in_essence_break    = get_proc( "blade_dance_in_essence_break" );
@@ -9470,7 +9466,6 @@ void demon_hunter_t::init_spells()
   spec.chaos_strike_fury   = find_spell( 193840, DEMON_HUNTER_HAVOC );
   spec.chaos_strike_refund = find_spell( 197125, DEMON_HUNTER_HAVOC );
   spec.death_sweep         = find_spell( 210152, DEMON_HUNTER_HAVOC );
-  spec.demons_bite         = find_spell( 162243, DEMON_HUNTER_HAVOC );
   spec.fel_rush            = find_specialization_spell( "Fel Rush" );
   spec.fel_rush_damage     = find_spell( 192611, DEMON_HUNTER_HAVOC );
   spec.immolation_aura_3   = find_rank_spell( "Immolation Aura", "Rank 3" );
