@@ -686,7 +686,8 @@ void create_all_stat_buffs( const special_effect_t& effect, const spell_data_t* 
       ->add_stat( stats.front(), amount ? amount : eff.average( effect ) )
       ->set_name_reporting( util::string_join( stat_strs ) );
 
-    add_fn( stats.front(), buff );
+    if ( add_fn )
+      add_fn( stats.front(), buff );
 
     if ( add_to_list && !range::contains( effect.buff_list, buff ) )
       effect.buff_list.push_back( buff );

@@ -127,9 +127,27 @@ void arcanoweave_lining( special_effect_t& effect )
   }
 }
 
+// 1241711 driver
+// 1230364 rppm driver
+// 1230366 buff
 void sunfire_silk_lining( special_effect_t& effect )
 {
+  if ( auto buff = buff_t::find( effect.player, "radiant_acumen" ) )
+  {
+    // add stat from 2nd copy of embellishment
+    debug_cast<stat_buff_t*>( buff )
+      ->add_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
 
+    return;
+  }
+
+  auto acumen = make_buff<stat_buff_t>( effect.player, "radiant_acumen", effect.trigger()->effectN( 1 ).trigger() )
+    ->add_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
+
+  effect.custom_buff = acumen;
+  effect.spell_id = effect.trigger()->id();
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void devouring_banding( special_effect_t& effect )
