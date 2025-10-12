@@ -7085,8 +7085,8 @@ struct fel_rush_t : public inertia_trigger_t<demon_hunter_attack_t>
 
 // Fracture =================================================================
 
-struct fracture_t : public felblade_trigger_t<
-                        art_of_the_glaive_trigger_t<art_of_the_glaive_ability::RENDING_STRIKE, demon_hunter_attack_t>>
+struct fracture_t : public voidfall_building_trigger_t<felblade_trigger_t<
+                        art_of_the_glaive_trigger_t<art_of_the_glaive_ability::RENDING_STRIKE, demon_hunter_attack_t>>>
 {
   struct fracture_damage_t : public demon_hunter_attack_t
   {
