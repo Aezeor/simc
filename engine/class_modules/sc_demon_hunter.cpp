@@ -335,6 +335,8 @@ public:
     buff_t* voidfall_spending;
     buff_t* voidfall_final_hour;
     buff_t* dark_matter;
+    buff_t* doomsayer_in_combat;
+    buff_t* doomsayer_out_of_combat;
 
     // Fel-scarred
     buff_t* monster_rising;
@@ -838,6 +840,8 @@ public:
     const spell_data_t* dark_matter_buff;
     const spell_data_t* meteor_shower_driver;
     const spell_data_t* meteor_shower_damage;
+    const spell_data_t* doomsayer_in_combat_buff;
+    const spell_data_t* doomsayer_out_of_combat_buff;
 
     // Fel-scarred
     const spell_data_t* burning_blades_debuff;
@@ -2877,6 +2881,39 @@ struct hungering_slash_trigger_t : BASE
   }
 };
 
+template <typename BASE>
+struct doomsayer_trigger_t : public BASE
+{
+  using base_t = doomsayer_trigger_t<BASE>;
+
+  doomsayer_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                       util::string_view o = {} )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    if ( !BASE::p()->talent.annihilator.doomsayer->ok() )
+      return;
+
+    if ( !( BASE::p()->buff.doomsayer_in_combat->up() || BASE::p()->buff.doomsayer_out_of_combat->up() ) )
+      return;
+
+    BASE::p()->sim->print_debug( "{} triggering Doomsayer", BASE::p()->name() );
+
+    int meteors_to_trigger = as<int>( BASE::p()->talent.annihilator.doomsayer->effectN( 1 ).base_value() );
+    BASE::p()->buff.doomsayer_in_combat->expire();
+
+    for ( int i = 0; i < meteors_to_trigger; ++i )
+    {
+      BASE::p()->active.voidfall_meteor->execute_on_target( BASE::target );
+    }
+  }
+};
+
 struct demon_hunter_heal_t : public demon_hunter_action_t<heal_t>
 {
   demon_hunter_heal_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
@@ -4092,38 +4129,22 @@ struct collective_anguish_t : public demon_hunter_spell_t
 
 // Infernal Strike ==========================================================
 
-struct infernal_strike_t : public demon_hunter_spell_t
+struct infernal_strike_t : public doomsayer_trigger_t<demon_hunter_spell_t>
 {
   struct infernal_strike_impact_t : public demon_hunter_spell_t
   {
-    sigil_of_flame_damage_t* felfire_fist;
-
     infernal_strike_impact_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->spec.infernal_strike_impact ), felfire_fist( nullptr )
+      : demon_hunter_spell_t( name, p, p->spec.infernal_strike_impact )
     {
       background = dual = true;
       aoe               = -1;
-
-      if ( p->talent.vengeance.felfire_fist->ok() )
-      {
-        felfire_fist = p->get_background_action<sigil_of_flame_damage_t>( "sigil_of_flame_damage_felfire_fist" );
-        add_child( felfire_fist );
-      }
-    }
-
-    void execute() override
-    {
-      demon_hunter_spell_t::execute();
-
-      if ( felfire_fist && ( p()->buff.felfire_fist_in_combat->up() || p()->buff.felfire_fist_out_of_combat->up() ) )
-      {
-        felfire_fist->place_sigil( target );
-      }
     }
   };
 
+  sigil_of_flame_damage_t* felfire_fist;
+
   infernal_strike_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "infernal_strike", p, p->spec.infernal_strike, options_str )
+    : base_t( "infernal_strike", p, p->spec.infernal_strike, options_str ), felfire_fist( nullptr )
   {
     may_miss                = false;
     base_teleport_distance  = data().max_range();
@@ -4132,12 +4153,28 @@ struct infernal_strike_t : public demon_hunter_spell_t
 
     impact_action = p->get_background_action<infernal_strike_impact_t>( "infernal_strike_impact" );
     add_child( impact_action );
+
+    if ( p->talent.vengeance.felfire_fist->ok() )
+    {
+      felfire_fist = p->get_background_action<sigil_of_flame_damage_t>( "sigil_of_flame_damage_felfire_fist" );
+      add_child( felfire_fist );
+    }
   }
 
   // leap travel time, independent of distance
   timespan_t travel_time() const override
   {
     return 1_s;
+  }
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+
+    if ( felfire_fist && ( p()->buff.felfire_fist_in_combat->up() || p()->buff.felfire_fist_out_of_combat->up() ) )
+    {
+      felfire_fist->place_sigil( target );
+    }
   }
 };
 
@@ -8691,6 +8728,22 @@ void demon_hunter_t::activate()
       }
     } );
   }
+
+  if ( talent.annihilator.doomsayer->ok() )
+  {
+    register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
+      if ( c )
+      {
+        buff.doomsayer_out_of_combat->expire();
+        buff.doomsayer_in_combat->trigger();
+      }
+      else
+      {
+        buff.doomsayer_in_combat->expire();
+        buff.doomsayer_out_of_combat->trigger();
+      }
+    } );
+  }
 }
 
 // demon_hunter_t::create_buffs =============================================
@@ -8903,7 +8956,13 @@ void demon_hunter_t::create_buffs()
                                  ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                  ->disable_ticking( true );
-  buff.dark_matter = make_buff( this, "dark_matter", hero_spec.dark_matter_buff );
+  buff.dark_matter         = make_buff( this, "dark_matter", hero_spec.dark_matter_buff );
+  buff.doomsayer_in_combat = make_buff( this, "doomsayer_in_combat", hero_spec.doomsayer_in_combat_buff )
+                                 ->set_quiet( true )
+                                 ->set_allow_precombat( true );
+  buff.doomsayer_out_of_combat = make_buff( this, "doomsayer_out_of_combat", hero_spec.doomsayer_out_of_combat_buff )
+                                     ->set_quiet( true )
+                                     ->set_allow_precombat( true );
 
   // Fel-scarred ============================================================
 
@@ -9112,36 +9171,61 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
 
     return std::make_unique<soul_fragments_expr_t>( this, name_str, type, filter );
   }
-  else if ( name_str == "cooldown.bd_ds_shared.remains" )
+
+  if ( name_str == "cooldown.bd_ds_shared.remains" )
   {
     return this->cooldown.blade_dance->create_expression( "remains" );
   }
-  else if ( util::str_compare_ci( name_str, "void_metamorphosis_base_drain_ps" ) )
+
+  if ( util::str_compare_ci( name_str, "void_metamorphosis_base_drain_ps" ) )
   {
     return make_fn_expr( name_str, [ this ]() {
       return devourer_fury_state.base_fury_drain_per_second( devourer_fury_state.drain_stacks );
     } );
   }
-  else if ( util::str_compare_ci( name_str, "void_metamorphosis_drain_ps" ) )
+
+  if ( util::str_compare_ci( name_str, "void_metamorphosis_drain_ps" ) )
   {
     return make_fn_expr( name_str, [ this ]() {
       return devourer_fury_state.fury_drain_per_second( devourer_fury_state.drain_stacks );
     } );
   }
-  else if ( splits.size() >= 3 && util::str_compare_ci( splits[ 0 ], "buff" ) &&
-            util::str_compare_ci( splits[ 1 ], "felfire_fist" ) )
+
+  if ( splits.size() == 3 )
   {
-    if ( util::str_compare_ci( splits[ 2 ], "up" ) )
+    if ( util::str_compare_ci( splits[ 0 ], "buff" ) )
     {
-      return make_fn_expr( name_str, [ this ]() {
-        return buff.felfire_fist_in_combat->check() || buff.felfire_fist_out_of_combat->check();
-      } );
-    }
-    if ( util::str_compare_ci( splits[ 2 ], "down" ) )
-    {
-      return make_fn_expr( name_str, [ this ]() {
-        return !( buff.felfire_fist_in_combat->check() || buff.felfire_fist_out_of_combat->check() );
-      } );
+      if ( util::str_compare_ci( splits[ 1 ], "felfire_fist" ) )
+      {
+        if ( util::str_compare_ci( splits[ 2 ], "up" ) )
+        {
+          return make_fn_expr( name_str, [ this ]() {
+            return buff.felfire_fist_in_combat->check() || buff.felfire_fist_out_of_combat->check();
+          } );
+        }
+        if ( util::str_compare_ci( splits[ 2 ], "down" ) )
+        {
+          return make_fn_expr( name_str, [ this ]() {
+            return !( buff.felfire_fist_in_combat->check() || buff.felfire_fist_out_of_combat->check() );
+          } );
+        }
+      }
+
+      if ( util::str_compare_ci( splits[ 1 ], "doomsayer" ) )
+      {
+        if ( util::str_compare_ci( splits[ 2 ], "up" ) )
+        {
+          return make_fn_expr( name_str, [ this ]() {
+            return buff.doomsayer_in_combat->check() || buff.doomsayer_out_of_combat->check();
+          } );
+        }
+        if ( util::str_compare_ci( splits[ 2 ], "down" ) )
+        {
+          return make_fn_expr( name_str, [ this ]() {
+            return !( buff.doomsayer_in_combat->check() || buff.doomsayer_out_of_combat->check() );
+          } );
+        }
+      }
     }
   }
 
@@ -9935,11 +10019,13 @@ void demon_hunter_t::init_spells()
       break;
   }
 
-  hero_spec.voidfall_meteor_damage   = talent_spell_lookup( talent.annihilator.voidfall, 1256305 );
-  hero_spec.voidfall_building_buff   = talent_spell_lookup( talent.annihilator.voidfall, 1256301 );
-  hero_spec.voidfall_spending_buff   = talent_spell_lookup( talent.annihilator.voidfall, 1256302 );
-  hero_spec.voidfall_final_hour_buff = talent_spell_lookup( talent.annihilator.final_hour, 1256322 );
-  hero_spec.dark_matter_buff         = talent_spell_lookup( talent.annihilator.dark_matter, 1256308 );
+  hero_spec.voidfall_meteor_damage       = talent_spell_lookup( talent.annihilator.voidfall, 1256305 );
+  hero_spec.voidfall_building_buff       = talent_spell_lookup( talent.annihilator.voidfall, 1256301 );
+  hero_spec.voidfall_spending_buff       = talent_spell_lookup( talent.annihilator.voidfall, 1256302 );
+  hero_spec.voidfall_final_hour_buff     = talent_spell_lookup( talent.annihilator.final_hour, 1256322 );
+  hero_spec.dark_matter_buff             = talent_spell_lookup( talent.annihilator.dark_matter, 1256308 );
+  hero_spec.doomsayer_in_combat_buff     = talent_spell_lookup( talent.annihilator.doomsayer, 1265768 );
+  hero_spec.doomsayer_out_of_combat_buff = talent_spell_lookup( talent.annihilator.doomsayer, 1264087 );
   switch ( specialization() )
   {
     case DEMON_HUNTER_DEVOURER:
