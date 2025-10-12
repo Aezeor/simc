@@ -5241,14 +5241,10 @@ struct void_buildup_t : public demon_hunter_spell_t
   }
 };
 
-struct soul_immolation_t : public demon_hunter_spell_t
+struct soul_immolation_base_t : public demon_hunter_spell_t
 {
-  soul_immolation_t( util::string_view n, demon_hunter_t* p, bool spontaneous = false, util::string_view o = "" )
-    : demon_hunter_spell_t( n, p,
-                            spontaneous                                      ? p->talent.devourer.soul_immolation
-                            : p->talent.devourer.spontaneous_immolation.ok() ? spell_data_t::not_found()
-                                                                             : p->talent.devourer.soul_immolation,
-                            o )
+  soul_immolation_base_t( util::string_view n, demon_hunter_t* p, util::string_view o )
+    : demon_hunter_spell_t( n, p, p->talent.devourer.soul_immolation, o )
   {
     // self damage doesn't count as DPS
     stats->type = stats_e::STATS_NEUTRAL;
@@ -5278,6 +5274,31 @@ struct soul_immolation_t : public demon_hunter_spell_t
     {
       p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
     }
+  }
+};
+
+struct soul_immolation_t : public soul_immolation_base_t
+{
+  soul_immolation_t( demon_hunter_t* p, util::string_view o ) : soul_immolation_base_t( "soul_immolation", p, o )
+  {
+  }
+
+  bool action_ready() override
+  {
+    if ( p()->talent.devourer.spontaneous_immolation->ok() )
+    {
+      return false;
+    }
+
+    return soul_immolation_base_t::action_ready();
+  }
+};
+
+struct spontaneous_immolation_t : public soul_immolation_base_t
+{
+  spontaneous_immolation_t( util::string_view n, demon_hunter_t* p ) : soul_immolation_base_t( n, p, "" )
+  {
+    cooldown->duration = 0_s;
   }
 };
 
@@ -8496,7 +8517,7 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
   if ( name == "voidblade" )
     return new voidblade_t( this, options_str );
   if ( name == "soul_immolation" )
-    return new soul_immolation_t( "soul_immolation", this, false, options_str );
+    return new soul_immolation_t( this, options_str );
   if ( name == "eradicate" )
     return new eradicate_t( this, options_str );
   if ( name == "cull" )
@@ -9202,9 +9223,9 @@ void demon_hunter_t::init_special_effects()
   // Havoc
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
-    auto effect      = new special_effect_t( this );
-    effect->name_str = "demon_blades";
-    effect->spell_id = spec.demon_blades->id();
+    auto effect            = new special_effect_t( this );
+    effect->name_str       = "demon_blades";
+    effect->spell_id       = spec.demon_blades->id();
     effect->execute_action = active.demon_blades;
     special_effects.push_back( effect );
 
@@ -9923,8 +9944,7 @@ void demon_hunter_t::init_spells()
 
   if ( talent.devourer.spontaneous_immolation->ok() )
   {
-    active.spontaneous_immolation = get_background_action<soul_immolation_t>( "soul_immolation_spontaneous", true );
-    active.spontaneous_immolation->cooldown->duration = 0_s;
+    active.spontaneous_immolation = get_background_action<spontaneous_immolation_t>( "soul_immolation_spontaneous" );
   }
 
   if ( specialization() == DEMON_HUNTER_DEVOURER )
