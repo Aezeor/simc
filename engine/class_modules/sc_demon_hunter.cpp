@@ -664,8 +664,6 @@ public:
     const spell_data_t* leather_specialization;
 
     // Background Spells
-    const spell_data_t* collective_anguish;
-    const spell_data_t* collective_anguish_damage;
     const spell_data_t* demon_soul;
     const spell_data_t* demon_soul_empowered;
     const spell_data_t* felblade_damage;
@@ -774,6 +772,8 @@ public:
     const spell_data_t* unbound_chaos_buff;
     const spell_data_t* cycle_of_hatred_buff;
     const spell_data_t* furious_throws_damage;
+    const spell_data_t* collective_anguish;
+    const spell_data_t* collective_anguish_damage;
 
     // Vengeance
     const spell_data_t* vengeance_demon_hunter;
@@ -4067,16 +4067,15 @@ struct collective_anguish_t : public demon_hunter_spell_t
   struct collective_anguish_tick_t : public demon_hunter_spell_t
   {
     collective_anguish_tick_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->spell.collective_anguish_damage )
+      : demon_hunter_spell_t( name, p, p->spec.collective_anguish_damage )
     {
-      // TOCHECK: Currently does not use split damage on beta but probably will at some point
       dual = true;
       aoe  = -1;
     }
   };
 
   collective_anguish_t( util::string_view name, demon_hunter_t* p )
-    : demon_hunter_spell_t( name, p, p->spell.collective_anguish )
+    : demon_hunter_spell_t( name, p, p->spec.collective_anguish )
   {
     may_miss = channeled = false;
     dual                 = true;
@@ -7461,7 +7460,8 @@ struct vengeful_retreat_t
 {
   struct voidstep_damage_t : public demon_hunter_spell_t
   {
-    voidstep_damage_t( util::string_view n, demon_hunter_t* p ) : demon_hunter_spell_t( n, p, p->spec.voidstep->effectN( 1 ).trigger() )
+    voidstep_damage_t( util::string_view n, demon_hunter_t* p )
+      : demon_hunter_spell_t( n, p, p->spec.voidstep->effectN( 1 ).trigger() )
     {
     }
 
@@ -9839,6 +9839,8 @@ void demon_hunter_t::init_spells()
   spec.unbound_chaos_buff               = talent_spell_lookup( talent.havoc.unbound_chaos, 347462 );
   spec.cycle_of_hatred_buff             = talent_spell_lookup( talent.havoc.cycle_of_hatred, 1214887 );
   spec.furious_throws_damage            = talent_spell_lookup( talent.havoc.furious_throws, 393035 );
+  spec.collective_anguish               = talent_spell_lookup( talent.havoc.collective_anguish, 393831 );
+  spec.collective_anguish_damage        = spec.collective_anguish->effectN( 1 ).trigger();
 
   spec.demon_spikes_buff        = find_spell( 203819 );
   spec.fiery_brand_debuff       = talent_spell_lookup( talent.vengeance.fiery_brand, 207771 );
@@ -10002,17 +10004,6 @@ void demon_hunter_t::init_spells()
   spec.sigil_of_misery        = talent.demon_hunter.sigil_of_misery;
   spec.sigil_of_silence       = talent.vengeance.sigil_of_silence;
   spec.sigil_of_chains        = talent.vengeance.sigil_of_chains;
-
-  if ( talent.havoc.collective_anguish->ok() )
-  {
-    spell.collective_anguish        = find_spell( 393831 );
-    spell.collective_anguish_damage = spell.collective_anguish->effectN( 1 ).trigger();
-  }
-  else
-  {
-    spell.collective_anguish        = spell_data_t::not_found();
-    spell.collective_anguish_damage = spell_data_t::not_found();
-  }
 
   // Set Bonus Items ========================================================
 
