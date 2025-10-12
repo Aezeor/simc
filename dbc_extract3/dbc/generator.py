@@ -1529,6 +1529,8 @@ class SpellDataGenerator(DataGenerator):
          1235633, # Soulbinder's Embrace
          1246637, 1246649, 1246851, # Chaotic Nethergate
          1242344, # Attuned to the Aether
+         # Midnight 12.X.X
+         1229746, # Arcanoweave embellishment buff
         ),
 
         # Warrior:

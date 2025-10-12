@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.0.63728
-static constexpr std::array<spelltext_data_t, 28218> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28219> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -25638,6 +25638,7 @@ static constexpr std::array<spelltext_data_t, 28218> __spelltext_data { {
   { 1229467, "$@spelldesc1229217", "$pri increased by $w1%.", 0 },
   { 1229511, "Increases $pri by $s0 whenever a party member comes within 10 yards.", 0, 0 },
   { 1229709, "$@spelldesc57330", 0, 0 },
+  { 1229746, "Increases your $pri by $1229511s0 while within 10 yards of a party member.", "$pri increased by $w1.", 0 },
   { 1230148, "While the Aegis is equipped, all party members deal $s6% increased damage and healing. Every $1230151t sec during combat, you and Brann heal for $s2% of the damage you've taken during that time.\r\n\r\nWhen a player dies, the Aegis grants them $s3% damage reduction and $s4% increased healing received upon revival, but reduces their damage and healing dealt by $s5% stacking up to $1230166u times.", "While the Aegis is equipped, all party members deal $w6% increased damage and healing. Every $1230151t sec during combat, you and Brann heal for $w2% of the damage you've taken during that time.\r\n\r\nWhen a player dies, the Aegis grants them $w3% damage reduction and $w4% increased healing received upon revival, but reduces their damage and healing dealt by $w5% stacking up to $1230166u times.", "Rank 1/4" },
   { 1230153, "Obliterate and Frostscythe consume all Killing Machines to deal $s2% increased critical strike damage and grant ${$1230916s1/10}.1% Haste for $1230916d for each stack consumed.\r\n\r\nMultiple applications may overlap.", 0, 0 },
   { 1230166, "$@spelldesc1229213", "Reduce incoming damage by $w1% and increase incoming healing by $w2%.\r\n\r\nDamage and healing done reduced by $w3%.", 0 },
