@@ -16,8 +16,6 @@ struct player_t;
 
 namespace unique_gear::thewarwithin
 {
-extern std::vector<unsigned> __tww_special_effect_ids;
-
 void register_special_effects();
 void register_target_data_initializers( sim_t& );
 void register_hotfixes();

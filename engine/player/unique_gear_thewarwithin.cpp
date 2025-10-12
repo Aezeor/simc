@@ -29,7 +29,6 @@
 
 namespace unique_gear::thewarwithin
 {
-std::vector<unsigned> __tww_special_effect_ids;
 wowv_t version_min = { 11 };
 wowv_t version_max = { UINT8_MAX };
 
@@ -45,20 +44,6 @@ void set_max_version( wowv_t build )
 // assuming priority for highest/lowest secondary is vers > mastery > haste > crit
 static constexpr std::array<stat_e, 4> secondary_ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING,
                                                              STAT_HASTE_RATING, STAT_CRIT_RATING };
-
-// can be called via unqualified lookup
-void register_special_effect( unsigned spell_id, custom_cb_t init_callback, bool fallback = false )
-{
-  unique_gear::register_special_effect( spell_id, init_callback, fallback, version_min, version_max );
-  __tww_special_effect_ids.push_back( spell_id );
-}
-
-void register_special_effect( std::initializer_list<unsigned> spell_ids, custom_cb_t init_callback,
-                              bool fallback = false )
-{
-  for ( auto id : spell_ids )
-    register_special_effect( id, init_callback, fallback );
-}
 
 // from item_naming.inc
 enum gem_color_e : unsigned
