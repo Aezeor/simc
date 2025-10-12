@@ -9,7 +9,8 @@
 #include "simulationcraft.hpp"
 
 namespace
-{  // UNNAMED NAMESPACE
+{
+// UNNAMED NAMESPACE
 
 // Forward Declarations
 class demon_hunter_t;
@@ -252,7 +253,7 @@ public:
 
   // Soul Fragments
   unsigned next_fragment_spawn;  // determines whether the next fragment spawn
-                                 // on the left or right
+  // on the left or right
   auto_dispose<std::vector<soul_fragment_t*>> soul_fragments;
   event_t* soul_fragment_pick_up;
 
@@ -274,6 +275,7 @@ public:
     buff_t* empowered_demon_soul;
     buff_t* immolation_aura;
     buff_t* metamorphosis;
+    buff_t* soul_fragments;
 
     // Devourer
     buff_t* reap;
@@ -314,7 +316,8 @@ public:
     buff_t* calcified_spikes;
     buff_t* painbringer;
     absorb_buff_t* soul_barrier;
-    buff_t* soul_fragments;
+    buff_t* felfire_fist_in_combat;
+    buff_t* felfire_fist_out_of_combat;
 
     // Aldrachi Reaver
     buff_t* reavers_glaive;
@@ -806,6 +809,8 @@ public:
     const spell_data_t* feast_of_souls_heal;
     const spell_data_t* fel_devastation_2;
     const spell_data_t* fel_devastation_heal;
+    const spell_data_t* felfire_fist_in_combat_buff;
+    const spell_data_t* felfire_fist_out_of_combat_buff;
   } spec;
 
   struct hero_spec_t
@@ -1168,6 +1173,8 @@ public:
   const spell_data_t* find_spell_override( const spell_data_t* base, std::vector<const spell_data_t*> passives );
   const spell_data_t* conditional_spell_lookup( bool fn, int id );
   const spell_data_t* talent_spell_lookup( player_talent_t t, int id );
+  const spell_data_t* spell_lookup_by_spec( const spell_data_t* devourer, const spell_data_t* havoc,
+                                            const spell_data_t* vengeance );
   void set_out_of_range( timespan_t duration );
   void adjust_movement();
   double calculate_expected_max_health() const;
@@ -3808,8 +3815,8 @@ struct glaive_tempest_t : public demon_hunter_spell_t
 
 struct sigil_of_flame_damage_base_t : public demon_hunter_sigil_t
 {
-  sigil_of_flame_damage_base_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, timespan_t delay )
-    : demon_hunter_sigil_t( name, p, s, delay )
+  sigil_of_flame_damage_base_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
+    : demon_hunter_sigil_t( name, p, s, p->spell.sigil_of_flame->duration() )
   {
     tick_on_application = false;
     dot_max_stack       = 1;
@@ -3855,8 +3862,8 @@ struct sigil_of_flame_damage_base_t : public demon_hunter_sigil_t
 
 struct sigil_of_flame_damage_t : public sigil_of_flame_damage_base_t
 {
-  sigil_of_flame_damage_t( util::string_view name, demon_hunter_t* p, timespan_t delay )
-    : sigil_of_flame_damage_base_t( name, p, p->spell.sigil_of_flame_damage, delay )
+  sigil_of_flame_damage_t( util::string_view name, demon_hunter_t* p )
+    : sigil_of_flame_damage_base_t( name, p, p->spell.sigil_of_flame_damage )
   {
   }
 
@@ -3892,8 +3899,8 @@ struct sigil_of_flame_damage_t : public sigil_of_flame_damage_base_t
 
 struct sigil_of_doom_damage_t : public sigil_of_flame_damage_base_t
 {
-  sigil_of_doom_damage_t( util::string_view name, demon_hunter_t* p, timespan_t delay )
-    : sigil_of_flame_damage_base_t( name, p, p->hero_spec.sigil_of_doom_damage, delay )
+  sigil_of_doom_damage_t( util::string_view name, demon_hunter_t* p )
+    : sigil_of_flame_damage_base_t( name, p, p->hero_spec.sigil_of_doom_damage )
   {
   }
 
@@ -3997,8 +4004,8 @@ struct sigil_of_doom_t : public demonsurge_trigger_t<demonsurge_ability::SIGIL_O
   {
     if ( p->hero_spec.sigil_of_doom_damage->ok() )
     {
-      sigil        = p->get_background_action<sigil_of_doom_damage_t>( "sigil_of_doom_damage", ground_aoe_duration );
-      sigil->stats = stats;
+      sigil = p->get_background_action<sigil_of_doom_damage_t>( "sigil_of_doom_damage" );
+      add_child( sigil );
     }
 
     // Add damage modifiers in sigil_of_doom_damage_t, not here.
@@ -4015,8 +4022,8 @@ struct sigil_of_flame_t : public sigil_of_flame_base_t
       sigil_of_doom( nullptr ),
       sigil_of_doom_cost( 0 )
   {
-    sigil        = p->get_background_action<sigil_of_flame_damage_t>( "sigil_of_flame_damage", ground_aoe_duration );
-    sigil->stats = stats;
+    sigil = p->get_background_action<sigil_of_flame_damage_t>( "sigil_of_flame_damage" );
+    add_child( sigil );
 
     if ( p->talent.felscarred.demonic_intensity->ok() )
     {
@@ -4089,11 +4096,29 @@ struct infernal_strike_t : public demon_hunter_spell_t
 {
   struct infernal_strike_impact_t : public demon_hunter_spell_t
   {
+    sigil_of_flame_damage_t* felfire_fist;
+
     infernal_strike_impact_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->spec.infernal_strike_impact )
+      : demon_hunter_spell_t( name, p, p->spec.infernal_strike_impact ), felfire_fist( nullptr )
     {
       background = dual = true;
       aoe               = -1;
+
+      if ( p->talent.vengeance.felfire_fist->ok() )
+      {
+        felfire_fist = p->get_background_action<sigil_of_flame_damage_t>( "sigil_of_flame_damage_felfire_fist" );
+        add_child( felfire_fist );
+      }
+    }
+
+    void execute() override
+    {
+      demon_hunter_spell_t::execute();
+
+      if ( felfire_fist && ( p()->buff.felfire_fist_in_combat->up() || p()->buff.felfire_fist_out_of_combat->up() ) )
+      {
+        felfire_fist->place_sigil( target );
+      }
     }
   };
 
@@ -4105,8 +4130,8 @@ struct infernal_strike_t : public demon_hunter_spell_t
     movement_directionality = movement_direction_type::OMNI;
     travel_speed            = 1.0;  // allows use precombat
 
-    impact_action        = p->get_background_action<infernal_strike_impact_t>( "infernal_strike_impact" );
-    impact_action->stats = stats;
+    impact_action = p->get_background_action<infernal_strike_impact_t>( "infernal_strike_impact" );
+    add_child( impact_action );
   }
 
   // leap travel time, independent of distance
@@ -6076,7 +6101,7 @@ struct blade_dance_base_t
     action_t* trail_of_ruin_dot;
     bool last_attack;
     bool from_first_blood;
-    int glaive_tempest_targets;
+    unsigned glaive_tempest_targets;
 
     blade_dance_damage_t( util::string_view name, demon_hunter_t* p, const spelleffect_data_t& eff,
                           const spell_data_t* first_blood_override = nullptr )
@@ -6089,7 +6114,7 @@ struct blade_dance_base_t
       background = dual      = true;
       aoe                    = ( from_first_blood ) ? 0 : -1;
       reduced_aoe_targets    = p->find_spell( 199552 )->effectN( 1 ).base_value();  // Use first impact spell
-      glaive_tempest_targets = as<int>( p->talent.havoc.glaive_tempest->effectN( 2 ).base_value() );
+      glaive_tempest_targets = as<unsigned>( p->talent.havoc.glaive_tempest->effectN( 2 ).base_value() );
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -8690,6 +8715,22 @@ void demon_hunter_t::activate()
       } );
     }
   }
+
+  if ( talent.vengeance.felfire_fist->ok() )
+  {
+    register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
+      if ( c )
+      {
+        buff.felfire_fist_out_of_combat->expire();
+        buff.felfire_fist_in_combat->trigger();
+      }
+      else
+      {
+        buff.felfire_fist_in_combat->expire();
+        buff.felfire_fist_out_of_combat->trigger();
+      }
+    } );
+  }
 }
 
 // demon_hunter_t::create_buffs =============================================
@@ -8828,6 +8869,14 @@ void demon_hunter_t::create_buffs()
       ->set_absorb_gain( get_gain( "soul_barrier" ) )
       ->set_absorb_high_priority( true )  // TOCHECK
       ->set_cooldown( timespan_t::zero() );
+
+  buff.felfire_fist_in_combat = make_buff( this, "felfire_fist_in_combat", spec.felfire_fist_in_combat_buff )
+                                    ->set_quiet( true )
+                                    ->set_allow_precombat( true );
+  buff.felfire_fist_out_of_combat =
+      make_buff( this, "felfire_fist_out_of_combat", spec.felfire_fist_out_of_combat_buff )
+          ->set_quiet( true )
+          ->set_allow_precombat( true );
 
   // Aldrachi Reaver ========================================================
 
@@ -9120,6 +9169,21 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
     return make_fn_expr( name_str, [ this ]() {
       return devourer_fury_state.fury_drain_per_second( devourer_fury_state.drain_stacks );
     } );
+  }
+  else if ( splits.size() >= 3 && util::str_compare_ci( splits[ 0 ], "buff" ) && util::str_compare_ci( splits[ 1 ], "felfire_fist" ) )
+  {
+    if ( util::str_compare_ci( splits[ 2 ], "up" ) )
+    {
+      return make_fn_expr( name_str, [ this ]() {
+        return buff.felfire_fist_in_combat->check() || buff.felfire_fist_out_of_combat->check();
+      });
+    }
+    if ( util::str_compare_ci( splits[ 2 ], "down" ) )
+    {
+      return make_fn_expr( name_str, [ this ]() {
+        return !(buff.felfire_fist_in_combat->check() || buff.felfire_fist_out_of_combat->check());
+      });
+    }
   }
 
   return player_t::create_expression( name_str );
@@ -9852,21 +9916,23 @@ void demon_hunter_t::init_spells()
   spec.collective_anguish_damage        = spec.collective_anguish->effectN( 1 ).trigger();
   spec.essence_break_proc_damage        = talent_spell_lookup( talent.havoc.essence_break, 1245759 );
 
-  spec.demon_spikes_buff        = find_spell( 203819 );
-  spec.fiery_brand_debuff       = talent_spell_lookup( talent.vengeance.fiery_brand, 207771 );
-  spec.frailty_debuff           = talent_spell_lookup( talent.vengeance.frailty, 247456 );
-  spec.painbringer_buff         = talent_spell_lookup( talent.vengeance.painbringer, 212988 );
-  spec.calcified_spikes_buff    = talent_spell_lookup( talent.vengeance.calcified_spikes, 391171 );
-  spec.retaliation_damage       = talent_spell_lookup( talent.vengeance.retaliation, 391159 );
-  spec.sigil_of_silence_debuff  = talent_spell_lookup( talent.vengeance.sigil_of_silence, 204490 );
-  spec.sigil_of_chains_debuff   = talent_spell_lookup( talent.vengeance.sigil_of_chains, 204843 );
-  spec.burning_alive_controller = talent_spell_lookup( talent.vengeance.burning_alive, 207760 );
-  spec.infernal_strike_impact   = find_spell( 189112 );
-  spec.spirit_bomb_damage       = talent_spell_lookup( talent.vengeance.spirit_bomb, 247455 );
-  spec.frailty_heal             = talent_spell_lookup( talent.vengeance.frailty, 227255 );
-  spec.feast_of_souls_heal      = talent_spell_lookup( talent.vengeance.feast_of_souls, 207693 );
-  spec.fel_devastation_2        = find_rank_spell( "Fel Devastation", "Rank 2" );
-  spec.fel_devastation_heal     = talent_spell_lookup( talent.vengeance.fel_devastation, 212106 );
+  spec.demon_spikes_buff               = find_spell( 203819 );
+  spec.fiery_brand_debuff              = talent_spell_lookup( talent.vengeance.fiery_brand, 207771 );
+  spec.frailty_debuff                  = talent_spell_lookup( talent.vengeance.frailty, 247456 );
+  spec.painbringer_buff                = talent_spell_lookup( talent.vengeance.painbringer, 212988 );
+  spec.calcified_spikes_buff           = talent_spell_lookup( talent.vengeance.calcified_spikes, 391171 );
+  spec.retaliation_damage              = talent_spell_lookup( talent.vengeance.retaliation, 391159 );
+  spec.sigil_of_silence_debuff         = talent_spell_lookup( talent.vengeance.sigil_of_silence, 204490 );
+  spec.sigil_of_chains_debuff          = talent_spell_lookup( talent.vengeance.sigil_of_chains, 204843 );
+  spec.burning_alive_controller        = talent_spell_lookup( talent.vengeance.burning_alive, 207760 );
+  spec.infernal_strike_impact          = find_spell( 189112 );
+  spec.spirit_bomb_damage              = talent_spell_lookup( talent.vengeance.spirit_bomb, 247455 );
+  spec.frailty_heal                    = talent_spell_lookup( talent.vengeance.frailty, 227255 );
+  spec.feast_of_souls_heal             = talent_spell_lookup( talent.vengeance.feast_of_souls, 207693 );
+  spec.fel_devastation_2               = find_rank_spell( "Fel Devastation", "Rank 2" );
+  spec.fel_devastation_heal            = talent_spell_lookup( talent.vengeance.fel_devastation, 212106 );
+  spec.felfire_fist_in_combat_buff     = talent_spell_lookup( talent.vengeance.felfire_fist, 1265759 );
+  spec.felfire_fist_out_of_combat_buff = talent_spell_lookup( talent.vengeance.felfire_fist, 1265751 );
 
   switch ( specialization() )
   {
@@ -9959,7 +10025,8 @@ void demon_hunter_t::init_spells()
       hero_spec.demonsurge_demonic_intensity_buff = talent_spell_lookup( talent.felscarred.demonic_intensity, 452489 );
       break;
     default:
-      hero_spec.burning_blades_debuff = spell_data_t::not_found();
+      hero_spec.burning_blades_debuff             = spell_data_t::not_found();
+      hero_spec.demonsurge_demonic_intensity_buff = spell_data_t::not_found();
       break;
   }
 
@@ -10006,8 +10073,7 @@ void demon_hunter_t::init_spells()
       break;
   }
 
-  // Sigil overrides for Precise/Concentrated Sigils
-  spell.sigil_of_flame = find_spell( 204596 );
+  spell.sigil_of_flame = specialization() != DEMON_HUNTER_DEVOURER ? find_spell( 204596 ) : spell_data_t::not_found();
   spell.sigil_of_spite = talent.vengeance.sigil_of_spite;
 
   spell.sigil_of_spite_damage = talent_spell_lookup( talent.vengeance.sigil_of_spite, 389860 );
@@ -10659,6 +10725,10 @@ void demon_hunter_t::arise()
   if ( talent.felscarred.pursuit_of_angriness->ok() )
   {
     buff.pursuit_of_angryness->trigger();
+  }
+  if ( talent.vengeance.felfire_fist->ok() )
+  {
+    buff.felfire_fist_out_of_combat->trigger();
   }
 }
 
@@ -11415,6 +11485,22 @@ const spell_data_t* demon_hunter_t::conditional_spell_lookup( bool fn, int id )
 const spell_data_t* demon_hunter_t::talent_spell_lookup( player_talent_t t, int id )
 {
   return conditional_spell_lookup( t->ok(), id );
+}
+
+const spell_data_t* demon_hunter_t::spell_lookup_by_spec( const spell_data_t* devourer, const spell_data_t* havoc,
+                                                          const spell_data_t* vengeance )
+{
+  switch ( specialization() )
+  {
+    case DEMON_HUNTER_DEVOURER:
+      return devourer;
+    case DEMON_HUNTER_HAVOC:
+      return havoc;
+    case DEMON_HUNTER_VENGEANCE:
+      return vengeance;
+    default:
+      return spell_data_t::not_found();
+  }
 }
 
 /* Report Extension Class
