@@ -15,6 +15,7 @@ struct embellishment_data_t
   const char* name;
   unsigned bonus_id;
   unsigned effect_id;
+  unsigned spell_id;
 
   static util::span<const embellishment_data_t> data( bool ptr );
 

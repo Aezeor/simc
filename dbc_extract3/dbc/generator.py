@@ -5038,7 +5038,7 @@ class EmbellishmentGenerator(DataGenerator):
             length = len(data))
 
         for emb in data:
-            fields = [str(emb[0]), str(emb[1]), str(emb[2])]
+            fields = ['{:<45}'.format(emb[0]), '{:7d}'.format(emb[1]), '{:7d}'.format(emb[2]), '{:7d}'.format(emb[3])]
             self.output_record(fields)
 
         self.output_footer()

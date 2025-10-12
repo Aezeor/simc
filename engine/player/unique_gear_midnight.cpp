@@ -58,6 +58,79 @@ void register_special_effect( std::initializer_list<unsigned> spell_ids, custom_
     register_special_effect( id, init_callback, fallback );
 }
 
+namespace consumables
+{
+
+}
+
+namespace enchants
+{
+
+}
+
+namespace embellishments
+{
+void arcanoweave_lining( special_effect_t& effect )
+{
+
+}
+
+void sunfire_silk_lining( special_effect_t& effect )
+{
+
+}
+
+void devouring_banding( special_effect_t& effect )
+{
+
+}
+
+void blessed_pango_charm( special_effect_t& effect )
+{
+
+}
+
+void primal_spore_binding( special_effect_t& effect )
+{
+
+}
+
+void lucky_keychain( special_effect_t& effect )
+{
+
+}
+
+void prismatic_focusing_iris( special_effect_t& effect )
+{
+
+}
+
+void stabilizing_gemstone_bandolier( special_effect_t& effect )
+{
+
+}
+}
+
+namespace trinkets
+{
+
+}
+
+namespace weapons
+{
+
+}
+
+namespace armors
+{
+
+}
+
+namespace sets
+{
+
+}
+
 void register_special_effects()
 {
   // NOTE: use unique_gear:: namespace for static consumables so we don't activate them with enable_all_item_effects
@@ -67,6 +140,14 @@ void register_special_effects()
   // Oils
   // Enchants & gems
   // Embellishments & Tinkers
+  register_special_effect( 1229511, embellishments::arcanoweave_lining );
+  register_special_effect( 1241711, embellishments::sunfire_silk_lining );
+  register_special_effect( 1244238, embellishments::devouring_banding );
+  register_special_effect( 1244243, embellishments::blessed_pango_charm );
+  register_special_effect( 1244276, embellishments::primal_spore_binding );
+  register_special_effect( 1246298, embellishments::lucky_keychain );
+  register_special_effect( 1251906, embellishments::prismatic_focusing_iris );
+  register_special_effect( 1251905, embellishments::stabilizing_gemstone_bandolier );
   // Trinkets
   // Weapons
   // Armor
@@ -79,7 +160,7 @@ void register_target_data_initializers( sim_t& )
 void register_hotfixes()
 {}
 
-action_t* create_action( player_t* p, std::string_view n, std::string_view options )
+action_t* create_action( player_t* /*p*/ , std::string_view /*name*/, std::string_view /*opt*/ )
 {
   return nullptr;
 }

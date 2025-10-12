@@ -835,8 +835,9 @@ class EmbellishmentSet(DataSet):
                     _name = mcri.child_refs('ItemSparse')[-1].name
                     _bonus_id = bonus.id_node
                     _effect_id = bonus.val_1
+                    _spell_id = self.db('ItemEffect')[_effect_id].id_spell
 
-                    _data.append([f'"{_name}"', _bonus_id, _effect_id])
+                    _data.append([f'"{_name}"', _bonus_id, _effect_id, _spell_id])
 
         return _data
 
