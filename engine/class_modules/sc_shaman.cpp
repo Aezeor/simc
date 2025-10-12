@@ -1290,7 +1290,6 @@ public:
     buff_t* converging_storms;
     buff_t* static_accumulation;
     buff_t* doom_winds;
-    buff_t* ashen_catalyst;
 
     buff_t* stormblast;
 
@@ -5285,8 +5284,6 @@ struct lava_lash_t : public shaman_attack_t
       m *= 1.0 + data().effectN( 2 ).percent();
     }
 
-    m *= 1.0 + p()->buff.ashen_catalyst->stack_value();
-
     return m;
   }
 
@@ -5297,7 +5294,6 @@ struct lava_lash_t : public shaman_attack_t
     p()->trigger_elemental_assault( execute_state );
     p()->trigger_lively_totems( execute_state );
 
-    p()->buff.ashen_catalyst->expire();
     p()->trigger_whirling_fire( execute_state );
 
     p()->trigger_reactivity( execute_state );
@@ -5333,6 +5329,17 @@ struct lava_lash_t : public shaman_attack_t
     }
 
     p()->trigger_ride_the_lightning( state, p()->action.chain_lightning_ll_rtl );
+
+    if ( p()->talent.ashen_catalyst.ok() && td( target )->dot.flame_shock->is_ticking() )
+    {
+      auto reduction = p()->talent.ashen_catalyst->effectN( 1 ).time_value();
+      if ( p()->buff.hot_hand->check() )
+      {
+        reduction /= 1.0 + p()->buff.hot_hand->data().effectN( 2 ).percent();
+      }
+
+      p()->cooldown.lava_lash->adjust( -reduction );
+    }
   }
 
   void move_random_target( std::vector<player_t*>& in, std::vector<player_t*>& out ) const
@@ -8683,18 +8690,6 @@ public:
         p()->lvs_samples.add( p()->lava_surge_attempts_normalized );
         p()->lava_surge_attempts_normalized = 0.0;
       }
-    }
-
-    if ( p()->talent.ashen_catalyst.ok() && d->state->result_amount > 0 )
-    {
-      auto reduction = p()->talent.ashen_catalyst->effectN( 1 ).base_value() / 10.0;
-      if ( p()->buff.hot_hand->check() )
-      {
-        reduction /= 1.0 + p()->buff.hot_hand->data().effectN( 2 ).percent();
-      }
-
-      p()->cooldown.lava_lash->adjust( timespan_t::from_seconds( -reduction ) );
-      p()->buff.ashen_catalyst->trigger();
     }
 
     // TODO: Determine proc chance / model
@@ -13368,10 +13363,6 @@ void shaman_t::create_buffs()
     ->set_trigger_spell( talent.feral_spirit );
   buff.converging_storms = make_buff( this, "converging_storms", find_spell( 198300 ) )
       ->set_default_value_from_effect( 1 );
-  buff.ashen_catalyst = make_buff( this, "ashen_catalyst", find_spell( 390371 ) )
-    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
-    ->set_trigger_spell( talent.ashen_catalyst );
-
   // Buffs stormstrike and lava lash after using crash lightning
   buff.crash_lightning = make_buff( this, "crash_lightning", find_spell( 187878 ) );
   // Buffs crash lightning with extra damage, after using chain lightning
@@ -14021,7 +14012,7 @@ void shaman_t::init_action_list_enhancement()
     single->add_action( "run_action_list,name=single_open,if=time<15" );
     single->add_action( "primordial_storm,if=(buff.maelstrom_weapon.stack>=10|buff.primordial_storm.remains<=4&buff.maelstrom_weapon.stack>=5)" );
     single->add_action( "doom_winds,if=(!buff.ascendance.up|(buff.tempest.up&buff.ascendance.remains>1*gcd&buff.maelstrom_weapon.stack<=9))&set_bonus.tww3_4pc" );
-    single->add_action( "lava_lash,if=(buff.hot_hand.up&buff.ashen_catalyst.stack=buff.ashen_catalyst.max_stack)&(buff.tempest.up&buff.ascendance.remains>5*gcd&buff.maelstrom_weapon.stack<=1)" );
+    single->add_action( "lava_lash,if=buff.hot_hand.up&(buff.tempest.up&buff.ascendance.remains>5*gcd&buff.maelstrom_weapon.stack<=1)" );
     single->add_action( "flame_shock,if=!ticking&(talent.ashen_catalyst.enabled|talent.lashing_flames.enabled)&!buff.ascendance.up&!talent.voltaic_blaze.enabled" );
     single->add_action( "windstrike,if=talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>0&ti_lightning_bolt" );
     single->add_action( "doom_winds" );
@@ -14087,7 +14078,7 @@ void shaman_t::init_action_list_enhancement()
     single_totemic->add_action( "lightning_bolt,if=(buff.maelstrom_weapon.stack>=10)&(buff.primordial_storm.down|buff.primordial_storm.remains>4)" );
     single_totemic->add_action( "crash_lightning,if=buff.electrostatic_wager.stack>4" );
     single_totemic->add_action( "stormstrike,if=buff.doom_winds.up|buff.stormblast.stack>1" );
-    single_totemic->add_action( "lava_lash,if=buff.whirling_fire.up|buff.ashen_catalyst.stack>=8" );
+    single_totemic->add_action( "lava_lash,if=buff.whirling_fire.up" );
     single_totemic->add_action( "windstrike" );
     single_totemic->add_action( "stormstrike" );
     single_totemic->add_action( "lava_lash" );
@@ -14225,7 +14216,7 @@ void shaman_t::init_action_list_enhancement()
     funnel->add_action( "lightning_bolt,if=variable.flame_shock_saturated&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack&(fight_remains<=12|raid_event.adds.remains<=gcd)" );
     funnel->add_action( "lightning_bolt,if=talent.supercharge.enabled&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack&(variable.expected_lb_funnel>variable.expected_cl_funnel)" );
     funnel->add_action( "chain_lightning,if=(talent.supercharge.enabled&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack)|buff.arc_discharge.up&buff.maelstrom_weapon.stack>=5" );
-    funnel->add_action( "lava_lash,if=(talent.molten_assault.enabled&dot.flame_shock.ticking&!variable.flame_shock_saturated)|(talent.ashen_catalyst.enabled&buff.ashen_catalyst.stack=buff.ashen_catalyst.max_stack)" );
+    funnel->add_action( "lava_lash,if=(talent.molten_assault.enabled&dot.flame_shock.ticking&!variable.flame_shock_saturated)" );
     funnel->add_action( "elemental_blast,if=buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack" );
     funnel->add_action( "doom_winds" );
     funnel->add_action( "stormstrike,if=buff.converging_storms.stack=buff.converging_storms.max_stack" );
