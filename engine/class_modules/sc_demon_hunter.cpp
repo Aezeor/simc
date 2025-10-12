@@ -774,6 +774,7 @@ public:
     const spell_data_t* furious_throws_damage;
     const spell_data_t* collective_anguish;
     const spell_data_t* collective_anguish_damage;
+    const spell_data_t* essence_break_proc_damage;
 
     // Vengeance
     const spell_data_t* vengeance_demon_hunter;
@@ -1038,6 +1039,7 @@ public:
     attack_t* screaming_brutality_blade_dance_throw_glaive         = nullptr;
     attack_t* screaming_brutality_death_sweep_throw_glaive         = nullptr;
     attack_t* screaming_brutality_slash_proc_throw_glaive          = nullptr;
+    attack_t* essence_break_proc                                   = nullptr;
 
     // Vengeance
     spell_t* infernal_armor = nullptr;
@@ -2023,7 +2025,6 @@ public:
 
     // Havoc
     ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::burning_wound ), p()->spec.burning_wound_debuff );
-    ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::essence_break ), p()->spec.essence_break_debuff );
     ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::serrated_glaive ),
                               p()->talent.havoc.serrated_glaive->effectN( 1 ).trigger(),
                               p()->talent.havoc.serrated_glaive );
@@ -6133,6 +6134,11 @@ struct blade_dance_base_t
     {
       demon_hunter_attack_t::impact( s );
 
+      if ( result_is_hit( s->result ) && td( s->target )->debuffs.essence_break->up() )
+      {
+        p()->active.essence_break_proc->execute_on_target( target );
+      }
+
       if ( last_attack )
       {
         if ( trail_of_ruin_dot )
@@ -6522,6 +6528,11 @@ struct chaos_strike_base_t
         p()->active.warblades_hunger->execute_on_target( target );
         p()->buff.warblades_hunger->expire();
       }
+
+      if ( result_is_hit( s->result ) && td( s->target )->debuffs.essence_break->up() )
+      {
+        p()->active.essence_break_proc->execute_on_target( target );
+      }
     }
   };
 
@@ -6773,6 +6784,8 @@ struct essence_break_t : public demon_hunter_attack_t
   {
     aoe                 = -1;
     reduced_aoe_targets = p->talent.havoc.essence_break->effectN( 2 ).base_value();
+
+    add_child( p->active.essence_break_proc );
   }
 
   void impact( action_state_t* s ) override
@@ -7717,6 +7730,14 @@ struct wounded_quarry_t : public demon_hunter_attack_t
   }
 };
 
+struct essence_break_proc_t : public demon_hunter_attack_t
+{
+  essence_break_proc_t( util::string_view n, demon_hunter_t* p )
+    : demon_hunter_attack_t( n, p, p->spec.essence_break_proc_damage )
+  {
+  }
+};
+
 }  // end namespace attacks
 
 }  // end namespace actions
@@ -8385,7 +8406,6 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
       break;
     case DEMON_HUNTER_HAVOC:
       debuffs.essence_break = make_buff( *this, "essence_break", p.spec.essence_break_debuff )
-                                  ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS )
                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                                   ->set_cooldown( timespan_t::zero() );
 
@@ -9839,6 +9859,7 @@ void demon_hunter_t::init_spells()
   spec.furious_throws_damage            = talent_spell_lookup( talent.havoc.furious_throws, 393035 );
   spec.collective_anguish               = talent_spell_lookup( talent.havoc.collective_anguish, 393831 );
   spec.collective_anguish_damage        = spec.collective_anguish->effectN( 1 ).trigger();
+  spec.essence_break_proc_damage        = talent_spell_lookup( talent.havoc.essence_break, 1245759 );
 
   spec.demon_spikes_buff        = find_spell( 203819 );
   spec.fiery_brand_debuff       = talent_spell_lookup( talent.vengeance.fiery_brand, 207771 );
@@ -10090,6 +10111,10 @@ void demon_hunter_t::init_spells()
         "throw_glaive_sb_ds_throw", "", throw_glaive_t::glaive_source::SCREAMING_BRUTALITY_DEATH_SWEEP_THROW );
     active.screaming_brutality_slash_proc_throw_glaive = get_background_action<throw_glaive_t>(
         "throw_glaive_sb_slash_proc_throw", "", throw_glaive_t::glaive_source::SCREAMING_BRUTALITY_SLASH_PROC_THROW );
+  }
+  if ( talent.havoc.essence_break->ok() )
+  {
+    active.essence_break_proc = get_background_action<essence_break_proc_t>( "essence_break_proc_damage" );
   }
 
   if ( talent.vengeance.retaliation->ok() )
