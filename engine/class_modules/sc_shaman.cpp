@@ -1175,6 +1175,9 @@ public:
     // Doom Winds damage
     action_t* doom_winds;
 
+    // Doom Winds triggred by Enhancement Ascendance
+    action_t* doom_winds_asc;
+
     action_t* set_ascendance;
     action_t* tww3_primordial_storm;
     action_t* tww3_lava_lash;
@@ -1755,6 +1758,7 @@ public:
   struct
   {
     const spell_data_t* ascendance;  // proxy spell data for normal & dre ascendance
+    const spell_data_t* ascendance_mw_passive;
     const spell_data_t* resurgence;
     const spell_data_t* maelstrom_weapon;
     const spell_data_t* feral_spirit;
@@ -5613,18 +5617,6 @@ struct stormstrike_base_t : public shaman_attack_t
     state->stormblast = p()->talent.stormblast.ok() && p()->buff.stormblast->check() != 0;
   }
 
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double m = shaman_attack_t::recharge_multiplier( cd );
-
-    if ( p()->buff.ascendance->up() )
-    {
-      m *= 1.0 + p()->buff.ascendance->data().effectN( 9 ).percent();
-    }
-
-    return m;
-  }
-
   void init() override
   {
     shaman_attack_t::init();
@@ -8919,25 +8911,17 @@ struct ascendance_damage_t : public shaman_spell_t
 
 struct ascendance_t : public shaman_spell_t
 {
-  ascendance_damage_t* ascendance_damage;
   lava_burst_t* lvb;
   lava_burst_overload_t* lvb_ol;
-  spell_variant var_;
 
   ascendance_t( shaman_t* player, util::string_view name_str, util::string_view options_str = {},
                 spell_variant var_ = spell_variant::NORMAL )
-    :
-    shaman_spell_t( name_str, player, player->spell.ascendance ),
-    ascendance_damage( nullptr ), lvb( nullptr ), lvb_ol(nullptr)
+    : shaman_spell_t( name_str, player, player->spell.ascendance, var_ ),
+      lvb( nullptr ), lvb_ol( nullptr )
   {
     parse_options( options_str );
     harmful = false;
-    this->var_  = var_;
 
-    if ( ascendance_damage )
-    {
-      add_child( ascendance_damage );
-    }
     // Periodic effect for Enhancement handled by the buff
     dot_duration = base_tick_time = timespan_t::zero();
     ancestor_trigger = ancestor_cast::CHAIN_LIGHTNING;
@@ -8960,19 +8944,6 @@ struct ascendance_t : public shaman_spell_t
       {
         lvb = new lava_burst_t( p(), spell_variant::ASCENDANCE );
         add_child( lvb );
-      }
-    }
-
-    if ( p()->specialization() == SHAMAN_ENHANCEMENT )
-    {
-      if ( auto trigger_spell = p()->find_action( "ascendance_damage" ) )
-      {
-        ascendance_damage = debug_cast<ascendance_damage_t*>( trigger_spell );
-      }
-      else
-      {
-        ascendance_damage = new ascendance_damage_t( p(), "ascendance_damage" );
-        add_child( ascendance_damage );
       }
     }
   }
@@ -9013,15 +8984,15 @@ struct ascendance_t : public shaman_spell_t
 
     if ( background )
     {
-      assert( var_ == spell_variant::DEEPLY_ROOTED_ELEMENTS || var_ == spell_variant::TWW3 );
+      assert( exec_type == spell_variant::DEEPLY_ROOTED_ELEMENTS || exec_type == spell_variant::TWW3 );
 
-      if (var_ == spell_variant::DEEPLY_ROOTED_ELEMENTS)
+      if ( exec_type == spell_variant::DEEPLY_ROOTED_ELEMENTS )
       {
         duration = p()->talent.deeply_rooted_elements->effectN( 1 ).time_value();
       }
       else
       {
-        if (p()->specialization() == SHAMAN_ENHANCEMENT)
+        if ( p()->specialization() == SHAMAN_ENHANCEMENT )
         {
           duration = p()->spell.tww3_stormbringer_2pc->effectN( 1 )
                          .time_value();
@@ -9062,10 +9033,9 @@ struct ascendance_t : public shaman_spell_t
       }
     }
 
-    if ( ascendance_damage )
+    if ( p()->specialization() == SHAMAN_ENHANCEMENT )
     {
-      ascendance_damage->set_target( target );
-      ascendance_damage->execute();
+      p()->action.doom_winds_asc->execute_on_target( target );
     }
 
     if ( p()->talent.static_accumulation.ok() )
@@ -9119,19 +9089,6 @@ struct ascendance_dre_t : public ascendance_t
       }
       lvb_ol = debug_cast<lava_burst_overload_t*>( p()->find_action( "lava_burst_overload" ) );
     }
-
-    if ( p()->specialization() == SHAMAN_ENHANCEMENT )
-    {
-      if ( auto trigger_spell = p()->find_action( "ascendance_damage_dre" ) )
-      {
-        ascendance_damage = debug_cast<ascendance_damage_t*>( trigger_spell );
-      }
-      else
-      {
-        ascendance_damage = new ascendance_damage_t( p(), "ascendance_damage_dre" );
-        add_child( ascendance_damage );
-      }
-    }
   }
 };
 
@@ -9173,8 +9130,8 @@ struct stormkeeper_t : public shaman_spell_t
 
 struct doom_winds_damage_t : public shaman_attack_t
 {
-  doom_winds_damage_t( shaman_t* player ) :
-    shaman_attack_t( "doom_winds_damage", player, player->find_spell( 469270 ) )
+  doom_winds_damage_t( shaman_t* player, spell_variant t ) :
+    shaman_attack_t( ::action_name( "doom_winds_damage", t ), player, player->find_spell( 469270 ), t )
   {
     background = true;
     aoe = -1;
@@ -9199,8 +9156,8 @@ struct doom_winds_damage_t : public shaman_attack_t
 
 struct doom_winds_t : public shaman_attack_t
 {
-  doom_winds_t( shaman_t* player, util::string_view options_str ) :
-    shaman_attack_t( "doom_winds", player, player->talent.doom_winds )
+  doom_winds_t( shaman_t* player, spell_variant t, util::string_view options_str = {} ) :
+    shaman_attack_t( ::action_name( "doom_winds", t ), player, player->talent.doom_winds, t )
   {
     parse_options( options_str );
 
@@ -9208,12 +9165,20 @@ struct doom_winds_t : public shaman_attack_t
     weapon_multiplier = 0.0;
     may_proc_flametongue = may_proc_stormsurge = may_proc_windfury = false;
 
-    if ( player->action.doom_winds == nullptr )
+    switch ( t )
     {
-      player->action.doom_winds = new doom_winds_damage_t( player );
+      case spell_variant::ASCENDANCE:
+        cooldown = player->get_cooldown( "doom_winds_ascendance" );
+        background = true;
+        break;
+      default:
+        if ( player->action.doom_winds == nullptr )
+        {
+          p()->action.doom_winds = new doom_winds_damage_t( player, spell_variant::NORMAL );
+        }
+        add_child( player->action.doom_winds );
+        break;
     }
-
-    add_child( player->action.doom_winds );
   }
 
   void init() override
@@ -9243,6 +9208,16 @@ struct doom_winds_t : public shaman_attack_t
       p()->summon_feral_spirit( wolf_type_e::LIGHTNING_WOLF, 1,
         p()->talent.rolling_thunder->effectN( 2 ).time_value() );
     }
+  }
+
+  bool ready() override
+  {
+    if ( p()->talent.ascendance.ok() || p()->talent.deeply_rooted_elements.ok() )
+    {
+      return false;
+    }
+
+    return shaman_attack_t::ready();
   }
 };
 
@@ -10931,7 +10906,7 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
   if ( name == "fire_nova" )
     return new fire_nova_t( this, spell_variant::NORMAL, options_str );
   if ( name == "doom_winds" )
-    return new doom_winds_t( this, options_str );
+    return new doom_winds_t( this, spell_variant::NORMAL, options_str );
   if ( name == "voltaic_blaze" )
     return new voltaic_blaze_t( this, options_str );
   if ( name == "primordial_storm" )
@@ -11149,6 +11124,12 @@ void shaman_t::create_actions()
   }
 
   parse_player_effects_t::create_actions();
+
+  if ( talent.deeply_rooted_elements.ok() ||
+       ( talent.ascendance.ok() && specialization() == SHAMAN_ENHANCEMENT ) )
+  {
+    action.doom_winds_asc = new doom_winds_t( this, spell_variant::ASCENDANCE );
+  }
 
   if ( talent.crash_lightning->ok() )
   {
@@ -11849,14 +11830,15 @@ void shaman_t::init_spells()
   // Misc spells
   //
 
-    switch ( specialization() )
-    {
-      case SHAMAN_ELEMENTAL: spell.ascendance = find_spell( 1219480 ); break;
-      case SHAMAN_ENHANCEMENT: spell.ascendance = find_spell( 114051 ); break;
-      case SHAMAN_RESTORATION: spell.ascendance = find_spell( 114052 ); break;
-      default:                 break;
-    }
+  switch ( specialization() )
+  {
+    case SHAMAN_ELEMENTAL: spell.ascendance = find_spell( 1219480 ); break;
+    case SHAMAN_ENHANCEMENT: spell.ascendance = find_spell( 114051 ); break;
+    case SHAMAN_RESTORATION: spell.ascendance = find_spell( 114052 ); break;
+    default:                 break;
+  }
 
+  spell.ascendance_mw_passive = find_spell( 1252197 );
   spell.resurgence          = find_spell( 101033 );
   spell.maelstrom_weapon    = find_spell( 187881 );
   spell.feral_spirit        = find_spell( 228562 );
@@ -12491,6 +12473,18 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
     {
       ls_counter -= as<unsigned>( talent.lightning_strikes->effectN( 2 ).base_value() );
       buff.lightning_strikes->trigger();
+    }
+  }
+
+  // TODO-midnight-talent: What RNG process to use here?
+  if ( talent.ascendance.ok() && !buff.ascendance->check() && stacks > 0 )
+  {
+    double proc_chance = spell.ascendance_mw_passive->effectN( 1 ).base_value() * 0.1 * 0.01 * stacks;
+    sim->print_debug(" {} attempts to proc doom_winds on {}, mw_stacks={}, proc_chance={}%",
+      name(), state->action->name(), stacks, proc_chance * 100.0 );
+    if ( rng().roll( proc_chance ) )
+    {
+      action.doom_winds_asc->execute_on_target( state->target );
     }
   }
 }
@@ -13766,6 +13760,7 @@ void shaman_t::apply_action_effects( parse_effects_t* a )
   eff::source_eff_builder_t( buff.forceful_winds ).build( a );
   eff::source_eff_builder_t( buff.converging_storms ).build( a );
   eff::source_eff_builder_t( buff.lightning_strikes ).build( a );
+  eff::source_eff_builder_t( buff.ascendance ).build( a );
 
 /*eff::source_eff_builder_t( talent.enhanced_imbues )
     .set_state_fn( [ this ] { return buff.flametongue_weapon->check(); } )
