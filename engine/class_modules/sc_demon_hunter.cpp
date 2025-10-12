@@ -1040,6 +1040,7 @@ public:
     attack_t* screaming_brutality_death_sweep_throw_glaive         = nullptr;
     attack_t* screaming_brutality_slash_proc_throw_glaive          = nullptr;
     attack_t* essence_break_proc                                   = nullptr;
+    spell_t* glaive_tempest                                        = nullptr;
 
     // Vengeance
     spell_t* infernal_armor = nullptr;
@@ -3779,12 +3780,12 @@ struct glaive_tempest_t : public demon_hunter_spell_t
   glaive_tempest_damage_t* glaive_tempest_mh;
   glaive_tempest_damage_t* glaive_tempest_oh;
 
-  glaive_tempest_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "glaive_tempest", p, p->talent.havoc.glaive_tempest, options_str )
+  glaive_tempest_t( util::string_view n, demon_hunter_t* p )
+    : demon_hunter_spell_t( n, p, p->talent.havoc.glaive_tempest )
   {
     school            = SCHOOL_CHAOS;  // Reporting purposes only
-    glaive_tempest_mh = p->get_background_action<glaive_tempest_damage_t>( "glaive_tempest_mh" );
-    glaive_tempest_oh = p->get_background_action<glaive_tempest_damage_t>( "glaive_tempest_oh" );
+    glaive_tempest_mh = p->get_background_action<glaive_tempest_damage_t>( fmt::format( "{}_mh", name() ) );
+    glaive_tempest_oh = p->get_background_action<glaive_tempest_damage_t>( fmt::format( "{}_oh", name() ) );
     add_child( glaive_tempest_mh );
     add_child( glaive_tempest_oh );
   }
@@ -6086,6 +6087,7 @@ struct blade_dance_base_t
     action_t* trail_of_ruin_dot;
     bool last_attack;
     bool from_first_blood;
+    int glaive_tempest_targets;
 
     blade_dance_damage_t( util::string_view name, demon_hunter_t* p, const spelleffect_data_t& eff,
                           const spell_data_t* first_blood_override = nullptr )
@@ -6095,9 +6097,10 @@ struct blade_dance_base_t
         last_attack( false ),
         from_first_blood( first_blood_override != nullptr )
     {
-      background = dual   = true;
-      aoe                 = ( from_first_blood ) ? 0 : -1;
-      reduced_aoe_targets = p->find_spell( 199552 )->effectN( 1 ).base_value();  // Use first impact spell
+      background = dual      = true;
+      aoe                    = ( from_first_blood ) ? 0 : -1;
+      reduced_aoe_targets    = p->find_spell( 199552 )->effectN( 1 ).base_value();  // Use first impact spell
+      glaive_tempest_targets = as<int>( p->talent.havoc.glaive_tempest->effectN( 2 ).base_value() );
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -6143,8 +6146,12 @@ struct blade_dance_base_t
       {
         if ( trail_of_ruin_dot )
         {
-          trail_of_ruin_dot->set_target( s->target );
-          trail_of_ruin_dot->execute();
+          trail_of_ruin_dot->execute_on_target( s->target );
+        }
+
+        if ( p()->talent.havoc.glaive_tempest->ok() && s->n_targets >= glaive_tempest_targets )
+        {
+          p()->active.glaive_tempest->execute_on_target( target );
         }
       }
     }
@@ -8600,8 +8607,6 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new fel_devastation_t( this, options_str );
   if ( name == "fiery_brand" )
     return new fiery_brand_t( this, options_str );
-  if ( name == "glaive_tempest" )
-    return new glaive_tempest_t( this, options_str );
   if ( name == "infernal_strike" )
     return new infernal_strike_t( this, options_str );
   if ( name == "immolation_aura" )
@@ -10115,6 +10120,10 @@ void demon_hunter_t::init_spells()
   if ( talent.havoc.essence_break->ok() )
   {
     active.essence_break_proc = get_background_action<essence_break_proc_t>( "essence_break_proc_damage" );
+  }
+  if ( talent.havoc.glaive_tempest->ok() )
+  {
+    active.glaive_tempest = get_background_action<glaive_tempest_t>( "glaive_tempest" );
   }
 
   if ( talent.vengeance.retaliation->ok() )
