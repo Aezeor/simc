@@ -2926,11 +2926,20 @@ struct doomsayer_trigger_t : public BASE
     BASE::p()->sim->print_debug( "{} triggering Doomsayer", BASE::p()->name() );
 
     int meteors_to_trigger = as<int>( BASE::p()->talent.annihilator.doomsayer->effectN( 1 ).base_value() );
+    if ( BASE::p()->talent.annihilator.world_killer->ok() )
+    {
+      meteors_to_trigger -= 1;
+    }
+
     BASE::p()->buff.doomsayer_in_combat->expire();
 
     for ( int i = 0; i < meteors_to_trigger; ++i )
     {
       BASE::p()->active.voidfall_meteor->execute_on_target( BASE::target );
+    }
+    if ( BASE::p()->talent.annihilator.world_killer->ok() )
+    {
+      BASE::p()->active.world_killer->execute_on_target( BASE::target );
     }
   }
 };
@@ -4190,7 +4199,7 @@ struct infernal_strike_t : public doomsayer_trigger_t<demon_hunter_spell_t>
 
   void execute() override
   {
-    demon_hunter_spell_t::execute();
+    base_t::execute();
 
     if ( felfire_fist && ( p()->buff.felfire_fist_in_combat->up() || p()->buff.felfire_fist_out_of_combat->up() ) )
     {
@@ -5554,7 +5563,7 @@ struct reap_t : public reap_base_t
   }
 };
 
-struct void_ray_t : public demon_hunter_spell_t
+struct void_ray_t : public doomsayer_trigger_t<demon_hunter_spell_t>
 {
   struct void_ray_tick_t : public demon_hunter_spell_t
   {
@@ -5595,7 +5604,7 @@ struct void_ray_t : public demon_hunter_spell_t
   demon_hunter_energize_t* voidglare_boon_energize;
 
   void_ray_t( demon_hunter_t* p, util::string_view o )
-    : demon_hunter_spell_t( "void_ray", p, p->talent.devourer.void_ray, o ), voidglare_boon_energize( nullptr )
+    : base_t( "void_ray", p, p->talent.devourer.void_ray, o ), voidglare_boon_energize( nullptr )
   {
     may_miss            = false;
     channeled           = true;
@@ -5621,16 +5630,14 @@ struct void_ray_t : public demon_hunter_spell_t
 
   void init() override
   {
-    demon_hunter_spell_t::init();
+    base_t::init();
 
     consume_per_tick_ = true;
   }
 
   void last_tick( dot_t* d ) override
   {
-    demon_hunter_spell_t::last_tick( d );
-
-    // TODO: on end of Void Ray channel stuff
+    base_t::last_tick( d );
 
     if ( d->current_tick == d->num_ticks() )
     {
@@ -5663,16 +5670,16 @@ struct void_ray_t : public demon_hunter_spell_t
     cooldown->duration = p()->buff.metamorphosis->up() ? p()->spec.void_metamorphosis->effectN( 8 ).time_value()
                                                        : p()->talent.devourer.void_ray->cooldown();
 
-    demon_hunter_spell_t::execute();
+    base_t::execute();
     p()->devourer_fury_state.reschedule_drain();
   }
 
-  bool ready() override
+  bool action_ready() override
   {
     // Void Ray requires 100 Fury to cast but doesn't cost 100 Fury
     if ( p()->buff.metamorphosis->up() || p()->resource_available( RESOURCE_FURY, data().cost( POWER_FURY ) ) )
     {
-      return demon_hunter_spell_t::ready();
+      return base_t::action_ready();
     }
     return false;
   }
@@ -5687,7 +5694,7 @@ struct void_ray_t : public demon_hunter_spell_t
   {
     if ( r != RESOURCE_FURY )
     {
-      return demon_hunter_spell_t::cost_per_tick( r );
+      return base_t::cost_per_tick( r );
     }
 
     // Void Ray costs 5 Fury per tick outside of Meta, 0 in Meta
@@ -5816,8 +5823,8 @@ struct voidfall_meteor_base_t : public demon_hunter_spell_t
   voidfall_meteor_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s )
     : demon_hunter_spell_t( n, p, s )
   {
-    execute_action = p->get_background_action<voidfall_meteor_damage_t>( fmt::format( "{}_damage", name() ),
-                                                                         s->effectN( 2 ).trigger() );
+    execute_action        = p->get_background_action<voidfall_meteor_damage_t>( fmt::format( "{}_damage", name() ),
+                                                                                s->effectN( 2 ).trigger() );
     execute_action->stats = stats;
   }
 };
@@ -9023,10 +9030,10 @@ void demon_hunter_t::create_buffs()
                                  ->disable_ticking( true );
   buff.dark_matter         = make_buff( this, "dark_matter", hero_spec.dark_matter_buff );
   buff.doomsayer_in_combat = make_buff( this, "doomsayer_in_combat", hero_spec.doomsayer_in_combat_buff )
-                                 ->set_quiet( true )
+                                 // ->set_quiet( true )
                                  ->set_allow_precombat( true );
   buff.doomsayer_out_of_combat = make_buff( this, "doomsayer_out_of_combat", hero_spec.doomsayer_out_of_combat_buff )
-                                     ->set_quiet( true )
+                                     // ->set_quiet( true )
                                      ->set_allow_precombat( true );
 
   // Fel-scarred ============================================================
@@ -10816,6 +10823,16 @@ void demon_hunter_t::arise()
 {
   base_t::arise();
 
+  if ( talent.vengeance.felfire_fist->ok() )
+  {
+    buff.felfire_fist_out_of_combat->trigger();
+  }
+
+  if ( talent.annihilator.doomsayer->ok() )
+  {
+    buff.doomsayer_out_of_combat->trigger();
+  }
+
   if ( talent.felscarred.monster_rising->ok() )
   {
     buff.monster_rising->trigger();
@@ -10827,10 +10844,6 @@ void demon_hunter_t::arise()
   if ( talent.felscarred.pursuit_of_angriness->ok() )
   {
     buff.pursuit_of_angryness->trigger();
-  }
-  if ( talent.vengeance.felfire_fist->ok() )
-  {
-    buff.felfire_fist_out_of_combat->trigger();
   }
 }
 
