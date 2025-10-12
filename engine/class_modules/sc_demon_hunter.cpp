@@ -286,6 +286,7 @@ public:
     buff_t* void_metamorphosis_stack;
     buff_t* rolling_torment;
     buff_t* impending_apocalypse;
+    buff_t* hungering_slash;
 
     // Havoc
     buff_t* blind_fury;
@@ -436,7 +437,7 @@ public:
       player_talent_t sweet_suffering;
       player_talent_t voidpurge;
 
-      player_talent_t hungering_slash;  // NYI
+      player_talent_t hungering_slash;
       player_talent_t voidrage;
       player_talent_t dark_ultimatum;
       player_talent_t beckon;
@@ -728,6 +729,10 @@ public:
     const spell_data_t* collapsing_star_stacking_buff;
     const spell_data_t* emptiness_buff;
     const spell_data_t* impending_apocalypse_buff;
+    const spell_data_t* hungering_slash;
+    const spell_data_t* hungering_slash_buff;
+    const spell_data_t* hungering_slash_damage;
+    const spell_data_t* hungering_slash_energize;
 
     // Havoc
     const spell_data_t* havoc_demon_hunter;
@@ -2839,6 +2844,31 @@ struct dark_matter_trigger_t : public BASE
   }
 };
 
+template <typename BASE>
+struct hungering_slash_trigger_t : BASE
+{
+  using base_t = hungering_slash_trigger_t<BASE>;
+
+  hungering_slash_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                             util::string_view o = {} )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    BASE::impact( s );
+
+    if ( !BASE::p()->talent.devourer.hungering_slash->ok() )
+      return;
+
+    if ( s->chain_target != 0 || !BASE::result_is_hit( s->result) )
+      return;
+
+    BASE::p()->buff.hungering_slash->trigger();
+  }
+};
+
 struct demon_hunter_heal_t : public demon_hunter_action_t<heal_t>
 {
   demon_hunter_heal_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
@@ -4897,7 +4927,7 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
 
 struct the_hunt_t : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exergy_trigger_t<demon_hunter_spell_t>>>
 {
-  struct the_hunt_damage_t : public demon_hunter_spell_t
+  struct the_hunt_damage_t : public hungering_slash_trigger_t<demon_hunter_spell_t>
   {
     struct the_hunt_dot_t : public demon_hunter_spell_t
     {
@@ -4910,7 +4940,7 @@ struct the_hunt_t : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exe
     };
 
     the_hunt_damage_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->spec.the_hunt->effectN( 1 ).trigger() )
+      : base_t( name, p, p->spec.the_hunt->effectN( 1 ).trigger() )
     {
       dual          = true;
       impact_action = p->get_background_action<the_hunt_dot_t>( "the_hunt_dot" );
@@ -4919,7 +4949,7 @@ struct the_hunt_t : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exe
 
     void impact( action_state_t* s ) override
     {
-      demon_hunter_spell_t::impact( s );
+      base_t::impact( s );
 
       if ( s->chain_target == 0 && p()->talent.devourer.devourers_bite->ok() )
       {
@@ -5191,9 +5221,9 @@ struct consume_t : public consume_base_t
 
 struct voidblade_t : public demon_hunter_spell_t
 {
-  struct voidblade_damage_t : public demon_hunter_spell_t
+  struct voidblade_damage_t : public hungering_slash_trigger_t<demon_hunter_spell_t>
   {
-    voidblade_damage_t( util::string_view name, demon_hunter_t* p ) : demon_hunter_spell_t( name, p, p->spec.voidblade )
+    voidblade_damage_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spec.voidblade )
     {
       background = dual = true;
       gain              = p->get_gain( "voidblade" );
@@ -5201,9 +5231,9 @@ struct voidblade_t : public demon_hunter_spell_t
 
     void impact( action_state_t* s ) override
     {
-      demon_hunter_spell_t::impact( s );
+      base_t::impact( s );
 
-      if ( p()->talent.devourer.devourers_bite->ok() )
+      if ( result_is_hit( s->result ) && p()->talent.devourer.devourers_bite->ok() )
       {
         td( s->target )->debuffs.devourers_bite->trigger();
       }
@@ -5767,6 +5797,46 @@ struct meteor_shower_t : public demon_hunter_spell_t
                                         .hasted( hasted )
                                         .duration( duration )
                                         .action( damage ) );
+  }
+};
+
+struct hungering_slash_t : public demon_hunter_spell_t
+{
+  struct hungering_slash_damage_t : public demon_hunter_spell_t
+  {
+    int number_of_souls_to_spawn;
+
+    hungering_slash_damage_t( util::string_view n, demon_hunter_t* p )
+      : demon_hunter_spell_t( n, p, p->spec.hungering_slash_damage )
+    {
+      number_of_souls_to_spawn = as<int>( p->spec.hungering_slash->effectN( 1 ).base_value() );
+    }
+
+    void execute() override
+    {
+      demon_hunter_spell_t::execute();
+
+      p()->spawn_soul_fragment( soul_fragment::LESSER, number_of_souls_to_spawn );
+    }
+  };
+
+  hungering_slash_t( demon_hunter_t* p, util::string_view o )
+    : demon_hunter_spell_t( "hungering_slash", p, p->spec.hungering_slash, o )
+  {
+    execute_action = p->get_background_action<hungering_slash_damage_t>( "hungering_slash_damage" );
+    add_child( execute_action );
+    execute_energize_action = p->get_background_action<demon_hunter_energize_t>( "hungering_slash_energize",
+                                                                                 p->spec.hungering_slash_energize );
+  }
+
+  bool action_ready() override
+  {
+    if ( !p()->buff.hungering_slash->check() )
+    {
+      return false;
+    }
+
+    return demon_hunter_spell_t::action_ready();
   }
 };
 
@@ -8528,6 +8598,8 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new void_ray_t( this, options_str );
   if ( name == "collapsing_star" )
     return new collapsing_star_t( this, options_str );
+  if ( name == "hungering_slash" )
+    return new hungering_slash_t( this, options_str );
 
   using namespace actions::attacks;
 
@@ -8633,6 +8705,8 @@ void demon_hunter_t::create_buffs()
                                    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buff.collapsing_star_stack = make_buff<collapsing_star_stacking_t>( this );
+
+  buff.hungering_slash = make_buff( this, "hungering_slash", spec.hungering_slash_buff );
 
   // Havoc ==================================================================
 
@@ -9708,6 +9782,10 @@ void demon_hunter_t::init_spells()
   spec.collapsing_star_stacking_buff = talent_spell_lookup( talent.devourer.collapsing_star, 1227702 );
   spec.emptiness_buff                = talent_spell_lookup( talent.devourer.emptiness, 1242504 );
   spec.impending_apocalypse_buff     = talent_spell_lookup( talent.devourer.impending_apocalypse, 1227338 );
+  spec.hungering_slash               = talent_spell_lookup( talent.devourer.hungering_slash, 1239123 );
+  spec.hungering_slash_buff          = talent_spell_lookup( talent.devourer.hungering_slash, 1239525 );
+  spec.hungering_slash_damage        = talent_spell_lookup( talent.devourer.hungering_slash, 1239127 );
+  spec.hungering_slash_energize      = talent_spell_lookup( talent.devourer.hungering_slash, 1239507 );
 
   mastery.a_fire_inside = talent.havoc.a_fire_inside->effectN( 6 ).trigger();
 
