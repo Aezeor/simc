@@ -741,7 +741,6 @@ public:
     const spell_data_t* chaos_strike;
     const spell_data_t* death_sweep;
     const spell_data_t* fel_rush;
-    const spell_data_t* fel_eruption;
     const spell_data_t* demonic_appetite;
 
     const spell_data_t* blade_dance_2;
@@ -3598,16 +3597,6 @@ struct fel_devastation_t : public demon_hunter_spell_t
     }
 
     demon_hunter_spell_t::tick( d );
-  }
-};
-
-// Fel Eruption =============================================================
-
-struct fel_eruption_t : public demon_hunter_spell_t
-{
-  fel_eruption_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "fel_eruption", p, p->spec.fel_eruption, options_str )
-  {
   }
 };
 
@@ -8601,8 +8590,6 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new disrupt_t( this, options_str );
   if ( name == "eye_beam" )
     return new eye_beam_t( this, options_str );
-  if ( name == "fel_eruption" )
-    return new fel_eruption_t( this, options_str );
   if ( name == "fel_devastation" )
     return new fel_devastation_t( this, options_str );
   if ( name == "fiery_brand" )
@@ -9492,7 +9479,6 @@ void demon_hunter_t::init_spells()
   spec.fel_rush            = find_specialization_spell( "Fel Rush" );
   spec.fel_rush_damage     = find_spell( 192611, DEMON_HUNTER_HAVOC );
   spec.immolation_aura_3   = find_rank_spell( "Immolation Aura", "Rank 3" );
-  spec.fel_eruption        = find_specialization_spell( "Fel Eruption" );
   spec.demonic_appetite    = find_spell( 206478, DEMON_HUNTER_HAVOC );
 
   // Vengeance Spells
