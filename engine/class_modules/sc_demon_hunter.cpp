@@ -679,9 +679,6 @@ public:
     const spell_data_t* soul_fragment;
 
     // Cross-Expansion Override Spells
-    const spell_data_t* sigil_of_spite;
-    const spell_data_t* sigil_of_spite_damage;
-
   } spell;
 
   // Specialization Spells
@@ -811,6 +808,8 @@ public:
     const spell_data_t* fel_devastation_heal;
     const spell_data_t* felfire_fist_in_combat_buff;
     const spell_data_t* felfire_fist_out_of_combat_buff;
+    const spell_data_t* sigil_of_spite;
+    const spell_data_t* sigil_of_spite_damage;
   } spec;
 
   struct hero_spec_t
@@ -4888,9 +4887,9 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
 
     sigil_of_spite_sigil_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, timespan_t delay )
       : demon_hunter_sigil_t( name, p, s, delay ),
-        soul_fragments_to_spawn( as<unsigned>( p->spell.sigil_of_spite->effectN( 3 ).base_value() ) )
+        soul_fragments_to_spawn( as<unsigned>( p->spec.sigil_of_spite->effectN( 3 ).base_value() ) )
     {
-      reduced_aoe_targets = p->spell.sigil_of_spite->effectN( 1 ).base_value();
+      reduced_aoe_targets = p->spec.sigil_of_spite->effectN( 1 ).base_value();
     }
 
     void execute() override
@@ -4907,11 +4906,11 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
   sigil_of_spite_sigil_t* sigil;
 
   sigil_of_spite_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "sigil_of_spite", p, p->spell.sigil_of_spite, options_str ), sigil( nullptr )
+    : demon_hunter_spell_t( "sigil_of_spite", p, p->spec.sigil_of_spite, options_str ), sigil( nullptr )
   {
-    if ( p->spell.sigil_of_spite->ok() )
+    if ( p->spec.sigil_of_spite->ok() )
     {
-      sigil = p->get_background_action<sigil_of_spite_sigil_t>( "sigil_of_spite_sigil", p->spell.sigil_of_spite_damage,
+      sigil = p->get_background_action<sigil_of_spite_sigil_t>( "sigil_of_spite_sigil", p->spec.sigil_of_spite_damage,
                                                                 ground_aoe_duration );
       sigil->stats = stats;
     }
@@ -9170,19 +9169,20 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
       return devourer_fury_state.fury_drain_per_second( devourer_fury_state.drain_stacks );
     } );
   }
-  else if ( splits.size() >= 3 && util::str_compare_ci( splits[ 0 ], "buff" ) && util::str_compare_ci( splits[ 1 ], "felfire_fist" ) )
+  else if ( splits.size() >= 3 && util::str_compare_ci( splits[ 0 ], "buff" ) &&
+            util::str_compare_ci( splits[ 1 ], "felfire_fist" ) )
   {
     if ( util::str_compare_ci( splits[ 2 ], "up" ) )
     {
       return make_fn_expr( name_str, [ this ]() {
         return buff.felfire_fist_in_combat->check() || buff.felfire_fist_out_of_combat->check();
-      });
+      } );
     }
     if ( util::str_compare_ci( splits[ 2 ], "down" ) )
     {
       return make_fn_expr( name_str, [ this ]() {
-        return !(buff.felfire_fist_in_combat->check() || buff.felfire_fist_out_of_combat->check());
-      });
+        return !( buff.felfire_fist_in_combat->check() || buff.felfire_fist_out_of_combat->check() );
+      } );
     }
   }
 
@@ -10073,13 +10073,13 @@ void demon_hunter_t::init_spells()
       break;
   }
 
-  spell.sigil_of_flame = specialization() != DEMON_HUNTER_DEVOURER ? find_spell( 204596 ) : spell_data_t::not_found();
-  spell.sigil_of_spite = talent.vengeance.sigil_of_spite;
+  spell.sigil_of_flame = conditional_spell_lookup( specialization() != DEMON_HUNTER_DEVOURER, 204596 );
 
-  spell.sigil_of_spite_damage = talent_spell_lookup( talent.vengeance.sigil_of_spite, 389860 );
-  spec.sigil_of_misery        = talent.demon_hunter.sigil_of_misery;
-  spec.sigil_of_silence       = talent.vengeance.sigil_of_silence;
-  spec.sigil_of_chains        = talent.vengeance.sigil_of_chains;
+  spec.sigil_of_spite        = talent.vengeance.sigil_of_spite;
+  spec.sigil_of_spite_damage = talent_spell_lookup( talent.vengeance.sigil_of_spite, 389860 );
+  spec.sigil_of_misery       = talent.demon_hunter.sigil_of_misery;
+  spec.sigil_of_silence      = talent.vengeance.sigil_of_silence;
+  spec.sigil_of_chains       = talent.vengeance.sigil_of_chains;
 
   // Set Bonus Items ========================================================
 
