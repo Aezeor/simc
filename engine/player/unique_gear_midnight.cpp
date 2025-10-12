@@ -75,7 +75,7 @@ namespace embellishments
 // 1230205 area trigger
 void arcanoweave_lining( special_effect_t& effect )
 {
-  effect.player->sim->error( "!!!PLACEHOLDER!!! midnight.arcanoweave_lining_uptime set to 0.9 !!!PLACEHOLDER!!!" );
+  effect.player->sim->error( error_level_e::PLACEHOLDER, "midnight.arcanoweave_lining_uptime set to 0.9" );
 
   struct arcanoweave_insight_buff_t : public stat_buff_t
   {

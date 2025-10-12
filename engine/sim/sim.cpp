@@ -3152,7 +3152,7 @@ void sim_t::do_pause()
 void sim_t::set_error( error_level_e level, std::string error )
 {
   util::replace_all( error, "\n", "" );
-  fmt::print( stderr, "{}\n", error );
+  fmt::print( stderr, "{}: {}\n", util::error_level_string( level ), error );
   std::fflush( stderr );
 
   error_list.emplace_back( level, std::move( error ) );

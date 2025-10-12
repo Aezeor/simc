@@ -1475,5 +1475,6 @@ enum error_level_e : unsigned short
 {
   TRIVIAL,
   MODERATE,
-  SEVERE
+  SEVERE,
+  PLACEHOLDER,
 };
