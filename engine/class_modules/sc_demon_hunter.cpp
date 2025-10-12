@@ -287,6 +287,7 @@ public:
     buff_t* rolling_torment;
     buff_t* impending_apocalypse;
     buff_t* hungering_slash;
+    buff_t* voidstep;
 
     // Havoc
     buff_t* blind_fury;
@@ -443,7 +444,7 @@ public:
       player_talent_t beckon;
       player_talent_t voidglare_boon;
 
-      player_talent_t voidstep;  // NYI
+      player_talent_t voidstep;
       player_talent_t up_close;
       player_talent_t impending_apocalypse;
       player_talent_t rolling_torment;
@@ -733,6 +734,7 @@ public:
     const spell_data_t* hungering_slash_buff;
     const spell_data_t* hungering_slash_damage;
     const spell_data_t* hungering_slash_energize;
+    const spell_data_t* voidstep;
 
     // Havoc
     const spell_data_t* havoc_demon_hunter;
@@ -2862,7 +2864,7 @@ struct hungering_slash_trigger_t : BASE
     if ( !BASE::p()->talent.devourer.hungering_slash->ok() )
       return;
 
-    if ( s->chain_target != 0 || !BASE::result_is_hit( s->result) )
+    if ( s->chain_target != 0 || !BASE::result_is_hit( s->result ) )
       return;
 
     BASE::p()->buff.hungering_slash->trigger();
@@ -5829,6 +5831,13 @@ struct hungering_slash_t : public demon_hunter_spell_t
                                                                                  p->spec.hungering_slash_energize );
   }
 
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+
+    p()->buff.voidstep->trigger();
+  }
+
   bool action_ready() override
   {
     if ( !p()->buff.hungering_slash->check() )
@@ -7453,6 +7462,20 @@ struct burning_blades_t : public residual_action::residual_periodic_action_t<dem
 struct vengeful_retreat_t
   : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exergy_trigger_t<demon_hunter_spell_t>>>
 {
+  struct voidstep_damage_t : public demon_hunter_spell_t
+  {
+    voidstep_damage_t( util::string_view n, demon_hunter_t* p ) : demon_hunter_spell_t( n, p, p->spec.voidstep->effectN( 1 ).trigger() )
+    {
+    }
+
+    void execute() override
+    {
+      demon_hunter_spell_t::execute();
+
+      p()->buff.voidstep->expire();
+    }
+  };
+
   struct vengeful_retreat_damage_t : public demon_hunter_spell_t
   {
     vengeful_retreat_damage_t( util::string_view name, demon_hunter_t* p )
@@ -7460,6 +7483,12 @@ struct vengeful_retreat_t
     {
       background = dual = true;
       aoe               = -1;
+
+      if ( p->talent.devourer.voidstep->ok() )
+      {
+        execute_action = p->get_background_action<voidstep_damage_t>( "voidstep" );
+        add_child( execute_action );
+      }
     }
 
     void execute() override
@@ -8708,6 +8737,8 @@ void demon_hunter_t::create_buffs()
 
   buff.hungering_slash = make_buff( this, "hungering_slash", spec.hungering_slash_buff );
 
+  buff.voidstep = make_buff( this, "voidstep", spec.voidstep );
+
   // Havoc ==================================================================
 
   buff.out_of_range = make_buff( this, "out_of_range", spell_data_t::nil() )->set_chance( 1.0 );
@@ -9786,6 +9817,7 @@ void demon_hunter_t::init_spells()
   spec.hungering_slash_buff          = talent_spell_lookup( talent.devourer.hungering_slash, 1239525 );
   spec.hungering_slash_damage        = talent_spell_lookup( talent.devourer.hungering_slash, 1239127 );
   spec.hungering_slash_energize      = talent_spell_lookup( talent.devourer.hungering_slash, 1239507 );
+  spec.voidstep                      = talent_spell_lookup( talent.devourer.voidstep, 1223157 );
 
   mastery.a_fire_inside = talent.havoc.a_fire_inside->effectN( 6 ).trigger();
 
