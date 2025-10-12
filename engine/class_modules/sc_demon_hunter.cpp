@@ -260,6 +260,7 @@ public:
   double frailty_accumulator;  // Frailty healing accumulator
   event_t* frailty_driver;
 
+  double feed_the_demon_accumulator;
   double shattered_destiny_accumulator;
 
   double wounded_quarry_accumulator;
@@ -992,6 +993,7 @@ public:
     proc_t* soul_fragment_from_fallout;
     proc_t* soul_fragment_from_meta;
     proc_t* soul_fragment_from_bulk_extraction;
+    proc_t* feed_the_demon;
 
     // Aldrachi Reaver
     proc_t* soul_fragment_from_aldrachi_tactics;
@@ -2324,6 +2326,23 @@ public:
           p()->proc.shattered_destiny->occur();
         }
       }
+
+      if ( p()->talent.vengeance.feed_the_demon->ok() )
+      {
+        resource_e cr  = ab::current_resource();
+        const auto& bc = ab::base_costs[ cr ];
+        auto base      = bc.base;
+
+        p()->feed_the_demon_accumulator += base;
+
+        const double threshold = p()->talent.vengeance.feed_the_demon->effectN( 1 ).base_value();
+        while ( p()->feed_the_demon_accumulator >= threshold )
+        {
+          p()->feed_the_demon_accumulator -= threshold;
+          p()->cooldown.demon_spikes->adjust( -p()->talent.vengeance.feed_the_demon->effectN( 2 ).time_value() );
+          p()->proc.feed_the_demon->occur();
+        }
+      }
     }
   }
 
@@ -3175,13 +3194,6 @@ struct consume_soul_t : public demon_hunter_heal_t
   void impact( action_state_t* s ) override
   {
     demon_hunter_heal_t::impact( s );
-
-    if ( p()->talent.vengeance.feed_the_demon->ok() )
-    {
-      timespan_t duration =
-          timespan_t::from_seconds( p()->talent.vengeance.feed_the_demon->effectN( 1 ).base_value() / 100 );
-      p()->cooldown.demon_spikes->adjust( -duration );
-    }
 
     p()->buff.painbringer->trigger();
     p()->buff.art_of_the_glaive->trigger();
@@ -8599,6 +8611,7 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, util::string_view name, race_e r )
     soul_fragments(),
     frailty_accumulator( 0.0 ),
     frailty_driver( nullptr ),
+    feed_the_demon_accumulator( 0.0 ),
     shattered_destiny_accumulator( 0.0 ),
     wounded_quarry_accumulator( 0.0 ),
     exit_melee_event( nullptr ),
@@ -9445,6 +9458,7 @@ void demon_hunter_t::init_procs()
   proc.soul_fragment_from_fallout         = get_proc( "soul_fragment_from_fallout" );
   proc.soul_fragment_from_meta            = get_proc( "soul_fragment_from_meta" );
   proc.soul_fragment_from_bulk_extraction = get_proc( "soul_fragment_from_bulk_extraction" );
+  proc.feed_the_demon = get_proc( "feed_the_demon" );
 
   // Aldrachi Reaver
   proc.soul_fragment_from_aldrachi_tactics = get_proc( "soul_fragment_from_aldrachi_tactics" );
@@ -11005,6 +11019,7 @@ void demon_hunter_t::reset()
   next_fragment_spawn           = 0;
   metamorphosis_health          = 0;
   frailty_accumulator           = 0.0;
+  feed_the_demon_accumulator = 0.0;
   shattered_destiny_accumulator = 0.0;
   wounded_quarry_accumulator    = 0.0;
   last_reavers_mark_applied     = nullptr;
