@@ -1138,7 +1138,6 @@ public:
 
   // overridden player_t stat functions
   double composite_armor() const override;
-  double composite_base_armor_multiplier() const override;
   double composite_armor_multiplier() const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_player_critical_damage_multiplier( const action_state_t*, school_e ) const override;
@@ -1961,7 +1960,13 @@ public:
     ab::parse_effects( p()->buff.demon_soul );
     ab::parse_effects( p()->buff.empowered_demon_soul );
     ab::parse_effects( p()->mastery.monster_within );
-    ab::parse_effects( p()->buff.metamorphosis, p()->mastery.monster_within );
+
+    effect_mask_t meta_mask = effect_mask_t( true );
+    if ( p()->specialization() == DEMON_HUNTER_VENGEANCE && !p()->talent.vengeance.vengeful_beast->ok() )
+    {
+      meta_mask.disable( 14 );
+    }
+    ab::parse_effects( p()->buff.metamorphosis, p()->mastery.monster_within, meta_mask );
 
     // Devourer
     ab::parse_effects( p()->buff.feast_of_souls );
@@ -8032,19 +8037,8 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 
     if ( !p()->buff.metamorphosis->up() )
     {
-      switch ( p()->specialization() )
-      {
-        case DEMON_HUNTER_DEVOURER:
-          break;
-        case DEMON_HUNTER_HAVOC:
-          p()->buff.demonsurge_abilities[ demonsurge_ability::ANNIHILATION ]->trigger();
-          p()->buff.demonsurge_abilities[ demonsurge_ability::DEATH_SWEEP ]->trigger();
-          break;
-        case DEMON_HUNTER_VENGEANCE:
-          break;
-        default:
-          break;
-      }
+      p()->buff.demonsurge_abilities[ demonsurge_ability::ANNIHILATION ]->trigger();
+      p()->buff.demonsurge_abilities[ demonsurge_ability::DEATH_SWEEP ]->trigger();
       p()->buff.demonsurge_demonic->trigger();
     }
 
@@ -8054,14 +8048,14 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 
   void extend_duration_or_trigger( timespan_t duration, player_t* player ) override
   {
-    demon_hunter_buff_t<buff_t>::extend_duration_or_trigger( duration, player );
+    demon_hunter_buff_t::extend_duration_or_trigger( duration, player );
 
     p()->buff.inner_demon->trigger();
   }
 
   void start( int stacks, double value, timespan_t duration ) override
   {
-    demon_hunter_buff_t<buff_t>::start( stacks, value, duration );
+    demon_hunter_buff_t::start( stacks, value, duration );
 
     if ( p()->specialization() == DEMON_HUNTER_VENGEANCE )
     {
@@ -8098,7 +8092,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    demon_hunter_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
+    demon_hunter_buff_t::expire_override( expiration_stacks, remaining_duration );
 
     if ( p()->specialization() == DEMON_HUNTER_VENGEANCE )
     {
@@ -10509,23 +10503,6 @@ double demon_hunter_t::composite_armor() const
   return a;
 }
 
-// demon_hunter_t::composite_base_armor_multiplier ==========================
-
-double demon_hunter_t::composite_base_armor_multiplier() const
-{
-  double am = base_t::composite_base_armor_multiplier();
-
-  if ( specialization() == DEMON_HUNTER_VENGEANCE )
-  {
-    if ( buff.metamorphosis->check() )
-    {
-      am *= 1.0 + spec.metamorphosis_buff->effectN( 8 ).percent();
-    }
-  }
-
-  return am;
-}
-
 // demon_hunter_t::composite_armor_multiplier ===============================
 
 double demon_hunter_t::composite_armor_multiplier() const
@@ -11348,6 +11325,7 @@ void demon_hunter_t::parse_player_effects()
   // Vengeance
   if ( specialization() == DEMON_HUNTER_VENGEANCE )
   {
+    parse_effects( buff.metamorphosis );
     parse_effects( buff.demon_spikes );
     parse_effects( mastery.fel_blood_rank_2 );
   }
