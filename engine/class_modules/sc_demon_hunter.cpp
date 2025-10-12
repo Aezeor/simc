@@ -5806,10 +5806,10 @@ struct catastrophe_t : public residual_action::residual_periodic_action_t<demon_
 
 struct meteor_shower_t : public demon_hunter_spell_t
 {
-  struct meteor_shower_damage_t : public demon_hunter_spell_t
+  struct meteor_shower_damage_t : public catastrophe_trigger_t<demon_hunter_spell_t>
   {
     meteor_shower_damage_t( util::string_view n, demon_hunter_t* p )
-      : demon_hunter_spell_t( n, p, p->hero_spec.meteor_shower_damage )
+      : base_t( n, p, p->hero_spec.meteor_shower_damage )
     {
     }
   };
