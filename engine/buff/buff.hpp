@@ -11,7 +11,6 @@
 #include "player/actor_pair.hpp"
 #include "sc_enums.hpp"
 #include "sim/uptime.hpp"
-#include "util/format.hpp"
 #include "util/parse_util.hpp"
 #include "util/sample_data.hpp"
 #include "util/span.hpp"
@@ -67,7 +66,7 @@ public:
   const spell_data_t* s_data_reporting;
   player_t* const source;
   std::vector<event_t*> expiration;
-  event_t* delay;
+  std::vector<event_t*> delay;
   event_t* expiration_delay;
   cooldown_t* cooldown;
   std::unique_ptr<cooldown_t> internal_cooldown;

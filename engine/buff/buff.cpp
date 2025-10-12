@@ -308,7 +308,12 @@ struct buff_delay_t : public buff_event_t
     // Add a Cooldown check here to avoid extra processing due to delays
     if ( buff->cooldown->remains() == timespan_t::zero() )
       buff->execute( stacks, value, duration );
-    buff->delay = nullptr;
+
+    auto it = range::find_if( buff->delay, [ this ]( const event_t* e ) {
+      return e == this;
+    } );
+    assert( it != buff->delay.end() );
+    buff->delay.erase( it );
   }
 };
 
@@ -1685,8 +1690,10 @@ int buff_t::total_stack()
 {
   int s = current_stack;
 
-  if ( delay )
-    s += debug_cast<buff_delay_t*>( delay )->stacks;
+  for ( const auto e : delay )
+  {
+    s += debug_cast<buff_delay_t*>( e )->stacks;
+  }
 
   return std::min( s, _max_stack );
 }
@@ -1854,14 +1861,27 @@ bool buff_t::trigger( int stacks, double value, double chance, timespan_t durati
     else
       stacks = _resolve_stacks( stacks );
 
-    if ( delay )
+    if ( !delay.empty() )
     {
-      buff_delay_t& d = *static_cast<buff_delay_t*>( delay );
-      d.stacks += stacks;
-      d.value = value;
+      auto it = range::find_if( delay, [ duration ]( const event_t* e ) {
+        return static_cast<const buff_delay_t*>( e )->duration == duration;
+      } );
+
+      if ( it != delay.end() )
+      {
+        auto d = static_cast<buff_delay_t*>( *it );
+        d->stacks += stacks;
+        d->value = value;
+      }
+      else
+      {
+        delay.emplace_back( make_event<buff_delay_t>( *sim, this, stacks, value, duration ) );
+      }
     }
     else
-      delay = make_event<buff_delay_t>( *sim, this, stacks, value, duration );
+    {
+      delay.emplace_back( make_event<buff_delay_t>( *sim, this, stacks, value, duration ) );
+    }
   }
   else
   {
@@ -2636,7 +2656,10 @@ void buff_t::cancel()
 {
   expire();
   event_t::cancel( expiration_delay );
-  event_t::cancel( delay );
+  for ( auto e : delay )
+  {
+    event_t::cancel( e );
+  }
 }
 
 void buff_t::predict()
@@ -2684,7 +2707,10 @@ void buff_t::aura_loss()
 
 void buff_t::reset()
 {
-  event_t::cancel( delay );
+  for ( auto e : delay )
+  {
+    event_t::cancel( e );
+  }
   event_t::cancel( expiration_delay );
   event_t::cancel( tick_event );
   cooldown->reset( false );
