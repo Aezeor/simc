@@ -1969,6 +1969,7 @@ public:
 
   // Midnight Triggers
   void trigger_ride_the_lightning( const action_state_t* state, action_t* trigger );
+  void trigger_thorims_invocation( const action_state_t* state );
 
   // Legendary
   void trigger_elemental_equilibrium( const action_state_t* state );
@@ -5714,13 +5715,20 @@ struct stormstrike_t : public stormstrike_base_t
   {
     stormstrike_base_t::impact( state );
 
-    p()->trigger_ride_the_lightning( execute_state, p()->action.chain_lightning_ss_rtl );
+    if ( strike_type == strike_variant::NORMAL && p()->buff.doom_winds->up() )
+    {
+      p()->trigger_thorims_invocation( state );
+    }
+
+    p()->trigger_ride_the_lightning( state, p()->action.chain_lightning_ss_rtl );
   }
 
   bool ready() override
   {
     if ( p()->buff.ascendance->check() )
+    {
       return false;
+    }
 
     return stormstrike_base_t::ready();
   }
@@ -5746,16 +5754,16 @@ struct windstrike_t : public stormstrike_base_t
     }
   }
 
-  double recharge_multiplier( const cooldown_t& cd ) const override
+  void impact( action_state_t* state ) override
   {
-    auto m = stormstrike_base_t::recharge_multiplier( cd );
+    stormstrike_base_t::impact( state );
 
-    if ( p()->buff.ascendance->up() )
+    if ( strike_type == strike_variant::NORMAL )
     {
-      m *= 1.0 + p()->buff.ascendance->data().effectN( 4 ).percent();
+      p()->trigger_thorims_invocation( state );
     }
 
-    return m;
+    p()->trigger_ride_the_lightning( state, p()->action.chain_lightning_ws_rtl );
   }
 
   bool ready() override
@@ -5767,51 +5775,6 @@ struct windstrike_t : public stormstrike_base_t
 
     return stormstrike_base_t::ready();
   }
-
-  void execute() override
-  {
-    stormstrike_base_t::execute();
-
-    if ( strike_type == strike_variant::NORMAL &&
-         p()->talent.thorims_invocation.ok() &&
-         p()->buff.maelstrom_weapon->check() )
-    {
-      action_t* spell = nullptr;
-
-      // On 11.2, Tempest overrides the TI primer completely
-      if ( p()->buff.tempest->check() )
-      {
-        spell = p()->action.tempest_ti;
-      }
-      else if ( p()->action.ti_trigger == p()->action.lightning_bolt_ti ||
-        p()->action.ti_trigger == nullptr )
-      {
-        if ( p()->buff.tempest->check() )
-        {
-          spell = p()->action.tempest_ti;
-        }
-        else
-        {
-          spell = p()->action.ti_trigger ? p()->action.ti_trigger : p()->action.lightning_bolt_ti;
-        }
-      }
-      else if ( p()->action.ti_trigger == p()->action.chain_lightning_ti )
-      {
-        spell = p()->action.ti_trigger;
-      }
-
-      spell->set_target( execute_state->target );
-      spell->execute();
-    }
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    stormstrike_base_t::impact( state );
-
-    p()->trigger_ride_the_lightning( execute_state, p()->action.chain_lightning_ws_rtl );
-  }
-
 };
 
 // Sundering Spell =========================================================
@@ -6098,6 +6061,11 @@ struct crash_lightning_t : public shaman_attack_t
     if ( p()->buff.tww2_enh_4pc->check() )
     {
       p()->buff.tww2_enh_4pc_damage->trigger( p()->buff.tww2_enh_4pc->check() );
+    }
+
+    if ( p()->buff.doom_winds->up() )
+    {
+      p()->trigger_thorims_invocation( execute_state );
     }
   }
 };
@@ -13172,6 +13140,34 @@ void shaman_t::trigger_ride_the_lightning( const action_state_t* state, action_t
   }
 
   trigger->execute_on_target( state->target );
+}
+
+void shaman_t::trigger_thorims_invocation( const action_state_t* state )
+{
+  if ( !talent.thorims_invocation.ok() )
+  {
+    return;
+  }
+
+  if ( buff.maelstrom_weapon->check() == 0 )
+  {
+    return;
+  }
+
+  // On 11.2, Tempest overrides the TI primer completely
+  if ( buff.tempest->check() )
+  {
+    action.tempest_ti->execute_on_target( state->target );
+  }
+  else if ( action.ti_trigger )
+  {
+    action.ti_trigger->execute_on_target( state->target );
+  }
+  // Default to Lightning Bolt
+  else
+  {
+    action.lightning_bolt_ti->execute_on_target( state->target );
+  }
 }
 
 // shaman_t::init_buffs =====================================================
