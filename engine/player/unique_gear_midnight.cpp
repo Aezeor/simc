@@ -301,11 +301,6 @@ void primal_spore_binding( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-void lucky_keychain( special_effect_t& effect )
-{
-
-}
-
 void prismatic_focusing_iris( special_effect_t& effect )
 {
 
@@ -351,7 +346,6 @@ void register_special_effects()
   register_special_effect( 1244238, embellishments::devouring_banding );
   register_special_effect( 1244243, embellishments::blessed_pango_charm );
   register_special_effect( 1244276, embellishments::primal_spore_binding );
-  register_special_effect( 1246298, embellishments::lucky_keychain );
   register_special_effect( 1251906, embellishments::prismatic_focusing_iris );
   register_special_effect( 1251905, embellishments::stabilizing_gemstone_bandolier );
   // Trinkets
