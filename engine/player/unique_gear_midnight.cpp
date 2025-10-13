@@ -90,6 +90,8 @@ void arcanoweave_lining( special_effect_t& effect )
 {
   effect.player->sim->error( error_level_e::PLACEHOLDER, "midnight.arcanoweave_lining_uptime set to 0.9" );
 
+  auto buff_amount = effect.driver()->effectN( 1 ).average( effect );
+
   struct arcanoweave_insight_buff_t : public stat_buff_t
   {
     rng::truncated_gauss_t interval;
@@ -100,7 +102,6 @@ void arcanoweave_lining( special_effect_t& effect )
                   e.player->midnight_opts.arcanoweave_lining_update_stddev )
     {
       set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-      add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e ) );
     }
   };
 
@@ -111,13 +112,12 @@ void arcanoweave_lining( special_effect_t& effect )
   if ( auto buff = buff_t::find( effect.player, "arcanoweave_insight" ) )
   {
     // add stat from 2nd copy of embellishment
-    debug_cast<arcanoweave_insight_buff_t*>( buff )
-      ->add_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
-
+    debug_cast<arcanoweave_insight_buff_t*>( buff )->add_stat_from_effect_type( A_MOD_STAT, buff_amount );
     return;
   }
 
   auto insight = make_buff<arcanoweave_insight_buff_t>( effect );
+  insight->add_stat_from_effect_type( A_MOD_STAT, buff_amount );
 
   if ( uptime_pct >= 1.0 )
   {
@@ -183,7 +183,6 @@ void devouring_banding( special_effect_t& effect )
     // add damage from 2nd copy of embellishment
     proc->base_dd_min += proc_damage;
     proc->base_dd_max += proc_damage;
-
     return;
   }
 
@@ -314,9 +313,35 @@ void primal_spore_binding( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 1251906 driver
+// 1252383 rppm driver
+// 1252389 dot
 void prismatic_focusing_iris( special_effect_t& effect )
 {
+  effect.player->sim->error( PLACEHOLDER,
+    "prismatic focusing iris damage using rppm driver value instead of effect driver value" );
 
+  auto dot_damage = effect.trigger()->effectN( 2 ).average( effect );
+
+  if ( auto proc = effect.player->find_action( "prismatic_focusing_iris" ) )
+  {
+    // add damage from 2nd copy of embellishment
+    proc->base_td += dot_damage;
+    return;
+  }
+
+  auto damage_spell = effect.trigger()->effectN( 1 ).trigger();
+  auto pct_per_gem = effect.driver()->effectN( 3 ).percent();
+
+  auto dot = create_proc_action<generic_proc_t>( "prismatic_focusing_iris", effect, damage_spell );
+  dot->base_td += dot_damage;
+  dot->base_td_multiplier *= role_mult( effect.player, damage_spell );
+  dot->base_td_multiplier *= 1.0 + ( pct_per_gem * unique_gem_list( effect.player, gem_colors ).size() );
+
+  effect.spell_id = effect.trigger()->id();
+  effect.execute_action = dot;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void stabilizing_gemstone_bandolier( special_effect_t& effect )
