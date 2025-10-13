@@ -363,7 +363,73 @@ namespace armors
 
 namespace sets
 {
+// 1244005 driver
+// 1259297 coeff
+// 1259504 shiv missile
+// 1259264 shiv direct damage
+// 1259503 crystal missile
+// 1259273 crystal aoe damage
+// 1259508 tonic missile
+// 1259276 tonic heal
+namespace
+{
+template <typename T>
+action_t* create_mrm_action( std::string n, const special_effect_t& e, unsigned id, double a )
+{
+  auto missile = create_proc_action<generic_proc_t>( n + "_missile", e, id );
+  auto impact = create_proc_action<T>( n, e, missile->data().effectN( 1 ).trigger() );
+  impact->base_dd_min = impact->base_dd_max = a;
+  missile->dual = true;
+  missile->stats = impact->stats;  // report the damage only
+  missile->impact_action = impact;
 
+  return missile;
+}
+}  // namespace
+
+void murder_row_materials( special_effect_t& effect )
+{
+  effect.player->sim->error( PLACEHOLDER, "murder row materials proc effect based on trigger action" );
+  effect.player->sim->error( PLACEHOLDER, "murder row materials item level scaling unknown" );
+  effect.player->sim->error( PLACEHOLDER, "murder row materials shiv assumed to use effect#1 coeff" );
+  effect.player->sim->error( PLACEHOLDER, "murder row materials crystal assumed to use effect#2 coeff" );
+  effect.player->sim->error( PLACEHOLDER, "murder row materials crystal assumed to split + increase per target " );
+  effect.player->sim->error( PLACEHOLDER, "murder row materials tonic assumed to use effect#3 coeff" );
+
+  auto shiv_amount = effect.trigger()->effectN( 1 ).average( effect );
+  auto crystal_amount = effect.trigger()->effectN( 2 ).average( effect );
+  auto tonic_amount = effect.trigger()->effectN( 3 ).average( effect );
+
+  auto shiv =
+    create_mrm_action<generic_proc_t>( "murder_row_shiv", effect, 1259504, shiv_amount );
+  auto crystal =
+    create_mrm_action<generic_aoe_proc_t>( "slightlystabilized_arcanocrystal", effect, 1259503, crystal_amount );
+  auto tonic =
+    create_mrm_action<generic_heal_t>( "emergency_healing_tonic", effect, 1259508, tonic_amount );
+
+  effect.proc_flags2_ = PF2_CRIT;
+  effect.player->callbacks.register_callback_execute_function( effect.spell_id,
+    [ shiv, crystal, tonic ]( auto, auto, auto s ) {
+      if ( !s->target->is_enemy() )
+        tonic->execute_on_target( s->target );
+      else if ( s->n_targets > 1 )
+        crystal->execute_on_target( s->target );
+      else
+        shiv->execute_on_target( s->target );
+    } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void root_wardens_regalia( special_effect_t& effect )
+{
+
+}
+
+void torments_duality( special_effect_t& effect )
+{
+
+}
 }
 
 void register_special_effects()
@@ -385,7 +451,11 @@ void register_special_effects()
   // Trinkets
   // Weapons
   // Armor
+  register_special_effect( 1244005, sets::murder_row_materials );
+  register_special_effect( 1244021, sets::root_wardens_regalia );
+  register_special_effect( 1253358, sets::torments_duality );
   // Sets
+
 }
 
 void register_target_data_initializers( sim_t& )
