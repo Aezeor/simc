@@ -5586,11 +5586,11 @@ struct void_ray_t : public doomsayer_trigger_t<demon_hunter_spell_t>
       aoe               = -1;
     }
 
-    double action_multiplier() const override
+    double composite_da_multiplier(const action_state_t* s) const override
     {
-      double m = demon_hunter_spell_t::action_multiplier();
+      double m = demon_hunter_spell_t::composite_da_multiplier( s );
 
-      if ( p()->talent.devourer.focused_ray->ok() && targets_in_range_list( target_list() ).size() == 1 )
+      if ( p()->talent.devourer.focused_ray->ok() && s->n_targets == 1 )
       {
         m *= 1.0 + p()->talent.devourer.focused_ray->effectN( 1 ).percent();
       }
