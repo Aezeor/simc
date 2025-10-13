@@ -1531,6 +1531,7 @@ class SpellDataGenerator(DataGenerator):
          1242344, # Attuned to the Aether
          # Midnight 12.X.X
          1229746, # Arcanoweave embellishment buff
+         1259130, # Primal Spore Binding embellishment heal
         ),
 
         # Warrior:

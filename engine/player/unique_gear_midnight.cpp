@@ -253,9 +253,52 @@ void blessed_pango_charm( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 1244276 driver
+// 1259124 rppm driver
+// 1259127 heal coeff?
+// 1259128 damage
+// 1259130 heal
 void primal_spore_binding( special_effect_t& effect )
 {
+  effect.player->sim->error( PLACEHOLDER,
+    "primal spore binding damage and heal using effect driver value instead of rppm driver value" );
 
+  auto damage_amount = effect.driver()->effectN( 1 ).average( effect );
+  auto heal_amount = effect.driver()->effectN( 2 ).average( effect );
+
+  if ( auto proc = effect.player->find_action( "primal_spore_explosion" ) )
+  {
+    // add damage from 2nd copy of embellishment
+    proc->base_dd_min += damage_amount;
+    proc->base_dd_max += damage_amount;
+
+    auto heal = effect.player->find_action( "primal_spore_explosion_heal" );
+    assert( heal );
+    heal->base_dd_min += heal_amount;
+    heal->base_dd_max += heal_amount;
+
+    return;
+  }
+
+  auto damage = create_proc_action<generic_aoe_proc_t>( "primal_spore_explosion", effect, 1259128, true );
+  damage->base_dd_min += damage_amount;
+  damage->base_dd_max += damage_amount;
+
+  auto heal =
+    create_proc_action<base_generic_aoe_proc_t<proc_heal_t>>( "primal_spore_explosion_heal", effect, 1259130, true );
+  heal->base_dd_min += heal_amount;
+  heal->base_dd_max += heal_amount;
+  heal->name_str_reporting = "Heal";
+
+  effect.spell_id = effect.trigger()->id();
+  effect.player->callbacks.register_callback_execute_function( effect.spell_id, [ damage, heal ]( auto, auto, auto s ) {
+    if ( s->target->is_enemy() )
+      damage->execute_on_target( s->target );
+    else
+      heal->execute_on_target( s->target );
+  } );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void lucky_keychain( special_effect_t& effect )
