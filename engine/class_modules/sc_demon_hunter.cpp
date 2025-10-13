@@ -406,8 +406,8 @@ public:
 
       player_talent_t erratic_felheart;
       player_talent_t final_breath;
-      player_talent_t darkness;       // No Implementation
-      player_talent_t demon_muzzle;   // No Implementation
+      player_talent_t darkness;      // No Implementation
+      player_talent_t demon_muzzle;  // No Implementation
       player_talent_t soul_splitter;
 
       player_talent_t wings_of_wrath;  // No Implementation
@@ -1097,6 +1097,7 @@ public:
     bool enable_dungeon_slice                        = false;
     double soul_fragment_from_shattered_souls_chance = 0.4;
     int entropy_starting_souls                       = -1;
+    int channel_tick_cutoff_benefit                  = 2;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -2984,7 +2985,7 @@ struct final_breath_trigger_t : public BASE
 
     assert( BASE::tick_action != nullptr );
 
-    if ( d->current_tick == d->num_ticks() )
+    if ( d->current_tick >= ( d->num_ticks() - BASE::p()->options.channel_tick_cutoff_benefit ) )
     {
       action_state_t* tick_state = BASE::tick_action->get_state( BASE::tick_action->execute_state );
       if ( BASE::tick_action->pre_execute_state )
@@ -3561,7 +3562,8 @@ struct eye_beam_base_t : public final_breath_trigger_t<demon_hunter_spell_t>
       p()->buff.blind_fury->cancel();
       p()->proc.eye_beam_canceled->occur();
     }
-    else if ( p()->talent.havoc.furious_gaze->ok() )
+    else if ( p()->talent.havoc.furious_gaze->ok() &&
+              d->current_tick >= ( d->num_ticks() - p()->options.channel_tick_cutoff_benefit ) )
     {
       p()->buff.furious_gaze->trigger();
     }
@@ -5717,7 +5719,7 @@ struct void_ray_t : public final_breath_trigger_t<doomsayer_trigger_t<demon_hunt
   {
     base_t::last_tick( d );
 
-    if ( d->current_tick == d->num_ticks() )
+    if ( d->current_tick >= ( d->num_ticks() - p()->options.channel_tick_cutoff_benefit ) )
     {
       if ( p()->talent.devourer.eradicate->ok() )
       {
@@ -9403,6 +9405,7 @@ void demon_hunter_t::create_options()
   add_option( opt_float( "soul_fragment_from_shattered_souls_chance", options.soul_fragment_from_shattered_souls_chance,
                          0.0, 1.0 ) );
   add_option( opt_int( "entropy_starting_souls", options.entropy_starting_souls, -1, 50 ) );
+  add_option( opt_int( "channel_tick_cutoff_benefit", options.channel_tick_cutoff_benefit, 0, 10 ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
