@@ -2113,35 +2113,6 @@ struct ascendance_buff_t : public buff_t
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
 };
 
-struct hot_hand_buff_t : public buff_t
-{
-  shaman_t* shaman;
-  hot_hand_buff_t( shaman_t* p )
-      : buff_t( p, "hot_hand", p->find_spell( 215785 ) ), shaman( p )
-  {
-    set_cooldown( timespan_t::zero() );
-    set_stack_change_callback(
-        [ this ]( buff_t*, int, int ) { shaman->cooldown.lava_lash->adjust_recharge_multiplier(); } );
-    set_chance( 1.0 ); // Proc chance handled by shaman_t::trigger_hot_hand
-  }
-
-  bool trigger( int s, double v, double c, timespan_t d ) override
-  {
-    bool trigger = buff_t::trigger( s, v, c, d );
-    if ( trigger )
-    {
-      shaman->uptime.hot_hand->update( trigger, sim->current_time() );
-    }
-    return trigger;
-  }
-
-  void expire_override( int s, timespan_t d ) override
-  {
-    shaman->uptime.hot_hand->update( false, sim->current_time() );
-    buff_t::expire_override( s, d );
-  }
-};
-
 struct cl_crash_lightning_buff_t : public buff_t
 {
   shaman_t* shaman;
@@ -5260,26 +5231,9 @@ struct lava_lash_t : public shaman_attack_t
     }
   }
 
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double m = shaman_attack_t::recharge_multiplier( cd );
-
-    if ( p()->buff.hot_hand->check() )
-    {
-      m /= 1.0 + p()->buff.hot_hand->data().effectN( 2 ).percent();
-    }
-
-    return m;
-  }
-
   double action_multiplier() const override
   {
     double m = shaman_attack_t::action_multiplier();
-
-    if ( p()->buff.hot_hand->up() )
-    {
-      m *= 1.0 + p()->buff.hot_hand->data().effectN( 1 ).percent();
-    }
 
     // Flametongue imbue only increases Lava Lash damage if it is imbued on the off-hand
     // weapon
@@ -5336,13 +5290,7 @@ struct lava_lash_t : public shaman_attack_t
 
     if ( p()->talent.ashen_catalyst.ok() && td( target )->dot.flame_shock->is_ticking() )
     {
-      auto reduction = p()->talent.ashen_catalyst->effectN( 1 ).time_value();
-      if ( p()->buff.hot_hand->check() )
-      {
-        reduction /= 1.0 + p()->buff.hot_hand->data().effectN( 2 ).percent();
-      }
-
-      p()->cooldown.lava_lash->adjust( -reduction );
+      p()->cooldown.lava_lash->adjust( -p()->talent.ashen_catalyst->effectN( 1 ).time_value() );
     }
   }
 
@@ -12226,6 +12174,11 @@ void shaman_t::trigger_hot_hand( const action_state_t* state )
     return;
   }
 
+  if ( buff.hot_hand->check() )
+  {
+    return;
+  }
+
   assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr && "Hot Hand called on invalid action type" );
   shaman_attack_t* attack = debug_cast<shaman_attack_t*>( state->action );
 
@@ -12240,14 +12193,7 @@ void shaman_t::trigger_hot_hand( const action_state_t* state )
     return;
   }
 
-  if ( !rng().roll( talent.hot_hand->proc_chance() ) )
-  {
-    return;
-  }
-
-  buff.hot_hand->extend_duration_or_trigger( buff.hot_hand->buff_duration() );
-
-  if ( attack->proc_hh )
+  if ( buff.hot_hand->trigger() && attack->proc_hh )
   {
     attack->proc_hh->occur();
   }
@@ -12725,7 +12671,15 @@ void shaman_t::trigger_whirling_fire( const action_state_t* state )
   }
 
   // Mote of Fire extends an existing Hot Hand buff, or triggers a new one with its duration
-  buff.hot_hand->extend_duration_or_trigger( buff.whirling_fire->data().effectN( 1 ).time_value() );
+  if ( buff.hot_hand->check() )
+  {
+    buff.hot_hand->extend_duration( this, buff.whirling_fire->data().effectN( 1 ).time_value() );
+  }
+  else
+  {
+    buff.hot_hand->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
+      buff.whirling_fire->data().effectN( 1 ).time_value() );
+  }
 
   buff.whirling_fire->decrement();
 
@@ -13366,7 +13320,8 @@ void shaman_t::create_buffs()
   // Buffs crash lightning with extra damage, after using chain lightning
   buff.cl_crash_lightning = new cl_crash_lightning_buff_t( this );
 
-  buff.hot_hand = new hot_hand_buff_t( this );
+  buff.hot_hand = make_buff( this, "hot_hand", find_spell( 215785 ) )
+    ->set_trigger_spell( talent.hot_hand );
   buff.spirit_walk  = make_buff( this, "spirit_walk", talent.spirit_walk );
   buff.stormbringer = make_buff( this, "stormsurge", find_spell( 201846 ) );
   buff.maelstrom_weapon = make_buff( this, "maelstrom_weapon", find_spell( 344179 ) )
@@ -13750,6 +13705,7 @@ void shaman_t::apply_action_effects( parse_effects_t* a )
   eff::source_eff_builder_t( buff.converging_storms ).build( a );
   eff::source_eff_builder_t( buff.lightning_strikes ).build( a );
   eff::source_eff_builder_t( buff.ascendance ).build( a );
+  eff::source_eff_builder_t( buff.hot_hand ).build( a );
 
 /*eff::source_eff_builder_t( talent.enhanced_imbues )
     .set_state_fn( [ this ] { return buff.flametongue_weapon->check(); } )
