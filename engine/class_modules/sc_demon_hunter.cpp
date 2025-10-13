@@ -968,6 +968,7 @@ public:
     proc_t* soul_fragment_greater_demon;
     proc_t* soul_fragment_empowered_demon;
     proc_t* soul_fragment_lesser;
+    proc_t* soul_fragment_soul_splitter;
     proc_t* felblade_reset;
     proc_t* soul_fragment_from_soul_sigils;
     proc_t* soul_fragment_from_shattered_souls;
@@ -9433,6 +9434,7 @@ void demon_hunter_t::init_procs()
   proc.soul_fragment_greater_demon        = get_proc( "soul_fragment_greater_demon" );
   proc.soul_fragment_empowered_demon      = get_proc( "soul_fragment_empowered_demon" );
   proc.soul_fragment_lesser               = get_proc( "soul_fragment_lesser" );
+  proc.soul_fragment_soul_splitter        = get_proc( "soul_splitter" );
   proc.felblade_reset                     = get_proc( "felblade_reset" );
   proc.soul_fragment_from_soul_sigils     = get_proc( "soul_fragment_from_soul_sigils" );
   proc.soul_fragment_from_shattered_souls = get_proc( "soul_fragment_from_shattered_souls" );
@@ -9458,7 +9460,7 @@ void demon_hunter_t::init_procs()
   proc.soul_fragment_from_fallout         = get_proc( "soul_fragment_from_fallout" );
   proc.soul_fragment_from_meta            = get_proc( "soul_fragment_from_meta" );
   proc.soul_fragment_from_bulk_extraction = get_proc( "soul_fragment_from_bulk_extraction" );
-  proc.feed_the_demon = get_proc( "feed_the_demon" );
+  proc.feed_the_demon                     = get_proc( "feed_the_demon" );
 
   // Aldrachi Reaver
   proc.soul_fragment_from_aldrachi_tactics = get_proc( "soul_fragment_from_aldrachi_tactics" );
@@ -11019,7 +11021,7 @@ void demon_hunter_t::reset()
   next_fragment_spawn           = 0;
   metamorphosis_health          = 0;
   frailty_accumulator           = 0.0;
-  feed_the_demon_accumulator = 0.0;
+  feed_the_demon_accumulator    = 0.0;
   shattered_destiny_accumulator = 0.0;
   wounded_quarry_accumulator    = 0.0;
   last_reavers_mark_applied     = nullptr;
@@ -11412,6 +11414,18 @@ void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, bool c
 
   sim->print_log( "{} creates {} {}. active={} total={}", *this, n, get_soul_fragment_str( type ),
                   get_active_soul_fragments( type ), get_total_soul_fragments( type ) );
+
+  if ( talent.demon_hunter.soul_splitter->ok() &&
+       rng().roll( talent.demon_hunter.soul_splitter->effectN( 1 ).percent() ) )
+  {
+    soul_fragments.push_back( new soul_fragment_t( this, soul_fragment::LESSER, consume_on_activation ) );
+    proc.soul_fragment_lesser->occur();
+    proc.soul_fragment_soul_splitter->occur();
+
+    sim->print_log( "{} creates an additional {} from Soul Splitter. active={} total={}", *this,
+                    get_soul_fragment_str( type ), get_active_soul_fragments( type ),
+                    get_total_soul_fragments( type ) );
+  }
 }
 
 void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, player_t* target, bool consume_on_activation )
