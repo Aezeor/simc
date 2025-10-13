@@ -968,10 +968,10 @@ public:
     proc_t* soul_fragment_greater_demon;
     proc_t* soul_fragment_empowered_demon;
     proc_t* soul_fragment_lesser;
-    proc_t* soul_fragment_soul_splitter;
+    proc_t* soul_splitter;
     proc_t* felblade_reset;
-    proc_t* soul_fragment_from_soul_sigils;
-    proc_t* soul_fragment_from_shattered_souls;
+    proc_t* soul_sigils;
+    proc_t* shattered_souls;
 
     // Havoc
     proc_t* demonic_appetite;
@@ -3044,7 +3044,7 @@ struct demon_hunter_sigil_t : public demon_hunter_spell_t
       p()->spawn_soul_fragment( soul_fragment::LESSER, num_souls, false );
       for ( unsigned i = 0; i < num_souls; i++ )
       {
-        p()->proc.soul_fragment_from_soul_sigils->occur();
+        p()->proc.soul_sigils->occur();
       }
     }
   }
@@ -8488,6 +8488,7 @@ struct shattered_souls_callback_t : public demon_hunter_proc_callback_t
       p()->sim->print_debug( "{} proc-ed Shattered Souls with {} ({}) chance: {:.3f}", p()->name(), action->name(),
                              action->data().id(), chance );
       p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
+      p()->proc.shattered_souls->occur();
     }
   }
 };
@@ -8596,7 +8597,7 @@ void demon_hunter_td_t::target_demise()
   if ( dh().rng().roll( dh().options.soul_fragment_from_shattered_souls_chance ) )
   {
     dh().spawn_soul_fragment( soul_fragment::GREATER );
-    dh().proc.soul_fragment_from_shattered_souls->occur();
+    dh().proc.shattered_souls->occur();
   }
 }
 
@@ -9429,15 +9430,15 @@ void demon_hunter_t::init_procs()
   base_t::init_procs();
 
   // General
-  proc.delayed_aa_range                   = get_proc( "delayed_aa_out_of_range" );
-  proc.soul_fragment_greater              = get_proc( "soul_fragment_greater" );
-  proc.soul_fragment_greater_demon        = get_proc( "soul_fragment_greater_demon" );
-  proc.soul_fragment_empowered_demon      = get_proc( "soul_fragment_empowered_demon" );
-  proc.soul_fragment_lesser               = get_proc( "soul_fragment_lesser" );
-  proc.soul_fragment_soul_splitter        = get_proc( "soul_splitter" );
-  proc.felblade_reset                     = get_proc( "felblade_reset" );
-  proc.soul_fragment_from_soul_sigils     = get_proc( "soul_fragment_from_soul_sigils" );
-  proc.soul_fragment_from_shattered_souls = get_proc( "soul_fragment_from_shattered_souls" );
+  proc.delayed_aa_range              = get_proc( "delayed_aa_out_of_range" );
+  proc.soul_fragment_greater         = get_proc( "soul_fragment_greater" );
+  proc.soul_fragment_greater_demon   = get_proc( "soul_fragment_greater_demon" );
+  proc.soul_fragment_empowered_demon = get_proc( "soul_fragment_empowered_demon" );
+  proc.soul_fragment_lesser          = get_proc( "soul_fragment_lesser" );
+  proc.soul_splitter                 = get_proc( "soul_splitter" );
+  proc.felblade_reset                = get_proc( "felblade_reset" );
+  proc.soul_sigils                   = get_proc( "soul_sigils" );
+  proc.shattered_souls               = get_proc( "shattered_souls" );
 
   // Havoc
   proc.demonic_appetite                = get_proc( "demonic_appetite" );
@@ -11420,7 +11421,7 @@ void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, bool c
   {
     soul_fragments.push_back( new soul_fragment_t( this, soul_fragment::LESSER, consume_on_activation ) );
     proc.soul_fragment_lesser->occur();
-    proc.soul_fragment_soul_splitter->occur();
+    proc.soul_splitter->occur();
 
     sim->print_log( "{} creates an additional {} from Soul Splitter. active={} total={}", *this,
                     get_soul_fragment_str( type ), get_active_soul_fragments( type ),
