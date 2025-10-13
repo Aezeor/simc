@@ -335,8 +335,9 @@ void prismatic_focusing_iris( special_effect_t& effect )
 
   auto dot = create_proc_action<generic_proc_t>( "prismatic_focusing_iris", effect, damage_spell );
   dot->base_td += dot_damage;
-  dot->base_td_multiplier *= role_mult( effect.player, damage_spell );
   dot->base_td_multiplier *= 1.0 + ( pct_per_gem * unique_gem_list( effect.player, gem_colors ).size() );
+  dot->base_td_multiplier *= role_mult( effect.player, damage_spell );
+  dot->base_td_multiplier *= bandolier_mul( effect.player );
 
   effect.spell_id = effect.trigger()->id();
   effect.execute_action = dot;
@@ -385,7 +386,7 @@ void register_special_effects()
   register_special_effect( 1244243, embellishments::blessed_pango_charm );
   register_special_effect( 1244276, embellishments::primal_spore_binding );
   register_special_effect( 1251906, embellishments::prismatic_focusing_iris );
-  register_special_effect( 1251905, embellishments::stabilizing_gemstone_bandolier );
+  register_special_effect( 1251905, DISABLED_EFFECT );  // stabilizing gemstone bandolier
   // Trinkets
   // Weapons
   // Armor
@@ -401,5 +402,13 @@ void register_hotfixes()
 action_t* create_action( player_t* /*p*/ , std::string_view /*name*/, std::string_view /*opt*/ )
 {
   return nullptr;
+}
+
+double bandolier_mul( player_t* p )
+{
+  if ( unique_gear::find_special_effect( p, 1251905 ) )
+    return 2.0;  // hardcoded
+  else
+    return 1.0;
 }
 }  // namespace unique_gear::midnight
