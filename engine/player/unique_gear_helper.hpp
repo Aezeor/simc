@@ -552,7 +552,7 @@ struct base_generic_aoe_proc_t : public base_generic_proc_t<BASE>
   unsigned max_scaling_targets;
 
   base_generic_aoe_proc_t( const special_effect_t& effect, ::util::string_view name, unsigned spell_id,
-                       bool aoe_damage_increase_ = false )
+                       bool aoe_damage_increase_ = true )
     : base_generic_proc_t<BASE>( effect, name, spell_id ), aoe_damage_increase( aoe_damage_increase_ ),
     max_scaling_targets( 5 )
   {
@@ -561,7 +561,7 @@ struct base_generic_aoe_proc_t : public base_generic_proc_t<BASE>
   }
 
   base_generic_aoe_proc_t( const special_effect_t& effect, ::util::string_view name, const spell_data_t* s,
-                       bool aoe_damage_increase_ = false )
+                       bool aoe_damage_increase_ = true )
     : base_generic_proc_t<BASE>( effect, name, s ), aoe_damage_increase( aoe_damage_increase_ ),
     max_scaling_targets( 5 )
   {
@@ -570,7 +570,7 @@ struct base_generic_aoe_proc_t : public base_generic_proc_t<BASE>
   }
 
   base_generic_aoe_proc_t( player_t* p, ::util::string_view name, const spell_data_t* s, const item_t* i = nullptr,
-                           bool aoe_damage_increase_ = false )
+                           bool aoe_damage_increase_ = true )
     : base_generic_proc_t<BASE>( p, name, s, i ), aoe_damage_increase( aoe_damage_increase_ ), max_scaling_targets( 5 )
   {
     this->aoe              = -1;

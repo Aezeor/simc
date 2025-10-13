@@ -192,7 +192,7 @@ void phial_of_glacial_fury( special_effect_t& effect )
   {
     const buff_t* buff;
     glacial_fury_t( const special_effect_t& e, const buff_t* b )
-      : generic_aoe_proc_t( e, "glacial_fury", e.driver()->effectN( 2 ).trigger(), true ), buff( b )
+      : generic_aoe_proc_t( e, "glacial_fury", e.driver()->effectN( 2 ).trigger() ), buff( b )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 3 ).average( e.item );
     }
@@ -684,7 +684,7 @@ void incandescent_essence( special_effect_t& e )
   {
     // buff_t* absorb;
     blazing_rage_t( const special_effect_t& e )
-      : generic_aoe_proc_t( e, "blazing_rage", 426306, true )/*,
+      : generic_aoe_proc_t( e, "blazing_rage", 426306 )/*,
         absorb( make_buff<absorb_buff_t>( e.player, "protective_flames", e.player->find_spell( 426313 ) ) )*/
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
@@ -1412,7 +1412,7 @@ void globe_of_jagged_ice( special_effect_t& effect )
 
   struct breaking_the_ice_t : public generic_aoe_proc_t
   {
-    breaking_the_ice_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "breaking_the_ice", 388948, true )
+    breaking_the_ice_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "breaking_the_ice", 388948 )
     {
       // Tooltip and damage value is based on max stacks
       base_dd_min = base_dd_max = data().effectN( 1 ).average( e.item ) / data().max_stacks();
@@ -1769,7 +1769,7 @@ void erupting_spear_fragment( special_effect_t& effect )
     double return_speed;
 
     erupting_spear_fragment_t( const special_effect_t& e )
-      : generic_aoe_proc_t( e, "erupting_spear_fragment", e.trigger() ),
+      : generic_aoe_proc_t( e, "erupting_spear_fragment", e.trigger(), false ),
         return_speed( e.player->find_spell( 381586 )->missile_speed() )
     {
       auto values = player->find_spell( 381484 );
@@ -1907,7 +1907,7 @@ void igneous_flowstone( special_effect_t& effect )
     double min_range;
 
     lava_wave_proc_t( const special_effect_t& e )
-      : generic_aoe_proc_t( e, "lava_wave", 407961, true ), min_range( e.driver()->effectN( 5 ).base_value() )
+      : generic_aoe_proc_t( e, "lava_wave", 407961, false ), min_range( e.driver()->effectN( 5 ).base_value() )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
     }
@@ -4193,7 +4193,7 @@ void anshuul_the_cosmic_wanderer( special_effect_t& effect )
   struct anshuul_damage_t : public generic_aoe_proc_t
   {
     anshuul_damage_t( const special_effect_t& e )
-      : generic_aoe_proc_t( e, "anshuul_the_cosmic_wanderer", e.driver(), true )
+      : generic_aoe_proc_t( e, "anshuul_the_cosmic_wanderer", e.driver(), false )
     {
       base_dd_min = base_dd_max = e.trigger()->effectN( 1 ).average( e.item );
       base_execute_time = 0_ms; // Overriding execute time, this is handled by the main action.
@@ -4263,7 +4263,8 @@ void zaqali_chaos_grapnel( special_effect_t& effect )
 {
   struct zaqali_chaos_grapnel_missile_t : public generic_aoe_proc_t
   {
-    zaqali_chaos_grapnel_missile_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "furious_impact", e.player -> find_spell( 400959 ), true )
+    zaqali_chaos_grapnel_missile_t( const special_effect_t& e )
+      : generic_aoe_proc_t( e, "furious_impact", e.player->find_spell( 400959 ), false )
     {
       base_dd_min = base_dd_max = e.player->find_spell( 400955 )->effectN( 2 ).average( e.item );
     }
@@ -6347,7 +6348,7 @@ void bandolier_of_twisted_blades( special_effect_t& effect )
   struct return_slash_t : public generic_aoe_proc_t
   {
     return_slash_t( const special_effect_t& effect )
-      : generic_aoe_proc_t( effect, "return_slash", effect.player->find_spell( 426114 ), true )
+      : generic_aoe_proc_t( effect, "return_slash", effect.player->find_spell( 426114 ) )
     {
       background = true;
       base_dd_min = base_dd_max = effect.player->find_spell( 422297 )->effectN( 2 ).average( effect.item );
@@ -6514,7 +6515,7 @@ void belorrelos_the_sunstone( special_effect_t& effect )
   struct belorrelos_damage_t : public generic_aoe_proc_t
   {
     belorrelos_damage_t( const special_effect_t& effect )
-      : generic_aoe_proc_t( effect, "solar_maelstrom", effect.driver(), true )
+      : generic_aoe_proc_t( effect, "solar_maelstrom", effect.driver() )
     {
       base_dd_min = base_dd_max = effect.player->find_spell( 422141 )->effectN( 1 ).average( effect.item );
       base_execute_time         = 0_ms;  // Overriding execute time, this is handled by the main action.
@@ -6899,7 +6900,7 @@ void branch_of_the_tormented_ancient( special_effect_t& e )
     buff_t* buff;
 
     severed_embers_t( const special_effect_t& effect, buff_t* b )
-      : generic_aoe_proc_t( effect, "severed_embers", effect.player->find_spell( 425509 ), true ), buff( b )
+      : generic_aoe_proc_t( effect, "severed_embers", effect.player->find_spell( 425509 ) ), buff( b )
     {
       base_dd_min = base_dd_max = effect.player->find_spell( 422440 )->effectN( 1 ).average( effect.item );
     }
@@ -6973,7 +6974,7 @@ void infernal_signet_brand( special_effect_t& e )
   struct radiating_brand_t : public generic_aoe_proc_t
   {
     radiating_brand_t( const special_effect_t& effect )
-      : generic_aoe_proc_t( effect, "radiating_brand", effect.player->find_spell( 425156 ) )
+      : generic_aoe_proc_t( effect, "radiating_brand", effect.player->find_spell( 425156 ), false )
     {
       may_crit = false;
     }
@@ -7931,7 +7932,7 @@ void shadowed_razing_annihilator( special_effect_t& e )
   struct shadowed_razing_annihilator_residual_t : public generic_aoe_proc_t
   {
     shadowed_razing_annihilator_residual_t( const special_effect_t& e )
-      : generic_aoe_proc_t( e, "shadowed_razing_annihilator_residual", e.player->find_spell( 411024 ), true )
+      : generic_aoe_proc_t( e, "shadowed_razing_annihilator_residual", e.player->find_spell( 411024 ) )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 4 ).average( e.item );
     }
@@ -7988,7 +7989,8 @@ void djaruun_pillar_of_the_elder_flame ( special_effect_t& effect )
   struct djaruun_pillar_of_the_elder_flame_siphon_t : public generic_aoe_proc_t
   {
     djaruun_pillar_of_the_elder_flame_siphon_t( const special_effect_t& effect )
-      : generic_aoe_proc_t( effect, "djaruun_pillar_of_the_elder_flame_siphon", effect.player->find_spell( 408815 ) )
+      : generic_aoe_proc_t( effect, "djaruun_pillar_of_the_elder_flame_siphon", effect.player->find_spell( 408815 ),
+                            false )
     {
       base_dd_min = base_dd_max = effect.player->find_spell( 403545 )->effectN( 1 ).average( effect.item );
       split_aoe_damage = false;
@@ -8001,7 +8003,7 @@ void djaruun_pillar_of_the_elder_flame ( special_effect_t& effect )
   struct djaruun_pillar_of_the_elder_flame_on_hit_t : public generic_aoe_proc_t
   {
     djaruun_pillar_of_the_elder_flame_on_hit_t( const special_effect_t& effect )
-      : generic_aoe_proc_t( effect, "djaruun_pillar_of_the_elder_flame_on_hit", effect.player->find_spell( 408836 ), true )
+      : generic_aoe_proc_t( effect, "djaruun_pillar_of_the_elder_flame_on_hit", effect.player->find_spell( 408836 ) )
     {
       base_dd_min = base_dd_max = effect.player->find_spell( 403545 ) -> effectN( 2 ).average( effect.item );
       name_str_reporting = "Wave";
@@ -8196,7 +8198,7 @@ void dreambinder_loom_of_the_great_cycle( special_effect_t& effect )
     const spell_data_t* slow_debuff;
 
     dreambinder_loom_of_the_great_cycle_t( const special_effect_t& effect )
-      : generic_aoe_proc_t( effect, "web_of_dreams", effect.player->find_spell( 427209 ), true ),
+      : generic_aoe_proc_t( effect, "web_of_dreams", effect.player->find_spell( 427209 ) ),
         target_specific_slow( false ),
         slow_debuff( effect.player->find_spell( 427212 ) )
     {
@@ -10155,7 +10157,7 @@ struct desirous_blood_stone_t : public damage_stone_t
 struct pestilent_plague_stone_aoe_t : public generic_aoe_proc_t
 {
   pestilent_plague_stone_aoe_t( const special_effect_t& e ) :
-    generic_aoe_proc_t( e, "pestilent_plague_stone_aoe", 405221 )
+    generic_aoe_proc_t( e, "pestilent_plague_stone_aoe", 405221, false )
   {
     auto driver = e.player->find_spell( PESTILENT_PLAGUE_STONE );
     base_td = driver->effectN( 1 ).average( e.item );

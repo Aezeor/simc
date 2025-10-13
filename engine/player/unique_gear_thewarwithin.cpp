@@ -2838,7 +2838,7 @@ void ravenous_honey_buzzer( special_effect_t& e )
     timespan_t movement_dur;
 
     ravenous_honey_buzzer_t( const special_effect_t& e )
-      : generic_aoe_proc_t( e, "ravenous_honey_buzzer", e.player->find_spell( 448909 ), true ),
+      : generic_aoe_proc_t( e, "ravenous_honey_buzzer", e.player->find_spell( 448909 ) ),
         movement_dur( timespan_t::from_seconds( e.trigger()->missile_speed() ) )
     {
       base_multiplier *= role_mult( e );
@@ -3020,7 +3020,7 @@ void opressive_orators_larynx( special_effect_t& e )
   {
     double mult;
     dark_oration_t( const special_effect_t& e, const spell_data_t* equip_driver )
-      : generic_aoe_proc_t( e, "oppressive_oration_damage", e.player->find_spell( 451015 ) ), mult( 0 )
+      : generic_aoe_proc_t( e, "oppressive_oration_damage", e.player->find_spell( 451015 ), false ), mult( 0 )
     {
       background = dual = true;
       base_dd_min = base_dd_max = equip_driver->effectN( 2 ).average( e );
@@ -3234,7 +3234,7 @@ void high_speakers_accretion( special_effect_t& effect )
       std::vector<player_t*>& targets_hit;
 
       high_speakers_accretion_damage_t( const special_effect_t& e, std::vector<player_t*>& tl )
-        : generic_aoe_proc_t( e, "high_speakers_accretion_damage", 450921, true ), targets_hit( tl )
+        : generic_aoe_proc_t( e, "high_speakers_accretion_damage", 450921 ), targets_hit( tl )
       {
         base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e );
         base_multiplier *= role_mult( e );
@@ -8243,7 +8243,7 @@ void unyielding_netherprism( special_effect_t& effect )
     buff_t* stacking;
 
     unyielding_netherprism_damage_t( const special_effect_t& e, const spell_data_t* equip, buff_t* stacking_buff )
-      : generic_aoe_proc_t( e, "unyielding_netherprism_damage", e.player->find_spell( 1239674 ), true ),
+      : generic_aoe_proc_t( e, "unyielding_netherprism_damage", e.player->find_spell( 1239674 ) ),
         stacking( stacking_buff )
     {
       base_dd_min = base_dd_max = equip->effectN( 1 ).average( e );
@@ -8536,7 +8536,7 @@ void eradicating_arcanocore( special_effect_t& effect )
     int st_stacks;
 
     eradicating_arcanocore_t( const special_effect_t& e, buff_t* stacking )
-      : generic_aoe_proc_t( e, "eradicating_arcanoblast", e.player->find_spell( 1240916 ), true ),
+      : generic_aoe_proc_t( e, "eradicating_arcanoblast", e.player->find_spell( 1240916 ) ),
         stacking_buff( stacking ),
         st_stacks( 0 )
     {
@@ -8694,7 +8694,7 @@ void cursed_stone_idol( special_effect_t& effect )
   {
     buff_t* buff;
     cursed_stone_idol_damage_t( const special_effect_t& e )
-      : generic_aoe_proc_t( e, "cursed_stone_idol_damage", e.player->find_spell( 1241809 ) ), buff( nullptr )
+      : generic_aoe_proc_t( e, "cursed_stone_idol_damage", e.player->find_spell( 1241809 ), false ), buff( nullptr )
     {
       const spell_data_t* value_spell = e.player->find_spell( 1241801 );
       base_dd_min = base_dd_max = value_spell->effectN( 2 ).average( e );
@@ -8736,7 +8736,7 @@ void naazindhris_mystic_lash( special_effect_t& effect )
   struct naazindhris_mystic_lash_t final : public generic_aoe_proc_t
   {
     naazindhris_mystic_lash_t( const special_effect_t& e, std::string_view n )
-      : generic_aoe_proc_t( e, n, e.player->find_spell( 1239810 ), true )
+      : generic_aoe_proc_t( e, n, e.player->find_spell( 1239810 ) )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
       base_multiplier           = role_mult( e );
@@ -9068,7 +9068,7 @@ void brand_of_ceaseless_ire( special_effect_t& effect )
     double shield_amount;
 
     brand_of_ceaseless_ire_t( const special_effect_t& e )
-      : generic_aoe_proc_t( e, "brand_of_ceaseless_ire", 1235946, true ),
+      : generic_aoe_proc_t( e, "brand_of_ceaseless_ire", 1235946 ),
         shield_amount( e.driver()->effectN( 1 ).average( e ) )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e );
@@ -9217,7 +9217,7 @@ void alldevouring_nucleus( special_effect_t& effect )
     double total_damage = 0.0;
 
     devouring_void_t( const special_effect_t& e )
-      : generic_aoe_proc_t( e, "devouring_void", 1236689, true ), heal_pct( e.driver()->effectN( 2 ).percent() )
+      : generic_aoe_proc_t( e, "devouring_void", 1236689 ), heal_pct( e.driver()->effectN( 2 ).percent() )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
 
@@ -9284,7 +9284,7 @@ void chaotic_nethergate( special_effect_t& effect )
       int cap;
 
       chaotic_nethergate_damage_t( const special_effect_t& e, const spell_data_t* data )
-        : generic_aoe_proc_t( e, "chaotic_nethergate_damage", 1246637 ),
+        : generic_aoe_proc_t( e, "chaotic_nethergate_damage", 1246637, false ),
           heal_amount( data->effectN( 2 ).average( e ) ),
           cap( as<int>( data->effectN( 4 ).base_value() ) )
       {
@@ -9644,7 +9644,7 @@ void voltaic_stormcaller( special_effect_t& effect )
   {
     stat_buff_with_multiplier_t* buff;
 
-    voltaic_stormstrike_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "voltaic_stormstrike", 455910 )
+    voltaic_stormstrike_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "voltaic_stormstrike", 455910, false )
     {
       travel_delay = 0.95;  // not in spell data, estimated from logs
 
@@ -10500,7 +10500,7 @@ void ethereal_reaping( special_effect_t& effect )
     double execute_mult;
 
     ethereal_reaping_t( const special_effect_t& e )
-      : generic_aoe_proc_t( e, "ethereal_reaping", e.player->find_spell( 1223417 ), true ), hp_pct( 0.0 ), execute_mult( 0.0 )
+      : generic_aoe_proc_t( e, "ethereal_reaping", e.player->find_spell( 1223417 ) ), hp_pct( 0.0 ), execute_mult( 0.0 )
     {
       const spell_data_t* value_spell = e.player->find_spell( 1217091 );
 
