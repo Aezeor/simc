@@ -5374,3 +5374,41 @@ const spell_data_t* unique_gear::spell_from_spell_text( const special_effect_t& 
 
   return spell_data_t::nil();
 }
+
+std::vector<unsigned> unique_gear::equipped_gem_list( player_t* player, util::span<const unsigned> gem_desc_id )
+{
+  std::vector<unsigned> gems;
+
+  for ( const auto& item : player->items )
+  {
+    for ( auto gem_id : item.parsed.gem_id )
+    {
+      if ( gem_id )
+      {
+        const auto& _gem = player->dbc->item( gem_id );
+        const auto& _prop = player->dbc->gem_property( _gem.gem_properties );
+        for ( auto g : gem_desc_id )
+        {
+          if ( _prop.desc_id == g )
+          {
+            gems.push_back( g );
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  return gems;
+}
+
+std::vector<unsigned> unique_gear::unique_gem_list( player_t* player, util::span<const unsigned> gem_desc_id )
+{
+  auto _list = equipped_gem_list( player, gem_desc_id );
+  range::sort( _list );
+
+  auto it = range::unique( _list );
+  _list.erase( it, _list.end() );
+
+  return _list;
+}

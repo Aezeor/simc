@@ -44,6 +44,19 @@ void set_max_version( wowv_t build )
 static constexpr std::array<stat_e, 4> secondary_ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING,
                                                              STAT_HASTE_RATING, STAT_CRIT_RATING };
 
+// from item_naming.inc
+enum gem_color_e : unsigned
+{
+  GEM_PERIDOT = 14262,
+  GEM_GARNET = 14276,
+  GEM_LAPIS = 14277,
+  GEM_AMETHYST = 14278,
+  GEM_DIAMOND = 14279
+};
+
+static constexpr unsigned __gem_colors[] = { GEM_PERIDOT, GEM_GARNET, GEM_LAPIS, GEM_AMETHYST };
+static constexpr util::span<const unsigned> gem_colors = util::make_span( __gem_colors );
+
 // can be called via unqualified lookup
 void register_special_effect( unsigned spell_id, custom_cb_t init_callback, bool fallback = false )
 {

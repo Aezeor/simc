@@ -55,55 +55,8 @@ enum gem_color_e : unsigned
   GEM_ONYX     = 14115
 };
 
-static constexpr std::array<gem_color_e, 5> gem_colors = { GEM_RUBY, GEM_AMBER, GEM_EMERALD, GEM_SAPPHIRE, GEM_ONYX };
-
-std::vector<gem_color_e> algari_gem_list( player_t* player )
-{
-  std::vector<gem_color_e> gems;
-
-  for ( const auto& item : player->items )
-  {
-    for ( auto gem_id : item.parsed.gem_id )
-    {
-      if ( gem_id )
-      {
-        const auto& _gem  = player->dbc->item( gem_id );
-        const auto& _prop = player->dbc->gem_property( _gem.gem_properties );
-        for ( auto g : gem_colors )
-        {
-          if ( _prop.desc_id == static_cast<unsigned>( g ) )
-          {
-            gems.push_back( g );
-            break;
-          }
-        }
-      }
-    }
-  }
-
-  return gems;
-}
-
-std::vector<gem_color_e> algari_gem_list( const special_effect_t& effect )
-{
-  return algari_gem_list( effect.player );
-}
-
-std::vector<gem_color_e> unique_gem_list( player_t* player )
-{
-  auto _list = algari_gem_list( player );
-  range::sort( _list );
-
-  auto it = range::unique( _list );
-  _list.erase( it, _list.end() );
-
-  return _list;
-}
-
-std::vector<gem_color_e> unique_gem_list( const special_effect_t& effect )
-{
-  return unique_gem_list( effect.player );
-}
+static constexpr unsigned __gem_colors[] = { GEM_RUBY, GEM_AMBER, GEM_EMERALD, GEM_SAPPHIRE, GEM_ONYX };
+static constexpr util::span<const unsigned> gem_colors = util::make_span( __gem_colors );
 
 namespace consumables
 {
@@ -586,7 +539,7 @@ void secondary_weapon_enchant( special_effect_t& effect )
 // 435500 driver
 void culminating_blasphemite( special_effect_t& effect )
 {
-  auto pct = effect.driver()->effectN( 1 ).percent() * unique_gem_list( effect ).size();
+  auto pct = effect.driver()->effectN( 1 ).percent() * unique_gem_list( effect.player, gem_colors ).size();
   // check for prismatic null stone
   if ( auto null_stone = find_special_effect( effect.player, 435992 ) )
     pct *= 1.0 + null_stone->driver()->effectN( 1 ).percent();
@@ -600,7 +553,7 @@ void culminating_blasphemite( special_effect_t& effect )
 // 435488 driver
 void insightful_blasphemite( special_effect_t& effect )
 {
-  auto pct = effect.driver()->effectN( 1 ).percent() * unique_gem_list( effect ).size();
+  auto pct = effect.driver()->effectN( 1 ).percent() * unique_gem_list( effect.player, gem_colors ).size();
   // check for prismatic null stone
   if ( auto null_stone = find_special_effect( effect.player, 435992 ) )
     pct *= 1.0 + null_stone->driver()->effectN( 1 ).percent();
@@ -966,7 +919,7 @@ void pouch_of_pocket_grenades( special_effect_t& effect )
 // 461193 frost damage from sapphire
 void elemental_focusing_lens( special_effect_t& effect )
 {
-  auto gems = unique_gem_list( effect );
+  auto gems = unique_gem_list( effect.player, gem_colors );
 
   if ( !gems.size() )
     return;
@@ -996,7 +949,7 @@ void elemental_focusing_lens( special_effect_t& effect )
 
   for ( auto [ g, id, name ] : damage_ids )
   {
-    if ( !range::contains( gems, g ) )
+    if ( !range::contains( gems, static_cast<unsigned>( g ) ) )
       continue;
 
     auto dam = create_proc_action<generic_proc_t>( fmt::format( "elemental_focusing_lens_{}", name ), effect, id );
@@ -1037,15 +990,15 @@ void binding_of_binding( special_effect_t& effect )
        if ( buffs[ buff_player ] )
          return buffs[ buff_player ];
 
-       auto gems = unique_gem_list( buff_player );
+       auto gems = unique_gem_list( buff_player, gem_colors );
 
        auto buff_spell = effect.player->find_spell( 436159 );
 
        auto buff = make_buff<stat_buff_t>( actor_pair_t{ buff_player, effect.player }, "boon_of_binding", buff_spell );
 
-       for ( gem_color_e gem_color : gems )
+       for ( auto gem_color : gems )
        {
-         switch ( gem_color )
+         switch ( static_cast<gem_color_e>( gem_color ) )
          {
            case GEM_RUBY:
              buff->add_stat_from_effect( 2, effect.driver()->effectN( 1 ).average( effect.player ) / 4 );
