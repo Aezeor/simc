@@ -344,11 +344,6 @@ void prismatic_focusing_iris( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
-
-void stabilizing_gemstone_bandolier( special_effect_t& effect )
-{
-
-}
 }
 
 namespace trinkets
