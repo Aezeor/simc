@@ -631,7 +631,7 @@ struct sim_t : private sc_thread_t
   std::unique_ptr<profileset::profilesets_t> profilesets;
 
   sim_t();
-  sim_t( sim_t* parent, int thread_index = 0 );
+  explicit sim_t( sim_t* parent, int thread_index = 0 );
   sim_t( sim_t* parent, int thread_index, sim_control_t* control );
   ~sim_t() override;
 
