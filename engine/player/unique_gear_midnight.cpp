@@ -421,10 +421,32 @@ void murder_row_materials( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 1244021 driver
+// 1258885 vers
+// 1258886 mast
+// 1258887 haste
+// 1258890 crit
 void root_wardens_regalia( special_effect_t& effect )
 {
+  effect.player->sim->error( PLACEHOLDER, "root wardens regalia buffs are not mutually exclusive" );
 
-}
+  auto stat_amount = effect.driver()->effectN( 1 ).average( effect );
+
+  std::vector<stat_buff_t*> buffs;
+
+  for ( auto id : { 1258885, 1258886, 1258887, 1258890 } )
+  {
+    auto _b = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( id ) )
+      ->add_stat_from_effect_type( A_MOD_RATING, stat_amount );
+    buffs.push_back( _b );
+  }
+
+  effect.player->callbacks.register_callback_execute_function( effect.spell_id, [ buffs ]( auto cb, auto, auto ) {
+    cb->rng().range( buffs )->trigger();
+  } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+};
 
 void torments_duality( special_effect_t& effect )
 {
