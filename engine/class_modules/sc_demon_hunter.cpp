@@ -405,10 +405,10 @@ public:
       player_talent_t first_in_last_out;  // NYI
 
       player_talent_t erratic_felheart;
-      player_talent_t final_breath;   // NYI
+      player_talent_t final_breath;
       player_talent_t darkness;       // No Implementation
       player_talent_t demon_muzzle;   // No Implementation
-      player_talent_t soul_splitter;  // NYI
+      player_talent_t soul_splitter;
 
       player_talent_t wings_of_wrath;  // No Implementation
       player_talent_t long_night;      // No Implementation
@@ -2964,6 +2964,59 @@ struct doomsayer_trigger_t : public BASE
   }
 };
 
+template <typename BASE>
+struct final_breath_trigger_t : public BASE
+{
+  using base_t = final_breath_trigger_t<BASE>;
+
+  final_breath_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                          util::string_view o = {} )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    BASE::last_tick( d );
+
+    if ( !BASE::p()->talent.demon_hunter.final_breath->ok() )
+      return;
+
+    assert( BASE::tick_action != nullptr );
+
+    if ( d->current_tick == d->num_ticks() )
+    {
+      action_state_t* tick_state = BASE::tick_action->get_state( BASE::tick_action->execute_state );
+      if ( BASE::tick_action->pre_execute_state )
+      {
+        tick_state->copy_state( BASE::tick_action->pre_execute_state );
+        action_state_t::release( BASE::tick_action->pre_execute_state );
+      }
+
+      tick_state->target = d->target;
+      BASE::tick_action->set_target( d->target );
+
+      if ( BASE::dynamic_tick_action )
+      {
+        auto flags_ = BASE::tick_action->update_flags;
+
+        // ticks actions that are also rolling periodics need to force update composite_rolling_ta_multiplier on every
+        // tick_action execute
+        if ( BASE::tick_action->rolling_periodic )
+          flags_ |= STATE_ROLLING_TA;
+
+        BASE::tick_action->update_state( tick_state, flags_,
+                                         BASE::amount_type( tick_state, BASE::tick_action->direct_tick ) );
+      }
+
+      BASE::tick_action->snapshot_state( tick_state, result_amount_type::DMG_DIRECT );
+      tick_state->da_multiplier *= BASE::p()->talent.demon_hunter.final_breath->effectN( 1 ).percent();
+
+      BASE::tick_action->schedule_execute( tick_state );
+    }
+  }
+};
+
 struct demon_hunter_heal_t : public demon_hunter_action_t<heal_t>
 {
   demon_hunter_heal_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
@@ -3443,7 +3496,7 @@ struct disrupt_t : public demon_hunter_spell_t
 
 // Eye Beam =================================================================
 
-struct eye_beam_base_t : public demon_hunter_spell_t
+struct eye_beam_base_t : public final_breath_trigger_t<demon_hunter_spell_t>
 {
   struct eye_beam_tick_t : public demon_hunter_spell_t
   {
@@ -3478,7 +3531,7 @@ struct eye_beam_base_t : public demon_hunter_spell_t
   };
 
   eye_beam_base_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
-    : demon_hunter_spell_t( name, p, s, o )
+    : base_t( name, p, s, o )
   {
     may_miss            = false;
     channeled           = true;
@@ -3499,7 +3552,7 @@ struct eye_beam_base_t : public demon_hunter_spell_t
 
   void last_tick( dot_t* d ) override
   {
-    demon_hunter_spell_t::last_tick( d );
+    base_t::last_tick( d );
 
     // If Eye Beam is canceled early, cancel Blind Fury and skip granting Furious Gaze
     // Collective Anguish is *not* canceled when early canceling Eye Beam, however
@@ -3524,7 +3577,7 @@ struct eye_beam_base_t : public demon_hunter_spell_t
       p()->buff.cycle_of_hatred->trigger();
     }
 
-    demon_hunter_spell_t::execute();
+    base_t::execute();
     timespan_t duration = composite_dot_duration( execute_state );
 
     // Since Demonic triggers Meta with 5s + hasted duration, need to extend by the hasted duration after have an
@@ -3554,7 +3607,7 @@ struct eye_beam_base_t : public demon_hunter_spell_t
 
   timespan_t cooldown_base_duration( const cooldown_t& cd ) const override
   {
-    return demon_hunter_spell_t::cooldown_base_duration( cd ) -
+    return base_t::cooldown_base_duration( cd ) -
            timespan_t::from_millis( as<int>( p()->buff.cycle_of_hatred->check_stack_value() ) );
   }
 };
@@ -3608,7 +3661,7 @@ struct eye_beam_t : public eye_beam_base_t
 
 // Fel Devastation ==========================================================
 
-struct fel_devastation_t : public demon_hunter_spell_t
+struct fel_devastation_t : public final_breath_trigger_t<demon_hunter_spell_t>
 {
   struct fel_devastation_tick_t : public demon_hunter_spell_t
   {
@@ -3618,12 +3671,24 @@ struct fel_devastation_t : public demon_hunter_spell_t
       background = dual = true;
       aoe               = -1;
     }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = demon_hunter_spell_t::composite_da_multiplier( s );
+
+      if ( parent_dot )
+      {
+        m *= parent_dot->get_tick_factor();
+      }
+
+      return m;
+    }
   };
 
   heals::fel_devastation_heal_t* heal;
 
   fel_devastation_t( demon_hunter_t* p, util::string_view o )
-    : demon_hunter_spell_t( "fel_devastation", p, p->talent.vengeance.fel_devastation, o ), heal( nullptr )
+    : base_t( "fel_devastation", p, p->talent.vengeance.fel_devastation, o ), heal( nullptr )
   {
     may_miss            = false;
     channeled           = true;
@@ -3648,7 +3713,7 @@ struct fel_devastation_t : public demon_hunter_spell_t
   void execute() override
   {
     p()->trigger_demonic();
-    demon_hunter_spell_t::execute();
+    base_t::execute();
 
     if ( heal )
     {
@@ -3659,7 +3724,7 @@ struct fel_devastation_t : public demon_hunter_spell_t
 
   void last_tick( dot_t* d ) override
   {
-    demon_hunter_spell_t::last_tick( d );
+    base_t::last_tick( d );
 
     if ( p()->talent.vengeance.darkglare_boon->ok() )
     {
@@ -3688,7 +3753,7 @@ struct fel_devastation_t : public demon_hunter_spell_t
       heal->execute();  // Heal happens before damage
     }
 
-    demon_hunter_spell_t::tick( d );
+    base_t::tick( d );
   }
 };
 
@@ -5576,7 +5641,7 @@ struct reap_t : public reap_base_t
   }
 };
 
-struct void_ray_t : public doomsayer_trigger_t<demon_hunter_spell_t>
+struct void_ray_t : public final_breath_trigger_t<doomsayer_trigger_t<demon_hunter_spell_t>>
 {
   struct void_ray_tick_t : public demon_hunter_spell_t
   {
@@ -5586,7 +5651,7 @@ struct void_ray_t : public doomsayer_trigger_t<demon_hunter_spell_t>
       aoe               = -1;
     }
 
-    double composite_da_multiplier(const action_state_t* s) const override
+    double composite_da_multiplier( const action_state_t* s ) const override
     {
       double m = demon_hunter_spell_t::composite_da_multiplier( s );
 
