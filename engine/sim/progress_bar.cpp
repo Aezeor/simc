@@ -276,9 +276,9 @@ bool progress_bar_t::update_normal( const sim_progress_t& progress, bool finishe
 
   if ( finished )
   {
-    int total_min = gsl::narrow_cast<int>(current_time / 60);
-    int total_sec = gsl::narrow_cast<int>(std::fmod( current_time, 60 ));
-    int total_msec = gsl::narrow_cast<int>(1000 * ( current_time - static_cast<int>( current_time ) ));
+    int total_min = gsl_lite::narrow_cast<int>(current_time / 60);
+    int total_sec = gsl_lite::narrow_cast<int>(std::fmod( current_time, 60 ));
+    int total_msec = gsl_lite::narrow_cast<int>(1000 * ( current_time - static_cast<int>( current_time ) ));
     if ( total_min > 0 )
     {
       fmt::format_to(std::back_inserter(new_status), " {:d}min", total_min );

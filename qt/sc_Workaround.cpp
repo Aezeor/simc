@@ -54,7 +54,7 @@ void win32_dll_workarounds( sim_t* sim )
     return;
   }
 
-  auto handle_closer = gsl::finally( [ & ]() { CloseHandle( processHandle ); } );
+  auto handle_closer = gsl_lite::finally( [ & ]() { CloseHandle( processHandle ); } );
 
   MODULEENTRY32 module;
   module.dwSize = sizeof( MODULEENTRY32 );

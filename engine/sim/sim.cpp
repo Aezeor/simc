@@ -3357,7 +3357,7 @@ bool sim_t::execute()
   bool success = false;
   {
     // Always merge, even in cases of unsuccessful simulation, parent sim merge_mutex is unlocked in merge()
-    auto merge_final_action = gsl::finally( [ & ]() {
+    auto merge_final_action = gsl_lite::finally( [ & ]() {
       merge();
       // Rethrow accumulated exceptions from threads
       if ( !children.empty() && rethrow_exception_queue() )
