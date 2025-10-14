@@ -291,8 +291,8 @@ interfaces/wowhead.cpp
 item/enchants.cpp
 item/item.cpp
 item/special_effect.cpp
-lib/fmt/format.cpp
-lib/fmt/os.cpp
+lib/fmt/format.cc
+lib/fmt/os.cc
 player/action_priority_list.cpp
 player/action_variable.cpp
 player/actor.cpp
