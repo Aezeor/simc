@@ -9777,7 +9777,7 @@ void raging_tempests( special_effect_t& effect )
 //407939 primary stat value
 void might_of_the_drogbar( special_effect_t& effect )
 {
-  auto set_driver_id = 407914;
+  auto set_driver_id = 407914U;
 
   if ( effect.driver()->id() == set_driver_id )
   {

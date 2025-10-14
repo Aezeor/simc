@@ -16349,12 +16349,13 @@ void player_t::register_passive_affect_list( const spell_data_t* spell, const af
 
 void player_t::parse_all_class_passives()
 {
-  // class-wide passives
+  // class aura
   parse_passive_effects( find_spell( dbc::get_class_aura_id( type ) ), false, PARSE_SOURCE_CLASS );
 
+  // class-wide rank spells
   for ( const auto& rank_spell : rank_class_spell_t::data( dbc->ptr ) )
   {
-    if ( rank_spell.class_id == util::class_id( type ) && rank_spell.spec_id == 0 )
+    if ( as<int>( rank_spell.class_id ) == util::class_id( type ) && rank_spell.spec_id == 0 )
     {
       auto spell = find_spell( rank_spell.spell_id );
       if ( spell->flags( SX_PASSIVE ) )
@@ -16362,7 +16363,7 @@ void player_t::parse_all_class_passives()
     }
   }
 
-  // spec passives
+  // spec passives & spec-only rank spells
   auto mastery_id = mastery_spell_entry_t::find( specialization(), dbc->ptr ).spell_id;
 
   for ( const auto& spec_spell : specialization_spell_entry_t::data( dbc->ptr ) )

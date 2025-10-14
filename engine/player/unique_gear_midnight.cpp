@@ -121,7 +121,7 @@ void arcanoweave_lining( special_effect_t& effect )
 
   if ( uptime_pct >= 1.0 )
   {
-    effect.player->register_precombat_begin( [ insight ]( player_t* p ) { insight->trigger(); } );
+    effect.player->register_precombat_begin( [ insight ]( player_t* ) { insight->trigger(); } );
   }
   else
   {
