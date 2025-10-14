@@ -353,7 +353,77 @@ namespace trinkets
 
 namespace weapons
 {
+// 1253357 umbral driver
+// 1265822 umbral damage
+// 1253359 radiant driver
+// 1266012 radiant damage
+// 1265823 void tear
+// 1253358 set
+void torments_duality( special_effect_t& effect )
+{
+  struct torments_duality_cb_t : public dbc_proc_callback_t
+  {
+    torments_duality_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {
+      target_debuff = e.player->find_spell( 1265823 );
+    }
 
+    buff_t* create_debuff( player_t* t ) override
+    {
+      if ( auto debuff = buff_t::find( t, "void_tear", listener ) )
+        return debuff;
+
+      return make_buff( actor_pair_t( t, listener ), "void_tear", target_debuff );
+    }
+  };
+
+  auto proxy = effect.player->find_action( "torments_duality" );
+  if ( !proxy )
+  {
+    proxy = new action_t( action_e::ACTION_OTHER, "torments_duality", effect.player );
+    proxy->name_str_reporting = "Torment's Duality";
+  }
+
+  if ( effect.spell_id == 1253357 )  // umbral sabre
+  {
+    auto damage = create_proc_action<generic_proc_t>( "umbral_sabre", effect, effect.trigger() );
+    damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+    proxy->add_child( damage );
+
+    // two stacks at a time with set
+    auto stacks = find_special_effect( effect.player, 1253358 ) ? 2 : 1;
+
+    effect.player->callbacks.register_callback_execute_function( effect.spell_id,
+      [ damage, stacks ]( auto cb, auto, auto s ) {
+        damage->execute_on_target( s->target );
+        cb->get_debuff( s->target )->trigger( stacks );
+      } );
+  }
+  else if ( effect.driver()->id() == 1253359 )  // radiant foil
+  {
+    effect.player->sim->error( PLACEHOLDER, "radiant foil base_dd_adder increased per void tear stack" );
+
+    auto damage = create_proc_action<generic_proc_t>( "radiant_foil", effect, effect.trigger() );
+    damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+    proxy->add_child( damage );
+
+    // assume additional damage per stack is added to base damage
+    auto void_add = effect.driver()->effectN( 2 ).average( effect );
+
+    effect.player->callbacks.register_callback_execute_function( effect.spell_id,
+      [ damage, void_add ]( auto cb, auto, auto s ) {
+        auto _debuff = cb->get_debuff( s->target );
+
+        damage->base_dd_adder = void_add * _debuff->check();
+        damage->execute_on_target( s->target );
+        damage->base_dd_adder = 0.0;
+
+        _debuff->expire();
+      } );
+  }
+
+  new torments_duality_cb_t( effect );
+}
 }
 
 namespace armors
@@ -447,11 +517,6 @@ void root_wardens_regalia( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 };
-
-void torments_duality( special_effect_t& effect )
-{
-
-}
 }
 
 void register_special_effects()
@@ -472,10 +537,11 @@ void register_special_effects()
   register_special_effect( 1251905, DISABLED_EFFECT );  // stabilizing gemstone bandolier
   // Trinkets
   // Weapons
+  register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
   register_special_effect( 1244005, sets::murder_row_materials );
   register_special_effect( 1244021, sets::root_wardens_regalia );
-  register_special_effect( 1253358, sets::torments_duality );
+  register_special_effect( 1253358, DISABLED_EFFECT );  // torments duality
   // Sets
 
 }

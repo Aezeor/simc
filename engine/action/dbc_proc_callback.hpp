@@ -63,8 +63,8 @@ struct dbc_proc_callback_t : public action_callback_t
     TRIGGER
   };
 
-  using execute_fn_t = std::function<void( const dbc_proc_callback_t*, action_t*, action_state_t* )>;
-  using trigger_fn_t = std::function<bool( const dbc_proc_callback_t*, action_t*, action_state_t* )>;
+  using execute_fn_t = std::function<void( dbc_proc_callback_t*, action_t*, action_state_t* )>;
+  using trigger_fn_t = std::function<bool( dbc_proc_callback_t*, action_t*, action_state_t* )>;
 
   static const item_t default_item_;
 
