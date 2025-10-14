@@ -122,14 +122,6 @@ namespace item
   void sorrowsong( special_effect_t& );
 }
 
-namespace gem
-{
-  void capacitive_primal( special_effect_t& );
-  void courageous_primal( special_effect_t& );
-  void indomitable_primal( special_effect_t& );
-  void sinister_primal( special_effect_t& );
-}
-
 namespace set_bonus
 {
   // Generic passive stat aura adder for set bonuses
@@ -825,136 +817,6 @@ void profession::draenor_philosophers_stone( special_effect_t& effect )
 
   new draenor_philosophers_stone_callback( effect.item, effect );
 }
-
-void gem::sinister_primal( special_effect_t& effect )
-{
-  if ( effect.item -> sim -> challenge_mode )
-    return;
-  if ( effect.item -> player -> level() >= 100 )
-    return;
-
-  auto p = effect.player;
-  if ( !p->buffs.tempus_repit )
-  {
-    p->buffs.tempus_repit = make_buff( p, "tempus_repit", p->find_spell( 137590 ) )
-      ->set_default_value_from_effect( 1 )
-      ->add_invalidate( CACHE_SPELL_CAST_SPEED )
-      ->set_activated( false );
-  }
-
-  effect.custom_buff = p->buffs.tempus_repit;
-
-  new dbc_proc_callback_t( effect.item, effect );
-}
-
-void gem::indomitable_primal( special_effect_t& effect )
-{
-  if ( effect.item -> sim -> challenge_mode )
-    return;
-  if ( effect.item -> player -> level() >= 100 )
-    return;
-
-  auto p = effect.player;
-  if ( !p->buffs.fortitude )
-  {
-    p->buffs.fortitude = make_buff( p, "fortitude", p->find_spell( 137593 ) )
-      ->set_default_value_from_effect( 1 )
-      ->set_activated( false );
-  }
-
-  effect.custom_buff = p->buffs.fortitude;
-
-  new dbc_proc_callback_t( effect.item, effect );
-}
-
-void gem::capacitive_primal( special_effect_t& effect )
-{
-  if ( effect.item -> sim -> challenge_mode )
-    return;
-  if ( effect.item -> player -> level() >= 100 )
-    return;
-
-  struct lightning_strike_t : public attack_t
-  {
-    lightning_strike_t( player_t* p ) :
-      attack_t( "lightning_strike", p, p -> find_spell( 137597 ) )
-    {
-      may_crit = special = background = true;
-      may_parry = may_dodge = false;
-      proc = false;
-    }
-  };
-
-  struct capacitive_primal_proc_t : public dbc_proc_callback_t
-  {
-    capacitive_primal_proc_t( const item_t* i, const special_effect_t& data ) :
-      dbc_proc_callback_t( i, data )
-    { }
-
-    void initialize() override
-    {
-      dbc_proc_callback_t::initialize();
-      // Unfortunately the weapon-based RPPM modifiers have to be hardcoded,
-      // as they will not show on the client tooltip data.
-      if ( listener -> main_hand_weapon.group() != WEAPON_2H )
-      {
-        if ( listener -> specialization() == WARRIOR_FURY )
-          rppm -> set_modifier( 1.152 );
-        else if ( listener -> specialization() == DEATH_KNIGHT_FROST )
-          rppm -> set_modifier( 1.134 );
-      }
-    }
-
-    void trigger( action_t* action, action_state_t* s ) override
-    {
-      // Flurry of Xuen and Capacitance cannot proc Capacitance
-      if ( action -> id == 147891 || action -> id == 146194 || action -> id == 137597 )
-        return;
-
-      dbc_proc_callback_t::trigger( action, s );
-    }
-  };
-
-  player_t* p = effect.item -> player;
-
-  // Stacking Buff
-  effect.custom_buff = make_buff( p, "capacitance", p -> find_spell( 137596 ) );
-
-  // Execute Action
-  action_t* ls = p -> create_proc_action( "lightning_strike", effect );
-  if ( ! ls )
-    ls = new lightning_strike_t( p );
-  effect.execute_action = ls;
-
-  new capacitive_primal_proc_t( effect.item, effect );
-}
-
-void gem::courageous_primal( special_effect_t& effect )
-{
-  if ( effect.item -> sim -> challenge_mode )
-    return;
-
-  if ( effect.item -> player -> level() >= 100 )
-    return;
-
-  auto p = effect.player;
-  if ( !p->buffs.courageous_primal_diamond_lucidity )
-    p->buffs.courageous_primal_diamond_lucidity = make_buff( p, "lucidity", p->find_spell( 137288 ) );
-
-  effect.custom_buff = p->buffs.courageous_primal_diamond_lucidity;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-struct lfr_harmful_spell_t : public spell_t
-{
-  lfr_harmful_spell_t( const std::string& name_str, special_effect_t& effect, const spell_data_t* data ) :
-    spell_t( name_str, effect.player, data )
-  {
-    background = may_crit = tick_may_crit = true;
-    callbacks = false;
-  }
-};
 
 // TODO: Ratings
 [[maybe_unused]] void set_bonus::passive_stat_aura( special_effect_t& effect )
@@ -4901,10 +4763,6 @@ void unique_gear::register_special_effects()
   // TODO: check why 20% PPM and not 100% from spell data?
   register_special_effect(  39958, "0.2PPM"                             ); /* Thundering Skyfire */
   register_special_effect(  55380, "0.2PPM"                             ); /* Thundering Skyflare */
-  register_special_effect( 137592, gem::sinister_primal                 ); /* Caster Legendary Gem */
-  register_special_effect( 137594, gem::indomitable_primal              ); /* Tank Legendary Gem */
-  register_special_effect( 137595, gem::capacitive_primal               ); /* Melee Legendary Gem */
-  register_special_effect( 137248, gem::courageous_primal               ); /* Healer Legendary Gem */
 
   /* Generic special effects begin here */
 

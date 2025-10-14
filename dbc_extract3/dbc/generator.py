@@ -1009,9 +1009,6 @@ class SpellDataGenerator(DataGenerator):
          52586,  68043,  68044,     # Gurthalak, Voice of the Deeps - LFR, N, H
          109959, 109955, 109939,    # Rogue Legendary buffs for P1, 2, 3
          84745,  84746,             # Shallow Insight, Moderate Insight
-         137597,                    # Legendary meta gem Lightning Strike
-         137323, 137247,            # Healer legendary meta
-         137331, 137326,
          146137,                    # Cleave
          146071,                    # Multistrike
          120032, 142530,            # Dancing Steel

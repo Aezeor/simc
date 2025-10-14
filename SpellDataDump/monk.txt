@@ -4066,19 +4066,6 @@ Effects          :
                    Affected Spells: Spinning Crane Kick (107270)
                    Family Flags: 8
 
-Name             : Lucidity (id=137331) [Spell Family (53)] 
-School           : Holy
-Spell Type       : Magic
-Range            : 100 yards
-Duration         : 4 seconds
-Attributes       : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Suppress Caster Procs (112), Suppress Target Procs (113), Can Proc From Procs (122), Do Not Display Range (126), Cannot Be Stolen (134), Not In Spellbook (143), Floating Combat Text On Cast (198)
-Effects          :
-#1 (id=180228)   : Apply Aura (6) | Modify Power Cost (73)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 0x7f | Misc Value 2: 1 | Target: Self (1)
-                   Affected School(s): All
-Description      : Your spells have their Mana cost reduced by $s1%.  Lasts $d.
-Tooltip          : Your spells have their Mana cost reduced by $s1%.
-
 Name             : Combo Breaker (id=137384) [Spell Family (53), Passive] 
 Talent Entry     : Windwalker [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Windwalker Monk
@@ -10694,7 +10681,6 @@ Description      : $@spelldesc337343
 Tooltip          : Healing done by your Enveloping Mists and Vivify increased by $w1%, and mana cost reduced by $w2%.
 
 Name             : Xuen's Battlegear (id=337481) [Spell Family (53), Passive] 
-Class            : Monk
 School           : Physical
 Spell Type       : None
 Max Aura Level   : 60
@@ -10715,7 +10701,6 @@ Description      : Rising Sun Kick critical strikes reduce the cooldown of Fists
 When Fists of Fury ends, the critical strike chance of Rising Sun Kick is increased by $337482m1% for $337482d.
 
 Name             : Pressure Point (id=337482) [Spell Family (53)] 
-Class            : Monk
 School           : Physical
 Spell Type       : None
 Duration         : 5 seconds
@@ -14808,7 +14793,6 @@ Description      : $@spelldesc392991
 Tooltip          : Unable to gain Skyreach from attacking this target for $d.
 
 Name             : Pressure Point (id=393053) [Spell Family (53)] 
-Class            : Monk
 School           : Physical
 Spell Type       : None
 Duration         : 5 seconds

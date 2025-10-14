@@ -514,11 +514,6 @@ struct player_t : public actor_t
     buff_t* berserking;
     buff_t* bloodlust;
 
-    // Legendary meta stuff
-    buff_t* courageous_primal_diamond_lucidity;
-    buff_t* tempus_repit;
-    buff_t* fortitude;
-
     // 7.0 trinket proxy buffs
     buff_t* incensed;
     buff_t* taste_of_mana; // Gnawed Thumb Ring buff

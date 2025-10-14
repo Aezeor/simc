@@ -5131,19 +5131,6 @@ Effects          :
                    Affected Spells: Moonfire (8921), Moonfire (164812), Red Moon (1252871), Red Moon (1253582), Lunar Wrath (1253609)
                    Family Flags: 21, 92
 
-Name             : Lucidity (id=137247) [Spell Family (7)] 
-School           : Nature
-Spell Type       : Magic
-Range            : 100 yards
-Duration         : 4 seconds
-Attributes       : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Cannot Be Stolen (134), Not In Spellbook (143), Floating Combat Text On Cast (198)
-Effects          :
-#1 (id=180108)   : Apply Aura (6) | Modify Power Cost (73)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 0x7f | Misc Value 2: 1 | Target: Self (1)
-                   Affected School(s): All
-Description      : Your spells have their Mana cost reduced by $s1%.  Lasts $d.
-Tooltip          : Your spells have their Mana cost reduced by $s1%.
-
 Name             : Item - Druid T15 Restoration 2P Bonus (id=138284) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical

@@ -3880,19 +3880,6 @@ Effects          :
                    Base Value: -140 | Scaled Value: -140 | Misc Value: 12 | Misc Value 2: 5555 (Label) | Target: Self (1)
                    Affected Spells (Label): Priest Voidweaver 11.2 Class Set 4pc (1236397)
 
-Name             : Lucidity (id=137323) [Spell Family (6)] 
-School           : Holy
-Spell Type       : Magic
-Range            : 100 yards
-Duration         : 4 seconds
-Attributes       : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Cannot Be Stolen (134), Not In Spellbook (143), Floating Combat Text On Cast (198)
-Effects          :
-#1 (id=180217)   : Apply Aura (6) | Modify Power Cost (73)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 0x7f | Misc Value 2: 1 | Target: Self (1)
-                   Affected School(s): All
-Description      : Your spells have their Mana cost reduced by $s1%.  Lasts $d.
-Tooltip          : Your spells have their Mana cost reduced by $s1%.
-
 Name             : Glyph of Inspired Hymns (desc=Holy) (id=147072) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
 School           : Physical

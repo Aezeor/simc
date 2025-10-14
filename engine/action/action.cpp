@@ -1212,12 +1212,6 @@ double action_t::cost_flat_modifier() const
 
 double action_t::cost_pct_multiplier() const
 {
-  if ( player->buffs.courageous_primal_diamond_lucidity && current_resource() == RESOURCE_MANA &&
-       player->buffs.courageous_primal_diamond_lucidity->check() )
-  {
-    return 0.0;
-  }
-
   return 1.0;
 }
 

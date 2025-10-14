@@ -3603,7 +3603,7 @@ Druid
 137011   Feral Druid
 137012   Restoration Druid
 137013   Balance Druid
-137247   Lucidity
+137247  *Lucidity
 137452  *Displacer Beast
 138216  *Item - Druid T15 Guardian 2P Bonus
 138217  *Improved Regeneration
@@ -11136,7 +11136,7 @@ Monk
 137023   Brewmaster Monk
 137024   Mistweaver Monk
 137025   Windwalker Monk
-137331   Lucidity
+137331  *Lucidity
 137384   Combo Breaker
 137639  *Storm, Earth, and Fire
 138083  *Storm, Earth, and Fire
@@ -15435,7 +15435,7 @@ Priest
 137031   Holy Priest
 137032   Discipline Priest
 137033   Shadow Priest
-137323   Lucidity
+137323  *Lucidity
 138156  *Item - Priest T15 Shadow 2P Bonus
 138158  *Item - Priest T15 Shadow 4P Bonus
 138164  *Item - Paladin T15 Retribution 4P Bonus
@@ -18891,7 +18891,7 @@ Shaman
 137039   Restoration Shaman
 137040   Elemental Shaman
 137041   Enhancement Shaman
-137326   Lucidity
+137326  *Lucidity
 137343  *Thunderstorm - Test
 138136  *Item - Shaman T15 Enhancement 2P Bonus
 138141  *Item - Shaman T15 Enhancement 4P Bonus

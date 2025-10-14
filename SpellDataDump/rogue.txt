@@ -10476,7 +10476,6 @@ Description      : Drink an alchemical concoction that heals you for $o1% of you
 Tooltip          : Healing for ${$W1}.2% of maximum health every $t1 sec.
 
 Name             : Splintered Elements (id=354648) [Spell Family (8)] 
-Class            : Shaman
 School           : Physical
 Spell Type       : None
 Duration         : 12 seconds

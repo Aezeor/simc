@@ -5508,11 +5508,6 @@ double player_t::composite_spell_cast_speed() const
 
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
-    if ( buffs.tempus_repit &&  buffs.tempus_repit->check() )
-    {
-      speed *= 1.0 / ( 1.0 + buffs.tempus_repit->check_stack_value() );
-    }
-
     if ( buffs.nefarious_pact )
     {
       speed *= 1.0 / ( 1.0 + buffs.nefarious_pact->check_stack_value() );
@@ -8702,9 +8697,6 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
 
   if ( buffs.stoneform && buffs.stoneform->up() )
     s->result_amount *= 1.0 + buffs.stoneform->data().effectN( 1 ).percent();
-
-  if ( buffs.fortitude && buffs.fortitude->up() )
-    s->result_amount *= 1.0 + buffs.fortitude->check_value();
 
   if ( buffs.elemental_chaos_earth && buffs.elemental_chaos_earth->check() )
     s->result_amount *= 1.0 + buffs.elemental_chaos_earth->check_value();

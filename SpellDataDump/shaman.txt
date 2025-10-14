@@ -3816,19 +3816,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2458 (Category) | Target: Self (1)
                    Affected Spells (Category): Crash Lightning (187874)
 
-Name             : Lucidity (id=137326) [Spell Family (11)] 
-School           : Nature
-Spell Type       : Magic
-Range            : 100 yards
-Duration         : 4 seconds
-Attributes       : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Cannot Be Stolen (134), Not In Spellbook (143), Floating Combat Text On Cast (198)
-Effects          :
-#1 (id=180221)   : Apply Aura (6) | Modify Power Cost (73)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 0x7f | Misc Value 2: 1 | Target: Self (1)
-                   Affected School(s): All
-Description      : Your spells have their Mana cost reduced by $s1%.  Lasts $d.
-Tooltip          : Your spells have their Mana cost reduced by $s1%.
-
 Name             : Lightning Blast (id=145002) 
 Class            : Shaman
 School           : Nature
@@ -11842,7 +11829,6 @@ Description      : $@spelldesc336215
 Tooltip          : Your next Earthquake will deal $s2% additional damage.
 
 Name             : Elemental Equilibrium (id=336730) [Spell Family (11), Passive] 
-Class            : Shaman
 School           : Physical
 Spell Type       : None
 Labels           : 931
@@ -11859,7 +11845,6 @@ Effects          :
 Description      : Dealing direct Fire, Frost, and Nature damage within $336731d will increase all damage dealt by $347348s1% for $347348d. This can only occur once every $347349d.
 
 Name             : Elemental Equilibrium (id=336731) [Spell Family (11), Hidden] 
-Class            : Shaman
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
@@ -11872,7 +11857,6 @@ Description      : $@spelldesc336730
 Tooltip          : Damage of your next Frost spell increased by $w1%.
 
 Name             : Elemental Equilibrium (id=336732) [Spell Family (11), Hidden] 
-Class            : Shaman
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
@@ -11885,7 +11869,6 @@ Description      : $@spelldesc336730
 Tooltip          : Damage of your next Nature spell increased by $w1%.
 
 Name             : Elemental Equilibrium (id=336733) [Spell Family (11), Hidden] 
-Class            : Shaman
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
@@ -11916,7 +11899,6 @@ Effects          :
 Description      : Flame Shock damage over time critical strikes reduce the cooldown of $?s192249[Storm Elemental][Fire Elemental] by $?s192249[${$m1/1000}.1][${$m2/1000}.1] sec, and Flame Shock has a $s3% increased critical strike chance.
 
 Name             : Chains of Devastation (id=336735) [Spell Family (11), Hidden] 
-Class            : Shaman
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -11930,7 +11912,6 @@ Effects          :
 Description      : Casting Chain Heal makes your next Chain Lightning instant cast$?$c1|c2[ and deal $336736s2% increased damage][]. Casting Chain Lightning makes your next Chain Heal instant cast$?$c1|c2[ and consume no mana][].
 
 Name             : Chains of Devastation (id=336736) [Spell Family (11)] 
-Class            : Shaman
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
@@ -11952,7 +11933,6 @@ Description      : $@spelldesc336735
 Tooltip          : Your next Chain Lightning will be instant cast$?$c1|c2[ and deal $s2% increased damage][].
 
 Name             : Chains of Devastation (id=336737) [Spell Family (11)] 
-Class            : Shaman
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
@@ -12283,7 +12263,6 @@ Effects          :
 Description      : $@spelldesc55342
 
 Name             : Elemental Equilibrium (id=347348) [Spell Family (11)] 
-Class            : Shaman
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
@@ -12299,7 +12278,6 @@ Description      : $@spelldesc336730
 Tooltip          : Damage dealt increased by $s1%.
 
 Name             : Elemental Equilibrium (id=347349) [Spell Family (11)] 
-Class            : Shaman
 School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
@@ -12378,33 +12356,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 5154 | Radius: 3 yards | Target: Left of Self (50)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
-
-Name             : Splintered Elements (id=354647) [Hidden] 
-Class            : Shaman
-School           : Physical
-Spell Type       : None
-Duration         : Aura (infinite)
-Labels           : 931
-Triggered By     : Splintered Elements (364736)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
-Effects          :
-#1 (id=887239)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Each additional $?a137039[Healing Wave]?a137040[Lava Burst][Lightning Bolt] generated by Primordial Wave increases your Haste by $s1% for $354648d.
-
-Name             : Splintered Elements (id=354648) [Spell Family (8)] 
-Class            : Shaman
-School           : Physical
-Spell Type       : None
-Duration         : 12 seconds
-Labels           : 20: Rogue Spells
-                 : 931
-Attributes       : Aura Points On Client (268)
-Effects          :
-#1 (id=887240)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : $@spelldesc354647
-Tooltip          : Haste increased by $w1%.
 
 Name             : Windveil (id=355630) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=5, col=6, max_rank=1, req_points=8]
@@ -12822,7 +12773,6 @@ Effects          :
 Description      : $@spelldesc356218
 
 Name             : Splintered Elements (id=364736) [Passive, Hidden] 
-Class            : Shaman
 School           : Physical
 Spell Type       : None
 Labels           : 24: Shaman Spells
