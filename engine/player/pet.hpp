@@ -22,7 +22,6 @@ struct pet_t : public player_t
   bool summoned;
   bool dynamic;
   bool can_dismiss;
-  bool affects_wod_legendary_ring;
   pet_e pet_type;
   event_t* expiration;
   timespan_t duration;
@@ -91,7 +90,6 @@ public:
   const spell_data_t* find_pet_spell( util::string_view name );
 
   double composite_attribute( attribute_e attr ) const override;
-  double composite_player_multiplier( school_e ) const override;
   double composite_player_target_multiplier( player_t*, school_e ) const override;
 
   // new pet scaling by Ghostcrawler, see http://us.battle.net/wow/en/forum/topic/5889309137?page=49#977

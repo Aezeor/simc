@@ -5737,9 +5737,6 @@ double player_t::composite_player_multiplier( school_e school ) const
 {
   double m = current.damage_multiplier[ school ];
 
-  if ( buffs.legendary_aoe_ring && buffs.legendary_aoe_ring->has_common_school( school ) )
-    m *= 1.0 + buffs.legendary_aoe_ring->check_value();
-
   if ( buffs.taste_of_mana && buffs.taste_of_mana->has_common_school( school ) )
     m *= 1.0 + buffs.taste_of_mana->check_value();
 
@@ -12479,12 +12476,6 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
   // trinkets
   if ( !splits.empty() && splits[ 0 ] == "trinket" )
-  {
-    if ( auto expr = unique_gear::create_expression( *this, expression_str ) )
-      return expr;
-  }
-
-  if ( splits[ 0 ] == "legendary_ring" )
   {
     if ( auto expr = unique_gear::create_expression( *this, expression_str ) )
       return expr;

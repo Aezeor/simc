@@ -1020,9 +1020,6 @@ class SpellDataGenerator(DataGenerator):
          105617,                    # Alchemist's Flask
          137596,                    # Capacitance
          104510, 104423,            # Windsong Mastery / Haste buffs
-         177172, 177175, 177176,    # WoD Legendary ring, phase 1(?)
-         177161, 177159, 177160,    # WoD Legendary ring, phase 1(?)
-         187619, 187616, 187624, 187625, # phase 2?
          143924,                    # Leech
          54861, 133022,             # Nitro boosts
          175457, 175456, 175439,    # Focus Augmentation / Hyper Augmentation / Stout Augmentation
@@ -2318,11 +2315,6 @@ class SpellDataGenerator(DataGenerator):
           ( 1249790, 3 ), # Celestial Conduit
           ( 1249791, 3 ), # Touch of Death
           ( 1249987, 3 ), # Rushing Wind Kick
-
-
-          # Shadowland Legendaries
-          ( 337342, 3 ), # Jade Ignition Damage
-          ( 337482, 3 ), # Pressure Point Buff
 
           # Tier 28
           ( 366793, 1 ), # BrM 4-piece Keg of the Heavens Heal

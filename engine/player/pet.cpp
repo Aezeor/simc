@@ -57,7 +57,6 @@ pet_t::pet_t( sim_t* sim, player_t* owner, util::string_view name, pet_e pet_typ
     summoned( false ),
     dynamic( dynamic ),
     can_dismiss( !guardian ),
-    affects_wod_legendary_ring( true ),
     pet_type( pet_type ),
     expiration( nullptr ),
     duration( timespan_t::zero() ),
@@ -102,16 +101,6 @@ double pet_t::composite_attribute( attribute_e attr ) const
   }
 
   return a;
-}
-
-double pet_t::composite_player_multiplier( school_e school ) const
-{
-  double m = player_t::composite_player_multiplier( school );
-
-  if ( owner -> buffs.legendary_aoe_ring && owner -> buffs.legendary_aoe_ring -> check() )
-    m *= 1.0 + owner -> buffs.legendary_aoe_ring -> default_value;
-
-  return m;
 }
 
 double pet_t::composite_player_target_multiplier( player_t* t, school_e school ) const

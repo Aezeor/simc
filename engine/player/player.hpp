@@ -519,8 +519,6 @@ struct player_t : public actor_t
     buff_t* tempus_repit;
     buff_t* fortitude;
 
-    buff_t* legendary_aoe_ring; // Legendary ring buff.
-
     // 7.0 trinket proxy buffs
     buff_t* incensed;
     buff_t* taste_of_mana; // Gnawed Thumb Ring buff

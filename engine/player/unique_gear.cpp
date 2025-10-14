@@ -101,7 +101,6 @@ namespace item
   void humming_blackiron_trigger( special_effect_t& );
   void spellbound_runic_band( special_effect_t& );
   void spellbound_solium_band( special_effect_t& );
-  void legendary_ring( special_effect_t& );
 
   /* Warlords of Draenor 6.2 */
   void discordant_chorus( special_effect_t& );
@@ -1652,206 +1651,6 @@ void item::spellbound_solium_band( special_effect_t& effect )
   effect.type = SPECIAL_EFFECT_EQUIP;
 
   new dbc_proc_callback_t( p, effect );
-}
-
-
-void item::legendary_ring( special_effect_t& effect )
-{
-  maintenance_check( 528 );
-
-  player_t* p = effect.item -> player;
-  buff_t* buff = nullptr;
-
-  struct legendary_ring_damage_t: public spell_t
-  {
-    double damage_coeff;
-    legendary_ring_damage_t( special_effect_t& originaleffect, const spell_data_t* spell ):
-      spell_t( spell -> name_cstr(), originaleffect.player, spell ),
-      damage_coeff( 0 )
-    {
-      damage_coeff = originaleffect.player -> find_spell( originaleffect.spell_id ) -> effectN( 1 ).average( originaleffect.item ) / 10000.0;
-      background = split_aoe_damage = true;
-      may_crit = false;
-      callbacks = false;
-      trigger_gcd = timespan_t::zero();
-      aoe = -1;
-      radius = 20;
-      range = -1;
-      travel_speed = 0.0;
-      item = originaleffect.item;
-      if ( originaleffect.player -> level() == 110 )
-        damage_coeff = 0.0;
-    }
-
-    void init() override
-    {
-      spell_t::init();
-
-      snapshot_flags = STATE_MUL_DA;
-      update_flags = 0;
-    }
-
-    double composite_da_multiplier( const action_state_t* ) const override
-    {
-      return damage_coeff;
-    }
-  };
-
-    struct legendary_ring_buff_t: public buff_t
-    {
-      struct legendary_ring_delay_event_t : public event_t
-      {
-        player_t* player;
-        action_t* boom;
-        double value;
-
-        legendary_ring_delay_event_t( player_t* p, action_t* b, double v ) :
-          event_t( *p, timespan_t::from_seconds( 1.0 ) ), player( p ), boom( b ), value( v )
-        { }
-
-        const char* name() const override
-        { return "legendary_ring_boom_delay"; }
-
-        void execute() override
-        {
-          if ( ! player -> is_sleeping() )
-          {
-            boom -> base_dd_min = boom -> base_dd_max = value;
-            boom -> execute();
-          }
-        }
-      };
-
-      action_t* boom;
-      player_t* p;
-
-      legendary_ring_buff_t( special_effect_t& originaleffect, const std::string& name, const spell_data_t* buff, const spell_data_t* damagespell ):
-        buff_t( originaleffect.player, name, buff, originaleffect.item ),
-        boom( nullptr ), p( originaleffect.player )
-      {
-        add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-        set_default_value( originaleffect.player -> find_spell( originaleffect.spell_id ) -> effectN( 1 ).average( originaleffect.item ) / 10000.0 );
-        boom = p -> find_action( damagespell -> name_cstr() );
-
-        if ( !boom )
-        {
-          boom = p -> create_proc_action( damagespell -> name_cstr(), originaleffect );
-        }
-
-        if ( !boom )
-        {
-          boom = new legendary_ring_damage_t( originaleffect, damagespell );
-        }
-        p -> buffs.legendary_aoe_ring = this;
-        if ( p -> level() == 110 ) // No damage boost at level 110.
-          default_value = 0;
-      }
-
-      void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-      {
-        double cv = current_value;
-
-        buff_t::expire_override( expiration_stacks, remaining_duration );
-
-        if ( cv > 0 )
-          make_event<legendary_ring_delay_event_t>( *sim, p, boom, cv );
-      }
-  };
-
-
-  if ( effect.spell_id != 187613 )
-  {
-    const spell_data_t* buffspell = nullptr;
-    const spell_data_t* actionspell = nullptr;
-    switch ( p -> convert_hybrid_stat( STAT_STR_AGI_INT ) )
-    {
-    case STAT_STRENGTH:
-      buffspell = p -> find_spell( 187619 );
-      actionspell = p -> find_spell( 187624 );
-      break;
-    case STAT_AGILITY:
-      buffspell = p -> find_spell( 187620 );
-      actionspell = p -> find_spell( 187626 );
-      break;
-    case STAT_INTELLECT:
-      buffspell = p -> find_spell( 187616 );
-      actionspell = p -> find_spell( 187625 );
-      break;
-    default:
-      break;
-    }
-
-    if ( buffspell && actionspell )
-    {
-      auto name = util::tokenize_fn( buffspell -> name_cstr() );
-      buff = new legendary_ring_buff_t( effect, name, buffspell, actionspell );
-    }
-
-    // Make legendary ring do it's accounting after target has been damaged
-    p -> assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [ buff ]( result_amount_type, action_state_t* state )
-    {
-      if ( ! buff -> up() )
-      {
-        return assessor::CONTINUE;
-      }
-
-      buff -> current_value += state -> result_amount;
-      if ( buff -> sim -> debug )
-      {
-        buff -> sim -> out_debug.printf( "%s %s stores %.2f damage from %s on %s, new stored amount = %.2f",
-                         buff -> player -> name(),
-                         buff -> name(),
-                         state -> result_amount, state -> action -> name(), state -> target -> name(),
-                         buff -> current_value );
-      }
-      return assessor::CONTINUE;
-    } );
-
-    // Generate functions for pets
-    for ( auto& pet : p -> pet_list )
-    {
-      if ( ! pet -> cast_pet() -> affects_wod_legendary_ring )
-      {
-        continue;
-      }
-
-      pet -> assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [ buff ]( result_amount_type, action_state_t* state )
-      {
-        if ( ! buff -> check() )
-        {
-          return assessor::CONTINUE;
-        }
-
-        buff -> current_value += state -> result_amount;
-        if ( buff -> sim -> debug )
-        {
-          buff -> sim -> out_debug.printf( "%s %s stores %.2f damage from %s %s on %s, new stored amount = %.2f",
-                           state -> action -> player -> name(),
-                           buff -> name(),
-                           state -> result_amount, buff -> player -> name(), state -> action -> name(),
-                           state -> target -> name(),
-                           buff -> current_value );
-        }
-        return assessor::CONTINUE;
-      } );
-    }
-  }
-  else // Tanks
-  {
-    buff = buff_t::find( p, "sanctus" );
-    if ( ! buff )
-    {
-      const spell_data_t* driver_spell = p->find_spell( effect.spell_id );
-      const spell_data_t* spell = p->find_spell( 187617 );
-      buff = make_buff( p, "sanctus", spell )
-        ->set_default_value( driver_spell->effectN( 1 ).average( effect.item ) / 10000.0 )
-        ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
-    }
-  }
-
-  effect.custom_buff = buff;
-  effect.type = SPECIAL_EFFECT_USE;
-  effect.cooldown_ = timespan_t::from_seconds( 120 );
 }
 
 void item::gronntooth_war_horn( special_effect_t& effect )
@@ -4520,7 +4319,6 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
   enum proc_type_e ptype = PROC_STAT;
   stat_e stat = STAT_NONE;
   std::vector<slot_e> slots;
-  bool legendary_ring = false;
 
   auto splits = util::string_split<util::string_view>( name_str, "." );
 
@@ -4630,7 +4428,7 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
   if ( util::str_in_str_ci( splits[ ptype_idx ], "stacking_" ) )
     ptype = PROC_STACKING_STAT;
 
-  if ( ptype != PROC_COOLDOWN && !legendary_ring )
+  if ( ptype != PROC_COOLDOWN )
   {
     if ( splits.size() <= stat_idx )
     {
@@ -4977,10 +4775,6 @@ void unique_gear::register_special_effects()
   register_special_effect( 184257, item::empty_drinking_horn            );
   register_special_effect( 184767, item::tyrants_decree                 );
   register_special_effect( 184762, item::warlords_unseeing_eye          );
-  register_special_effect( 187614, item::legendary_ring                 );
-  register_special_effect( 187611, item::legendary_ring                 );
-  register_special_effect( 187615, item::legendary_ring                 );
-  register_special_effect( 187613, item::legendary_ring                 );
   register_special_effect( 201404, item::gronntooth_war_horn            );
   register_special_effect( 201407, item::infallible_tracking_charm      );
   register_special_effect( 201409, item::orb_of_voidsight               );
