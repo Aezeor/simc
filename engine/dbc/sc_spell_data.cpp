@@ -4,7 +4,6 @@
 // ==========================================================================
 
 #include "dbc.hpp"
-#include "dbc/item_runeforge.hpp"
 #include "dbc/trait_data.hpp"
 #include "specialization_spell.hpp"
 #include "active_spells.hpp"
@@ -14,7 +13,6 @@
 #include "azerite.hpp"
 #include "spell_query/spell_data_expr.hpp"
 #include "sim/sim.hpp"
-#include "player/runeforge_data.hpp"
 #include "util/util.hpp"
 
 #include <unordered_set>
@@ -263,7 +261,7 @@ struct expr_data_map_t
   expr_data_e type;
 };
 
-static constexpr std::array<expr_data_map_t, 13> expr_map { {
+static constexpr std::array<expr_data_map_t, DATA_EXPR_MAX> expr_map { {
   { "spell", DATA_SPELL },
   { "talent", DATA_TALENT },
   { "effect", DATA_EFFECT },
@@ -272,8 +270,7 @@ static constexpr std::array<expr_data_map_t, 13> expr_map { {
   { "race_spell", DATA_RACIAL_SPELL },
   { "mastery", DATA_MASTERY_SPELL },
   { "spec_spell", DATA_SPECIALIZATION_SPELL },
-  { "azerite", DATA_AZERITE_SPELL },
-  { "runeforge_spell", DATA_RUNEFORGE_SPELL }
+  { "azerite", DATA_AZERITE_SPELL }
 } };
 
 expr_data_e parse_data_type( util::string_view name )
@@ -452,12 +449,6 @@ struct spell_list_expr_t : public spell_data_expr_t
         }
         break;
       }
-      case DATA_RUNEFORGE_SPELL:
-        range::for_each( runeforge_legendary_entry_t::data( dbc.ptr ),
-            [this]( const runeforge_legendary_entry_t& e ) {
-              result_spell_list.push_back( e.spell_id );
-        } );
-        break;
       default:
         return expression::TOK_UNKNOWN;
     }

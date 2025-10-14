@@ -54,7 +54,6 @@ dbc/item_database.hpp
 dbc/item_effect.hpp
 dbc/item_import.hpp
 dbc/item_naming.hpp
-dbc/item_runeforge.hpp
 dbc/item_scaling.hpp
 dbc/item_set_bonus.hpp
 dbc/item_weapon.hpp
@@ -117,7 +116,6 @@ player/player_resources.hpp
 player/player_scaling.hpp
 player/player_stat_cache.hpp
 player/rating.hpp
-player/runeforge_data.hpp
 player/sample_data_helper.hpp
 player/scaling_metric_data.hpp
 player/set_bonus.hpp
@@ -263,7 +261,6 @@ dbc/item_effect.cpp
 dbc/item_import.cpp
 dbc/item_import_ptr.cpp
 dbc/item_naming.cpp
-dbc/item_runeforge.cpp
 dbc/item_scaling.cpp
 dbc/item_set_bonus.cpp
 dbc/item_weapon.cpp
@@ -312,7 +309,6 @@ player/player_collected_data.cpp
 player/player_event.cpp
 player/player_stat_cache.cpp
 player/rating.cpp
-player/runeforge_data.cpp
 player/set_bonus.cpp
 player/spawner_base.cpp
 player/talent.cpp

@@ -2036,9 +2036,6 @@ class SpellDataGenerator(DataGenerator):
           ( 279556, 0 ),                                # Rumbling Tremors damage spell
           ( 286976, 0 ),                                # Tectonic Thunder Azerite Trait buff
           ( 327164, 0 ),                                # Primordial Wave buff
-          ( 336732, 0 ), ( 336733, 0 ),                 # Legendary: Elemental Equilibrium school buffs
-          ( 336737, 0 ),                                # Runeforged Legendary: Chains of Devastation
-          ( 354648, 0 ),                                # Runeforged Legendary: Splintered Elements
           ( 222251, 0 ),                                # Improved Stormbringer damage
           ( 381725, 0 ), ( 298765, 0 ),                 # Mountains Will Fall Earth Shock and Earthquake Overload
           ( 390287, 0 ),                                # Improved Stormbringer damage spell
@@ -3207,10 +3204,6 @@ class SpellDataGenerator(DataGenerator):
                 continue
 
             self.process_spell(effect.id_spell, ids, 0, 0, False)
-
-        # Explicitly add Shadowlands legendaries
-        for entry in self.db('RuneforgeLegendaryAbility').values():
-            self.process_spell(entry.id_spell, ids, 0, 0)
 
         # Dragonflight player traits
         for data in TraitSet(self._options).get().values():
@@ -4758,36 +4751,6 @@ class PetRaceEnumGenerator(DataGenerator):
 
         self._out.write('};\n')
         self._out.write('#endif /* PET_RACES_HPP */')
-
-class RuneforgeLegendaryGenerator(DataGenerator):
-    def filter(self):
-        entries = list(filter(lambda v: v.id_bonus and v.id_spell > 0,
-            self.db('RuneforgeLegendaryAbility').values()
-        ))
-
-        # Generate spec set dict and expand entries
-        spec_sets = defaultdict(list)
-        for entry in self.db('SpecSetMember').values():
-            spec_sets[entry.id_parent].append(entry)
-
-        return [
-            (entry, spec) for entry in entries for spec in spec_sets.get(entry.id_spec_set, [])
-        ]
-
-    def generate(self, data=None):
-        self.output_header(
-                header='Runeforge legendary bonuses',
-                type='runeforge_legendary_entry_t',
-                array='runeforge_legendary',
-                length=len(data))
-
-        for entry, spec in sorted(data, key=lambda v: (v[0].id_bonus, v[1].id_spec)):
-            fields = entry.field('id_bonus')
-            fields += spec.field('id_spec')
-            fields += entry.field('id_spell', 'mask_inv_type', 'id_covenant', 'name')
-            self.output_record(fields)
-
-        self.output_footer()
 
 class RankSpellGenerator(DataGenerator):
     def filter(self):

@@ -42,7 +42,6 @@
 #include "player/player_demise_event.hpp"
 #include "player/player_event.hpp"
 #include "player/player_scaling.hpp"
-#include "player/runeforge_data.hpp"
 #include "player/sample_data_helper.hpp"
 #include "player/scaling_metric_data.hpp"
 #include "player/set_bonus.hpp"
@@ -6408,7 +6407,6 @@ void player_t::combat_begin()
 
   add_timed_buff_triggers( external_buffs.power_infusion, buffs.power_infusion );
   add_timed_buff_triggers( external_buffs.rallying_cry, buffs.rallying_cry );
-  add_timed_buff_triggers( external_buffs.pact_of_the_soulstalkers, buffs.pact_of_the_soulstalkers );
   add_timed_buff_triggers( external_buffs.boon_of_azeroth, buffs.boon_of_azeroth );
   add_timed_buff_triggers( external_buffs.boon_of_azeroth_mythic, buffs.boon_of_azeroth_mythic );
   add_timed_buff_triggers( external_buffs.tome_of_unstable_power, buffs.tome_of_unstable_power );
@@ -11694,63 +11692,6 @@ azerite_essence_t player_t::find_azerite_essence( util::string_view name, bool t
   return azerite_essence->get_essence( name, tokenized );
 }
 
-item_runeforge_t player_t::find_runeforge_legendary( util::string_view name, bool tokenized, bool force_unity ) const
-{
-  if ( !sim->shadowlands_opts.enabled )
-  {
-    return item_runeforge_t::nil();
-  }
-
-  auto entries = runeforge_legendary_entry_t::find( name, dbc->ptr, tokenized );
-  if ( entries.empty() )
-  {
-    return item_runeforge_t::nil();
-  }
-
-  unsigned unity_bonus_id = 0;
-  unsigned unity_spell_id = 0;
-
-  if ( force_unity )
-  {
-    auto unity_entries = runeforge_legendary_entry_t::find( "Unity", dbc->ptr );
-    if ( !unity_entries.empty() )
-    {
-      auto it = range::find( unity_entries, specialization(), &runeforge_legendary_entry_t::specialization_id );
-      if ( it != unity_entries.end() )
-      {
-        unity_bonus_id = it->bonus_id;
-        unity_spell_id = it->spell_id;
-      }
-    }
-  }
-
-  // 8/22/2020 - Removed spec filtering for now since these currently have no spec limitations in-game
-  //             May need to restore some logic at some point if Blizzard points to different spells per-spec
-
-  // Iterate over all items to find the bonus id on an item. Note that Simulationcraft
-  // currently does not enforce the item restrictions on the legendary bonuses. This is
-  // intentional to allow people who know what they are doing(tm) to override in-game
-  // rules.
-  const item_t* item = nullptr;
-  for ( const auto& i : items )
-  {
-    if ( range::contains( i.parsed.bonus_id, as<int>( entries.front().bonus_id ) ) ||
-         ( unity_bonus_id && range::contains( i.parsed.bonus_id, as<int>( unity_bonus_id ) ) ) ||
-         ( unity_spell_id && range::contains( i.parsed.data.effects, unity_spell_id, &item_effect_t::spell_id ) ) )
-    {
-      item = &i;
-      break;
-    }
-  }
-
-  if ( item == nullptr )
-  {
-    return item_runeforge_t::not_found();
-  }
-
-  return { entries.front(), item };
-}
-
 /**
  * 8.2 Vision of Perfection proc handler
  *
@@ -12701,11 +12642,6 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     return unique_gear::create_expression( *this, expression_str );
   }
 
-  if ( auto expr = runeforge::create_expression( this, splits, expression_str ) )
-  {
-    return expr;
-  }
-
   return sim->create_expression( expression_str );
 }
 
@@ -13651,7 +13587,6 @@ void player_t::create_options()
   add_option( opt_external_buff_times( "external_buffs.power_infusion", external_buffs.power_infusion ) );
   add_option( opt_external_buff_times( "external_buffs.conquerors_banner", external_buffs.conquerors_banner ) );
   add_option( opt_external_buff_times( "external_buffs.rallying_cry", external_buffs.rallying_cry ) );
-  add_option( opt_external_buff_times( "external_buffs.pact_of_the_soulstalkers", external_buffs.pact_of_the_soulstalkers ) ); // 9.1 Kyrian Hunter Legendary
   add_option( opt_external_buff_times( "external_buffs.boon_of_azeroth", external_buffs.boon_of_azeroth ) );
   add_option( opt_external_buff_times( "external_buffs.boon_of_azeroth_mythic", external_buffs.boon_of_azeroth_mythic ) );
   add_option( opt_external_buff_times( "external_buffs.tome_of_unstable_power", external_buffs.tome_of_unstable_power) );

@@ -363,9 +363,6 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
 {
   std::string tier_name;
   unsigned int max_ilevel_allowed = 0;
-  unsigned int legendary_ilevel   = 0;
-  int max_legendary_items         = 0;
-  int equipped_legendaries        = 0;  // counter
 
   if ( p.report_information.save_str.find( "PR" ) != std::string::npos )
   {
@@ -423,34 +420,20 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
   {
     item_t& item = p.items[ slot ];
 
-    // Legendary item count
-    if ( item.parsed.data.quality == ITEM_QUALITY_LEGENDARY )
+    // Check if the item is not whitelisted
+    bool is_whitelisted = false;
+    for ( auto& item_id : whitelisted_items )
     {
-      equipped_legendaries++;
-      if ( item.item_level() != legendary_ilevel )
+      if ( item.parsed.data.id == item_id )
       {
-        sim.error( "Player {} has legendary item at slot {} of ilevel {}, legendary ilevel for {} is {}.\n", p.name(),
-                   util::slot_type_string( slot ), item.item_level(), tier_name, legendary_ilevel );
+        is_whitelisted = true;
+        break;
       }
     }
-    // Normal gear
-    else
-    {
-      // Check if the item is not whitelisted
-      bool is_whitelisted = false;
-      for ( auto& item_id : whitelisted_items )
-      {
-        if ( item.parsed.data.id == item_id )
-        {
-          is_whitelisted = true;
-          break;
-        }
-      }
-      // Check item level
-      if ( !is_whitelisted && item.item_level() > max_ilevel_allowed )
-        sim.error( "Player {} has {} of ilevel {}, maximum allowed ilevel for {} is {}.\n", p.name(),
-                   util::slot_type_string( slot ), item.item_level(), tier_name, max_ilevel_allowed );
-    }
+    // Check item level
+    if ( !is_whitelisted && item.item_level() > max_ilevel_allowed )
+      sim.error( "Player {} has {} of ilevel {}, maximum allowed ilevel for {} is {}.\n", p.name(),
+                 util::slot_type_string( slot ), item.item_level(), tier_name, max_ilevel_allowed );
 
     // Check gem sockets
     int gem_count = 0;
@@ -548,13 +531,6 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     // Check if the item is using gems=
     if ( !item.option_gems_str.empty() )
       sim.errorf( "Player %s has %s with gems=, use gem_id= instead.\n", p.name(), util::slot_type_string( slot ) );
-  }
-
-  // Ensures that the player doesn't have too many legendary items equipped
-  if ( equipped_legendaries != max_legendary_items )
-  {
-    sim.error( "Player {} has {} legendary items equipped, legendary item count for {} is {}, at item level {}.\n",
-               p.name(), equipped_legendaries, tier_name, max_legendary_items, legendary_ilevel );
   }
 
   return true;

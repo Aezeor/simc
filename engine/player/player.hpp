@@ -55,7 +55,6 @@ struct event_t;
 struct expr_t;
 struct gain_t;
 struct instant_absorb_t;
-class item_runeforge_t;
 struct sample_data_helper_t;
 struct option_t;
 struct pet_t;
@@ -561,9 +560,6 @@ struct player_t : public actor_t
     buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving
     buff_t* echo_of_eonar;               // passive self buff
 
-    // 9.1 Legendary Buffs
-    buff_t* pact_of_the_soulstalkers; // Kyrian Hunter Legendary
-
     // Trinkets
     buff_t* soleahs_secret_technique_external;
     buff_t* elegy_of_the_eternals_external;
@@ -628,7 +624,6 @@ struct player_t : public actor_t
     std::vector<timespan_t> blessing_of_spring;
     std::vector<timespan_t> conquerors_banner;
     std::vector<timespan_t> rallying_cry;
-    std::vector<timespan_t> pact_of_the_soulstalkers;
     std::vector<timespan_t> boon_of_azeroth;
     std::vector<timespan_t> boon_of_azeroth_mythic;
     std::vector<timespan_t> tome_of_unstable_power;
@@ -1089,8 +1084,6 @@ public:
   azerite_power_t find_azerite_spell( unsigned power_id ) const;
   azerite_essence_t find_azerite_essence( util::string_view name, bool tokenized = false ) const;
   azerite_essence_t find_azerite_essence( unsigned power_id ) const;
-
-  item_runeforge_t find_runeforge_legendary( util::string_view name, bool tokenized = false, bool force_unity = false ) const;
 
   const spell_data_t* find_racial_spell( util::string_view name, race_e r = RACE_NONE ) const;
   const spell_data_t* find_class_spell( util::string_view name, specialization_e s = SPEC_NONE ) const;

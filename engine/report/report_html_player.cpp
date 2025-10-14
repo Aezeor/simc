@@ -2610,7 +2610,6 @@ std::string find_matching_decorator( const player_t& p, std::string_view n )
   if ( !spell->ok() ) spell = p.find_specialization_spell( n_token );
   if ( !spell->ok() ) spell = p.find_class_spell( n );
   if ( !spell->ok() ) spell = p.find_class_spell( n_token );
-  if ( !spell->ok() ) spell = p.find_runeforge_legendary( n );
   if ( spell->ok() )
     return report_decorators::decorated_spell_data( *p.sim, spell );
 
@@ -3934,9 +3933,6 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
     {
       p.azerite->generate_report( os );
     }
-
-    // Runeforge Legendaries
-    runeforge::generate_report( p, os );
 
     // Professions
     if ( !p.professions_str.empty() )
