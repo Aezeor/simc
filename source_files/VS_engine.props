@@ -297,8 +297,8 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\item\enchants.cpp" />
 		<ClCompile Include="..\engine\item\item.cpp" />
 		<ClCompile Include="..\engine\item\special_effect.cpp" />
-		<ClCompile Include="..\engine\lib\fmt\format.cc" />
-		<ClCompile Include="..\engine\lib\fmt\os.cc" />
+		<ClCompile Include="..\engine\lib\fmt\format.cpp" />
+		<ClCompile Include="..\engine\lib\fmt\os.cpp" />
 		<ClCompile Include="..\engine\player\action_priority_list.cpp" />
 		<ClCompile Include="..\engine\player\action_variable.cpp" />
 		<ClCompile Include="..\engine\player\actor.cpp" />

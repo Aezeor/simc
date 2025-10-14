@@ -103,8 +103,8 @@ SRC += \
     item$(PATHSEP)enchants.cpp \
     item$(PATHSEP)item.cpp \
     item$(PATHSEP)special_effect.cpp \
-    lib$(PATHSEP)fmt$(PATHSEP)format.cc \
-    lib$(PATHSEP)fmt$(PATHSEP)os.cc \
+    lib$(PATHSEP)fmt$(PATHSEP)format.cpp \
+    lib$(PATHSEP)fmt$(PATHSEP)os.cpp \
     player$(PATHSEP)action_priority_list.cpp \
     player$(PATHSEP)action_variable.cpp \
     player$(PATHSEP)actor.cpp \
