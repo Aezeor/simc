@@ -5290,14 +5290,14 @@ Druid
 1264899  Spirit of the Thicket
 1264905  Spirit of the Thicket
 1264911  Spirit of the Thicket
-1269186 *Unshapeshifted
+1269186  Unshapeshifted
 1269614  Wild Guardian
 1269616  Wild Guardian
 1269617  Wild Guardian
 1269619  Wild Guardian
-1269633 *Echo of Ironfur
-1269645 *Echo of Frenzied Regeneration
-1269648 *Echo of Maul
+1269633  Echo of Ironfur
+1269645  Echo of Frenzied Regeneration
+1269648  Echo of Maul
 1269658  Wild Guardian
 1269659  Gift of Ironfur
 1269660  Gift of Maul

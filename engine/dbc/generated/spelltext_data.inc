@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.0.63854
-static constexpr std::array<spelltext_data_t, 28328> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28332> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28222,6 +28222,7 @@ static constexpr std::array<spelltext_data_t, 28328> __spelltext_data { {
   { 1269168, 0, "Speed increased by $w2.", 0 },
   { 1269175, "$@spelldesc1267203", 0, 0 },
   { 1269179, "$@spelldesc1267203", "Your next Shield of the Righteous deals $s1~% increased damage to your primary target and refracts onto $1267215s2~ nearby enemies for additional Holy damage.", 0 },
+  { 1269186, "Restoration Druid core passive", 0, 0 },
   { 1269205, "$@spelldesc196819", 0, 0 },
   { 1269209, "$@spelldesc53", 0, 0 },
   { 1269214, "$@spelldesc200758", 0, 0 },
@@ -28270,8 +28271,11 @@ static constexpr std::array<spelltext_data_t, 28328> __spelltext_data { {
   { 1269617, "Mastery increased by $s1%. Wild Guardian's echoes of your abilities are now cast at $s2% effectiveness.", 0, 0 },
   { 1269619, "Wild Guardian's echoes of your abilities are empowered with additional effects:\r\n\r\n$@spellicon192081 $@spellname192081: Absorbs $<absorb> damage\r\n$@spellicon22842 $@spellname22842: Grants Dream of Cenarius\r\n$@spellicon6807 $@spellname6807: Deals $s2% additional Nature damage over $1270065d.", 0, 0 },
   { 1269630, "$@spelldesc196819", 0, 0 },
+  { 1269633, "Armor increased by ${$s1*$AGI/100}.$?a1269619[Absorb up to $s2 damage taken.][]\r\n", "Armor increased by ${$w1*$AGI/100}. $?$w2>0[Absorbing the next $w2 damage taken.][]", 0 },
   { 1269634, "$@spelldesc319175", 0, 0 },
   { 1269643, "$@spelldesc1268709", "Demonic eyes float overhead, analyzing nearby enemies.\r\n\r\nConsuming Demonic Art commands the eye to fly at your current target and explode, dealing Fire damage.", 0 },
+  { 1269645, "Heals you for $o1% health over $d.", "Healing $w1% health every $t1 sec.", 0 },
+  { 1269648, "Maul the target for $s1 Physical damage.", 0, 0 },
   { 1269658, "$@spelldesc1269614", 0, 0 },
   { 1269659, "$@spelldesc1269614", "Your next cast of Ironfur will be echoed.", 0 },
   { 1269660, "$@spelldesc1269614", "Your next cast of Maul will be echoed.", 0 },

@@ -2353,6 +2353,7 @@ class SpellDataGenerator(DataGenerator):
         (
           ( 48629, 0 ), ( 106840, 0 ), # Cat Form override
           ( 106829, 0 ), ( 106899, 0 ), # Bear Form override
+          ( 1269186, 0 ), # HOTW caster form?
           # Balance
           ( 188046, 1 ), # Fey Missile
           ( 274282, 1 ), # Half Moon
@@ -2364,6 +2365,7 @@ class SpellDataGenerator(DataGenerator):
           # Guardian
           ( 1250913, 3 ), # Memory of Ysera heal
           ( 1252994, 3 ), # Killing Blow (unused?)
+          ( 1269633, 3 ), ( 1269645, 3 ), ( 1269648, 3 ), # Apex talent echoes
           # Restoration
           ( 1236574, 4 ), ( 1264623, 4 ), ( 1264659, 4 ), # Dryad Tranquility
           ( 1236647, 4 ), # Dryad Regrowth
