@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 12.0.0.63728
-static constexpr std::array<specialization_spell_entry_t, 608> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 12.0.0.63854
+static constexpr std::array<specialization_spell_entry_t, 609> __specialization_spell_data { {
   {  0,  535,  264656,      0, "Pathfinding"                       , 0 },
   {  0,  535,  264662,      0, "Endurance Training"                , 0 },
   {  0,  535,  264663,      0, "Predator's Thirst"                 , 0 },
@@ -426,6 +426,7 @@ static constexpr std::array<specialization_spell_entry_t, 608> __specialization_
   { 10,  270,  462088,      0, "Monk"                              , 0 },
   { 10,  270,  462090,      0, "Mistweaver Monk"                   , 0 },
   { 10,  270, 1229376,      0, "Single-Button Assistant"           , 0 },
+  { 10,  270, 1242468,      0, "Serene Vitality"                   , 0 },
   { 10,  270, 1258138,      0, "Mistweaver Monk"                   , 0 },
   { 10,  269,  101545,      0, "Flying Serpent Kick"               , 0 },
   { 10,  269,  115636,      0, "Mastery: Combo Strikes"            , 0 },

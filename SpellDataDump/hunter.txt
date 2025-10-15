@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.63728 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.63854 midnight-BETA
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -308,7 +308,7 @@ School           : Physical
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 30 yards
-Duration         : 3 seconds
+Duration         : 6 seconds
 Cooldown         : 8 seconds
 Category         : 82 (Type 0x0)
 Labels           : 16: Class Spells
@@ -325,7 +325,7 @@ Effects          :
 #2 (id=140019)   : Taunt (114)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25 | Mechanic: Heal | Target: Targeted Enemy (6)
 #3 (id=140020)   : Apply Aura (6) | Taunt (11)
-                   Base Value: 400 | Scaled Value: 400 | Mechanic: Heal | Target: Targeted Enemy (6)
+                   Base Value: 800 | Scaled Value: 800 | Mechanic: Heal | Target: Targeted Enemy (6)
 Description      : Your pet growls at the target, generating threat, taunting the target to attack the pet.
 Tooltip          : Taunted.
 

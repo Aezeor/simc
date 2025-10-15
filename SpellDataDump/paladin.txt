@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.63728 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.63854 midnight-BETA
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -464,7 +464,7 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Duration         : 5 seconds
 Charges          : 1 (11 seconds cooldown)
-Category         : 1663 (Type 0x25): Protection Paladin (137028 effect#6), Protection Paladin (137028 effect#9), Crusader's Judgment (204023 effect#1), Avenging Crusader (216331 effect#3), Improved Judgment (405461 effect#1), Retribution Paladin (1258011 effect#7), Holy Paladin (1258016 effect#3)
+Category         : 1663 (Type 0x25): Protection Paladin (137028 effect#6), Protection Paladin (137028 effect#9), Holy Paladin (137029 effect#20), Crusader's Judgment (204023 effect#1), Avenging Crusader (216331 effect#3), Improved Judgment (405461 effect#1), Retribution Paladin (1258011 effect#7), Holy Paladin (1258016 effect#3)
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 189
@@ -495,7 +495,7 @@ Resource         : 2.8% Base Mana (0) (id=836)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
-Charges          : 1 (9.5 seconds cooldown)
+Charges          : 1 (7.5 seconds cooldown)
 Category         : 2179 (Type 0x5): Avenging Wrath (31884 effect#5), Avenging Crusader (216331 effect#8), Light's Conviction (414073 effect#1), Paladin Holy 11.0 Class Set 2pc (453658 effect#2), Avenging Wrath (454351 effect#6), Holy Paladin (1258016 effect#15)
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
@@ -879,7 +879,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 741: Healing Spells
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Tyr's Deliverance (200654 effect#2), Sacred Dawn (243174 effect#1), Holy Shock (272906 effect#1), Blessing of Dawn (337747 effects: #1, #2), Divine Glimpse (387805 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Lightspark (394667 effect#1), Paladin Holy 10.1 Class Set 2pc (405545 effect#1), Reclamation (415364 effect#2), Initial Paladin (417383 effects: #3, #4), Awestruck (417855 effect#1), Holy Paladin (428076 effects: #1, #2), Luminosity (431402 effect#1), Blessing of An'she (445204 effect#1), Light of the Martyr (447988 effect#1), Paladin Holy 11.0 Class Set 2pc (453658 effect#1), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Glorious Dawn (461246 effect#2), Beacon of the Savior (1244893 effect#3)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Tyr's Deliverance (200654 effect#2), Sacred Dawn (243174 effect#1), Holy Shock (272906 effect#1), Blessing of Dawn (337747 effects: #1, #2), Divine Glimpse (387805 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Lightspark (394667 effect#1), Paladin Holy 10.1 Class Set 2pc (405545 effect#1), Reclamation (415364 effect#2), Initial Paladin (417383 effects: #3, #4), Awestruck (417855 effect#1), Holy Paladin (428076 effects: #1, #2), Luminosity (431402 effect#1), Blessing of An'she (445204 effect#1), Light of the Martyr (447988 effect#1), Paladin Holy 11.0 Class Set 2pc (453658 effect#1), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Glorious Dawn (461246 effect#2), Beacon of the Savior (1244893 effect#3), Paladin Holy 12.0 Class Set 2pc (1264844 effect#1)
 Family Flags     : 46, 48
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), Ignore Line of Sight (66), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
@@ -2056,7 +2056,7 @@ Spell Type       : Melee
 Resource         : 0.6% Base Mana (0) (id=2804)
 Spell Level      : 9
 Range            : 30 yards
-Duration         : 3 seconds
+Duration         : 6 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1587 (Type 0x1)
 Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
@@ -2071,8 +2071,8 @@ Effects          :
 #1 (id=56098)    : Taunt (114)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=56099)    : Apply Aura (6) | Taunt (11)
-                   Base Value: 400 | Scaled Value: 400 | Target: Targeted Enemy (6)
-Description      : Commands the attention of an enemy target, forcing them to attack you.
+                   Base Value: 800 | Scaled Value: 800 | Target: Targeted Enemy (6)
+Description      : Commands the attention of an enemy target, forcing them to attack you and increasing the threat you generate against them by $s2% for $d.
 Tooltip          : Taunted.
 
 Name             : Stoneform (desc=Racial) (id=65116) 
@@ -2501,12 +2501,12 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 2706: Spatial Paradox (406732 effect#11), Spatial Paradox (406789 effect#10)
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Protection Paladin (137028 effect#7), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Divine Purpose (223819 effects: #1, #2, #5, #6), Sacred Dawn (243174 effect#1), Breaking Dawn (278594 effect#3), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Dawn Will Come (364306 effect#2), Breaking Dawn (387879 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1), Unending Light (394709 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Luminosity (431402 effect#1), Gleaming Rays (431481 effect#1), Avenging Wrath (454351 effects: #1, #2), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1), Solar Wrath (1236972 effects: #1, #2), Beacon of the Savior (1244893 effect#3), Holy Paladin (1258016 effect#1)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Protection Paladin (137028 effect#7), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Divine Purpose (223819 effects: #1, #2, #5, #6), Sacred Dawn (243174 effect#1), Breaking Dawn (278594 effect#3), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Dawn Will Come (364306 effect#2), Breaking Dawn (387879 effect#1), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1), Unending Light (394709 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Luminosity (431402 effect#1), Gleaming Rays (431481 effect#1), Avenging Wrath (454351 effects: #1, #2), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1), Solar Wrath (1236972 effects: #1, #2), Seraphic Barrier (1241714 effect#2), Beacon of the Savior (1244893 effect#3), Holy Paladin (1258016 effect#1)
 Family Flags     : 46, 82
 Attributes       : Not Shapeshifted (16), Always Line of Sight (185), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=86331)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.22566 | Radius: 0 - 15 yards | Target: Source (22) -> Ally in Area (30)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.22566 | Radius: 0 - 40 yards | Target: Source (22) -> Ally in Area (30)
 #2 (id=337580)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 4 yards | Target: Source (22) -> Ally in Area (30)
 #3 (id=736030)   : Dummy (3)
@@ -2580,7 +2580,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 741: Healing Spells
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Sanctuary (105805 effect#5), Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#22), Holy Paladin (137029 effects: #1, #2, #9), Beacon of Faith (156910 effect#3), Consecration (188370 effect#2), Divine Purpose (223819 effects: #1, #2, #5, #6), Righteous Conviction (287126 effect#1), Shining Light (327510 effect#1), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Royal Decree (340147 effect#1), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1), Judge, Jury and Executioner (406157 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Gleaming Rays (431481 effect#1), Avenging Wrath (454351 effects: #1, #2), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1), All in! (1216837 effect#1), Solar Wrath (1236972 effects: #1, #2), Protection Paladin (1256936 effect#4)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Sanctuary (105805 effect#5), Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#22), Holy Paladin (137029 effects: #1, #2, #9), Beacon of Faith (156910 effect#3), Consecration (188370 effect#2), Divine Purpose (223819 effects: #1, #2, #5, #6), Righteous Conviction (287126 effect#1), Shining Light (327510 effect#1), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Royal Decree (340147 effect#1), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1), Judge, Jury and Executioner (406157 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Gleaming Rays (431481 effect#1), Avenging Wrath (454351 effects: #1, #2), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1), All in! (1216837 effect#1), Solar Wrath (1236972 effects: #1, #2), Seraphic Barrier (1241714 effect#2), Protection Paladin (1256936 effect#4)
 Family Flags     : 46, 78
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
@@ -3738,11 +3738,15 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Not an Attack (194
 Effects          :
 #1 (id=127312)   : Dummy (3)
                    Base Value: 102 | Scaled Value: 102 | Target: Current Target (25)
+#2 (id=1282788)  : Energize Power (30)
+                   Base Value: 3 | Scaled Value: 3 | Resource: holy_power | Target: Self (1)
 Description      : Fires a beam of light that scatters to strike a clump of targets. 
 
 If the beam is aimed at an enemy target, it deals $114852s1 Holy damage and radiates ${$114852s2*$<healmod>} healing to 5 allies within $114852A2 yds.
 
-If the beam is aimed at a friendly target, it heals for ${$114871s1*$<healmod>} and radiates $114871s2 Holy damage to 5 enemies within $114871A2 yds.
+If the beam is aimed at a friendly target, it heals for ${$114871s1*$<healmod>} and radiates $114871s2 Holy damage to 5 enemies within $114871A2 yds.
+
+|cFFFFFFFFGenerates $s2 Holy Power.
 Variables        : $healmod=$?a405546[${1+$405546s3/100}][${1}]
 
 Name             : Holy Prism (id=114852) [Spell Family (10)] 
@@ -4425,6 +4429,9 @@ Effects          :
                    Base Value: 92 | Scaled Value: 92
                    Affected Spells: Consecration (26573), Consecration (81297), Consecration (243597), Consecration (387881), Consecration (419810)
                    Family Flags: 5
+#20 (id=1282769) : Apply Aura (6) | Modify Recharge Time% (Category) (454)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 1663 (Category) | Target: Self (1)
+                   Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779), Hammer of Wrath (1241413)
 Description      : Holy Paladin core passive
 
 Name             : Lucidity (id=137288) [Spell Family (10)] 
@@ -4662,7 +4669,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 741: Healing Spells
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Sanctuary (105805 effect#5), Retribution Paladin (137027 effects: #8, #9), Holy Paladin (137029 effects: #1, #2, #10, #11), Beacon of Faith (156910 effect#3), Consecration (188370 effect#2), Divine Purpose (223819 effects: #1, #2, #5, #6), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Judge, Jury and Executioner (406157 effect#1), Divine Purpose (408458 effects: #1, #2), Retribution Paladin (412314 effect#9), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Gleaming Rays (431481 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), All in! (1216837 effect#1), Solar Wrath (1236972 effects: #1, #2), Retribution Paladin (1258011 effect#23)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Sanctuary (105805 effect#5), Retribution Paladin (137027 effects: #8, #9), Holy Paladin (137029 effects: #1, #2, #10, #11), Beacon of Faith (156910 effect#3), Consecration (188370 effect#2), Divine Purpose (223819 effects: #1, #2, #5, #6), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Judge, Jury and Executioner (406157 effect#1), Divine Purpose (408458 effects: #1, #2), Retribution Paladin (412314 effect#9), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Gleaming Rays (431481 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), All in! (1216837 effect#1), Solar Wrath (1236972 effects: #1, #2), Seraphic Barrier (1241714 effect#2), Retribution Paladin (1258011 effect#23)
 Family Flags     : 41, 46, 89, 115
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
@@ -5084,7 +5091,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Proc Flags       : Generic Heal Taken, Magic Heal Taken, Helpful Periodic Taken
 Family Flags     : 119
-Attributes       : Passive (6), Not In Spellbook (143), Allow Cast While Channeling (308), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Ignore Target Absorb Modifiers (371), Hide Damage Absorb UI (380), Allow Class Ability Procs (416)
+Attributes       : Passive (6), No Aura Icon (60), Not In Spellbook (143), Allow Cast While Channeling (308), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Ignore Target Absorb Modifiers (371), Hide Damage Absorb UI (380), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=265639)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.25 | Target: Self (1) -> Self (1)
@@ -5526,7 +5533,7 @@ Description      : $@spelldesc183998
 Tooltip          : Suffering $w2 Holy damage every $t2 sec.
 
 Name             : Crusader's Might (id=196926) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=9, col=3, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=7, col=1, max_rank=1, req_points=8, select_idx=200]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -5539,7 +5546,7 @@ Proc Flags       : Magic Heal, Magic Hostile Spell
 Attributes       : Is Ability (4), Passive (6), Do Not Log (8), Can Proc From Procs (122), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=289151)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -1000 | Scaled Value: -1000 | Misc Value: 7 | Target: Self (1)
+                   Base Value: -3000 | Scaled Value: -3000 | Misc Value: 7 | Target: Self (1)
 Description      : Holy Shock reduces the cooldown of Judgment by ${$m1/-1000}.1 sec.
 
 Name             : Judgment (id=197277) [Spell Family (10)] 
@@ -6843,12 +6850,12 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 1627 (Category) | Target: Self (1)
                    Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
 #3 (id=321880)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -60 | Scaled Value: -60 | Misc Value: 1663 (Category) | Target: Self (1)
+                   Base Value: -40 | Scaled Value: -40 | Misc Value: 1663 (Category) | Target: Self (1)
                    Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779), Hammer of Wrath (1241413)
 #4 (id=321881)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #5 (id=321882)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 260 | Scaled Value: 260 | PvP Coefficient: 0.77 | Misc Value: 127 | Misc Value 2: 1 | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | Misc Value: 127 | Misc Value 2: 1 | Target: Self (1)
 #6 (id=321944)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #7 (id=321945)   : Apply Aura (6) | Ignore Aura State (262)
@@ -7251,7 +7258,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Protection Paladin (137028 effect#7), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Divine Purpose (223819 effects: #1, #2, #5, #6), Sacred Dawn (243174 effect#1), Breaking Dawn (278594 effect#3), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Dawn Will Come (364306 effect#2), Breaking Dawn (387879 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1), Unending Light (394709 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Luminosity (431402 effect#1), Gleaming Rays (431481 effect#1), Avenging Wrath (454351 effects: #1, #2), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1), Solar Wrath (1236972 effects: #1, #2), Beacon of the Savior (1244893 effect#3), Holy Paladin (1258016 effect#1)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Protection Paladin (137028 effect#7), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Divine Purpose (223819 effects: #1, #2, #5, #6), Sacred Dawn (243174 effect#1), Breaking Dawn (278594 effect#3), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Dawn Will Come (364306 effect#2), Breaking Dawn (387879 effect#1), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1), Unending Light (394709 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Luminosity (431402 effect#1), Gleaming Rays (431481 effect#1), Avenging Wrath (454351 effects: #1, #2), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1), Solar Wrath (1236972 effects: #1, #2), Seraphic Barrier (1241714 effect#2), Beacon of the Savior (1244893 effect#3), Holy Paladin (1258016 effect#1)
 Family Flags     : 46, 82
 Attributes       : Not a Proc (105), Allow Class Ability Procs (416)
 Effects          :
@@ -9240,7 +9247,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (11 seconds cooldown)
-Category         : 1663 (Type 0x25): Protection Paladin (137028 effect#6), Protection Paladin (137028 effect#9), Crusader's Judgment (204023 effect#1), Avenging Crusader (216331 effect#3), Improved Judgment (405461 effect#1), Retribution Paladin (1258011 effect#7), Holy Paladin (1258016 effect#3)
+Category         : 1663 (Type 0x25): Protection Paladin (137028 effect#6), Protection Paladin (137028 effect#9), Holy Paladin (137029 effect#20), Crusader's Judgment (204023 effect#1), Avenging Crusader (216331 effect#3), Improved Judgment (405461 effect#1), Retribution Paladin (1258011 effect#7), Holy Paladin (1258016 effect#3)
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 189
@@ -9268,7 +9275,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (11 seconds cooldown)
-Category         : 1663 (Type 0x25): Protection Paladin (137028 effect#6), Protection Paladin (137028 effect#9), Crusader's Judgment (204023 effect#1), Avenging Crusader (216331 effect#3), Improved Judgment (405461 effect#1), Retribution Paladin (1258011 effect#7), Holy Paladin (1258016 effect#3)
+Category         : 1663 (Type 0x25): Protection Paladin (137028 effect#6), Protection Paladin (137028 effect#9), Holy Paladin (137029 effect#20), Crusader's Judgment (204023 effect#1), Avenging Crusader (216331 effect#3), Improved Judgment (405461 effect#1), Retribution Paladin (1258011 effect#7), Holy Paladin (1258016 effect#3)
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 189
@@ -11194,7 +11201,7 @@ Proc Flags       : Magic Heal
 Attributes       : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=817890)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=817891)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #3 (id=845536)   : Apply Aura (6) | Dummy (4)
@@ -14070,7 +14077,7 @@ Attributes       : Passive (6), Can Proc From Procs (122), Do Not Display Range 
 Effects          :
 #1 (id=1015198)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 383346 | Target: Self (1)
-Description      : Your Blade of Justice causes the target to burn for $383346o1 $?s403665[Holy][Radiant] damage over $383346d.
+Description      : Your Blade of Justice causes the target to burn for $383346o1 $?s403665[Holy][Radiant] damage over $383346d. When reapplied, any remaining damage is added to the new effect.
 
 Name             : Expurgation (id=383346) [Spell Family (10)] 
 Class            : Paladin
@@ -15169,15 +15176,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268)
 Effects          :
-#1 (id=1022981)  : Apply Aura (6) | Add Flat Modifier (107): Spell Radius (6)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 6 | Target: Self (1)
-                   Affected Spells: Light of Dawn (85222), Light of Dawn (225311)
-                   Family Flags: 82
-#2 (id=1240294)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#1 (id=1022981)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Light of Dawn (85222), Light of Dawn (225311)
                    Family Flags: 82
-Description      : Increases the radius of Light of Dawn by $s1 yds and increases its healing by $s2%.
+Description      : Increases Light of Dawn's healing by $s1%.
 
 Name             : Consecration (id=387881) [Spell Family (10)] 
 Class            : Paladin
@@ -15409,7 +15412,7 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Sanctuary (105805 effect#5), Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#22), Holy Paladin (137029 effect#9), Consecration (188370 effect#2), Divine Purpose (223819 effects: #1, #2, #5, #6), Righteous Conviction (287126 effect#1), Shining Light (327510 effect#1), The Magistrate's Judgment (337682 effect#1), Royal Decree (340147 effect#1), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Judge, Jury and Executioner (406157 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Gleaming Rays (431481 effect#1), Pure Light (454653 effect#1), Sacred Strength (469337 effect#1), All in! (1216837 effect#1), Solar Wrath (1236972 effects: #1, #2), Protection Paladin (1256936 effect#4)
+Affecting Spells : Sanctuary (105805 effect#5), Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#22), Holy Paladin (137029 effect#9), Consecration (188370 effect#2), Divine Purpose (223819 effects: #1, #2, #5, #6), Righteous Conviction (287126 effect#1), Shining Light (327510 effect#1), The Magistrate's Judgment (337682 effect#1), Royal Decree (340147 effect#1), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Judge, Jury and Executioner (406157 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Gleaming Rays (431481 effect#1), Pure Light (454653 effect#1), Sacred Strength (469337 effect#1), All in! (1216837 effect#1), Solar Wrath (1236972 effects: #1, #2), Seraphic Barrier (1241714 effect#2), Protection Paladin (1256936 effect#4)
 Family Flags     : 78
 Attributes       : Do Not Log (8), Allow While Sitting (27), Not an Action (92), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
@@ -17299,7 +17302,7 @@ Effects          :
 #1 (id=1070164)  : Taunt (114)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 15 yards | Target: Source (22) -> Enemy in Area (15)
 #2 (id=1070165)  : Apply Aura (6) | Taunt (11)
-                   Base Value: 400 | Scaled Value: 400 | Radius: 0 - 15 yards | Target: Source (22) -> Enemy in Area (15)
+                   Base Value: 800 | Scaled Value: 800 | Radius: 0 - 15 yards | Target: Source (22) -> Enemy in Area (15)
 Description      : $@spelldesc204077
 Tooltip          : Taunted.
 
@@ -17814,7 +17817,7 @@ Attributes       : Aura Points On Client (268), Do Not Log Aura Refresh (291), A
 Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1083043)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779), Boundless Judgment (383970), Judgment (383991), Hammer of Wrath (1241413)
                    Family Flags: 23
 #2 (id=1083044)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7) | Attributes: Suppress Points Stacking (6)
@@ -17995,7 +17998,7 @@ Effects          :
 #1 (id=1083442)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #2 (id=1083443)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 150 | Scaled Value: 150 | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | Target: Self (1)
 Description      : $@spelldesc392938
 
 Name             : Shining Righteousness (id=414443) [Spell Family (10), Passive] 
@@ -18187,8 +18190,8 @@ Effects          :
 #3 (id=1084764)  : Trigger Spell w/ Value (142): Lightforged Blessing
                    Base Value: 2 | Scaled Value: 2 | Trigger Spell: 407467
 #4 (id=1084768)  : Dummy (3)
-                   Base Value: 1500 | Scaled Value: 1500
-Description      : Slams enemies in front of you with your shield, causing $s1 Holy damage, and reducing the cooldown of Holy Shock by ${$s4/1000}.1 sec.$?a386568[
+                   Base Value: 4000 | Scaled Value: 4000
+Description      : Slams enemies in front of you with your shield, causing $s1 Holy damage, and reducing the cooldown of Holy Shock by ${$s4/1000}.1 sec and granting $1270617s1 mana.$?a386568[
 
 $@spelldesc386568][]$?a280373[
 
@@ -18846,11 +18849,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1108026)  : Apply Aura (6) | Unknown(647)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: -20 | Scaled Value: -20
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Beacon of Light (53563), Holy Light (82326), Light of Dawn (85222), Word of Glory (85673), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Arcing Light (119952), Eternal Flame (156322), Beacon of Faith (156910), Light of the Martyr (183998), Holy Ritual (199423), Tyr's Deliverance (200654), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Glimmer of Light (287286), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Lightforged Blessing (403460), Lightforged Blessing (407467), Glimmer of Light (416619), Holy Reverberation (423377), Dawnlight (431381), Sun Sear (431415), Sun's Avatar (431939), Rite of Adjuration (433682), Hammer and Anvil (433722), Divine Guidance (433807), Sacred Weapon (441590), Sacred Word (447246), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Lesser Bulwark (1239002), Lesser Weapon (1239276), Beacon of the Savior (1244893)
                    Family Flags: 38, 46, 90
 #2 (id=1108027)  : Apply Aura (6) | Unknown(647)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1
+                   Base Value: -20 | Scaled Value: -20 | Misc Value: 1
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Beacon of Light (53563), Holy Light (82326), Light of Dawn (85222), Word of Glory (85673), Arcing Light (119952), Eternal Flame (156322), Beacon of Faith (156910), Light of the Martyr (183998), Holy Ritual (199423), Tyr's Deliverance (200654), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Glimmer of Light (287286), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Lightforged Blessing (403460), Lightforged Blessing (407467), Glimmer of Light (416619), Holy Reverberation (423377), Dawnlight (431381), Sun Sear (431415), Sun's Avatar (431939), Rite of Adjuration (433682), Hammer and Anvil (433722), Divine Guidance (433807), Sacred Weapon (441590), Sacred Word (447246), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Lesser Bulwark (1239002), Lesser Weapon (1239276), Beacon of the Savior (1244893)
                    Family Flags: 46
 #3 (id=1108028)  : Apply Aura (6) | Unknown(647)
@@ -21809,7 +21812,7 @@ Effects          :
 Description      : Word of Glory and Light of Dawn gain up to $s1% additional chance to critically strike, based on their target's current health. Lower health targets are more likely to be critically struck.
 
 Name             : Liberation (id=461287) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=7, col=1, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=7, col=1, max_rank=1, req_points=8, select_idx=100]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -21822,7 +21825,7 @@ Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143
 Effects          :
 #1 (id=1169627)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Description      : Word of Glory and Light of Dawn have a chance equal to your haste to convert $s1% of their healing into damage onto a nearby enemy.
+Description      : $s1% of Word of Glory and Light of Dawn's healing is converted into Holy damage that strikes a nearby enemy.
 
 Name             : Eternal Flame (id=461432) [Spell Family (10)] 
 Class            : Paladin
@@ -21834,7 +21837,7 @@ Duration         : 16 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Sanctuary (105805 effect#5), Retribution Paladin (137027 effects: #8, #9), Holy Paladin (137029 effects: #1, #2, #10, #11), Beacon of Faith (156910 effect#3), Consecration (188370 effect#2), Divine Purpose (223819 effects: #1, #2, #5, #6), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Judge, Jury and Executioner (406157 effect#1), Divine Purpose (408458 effects: #1, #2), Retribution Paladin (412314 effect#9), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Gleaming Rays (431481 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), All in! (1216837 effect#1), Solar Wrath (1236972 effects: #1, #2), Retribution Paladin (1258011 effect#23)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Sanctuary (105805 effect#5), Retribution Paladin (137027 effects: #8, #9), Holy Paladin (137029 effects: #1, #2, #10, #11), Beacon of Faith (156910 effect#3), Consecration (188370 effect#2), Divine Purpose (223819 effects: #1, #2, #5, #6), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Judge, Jury and Executioner (406157 effect#1), Divine Purpose (408458 effects: #1, #2), Retribution Paladin (412314 effect#9), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Gleaming Rays (431481 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), All in! (1216837 effect#1), Solar Wrath (1236972 effects: #1, #2), Seraphic Barrier (1241714 effect#2), Retribution Paladin (1258011 effect#23)
 Family Flags     : 41, 46, 89, 115
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
@@ -23564,7 +23567,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Charges          : 1 (11 seconds cooldown)
-Category         : 1663 (Type 0x25): Protection Paladin (137028 effect#6), Protection Paladin (137028 effect#9), Crusader's Judgment (204023 effect#1), Avenging Crusader (216331 effect#3), Improved Judgment (405461 effect#1), Retribution Paladin (1258011 effect#7), Holy Paladin (1258016 effect#3)
+Category         : 1663 (Type 0x25): Protection Paladin (137028 effect#6), Protection Paladin (137028 effect#9), Holy Paladin (137029 effect#20), Crusader's Judgment (204023 effect#1), Avenging Crusader (216331 effect#3), Improved Judgment (405461 effect#1), Retribution Paladin (1258011 effect#7), Holy Paladin (1258016 effect#3)
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 189
@@ -23652,8 +23655,12 @@ Proc Flags       : Generic Heal, Magic Heal
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143)
 Effects          :
 #1 (id=1240860)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Word of Glory and Light of Dawn grant allies an absorb shield equal to $s1% of their healing.
+                   Base Value: 18 | Scaled Value: 18 | Target: Self (1)
+#2 (id=1281914)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -15 | Scaled Value: -15 | Target: Self (1)
+                   Affected Spells: Light of Dawn (85222), Word of Glory (85673), Eternal Flame (156322), Light of Dawn (225311), Afterimage (391309), Eternal Flame (461432)
+                   Family Flags: 78, 82, 89
+Description      : Word of Glory and Light of Dawn now convert $s2% of their healing into an absorb shield instead.
 
 Name             : Seraphic Barrier (id=1241717) [Spell Family (10)] 
 Class            : Paladin
@@ -23833,9 +23840,11 @@ Effects          :
                    Modified By: Beacon of the Savior (1245367 effect#1)
 #3 (id=1246355)  : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#4 (id=1281942)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Beacon of the Savior
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1270083 | Target: Self (1)
 Description      : While in combat, apply a Beacon of the Savior to the lowest health ally within $s1 yds that causes your direct healing on others to also heal that ally for $s2% of the amount healed.
 
-Beacon of the Savior transfers to the lowest health ally within $s1 yds if it heals a target past maximum health.
+Beacon of the Savior transfers to the lowest health ally within $s1 yds if it heals a target past maximum health or if an ally drops below $1270083s4% health.
 
 Name             : Beacon of the Savior (id=1244893) [Spell Family (10)] 
 Class            : Paladin
@@ -23920,7 +23929,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1246374)  : Apply Aura (6) | Periodic Dummy (226): every 5 seconds
+#1 (id=1246374)  : Apply Aura (6) | Periodic Dummy (226): every 8 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Every $t1 sec or when Beacon of the Savior transfers to a new injured target, they are granted an absorb shield that prevents the next $1245369s1 damage and reduces damage taken by $1245369s2% for $1245369d.
 
@@ -24656,8 +24665,11 @@ Labels           : 16: Class Spells
                  : 5829
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=1276451)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+#1 (id=1276451)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Affected Spells: Holy Shock (25914)
+                   Family Flags: 48
+Description      : Holy Shock's healing is increased by $s1%.
 
 Name             : Paladin Holy 12.0 Class Set 4pc (id=1264845) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
@@ -24671,6 +24683,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1276452)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+Description      : Holy Shock transfers an additional $s1% healing into your Beacon of Light.
 
 Name             : Paladin Protection 12.0 Class Set 2pc (id=1264846) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
@@ -25007,4 +25020,61 @@ Effects          :
 #1 (id=1280951)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
 Description      : $@spelldesc1267203
+
+Name             : Beacon of the Savior (id=1270083) [Spell Family (10), Passive, Hidden] 
+Class            : Paladin
+School           : Holy
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+Triggered By     : Beacon of the Savior (1244878)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1281956)  : Apply Aura Raid (65) | Trigger Spell Based on Health% (468): Beacon of the Savior
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 1 | Trigger Spell: 1270102 | Radius: 40 yards | Target: Self (1)
+Description      : $@spelldesc1244878
+
+Name             : Beacon of the Savior (id=1270102) [Spell Family (10), Hidden] 
+Class            : Paladin
+School           : Holy
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+Triggered By     : Beacon of the Savior (1270083)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1281984)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc1244878
+
+Name             : Shield of the Righteous (id=1270616) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Type       : None
+Max Scaling Level: 100
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+Attributes       : Aura Points On Client (268)
+Effects          :
+#1 (id=1282879)  : Energize Power (30) | Scaling Class: Restore Health/Resource (-2)
+                   Base Value: 0 | Scaled Value: 1250.062 (coefficient=0.006667) | Resource: mana | Target: Self (1)
+Description      : $@spelldesc415091
+
+Name             : Shield of the Righteous (id=1270617) [Spell Family (10)] 
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Max Scaling Level: 100
+Min Scaling Level: 1
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+Attributes       : Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1282880)  : Energize Power (30) | Scaling Class: Restore Health/Resource (-2)
+                   Base Value: 0.5 | Scaled Value: 1250.062 (coefficient=0.006667) | Resource: mana | Target: Self (1)
+Description      : $@spelldesc415091
 

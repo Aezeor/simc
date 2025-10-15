@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 12.0.0.63728
-static constexpr std::array<item_enchantment_data_t, 5325> __spell_item_ench_data { {
+// Item enchantment data, wow build 12.0.0.63854
+static constexpr std::array<item_enchantment_data_t, 5326> __spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 10, 320,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },       0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 10, 320,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637f,  0.0000f,  0.0000f },       0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 0, 320,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720f,  0.0000f,  0.0000f },    2831, "Reinforced (+$k1 Armor)"           },
@@ -5325,5 +5325,6 @@ static constexpr std::array<item_enchantment_data_t, 5325> __spell_item_ench_dat
   { 8613,      0,  0,   0,  80, 80, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1262298,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1262300, "Smuggler's Lynxeye |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
   { 8614,      0,  0,   0,  80, 80, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1262337,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1262341, "Farstrider's Hawkeye |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
   { 8615,      0,  0,   0,  80, 80, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1262339,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1262344, "Farstrider's Hawkeye |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
+  { 8638,      0,  0,   0,  50, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1269475,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1269474, "Grand Line"                        },
 } };
 

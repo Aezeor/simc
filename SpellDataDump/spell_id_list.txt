@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.0.63728
+Class Spell ID List, wow build 12.0.0.63854
 
 Death Knight
 3714     Path of Frost
@@ -1200,7 +1200,7 @@ Death Knight
 390259   Commander of the Dead
 390260   Commander of the Dead
 390264   Commander of the Dead
-390268  *Eternal Agony
+390268   Eternal Agony
 390270   Coil of Devastation
 390271   Coil of Devastation
 390275  *Rotten Touch
@@ -1628,7 +1628,7 @@ Death Knight
 1242294  Army of the Damned
 1242561  Rapid Variant
 1242564  Rapid Variant
-1242597  Blighted
+1242597 *Blighted
 1242601  Festering Corruption
 1242604  Scourging
 1242608  Raise Abomination
@@ -1638,7 +1638,7 @@ Death Knight
 1242756 *Compromised
 1242866  Raise Dead
 1242998  Lesser Ghoul
-1244030  Putrefy
+1244030 *Putrefy
 1244158 *March of Madness
 1244347  Disease Cloud
 1244516  Forbidden Knowledge
@@ -1726,6 +1726,12 @@ Death Knight
 1267032  Blood Bond
 1267044  Blood Bond
 1268917  Unholy Aura
+1269300  Empowered Strikes
+1269322  Death Knight Frost 12.0 Class Set 4pc
+1269352 *Contamination
+1269355 *Contamination
+1270443  Putrefy
+1270491  Unholy Devotion
 
 Demon Hunter
 1490     Chaos Brand
@@ -3160,6 +3166,11 @@ Demon Hunter
 1266619  First In, Last Out
 1266696 *Soul Immolation
 1266762  Felbound
+1270444  Untethered Rage
+1270448  Untethered Rage
+1270449  Untethered Rage
+1270476  Untethered Rage
+1270547  Seething Anger
 
 Druid
 99       Incapacitating Roar
@@ -5080,7 +5091,7 @@ Druid
 469004   Hail of Stars
 469012  *Circle of Life and Death
 470540  *Twinleaf
-470549   Wildwood Roots
+470549   Improved Swiftmend
 470562   Renewing Surge
 470581  *Forest's Flow
 471491   Ursol's Warding
@@ -5280,6 +5291,25 @@ Druid
 1264905  Spirit of the Thicket
 1264911  Spirit of the Thicket
 1269186 *Unshapeshifted
+1269614  Wild Guardian
+1269616  Wild Guardian
+1269617  Wild Guardian
+1269619  Wild Guardian
+1269633 *Echo of Ironfur
+1269645 *Echo of Frenzied Regeneration
+1269648 *Echo of Maul
+1269658  Wild Guardian
+1269659  Gift of Ironfur
+1269660  Gift of Maul
+1269661  Gift of Frenzied Regeneration
+1269972  Echo of Raze
+1269973  Echo of Ravage
+1270065  Vicious Brambles
+1270277  Wild Guardian
+1270292  Lunar Beam
+1270565  Green Thumb
+1270586  Rampancy
+1270592  Patient Custodian
 
 Evoker
 351338   Quell
@@ -6125,7 +6155,7 @@ Evoker
 1265993  Essence Well
 1266151  Strafing Run
 1266165  Second Exhale
-1267206 *Strike from Above
+1267206  Strike from Above
 1268881  Improved Defy Fate
 
 Hunter
@@ -12153,9 +12183,8 @@ Monk
 388867   Exploding Keg
 388874   Improved Detox
 388917   Fortifying Brew
-389325   Awakened Jadefire
-389328   Awakened Jadefire
-389387   Awakened Jadefire
+389325   Way of the Crane
+389328   Way of the Crane
 389391  *Ancient Concordance
 389422  *Yu'lon's Blessing
 389541   Claw of the White Tiger
@@ -12586,7 +12615,7 @@ Monk
 462090   Mistweaver Monk
 462091   Windwalker Monk
 466806  *Revival
-467270  *Refreshment
+467270   Refreshment
 467281   Healing Elixir
 467293   Jadefire Teachings
 467307   Rushing Wind Kick
@@ -12780,6 +12809,7 @@ Monk
 1268817  Misty Coalescence
 1268958  Soothing Mist
 1269159  Rushing Wind Kick
+1270621  Tranquil Tea
 
 Paladin
 465      Devotion Aura
@@ -14923,6 +14953,10 @@ Paladin
 1269179  Valor
 1269224  Blaze of Glory
 1269225  Blaze of Glory
+1270083  Beacon of the Savior
+1270102  Beacon of the Savior
+1270616  Shield of the Righteous
+1270617  Shield of the Righteous
 
 Priest
 17       Power Word: Shield
@@ -18497,14 +18531,33 @@ Rogue
 1267210 *Quick Fingers
 1267216 *Deep Cuts
 1267220 *Danger Sense
-1268932  Ancient Arts [NYI]
-1268936  Ancient Arts [NYI]
-1268939  Ancient Arts [NYI]
+1268932  Ancient Arts
+1268936  Ancient Arts
+1268939  Ancient Arts
 1269163  Ancient Arts
 1269205  Eviscerate
 1269209  Backstab
 1269214  Gloomblade
 1269217  Goremaw's Bite
+1269336  Shadowstrike
+1269340  Shuriken Storm
+1269343  Shuriken Toss
+1269560  Secret Technique
+1269565  Black Powder
+1269579  Ancient Arts
+1269584  Ancient Arts
+1269592  Ancient Arts
+1269630  Eviscerate
+1269634  Black Powder
+1269663  Secret Technique
+1269664  Backstab
+1269669  Gloomblade
+1269674  Goremaw's Bite
+1269676  Shadowstrike
+1269678  Shuriken Storm
+1269680  Shuriken Toss
+1270203  Rupture
+1270243  Rupture
 
 Shaman
 370      Purge
@@ -19908,7 +19961,7 @@ Shaman
 378193   Primordial Fury
 378211   Refreshing Waters
 378241  *Call of Thunder
-378255  *Call of Fire
+378255   Call of Fire
 378257  *High Voltage
 378258  *High Voltage
 378266   Flames of the Cauldron
@@ -19947,7 +20000,7 @@ Shaman
 381777  *Flux Melting
 381782   Searing Flames
 381783   Searing Flames
-381784  *Flames of the Firelord
+381784   Flames of the Firelord
 381785  *Oath of the Farseer
 381787  *Further Beyond
 381819  *Guardian's Cudgel
@@ -20455,7 +20508,7 @@ Shaman
 1258889  Storm Infusion
 1258895  Elemental Resonance
 1258899  Tectonic Collapse
-1259001  Coming Soon
+1259001 *Coming Soon
 1259047  Inferno Arc
 1259101  Voltaic Blaze
 1259471  Purging Flames
@@ -20463,7 +20516,7 @@ Shaman
 1260644  Totemic Momentum
 1260666  Fire Nova
 1260667  Elementalist
-1260874  Surge Catalyst
+1260874  Primal Catalyst
 1260880  Elemental Overflow
 1262635  Thunder Capacitor
 1262713  Storm Unleashed
@@ -20487,7 +20540,18 @@ Shaman
 1267745  Stormstream Totem
 1267765  Stormstream Totem
 1268684  Stormswell
-1269215  Improved Voltaic Blaze [NNF]
+1269215  Crackling Fury
+1269360  Amped Up
+1269364  Path of the Seer
+1270061  Feedback Loop
+1270062  Feedback Loop
+1270064  Feedback Loop
+1270350  Instinctive Imbuements
+1270375  Spiritual Awakening
+1270446  Ancestral Influence
+1270447  Windspeaker
+1270450  Mystic Knowledge
+1270453  Mystic Knowledge
 
 Warlock
 126      Eye of Kilrogg
@@ -20503,12 +20567,12 @@ Warlock
 702      Curse of Weakness
 710      Banish
 712     *Summon Succubus
-755      Health Funnel
+755     *Health Funnel
 980      Agony
 1098     Subjugate Demon
 1122     Summon Infernal
 1454    *Life Tap
-1714    *Curse of Tongues
+1714     Curse of Tongues
 1949    *Hellfire
 2585    *Eye of Kilrogg
 3026     Use Soulstone
@@ -21194,7 +21258,7 @@ Warlock
 216722  *Souls of the Damned
 216724  *Souls of the Damned
 217519   Pillars of the Dark Portal
-217979   Health Funnel
+217979  *Health Funnel
 218565  *Soul Skin
 218566  *Fel Skin
 218567  *Soul Skin
@@ -21343,7 +21407,7 @@ Warlock
 264364   Embers
 264365   Burning Ember
 264571   Nightfall
-264874   Darkfury
+264874  *Darkfury
 265187   Summon Demonic Tyrant
 265273   Demonic Power
 265279   Demonfire Blast
@@ -21549,7 +21613,7 @@ Warlock
 333037  *Accursed Hand Wraps
 333889   Fel Domination
 334183  *Summon Darkglare
-334275  *Curse of Exhaustion
+334275   Curse of Exhaustion
 334315  *Unstable Affliction
 334319   Inevitable Demise
 334320   Inevitable Demise
@@ -22160,7 +22224,7 @@ Warlock
 456312   Burning Ember
 456323   Abyssal Dominion
 456939   Blistering Atrophy
-456943   Fiendish Cruelty
+456943  *Fiendish Cruelty
 456946   Demonfire Mastery
 456951   Improved Chaos Bolt
 456975   Avatar of Destruction
@@ -22213,6 +22277,7 @@ Warlock
 1217786  Channel Demonfire
 1217787  Channel Demonfire
 1217798  Jackpot!
+1218082 *Hype the Band
 1218128 *Bloodstone
 1218692 *Bloodstones
 1218702 *Create Bloodstone
@@ -22256,8 +22321,8 @@ Warlock
 1245326 *Track Pets
 1245363 *Shadowburn
 1245405 *Shadowburn
-1245633 *Fiendish Cruelty
-1245664 *Fiendish Cruelty
+1245633  Fiendish Cruelty
+1245664  Fiendish Cruelty
 1250188  Hand of Gul'dan
 1250197 *Eye of Gul'dan
 1250204 *Wild Imp
@@ -22359,30 +22424,39 @@ Warlock
 1265770  Embers of Nihilam
 1265772  Embers of Nihilam
 1265774  Embers of Nihilam
-1265797  Curse of Exhaustion [NYI]
-1265798  Curse of Tongues [NYI]
+1265797 *Curse of Exhaustion [NYI]
+1265798 *Curse of Tongues [NYI]
 1265799  Blight of Weakness [NYI]
 1265801  Frequent Traveler [NYI]
 1265803  Gorefiend's Avarice [NYI]
-1265807  Infernal Beneficiary [NYI]
+1265807 *Infernal Beneficiary [NYI]
 1265810  Shared Vitality [NYI]
 1265813  Foul Mouth [NYI]
-1265816  Improved Mortal Coil [NYI]
+1265816  Improved Mortal Coil
 1265884  Echo of Sargeras
 1265939  Vision of Nihilam
-1266799  Wrath of the Wildshaper [NYI]
-1266803  Thorngrin's Iniquity [NYI]
-1266805  Devil Fruit [NYI]
-1268709  Diabolic Oculi [NYI]
-1268713  Looks That Kill [NYI]
-1268716  Mind's Eyes [NYI]
-1268884  Manifested Avarice [NYI]
-1268889  Shared Vessel [NYI]
-1268903  Eternal Hunger [NYI]
+1266799  Wrath of the Wildshaper
+1266803  Thorngrin's Iniquity
+1266805  Devil Fruit
+1268709  Diabolic Oculi
+1268713  Looks That Kill
+1268716  Mind's Eyes
+1268884  Manifested Avarice
+1268889  Shared Vessel
+1268903  Eternal Hunger
 1269042  Manifested Demonic Soul
 1269049  Soul Swipe
 1269050  Manifested Avarice
 1269221  Demonic Touch
+1269643  Demonic Oculi
+1269800  Eye Explosion
+1269879  Mind's Eyes
+1269885 *Diabolic Gaze
+1269886 *Diabolic Gaze
+1269892  Diabolic Gaze
+1269991  Pact of Exhaustion
+1270032  Pact of Tongues
+1270255  Oppressive Darkness
 
 Warrior
 71       Vanguard
@@ -24191,3 +24265,17 @@ Warrior
 1265641  Kill or Be Killed
 1265645  Kill or Be Killed
 1265646  Kill or Be Killed
+1269306  Master of Warfare
+1269307  Master of Warfare
+1269308  Rampaging Berserker
+1269309  Rampaging Berserker
+1269310  Rampaging Berserker
+1269311  Phalanx
+1269312  Phalanx
+1269313  Phalanx
+1269314  Master of Warfare
+1269349  Rampaging Berserker
+1269383  Heroic Strike
+1269391  Master of Warfare
+1269394  Master of Warfare
+1270116  Phalanx

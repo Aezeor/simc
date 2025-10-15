@@ -1,5 +1,5 @@
-// Active class spells, wow build 12.0.0.63728
-static constexpr std::array<active_class_spell_t, 355> __active_spells_data { {
+// Active class spells, wow build 12.0.0.63854
+static constexpr std::array<active_class_spell_t, 354> __active_spells_data { {
   {  1,    0,     100,       0, "Charge"                             },
   {  1,    0,     355,       0, "Taunt"                              },
   {  1,    0,    1464,       0, "Slam"                               },
@@ -238,7 +238,6 @@ static constexpr std::array<active_class_spell_t, 355> __active_spells_data { {
   {  9,    0,     697,       0, "Summon Voidwalker"                  },
   {  9,    0,     698,       0, "Ritual of Summoning"                },
   {  9,    0,     702,       0, "Curse of Weakness"                  },
-  {  9,    0,     755,       0, "Health Funnel"                      },
   {  9,    0,    1098,       0, "Subjugate Demon"                    },
   {  9,    0,    5697,       0, "Unending Breath"                    },
   {  9,    0,    5782,       0, "Fear"                               },
@@ -357,7 +356,7 @@ static constexpr std::array<active_class_spell_t, 355> __active_spells_data { {
   { 13, 1473, 1229376,       0, "Single-Button Assistant"            },
 } };
 
-// Pet active spells, wow build 12.0.0.63728
+// Pet active spells, wow build 12.0.0.63854
 static constexpr std::array<active_pet_spell_t, 133> __active_pet_spells_data { {
   {  3,    2649, "Growl"                              },
   {  3,   16827, "Claw"                               },
