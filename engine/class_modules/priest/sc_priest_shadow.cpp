@@ -2318,6 +2318,16 @@ void priest_t::spawn_thing_from_beyond()
   }
 }
 
+void priest_t::trigger_idol_of_yshaarj()
+{
+  buffs.call_of_the_void->trigger();
+
+  if ( talents.shadow.void_apparitions_1.enabled() )
+  {
+    trigger_shadowy_apparitions( procs.shadowy_apparition_yshaarj );
+  }
+}
+
 void priest_t::trigger_random_idol( action_state_t* s )
 {
   if ( !talents.shadow.void_apparitions_3.enabled() )
@@ -2365,6 +2375,7 @@ void priest_t::trigger_random_idol( action_state_t* s )
     case idol_e::YSHAARJ:
       buffs.call_of_the_void->trigger();
       procs.void_apparition_yshaarj->occur();
+      trigger_idol_of_yshaarj();
       break;
     case idol_e::NZOTH_HORRIFIC_VISION:
       procs.void_apparition_horrific_vision->occur();

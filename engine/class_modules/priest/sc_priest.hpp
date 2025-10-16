@@ -994,6 +994,7 @@ public:
   void trigger_horrific_vision( player_t* target );
   void trigger_vision_of_nzoth( player_t* target );
   void trigger_shadowy_insight( bool guaranteed = false );
+  void trigger_idol_of_yshaarj();
 
   std::vector<action_t*> secondary_action_list;
 
@@ -1539,12 +1540,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       {
         if ( priest().rppm.idol_of_yshaarj->trigger() )
         {
-          priest().buffs.call_of_the_void->trigger();
-
-          if ( priest().talents.shadow.void_apparitions_1.enabled() )
-          {
-            priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_yshaarj );
-          }
+          priest().trigger_idol_of_yshaarj();
         }
       }
     }
