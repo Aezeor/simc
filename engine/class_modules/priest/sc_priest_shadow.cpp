@@ -2161,7 +2161,7 @@ void priest_t::trigger_shadowy_apparitions( proc_t* proc )
     if ( has_vt( priest_td ) )
     {
       if ( talents.shadow.void_apparitions_2.enabled() &&
-           rng().roll( talents.shadow.void_apparitions_2->effectN( 1 ).percent() ) )
+           rng().roll( talents.shadow.void_apparitions_2->effectN( 2 ).percent() ) )
       {
         procs.void_apparition->occur();
         background_actions.void_apparitions->trigger( priest_td->target, proc, vts );
