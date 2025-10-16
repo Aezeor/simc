@@ -1641,7 +1641,7 @@ struct entropic_rift_t final : public priest_spell_t
       switch ( priest().specialization() )
       {
         case PRIEST_SHADOW:
-          priest().trigger_shadowy_insight();
+          priest().trigger_shadowy_insight( true );
           break;
         case PRIEST_DISCIPLINE:
           // TODO: Extend five shortest atonement.

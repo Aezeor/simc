@@ -2377,7 +2377,7 @@ void priest_t::trigger_random_idol( action_state_t* s )
   }
 }
 
-void priest_t::trigger_shadowy_insight()
+void priest_t::trigger_shadowy_insight( bool guaranteed = false )
 {
   if ( !talents.shadow.shadowy_insight.enabled() && !talents.voidweaver.void_empowerment.enabled() )
   {
@@ -2385,7 +2385,7 @@ void priest_t::trigger_shadowy_insight()
   }
 
   int stack = buffs.shadowy_insight->check();
-  if ( threshold_rng.shadowy_insight->trigger() )
+  if ( guaranteed || threshold_rng.shadowy_insight->trigger() )
   {
     buffs.shadowy_insight->trigger();
 
