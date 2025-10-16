@@ -2332,42 +2332,53 @@ void priest_t::trigger_random_idol( action_state_t* s )
 
   procs.tentacle_slam_idol->occur();
 
-  enum idol
+  enum class idol_e
   {
-    YSHAARJ = 0,
-    NZOTH   = 1,
-    YOGG    = 2,
-    CTHUN   = 3,
+    NONE = 0,
+    YSHAARJ,
+    NZOTH_HORRIFIC_VISION,
+    NZOTH_VISION_OF_NZOTH,
+    YOGG,
+    CTHUN,
+    MAX
   };
 
-  std::vector<idol> idols = { idol::YSHAARJ, idol::NZOTH, idol::YOGG, idol::CTHUN };
+  constexpr std::array<double, static_cast<unsigned>( idol_e::MAX )> weights = { 0, 0.2, 0.2, 0.05, 0.15, 0.4 };
 
-  idol n = rng().range( idols );
+  double n = rng().real();
 
-  switch ( n )
+  idol_e chosen_idol = idol_e::NONE;
+
+  for ( idol_e idol = idol_e::YSHAARJ; idol < idol_e::MAX; idol++ )
   {
-    case idol::YSHAARJ:
+    auto weight = weights[ static_cast<unsigned>( idol ) ];
+    if ( n <= weight )
+    {
+      chosen_idol = idol;
+      break;
+    }
+    n -= weight;
+  }
+
+  switch ( chosen_idol )
+  {
+    case idol_e::YSHAARJ:
       buffs.call_of_the_void->trigger();
       procs.void_apparition_yshaarj->occur();
       break;
-    case idol::NZOTH:
-      // TODO: need to do longer tests to see if these have an independent chance to roll or not
-      if ( rng().roll( .5 ) )
-      {
-        procs.void_apparition_horrific_vision->occur();
-        trigger_horrific_vision( s->target );
-      }
-      else
-      {
-        procs.void_apparition_vision_of_nzoth->occur();
-        trigger_vision_of_nzoth( s->target );
-      }
+    case idol_e::NZOTH_HORRIFIC_VISION:
+      procs.void_apparition_horrific_vision->occur();
+      trigger_horrific_vision( s->target );
       break;
-    case idol::YOGG:
+    case idol_e::NZOTH_VISION_OF_NZOTH:
+      procs.void_apparition_vision_of_nzoth->occur();
+      trigger_vision_of_nzoth( s->target );
+      break;
+    case idol_e::YOGG:
       procs.void_apparition_yogg->occur();
       spawn_thing_from_beyond();
       break;
-    case idol::CTHUN:
+    case idol_e::CTHUN:
       procs.void_apparition_cthun->occur();
       trigger_idol_of_cthun( s );
       break;
