@@ -80,7 +80,7 @@ public:
   void target_demise();
 };
 
-constexpr unsigned MAX_SOUL_FRAGMENTS          = 5;
+constexpr unsigned MAX_SOUL_FRAGMENTS          = 6;
 constexpr unsigned DEVOURER_MAX_SOUL_FRAGMENTS = 10;
 constexpr double VENGEFUL_RETREAT_DISTANCE     = 20.0;
 
@@ -318,6 +318,8 @@ public:
     absorb_buff_t* soul_barrier;
     buff_t* felfire_fist_in_combat;
     buff_t* felfire_fist_out_of_combat;
+    buff_t* untethered_rage;
+    buff_t* seething_anger;
 
     // Aldrachi Reaver
     buff_t* reavers_glaive;
@@ -581,6 +583,9 @@ public:
       player_talent_t darkglare_boon;
       player_talent_t down_in_flames;
 
+      player_talent_t untethered_rage1;
+      player_talent_t untethered_rage2;
+      player_talent_t untethered_rage3;
     } vengeance;
 
     struct aldrachi_reaver_talents_t
@@ -811,6 +816,8 @@ public:
     const spell_data_t* felfire_fist_out_of_combat_buff;
     const spell_data_t* sigil_of_spite;
     const spell_data_t* sigil_of_spite_damage;
+    const spell_data_t* untethered_rage_buff;
+    const spell_data_t* seething_anger_buff;
   } spec;
 
   struct hero_spec_t
@@ -2391,6 +2398,30 @@ public:
 
     p()->buff.initiative->trigger();
     td( s->target )->debuffs.initiative_tracker->trigger();
+  }
+
+  bool trigger_untethered_rage( const int souls_consumed )
+  {
+    if ( souls_consumed <= 0 || !p()->talent.vengeance.untethered_rage1->ok() )
+      return false;
+
+    // TODO: CHECK IF THIS PERCENTAGE IS RIGHT
+    double chance_to_proc = 0.1 * ( 1.0 + p()->buff.seething_anger->stack_value() );
+    for ( int i = 0; i < souls_consumed; ++i )
+    {
+      if ( ab::rng().roll( chance_to_proc ) )
+      {
+        p()->buff.untethered_rage->trigger();
+        return true;
+      }
+    }
+
+    if ( !p()->buff.untethered_rage->up() && p()->talent.vengeance.untethered_rage3->ok() )
+    {
+      p()->buff.seething_anger->trigger();
+    }
+
+    return false;
   }
 
 protected:
@@ -5010,6 +5041,8 @@ struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
       damage->schedule_execute( damage_state );
       damage->execute_event->reschedule( timespan_t::from_seconds( 1.0 ) );
     }
+
+    trigger_untethered_rage( fragments_consumed );
   }
 
   bool action_ready() override
@@ -7337,7 +7370,8 @@ struct soul_cleave_t : public voidfall_spending_trigger_t<
   soul_cleave_t( demon_hunter_t* p, util::string_view options_str = {} )
     : base_t( "soul_cleave", p, p->spec.soul_cleave, options_str ),
       damage_spell( data().effectN( 2 ).trigger() ),
-      max_fragments_consumed( static_cast<unsigned>( data().effectN( 3 ).base_value() ) )
+      max_fragments_consumed( static_cast<unsigned>( data().effectN( 2 ).base_value() ) +
+                              static_cast<unsigned>( data().effectN( 3 ).base_value() ) )
   {
     may_miss = may_dodge = may_parry = may_block = false;
     attack_power_mod.direct = 0;  // This parent action deals no damage, parsed data is for the heal
@@ -7365,6 +7399,8 @@ struct soul_cleave_t : public voidfall_spending_trigger_t<
     damage_state->da_multiplier *= 1.0 + ( damage_spell->effectN( 3 ).percent() * fragments_consumed );
     damage->schedule_execute( damage_state );
     damage->execute_event->reschedule( timespan_t::from_millis( data().effectN( 2 ).misc_value1() ) );
+
+    trigger_untethered_rage( fragments_consumed );
   }
 };
 
@@ -9042,6 +9078,10 @@ void demon_hunter_t::create_buffs()
           ->set_quiet( true )
           ->set_allow_precombat( true );
 
+  buff.untethered_rage = make_buff( this, "untethered_rage", spec.untethered_rage_buff );
+  buff.seething_anger =
+      make_buff( this, "seething_anger", spec.seething_anger_buff )->set_default_value_from_effect( 1 );
+
   // Aldrachi Reaver ========================================================
 
   buff.reavers_glaive = make_buff( this, "reavers_glaive", hero_spec.reavers_glaive_buff )->set_quiet( true );
@@ -9987,6 +10027,11 @@ void demon_hunter_t::init_spells()
   talent.vengeance.darkglare_boon = find_talent_spell( talent_tree::SPECIALIZATION, "Darkglare Boon" );
   talent.vengeance.down_in_flames = find_talent_spell( talent_tree::SPECIALIZATION, "Down in Flames" );
 
+  // Vengeance Apex Talents
+  talent.vengeance.untethered_rage1 = find_talent_spell( talent_tree::SPECIALIZATION, 1270444 );
+  talent.vengeance.untethered_rage2 = find_talent_spell( talent_tree::SPECIALIZATION, 1270448 );
+  talent.vengeance.untethered_rage3 = find_talent_spell( talent_tree::SPECIALIZATION, 1270449 );
+
   // Hero Talents ===========================================================
 
   // Aldrachi Reaver talents
@@ -10130,6 +10175,8 @@ void demon_hunter_t::init_spells()
   spec.fel_devastation_heal            = talent_spell_lookup( talent.vengeance.fel_devastation, 212106 );
   spec.felfire_fist_in_combat_buff     = talent_spell_lookup( talent.vengeance.felfire_fist, 1265759 );
   spec.felfire_fist_out_of_combat_buff = talent_spell_lookup( talent.vengeance.felfire_fist, 1265751 );
+  spec.untethered_rage_buff            = talent_spell_lookup( talent.vengeance.untethered_rage1, 1270476 );
+  spec.seething_anger_buff             = talent_spell_lookup( talent.vengeance.untethered_rage3, 1270547 );
 
   switch ( specialization() )
   {
@@ -11562,6 +11609,7 @@ void demon_hunter_t::parse_player_effects()
   {
     parse_effects( buff.metamorphosis );
     parse_effects( buff.demon_spikes );
+    parse_effects( buff.seething_anger );
     parse_effects( mastery.fel_blood_rank_2 );
   }
 
