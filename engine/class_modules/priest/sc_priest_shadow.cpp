@@ -571,21 +571,7 @@ struct shadow_word_pain_t final : public priest_spell_t
     if ( result_is_hit( d->state->result ) && d->state->result_amount > 0 )
     {
       trigger_power_of_the_dark_side();
-
-      int stack = priest().buffs.shadowy_insight->check();
-      if ( priest().threshold_rng.shadowy_insight->trigger() )
-      {
-        priest().buffs.shadowy_insight->trigger();
-
-        if ( priest().buffs.shadowy_insight->check() == stack )
-        {
-          priest().procs.shadowy_insight_overflow->occur();
-        }
-        else
-        {
-          priest().procs.shadowy_insight->occur();
-        }
-      }
+      priest().trigger_shadowy_insight();
 
       // its either -0.9 or -0.909. Not too sure right now. Leaning on -0.9
       auto chance = 2.0 / 9.0 * std::pow( priest().get_active_dots( d ), -0.9 );
@@ -2388,6 +2374,29 @@ void priest_t::trigger_random_idol( action_state_t* s )
     default:
       sim->print_debug( "Could not trigger a valid Idol" );
       break;
+  }
+}
+
+void priest_t::trigger_shadowy_insight()
+{
+  if ( !talents.shadow.shadowy_insight.enabled() && !talents.voidweaver.void_empowerment.enabled() )
+  {
+    return;
+  }
+
+  int stack = buffs.shadowy_insight->check();
+  if ( threshold_rng.shadowy_insight->trigger() )
+  {
+    buffs.shadowy_insight->trigger();
+
+    if ( buffs.shadowy_insight->check() == stack )
+    {
+      procs.shadowy_insight_overflow->occur();
+    }
+    else
+    {
+      procs.shadowy_insight->occur();
+    }
   }
 }
 

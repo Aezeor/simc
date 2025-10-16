@@ -993,6 +993,7 @@ public:
   void trigger_random_idol( action_state_t* s );
   void trigger_horrific_vision( player_t* target );
   void trigger_vision_of_nzoth( player_t* target );
+  void trigger_shadowy_insight();
 
   std::vector<action_t*> secondary_action_list;
 
