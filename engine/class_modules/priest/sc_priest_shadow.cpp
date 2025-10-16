@@ -1431,7 +1431,7 @@ struct tentacle_slam_dots_t final : public priest_spell_t
   {
     may_miss   = false;
     background = true;
-    aoe        = as<int>( data().effectN( 1 ).base_value() );
+    aoe        = as<int>( s->effectN( 3 ).base_value() );
 
     child_vt->background = true;
   }
