@@ -59,7 +59,6 @@ void shadow( player_t* p )
   precombat->add_action( "use_item,name=ingenious_mana_battery" );
   precombat->add_action( "arcane_torrent" );
   precombat->add_action( "use_item,name=aberrant_spellforge" );
-  precombat->add_action( "halo,if=!fight_style.dungeonroute&!fight_style.dungeonslice&active_enemies<=4&(fight_remains>=120|active_enemies<=2)&!talent.power_surge" );
   precombat->add_action( "vampiric_touch" );
 
   default_->add_action( "variable,name=holding_tentacle_slam,op=set,value=raid_event.adds.in<15" );
@@ -87,33 +86,26 @@ void shadow( player_t* p )
   cds->add_action( "invoke_external_buff,name=bloodlust,if=buff.power_infusion.up&fight_remains<120|fight_remains<=40" );
   cds->add_action( "flash_heal,if=equipped.nexuskings_command&buff.oathbound.up&(!buff.boon_of_the_oathsworn.up|buff.boon_of_the_oathsworn.remains<3)&((talent.voidform&(buff.voidform.up|cooldown.voidform.up))|(talent.power_surge&cooldown.halo.up)|cooldown.void_torrent.up)", "Use Flash Heal to proc Nexus-King's Command trinket" );
   cds->add_action( "power_infusion,if=(buff.voidform.up&(fight_remains<=80|fight_remains>=140)|active_allied_augmentations)&(!buff.power_infusion.up|set_bonus.tww2_4pc&buff.power_infusion.remains<=15)", "Sync Power Infusion with Voidform or Dark Ascension" );
-  cds->add_action( "halo,if=talent.power_surge&(cooldown.mind_blast.charges=0|!talent.voidform|cooldown.voidform.remains>=gcd.max*4|buff.mind_devourer.up&talent.mind_devourer)", "Make sure Mindbender is active before popping Dark Ascension unless you have insignificant talent points or too many targets" );
-  cds->add_action( "voidform,if=((pet.fiend.active&cooldown.fiend.remains>=4)|(!talent.mindbender&!cooldown.fiend.up)|(active_enemies>2&!talent.inescapable_torment)|(!talent.shadowfiend&!talent.mindbender))&(cooldown.mind_blast.charges=0|time>15|buff.mind_devourer.up&talent.mind_devourer|buff.power_surge.up)", "Make sure Mindbender is active before popping Void Eruption and dump charges of Mind Blast if Mind Devourer is not active and you are not Archon" );
+  cds->add_action( "halo,if=talent.power_surge", "Make sure Mindbender is active before popping Dark Ascension unless you have insignificant talent points or too many targets" );
+  cds->add_action( "voidform", "Make sure Mindbender is active before popping Void Eruption and dump charges of Mind Blast if Mind Devourer is not active and you are not Archon" );
   cds->add_action( "call_action_list,name=trinkets" );
   cds->add_action( "desperate_prayer,if=health.pct<=75", "Use Desperate Prayer to heal up should Shadow Word: Death or other damage bring you below 75%" );
 
-  heal_for_tof->add_action( "halo", "Use Halo to acquire Twist of Fate if an ally can be healed for it and it is not currently up." );
+  heal_for_tof->add_action( "holy_nova,if=talent.lightburst", "Use Halo to acquire Twist of Fate if an ally can be healed for it and it is not currently up." );
 
   main->add_action( "variable,name=dots_up,op=set,value=active_dot.vampiric_touch=active_enemies|action.tentacle_slam.in_flight,if=active_enemies<3" );
   main->add_action( "call_action_list,name=cds,if=fight_remains<30|target.time_to_die>15&(!variable.holding_tentacle_slam|active_enemies>2)" );
-  main->add_action( "mindbender,if=(dot.shadow_word_pain.ticking&variable.dots_up|action.tentacle_slam.in_flight)&(!cooldown.halo.up|!talent.power_surge.enabled)&(fight_remains<30|target.time_to_die>15)", "Use Shadowfiend and Mindbender on cooldown as long as Vampiric Touch and Shadow Word: Pain are active and sync with Dark Ascension" );
   main->add_action( "shadow_word_death,target_if=max:(target.health.pct<=20)*100+dot.shadow_word_madness.ticking,if=priest.force_devour_matter&talent.devour_matter", "High Priority Shadow Word: Death when you are forcing the bonus from Devour Matter" );
-  main->add_action( "void_blast,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die),if=(dot.shadow_word_madness.remains>=execute_time|buff.entropic_rift.remains<=gcd.max|action.void_torrent.channeling&talent.void_empowerment)&(insanity.deficit>=16|cooldown.mind_blast.full_recharge_time<=gcd.max|buff.entropic_rift.remains<=gcd.max)", "Blast more burst :wicked:" );
-  main->add_action( "shadow_word_madness,target_if=max:target.time_to_die*(dot.shadow_word_madness.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=buff.voidform.up&talent.perfected_form&buff.voidform.remains<=gcd.max&talent.voidform", "Do not let Voidform Expire if you can avoid it." );
-  main->add_action( "shadow_word_madness,target_if=max:target.time_to_die*(dot.shadow_word_madness.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=active_dot.shadow_word_madness<=1&dot.shadow_word_madness.remains<=gcd.max&(!talent.voidform|cooldown.voidform.remains>=gcd.max*3)|insanity.deficit<=35|buff.mind_devourer.up|buff.entropic_rift.up|buff.power_surge.up&buff.tww3_archon_4pc_helper.stack<4&buff.ascension.up", "Do not overcap on insanity" );
-  main->add_action( "void_torrent,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die),if=!variable.holding_tentacle_slam&(dot.shadow_word_madness.remains>=2.5)", "Use Void Torrent if it will get near full Mastery Value" );
-  main->add_action( "void_volley,if=buff.voidform.remains<=5|buff.entropic_rift.up&action.void_blast.usable_in>buff.entropic_rift.remains|target.time_to_die<=5", "Use Void Volley if it would expire soon" );
-  main->add_action( "mind_flay_insanity,target_if=max:dot.shadow_word_madness.remains", "MFI is a good button" );
-  main->add_action( "tentacle_slam,target_if=dot.vampiric_touch.refreshable,if=cooldown.tentacle_slam.full_recharge_time<=gcd.max|(!variable.holding_tentacle_slam&!action.tentacle_slam.in_flight)", "Use Tentacle Slam as long as you are not holding for adds and Vampiric Touch is within pandemic range" );
-  main->add_action( "vampiric_touch,target_if=max:(refreshable*10000+target.time_to_die)*(dot.vampiric_touch.ticking|!variable.dots_up),if=refreshable&target.time_to_die>12&(dot.vampiric_touch.ticking|!variable.dots_up)&(variable.max_vts>0|active_enemies=1)&(action.tentacle_slam.usable_in>=dot.vampiric_touch.remains|variable.holding_tentacle_slam|!action.tentacle_slam.enabled)&(!action.tentacle_slam.in_flight)", "Put out Vampiric Touch on enemies that will live at least 12s and Tentacle Slam is not available soon" );
-  main->add_action( "mind_blast,target_if=max:dot.shadow_word_madness.remains,if=(!buff.mind_devourer.react|!talent.mind_devourer|cooldown.voidform.up&talent.voidform)", "Use all charges of Mind Blast if Vampiric Touch and Shadow Word: Pain are active and Mind Devourer is not active or you are prepping Void Eruption" );
+  main->add_action( "shadow_word_madness,target_if=max:target.time_to_die*(dot.shadow_word_madness.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=active_dot.shadow_word_madness<=1&dot.shadow_word_madness.remains<=gcd.max|insanity.deficit<=35|buff.mind_devourer.up", "Do not overcap on insanity" );
   main->add_action( "void_volley" );
-  main->add_action( "shadow_word_madness,if=buff.voidform.up&talent.voidform|buff.power_surge.up|talent.distorted_reality" );
-  main->add_action( "halo,if=spell_targets>1" );
+  main->add_action( "void_blast,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die)", "Blast more burst :wicked:" );
+  main->add_action( "tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=raid_event.adds.in>30&(talent.void_apparitions|cooldown.tentacle_slam.full_recharge_time<=gcd.max&dot.vampiric_touch.refreshable)", "Use Tentacle Slam as long as you are not holding for adds and Vampiric Touch is within pandemic range, or if void apparitions." );
+  main->add_action( "void_torrent,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die),if=!variable.holding_tentacle_slam", "Use Void Torrent if it will get near full Mastery Value" );
+  main->add_action( "mind_blast,target_if=max:dot.shadow_word_madness.remains,if=!buff.mind_devourer.react|!talent.mind_devourer", "Use all charges of Mind Blast if Vampiric Touch and Shadow Word: Pain are active and Mind Devourer is not active or you are prepping Void Eruption" );
+  main->add_action( "mind_flay_insanity,target_if=max:dot.shadow_word_madness.remains", "MFI is a good button" );
+  main->add_action( "mindbender", "Use Shadowfiend and Mindbender on cooldown as long as Vampiric Touch and Shadow Word: Pain are active and sync with Dark Ascension" );
+  main->add_action( "vampiric_touch,target_if=max:(refreshable*10000+target.time_to_die)*(dot.vampiric_touch.ticking|!variable.dots_up),if=refreshable&target.time_to_die>12&(dot.vampiric_touch.ticking|!variable.dots_up)&(variable.max_vts>0|active_enemies=1)&(action.tentacle_slam.usable_in>=dot.vampiric_touch.remains|variable.holding_tentacle_slam|!action.tentacle_slam.enabled)&(!action.tentacle_slam.in_flight)", "Put out Vampiric Touch on enemies that will live at least 12s and Tentacle Slam is not available soon" );
   main->add_action( "call_action_list,name=heal_for_tof,if=!buff.twist_of_fate.up&buff.twist_of_fate_can_trigger_on_ally_heal.up&talent.halo", "Healing spell action list for proccing Twist of Fate. Set priest.twist_of_fate_heal_rppm=<rppm> to make this be used." );
-  main->add_action( "tentacle_slam,if=!variable.holding_tentacle_slam&raid_event.adds.in>=30&talent.descending_darkness&raid_event.movement.in>=30" );
-  main->add_action( "shadow_word_death,target_if=target.health.pct<(20+15*talent.deathspeaker)" );
-  main->add_action( "shadow_word_death,target_if=min:target.time_to_die,if=talent.inescapable_torment&pet.fiend.active" );
   main->add_action( "mind_flay,target_if=max:dot.shadow_word_madness.remains,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2,interrupt_global=1" );
   main->add_action( "tentacle_slam,if=raid_event.adds.in>20", "Use Tentacle Slam while moving as a low-priority action when adds will not spawn in 20 seconds." );
   main->add_action( "shadow_word_death,target_if=target.health.pct<20", "Use Shadow Word: Death while moving as a low-priority action in execute" );
@@ -147,7 +139,6 @@ void shadow_ptr( player_t* p )
   precombat->add_action( "use_item,name=ingenious_mana_battery" );
   precombat->add_action( "arcane_torrent" );
   precombat->add_action( "use_item,name=aberrant_spellforge" );
-  precombat->add_action( "halo,if=!fight_style.dungeonroute&!fight_style.dungeonslice&active_enemies<=4&(fight_remains>=120|active_enemies<=2)&!talent.power_surge" );
   precombat->add_action( "vampiric_touch" );
 
   default_->add_action( "variable,name=holding_tentacle_slam,op=set,value=raid_event.adds.in<15" );
@@ -175,33 +166,26 @@ void shadow_ptr( player_t* p )
   cds->add_action( "invoke_external_buff,name=bloodlust,if=buff.power_infusion.up&fight_remains<120|fight_remains<=40" );
   cds->add_action( "flash_heal,if=equipped.nexuskings_command&buff.oathbound.up&(!buff.boon_of_the_oathsworn.up|buff.boon_of_the_oathsworn.remains<3)&((talent.voidform&(buff.voidform.up|cooldown.voidform.up))|(talent.power_surge&cooldown.halo.up)|cooldown.void_torrent.up)", "Use Flash Heal to proc Nexus-King's Command trinket" );
   cds->add_action( "power_infusion,if=(buff.voidform.up&(fight_remains<=80|fight_remains>=140)|active_allied_augmentations)&(!buff.power_infusion.up|set_bonus.tww2_4pc&buff.power_infusion.remains<=15)", "Sync Power Infusion with Voidform or Dark Ascension" );
-  cds->add_action( "halo,if=talent.power_surge&(cooldown.mind_blast.charges=0|!talent.voidform|cooldown.voidform.remains>=gcd.max*4|buff.mind_devourer.up&talent.mind_devourer)", "Make sure Mindbender is active before popping Dark Ascension unless you have insignificant talent points or too many targets" );
-  cds->add_action( "voidform,if=((pet.fiend.active&cooldown.fiend.remains>=4)|(!talent.mindbender&!cooldown.fiend.up)|(active_enemies>2&!talent.inescapable_torment)|(!talent.shadowfiend&!talent.mindbender))&(cooldown.mind_blast.charges=0|time>15|buff.mind_devourer.up&talent.mind_devourer|buff.power_surge.up)", "Make sure Mindbender is active before popping Void Eruption and dump charges of Mind Blast if Mind Devourer is not active and you are not Archon" );
+  cds->add_action( "halo,if=talent.power_surge", "Make sure Mindbender is active before popping Dark Ascension unless you have insignificant talent points or too many targets" );
+  cds->add_action( "voidform", "Make sure Mindbender is active before popping Void Eruption and dump charges of Mind Blast if Mind Devourer is not active and you are not Archon" );
   cds->add_action( "call_action_list,name=trinkets" );
   cds->add_action( "desperate_prayer,if=health.pct<=75", "Use Desperate Prayer to heal up should Shadow Word: Death or other damage bring you below 75%" );
 
-  heal_for_tof->add_action( "halo", "Use Halo to acquire Twist of Fate if an ally can be healed for it and it is not currently up." );
+  heal_for_tof->add_action( "holy_nova,if=talent.lightburst", "Use Halo to acquire Twist of Fate if an ally can be healed for it and it is not currently up." );
 
   main->add_action( "variable,name=dots_up,op=set,value=active_dot.vampiric_touch=active_enemies|action.tentacle_slam.in_flight,if=active_enemies<3" );
   main->add_action( "call_action_list,name=cds,if=fight_remains<30|target.time_to_die>15&(!variable.holding_tentacle_slam|active_enemies>2)" );
-  main->add_action( "mindbender,if=(dot.shadow_word_pain.ticking&variable.dots_up|action.tentacle_slam.in_flight)&(!cooldown.halo.up|!talent.power_surge.enabled)&(fight_remains<30|target.time_to_die>15)", "Use Shadowfiend and Mindbender on cooldown as long as Vampiric Touch and Shadow Word: Pain are active and sync with Dark Ascension" );
   main->add_action( "shadow_word_death,target_if=max:(target.health.pct<=20)*100+dot.shadow_word_madness.ticking,if=priest.force_devour_matter&talent.devour_matter", "High Priority Shadow Word: Death when you are forcing the bonus from Devour Matter" );
-  main->add_action( "void_blast,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die),if=(dot.shadow_word_madness.remains>=execute_time|buff.entropic_rift.remains<=gcd.max|action.void_torrent.channeling&talent.void_empowerment)&(insanity.deficit>=16|cooldown.mind_blast.full_recharge_time<=gcd.max|buff.entropic_rift.remains<=gcd.max)", "Blast more burst :wicked:" );
-  main->add_action( "shadow_word_madness,target_if=max:target.time_to_die*(dot.shadow_word_madness.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=buff.voidform.up&talent.perfected_form&buff.voidform.remains<=gcd.max&talent.voidform", "Do not let Voidform Expire if you can avoid it." );
-  main->add_action( "shadow_word_madness,target_if=max:target.time_to_die*(dot.shadow_word_madness.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=active_dot.shadow_word_madness<=1&dot.shadow_word_madness.remains<=gcd.max&(!talent.voidform|cooldown.voidform.remains>=gcd.max*3)|insanity.deficit<=35|buff.mind_devourer.up|buff.entropic_rift.up|buff.power_surge.up&buff.tww3_archon_4pc_helper.stack<4&buff.ascension.up", "Do not overcap on insanity" );
-  main->add_action( "void_torrent,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die),if=!variable.holding_tentacle_slam&(dot.shadow_word_madness.remains>=2.5)", "Use Void Torrent if it will get near full Mastery Value" );
-  main->add_action( "void_volley,if=buff.voidform.remains<=5|buff.entropic_rift.up&action.void_blast.usable_in>buff.entropic_rift.remains|target.time_to_die<=5", "Use Void Volley if it would expire soon" );
-  main->add_action( "mind_flay_insanity,target_if=max:dot.shadow_word_madness.remains", "MFI is a good button" );
-  main->add_action( "tentacle_slam,target_if=dot.vampiric_touch.refreshable,if=cooldown.tentacle_slam.full_recharge_time<=gcd.max|(!variable.holding_tentacle_slam&!action.tentacle_slam.in_flight)", "Use Tentacle Slam as long as you are not holding for adds and Vampiric Touch is within pandemic range" );
-  main->add_action( "vampiric_touch,target_if=max:(refreshable*10000+target.time_to_die)*(dot.vampiric_touch.ticking|!variable.dots_up),if=refreshable&target.time_to_die>12&(dot.vampiric_touch.ticking|!variable.dots_up)&(variable.max_vts>0|active_enemies=1)&(action.tentacle_slam.usable_in>=dot.vampiric_touch.remains|variable.holding_tentacle_slam|!action.tentacle_slam.enabled)&(!action.tentacle_slam.in_flight)", "Put out Vampiric Touch on enemies that will live at least 12s and Tentacle Slam is not available soon" );
-  main->add_action( "mind_blast,target_if=max:dot.shadow_word_madness.remains,if=(!buff.mind_devourer.react|!talent.mind_devourer|cooldown.voidform.up&talent.voidform)", "Use all charges of Mind Blast if Vampiric Touch and Shadow Word: Pain are active and Mind Devourer is not active or you are prepping Void Eruption" );
+  main->add_action( "shadow_word_madness,target_if=max:target.time_to_die*(dot.shadow_word_madness.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=active_dot.shadow_word_madness<=1&dot.shadow_word_madness.remains<=gcd.max|insanity.deficit<=35|buff.mind_devourer.up", "Do not overcap on insanity" );
   main->add_action( "void_volley" );
-  main->add_action( "shadow_word_madness,if=buff.voidform.up&talent.voidform|buff.power_surge.up|talent.distorted_reality" );
-  main->add_action( "halo,if=spell_targets>1" );
+  main->add_action( "void_blast,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die)", "Blast more burst :wicked:" );
+  main->add_action( "tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=raid_event.adds.in>30&(talent.void_apparitions|cooldown.tentacle_slam.full_recharge_time<=gcd.max&dot.vampiric_touch.refreshable)", "Use Tentacle Slam as long as you are not holding for adds and Vampiric Touch is within pandemic range, or if void apparitions." );
+  main->add_action( "void_torrent,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die),if=!variable.holding_tentacle_slam", "Use Void Torrent if it will get near full Mastery Value" );
+  main->add_action( "mind_blast,target_if=max:dot.shadow_word_madness.remains,if=!buff.mind_devourer.react|!talent.mind_devourer", "Use all charges of Mind Blast if Vampiric Touch and Shadow Word: Pain are active and Mind Devourer is not active or you are prepping Void Eruption" );
+  main->add_action( "mind_flay_insanity,target_if=max:dot.shadow_word_madness.remains", "MFI is a good button" );
+  main->add_action( "mindbender", "Use Shadowfiend and Mindbender on cooldown as long as Vampiric Touch and Shadow Word: Pain are active and sync with Dark Ascension" );
+  main->add_action( "vampiric_touch,target_if=max:(refreshable*10000+target.time_to_die)*(dot.vampiric_touch.ticking|!variable.dots_up),if=refreshable&target.time_to_die>12&(dot.vampiric_touch.ticking|!variable.dots_up)&(variable.max_vts>0|active_enemies=1)&(action.tentacle_slam.usable_in>=dot.vampiric_touch.remains|variable.holding_tentacle_slam|!action.tentacle_slam.enabled)&(!action.tentacle_slam.in_flight)", "Put out Vampiric Touch on enemies that will live at least 12s and Tentacle Slam is not available soon" );
   main->add_action( "call_action_list,name=heal_for_tof,if=!buff.twist_of_fate.up&buff.twist_of_fate_can_trigger_on_ally_heal.up&talent.halo", "Healing spell action list for proccing Twist of Fate. Set priest.twist_of_fate_heal_rppm=<rppm> to make this be used." );
-  main->add_action( "tentacle_slam,if=!variable.holding_tentacle_slam&raid_event.adds.in>=30&talent.descending_darkness&raid_event.movement.in>=30" );
-  main->add_action( "shadow_word_death,target_if=target.health.pct<(20+15*talent.deathspeaker)" );
-  main->add_action( "shadow_word_death,target_if=min:target.time_to_die,if=talent.inescapable_torment&pet.fiend.active" );
   main->add_action( "mind_flay,target_if=max:dot.shadow_word_madness.remains,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2,interrupt_global=1" );
   main->add_action( "tentacle_slam,if=raid_event.adds.in>20", "Use Tentacle Slam while moving as a low-priority action when adds will not spawn in 20 seconds." );
   main->add_action( "shadow_word_death,target_if=target.health.pct<20", "Use Shadow Word: Death while moving as a low-priority action in execute" );
