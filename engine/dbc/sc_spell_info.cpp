@@ -1062,6 +1062,17 @@ static constexpr auto _property_type_strings = util::make_static_map<int, std::s
   { P_MAX_TARGETS,        "Spell Max Targets"               },
 } );
 
+static constexpr auto _pvp_property_type_strings = util::make_static_map<int, std::string_view>( {
+  { P_PVP_DIRECT,   "Direct Amount"   },
+  { P_PVP_PERIODIC, "Periodic Amount" },
+  { P_PVP_ABSORB,   "Absorb Amount"   },
+  { P_PVP_EFFECT_1, "Modify Effect 1" },
+  { P_PVP_EFFECT_2, "Modify Effect 2" },
+  { P_PVP_EFFECT_3, "Modify Effect 3" },
+  { P_PVP_EFFECT_4, "Modify Effect 4" },
+  { P_PVP_EFFECT_5, "Modify Effect 5" },
+} );
+
 static constexpr auto _effect_type_strings = util::make_static_map<unsigned, std::string_view>( {
   { E_NONE,                                            "None"                                              },
   { E_INSTAKILL,                                       "Instant Kill"                                      },
@@ -1699,6 +1710,10 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { A_MOD_CRITICAL_BLOCK_AMOUNT,             "Modify Critical Block Amount"                      },
   { A_MOD_DAMAGE_DONE_TO_CASTER_FROM_SCHOOL, "Modify Damage done to Caster from School"          },
   { A_MOD_RANGED_ATTACK_SPEED_FLAT,          "Modify Ranged Attack Speed Flat"                   },
+  { A_MOD_FLAT_PVP_MULTIPLIER,               "Modify Flat PVP Multiplier"                        },
+  { A_MOD_PCT_PVP_MULTIPLIER,                "Modify Percent PVP Multiplier"                     },
+  { A_MOD_FLAT_LABEL_PVP_MULTIPLIER,         "Modify Flat PVP Multiplier by Label"               },
+  { A_MOD_PCT_LABEL_PVP_MULTIPLIER,          "Modify Percent PVP Multiplier by Label"            },
 } );
 
 static constexpr auto _effect_attribute_strings = util::make_static_map<unsigned, std::string_view>( {
@@ -2042,6 +2057,13 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
       case A_ADD_FLAT_LABEL_MODIFIER:
         tmp_str += fmt::format( ": {}", map_string( _property_type_strings, e->misc_value1() ) );
         break;
+      // 12.0 pvp modifier effects (646, 647, 648, 649)
+      case A_MOD_FLAT_PVP_MULTIPLIER:
+      case A_MOD_PCT_PVP_MULTIPLIER:
+      case A_MOD_FLAT_LABEL_PVP_MULTIPLIER:
+      case A_MOD_PCT_LABEL_PVP_MULTIPLIER:
+        tmp_str += fmt::format( ": {}", map_string( _pvp_property_type_strings, e->misc_value1() ) );
+        break;
       default:
         break;
     }
@@ -2214,7 +2236,9 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
 
   if ( e->misc_value2() != 0 )
   {
-    if ( e->subtype() == A_MOD_TOTAL_STAT_PERCENTAGE )
+    switch( e->subtype() )
+    {
+    case A_MOD_TOTAL_STAT_PERCENTAGE:
     {
       auto misc2 = e->misc_value2();
       size_t idx = 0;
@@ -2227,18 +2251,19 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
         idx++;
       }
     }
-    else if ( e->subtype() == A_ADD_PCT_LABEL_MODIFIER || e->subtype() == A_ADD_FLAT_LABEL_MODIFIER )
-    {
+    break;
+    case A_ADD_PCT_LABEL_MODIFIER:
+    case A_ADD_FLAT_LABEL_MODIFIER:
+    case A_MOD_PCT_LABEL_PVP_MULTIPLIER:
+    case A_MOD_FLAT_LABEL_PVP_MULTIPLIER:
       tokens.emplace_back( fmt::format( "Misc Value 2: {} (Label)", e->misc_value2() ) );
-    }
-    else if ( e->subtype() == A_PCT_RATING_ADDED_TO_RATING )
-    {
+      break;
+    case A_PCT_RATING_ADDED_TO_RATING:
       tokens.emplace_back(
         fmt::format( "To Rating: {}", util::stat_type_abbrev( util::translate_rating_mod( e->misc_value2() ) ) ) );
-    }
-    else
-    {
-      tokens.emplace_back( fmt::format( "Misc Value 2: {}", e->misc_value2() ) );
+      break;
+    default: tokens.emplace_back( fmt::format( "Misc Value 2: {}", e->misc_value2() ) );
+      break;
     }
   }
 

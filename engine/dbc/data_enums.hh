@@ -660,6 +660,19 @@ enum property_type_t {
   P_MAX
 };
 
+// Property (misc value 1) types for PVP multiplier subtypes (646, 647, 648, 649)
+enum pvp_property_type {
+  P_PVP_DIRECT = 0,
+  P_PVP_PERIODIC = 1,
+  P_PVP_ABSORB = 2,
+  P_PVP_EFFECT_1 = 5,
+  P_PVP_EFFECT_2 = 6,
+  P_PVP_EFFECT_3 = 7,
+  P_PVP_EFFECT_4 = 8,
+  P_PVP_EFFECT_5 = 9,
+  P_PVP_MAX
+};
+
 enum effect_type_t : unsigned {
   E_NONE = 0,
   E_INSTAKILL = 1,
@@ -1656,6 +1669,10 @@ enum effect_subtype_t : unsigned {
   A_MOD_RANGED_ATTACK_SPEED_FLAT = 643,
   A_644 = 644,
   A_645 = 645,
+  A_MOD_FLAT_PVP_MULTIPLIER = 646,
+  A_MOD_PCT_PVP_MULTIPLIER = 647,
+  A_MOD_FLAT_LABEL_PVP_MULTIPLIER = 648,
+  A_MOD_PCT_LABEL_PVP_MULTIPLIER = 649,
   A_MAX
 };
 
