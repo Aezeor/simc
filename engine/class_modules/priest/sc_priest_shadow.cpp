@@ -2377,7 +2377,7 @@ void priest_t::trigger_random_idol( action_state_t* s )
   }
 }
 
-void priest_t::trigger_shadowy_insight( bool guaranteed = false )
+void priest_t::trigger_shadowy_insight( bool guaranteed )
 {
   if ( !talents.shadow.shadowy_insight.enabled() && !talents.voidweaver.void_empowerment.enabled() )
   {
