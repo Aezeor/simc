@@ -297,7 +297,6 @@ void unholy( player_t* p )
 
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "raise_dead" );
-  precombat->add_action( "army_of_the_dead,precombat_time=2" );
   precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff" );
   precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff" );
   precombat->add_action( "variable,name=trinket_1_duration,op=setif,value=0,value_else=trinket.1.proc.any_dps.duration,condition=0" );
