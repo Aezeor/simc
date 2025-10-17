@@ -7468,7 +7468,7 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
 
   private:
     int n_ghoul;
-    unsigned max_ghouls;
+    int max_ghouls;
     timespan_t summon_interval;
     timespan_t summon_duration;
     death_knight_t* p;
@@ -7581,7 +7581,7 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
     {
       // The first pet spawns after the interval timer
       timespan_t duration_penalty = timespan_t::from_seconds( precombat_time ) - summon_interval;
-      while ( duration_penalty >= 0_s && n_ghoul < 8 )
+      while ( duration_penalty >= 0_s && n_ghoul < as<int>( data().effectN( 1 ).base_value() ) )
       {
         n_ghoul++;
         // Spawn with a duration penalty, and adjust the spawn/travel delay by the penalty
@@ -7619,7 +7619,7 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
     // If precombat didn't summon every ghoul (due to interval between each spawn)
     // Or if the cast isn't during precombat
     // Summon the rest
-    if ( n_ghoul < 8 )
+    if ( n_ghoul < as<int>( data().effectN( 1 ).base_value() ) )
       make_event<summon_army_event_t>( *sim, p(), n_ghoul, summon_interval, summon_duration );
 
     if ( p()->talent.unholy.magus_of_the_dead.ok() )
