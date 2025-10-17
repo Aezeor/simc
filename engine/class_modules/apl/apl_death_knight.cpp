@@ -85,14 +85,14 @@ std::string rune( const player_t* p )
 std::string temporary_enchant( const player_t* p )
 {
   std::string frost_temporary_enchant = ( p->true_level >= 81 )
-                                            ? "main_hand:disabled/off_hand:disabled"
+                                            ? "disabled"
                                             : "main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3";
 
   std::string unholy_temporary_enchant =
-      ( p->true_level >= 81 ) ? "main_hand:disabled" : "main_hand:algari_mana_oil_3";
+      ( p->true_level >= 81 ) ? "disabled" : "main_hand:algari_mana_oil_3";
 
   std::string blood_temporary_enchant =
-      ( p->true_level >= 81 ) ? "main_hand:disabled" : "main_hand:ironclaw_whetstone_3";
+      ( p->true_level >= 81 ) ? "disabled" : "main_hand:ironclaw_whetstone_3";
 
   switch ( p->specialization() )
   {
@@ -292,6 +292,8 @@ void unholy( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* racials   = p->get_action_priority_list( "racials" );
+  action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "raise_dead" );
@@ -308,14 +310,35 @@ void unholy( player_t* p )
   precombat->add_action( "variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs&trinket.2.ilvl>=trinket.1.ilvl" );
 
   default_->add_action( "auto_attack" );
+  default_->add_action( "call_action_list,name=racials" );
+  default_->add_action( "call_action_list,name=trinkets" );
+  default_->add_action( "outbreak,if=dot.dread_plague.ticks_remain<3" );
   default_->add_action( "army_of_the_dead" );
-  default_->add_action( "outbreak,target_if=dot.virulent_plague.ticks_remain<3|dot.dread_plague.ticks_remain<3" );
   default_->add_action( "dark_transformation" );
-  default_->add_action( "death_coil,if=buff.sudden_doom.react" );
+  default_->add_action( "soul_reaper" );
+  default_->add_action( "putrefy,if=lesser_ghoul.count>1&buff.forbidden_knowledge.up&runic_power.deficit>10" );
+  default_->add_action( "scourge_strike,if=buff.lesser_ghoul_ready.stack>=1&buff.forbidden_knowledge.up&runic_power.deficit>10" );
+  default_->add_action( "epidemic,if=active_enemies>=4&(buff.sudden_doom.react|buff.forbidden_knowledge.up&rune<4|runic_power.deficit<20)" );
+  default_->add_action( "death_coil,if=buff.sudden_doom.react|buff.forbidden_knowledge.up&rune<4|runic_power.deficit<20" );
   default_->add_action( "festering_strike,if=buff.lesser_ghoul_ready.stack=0" );
   default_->add_action( "putrefy,if=lesser_ghoul.count>1" );
   default_->add_action( "scourge_strike,if=buff.lesser_ghoul_ready.stack>=1" );
+  default_->add_action( "epidemic,if=active_enemies>=4" );
   default_->add_action( "death_coil" );
+
+  racials->add_action( "ancestral_call,if=pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up" );
+  racials->add_action( "arcane_pulse,if=runic_power<20&rune<2" );
+  racials->add_action( "arcane_torrent,if=runic_power<20&rune<2" );
+  racials->add_action( "bag_of_tricks,if=runic_power<20&rune<2" );
+  racials->add_action( "blood_fury,if=buff.dark_transformation.up" );
+  racials->add_action( "berserking,if=pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up" );
+  racials->add_action( "fireblood,if=pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up" );
+  racials->add_action( "lights_judgment,if=runic_power<20&rune<2" );
+
+  trinkets->add_action( "use_item,slot=trinket1,if=variable.trinket_1_buffs&(variable.trinket_priority=1|!variable.trinket_2_buffs|!trinket.2.has_cooldown)&(pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up)" );
+  trinkets->add_action( "use_item,slot=trinket2,if=variable.trinket_2_buffs&(variable.trinket_priority=2|!variable.trinket_1_buffs|!trinket.1.has_cooldown)&(pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up)" );
+  trinkets->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&(variable.damage_trinket_priority=1|!variable.trinket_2_buffs|!trinket.2.has_cooldown)" );
+  trinkets->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&(variable.damage_trinket_priority=2|!variable.trinket_1_buffs|!trinket.1.has_cooldown)" );
 }
 //unholy_apl_end
 
