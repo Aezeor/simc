@@ -1588,7 +1588,7 @@
       { "data_type": "h", "field": "id_difficulty" },
       { "data_type": "h", "field": "id_cooldown_category", "formats": { "cpp": "%4u" }, "ref": "SpellCategory" },
       { "data_type": "b", "field": "dmg_class" },
-	    { "data_type": "i", "field": "unk_3" },
+	  { "data_type": "i", "field": "unk_3" },
       { "data_type": "b", "field": "dispel" },
       { "data_type": "b", "field": "id_mechanic", "ref": "SpellMechanic" },
       { "data_type": "i", "field": "type_prevention" },
