@@ -14537,6 +14537,12 @@ void death_knight_t::init_finished()
         "Use death_knight.runeforge.name instead.",
         name() );
   }
+
+  if ( main_hand_weapon.type != WEAPON_NONE && mh_runeforge == RUNEFORGE_NONE )
+    sim->error( TRIVIAL, fmt::format( "Player {} has no Main-Hand Runeforge enchanted.", name() ) );
+
+  if ( off_hand_weapon.type != WEAPON_NONE && oh_runeforge == RUNEFORGE_NONE )
+    sim->error( TRIVIAL, fmt::format( "Player {} has no Off-Hand Runeforge enchanted.", name() ) );
 }
 
 // death_knight_t::validate_fight_style =====================================
