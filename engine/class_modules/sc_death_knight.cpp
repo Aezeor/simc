@@ -14877,50 +14877,67 @@ void death_knight_t::apply_action_effects( action_t* a, bool pet )
   // Shared
   action->parse_effects( buffs.blood_draw );
 
-  // Blood
-  // Don't auto parse coag, since there is some snapshot behavior when the DRW dies
-  if ( !pet )
-    action->parse_effects( buffs.coagulopathy );
-  action->parse_effects( buffs.consumption );
-  action->parse_effects( buffs.crimson_scourge );
-  action->parse_effects( buffs.sanguine_ground );
-  action->parse_effects( buffs.hemostasis );
-  action->parse_effects( buffs.ossuary );
+  switch ( specialization() )
+  {
+    case DEATH_KNIGHT_BLOOD:
+      // Don't auto parse coag, since there is some snapshot behavior when the DRW dies
+      if ( !pet )
+        action->parse_effects( buffs.coagulopathy );
+      action->parse_effects( buffs.consumption );
+      action->parse_effects( buffs.crimson_scourge );
+      action->parse_effects( buffs.sanguine_ground );
+      action->parse_effects( buffs.hemostasis );
+      action->parse_effects( buffs.ossuary );
+      break;
+    case DEATH_KNIGHT_FROST:
+      action->parse_effects( buffs.rime );
+      action->parse_effects( buffs.gathering_storm );
+      action->parse_effects( buffs.killing_machine );
+      action->parse_effects( mastery.frozen_heart );
+      action->parse_effects( talent.frost.smothering_offense );
+      action->parse_effects( buffs.icy_onslaught );
+      action->parse_effects( buffs.remorseless_winter );
+      action->parse_effects( buffs.frozen_dominion_remorseless_winter );
+      action->parse_effects( buffs.empower_rune_weapon, talent.frost.obliteration->effectN( 1 ).trigger() );
+      break;
+    case DEATH_KNIGHT_UNHOLY:
+      action->parse_effects( buffs.sudden_doom, CONSUME_BUFF );
+      action->parse_effects( buffs.commander_of_the_dead );
+      // Dont parse effect 6 due to the way this effect works.
+      action->parse_effects( mastery.dreadblade, effect_mask_t( true ).disable( 6 ) );
+      break;
+    default:
+      break;
+  }
 
-  // Frost
-  action->parse_effects( buffs.rime );
-  action->parse_effects( buffs.gathering_storm );
-  action->parse_effects( buffs.killing_machine );
-  action->parse_effects( mastery.frozen_heart );
-  action->parse_effects( talent.frost.smothering_offense );
-  action->parse_effects( buffs.icy_onslaught );
-  action->parse_effects( buffs.remorseless_winter );
-  action->parse_effects( buffs.frozen_dominion_remorseless_winter );
-  action->parse_effects( buffs.empower_rune_weapon, talent.frost.obliteration->effectN( 1 ).trigger() );
-
-  // Unholy
-  action->parse_effects( buffs.sudden_doom, CONSUME_BUFF );
-  action->parse_effects( buffs.commander_of_the_dead );
-  // Dont parse effect 6 due to the way this effect works.
-  action->parse_effects( mastery.dreadblade, effect_mask_t( true ).disable( 6 ) );
-
-  // Rider of the Apocalypse
-  action->parse_effects( buffs.mograines_might );
-  action->parse_effects( buffs.a_feast_of_souls );
-
-  // Deathbringer
-  action->parse_effects( buffs.dark_talons_shadowfrost );
-  action->parse_effects( buffs.bind_in_darkness );
-  action->parse_effects( buffs.exterminate );
-  action->parse_effects( buffs.reaper_of_souls );
-
-  // San'layn
-  action->parse_effects( buffs.visceral_strength_unholy );
-  action->parse_effects( buffs.essence_of_the_blood_queen, [ & ]( double v ) {
-    if ( buffs.gift_of_the_sanlayn->check() )
-      v *= 1.0 + buffs.gift_of_the_sanlayn->check_value();
-    return v;
-  } );
+  // Might break if Blizzard ever adds other types of subtrees.
+  for ( auto& tree : player_sub_trees )
+  {
+    hero_tree_e hero_tree = static_cast<hero_tree_e>( tree );
+    switch ( hero_tree )
+    {
+      case HERO_DEATHBRINGER:
+        action->parse_effects( buffs.dark_talons_shadowfrost );
+        action->parse_effects( buffs.bind_in_darkness );
+        action->parse_effects( buffs.exterminate );
+        action->parse_effects( buffs.reaper_of_souls );
+        break;
+      case HERO_RIDER_OF_THE_APOCALYPSE:
+        action->parse_effects( buffs.mograines_might );
+        action->parse_effects( buffs.a_feast_of_souls );
+        break;
+      case HERO_SANLAYN:
+        action->parse_effects( buffs.visceral_strength_unholy );
+        action->parse_effects( buffs.essence_of_the_blood_queen, [ & ]( double v ) {
+          if ( buffs.gift_of_the_sanlayn->check() )
+            v *= 1.0 + buffs.gift_of_the_sanlayn->check_value();
+          return v;
+        } );
+        break;
+      default:
+        break;
+    }
+  }
 }
 
 void death_knight_t::apply_target_action_effects( action_t* a, bool pet )
@@ -14946,30 +14963,50 @@ void death_knight_t::apply_target_action_effects( action_t* a, bool pet )
   else
   {
     // Shared
-    action->parse_target_effects( d_fn( &death_knight_td_t::dots_t::virulent_plague ), spell.virulent_plague );
-    action->parse_target_effects( d_fn( &death_knight_td_t::dots_t::frost_fever ), spell.frost_fever );
-    action->parse_target_effects( d_fn( &death_knight_td_t::dots_t::blood_plague ), spell.blood_plague );
     action->parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::apocalypse_war ), spell.apocalypse_war_debuff );
     action->parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::razorice ), spell.razorice_debuff );
     action->parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::brittle ), spell.brittle_debuff );
 
-    // Blood
+    switch ( specialization() )
+    {
+      case DEATH_KNIGHT_BLOOD:
+        action->parse_target_effects( d_fn( &death_knight_td_t::dots_t::blood_plague ), spell.blood_plague );
+        break;
+      case DEATH_KNIGHT_FROST:
+        action->parse_target_effects( d_fn( &death_knight_td_t::dots_t::frost_fever ), spell.frost_fever );
+        action->parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::everfrost ),
+                                      talent.frost.everfrost->effectN( 1 ).trigger(), talent.frost.everfrost );
+        break;
+      case DEATH_KNIGHT_UNHOLY:
+        action->parse_target_effects( d_fn( &death_knight_td_t::dots_t::virulent_plague ), spell.virulent_plague );
+        action->parse_target_effects( d_fn( &death_knight_td_t::dots_t::dread_plague ), spell.dread_plague );
+        action->parse_target_effects( d_fn( &death_knight_td_t::dots_t::infected_claws ), spell.infected_claws_dot );
+        action->parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::disease_cloud ),
+                                      spell.disease_cloud_debuff );
+        action->parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::soul_reaper ), spell.soul_reaper_debuff );
+        break;
+      default:
+        break;
+    }
 
-    // Frost
-    action->parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::everfrost ),
-                                  talent.frost.everfrost->effectN( 1 ).trigger(), talent.frost.everfrost );
-
-    // Unholy
-    action->parse_target_effects( d_fn( &death_knight_td_t::dots_t::dread_plague ), spell.dread_plague );
-    action->parse_target_effects( d_fn( &death_knight_td_t::dots_t::infected_claws ), spell.infected_claws_dot );
-    action->parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::disease_cloud ), spell.disease_cloud_debuff );
-
-    // Rider of the Apocalypse
-
-    // Deathbringer
-
-    // San'layn
-    action->parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::incite_terror ), spell.incite_terror_debuff );
+    // Might break if Blizzard ever adds other types of subtrees.
+    for ( auto& tree : player_sub_trees )
+    {
+      hero_tree_e hero_tree = static_cast<hero_tree_e>( tree );
+      switch ( hero_tree )
+      {
+        case HERO_DEATHBRINGER:
+          break;
+        case HERO_RIDER_OF_THE_APOCALYPSE:
+          break;
+        case HERO_SANLAYN:
+          action->parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::incite_terror ),
+                                        spell.incite_terror_debuff );
+          break;
+        default:
+          break;
+      }
+    }
   }
 }
 
@@ -14983,67 +15020,74 @@ void death_knight_t::parse_player_effects()
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::brittle ), spell.brittle_debuff );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::apocalypse_war ), spell.apocalypse_war_debuff );
 
-  // Blood
-  if ( specialization() == DEATH_KNIGHT_BLOOD )
+  switch ( specialization() )
   {
-    parse_effects( mastery.blood_shield );
-    parse_effects( buffs.blood_shield );
-    parse_effects( buffs.voracious );
-    parse_effects( buffs.dancing_rune_weapon );
-    parse_effects( buffs.vampiric_blood, effect_mask_t( true ).disable( 2, 4 ) );
-    parse_effects( buffs.sanguine_ground );
-    parse_effects( buffs.bone_shield, IGNORE_STACKS );
-    parse_effects( buffs.perseverance_of_the_ebon_blade );
+    case DEATH_KNIGHT_BLOOD:
+      parse_effects( mastery.blood_shield );
+      parse_effects( buffs.blood_shield );
+      parse_effects( buffs.voracious );
+      parse_effects( buffs.dancing_rune_weapon );
+      parse_effects( buffs.vampiric_blood, effect_mask_t( true ).disable( 2, 4 ) );
+      parse_effects( buffs.sanguine_ground );
+      parse_effects( buffs.bone_shield, IGNORE_STACKS );
+      parse_effects( buffs.perseverance_of_the_ebon_blade );
+      break;
+    case DEATH_KNIGHT_FROST:
+      parse_effects( buffs.bonegrinder_frost );
+      parse_effects( buffs.bonegrinder_crit );
+      parse_effects( buffs.frozen_dominion );
+      parse_effects( buffs.enduring_strength );
+      parse_effects( buffs.swift_and_painful );
+      break;
+    case DEATH_KNIGHT_UNHOLY:
+      parse_effects( mastery.dreadblade );
+      parse_effects( buffs.ghoulish_frenzy );
 
-    // Tier Sets
+      parse_target_effects( d_fn( &death_knight_td_t::dots_t::virulent_plague ), spell.virulent_plague );
+      parse_target_effects( d_fn( &death_knight_td_t::dots_t::dread_plague ), spell.dread_plague );
+      parse_target_effects( d_fn( &death_knight_td_t::dots_t::infected_claws ), spell.infected_claws_dot );
+      parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::disease_cloud ), spell.disease_cloud_debuff );
+      parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::soul_reaper ), spell.soul_reaper_debuff );
+      break;
+    default:
+      break;
   }
 
-  // Frost
-  if ( specialization() == DEATH_KNIGHT_FROST )
-  {
-    parse_effects( buffs.bonegrinder_frost );
-    parse_effects( buffs.bonegrinder_crit );
-    parse_effects( buffs.frozen_dominion );
-    parse_effects( buffs.enduring_strength );
-    parse_effects( buffs.swift_and_painful );
-  }
-
-  // Unholy
-  if ( specialization() == DEATH_KNIGHT_UNHOLY )
-  {
-    parse_effects( mastery.dreadblade );
-    parse_effects( buffs.ghoulish_frenzy );
-
-    parse_target_effects( d_fn( &death_knight_td_t::dots_t::virulent_plague ), spell.virulent_plague );
-    parse_target_effects( d_fn( &death_knight_td_t::dots_t::dread_plague ), spell.dread_plague );
-    parse_target_effects( d_fn( &death_knight_td_t::dots_t::infected_claws ), spell.infected_claws_dot );
-    parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::disease_cloud ), spell.disease_cloud_debuff );
-    parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::soul_reaper ), spell.soul_reaper_debuff );
-  }
-
-  // Rider of the Apocalypse
   auto mograines_might_mask = effect_mask_t( true );
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
     mograines_might_mask.disable( 4 );
 
-  parse_effects( buffs.mograines_might, mograines_might_mask );
-  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::chains_of_ice_trollbane_damage ),
-                        pet_spell.trollbanes_chains_of_ice_debuff );
 
-  // San'layn
-  parse_effects( buffs.essence_of_the_blood_queen, effect_mask_t( true ).disable( 3 ), [ & ]( double v ) {
-    v *= 0.1;  // Divides by 10 in spell data
-    if ( buffs.gift_of_the_sanlayn->check() )
-      v *= 1.0 + buffs.gift_of_the_sanlayn->check_value();
-    return v;
-  } );
-  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::incite_terror ), spell.incite_terror_debuff );
-
-  // Deathbringer
-  if ( specialization() == DEATH_KNIGHT_FROST )
-    parse_effects( buffs.empowered_soul, effect_mask_t( false ).enable( 1 ) );
-  else if ( specialization() == DEATH_KNIGHT_BLOOD )
-    parse_effects( buffs.empowered_soul, effect_mask_t( false ).enable( 2 ) );
+  // Might break if Blizzard ever adds other types of subtrees.
+  for ( auto& tree : player_sub_trees )
+  {
+    hero_tree_e hero_tree = static_cast<hero_tree_e>( tree );
+    switch ( hero_tree )
+    {
+      case HERO_DEATHBRINGER:
+        if ( specialization() == DEATH_KNIGHT_FROST )
+          parse_effects( buffs.empowered_soul, effect_mask_t( false ).enable( 1 ) );
+        else if ( specialization() == DEATH_KNIGHT_BLOOD )
+          parse_effects( buffs.empowered_soul, effect_mask_t( false ).enable( 2 ) );
+        break;
+      case HERO_RIDER_OF_THE_APOCALYPSE:
+        parse_effects( buffs.mograines_might, mograines_might_mask );
+        parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::chains_of_ice_trollbane_damage ),
+                              pet_spell.trollbanes_chains_of_ice_debuff );
+        break;
+      case HERO_SANLAYN:
+        parse_effects( buffs.essence_of_the_blood_queen, effect_mask_t( true ).disable( 3 ), [ & ]( double v ) {
+          v *= 0.1;  // Divides by 10 in spell data
+          if ( buffs.gift_of_the_sanlayn->check() )
+            v *= 1.0 + buffs.gift_of_the_sanlayn->check_value();
+          return v;
+        } );
+        parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::incite_terror ), spell.incite_terror_debuff );
+        break;
+      default:
+        break;
+    }
+  }
 }
 
 /* Report Extension Class
