@@ -166,7 +166,7 @@ void stoneskin_gargoyle( special_effect_t& );
 void unending_thirst( special_effect_t& );  // Effect only procs on killing blows, NYI
 }  // namespace runeforge
 
-enum runeforge_apocalypse
+enum runeforge_apocalypse_e
 {
   DEATH = 0,
   FAMINE = 1,
@@ -175,7 +175,7 @@ enum runeforge_apocalypse
   MAX = 4
 };
 
-enum lesser_ghoul
+enum lesser_ghoul_e
 {
   LESSER_DOOMED_BIDDING_COIL,
   LESSER_DOOMED_BIDDING_EPIDEMIC,
@@ -183,14 +183,14 @@ enum lesser_ghoul
   LESSER_FESTERING_STRIKE
 };
 
-enum magus_of_the_dead
+enum magus_of_the_dead_e
 {
   MAGUS_DARK_TRANSFORMATION,
   MAGUS_REANIMATION,
   MAGUS_ARMY_OF_THE_DEAD
 };
 
-enum rider_of_the_apocalypse
+enum rider_of_the_apocalypse_e
 {
   NONE = -1,
   RANDOM = 0,
@@ -201,7 +201,19 @@ enum rider_of_the_apocalypse
   ALL_RIDERS = 5
 };
 
-enum drw_actions
+enum runeforges_e
+{
+  RUNEFORGE_NONE = -1,
+  RUNEFORGE_APOCALYPSE,
+  RUNEFORGE_FALLEN_CRUSADER,
+  RUNEFORGE_RAZORICE,
+  RUNEFORGE_SANGUINATION,
+  RUNEFORGE_SPELLWARDING,
+  RUNEFORGE_STONESKIN_GARGOYLE,
+  RUNEFORGE_UNENDING_THIRST,
+};
+
+enum drw_actions_e
 {
   DRW_ACTION_BLOOD_BOIL = 0,
   DRW_ACTION_DEATHS_CARESS = 1,
@@ -821,20 +833,6 @@ public:
 
   } buffs;
 
-  struct runeforge_t
-  {
-    bool rune_of_apocalypse;
-    // Razorice has one for each weapon because they don't proc from the same abilities
-    bool rune_of_razorice_mh, rune_of_razorice_oh;
-    bool rune_of_sanguination;
-    bool rune_of_the_fallen_crusader;
-    bool rune_of_the_stoneskin_gargoyle;
-    bool rune_of_unending_thirst;
-
-    // Spellwarding is simpler to store as a double to check whether it's stacked or not
-    double rune_of_spellwarding;
-  } runeforge;
-
   // Cooldowns
   struct cooldowns_t
   {
@@ -867,8 +865,6 @@ public:
   struct background_actions_t
   {
     // Shared
-    propagate_const<action_t*> runeforge_pestilence;
-    propagate_const<action_t*> runeforge_razorice;
 
     // Class Tree
     propagate_const<action_t*> blood_draw;
@@ -925,6 +921,15 @@ public:
     propagate_const<action_t*> disease_cloud;
     propagate_const<action_t*> rapid_variant;
   } background_actions;
+
+  struct runeforge_actions_t
+  {
+    propagate_const<action_t*> apocalypse_pestilence;
+    propagate_const<action_t*> fallen_crusader_heal;
+    propagate_const<action_t*> razorice_damage;
+    propagate_const<action_t*> sanguination_heal;
+    propagate_const<action_t*> spellwarding_absorb;
+  } runeforge_actions;
 
   struct pet_summon_actions_t
   {
@@ -1336,20 +1341,12 @@ public:
     // Shared
     const spell_data_t* brittle_debuff;
     const spell_data_t* dnd_buff;  // obliterate aoe increase while in death's due (nf covenant ability)
-    const spell_data_t* razorice_debuff;
     const spell_data_t* rune_mastery_buff;
     const spell_data_t* coldthirst_gain;  // Coldthirst has a unique ID for the gain and cooldown reduction
-    const spell_data_t* apocalypse_death_debuff;
-    const spell_data_t* apocalypse_famine_debuff;
-    const spell_data_t* apocalypse_war_debuff;
-    const spell_data_t* apocalypse_pestilence_damage;
-    const spell_data_t* razorice_damage;
     const spell_data_t* death_and_decay_damage;
     const spell_data_t* death_coil_damage;
     const spell_data_t* death_strike_heal;
     const spell_data_t* sacrificial_pact_damage;
-    const spell_data_t* sanguination_cooldown;
-    const spell_data_t* spellwarding_absorb;
     const spell_data_t* anti_magic_zone_buff;
     const spell_data_t* frost_shield_buff;
 
@@ -1518,6 +1515,20 @@ public:
     const spell_data_t* swift_and_painful_buff;
     const spell_data_t* reapers_of_souls_buff;
   } spell;
+
+  struct runeforge_spells_t
+  {
+    const spell_data_t* apocalypse_death_debuff;
+    const spell_data_t* apocalypse_famine_debuff;
+    const spell_data_t* apocalypse_war_debuff;
+    const spell_data_t* apocalypse_pestilence_damage;
+    const spell_data_t* razorice_damage;
+    const spell_data_t* razorice_debuff;
+    const spell_data_t* sanguination_cooldown;
+    const spell_data_t* sanguination_heal;
+    const spell_data_t* spellwarding_absorb;
+    const spell_data_t* unholy_strength;
+  } runeforge_spell;
 
   // Pet Abilities
   struct pet_spells_t
@@ -1710,10 +1721,12 @@ public:
 
   // Runes
   runes_t _runes;
-  rider_of_the_apocalypse last_summoned_rider;
+  rider_of_the_apocalypse_e last_summoned_rider;
   auto_dispose<std::vector<modified_spell_data_t*>> modified_spells;
   std::vector<pets::death_knight_pet_t*> dk_active_pets;
   std::vector<pets::lesser_ghoul_pet_t*> active_lesser_ghouls;
+  runeforges_e mh_runeforge;
+  runeforges_e oh_runeforge;
   player_t* last_target;
 
   death_knight_t( sim_t* sim, std::string_view name, race_e r )
@@ -1730,8 +1743,8 @@ public:
       active_riders( 0 ),
       undeath_tl(),
       buffs(),
-      runeforge(),
       background_actions(),
+      runeforge_actions(),
       gains(),
       spec(),
       mastery(),
@@ -1742,9 +1755,11 @@ public:
       procs(),
       options(),
       _runes( this ),
-      last_summoned_rider( rider_of_the_apocalypse::ALL_RIDERS ),
+      last_summoned_rider( rider_of_the_apocalypse_e::NONE ),
       dk_active_pets(),
       active_lesser_ghouls(),
+      mh_runeforge( RUNEFORGE_NONE ),
+      oh_runeforge( RUNEFORGE_NONE ),
       last_target( this )
   {
     // Shared
@@ -1865,6 +1880,7 @@ public:
   double rune_regen_coefficient() const;
   unsigned replenish_rune( unsigned n, gain_t* gain = nullptr );
   // Shared
+  bool has_runeforge( runeforges_e rf ) const;
   modified_spell_data_t* get_modified_spell( const spell_data_t* );
   void spell_lookups();
   void set_icds();
@@ -1876,8 +1892,8 @@ public:
   double psuedo_random_p_from_c( double c );
   double pseudo_random_c_from_p( double p );
   // Rider of the Apocalypse
-  rider_of_the_apocalypse get_random_rider();
-  void summon_rider( timespan_t duration, rider_of_the_apocalypse = rider_of_the_apocalypse::RANDOM );
+  rider_of_the_apocalypse_e get_random_rider();
+  void summon_rider( timespan_t duration, rider_of_the_apocalypse_e = rider_of_the_apocalypse_e::RANDOM );
   void extend_rider( double amount, pets::horseman_pet_t* rider );
   void trigger_whitemanes_famine( player_t* target );
   void spread_undeath( death_knight_td_t* main_td, player_t* main_target, player_t* new_target );
@@ -1892,8 +1908,8 @@ public:
   void reapers_mark_explosion_wrapper( player_t* target, player_t* source, int stacks );
   // Blood
   void bone_shield_handler( const action_state_t* ) const;
-  void drw_action_execute( pets::dancing_rune_weapon_pet_t* drw, drw_actions action );
-  void trigger_drw_action( drw_actions action );
+  void drw_action_execute( pets::dancing_rune_weapon_pet_t* drw, drw_actions_e action );
+  void trigger_drw_action( drw_actions_e action );
   // Frost
   void trigger_killing_machine( bool predictable, proc_t* proc, proc_t* wasted_proc );
   void consume_killing_machine( proc_t* proc, timespan_t total_delay, action_t* aa_action );
@@ -3026,24 +3042,24 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     void execute() override
     {
       pet_melee_attack_t<ghoul_pet_t>::execute();
-      if ( triggers_apocalypse && dk()->runeforge.rune_of_apocalypse && hit_any_target )
+      if ( triggers_apocalypse && dk()->has_runeforge( RUNEFORGE_APOCALYPSE ) && hit_any_target)
       {
-        int n = as<int>( std::floor( pet()->rng().range( 0, runeforge_apocalypse::MAX ) ) );
+        int n = as<int>( std::floor( pet()->rng().range( 0, runeforge_apocalypse_e::MAX ) ) );
 
         death_knight_td_t* td = dk()->get_target_data( target );
 
         switch ( n )
         {
-          case runeforge_apocalypse::DEATH:
+          case runeforge_apocalypse_e::DEATH:
             td->debuff.apocalypse_death->trigger();
             break;
-          case runeforge_apocalypse::FAMINE:
+          case runeforge_apocalypse_e::FAMINE:
             td->debuff.apocalypse_famine->trigger();
             break;
-          case runeforge_apocalypse::PESTILENCE:
-            dk()->background_actions.runeforge_pestilence->execute_on_target( target );
+          case runeforge_apocalypse_e::PESTILENCE:
+            dk()->runeforge_actions.apocalypse_pestilence->execute_on_target( target );
             break;
-          case runeforge_apocalypse::WAR:
+          case runeforge_apocalypse_e::WAR:
             td->debuff.apocalypse_war->trigger();
             break;
         }
@@ -5451,10 +5467,10 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
     death_knight_action_t::impact( state );
 
     if ( state->result_amount > 0 && callbacks && weapon &&
-         ( ( p()->runeforge.rune_of_razorice_mh && weapon->slot == SLOT_MAIN_HAND ) ||
-           ( p()->runeforge.rune_of_razorice_oh && weapon->slot == SLOT_OFF_HAND ) ) )
+         ( ( p()->mh_runeforge == RUNEFORGE_RAZORICE && weapon->slot == SLOT_MAIN_HAND ) ||
+           ( p()->oh_runeforge == RUNEFORGE_RAZORICE && weapon->slot == SLOT_OFF_HAND ) ) )
     {
-      make_event<delayed_execute_event_t>( *sim, p(), p()->background_actions.runeforge_razorice, state->target, 0_ms );
+      make_event<delayed_execute_event_t>( *sim, p(), p()->runeforge_actions.razorice_damage, state->target, 0_ms );
     }
   }
 };
@@ -5523,6 +5539,97 @@ struct permafrost_t final : public death_knight_absorb_t
 };
 
 // ==========================================================================
+// Death Knight Runeforge Actions
+// ==========================================================================
+
+// Rune of Apocalpyse - Pestilence ==========================================
+struct runeforge_apocalypse_pestilence_t final : public death_knight_spell_t
+{
+  runeforge_apocalypse_pestilence_t( std::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->runeforge_spell.apocalypse_pestilence_damage )
+  {
+    background = true;
+  }
+};
+
+// Fallen Crusader Heal =====================================================
+struct fallen_crusader_heal_t final : public heal_t
+{
+  fallen_crusader_heal_t( std::string_view name, death_knight_t* p )
+    : heal_t( name, p, p->runeforge_spell.unholy_strength )
+  {
+    background = true;
+    target     = p;
+    harmful = callbacks = may_crit = false;
+    base_pct_heal                  = data().effectN( 2 ).percent();
+  }
+
+  // Procs by default target the target of the action that procced them.
+  void execute() override
+  {
+    target = player;
+    heal_t::execute();
+  }
+};
+
+// Razorice Attack ==========================================================
+struct razorice_attack_t final : public death_knight_spell_t
+{
+  razorice_attack_t( std::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->runeforge_spell.razorice_damage )
+  {
+    may_miss = callbacks = false;
+    background = proc = true;
+    target_debuff = p->runeforge_spell.razorice_debuff;
+    // Note, razorice always attacks with the main hand weapon, regardless of which hand triggers it
+    weapon = &p->main_hand_weapon;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_spell_t::impact( s );
+    death_knight_td_t* td = p()->get_target_data( s->target );
+    td->debuff.razorice->trigger();
+  }
+};
+
+// Sanguination Heal ========================================================
+struct sanguination_heal_t final : public heal_t
+{
+  sanguination_heal_t( std::string_view name, death_knight_t* p )
+    : heal_t( "rune_of_sanguination", p, p->runeforge_spell.sanguination_heal )
+  {
+    background    = true;
+    harmful       = false;
+    tick_pct_heal = data().effectN( 1 ).percent();
+
+    // Sated-type debuff, for simplicity the debuff's duration is used as a simple cooldown in simc
+    cooldown->duration = p->runeforge_spell.sanguination_cooldown->duration();
+    target             = p;
+  }
+};
+
+// Spellwarding Absorb ======================================================
+struct spellwarding_absorb_t final : public death_knight_absorb_t
+{
+  spellwarding_absorb_t( std::string_view name, death_knight_t* p )
+    : death_knight_absorb_t( name, p, p->runeforge_spell.spellwarding_absorb )
+  {
+    target     = p;
+    background = true;
+    harmful    = false;
+  }
+
+  void execute() override
+  {
+    base_dd_min = base_dd_max =
+        p()->runeforge_spell.spellwarding_absorb->effectN( 2 ).percent() * player->resources.max[ RESOURCE_HEALTH ];
+
+    death_knight_absorb_t::execute();
+  }
+};
+
+// ==========================================================================
 // Death Knight Pet Summon Spell
 // ==========================================================================
 struct death_knight_summon_spell_t : public death_knight_spell_t
@@ -5576,7 +5683,7 @@ struct blood_beast_summon_t : public death_knight_summon_spell_t
 
 struct summon_lesser_ghoul_t : public death_knight_summon_spell_t
 {
-  summon_lesser_ghoul_t( std::string_view n, death_knight_t* p, const spell_data_t* s, lesser_ghoul type )
+  summon_lesser_ghoul_t( std::string_view n, death_knight_t* p, const spell_data_t* s, lesser_ghoul_e type )
     : death_knight_summon_spell_t( n, p, s ), source( type )
   {
     background = true;
@@ -5587,16 +5694,16 @@ struct summon_lesser_ghoul_t : public death_knight_summon_spell_t
     death_knight_summon_spell_t::execute();
     switch ( source )
     {
-      case lesser_ghoul::LESSER_DOOMED_BIDDING_COIL:
+      case lesser_ghoul_e::LESSER_DOOMED_BIDDING_COIL:
         p()->pets.lesser_ghoul_db_coil.spawn();
         break;
-      case lesser_ghoul::LESSER_DOOMED_BIDDING_EPIDEMIC:
+      case lesser_ghoul_e::LESSER_DOOMED_BIDDING_EPIDEMIC:
         p()->pets.lesser_ghoul_db_epi.spawn();
         break;
-      case lesser_ghoul::LESSER_FESTERING_STRIKE:
+      case lesser_ghoul_e::LESSER_FESTERING_STRIKE:
         p()->pets.lesser_ghoul_fs.spawn();
         break;
-      case lesser_ghoul::LESSER_ARMY_OF_THE_DEAD:
+      case lesser_ghoul_e::LESSER_ARMY_OF_THE_DEAD:
         p()->pets.lesser_ghoul_army.spawn( duration );
         set_duration( p()->pets.lesser_ghoul_army.duration() );
         break;
@@ -5604,12 +5711,12 @@ struct summon_lesser_ghoul_t : public death_knight_summon_spell_t
   }
 
 private:
-  lesser_ghoul source;
+  lesser_ghoul_e source;
 };
 
 struct summon_magus_t : public death_knight_summon_spell_t
 {
-  summon_magus_t( std::string_view n, death_knight_t* p, magus_of_the_dead type )
+  summon_magus_t( std::string_view n, death_knight_t* p, magus_of_the_dead_e type )
     : death_knight_summon_spell_t( n, p, p->spell.summon_magus ), source( type )
   {
     background = true;
@@ -5620,21 +5727,21 @@ struct summon_magus_t : public death_knight_summon_spell_t
     death_knight_summon_spell_t::execute();
     switch ( source )
     {
-      case magus_of_the_dead::MAGUS_DARK_TRANSFORMATION:
+      case magus_of_the_dead_e::MAGUS_DARK_TRANSFORMATION:
         p()->pets.dt_magus.spawn();
         break;
-      case magus_of_the_dead::MAGUS_ARMY_OF_THE_DEAD:
+      case magus_of_the_dead_e::MAGUS_ARMY_OF_THE_DEAD:
         p()->pets.army_magus.spawn( duration );
         set_duration( p()->pets.army_magus.duration() );
         break;
-      case magus_of_the_dead::MAGUS_REANIMATION:
+      case magus_of_the_dead_e::MAGUS_REANIMATION:
         p()->pets.reanimation_magus.spawn();
         break;
     }
   }
 
 private:
-  magus_of_the_dead source;
+  magus_of_the_dead_e source;
 };
 
 struct summon_abomination_t : public death_knight_summon_spell_t
@@ -7391,7 +7498,7 @@ struct dark_transformation_t : public death_knight_spell_t
     if ( p->talent.unholy.magus_of_the_dead.ok() )
     {
       p->pets.dt_magus.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
-      summon_magus = get_action<summon_magus_t>( "dt_magus", p, magus_of_the_dead::MAGUS_DARK_TRANSFORMATION );
+      summon_magus = get_action<summon_magus_t>( "dt_magus", p, magus_of_the_dead_e::MAGUS_DARK_TRANSFORMATION );
     }
 
     if ( p->talent.sanlayn.the_blood_is_life.ok() )
@@ -7423,7 +7530,7 @@ struct dark_transformation_t : public death_knight_spell_t
     if ( p()->talent.rider.ride_or_die.ok() )
     {
       timespan_t dur = timespan_t::from_seconds( p()->talent.rider.ride_or_die->effectN( 1 ).base_value() );
-      p()->summon_rider( dur, rider_of_the_apocalypse::WHITEMANE );
+      p()->summon_rider( dur, rider_of_the_apocalypse_e::WHITEMANE );
     }
   }
 
@@ -7504,7 +7611,7 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
     if ( p->talent.unholy.magus_of_the_dead.ok() )
     {
       p->pets.army_magus.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
-      summon_magus = get_action<summon_magus_t>( "army_magus", p, magus_of_the_dead::MAGUS_ARMY_OF_THE_DEAD );
+      summon_magus = get_action<summon_magus_t>( "army_magus", p, magus_of_the_dead_e::MAGUS_ARMY_OF_THE_DEAD );
       magus_duration = p->spell.summon_magus->duration();
     }
     if ( p->talent.unholy.raise_abomination.ok() )
@@ -7646,7 +7753,7 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
     if ( p()->talent.rider.apocalypse_now.ok() )
       p()->summon_rider(
           p()->talent.rider.apocalypse_now->effectN( 2 ).time_value() - timespan_t::from_seconds( precombat_time ),
-          rider_of_the_apocalypse::ALL_RIDERS );
+          rider_of_the_apocalypse_e::ALL_RIDERS );
 
     if ( p()->talent.unholy.forbidden_knowledge_1.ok() )
       p()->buffs.forbidden_knowledge->trigger();
@@ -8543,7 +8650,7 @@ struct death_strike_t final : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::init_finished();
 
-    if ( p()->runeforge.rune_of_sanguination )
+    if ( p()->has_runeforge( RUNEFORGE_SANGUINATION ) )
     {
       sanguination_pct = 1 + ( 0.25 * ( 1 + p()->talent.unholy_bond->effectN( 1 ).percent() ) );
     }
@@ -8573,7 +8680,7 @@ struct death_strike_t final : public death_knight_melee_attack_t
     // Update 2021-06-16 Changed from 1% to 1.25% damage increase
     // Testing shows a linear 1.25% damage increase for every 1% missing health
     // Unholy Bond increases this by 20% with the formula 1 + ( 0.25 * ( 1 + unholy_bond % ) )
-    if ( p()->runeforge.rune_of_sanguination )
+    if ( p()->has_runeforge( RUNEFORGE_SANGUINATION ) )
     {
       m *= 1.0 + std::min( ( 1.0 - target->health_percentage() * 0.01 ) * sanguination_pct,
                            ( sanguination_pct * 80 ) * 0.01 );
@@ -9111,7 +9218,7 @@ struct frostwyrms_fury_damage_t : public death_knight_spell_t
 
     if ( p()->talent.rider.apocalypse_now.ok() )
     {
-      p()->summon_rider( p()->spell.apocalypse_now_data->duration(), rider_of_the_apocalypse::ALL_RIDERS );
+      p()->summon_rider( p()->spell.apocalypse_now_data->duration(), rider_of_the_apocalypse_e::ALL_RIDERS );
     }
   }
 };
@@ -10335,7 +10442,7 @@ struct pillar_of_frost_t final : public death_knight_spell_t
     if ( p()->talent.rider.ride_or_die.ok() )
     {
       timespan_t dur = timespan_t::from_seconds( p()->talent.rider.ride_or_die->effectN( 1 ).base_value() );
-      p()->summon_rider( dur, rider_of_the_apocalypse::TROLLBANE );
+      p()->summon_rider( dur, rider_of_the_apocalypse_e::TROLLBANE );
     }
   }
 };
@@ -10701,7 +10808,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
   scourge_strike_base_t( std::string_view name, death_knight_t* p, const spell_data_t* spell )
     : death_knight_melee_attack_t( name, p, spell ),
       summon_ghoul( get_action<summon_lesser_ghoul_t>( "fs_ghoul", p, p->spell.summon_lesser_ghoul,
-                                                       lesser_ghoul::LESSER_FESTERING_STRIKE ) )
+                                                       lesser_ghoul_e::LESSER_FESTERING_STRIKE ) )
   {
     weapon = &( player->main_hand_weapon );
     aoe    = 1;
@@ -11059,26 +11166,6 @@ void runeforge::fallen_crusader( special_effect_t& effect )
   {
     return;
   }
-  struct fallen_crusader_heal_t final : public heal_t
-  {
-    fallen_crusader_heal_t( std::string_view name, player_t* p, const spell_data_t* data ) : heal_t( name, p, data )
-    {
-      background = true;
-      target     = p;
-      harmful = callbacks = may_crit  = false;
-      base_pct_heal                   = data->effectN( 2 ).percent();
-
-      if ( p->thewarwithin_opts.attuned_to_the_aether )
-        base_pct_heal *= 1.0 + p->find_spell( 1242344 )->effectN( 3 ).percent();
-    }
-
-    // Procs by default target the target of the action that procced them.
-    void execute() override
-    {
-      target = player;
-      heal_t::execute();
-    }
-  };
 
   if ( effect.player->type != DEATH_KNIGHT )
   {
@@ -11086,53 +11173,27 @@ void runeforge::fallen_crusader( special_effect_t& effect )
     return;
   }
 
-  death_knight_t* dk = debug_cast< death_knight_t* >( effect.player );
-  buff_t* buff                    = dk->buffs.unholy_strength;
-  dk->runeforge.rune_of_the_fallen_crusader = true;
-  effect.custom_buff = buff;
-  effect.execute_action =
-      get_action<fallen_crusader_heal_t>( "unholy_strength", effect.player, effect.driver()->effectN( 1 ).trigger() );
+  death_knight_t* dk = debug_cast<death_knight_t*>( effect.player );
+  buff_t* buff       = dk->buffs.unholy_strength;
+
+  switch ( effect.item->slot )
+  {
+    case SLOT_MAIN_HAND:
+      dk->mh_runeforge = RUNEFORGE_FALLEN_CRUSADER;
+      break;
+    case SLOT_OFF_HAND:
+      dk->oh_runeforge = RUNEFORGE_FALLEN_CRUSADER;
+      break;
+  }
+
+  effect.custom_buff    = buff;
+  effect.execute_action = get_action<fallen_crusader_heal_t>( "unholy_strength", dk );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
 
 void runeforge::razorice( special_effect_t& effect )
 {
-  // Razorice Attack ==========================================================
-  struct razorice_attack_t final : public generic_proc_t
-  {
-    razorice_attack_t( std::string_view name, const special_effect_t& e, weapon_t* w )
-      : generic_proc_t( e, name, e.player->find_spell( 50401 ) )
-    {
-      may_miss = callbacks = false;
-      background = proc                = true;
-      const spell_data_t* debuff_spell = e.player->find_spell( 51714 );
-      target_debuff                    = debuff_spell;
-      // Note, razorice always attacks with the main hand weapon, regardless of which hand triggers it
-      weapon = w;
-    }
-
-    buff_t* create_debuff( player_t* t ) override
-    {
-      auto buff = buff_t::find( t, "razorice", player );
-      if ( !buff )
-      {
-        std::string name_ = target_debuff->ok() ? target_debuff->name_cstr() : name_str;
-        util::tokenize( name_ );
-        buff = make_buff( actor_pair_t( t, player ), name_, target_debuff );
-      }
-
-      return buff;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      generic_proc_t::impact( s );
-      auto debuff = get_debuff( s->target );
-      debuff->trigger();
-    }
-  };
-
   if ( effect.player->type != DEATH_KNIGHT )
   {
     effect.type = SPECIAL_EFFECT_NONE;
@@ -11142,18 +11203,18 @@ void runeforge::razorice( special_effect_t& effect )
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.proc_chance_ = 1.01;  // Always proc, as the proc chance is 100%
 
-  // Store in which hand razorice is equipped, as it affects which abilities proc it
+  death_knight_t* dk = debug_cast<death_knight_t*>( effect.player );
   switch ( effect.item->slot )
   {
     case SLOT_MAIN_HAND:
-      effect.execute_action =
-          get_action<razorice_attack_t>( "razorice_mh", effect.player, &effect.player->main_hand_weapon );
-      effect.proc_flags_ = PF_MAINHAND | PF_MELEE_ABILITY | PF_MELEE;
+      effect.execute_action = get_action<razorice_attack_t>( "razorice_mh", dk );
+      effect.proc_flags_    = PF_MAINHAND | PF_MELEE_ABILITY | PF_MELEE;
+      dk->mh_runeforge      = RUNEFORGE_RAZORICE;
       break;
     case SLOT_OFF_HAND:
-      effect.execute_action =
-          get_action<razorice_attack_t>( "razorice_oh", effect.player, &effect.player->off_hand_weapon );
-      effect.proc_flags_ = PF_OFFHAND | PF_MELEE_ABILITY | PF_MELEE;
+      effect.execute_action = get_action<razorice_attack_t>( "razorice_oh", dk );
+      effect.proc_flags_    = PF_OFFHAND | PF_MELEE_ABILITY | PF_MELEE;
+      dk->oh_runeforge      = RUNEFORGE_RAZORICE;
       break;
     default:
       break;
@@ -11172,34 +11233,42 @@ void runeforge::stoneskin_gargoyle( special_effect_t& effect )
 
   death_knight_t* dk = debug_cast<death_knight_t*>( effect.player );
   buff_t* buff       = dk->buffs.stoneskin_gargoyle;
-  if ( dk->runeforge.rune_of_the_stoneskin_gargoyle )
-    buff->set_max_stack( buff->max_stack() + 1 );
-  else
-    dk->runeforge.rune_of_the_stoneskin_gargoyle = true;
+
+  switch ( effect.item->slot )
+  {
+    case SLOT_MAIN_HAND:
+      dk->mh_runeforge = RUNEFORGE_STONESKIN_GARGOYLE;
+      if ( dk->oh_runeforge == RUNEFORGE_STONESKIN_GARGOYLE )
+        buff->set_max_stack( buff->max_stack() + 1 );
+      break;
+    case SLOT_OFF_HAND:
+      dk->oh_runeforge = RUNEFORGE_STONESKIN_GARGOYLE;
+      if ( dk->mh_runeforge == RUNEFORGE_STONESKIN_GARGOYLE )
+        buff->set_max_stack( buff->max_stack() + 1 );
+      break;
+  }
 
   effect.player->register_on_arise_callback( effect.player, [ buff ] { buff->trigger(); } );
 }
 
 void runeforge::apocalypse( special_effect_t& effect )
 {
-  // Rune of Apocalpyse - Pestilence ==========================================
-  struct runeforge_apocalypse_pestilence_t final : public generic_proc_t
-  {
-    runeforge_apocalypse_pestilence_t( std::string_view name, const special_effect_t& e )
-      : generic_proc_t( e, name, e.player->find_spell( 327093 ) )
-    {
-      background = true;
-    }
-  };
-
   if ( effect.player->type != DEATH_KNIGHT )
   {
     effect.type = SPECIAL_EFFECT_NONE;
     return;
   }
 
-  // Even though a pet procs it, the damage from Pestilence belongs directly to the player in logs
-  effect.execute_action = new runeforge_apocalypse_pestilence_t( "pestilence", effect );
+  death_knight_t* dk = debug_cast< death_knight_t* >( effect.player );
+  switch( effect.item->slot )
+  {
+    case SLOT_MAIN_HAND:
+      dk->mh_runeforge = RUNEFORGE_APOCALYPSE;
+      break;
+    case SLOT_OFF_HAND:
+      dk->oh_runeforge = RUNEFORGE_APOCALYPSE;
+      break;
+  }
 }
 
 void runeforge::sanguination( special_effect_t& effect )
@@ -11210,23 +11279,17 @@ void runeforge::sanguination( special_effect_t& effect )
     return;
   }
 
-  struct sanguination_heal_t final : public heal_t
+  death_knight_t* dk = debug_cast<death_knight_t*>( effect.player );
+
+  switch ( effect.item->slot )
   {
-    sanguination_heal_t( std::string_view /* name */, player_t* p, special_effect_t& effect )
-      : heal_t( "rune_of_sanguination", p, effect.driver()->effectN( 1 ).trigger() )
-    {
-      background                      = true;
-      harmful                         = false;
-      tick_pct_heal                   = data().effectN( 1 ).percent();
-
-      if ( p->thewarwithin_opts.attuned_to_the_aether )
-        tick_pct_heal *= 1.0 + p->find_spell( 1242344 )->effectN( 2 ).percent();
-
-      // Sated-type debuff, for simplicity the debuff's duration is used as a simple cooldown in simc
-      cooldown->duration = p->find_spell( 326809 )->duration();
-      target             = p;
-    }
-  };
+    case SLOT_MAIN_HAND:
+      dk->mh_runeforge = RUNEFORGE_SANGUINATION;
+      break;
+    case SLOT_OFF_HAND:
+      dk->oh_runeforge = RUNEFORGE_SANGUINATION;
+      break;
+  }
 
   effect.player->callbacks.register_callback_trigger_function(
       effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
@@ -11235,49 +11298,32 @@ void runeforge::sanguination( special_effect_t& effect )
       } );
 
   effect.proc_flags2_   = PF2_ALL_HIT;
-  effect.execute_action = get_action<sanguination_heal_t>( "rune_of_sanguination", effect.player, effect );
-  effect.cooldown_     = effect.player->find_spell( 326809 )->duration();
+  effect.execute_action = get_action<sanguination_heal_t>( "rune_of_sanguination", dk );
+  effect.cooldown_      = dk->runeforge_spell.sanguination_cooldown->duration();
   new dbc_proc_callback_t( effect.player, effect );
 }
 
 void runeforge::spellwarding( special_effect_t& effect )
 {
-  struct spellwarding_absorb_t final : public absorb_t
-  {
-    spellwarding_absorb_t( std::string_view name, player_t* p, const spell_data_t* data )
-      : absorb_t( name, p, data ), health_percentage( p->find_spell( 326855 )->effectN( 2 ).percent() )
-    // The absorb amount is hardcoded in the effect tooltip, the only data is in the runeforging action spell
-    {
-      target     = p;
-      background = true;
-      harmful    = false;
-    }
-
-    void execute() override
-    {
-      base_dd_min = base_dd_max = health_percentage * player->resources.max[ RESOURCE_HEALTH ];
-
-      absorb_t::execute();
-    }
-
-  private:
-    double health_percentage;
-  };
-
   if ( effect.player->type != DEATH_KNIGHT )
   {
     effect.type = SPECIAL_EFFECT_NONE;
     return;
   }
 
-  buff_t* dr_buff = buff_t::find( effect.player, "rune_of_spellwarding" );
-  if ( !dr_buff )
-    dr_buff = make_buff( effect.player, "rune_of_spellwarding", effect.driver() );
-  else
-    dr_buff->set_max_stack( dr_buff->max_stack() + dr_buff->max_stack() );
+  death_knight_t* dk = debug_cast<death_knight_t*>( effect.player );
 
-  effect.execute_action = get_action<spellwarding_absorb_t>( "rune_of_spellwarding", effect.player,
-                                                             effect.driver()->effectN( 1 ).trigger() );
+  switch( effect.item->slot )
+  {
+    case SLOT_MAIN_HAND:
+      dk->mh_runeforge = RUNEFORGE_SPELLWARDING;
+      break;
+    case SLOT_OFF_HAND:
+      dk->oh_runeforge = RUNEFORGE_SPELLWARDING;
+      break;
+  }
+
+  effect.execute_action = get_action<spellwarding_absorb_t>( "rune_of_spellwarding", dk );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -11291,8 +11337,16 @@ void runeforge::unending_thirst( special_effect_t& effect )
     return;
   }
 
-  // Placeholder for APL tracking purpose, effect NYI
-  debug_cast<death_knight_t*>( effect.player )->runeforge.rune_of_unending_thirst = true;
+  death_knight_t* dk = debug_cast<death_knight_t*>( effect.player );
+  switch( effect.item->slot )
+  {
+    case SLOT_MAIN_HAND:
+      dk->mh_runeforge = RUNEFORGE_UNENDING_THIRST;
+      break;
+    case SLOT_OFF_HAND:
+      dk->oh_runeforge = RUNEFORGE_UNENDING_THIRST;
+      break;
+  }
 }
 
 // Resource Manipulation ====================================================
@@ -11803,60 +11857,60 @@ void death_knight_t::start_inexorable_assault()
   } );
 }
 
-rider_of_the_apocalypse death_knight_t::get_random_rider()
+rider_of_the_apocalypse_e death_knight_t::get_random_rider()
 {
   // If all riders are active, dont bother running the rest of the function, no random riders can be spawned.
   if ( pets.mograine.active_pet() != nullptr && pets.nazgrim.active_pet() != nullptr &&
        pets.trollbane.active_pet() != nullptr && pets.whitemane.active_pet() != nullptr )
-    return rider_of_the_apocalypse::NONE;
+    return rider_of_the_apocalypse_e::NONE;
 
-  std::vector<rider_of_the_apocalypse> available_riders;
-  available_riders.reserve( rider_of_the_apocalypse::ALL_RIDERS );
+  std::vector<rider_of_the_apocalypse_e> available_riders;
+  available_riders.reserve( rider_of_the_apocalypse_e::ALL_RIDERS );
 
-  for ( auto& rider : { rider_of_the_apocalypse::MOGRAINE, rider_of_the_apocalypse::NAZGRIM,
-                        rider_of_the_apocalypse::TROLLBANE, rider_of_the_apocalypse::WHITEMANE } )
+  for ( auto& rider : { rider_of_the_apocalypse_e::MOGRAINE, rider_of_the_apocalypse_e::NAZGRIM,
+                        rider_of_the_apocalypse_e::TROLLBANE, rider_of_the_apocalypse_e::WHITEMANE } )
   {
     if ( last_summoned_rider != rider )
       available_riders.push_back( rider );
   }
 
-  rider_of_the_apocalypse n = rng().range( available_riders );
+  rider_of_the_apocalypse_e n = rng().range( available_riders );
   last_summoned_rider = n;
   return n;
 }
 
-void death_knight_t::summon_rider( timespan_t duration, rider_of_the_apocalypse rider )
+void death_knight_t::summon_rider( timespan_t duration, rider_of_the_apocalypse_e rider )
 {
-  rider_of_the_apocalypse n = rider;
+  rider_of_the_apocalypse_e n = rider;
   bool random               = false;
-  if ( n == rider_of_the_apocalypse::RANDOM )
+  if ( n == rider_of_the_apocalypse_e::RANDOM )
   {
     random = true;
     n      = get_random_rider();
   }
 
-  if ( n == rider_of_the_apocalypse::NONE )
+  if ( n == rider_of_the_apocalypse_e::NONE )
     return;
 
   std::vector<action_t*> summon_riders;
-  if( n == rider_of_the_apocalypse::ALL_RIDERS )
+  if( n == rider_of_the_apocalypse_e::ALL_RIDERS )
     summon_riders.reserve( 4 );
 
   switch ( n )
   {
-    case rider_of_the_apocalypse::MOGRAINE:
+    case rider_of_the_apocalypse_e::MOGRAINE:
       summon_riders.push_back( pet_summon.summon_mograine );
       break;
-    case rider_of_the_apocalypse::NAZGRIM:
+    case rider_of_the_apocalypse_e::NAZGRIM:
       summon_riders.push_back( pet_summon.summon_nazgrim );
       break;
-    case rider_of_the_apocalypse::TROLLBANE:
+    case rider_of_the_apocalypse_e::TROLLBANE:
       summon_riders.push_back( pet_summon.summon_trollbane );
       break;
-    case rider_of_the_apocalypse::WHITEMANE:
+    case rider_of_the_apocalypse_e::WHITEMANE:
       summon_riders.push_back( pet_summon.summon_whitemane );
       break;
-    case rider_of_the_apocalypse::ALL_RIDERS:
+    case rider_of_the_apocalypse_e::ALL_RIDERS:
       summon_riders.push_back( pet_summon.summon_mograine );
       summon_riders.push_back( pet_summon.summon_nazgrim );
       summon_riders.push_back( pet_summon.summon_trollbane );
@@ -12122,7 +12176,7 @@ void death_knight_t::reapers_mark_explosion_wrapper( player_t* target, player_t*
   }
 }
 
-void death_knight_t::drw_action_execute( pets::dancing_rune_weapon_pet_t* drw, drw_actions action )
+void death_knight_t::drw_action_execute( pets::dancing_rune_weapon_pet_t* drw, drw_actions_e action )
 {
   switch ( action )
   {
@@ -12153,7 +12207,7 @@ void death_knight_t::drw_action_execute( pets::dancing_rune_weapon_pet_t* drw, d
   }
 }
 
-void death_knight_t::trigger_drw_action( drw_actions action )
+void death_knight_t::trigger_drw_action( drw_actions_e action )
 {
   if ( specialization() != DEATH_KNIGHT_BLOOD || !talent.blood.dancing_rune_weapon.ok() ||
        pets.dancing_rune_weapon_pet.active_pet() == nullptr )
@@ -12239,6 +12293,42 @@ modified_spell_data_t* death_knight_t::get_modified_spell( const spell_data_t* s
   return modified_spells.emplace_back( new modified_spell_data_t( s ) );
 }
 
+bool death_knight_t::has_runeforge( runeforges_e rf ) const
+{
+  bool has_runeforge = false;
+  switch ( rf )
+  {
+    case RUNEFORGE_NONE:
+      has_runeforge = false;
+      break;
+    case RUNEFORGE_APOCALYPSE:
+      has_runeforge = mh_runeforge == RUNEFORGE_APOCALYPSE || oh_runeforge == RUNEFORGE_APOCALYPSE;
+      break;
+    case RUNEFORGE_FALLEN_CRUSADER:
+      has_runeforge = mh_runeforge == RUNEFORGE_FALLEN_CRUSADER || oh_runeforge == RUNEFORGE_FALLEN_CRUSADER;
+      break;
+    case RUNEFORGE_RAZORICE:
+      has_runeforge = mh_runeforge == RUNEFORGE_RAZORICE || oh_runeforge == RUNEFORGE_RAZORICE;
+      break;
+    case RUNEFORGE_SANGUINATION:
+      has_runeforge = mh_runeforge == RUNEFORGE_SANGUINATION || oh_runeforge == RUNEFORGE_SANGUINATION;
+      break;
+    case RUNEFORGE_SPELLWARDING:
+      has_runeforge = mh_runeforge == RUNEFORGE_SPELLWARDING || oh_runeforge == RUNEFORGE_SPELLWARDING;
+      break;
+    case RUNEFORGE_STONESKIN_GARGOYLE:
+      has_runeforge = mh_runeforge == RUNEFORGE_STONESKIN_GARGOYLE || oh_runeforge == RUNEFORGE_STONESKIN_GARGOYLE;
+      break;
+    case RUNEFORGE_UNENDING_THIRST:
+      has_runeforge = mh_runeforge == RUNEFORGE_UNENDING_THIRST || oh_runeforge == RUNEFORGE_UNENDING_THIRST;
+      break;
+    default:
+      break;
+  }
+
+  return has_runeforge;
+}
+
 // ==========================================================================
 // Death Knight Character Definition
 // ==========================================================================
@@ -12249,6 +12339,14 @@ void death_knight_t::create_actions()
 {
   background_actions.death_coil_damage = get_action<death_coil_damage_t>( "death_coil_damage", this );
   last_cast_rp_spender                 = background_actions.death_coil_damage;
+
+  // Runeforges
+  runeforge_actions.apocalypse_pestilence = get_action<runeforge_apocalypse_pestilence_t>( "pestilence", this );
+  runeforge_actions.razorice_damage       = get_action<razorice_attack_t>( "razorice", this );
+  runeforge_actions.sanguination_heal     = get_action<sanguination_heal_t>( "sanguination_heal", this );
+  runeforge_actions.spellwarding_absorb   = get_action<spellwarding_absorb_t>( "spellwarding", this );
+  runeforge_actions.sanguination_heal     = get_action<sanguination_heal_t>( "sanguination_heal", this );
+
   // Class talents
   if ( talent.blood_draw.ok() )
   {
@@ -12357,7 +12455,7 @@ void death_knight_t::create_actions()
 
     if ( talent.unholy.army_of_the_dead.ok() )
       pet_summon.army_ghoul = get_action<summon_lesser_ghoul_t>( "army_ghoul", this, spell.summon_lesser_ghoul,
-                                                                 lesser_ghoul::LESSER_ARMY_OF_THE_DEAD );
+                                                                 lesser_ghoul_e::LESSER_ARMY_OF_THE_DEAD );
 
     if ( talent.unholy.infected_claws.ok() )
       background_actions.infected_claws = get_action<infected_claws_t>( "infected_claws", this );
@@ -12365,14 +12463,14 @@ void death_knight_t::create_actions()
     if ( talent.unholy.doomed_bidding.ok() )
     {
       pet_summon.db_ghoul_coil =
-          get_action<summon_lesser_ghoul_t>( "coil_db_ghoul", this, spell.summon_lesser_ghoul, lesser_ghoul::LESSER_DOOMED_BIDDING_COIL );
+          get_action<summon_lesser_ghoul_t>( "coil_db_ghoul", this, spell.summon_lesser_ghoul, lesser_ghoul_e::LESSER_DOOMED_BIDDING_COIL );
       pet_summon.db_ghoul_epi = 
-          get_action<summon_lesser_ghoul_t>( "epi_db_ghoul", this, spell.summon_lesser_ghoul, lesser_ghoul::LESSER_DOOMED_BIDDING_EPIDEMIC );
+          get_action<summon_lesser_ghoul_t>( "epi_db_ghoul", this, spell.summon_lesser_ghoul, lesser_ghoul_e::LESSER_DOOMED_BIDDING_EPIDEMIC );
     }
 
     if ( talent.unholy.reanimation.ok() )
       pet_summon.reanimation_magus =
-          get_action<summon_magus_t>( "reanimation_magus", this, magus_of_the_dead::MAGUS_REANIMATION );
+          get_action<summon_magus_t>( "reanimation_magus", this, magus_of_the_dead_e::MAGUS_REANIMATION );
 
     if ( talent.unholy.coil_of_devastation.ok() )
       background_actions.coil_of_devastation = get_action<coil_of_devastation_t>( "coil_of_devastation", this );
@@ -12576,38 +12674,38 @@ std::unique_ptr<expr_t> death_knight_t::create_runeforge_expression( std::string
   // Razorice, looks for the damage procs related to MH and OH
   if ( util::str_compare_ci( runeforge_name, "razorice" ) )
     return expr_t::create_constant( "razorice_runforge_expression",
-                                    runeforge.rune_of_razorice_mh || runeforge.rune_of_razorice_oh );
+                                    has_runeforge( RUNEFORGE_RAZORICE ) );
 
   // Razorice MH and OH expressions (this can matter for razorice application)
   if ( util::str_compare_ci( runeforge_name, "razorice_mh" ) )
-    return expr_t::create_constant( "razorice_mh_runforge_expression", runeforge.rune_of_razorice_mh );
+    return expr_t::create_constant( "razorice_mh_runforge_expression", mh_runeforge == RUNEFORGE_RAZORICE );
   if ( util::str_compare_ci( runeforge_name, "razorice_oh" ) )
-    return expr_t::create_constant( "razorice_oh_runforge_expression", runeforge.rune_of_razorice_oh );
+    return expr_t::create_constant( "razorice_oh_runforge_expression", oh_runeforge == RUNEFORGE_RAZORICE );
 
   // Fallen Crusader, looks for the unholy strength healing action
   if ( util::str_compare_ci( runeforge_name, "fallen_crusader" ) )
-    return expr_t::create_constant( "fallen_crusader_runforge_expression", runeforge.rune_of_the_fallen_crusader );
+    return expr_t::create_constant( "fallen_crusader_runforge_expression", has_runeforge( RUNEFORGE_FALLEN_CRUSADER ) );
 
   // Stoneskin Gargoyle
   if ( util::str_compare_ci( runeforge_name, "stoneskin_gargoyle" ) )
     return expr_t::create_constant( "stoneskin_gargoyle_runforge_expression",
-                                    runeforge.rune_of_the_stoneskin_gargoyle );
+                                    has_runeforge( RUNEFORGE_STONESKIN_GARGOYLE ) );
 
   // Apocalypse
   if ( util::str_compare_ci( runeforge_name, "apocalypse" ) )
-    return expr_t::create_constant( "apocalypse_runforge_expression", runeforge.rune_of_apocalypse );
+    return expr_t::create_constant( "apocalypse_runforge_expression", has_runeforge( RUNEFORGE_APOCALYPSE ) );
 
   // Sanguination
   if ( util::str_compare_ci( runeforge_name, "sanguination" ) )
-    return expr_t::create_constant( "sanguination_runeforge_expression", runeforge.rune_of_sanguination );
+    return expr_t::create_constant( "sanguination_runeforge_expression", has_runeforge( RUNEFORGE_SANGUINATION ) );
 
   // Spellwarding
   if ( util::str_compare_ci( runeforge_name, "spellwarding" ) )
-    return expr_t::create_constant( "spellwarding_runeforge_expression", runeforge.rune_of_spellwarding != 0 );
+    return expr_t::create_constant( "spellwarding_runeforge_expression", has_runeforge( RUNEFORGE_SPELLWARDING ) );
 
   // Unending Thirst, effect NYI
   if ( util::str_compare_ci( runeforge_name, "unending_thirst" ) )
-    return expr_t::create_constant( "unending_thirst_runeforge_expression", runeforge.rune_of_unending_thirst );
+    return expr_t::create_constant( "unending_thirst_runeforge_expression", has_runeforge( RUNEFORGE_UNENDING_THIRST ) );
 
   // Only throw an error with death_knight.runeforge expressions
   // runeforge.x already spits out a warning for relevant runeforges and has to send a runeforge legendary if needed
@@ -13303,11 +13401,16 @@ void death_knight_t::spell_lookups()
   spell.blood_draw_cooldown     = conditional_spell_lookup( talent.blood_draw.ok(), 374609 );
 
   // Runeforges
-  spell.razorice_debuff          = find_spell( 51714 );
-  spell.apocalypse_death_debuff  = find_spell( 327095 );
-  spell.apocalypse_famine_debuff = find_spell( 327092 );
-  spell.apocalypse_war_debuff    = find_spell( 327096 );
-  spell.spellwarding_absorb      = find_spell( 326855 );
+  runeforge_spell.apocalypse_death_debuff      = find_spell( 327095 );
+  runeforge_spell.apocalypse_famine_debuff     = find_spell( 327092 );
+  runeforge_spell.apocalypse_war_debuff        = find_spell( 327096 );
+  runeforge_spell.apocalypse_pestilence_damage = find_spell( 327093 );
+  runeforge_spell.razorice_damage              = find_spell( 50401 );
+  runeforge_spell.razorice_debuff              = find_spell( 51714 );
+  runeforge_spell.sanguination_cooldown        = find_spell( 326809 );
+  runeforge_spell.sanguination_heal            = find_spell( 326808 );
+  runeforge_spell.spellwarding_absorb          = find_spell( 326855 );
+  runeforge_spell.unholy_strength              = find_spell( 53365 );
 
   // Diseases
   spell.blood_plague =
@@ -13737,27 +13840,31 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
   // Deathbringer
 
   using namespace debuffs;
-  // General Talents
+
+  // Shared
   debuff.brittle = make_debuff( p.talent.brittle.ok(), *this, "brittle", p.spell.brittle_debuff )
                        ->set_default_value_from_effect( 1 );
+
+  debuff.razorice = make_debuff( p.spec.glacial_advance->ok() || p.talent.frost.avalanche->ok() ||
+                                     p.talent.frost.arctic_assault->ok() || p.has_runeforge( RUNEFORGE_RAZORICE ),
+                                 *this, "razorice", p.runeforge_spell.razorice_debuff )
+                        ->set_default_value_from_effect( 1 )
+                        ->disable_ticking( true );
+
+  debuff.apocalypse_death = make_debuff( p.has_runeforge( RUNEFORGE_APOCALYPSE ), *this, "death",
+                                         p.runeforge_spell.apocalypse_death_debuff );  // Effect not implemented
+
+  debuff.apocalypse_famine = make_debuff( p.has_runeforge( RUNEFORGE_APOCALYPSE ), *this, "famine",
+                                          p.runeforge_spell.apocalypse_famine_debuff )
+                                 ->set_default_value_from_effect( 1 );
+
+  debuff.apocalypse_war =
+      make_debuff( p.has_runeforge( RUNEFORGE_APOCALYPSE ), *this, "war", p.runeforge_spell.apocalypse_war_debuff )
+          ->set_default_value_from_effect( 1 );
 
   // Blood
 
   // Frost
-  debuff.razorice = buff_t::find( &target, "razorice", &p );
-  if ( debuff.razorice )
-  {
-    debuff.razorice->set_default_value_from_effect( 1 )->disable_ticking( true );
-  }
-  if ( !debuff.razorice )
-  {
-    debuff.razorice = make_debuff( p.spec.glacial_advance->ok() || p.talent.frost.avalanche->ok() ||
-                                       p.talent.frost.arctic_assault->ok(),
-                                   *this, "razorice", p.spell.razorice_debuff )
-                          ->set_default_value_from_effect( 1 )
-                          ->disable_ticking( true );
-  }
-
   debuff.everfrost =
       make_debuff( p.talent.frost.everfrost.ok(), *this, "everfrost", p.talent.frost.everfrost->effectN( 1 ).trigger() )
           ->set_default_value( p.talent.frost.everfrost->effectN( 1 ).percent() );
@@ -13773,22 +13880,14 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
   // Unholy
   dot.infected_claws = target.get_dot( "infected_claws", &p );
 
-  debuff.disease_cloud = make_debuff( p.talent.unholy.raise_abomination.ok(), *this, "disease_cloud", p.spell.disease_cloud_debuff );
+  debuff.disease_cloud =
+      make_debuff( p.talent.unholy.raise_abomination.ok(), *this, "disease_cloud", p.spell.disease_cloud_debuff );
 
   debuff.contagion = make_debuff( p.talent.unholy.festering_scythe.ok(), *this, "contagion", p.spell.contagion )
                          ->set_default_value_from_effect( 1 );
 
-  debuff.soul_reaper = make_debuff( p.talent.unholy.soul_reaper.ok(), *this, "soul_reaper_debuff", p.spell.soul_reaper_debuff );
-
-  // Apocalypse Death Knight Runeforge Debuffs
-  debuff.apocalypse_death = make_debuff( true, *this, "death",
-                                         p.spell.apocalypse_death_debuff );  // Effect not implemented
-
-  debuff.apocalypse_famine = make_debuff( true, *this, "famine", p.spell.apocalypse_famine_debuff )
-                                 ->set_default_value_from_effect( 1 );
-
-  debuff.apocalypse_war = make_debuff( true, *this, "war", p.spell.apocalypse_war_debuff )
-                              ->set_default_value_from_effect( 1 );
+  debuff.soul_reaper =
+      make_debuff( p.talent.unholy.soul_reaper.ok(), *this, "soul_reaper_debuff", p.spell.soul_reaper_debuff );
 
   // Rider of the Apocalypse Debuffs
   debuff.chains_of_ice_trollbane_slow =
@@ -14417,27 +14516,6 @@ void death_knight_t::init_special_effects()
 
 void death_knight_t::init_finished()
 {
-  action_t* ri_mh                       = find_action( "razorice_mh" );
-  action_t* ri_oh                       = find_action( "razorice_oh" );
-  runeforge.rune_of_razorice_mh         = ri_mh != nullptr;
-  runeforge.rune_of_razorice_oh         = ri_oh != nullptr;
-  if ( runeforge.rune_of_razorice_mh )
-    background_actions.runeforge_razorice = ri_mh;
-  else if ( runeforge.rune_of_razorice_oh )
-    background_actions.runeforge_razorice = ri_oh;
-  action_t* apoc                           = find_action( "pestilence" );
-  runeforge.rune_of_apocalypse             = apoc != nullptr;
-  if ( runeforge.rune_of_apocalypse )
-    background_actions.runeforge_pestilence = apoc;
-  action_t* spellwarding = find_action( "rune_of_spellwarding" );
-  if ( spellwarding != nullptr )
-  {
-    buffs.spellwarding             = buff_t::find( this, "rune_of_spellwarding" );
-    runeforge.rune_of_spellwarding = find_spell( 326864 )->effectN( 2 ).percent() * buffs.spellwarding->max_stack();
-  }
-  action_t* sanguination         = find_action( "rune_of_sanguination" );
-  runeforge.rune_of_sanguination = sanguination != nullptr;
-
   parse_player_effects();
 
   player_t::init_finished();
@@ -14659,11 +14737,19 @@ void death_knight_t::target_mitigation( school_e school, result_amount_type type
     state->result_amount *= 1.0 + buffs.bloodsoaked_ground->data().effectN( 1 ).percent();
 
   const death_knight_td_t* td = get_target_data( state->action->player );
-  if ( td && runeforge.rune_of_apocalypse )
+  if ( td && has_runeforge( RUNEFORGE_APOCALYPSE ) )
     state->result_amount *= 1.0 + td->debuff.apocalypse_famine->check_stack_value();
 
-  if ( dbc::is_school( school, SCHOOL_MAGIC ) && runeforge.rune_of_spellwarding )
-    state->result_amount *= 1.0 + runeforge.rune_of_spellwarding;
+  if ( dbc::is_school( school, SCHOOL_MAGIC ) && has_runeforge( RUNEFORGE_SPELLWARDING ) )
+  {
+    double val = 0;
+    if ( mh_runeforge == RUNEFORGE_SPELLWARDING )
+      val += runeforge_spell.spellwarding_absorb->effectN( 2 ).percent();
+    if ( oh_runeforge == RUNEFORGE_SPELLWARDING )
+      val += runeforge_spell.spellwarding_absorb->effectN( 2 ).percent();
+
+    state->result_amount *= 1.0 + val;
+  }
 
   player_t::target_mitigation( school, type, state );
 }
@@ -14963,8 +15049,8 @@ void death_knight_t::apply_target_action_effects( action_t* a, bool pet )
   else
   {
     // Shared
-    action->parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::apocalypse_war ), spell.apocalypse_war_debuff );
-    action->parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::razorice ), spell.razorice_debuff );
+    action->parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::apocalypse_war ), runeforge_spell.apocalypse_war_debuff );
+    action->parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::razorice ), runeforge_spell.razorice_debuff );
     action->parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::brittle ), spell.brittle_debuff );
 
     switch ( specialization() )
@@ -15018,7 +15104,7 @@ void death_knight_t::parse_player_effects()
   parse_effects( buffs.rune_mastery );
   parse_effects( buffs.antimagic_shell );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::brittle ), spell.brittle_debuff );
-  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::apocalypse_war ), spell.apocalypse_war_debuff );
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::apocalypse_war ), runeforge_spell.apocalypse_war_debuff );
 
   switch ( specialization() )
   {
