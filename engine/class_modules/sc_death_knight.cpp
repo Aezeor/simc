@@ -753,7 +753,6 @@ public:
     propagate_const<buff_t*> death_and_decay;
     propagate_const<buff_t*> spellwarding;
     propagate_const<buff_t*> unholy_strength;
-    propagate_const<buff_t*> stoneskin_gargoyle;
 
     // Blood
     absorb_buff_t* blood_shield;
@@ -1528,6 +1527,7 @@ public:
     const spell_data_t* sanguination_cooldown;
     const spell_data_t* sanguination_heal;
     const spell_data_t* spellwarding_absorb;
+    const spell_data_t* stoneskin_gargoyle;
     const spell_data_t* unholy_strength;
   } runeforge_spell;
 
@@ -11232,23 +11232,22 @@ void runeforge::stoneskin_gargoyle( special_effect_t& effect )
   }
 
   death_knight_t* dk = debug_cast<death_knight_t*>( effect.player );
-  buff_t* buff       = dk->buffs.stoneskin_gargoyle;
 
   switch ( effect.item->slot )
   {
     case SLOT_MAIN_HAND:
       dk->mh_runeforge = RUNEFORGE_STONESKIN_GARGOYLE;
-      if ( dk->oh_runeforge == RUNEFORGE_STONESKIN_GARGOYLE )
-        buff->set_max_stack( buff->max_stack() + 1 );
       break;
     case SLOT_OFF_HAND:
       dk->oh_runeforge = RUNEFORGE_STONESKIN_GARGOYLE;
-      if ( dk->mh_runeforge == RUNEFORGE_STONESKIN_GARGOYLE )
-        buff->set_max_stack( buff->max_stack() + 1 );
       break;
   }
 
-  effect.player->register_on_arise_callback( effect.player, [ buff ] { buff->trigger(); } );
+  dk->base.armor_multiplier += dk->runeforge_spell.stoneskin_gargoyle->effectN( 1 ).percent();
+  for ( auto attribute : { ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT } )
+  {
+    dk->base.attribute_multiplier[ attribute ] += dk->runeforge_spell.stoneskin_gargoyle->effectN( 2 ).percent();
+  }
 }
 
 void runeforge::apocalypse( special_effect_t& effect )
@@ -13421,6 +13420,7 @@ void death_knight_t::spell_lookups()
   runeforge_spell.sanguination_cooldown        = find_spell( 326809 );
   runeforge_spell.sanguination_heal            = find_spell( 326808 );
   runeforge_spell.spellwarding_absorb          = find_spell( 326855 );
+  runeforge_spell.stoneskin_gargoyle           = find_spell( 62157 );
   runeforge_spell.unholy_strength              = find_spell( 53365 );
 
   // Diseases
@@ -13970,12 +13970,6 @@ void death_knight_t::create_buffs()
                               ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
                               ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
 
-  buffs.stoneskin_gargoyle = make_buff( this, "stoneskin_gargoyle", find_spell( 62157 ) )
-                                 ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-                                 ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
-                                 ->set_pct_buff_type( STAT_PCT_BUFF_STAMINA )
-                                 ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
-                                 ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
 
   // Rider of the Apocalypse
   buffs.antimagic_shell_horsemen =
@@ -14728,17 +14722,19 @@ void death_knight_t::do_damage( action_state_t* state )
 
 void death_knight_t::target_mitigation( school_e school, result_amount_type type, action_state_t* state )
 {
-  if ( buffs.icebound_fortitude->up() )
+  if ( buffs.icebound_fortitude->up() && buffs.icebound_fortitude->data().effectN( 3 ).has_common_school( school ) )
     state->result_amount *= 1.0 + buffs.icebound_fortitude->data().effectN( 3 ).percent();
 
-  if ( buffs.bloodsoaked_ground->up() )
+  if ( buffs.bloodsoaked_ground->up() && buffs.bloodsoaked_ground->data().effectN( 1 ).has_common_school( school ) )
     state->result_amount *= 1.0 + buffs.bloodsoaked_ground->data().effectN( 1 ).percent();
 
   const death_knight_td_t* td = get_target_data( state->action->player );
-  if ( td && has_runeforge( RUNEFORGE_APOCALYPSE ) )
+  if ( td && has_runeforge( RUNEFORGE_APOCALYPSE ) &&
+       runeforge_spell.apocalypse_famine_debuff->effectN( 1 ).has_common_school( school ) )
     state->result_amount *= 1.0 + td->debuff.apocalypse_famine->check_stack_value();
 
-  if ( dbc::is_school( school, SCHOOL_MAGIC ) && has_runeforge( RUNEFORGE_SPELLWARDING ) )
+  if ( has_runeforge( RUNEFORGE_SPELLWARDING ) &&
+       runeforge_spell.spellwarding_absorb->effectN( 2 ).has_common_school( school ) )
   {
     double val = 0;
     if ( mh_runeforge == RUNEFORGE_SPELLWARDING )
