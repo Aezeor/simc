@@ -14498,10 +14498,10 @@ void death_knight_t::init_finished()
   parse_player_effects();
 
   if ( main_hand_weapon.type != WEAPON_NONE && mh_runeforge == RUNEFORGE_NONE )
-    sim->error( TRIVIAL, fmt::format( "Player {} has no Main-Hand Runeforge enchanted.", name() ) );
+    sim->error( TRIVIAL, "Player {} has no Main-Hand Runeforge enchanted.", name() );
 
   if ( off_hand_weapon.type != WEAPON_NONE && oh_runeforge == RUNEFORGE_NONE )
-    sim->error( TRIVIAL, fmt::format( "Player {} has no Off-Hand Runeforge enchanted.", name() ) );
+    sim->error( TRIVIAL, "Player {} has no Off-Hand Runeforge enchanted.", name() );
 
   player_t::init_finished();
 }
