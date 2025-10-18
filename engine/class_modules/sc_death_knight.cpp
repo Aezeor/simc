@@ -164,6 +164,7 @@ void sanguination( special_effect_t& );
 void spellwarding( special_effect_t& );
 void stoneskin_gargoyle( special_effect_t& );
 void unending_thirst( special_effect_t& );  // Effect only procs on killing blows, NYI
+void init_runeforges();
 }  // namespace runeforge
 
 enum runeforge_apocalypse_e
@@ -1803,7 +1804,6 @@ public:
                                                             const assisted_combat_step_data_t& step ) const override;
   std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
   std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self ) const override;
-  void init_items() override;
   void init_rng() override;
   void init_base_stats() override;
   void init_scaling() override;
@@ -11349,6 +11349,17 @@ void runeforge::unending_thirst( special_effect_t& effect )
   }
 }
 
+void runeforge::init_runeforges()
+{
+  unique_gear::register_special_effect( 50401, runeforge::razorice );
+  unique_gear::register_special_effect( 166441, runeforge::fallen_crusader, true );
+  unique_gear::register_special_effect( 62157, runeforge::stoneskin_gargoyle );
+  unique_gear::register_special_effect( 327087, runeforge::apocalypse );
+  unique_gear::register_special_effect( 326801, runeforge::sanguination );
+  unique_gear::register_special_effect( 326864, runeforge::spellwarding );
+  unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
+}
+
 // Resource Manipulation ====================================================
 
 double death_knight_t::resource_gain( resource_e resource_type, double amount, gain_t* g, action_t* action )
@@ -13661,22 +13672,6 @@ void death_knight_t::set_icds()
         spell.inexorable_assault_buff->internal_cooldown();  // Inexorable Assault buff spell id
 }
 
-void death_knight_t::init_items()
-{
-  player_t::init_items();
-
-  if ( main_hand_weapon.type == WEAPON_NONE )
-  {
-    throw sc_invalid_player_argument(
-        fmt::format( "Player {} has no weapon equipped in the Main-Hand slot.", name() ) );
-  }
-
-  if ( main_hand_weapon.group() == WEAPON_2H && off_hand_weapon.type != WEAPON_NONE )
-  {
-    throw sc_invalid_player_argument( fmt::format( "Player {} has an Off-Hand weapon equipped with a 2h.", name() ) );
-  }
-}
-
 // death_knight_t::init_action_list =========================================
 
 void death_knight_t::init_action_list()
@@ -13712,22 +13707,6 @@ void death_knight_t::init_action_list()
 // death_knight_t::init_blizzard_action_list ================================
 void death_knight_t::init_blizzard_action_list()
 {
-  if ( main_hand_weapon.type == WEAPON_NONE )
-  {
-    if ( !quiet )
-      sim->errorf( "Player %s has no weapon equipped at the Main-Hand slot.", name() );
-    quiet = true;
-    return;
-  }
-
-  if ( main_hand_weapon.group() == WEAPON_2H && off_hand_weapon.type != WEAPON_NONE )
-  {
-    if ( !quiet )
-      sim->errorf( "Player %s has an Off-Hand weapon equipped with a 2h.", name() );
-    quiet = true;
-    return;
-  }
-
   action_priority_list_t* default_ = get_action_priority_list( "default" );
   default_->add_action( "auto_attack" );  // Add before generating the other actions so its always the highest priority
   player_t::init_blizzard_action_list();
@@ -14518,31 +14497,13 @@ void death_knight_t::init_finished()
 {
   parse_player_effects();
 
-  player_t::init_finished();
-
-  if ( deprecated_dnd_expression )
-  {
-    sim->errorf(
-        "Player %s, Death and Decay and Defile expressions of the form "
-        "'dot.death_and_decay.X' have been deprecated. Use 'death_and_decay.ticking' "
-        "or death_and_decay.remains' instead.",
-        name() );
-  }
-
-  if ( runeforge_expression_warning )
-  {
-    sim->errorf(
-        "Player %s, Death Knight runeforge expressions of the form "
-        "runeforge.name are to be used with Shadowlands Runeforge legendaries only. "
-        "Use death_knight.runeforge.name instead.",
-        name() );
-  }
-
   if ( main_hand_weapon.type != WEAPON_NONE && mh_runeforge == RUNEFORGE_NONE )
     sim->error( TRIVIAL, fmt::format( "Player {} has no Main-Hand Runeforge enchanted.", name() ) );
 
   if ( off_hand_weapon.type != WEAPON_NONE && oh_runeforge == RUNEFORGE_NONE )
     sim->error( TRIVIAL, fmt::format( "Player {} has no Off-Hand Runeforge enchanted.", name() ) );
+
+  player_t::init_finished();
 }
 
 // death_knight_t::validate_fight_style =====================================
@@ -14596,6 +14557,37 @@ bool death_knight_t::validate_actor()
   if ( talent.frost.frostbane.ok() )
   {
     sim->error( error_level_e::SEVERE, "The precise proc chance of Frostbane is unknown. Results will be incorrect." );
+  }
+
+  if ( deprecated_dnd_expression )
+  {
+    sim->errorf(
+        "Player %s, Death and Decay and Defile expressions of the form "
+        "'dot.death_and_decay.X' have been deprecated. Use 'death_and_decay.ticking' "
+        "or death_and_decay.remains' instead.",
+        name() );
+  }
+
+  if ( runeforge_expression_warning )
+  {
+    sim->errorf(
+        "Player %s, Death Knight runeforge expressions of the form "
+        "runeforge.name are to be used with Shadowlands Runeforge legendaries only. "
+        "Use death_knight.runeforge.name instead.",
+        name() );
+  }
+
+  if ( main_hand_weapon.type == WEAPON_NONE )
+  {
+    throw sc_invalid_player_argument(
+        fmt::format( "Player {} has no weapon equipped in the Main-Hand slot.", name() ) );
+    return false;
+  }
+
+  if ( main_hand_weapon.group() == WEAPON_2H && off_hand_weapon.type != WEAPON_NONE )
+  {
+    throw sc_invalid_player_argument( fmt::format( "Player {} has an Off-Hand weapon equipped with a 2h.", name() ) );
+    return false;
   }
 
   return true;
@@ -15194,7 +15186,7 @@ public:
 
   void html_rune_waste( report::sc_html_stream& os ) const
   {
-    os << "<h3 class=\"toggle open\">Rune waste details (<strong>experimental</strong>)</h3>\n"
+    os << "<h3 class=\"toggle open\">Rune waste details</h3>\n"
        << "<div class=\"toggle-content\">\n";
 
     os << "<p style=\"width: 75%\">"
@@ -15287,13 +15279,15 @@ struct death_knight_module_t : public module_t
 
   void static_init() const override
   {
-    unique_gear::register_special_effect( 50401, runeforge::razorice );
-    unique_gear::register_special_effect( 166441, runeforge::fallen_crusader, true );
-    unique_gear::register_special_effect( 62157, runeforge::stoneskin_gargoyle );
-    unique_gear::register_special_effect( 327087, runeforge::apocalypse );
-    unique_gear::register_special_effect( 326801, runeforge::sanguination );
-    unique_gear::register_special_effect( 326864, runeforge::spellwarding );
-    unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
+    runeforge::init_runeforges();
+    // If the module is split between live and ptr, it needs to call the live init instead.
+    // Make sure the wowv check is correct.
+    /*
+     * if( sim->dbc->wowv() >= wowv_t( 12, 0, 0 ) )
+     *   runeforge::init_runeforges();
+     * else
+     *   live_death_knight::runeforge::init_runeforges();
+     */
   }
 
   /*
