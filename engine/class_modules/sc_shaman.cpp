@@ -4581,12 +4581,28 @@ struct windfury_attack_t : public shaman_attack_t
 
 struct crash_lightning_attack_t : public shaman_attack_t
 {
-  crash_lightning_attack_t( shaman_t* p ) : shaman_attack_t( "crash_lightning_proc", p, p->find_spell( 195592 ) )
+  strike_variant strike_type; // Type of strike proccing the Crash Lightning damage
+
+  crash_lightning_attack_t( shaman_t* p ) :
+    shaman_attack_t( "crash_lightning_proc", p, p->find_spell( 195592 ) ),
+    strike_type( strike_variant::NORMAL )
   {
     weapon     = &( p->main_hand_weapon );
     background = true;
     split_aoe_damage = true;
     may_proc_ability_procs = false;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = shaman_attack_t::action_multiplier();
+
+    if ( strike_type == strike_variant::STORMFLURRY )
+    {
+      m *= p()->talent.stormflurry->effectN( 2 ).percent();
+    }
+
+    return m;
   }
 
   void init() override
@@ -4595,6 +4611,13 @@ struct crash_lightning_attack_t : public shaman_attack_t
 
     may_proc_windfury = may_proc_flametongue = may_proc_hot_hand = false;
     may_proc_stormsurge = false;
+  }
+
+  void trigger( const action_state_t* strike_state, strike_variant st )
+  {
+    strike_type = st;
+    set_target( strike_state->target );
+    schedule_execute();
   }
 };
 
@@ -5282,8 +5305,8 @@ struct lava_lash_t : public shaman_attack_t
 
     if ( result_is_hit( state->result ) && p()->buff.crash_lightning->up() )
     {
-      p()->action.crash_lightning_aoe->set_target( state->target );
-      p()->action.crash_lightning_aoe->schedule_execute();
+      debug_cast<crash_lightning_attack_t*>( p()->action.crash_lightning_aoe )
+        ->trigger( state, strike_variant::NORMAL );
     }
 
     p()->trigger_ride_the_lightning( state, p()->action.chain_lightning_ll_rtl );
@@ -5550,7 +5573,7 @@ struct stormstrike_base_t : public shaman_attack_t
 
   void trigger_stormflurry( player_t* t, bool stormblast )
   {
-    auto s= get_state();
+    auto s = get_state();
 
     snapshot_state( s, amount_type( s ) );
 
@@ -5618,8 +5641,8 @@ struct stormstrike_base_t : public shaman_attack_t
 
       if ( p()->buff.crash_lightning->up() )
       {
-        p()->action.crash_lightning_aoe->set_target( execute_state->target );
-        p()->action.crash_lightning_aoe->execute();
+        debug_cast<crash_lightning_attack_t*>( p()->action.crash_lightning_aoe )
+          ->trigger( execute_state, strike_type );
       }
     }
 
