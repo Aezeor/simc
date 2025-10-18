@@ -11243,10 +11243,10 @@ void runeforge::stoneskin_gargoyle( special_effect_t& effect )
       break;
   }
 
-  dk->base.armor_multiplier += dk->runeforge_spell.stoneskin_gargoyle->effectN( 1 ).percent();
+  dk->base.armor_multiplier *= dk->runeforge_spell.stoneskin_gargoyle->effectN( 1 ).percent();
   for ( auto attribute : { ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT } )
   {
-    dk->base.attribute_multiplier[ attribute ] += dk->runeforge_spell.stoneskin_gargoyle->effectN( 2 ).percent();
+    dk->base.attribute_multiplier[ attribute ] *= dk->runeforge_spell.stoneskin_gargoyle->effectN( 2 ).percent();
   }
 }
 
