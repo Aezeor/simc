@@ -43,8 +43,6 @@
 // TODO-midnight-talent: Does Overcharge include target-based crit chance% debuffs?
 // TODO-midnight-talent: Do all nature damage benefit from Overcharge, or just "abilities"?
 // TODO-midnight-talent: Ride the Lightning interactions with Arc Discharge, Thorim's etc?
-// TODO-midnight-core: Asynchronous buffs with differing duration triggers use the same buff delay
-// event; fix
 
 namespace eff
 {
@@ -1108,6 +1106,9 @@ public:
   /// Rolling Thunder last trigger
   timespan_t rt_last_trigger;
 
+  /// Crash Lightnings for cooldown management of Storm Unleashed
+  std::vector<action_t*> crash_lightning;
+
   /// Buff state tracking
   unsigned buff_state_lightning_rod;
   unsigned buff_state_lashing_flames;
@@ -1299,6 +1300,7 @@ public:
     buff_t* primordial_storm;
     buff_t* lightning_strikes;
     buff_t* surging_elements;
+    buff_t* storm_unleashed;
 
     buff_t* tww2_enh_2pc; // Winning Streak!
     buff_t* tww2_enh_4pc; // Electrostatic Wager (visible buff)
@@ -1378,6 +1380,7 @@ public:
   {
     cooldown_t* ascendance;
     cooldown_t* crash_lightning;
+    cooldown_t* crash_lightning_su; // CD ignore for Crash Lightning
     cooldown_t* feral_spirits;
     cooldown_t* fire_elemental;
     cooldown_t* flame_shock;
@@ -1844,6 +1847,7 @@ public:
     // Cooldowns
     cooldown.ascendance         = get_cooldown( "ascendance" );
     cooldown.crash_lightning    = get_cooldown( "crash_lightning" );
+    cooldown.crash_lightning_su = get_cooldown( "crash_lighting_su" );
     cooldown.fire_elemental     = get_cooldown( "fire_elemental" );
     cooldown.flame_shock        = get_cooldown( "flame_shock" );
     cooldown.frost_shock        = get_cooldown( "frost_shock" );
@@ -1970,6 +1974,7 @@ public:
   // Midnight Triggers
   void trigger_ride_the_lightning( const action_state_t* state, action_t* trigger );
   void trigger_thorims_invocation( const action_state_t* state );
+  void trigger_crash_lightning_proc( const action_state_t* state, strike_variant t );
 
   // Legendary
   void trigger_elemental_equilibrium( const action_state_t* state );
@@ -5303,10 +5308,9 @@ struct lava_lash_t : public shaman_attack_t
 
     trigger_flame_shock( state );
 
-    if ( result_is_hit( state->result ) && p()->buff.crash_lightning->up() )
+    if ( result_is_hit( state->result ) )
     {
-      debug_cast<crash_lightning_attack_t*>( p()->action.crash_lightning_aoe )
-        ->trigger( state, strike_variant::NORMAL );
+      p()->trigger_crash_lightning_proc( execute_state, strike_variant::NORMAL );
     }
 
     p()->trigger_ride_the_lightning( state, p()->action.chain_lightning_ll_rtl );
@@ -5639,11 +5643,7 @@ struct stormstrike_base_t : public shaman_attack_t
         oh->execute_on_target( execute_state->target );
       }
 
-      if ( p()->buff.crash_lightning->up() )
-      {
-        debug_cast<crash_lightning_attack_t*>( p()->action.crash_lightning_aoe )
-          ->trigger( execute_state, strike_type );
-      }
+      p()->trigger_crash_lightning_proc( execute_state, strike_type );
     }
 
     p()->trigger_stormflurry( execute_state );
@@ -5977,6 +5977,8 @@ struct crash_lightning_t : public shaman_attack_t
 
     weapon  = &( p()->main_hand_weapon );
     ap_type = attack_power_type::WEAPON_BOTH;
+
+    player->crash_lightning.emplace_back( this );
   }
 
   void init() override
@@ -5987,6 +5989,54 @@ struct crash_lightning_t : public shaman_attack_t
     {
       add_child( p()->action.crash_lightning_aoe );
     }
+  }
+
+  std::unique_ptr<expr_t> create_expression( util::string_view expression_str ) override
+  {
+    struct cl_cd_t : public expr_t
+    {
+      std::unique_ptr<expr_t> normal, su;
+      shaman_t* actor;
+
+      cl_cd_t( shaman_t* player, std::string_view expr_str ) : expr_t( expr_str ),
+        normal( player->cooldown.crash_lightning->create_expression( expr_str ) ),
+        su( player->cooldown.crash_lightning_su->create_expression( expr_str ) ),
+        actor( player )
+      { }
+
+      double evaluate() override
+      {
+        if ( actor->buff.storm_unleashed->check() )
+        {
+          return su->evaluate();
+        }
+        else
+        {
+          return normal->evaluate();
+        }
+      }
+    };
+
+    std::vector<util::string_view> cd_expr_str {
+      "cooldown", "charges", "charges_fractional", "max_charges", "recharge_time",
+      "full_recharge_time"
+    };
+    auto split = util::string_split( expression_str, "." );
+
+    if ( range::find( cd_expr_str, split.front() ) != cd_expr_str.end() )
+    {
+      if ( split.size() == 1U )
+      {
+        return std::make_unique<cl_cd_t>( p(), split.front() );
+      }
+      else if ( split.size() == 3U && util::str_compare_ci( split.front(), "cooldown" ) &&
+        util::str_compare_ci( split[ 1 ], "crash_lightning" ) )
+      {
+        return std::make_unique<cl_cd_t>( p(), split[ 2 ] );
+      }
+    }
+
+    return shaman_attack_t::create_expression( expression_str );
   }
 
   double action_multiplier() const override
@@ -6038,6 +6088,8 @@ struct crash_lightning_t : public shaman_attack_t
     {
       p()->trigger_thorims_invocation( execute_state );
     }
+
+    p()->buff.storm_unleashed->consume( this );
   }
 };
 
@@ -12421,6 +12473,12 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
       action.doom_winds_asc->execute_on_target( state->target );
     }
   }
+
+  if ( talent.storm_unleashed_1.ok() &&
+    rng().roll( talent.storm_unleashed_1->effectN( 1 ).base_value() * 0.1 * 0.01 * stacks ) )
+  {
+    buff.storm_unleashed->trigger();
+  }
 }
 
 void shaman_t::trigger_maelstrom_gain( double maelstrom_gain, gain_t* gain )
@@ -13147,6 +13205,19 @@ void shaman_t::trigger_thorims_invocation( const action_state_t* state )
   }
 }
 
+void shaman_t::trigger_crash_lightning_proc( const action_state_t* state, strike_variant t )
+{
+  if ( !talent.crash_lightning.ok() )
+  {
+    return;
+  }
+
+  for ( int i = 0; i < buff.crash_lightning->check(); ++i )
+  {
+    debug_cast<crash_lightning_attack_t*>( action.crash_lightning_aoe )->trigger( state, t );
+  }
+}
+
 // shaman_t::init_buffs =====================================================
 
 void shaman_t::create_buffs()
@@ -13339,7 +13410,13 @@ void shaman_t::create_buffs()
   buff.converging_storms = make_buff( this, "converging_storms", find_spell( 198300 ) )
       ->set_default_value_from_effect( 1 );
   // Buffs stormstrike and lava lash after using crash lightning
-  buff.crash_lightning = make_buff( this, "crash_lightning", find_spell( 187878 ) );
+  buff.crash_lightning = make_buff( this, "crash_lightning", find_spell( 187878 ) )
+    ->set_max_stack( talent.storm_unleashed_1.ok() ? 10 : 1 )
+    ->set_stack_behavior( talent.storm_unleashed_1.ok()
+      ? buff_stack_behavior::ASYNCHRONOUS
+      : buff_stack_behavior::DEFAULT
+    )
+    ->set_chance( talent.crash_lightning.ok() ? 1.0 : 0.0 );
   // Buffs crash lightning with extra damage, after using chain lightning
   buff.cl_crash_lightning = new cl_crash_lightning_buff_t( this );
 
@@ -13382,6 +13459,23 @@ void shaman_t::create_buffs()
 
   buff.surging_elements = make_buff( this, "surging_elements", find_spell( 382043 ) )
     ->set_trigger_spell( talent.surging_elements );
+
+  buff.storm_unleashed = make_buff( this, "storm_unleashed", find_spell( 1262830 ) )
+    ->set_stack_change_callback( [ this ]( buff_t*, int old, int new_ ) {
+      if ( old == 0 )
+      {
+        range::for_each( crash_lightning, [ this ]( action_t* a ) {
+          a->cooldown = cooldown.crash_lightning_su;
+        } );
+      }
+      else if ( new_ == 0 )
+      {
+        range::for_each( crash_lightning, [ this ]( action_t* a ) {
+          a->cooldown = cooldown.crash_lightning;
+        } );
+      }
+    } )
+    ->set_trigger_spell( talent.storm_unleashed_1 );
 
   buff.tww2_enh_2pc = make_buff( this, "winning_streak", find_spell( 1218616 ) )
     ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, TWW2, B2 ) );
