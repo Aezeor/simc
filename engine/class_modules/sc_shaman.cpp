@@ -6101,18 +6101,19 @@ struct crash_lightning_t : public shaman_attack_t
       p()->trigger_thorims_invocation( execute_state );
     }
 
-    p()->buff.storm_unleashed->consume( this );
-
-    for ( auto t : target_list() )
+    if ( p()->buff.storm_unleashed->consume( this ) )
     {
-      if ( !rng().roll( p()->options.crash_lightning_su_hit_chance ) )
+      for ( auto t : target_list() )
       {
-        continue;
-      }
+        if ( !rng().roll( p()->options.crash_lightning_su_hit_chance ) )
+        {
+          continue;
+        }
 
-      for ( auto i = 0; i < as<int>( p()->talent.storm_unleashed_3->effectN( 2 ).base_value() ); ++i )
-      {
-        p()->action.crash_lightning_unleashed->execute_on_target( t );
+        for ( auto i = 0; i < as<int>( p()->talent.storm_unleashed_3->effectN( 2 ).base_value() ); ++i )
+        {
+          p()->action.crash_lightning_unleashed->execute_on_target( t );
+        }
       }
     }
   }
