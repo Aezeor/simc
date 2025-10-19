@@ -1374,6 +1374,9 @@ public:
     // New deck dre implementation
     unsigned n_dre_draw_success = 2; // Number of successs in the deck
     int n_dre_draws = -1; // Total cards in the deck
+
+    // Chance on Crash Lightning target to sit in the Crash Lightning (Unleashed) puddle
+    double crash_lightning_su_hit_chance = 0.85;
   } options;
 
   // Cooldowns
@@ -4630,16 +4633,6 @@ struct crash_lightning_attack_t : public shaman_attack_t
     may_proc_stormsurge = false;
   }
 
-  void impact( action_state_t* state ) override
-  {
-    shaman_attack_t::impact( state );
-
-    for ( auto i = 0; i < as<int>( p()->talent.storm_unleashed_3->effectN( 2 ).base_value() ); ++i )
-    {
-      p()->action.crash_lightning_unleashed->execute_on_target( execute_state->target );
-    }
-  }
-
   void trigger( const action_state_t* strike_state, strike_variant st )
   {
     strike_type = st;
@@ -6107,6 +6100,19 @@ struct crash_lightning_t : public shaman_attack_t
     }
 
     p()->buff.storm_unleashed->consume( this );
+
+    for ( auto t : target_list() )
+    {
+      if ( !rng().roll( p()->options.crash_lightning_su_hit_chance ) )
+      {
+        continue;
+      }
+
+      for ( auto i = 0; i < as<int>( p()->talent.storm_unleashed_3->effectN( 2 ).base_value() ); ++i )
+      {
+        p()->action.crash_lightning_unleashed->execute_on_target( t );
+      }
+    }
   }
 };
 
@@ -11307,6 +11313,9 @@ void shaman_t::create_options()
   // New DRE shuffled deck options
   add_option( opt_uint( "shaman.dre_deck_success", options.n_dre_draw_success, 0, 10000U ) );
   add_option( opt_int( "shaman.dre_deck_total", options.n_dre_draws, 1, 10000U ) );
+
+  add_option( opt_float( "shaman.crash_lightning_su_hit_chance",
+    options.crash_lightning_su_hit_chance, 0.0 , 1.0 ) );
 }
 
 // shaman_t::create_profile ================================================
