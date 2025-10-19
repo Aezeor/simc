@@ -1534,6 +1534,7 @@ public:
     const spell_data_t* sanguination_heal;
     const spell_data_t* spellwarding_absorb;
     const spell_data_t* stoneskin_gargoyle;
+    const spell_data_t* unending_thirst;
     const spell_data_t* unholy_strength;
   } runeforge_spell;
 
@@ -5571,6 +5572,25 @@ struct fallen_crusader_heal_t final : public heal_t
     base_pct_heal                  = data().effectN( 2 ).percent();
   }
 
+  // Procs by default target the target of the action that procced them.
+  void execute() override
+  {
+    target = player;
+    heal_t::execute();
+  }
+};
+
+// Unending Thirst Heal =====================================================
+struct unending_thirst_heal_t final : public heal_t
+{
+  unending_thirst_heal_t( std::string_view name, death_knight_t* p )
+    : heal_t( name, p, p->runeforge_spell.unending_thirst )
+  {
+    background = true;
+    target     = p;
+    harmful = callbacks = may_crit = false;
+    base_pct_heal                  = data().effectN( 2 ).percent();
+  }
   // Procs by default target the target of the action that procced them.
   void execute() override
   {
@@ -11275,7 +11295,6 @@ void runeforge::spellwarding( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-// NYI
 void runeforge::unending_thirst( special_effect_t& effect )
 {
   if ( effect.player->type != DEATH_KNIGHT )
@@ -11283,6 +11302,19 @@ void runeforge::unending_thirst( special_effect_t& effect )
     effect.type = SPECIAL_EFFECT_NONE;
     return;
   }
+
+  death_knight_t* dk = debug_cast<death_knight_t*>( effect.player );
+
+  auto buff = make_buff( dk, "rune_of_unending_thirst", dk->runeforge_spell.unending_thirst )
+                  ->set_default_value_from_effect_type( A_HASTE_ALL )
+                  ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+
+  auto heal = get_action<unending_thirst_heal_t>( "rune_of_unending_thirst", dk );
+
+  dk->register_on_kill_callback( [ buff, heal ]( player_t* ) {
+    buff->trigger();
+    heal->execute();
+  } );
 }
 
 void runeforge::init_runeforges()
@@ -13432,6 +13464,7 @@ void death_knight_t::spell_lookups()
   runeforge_spell.sanguination_heal            = conditional_spell_lookup( has_runeforge( RUNEFORGE_SANGUINATION ), 326808 );
   runeforge_spell.spellwarding_absorb          = conditional_spell_lookup( has_runeforge( RUNEFORGE_SPELLWARDING ), 326855 );
   runeforge_spell.stoneskin_gargoyle           = conditional_spell_lookup( has_runeforge( RUNEFORGE_STONESKIN_GARGOYLE ), 62157 );
+  runeforge_spell.unending_thirst              = conditional_spell_lookup( has_runeforge( RUNEFORGE_UNENDING_THIRST ), 326984 );
   runeforge_spell.unholy_strength              = conditional_spell_lookup( has_runeforge( RUNEFORGE_FALLEN_CRUSADER ), 53365 );
 
   // Diseases
