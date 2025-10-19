@@ -1693,18 +1693,20 @@ public:
     // Row 2
     player_talent_t unlimited_power;
     player_talent_t stormcaller;
-    // player_talent_t shocking_grasp;
+    player_talent_t electroshock;
+    player_talent_t stormwell;
 
     // Row 3
     player_talent_t supercharge;
     player_talent_t storm_swell;
     player_talent_t arc_discharge;
     player_talent_t rolling_thunder;
+    player_talent_t natural_gift;
 
     // Row 4
     player_talent_t voltaic_surge;
     player_talent_t conductive_energy;
-    player_talent_t surging_currents;
+    player_talent_t descending_skies;
 
     // Row 5
     player_talent_t awakening_storms;
@@ -10782,6 +10784,11 @@ inline bool ascendance_buff_t::trigger( int stacks, double value, double chance,
 
   p->cooldown.strike->adjust_recharge_multiplier();
 
+  if ( p->talent.descending_skies.ok() )
+  {
+    p->buff.tempest->trigger();
+  }
+
   return true;
 }
 
@@ -11721,10 +11728,43 @@ void shaman_t::init_spells()
     { talent.primordial_storm,       "Primordial Storm"       },
   };
 
+  std::vector<std::pair<player_talent_t&, util::string_view>> hero_talents {
+    // Stormbringer
+    // Row 1
+    { talent.tempest,           "Tempest"           },
+
+    // Row 2
+    { talent.unlimited_power,   "Unlimited Power"   },
+    { talent.stormcaller,       "Stormcaller"       },
+    { talent.electroshock,      "Electroshock"      },
+    { talent.stormwell,         "Stormwell"         },
+
+    // Row 3
+    { talent.supercharge,       "Supercharge"       },
+    { talent.storm_swell,       "Storm Swell"       },
+    { talent.arc_discharge,     "Arc Discharge"     },
+    { talent.rolling_thunder,   "Rolling Thunder"   },
+    { talent.natural_gift,      "Natural Gift"      },
+
+    // Row 4
+    { talent.voltaic_surge,     "Voltaic Surge"     },
+    { talent.conductive_energy, "Conductive Energy" },
+    { talent.descending_skies,  "Descending Skies"  },
+
+    // Row 5
+    { talent.awakening_storms,  "Awakening Storms"  },
+  };
+
   // Initialize Specialization tree talents
   for ( const auto& entry : spec_talents )
   {
     std::get<0>( entry ) = find_talent_spell( talent_tree::SPECIALIZATION, std::get<1>( entry ) );
+  }
+
+  // Initialize Hero tree talents
+  for ( const auto& entry : hero_talents )
+  {
+    std::get<0>( entry ) = find_talent_spell( talent_tree::HERO, std::get<1>( entry ) );
   }
 
   // Enhancement keystones
@@ -11788,25 +11828,6 @@ void shaman_t::init_spells()
   talent.lightning_rod          = _ST( "Lightning Rod" );
   talent.primal_elementalist    = _ST( "Primal Elementalist" );
   talent.liquid_magma_totem     = _ST( "Liquid Magma Totem" );
-
-  // Stormbringer
-
-  talent.tempest               = find_talent_spell( talent_tree::HERO, 454009 );
-
-  talent.unlimited_power       = find_talent_spell( talent_tree::HERO, "Unlimited Power" );
-  talent.stormcaller           = find_talent_spell( talent_tree::HERO, "Stormcaller" );
-  //talent.shocking_grasp   = find_talent_spell( talent_tree::HERO, "Shocking Grasp" );
-
-  talent.supercharge           = find_talent_spell( talent_tree::HERO, "Supercharge" );
-  talent.storm_swell           = find_talent_spell( talent_tree::HERO, "Storm Swell" );
-  talent.arc_discharge         = find_talent_spell( talent_tree::HERO, "Arc Discharge" );
-  talent.rolling_thunder       = find_talent_spell( talent_tree::HERO, "Rolling Thunder" );
-
-  talent.voltaic_surge         = find_talent_spell( talent_tree::HERO, "Voltaic Surge" );
-  talent.conductive_energy     = find_talent_spell( talent_tree::HERO, "Conductive Energy" );
-  talent.surging_currents      = find_talent_spell( talent_tree::HERO, "Surging Currents" );
-
-  talent.awakening_storms      = find_talent_spell( talent_tree::HERO, "Awakening Storms" );
 
   // Totemic
 
@@ -13452,7 +13473,11 @@ void shaman_t::create_buffs()
   buff.cl_crash_lightning = new cl_crash_lightning_buff_t( this );
 
   buff.hot_hand = make_buff( this, "hot_hand", find_spell( 215785 ) )
-    ->set_trigger_spell( talent.hot_hand );
+    ->set_chance( talent.hot_hand.ok()
+      ? talent.hot_hand->proc_chance()
+      : talent.whirling_elements.ok()
+        ? 1.0
+        : 0.0 );
   buff.spirit_walk  = make_buff( this, "spirit_walk", talent.spirit_walk );
   buff.stormbringer = make_buff( this, "stormsurge", find_spell( 201846 ) );
   buff.maelstrom_weapon = make_buff( this, "maelstrom_weapon", find_spell( 344179 ) )
