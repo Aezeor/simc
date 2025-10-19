@@ -1948,6 +1948,7 @@ public:
 
   // triggers
   void trigger_maelstrom_gain( double maelstrom_gain, gain_t* gain = nullptr );
+  void trigger_windfury_weapon( player_t* target, double override_chance = -1.0 );
   void trigger_windfury_weapon( const action_state_t*, double override_chance = -1.0 );
   void trigger_flametongue_weapon( const action_state_t* );
   void trigger_stormbringer( const action_state_t* state, double proc_chance = -1.0, stats::proc_tracker_t* proc_obj = nullptr );
@@ -6115,6 +6116,16 @@ struct crash_lightning_t : public shaman_attack_t
           p()->action.crash_lightning_unleashed->execute_on_target( t );
         }
       }
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    shaman_attack_t::impact( state );
+
+    if ( state->chain_target == 0 && p()->talent.stormwell.ok() )
+    {
+      p()->trigger_windfury_weapon( execute_state, 1.0 );
     }
   }
 };
