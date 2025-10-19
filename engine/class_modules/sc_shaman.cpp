@@ -15203,6 +15203,12 @@ struct shaman_module_t : public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 3 )
       .verification_value( 0.0 );
+
+    hotfix::register_effect( "Shaman", "2025-10-19", "Manually add Label to Enhancement 12.0 4PC set bonus", 1276472 )
+      .field( "misc_value2" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 5779 )
+      .verification_value( 0 );
   }
 
   void combat_begin( sim_t* ) const override
