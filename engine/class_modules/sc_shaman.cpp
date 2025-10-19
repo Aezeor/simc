@@ -13801,6 +13801,7 @@ void shaman_t::apply_action_effects( parse_effects_t* a )
   eff::source_eff_builder_t( buff.lightning_strikes ).build( a );
   eff::source_eff_builder_t( buff.ascendance ).build( a );
   eff::source_eff_builder_t( buff.hot_hand ).build( a );
+  eff::source_eff_builder_t( buff.arc_discharge ).build( a );
 
 /*eff::source_eff_builder_t( talent.enhanced_imbues )
     .set_state_fn( [ this ] { return buff.flametongue_weapon->check(); } )
