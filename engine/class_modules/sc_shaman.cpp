@@ -1121,6 +1121,7 @@ public:
   {
     spell_t* lightning_shield;
     attack_t* crash_lightning_aoe;
+    attack_t* crash_lightning_unleashed;
     action_t* lightning_bolt_ti;
     action_t* lightning_bolt_ps;
     action_t* tempest_ti;
@@ -4584,6 +4585,17 @@ struct windfury_attack_t : public shaman_attack_t
   }
 };
 
+struct crash_lightning_unleashed_t : public shaman_attack_t
+{
+  crash_lightning_unleashed_t( shaman_t* p ) :
+    shaman_attack_t( "crash_lightning_unleashed", p, p->find_spell( 1252431 ) )
+  {
+    weapon     = &( p->main_hand_weapon );
+    background = true;
+    may_proc_ability_procs = false;
+  }
+};
+
 struct crash_lightning_attack_t : public shaman_attack_t
 {
   strike_variant strike_type; // Type of strike proccing the Crash Lightning damage
@@ -4616,6 +4628,16 @@ struct crash_lightning_attack_t : public shaman_attack_t
 
     may_proc_windfury = may_proc_flametongue = may_proc_hot_hand = false;
     may_proc_stormsurge = false;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    shaman_attack_t::impact( state );
+
+    for ( auto i = 0; i < as<int>( p()->talent.storm_unleashed_3->effectN( 2 ).base_value() ); ++i )
+    {
+      p()->action.crash_lightning_unleashed->execute_on_target( execute_state->target );
+    }
   }
 
   void trigger( const action_state_t* strike_state, strike_variant st )
@@ -5243,10 +5265,7 @@ struct lava_lash_t : public shaman_attack_t
 
     may_proc_stormsurge = true;
 
-    if ( p()->talent.reactivity.ok() && p()->action.reactivity )
-    {
-      add_child( p()->action.reactivity );
-    }
+    add_child( p()->action.reactivity );
   }
 
   void init_finished() override
@@ -5985,10 +6004,8 @@ struct crash_lightning_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    if ( p()->action.crash_lightning_aoe )
-    {
-      add_child( p()->action.crash_lightning_aoe );
-    }
+    add_child( p()->action.crash_lightning_aoe );
+    add_child( p()->action.crash_lightning_unleashed );
   }
 
   std::unique_ptr<expr_t> create_expression( util::string_view expression_str ) override
@@ -11119,9 +11136,14 @@ void shaman_t::create_actions()
     action.doom_winds_asc = new doom_winds_t( this, spell_variant::ASCENDANCE );
   }
 
-  if ( talent.crash_lightning->ok() )
+  if ( talent.crash_lightning.ok() )
   {
     action.crash_lightning_aoe = new crash_lightning_attack_t( this );
+  }
+
+  if ( talent.storm_unleashed_3.ok() )
+  {
+    action.crash_lightning_unleashed = new crash_lightning_unleashed_t( this );
   }
 
   if ( specialization() == SHAMAN_ELEMENTAL && ( talent.ascendance.ok() ||
@@ -13410,8 +13432,8 @@ void shaman_t::create_buffs()
   buff.converging_storms = make_buff( this, "converging_storms", find_spell( 198300 ) )
       ->set_default_value_from_effect( 1 );
   // Buffs stormstrike and lava lash after using crash lightning
-  buff.crash_lightning = make_buff( this, "crash_lightning", find_spell( 187878 ) )
-    ->set_max_stack( talent.storm_unleashed_1.ok() ? 10 : 1 )
+  buff.crash_lightning = make_buff( this, "crash_lightning",
+    find_spell( talent.storm_unleashed_1.ok() ? 1252415 : 187878 ) )
     ->set_stack_behavior( talent.storm_unleashed_1.ok()
       ? buff_stack_behavior::ASYNCHRONOUS
       : buff_stack_behavior::DEFAULT
@@ -13797,6 +13819,7 @@ void shaman_t::apply_player_effects()
 
   // Enhancement
   eff::source_eff_builder_t( buff.flurry ).set_flag( IGNORE_STACKS ).build( this );
+  eff::source_eff_builder_t( buff.crash_lightning ).build( this );
 
   // Elemental
   eff::source_eff_builder_t( mastery.elemental_overload ).build( this );
