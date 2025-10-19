@@ -1151,7 +1151,6 @@ public:
     action_t* ascendance; // MW Tracking
 
     // TWW Hero Talent stuff
-    action_t* awakening_storms; // Awakening Storms damage
     action_t* whirling_air_ss;
     action_t* whirling_air_ws;
 
@@ -1316,7 +1315,6 @@ public:
     buff_t* whirling_fire;
     buff_t* whirling_earth;
 
-    buff_t* awakening_storms;
     buff_t* totemic_rebound;
     buff_t* surging_totem;
 
@@ -1957,6 +1955,8 @@ public:
   // TWW Triggers
   template <typename T>
   void trigger_tempest( T resource_count );
+  void trigger_awakening_storms( player_t* target );
+  void trigger_awakening_storms( double maelstrom_consumed, player_t* target );
   void trigger_awakening_storms( const action_state_t* state );
   void trigger_earthsurge( const action_state_t* state, double mul = 1.0 );
   void trigger_whirling_air( const action_state_t* state );
@@ -3065,6 +3065,7 @@ public:
     if ( this->last_resource_cost > 0 && this->current_resource() == RESOURCE_MAELSTROM )
     {
       this->p()->trigger_deeply_rooted_elements( this->execute_state );
+      this->p()->trigger_awakening_storms( this->last_resource_cost, this->execute_state->target );
     }
   }
 
@@ -4820,15 +4821,6 @@ struct lightning_shield_defense_damage_t : public shaman_spell_t
   {
     background = true;
     callbacks  = false;
-  }
-};
-
-struct awakening_storms_t : public shaman_spell_t
-{
-  awakening_storms_t( shaman_t* player ) :
-    shaman_spell_t( "awakening_storms", player, player->find_spell( 455130 ))
-  {
-    background = true;
   }
 };
 
@@ -6683,11 +6675,6 @@ struct chain_lightning_t : public chained_base_t
       p()->generate_maelstrom_weapon( execute_state->action, mw_consumed_stacks );
     }
 
-    if ( exec_type == spell_variant::NORMAL )
-    {
-      p()->trigger_awakening_storms( execute_state );
-    }
-
     p()->trigger_thunderstrike_ward( execute_state );
 
     proc_lightning_rod();
@@ -7501,11 +7488,6 @@ struct lightning_bolt_t : public shaman_spell_t
     }
 
     p()->trigger_herald_of_the_storms();
-
-    if ( exec_type == spell_variant::NORMAL )
-    {
-      p()->trigger_awakening_storms( execute_state );
-    }
 
     // Track last cast for LB / CL because of Thorim's Invocation
     if ( p()->talent.thorims_invocation.ok() && exec_type == spell_variant::NORMAL )
@@ -11191,11 +11173,6 @@ void shaman_t::create_actions()
     action.stormflurry_ws = new windstrike_t( this, "", strike_variant::STORMFLURRY );
   }
 
-  if ( talent.awakening_storms.ok() )
-  {
-    action.awakening_storms = new awakening_storms_t( this );
-  }
-
   if ( talent.fusion_of_elements.ok() )
   {
     action.elemental_blast_foe = new elemental_blast_t( this, spell_variant::FUSION_OF_ELEMENTS );
@@ -12838,6 +12815,44 @@ void shaman_t::trigger_tempest( T resource_count )
   }
 }
 
+void shaman_t::trigger_awakening_storms( player_t* target )
+{
+  if ( spell.tww3_stormbringer_2pc->ok() )
+  {
+    aws_counter++;
+
+    unsigned int tww3_mod_value = static_cast<unsigned int>( specialization() == SHAMAN_ELEMENTAL
+      ? spell.tww3_stormbringer_2pc->effectN( 3 ).base_value()
+      : spell.tww3_stormbringer_2pc->effectN( 4 ).base_value() );
+
+    if ( aws_counter % tww3_mod_value == 0 )
+    {
+      action.set_ascendance->execute_on_target( target );
+    }
+  }
+
+  if ( buff.tempest->check() )
+  {
+    proc.tempest_awakening_storms->occur();
+  }
+  buff.tempest->trigger();
+}
+
+void shaman_t::trigger_awakening_storms( double maelstrom_consumed, player_t* target )
+{
+  if ( !talent.awakening_storms.ok() )
+  {
+    return;
+  }
+
+  if ( !rng().roll( maelstrom_consumed * talent.awakening_storms->effectN( 3 ).percent() * 0.01 ) )
+  {
+    return;
+  }
+
+  trigger_awakening_storms( target );
+}
+
 void shaman_t::trigger_awakening_storms( const action_state_t* state )
 {
   if ( !talent.awakening_storms.ok() )
@@ -12850,33 +12865,7 @@ void shaman_t::trigger_awakening_storms( const action_state_t* state )
     return;
   }
 
-  if ( spell.tww3_stormbringer_2pc->ok() )
-  {
-    aws_counter++;
-
-    unsigned int tww3_mod_value = static_cast<unsigned int>( specialization() == SHAMAN_ELEMENTAL
-                                                    ? spell.tww3_stormbringer_2pc->effectN( 3 ).base_value()
-                                                    : spell.tww3_stormbringer_2pc->effectN( 4 ).base_value() );
-
-    if ( aws_counter % tww3_mod_value == 0 )
-    {
-      action.set_ascendance->execute_on_target( state->target );
-    }
-  }
-
-  buff.awakening_storms->trigger();
-
-  if ( buff.awakening_storms->stack() == buff.awakening_storms->max_stack() )
-  {
-    if ( buff.tempest->check() )
-    {
-      proc.tempest_awakening_storms->occur();
-    }
-    buff.awakening_storms->expire();
-    buff.tempest->trigger();
-  }
-
-  action.awakening_storms->execute_on_target( state->target );
+  trigger_awakening_storms( state->target );
 }
 
 void shaman_t::trigger_earthsurge( const action_state_t* state, double mul )
@@ -13317,9 +13306,6 @@ void shaman_t::create_buffs()
     ->set_trigger_spell( talent.whirling_elements );
   buff.lightning_shield = make_buff( this, "lightning_shield", find_spell( 192106 ) )
       ->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER);
-
-  buff.awakening_storms = make_buff( this, "awakening_storms", find_spell( 462131 ) )
-    ->set_chance( talent.awakening_storms.ok() ? 1.0 : 0.0 );
 
   buff.totemic_rebound = make_buff( this, "totemic_rebound", find_spell( 458269 ) )
     ->set_default_value_from_effect( 1 );
@@ -14124,7 +14110,7 @@ void shaman_t::init_action_list_enhancement()
     single->add_action( "natures_swiftness,if=buff.tempest.up&tww3_procs_to_asc=1&buff.maelstrom_weapon.stack<=4" );
     single->add_action( "tempest,if=(buff.maelstrom_weapon.stack>=5|buff.natures_swiftness.up)&(buff.tempest.up&tww3_procs_to_asc=1|buff.tempest.max_stack&cooldown.ascendance.remains<=2&talent.ascendance.enabled)&set_bonus.tww3_4pc" );
     single->add_action( "ascendance,if=(dot.flame_shock.ticking|!talent.ashen_catalyst.enabled)" );
-    single->add_action( "tempest,if=((buff.maelstrom_weapon.stack>=5)|(talent.deeply_rooted_elements.enabled&buff.maelstrom_weapon.stack>=5))&(buff.tempest.stack=buff.tempest.max_stack&buff.awakening_storms.stack=3)" );
+    single->add_action( "tempest,if=((buff.maelstrom_weapon.stack>=5)|(talent.deeply_rooted_elements.enabled&buff.maelstrom_weapon.stack>=5))&(buff.tempest.stack=buff.tempest.max_stack)" );
     single->add_action( "elemental_blast,if=buff.maelstrom_weapon.stack>=5&tww3_procs_to_asc=1&!buff.tempest.up" );
     single->add_action( "elemental_blast,if=((!talent.overflowing_maelstrom.enabled&buff.maelstrom_weapon.stack>=5)|(buff.maelstrom_weapon.stack>=9&talent.ascendance.enabled)|(talent.deeply_rooted_elements.enabled&buff.maelstrom_weapon.stack>=8))&(charges_fractional>=1.6|set_bonus.tww2_4pc)" );
     single->add_action( "stormstrike,if=charges_fractional>=2&(buff.maelstrom_weapon.stack<=6)&!buff.tempest.up&tww3_procs_to_asc=1" );
@@ -14307,7 +14293,7 @@ void shaman_t::init_action_list_enhancement()
     funnel->add_action( "surging_totem" );
     funnel->add_action( "ascendance" );
     funnel->add_action( "windstrike,if=(talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>0)|buff.converging_storms.stack=buff.converging_storms.max_stack" );
-    funnel->add_action( "tempest,if=buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack|(buff.maelstrom_weapon.stack>=5&buff.awakening_storms.stack=2)" );
+    funnel->add_action( "tempest,if=buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack|buff.maelstrom_weapon.stack>=5" );
     funnel->add_action( "lightning_bolt,if=variable.flame_shock_saturated&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack&(fight_remains<=12|raid_event.adds.remains<=gcd)" );
     funnel->add_action( "lightning_bolt,if=talent.supercharge.enabled&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack&(variable.expected_lb_funnel>variable.expected_cl_funnel)" );
     funnel->add_action( "chain_lightning,if=(talent.supercharge.enabled&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack)|buff.arc_discharge.up&buff.maelstrom_weapon.stack>=5" );
