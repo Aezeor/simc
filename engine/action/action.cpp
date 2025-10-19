@@ -4854,6 +4854,11 @@ buff_t* action_t::find_debuff( player_t* t ) const
 
 void action_t::add_child( action_t* child )
 {
+  if ( child == nullptr )
+  {
+    return;
+  }
+
   child->parent_dot = target->get_dot( name_str, player );
   child_action.push_back( child );
   if ( child->parent_dot && range > 0 && child->radius > 0 && child->is_aoe() )
