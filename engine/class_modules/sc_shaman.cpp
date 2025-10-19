@@ -1100,9 +1100,6 @@ public:
   timespan_t accumulated_ascendance_extension_time;
   timespan_t ascendance_extension_cap;
 
-  /// Tempest stack count
-  unsigned tempest_counter;
-
   /// Rolling Thunder last trigger
   timespan_t rt_last_trigger;
 
@@ -1337,9 +1334,6 @@ public:
   struct options_t
   {
     rotation_type_e rotation = ROTATION_STANDARD;
-
-    // Tempest options
-    int init_tempest_counter = -1;
 
     // Icefury Deck-of-Cards RNG parametrization
     unsigned icefury_positive = 0U;
@@ -1833,7 +1827,6 @@ public:
       lava_surge_attempts_normalized( 0.0 ),
       accumulated_ascendance_extension_time( timespan_t::from_seconds( 0 ) ),
       ascendance_extension_cap( timespan_t::from_seconds( 0 ) ),
-      tempest_counter( 0U ),
       tracker( this ),
       action(),
       pet( this ),
@@ -4641,24 +4634,6 @@ struct crash_lightning_attack_t : public shaman_attack_t
     strike_type = st;
     set_target( strike_state->target );
     schedule_execute();
-  }
-};
-
-struct icy_edge_attack_t : public shaman_attack_t
-{
-  icy_edge_attack_t( util::string_view n, shaman_t* p, weapon_t* w ) : shaman_attack_t( n, p, p->find_spell( 271920 ) )
-  {
-    weapon                 = w;
-    background             = true;
-    may_proc_ability_procs = false;
-  }
-
-  void init() override
-  {
-    shaman_attack_t::init();
-
-    may_proc_windfury = may_proc_flametongue = may_proc_hot_hand = false;
-    may_proc_stormsurge = false;
   }
 };
 
@@ -11106,11 +11081,6 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
     return expr_t::create_constant( name, rotation_type == options.rotation );
   }
 
-  if ( util::str_compare_ci( splits[ 0 ], "tempest_mael_count" ) )
-  {
-    return make_ref_expr( splits[ 0 ], tempest_counter );
-  }
-
   if ( util::str_compare_ci( splits[ 0 ], "windfury_chance" ) )
   {
     return make_fn_expr( splits[ 0 ], [ this ]() {
@@ -11294,8 +11264,6 @@ void shaman_t::create_options()
     return true;
   } ) );
 
-  add_option( opt_int( "shaman.initial_tempest_counter", options.init_tempest_counter, -1, 299 ) );
-
   add_option( opt_obsoleted( "shaman.chain_harvest_allies" ) );
   add_option( opt_obsoleted( "shaman.dre_flat_chance" ) );
   add_option( opt_obsoleted( "shaman.dre_forced_failures" ) );
@@ -11363,8 +11331,6 @@ void shaman_t::copy_from( player_t* source )
   raptor_glyph = p->raptor_glyph;
   options.rotation = p->options.rotation;
   options.earthquake_spell_power_coefficient = p->options.earthquake_spell_power_coefficient;
-
-  options.init_tempest_counter = p->options.init_tempest_counter;
 
   options.icefury_positive = p->options.icefury_positive;
   options.icefury_total = p->options.icefury_total;
@@ -12863,14 +12829,11 @@ void shaman_t::trigger_tempest( T resource_count )
     return;
   }
 
-  unsigned tempest_threshold = as<unsigned>( talent.tempest->effectN(
-    specialization() == SHAMAN_ELEMENTAL ? 1 : 2 ).base_value() );
+  double tempest_chance =talent.tempest->effectN(
+    specialization() == SHAMAN_ELEMENTAL ? 1 : 2 ).percent() * 0.01 * 0.01 * resource_count;
 
-  tempest_counter += as<unsigned>( resource_count );
-
-  if ( tempest_counter >= tempest_threshold )
+  if ( rng().roll( tempest_chance ) )
   {
-    tempest_counter -= tempest_threshold;
     buff.tempest->trigger();
   }
 }
@@ -14161,8 +14124,8 @@ void shaman_t::init_action_list_enhancement()
     single->add_action( "natures_swiftness,if=buff.tempest.up&tww3_procs_to_asc=1&buff.maelstrom_weapon.stack<=4" );
     single->add_action( "tempest,if=(buff.maelstrom_weapon.stack>=5|buff.natures_swiftness.up)&(buff.tempest.up&tww3_procs_to_asc=1|buff.tempest.max_stack&cooldown.ascendance.remains<=2&talent.ascendance.enabled)&set_bonus.tww3_4pc" );
     single->add_action( "ascendance,if=(dot.flame_shock.ticking|!talent.ashen_catalyst.enabled)" );
-    single->add_action( "tempest,if=((buff.maelstrom_weapon.stack>=5)|(talent.deeply_rooted_elements.enabled&buff.maelstrom_weapon.stack>=5))&(buff.tempest.stack=buff.tempest.max_stack&(tempest_mael_count>30|buff.awakening_storms.stack=3))" );
-    single->add_action( "elemental_blast,if=buff.maelstrom_weapon.stack>=5&tww3_procs_to_asc=1&((tempest_mael_count+buff.maelstrom_weapon.stack)>=40)&!buff.tempest.up" );
+    single->add_action( "tempest,if=((buff.maelstrom_weapon.stack>=5)|(talent.deeply_rooted_elements.enabled&buff.maelstrom_weapon.stack>=5))&(buff.tempest.stack=buff.tempest.max_stack&buff.awakening_storms.stack=3)" );
+    single->add_action( "elemental_blast,if=buff.maelstrom_weapon.stack>=5&tww3_procs_to_asc=1&!buff.tempest.up" );
     single->add_action( "elemental_blast,if=((!talent.overflowing_maelstrom.enabled&buff.maelstrom_weapon.stack>=5)|(buff.maelstrom_weapon.stack>=9&talent.ascendance.enabled)|(talent.deeply_rooted_elements.enabled&buff.maelstrom_weapon.stack>=8))&(charges_fractional>=1.6|set_bonus.tww2_4pc)" );
     single->add_action( "stormstrike,if=charges_fractional>=2&(buff.maelstrom_weapon.stack<=6)&!buff.tempest.up&tww3_procs_to_asc=1" );
     single->add_action( "tempest,if=(buff.maelstrom_weapon.stack>=9&talent.ascendance.enabled)|(talent.deeply_rooted_elements.enabled&buff.maelstrom_weapon.stack>=8)" );
@@ -14171,7 +14134,7 @@ void shaman_t::init_action_list_enhancement()
     single->add_action( "windstrike,if=!talent.thorims_invocation.enabled" );
     single->add_action( "stormstrike,if=!buff.tempest.up&tww3_procs_to_asc=1" );
     single->add_action( "crash_lightning,if=(buff.doom_winds.up&buff.electrostatic_wager.stack>1)|buff.electrostatic_wager.stack>8" );
-    single->add_action( "voltaic_blaze,if=tempest_mael_count>=30&tww3_procs_to_asc=1" );
+    single->add_action( "voltaic_blaze,if=tww3_procs_to_asc=1" );
     single->add_action( "stormstrike,if=buff.doom_winds.up|buff.stormblast.stack>0" );
     single->add_action( "crash_lightning,if=set_bonus.tww2_4pc" );
     single->add_action( "voltaic_blaze,if=dot.flame_shock.remains<=4" );
@@ -14344,7 +14307,7 @@ void shaman_t::init_action_list_enhancement()
     funnel->add_action( "surging_totem" );
     funnel->add_action( "ascendance" );
     funnel->add_action( "windstrike,if=(talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>0)|buff.converging_storms.stack=buff.converging_storms.max_stack" );
-    funnel->add_action( "tempest,if=buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack|(buff.maelstrom_weapon.stack>=5&(tempest_mael_count>30|buff.awakening_storms.stack=2))" );
+    funnel->add_action( "tempest,if=buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack|(buff.maelstrom_weapon.stack>=5&buff.awakening_storms.stack=2)" );
     funnel->add_action( "lightning_bolt,if=variable.flame_shock_saturated&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack&(fight_remains<=12|raid_event.adds.remains<=gcd)" );
     funnel->add_action( "lightning_bolt,if=talent.supercharge.enabled&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack&(variable.expected_lb_funnel>variable.expected_cl_funnel)" );
     funnel->add_action( "chain_lightning,if=(talent.supercharge.enabled&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack)|buff.arc_discharge.up&buff.maelstrom_weapon.stack>=5" );
@@ -14640,19 +14603,6 @@ void shaman_t::reset()
 
   accumulated_ascendance_extension_time = timespan_t::from_seconds( 0.0 );
   ascendance_extension_cap = timespan_t::from_seconds( 0.0 );
-
-  unsigned tempest_threshold = as<unsigned>( talent.tempest->effectN(
-    specialization() == SHAMAN_ELEMENTAL ? 1 : 2 ).base_value() );
-
-  if ( options.init_tempest_counter == -1 )
-  {
-    tempest_counter = 0U;
-  }
-  else
-  {
-    tempest_counter = std::min( as<unsigned>( options.init_tempest_counter ),
-      tempest_threshold - 1 );
-  }
 
   ls_counter = 0U;
   dre_attempts = 0U;
