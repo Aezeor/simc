@@ -1392,7 +1392,6 @@ public:
     cooldown_t* sundering;
     cooldown_t* totemic_recall;
     cooldown_t* ancestral_swiftness;
-    cooldown_t* arc_discharge;
 
     cooldown_t* tww3_enh_4pc_icd; // Elemental Overflow ICD for presumably consuming the buff
   } cooldown;
@@ -1859,7 +1858,6 @@ public:
     cooldown.sundering          = get_cooldown( "sundering" );
     cooldown.totemic_recall     = get_cooldown( "totemic_recall" );
     cooldown.ancestral_swiftness= get_cooldown( "ancestral_swiftness" );
-    cooldown.arc_discharge      = get_cooldown( "arc_discharge" );
     cooldown.tww3_enh_4pc_icd   = get_cooldown( "elemental_overflow" );
 
     melee_mh      = nullptr;
@@ -2336,7 +2334,6 @@ public:
 
   bool affected_by_stormkeeper_cast_time;
   bool affected_by_stormkeeper_damage;
-  bool affected_by_arc_discharge;
 
   bool affected_by_storm_frenzy;
 
@@ -2380,7 +2377,6 @@ public:
       affected_by_ans_cast_time( false ),
       affected_by_stormkeeper_cast_time( false ),
       affected_by_stormkeeper_damage( false ),
-      affected_by_arc_discharge( false ),
       affected_by_storm_frenzy( false ),
       affected_by_elemental_unity_fe_da( false ),
       affected_by_elemental_unity_fe_ta( false ),
@@ -2432,8 +2428,6 @@ public:
                            ab::data().affected_by( player->buff.ancestral_swiftness->data().effectN( 3 ) );
     affected_by_ns_cast_time = ab::data().affected_by( player->talent.natures_swiftness->effectN( 2 ) );
     affected_by_ans_cast_time = ab::data().affected_by( player->buff.ancestral_swiftness->data().effectN( 2 ) );
-
-    affected_by_arc_discharge = ab::data().affected_by( player->buff.arc_discharge->data().effectN( 1 ) );
 
     affected_by_storm_frenzy = ab::data().affected_by( player->buff.storm_frenzy->data().effectN( 1 ) );
 
@@ -2655,11 +2649,6 @@ public:
   {
     double m = ab::action_da_multiplier();
 
-    if ( affected_by_arc_discharge && p()->buff.arc_discharge->check() )
-    {
-      m *= 1.0 + p()->buff.arc_discharge->value();
-    }
-
     if ( ( affected_by_elemental_unity_fe_da && p()->talent.elemental_unity.ok() &&
            p()->buff.fire_elemental->check() ) ||
          ( affected_by_elemental_unity_fe_da && p()->talent.elemental_unity.ok() &&
@@ -2754,11 +2743,6 @@ public:
     if ( affected_by_ans_cast_time && p()->buff.ancestral_swiftness->check() && !ab::background )
     {
       mul *= 1.0 + p()->buff.ancestral_swiftness->data().effectN( 2 ).percent();
-    }
-
-    if ( affected_by_arc_discharge && p()->buff.arc_discharge->check() && !ab::background)
-    {
-      mul *= 1.0 + p()->buff.arc_discharge->data().effectN( 1 ).percent();
     }
 
     if ( affected_by_storm_frenzy && p()->buff.storm_frenzy->check() && !ab::background)
@@ -7513,8 +7497,6 @@ struct lightning_bolt_t : public shaman_spell_t
 
     p()->trigger_thunderstrike_ward( execute_state );
 
-    p()->trigger_arc_discharge( execute_state );
-
     p()->trigger_totemic_rebound( execute_state );
 
     if ( exec_type == spell_variant::NORMAL || exec_type == spell_variant::THORIMS_INVOCATION )
@@ -10486,11 +10468,9 @@ struct tempest_t : public shaman_spell_t
       p()->buff.storm_swell->trigger();
     }
 
-    if ( p()->talent.arc_discharge.ok() )
+    if ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.arc_discharge.ok() )
     {
-      p()->buff.arc_discharge->trigger(
-        p()->specialization() == SHAMAN_ENHANCEMENT ? 1 : p()->buff.arc_discharge->max_stack()
-      );
+      p()->cooldown.stormkeeper->reset( false );
     }
 
     if ( p()->talent.thorims_invocation.ok() && exec_type == spell_variant::NORMAL )
@@ -11190,7 +11170,6 @@ void shaman_t::create_actions()
 
   if ( talent.arc_discharge.ok() && specialization() == SHAMAN_ENHANCEMENT )
   {
-    action.lightning_bolt_ad = new lightning_bolt_t( this, spell_variant::ARC_DISCHARGE );
     action.chain_lightning_ad = new chain_lightning_t( this, spell_variant::ARC_DISCHARGE );
   }
 
@@ -13074,12 +13053,12 @@ void shaman_t::trigger_ancestor( ancestor_cast cast, const action_state_t* state
 
 void shaman_t::trigger_arc_discharge( const action_state_t* state )
 {
-  if ( !talent.arc_discharge.ok() || !buff.arc_discharge->up() )
+  if ( specialization() != SHAMAN_ENHANCEMENT )
   {
     return;
   }
 
-  if ( cooldown.arc_discharge->down() )
+  if ( !talent.arc_discharge.ok() || !buff.arc_discharge->up() )
   {
     return;
   }
@@ -13092,39 +13071,22 @@ void shaman_t::trigger_arc_discharge( const action_state_t* state )
     return;
   }
 
-  if ( specialization() == SHAMAN_ENHANCEMENT )
+  if ( buff.arc_discharge->consume( state->action, 1 ) )
   {
-    action_t* action_ = nullptr;
-    // Chain Lightning
-    if ( state->action->id == 188443 )
-    {
-      action_ = action.chain_lightning_ad;
-    }
-    // Lightning Bolt
-    else if ( state->action->id == 188196 )
-    {
-      action_ = action.lightning_bolt_ad;
-    }
-
-    assert( action_ );
-
     // Arc Discharge is capable of self-proccing; experimentally verified in game to roughly 3/4 of
     // re-triggering within the ICD (400ms), vs 1/4 of re-triggering outside of the ICD in which
     // case the Arc Discharge Lightning Bolt will consume the remaining stack of Arc Discharge and
     // trigger again.
     make_event( *sim, rng().range( 325_ms, 425_ms ),
-      [ action_, t = state->target ]() {
+      [ this, t = state->target ]() {
         if ( t->is_sleeping() )
         {
           return;
         }
 
-        action_->execute_on_target( t );
+        action.chain_lightning_ad->execute_on_target( t );
     } );
   }
-
-  buff.arc_discharge->decrement();
-  cooldown.arc_discharge->start( buff.arc_discharge->data().internal_cooldown() );
 }
 
 void shaman_t::trigger_lively_totems( const action_state_t* state )
@@ -13283,10 +13245,8 @@ void shaman_t::create_buffs()
     ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
-  buff.arc_discharge = make_buff( this, "arc_discharge", find_spell( 455097 ) )
-    ->set_max_stack( find_spell( 455097 )->max_stacks() )
-    ->set_default_value_from_effect( 2 )
-    ->set_cooldown( 0_ms ); // Handled by shaman_t::trigger_arc_discharge
+  buff.arc_discharge = make_buff( this, "arc_discharge", find_spell( 470532 ) )
+    ->set_trigger_spell( talent.arc_discharge );
 
   buff.storm_swell = make_buff( this, "storm_swell", find_spell( 455089 ) )
     ->set_default_value_from_effect_type(A_MOD_MASTERY_PCT)
