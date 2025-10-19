@@ -13432,7 +13432,7 @@ void death_knight_t::spell_lookups()
   runeforge_spell.sanguination_heal            = conditional_spell_lookup( has_runeforge( RUNEFORGE_SANGUINATION ), 326808 );
   runeforge_spell.spellwarding_absorb          = conditional_spell_lookup( has_runeforge( RUNEFORGE_SPELLWARDING ), 326855 );
   runeforge_spell.stoneskin_gargoyle           = conditional_spell_lookup( has_runeforge( RUNEFORGE_STONESKIN_GARGOYLE ), 62157 );
-  runeforge_spell.unholy_strength              = conditional_spell_lookup( has_runeforge( RUNEFORGE_UNENDING_THIRST ), 53365 );
+  runeforge_spell.unholy_strength              = conditional_spell_lookup( has_runeforge( RUNEFORGE_FALLEN_CRUSADER ), 53365 );
 
   // Diseases
   spell.blood_plague =
