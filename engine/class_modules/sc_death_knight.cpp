@@ -212,6 +212,13 @@ enum runeforges_e
   RUNEFORGE_SPELLWARDING,
   RUNEFORGE_STONESKIN_GARGOYLE,
   RUNEFORGE_UNENDING_THIRST,
+  RUNEFORGE_ID_APOCALYPSE = 6245,
+  RUNEFORGE_ID_FALLEN_CRUSADER = 3368,
+  RUNEFORGE_ID_RAZORICE        = 3370,
+  RUNEFORGE_ID_SANGUINATION    = 6241,
+  RUNEFORGE_ID_SPELLWARDING    = 6242,
+  RUNEFORGE_ID_STONESKIN_GARGOYLE = 3847,
+  RUNEFORGE_ID_UNENDING_THIRST    = 6244,
 };
 
 enum drw_actions_e
@@ -752,7 +759,6 @@ public:
     propagate_const<buff_t*> lichborne;  // NYI
     propagate_const<buff_t*> death_and_decay;
     propagate_const<buff_t*> spellwarding;
-    propagate_const<buff_t*> unholy_strength;
 
     // Blood
     absorb_buff_t* blood_shield;
@@ -1881,6 +1887,7 @@ public:
   unsigned replenish_rune( unsigned n, gain_t* gain = nullptr );
   // Shared
   bool has_runeforge( runeforges_e rf ) const;
+  void set_runeforges();
   modified_spell_data_t* get_modified_spell( const spell_data_t* );
   void spell_lookups();
   void set_icds();
@@ -11174,17 +11181,9 @@ void runeforge::fallen_crusader( special_effect_t& effect )
   }
 
   death_knight_t* dk = debug_cast<death_knight_t*>( effect.player );
-  buff_t* buff       = dk->buffs.unholy_strength;
-
-  switch ( effect.item->slot )
-  {
-    case SLOT_MAIN_HAND:
-      dk->mh_runeforge = RUNEFORGE_FALLEN_CRUSADER;
-      break;
-    case SLOT_OFF_HAND:
-      dk->oh_runeforge = RUNEFORGE_FALLEN_CRUSADER;
-      break;
-  }
+  buff_t* buff       = make_buff( dk, "unholy_strength", dk->runeforge_spell.unholy_strength )
+                     ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+                     ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
 
   effect.custom_buff    = buff;
   effect.execute_action = get_action<fallen_crusader_heal_t>( "unholy_strength", dk );
@@ -11209,12 +11208,10 @@ void runeforge::razorice( special_effect_t& effect )
     case SLOT_MAIN_HAND:
       effect.execute_action = get_action<razorice_attack_t>( "razorice_mh", dk );
       effect.proc_flags_    = PF_MAINHAND | PF_MELEE_ABILITY | PF_MELEE;
-      dk->mh_runeforge      = RUNEFORGE_RAZORICE;
       break;
     case SLOT_OFF_HAND:
       effect.execute_action = get_action<razorice_attack_t>( "razorice_oh", dk );
       effect.proc_flags_    = PF_OFFHAND | PF_MELEE_ABILITY | PF_MELEE;
-      dk->oh_runeforge      = RUNEFORGE_RAZORICE;
       break;
     default:
       break;
@@ -11230,24 +11227,6 @@ void runeforge::stoneskin_gargoyle( special_effect_t& effect )
     effect.type = SPECIAL_EFFECT_NONE;
     return;
   }
-
-  death_knight_t* dk = debug_cast<death_knight_t*>( effect.player );
-
-  switch ( effect.item->slot )
-  {
-    case SLOT_MAIN_HAND:
-      dk->mh_runeforge = RUNEFORGE_STONESKIN_GARGOYLE;
-      break;
-    case SLOT_OFF_HAND:
-      dk->oh_runeforge = RUNEFORGE_STONESKIN_GARGOYLE;
-      break;
-  }
-
-  dk->base.armor_multiplier *= 1.0 + dk->runeforge_spell.stoneskin_gargoyle->effectN( 1 ).percent();
-  for ( auto attribute : { ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT } )
-  {
-    dk->base.attribute_multiplier[ attribute ] *= 1.0 + dk->runeforge_spell.stoneskin_gargoyle->effectN( 2 ).percent();
-  }
 }
 
 void runeforge::apocalypse( special_effect_t& effect )
@@ -11256,17 +11235,6 @@ void runeforge::apocalypse( special_effect_t& effect )
   {
     effect.type = SPECIAL_EFFECT_NONE;
     return;
-  }
-
-  death_knight_t* dk = debug_cast< death_knight_t* >( effect.player );
-  switch( effect.item->slot )
-  {
-    case SLOT_MAIN_HAND:
-      dk->mh_runeforge = RUNEFORGE_APOCALYPSE;
-      break;
-    case SLOT_OFF_HAND:
-      dk->oh_runeforge = RUNEFORGE_APOCALYPSE;
-      break;
   }
 }
 
@@ -11279,16 +11247,6 @@ void runeforge::sanguination( special_effect_t& effect )
   }
 
   death_knight_t* dk = debug_cast<death_knight_t*>( effect.player );
-
-  switch ( effect.item->slot )
-  {
-    case SLOT_MAIN_HAND:
-      dk->mh_runeforge = RUNEFORGE_SANGUINATION;
-      break;
-    case SLOT_OFF_HAND:
-      dk->oh_runeforge = RUNEFORGE_SANGUINATION;
-      break;
-  }
 
   effect.player->callbacks.register_callback_trigger_function(
       effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
@@ -11312,16 +11270,6 @@ void runeforge::spellwarding( special_effect_t& effect )
 
   death_knight_t* dk = debug_cast<death_knight_t*>( effect.player );
 
-  switch( effect.item->slot )
-  {
-    case SLOT_MAIN_HAND:
-      dk->mh_runeforge = RUNEFORGE_SPELLWARDING;
-      break;
-    case SLOT_OFF_HAND:
-      dk->oh_runeforge = RUNEFORGE_SPELLWARDING;
-      break;
-  }
-
   effect.execute_action = get_action<spellwarding_absorb_t>( "rune_of_spellwarding", dk );
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -11334,17 +11282,6 @@ void runeforge::unending_thirst( special_effect_t& effect )
   {
     effect.type = SPECIAL_EFFECT_NONE;
     return;
-  }
-
-  death_knight_t* dk = debug_cast<death_knight_t*>( effect.player );
-  switch( effect.item->slot )
-  {
-    case SLOT_MAIN_HAND:
-      dk->mh_runeforge = RUNEFORGE_UNENDING_THIRST;
-      break;
-    case SLOT_OFF_HAND:
-      dk->oh_runeforge = RUNEFORGE_UNENDING_THIRST;
-      break;
   }
 }
 
@@ -12339,6 +12276,68 @@ bool death_knight_t::has_runeforge( runeforges_e rf ) const
   return has_runeforge;
 }
 
+void death_knight_t::set_runeforges()
+{
+  switch ( items[ SLOT_MAIN_HAND ].parsed.enchant_id )
+  {
+    case RUNEFORGE_ID_APOCALYPSE:
+      mh_runeforge = RUNEFORGE_APOCALYPSE;
+      break;
+    case RUNEFORGE_ID_FALLEN_CRUSADER:
+      mh_runeforge = RUNEFORGE_FALLEN_CRUSADER;
+      break;
+    case RUNEFORGE_ID_RAZORICE:
+      mh_runeforge = RUNEFORGE_RAZORICE;
+      break;
+    case RUNEFORGE_ID_SANGUINATION:
+      mh_runeforge = RUNEFORGE_SANGUINATION;
+      break;
+    case RUNEFORGE_ID_SPELLWARDING:
+      mh_runeforge = RUNEFORGE_SPELLWARDING;
+      break;
+    case RUNEFORGE_ID_STONESKIN_GARGOYLE:
+      mh_runeforge = RUNEFORGE_STONESKIN_GARGOYLE;
+      break;
+    case RUNEFORGE_ID_UNENDING_THIRST:
+      mh_runeforge = RUNEFORGE_UNENDING_THIRST;
+      break;
+    default:
+      mh_runeforge = RUNEFORGE_NONE;
+      break;
+  }
+
+  if ( off_hand_weapon.type != WEAPON_NONE )
+  {
+    switch ( items[ SLOT_OFF_HAND ].parsed.enchant_id )
+    {
+      case RUNEFORGE_ID_APOCALYPSE:
+        oh_runeforge = RUNEFORGE_APOCALYPSE;
+        break;
+      case RUNEFORGE_ID_FALLEN_CRUSADER:
+        oh_runeforge = RUNEFORGE_FALLEN_CRUSADER;
+        break;
+      case RUNEFORGE_ID_RAZORICE:
+        oh_runeforge = RUNEFORGE_RAZORICE;
+        break;
+      case RUNEFORGE_ID_SANGUINATION:
+        oh_runeforge = RUNEFORGE_SANGUINATION;
+        break;
+      case RUNEFORGE_ID_SPELLWARDING:
+        oh_runeforge = RUNEFORGE_SPELLWARDING;
+        break;
+      case RUNEFORGE_ID_STONESKIN_GARGOYLE:
+        oh_runeforge = RUNEFORGE_STONESKIN_GARGOYLE;
+        break;
+      case RUNEFORGE_ID_UNENDING_THIRST:
+        oh_runeforge = RUNEFORGE_UNENDING_THIRST;
+        break;
+      default:
+        oh_runeforge = RUNEFORGE_NONE;
+        break;
+    }
+  }
+}
+
 // ==========================================================================
 // Death Knight Character Definition
 // ==========================================================================
@@ -13041,7 +13040,7 @@ void death_knight_t::init_base_stats()
 void death_knight_t::init_spells()
 {
   player_t::init_spells();
-
+  set_runeforges();
   // Specialization
 
   // Generic baselines
@@ -13257,43 +13256,43 @@ void death_knight_t::init_spells()
   talent.unholy.putrefy         = find_talent_spell( talent_tree::SPECIALIZATION, "Putrefy" );
   talent.unholy.doomed_bidding  = find_talent_spell( talent_tree::SPECIALIZATION, "Doomed Bidding" );
   // Row 4
-  talent.unholy.foul_infections = find_talent_spell( talent_tree::SPECIALIZATION, "Foul Infections" );
-  talent.unholy.plague_mastery  = find_talent_spell( talent_tree::SPECIALIZATION, "Plague Mastery" );
-  talent.unholy.grave_mastery   = find_talent_spell( talent_tree::SPECIALIZATION, "Grave Mastery" );
+  talent.unholy.foul_infections     = find_talent_spell( talent_tree::SPECIALIZATION, "Foul Infections" );
+  talent.unholy.plague_mastery      = find_talent_spell( talent_tree::SPECIALIZATION, "Plague Mastery" );
+  talent.unholy.grave_mastery       = find_talent_spell( talent_tree::SPECIALIZATION, "Grave Mastery" );
   talent.unholy.dark_transformation = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Transformation" );
   // Row 5
-  talent.unholy.morbidity = find_talent_spell( talent_tree::SPECIALIZATION, "Morbidity" );
-  talent.unholy.superstrain = find_talent_spell( talent_tree::SPECIALIZATION, "Superstrain" );
-  talent.unholy.rapid_variant = find_talent_spell( talent_tree::SPECIALIZATION, "Rapid Variant" );
+  talent.unholy.morbidity         = find_talent_spell( talent_tree::SPECIALIZATION, "Morbidity" );
+  talent.unholy.superstrain       = find_talent_spell( talent_tree::SPECIALIZATION, "Superstrain" );
+  talent.unholy.rapid_variant     = find_talent_spell( talent_tree::SPECIALIZATION, "Rapid Variant" );
   talent.unholy.soul_reaper       = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Reaper" );
-  talent.unholy.outnumber     = find_talent_spell( talent_tree::SPECIALIZATION, "Outnumber" );
-  talent.unholy.march_of_madness = find_talent_spell( talent_tree::SPECIALIZATION, "March of Madness" );
+  talent.unholy.outnumber         = find_talent_spell( talent_tree::SPECIALIZATION, "Outnumber" );
+  talent.unholy.march_of_madness  = find_talent_spell( talent_tree::SPECIALIZATION, "March of Madness" );
   talent.unholy.magus_of_the_dead = find_talent_spell( talent_tree::SPECIALIZATION, "Magus of the Dead" );
   talent.unholy.infected_claws    = find_talent_spell( talent_tree::SPECIALIZATION, "Infected Claws" );
   // Row 6
-  talent.unholy.ebon_fever = find_talent_spell( talent_tree::SPECIALIZATION, "Ebon Fever" );
+  talent.unholy.ebon_fever          = find_talent_spell( talent_tree::SPECIALIZATION, "Ebon Fever" );
   talent.unholy.coil_of_devastation = find_talent_spell( talent_tree::SPECIALIZATION, "Coil of Devastation" );
   talent.unholy.harbinger_of_doom   = find_talent_spell( talent_tree::SPECIALIZATION, "Harbinger of Doom" );
   talent.unholy.putrid_echoes       = find_talent_spell( talent_tree::SPECIALIZATION, "Putrid Echoes" );
   talent.unholy.menacing_magus      = find_talent_spell( talent_tree::SPECIALIZATION, "Menacing Magus" );
   talent.unholy.ghoulish_frenzy     = find_talent_spell( talent_tree::SPECIALIZATION, "Ghoulish Frenzy" );
   // Row 7
-  talent.unholy.blightburst = find_talent_spell( talent_tree::SPECIALIZATION, "Blightburst" );
+  talent.unholy.blightburst          = find_talent_spell( talent_tree::SPECIALIZATION, "Blightburst" );
   talent.unholy.festering_corruption = find_talent_spell( talent_tree::SPECIALIZATION, "Festering Corruption" );
   talent.unholy.unholy_devotion      = find_talent_spell( talent_tree::SPECIALIZATION, "Unholy Devotion" );
   talent.unholy.all_will_serve       = find_talent_spell( talent_tree::SPECIALIZATION, "All Will Serve" );
   // Row 8
-  talent.unholy.blightfall = find_talent_spell( talent_tree::SPECIALIZATION, "Blightfall" );
-  talent.unholy.reaping = find_talent_spell( talent_tree::SPECIALIZATION, "Reaping" );
+  talent.unholy.blightfall       = find_talent_spell( talent_tree::SPECIALIZATION, "Blightfall" );
+  talent.unholy.reaping          = find_talent_spell( talent_tree::SPECIALIZATION, "Reaping" );
   talent.unholy.army_of_the_dead = find_talent_spell( talent_tree::SPECIALIZATION, "Army of the Dead" );
   // Row 9
-  talent.unholy.scourging = find_talent_spell( talent_tree::SPECIALIZATION, "Scourging" );
-  talent.unholy.ancient_runes = find_talent_spell( talent_tree::SPECIALIZATION, "Ancient Runes" );
-  talent.unholy.unholy_aura   = find_talent_spell( talent_tree::SPECIALIZATION, "Unholy Aura" );
+  talent.unholy.scourging             = find_talent_spell( talent_tree::SPECIALIZATION, "Scourging" );
+  talent.unholy.ancient_runes         = find_talent_spell( talent_tree::SPECIALIZATION, "Ancient Runes" );
+  talent.unholy.unholy_aura           = find_talent_spell( talent_tree::SPECIALIZATION, "Unholy Aura" );
   talent.unholy.commander_of_the_dead = find_talent_spell( talent_tree::SPECIALIZATION, "Commander of the Dead" );
   // Row 10
-  talent.unholy.festering_scythe = find_talent_spell( talent_tree::SPECIALIZATION, "Festering Scythe" );
-  talent.unholy.reanimation      = find_talent_spell( talent_tree::SPECIALIZATION, "Reanimation" );
+  talent.unholy.festering_scythe  = find_talent_spell( talent_tree::SPECIALIZATION, "Festering Scythe" );
+  talent.unholy.reanimation       = find_talent_spell( talent_tree::SPECIALIZATION, "Reanimation" );
   talent.unholy.raise_abomination = find_talent_spell( talent_tree::SPECIALIZATION, "Raise Abomination" );
   talent.unholy.summon_gargoyle   = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Gargoyle" );
   // Apex
@@ -13378,6 +13377,18 @@ void death_knight_t::init_spells()
   if ( main_hand_weapon.group() != WEAPON_2H )
     deregister_passive_spell( spec.might_of_the_frozen_wastes );
 
+  if ( has_runeforge( RUNEFORGE_STONESKIN_GARGOYLE ) )
+  {
+    parse_passive_effects( runeforge_spell.stoneskin_gargoyle );
+    if ( mh_runeforge == RUNEFORGE_STONESKIN_GARGOYLE && oh_runeforge == RUNEFORGE_STONESKIN_GARGOYLE )
+    {
+      register_passive_effect_override( runeforge_spell.stoneskin_gargoyle->effectN( 1 ),
+                                        runeforge_spell.stoneskin_gargoyle->effectN( 1 ).base_value() * 2 );
+      register_passive_effect_override( runeforge_spell.stoneskin_gargoyle->effectN( 2 ),
+                                        runeforge_spell.stoneskin_gargoyle->effectN( 2 ).base_value() * 2 );
+    }
+  }
+
   // Handle Rune Regen Rate effects manually due to the unique nature of runes
   deregister_passive_spell( talent.frost.runic_command );
 
@@ -13411,17 +13422,17 @@ void death_knight_t::spell_lookups()
   spell.blood_draw_cooldown     = conditional_spell_lookup( talent.blood_draw.ok(), 374609 );
 
   // Runeforges
-  runeforge_spell.apocalypse_death_debuff      = find_spell( 327095 );
-  runeforge_spell.apocalypse_famine_debuff     = find_spell( 327092 );
-  runeforge_spell.apocalypse_war_debuff        = find_spell( 327096 );
-  runeforge_spell.apocalypse_pestilence_damage = find_spell( 327093 );
-  runeforge_spell.razorice_damage              = find_spell( 50401 );
-  runeforge_spell.razorice_debuff              = find_spell( 51714 );
-  runeforge_spell.sanguination_cooldown        = find_spell( 326809 );
-  runeforge_spell.sanguination_heal            = find_spell( 326808 );
-  runeforge_spell.spellwarding_absorb          = find_spell( 326855 );
-  runeforge_spell.stoneskin_gargoyle           = find_spell( 62157 );
-  runeforge_spell.unholy_strength              = find_spell( 53365 );
+  runeforge_spell.apocalypse_death_debuff      = conditional_spell_lookup( has_runeforge( RUNEFORGE_APOCALYPSE ), 327095 );
+  runeforge_spell.apocalypse_famine_debuff     = conditional_spell_lookup( has_runeforge( RUNEFORGE_APOCALYPSE ), 327092 );
+  runeforge_spell.apocalypse_war_debuff        = conditional_spell_lookup( has_runeforge( RUNEFORGE_APOCALYPSE ), 327096 );
+  runeforge_spell.apocalypse_pestilence_damage = conditional_spell_lookup( has_runeforge( RUNEFORGE_APOCALYPSE ), 327093 );
+  runeforge_spell.razorice_damage              = conditional_spell_lookup( has_runeforge( RUNEFORGE_RAZORICE ), 50401 );
+  runeforge_spell.razorice_debuff              = conditional_spell_lookup( has_runeforge( RUNEFORGE_RAZORICE ), 51714 );
+  runeforge_spell.sanguination_cooldown        = conditional_spell_lookup( has_runeforge( RUNEFORGE_SANGUINATION ), 326809 );
+  runeforge_spell.sanguination_heal            = conditional_spell_lookup( has_runeforge( RUNEFORGE_SANGUINATION ), 326808 );
+  runeforge_spell.spellwarding_absorb          = conditional_spell_lookup( has_runeforge( RUNEFORGE_SPELLWARDING ), 326855 );
+  runeforge_spell.stoneskin_gargoyle           = conditional_spell_lookup( has_runeforge( RUNEFORGE_STONESKIN_GARGOYLE ), 62157 );
+  runeforge_spell.unholy_strength              = conditional_spell_lookup( has_runeforge( RUNEFORGE_UNENDING_THIRST ), 53365 );
 
   // Diseases
   spell.blood_plague =
@@ -13965,10 +13976,6 @@ void death_knight_t::create_buffs()
   buffs.runic_corruption =
       make_fallback<runic_corruption_buff_t>( specialization() == DEATH_KNIGHT_UNHOLY, this,
                                               "runic_corruption", spell.runic_corruption );
-
-  buffs.unholy_strength = make_buff( this, "unholy_strength", find_spell( 53365 ) )
-                              ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-                              ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
 
 
   // Rider of the Apocalypse
