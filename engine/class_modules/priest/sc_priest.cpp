@@ -2284,7 +2284,7 @@ void priest_t::create_procs()
       get_proc( "Power of the Dark Side from Dark Indulgence lost to overflow" );
   procs.expiation_lost_no_dot = get_proc( "Missed chance for expiation to consume a DoT" );
   // Shadow - Talents
-  procs.shadowy_apparition_swp          = get_proc( "Shadowy Apparition from Shadow Word: Pain" );
+  procs.shadowy_apparition_swp          = get_proc( "Shadowy Apparition from Tormented Spirits" );
   procs.shadowy_apparition_swm          = get_proc( "Shadowy Apparition from Shadow Word: Madness" );
   procs.shadowy_apparition_mb           = get_proc( "Shadowy Apparition from Mind Blast" );
   procs.shadowy_apparition_mfi          = get_proc( "Shadowy Apparition from Mind Flay: Insanity" );
