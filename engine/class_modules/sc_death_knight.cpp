@@ -10,7 +10,7 @@
 // Automate Rune energize in death_knight_action_t::execute() instead of per spell overrides
 // Look into Death Strike OH handling (p -> dual_wield()?) and see if it can apply to other DW attacks
 // Unholy:
-// - Predict the first two Festering wounds on FS and use reaction time on the third?
+// 
 // Blood:
 // - Check that VB's absorb increase is correctly implemented
 // - Healing from Consumption damage done
@@ -739,7 +739,6 @@ public:
 
   // Counters
   unsigned int km_proc_attempts;               // critical auto attacks since the last KM proc
-  unsigned int festering_wounds_target_count;  // cached value of the current number of enemies affected by FW
   unsigned int
       bone_shield_charges_consumed;  // Counts how many bone shield charges have been consumed for DF1 4pc blood
   unsigned int active_riders;        // Number of active Riders of the Apocalypse pets
@@ -1758,7 +1757,6 @@ public:
       soul_reaper_castable( false ),
       runeforge_expression_warning( false ),
       km_proc_attempts( 0 ),
-      festering_wounds_target_count( 0 ),
       bone_shield_charges_consumed( 0 ),
       active_riders( 0 ),
       undeath_tl(),
@@ -10881,7 +10879,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     return p()->buffs.clawing_shadows->check() ? aoe + as<int>( p()->buffs.clawing_shadows->check_stack_value() ) : aoe;
   }
 
-  std::vector<player_t*>& target_list() const override  // smart targeting to targets with wounds when cleaving SS
+  std::vector<player_t*>& target_list() const override
   {
     std::vector<player_t*>& current_targets = death_knight_melee_attack_t::target_list();
     // Don't bother ordering the list if all the valid targets will be hit
@@ -12849,11 +12847,6 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( std::string_view name
     if ( util::str_compare_ci( splits[ 1 ], "disable_aotd" ) && splits.size() == 2 )
       return expr_t::create_constant( "disable_aotd_expression", this->options.disable_aotd );
 
-    // Returns the number of targets currently affected by the festering wound debuff
-    if ( util::str_compare_ci( splits[ 1 ], "fwounded_targets" ) && splits.size() == 2 )
-      return make_fn_expr( "festering_wounds_target_count_expression",
-                           [ this ]() { return this->festering_wounds_target_count; } );
-
     // Returns if the given death knight runeforge is equipped or not
     if ( util::str_compare_ci( splits[ 1 ], "runeforge" ) && splits.size() == 3 )
     {
@@ -14542,6 +14535,13 @@ void death_knight_t::init_uptimes()
   player_t::init_uptimes();
   if ( talent.unholy.putrefy.ok() )
     sample_data.putrefied_ghoul_remains = std::make_unique<extended_sample_data_t>( "Remaining Ghoul Duration", false );
+
+  // Enable detailed reporting for primary resource cap uptimes if requested
+  if ( sim->report_details == 1 )
+  {
+    uptimes.primary_resource_cap->uptime_instance.change_mode( false );
+    uptimes.primary_resource_cap->uptime_sum.change_mode( false );
+  }
 }
 
 // death_knight_t::init_special_effects =====================================
@@ -14679,6 +14679,29 @@ bool death_knight_t::validate_actor()
 void death_knight_t::activate()
 {
   player_t::activate();
+
+  // Reserve space in the vector based on the maximum number of pets that can be active at once.
+  switch ( specialization() )
+  {
+    case DEATH_KNIGHT_BLOOD:
+      dk_active_pets.reserve( 9 );
+      // Add some extra space for cantrip item pets.
+      active_pets.reserve( 12 );
+      break;
+    case DEATH_KNIGHT_FROST:
+      dk_active_pets.reserve( 6 );
+      // Add some extra space for cantrip item pets.
+      active_pets.reserve( 10 );
+      break;
+    case DEATH_KNIGHT_UNHOLY:
+      dk_active_pets.reserve( 32 );
+      // Add some extra space for cantrip item pets.
+      active_pets.reserve( 36 );
+      active_lesser_ghouls.reserve( 24 );
+      break;
+    default:
+      break;
+  }
 
   register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
     if ( !c )
@@ -15000,29 +15023,6 @@ void death_knight_t::arise()
 
   if ( talent.rider.a_feast_of_souls.ok() )
     start_a_feast_of_souls();
-
-  // Reserve space in the vector based on the maximum number of pets that can be active at once.
-  switch ( specialization() )
-  {
-    case DEATH_KNIGHT_BLOOD:
-      dk_active_pets.reserve( 9 );
-      // Add some extra space for cantrip item pets.
-      active_pets.reserve( 12 );
-      break;
-    case DEATH_KNIGHT_FROST:
-      dk_active_pets.reserve( 6 );
-      // Add some extra space for cantrip item pets.
-      active_pets.reserve( 10 );
-      break;
-    case DEATH_KNIGHT_UNHOLY:
-      dk_active_pets.reserve( 32 );
-      // Add some extra space for cantrip item pets.
-      active_pets.reserve( 36 );
-      active_lesser_ghouls.reserve( 24 );
-      break;
-    default:
-      break;
-  }
 }
 
 void death_knight_t::adjust_dynamic_cooldowns()
@@ -15357,6 +15357,33 @@ public:
     os << "</div>\n";
   }
 
+  void html_rp_waste( report::sc_html_stream& os ) const
+  {
+    auto& d = p.get_uptime( "Runic Power Cap" )->uptime_instance;
+    if ( d.distribution.size() == 0 ) 
+      return;
+
+    os << "<div class=\"player-section custom_section\">\n"
+          "<h3 class=\"toggle open\">Runic Power Waste Details</h3>\n"
+          "<div class=\"toggle-content\">\n";
+
+    int num_buckets = std::min( 24, static_cast<int>( 2 * ( d.max() - d.min() ) ) + 1 );
+    d.create_histogram( num_buckets );
+
+    highchart::histogram_chart_t chart( highchart::build_id( p, "rp_wasted_time" ), *p.sim );
+    if ( chart::generate_distribution( chart, &p, d.distribution, "Total Seconds Spent Wasting Runic Power", d.mean(),
+                                       d.min(), d.max() ) )
+    {
+      chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+      chart.set( "chart.width", std::to_string( 80 + num_buckets * 20 ) );
+      os << chart.to_target_div();
+      p.sim->add_chart_data( chart );
+    }
+
+    os << "</div>\n"
+          "</div>\n";
+  }
+
   void putrefy_ghoul_remains_chart( report::sc_html_stream& os )
   {
     if ( !p.talent.unholy.putrefy.ok() )
@@ -15456,11 +15483,15 @@ public:
 
   void html_customsection( report::sc_html_stream& os ) override
   {
-    if ( p._runes.cumulative_waste.percentile( .5 ) > 0 )
-      html_rune_waste( os );
+    if ( p.sim->report_details == 1 )
+    {
+      if ( p._runes.cumulative_waste.percentile( .5 ) > 0 )
+        html_rune_waste( os );
 
-    putrefy_ghoul_remains_chart( os );
-    lesser_ghoul_piechart( os );
+      html_rp_waste( os );
+      putrefy_ghoul_remains_chart( os );
+      lesser_ghoul_piechart( os );
+    }
   }
 
 private:
