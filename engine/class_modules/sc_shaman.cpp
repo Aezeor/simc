@@ -11064,7 +11064,8 @@ void shaman_t::create_actions()
     action.tww3_primordial_storm = new primordial_storm_t( this, spell_variant::TWW3 );
   }
 
-  if ( sets->has_set_bonus( HERO_TOTEMIC, TWW3, B4 ) && specialization() == SHAMAN_ENHANCEMENT )
+  if ( ( talent.primal_catalyst.ok() || sets->has_set_bonus( HERO_TOTEMIC, TWW3, B4 ) ) &&
+    specialization() == SHAMAN_ENHANCEMENT )
   {
     action.tww3_lava_lash = new lava_lash_t( this, spell_variant::TWW3 );
     action.tww3_fire_nova = new fire_nova_t( this, spell_variant::TWW3 );
