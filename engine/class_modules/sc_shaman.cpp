@@ -13,6 +13,7 @@
 #include "action/spell.hpp"
 #include "class_modules/apl/apl_shaman.hpp"
 #include "class_modules/class_module.hpp"
+#include "dbc/data_enums.hh"
 #include "dbc/dbc.hpp"
 #include "item/item.hpp"
 #include "item/special_effect.hpp"
@@ -2878,18 +2879,17 @@ public:
   bool may_proc_hot_hand;
   bool may_proc_ability_procs;  // For things that explicitly state they proc from "abilities"
 
-  stats::proc_tracker_t* proc_wf, *proc_mw, *proc_ls, *proc_hh, *proc_ft;
+  stats::proc_tracker_t* proc_wf, *proc_ls, *proc_hh, *proc_ft;
 
   shaman_attack_t( util::string_view token, shaman_t* p, const spell_data_t* s,
                    spell_variant variant_ = spell_variant::NORMAL )
     : base_t( token, p, s, variant_ ),
       may_proc_windfury( p->talent.windfury_weapon.ok() ),
-      may_proc_flametongue( true ),
+      may_proc_flametongue( p->talent.flametongue_weapon.ok() ),
       may_proc_lightning_shield( false ),
       may_proc_hot_hand( p->talent.hot_hand.ok() ),
       may_proc_ability_procs( true ),
       proc_wf( nullptr ),
-      proc_mw( nullptr ),
       proc_hh( nullptr ),
       proc_ft( nullptr )
   {
@@ -2903,7 +2903,9 @@ public:
 
     if ( may_proc_flametongue )
     {
-      may_proc_flametongue = ab::weapon != nullptr;
+      may_proc_flametongue = this->id == 1 || this->id == 2 ||
+        ( this->does_direct_damage() && data().dmg_class() == spell_type::SPELL_TYPE_MELEE &&
+          ( data().flags( SX_REQ_MAIN_HAND ) || data().flags( SX_REQ_OFF_HAND ) ) );
     }
 
     if ( may_proc_windfury )
@@ -2924,7 +2926,7 @@ public:
   {
     if ( may_proc_flametongue )
     {
-      proc_ft = p()->tracker.register_proc( p()->find_class_spell( "Flametongue Weapon"), this );
+      proc_ft = p()->tracker.register_proc( p()->talent.flametongue_weapon, this );
     }
 
     if ( may_proc_hot_hand )
@@ -4437,7 +4439,7 @@ struct stormblast_t : public shaman_attack_t
 
     snapshot_flags = update_flags = ~STATE_MUL_PLAYER_DAM & ( STATE_MUL_DA | STATE_TGT_MUL_DA );
 
-    may_proc_windfury = may_proc_flametongue = may_proc_hot_hand = false;
+    may_proc_windfury = may_proc_hot_hand = false;
     may_proc_ability_procs = false;
 
     p()->set_mw_proc_state( this, mw_proc_state::DISABLED );
@@ -4519,7 +4521,6 @@ struct crash_lightning_unleashed_t : public shaman_attack_t
   {
     weapon     = &( p->main_hand_weapon );
     background = true;
-    may_proc_ability_procs = false;
   }
 };
 
@@ -4553,7 +4554,7 @@ struct crash_lightning_attack_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_windfury = may_proc_flametongue = may_proc_hot_hand = false;
+    may_proc_windfury = may_proc_hot_hand = false;
   }
 
   void trigger( const action_state_t* strike_state, strike_variant st )
@@ -4794,7 +4795,7 @@ struct sundering_reactivity_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_flametongue = may_proc_windfury = true;
+    may_proc_windfury = true;
   }
 
   void execute() override
@@ -4997,8 +4998,6 @@ struct melee_t : public shaman_attack_t
 
     if ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->dual_wield() )
       base_hit -= 0.19;
-
-    may_proc_flametongue      = true;
   }
 
   void reset() override
@@ -5530,7 +5529,7 @@ struct stormstrike_base_t : public shaman_attack_t
   void init() override
   {
     shaman_attack_t::init();
-    may_proc_flametongue = may_proc_windfury = false;
+    may_proc_windfury = false;
 
     p()->set_mw_proc_state( this, mw_proc_state::DISABLED );
 
@@ -5677,13 +5676,6 @@ struct sundering_t : public shaman_attack_t
 
     parse_options( options_str );
     aoe    = -1;  // TODO: This is likely not going to affect all enemies but it will do for now
-  }
-
-  void init() override
-  {
-    shaman_attack_t::init();
-
-    may_proc_flametongue = true;
   }
 
   void execute() override
@@ -5845,7 +5837,7 @@ struct flametongue_weapon_t : public weapon_imbue_t
                     player->specialization() == SHAMAN_ENHANCEMENT
                     ? SLOT_OFF_HAND
                     : SLOT_MAIN_HAND,
-                    player->find_class_spell( "Flametongue Weapon" ), options_str )
+                    player->talent.flametongue_weapon, options_str )
   {
     imbue = FLAMETONGUE_IMBUE;
     imbue_buff = player->buff.flametongue_weapon;
@@ -6007,18 +5999,17 @@ struct crash_lightning_t : public shaman_attack_t
 
     if ( p()->buff.storm_unleashed->consume( this ) )
     {
-      for ( auto t : target_list() )
-      {
-        if ( !rng().roll( p()->options.crash_lightning_su_hit_chance ) )
+      make_repeating_event( sim, 1_s, [ this ]() {
+        for ( auto t : target_list() )
         {
-          continue;
-        }
+          if ( !rng().roll( p()->options.crash_lightning_su_hit_chance ) )
+          {
+            continue;
+          }
 
-        for ( auto i = 0; i < as<int>( p()->talent.storm_unleashed_3->effectN( 2 ).base_value() ); ++i )
-        {
           p()->action.crash_lightning_unleashed->execute_on_target( t );
         }
-      }
+      }, as<int>( p()->talent.storm_unleashed_3->effectN( 2 ).base_value() ) );
     }
   }
 
@@ -8199,7 +8190,7 @@ struct feral_lunge_t : public shaman_spell_t
     {
       shaman_attack_t::init();
 
-      may_proc_windfury = may_proc_flametongue = false;
+      may_proc_windfury = false;
 
       p()->set_mw_proc_state( this, mw_proc_state::DISABLED );
     }
@@ -9049,7 +9040,7 @@ struct doom_winds_damage_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_flametongue = may_proc_windfury = false;
+    may_proc_windfury = false;
   }
 
   void execute() override
@@ -9070,7 +9061,7 @@ struct doom_winds_t : public shaman_attack_t
 
     weapon = &( player->main_hand_weapon );
     weapon_multiplier = 0.0;
-    may_proc_flametongue = may_proc_windfury = false;
+    may_proc_windfury = false;
 
     switch ( t )
     {
