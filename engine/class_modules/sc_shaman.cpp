@@ -1713,9 +1713,11 @@ public:
     player_talent_t amplification_core;
     player_talent_t oversurge;
     player_talent_t lively_totems;
+    player_talent_t totemic_momentum;
 
     // Row 3
     player_talent_t reactivity;
+    player_talent_t elemental_attunement;
 
     // Row 4
     player_talent_t imbuement_mastery;
@@ -1723,6 +1725,7 @@ public:
     player_talent_t supportive_imbuements;
     player_talent_t totemic_coordination;
     player_talent_t earthsurge;
+    player_talent_t primal_catalyst;
 
     // Row 5
     player_talent_t whirling_elements;
@@ -11600,6 +11603,27 @@ void shaman_t::init_spells()
 
     // Row 5
     { talent.awakening_storms,  "Awakening Storms"  },
+    // Totemic
+    // Row 1
+    { talent.surging_totem,         "Surging Totem"         },
+    // Row 2
+    { talent.totemic_rebound,       "Totemic Rebound"       },
+    { talent.amplification_core,    "Amplification Core"    },
+    { talent.oversurge,             "Oversurge"             },
+    { talent.lively_totems,         "Lively Totems"         },
+    { talent.totemic_momentum,      "Totemic Momentum"      },
+    // Row 3
+    { talent.reactivity,            "Reactivity"            },
+    { talent.elemental_attunement,  "Elemental Attunement"  },
+    // Row 4
+    { talent.imbuement_mastery,     "Imbuement Mastery"     },
+    { talent.pulse_capacitor,       "Pulse Capacitor"       },
+    { talent.supportive_imbuements, "Supportive Imbuements" },
+    { talent.totemic_coordination,  "Totemic Coordination"  },
+    { talent.earthsurge,            "Earthsurge"            },
+    { talent.primal_catalyst,       "Primal Catalyst"       },
+    // Row 5
+    { talent.whirling_elements,     "Whirling Elements"     },
   };
 
   // Initialize Specialization tree talents
@@ -12291,6 +12315,15 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
     rng().roll( talent.storm_unleashed_1->effectN( 1 ).base_value() * 0.1 * 0.01 * stacks ) )
   {
     buff.storm_unleashed->trigger();
+  }
+
+  if ( talent.totemic_momentum.ok() && stacks > 0 && buff.hot_hand->check() )
+  {
+    auto extension = timespan_t::from_seconds(
+      talent.totemic_momentum->effectN( 1 ).base_value() * 0.001 * stacks );
+
+    buff.hot_hand->extend_duration( this, extension );
+
   }
 }
 
