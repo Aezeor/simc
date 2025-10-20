@@ -6000,7 +6000,9 @@ struct crash_lightning_t : public shaman_attack_t
       p()->trigger_thorims_invocation( execute_state );
     }
 
-    if ( p()->buff.storm_unleashed->consume( this, 1 ) )
+    p()->buff.storm_unleashed->consume( this, 1 );
+
+    if ( p()->talent.storm_unleashed_3.ok() )
     {
       make_repeating_event( sim, 1_s, [ this ]() {
         for ( auto t : target_list() )
