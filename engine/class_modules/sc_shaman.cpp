@@ -1282,7 +1282,7 @@ public:
     buff_t* cl_crash_lightning;  // Buffs crash lightning with extra damage, after using chain lightning
     buff_t* hot_hand;
     buff_t* lightning_shield;
-    buff_t* stormbringer;
+    buff_t* stormsurge;
     buff_t* windfury_weapon;
 
     buff_t* forceful_winds;
@@ -2828,13 +2828,6 @@ public:
     this->p()->consume_maelstrom_weapon( this->execute_state, mw_consumed_stacks );
   }
 
-  void impact( action_state_t* state ) override
-  {
-    ab::impact( state );
-
-    p()->trigger_stormbringer( state );
-  }
-
   void schedule_execute( action_state_t* execute_state = nullptr ) override
   {
     if ( !ab::background && unshift_ghost_wolf )
@@ -2881,25 +2874,22 @@ private:
 public:
   bool may_proc_windfury;
   bool may_proc_flametongue;
-  bool may_proc_stormsurge;
   bool may_proc_lightning_shield;
   bool may_proc_hot_hand;
   bool may_proc_ability_procs;  // For things that explicitly state they proc from "abilities"
 
-  stats::proc_tracker_t* proc_wf, *proc_fb, *proc_mw, *proc_sb, *proc_ls, *proc_hh, *proc_ft;
+  stats::proc_tracker_t* proc_wf, *proc_mw, *proc_ls, *proc_hh, *proc_ft;
 
   shaman_attack_t( util::string_view token, shaman_t* p, const spell_data_t* s,
                    spell_variant variant_ = spell_variant::NORMAL )
     : base_t( token, p, s, variant_ ),
       may_proc_windfury( p->talent.windfury_weapon.ok() ),
       may_proc_flametongue( true ),
-      may_proc_stormsurge( p->spec.stormbringer->ok() ),
       may_proc_lightning_shield( false ),
       may_proc_hot_hand( p->talent.hot_hand.ok() ),
       may_proc_ability_procs( true ),
       proc_wf( nullptr ),
       proc_mw( nullptr ),
-      proc_sb( nullptr ),
       proc_hh( nullptr ),
       proc_ft( nullptr )
   {
@@ -2910,11 +2900,6 @@ public:
   void init() override
   {
     ab::init();
-
-    if ( may_proc_stormsurge )
-    {
-      may_proc_stormsurge = ab::weapon != nullptr;
-    }
 
     if ( may_proc_flametongue )
     {
@@ -2945,11 +2930,6 @@ public:
     if ( may_proc_hot_hand )
     {
       proc_hh = p()->tracker.register_proc( p()->talent.hot_hand, this );
-    }
-
-    if ( may_proc_stormsurge )
-    {
-      proc_sb = p()->tracker.register_proc( p()->spec.stormbringer, this );
     }
 
     if ( may_proc_windfury )
@@ -2983,16 +2963,6 @@ public:
     p()->trigger_windfury_weapon( state );
     p()->trigger_flametongue_weapon( state );
     p()->trigger_hot_hand( state );
-  }
-
-  virtual double stormbringer_proc_chance() const
-  {
-    double base_mul = p()->mastery.enhanced_elements->effectN( 3 ).mastery_value() *
-      ( 1.0 + p()->talent.storms_wrath->effectN( 1 ).percent() );
-    double base_chance = p()->spec.stormbringer->proc_chance() +
-                         p()->cache.mastery() * base_mul;
-
-    return base_chance;
   }
 };
 
@@ -3111,8 +3081,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 {
   action_t* overload;
 
-  bool may_proc_stormsurge = false;
-  stats::proc_tracker_t* proc_sb;
   bool affected_by_master_of_the_elements = false;
   proc_t* proc_moe;
 
@@ -3122,19 +3090,12 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
   shaman_spell_t( util::string_view token, shaman_t* p, const spell_data_t* s = spell_data_t::nil(),
                  spell_variant type_ = spell_variant::NORMAL ) :
-    base_t( token, p, s, type_ ), overload( nullptr ), proc_sb( nullptr ), proc_moe( nullptr ),
+    base_t( token, p, s, type_ ), overload( nullptr ), proc_moe( nullptr ),
     accumulated_lightning_rod_damage( 0.0 ), lr_event( nullptr )
-  {
-    may_proc_stormsurge = false;
-  }
+  { }
 
   void init_finished() override
   {
-    if ( may_proc_stormsurge )
-    {
-      proc_sb = p()->tracker.register_proc( p()->spec.stormbringer, this );
-    }
-
     if ( affected_by_master_of_the_elements && p()->talent.master_of_the_elements.ok() )
     {
       proc_moe = p()->get_proc( "Master of the Elements: " + full_name() );
@@ -4477,7 +4438,7 @@ struct stormblast_t : public shaman_attack_t
     snapshot_flags = update_flags = ~STATE_MUL_PLAYER_DAM & ( STATE_MUL_DA | STATE_TGT_MUL_DA );
 
     may_proc_windfury = may_proc_flametongue = may_proc_hot_hand = false;
-    may_proc_stormsurge = may_proc_ability_procs = false;
+    may_proc_ability_procs = false;
 
     p()->set_mw_proc_state( this, mw_proc_state::DISABLED );
   }
@@ -4540,24 +4501,6 @@ struct windfury_attack_t : public shaman_attack_t
     }
   }
 
-  void init_finished() override
-  {
-    shaman_attack_t::init_finished();
-
-    if ( may_proc_stormsurge )
-    {
-      if ( weapon->slot == SLOT_MAIN_HAND )
-      {
-        proc_sb = p()->tracker.register_proc( p()->spec.stormbringer, this );
-      }
-
-      if ( weapon->slot == SLOT_OFF_HAND )
-      {
-        proc_sb = p()->tracker.register_proc( p()->spec.stormbringer, this );
-      }
-    }
-  }
-
   void impact( action_state_t* state ) override
   {
     shaman_attack_t::impact( state );
@@ -4611,7 +4554,6 @@ struct crash_lightning_attack_t : public shaman_attack_t
     shaman_attack_t::init();
 
     may_proc_windfury = may_proc_flametongue = may_proc_hot_hand = false;
-    may_proc_stormsurge = false;
   }
 
   void trigger( const action_state_t* strike_state, strike_variant st )
@@ -4681,6 +4623,17 @@ struct stormstrike_attack_t : public shaman_attack_t
     }
   }
 
+  virtual double stormsurge_proc_chance() const
+  {
+    double base_mul = p()->mastery.enhanced_elements->effectN( 3 ).mastery_value() *
+      ( 1.0 + p()->talent.storms_wrath->effectN( 1 ).percent() );
+    double base_chance = p()->spec.stormbringer->proc_chance() +
+                          p()->cache.mastery() * base_mul;
+
+    sim->print_debug( "{} stormsurge_proc_chance={}", player->name(), base_chance );
+    return base_chance;
+  }
+
   action_state_t* new_state() override
   { return new stormstrike_attack_state_t( this, target ); }
 
@@ -4707,6 +4660,13 @@ struct stormstrike_attack_t : public shaman_attack_t
   void execute() override
   {
     shaman_attack_t::execute();
+
+    if ( p()->spec.stormbringer->ok() && rng().roll( stormsurge_proc_chance() ) )
+    {
+      p()->buff.stormsurge->trigger();
+      p()->buff.stormblast->trigger();
+      p()->cooldown.strike->reset( true );
+    }
 
     stormblast_trigger = false;
   }
@@ -4834,7 +4794,7 @@ struct sundering_reactivity_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_flametongue = may_proc_windfury = may_proc_stormsurge = true;
+    may_proc_flametongue = may_proc_windfury = true;
   }
 
   void execute() override
@@ -5210,8 +5170,6 @@ struct lava_lash_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_stormsurge = true;
-
     add_child( p()->action.reactivity );
   }
 
@@ -5572,7 +5530,7 @@ struct stormstrike_base_t : public shaman_attack_t
   void init() override
   {
     shaman_attack_t::init();
-    may_proc_flametongue = may_proc_windfury = may_proc_stormsurge = false;
+    may_proc_flametongue = may_proc_windfury = false;
 
     p()->set_mw_proc_state( this, mw_proc_state::DISABLED );
 
@@ -5586,21 +5544,15 @@ struct stormstrike_base_t : public shaman_attack_t
   {
     shaman_attack_t::execute();
 
-    auto stormbringer_state = strike_type == strike_variant::NORMAL && p()->buff.stormbringer->up();
-    auto ss = debug_cast<const stormstrike_state_t*>( execute_state );
-
-    if ( stormbringer_state )
-    {
-      p()->buff.stormbringer->decrement();
-    }
-
     if ( strike_type == strike_variant::NORMAL )
     {
-      p()->buff.stormblast->decrement();
+      p()->buff.stormsurge->consume( this, 1 );
+      p()->buff.stormblast->consume( this, 1 );
     }
 
     if ( result_is_hit( execute_state->result ) )
     {
+      auto ss = debug_cast<const stormstrike_state_t*>( execute_state );
       mh->stormblast_trigger = ss->stormblast;
       mh->execute_on_target( execute_state->target );
       if ( oh )
@@ -5731,7 +5683,7 @@ struct sundering_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_stormsurge = may_proc_flametongue = true;
+    may_proc_flametongue = true;
   }
 
   void execute() override
@@ -9097,7 +9049,7 @@ struct doom_winds_damage_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_flametongue = may_proc_stormsurge = may_proc_windfury = false;
+    may_proc_flametongue = may_proc_windfury = false;
   }
 
   void execute() override
@@ -9118,7 +9070,7 @@ struct doom_winds_t : public shaman_attack_t
 
     weapon = &( player->main_hand_weapon );
     weapon_multiplier = 0.0;
-    may_proc_flametongue = may_proc_stormsurge = may_proc_windfury = false;
+    may_proc_flametongue = may_proc_windfury = false;
 
     switch ( t )
     {
@@ -9134,13 +9086,6 @@ struct doom_winds_t : public shaman_attack_t
         add_child( player->action.doom_winds );
         break;
     }
-  }
-
-  void init() override
-  {
-    shaman_attack_t::init();
-
-    may_proc_stormsurge = false;
   }
 
   void execute() override
@@ -10202,7 +10147,7 @@ struct primordial_storm_t : public shaman_spell_t
         // Note, 11.2 totemic set bonus spells do not benefit from Maelstrom Weapon
         case spell_variant::TWW3:
           base_multiplier *= p()->sets->set( HERO_TOTEMIC, TWW3, B2 )->effectN( 1 ).percent();
-          may_proc_flametongue = may_proc_windfury = may_proc_stormsurge = false;
+          may_proc_flametongue = may_proc_windfury = false;
           break;
         default:
           // Inherit Maelstrom Weapon stacks from the parent cast for normal casts
@@ -11384,7 +11329,7 @@ action_t* shaman_t::create_proc_action( util::string_view name, const special_ef
       {
         shaman_attack_t::init();
 
-        may_proc_flametongue = may_proc_stormsurge = false;
+        may_proc_flametongue = false;
         may_proc_windfury = false;
       }
     };
@@ -12141,92 +12086,6 @@ void shaman_t::track_magma_chamber()
 // ==========================================================================
 // Shaman Ability Triggers
 // ==========================================================================
-
-void shaman_t::trigger_stormbringer( const action_state_t* state, double override_proc_chance,
-                                     stats::proc_tracker_t* override_proc_obj )
-{
-  // assert( debug_cast< shaman_attack_t* >( state -> action ) != nullptr &&
-  //        "Stormbringer called on invalid action type" );
-
-  if ( buff.ghost_wolf->check() )
-  {
-    return;
-  }
-
-  if ( !state->action->special )
-  {
-    return;
-  }
-
-  shaman_attack_t* attack = nullptr;
-  shaman_spell_t* spell   = nullptr;
-
-  if ( state->action->type == ACTION_ATTACK )
-  {
-    attack = debug_cast<shaman_attack_t*>( state->action );
-  }
-  else if ( state->action->type == ACTION_SPELL )
-  {
-    spell = debug_cast<shaman_spell_t*>( state->action );
-  }
-
-  auto triggered = false;
-
-  if ( attack )
-  {
-    if ( attack->may_proc_stormsurge )
-    {
-      result_e r = state->result;
-      if ( r == RESULT_HIT || r == RESULT_CRIT || r == RESULT_GLANCE || r == RESULT_NONE )
-      {
-        if ( override_proc_chance < 0 )
-        {
-          override_proc_chance = attack->stormbringer_proc_chance();
-        }
-
-        if ( override_proc_obj == nullptr )
-        {
-          override_proc_obj = attack->proc_sb;
-        }
-
-        if ( ( triggered = rng().roll( override_proc_chance ) ) )
-        {
-          buff.stormbringer->trigger( buff.stormbringer->max_stack() );
-          cooldown.strike->reset( true );
-          override_proc_obj->occur();
-        }
-      }
-    }
-  }
-
-  if ( spell )
-  {
-    if ( spell->may_proc_stormsurge )
-    {
-      if ( override_proc_chance < 0 )
-      {
-        override_proc_chance = spell->stormbringer_proc_chance();
-      }
-
-      if ( override_proc_obj == nullptr )
-      {
-        override_proc_obj = spell->proc_sb;
-      }
-
-      if ( ( triggered = rng().roll( override_proc_chance ) ) )
-      {
-        buff.stormbringer->trigger( buff.stormbringer->max_stack() );
-        cooldown.strike->reset( true );
-        override_proc_obj->occur();
-      }
-    }
-  }
-
-  if ( triggered )
-  {
-    buff.stormblast->trigger();
-  }
-}
 
 void shaman_t::trigger_hot_hand( const action_state_t* state )
 {
@@ -13400,7 +13259,7 @@ void shaman_t::create_buffs()
         ? 1.0
         : 0.0 );
   buff.spirit_walk  = make_buff( this, "spirit_walk", talent.spirit_walk );
-  buff.stormbringer = make_buff( this, "stormsurge", find_spell( 201846 ) );
+  buff.stormsurge = make_buff( this, "stormsurge", find_spell( 201846 ) );
   buff.maelstrom_weapon = make_buff( this, "maelstrom_weapon", find_spell( 344179 ) )
     ->set_chance( talent.maelstrom_weapon.ok() ? 1.0 : 0.0 );
   buff.static_accumulation = make_buff( this, "static_accumulation", find_spell( 384437 ) )
