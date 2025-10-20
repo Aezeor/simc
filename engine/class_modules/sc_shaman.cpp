@@ -1107,6 +1107,9 @@ public:
   /// Crash Lightnings for cooldown management of Storm Unleashed
   std::vector<action_t*> crash_lightning;
 
+  /// Flag to indicate Primordial Catalyst state, since no aura exists for it
+  bool primal_catalyst;
+
   /// Buff state tracking
   unsigned buff_state_lightning_rod;
   unsigned buff_state_lashing_flames;
@@ -5191,6 +5194,11 @@ struct lava_lash_t : public shaman_attack_t
       m *= 1.0 + data().effectN( 2 ).percent();
     }
 
+    if ( p()->primal_catalyst )
+    {
+      m *= p()->talent.primal_catalyst->effectN( 1 ).percent();
+    }
+
     return m;
   }
 
@@ -5219,6 +5227,8 @@ struct lava_lash_t : public shaman_attack_t
     {
       p()->generate_maelstrom_weapon( this, 1 );
     }
+
+    p()->primal_catalyst = false;
   }
 
   void impact( action_state_t* state ) override
@@ -9959,6 +9969,8 @@ struct surging_totem_spell_t : public shaman_totem_t<spell_totem_pet_t, shaman_s
     p()->buff.whirling_air->trigger();
     p()->buff.whirling_fire->trigger();
     p()->buff.whirling_earth->trigger();
+
+    p()->primal_catalyst = true;
   }
 
   bool ready() override
@@ -14422,6 +14434,8 @@ void shaman_t::reset()
 
   earthen_rage_target = nullptr;
   earthen_rage_event = nullptr;
+
+  primal_catalyst = false;
 
   if ( specialization() == SHAMAN_ELEMENTAL && talent.rolling_thunder.ok() )
   {
