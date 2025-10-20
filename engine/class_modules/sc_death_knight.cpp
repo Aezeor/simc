@@ -3359,6 +3359,13 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     def->add_action( "claw" );
   }
 
+  void init_uptimes() override
+  {
+    base_ghoul_pet_t::init_uptimes();
+    // Merge time spent at resource cap for pets sharing the same name to reduce report clutter
+    this->uptimes.primary_resource_cap = dk()->find_pet( name_str )->uptimes.primary_resource_cap;
+  }
+
   double composite_melee_auto_attack_speed() const override
   {
     double haste = base_ghoul_pet_t::composite_melee_auto_attack_speed();
@@ -3382,7 +3389,8 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
   {
     base_ghoul_pet_t::create_buffs();
     unholy_devotion = make_buff( this, "unholy_devotion", dk()->pet_spell.unholy_devotion_buff )
-                          ->set_default_value_from_effect_type( A_MOD_MELEE_AUTO_ATTACK_SPEED );
+                          ->set_default_value_from_effect_type( A_MOD_MELEE_AUTO_ATTACK_SPEED )
+                          ->set_quiet( true );
   }
 
   action_t* create_action( std::string_view name, std::string_view options_str ) override
@@ -15367,9 +15375,6 @@ public:
                                        d.min(), d.max() ) )
     {
       chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
-      chart.set_title( fmt::format( "Putrefied Ghoul Duration Left (min={} median={} max={})",
-                                    std::roundf( d.min() * 100 ) / 100, std::roundf( d.percentile( 0.5 ) * 100 ) / 100,
-                                    std::roundf( d.max() * 100 ) / 100 ) );
       chart.set( "chart.width", std::to_string( 80 + num_buckets * 20 ) );
       os << chart.to_target_div();
       p.sim->add_chart_data( chart );
