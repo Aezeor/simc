@@ -2910,7 +2910,9 @@ public:
 
     if ( may_proc_windfury )
     {
-      may_proc_windfury = ab::weapon != nullptr;
+      may_proc_windfury = this->id == 1 ||
+        ( this->does_direct_damage() && data().dmg_class() == spell_type::SPELL_TYPE_MELEE &&
+          data().flags( SX_REQ_MAIN_HAND ) );
     }
 
     if ( may_proc_hot_hand )
@@ -4439,7 +4441,7 @@ struct stormblast_t : public shaman_attack_t
 
     snapshot_flags = update_flags = ~STATE_MUL_PLAYER_DAM & ( STATE_MUL_DA | STATE_TGT_MUL_DA );
 
-    may_proc_windfury = may_proc_hot_hand = false;
+    may_proc_hot_hand = false;
     may_proc_ability_procs = false;
 
     p()->set_mw_proc_state( this, mw_proc_state::DISABLED );
@@ -4554,7 +4556,7 @@ struct crash_lightning_attack_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_windfury = may_proc_hot_hand = false;
+    may_proc_hot_hand = false;
   }
 
   void trigger( const action_state_t* strike_state, strike_variant st )
@@ -4789,13 +4791,6 @@ struct sundering_reactivity_t : public shaman_attack_t
     weapon = &( player->main_hand_weapon );
     aoe    = -1;  // TODO: This is likely not going to affect all enemies but it will do for now
     base_multiplier = player->talent.reactivity->effectN( 1 ).percent();
-  }
-
-  void init() override
-  {
-    shaman_attack_t::init();
-
-    may_proc_windfury = true;
   }
 
   void execute() override
@@ -5529,7 +5524,6 @@ struct stormstrike_base_t : public shaman_attack_t
   void init() override
   {
     shaman_attack_t::init();
-    may_proc_windfury = false;
 
     p()->set_mw_proc_state( this, mw_proc_state::DISABLED );
 
@@ -8190,8 +8184,6 @@ struct feral_lunge_t : public shaman_spell_t
     {
       shaman_attack_t::init();
 
-      may_proc_windfury = false;
-
       p()->set_mw_proc_state( this, mw_proc_state::DISABLED );
     }
   };
@@ -9036,13 +9028,6 @@ struct doom_winds_damage_t : public shaman_attack_t
     reduced_aoe_targets = 5.0;
   }
 
-  void init() override
-  {
-    shaman_attack_t::init();
-
-    may_proc_windfury = false;
-  }
-
   void execute() override
   {
     shaman_attack_t::execute();
@@ -9061,7 +9046,6 @@ struct doom_winds_t : public shaman_attack_t
 
     weapon = &( player->main_hand_weapon );
     weapon_multiplier = 0.0;
-    may_proc_windfury = false;
 
     switch ( t )
     {
