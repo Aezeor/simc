@@ -4070,6 +4070,71 @@ public:
   {
   }
 
+  void shadowy_apparition_piechart( report::sc_html_stream& os )
+  {
+    highchart::pie_chart_t shadowy_apparition_sources( highchart::build_id( p, "shadowy_apparition_sources" ), *p.sim );
+    shadowy_apparition_sources.set_title( "Shadowy Apparition Sources" );
+    shadowy_apparition_sources.set( "plotOptions.pie.dataLabels.format", "{point.name}: {point.percentage:.1f}%" );
+
+    std::vector<proc_t*> sa_source_list = {
+        p.procs.shadowy_apparition_swp,  p.procs.shadowy_apparition_swm,     p.procs.shadowy_apparition_mb,
+        p.procs.shadowy_apparition_mfi,  p.procs.shadowy_apparition_yshaarj, p.procs.shadowy_apparition_nzoth,
+        p.procs.shadowy_apparition_yogg, p.procs.shadowy_apparition_cthun,
+    };
+
+    double sum = 0.0;
+
+    // Get total amount of Shadowy Apparitions
+    for ( size_t i = 0; i < sa_source_list.size(); ++i )
+    {
+      const auto& entry = sa_source_list[ i ];
+
+      sum += entry->count.mean();
+    }
+
+    // Sort the dataset so it looks better in the chart
+    range::sort( sa_source_list, []( const auto& left, const auto& right ) {
+      if ( left->count.mean() == right->count.mean() )
+      {
+        return left->name_str < right->name_str;
+      }
+
+      return left->count.mean() > right->count.mean();
+    } );
+
+    // Populate the pie chart with each entry
+    range::for_each( sa_source_list, [ this, &shadowy_apparition_sources, sum ]( const auto& entry ) {
+      if ( entry->count.mean() == 0.0 )
+        return;
+
+      std::string prefix = "Shadowy Apparition from ";
+      color::rgb color   = color::school_color( SCHOOL_SHADOW );
+
+      js::sc_js_t e;
+      e.set( "color", color.str() );
+      e.set( "y", util::round( ( entry->count.mean() / sum ) * 100, p.sim->report_precision ) );
+      e.set( "name", report_decorators::decorate_html_string(
+                         util::encode_html( entry->name_str.substr( prefix.length() ) ), color ) );
+
+      shadowy_apparition_sources.add( "series.0.data", e );
+    } );
+
+    os << shadowy_apparition_sources.to_target_div();
+    p.sim->add_chart_data( shadowy_apparition_sources );
+  }
+
+  void html_customsection_shadowy_apparitions( report::sc_html_stream& os )
+  {
+    os << "<div class=\"player-section custom_section\">\n"
+          "<h3 class=\"toggle open\">Shadowy Apparitions</h3>\n"
+          "<div class=\"toggle-content\">\n";
+
+    shadowy_apparition_piechart( os );
+
+    os << "</div>\n"
+          "</div>\n";
+  }
+
   void html_customsection_voidform( report::sc_html_stream& os )
   {
     os << "<div class=\"player-section custom_section\">\n"
@@ -4121,9 +4186,15 @@ public:
     if ( p.sim->report_details == 0 )
       return;
 
-    if ( p.talents.shadow.voidform.enabled() )
+    // Only show this when you are able to extend Voidform
+    if ( p.talents.shadow.ancient_madness.enabled() )
     {
       html_customsection_voidform( os );
+    }
+
+    if ( p.talents.shadow.shadowy_apparitions.enabled() )
+    {
+      html_customsection_shadowy_apparitions( os );
     }
   }
 
