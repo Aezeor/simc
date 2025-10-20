@@ -1107,9 +1107,6 @@ public:
   /// Crash Lightnings for cooldown management of Storm Unleashed
   std::vector<action_t*> crash_lightning;
 
-  /// Flag to indicate Primordial Catalyst state, since no aura exists for it
-  bool primal_catalyst;
-
   /// Buff state tracking
   unsigned buff_state_lightning_rod;
   unsigned buff_state_lashing_flames;
@@ -1306,7 +1303,7 @@ public:
     buff_t* tww2_enh_2pc; // Winning Streak!
     buff_t* tww2_enh_4pc; // Electrostatic Wager (visible buff)
     buff_t* tww2_enh_4pc_damage; // Electrostatic Wager (hidden damage to CL)
-    buff_t* tww3_enh_4pc; // Elemental Overflow
+    buff_t* elemental_overflow; // Elemental Overflow
 
     // Shared talent stuff
     buff_t* tempest;
@@ -1396,8 +1393,6 @@ public:
     cooldown_t* sundering;
     cooldown_t* totemic_recall;
     cooldown_t* ancestral_swiftness;
-
-    cooldown_t* tww3_enh_4pc_icd; // Elemental Overflow ICD for presumably consuming the buff
   } cooldown;
 
   // Expansion-specific Legendaries
@@ -1865,7 +1860,6 @@ public:
     cooldown.sundering          = get_cooldown( "sundering" );
     cooldown.totemic_recall     = get_cooldown( "totemic_recall" );
     cooldown.ancestral_swiftness= get_cooldown( "ancestral_swiftness" );
-    cooldown.tww3_enh_4pc_icd   = get_cooldown( "elemental_overflow" );
 
     melee_mh      = nullptr;
     melee_oh      = nullptr;
@@ -1974,7 +1968,7 @@ public:
   void trigger_arc_discharge( const action_state_t* state );
   void trigger_lively_totems( const action_state_t* state );
   void trigger_tww3_totemic_enh_2pc( const action_state_t* state );
-  void trigger_tww3_totemic_enh_4pc( const action_state_t* state, action_t* trigger );
+  void trigger_elemental_overflow( const action_state_t* state, action_t* trigger );
 
   // Midnight Triggers
   void trigger_ride_the_lightning( const action_state_t* state, action_t* trigger );
@@ -5159,7 +5153,7 @@ struct lava_lash_t : public shaman_attack_t
       case spell_variant::TWW3:
         background = true;
         cooldown = player->get_cooldown( "lava_lash_tww3" );
-        base_multiplier *= player->sets->set( HERO_TOTEMIC, TWW3, B4 )->effectN( 2 ).percent();
+        base_multiplier *= player->buff.elemental_overflow->data().effectN( 1 ).percent();
         break;
       default:
         break;
@@ -5194,11 +5188,6 @@ struct lava_lash_t : public shaman_attack_t
       m *= 1.0 + data().effectN( 2 ).percent();
     }
 
-    if ( p()->primal_catalyst )
-    {
-      m *= p()->talent.primal_catalyst->effectN( 1 ).percent();
-    }
-
     return m;
   }
 
@@ -5221,14 +5210,15 @@ struct lava_lash_t : public shaman_attack_t
       proc_lively_totems->occur();
     }
 
-    p()->trigger_tww3_totemic_enh_4pc( execute_state, p()->action.tww3_lava_lash );
+    if ( p()->sets->has_set_bonus( HERO_TOTEMIC, TWW3, B4 ) || p()->talent.primal_catalyst.ok() )
+    {
+      p()->trigger_elemental_overflow( execute_state, p()->action.tww3_lava_lash );
+    }
 
     if ( p()->buff.lightning_strikes->consume( this ) )
     {
       p()->generate_maelstrom_weapon( this, 1 );
     }
-
-    p()->primal_catalyst = false;
   }
 
   void impact( action_state_t* state ) override
@@ -7017,7 +7007,11 @@ struct fire_nova_t : public shaman_spell_t
 
     p()->trigger_lively_totems( execute_state );
     p()->trigger_whirling_fire( execute_state );
-    p()->trigger_tww3_totemic_enh_4pc( execute_state, p()->action.tww3_fire_nova );
+
+    if ( p()->sets->has_set_bonus( HERO_TOTEMIC, TWW3, B4 ) )
+    {
+      p()->trigger_elemental_overflow( execute_state, p()->action.tww3_fire_nova );
+    }
   }
 };
 
@@ -9970,7 +9964,10 @@ struct surging_totem_spell_t : public shaman_totem_t<spell_totem_pet_t, shaman_s
     p()->buff.whirling_fire->trigger();
     p()->buff.whirling_earth->trigger();
 
-    p()->primal_catalyst = true;
+    if ( p()->talent.primal_catalyst.ok() )
+    {
+      p()->buff.elemental_overflow->trigger();
+    }
   }
 
   bool ready() override
@@ -10218,8 +10215,6 @@ struct primordial_storm_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p()->buff.tww3_enh_4pc->trigger();
-
     // Set targets early so we can use fire target list to figure out whether LB or CL can be shot,
     // before the fire damage spell executes.
     fire->set_target( execute_state->target );
@@ -10267,7 +10262,7 @@ struct primordial_storm_t : public shaman_spell_t
       p()->generate_maelstrom_weapon( this, as<int>( p()->talent.supercharge->effectN( 3 ).base_value() ) );
     }
 
-    p()->buff.tww3_enh_4pc->trigger();
+    p()->buff.elemental_overflow->trigger();
   }
 
   bool ready() override
@@ -12991,30 +12986,21 @@ void shaman_t::trigger_tww3_totemic_enh_2pc( const action_state_t* state )
   action.tww3_primordial_storm->execute_on_target( state->target );
 }
 
-void shaman_t::trigger_tww3_totemic_enh_4pc( const action_state_t* state, action_t* trigger )
+void shaman_t::trigger_elemental_overflow( const action_state_t* state, action_t* trigger )
 {
-  if ( !sets->has_set_bonus( HERO_TOTEMIC, TWW3, B4 ) )
+  if ( buff.elemental_overflow->consume( state->action, 1 ) )
   {
-    return;
+    auto delay = rng().gauss( 500_ms, 33_ms );
+    sim->print_debug( "{} triggering enhancement tww3 4 piece set bonus / primal catalyst using {} on {}, delay={}",
+      name(), trigger->name(), state->target->name(), delay );
+    make_event( sim, delay, [ t = state->target, trigger ]() {
+      if ( t->is_sleeping() )
+      {
+        return;
+      }
+      trigger->execute_on_target( t );
+    } );
   }
-
-  if ( cooldown.tww3_enh_4pc_icd->down() || !buff.tww3_enh_4pc->up() )
-  {
-    return;
-  }
-
-  auto delay = rng().gauss( 500_ms, 33_ms );
-  sim->print_debug( "{} triggering enhancement tww3 4 piece set bonus using {} on {}, delay={}",
-    name(), trigger->name(), state->target->name(), delay );
-  make_event( sim, delay, [ t = state->target, trigger ]() {
-    if ( t->is_sleeping() )
-    {
-      return;
-    }
-    trigger->execute_on_target( t );
-  } );
-  buff.tww3_enh_4pc->decrement();
-  cooldown.tww3_enh_4pc_icd->start( buff.tww3_enh_4pc->data().internal_cooldown() );
 }
 
 void shaman_t::trigger_ride_the_lightning( const action_state_t* state, action_t* trigger )
@@ -13333,8 +13319,8 @@ void shaman_t::create_buffs()
   buff.tww2_enh_4pc_damage = make_buff( this, "electrostatic_wager_dmg", find_spell( 1223332 ) )
     ->set_quiet( true )
     ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, TWW2, B4 ) );
-  buff.tww3_enh_4pc = make_buff( this, "elemental_overflow", find_spell( 1239170 ) )
-    ->set_trigger_spell( sets->set( HERO_TOTEMIC, TWW3, B4 ) );
+  buff.elemental_overflow = make_buff( this, "elemental_overflow", find_spell( 1239170 ) )
+    ->set_chance( sets->has_set_bonus( HERO_TOTEMIC, TWW3, B4 ) || talent.primal_catalyst.ok() ? 1.0 : 0.0 );
   buff.ancestral_wisdom = make_buff( this, "ancestral_wisdom", find_spell( 1238279 ) )
                               ->set_trigger_spell( spell.tww3_farseer_4pc )
                               ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
@@ -14434,8 +14420,6 @@ void shaman_t::reset()
 
   earthen_rage_target = nullptr;
   earthen_rage_event = nullptr;
-
-  primal_catalyst = false;
 
   if ( specialization() == SHAMAN_ELEMENTAL && talent.rolling_thunder.ok() )
   {
