@@ -15367,8 +15367,9 @@ public:
                                        d.min(), d.max() ) )
     {
       chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
-      chart.set_title( fmt::format( "Putrefied Ghoul Duration Left (min={} median={} max={})", d.min(),
-                                    d.percentile( 0.5 ), std::roundf( d.max() * 100 ) / 100 ) );
+      chart.set_title( fmt::format( "Putrefied Ghoul Duration Left (min={} median={} max={})",
+                                    std::roundf( d.min() * 100 ) / 100, std::roundf( d.percentile( 0.5 ) * 100 ) / 100,
+                                    std::roundf( d.max() * 100 ) / 100 ) );
       chart.set( "chart.width", std::to_string( 80 + num_buckets * 20 ) );
       os << chart.to_target_div();
       p.sim->add_chart_data( chart );
