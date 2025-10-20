@@ -10518,14 +10518,7 @@ struct voltaic_blaze_t : public shaman_spell_t
     {
       shaman_spell_t::impact( state );
 
-      make_event( *sim, [ t = state->target, p = p() ]() {
-        if ( t->is_sleeping() )
-        {
-          return;
-        }
-
-        p->trigger_secondary_flame_shock( t, spell_variant::NORMAL );
-      } );
+      p()->trigger_secondary_flame_shock( state->target, spell_variant::NORMAL );
     }
   };
 
