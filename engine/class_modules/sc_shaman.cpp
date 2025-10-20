@@ -7005,7 +7005,6 @@ struct fire_nova_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p()->trigger_lively_totems( execute_state );
     p()->trigger_whirling_fire( execute_state );
 
     if ( p()->sets->has_set_bonus( HERO_TOTEMIC, TWW3, B4 ) )
@@ -10526,6 +10525,8 @@ struct voltaic_blaze_t : public shaman_spell_t
     {
       p()->action.fire_nova->execute_on_target( execute_state->target );
     }
+
+    p()->trigger_lively_totems( execute_state );
   }
 };
 
@@ -11707,25 +11708,6 @@ void shaman_t::init_spells()
   talent.lightning_rod          = _ST( "Lightning Rod" );
   talent.primal_elementalist    = _ST( "Primal Elementalist" );
   talent.liquid_magma_totem     = _ST( "Liquid Magma Totem" );
-
-  // Totemic
-
-  talent.surging_totem         = find_talent_spell( talent_tree::HERO, "Surging Totem" );
-
-  talent.totemic_rebound       = find_talent_spell( talent_tree::HERO, "Totemic Rebound" );
-  talent.amplification_core    = find_talent_spell( talent_tree::HERO, "Amplification Core" );
-  talent.oversurge             = find_talent_spell( talent_tree::HERO, "Oversurge" );
-  talent.lively_totems         = find_talent_spell( talent_tree::HERO, "Lively Totems" );
-
-  talent.reactivity            = find_talent_spell( talent_tree::HERO, "Reactivity" );
-
-  talent.imbuement_mastery     = find_talent_spell( talent_tree::HERO, "Imbuement Mastery" );
-  talent.pulse_capacitor       = find_talent_spell( talent_tree::HERO, "Pulse Capacitor" );
-  talent.supportive_imbuements = find_talent_spell( talent_tree::HERO, "Supportive Imbuements" );
-  talent.totemic_coordination  = find_talent_spell( talent_tree::HERO, "Totemic Coordination" );
-  talent.earthsurge            = find_talent_spell( talent_tree::HERO, "Earthsurge" );
-
-  talent.whirling_elements     = find_talent_spell( talent_tree::HERO, "Whirling Elements" );
 
   // Farseer
 
