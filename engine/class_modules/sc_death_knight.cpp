@@ -21,6 +21,8 @@
 #include "action/parse_effects.hpp"
 #include "class_modules/apl/apl_death_knight.hpp"
 #include "player/pet_spawner.hpp"
+#include "report/charts.hpp"
+#include "report/highchart.hpp"
 
 #include "simulationcraft.hpp"
 
@@ -1695,6 +1697,11 @@ public:
     propagate_const<proc_t*> razorice_from_avalanche;
     propagate_const<proc_t*> razorice_from_glacial_advance;
     propagate_const<proc_t*> razorice_from_runeforge;
+    
+    // Lesser Ghoul Sources
+    propagate_const<proc_t*> lesser_ghoul_db;
+    propagate_const<proc_t*> lesser_ghoul_fs;
+    propagate_const<proc_t*> lesser_ghoul_army;
 
     // Runic corruption triggered by
     propagate_const<proc_t*> rp_runic_corruption;
@@ -1711,6 +1718,11 @@ public:
     // Deathbringer procs
     propagate_const<proc_t*> exterminate_reapers_mark;
   } procs;
+
+  struct sample_data_t
+  {
+    std::unique_ptr<extended_sample_data_t> putrefied_ghoul_remains;
+  } sample_data;
 
   // Death Knight Options
   struct options_t
@@ -1817,6 +1829,7 @@ public:
   void create_buffs() override;
   void init_gains() override;
   void init_procs() override;
+  void init_uptimes() override;
   void init_special_effects() override;
   void init_finished() override;
   bool validate_fight_style( fight_style_e style ) const override;
@@ -3319,6 +3332,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
 
   void putrefy_ghoul()
   {
+    dk()->sample_data.putrefied_ghoul_remains->add( this->expiration->remains().total_seconds() );
     dk()->background_actions.putrefy->execute_on_target( this->target );
 
     if ( dk()->talent.unholy.reanimation.ok() )
@@ -5725,16 +5739,20 @@ struct summon_lesser_ghoul_t : public death_knight_summon_spell_t
     {
       case lesser_ghoul_e::LESSER_DOOMED_BIDDING_COIL:
         p()->pets.lesser_ghoul_db_coil.spawn();
+        p()->procs.lesser_ghoul_db->occur();
         break;
       case lesser_ghoul_e::LESSER_DOOMED_BIDDING_EPIDEMIC:
         p()->pets.lesser_ghoul_db_epi.spawn();
+        p()->procs.lesser_ghoul_db->occur();
         break;
       case lesser_ghoul_e::LESSER_FESTERING_STRIKE:
         p()->pets.lesser_ghoul_fs.spawn();
+        p()->procs.lesser_ghoul_fs->occur();
         break;
       case lesser_ghoul_e::LESSER_ARMY_OF_THE_DEAD:
         p()->pets.lesser_ghoul_army.spawn( duration );
         set_duration( p()->pets.lesser_ghoul_army.duration() );
+        p()->procs.lesser_ghoul_army->occur();
         break;
     }
   }
@@ -10568,12 +10586,22 @@ struct putrefy_t final : public death_knight_spell_t
       int ghouls_putrefied = 0;
       int ghouls_devoted   = 0;
 
+      range::sort( p()->active_lesser_ghouls,
+                   []( const pets::lesser_ghoul_pet_t* a, const pets::lesser_ghoul_pet_t* b ) {
+                     return a->expiration->remains() < b->expiration->remains();
+                   } );
+
       for ( int i = 0; i < p()->active_lesser_ghouls.size(); i++ )
       {
         auto& ghoul = p()->active_lesser_ghouls[ i ];
+
+        if( ghoul == nullptr || ghoul->is_sleeping() )
+          continue;
+
         if ( ghouls_putrefied < ghouls_to_putrefy )
         {
           ghoul->putrefy_ghoul();
+
           ghoul->dismiss();
           ghouls_putrefied++;
           continue;
@@ -11505,6 +11533,9 @@ void death_knight_t::merge( player_t& other )
 
   _runes.rune_waste.merge( dk._runes.rune_waste );
   _runes.cumulative_waste.merge( dk._runes.cumulative_waste );
+
+  if( talent.unholy.putrefy.ok() )
+    sample_data.putrefied_ghoul_remains->merge( *dk.sample_data.putrefied_ghoul_remains );
 }
 
 std::string death_knight_t::create_profile( save_e type )
@@ -11552,6 +11583,9 @@ void death_knight_t::analyze( sim_t& s )
 
   _runes.rune_waste.analyze();
   _runes.cumulative_waste.analyze();
+
+  if ( talent.unholy.putrefy.ok() )
+    sample_data.putrefied_ghoul_remains->analyze();
 }
 
 bool death_knight_t::in_death_and_decay() const
@@ -14475,6 +14509,10 @@ void death_knight_t::init_procs()
 
   procs.ready_rune = get_proc( "Rune ready" );
 
+  procs.lesser_ghoul_army = get_proc( "Lesser Ghoul from Army" );
+  procs.lesser_ghoul_db   = get_proc( "Lesser Ghoul from Doomed Bidding" );
+  procs.lesser_ghoul_fs   = get_proc( "Lesser Ghoul from Festering Strike" );
+
   procs.rp_runic_corruption = get_proc( "Runic Corruption from Runic Power Spent" );
 
   procs.bloodworms = get_proc( "Bloodworms" );
@@ -14488,6 +14526,14 @@ void death_knight_t::init_procs()
   procs.vampiric_strike_waste = get_proc( "Vampiric Strike Proc Wasted" );
 
   procs.exterminate_reapers_mark = get_proc( "Reaper's Mark from Exterminate" );
+}
+
+// death_knight_t::init_uptimes =============================================
+void death_knight_t::init_uptimes()
+{
+  player_t::init_uptimes();
+  if ( talent.unholy.putrefy.ok() )
+    sample_data.putrefied_ghoul_remains = std::make_unique<extended_sample_data_t>( "Remaining Ghoul Duration", false );
 }
 
 // death_knight_t::init_special_effects =====================================
@@ -15215,6 +15261,8 @@ public:
 
   void html_rune_waste( report::sc_html_stream& os ) const
   {
+    // Basic Table
+    os << "<div class=\"player-section custom_section\">\n";
     os << "<h3 class=\"toggle open\">Rune waste details</h3>\n"
        << "<div class=\"toggle-content\">\n";
 
@@ -15265,21 +15313,148 @@ public:
     os.printf( "<td class=\"right\">%.3f</td>", p._runes.cumulative_waste.percentile( .95 ) );
     os.printf( "<td class=\"right\">%.3f</td>", p._runes.cumulative_waste.max() );
     os << "</tr>\n";
-
     os << "</table>\n";
 
+    // Bar Charts
+    auto& d         = p._runes.rune_waste;
+    int num_buckets = std::min( 24, static_cast<int>( 2 * ( d.max() - d.min() ) ) + 1 );
+    d.create_histogram( num_buckets );
+
+    highchart::histogram_chart_t chart( highchart::build_id( p, "time_spent_wasting" ), *p.sim );
+    if ( chart::generate_distribution( chart, &p, d.distribution, "Seconds Spent Wasting Per Rune", d.mean(), d.min(),
+                                       d.max() ) )
+    {
+      chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+      chart.set( "chart.width", std::to_string( 80 + num_buckets * 20 ) );
+      os << chart.to_target_div();
+      p.sim->add_chart_data( chart );
+    }
+
+    auto& r         = p._runes.cumulative_waste;
+    int n_buckets = std::min( 24, static_cast<int>( 2 * ( r.max() - r.min() ) ) + 1 );
+    r.create_histogram( n_buckets );
+
+    highchart::histogram_chart_t total_chart( highchart::build_id( p, "total_time_spent_wasting" ), *p.sim );
+    if ( chart::generate_distribution( total_chart, &p, r.distribution, "Total Seconds Spent Wasting Runes", r.mean(), r.min(),
+                                       r.max() ) )
+    {
+      total_chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+      total_chart.set( "chart.width", std::to_string( 80 + n_buckets * 20 ) );
+      os << total_chart.to_target_div();
+      p.sim->add_chart_data( total_chart );
+    }
+
     os << "</div>\n";
+    os << "<div class=\"clear\"></div>\n";
+    os << "</div>\n";
+  }
+
+  void putrefy_ghoul_remains_chart( report::sc_html_stream& os )
+  {
+    if ( !p.talent.unholy.putrefy.ok() )
+      return;
+
+    os << "<div class=\"player-section custom_section\">\n"
+          "<h3 class=\"toggle open\">Putrefy</h3>\n"
+          "<div class=\"toggle-content\">\n";
+
+    auto& d         = *p.sample_data.putrefied_ghoul_remains;
+    int num_buckets = std::min( 30, static_cast<int>( 2 * ( d.max() - d.min() ) ) + 1 );
+    d.create_histogram( num_buckets );
+
+    highchart::histogram_chart_t chart( highchart::build_id( p, "putrefied_ghoul_remains" ), *p.sim );
+    if ( chart::generate_distribution( chart, &p, d.distribution, "Putrefied Ghoul Duration Left (Seconds)", d.mean(),
+                                       d.min(), d.max() ) )
+    {
+      chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+      chart.set_title( fmt::format( "Putrefied Ghoul Duration Left (min={} median={} max={})", d.min(),
+                                    d.percentile( 0.5 ), std::roundf( d.max() * 100 ) / 100 ) );
+      chart.set( "chart.width", std::to_string( 80 + num_buckets * 20 ) );
+      os << chart.to_target_div();
+      p.sim->add_chart_data( chart );
+    }
+
+    os << "<table class=\"sc\">\n"
+       << "<tr>\n"
+       << "<th colspan=\"5\">Statistics</th>\n"
+       << "</tr>\n"
+       << "<tr>\n"
+       << "<th>Minimum</th>\n"
+       << "<th>5<sup>th</sup> percentile</th>\n"
+       << "<th>Mean / Median</th>\n"
+       << "<th>75<sup>th</sup> percentile</th>\n"
+       << "<th>95<sup>th</sup> percentile</th>\n"
+       << "<th>Maximum</th>\n"
+       << "</tr>\n";
+
+    os << "<tr>\n";
+    os.printf( "<td class=\"right\">%.3f</td>", d.min() );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .05 ) );
+    os.printf( "<td class=\"right\">%.3f / %.3f</td>", d.mean(), d.percentile( .5 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .75 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .95 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.max() );
+    os << "</tr>\n";
+    os << "</table>\n";
+
+    os << "</div>\n"
+          "</div>\n";
+  }
+
+  void lesser_ghoul_piechart( report::sc_html_stream& os )
+  {
+    if ( p.specialization() != DEATH_KNIGHT_UNHOLY )
+      return;
+
+    highchart::pie_chart_t lesser_ghoul_sources( highchart::build_id( p, "lesser_ghoul_sources" ), *p.sim );
+    lesser_ghoul_sources.set_title( "Lesser Ghoul Summon Sources" );
+    lesser_ghoul_sources.set( "plotOptions.pie.dataLabels.format", "{point.name}: {point.percentage:.1f}%" );
+
+    std::array<proc_t*, 3> sources = { p.procs.lesser_ghoul_army, p.procs.lesser_ghoul_db, p.procs.lesser_ghoul_fs };
+
+    double sum = 0.0;
+
+    for ( auto source : sources )
+      sum += source->count.mean();
+
+    range::sort( sources, [ & ]( proc_t* a, proc_t* b ) {
+      if ( a->count.mean() == b->count.mean() )
+        return a->name() < b->name();
+      return a->count.mean() > b->count.mean();
+    } );
+
+    range::for_each( sources, [ this, &lesser_ghoul_sources, sum ]( proc_t* source ) {
+      if ( source->count.mean() == 0.0 )
+        return;
+
+      color::rgb color = color::school_color( SCHOOL_SHADOWSTORM );
+
+      js::sc_js_t e;
+      e.set( "color", color.str() );
+      e.set( "y", util::round( source->count.mean() / sum * 100, p.sim->report_precision ) );
+      e.set( "name", report_decorators::decorate_html_string( source->name(), color ) );
+
+      lesser_ghoul_sources.add( "series.0.data", e );
+    } );
+
+    os << "<div class=\"player-section custom_section\">\n"
+          "<h3 class=\"toggle open\">Lesser Ghouls</h3>\n"
+          "<div class=\"toggle-content\">\n";
+
+    os << lesser_ghoul_sources.to_target_div();
+    p.sim->add_chart_data( lesser_ghoul_sources );
+
+    os << "</div>\n"
+          "</div>\n";
   }
 
   void html_customsection( report::sc_html_stream& os ) override
   {
-    os << "<div class=\"player-section custom_section\">\n";
     if ( p._runes.cumulative_waste.percentile( .5 ) > 0 )
-    {
       html_rune_waste( os );
-    }
-    os << "<div class=\"clear\"></div>\n";
-    os << "</div>\n";
+
+    putrefy_ghoul_remains_chart( os );
+    lesser_ghoul_piechart( os );
   }
 
 private:
