@@ -5695,6 +5695,12 @@ struct sundering_t : public shaman_attack_t
         as<int>( p()->talent.feral_spirit->effectN( 1 ).base_value() ),
         p()->spell.flowing_spirits_feral_spirit->duration() );
     }
+
+    if ( p()->buff.whirling_earth->consume( this ) )
+    {
+      p()->pet.searing_totem.spawn( timespan_t::from_seconds( 8.0 + rng().range( 0.85 ) ) );
+      p()->trigger_tww3_totemic_enh_2pc( execute_state );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -7004,8 +7010,6 @@ struct fire_nova_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
-
-    p()->trigger_whirling_fire( execute_state );
 
     if ( p()->sets->has_set_bonus( HERO_TOTEMIC, TWW3, B4 ) )
     {
@@ -8498,20 +8502,6 @@ public:
     }
   }
 
-  double calculate_direct_amount( action_state_t* state ) const override
-  {
-    shaman_spell_t::calculate_direct_amount( state );
-
-    // Apparently in game, Whirling Earth only buffs the first Flame Shock target damage
-    if ( state->chain_target > 0 && p()->buff.whirling_earth->check() )
-    {
-      state->result_raw = floor( state->result_raw / ( 1.0 + p()->buff.whirling_earth->check_stack_value() ) );
-      state->result_total = floor( state->result_total / ( 1.0 + p()->buff.whirling_earth->check_stack_value() ) );
-    }
-
-    return state->result_total;
-  }
-
   void trigger_dot( action_state_t* state ) override
   {
     if ( !get_dot( state->target )->is_ticking() )
@@ -8522,15 +8512,6 @@ public:
     track_flame_shock( state );
 
     shaman_spell_t::trigger_dot( state );
-  }
-
-  double action_da_multiplier() const override
-  {
-    auto m = shaman_spell_t::action_da_multiplier();
-
-    m *= 1.0 + p()->buff.whirling_earth->stack_value();
-
-    return m;
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -8614,18 +8595,6 @@ public:
 
     untrack_flame_shock( d );
     invalidate_dependant_targets();
-  }
-
-  void execute() override
-  {
-    shaman_spell_t::execute();
-
-    if ( p()->buff.whirling_earth->check() )
-    {
-      p()->buff.whirling_earth->decrement();
-
-      p()->trigger_tww3_totemic_enh_2pc( execute_state );
-    }
   }
 
   void impact( action_state_t* state ) override
@@ -12580,27 +12549,28 @@ void shaman_t::trigger_whirling_fire( const action_state_t* state )
     return;
   }
 
-  // [BUG] 2025-03-08 Apparently in-game, a Mote of Fire consuming Lava Lash will trigger an
-  // additional Reactivity Sundering on the target.
-  if ( bugs && buff.hot_hand->check() )
+  if ( buff.whirling_fire->consume( state->action, 1 ) )
   {
-    trigger_reactivity( state );
-  }
+    // [BUG] 2025-03-08 Apparently in-game, a Mote of Fire consuming Lava Lash will trigger an
+    // additional Reactivity Sundering on the target.
+    if ( bugs && buff.hot_hand->check() )
+    {
+      trigger_reactivity( state );
+    }
 
-  // Mote of Fire extends an existing Hot Hand buff, or triggers a new one with its duration
-  if ( buff.hot_hand->check() )
-  {
-    buff.hot_hand->extend_duration( this, buff.whirling_fire->data().effectN( 1 ).time_value() );
-  }
-  else
-  {
-    buff.hot_hand->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
-      buff.whirling_fire->data().effectN( 1 ).time_value() );
-  }
+    // Mote of Fire extends an existing Hot Hand buff, or triggers a new one with its duration
+    if ( buff.hot_hand->check() )
+    {
+      buff.hot_hand->extend_duration( this, buff.whirling_fire->data().effectN( 1 ).time_value() );
+    }
+    else
+    {
+      buff.hot_hand->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
+        buff.whirling_fire->data().effectN( 1 ).time_value() );
+    }
 
-  buff.whirling_fire->decrement();
-
-  trigger_tww3_totemic_enh_2pc( state );
+    trigger_tww3_totemic_enh_2pc( state );
+  }
 }
 
 void shaman_t::trigger_stormblast( const action_state_t* state )
@@ -13643,6 +13613,7 @@ void shaman_t::apply_action_effects( parse_effects_t* a )
   eff::source_eff_builder_t( buff.ascendance ).build( a );
   eff::source_eff_builder_t( buff.hot_hand ).build( a );
   eff::source_eff_builder_t( buff.arc_discharge ).build( a );
+  eff::source_eff_builder_t( buff.whirling_earth ).build( a );
 
 /*eff::source_eff_builder_t( talent.enhanced_imbues )
     .set_state_fn( [ this ] { return buff.flametongue_weapon->check(); } )
