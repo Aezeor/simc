@@ -12898,7 +12898,8 @@ void shaman_t::trigger_arc_discharge( const action_state_t* state )
   auto s = shaman_spell_t::cast_state( state );
 
   if ( s->exec_type != spell_variant::NORMAL && s->exec_type != spell_variant::THORIMS_INVOCATION &&
-       s->exec_type != spell_variant::PRIMORDIAL_STORM && s->exec_type != spell_variant::ARC_DISCHARGE )
+       s->exec_type != spell_variant::PRIMORDIAL_STORM && s->exec_type != spell_variant::ARC_DISCHARGE && 
+       s->exec_type != spell_variant::RIDE_THE_LIGHTNING )
   {
     return;
   }
