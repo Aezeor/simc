@@ -13618,7 +13618,8 @@ void death_knight_t::spell_lookups()
   spell.summon_abomination  = conditional_spell_lookup( talent.unholy.raise_abomination.ok(), 288853 );
   spell.summon_army_ghoul   = conditional_spell_lookup( talent.unholy.army_of_the_dead.ok(), 42651 );
   spell.summon_lesser_ghoul = conditional_spell_lookup( talent.unholy.doomed_bidding.ok(), 275430 );
-  spell.summon_magus        = conditional_spell_lookup( talent.unholy.magus_of_the_dead.ok(), 1242294 );
+  spell.summon_magus =
+      conditional_spell_lookup( talent.unholy.magus_of_the_dead.ok() || talent.unholy.reanimation.ok(), 1242294 );
 
   // Rider of the Apocalypse Spells
   spell.a_feast_of_souls_buff = conditional_spell_lookup( talent.rider.a_feast_of_souls.ok(), 440861 );
