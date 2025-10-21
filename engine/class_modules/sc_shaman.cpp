@@ -12615,7 +12615,10 @@ void shaman_t::trigger_tempest( T resource_count )
   }
 
   double tempest_chance =talent.tempest->effectN(
-    specialization() == SHAMAN_ELEMENTAL ? 1 : 2 ).percent() * 0.01 * 0.01 * resource_count;
+    specialization() == SHAMAN_ELEMENTAL ? 1 : 2 ).percent() * 0.01 * resource_count;
+
+  sim->print_debug( "{} attempts to proc tempest on {} consumed: chance={}", name(), resource_count,
+    tempest_chance );
 
   if ( rng().roll( tempest_chance ) )
   {
