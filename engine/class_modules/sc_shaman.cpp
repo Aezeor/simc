@@ -10368,9 +10368,16 @@ struct tempest_t : public shaman_spell_t
       p()->buff.storm_swell->trigger();
     }
 
-    if ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.arc_discharge.ok() )
+    if ( p()->talent.arc_discharge.ok() )
     {
-      p()->cooldown.stormkeeper->reset( false );
+      if ( p()->specialization() == SHAMAN_ELEMENTAL )
+      {
+        p()->cooldown.stormkeeper->reset( false );
+      }
+      else
+      {
+        p()->buff.arc_discharge->trigger();
+      }
     }
 
     if ( p()->talent.thorims_invocation.ok() && exec_type == spell_variant::NORMAL )
