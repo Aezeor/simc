@@ -8904,18 +8904,6 @@ struct ascendance_t : public shaman_spell_t
     {
       p()->action.doom_winds_asc->execute_on_target( target );
     }
-
-    if ( p()->talent.static_accumulation.ok() )
-    {
-      if ( background )
-      {
-        p()->buff.static_accumulation->extend_duration_or_trigger( duration, player );
-      }
-      else
-      {
-        p()->buff.static_accumulation->trigger();
-      }
-    }
   }
 
   bool ready() override
@@ -10640,6 +10628,11 @@ inline bool ascendance_buff_t::trigger( int stacks, double value, double chance,
     p->buff.tempest->trigger();
   }
 
+  if ( !p->buff.static_accumulation->check() )
+  {
+    p->buff.static_accumulation->trigger();
+  }
+
   return true;
 }
 
@@ -10658,6 +10651,12 @@ inline void ascendance_buff_t::expire_override( int expiration_stacks, timespan_
   buff_t::expire_override( expiration_stacks, remaining_duration );
 
   p->cooldown.strike->adjust_recharge_multiplier();
+
+  if ( p->buff.static_accumulation->check() && !p->buff.doom_winds->check() )
+  {
+    p->buff.static_accumulation->expire();
+  }
+
 }
 
 // ==========================================================================
@@ -12898,7 +12897,7 @@ void shaman_t::trigger_arc_discharge( const action_state_t* state )
   auto s = shaman_spell_t::cast_state( state );
 
   if ( s->exec_type != spell_variant::NORMAL && s->exec_type != spell_variant::THORIMS_INVOCATION &&
-       s->exec_type != spell_variant::PRIMORDIAL_STORM && s->exec_type != spell_variant::ARC_DISCHARGE && 
+       s->exec_type != spell_variant::PRIMORDIAL_STORM && s->exec_type != spell_variant::ARC_DISCHARGE &&
        s->exec_type != spell_variant::RIDE_THE_LIGHTNING )
   {
     return;
@@ -13229,6 +13228,8 @@ void shaman_t::create_buffs()
     ->set_chance( talent.maelstrom_weapon.ok() ? 1.0 : 0.0 );
   buff.static_accumulation = make_buff( this, "static_accumulation", find_spell( 384437 ) )
     ->set_default_value( talent.static_accumulation->effectN( 1 ).base_value() )
+    ->set_trigger_spell( talent.static_accumulation )
+    ->set_duration( 0_ms ) // Buff state controlled by Ascendance and Doom winds buffs
     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
       generate_maelstrom_weapon( action.ascendance, as<int>( b->value() ) );
     } );
@@ -13236,6 +13237,16 @@ void shaman_t::create_buffs()
     ->set_tick_on_application( true )
     ->set_period( timespan_t::from_seconds( find_spell( 466772 )->effectN( 5 ).base_value() ) )
     ->set_cooldown( 0_ms ) // Handled by the action
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+      if ( new_ == 1 && !buff.static_accumulation->check() )
+      {
+        buff.static_accumulation->trigger();
+      }
+      else if ( new_ == 0 && !buff.ascendance->check() )
+      {
+        buff.static_accumulation->expire();
+      }
+    } )
     ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       if ( target->is_sleeping() )
       {
