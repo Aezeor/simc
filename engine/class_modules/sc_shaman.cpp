@@ -1286,7 +1286,6 @@ public:
     buff_t* stormsurge;
     buff_t* windfury_weapon;
 
-    buff_t* forceful_winds;
     buff_t* molten_weapon;
     buff_t* crackling_surge;
     buff_t* converging_storms;
@@ -4484,11 +4483,6 @@ struct flametongue_weapon_spell_t : public shaman_spell_t  // flametongue_attack
 
 struct windfury_attack_t : public shaman_attack_t
 {
-  struct
-  {
-    std::array<proc_t*, 6> at_fw;
-  } stats_;
-
   windfury_attack_t( util::string_view n, shaman_t* player, const spell_data_t* s, weapon_t* w )
     : shaman_attack_t( n, player, s )
   {
@@ -4498,21 +4492,6 @@ struct windfury_attack_t : public shaman_attack_t
 
     // Windfury can not proc itself
     may_proc_windfury = false;
-
-    for ( size_t i = 0; i < stats_.at_fw.size(); i++ )
-    {
-      stats_.at_fw[ i ] = player->get_proc( "Windfury-ForcefulWinds: " + std::to_string( i ) );
-    }
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    shaman_attack_t::impact( state );
-
-    if ( p()->talent.forceful_winds->ok() )
-    {
-      stats_.at_fw[ p()->buff.forceful_winds->check() ]->occur();
-    }
   }
 };
 
@@ -12379,11 +12358,6 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state, double over
   {
     action_t* a = windfury_mh;
 
-    if ( talent.forceful_winds->ok() )
-    {
-      buff.forceful_winds->trigger();
-    }
-
     // Note, windfury needs to do a discrete execute event because in AoE situations, Forceful Winds
     // must be let to stack (fully) before any Windfury Attacks are executed. In this case, the
     // schedule must be done through a pre-snapshotted state object to preserve targeting
@@ -13194,10 +13168,6 @@ void shaman_t::create_buffs()
   // Enhancement
   //
 
-  buff.forceful_winds   = make_buff<buff_t>( this, "forceful_winds", find_spell( 262652 ) )
-                            ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-                            ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
-
   buff.molten_weapon = make_buff( this, "molten_weapon", find_spell( 224125 ) )
     ->set_trigger_spell( talent.feral_spirit );
   buff.crackling_surge  = make_buff( this, "crackling_surge", find_spell( 224127 ) )
@@ -13631,7 +13601,6 @@ void shaman_t::apply_action_effects( parse_effects_t* a )
   eff::source_eff_builder_t( buff.crackling_surge ).build( a );
   eff::source_eff_builder_t( buff.molten_weapon ).build( a );
   eff::source_eff_builder_t( buff.doom_winds ).build( a );
-  eff::source_eff_builder_t( buff.forceful_winds ).build( a );
   eff::source_eff_builder_t( buff.converging_storms ).build( a );
   eff::source_eff_builder_t( buff.lightning_strikes ).build( a );
   eff::source_eff_builder_t( buff.ascendance ).build( a );
