@@ -5327,17 +5327,17 @@ Druid
 1270586  Rampancy
 1270592  Patient Custodian
 1271206  Star Cascade
-1271222 *Starsurge
+1271222  Starsurge
 1271261  Penumbral Swell
 1271305  Bask in Moonlight
-1271400 *Battle Resurrection Highlight
+1271400  Battle Resurrection Highlight
 1271540  Limb from Limb
 1271635  Twin Claw
 1271636  Twin Claw
 1271657  Twin Claw
 1271839  Exacerbating Wounds
 1271863  Unseen Slash
-1271910 *Mark of the Wild Highlight
+1271910  Mark of the Wild Highlight
 
 Evoker
 351338   Quell

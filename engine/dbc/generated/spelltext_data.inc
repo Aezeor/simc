@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.0.63967
-static constexpr std::array<spelltext_data_t, 28454> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28455> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28399,6 +28399,7 @@ static constexpr std::array<spelltext_data_t, 28454> __spelltext_data { {
   { 1271199, "$@spelldesc1264804", "Your next Scourge Strike costs no Rune.", 0 },
   { 1271206, "$?c1[Gaining Astral Power with Wrath or Starfire][Thrash] has a $?c1[$s1][$s2]% chance to launch a Starsurge at a victim at $?c1[$s3][$s4]% effectiveness.\r\n", 0, 0 },
   { 1271211, "Dealing Shadow damage has a chance to unleash a Voidstalker Sting, dealing ${$s1*$<rolemult>*$1271226d/$1271226t1} Shadow damage to your target over $1271226d. Multiple applications may overlap.", 0, 0 },
+  { 1271222, "Launch a surge of stellar energies at the target, dealing $s1 Astral damage.", 0, 0 },
   { 1271225, "$@spelldesc187650", "Incapacitated.", 0 },
   { 1271226, "$@spelldesc1271211", "Suffering $w1 Shadow damage every $t1 sec.", 0 },
   { 1271261, "$?c1[Lunar Eclipse increases Arcane damage by an additional $s1%][\r\nLunar Beam increases Arcane damage you deal by $204066s6% while it is active].", 0, 0 },
