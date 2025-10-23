@@ -1168,8 +1168,8 @@ public:
     // Imbuement Mastery damage
     action_t* imbuement_mastery;
 
-    // Reactivity
-    action_t* reactivity;
+    // Splitstream
+    action_t* splitstream;
 
     // Doom Winds damage
     action_t* doom_winds;
@@ -1713,7 +1713,7 @@ public:
     player_talent_t totemic_momentum;
 
     // Row 3
-    player_talent_t reactivity;
+    player_talent_t splitstream;
     player_talent_t elemental_attunement;
 
     // Row 4
@@ -1958,7 +1958,7 @@ public:
   void trigger_awakening_storms( const action_state_t* state );
   void trigger_earthsurge( const action_state_t* state, double mul = 1.0 );
   void trigger_whirling_air( const action_state_t* state );
-  void trigger_reactivity( const action_state_t* state );
+  void trigger_splitstream( const action_state_t* state );
   void trigger_fusion_of_elements( const action_state_t* state );
   void trigger_thunderstrike_ward( const action_state_t* state );
   void trigger_earthen_rage( const action_state_t* state );
@@ -4762,21 +4762,21 @@ struct imbuement_mastery_t : public shaman_spell_t  // Imbuement Mastery damage
   }
 };
 
-struct sundering_reactivity_t : public shaman_attack_t
+struct sundering_splitstream_t : public shaman_attack_t
 {
-  sundering_reactivity_t( shaman_t* player ) :
-    shaman_attack_t( "sundering_reactivity", player, player->find_spell( 467283 ) )
+  sundering_splitstream_t( shaman_t* player ) :
+    shaman_attack_t( "sundering_splitstream", player, player->find_spell( 467283 ) )
   {
     weapon = &( player->main_hand_weapon );
     aoe    = -1;  // TODO: This is likely not going to affect all enemies but it will do for now
-    base_multiplier = player->talent.reactivity->effectN( 1 ).percent();
+    base_multiplier = player->talent.splitstream->effectN( 1 ).percent();
   }
 
   void execute() override
   {
     shaman_attack_t::execute();
 
-    p()->trigger_earthsurge( execute_state, p()->talent.reactivity->effectN( 1 ).percent() );
+    p()->trigger_earthsurge( execute_state, p()->talent.splitstream->effectN( 1 ).percent() );
   }
 };
 
@@ -5143,7 +5143,7 @@ struct lava_lash_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    add_child( p()->action.reactivity );
+    add_child( p()->action.splitstream );
   }
 
   void init_finished() override
@@ -5179,7 +5179,7 @@ struct lava_lash_t : public shaman_attack_t
 
     p()->trigger_whirling_fire( execute_state );
 
-    p()->trigger_reactivity( execute_state );
+    p()->trigger_splitstream( execute_state );
 
     if ( p()->talent.lively_totems.ok() && p()->rng_obj.lively_totems_ptr->trigger() )
     {
@@ -11059,9 +11059,9 @@ void shaman_t::create_actions()
     action.imbuement_mastery = new imbuement_mastery_t( this );
   }
 
-  if ( talent.reactivity.ok() )
+  if ( talent.splitstream.ok() )
   {
-    action.reactivity = new sundering_reactivity_t( this );
+    action.splitstream = new sundering_splitstream_t( this );
   }
 
   if ( talent.primordial_storm.ok() )
@@ -11578,7 +11578,7 @@ void shaman_t::init_spells()
     { talent.lively_totems,         "Lively Totems"         },
     { talent.totemic_momentum,      "Totemic Momentum"      },
     // Row 3
-    { talent.reactivity,            "Reactivity"            },
+    { talent.splitstream,            "Splitstream"            },
     { talent.elemental_attunement,  "Elemental Attunement"  },
     // Row 4
     { talent.imbuement_mastery,     "Imbuement Mastery"     },
@@ -12534,10 +12534,10 @@ void shaman_t::trigger_whirling_fire( const action_state_t* state )
   if ( buff.whirling_fire->consume( state->action, 1 ) )
   {
     // [BUG] 2025-03-08 Apparently in-game, a Mote of Fire consuming Lava Lash will trigger an
-    // additional Reactivity Sundering on the target.
+    // additional Splitstream Sundering on the target.
     if ( bugs && buff.hot_hand->check() )
     {
-      trigger_reactivity( state );
+      trigger_splitstream( state );
     }
 
     // Mote of Fire extends an existing Hot Hand buff, or triggers a new one with its duration
@@ -12697,14 +12697,14 @@ void shaman_t::trigger_whirling_air( const action_state_t* state )
   trigger_tww3_totemic_enh_2pc( state );
 }
 
-void shaman_t::trigger_reactivity( const action_state_t* state )
+void shaman_t::trigger_splitstream( const action_state_t* state )
 {
-  if ( !talent.reactivity.ok() || !buff.hot_hand->up() )
+  if ( !talent.splitstream.ok() || !buff.hot_hand->up() )
   {
     return;
   }
 
-  action.reactivity->execute_on_target( state->target );
+  action.splitstream->execute_on_target( state->target );
 }
 
 void shaman_t::trigger_fusion_of_elements( const action_state_t* state )
