@@ -10199,7 +10199,10 @@ struct primordial_storm_t : public shaman_spell_t
       p()->generate_maelstrom_weapon( this, as<int>( p()->talent.supercharge->effectN( 3 ).base_value() ) );
     }
 
-    p()->buff.elemental_overflow->trigger();
+    if ( p()->sets->has_set_bonus( HERO_TOTEMIC, TWW3, B4 ) )
+    {
+      p()->buff.elemental_overflow->trigger();
+    }
   }
 
   bool ready() override
