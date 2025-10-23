@@ -10,7 +10,7 @@
 // Automate Rune energize in death_knight_action_t::execute() instead of per spell overrides
 // Look into Death Strike OH handling (p -> dual_wield()?) and see if it can apply to other DW attacks
 // Unholy:
-// 
+//
 // Blood:
 // - Check that VB's absorb increase is correctly implemented
 // - Healing from Consumption damage done
@@ -658,7 +658,7 @@ struct death_knight_td_t : public actor_target_data_t
     propagate_const<buff_t*> frostreaper;
 
     // Unholy
-    propagate_const<buff_t*> contagion;
+    propagate_const<buff_t*> festering_scythe;
     propagate_const<buff_t*> disease_cloud;
     propagate_const<buff_t*> soul_reaper;
 
@@ -738,7 +738,7 @@ public:
   bool soul_reaper_castable;
 
   // Counters
-  unsigned int km_proc_attempts;               // critical auto attacks since the last KM proc
+  unsigned int km_proc_attempts;  // critical auto attacks since the last KM proc
   unsigned int
       bone_shield_charges_consumed;  // Counts how many bone shield charges have been consumed for DF1 4pc blood
   unsigned int active_riders;        // Number of active Riders of the Apocalypse pets
@@ -812,6 +812,8 @@ public:
     propagate_const<buff_t*> unholy_aura;
     propagate_const<buff_t*> unholy_aura_mastery;
     propagate_const<buff_t*> festering_scythe;
+    // Tier Sets
+    propagate_const<buff_t*> blighted;
 
     // Rider of the Apocalypse
     propagate_const<buff_t*> a_feast_of_souls;
@@ -1432,7 +1434,7 @@ public:
     const spell_data_t* ghoulish_frenzy_player;
     const spell_data_t* commander_of_the_dead;
     const spell_data_t* dark_transformation_damage;
-    const spell_data_t* dark_transformation_extend;
+    const spell_data_t* eternal_agony;
     const spell_data_t* epidemic_damage;
     const spell_data_t* outbreak_aoe;
     const spell_data_t* festering_scythe;
@@ -1460,7 +1462,7 @@ public:
     const spell_data_t* disease_cloud_damage;
     const spell_data_t* disease_cloud_debuff;
     const spell_data_t* disease_cloud_area;
-    const spell_data_t* contagion;
+    const spell_data_t* festering_scythe_debuff;
     const spell_data_t* rapid_variant_damage;
     const spell_data_t* unholy_aura_mastery_buff;
     const spell_data_t* putrefy_st;
@@ -1474,6 +1476,9 @@ public:
     const spell_data_t* summon_army_ghoul;
     const spell_data_t* summon_lesser_ghoul;
     const spell_data_t* summon_magus;
+
+    // Unholy Tier Set Spells
+    const spell_data_t* blighted_buff;
 
     // Rider of the Apocalypse non-talent spells
     const spell_data_t* a_feast_of_souls_buff;
@@ -1696,7 +1701,7 @@ public:
     propagate_const<proc_t*> razorice_from_avalanche;
     propagate_const<proc_t*> razorice_from_glacial_advance;
     propagate_const<proc_t*> razorice_from_runeforge;
-    
+
     // Lesser Ghoul Sources
     propagate_const<proc_t*> lesser_ghoul_db;
     propagate_const<proc_t*> lesser_ghoul_fs;
@@ -6770,8 +6775,8 @@ struct death_knight_disease_t : public death_knight_spell_t
     if ( p()->talent.unholy.festering_scythe.ok() && affected_by_contagion )
     {
       death_knight_td_t* td = get_td( s->target );
-      if ( td->debuff.contagion->check() )
-        tt *= 1.0 + td->debuff.contagion->data().effectN( 1 ).percent();
+      if ( td->debuff.festering_scythe->check() )
+        tt *= 1.0 + td->debuff.festering_scythe->data().effectN( 1 ).percent();
     }
 
     return tt;
@@ -9079,7 +9084,7 @@ struct festering_scythe_t final : public festering_base_t
   {
     festering_base_t::impact( s );
     death_knight_td_t* td = get_td( s->target );
-    td->debuff.contagion->trigger();
+    td->debuff.festering_scythe->trigger();
   }
 };
 
@@ -10601,7 +10606,7 @@ struct putrefy_t final : public death_knight_spell_t
       {
         auto& ghoul = p()->active_lesser_ghouls[ i ];
 
-        if( ghoul == nullptr || ghoul->is_sleeping() )
+        if ( ghoul == nullptr || ghoul->is_sleeping() )
           continue;
 
         if ( ghouls_putrefied < ghouls_to_putrefy )
@@ -10627,12 +10632,16 @@ struct putrefy_t final : public death_knight_spell_t
         p()->buffs.forbidden_knowledge->extend_duration(
             p(), p()->talent.unholy.forbidden_knowledge_3->effectN( 1 ).time_value() );
 
-      if ( p()->talent.unholy.reaping.ok() && p()->talent.unholy.soul_reaper.ok() )
+      if ( p()->talent.unholy.reaping.ok() && p()->talent.unholy.soul_reaper.ok() &&
+           rng().roll( p()->talent.unholy.reaping->effectN( 3 ).percent() ) )
       {
         p()->soul_reaper_castable = true;
         p()->cooldown.soul_reaper->reset( false );
       }
     } );
+
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, MID1, B4 ) )
+      p()->buffs.blighted->trigger();
   }
 
   bool ready() override
@@ -11540,7 +11549,7 @@ void death_knight_t::merge( player_t& other )
   _runes.rune_waste.merge( dk._runes.rune_waste );
   _runes.cumulative_waste.merge( dk._runes.cumulative_waste );
 
-  if( talent.unholy.putrefy.ok() )
+  if ( talent.unholy.putrefy.ok() )
     sample_data.putrefied_ghoul_remains->merge( *dk.sample_data.putrefied_ghoul_remains );
 }
 
@@ -11816,8 +11825,7 @@ void death_knight_t::sudden_doom_impact_effects( action_state_t* state, bool coi
 void death_knight_t::unholy_rp_execute_effects( bool sd, bool coil )
 {
   if ( buffs.dark_transformation->up() )
-    buffs.dark_transformation->extend_duration(
-        this, timespan_t::from_seconds( spell.dark_transformation_extend->effectN( 1 ).base_value() ) );
+    buffs.dark_transformation->extend_duration( this, spell.eternal_agony->effectN( 1 ).time_value() );
 
   if ( talent.sanlayn.vampiric_strike.ok() && !buffs.gift_of_the_sanlayn->check() )
     trigger_vampiric_strike_proc( target );
@@ -11840,7 +11848,7 @@ void death_knight_t::unholy_rp_impact_effects( action_state_t* state, bool sd, b
     return;
 
   death_knight_td_t* td     = get_target_data( state->target );
-  timespan_t extension_time = timespan_t::from_seconds( spec.death_coil->effectN( 3 ).base_value() );
+  timespan_t extension_time = spec.unholy_death_knight->effectN( 11 ).time_value();
 
   if ( td->dot.dread_plague->is_ticking() )
     td->dot.dread_plague->adjust_duration( extension_time );
@@ -12068,8 +12076,17 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* t, bool is_vampiric
 
   if ( is_vampiric )
   {
-    timespan_t extension = timespan_t::from_seconds( talent.sanlayn.infliction_of_sorrow->effectN( 3 ).base_value() );
-    mod                  = talent.sanlayn.infliction_of_sorrow->effectN( 2 ).percent();
+    timespan_t extension = 0_s;
+    switch ( specialization() )
+    {
+      case DEATH_KNIGHT_BLOOD:
+        extension = talent.sanlayn.infliction_of_sorrow->effectN( 3 ).time_value();
+        break;
+      case DEATH_KNIGHT_UNHOLY:
+        extension = talent.sanlayn.infliction_of_sorrow->effectN( 5 ).time_value();
+        break;
+    }
+    mod = talent.sanlayn.infliction_of_sorrow->effectN( 2 ).percent();
 
     if ( talent.sanlayn.unending_misery.ok() && t == target )
     {
@@ -13577,7 +13594,7 @@ void death_knight_t::spell_lookups()
   spell.ghoulish_frenzy_player          = conditional_spell_lookup( talent.unholy.ghoulish_frenzy.ok(), 377588 );
   spell.commander_of_the_dead           = conditional_spell_lookup( talent.unholy.commander_of_the_dead.ok(), 390260 );
   spell.dark_transformation_damage      = conditional_spell_lookup( talent.unholy.dark_transformation.ok(), 344955 );
-  spell.dark_transformation_extend      = conditional_spell_lookup( talent.unholy.dark_transformation.ok(), 63560 );
+  spell.eternal_agony                   = conditional_spell_lookup( talent.unholy.dark_transformation.ok(), 390268 );
   spell.epidemic_damage                 = conditional_spell_lookup( spec.epidemic->ok(), 212739 );
   spell.outbreak_aoe                    = conditional_spell_lookup( talent.unholy.outbreak.ok(), 196780 );
   spell.festering_scythe                = conditional_spell_lookup( talent.unholy.festering_scythe.ok(), 458128 );
@@ -13597,7 +13614,7 @@ void death_knight_t::spell_lookups()
   spell.disease_cloud_damage            = conditional_spell_lookup( talent.unholy.raise_abomination.ok(), 1244347 );
   spell.disease_cloud_debuff            = conditional_spell_lookup( talent.unholy.raise_abomination.ok(), 1244102 );
   spell.disease_cloud_area              = conditional_spell_lookup( talent.unholy.raise_abomination.ok(), 1244103 );
-  spell.contagion                       = conditional_spell_lookup( talent.unholy.raise_abomination.ok(), 1241077 );
+  spell.festering_scythe_debuff         = conditional_spell_lookup( talent.unholy.raise_abomination.ok(), 1241077 );
   spell.rapid_variant_damage            = conditional_spell_lookup( talent.unholy.rapid_variant.ok(), 1242564 );
   spell.unholy_aura_mastery_buff        = conditional_spell_lookup( talent.unholy.unholy_aura.ok(), 1268917 );
   spell.putrefy_st                      = conditional_spell_lookup( talent.unholy.putrefy.ok(), 1270443 );
@@ -13620,6 +13637,9 @@ void death_knight_t::spell_lookups()
   spell.summon_lesser_ghoul = conditional_spell_lookup( talent.unholy.doomed_bidding.ok(), 275430 );
   spell.summon_magus =
       conditional_spell_lookup( talent.unholy.magus_of_the_dead.ok() || talent.unholy.reanimation.ok(), 1242294 );
+
+  // Unholy Tier Set Spells
+  spell.blighted_buff = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, MID1, B4 ), 1271199 );
 
   // Rider of the Apocalypse Spells
   spell.a_feast_of_souls_buff = conditional_spell_lookup( talent.rider.a_feast_of_souls.ok(), 440861 );
@@ -13938,8 +13958,9 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
   debuff.disease_cloud =
       make_debuff( p.talent.unholy.raise_abomination.ok(), *this, "disease_cloud", p.spell.disease_cloud_debuff );
 
-  debuff.contagion = make_debuff( p.talent.unholy.festering_scythe.ok(), *this, "contagion", p.spell.contagion )
-                         ->set_default_value_from_effect( 1 );
+  debuff.festering_scythe = make_debuff( p.talent.unholy.festering_scythe.ok(), *this, "festering_scythe_debuff",
+                                                p.spell.festering_scythe_debuff )
+                                       ->set_default_value_from_effect( 1 );
 
   debuff.soul_reaper =
       make_debuff( p.talent.unholy.soul_reaper.ok(), *this, "soul_reaper_debuff", p.spell.soul_reaper_debuff );
@@ -14439,6 +14460,9 @@ void death_knight_t::create_buffs()
 
   buffs.festering_scythe =
       make_fallback( talent.unholy.festering_scythe.ok(), this, "festering_scythe", spell.festering_scythe_buff );
+
+  // Tier Sets
+  buffs.blighted = make_fallback( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, MID1, B4 ), this, "blighted", spell.blighted_buff );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -15073,6 +15097,8 @@ void death_knight_t::apply_action_effects( action_t* a, bool pet )
       action->parse_effects( buffs.commander_of_the_dead );
       // Dont parse effect 6 due to the way this effect works.
       action->parse_effects( mastery.dreadblade, effect_mask_t( true ).disable( 6 ) );
+      // Sets
+      action->parse_effects( buffs.blighted, CONSUME_BUFF );
       break;
     default:
       break;
@@ -15339,13 +15365,13 @@ public:
       p.sim->add_chart_data( chart );
     }
 
-    auto& r         = p._runes.cumulative_waste;
+    auto& r       = p._runes.cumulative_waste;
     int n_buckets = std::min( 24, static_cast<int>( 2 * ( r.max() - r.min() ) ) + 1 );
     r.create_histogram( n_buckets );
 
     highchart::histogram_chart_t total_chart( highchart::build_id( p, "total_time_spent_wasting" ), *p.sim );
-    if ( chart::generate_distribution( total_chart, &p, r.distribution, "Total Seconds Spent Wasting Runes", r.mean(), r.min(),
-                                       r.max() ) )
+    if ( chart::generate_distribution( total_chart, &p, r.distribution, "Total Seconds Spent Wasting Runes", r.mean(),
+                                       r.min(), r.max() ) )
     {
       total_chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
       total_chart.set( "chart.width", std::to_string( 80 + n_buckets * 20 ) );
@@ -15361,7 +15387,7 @@ public:
   void html_rp_waste( report::sc_html_stream& os ) const
   {
     auto& d = p.get_uptime( "Runic Power Cap" )->uptime_instance;
-    if ( d.distribution.size() == 0 ) 
+    if ( d.distribution.size() == 0 )
       return;
 
     os << "<div class=\"player-section custom_section\">\n"
