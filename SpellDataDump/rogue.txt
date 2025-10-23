@@ -20225,7 +20225,7 @@ Proc Chance      : 101%
 Attributes       : Do Not Sheath (18), No Threat (42), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1278003)  : Apply Aura (6) | Trigger Spell on Aura Stack Count (542): Gravedigger
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6 | Misc Value 2: 6 | Trigger Spell: 1265935 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Min Stack Count: 6 | Max Stack Count: 6 | Trigger Spell: 1265935 | Target: Self (1)
 #2 (id=1278078)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : $@spelldesc1265863

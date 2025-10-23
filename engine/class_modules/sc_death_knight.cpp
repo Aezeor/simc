@@ -4465,6 +4465,7 @@ struct whitemane_pet_t final : public horseman_pet_t
     death_coil_whitemane_background_t( std::string_view name, horseman_pet_t* p )
       : horseman_spell_t( p, name, p->dk()->pet_spell.whitemane_death_coil )
     {
+      background = true;
       base_multiplier    = dk()->talent.rider.let_terror_reign->effectN( 2 ).percent();
       cooldown->duration = 0_ms;  // Ignore the cooldown for the background casts
     }
@@ -4623,7 +4624,7 @@ struct whitemane_pet_t final : public horseman_pet_t
   {
     death_knight_pet_t::create_actions();
     epidemic   = new epidemic_whitemane_t( "epidemic", this );
-    death_coil = new death_coil_whitemane_background_t( "death_coil_ride_or_die", this );
+    death_coil = new death_coil_whitemane_background_t( "death_coil_let_terror_reign", this );
   }
 
 public:
@@ -6198,6 +6199,7 @@ struct dark_transformation_buff_t final : public death_knight_buff_t
     : death_knight_buff_t( p, n, s )
   {
     set_default_value_from_effect( 1 );
+    set_duration( p->talent.unholy.dark_transformation->duration() );
     cooldown->duration = 0_ms;  // Handled by the player ability
   }
 
@@ -8905,19 +8907,8 @@ struct graveyard_damage_aoe_t final : public epidemic_damage_base_t
     : epidemic_damage_base_t( name, p, p->spell.graveyard_damage )
   {
     // Main is one target, aoe is the other targets, so we take 1 off the max targets
-    aoe                     = aoe - 1;
+    aoe                     = -1;
     attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    death_knight_spell_t::available_targets( tl );
-    auto it = range::find( tl, target );
-    if ( it != tl.end() )
-    {
-      tl.erase( it );
-    }
-    return tl.size();
   }
 };
 

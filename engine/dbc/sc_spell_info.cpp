@@ -2228,6 +2228,10 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
       tokens.emplace_back(
           fmt::format( "School: {}", util::school_type_string( dbc::get_school_type( e->misc_value1() ) ) ) );
     }
+    else if ( e->subtype() == A_TRIGGER_SPELL_ON_STACK_AMOUNT )
+    {
+      tokens.emplace_back( fmt::format( "Min Stack Count: {}", e->misc_value1() ) );
+    }
     else
     {
       tokens.emplace_back( fmt::format( "Misc Value: {}", e->misc_value1() ) );
@@ -2261,6 +2265,9 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     case A_PCT_RATING_ADDED_TO_RATING:
       tokens.emplace_back(
         fmt::format( "To Rating: {}", util::stat_type_abbrev( util::translate_rating_mod( e->misc_value2() ) ) ) );
+      break;
+    case A_TRIGGER_SPELL_ON_STACK_AMOUNT:
+      tokens.emplace_back( fmt::format( "Max Stack Count: {}", e->misc_value2() ) );
       break;
     default: tokens.emplace_back( fmt::format( "Misc Value 2: {}", e->misc_value2() ) );
       break;
