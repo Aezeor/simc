@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.63854 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.63967 midnight-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, base_ilevel={ 30 }, req_ilevel={ 25 }
@@ -4160,6 +4160,55 @@ bonus_id={ 7245 }, quality={ epic }
 bonus_id={ 7246 }, quality={ legendary }
 bonus_id={ 7247 }, desc={ Timewarped }, ilevel={ 5 @plvl 1 - 138 @plvl 60 }
 bonus_id={ 7250 }, quality={ epic }, recursive_bonus_ids={ 9117 }
+bonus_id={ 7256 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7257 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7258 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7259 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7260 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7261 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7262 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7263 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7264 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7265 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7266 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7267 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7268 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7269 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7270 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7271 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7272 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7273 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7274 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7275 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7276 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7277 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7278 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7279 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7280 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7281 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7282 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7283 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7284 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7285 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7286 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7287 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7288 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7289 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7290 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7291 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7292 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7293 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7294 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7295 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7296 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7297 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7298 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7299 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7300 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7301 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7302 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7303 }, recursive_bonus_ids={ 13539 }
+bonus_id={ 7304 }, recursive_bonus_ids={ 13539 }
 bonus_id={ 7357 }, effects={ Unknown Effect (id=138395) }
 bonus_id={ 7452 }, ilevel={ 160 @plvl 1 - 160 @plvl 70 }
 bonus_id={ 7453 }, ilevel={ 163 @plvl 1 - 163 @plvl 70 }
@@ -4180,6 +4229,55 @@ bonus_id={ 7475 }, quality={ legendary }, effects={ Death's Fathom (id=364855, i
 bonus_id={ 7476 }, quality={ legendary }, effects={ Sinful Delight (id=364854, index=0, type=equip) }
 bonus_id={ 7477 }, quality={ legendary }, effects={ Kindred Affinity (id=364815, index=0, type=equip) }
 bonus_id={ 7478 }, quality={ legendary }, effects={ Toxic Onslaught (id=364928, index=0, type=equip) }
+bonus_id={ 7479 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7480 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7481 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7482 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7483 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7484 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7485 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7486 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7487 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7488 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7489 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7490 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7491 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7492 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7493 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7494 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7495 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7496 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7497 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7498 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7499 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7500 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7501 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7502 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7503 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7504 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7505 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7506 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7507 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7508 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7509 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7510 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7511 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7512 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7513 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7514 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7515 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7516 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7517 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7518 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7519 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7520 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7521 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7522 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7523 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7524 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7525 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7526 }, recursive_bonus_ids={ 13541 }
+bonus_id={ 7527 }, recursive_bonus_ids={ 13541 }
 bonus_id={ 7570 }, quality={ legendary }, effects={ Splintered Elements (id=364736, index=0, type=equip) }
 bonus_id={ 7571 }, quality={ legendary }, effects={ Celestial Spirits (id=364819, index=0, type=equip) }
 bonus_id={ 7572 }, quality={ legendary }, effects={ Obedience (id=364927, index=0, type=equip) }
@@ -4451,6 +4549,55 @@ bonus_id={ 8186 }, suffix={ of the Harmonious }, stats={ 71% Mastery [0.5000], 2
 bonus_id={ 8187 }, suffix={ of the Harmonious }, stats={ 29% Mastery [0.2000], 71% Vers [0.5000] }
 bonus_id={ 8188 }, effects={ Armor Spikes (id=396581, index=0, type=equip) }
 bonus_id={ 8289 }, socket={ 1 }
+bonus_id={ 8290 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8291 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8292 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8293 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8294 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8295 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8296 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8297 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8298 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8299 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8300 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8301 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8302 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8303 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8304 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8305 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8306 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8307 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8308 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8309 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8310 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8311 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8312 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8313 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8314 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8315 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8316 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8317 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8318 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8319 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8320 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8321 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8322 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8323 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8324 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8325 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8326 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8327 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8328 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8329 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8330 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8331 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8332 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8333 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8334 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8335 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8336 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8337 }, recursive_bonus_ids={ 13542 }
+bonus_id={ 8338 }, recursive_bonus_ids={ 13542 }
 bonus_id={ 8402 }, desc={ Timewarped }, quality={ rare }, ilevel={ 3 @plvl 1 - 210 @plvl 60 }
 bonus_id={ 8403 }, desc={ Timewarped }, ilevel={ 5 @plvl 1 - 200 @plvl 60 }
 bonus_id={ 8404 }, quality={ uncommon }, effects={ Alter Time (id=397315, index=0, type=equip) }

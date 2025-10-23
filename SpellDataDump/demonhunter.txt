@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.63854 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.63967 midnight-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1236,7 +1236,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
 Category Cooldown: 15 seconds
-Affecting Spells : Metamorphosis (162264 effect#7), Havoc Demon Hunter (212612 effects: #6, #7), Vengeance Demon Hunter (212613 effects: #6, #7), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Blade Dance (320402 effect#1), Mark of the Ogre (326486 effect#5), Half-Giant Empowerment (345871 effect#5), Deadly Dance (364438 effect#1), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Enduring Torment (453314 effect#2), Demon Hunter Havoc 11.0 Class Set 2pc (454616 effect#1), Blade Rhapsody (454628 effect#2), Devourer Demon Hunter (1213636 effects: #5, #6), Winning Streak! (1217011 effect#1), Winning Streak! (1220706 effect#1), Remorseless (1266328 effects: #1, #2)
+Affecting Spells : Metamorphosis (162264 effect#7), Havoc Demon Hunter (212612 effects: #6, #7), Vengeance Demon Hunter (212613 effects: #6, #7), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Blade Dance (320402 effect#1), Mark of the Ogre (326486 effect#5), Half-Giant Empowerment (345871 effect#5), Deadly Dance (364438 effect#1), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Enduring Torment (453314 effect#2), Demon Hunter Havoc 11.0 Class Set 2pc (454616 effect#1), Blade Rhapsody (454628 effect#2), Devourer Demon Hunter (1213636 effects: #5, #6), Winning Streak! (1217011 effect#1), Winning Streak! (1220706 effect#1), Remorseless (1266328 effects: #1, #2), Eternal Hunt (1270901 effect#1)
 Triggered By     : Unbreaking Grasp (370718)
 Family Flags     : 25, 32, 42, 85
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), No Aura Icon (60), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
@@ -1608,13 +1608,13 @@ Spell Level      : 11
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
-Cooldown         : 40 seconds
+Cooldown         : 30 seconds
 Category         : 1582 (Type 0x0)
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 186
                  : 292
-Category Cooldown: 40 seconds
+Category Cooldown: 30 seconds
 Affecting Spells : Blind Fury (203550 effect#1), Soul Flame of Insight (226334 effect#2)
 Family Flags     : 10
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Is Self Channelled (38), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), Name in Channel Bar (61), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Delay Combat Timer During Cast (211), Aura Points On Client (268), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Allow Class Ability Procs (416)
@@ -1645,7 +1645,7 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Blind Fury (203550 effect#2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Soul Flame of Insight (226334 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Eyes of Rage (278500 effect#2), Looks Can Kill (320415 effect#1), Exposed Wound (339229 effect#1), Demon Soul (347765 effects: #1, #2), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Demonsurge (452489 effect#5), Void Metamorphosis (471306 effect#3), Demon Soul (1238676 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Remorseless (1266328 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Blind Fury (203550 effect#2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Soul Flame of Insight (226334 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Eyes of Rage (278500 effect#2), Looks Can Kill (320415 effect#1), Exposed Wound (339229 effect#1), Demon Soul (347765 effects: #1, #2), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Demonsurge (452489 effect#5), Void Metamorphosis (471306 effect#3), Demon Soul (1238676 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Remorseless (1266328 effects: #1, #2), Empowered Eye Beam (1271144 effect#1)
 Family Flags     : 8, 16, 43
 Attributes       : Not a Proc (105), Do Not Display Range (126), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Allow Cast While Channeling (308), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
@@ -1713,7 +1713,7 @@ Duration         : 3 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Prepared (203551 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Tactical Retreat (389688 effect#1), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Evasive Action (444929 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Voidstep (1223157 effect#2), Thrill of the Fight (1227062 effects: #1, #2), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Demon Soul (1238675 effects: #1, #2), Demon Soul (1238676 effects: #1, #2), Demonsurge (1245496 effect#3), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Prepared (203551 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Tactical Retreat (389688 effect#1), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Evasive Action (444929 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Voidstep (1223157 effect#2), Thrill of the Fight (1227062 effects: #1, #2), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Demon Soul (1238675 effects: #1, #2), Demon Soul (1238676 effects: #1, #2), Demonsurge (1245496 effect#3), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2), Keen Edge (1272138 effects: #2, #3)
 Triggered By     : Vengeful Retreat (198793)
 Family Flags     : 3, 16, 42, 58, 70
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Aura Points On Client (268), Allow Class Ability Procs (416)
@@ -1751,7 +1751,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Metamorphosis (162264 effect#7), Demon Soul (163073 effects: #1, #2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Blade Dance (320402 effect#1), Mark of the Ogre (326486 effect#5), Half-Giant Empowerment (345871 effect#5), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Enduring Torment (453314 effect#2), Demon Hunter Havoc 11.0 Class Set 2pc (454616 effect#1), Blade Rhapsody (454628 effect#2), Void Metamorphosis (471306 effect#3), Winning Streak! (1217011 effect#1), Winning Streak! (1220706 effect#1), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Demon Soul (1238676 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2), Remorseless (1266328 effects: #1, #2)
+Affecting Spells : Metamorphosis (162264 effect#7), Demon Soul (163073 effects: #1, #2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Blade Dance (320402 effect#1), Mark of the Ogre (326486 effect#5), Half-Giant Empowerment (345871 effect#5), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Enduring Torment (453314 effect#2), Demon Hunter Havoc 11.0 Class Set 2pc (454616 effect#1), Blade Rhapsody (454628 effect#2), Void Metamorphosis (471306 effect#3), Winning Streak! (1217011 effect#1), Winning Streak! (1220706 effect#1), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Demon Soul (1238676 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2), Remorseless (1266328 effects: #1, #2), Eternal Hunt (1270901 effect#1), Keen Edge (1272138 effects: #2, #3)
 Triggered By     : Blade Dance (188499)
 Family Flags     : 16, 25, 42, 58
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
@@ -1791,7 +1791,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Metamorphosis (162264 effect#7), Demon Soul (163073 effects: #1, #2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Blade Dance (320402 effect#1), Mark of the Ogre (326486 effect#5), Half-Giant Empowerment (345871 effect#5), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Dancing with Fate (389978 effect#1), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Enduring Torment (453314 effect#2), Demon Hunter Havoc 11.0 Class Set 2pc (454616 effect#1), Blade Rhapsody (454628 effect#2), Void Metamorphosis (471306 effect#3), Winning Streak! (1217011 effect#1), Winning Streak! (1220706 effect#1), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Demon Soul (1238676 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2), Remorseless (1266328 effects: #1, #2)
+Affecting Spells : Metamorphosis (162264 effect#7), Demon Soul (163073 effects: #1, #2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Blade Dance (320402 effect#1), Mark of the Ogre (326486 effect#5), Half-Giant Empowerment (345871 effect#5), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Dancing with Fate (389978 effect#1), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Enduring Torment (453314 effect#2), Demon Hunter Havoc 11.0 Class Set 2pc (454616 effect#1), Blade Rhapsody (454628 effect#2), Void Metamorphosis (471306 effect#3), Winning Streak! (1217011 effect#1), Winning Streak! (1220706 effect#1), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Demon Soul (1238676 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2), Remorseless (1266328 effects: #1, #2), Eternal Hunt (1270901 effect#1), Keen Edge (1272138 effects: #2, #3)
 Triggered By     : Blade Dance (188499)
 Family Flags     : 12, 16, 25, 42, 58
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
@@ -2356,7 +2356,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 2618: Fiery Brand (207744 effect#5), Fiery Brand (207771 effect#4)
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Havoc Demon Hunter (212612 effects: #6, #7), Vengeance Demon Hunter (212613 effects: #1, #2, #6, #7, #17), Fiery Demise (212818 effect#2), Frailty (247456 effect#4), Mark of the Ogre (326486 effect#3), Half-Giant Empowerment (345871 effect#3), Demon Soul (347765 effects: #1, #2), Demon Hunter Vengeance Class Set 2pc (393630 effects: #1, #2), Demon Hunter Vengeance 10.1 Class Set 4pc (405509 effect#3), Fires of Fel (409645 effect#2), Fiery Resolve (425653 effects: #1, #2), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #5, #6), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Demon Soul (1238675 effects: #1, #2), Celestial Echoes (1253415 effects: #1, #3), Celestial Echoes (1256312 effects: #1, #3), Vengeance Demon Hunter (1256959 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Havoc Demon Hunter (212612 effects: #6, #7), Vengeance Demon Hunter (212613 effects: #1, #2, #6, #7, #17), Fiery Demise (212818 effect#2), Frailty (247456 effect#4), Mark of the Ogre (326486 effect#3), Half-Giant Empowerment (345871 effect#3), Demon Soul (347765 effects: #1, #2), Demon Hunter Vengeance Class Set 2pc (393630 effects: #1, #2), Demon Hunter Vengeance 10.1 Class Set 4pc (405509 effect#3), Fires of Fel (409645 effect#2), Fiery Resolve (425653 effects: #1, #2), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #5, #6), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Demon Soul (1238675 effects: #1, #2), Celestial Echoes (1253415 effects: #1, #3), Celestial Echoes (1256312 effects: #1, #3), Vengeance Demon Hunter (1256959 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2), Keen Edge (1272138 effects: #2, #3)
 Family Flags     : 22, 32, 58, 70, 85
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
@@ -2886,7 +2886,7 @@ Labels           : 16: Class Spells
                  : 117
                  : 292
 Proc Chance      : 101%
-Real PPM         : 6 (Haste multiplier)
+Real PPM         : 6
 Proc Flags       : Yellow Melee
 Attributes       : Passive (6), Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
@@ -3561,7 +3561,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3597
 Category Cooldown: 9 seconds
-Affecting Spells : Havoc Demon Hunter (212612 effects: #6, #7), Vengeance Demon Hunter (212613 effects: #6, #7), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Mark of the Ogre (326486 effect#5), Half-Giant Empowerment (345871 effect#5), Deadly Dance (364438 effect#1), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Demon Hunter Havoc 11.0 Class Set 2pc (454616 effect#1), Blade Rhapsody (454628 effect#2), Devourer Demon Hunter (1213636 effects: #5, #6), Winning Streak! (1217011 effect#1), Winning Streak! (1220706 effect#1)
+Affecting Spells : Havoc Demon Hunter (212612 effects: #6, #7), Vengeance Demon Hunter (212613 effects: #6, #7), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Mark of the Ogre (326486 effect#5), Half-Giant Empowerment (345871 effect#5), Deadly Dance (364438 effect#1), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Demon Hunter Havoc 11.0 Class Set 2pc (454616 effect#1), Blade Rhapsody (454628 effect#2), Devourer Demon Hunter (1213636 effects: #5, #6), Winning Streak! (1217011 effect#1), Winning Streak! (1220706 effect#1), Eternal Hunt (1270901 effect#1)
 Family Flags     : 32, 37, 42, 85
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
@@ -3588,7 +3588,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Mark of the Ogre (326486 effect#5), Half-Giant Empowerment (345871 effect#5), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Demon Hunter Havoc 11.0 Class Set 2pc (454616 effect#1), Blade Rhapsody (454628 effect#2), Void Metamorphosis (471306 effect#3), Winning Streak! (1217011 effect#1), Winning Streak! (1220706 effect#1), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Demon Soul (1238676 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Mark of the Ogre (326486 effect#5), Half-Giant Empowerment (345871 effect#5), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Demon Hunter Havoc 11.0 Class Set 2pc (454616 effect#1), Blade Rhapsody (454628 effect#2), Void Metamorphosis (471306 effect#3), Winning Streak! (1217011 effect#1), Winning Streak! (1220706 effect#1), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Demon Soul (1238676 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2), Eternal Hunt (1270901 effect#1), Keen Edge (1272138 effects: #2, #3)
 Triggered By     : Death Sweep (210152)
 Family Flags     : 16, 37, 42, 58
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
@@ -3607,7 +3607,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Mark of the Ogre (326486 effect#5), Half-Giant Empowerment (345871 effect#5), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Dancing with Fate (389978 effect#1), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Demon Hunter Havoc 11.0 Class Set 2pc (454616 effect#1), Blade Rhapsody (454628 effect#2), Void Metamorphosis (471306 effect#3), Winning Streak! (1217011 effect#1), Winning Streak! (1220706 effect#1), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Demon Soul (1238676 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Mark of the Ogre (326486 effect#5), Half-Giant Empowerment (345871 effect#5), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Dancing with Fate (389978 effect#1), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Demon Hunter Havoc 11.0 Class Set 2pc (454616 effect#1), Blade Rhapsody (454628 effect#2), Void Metamorphosis (471306 effect#3), Winning Streak! (1217011 effect#1), Winning Streak! (1220706 effect#1), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Demon Soul (1238676 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2), Eternal Hunt (1270901 effect#1), Keen Edge (1272138 effects: #2, #3)
 Triggered By     : Death Sweep (210152)
 Family Flags     : 16, 37, 38, 42, 58
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
@@ -3835,10 +3835,10 @@ Effects          :
                    Affected Spells (Label): Reaver's Mark (442624)
 #12 (id=1165304) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 9 | Scaled Value: 9 | Misc Value 2: 3367 (Label) | Target: Self (1)
-                   Affected Spells (Label): Art of the Glaive (442290), Reaver's Glaive (442294), Keen Engagement (442497), Warblade's Hunger (442503), Warblade's Hunger (442507), Reaver's Mark (442624), Reaver's Mark (442679), Aldrachi Tactics (442683), Thrill of the Fight (442686), Thrill of the Fight (442688), Thrill of the Fight (442695), Army Unto Oneself (442714), Blade Ward (442715), Fury of the Aldrachi (442718), Incorruptible Spirit (442736), Incorruptible Spirit (442788), Wounded Quarry (442806), Art of the Glaive (444661), Reaver's Glaive (444686), Reaver's Glaive (444764), Fury of the Aldrachi (444806), Art of the Glaive (444810), Evasive Action (444926), Evasive Action (444929), Unhindered Assault (444931), Preemptive Strike (444979), Preemptive Strike (444997), Wounded Quarry (474339), Thrill of the Fight (1227062)
+                   Affected Spells (Label): Art of the Glaive (442290), Reaver's Glaive (442294), Keen Engagement (442497), Warblade's Hunger (442503), Warblade's Hunger (442507), Reaver's Mark (442624), Reaver's Mark (442679), Aldrachi Tactics (442683), Thrill of the Fight (442686), Thrill of the Fight (442688), Thrill of the Fight (442695), Army Unto Oneself (442714), Blade Ward (442715), Fury of the Aldrachi (442718), Incorruptible Spirit (442736), Incorruptible Spirit (442788), Wounded Quarry (442806), Art of the Glaive (444661), Reaver's Glaive (444686), Reaver's Glaive (444764), Fury of the Aldrachi (444806), Art of the Glaive (444810), Evasive Action (444926), Evasive Action (444929), Unhindered Assault (444931), Preemptive Strike (444979), Preemptive Strike (444997), Wounded Quarry (474339), Thrill of the Fight (1227062), Keen Edge (1272138), Broken Spirit (1272143), Bladecraft (1272153)
 #13 (id=1165305) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Misc Value 2: 3367 (Label) | Target: Self (1)
-                   Affected Spells (Label): Art of the Glaive (442290), Reaver's Glaive (442294), Keen Engagement (442497), Warblade's Hunger (442503), Warblade's Hunger (442507), Reaver's Mark (442624), Reaver's Mark (442679), Aldrachi Tactics (442683), Thrill of the Fight (442686), Thrill of the Fight (442688), Thrill of the Fight (442695), Army Unto Oneself (442714), Blade Ward (442715), Fury of the Aldrachi (442718), Incorruptible Spirit (442736), Incorruptible Spirit (442788), Wounded Quarry (442806), Art of the Glaive (444661), Reaver's Glaive (444686), Reaver's Glaive (444764), Fury of the Aldrachi (444806), Art of the Glaive (444810), Evasive Action (444926), Evasive Action (444929), Unhindered Assault (444931), Preemptive Strike (444979), Preemptive Strike (444997), Wounded Quarry (474339), Thrill of the Fight (1227062)
+                   Affected Spells (Label): Art of the Glaive (442290), Reaver's Glaive (442294), Keen Engagement (442497), Warblade's Hunger (442503), Warblade's Hunger (442507), Reaver's Mark (442624), Reaver's Mark (442679), Aldrachi Tactics (442683), Thrill of the Fight (442686), Thrill of the Fight (442688), Thrill of the Fight (442695), Army Unto Oneself (442714), Blade Ward (442715), Fury of the Aldrachi (442718), Incorruptible Spirit (442736), Incorruptible Spirit (442788), Wounded Quarry (442806), Art of the Glaive (444661), Reaver's Glaive (444686), Reaver's Glaive (444764), Fury of the Aldrachi (444806), Art of the Glaive (444810), Evasive Action (444926), Evasive Action (444929), Unhindered Assault (444931), Preemptive Strike (444979), Preemptive Strike (444997), Wounded Quarry (474339), Thrill of the Fight (1227062), Keen Edge (1272138), Broken Spirit (1272143), Bladecraft (1272153)
 #14 (id=1202499) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -3 | Scaled Value: -3 | Target: Self (1)
                    Affected Spells: Immolation Aura (258921), Immolation Aura (258922), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916)
@@ -4560,7 +4560,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 2618: Fiery Brand (207744 effect#5), Fiery Brand (207771 effect#4)
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Metamorphosis (187827 effect#14), Vengeance Demon Hunter (212613 effects: #1, #2, #17), Fiery Demise (212818 effect#2), Frailty (247456 effect#4), Mark of the Ogre (326486 effect#3), Half-Giant Empowerment (345871 effect#3), Demon Soul (347765 effects: #1, #2), Demon Hunter Vengeance Class Set 2pc (393630 effect#1), Demon Hunter Vengeance 10.1 Class Set 4pc (405509 effect#3), Fires of Fel (409645 effect#2), Fiery Resolve (425653 effects: #1, #2), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Demon Soul (1238675 effects: #1, #2), Celestial Echoes (1253415 effect#3), Celestial Echoes (1256312 effect#3), Vengeance Demon Hunter (1256959 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2), Furious (1266326 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Metamorphosis (187827 effect#14), Vengeance Demon Hunter (212613 effects: #1, #2, #17), Fiery Demise (212818 effect#2), Frailty (247456 effect#4), Mark of the Ogre (326486 effect#3), Half-Giant Empowerment (345871 effect#3), Demon Soul (347765 effects: #1, #2), Demon Hunter Vengeance Class Set 2pc (393630 effect#1), Demon Hunter Vengeance 10.1 Class Set 4pc (405509 effect#3), Fires of Fel (409645 effect#2), Fiery Resolve (425653 effects: #1, #2), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Demon Soul (1238675 effects: #1, #2), Celestial Echoes (1253415 effect#3), Celestial Echoes (1256312 effect#3), Vengeance Demon Hunter (1256959 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2), Furious (1266326 effects: #1, #2), Keen Edge (1272138 effects: #2, #3)
 Triggered By     : Fracture (263642)
 Family Flags     : 58, 69, 70
 Attributes       : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), Always Hit (114), Allow Class Ability Procs (416)
@@ -4581,7 +4581,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 2618: Fiery Brand (207744 effect#5), Fiery Brand (207771 effect#4)
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Metamorphosis (187827 effect#14), Vengeance Demon Hunter (212613 effects: #1, #2, #17), Fiery Demise (212818 effect#2), Frailty (247456 effect#4), Mark of the Ogre (326486 effect#3), Half-Giant Empowerment (345871 effect#3), Demon Soul (347765 effects: #1, #2), Demon Hunter Vengeance Class Set 2pc (393630 effect#1), Demon Hunter Vengeance 10.1 Class Set 4pc (405509 effect#3), Fires of Fel (409645 effect#2), Fiery Resolve (425653 effects: #1, #2), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Demon Soul (1238675 effects: #1, #2), Celestial Echoes (1253415 effect#3), Celestial Echoes (1256312 effect#3), Vengeance Demon Hunter (1256959 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2), Furious (1266326 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Metamorphosis (187827 effect#14), Vengeance Demon Hunter (212613 effects: #1, #2, #17), Fiery Demise (212818 effect#2), Frailty (247456 effect#4), Mark of the Ogre (326486 effect#3), Half-Giant Empowerment (345871 effect#3), Demon Soul (347765 effects: #1, #2), Demon Hunter Vengeance Class Set 2pc (393630 effect#1), Demon Hunter Vengeance 10.1 Class Set 4pc (405509 effect#3), Fires of Fel (409645 effect#2), Fiery Resolve (425653 effects: #1, #2), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Demon Soul (1238675 effects: #1, #2), Celestial Echoes (1253415 effect#3), Celestial Echoes (1256312 effect#3), Vengeance Demon Hunter (1256959 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2), Furious (1266326 effects: #1, #2), Keen Edge (1272138 effects: #2, #3)
 Triggered By     : Fracture (263642)
 Family Flags     : 58, 69, 70
 Attributes       : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Always Hit (114), Requires Off-Hand Weapon (120), Allow Class Ability Procs (416)
@@ -5688,9 +5688,9 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=483114)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5000 | Scaled Value: 5000 | Target: Self (1)
+                   Base Value: 2500 | Scaled Value: 2500 | Target: Self (1)
 #2 (id=1197397)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Activating Eye Beam reduces the cooldown of your next Eye Beam by ${$s1/1000}.1 sec, stacking up to $s2 sec.
 
 Name             : Immolation Aura (id=258920) [Spell Family (107)] 
@@ -6963,7 +6963,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #3 (id=758244)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -33 | Scaled Value: -33 | Misc Value: 3 | Misc Value 2: 621 (Label) | Target: Self (1)
-                   Affected Spells (Label): Weak Alcohol (11007), Standard Alcohol (11008), Strong Alcohol (11009), Potent Alcohol (11629), Use Filled Brewfest Stein (41921), Use Filled Brewfest Stein (41943), Use Filled Brewfest Stein (41944), Use Filled Brewfest Stein (41945), Use Filled Brewfest Stein (41946), Foaming Rage (47217), Enjoying A Cold One (101582), Drink (105221), Delusional (105225), Banana Infused Rum (125686), Refreshment (148720), Pandaren Brew (149021), Savage Remedy (177154), Pinchwhistle "Nitro Fuel" (179198), DrogLite (203491), Jug of Drog (203501), Drink (236820), Goldtusk Visions (246186), Bilewing Kiss (262960), Goldtusk Visions (263442), Strong Alcohol (279600), Magical Life (288555), Kelp'thar Gas (289209), Strong Alcohol (305431), Strong Alcohol (305432), Weak Alcohol (305433), Potent Alcohol (305434), Potent Alcohol (305435), Standard Alcohol (305436), Standard Alcohol (305438), Ohn Lite Drinking (392343)
+                   Affected Spells (Label): Weak Alcohol (11007), Standard Alcohol (11008), Strong Alcohol (11009), Potent Alcohol (11629), Use Filled Brewfest Stein (41921), Use Filled Brewfest Stein (41943), Use Filled Brewfest Stein (41944), Use Filled Brewfest Stein (41945), Use Filled Brewfest Stein (41946), Foaming Rage (47217), Drink Wine (55296), Enjoying A Cold One (101582), Drink (105221), Delusional (105225), Banana Infused Rum (125686), Refreshment (148720), Pandaren Brew (149021), Savage Remedy (177154), Pinchwhistle "Nitro Fuel" (179198), DrogLite (203491), Jug of Drog (203501), Drink (236820), Goldtusk Visions (246186), Bilewing Kiss (262960), Goldtusk Visions (263442), Strong Alcohol (279600), Magical Life (288555), Kelp'thar Gas (289209), Strong Alcohol (305431), Strong Alcohol (305432), Weak Alcohol (305433), Potent Alcohol (305434), Potent Alcohol (305435), Standard Alcohol (305436), Standard Alcohol (305438), Ohn Lite Drinking (392343)
 Description      : Increases Versatility by $s1%. When you take damage, heal for $s2% of that amount over $291843d.
 
 Name             : Brush It Off (desc=Racial Ability) (id=291843) 
@@ -8182,7 +8182,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 976: Covenant Spells
-Affecting Spells : Havoc Demon Hunter (212612 effect#6), Vengeance Demon Hunter (212613 effect#6), Any Means Necessary (388114 effects: #1, #3, #4), Devourer Demon Hunter (1213636 effect#5), Demonsurge (1245496 effect#3)
+Affecting Spells : Havoc Demon Hunter (212612 effect#6), Vengeance Demon Hunter (212613 effect#6), Any Means Necessary (388114 effects: #1, #3, #4), Devourer Demon Hunter (1213636 effect#5), Demonsurge (1245496 effect#3), Eternal Hunt (1270900 effect#1)
 Family Flags     : 32, 82
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Track Target in Cast (Player Only) (22), No Immunities (29), No Threat (42), No Aura Icon (60), Always Hit (114), Taps immediately (215), Attack on Charge to Unit (242), Not In Spellbook Until Learned (269), Haste Affects Melee Ability Casttime (301), Allow Defense While Casting (337)
 Effects          :
@@ -8962,7 +8962,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 4215
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Exergy (208628 effects: #1, #2), Mo'arg Bionic Stabilizers (208826 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #6, #7), Vengeance Demon Hunter (212613 effects: #6, #7), Chaos Blades (247938 effects: #2, #3), Bouncing Glaives (320386 effect#1), Demon Soul (347765 effects: #1, #2), Serrated Glaive (390155 effect#1), Accelerated Blade (391275 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Champion of the Glaive (429211 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #5, #6), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Demon Soul (1238676 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Exergy (208628 effects: #1, #2), Mo'arg Bionic Stabilizers (208826 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #6, #7), Vengeance Demon Hunter (212613 effects: #6, #7), Chaos Blades (247938 effects: #2, #3), Bouncing Glaives (320386 effect#1), Demon Soul (347765 effects: #1, #2), Serrated Glaive (390155 effect#1), Accelerated Blade (391275 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Champion of the Glaive (429211 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #5, #6), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Demon Soul (1238676 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2), Keen Edge (1272138 effects: #2, #3)
 Triggered By     : Throw Glaive (185123)
 Family Flags     : 5, 16, 32, 42, 58, 85
 Attributes       : Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Active Threat (94), Allow Cast While Casting (135), Bouncy Chain Missiles (146), Treat as Area Effect (175), Do Not Chain To Crowd-Controlled Targets (200), Show Mechanic as Combat Text (213), Do Not Auto Select Target with Initiates Combat (220), Allow Cast While Channeling (308), Enforce Facing on Primary Target Only (351), Active Passive (393), Allow Class Ability Procs (416)
@@ -9159,7 +9159,7 @@ Effects          :
 Description      : Soul Cleave deals $s1% increased damage to your primary target.
 
 Name             : Furious Gaze (id=343311) [Spell Family (107), Passive] 
-Talent Entry     : Havoc [tree=spec, row=7, col=3, max_rank=1, req_points=8]
+Talent Entry     : Havoc [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -9308,7 +9308,7 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Seething Chaos (394934 effects: #1, #2), Demon Hunter Havoc 10.2 Class Set 4pc (422859 effect#2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Demon Soul (1238676 effects: #1, #2), Demonsurge (1245496 effect#3), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Seething Chaos (394934 effects: #1, #2), Demon Hunter Havoc 10.2 Class Set 4pc (422859 effect#2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Demon Soul (1238676 effects: #1, #2), Demonsurge (1245496 effect#3), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Eternal Hunt (1270900 effect#4)
 Triggered By     : The Hunt (323639)
 Family Flags     : 16, 70, 87
 Attributes       : Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Nameplate Personal Buffs/Debuffs (423)
@@ -9328,7 +9328,7 @@ Duration         : 1.5 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Any Means Necessary (388114 effects: #1, #3, #4), Demonsurge (1245496 effect#3)
+Affecting Spells : Any Means Necessary (388114 effects: #1, #3, #4), Demonsurge (1245496 effect#3), Eternal Hunt (1270900 effect#1)
 Triggered By     : The Hunt (323639)
 Family Flags     : 82
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269)
@@ -9347,7 +9347,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Affecting Spells : Any Means Necessary (388114 effects: #1, #3, #4), Demonsurge (1245496 effect#3)
+Affecting Spells : Any Means Necessary (388114 effects: #1, #3, #4), Demonsurge (1245496 effect#3), Eternal Hunt (1270900 effect#1)
 Triggered By     : The Hunt (323639)
 Family Flags     : 82
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook Until Learned (269)
@@ -9535,7 +9535,7 @@ Travel Delay     : 0.15 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Mo'arg Bionic Stabilizers (208826 effects: #1, #2), Havoc Demon Hunter (212612 effects: #6, #7), Vengeance Demon Hunter (212613 effects: #1, #2, #6, #7), Frailty (247456 effect#4), Bouncing Glaives (320386 effect#1), Demon Soul (347765 effects: #1, #2), Serrated Glaive (390155 effect#1), Accelerated Blade (391275 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Champion of the Glaive (429211 effect#1), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #5, #6), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Demon Soul (1238675 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Mo'arg Bionic Stabilizers (208826 effects: #1, #2), Havoc Demon Hunter (212612 effects: #6, #7), Vengeance Demon Hunter (212613 effects: #1, #2, #6, #7), Frailty (247456 effect#4), Bouncing Glaives (320386 effect#1), Demon Soul (347765 effects: #1, #2), Serrated Glaive (390155 effect#1), Accelerated Blade (391275 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Champion of the Glaive (429211 effect#1), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #5, #6), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Demon Soul (1238675 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2), Keen Edge (1272138 effects: #2, #3)
 Triggered By     : Throw Glaive (204157)
 Family Flags     : 5, 32, 58, 70, 85
 Attributes       : Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Active Threat (94), Not a Proc (105), Bouncy Chain Missiles (146), Treat as Area Effect (175), Do Not Chain To Crowd-Controlled Targets (200), Show Mechanic as Combat Text (213), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Interrupts Current Cast (419)
@@ -10166,7 +10166,7 @@ Effects          :
 Description      : Enables Dracthyr to switch between Visage and Dracthyr forms.
 
 Name             : The Hunt (id=370965) [Spell Family (107)] 
-Talent Entry     : Havoc [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Havoc [tree=spec, row=7, col=3, max_rank=1, req_points=8]
 Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Melee
@@ -10176,12 +10176,12 @@ Cast Time        : 1 seconds
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 90 seconds
-Category         : 2427 (Type 0x0)
+Category         : 2427 (Type 0x0): Eternal Hunt (1270900 effect#2)
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
 Category Cooldown: 90 seconds
-Affecting Spells : Havoc Demon Hunter (212612 effect#6), Vengeance Demon Hunter (212613 effect#6), Any Means Necessary (388114 effects: #1, #3, #4), Devourer Demon Hunter (1213636 effect#5), Demonsurge (1245496 effect#3)
+Affecting Spells : Havoc Demon Hunter (212612 effect#6), Vengeance Demon Hunter (212613 effect#6), Any Means Necessary (388114 effects: #1, #3, #4), Devourer Demon Hunter (1213636 effect#5), Demonsurge (1245496 effect#3), Eternal Hunt (1270900 effect#1)
 Triggered By     : The Hunt (370966)
 Family Flags     : 32, 82
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Track Target in Cast (Player Only) (22), No Immunities (29), No Threat (42), No Aura Icon (60), Always Hit (114), Taps immediately (215), Attack on Charge to Unit (242), Not In Spellbook Until Learned (269), Haste Affects Melee Ability Casttime (301), Allow Defense While Casting (337)
@@ -10206,8 +10206,8 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 1134
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Demon Soul (1238676 effects: #1, #2), Demonsurge (1245496 effect#3), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2)
-Triggered By     : The Hunt (370965), Predator's Wake (1259431)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Demon Soul (1238676 effects: #1, #2), Demonsurge (1245496 effect#3), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Eternal Hunt (1270900 effect#1)
+Triggered By     : The Hunt (370965)
 Family Flags     : 16, 43, 70, 82
 Attributes       : Is Ability (4), Do Not Sheath (18), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
@@ -10237,7 +10237,7 @@ Duration         : 1.5 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Any Means Necessary (388114 effects: #1, #3, #4), Demonsurge (1245496 effect#3)
+Affecting Spells : Any Means Necessary (388114 effects: #1, #3, #4), Demonsurge (1245496 effect#3), Eternal Hunt (1270900 effect#1)
 Triggered By     : The Hunt (370965), The Hunt (1246167), Predator's Wake (1259431)
 Family Flags     : 82
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Always Line of Sight (185), Always AOE Line of Sight (186), Not In Spellbook Until Learned (269)
@@ -10256,8 +10256,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Affecting Spells : Any Means Necessary (388114 effects: #1, #3, #4), Demonsurge (1245496 effect#3)
-Triggered By     : Predator's Wake (1259431)
+Affecting Spells : Any Means Necessary (388114 effects: #1, #3, #4), Demonsurge (1245496 effect#3), Eternal Hunt (1270900 effect#1)
 Family Flags     : 82
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook Until Learned (269)
 Effects          :
@@ -10277,7 +10276,7 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Demon Hunter Havoc 10.2 Class Set 4pc (422859 effect#2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Demon Soul (1238676 effects: #1, #2), Demonsurge (1245496 effect#3), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Demon Hunter Havoc 10.2 Class Set 4pc (422859 effect#2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Demon Soul (1238676 effects: #1, #2), Demonsurge (1245496 effect#3), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Eternal Hunt (1270900 effect#4)
 Triggered By     : The Hunt (370966)
 Family Flags     : 16, 43, 70, 87
 Attributes       : Spell Haste Affects Periodic (173), Always Line of Sight (185), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
@@ -10516,7 +10515,7 @@ Description      : Damaging an enemy before they damage you increases your criti
 Vengeful Retreat refreshes your potential to trigger this effect on any enemies you are in combat with.
 
 Name             : Chaotic Transformation (id=388112) [Spell Family (107), Passive] 
-Talent Entry     : Havoc [tree=spec, row=6, col=3, max_rank=1, req_points=8]
+Talent Entry     : Havoc [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=200]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -11446,7 +11445,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Blind Fury (203550 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Soul Flame of Insight (226334 effects: #1, #2), Frailty (247456 effect#4), Eyes of Rage (278500 effect#2), Looks Can Kill (320415 effect#1), Exposed Wound (339229 effect#1), Demon Soul (347765 effects: #1, #2), Burning Blood (390213 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Demonsurge (452489 effect#5), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Remorseless (1266328 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Blind Fury (203550 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Soul Flame of Insight (226334 effects: #1, #2), Frailty (247456 effect#4), Eyes of Rage (278500 effect#2), Looks Can Kill (320415 effect#1), Exposed Wound (339229 effect#1), Demon Soul (347765 effects: #1, #2), Burning Blood (390213 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Demonsurge (452489 effect#5), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Remorseless (1266328 effects: #1, #2), Empowered Eye Beam (1271144 effect#1)
 Family Flags     : 8, 10, 43, 70
 Attributes       : Not a Proc (105), Do Not Display Range (126), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Allow Cast While Channeling (308), Area Effects Use Target Radius (328), Allow during spell override (404), Allow Class Ability Procs (416)
 Effects          :
@@ -11636,7 +11635,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Metamorphosis (162264 effect#7), Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Blade Dance (320402 effect#1), Mark of the Ogre (326486 effect#5), Half-Giant Empowerment (345871 effect#5), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Enduring Torment (453314 effect#2), Demon Hunter Havoc 11.0 Class Set 2pc (454616 effect#1), Blade Rhapsody (454628 effect#2), Void Metamorphosis (471306 effect#3), Winning Streak! (1217011 effect#1), Winning Streak! (1220706 effect#1), Demon Soul (1238676 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Remorseless (1266328 effects: #1, #2)
+Affecting Spells : Metamorphosis (162264 effect#7), Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Blade Dance (320402 effect#1), Mark of the Ogre (326486 effect#5), Half-Giant Empowerment (345871 effect#5), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Enduring Torment (453314 effect#2), Demon Hunter Havoc 11.0 Class Set 2pc (454616 effect#1), Blade Rhapsody (454628 effect#2), Void Metamorphosis (471306 effect#3), Winning Streak! (1217011 effect#1), Winning Streak! (1220706 effect#1), Demon Soul (1238676 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Remorseless (1266328 effects: #1, #2), Eternal Hunt (1270901 effect#1)
 Family Flags     : 16, 25, 43
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
@@ -11655,7 +11654,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Metamorphosis (162264 effect#7), Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Blade Dance (320402 effect#1), Mark of the Ogre (326486 effect#5), Half-Giant Empowerment (345871 effect#5), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Dancing with Fate (389978 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Enduring Torment (453314 effect#2), Demon Hunter Havoc 11.0 Class Set 2pc (454616 effect#1), Blade Rhapsody (454628 effect#2), Void Metamorphosis (471306 effect#3), Winning Streak! (1217011 effect#1), Winning Streak! (1220706 effect#1), Demon Soul (1238676 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Remorseless (1266328 effects: #1, #2)
+Affecting Spells : Metamorphosis (162264 effect#7), Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Blade Dance (320402 effect#1), Mark of the Ogre (326486 effect#5), Half-Giant Empowerment (345871 effect#5), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Dancing with Fate (389978 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Enduring Torment (453314 effect#2), Demon Hunter Havoc 11.0 Class Set 2pc (454616 effect#1), Blade Rhapsody (454628 effect#2), Void Metamorphosis (471306 effect#3), Winning Streak! (1217011 effect#1), Winning Streak! (1220706 effect#1), Demon Soul (1238676 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Remorseless (1266328 effects: #1, #2), Eternal Hunt (1270901 effect#1)
 Family Flags     : 12, 16, 25, 43
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
@@ -11822,7 +11821,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Mark of the Ogre (326486 effect#5), Half-Giant Empowerment (345871 effect#5), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Dancing with Fate (389978 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Demon Hunter Havoc 11.0 Class Set 2pc (454616 effect#1), Blade Rhapsody (454628 effect#2), Void Metamorphosis (471306 effect#3), Winning Streak! (1217011 effect#1), Winning Streak! (1220706 effect#1), Demon Soul (1238676 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Mark of the Ogre (326486 effect#5), Half-Giant Empowerment (345871 effect#5), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Dancing with Fate (389978 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Demon Hunter Havoc 11.0 Class Set 2pc (454616 effect#1), Blade Rhapsody (454628 effect#2), Void Metamorphosis (471306 effect#3), Winning Streak! (1217011 effect#1), Winning Streak! (1220706 effect#1), Demon Soul (1238676 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Eternal Hunt (1270901 effect#1)
 Family Flags     : 16, 37, 38, 43
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
@@ -11841,7 +11840,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Mark of the Ogre (326486 effect#5), Half-Giant Empowerment (345871 effect#5), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Demon Hunter Havoc 11.0 Class Set 2pc (454616 effect#1), Blade Rhapsody (454628 effect#2), Void Metamorphosis (471306 effect#3), Winning Streak! (1217011 effect#1), Winning Streak! (1220706 effect#1), Demon Soul (1238676 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Mark of the Ogre (326486 effect#5), Half-Giant Empowerment (345871 effect#5), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Demon Hunter Havoc 11.0 Class Set 2pc (454616 effect#1), Blade Rhapsody (454628 effect#2), Void Metamorphosis (471306 effect#3), Winning Streak! (1217011 effect#1), Winning Streak! (1220706 effect#1), Demon Soul (1238676 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Eternal Hunt (1270901 effect#1)
 Family Flags     : 16, 37, 43
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
@@ -13537,10 +13536,10 @@ Velocity         : 30 yards/sec
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3349: Keen Engagement (442497 effect#1), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effect#5)
+                 : 3349: Keen Engagement (442497 effect#1), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effect#5), Keen Edge (1272138 effect#5)
                  : 3367: Havoc Demon Hunter (212612 effect#12), Havoc Demon Hunter (212612 effect#13), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4), Tempered Steel (1265800 effect#4), Tempered Steel (1265800 effect#5)
                  : 4215
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Exergy (208628 effects: #1, #2), Mo'arg Bionic Stabilizers (208826 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #6), Vengeance Demon Hunter (212613 effects: #1, #2, #6), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Bouncing Glaives (320386 effect#1), Demon Soul (347765 effects: #1, #2), Serrated Glaive (390155 effect#1), Accelerated Blade (391275 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Champion of the Glaive (429211 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effect#5), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Demon Soul (1238675 effects: #1, #2), Demon Soul (1238676 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Exergy (208628 effects: #1, #2), Mo'arg Bionic Stabilizers (208826 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #6), Vengeance Demon Hunter (212613 effects: #1, #2, #6), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Bouncing Glaives (320386 effect#1), Demon Soul (347765 effects: #1, #2), Serrated Glaive (390155 effect#1), Accelerated Blade (391275 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Champion of the Glaive (429211 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effect#5), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Demon Soul (1238675 effects: #1, #2), Demon Soul (1238676 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2), Keen Edge (1272138 effects: #2, #3)
 Family Flags     : 5, 16, 32, 58, 70
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Bouncy Chain Missiles (146), Treat as Area Effect (175), Do Not Chain To Crowd-Controlled Targets (200), Show Mechanic as Combat Text (213), Do Not Auto Select Target with Initiates Combat (220), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Interrupts Current Cast (419)
 Effects          :
@@ -13621,7 +13620,7 @@ Effects          :
 Description      : Reaver's Glaive generates $s1 Fury.
 
 Name             : Warblade's Hunger (id=442502) [Spell Family (107), Passive] 
-Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=4, col=3, max_rank=1, req_points=1]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=4, col=4, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -13672,7 +13671,7 @@ Labels           : 16: Class Spells
                  : 3351: Warblade's Hunger (442503 effect#1)
                  : 3367: Havoc Demon Hunter (212612 effect#12), Havoc Demon Hunter (212612 effect#13), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4), Tempered Steel (1265800 effect#4), Tempered Steel (1265800 effect#5)
                  : 4215
-Affecting Spells : Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Tempered Steel (1265800 effects: #1, #2)
+Affecting Spells : Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Tempered Steel (1265800 effects: #1, #2), Keen Edge (1272138 effects: #2, #3)
 Family Flags     : 58
 Attributes       : Aura Points On Client (268)
 Effects          :
@@ -13691,7 +13690,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 3367: Havoc Demon Hunter (212612 effect#12), Havoc Demon Hunter (212612 effect#13), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4), Tempered Steel (1265800 effect#4), Tempered Steel (1265800 effect#5)
-                 : 4821: Havoc Demon Hunter (212612 effect#11), Demon Hunter Aldrachi Reaver 11.2 Class Set 4pc (1236360 effect#2)
+                 : 4821: Havoc Demon Hunter (212612 effect#11), Demon Hunter Aldrachi Reaver 11.2 Class Set 4pc (1236360 effect#2), Bladecraft (1272153 effect#2)
 Internal Cooldown: 0.1 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
@@ -13717,14 +13716,14 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 3367: Havoc Demon Hunter (212612 effect#12), Havoc Demon Hunter (212612 effect#13), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4), Tempered Steel (1265800 effect#4), Tempered Steel (1265800 effect#5)
-                 : 5190: Demon Hunter Aldrachi Reaver 11.2 Class Set 4pc (1236360 effect#3)
+                 : 5190: Demon Hunter Aldrachi Reaver 11.2 Class Set 4pc (1236360 effect#3), Bladecraft (1272153 effect#3)
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1138061)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #2 (id=1238322)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-                   Modified By: Demon Hunter Aldrachi Reaver 11.2 Class Set 4pc (1236360 effect#3)
+                   Modified By: Demon Hunter Aldrachi Reaver 11.2 Class Set 4pc (1236360 effect#3), Bladecraft (1272153 effect#3)
 Description      : When enhanced by Reaver's Glaive, $?a212612[Chaos Strike]?s263642[Fracture][Shear] applies Reaver's Mark, which causes the target to take $442624s1% increased damage for $442624d. Max $442624u stacks.
 
 Applies $m2 additional $Lstack:stacks; of Reaver's Mark If cast after $?a212612[Blade Dance][Soul Cleave].
@@ -13781,10 +13780,10 @@ Effects          :
                    Family Flags: 16, 20, 80
 #3 (id=1178284)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Misc Value 2: 3367 (Label) | Target: Self (1)
-                   Affected Spells (Label): Art of the Glaive (442290), Reaver's Glaive (442294), Keen Engagement (442497), Warblade's Hunger (442503), Warblade's Hunger (442507), Reaver's Mark (442624), Reaver's Mark (442679), Aldrachi Tactics (442683), Thrill of the Fight (442686), Thrill of the Fight (442688), Thrill of the Fight (442695), Army Unto Oneself (442714), Blade Ward (442715), Fury of the Aldrachi (442718), Incorruptible Spirit (442736), Incorruptible Spirit (442788), Wounded Quarry (442806), Art of the Glaive (444661), Reaver's Glaive (444686), Reaver's Glaive (444764), Fury of the Aldrachi (444806), Art of the Glaive (444810), Evasive Action (444926), Evasive Action (444929), Unhindered Assault (444931), Preemptive Strike (444979), Preemptive Strike (444997), Wounded Quarry (474339), Thrill of the Fight (1227062)
+                   Affected Spells (Label): Art of the Glaive (442290), Reaver's Glaive (442294), Keen Engagement (442497), Warblade's Hunger (442503), Warblade's Hunger (442507), Reaver's Mark (442624), Reaver's Mark (442679), Aldrachi Tactics (442683), Thrill of the Fight (442686), Thrill of the Fight (442688), Thrill of the Fight (442695), Army Unto Oneself (442714), Blade Ward (442715), Fury of the Aldrachi (442718), Incorruptible Spirit (442736), Incorruptible Spirit (442788), Wounded Quarry (442806), Art of the Glaive (444661), Reaver's Glaive (444686), Reaver's Glaive (444764), Fury of the Aldrachi (444806), Art of the Glaive (444810), Evasive Action (444926), Evasive Action (444929), Unhindered Assault (444931), Preemptive Strike (444979), Preemptive Strike (444997), Wounded Quarry (474339), Thrill of the Fight (1227062), Keen Edge (1272138), Broken Spirit (1272143), Bladecraft (1272153)
 #4 (id=1178285)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Misc Value 2: 3367 (Label) | Target: Self (1)
-                   Affected Spells (Label): Art of the Glaive (442290), Reaver's Glaive (442294), Keen Engagement (442497), Warblade's Hunger (442503), Warblade's Hunger (442507), Reaver's Mark (442624), Reaver's Mark (442679), Aldrachi Tactics (442683), Thrill of the Fight (442686), Thrill of the Fight (442688), Thrill of the Fight (442695), Army Unto Oneself (442714), Blade Ward (442715), Fury of the Aldrachi (442718), Incorruptible Spirit (442736), Incorruptible Spirit (442788), Wounded Quarry (442806), Art of the Glaive (444661), Reaver's Glaive (444686), Reaver's Glaive (444764), Fury of the Aldrachi (444806), Art of the Glaive (444810), Evasive Action (444926), Evasive Action (444929), Unhindered Assault (444931), Preemptive Strike (444979), Preemptive Strike (444997), Wounded Quarry (474339), Thrill of the Fight (1227062)
+                   Affected Spells (Label): Art of the Glaive (442290), Reaver's Glaive (442294), Keen Engagement (442497), Warblade's Hunger (442503), Warblade's Hunger (442507), Reaver's Mark (442624), Reaver's Mark (442679), Aldrachi Tactics (442683), Thrill of the Fight (442686), Thrill of the Fight (442688), Thrill of the Fight (442695), Army Unto Oneself (442714), Blade Ward (442715), Fury of the Aldrachi (442718), Incorruptible Spirit (442736), Incorruptible Spirit (442788), Wounded Quarry (442806), Art of the Glaive (444661), Reaver's Glaive (444686), Reaver's Glaive (444764), Fury of the Aldrachi (444806), Art of the Glaive (444810), Evasive Action (444926), Evasive Action (444929), Unhindered Assault (444931), Preemptive Strike (444979), Preemptive Strike (444997), Wounded Quarry (474339), Thrill of the Fight (1227062), Keen Edge (1272138), Broken Spirit (1272143), Bladecraft (1272153)
 Description      : $@spelldesc442686
 Tooltip          : Damage and healing increased by $w1%.
 
@@ -13955,7 +13954,7 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3349: Keen Engagement (442497 effect#1), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effect#5)
+                 : 3349: Keen Engagement (442497 effect#1), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effect#5), Keen Edge (1272138 effect#5)
                  : 3367: Havoc Demon Hunter (212612 effect#12), Havoc Demon Hunter (212612 effect#13), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4), Tempered Steel (1265800 effect#4), Tempered Steel (1265800 effect#5)
 Attributes       : No Aura Icon (60), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43), Change Talent (46)
@@ -13972,7 +13971,7 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3349: Keen Engagement (442497 effect#1), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effect#5)
+                 : 3349: Keen Engagement (442497 effect#1), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effect#5), Keen Edge (1272138 effect#5)
                  : 3367: Havoc Demon Hunter (212612 effect#12), Havoc Demon Hunter (212612 effect#13), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4), Tempered Steel (1265800 effect#4), Tempered Steel (1265800 effect#5)
 Attributes       : No Aura Icon (60), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43), Change Talent (46)
@@ -13990,7 +13989,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3367: Havoc Demon Hunter (212612 effect#12), Havoc Demon Hunter (212612 effect#13), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4), Tempered Steel (1265800 effect#4), Tempered Steel (1265800 effect#5)
                  : 4215
-Affecting Spells : Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Tempered Steel (1265800 effects: #1, #2)
+Affecting Spells : Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Tempered Steel (1265800 effects: #1, #2), Keen Edge (1272138 effects: #2, #3)
 Triggered By     : Art of the Glaive (444810)
 Family Flags     : 58
 Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)
@@ -14085,7 +14084,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3367: Havoc Demon Hunter (212612 effect#12), Havoc Demon Hunter (212612 effect#13), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4), Tempered Steel (1265800 effect#4), Tempered Steel (1265800 effect#5)
                  : 4215
-Affecting Spells : Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Tempered Steel (1265800 effects: #1, #2)
+Affecting Spells : Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effects: #2, #3), Tempered Steel (1265800 effects: #1, #2), Keen Edge (1272138 effects: #2, #3)
 Triggered By     : Preemptive Strike (444997)
 Family Flags     : 58
 Attributes       : Do Not Log Immune Misses (3), Always Line of Sight (185), Always AOE Line of Sight (186), Do Not Log Spell Miss (397)
@@ -14215,6 +14214,7 @@ Description      : $@spelldesc436344
 
 Name             : Demonsurge (id=452402) [Spell Family (107), Passive] 
 Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
+                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14234,6 +14234,7 @@ While demon form is active, the first cast of each empowered ability induces a $
 
 Name             : Wave of Debilitation (id=452403) [Spell Family (107), Passive] 
 Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=100]
+                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=100]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14249,6 +14250,7 @@ Description      : $?c1[Chaos][Void] Nova slows enemies by $453263s1% and reduce
 
 Name             : Pursuit of Angriness (id=452404) [Spell Family (107), Passive] 
 Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=200]
+                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=200]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14269,6 +14271,7 @@ Tooltip          : $w3
 
 Name             : Focused Hatred (id=452405) [Spell Family (107), Passive] 
 Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=2, col=2, max_rank=1, req_points=1]
+                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=2, col=2, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14290,6 +14293,7 @@ Each additional target reduces this bonus by $s2%.
 
 Name             : Set Fire to the Pain (id=452406) [Spell Family (107), Passive] 
 Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=100]
+                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=100]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14315,6 +14319,7 @@ Fire damage taken reduced by $S3%.
 
 Name             : Improved Soul Rending (id=452407) [Spell Family (107), Passive] 
 Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=200]
+                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=200]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14334,6 +14339,7 @@ Description      : Leech granted by Soul Rending increased by $s1% and an additi
 
 Name             : Burning Blades (id=452408) [Spell Family (107), Passive] 
 Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=3, col=1, max_rank=1, req_points=1]
+                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=3, col=1, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14355,6 +14361,7 @@ Description      : $?a212612[Your blades burn with Fel energy, causing your Chao
 
 Name             : Violent Transformation (id=452409) [Spell Family (107), Passive] 
 Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=3, col=2, max_rank=1, req_points=1]
+                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=3, col=2, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14372,6 +14379,7 @@ Description      : $?a212612[When you activate Metamorphosis, the cooldowns of y
 
 Name             : Enduring Torment (id=452410) [Spell Family (107), Passive] 
 Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=3, col=3, max_rank=1, req_points=1]
+                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=3, col=3, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14387,6 +14395,7 @@ Description      : The effects of your demon form persist outside of it in a wea
 
 Name             : Untethered Fury (id=452411) [Spell Family (107), Passive] 
 Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=4, col=1, max_rank=1, req_points=1]
+                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=4, col=1, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14405,6 +14414,7 @@ Description      : Maximum Fury increased by $?a212612[$s1][$s2].
 
 Name             : Student of Suffering (id=452412) [Spell Family (107), Passive] 
 Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=100]
+                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=100]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14422,6 +14432,7 @@ Description      : $?a212612[Eye Beam][Void Ray] applies Student of Suffering to
 
 Name             : Flamebound (id=452413) [Spell Family (107), Passive] 
 Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=200]
+                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=200]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14454,6 +14465,7 @@ Description      : $?a212612[Immolation Aura][Hungering Slash] has $s1 yd increa
 
 Name             : Monster Rising (id=452414) [Spell Family (107), Passive] 
 Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=4, col=3, max_rank=1, req_points=1]
+                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=4, col=3, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14469,6 +14481,7 @@ Description      : $?a212612[Agility][Intellect] increased by $?a212612[$452550s
 
 Name             : Demonic Intensity (id=452415) [Spell Family (107), Passive] 
 Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
+                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14851,7 +14864,7 @@ Spell Level      : 11
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
-Cooldown         : 40 seconds
+Cooldown         : 30 seconds
 Category         : 1582 (Type 0x0)
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
@@ -14859,7 +14872,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
                  : 3597
-Category Cooldown: 40 seconds
+Category Cooldown: 30 seconds
 Affecting Spells : Blind Fury (203550 effect#1), Soul Flame of Insight (226334 effect#2)
 Family Flags     : 10
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Is Self Channelled (38), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), Name in Channel Bar (61), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Delay Combat Timer During Cast (211), Aura Points On Client (268), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Allow Class Ability Procs (416)
@@ -15281,6 +15294,7 @@ Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman
 Race             : Earthen (0x60000)
 School           : Physical
 Spell Type       : None
+Max Scaling Level: 70
 GCD              : 1 seconds
 Duration         : 20 seconds
 Cooldown         : 1 seconds
@@ -15290,16 +15304,14 @@ Category Cooldown: 1 seconds
 Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
-#1 (id=1169179)  : Apply Aura (6) | Restore Health (84) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Target: Self (1)
+#1 (id=1169179)  : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
+                   Base Value: 5 | Scaled Value: 5 | Value Multiplier: 1 | Target: Self (1)
 #2 (id=1169180)  : Apply Aura (6) | Restore Power (85) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 96750 (coefficient=4.3) | Target: Self (1)
 #3 (id=1169181)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.55552 | Target: Self (1)
-#4 (id=1257618)  : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : Draws upon your inner energy, restoring ${$m4*$d} health and ${$m4*$d} mana over $d. Must remain seated during contemplation.
-Tooltip          : Restores ${$w1/5} health and ${$w2/5} mana per second.
+                   Base Value: 0 | Scaled Value: 96750 (coefficient=4.3) | PvP Coefficient: 0.55552 | Target: Self (1)
+Description      : Draws upon your inner energy, restoring ${$s1*$d}% of your maximum health and ${$m3/5*$d} mana over $d. Must remain seated during contemplation.
+Tooltip          : Restores ${$s1}% health and ${$w2/5} mana per second.
 
 Name             : Sigil of Doom (id=462030) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -15524,7 +15536,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 4149
-Affecting Spells : Havoc Demon Hunter (212612 effects: #6, #7), Vengeance Demon Hunter (212613 effects: #6, #7), Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2, #5, #6), Predator's Thirst (1215617 effect#1), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Celestial Echoes (1253415 effect#4), Celestial Echoes (1256312 effects: #2, #4), Devourer Demon Hunter (1256964 effects: #1, #2), Furious (1266326 effects: #1, #2)
+Affecting Spells : Havoc Demon Hunter (212612 effects: #6, #7), Vengeance Demon Hunter (212613 effects: #6, #7), Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2, #5, #6), Predator's Thirst (1215617 effect#1), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Celestial Echoes (1253415 effect#4), Celestial Echoes (1256312 effects: #2, #4), Devourer Demon Hunter (1256964 effects: #1, #2), Furious (1266326 effects: #1, #2)
 Family Flags     : 32, 85, 95, 97
 Attributes       : Track Target in Cast (Player Only) (22), Allow Class Ability Procs (416)
 Effects          :
@@ -15546,7 +15558,7 @@ Labels           : 16: Class Spells
 Attributes       : Can Proc From Procs (122)
 Effects          :
 #1 (id=1192737)  : Energize Power (30)
-                   Base Value: -1 | Scaled Value: -1 | Resource: fury | Target: Self (1)
+                   Base Value: -2 | Scaled Value: -2 | Resource: fury | Target: Self (1)
 Description      : Every 2 sec, you gain Void Buildup. Gaining Void Buildup grants 5 Fury per stack.
 
 Void Buildup
@@ -15649,7 +15661,7 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Havoc Demon Hunter (212612 effect#7), Vengeance Demon Hunter (212613 effect#7), Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2, #6), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Rolling Torment (1244235 effect#1), Voidpurge (1247538 effect#1), Midnight (1250088 effects: #4, #5), Meteoric Rise (1253377 effect#1), Devourer Demon Hunter (1256964 effects: #1, #2), Remorseless (1266328 effects: #1, #2)
+Affecting Spells : Havoc Demon Hunter (212612 effect#7), Vengeance Demon Hunter (212613 effect#7), Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2, #6), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effect#1), Voidpurge (1247538 effect#1), Midnight (1250088 effects: #4, #5), Meteoric Rise (1253377 effect#1), Devourer Demon Hunter (1256964 effects: #1, #2), Remorseless (1266328 effects: #1, #2)
 Family Flags     : 85, 95, 100
 Attributes       : Not a Proc (105), Do Not Display Range (126), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Allow Cast While Channeling (308), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
@@ -15664,12 +15676,12 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Havoc Demon Hunter (212612 effect#7), Vengeance Demon Hunter (212613 effect#7), Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2, #6), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Rolling Torment (1244235 effect#1), Voidpurge (1247538 effect#1), Midnight (1250088 effects: #4, #5), Meteoric Rise (1253377 effect#1), Devourer Demon Hunter (1256964 effects: #1, #2), Remorseless (1266328 effects: #1, #2)
+Affecting Spells : Havoc Demon Hunter (212612 effect#7), Vengeance Demon Hunter (212613 effect#7), Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2, #6), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effect#1), Voidpurge (1247538 effect#1), Midnight (1250088 effects: #4, #5), Meteoric Rise (1253377 effect#1), Devourer Demon Hunter (1256964 effects: #1, #2), Remorseless (1266328 effects: #1, #2)
 Family Flags     : 85, 95, 100
 Attributes       : Not a Proc (105), Do Not Display Range (126), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Allow Cast While Channeling (308), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1196915)  : School Damage (2): cosmic | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.8 | Radius: 30 yards | Target: Target Reticule: Enemy (129)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.2 | Radius: 30 yards | Target: Target Reticule: Enemy (129)
 
 Name             : Cycle of Hatred (id=1214887) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -15929,7 +15941,7 @@ Effects          :
 #7 (id=1201783)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0
 #8 (id=1201784)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: 18000 | Scaled Value: 18000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: 16000 | Scaled Value: 16000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Void Ray (473728)
                    Family Flags: 104
 #9 (id=1201785)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
@@ -15960,7 +15972,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 4149
-Affecting Spells : Havoc Demon Hunter (212612 effects: #6, #7), Vengeance Demon Hunter (212613 effects: #6, #7), Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2, #5, #6), Predator's Thirst (1215617 effect#1), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Celestial Echoes (1253415 effect#4), Celestial Echoes (1256312 effects: #2, #4), Devourer Demon Hunter (1256964 effects: #1, #2), Furious (1266326 effects: #1, #2)
+Affecting Spells : Havoc Demon Hunter (212612 effects: #6, #7), Vengeance Demon Hunter (212613 effects: #6, #7), Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2, #5, #6), Predator's Thirst (1215617 effect#1), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Celestial Echoes (1253415 effect#4), Celestial Echoes (1256312 effects: #2, #4), Devourer Demon Hunter (1256964 effects: #1, #2), Furious (1266326 effects: #1, #2)
 Family Flags     : 32, 85, 95, 97
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
@@ -16050,7 +16062,7 @@ GCD              : 1.5 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2)
+Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2)
 Family Flags     : 95
 Attributes       : Not Shapeshifted (16), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Action (Delayed) (17)
@@ -16070,7 +16082,7 @@ Velocity         : 44 yards/sec
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Impending Apocalypse (1227338 effect#1), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Midnight (1242486 effect#1), Dark Ultimatum (1244229 effect#1), Rolling Torment (1244235 effect#1), Rolling Torment (1244237 effect#1), Midnight (1250088 effects: #1, #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2)
+Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Impending Apocalypse (1227338 effect#1), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Midnight (1242486 effect#1), Calamitous (1242495 effect#1), Dark Ultimatum (1244229 effect#1), Rolling Torment (1244235 effect#1), Rolling Torment (1244237 effect#1), Midnight (1250088 effects: #1, #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Demon Hunter Devourer 12.0 Class Set 4pc (1264882 effect#1)
 Family Flags     : 95, 103
 Attributes       : Ignore Line of Sight (66), Always AOE Line of Sight (186)
 Effects          :
@@ -16249,7 +16261,7 @@ Velocity         : 60 yards/sec
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Improved Reap (1244222 effects: #1, #2), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Furious (1266326 effects: #1, #2)
+Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Improved Reap (1244222 effects: #1, #2), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Furious (1266326 effects: #1, #2)
 Family Flags     : 95, 99
 Attributes       : Can Proc From Procs (122)
 Effects          :
@@ -16263,6 +16275,8 @@ Spell Type       : Magic
 Range            : 25 yards
 GCD              : 1.5 seconds
 Duration         : 1.5 seconds
+Charges          : 1 (8 seconds cooldown)
+Category         : 2409 (Type 0x1): Second Helping (1239537 effect#1)
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
@@ -16291,7 +16305,7 @@ Travel Time      : 0.25 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Improved Reap (1244222 effects: #1, #2), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Furious (1266326 effects: #1, #2)
+Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Improved Reap (1244222 effects: #1, #2), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Furious (1266326 effects: #1, #2)
 Family Flags     : 95, 99
 Attributes       : Track Target in Cast (Player Only) (22), Can Proc From Procs (122), Missile Speed is Delay (in sec) (292)
 Effects          :
@@ -16302,7 +16316,7 @@ Description      : $@spelldesc1225826
 Name             : Reap (id=1226019) [Spell Family (107)] 
 Replaces         : Chaos Strike (id=344862)
 Class            : Unknown Demon Hunter (1480)
-School           : Spellshadow
+School           : Cosmic
 Spell Type       : Magic
 Range            : 25 yards
 GCD              : 1.5 seconds
@@ -16364,10 +16378,10 @@ Effects          :
                    Family Flags: 20, 70, 80
 #3 (id=1217253)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Misc Value 2: 3367 (Label) | Target: Self (1)
-                   Affected Spells (Label): Art of the Glaive (442290), Reaver's Glaive (442294), Keen Engagement (442497), Warblade's Hunger (442503), Warblade's Hunger (442507), Reaver's Mark (442624), Reaver's Mark (442679), Aldrachi Tactics (442683), Thrill of the Fight (442686), Thrill of the Fight (442688), Thrill of the Fight (442695), Army Unto Oneself (442714), Blade Ward (442715), Fury of the Aldrachi (442718), Incorruptible Spirit (442736), Incorruptible Spirit (442788), Wounded Quarry (442806), Art of the Glaive (444661), Reaver's Glaive (444686), Reaver's Glaive (444764), Fury of the Aldrachi (444806), Art of the Glaive (444810), Evasive Action (444926), Evasive Action (444929), Unhindered Assault (444931), Preemptive Strike (444979), Preemptive Strike (444997), Wounded Quarry (474339), Thrill of the Fight (1227062)
+                   Affected Spells (Label): Art of the Glaive (442290), Reaver's Glaive (442294), Keen Engagement (442497), Warblade's Hunger (442503), Warblade's Hunger (442507), Reaver's Mark (442624), Reaver's Mark (442679), Aldrachi Tactics (442683), Thrill of the Fight (442686), Thrill of the Fight (442688), Thrill of the Fight (442695), Army Unto Oneself (442714), Blade Ward (442715), Fury of the Aldrachi (442718), Incorruptible Spirit (442736), Incorruptible Spirit (442788), Wounded Quarry (442806), Art of the Glaive (444661), Reaver's Glaive (444686), Reaver's Glaive (444764), Fury of the Aldrachi (444806), Art of the Glaive (444810), Evasive Action (444926), Evasive Action (444929), Unhindered Assault (444931), Preemptive Strike (444979), Preemptive Strike (444997), Wounded Quarry (474339), Thrill of the Fight (1227062), Keen Edge (1272138), Broken Spirit (1272143), Bladecraft (1272153)
 #4 (id=1217254)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Misc Value 2: 3367 (Label) | Target: Self (1)
-                   Affected Spells (Label): Art of the Glaive (442290), Reaver's Glaive (442294), Keen Engagement (442497), Warblade's Hunger (442503), Warblade's Hunger (442507), Reaver's Mark (442624), Reaver's Mark (442679), Aldrachi Tactics (442683), Thrill of the Fight (442686), Thrill of the Fight (442688), Thrill of the Fight (442695), Army Unto Oneself (442714), Blade Ward (442715), Fury of the Aldrachi (442718), Incorruptible Spirit (442736), Incorruptible Spirit (442788), Wounded Quarry (442806), Art of the Glaive (444661), Reaver's Glaive (444686), Reaver's Glaive (444764), Fury of the Aldrachi (444806), Art of the Glaive (444810), Evasive Action (444926), Evasive Action (444929), Unhindered Assault (444931), Preemptive Strike (444979), Preemptive Strike (444997), Wounded Quarry (474339), Thrill of the Fight (1227062)
+                   Affected Spells (Label): Art of the Glaive (442290), Reaver's Glaive (442294), Keen Engagement (442497), Warblade's Hunger (442503), Warblade's Hunger (442507), Reaver's Mark (442624), Reaver's Mark (442679), Aldrachi Tactics (442683), Thrill of the Fight (442686), Thrill of the Fight (442688), Thrill of the Fight (442695), Army Unto Oneself (442714), Blade Ward (442715), Fury of the Aldrachi (442718), Incorruptible Spirit (442736), Incorruptible Spirit (442788), Wounded Quarry (442806), Art of the Glaive (444661), Reaver's Glaive (444686), Reaver's Glaive (444764), Fury of the Aldrachi (444806), Art of the Glaive (444810), Evasive Action (444926), Evasive Action (444929), Unhindered Assault (444931), Preemptive Strike (444979), Preemptive Strike (444997), Wounded Quarry (474339), Thrill of the Fight (1227062), Keen Edge (1272138), Broken Spirit (1272143), Bladecraft (1272153)
 Description      : $@spelldesc442686
 Tooltip          : Damage and healing increased by $w1%.
 
@@ -17006,7 +17020,7 @@ Range            : 25 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Roaring Fire (391178 effect#1), Flamebound (452413 effects: #4, #5), Demonsurge (452435 effect#2), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Up Close (1244220 effects: #1, #2), Rolling Torment (1244235 effect#1), Demonsurge (1245496 effect#3), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2)
+Affecting Spells : Roaring Fire (391178 effect#1), Flamebound (452413 effects: #4, #5), Demonsurge (452435 effect#2), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Up Close (1244220 effects: #1, #2), Rolling Torment (1244235 effect#1), Demonsurge (1245496 effect#3), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2)
 Family Flags     : 95, 106
 Attributes       : Track Target in Cast (Player Only) (22), Can Proc From Procs (122)
 Effects          :
@@ -17074,6 +17088,8 @@ Attributes       : Track Target in Cast (Player Only) (22), Can Proc From Procs 
 Effects          :
 #1 (id=1237354)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Eradicate overrides Reap
                    Base Value: 1225826 | Scaled Value: 1225826 | Misc Value: 1226019 | Target: Self (1)
+#2 (id=1284947)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Eradicate overrides Cull
+                   Base Value: 1225826 | Scaled Value: 1225826 | Misc Value: 1245453 | Target: Self (1)
 Description      : $@spelldesc1226033
 Tooltip          : Your next Reap is substantially empowered.
 
@@ -17090,7 +17106,7 @@ Attributes       : Can Proc From Procs (122), Spellcast Override In Spellbook (3
 Effects          :
 #1 (id=1237356)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Hungering Slash overrides Voidblade
                    Base Value: 1239123 | Scaled Value: 1239123 | Misc Value: 1245412 | Target: Self (1)
-Tooltip          : Your Felblade is replaced with Reaper's Slice.
+Tooltip          : Your Voidblade is replaced with Hungering Slash.
 
 Name             : Voidstep (id=1239526) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -17105,6 +17121,7 @@ Attributes       : Can Proc From Procs (122)
 Effects          :
 #1 (id=1237358)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8 | Radius: 0 - 5 yards | Target: Source (22) -> Enemy in Area (15)
+Description      : $@spelldesc1239520
 
 Name             : Second Helping (id=1239537) [Spell Family (107), Passive, Hidden] 
 Talent Entry     : Devourer [tree=spec, row=5, col=2, max_rank=1, req_points=8]
@@ -17118,7 +17135,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1237374)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2409 (Category) | Target: Self (1)
-                   Affected Spells (Category): Reap (1226019), Cull (1245453)
+                   Affected Spells (Category): Eradicate (1225826), Reap (1226019), Cull (1245453)
 Description      : Reap gains an additional charge.
 
 Name             : Devourer's Bite (id=1240201) [Spell Family (107), Passive, Hidden] 
@@ -17315,7 +17332,7 @@ Labels           : 16: Class Spells
                  : 5671
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1242017)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
+#1 (id=1242017)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Collapsing Star (1221162)
                    Family Flags: 103
@@ -17349,6 +17366,8 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1242029)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 15 | Target: Self (1)
+                   Affected Spells: Consume (473662), Void Ray (1213649), Void Ray (1214595), Devour (1217610), Collapsing Star (1221150), Collapsing Star (1221162), Reap (1225823), Eradicate (1225827), Hungering Slash (1239127), Voidblade (1245414), Cull (1245455), Burning Blades (1245654), Voidsurge (1246160), The Hunt (1246168), The Hunt (1246169), Voidfall Meteor (1256305), World Killer (1256619), Meteor Shower (1264129)
+                   Family Flags: 95
 Description      : Your damaging critical strikes deal ${200+$s1}% damage instead of the usual 200%.
 
 Name             : Emptiness (id=1242504) [Spell Family (107)] 
@@ -17594,7 +17613,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 117
                  : 292
-Affecting Spells : Vengeance Demon Hunter (212613 effect#15), Any Means Necessary (388114 effects: #3, #4), Roaring Fire (391178 effect#1), Demonsurge (452435 effect#2), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Guile (1223171 effect#1), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1240201 effect#1), Devourer's Bite (1241532 effect#1), Up Close (1244220 effect#1), Rolling Torment (1244235 effect#1), Demonsurge (1245496 effect#3), Duty Eternal (1246562 effects: #1, #2), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Furious (1266326 effects: #1, #2)
+Affecting Spells : Vengeance Demon Hunter (212613 effect#15), Any Means Necessary (388114 effects: #3, #4), Roaring Fire (391178 effect#1), Demonsurge (452435 effect#2), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Guile (1223171 effect#1), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1240201 effect#1), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Up Close (1244220 effect#1), Rolling Torment (1244235 effect#1), Demonsurge (1245496 effect#3), Duty Eternal (1246562 effects: #1, #2), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Furious (1266326 effects: #1, #2)
 Family Flags     : 30, 95
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Always Line of Sight (185), Allow Class Ability Procs (416)
 Effects          :
@@ -17609,7 +17628,7 @@ Description      : $@spelldesc1245412
 
 Name             : Cull (id=1245453) [Spell Family (107)] 
 Class            : Demon Hunter
-School           : Spellshadow
+School           : Cosmic
 Spell Type       : Magic
 Range            : 25 yards
 GCD              : 1.5 seconds
@@ -17631,7 +17650,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Resource: fury | Target: Self (1)
 Description      : Cut a hole in the fabric of reality, sending a concentrated bolt of cosmic matter towards your target, dealing $1225827s1 Cosmic damage.
 
-Reap gathers up to $1227619s2 nearby souls.$?a1246558[
+Cull gathers up to $1227619s2 nearby souls.$?a1246558[
 
 |CFFffffffGenerates $1261679s1 Fury.|R][]
 
@@ -17644,7 +17663,7 @@ Velocity         : 60 yards/sec
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Improved Reap (1244222 effects: #1, #2), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Furious (1266326 effects: #1, #2)
+Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Improved Reap (1244222 effects: #1, #2), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Furious (1266326 effects: #1, #2)
 Family Flags     : 95, 99
 Attributes       : Can Proc From Procs (122)
 Effects          :
@@ -17801,7 +17820,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
                  : 3766: Any Means Necessary (388114 effect#8), Any Means Necessary (388114 effect#9)
-Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2)
+Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2)
 Family Flags     : 95
 Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Can't Crit (93), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Aura Never Bounces (148), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416)
 Effects          :
@@ -17853,7 +17872,7 @@ Labels           : 16: Class Spells
                  : 3594: Vengeance Demon Hunter (212613 effect#18), Any Means Necessary (388114 effect#6), Any Means Necessary (388114 effect#7), Demonsurge (452416 effect#2), Demonsurge (452435 effect#4), Demon Hunter Fel-Scarred 11.2 Class Set 4pc (1236362 effect#2), Voidsurge (1246160 effect#2)
 Stacks           : 4 maximum
 Proc Chance      : 101%
-Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2)
+Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2)
 Triggered By     : Voidsurge (1246161)
 Family Flags     : 95
 Attributes       : Not In Spellbook (143), Always AOE Line of Sight (186), Aura Points On Client (268)
@@ -17900,7 +17919,7 @@ Cooldown         : 90 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Havoc Demon Hunter (212612 effect#6), Vengeance Demon Hunter (212613 effect#6), Any Means Necessary (388114 effects: #1, #3, #4), Devourer Demon Hunter (1213636 effect#5), Demonsurge (1245496 effect#3)
+Affecting Spells : Havoc Demon Hunter (212612 effect#6), Vengeance Demon Hunter (212613 effect#6), Any Means Necessary (388114 effects: #1, #3, #4), Devourer Demon Hunter (1213636 effect#5), Demonsurge (1245496 effect#3), Eternal Hunt (1270900 effect#1)
 Triggered By     : The Hunt (370966), The Hunt (1246169)
 Family Flags     : 32, 82
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Track Target in Cast (Player Only) (22), No Immunities (29), No Threat (42), No Aura Icon (60), Always Hit (114), Taps immediately (215), Attack on Charge to Unit (242), Not In Spellbook Until Learned (269), Haste Affects Melee Ability Casttime (301), Allow Defense While Casting (337)
@@ -17925,7 +17944,7 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Roaring Fire (391178 effect#1), Demon Hunter Havoc 10.2 Class Set 4pc (422859 effect#2), Demon Hide (428241 effects: #1, #3), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Rolling Torment (1244235 effect#1), Demonsurge (1245496 effect#3), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2)
+Affecting Spells : Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Roaring Fire (391178 effect#1), Demon Hunter Havoc 10.2 Class Set 4pc (422859 effect#2), Demon Hide (428241 effects: #1, #3), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effect#1), Demonsurge (1245496 effect#3), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Eternal Hunt (1270900 effect#4)
 Triggered By     : The Hunt (1246169)
 Family Flags     : 43, 87, 95
 Attributes       : Spell Haste Affects Periodic (173), Always Line of Sight (185), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
@@ -17945,8 +17964,8 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 1134
-Affecting Spells : Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Roaring Fire (391178 effect#1), Demon Hide (428241 effects: #1, #3), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Rolling Torment (1244235 effect#1), Demonsurge (1245496 effect#3), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2)
-Triggered By     : The Hunt (1246167)
+Affecting Spells : Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Roaring Fire (391178 effect#1), Demon Hide (428241 effects: #1, #3), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effect#1), Demonsurge (1245496 effect#3), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Eternal Hunt (1270900 effect#1)
+Triggered By     : The Hunt (1246167), Predator's Wake (1259431)
 Family Flags     : 43, 82, 95
 Attributes       : Is Ability (4), Do Not Sheath (18), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
@@ -18500,7 +18519,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2)
+Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2)
 Triggered By     : Voidfall Meteor (1256304), World Killer (1256618)
 Family Flags     : 95, 108, 109
 Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
@@ -18723,7 +18742,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2)
+Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2)
 Family Flags     : 95, 108, 109
 Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
@@ -18858,18 +18877,16 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 3597
-Affecting Spells : Havoc Demon Hunter (212612 effect#6), Vengeance Demon Hunter (212613 effect#6), Any Means Necessary (388114 effects: #1, #3, #4), Devourer Demon Hunter (1213636 effect#5), Demonsurge (1245496 effect#3)
+Affecting Spells : Havoc Demon Hunter (212612 effect#6), Vengeance Demon Hunter (212613 effect#6), Any Means Necessary (388114 effects: #1, #3, #4), Devourer Demon Hunter (1213636 effect#5), Demonsurge (1245496 effect#3), Eternal Hunt (1270900 effect#1)
 Triggered By     : The Hunt (370966), The Hunt (1246169)
 Family Flags     : 32, 82
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Track Target in Cast (Player Only) (22), No Immunities (29), No Threat (42), No Aura Icon (60), Always Hit (114), Taps immediately (215), Attack on Charge to Unit (242), Not In Spellbook Until Learned (269), Haste Affects Melee Ability Casttime (301), Allow Defense While Casting (337)
 Effects          :
 #1 (id=1268534)  : Charge (96)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 2 | Trigger Spell: 370966 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 2 | Trigger Spell: 1246169 | Target: Targeted Enemy (6)
 #2 (id=1268535)  : Trigger Spell (64): The Hunt
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 370967 | Target: Targeted Enemy (6)
-#3 (id=1268536)  : Trigger Spell (64): The Hunt
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 370968 | Target: Self (1)
-#4 (id=1268537)  : Apply Aura (6) | Dummy (4)
+#3 (id=1268536)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Charge to your target, striking them for $1246169s1 Cosmic damage, rooting them in place for $370970d and inflicting $1246168o1 Cosmic damage over $1246168d to up to $370967s2 enemies in your path. 
 
@@ -19032,7 +19049,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2)
+Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2)
 Triggered By     : Meteor Shower (1264126)
 Family Flags     : 95, 108, 109
 Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
@@ -19115,8 +19132,9 @@ Labels           : 16: Class Spells
                  : 5829
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=1276488)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+#1 (id=1276488)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
+Description      : Void Ray damage increased by $s1%.
 
 Name             : Demon Hunter Devourer 12.0 Class Set 4pc (id=1264882) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
@@ -19127,8 +19145,11 @@ Labels           : 16: Class Spells
                  : 5829
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=1276489)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+#1 (id=1276489)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Affected Spells: Collapsing Star (1221162)
+                   Family Flags: 103
+Description      : Collapsing Star damage increased by $s1% and it now generates $1271663s1 Fury.
 
 Name             : Felfire Fist (id=1265751) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -19207,10 +19228,10 @@ Effects          :
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
 #4 (id=1277777)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 12 | Scaled Value: 12 | Misc Value 2: 3367 (Label) | Target: Self (1)
-                   Affected Spells (Label): Art of the Glaive (442290), Reaver's Glaive (442294), Keen Engagement (442497), Warblade's Hunger (442503), Warblade's Hunger (442507), Reaver's Mark (442624), Reaver's Mark (442679), Aldrachi Tactics (442683), Thrill of the Fight (442686), Thrill of the Fight (442688), Thrill of the Fight (442695), Army Unto Oneself (442714), Blade Ward (442715), Fury of the Aldrachi (442718), Incorruptible Spirit (442736), Incorruptible Spirit (442788), Wounded Quarry (442806), Art of the Glaive (444661), Reaver's Glaive (444686), Reaver's Glaive (444764), Fury of the Aldrachi (444806), Art of the Glaive (444810), Evasive Action (444926), Evasive Action (444929), Unhindered Assault (444931), Preemptive Strike (444979), Preemptive Strike (444997), Wounded Quarry (474339), Thrill of the Fight (1227062)
+                   Affected Spells (Label): Art of the Glaive (442290), Reaver's Glaive (442294), Keen Engagement (442497), Warblade's Hunger (442503), Warblade's Hunger (442507), Reaver's Mark (442624), Reaver's Mark (442679), Aldrachi Tactics (442683), Thrill of the Fight (442686), Thrill of the Fight (442688), Thrill of the Fight (442695), Army Unto Oneself (442714), Blade Ward (442715), Fury of the Aldrachi (442718), Incorruptible Spirit (442736), Incorruptible Spirit (442788), Wounded Quarry (442806), Art of the Glaive (444661), Reaver's Glaive (444686), Reaver's Glaive (444764), Fury of the Aldrachi (444806), Art of the Glaive (444810), Evasive Action (444926), Evasive Action (444929), Unhindered Assault (444931), Preemptive Strike (444979), Preemptive Strike (444997), Wounded Quarry (474339), Thrill of the Fight (1227062), Keen Edge (1272138), Broken Spirit (1272143), Bladecraft (1272153)
 #5 (id=1277778)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Misc Value 2: 3367 (Label) | Target: Self (1)
-                   Affected Spells (Label): Art of the Glaive (442290), Reaver's Glaive (442294), Keen Engagement (442497), Warblade's Hunger (442503), Warblade's Hunger (442507), Reaver's Mark (442624), Reaver's Mark (442679), Aldrachi Tactics (442683), Thrill of the Fight (442686), Thrill of the Fight (442688), Thrill of the Fight (442695), Army Unto Oneself (442714), Blade Ward (442715), Fury of the Aldrachi (442718), Incorruptible Spirit (442736), Incorruptible Spirit (442788), Wounded Quarry (442806), Art of the Glaive (444661), Reaver's Glaive (444686), Reaver's Glaive (444764), Fury of the Aldrachi (444806), Art of the Glaive (444810), Evasive Action (444926), Evasive Action (444929), Unhindered Assault (444931), Preemptive Strike (444979), Preemptive Strike (444997), Wounded Quarry (474339), Thrill of the Fight (1227062)
+                   Affected Spells (Label): Art of the Glaive (442290), Reaver's Glaive (442294), Keen Engagement (442497), Warblade's Hunger (442503), Warblade's Hunger (442507), Reaver's Mark (442624), Reaver's Mark (442679), Aldrachi Tactics (442683), Thrill of the Fight (442686), Thrill of the Fight (442688), Thrill of the Fight (442695), Army Unto Oneself (442714), Blade Ward (442715), Fury of the Aldrachi (442718), Incorruptible Spirit (442736), Incorruptible Spirit (442788), Wounded Quarry (442806), Art of the Glaive (444661), Reaver's Glaive (444686), Reaver's Glaive (444764), Fury of the Aldrachi (444806), Art of the Glaive (444810), Evasive Action (444926), Evasive Action (444929), Unhindered Assault (444931), Preemptive Strike (444979), Preemptive Strike (444997), Wounded Quarry (474339), Thrill of the Fight (1227062), Keen Edge (1272138), Broken Spirit (1272143), Bladecraft (1272153)
 Description      : Physical damage increased by $s1%.
 
 Name             : Vengeful Beast (id=1265818) [Spell Family (107), Passive] 
@@ -19671,4 +19692,192 @@ Description      : $@spelldesc1270449
 Tooltip          : Agility increased by $w1%.
 
 Chance to gain Untethered Rage is growing...
+
+Name             : Eternal Hunt (id=1270898) [Spell Family (107), Passive] 
+Talent Entry     : Havoc [tree=spec, row=8, col=1, max_rank=1, req_points=20]
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 66: Demon Hunter Spells
+                 : 292
+Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1283311)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+Description      : The Hunt empowers your next Eye Beam, increasing damage by $s1% and affecting enemies in a wider area.
+
+Name             : Eternal Hunt (id=1270900) [Spell Family (107), Passive] 
+Talent Entry     : Havoc [tree=spec, row=9, col=1, max_rank=2, req_points=20]
+                 : Effect#1 [op=set, values=(15, 30)]
+                 : Effect#2 [op=set, values=(-15000, -30000)]
+                 : Effect#3 [op=set, values=(2, 4)]
+                 : Effect#4 [op=set, values=(15, 30)]
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 66: Demon Hunter Spells
+                 : 292
+Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1283313)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Affected Spells: The Hunt (323639), The Hunt (345396), The Hunt (345422), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (1246167), The Hunt (1246169), Predator's Wake (1259431)
+                   Family Flags: 82
+#2 (id=1283315)  : Apply Aura (6) | Modify Cooldown Time (Category) (341)
+                   Base Value: -15000 | Scaled Value: -15000 | Misc Value: 2427 (Category) | Target: Self (1)
+                   Affected Spells (Category): The Hunt (370965)
+#3 (id=1283316)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+#4 (id=1283497)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: The Hunt (345335), The Hunt (370969), The Hunt (1246168)
+                   Family Flags: 87
+Description      : The Hunt has ${$s2/-1000} sec reduced cooldown, deals $s1% more damage, and its damage over time effect applies to $s3 additional enemies.
+
+Name             : Eternal Hunt (id=1270901) [Spell Family (107), Passive] 
+Talent Entry     : Havoc [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 66: Demon Hunter Spells
+                 : 292
+Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1283314)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Affected Spells: Blade Dance (188499), Blade Dance (199552), Blade Dance (200685), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055)
+                   Family Flags: 12, 25, 37, 38
+Description      : Blade Dance damage increased by $s1%.
+
+Fully channeling Eye Beam causes your next Blade Dance to refresh its own cooldown.
+
+Name             : Eternal Hunt (id=1271092) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 8 seconds
+Labels           : 16: Class Spells
+                 : 66: Demon Hunter Spells
+                 : 292
+Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Only On Player (104), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
+Effects          :
+#1 (id=1283632)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Description      : $@spelldesc1270901
+Tooltip          : Your next Blade Dance immediately refreshes its cooldown.
+
+Name             : Empowered Eye Beam (id=1271144) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 12 seconds
+Labels           : 16: Class Spells
+                 : 66: Demon Hunter Spells
+                 : 292
+Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Only On Player (104), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
+Effects          :
+#1 (id=1283702)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Affected Spells: Eye Beam (198030), Eye Beam (391058)
+                   Family Flags: 8
+Description      : $@spelldesc1270898
+Tooltip          : Eye Beam deals $w1% increased damage and has a wider area of effect.
+
+Name             : Star's Fury (id=1271663) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Cosmic
+Spell Type       : Ranged
+Labels           : 16: Class Spells
+                 : 66: Demon Hunter Spells
+                 : 292
+                 : 5754
+Attributes       : Not Shapeshifted (16), Allow While Mounted (24), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Personal Buffs/Debuffs (423)
+Effects          :
+#1 (id=1284499)  : Energize Power (30)
+                   Base Value: 10 | Scaled Value: 10 | Resource: fury | Target: Self (1)
+Description      : $@spelldesc1264882
+
+Name             : Keen Edge (id=1272138) [Spell Family (107), Passive] 
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=3, col=4, max_rank=1, req_points=1]
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 66: Demon Hunter Spells
+                 : 292
+                 : 3367: Havoc Demon Hunter (212612 effect#12), Havoc Demon Hunter (212612 effect#13), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4), Tempered Steel (1265800 effect#4), Tempered Steel (1265800 effect#5)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1285217)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.33 | Target: Self (1)
+#2 (id=1285218)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Affected Spells: Vengeful Retreat (198813), Blade Dance (199552), Blade Dance (200685), Shear (203782), Death Sweep (210153), Death Sweep (210155), Fracture (225919), Fracture (225921), Throw Glaive (337819), Throw Glaive (346665), Reaver's Glaive (442294), Warblade's Hunger (442507), Fury of the Aldrachi (444806), Preemptive Strike (444979)
+                   Family Flags: 58
+#3 (id=1285219)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Vengeful Retreat (198813), Blade Dance (199552), Blade Dance (200685), Shear (203782), Death Sweep (210153), Death Sweep (210155), Fracture (225919), Fracture (225921), Throw Glaive (337819), Throw Glaive (346665), Reaver's Glaive (442294), Warblade's Hunger (442507), Fury of the Aldrachi (444806), Preemptive Strike (444979)
+                   Family Flags: 58
+#4 (id=1285220)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+#5 (id=1285221)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 9 | Scaled Value: 9 | Misc Value 2: 3349 (Label) | Target: Self (1)
+                   Affected Spells (Label): Reaver's Glaive (442294), Reaver's Glaive (444686), Reaver's Glaive (444764)
+Description      : Reaver's Glaive damage is increased by $s1% and other Physical-only damage is increased by $s2%.
+
+Name             : Broken Spirit (id=1272143) [Spell Family (107), Passive] 
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=2, col=4, max_rank=1, req_points=1]
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 66: Demon Hunter Spells
+                 : 292
+                 : 3367: Havoc Demon Hunter (212612 effect#12), Havoc Demon Hunter (212612 effect#13), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4), Tempered Steel (1265800 effect#4), Tempered Steel (1265800 effect#5)
+Internal Cooldown: 0.1 seconds
+Proc Chance      : 100%
+Proc Flags       : Generic Hostile Spell
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1285228)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+#2 (id=1285229)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+#3 (id=1285230)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+#4 (id=1285231)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+Description      : $?a212613[Sigil of Spite][The Hunt] shatters $?a212613[$s1 additional][$s2] Soul $LFragment:Fragments;. $?a212613[Soul Cleave][Chaos Strike] has a $?a212613[$s3][$s4]% chance to shatter a Soul Fragment.
+
+Name             : Bladecraft (id=1272153) [Spell Family (107), Passive] 
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=4, col=3, max_rank=1, req_points=1]
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 66: Demon Hunter Spells
+                 : 292
+                 : 3367: Havoc Demon Hunter (212612 effect#12), Havoc Demon Hunter (212612 effect#13), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4), Tempered Steel (1265800 effect#4), Tempered Steel (1265800 effect#5)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1285259)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+#2 (id=1285260)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 37 | Misc Value 2: 4821 (Label) | Target: Self (1)
+                   Affected Spells (Label): Reaver's Mark (442624)
+#3 (id=1285261)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Misc Value 2: 5190 (Label) | Target: Self (1)
+                   Affected Spells (Label): Reaver's Mark (442679)
+#4 (id=1285262)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+Description      : Fury of the Aldrachi further empowers $?a212613[Soul Cleave][Blade Dance] when cast after $?a212613[Fracture][Chaos Strike], increasing slashes to ${$442718s2*($442718s1/100+1)+$s1}.
+
+Reaver's Mark now stacks up to $442624u times and further empowers $?a212613[Fracture][Chaos Strike] when cast after $?a212613[Soul Cleave][Blade Dance], applying an additional stack.
 

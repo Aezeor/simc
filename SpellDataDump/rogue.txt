@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.63854 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.63967 midnight-BETA
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -1041,7 +1041,6 @@ Talent Entry     : Outlaw [tree=spec, row=2, col=2, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
-Spell Level      : 42
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Labels           : 16: Class Spells
@@ -3873,15 +3872,15 @@ Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 22
-Duration         : 6 seconds
-Cooldown         : 6 seconds
-Charges          : 1 (45 seconds cooldown)
-Category         : 1615 (Type 0x1): Deepening Shadows (185314 effect#1), Double Dance (394930 effect#1)
+Duration         : 8 seconds
+Cooldown         : 8 seconds
+Charges          : 1 (30 seconds cooldown)
+Category         : 1615 (Type 0x1): Double Dance (394930 effect#1)
 Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting Spells : Improved Shadow Dance (393972 effects: #1, #2), The First Dance (470678 effects: #1, #2)
+Affecting Spells : The First Dance (470678 effects: #1, #2), Deepening Shadows (1271702 effects: #1, #2)
 Family Flags     : 103
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Aura Cancel (31), No Skill Increase (36), No Threat (42), No Aura Icon (60), Suppress Caster Procs (112), Suppress Target Procs (113), No Aura Log (202), Ignore Healing Modifiers (219), Aura Points On Client (268), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
@@ -3907,36 +3906,38 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Shadow Techniques (196911), Shadow Techniques (196912)
                    Family Flags: 107
-Description      : Allows use of all Stealth abilities and grants all the combat benefits of Stealth for $d$?a245687[, and increases damage by $s2%][]. Effect not broken from taking damage or attacking.
+Description      : Allows use of all Stealth abilities and grants all the combat benefits of Stealth for $d$?a245687[, and increases Shadowstrike damage by $245687s1%][]. Effect not broken from taking damage or attacking.
 
 Name             : Deepening Shadows (id=185314) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=7, col=3, max_rank=1, req_points=8]
+Talent Entry     : Subtlety [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 41
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
-                 : 59
                  : 292
+                 : 5969: Deepening Shadows (1271702 effect#4)
 Family Flags     : 88
-Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Unknown (450)
 Effects          :
-#1 (id=269038)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1615 (Category) | Target: Self (1)
-                   Affected Spells (Category): Shadow Dance (185313)
-Description      : Haste affects the cooldown recovery rate of Shadow Dance.
+#1 (id=269038)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Deepening Shadows
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1271702 | Target: Self (1)
+                   Modified By: Deepening Shadows (1271702 effect#4)
+Description      : Shadow Dance duration is increased by $1271702s3% of your Haste.
+
+Current bonus duration: ${$s1/1000}.2 sec
 
 Name             : Shadow Dance (id=185422) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 5
-Duration         : 6 seconds
+Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting Spells : Shadowrunner (378807 effect#1), Improved Shadow Dance (393972 effects: #1, #2), Shadowheart (455131 effect#1), The First Dance (470678 effects: #1, #2)
+Affecting Spells : Shadowrunner (378807 effect#1), Shadowheart (455131 effect#1), The First Dance (470678 effects: #1, #2), Deepening Shadows (1271702 effects: #1, #2)
 Family Flags     : 57
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Skill Increase (36), No Threat (42), Fail on all targets immune (85), Can Proc From Procs (122), No Cast Log (128), Allow Proc While Sitting (147), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Change Specialization (38)
@@ -5604,20 +5605,6 @@ Effects          :
                    Affected Spells: Sprint (2983)
                    Family Flags: 6
 Description      : Reduces the cooldown of Sprint by ${$m1/-1000} sec.
-
-Name             : Eviscerate (desc=Rank 2) (id=231716) [Spell Family (8), Passive] 
-Class            : Subtlety Rogue
-School           : Physical
-Spell Type       : None
-Spell Level      : 44
-Labels           : 16: Class Spells
-                 : 20: Rogue Spells
-                 : 292
-Attributes       : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
-Effects          :
-#1 (id=349575)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-Description      : Eviscerate deals an additional $s1% damage as Shadow to targets with your Find Weakness active.
 
 Name             : Shadowstrike (desc=Rank 2) (id=231718) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
@@ -8045,7 +8032,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #3 (id=758244)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -33 | Scaled Value: -33 | Misc Value: 3 | Misc Value 2: 621 (Label) | Target: Self (1)
-                   Affected Spells (Label): Weak Alcohol (11007), Standard Alcohol (11008), Strong Alcohol (11009), Potent Alcohol (11629), Use Filled Brewfest Stein (41921), Use Filled Brewfest Stein (41943), Use Filled Brewfest Stein (41944), Use Filled Brewfest Stein (41945), Use Filled Brewfest Stein (41946), Foaming Rage (47217), Enjoying A Cold One (101582), Drink (105221), Delusional (105225), Banana Infused Rum (125686), Refreshment (148720), Pandaren Brew (149021), Savage Remedy (177154), Pinchwhistle "Nitro Fuel" (179198), DrogLite (203491), Jug of Drog (203501), Drink (236820), Goldtusk Visions (246186), Bilewing Kiss (262960), Goldtusk Visions (263442), Strong Alcohol (279600), Magical Life (288555), Kelp'thar Gas (289209), Strong Alcohol (305431), Strong Alcohol (305432), Weak Alcohol (305433), Potent Alcohol (305434), Potent Alcohol (305435), Standard Alcohol (305436), Standard Alcohol (305438), Ohn Lite Drinking (392343)
+                   Affected Spells (Label): Weak Alcohol (11007), Standard Alcohol (11008), Strong Alcohol (11009), Potent Alcohol (11629), Use Filled Brewfest Stein (41921), Use Filled Brewfest Stein (41943), Use Filled Brewfest Stein (41944), Use Filled Brewfest Stein (41945), Use Filled Brewfest Stein (41946), Foaming Rage (47217), Drink Wine (55296), Enjoying A Cold One (101582), Drink (105221), Delusional (105225), Banana Infused Rum (125686), Refreshment (148720), Pandaren Brew (149021), Savage Remedy (177154), Pinchwhistle "Nitro Fuel" (179198), DrogLite (203491), Jug of Drog (203501), Drink (236820), Goldtusk Visions (246186), Bilewing Kiss (262960), Goldtusk Visions (263442), Strong Alcohol (279600), Magical Life (288555), Kelp'thar Gas (289209), Strong Alcohol (305431), Strong Alcohol (305432), Weak Alcohol (305433), Potent Alcohol (305434), Potent Alcohol (305435), Standard Alcohol (305436), Standard Alcohol (305438), Ohn Lite Drinking (392343)
 Description      : Increases Versatility by $s1%. When you take damage, heal for $s2% of that amount over $291843d.
 
 Name             : Brush It Off (desc=Racial Ability) (id=291843) 
@@ -13402,26 +13389,6 @@ Effects          :
 Description      : $@spelldesc393970
 Tooltip          : Healing $w1% of max health every $t.
 
-Name             : Improved Shadow Dance (id=393972) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=5, col=4, max_rank=1, req_points=8]
-Class            : Rogue
-School           : Physical
-Spell Type       : None
-Labels           : 16: Class Spells
-                 : 20: Rogue Spells
-                 : 292
-Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1033249)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Shadow Dance (185313), Shadow Dance (185422)
-                   Family Flags: 57, 103
-#2 (id=1043944)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Shadow Dance (185313), Shadow Dance (185422)
-                   Family Flags: 57, 103
-Description      : Shadow Dance has ${$s1/1000} sec increased duration.
-
 Name             : Mutilated Flesh (id=394021) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
@@ -17450,6 +17417,7 @@ Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman
 Race             : Earthen (0x60000)
 School           : Physical
 Spell Type       : None
+Max Scaling Level: 70
 GCD              : 1 seconds
 Duration         : 20 seconds
 Cooldown         : 1 seconds
@@ -17459,16 +17427,14 @@ Category Cooldown: 1 seconds
 Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
-#1 (id=1169179)  : Apply Aura (6) | Restore Health (84) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Target: Self (1)
+#1 (id=1169179)  : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
+                   Base Value: 5 | Scaled Value: 5 | Value Multiplier: 1 | Target: Self (1)
 #2 (id=1169180)  : Apply Aura (6) | Restore Power (85) | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 96750 (coefficient=4.3) | Target: Self (1)
 #3 (id=1169181)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Scaling Class: Restore Health/Resource (-2)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.55552 | Target: Self (1)
-#4 (id=1257618)  : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : Draws upon your inner energy, restoring ${$m4*$d} health and ${$m4*$d} mana over $d. Must remain seated during contemplation.
-Tooltip          : Restores ${$w1/5} health and ${$w2/5} mana per second.
+                   Base Value: 0 | Scaled Value: 96750 (coefficient=4.3) | PvP Coefficient: 0.55552 | Target: Self (1)
+Description      : Draws upon your inner energy, restoring ${$s1*$d}% of your maximum health and ${$m3/5*$d} mana over $d. Must remain seated during contemplation.
+Tooltip          : Restores ${$s1}% health and ${$w2/5} mana per second.
 
 Name             : Assassination Rogue (id=462102) [Spell Family (8), Passive, Hidden] 
 Class            : Assassination Rogue
@@ -19107,7 +19073,7 @@ Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143
 Effects          :
 #1 (id=1252175)  : Apply Aura (6) | Dummy (4)
                    Base Value: 7 | Scaled Value: 7 | Target: Self (1)
-Description      : Every $s1 coin flips, keep a lucky coin that bends you towards your fate for $1248971d. Your Agility is increased by $1248971s1%, the damage and bonuses of Fatebound Coins are increased by $1248971s2%, and coin flips are $1248971s3% more likely to match the same face as the last flip.
+Description      : Every $s1 coin flips, keep a lucky coin that bends you towards your fate for $1248971d. Your Agility is increased by $1248971s1%, the damage and bonuses of Fatebound Coins are increased by $1248971s3%, and coin flips are $1248971s5% more likely to match the same face as the last flip.
 
 Coin flips do not count toward finding a lucky coin while you have a lucky coin.
 
@@ -19143,25 +19109,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Modified By: Rogue Fatebound 11.2 Class Set 4pc (1236403 effect#4)
 Description      : $@spelldesc1248970
-Tooltip          : Agility increased by $w1%. Damage and bonuses of Fatebound Coins increased by $w4%. Coin flips are $w5% more likely to match the same face as the last flip.
-
-Name             : Fatebound Coin Flips (id=1249093) [Spell Family (8)] 
-Class            : Rogue
-School           : Physical
-Spell Type       : Magic
-Duration         : Aura (infinite)
-Labels           : 16: Class Spells
-                 : 20: Rogue Spells
-                 : 292
-Stacks           : 7 maximum
-Proc Chance      : 101%
-Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43), Change Talent (46)
-Effects          :
-#1 (id=1252368)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : $@spelldesc1248970
-Tooltip          : You've flipped $w1 Fatebound Coins. The 7th will be a Lucky Coin.
+Tooltip          : Agility increased by $w1%. Damage and bonuses of Fatebound Coins increased by $w3%. Coin flips are $w5% more likely to match the same face as the last flip.
 
 Name             : Overflowing Purse (id=1249190) [Spell Family (8), Passive] 
 Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=100]
@@ -19195,7 +19143,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #2 (id=1252538)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : $?c1[Envenom deals][Dispatch or Between the Eyes deal] $s1% more damage when they consume $s2 or more combo points. 
+Description      : $?c1[Envenom deals][Dispatch or Between the Eyes deal] $s1% more damage when $?c1[it consumes][they consume] $s2 or more combo points. 
 
 Name             : Chosen's Revelry (id=1249201) [Spell Family (8), Passive] 
 Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=100]
@@ -20261,7 +20209,7 @@ Family Flags     : 54
 Attributes       : Is Ability (4), Do Not Sheath (18), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Allow Cast While Casting (135), Always AOE Line of Sight (186), Allow Cast While Channeling (308), No Movement Radius Bonus (318), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1277972)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.5 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.5 | Target: Targeted Enemy (6)
 Description      : $@spelldesc1265862
 
 Name             : Palmed Bullets (id=1265931) [Spell Family (8)] 
@@ -20332,6 +20280,23 @@ Effects          :
 #2 (id=1278048)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Black Powder deals increased damage equal to $s1% of your Mastery when it spends $s2 or more combo points.
+
+Name             : Moment of Opportunity (id=1267208) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Spell Level      : 1
+Duration         : 3 seconds
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+Triggered By     : Moment of Opportunity (459488)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No Threat (42), Not an Action (92), Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1280070)  : Apply Aura (6) | Increase Speed% (31)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+Description      : $@spelldesc459488
+Tooltip          : Movement speed increased by $w1%.
 
 Name             : Ancient Arts (id=1268932) [Spell Family (8), Passive] 
 Talent Entry     : Subtlety [tree=spec, row=8, col=1, max_rank=1, req_points=20]
@@ -20800,4 +20765,31 @@ Effects          :
 #1 (id=1282140)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
 Description      : $@spelldesc1943
+
+Name             : Deepening Shadows (id=1271702) [Spell Family (8), Hidden] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+Triggered By     : Deepening Shadows (185314)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1284575)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Shadow Dance (185313), Shadow Dance (185422)
+                   Family Flags: 57, 103
+#2 (id=1284576)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Shadow Dance (185313), Shadow Dance (185422)
+                   Family Flags: 57, 103
+#3 (id=1284577)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+#4 (id=1284581)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Misc Value 2: 5969 (Label) | Target: Self (1)
+                   Affected Spells (Label): Deepening Shadows (185314)
+Description      : $@spelldesc185314
+Tooltip          : Shadow Dance duration increased by ${$w3/1000}.2 sec.
 

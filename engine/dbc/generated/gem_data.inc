@@ -1,4 +1,4 @@
-// Gem properties, wow build 12.0.0.63854
+// Gem properties, wow build 12.0.0.63967
 static constexpr std::array<gem_property_data_t, 2405> __gem_property_data { {
   {    2,  2686, 0x00000002, 0 }, // +$k1 Strength
   {    3,  2687, 0x00000008, 0 }, // +$k1 Agility
@@ -2397,8 +2397,8 @@ static constexpr std::array<gem_property_data_t, 2405> __gem_property_data { {
   { 4402,  8552, 0x0000000e, 0 }, // +$k1 Primary Stat
   { 4405,  8558, 0x0000000e, 0 }, // +$k1 Primary Stat and +$1258210s1% Maximum Mana per unique Midnight gem color
   { 4406,  8559, 0x0000000e, 0 }, // +$k1 Primary Stat and +$1258210s1% Maximum Mana per unique Midnight gem color
-  { 4407,  8557, 0x0000000e, 0 }, // +$k1 Primary Stat and +0.15% Critical Effect per unique Midnight gem color
-  { 4408,  8556, 0x0000000e, 0 }, // +$k1 Primary Stat and +0.15% Critical Effect per unique Midnight gem color
+  { 4407,  8557, 0x0000000e, 0 }, // +$k1 Primary Stat and +0.15% critical strike effectiveness per unique Midnight gem color
+  { 4408,  8556, 0x0000000e, 0 }, // +$k1 Primary Stat and +0.15% critical strike effectiveness per unique Midnight gem color
   { 4409,  8554, 0x0000000e, 0 }, // +$k1 Primary Stat and +$k2 Armor
   { 4410,  8555, 0x0000000e, 0 }, // +$k1 Primary Stat and +$k2 Armor
   { 4415,  8577, 0x0000000e, 0 }, // Flawed Everchill Pearl

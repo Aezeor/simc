@@ -326,7 +326,8 @@ enum hero_tree_e
   HERO_CONDUIT_OF_THE_CELESTIALS = 64,
   HERO_SHADOPAN                  = 65,
   HERO_MASTER_OF_HARMONY         = 66,
-  HEO_ANNIHILATOR                = 124,
+  HERO_ANNIHILATOR               = 124,
+  HERO_VOID_SCARRED              = 126,
   HERO_MAX
 };
 

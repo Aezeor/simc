@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 12.0.0.63854
-static constexpr std::array<specialization_spell_entry_t, 609> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 12.0.0.63967
+static constexpr std::array<specialization_spell_entry_t, 608> __specialization_spell_data { {
   {  0,  535,  264656,      0, "Pathfinding"                       , 0 },
   {  0,  535,  264662,      0, "Endurance Training"                , 0 },
   {  0,  535,  264663,      0, "Predator's Thirst"                 , 0 },
@@ -195,7 +195,6 @@ static constexpr std::array<specialization_spell_entry_t, 609> __specialization_
   {  4,  261,  196912,      0, "Shadow Techniques"                 , 0 },
   {  4,  261,  197835,      0, "Shuriken Storm"                    , 0 },
   {  4,  261,  212283,      0, "Symbols of Death"                  , 0 },
-  {  4,  261,  231716,      0, "Eviscerate"                        , "Rank 2" },
   {  4,  261,  319175,      0, "Black Powder"                      , 0 },
   {  4,  261,  394935,      0, "Shadowstep"                        , 0 },
   {  4,  261,  462103,      0, "Rogue"                             , 0 },
