@@ -14901,7 +14901,8 @@ double death_knight_t::composite_attribute( attribute_e attr ) const
     {
       case DEATH_KNIGHT_BLOOD:
         if ( buffs.bloodied_blade_final->check() )
-          a += base.stats.attribute[ attr ] * buffs.bloodied_blade_final->check_value();
+          a += dbc->race_base( race ).strength +
+               dbc->attribute_base( type, level() ).strength * buffs.bloodied_blade_final->check_value();
         break;
       case DEATH_KNIGHT_UNHOLY:
         break;
