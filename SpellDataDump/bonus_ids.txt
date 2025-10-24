@@ -7320,7 +7320,7 @@ bonus_id={ 12234 }, socket={ 3 }
 bonus_id={ 12235 }, effects={ Unknown Effect (id=206760) }
 bonus_id={ 12236 }, effects={ Unknown Effect (id=206761) }
 bonus_id={ 12237 }, effects={ Skrog Tooth (id=1223600, index=0, type=equip) }
-bonus_id={ 12245 }
+bonus_id={ 12245 }, base_ilevel={ 259 }, req_ilevel={ 90 }
 bonus_id={ 12247 }, base_ilevel={ 201 }, req_ilevel={ 90 }
 bonus_id={ 12249 }, base_ilevel={ 165 }, req_ilevel={ 81 }
 bonus_id={ 12250 }, base_ilevel={ 526 }
@@ -7462,7 +7462,7 @@ bonus_id={ 12394 }, base_ilevel={ 500 }
 bonus_id={ 12403 }, base_ilevel={ 80 }, req_ilevel={ 80 }
 bonus_id={ 12405 }, base_ilevel={ 133 }, req_ilevel={ 82 }
 bonus_id={ 12406 }, base_ilevel={ 133 }, req_ilevel={ 82 }
-bonus_id={ 12407 }
+bonus_id={ 12407 }, base_ilevel={ 183 }, req_ilevel={ 87 }
 bonus_id={ 12408 }, base_ilevel={ 197 }, req_ilevel={ 90 }
 bonus_id={ 12409 }, quality={ common }, effects={ Unknown Effect (id=210070) }
 bonus_id={ 12410 }, quality={ uncommon }, effects={ Unknown Effect (id=210081) }

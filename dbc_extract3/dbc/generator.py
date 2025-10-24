@@ -5118,7 +5118,7 @@ class AssistedCombatRuleGenerator(DataGenerator):
 
 class ItemScalingConfigGenerator(DataGenerator):
     def generate(self, data = None):
-        data = self.db('ItemScalingConfig').values()
+        data = sorted(self.db('ItemScalingConfig').values(), key=lambda e: e.id)
 
         self.output_header(
             header = 'Item Scaling Config data',
@@ -5134,7 +5134,7 @@ class ItemScalingConfigGenerator(DataGenerator):
 
 class ItemOffsetCurveGenerator(DataGenerator):
     def generate(self, data = None):
-        data = self.db('ItemOffsetCurve').values()
+        data = sorted(self.db('ItemOffsetCurve').values(), key=lambda e: e.id)
 
         self.output_header(
             header = 'Item Offset Curve data',
