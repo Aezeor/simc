@@ -1604,10 +1604,6 @@ public:
     const spell_data_t* abomination_disease_cloud;
   } pet_spell;
 
-  struct modified_spells_t
-  {
-  } modified_spell;
-
   // RPPM
   struct rppm_t
   {
@@ -1746,7 +1742,6 @@ public:
   // Runes
   runes_t _runes;
   rider_of_the_apocalypse_e last_summoned_rider;
-  auto_dispose<std::vector<modified_spell_data_t*>> modified_spells;
   std::vector<pets::death_knight_pet_t*> dk_active_pets;
   std::vector<pets::lesser_ghoul_pet_t*> active_lesser_ghouls;
   runeforges_e mh_runeforge;
@@ -1895,8 +1890,6 @@ public:
   // Create Profile options
   std::string create_profile( save_e ) override;
 
-  void print_custom_parsed_effects( report::sc_html_stream& ) const override;
-
   // Death Knight specific methods
   // Rune related methods
   double runes_per_second() const;
@@ -1905,7 +1898,6 @@ public:
   // Shared
   bool has_runeforge( runeforges_e rf ) const;
   void set_runeforges();
-  modified_spell_data_t* get_modified_spell( const spell_data_t* );
   void spell_lookups();
   void set_icds();
   void apply_effect_modifying_effects();
@@ -11563,12 +11555,6 @@ std::string death_knight_t::create_profile( save_e type )
   return profile_str;
 }
 
-void death_knight_t::print_custom_parsed_effects( report::sc_html_stream& os ) const
-{
-  parse_player_effects_t::print_custom_parsed_effects( os );
-  modified_spell_data_t::parsed_effects_html( os, *sim, modified_spells );
-}
-
 // death_knight_t::datacollection_begin ===========================================
 
 void death_knight_t::datacollection_begin()
@@ -12302,18 +12288,6 @@ const spell_data_t* death_knight_t::conditional_spell_lookup( bool fn, int id )
     return spell_data_t::not_found();
 
   return find_spell( id );
-}
-
-modified_spell_data_t* death_knight_t::get_modified_spell( const spell_data_t* s )
-{
-  if ( !s || !s->ok() )
-    return modified_spell_data_t::nil();
-
-  for ( auto& m : modified_spells )
-    if ( m->_spell.id() == s->id() )
-      return m;
-
-  return modified_spells.emplace_back( new modified_spell_data_t( s ) );
 }
 
 bool death_knight_t::has_runeforge( runeforges_e rf ) const
