@@ -4241,11 +4241,11 @@ struct horseman_pet_t : public death_knight_pet_t
     void execute() override
     {
       horseman_spell_t::execute();
-      if ( !pet()->dk()->buffs.antimagic_shell_horsemen_icd->check() && dk()->talent.rider.horsemens_aid.ok() )
+      if ( !dk()->buffs.antimagic_shell_horsemen_icd->check() && dk()->talent.rider.horsemens_aid.ok() )
       {
-        set_target( pet()->dk() );
-        pet()->dk()->buffs.antimagic_shell_horsemen->trigger();
-        pet()->dk()->buffs.antimagic_shell_horsemen_icd->trigger();
+        set_target( dk() );
+        dk()->buffs.antimagic_shell_horsemen->trigger();
+        dk()->buffs.antimagic_shell_horsemen_icd->trigger();
       }
       else
         set_target( pet() );
