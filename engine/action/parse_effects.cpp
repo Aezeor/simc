@@ -1252,6 +1252,13 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
       str = "absorb received";
       return &absorb_received_mult_effects;
 
+    case A_MOD_PERCENT_STAT:
+      sim->error( SEVERE,
+                  "Parse Effects: {}(id={}), effectN {} is utilizing aura subtype 80, rather than 137. This is a bug, "
+                  "as it only modifies base attributes. This effect will not be applied by Parse Effects.",
+                  eff.spell()->name_cstr(), eff.spell()->id(), eff.index() );
+      return nullptr;
+
     default:
       return nullptr;
   }
