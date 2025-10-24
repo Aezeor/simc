@@ -15485,9 +15485,9 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       case A_MOD_PERCENT_STAT:  // 80
         pct_val = modifying_eff.percent();
         sim->error( SEVERE,
-                    "{} is utilizing aura subtype 80, rather than 137. This is a bug, as it only modifies base "
-                    "attributes.",
-                    modifying_spell->name_cstr() );
+                    "{}(id={}) effect #:{} is utilizing aura subtype 80, rather than 137. This is a bug, as it only "
+                    "modifies base attributes.",
+                    modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() );
         break;
 
       default:
