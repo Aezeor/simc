@@ -1509,6 +1509,7 @@ void player_t::init_base_stats()
     // Passive Flat Stat Modifiers
     for( auto attr : { ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT } )
     {
+      base.stats.attribute[ attr ] *= get_passive_player_value( 1.0, "base_attribute_multiplier", attr );
       base.stats.attribute[ attr ] = get_passive_player_value( base.stats.attribute[ attr ], "attribute_value", attr );
     }
 
@@ -15107,6 +15108,7 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { A_MOD_BLOCK_PERCENT,                      "block"                            },  // 51
   { A_MOD_SPELL_CRIT_CHANCE,                  "spell_crit"                       },  // 57
   { A_MOD_DAMAGE_PERCENT_DONE,                "damage_multiplier"                },  // 79
+  { A_MOD_PERCENT_STAT,                       "base_attribute_multiplier"        },  // 80
   { A_MOD_RESISTANCE_PCT,                     "armor_multiplier"                 },  // 101
   { A_MOD_POWER_REGEN_PERCENT,                "resource_regen"                   },  // 110
   { A_MOD_HEALING_RECEIVED_PCT,               "healing_received_multiplier"      },  // 118
@@ -15193,16 +15195,17 @@ struct misc_expansion_t
   std::function<std::string( int )> formatter;
 };
 
-static const std::array<misc_expansion_t, 9> misc_expansion_map = { {
-  { "attribute_value",        MISC_LIST_ATTR,     &attr_formatter     },
-  { "attribute_multiplier",   MISC_BITMAP_ATTR,   &attr_formatter     },
-  { "armor_type_multiplier",  MISC_BITMAP_ATTR,   &attr_formatter     },
-  { "rating_multiplier",      MISC_BITMAP_RATING, &rating_formatter   },
-  { "crit_damage_multiplier", MISC_BITMAP_SCHOOL, &school_formatter   },
-  { "damage_multiplier",      MISC_BITMAP_SCHOOL, &school_formatter   },
-  { "resource_max",           MISC_TYPE_RESOURCE, &resource_formatter },
-  { "resource_multiplier",    MISC_TYPE_RESOURCE, &resource_formatter },
-  { "resource_regen",         MISC_TYPE_RESOURCE, &resource_formatter },
+static const std::array<misc_expansion_t, 10> misc_expansion_map = { {
+  { "attribute_value",            MISC_LIST_ATTR,     &attr_formatter     },
+  { "base_attribute_multiplieer", MISC_LIST_ATTR,     &attr_formatter     },
+  { "attribute_multiplier",       MISC_BITMAP_ATTR,   &attr_formatter     },
+  { "armor_type_multiplier",      MISC_BITMAP_ATTR,   &attr_formatter     },
+  { "rating_multiplier",          MISC_BITMAP_RATING, &rating_formatter   },
+  { "crit_damage_multiplier",     MISC_BITMAP_SCHOOL, &school_formatter   },
+  { "damage_multiplier",          MISC_BITMAP_SCHOOL, &school_formatter   },
+  { "resource_max",               MISC_TYPE_RESOURCE, &resource_formatter },
+  { "resource_multiplier",        MISC_TYPE_RESOURCE, &resource_formatter },
+  { "resource_regen",             MISC_TYPE_RESOURCE, &resource_formatter },
 } };
 
 std::string_view get_field_from_type( int type )
@@ -15477,6 +15480,14 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       case A_MOD_LEECH_PERCENT:  // 443
       case A_MOD_PARRY_FROM_CRIT_RATING:  // 463
         flat_val = modifying_eff.percent();
+        break;
+
+      case A_MOD_PERCENT_STAT:  // 80
+        pct_val = modifying_eff.percent();
+        sim->error( SEVERE,
+                    "{} is utilizing aura subtype 80, rather than 137. This is a bug, as it only modifies base "
+                    "attributes.",
+                    modifying_spell->name_cstr() );
         break;
 
       default:
