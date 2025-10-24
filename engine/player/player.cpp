@@ -15196,16 +15196,16 @@ struct misc_expansion_t
 };
 
 static const std::array<misc_expansion_t, 10> misc_expansion_map = { {
-  { "attribute_value",            MISC_LIST_ATTR,     &attr_formatter     },
-  { "base_attribute_multiplieer", MISC_LIST_ATTR,     &attr_formatter     },
-  { "attribute_multiplier",       MISC_BITMAP_ATTR,   &attr_formatter     },
-  { "armor_type_multiplier",      MISC_BITMAP_ATTR,   &attr_formatter     },
-  { "rating_multiplier",          MISC_BITMAP_RATING, &rating_formatter   },
-  { "crit_damage_multiplier",     MISC_BITMAP_SCHOOL, &school_formatter   },
-  { "damage_multiplier",          MISC_BITMAP_SCHOOL, &school_formatter   },
-  { "resource_max",               MISC_TYPE_RESOURCE, &resource_formatter },
-  { "resource_multiplier",        MISC_TYPE_RESOURCE, &resource_formatter },
-  { "resource_regen",             MISC_TYPE_RESOURCE, &resource_formatter },
+  { "attribute_value",           MISC_LIST_ATTR,     &attr_formatter     },
+  { "base_attribute_multiplier", MISC_LIST_ATTR,     &attr_formatter     },
+  { "attribute_multiplier",      MISC_BITMAP_ATTR,   &attr_formatter     },
+  { "armor_type_multiplier",     MISC_BITMAP_ATTR,   &attr_formatter     },
+  { "rating_multiplier",         MISC_BITMAP_RATING, &rating_formatter   },
+  { "crit_damage_multiplier",    MISC_BITMAP_SCHOOL, &school_formatter   },
+  { "damage_multiplier",         MISC_BITMAP_SCHOOL, &school_formatter   },
+  { "resource_max",              MISC_TYPE_RESOURCE, &resource_formatter },
+  { "resource_multiplier",       MISC_TYPE_RESOURCE, &resource_formatter },
+  { "resource_regen",            MISC_TYPE_RESOURCE, &resource_formatter },
 } };
 
 std::string_view get_field_from_type( int type )
