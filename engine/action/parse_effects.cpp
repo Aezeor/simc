@@ -1256,7 +1256,7 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
       sim->error( SEVERE,
                   "Parse Effects: {}(id={}), effectN {} is utilizing aura subtype 80, rather than 137. This is a bug, "
                   "as it only modifies base attributes. This effect will not be applied by Parse Effects.",
-                  eff.spell()->name_cstr(), eff.spell()->id(), eff.index() );
+                  eff.spell()->name_cstr(), eff.spell()->id(), eff.index() + 1 );
       return nullptr;
 
     default:

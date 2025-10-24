@@ -15487,7 +15487,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         sim->error( SEVERE,
                     "{}(id={}) effect #:{} is utilizing aura subtype 80, rather than 137. This is a bug, as it only "
                     "modifies base attributes.",
-                    modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() );
+                    modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1 );
         break;
 
       default:
