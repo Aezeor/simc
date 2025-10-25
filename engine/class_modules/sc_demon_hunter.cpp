@@ -307,6 +307,8 @@ public:
     buff_t* tactical_retreat;
     buff_t* unbound_chaos;
     buff_t* cycle_of_hatred;
+    buff_t* empowered_eye_beam;
+    buff_t* eternal_hunt;
 
     movement_buff_t* fel_rush_move;
     movement_buff_t* vengeful_retreat_move;
@@ -526,6 +528,10 @@ public:
       player_talent_t collective_anguish;
       player_talent_t screaming_brutality;
       player_talent_t a_fire_inside;
+
+      player_talent_t eternal_hunt_1;
+      player_talent_t eternal_hunt_2;
+      player_talent_t eternal_hunt_3;
     } havoc;
 
     struct vengeance_talents_t
@@ -781,6 +787,8 @@ public:
     const spell_data_t* collective_anguish;
     const spell_data_t* collective_anguish_damage;
     const spell_data_t* essence_break_proc_damage;
+    const spell_data_t* empowered_eye_beam_buff;
+    const spell_data_t* eternal_hunt_buff;
 
     // Vengeance
     const spell_data_t* vengeance_demon_hunter;
@@ -1991,6 +1999,7 @@ public:
     // Havoc
     ab::parse_effects( p()->buff.exergy );
     ab::parse_effects( p()->buff.inertia );
+    ab::parse_effects( p()->buff.empowered_eye_beam );
 
     // Vengeance
 
@@ -3593,10 +3602,22 @@ struct eye_beam_base_t : public final_breath_trigger_t<demon_hunter_spell_t>
       p()->buff.blind_fury->cancel();
       p()->proc.eye_beam_canceled->occur();
     }
-    else if ( p()->talent.havoc.furious_gaze->ok() &&
-              d->current_tick >= ( d->num_ticks() - p()->options.channel_tick_cutoff_benefit ) )
+
+    if ( p()->talent.havoc.furious_gaze->ok() &&
+         d->current_tick >= ( d->num_ticks() - p()->options.channel_tick_cutoff_benefit ) )
     {
       p()->buff.furious_gaze->trigger();
+    }
+
+    if ( p()->talent.havoc.eternal_hunt_3->ok() &&
+         d->current_tick >= ( d->num_ticks() - p()->options.channel_tick_cutoff_benefit ) )
+    {
+      p()->buff.eternal_hunt->trigger();
+    }
+
+    if ( p()->buff.empowered_eye_beam->up() )
+    {
+      p()->buff.empowered_eye_beam->expire();
     }
   }
 
@@ -5161,6 +5182,8 @@ struct the_hunt_t : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exe
     p()->set_out_of_range( timespan_t::zero() );  // Cancel all other movement
 
     p()->buff.reavers_glaive->trigger();
+
+    p()->buff.empowered_eye_beam->trigger();
   }
 
   timespan_t travel_time() const override
@@ -6523,6 +6546,11 @@ struct blade_dance_base_t
     if ( dodge_buff )
     {
       dodge_buff->trigger();
+    }
+
+    if ( p()->buff.eternal_hunt->up() )
+    {
+      cooldown->reset( true );
     }
   }
 
@@ -9055,6 +9083,10 @@ void demon_hunter_t::create_buffs()
 
   buff.chaos_theory = make_buff( this, "chaos_theory", spec.chaos_theory_buff );
 
+  buff.empowered_eye_beam = make_buff( this, "empowered_eye_beam", spec.empowered_eye_beam_buff );
+
+  buff.eternal_hunt = make_buff( this, "eternal_hunt", spec.eternal_hunt_buff );
+
   // Vengeance ==============================================================
 
   buff.demon_spikes = new buffs::demon_spikes_t( this );
@@ -9970,6 +10002,10 @@ void demon_hunter_t::init_spells()
   talent.havoc.screaming_brutality = find_talent_spell( talent_tree::SPECIALIZATION, "Screaming Brutality" );
   talent.havoc.a_fire_inside       = find_talent_spell( talent_tree::SPECIALIZATION, "A Fire Inside" );
 
+  talent.havoc.eternal_hunt_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1270898 );
+  talent.havoc.eternal_hunt_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1270900 );
+  talent.havoc.eternal_hunt_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1270901 );
+
   // Vengeance Talents
 
   talent.vengeance.fel_devastation = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Devastation" );
@@ -10158,6 +10194,8 @@ void demon_hunter_t::init_spells()
   spec.collective_anguish               = talent_spell_lookup( talent.havoc.collective_anguish, 393831 );
   spec.collective_anguish_damage        = spec.collective_anguish->effectN( 1 ).trigger();
   spec.essence_break_proc_damage        = talent_spell_lookup( talent.havoc.essence_break, 1245759 );
+  spec.empowered_eye_beam_buff          = talent_spell_lookup( talent.havoc.eternal_hunt_1, 1271144 );
+  spec.eternal_hunt_buff                = talent_spell_lookup( talent.havoc.eternal_hunt_3, 1271092 );
 
   spec.demon_spikes_buff               = find_spell( 203819 );
   spec.fiery_brand_debuff              = talent_spell_lookup( talent.vengeance.fiery_brand, 207771 );
