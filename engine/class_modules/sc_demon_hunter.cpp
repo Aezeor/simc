@@ -9535,13 +9535,19 @@ void demon_hunter_t::init_action_list()
   }
   clear_action_priority_lists();
 
-  if ( specialization() == DEMON_HUNTER_HAVOC )
+  switch (specialization())
   {
-    demon_hunter_apl::havoc( this );
-  }
-  else if ( specialization() == DEMON_HUNTER_VENGEANCE )
-  {
-    demon_hunter_apl::vengeance( this );
+    case DEMON_HUNTER_DEVOURER:
+      demon_hunter_apl::devourer( this );
+      break;
+    case DEMON_HUNTER_HAVOC:
+      demon_hunter_apl::havoc( this );
+      break;
+    case DEMON_HUNTER_VENGEANCE:
+      demon_hunter_apl::vengeance( this );
+      break;
+    default:
+      break;
   }
 
   use_default_action_list = true;
