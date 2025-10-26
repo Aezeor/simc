@@ -2509,8 +2509,8 @@ struct voidsurge_trigger_t : public BASE
 {
   using base_t = voidsurge_trigger_t<ABILITY, BASE>;
 
-  voidsurge_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
-    : BASE( n, p, s, o )
+  template <typename... Args>
+  voidsurge_trigger_t( Args&&... args ) : BASE( std::forward<Args>( args )... )
   {
   }
 
@@ -5733,10 +5733,10 @@ struct eradicate_t : public reap_base_t
   }
 };
 
-struct cull_t : public reap_base_t
+struct cull_t : public voidsurge_trigger_t<voidsurge_ability::CULL, reap_base_t>
 {
   cull_t( demon_hunter_t* p, util::string_view o )
-    : reap_base_t( "cull", p, p->spec.cull, o, p->spec.cull_damage, p->spec.reap_energize )
+    : base_t( "cull", p, p->spec.cull, o, p->spec.cull_damage, p->spec.reap_energize )
   {
   }
 
@@ -5747,7 +5747,7 @@ struct cull_t : public reap_base_t
       return false;
     }
 
-    return reap_base_t::action_ready();
+    return base_t::action_ready();
   }
 };
 
