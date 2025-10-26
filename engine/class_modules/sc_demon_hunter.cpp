@@ -211,7 +211,8 @@ enum voidsurge_ability
   VOIDBLADE
 };
 
-const std::vector<voidsurge_ability> voidsurge_abilities{voidsurge_ability::PREDATORS_WAKE, voidsurge_ability::VOIDBLADE };
+const std::vector<voidsurge_ability> voidsurge_abilities{ voidsurge_ability::PREDATORS_WAKE,
+                                                          voidsurge_ability::VOIDBLADE };
 
 std::string voidsurge_ability_name( voidsurge_ability ability )
 {
@@ -885,6 +886,7 @@ public:
     const spell_data_t* sigil_of_doom_damage;
     const spell_data_t* abyssal_gaze;
     const spell_data_t* predators_wake;
+    const spell_data_t* pierce_the_veil;
   } hero_spec;
 
   // Set Bonus effects
@@ -5560,7 +5562,7 @@ struct consume_t : public consume_base_t
   }
 };
 
-struct voidblade_t : public demon_hunter_spell_t
+struct voidblade_base_t : public demon_hunter_spell_t
 {
   struct voidblade_damage_t : public hungering_slash_trigger_t<demon_hunter_spell_t>
   {
@@ -5581,14 +5583,50 @@ struct voidblade_t : public demon_hunter_spell_t
     }
   };
 
-  voidblade_t( demon_hunter_t* p, util::string_view o )
-    : demon_hunter_spell_t( "voidblade", p, p->talent.demon_hunter.voidblade, o )
+  voidblade_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
+    : demon_hunter_spell_t( n, p, s, o )
   {
+    cooldown = p->cooldown.voidblade;
+
     may_block               = false;
     movement_directionality = movement_direction_type::TOWARDS;
 
-    execute_action = p->get_background_action<voidblade_damage_t>( "voidblade_damage" );
+    execute_action = p->get_background_action<voidblade_damage_t>( fmt::format( "{}_damage", n ) );
     add_child( execute_action );
+  }
+};
+
+struct pierce_the_veil_t : public voidsurge_trigger_t<voidsurge_ability::VOIDBLADE, voidblade_base_t>
+{
+  pierce_the_veil_t( demon_hunter_t* p, util::string_view o )
+    : base_t( "pierce_the_veil", p, p->hero_spec.pierce_the_veil, o )
+  {
+  }
+
+  bool action_ready() override
+  {
+    if ( !p()->buff.metamorphosis->check() )
+    {
+      return false;
+    }
+    return base_t::action_ready();
+  }
+};
+
+struct voidblade_t : public voidblade_base_t
+{
+  voidblade_t( demon_hunter_t* p, util::string_view o )
+    : voidblade_base_t( "voidblade", p, p->talent.demon_hunter.voidblade, o )
+  {
+  }
+
+  bool action_ready() override
+  {
+    if ( p()->buff.metamorphosis->check() )
+    {
+      return false;
+    }
+    return voidblade_base_t::action_ready();
   }
 };
 
@@ -8961,6 +8999,8 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new consume_t( this, options_str );
   if ( name == "voidblade" )
     return new voidblade_t( this, options_str );
+  if ( name == "pierce_the_veil" )
+    return new pierce_the_veil_t( this, options_str );
   if ( name == "soul_immolation" )
     return new soul_immolation_t( this, options_str );
   if ( name == "eradicate" )
@@ -10437,6 +10477,7 @@ void demon_hunter_t::init_spells()
   hero_spec.sigil_of_doom_damage    = talent_spell_lookup( talent.scarred.demonic_intensity, 462030 );
   hero_spec.abyssal_gaze            = talent_spell_lookup( talent.scarred.demonic_intensity, 452497 );
   hero_spec.predators_wake          = talent_spell_lookup( talent.scarred.demonic_intensity, 1259431 );
+  hero_spec.pierce_the_veil         = talent_spell_lookup( talent.scarred.demonsurge, 1245483 );
   switch ( specialization() )
   {
     case DEMON_HUNTER_DEVOURER:
