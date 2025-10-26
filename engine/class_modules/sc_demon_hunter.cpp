@@ -6465,13 +6465,11 @@ struct blade_dance_base_t
 
   std::vector<blade_dance_damage_t*> attacks;
   std::vector<blade_dance_damage_t*> first_blood_attacks;
-  buff_t* dodge_buff;
   trail_of_ruin_dot_t* trail_of_ruin_dot;
   timespan_t ability_cooldown;
 
-  blade_dance_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view options_str,
-                      buff_t* dodge_buff )
-    : base_t( n, p, s, options_str ), dodge_buff( dodge_buff ), trail_of_ruin_dot( nullptr )
+  blade_dance_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view options_str )
+    : base_t( n, p, s, options_str ), trail_of_ruin_dot( nullptr )
   {
     may_miss = false;
     cooldown = p->cooldown.blade_dance;  // Blade Dance/Death Sweep Category Cooldown
@@ -6594,11 +6592,6 @@ struct blade_dance_base_t
       }
     }
 
-    if ( dodge_buff )
-    {
-      dodge_buff->trigger();
-    }
-
     if ( p()->buff.eternal_hunt->up() )
     {
       cooldown->reset( true );
@@ -6614,7 +6607,7 @@ struct blade_dance_base_t
 struct blade_dance_t : public blade_dance_base_t
 {
   blade_dance_t( demon_hunter_t* p, util::string_view options_str )
-    : blade_dance_base_t( "blade_dance", p, p->spec.blade_dance, options_str, nullptr )
+    : blade_dance_base_t( "blade_dance", p, p->spec.blade_dance, options_str )
   {
     if ( attacks.empty() )
     {
@@ -6664,7 +6657,7 @@ struct blade_dance_t : public blade_dance_base_t
 struct death_sweep_t : public blade_dance_base_t
 {
   death_sweep_t( demon_hunter_t* p, util::string_view options_str )
-    : blade_dance_base_t( "death_sweep", p, p->spec.death_sweep, options_str, nullptr )
+    : blade_dance_base_t( "death_sweep", p, p->spec.death_sweep, options_str )
   {
     if ( attacks.empty() )
     {
