@@ -207,31 +207,20 @@ std::string demonsurge_ability_name( demonsurge_ability ability )
 
 enum voidsurge_ability
 {
-  DEVOUR,
-  CULL,
   PREDATORS_WAKE,
-  VOIDBLADE,
-  HUNGERING_SLASH
+  VOIDBLADE
 };
 
-const std::vector<voidsurge_ability> voidsurge_abilities{
-    voidsurge_ability::DEVOUR, voidsurge_ability::CULL, voidsurge_ability::PREDATORS_WAKE, voidsurge_ability::VOIDBLADE,
-    voidsurge_ability::HUNGERING_SLASH };
+const std::vector<voidsurge_ability> voidsurge_abilities{voidsurge_ability::PREDATORS_WAKE, voidsurge_ability::VOIDBLADE };
 
 std::string voidsurge_ability_name( voidsurge_ability ability )
 {
   switch ( ability )
   {
-    case voidsurge_ability::DEVOUR:
-      return "voidsurge_devour";
-    case voidsurge_ability::CULL:
-      return "voidsurge_cull";
     case voidsurge_ability::PREDATORS_WAKE:
       return "voidsurge_the_hunt";
     case voidsurge_ability::VOIDBLADE:
       return "voidsurge_voidblade";
-    case voidsurge_ability::HUNGERING_SLASH:
-      return "voidsurge_hungering_slash";
     default:
       return "voidsurge_unknown";
   }
@@ -5529,18 +5518,18 @@ struct consume_base_t : public voidfall_building_trigger_t<demon_hunter_spell_t>
   }
 };
 
-struct devour_t : public voidsurge_trigger_t<voidsurge_ability::DEVOUR, consume_base_t>
+struct devour_t : public consume_base_t
 {
   timespan_t reap_cdr;
 
-  devour_t( demon_hunter_t* p, util::string_view o ) : base_t( "devour", p, p->spec.devour, o )
+  devour_t( demon_hunter_t* p, util::string_view o ) : consume_base_t( "devour", p, p->spec.devour, o )
   {
     reap_cdr = timespan_t::from_millis( p->spec.void_metamorphosis->effectN( 14 ).base_value() );
   }
 
   void execute() override
   {
-    base_t::execute();
+    consume_base_t::execute();
 
     p()->cooldown.reap->adjust( -reap_cdr );
   }
@@ -5551,7 +5540,7 @@ struct devour_t : public voidsurge_trigger_t<voidsurge_ability::DEVOUR, consume_
     {
       return false;
     }
-    return base_t::action_ready();
+    return consume_base_t::action_ready();
   }
 };
 
@@ -5767,10 +5756,10 @@ struct eradicate_t : public reap_base_t
   }
 };
 
-struct cull_t : public voidsurge_trigger_t<voidsurge_ability::CULL, reap_base_t>
+struct cull_t : public reap_base_t
 {
   cull_t( demon_hunter_t* p, util::string_view o )
-    : base_t( "cull", p, p->spec.cull, o, p->spec.cull_damage, p->spec.reap_energize )
+    : reap_base_t( "cull", p, p->spec.cull, o, p->spec.cull_damage, p->spec.reap_energize )
   {
   }
 
@@ -5781,7 +5770,7 @@ struct cull_t : public voidsurge_trigger_t<voidsurge_ability::CULL, reap_base_t>
       return false;
     }
 
-    return base_t::action_ready();
+    return reap_base_t::action_ready();
   }
 };
 
