@@ -2501,6 +2501,38 @@ struct demonsurge_trigger_t : public BASE
   }
 };
 
+template <voidsurge_ability ABILITY, typename BASE>
+struct voidsurge_trigger_t : public BASE
+{
+  using base_t = voidsurge_trigger_t<ABILITY, BASE>;
+
+  voidsurge_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    BASE::p()->trigger_voidsurge( ABILITY );
+  }
+
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
+  {
+    if ( util::str_compare_ci( name, "voidsurge_available" ) )
+    {
+      if ( BASE::p()->talent.scarred.demonsurge->ok() )
+      {
+        return make_fn_expr( name, [ this ]() { return BASE::p()->buff.voidsurge_abilities[ ABILITY ]->check(); } );
+      }
+      return expr_t::create_constant( name, 0 );
+    }
+
+    return BASE::create_expression( name );
+  }
+};
+
 template <art_of_the_glaive_ability ABILITY, typename BASE>
 struct art_of_the_glaive_trigger_t : public BASE
 {
