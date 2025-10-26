@@ -214,9 +214,9 @@ enum voidsurge_ability
   HUNGERING_SLASH
 };
 
-const std::vector<voidsurge_ability> voidsurge_abilities{ voidsurge_ability::DEVOUR, voidsurge_ability::CULL,
-                                                          voidsurge_ability::PREDATORS_WAKE, voidsurge_ability::VOIDBLADE,
-                                                          voidsurge_ability::HUNGERING_SLASH };
+const std::vector<voidsurge_ability> voidsurge_abilities{
+    voidsurge_ability::DEVOUR, voidsurge_ability::CULL, voidsurge_ability::PREDATORS_WAKE, voidsurge_ability::VOIDBLADE,
+    voidsurge_ability::HUNGERING_SLASH };
 
 std::string voidsurge_ability_name( voidsurge_ability ability )
 {
@@ -2440,14 +2440,11 @@ public:
       return false;
 
     // TODO: CHECK IF THIS PERCENTAGE IS RIGHT
-    double chance_to_proc = 0.1 * ( 1.0 + p()->buff.seething_anger->stack_value() );
-    for ( int i = 0; i < souls_consumed; ++i )
+    double chance_to_proc = 0.1 * ( 1.0 + p()->buff.seething_anger->stack_value() ) * souls_consumed;
+    if ( ab::rng().roll( chance_to_proc ) )
     {
-      if ( ab::rng().roll( chance_to_proc ) )
-      {
-        p()->buff.untethered_rage->trigger();
-        return true;
-      }
+      p()->buff.untethered_rage->trigger();
+      return true;
     }
 
     if ( !p()->buff.untethered_rage->up() && p()->talent.vengeance.untethered_rage3->ok() )
