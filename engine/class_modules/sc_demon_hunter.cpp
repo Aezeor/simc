@@ -4655,6 +4655,22 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
     p()->trigger_demonsurge( demonsurge_ability::CONSUMING_FIRE );
   }
+
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
+  {
+    if ( util::str_compare_ci( name, "demonsurge_available" ) )
+    {
+      if ( p()->talent.scarred.demonsurge->ok() )
+      {
+        return make_fn_expr( name, [ this ]() {
+          return p()->buff.demonsurge_abilities[ demonsurge_ability::CONSUMING_FIRE ]->check();
+        } );
+      }
+      return expr_t::create_constant( name, 0 );
+    }
+
+    return demon_hunter_spell_t::create_expression( name );
+  }
 };
 
 // Metamorphosis ============================================================
