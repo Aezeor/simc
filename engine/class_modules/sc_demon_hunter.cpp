@@ -343,7 +343,7 @@ public:
     buff_t* doomsayer_in_combat;
     buff_t* doomsayer_out_of_combat;
 
-    // Fel-scarred
+    // Scarred
     buff_t* monster_rising;
     buff_t* student_of_suffering;
     buff_t* enduring_torment;
@@ -639,7 +639,7 @@ public:
       player_talent_t world_killer;
     } annihilator;
 
-    struct felscarred_talents_t
+    struct scarred_talents_t
     {
       player_talent_t demonsurge;
 
@@ -659,7 +659,7 @@ public:
       player_talent_t monster_rising;
 
       player_talent_t demonic_intensity;
-    } felscarred;
+    } scarred;
   } talent;
 
   // Spell Data
@@ -860,7 +860,7 @@ public:
     const spell_data_t* doomsayer_out_of_combat_buff;
     const spell_data_t* world_killer;
 
-    // Fel-scarred
+    // Scarred
     const spell_data_t* burning_blades_debuff;
     const spell_data_t* enduring_torment_buff;
     const spell_data_t* monster_rising_buff;
@@ -937,7 +937,7 @@ public:
     cooldown_t* art_of_the_glaive_consumption_icd;
     cooldown_t* wounded_quarry_trigger_icd;
 
-    // Fel-scarred
+    // Scarred
   } cooldown;
 
   // Gains
@@ -964,7 +964,7 @@ public:
     // Set Bonuses
     gain_t* seething_fury;
 
-    // Fel-scarred
+    // Scarred
     gain_t* student_of_suffering;
   } gain;
 
@@ -1016,7 +1016,7 @@ public:
     proc_t* soul_fragment_from_wounded_quarry;
     proc_t* wounded_quarry_accumulator_reset;
 
-    // Fel-scarred
+    // Scarred
     std::unordered_map<demonsurge_ability, proc_t*> demonsurge_abilities;
 
     // Set Bonuses
@@ -1083,7 +1083,7 @@ public:
     spell_t* meteor_shower   = nullptr;
     spell_t* world_killer    = nullptr;
 
-    // Fel-scarred
+    // Scarred
     action_t* burning_blades = nullptr;
     action_t* demonsurge     = nullptr;
   } active;
@@ -2042,7 +2042,7 @@ public:
     art_of_the_glaive( 4, p()->buff.art_of_the_glaive_second_rending_strike );
     // End Art of the Glaive bullshittery
 
-    // Fel-scarred
+    // Scarred
     ab::parse_effects( p()->buff.enduring_torment );
     ab::parse_effects( p()->buff.demonsurge_demonic );
     ab::parse_effects( p()->buff.demonsurge_hardcast );
@@ -2080,7 +2080,7 @@ public:
 
     // Aldrachi Reaver
 
-    // Fel-scarred
+    // Scarred
   }
 
   void init_finished() override
@@ -2840,13 +2840,13 @@ struct burning_blades_trigger_t : public BASE
   {
     BASE::impact( s );
 
-    if ( !BASE::p()->talent.felscarred.burning_blades->ok() )
+    if ( !BASE::p()->talent.scarred.burning_blades->ok() )
       return;
 
     if ( !action_t::result_is_hit( s->result ) )
       return;
 
-    const double dot_damage = s->result_amount * BASE::p()->talent.felscarred.burning_blades->effectN( 1 ).percent();
+    const double dot_damage = s->result_amount * BASE::p()->talent.scarred.burning_blades->effectN( 1 ).percent();
     residual_action::trigger( BASE::p()->active.burning_blades, s->target, dot_damage );
   }
 };
@@ -3683,7 +3683,7 @@ struct eye_beam_t : public eye_beam_base_t
       abyssal_gaze( nullptr ),
       abyssal_gaze_cost( 0 )
   {
-    if ( p->talent.felscarred.demonic_intensity->ok() )
+    if ( p->talent.scarred.demonic_intensity->ok() )
     {
       abyssal_gaze      = new abyssal_gaze_t( p );
       abyssal_gaze_cost = abyssal_gaze->data().cost( POWER_FURY );
@@ -4030,7 +4030,7 @@ struct sigil_of_flame_damage_base_t : public demon_hunter_sigil_t
   void execute() override
   {
     demon_hunter_sigil_t::execute();
-    if ( p()->talent.felscarred.student_of_suffering->ok() )
+    if ( p()->talent.scarred.student_of_suffering->ok() )
     {
       p()->buff.student_of_suffering->trigger();
     }
@@ -4224,7 +4224,7 @@ struct sigil_of_flame_t : public sigil_of_flame_base_t
     sigil = p->get_background_action<sigil_of_flame_damage_t>( "sigil_of_flame_damage" );
     add_child( sigil );
 
-    if ( p->talent.felscarred.demonic_intensity->ok() )
+    if ( p->talent.scarred.demonic_intensity->ok() )
     {
       sigil_of_doom      = new sigil_of_doom_t( p );
       sigil_of_doom_cost = sigil_of_doom->data().cost( POWER_FURY );
@@ -4683,7 +4683,7 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
 
         p()->buff.dark_matter->trigger();
 
-        if ( p()->talent.felscarred.violent_transformation->ok() )
+        if ( p()->talent.scarred.violent_transformation->ok() )
         {
           p()->cooldown.voidblade->reset( true );
           p()->cooldown.the_hunt->reset( true );
@@ -4707,7 +4707,7 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
           p()->cooldown.blade_dance->reset( false );
         }
 
-        if ( p()->talent.felscarred.violent_transformation->ok() )
+        if ( p()->talent.scarred.violent_transformation->ok() )
         {
           p()->cooldown.immolation_aura->reset( false, -1 );
           p()->cooldown.sigil_of_flame->reset( false );
@@ -5351,15 +5351,15 @@ struct demonsurge_t : public demon_hunter_spell_t
     double m = demon_hunter_spell_t::composite_da_multiplier( s );
 
     // Focused Hatred increases Demonsurge damage when hitting less than 6 targets
-    if ( p()->talent.felscarred.focused_hatred->ok() && s->n_targets <= 5 )
+    if ( p()->talent.scarred.focused_hatred->ok() && s->n_targets <= 5 )
     {
       // 1 target is always effect 1 %
       // 2 target is effect 1 % - effect 2 %
       // 3 target is effect 1 % - (effect 2 % * 2)
       // etc up to 5 target
       auto num_target_reduction_percent =
-          p()->talent.felscarred.focused_hatred->effectN( 2 ).percent() * ( s->n_targets - 1 );
-      m *= 1.0 + ( p()->talent.felscarred.focused_hatred->effectN( 1 ).percent() - num_target_reduction_percent );
+          p()->talent.scarred.focused_hatred->effectN( 2 ).percent() * ( s->n_targets - 1 );
+      m *= 1.0 + ( p()->talent.scarred.focused_hatred->effectN( 1 ).percent() - num_target_reduction_percent );
     }
 
     return m;
@@ -6986,7 +6986,7 @@ struct demon_blades_t : public felblade_trigger_t<demon_hunter_attack_t>
   {
     double ea = base_t::composite_energize_amount( s );
 
-    if ( p()->talent.felscarred.demonsurge->ok() && p()->buff.metamorphosis->check() )
+    if ( p()->talent.scarred.demonsurge->ok() && p()->buff.metamorphosis->check() )
     {
       ea += as<int>( p()->spec.metamorphosis_buff->effectN( 10 ).base_value() );
     }
@@ -8280,11 +8280,11 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       p()->buff.rolling_torment->trigger();
     }
 
-    if ( p()->talent.felscarred.monster_rising->ok() )
+    if ( p()->talent.scarred.monster_rising->ok() )
     {
       p()->buff.monster_rising->expire();
     }
-    if ( p()->talent.felscarred.enduring_torment->ok() )
+    if ( p()->talent.scarred.enduring_torment->ok() )
     {
       p()->buff.enduring_torment->expire();
     }
@@ -8300,11 +8300,11 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       p()->metamorphosis_health = 0;
     }
 
-    if ( p()->talent.felscarred.monster_rising->ok() )
+    if ( p()->talent.scarred.monster_rising->ok() )
     {
       p()->buff.monster_rising->trigger();
     }
-    if ( p()->talent.felscarred.enduring_torment->ok() )
+    if ( p()->talent.scarred.enduring_torment->ok() )
     {
       p()->buff.enduring_torment->trigger();
     }
@@ -9152,7 +9152,7 @@ void demon_hunter_t::create_buffs()
                                      ->set_quiet( true )
                                      ->set_allow_precombat( true );
 
-  // Fel-scarred ============================================================
+  // Scarred ============================================================
 
   buff.enduring_torment = make_buff( this, "enduring_torment", hero_spec.enduring_torment_buff )
                               ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
@@ -9170,13 +9170,13 @@ void demon_hunter_t::create_buffs()
                             ->add_invalidate( CACHE_AGILITY );
 
   buff.pursuit_of_angryness =
-      make_buff( this, "pursuit_of_angriness", talent.felscarred.pursuit_of_angriness )
+      make_buff( this, "pursuit_of_angriness", talent.scarred.pursuit_of_angriness )
           ->set_quiet( true )
           ->set_tick_zero( true )
           ->add_invalidate( CACHE_RUN_SPEED )
           ->set_tick_callback(
-              [ this, speed_per_fury = talent.felscarred.pursuit_of_angriness->effectN( 1 ).percent() /
-                                       talent.felscarred.pursuit_of_angriness->effectN( 1 ).base_value() ](
+              [ this, speed_per_fury = talent.scarred.pursuit_of_angriness->effectN( 1 ).percent() /
+                                       talent.scarred.pursuit_of_angriness->effectN( 1 ).base_value() ](
                   buff_t* b, int, timespan_t ) {
                 // TOCHECK - Does this need to floor if it's not a whole number
                 b->current_value = resources.current[ RESOURCE_FURY ] * speed_per_fury;
@@ -9577,7 +9577,7 @@ void demon_hunter_t::init_procs()
   proc.soul_fragment_from_wounded_quarry   = get_proc( "soul_fragment_from_wounded_quarry" );
   proc.wounded_quarry_accumulator_reset    = get_proc( "wounded_quarry_accumulator_reset" );
 
-  // Fel-scarred
+  // Scarred
   for ( demonsurge_ability ability : hero_spec.demonsurge_abilities )
   {
     proc.demonsurge_abilities[ ability ] = get_proc( demonsurge_ability_name( ability ) );
@@ -10080,25 +10080,25 @@ void demon_hunter_t::init_spells()
 
   talent.annihilator.world_killer = find_talent_spell( talent_tree::HERO, "World Killer" );
 
-  // Fel-Scarred talents
-  talent.felscarred.demonsurge = find_talent_spell( talent_tree::HERO, "Demonsurge" );
+  // Scarred talents
+  talent.scarred.demonsurge = find_talent_spell( talent_tree::HERO, "Demonsurge" );
 
-  talent.felscarred.wave_of_debilitation  = find_talent_spell( talent_tree::HERO, "Wave of Debilitation" );
-  talent.felscarred.pursuit_of_angriness  = find_talent_spell( talent_tree::HERO, "Pursuit of Angriness" );
-  talent.felscarred.focused_hatred        = find_talent_spell( talent_tree::HERO, "Focused Hatred" );
-  talent.felscarred.set_fire_to_the_pain  = find_talent_spell( talent_tree::HERO, "Set Fire to the Pain" );
-  talent.felscarred.improved_soul_rending = find_talent_spell( talent_tree::HERO, "Improved Soul Rending" );
+  talent.scarred.wave_of_debilitation  = find_talent_spell( talent_tree::HERO, "Wave of Debilitation" );
+  talent.scarred.pursuit_of_angriness  = find_talent_spell( talent_tree::HERO, "Pursuit of Angriness" );
+  talent.scarred.focused_hatred        = find_talent_spell( talent_tree::HERO, "Focused Hatred" );
+  talent.scarred.set_fire_to_the_pain  = find_talent_spell( talent_tree::HERO, "Set Fire to the Pain" );
+  talent.scarred.improved_soul_rending = find_talent_spell( talent_tree::HERO, "Improved Soul Rending" );
 
-  talent.felscarred.burning_blades         = find_talent_spell( talent_tree::HERO, "Burning Blades" );
-  talent.felscarred.violent_transformation = find_talent_spell( talent_tree::HERO, "Violent Transformation" );
-  talent.felscarred.enduring_torment       = find_talent_spell( talent_tree::HERO, "Enduring Torment" );
+  talent.scarred.burning_blades         = find_talent_spell( talent_tree::HERO, "Burning Blades" );
+  talent.scarred.violent_transformation = find_talent_spell( talent_tree::HERO, "Violent Transformation" );
+  talent.scarred.enduring_torment       = find_talent_spell( talent_tree::HERO, "Enduring Torment" );
 
-  talent.felscarred.untethered_fury      = find_talent_spell( talent_tree::HERO, "Untethered Fury" );
-  talent.felscarred.student_of_suffering = find_talent_spell( talent_tree::HERO, "Student of Suffering" );
-  talent.felscarred.flamebound           = find_talent_spell( talent_tree::HERO, "Flamebound" );
-  talent.felscarred.monster_rising       = find_talent_spell( talent_tree::HERO, "Monster Rising" );
+  talent.scarred.untethered_fury      = find_talent_spell( talent_tree::HERO, "Untethered Fury" );
+  talent.scarred.student_of_suffering = find_talent_spell( talent_tree::HERO, "Student of Suffering" );
+  talent.scarred.flamebound           = find_talent_spell( talent_tree::HERO, "Flamebound" );
+  talent.scarred.monster_rising       = find_talent_spell( talent_tree::HERO, "Monster Rising" );
 
-  talent.felscarred.demonic_intensity = find_talent_spell( talent_tree::HERO, "Demonic Intensity" );
+  talent.scarred.demonic_intensity = find_talent_spell( talent_tree::HERO, "Demonic Intensity" );
 
   // Class Background Spells
   spell.felblade_damage          = talent_spell_lookup( talent.demon_hunter.felblade, 213243 );
@@ -10256,29 +10256,29 @@ void demon_hunter_t::init_spells()
       break;
   }
 
-  hero_spec.student_of_suffering_buff  = talent_spell_lookup( talent.felscarred.student_of_suffering, 453239 );
-  hero_spec.monster_rising_buff        = talent_spell_lookup( talent.felscarred.monster_rising, 452550 );
-  hero_spec.enduring_torment_buff      = talent_spell_lookup( talent.felscarred.enduring_torment, 453314 );
-  hero_spec.demonsurge_demonsurge_buff = talent_spell_lookup( talent.felscarred.demonsurge, 452435 );
-  hero_spec.demonsurge_damage          = talent_spell_lookup( talent.felscarred.demonsurge, 452416 );
-  hero_spec.demonsurge_stacking_buff   = talent_spell_lookup( talent.felscarred.demonic_intensity, 452416 );
-  hero_spec.demonsurge_trigger         = talent_spell_lookup( talent.felscarred.demonsurge, 453323 );
-  hero_spec.soul_sunder                = talent_spell_lookup( talent.felscarred.demonsurge, 452436 );
+  hero_spec.student_of_suffering_buff  = talent_spell_lookup( talent.scarred.student_of_suffering, 453239 );
+  hero_spec.monster_rising_buff        = talent_spell_lookup( talent.scarred.monster_rising, 452550 );
+  hero_spec.enduring_torment_buff      = talent_spell_lookup( talent.scarred.enduring_torment, 453314 );
+  hero_spec.demonsurge_demonsurge_buff = talent_spell_lookup( talent.scarred.demonsurge, 452435 );
+  hero_spec.demonsurge_damage          = talent_spell_lookup( talent.scarred.demonsurge, 452416 );
+  hero_spec.demonsurge_stacking_buff   = talent_spell_lookup( talent.scarred.demonic_intensity, 452416 );
+  hero_spec.demonsurge_trigger         = talent_spell_lookup( talent.scarred.demonsurge, 453323 );
+  hero_spec.soul_sunder                = talent_spell_lookup( talent.scarred.demonsurge, 452436 );
   hero_spec.spirit_burst =
-      conditional_spell_lookup( talent.vengeance.spirit_bomb->ok() && talent.felscarred.demonsurge->ok(), 452437 );
-  hero_spec.sigil_of_doom        = talent_spell_lookup( talent.felscarred.demonic_intensity, 452490 );
-  hero_spec.sigil_of_doom_damage = talent_spell_lookup( talent.felscarred.demonic_intensity, 462030 );
-  hero_spec.abyssal_gaze         = talent_spell_lookup( talent.felscarred.demonic_intensity, 452497 );
-  hero_spec.fel_desolation       = talent_spell_lookup( talent.felscarred.demonic_intensity, 452486 );
+      conditional_spell_lookup( talent.vengeance.spirit_bomb->ok() && talent.scarred.demonsurge->ok(), 452437 );
+  hero_spec.sigil_of_doom        = talent_spell_lookup( talent.scarred.demonic_intensity, 452490 );
+  hero_spec.sigil_of_doom_damage = talent_spell_lookup( talent.scarred.demonic_intensity, 462030 );
+  hero_spec.abyssal_gaze         = talent_spell_lookup( talent.scarred.demonic_intensity, 452497 );
+  hero_spec.fel_desolation       = talent_spell_lookup( talent.scarred.demonic_intensity, 452486 );
   switch ( specialization() )
   {
     case DEMON_HUNTER_DEVOURER:
-      hero_spec.burning_blades_debuff             = talent_spell_lookup( talent.felscarred.burning_blades, 1245654 );
-      hero_spec.demonsurge_demonic_intensity_buff = talent_spell_lookup( talent.felscarred.demonic_intensity, 1245496 );
+      hero_spec.burning_blades_debuff             = talent_spell_lookup( talent.scarred.burning_blades, 1245654 );
+      hero_spec.demonsurge_demonic_intensity_buff = talent_spell_lookup( talent.scarred.demonic_intensity, 1245496 );
       break;
     case DEMON_HUNTER_HAVOC:
-      hero_spec.burning_blades_debuff             = talent_spell_lookup( talent.felscarred.burning_blades, 453177 );
-      hero_spec.demonsurge_demonic_intensity_buff = talent_spell_lookup( talent.felscarred.demonic_intensity, 452489 );
+      hero_spec.burning_blades_debuff             = talent_spell_lookup( talent.scarred.burning_blades, 453177 );
+      hero_spec.demonsurge_demonic_intensity_buff = talent_spell_lookup( talent.scarred.demonic_intensity, 452489 );
       break;
     default:
       hero_spec.burning_blades_debuff             = spell_data_t::not_found();
@@ -10477,11 +10477,11 @@ void demon_hunter_t::init_spells()
     active.world_killer = get_background_action<world_killer_t>( "world_killer" );
   }
 
-  if ( talent.felscarred.burning_blades->ok() )
+  if ( talent.scarred.burning_blades->ok() )
   {
     active.burning_blades = get_background_action<burning_blades_t>( "burning_blades" );
   }
-  if ( talent.felscarred.demonsurge->ok() )
+  if ( talent.scarred.demonsurge->ok() )
   {
     active.demonsurge = get_background_action<demonsurge_t>( "demonsurge" );
   }
@@ -10719,7 +10719,7 @@ void demon_hunter_t::create_cooldowns()
   cooldown.art_of_the_glaive_consumption_icd = get_cooldown( "art_of_the_glaive_consumption_icd" );
   cooldown.wounded_quarry_trigger_icd        = get_cooldown( "wounded_quarry_trigger_icd" );
 
-  // Fel-scarred
+  // Scarred
 }
 
 // demon_hunter_t::create_gains =============================================
@@ -10745,7 +10745,7 @@ void demon_hunter_t::create_gains()
   // Set Bonuses
   gain.seething_fury = get_gain( "seething_fury" );
 
-  // Fel-scarred
+  // Scarred
   gain.student_of_suffering = get_gain( "student_of_suffering" );
 }
 
@@ -10831,7 +10831,7 @@ double demon_hunter_t::stacking_movement_modifier() const
     ms += cache.mastery() * talent.demon_hunter.pursuit->effectN( 1 ).mastery_value();
   }
 
-  if ( talent.felscarred.pursuit_of_angriness->ok() )
+  if ( talent.scarred.pursuit_of_angriness->ok() )
   {
     ms += buff.pursuit_of_angryness->value();
   }
@@ -10971,15 +10971,15 @@ void demon_hunter_t::arise()
     buff.doomsayer_out_of_combat->trigger();
   }
 
-  if ( talent.felscarred.monster_rising->ok() )
+  if ( talent.scarred.monster_rising->ok() )
   {
     buff.monster_rising->trigger();
   }
-  if ( talent.felscarred.enduring_torment->ok() )
+  if ( talent.scarred.enduring_torment->ok() )
   {
     buff.enduring_torment->trigger();
   }
-  if ( talent.felscarred.pursuit_of_angriness->ok() )
+  if ( talent.scarred.pursuit_of_angriness->ok() )
   {
     buff.pursuit_of_angryness->trigger();
   }
@@ -10997,7 +10997,7 @@ void demon_hunter_t::regen( timespan_t periodicity )
 double demon_hunter_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
 {
   double amt = player_t::resource_gain( resource_type, amount, source, action );
-  if ( resource_type == RESOURCE_FURY && talent.felscarred.pursuit_of_angriness->ok() )
+  if ( resource_type == RESOURCE_FURY && talent.scarred.pursuit_of_angriness->ok() )
   {
     invalidate_cache( CACHE_RUN_SPEED );
   }
@@ -11017,7 +11017,7 @@ double demon_hunter_t::resource_gain( resource_e resource_type, double amount, d
 double demon_hunter_t::resource_loss( resource_e resource_type, double amount, gain_t* source, action_t* action )
 {
   double amt = player_t::resource_loss( resource_type, amount, source, action );
-  if ( resource_type == RESOURCE_FURY && talent.felscarred.pursuit_of_angriness->ok() )
+  if ( resource_type == RESOURCE_FURY && talent.scarred.pursuit_of_angriness->ok() )
   {
     invalidate_cache( CACHE_RUN_SPEED );
   }
@@ -11628,7 +11628,7 @@ void demon_hunter_t::parse_player_effects()
   parse_effects( buff.voidfall_spending );
   parse_effects( buff.voidfall_final_hour );
 
-  // Fel-scarred
+  // Scarred
 
   // Set Bonuses
 }
