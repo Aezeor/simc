@@ -617,15 +617,18 @@ public:
       player_talent_t evasive_action;  // No Implementation
       player_talent_t unhindered_assault;
       player_talent_t reavers_mark;
+      player_talent_t broken_spirit; // NYI
 
       player_talent_t aldrachi_tactics;
       player_talent_t army_unto_oneself;     // No Implementation
       player_talent_t incorruptible_spirit;  // NYI
       player_talent_t wounded_quarry;
+      player_talent_t keen_edge;
 
       player_talent_t incisive_blade;
       player_talent_t keen_engagement;
       player_talent_t preemptive_strike;
+      player_talent_t bladecraft; // NYI
       player_talent_t warblades_hunger;
 
       player_talent_t thrill_of_the_fight;
@@ -10159,15 +10162,18 @@ void demon_hunter_t::init_spells()
   talent.aldrachi_reaver.evasive_action       = find_talent_spell( talent_tree::HERO, "Evasive Action" );
   talent.aldrachi_reaver.unhindered_assault   = find_talent_spell( talent_tree::HERO, "Unhindered Assault" );
   talent.aldrachi_reaver.reavers_mark         = find_talent_spell( talent_tree::HERO, "Reaver's Mark" );
+  talent.aldrachi_reaver.broken_spirit        = find_talent_spell( talent_tree::HERO, "Broken Spirit" );
 
   talent.aldrachi_reaver.aldrachi_tactics     = find_talent_spell( talent_tree::HERO, "Aldrachi Tactics" );
   talent.aldrachi_reaver.army_unto_oneself    = find_talent_spell( talent_tree::HERO, "Army Unto Oneself" );
   talent.aldrachi_reaver.incorruptible_spirit = find_talent_spell( talent_tree::HERO, "Incorruptible Spirit" );
   talent.aldrachi_reaver.wounded_quarry       = find_talent_spell( talent_tree::HERO, "Wounded Quarry" );
+  talent.aldrachi_reaver.keen_edge            = find_talent_spell( talent_tree::HERO, "Keen Edge" );
 
   talent.aldrachi_reaver.incisive_blade    = find_talent_spell( talent_tree::HERO, "Incisive Blade" );
   talent.aldrachi_reaver.keen_engagement   = find_talent_spell( talent_tree::HERO, "Keen Engagement" );
   talent.aldrachi_reaver.preemptive_strike = find_talent_spell( talent_tree::HERO, "Preemptive Strike" );
+  talent.aldrachi_reaver.bladecraft        = find_talent_spell( talent_tree::HERO, "Bladecraft" );
   talent.aldrachi_reaver.warblades_hunger  = find_talent_spell( talent_tree::HERO, "Warblade's Hunger" );
 
   talent.aldrachi_reaver.thrill_of_the_fight = find_talent_spell( talent_tree::HERO, "Thrill of the Fight" );
