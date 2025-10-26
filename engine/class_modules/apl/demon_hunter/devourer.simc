@@ -3,13 +3,14 @@ actions.precombat=snapshot_stats
 actions.precombat+=/consume
 
 actions=metamorphosis
+actions+=/invoke_external_buff,name=power_infusion,if=!buff.power_infusion.up
 actions+=/collapsing_star
 actions+=/the_hunt
 actions+=/voidblade,if=talent.duty_eternal&active_enemies=1|talent.hungering_slash
 actions+=/void_ray,if=!buff.eradicate.up
-actions+=/eradicate,if=!buff.metamorphosis.up|fury.deficit>=50|!talent.emptiness|action.void_ray.usable_in<=gcd.max|active_enemies>1
+actions+=/eradicate,if=!buff.metamorphosis.up|fury.deficit>=50|!talent.emptiness|action.void_ray.usable_in<=gcd.max|active_enemies>1|buff.voidfall_spending.up
 actions+=/soul_immolation,if=refreshable&!buff.metamorphosis.up
-actions+=/cull,if=(soul_fragments>=4&talent.scythes_embrace&fury.deficit<=40|buff.collapsing_star_stacking.stack+soul_fragments>=30)
-actions+=/reap,if=talent.scythes_embrace|soul_fragments>=4&active_enemies<=2|buff.void_metamorphosis_stack.stack+soul_fragments>=buff.void_metamorphosis_stack.max_stack
+actions+=/cull,if=buff.voidfall_spending.up
+actions+=/reap,if=soul_fragments>=4&(talent.scythes_embrace|active_enemies<=2)|buff.void_metamorphosis_stack.stack+soul_fragments>=buff.void_metamorphosis_stack.max_stack|buff.voidfall_spending.up
 actions+=/devour
 actions+=/consume

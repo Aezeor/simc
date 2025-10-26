@@ -72,14 +72,15 @@ void devourer( player_t* p )
   precombat->add_action( "consume" );
 
   default_->add_action( "metamorphosis" );
+  default_->add_action( "invoke_external_buff,name=power_infusion,if=!buff.power_infusion.up" );
   default_->add_action( "collapsing_star" );
   default_->add_action( "the_hunt" );
   default_->add_action( "voidblade,if=talent.duty_eternal&active_enemies=1|talent.hungering_slash" );
   default_->add_action( "void_ray,if=!buff.eradicate.up" );
-  default_->add_action( "eradicate,if=!buff.metamorphosis.up|fury.deficit>=50|!talent.emptiness|action.void_ray.usable_in<=gcd.max|active_enemies>1" );
+  default_->add_action( "eradicate,if=!buff.metamorphosis.up|fury.deficit>=50|!talent.emptiness|action.void_ray.usable_in<=gcd.max|active_enemies>1|buff.voidfall_spending.up" );
   default_->add_action( "soul_immolation,if=refreshable&!buff.metamorphosis.up" );
-  default_->add_action( "cull,if=(soul_fragments>=4&talent.scythes_embrace&fury.deficit<=40|buff.collapsing_star_stacking.stack+soul_fragments>=30)" );
-  default_->add_action( "reap,if=talent.scythes_embrace|soul_fragments>=4&active_enemies<=2|buff.void_metamorphosis_stack.stack+soul_fragments>=buff.void_metamorphosis_stack.max_stack" );
+  default_->add_action( "cull,if=buff.voidfall_spending.up" );
+  default_->add_action( "reap,if=soul_fragments>=4&(talent.scythes_embrace|active_enemies<=2)|buff.void_metamorphosis_stack.stack+soul_fragments>=buff.void_metamorphosis_stack.max_stack|buff.voidfall_spending.up", "actions+=/cull,if=soul_fragments>=4&talent.scythes_embrace&fury.deficit<=40|buff.collapsing_star_stacking.stack+soul_fragments>=30" );
   default_->add_action( "devour" );
   default_->add_action( "consume" );
 }
