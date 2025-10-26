@@ -6654,10 +6654,10 @@ struct blade_dance_t : public blade_dance_base_t
 
 // Death Sweep ==============================================================
 
-struct death_sweep_t : public blade_dance_base_t
+struct death_sweep_t : public demonsurge_trigger_t<demonsurge_ability::DEATH_SWEEP, blade_dance_base_t>
 {
   death_sweep_t( demon_hunter_t* p, util::string_view options_str )
-    : blade_dance_base_t( "death_sweep", p, p->spec.death_sweep, options_str )
+    : base_t( "death_sweep", p, p->spec.death_sweep, options_str )
   {
     if ( attacks.empty() )
     {
@@ -6693,9 +6693,8 @@ struct death_sweep_t : public blade_dance_base_t
       p()->buff.metamorphosis->extend_duration( p(), 1_s - p()->buff.metamorphosis->remains() );
     }
 
-    blade_dance_base_t::execute();
+    base_t::execute();
 
-    p()->trigger_demonsurge( demonsurge_ability::DEATH_SWEEP );
     if ( p()->talent.havoc.screaming_brutality->ok() && p()->cooldown.throw_glaive->up() )
     {
       p()->active.screaming_brutality_death_sweep_throw_glaive->execute_on_target( target );
@@ -6704,7 +6703,7 @@ struct death_sweep_t : public blade_dance_base_t
 
   bool ready() override
   {
-    if ( !blade_dance_base_t::ready() )
+    if ( !base_t::ready() )
       return false;
 
     // Death Sweep can be queued in the last 250ms, so need to ensure meta is still up after that.
