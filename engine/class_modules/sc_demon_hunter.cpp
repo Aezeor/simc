@@ -617,7 +617,7 @@ public:
       player_talent_t evasive_action;  // No Implementation
       player_talent_t unhindered_assault;
       player_talent_t reavers_mark;
-      player_talent_t broken_spirit; // NYI
+      player_talent_t broken_spirit;  // NYI
 
       player_talent_t aldrachi_tactics;
       player_talent_t army_unto_oneself;     // No Implementation
@@ -628,7 +628,7 @@ public:
       player_talent_t incisive_blade;
       player_talent_t keen_engagement;
       player_talent_t preemptive_strike;
-      player_talent_t bladecraft; // NYI
+      player_talent_t bladecraft;
       player_talent_t warblades_hunger;
 
       player_talent_t thrill_of_the_fight;
@@ -7983,6 +7983,13 @@ struct fury_of_the_aldrachi_t : public demon_hunter_attack_t
          !p()->buff.rending_strike->up() )
     {
       make_event<delayed_execute_event_t>( *sim, p(), p()->active.fury_of_the_aldrachi, target, 300_ms );
+
+      // Bladecraft makes it trigger 6 more times
+      if ( p()->talent.aldrachi_reaver.bladecraft->ok() )
+      {
+        make_event<delayed_execute_event_t>( *sim, p(), p()->active.fury_of_the_aldrachi, target, 300_ms );
+        make_event<delayed_execute_event_t>( *sim, p(), p()->active.fury_of_the_aldrachi, target, 300_ms );
+      }
     }
 
     for ( auto attack : attacks )
