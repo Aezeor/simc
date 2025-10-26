@@ -5924,7 +5924,7 @@ struct voidfall_meteor_base_t : public demon_hunter_spell_t
   {
     execute_action        = p->get_background_action<voidfall_meteor_damage_t>( fmt::format( "{}_damage", name() ),
                                                                                 s->effectN( 2 ).trigger() );
-    execute_action->stats = stats;
+    add_child( execute_action );
   }
 };
 
