@@ -840,7 +840,6 @@ public:
     const spell_data_t* fel_devastation_heal;
     const spell_data_t* felfire_fist_in_combat_buff;
     const spell_data_t* felfire_fist_out_of_combat_buff;
-    const spell_data_t* sigil_of_spite;
     const spell_data_t* sigil_of_spite_damage;
     const spell_data_t* untethered_rage_buff;
     const spell_data_t* seething_anger_buff;
@@ -891,12 +890,9 @@ public:
     const spell_data_t* voidsurge_trigger;
     const spell_data_t* voidsurge_damage;
     const spell_data_t* voidsurge_stacking_buff;
-    const spell_data_t* soul_sunder;
-    const spell_data_t* spirit_burst;
     const spell_data_t* sigil_of_doom;
     const spell_data_t* sigil_of_doom_damage;
     const spell_data_t* abyssal_gaze;
-    const spell_data_t* fel_desolation;
   } hero_spec;
 
   // Set Bonus effects
@@ -5173,9 +5169,9 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
 
     sigil_of_spite_sigil_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, timespan_t delay )
       : demon_hunter_sigil_t( name, p, s, delay ),
-        soul_fragments_to_spawn( as<unsigned>( p->spec.sigil_of_spite->effectN( 3 ).base_value() ) )
+        soul_fragments_to_spawn( as<unsigned>( p->talent.vengeance.sigil_of_spite->effectN( 3 ).base_value() ) )
     {
-      reduced_aoe_targets = p->spec.sigil_of_spite->effectN( 1 ).base_value();
+      reduced_aoe_targets = p->talent.vengeance.sigil_of_spite->effectN( 1 ).base_value();
     }
 
     void execute() override
@@ -5192,9 +5188,9 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
   sigil_of_spite_sigil_t* sigil;
 
   sigil_of_spite_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "sigil_of_spite", p, p->spec.sigil_of_spite, options_str ), sigil( nullptr )
+    : demon_hunter_spell_t( "sigil_of_spite", p, p->talent.vengeance.sigil_of_spite, options_str ), sigil( nullptr )
   {
-    if ( p->spec.sigil_of_spite->ok() )
+    if ( p->talent.vengeance.sigil_of_spite->ok() )
     {
       sigil = p->get_background_action<sigil_of_spite_sigil_t>( "sigil_of_spite_sigil", p->spec.sigil_of_spite_damage,
                                                                 ground_aoe_duration );
@@ -10247,7 +10243,7 @@ void demon_hunter_t::init_spells()
   spec.void_ray_tick                 = talent_spell_lookup( talent.devourer.void_ray, 1213649 );
   spec.void_ray_tick_meta            = talent_spell_lookup( talent.devourer.void_ray, 1214595 );
   spec.moment_of_craving_buff        = talent_spell_lookup( talent.devourer.moment_of_craving, 1238495 );
-  spec.void_buildup                  = find_spell( 473671 );
+  spec.void_buildup                  = talent_spell_lookup( talent.devourer.void_metamorphosis, 473671 );
   spec.voidglare_boon_energize       = talent_spell_lookup( talent.devourer.voidglare_boon, 1241922 );
   spec.collapsing_star_damage        = talent_spell_lookup( talent.devourer.collapsing_star, 1221162 );
   spec.collapsing_star_spell         = talent_spell_lookup( talent.devourer.collapsing_star, 1221150 );
@@ -10292,7 +10288,7 @@ void demon_hunter_t::init_spells()
   spec.empowered_eye_beam_buff          = talent_spell_lookup( talent.havoc.eternal_hunt_1, 1271144 );
   spec.eternal_hunt_buff                = talent_spell_lookup( talent.havoc.eternal_hunt_3, 1271092 );
 
-  spec.demon_spikes_buff               = find_spell( 203819 );
+  spec.demon_spikes_buff               = find_spell( 203819, DEMON_HUNTER_VENGEANCE );
   spec.fiery_brand_debuff              = talent_spell_lookup( talent.vengeance.fiery_brand, 207771 );
   spec.frailty_debuff                  = talent_spell_lookup( talent.vengeance.frailty, 247456 );
   spec.painbringer_buff                = talent_spell_lookup( talent.vengeance.painbringer, 212988 );
@@ -10300,7 +10296,7 @@ void demon_hunter_t::init_spells()
   spec.sigil_of_silence_debuff         = talent_spell_lookup( talent.vengeance.sigil_of_silence, 204490 );
   spec.sigil_of_chains_debuff          = talent_spell_lookup( talent.vengeance.sigil_of_chains, 204843 );
   spec.burning_alive_controller        = talent_spell_lookup( talent.vengeance.burning_alive, 207760 );
-  spec.infernal_strike_impact          = find_spell( 189112 );
+  spec.infernal_strike_impact          = find_spell( 189112, DEMON_HUNTER_VENGEANCE );
   spec.spirit_bomb_damage              = talent_spell_lookup( talent.vengeance.spirit_bomb, 247455 );
   spec.frailty_heal                    = talent_spell_lookup( talent.vengeance.frailty, 227255 );
   spec.feast_of_souls_heal             = talent_spell_lookup( talent.vengeance.feast_of_souls, 207693 );
@@ -10346,12 +10342,18 @@ void demon_hunter_t::init_spells()
   {
     case DEMON_HUNTER_HAVOC:
       hero_spec.thrill_of_the_fight_damage_buff = hero_spec.thrill_of_the_fight_damage_buff_havoc;
+      hero_spec.reavers_glaive_buff = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 444686 );
+      hero_spec.wounded_quarry_proc_rate = options.wounded_quarry_chance_havoc;
       break;
     case DEMON_HUNTER_VENGEANCE:
       hero_spec.thrill_of_the_fight_damage_buff = hero_spec.thrill_of_the_fight_damage_buff_vengeance;
+      hero_spec.reavers_glaive_buff = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 444764 );
+      hero_spec.wounded_quarry_proc_rate = options.wounded_quarry_chance_vengeance;
       break;
     default:
       hero_spec.thrill_of_the_fight_damage_buff = spell_data_t::not_found();
+      hero_spec.reavers_glaive_buff = spell_data_t::not_found();
+      hero_spec.wounded_quarry_proc_rate = 0;
       break;
   }
 
@@ -10378,7 +10380,11 @@ void demon_hunter_t::init_spells()
       hero_spec.world_killer         = talent_spell_lookup( talent.annihilator.dark_matter, 1256616 );
       break;
     default:
-      hero_spec.catastrophe_dot = spell_data_t::not_found();
+      hero_spec.voidfall_meteor      = spell_data_t::not_found();
+      hero_spec.catastrophe_dot      = spell_data_t::not_found();
+      hero_spec.meteor_shower_driver = spell_data_t::not_found();
+      hero_spec.meteor_shower_damage = spell_data_t::not_found();
+      hero_spec.world_killer         = spell_data_t::not_found();
       break;
   }
 
@@ -10392,13 +10398,9 @@ void demon_hunter_t::init_spells()
   hero_spec.voidsurge_trigger = spec_talent_spell_lookup( DEMON_HUNTER_DEVOURER, talent.scarred.demonsurge, 1246161 );
   hero_spec.voidsurge_damage  = hero_spec.voidsurge_trigger->effectN( 1 ).trigger();
   hero_spec.voidsurge_stacking_buff = hero_spec.voidsurge_damage;
-  hero_spec.soul_sunder             = talent_spell_lookup( talent.scarred.demonsurge, 452436 );
-  hero_spec.spirit_burst =
-      conditional_spell_lookup( talent.vengeance.spirit_bomb->ok() && talent.scarred.demonsurge->ok(), 452437 );
-  hero_spec.sigil_of_doom        = talent_spell_lookup( talent.scarred.demonic_intensity, 452490 );
-  hero_spec.sigil_of_doom_damage = talent_spell_lookup( talent.scarred.demonic_intensity, 462030 );
-  hero_spec.abyssal_gaze         = talent_spell_lookup( talent.scarred.demonic_intensity, 452497 );
-  hero_spec.fel_desolation       = talent_spell_lookup( talent.scarred.demonic_intensity, 452486 );
+  hero_spec.sigil_of_doom           = talent_spell_lookup( talent.scarred.demonic_intensity, 452490 );
+  hero_spec.sigil_of_doom_damage    = talent_spell_lookup( talent.scarred.demonic_intensity, 462030 );
+  hero_spec.abyssal_gaze            = talent_spell_lookup( talent.scarred.demonic_intensity, 452497 );
   switch ( specialization() )
   {
     case DEMON_HUNTER_DEVOURER:
@@ -10415,40 +10417,8 @@ void demon_hunter_t::init_spells()
       break;
   }
 
-  if ( talent.aldrachi_reaver.art_of_the_glaive->ok() )
-  {
-    switch ( specialization() )
-    {
-      case DEMON_HUNTER_HAVOC:
-        hero_spec.reavers_glaive_buff = find_spell( 444686 );
-        break;
-      case DEMON_HUNTER_VENGEANCE:
-        hero_spec.reavers_glaive_buff = find_spell( 444764 );
-        break;
-      default:
-        break;
-    }
-  }
-  else
-  {
-    hero_spec.reavers_glaive_buff = spell_data_t::not_found();
-  }
-
-  switch ( specialization() )
-  {
-    case DEMON_HUNTER_HAVOC:
-      hero_spec.wounded_quarry_proc_rate = options.wounded_quarry_chance_havoc;
-      break;
-    case DEMON_HUNTER_VENGEANCE:
-      hero_spec.wounded_quarry_proc_rate = options.wounded_quarry_chance_vengeance;
-      break;
-    default:
-      break;
-  }
-
   spell.sigil_of_flame = conditional_spell_lookup( specialization() != DEMON_HUNTER_DEVOURER, 204596 );
 
-  spec.sigil_of_spite        = talent.vengeance.sigil_of_spite;
   spec.sigil_of_spite_damage = talent_spell_lookup( talent.vengeance.sigil_of_spite, 389860 );
   spec.sigil_of_misery       = talent.demon_hunter.sigil_of_misery;
   spec.sigil_of_silence      = talent.vengeance.sigil_of_silence;
@@ -10492,7 +10462,7 @@ void demon_hunter_t::init_spells()
     active.spontaneous_immolation = get_background_action<spontaneous_immolation_t>( "soul_immolation_spontaneous" );
   }
 
-  if ( specialization() == DEMON_HUNTER_DEVOURER )
+  if ( talent.devourer.void_metamorphosis->ok() )
   {
     active.void_buildup = get_background_action<void_buildup_t>( "void_buildup" );
   }
