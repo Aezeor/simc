@@ -5,6 +5,7 @@ actions.precombat+=/consume
 actions=metamorphosis
 actions+=/invoke_external_buff,name=power_infusion,if=!buff.power_infusion.up
 actions+=/collapsing_star
+actions+=/predators_wake
 actions+=/the_hunt
 actions+=/voidblade,if=talent.duty_eternal&active_enemies=1|talent.hungering_slash
 actions+=/void_ray,if=!buff.eradicate.up

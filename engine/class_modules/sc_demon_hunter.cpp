@@ -209,13 +209,13 @@ enum voidsurge_ability
 {
   DEVOUR,
   CULL,
-  THE_HUNT,
+  PREDATORS_WAKE,
   VOIDBLADE,
   HUNGERING_SLASH
 };
 
 const std::vector<voidsurge_ability> voidsurge_abilities{ voidsurge_ability::DEVOUR, voidsurge_ability::CULL,
-                                                          voidsurge_ability::THE_HUNT, voidsurge_ability::VOIDBLADE,
+                                                          voidsurge_ability::PREDATORS_WAKE, voidsurge_ability::VOIDBLADE,
                                                           voidsurge_ability::HUNGERING_SLASH };
 
 std::string voidsurge_ability_name( voidsurge_ability ability )
@@ -226,7 +226,7 @@ std::string voidsurge_ability_name( voidsurge_ability ability )
       return "voidsurge_devour";
     case voidsurge_ability::CULL:
       return "voidsurge_cull";
-    case voidsurge_ability::THE_HUNT:
+    case voidsurge_ability::PREDATORS_WAKE:
       return "voidsurge_the_hunt";
     case voidsurge_ability::VOIDBLADE:
       return "voidsurge_voidblade";
@@ -727,6 +727,8 @@ public:
     const spell_data_t* sigil_of_misery_debuff;
     const spell_data_t* shattered_souls;
     const spell_data_t* the_hunt;
+    const spell_data_t* the_hunt_impact;
+    const spell_data_t* the_hunt_dot;
     const spell_data_t* blur;
 
     // Devourer
@@ -893,6 +895,7 @@ public:
     const spell_data_t* sigil_of_doom;
     const spell_data_t* sigil_of_doom_damage;
     const spell_data_t* abyssal_gaze;
+    const spell_data_t* predators_wake;
   } hero_spec;
 
   // Set Bonus effects
@@ -5218,25 +5221,26 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
 
 // The Hunt =================================================================
 
-struct the_hunt_t : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exergy_trigger_t<demon_hunter_spell_t>>>
+struct the_hunt_base_t
+  : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exergy_trigger_t<demon_hunter_spell_t>>>
 {
+  struct the_hunt_dot_t : public demon_hunter_spell_t
+  {
+    the_hunt_dot_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s )
+      : demon_hunter_spell_t( fmt::format( "{}_dot", n ), p, s )
+    {
+      dual = true;
+      aoe  = as<int>( p->spec.the_hunt->effectN( 2 ).trigger()->effectN( 1 ).base_value() );
+    }
+  };
+
   struct the_hunt_damage_t : public hungering_slash_trigger_t<demon_hunter_spell_t>
   {
-    struct the_hunt_dot_t : public demon_hunter_spell_t
-    {
-      the_hunt_dot_t( util::string_view name, demon_hunter_t* p )
-        : demon_hunter_spell_t( name, p, p->spec.the_hunt->effectN( 1 ).trigger()->effectN( 4 ).trigger() )
-      {
-        dual = true;
-        aoe  = as<int>( p->spec.the_hunt->effectN( 2 ).trigger()->effectN( 1 ).base_value() );
-      }
-    };
-
-    the_hunt_damage_t( util::string_view name, demon_hunter_t* p )
-      : base_t( name, p, p->spec.the_hunt->effectN( 1 ).trigger() )
+    the_hunt_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, const spell_data_t* dot_s )
+      : base_t( fmt::format( "{}_damage", n ), p, s )
     {
       dual          = true;
-      impact_action = p->get_background_action<the_hunt_dot_t>( "the_hunt_dot" );
+      impact_action = p->get_background_action<the_hunt_dot_t>( n, dot_s );
       add_child( impact_action );
     }
 
@@ -5251,11 +5255,13 @@ struct the_hunt_t : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exe
     }
   };
 
-  the_hunt_t( demon_hunter_t* p, util::string_view options_str )
-    : base_t( "the_hunt", p, p->spec.the_hunt, options_str )
+  the_hunt_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o,
+                   const spell_data_t* impact_s, const spell_data_t* dot_s )
+    : base_t( n, p, s, o )
   {
+    cooldown                = p->cooldown.the_hunt;
     movement_directionality = movement_direction_type::TOWARDS;
-    impact_action           = p->get_background_action<the_hunt_damage_t>( "the_hunt_damage" );
+    impact_action           = p->get_background_action<the_hunt_damage_t>( n, impact_s, dot_s );
     add_child( impact_action );
   }
 
@@ -5273,6 +5279,41 @@ struct the_hunt_t : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exe
   timespan_t travel_time() const override
   {
     return 100_ms;
+  }
+};
+
+struct predators_wake_t : public voidsurge_trigger_t<voidsurge_ability::PREDATORS_WAKE, the_hunt_base_t>
+{
+  // TODO: VERIFY THE IMPACT AND DOT SPELLS USED HERE
+  predators_wake_t( demon_hunter_t* p, util::string_view o )
+    : base_t( "predators_wake", p, p->hero_spec.predators_wake, o, p->spec.the_hunt_impact, p->spec.the_hunt_dot )
+  {
+  }
+
+  bool action_ready() override
+  {
+    if ( !p()->buff.metamorphosis->check() )
+    {
+      return false;
+    }
+    return base_t::action_ready();
+  }
+};
+
+struct the_hunt_t : public the_hunt_base_t
+{
+  the_hunt_t( demon_hunter_t* p, util::string_view o )
+    : the_hunt_base_t( "the_hunt", p, p->spec.the_hunt, o, p->spec.the_hunt_impact, p->spec.the_hunt_dot )
+  {
+  }
+
+  bool action_ready() override
+  {
+    if ( p()->buff.metamorphosis->check() )
+    {
+      return false;
+    }
+    return the_hunt_base_t::action_ready();
   }
 };
 
@@ -8920,6 +8961,8 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new sigil_of_spite_t( this, options_str );
   if ( name == "the_hunt" )
     return new the_hunt_t( this, options_str );
+  if ( name == "predators_wake" )
+    return new predators_wake_t( this, options_str );
   if ( name == "sigil_of_misery" )
     return new sigil_of_misery_t( this, options_str );
   if ( name == "sigil_of_silence" )
@@ -10310,13 +10353,19 @@ void demon_hunter_t::init_spells()
   switch ( specialization() )
   {
     case DEMON_HUNTER_DEVOURER:
-      spec.the_hunt = talent.devourer.the_hunt;
+      spec.the_hunt        = talent.devourer.the_hunt;
+      spec.the_hunt_impact = spec.the_hunt->effectN( 1 ).trigger();
+      spec.the_hunt_dot    = spec.the_hunt_impact->effectN( 4 ).trigger();
       break;
     case DEMON_HUNTER_HAVOC:
-      spec.the_hunt = talent.havoc.the_hunt;
+      spec.the_hunt        = talent.havoc.the_hunt;
+      spec.the_hunt_impact = spec.the_hunt->effectN( 1 ).trigger();
+      spec.the_hunt_dot    = spec.the_hunt_impact->effectN( 4 ).trigger();
       break;
     case DEMON_HUNTER_VENGEANCE:
-      spec.the_hunt = spell_data_t::not_found();
+      spec.the_hunt        = spell_data_t::not_found();
+      spec.the_hunt_impact = spell_data_t::not_found();
+      spec.the_hunt_dot    = spell_data_t::not_found();
       break;
     default:
       break;
@@ -10342,18 +10391,18 @@ void demon_hunter_t::init_spells()
   {
     case DEMON_HUNTER_HAVOC:
       hero_spec.thrill_of_the_fight_damage_buff = hero_spec.thrill_of_the_fight_damage_buff_havoc;
-      hero_spec.reavers_glaive_buff = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 444686 );
+      hero_spec.reavers_glaive_buff      = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 444686 );
       hero_spec.wounded_quarry_proc_rate = options.wounded_quarry_chance_havoc;
       break;
     case DEMON_HUNTER_VENGEANCE:
       hero_spec.thrill_of_the_fight_damage_buff = hero_spec.thrill_of_the_fight_damage_buff_vengeance;
-      hero_spec.reavers_glaive_buff = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 444764 );
+      hero_spec.reavers_glaive_buff      = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 444764 );
       hero_spec.wounded_quarry_proc_rate = options.wounded_quarry_chance_vengeance;
       break;
     default:
       hero_spec.thrill_of_the_fight_damage_buff = spell_data_t::not_found();
-      hero_spec.reavers_glaive_buff = spell_data_t::not_found();
-      hero_spec.wounded_quarry_proc_rate = 0;
+      hero_spec.reavers_glaive_buff             = spell_data_t::not_found();
+      hero_spec.wounded_quarry_proc_rate        = 0;
       break;
   }
 
@@ -10401,6 +10450,7 @@ void demon_hunter_t::init_spells()
   hero_spec.sigil_of_doom           = talent_spell_lookup( talent.scarred.demonic_intensity, 452490 );
   hero_spec.sigil_of_doom_damage    = talent_spell_lookup( talent.scarred.demonic_intensity, 462030 );
   hero_spec.abyssal_gaze            = talent_spell_lookup( talent.scarred.demonic_intensity, 452497 );
+  hero_spec.predators_wake          = talent_spell_lookup( talent.scarred.demonic_intensity, 1259431 );
   switch ( specialization() )
   {
     case DEMON_HUNTER_DEVOURER:
