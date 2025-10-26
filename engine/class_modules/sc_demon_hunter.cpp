@@ -5922,8 +5922,8 @@ struct voidfall_meteor_base_t : public demon_hunter_spell_t
   voidfall_meteor_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s )
     : demon_hunter_spell_t( n, p, s )
   {
-    execute_action        = p->get_background_action<voidfall_meteor_damage_t>( fmt::format( "{}_damage", name() ),
-                                                                                s->effectN( 2 ).trigger() );
+    execute_action = p->get_background_action<voidfall_meteor_damage_t>( fmt::format( "{}_damage", name() ),
+                                                                         s->effectN( 2 ).trigger() );
     add_child( execute_action );
   }
 };
@@ -9146,10 +9146,10 @@ void demon_hunter_t::create_buffs()
                                  ->disable_ticking( true );
   buff.dark_matter         = make_buff( this, "dark_matter", hero_spec.dark_matter_buff );
   buff.doomsayer_in_combat = make_buff( this, "doomsayer_in_combat", hero_spec.doomsayer_in_combat_buff )
-                                 // ->set_quiet( true )
+                                 ->set_quiet( true )
                                  ->set_allow_precombat( true );
   buff.doomsayer_out_of_combat = make_buff( this, "doomsayer_out_of_combat", hero_spec.doomsayer_out_of_combat_buff )
-                                     // ->set_quiet( true )
+                                     ->set_quiet( true )
                                      ->set_allow_precombat( true );
 
   // Fel-scarred ============================================================
@@ -9498,7 +9498,7 @@ void demon_hunter_t::init_action_list()
   }
   clear_action_priority_lists();
 
-  switch (specialization())
+  switch ( specialization() )
   {
     case DEMON_HUNTER_DEVOURER:
       demon_hunter_apl::devourer( this );
