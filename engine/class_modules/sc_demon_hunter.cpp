@@ -5543,68 +5543,6 @@ struct spontaneous_immolation_t : public soul_immolation_base_t
   }
 };
 
-// eradicate is intentionally identical to reap_base_t implementations
-// without being parented by it because of subtle behavior differences.
-struct eradicate_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<demon_hunter_spell_t>>
-{
-  struct eradicate_damage_t : public burning_blades_trigger_t<demon_hunter_spell_t>
-  {
-    eradicate_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : base_t( n, p, s, "" )
-    {
-      background = dual = true;
-      aoe               = -1;
-    }
-  };
-
-  eradicate_damage_t* damage_action;
-
-  eradicate_t( demon_hunter_t* p, util::string_view o ) : base_t( "eradicate", p, p->spec.eradicate, o )
-  {
-    damage_action = p->get_background_action<eradicate_damage_t>( "eradicate_damage", p->spec.eradicate_damage );
-    add_child( damage_action );
-  }
-
-  void execute() override
-  {
-    p()->buff.reap->trigger();
-    base_t::execute();
-    p()->buff.eradicate->expire();
-
-    double souls_to_consume = p()->spec.shattered_souls->effectN( 2 ).base_value();
-    if ( p()->buff.moment_of_craving->up() )
-    {
-      souls_to_consume += p()->buff.moment_of_craving->check_value();
-    }
-
-    unsigned fragments_consumed =
-        p()->consume_soul_fragments( soul_fragment::LESSER, true, as<unsigned int>( souls_to_consume ) );
-
-    damage_action->set_target( target );
-    action_state_t* damage_state = damage_action->get_state();
-    damage_state->target         = target;
-    damage_action->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
-
-    if ( p()->talent.devourer.soulshaper->ok() )
-    {
-      damage_state->da_multiplier *= 1.0 + fragments_consumed * p()->talent.devourer.soulshaper->effectN( 1 ).percent();
-    }
-
-    damage_action->schedule_execute( damage_state );
-
-    p()->buff.moment_of_craving->expire();
-  }
-
-  bool action_ready() override
-  {
-    if ( !p()->buff.eradicate->check() )
-    {
-      return false;
-    }
-
-    return base_t::action_ready();
-  }
-};
-
 struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<demon_hunter_spell_t>>
 {
   struct reap_damage_t : public burning_blades_trigger_t<demon_hunter_spell_t>
@@ -5660,6 +5598,31 @@ struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
     damage_action->schedule_execute( damage_state );
 
     p()->buff.moment_of_craving->expire();
+  }
+};
+
+struct eradicate_t : public reap_base_t
+{
+  eradicate_t( demon_hunter_t* p, util::string_view o )
+    : reap_base_t( "eradicate", p, p->spec.eradicate, o, p->spec.eradicate_damage, p->spec.reap_energize )
+  {
+  }
+
+  void execute() override
+  {
+    reap_base_t::execute();
+
+    p()->buff.eradicate->expire();
+  }
+
+  bool action_ready() override
+  {
+    if ( !p()->buff.eradicate->check() )
+    {
+      return false;
+    }
+
+    return reap_base_t::action_ready();
   }
 };
 
