@@ -175,11 +175,6 @@ static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
 
 enum demonsurge_ability
 {
-  DEVOUR,
-  CULL,
-  THE_HUNT,
-  VOIDBLADE,
-  HUNGERING_SLASH,
   SIGIL_OF_DOOM,
   CONSUMING_FIRE,
   ABYSSAL_GAZE,
@@ -187,28 +182,14 @@ enum demonsurge_ability
   DEATH_SWEEP
 };
 
-const std::vector<demonsurge_ability> demonsurge_havoc_abilities{
+const std::vector<demonsurge_ability> demonsurge_abilities{
     demonsurge_ability::SIGIL_OF_DOOM, demonsurge_ability::CONSUMING_FIRE, demonsurge_ability::ABYSSAL_GAZE,
     demonsurge_ability::ANNIHILATION, demonsurge_ability::DEATH_SWEEP };
-
-const std::vector<demonsurge_ability> demonsurge_devourer_abilities{
-    demonsurge_ability::DEVOUR, demonsurge_ability::CULL, demonsurge_ability::THE_HUNT, demonsurge_ability::VOIDBLADE,
-    demonsurge_ability::HUNGERING_SLASH };
 
 std::string demonsurge_ability_name( demonsurge_ability ability )
 {
   switch ( ability )
   {
-    case demonsurge_ability::DEVOUR:
-      return "demonsurge_devour";
-    case demonsurge_ability::CULL:
-      return "demonsurge_cull";
-    case demonsurge_ability::THE_HUNT:
-      return "demonsurge_the_hunt";
-    case demonsurge_ability::VOIDBLADE:
-      return "demonsurge_voidblade";
-    case demonsurge_ability::HUNGERING_SLASH:
-      return "demonsurge_hungering_slash";
     case demonsurge_ability::SIGIL_OF_DOOM:
       return "demonsurge_sigil_of_doom";
     case demonsurge_ability::CONSUMING_FIRE:
@@ -221,6 +202,38 @@ std::string demonsurge_ability_name( demonsurge_ability ability )
       return "demonsurge_death_sweep";
     default:
       return "demonsurge_unknown";
+  }
+}
+
+enum voidsurge_ability
+{
+  DEVOUR,
+  CULL,
+  THE_HUNT,
+  VOIDBLADE,
+  HUNGERING_SLASH
+};
+
+const std::vector<voidsurge_ability> voidsurge_abilities{ voidsurge_ability::DEVOUR, voidsurge_ability::CULL,
+                                                          voidsurge_ability::THE_HUNT, voidsurge_ability::VOIDBLADE,
+                                                          voidsurge_ability::HUNGERING_SLASH };
+
+std::string voidsurge_ability_name( voidsurge_ability ability )
+{
+  switch ( ability )
+  {
+    case voidsurge_ability::DEVOUR:
+      return "voidsurge_devour";
+    case voidsurge_ability::CULL:
+      return "voidsurge_cull";
+    case voidsurge_ability::THE_HUNT:
+      return "voidsurge_the_hunt";
+    case voidsurge_ability::VOIDBLADE:
+      return "voidsurge_voidblade";
+    case voidsurge_ability::HUNGERING_SLASH:
+      return "voidsurge_hungering_slash";
+    default:
+      return "voidsurge_unknown";
   }
 }
 
@@ -349,9 +362,11 @@ public:
     buff_t* enduring_torment;
     buff_t* pursuit_of_angryness;  // passive periodic updater buff
     std::unordered_map<demonsurge_ability, buff_t*> demonsurge_abilities;
-    buff_t* demonsurge_demonic;
-    buff_t* demonsurge_hardcast;
+    std::unordered_map<voidsurge_ability, buff_t*> voidsurge_abilities;
+    buff_t* demonsurge_demonsurge;
+    buff_t* demonsurge_demonic_intensity;
     buff_t* demonsurge;
+    buff_t* voidsurge;
 
     // Set Bonuses
   } buff;
@@ -709,6 +724,7 @@ public:
     const spell_data_t* sigil_of_misery_debuff;
     const spell_data_t* shattered_souls;
     const spell_data_t* the_hunt;
+    const spell_data_t* blur;
 
     // Devourer
     const spell_data_t* devourer_demon_hunter;
@@ -750,7 +766,6 @@ public:
     const spell_data_t* havoc_demon_hunter;
     const spell_data_t* annihilation;
     const spell_data_t* blade_dance;
-    const spell_data_t* blur;
     const spell_data_t* chaos_strike;
     const spell_data_t* death_sweep;
     const spell_data_t* fel_rush;
@@ -867,16 +882,18 @@ public:
     const spell_data_t* student_of_suffering_buff;
     const spell_data_t* demonsurge_demonsurge_buff;
     const spell_data_t* demonsurge_demonic_intensity_buff;
+    const spell_data_t* demonsurge_trigger;
     const spell_data_t* demonsurge_damage;
     const spell_data_t* demonsurge_stacking_buff;
-    const spell_data_t* demonsurge_trigger;
+    const spell_data_t* voidsurge_trigger;
+    const spell_data_t* voidsurge_damage;
+    const spell_data_t* voidsurge_stacking_buff;
     const spell_data_t* soul_sunder;
     const spell_data_t* spirit_burst;
     const spell_data_t* sigil_of_doom;
     const spell_data_t* sigil_of_doom_damage;
     const spell_data_t* abyssal_gaze;
     const spell_data_t* fel_desolation;
-    std::vector<demonsurge_ability> demonsurge_abilities;
   } hero_spec;
 
   // Set Bonus effects
@@ -1018,6 +1035,7 @@ public:
 
     // Scarred
     std::unordered_map<demonsurge_ability, proc_t*> demonsurge_abilities;
+    std::unordered_map<voidsurge_ability, proc_t*> voidsurge_abilities;
 
     // Set Bonuses
   } proc;
@@ -1086,6 +1104,7 @@ public:
     // Scarred
     action_t* burning_blades = nullptr;
     action_t* demonsurge     = nullptr;
+    action_t* voidsurge      = nullptr;
   } active;
 
   // Pets
@@ -1194,6 +1213,7 @@ public:
   const spell_data_t* find_spell_override( const spell_data_t* base, std::vector<const spell_data_t*> passives );
   const spell_data_t* conditional_spell_lookup( bool fn, int id );
   const spell_data_t* talent_spell_lookup( player_talent_t t, int id );
+  const spell_data_t* spec_talent_spell_lookup( specialization_e s, const player_talent_t& t, int id );
   const spell_data_t* spell_lookup_by_spec( const spell_data_t* devourer, const spell_data_t* havoc,
                                             const spell_data_t* vengeance );
   void set_out_of_range( timespan_t duration );
@@ -1211,6 +1231,8 @@ public:
   void trigger_demonic() const;
   void trigger_demonsurge( demonsurge_ability, bool = true );
   void trigger_demonsurge( demonsurge_ability, timespan_t, bool = true );
+  void trigger_voidsurge( voidsurge_ability, bool = true );
+  void trigger_voidsurge( voidsurge_ability, timespan_t, bool = true );
   double get_target_reach() const
   {
     return options.target_reach >= 0 ? options.target_reach : sim->target->combat_reach;
@@ -2044,9 +2066,10 @@ public:
 
     // Scarred
     ab::parse_effects( p()->buff.enduring_torment );
-    ab::parse_effects( p()->buff.demonsurge_demonic );
-    ab::parse_effects( p()->buff.demonsurge_hardcast );
+    ab::parse_effects( p()->buff.demonsurge_demonsurge );
+    ab::parse_effects( p()->buff.demonsurge_demonic_intensity );
     ab::parse_effects( p()->buff.demonsurge );
+    ab::parse_effects( p()->buff.voidsurge );
 
     // Tier sets
   }
@@ -3693,7 +3716,7 @@ struct eye_beam_t : public eye_beam_base_t
 
   double cost() const override
   {
-    if ( p()->buff.demonsurge_hardcast->check() )
+    if ( p()->buff.demonsurge_demonic_intensity->check() )
     {
       return abyssal_gaze_cost;
     }
@@ -3702,7 +3725,7 @@ struct eye_beam_t : public eye_beam_base_t
 
   void execute() override
   {
-    if ( p()->buff.demonsurge_hardcast->check() )
+    if ( p()->buff.demonsurge_demonic_intensity->check() )
     {
       abyssal_gaze->execute_on_target( target );
       stats->add_execute( time_to_execute, target );
@@ -4235,7 +4258,7 @@ struct sigil_of_flame_t : public sigil_of_flame_base_t
 
   double cost() const override
   {
-    if ( p()->buff.demonsurge_hardcast->check() )
+    if ( p()->buff.demonsurge_demonic_intensity->check() )
     {
       return sigil_of_doom_cost;
     }
@@ -4244,7 +4267,7 @@ struct sigil_of_flame_t : public sigil_of_flame_base_t
 
   void execute() override
   {
-    if ( p()->buff.demonsurge_hardcast->check() )
+    if ( p()->buff.demonsurge_demonic_intensity->check() )
     {
       sigil_of_doom->execute_on_target( target );
       stats->add_execute( time_to_execute, target );
@@ -4671,12 +4694,12 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
     switch ( p()->specialization() )
     {
       case DEMON_HUNTER_DEVOURER:
-        for ( demonsurge_ability ability : p()->hero_spec.demonsurge_abilities )
+        for ( voidsurge_ability ability : voidsurge_abilities )
         {
-          p()->buff.demonsurge_abilities[ ability ]->trigger();
+          p()->buff.voidsurge_abilities[ ability ]->trigger();
         }
-        p()->buff.demonsurge_demonic->trigger();
-        p()->buff.demonsurge_hardcast->trigger();
+        p()->buff.demonsurge_demonsurge->trigger();
+        p()->buff.demonsurge_demonic_intensity->trigger();
         p()->buff.demonsurge->expire();
 
         p()->devourer_fury_state.start();
@@ -4690,12 +4713,12 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
         }
         break;
       case DEMON_HUNTER_HAVOC:
-        for ( demonsurge_ability ability : p()->hero_spec.demonsurge_abilities )
+        for ( demonsurge_ability ability : demonsurge_abilities )
         {
           p()->buff.demonsurge_abilities[ ability ]->trigger();
         }
-        p()->buff.demonsurge_demonic->trigger();
-        p()->buff.demonsurge_hardcast->trigger();
+        p()->buff.demonsurge_demonsurge->trigger();
+        p()->buff.demonsurge_demonic_intensity->trigger();
         p()->buff.demonsurge->expire();
 
         // Buff is gained at the start of the leap.
@@ -5330,27 +5353,20 @@ struct sigil_of_chains_t : public demon_hunter_spell_t
   }
 };
 
-struct demonsurge_t : public demon_hunter_spell_t
+struct surge_base_t : public demon_hunter_spell_t
 {
-  demonsurge_t( util::string_view name, demon_hunter_t* p )
-    : demon_hunter_spell_t( name, p, p->hero_spec.demonsurge_damage )
+  surge_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : demon_hunter_spell_t( n, p, s )
   {
     background = dual   = true;
     aoe                 = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
   }
 
-  void execute() override
-  {
-    demon_hunter_spell_t::execute();
-    p()->buff.demonsurge->trigger();
-  }
-
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = demon_hunter_spell_t::composite_da_multiplier( s );
 
-    // Focused Hatred increases Demonsurge damage when hitting less than 6 targets
+    // Focused Hatred increases _surge damage when hitting less than 6 targets
     if ( p()->talent.scarred.focused_hatred->ok() && s->n_targets <= 5 )
     {
       // 1 target is always effect 1 %
@@ -5363,6 +5379,32 @@ struct demonsurge_t : public demon_hunter_spell_t
     }
 
     return m;
+  }
+};
+
+struct demonsurge_t : public surge_base_t
+{
+  demonsurge_t( util::string_view name, demon_hunter_t* p ) : surge_base_t( name, p, p->hero_spec.demonsurge_damage )
+  {
+  }
+
+  void execute() override
+  {
+    surge_base_t::execute();
+    p()->buff.demonsurge->trigger();
+  }
+};
+
+struct voidsurge_t : public surge_base_t
+{
+  voidsurge_t( util::string_view name, demon_hunter_t* p ) : surge_base_t( name, p, p->hero_spec.voidsurge_damage )
+  {
+  }
+
+  void execute() override
+  {
+    surge_base_t::execute();
+    p()->buff.voidsurge->trigger();
   }
 };
 
@@ -8239,7 +8281,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     {
       p()->buff.demonsurge_abilities[ demonsurge_ability::ANNIHILATION ]->trigger();
       p()->buff.demonsurge_abilities[ demonsurge_ability::DEATH_SWEEP ]->trigger();
-      p()->buff.demonsurge_demonic->trigger();
+      p()->buff.demonsurge_demonsurge->trigger();
     }
 
     const timespan_t extend_duration = p()->talent.havoc.demonic->effectN( 1 ).time_value();
@@ -8316,13 +8358,18 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     event_t::cancel( p()->devourer_fury_state.next_drain_event );
     p()->devourer_fury_state.clear_state();
 
-    for ( demonsurge_ability ability : p()->hero_spec.demonsurge_abilities )
+    for ( demonsurge_ability ability : demonsurge_abilities )
     {
       p()->buff.demonsurge_abilities[ ability ]->expire();
     }
+    for ( voidsurge_ability ability : voidsurge_abilities )
+    {
+      p()->buff.voidsurge_abilities[ ability ]->expire();
+    }
     p()->buff.demonsurge->expire();
-    p()->buff.demonsurge_demonic->expire();
-    p()->buff.demonsurge_hardcast->expire();
+    p()->buff.voidsurge->expire();
+    p()->buff.demonsurge_demonsurge->expire();
+    p()->buff.demonsurge_demonic_intensity->expire();
   }
 };
 
@@ -9176,8 +9223,8 @@ void demon_hunter_t::create_buffs()
           ->add_invalidate( CACHE_RUN_SPEED )
           ->set_tick_callback(
               [ this, speed_per_fury = talent.scarred.pursuit_of_angriness->effectN( 1 ).percent() /
-                                       talent.scarred.pursuit_of_angriness->effectN( 1 ).base_value() ](
-                  buff_t* b, int, timespan_t ) {
+                                       talent.scarred.pursuit_of_angriness->effectN( 1 ).base_value() ]( buff_t* b, int,
+                                                                                                         timespan_t ) {
                 // TOCHECK - Does this need to floor if it's not a whole number
                 b->current_value = resources.current[ RESOURCE_FURY ] * speed_per_fury;
               } );
@@ -9193,14 +9240,22 @@ void demon_hunter_t::create_buffs()
                            gain.student_of_suffering );
           } );
 
-  for ( demonsurge_ability ability : hero_spec.demonsurge_abilities )
+  for ( demonsurge_ability ability : demonsurge_abilities )
   {
-    buff.demonsurge_abilities[ ability ] = make_buff( this, demonsurge_ability_name( ability ), spell_data_t::nil() );
+    buff.demonsurge_abilities[ ability ] =
+        make_buff( this, demonsurge_ability_name( ability ), hero_spec.demonsurge_demonsurge_buff )->set_quiet( true );
+  }
+  for ( voidsurge_ability ability : voidsurge_abilities )
+  {
+    buff.voidsurge_abilities[ ability ] =
+        make_buff( this, voidsurge_ability_name( ability ), hero_spec.demonsurge_demonsurge_buff )->set_quiet( true );
   }
 
-  buff.demonsurge_demonic  = make_buff( this, "demonsurge_demonic", hero_spec.demonsurge_demonsurge_buff );
-  buff.demonsurge_hardcast = make_buff( this, "demonsurge_hardcast", hero_spec.demonsurge_demonic_intensity_buff );
-  buff.demonsurge          = make_buff( this, "demonsurge", hero_spec.demonsurge_stacking_buff );
+  buff.demonsurge_demonsurge = make_buff( this, "demonsurge_demonsurge", hero_spec.demonsurge_demonsurge_buff );
+  buff.demonsurge_demonic_intensity =
+      make_buff( this, "demonsurge_demonic_intensity", hero_spec.demonsurge_demonic_intensity_buff );
+  buff.demonsurge = make_buff( this, "demonsurge", hero_spec.demonsurge_stacking_buff );
+  buff.voidsurge  = make_buff( this, "voidsurge", hero_spec.voidsurge_stacking_buff );
 
   // Set Bonus Items ========================================================
 }
@@ -9578,9 +9633,13 @@ void demon_hunter_t::init_procs()
   proc.wounded_quarry_accumulator_reset    = get_proc( "wounded_quarry_accumulator_reset" );
 
   // Scarred
-  for ( demonsurge_ability ability : hero_spec.demonsurge_abilities )
+  for ( demonsurge_ability ability : demonsurge_abilities )
   {
     proc.demonsurge_abilities[ ability ] = get_proc( demonsurge_ability_name( ability ) );
+  }
+  for ( voidsurge_ability ability : voidsurge_abilities )
+  {
+    proc.voidsurge_abilities[ ability ] = get_proc( voidsurge_ability_name( ability ) );
   }
 
   // Set Bonuses
@@ -10260,10 +10319,13 @@ void demon_hunter_t::init_spells()
   hero_spec.monster_rising_buff        = talent_spell_lookup( talent.scarred.monster_rising, 452550 );
   hero_spec.enduring_torment_buff      = talent_spell_lookup( talent.scarred.enduring_torment, 453314 );
   hero_spec.demonsurge_demonsurge_buff = talent_spell_lookup( talent.scarred.demonsurge, 452435 );
-  hero_spec.demonsurge_damage          = talent_spell_lookup( talent.scarred.demonsurge, 452416 );
-  hero_spec.demonsurge_stacking_buff   = talent_spell_lookup( talent.scarred.demonic_intensity, 452416 );
-  hero_spec.demonsurge_trigger         = talent_spell_lookup( talent.scarred.demonsurge, 453323 );
-  hero_spec.soul_sunder                = talent_spell_lookup( talent.scarred.demonsurge, 452436 );
+  hero_spec.demonsurge_trigger = spec_talent_spell_lookup( DEMON_HUNTER_HAVOC, talent.scarred.demonsurge, 453323 );
+  hero_spec.demonsurge_damage  = hero_spec.demonsurge_trigger->effectN( 1 ).trigger();
+  hero_spec.demonsurge_stacking_buff = hero_spec.demonsurge_damage;
+  hero_spec.voidsurge_trigger = spec_talent_spell_lookup( DEMON_HUNTER_DEVOURER, talent.scarred.demonsurge, 1246161 );
+  hero_spec.voidsurge_damage  = hero_spec.voidsurge_trigger->effectN( 1 ).trigger();
+  hero_spec.voidsurge_stacking_buff = hero_spec.voidsurge_damage;
+  hero_spec.soul_sunder             = talent_spell_lookup( talent.scarred.demonsurge, 452436 );
   hero_spec.spirit_burst =
       conditional_spell_lookup( talent.vengeance.spirit_bomb->ok() && talent.scarred.demonsurge->ok(), 452437 );
   hero_spec.sigil_of_doom        = talent_spell_lookup( talent.scarred.demonic_intensity, 452490 );
@@ -10283,18 +10345,6 @@ void demon_hunter_t::init_spells()
     default:
       hero_spec.burning_blades_debuff             = spell_data_t::not_found();
       hero_spec.demonsurge_demonic_intensity_buff = spell_data_t::not_found();
-      break;
-  }
-
-  switch ( specialization() )
-  {
-    case DEMON_HUNTER_HAVOC:
-      hero_spec.demonsurge_abilities = demonsurge_havoc_abilities;
-      break;
-    case DEMON_HUNTER_DEVOURER:
-      hero_spec.demonsurge_abilities = demonsurge_devourer_abilities;
-      break;
-    default:
       break;
   }
 
@@ -10483,7 +10533,17 @@ void demon_hunter_t::init_spells()
   }
   if ( talent.scarred.demonsurge->ok() )
   {
-    active.demonsurge = get_background_action<demonsurge_t>( "demonsurge" );
+    switch ( specialization() )
+    {
+      case DEMON_HUNTER_DEVOURER:
+        active.voidsurge = get_background_action<voidsurge_t>( "voidsurge" );
+        break;
+      case DEMON_HUNTER_HAVOC:
+        active.demonsurge = get_background_action<demonsurge_t>( "demonsurge" );
+        break;
+      default:
+        break;
+    }
   }
 
   if ( specialization() == DEMON_HUNTER_DEVOURER )
@@ -11573,13 +11633,13 @@ void demon_hunter_t::trigger_demonic() const
 
 // demon_hunter_t::trigger_demonsurge =============================================
 
-void demon_hunter_t::trigger_demonsurge( demonsurge_ability ability, bool check_buff )
+void demon_hunter_t::trigger_demonsurge( const demonsurge_ability ability, const bool check_buff )
 {
   trigger_demonsurge( ability, timespan_t::from_millis( hero_spec.demonsurge_trigger->effectN( 1 ).misc_value1() ),
                       check_buff );
 }
 
-void demon_hunter_t::trigger_demonsurge( demonsurge_ability ability, timespan_t delay, bool check_buff )
+void demon_hunter_t::trigger_demonsurge( const demonsurge_ability ability, timespan_t delay, const bool check_buff )
 {
   if ( active.demonsurge && ( !check_buff || buff.demonsurge_abilities[ ability ]->up() ) )
   {
@@ -11589,6 +11649,27 @@ void demon_hunter_t::trigger_demonsurge( demonsurge_ability ability, timespan_t 
     }
     proc.demonsurge_abilities[ ability ]->occur();
     make_event<delayed_execute_event_t>( *sim, this, active.demonsurge, target, delay );
+  }
+}
+
+// demon_hunter_t::trigger_voidsurge ==============================================
+
+void demon_hunter_t::trigger_voidsurge( const voidsurge_ability ability, const bool check_buff )
+{
+  trigger_voidsurge( ability, timespan_t::from_millis( hero_spec.voidsurge_trigger->effectN( 1 ).misc_value1() ),
+                     check_buff );
+}
+
+void demon_hunter_t::trigger_voidsurge( const voidsurge_ability ability, timespan_t delay, const bool check_buff )
+{
+  if ( active.voidsurge && ( !check_buff || buff.voidsurge_abilities[ ability ]->up() ) )
+  {
+    if ( check_buff )
+    {
+      buff.voidsurge_abilities[ ability ]->expire();
+    }
+    proc.voidsurge_abilities[ ability ]->occur();
+    make_event<delayed_execute_event_t>( *sim, this, active.voidsurge, target, delay );
   }
 }
 
@@ -11602,6 +11683,7 @@ void demon_hunter_t::parse_player_effects()
   if ( specialization() == DEMON_HUNTER_DEVOURER )
   {
     parse_effects( buff.metamorphosis );
+    parse_effects( buff.blur );
   }
 
   // Havoc
@@ -11753,6 +11835,12 @@ const spell_data_t* demon_hunter_t::conditional_spell_lookup( bool fn, int id )
 const spell_data_t* demon_hunter_t::talent_spell_lookup( player_talent_t t, int id )
 {
   return conditional_spell_lookup( t->ok(), id );
+}
+
+const spell_data_t* demon_hunter_t::spec_talent_spell_lookup( const specialization_e s, const player_talent_t& t,
+                                                              const int id )
+{
+  return conditional_spell_lookup( specialization() == s && t->ok(), id );
 }
 
 const spell_data_t* demon_hunter_t::spell_lookup_by_spec( const spell_data_t* devourer, const spell_data_t* havoc,
