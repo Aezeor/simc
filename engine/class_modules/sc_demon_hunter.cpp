@@ -5495,18 +5495,18 @@ struct consume_base_t : public voidfall_building_trigger_t<demon_hunter_spell_t>
   }
 };
 
-struct devour_t : public consume_base_t
+struct devour_t : public voidsurge_trigger_t<voidsurge_ability::DEVOUR, consume_base_t>
 {
   timespan_t reap_cdr;
 
-  devour_t( demon_hunter_t* p, util::string_view o ) : consume_base_t( "devour", p, p->spec.devour, o )
+  devour_t( demon_hunter_t* p, util::string_view o ) : base_t( "devour", p, p->spec.devour, o )
   {
     reap_cdr = timespan_t::from_millis( p->spec.void_metamorphosis->effectN( 14 ).base_value() );
   }
 
   void execute() override
   {
-    consume_base_t::execute();
+    base_t::execute();
 
     p()->cooldown.reap->adjust( -reap_cdr );
   }
@@ -5517,7 +5517,7 @@ struct devour_t : public consume_base_t
     {
       return false;
     }
-    return consume_base_t::action_ready();
+    return base_t::action_ready();
   }
 };
 
