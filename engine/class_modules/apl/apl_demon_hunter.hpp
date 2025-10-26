@@ -18,9 +18,9 @@ std::string temporary_enchant_devourer( const player_t* );
 std::string temporary_enchant_havoc( const player_t* );
 std::string temporary_enchant_vengeance( const player_t* );
 void devourer( player_t* );
+//void devourer_ptr( player_t* );
 void havoc( player_t* );
 //void havoc_ptr( player_t* );
 void vengeance( player_t* );
 //void vengeance_ptr( player_t* );
-// TODO: MIDNIGHT - ADD DEVOURER
 }  // namespace demon_hunter_apl
