@@ -2485,6 +2485,20 @@ struct demonsurge_trigger_t : public BASE
 
     BASE::p()->trigger_demonsurge( ABILITY );
   }
+
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
+  {
+    if ( util::str_compare_ci( name, "demonsurge_available" ) )
+    {
+      if ( BASE::p()->talent.scarred.demonsurge->ok() )
+      {
+        return make_fn_expr( name, [ this ]() { return BASE::p()->buff.demonsurge_abilities[ ABILITY ]->check(); } );
+      }
+      return expr_t::create_constant( name, 0 );
+    }
+
+    return BASE::create_expression( name );
+  }
 };
 
 template <art_of_the_glaive_ability ABILITY, typename BASE>
