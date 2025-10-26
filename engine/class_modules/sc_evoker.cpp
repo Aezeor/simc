@@ -2311,13 +2311,7 @@ public:
 
     if ( p()->specialization() == EVOKER_AUGMENTATION )
     {
-      parse_effects(
-          p()->buff.ebon_might_self_buff, [ this ] { return p()->close_as_clutchmates; },
-          p()->sets->set( EVOKER_AUGMENTATION, DF2, B2 ), p()->spec.close_as_clutchmates );
-
-      parse_effects(
-          p()->buff.ebon_might_self_buff, [ this ] { return !p()->close_as_clutchmates; },
-          p()->sets->set( EVOKER_AUGMENTATION, DF2, B2 ) );
+      parse_effects( p()->buff.ebon_might_self_buff );
     }
 
     if ( p()->talent.chronowarden.temporal_burst.enabled() )
@@ -3669,8 +3663,7 @@ struct empowered_charge_spell_t : public empowered_charge_t<evoker_spell_t>
 struct ebon_might_t : public evoker_augment_t
 {
 public:
-  timespan_t ebon_time          = timespan_t::min();
-  mutable std::vector<player_t*> secondary_list, tertiary_list;
+  timespan_t ebon_time = timespan_t::min();
   double double_time_mult;
 
   ebon_might_t( evoker_t* p, std::string_view options_str )
@@ -3685,8 +3678,6 @@ public:
   ebon_might_t( evoker_t* p, std::string_view name, std::string_view options_str, timespan_t ebon )
     : evoker_augment_t( name, p, p->talent.ebon_might, options_str ),
       ebon_time( ebon ),
-      secondary_list(),
-      tertiary_list(),
       double_time_mult( p->talent.chronowarden.double_time->effectN( 2 ).percent() )
   {
     // Add a target so you always hit yourself.
@@ -3701,9 +3692,8 @@ public:
     {
       p->spec.ebon_might = std::make_unique<modified_spell_data_t>( data() );
       p->spec.ebon_might->parse_effects( p->sets->set( EVOKER_AUGMENTATION, DF2, B4 ) )
-        ->parse_effects( p->spec.close_as_clutchmates, [ p = p ]( const action_t*, const action_state_t* ) {
-          return p->close_as_clutchmates;
-        } );
+          ->parse_effects( p->spec.close_as_clutchmates,
+                           [ p = p ]( const action_t*, const action_state_t* ) { return p->close_as_clutchmates; } );
     }
   }
 
@@ -3717,8 +3707,7 @@ public:
   {
     sim->print_debug( "{} ebon might current int: {}, base percent: {}, crit_mod: {}, aug_4pc_value: {}",
                       player->name_str, p()->cache.intellect(), p()->spec.ebon_might->effectN( 1 ).percent(),
-                      p()->buff.ebon_might_self_buff->check_value(),
-                      p()->buff.tww1_4pc_aug->check_stack_value() );
+                      p()->buff.ebon_might_self_buff->check_value(), p()->buff.tww1_4pc_aug->check_stack_value() );
 
     if ( p()->allied_ebons_on_me.empty() )
       return p()->cache.intellect() * ebon_value();
@@ -3733,6 +3722,16 @@ public:
     ignore_int *= p()->composite_attribute_multiplier( ATTR_INTELLECT );
 
     return ( p()->cache.intellect() - ignore_int ) * ebon_value();
+  }
+
+  double ebon_int_post_dr()
+  {
+    auto amount = ebon_int();
+    if ( p()->allies_with_my_ebon.size() >= 2 )
+    {
+      amount *= 2.0 / p()->allies_with_my_ebon.size();
+    }
+    return amount;
   }
 
   void extend_ebon( timespan_t extend )
@@ -3768,6 +3767,11 @@ public:
   void update_stats()
   {
     auto _ebon_int = ebon_int();
+
+    if ( p()->allies_with_my_ebon.size() >= 2 )
+    {
+      _ebon_int *= 2.0 / p()->allies_with_my_ebon.size();
+    }
 
     for ( auto ally : p()->allies_with_my_ebon )
     {
@@ -3833,8 +3837,6 @@ public:
       {
         buff->current_value = double_time_mult;
       }
-      if ( t != p() && new_cast )
-        update_stat( debug_cast<stat_buff_t*>( buff ), ebon_int() );
     }
     else
     {
@@ -3926,28 +3928,25 @@ public:
 
     evoker_augment_t::execute();
 
-    sim->print_debug("{} casts {} allies with prescience: {} allies with ebon: {} n_targets: {}", *p(), *this,
-        p()->allies_with_my_prescience.size(), p()->allies_with_my_ebon.size(), n_targets());
+    update_stats();
+
+    sim->print_debug( "{} casts {} allies with prescience: {} allies with ebon: {} n_targets: {}", *p(), *this,
+                      p()->allies_with_my_prescience.size(), p()->allies_with_my_ebon.size(), n_targets() );
   }
 
   void impact( action_state_t* s ) override
   {
     evoker_augment_t::impact( s );
 
-    if ( s->chain_target == 0 )
+    /*if ( s->chain_target == 0 )
     {
       for ( auto t : p()->allies_with_my_ebon )
       {
         ebon_on_target( t, s->result == RESULT_CRIT );
       }
-    }
+    }*/
 
     ebon_on_target( s->target, s->result == RESULT_CRIT );
-  }
-
-  int n_targets() const override
-  {
-    return aoe - as<int>( p()->allies_with_my_ebon.size() );
   }
 
   void activate() override
@@ -3968,65 +3967,12 @@ public:
     // Player must always be the first target.
     target_list.push_back( player );
 
-    for ( auto& t : p()->allies_with_my_prescience )
+    for ( auto& t : p()->sim->player_non_sleeping_list )
     {
-      if ( t == player || ( t->role == ROLE_TANK || t->role == ROLE_HEAL ) ||
-           ( std::count_if( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
-                            [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.ebon_might->up(); } ) +
-             p()->get_target_data( t )->buffs.ebon_might->up() ) >= 2 )
+      if ( t == player || ( t->role == ROLE_TANK || t->role == ROLE_HEAL ) || t->is_pet() )
         continue;
 
       target_list.push_back( t );
-    }
-
-    // Clear helper vectors used to process in a single pass.
-    secondary_list.clear();
-    tertiary_list.clear();
-
-    for ( const auto& t : sim->player_no_pet_list )
-    {
-      if ( t->is_sleeping() || p()->get_target_data( t )->buffs.ebon_might->up() || t == player || ( t->role == ROLE_TANK || t->role == ROLE_HEAL ) )
-        continue;
-
-      if ( range::find( p()->allies_with_my_prescience, t ) == p()->allies_with_my_prescience.end() )
-      {
-        auto allied_aug_buffs =
-            ( std::count_if( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
-                             [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.ebon_might->up(); } ) );
-
-        if ( allied_aug_buffs == 0 )
-        {
-          if ( t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK &&
-               t->specialization() != EVOKER_AUGMENTATION )
-            target_list.push_back( t );
-          else
-            secondary_list.push_back( t );
-        }
-        else if ( allied_aug_buffs < 2 )
-        {
-          tertiary_list.push_back( t );
-        }
-      }
-    }
-
-    if ( as<int>( target_list.size() ) < n_targets() )
-    {
-      for ( auto& t : secondary_list )
-      {
-        target_list.push_back( t );
-        if ( as<int>( target_list.size() ) >= n_targets() )
-          break;
-      }
-    }
-
-    if ( as<int>( target_list.size() ) < n_targets() )
-    {
-      for ( auto& t : tertiary_list )
-      {
-        target_list.push_back( t );
-        if ( as<int>( target_list.size() ) >= n_targets() )
-          break;
-      }
     }
 
     return target_list.size();
@@ -9177,6 +9123,8 @@ void evoker_t::init_spells()
   talent.scalecommander.refined_essence                 = HT( "Refined Essence" );
 
   talent.scalecommander.commando_deep_breath_buff = find_spell( 1236943 );
+
+  register_passive_effect_mask( spec.close_as_clutchmates, effect_mask_t( true ).disable( 1, 2 ) );
 
   // Register passives
   parse_all_class_passives();
