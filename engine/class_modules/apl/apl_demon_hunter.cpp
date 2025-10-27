@@ -76,6 +76,8 @@ void devourer( player_t* p )
   default_->add_action( "collapsing_star" );
   default_->add_action( "predators_wake" );
   default_->add_action( "the_hunt" );
+  default_->add_action( "reapers_toll" );
+  default_->add_action( "hungering_slash" );
   default_->add_action( "pierce_the_veil,if=voidsurge_available|talent.duty_eternal&active_enemies=1|talent.hungering_slash" );
   default_->add_action( "voidblade,if=talent.duty_eternal&active_enemies=1|talent.hungering_slash" );
   default_->add_action( "void_ray,if=!buff.eradicate.up" );

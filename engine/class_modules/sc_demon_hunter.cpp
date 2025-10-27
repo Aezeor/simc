@@ -208,20 +208,23 @@ std::string demonsurge_ability_name( demonsurge_ability ability )
 enum voidsurge_ability
 {
   PREDATORS_WAKE,
-  VOIDBLADE
+  PIERCE_THE_VEIL,
+  REAPERS_TOLL
 };
 
 const std::vector<voidsurge_ability> voidsurge_abilities{ voidsurge_ability::PREDATORS_WAKE,
-                                                          voidsurge_ability::VOIDBLADE };
+                                                          voidsurge_ability::PIERCE_THE_VEIL };
 
 std::string voidsurge_ability_name( voidsurge_ability ability )
 {
   switch ( ability )
   {
     case voidsurge_ability::PREDATORS_WAKE:
-      return "voidsurge_the_hunt";
-    case voidsurge_ability::VOIDBLADE:
-      return "voidsurge_voidblade";
+      return "voidsurge_predators_wake";
+    case voidsurge_ability::PIERCE_THE_VEIL:
+      return "voidsurge_pierce_the_veil";
+    case voidsurge_ability::REAPERS_TOLL:
+      return "voidsurge_reapers_toll";
     default:
       return "voidsurge_unknown";
   }
@@ -887,6 +890,7 @@ public:
     const spell_data_t* abyssal_gaze;
     const spell_data_t* predators_wake;
     const spell_data_t* pierce_the_veil;
+    const spell_data_t* reapers_toll;
   } hero_spec;
 
   // Set Bonus effects
@@ -5593,7 +5597,7 @@ struct voidblade_base_t : public demon_hunter_spell_t
   }
 };
 
-struct pierce_the_veil_t : public voidsurge_trigger_t<voidsurge_ability::VOIDBLADE, voidblade_base_t>
+struct pierce_the_veil_t : public voidsurge_trigger_t<voidsurge_ability::PIERCE_THE_VEIL, voidblade_base_t>
 {
   pierce_the_veil_t( demon_hunter_t* p, util::string_view o )
     : base_t( "pierce_the_veil", p, p->hero_spec.pierce_the_veil, o )
@@ -6181,16 +6185,15 @@ struct meteor_shower_t : public demon_hunter_spell_t
   }
 };
 
-struct hungering_slash_t : public demon_hunter_spell_t
+struct hungering_slash_base_t : public demon_hunter_spell_t
 {
   struct hungering_slash_damage_t : public demon_hunter_spell_t
   {
     int number_of_souls_to_spawn;
 
-    hungering_slash_damage_t( util::string_view n, demon_hunter_t* p )
-      : demon_hunter_spell_t( n, p, p->spec.hungering_slash_damage )
+    hungering_slash_damage_t( util::string_view n, demon_hunter_t* p, int souls )
+      : demon_hunter_spell_t( n, p, p->spec.hungering_slash_damage ), number_of_souls_to_spawn( souls )
     {
-      number_of_souls_to_spawn = as<int>( p->spec.hungering_slash->effectN( 1 ).base_value() );
     }
 
     void execute() override
@@ -6201,12 +6204,13 @@ struct hungering_slash_t : public demon_hunter_spell_t
     }
   };
 
-  hungering_slash_t( demon_hunter_t* p, util::string_view o )
-    : demon_hunter_spell_t( "hungering_slash", p, p->spec.hungering_slash, o )
+  hungering_slash_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
+    : demon_hunter_spell_t( n, p, s, o )
   {
-    execute_action = p->get_background_action<hungering_slash_damage_t>( "hungering_slash_damage" );
+    execute_action = p->get_background_action<hungering_slash_damage_t>( fmt::format( "{}_damage", n ),
+                                                                         as<int>( s->effectN( 1 ).base_value() ) );
     add_child( execute_action );
-    execute_energize_action = p->get_background_action<demon_hunter_energize_t>( "hungering_slash_energize",
+    execute_energize_action = p->get_background_action<demon_hunter_energize_t>( fmt::format( "{}_energize", n ),
                                                                                  p->spec.hungering_slash_energize );
   }
 
@@ -6225,6 +6229,48 @@ struct hungering_slash_t : public demon_hunter_spell_t
     }
 
     return demon_hunter_spell_t::action_ready();
+  }
+};
+
+struct reapers_toll_t : public hungering_slash_base_t
+{
+  reapers_toll_t( demon_hunter_t* p, util::string_view o )
+    : hungering_slash_base_t( "reapers_toll", p, p->hero_spec.reapers_toll, o )
+  {
+  }
+
+  void execute() override
+  {
+    hungering_slash_base_t::execute();
+
+    // every Reaper's Toll triggers a Voidsurge regardless of buff
+    p()->trigger_voidsurge( voidsurge_ability::REAPERS_TOLL, false );
+  }
+
+  bool action_ready() override
+  {
+    if ( !p()->buff.metamorphosis->check() )
+    {
+      return false;
+    }
+    return hungering_slash_base_t::action_ready();
+  }
+};
+
+struct hungering_slash_t : public hungering_slash_base_t
+{
+  hungering_slash_t( demon_hunter_t* p, util::string_view o )
+    : hungering_slash_base_t( "hungering_slash", p, p->spec.hungering_slash, o )
+  {
+  }
+
+  bool action_ready() override
+  {
+    if ( p()->buff.metamorphosis->check() )
+    {
+      return false;
+    }
+    return hungering_slash_base_t::action_ready();
   }
 };
 
@@ -9012,6 +9058,8 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new collapsing_star_t( this, options_str );
   if ( name == "hungering_slash" )
     return new hungering_slash_t( this, options_str );
+  if ( name == "reapers_toll" )
+    return new reapers_toll_t( this, options_str );
 
   using namespace actions::attacks;
 
@@ -9767,6 +9815,8 @@ void demon_hunter_t::init_procs()
   {
     proc.voidsurge_abilities[ ability ] = get_proc( voidsurge_ability_name( ability ) );
   }
+  proc.voidsurge_abilities[ voidsurge_ability::REAPERS_TOLL ] =
+      get_proc( voidsurge_ability_name( voidsurge_ability::REAPERS_TOLL ) );
 
   // Set Bonuses
 }
@@ -10475,6 +10525,7 @@ void demon_hunter_t::init_spells()
   hero_spec.abyssal_gaze            = talent_spell_lookup( talent.scarred.demonic_intensity, 452497 );
   hero_spec.predators_wake          = talent_spell_lookup( talent.scarred.demonic_intensity, 1259431 );
   hero_spec.pierce_the_veil         = talent_spell_lookup( talent.scarred.demonsurge, 1245483 );
+  hero_spec.reapers_toll            = talent_spell_lookup( talent.scarred.demonsurge, 1245470 );
   switch ( specialization() )
   {
     case DEMON_HUNTER_DEVOURER:
