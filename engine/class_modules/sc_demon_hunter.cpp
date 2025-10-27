@@ -6247,6 +6247,21 @@ struct reapers_toll_t : public hungering_slash_base_t
     p()->trigger_voidsurge( voidsurge_ability::REAPERS_TOLL, false );
   }
 
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
+  {
+    if ( util::str_compare_ci( name, "voidsurge_available" ) )
+    {
+      if ( p()->talent.scarred.demonsurge->ok() )
+      {
+        return make_fn_expr(
+            name, [ this ]() { return p()->buff.voidsurge_abilities[ voidsurge_ability::REAPERS_TOLL ]->check(); } );
+      }
+      return expr_t::create_constant( name, 0 );
+    }
+
+    return hungering_slash_base_t::create_expression( name );
+  }
+
   bool action_ready() override
   {
     if ( !p()->buff.metamorphosis->check() )
