@@ -13202,6 +13202,7 @@ void player_t::copy_from( player_t* source )
   class_talents_str                 = source->class_talents_str;
   spec_talents_str                  = source->spec_talents_str;
   hero_talents_str                  = source->hero_talents_str;
+  set_bonus_str                     = source->set_bonus_str;
   player_traits                     = source->player_traits;
   player_sub_trees                  = source->player_sub_trees;
   player_sub_traits                 = source->player_sub_traits;
