@@ -6030,8 +6030,10 @@ struct collapsing_star_t : public demon_hunter_spell_t
     }
   };
 
+  int soul_cost;
   collapsing_star_t( demon_hunter_t* p, util::string_view o )
-    : demon_hunter_spell_t( "collapsing_star", p, p->spec.collapsing_star_spell, o )
+    : demon_hunter_spell_t( "collapsing_star", p, p->spec.collapsing_star_spell, o ),
+      soul_cost( as<int>( p->talent.devourer.collapsing_star->effectN( 1 ).base_value() ) )
   {
     execute_action = p->get_background_action<collapsing_star_damage_t>( "collapsing_star_damage" );
     add_child( execute_action );
@@ -6040,7 +6042,7 @@ struct collapsing_star_t : public demon_hunter_spell_t
   void execute() override
   {
     p()->buff.collapsing_star_ready->expire();
-    p()->buff.collapsing_star_stack->expire();
+    p()->buff.collapsing_star_stack->decrement( soul_cost );
     demon_hunter_spell_t::execute();
 
     if ( p()->talent.devourer.impending_apocalypse->ok() )
@@ -8540,6 +8542,10 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     p()->buff.impending_apocalypse->expire();
     event_t::cancel( p()->devourer_fury_state.next_drain_event );
     p()->devourer_fury_state.clear_state();
+    if ( p()->specialization() == DEMON_HUNTER_DEVOURER )
+    {
+      p()->resources.current[ RESOURCE_FURY ] = 0;
+    }
 
     for ( demonsurge_ability ability : demonsurge_abilities )
     {
