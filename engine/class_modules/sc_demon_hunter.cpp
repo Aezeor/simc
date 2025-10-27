@@ -10507,14 +10507,14 @@ void demon_hunter_t::init_spells()
       hero_spec.catastrophe_dot      = talent_spell_lookup( talent.annihilator.catastrophe, 1256676 );
       hero_spec.meteor_shower_driver = talent_spell_lookup( talent.annihilator.dark_matter, 1264126 );
       hero_spec.meteor_shower_damage = hero_spec.meteor_shower_driver->effectN( 2 ).trigger();
-      hero_spec.world_killer         = talent_spell_lookup( talent.annihilator.dark_matter, 1256618 );
+      hero_spec.world_killer         = talent_spell_lookup( talent.annihilator.world_killer, 1256618 );
       break;
     case DEMON_HUNTER_VENGEANCE:
       hero_spec.voidfall_meteor      = talent_spell_lookup( talent.annihilator.voidfall, 1256303 );
       hero_spec.catastrophe_dot      = talent_spell_lookup( talent.annihilator.catastrophe, 1256667 );
       hero_spec.meteor_shower_driver = talent_spell_lookup( talent.annihilator.dark_matter, 1264128 );
       hero_spec.meteor_shower_damage = hero_spec.meteor_shower_driver->effectN( 2 ).trigger();
-      hero_spec.world_killer         = talent_spell_lookup( talent.annihilator.dark_matter, 1256616 );
+      hero_spec.world_killer         = talent_spell_lookup( talent.annihilator.world_killer, 1256616 );
       break;
     default:
       hero_spec.voidfall_meteor      = spell_data_t::not_found();
