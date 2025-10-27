@@ -5214,8 +5214,8 @@ struct the_hunt_base_t
 {
   struct the_hunt_dot_t : public demon_hunter_spell_t
   {
-    the_hunt_dot_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s )
-      : demon_hunter_spell_t( fmt::format( "{}_dot", n ), p, s )
+    the_hunt_dot_t( util::string_view n, demon_hunter_t* p )
+      : demon_hunter_spell_t( fmt::format( "{}_dot", n ), p, p->spec.the_hunt_dot )
     {
       dual = true;
       aoe  = as<int>( p->spec.the_hunt->effectN( 2 ).trigger()->effectN( 1 ).base_value() );
@@ -5224,11 +5224,11 @@ struct the_hunt_base_t
 
   struct the_hunt_damage_t : public hungering_slash_trigger_t<demon_hunter_spell_t>
   {
-    the_hunt_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, const spell_data_t* dot_s )
-      : base_t( fmt::format( "{}_damage", n ), p, s )
+    the_hunt_damage_t( util::string_view n, demon_hunter_t* p )
+      : base_t( fmt::format( "{}_damage", n ), p, p->spec.the_hunt_impact )
     {
       dual          = true;
-      impact_action = p->get_background_action<the_hunt_dot_t>( n, dot_s );
+      impact_action = p->get_background_action<the_hunt_dot_t>( n );
       add_child( impact_action );
     }
 
@@ -5243,13 +5243,12 @@ struct the_hunt_base_t
     }
   };
 
-  the_hunt_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o,
-                   const spell_data_t* impact_s, const spell_data_t* dot_s )
+  the_hunt_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
     : base_t( n, p, s, o )
   {
     cooldown                = p->cooldown.the_hunt;
     movement_directionality = movement_direction_type::TOWARDS;
-    impact_action           = p->get_background_action<the_hunt_damage_t>( n, impact_s, dot_s );
+    impact_action           = p->get_background_action<the_hunt_damage_t>( n );
     add_child( impact_action );
   }
 
@@ -5272,9 +5271,8 @@ struct the_hunt_base_t
 
 struct predators_wake_t : public voidsurge_trigger_t<voidsurge_ability::PREDATORS_WAKE, the_hunt_base_t>
 {
-  // TODO: VERIFY THE IMPACT AND DOT SPELLS USED HERE
   predators_wake_t( demon_hunter_t* p, util::string_view o )
-    : base_t( "predators_wake", p, p->hero_spec.predators_wake, o, p->spec.the_hunt_impact, p->spec.the_hunt_dot )
+    : base_t( "predators_wake", p, p->hero_spec.predators_wake, o )
   {
   }
 
@@ -5290,8 +5288,7 @@ struct predators_wake_t : public voidsurge_trigger_t<voidsurge_ability::PREDATOR
 
 struct the_hunt_t : public the_hunt_base_t
 {
-  the_hunt_t( demon_hunter_t* p, util::string_view o )
-    : the_hunt_base_t( "the_hunt", p, p->spec.the_hunt, o, p->spec.the_hunt_impact, p->spec.the_hunt_dot )
+  the_hunt_t( demon_hunter_t* p, util::string_view o ) : the_hunt_base_t( "the_hunt", p, p->spec.the_hunt, o )
   {
   }
 
