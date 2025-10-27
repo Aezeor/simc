@@ -8801,6 +8801,10 @@ struct shattered_souls_callback_t : public demon_hunter_proc_callback_t
     }
 
     double chance = shattered_souls->effectN( 1 ).percent();
+
+    // SQRT or worse - definitely not linear.
+    chance *= std::sqrt( state->n_targets );
+
     if ( p()->talent.devourer.waste_not->ok() && ( action->data().id() == p()->spec.void_ray_tick->id() ||
                                                    action->data().id() == p()->spec.void_ray_tick_meta->id() ) )
     {
