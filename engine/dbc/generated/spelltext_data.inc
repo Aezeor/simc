@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.0.63967
-static constexpr std::array<spelltext_data_t, 28455> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28457> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26711,9 +26711,11 @@ static constexpr std::array<spelltext_data_t, 28455> __spelltext_data { {
   { 1245427, "A new talent will soon rise from the dead.", 0, 0 },
   { 1245431, "$@spelldesc1244406", "Absorbs $w1 damage.", 0 },
   { 1245453, "Cut a hole in the fabric of reality, sending a concentrated bolt of cosmic matter towards your target, dealing $1225827s1 Cosmic damage.\r\n\r\nCull gathers up to $1227619s2 nearby souls.$?a1246558[\r\n\r\n|CFFffffffGenerates $1261679s1 Fury.|R][]", 0, 0 },
+  { 1245470, "Violently slash your scythe around you, dealing $1239127s1 Cosmic damage to nearby enemies and generating $1239507s1 Fury. Shatters up to $s1 soul fragments from nearby enemies.", 0, 0 },
   { 1245483, "Unleash your glaives and charge to your target, dealing $1245485s2 Cosmic damage.\r\n\r\nGenerates $1245414s3 Fury.\r\n", 0, 0 },
   { 1245511, "$@spelldesc452402", 0, 0 },
   { 1245514, "$@spelldesc452402", 0, 0 },
+  { 1245523, 0, "Your Veilpierce is replaced with Reaper's Toll.", 0 },
   { 1245577, "Consuming a nearby Soul Fragment empowers you.", "Soul Fragments are nearby.", 0 },
   { 1245621, "Your damaging spells and abilities have the change to fire a Pigment of the Wind at your target dealing between $s4-$s5 damage depending on the effect of the Pigment fired.", 0, 0 },
   { 1245628, "$@spelldesc452402", 0, 0 },

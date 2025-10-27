@@ -3055,13 +3055,13 @@ Demon Hunter
 1245414  Voidblade
 1245453  Cull
 1245455  Cull
-1245470 *Reaper's Toll
+1245470  Reaper's Toll
 1245483  Pierce the Veil
 1245496  Demonsurge
 1245498 *Netherstream
 1245511  Demonsurge
 1245514  Demonsurge
-1245523 *Reaper's Toll
+1245523  Reaper's Toll
 1245577  Soul Fragments
 1245584  Soul Fragments
 1245624 *Backlash

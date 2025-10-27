@@ -19466,7 +19466,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1255072)  : Apply Aura (6) | Modify Attribute% (80)
+#1 (id=1255072)  : Apply Aura (6) | Modify Base Attribute% (80)
                    Base Value: 3 | Scaled Value: 3 | Stat: Int | Target: Self (1)
 Description      : Increases your Intellect by $s1%.
 
@@ -19480,7 +19480,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1255075)  : Apply Aura (6) | Modify Attribute% (80)
+#1 (id=1255075)  : Apply Aura (6) | Modify Base Attribute% (80)
                    Base Value: 4 | Scaled Value: 4 | Stat: Sta | Target: Self (1)
 Description      : Increases your Stamina by $s1%.
 

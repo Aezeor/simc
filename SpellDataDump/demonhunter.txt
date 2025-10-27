@@ -4028,7 +4028,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Havoc Demon Hunter (212612 effects: #6, #7), Vengeance Demon Hunter (212613 effects: #6, #7, #15), Any Means Necessary (388114 effects: #3, #4), Demonsurge (452435 effect#2), Devourer Demon Hunter (1213636 effects: #5, #6), Guile (1223171 effect#1), Devourer's Bite (1240201 effect#1), Up Close (1244220 effect#1), Demonsurge (1245496 effect#3), Duty Eternal (1246562 effects: #1, #2), Furious (1266326 effects: #1, #2)
+Affecting Spells : Havoc Demon Hunter (212612 effects: #6, #7), Vengeance Demon Hunter (212613 effects: #6, #7, #15), Any Means Necessary (388114 effects: #3, #4), Demonsurge (452435 effect#2), Devourer Demon Hunter (1213636 effects: #5, #6), Guile (1223171 effect#1), Devourer's Bite (1240201 effect#1), Up Close (1244220 effect#1), Demonsurge (1245496 effect#3), Reaper's Toll (1245523 effect#2), Duty Eternal (1246562 effects: #1, #2), Furious (1266326 effects: #1, #2)
 Family Flags     : 30, 32, 85
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), Initiates Combat (Enables Auto-Attack) (41), Always Line of Sight (185), Taps immediately (215), Attack on Charge to Unit (242), Allow Class Ability Procs (416)
 Effects          :
@@ -4047,7 +4047,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 117
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2, #15), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Demonsurge (452435 effect#2), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Guile (1223171 effect#1), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Demon Soul (1238676 effects: #1, #2), Devourer's Bite (1240201 effect#1), Up Close (1244220 effect#1), Demonsurge (1245496 effect#3), Duty Eternal (1246562 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Furious (1266326 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2, #15), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Demonsurge (452435 effect#2), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Guile (1223171 effect#1), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Demon Soul (1238676 effects: #1, #2), Devourer's Bite (1240201 effect#1), Up Close (1244220 effect#1), Demonsurge (1245496 effect#3), Reaper's Toll (1245523 effect#2), Duty Eternal (1246562 effects: #1, #2), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Furious (1266326 effects: #1, #2)
 Family Flags     : 16, 30, 42, 70, 72
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Always Line of Sight (185), Allow Class Ability Procs (416)
 Effects          :
@@ -4889,7 +4889,7 @@ Cooldown         : 12 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Havoc Demon Hunter (212612 effect#7), Vengeance Demon Hunter (212613 effects: #7, #15), Any Means Necessary (388114 effects: #3, #4), Demonsurge (452435 effect#2), Devourer Demon Hunter (1213636 effect#6), Guile (1223171 effect#1), Devourer's Bite (1240201 effect#1), Up Close (1244220 effect#1), Demonsurge (1245496 effect#3), Duty Eternal (1246562 effects: #1, #2), Furious (1266326 effects: #1, #2)
+Affecting Spells : Havoc Demon Hunter (212612 effect#7), Vengeance Demon Hunter (212613 effects: #7, #15), Any Means Necessary (388114 effects: #3, #4), Demonsurge (452435 effect#2), Devourer Demon Hunter (1213636 effect#6), Guile (1223171 effect#1), Devourer's Bite (1240201 effect#1), Up Close (1244220 effect#1), Demonsurge (1245496 effect#3), Reaper's Toll (1245523 effect#2), Duty Eternal (1246562 effects: #1, #2), Furious (1266326 effects: #1, #2)
 Family Flags     : 30, 85
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), Initiates Combat (Enables Auto-Attack) (41), Not an Action (92), Always Line of Sight (185), Taps immediately (215), Attack on Charge to Unit (242), Allow Class Ability Procs (416)
 Effects          :
@@ -17211,7 +17211,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Havoc Demon Hunter (212612 effects: #6, #7), Vengeance Demon Hunter (212613 effects: #6, #7, #15), Any Means Necessary (388114 effects: #3, #4), Demonsurge (452435 effect#2), Devourer Demon Hunter (1213636 effects: #5, #6), Guile (1223171 effect#1), Devourer's Bite (1240201 effect#1), Up Close (1244220 effect#1), Demonsurge (1245496 effect#3), Duty Eternal (1246562 effects: #1, #2), Furious (1266326 effects: #1, #2)
+Affecting Spells : Havoc Demon Hunter (212612 effects: #6, #7), Vengeance Demon Hunter (212613 effects: #6, #7, #15), Any Means Necessary (388114 effects: #3, #4), Demonsurge (452435 effect#2), Devourer Demon Hunter (1213636 effects: #5, #6), Guile (1223171 effect#1), Devourer's Bite (1240201 effect#1), Up Close (1244220 effect#1), Demonsurge (1245496 effect#3), Reaper's Toll (1245523 effect#2), Duty Eternal (1246562 effects: #1, #2), Furious (1266326 effects: #1, #2)
 Family Flags     : 30, 32, 85
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), Initiates Combat (Enables Auto-Attack) (41), Always Line of Sight (185), Taps immediately (215), Attack on Charge to Unit (242), Allow Class Ability Procs (416)
 Effects          :
@@ -17591,7 +17591,7 @@ Category         : 2426 (Type 0x1): Devourer Demon Hunter (1213636 effect#7)
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Havoc Demon Hunter (212612 effect#7), Vengeance Demon Hunter (212613 effects: #7, #15), Any Means Necessary (388114 effects: #3, #4), Demonsurge (452435 effect#2), Devourer Demon Hunter (1213636 effect#6), Guile (1223171 effect#1), Devourer's Bite (1240201 effect#1), Up Close (1244220 effect#1), Demonsurge (1245496 effect#3), Duty Eternal (1246562 effects: #1, #2), Furious (1266326 effects: #1, #2)
+Affecting Spells : Havoc Demon Hunter (212612 effect#7), Vengeance Demon Hunter (212613 effects: #7, #15), Any Means Necessary (388114 effects: #3, #4), Demonsurge (452435 effect#2), Devourer Demon Hunter (1213636 effect#6), Guile (1223171 effect#1), Devourer's Bite (1240201 effect#1), Up Close (1244220 effect#1), Demonsurge (1245496 effect#3), Reaper's Toll (1245523 effect#2), Duty Eternal (1246562 effects: #1, #2), Furious (1266326 effects: #1, #2)
 Family Flags     : 30, 85
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), Initiates Combat (Enables Auto-Attack) (41), Not an Action (92), Always Line of Sight (185), Taps immediately (215), Attack on Charge to Unit (242), Allow Class Ability Procs (416)
 Effects          :
@@ -17613,7 +17613,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 117
                  : 292
-Affecting Spells : Vengeance Demon Hunter (212613 effect#15), Any Means Necessary (388114 effects: #3, #4), Roaring Fire (391178 effect#1), Demonsurge (452435 effect#2), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Guile (1223171 effect#1), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1240201 effect#1), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Up Close (1244220 effect#1), Rolling Torment (1244235 effect#1), Demonsurge (1245496 effect#3), Duty Eternal (1246562 effects: #1, #2), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Furious (1266326 effects: #1, #2)
+Affecting Spells : Vengeance Demon Hunter (212613 effect#15), Any Means Necessary (388114 effects: #3, #4), Roaring Fire (391178 effect#1), Demonsurge (452435 effect#2), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Guile (1223171 effect#1), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1240201 effect#1), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Up Close (1244220 effect#1), Rolling Torment (1244235 effect#1), Demonsurge (1245496 effect#3), Reaper's Toll (1245523 effect#2), Duty Eternal (1246562 effects: #1, #2), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Furious (1266326 effects: #1, #2)
 Family Flags     : 30, 95
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Always Line of Sight (185), Allow Class Ability Procs (416)
 Effects          :
@@ -17670,6 +17670,22 @@ Effects          :
 #1 (id=1246508)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 9 | Target: Targeted Enemy (6)
 
+Name             : Reaper's Toll (id=1245470) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Cosmic
+Spell Type       : None
+GCD              : 1.5 seconds
+Duration         : 1 seconds
+Labels           : 16: Class Spells
+                 : 66: Demon Hunter Spells
+                 : 292
+                 : 3597
+Family Flags     : 107
+Effects          :
+#1 (id=1246525)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+Description      : Violently slash your scythe around you, dealing $1239127s1 Cosmic damage to nearby enemies and generating $1239507s1 Fury. Shatters up to $s1 soul fragments from nearby enemies.
+
 Name             : Pierce the Veil (id=1245483) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
@@ -17683,7 +17699,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 3597
-Affecting Spells : Havoc Demon Hunter (212612 effect#7), Vengeance Demon Hunter (212613 effects: #7, #15), Any Means Necessary (388114 effects: #3, #4), Demonsurge (452435 effect#2), Devourer Demon Hunter (1213636 effect#6), Guile (1223171 effect#1), Devourer's Bite (1240201 effect#1), Up Close (1244220 effect#1), Demonsurge (1245496 effect#3), Duty Eternal (1246562 effects: #1, #2), Furious (1266326 effects: #1, #2)
+Affecting Spells : Havoc Demon Hunter (212612 effect#7), Vengeance Demon Hunter (212613 effects: #7, #15), Any Means Necessary (388114 effects: #3, #4), Demonsurge (452435 effect#2), Devourer Demon Hunter (1213636 effect#6), Guile (1223171 effect#1), Devourer's Bite (1240201 effect#1), Up Close (1244220 effect#1), Demonsurge (1245496 effect#3), Reaper's Toll (1245523 effect#2), Duty Eternal (1246562 effects: #1, #2), Furious (1266326 effects: #1, #2)
 Family Flags     : 30, 85
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), Initiates Combat (Enables Auto-Attack) (41), Not an Action (92), Always Line of Sight (185), Taps immediately (215), Attack on Charge to Unit (242), Allow Class Ability Procs (416)
 Effects          :
@@ -17746,6 +17762,25 @@ Effects          :
 #1 (id=1246589)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc452402
+
+Name             : Reaper's Toll (id=1245523) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Spellshadow
+Spell Type       : None
+Range            : 25 yards
+Duration         : 6 seconds
+Labels           : 16: Class Spells
+                 : 66: Demon Hunter Spells
+                 : 292
+Attributes       : Can Proc From Procs (122), Spellcast Override In Spellbook (310)
+Effects          :
+#1 (id=1246603)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Reaper's Toll overrides Pierce the Veil
+                   Base Value: 1245470 | Scaled Value: 1245470 | Misc Value: 1245483 | Target: Self (1)
+#2 (id=1246756)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
+                   Base Value: 1245470 | Scaled Value: 1245470 | Target: Self (1)
+                   Affected Spells: Felblade (213241), Felblade (213243), Felblade (232893), Voidblade (1241285), Voidblade (1245412), Voidblade (1245414), Pierce the Veil (1245483)
+                   Family Flags: 30
+Tooltip          : Your Veilpierce is replaced with Reaper's Toll.
 
 Name             : Soul Fragments (id=1245577) [Spell Family (107)] 
 Class            : Demon Hunter

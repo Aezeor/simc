@@ -22717,7 +22717,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1280408)  : Apply Aura (6) | Modify Attribute% (80)
+#1 (id=1280408)  : Apply Aura (6) | Modify Base Attribute% (80)
                    Base Value: 3 | Scaled Value: 3 | Stat: Agi | Target: Self (1)
 Description      : Your Agility is increased by $s1%.
 
