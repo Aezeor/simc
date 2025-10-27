@@ -6070,7 +6070,7 @@ struct voidfall_meteor_base_t : public demon_hunter_spell_t
 
     double composite_da_multiplier( const action_state_t* s ) const override
     {
-      double m = demon_hunter_spell_t::composite_da_multiplier( s );
+      double m = base_t::composite_da_multiplier( s );
 
       if ( p()->talent.annihilator.otherworldly_focus->ok() )
       {
