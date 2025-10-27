@@ -5,6 +5,7 @@ actions.precombat+=/consume
 actions=metamorphosis
 actions+=/invoke_external_buff,name=power_infusion,if=!buff.power_infusion.up
 actions+=/collapsing_star
+actions+=/vengeful_retreat,if=buff.voidstep.up
 actions+=/predators_wake
 actions+=/the_hunt
 actions+=/reapers_toll
