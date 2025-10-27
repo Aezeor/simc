@@ -5993,7 +5993,7 @@ struct collapsing_star_t : public demon_hunter_spell_t
 
       if ( p()->talent.devourer.midnight2->ok() )
       {
-        cm += p()->talent.devourer.midnight2->effectN( 3 ).percent() * p()->cache.spell_crit_chance();
+        cm *= 1.0 + p()->talent.devourer.midnight2->effectN( 3 ).percent() * p()->cache.spell_crit_chance();
       }
 
       return cm;
