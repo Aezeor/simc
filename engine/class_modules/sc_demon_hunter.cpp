@@ -179,7 +179,8 @@ enum demonsurge_ability
   CONSUMING_FIRE,
   ABYSSAL_GAZE,
   ANNIHILATION,
-  DEATH_SWEEP
+  DEATH_SWEEP,
+  ENTER_META
 };
 
 const std::vector<demonsurge_ability> demonsurge_abilities{
@@ -200,6 +201,8 @@ std::string demonsurge_ability_name( demonsurge_ability ability )
       return "demonsurge_annihilation";
     case demonsurge_ability::DEATH_SWEEP:
       return "demonsurge_death_sweep";
+    case demonsurge_ability::ENTER_META:
+      return "demonsurge_enter_meta";
     default:
       return "demonsurge_unknown";
   }
@@ -209,7 +212,8 @@ enum voidsurge_ability
 {
   PREDATORS_WAKE,
   PIERCE_THE_VEIL,
-  REAPERS_TOLL
+  REAPERS_TOLL,
+  VOLATILE_INSTINCT
 };
 
 const std::vector<voidsurge_ability> voidsurge_abilities{ voidsurge_ability::PREDATORS_WAKE,
@@ -225,6 +229,8 @@ std::string voidsurge_ability_name( voidsurge_ability ability )
       return "voidsurge_pierce_the_veil";
     case voidsurge_ability::REAPERS_TOLL:
       return "voidsurge_reapers_toll";
+    case voidsurge_ability::VOLATILE_INSTINCT:
+      return "voidsurge_volatile_instinct";
     default:
       return "voidsurge_unknown";
   }
@@ -476,6 +482,16 @@ public:
       player_talent_t soul_glutton;
       player_talent_t eradicate;
 
+      player_talent_t voidrush;
+      player_talent_t demonic_instinct;
+      player_talent_t soulforged_blades;
+      player_talent_t devourers_edge;
+      player_talent_t singular_strikes;
+      player_talent_t gift_of_the_void;
+      player_talent_t improved_consume;
+      player_talent_t umbral_blade;
+      player_talent_t singed_spirit;
+
       player_talent_t midnight1;
       player_talent_t midnight2;
       player_talent_t midnight3;
@@ -668,6 +684,10 @@ public:
       player_talent_t student_of_suffering;
       player_talent_t flamebound;
       player_talent_t monster_rising;
+
+      player_talent_t blind_focus;     // NYI
+      player_talent_t undying_embers;  // NYI
+      player_talent_t volatile_instinct;
 
       player_talent_t demonic_intensity;
     } scarred;
@@ -9836,12 +9856,17 @@ void demon_hunter_t::init_procs()
   {
     proc.demonsurge_abilities[ ability ] = get_proc( demonsurge_ability_name( ability ) );
   }
+  proc.demonsurge_abilities[ demonsurge_ability::ENTER_META ] =
+      get_proc( demonsurge_ability_name( demonsurge_ability::ENTER_META ) );
+
   for ( voidsurge_ability ability : voidsurge_abilities )
   {
     proc.voidsurge_abilities[ ability ] = get_proc( voidsurge_ability_name( ability ) );
   }
   proc.voidsurge_abilities[ voidsurge_ability::REAPERS_TOLL ] =
       get_proc( voidsurge_ability_name( voidsurge_ability::REAPERS_TOLL ) );
+  proc.voidsurge_abilities[ voidsurge_ability::VOLATILE_INSTINCT ] =
+      get_proc( voidsurge_ability_name( voidsurge_ability::VOLATILE_INSTINCT ) );
 
   // Set Bonuses
 }
@@ -10169,6 +10194,15 @@ void demon_hunter_t::init_spells()
   talent.devourer.soul_glutton = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Glutton" );
   talent.devourer.eradicate    = find_talent_spell( talent_tree::SPECIALIZATION, "Eradicate" );
 
+  talent.devourer.demonic_instinct  = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Instinct" );
+  talent.devourer.soulforged_blades = find_talent_spell( talent_tree::SPECIALIZATION, "Soulforged Blades" );
+  talent.devourer.devourers_edge    = find_talent_spell( talent_tree::SPECIALIZATION, "Devourer's Edge" );
+  talent.devourer.singular_strikes  = find_talent_spell( talent_tree::SPECIALIZATION, "Singular Strikes" );
+  talent.devourer.gift_of_the_void  = find_talent_spell( talent_tree::SPECIALIZATION, "Gift of the Void" );
+  talent.devourer.improved_consume  = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Consume" );
+  talent.devourer.umbral_blade      = find_talent_spell( talent_tree::SPECIALIZATION, "Umbral Blade" );
+  talent.devourer.singed_spirit     = find_talent_spell( talent_tree::SPECIALIZATION, "Singed Spirit" );
+
   // Devouer Apex Talents
   talent.devourer.midnight1 = find_talent_spell( talent_tree::SPECIALIZATION, 1242486 );
   talent.devourer.midnight2 = find_talent_spell( talent_tree::SPECIALIZATION, 1250088 );
@@ -10360,6 +10394,10 @@ void demon_hunter_t::init_spells()
   talent.scarred.student_of_suffering = find_talent_spell( talent_tree::HERO, "Student of Suffering" );
   talent.scarred.flamebound           = find_talent_spell( talent_tree::HERO, "Flamebound" );
   talent.scarred.monster_rising       = find_talent_spell( talent_tree::HERO, "Monster Rising" );
+
+  talent.scarred.blind_focus       = find_talent_spell( talent_tree::HERO, "Blind Focus" );
+  talent.scarred.undying_embers    = find_talent_spell( talent_tree::HERO, "Undying Embers" );
+  talent.scarred.volatile_instinct = find_talent_spell( talent_tree::HERO, "Volatile Instinct" );
 
   talent.scarred.demonic_intensity = find_talent_spell( talent_tree::HERO, "Demonic Intensity" );
 
