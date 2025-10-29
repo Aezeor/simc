@@ -470,7 +470,7 @@ public:
       player_talent_t focused_ray;
 
       player_talent_t soulforged_blades;
-      player_talent_t singular_strikes;  // Partial Implementation
+      player_talent_t singular_strikes;
       player_talent_t demonic_instinct;
       player_talent_t devourers_edge;
       player_talent_t voidglare_boon;
@@ -6225,6 +6225,18 @@ struct hungering_slash_base_t : public demon_hunter_spell_t
       demon_hunter_spell_t::execute();
 
       p()->spawn_soul_fragment( soul_fragment::LESSER, number_of_souls_to_spawn );
+    }
+
+    double composite_da_multiplier(const action_state_t* s) const override
+    {
+      double m = demon_hunter_spell_t::composite_da_multiplier( s );
+
+      if ( p()->talent.devourer.singular_strikes->ok() && s->chain_target == 0 )
+      {
+        m *= 1.0 + p()->talent.devourer.singular_strikes->effectN( 2 ).percent();
+      }
+
+      return m;
     }
   };
 
