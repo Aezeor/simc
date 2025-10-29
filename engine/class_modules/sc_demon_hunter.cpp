@@ -5861,7 +5861,8 @@ struct void_ray_t : public final_breath_trigger_t<doomsayer_trigger_t<demon_hunt
     {
       double m = demon_hunter_spell_t::composite_da_multiplier( s );
 
-      if ( p()->talent.devourer.focused_ray->ok() && s->n_targets == 1 )
+      if ( p()->talent.devourer.focused_ray->ok() &&
+           s->n_targets <= as<int>( p()->talent.devourer.focused_ray->effectN( 2 ).base_value() ) )
       {
         m *= 1.0 + p()->talent.devourer.focused_ray->effectN( 1 ).percent();
       }
@@ -7950,7 +7951,8 @@ struct vengeful_retreat_t
     voidstep_damage_t* voidstep;
 
     vengeful_retreat_damage_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->talent.demon_hunter.vengeful_retreat->effectN( 1 ).trigger() ), voidstep( nullptr )
+      : demon_hunter_spell_t( name, p, p->talent.demon_hunter.vengeful_retreat->effectN( 1 ).trigger() ),
+        voidstep( nullptr )
     {
       background = dual = true;
       aoe               = -1;
