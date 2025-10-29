@@ -366,6 +366,7 @@ public:
     buff_t* demonsurge_demonic_intensity;
     buff_t* demonsurge;
     buff_t* voidsurge;
+    buff_t* volatile_instinct;
 
     // Set Bonuses
   } buff;
@@ -688,7 +689,7 @@ public:
 
       player_talent_t blind_focus;        // NYI
       player_talent_t undying_embers;     // NYI
-      player_talent_t volatile_instinct;  // NYI
+      player_talent_t volatile_instinct;
 
       player_talent_t demonic_intensity;
     } scarred;
@@ -912,6 +913,7 @@ public:
     const spell_data_t* predators_wake;
     const spell_data_t* pierce_the_veil;
     const spell_data_t* reapers_toll;
+    const spell_data_t* volatile_instinct;
   } hero_spec;
 
   // Set Bonus effects
@@ -8536,6 +8538,21 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     {
       p()->buff.enduring_torment->expire();
     }
+
+    if ( p()->talent.scarred.volatile_instinct->ok() )
+    {
+      switch ( p()->specialization() )
+      {
+        case DEMON_HUNTER_DEVOURER:
+          p()->buff.volatile_instinct->trigger();
+          break;
+        case DEMON_HUNTER_HAVOC:
+          p()->trigger_demonsurge( demonsurge_ability::ENTER_META, false );
+          break;
+        default:
+          break;
+      }
+    }
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -9474,8 +9491,9 @@ void demon_hunter_t::create_buffs()
   buff.demonsurge_demonsurge = make_buff( this, "demonsurge_demonsurge", hero_spec.demonsurge_demonsurge_buff );
   buff.demonsurge_demonic_intensity =
       make_buff( this, "demonsurge_demonic_intensity", hero_spec.demonsurge_demonic_intensity_buff );
-  buff.demonsurge = make_buff( this, "demonsurge", hero_spec.demonsurge_stacking_buff );
-  buff.voidsurge  = make_buff( this, "voidsurge", hero_spec.voidsurge_stacking_buff );
+  buff.demonsurge        = make_buff( this, "demonsurge", hero_spec.demonsurge_stacking_buff );
+  buff.voidsurge         = make_buff( this, "voidsurge", hero_spec.voidsurge_stacking_buff );
+  buff.volatile_instinct = make_buff( this, "volatile_instinct", hero_spec.volatile_instinct );
 
   // Set Bonus Items ========================================================
 }
@@ -10595,14 +10613,17 @@ void demon_hunter_t::init_spells()
     case DEMON_HUNTER_DEVOURER:
       hero_spec.burning_blades_debuff             = talent_spell_lookup( talent.scarred.burning_blades, 1245654 );
       hero_spec.demonsurge_demonic_intensity_buff = talent_spell_lookup( talent.scarred.demonic_intensity, 1245496 );
+      hero_spec.volatile_instinct                 = talent_spell_lookup( talent.scarred.volatile_instinct, 1272462 );
       break;
     case DEMON_HUNTER_HAVOC:
       hero_spec.burning_blades_debuff             = talent_spell_lookup( talent.scarred.burning_blades, 453177 );
       hero_spec.demonsurge_demonic_intensity_buff = talent_spell_lookup( talent.scarred.demonic_intensity, 452489 );
+      hero_spec.volatile_instinct                 = spell_data_t::not_found();
       break;
     default:
       hero_spec.burning_blades_debuff             = spell_data_t::not_found();
       hero_spec.demonsurge_demonic_intensity_buff = spell_data_t::not_found();
+      hero_spec.volatile_instinct                 = spell_data_t::not_found();
       break;
   }
 
@@ -11896,6 +11917,14 @@ void demon_hunter_t::trigger_voidsurge( const voidsurge_ability ability, timespa
     }
     proc.voidsurge_abilities[ ability ]->occur();
     make_event<delayed_execute_event_t>( *sim, this, active.voidsurge, target, delay );
+
+    if ( buff.volatile_instinct->up() )
+    {
+      proc.voidsurge_abilities[ ability ]->occur();
+      make_event<delayed_execute_event_t>( *sim, this, active.voidsurge, target, delay );
+
+      buff.volatile_instinct->expire();
+    }
   }
 }
 
