@@ -7947,17 +7947,18 @@ struct vengeful_retreat_t
 
   struct vengeful_retreat_damage_t : public demon_hunter_spell_t
   {
+    voidstep_damage_t* voidstep;
+
     vengeful_retreat_damage_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->talent.demon_hunter.vengeful_retreat->effectN( 1 ).trigger() )
+      : demon_hunter_spell_t( name, p, p->talent.demon_hunter.vengeful_retreat->effectN( 1 ).trigger() ), voidstep( nullptr )
     {
       background = dual = true;
       aoe               = -1;
 
       if ( p->talent.devourer.hungering_slash->ok() )
       {
-        // TODO: Make this only happen while voidstep buff is active
-        execute_action = p->get_background_action<voidstep_damage_t>( "voidstep" );
-        add_child( execute_action );
+        voidstep = p->get_background_action<voidstep_damage_t>( "voidstep" );
+        add_child( voidstep );
       }
     }
 
@@ -7975,6 +7976,11 @@ struct vengeful_retreat_t
       demon_hunter_spell_t::execute();
 
       p()->buff.tactical_retreat->trigger();
+
+      if ( p()->buff.voidstep->up() )
+      {
+        voidstep->execute_on_target( target );
+      }
     }
   };
 
