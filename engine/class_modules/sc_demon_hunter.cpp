@@ -482,11 +482,12 @@ public:
       player_talent_t soul_glutton;
       player_talent_t eradicate;
 
-      player_talent_t voidrush;
+      // TODO: Put in right locations
+      player_talent_t voidrush;  // NYI
       player_talent_t demonic_instinct;
       player_talent_t soulforged_blades;
       player_talent_t devourers_edge;
-      player_talent_t singular_strikes;
+      player_talent_t singular_strikes;  // Partial Implementation
       player_talent_t gift_of_the_void;
       player_talent_t improved_consume;
       player_talent_t umbral_blade;
@@ -685,9 +686,9 @@ public:
       player_talent_t flamebound;
       player_talent_t monster_rising;
 
-      player_talent_t blind_focus;     // NYI
-      player_talent_t undying_embers;  // NYI
-      player_talent_t volatile_instinct;
+      player_talent_t blind_focus;        // NYI
+      player_talent_t undying_embers;     // NYI
+      player_talent_t volatile_instinct;  // NYI
 
       player_talent_t demonic_intensity;
     } scarred;
