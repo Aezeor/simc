@@ -3077,6 +3077,7 @@ void priest_t::init_spells()
   talents.archon.power_surge              = HT( "Power Surge" );
   talents.archon.power_surge_buff         = find_spell( 453112 );
   talents.archon.manifested_power         = HT( "Manifested Power" );
+  talents.archon.energy_conservation      = HT( "Energy Conservation" );
   talents.archon.mind_flay_insanity       = ST( "Mind Flay: Insanity" );
   talents.archon.mind_flay_insanity_spell = find_spell( 391403 );  // Not linked to talent, actual dmg spell
   talents.archon.mind_flay_insanity_buff  = find_spell( 391401 );
@@ -3086,12 +3087,14 @@ void priest_t::init_spells()
   talents.archon.heightened_alteration    = HT( "Heightened Alteration" );
   talents.archon.empowered_surges         = HT( "Empowered Surges" );
   talents.archon.spiritwell               = HT( "Spiritwell" );
+  talents.archon.realized_potential       = HT( "Realized Potential" );
   talents.archon.energy_compression       = HT( "Energy Compression" );
   talents.archon.sustained_potency        = HT( "Sustained Potency" );
   talents.archon.sustained_potency_buff   = find_spell( 454002 );
   talents.archon.resonant_energy          = HT( "Resonant Energy" );
   talents.archon.resonant_energy_shadow   = find_spell( 453850 );
   talents.archon.energy_cycle             = HT( "Energy Cycle" );
+  talents.archon.focused_outburst         = HT( "Focused Outburst" );
   talents.archon.divine_halo              = HT( "Divine Halo" );
 
   // Oracle Hero Talents (Holy/Discipline)

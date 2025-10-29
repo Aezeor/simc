@@ -531,6 +531,7 @@ public:
       player_talent_t power_surge;
       const spell_data_t* power_surge_buff;
       player_talent_t manifested_power;
+      player_talent_t energy_conservation;
       const spell_data_t* mind_flay_insanity;
       const spell_data_t* mind_flay_insanity_spell;
       const spell_data_t* mind_flay_insanity_buff;
@@ -540,6 +541,7 @@ public:
       player_talent_t heightened_alteration;
       player_talent_t empowered_surges;
       player_talent_t spiritwell;
+      player_talent_t realized_potential;
       player_talent_t ascendant_prayers;
       player_talent_t energy_compression;
       player_talent_t sustained_potency;
@@ -547,6 +549,7 @@ public:
       player_talent_t resonant_energy;
       const spell_data_t* resonant_energy_shadow;
       player_talent_t energy_cycle;
+      player_talent_t focused_outburst;
       player_talent_t divine_halo;
     } archon;
 
