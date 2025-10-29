@@ -476,7 +476,7 @@ public:
       player_talent_t voidglare_boon;
       player_talent_t rolling_torment;
 
-      player_talent_t voidrush;  // NYI
+      player_talent_t voidrush;  // Partial implementation
       player_talent_t devourers_bite;
       player_talent_t impending_apocalypse;
       player_talent_t calamitous;
@@ -6043,6 +6043,11 @@ struct collapsing_star_t : public demon_hunter_spell_t
       {
         unsigned fragments_to_spawn = as<unsigned>( p()->talent.devourer.star_fragments->effectN( 1 ).base_value() );
         p()->spawn_soul_fragment( soul_fragment::LESSER, fragments_to_spawn );
+      }
+
+      if ( p()->talent.devourer.voidrush->ok() )
+      {
+        p()->cooldown.voidblade->adjust( -p()->talent.devourer.voidrush->effectN( 1 ).time_value() );
       }
     }
   };
