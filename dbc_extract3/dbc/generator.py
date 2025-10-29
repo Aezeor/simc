@@ -2353,11 +2353,14 @@ class SpellDataGenerator(DataGenerator):
         (
           ( 48629, 0 ), ( 106840, 0 ), # Cat Form override
           ( 106829, 0 ), ( 106899, 0 ), # Bear Form override
+          ( 429438, 0 ), # Blooming Infusion buff
           ( 1269186, 0 ), # HOTW caster form?
           ( 1271400, 0 ), ( 1271910, 0 ), # UI stuff?
           # Balance
           ( 188046, 1 ), # Fey Missile
           ( 274282, 1 ), # Half Moon
+          ( 393942, 1 ), ( 393944, 1 ), # Starweaver buffs
+          ( 394050, 1 ), # Balance of All Things arcane buff
           ( 1233346, 1 ), # Solar Eclipse
           ( 1264671, 1 ), ( 1264673, 1 ), # Dryad Starfall?
           ( 1271222, 1 ), # Star Cascade surge?
