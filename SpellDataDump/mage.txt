@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.63967 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.64124 midnight-BETA
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -1460,7 +1460,10 @@ Effects          :
 #2 (id=21277)    : School Damage (2): fire | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.6699 | Radius: 12 yards | Target: Enemies in Cone to Targeted Enemy (104)
                    Modified By: Rollin' Hot (1219035 effect#2)
-Description      : Enemies in a cone in front of you take $s2 Fire damage and are disoriented for $d. Damage will cancel the effect.$?a235870[
+#3 (id=1286449)  : Dummy (3)
+                   Base Value: 12 | Scaled Value: 12
+                   Modified By: Rollin' Hot (1219035 effect#2)
+Description      : Enemies in a $s3 yd cone in front of you take $s2 Fire damage and are disoriented for $d. Damage will cancel the effect.$?a235870[
 
 Always deals a critical strike and contributes to Hot Streak.][]
 Tooltip          : Disoriented.
@@ -4398,7 +4401,7 @@ Labels           : 16: Class Spells
                  : 690: Major Cooldowns
 Affecting Spells : Fiery Rush (364476 effect#1), Spellfire Sphere (448604 effect#3), Kindling (1254194 effect#1), Burn It All (1254512 effects: #2, #3)
 Family Flags     : 58, 67
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While Casting (135), Extra Initial Period (169), Aura Points On Client (268), Allow Cast While Channeling (308), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Allow Cast While Casting (135), Extra Initial Period (169), Aura Points On Client (268), Allow Cast While Channeling (308), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=278782)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 7 | Target: Self (1)
@@ -5694,7 +5697,7 @@ Effects          :
                    Family Flags: 32
 #7 (id=315256)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Target: Self (1)
-                   Affected Spells: Throw Glaive (185123), Blade Dance (188499), Infernal Strike (189110), Shear (203782), Throw Glaive (204157), Death Sweep (210152), Felblade (213241), Felblade (232893), Spirit Bomb (247454), Immolation Aura (258920), Throw Glaive (337819), Glaive Tempest (342817), Throw Glaive (346665), Throw Glaive (393035), Immolation Aura (427913), Immolation Aura (427914), Immolation Aura (427915), Immolation Aura (427917), A Fire Inside (427918), Consuming Fire (452487), Consuming Fire (456640), Consume (473662), Void Ray (473728), Void Ray (1213649), Void Ray (1214595), Devour (1217610), Reap (1226019), Voidblade (1241285), Soul Immolation (1241937), Voidblade (1245412), Cull (1245453), Pierce the Veil (1245483)
+                   Affected Spells: Throw Glaive (185123), Blade Dance (188499), Infernal Strike (189110), Shear (203782), Throw Glaive (204157), Death Sweep (210152), Felblade (213241), Felblade (232893), Spirit Bomb (247454), Immolation Aura (258920), Throw Glaive (337819), Glaive Tempest (342817), Throw Glaive (346665), Throw Glaive (393035), Immolation Aura (427913), Immolation Aura (427914), Immolation Aura (427915), Immolation Aura (427917), A Fire Inside (427918), Consuming Fire (452487), Consuming Fire (456640), Consume (473662), Void Ray (473728), Void Ray (1213649), Void Ray (1214595), Devour (1217610), Reap (1226019), Voidblade (1241285), Soul Immolation (1241937), Cull (1245453), Pierce the Veil (1245483)
                    Family Flags: 85
 #8 (id=315257)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1586 (Category) | Target: Self (1)
@@ -14599,8 +14602,8 @@ Family Flags     : 0, 5, 57, 108
 Attributes       : Not Shapeshifted (16), Spell Haste Affects Periodic (173), Do Not Chain To Crowd-Controlled Targets (200), Periodic Can Crit (265), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1118526)  : Trigger Missiles (32): Frostfire Bolt
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 468655 | Target: Targeted Enemy (6)
-Description      : Launches a bolt of frostfire at the enemy, causing $468655s1 Frostfire damage, slowing movement speed by $468655s3%, and causing an additional $468655o2 Frostfire damage over $468655d.$?a1246769[
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Trigger Spell: 468655 | Chain Targets: 1 | Target: Targeted Enemy (6)
+Description      : Launches a bolt of frostfire at the enemy, causing $468655s1 Frostfire damage, slowing movement speed by $205708s1%, and causing an additional $468655o2 Frostfire damage over $468655d.$?a1246769[
 
 |CFFffffffApplies $1246769s1 $lstack:stacks; of Freezing.|R][]
 
@@ -14794,7 +14797,9 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #4 (id=1254332)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : The direct damage of your Frostfire spells has a $s3% chance to activate Frostfire Empowerment, causing your next Frostfire Bolt to be instant cast, deal $431177s3% increased damage, explode for $s2% of its damage to nearby enemies.$?c2[][
+#5 (id=1286321)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+Description      : The direct damage of your Frostfire spells has a $s3% chance to activate Frostfire Empowerment, causing your next Frostfire Bolt to be instant cast, deal $431177s3% increased damage, explode for $s2% of its damage to nearby enemies. Damage reduced beyond $s5 targets.$?c2[][
 
 Damage from Frostfire Empowerment applies $s4 $Lstack:stacks; of Freezing.]
 
@@ -18718,7 +18723,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 5271: Arcane Singularity (1244001 effect#1), Spellfire Salvo (1260616 effect#1)
 Stacks           : 20 maximum
-Proc Chance      : 101%
+Proc Chance      : 100%
 Proc Flags       : Magic Hostile Spell
 Attributes       : Include In Advanced Combat Log (72), Allow Cast While Casting (135), Allow Cast While Channeling (308), Do Not Consume Aura Stack On Proc (428)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
@@ -19132,23 +19137,23 @@ Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Do Not Log (8), Can Proc From Procs (122), Mastery Affects Points (285), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1248483)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.6 | Target: Self (1)
                    Affected Spells: Frostbolt (116), Cone of Cold (120), Frozen Orb (84721), Ice Nova (157997), Blizzard (190356), Blizzard (190357), Ray of Frost (205021), Flurry (228354), Flurry (228596), Frostbolt (228597), Glacial Spike (228600), Frostfire Bolt (431044), Frost Splinter (443722), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Frostfire Bolt (468655), Freezing Winds (1247554), Blizzard (1248829), Glacial Spike (1272182)
                    Family Flags: 5, 7, 9, 56, 78, 85, 102, 119
 #2 (id=1248484)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.6 | Target: Self (1)
                    Affected Spells: Ice Lance (30455), Meteor (153564), Comet Storm (153595), Comet Storm (153596), Ice Lance (228598), Comet Storm (228601), Meteor (351140), Meteor (438607), Meteor (438608), Comet Storm (438609), Meteorite (449560), Meteorite (449569), Shatter (1246949)
                    Family Flags: 17, 35, 96, 120
 #3 (id=1280803)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.6 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Frostbolt (116), Cone of Cold (120), Frozen Orb (84721), Ice Nova (157997), Blizzard (190356), Blizzard (190357), Ray of Frost (205021), Flurry (228354), Flurry (228596), Frostbolt (228597), Glacial Spike (228600), Frostfire Bolt (431044), Frost Splinter (443722), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Frostfire Bolt (468655), Freezing Winds (1247554), Blizzard (1248829), Glacial Spike (1272182)
                    Family Flags: 5, 7, 9, 56, 78, 85, 102, 119
 #4 (id=1280804)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.6 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Ice Lance (30455), Meteor (153564), Comet Storm (153595), Comet Storm (153596), Ice Lance (228598), Comet Storm (228601), Meteor (351140), Meteor (438607), Meteor (438608), Comet Storm (438609), Meteorite (449560), Meteorite (449569), Shatter (1246949)
                    Family Flags: 17, 35, 96, 120
 #5 (id=1283499)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Misc Value 2: 5945 (Label) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.6 | Misc Value 2: 5945 (Label) | Target: Self (1)
                    Affected Spells (Label): Glacial Assault (379029)
 Description      : Spells that Freeze your enemies deal $s1% increased damage.
 
@@ -19505,7 +19510,7 @@ Attributes       : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1250224)  : Apply Aura (6) | Proc Trigger Spell (42): Comet Storm!
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1247778 | Target: Self (1)
-Description      : Casting Ray of Frost replaces your Blizzard with Comet Storm, calling down a series of 7 icy comets on and around the target, that deals up to ${7*$153596s1} Frost damage to all enemies within $228601A1 yds of its impacts.
+Description      : Casting Ray of Frost replaces your Ray of Frost with Comet Storm, calling down a series of 7 icy comets on and around the target, that deals up to ${7*$153596s1} Frost damage to all enemies within $228601A1 yds of its impacts.
 
 |CFFffffffEach Comet Shatters $1246769s5 $Lstack:stacks; of Freezing.|R
 
@@ -19683,7 +19688,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 5448: Freezing Winds (1216953 effect#1), Freezing Winds (1216953 effect#2)
 Proc Chance      : 8%
-Proc Flags       : Magic Hostile Spell
+Proc Flags       : Periodic
 Attributes       : Is Ability (4), Passive (6), Do Not Log (8), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1252004)  : Apply Aura (6) | Dummy (4)
@@ -20107,7 +20112,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2)
+Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Blind Focus (1272364 effects: #3, #4)
 Triggered By     : Voidfall Meteor (1256304), World Killer (1256618)
 Family Flags     : 95, 108, 109
 Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
@@ -20124,7 +20129,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Blind Focus (1272364 effects: #1, #2)
 Triggered By     : Voidfall Meteor (1256303), Voidfall Meteor (1266127)
 Family Flags     : 70, 72, 108, 109
 Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
@@ -20190,7 +20195,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Blind Focus (1272364 effects: #1, #2)
 Triggered By     : World Killer (1256616), World Killer (1266123)
 Family Flags     : 70, 72, 108, 109
 Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
@@ -20225,7 +20230,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2)
+Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Blind Focus (1272364 effects: #3, #4)
 Family Flags     : 95, 108, 109
 Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
@@ -20947,7 +20952,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2)
+Affecting Spells : Roaring Fire (391178 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effects: #1, #2), Void Metamorphosis (1217607 effects: #4, #5), Feast of Souls (1232310 effects: #1, #2), Mastery: Monster Within (1238855 effects: #1, #2), Devourer's Bite (1241532 effect#1), Calamitous (1242495 effect#1), Rolling Torment (1244235 effect#1), Midnight (1250088 effects: #4, #5), Devourer Demon Hunter (1256964 effects: #1, #2), Blind Focus (1272364 effects: #3, #4)
 Triggered By     : Meteor Shower (1264126)
 Family Flags     : 95, 108, 109
 Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
@@ -20964,7 +20969,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Blind Focus (1272364 effects: #1, #2)
 Triggered By     : Meteor Shower (1264128)
 Family Flags     : 70, 72, 108, 109
 Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)

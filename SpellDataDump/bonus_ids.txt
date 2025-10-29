@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.63967 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.64124 midnight-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, base_ilevel={ 30 }, req_ilevel={ 25 }
@@ -3683,8 +3683,8 @@ bonus_id={ 6495 }, effects={ Siphoner (id=315592, index=2, type=equip) }
 bonus_id={ 6496 }, effects={ Unknown Effect (id=116246) }
 bonus_id={ 6497 }, effects={ Unknown Effect (id=116247) }
 bonus_id={ 6498 }, effects={ Unknown Effect (id=116248) }
-bonus_id={ 6499 }, ilevel={ 1 @plvl 1 - 332 @plvl 70 }
-bonus_id={ 6500 }, ilevel={ 1 @plvl 1 - 80 @plvl 80 }
+bonus_id={ 6499 }, base_ilevel={ 1 }
+bonus_id={ 6500 }, base_ilevel={ 2 }
 bonus_id={ 6514 }, socket={ 1 }
 bonus_id={ 6517 }, desc={ Challenger I }, quality={ epic }
 bonus_id={ 6518 }, desc={ Rival I }, quality={ epic }
@@ -3859,7 +3859,7 @@ bonus_id={ 6804 }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
 bonus_id={ 6810 }, effects={ Unknown Effect (id=117472) }
 bonus_id={ 6811 }, effects={ Unknown Effect (id=117290) }
 bonus_id={ 6812 }, effects={ Unknown Effect (id=117290) }
-bonus_id={ 6813 }, ilevel={ 1 @plvl 1 - 80 @plvl 80 }
+bonus_id={ 6813 }, base_ilevel={ 2 }
 bonus_id={ 6815 }, ilevel={ 20 @plvl 0 - 20 @plvl 1 }
 bonus_id={ 6816 }, ilevel={ 2 @plvl 1 - 59 @plvl 70 }
 bonus_id={ 6817 }, ilevel={ 4 @plvl 1 - 65 @plvl 70 }
@@ -3867,7 +3867,7 @@ bonus_id={ 6818 }, ilevel={ 6 @plvl 1 - 71 @plvl 70 }
 bonus_id={ 6819 }, ilevel={ 2 @plvl 1 - 59 @plvl 70 }
 bonus_id={ 6820 }, ilevel={ 4 @plvl 1 - 65 @plvl 70 }
 bonus_id={ 6821 }, ilevel={ 6 @plvl 1 - 71 @plvl 70 }
-bonus_id={ 6822 }, ilevel={ 10 @plvl 1 - 371 @plvl 70 }
+bonus_id={ 6822 }, base_ilevel={ 4 }
 bonus_id={ 6823 }, quality={ legendary }, effects={ Slick Ice (id=327508, index=0, type=equip) }
 bonus_id={ 6825 }, ilevel={ 5 @plvl 0 - 61 @plvl 80 }
 bonus_id={ 6826 }, ilevel={ 50 @plvl 50 - 70 @plvl 70 }
@@ -7462,7 +7462,7 @@ bonus_id={ 12394 }, base_ilevel={ 500 }
 bonus_id={ 12403 }, base_ilevel={ 80 }, req_ilevel={ 80 }
 bonus_id={ 12405 }, base_ilevel={ 133 }, req_ilevel={ 82 }
 bonus_id={ 12406 }, base_ilevel={ 133 }, req_ilevel={ 82 }
-bonus_id={ 12407 }, base_ilevel={ 183 }, req_ilevel={ 87 }
+bonus_id={ 12407 }, base_ilevel={ 165 }, req_ilevel={ 87 }
 bonus_id={ 12408 }, base_ilevel={ 197 }, req_ilevel={ 90 }
 bonus_id={ 12409 }, quality={ common }, effects={ Unknown Effect (id=210070) }
 bonus_id={ 12410 }, quality={ uncommon }, effects={ Unknown Effect (id=210081) }
@@ -8170,3 +8170,4 @@ bonus_id={ 13626 }, ilevel_adjust={ 2 }
 bonus_id={ 13627 }, ilevel_adjust={ 3 }
 bonus_id={ 13628 }, ilevel_adjust={ 4 }
 bonus_id={ 13629 }, base_ilevel={ 217 }, req_ilevel={ 90 }
+bonus_id={ 13634 }, base_ilevel={ 214 }, req_ilevel={ 90 }

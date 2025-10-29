@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.63967 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.64124 midnight-BETA
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -7110,7 +7110,7 @@ Duration         : 120 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#1), Demonic Meteor (278737 effect#1), Flames of Xoroth (429657 effects: #1, #2)
+Affecting Spells : Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#1), Demonic Meteor (278737 effect#1), Flames of Xoroth (429657 effects: #1, #2), Warlock Demonology 12.0 Class Set 2pc (1264871 effect#1)
 Family Flags     : 86
 Attributes       : Do Not Log (8), Allow Cast While Dead (23), Ignore Line of Sight (66), Not an Action (92), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :

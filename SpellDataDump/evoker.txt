@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.63967 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.64124 midnight-BETA
 Name             : Arcane Resistance (desc=Racial Passive) (id=822) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Blood Elf (0x200)
@@ -609,7 +609,7 @@ Spell Type       : None
 Spell Level      : 1
 Duration         : 1.1 seconds
 Charges          : 2 (20 seconds cooldown)
-Category         : 1365 (Type 0x9): Celerity (115173 effect#1), Celerity (115173 effect#2), Roll Buff (222625 effect#1), Time Spiral (375252 effect#1), Time Spiral (375252 effect#2), Blessing of the Bronze (381751 effect#1), Lighter Than Air (449582 effect#1)
+Category         : 1365 (Type 0x9): Celerity (115173 effect#1), Celerity (115173 effect#2), Roll Buff (222625 effect#1), Time Spiral (375252 effect#1), Time Spiral (375252 effect#2), Blessing of the Bronze (381751 effect#1), Lighter Than Air (449582 effect#1), Combat Stance (1272844 effect#1)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 219
@@ -2372,7 +2372,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1468: Black Evoker Spells
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Lay Waste (371034 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2, #17), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Strafing Run (1266151 effect#1), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Lay Waste (371034 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2, #17), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Strafing Run (1266151 effect#1)
 Triggered By     : Deep Breath (362010), Aerial Bombardment (440263)
 Family Flags     : 0, 34
 Attributes       : DoT Stacking Rule (103), Extra Initial Period (169), Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
@@ -2647,11 +2647,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=890886)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Defy Fate (404381), Spiritbloom (409894), Verdant Embrace (409895), Molten Blood (410651), Insurance! (1215550), Insurance! (1215553), Essence Bomb (1236803), Merithra's Blessing (1256581)
                    Family Flags: 1
 #2 (id=896453)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Defy Fate (404381), Spiritbloom (409894), Verdant Embrace (409895), Molten Blood (410651), Insurance! (1215550), Insurance! (1215553), Essence Bomb (1236803), Merithra's Blessing (1256581)
                    Family Flags: 1
 #3 (id=900193)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -2770,7 +2770,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1465: Blue Evoker Spells
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4, #20), Initial Evoker (356816 effects: #3, #4), Hover (358267 effect#5), Essence Burst (359618 effect#1), Essence Burst (369299 effects: #1, #2), Natural Convergence (369913 effects: #1, #2), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Energy Loop (372233 effect#2), Arcane Intensity (375618 effect#1), Boon of the Covenants (387169 effects: #1, #2), Hover (393271 effect#1), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Spatial Paradox (406732 effect#3), Spatial Paradox (406789 effect#3), Imminent Destruction (411055 effect#1), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Mass Disintegrate (436336 effect#1), Melt Armor (441172 effect#2), Unrelenting Siege (441248 effects: #1, #3), Evoker Devastation 11.0 Class Set 2pc (453676 effects: #1, #3), Imminent Destruction (459574 effect#1), Azure Celerity (1219723 effects: #1, #2, #3), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Refined Essence (1261452 effect#2), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4, #20), Initial Evoker (356816 effects: #3, #4), Hover (358267 effect#5), Essence Burst (359618 effect#1), Essence Burst (369299 effects: #1, #2), Natural Convergence (369913 effects: #1, #2), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Energy Loop (372233 effect#2), Arcane Intensity (375618 effect#1), Boon of the Covenants (387169 effects: #1, #2), Hover (393271 effect#1), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Spatial Paradox (406732 effect#3), Spatial Paradox (406789 effect#3), Imminent Destruction (411055 effect#1), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Mass Disintegrate (436336 effect#1), Melt Armor (441172 effect#2), Unrelenting Siege (441248 effects: #1, #3), Evoker Devastation 11.0 Class Set 2pc (453676 effects: #1, #3), Imminent Destruction (459574 effect#1), Azure Celerity (1219723 effects: #1, #2, #3), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Refined Essence (1261452 effect#2)
 Family Flags     : 0, 2, 3, 6, 38
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Name in Channel Bar (61), Chain From Caster (76), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Do Not Chain To Crowd-Controlled Targets (200), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273), Allow Class Ability Procs (416), Chain by Most Hit (440)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Action (Delayed) (17)
@@ -2872,7 +2872,7 @@ Labels           : 16: Class Spells
                  : 2706: Spatial Paradox (406732 effect#11), Spatial Paradox (406789 effect#10)
 Proc Chance      : 101%
 Proc Flags       : Periodic Taken
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2, #23, #24), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Temporal Compression (362877 effect#2), Scorching Embers (370819 effect#1), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Heat Wave (375725 effects: #1, #2), Lifeforce Mender (376179 effect#2), Full Belly (377087 effect#1), Boon of the Covenants (387169 effects: #1, #2), Evoker Devastation Class Set 2pc (393642 effect#1), Ebon Might (395296 effects: #1, #2, #3, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Devastation 10.1 Class Set 4pc (405519 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Expanded Lungs (444845 effect#1), Molten Embers (459725 effect#1), Fulminous Roar (1218447 effect#1), Inner Flame (1236776 effect#1), Unshakable (1239581 effects: #1, #2), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2, #5), Preservation Evoker (1256944 effects: #3, #4), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2, #23, #24), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Temporal Compression (362877 effect#2), Scorching Embers (370819 effect#1), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Heat Wave (375725 effects: #1, #2), Lifeforce Mender (376179 effect#2), Full Belly (377087 effect#1), Boon of the Covenants (387169 effects: #1, #2), Evoker Devastation Class Set 2pc (393642 effect#1), Ebon Might (395296 effects: #1, #2, #3, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Devastation 10.1 Class Set 4pc (405519 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Expanded Lungs (444845 effect#1), Molten Embers (459725 effect#1), Fulminous Roar (1218447 effect#1), Inner Flame (1236776 effect#1), Unshakable (1239581 effects: #1, #2), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2, #5), Preservation Evoker (1256944 effects: #3, #4)
 Triggered By     : Full Belly (377087)
 Family Flags     : 0, 35
 Attributes       : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
@@ -2969,7 +2969,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1464: Red Evoker Spells
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Melt Armor (441172 effect#2), Evoker Devastation 11.0 Class Set 2pc (453676 effect#2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Refined Essence (1261452 effect#1), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Melt Armor (441172 effect#2), Evoker Devastation 11.0 Class Set 2pc (453676 effect#2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Refined Essence (1261452 effect#1)
 Family Flags     : 0, 5, 38
 Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
@@ -3305,7 +3305,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1465: Blue Evoker Spells
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Evoker Devastation Class Set 2pc (393642 effect#1), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Devastation 10.1 Class Set 4pc (405519 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Evoker Devastation Class Set 2pc (393642 effect#1), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Devastation 10.1 Class Set 4pc (405519 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4)
 Family Flags     : 0, 18
 Attributes       : No Aura Icon (60), Chain From Caster (76), Not a Proc (105), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Do Not Chain To Crowd-Controlled Targets (200), Allow Spell Reflection (224), Allow While Charmed (261), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Do Not Log on Learn (355), Allow Class Ability Procs (416), Chain by Most Hit (440)
 Effects          :
@@ -3753,7 +3753,7 @@ Labels           : 16: Class Spells
                  : 1464: Red Evoker Spells
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4, #19), Initial Evoker (356816 effects: #3, #4), Engulfing Blaze (370837 effect#2), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effects: #1, #2), Lifeforce Mender (376179 effect#2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Lifespark (394552 effect#2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Unrelenting Siege (441248 effects: #1, #3), Lifespark (443176 effect#2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4, #8), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4, #19), Initial Evoker (356816 effects: #3, #4), Engulfing Blaze (370837 effect#2), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effects: #1, #2), Lifeforce Mender (376179 effect#2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Lifespark (394552 effect#2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Unrelenting Siege (441248 effects: #1, #3), Lifespark (443176 effect#2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4, #8)
 Family Flags     : 0, 7, 50
 Attributes       : Active Threat (94), DoT Stacking Rule (103), Not a Proc (105), Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
 Effects          :
@@ -3949,7 +3949,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1465: Blue Evoker Spells
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Protracted Talons (369909 effect#1), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Arcane Intensity (375618 effect#2), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Echoing Strike (410784 effect#2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Unrelenting Siege (441248 effects: #1, #3), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Azure Sweep (1265871 effect#2), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Protracted Talons (369909 effect#1), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Arcane Intensity (375618 effect#2), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Echoing Strike (410784 effect#2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Unrelenting Siege (441248 effects: #1, #3), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Azure Sweep (1265871 effect#2)
 Family Flags     : 0, 12
 Attributes       : Not Shapeshifted (16), Allow Spell Reflection (224), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
@@ -4233,7 +4233,7 @@ Effects          :
 #2 (id=904257)   : Apply Aura (6) | Dummy (4)
                    Base Value: 70 | Scaled Value: 70 | Target: Targeted Ally (21)
                    Modified By: Essence Burst (369299 effect#3), Time Lord (372527 effect#1), Golden Opportunity (432004 effect#1)
-Description      : Wrap an ally with temporal energy, healing them for $s1 and causing your next healing spell to cast an additional time on that ally at $s2% of normal healing. Essence spells cannot be Echoed.
+Description      : Wrap an ally with temporal energy, healing them for $s1 and causing your next healing spell to cast an additional time on that ally at ${$ceil($s2)}% of normal healing. Essence spells cannot be Echoed.
 Tooltip          : When $@auracaster casts a healing spell, $w2% of the healing will be replicated.
 
 Name             : Living Flame (id=364664) 
@@ -4861,7 +4861,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1464: Red Evoker Spells
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4)
 Family Flags     : 0, 64
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Treat As Periodic (121), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
@@ -6067,7 +6067,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1467: Bronze Evoker Spells
-Affecting Spells : Preservation Evoker (356810 effect#12), Hover (358267 effect#5), Timeless Magic (376240 effects: #1, #2), Hover (393271 effect#1), Spatial Paradox (406732 effect#3), Spatial Paradox (406789 effect#3), Nozdormu Adept (431715 effects: #1, #2), Tempo Charged (1237978 effect#3)
+Affecting Spells : Preservation Evoker (356810 effect#12), Hover (358267 effect#5), Timeless Magic (376240 effects: #1, #2), Hover (393271 effect#1), Spatial Paradox (406732 effect#3), Spatial Paradox (406789 effect#3), Nozdormu Adept (431715 effects: #1, #2)
 Family Flags     : 2, 45
 Attributes       : Not Shapeshifted (16), No Aura Icon (60), Spell Haste Affects Periodic (173), Haste Affects Duration (273)
 Effects          :
@@ -6090,7 +6090,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1467: Bronze Evoker Spells
-Affecting Spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2, #12), Initial Evoker (356816 effects: #5, #6), Timeless Magic (376240 effects: #1, #2), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Augmentation Evoker (396186 effects: #5, #6), Nozdormu Adept (431715 effects: #1, #2), Arcane Reach (454983 effect#1), Inner Flame (1236776 effect#1), Tempo Charged (1237978 effect#3), Inner Flame (1242747 effect#1), Preservation Evoker (1256944 effects: #1, #2)
+Affecting Spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2, #12), Initial Evoker (356816 effects: #5, #6), Timeless Magic (376240 effects: #1, #2), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Augmentation Evoker (396186 effects: #5, #6), Nozdormu Adept (431715 effects: #1, #2), Arcane Reach (454983 effect#1), Inner Flame (1236776 effect#1), Inner Flame (1242747 effect#1), Preservation Evoker (1256944 effects: #1, #2)
 Family Flags     : 1, 45
 Attributes       : Fail on all targets immune (85), Do Not Display Range (126), Aura Points On Client (268)
 Effects          :
@@ -8884,7 +8884,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1468: Black Evoker Spells
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Hover (358267 effect#5), Natural Convergence (369913 effect#3), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Essence Burst (392268 effects: #1, #2, #3, #5), Hover (393271 effect#1), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Spatial Paradox (406732 effect#3), Spatial Paradox (406789 effect#3), Volcanism (406904 effect#1), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Temporal Burst (431698 effect#15), Melt Armor (441172 effect#2), Unrelenting Siege (441248 effects: #1, #3), Volcanic Upsurge (456142 effect#1), Imminent Destruction (459574 effect#1), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Duplicate (1259171 effect#3), Refined Essence (1261452 effect#1), Evoker Augmentation 12.0 Class Set 2pc (1264819 effect#1), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Hover (358267 effect#5), Natural Convergence (369913 effect#3), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Essence Burst (392268 effects: #1, #2, #3, #5), Hover (393271 effect#1), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Spatial Paradox (406732 effect#3), Spatial Paradox (406789 effect#3), Volcanism (406904 effect#1), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Temporal Burst (431698 effect#15), Melt Armor (441172 effect#2), Unrelenting Siege (441248 effects: #1, #3), Volcanic Upsurge (456142 effect#1), Imminent Destruction (459574 effect#1), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Duplicate (1259171 effect#3), Refined Essence (1261452 effect#1), Evoker Augmentation 12.0 Class Set 2pc (1264819 effect#1)
 Family Flags     : 0, 2, 3, 38, 54
 Attributes       : Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
@@ -9094,7 +9094,7 @@ Labels           : 16: Class Spells
                  : 1468: Black Evoker Spells
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #2, #3, #6), Augmentation Evoker (396186 effects: #1, #2), Tectonic Locus (408002 effect#2), Unyielding Domain (412733 effect#1), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Evoker Augmentation 11.0 Class Set 2pc (453672 effect#1), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #2, #3, #6), Augmentation Evoker (396186 effects: #1, #2), Tectonic Locus (408002 effect#2), Unyielding Domain (412733 effect#1), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Evoker Augmentation 11.0 Class Set 2pc (453672 effect#1), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4)
 Family Flags     : 0, 58
 Attributes       : Allow While Sitting (27), No Aura Icon (60), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Not a Proc (105), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), No Aura Log (202), Allow While Charmed (261), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
@@ -11853,7 +11853,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1468: Black Evoker Spells
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4)
 Family Flags     : 0
 Attributes       : Initiate Combat Post-Cast (Enables Auto-Attack) (84), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
@@ -12150,7 +12150,7 @@ Effects          :
 Description      : $@spelldesc431442
 
 Name             : Instability Matrix (desc=Bronze) (id=431484) [Spell Family (224), Passive] 
-Talent Entry     : Chronowarden (Preservation) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Chronowarden (Preservation) [tree=hero, row=4, col=2, max_rank=1, req_points=1]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -12396,48 +12396,13 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 33%
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Affecting Spells : Master of Destiny (431846 effect#1)
 Family Flags     : 77
 Attributes       : Can Proc From Procs (122), Do Not Display Range (126), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1119665)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Radius: 0 - 100 yards | Target: at Self (18) -> At Ally in Area (31)
-                   Modified By: Master of Destiny (431846 effect#1)
 Description      : $@spelldesc431715
 Tooltip          : Abilities have a chance to echo at $s1% power.
-
-Name             : Master of Destiny (desc=Bronze) (id=431840) [Spell Family (224), Passive] 
-Talent Entry     : Chronowarden (Preservation) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=100]
-Class            : Evoker
-School           : Arcane
-Spell Type       : None
-Spell Level      : 10
-Labels           : 16: Class Spells
-                 : 292
-Attributes       : Passive (6), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Spellcast Override In Spellbook (310), Do Not Log on Learn (355)
-Effects          :
-#1 (id=1119949)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : Casting Essence spells extends all your active Threads of Fate by $s1 sec.
-
-Name             : Master of Destiny (desc=Bronze) (id=431846) [Spell Family (224)] 
-Class            : Evoker
-School           : Arcane
-Spell Type       : None
-Spell Level      : 10
-Duration         : 10 seconds
-Labels           : 16: Class Spells
-                 : 292
-Stacks           : 2 maximum
-Proc Chance      : 101%
-Attributes       : Do Not Log on Learn (355)
-Effects          :
-#1 (id=1119958)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Thread of Fate (431716)
-                   Family Flags: 77
-Description      : $@spelldesc431840
-Tooltip          : Threads of Fate are amplified.
 
 Name             : Temporality (desc=Bronze) (id=431872) [Spell Family (224)] 
 Class            : Evoker
@@ -12901,22 +12866,6 @@ Description      : $@spelldesc358267
 Variables        : $flight=$?a375517[${$375517s1/1000}][${0}]
 $dura=$?a406380[${6*(1+$406380s2/100)+$<flight>}.1][${6+$<flight>}]
 
-Name             : Master of Destiny (desc=Bronze) (id=436156) [Spell Family (224), Hidden] 
-Class            : Evoker
-School           : Arcane
-Spell Type       : None
-Spell Level      : 10
-Duration         : 60 seconds
-Labels           : 16: Class Spells
-                 : 292
-Proc Chance      : 101%
-Proc Flags       : Magic Heal, Magic Hostile Spell
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Display Range (126), Do Not Log on Learn (355)
-Effects          :
-#1 (id=1127303)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Description      : $@spelldesc431840
-
 Name             : Mass Disintegrate (desc=Black) (id=436335) [Spell Family (224), Passive] 
 Talent Entry     : Scalecommander (Devastation) [tree=hero, row=1, col=1, max_rank=1, req_points=0]
 Class            : Evoker
@@ -13077,7 +13026,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1468: Black Evoker Spells
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Natural Convergence (369913 effect#3), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Essence Burst (392268 effects: #1, #2, #3, #5), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Volcanism (406904 effect#1), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Temporal Burst (431698 effect#15), Melt Armor (441172 effect#2), Unrelenting Siege (441248 effects: #1, #3), Volcanic Upsurge (456142 effect#1), Imminent Destruction (459574 effect#1), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Duplicate (1259171 effect#3), Refined Essence (1261452 effect#1), Evoker Augmentation 12.0 Class Set 2pc (1264819 effect#1), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Natural Convergence (369913 effect#3), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Essence Burst (392268 effects: #1, #2, #3, #5), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Volcanism (406904 effect#1), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Temporal Burst (431698 effect#15), Melt Armor (441172 effect#2), Unrelenting Siege (441248 effects: #1, #3), Volcanic Upsurge (456142 effect#1), Imminent Destruction (459574 effect#1), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Duplicate (1259171 effect#3), Refined Essence (1261452 effect#1), Evoker Augmentation 12.0 Class Set 2pc (1264819 effect#1)
 Family Flags     : 0, 3, 38, 54
 Attributes       : Initiate Combat Post-Cast (Enables Auto-Attack) (84), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
@@ -13170,7 +13119,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1468: Black Evoker Spells
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Lay Waste (371034 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2, #17), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Strafing Run (1266151 effect#1), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Lay Waste (371034 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2, #17), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Strafing Run (1266151 effect#1)
 Family Flags     : 0, 34
 Attributes       : DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -13707,7 +13656,7 @@ Labels           : 16: Class Spells
                  : 2706: Spatial Paradox (406732 effect#11), Spatial Paradox (406789 effect#10)
 Proc Chance      : 101%
 Proc Flags       : Periodic Taken
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2, #23, #24), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Temporal Compression (362877 effect#2), Scorching Embers (370819 effect#1), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Heat Wave (375725 effects: #1, #2), Lifeforce Mender (376179 effect#2), Full Belly (377087 effect#1), Boon of the Covenants (387169 effects: #1, #2), Evoker Devastation Class Set 2pc (393642 effect#1), Ebon Might (395296 effects: #1, #2, #3, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Devastation 10.1 Class Set 4pc (405519 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Expanded Lungs (444845 effect#1), Molten Embers (459725 effect#1), Fulminous Roar (1218447 effect#1), Inner Flame (1236776 effect#1), Unshakable (1239581 effects: #1, #2), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2, #5), Preservation Evoker (1256944 effects: #3, #4), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2, #23, #24), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Temporal Compression (362877 effect#2), Scorching Embers (370819 effect#1), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Heat Wave (375725 effects: #1, #2), Lifeforce Mender (376179 effect#2), Full Belly (377087 effect#1), Boon of the Covenants (387169 effects: #1, #2), Evoker Devastation Class Set 2pc (393642 effect#1), Ebon Might (395296 effects: #1, #2, #3, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Devastation 10.1 Class Set 4pc (405519 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Expanded Lungs (444845 effect#1), Molten Embers (459725 effect#1), Fulminous Roar (1218447 effect#1), Inner Flame (1236776 effect#1), Unshakable (1239581 effects: #1, #2), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2, #5), Preservation Evoker (1256944 effects: #3, #4)
 Family Flags     : 0, 35
 Attributes       : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
@@ -14278,7 +14227,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1464: Red Evoker Spells
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4)
 Family Flags     : 0, 64
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Treat As Periodic (121), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
@@ -15010,7 +14959,7 @@ Labels           : 16: Class Spells
                  : 295
                  : 1216: Evoker Spells
                  : 5061
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4)
 Family Flags     : 0
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Missile Speed is Delay (in sec) (292), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
@@ -15088,7 +15037,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1465: Blue Evoker Spells
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Hover (358267 effect#5), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Hover (393271 effect#1), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Spatial Paradox (406732 effect#3), Spatial Paradox (406789 effect#3), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Hover (358267 effect#5), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Hover (393271 effect#1), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Spatial Paradox (406732 effect#3), Spatial Paradox (406789 effect#3), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4)
 Family Flags     : 0, 2
 Attributes       : Not Shapeshifted (16), Allow While Mounted (24), Allow While Sitting (27), Is Channelled (34), Allow While Stealthed (37), Track Target in Channel (46), Name in Channel Bar (61), Chain From Caster (76), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Client Targeting (133), Allow Cast While Casting (135), Ignore Default Arena Restrictions (145), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), No Caster Aura Icon (187), Do Not Chain To Crowd-Controlled Targets (200), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273), Allow While Banished Aura State (299), Ignore Default Rated Battleground Restrictions (302), Allow Cast While Channeling (308), Ignore instance lock and farm limit on teleport (327), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Chain by Most Hit (440), Allow Aura On Level Scale (444)
 Channel Interrupt: Action (3)
@@ -15109,7 +15058,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1464: Red Evoker Spells
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Melt Armor (441172 effect#2), Evoker Devastation 11.0 Class Set 2pc (453676 effect#2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Refined Essence (1261452 effect#1), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Melt Armor (441172 effect#2), Evoker Devastation 11.0 Class Set 2pc (453676 effect#2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Refined Essence (1261452 effect#1)
 Family Flags     : 0, 5, 38
 Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
@@ -15220,10 +15169,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rewind (363534), Reversion (366155), Reversion (367364)
                    Family Flags: 8, 29
-#3 (id=1283598)  : Apply Aura (6) | Add Percent Modifier (108): Spell Coefficient (24)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 24 | Target: Self (1)
-                   Affected Spells: Temporal Anomaly (373861), Temporal Anomaly (373862)
-                   Family Flags: 45
 Description      : Bronze healing and absorption increased by $s1%.
 
 Name             : Delay Harm (id=1239574) [Spell Family (224)] 
@@ -15369,6 +15314,9 @@ Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : Magic Heal
 Effects          :
 #1 (id=1242457)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -15889,7 +15837,7 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4)
 Family Flags     : 0
 Effects          :
 #1 (id=1275699)  : School Damage (2): spellfrost | Attributes: Area Effects Use Target Radius (17), Damage Only Affects Absorbs (26)
@@ -16040,7 +15988,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 1465: Blue Evoker Spells
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Essence Burst (359618 effect#1), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Evoker Devastation 11.0 Class Set 4pc (453675 effect#1), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Star Salvo (1265826 effect#1), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Essence Burst (359618 effect#1), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Evoker Devastation 11.0 Class Set 4pc (453675 effect#1), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Star Salvo (1265826 effect#1)
 Family Flags     : 0, 20
 Attributes       : Not Shapeshifted (16), Allow Spell Reflection (224), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
@@ -16119,7 +16067,7 @@ Labels           : 16: Class Spells
                  : 1216: Evoker Spells
                  : 1465: Blue Evoker Spells
                  : 5988: Evoker Devastation 12.0 Class Set 2pc (1264821 effect#1), Evoker Devastation 12.0 Class Set 4pc (1264822 effect#1)
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Protracted Talons (369909 effect#1), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Arcane Intensity (375618 effect#2), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Echoing Strike (410784 effect#2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Unrelenting Siege (441248 effects: #1, #3), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Azure Sweep (1265871 effect#2), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Protracted Talons (369909 effect#1), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Arcane Intensity (375618 effect#2), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Echoing Strike (410784 effect#2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Unrelenting Siege (441248 effects: #1, #3), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Azure Sweep (1265871 effect#2)
 Family Flags     : 0, 12
 Attributes       : Not Shapeshifted (16), Allow Spell Reflection (224), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
@@ -16155,7 +16103,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 5865: Fire Torrent (1265992 effect#1)
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4)
 Family Flags     : 0
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Bouncy Chain Missiles (146), Allow Proc While Sitting (147), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
@@ -16173,7 +16121,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
                  : 5865: Fire Torrent (1265992 effect#1)
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4), Rising Fury (1271783 effects: #2, #3), Risen Fury (1271799 effects: #2, #3)
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ebon Might (395296 effects: #1, #6), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1), Augmentation Evoker (1256942 effects: #1, #2), Devastation Evoker (1256943 effects: #1, #2), Preservation Evoker (1256944 effects: #3, #4)
 Family Flags     : 0
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Bouncy Chain Missiles (146), Allow Proc While Sitting (147), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
@@ -16294,105 +16242,4 @@ Effects          :
                    Affected Spells: Empty Hourglass (404369)
                    Family Flags: 87
 Description      : Defy Fate healing increased by $s1% and its cooldown is reduced by $s2 min.
-
-Name             : Rising Fury (id=1271687) [Spell Family (224), Passive, Hidden] 
-Talent Entry     : Devastation [tree=spec, row=11, col=1, max_rank=1, req_points=20]
-Class            : Evoker
-School           : Physical
-Spell Type       : None
-Labels           : 16: Class Spells
-                 : 292
-                 : 1216: Evoker Spells
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Proc Cooldown On Failure (87), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1284541)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : While Dragonrage is active you gain Rising Fury every $1271783t4 sec, increasing your haste by $1271783s1%, stacking up to $1271783U times.
-
-Name             : Rising Fury (id=1271783) [Spell Family (224)] 
-Class            : Evoker
-School           : Physical
-Spell Type       : None
-Duration         : 10 seconds
-Labels           : 16: Class Spells
-                 : 292
-                 : 1216: Evoker Spells
-Stacks           : 5 maximum
-Proc Chance      : 101%
-Attributes       : Do Not Display Range (126), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1284724)  : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
-#2 (id=1284725)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Firestorm (369374), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Fire Breath (444249), Firestorm (456657), Essence Bomb (1236792), Disintegrate (1236949), Pyre (1236970), Unravel (1264379), Shattering Star (1265804), Azure Sweep (1265872), Twin Flame (1265980), Twin Flame (1265991)
-                   Family Flags: 0
-#3 (id=1284744)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Firestorm (369374), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Fire Breath (444249), Firestorm (456657), Essence Bomb (1236792), Disintegrate (1236949), Pyre (1236970), Unravel (1264379), Shattering Star (1265804), Azure Sweep (1265872), Twin Flame (1265980), Twin Flame (1265991)
-                   Family Flags: 0
-#4 (id=1284745)  : Apply Aura (6) | Periodic Dummy (226): every 6 seconds
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : $@spelldesc1271687
-Tooltip          : Haste increased by ${$w1}.1%.$?$w3>0[ Damage increased by $w3%.][]
-
-Name             : Rising Fury (id=1271788) [Spell Family (224), Passive, Hidden] 
-Talent Entry     : Devastation [tree=spec, row=11, col=3, max_rank=1, req_points=20]
-Class            : Evoker
-School           : Physical
-Spell Type       : None
-Labels           : 16: Class Spells
-                 : 292
-                 : 1216: Evoker Spells
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Proc Cooldown On Failure (87), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1284732)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
-Description      : When Dragonrage ends, gain Risen Fury for ${$s1/1000} sec for each stack of Rising Fury.
-
-Risen Fury grants the damage and haste bonuses accumulated from Rising Fury and generates Essence Burst every $1271799t4 sec.
-
-Name             : Rising Fury (id=1271796) [Spell Family (224), Passive, Hidden] 
-Talent Entry     : Devastation [tree=spec, row=11, col=2, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(8, 15)]
-Class            : Evoker
-School           : Physical
-Spell Type       : None
-Labels           : 16: Class Spells
-                 : 292
-                 : 1216: Evoker Spells
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Proc Cooldown On Failure (87), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1284743)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
-Description      : At $1271783U stacks of Rising Fury, all damage dealt is increased by $s1%.
-
-Name             : Risen Fury (id=1271799) [Spell Family (224)] 
-Class            : Evoker
-School           : Physical
-Spell Type       : None
-Duration         : 4 seconds
-Labels           : 16: Class Spells
-                 : 292
-                 : 1216: Evoker Spells
-Stacks           : 5 maximum
-Proc Chance      : 101%
-Attributes       : Do Not Display Range (126), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1284749)  : Apply Aura (6) | Modify All Haste% (193) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
-#2 (id=1284750)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Firestorm (369374), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Fire Breath (444249), Firestorm (456657), Essence Bomb (1236792), Disintegrate (1236949), Pyre (1236970), Unravel (1264379), Shattering Star (1265804), Azure Sweep (1265872), Twin Flame (1265980), Twin Flame (1265991)
-                   Family Flags: 0
-#3 (id=1284751)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Firestorm (369374), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Fire Breath (444249), Firestorm (456657), Essence Bomb (1236792), Disintegrate (1236949), Pyre (1236970), Unravel (1264379), Shattering Star (1265804), Azure Sweep (1265872), Twin Flame (1265980), Twin Flame (1265991)
-                   Family Flags: 0
-#4 (id=1284752)  : Apply Aura (6) | Periodic Dummy (226): every 4 seconds
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : $@spelldesc1271788
-Tooltip          : Haste increased by ${$w1}.1%.$?$w3>0[ Damage increased by $w3%][]
-
-Generating Essence Burst every $t4 sec.
 

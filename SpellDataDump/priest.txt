@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.63967 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.64124 midnight-BETA
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -25,6 +25,9 @@ Effects          :
 #1 (id=13)       : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.638 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
+                   Modified By: Improved Power Word: Shield (24191 effect#1)
+#2 (id=1285768)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Target: Targeted Ally (21)
                    Modified By: Improved Power Word: Shield (24191 effect#1)
 Description      : Shields an ally for $d, absorbing $s1 damage.
 Tooltip          : Absorbs $w1 damage.
@@ -144,7 +147,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 954
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #17), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Muze's Unwavering Will (210632 effects: #1, #3), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Woe (273312 effect#1), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#4), Inner Shadow (355898 effects: #1, #4), Divine Conversation (363727 effect#2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effects: #3, #4), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5, #11), Focused Power (1249230 effects: #1, #2), Mindpierce (1251029 effect#1), Twin Disciplines (1251077 effects: #1, #2), Greater Smite (1253725 effects: #1, #2, #3), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #17), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Muze's Unwavering Will (210632 effects: #1, #3), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Woe (273312 effect#1), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#4), Inner Shadow (355898 effects: #1, #4), Divine Conversation (363727 effect#2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effects: #3, #4), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5, #11), Focused Power (1249230 effects: #1, #2), Mindpierce (1251029 effect#1), Twin Disciplines (1251077 effects: #1, #2), Greater Smite (1253725 effect#1), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
 Family Flags     : 7, 72
 Attributes       : Not Shapeshifted (16), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Allow Class Ability Procs (416)
 Effects          :
@@ -231,7 +234,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 954
 Stance Mask      : 0x80000000
-Affecting Spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Surge of Light (114255 effects: #7, #8), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #2, #3, #4, #5), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Divine Conversation (363727 effect#2), Unwavering Will (373456 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Lightweaver (390993 effects: #1, #2), Prayer Focus (394729 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effect#1), Divinity (1216314 effects: #1, #2), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Efficient Prayers (1247131 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2)
+Affecting Spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Surge of Light (114255 effects: #7, #8), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #2, #3, #4, #5), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Divine Conversation (363727 effect#2), Unwavering Will (373456 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Lightweaver (390993 effects: #1, #2), Prayer Focus (394729 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effect#1), Divinity (1216314 effects: #1, #2), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Efficient Prayers (1247131 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Focused Outburst (1272320 effects: #1, #2)
 Triggered By     : Surge of Light (114255), Lightweaver (390993)
 Family Flags     : 9, 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
@@ -317,14 +320,14 @@ Resource         : 2.375% Base Mana (0) (id=152)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 1673 (Type 0x1): Miracle Worker (235587 effect#1), Holy Celerity (1215275 effect#2)
+Category         : 1673 (Type 0x1): Miracle Worker (235587 effect#1), Holy Celerity (1215275 effect#2), Prophet's Insight (1272359 effect#1)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 741: Healing Spells
                  : 1116
 Stance Mask      : 0x80000000
-Affecting Spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4, #6), Light of T'uure (208065 effect#1), Al'maiesh, the Cord of Hope (211440 effect#1), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Divine Conversation (363727 effect#3), Twist of Fate (390978 effects: #1, #2), Inspired Word (409479 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Sacred Reverence (423510 effect#2), Prophet's Will (433905 effect#1), Resonant Energy (453846 effects: #1, #2), Phantom Reach (459559 effect#2), Light in the Darkness (471668 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Ultimate Serenity (1246517 effect#2), Uplifting Words (1250562 effect#1), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2)
+Affecting Spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4, #6), Light of T'uure (208065 effect#1), Al'maiesh, the Cord of Hope (211440 effect#1), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Divine Conversation (363727 effect#3), Twist of Fate (390978 effects: #1, #2), Inspired Word (409479 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Sacred Reverence (423510 effect#2), Prophet's Will (433905 effect#1), Resonant Energy (453846 effects: #1, #2), Phantom Reach (459559 effect#2), Light in the Darkness (471668 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Ultimate Serenity (1246517 effect#2), Uplifting Words (1250562 effect#1), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Words of the Wise (1272352 effect#1)
 Family Flags     : 10, 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
@@ -379,7 +382,7 @@ Labels           : 16: Class Spells
                  : 889
                  : 954
 Stance Mask      : 0x88000000
-Affecting Spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Surge of Light (114255 effects: #1, #2, #3, #4, #5), Holy Priest (137031 effects: #1, #2, #16), Discipline Priest (137032 effects: #1, #2, #19), Shadow Priest (137033 effect#11), Complete Healing (184914 effect#1), Apotheosis (200183 effects: #3, #4), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Promise of Deliverance (287340 effect#1), Measured Contemplation (341824 effect#1), Inner Light (355897 effect#3), Divine Conversation (363727 effect#2), Unwavering Will (373456 effects: #1, #3), Inner Focus (390693 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Improved Flash Heal (393870 effect#1), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Prophet's Will (433905 effect#1), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2, #9), Healing Focus (1247166 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Priest Discipline 12.0 Class Set 2pc (1264850 effect#1)
+Affecting Spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Surge of Light (114255 effects: #1, #2, #3, #4, #5), Holy Priest (137031 effects: #1, #2, #16), Discipline Priest (137032 effects: #1, #2, #19), Shadow Priest (137033 effect#11), Complete Healing (184914 effect#1), Apotheosis (200183 effects: #3, #4), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Promise of Deliverance (287340 effect#1), Measured Contemplation (341824 effect#1), Inner Light (355897 effect#3), Divine Conversation (363727 effect#2), Unwavering Will (373456 effects: #1, #3), Inner Focus (390693 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Improved Flash Heal (393870 effect#1), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Prophet's Will (433905 effect#1), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2, #9), Healing Focus (1247166 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Priest Discipline 12.0 Class Set 2pc (1264850 effect#1), Realized Potential (1272326 effect#1), Words of the Wise (1272352 effect#2)
 Triggered By     : Surge of Light (114255)
 Family Flags     : 11, 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
@@ -1258,12 +1261,12 @@ Spell Level      : 14
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (10 seconds cooldown)
-Category         : 1169 (Type 0x1): Kiss of Death (336133 effect#2)
+Category         : 1169 (Type 0x1): Kiss of Death (336133 effect#2), Realized Potential (1272326 effect#4)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
 Stance Mask      : 0x08000000
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #12), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2, #7, #8, #15), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Zeks Exterminatus (236546 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Kiss of Death (336133 effect#1), Inner Shadow (355898 effects: #1, #4), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Mastermind (391151 effects: #1, #2), Deathspeaker (392507 effects: #1, #2), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2, #3)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #12), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2, #7, #8, #15), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Zeks Exterminatus (236546 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Kiss of Death (336133 effect#1), Inner Shadow (355898 effects: #1, #4), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Mastermind (391151 effects: #1, #2), Deathspeaker (392507 effects: #1, #2), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2, #3), Realized Potential (1272326 effect#3)
 Family Flags     : 33, 72
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -1466,13 +1469,13 @@ Resource         : 3.325% Base Mana (0) (id=1546)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 2075 (Type 0x1): Miracle Worker (235587 effect#2), Holy Celerity (1215275 effect#1)
+Category         : 2075 (Type 0x1): Miracle Worker (235587 effect#2), Holy Celerity (1215275 effect#1), Prophet's Insight (1272359 effect#2)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 1116
 Stance Mask      : 0x80000000
-Affecting Spells : Renew (139 effect#2), Healing Trance (37706 effect#1), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4, #6), Light of T'uure (208065 effect#1), Al'maiesh, the Cord of Hope (211442 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Divine Conversation (363727 effect#3), Twist of Fate (390978 effects: #1, #2), Inspired Word (409479 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Sacred Reverence (423510 effect#2), Resonant Energy (453846 effects: #1, #2), Light in the Darkness (471668 effects: #1, #2), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Ultimate Serenity (1246517 effect#1), Uplifting Words (1250562 effect#1), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2)
+Affecting Spells : Renew (139 effect#2), Healing Trance (37706 effect#1), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4, #6), Light of T'uure (208065 effect#1), Al'maiesh, the Cord of Hope (211442 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Divine Conversation (363727 effect#3), Twist of Fate (390978 effects: #1, #2), Inspired Word (409479 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Sacred Reverence (423510 effect#2), Resonant Energy (453846 effects: #1, #2), Light in the Darkness (471668 effects: #1, #2), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Ultimate Serenity (1246517 effect#1), Uplifting Words (1250562 effect#1), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Words of the Wise (1272352 effect#1)
 Family Flags     : 28, 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Allow Class Ability Procs (416)
 Effects          :
@@ -2622,7 +2625,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 1116
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Apotheosis (200183 effect#6), Al'maiesh, the Cord of Hope (211443 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Inspired Word (409479 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Phantom Reach (459559 effect#4), Holy Celerity (1215275 effect#3), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Apotheosis (200183 effect#6), Al'maiesh, the Cord of Hope (211443 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Inspired Word (409479 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Phantom Reach (459559 effect#4), Holy Celerity (1215275 effect#3), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Prophet's Insight (1272359 effect#3)
 Family Flags     : 69, 72
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19)
@@ -3042,7 +3045,7 @@ Duration         : 20 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-                 : 3625: Empowered Surges (453799 effect#1)
+                 : 3625: Empowered Surges (453799 effect#1), Realized Potential (1272326 effect#2)
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Attributes       : No Threat (42), Not In Spellbook (143), Floating Combat Text On Cast (198), Aura Points On Client (268), Allow Class Ability Procs (416)
@@ -3051,6 +3054,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Flash Heal (2061), Shadow Mend (186263), Shadow Mend (187464), Benediction (1262763)
                    Family Flags: 11, 52
+                   Modified By: Realized Potential (1272326 effect#2)
 #2 (id=156626)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Flash Heal (2061), Benediction (1262763)
@@ -4578,7 +4582,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
 Stance Mask      : 0x80000000
-Affecting Spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Enduring Luminescence (278643 effect#2), Enduring Luminescence (279245 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Inner Light (355897 effect#1), Enduring Luminescence (390685 effects: #1, #2), Inner Focus (390693 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effect#2), Radiant Providence (410638 effects: #2, #3), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effect#1), Evangelism (472433 effect#5), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Priest Discipline 12.0 Class Set 2pc (1264850 effect#1)
+Affecting Spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Enduring Luminescence (278643 effect#2), Enduring Luminescence (279245 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Inner Light (355897 effect#1), Enduring Luminescence (390685 effects: #1, #2), Inner Focus (390693 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effect#2), Radiant Providence (410638 effects: #2, #3), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effect#1), Evangelism (472433 effect#5), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Priest Discipline 12.0 Class Set 2pc (1264850 effect#1), Words of the Wise (1272352 effect#2)
 Family Flags     : 22, 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
@@ -5168,7 +5172,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Affecting Spells : Apotheosis (200183 effect#6), Al'maiesh, the Cord of Hope (211443 effect#1), Inspired Word (409479 effect#1), Phantom Reach (459559 effect#4), Holy Celerity (1215275 effect#3)
+Affecting Spells : Apotheosis (200183 effect#6), Al'maiesh, the Cord of Hope (211443 effect#1), Inspired Word (409479 effect#1), Phantom Reach (459559 effect#4), Holy Celerity (1215275 effect#3), Prophet's Insight (1272359 effect#3)
 Family Flags     : 69
 Attributes       : Not Shapeshifted (16), Not In Spellbook (143), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Damage (Script) (27)
@@ -5204,7 +5208,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 181
                  : 292
-Affecting Spells : Apotheosis (200183 effect#6), Al'maiesh, the Cord of Hope (211443 effect#1), Inspired Word (409479 effect#1), Phantom Reach (459559 effect#4), Holy Celerity (1215275 effect#3)
+Affecting Spells : Apotheosis (200183 effect#6), Al'maiesh, the Cord of Hope (211443 effect#1), Inspired Word (409479 effect#1), Phantom Reach (459559 effect#4), Holy Celerity (1215275 effect#3), Prophet's Insight (1272359 effect#3)
 Family Flags     : 69
 Attributes       : Not Shapeshifted (16), Not In Spellbook (143), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19)
@@ -5259,6 +5263,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
 Stance Mask      : 0x80000000
+Affecting Spells : Words of the Wise (1272352 effect#2)
 Family Flags     : 8
 Attributes       : Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416)
 Effects          :
@@ -10171,7 +10176,7 @@ Effects          :
                    Affected Spells (Category): Avenging Wrath (31884), Avenging Wrath (231895), Sentinel (389539)
 #3 (id=868652)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1592 (Category) | Target: Current Target (25)
-                   Affected Spells (Category): Weapons of Order (1249625)
+                   Affected Spells (Category): Zenith (1249625)
 #4 (id=868655)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1572 (Category) | Target: Current Target (25)
                    Affected Spells (Category): Storm Elemental (192249), Fire Elemental (198067)
@@ -10350,7 +10355,7 @@ Name             : Painbreaker Psalm (id=336167) [Spell Family (6)]
 School           : Shadow
 Spell Type       : None
 Range            : 50000 yards
-Affecting Spells : Holy Priest (137031 effect#12), Shadow Priest (137033 effects: #7, #8, #15), Zeks Exterminatus (236546 effects: #1, #2), Shadow Covenant (322105 effect#1), Kiss of Death (336133 effect#1), Twilight Equilibrium (390707 effect#1), Dark Ascension (391109 effect#1), Mastermind (391151 effects: #1, #2), Deathspeaker (392507 effects: #1, #2), Light Weaving (394609 effect#1), Shadow Priest (1256905 effect#3)
+Affecting Spells : Holy Priest (137031 effect#12), Shadow Priest (137033 effects: #7, #8, #15), Zeks Exterminatus (236546 effects: #1, #2), Shadow Covenant (322105 effect#1), Kiss of Death (336133 effect#1), Twilight Equilibrium (390707 effect#1), Dark Ascension (391109 effect#1), Mastermind (391151 effects: #1, #2), Deathspeaker (392507 effects: #1, #2), Light Weaving (394609 effect#1), Shadow Priest (1256905 effect#3), Realized Potential (1272326 effect#3)
 Family Flags     : 33
 Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Can't Crit (93), Always Hit (114), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Ignore Damage Taken Modifiers (136), Not In Spellbook (143), Aura Never Bounces (148), No Partial Resists (183), Ignore Caster Damage Modifiers (221)
 Effects          :
@@ -11358,7 +11363,7 @@ Effects          :
                    Affected Spells (Category): Avenging Wrath (31884), Avenging Wrath (231895), Sentinel (389539)
 #3 (id=891150)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 1592 (Category) | Target: Current Target (25)
-                   Affected Spells (Category): Weapons of Order (1249625)
+                   Affected Spells (Category): Zenith (1249625)
 #4 (id=891151)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 1572 (Category) | Target: Current Target (25)
                    Affected Spells (Category): Storm Elemental (192249), Fire Elemental (198067)
@@ -15604,7 +15609,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 954
                  : 2952: Shadow Covenant (322105 effect#6)
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #17), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Muze's Unwavering Will (210632 effects: #1, #3), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Woe (273312 effect#1), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#4), Inner Shadow (355898 effects: #1, #4), Divine Conversation (363727 effect#2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effects: #3, #4), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5, #11), Focused Power (1249230 effects: #1, #2), Mindpierce (1251029 effect#1), Twin Disciplines (1251077 effects: #1, #2), Greater Smite (1253725 effects: #1, #2, #3), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #17), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Muze's Unwavering Will (210632 effects: #1, #3), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Woe (273312 effect#1), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#4), Inner Shadow (355898 effects: #1, #4), Divine Conversation (363727 effect#2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effects: #3, #4), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5, #11), Focused Power (1249230 effects: #1, #2), Mindpierce (1251029 effect#1), Twin Disciplines (1251077 effects: #1, #2), Greater Smite (1253725 effect#1), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
 Family Flags     : 7, 72
 Attributes       : Not Shapeshifted (16), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Allow Class Ability Procs (416)
 Effects          :
@@ -16433,7 +16438,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 3532
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #17), Discipline Priest (137032 effects: #4, #5, #14), Shadow Priest (137033 effects: #1, #2, #14), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Woe (273312 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Boon of the Ascended (325013 effect#4), Inner Shadow (355898 effects: #1, #4), Divine Conversation (363727 effect#2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effects: #3, #4), Void Infusion (450612 effect#1), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Priest Voidweaver 11.2 Class Set 2pc (1236396 effects: #1, #2, #4), Holy Priest (1238052 effects: #4, #5, #11), Focused Power (1249230 effects: #1, #2), Mindpierce (1251029 effect#1), Twin Disciplines (1251077 effects: #1, #2), Greater Smite (1253725 effects: #1, #2, #3), Discipline Priest (1256903 effects: #4, #5, #9), Shadow Priest (1256905 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #17), Discipline Priest (137032 effects: #4, #5, #14), Shadow Priest (137033 effects: #1, #2, #14), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Woe (273312 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Boon of the Ascended (325013 effect#4), Inner Shadow (355898 effects: #1, #4), Divine Conversation (363727 effect#2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effects: #3, #4), Void Infusion (450612 effect#1), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Priest Voidweaver 11.2 Class Set 2pc (1236396 effects: #1, #2, #4), Holy Priest (1238052 effects: #4, #5, #11), Focused Power (1249230 effects: #1, #2), Mindpierce (1251029 effect#1), Twin Disciplines (1251077 effects: #1, #2), Greater Smite (1253725 effect#1), Discipline Priest (1256903 effects: #4, #5, #9), Shadow Priest (1256905 effects: #1, #2)
 Family Flags     : 7, 57, 72
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
@@ -16987,6 +16992,7 @@ Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
+                 : 5998: Energy Conservation (1272308 effect#1)
 Attributes       : No Immunities (29), Allow While Stealthed (37), Allow While Invisible (78), No School Immunities (90), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Change Talent (46)
 Effects          :
@@ -17004,6 +17010,7 @@ Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
+                 : 5998: Energy Conservation (1272308 effect#1)
 Proc Chance      : 101%
 Proc Flags       : Magic Heal
 Attributes       : No Immunities (29), Allow While Stealthed (37), Allow While Invisible (78), No School Immunities (90), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
@@ -17112,7 +17119,7 @@ Effects          :
 Description      : Devouring Plague increases your damage done by $454638s1% for $454638d, multiple applications may overlap.
 
 Name             : Word of Supremacy (id=453726) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=3, col=2, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -17127,7 +17134,7 @@ Effects          :
 Description      : Power Word: Fortitude grants you an additional $s1% stamina.
 
 Name             : Heightened Alteration (id=453729) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=3, col=2, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -17169,7 +17176,7 @@ $@spellicon391403 $@spellname391403
 $@spelldesc391403][grants Surge of Light.]
 
 Name             : Empowered Surges (id=453799) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=3, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=3, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -18851,7 +18858,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
 Stance Mask      : 0x08000000
-Affecting Spells : Priest (137030 effect#1), Insidious Ire (373213 effect#1), Dark Ascension (391109 effect#1)
+Affecting Spells : Priest (137030 effect#1), Insidious Ire (373213 effect#1), Dark Ascension (391109 effect#1), Focused Outburst (1272320 effects: #3, #4)
 Family Flags     : 41
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83)
 Effects          :
@@ -18874,7 +18881,7 @@ Velocity         : 50 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Spirit Shell (109964 effect#2), Priest (137030 effect#1), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Insidious Ire (373213 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Priest (137030 effect#1), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Insidious Ire (373213 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Focused Outburst (1272320 effects: #3, #4)
 Family Flags     : 41, 72
 Effects          :
 #1 (id=1241611)  : School Damage (2): shadow
@@ -19166,7 +19173,7 @@ Effects          :
 Description      : Reduces the mana cost of Flash Heal by $s1%.
 
 Name             : Spiritwell (id=1247178) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=3, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=4, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -19177,7 +19184,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1249168)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Shadowy Apparition (413231), Void Apparition (1264176)
                    Family Flags: 90
 Description      : $?c2[Surge of Light can now be consumed by Prayer of Healing in addition to Flash Heal.
@@ -19252,7 +19259,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1252614)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-Description      : Surge of Light occurs up to $s3% more often based on your remaining mana.
+Description      : Surge of Light occurs up to $s3% more often based on your missing mana.
 
 Name             : Purge the Wicked (id=1250218) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=6, col=1, max_rank=1, req_points=8]
@@ -19399,7 +19406,7 @@ Labels           : 16: Class Spells
                  : 741: Healing Spells
                  : 1116
 Stance Mask      : 0x80000000
-Affecting Spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4, #6), Light of T'uure (208065 effect#1), Al'maiesh, the Cord of Hope (211440 effect#1), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Divine Conversation (363727 effect#3), Twist of Fate (390978 effects: #1, #2), Inspired Word (409479 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Sacred Reverence (423510 effect#2), Prophet's Will (433905 effect#1), Resonant Energy (453846 effects: #1, #2), Phantom Reach (459559 effect#2), Light in the Darkness (471668 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Ultimate Serenity (1246517 effect#2), Uplifting Words (1250562 effect#1), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2)
+Affecting Spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4, #6), Light of T'uure (208065 effect#1), Al'maiesh, the Cord of Hope (211440 effect#1), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Divine Conversation (363727 effect#3), Twist of Fate (390978 effects: #1, #2), Inspired Word (409479 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Sacred Reverence (423510 effect#2), Prophet's Will (433905 effect#1), Resonant Energy (453846 effects: #1, #2), Phantom Reach (459559 effect#2), Light in the Darkness (471668 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Ultimate Serenity (1246517 effect#2), Uplifting Words (1250562 effect#1), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Words of the Wise (1272352 effect#1)
 Family Flags     : 10, 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
@@ -19679,6 +19686,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 7 | Misc Value: 0x7f | Radius: 0 - 30 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
                    Affected School(s): All
                    Modified By: Improved Power Word: Shield (24191 effect#1)
+#2 (id=1285766)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Radius: 0 - 30 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
+                   Modified By: Improved Power Word: Shield (24191 effect#1)
 Description      : Shields $i allies for $d, absorbing $s1 damage.
 Tooltip          : Absorbs $w1 damage.
 
@@ -19696,12 +19706,12 @@ Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1259711)  : Apply Aura (6) | Proc Trigger Spell (42): Greater Smite
-                   Base Value: 10 | Scaled Value: 10 | Trigger Spell: 1253725 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Trigger Spell: 1253725 | Target: Self (1)
 #2 (id=1259712)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 1963 (Label) | Target: Self (1)
 #3 (id=1259713)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.42
-Description      : Casting Smite increases the casting speed and damage of Smite by $s1%, stacking $1253725u times. Lasts $1253725d.
+Description      : Casting Smite increases the damage of Smite by $s1%, stacking $1253725u times. Lasts $1253725d.
 
 Name             : Greater Smite (id=1253725) [Spell Family (6)] 
 Class            : Priest
@@ -19715,16 +19725,8 @@ Stacks           : 2 maximum
 Proc Chance      : 101%
 Triggered By     : Greater Smite (1253724)
 Effects          :
-#1 (id=1259714)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
-                   Base Value: -15 | Scaled Value: -15 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Smite (585), Smite (425529), Void Blast (450215)
-                   Family Flags: 7
-#2 (id=1259715)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21)
-                   Base Value: -15 | Scaled Value: -15 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Smite (585), Smite (425529), Void Blast (450215)
-                   Family Flags: 7
-#3 (id=1259716)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+#1 (id=1259714)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Smite (585), Smite (425529), Void Blast (450215)
                    Family Flags: 7
 Description      : $@spelldesc1253724
@@ -19955,7 +19957,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Stance Mask      : 0x88000000
 Proc Flags       : Magic Heal
-Affecting Spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Surge of Light (114255 effects: #1, #2, #3, #4, #5), Holy Priest (137031 effects: #1, #2, #16), Discipline Priest (137032 effects: #1, #2, #19), Shadow Priest (137033 effect#11), Complete Healing (184914 effect#1), Apotheosis (200183 effects: #3, #4), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Promise of Deliverance (287340 effect#1), Measured Contemplation (341824 effect#1), Inner Light (355897 effect#3), Divine Conversation (363727 effect#2), Unwavering Will (373456 effects: #1, #3), Inner Focus (390693 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Improved Flash Heal (393870 effect#1), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Prophet's Will (433905 effect#1), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2, #9), Healing Focus (1247166 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Priest Discipline 12.0 Class Set 2pc (1264850 effect#1)
+Affecting Spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Surge of Light (114255 effects: #1, #2, #3, #4, #5), Holy Priest (137031 effects: #1, #2, #16), Discipline Priest (137032 effects: #1, #2, #19), Shadow Priest (137033 effect#11), Complete Healing (184914 effect#1), Apotheosis (200183 effects: #3, #4), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Promise of Deliverance (287340 effect#1), Measured Contemplation (341824 effect#1), Inner Light (355897 effect#3), Divine Conversation (363727 effect#2), Unwavering Will (373456 effects: #1, #3), Inner Focus (390693 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Improved Flash Heal (393870 effect#1), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Prophet's Will (433905 effect#1), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2, #9), Healing Focus (1247166 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Priest Discipline 12.0 Class Set 2pc (1264850 effect#1), Realized Potential (1272326 effect#1), Words of the Wise (1272352 effect#2)
 Family Flags     : 11, 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
@@ -20257,4 +20259,148 @@ Effects          :
                    Affected Spells: Mind Blast (8092), Void Blast (450983)
                    Family Flags: 13
 Description      : $?c3[Void Torrent deals $s1% increased damage.][Mind Blast deals $s1% increased damage.]
+
+Name             : Energy Conservation (id=1272308) [Spell Family (6), Passive, Hidden] 
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=3, col=2, max_rank=1, req_points=0]
+Class            : Priest
+School           : Holy
+Spell Type       : Magic
+Spell Level      : 1
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+                 : 3022
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1285482)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
+                   Base Value: 5000 | Scaled Value: 5000 | Misc Value: 1 | Misc Value 2: 5998 (Label) | Target: Self (1)
+                   Affected Spells (Label): Power Surge (453112), Power Surge (453113)
+Description      : Power Surge lasts an additional ${$s1/1000} sec.
+
+Name             : Focused Outburst (id=1272320) [Spell Family (6), Passive, Hidden] 
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=2, col=4, max_rank=1, req_points=0]
+Class            : Priest
+School           : Holy
+Spell Type       : Magic
+Spell Level      : 1
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+                 : 3022
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1285499)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Prayer of Healing (596)
+                   Family Flags: 9
+#2 (id=1285500)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 10 | Target: Self (1)
+                   Affected Spells: Prayer of Healing (596)
+                   Family Flags: 9
+#3 (id=1285501)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Affected Spells: Void Volley (1242173), Void Volley (1242189)
+                   Family Flags: 41
+#4 (id=1285502)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -4000 | Scaled Value: -4000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Void Volley (1242173), Void Volley (1242189)
+                   Family Flags: 41
+Description      : $?c2[Prayer of Healing mana cost reduced by $s1% and its cast time is reduced by $s2%.][Void Volley damage increased by $s3% and its cooldown is reduced by ${$s4/-1000} sec.]
+
+Name             : Realized Potential (id=1272326) [Spell Family (6), Passive, Hidden] 
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=4, col=4, max_rank=1, req_points=0, select_idx=100]
+Class            : Priest
+School           : Holy
+Spell Type       : Magic
+Spell Level      : 1
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+                 : 3022
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1285511)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Affected Spells: Flash Heal (2061), Benediction (1262763)
+                   Family Flags: 11
+#2 (id=1285512)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 3 | Misc Value 2: 3625 (Label) | Target: Self (1)
+                   Affected Spells (Label): Surge of Light (114255)
+#3 (id=1285513)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Affected Spells: Shadow Word: Death (32379), Painbreaker Psalm (336167)
+                   Family Flags: 33
+#4 (id=1285514)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
+                   Base Value: -3000 | Scaled Value: -3000 | Misc Value: 1169 (Category) | Target: Self (1)
+                   Affected Spells (Category): Shadow Word: Death (32379)
+Description      : $?c2[Flash Heal healing increased by $s1%. 
+
+Healing spells and Smite have an additional $s2% chance to grant Surge of Light.][Shadow Word: Death damage increased by $s3% and its cooldown is reduced by ${$s4/-1000} sec.]
+
+Name             : Words of the Wise (id=1272352) [Spell Family (6), Passive, Hidden] 
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=2, col=4, max_rank=1, req_points=0]
+Class            : Priest
+School           : Holy
+Spell Type       : Magic
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+                 : 3022
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
+Effects          :
+#1 (id=1285549)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Affected Spells: Holy Word: Serenity (2050), Holy Word: Sanctify (34861), Ultimate Serenity (1250581)
+                   Family Flags: 10, 28
+#2 (id=1285550)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Affected Spells: Flash Heal (2061), Power Word: Radiance (194509), Plea (200829), Benediction (1262763)
+                   Family Flags: 8, 11, 22
+Description      : $?a137031&?a1246517[Holy Word: Serenity healing increased by $s1%.]?c2[Holy Word: Serenity and Holy Word: Sanctify healing increased by $s1%.][Flash Heal, Plea, and Power Word: Radiance healing increased by $s2%.]
+
+
+Name             : Prophet's Insight (id=1272359) [Spell Family (6), Passive, Hidden] 
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=3, col=4, max_rank=1, req_points=0]
+Class            : Priest
+School           : Holy
+Spell Type       : Magic
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+                 : 3022
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
+Effects          :
+#1 (id=1285557)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
+                   Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1673 (Category) | Target: Self (1)
+                   Affected Spells (Category): Holy Word: Serenity (2050)
+#2 (id=1285558)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
+                   Base Value: -5000 | Scaled Value: -5000 | Misc Value: 2075 (Category) | Target: Self (1)
+                   Affected Spells (Category): Holy Word: Sanctify (34861)
+#3 (id=1285564)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -5000 | Scaled Value: -5000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Holy Word: Chastise (88625), Holy Word: Chastise (200196), Holy Word: Chastise (200200)
+                   Family Flags: 69
+#4 (id=1285565)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+Description      : $?c2[Reduces the cooldown of your Holy Words by ${$s1/-1000} sec.][Atonement healing from Holy spells is increased by $s4%.]
+
+
+Name             : Unfolding Vision (id=1272363) [Spell Family (6), Passive, Hidden] 
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=4, col=4, max_rank=1, req_points=0]
+Class            : Priest
+School           : Holy
+Spell Type       : Magic
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+                 : 3022
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
+Effects          :
+#1 (id=1285568)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+#2 (id=1285569)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
+Description      : $?c2[When Prayer of Mending expires without healing, it jumps to a nearby injured ally and loses $s1 $Lstack:stacks; instead.][
+When Power Word: Shield or Void Shield expires with absorption remaining, it jumps to a nearby injured ally and loses $s2% of its maximum absorb instead.]
+
 
