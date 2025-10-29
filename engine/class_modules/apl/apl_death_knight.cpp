@@ -311,7 +311,7 @@ void unholy( player_t* p )
   default_->add_action( "auto_attack" );
   default_->add_action( "call_action_list,name=racials" );
   default_->add_action( "call_action_list,name=trinkets" );
-  default_->add_action( "outbreak,if=dot.dread_plague.ticks_remain<3" );
+  default_->add_action( "outbreak,if=dot.dread_plague.ticks_remain<3|buff.pestilence.react" );
   default_->add_action( "army_of_the_dead" );
   default_->add_action( "dark_transformation" );
   default_->add_action( "soul_reaper" );
