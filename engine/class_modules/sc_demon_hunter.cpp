@@ -449,50 +449,43 @@ public:
 
       player_talent_t scythes_embrace;
       player_talent_t duty_eternal;
-      player_talent_t entropy;
+      player_talent_t collapsing_star;
       player_talent_t moment_of_craving;
 
-      player_talent_t sunder;  // NYI
-      player_talent_t second_helping;
+      player_talent_t gift_of_the_void;
+      player_talent_t entropy;
       player_talent_t waste_not;
       player_talent_t soulshaper;
 
-      player_talent_t focused_ray;
-      player_talent_t collapsing_star;
+      player_talent_t singed_spirit;
       player_talent_t sweet_suffering;
+      player_talent_t second_helping;
+      player_talent_t umbral_blade;
+      player_talent_t improved_consume;
+      player_talent_t sweet_release;
       player_talent_t voidpurge;
 
       player_talent_t hungering_slash;
       player_talent_t voidrage;
-      player_talent_t dark_ultimatum;
-      player_talent_t beckon;
+      player_talent_t focused_ray;
+
+      player_talent_t soulforged_blades;
+      player_talent_t singular_strikes;  // Partial Implementation
+      player_talent_t demonic_instinct;
+      player_talent_t devourers_edge;
       player_talent_t voidglare_boon;
-
-      player_talent_t voidstep;
-      player_talent_t up_close;
-      player_talent_t impending_apocalypse;
       player_talent_t rolling_torment;
-      player_talent_t improved_reap;
 
+      player_talent_t voidrush;  // NYI
       player_talent_t devourers_bite;
+      player_talent_t impending_apocalypse;
+      player_talent_t calamitous;
       player_talent_t star_fragments;
-      player_talent_t calamitous;  // NYI
 
       player_talent_t the_hunt;
       player_talent_t emptiness;
       player_talent_t soul_glutton;
       player_talent_t eradicate;
-
-      // TODO: Put in right locations
-      player_talent_t voidrush;  // NYI
-      player_talent_t demonic_instinct;
-      player_talent_t soulforged_blades;
-      player_talent_t devourers_edge;
-      player_talent_t singular_strikes;  // Partial Implementation
-      player_talent_t gift_of_the_void;
-      player_talent_t improved_consume;
-      player_talent_t umbral_blade;
-      player_talent_t singed_spirit;
 
       player_talent_t midnight1;
       player_talent_t midnight2;
@@ -687,8 +680,8 @@ public:
       player_talent_t flamebound;
       player_talent_t monster_rising;
 
-      player_talent_t blind_focus;        // NYI
-      player_talent_t undying_embers;     // NYI
+      player_talent_t blind_focus;     // NYI
+      player_talent_t undying_embers;  // NYI
       player_talent_t volatile_instinct;
 
       player_talent_t demonic_intensity;
@@ -7960,8 +7953,9 @@ struct vengeful_retreat_t
       background = dual = true;
       aoe               = -1;
 
-      if ( p->talent.devourer.voidstep->ok() )
+      if ( p->talent.devourer.hungering_slash->ok() )
       {
+        // TODO: Make this only happen while voidstep buff is active
         execute_action = p->get_background_action<voidstep_damage_t>( "voidstep" );
         add_child( execute_action );
       }
@@ -10179,48 +10173,43 @@ void demon_hunter_t::init_spells()
 
   talent.devourer.scythes_embrace   = find_talent_spell( talent_tree::SPECIALIZATION, "Scythe's Embrace" );
   talent.devourer.duty_eternal      = find_talent_spell( talent_tree::SPECIALIZATION, "Duty Eternal" );
-  talent.devourer.entropy           = find_talent_spell( talent_tree::SPECIALIZATION, "Entropy" );
+  talent.devourer.collapsing_star   = find_talent_spell( talent_tree::SPECIALIZATION, "Collapsing Star" );
   talent.devourer.moment_of_craving = find_talent_spell( talent_tree::SPECIALIZATION, "Moment of Craving" );
 
-  talent.devourer.sunder         = find_talent_spell( talent_tree::SPECIALIZATION, "Sunder" );
-  talent.devourer.second_helping = find_talent_spell( talent_tree::SPECIALIZATION, "Second Helping" );
-  talent.devourer.waste_not      = find_talent_spell( talent_tree::SPECIALIZATION, "Waste Not" );
-  talent.devourer.soulshaper     = find_talent_spell( talent_tree::SPECIALIZATION, "Soulshaper" );
+  talent.devourer.gift_of_the_void = find_talent_spell( talent_tree::SPECIALIZATION, "Gift of the Void" );
+  talent.devourer.entropy          = find_talent_spell( talent_tree::SPECIALIZATION, "Entropy" );
+  talent.devourer.waste_not        = find_talent_spell( talent_tree::SPECIALIZATION, "Waste Not" );
+  talent.devourer.soulshaper       = find_talent_spell( talent_tree::SPECIALIZATION, "Soulshaper" );
 
-  talent.devourer.focused_ray     = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Ray" );
-  talent.devourer.collapsing_star = find_talent_spell( talent_tree::SPECIALIZATION, "Collapsing Star" );
-  talent.devourer.sweet_suffering = find_talent_spell( talent_tree::SPECIALIZATION, "Sweet Suffering" );
-  talent.devourer.voidpurge       = find_talent_spell( talent_tree::SPECIALIZATION, "Voidpurge" );
+  talent.devourer.singed_spirit    = find_talent_spell( talent_tree::SPECIALIZATION, "Singed Spirit" );
+  talent.devourer.sweet_suffering  = find_talent_spell( talent_tree::SPECIALIZATION, "Sweet Suffering" );
+  talent.devourer.second_helping   = find_talent_spell( talent_tree::SPECIALIZATION, "Second Helping" );
+  talent.devourer.umbral_blade     = find_talent_spell( talent_tree::SPECIALIZATION, "Umbral Blade" );
+  talent.devourer.improved_consume = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Consume" );
+  talent.devourer.sweet_release    = find_talent_spell( talent_tree::SPECIALIZATION, "Sweet Release" );
+  talent.devourer.voidpurge        = find_talent_spell( talent_tree::SPECIALIZATION, "Voidpurge" );
 
   talent.devourer.hungering_slash = find_talent_spell( talent_tree::SPECIALIZATION, "Hungering Slash" );
   talent.devourer.voidrage        = find_talent_spell( talent_tree::SPECIALIZATION, "Voidrage" );
-  talent.devourer.dark_ultimatum  = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Ultimatum" );
-  talent.devourer.beckon          = find_talent_spell( talent_tree::SPECIALIZATION, "Beckon" );
-  talent.devourer.voidglare_boon  = find_talent_spell( talent_tree::SPECIALIZATION, "Voidglare Boon" );
+  talent.devourer.focused_ray     = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Ray" );
 
-  talent.devourer.voidstep             = find_talent_spell( talent_tree::SPECIALIZATION, "Voidstep" );
-  talent.devourer.up_close             = find_talent_spell( talent_tree::SPECIALIZATION, "Up Close" );
+  talent.devourer.soulforged_blades = find_talent_spell( talent_tree::SPECIALIZATION, "Soulforged Blades" );
+  talent.devourer.singular_strikes  = find_talent_spell( talent_tree::SPECIALIZATION, "Singular Strikes" );
+  talent.devourer.demonic_instinct  = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Instinct" );
+  talent.devourer.devourers_edge    = find_talent_spell( talent_tree::SPECIALIZATION, "Devourer's Edge" );
+  talent.devourer.voidglare_boon    = find_talent_spell( talent_tree::SPECIALIZATION, "Voidglare Boon" );
+  talent.devourer.rolling_torment   = find_talent_spell( talent_tree::SPECIALIZATION, "Rolling Torment" );
+
+  talent.devourer.voidrush             = find_talent_spell( talent_tree::SPECIALIZATION, "Voidrush" );
+  talent.devourer.devourers_bite       = find_talent_spell( talent_tree::SPECIALIZATION, "Devourer's Bite" );
   talent.devourer.impending_apocalypse = find_talent_spell( talent_tree::SPECIALIZATION, "Impending Apocalypse" );
-  talent.devourer.rolling_torment      = find_talent_spell( talent_tree::SPECIALIZATION, "Rolling Torment" );
-  talent.devourer.improved_reap        = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Reap" );
-
-  talent.devourer.devourers_bite = find_talent_spell( talent_tree::SPECIALIZATION, "Devourer's Bite" );
-  talent.devourer.star_fragments = find_talent_spell( talent_tree::SPECIALIZATION, "Star Fragments" );
-  talent.devourer.calamitous     = find_talent_spell( talent_tree::SPECIALIZATION, "Calamitous" );
+  talent.devourer.calamitous           = find_talent_spell( talent_tree::SPECIALIZATION, "Calamitous" );
+  talent.devourer.star_fragments       = find_talent_spell( talent_tree::SPECIALIZATION, "Star Fragments" );
 
   talent.devourer.the_hunt     = find_talent_spell( talent_tree::SPECIALIZATION, "The Hunt" );
   talent.devourer.emptiness    = find_talent_spell( talent_tree::SPECIALIZATION, "Emptiness" );
   talent.devourer.soul_glutton = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Glutton" );
   talent.devourer.eradicate    = find_talent_spell( talent_tree::SPECIALIZATION, "Eradicate" );
-
-  talent.devourer.demonic_instinct  = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Instinct" );
-  talent.devourer.soulforged_blades = find_talent_spell( talent_tree::SPECIALIZATION, "Soulforged Blades" );
-  talent.devourer.devourers_edge    = find_talent_spell( talent_tree::SPECIALIZATION, "Devourer's Edge" );
-  talent.devourer.singular_strikes  = find_talent_spell( talent_tree::SPECIALIZATION, "Singular Strikes" );
-  talent.devourer.gift_of_the_void  = find_talent_spell( talent_tree::SPECIALIZATION, "Gift of the Void" );
-  talent.devourer.improved_consume  = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Consume" );
-  talent.devourer.umbral_blade      = find_talent_spell( talent_tree::SPECIALIZATION, "Umbral Blade" );
-  talent.devourer.singed_spirit     = find_talent_spell( talent_tree::SPECIALIZATION, "Singed Spirit" );
 
   // Devouer Apex Talents
   talent.devourer.midnight1 = find_talent_spell( talent_tree::SPECIALIZATION, 1242486 );
@@ -10453,7 +10442,7 @@ void demon_hunter_t::init_spells()
   spec.hungering_slash_buff          = talent_spell_lookup( talent.devourer.hungering_slash, 1239525 );
   spec.hungering_slash_damage        = talent_spell_lookup( talent.devourer.hungering_slash, 1239127 );
   spec.hungering_slash_energize      = talent_spell_lookup( talent.devourer.hungering_slash, 1239507 );
-  spec.voidstep                      = talent_spell_lookup( talent.devourer.voidstep, 1223157 );
+  spec.voidstep                      = talent_spell_lookup( talent.devourer.hungering_slash, 1223157 );
 
   mastery.a_fire_inside = talent.havoc.a_fire_inside->effectN( 6 ).trigger();
 
