@@ -1908,7 +1908,6 @@ public:
   bool in_death_and_decay() const;
   void parse_player_effects();
   const spell_data_t* conditional_spell_lookup( bool fn, int id );
-  double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
   double psuedo_random_p_from_c( double c );
   double pseudo_random_c_from_p( double p );
   // Rider of the Apocalypse
@@ -10472,12 +10471,12 @@ struct pestilence_t final : public death_knight_spell_t
     double damage         = 0.0;
     if ( vp->is_ticking() )
     {
-      damage += p()->tick_damage_over_time( vp->remains() * duration_mult, vp ) * damage_mult;
+      damage += vp->tick_damage_over_time( vp->remains() * duration_mult ) * damage_mult;
       vp->cancel();
     }
     if ( dp->is_ticking() )
     {
-      damage += p()->tick_damage_over_time( dp->remains() * duration_mult, dp ) * damage_mult;
+      damage += dp->tick_damage_over_time( dp->remains() * duration_mult ) * damage_mult;
       dp->cancel();
     }
     dam->execute_on_target( s->target, damage );
@@ -10643,8 +10642,8 @@ struct putrefy_aoe_t final : public death_knight_spell_t
         return;
 
       double dam = 0;
-      dam += p()->tick_damage_over_time( blightburst_dur, dk_td->dot.dread_plague ) * blightburst_mult;
-      dam += p()->tick_damage_over_time( blightburst_dur, dk_td->dot.virulent_plague ) * blightburst_mult;
+      dam += dk_td->dot.dread_plague->tick_damage_over_time( blightburst_dur ) * blightburst_mult;
+      dam += dk_td->dot.virulent_plague->tick_damage_over_time( blightburst_dur ) * blightburst_mult;
       blightburst->execute_on_target( s->target, dam );
       dk_td->dot.dread_plague->adjust_duration( blightburst_dur );
       dk_td->dot.virulent_plague->adjust_duration( blightburst_dur );
@@ -11087,7 +11086,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 
     double mult = p()->talent.unholy.scourge_strike->effectN( 2 ).percent();
 
-    double dam = p()->tick_damage_over_time( dur, dot ) * mult;
+    double dam = dot->tick_damage_over_time( dur ) * mult;
 
     if ( dot == td->dot.virulent_plague )
     {
@@ -12126,22 +12125,6 @@ void death_knight_t::start_a_feast_of_souls()
   } );
 }
 
-double death_knight_t::tick_damage_over_time( timespan_t duration, const dot_t* dot ) const
-{
-  if ( !dot->is_ticking() )
-  {
-    return 0.0;
-  }
-  action_state_t* state = dot->current_action->get_state( dot->state );
-  dot->current_action->calculate_tick_amount( state, dot->current_stack() );
-  double tick_base_damage  = state->result_raw;
-  timespan_t dot_tick_time = dot->current_action->tick_time( state );
-  double ticks_left        = duration / dot_tick_time;
-  double total_damage      = ticks_left * tick_base_damage;
-  action_state_t::release( state );
-  return total_damage;
-}
-
 void death_knight_t::trigger_infliction_of_sorrow( player_t* t, bool is_vampiric )
 {
   if ( !is_vampiric )
@@ -12166,7 +12149,7 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* t, bool is_vampiric
   }
 
   for ( auto& disease : disease_td )
-    disease_remaining_damage += tick_damage_over_time( disease->remains(), disease );
+    disease_remaining_damage += disease->tick_damage_over_time( disease->remains() );
 
   if ( disease_remaining_damage == 0 || disease_td.empty() )
     return;

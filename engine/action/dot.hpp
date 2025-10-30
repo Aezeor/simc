@@ -98,6 +98,8 @@ public:
   void tick();
   void last_tick();
   bool channel_interrupt();
+  // Get the value in damage the DoT would do over the specified duration
+  double tick_damage_over_time( timespan_t ) const;
 
   friend void sc_format_to( const dot_t&, fmt::format_context::iterator );
 

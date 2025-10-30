@@ -854,6 +854,28 @@ void dot_t::schedule_tick()
   }
 }
 
+double dot_t::tick_damage_over_time( timespan_t duration ) const
+{
+  if ( !ticking || duration <= 0_ms )
+    return 0.0;
+
+  action_state_t* as = current_action->get_state( state );
+
+  assert( as && "Dot tick damage calculation requires a valid action state." );
+
+  current_action->calculate_tick_amount( as, current_stack() );
+  double tick_base_damage = as->result_raw;
+
+  timespan_t dot_tick_time = current_action->tick_time( as );
+
+  double ticks_left = duration / dot_tick_time;
+  double total_damage = ticks_left * tick_base_damage;
+
+  action_state_t::release( as );
+
+  return total_damage;
+}
+
 void dot_t::start( timespan_t duration )
 {
   current_duration = duration;
