@@ -854,9 +854,9 @@ void dot_t::schedule_tick()
   }
 }
 
-double dot_t::tick_damage_over_time( timespan_t duration ) const
+double dot_t::tick_damage_over_time( timespan_t dur ) const
 {
-  if ( !ticking || duration <= 0_ms )
+  if ( !ticking || dur <= 0_ms )
     return 0.0;
 
   action_state_t* as = current_action->get_state( state );
@@ -868,12 +868,12 @@ double dot_t::tick_damage_over_time( timespan_t duration ) const
 
   timespan_t dot_tick_time = current_action->tick_time( as );
 
-  double ticks_left = duration / dot_tick_time;
-  double total_damage = ticks_left * tick_base_damage;
+  double ticks = dur / dot_tick_time;
+  double damage = ticks * tick_base_damage;
 
   action_state_t::release( as );
 
-  return total_damage;
+  return damage;
 }
 
 void dot_t::start( timespan_t duration )
