@@ -5266,7 +5266,6 @@ struct the_hunt_base_t
   the_hunt_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
     : base_t( n, p, s, o )
   {
-    cooldown                = p->cooldown.the_hunt;
     movement_directionality = movement_direction_type::TOWARDS;
     impact_action           = p->get_background_action<the_hunt_damage_t>( n );
     add_child( impact_action );
@@ -6227,7 +6226,7 @@ struct hungering_slash_base_t : public demon_hunter_spell_t
       p()->spawn_soul_fragment( soul_fragment::LESSER, number_of_souls_to_spawn );
     }
 
-    double composite_da_multiplier(const action_state_t* s) const override
+    double composite_da_multiplier( const action_state_t* s ) const override
     {
       double m = demon_hunter_spell_t::composite_da_multiplier( s );
 
