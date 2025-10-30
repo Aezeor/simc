@@ -10444,29 +10444,33 @@ void demon_hunter_t::init_spells()
   spec.sigil_of_misery_debuff    = talent_spell_lookup( talent.demon_hunter.sigil_of_misery, 207685 );
 
   // Spec Background Spells
-  spec.feast_of_souls_buff           = talent_spell_lookup( talent.devourer.feast_of_souls, 1232310 );
-  spec.devourers_bite_debuff         = talent_spell_lookup( talent.devourer.devourers_bite, 1241532 );
-  spec.void_metamorphosis            = talent_spell_lookup( talent.devourer.void_metamorphosis, 1217607 );
-  spec.void_metamorphosis_stack      = talent_spell_lookup( talent.devourer.void_metamorphosis, 1225789 );
-  spec.eradicate                     = talent_spell_lookup( talent.devourer.eradicate, 1225826 );
-  spec.eradicate_damage              = talent_spell_lookup( talent.devourer.eradicate, 1225827 );
-  spec.eradicate_buff                = talent_spell_lookup( talent.devourer.eradicate, 1239524 );
-  spec.void_ray_tick                 = talent_spell_lookup( talent.devourer.void_ray, 1213649 );
-  spec.void_ray_tick_meta            = talent_spell_lookup( talent.devourer.void_ray, 1214595 );
-  spec.moment_of_craving_buff        = talent_spell_lookup( talent.devourer.moment_of_craving, 1238495 );
-  spec.void_buildup                  = talent_spell_lookup( talent.devourer.void_metamorphosis, 473671 );
-  spec.voidglare_boon_energize       = talent_spell_lookup( talent.devourer.voidglare_boon, 1241922 );
-  spec.collapsing_star_damage        = talent_spell_lookup( talent.devourer.collapsing_star, 1221162 );
-  spec.collapsing_star_spell         = talent_spell_lookup( talent.devourer.collapsing_star, 1221150 );
-  spec.collapsing_star_ready_buff    = talent_spell_lookup( talent.devourer.collapsing_star, 1221171 );
-  spec.collapsing_star_stacking_buff = talent_spell_lookup( talent.devourer.collapsing_star, 1227702 );
-  spec.emptiness_buff                = talent_spell_lookup( talent.devourer.emptiness, 1242504 );
-  spec.impending_apocalypse_buff     = talent_spell_lookup( talent.devourer.impending_apocalypse, 1227338 );
-  spec.hungering_slash               = talent_spell_lookup( talent.devourer.hungering_slash, 1239123 );
-  spec.hungering_slash_buff          = talent_spell_lookup( talent.devourer.hungering_slash, 1239525 );
-  spec.hungering_slash_damage        = talent_spell_lookup( talent.devourer.hungering_slash, 1239127 );
-  spec.hungering_slash_energize      = talent_spell_lookup( talent.devourer.hungering_slash, 1239507 );
-  spec.voidstep                      = talent_spell_lookup( talent.devourer.hungering_slash, 1223157 );
+  spec.feast_of_souls_buff      = talent_spell_lookup( talent.devourer.feast_of_souls, 1232310 );
+  spec.devourers_bite_debuff    = talent_spell_lookup( talent.devourer.devourers_bite, 1241532 );
+  spec.void_metamorphosis       = talent_spell_lookup( talent.devourer.void_metamorphosis, 1217607 );
+  spec.void_metamorphosis_stack = talent_spell_lookup( talent.devourer.void_metamorphosis, 1225789 );
+  spec.eradicate                = talent_spell_lookup( talent.devourer.eradicate, 1225826 );
+  spec.eradicate_damage         = talent_spell_lookup( talent.devourer.eradicate, 1225827 );
+  spec.eradicate_buff           = talent_spell_lookup( talent.devourer.eradicate, 1239524 );
+  spec.void_ray_tick            = talent_spell_lookup( talent.devourer.void_ray, 1213649 );
+  spec.void_ray_tick_meta       = talent_spell_lookup( talent.devourer.void_ray, 1214595 );
+  spec.moment_of_craving_buff   = talent_spell_lookup( talent.devourer.moment_of_craving, 1238495 );
+  spec.void_buildup             = talent_spell_lookup( talent.devourer.void_metamorphosis, 473671 );
+  spec.voidglare_boon_energize  = talent_spell_lookup( talent.devourer.voidglare_boon, 1241922 );
+  spec.collapsing_star_damage =
+      conditional_spell_lookup( talent.devourer.collapsing_star->ok() || talent.devourer.midnight3->ok(), 1221162 );
+  spec.collapsing_star_spell =
+      conditional_spell_lookup( talent.devourer.collapsing_star->ok() || talent.devourer.midnight3->ok(), 1221150 );
+  spec.collapsing_star_ready_buff =
+      conditional_spell_lookup( talent.devourer.collapsing_star->ok() || talent.devourer.midnight3->ok(), 1221171 );
+  spec.collapsing_star_stacking_buff =
+      conditional_spell_lookup( talent.devourer.collapsing_star->ok() || talent.devourer.midnight3->ok(), 1227702 );
+  spec.emptiness_buff            = talent_spell_lookup( talent.devourer.emptiness, 1242504 );
+  spec.impending_apocalypse_buff = talent_spell_lookup( talent.devourer.impending_apocalypse, 1227338 );
+  spec.hungering_slash           = talent_spell_lookup( talent.devourer.hungering_slash, 1239123 );
+  spec.hungering_slash_buff      = talent_spell_lookup( talent.devourer.hungering_slash, 1239525 );
+  spec.hungering_slash_damage    = talent_spell_lookup( talent.devourer.hungering_slash, 1239127 );
+  spec.hungering_slash_energize  = talent_spell_lookup( talent.devourer.hungering_slash, 1239507 );
+  spec.voidstep                  = talent_spell_lookup( talent.devourer.hungering_slash, 1223157 );
 
   mastery.a_fire_inside = talent.havoc.a_fire_inside->effectN( 6 ).trigger();
 
