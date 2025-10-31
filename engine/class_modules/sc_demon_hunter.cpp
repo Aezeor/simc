@@ -709,8 +709,6 @@ public:
     const spell_data_t* demon_soul;
     const spell_data_t* demon_soul_empowered;
     const spell_data_t* felblade_damage;
-    const spell_data_t* felblade_reset_havoc;
-    const spell_data_t* felblade_reset_vengeance;
     const spell_data_t* immolation_aura_damage;
     const spell_data_t* infernal_armor_damage;
     const spell_data_t* sigil_of_flame_damage;
@@ -799,6 +797,7 @@ public:
     const spell_data_t* first_blood_death_sweep_damage;
     const spell_data_t* first_blood_death_sweep_2_damage;
     const spell_data_t* furious_gaze_buff;
+    const spell_data_t* glaive_tempest;
     const spell_data_t* glaive_tempest_damage;
     const spell_data_t* immolation_aura_3;
     const spell_data_t* initiative_buff;
@@ -1056,8 +1055,6 @@ public:
   // RPPM objects
   struct rppms_t
   {
-    real_ppm_t* felblade;
-
     // Havoc
     real_ppm_t* demonic_appetite;
   } rppm;
@@ -4052,15 +4049,14 @@ struct glaive_tempest_t : public demon_hunter_spell_t
     {
       background = dual = ground_aoe = true;
       aoe                            = -1;
-      reduced_aoe_targets            = p->talent.havoc.glaive_tempest->effectN( 2 ).base_value();
+      reduced_aoe_targets            = p->spec.glaive_tempest->effectN( 2 ).base_value();
     }
   };
 
   glaive_tempest_damage_t* glaive_tempest_mh;
   glaive_tempest_damage_t* glaive_tempest_oh;
 
-  glaive_tempest_t( util::string_view n, demon_hunter_t* p )
-    : demon_hunter_spell_t( n, p, p->talent.havoc.glaive_tempest )
+  glaive_tempest_t( util::string_view n, demon_hunter_t* p ) : demon_hunter_spell_t( n, p, p->spec.glaive_tempest )
   {
     school            = SCHOOL_CHAOS;  // Reporting purposes only
     glaive_tempest_mh = p->get_background_action<glaive_tempest_damage_t>( fmt::format( "{}_mh", name() ) );
@@ -6359,32 +6355,6 @@ struct soulscar_trigger_t : public BASE
   }
 };
 
-template <typename BASE>
-struct felblade_trigger_t : public BASE
-{
-  using base_t = felblade_trigger_t<BASE>;
-
-  felblade_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
-                      util::string_view o = {} )
-    : BASE( n, p, s, o )
-  {
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    BASE::impact( s );
-
-    if ( !BASE::p()->talent.demon_hunter.felblade->ok() || !BASE::p()->rppm.felblade->trigger() )
-      return;
-
-    if ( action_t::result_is_miss( s->result ) )
-      return;
-
-    BASE::p()->proc.felblade_reset->occur();
-    BASE::p()->cooldown.felblade->reset( true );
-  }
-};
-
 // Auto Attack ==============================================================
 
 struct auto_attack_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
@@ -6564,6 +6534,7 @@ struct blade_dance_base_t
   {
     timespan_t delay;
     action_t* trail_of_ruin_dot;
+    bool first_attack;
     bool last_attack;
     bool from_first_blood;
     unsigned glaive_tempest_targets;
@@ -6573,6 +6544,7 @@ struct blade_dance_base_t
       : demon_hunter_attack_t( name, p, first_blood_override ? first_blood_override : eff.trigger() ),
         delay( timespan_t::from_millis( eff.misc_value1() ) ),
         trail_of_ruin_dot( nullptr ),
+        first_attack( false ),
         last_attack( false ),
         from_first_blood( first_blood_override != nullptr )
     {
@@ -6616,7 +6588,7 @@ struct blade_dance_base_t
     {
       demon_hunter_attack_t::impact( s );
 
-      if ( result_is_hit( s->result ) && td( s->target )->debuffs.essence_break->up() )
+      if ( result_is_hit( s->result ) && td( s->target )->debuffs.essence_break->up() && first_attack )
       {
         p()->active.essence_break_proc->execute_on_target( target );
       }
@@ -6628,7 +6600,8 @@ struct blade_dance_base_t
           trail_of_ruin_dot->execute_on_target( s->target );
         }
 
-        if ( p()->talent.havoc.glaive_tempest->ok() && s->n_targets >= glaive_tempest_targets )
+        if ( p()->talent.havoc.glaive_tempest->ok() && s->n_targets >= glaive_tempest_targets &&
+             p()->resource_available( RESOURCE_FURY, p()->talent.havoc.glaive_tempest->effectN( 1 ).base_value() ) )
         {
           p()->active.glaive_tempest->execute_on_target( target );
         }
@@ -6673,6 +6646,11 @@ struct blade_dance_base_t
     for ( auto& attack : attacks )
     {
       attack->stats = stats;
+    }
+
+    if ( attacks.front() )
+    {
+      attacks.front()->first_attack = true;
     }
 
     if ( attacks.back() )
@@ -6765,9 +6743,14 @@ struct blade_dance_base_t
       }
     }
 
+    // Eternal Hunt buff expires ~500ms after Blade Dance is used
+
     if ( p()->buff.eternal_hunt->up() )
     {
-      cooldown->reset( true );
+      make_event( *p()->sim, 500_ms, [ this ] {
+        p()->buff.eternal_hunt->expire();
+        cooldown->reset( true );
+      } );
     }
   }
 
@@ -6860,10 +6843,12 @@ struct death_sweep_t : public demonsurge_trigger_t<demonsurge_ability::DEATH_SWE
   {
     assert( p()->buff.metamorphosis->check() );
 
-    // If Metamorphosis has less than 1s remaining, it gets extended so the whole Death Sweep happens during Meta.
-    if ( p()->buff.metamorphosis->remains_lt( 1_s ) )
+    timespan_t ds_extension = timespan_t::from_millis( data().effectN( 5 ).misc_value1() );
+
+    // If Metamorphosis has less than 950ms remaining, it gets extended so the whole Death Sweep happens during Meta.
+    if ( p()->buff.metamorphosis->remains_lt( ds_extension ) )
     {
-      p()->buff.metamorphosis->extend_duration( p(), 1_s - p()->buff.metamorphosis->remains() );
+      p()->buff.metamorphosis->extend_duration( p(), ds_extension - p()->buff.metamorphosis->remains() );
     }
 
     base_t::execute();
@@ -7227,9 +7212,9 @@ struct burning_wound_t : public demon_hunter_spell_t
 
 // Demon Blades =============================================================
 
-struct demon_blades_t : public felblade_trigger_t<demon_hunter_attack_t>
+struct demon_blades_t : public demon_hunter_attack_t
 {
-  demon_blades_t( demon_hunter_t* p ) : base_t( "demon_blades", p, p->spec.demon_blades_damage )
+  demon_blades_t( demon_hunter_t* p ) : demon_hunter_attack_t( "demon_blades", p, p->spec.demon_blades_damage )
   {
     background     = true;
     energize_delta = energize_amount * data().effectN( 2 ).m_delta();
@@ -7449,8 +7434,8 @@ struct fel_rush_t : public inertia_trigger_t<demon_hunter_attack_t>
 
 // Fracture =================================================================
 
-struct fracture_t : public voidfall_building_trigger_t<felblade_trigger_t<
-                        art_of_the_glaive_trigger_t<art_of_the_glaive_ability::RENDING_STRIKE, demon_hunter_attack_t>>>
+struct fracture_t : public voidfall_building_trigger_t<
+                        art_of_the_glaive_trigger_t<art_of_the_glaive_ability::RENDING_STRIKE, demon_hunter_attack_t>>
 {
   struct fracture_damage_t : public demon_hunter_attack_t
   {
@@ -8979,6 +8964,8 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
 
 void demon_hunter_td_t::target_demise()
 {
+  if ( dh().specialization() == DEMON_HUNTER_DEVOURER )
+    return;
   if ( !( target->is_enemy() ) )
     return;
   // Don't pollute results at the end-of-iteration deaths of everyone
@@ -9982,11 +9969,9 @@ void demon_hunter_t::init_rng()
     case DEMON_HUNTER_DEVOURER:
       break;
     case DEMON_HUNTER_HAVOC:
-      rppm.felblade         = get_rppm( "felblade", spell.felblade_reset_havoc );
       rppm.demonic_appetite = get_rppm( "demonic_appetite", spec.demonic_appetite );
       break;
     case DEMON_HUNTER_VENGEANCE:
-      rppm.felblade = get_rppm( "felblade", spell.felblade_reset_vengeance );
       break;
     default:
       break;
@@ -10434,14 +10419,12 @@ void demon_hunter_t::init_spells()
   talent.scarred.demonic_intensity = find_talent_spell( talent_tree::HERO, "Demonic Intensity" );
 
   // Class Background Spells
-  spell.felblade_damage          = talent_spell_lookup( talent.demon_hunter.felblade, 213243 );
-  spell.felblade_reset_havoc     = talent_spell_lookup( talent.demon_hunter.felblade, 236167 );
-  spell.felblade_reset_vengeance = talent_spell_lookup( talent.demon_hunter.felblade, 203557 );
-  spell.infernal_armor_damage    = talent_spell_lookup( talent.demon_hunter.infernal_armor, 320334 );
-  spell.immolation_aura_damage   = conditional_spell_lookup( spell.immolation_aura_2->ok(), 258921 );
-  spell.sigil_of_flame_damage    = find_spell( 204598 );
-  spell.sigil_of_flame_fury      = find_spell( 389787 );
-  spec.sigil_of_misery_debuff    = talent_spell_lookup( talent.demon_hunter.sigil_of_misery, 207685 );
+  spell.felblade_damage        = talent_spell_lookup( talent.demon_hunter.felblade, 213243 );
+  spell.infernal_armor_damage  = talent_spell_lookup( talent.demon_hunter.infernal_armor, 320334 );
+  spell.immolation_aura_damage = conditional_spell_lookup( spell.immolation_aura_2->ok(), 258921 );
+  spell.sigil_of_flame_damage  = find_spell( 204598 );
+  spell.sigil_of_flame_fury    = find_spell( 389787 );
+  spec.sigil_of_misery_debuff  = talent_spell_lookup( talent.demon_hunter.sigil_of_misery, 207685 );
 
   // Spec Background Spells
   spec.feast_of_souls_buff      = talent_spell_lookup( talent.devourer.feast_of_souls, 1232310 );
@@ -10485,6 +10468,7 @@ void demon_hunter_t::init_spells()
   spec.first_blood_blade_dance_2_damage = talent_spell_lookup( talent.havoc.first_blood, 391378 );
   spec.first_blood_death_sweep_damage   = talent_spell_lookup( talent.havoc.first_blood, 393055 );
   spec.first_blood_death_sweep_2_damage = talent_spell_lookup( talent.havoc.first_blood, 393054 );
+  spec.glaive_tempest                   = talent_spell_lookup( talent.havoc.glaive_tempest, 342817 );
   spec.glaive_tempest_damage            = talent_spell_lookup( talent.havoc.glaive_tempest, 342857 );
   spec.initiative_buff                  = talent_spell_lookup( talent.havoc.initiative, 391215 );
   spec.inner_demon_buff                 = talent_spell_lookup( talent.havoc.inner_demon, 390145 );
