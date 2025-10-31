@@ -1051,7 +1051,7 @@ struct summon_fiend_t final : public priest_spell_t
 
   const spell_data_t* pet_summon_spell( priest_t& p )
   {
-    if ( p.talents.voidweaver.voidwraith.enabled() )
+    if ( p.talents.voidweaver.voidwraith.enabled() && p.talents.shared.shadowfiend.enabled() )
       return p.talents.voidweaver.voidwraith_spell;
 
     return p.talents.shared.mindbender.enabled() ? p.talents.shared.mindbender : p.talents.shared.shadowfiend;
