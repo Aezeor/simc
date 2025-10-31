@@ -5309,7 +5309,8 @@ struct the_hunt_t : public the_hunt_base_t
 
   bool action_ready() override
   {
-    if ( p()->buff.metamorphosis->check() )
+    if ( p()->specialization() == DEMON_HUNTER_DEVOURER && p()->talent.scarred.demonic_intensity->ok() &&
+         p()->buff.metamorphosis->check() )
     {
       return false;
     }
@@ -10603,28 +10604,29 @@ void demon_hunter_t::init_spells()
   hero_spec.voidsurge_trigger = spec_talent_spell_lookup( DEMON_HUNTER_DEVOURER, talent.scarred.demonsurge, 1246161 );
   hero_spec.voidsurge_damage  = hero_spec.voidsurge_trigger->effectN( 1 ).trigger();
   hero_spec.voidsurge_stacking_buff = hero_spec.voidsurge_damage;
-  hero_spec.sigil_of_doom           = talent_spell_lookup( talent.scarred.demonic_intensity, 452490 );
-  hero_spec.sigil_of_doom_damage    = talent_spell_lookup( talent.scarred.demonic_intensity, 462030 );
-  hero_spec.abyssal_gaze            = talent_spell_lookup( talent.scarred.demonic_intensity, 452497 );
-  hero_spec.predators_wake          = talent_spell_lookup( talent.scarred.demonic_intensity, 1259431 );
-  hero_spec.pierce_the_veil         = talent_spell_lookup( talent.scarred.demonsurge, 1245483 );
-  hero_spec.reapers_toll            = talent_spell_lookup( talent.scarred.demonsurge, 1245470 );
+  hero_spec.sigil_of_doom           = spec_talent_spell_lookup( DEMON_HUNTER_HAVOC, talent.scarred.demonic_intensity, 452490 );
+  hero_spec.sigil_of_doom_damage    = spec_talent_spell_lookup( DEMON_HUNTER_HAVOC, talent.scarred.demonic_intensity, 462030 );
+  hero_spec.abyssal_gaze            = spec_talent_spell_lookup( DEMON_HUNTER_HAVOC, talent.scarred.demonic_intensity, 452497 );
+  hero_spec.predators_wake =
+      spec_talent_spell_lookup( DEMON_HUNTER_DEVOURER, talent.scarred.demonic_intensity, 1259431 );
+  hero_spec.pierce_the_veil = spec_talent_spell_lookup( DEMON_HUNTER_DEVOURER, talent.scarred.demonsurge, 1245483 );
+  hero_spec.reapers_toll    = spec_talent_spell_lookup( DEMON_HUNTER_DEVOURER, talent.scarred.demonsurge, 1245470 );
+  hero_spec.volatile_instinct =
+      spec_talent_spell_lookup( DEMON_HUNTER_DEVOURER, talent.scarred.volatile_instinct, 1272462 );
+
   switch ( specialization() )
   {
     case DEMON_HUNTER_DEVOURER:
       hero_spec.burning_blades_debuff             = talent_spell_lookup( talent.scarred.burning_blades, 1245654 );
       hero_spec.demonsurge_demonic_intensity_buff = talent_spell_lookup( talent.scarred.demonic_intensity, 1245496 );
-      hero_spec.volatile_instinct                 = talent_spell_lookup( talent.scarred.volatile_instinct, 1272462 );
       break;
     case DEMON_HUNTER_HAVOC:
       hero_spec.burning_blades_debuff             = talent_spell_lookup( talent.scarred.burning_blades, 453177 );
       hero_spec.demonsurge_demonic_intensity_buff = talent_spell_lookup( talent.scarred.demonic_intensity, 452489 );
-      hero_spec.volatile_instinct                 = spell_data_t::not_found();
       break;
     default:
       hero_spec.burning_blades_debuff             = spell_data_t::not_found();
       hero_spec.demonsurge_demonic_intensity_buff = spell_data_t::not_found();
-      hero_spec.volatile_instinct                 = spell_data_t::not_found();
       break;
   }
 
