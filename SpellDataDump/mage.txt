@@ -19363,7 +19363,7 @@ Family Flags     : 16
 Attributes       : Aura Is Debuff (26), Immunity Purges Effect (47), No Client Fail While Stunned, Fleeing, Confused (244)
 Effects          :
 #1 (id=1250075)  : Leap (29)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: Targeted Enemy (6) -> Unknown(151)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: Targeted Enemy (6) -> Enemies in Area between Caster and Destination (151)
 #2 (id=1250694)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 50 | Scaled Value: 50 | Mechanic: Snare | Target: Targeted Enemy (6)
 Description      : $@spelldesc1247687

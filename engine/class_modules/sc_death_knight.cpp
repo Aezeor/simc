@@ -5382,7 +5382,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
       p()->last_target = s->target;
 
     if ( p()->talent.sanlayn.pact_of_the_sanlayn.ok() && p()->pets.blood_beast.active_pet() != nullptr &&
-         dbc::is_school( this->get_school(), SCHOOL_SHADOW ) )
+         dbc::has_common_school( this->get_school(), SCHOOL_SHADOW ) )
     {
       p()->pets.blood_beast.active_pet()->accumulator +=
           s->result_amount * p()->talent.sanlayn.pact_of_the_sanlayn->effectN( 1 ).percent();
@@ -5787,11 +5787,11 @@ private:
 
 struct summon_magus_t : public death_knight_summon_spell_t
 {
-  summon_magus_t( std::string_view n, death_knight_t* p, const spell_data_t* s,  magus_of_the_dead_e type )
+  summon_magus_t( std::string_view n, death_knight_t* p, const spell_data_t* s, magus_of_the_dead_e type )
     : death_knight_summon_spell_t( n, p, s ), source( type ), default_duration( 0_s )
   {
     background = true;
-    switch (type)
+    switch ( type )
     {
       case MAGUS_ARMY_OF_THE_DEAD:
       case MAGUS_DARK_TRANSFORMATION:

@@ -19993,6 +19993,20 @@ Description      : Voidblade damage increased by $s1%.
 
 Hungering Slash deals $s2% increased damage to its primary target.
 
+Name             : Voidrush (id=1272778) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Cosmic
+Spell Type       : None
+Duration         : 1.5 seconds
+Labels           : 16: Class Spells
+                 : 66: Demon Hunter Spells
+                 : 292
+Attributes       : Can Proc From Procs (122), Do Not Consume Aura Stack On Proc (428)
+Effects          :
+#1 (id=1286069)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Tooltip          : Your Fury drain is dramatically reduced.
+
 Name             : Improved Consume (id=1272817) [Spell Family (107), Passive, Hidden] 
 Talent Entry     : Devourer [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Demon Hunter
