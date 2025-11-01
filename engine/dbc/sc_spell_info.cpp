@@ -468,7 +468,7 @@ static constexpr auto _targeting_strings = util::make_static_map<unsigned, std::
   { T_DESTINATION_NEARBY_ENTRY_OR_DB,                "Nearby: in Database or Entry"                   },
   { T_DESTINATION_DESTINATION_TARGET_TOWARDS_CASTER, "in Area From Target to Self"                    },
   { T_UNIT_OWN_CRITTER,                              "Own Critter"                                    },
-  { T_UNIT_CASTER_TO_DESTINATION_AREA_ENEMY,         "Enemies in Area between Caster and Destination" },
+  { T_UNIT_CASTER_AREA_ENEMY,                        "Enemy in Area around Caster"                    },
 } );
 
 static constexpr auto _resource_strings = util::make_static_map<int, std::string_view>( {
