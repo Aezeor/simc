@@ -681,8 +681,8 @@ public:
       player_talent_t flamebound;
       player_talent_t monster_rising;
 
-      player_talent_t blind_focus;     // NYI
-      player_talent_t undying_embers;  // NYI
+      player_talent_t blind_focus;     // Partial implementation (no Meta)
+      player_talent_t undying_embers;  // Partial implementation (Devourer)
       player_talent_t volatile_instinct;
 
       player_talent_t demonic_intensity;
@@ -1018,6 +1018,9 @@ public:
     proc_t* soul_sigils;
     proc_t* shattered_souls;
 
+    // Devourer
+    proc_t* spontaneous_immolation;
+
     // Havoc
     proc_t* demonic_appetite;
     proc_t* chaos_strike_in_essence_break;
@@ -1049,6 +1052,7 @@ public:
     // Scarred
     std::unordered_map<demonsurge_ability, proc_t*> demonsurge_abilities;
     std::unordered_map<voidsurge_ability, proc_t*> voidsurge_abilities;
+    proc_t* undying_embers;
 
     // Set Bonuses
   } proc;
@@ -3044,7 +3048,7 @@ struct voidrush_trigger_t : BASE
   using base_t = voidrush_trigger_t<BASE>;
 
   voidrush_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
-                             util::string_view o = {} )
+                      util::string_view o = {} )
     : BASE( n, p, s, o )
   {
   }
@@ -5307,8 +5311,7 @@ struct the_hunt_base_t
 struct predators_wake_t : public voidsurge_trigger_t<voidsurge_ability::PREDATORS_WAKE, the_hunt_base_t>
 {
   predators_wake_t( demon_hunter_t* p, util::string_view o )
-    : base_t( "predators_wake", p,
-              p->talent.devourer.the_hunt->ok() ? p->hero_spec.predators_wake : spell_data_t::not_found(), o )
+    : base_t( "predators_wake", p, p->hero_spec.predators_wake, o )
   {
   }
 
@@ -5720,6 +5723,23 @@ struct soul_immolation_base_t : public demon_hunter_spell_t
       p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
     }
   }
+
+  void last_tick( dot_t* d ) override
+  {
+    demon_hunter_spell_t::last_tick( d );
+
+    if ( p()->talent.scarred.undying_embers->ok() &&
+         rng().roll( p()->talent.scarred.undying_embers->effectN( 2 ).percent() ) )
+    {
+      p()->proc.undying_embers->occur();
+
+      // retriggers the DoT but doesn't count as a cast/execute
+      action_state_t* undying_embers_state = get_state();
+      snapshot_state( undying_embers_state, result_amount_type::DMG_OVER_TIME );
+
+      make_event( sim, [ undying_embers_state, this ] { trigger_dot( undying_embers_state ); } );
+    }
+  }
 };
 
 struct soul_immolation_t : public soul_immolation_base_t
@@ -5744,6 +5764,13 @@ struct spontaneous_immolation_t : public soul_immolation_base_t
   spontaneous_immolation_t( util::string_view n, demon_hunter_t* p ) : soul_immolation_base_t( n, p, "" )
   {
     cooldown->duration = 0_s;
+  }
+
+  void execute() override
+  {
+    soul_immolation_base_t::execute();
+
+    p()->proc.spontaneous_immolation->occur();
   }
 };
 
@@ -9898,6 +9925,9 @@ void demon_hunter_t::init_procs()
   proc.soul_sigils                   = get_proc( "soul_sigils" );
   proc.shattered_souls               = get_proc( "shattered_souls" );
 
+  // Devourer
+  proc.spontaneous_immolation = get_proc( "spontaneous_immolation" );
+
   // Havoc
   proc.demonic_appetite                = get_proc( "demonic_appetite" );
   proc.chaos_strike_in_essence_break   = get_proc( "chaos_strike_in_essence_break" );
@@ -9942,6 +9972,7 @@ void demon_hunter_t::init_procs()
       get_proc( voidsurge_ability_name( voidsurge_ability::REAPERS_TOLL ) );
   proc.voidsurge_abilities[ voidsurge_ability::VOLATILE_INSTINCT ] =
       get_proc( voidsurge_ability_name( voidsurge_ability::VOLATILE_INSTINCT ) );
+  proc.undying_embers = get_proc( "undying_embers" );
 
   // Set Bonuses
 }
@@ -10654,11 +10685,14 @@ void demon_hunter_t::init_spells()
   hero_spec.voidsurge_trigger = spec_talent_spell_lookup( DEMON_HUNTER_DEVOURER, talent.scarred.demonsurge, 1246161 );
   hero_spec.voidsurge_damage  = hero_spec.voidsurge_trigger->effectN( 1 ).trigger();
   hero_spec.voidsurge_stacking_buff = hero_spec.voidsurge_damage;
-  hero_spec.sigil_of_doom           = spec_talent_spell_lookup( DEMON_HUNTER_HAVOC, talent.scarred.demonic_intensity, 452490 );
-  hero_spec.sigil_of_doom_damage    = spec_talent_spell_lookup( DEMON_HUNTER_HAVOC, talent.scarred.demonic_intensity, 462030 );
-  hero_spec.abyssal_gaze            = spec_talent_spell_lookup( DEMON_HUNTER_HAVOC, talent.scarred.demonic_intensity, 452497 );
+  hero_spec.sigil_of_doom = spec_talent_spell_lookup( DEMON_HUNTER_HAVOC, talent.scarred.demonic_intensity, 452490 );
+  hero_spec.sigil_of_doom_damage =
+      spec_talent_spell_lookup( DEMON_HUNTER_HAVOC, talent.scarred.demonic_intensity, 462030 );
+  hero_spec.abyssal_gaze = spec_talent_spell_lookup( DEMON_HUNTER_HAVOC, talent.scarred.demonic_intensity, 452497 );
   hero_spec.predators_wake =
-      spec_talent_spell_lookup( DEMON_HUNTER_DEVOURER, talent.scarred.demonic_intensity, 1259431 );
+      conditional_spell_lookup( specialization() == DEMON_HUNTER_DEVOURER && talent.devourer.the_hunt->ok() &&
+                                    talent.scarred.demonic_intensity->ok(),
+                                1259431 );
   hero_spec.pierce_the_veil = spec_talent_spell_lookup( DEMON_HUNTER_DEVOURER, talent.scarred.demonsurge, 1245483 );
   hero_spec.reapers_toll    = spec_talent_spell_lookup( DEMON_HUNTER_DEVOURER, talent.scarred.demonsurge, 1245470 );
   hero_spec.volatile_instinct =
