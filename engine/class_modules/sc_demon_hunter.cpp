@@ -1470,6 +1470,9 @@ bool movement_buff_t::trigger( int s, double v, double c, timespan_t d )
   assert( distance_moved > 0 );
   assert( buff_duration() > timespan_t::zero() );
 
+  if ( dh->specialization() == DEMON_HUNTER_DEVOURER )
+    return buff_t::trigger( s, v, c, d );
+
   // Check if we're already moving away from the target, if so we will now be moving towards it
   if ( dh->current.distance_to_move || dh->buff.out_of_range->check() || dh->buff.vengeful_retreat_move->check() ||
        dh->buff.metamorphosis_move->check() )
@@ -3026,17 +3029,32 @@ struct hungering_slash_trigger_t : BASE
   {
   }
 
-  void impact( action_state_t* s ) override
+  void execute() override
   {
-    BASE::impact( s );
+    BASE::execute();
 
-    if ( !BASE::p()->talent.devourer.hungering_slash->ok() )
-      return;
+    if ( BASE::p()->talent.devourer.hungering_slash->ok() )
+      BASE::p()->buff.hungering_slash->trigger();
+  }
+};
 
-    if ( s->chain_target != 0 || !BASE::result_is_hit( s->result ) )
-      return;
+template <typename BASE>
+struct voidrush_trigger_t : BASE
+{
+  using base_t = voidrush_trigger_t<BASE>;
 
-    BASE::p()->buff.hungering_slash->trigger();
+  voidrush_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                             util::string_view o = {} )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    if ( BASE::p()->talent.devourer.voidrush->ok() )
+      BASE::p()->buff.voidrush->trigger();
   }
 };
 
@@ -5227,7 +5245,8 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
 // The Hunt =================================================================
 
 struct the_hunt_base_t
-  : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exergy_trigger_t<demon_hunter_spell_t>>>
+  : public voidrush_trigger_t<hungering_slash_trigger_t<
+        unbound_chaos_trigger_t<inertia_trigger_trigger_t<exergy_trigger_t<demon_hunter_spell_t>>>>>
 {
   struct the_hunt_dot_t : public demon_hunter_spell_t
   {
@@ -5239,10 +5258,10 @@ struct the_hunt_base_t
     }
   };
 
-  struct the_hunt_damage_t : public hungering_slash_trigger_t<demon_hunter_spell_t>
+  struct the_hunt_damage_t : public demon_hunter_spell_t
   {
     the_hunt_damage_t( util::string_view n, demon_hunter_t* p )
-      : base_t( fmt::format( "{}_damage", n ), p, p->spec.the_hunt_impact )
+      : demon_hunter_spell_t( fmt::format( "{}_damage", n ), p, p->spec.the_hunt_impact )
     {
       dual          = true;
       impact_action = p->get_background_action<the_hunt_dot_t>( n );
@@ -5277,9 +5296,6 @@ struct the_hunt_base_t
     p()->buff.reavers_glaive->trigger();
 
     p()->buff.empowered_eye_beam->trigger();
-
-    if ( p()->talent.devourer.voidrush->ok() )
-      p()->buff.voidrush->trigger();
   }
 
   timespan_t travel_time() const override
@@ -5579,11 +5595,11 @@ struct consume_t : public consume_base_t
   }
 };
 
-struct voidblade_base_t : public demon_hunter_spell_t
+struct voidblade_base_t : public voidrush_trigger_t<hungering_slash_trigger_t<demon_hunter_spell_t>>
 {
-  struct voidblade_damage_t : public hungering_slash_trigger_t<demon_hunter_spell_t>
+  struct voidblade_damage_t : public demon_hunter_spell_t
   {
-    voidblade_damage_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spec.voidblade )
+    voidblade_damage_t( util::string_view name, demon_hunter_t* p ) : demon_hunter_spell_t( name, p, p->spec.voidblade )
     {
       background = dual = true;
       gain              = p->get_gain( "voidblade" );
@@ -5591,7 +5607,7 @@ struct voidblade_base_t : public demon_hunter_spell_t
 
     void impact( action_state_t* s ) override
     {
-      base_t::impact( s );
+      demon_hunter_spell_t::impact( s );
 
       if ( result_is_hit( s->result ) && p()->talent.devourer.devourers_bite->ok() )
       {
@@ -5601,7 +5617,7 @@ struct voidblade_base_t : public demon_hunter_spell_t
   };
 
   voidblade_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
-    : demon_hunter_spell_t( n, p, s, o )
+    : base_t( n, p, s, o )
   {
     cooldown = p->cooldown.voidblade;
 
@@ -5610,14 +5626,6 @@ struct voidblade_base_t : public demon_hunter_spell_t
 
     execute_action = p->get_background_action<voidblade_damage_t>( fmt::format( "{}_damage", n ) );
     add_child( execute_action );
-  }
-  
-  void execute() override
-  {
-    demon_hunter_spell_t::execute();
-
-    if ( p()->talent.devourer.voidrush.enabled() )
-      p()->buff.voidrush->trigger();
   }
 };
 
@@ -5961,7 +5969,8 @@ struct void_ray_t : public final_breath_trigger_t<doomsayer_trigger_t<demon_hunt
   void execute() override
   {
     tick_action        = p()->buff.metamorphosis->up() ? tick_meta : tick;
-    cooldown->duration = p()->buff.metamorphosis->up() ? p()->spec.void_metamorphosis->effectN( 8 ).time_value()
+    cooldown->duration = p()->buff.metamorphosis->up() ? p()->spec.void_metamorphosis->effectN( 8 ).time_value() +
+                                                             p()->talent.devourer.voidpurge->effectN( 1 ).time_value()
                                                        : p()->talent.devourer.void_ray->cooldown();
 
     base_t::execute();
@@ -6327,7 +6336,7 @@ struct hungering_slash_t : public hungering_slash_base_t
 
   bool action_ready() override
   {
-    if ( p()->buff.metamorphosis->check() )
+    if ( p()->buff.metamorphosis->check() && p()->talent.scarred.demonsurge->ok() )
     {
       return false;
     }
