@@ -5307,7 +5307,8 @@ struct the_hunt_base_t
 struct predators_wake_t : public voidsurge_trigger_t<voidsurge_ability::PREDATORS_WAKE, the_hunt_base_t>
 {
   predators_wake_t( demon_hunter_t* p, util::string_view o )
-    : base_t( "predators_wake", p, p->hero_spec.predators_wake, o )
+    : base_t( "predators_wake", p,
+              p->talent.devourer.the_hunt->ok() ? p->hero_spec.predators_wake : spell_data_t::not_found(), o )
   {
   }
 
@@ -5642,6 +5643,7 @@ struct pierce_the_veil_t : public voidsurge_trigger_t<voidsurge_ability::PIERCE_
     {
       return false;
     }
+
     return base_t::action_ready();
   }
 };
