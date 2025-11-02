@@ -5775,7 +5775,7 @@ struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
     }
   }
 
-  unsigned int souls_to_consume() const
+  virtual unsigned int souls_to_consume() const
   {
     unsigned int souls = as<unsigned int>( p()->spec.shattered_souls->effectN( 2 ).base_value() );
     if ( p()->buff.moment_of_craving->up() )
