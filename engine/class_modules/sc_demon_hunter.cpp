@@ -5775,19 +5775,35 @@ struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
     }
   }
 
+  unsigned int souls_to_consume() const
+  {
+    unsigned int souls = as<unsigned int>( p()->spec.shattered_souls->effectN( 2 ).base_value() );
+    if ( p()->buff.moment_of_craving->up() )
+    {
+      souls += as<unsigned int>( p()->buff.moment_of_craving->check_value() );
+    }
+    return souls;
+  }
+
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
+  {
+    if ( util::str_compare_ci( name, "max_souls_consumed" ) )
+      return make_fn_expr( name, [ this ]() { return souls_to_consume(); } );
+
+    if ( util::str_compare_ci( name, "souls_consumed" ) )
+      return make_fn_expr( name, [ this ]() {
+        return std::min( p()->get_active_soul_fragments( soul_fragment::ANY ), souls_to_consume() );
+      } );
+
+    return base_t::create_expression( name );
+  }
+
   void execute() override
   {
     p()->buff.reap->trigger();
     base_t::execute();
 
-    double souls_to_consume = p()->spec.shattered_souls->effectN( 2 ).base_value();
-    if ( p()->buff.moment_of_craving->up() )
-    {
-      souls_to_consume += p()->buff.moment_of_craving->check_value();
-    }
-
-    unsigned fragments_consumed =
-        p()->consume_soul_fragments( soul_fragment::LESSER, false, as<unsigned int>( souls_to_consume ) );
+    unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume() );
 
     damage_action->set_target( target );
     action_state_t* damage_state = damage_action->get_state();
