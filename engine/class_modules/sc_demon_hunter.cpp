@@ -674,7 +674,7 @@ public:
 
       player_talent_t burning_blades;
       player_talent_t violent_transformation;
-      player_talent_t enduring_torment;  // NYI for Vengeance
+      player_talent_t enduring_torment;  // Partial Implementation (Havoc)
 
       player_talent_t untethered_fury;
       player_talent_t student_of_suffering;
@@ -9523,18 +9523,32 @@ void demon_hunter_t::create_buffs()
 
   buff.enduring_torment = make_buff( this, "enduring_torment", hero_spec.enduring_torment_buff )
                               ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-                              ->set_allow_precombat( true );
+                              ->set_allow_precombat( true )
+                              ->set_quiet( true );
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
     buff.enduring_torment->set_default_value_from_effect_type( A_HASTE_ALL )->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   }
 
   buff.monster_rising = make_buff( this, "monster_rising", hero_spec.monster_rising_buff )
-                            ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-                            ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
                             ->set_allow_precombat( true )
                             ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-                            ->add_invalidate( CACHE_AGILITY );
+                            ->set_quiet( true );
+  switch ( specialization() )
+  {
+    case DEMON_HUNTER_DEVOURER:
+      buff.monster_rising->set_default_value_from_effect( 2 )
+          ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+          ->add_invalidate( CACHE_INTELLECT );
+      break;
+    case DEMON_HUNTER_HAVOC:
+      buff.monster_rising->set_default_value_from_effect( 1 )
+          ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+          ->add_invalidate( CACHE_AGILITY );
+      break;
+    default:
+      break;
+  }
 
   buff.pursuit_of_angryness =
       make_buff( this, "pursuit_of_angriness", talent.scarred.pursuit_of_angriness )
