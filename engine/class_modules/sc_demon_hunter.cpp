@@ -912,6 +912,7 @@ public:
   // Set Bonus effects
   struct set_bonuses_t
   {
+    const spell_data_t* stars_fury; // MID Devourer 4pc Energize
     // Auxilliary
   } set_bonuses;
 
@@ -6122,6 +6123,12 @@ struct collapsing_star_t : public demon_hunter_spell_t
   {
     execute_action = p->get_background_action<collapsing_star_damage_t>( "collapsing_star_damage" );
     add_child( execute_action );
+
+    if ( p->sets->has_set_bonus( DEMON_HUNTER_DEVOURER, MID1, B4 ) )
+    {
+      execute_energize_action =
+          p->get_background_action<demon_hunter_energize_t>( "stars_fury", p->set_bonuses.stars_fury );
+    }
   }
 
   void execute() override
@@ -10738,6 +10745,8 @@ void demon_hunter_t::init_spells()
   // Set Bonus Items ========================================================
 
   // Set Bonus Auxilliary ===================================================
+  set_bonuses.stars_fury = conditional_spell_lookup( sets->has_set_bonus( DEMON_HUNTER_DEVOURER, MID1, B4 ),
+                                                     1271663 );  // Stars' Fury (set bonus)
 
   // Wounded Quarry (442808) is affected by Demon Hide.
   register_passive_affect_list( talent.havoc.demon_hide,
