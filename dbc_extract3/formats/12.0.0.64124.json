@@ -343,8 +343,10 @@
       { "data_type": "i", "field": "id" },
       { "data_type": "i", "field": "order" },
       { "data_type": "i", "field": "id_item" },
-      { "data_type": "f", "field": "unk_1", "formats": { "cpp": "%9.3f" } },
-      { "data_type": "f", "field": "unk_2", "formats": { "cpp": "%9.3f" } }
+      { "data_type": "i", "field": "id_currency_types" },
+      { "data_type": "f", "field": "max_difficulty_adjustment", "formats": { "cpp": "%9.3f" } },
+      { "data_type": "f", "field": "unk_2", "formats": { "cpp": "%9.3f" } },
+      { "data_type": "i", "field": "unk_3"}
     ]
   },
   "CraftingReagentRequirement": {
@@ -407,6 +409,9 @@
       { "data_type": "I", "field": "recharging_cycle_duration_ms" },
       { "data_type": "f", "field": "warband_transfer_pct" },
       { "data_type": "B", "field": "unk_17" },
+      { "data_type": "f", "field": "unk_18" },
+      { "data_type": "B", "field": "unk_19" },
+      { "data_type": "i", "field": "id_mcr_currency" },
       { "data_type": "I", "field": "flags", "elements": 2 }
     ]
   },
@@ -1978,7 +1983,7 @@
       { "data_type": "i", "field": "visual_style" },
       { "data_type": "i", "field": "id_left_trait_node", "ref": "TraitNode" },
       { "data_type": "i", "field": "id_right_trait_node", "ref": "TraitNode" },
-      { "data_type": "i", "field": "type" }
+      { "data_type": "B", "field": "type" }
     ]
   },
   "TraitNode": {
