@@ -10736,8 +10736,17 @@ struct putrefy_t final : public death_knight_spell_t
       }
     } );
 
+    // Reset ghouls to putrefy for next cast
+    ghouls_to_putrefy = as<int>( data().effectN( 1 ).base_value() );
+
     if ( p()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, MID1, B4 ) )
       p()->buffs.blighted->trigger();
+  }
+
+  void reset() override
+  {
+    death_knight_spell_t::reset();
+    ghouls_to_putrefy = as<int>( data().effectN( 1 ).base_value() );
   }
 
   bool ready() override
