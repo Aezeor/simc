@@ -912,7 +912,7 @@ public:
   // Set Bonus effects
   struct set_bonuses_t
   {
-    const spell_data_t* stars_fury; // MID Devourer 4pc Energize
+    const spell_data_t* stars_fury;  // MID Devourer 4pc Energize
     // Auxilliary
   } set_bonuses;
 
@@ -10752,7 +10752,7 @@ void demon_hunter_t::init_spells()
   register_passive_affect_list( talent.havoc.demon_hide,
                                 affect_list_t( 1, 3 ).add_spell( hero_spec.wounded_quarry_damage->id() ) );
 
-  switch (specialization())
+  switch ( specialization() )
   {
     case DEMON_HUNTER_DEVOURER:
       deregister_passive_effect( talent.scarred.untethered_fury->effectN( 1 ) );
@@ -10760,6 +10760,8 @@ void demon_hunter_t::init_spells()
     case DEMON_HUNTER_HAVOC:
     case DEMON_HUNTER_VENGEANCE:
       deregister_passive_effect( talent.scarred.untethered_fury->effectN( 2 ) );
+      break;
+    default:
       break;
   }
 
