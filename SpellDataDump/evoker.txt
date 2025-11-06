@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.64124 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.64228 midnight-BETA
 Name             : Arcane Resistance (desc=Racial Passive) (id=822) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Blood Elf (0x200)
@@ -591,7 +591,7 @@ Cooldown         : 120 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Affecting Spells : Shadow Blades (121471 effect#2), Nightstalker (130493 effect#1), Broadside (193356 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), Fazed (441224 effect#4)
+Affecting Spells : Shadow Blades (121471 effect#2), Broadside (193356 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), Fazed (441224 effect#4)
 Family Flags     : 3
 Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Prevents Anim (50), No Proc Equip Requirement (97), Completely Blocked (99), Can Proc From Procs (122), Suppress Weapon Procs (151), Reset cooldown upon ending an encounter (333)
 Aura Interrupt   : Damage (Script) (27)
@@ -4207,6 +4207,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 381757 | Target: Self (1)
 #13 (id=1012796) : Trigger Spell (64): Blessing of the Bronze
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 381758 | Target: Self (1)
+#14 (id=1286693) : Remove Aura (203): Blessing of the Bronze Highlight
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1271912 | Radius: 100 yards | Target: Targeted Ally or Raid (118)
 Description      : Weave the threads of time, reducing the cooldown of a major movement ability for all party and raid members by $381732s1% for $381732d.
 
 Name             : Echo (desc=Bronze) (id=364343) [Spell Family (224)] 
@@ -14002,6 +14004,7 @@ Name             : Evoker Augmentation 11.0 Class Set 4pc (id=453671) [Spell Fam
 Class            : Evoker
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
@@ -14020,6 +14023,7 @@ Name             : Evoker Augmentation 11.0 Class Set 2pc (id=453672) [Spell Fam
 Class            : Evoker
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
@@ -14041,6 +14045,7 @@ Name             : Evoker Preservation 11.0 Class Set 2pc (id=453673) [Spell Fam
 Class            : Evoker
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
@@ -14061,6 +14066,7 @@ Name             : Evoker Preservation 11.0 Class Set 4pc (id=453674) [Spell Fam
 Class            : Evoker
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
@@ -14075,6 +14081,7 @@ Name             : Evoker Devastation 11.0 Class Set 4pc (id=453675) [Spell Fami
 Class            : Evoker
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
@@ -14093,6 +14100,7 @@ Name             : Evoker Devastation 11.0 Class Set 2pc (id=453676) [Spell Fami
 Class            : Evoker
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
@@ -14459,6 +14467,7 @@ Name             : Evoker Preservation 11.1 Class Set 2pc (id=1215549) [Spell Fa
 Class            : Evoker
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 292
                  : 295
@@ -14521,6 +14530,7 @@ Name             : Evoker Preservation 11.1 Class Set 4pc (id=1215610) [Spell Fa
 Class            : Evoker
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 292
                  : 295
@@ -14540,6 +14550,7 @@ Name             : Evoker Devastation 11.1 Class Set 2pc (id=1215687) [Spell Fam
 Class            : Evoker
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 292
                  : 295
@@ -14560,6 +14571,7 @@ Name             : Evoker Augmentation 11.1 Class Set 2pc (id=1215689) [Spell Fa
 Class            : Evoker
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 292
                  : 295
@@ -14578,6 +14590,7 @@ Name             : Evoker Augmentation 11.1 Class Set 4pc (id=1215691) [Spell Fa
 Class            : Evoker
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 292
                  : 295
@@ -14597,6 +14610,7 @@ Name             : Evoker Devastation 11.1 Class Set 4pc (id=1215692) [Spell Fam
 Class            : Evoker
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 292
                  : 295
@@ -14817,6 +14831,7 @@ Name             : Evoker Flameshaper 11.2 Class Set 2pc (id=1236364) [Spell Fam
 Class            : Evoker
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 292
                  : 295
@@ -14832,6 +14847,7 @@ Name             : Evoker Flameshaper 11.2 Class Set 4pc (id=1236365) [Spell Fam
 Class            : Evoker
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 292
                  : 295
@@ -14847,6 +14863,7 @@ Name             : Evoker Scalecommander 11.2 Class Set 2pc (id=1236366) [Spell 
 Class            : Evoker
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 292
                  : 295
@@ -14866,6 +14883,7 @@ Name             : Evoker Scalecommander 11.2 Class Set 4pc (id=1236367) [Spell 
 Class            : Evoker
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 292
                  : 295
@@ -14885,6 +14903,7 @@ Name             : Evoker Chronowarden 11.2 Class Set 2pc (id=1236368) [Spell Fa
 Class            : Evoker
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 292
                  : 295
@@ -14902,6 +14921,7 @@ Name             : Evoker Chronowarden 11.2 Class Set 4pc (id=1236369) [Spell Fa
 Class            : Evoker
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 292
                  : 295
@@ -15158,7 +15178,6 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
-                 : 3617
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1234901)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -16325,7 +16344,7 @@ Labels           : 16: Class Spells
                  : 1216: Evoker Spells
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Attributes       : Do Not Display Range (126), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1284749)  : Apply Aura (6) | Modify All Haste% (193) | Attributes: Suppress Points Stacking (6)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -16343,4 +16362,22 @@ Description      : $@spelldesc1271788
 Tooltip          : Haste increased by ${$w1}.1%.$?$w3>0[ Damage increased by $w3%][]
 
 Generating Essence Burst every $t4 sec.
+
+Name             : Blessing of the Bronze Highlight (id=1271912) [Spell Family (224), Hidden] 
+Class            : Evoker
+School           : Physical
+Spell Type       : None
+Duration         : 8 seconds
+Labels           : 16: Class Spells
+                 : 292
+                 : 1216: Evoker Spells
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
+Proc Flags       : Cast Successful
+Triggered By     : Blessing of the Bronze (364342)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Effects          :
+#1 (id=1284924)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 

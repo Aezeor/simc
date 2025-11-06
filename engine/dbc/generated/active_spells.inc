@@ -1,5 +1,5 @@
-// Active class spells, wow build 12.0.0.64124
-static constexpr std::array<active_class_spell_t, 354> __active_spells_data { {
+// Active class spells, wow build 12.0.0.64228
+static constexpr std::array<active_class_spell_t, 353> __active_spells_data { {
   {  1,    0,     100,       0, "Charge"                             },
   {  1,    0,     355,       0, "Taunt"                              },
   {  1,    0,    1464,       0, "Slam"                               },
@@ -227,7 +227,6 @@ static constexpr std::array<active_class_spell_t, 354> __active_spells_data { {
   {  8,   62,   44425,  319836, "Arcane Barrage"                     },
   {  8,   62, 1229376,       0, "Single-Button Assistant"            },
   {  8,   63,     133,     116, "Fireball"                           },
-  {  8,   63,    2120,       0, "Flamestrike"                        },
   {  8,   63, 1229376,       0, "Single-Button Assistant"            },
   {  8,   64, 1229376,       0, "Single-Button Assistant"            },
   {  9,    0,     126,       0, "Eye of Kilrogg"                     },
@@ -356,7 +355,7 @@ static constexpr std::array<active_class_spell_t, 354> __active_spells_data { {
   { 13, 1473, 1229376,       0, "Single-Button Assistant"            },
 } };
 
-// Pet active spells, wow build 12.0.0.64124
+// Pet active spells, wow build 12.0.0.64228
 static constexpr std::array<active_pet_spell_t, 133> __active_pet_spells_data { {
   {  3,    2649, "Growl"                              },
   {  3,   16827, "Claw"                               },

@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 12.0.0.64124
-static constexpr std::array<item_name_description_t, 1020> __item_name_description_data { {
+// Item name descriptions, wow build 12.0.0.64228
+static constexpr std::array<item_name_description_t, 1021> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -1016,9 +1016,10 @@ static constexpr std::array<item_name_description_t, 1020> __item_name_descripti
   { 14362, "Prey"                                        },
   { 14363, "Horde"                                       },
   { 14364, "Alliance"                                    },
-  { 14365, "Vendors and Rares"                           },
+  { 14365, "Twilight Ascension Vendors and Rare Creatures" },
   { 14366, "Housing Dye Pigment"                         },
   { 14367, "Gravestone Cosmetic"                         },
   { 14368, "Pinnacle Cache - Midnight Season 1"          },
+  { 14401, "Nobility"                                    },
 } };
 

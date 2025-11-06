@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 12.0.0.64124
-static constexpr std::array<specialization_spell_entry_t, 608> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 12.0.0.64228
+static constexpr std::array<specialization_spell_entry_t, 607> __specialization_spell_data { {
   {  0,  535,  264656,      0, "Pathfinding"                       , 0 },
   {  0,  535,  264662,      0, "Endurance Training"                , 0 },
   {  0,  535,  264663,      0, "Predator's Thirst"                 , 0 },
@@ -341,7 +341,6 @@ static constexpr std::array<specialization_spell_entry_t, 608> __specialization_
   {  8,   62, 1229376,      0, "Single-Button Assistant"           , 0 },
   {  8,   62, 1256909,      0, "Arcane Mage"                       , 0 },
   {  8,   63,     133,    116, "Fireball"                          , 0 },
-  {  8,   63,    2120,      0, "Flamestrike"                       , 0 },
   {  8,   63,   12846,      0, "Mastery: Ignite"                   , 0 },
   {  8,   63,   44448,      0, "Pyroblast Clearcasting Driver"     , 0 },
   {  8,   63,  137019,      0, "Fire Mage"                         , 0 },

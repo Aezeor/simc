@@ -1,5 +1,5 @@
-// Item effects, wow build 12.0.0.64124
-static constexpr std::array<item_effect_t, 10848> __item_effect_data { {
+// Item effects, wow build 12.0.0.64228
+static constexpr std::array<item_effect_t, 10849> __item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -10175,29 +10175,29 @@ static constexpr std::array<item_effect_t, 10848> __item_effect_data { {
   { 207772, 1224458, 237790,   0,   1,    0,      -1,      -1 }, // Draining Essence
   { 206921, 1234139, 237946,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 206922, 1234151, 237947,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
-  { 206923, 455727, 237948,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206923, 1234183, 237948,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 206925, 1234140, 237950,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 206926, 1234152, 237951,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 206927, 1234184, 237952,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
-  { 206930, 455757, 238009,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206930, 1234161, 238009,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 206931, 395185, 238009,   1,   1,    0,      -1,      -1 }, // Herbalism Tool Equipped (DNT)
-  { 206932, 455768, 238010,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206932, 1234145, 238010,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 206933, 394872, 238010,   1,   1,    0,      -1,      -1 }, // Mining Tool Equipped (DNT)
-  { 206934, 455740, 238011,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206934, 1234141, 238011,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 206935, 395335, 238011,   1,   1,    0,      -1,      -1 }, // Skinning Tool Equipped (DNT)
-  { 206936, 455692, 238012,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206936, 1234149, 238012,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 206937, 395393, 238012,   1,   1,    0,      -1,      -1 }, // Leatherworking Tool Equipped (DNT)
-  { 206938, 455694, 238013,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206938, 1234181, 238013,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 206939, 395392, 238013,   1,   1,    0,      -1,      -1 }, // Blacksmithing Tool Equipped (DNT)
-  { 206940, 455698, 238014,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206940, 1234162, 238014,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 206941, 395185, 238014,   1,   1,    0,      -1,      -1 }, // Herbalism Tool Equipped (DNT)
-  { 206942, 455723, 238015,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206942, 1234146, 238015,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 206943, 394872, 238015,   1,   1,    0,      -1,      -1 }, // Mining Tool Equipped (DNT)
-  { 206944, 455771, 238016,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206944, 1234146, 238016,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 206945, 395335, 238016,   1,   1,    0,      -1,      -1 }, // Skinning Tool Equipped (DNT)
-  { 206946, 455754, 238017,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206946, 1234150, 238017,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 206947, 395393, 238017,   1,   1,    0,      -1,      -1 }, // Leatherworking Tool Equipped (DNT)
-  { 206948, 455782, 238018,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 206948, 1234182, 238018,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 206949, 395392, 238018,   1,   1,    0,      -1,      -1 }, // Blacksmithing Tool Equipped (DNT)
   { 207392, 1224856, 238386,   0,   1,    0,      -1,      -1 }, // Void-Touched Fragment
   { 207401, 1224917, 238386,   1,   1,    0,      -1,      -1 }, // Void-Touched Fragment
@@ -10511,7 +10511,7 @@ static constexpr std::array<item_effect_t, 10848> __item_effect_data { {
   { 211530, 395369, 244711,   1,   1,    0,      -1,      -1 }, // Fishing Tool Equipped (DNT)
   { 211531, 455702, 244712,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211532, 395369, 244712,   1,   1,    0,      -1,      -1 }, // Fishing Tool Equipped (DNT)
-  { 211533, 455739, 244713,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211533, 1234153, 244713,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211534, 395399, 244713,   1,   1,    0,      -1,      -1 }, // Jewelcrafting Tool Equipped (DNT)
   { 211535, 1234154, 244714,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211536, 395399, 244714,   1,   1,    0,      -1,      -1 }, // Jewelcrafting Tool Equipped (DNT)
@@ -10521,9 +10521,9 @@ static constexpr std::array<item_effect_t, 10848> __item_effect_data { {
   { 211540, 455729, 244716,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211541, 394914, 244716,   1,   1,    0,      -1,      -1 }, // Mining Gear Equipped (DNT)
   { 211542, 441807, 244716,   2,   1,    0,      -1,      -1 }, // Hard Hat
-  { 211543, 455789, 244717,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211543, 1234169, 244717,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211544, 395397, 244717,   1,   1,    0,      -1,      -1 }, // Engineering Tool Equipped (DNT)
-  { 211545, 455778, 244718,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 211545, 1234170, 244718,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211546, 395397, 244718,   1,   1,    0,      -1,      -1 }, // Engineering Tool Equipped (DNT)
   { 211547, 455743, 244719,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 211548, 394914, 244719,   1,   1,    0,      -1,      -1 }, // Mining Gear Equipped (DNT)
@@ -10554,17 +10554,17 @@ static constexpr std::array<item_effect_t, 10848> __item_effect_data { {
   { 212119, 336126, 245751,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
   { 212120, 345229, 245752,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
   { 212121, 345231, 245753,   0,   0, 1141,  120000,   20000 }, // Gladiator's Emblem
-  { 212131, 455731, 245775,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212131, 1234157, 245775,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 212132, 395400, 245775,   1,   1,    0,      -1,      -1 }, // Inscription Tool Equipped (DNT)
-  { 212133, 455708, 245776,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212133, 1234158, 245776,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 212134, 395400, 245776,   1,   1,    0,      -1,      -1 }, // Inscription Tool Equipped (DNT)
-  { 212135, 455716, 245777,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212135, 1234185, 245777,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 212136, 395394, 245777,   1,   1,    0,      -1,      -1 }, // Alchemy Tool Equipped (DNT)
-  { 212137, 455787, 245778,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212137, 1234186, 245778,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 212138, 395394, 245778,   1,   1,    0,      -1,      -1 }, // Alchemy Tool Equipped (DNT)
-  { 212139, 455738, 245779,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212139, 1234177, 245779,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 212140, 395472, 245779,   1,   1,    0,      -1,      -1 }, // Cooking Gear Equipped (DNT)
-  { 212141, 455772, 245780,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212141, 1234178, 245780,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 212142, 395472, 245780,   1,   1,    0,      -1,      -1 }, // Cooking Gear Equipped (DNT)
   { 212153, 1245050, 245829,   0,   1,    0,      -1,      -1 }, // Hunt
   { 212170, 1245051, 245846,   0,   1,    0,      -1,      -1 }, // Rot
@@ -10627,15 +10627,15 @@ static constexpr std::array<item_effect_t, 10848> __item_effect_data { {
   { 212654, 395472, 246522,   1,   1,    0,      -1,      -1 }, // Cooking Gear Equipped (DNT)
   { 212655, 1234176, 246523,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 212656, 395469, 246523,   1,   1,    0,      -1,      -1 }, // Enchanting Gear Equipped (DNT)
-  { 212665, 455698, 246533,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212665, 1234162, 246533,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 212666, 395185, 246533,   1,   1,    0,      -1,      -1 }, // Herbalism Tool Equipped (DNT)
-  { 212667, 455723, 246534,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212667, 1234146, 246534,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 212668, 394872, 246534,   1,   1,    0,      -1,      -1 }, // Mining Tool Equipped (DNT)
-  { 212669, 455771, 246535,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212669, 1234142, 246535,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 212670, 395335, 246535,   1,   1,    0,      -1,      -1 }, // Skinning Tool Equipped (DNT)
-  { 212671, 455754, 246536,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212671, 1234150, 246536,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 212672, 395393, 246536,   1,   1,    0,      -1,      -1 }, // Leatherworking Tool Equipped (DNT)
-  { 212673, 455782, 246537,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 212673, 1234182, 246537,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 212674, 395392, 246537,   1,   1,    0,      -1,      -1 }, // Blacksmithing Tool Equipped (DNT)
   { 212821, 1221429, 246757,   0,   1,    0,      -1,      -1 }, // Feeling Lucky
   { 212822, 1221429, 246758,   0,   1,    0,      -1,      -1 }, // Feeling Lucky
@@ -10783,15 +10783,15 @@ static constexpr std::array<item_effect_t, 10848> __item_effect_data { {
   { 226581, 395396, 259177,   1,   1,    0,      -1,      -1 }, // Tailoring Tool Equipped (DNT)
   { 226584, 455702, 259179,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 226585, 395369, 259179,   1,   1,    0,      -1,      -1 }, // Fishing Tool Equipped (DNT)
-  { 226588, 455745, 259181,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 226588, 1234154, 259181,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 226589, 395399, 259181,   1,   1,    0,      -1,      -1 }, // Jewelcrafting Tool Equipped (DNT)
-  { 226592, 455778, 259183,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 226592, 1234170, 259183,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 226593, 395397, 259183,   1,   1,    0,      -1,      -1 }, // Engineering Tool Equipped (DNT)
-  { 226597, 455787, 259205,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 226597, 1234188, 259205,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 226598, 395394, 259205,   1,   1,    0,      -1,      -1 }, // Alchemy Tool Equipped (DNT)
-  { 226601, 455708, 259207,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
-  { 226602, 395400, 259207,   1,   1,    0,      -1,      -1 }, // Inscription Tool Equipped (DNT)
-  { 226605, 455772, 259209,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 226601, 1234178, 259207,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
+  { 226602, 395395, 259207,   1,   1,    0,      -1,      -1 }, // Cooking Tool Equipped (DNT)
+  { 226605, 1234158, 259209,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 226606, 395472, 259209,   1,   1,    0,      -1,      -1 }, // Cooking Gear Equipped (DNT)
   { 226637, 1234184, 259230,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 226640, 1234152, 259232,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
@@ -10848,9 +10848,10 @@ static constexpr std::array<item_effect_t, 10848> __item_effect_data { {
   { 229041, 1272693, 264878,   1,   0,    0,      -1,      -1 }, // Astalor's Anguish Agitator
   { 229102, 1272939, 264968,   0,   1,    0,      -1,      -1 }, // Telluric Leyblossom
   { 229124, 1273106, 265027,   0,   1,    0,      -1,      -1 }, // Lucky Lynx Locket
+  { 229304, 1276678, 265657,   0,   1,    0,      -1,      -1 }, // Fiber of Living Agony
 } };
 
-static const std::array<uint16_t, 10848> __item_effect_id_index { {
+static const std::array<uint16_t, 10849> __item_effect_id_index { {
    1088,  1089,  1090,  1091,  1092,  1093,  1094,  1097,
    1098,  1099,  1100,  1101,  1102,  1103,  1104,  1105,
    1106,  1107,  1108,  1109,  1112,  1113,  1114,  1115,
@@ -12207,5 +12208,6 @@ static const std::array<uint16_t, 10848> __item_effect_id_index { {
   10825, 10826, 10827, 10828, 10829, 10830, 10831, 10832,
   10833, 10834, 10835, 10836, 10837, 10838, 10839, 10840,
   10675, 10841, 10842, 10843, 10844, 10845, 10846, 10847,
+  10848,
 } };
 

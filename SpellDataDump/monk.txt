@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.64124 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.64228 midnight-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1188,7 +1188,7 @@ Cooldown         : 120 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Affecting Spells : Shadow Blades (121471 effect#2), Nightstalker (130493 effect#1), Broadside (193356 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), Fazed (441224 effect#4)
+Affecting Spells : Shadow Blades (121471 effect#2), Broadside (193356 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), Fazed (441224 effect#4)
 Family Flags     : 3
 Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Prevents Anim (50), No Proc Equip Requirement (97), Completely Blocked (99), Can Proc From Procs (122), Suppress Weapon Procs (151), Reset cooldown upon ending an encounter (333)
 Aura Interrupt   : Damage (Script) (27)
@@ -3009,6 +3009,7 @@ Effects          :
 Description      : $@spelldesc115294
 
 Name             : Invoke Xuen, the White Tiger (id=123904) [Spell Family (53)] 
+Talent Entry     : Conduit of the Celestials (Windwalker) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -3022,7 +3023,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
-Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Celestial Conduit (1248992 effect#1)
+Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Efficient Training (450989 effect#6), Celestial Conduit (1248992 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), No Aura Icon (60), Do Not Reset Combat Timers (81), Can Proc From Procs (122), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
@@ -3771,7 +3772,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 690: Major Cooldowns
                  : 930
-Affecting Spells : Gift of the Celestials (388212 effects: #1, #2), Celestial Conduit (1248992 effect#1)
+Affecting Spells : Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Efficient Training (450989 effect#6), Celestial Conduit (1248992 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Do Not Reset Combat Timers (81), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Hide Damage Absorb UI (380), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38)
@@ -7979,10 +7980,9 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No AutoCast (AI) (49), Do Not Display Range (126), Not In Spellbook (143), Always Line of Sight (185), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
-#1 (id=737590)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -20000 | Scaled Value: -20000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Weapons of Order (310454), Zenith (1249625)
-                   Family Flags: 77
+#1 (id=737590)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
+                   Base Value: -20000 | Scaled Value: -20000 | Misc Value: 1592 (Category) | Target: Self (1)
+                   Affected Spells (Category): Zenith (1249625)
 Description      : The cooldown of $?s152173[Serenity][Zenith] is reduced by ${$s1/-1000} sec.
 
 Name             : Misty Peaks (id=280386) [Spell Family (53), Hidden] 
@@ -8699,7 +8699,7 @@ Internal Cooldown: 0.1 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee
-Affecting Spells : Spiritual Focus (280197 effect#1), Tear of Morning (337993 effect#2), Tear of Morning (387995 effect#2), Drinking Horn Cover (391370 effect#1), Windwalker Monk (1258122 effect#8), Brewmaster Monk (1258153 effect#7), Weapon of Wind (1272678 effects: #1, #2)
+Affecting Spells : Tear of Morning (337993 effect#2), Tear of Morning (387995 effect#2), Drinking Horn Cover (391370 effect#1), Windwalker Monk (1258122 effect#8), Brewmaster Monk (1258153 effect#7), Weapon of Wind (1272678 effects: #1, #2)
 Family Flags     : 77
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
@@ -9428,7 +9428,7 @@ Cooldown         : 120 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Celestial Conduit (1248992 effect#1)
+Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Efficient Training (450989 effect#6), Celestial Conduit (1248992 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), No Aura Icon (60), Do Not Reset Combat Timers (81), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
@@ -9782,7 +9782,7 @@ Cooldown         : 120 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Celestial Conduit (1248992 effect#1)
+Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Efficient Training (450989 effect#6), Celestial Conduit (1248992 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), No Aura Icon (60), Do Not Reset Combat Timers (81), No Aura Log (202), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Do Not Log Aura Refresh (291), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
@@ -14403,6 +14403,24 @@ Description      : Strike of the Windlord and Whirling Dragon Punch grant you $s
 
 Thunderfist discharges upon melee strikes, dealing $393566s1 Nature damage.
 
+Name             : Xuen's Bond (id=392986) [Spell Family (53), Passive, Hidden] 
+Talent Entry     : Conduit of the Celestials (Windwalker) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=200]
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 22: Monk Spells
+                 : 292
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269)
+Effects          :
+#1 (id=1031606)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+#2 (id=1031607)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -30000 | Scaled Value: -30000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Invoke Xuen, the White Tiger (123904), Invoke Niuzao, the Black Ox (132578), Invoke Yu'lon, the Jade Serpent (322118), Invoke Chi-Ji, the Red Crane (325197), Invoke Niuzao, the Black Ox (395267)
+                   Family Flags: 3
+Description      : Invoke Xuen, the White Tiger's damage is increased by ${$s1}% and its cooldown is reduced by ${$s2/-1000} sec.
+
 Name             : Skyreach (id=392991) [Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
@@ -14584,6 +14602,21 @@ Description      : $@spelldesc337483
 Tooltip          : Increases the damage done by your next Chi Explosion by $s1%.
 
 Chi Explosion is triggered whenever you use Spinning Crane Kick.
+
+Name             : Xuen's Bond (id=393058) [Spell Family (53), Hidden] 
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Duration         : 24 seconds
+Labels           : 16: Class Spells
+                 : 22: Monk Spells
+                 : 292
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269)
+Effects          :
+#1 (id=1031750)  : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Description      : $@spelldesc392986
 
 Name             : Forbidden Technique (id=393099) [Spell Family (53)] 
 School           : Physical
@@ -14823,18 +14856,13 @@ School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
-Proc Chance      : 100%
-Proc Flags       : Cast Successful
 Attributes       : Passive (6), No Aura Cancel (31), No Threat (42), No Aura Icon (60), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Spellbook (143), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268), Do Not Log on Learn (355), Don't close loot window (379), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1033529)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -90000 | Scaled Value: -90000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Touch of Death (322109), Touch of Death (322111)
                    Family Flags: 40
-#2 (id=1151005)  : Apply Aura (6) | Proc Trigger Spell (42): Fatal Touch
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 450832 | Target: Self (1)
-Description      : Touch of Death increases your damage by $450832s1% for $450832d after being cast and its cooldown is reduced by ${$s1/-1000} sec.
-Tooltip          : Touch of Death cooldown reduced by ${$s1/-1000} sec.
+Description      : Touch of Death's cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Brewmaster's Rhythm (id=394797) [Spell Family (53)] 
 Class            : Monk
@@ -14947,7 +14975,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 690: Major Cooldowns
-Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Celestial Conduit (1248992 effect#1)
+Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Efficient Training (450989 effect#6), Celestial Conduit (1248992 effect#1)
 Family Flags     : 3
 Attributes       : No AutoCast (AI) (49), Do Not Reset Combat Timers (81), Can Proc From Procs (122), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Hide Damage Absorb UI (380), Allow Class Ability Procs (416)
 Effects          :
@@ -16385,6 +16413,7 @@ The damage of Tiger Palm is increased by $s2%.
 
 Name             : Restore Balance (id=442719) [Spell Family (53), Passive] 
 Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=100]
+                 : Conduit of the Celestials (Windwalker) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -17926,13 +17955,13 @@ Labels           : 16: Class Spells
                  : 292
                  : 5097: Invoke Niuzao, the Black Ox (132578 effect#7), Invoke Niuzao, the Black Ox (132578 effect#8), Zenith (1249625 effect#5), Zenith (1249625 effect#6), Zenith (1249625 effect#11), Zenith (1249625 effect#12)
 Proc Chance      : 101%
-Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : White Melee, Yellow Melee, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : Passive (6), Not Shapeshifted (16), No Threat (42), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=1150629)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1151332)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 240 | Scaled Value: 240 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
                    Modified By: Invoke Niuzao, the Black Ox (132578 effect#8), Zenith (1249625 effect#6), Zenith (1249625 effect#12)
 #3 (id=1167368)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -17941,7 +17970,7 @@ Effects          :
 #5 (id=1167370)  : Apply Aura (6) | Dummy (4)
                    Base Value: 625 | Scaled Value: 625 | Target: Self (1)
                    Modified By: Invoke Niuzao, the Black Ox (132578 effect#7), Zenith (1249625 effect#5), Zenith (1249625 effect#11)
-Description      : Every $<value> damage you deal generates a Flurry Charge. When you cast $?c3[Fists of Fury][Keg Smash], unleash all Flurry Charges, dealing $450617s1 Physical damage per charge. 
+Description      : Your auto attacks have a chance to generate $s1-$s2 Flurry Charges. When you cast $?c3[Fists of Fury][Keg Smash], unleash all Flurry Charges, dealing $450617s1 Physical damage per charge. 
 Variables        : $value=${($AP*($450615s5/100)*(1+$@versadmg))}
 
 Name             : Flurry Strike (id=450617) [Spell Family (53)] 
@@ -18134,7 +18163,6 @@ Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Triggered By     : Fatal Touch (394123)
 Effects          :
 #1 (id=1151001)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -18331,7 +18359,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1151270)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1151622)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Fists of Fury (117418)
@@ -18340,7 +18368,7 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
                    Affected Spells: Keg Smash (121253)
                    Family Flags: 57
-Description      : Damage dealt by Fists of Fury and Keg Smash counts as double towards Flurry Charge generation.
+Description      : Auto attack critical strikes generate double the amount of Flurry Charges.
 
 Fists of Fury damage increased by $s2%.
 Keg Smash damage increased by $s3%.
@@ -18354,8 +18382,6 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 5146: Windwalker Monk (1258122 effect#16), Windwalker Monk (1258122 effect#17)
-Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1151271)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -18370,14 +18396,19 @@ Effects          :
                    Modified By: Windwalker Monk (1258122 effect#17)
 #3 (id=1151637)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-#4 (id=1151638)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
+#4 (id=1151638)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
+                   Base Value: -10000 | Scaled Value: -10000 | Misc Value: 1592 (Category) | Target: Self (1)
+                   Affected Spells (Category): Zenith (1249625)
 #5 (id=1151757)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Spinning Crane Kick (101546), Spinning Crane Kick (107270), Spinning Crane Kick (322729)
                    Family Flags: 8, 63
+#6 (id=1289290)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -25000 | Scaled Value: -25000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Invoke Xuen, the White Tiger (123904), Invoke Niuzao, the Black Ox (132578), Invoke Yu'lon, the Jade Serpent (322118), Invoke Chi-Ji, the Red Crane (325197), Invoke Niuzao, the Black Ox (395267)
+                   Family Flags: 3
 Description      : Energy spenders deal an additional $s1% damage.
-Every $s3 Energy spent reduces the cooldown of $?c1[Invoke Niuzao, the Black Ox][Zenith] by ${$s4/1000} sec.
+The cooldown of $?c1[Invoke Niuzao, the Black Ox is reduced by ${$s6/-1000} sec][Zenith is reduced by ${$s4/-1000} sec].
 
 Name             : Martial Precision (id=450990) [Spell Family (53), Passive] 
 Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=2, col=3, max_rank=1, req_points=1]
@@ -18470,7 +18501,7 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Stacks           : 10 maximum
+Stacks           : 30 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40)
@@ -19191,14 +19222,14 @@ Name             : Jade Swiftness (id=451943) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Duration         : Aura (infinite)
+Duration         : 3 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Attributes       : Not an Action (92), No Aura Log (202)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
-#1 (id=1152760)  : Apply Aura (6) | Increase Speed% (31)
+#1 (id=1152760)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : $@spelldesc388193
 Tooltip          : Movement speed increased by $s1%.
@@ -19425,6 +19456,7 @@ Name             : Monk Brewmaster 11.0 Class Set 2pc (id=453623) [Spell Family 
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -19443,6 +19475,7 @@ Name             : Monk Brewmaster 11.0 Class Set 4pc (id=453624) [Spell Family 
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -19457,6 +19490,7 @@ Name             : Monk Windwalker 11.0 Class Set 4pc (id=453625) [Spell Family 
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -19476,6 +19510,7 @@ Name             : Monk Windwalker 11.0 Class Set 2pc (id=453626) [Spell Family 
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -19492,6 +19527,7 @@ Name             : Monk Mistweaver 11.0 Class Set 4pc (id=453627) [Spell Family 
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -19512,6 +19548,7 @@ Name             : Monk Mistweaver 11.0 Class Set 2pc (id=453628) [Spell Family 
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -19625,6 +19662,7 @@ Name             : Monk Windwalker 11.0 Class Set 4pc (id=454505) [Spell Family 
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -19935,7 +19973,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #2 (id=1251978)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : At the end of your Fists of Fury channel, you release a Jadefire Stomp, dealing $388207s1 damage to $s2 enemies in front of you.
+Description      : At the end of your Fists of Fury channel, you release a Jadefire Stomp, dealing $388207s1 damage to $s2 enemies in front of you and increasing your movement speed by $451943s1% for $451943d.
 
 Name             : Lotus Infusion (id=458431) [Spell Family (53), Passive] 
 Talent Entry     : Mistweaver [tree=spec, row=7, col=6, max_rank=1, req_points=8]
@@ -20242,7 +20280,7 @@ Effects          :
                    Base Value: 215 | Scaled Value: 215 | PvP Coefficient: 0.745 | Misc Value: 3 | Misc Value 2: 2577 (Label) | Target: Self (1)
                    Affected Spells (Label): Ancient Teachings (388023)
 #2 (id=1241878)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 5 | Scaled Value: 5 | Stat: Sta | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Stat: Sta | Target: Self (1)
 Description      : Ancient Teachings transfers an additional $388026s2% damage to healing.
 
 Your Stamina is increased by $s2%.
@@ -20448,6 +20486,7 @@ Name             : Druid Restoration 11.1 Class Set 2pc (id=1215502) [Spell Fami
 Class            : Monk, Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -20510,6 +20549,7 @@ Name             : Monk Mistweaver 11.1 Class Set 2pc (id=1215543) [Spell Family
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -20572,6 +20612,7 @@ Name             : Monk Mistweaver 11.1 Class Set 4pc (id=1215609) [Spell Family
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -20591,6 +20632,7 @@ Name             : Monk Windwalker 11.1 Class Set 2pc (id=1215717) [Spell Family
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -20609,6 +20651,7 @@ Name             : Monk Windwalker 11.1 Class Set 4pc (id=1215718) [Spell Family
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -20626,6 +20669,7 @@ Name             : Monk Brewmaster 11.1 Class Set 2pc (id=1215996) [Spell Family
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -20644,6 +20688,7 @@ Name             : Monk Brewmaster 11.1 Class Set 4pc (id=1215997) [Spell Family
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -21037,6 +21082,7 @@ Name             : Monk Master of Harmony 11.2 Class Set 2pc (id=1236377) [Spell
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -21058,6 +21104,7 @@ Name             : Monk Master of Harmony 11.2 Class Set 4pc (id=1236378) [Spell
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -21075,6 +21122,7 @@ Name             : Monk Shado-Pan 11.2 Class Set 2pc (id=1236379) [Spell Family 
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -21099,6 +21147,7 @@ Name             : Monk Shado-Pan 11.2 Class Set 4pc (id=1236380) [Spell Family 
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -21119,6 +21168,7 @@ Name             : Monk Conduit of the Celestials 11.2 Class Set 2pc (id=1236381
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -21141,6 +21191,7 @@ Name             : Monk Conduit of the Celestials 11.2 Class Set 4pc (id=1236382
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -21736,7 +21787,7 @@ Effects          :
 Description      : $@spelldesc1248833
 
 Name             : Celestial Conduit (id=1248989) [Spell Family (53), Passive] 
-Talent Entry     : Conduit of the Celestials (Windwalker) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
+Talent Entry     : Conduit of the Celestials (Windwalker) [tree=hero, row=4, col=2, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -21749,7 +21800,7 @@ Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143
 Effects          :
 #1 (id=1252210)  : Apply Aura (6) | Proc Trigger Spell (42): Celestial Conduit
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1248992 | Target: Self (1)
-Description      : Gain the power to Invoke Xuen, the White Tiger. After Invoking Xuen, you may cast Celestial Conduit within $1248992d.
+Description      : After Invoking Xuen, the White Tiger you may cast Celestial Conduit within $1248992d.
 
 $@spellicon443028 $@spellname443028:
 $@spelldesc443028
@@ -21781,7 +21832,7 @@ Resource         : 5% Base Mana (0) (id=311334) w/ Mistweaver Monk (id=137024)
 Duration         : 15 seconds
 Cooldown         : 16 seconds
 Charges          : 2 (90 seconds cooldown)
-Category         : 1592 (Type 0x1): Strive for Perfection (296320 effect#4), Strive for Perfection (299367 effect#4), Strive for Perfection (299369 effect#4), Benevolent Faerie (327710 effect#3), Haunted Mask (356968 effect#3)
+Category         : 1592 (Type 0x1): Spiritual Focus (280197 effect#1), Strive for Perfection (296320 effect#4), Strive for Perfection (299367 effect#4), Strive for Perfection (299369 effect#4), Benevolent Faerie (327710 effect#3), Haunted Mask (356968 effect#3), Efficient Training (450989 effect#4)
 Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
@@ -21789,7 +21840,7 @@ Labels           : 16: Class Spells
                  : 2375
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting Spells : Spiritual Focus (280197 effect#1), Tear of Morning (337993 effect#2), Tear of Morning (387995 effect#2), Drinking Horn Cover (391370 effect#1), Windwalker Monk (1258122 effect#8), Brewmaster Monk (1258153 effect#7), Weapon of Wind (1272678 effects: #1, #2)
+Affecting Spells : Tear of Morning (337993 effect#2), Tear of Morning (387995 effect#2), Drinking Horn Cover (391370 effect#1), Windwalker Monk (1258122 effect#8), Brewmaster Monk (1258153 effect#7), Weapon of Wind (1272678 effects: #1, #2)
 Triggered By     : Tigereye Brew (1261724)
 Family Flags     : 77
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333)
@@ -23847,7 +23898,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (2
 Effects          :
 #1 (id=1285642)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Description      : Rising Sun Kick gains $s1% additional effectiveness from Mastery: Combo Breaker.
+Description      : Rising Sun Kick gains $s1% additional effectiveness from Mastery: Combo Strikes.
 
 Name             : Chi Transfer (id=1272452) [Spell Family (53), Passive] 
 Talent Entry     : Generic [tree=class, row=9, col=4, max_rank=1, req_points=23]
@@ -24062,7 +24113,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #2 (id=1286581)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Description      : Celestial Conduit's damage is increased by $s1% when striking a single target.
+Description      : Celestial Conduit's healing and damage is increased by $s1% when striking a single target.
 
 Each addtional target reduces this bonus by $s2%.
 

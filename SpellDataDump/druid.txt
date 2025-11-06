@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.64124 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.64228 midnight-BETA
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -292,6 +292,8 @@ Attributes       : No Threat (42), No AutoCast (AI) (49), Allow Low Level Buff (
 Effects          :
 #1 (id=404)      : Apply Aura (6) | Modify Versatility% (471)
                    Base Value: 3 | Scaled Value: 3 | Value Multiplier: 1 | Radius: 100 yards | Target: Targeted Ally or Raid (118)
+#2 (id=1286690)  : Remove Aura (203): Mark of the Wild Highlight
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1271910 | Radius: 100 yards | Target: Targeted Ally or Raid (118)
 Description      : Infuse a friendly target with the power of the wild, increasing their Versatility by $s1% for 60 minutes.
 
 If target is in your party or raid, all party and raid members will be affected.
@@ -4267,7 +4269,7 @@ Cooldown         : 120 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Affecting Spells : Shadow Blades (121471 effect#2), Nightstalker (130493 effect#1), Broadside (193356 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), Fazed (441224 effect#4)
+Affecting Spells : Shadow Blades (121471 effect#2), Broadside (193356 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), Fazed (441224 effect#4)
 Family Flags     : 3
 Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Prevents Anim (50), No Proc Equip Requirement (97), Completely Blocked (99), Can Proc From Procs (122), Suppress Weapon Procs (151), Reset cooldown upon ending an encounter (333)
 Aura Interrupt   : Damage (Script) (27)
@@ -21766,6 +21768,7 @@ Name             : Druid Guardian 11.0 Class Set 4pc (id=453664) [Spell Family (
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -21802,6 +21805,7 @@ Name             : Druid Guardian 11.0 Class Set 2pc (id=453665) [Spell Family (
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -21819,6 +21823,7 @@ Name             : Druid Balance 11.0 Class Set 2pc (id=453666) [Spell Family (7
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -21839,6 +21844,7 @@ Name             : Druid Balance 11.0 Class Set 4pc (id=453667) [Spell Family (7
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -21855,6 +21861,7 @@ Name             : Druid Restoration 11.0 Class Set 4pc (id=453668) [Spell Famil
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -21869,6 +21876,7 @@ Name             : Druid Restoration 11.0 Class Set 2pc (id=453669) [Spell Famil
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -21889,6 +21897,7 @@ Name             : Druid Feral 11.0 Class Set 2pc (id=453670) [Spell Family (7),
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -21907,6 +21916,7 @@ Name             : Druid Feral 11.0 Class Set 4pc (id=454839) [Spell Family (7),
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -22789,6 +22799,7 @@ Name             : Druid Restoration 11.1 Class Set 2pc (id=1215502) [Spell Fami
 Class            : Monk, Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -22895,6 +22906,7 @@ Name             : Druid Restoration 11.1 Class Set 4pc (id=1215619) [Spell Fami
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -22914,6 +22926,7 @@ Name             : Druid Balance 11.1 Class Set 2pc (id=1215695) [Spell Family (
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -22932,6 +22945,7 @@ Name             : Druid Balance 11.1 Class Set 4pc (id=1215698) [Spell Family (
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -22947,6 +22961,7 @@ Name             : Druid Feral 11.1 Class Set 2pc (id=1215734) [Spell Family (7)
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -22965,6 +22980,7 @@ Name             : Druid Feral 11.1 Class Set 4pc (id=1215735) [Spell Family (7)
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -22980,6 +22996,7 @@ Name             : Druid Guardian 11.1 Class Set 2pc (id=1215986) [Spell Family 
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -23000,6 +23017,7 @@ Name             : Druid Guardian 11.1 Class Set 4pc (id=1215988) [Spell Family 
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -23015,6 +23033,7 @@ Name             : Warrior Protection 11.1 Class Set 2pc (id=1215994) [Spell Fam
 Class            : Warrior, Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -23164,7 +23183,7 @@ Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1202836)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Bloodbath (113344), Deep Wounds (115767), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Shield Charge (385954), Rend (388539), Shattering Throw (394352), Wrecking Throw (394354), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174), Ionizing Strike (1238042), Retaliation (1245365), Revenge (1264147), Rampage (1265579), Rampage (1265580), Rampage (1265581), Rampage (1265582), Heroic Strike (1269383), Phalanx (1270116), Champion's Leap (1271985)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Bloodbath (113344), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Shield Charge (385954), Rend (388539), Shattering Throw (394352), Wrecking Throw (394354), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174), Ionizing Strike (1238042), Retaliation (1245365), Revenge (1264147), Rampage (1265579), Rampage (1265580), Rampage (1265581), Rampage (1265582), Heroic Strike (1269383), Phalanx (1270116), Champion's Leap (1271985)
                    Family Flags: 9
 #2 (id=1202850)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Misc Value: 7 | Target: Self (1)
@@ -23176,7 +23195,7 @@ Effects          :
                    Modified By: Warrior Protection 11.1 Class Set 4pc (1215995 effect#2)
 #4 (id=1204386)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Bloodbath (113344), Deep Wounds (115767), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Shield Charge (385954), Rend (388539), Shattering Throw (394352), Wrecking Throw (394354), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174), Ionizing Strike (1238042), Retaliation (1245365), Revenge (1264147), Rampage (1265579), Rampage (1265580), Rampage (1265581), Rampage (1265582), Heroic Strike (1269383), Phalanx (1270116), Champion's Leap (1271985)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Bloodbath (113344), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Shield Charge (385954), Rend (388539), Shattering Throw (394352), Wrecking Throw (394354), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174), Ionizing Strike (1238042), Retaliation (1245365), Revenge (1264147), Rampage (1265579), Rampage (1265580), Rampage (1265581), Rampage (1265582), Heroic Strike (1269383), Phalanx (1270116), Champion's Leap (1271985)
                    Family Flags: 9
 #5 (id=1215741)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -23427,6 +23446,7 @@ Name             : Druid Druid of the Claw 11.2 Class Set 4pc (id=1236330) [Spel
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -23446,6 +23466,7 @@ Name             : Druid Druid of the Claw 11.2 Class Set 2pc (id=1236331) [Spel
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -23464,6 +23485,7 @@ Name             : Druid Elune's Chosen 11.2 Class Set 2pc (id=1236332) [Spell F
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -23501,6 +23523,7 @@ Name             : Druid Elune's Chosen 11.2 Class Set 4pc (id=1236333) [Spell F
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -23523,6 +23546,7 @@ Name             : Druid Keeper of the Grove 11.2 Class Set 2pc (id=1236334) [Sp
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -23548,6 +23572,7 @@ Name             : Druid Keeper of the Grove 11.2 Class Set 4pc (id=1236336) [Sp
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -23573,6 +23598,7 @@ Name             : Druid Wildstalker 11.2 Class Set 2pc (id=1236337) [Spell Fami
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -23597,6 +23623,7 @@ Name             : Druid Wildstalker 11.2 Class Set 4pc (id=1236338) [Spell Fami
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -26887,6 +26914,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
+Triggered By     : Mark of the Wild (1126)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :

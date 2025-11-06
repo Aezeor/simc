@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.64124 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.64228 midnight-BETA
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -509,7 +509,7 @@ Effects          :
 Description      : $@spelldesc318038
 
 Name             : Master of the Elements (id=16166) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Elemental [tree=spec, row=3, col=3, max_rank=1, req_points=0, select_idx=200]
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -1360,7 +1360,7 @@ Category         : 1536 (Type 0x1): Echo of the Elements (333919 effect#1), Elem
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5, #18), Elemental Shaman (137040 effects: #1, #2, #21), Enhancement Shaman (137041 effects: #1, #2), Mastery: Elemental Overload (168534 effects: #3, #4), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3), Fireheart (364523 effect#2), Improved Flametongue Weapon (382028 effect#1), Fire and Ice (382886 effect#1), Elemental Blast (394152 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Elemental Reverb (443418 effect#2), Ancestral Swiftness (443454 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Enhancement Shaman (1214207 effects: #1, #2), Jackpot! (1218612 effect#1), Elemental Shaman (1231772 effects: #1, #2, #5), Ancestral Wisdom (1238279 effects: #1, #7), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4, #12), Molten Wrath (1258843 effect#1), Elemental Resonance (1258895 effect#1), Purging Flames (1259471 effect#1), Windspeaker (1270447 effects: #1, #2)
+Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5, #18), Elemental Shaman (137040 effects: #1, #2, #21), Enhancement Shaman (137041 effects: #1, #2), Mastery: Elemental Overload (168534 effects: #3, #4), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3), Fireheart (364523 effect#2), Improved Flametongue Weapon (382028 effect#1), Fire and Ice (382886 effect#1), Elemental Blast (394152 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Elemental Reverb (443418 effect#2), Ancestral Swiftness (443454 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Enhancement Shaman (1214207 effects: #1, #2), Jackpot! (1218612 effect#1), Elemental Shaman (1231772 effects: #1, #2, #5), Ancestral Wisdom (1238279 effects: #1, #7), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4, #12), Molten Wrath (1258843 effect#1), Elemental Resonance (1258895 effect#1), Purging Flames (1259471 effect#1), Windspeaker (1270447 effects: #1, #2), Lava Flows (1273485 effect#1)
 Family Flags     : 39, 44, 56
 Attributes       : Not Shapeshifted (16), Allow Aura While Dead (116), Doesn't Reset Swing Timer if Instant (217), Allow Class Ability Procs (416)
 Effects          :
@@ -2886,7 +2886,7 @@ Cooldown         : 120 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Affecting Spells : Shadow Blades (121471 effect#2), Nightstalker (130493 effect#1), Broadside (193356 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), Fazed (441224 effect#4)
+Affecting Spells : Shadow Blades (121471 effect#2), Broadside (193356 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), Fazed (441224 effect#4)
 Family Flags     : 3
 Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Prevents Anim (50), No Proc Equip Requirement (97), Completely Blocked (99), Can Proc From Procs (122), Suppress Weapon Procs (151), Reset cooldown upon ending an encounter (333)
 Aura Interrupt   : Damage (Script) (27)
@@ -2998,7 +2998,7 @@ Effects          :
 Description      : Relocates your active totems to the specified location.
 
 Name             : Ascendance (id=114050) [Spell Family (11)] 
-Talent Entry     : Elemental [tree=spec, row=8, col=3, max_rank=1, req_points=20, replace="Fire Elemental" (id=198067)]
+Talent Entry     : Elemental [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Fire
 Spell Type       : None
@@ -3300,7 +3300,7 @@ Description      : Reduces the movement speed of all nearby enemies by $s1%.
 Tooltip          : Movement speed reduced by $s1%.
 
 Name             : Primal Elementalist (id=117013) [Passive] 
-Talent Entry     : Elemental [tree=spec, row=9, col=6, max_rank=1, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -3740,7 +3740,7 @@ Effects          :
                    Affected Spells: Lightning Bolt Overload (45284), Lightning Bolt (188196), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0, 96
 #21 (id=1070361) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 59 | Scaled Value: 59 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Burst (285452), Lava Burst Overload (285466)
                    Family Flags: 44, 86
 #22 (id=1070607) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -4376,7 +4376,7 @@ Your Lightning Bolt,$?s454009[ Tempest,][] Lava Burst, and Chain Lightning casts
 
 
 Name             : Earthen Rage (id=170374) [Spell Family (11), Passive] 
-Talent Entry     : Elemental [tree=spec, row=7, col=7, max_rank=1, req_points=8]
+Talent Entry     : Elemental [tree=spec, row=7, col=6, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -5507,7 +5507,6 @@ Effects          :
 Description      : $@spelldesc210689
 
 Name             : Fire Elemental (id=198067) [Spell Family (11)] 
-Talent Entry     : Elemental [tree=spec, row=2, col=3, max_rank=1, req_points=0]
 Class            : Shaman
 School           : Fire
 Spell Type       : Magic
@@ -7110,7 +7109,7 @@ Duration         : 120 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#1), Demonic Meteor (278737 effect#1), Flames of Xoroth (429657 effects: #1, #2), Warlock Demonology 12.0 Class Set 2pc (1264871 effect#1)
+Affecting Spells : Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#1), Demonic Meteor (278737 effect#1), Flames of Xoroth (429657 effects: #1, #2), Warlock Demonology 12.0 Class Set 2pc (1264871 effect#1), Dominion of Argus (1276190 effect#2)
 Family Flags     : 86
 Attributes       : Do Not Log (8), Allow Cast While Dead (23), Ignore Line of Sight (66), Not an Action (92), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
@@ -9630,7 +9629,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5, #18), Elemental Shaman (137040 effects: #1, #2, #21), Enhancement Shaman (137041 effects: #1, #2), Mastery: Elemental Overload (168534 effects: #3, #4), Fire Elemental (188592 effects: #4, #5), Molten Weapon (224125 effects: #1, #2), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3), Fireheart (364523 effect#2), Improved Flametongue Weapon (382028 effect#1), Fire and Ice (382886 effect#1), Elemental Blast (394152 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Elemental Reverb (443418 effect#2), Ancestral Swiftness (443454 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lesser Fire Elemental (462992 effects: #4, #5), Enhancement Shaman (1214207 effects: #1, #2), Jackpot! (1218612 effect#1), Elemental Shaman (1231772 effects: #1, #2, #5), Ancestral Wisdom (1238279 effects: #1, #7), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4, #12), Molten Wrath (1258843 effect#1), Elemental Resonance (1258895 effect#1), Purging Flames (1259471 effect#1), Windspeaker (1270447 effects: #1, #2)
+Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5, #18), Elemental Shaman (137040 effects: #1, #2, #21), Enhancement Shaman (137041 effects: #1, #2), Mastery: Elemental Overload (168534 effects: #3, #4), Fire Elemental (188592 effects: #4, #5), Molten Weapon (224125 effects: #1, #2), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3), Fireheart (364523 effect#2), Improved Flametongue Weapon (382028 effect#1), Fire and Ice (382886 effect#1), Elemental Blast (394152 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Elemental Reverb (443418 effect#2), Ancestral Swiftness (443454 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lesser Fire Elemental (462992 effects: #4, #5), Enhancement Shaman (1214207 effects: #1, #2), Jackpot! (1218612 effect#1), Elemental Shaman (1231772 effects: #1, #2, #5), Ancestral Wisdom (1238279 effects: #1, #7), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4, #12), Molten Wrath (1258843 effect#1), Elemental Resonance (1258895 effect#1), Purging Flames (1259471 effect#1), Windspeaker (1270447 effects: #1, #2), Lava Flows (1273485 effect#1)
 Triggered By     : Lava Burst (51505)
 Family Flags     : 39, 44, 56, 103
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
@@ -9647,7 +9646,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5), Elemental Shaman (137040 effects: #1, #2, #21), Enhancement Shaman (137041 effects: #1, #2), Mastery: Elemental Overload (168534 effects: #3, #4), Igneous Potential (279829 effect#2), Maelstrom (343725 effect#4), Fireheart (364523 effect#2), Improved Flametongue Weapon (382028 effect#1), Initial Shaman (417374 effects: #1, #2), Elemental Reverb (443418 effect#2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Enhancement Shaman (1214207 effects: #1, #2), Jackpot! (1218612 effect#1), Elemental Shaman (1231772 effects: #1, #2, #5), Ancestral Wisdom (1238279 effects: #1, #7), Restoration Shaman (1256945 effects: #3, #4), Molten Wrath (1258843 effect#1), Elemental Resonance (1258895 effect#1), Purging Flames (1259471 effect#1)
+Affecting Spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5), Elemental Shaman (137040 effects: #1, #2, #21), Enhancement Shaman (137041 effects: #1, #2), Mastery: Elemental Overload (168534 effects: #3, #4), Igneous Potential (279829 effect#2), Maelstrom (343725 effect#4), Fireheart (364523 effect#2), Improved Flametongue Weapon (382028 effect#1), Initial Shaman (417374 effects: #1, #2), Elemental Reverb (443418 effect#2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Enhancement Shaman (1214207 effects: #1, #2), Jackpot! (1218612 effect#1), Elemental Shaman (1231772 effects: #1, #2, #5), Ancestral Wisdom (1238279 effects: #1, #7), Restoration Shaman (1256945 effects: #3, #4), Molten Wrath (1258843 effect#1), Elemental Resonance (1258895 effect#1), Purging Flames (1259471 effect#1), Lava Flows (1273485 effect#1)
 Triggered By     : Lava Burst Overload (77451)
 Family Flags     : 39, 79, 86
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
@@ -10681,7 +10680,7 @@ Tooltip          : Movement speed increased by $w2%.
 
 Name             : Flametongue Weapon (desc=Weapon Imbue) (id=318038) [Spell Family (11)] 
 Talent Entry     : Enhancement [tree=spec, row=2, col=2, max_rank=1, req_points=0]
-                 : Elemental [tree=spec, row=6, col=4, max_rank=1, req_points=8]
+                 : Elemental [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Shaman
 School           : Fire
 Spell Type       : None
@@ -11437,7 +11436,7 @@ $voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]
 $damage=${$SPN*0.5*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}
 
 Name             : Echo of the Elements (id=333919) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Elemental [tree=spec, row=2, col=3, max_rank=1, req_points=0]
                  : Restoration [tree=spec, row=7, col=3, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Physical
@@ -12169,7 +12168,7 @@ Spell Level      : 10
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-                 : 1748: Primal Fracture (410018 effect#1), Primal Fracture (410018 effect#3), Primal Fracture (410018 effect#4), Primal Fracture (410018 effect#5)
+                 : 1748: Primal Fracture (410018 effect#1), Primal Fracture (410018 effect#3), Primal Fracture (410018 effect#4), Primal Fracture (410018 effect#5), Lava Flows (1273485 effect#2), Lava Flows (1273485 effect#3)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
 #1 (id=845763)   : Apply Aura (6) | Dummy (4)
@@ -12182,12 +12181,12 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Burst (285452)
                    Family Flags: 44
-                   Modified By: Primal Fracture (410018 effect#4)
+                   Modified By: Primal Fracture (410018 effect#4), Lava Flows (1273485 effect#2)
 #4 (id=845766)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Lava Burst Overload (285466)
                    Family Flags: 86
-                   Modified By: Primal Fracture (410018 effect#5)
+                   Modified By: Primal Fracture (410018 effect#5), Lava Flows (1273485 effect#3)
 #5 (id=845767)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #6 (id=845768)   : Apply Aura (6) | Dummy (4)
@@ -13514,7 +13513,7 @@ Effects          :
 Description      : Reduces all magic damage taken by $s1%.
 
 Name             : Nature's Fury (id=381655) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=7, col=2, max_rank=2, req_points=8, replace="Earthbind Totem" (id=2484)]
+Talent Entry     : Generic [tree=class, row=7, col=2, max_rank=2, req_points=8]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Shaman
@@ -13706,7 +13705,7 @@ Effects          :
 Description      : $@spelldesc381761
 
 Name             : Searing Flames (id=381782) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Elemental [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -13737,7 +13736,7 @@ Effects          :
 Description      : $@spelldesc381782
 
 Name             : Flames of the Firelord (id=381784) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=9, col=4, max_rank=1, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=8, col=5, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -14581,42 +14580,6 @@ Description      : $@spelldesc974
 Tooltip          : $?$w3!=0[Damage taken reduced by $w3%.
 
 ][]Heals for ${$w2*(1+$w1/100)} upon taking damage.
-
-Name             : Echoes of Great Sundering (id=384087) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=10, col=2, max_rank=1, req_points=20]
-Class            : Shaman
-School           : Physical
-Spell Type       : None
-Labels           : 16: Class Spells
-                 : 24: Shaman Spells
-                 : 292
-Proc Chance      : 101%
-Proc Flags       : Magic Hostile Spell
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
-Effects          :
-#1 (id=1016422)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 120 | Scaled Value: 120 | Target: Self (1)
-#2 (id=1016460)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 140 | Scaled Value: 140 | Target: Self (1)
-Description      : After casting Earth Shock, your next Earthquake deals $s1% additional damage.
-
-After casting Elemental Blast, your next Earthquake deals $s2% additional damage.
-
-Name             : Echoes of Great Sundering (id=384088) [Spell Family (11)] 
-Class            : Shaman
-School           : Physical
-Spell Type       : None
-Duration         : 25 seconds
-Labels           : 16: Class Spells
-                 : 24: Shaman Spells
-                 : 292
-                 : 1750
-Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
-Effects          :
-#1 (id=1016423)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : $@spelldesc384087
-Tooltip          : Your next Earthquake will deal $w1% additional damage.
 
 Name             : Raging Maelstrom (id=384143) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Enhancement [tree=spec, row=4, col=2, max_rank=1, req_points=0]
@@ -17277,6 +17240,7 @@ Name             : Shaman Elemental 11.0 Class Set 2pc (id=453684) [Spell Family
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -17297,6 +17261,7 @@ Name             : Shaman Elemental 11.0 Class Set 4pc (id=453685) [Spell Family
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -17313,6 +17278,7 @@ Name             : Shaman Restoration 11.0 Class Set 2pc (id=453705) [Spell Fami
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -17329,6 +17295,7 @@ Name             : Shaman Restoration 11.0 Class Set 4pc (id=453706) [Spell Fami
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -17350,6 +17317,7 @@ Name             : Shaman Enhancement 11.0 Class Set 4pc (id=453708) [Spell Fami
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -17613,6 +17581,7 @@ Name             : Shaman Enhancement 11.0 Class Set 2pc (id=454838) [Spell Fami
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -19004,6 +18973,8 @@ Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49),
 Effects          :
 #1 (id=1173055)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 2 | Scaled Value: 2 | Radius: 100 yards | Target: Targeted Ally or Raid (118)
+#2 (id=1286687)  : Remove Aura (203): Skyfury Highlight
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1271904 | Radius: 100 yards | Target: Targeted Ally or Raid (118)
 Description      : Harness the fury of the Windlord to grant a target ally $s1% Mastery and empower their auto attacks to have a $h% chance to instantly strike again for $d.
 
 If the target is in your party or raid, all party and raid members will be affected.
@@ -19032,7 +19003,7 @@ Effects          :
 Description      : While Lightning Shield is active, your Nature damage dealt is increased by $s3%.
 
 Name             : Echo of the Elementals (id=462864) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=8, col=5, max_rank=1, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -19046,7 +19017,7 @@ Effects          :
 Description      : When your Storm Elemental or Fire Elemental expires, it leaves behind a lesser Elemental to continue attacking your enemies for $462990d.
 
 Name             : Elemental Unity (id=462866) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=6, col=5, max_rank=1, req_points=8]
+Talent Entry     : Elemental [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -19066,7 +19037,7 @@ Description      : While a Fire Elemental is active, your Fire damage dealt is i
 While a Storm Elemental is active, your Nature damage dealt is increased by $157299s4%.
 
 Name             : Everlasting Elements (id=462867) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=7, col=6, max_rank=1, req_points=8]
+Talent Entry     : Elemental [tree=spec, row=7, col=5, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -19727,7 +19698,7 @@ Description      : $@spelldesc469314
 
 Name             : Voltaic Blaze (id=470057) [Spell Family (11)] 
 Talent Entry     : Enhancement [tree=spec, row=6, col=3, max_rank=1, req_points=8, replace="Flame Shock" (id=470411)]
-                 : Elemental [tree=spec, row=9, col=5, max_rank=1, req_points=20, replace="Flame Shock" (id=470411)]
+                 : Elemental [tree=spec, row=9, col=4, max_rank=1, req_points=20, replace="Flame Shock" (id=470411)]
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -19918,6 +19889,7 @@ Name             : Shaman Restoration 11.1 Class Set 2pc (id=1215538) [Spell Fam
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -20691,6 +20663,7 @@ Name             : Shaman Farseer 11.2 Class Set 2pc (id=1236406) [Spell Family 
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -20708,6 +20681,7 @@ Name             : Shaman Farseer 11.2 Class Set 4pc (id=1236407) [Spell Family 
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -20725,6 +20699,7 @@ Name             : Shaman Stormbringer 11.2 Class Set 2pc (id=1236408) [Spell Fa
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -20755,6 +20730,7 @@ Name             : Shaman Stormbringer 11.2 Class Set 4pc (id=1236409) [Spell Fa
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -20793,6 +20769,7 @@ Name             : Shaman Totemic 11.2 Class Set 2pc (id=1236410) [Spell Family 
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -20810,6 +20787,7 @@ Name             : Shaman Totemic 11.2 Class Set 4pc (id=1236411) [Spell Family 
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 81
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -21445,7 +21423,7 @@ Effects          :
 Description      : Restoration Shaman core passive
 
 Name             : Molten Wrath (id=1258843) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Elemental [tree=spec, row=3, col=3, max_rank=1, req_points=0, select_idx=100]
 Class            : Shaman
 School           : Fire
 Spell Type       : None
@@ -21573,7 +21551,7 @@ Effects          :
 Description      : $@spelldesc470057
 
 Name             : Purging Flames (id=1259471) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=10, col=5, max_rank=1, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=10, col=6, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Fire
 Spell Type       : None
@@ -21724,8 +21702,6 @@ Duration         : 20 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-                 : 295
-                 : 5061
 Internal Cooldown: 0.75 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
@@ -22172,7 +22148,7 @@ Effects          :
 Description      : $@spelldesc1267016
 
 Name             : Crackling Fury (id=1269215) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=10, col=4, max_rank=2, req_points=20]
+Talent Entry     : Elemental [tree=spec, row=10, col=5, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(-3000, -6000)]
                  : Effect#2 [op=set, values=(50, 100)]
 Class            : Shaman
@@ -22450,6 +22426,24 @@ Effects          :
 Description      : $@spelldesc114052
 Tooltip          : Your next Chain Heal or Healing Wave is instant.
 
+Name             : Skyfury Highlight (id=1271904) [Spell Family (11), Hidden] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Duration         : 8 seconds
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 292
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
+Proc Flags       : Cast Successful
+Triggered By     : Skyfury (462854)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Effects          :
+#1 (id=1284916)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+
 Name             : Thunderous Velocity (id=1272101) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
@@ -22467,4 +22461,30 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : $@spelldesc1264862
 Tooltip          : Haste increased by ${$w1}.1%.
+
+Name             : Lava Flows (id=1273485) [Spell Family (11), Passive, Hidden] 
+Talent Entry     : Elemental [tree=spec, row=7, col=7, max_rank=1, req_points=8]
+Class            : Shaman
+School           : Nature
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 292
+Proc Chance      : 101%
+Proc Flags       : Magic Hostile Spell
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1286780)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Affected Spells: Lava Burst (51505), Lava Burst (285452), Lava Burst Overload (285466)
+                   Family Flags: 44, 86
+#2 (id=1286781)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 23 | Misc Value 2: 1748 (Label) | Target: Self (1)
+                   Affected Spells (Label): Maelstrom (343725)
+#3 (id=1286782)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 32 | Misc Value 2: 1748 (Label) | Target: Self (1)
+                   Affected Spells (Label): Maelstrom (343725)
+Description      : Lava Burst damage increased by $s1%.
+
+Lava Burst and Lava Burst Overload generate $s2 additional Maelstrom.
 
