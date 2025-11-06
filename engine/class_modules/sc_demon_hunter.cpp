@@ -10752,6 +10752,17 @@ void demon_hunter_t::init_spells()
   register_passive_affect_list( talent.havoc.demon_hide,
                                 affect_list_t( 1, 3 ).add_spell( hero_spec.wounded_quarry_damage->id() ) );
 
+  switch (specialization())
+  {
+    case DEMON_HUNTER_DEVOURER:
+      deregister_passive_effect( talent.scarred.untethered_fury->effectN( 1 ) );
+      break;
+    case DEMON_HUNTER_HAVOC:
+    case DEMON_HUNTER_VENGEANCE:
+      deregister_passive_effect( talent.scarred.untethered_fury->effectN( 2 ) );
+      break;
+  }
+
   // Critical Chaos eff#2 (dummy script) overwrites the value of eff#1 (add flat: proc chance)
   deregister_passive_effect( talent.havoc.critical_chaos->effectN( 1 ) );
 
