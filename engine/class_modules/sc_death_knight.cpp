@@ -10443,7 +10443,8 @@ struct pestilence_t final : public death_knight_spell_t
     aoe           = -1;
     damage_mult   = p->talent.unholy.pestilence->effectN( 2 ).percent();
     duration_mult = p->talent.unholy.pestilence->effectN( 1 ).percent();
-    dam           = get_action<pestilence_damage_t>( "unleash_plague", p );
+    dam           = get_action<pestilence_damage_t>( "pestilence_damage", p );
+    dam->name_str_reporting = "damage";
     add_child( dam );
   }
 
