@@ -7787,6 +7787,10 @@ struct soul_cleave_t : public voidfall_spending_trigger_t<
 
     heal = p->get_background_action<heals::soul_cleave_heal_t>( "soul_cleave_heal" );
 
+    if ( p->active.fury_of_the_aldrachi )
+    {
+      add_child( p->active.fury_of_the_aldrachi );
+    }
     // Add damage modifiers in soul_cleave_damage_t, not here.
   }
 
