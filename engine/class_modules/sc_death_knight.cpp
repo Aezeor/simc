@@ -3337,6 +3337,10 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
   void putrefy_ghoul()
   {
     dk()->sample_data.putrefied_ghoul_remains->add( this->expiration->remains().total_seconds() );
+    dk()->background_actions.putrefy->execute_on_target( this->target );
+
+    if ( dk()->pets.ghoul_pet.active_pet() )
+      dk()->pets.ghoul_pet.active_pet()->unholy_devotion->trigger();
 
     if ( dk()->talent.unholy.reanimation.ok() && rng().roll( dk()->talent.unholy.reanimation->effectN( 1 ).percent() ) )
       dk()->pet_summon.reanimation_magus->execute();
@@ -10706,8 +10710,6 @@ struct putrefy_t final : public death_knight_spell_t
         ghoul->putrefy_ghoul();
         ghoul->dismiss();
         ghouls_putrefied++;
-        p()->background_actions.putrefy->execute_on_target( this->target );
-        p()->pets.ghoul_pet.active_pet()->unholy_devotion->trigger();
         continue;
       }
 
