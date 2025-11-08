@@ -3342,6 +3342,8 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     if ( dk()->pets.ghoul_pet.active_pet() )
       dk()->pets.ghoul_pet.active_pet()->unholy_devotion->trigger();
 
+    dismiss();
+
     if ( dk()->talent.unholy.reanimation.ok() && rng().roll( dk()->talent.unholy.reanimation->effectN( 1 ).percent() ) )
       dk()->pet_summon.reanimation_magus->execute();
   }
@@ -10688,8 +10690,6 @@ struct putrefy_t final : public death_knight_spell_t
     if ( p()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, MID1, B4 ) )
       p()->buffs.blighted->trigger();
 
-    int ghouls_putrefied = 0;
-
     if ( p()->talent.unholy.reanimation.ok() && p()->buffs.dark_transformation->check() )
       ghouls_to_putrefy = as<int>( data().effectN( 1 ).base_value() ) +
                           as<int>( p()->talent.unholy.reanimation->effectN( 3 ).base_value() );
@@ -10698,22 +10698,16 @@ struct putrefy_t final : public death_knight_spell_t
       return a->expiration->remains() < b->expiration->remains();
     } );
 
-    for ( int i = 0; i < p()->active_lesser_ghouls.size(); i++ )
+    for ( int i = 0; i < ghouls_to_putrefy; i++ )
     {
-      auto& ghoul = p()->active_lesser_ghouls[ i ];
+      if ( i >= p()->active_lesser_ghouls.size() )
+        break;
 
+      auto& ghoul = p()->active_lesser_ghouls[ i ];
       if ( ghoul == nullptr || ghoul->is_sleeping() )
         continue;
 
-      if ( ghouls_putrefied < ghouls_to_putrefy )
-      {
-        ghoul->putrefy_ghoul();
-        ghoul->dismiss();
-        ghouls_putrefied++;
-        continue;
-      }
-
-      break;
+      ghoul->putrefy_ghoul();
     }
 
     if ( p()->talent.unholy.reaping.ok() && p()->talent.unholy.soul_reaper.ok() &&
