@@ -3334,9 +3334,11 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     base_ghoul_pet_t::demise();
   }
 
-  void putrefy_ghoul()
+  void putrefy_ghoul( bool log = true )
   {
-    dk()->sample_data.putrefied_ghoul_remains->add( this->expiration->remains().total_seconds() );
+    if( log )
+      dk()->sample_data.putrefied_ghoul_remains->add( this->expiration->remains().total_seconds() );
+
     dk()->background_actions.putrefy->execute_on_target( this->target );
 
     if ( dk()->pets.ghoul_pet.active_pet() )
@@ -5761,7 +5763,7 @@ struct summon_lesser_ghoul_t : public death_knight_summon_spell_t
     }
 
     if ( putrefy_instantly )
-      p()->active_lesser_ghouls.back()->putrefy_ghoul();
+      p()->active_lesser_ghouls.back()->putrefy_ghoul( false );
   }
 
 private:
