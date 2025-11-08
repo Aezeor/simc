@@ -1116,7 +1116,7 @@ public:
     heal_t* frailty_heal    = nullptr;
 
     // Aldrachi Reaver
-    attack_t* fury_of_the_aldrachi = nullptr;
+    attack_t* art_of_the_glaive = nullptr;
     attack_t* preemptive_strike    = nullptr;
     attack_t* warblades_hunger     = nullptr;
     attack_t* wounded_quarry       = nullptr;
@@ -2586,7 +2586,7 @@ struct art_of_the_glaive_trigger_t : public BASE
 
       if ( BASE::p()->talent.aldrachi_reaver.fury_of_the_aldrachi->ok() )
       {
-        BASE::p()->active.fury_of_the_aldrachi->execute_on_target( BASE::target );
+        BASE::p()->active.art_of_the_glaive->execute_on_target( BASE::target );
       }
 
       BASE::p()->buff.glaive_flurry->expire();
@@ -7787,9 +7787,9 @@ struct soul_cleave_t : public voidfall_spending_trigger_t<
 
     heal = p->get_background_action<heals::soul_cleave_heal_t>( "soul_cleave_heal" );
 
-    if ( p->active.fury_of_the_aldrachi )
+    if ( p->active.art_of_the_glaive )
     {
-      add_child( p->active.fury_of_the_aldrachi );
+      add_child( p->active.art_of_the_glaive );
     }
     // Add damage modifiers in soul_cleave_damage_t, not here.
   }
@@ -8264,25 +8264,23 @@ struct soul_carver_t : public demon_hunter_attack_t
 };
 
 // Art of the Glaive ===================================================
-struct fury_of_the_aldrachi_t : public demon_hunter_attack_t
+struct art_of_the_glaive_t : public demon_hunter_attack_t
 {
   struct fury_of_the_aldrachi_damage_t : public demon_hunter_attack_t
   {
     timespan_t delay;
 
-    fury_of_the_aldrachi_damage_t( util::string_view name, demon_hunter_t* p, const spelleffect_data_t& eff,
-                                   std::basic_string<char> reporting_name )
+    fury_of_the_aldrachi_damage_t( util::string_view name, demon_hunter_t* p, const spelleffect_data_t& eff )
       : demon_hunter_attack_t( name, p, eff.trigger() ), delay( timespan_t::from_millis( eff.misc_value1() ) )
     {
-      background = dual  = true;
-      aoe                = -1;
-      name_str_reporting = reporting_name;
+      background = dual = true;
+      aoe               = -1;
     }
   };
 
   std::vector<fury_of_the_aldrachi_damage_t*> attacks;
 
-  fury_of_the_aldrachi_t( util::string_view name, demon_hunter_t* p )
+  art_of_the_glaive_t( util::string_view name, demon_hunter_t* p )
     : demon_hunter_attack_t( name, p, p->hero_spec.art_of_the_glaive_damage )
   {
     background = dual = true;
@@ -8291,8 +8289,7 @@ struct fury_of_the_aldrachi_t : public demon_hunter_attack_t
       if ( effect.type() != E_TRIGGER_SPELL )
         continue;
 
-      attacks.push_back( p->get_background_action<fury_of_the_aldrachi_damage_t>(
-          fmt::format( "fury_of_the_aldrachi_{}", effect.index() ), effect, "fury_of_the_aldrachi" ) );
+      attacks.push_back( p->get_background_action<fury_of_the_aldrachi_damage_t>( "fury_of_the_aldrachi", effect ) );
     }
   }
 
@@ -8317,13 +8314,13 @@ struct fury_of_the_aldrachi_t : public demon_hunter_attack_t
     if ( p()->talent.aldrachi_reaver.fury_of_the_aldrachi->ok() && p()->buff.glaive_flurry->up() &&
          !p()->buff.rending_strike->up() )
     {
-      make_event<delayed_execute_event_t>( *sim, p(), p()->active.fury_of_the_aldrachi, target, 300_ms );
+      make_event<delayed_execute_event_t>( *sim, p(), p()->active.art_of_the_glaive, target, 300_ms );
 
       // Bladecraft makes it trigger 6 more times
       if ( p()->talent.aldrachi_reaver.bladecraft->ok() )
       {
-        make_event<delayed_execute_event_t>( *sim, p(), p()->active.fury_of_the_aldrachi, target, 300_ms );
-        make_event<delayed_execute_event_t>( *sim, p(), p()->active.fury_of_the_aldrachi, target, 300_ms );
+        make_event<delayed_execute_event_t>( *sim, p(), p()->active.art_of_the_glaive, target, 300_ms );
+        make_event<delayed_execute_event_t>( *sim, p(), p()->active.art_of_the_glaive, target, 300_ms );
       }
     }
 
@@ -10993,7 +10990,7 @@ void demon_hunter_t::init_spells()
 
   if ( talent.aldrachi_reaver.fury_of_the_aldrachi->ok() )
   {
-    active.fury_of_the_aldrachi = get_background_action<fury_of_the_aldrachi_t>( "fury_of_the_aldrachi" );
+    active.art_of_the_glaive = get_background_action<art_of_the_glaive_t>( "art_of_the_glaive" );
   }
   if ( talent.aldrachi_reaver.preemptive_strike->ok() )
   {
