@@ -7609,6 +7609,11 @@ struct fracture_t : public voidfall_building_trigger_t<
       mid1_veng_4pc_damage = p->get_background_action<spells::mid1_vengeance_4pc_damage_t>( "mid1_vengeance_4pc" );
       add_child( mid1_veng_4pc_damage );
     }
+
+    if ( p->talent.aldrachi_reaver.warblades_hunger->ok() )
+    {
+      add_child( p->active.warblades_hunger );
+    }
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
