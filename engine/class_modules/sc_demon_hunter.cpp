@@ -1057,6 +1057,9 @@ public:
     proc_t* soul_fragment_from_wounded_quarry;
     proc_t* wounded_quarry_accumulator_reset;
 
+    // Annihilator
+    proc_t* soul_fragment_from_meteoric_rise;
+
     // Scarred
     std::unordered_map<demonsurge_ability, proc_t*> demonsurge_abilities;
     std::unordered_map<voidsurge_ability, proc_t*> voidsurge_abilities;
@@ -3171,7 +3174,7 @@ struct student_of_suffering_trigger_t : public BASE
   using base_t = student_of_suffering_trigger_t<BASE>;
 
   student_of_suffering_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
-                       util::string_view o = {} )
+                                  util::string_view o = {} )
     : BASE( n, p, s, o )
   {
   }
@@ -3869,9 +3872,12 @@ struct fel_devastation_t : public final_breath_trigger_t<demon_hunter_spell_t>
   };
 
   heals::fel_devastation_heal_t* heal;
+  int soul_fragments_from_meteoric_rise;
 
   fel_devastation_t( demon_hunter_t* p, util::string_view o )
-    : base_t( "fel_devastation", p, p->talent.vengeance.fel_devastation, o ), heal( nullptr )
+    : base_t( "fel_devastation", p, p->talent.vengeance.fel_devastation, o ),
+      heal( nullptr ),
+      soul_fragments_from_meteoric_rise( 0 )
   {
     may_miss            = false;
     channeled           = true;
@@ -3891,6 +3897,11 @@ struct fel_devastation_t : public final_breath_trigger_t<demon_hunter_spell_t>
 
     tick_action = p->get_background_action<fel_devastation_tick_t>( "fel_devastation_tick" );
     add_child( tick_action );
+
+    if ( p->talent.annihilator.meteoric_rise->ok() )
+    {
+      soul_fragments_from_meteoric_rise = as<int>( p->talent.annihilator.meteoric_rise->effectN( 4 ).base_value() );
+    }
   }
 
   void execute() override
@@ -3937,6 +3948,16 @@ struct fel_devastation_t : public final_breath_trigger_t<demon_hunter_spell_t>
     }
 
     base_t::tick( d );
+
+    if ( p()->talent.annihilator.meteoric_rise->ok() )
+    {
+      int ticks_per_soul_fragment = as<int>( d->num_ticks() / soul_fragments_from_meteoric_rise );
+      if ( d->num_ticks() % ticks_per_soul_fragment == 0 )
+      {
+        p()->spawn_soul_fragment( soul_fragment::LESSER );
+        p()->proc.soul_fragment_from_meteoric_rise->occur();
+      }
+    }
   }
 };
 
@@ -5942,7 +5963,8 @@ struct reap_t : public reap_base_t
   }
 };
 
-struct void_ray_t : public student_of_suffering_trigger_t<final_breath_trigger_t<doomsayer_trigger_t<demon_hunter_spell_t>>>
+struct void_ray_t
+  : public student_of_suffering_trigger_t<final_breath_trigger_t<doomsayer_trigger_t<demon_hunter_spell_t>>>
 {
   struct void_ray_tick_t : public demon_hunter_spell_t
   {
@@ -10059,6 +10081,9 @@ void demon_hunter_t::init_procs()
   proc.soul_fragment_from_aldrachi_tactics = get_proc( "soul_fragment_from_aldrachi_tactics" );
   proc.soul_fragment_from_wounded_quarry   = get_proc( "soul_fragment_from_wounded_quarry" );
   proc.wounded_quarry_accumulator_reset    = get_proc( "wounded_quarry_accumulator_reset" );
+
+  // Annihilator
+  proc.soul_fragment_from_meteoric_rise = get_proc( "soul_fragment_from_meteoric_rise" );
 
   // Scarred
   for ( demonsurge_ability ability : demonsurge_abilities )
