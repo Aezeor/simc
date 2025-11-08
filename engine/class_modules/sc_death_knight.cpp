@@ -925,6 +925,7 @@ public:
     propagate_const<action_t*> virulent_plague_erupt;
     propagate_const<action_t*> dread_plague_erupt;
     propagate_const<action_t*> dread_plague;
+    propagate_const<action_t*> putrefy;
     propagate_const<action_t*> putrefy_aoe;
     propagate_const<action_t*> disease_cloud;
     propagate_const<action_t*> rapid_variant;
@@ -3305,16 +3306,6 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     }
   };
 
-  struct putrefy_t final : public pet_melee_attack_t<lesser_ghoul_pet_t>
-  {
-    putrefy_t( std::string_view n, lesser_ghoul_pet_t* p ) : pet_melee_attack_t( p, n, p->dk()->spell.putrefy_st )
-    {
-      background = true;
-      cooldown->duration = 0_ms;
-      execute_action = dk()->background_actions.putrefy_aoe;
-    }
-  };
-
   lesser_ghoul_pet_t( death_knight_t* owner, std::string_view name = "army_ghoul" )
     : base_ghoul_pet_t( owner, name, true )
   {
@@ -3346,7 +3337,6 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
   void putrefy_ghoul()
   {
     dk()->sample_data.putrefied_ghoul_remains->add( this->expiration->remains().total_seconds() );
-    putrefy->execute_on_target( this->target );
 
     if ( dk()->talent.unholy.reanimation.ok() && rng().roll( dk()->talent.unholy.reanimation->effectN( 1 ).percent() ) )
       dk()->pet_summon.reanimation_magus->execute();
@@ -3389,12 +3379,6 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     return m;
   }
 
-  void create_actions() override
-  {
-    base_ghoul_pet_t::create_actions();
-    putrefy = get_action<putrefy_t>( "putrefy", this );
-  }
-
   action_t* create_action( std::string_view name, std::string_view options_str ) override
   {
     if ( name == "claw" )
@@ -3402,9 +3386,6 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
 
     return base_ghoul_pet_t::create_action( name, options_str );
   }
-
-public:
-  action_t* putrefy;
 };
 
 // ==========================================================================
@@ -10617,6 +10598,7 @@ struct putrefy_aoe_t final : public death_knight_spell_t
     aoe        = -1;
     radius     = data().effectN( 1 ).radius_max();
     background = true;
+    name_str_reporting = "aoe";
     if ( p->talent.unholy.blightburst.ok() )
     {
       blightburst_dur  = p->talent.unholy.blightburst->effectN( 1 ).time_value();
@@ -10661,6 +10643,17 @@ private:
   action_t* blightburst;
 };
 
+struct putrefy_st_t final : public death_knight_spell_t
+{
+  putrefy_st_t( std::string_view n, death_knight_t* p ) : death_knight_spell_t( n, p, p->spell.putrefy_st )
+  {
+    background = true;
+    cooldown->duration = 0_ms;
+    execute_action = p->background_actions.putrefy_aoe;
+    name_str_reporting = "st";
+  }
+};
+
 struct putrefy_t final : public death_knight_spell_t
 {
   putrefy_t( death_knight_t* p, std::string_view options_str )
@@ -10669,6 +10662,7 @@ struct putrefy_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     add_child( p->background_actions.putrefy_aoe );
+    add_child( p->background_actions.putrefy );
 
     p->cooldown.putrefy = cooldown;
 
@@ -10690,50 +10684,45 @@ struct putrefy_t final : public death_knight_spell_t
     if ( p()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, MID1, B4 ) )
       p()->buffs.blighted->trigger();
 
-    // Delayed by about 1 second in game
-    make_event( *p()->sim, 1_s, [ & ] {
-      int ghouls_putrefied = 0;
+    int ghouls_putrefied = 0;
 
-      if ( p()->talent.unholy.reanimation.ok() && p()->buffs.dark_transformation->check() )
-        ghouls_to_putrefy = as<int>( data().effectN( 1 ).base_value() ) +
-                            as<int>( p()->talent.unholy.reanimation->effectN( 3 ).base_value() );
+    if ( p()->talent.unholy.reanimation.ok() && p()->buffs.dark_transformation->check() )
+      ghouls_to_putrefy = as<int>( data().effectN( 1 ).base_value() ) +
+                          as<int>( p()->talent.unholy.reanimation->effectN( 3 ).base_value() );
 
-      range::sort( p()->active_lesser_ghouls,
-                   []( const pets::lesser_ghoul_pet_t* a, const pets::lesser_ghoul_pet_t* b ) {
-                     return a->expiration->remains() < b->expiration->remains();
-                   } );
-
-      for ( int i = 0; i < p()->active_lesser_ghouls.size(); i++ )
-      {
-        auto& ghoul = p()->active_lesser_ghouls[ i ];
-
-        if ( ghoul == nullptr || ghoul->is_sleeping() )
-          continue;
-
-        if ( ghouls_putrefied < ghouls_to_putrefy )
-        {
-          ghoul->putrefy_ghoul();
-
-          ghoul->dismiss();
-          ghouls_putrefied++;
-
-          p()->pets.ghoul_pet.active_pet()->unholy_devotion->trigger();
-          continue;
-        }
-
-        break;
-      }
-
-      if ( p()->talent.unholy.reaping.ok() && p()->talent.unholy.soul_reaper.ok() &&
-           rng().roll( p()->talent.unholy.reaping->effectN( 3 ).percent() ) )
-      {
-        p()->soul_reaper_castable = true;
-        p()->cooldown.soul_reaper->reset( false );
-      }
-
-      // Reset ghouls to putrefy for next cast
-      ghouls_to_putrefy = as<int>( data().effectN( 1 ).base_value() );
+    range::sort( p()->active_lesser_ghouls, []( const pets::lesser_ghoul_pet_t* a, const pets::lesser_ghoul_pet_t* b ) {
+      return a->expiration->remains() < b->expiration->remains();
     } );
+
+    for ( int i = 0; i < p()->active_lesser_ghouls.size(); i++ )
+    {
+      auto& ghoul = p()->active_lesser_ghouls[ i ];
+
+      if ( ghoul == nullptr || ghoul->is_sleeping() )
+        continue;
+
+      if ( ghouls_putrefied < ghouls_to_putrefy )
+      {
+        ghoul->putrefy_ghoul();
+        ghoul->dismiss();
+        ghouls_putrefied++;
+        p()->background_actions.putrefy->execute_on_target( this->target );
+        p()->pets.ghoul_pet.active_pet()->unholy_devotion->trigger();
+        continue;
+      }
+
+      break;
+    }
+
+    if ( p()->talent.unholy.reaping.ok() && p()->talent.unholy.soul_reaper.ok() &&
+         rng().roll( p()->talent.unholy.reaping->effectN( 3 ).percent() ) )
+    {
+      p()->soul_reaper_castable = true;
+      p()->cooldown.soul_reaper->reset( false );
+    }
+
+    // Reset ghouls to putrefy for next cast
+    ghouls_to_putrefy = as<int>( data().effectN( 1 ).base_value() );
   }
 
   void reset() override
@@ -12592,6 +12581,7 @@ void death_knight_t::create_actions()
     if ( talent.unholy.putrefy.ok() )
     {
       background_actions.putrefy_aoe = get_action<putrefy_aoe_t>( "putrefy_aoe", this );
+      background_actions.putrefy     = get_action<putrefy_st_t>( "putrefy_st", this );
     }
 
     if ( talent.unholy.army_of_the_dead.ok() )
