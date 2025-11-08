@@ -4574,7 +4574,13 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
       if ( result_is_hit( s->result ) )
       {
-        if ( initial && p()->talent.vengeance.fallout->ok() && rng().roll( 0.60 ) )
+        bool spawn_fallout_soul = false;
+        if ( p()->talent.vengeance.fallout->ok() )
+        {
+          spawn_fallout_soul = s->n_targets == 1 || rng().roll( 0.60 );
+        }
+
+        if ( initial && spawn_fallout_soul )
         {
           p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
           p()->proc.soul_fragment_from_fallout->occur();
