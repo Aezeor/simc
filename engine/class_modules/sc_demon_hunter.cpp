@@ -3165,6 +3165,28 @@ struct final_breath_trigger_t : public BASE
   }
 };
 
+template <typename BASE>
+struct student_of_suffering_trigger_t : public BASE
+{
+  using base_t = student_of_suffering_trigger_t<BASE>;
+
+  student_of_suffering_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                       util::string_view o = {} )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    if ( BASE::p()->talent.scarred.student_of_suffering->ok() )
+    {
+      BASE::p()->buff.student_of_suffering->trigger();
+    }
+  }
+};
+
 struct demon_hunter_heal_t : public demon_hunter_action_t<heal_t>
 {
   demon_hunter_heal_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
@@ -3644,7 +3666,7 @@ struct disrupt_t : public demon_hunter_spell_t
 
 // Eye Beam =================================================================
 
-struct eye_beam_base_t : public final_breath_trigger_t<demon_hunter_spell_t>
+struct eye_beam_base_t : public student_of_suffering_trigger_t<final_breath_trigger_t<demon_hunter_spell_t>>
 {
   struct eye_beam_tick_t : public demon_hunter_spell_t
   {
@@ -4136,10 +4158,7 @@ struct sigil_of_flame_damage_base_t : public demon_hunter_sigil_t
   void execute() override
   {
     demon_hunter_sigil_t::execute();
-    if ( p()->talent.scarred.student_of_suffering->ok() )
-    {
-      p()->buff.student_of_suffering->trigger();
-    }
+
     if ( hit_any_target && p()->talent.vengeance.cycle_of_binding->ok() )
     {
       trigger_cycle_of_binding_event();
@@ -5923,7 +5942,7 @@ struct reap_t : public reap_base_t
   }
 };
 
-struct void_ray_t : public final_breath_trigger_t<doomsayer_trigger_t<demon_hunter_spell_t>>
+struct void_ray_t : public student_of_suffering_trigger_t<final_breath_trigger_t<doomsayer_trigger_t<demon_hunter_spell_t>>>
 {
   struct void_ray_tick_t : public demon_hunter_spell_t
   {
@@ -8857,6 +8876,26 @@ struct voidfall_spending_buff_t : public demon_hunter_buff_t<buff_t>
   }
 };
 
+struct student_of_suffering_t : public demon_hunter_buff_t<buff_t>
+{
+  actions::demon_hunter_energize_t* energize;
+
+  student_of_suffering_t( demon_hunter_t* p )
+    : base_t( *p, "student_of_suffering", p->hero_spec.student_of_suffering_buff )
+  {
+    energize = p->get_background_action<actions::demon_hunter_energize_t>(
+        "student_of_suffering_energize", p->hero_spec.student_of_suffering_buff->effectN( 2 ).trigger() );
+
+    set_default_value_from_effect_type( A_MOD_MASTERY_PCT );
+    set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+    set_tick_behavior( buff_tick_behavior::REFRESH );
+    set_tick_on_application( false );
+    set_period( 2_s );
+
+    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { energize->execute(); } );
+  }
+};
+
 }  // end namespace buffs
 
 // Namespace Actions post buffs
@@ -9618,17 +9657,7 @@ void demon_hunter_t::create_buffs()
                 // TOCHECK - Does this need to floor if it's not a whole number
                 b->current_value = resources.current[ RESOURCE_FURY ] * speed_per_fury;
               } );
-  buff.student_of_suffering =
-      make_buff( this, "student_of_suffering", hero_spec.student_of_suffering_buff )
-          ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
-          ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-          ->set_tick_behavior( buff_tick_behavior::REFRESH )
-          ->set_tick_on_application( false )
-          ->set_period( 2_s )
-          ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-            resource_gain( RESOURCE_FURY, b->data().effectN( 2 ).trigger()->effectN( 1 ).base_value(),
-                           gain.student_of_suffering );
-          } );
+  buff.student_of_suffering = make_buff<student_of_suffering_t>( this );
 
   for ( demonsurge_ability ability : demonsurge_abilities )
   {
