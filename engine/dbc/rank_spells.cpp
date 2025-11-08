@@ -23,7 +23,7 @@ const rank_class_spell_t& rank_class_spell_t::find( util::string_view name,
                                                     bool              ptr )
 {
   auto __data = data( ptr );
-  auto __range = range::equal_range( __data, name, {}, &rank_class_spell_t::name );
+  auto __range = range::equal_range( __data, class_id, {}, &rank_class_spell_t::class_id );
 
   if ( __range.first == __data.end() )
   {
