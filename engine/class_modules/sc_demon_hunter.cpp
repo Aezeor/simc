@@ -5241,6 +5241,19 @@ struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
 
     return base_t::action_ready();
   }
+
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
+  {
+    if ( util::str_compare_ci( name, "max_souls_consumed" ) )
+      return expr_t::create_constant( name, max_fragments_consumed );
+
+    if ( util::str_compare_ci( name, "souls_consumed" ) )
+      return make_fn_expr( name, [ this ]() {
+        return std::min( p()->get_active_soul_fragments( soul_fragment::ANY ), max_fragments_consumed );
+      } );
+
+    return base_t::create_expression( name );
+  }
 };
 
 // Sigil of Spite ===========================================================
