@@ -15480,7 +15480,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       case A_MOD_VERSATILITY_PCT:  // 417
       case A_MOD_LEECH_PERCENT:  // 443
       case A_MOD_PARRY_FROM_CRIT_RATING:  // 463
-        flat_val = modifying_eff.percent();
+        flat_val = modifying_eff.base_value();
         break;
 
       case A_MOD_PERCENT_STAT:  // 80
