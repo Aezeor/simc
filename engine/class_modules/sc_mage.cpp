@@ -4041,14 +4041,6 @@ struct ice_nova_t final : public frost_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
-
-    // TODO: This is most likely a bug
-    if ( p->specialization() == MAGE_FIRE && p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B2 ) )
-    {
-      triggers.ignite = true;
-      const auto* set = p->sets->set( HERO_FROSTFIRE, TWW3, B2 );
-      base_ignite_multiplier = set->effectN( 1 ).percent();
-    }
   }
 
   void impact( action_state_t* s ) override
