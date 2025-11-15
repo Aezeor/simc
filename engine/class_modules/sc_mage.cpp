@@ -1063,10 +1063,7 @@ struct arcane_phoenix_spell_t : public mage_pet_spell_t
     double c = mage_pet_spell_t::composite_crit_chance();
 
     if ( is_mage_spell )
-    {
       c += o()->buffs.combustion->check_value();
-      c += o()->buffs.overflowing_energy->check_stack_value();
-    }
 
     return c;
   }
@@ -1454,7 +1451,7 @@ struct mage_spell_t : public spell_t
     // Misc
     bool combustion = true;
     bool fires_ire = true;
-    bool overflowing_energy = true;
+    bool overflowing_energy = false;
     bool wildfire = true;
   } affected_by;
 
@@ -1464,7 +1461,6 @@ struct mage_spell_t : public spell_t
     bool from_the_ashes = false;
     bool ignite = false;
     bool ignite_2pc = false; // Frostfire Frost Ignite
-    bool overflowing_energy = true;
     bool touch_of_the_magi = true;
 
     target_trigger_type_e hot_streak = TT_NONE;
@@ -1761,13 +1757,10 @@ public:
     if ( triggers.ignite_2pc )
       trigger_ignite_2pc( s );
 
-    if ( triggers.overflowing_energy && p()->talents.overflowing_energy.ok() && s->result_type == result_amount_type::DMG_DIRECT )
+    if ( affected_by.overflowing_energy )
     {
-      // TODO: This isn't perfect, but currently describes all "non AoE" spells mages have
-      if ( may_crit && s->result != RESULT_CRIT && aoe >= 0 && aoe < 5 && !data().flags( spell_attribute::SX_TREAT_AS_AREA_EFFECT ) )
-        p()->trigger_merged_buff( p()->buffs.overflowing_energy, true );
-      if ( s->result == RESULT_CRIT && ( !proc || not_a_proc ) )
-        p()->trigger_merged_buff( p()->buffs.overflowing_energy, false );
+      // TODO: For Frost, this is currently triggered by Ice Lance but consumed by FB/FFB/GS
+      p()->trigger_merged_buff( p()->buffs.overflowing_energy, s->result != RESULT_CRIT );
     }
 
     if ( p()->talents.fevered_incantation.ok() && s->result_type == result_amount_type::DMG_DIRECT )
@@ -2513,6 +2506,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
   {
     parse_options( options_str );
     base_aoe_multiplier *= p->talents.arcing_cleave->effectN( 2 ).percent();
+    affected_by.overflowing_energy = true;
     triggers.clearcasting = true;
     glorious_incandescence_charges = as<int>( p->find_spell( 451223 )->effectN( 1 ).base_value() );
     arcane_soul_charges = as<int>( p->find_spell( 453413 )->effectN( 1 ).base_value() );
@@ -3412,11 +3406,11 @@ struct fireball_t final : public fire_mage_spell_t
     master_of_flame_mult( 1.0 )
   {
     parse_options( options_str );
-    triggers.hot_streak = TT_ALL_TARGETS;
-    triggers.ignite = triggers.from_the_ashes = true;
-
     if ( frostfire )
       enable_calculate_on_impact( 468655 );
+    affected_by.overflowing_energy = true;
+    triggers.hot_streak = TT_ALL_TARGETS;
+    triggers.ignite = triggers.from_the_ashes = true;
 
     if ( p->talents.master_of_flame.ok() )
       master_of_flame_mult *= 1.0 + p->find_spell( 1217750 )->effectN( 1 ).percent();
@@ -3689,15 +3683,14 @@ struct frostbolt_t final : public frost_mage_spell_t
     bf_chance(),
     fractured_frost_mul()
   {
-    // TODO Frostfire
-    // * triggers an additional Frost/Fire Mastery on hit rather than on cast
-
     parse_options( options_str );
+    enable_calculate_on_impact( frostfire ? 468655 : 228597 );
+    affected_by.overflowing_energy = true;
+
     if ( frostfire && p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B2 ) )
     {
       triggers.ignite_2pc = true;
     }
-    enable_calculate_on_impact( frostfire ? 468655 : 228597 );
 
     fof_chance = p->talents.fingers_of_frost->effectN( 1 ).percent();
     bf_chance = p->talents.brain_freeze->effectN( 1 ).percent();
@@ -3921,6 +3914,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
   {
     parse_options( options_str );
     enable_calculate_on_impact( 228600 );
+    affected_by.overflowing_energy = true;
 
     if ( p->talents.splitting_ice.ok() )
     {
@@ -4842,7 +4836,6 @@ struct splinter_t final : public mage_spell_t
     splinterstorm( splinterstorm_ )
   {
     background = proc = true;
-    triggers.overflowing_energy = false;
 
     if ( p->talents.controlled_instincts.ok() )
       controlled_instincts = get_action<controlled_instincts_t>( "controlled_instincts", p );
