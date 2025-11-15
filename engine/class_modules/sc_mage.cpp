@@ -356,19 +356,18 @@ public:
     const spell_data_t* arcane_charge;
     const spell_data_t* arcane_mage;
     const spell_data_t* clearcasting;
-    const spell_data_t* mana_adept;
     const spell_data_t* savant;
 
     // Fire
     const spell_data_t* fire_mage;
-    const spell_data_t* fuel_the_fire;
+    const spell_data_t* hot_streak;
     const spell_data_t* ignite;
     const spell_data_t* pyroblast_clearcasting_driver;
 
     // Frost
     const spell_data_t* frost_mage;
-    const spell_data_t* icicles;
-    const spell_data_t* icicles_2;
+    const spell_data_t* freeze_and_shatter;
+    const spell_data_t* shatter;
   } spec;
 
   // State
@@ -2259,7 +2258,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
 
     if ( cast_state( s )->data.hot_streak )
     {
-      m *= 2.0; // base Hot Streak! multiplier (not in spell data)
+      m *= 1.0 + p()->spec.hot_streak->effectN( 1 ).percent();
       m *= 1.0 + p()->talents.inflame->effectN( 1 ).percent();
     }
 
@@ -2440,7 +2439,7 @@ struct arcane_orb_t final : public arcane_mage_spell_t
   const ao_type type;
 
   arcane_orb_t( std::string_view n, mage_t* p, std::string_view options_str, ao_type type_ = ao_type::NORMAL ) :
-    arcane_mage_spell_t( n, p, p->find_specialization_spell( "Arcane Orb" ) ),
+    arcane_mage_spell_t( n, p, p->talents.arcane_orb ), // TODO: what happens when you trigger Orb Barrage w/o the orb talent
     type( type_ )
   {
     parse_options( options_str );
@@ -2556,7 +2555,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     arcane_mage_spell_t::execute();
 
-    double mana_pct = p()->buffs.arcane_charge->check() * 0.01 * p()->spec.mana_adept->effectN( 1 ).percent();
+    double mana_pct = p()->buffs.arcane_charge->check() * 0.01 * p()->talents.mana_adept->effectN( 1 ).percent();
     p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * mana_pct, p()->gains.arcane_barrage, this );
 
     p()->buffs.arcane_tempo->trigger();
@@ -3103,7 +3102,7 @@ struct blizzard_t final : public frost_mage_spell_t
   action_t* blizzard_shard;
 
   blizzard_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    frost_mage_spell_t( n, p, p->find_specialization_spell( "Blizzard" ) ),
+    frost_mage_spell_t( n, p, p->talents.blizzard_1.ok() ? p->talents.blizzard_1 : p->talents.blizzard_2 ),
     blizzard_shard( get_action<blizzard_shard_t>( "blizzard_shard", p ) )
   {
     parse_options( options_str );
@@ -3138,7 +3137,7 @@ struct blizzard_t final : public frost_mage_spell_t
 struct cold_snap_t final : public frost_mage_spell_t
 {
   cold_snap_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    frost_mage_spell_t( n, p, p->find_specialization_spell( "Cold Snap" ) )
+    frost_mage_spell_t( n, p, p->talents.cold_snap )
   {
     parse_options( options_str );
     harmful = false;
@@ -3485,7 +3484,7 @@ struct flamestrike_pyromaniac_t final : public fire_mage_spell_t
 struct flamestrike_t final : public hot_streak_spell_t
 {
   flamestrike_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    hot_streak_spell_t( n, p, p->find_specialization_spell( "Flamestrike" ) )
+    hot_streak_spell_t( n, p, p->talents.flamestrike_1.ok() ? p->talents.flamestrike_1 : p->talents.flamestrike_2 )
   {
     parse_options( options_str );
     triggers.ignite = true;
@@ -3522,7 +3521,7 @@ struct flamestrike_t final : public hot_streak_spell_t
     hot_streak_spell_t::execute();
 
     if ( hit_any_target )
-      handle_hot_streak( execute_state->crit_chance, p()->spec.fuel_the_fire->ok() ? HS_CUSTOM : HS_HIT );
+      handle_hot_streak( execute_state->crit_chance, p()->talents.fuel_the_fire->ok() ? HS_CUSTOM : HS_HIT );
   }
 };
 
@@ -4242,6 +4241,8 @@ struct mirror_image_t final : public mage_spell_t
   }
 };
 
+// TODO: reuse for the new frostfire talent
+/*
 struct glacial_spike_4pc_t final : public mage_spell_t
 {
   double base_icicle_coef;
@@ -4277,19 +4278,15 @@ struct glacial_spike_4pc_t final : public mage_spell_t
     return am;
   }
 };
+*/
 
 struct pyroblast_pyromaniac_t final : public fire_mage_spell_t
 {
-  action_t* glacial_spike_4pc = nullptr;
-
   pyroblast_pyromaniac_t( std::string_view n, mage_t* p ) :
     fire_mage_spell_t( n, p, p->find_spell( 460475 ) )
   {
     background = proc = true;
     triggers.ignite = true;
-
-    if ( p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B4 ) )
-      glacial_spike_4pc = get_action<glacial_spike_4pc_t>( "glacial_spike_4pc", p );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -4320,16 +4317,11 @@ struct pyroblast_pyromaniac_t final : public fire_mage_spell_t
     p()->consume_burden_of_power();
     if ( p()->buffs.hyperthermia->check() )
       p()->buffs.hyperthermia_damage->trigger();
-
-    if ( rng().roll( p()->sets->set( HERO_FROSTFIRE, TWW3, B4 )->effectN( 1 ).percent() ) )
-      glacial_spike_4pc->execute_on_target( target );
   }
 };
 
 struct pyroblast_t final : public hot_streak_spell_t
 {
-  action_t* glacial_spike_4pc = nullptr;
-
   pyroblast_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     hot_streak_spell_t( n, p, p->talents.pyroblast )
   {
@@ -4339,12 +4331,6 @@ struct pyroblast_t final : public hot_streak_spell_t
 
     if ( p->talents.pyromaniac.ok() )
       pyromaniac_action = get_action<pyroblast_pyromaniac_t>( "pyroblast_pyromaniac", p );
-
-    if ( p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B4 ) )
-    {
-      glacial_spike_4pc = get_action<glacial_spike_4pc_t>( "glacial_spike_4pc", p );
-      add_child( glacial_spike_4pc );
-    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -4361,14 +4347,6 @@ struct pyroblast_t final : public hot_streak_spell_t
   {
     timespan_t t = hot_streak_spell_t::travel_time();
     return std::min( t, 0.75_s );
-  }
-
-  void execute() override
-  {
-    hot_streak_spell_t::execute();
-
-    if ( rng().roll( p()->sets->set( HERO_FROSTFIRE, TWW3, B4 )->effectN( 1 ).percent() ) )
-      glacial_spike_4pc->execute_on_target( target );
   }
 
   void impact( action_state_t* s ) override
@@ -4714,7 +4692,6 @@ struct embedded_splinter_t final : public mage_spell_t
     double am = mage_spell_t::action_multiplier();
 
     am *= 1.0 + p()->cache.mastery() * p()->spec.savant->effectN( 6 ).mastery_value();
-    am *= 1.0 + p()->cache.mastery() * p()->spec.icicles_2->effectN( 5 ).mastery_value();
 
     return am;
   }
@@ -4798,7 +4775,6 @@ struct splinter_t final : public mage_spell_t
     double am = mage_spell_t::action_multiplier();
 
     am *= 1.0 + p()->cache.mastery() * p()->spec.savant->effectN( 7 ).mastery_value();
-    am *= 1.0 + p()->cache.mastery() * p()->spec.icicles_2->effectN( 4 ).mastery_value();
 
     return am;
   }
@@ -5686,25 +5662,21 @@ void mage_t::init_spells()
   spec.arcane_charge                 = find_specialization_spell( "Arcane Charge"                 );
   spec.arcane_mage                   = find_specialization_spell( "Arcane Mage"                   );
   spec.clearcasting                  = find_specialization_spell( "Clearcasting"                  );
-  spec.mana_adept                    = find_specialization_spell( "Mana Adept"                    );
   spec.fire_mage                     = find_specialization_spell( "Fire Mage"                     );
-  spec.fuel_the_fire                 = find_specialization_spell( "Fuel the Fire"                 );
+  spec.hot_streak                    = find_specialization_spell( "Hot Streak"                    );
   spec.pyroblast_clearcasting_driver = find_specialization_spell( "Pyroblast Clearcasting Driver" );
   spec.frost_mage                    = find_specialization_spell( "Frost Mage"                    );
+  spec.shatter                       = find_specialization_spell( "Shatter"                       );
 
   // Mastery
-  spec.savant    = find_mastery_spell( MAGE_ARCANE );
-  spec.ignite    = find_mastery_spell( MAGE_FIRE );
-  spec.icicles   = find_mastery_spell( MAGE_FROST );
-  spec.icicles_2 = find_specialization_spell( "Mastery: Icicles", "Rank 2" );
+  spec.savant             = find_mastery_spell( MAGE_ARCANE );
+  spec.ignite             = find_mastery_spell( MAGE_FIRE );
+  spec.freeze_and_shatter = find_mastery_spell( MAGE_FROST );
 
   // Misc
   cooldowns.arcane_echo->duration = find_spell( 464515 )->internal_cooldown();
 
   // Register passives
-  // Flash freeze also affects glacial spike impact spell (228600)
-  register_passive_affect_list( talents.flash_freeze, affect_list_t( 2 ).add_spell( 228600 ) );
-
   // Arcane aura mana regen includes points per level adjustment, handled manually in mage_t::resource_regen_per_second
   deregister_passive_effect( spec.arcane_mage->effectN( 5 ) );
 
