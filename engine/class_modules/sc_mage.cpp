@@ -286,7 +286,6 @@ public:
     timespan_t arcane_missiles_chain_delay = 200_ms;
     double arcane_missiles_chain_relstddev = 0.1;
     timespan_t arcane_missiles_delay = 100_ms;
-    timespan_t glacial_spike_delay = 100_ms;
     unsigned initial_spellfire_spheres = 5;
     arcane_phoenix_rotation arcane_phoenix_rotation_override = arcane_phoenix_rotation::DEFAULT;
     double clearcasting_chance = 0.0068;
@@ -367,7 +366,6 @@ public:
     bool brain_freeze_active;
     bool fingers_of_frost_active;
     bool grant_fingers_of_frost;
-    timespan_t gained_full_icicles;
     bool had_low_mana;
     bool trigger_ff_empowerment;
     bool ff_empowerment_crit;
@@ -3108,12 +3106,9 @@ struct cold_snap_t final : public frost_mage_spell_t
     frost_mage_spell_t::execute();
 
     p()->cooldowns.frost_nova->reset( false );
-
+    p()->cooldowns.cone_of_cold->reset( false );
     if ( p()->talents.flame_and_frost.ok() )
-    {
       p()->cooldowns.dragons_breath->reset( false );
-      p()->cooldowns.fire_blast->reset( false );
-    }
   }
 };
 
@@ -3391,11 +3386,8 @@ struct fireball_t final : public fire_mage_spell_t
     if ( !p()->buffs.combustion->check() )
       m *= master_of_flame_mult;
 
-    if ( frostfire )
-    {
-      if ( p()->state.trigger_ff_empowerment )
-        m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 3 ).percent();
-    }
+    if ( frostfire && p()->state.trigger_ff_empowerment )
+      m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 3 ).percent();
 
     return m;
   }
@@ -3626,11 +3618,9 @@ struct frostbolt_t final : public frost_mage_spell_t
   {
     double m = frost_mage_spell_t::composite_da_multiplier( s );
 
-    if ( frostfire )
-    {
-      if ( p()->state.trigger_ff_empowerment )
-        m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 3 ).percent();
-    }
+    if ( frostfire && p()->state.trigger_ff_empowerment )
+      m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 3 ).percent();
+
     return m;
   }
 
@@ -3834,23 +3824,6 @@ struct glacial_spike_t final : public frost_mage_spell_t
       pyroblast_4pc = get_action<pyroblast_4pc_t>( "pyroblast_4pc", p );
       add_child( pyroblast_4pc );
     }
-  }
-
-  void init_finished() override
-  {
-    proc_brain_freeze = p()->get_proc( "Brain Freeze from Glacial Spike" );
-
-    frost_mage_spell_t::init_finished();
-  }
-
-  timespan_t execute_time() const override
-  {
-    timespan_t t = frost_mage_spell_t::execute_time();
-
-    // If the Mage just gained the final Icicle, add a small delay to approximate the lack of spell queueing.
-    t += std::max( p()->state.gained_full_icicles + p()->options.glacial_spike_delay - sim->current_time(), 0_ms );
-
-    return t;
   }
 
   void execute() override
@@ -5182,7 +5155,6 @@ void mage_t::create_options()
   add_option( opt_timespan( "mage.arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "mage.arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_timespan( "mage.arcane_missiles_delay", options.arcane_missiles_delay, 0_ms, timespan_t::max() ) );
-  add_option( opt_timespan( "mage.glacial_spike_delay", options.glacial_spike_delay, 0_ms, timespan_t::max() ) );
   add_option( opt_uint( "mage.initial_spellfire_spheres", options.initial_spellfire_spheres ) );
   add_option( opt_func( "mage.arcane_phoenix_rotation_override", [ this ] ( sim_t*, util::string_view, util::string_view value )
               {
@@ -6314,7 +6286,6 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
       {
         case AOE_BLIZZARD:    return "blizzard";
         case AOE_COMET_STORM: return "comet_storm";
-        case AOE_FLAME_PATCH: return "flame_patch";
         case AOE_FROZEN_ORB:  return "frozen_orb";
         case AOE_METEOR_BURN: return "meteor_burn";
         case AOE_MAX:         return "unknown";
