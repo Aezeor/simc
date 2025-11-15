@@ -810,7 +810,7 @@ public:
 
   void trigger_arcane_charge( int stacks = 1 );
   bool trigger_brain_freeze( double chance, proc_t* source, timespan_t delay = 0.15_s );
-  bool trigger_crowd_control( const action_state_t* s, spell_mechanic type, timespan_t adjust = 0_ms );
+  bool trigger_crowd_control( const action_state_t* s, spell_mechanic type );
   bool trigger_clearcasting( double chance = 1.0, timespan_t delay = 0_ms, bool never_predictable = false, bool precombat_evocation = false );
   bool trigger_fof( double chance, proc_t* source, int stacks = 1 );
   void trigger_mana_cascade();
@@ -3323,7 +3323,7 @@ struct cone_of_cold_t final : public frost_mage_spell_t
     frost_mage_spell_t::impact( s );
 
     if ( p()->talents.freezing_cold.ok() )
-      p()->trigger_crowd_control( s, MECHANIC_FREEZE, -0.5_s ); // Freezing Cold only has the initial grace period
+      p()->trigger_crowd_control( s, MECHANIC_FREEZE );
   }
 };
 
@@ -6528,7 +6528,7 @@ stat_e mage_t::convert_hybrid_stat( stat_e s ) const
   }
 }
 
-bool mage_t::trigger_crowd_control( const action_state_t* s, spell_mechanic type, timespan_t adjust )
+bool mage_t::trigger_crowd_control( const action_state_t* s, spell_mechanic type )
 {
   if ( type == MECHANIC_INTERRUPT )
     return s->target->debuffs.casting->check();
