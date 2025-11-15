@@ -2700,75 +2700,21 @@ struct arcane_blast_t final : public arcane_mage_spell_t
 
 struct arcane_explosion_t final : public arcane_mage_spell_t
 {
-  static const spell_data_t* spell( mage_t* p, ae_type type )
-  {
-    switch ( type )
-    {
-      case ae_type::NORMAL: return p->find_class_spell( "Arcane Explosion" );
-      case ae_type::ECHO:   return p->find_spell( 414381 );
-      default:              return nullptr;
-    }
-  }
-
-  action_t* echo = nullptr;
-  const ae_type type;
-
-  arcane_explosion_t( std::string_view n, mage_t* p, std::string_view options_str, ae_type type_ = ae_type::NORMAL ) :
-    arcane_mage_spell_t( n, p, spell( p, type_ ) ),
-    type( type_ )
+  arcane_explosion_t( std::string_view n, mage_t* p, std::string_view options_str ) :
+    arcane_mage_spell_t( n, p, p->find_class_spell( "Arcane Explosion" ) )
   {
     parse_options( options_str );
     aoe = -1;
     affected_by.savant = true;
     triggers.clearcasting = true;
-
-    if ( type == ae_type::NORMAL )
-    {
-      cost_reductions = { p->buffs.clearcasting };
-      if ( p->talents.concentrated_power.ok() )
-      {
-        echo = get_action<arcane_explosion_t>( "arcane_explosion_echo", p, "", ae_type::ECHO );
-        add_child( echo );
-      }
-    }
-    else
-    {
-      background = proc = true;
-    }
   }
 
   void execute() override
   {
-    if ( echo && p()->buffs.clearcasting->check() )
-      make_event( *sim, 500_ms, [ this, t = target ] { echo->execute_on_target( t ); } );
-
     arcane_mage_spell_t::execute();
 
     if ( !target_list().empty() )
       p()->trigger_arcane_charge();
-
-    if ( num_targets_hit >= as<int>( p()->talents.reverberate->effectN( 2 ).base_value() )
-      && rng().roll( p()->talents.reverberate->effectN( 1 ).percent() ) )
-    {
-      p()->trigger_arcane_charge();
-    }
-
-    if ( !background && p()->buffs.aether_attunement_counter->at_max_stacks() )
-    {
-      p()->buffs.aether_attunement_counter->expire();
-      p()->buffs.aether_attunement->trigger();
-    }
-  }
-
-  double action_multiplier() const override
-  {
-    double am = arcane_mage_spell_t::action_multiplier();
-
-    // Seems to affect the echo as well, but only if the mage has CC at that time.
-    if ( p()->buffs.clearcasting->check() )
-      am *= 1.0 + p()->talents.eureka->effectN( 1 ).percent();
-
-    return am;
   }
 };
 
@@ -3313,9 +3259,6 @@ struct cone_of_cold_t final : public frost_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    // Since impact needs to know how many targets were actually hit, we
-    // delay all impact events by 1 ms so that they occur after execute is done.
-    travel_delay = 0.001;
   }
 
   void impact( action_state_t* s ) override
@@ -3339,10 +3282,7 @@ struct counterspell_t final : public mage_spell_t
   void impact( action_state_t* s ) override
   {
     mage_spell_t::impact( s );
-
-    bool success = p()->trigger_crowd_control( s, MECHANIC_INTERRUPT );
-    if ( success && p()->talents.quick_witted.ok() )
-      make_event( *sim, [ this ] { cooldown->adjust( -p()->talents.quick_witted->effectN( 1 ).time_value() ); } );
+    p()->trigger_crowd_control( s, MECHANIC_INTERRUPT );
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -3685,14 +3625,12 @@ struct frostbolt_t final : public frost_mage_spell_t
 
   double fof_chance;
   double bf_chance;
-  double fractured_frost_mul;
 
   frostbolt_t( std::string_view n, mage_t* p, std::string_view options_str, bool frostfire_ = false ) :
     frost_mage_spell_t( n, p, frostfire_ ? p->talents.frostfire_bolt : p->find_class_spell( "Frostbolt" ) ),
     frostfire( frostfire_ ),
     fof_chance(),
-    bf_chance(),
-    fractured_frost_mul()
+    bf_chance()
   {
     parse_options( options_str );
     enable_calculate_on_impact( frostfire ? 468655 : 228597 );
@@ -3706,7 +3644,8 @@ struct frostbolt_t final : public frost_mage_spell_t
     fof_chance = p->talents.fingers_of_frost->effectN( 1 ).percent();
     bf_chance = p->talents.brain_freeze->effectN( 1 ).percent();
 
-    fractured_frost_mul = p->find_spell( 378445 )->effectN( 3 ).percent();
+    if ( p->specialization() == MAGE_ARCANE || p->specialization() == MAGE_FIRE )
+      background = true;
   }
 
   void init_finished() override
@@ -4052,25 +3991,22 @@ struct ice_nova_t final : public frost_mage_spell_t
 
 struct fire_blast_t final : public fire_mage_spell_t
 {
-  size_t lit_fuse_targets;
-
   fire_blast_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     fire_mage_spell_t( n, p, p->talents.fire_blast.ok() ? p->talents.fire_blast : p->find_class_spell( "Fire Blast" ) )
   {
     parse_options( options_str );
     triggers.hot_streak = TT_ALL_TARGETS;
     triggers.ignite = triggers.from_the_ashes = true;
-
-    cooldown->duration -= 1000 * p->talents.fervent_flickering->effectN( 2 ).time_value();
     cooldown->hasted = true;
-    // Data comes from talents.lit_fuse but needs to be available even when the talent isn't taken
-    lit_fuse_targets = as<size_t>( p->find_spell( 450716 )->effectN( 2 ).base_value() );
 
     if ( p->talents.fire_blast.ok() )
     {
       base_crit += 1.0;
       usable_while_casting = true;
     }
+
+    if ( p->find_specialization_spell( "Arcane Barrage" )->ok() || p->talents.ice_lance.ok() )
+      background = true;
   }
 
   int n_targets() const override
