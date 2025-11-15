@@ -37,7 +37,6 @@ enum ground_aoe_type_e
 {
   AOE_BLIZZARD = 0,
   AOE_COMET_STORM,
-  AOE_FLAME_PATCH,
   AOE_FROZEN_ORB,
   AOE_METEOR_BURN,
   AOE_MAX
@@ -62,12 +61,6 @@ enum hot_streak_trigger_type_e
   HS_HIT,
   HS_CRIT,
   HS_CUSTOM
-};
-
-enum class ae_type
-{
-  NORMAL,
-  ECHO
 };
 
 enum class ao_type
@@ -101,7 +94,6 @@ struct mage_td_t final : public actor_target_data_t
   struct debuffs_t
   {
     buff_t* controlled_destruction;
-    buff_t* controlled_instincts;
     buff_t* molten_fury;
     buff_t* touch_of_the_magi;
   } debuffs;
@@ -276,7 +268,6 @@ public:
     cooldown_t* frost_nova;
     cooldown_t* frozen_orb;
     cooldown_t* meteor;
-    cooldown_t* phoenix_flames;
     cooldown_t* presence_of_mind;
     cooldown_t* pyromaniac;
   } cooldowns;
@@ -742,7 +733,6 @@ public:
     // Row 5
     player_talent_t memory_of_alar;
   } talents;
-
 
   mage_t( sim_t* sim, std::string_view name, race_e r = RACE_NONE );
 
@@ -1881,22 +1871,6 @@ public:
     residual_action::trigger( p()->action.ignite_2pc, s->target, amount );
   }
 
-  void trigger_tracking_buff( buff_t* counter, buff_t* ready, int offset = 1, int stacks = 1 )
-  {
-    if ( ready->check() )
-      return;
-
-    if ( counter->at_max_stacks( offset + stacks - 1 ) )
-    {
-      counter->expire();
-      ready->trigger();
-    }
-    else
-    {
-      counter->trigger( stacks );
-    }
-  }
-
   void trigger_glorious_incandescence( player_t* t )
   {
     if ( !p()->talents.glorious_incandescence.ok() || !p()->state.trigger_glorious_incandescence )
@@ -2036,7 +2010,7 @@ struct fire_mage_spell_t : public mage_spell_t
       if ( triggers.from_the_ashes && p()->talents.from_the_ashes.ok() && p()->cooldowns.from_the_ashes->up() )
       {
         p()->cooldowns.from_the_ashes->start( p()->talents.from_the_ashes->internal_cooldown() );
-        p()->cooldowns.phoenix_flames->adjust( p()->talents.from_the_ashes->effectN( 1 ).time_value() );
+        // TODO: Fire Blast cdr
       }
     }
   }
@@ -2428,9 +2402,6 @@ struct arcane_orb_bolt_t final : public arcane_mage_spell_t
 
     // AC is triggered even if the spell misses.
     p()->trigger_arcane_charge();
-
-    if ( result_is_hit( s->result ) && p()->talents.controlled_instincts.ok() )
-      get_td( s->target )->debuffs.controlled_instincts->trigger();
   }
 };
 
@@ -3084,17 +3055,6 @@ struct blizzard_shard_t final : public frost_mage_spell_t
 
     return am;
   }
-
-  void impact( action_state_t* s ) override
-  {
-    frost_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-    {
-      if ( p()->talents.controlled_instincts.ok() )
-        get_td( s->target )->debuffs.controlled_instincts->trigger();
-    }
-  }
 };
 
 struct blizzard_t final : public frost_mage_spell_t
@@ -3178,7 +3138,6 @@ struct combustion_t final : public fire_mage_spell_t
     p()->buffs.combustion->trigger( combustion_duration );
     p()->buffs.wildfire->trigger();
     p()->cooldowns.fire_blast->reset( false, as<int>( p()->talents.spontaneous_combustion->effectN( 1 ).base_value() ) );
-    p()->cooldowns.phoenix_flames->reset( false, as<int>( p()->talents.spontaneous_combustion->effectN( 2 ).base_value() ) );
     p()->trigger_flash_freezeburn();
     if ( p()->pets.arcane_phoenix )
       p()->pets.arcane_phoenix->summon( combustion_duration ); // TODO: The extra random pet duration can sometimes result in an extra cast.
@@ -4788,11 +4747,8 @@ struct splinter_t final : public mage_spell_t
 
     if ( controlled_instincts )
     {
-      if ( auto td = find_td( s->target ); td && td->debuffs.controlled_instincts->check() )
-      {
-        double pct = p()->talents.controlled_instincts->effectN( p()->specialization() == MAGE_FROST ? 4 : 1 ).percent();
-        controlled_instincts->execute_on_target( s->target, pct * s->result_total );
-      }
+      double pct = p()->talents.controlled_instincts->effectN( p()->specialization() == MAGE_FROST ? 4 : 1 ).percent();
+      controlled_instincts->execute_on_target( s->target, pct * s->result_total );
     }
 
     auto cd = p()->specialization() == MAGE_FROST ? p()->cooldowns.frozen_orb : p()->cooldowns.arcane_orb;
@@ -5056,8 +5012,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.controlled_destruction = make_buff( *this, "controlled_destruction", mage->find_spell( 453268 ) )
                                      ->set_default_value( 0.1 * mage->talents.controlled_destruction->effectN( 1 ).percent() )
                                      ->set_chance( mage->talents.controlled_destruction.ok() );
-  debuffs.controlled_instincts   = make_buff( *this, "controlled_instincts", mage->find_spell( mage->specialization() == MAGE_FROST ? 463192 : 454214 ) )
-                                     ->set_chance( mage->talents.controlled_instincts.ok() );
   debuffs.molten_fury            = make_buff( *this, "molten_fury", mage->find_spell( 458910 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->set_chance( mage->talents.molten_fury.ok() );
@@ -5095,7 +5049,6 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   cooldowns.frost_nova         = get_cooldown( "frost_nova"       );
   cooldowns.frozen_orb         = get_cooldown( "frozen_orb"       );
   cooldowns.meteor             = get_cooldown( "meteor"           );
-  cooldowns.phoenix_flames     = get_cooldown( "phoenix_flames"   );
   cooldowns.presence_of_mind   = get_cooldown( "presence_of_mind" );
   cooldowns.pyromaniac         = get_cooldown( "pyromaniac"       );
 
@@ -5222,10 +5175,6 @@ void mage_t::create_actions()
     action.ignite_2pc = get_action<ignite_2pc_t>( "ignite_2pc", this );
 
   player_t::create_actions();
-
-  // Ensure the cooldown of Phoenix Flames is properly initialized.
-  if ( talents.from_the_ashes.ok() && !find_action( "phoenix_flames" ) )
-    create_action( "phoenix_flames", "" );
 }
 
 void mage_t::create_options()
@@ -5819,10 +5768,7 @@ void mage_t::create_buffs()
   buffs.fiery_rush               = make_buff( this, "fiery_rush", find_spell( 383637 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
-                                       {
-                                         cooldowns.fire_blast->adjust_recharge_multiplier();
-                                         cooldowns.phoenix_flames->adjust_recharge_multiplier();
-                                       } )
+                                       { cooldowns.fire_blast->adjust_recharge_multiplier(); } )
                                      ->set_chance( talents.fiery_rush.ok() );
   buffs.frenetic_speed           = make_buff( this, "frenetic_speed", find_spell( 236060 ) )
                                      ->set_default_value_from_effect( 1 )
