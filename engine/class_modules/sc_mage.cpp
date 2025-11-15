@@ -4553,6 +4553,12 @@ struct supernova_t final : public mage_spell_t
     base_multiplier     *= sn_mult;
     base_aoe_multiplier /= sn_mult;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    mage_spell_t::impact( s );
+    p()->trigger_crowd_control( s, MECHANIC_KNOCKBACK );
+  }
 };
 
 struct time_warp_t final : public mage_spell_t
