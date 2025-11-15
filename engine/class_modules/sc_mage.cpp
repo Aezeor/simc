@@ -245,6 +245,7 @@ public:
 
 
     // Shared
+    buff_t* brainstorm;
     buff_t* overflowing_energy;
 
 
@@ -2065,6 +2066,7 @@ struct fire_mage_spell_t : public mage_spell_t
           bool hu_react = p->buffs.heating_up->stack_react() > 0;
           p->buffs.heating_up->expire();
           p->buffs.hot_streak->trigger();
+          p->buffs.brainstorm->trigger();
           // If the player knew about Heating Up and converted to Hot Streak
           // with a guaranteed crit, let them react to the Hot Streak instantly.
           if ( guaranteed && hu_react )
@@ -5866,14 +5868,6 @@ void mage_t::create_buffs()
                                       ->set_default_value( talents.arcane_tempo->effectN( 1 ).percent() )
                                       ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                                       ->set_chance( talents.arcane_tempo.ok() );
-  // TODO: turn this into the class talent
-  /*
-  buffs.big_brained               = make_buff( this, "big_brained", find_spell( 461531 ) )
-                                      ->set_default_value_from_effect( 1 )
-                                      ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
-                                      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-                                      ->set_chance( talents.big_brained.ok() );
-  */
   buffs.clearcasting              = make_buff( this, "clearcasting", find_spell( 263725 ) )
                                       ->set_default_value_from_effect( 1 )
                                       ->set_chance( spec.clearcasting->ok() ) ;
@@ -5991,6 +5985,11 @@ void mage_t::create_buffs()
 
 
   // Shared
+  buffs.brainstorm         = make_buff( this, "brainstorm", find_spell( 461531 ) )
+                               ->set_default_value_from_effect( 1 )
+                               ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+                               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                               ->set_chance( talents.brainstorm.ok() );
   buffs.overflowing_energy = make_buff( this, "overflowing_energy", find_spell( 394195 ) )
                                ->set_default_value_from_effect( 1 )
                                ->set_chance( talents.overflowing_energy.ok() );
@@ -6775,6 +6774,8 @@ bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool never_p
     if ( chance >= 1.0 && !never_predictable )
       buffs.clearcasting->predict();
 
+    // TODO: double check timing
+    buffs.brainstorm->trigger();
     trigger_jackpot();
   }
 
@@ -6805,6 +6806,7 @@ bool mage_t::trigger_brain_freeze( double chance, proc_t* source, timespan_t del
       cooldowns.flurry->reset( chance < 1.0 );
     }
 
+    buffs.brainstorm->trigger();
     source->occur();
     if ( procs.brain_freeze )
       procs.brain_freeze->occur();
