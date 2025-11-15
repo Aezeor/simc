@@ -1695,6 +1695,15 @@ public:
     }
   }
 
+  double cost_pct_multiplier() const override
+  {
+    double c = spell_t::cost_pct_multiplier();
+
+    c *= 1.0 + p()->talents.mana_confluence->effectN( 1 ).percent();
+
+    return c;
+  }
+
   void execute() override
   {
     spell_t::execute();
