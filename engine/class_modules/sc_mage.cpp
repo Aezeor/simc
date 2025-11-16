@@ -3700,6 +3700,11 @@ struct frozen_orb_bolt_t final : public frost_mage_spell_t
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
     background = proc = true;
+    if ( p->talents.wintertide.ok() )
+    {
+      freezing_chance = p->talents.wintertide->proc_chance();
+      freezing_stacks = 1; // Not in spell data
+    }
   }
 };
 
