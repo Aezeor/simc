@@ -3534,14 +3534,12 @@ struct flurry_t final : public frost_mage_spell_t
   action_t* flurry_bolt;
 
   const int pulses;
-  const timespan_t base_pulse_time = 0.4_s;
-  const timespan_t winters_chill_duration;
+  const timespan_t pulse_time = 0.4_s;
 
   flurry_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     frost_mage_spell_t( n, p, p->talents.flurry ),
     flurry_bolt( get_action<flurry_bolt_t>( "flurry_bolt", p ) ),
-    pulses( as<int>( data().effectN( 1 ).base_value() ) ),
-    winters_chill_duration( p->find_spell( 228358 )->duration() )
+    pulses( as<int>( data().effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
     may_miss = false;
@@ -3550,17 +3548,6 @@ struct flurry_t final : public frost_mage_spell_t
     if ( p->action.glacial_assault )
       add_child( p->action.glacial_assault );
   }
-
-  void init() override
-  {
-    frost_mage_spell_t::init();
-
-    // Snapshot haste for bolt impact timing.
-    snapshot_flags |= STATE_HASTE;
-  }
-
-  timespan_t pulse_time( const action_state_t* s ) const
-  { return ( s ? s->haste : p()->cache.spell_cast_speed() ) * base_pulse_time; }
 
   void execute() override
   {
@@ -3575,7 +3562,7 @@ struct flurry_t final : public frost_mage_spell_t
     frost_mage_spell_t::impact( s );
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-      .pulse_time( pulse_time( s ) )
+      .pulse_time( pulse_time )
       .target( s->target )
       .n_pulses( pulses )
       .action( flurry_bolt ), true );
