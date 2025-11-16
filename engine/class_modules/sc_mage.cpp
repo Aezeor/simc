@@ -3744,6 +3744,8 @@ struct frozen_orb_t final : public frost_mage_spell_t
 
     p()->buffs.permafrost_lances->trigger();
     p()->buffs.freezing_rain->trigger();
+    if ( p()->talents.everlasting_frost.ok() )
+      p()->trigger_fof( 1.0, proc_fof );
   }
 
   void impact( action_state_t* s ) override
