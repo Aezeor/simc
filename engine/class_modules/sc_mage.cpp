@@ -3749,7 +3749,7 @@ struct frozen_orb_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    int pulse_count = 20;
+    int pulse_count = 30;
     timespan_t pulse_time = 0.5_s;
     timespan_t duration = ( pulse_count - 1 ) * pulse_time;
     p()->ground_aoe_expiration[ AOE_FROZEN_ORB ] = sim->current_time() + duration;
@@ -3835,6 +3835,15 @@ struct shatter_t final : public mage_spell_t
     mage_spell_t( n, p, p->find_spell( 1246949 ) )
   {
     background = proc = true;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p()->buffs.permafrost_lances->check_value();
+
+    return am;
   }
 };
 
