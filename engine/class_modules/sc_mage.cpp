@@ -143,6 +143,7 @@ public:
   // Events
   struct events_t
   {
+    event_t* icicle;
     event_t* merged_buff_execute;
     event_t* meteor_burn;
     event_t* splinterstorm;
@@ -226,6 +227,7 @@ public:
     buff_t* brain_freeze;
     buff_t* fingers_of_frost;
     buff_t* freezing_rain;
+    buff_t* glacial_spike;
     buff_t* permafrost_lances;
 
 
@@ -295,6 +297,7 @@ public:
     double arcane_missiles_chain_relstddev = 0.1;
     timespan_t arcane_missiles_delay = 100_ms;
     unsigned initial_spellfire_spheres = 5;
+    unsigned initial_icicles = 5;
     arcane_phoenix_rotation arcane_phoenix_rotation_override = arcane_phoenix_rotation::DEFAULT;
     double clearcasting_chance = 0.0068;
     double it_clearcasting_chance = 0.0938;
@@ -383,6 +386,7 @@ public:
     int embedded_splinters;
     int remaining_splinterstorm;
     int clearcasting_blp_count;
+    int icicles;
   } state;
 
   // Talents
@@ -3676,6 +3680,15 @@ struct frostbolt_t final : public frost_mage_spell_t
       p()->action.frostfire_empowerment->execute_on_target( s->target, p()->talents.frostfire_empowerment->effectN( 2 ).percent() * s->result_total );
     }
   }
+
+  bool ready() override
+  {
+    // Buff only needs to be missing at the start of the cast
+    if ( p()->buffs.glacial_spike->check() && p()->executing != this )
+      return false;
+
+    return frost_mage_spell_t::ready();
+  }
 };
 
 struct frost_nova_t final : public mage_spell_t
@@ -3825,11 +3838,6 @@ struct glacial_spike_t final : public frost_mage_spell_t
     affected_by.overflowing_energy = true;
     freezing_stacks = as<int>( p->spec.shatter->effectN( 3 ).base_value() );
 
-    if ( p->talents.splitting_ice.ok() )
-    {
-      chain_multiplier = p->talents.splitting_ice->effectN( 4 ).percent();
-    }
-
     if ( p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B4 ) )
     {
       pyroblast_4pc = get_action<pyroblast_4pc_t>( "pyroblast_4pc", p );
@@ -3840,9 +3848,20 @@ struct glacial_spike_t final : public frost_mage_spell_t
   void execute() override
   {
     frost_mage_spell_t::execute();
+    p()->buffs.glacial_spike->decrement();
+    p()->state.icicles = 0;
 
     if ( rng().roll( p()->sets->set( HERO_FROSTFIRE, TWW3, B4 )->effectN( 2 ).percent() ) )
       pyroblast_4pc->execute_on_target( target );
+  }
+
+  bool ready() override
+  {
+    // Buff needs to be present at the start and also at the end of the cast
+    if ( !p()->buffs.glacial_spike->check() )
+      return false;
+
+    return frost_mage_spell_t::ready();
   }
 };
 
@@ -4893,6 +4912,36 @@ struct mage_event_t : public event_t
   { }
 };
 
+struct icicle_event_t final : public mage_event_t
+{
+  icicle_event_t( mage_t& m, timespan_t delta_time ) :
+    mage_event_t( m, delta_time )
+  { }
+
+  const char* name() const override
+  { return "icicle_event"; }
+
+  static void schedule_next( mage_t* p, bool randomize = false )
+  {
+    timespan_t next = p->talents.icicles->effectN( 1 ).period();
+    next *= p->cache.spell_haste();  // Does not use spell speed
+    if ( randomize ) next *= p->rng().real();
+    p->events.icicle = make_event<icicle_event_t>( *p->sim, *p, next );
+  }
+
+  void execute() override
+  {
+    mage->events.icicle = nullptr;
+
+    int max_icicles = as<int>( mage->talents.icicles->effectN( 2 ).base_value() );
+    mage->state.icicles = std::min( mage->state.icicles + 1, max_icicles );
+    if ( mage->state.icicles == max_icicles )
+      mage->buffs.glacial_spike->trigger();
+
+    schedule_next( mage );
+  }
+};
+
 struct merged_buff_execute_event_t final : public mage_event_t
 {
   merged_buff_execute_event_t( mage_t& m ) :
@@ -4924,6 +4973,13 @@ struct splinterstorm_event_t final : public mage_event_t
 
   const char* name() const override
   { return "splinterstorm_event"; }
+
+  static void schedule_next( mage_t* p, bool randomize = false )
+  {
+    timespan_t next = p->talents.splinterstorm->effectN( 2 ).period();
+    if ( randomize ) next *= p->rng().real();
+    p->events.splinterstorm = make_event<splinterstorm_event_t>( *p->sim, *p, next );
+  }
 
   void execute() override
   {
@@ -4971,8 +5027,7 @@ struct splinterstorm_event_t final : public mage_event_t
         mage->trigger_clearcasting( mage->talents.splinterstorm->effectN( 4 ).percent() );
     }
 
-    mage->events.splinterstorm = make_event<splinterstorm_event_t>(
-      sim(), *mage, mage->talents.splinterstorm->effectN( 2 ).period() );
+    schedule_next( mage );
   }
 };
 
@@ -5199,6 +5254,7 @@ void mage_t::create_options()
   add_option( opt_float( "mage.arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_timespan( "mage.arcane_missiles_delay", options.arcane_missiles_delay, 0_ms, timespan_t::max() ) );
   add_option( opt_uint( "mage.initial_spellfire_spheres", options.initial_spellfire_spheres ) );
+  add_option( opt_uint( "mage.initial_icicles", options.initial_icicles ) );
   add_option( opt_func( "mage.arcane_phoenix_rotation_override", [ this ] ( sim_t*, util::string_view, util::string_view value )
               {
                 if ( value.empty() || value == "default" )
@@ -5808,6 +5864,8 @@ void mage_t::create_buffs()
   buffs.fingers_of_frost   = make_buff( this, "fingers_of_frost", find_spell( 44544 ) );
   buffs.freezing_rain      = make_buff( this, "freezing_rain", find_spell( 270232 ) )
                                ->set_chance( talents.freezing_rain.ok() );
+  buffs.glacial_spike      = make_buff( this, "glacial_spike", find_spell( 1222865 ) )
+                               ->set_chance( talents.icicles.ok() );
   buffs.permafrost_lances  = make_buff( this, "permafrost_lances", find_spell( 455122 ) )
                                ->set_default_value_from_effect( 1 )
                                ->set_chance( talents.permafrost_lances.ok() );
@@ -6182,11 +6240,17 @@ void mage_t::arise()
   if ( options.initial_spellfire_spheres > 0 )
     buffs.spellfire_sphere->trigger( options.initial_spellfire_spheres );
 
-  if ( talents.splinterstorm.ok() )
+  if ( talents.icicles.ok() )
   {
-    timespan_t first_tick = rng().real() * talents.splinterstorm->effectN( 2 ).period();
-    events.splinterstorm = make_event<events::splinterstorm_event_t>( *sim, *this, first_tick );
+    int max_icicles = as<int>( talents.icicles->effectN( 2 ).base_value() );
+    state.icicles = clamp<int>( options.initial_icicles, 0, max_icicles );
+    if ( state.icicles == max_icicles )
+      buffs.glacial_spike->trigger();
+    events::icicle_event_t::schedule_next( this, true );
   }
+
+  if ( talents.splinterstorm.ok() )
+    events::splinterstorm_event_t::schedule_next( this, true );
 }
 
 void mage_t::combat_begin()
