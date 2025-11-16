@@ -5928,8 +5928,8 @@ struct eradicate_t : public reap_base_t
   eradicate_t( demon_hunter_t* p, util::string_view o )
     : reap_base_t( "eradicate", p, p->spec.eradicate, o, p->spec.eradicate_damage, p->spec.reap_energize )
   {
-    aoe = -1;
-    reduced_aoe_targets = p->spec.eradicate->effectN( 1 ).base_value();
+    damage_action->aoe                 = -1;
+    damage_action->reduced_aoe_targets = p->spec.eradicate->effectN( 1 ).base_value();
   }
 
   void execute() override
