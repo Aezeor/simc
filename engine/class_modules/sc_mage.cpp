@@ -3850,6 +3850,16 @@ struct shatter_t final : public mage_spell_t
 
     return am;
   }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double cm = mage_spell_t::composite_crit_damage_bonus_multiplier();
+
+    // Technically, there's a ticking effect that updates the multiplier every second, but this is be close enough.
+    cm *= 1.0 + p()->talents.deep_shatter->effectN( 1 ).percent() * p()->cache.spell_crit_chance();
+
+    return cm;
+  }
 };
 
 struct ice_lance_t final : public frost_mage_spell_t
