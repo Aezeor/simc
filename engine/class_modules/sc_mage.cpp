@@ -798,7 +798,7 @@ public:
   void trigger_arcane_charge( int stacks = 1 );
   bool trigger_brain_freeze( double chance, proc_t* source, timespan_t delay = 0.15_s );
   bool trigger_crowd_control( const action_state_t* s, spell_mechanic type );
-  bool trigger_clearcasting( double chance = 1.0, timespan_t delay = 0_ms, bool never_predictable = false, bool precombat_evocation = false );
+  bool trigger_clearcasting( double chance = 1.0, timespan_t delay = 0_ms, bool never_predictable = false );
   bool trigger_fof( double chance, proc_t* source, int stacks = 1 );
   void trigger_mana_cascade();
   void trigger_merged_buff( buff_t* buff, bool trigger );
@@ -3044,15 +3044,6 @@ struct blizzard_shard_t final : public frost_mage_spell_t
   {
     return result_amount_type::DMG_OVER_TIME;
   }
-
-  double action_multiplier() const override
-  {
-    double am = frost_mage_spell_t::action_multiplier();
-
-    am *= 1.0 + p()->buffs.freezing_rain->check_value();
-
-    return am;
-  }
 };
 
 struct blizzard_t final : public frost_mage_spell_t
@@ -3065,7 +3056,6 @@ struct blizzard_t final : public frost_mage_spell_t
   {
     parse_options( options_str );
     add_child( blizzard_shard );
-    cooldown->hasted = true;
     may_miss = false;
   }
 
@@ -3606,12 +3596,12 @@ struct frostbolt_t final : public frost_mage_spell_t
     frost_mage_spell_t::init_finished();
   }
 
-  double execute_time_pct_multiplier() const override
+  timespan_t execute_time() const override
   {
     if ( frostfire && p()->buffs.frostfire_empowerment->check() )
-      return 0.0;
+      return 0_ms;
 
-    return frost_mage_spell_t::execute_time_pct_multiplier();
+    return frost_mage_spell_t::execute_time();
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -3928,7 +3918,6 @@ struct fire_blast_t final : public fire_mage_spell_t
     parse_options( options_str );
     triggers.hot_streak = TT_ALL_TARGETS;
     triggers.ignite = triggers.from_the_ashes = true;
-    cooldown->hasted = true;
 
     if ( p->talents.fire_blast.ok() )
     {
@@ -4029,9 +4018,9 @@ struct meteor_impact_t final : public fire_mage_spell_t
     reduced_aoe_targets = 8;
     background = proc = triggers.ignite = true;
 
-    // As of 11.2, Meteor deals extra damage to the target closest to the impact point.
+    // With Deep Impact, Meteor deals extra damage to the target closest to the impact point.
     // For simplicity, we assume that will be the main target.
-    double m = 1.0 + p->find_spell( 153561 )->effectN( 2 ).percent();
+    double m = 1.0 + p->talents.deep_impact->effectN( 1 ).percent();
     base_multiplier     *= m;
     base_aoe_multiplier /= m;
 
@@ -5745,7 +5734,7 @@ void mage_t::create_buffs()
   buffs.frenetic_speed           = make_buff( this, "frenetic_speed", find_spell( 236060 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->add_invalidate( CACHE_RUN_SPEED )
-                                     ->set_chance( talents.scorch.ok() );
+                                     ->set_chance( talents.frenetic_speed.ok() );
   buffs.heating_up               = make_buff( this, "heating_up", find_spell( 48107 ) );
   buffs.hot_streak               = make_buff( this, "hot_streak", find_spell( 48108 ) );
   buffs.hyperthermia             = make_buff( this, "hyperthermia", find_spell( 383874 ) )
@@ -5764,7 +5753,6 @@ void mage_t::create_buffs()
   buffs.brain_freeze       = make_buff( this, "brain_freeze", find_spell( 190446 ) );
   buffs.fingers_of_frost   = make_buff( this, "fingers_of_frost", find_spell( 44544 ) );
   buffs.freezing_rain      = make_buff( this, "freezing_rain", find_spell( 270232 ) )
-                               ->set_default_value_from_effect( 2 )
                                ->set_chance( talents.freezing_rain.ok() );
   buffs.permafrost_lances  = make_buff( this, "permafrost_lances", find_spell( 455122 ) )
                                ->set_default_value_from_effect( 1 )
@@ -6580,7 +6568,7 @@ void mage_t::trigger_splinter( player_t* target, int count )
   }
 }
 
-bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool never_predictable, bool precombat_evocation )
+bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool never_predictable )
 {
   if ( specialization() != MAGE_ARCANE )
     return false;
@@ -6588,7 +6576,7 @@ bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool never_p
   bool success = rng().roll( chance );
   if ( success )
   {
-    if ( !buffs.clearcasting->check() && !precombat_evocation )
+    if ( !buffs.clearcasting->check() )
     {
       state.gained_initial_clearcasting = true;
       make_event( *sim, 50_ms, [ this ] { state.gained_initial_clearcasting = false; } );
