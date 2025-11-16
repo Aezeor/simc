@@ -1472,6 +1472,7 @@ struct mage_spell_t : public spell_t
 
   double freezing_chance = 1.0;
   int freezing_stacks = 0;
+  int freezing_targets = -1;
 
 public:
   mage_spell_t( std::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
@@ -1763,7 +1764,8 @@ public:
     if ( s->result_total <= 0.0 )
       return;
 
-    p()->trigger_freezing( s->target, freezing_stacks, freezing_chance );
+    if ( freezing_targets == -1 || s->chain_target < freezing_targets )
+      p()->trigger_freezing( s->target, freezing_stacks, freezing_chance );
 
     if ( triggers.ignite )
       trigger_ignite( s );
@@ -3222,6 +3224,11 @@ struct cone_of_cold_t final : public frost_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+    if ( p->talents.cone_of_frost.ok() )
+    {
+      freezing_stacks = as<int>( p->talents.cone_of_frost->effectN( 1 ).base_value() );
+      freezing_targets = as<int>( p->talents.cone_of_frost->effectN( 2 ).base_value() );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -3947,6 +3954,12 @@ struct ice_nova_t final : public frost_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
+    if ( p->talents.cone_of_frost.ok() )
+    {
+      // TODO: Currently seems to ignore the main target if possible
+      freezing_stacks = as<int>( p->talents.cone_of_frost->effectN( 1 ).base_value() );
+      freezing_targets = as<int>( p->talents.cone_of_frost->effectN( 2 ).base_value() );
+    }
   }
 
   void impact( action_state_t* s ) override
