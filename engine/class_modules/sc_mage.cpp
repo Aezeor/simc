@@ -4361,8 +4361,9 @@ struct ray_of_frost_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::tick( d );
 
-    // TODO: Now happens at 2.5 and 5 through a hidden buff (spell_id 269748).
-    if ( d->current_tick == 3 || d->current_tick == 5 )
+    p()->trigger_freezing( d->target, 1 ); // Not in spell data
+
+    if ( p()->talents.crystalline_refraction.ok() && ( d->current_tick == 4 || d->current_tick == 8 ) )
       p()->trigger_fof( 1.0, proc_fof );
 
     if ( splintering_ray )
