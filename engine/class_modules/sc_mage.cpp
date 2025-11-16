@@ -331,7 +331,6 @@ public:
     proc_t* brain_freeze;
     proc_t* brain_freeze_splinterstorm;
     proc_t* fingers_of_frost;
-    proc_t* fingers_of_frost_flash_freeze;
   } procs;
 
   struct rppms_t
@@ -376,7 +375,6 @@ public:
   {
     bool brain_freeze_active;
     bool fingers_of_frost_active;
-    bool grant_fingers_of_frost;
     bool had_low_mana;
     bool trigger_ff_empowerment;
     bool ff_empowerment_crit;
@@ -3696,8 +3694,6 @@ struct frost_nova_t final : public mage_spell_t
 
 struct frozen_orb_bolt_t final : public frost_mage_spell_t
 {
-  proc_t* proc_fof_initial = nullptr;
-
   frozen_orb_bolt_t( std::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 84721 ) )
   {
@@ -3705,54 +3701,24 @@ struct frozen_orb_bolt_t final : public frost_mage_spell_t
     reduced_aoe_targets = data().effectN( 2 ).base_value();
     background = proc = true;
   }
-
-  void init_finished() override
-  {
-    proc_fof = p()->get_proc( "Fingers of Frost from Frozen Orb Tick" );
-    proc_fof_initial = p()->get_proc( "Fingers of Frost from Frozen Orb Initial Impact" );
-    frost_mage_spell_t::init_finished();
-  }
-
-  void execute() override
-  {
-    frost_mage_spell_t::execute();
-
-    if ( hit_any_target )
-    {
-      if ( p()->bugs && p()->state.grant_fingers_of_frost )
-      {
-        p()->trigger_fof( 1.0, proc_fof_initial );
-        p()->state.grant_fingers_of_frost = false;
-      }
-
-      p()->trigger_fof( p()->talents.fingers_of_frost->effectN( 2 ).percent(), proc_fof );
-    }
-  }
 };
 
 struct frozen_orb_t final : public frost_mage_spell_t
 {
   action_t* frozen_orb_bolt;
 
-  frozen_orb_t( std::string_view n, mage_t* p, std::string_view options_str, bool cold_front = false ) :
-    frost_mage_spell_t( n, p, cold_front ? p->find_spell( 84714 ) : p->talents.frozen_orb ),
-    frozen_orb_bolt( get_action<frozen_orb_bolt_t>( cold_front ? "cold_front_frozen_orb_bolt" : "frozen_orb_bolt", p ) )
+  frozen_orb_t( std::string_view n, mage_t* p, std::string_view options_str ) :
+    frost_mage_spell_t( n, p, p->talents.frozen_orb ),
+    frozen_orb_bolt( get_action<frozen_orb_bolt_t>( "frozen_orb_bolt", p ) )
   {
     parse_options( options_str );
     may_miss = false;
     add_child( frozen_orb_bolt );
-
-    if ( cold_front )
-    {
-      background = proc = true;
-      cooldown->duration = 0_ms;
-      base_costs[ RESOURCE_MANA ] = 0;
-    }
   }
 
   void init_finished() override
   {
-    proc_fof = p()->get_proc( "Fingers of Frost from Frozen Orb Initial Impact" );
+    proc_fof = p()->get_proc( "Fingers of Frost from Frozen Orb" );
     frost_mage_spell_t::init_finished();
   }
 
@@ -3770,21 +3736,16 @@ struct frozen_orb_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    p()->state.grant_fingers_of_frost = true;
     p()->buffs.permafrost_lances->trigger();
-    if ( !background ) p()->buffs.freezing_rain->trigger();
+    p()->buffs.freezing_rain->trigger();
   }
 
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
 
-    if ( !p()->bugs )
-      p()->trigger_fof( 1.0, proc_fof );
-
     int pulse_count = 20;
     timespan_t pulse_time = 0.5_s;
-    pulse_count += as<int>( p()->talents.everlasting_frost->effectN( 2 ).time_value() / pulse_time );
     timespan_t duration = ( pulse_count - 1 ) * pulse_time;
     p()->ground_aoe_expiration[ AOE_FROZEN_ORB ] = sim->current_time() + duration;
 
@@ -5979,10 +5940,9 @@ void mage_t::init_procs()
       procs.ignite_overwrite  = get_proc( "Ignites spread to targets with existing Ignite" );
       break;
     case MAGE_FROST:
-      procs.brain_freeze                  = get_proc( "Brain Freeze" );
-      procs.brain_freeze_splinterstorm    = get_proc( "Brain Freeze from Splinterstorm" );
-      procs.fingers_of_frost              = get_proc( "Fingers of Frost" );
-      procs.fingers_of_frost_flash_freeze = get_proc( "Fingers of Frost from Flash Freeze" );
+      procs.brain_freeze               = get_proc( "Brain Freeze" );
+      procs.brain_freeze_splinterstorm = get_proc( "Brain Freeze from Splinterstorm" );
+      procs.fingers_of_frost           = get_proc( "Fingers of Frost" );
       break;
     default:
       break;
