@@ -94,6 +94,7 @@ struct mage_td_t final : public actor_target_data_t
   struct debuffs_t
   {
     buff_t* controlled_destruction;
+    buff_t* freezing;
     buff_t* molten_fury;
     buff_t* touch_of_the_magi;
   } debuffs;
@@ -170,6 +171,13 @@ public:
     action_t* splinter_recall;
     action_t* splinterstorm;
     action_t* touch_of_the_magi_explosion;
+
+    struct shatter_actions_t
+    {
+      action_t* comet_storm;
+      action_t* ice_lance;
+      action_t* meteor;
+    } shatter;
   } action;
 
   // Benefits
@@ -808,6 +816,8 @@ public:
   void consume_burden_of_power();
   void trigger_splinter( player_t* target, int count = -1 );
   void trigger_jackpot( bool guaranteed = false );
+  void trigger_freezing( player_t* target, int stacks, double chance = 1.0 );
+  int  trigger_shatter( player_t* target, action_t* action, int max_consumption, bool fof = false );
 };
 
 namespace pets {
@@ -1458,6 +1468,9 @@ struct mage_spell_t : public spell_t
   unsigned impact_flags;
   double base_ignite_multiplier = 1.0;
 
+  double freezing_chance = 1.0;
+  int freezing_stacks = 0;
+
 public:
   mage_spell_t( std::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
@@ -1747,6 +1760,8 @@ public:
 
     if ( s->result_total <= 0.0 )
       return;
+
+    p()->trigger_freezing( s->target, freezing_stacks, freezing_chance );
 
     if ( triggers.ignite )
       trigger_ignite( s );
@@ -3024,9 +3039,6 @@ struct blink_t final : public mage_spell_t
     ignore_false_positive = true;
     base_teleport_distance = data().effectN( 1 ).radius_max();
     movement_directionality = movement_direction_type::OMNI;
-
-    if ( p->talents.shimmer.ok() )
-      background = true;
   }
 };
 
@@ -3482,6 +3494,7 @@ struct flurry_bolt_t final : public frost_mage_spell_t
     frost_mage_spell_t( n, p, p->find_spell( 228354 ) )
   {
     background = proc = true;
+    freezing_stacks = as<int>( p->spec.shatter->effectN( 2 ).base_value() );
   }
 
   void impact( action_state_t* s ) override
@@ -3583,9 +3596,7 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     fof_chance = p->talents.fingers_of_frost->effectN( 1 ).percent();
     bf_chance = p->talents.brain_freeze->effectN( 1 ).percent();
-
-    if ( p->specialization() == MAGE_ARCANE || p->specialization() == MAGE_FIRE )
-      background = true;
+    freezing_stacks = as<int>( p->spec.shatter->effectN( 1 ).base_value() );
   }
 
   void init_finished() override
@@ -3803,6 +3814,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
     parse_options( options_str );
     enable_calculate_on_impact( 228600 );
     affected_by.overflowing_energy = true;
+    freezing_stacks = as<int>( p->spec.shatter->effectN( 3 ).base_value() );
 
     if ( p->talents.splitting_ice.ok() )
     {
@@ -3836,21 +3848,37 @@ struct frigid_pulse_t final : public mage_spell_t
   }
 };
 
+struct shatter_t final : public mage_spell_t
+{
+  shatter_t( std::string_view n, mage_t* p ) :
+    mage_spell_t( n, p, p->find_spell( 1246949 ) )
+  {
+    background = proc = true;
+  }
+};
+
 struct ice_lance_t final : public frost_mage_spell_t
 {
+  int freezing_consume;
   action_t* frigid_pulse = nullptr;
 
   ice_lance_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    frost_mage_spell_t( n, p, p->talents.ice_lance )
+    frost_mage_spell_t( n, p, p->talents.ice_lance ),
+    freezing_consume( as<int>( p->spec.shatter->effectN( 4 ).base_value() ) )
   {
     parse_options( options_str );
     enable_calculate_on_impact( 228598 );
 
-    // TODO: Cleave distance for SI seems to be 8 + hitbox size.
-    if ( p->talents.splitting_ice.ok() )
-    {
-      chain_multiplier = p->find_spell( 228598 )->effectN( 1 ).chain_multiplier();
-    }
+    // Spell data contains the AoE effect which is disabled unless you pick Fractured Frost
+    // Fix the spell power mod and use base_aoe_multiplier for the cleave
+    auto dmg_spell = p->find_spell( 228598 );
+    double primary_coef = dmg_spell->effectN( 1 ).sp_coeff();
+    double secondary_coef = dmg_spell->effectN( 2 ).sp_coeff();
+    spell_power_mod.direct = primary_coef;
+    base_aoe_multiplier = secondary_coef / primary_coef;
+
+    if ( p->talents.fractured_frost.ok() )
+      aoe = 1 + as<int>( p->talents.fractured_frost->effectN( 1 ).base_value() );
 
     if ( p->sets->has_set_bonus( MAGE_FROST, TWW1, B4 ) )
     {
@@ -3878,18 +3906,32 @@ struct ice_lance_t final : public frost_mage_spell_t
     if ( !result_is_hit( s->result ) )
       return;
 
+    p()->trigger_shatter( s->target, p()->action.shatter.ice_lance, freezing_consume, p()->state.fingers_of_frost_active );
+
     // TODO: is this correct?
     if ( p()->state.fingers_of_frost_active && frigid_pulse )
       frigid_pulse->execute_on_target( s->target );
   }
 
-  double action_multiplier() const override
+  size_t available_targets( std::vector<player_t*>& tl ) const override
   {
-    double am = frost_mage_spell_t::action_multiplier();
+    frost_mage_spell_t::available_targets( tl );
 
-    am *= 1.0 + p()->buffs.permafrost_lances->check_value();
+    range::erase_remove( tl, [ this ] ( player_t* t )
+    {
+      if ( t == target ) return false;
+      if ( auto td = find_td( t ) ) return td->debuffs.freezing->check() == 0;
+      return true;
+    } );
 
-    return am;
+    return tl.size();
+  }
+
+  std::vector<player_t*>& target_list() const override
+  {
+    // Can't cache valid targets as they could change at any moment.
+    target_cache.is_valid = false;
+    return frost_mage_spell_t::target_list();
   }
 };
 
@@ -3924,9 +3966,6 @@ struct fire_blast_t final : public fire_mage_spell_t
       base_crit += 1.0;
       usable_while_casting = true;
     }
-
-    if ( p->find_specialization_spell( "Arcane Barrage" )->ok() || p->talents.ice_lance.ok() )
-      background = true;
   }
 
   int n_targets() const override
@@ -4974,6 +5013,8 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.controlled_destruction = make_buff( *this, "controlled_destruction", mage->find_spell( 453268 ) )
                                      ->set_default_value( 0.1 * mage->talents.controlled_destruction->effectN( 1 ).percent() )
                                      ->set_chance( mage->talents.controlled_destruction.ok() );
+  debuffs.freezing               = make_buff( *this, "freezing", mage->find_spell( 1221389 ) )
+                                     ->set_chance( mage->spec.shatter->ok() );
   debuffs.molten_fury            = make_buff( *this, "molten_fury", mage->find_spell( 458910 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->set_chance( mage->talents.molten_fury.ok() );
@@ -5086,6 +5127,13 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
 void mage_t::create_actions()
 {
   using namespace actions;
+
+  if ( spec.shatter->ok() )
+  {
+    action.shatter.comet_storm = get_action<shatter_t>( "shatter_comet_storm", this );
+    action.shatter.ice_lance   = get_action<shatter_t>( "shatter_ice_lance",   this );
+    action.shatter.meteor      = get_action<shatter_t>( "shatter_meteor",      this );
+  }
 
   if ( spec.ignite->ok() )
     action.ignite = get_action<ignite_t>( "ignite", this );
@@ -6396,6 +6444,52 @@ void mage_t::trigger_jackpot( bool guaranteed )
     default:
       break;
   }
+}
+
+void mage_t::trigger_freezing( player_t* target, int stacks, double chance )
+{
+  if ( !spec.shatter->ok() || stacks <= 0 )
+    return;
+
+  if ( rng().roll( chance ) )
+    get_target_data( target )->debuffs.freezing->trigger( stacks );
+}
+
+int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consumption, bool fof )
+{
+  if ( !spec.shatter->ok() || max_consumption <= 0 )
+    return 0;
+
+  buff_t* debuff = nullptr;
+  if ( auto td = find_target_data( target ) )
+    debuff = td->debuffs.freezing;
+  int stacks = debuff ? debuff->check() : 0;
+
+  // TODO: With FoF, Shatter should happen even if the target has 0 Freezing stacks, this
+  // is currently not the case.
+  if ( stacks == 0 )
+    return 0;
+
+  int shatter_stacks = fof ? max_consumption : std::min( max_consumption, stacks );
+  int consume_stacks = fof ? 0 : max_consumption;
+
+  if ( shatter_stacks > 0 )
+  {
+    double old_mult = action->base_multiplier;
+    action->base_multiplier *= shatter_stacks;
+    action->execute_on_target( target );
+    action->base_multiplier = old_mult;
+  }
+
+  if ( debuff )
+  {
+    if ( consume_stacks > 0 )
+      debuff->decrement( consume_stacks );
+    if ( debuff->check() )
+      debuff->refresh();
+  }
+
+  return shatter_stacks;
 }
 
 void mage_t::trigger_mana_cascade()
