@@ -3500,6 +3500,7 @@ struct glacial_assault_t final : public frost_mage_spell_t
   {
     background = proc = true;
     aoe = -1;
+    freezing_stacks = as<int>( p->talents.glacial_assault->effectN( 2 ).base_value() );
   }
 };
 
@@ -3810,11 +3811,19 @@ struct glacial_spike_t final : public frost_mage_spell_t
     }
   }
 
+  void init_finished() override
+  {
+    proc_fof = p()->get_proc( "Fingers of Frost from Glacial Spike" );
+    frost_mage_spell_t::init_finished();
+  }
+
   void execute() override
   {
     frost_mage_spell_t::execute();
     p()->buffs.glacial_spike->decrement();
     p()->state.icicles = 0;
+
+    p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), proc_fof );
 
     if ( rng().roll( p()->sets->set( HERO_FROSTFIRE, TWW3, B4 )->effectN( 2 ).percent() ) )
       pyroblast_4pc->execute_on_target( target );
@@ -3893,6 +3902,9 @@ struct ice_lance_t final : public frost_mage_spell_t
 
     if ( p->talents.fractured_frost.ok() )
       aoe = 1 + as<int>( p->talents.fractured_frost->effectN( 1 ).base_value() );
+
+    if ( p->spec.shatter->ok() )
+      add_child( p->action.shatter.ice_lance );
 
     if ( p->sets->has_set_bonus( MAGE_FROST, TWW1, B4 ) )
     {
