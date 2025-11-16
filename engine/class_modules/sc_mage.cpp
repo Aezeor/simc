@@ -3559,6 +3559,7 @@ struct flurry_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
+    // TODO: Only fires 3 instead of 4 bolts at the secondary target
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( pulse_time )
       .target( s->target )
@@ -3790,6 +3791,8 @@ struct glacial_spike_t final : public frost_mage_spell_t
     enable_calculate_on_impact( 228600 );
     affected_by.overflowing_energy = true;
     freezing_stacks = as<int>( p->spec.shatter->effectN( 3 ).base_value() );
+    chain_multiplier = 1.0; // The spell data value isn't used
+    // TODO: GS seems to autocast if FFB hits while the GS buff is up, not sure what causes this
 
     if ( p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B4 ) )
     {
@@ -4322,6 +4325,8 @@ struct splintering_ray_t final : public spell_t
   {
     background = proc = true;
     base_dd_min = base_dd_max = 1.0;
+    // TODO: Seems to hit 1 fewer target
+    aoe--;
   }
 
   void init() override
@@ -4345,6 +4350,12 @@ struct splintering_ray_t final : public spell_t
     range::erase_remove( tl, target );
 
     return tl.size();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    spell_t::impact( s );
+    debug_cast<mage_t*>( player )->trigger_freezing( s->target, 1 );
   }
 };
 
