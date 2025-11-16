@@ -1438,6 +1438,8 @@ struct mage_spell_t : public spell_t
   {
     // Temporary damage increase
     bool arcane_surge = true;
+    bool freeze_and_shatter_1 = false;
+    bool freeze_and_shatter_2 = false;
     bool lingering_embers = true;
     bool molten_fury = true;
     bool savant = false;
@@ -1486,6 +1488,9 @@ public:
     weapon_multiplier = 0.0;
     track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
     energize_type = action_energize::NONE;
+    // TODO: This could be a bit more robust; also the on-impact version
+    affected_by.freeze_and_shatter_1 = data().affected_by( p->spec.freeze_and_shatter->effectN( 1 ) );
+    affected_by.freeze_and_shatter_2 = data().affected_by( p->spec.freeze_and_shatter->effectN( 2 ) );
   }
 
   mage_t* p()
@@ -1562,6 +1567,12 @@ public:
 
     if ( affected_by.spherical_sorcery )
       m *= 1.0 + p()->buffs.spherical_sorcery->check_value();
+
+    if ( affected_by.freeze_and_shatter_1 )
+      m *= 1.0 + p()->cache.mastery() * p()->spec.freeze_and_shatter->effectN( 1 ).mastery_value();
+
+    if ( affected_by.freeze_and_shatter_2 )
+      m *= 1.0 + p()->cache.mastery() * p()->spec.freeze_and_shatter->effectN( 2 ).mastery_value();
 
     return m;
   }
@@ -1664,6 +1675,9 @@ public:
       parse_effect_data( eff );
     may_crit = !spell->flags( SX_CANNOT_CRIT );
     tick_may_crit = spell->flags( SX_TICK_MAY_CRIT );
+
+    affected_by.freeze_and_shatter_1 = spell->affected_by( p()->spec.freeze_and_shatter->effectN( 1 ) );
+    affected_by.freeze_and_shatter_2 = spell->affected_by( p()->spec.freeze_and_shatter->effectN( 2 ) );
 
     // handle parsed base damage modifiers
     auto base_dd_mod = player->get_passive_value( *spell, "direct_damage" );
@@ -3502,6 +3516,7 @@ struct glacial_assault_t final : public frost_mage_spell_t
     background = proc = true;
     aoe = -1;
     freezing_stacks = as<int>( p->talents.glacial_assault->effectN( 2 ).base_value() );
+    affected_by.freeze_and_shatter_1 = true; // TODO: Technically, this is effect 5 that does it by label
   }
 };
 
