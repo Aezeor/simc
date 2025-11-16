@@ -3048,8 +3048,14 @@ struct blizzard_shard_t final : public frost_mage_spell_t
     frost_mage_spell_t( n, p, p->find_spell( 190357 ) )
   {
     aoe = -1;
-    reduced_aoe_targets = 8;
+    reduced_aoe_targets = 8; // TODO: check if this is still the case
     background = proc = ground_aoe = true;
+
+    if ( p->talents.frostbite.ok() )
+    {
+      freezing_chance = p->talents.frostbite->proc_chance();
+      freezing_stacks = as<int>( p->talents.frostbite->effectN( 2 ).base_value() );
+    }
   }
 
   result_amount_type amount_type( const action_state_t*, bool ) const override
@@ -3661,6 +3667,9 @@ struct frostbolt_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
+    if ( s->result == RESULT_CRIT && p()->talents.frostbite.ok() )
+      p()->trigger_freezing( s->target, as<int>( p()->talents.frostbite->effectN( 1 ).base_value() ) );
+
     if ( result_is_hit( s->result ) && frostfire && p()->state.trigger_ff_empowerment )
     {
       p()->state.trigger_ff_empowerment = false;
@@ -3892,9 +3901,6 @@ struct ice_lance_t final : public frost_mage_spell_t
     p()->state.fingers_of_frost_active = p()->buffs.fingers_of_frost->up();
 
     frost_mage_spell_t::execute();
-
-    if ( p()->state.fingers_of_frost_active )
-      p()->trigger_splinter( target );
 
     p()->buffs.fingers_of_frost->decrement();
   }
