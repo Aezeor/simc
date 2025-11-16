@@ -3871,6 +3871,8 @@ struct ice_lance_t final : public frost_mage_spell_t
     double secondary_coef = dmg_spell->effectN( 2 ).sp_coeff();
     spell_power_mod.direct = primary_coef;
     base_aoe_multiplier = secondary_coef / primary_coef;
+    // TODO: Technically, the secondary hits shouldn't be their own separate projectiles with
+    // travel time. Perhaps it's time to redo it with an actual impact spell
 
     if ( p->talents.fractured_frost.ok() )
       aoe = 1 + as<int>( p->talents.fractured_frost->effectN( 1 ).base_value() );
@@ -4543,6 +4545,31 @@ struct touch_of_the_magi_explosion_t final : public spell_t
   }
 };
 
+struct summon_water_elemental_t final : public frost_mage_spell_t
+{
+  summon_water_elemental_t( std::string_view n, mage_t* p, std::string_view options_str ) :
+    frost_mage_spell_t( n, p, p->talents.summon_water_elemental )
+  {
+    parse_options( options_str );
+    harmful = false;
+    ignore_false_positive = true;
+  }
+
+  void execute() override
+  {
+    frost_mage_spell_t::execute();
+    p()->pets.water_elemental->summon();
+  }
+
+  bool ready() override
+  {
+    if ( !p()->pets.water_elemental || !p()->pets.water_elemental->is_sleeping() )
+      return false;
+
+    return frost_mage_spell_t::ready();
+  }
+};
+
 struct arcane_echo_t final : public arcane_mage_spell_t
 {
   arcane_echo_t( std::string_view n, mage_t* p ) :
@@ -4551,34 +4578,6 @@ struct arcane_echo_t final : public arcane_mage_spell_t
     aoe = -1;
     reduced_aoe_targets = p->talents.arcane_echo->effectN( 1 ).base_value();
     background = proc = true;
-  }
-};
-
-struct magis_spark_t final : public arcane_mage_spell_t
-{
-  magis_spark_t( std::string_view n, mage_t* p ) :
-    arcane_mage_spell_t( n, p, p->find_spell( 453925 ) )
-  {
-    aoe = -1;
-    background = proc = true;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    arcane_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) && s->chain_target == 0 )
-      p()->trigger_splinter( s->target, as<int>( p()->talents.signature_spell->effectN( 1 ).base_value() ) );
-  }
-};
-
-struct magis_spark_echo_t final : public spell_t
-{
-  magis_spark_echo_t( std::string_view n, mage_t* p ) :
-    spell_t( n, p, p->find_spell( 458375 ) )
-  {
-    background = proc = true;
-    base_dd_min = base_dd_max = 1.0;
   }
 };
 
@@ -5130,9 +5129,6 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
   if ( name == "ice_lance"         ) return new         ice_lance_t( name, this, options_str );
   if ( name == "ray_of_frost"      ) return new      ray_of_frost_t( name, this, options_str );
 
-  if ( name == "freeze"            ) return new            freeze_t( name, this, options_str );
-  if ( name == "water_jet"         ) return new         water_jet_t( name, this, options_str );
-
   // Shared
   if ( name == "arcane_explosion"  ) return new  arcane_explosion_t( name, this, options_str );
   if ( name == "arcane_intellect"  ) return new  arcane_intellect_t( name, this, options_str );
@@ -5157,6 +5153,11 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
     return specialization() == MAGE_FIRE
          ? static_cast<action_t*>( new  fireball_t( name, this, options_str, true ) )
          : static_cast<action_t*>( new frostbolt_t( name, this, options_str, true ) );
+
+  // Pet spells
+  if ( name == "summon_water_elemental" ) return new summon_water_elemental_t( name, this, options_str );
+  if ( name == "freeze"                 ) return new                 freeze_t( name, this, options_str );
+  if ( name == "water_jet"              ) return new              water_jet_t( name, this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -5327,7 +5328,7 @@ void mage_t::create_pets()
 {
   player_t::create_pets();
 
-  if ( talents.summon_water_elemental.ok() ) // TODO: check for apl action?
+  if ( talents.summon_water_elemental.ok() && find_action( "summon_water_elemental" ) )
     pets.water_elemental = new pets::water_elemental::water_elemental_pet_t( sim, this );
 
   if ( talents.mirror_image.ok() && find_action( "mirror_image" ) )
