@@ -820,6 +820,7 @@ public:
   void trigger_jackpot( bool guaranteed = false );
   void trigger_freezing( player_t* target, int stacks, double chance = 1.0 );
   int  trigger_shatter( player_t* target, action_t* action, int max_consumption, bool fof = false );
+  void trigger_icicle( int count = 1 );
 };
 
 namespace pets {
@@ -4430,6 +4431,15 @@ struct ray_of_frost_t final : public frost_mage_spell_t
     if ( p()->talents.crystalline_refraction.ok() && ( d->current_tick == 4 || d->current_tick == 8 ) )
       p()->trigger_fof( 1.0, proc_fof );
 
+    if ( p()->talents.glaciate.ok() )
+    {
+      // Seems to trigger an Icicle each tick
+      p()->trigger_icicle();
+      timespan_t cdr = -p()->talents.glaciate->effectN( 2 ).time_value();
+      p()->cooldowns.flurry->adjust( cdr, false );
+      p()->cooldowns.frozen_orb->adjust( cdr, false );
+    }
+
     if ( splintering_ray )
       splintering_ray->execute_on_target( d->target, p()->talents.splintering_ray->effectN( 1 ).percent() * d->state->result_total );
   }
@@ -4942,12 +4952,7 @@ struct icicle_event_t final : public mage_event_t
   void execute() override
   {
     mage->events.icicle = nullptr;
-
-    int max_icicles = as<int>( mage->talents.icicles->effectN( 2 ).base_value() );
-    mage->state.icicles = std::min( mage->state.icicles + 1, max_icicles );
-    if ( mage->state.icicles == max_icicles )
-      mage->buffs.glacial_spike->trigger();
-
+    mage->trigger_icicle();
     schedule_next( mage );
   }
 };
@@ -6253,10 +6258,7 @@ void mage_t::arise()
 
   if ( talents.icicles.ok() )
   {
-    int max_icicles = as<int>( talents.icicles->effectN( 2 ).base_value() );
-    state.icicles = clamp<int>( options.initial_icicles, 0, max_icicles );
-    if ( state.icicles == max_icicles )
-      buffs.glacial_spike->trigger();
+    trigger_icicle( options.initial_icicles );
     events::icicle_event_t::schedule_next( this, true );
   }
 
@@ -6571,6 +6573,17 @@ int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consump
   }
 
   return shatter_stacks;
+}
+
+void mage_t::trigger_icicle( int count )
+{
+  if ( !talents.icicles.ok() || count <= 0 )
+    return;
+
+  int max_icicles = as<int>( talents.icicles->effectN( 2 ).base_value() );
+  state.icicles = std::min( state.icicles + count, max_icicles );
+  if ( state.icicles == max_icicles )
+    buffs.glacial_spike->trigger();
 }
 
 void mage_t::trigger_mana_cascade()
