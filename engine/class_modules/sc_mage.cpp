@@ -3093,8 +3093,6 @@ struct cold_snap_t final : public frost_mage_spell_t
 
     p()->cooldowns.frost_nova->reset( false );
     p()->cooldowns.cone_of_cold->reset( false );
-    if ( p()->talents.flame_and_frost.ok() )
-      p()->cooldowns.dragons_breath->reset( false );
   }
 };
 
