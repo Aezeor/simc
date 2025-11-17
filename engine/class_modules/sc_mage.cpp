@@ -4390,7 +4390,9 @@ struct splintering_ray_t final : public spell_t
   void impact( action_state_t* s ) override
   {
     spell_t::impact( s );
-    debug_cast<mage_t*>( player )->trigger_freezing( s->target, 1 );
+
+    if ( result_is_hit( s->result ) )
+      debug_cast<mage_t*>( player )->trigger_freezing( s->target, 1 );
   }
 };
 
@@ -4651,6 +4653,14 @@ struct frostfire_empowerment_t final : public spell_t
     range::erase_remove( tl, target );
 
     return tl.size();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+      debug_cast<mage_t*>( player )->trigger_freezing( s->target, 1 );
   }
 };
 
