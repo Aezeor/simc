@@ -228,6 +228,7 @@ public:
     buff_t* freezing_rain;
     buff_t* glacial_spike;
     buff_t* permafrost_lances;
+    buff_t* thermal_void;
 
 
     // Frostfire
@@ -3539,6 +3540,7 @@ struct flurry_t final : public frost_mage_spell_t
 
     p()->state.brain_freeze_active = p()->buffs.brain_freeze->up();
     p()->buffs.brain_freeze->decrement();
+    p()->buffs.thermal_void->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -3856,8 +3858,9 @@ struct shatter_t final : public mage_spell_t
 struct ice_lance_t final : public frost_mage_spell_t
 {
   int freezing_consume;
+  action_t* thermal_void_il = nullptr;
 
-  ice_lance_t( std::string_view n, mage_t* p, std::string_view options_str ) :
+  ice_lance_t( std::string_view n, mage_t* p, std::string_view options_str, bool thermal_void = false ) :
     frost_mage_spell_t( n, p, p->talents.ice_lance ),
     freezing_consume( as<int>( p->spec.shatter->effectN( 4 ).base_value() ) )
   {
@@ -3877,17 +3880,38 @@ struct ice_lance_t final : public frost_mage_spell_t
     if ( p->talents.fractured_frost.ok() )
       aoe = 1 + as<int>( p->talents.fractured_frost->effectN( 1 ).base_value() );
 
+    if ( thermal_void )
+    {
+      background = proc = true;
+      cooldown->duration = 0_ms;
+      // TODO: Seems to actually consume mana despite being a proc
+      // base_costs[ RESOURCE_MANA ] = 0;
+      return;
+    }
+
     if ( p->spec.shatter->ok() )
       add_child( p->action.shatter.ice_lance );
+
+    if ( p->talents.thermal_void.ok() )
+    {
+      thermal_void_il = get_action<ice_lance_t>( "thermal_void_ice_lance", p, "", true );
+      add_child( thermal_void_il );
+    }
   }
 
   void execute() override
   {
-    p()->state.fingers_of_frost_active = p()->buffs.fingers_of_frost->up();
-
     frost_mage_spell_t::execute();
+    if ( background )
+      return;
 
+    p()->state.fingers_of_frost_active = p()->buffs.fingers_of_frost->up();
     p()->buffs.fingers_of_frost->decrement();
+    if ( thermal_void_il && p()->buffs.thermal_void->check() )
+    {
+      p()->buffs.thermal_void->decrement();
+      make_event( *sim, 0.8_s, [ this, t = target ] { thermal_void_il->execute_on_target( t ); } );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -5802,6 +5826,8 @@ void mage_t::create_buffs()
   buffs.permafrost_lances  = make_buff( this, "permafrost_lances", find_spell( 455122 ) )
                                ->set_default_value_from_effect( 1 )
                                ->set_chance( talents.permafrost_lances.ok() );
+  buffs.thermal_void       = make_buff( this, "thermal_void", find_spell( 1247730 ) )
+                               ->set_chance( talents.thermal_void->effectN( 1 ).percent() );
 
 
   // Frostfire
