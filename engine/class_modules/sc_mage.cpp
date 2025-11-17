@@ -5737,6 +5737,10 @@ void mage_t::init_spells()
   register_passive_effect_mask( talents.dualcasting_adept,
     specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 1, 3, 6 ) : effect_mask_t( true ).disable( 2, 4, 5 ) );
 
+  // TODO: The effects aren't properly disabled in game, so both CmS and Meteor get 44% extra damage
+  // register_passive_effect_mask( talents.blast_radius,
+  //   specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 1, 2 ) : effect_mask_t( true ).disable( 3, 4 ) );
+
   register_passive_effect_mask( sets->set( HERO_FROSTFIRE, TWW3, B2 ),
     specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 5, 6 ) : effect_mask_t( true ).disable( 3, 4 ) );
 
