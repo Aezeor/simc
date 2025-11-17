@@ -3332,6 +3332,10 @@ struct fireball_t final : public fire_mage_spell_t
 
     if ( p->talents.master_of_flame.ok() )
       master_of_flame_mult *= 1.0 + p->find_spell( 1217750 )->effectN( 1 ).percent();
+
+    // TODO: Seems to get another 8% from Frostfire Infusion without any apparent reason
+    if ( frostfire )
+      base_multiplier *= 1.0 + p->talents.frostfire_infusion->effectN( 3 ).percent();
   }
 
   timespan_t travel_time() const override
@@ -3590,6 +3594,10 @@ struct frostbolt_t final : public frost_mage_spell_t
     fof_chance = p->talents.fingers_of_frost->effectN( 1 ).percent();
     bf_chance = p->talents.brain_freeze->effectN( 1 ).percent();
     freezing_stacks = as<int>( p->spec.shatter->effectN( 1 ).base_value() );
+
+    // TODO: Seems to get another 8% from Frostfire Infusion without any apparent reason
+    if ( frostfire )
+      base_multiplier *= 1.0 + p->talents.frostfire_infusion->effectN( 3 ).percent();
   }
 
   void init_finished() override
@@ -3787,6 +3795,9 @@ struct glacial_spike_t final : public frost_mage_spell_t
       pyroblast_4pc = get_action<pyroblast_4pc_t>( "pyroblast_4pc", p );
       add_child( pyroblast_4pc );
     }
+
+    // TODO: Seems to get another 8% from Frostfire Infusion without any apparent reason
+    base_multiplier *= 1.0 + p->talents.frostfire_infusion->effectN( 3 ).percent();
   }
 
   void init_finished() override
@@ -5720,6 +5731,10 @@ void mage_t::init_spells()
 
   register_passive_effect_mask( talents.elemental_affinity,
     specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 3 ) : effect_mask_t( false ).enable( 3 ) );
+
+  // TODO: Double check that the fire effect doesn't apply as frost
+  register_passive_effect_mask( talents.frostfire_infusion,
+    specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 1 ) : effect_mask_t( true ).disable( 2 ) );
 
   register_passive_effect_mask( sets->set( HERO_FROSTFIRE, TWW3, B2 ),
     specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 5, 6 ) : effect_mask_t( true ).disable( 3, 4 ) );
