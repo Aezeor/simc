@@ -3857,28 +3857,63 @@ struct shatter_t final : public mage_spell_t
 
 struct ice_lance_t final : public frost_mage_spell_t
 {
-  int freezing_consume;
+  struct ice_lance_impact_t final : public frost_mage_spell_t
+  {
+    int freezing_consume;
+
+    ice_lance_impact_t( std::string_view n, mage_t* p ) :
+      frost_mage_spell_t( n, p, p->find_spell( 228598 ) ),
+      freezing_consume( as<int>( p->spec.shatter->effectN( 4 ).base_value() ) )
+    {
+      background = proc = true;
+      // Spell data contains the AoE effect which is disabled unless you pick Fractured Frost
+      // Fix the spell power mod and use base_aoe_multiplier for the cleave
+      double primary_coef = data().effectN( 1 ).sp_coeff();
+      double secondary_coef = data().effectN( 2 ).sp_coeff();
+      spell_power_mod.direct = primary_coef;
+      base_aoe_multiplier = secondary_coef / primary_coef;
+
+      if ( p->talents.fractured_frost.ok() )
+        aoe = 1 + as<int>( p->talents.fractured_frost->effectN( 1 ).base_value() );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      frost_mage_spell_t::impact( s );
+
+      if ( result_is_hit( s->result ) && p()->action.shatter.ice_lance )
+        p()->trigger_shatter( s->target, p()->action.shatter.ice_lance, freezing_consume, p()->state.fingers_of_frost_active );
+    }
+
+    size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+      frost_mage_spell_t::available_targets( tl );
+
+      range::erase_remove( tl, [ this ] ( player_t* t )
+      {
+        if ( t == target ) return false;
+        if ( auto td = find_td( t ) ) return td->debuffs.freezing->check() == 0;
+        return true;
+      } );
+
+      return tl.size();
+    }
+
+    std::vector<player_t*>& target_list() const override
+    {
+      // Can't cache valid targets as they could change at any moment.
+      target_cache.is_valid = false;
+      return frost_mage_spell_t::target_list();
+    }
+  };
+
   action_t* thermal_void_il = nullptr;
 
   ice_lance_t( std::string_view n, mage_t* p, std::string_view options_str, bool thermal_void = false ) :
-    frost_mage_spell_t( n, p, p->talents.ice_lance ),
-    freezing_consume( as<int>( p->spec.shatter->effectN( 4 ).base_value() ) )
+    frost_mage_spell_t( n, p, p->talents.ice_lance )
   {
     parse_options( options_str );
-    enable_calculate_on_impact( 228598 );
-
-    // Spell data contains the AoE effect which is disabled unless you pick Fractured Frost
-    // Fix the spell power mod and use base_aoe_multiplier for the cleave
-    auto dmg_spell = p->find_spell( 228598 );
-    double primary_coef = dmg_spell->effectN( 1 ).sp_coeff();
-    double secondary_coef = dmg_spell->effectN( 2 ).sp_coeff();
-    spell_power_mod.direct = primary_coef;
-    base_aoe_multiplier = secondary_coef / primary_coef;
-    // TODO: Technically, the secondary hits shouldn't be their own separate projectiles with
-    // travel time. Perhaps it's time to redo it with an actual impact spell
-
-    if ( p->talents.fractured_frost.ok() )
-      aoe = 1 + as<int>( p->talents.fractured_frost->effectN( 1 ).base_value() );
+    impact_action = get_action<ice_lance_impact_t>( "ice_lance_impact", p );
 
     if ( thermal_void )
     {
@@ -3889,14 +3924,11 @@ struct ice_lance_t final : public frost_mage_spell_t
       return;
     }
 
+    add_child( impact_action );
     if ( p->spec.shatter->ok() )
       add_child( p->action.shatter.ice_lance );
-
     if ( p->talents.thermal_void.ok() )
-    {
       thermal_void_il = get_action<ice_lance_t>( "thermal_void_ice_lance", p, "", true );
-      add_child( thermal_void_il );
-    }
   }
 
   void execute() override
@@ -3912,37 +3944,6 @@ struct ice_lance_t final : public frost_mage_spell_t
       p()->buffs.thermal_void->decrement();
       make_event( *sim, 0.8_s, [ this, t = target ] { thermal_void_il->execute_on_target( t ); } );
     }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    frost_mage_spell_t::impact( s );
-
-    if ( !result_is_hit( s->result ) )
-      return;
-
-    p()->trigger_shatter( s->target, p()->action.shatter.ice_lance, freezing_consume, p()->state.fingers_of_frost_active );
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    frost_mage_spell_t::available_targets( tl );
-
-    range::erase_remove( tl, [ this ] ( player_t* t )
-    {
-      if ( t == target ) return false;
-      if ( auto td = find_td( t ) ) return td->debuffs.freezing->check() == 0;
-      return true;
-    } );
-
-    return tl.size();
-  }
-
-  std::vector<player_t*>& target_list() const override
-  {
-    // Can't cache valid targets as they could change at any moment.
-    target_cache.is_valid = false;
-    return frost_mage_spell_t::target_list();
   }
 };
 
