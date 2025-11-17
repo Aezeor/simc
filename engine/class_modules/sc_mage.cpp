@@ -159,6 +159,7 @@ public:
     action_t* arcane_echo;
     action_t* frostfire_empowerment;
     action_t* glacial_assault;
+    action_t* hand_of_frost;
     action_t* ignite;
     action_t* ignite_2pc;
     action_t* isothermic_comet_storm;
@@ -228,6 +229,7 @@ public:
     buff_t* fingers_of_frost;
     buff_t* freezing_rain;
     buff_t* glacial_spike;
+    buff_t* hand_of_frost;
     buff_t* permafrost_lances;
     buff_t* thermal_void;
 
@@ -1417,6 +1419,7 @@ struct mage_spell_t : public spell_t
     bool arcane_surge = true;
     bool freeze_and_shatter_1 = false;
     bool freeze_and_shatter_2 = false;
+    bool hand_of_frost = true;
     bool lingering_embers = true;
     bool molten_fury = true;
     bool savant = false;
@@ -1522,6 +1525,9 @@ public:
 
     if ( affected_by.arcane_surge && p()->buffs.arcane_surge->check() )
       m *= 1.0 + p()->buffs.arcane_surge->data().effectN( 1 ).percent();
+
+    if ( affected_by.hand_of_frost )
+      m *= 1.0 + p()->buffs.hand_of_frost->check_stack_value();
 
     if ( affected_by.lingering_embers )
       m *= 1.0 + p()->buffs.lingering_embers->check_stack_value();
@@ -4424,6 +4430,10 @@ struct ray_of_frost_t final : public frost_mage_spell_t
 
     if ( splintering_ray )
       splintering_ray->execute_on_target( d->target, p()->talents.splintering_ray->effectN( 1 ).percent() * d->state->result_total );
+
+    // TODO: use the spell data in some way
+    if ( p()->action.hand_of_frost && p()->talents.hand_of_frost_3.ok() && d->current_tick % 2 == 1 )
+      p()->action.hand_of_frost->execute_on_target( d->target );
   }
 
   void execute() override
@@ -4800,6 +4810,22 @@ struct splinter_t final : public mage_spell_t
       t += timespan_t::from_millis( rng().gauss( 0.0, 5.0 ) );
 
     return std::max( t, 0_ms );
+  }
+};
+
+struct hand_of_frost_t final : public mage_spell_t
+{
+  hand_of_frost_t( std::string_view n, mage_t* p ) :
+    mage_spell_t( n, p, p->find_spell( 1262769 ) )
+  {
+    background = proc = true;
+    freezing_stacks = as<int>( p->talents.hand_of_frost_1->effectN( 2 ).base_value() );
+  }
+
+  void execute() override
+  {
+    mage_spell_t::execute();
+    p()->buffs.hand_of_frost->trigger();
   }
 };
 
@@ -5202,6 +5228,9 @@ void mage_t::create_actions()
 
   if ( talents.touch_of_the_magi.ok() )
     action.touch_of_the_magi_explosion = get_action<touch_of_the_magi_explosion_t>( "touch_of_the_magi_explosion", this );
+
+  if ( talents.hand_of_frost_1.ok() )
+    action.hand_of_frost = get_action<hand_of_frost_t>( "hand_of_frost", this );
 
   if ( talents.frostfire_empowerment.ok() || talents.flash_freezeburn.ok() )
     action.frostfire_empowerment = get_action<frostfire_empowerment_t>( "frostfire_empowerment", this );
@@ -5834,6 +5863,10 @@ void mage_t::create_buffs()
                                ->set_chance( talents.freezing_rain.ok() );
   buffs.glacial_spike      = make_buff( this, "glacial_spike", find_spell( 1222865 ) )
                                ->set_chance( talents.icicles.ok() );
+  buffs.hand_of_frost      = make_buff( this, "hand_of_frost", find_spell( 1263263 ) )
+                               ->set_default_value_from_effect( 1 )
+                               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                               ->set_chance( talents.hand_of_frost_2.ok() );
   buffs.permafrost_lances  = make_buff( this, "permafrost_lances", find_spell( 455122 ) )
                                ->set_default_value_from_effect( 1 )
                                ->set_chance( talents.permafrost_lances.ok() );
@@ -6441,7 +6474,7 @@ int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consump
     return 0;
 
   int shatter_stacks = fof ? max_consumption : std::min( max_consumption, stacks );
-  int consume_stacks = fof ? 0 : max_consumption;
+  int consume_stacks = fof ? 0 : std::min( max_consumption, stacks );
 
   if ( shatter_stacks > 0 )
   {
@@ -6449,6 +6482,14 @@ int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consump
     action->base_multiplier *= shatter_stacks;
     action->execute_on_target( target );
     action->base_multiplier = old_mult;
+
+    action_t* hof = this->action.hand_of_frost;
+    double hof_chance = talents.hand_of_frost_1->effectN( 1 ).percent();
+    // TODO: Seems to be based on actually consumed stacks, so Fingers of Frost doesn't increase
+    // the proc chance at all
+    hof_chance += consume_stacks * 0.1 * talents.hand_of_frost_2->effectN( 1 ).percent();
+    if ( hof && rng().roll( hof_chance ) )
+      hof->execute_on_target( target );
   }
 
   if ( debuff )
