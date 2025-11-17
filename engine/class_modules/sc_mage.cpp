@@ -366,7 +366,6 @@ public:
     bool fingers_of_frost_active;
     bool had_low_mana;
     bool trigger_ff_empowerment;
-    bool ff_empowerment_crit;
     bool trigger_flash_freezeburn;
     bool trigger_glorious_incandescence;
     bool gained_initial_clearcasting; // Used to prevent queueing Arcane Missiles immediately after gaining the first stack Clearclasting.
@@ -1618,18 +1617,10 @@ public:
   { return spell_t::calculate_direct_amount( s ); }
 
   result_e calculate_result( action_state_t* s ) const override
-  { return calculate_on_impact ? RESULT_NONE : add_ffe_crit( s ); }
+  { return calculate_on_impact ? RESULT_NONE : spell_t::calculate_result( s ); }
 
   virtual result_e calculate_impact_result( action_state_t* s ) const
-  { return add_ffe_crit( s ); }
-
-  result_e add_ffe_crit( action_state_t* s ) const
-  {
-    result_e r = spell_t::calculate_result( s );
-    if ( s->chain_target == 0 && r == RESULT_HIT && p()->bugs && may_crit && p()->state.ff_empowerment_crit )
-      r = RESULT_CRIT;
-    return r;
-  }
+  { return spell_t::calculate_result( s ); }
 
   void enable_calculate_on_impact( unsigned spell_id )
   {
@@ -1769,9 +1760,6 @@ public:
       else
         get_td( s->target )->debuffs.molten_fury->expire();
     }
-
-    if ( s->chain_target == 0 && may_crit )
-      p()->state.ff_empowerment_crit = false;
   }
 
   void assess_damage( result_amount_type rt, action_state_t* s ) override
@@ -3386,16 +3374,6 @@ struct fireball_t final : public fire_mage_spell_t
 
     return m;
   }
-
-  double composite_crit_chance_multiplier() const override
-  {
-    double m = fire_mage_spell_t::composite_crit_chance_multiplier();
-
-    if ( frostfire && p()->state.trigger_ff_empowerment )
-      m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 1 ).percent();
-
-    return m;
-  }
 };
 
 struct flamestrike_pyromaniac_t final : public fire_mage_spell_t
@@ -3609,16 +3587,6 @@ struct frostbolt_t final : public frost_mage_spell_t
     return m;
   }
 
-  double composite_crit_chance_multiplier() const override
-  {
-    double m = frost_mage_spell_t::composite_crit_chance_multiplier();
-
-    if ( frostfire && p()->state.trigger_ff_empowerment && !p()->bugs )
-      m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 1 ).percent();
-
-    return m;
-  }
-
   void execute() override
   {
     frost_mage_spell_t::execute();
@@ -3634,7 +3602,6 @@ struct frostbolt_t final : public frost_mage_spell_t
         // TODO: Double check this later
         make_event( *sim, 15_ms, [ this ] { p()->buffs.frostfire_empowerment->decrement(); } );
         p()->state.trigger_ff_empowerment = true;
-        p()->state.ff_empowerment_crit = true;
       }
 
       p()->trigger_flash_freezeburn( true );
