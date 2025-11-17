@@ -224,6 +224,7 @@ public:
 
     // Frost
     buff_t* brain_freeze;
+    buff_t* comet_storm;
     buff_t* fingers_of_frost;
     buff_t* freezing_rain;
     buff_t* glacial_spike;
@@ -3120,8 +3121,11 @@ struct combustion_t final : public fire_mage_spell_t
 
 struct comet_storm_projectile_t final : public frost_mage_spell_t
 {
+  int freezing_consume;
+
   comet_storm_projectile_t( std::string_view n, mage_t* p, bool isothermic_ = false ) :
-    frost_mage_spell_t( n, p, p->find_spell( isothermic_ ? 438609 : 153596 ) )
+    frost_mage_spell_t( n, p, p->find_spell( isothermic_ ? 438609 : 153596 ) ),
+    freezing_consume( as<int>( p->spec.shatter->effectN( 5 ).base_value() ) )
   {
     aoe = -1;
     background = proc = true;
@@ -3132,6 +3136,14 @@ struct comet_storm_projectile_t final : public frost_mage_spell_t
       const auto* set = p->sets->set( HERO_FROSTFIRE, TWW3, B2 );
       base_ignite_multiplier = set->effectN( 1 ).percent();
     }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    frost_mage_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) && p()->action.shatter.comet_storm )
+      p()->trigger_shatter( s->target, p()->action.shatter.comet_storm, freezing_consume );
   }
 };
 
@@ -3144,7 +3156,7 @@ struct comet_storm_t final : public frost_mage_spell_t
   const bool isothermic;
 
   comet_storm_t( std::string_view n, mage_t* p, std::string_view options_str, bool isothermic_ = false ) :
-    frost_mage_spell_t( n, p, isothermic_ ? p->find_spell( 153595 ) : p->talents.comet_storm ),
+    frost_mage_spell_t( n, p, p->find_spell( 153595 ) ),
     projectile( get_action<comet_storm_projectile_t>( isothermic_ ? "isothermic_comet_storm_projectile" : "comet_storm_projectile", p, isothermic_ ) ),
     isothermic( isothermic_ )
   {
@@ -3158,7 +3170,11 @@ struct comet_storm_t final : public frost_mage_spell_t
       background = proc = true;
       cooldown->duration = 0_ms;
       base_costs[ RESOURCE_MANA ] = 0;
+      return;
     }
+
+    if ( p->spec.shatter->ok() )
+      add_child( p->action.shatter.comet_storm );
   }
 
   void impact( action_state_t* s ) override
@@ -3177,9 +3193,18 @@ struct comet_storm_t final : public frost_mage_spell_t
   void execute() override
   {
     frost_mage_spell_t::execute();
+    p()->buffs.comet_storm->decrement();
 
     if ( p()->action.isothermic_meteor )
       p()->action.isothermic_meteor->execute_on_target( target );
+  }
+
+  bool ready() override
+  {
+    if ( !p()->buffs.comet_storm->check() )
+      return false;
+
+    return frost_mage_spell_t::ready();
   }
 };
 
@@ -3742,7 +3767,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
   action_t* pyroblast_4pc = nullptr;
 
   glacial_spike_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    frost_mage_spell_t( n, p, p->talents.icicles.ok() ? p->find_spell( 199786 ) : spell_data_t::not_found() )
+    frost_mage_spell_t( n, p, p->find_spell( 199786 ) )
   {
     parse_options( options_str );
     enable_calculate_on_impact( 228600 );
@@ -4399,6 +4424,20 @@ struct ray_of_frost_t final : public frost_mage_spell_t
 
     if ( splintering_ray )
       splintering_ray->execute_on_target( d->target, p()->talents.splintering_ray->effectN( 1 ).percent() * d->state->result_total );
+  }
+
+  void execute() override
+  {
+    frost_mage_spell_t::execute();
+    p()->buffs.comet_storm->trigger();
+  }
+
+  bool ready() override
+  {
+    if ( p()->buffs.comet_storm->check() )
+      return false;
+
+    return frost_mage_spell_t::ready();
   }
 };
 
@@ -5788,6 +5827,8 @@ void mage_t::create_buffs()
 
   // Frost
   buffs.brain_freeze       = make_buff( this, "brain_freeze", find_spell( 190446 ) );
+  buffs.comet_storm        = make_buff( this, "comet_storm", find_spell( 1247778 ) )
+                               ->set_chance( talents.comet_storm.ok() );
   buffs.fingers_of_frost   = make_buff( this, "fingers_of_frost", find_spell( 44544 ) );
   buffs.freezing_rain      = make_buff( this, "freezing_rain", find_spell( 270232 ) )
                                ->set_chance( talents.freezing_rain.ok() );
