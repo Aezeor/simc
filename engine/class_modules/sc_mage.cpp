@@ -3845,6 +3845,14 @@ struct glacial_spike_t final : public frost_mage_spell_t
       pyroblast_4pc->execute_on_target( target );
   }
 
+  void impact( action_state_t* s ) override
+  {
+    frost_mage_spell_t::impact( s );
+
+    if ( s->result == RESULT_CRIT && p()->talents.frostbite.ok() )
+      p()->trigger_freezing( s->target, as<int>( p()->talents.frostbite->effectN( 1 ).base_value() ) );
+  }
+
   bool ready() override
   {
     // Buff needs to be present at the start and also at the end of the cast
