@@ -157,7 +157,6 @@ public:
   {
     action_t* arcane_assault;
     action_t* arcane_echo;
-    action_t* frostbolt_volley;
     action_t* frostfire_empowerment;
     action_t* glacial_assault;
     action_t* ignite;
@@ -252,12 +251,6 @@ public:
 
 
     // Set Bonuses
-    buff_t* clarity;
-
-    buff_t* blessing_of_the_phoenix;
-    buff_t* rollin_hot;
-
-    buff_t* extended_bankroll;
     buff_t* spherical_sorcery;
 
     buff_t* flame_quills;
@@ -332,11 +325,6 @@ public:
     proc_t* brain_freeze_splinterstorm;
     proc_t* fingers_of_frost;
   } procs;
-
-  struct rppms_t
-  {
-    real_ppm_t* arcane_jackpot;
-  } rppm;
 
   struct accumulated_rngs_t
   {
@@ -746,7 +734,6 @@ public:
 
   // Character Definition
   void init_spells() override;
-  void init_special_effects() override;
   void init_base_stats() override;
   void create_buffs() override;
   void create_options() override;
@@ -817,7 +804,6 @@ public:
   void trigger_spellfire_spheres();
   void consume_burden_of_power();
   void trigger_splinter( player_t* target, int count = -1 );
-  void trigger_jackpot( bool guaranteed = false );
   void trigger_freezing( player_t* target, int stacks, double chance = 1.0 );
   int  trigger_shatter( player_t* target, action_t* action, int max_consumption, bool fof = false );
   void trigger_icicle( int count = 1 );
@@ -1023,16 +1009,6 @@ struct arcane_phoenix_spell_t : public mage_pet_spell_t
       m *= 1.0 + o()->buffs.lingering_embers->check_stack_value();
       m *= 1.0 + o()->buffs.spellfire_sphere->check_stack_value();
     }
-
-    return m;
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = mage_pet_spell_t::composite_da_multiplier( s );
-
-    if ( is_mage_spell )
-      m *= 1.0 + o()->buffs.blessing_of_the_phoenix->check_value();
 
     return m;
   }
@@ -1445,10 +1421,7 @@ struct mage_spell_t : public spell_t
     bool savant = false;
     bool spellfire_sphere = true;
 
-    bool blessing_of_the_phoenix = true;
-    bool clarity = true;
     bool flame_quills = true;
-    bool rollin_hot = true;
     bool spherical_sorcery = true;
 
     // Misc
@@ -1555,15 +1528,8 @@ public:
     if ( affected_by.spellfire_sphere )
       m *= 1.0 + p()->buffs.spellfire_sphere->check_stack_value();
 
-    if ( affected_by.clarity )
-      m *= 1.0 + p()->buffs.clarity->check_value();
-
     if ( affected_by.flame_quills )
       m *= 1.0 + p()->buffs.flame_quills->check_value();
-
-    // TODO (11.1 PTR): the second effect affects spell effects rather than periodic damage
-    if ( affected_by.rollin_hot )
-      m *= 1.0 + p()->buffs.rollin_hot->check_value();
 
     if ( affected_by.spherical_sorcery )
       m *= 1.0 + p()->buffs.spherical_sorcery->check_value();
@@ -1583,9 +1549,6 @@ public:
 
     if ( affected_by.savant )
       m *= 1.0 + p()->cache.mastery() * p()->spec.savant->effectN( 5 ).mastery_value();
-
-    if ( affected_by.blessing_of_the_phoenix )
-      m *= 1.0 + p()->buffs.blessing_of_the_phoenix->check_value();
 
     return m;
   }
@@ -3163,7 +3126,6 @@ struct combustion_t final : public fire_mage_spell_t
     p()->trigger_flash_freezeburn();
     if ( p()->pets.arcane_phoenix )
       p()->pets.arcane_phoenix->summon( combustion_duration ); // TODO: The extra random pet duration can sometimes result in an extra cast.
-    p()->trigger_jackpot( true );
   }
 };
 
@@ -3863,17 +3825,6 @@ struct glacial_spike_t final : public frost_mage_spell_t
   }
 };
 
-struct frigid_pulse_t final : public mage_spell_t
-{
-  frigid_pulse_t( std::string_view n, mage_t* p ) :
-    mage_spell_t( n, p, p->find_spell( 460623 ) )
-  {
-    background = proc = true;
-    aoe = -1;
-    reduced_aoe_targets = p->sets->set( MAGE_FROST, TWW1, B4 )->effectN( 1 ).base_value();
-  }
-};
-
 struct shatter_t final : public mage_spell_t
 {
   shatter_t( std::string_view n, mage_t* p ) :
@@ -3905,7 +3856,6 @@ struct shatter_t final : public mage_spell_t
 struct ice_lance_t final : public frost_mage_spell_t
 {
   int freezing_consume;
-  action_t* frigid_pulse = nullptr;
 
   ice_lance_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     frost_mage_spell_t( n, p, p->talents.ice_lance ),
@@ -3929,12 +3879,6 @@ struct ice_lance_t final : public frost_mage_spell_t
 
     if ( p->spec.shatter->ok() )
       add_child( p->action.shatter.ice_lance );
-
-    if ( p->sets->has_set_bonus( MAGE_FROST, TWW1, B4 ) )
-    {
-      frigid_pulse = get_action<frigid_pulse_t>( "frigid_pulse", p );
-      add_child( frigid_pulse );
-    }
   }
 
   void execute() override
@@ -3954,10 +3898,6 @@ struct ice_lance_t final : public frost_mage_spell_t
       return;
 
     p()->trigger_shatter( s->target, p()->action.shatter.ice_lance, freezing_consume, p()->state.fingers_of_frost_active );
-
-    // TODO: is this correct?
-    if ( p()->state.fingers_of_frost_active && frigid_pulse )
-      frigid_pulse->execute_on_target( s->target );
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -4555,14 +4495,7 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
   void execute() override
   {
     arcane_mage_spell_t::execute();
-
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
-    // Clearcasting triggered by the TWW2 set is independent, allowing ToTM to sometimes apply two applications with one cast.
-    if ( p()->sets->has_set_bonus( MAGE_ARCANE, TWW2, B2 ) )
-    {
-      p()->trigger_clearcasting();
-      p()->trigger_jackpot( true );
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -4834,19 +4767,6 @@ struct splinter_t final : public mage_spell_t
       t += timespan_t::from_millis( rng().gauss( 0.0, 5.0 ) );
 
     return std::max( t, 0_ms );
-  }
-};
-
-struct frostbolt_volley_t final : public frost_mage_spell_t
-{
-  frostbolt_volley_t( std::string_view n, mage_t* p ) :
-    frost_mage_spell_t( n, p, p->find_spell( 1216910 ) )
-  {
-    background = proc = true;
-
-    double m = p->sets->set( MAGE_FROST, TWW2, B2 )->effectN( 2 ).base_value();
-    base_multiplier     *= m;
-    base_aoe_multiplier /= m;
   }
 };
 
@@ -5132,7 +5052,6 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   options(),
   pets(),
   procs(),
-  rppm(),
   accumulated_rng(),
   sample_data(),
   spec(),
@@ -5278,9 +5197,6 @@ void mage_t::create_actions()
 
   if ( talents.glorious_incandescence.ok() )
     action.meteorite = get_action<meteorite_t>( "meteorite", this );
-
-  if ( specialization() == MAGE_FROST && sets->has_set_bonus( MAGE_FROST, TWW2, B2 ) )
-    action.frostbolt_volley = get_action<frostbolt_volley_t>( "frostbolt_volley", this );
 
   if ( specialization() == MAGE_FROST && sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B2 ) )
     action.ignite_2pc = get_action<ignite_2pc_t>( "ignite_2pc", this );
@@ -5763,32 +5679,6 @@ void mage_t::init_spells()
   parse_all_passive_sets();
 }
 
-void mage_t::init_special_effects()
-{
-  auto spell = sets->set( specialization(), TWW2, B2 );
-  if ( spell->ok() && ( specialization() != MAGE_ARCANE ) )
-  {
-    auto effect = new special_effect_t( this );
-    effect->name_str = "mage_jackpot_proc";
-    effect->spell_id = spell->id();
-    special_effects.push_back( effect );
-
-    struct jackpot_proc_t final : public dbc_proc_callback_t
-    {
-      jackpot_proc_t( mage_t* m, const special_effect_t* effect ) :
-        dbc_proc_callback_t( m, *effect )
-      { }
-
-      void execute( action_t*, action_state_t* ) override
-      { debug_cast<mage_t*>( listener )->trigger_jackpot(); }
-    };
-
-    new jackpot_proc_t( this, effect );
-  }
-
-  player_t::init_special_effects();
-}
-
 void mage_t::init_base_stats()
 {
   if ( base.distance < 1.0 )
@@ -5966,20 +5856,6 @@ void mage_t::create_buffs()
 
 
   // Set Bonuses
-  buffs.clarity = make_buff( this, "clarity", find_spell( 1216178 ) )
-                    ->set_default_value_from_effect( 1 )
-                    ->set_chance( sets->has_set_bonus( MAGE_ARCANE, TWW2, B2 ) );
-
-  buffs.blessing_of_the_phoenix = make_buff( this, "blessing_of_the_phoenix", find_spell( 455134 ) )
-                                    ->set_default_value_from_effect( 1 )
-                                    ->set_chance( sets->has_set_bonus( MAGE_FIRE, TWW1, B4 ) );
-  buffs.rollin_hot              = make_buff( this, "rollin_hot", find_spell( 1219035 ) )
-                                    ->set_default_value_from_effect( 1 )
-                                    ->set_chance( sets->has_set_bonus( MAGE_FIRE, TWW2, B4 ) );
-
-  buffs.extended_bankroll = make_buff( this, "extended_bankroll", find_spell( 1216914 ) )
-                              ->set_chance( sets->has_set_bonus( MAGE_FROST, TWW2, B4 ) )
-                              ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t ) { trigger_jackpot(); } );
   buffs.spherical_sorcery = make_buff( this, "spherical_sorcery", find_spell( 1247525 ) )
                               ->set_default_value_from_effect( 1 )
                               ->set_chance( sets->has_set_bonus( HERO_SPELLSLINGER, TWW3, B4 ) );
@@ -6089,7 +5965,6 @@ void mage_t::init_rng()
 {
   player_t::init_rng();
 
-  rppm.arcane_jackpot = get_rppm( "arcane_jackpot", sets->set( MAGE_ARCANE, TWW2, B2 ) );
   // Accumulated RNG is also not present in the game data.
   accumulated_rng.pyromaniac = get_accumulated_rng( "pyromaniac", talents.pyromaniac.ok() ? 0.00605 : 0.0 );
 }
@@ -6504,57 +6379,6 @@ bool mage_t::trigger_crowd_control( const action_state_t* s, spell_mechanic type
   return false;
 }
 
-void mage_t::trigger_jackpot( bool guaranteed )
-{
-  if ( !sets->has_set_bonus( specialization(), TWW2, B2 ) )
-    return;
-
-  bool has_4pc = sets->has_set_bonus( specialization(), TWW2, B4 );
-  switch ( specialization() )
-  {
-    // TWW2's tier effect for Arcane doesn't randomly generate Clearcasting (has a misleading tooltip). 
-    // Instead, it solely grants Clarity/AA whenever any source of CC is applied at 2RPPM -- appears as if guaranteed jackpots don't reset the RPPM.
-    case MAGE_ARCANE:
-      if ( guaranteed || rppm.arcane_jackpot->trigger() )
-      {
-        buffs.clarity->trigger();
-        if ( has_4pc )
-          buffs.aether_attunement->trigger();
-        if ( guaranteed )
-        {
-          buffs.clarity->predict();
-          if ( has_4pc )
-            buffs.aether_attunement->predict();
-        }
-      }
-      break;
-    case MAGE_FIRE:
-    {
-      auto set_2pc = sets->set( MAGE_FIRE, TWW2, B2 );
-      timespan_t cdr = -1000 * set_2pc->effectN( 1 ).time_value();
-      if ( guaranteed )
-        cdr *= set_2pc->effectN( 2 ).percent();
-      cooldowns.combustion->adjust( cdr );
-      if ( has_4pc )
-      {
-        timespan_t duration = buffs.rollin_hot->buff_duration();
-        if ( guaranteed )
-          duration *= 1.0 + sets->set( MAGE_FIRE, TWW2, B4 )->effectN( 2 ).percent();
-        buffs.rollin_hot->trigger( duration );
-      }
-      break;
-    }
-    case MAGE_FROST:
-      if ( !sim->target_non_sleeping_list.empty() )
-        action.frostbolt_volley->execute_on_target( rng().range( sim->target_non_sleeping_list ) );
-      if ( has_4pc && guaranteed )
-        buffs.extended_bankroll->trigger();
-      break;
-    default:
-      break;
-  }
-}
-
 void mage_t::trigger_freezing( player_t* target, int stacks, double chance )
 {
   if ( !spec.shatter->ok() || stacks <= 0 )
@@ -6804,7 +6628,6 @@ bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool never_p
 
     // TODO: double check timing
     buffs.brainstorm->trigger();
-    trigger_jackpot();
   }
 
   return success;
