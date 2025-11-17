@@ -4416,6 +4416,8 @@ struct ray_of_frost_t final : public frost_mage_spell_t
 
     p()->trigger_freezing( d->target, 1 ); // Not in spell data
 
+    // TODO: FoF is granted through spell 269748. Unfortunately, Blizzard forgot to change its
+    // period to 2 sec when Ray of Frost was changed to 4 sec channel, so now it only grants a single FoF.
     if ( p()->talents.crystalline_refraction.ok() && ( d->current_tick == 4 || d->current_tick == 8 ) )
       p()->trigger_fof( 1.0, proc_fof );
 
