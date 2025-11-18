@@ -4802,6 +4802,9 @@ struct splinter_t final : public mage_spell_t
     if ( p->talents.controlled_instincts.ok() )
       controlled_instincts = get_action<controlled_instincts_t>( "controlled_instincts", p );
 
+    freezing_chance = p->talents.infused_splinters->effectN( 2 ).percent();
+    freezing_stacks = as<int>( p->talents.infused_splinters->effectN( 4 ).base_value() );
+
     if ( splinterstorm )
       return;
 
