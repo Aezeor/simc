@@ -880,6 +880,14 @@ struct waterbolt_t final : public mage_pet_spell_t
   {
     parse_options( options_str );
   }
+
+  void execute() override
+  {
+    mage_pet_spell_t::execute();
+
+    if ( rng().roll( o()->talents.attuned_familiar->effectN( 2 ).percent() ) )
+      o()->trigger_splinter( target );
+  }
 };
 
 struct freeze_t final : public mage_pet_spell_t
@@ -2701,6 +2709,9 @@ struct arcane_assault_t final : public arcane_mage_spell_t
     // TODO: Proc rate isn't listed anywhere, update as we get more data
     if ( p()->talents.energized_familiar.ok() && rng().roll( 0.05 ) )
       p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * energize_pct, p()->gains.energized_familiar, this );
+
+    if ( rng().roll( p()->talents.attuned_familiar->effectN( 1 ).percent() ) )
+      p()->trigger_splinter( target );
   }
 };
 
