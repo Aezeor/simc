@@ -3828,6 +3828,10 @@ struct glacial_spike_t final : public frost_mage_spell_t
     p()->state.icicles = 0;
 
     p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), proc_fof );
+    // TODO: Double check
+    p()->trigger_splinter( target );
+    // TODO: Double check cast vs impact
+    p()->trigger_splinter( target, as<int>( p()->talents.signature_spell->effectN( 2 ).base_value() ) );
 
     if ( rng().roll( p()->sets->set( HERO_FROSTFIRE, TWW3, B4 )->effectN( 2 ).percent() ) )
       pyroblast_4pc->execute_on_target( target );
@@ -4573,6 +4577,7 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
+    p()->trigger_splinter( target, as<int>( p()->talents.signature_spell->effectN( 1 ).base_value() ) );
   }
 
   void impact( action_state_t* s ) override
