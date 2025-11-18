@@ -3895,7 +3895,11 @@ struct ice_lance_t final : public frost_mage_spell_t
       frost_mage_spell_t::impact( s );
 
       if ( result_is_hit( s->result ) && p()->action.shatter.ice_lance )
-        p()->trigger_shatter( s->target, p()->action.shatter.ice_lance, freezing_consume, p()->state.fingers_of_frost_active );
+      {
+        int stacks = p()->trigger_shatter( s->target, p()->action.shatter.ice_lance, freezing_consume, p()->state.fingers_of_frost_active );
+        if ( s->chain_target == 0 && p()->talents.force_of_will.ok() )
+          p()->trigger_splinter( s->target, stacks / as<int>( p()->talents.force_of_will->effectN( 3 ).base_value() ) );
+      }
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
