@@ -6763,6 +6763,7 @@ bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool never_p
 
     // TODO: double check timing
     buffs.brainstorm->trigger();
+    trigger_splinter( nullptr, as<int>( talents.shifting_shards->effectN( 1 ).base_value() ) );
   }
 
   return success;
@@ -6793,6 +6794,7 @@ bool mage_t::trigger_brain_freeze( double chance, proc_t* source, timespan_t del
     }
 
     buffs.brainstorm->trigger();
+    trigger_splinter( nullptr, as<int>( talents.shifting_shards->effectN( 1 ).base_value() ) );
     source->occur();
     if ( procs.brain_freeze )
       procs.brain_freeze->occur();
