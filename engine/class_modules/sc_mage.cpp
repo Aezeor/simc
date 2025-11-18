@@ -3552,6 +3552,7 @@ struct flurry_t final : public frost_mage_spell_t
     p()->state.brain_freeze_active = p()->buffs.brain_freeze->up();
     p()->buffs.brain_freeze->decrement();
     p()->buffs.thermal_void->trigger();
+    p()->trigger_splinter( target );
   }
 
   void impact( action_state_t* s ) override
@@ -3630,6 +3631,7 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     p()->trigger_fof( fof_chance, proc_fof );
     p()->trigger_brain_freeze( bf_chance, proc_brain_freeze );
+    p()->trigger_splinter( target );
 
     if ( frostfire )
     {
@@ -6697,7 +6699,7 @@ void mage_t::trigger_splinter( player_t* target, int count )
     return;
 
   if ( count < 0 )
-    count = specialization() == MAGE_FROST ? 1 : as<int>( talents.splintering_sorcery->effectN( 2 ).base_value() );
+    count = 1; // TODO: Effect 2 of Splintering Sorcery? Unclear
 
   double chance = talents.augury_abounds->effectN( 2 ).percent();
   for ( int i = 0; i < count; i++ )
