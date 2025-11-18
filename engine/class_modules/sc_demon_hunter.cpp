@@ -2868,19 +2868,24 @@ struct voidfall_spending_trigger_t : public BASE
     if ( !BASE::p()->buff.voidfall_spending->up() )
       return;
 
-    int stacks = BASE::p()->buff.voidfall_spending->stack();
+    int stacks                  = BASE::p()->buff.voidfall_spending->stack();
+    int stacks_for_world_killer = 0;
+    if ( BASE::p()->talent.annihilator.world_killer->ok() )
+    {
+      stacks_for_world_killer += 1;
+    }
 
     BASE::p()->sim->print_debug( "{} triggering Voidfall spending", BASE::p()->name() );
 
     BASE::p()->buff.voidfall_spending->decrement();
 
-    if ( stacks != 1 )
+    if ( BASE::p()->buff.voidfall_spending->stack() == 0 && BASE::p()->talent.annihilator.world_killer->ok() )
     {
-      BASE::p()->active.voidfall_meteor->execute_on_target( BASE::target );
+      BASE::p()->active.world_killer->execute_on_target( BASE::target );
     }
     else
     {
-      BASE::p()->active.world_killer->execute_on_target( BASE::target );
+      BASE::p()->active.voidfall_meteor->execute_on_target( BASE::target );
     }
   }
 };
