@@ -3914,6 +3914,9 @@ struct ice_lance_t final : public frost_mage_spell_t
         int stacks = p()->trigger_shatter( s->target, p()->action.shatter.ice_lance, freezing_consume, p()->state.fingers_of_frost_active );
         if ( s->chain_target == 0 && p()->talents.force_of_will.ok() )
           p()->trigger_splinter( s->target, stacks / as<int>( p()->talents.force_of_will->effectN( 3 ).base_value() ) );
+        // TODO: Check if it's main target only and how it interacts with Heart of Frost
+        if ( stacks == freezing_consume )
+          p()->trigger_freezing( s->target, as<int>( p()->talents.polished_focus->effectN( 3 ).base_value() ) );
       }
     }
 
