@@ -238,6 +238,10 @@ public:
     buff_t* frostfire_empowerment;
 
 
+    // Spellslinger
+    buff_t* augury_abounds;
+
+
     // Sunfury
     buff_t* arcane_soul;
     buff_t* arcane_soul_damage;
@@ -4426,6 +4430,7 @@ struct ray_of_frost_t final : public frost_mage_spell_t
     frost_mage_spell_t::tick( d );
 
     p()->trigger_freezing( d->target, 1 ); // Not in spell data
+    p()->trigger_splinter( d->target, as<int>( p()->talents.augury_abounds->effectN( 3 ).base_value() ) );
 
     // TODO: FoF is granted through spell 269748. Unfortunately, Blizzard forgot to change its
     // period to 2 sec when Ray of Frost was changed to 4 sec channel, so now it only grants a single FoF.
@@ -4453,6 +4458,7 @@ struct ray_of_frost_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
     p()->buffs.comet_storm->trigger();
+    p()->buffs.augury_abounds->trigger();
   }
 
   bool ready() override
@@ -5911,6 +5917,10 @@ void mage_t::create_buffs()
                                   ->set_trigger_spell( talents.frostfire_empowerment );
 
 
+  // Spellslinger
+  buffs.augury_abounds = make_buff( this, "augury_abounds", find_spell( 1247908 ) )
+                           ->set_chance( talents.augury_abounds.ok() );
+
   // Sunfury
   buffs.arcane_soul            = make_buff( this, "arcane_soul", find_spell( 451038 ) )
                                    ->set_stack_change_callback( [ this ] ( buff_t*, int, int ) { buffs.arcane_soul_damage->expire(); } )
@@ -6708,7 +6718,7 @@ void mage_t::trigger_splinter( player_t* target, int count )
     if ( !t_ )
       t_ = rng().range( sim->target_non_sleeping_list );
 
-    int per_conjure = ( false || buffs.arcane_surge->check() ) && rng().roll( chance ) ? 2 : 1; // TODO: fix frost version
+    int per_conjure = ( buffs.augury_abounds->check() || buffs.arcane_surge->check() ) && rng().roll( chance ) ? 2 : 1;
     for ( int j = 0; j < per_conjure; j++ )
     {
       make_event( *sim, [ this, t = t_ ] { action.splinter->execute_on_target( t ); } );
