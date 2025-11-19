@@ -3182,6 +3182,8 @@ struct comet_storm_t final : public frost_mage_spell_t
 
     if ( p->spec.shatter->ok() )
       add_child( p->action.shatter.comet_storm );
+    if ( p->talents.isothermic_core.ok() )
+      add_child( p->action.isothermic_meteor );
   }
 
   void impact( action_state_t* s ) override
@@ -4082,13 +4084,15 @@ struct meteor_impact_t final : public fire_mage_spell_t
 
   timespan_t meteor_burn_duration;
   timespan_t meteor_burn_pulse_time;
+  int freezing_consume;
 
   meteor_impact_t( std::string_view n, mage_t* p, action_t* burn, meteor_type type_ ) :
     fire_mage_spell_t( n, p, p->find_spell( type_ == meteor_type::ISOTHERMIC ? 438607 : 351140 ) ),
     type( type_ ),
     meteor_burn( burn ),
     meteor_burn_duration( p->find_spell( 175396 )->duration() ),
-    meteor_burn_pulse_time( p->find_spell( 155158 )->effectN( 1 ).period() )
+    meteor_burn_pulse_time( p->find_spell( 155158 )->effectN( 1 ).period() ),
+    freezing_consume( as<int>( p->spec.shatter->effectN( 5 ).base_value() ) )
   {
     aoe = -1;
     reduced_aoe_targets = 8;
@@ -4109,6 +4113,14 @@ struct meteor_impact_t final : public fire_mage_spell_t
 
     p()->ground_aoe_expiration[ AOE_METEOR_BURN ] = sim->current_time() + meteor_burn_duration;
     p()->trigger_meteor_burn( meteor_burn, target, meteor_burn_pulse_time, meteor_burn_duration );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    fire_mage_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) && p()->action.shatter.meteor )
+      p()->trigger_shatter( s->target, p()->action.shatter.meteor, freezing_consume );
   }
 };
 
@@ -4151,12 +4163,19 @@ struct meteor_t final : public fire_mage_spell_t
     add_child( meteor_burn );
     add_child( impact_action );
 
+    if ( p->spec.shatter->ok() )
+      add_child( p->action.shatter.meteor );
+
     if ( type != meteor_type::NORMAL )
     {
       background = proc = true;
       cooldown->duration = 0_ms;
       base_costs[ RESOURCE_MANA ] = 0;
+      return;
     }
+
+    if ( p->talents.isothermic_core.ok() )
+      add_child( p->action.isothermic_comet_storm );
   }
 
   timespan_t travel_time() const override
