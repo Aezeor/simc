@@ -3568,7 +3568,7 @@ struct flurry_t final : public frost_mage_spell_t
     p()->buffs.brain_freeze->decrement();
     if ( p()->state.brain_freeze_active )
       p()->buffs.thermal_void->trigger();
-    p()->trigger_splinter( target );
+    p()->trigger_splinter( p()->target );
   }
 
   void impact( action_state_t* s ) override
@@ -3588,14 +3588,12 @@ struct frostbolt_t final : public frost_mage_spell_t
 {
   const bool frostfire;
 
-  double fof_chance;
-  double bf_chance;
+  double fof_chance = 0.0;
+  double bf_chance = 0.0;
 
   frostbolt_t( std::string_view n, mage_t* p, std::string_view options_str, bool frostfire_ = false ) :
     frost_mage_spell_t( n, p, frostfire_ ? p->talents.frostfire_bolt : p->find_class_spell( "Frostbolt" ) ),
-    frostfire( frostfire_ ),
-    fof_chance(),
-    bf_chance()
+    frostfire( frostfire_ )
   {
     parse_options( options_str );
     enable_calculate_on_impact( frostfire ? 468655 : 228597 );
@@ -3647,7 +3645,7 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     p()->trigger_fof( fof_chance, proc_fof );
     p()->trigger_brain_freeze( bf_chance, proc_brain_freeze );
-    p()->trigger_splinter( target );
+    p()->trigger_splinter( p()->target );
 
     if ( frostfire )
     {
@@ -3794,6 +3792,8 @@ struct pyroblast_4pc_t final : public mage_spell_t
 
 struct glacial_spike_t final : public frost_mage_spell_t
 {
+  double fof_chance = 0.0;
+  double bf_chance = 0.0;
   action_t* pyroblast_4pc = nullptr;
 
   glacial_spike_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -3802,6 +3802,9 @@ struct glacial_spike_t final : public frost_mage_spell_t
     parse_options( options_str );
     enable_calculate_on_impact( 228600 );
     affected_by.overflowing_energy = true;
+
+    fof_chance = p->talents.fingers_of_frost->effectN( 1 ).percent();
+    bf_chance = p->talents.brain_freeze->effectN( 1 ).percent();
     freezing_stacks = as<int>( p->spec.shatter->effectN( 3 ).base_value() );
     chain_multiplier = 1.0; // The spell data value isn't used
     // TODO: GS seems to autocast if FFB hits while the GS buff is up, not sure what causes this
@@ -3818,7 +3821,9 @@ struct glacial_spike_t final : public frost_mage_spell_t
 
   void init_finished() override
   {
+    proc_brain_freeze = p()->get_proc( "Brain Freeze from Glacial Spike" );
     proc_fof = p()->get_proc( "Fingers of Frost from Glacial Spike" );
+
     frost_mage_spell_t::init_finished();
   }
 
@@ -3828,11 +3833,12 @@ struct glacial_spike_t final : public frost_mage_spell_t
     p()->buffs.glacial_spike->decrement();
     p()->state.icicles = 0;
 
+    p()->trigger_fof( fof_chance, proc_fof );
     p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), proc_fof );
-    // TODO: Double check
-    p()->trigger_splinter( target );
-    // TODO: Double check cast vs impact
-    p()->trigger_splinter( target, as<int>( p()->talents.signature_spell->effectN( 2 ).base_value() ) );
+    p()->trigger_brain_freeze( bf_chance, proc_brain_freeze );
+    p()->trigger_splinter( p()->target );
+    // TODO: Currently doesn't work
+    p()->trigger_splinter( p()->target, as<int>( p()->talents.signature_spell->effectN( 2 ).base_value() ) );
 
     if ( rng().roll( p()->sets->set( HERO_FROSTFIRE, TWW3, B4 )->effectN( 2 ).percent() ) )
       pyroblast_4pc->execute_on_target( target );
@@ -3915,7 +3921,6 @@ struct ice_lance_t final : public frost_mage_spell_t
         int stacks = p()->trigger_shatter( s->target, p()->action.shatter.ice_lance, freezing_consume, p()->state.fingers_of_frost_active );
         if ( s->chain_target == 0 && p()->talents.force_of_will.ok() )
           p()->trigger_splinter( s->target, stacks / as<int>( p()->talents.force_of_will->effectN( 3 ).base_value() ) );
-        // TODO: Check if it's main target only and how it interacts with Heart of Frost
         if ( stacks == freezing_consume )
           p()->trigger_freezing( s->target, as<int>( p()->talents.polished_focus->effectN( 3 ).base_value() ) );
       }
@@ -6775,7 +6780,7 @@ bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool never_p
 
     // TODO: double check timing
     buffs.brainstorm->trigger();
-    trigger_splinter( nullptr, as<int>( talents.shifting_shards->effectN( 1 ).base_value() ) );
+    trigger_splinter( target, as<int>( talents.shifting_shards->effectN( 1 ).base_value() ) );
   }
 
   return success;
@@ -6806,7 +6811,7 @@ bool mage_t::trigger_brain_freeze( double chance, proc_t* source, timespan_t del
     }
 
     buffs.brainstorm->trigger();
-    trigger_splinter( nullptr, as<int>( talents.shifting_shards->effectN( 1 ).base_value() ) );
+    trigger_splinter( target, as<int>( talents.shifting_shards->effectN( 1 ).base_value() ) );
     source->occur();
     if ( procs.brain_freeze )
       procs.brain_freeze->occur();
