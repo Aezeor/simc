@@ -3780,13 +3780,13 @@ struct frozen_orb_t final : public frost_mage_spell_t
   }
 };
 
-struct pyroblast_4pc_t final : public mage_spell_t
+struct duality_pyroblast_t final : public mage_spell_t
 {
-  pyroblast_4pc_t( std::string_view n, mage_t* p ) :
-    mage_spell_t( n, p, p->find_spell( 1236212 ) )
+  duality_pyroblast_t( std::string_view n, mage_t* p ) :
+    mage_spell_t( n, p, p->find_spell( 1262863 ) )
   {
     // TODO: This might actually be consuming mana
-    background = proc = triggers.ignite_2pc = true;
+    background = proc = true;
   }
 };
 
@@ -3794,7 +3794,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
 {
   double fof_chance = 0.0;
   double bf_chance = 0.0;
-  action_t* pyroblast_4pc = nullptr;
+  action_t* duality_pyroblast = nullptr;
 
   glacial_spike_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     frost_mage_spell_t( n, p, p->find_spell( 199786 ) )
@@ -3809,10 +3809,10 @@ struct glacial_spike_t final : public frost_mage_spell_t
     chain_multiplier = 1.0; // The spell data value isn't used
     // TODO: GS seems to autocast if FFB hits while the GS buff is up, not sure what causes this
 
-    if ( p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B4 ) )
+    if ( p->talents.duality.ok() )
     {
-      pyroblast_4pc = get_action<pyroblast_4pc_t>( "pyroblast_4pc", p );
-      add_child( pyroblast_4pc );
+      duality_pyroblast = get_action<duality_pyroblast_t>( "duality_pyroblast", p );
+      add_child( duality_pyroblast );
     }
 
     // TODO: Seems to get another 8% from Frostfire Infusion without any apparent reason
@@ -3840,8 +3840,8 @@ struct glacial_spike_t final : public frost_mage_spell_t
     // TODO: Currently doesn't work
     p()->trigger_splinter( p()->target, as<int>( p()->talents.signature_spell->effectN( 2 ).base_value() ) );
 
-    if ( rng().roll( p()->sets->set( HERO_FROSTFIRE, TWW3, B4 )->effectN( 2 ).percent() ) )
-      pyroblast_4pc->execute_on_target( target );
+    if ( duality_pyroblast )
+      duality_pyroblast->execute_on_target( target );
   }
 
   void impact( action_state_t* s ) override
@@ -4260,52 +4260,32 @@ struct mirror_image_t final : public mage_spell_t
   }
 };
 
-// TODO: reuse for the new frostfire talent
-/*
-struct glacial_spike_4pc_t final : public mage_spell_t
+struct duality_glacial_spike_t final : public mage_spell_t
 {
-  double base_icicle_coef;
-  double icicles_mastery_coef;
-  double icicles2_mastery_coef;
-  double icicle_count;
-  double base_gs_coef; // The mastery multiplier seems to be based on the spcoef of the original GS.
-
-  glacial_spike_4pc_t( std::string_view n, mage_t* p ) :
+  // TODO: Still seems to be using the old TWW set bonus GS
+  // TODO: Also affected by Flash Freezeburn
+  duality_glacial_spike_t( std::string_view n, mage_t* p ) :
     mage_spell_t( n, p, p->find_spell( 1236209 ) )
   {
     enable_calculate_on_impact( 1236211 );
-    background = proc = triggers.ignite = true;
-    base_ignite_multiplier = p->sets->set( HERO_FROSTFIRE, TWW3, B2 )->effectN( 1 ).percent();
-
-    base_icicle_coef = p->find_spell( 148022 )->effectN( 1 ).sp_coeff();
-    icicles_mastery_coef = p->find_spell( 76613 )->effectN( 3 ).sp_coeff();
-    icicles2_mastery_coef = p->find_spell( 321684 )->effectN( 3 ).mastery_value();
-    icicle_count = p->find_spell( 76613 )->effectN( 2 ).base_value();
-    base_gs_coef = p->find_spell( 228600 )->effectN( 1 ).sp_coeff();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = mage_spell_t::action_multiplier();
-
-    double icicle_coef = base_icicle_coef + p()->cache.mastery() * icicles_mastery_coef;
-    // See glacial_spike_t for explanation.
-    double icicles1_part = icicle_count * icicle_coef / base_gs_coef;
-    double icicles2_part = p()->cache.mastery() * icicles2_mastery_coef;
-    am *= 1.0 + icicles1_part / ( 1.0 + icicles2_part );
-
-    return am;
+    background = proc = true;
   }
 };
-*/
 
 struct pyroblast_pyromaniac_t final : public fire_mage_spell_t
 {
+  action_t* duality_gs = nullptr;
+
   pyroblast_pyromaniac_t( std::string_view n, mage_t* p ) :
     fire_mage_spell_t( n, p, p->find_spell( 460475 ) )
   {
     background = proc = true;
     triggers.ignite = true;
+    if ( p->talents.duality.ok() )
+    {
+      duality_gs = get_action<duality_glacial_spike_t>( "duality_glacial_spike", p );
+      add_child( duality_gs );
+    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -4336,11 +4316,15 @@ struct pyroblast_pyromaniac_t final : public fire_mage_spell_t
     p()->consume_burden_of_power();
     if ( p()->buffs.hyperthermia->check() )
       p()->buffs.hyperthermia_damage->trigger();
+    if ( rng().roll( p()->talents.duality->effectN( 1 ).percent() ) )
+      duality_gs->execute_on_target( target );
   }
 };
 
 struct pyroblast_t final : public hot_streak_spell_t
 {
+  action_t* duality_gs = nullptr;
+
   pyroblast_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     hot_streak_spell_t( n, p, p->talents.pyroblast )
   {
@@ -4350,6 +4334,12 @@ struct pyroblast_t final : public hot_streak_spell_t
 
     if ( p->talents.pyromaniac.ok() )
       pyromaniac_action = get_action<pyroblast_pyromaniac_t>( "pyroblast_pyromaniac", p );
+
+    if ( p->talents.duality.ok() )
+    {
+      duality_gs = get_action<duality_glacial_spike_t>( "duality_glacial_spike", p );
+      add_child( duality_gs );
+    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -4374,6 +4364,14 @@ struct pyroblast_t final : public hot_streak_spell_t
 
     if ( result_is_hit( s->result ) )
       get_td( s->target )->debuffs.controlled_destruction->trigger();
+  }
+
+  void execute() override
+  {
+    hot_streak_spell_t::execute();
+
+    if ( rng().roll( p()->talents.duality->effectN( 1 ).percent() ) )
+      duality_gs->execute_on_target( target );
   }
 
   double composite_target_crit_chance( player_t* target ) const override
