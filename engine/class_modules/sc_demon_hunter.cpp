@@ -6942,7 +6942,13 @@ struct blade_dance_base_t
         attack->stats = first_blood_attacks.front()->stats;
       }
 
-      add_child( first_blood_attacks.front() );
+
+      if ( first_blood_attacks.front() )
+      {
+        first_blood_attacks.front()->first_attack = true;
+
+        add_child( first_blood_attacks.front() );
+      }
 
       if ( first_blood_attacks.back() )
       {
