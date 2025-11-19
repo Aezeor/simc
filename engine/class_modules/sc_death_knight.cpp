@@ -1730,6 +1730,7 @@ public:
   struct sample_data_t
   {
     std::unique_ptr<extended_sample_data_t> putrefied_ghoul_remains;
+    std::unique_ptr<extended_sample_data_t> lesser_ghoul_duration;
   } sample_data;
 
   // Death Knight Options
@@ -3428,6 +3429,8 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
 
   void arise() override
   {
+    if ( dk()->talent.unholy.commander_of_the_dead.ok() )
+      dk()->sample_data.lesser_ghoul_duration->add( this->duration.total_seconds() );
     base_ghoul_pet_t::arise();
     dk()->active_lesser_ghouls.push_back( this );
     dk()->buffs.lesser_ghoul_counter->trigger();
@@ -11781,6 +11784,8 @@ void death_knight_t::merge( player_t& other )
 
   if ( talent.unholy.putrefy.ok() )
     sample_data.putrefied_ghoul_remains->merge( *dk.sample_data.putrefied_ghoul_remains );
+  if ( talent.unholy.commander_of_the_dead.ok() )
+    sample_data.lesser_ghoul_duration->merge( *dk.sample_data.lesser_ghoul_duration );
 }
 
 std::string death_knight_t::create_profile( save_e type )
@@ -11825,6 +11830,9 @@ void death_knight_t::analyze( sim_t& s )
 
   if ( talent.unholy.putrefy.ok() )
     sample_data.putrefied_ghoul_remains->analyze();
+
+  if ( talent.unholy.commander_of_the_dead.ok() )
+    sample_data.lesser_ghoul_duration->analyze();
 }
 
 bool death_knight_t::in_death_and_decay() const
@@ -14731,6 +14739,9 @@ void death_knight_t::init_uptimes()
   if ( talent.unholy.putrefy.ok() )
     sample_data.putrefied_ghoul_remains = std::make_unique<extended_sample_data_t>( "Remaining Ghoul Duration", false );
 
+  if (talent.unholy.commander_of_the_dead.ok())
+    sample_data.lesser_ghoul_duration = std::make_unique<extended_sample_data_t>( "Lesser Ghoul Duration", false );
+
   // Enable detailed reporting for primary resource cap uptimes if requested
   if ( sim->report_details == 1 )
   {
@@ -15636,7 +15647,53 @@ public:
           "</div>\n";
   }
 
-  void lesser_ghoul_piechart( report::sc_html_stream& os )
+  void lesser_ghoul_duration_chart( report::sc_html_stream& os )
+  {
+    if ( !p.talent.unholy.commander_of_the_dead.ok() )
+      return;
+
+    auto& d = *p.sample_data.lesser_ghoul_duration;
+    if ( d.count() == 0 )
+      return;
+
+    int num_buckets = std::min( 30, static_cast<int>( 2 * ( d.max() - d.min() ) ) + 1 );
+    d.create_histogram( num_buckets );
+
+    highchart::histogram_chart_t chart( highchart::build_id( p, "lesser_ghoul_duration" ), *p.sim );
+    if ( chart::generate_distribution( chart, &p, d.distribution, "Lesser Ghoul Duration (Seconds)", d.mean(),
+                                       d.min(), d.max() ) )
+    {
+      chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+      chart.set( "chart.width", std::to_string( 80 + num_buckets * 20 ) );
+      os << chart.to_target_div();
+      p.sim->add_chart_data( chart );
+    }
+
+    os << "<table class=\"sc\">\n"
+       << "<tr>\n"
+       << "<th colspan=\"5\">Statistics</th>\n"
+       << "</tr>\n"
+       << "<tr>\n"
+       << "<th>Minimum</th>\n"
+       << "<th>5<sup>th</sup> percentile</th>\n"
+       << "<th>Mean / Median</th>\n"
+       << "<th>75<sup>th</sup> percentile</th>\n"
+       << "<th>95<sup>th</sup> percentile</th>\n"
+       << "<th>Maximum</th>\n"
+       << "</tr>\n";
+
+    os << "<tr>\n";
+    os.printf( "<td class=\"right\">%.3f</td>", d.min() );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .05 ) );
+    os.printf( "<td class=\"right\">%.3f / %.3f</td>", d.mean(), d.percentile( .5 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .75 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .95 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.max() );
+    os << "</tr>\n";
+    os << "</table>\n";
+  }
+
+  void lesser_ghoul_charts( report::sc_html_stream& os )
   {
     if ( p.specialization() != DEATH_KNIGHT_UNHOLY )
       return;
@@ -15678,6 +15735,7 @@ public:
 
     os << lesser_ghoul_sources.to_target_div();
     p.sim->add_chart_data( lesser_ghoul_sources );
+    lesser_ghoul_duration_chart( os );
 
     os << "</div>\n"
           "</div>\n";
@@ -15692,7 +15750,7 @@ public:
 
       html_rp_waste( os );
       putrefy_ghoul_remains_chart( os );
-      lesser_ghoul_piechart( os );
+      lesser_ghoul_charts( os );
     }
   }
 
