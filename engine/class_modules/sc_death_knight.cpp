@@ -15588,11 +15588,14 @@ public:
     if ( !p.talent.unholy.putrefy.ok() )
       return;
 
+    auto& d = *p.sample_data.putrefied_ghoul_remains;
+    if ( d.count() == 0 )
+      return;
+
     os << "<div class=\"player-section custom_section\">\n"
           "<h3 class=\"toggle open\">Putrefy</h3>\n"
           "<div class=\"toggle-content\">\n";
 
-    auto& d         = *p.sample_data.putrefied_ghoul_remains;
     int num_buckets = std::min( 30, static_cast<int>( 2 * ( d.max() - d.min() ) ) + 1 );
     d.create_histogram( num_buckets );
 
