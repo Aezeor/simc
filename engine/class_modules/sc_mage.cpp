@@ -1440,6 +1440,7 @@ struct mage_spell_t : public spell_t
   {
     bool clearcasting = false;
     bool from_the_ashes = false;
+    bool frostfire_empowerment = false;
     bool ignite = false;
     bool molten_chill_ignite = false;
     bool touch_of_the_magi = true;
@@ -1726,8 +1727,7 @@ public:
       }
     }
 
-    // TODO: Check if the trigger condition is accurate
-    if ( !background && school == SCHOOL_FROSTFIRE && rng().roll( p()->talents.frostfire_empowerment->effectN( 3 ).percent() ) )
+    if ( triggers.frostfire_empowerment && rng().roll( p()->talents.frostfire_empowerment->effectN( 3 ).percent() ) )
       make_event( *sim, [ this ] { p()->buffs.frostfire_empowerment->trigger(); } );
   }
 
@@ -3332,7 +3332,7 @@ struct fireball_t final : public fire_mage_spell_t
       enable_calculate_on_impact( 468655 );
     affected_by.overflowing_energy = true;
     triggers.hot_streak = TT_ALL_TARGETS;
-    triggers.ignite = triggers.from_the_ashes = true;
+    triggers.ignite = triggers.from_the_ashes = triggers.frostfire_empowerment = true;
 
     if ( p->talents.master_of_flame.ok() )
       master_of_flame_mult *= 1.0 + p->find_spell( 1217750 )->effectN( 1 ).percent();
@@ -3540,6 +3540,7 @@ struct flurry_t final : public frost_mage_spell_t
   {
     parse_options( options_str );
     may_miss = false;
+    triggers.frostfire_empowerment = true; // Doesn't seem to need Heat Sink
 
     add_child( flurry_bolt );
     if ( p->action.glacial_assault )
@@ -3584,6 +3585,7 @@ struct frostbolt_t final : public frost_mage_spell_t
     parse_options( options_str );
     enable_calculate_on_impact( frostfire ? 468655 : 228597 );
     affected_by.overflowing_energy = true;
+    triggers.frostfire_empowerment = true;
 
     fof_chance = p->talents.fingers_of_frost->effectN( 1 ).percent();
     bf_chance = p->talents.brain_freeze->effectN( 1 ).percent();
@@ -4005,7 +4007,7 @@ struct fire_blast_t final : public fire_mage_spell_t
   {
     parse_options( options_str );
     triggers.hot_streak = TT_ALL_TARGETS;
-    triggers.ignite = triggers.from_the_ashes = true;
+    triggers.ignite = triggers.from_the_ashes = triggers.frostfire_empowerment = true;
 
     if ( p->talents.fire_blast.ok() )
     {
