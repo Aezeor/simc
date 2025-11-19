@@ -326,6 +326,9 @@ public:
     proc_t* brain_freeze;
     proc_t* brain_freeze_splinterstorm;
     proc_t* fingers_of_frost;
+
+    // TODO: Use something nicer for this
+    std::array<proc_t*, 6> shatter;
   } procs;
 
   struct accumulated_rngs_t
@@ -6096,6 +6099,9 @@ void mage_t::init_procs()
       procs.brain_freeze               = get_proc( "Brain Freeze" );
       procs.brain_freeze_splinterstorm = get_proc( "Brain Freeze from Splinterstorm" );
       procs.fingers_of_frost           = get_proc( "Fingers of Frost" );
+
+      for ( int i = 0; i < std::size( procs.shatter ); i++ )
+        procs.shatter[ i ] = get_proc( fmt::format( "Shatter ({} stacks)", i + 1 ) );
       break;
     default:
       break;
@@ -6602,6 +6608,9 @@ int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consump
     hof_chance += consume_stacks * 0.1 * talents.hand_of_frost_2->effectN( 1 ).percent();
     if ( hof && rng().roll( hof_chance ) )
       hof->execute_on_target( target );
+
+    assert( shatter_stacks <= std::size( procs.shatter ) );
+    procs.shatter[ shatter_stacks - 1 ]->occur();
   }
 
   if ( debuff )
