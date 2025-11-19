@@ -3140,6 +3140,8 @@ struct comet_storm_projectile_t final : public frost_mage_spell_t
   {
     aoe = -1;
     background = proc = true;
+    if ( p->talents.elemental_conduit.ok() )
+      triggers.ignite = true;
   }
 
   void impact( action_state_t* s ) override
@@ -3767,6 +3769,8 @@ struct duality_pyroblast_t final : public mage_spell_t
   {
     // TODO: This might actually be consuming mana
     background = proc = true;
+    if ( p->talents.elemental_conduit.ok() )
+      triggers.molten_chill_ignite = true;
   }
 };
 
@@ -4095,6 +4099,8 @@ struct meteor_impact_t final : public fire_mage_spell_t
     aoe = -1;
     reduced_aoe_targets = 8;
     background = proc = triggers.ignite = true;
+    if ( p->talents.elemental_conduit.ok() )
+      triggers.molten_chill_ignite = true;
 
     // With Deep Impact, Meteor deals extra damage to the target closest to the impact point.
     // For simplicity, we assume that will be the main target.
@@ -4244,6 +4250,8 @@ struct duality_glacial_spike_t final : public mage_spell_t
   {
     enable_calculate_on_impact( 1236211 );
     background = proc = true;
+    if ( p->talents.elemental_conduit.ok() )
+      triggers.ignite = true;
   }
 };
 
