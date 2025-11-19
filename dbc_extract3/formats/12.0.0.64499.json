@@ -1852,12 +1852,11 @@
   "SpellTargetRestrictions": {
     "parent": "SpellName",
     "fields": [
-      { "data_type": "b", "field": "unk_5" },
+      { "data_type": "h", "field": "difficulty_id" },
       { "data_type": "f", "field": "cone" },
       { "data_type": "b", "field": "max_affected_targets" },
       { "data_type": "i", "field": "max_target_level" },
       { "data_type": "h", "field": "unk_4" },
-
       { "data_type": "I", "field": "flags" },
       { "data_type": "f", "field": "width" }
     ]
