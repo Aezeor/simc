@@ -157,6 +157,7 @@ public:
   {
     action_t* arcane_assault;
     action_t* arcane_echo;
+    action_t* flash_freezeburn;
     action_t* frostfire_empowerment;
     action_t* glacial_assault;
     action_t* hand_of_frost;
@@ -3822,6 +3823,9 @@ struct glacial_spike_t final : public frost_mage_spell_t
 
     if ( duality_pyroblast )
       duality_pyroblast->execute_on_target( target );
+
+    if ( p()->talents.flash_freezeburn.ok() )
+      p()->buffs.frostfire_empowerment->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -3830,6 +3834,9 @@ struct glacial_spike_t final : public frost_mage_spell_t
 
     if ( s->result == RESULT_CRIT && p()->talents.frostbite.ok() )
       p()->trigger_freezing( s->target, as<int>( p()->talents.frostbite->effectN( 1 ).base_value() ) );
+
+    if ( result_is_hit( s->result ) && p()->action.flash_freezeburn )
+      p()->action.flash_freezeburn->execute_on_target( s->target, p()->talents.flash_freezeburn->effectN( 2 ).percent() * s->result_total );
   }
 
   bool ready() override
@@ -4188,6 +4195,9 @@ struct meteor_t final : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
 
+    if ( !background && p()->talents.flash_freezeburn.ok() )
+      p()->buffs.frostfire_empowerment->trigger();
+
     if ( p()->action.isothermic_comet_storm )
       p()->action.isothermic_comet_storm->execute_on_target( target );
   }
@@ -4265,6 +4275,15 @@ struct duality_glacial_spike_t final : public mage_spell_t
     background = proc = true;
     if ( p->talents.elemental_conduit.ok() )
       triggers.ignite = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    mage_spell_t::impact( s );
+
+    // TODO: This is probably a bug
+    if ( result_is_hit( s->result ) && p()->action.flash_freezeburn )
+      p()->action.flash_freezeburn->execute_on_target( s->target, p()->talents.flash_freezeburn->effectN( 2 ).percent() * s->result_total );
   }
 };
 
@@ -4692,6 +4711,37 @@ struct frostfire_empowerment_t final : public spell_t
     mage_t* p = debug_cast<mage_t*>( player );
     if ( result_is_hit( s->result ) )
       p->trigger_freezing( s->target, as<int>( p->talents.frostfire_empowerment->effectN( 4 ).base_value() ) );
+  }
+};
+
+struct flash_freezeburn_t final : public spell_t
+{
+  flash_freezeburn_t( std::string_view n, mage_t* p ) :
+    spell_t( n, p, p->find_spell( 1278079 ) )
+  {
+    background = proc = true;
+    base_dd_min = base_dd_max = 1.0;
+    // TODO: Usually hits one fewer target
+    // It's possible it picks 5 random targets and if one of them happens to be
+    // the main target, it simply skips it. See also: Splintering Ray
+    aoe--;
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    spell_t::available_targets( tl );
+
+    range::erase_remove( tl, target );
+
+    return tl.size();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+      debug_cast<mage_t*>( player )->trigger_freezing( s->target, 1 );
   }
 };
 
@@ -5288,6 +5338,9 @@ void mage_t::create_actions()
   if ( talents.frostfire_empowerment.ok() )
     action.frostfire_empowerment = get_action<frostfire_empowerment_t>( "frostfire_empowerment", this );
 
+  if ( talents.flash_freezeburn.ok() )
+    action.flash_freezeburn = get_action<flash_freezeburn_t>( "flash_freezeburn", this );
+
   if ( talents.isothermic_core.ok() )
   {
     if ( specialization() == MAGE_FIRE )
@@ -5784,6 +5837,10 @@ void mage_t::init_spells()
   // TODO: The effects aren't properly disabled in game, so both CmS and Meteor get 44% extra damage
   // register_passive_effect_mask( talents.blast_radius,
   //   specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 1, 2 ) : effect_mask_t( true ).disable( 3, 4 ) );
+
+  // TODO: The effects aren't properly disabled in game, Fire gets extra GS damage and Frost gets extra Meteor damage
+  // register_passive_effect_mask( talents.flash_freezeburn,
+  //   specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 1 ) : effect_mask_t( true ).disable( 4, 5 ) );
 
   // TODO: Remove these when Midnight releases
   register_passive_effect_mask( sets->set( HERO_FROSTFIRE, TWW3, B2 ),
