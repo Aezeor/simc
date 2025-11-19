@@ -366,7 +366,6 @@ public:
     bool fingers_of_frost_active;
     bool had_low_mana;
     bool trigger_ff_empowerment;
-    bool trigger_flash_freezeburn;
     bool trigger_glorious_incandescence;
     bool gained_initial_clearcasting; // Used to prevent queueing Arcane Missiles immediately after gaining the first stack Clearclasting.
     int embedded_splinters;
@@ -800,7 +799,6 @@ public:
   void trigger_mana_cascade();
   void trigger_merged_buff( buff_t* buff, bool trigger );
   void trigger_meteor_burn( action_t* action, player_t* target, timespan_t pulse_time, timespan_t duration );
-  void trigger_flash_freezeburn( bool ffb = false );
   void trigger_spellfire_spheres();
   void consume_burden_of_power();
   void trigger_splinter( player_t* target, int count = -1 );
@@ -1726,6 +1724,10 @@ public:
           p()->state.clearcasting_blp_count = 0;
       }
     }
+
+    // TODO: Check if the trigger condition is accurate
+    if ( !background && school == SCHOOL_FROSTFIRE && rng().roll( p()->talents.frostfire_empowerment->effectN( 3 ).percent() ) )
+      make_event( *sim, [ this ] { p()->buffs.frostfire_empowerment->trigger(); } );
   }
 
   void impact( action_state_t* s ) override
@@ -3124,7 +3126,6 @@ struct combustion_t final : public fire_mage_spell_t
     p()->buffs.combustion->trigger( combustion_duration );
     p()->buffs.wildfire->trigger();
     p()->cooldowns.fire_blast->reset( false, as<int>( p()->talents.spontaneous_combustion->effectN( 1 ).base_value() ) );
-    p()->trigger_flash_freezeburn();
     if ( p()->pets.arcane_phoenix )
       p()->pets.arcane_phoenix->summon( combustion_duration ); // TODO: The extra random pet duration can sometimes result in an extra cast.
   }
@@ -3357,17 +3358,12 @@ struct fireball_t final : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
 
-    if ( frostfire )
+    if ( frostfire && p()->buffs.frostfire_empowerment->check() )
     {
-      if ( p()->buffs.frostfire_empowerment->check() )
-      {
-        // Buff is decremented with a short delay, allowing two spells to benefit.
-        // TODO: Double check this later
-        make_event( *sim, 15_ms, [ this ] { p()->buffs.frostfire_empowerment->decrement(); } );
-        p()->state.trigger_ff_empowerment = true;
-      }
-
-      p()->trigger_flash_freezeburn( true );
+      // Buff is decremented with a short delay, allowing two spells to benefit.
+      // TODO: Double check this later
+      make_event( *sim, 15_ms, [ this ] { p()->buffs.frostfire_empowerment->decrement(); } );
+      p()->state.trigger_ff_empowerment = true;
     }
   }
 
@@ -3615,6 +3611,9 @@ struct frostbolt_t final : public frost_mage_spell_t
   {
     double m = frost_mage_spell_t::composite_da_multiplier( s );
 
+    // TODO: This can get consumed by a Glacial Spike that hits before FFB does.
+    // The GS benefits (and consumes) only from the extra damage, the explosion
+    // still happens on FFB hit.
     if ( frostfire && p()->state.trigger_ff_empowerment )
       m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 3 ).percent();
 
@@ -3629,17 +3628,12 @@ struct frostbolt_t final : public frost_mage_spell_t
     p()->trigger_brain_freeze( bf_chance, proc_brain_freeze );
     p()->trigger_splinter( p()->target );
 
-    if ( frostfire )
+    if ( frostfire && p()->buffs.frostfire_empowerment->check() )
     {
-      if ( p()->buffs.frostfire_empowerment->check() )
-      {
-        // Buff is decremented with a short delay, allowing two spells to benefit.
-        // TODO: Double check this later
-        make_event( *sim, 15_ms, [ this ] { p()->buffs.frostfire_empowerment->decrement(); } );
-        p()->state.trigger_ff_empowerment = true;
-      }
-
-      p()->trigger_flash_freezeburn( true );
+      // Buff is decremented with a short delay, allowing two spells to benefit.
+      // TODO: Double check this later
+      make_event( *sim, 15_ms, [ this ] { p()->buffs.frostfire_empowerment->decrement(); } );
+      p()->state.trigger_ff_empowerment = true;
     }
   }
 
@@ -4659,6 +4653,8 @@ struct frostfire_empowerment_t final : public spell_t
     background = proc = true;
     aoe = -1;
     base_dd_min = base_dd_max = 1.0;
+    // TODO: Check how it behaves wrt the excluded main target
+    reduced_aoe_targets = p->talents.frostfire_empowerment->effectN( 5 ).base_value();
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -4674,8 +4670,9 @@ struct frostfire_empowerment_t final : public spell_t
   {
     spell_t::impact( s );
 
+    mage_t* p = debug_cast<mage_t*>( player );
     if ( result_is_hit( s->result ) )
-      debug_cast<mage_t*>( player )->trigger_freezing( s->target, 1 );
+      p->trigger_freezing( s->target, as<int>( p->talents.frostfire_empowerment->effectN( 4 ).base_value() ) );
   }
 };
 
@@ -5269,7 +5266,7 @@ void mage_t::create_actions()
   if ( talents.hand_of_frost_1.ok() )
     action.hand_of_frost = get_action<hand_of_frost_t>( "hand_of_frost", this );
 
-  if ( talents.frostfire_empowerment.ok() || talents.flash_freezeburn.ok() )
+  if ( talents.frostfire_empowerment.ok() )
     action.frostfire_empowerment = get_action<frostfire_empowerment_t>( "frostfire_empowerment", this );
 
   if ( talents.isothermic_core.ok() )
@@ -5925,7 +5922,7 @@ void mage_t::create_buffs()
 
   // Frostfire
   buffs.frostfire_empowerment = make_buff( this, "frostfire_empowerment", find_spell( 431177 ) )
-                                  ->set_trigger_spell( talents.frostfire_empowerment );
+                                  ->set_chance( talents.frostfire_empowerment.ok() );
 
 
   // Spellslinger
@@ -5980,10 +5977,6 @@ void mage_t::create_buffs()
 
   // Buffs that use stack_react or may_react need to be reactable regardless of what the APL does
   buffs.heating_up->reactable = true;
-
-  // Frostfire Empowerment can be activated through Flash Freezeburn and doesn't need the previous talent
-  if ( talents.flash_freezeburn.ok() )
-    buffs.frostfire_empowerment->default_chance = -1.0;
 
   // Hyperthermia can be activated through Memory of Al'ar and doesn't need to be talented
   // TODO: adjust this
@@ -6617,42 +6610,6 @@ void mage_t::trigger_meteor_burn( action_t* action, player_t* target, timespan_t
   e->target = target;
   e->pulse_time = pulse_time;
   e->expiration = expiration;
-}
-
-void mage_t::trigger_flash_freezeburn( bool ffb )
-{
-  if ( !talents.flash_freezeburn.ok() )
-    return;
-
-  bool schedule_event = false;
-  // Attempt to apply a "banked" proc
-  if ( ffb )
-  {
-    if ( state.trigger_flash_freezeburn )
-    {
-      state.trigger_flash_freezeburn = false;
-      schedule_event = true;
-    }
-  }
-  else
-  {
-    // If the player is currently casting a Frostfire Bolt, the proc isn't
-    // applied immediately and is instead "banked," to be applied when
-    // a Frostfire Bolt executes (generally the one that's currently being
-    // cast, but could be a different one if the player is interrupted).
-    // TODO: You can also do this with Icy Veins + FFB macro, implying there's
-    // some small delay on this trigger as well.
-    if ( executing && executing->id == 431044 )
-      state.trigger_flash_freezeburn = true;
-    else
-      schedule_event = true;
-  }
-
-  if ( schedule_event )
-    // The buff is applied with a small delay, which kinda defeats the
-    // purpose of this whole mechanic.
-    // TODO: double check this later
-    make_event( *sim, 15_ms, [ this ] { buffs.frostfire_empowerment->execute(); } );
 }
 
 void mage_t::trigger_spellfire_spheres()
