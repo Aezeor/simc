@@ -5045,8 +5045,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     // Vengeance Greater Demon soul: 6 yards
     // Havoc Lesser and Greater souls: 8 yards
     // Havoc Greater Demon soul: 10 yards
-    // TODO: 11.2 Empowered soul for both specs: 6 yards
-    // TOCHECK: Devourer souls (currently default to previous 6 yard)
+    // Devourer Lesser and Greater souls: 4 yards
     double dtm;
     if ( frag->is_type( soul_fragment::EMPOWERED_DEMON ) )
     {
@@ -5056,6 +5055,9 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     {
       switch ( p()->specialization() )
       {
+        case DEMON_HUNTER_DEVOURER:
+          dtm = std::max( 0.0, frag->get_distance( p() ) - 4.0 );
+          break;
         case DEMON_HUNTER_HAVOC:
           dtm = std::max( 0.0, frag->get_distance( p() ) - 8.0 );
           break;
