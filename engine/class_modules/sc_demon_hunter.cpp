@@ -8811,6 +8811,13 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     demon_hunter_buff_t::extend_duration_or_trigger( duration, player );
 
     p()->buff.inner_demon->trigger();
+
+    if ( p()->specialization() == DEMON_HUNTER_HAVOC && p()->talent.scarred.volatile_instinct->ok() )
+    {
+      p()->trigger_demonsurge(
+          demonsurge_ability::ENTER_META,
+          timespan_t::from_millis( p()->hero_spec.demonsurge_meta_trigger->effectN( 1 ).misc_value1() ), false );
+    }
   }
 
   void start( int stacks, double value, timespan_t duration ) override
@@ -8846,19 +8853,9 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       p()->buff.enduring_torment->expire();
     }
 
-    if ( p()->talent.scarred.volatile_instinct->ok() )
+    if ( p()->specialization() == DEMON_HUNTER_DEVOURER && p()->talent.scarred.volatile_instinct->ok() )
     {
-      switch ( p()->specialization() )
-      {
-        case DEMON_HUNTER_DEVOURER:
-          p()->buff.volatile_instinct->trigger();
-          break;
-        case DEMON_HUNTER_HAVOC:
-          p()->trigger_demonsurge( demonsurge_ability::ENTER_META, false );
-          break;
-        default:
-          break;
-      }
+      p()->buff.volatile_instinct->trigger();
     }
   }
 
