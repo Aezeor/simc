@@ -4257,10 +4257,7 @@ struct pyroblast_pyromaniac_t final : public fire_mage_spell_t
     background = proc = true;
     triggers.ignite = true;
     if ( p->talents.duality.ok() )
-    {
       duality_gs = get_action<duality_glacial_spike_t>( "duality_glacial_spike", p );
-      add_child( duality_gs );
-    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
