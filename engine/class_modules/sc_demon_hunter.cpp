@@ -980,6 +980,7 @@ public:
     cooldown_t* wounded_quarry_trigger_icd;
 
     // Scarred
+    cooldown_t* predators_wake;
   } cooldown;
 
   // Gains
@@ -4869,7 +4870,7 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
         if ( p()->talent.scarred.violent_transformation->ok() )
         {
           p()->cooldown.voidblade->reset( true );
-          p()->cooldown.the_hunt->reset( true );
+          p()->cooldown.predators_wake->reset( true );
         }
         break;
       case DEMON_HUNTER_HAVOC:
@@ -11371,6 +11372,7 @@ void demon_hunter_t::create_cooldowns()
   cooldown.wounded_quarry_trigger_icd        = get_cooldown( "wounded_quarry_trigger_icd" );
 
   // Scarred
+  cooldown.predators_wake = get_cooldown( "predators_wake" );
 }
 
 // demon_hunter_t::create_gains =============================================
