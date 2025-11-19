@@ -16199,6 +16199,25 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1245584 | Target: Self (1)
 Description      : A fragment of your enemy's soul. Walking into the soul or casting Reap will collect it, granting you $1223628s1 Fury and healing you for $1266301s1% of your maximum health.
 
+Name             : Consume Soul (id=1223423) [Spell Family (107), Hidden] 
+Class            : Demon Hunter
+School           : Shadow
+Spell Type       : Magic
+Range            : 100 yards
+Velocity         : 40 yards/sec
+Min Travel Time  : 0.1 seconds
+Labels           : 16: Class Spells
+                 : 66: Demon Hunter Spells
+                 : 292
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Not an Action (92), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+Effects          :
+#1 (id=1211383)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Area (87)
+#2 (id=1211384)  : Trigger Missiles (32): Consume Soul
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1223628 | Target: Self (1)
+#3 (id=1278654)  : Trigger Missiles (32): Consume Soul
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1266301 | Target: Self (1)
+
 Name             : Consume Soul (id=1223628) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Shadow
@@ -16208,6 +16227,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 5263
+Triggered By     : Consume Soul (1223423)
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Can't Crit (93), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1211766)  : Energize Power (30)
@@ -18091,13 +18111,14 @@ Lock Appearance:
 
 |cnGREEN_FONT_COLOR:<Right Click to toggle lock appearance>|r
 
-Name             : Clear Current Transmogrifications (id=1247917) 
+Name             : Clear Current Transmogrifications (id=1247917) [Hidden] 
+Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Allow While Riding Vehicle (204), Skip Is Known Check (282)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Allow While Riding Vehicle (204), Skip Is Known Check (282)
 Effects          :
 #1 (id=1250344)  : Unknown(347)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -19402,6 +19423,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
 Affecting Spells : Demon Hunter Vengeance 10.1 Class Set 2pc (405508 effect#1), Fiery Resolve (425653 effect#1), Thrill of the Fight (442688 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2)
+Triggered By     : Consume Soul (1223423)
 Family Flags     : 20
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Can't Crit (93), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Ignore Healing Modifiers (219), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
@@ -20064,12 +20086,13 @@ Effects          :
 Description      : $@spelldesc1272453
 Tooltip          : Your next Voidsurge repeats.
 
-Name             : Clear Transmog Outfit (id=1272615) 
+Name             : Clear Transmog Outfit (id=1272615) [Hidden] 
+Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Haranir, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Allow While Riding Vehicle (204), Skip Is Known Check (282)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Allow While Riding Vehicle (204), Skip Is Known Check (282)
 Effects          :
 #1 (id=1285872)  : Unknown(347)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)

@@ -2937,7 +2937,7 @@ Demon Hunter
 1223157  Voidstep
 1223171  Guile
 1223412  Soul Fragment
-1223423 *Consume Soul
+1223423  Consume Soul
 1223445 *Shattered Souls
 1223448 *Shattered Souls
 1223450 *Shattered Souls
@@ -18217,7 +18217,7 @@ Rogue
 382503   Quick Decisions
 382504   Dark Brew
 382505   The First Dance
-382506   Replicating Shadows [NYI]
+382506   Replicating Shadows
 382507   Shrouded in Darkness
 382508   Planned Execution
 382509  *Stiletto Staccato
