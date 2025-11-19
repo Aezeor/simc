@@ -3566,7 +3566,8 @@ struct flurry_t final : public frost_mage_spell_t
 
     p()->state.brain_freeze_active = p()->buffs.brain_freeze->up();
     p()->buffs.brain_freeze->decrement();
-    p()->buffs.thermal_void->trigger();
+    if ( p()->state.brain_freeze_active )
+      p()->buffs.thermal_void->trigger();
     p()->trigger_splinter( target );
   }
 
