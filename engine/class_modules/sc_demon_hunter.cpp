@@ -652,6 +652,7 @@ public:
       player_talent_t state_of_matter;   // No Implementation
       player_talent_t mass_acceleration;
       player_talent_t doomsayer;
+      player_talent_t harness_the_cosmos;
       player_talent_t celestial_echoes;
 
       player_talent_t final_hour;
@@ -757,6 +758,7 @@ public:
     const spell_data_t* eradicate;
     const spell_data_t* eradicate_buff;
     const spell_data_t* eradicate_damage;
+    const spell_data_t* eradicate_damage_meta;
     const spell_data_t* void_ray_tick;
     const spell_data_t* void_ray_tick_meta;
     const spell_data_t* moment_of_craving_buff;
@@ -5928,18 +5930,90 @@ struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
   }
 };
 
-struct eradicate_t : public reap_base_t
+struct eradicate_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<demon_hunter_spell_t>>
 {
-  eradicate_t( demon_hunter_t* p, util::string_view o )
-    : reap_base_t( "eradicate", p, p->spec.eradicate, o, p->spec.eradicate_damage, p->spec.reap_energize )
+  struct eradicate_damage_t : public burning_blades_trigger_t<demon_hunter_spell_t>
   {
-    damage_action->aoe                 = -1;
+    eradicate_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : base_t( n, p, s, "" )
+    {
+      background = dual = true;
+    }
+  };
+
+  eradicate_damage_t* damage_action;
+  eradicate_damage_t* damage_action_meta;
+
+  eradicate_t( demon_hunter_t* p, util::string_view o )
+    : base_t( "eradicate", p, p->spec.eradicate, o ), damage_action( nullptr ), damage_action_meta( nullptr )
+  {
+    cooldown = p->cooldown.reap;
+
+    damage_action      = p->get_background_action<eradicate_damage_t>( "eradicate_damage", p->spec.eradicate_damage );
+    damage_action->aoe = -1;
     damage_action->reduced_aoe_targets = p->spec.eradicate->effectN( 1 ).base_value();
+    add_child( damage_action );
+
+    if ( p->talent.devourer.void_metamorphosis->ok() )
+    {
+      damage_action_meta =
+          p->get_background_action<eradicate_damage_t>( "eradicate_damage_meta", p->spec.eradicate_damage_meta );
+      damage_action_meta->aoe                 = -1;
+      damage_action_meta->reduced_aoe_targets = p->spec.eradicate->effectN( 1 ).base_value();
+      add_child( damage_action_meta );
+    }
+
+    if ( p->talent.devourer.scythes_embrace->ok() )
+    {
+      execute_energize_action =
+          p->get_background_action<demon_hunter_energize_t>( "eradicate_energize", p->spec.reap_energize );
+    }
+  }
+
+  virtual unsigned int souls_to_consume() const
+  {
+    unsigned int souls = as<unsigned int>( p()->spec.shattered_souls->effectN( 2 ).base_value() );
+    if ( p()->buff.moment_of_craving->up() )
+    {
+      souls += as<unsigned int>( p()->buff.moment_of_craving->check_value() );
+    }
+    return souls;
+  }
+
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
+  {
+    if ( util::str_compare_ci( name, "max_souls_consumed" ) )
+      return make_fn_expr( name, [ this ]() { return souls_to_consume(); } );
+
+    if ( util::str_compare_ci( name, "souls_consumed" ) )
+      return make_fn_expr( name, [ this ]() {
+        return std::min( p()->get_active_soul_fragments( soul_fragment::ANY ), souls_to_consume() );
+      } );
+
+    return base_t::create_expression( name );
   }
 
   void execute() override
   {
-    reap_base_t::execute();
+    p()->buff.reap->trigger();
+    base_t::execute();
+
+    unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume() );
+
+    auto damage = p()->buff.metamorphosis->up() ? damage_action_meta : damage_action;
+
+    damage->set_target( target );
+    action_state_t* damage_state = damage->get_state();
+    damage_state->target         = target;
+    damage->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
+
+    if ( p()->talent.devourer.soulshaper->ok() )
+    {
+      damage_state->da_multiplier *= 1.0 + fragments_consumed * p()->talent.devourer.soulshaper->effectN( 1 ).percent();
+    }
+
+    damage->schedule_execute( damage_state );
+
+    p()->buff.moment_of_craving->expire();
 
     p()->buff.eradicate->expire();
   }
@@ -5951,7 +6025,7 @@ struct eradicate_t : public reap_base_t
       return false;
     }
 
-    return reap_base_t::action_ready();
+    return base_t::action_ready();
   }
 };
 
@@ -10624,11 +10698,12 @@ void demon_hunter_t::init_spells()
   talent.annihilator.catastrophe   = find_talent_spell( talent_tree::HERO, "Catastrophe" );
   talent.annihilator.phase_shift   = find_talent_spell( talent_tree::HERO, "Phase Shift" );
 
-  talent.annihilator.path_to_oblivion  = find_talent_spell( talent_tree::HERO, "Path to Oblivion" );
-  talent.annihilator.state_of_matter   = find_talent_spell( talent_tree::HERO, "State of Matter" );
-  talent.annihilator.mass_acceleration = find_talent_spell( talent_tree::HERO, "Mass Acceleration" );
-  talent.annihilator.doomsayer         = find_talent_spell( talent_tree::HERO, "Doomsayer" );
-  talent.annihilator.celestial_echoes  = find_talent_spell( talent_tree::HERO, "Celestial Echoes" );
+  talent.annihilator.path_to_oblivion   = find_talent_spell( talent_tree::HERO, "Path to Oblivion" );
+  talent.annihilator.state_of_matter    = find_talent_spell( talent_tree::HERO, "State of Matter" );
+  talent.annihilator.mass_acceleration  = find_talent_spell( talent_tree::HERO, "Mass Acceleration" );
+  talent.annihilator.doomsayer          = find_talent_spell( talent_tree::HERO, "Doomsayer" );
+  talent.annihilator.harness_the_cosmos = find_talent_spell( talent_tree::HERO, "Harness the Cosmos" );
+  talent.annihilator.celestial_echoes   = find_talent_spell( talent_tree::HERO, "Celestial Echoes" );
 
   talent.annihilator.final_hour         = find_talent_spell( talent_tree::HERO, "Final Hour" );
   talent.annihilator.meteoric_fall      = find_talent_spell( talent_tree::HERO, "Meteoric Fall" );
@@ -10676,6 +10751,7 @@ void demon_hunter_t::init_spells()
   spec.void_metamorphosis_stack = talent_spell_lookup( talent.devourer.void_metamorphosis, 1225789 );
   spec.eradicate                = talent_spell_lookup( talent.devourer.eradicate, 1225826 );
   spec.eradicate_damage         = talent_spell_lookup( talent.devourer.eradicate, 1225827 );
+  spec.eradicate_damage_meta    = talent_spell_lookup( talent.devourer.eradicate, 1279200 );
   spec.eradicate_buff           = talent_spell_lookup( talent.devourer.eradicate, 1239524 );
   spec.void_ray_tick            = talent_spell_lookup( talent.devourer.void_ray, 1213649 );
   spec.void_ray_tick_meta       = talent_spell_lookup( talent.devourer.void_ray, 1214595 );
