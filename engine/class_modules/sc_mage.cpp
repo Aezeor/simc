@@ -161,10 +161,10 @@ public:
     action_t* glacial_assault;
     action_t* hand_of_frost;
     action_t* ignite;
-    action_t* ignite_2pc;
     action_t* isothermic_comet_storm;
     action_t* isothermic_meteor;
     action_t* meteorite;
+    action_t* molten_chill_ignite;
     action_t* pet_freeze;
     action_t* pet_water_jet;
     action_t* splinter;
@@ -256,13 +256,6 @@ public:
     // Shared
     buff_t* brainstorm;
     buff_t* overflowing_energy;
-
-
-    // Set Bonuses
-    buff_t* spherical_sorcery;
-
-    buff_t* flame_quills;
-    buff_t* lesser_time_warp;
   } buffs;
 
   // Cooldowns
@@ -1178,9 +1171,6 @@ struct arcane_phoenix_pet_t final : public mage_pet_t
     {
       o()->buffs.arcane_soul->trigger( buff_duration );
     }
-
-    o()->buffs.flame_quills->trigger();
-    o()->buffs.lesser_time_warp->trigger();
   };
 
   void create_actions() override;
@@ -1452,7 +1442,7 @@ struct mage_spell_t : public spell_t
     bool clearcasting = false;
     bool from_the_ashes = false;
     bool ignite = false;
-    bool ignite_2pc = false; // Frostfire Frost Ignite
+    bool molten_chill_ignite = false;
     bool touch_of_the_magi = true;
 
     target_trigger_type_e hot_streak = TT_NONE;
@@ -1480,6 +1470,13 @@ public:
     // TODO: This could be a bit more robust; also the on-impact version
     affected_by.freeze_and_shatter_1 = data().affected_by( p->spec.freeze_and_shatter->effectN( 1 ) );
     affected_by.freeze_and_shatter_2 = data().affected_by( p->spec.freeze_and_shatter->effectN( 2 ) );
+
+    if ( p->talents.molten_chill.ok() && school == SCHOOL_FROSTFIRE )
+    {
+      base_ignite_multiplier *= 1.0 + p->talents.molten_chill->effectN( 2 ).percent();
+      // TODO: Looks like Flurry applies it even without Heat Sink
+      triggers.molten_chill_ignite = true;
+    }
   }
 
   mage_t* p()
@@ -1546,12 +1543,6 @@ public:
 
     if ( affected_by.spellfire_sphere )
       m *= 1.0 + p()->buffs.spellfire_sphere->check_stack_value();
-
-    if ( affected_by.flame_quills )
-      m *= 1.0 + p()->buffs.flame_quills->check_value();
-
-    if ( affected_by.spherical_sorcery )
-      m *= 1.0 + p()->buffs.spherical_sorcery->check_value();
 
     if ( affected_by.freeze_and_shatter_1 )
       m *= 1.0 + p()->cache.mastery() * p()->spec.freeze_and_shatter->effectN( 1 ).mastery_value();
@@ -1759,8 +1750,8 @@ public:
     if ( triggers.ignite )
       trigger_ignite( s );
 
-    if ( triggers.ignite_2pc )
-      trigger_ignite_2pc( s );
+    if ( triggers.molten_chill_ignite )
+      trigger_molten_chill_ignite( s );
 
     if ( affected_by.overflowing_energy )
     {
@@ -1857,21 +1848,22 @@ public:
   }
 
   // Simplified version of trigger_ignite for the Frostfire Frost version.
-  void trigger_ignite_2pc( action_state_t* s )
+  void trigger_molten_chill_ignite( action_state_t* s )
   {
-    if ( !p()->action.ignite_2pc )
+    if ( !p()->action.molten_chill_ignite )
       return;
 
     double m = s->target_da_multiplier;
     if ( m <= 0.0 )
       return;
 
-    double amount = s->result_total / m * p()->sets->set( HERO_FROSTFIRE, TWW3, B2 )->effectN( 2 ).percent();
+    // TODO: Description says 15% (effect 1), but it seems to be doing 10% in game
+    double amount = s->result_total / m * p()->talents.molten_chill->effectN( 1 ).percent();
     if ( amount <= 0.0 )
       return;
 
     // Note that composite_ignite_multiplier could be different from 1.0. Don't apply it here.
-    residual_action::trigger( p()->action.ignite_2pc, s->target, amount );
+    residual_action::trigger( p()->action.molten_chill_ignite, s->target, amount );
   }
 
   void trigger_glorious_incandescence( player_t* t )
@@ -2381,10 +2373,10 @@ struct ignite_t final : public residual_action::residual_periodic_action_t<spell
   }
 };
 
-struct ignite_2pc_t final : public residual_action::residual_periodic_action_t<spell_t>
+struct molten_chill_ignite_t final : public residual_action::residual_periodic_action_t<spell_t>
 {
-  ignite_2pc_t( std::string_view n, mage_t* p ) :
-    residual_action_t( n, p, p->find_spell( 1236160 ) )
+  molten_chill_ignite_t( std::string_view n, mage_t* p ) :
+    residual_action_t( n, p, p->find_spell( 1262887 ) )
   {
     proc = true;
   }
@@ -3148,13 +3140,6 @@ struct comet_storm_projectile_t final : public frost_mage_spell_t
   {
     aoe = -1;
     background = proc = true;
-
-    if ( isothermic_ && p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B2 ) )
-    {
-      triggers.ignite = true;
-      const auto* set = p->sets->set( HERO_FROSTFIRE, TWW3, B2 );
-      base_ignite_multiplier = set->effectN( 1 ).percent();
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -3598,11 +3583,6 @@ struct frostbolt_t final : public frost_mage_spell_t
     parse_options( options_str );
     enable_calculate_on_impact( frostfire ? 468655 : 228597 );
     affected_by.overflowing_energy = true;
-
-    if ( frostfire && p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B2 ) )
-    {
-      triggers.ignite_2pc = true;
-    }
 
     fof_chance = p->talents.fingers_of_frost->effectN( 1 ).percent();
     bf_chance = p->talents.brain_freeze->effectN( 1 ).percent();
@@ -4121,11 +4101,6 @@ struct meteor_impact_t final : public fire_mage_spell_t
     double m = 1.0 + p->talents.deep_impact->effectN( 1 ).percent();
     base_multiplier     *= m;
     base_aoe_multiplier /= m;
-
-    if ( type == meteor_type::ISOTHERMIC && p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B2 ) )
-    {
-      triggers.ignite_2pc = true;
-    }
   }
 
   void execute() override
@@ -5317,8 +5292,8 @@ void mage_t::create_actions()
   if ( talents.glorious_incandescence.ok() )
     action.meteorite = get_action<meteorite_t>( "meteorite", this );
 
-  if ( specialization() == MAGE_FROST && sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B2 ) )
-    action.ignite_2pc = get_action<ignite_2pc_t>( "ignite_2pc", this );
+  if ( specialization() == MAGE_FROST && talents.molten_chill.ok() )
+    action.molten_chill_ignite = get_action<molten_chill_ignite_t>( "molten_chill_ignite", this );
 
   player_t::create_actions();
 }
@@ -5789,6 +5764,7 @@ void mage_t::init_spells()
   // register_passive_effect_mask( talents.blast_radius,
   //   specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 1, 2 ) : effect_mask_t( true ).disable( 3, 4 ) );
 
+  // TODO: Remove these when Midnight releases
   register_passive_effect_mask( sets->set( HERO_FROSTFIRE, TWW3, B2 ),
     specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 5, 6 ) : effect_mask_t( true ).disable( 3, 4 ) );
 
@@ -5995,20 +5971,6 @@ void mage_t::create_buffs()
   buffs.overflowing_energy = make_buff( this, "overflowing_energy", find_spell( 394195 ) )
                                ->set_default_value_from_effect( 1 )
                                ->set_chance( talents.overflowing_energy.ok() );
-
-
-  // Set Bonuses
-  buffs.spherical_sorcery = make_buff( this, "spherical_sorcery", find_spell( 1247525 ) )
-                              ->set_default_value_from_effect( 1 )
-                              ->set_chance( sets->has_set_bonus( HERO_SPELLSLINGER, TWW3, B4 ) );
-
-  buffs.flame_quills     = make_buff( this, "flame_quills", find_spell( 1236145 ) )
-                             ->set_default_value_from_effect( specialization() == MAGE_FIRE ? 2 : 1 )
-                             ->set_chance( sets->has_set_bonus( HERO_SUNFURY, TWW3, B4 ) );
-  buffs.lesser_time_warp = make_buff( this, "lesser_time_warp", find_spell( 1236231 ) )
-                             ->set_default_value_from_effect( specialization() == MAGE_FIRE ? 2 : 1 )
-                             ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                             ->set_chance( sets->has_set_bonus( HERO_SUNFURY, TWW3, B4 ) );
 
 
   // Buffs that use stack_react or may_react need to be reactable regardless of what the APL does
