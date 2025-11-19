@@ -3619,6 +3619,8 @@ struct frostbolt_t final : public frost_mage_spell_t
     // TODO: This can get consumed by a Glacial Spike that hits before FFB does.
     // The GS benefits (and consumes) only from the extra damage, the explosion
     // still happens on FFB hit.
+    // TODO: Seems to be doing +100% damage rather than the +60% mentioned in desc
+    // Possibly talent's effect 1? Same goes for the Fire version
     if ( frostfire && p()->state.trigger_ff_empowerment )
       m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 3 ).percent();
 
