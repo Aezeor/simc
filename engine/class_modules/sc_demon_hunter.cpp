@@ -911,6 +911,7 @@ public:
     const spell_data_t* pierce_the_veil;
     const spell_data_t* reapers_toll;
     const spell_data_t* volatile_instinct;
+    const spell_data_t* demonsurge_meta_trigger;
   } hero_spec;
 
   // Set Bonus effects
@@ -10937,6 +10938,8 @@ void demon_hunter_t::init_spells()
   hero_spec.reapers_toll    = spec_talent_spell_lookup( DEMON_HUNTER_DEVOURER, talent.scarred.demonsurge, 1245470 );
   hero_spec.volatile_instinct =
       spec_talent_spell_lookup( DEMON_HUNTER_DEVOURER, talent.scarred.volatile_instinct, 1272462 );
+  hero_spec.demonsurge_meta_trigger =
+      spec_talent_spell_lookup( DEMON_HUNTER_HAVOC, talent.scarred.volatile_instinct, 1238696 );
 
   switch ( specialization() )
   {
@@ -10992,6 +10995,7 @@ void demon_hunter_t::init_spells()
 
   // TODO: Check if this still behaves as described in `composite_player_critical_damage_multiplier`
   deregister_passive_spell( talent.havoc.know_your_enemy );
+  deregister_passive_spell( talent.havoc.tactical_retreat );
 
   parse_all_class_passives();
   parse_all_passive_talents();
@@ -12220,8 +12224,13 @@ void demon_hunter_t::trigger_demonic() const
 
 void demon_hunter_t::trigger_demonsurge( const demonsurge_ability ability, const bool check_buff )
 {
-  trigger_demonsurge( ability, timespan_t::from_millis( hero_spec.demonsurge_trigger->effectN( 1 ).misc_value1() ),
-                      check_buff );
+  timespan_t delay = timespan_t::from_millis( hero_spec.demonsurge_trigger->effectN( 1 ).misc_value1() );
+  if ( ability == demonsurge_ability::DEATH_SWEEP )
+  {
+    delay = timespan_t::from_millis( hero_spec.demonsurge_meta_trigger->effectN( 1 ).misc_value1() );
+  }
+
+  trigger_demonsurge( ability, delay, check_buff );
 }
 
 void demon_hunter_t::trigger_demonsurge( const demonsurge_ability ability, timespan_t delay, const bool check_buff )
