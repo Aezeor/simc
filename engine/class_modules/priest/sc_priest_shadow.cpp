@@ -1413,14 +1413,11 @@ struct shadow_weaving_t final : public priest_spell_t
 struct tentacle_slam_damage_t final : public priest_spell_t
 {
   double parent_targets = 1;
-  propagate_const<shadow_word_madness_t*> child_swm;
 
-  tentacle_slam_damage_t( util::string_view n, priest_t& p, const spell_data_t* s )
-    : priest_spell_t( n, p, s ), child_swm( new shadow_word_madness_t( priest(), false, true ) )
+  tentacle_slam_damage_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
   {
     background                 = true;
     affected_by_shadow_weaving = true;
-    child_swm->background      = true;
   }
 
   // Hacked in until the base spell covers this
@@ -1453,16 +1450,6 @@ struct tentacle_slam_damage_t final : public priest_spell_t
     if ( priest().talents.shadow.void_apparitions_3.enabled() )
     {
       priest().trigger_random_idol( s );
-    }
-
-    if ( priest().talents.shadow.maddening_tentacles.enabled() )
-    {
-      // Only trigger this on the main target
-      if ( target == s->target )
-      {
-        child_swm->target = s->target;
-        child_swm->execute();
-      }
     }
   }
 };
@@ -1564,14 +1551,18 @@ struct tentacle_slam_base_t : public priest_spell_t
 struct tentacle_slam_t final : public tentacle_slam_base_t
 {
   propagate_const<tentacle_slam_damage_t*> tentacle_slam_damage;
+  propagate_const<shadow_word_madness_t*> child_swm;
 
   tentacle_slam_t( priest_t& p, util::string_view options_str )
     : tentacle_slam_base_t( p, options_str, "tentacle_slam", p.talents.shadow.tentacle_slam ),
-      tentacle_slam_damage( nullptr )
+      tentacle_slam_damage( nullptr ),
+      child_swm( new shadow_word_madness_t( priest(), false, true ) )
   {
     tentacle_slam_damage =
         new tentacle_slam_damage_t( name_str + "_damage", p, priest().talents.shadow.tentacle_slam_damage );
     add_child( tentacle_slam_damage );
+
+    child_swm->background = true;
   }
 
   void execute() override
@@ -1579,6 +1570,14 @@ struct tentacle_slam_t final : public tentacle_slam_base_t
     priest_spell_t::execute();
 
     tentacle_slam_dots->execute();
+
+    if ( priest().talents.shadow.maddening_tentacles.enabled() )
+    {
+      make_event( sim, 500_ms, [ this ] {
+        child_swm->target = target;
+        child_swm->execute();
+      } );
+    }
   }
 
   void impact( action_state_t* s ) override
