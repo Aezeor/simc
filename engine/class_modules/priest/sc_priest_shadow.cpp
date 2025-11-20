@@ -845,8 +845,24 @@ struct shadow_word_madness_t final : public priest_spell_t
 
     if ( priest().talents.shadow.ancient_madness.enabled() && priest().buffs.voidform->up() && casted )
     {
-      priest().buffs.voidform->extend_duration(
-          &priest(), timespan_t::from_millis( priest().talents.shadow.voidform->effectN( 2 ).base_value() ) );
+      timespan_t base_duration = timespan_t::from_millis( priest().talents.shadow.voidform->effectN( 2 ).base_value() );
+
+      if ( priest().buffs.ancient_madness->check() )
+      {
+        // Ancient Madness diminishes by 25% per cast:
+        double factor = std::pow( 1 - priest().talents.shadow.ancient_madness->effectN( 3 ).percent(),
+                                  priest().buffs.ancient_madness->check() );
+
+        timespan_t extension_ms = base_duration * factor;
+
+        priest().buffs.voidform->extend_duration( &priest(), extension_ms );
+      }
+      else
+      {
+        priest().buffs.voidform->extend_duration( &priest(), base_duration );
+      }
+
+      priest().buffs.ancient_madness->trigger();
     }
 
     if ( priest().talents.shadow.screams_of_the_void.enabled() )
@@ -1441,8 +1457,12 @@ struct tentacle_slam_damage_t final : public priest_spell_t
 
     if ( priest().talents.shadow.maddening_tentacles.enabled() )
     {
-      child_swm->target = s->target;
-      child_swm->execute();
+      // Only trigger this on the main target
+      if ( target == s->target )
+      {
+        child_swm->target = s->target;
+        child_swm->execute();
+      }
     }
   }
 };
@@ -1670,6 +1690,11 @@ struct voidform_t final : public priest_buff_t<buff_t>
     if ( priest().talents.shadow.crushing_void.enabled() )
     {
       priest().buffs.crushing_void->trigger();
+    }
+
+    if ( priest().buffs.ancient_madness->check() )
+    {
+      priest().buffs.ancient_madness->expire();
     }
   }
 };
@@ -1935,6 +1960,10 @@ void priest_t::create_buffs_shadow()
           ->set_trigger_spell( talents.shadow.death_and_madness );
 
   buffs.crushing_void = make_buff( this, "crushing_void", talents.shadow.crushing_void_buff );
+
+  buffs.ancient_madness = make_buff( this, "ancient_madness", talents.shadow.ancient_madness )
+                              ->set_duration( timespan_t::zero() )
+                              ->set_max_stack( 99 );
 }  // namespace priestspace
 
 void priest_t::init_rng_shadow()

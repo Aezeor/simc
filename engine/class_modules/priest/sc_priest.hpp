@@ -220,6 +220,7 @@ public:
     propagate_const<buff_t*> horrific_vision;
     propagate_const<buff_t*> vision_of_nzoth;
     propagate_const<buff_t*> crushing_void;
+    propagate_const<buff_t*> ancient_madness;
 
     // Tier Sets
     propagate_const<buff_t*> ascension;         // TWW3 Archon Set 2pc
