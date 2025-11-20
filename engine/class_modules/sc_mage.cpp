@@ -3806,6 +3806,9 @@ struct glacial_spike_t final : public frost_mage_spell_t
       add_child( duality_pyroblast );
     }
 
+    if ( p->talents.flash_freezeburn.ok() )
+      add_child( p->action.flash_freezeburn );
+
     // TODO: Seems to get another 8% from Frostfire Infusion without any apparent reason
     base_multiplier *= 1.0 + p->talents.frostfire_infusion->effectN( 3 ).percent();
   }
@@ -4285,6 +4288,9 @@ struct duality_glacial_spike_t final : public mage_spell_t
     background = proc = true;
     if ( p->talents.elemental_conduit.ok() )
       triggers.ignite = true;
+
+    if ( p->talents.flash_freezeburn.ok() )
+      add_child( p->action.flash_freezeburn );
   }
 
   void impact( action_state_t* s ) override
