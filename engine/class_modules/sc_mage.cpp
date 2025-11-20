@@ -809,7 +809,7 @@ public:
   void trigger_spellfire_spheres();
   void consume_burden_of_power();
   void trigger_splinter( player_t* target, int count = -1 );
-  void trigger_freezing( player_t* target, int stacks, double chance = 1.0 );
+  void trigger_freezing( player_t* target, int stacks, proc_t* source, double chance = 1.0 );
   int  trigger_shatter( player_t* target, action_t* action, int max_consumption, bool fof = false );
   void trigger_icicle( int count = 1 );
 };
@@ -1461,6 +1461,7 @@ struct mage_spell_t : public spell_t
   double freezing_chance = 1.0;
   int freezing_stacks = 0;
   int freezing_targets = -1;
+  proc_t* freezing_source = nullptr;
 
 public:
   mage_spell_t( std::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
@@ -1532,6 +1533,14 @@ public:
 
     if ( !harmful )
       target = player;
+  }
+
+  void init_finished() override
+  {
+    spell_t::init_finished();
+
+    if ( p()->spec.shatter->ok() )
+      freezing_source = p()->get_proc( fmt::format( "Freezing applied ({})", data().name_cstr() ) );
   }
 
   double action_multiplier() const override
@@ -1754,7 +1763,7 @@ public:
       return;
 
     if ( freezing_targets == -1 || s->chain_target < freezing_targets )
-      p()->trigger_freezing( s->target, freezing_stacks, freezing_chance );
+      p()->trigger_freezing( s->target, freezing_stacks, freezing_source, freezing_chance );
 
     if ( triggers.ignite )
       trigger_ignite( s );
@@ -3661,7 +3670,7 @@ struct frostbolt_t final : public frost_mage_spell_t
     frost_mage_spell_t::impact( s );
 
     if ( s->result == RESULT_CRIT && p()->talents.frostbite.ok() )
-      p()->trigger_freezing( s->target, as<int>( p()->talents.frostbite->effectN( 1 ).base_value() ) );
+      p()->trigger_freezing( s->target, as<int>( p()->talents.frostbite->effectN( 1 ).base_value() ), freezing_source );
 
     if ( result_is_hit( s->result ) && frostfire && p()->state.trigger_ff_empowerment )
     {
@@ -3852,7 +3861,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
     frost_mage_spell_t::impact( s );
 
     if ( s->result == RESULT_CRIT && p()->talents.frostbite.ok() )
-      p()->trigger_freezing( s->target, as<int>( p()->talents.frostbite->effectN( 1 ).base_value() ) );
+      p()->trigger_freezing( s->target, as<int>( p()->talents.frostbite->effectN( 1 ).base_value() ), freezing_source );
 
     if ( result_is_hit( s->result ) && p()->action.flash_freezeburn )
       p()->action.flash_freezeburn->execute_on_target( s->target, p()->talents.flash_freezeburn->effectN( 2 ).percent() * s->result_total );
@@ -3901,6 +3910,7 @@ struct ice_lance_t final : public frost_mage_spell_t
   struct ice_lance_impact_t final : public frost_mage_spell_t
   {
     int freezing_consume;
+    proc_t* polished_focus = nullptr;
 
     ice_lance_impact_t( std::string_view n, mage_t* p ) :
       frost_mage_spell_t( n, p, p->find_spell( 228598 ) ),
@@ -3918,6 +3928,14 @@ struct ice_lance_t final : public frost_mage_spell_t
         aoe = 1 + as<int>( p->talents.fractured_frost->effectN( 1 ).base_value() );
     }
 
+    void init_finished() override
+    {
+      frost_mage_spell_t::init_finished();
+
+      if ( p()->talents.polished_focus.ok() )
+        polished_focus = p()->get_proc( "Freezing applied (Polished Focus)" );
+    }
+
     void impact( action_state_t* s ) override
     {
       frost_mage_spell_t::impact( s );
@@ -3928,7 +3946,7 @@ struct ice_lance_t final : public frost_mage_spell_t
         if ( s->chain_target == 0 && p()->talents.force_of_will.ok() )
           p()->trigger_splinter( s->target, stacks / as<int>( p()->talents.force_of_will->effectN( 3 ).base_value() ) );
         if ( stacks == freezing_consume )
-          p()->trigger_freezing( s->target, as<int>( p()->talents.polished_focus->effectN( 3 ).base_value() ) );
+          p()->trigger_freezing( s->target, as<int>( p()->talents.polished_focus->effectN( 3 ).base_value() ), polished_focus );
       }
     }
 
@@ -4421,8 +4439,11 @@ struct pyroblast_t final : public hot_streak_spell_t
 
 struct splintering_ray_t final : public spell_t
 {
+  proc_t* freezing_source;
+
   splintering_ray_t( std::string_view n, mage_t* p ) :
-    spell_t( n, p, p->find_spell( 418735 ) )
+    spell_t( n, p, p->find_spell( 418735 ) ),
+    freezing_source( p->get_proc( "Freezing applied (Splintering Ray)" ) )
   {
     background = proc = true;
     base_dd_min = base_dd_max = 1.0;
@@ -4458,7 +4479,7 @@ struct splintering_ray_t final : public spell_t
     spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
-      debug_cast<mage_t*>( player )->trigger_freezing( s->target, 1 );
+      debug_cast<mage_t*>( player )->trigger_freezing( s->target, 1, freezing_source );
   }
 };
 
@@ -4489,7 +4510,7 @@ struct ray_of_frost_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::tick( d );
 
-    p()->trigger_freezing( d->target, 1 ); // Not in spell data
+    p()->trigger_freezing( d->target, 1, freezing_source ); // Not in spell data
     p()->trigger_splinter( d->target, as<int>( p()->talents.augury_abounds->effectN( 3 ).base_value() ) );
 
     // TODO: FoF is granted through spell 269748. Unfortunately, Blizzard forgot to change its
@@ -4707,8 +4728,11 @@ struct arcane_echo_t final : public arcane_mage_spell_t
 
 struct frostfire_empowerment_t final : public spell_t
 {
+  proc_t* freezing_source;
+
   frostfire_empowerment_t( std::string_view n, mage_t* p ) :
-    spell_t( n, p, p->find_spell( 431186 ) )
+    spell_t( n, p, p->find_spell( 431186 ) ),
+    freezing_source( p->get_proc( "Freezing applied (Frostfire Empowerment)" ) )
   {
     background = proc = true;
     aoe = -1;
@@ -4732,14 +4756,17 @@ struct frostfire_empowerment_t final : public spell_t
 
     mage_t* p = debug_cast<mage_t*>( player );
     if ( result_is_hit( s->result ) )
-      p->trigger_freezing( s->target, as<int>( p->talents.frostfire_empowerment->effectN( 4 ).base_value() ) );
+      p->trigger_freezing( s->target, as<int>( p->talents.frostfire_empowerment->effectN( 4 ).base_value() ), freezing_source );
   }
 };
 
 struct flash_freezeburn_t final : public spell_t
 {
+  proc_t* freezing_source;
+
   flash_freezeburn_t( std::string_view n, mage_t* p ) :
-    spell_t( n, p, p->find_spell( 1278079 ) )
+    spell_t( n, p, p->find_spell( 1278079 ) ),
+    freezing_source( p->get_proc( "Freezing applied (Flash Freezeburn)" ) )
   {
     background = proc = true;
     base_dd_min = base_dd_max = 1.0;
@@ -4763,7 +4790,7 @@ struct flash_freezeburn_t final : public spell_t
     spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
-      debug_cast<mage_t*>( player )->trigger_freezing( s->target, 1 );
+      debug_cast<mage_t*>( player )->trigger_freezing( s->target, 1, freezing_source );
   }
 };
 
@@ -6591,7 +6618,7 @@ bool mage_t::trigger_crowd_control( const action_state_t* s, spell_mechanic type
   return false;
 }
 
-void mage_t::trigger_freezing( player_t* target, int stacks, double chance )
+void mage_t::trigger_freezing( player_t* target, int stacks, proc_t* source, double chance )
 {
   if ( !spec.shatter->ok() || stacks <= 0 )
     return;
@@ -6603,8 +6630,12 @@ void mage_t::trigger_freezing( player_t* target, int stacks, double chance )
     debuff->trigger( stacks );
     int new_stacks = debuff->check();
 
+    assert( source );
     for ( int i = 0; i < stacks; i++ )
+    {
+      source->occur();
       procs.freezing_applied->occur();
+    }
     int overflow = stacks - ( new_stacks - old_stacks );
     for ( int i = 0; i < overflow; i++ )
       procs.freezing_overflow->occur();
