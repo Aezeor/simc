@@ -326,6 +326,9 @@ public:
     proc_t* brain_freeze;
     proc_t* brain_freeze_splinterstorm;
     proc_t* fingers_of_frost;
+    proc_t* freezing_applied;
+    proc_t* freezing_expired;
+    proc_t* freezing_overflow;
 
     // TODO: Use something nicer for this
     std::array<proc_t*, 6> shatter;
@@ -5202,6 +5205,12 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                      ->set_default_value( 0.1 * mage->talents.controlled_destruction->effectN( 1 ).percent() )
                                      ->set_chance( mage->talents.controlled_destruction.ok() );
   debuffs.freezing               = make_buff( *this, "freezing", mage->find_spell( 1221389 ) )
+                                     ->set_expire_callback( [ mage ] ( buff_t*, int stacks, timespan_t duration )
+                                       {
+                                         if ( duration != 0_ms ) return;
+                                         for ( int i = 0; i < stacks; i++ )
+                                           mage->procs.freezing_expired->occur();
+                                       } )
                                      ->set_chance( mage->spec.shatter->ok() );
   debuffs.molten_fury            = make_buff( *this, "molten_fury", mage->find_spell( 458910 ) )
                                      ->set_default_value_from_effect( 1 )
@@ -6099,6 +6108,9 @@ void mage_t::init_procs()
       procs.brain_freeze               = get_proc( "Brain Freeze" );
       procs.brain_freeze_splinterstorm = get_proc( "Brain Freeze from Splinterstorm" );
       procs.fingers_of_frost           = get_proc( "Fingers of Frost" );
+      procs.freezing_applied           = get_proc( "Freezing applied" );
+      procs.freezing_expired           = get_proc( "Freezing expired" );
+      procs.freezing_overflow          = get_proc( "Freezing overflow" );
 
       for ( int i = 0; i < std::size( procs.shatter ); i++ )
         procs.shatter[ i ] = get_proc( fmt::format( "Shatter ({} stacks)", i + 1 ) );
@@ -6573,7 +6585,18 @@ void mage_t::trigger_freezing( player_t* target, int stacks, double chance )
     return;
 
   if ( rng().roll( chance ) )
-    get_target_data( target )->debuffs.freezing->trigger( stacks );
+  {
+    auto debuff = get_target_data( target )->debuffs.freezing;
+    int old_stacks = debuff->check();
+    debuff->trigger( stacks );
+    int new_stacks = debuff->check();
+
+    for ( int i = 0; i < stacks; i++ )
+      procs.freezing_applied->occur();
+    int overflow = stacks - ( new_stacks - old_stacks );
+    for ( int i = 0; i < overflow; i++ )
+      procs.freezing_overflow->occur();
+  }
 }
 
 int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consumption, bool fof )
