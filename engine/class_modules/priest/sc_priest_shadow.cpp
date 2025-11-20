@@ -977,7 +977,7 @@ struct void_volley_base_t : public priest_spell_t
 
   bool ready() override
   {
-    if ( !priest().buffs.voidform->check() )
+    if ( !priest().buffs.voidform->check() && !priest().buffs.crushing_void->check() )
     {
       return false;
     }
@@ -987,7 +987,6 @@ struct void_volley_base_t : public priest_spell_t
 
   void impact( action_state_t* s ) override
   {
-    // TODO: verify
     priest().spawn_idol_of_cthun( s );
 
     // fire s1 bolts at main target
@@ -1006,6 +1005,11 @@ struct void_volley_base_t : public priest_spell_t
     {
       make_repeating_event(
           sim, 50_ms, [ this ] { void_volley_damage_aoe->execute(); }, as<int>( data().effectN( 3 ).base_value() ) );
+    }
+
+    if ( priest().talents.shadow.crushing_void.enabled() && priest().buffs.crushing_void->check() )
+    {
+      priest().buffs.crushing_void->expire();
     }
   }
 };
@@ -1453,14 +1457,11 @@ struct tentacle_slam_dots_t final : public priest_spell_t
       child_vt( new vampiric_touch_t( priest(), true, false ) ),
       missile_speed( _missile_speed )
   {
-    may_miss   = false;
-    background = true;
-    aoe        = as<int>( s->effectN( 3 ).base_value() );
-
-    // TODO: confirm this works
+    may_miss                     = false;
+    background                   = true;
+    aoe                          = as<int>( s->effectN( 3 ).base_value() );
     idol_of_nzoth_execute_stacks = 6;
-
-    child_vt->background = true;
+    child_vt->background         = true;
   }
 
   std::vector<player_t*>& target_list() const override
@@ -1664,6 +1665,11 @@ struct voidform_t final : public priest_buff_t<buff_t>
     if ( remaining_duration == 0_ms )
     {
       priest().sample_data.voidform_duration->add( elapsed( sim->current_time() ).total_seconds() );
+    }
+
+    if ( priest().talents.shadow.crushing_void.enabled() )
+    {
+      priest().buffs.crushing_void->trigger();
     }
   }
 };
@@ -1927,6 +1933,8 @@ void priest_t::create_buffs_shadow()
   buffs.death_and_madness_reset =
       make_buff( this, "death_and_madness_reset", talents.shadow.death_and_madness_reset_buff )
           ->set_trigger_spell( talents.shadow.death_and_madness );
+
+  buffs.crushing_void = make_buff( this, "crushing_void", talents.shadow.crushing_void_buff );
 }  // namespace priestspace
 
 void priest_t::init_rng_shadow()
@@ -2010,6 +2018,7 @@ void priest_t::init_spells_shadow()
   talents.shadow.tormented_spirits   = ST( "Tormented Spirits" );
   talents.shadow.insidious_ire       = ST( "Insidious Ire" );
   talents.shadow.crushing_void       = ST( "Crushing Void" );
+  talents.shadow.crushing_void_buff  = find_spell( 1279437 );
   // Row 10
   talents.shadow.idol_of_yshaarj        = ST( "Idol of Y'Shaarj" );
   talents.shadow.call_of_the_void       = find_spell( 373316 );   // Idol of Y'Shaarj positive haste buff

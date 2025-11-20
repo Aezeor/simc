@@ -219,6 +219,7 @@ public:
     propagate_const<buff_t*> void_volley;
     propagate_const<buff_t*> horrific_vision;
     propagate_const<buff_t*> vision_of_nzoth;
+    propagate_const<buff_t*> crushing_void;
 
     // Tier Sets
     propagate_const<buff_t*> ascension;         // TWW3 Archon Set 2pc
@@ -377,6 +378,7 @@ public:
       player_talent_t tormented_spirits;
       player_talent_t insidious_ire;
       player_talent_t crushing_void;
+      const spell_data_t* crushing_void_buff;
       // Row 10
       player_talent_t idol_of_yshaarj;
       const spell_data_t* call_of_the_void;
@@ -674,10 +676,6 @@ public:
     // Shared
     propagate_const<cooldown_t*> shadow_word_death;
     propagate_const<cooldown_t*> power_word_shield;
-    propagate_const<cooldown_t*> mindbender;
-    propagate_const<cooldown_t*> shadowfiend;
-    propagate_const<cooldown_t*> voidwraith;
-    propagate_const<cooldown_t*> fiend;
 
     // Shadow
     propagate_const<cooldown_t*> void_bolt;
@@ -936,8 +934,6 @@ public:
   const priest_td_t* find_target_data( const player_t* target ) const override;
   priest_td_t* get_target_data( player_t* target ) const override;
   std::unique_ptr<expr_t> create_expression( util::string_view expression_str ) override;
-  std::unique_ptr<expr_t> create_pet_expression( util::string_view expression_str,
-                                                 util::span<util::string_view> splits );
 
   void arise() override;
   void demise() override;
