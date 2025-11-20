@@ -1051,7 +1051,7 @@ struct summon_fiend_t final : public priest_spell_t
 
   const spell_data_t* pet_summon_spell( priest_t& p )
   {
-    if ( p.talents.voidweaver.voidwraith.enabled() && p.talents.shared.shadowfiend.enabled() )
+    if ( p.talents.voidweaver.voidwraith.enabled() )
       return p.talents.voidweaver.voidwraith_spell;
 
     return p.talents.shared.mindbender.enabled() ? p.talents.shared.mindbender : p.talents.shared.shadowfiend;
@@ -1199,8 +1199,8 @@ public:
       execute_modifier( data().effectN( 4 ).percent() ),
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
       depth_of_shadows_duration(
-          timespan_t::from_seconds( p.talents.voidweaver.depth_of_shadows->effectN( 1 ).base_value() ) ),
-      depth_of_shadows_threshold( p.talents.voidweaver.depth_of_shadows->effectN( 2 ).base_value() ),
+          timespan_t::from_seconds( p.talents.shared.depth_of_shadows->effectN( 1 ).base_value() ) ),
+      depth_of_shadows_threshold( p.talents.shared.depth_of_shadows->effectN( 2 ).base_value() ),
       child_expiation( nullptr ),
       child_searing_light( priest().background_actions.searing_light ),
       execute_override( execute_override )
@@ -1331,7 +1331,7 @@ public:
     {
       double save_health_percentage = s->target->health_percentage();
 
-      if ( priest().talents.voidweaver.depth_of_shadows.enabled() )
+      if ( priest().talents.shared.depth_of_shadows.enabled() )
       {
         double chance = 0.9;
         // TODO: Find out the actual chance, this is a guess
@@ -2730,10 +2730,6 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
   {
     return new power_word_fortitude_t( *this, options_str );
   }
-  if ( ( name == "shadowfiend" ) || ( name == "mindbender" ) || ( name == "fiend" ) || ( name == "voidwraith" ) )
-  {
-    return new summon_fiend_t( *this, options_str );
-  }
   if ( name == "mind_blast" )
   {
     return new mind_blast_t( *this, options_str );
@@ -2968,7 +2964,8 @@ void priest_t::init_spells()
   // Shared Spells
   talents.shared.mindbender          = ST( "Mindbender" );
   talents.shared.inescapable_torment = ST( "Inescapable Torment" );
-  talents.shared.shadowfiend         = ST( "Shadowfiend" );
+  talents.shared.shadowfiend         = find_spell( 34433 );
+  talents.shared.depth_of_shadows    = ST( "Depth of Shadows" );
 
   // Generic Spells
   specs.levitate_buff     = find_spell( 111759 );
@@ -3131,7 +3128,6 @@ void priest_t::init_spells()
   talents.voidweaver.void_empowerment       = HT( "Void Empowerment" );
   talents.voidweaver.void_empowerment_buff  = find_spell( 450140 );
   talents.voidweaver.darkening_horizon      = HT( "Darkening Horizon" );
-  talents.voidweaver.depth_of_shadows       = HT( "Depth of Shadows" );
   talents.voidweaver.voidwraith             = HT( "Voidwraith" );
   talents.voidweaver.voidwraith_spell       = find_spell( 451235 );
   talents.voidweaver.touch_of_the_void      = HT( "Touch of the Void" );
@@ -3144,8 +3140,8 @@ void priest_t::init_spells()
   talents.voidweaver.collapsing_void_damage = find_spell( 448405 );
 
   tww3_spells.voidweaver_4pc = sets->set( HERO_VOIDWEAVER, TWW3, B4 );
-  
-  if ( specialization()  == PRIEST_SHADOW)
+
+  if ( specialization() == PRIEST_SHADOW )
     deregister_passive_effect( talents.voidweaver.overwhelming_shadows->effectN( 2 ) );
 
   // Register passives

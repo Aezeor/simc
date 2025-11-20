@@ -596,7 +596,7 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
   }
   double insanity_gain() const override
   {
-    if ( o().talents.shared.shadowfiend.enabled() )
+    if ( o().talents.shared.depth_of_shadows.enabled() )
     {
       return power_leech_insanity;
     }
@@ -737,7 +737,7 @@ struct fiend_melee_t : public priest_pet_melee_t
 
       p().o().trigger_atonement( s, composite_atonement_multiplier( s ) );
 
-      if ( p().o().talents.shared.shadowfiend.enabled() || p().o().talents.shared.mindbender.enabled() )
+      if ( p().o().talents.shared.depth_of_shadows.enabled() || p().o().talents.shared.mindbender.enabled() )
       {
         if ( p().o().specialization() == PRIEST_SHADOW )
         {

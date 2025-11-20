@@ -311,9 +311,10 @@ public:
 
     struct
     {
-      player_talent_t shadowfiend;
+      const spell_data_t* shadowfiend;
       player_talent_t mindbender;
       player_talent_t inescapable_torment;
+      player_talent_t depth_of_shadows;
     } shared;
 
     struct
@@ -322,6 +323,7 @@ public:
       // Row 2
       player_talent_t psychic_link;
       player_talent_t misery;
+      player_talent_t invoked_nightmares;
       player_talent_t intangibility;
       player_talent_t mental_fortitude;
       // Row 3
@@ -342,6 +344,7 @@ public:
       const spell_data_t* void_volley_buff;
       const spell_data_t* void_volley_missile;
       const spell_data_t* void_volley_damage;
+      player_talent_t haunting_shadows;
       player_talent_t mental_decay;
       // Row 6
       player_talent_t dark_thoughts;
@@ -366,12 +369,14 @@ public:
       const spell_data_t* death_and_madness_reset_buff;
       player_talent_t mind_devourer;
       player_talent_t auspicious_spirits;
+      player_talent_t maddening_tentacles;
       // Row 9
       player_talent_t madness_weaving;
       player_talent_t deaths_torment;
       player_talent_t screams_of_the_void;
       player_talent_t tormented_spirits;
       player_talent_t insidious_ire;
+      player_talent_t crushing_void;
       // Row 10
       player_talent_t idol_of_yshaarj;
       const spell_data_t* call_of_the_void;
@@ -590,7 +595,6 @@ public:
       player_talent_t void_empowerment;
       const spell_data_t* void_empowerment_buff;
       player_talent_t darkening_horizon;
-      player_talent_t depth_of_shadows;
       player_talent_t voidwraith;
       const spell_data_t* voidwraith_spell;
       player_talent_t touch_of_the_void;
