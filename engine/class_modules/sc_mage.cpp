@@ -3346,6 +3346,9 @@ struct fireball_t final : public fire_mage_spell_t
     // TODO: Seems to get another 8% from Frostfire Infusion without any apparent reason
     if ( frostfire )
       base_multiplier *= 1.0 + p->talents.frostfire_infusion->effectN( 3 ).percent();
+
+    if ( data().ok() && p->talents.frostfire_empowerment.ok() )
+      add_child( p->action.frostfire_empowerment );
   }
 
   timespan_t travel_time() const override
@@ -3549,7 +3552,7 @@ struct flurry_t final : public frost_mage_spell_t
     triggers.frostfire_empowerment = true; // Doesn't seem to need Heat Sink
 
     add_child( flurry_bolt );
-    if ( p->action.glacial_assault )
+    if ( p->talents.glacial_assault.ok() )
       add_child( p->action.glacial_assault );
   }
 
@@ -3600,6 +3603,9 @@ struct frostbolt_t final : public frost_mage_spell_t
     // TODO: Seems to get another 8% from Frostfire Infusion without any apparent reason
     if ( frostfire )
       base_multiplier *= 1.0 + p->talents.frostfire_infusion->effectN( 3 ).percent();
+
+    if ( data().ok() && p->talents.frostfire_empowerment.ok() )
+      add_child( p->action.frostfire_empowerment );
   }
 
   void init_finished() override
