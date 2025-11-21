@@ -6471,6 +6471,12 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
     } );
   }
 
+  if ( util::str_compare_ci( name, "icicles" ) )
+  {
+    return make_fn_expr( name, [ this ]
+    { return state.icicles; } );
+  }
+
   if ( util::str_compare_ci( name, "embedded_splinters" ) )
   {
     return make_fn_expr( name, [ this ]
