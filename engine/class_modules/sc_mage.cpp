@@ -1711,6 +1711,10 @@ public:
 
     if ( p()->spec.clearcasting->ok() && triggers.clearcasting )
     {
+      // TODO: remove me
+      p()->trigger_clearcasting( p()->spec.clearcasting->effectN( 2 ).percent(), 100_ms );
+      return;
+      // TODO: Adjust this with the new BLP data
       constexpr int cc_blp_threshold = 13;
       timespan_t delay = 100_ms;
       // The tooltip chance present on Clearcasting/Illuminated Thoughts is the total expected outcome of Clearcasting applications, not it's random proc chance.
