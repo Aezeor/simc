@@ -1621,7 +1621,15 @@ public:
   // Pets and Guardians
   struct pets_t
   {
+    // Shared
     spawner::pet_spawner_t<pets::ghoul_pet_t, death_knight_t> ghoul_pet;
+    // Blood
+    spawner::pet_spawner_t<pets::dancing_rune_weapon_pet_t, death_knight_t> dancing_rune_weapon_pet;
+    spawner::pet_spawner_t<pets::dancing_rune_weapon_pet_t, death_knight_t> everlasting_bond_pet;
+    spawner::pet_spawner_t<pets::bloodworm_pet_t, death_knight_t> bloodworms;
+    // Frost
+
+    // Unholy
     spawner::pet_spawner_t<pets::lesser_ghoul_pet_t, death_knight_t> lesser_ghoul_army;
     spawner::pet_spawner_t<pets::lesser_ghoul_pet_t, death_knight_t> lesser_ghoul_db_coil;
     spawner::pet_spawner_t<pets::lesser_ghoul_pet_t, death_knight_t> lesser_ghoul_db_epi;
@@ -1629,20 +1637,22 @@ public:
     spawner::pet_spawner_t<pets::lesser_ghoul_pet_t, death_knight_t> lesser_ghoul_putrefy;
     spawner::pet_spawner_t<pets::gargoyle_pet_t, death_knight_t> gargoyle;
     spawner::pet_spawner_t<pets::risen_skulker_pet_t, death_knight_t> risen_skulker;
-    spawner::pet_spawner_t<pets::dancing_rune_weapon_pet_t, death_knight_t> dancing_rune_weapon_pet;
-    spawner::pet_spawner_t<pets::dancing_rune_weapon_pet_t, death_knight_t> everlasting_bond_pet;
-    spawner::pet_spawner_t<pets::bloodworm_pet_t, death_knight_t> bloodworms;
     spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> dt_magus;
     spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> reanimation_magus;
-    spawner::pet_spawner_t<pets::blood_beast_pet_t, death_knight_t> blood_beast;
+    spawner::pet_spawner_t<pets::abomination_pet_t, death_knight_t> abomination;
+    // Rider of the Apocalypse
     spawner::pet_spawner_t<pets::mograine_pet_t, death_knight_t> mograine;
     spawner::pet_spawner_t<pets::whitemane_pet_t, death_knight_t> whitemane;
     spawner::pet_spawner_t<pets::trollbane_pet_t, death_knight_t> trollbane;
     spawner::pet_spawner_t<pets::nazgrim_pet_t, death_knight_t> nazgrim;
-    spawner::pet_spawner_t<pets::abomination_pet_t, death_knight_t> abomination;
+    // San'layn
+    spawner::pet_spawner_t<pets::blood_beast_pet_t, death_knight_t> blood_beast;
 
     pets_t( death_knight_t* p )
       : ghoul_pet( "ghoul", p ),
+        dancing_rune_weapon_pet( "dancing_rune_weapon", p ),
+        everlasting_bond_pet( "everlasting_bond", p ),
+        bloodworms( "bloodworm", p ),
         lesser_ghoul_army( "lesser_ghoul_army", p ),
         lesser_ghoul_db_coil( "lesser_ghoul_db_coil", p ),
         lesser_ghoul_db_epi( "lesser_ghoul_db_epi", p ),
@@ -1650,17 +1660,14 @@ public:
         lesser_ghoul_putrefy( "lesser_ghoul_putrefy", p ),
         gargoyle( "gargoyle", p ),
         risen_skulker( "risen_skulker", p ),
-        dancing_rune_weapon_pet( "dancing_rune_weapon", p ),
-        everlasting_bond_pet( "everlasting_bond", p ),
-        bloodworms( "bloodworm", p ),
         dt_magus( "dt_magus", p ),
         reanimation_magus( "reanimation_magus", p ),
-        blood_beast( "blood_beast", p ),
+        abomination( "abomination", p ),
         mograine( "mograine", p ),
         whitemane( "whitemane", p ),
         trollbane( "trollbane", p ),
         nazgrim( "nazgrim", p ),
-        abomination( "abomination", p )
+        blood_beast( "blood_beast", p )
     {
     }
   } pets;
