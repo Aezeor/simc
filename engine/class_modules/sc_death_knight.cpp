@@ -10875,7 +10875,7 @@ struct putrefy_t final : public death_knight_spell_t
 
   bool ready() override
   {
-    if ( p()->active_lesser_ghouls.size() == 0 )
+    if ( p()->active_lesser_ghouls.size() == 0 && !p()->talent.unholy.necromancers_cunning.ok() )
       return false;
 
     return death_knight_spell_t::ready();
