@@ -1654,7 +1654,7 @@ public:
         everlasting_bond_pet( "everlasting_bond", p ),
         bloodworms( "bloodworm", p ),
         dt_magus( "dt_magus", p ),
-        reanimation_magus( "summon_reanimation_magus", p ),
+        reanimation_magus( "reanimation_magus", p ),
         blood_beast( "blood_beast", p ),
         mograine( "mograine", p ),
         whitemane( "whitemane", p ),
@@ -13220,7 +13220,7 @@ void death_knight_t::create_pets()
     {
       timespan_t reanimation_duration = talent.unholy.reanimation->effectN( 2 ).time_value();
       pets.reanimation_magus.set_creation_callback(
-          []( death_knight_t* p ) { return new pets::magus_pet_t( p, "summon_reanimation_magus" ); } );
+          []( death_knight_t* p ) { return new pets::magus_pet_t( p, "reanimation_magus" ); } );
       pets.reanimation_magus.set_default_duration( reanimation_duration );
     }
 
