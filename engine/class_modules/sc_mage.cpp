@@ -4644,6 +4644,8 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
     p()->trigger_splinter( target, as<int>( p()->talents.signature_spell->effectN( 1 ).base_value() ) );
+    if ( p()->talents.aegwynns_technique.ok() )
+      p()->trigger_clearcasting();
   }
 
   void impact( action_state_t* s ) override
