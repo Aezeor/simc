@@ -1632,7 +1632,6 @@ public:
     spawner::pet_spawner_t<pets::dancing_rune_weapon_pet_t, death_knight_t> dancing_rune_weapon_pet;
     spawner::pet_spawner_t<pets::dancing_rune_weapon_pet_t, death_knight_t> everlasting_bond_pet;
     spawner::pet_spawner_t<pets::bloodworm_pet_t, death_knight_t> bloodworms;
-    spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> army_magus;
     spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> dt_magus;
     spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> reanimation_magus;
     spawner::pet_spawner_t<pets::blood_beast_pet_t, death_knight_t> blood_beast;
@@ -1654,7 +1653,6 @@ public:
         dancing_rune_weapon_pet( "dancing_rune_weapon", p ),
         everlasting_bond_pet( "everlasting_bond", p ),
         bloodworms( "bloodworm", p ),
-        army_magus( "army_magus", p ),
         dt_magus( "dt_magus", p ),
         reanimation_magus( "summon_reanimation_magus", p ),
         blood_beast( "blood_beast", p ),
@@ -4152,7 +4150,7 @@ struct magus_pet_t : public death_knight_pet_t
     }
   };
 
-  magus_pet_t( death_knight_t* owner, std::string_view name = "army_magus" )
+  magus_pet_t( death_knight_t* owner, std::string_view name = "dt_magus" )
     : death_knight_pet_t( owner, name, true, false )
   {
     resource_regeneration             = regen_type::DISABLED;
@@ -13196,15 +13194,6 @@ void death_knight_t::create_pets()
           []( death_knight_t* p ) { return new pets::lesser_ghoul_pet_t( p, "army_ghoul" ); } );
       pets.lesser_ghoul_army.set_default_duration( spell.summon_army_ghoul->duration() );
       pets.lesser_ghoul_army.set_max_pets( 8 );
-    }
-
-    if ( talent.unholy.magus_of_the_dead.ok() && talent.unholy.army_of_the_dead.ok() )
-    {
-      pets.army_magus.set_creation_callback(
-          []( death_knight_t* p ) { return new pets::magus_pet_t( p, "army_magus" ); } );
-      const timespan_t duration = spell.summon_army_ghoul->duration();
-      pets.army_magus.set_default_duration( duration );
-      pets.army_magus.set_max_pets( 1 );
     }
 
     if ( talent.unholy.dark_transformation.ok() && talent.unholy.magus_of_the_dead.ok() )
