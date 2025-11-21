@@ -2817,8 +2817,9 @@ struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_sp
     background = proc = true;
     affected_by.savant = true;
 
-    const auto& aa = p->buffs.aether_attunement->data();
-    base_aoe_multiplier *= ( 1.0 + aa.effectN( 4 ).percent() ) / ( 1.0 + aa.effectN( 1 ).percent() );
+    // The mage could have Overpowered Missiles without Aether Attunement,
+    // so we can't use talents.aether_attunement here.
+    base_aoe_multiplier *= p->find_spell( 1243307 )->effectN( 1 ).percent();
   }
 
   int n_targets() const override
@@ -2828,9 +2829,11 @@ struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_sp
     if ( pre_execute_state )
       return cast_state( pre_execute_state )->data.targets;
 
-    return p()->buffs.aether_attunement->check()
-      ? as<int>( p()->buffs.aether_attunement->data().effectN( 2 ).base_value() )
-      : custom_state_spell_t::n_targets();
+    assert( custom_state_spell_t::n_targets() == 0 );
+    int targets = 1;
+    targets += as<int>( p()->talents.aether_attunement->effectN( 2 ).base_value() );
+    targets += as<int>( p()->buffs.aether_attunement->data().effectN( 2 ).base_value() - 1 );
+    return targets == 1 ? 0 : targets;
   }
 
   void update_state( action_state_t* s, unsigned flags, result_amount_type rt ) override
