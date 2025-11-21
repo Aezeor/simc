@@ -2694,12 +2694,29 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
 
 struct arcane_pulse_t final : public arcane_mage_spell_t
 {
-  arcane_pulse_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    arcane_mage_spell_t( n, p, p->talents.arcane_pulse )
+  action_t* arcane_pulse_echo = nullptr;
+
+  arcane_pulse_t( std::string_view n, mage_t* p, std::string_view options_str, bool echo = false ) :
+    arcane_mage_spell_t( n, p, echo ? p->find_spell( 1243460 ) : p->talents.arcane_pulse )
   {
     parse_options( options_str );
+    // TODO: Can the echo also trigger CC?
     triggers.clearcasting = true;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
+
+    if ( echo )
+    {
+      background = proc = true;
+      cooldown->duration = 0_ms;
+      base_costs[ RESOURCE_MANA ] = 0;
+      return;
+    }
+
+    if ( p->talents.reverberate.ok() )
+    {
+      arcane_pulse_echo = get_action<arcane_pulse_t>( "arcane_pulse_echo", p, "", true );
+      add_child( arcane_pulse_echo );
+    }
   }
 
   double cost_pct_multiplier() const override
@@ -2719,6 +2736,8 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
+    if ( arcane_pulse_echo && rng().roll( p()->talents.reverberate->effectN( 1 ).percent() ) )
+      make_event( *sim, 500_ms, [ this, t = target ] { arcane_pulse_echo->execute_on_target( t ); } );
   }
 
   double action_multiplier() const override
