@@ -2859,6 +2859,9 @@ struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_sp
 
     if ( rng().roll( p()->talents.high_voltage->effectN( 1 ).percent() ) )
       p()->trigger_arcane_charge( high_voltage_energize );
+
+    if ( p()->talents.charged_missiles.ok() )
+      p()->buffs.arcane_charge->decrement();
   }
 
   double action_multiplier() const override
@@ -2866,6 +2869,8 @@ struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_sp
     double am = custom_state_spell_t::action_multiplier();
 
     am *= 1.0 + p()->buffs.aether_attunement->check_value();
+    if ( p()->buffs.arcane_charge->check() )
+      am *= 1.0 + p()->talents.charged_missiles->effectN( 1 ).percent();
 
     return am;
   }
