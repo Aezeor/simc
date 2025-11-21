@@ -201,13 +201,10 @@ public:
     buff_t* arcane_charge;
     buff_t* arcane_familiar;
     buff_t* arcane_surge;
-    buff_t* arcane_tempo;
     buff_t* clearcasting;
     buff_t* clearcasting_channel; // Hidden buff which governs tick and channel time
     buff_t* enlightened;
     buff_t* evocation;
-    buff_t* high_voltage;
-    buff_t* impetus;
     buff_t* presence_of_mind;
 
 
@@ -2542,7 +2539,6 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     double mana_pct = p()->buffs.arcane_charge->check() * 0.01 * p()->talents.mana_adept->effectN( 1 ).percent();
     p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * mana_pct, p()->gains.arcane_barrage, this );
 
-    p()->buffs.arcane_tempo->trigger();
     p()->buffs.arcane_charge->expire();
 
     if ( p()->buffs.arcane_soul->check() )
@@ -2636,14 +2632,6 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     p()->trigger_arcane_charge();
     p()->trigger_spellfire_spheres();
     p()->trigger_mana_cascade();
-
-    if ( rng().roll( p()->talents.impetus->effectN( 1 ).percent() ) )
-    {
-      if ( p()->buffs.arcane_charge->at_max_stacks() )
-        p()->buffs.impetus->trigger();
-      else
-        p()->trigger_arcane_charge();
-    }
 
     if ( p()->buffs.presence_of_mind->up() )
       p()->buffs.presence_of_mind->decrement();
@@ -2784,29 +2772,6 @@ struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_sp
   {
     custom_state_spell_t::update_state( s, flags, rt );
     cast_state( s )->data.targets = n_targets();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    custom_state_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-    {
-      if ( p()->talents.high_voltage.ok() )
-      {
-        double chance = p()->talents.high_voltage->effectN( 1 ).percent();
-        chance += p()->buffs.high_voltage->check_stack_value();
-        if ( rng().roll( chance ) )
-        {
-          p()->trigger_arcane_charge();
-          p()->buffs.high_voltage->expire();
-        }
-        else
-        {
-          p()->buffs.high_voltage->trigger();
-        }
-      }
-    }
   }
 
   double action_multiplier() const override
@@ -5965,10 +5930,6 @@ void mage_t::create_buffs()
   buffs.arcane_surge              = make_buff( this, "arcane_surge", find_spell( 365362 ) )
                                       ->set_default_value_from_effect( 3 )
                                       ->set_affects_regen( true );
-  buffs.arcane_tempo              = make_buff( this, "arcane_tempo", find_spell( 383997 ) )
-                                      ->set_default_value( talents.arcane_tempo->effectN( 1 ).percent() )
-                                      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                                      ->set_chance( talents.arcane_tempo.ok() );
   buffs.clearcasting              = make_buff( this, "clearcasting", find_spell( 263725 ) )
                                       ->set_default_value_from_effect( 1 )
                                       ->set_chance( spec.clearcasting->ok() ) ;
@@ -5986,11 +5947,6 @@ void mage_t::create_buffs()
                                       ->set_default_value_from_effect( 1 )
                                       ->set_cooldown( 0_ms )
                                       ->set_affects_regen( true );
-  buffs.high_voltage              = make_buff( this, "high_voltage", find_spell( 461525 ) )
-                                      ->set_default_value_from_effect( 1, 0.01 );
-  buffs.impetus                   = make_buff( this, "impetus", find_spell( 393939 ) )
-                                      ->set_default_value_from_effect( 1 )
-                                      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.presence_of_mind          = make_buff( this, "presence_of_mind", find_spell( 205025 ) )
                                       ->set_cooldown( 0_ms )
                                       ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
@@ -6333,8 +6289,6 @@ double mage_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.enlightened->check() && buffs.enlightened->has_common_school( school ) )
     m *= 1.0 + buffs.enlightened->check_value() * buffs.enlightened->data().effectN( 2 ).percent();
-  if ( buffs.impetus->has_common_school( school ) )
-    m *= 1.0 + buffs.impetus->check_value();
 
   return m;
 }
