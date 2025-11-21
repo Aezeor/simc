@@ -73,7 +73,23 @@ void register_special_effect( std::initializer_list<unsigned> spell_ids, custom_
 
 namespace consumables
 {
+// Potions
+// Draught of Rampant Abandon
+// 1236998 driver & buff
+// 1237154 AoE trigger (NYI)
+void draught_of_rampant_abandon( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "draught_of_rampant_abandon" );
+  if ( !buff )
+  {
+    // TODO: RPPM is for the AoE trigger (NYI), disabling for now
+    buff = make_buff<stat_buff_t>( effect.player, "draught_of_rampant_abandon", effect.driver() )
+               ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) )
+               ->set_rppm( rppm_scale_e::RPPM_DISABLE );
+  }
 
+  effect.custom_buff = buff;
+}
 }
 
 namespace enchants
@@ -525,6 +541,7 @@ void register_special_effects()
   // Food
   // Flasks
   // Potions
+  register_special_effect( 1236998, consumables::draught_of_rampant_abandon );
   // Oils
   // Enchants & gems
   // Embellishments & Tinkers
