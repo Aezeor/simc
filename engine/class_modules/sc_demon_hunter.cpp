@@ -6278,6 +6278,11 @@ struct collapsing_star_t : public demon_hunter_spell_t
       {
         p()->cooldown.voidblade->adjust( -p()->talent.devourer.voidrush->effectN( 1 ).time_value() );
       }
+
+      if ( p()->talent.devourer.impending_apocalypse->ok() )
+      {
+        p()->buff.impending_apocalypse->trigger();
+      }
     }
   };
 
@@ -6301,11 +6306,6 @@ struct collapsing_star_t : public demon_hunter_spell_t
     p()->buff.collapsing_star_ready->expire();
     p()->buff.collapsing_star_stack->decrement( soul_cost );
     demon_hunter_spell_t::execute();
-
-    if ( p()->talent.devourer.impending_apocalypse->ok() )
-    {
-      p()->buff.impending_apocalypse->trigger();
-    }
   }
 
   bool action_ready() override
