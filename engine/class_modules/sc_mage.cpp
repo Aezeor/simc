@@ -2771,8 +2771,7 @@ struct arcane_assault_t final : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
 
-    // TODO: Proc rate isn't listed anywhere, update as we get more data
-    if ( p()->talents.energized_familiar.ok() && rng().roll( 0.05 ) )
+    if ( rng().roll( p()->talents.energized_familiar->effectN( 2 ).percent() ) )
       p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * energize_pct, p()->gains.energized_familiar, this );
 
     if ( rng().roll( p()->talents.attuned_familiar->effectN( 1 ).percent() ) )
