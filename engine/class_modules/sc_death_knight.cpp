@@ -7764,7 +7764,8 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
     {
       summon_lesser_ghoul_t* summon_ghoul_cast = debug_cast<summon_lesser_ghoul_t*>( summon_ghoul );
       summon_ghoul_cast->set_duration( summon_duration );
-      summon_ghoul_cast->set_putrefy_instantly( n_ghoul > n_to_putrefy );
+      if ( n_to_putrefy > 0 )
+        summon_ghoul_cast->set_putrefy_instantly( n_ghoul < n_to_putrefy );
       summon_ghoul->execute();
 
       if ( ++n_ghoul < max_ghouls )
