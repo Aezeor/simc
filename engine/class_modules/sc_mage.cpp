@@ -2815,8 +2815,11 @@ struct am_data_t
 
 struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_spell_t, am_data_t>
 {
+  int high_voltage_energize;
+
   arcane_missiles_tick_t( std::string_view n, mage_t* p ) :
-    custom_state_spell_t( n, p, p->find_spell( 7268 ) )
+    custom_state_spell_t( n, p, p->find_spell( 7268 ) ),
+    high_voltage_energize( as<int>( p->find_spell( 461524 )->effectN( 1 ).base_value() ) )
   {
     background = proc = true;
     affected_by.savant = true;
@@ -2849,9 +2852,13 @@ struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_sp
   void execute() override
   {
     custom_state_spell_t::execute();
+
     p()->trigger_arcane_salvo();
     p()->trigger_arcane_salvo( as<int>( p()->talents.focusing_crystal->effectN( 2 ).base_value() ),
                                p()->talents.focusing_crystal->effectN( 1 ).percent() );
+
+    if ( rng().roll( p()->talents.high_voltage->effectN( 1 ).percent() ) )
+      p()->trigger_arcane_charge( high_voltage_energize );
   }
 
   double action_multiplier() const override
