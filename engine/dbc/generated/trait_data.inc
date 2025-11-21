@@ -1,4 +1,4 @@
-// Player trait definitions, wow build 12.0.0.64507
+// Player trait definitions, wow build 12.0.0.64529
 static constexpr std::array<trait_data_t, 3423> __trait_data_data { {
   { 1,  1, 112112,  90261, 1,  0, 117117,  386164,      0,      0,  1,  1,  -1,                          "Battle Stance", {   73,    0,    0,    0 }, {   73,    0,    0,    0 },  0, 0 },
   { 1,  1, 112179,  90322, 2, 23, 117184,  382896,      0,      0,  9,  3,  -1,       "Two-Handed Weapon Specialization", {   71,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
@@ -1225,7 +1225,7 @@ static constexpr std::array<trait_data_t, 3423> __trait_data_data { {
   { 2,  4, 112601,  90713, 1,  8, 117606,  382017,      0,      0,  7,  4,  -1,                            "Veiltouched", {  261,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
   { 2,  4, 112602,  90714, 1,  0, 117607,  277953,      0,      0,  4,  4, 100,                          "Night Terrors", {  261,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 2 },
   { 2,  4, 112603,  90715, 1,  8, 117608, 1279444,      0,      0,  5,  4,  -1,              "Improved Secret Technique", {  261,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
-  { 2,  4, 112604,  90716, 1,  8, 117609,  382506,      0,      0,  7,  5,  -1,                    "Replicating Shadows", {  261,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
+  { 2,  4, 112604,  90716, 1,  8, 117609,  382506,      0,      0,  7,  5,  -1,              "Replicating Shadows [NYI]", {  261,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
   { 2,  4, 112605,  90717, 1,  8, 117610, 1264764,      0,      0,  6,  6,  -1,                       "Shuriken Tornado", {  261,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
   { 2,  4, 112606,  90718, 1, 20, 117611, 1265952,      0,      0,  8,  6,  -1,                          "Potent Powder", {  261,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
   { 2,  4, 112607,  90719, 1, 20, 117612,  382504,      0,      0, 10,  6,  -1,                              "Dark Brew", {  261,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
@@ -3425,7 +3425,7 @@ static constexpr std::array<trait_data_t, 3423> __trait_data_data { {
   { 4, 13, 123336,  99827, 1,  0,      0,       0,      0,      0,  1,  1,  -1,                                      "0", {    0, 1467,    0,    0 }, {    0,    0,    0,    0 }, 37, 3 },
 } };
 
-// Player trait definition effect entries, wow build 12.0.0.64507
+// Player trait definition effect entries, wow build 12.0.0.64529
 static constexpr std::array<trait_definition_effect_entry_t, 498> __trait_definition_effect_data { {
   { 85158, 0, 1, 88312 },
   { 85162, 0, 1, 94588 },
@@ -4360,7 +4360,7 @@ static const std::array<uint16_t, 3423> __trait_spell_id_index { {
 
 #define MAX_HERO_TREES_PER_CLASS (4)
 
-// Hero trees, wow build 12.0.0.64507
+// Hero trees, wow build 12.0.0.64529
 static constexpr std::array<std::tuple<unsigned, const char*, unsigned>, 41> __trait_sub_tree_data { {
   { 18, "Voidweaver", 5 },
   { 19, "Archon", 5 },
