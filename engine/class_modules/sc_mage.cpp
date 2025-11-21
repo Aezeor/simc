@@ -2977,7 +2977,10 @@ struct arcane_surge_t final : public arcane_mage_spell_t
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
-    am *= 1.0 + p()->resources.pct( RESOURCE_MANA ) * ( data().effectN( 2 ).base_value() - 1.0 );
+    double max_mana_mult = data().effectN( 2 ).base_value();
+    // TODO: Doesn't seem to work ingame, best guess at how it should work
+    max_mana_mult *= 1.0 + p()->talents.mana_bomb->effectN( 1 ).percent();
+    am *= 1.0 + p()->resources.pct( RESOURCE_MANA ) * ( max_mana_mult - 1.0 );
 
     return am;
   }
@@ -5282,6 +5285,7 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
   if ( name == "arcane_barrage"    ) return new    arcane_barrage_t( name, this, options_str );
   if ( name == "arcane_blast"      ) return new      arcane_blast_t( name, this, options_str );
   if ( name == "arcane_missiles"   ) return new   arcane_missiles_t( name, this, options_str );
+  if ( name == "arcane_pulse"      ) return new      arcane_pulse_t( name, this, options_str );
   if ( name == "arcane_orb"        ) return new        arcane_orb_t( name, this, options_str );
   if ( name == "arcane_surge"      ) return new      arcane_surge_t( name, this, options_str );
   if ( name == "evocation"         ) return new         evocation_t( name, this, options_str );
