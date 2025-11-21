@@ -2629,7 +2629,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     p()->consume_burden_of_power();
-    p()->trigger_arcane_charge();
+    p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
     p()->trigger_spellfire_spheres();
     p()->trigger_mana_cascade();
 
@@ -2685,7 +2685,7 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     if ( !target_list().empty() )
-      p()->trigger_arcane_charge();
+      p()->trigger_arcane_charge( as<int>( data().effectN( 1 ).base_value() ) );
   }
 };
 
@@ -2739,9 +2739,8 @@ struct arcane_intellect_t final : public mage_spell_t
 
 struct am_data_t
 {
-  double tick_time_multiplier = 1.0;
   int targets = 0;
-  void debug( std::ostringstream& s ) const { s << " tick_time_multiplier=" << tick_time_multiplier << " targets=" << targets; }
+  void debug( std::ostringstream& s ) const { s << " targets=" << targets; }
 };
 
 struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_spell_t, am_data_t>
@@ -2786,58 +2785,23 @@ struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_sp
 
 struct arcane_missiles_t final : public custom_state_spell_t<arcane_mage_spell_t, am_data_t>
 {
-  double cc_duration_reduction;
-  double cc_tick_time_reduction;
-  bool allow_arcane_missiles_delay;
+  bool allow_arcane_missiles_delay = false;
 
   arcane_missiles_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    custom_state_spell_t( n, p, p->talents.arcane_missiles ), allow_arcane_missiles_delay( false )
+    custom_state_spell_t( n, p, p->talents.arcane_missiles )
   {
     add_option( opt_bool( "allow_arcane_missiles_delay", allow_arcane_missiles_delay ) );
     parse_options( options_str );
     may_miss = false;
-    // In the game, the tick zero of Arcane Missiles actually happens after 100 ms
     tick_zero = channeled = true;
     triggers.clearcasting = true;
     tick_action = get_action<arcane_missiles_tick_t>( "arcane_missiles_tick", p );
     cost_reductions = { p->buffs.clearcasting };
-
-    // TODO (10.1.5 PTR): the tick time reduction is in CC while the duration reduction
-    // is in Concentrated Power, which doesn't make sense and will presumably be fixed
-    const auto& cc_data = p->buffs.clearcasting_channel->data();
-    cc_duration_reduction  = cc_data.effectN( 1 ).percent();
-    cc_tick_time_reduction = cc_data.effectN( 2 ).percent();
   }
 
   result_amount_type amount_type( const action_state_t*, bool ) const override
   {
     return result_amount_type::DMG_DIRECT;
-  }
-
-  // We need to snapshot any tick time reduction effect here so that it correctly affects the whole channel.
-  void snapshot_state( action_state_t* s, result_amount_type rt ) override
-  {
-    cast_state( s )->data.tick_time_multiplier = p()->buffs.clearcasting_channel->check() ? 1.0 + cc_tick_time_reduction : 1.0;
-    custom_state_spell_t::snapshot_state( s, rt );
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    timespan_t full_duration = dot_duration * s->haste;
-
-    if ( p()->buffs.clearcasting_channel->check() )
-      full_duration *= 1.0 + cc_duration_reduction;
-
-    return full_duration;
-  }
-
-  double tick_time_pct_multiplier( const action_state_t* s ) const override
-  {
-    auto mul = custom_state_spell_t::tick_time_pct_multiplier( s );
-
-    mul *= cast_state( s )->data.tick_time_multiplier;
-
-    return mul;
   }
 
   void channel_finish()
