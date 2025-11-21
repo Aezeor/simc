@@ -200,6 +200,7 @@ public:
     buff_t* aether_attunement_counter;
     buff_t* arcane_charge;
     buff_t* arcane_familiar;
+    buff_t* arcane_salvo;
     buff_t* arcane_surge;
     buff_t* clearcasting;
     buff_t* clearcasting_channel; // Hidden buff which governs tick and channel time
@@ -809,6 +810,8 @@ public:
   void trigger_freezing( player_t* target, int stacks, proc_t* source, double chance = 1.0 );
   int  trigger_shatter( player_t* target, action_t* action, int max_consumption, bool fof = false );
   void trigger_icicle( int count = 1 );
+  // TODO: add source tracking
+  void trigger_arcane_salvo( int stacks = 1, double chance = 1.0 );
 };
 
 namespace pets {
@@ -2540,6 +2543,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * mana_pct, p()->gains.arcane_barrage, this );
 
     p()->buffs.arcane_charge->expire();
+    p()->buffs.arcane_salvo->expire();
 
     if ( p()->buffs.arcane_soul->check() )
     {
@@ -2583,6 +2587,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     double am = arcane_mage_spell_t::action_multiplier();
 
     am *= arcane_charge_multiplier( true );
+    am *= 1.0 + p()->buffs.arcane_salvo->check_stack_value();
     am *= 1.0 + p()->buffs.arcane_soul_damage->check_stack_value();
 
     return am;
@@ -2771,6 +2776,12 @@ struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_sp
   {
     custom_state_spell_t::update_state( s, flags, rt );
     cast_state( s )->data.targets = n_targets();
+  }
+
+  void execute() override
+  {
+    custom_state_spell_t::execute();
+    p()->trigger_arcane_salvo();
   }
 
   double action_multiplier() const override
@@ -5891,6 +5902,9 @@ void mage_t::create_buffs()
                                       ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
                                         { recalculate_resource_max( RESOURCE_MANA ); } )
                                       ->set_chance( talents.arcane_familiar.ok() );
+  buffs.arcane_salvo              = make_buff( this, "arcane_salvo", find_spell( 1242974 ) )
+                                      ->set_default_value_from_effect( 1 )
+                                      ->set_chance( talents.arcane_salvo.ok() );
   buffs.arcane_surge              = make_buff( this, "arcane_surge", find_spell( 365362 ) )
                                       ->set_default_value_from_effect( 3 )
                                       ->set_affects_regen( true );
@@ -6650,6 +6664,18 @@ void mage_t::trigger_mana_cascade()
       make_event( *sim, trigger_buff );
     else
       trigger_buff();
+  }
+}
+
+void mage_t::trigger_arcane_salvo( int stacks, double chance )
+{
+  if ( !talents.arcane_salvo->ok() || stacks <= 0 )
+    return;
+
+  if ( rng().roll( chance ) )
+  {
+    buffs.arcane_salvo->trigger( stacks );
+    // TODOD: proc_t* stuff
   }
 }
 
