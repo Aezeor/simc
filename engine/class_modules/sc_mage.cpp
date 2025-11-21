@@ -2633,6 +2633,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
 
     p()->consume_burden_of_power();
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
+    p()->trigger_arcane_salvo( as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
     p()->trigger_spellfire_spheres();
     p()->trigger_mana_cascade();
 
@@ -2709,6 +2710,8 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
       background = proc = true;
       cooldown->duration = 0_ms;
       base_costs[ RESOURCE_MANA ] = 0;
+      // TODO: This is probably a bug
+      affected_by.savant = true;
       return;
     }
 
@@ -2736,6 +2739,9 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
+    if ( !background )
+      p()->trigger_arcane_salvo( as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
+
     if ( arcane_pulse_echo && rng().roll( p()->talents.reverberate->effectN( 1 ).percent() ) )
       make_event( *sim, 500_ms, [ this, t = target ] { arcane_pulse_echo->execute_on_target( t ); } );
   }
