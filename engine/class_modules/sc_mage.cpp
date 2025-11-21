@@ -2846,6 +2846,8 @@ struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_sp
   {
     custom_state_spell_t::execute();
     p()->trigger_arcane_salvo();
+    p()->trigger_arcane_salvo( as<int>( p()->talents.focusing_crystal->effectN( 2 ).base_value() ),
+                               p()->talents.focusing_crystal->effectN( 1 ).percent() );
   }
 
   double action_multiplier() const override
