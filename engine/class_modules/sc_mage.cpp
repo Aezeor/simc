@@ -189,6 +189,7 @@ public:
     {
       std::unique_ptr<buff_stack_benefit_t> arcane_barrage;
       std::unique_ptr<buff_stack_benefit_t> arcane_blast;
+      std::unique_ptr<buff_stack_benefit_t> arcane_pulse;
     } arcane_charge;
   } benefits;
 
@@ -1432,9 +1433,6 @@ struct mage_spell_t : public spell_t
     bool savant = false;
     bool spellfire_sphere = true;
 
-    bool flame_quills = true;
-    bool spherical_sorcery = true;
-
     // Misc
     bool combustion = true;
     bool fires_ire = true;
@@ -2423,7 +2421,7 @@ struct arcane_orb_t final : public arcane_mage_spell_t
   const ao_type type;
 
   arcane_orb_t( std::string_view n, mage_t* p, std::string_view options_str, ao_type type_ = ao_type::NORMAL ) :
-    arcane_mage_spell_t( n, p, p->talents.arcane_orb ), // TODO: what happens when you trigger Orb Barrage w/o the orb talent
+    arcane_mage_spell_t( n, p, type_ == ao_type::NORMAL ? p->talents.arcane_orb : p->find_spell( 153626 ) ),
     type( type_ )
   {
     parse_options( options_str );
@@ -2691,6 +2689,45 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
 
     if ( !target_list().empty() )
       p()->trigger_arcane_charge( as<int>( data().effectN( 1 ).base_value() ) );
+  }
+};
+
+struct arcane_pulse_t final : public arcane_mage_spell_t
+{
+  arcane_pulse_t( std::string_view n, mage_t* p, std::string_view options_str ) :
+    arcane_mage_spell_t( n, p, p->talents.arcane_pulse )
+  {
+    parse_options( options_str );
+    triggers.clearcasting = true;
+    reduced_aoe_targets = data().effectN( 3 ).base_value();
+  }
+
+  double cost_pct_multiplier() const override
+  {
+    double c = arcane_mage_spell_t::cost_pct_multiplier();
+
+    c *= 1.0 + p()->buffs.arcane_charge->check() * p()->buffs.arcane_charge->data().effectN( 5 ).percent();
+
+    return c;
+  }
+
+  void execute() override
+  {
+    p()->benefits.arcane_charge.arcane_pulse->update();
+
+    // TODO: radius increase?
+    arcane_mage_spell_t::execute();
+
+    p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = arcane_mage_spell_t::action_multiplier();
+
+    am *= arcane_charge_multiplier();
+
+    return am;
   }
 };
 
@@ -6114,6 +6151,7 @@ void mage_t::init_benefits()
     case MAGE_ARCANE:
       benefits.arcane_charge.arcane_barrage = std::make_unique<buff_stack_benefit_t>( buffs.arcane_charge, "Arcane Barrage" );
       benefits.arcane_charge.arcane_blast = std::make_unique<buff_stack_benefit_t>( buffs.arcane_charge, "Arcane Blast" );
+      benefits.arcane_charge.arcane_pulse = std::make_unique<buff_stack_benefit_t>( buffs.arcane_charge, "Arcane Pulse" );
       break;
     default:
       break;
@@ -6290,6 +6328,7 @@ double mage_t::composite_spell_crit_chance() const
 {
   double c = player_t::composite_spell_crit_chance();
 
+  // TODO: Check the passive parsing and make sure we don't apply it twice
   if ( !buffs.combustion->check() && talents.fires_ire.ok() )
   {
     if ( bugs )
