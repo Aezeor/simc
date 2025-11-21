@@ -66,7 +66,8 @@ enum hot_streak_trigger_type_e
 enum class ao_type
 {
   NORMAL,
-  ORB_BARRAGE
+  ORB_BARRAGE,
+  ORB_MASTERY
 };
 
 enum class meteor_type
@@ -373,6 +374,7 @@ public:
     bool trigger_glorious_incandescence;
     bool trigger_overpowered_missiles;
     bool gained_initial_clearcasting; // Used to prevent queueing Arcane Missiles immediately after gaining the first stack Clearclasting.
+    bool eureka;
     int embedded_splinters;
     int remaining_splinterstorm;
     int clearcasting_blp_count;
@@ -2410,20 +2412,38 @@ struct arcane_orb_bolt_t final : public arcane_mage_spell_t
     // AC is triggered even if the spell misses.
     p()->trigger_arcane_charge();
   }
+
+  double action_multiplier() const override
+  {
+    double am = arcane_mage_spell_t::action_multiplier();
+
+    if ( p()->state.eureka )
+      am *= 1.0 + p()->talents.eureka->effectN( 1 ).percent();
+
+    return am;
+  }
 };
 
-struct arcane_orb_t final : public arcane_mage_spell_t
+struct arcane_orb_data_t
+{
+  bool eureka = false;
+  void debug( std::ostringstream& s ) const { s << " eureka=" << eureka; }
+};
+
+struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arcane_orb_data_t>
 {
   const ao_type type;
+  bool clearcasting_snapshot = false;
+  action_t* orb_mastery = nullptr;
 
   arcane_orb_t( std::string_view n, mage_t* p, std::string_view options_str, ao_type type_ = ao_type::NORMAL ) :
-    arcane_mage_spell_t( n, p, type_ == ao_type::NORMAL ? p->talents.arcane_orb : p->find_spell( 153626 ) ),
+    custom_state_spell_t( n, p, type_ == ao_type::NORMAL ? p->talents.arcane_orb : p->find_spell( 153626 ) ),
     type( type_ )
   {
     parse_options( options_str );
     may_miss = false;
     aoe = -1;
-    triggers.clearcasting = type != ao_type::ORB_BARRAGE;
+    triggers.clearcasting = type == ao_type::NORMAL;
 
     std::string_view bolt_name;
     switch ( type )
@@ -2433,6 +2453,9 @@ struct arcane_orb_t final : public arcane_mage_spell_t
         break;
       case ao_type::ORB_BARRAGE:
         bolt_name = "orb_barrage_arcane_orb_bolt";
+        break;
+      case ao_type::ORB_MASTERY:
+        bolt_name = "orb_mastery_arcane_orb_bolt";
         break;
       default:
         assert( false );
@@ -2447,18 +2470,44 @@ struct arcane_orb_t final : public arcane_mage_spell_t
       background = proc = true;
       cooldown->duration = 0_ms;
       base_costs[ RESOURCE_MANA ] = 0;
+      return;
     }
+
+    if ( p->talents.orb_mastery.ok() )
+    {
+      cost_reductions = { p->buffs.clearcasting };
+      orb_mastery = get_action<arcane_orb_t>( "orb_mastery_arcane_orb", p, "", ao_type::ORB_MASTERY );
+      add_child( orb_mastery );
+    }
+  }
+
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
+  {
+    cast_state( s )->data.eureka = p()->talents.orb_mastery.ok() && p()->talents.eureka.ok() && clearcasting_snapshot;
+    custom_state_spell_t::snapshot_state( s, rt );
   }
 
   void execute() override
   {
-    arcane_mage_spell_t::execute();
+    if ( orb_mastery && p()->buffs.clearcasting->check() )
+    {
+      int count = as<int>( p()->talents.orb_mastery->effectN( 1 ).base_value() );
+      make_repeating_event( *sim, 150_ms, [ this, t = target ] { orb_mastery->execute_on_target( t ); }, count );
+      clearcasting_snapshot = true;
+    }
+
+    custom_state_spell_t::execute();
+
     p()->trigger_arcane_charge();
+    clearcasting_snapshot = false;
   }
 
   void impact( action_state_t* s ) override
   {
-    arcane_mage_spell_t::impact( s );
+    // TODO: There's probably a nicer way to do this without having to give up on impact_spell
+    p()->state.eureka = cast_state( s )->data.eureka;
+    custom_state_spell_t::impact( s );
+    p()->state.eureka = false;
 
     if ( p()->talents.splintering_orbs.ok() )
     {
@@ -2468,6 +2517,14 @@ struct arcane_orb_t final : public arcane_mage_spell_t
       if ( s->chain_target < max_count / count )
         p()->trigger_splinter( s->target, count );
     }
+  }
+
+  double cost_pct_multiplier() const override
+  {
+    // TODO: Clearcasting is the only cost reduction now and it applies
+    // to a single spell. Perhaps we can remove the cost_reduction machinery
+    // and avoid this silly hack.
+    return mage_spell_t::cost_pct_multiplier();
   }
 };
 
