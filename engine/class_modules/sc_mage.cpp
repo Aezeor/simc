@@ -5981,6 +5981,8 @@ void mage_t::init_spells()
 
   // Wizardry
   parse_passive_effects( find_spell( 89744 ) );
+  // Mana Attunement
+  parse_passive_effects( find_spell( 121039 ) );
 }
 
 void mage_t::init_base_stats()
@@ -5994,9 +5996,6 @@ void mage_t::init_base_stats()
     regen_caches[ CACHE_MASTERY ] = true;
 
   player_t::init_base_stats();
-
-  // Mana Attunement
-  resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + find_spell( 121039 )->effectN( 1 ).percent();
 }
 
 void mage_t::create_buffs()
