@@ -904,9 +904,6 @@ struct judgment_ret_t : public judgment_t
         p()->buffs.empyrean_legacy_cooldown->trigger();
       }
     }
-    // Decrement For Whom The Bell Tolls Stacks only on Divine Resonance Judgments
-    if ( !local_is_divine_toll )
-      p()->buffs.templar.for_whom_the_bell_tolls->decrement();
   }
 
   void impact(action_state_t* s) override
@@ -924,19 +921,6 @@ struct judgment_ret_t : public judgment_t
       p()->active.highlords_judgment->execute();
     }
   }
-
-  double action_multiplier() const override
-  {
-    double am = judgment_t::action_multiplier();
-
-    // Increase Judgments damage only if it is Divine Resonance
-    if ( p()->buffs.templar.for_whom_the_bell_tolls->up() && !local_is_divine_toll )
-    {
-      am *= 1.0 + p()->buffs.templar.for_whom_the_bell_tolls->current_value;
-    }
-    return am;
-  }
-  
 };
 
 // Justicar's Vengeance
@@ -1220,17 +1204,17 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
 
 struct divine_hammer_t : public holy_power_consumer_t<paladin_spell_t>
 {
-  divine_hammer_t( paladin_t* p ) : holy_power_consumer_t<paladin_spell_t>( "divine_hammer", p, p->talents.divine_hammer )
+  divine_hammer_t( paladin_t* p ) : holy_power_consumer_t<paladin_spell_t>( "divine_hammer", p, p->talents.templar.divine_hammer )
   {
     background = true;
   }
 
   divine_hammer_t( paladin_t* p, util::string_view options_str )
-    : holy_power_consumer_t<paladin_spell_t>( "divine_hammer", p, p->talents.divine_hammer )
+    : holy_power_consumer_t<paladin_spell_t>( "divine_hammer", p, p->talents.templar.divine_hammer )
   {
     parse_options( options_str );
 
-    if ( !p->talents.divine_hammer->ok() )
+    if ( !p->talents.templar.divine_hammer->ok() )
       background = true;
   }
 
@@ -1591,7 +1575,7 @@ void paladin_t::create_buffs_retribution()
   buffs.empyrean_power = make_buff( this, "empyrean_power", find_spell( 326733 ) )
                           ->set_trigger_spell( talents.empyrean_power );
   buffs.judge_jury_and_executioner = make_buff( this, "judge_jury_and_executioner", find_spell( 453433 ) );
-  buffs.divine_hammer = make_buff( this, "divine_hammer", talents.divine_hammer )
+  buffs.divine_hammer = make_buff( this, "divine_hammer", talents.templar.divine_hammer )
     ->set_tick_on_application( true )
     ->set_partial_tick( true )
     ->set_max_stack( 1 )
@@ -1661,7 +1645,6 @@ void paladin_t::init_spells_retribution()
   talents.penitence                   = find_talent_spell( talent_tree::SPECIALIZATION, "Penitence" );
   talents.adjudication                = find_talent_spell( talent_tree::SPECIALIZATION, "Adjudication" );
   talents.heart_of_the_crusader       = find_talent_spell( talent_tree::SPECIALIZATION, "Heart of the Crusader" );
-  talents.divine_hammer               = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Hammer" );
   talents.holy_flames                 = find_talent_spell( talent_tree::SPECIALIZATION, "Holy Flames" );
   talents.blade_of_vengeance          = find_talent_spell( talent_tree::SPECIALIZATION, "Blade of Vengeance" );
   talents.vanguard_of_justice         = find_talent_spell( talent_tree::SPECIALIZATION, "Vanguard of Justice" );
@@ -1675,27 +1658,6 @@ void paladin_t::init_spells_retribution()
   talents.divine_auxiliary            = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Auxiliary" );
   talents.seething_flames             = find_talent_spell( talent_tree::SPECIALIZATION, "Seething Flames" );
   talents.burn_to_ash                 = find_talent_spell( talent_tree::SPECIALIZATION, "Burn to Ash" );
-
-  talents.vengeful_wrath = find_talent_spell( talent_tree::CLASS, "Vengeful Wrath" );
-  // for some reason find_talent_spell does not seem to work for vengeful wrath.
-  // do the lookup manually, similarly to rogues with Ghostly Strike.
-  if ( specialization() == PALADIN_RETRIBUTION && !talents.vengeful_wrath->ok() )
-  {
-    uint32_t class_idx, spec_idx;
-    dbc->spec_idx( PALADIN_RETRIBUTION, class_idx, spec_idx );
-    auto traits = trait_data_t::find_by_spell( talent_tree::CLASS, 406835, class_idx, PALADIN_RETRIBUTION, dbc->ptr );
-    for ( auto trait : traits )
-    {
-      auto it = range::find_if( player_traits, [ trait ]( const auto& entry ) {
-        return std::get<1>( entry ) == trait->id_trait_node_entry;
-      });
-
-      if ( it != player_traits.end() && std::get<2>( *it ) != 0U )
-      {
-        talents.vengeful_wrath = find_talent_spell( trait->id_trait_node_entry );
-      }
-    }
-  }
   talents.healing_hands  = find_talent_spell( talent_tree::CLASS, "Healing Hands" );
   // Spec passives and useful spells
   spec.retribution_paladin = find_specialization_spell( "Retribution Paladin" );
