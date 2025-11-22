@@ -2583,6 +2583,12 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * mana_pct, p()->gains.arcane_barrage, this );
 
     p()->buffs.arcane_charge->expire();
+    if ( int stacks = p()->buffs.arcane_salvo->check(); stacks && p()->talents.force_of_will.ok() )
+    {
+      // TODO: Force of Will seems to conjure one additional splinter if at
+      // least one stack of Arcane Salvo is present
+      p()->trigger_splinter( target, 1 + stacks / as<int>( p()->talents.force_of_will->effectN( 1 ).base_value() ) );
+    }
     p()->buffs.arcane_salvo->expire();
 
     if ( p()->buffs.arcane_soul->check() )
