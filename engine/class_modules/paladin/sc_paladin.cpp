@@ -1384,38 +1384,39 @@ struct hammer_of_justice_t : public paladin_melee_attack_t
   }
 };
 
-// Base Judgment spell ======================================================
 
-judgment_t::judgment_t( paladin_t* p, util::string_view name ) :
-  paladin_melee_attack_t( name, p, p->find_class_spell( "Judgment" ) )
+hammer_and_anvil_t::hammer_and_anvil_t( paladin_t* p, util::string_view n )
+: paladin_spell_t( n, p, p->find_spell( 433717 ) )
 {
-  // no weapon multiplier
-  weapon_multiplier = 0.0;
-  may_block = may_parry = may_dodge = false;
-
-  // force effect 1 to be used for direct ratios
-  parse_effect_data( data().effectN( 1 ) );
+  background = proc = may_crit = true;
+  may_miss                     = false;
+  aoe                          = -1;
 }
 
-proc_types judgment_t::proc_type() const
+void trigger_hammer_and_anvil( paladin_t* p, action_state_t* s, hammer_and_anvil_t* haa,
+                               hammer_and_anvil_source haas = HAA_JUDGMENT )
 {
-  return PROC1_MELEE_ABILITY;
-}
-
-void judgment_t::impact( action_state_t* s )
-{
-  paladin_melee_attack_t::impact( s );
-
-  if ( result_is_hit( s->result ) && p()->talents.greater_judgment->ok() )
+  if ( p->talents.lightsmith.hammer_and_anvil->ok() )
   {
-    p()->trigger_greater_judgment( td( s->target ) );
+    if ( ( haas == HAA_JUDGMENT && s->result == RESULT_CRIT ) || ( haas == HAA_DIVINE_TOLL ) )
+    {
+      haa->set_target( s->target );
+      haa->execute();
+    }
   }
 }
 
-void judgment_t::execute()
+// Base Judgment spell ======================================================
+
+judgment_base_t::judgment_base_t( paladin_t* p, util::string_view name, const spell_data_t* s )
+  : paladin_melee_attack_t( name, p, s ), is_how(false)
+{
+
+}
+
+void judgment_base_t::execute()
 {
   paladin_melee_attack_t::execute();
-
   if ( p()->talents.zealots_paragon->ok() )
   {
     auto extension = timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() );
@@ -1428,19 +1429,226 @@ void judgment_t::execute()
     if ( p()->buffs.sentinel->up() )
     {
       p()->buffs.sentinel->extend_duration( p(), extension );
-      // 2022-11-14 If Sentinel is still at max stacks, Zealot's Paragon increases decay length, too.
-      if ( p()->bugs && p()->buffs.sentinel->at_max_stacks() && p()->buffs.sentinel_decay->up())
-      {
-        p()->buffs.sentinel_decay->extend_duration( p(), extension );
-      }
     }
   }
+}
+void judgment_base_t::impact(action_state_t* s)
+{
+  paladin_melee_attack_t::impact( s );
+  if ( result_is_hit( s->result ) && p()->talents.greater_judgment->ok() )
+  {
+    p()->trigger_greater_judgment( td( s->target ) );
+  }
+}
+
+judgment_t::judgment_t( paladin_t* p, util::string_view name ) :
+  judgment_base_t ( p, name, p->find_class_spell( "Judgment" ) )
+{
+  // no weapon multiplier
+  weapon_multiplier = 0.0;
+  may_block = may_parry = may_dodge = false;
+  // force effect 1 to be used for direct ratios
+  parse_effect_data( data().effectN( 1 ) );
+
+  if ( p->cooldowns.judgment == nullptr )
+    p->cooldowns.judgment = cooldown;
+  else
+    cooldown = p->cooldowns.judgment;
+}
+
+proc_types judgment_t::proc_type() const
+{
+  return PROC1_MELEE_ABILITY;
+}
+
+bool judgment_t::target_ready( player_t* candidate_target )
+{
+  if ( !background && p()->get_how_availability() )
+  {
+    return false;
+  }
+
+  return judgment_base_t::target_ready( candidate_target );
+}
+
+void judgment_t::execute()
+{
+  judgment_base_t::execute();
 
   if ( p()->talents.templar.sanctification->ok() )
   {
     p()->buffs.templar.sanctification->trigger();
   }
 }
+
+  hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view options_str )
+    : judgment_base_t( p, "Hammer of Wrath",  p->find_spell( 1241413 ) ),
+      echo( nullptr )
+  {
+    parse_options( options_str );
+    is_how = true;
+    if ( p->talents.adjudication->ok() )
+    {
+      add_child( p->active.background_blessed_hammer );
+    }
+    triggers_higher_calling = true;
+
+    if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
+    {
+      echo                          = new hammer_of_wrath_t( p, "Hammer of Wrath Echo" );
+      echo->base_multiplier         = base_multiplier;
+      echo->aoe                     = aoe;
+      echo->base_aoe_multiplier     = base_aoe_multiplier;
+      echo->crit_bonus_multiplier   = crit_bonus_multiplier;
+      echo->triggers_higher_calling = true;
+      echo->base_multiplier *= p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent();
+      echo->is_how = true;
+    }
+    if (p->specialization() == PALADIN_PROTECTION)
+    {
+      if ( p->cooldowns.judgment == nullptr )
+        p->cooldowns.judgment = cooldown;
+      else
+        cooldown = p->cooldowns.judgment;
+    }
+  }
+
+  bool hammer_of_wrath_t::target_ready( player_t* candidate_target )
+  {
+    if ( !background && !p()->get_how_availability() )
+    {
+      return false;
+    }
+
+    return judgment_base_t::target_ready( candidate_target );
+  }
+
+  void hammer_of_wrath_t::execute()
+  {
+    judgment_base_t::execute();
+
+    if ( p()->buffs.final_verdict->up() )
+    {
+      p()->buffs.final_verdict->expire();
+    }
+
+    if ( p()->buffs.herald_of_the_sun.blessing_of_anshe->up() )
+    {
+      p()->buffs.herald_of_the_sun.blessing_of_anshe->expire();
+    }
+  }
+
+  double hammer_of_wrath_t::action_multiplier() const
+  {
+    double am = judgment_base_t::action_multiplier();
+
+    if ( p()->buffs.herald_of_the_sun.blessing_of_anshe->up() )
+    {
+      am *= 1.0 + p()->buffs.herald_of_the_sun.blessing_of_anshe->data().effectN( 1 ).percent();
+    }
+
+    return am;
+  }
+
+  void hammer_of_wrath_t::impact( action_state_t* s )
+  {
+    judgment_base_t::impact( s );
+
+    if ( !result_is_hit( s->result ) )
+      return;
+
+    if ( p()->talents.vanguards_momentum->ok() )
+    {
+      if ( s->target->health_percentage() <= p()->talents.vanguards_momentum->effectN( 2 ).base_value() &&
+           s->chain_target == 0 )
+      {
+        // technically this is in spell 403081 for some reason
+        p()->resource_gain( RESOURCE_HOLY_POWER, 1, p()->gains.hp_vm );
+      }
+    }
+
+    if ( s->result == RESULT_CRIT && p()->talents.herald_of_the_sun.sun_sear->ok() &&
+         p()->specialization() == PALADIN_RETRIBUTION )
+    {
+      p()->active.sun_sear->target = s->target;
+      p()->active.sun_sear->execute();
+    }
+
+    if ( echo != nullptr && s->chain_target == 0 && p()->cooldowns.second_sunrise_icd->up() )
+    {
+      if ( rng().roll( p()->talents.herald_of_the_sun.second_sunrise->effectN( 1 ).percent() ) )
+      {
+        p()->cooldowns.second_sunrise_icd->start();
+        // TODO(mserrano): verify this delay
+        echo->target = s->target;
+        echo->start_action_execute_event( 200_ms );
+      }
+    }
+  }
+
+  double hammer_of_wrath_t::composite_target_multiplier( player_t* target ) const
+  {
+    double ctm = judgment_base_t::composite_target_multiplier( target );
+
+    if ( p()->talents.vengeful_wrath->ok() )
+    {
+      // ToDo Fluttershy: Verify, also verify ranks
+      ctm *= 1.0 + p()->talents.vengeful_wrath->effectN( 1 ).percent() * ( 1.0 - target->health_percentage() );
+    }
+
+    return ctm;
+  }
+
+
+void paladin_t::trigger_greater_judgment( paladin_td_t* targetdata, bool remove_stack )
+{
+  if ( !targetdata->target->in_combat )
+    return;
+
+  if ( !remove_stack )
+    targetdata->debuff.judgment->trigger();
+
+  auto stack = spells.judgment_debuff->initial_stacks();
+  if ( remove_stack )
+    stack--;
+
+  if ( stack )
+    targetdata->debuff.judgment->trigger( stack );
+}
+struct divine_toll_t : public paladin_spell_t
+{
+  divine_toll_t( paladin_t* p, util::string_view options_str )
+    : paladin_spell_t( "divine_toll", p, p->talents.divine_toll )
+  {
+    parse_options( options_str );
+
+    aoe = as<int>( data().effectN( 1 ).base_value() );
+
+    add_child( p->active.divine_toll );
+    add_child( p->active.divine_resonance );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    paladin_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      p()->active.divine_toll->set_target( s->target );
+      p()->active.divine_toll->execute();
+    }
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+    if ( p()->talents.divine_resonance->ok() )
+    {
+      p()->buffs.divine_resonance->trigger();
+    }
+  }
+};
+
 // Rebuke ===================================================================
 
 struct rebuke_t : public paladin_melee_attack_t
@@ -1483,43 +1691,6 @@ struct hand_of_reckoning_t : public paladin_melee_attack_t
       target->taunt( player );
 
     paladin_melee_attack_t::impact( s );
-  }
-};
-
-
-// Covenants =======
-
-struct divine_toll_t : public paladin_spell_t
-{
-  divine_toll_t( paladin_t* p, util::string_view options_str )
-    : paladin_spell_t( "divine_toll", p, p->talents.divine_toll )
-  {
-    parse_options( options_str );
-
-    aoe = as<int>( data().effectN( 1 ).base_value() );
-
-    add_child( p->active.divine_toll );
-    add_child( p->active.divine_resonance );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    paladin_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-    {
-      p()->active.divine_toll->set_target( s->target );
-      p()->active.divine_toll->execute();
-    }
-  }
-
-  void execute() override
-  {
-    paladin_spell_t::execute();
-    if ( p()->talents.divine_resonance->ok() )
-    {
-      p()->buffs.divine_resonance->trigger();
-    }
   }
 };
 
@@ -1965,22 +2136,6 @@ void paladin_t::trigger_lights_deliverance()
   buffs.templar.lights_deliverance->expire();
 }
 
-void paladin_t::trigger_greater_judgment(paladin_td_t* targetdata, bool remove_stack )
-{
-  if ( !targetdata->target->in_combat )
-    return;
-
-  if ( !remove_stack )
-    targetdata->debuff.judgment->trigger();
-
-  auto stack = spells.judgment_debuff->initial_stacks();
-  if ( remove_stack )
-    stack--;
-
-  if ( stack )
-    targetdata->debuff.judgment->trigger( stack );
-}
-
 // Holy Armaments
 // Sacred Weapon Driver
 struct sacred_weapon_proc_damage_t : public paladin_spell_t
@@ -2421,152 +2576,6 @@ struct eye_for_an_eye_t : public paladin_spell_t
   eye_for_an_eye_t( paladin_t* p ) : paladin_spell_t( "eye_for_an_eye", p, p->find_spell( 469311 ) )
   {
     background = true;
-  }
-};
-
-// Hammer of Wrath
-
-struct hammer_of_wrath_t : public paladin_melee_attack_t
-{
-private:
-  hammer_of_wrath_t* echo;
-
-  hammer_of_wrath_t( paladin_t* p )
-    : paladin_melee_attack_t( "hammer_of_wrath_echo", p, p->find_talent_spell( talent_tree::CLASS, "Hammer of Wrath" ) ),
-      echo( nullptr )
-  {
-    background = true;
-  }
-
-public:
-  hammer_of_wrath_t( paladin_t* p, util::string_view options_str )
-    : paladin_melee_attack_t( "hammer_of_wrath", p, p->find_talent_spell( talent_tree::CLASS, "Hammer of Wrath" ) ),
-      echo( nullptr )
-  {
-    parse_options( options_str );
-
-    if ( p->talents.adjudication->ok() )
-    {
-      add_child( p->active.background_blessed_hammer );
-    }
-    triggers_higher_calling = true;
-
-    if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
-    {
-      echo = new hammer_of_wrath_t( p );
-      echo->base_multiplier = base_multiplier;
-      echo->aoe = aoe;
-      echo->base_aoe_multiplier = base_aoe_multiplier;
-      echo->crit_bonus_multiplier = crit_bonus_multiplier;
-      echo->triggers_higher_calling = true;
-      echo->base_multiplier *= p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent();
-    }
-  }
-
-  bool target_ready( player_t* candidate_target ) override
-  {
-    if ( !background && !p()->get_how_availability() )
-    {
-      return false;
-    }
-
-    return paladin_melee_attack_t::target_ready( candidate_target );
-  }
-
-  void execute() override
-  {
-    paladin_melee_attack_t::execute();
-
-    if ( p()->buffs.final_verdict->up() )
-    {
-      p()->buffs.final_verdict->expire();
-    }
-
-    if ( p()->buffs.herald_of_the_sun.blessing_of_anshe->up() )
-    {
-      p()->buffs.herald_of_the_sun.blessing_of_anshe->expire();
-    }
-  }
-
-  double action_multiplier() const override
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-
-    if ( p()->buffs.herald_of_the_sun.blessing_of_anshe->up() )
-    {
-      am *= 1.0 + p()->buffs.herald_of_the_sun.blessing_of_anshe->data().effectN( 1 ).percent();
-    }
-
-    return am;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    paladin_melee_attack_t::impact( s );
-
-    if ( !result_is_hit( s->result ) )
-      return;
-
-    if ( p()->talents.zealots_paragon->ok() )
-    {
-      auto extension = timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() );
-
-      if ( p()->buffs.avenging_wrath->up() )
-      {
-        p()->buffs.avenging_wrath->extend_duration( p(), extension );
-      }
-
-      if ( p()->buffs.sentinel->up() )
-      {
-        p()->buffs.sentinel->extend_duration( p(), extension );
-        // 2022-11-14 If Sentinel is still at max stacks, Zealot's Paragon increases decay length, too.
-        if ( p()->bugs && p()->buffs.sentinel->at_max_stacks() && p()->buffs.sentinel_decay->up() )
-        {
-          p()->buffs.sentinel_decay->extend_duration( p(), extension );
-        }
-      }
-    }
-
-    if ( p()->talents.vanguards_momentum->ok() )
-    {
-      if ( s->target->health_percentage() <= p()->talents.vanguards_momentum->effectN( 2 ).base_value() && s->chain_target == 0 )
-      {
-        // technically this is in spell 403081 for some reason
-        p()->resource_gain( RESOURCE_HOLY_POWER, 1, p()->gains.hp_vm );
-      }
-    }
-
-    if ( s->result == RESULT_CRIT && p()->talents.herald_of_the_sun.sun_sear->ok() && p()->specialization() == PALADIN_RETRIBUTION )
-    {
-      p()->active.sun_sear->target = s->target;
-      p()->active.sun_sear->execute();
-    }
-
-    if ( echo != nullptr &&
-        s->chain_target == 0 &&
-        p()->cooldowns.second_sunrise_icd->up() )
-    {
-      if ( rng().roll( p()->talents.herald_of_the_sun.second_sunrise->effectN( 1 ).percent() ) )
-      {
-        p()->cooldowns.second_sunrise_icd->start();
-        // TODO(mserrano): verify this delay
-        echo->target = s->target;
-        echo->start_action_execute_event( 200_ms );
-      }
-    }
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double ctm = paladin_melee_attack_t::composite_target_multiplier( target );
-
-    if ( p()->talents.vengeful_wrath->ok() )
-    {
-      // ToDo Fluttershy: Verify, also verify ranks
-      ctm *= 1.0 + p()->talents.vengeful_wrath->effectN( 1 ).percent() * ( 1.0 - target->health_percentage() );
-    }
-
-    return ctm;
   }
 };
 
@@ -4500,18 +4509,6 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
         s->self_absorb_amount += block_amount;
         s->result_amount -= block_amount;
         s->result_absorbed = s->result_amount;
-
-        // hack to register this on the abilities table
-        if ( s->result_type != result_amount_type::DMG_OVER_TIME )
-        {
-          buffs.holy_shield_absorb->trigger( 1, block_amount );
-          buffs.holy_shield_absorb->consume( block_amount );
-        }
-        else
-        {
-          buffs.divine_bulwark_absorb->trigger( 1, block_amount );
-          buffs.divine_bulwark_absorb->consume( block_amount );
-        }
       }
       else
       {

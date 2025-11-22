@@ -1862,17 +1862,45 @@ struct avenging_wrath_t : public paladin_spell_t
   action_state_t* new_state() override;
 };
 
-struct judgment_t : public paladin_melee_attack_t
+struct judgment_base_t : public paladin_melee_attack_t
+{
+  bool is_how;
+  judgment_base_t( paladin_t* p, util::string_view name, const spell_data_t* s = spell_data_t::nil() );
+  void impact( action_state_t* s ) override;
+  void execute();
+};
+
+struct judgment_t : public judgment_base_t
 {
   judgment_t( paladin_t* p, util::string_view name );
 
   proc_types proc_type() const override;
-  void impact( action_state_t* s ) override;
   void execute() override;
+  bool target_ready( player_t* candidate_target ) override;
+};
+
+struct hammer_of_wrath_t : public judgment_base_t
+{
+private:
+  hammer_of_wrath_t* echo;
+
+public:
+  hammer_of_wrath_t( paladin_t* p, util::string_view name );
+  bool target_ready( player_t* candidate_target ) override;
+  void execute() override;
+  double action_multiplier() const override;
+  void impact( action_state_t* s ) override;
+  double composite_target_multiplier( player_t* target ) const override;
 };
 
 struct shield_of_the_righteous_buff_t : public buff_t
 {
   shield_of_the_righteous_buff_t( paladin_t* p );
 };
+struct hammer_and_anvil_t : public paladin_spell_t
+{
+  hammer_and_anvil_t( paladin_t* p, util::string_view name );
+};
+void trigger_hammer_and_anvil( paladin_t* p, action_state_t* s, hammer_and_anvil_t* haa,
+                               hammer_and_anvil_source haas );
 }  // namespace paladin

@@ -80,21 +80,6 @@ struct ardent_defender_t : public paladin_spell_t
   }
 };
 
-// Heartfire ================================================================
-
-struct heartfire_t : public residual_action::residual_periodic_action_t<paladin_spell_t>
-{
-  heartfire_t( paladin_t* p ) : base_t( "heartfire", p, p->find_spell( 408461 ) )
-  {
-    background = true;
-    may_miss = may_crit = false;
-    dot_duration        = timespan_t::from_seconds( 5 );
-    base_tick_time      = timespan_t::from_seconds( 1 );
-    tick_zero           = false;
-    hasted_ticks        = false;
-  }
-};
-
 // Avengers Shield ==========================================================
 
 // This struct is for all things Avenger's Shield which should occur baseline, disregarding whether it's selfcast, Divine Resonance or Divine Toll.
@@ -113,11 +98,9 @@ struct avengers_shield_base_t : public paladin_spell_t
     }
   };
 
-  heartfire_t* heartfire;
   tyrs_enforcer_t* tyrs_enforcer;
   avengers_shield_base_t( util::string_view n, paladin_t* p, util::string_view options_str )
     : paladin_spell_t( n, p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Avenger's Shield" ) ),
-      heartfire( nullptr ),
       tyrs_enforcer( nullptr )
   {
     parse_options( options_str );
@@ -245,29 +228,6 @@ struct avengers_shield_t : public avengers_shield_base_t
     cooldown = p->cooldowns.avengers_shield;
   }
 };
-
-struct hammer_and_anvil_t : public paladin_spell_t
-{
-  hammer_and_anvil_t( util::string_view n, paladin_t* p ) : paladin_spell_t( n, p, p->find_spell( 433717 ) )
-  {
-    background = proc = may_crit = true;
-    may_miss                     = false;
-    aoe                          = -1;
-  }
-};
-
-void trigger_hammer_and_anvil( paladin_t* p, action_state_t* s, hammer_and_anvil_t* haa,
-                               hammer_and_anvil_source haas = HAA_JUDGMENT )
-{
-  if ( p->talents.lightsmith.hammer_and_anvil->ok() )
-  {
-    if ( ( haas == HAA_JUDGMENT && s->result == RESULT_CRIT ) || ( haas == HAA_DIVINE_TOLL ) )
-    {
-      haa->set_target( s->target );
-      haa->execute();
-    }
-  }
-}
 
 struct blessed_hammer_data_t
 {
@@ -578,12 +538,10 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 
 struct judgment_prot_t : public judgment_t
 {
-  heartfire_t* heartfire;
   int judge_holy_power, sw_holy_power;
   hammer_and_anvil_t* hammer_and_anvil;
   judgment_prot_t( paladin_t* p, util::string_view name, util::string_view options_str )
     : judgment_t( p, name ),
-      heartfire( nullptr ),
       judge_holy_power( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) ),
       sw_holy_power( as<int>( p->talents.sanctified_wrath->effectN( 3 ).base_value() ) ),
       hammer_and_anvil( nullptr )
@@ -592,7 +550,7 @@ struct judgment_prot_t : public judgment_t
     triggers_higher_calling = true;
     if (p->talents.lightsmith.hammer_and_anvil->ok())
     {
-      hammer_and_anvil = new hammer_and_anvil_t( "hammer_and_anvil_j", p );
+      hammer_and_anvil = new hammer_and_anvil_t( p, "hammer_and_anvil_j" );
       add_child( hammer_and_anvil );
     }
   }
@@ -617,7 +575,7 @@ struct judgment_prot_t : public judgment_t
   void impact( action_state_t* s ) override
   {
     judgment_t::impact( s );
-    trigger_hammer_and_anvil( p(), s, hammer_and_anvil );
+    trigger_hammer_and_anvil( p(), s, hammer_and_anvil, HAA_JUDGMENT );
   }
 };
 
@@ -742,9 +700,10 @@ void paladin_t::target_mitigation( school_e school,
     s->result_amount *= 1.0 + adReduce;
   }
 
-  if ( buffs.blessing_of_dusk->up() )
+  if ( talents.blessing_of_dusk->ok() )
   {
-    s->result_amount *= 1.0 + buffs.blessing_of_dusk->data().effectN( 1 ).percent();
+    // ToDo Fluttershy: Fix or remove
+    s->result_amount *= 1.0 - talents.blessing_of_dusk->effectN( 1 ).percent();
   }
 
   if ( buffs.devotion_aura->up() )
