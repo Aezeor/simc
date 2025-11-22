@@ -2676,6 +2676,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     p()->consume_burden_of_power();
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
     p()->trigger_arcane_salvo( as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
+    p()->trigger_splinter( p()->target );
     p()->trigger_spellfire_spheres();
     p()->trigger_mana_cascade();
 
@@ -2782,6 +2783,7 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
+    p()->trigger_splinter( p()->target ); // Also triggers from echo
     if ( !background )
       p()->trigger_arcane_salvo( as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
 
@@ -6034,7 +6036,8 @@ void mage_t::create_buffs()
                                       ->set_cooldown( 0_ms )
                                       ->set_affects_regen( true );
   buffs.overpowered_missiles      = make_buff( this, "overpowered_missiles", find_spell( 1277009 ) )
-                                      ->set_default_value_from_effect( 1 );
+                                      ->set_default_value_from_effect( 1 )
+                                      ->set_chance( talents.overpowered_missiles.ok() );
   buffs.presence_of_mind          = make_buff( this, "presence_of_mind", find_spell( 205025 ) )
                                       ->set_cooldown( 0_ms )
                                       ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
