@@ -3987,7 +3987,7 @@ struct ice_lance_t final : public frost_mage_spell_t
       frost_mage_spell_t( n, p, p->find_spell( 228598 ) ),
       freezing_consume( as<int>( p->spec.shatter->effectN( 4 ).base_value() ) )
     {
-      background = proc = true;
+      background = true;
       // Spell data contains the AoE effect which is disabled unless you pick Fractured Frost
       // Fix the spell power mod and use base_aoe_multiplier for the cleave
       double primary_coef = data().effectN( 1 ).sp_coeff();
