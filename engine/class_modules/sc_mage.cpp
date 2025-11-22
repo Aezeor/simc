@@ -2528,17 +2528,6 @@ struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arc
   }
 };
 
-// TODO 11.1: Not a mage spell and thus not affected by a lot of mage stuff
-struct arcane_rebound_t final : public spell_t
-{
-  arcane_rebound_t( std::string_view n, mage_t* p ) :
-    spell_t( n, p, p->find_spell( 1223801 ) )
-  {
-    background = proc = true;
-    aoe = -1;
-  }
-};
-
 struct arcane_barrage_t final : public arcane_mage_spell_t
 {
   action_t* orb_barrage = nullptr;
@@ -5989,6 +5978,9 @@ void mage_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
+
+  // Wizardry
+  parse_passive_effects( find_spell( 89744 ) );
 }
 
 void mage_t::init_base_stats()
