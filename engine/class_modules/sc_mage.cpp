@@ -2888,7 +2888,8 @@ struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_sp
     assert( custom_state_spell_t::n_targets() == 0 );
     int targets = 1;
     targets += as<int>( p()->talents.aether_attunement->effectN( 2 ).base_value() );
-    targets += as<int>( p()->buffs.overpowered_missiles->data().effectN( 2 ).base_value() );
+    if ( p()->talents.overpowered_missiles.ok() )
+      targets += as<int>( p()->buffs.overpowered_missiles->data().effectN( 2 ).base_value() );
     return targets == 1 ? 0 : targets;
   }
 
