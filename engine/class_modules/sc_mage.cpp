@@ -2754,6 +2754,7 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, echo ? p->find_spell( 1243460 ) : p->talents.arcane_pulse )
   {
     parse_options( options_str );
+    aoe = -1;
     // TODO: Can the echo also trigger CC?
     triggers.clearcasting = true;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
@@ -2888,7 +2889,7 @@ struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_sp
     assert( custom_state_spell_t::n_targets() == 0 );
     int targets = 1;
     targets += as<int>( p()->talents.aether_attunement->effectN( 2 ).base_value() );
-    if ( p()->talents.overpowered_missiles.ok() )
+    if ( p()->buffs.overpowered_missiles->check() )
       targets += as<int>( p()->buffs.overpowered_missiles->data().effectN( 2 ).base_value() );
     return targets == 1 ? 0 : targets;
   }
@@ -3079,7 +3080,8 @@ struct arcane_surge_t final : public arcane_mage_spell_t
 
     // Clear any existing surge buffs to trigger the DF2 4pc buff.
     p()->buffs.arcane_surge->expire();
-    timespan_t bonus_duration = p()->buffs.spellfire_sphere->check() * p()->buffs.spellfire_sphere->data().effectN( 5 ).time_value();
+    // TODO: fixme
+    timespan_t bonus_duration = 0_ms; // p()->buffs.spellfire_sphere->check() * p()->buffs.spellfire_sphere->data().effectN( 5 ).time_value();
     timespan_t arcane_surge_duration = p()->buffs.arcane_surge->buff_duration() + bonus_duration;
     p()->buffs.arcane_surge->trigger( arcane_surge_duration );
 
@@ -6942,6 +6944,7 @@ bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool never_p
     {
       // If Overpowered Missiles triggers during AM channel, the buff application
       // is delayed until the channel ends (or is refreshed).
+      // TODO: Should we use the delay param here?
       if ( channeling && channeling->id == 5143 )
         state.trigger_overpowered_missiles = true;
       else
