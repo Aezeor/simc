@@ -3411,10 +3411,6 @@ struct fireball_t final : public fire_mage_spell_t
     if ( p->talents.master_of_flame.ok() )
       master_of_flame_mult *= 1.0 + p->find_spell( 1217750 )->effectN( 1 ).percent();
 
-    // TODO: Seems to get another 8% from Frostfire Infusion without any apparent reason
-    if ( frostfire )
-      base_multiplier *= 1.0 + p->talents.frostfire_infusion->effectN( 3 ).percent();
-
     if ( data().ok() && p->talents.frostfire_empowerment.ok() )
       add_child( p->action.frostfire_empowerment );
   }
@@ -3668,10 +3664,6 @@ struct frostbolt_t final : public frost_mage_spell_t
     bf_chance = p->talents.brain_freeze->effectN( 1 ).percent();
     freezing_stacks = as<int>( p->spec.shatter->effectN( 1 ).base_value() );
 
-    // TODO: Seems to get another 8% from Frostfire Infusion without any apparent reason
-    if ( frostfire )
-      base_multiplier *= 1.0 + p->talents.frostfire_infusion->effectN( 3 ).percent();
-
     if ( data().ok() && p->talents.frostfire_empowerment.ok() )
       add_child( p->action.frostfire_empowerment );
   }
@@ -3882,9 +3874,6 @@ struct glacial_spike_t final : public frost_mage_spell_t
 
     if ( p->talents.flash_freezeburn.ok() )
       add_child( p->action.flash_freezeburn );
-
-    // TODO: Seems to get another 8% from Frostfire Infusion without any apparent reason
-    base_multiplier *= 1.0 + p->talents.frostfire_infusion->effectN( 3 ).percent();
   }
 
   void init_finished() override
@@ -5948,8 +5937,9 @@ void mage_t::init_spells()
   register_passive_effect_mask( talents.frostfire_infusion,
     specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 1 ) : effect_mask_t( true ).disable( 2 ) );
 
+  // TODO: Technically, Frost can (and does) benefit from the Pyroblast effect
   register_passive_effect_mask( talents.dualcasting_adept,
-    specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 1, 3, 6 ) : effect_mask_t( true ).disable( 2, 4, 5 ) );
+    specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 1 ) : effect_mask_t( true ).disable( 2 ) );
 
   // TODO: The effects aren't properly disabled in game, so both CmS and Meteor get 44% extra damage
   // register_passive_effect_mask( talents.blast_radius,
