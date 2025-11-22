@@ -5006,6 +5006,9 @@ struct splinter_t final : public mage_spell_t
       controlled_instincts->execute_on_target( s->target, pct * s->result_total );
     }
 
+    p()->trigger_arcane_salvo( as<int>( p()->talents.infused_splinters->effectN( 3 ).base_value() ),
+                               p()->talents.infused_splinters->effectN( 1 ).percent() );
+
     auto cd = p()->specialization() == MAGE_FROST ? p()->cooldowns.frozen_orb : p()->cooldowns.arcane_orb;
     cd->adjust( -p()->talents.spellfrost_teachings->effectN( p()->specialization() == MAGE_FROST ? 2 : 1 ).time_value(), false );
   }
