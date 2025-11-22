@@ -97,6 +97,7 @@ struct mage_td_t final : public actor_target_data_t
     buff_t* controlled_destruction;
     buff_t* freezing;
     buff_t* molten_fury;
+    buff_t* touch_of_the_archmage;
     buff_t* touch_of_the_magi;
   } debuffs;
 
@@ -173,6 +174,7 @@ public:
     action_t* splinter_dot;
     action_t* splinter_recall;
     action_t* splinterstorm;
+    action_t* touch_of_the_archmage;
     action_t* touch_of_the_magi_explosion;
 
     struct shatter_actions_t
@@ -1322,8 +1324,18 @@ struct touch_of_the_magi_t final : public buff_t
     buff_t::expire_override( stacks, duration );
 
     auto p = debug_cast<mage_t*>( source );
-    double pct = p->talents.touch_of_the_magi->effectN( 1 ).percent();
-    p->action.touch_of_the_magi_explosion->execute_on_target( player, pct * current_value );
+    // TODO: This *should* be affected by Touch of the Archmage and provide 25%, but
+    // it currently doesn't seem to work ingame.
+    double damage = current_value * p->talents.touch_of_the_magi->effectN( 1 ).percent();
+    p->action.touch_of_the_magi_explosion->execute_on_target( player, damage );
+    if ( p->talents.touch_of_the_archmage_3.ok() )
+    {
+      auto* debuff = p->get_target_data( player )->debuffs.touch_of_the_archmage;
+      double ticks = std::round( debuff->buff_duration() / debuff->buff_period );
+      // TODO: This seems to actually be using effect2, causing it to do 4 times as much damage
+      double total = damage * p->talents.touch_of_the_archmage_3->effectN( 1 ).percent();
+      debuff->trigger( -1, total / ticks );
+    }
   }
 };
 
@@ -4692,6 +4704,9 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
 
     if ( data().ok() )
       add_child( p->action.touch_of_the_magi_explosion );
+
+    if ( p->talents.touch_of_the_archmage_3.ok() )
+      add_child( p->action.touch_of_the_archmage );
   }
 
   void execute() override
@@ -4748,6 +4763,20 @@ struct touch_of_the_magi_explosion_t final : public spell_t
 
     // For some reason, Touch of the Magi triple dips damage reductions.
     return m * std::min( m, 1.0 );
+  }
+};
+
+struct touch_of_the_archmage_t final : public spell_t
+{
+  touch_of_the_archmage_t( std::string_view n, mage_t* p ) :
+    spell_t( n, p, p->find_spell( 1258036 ) )
+  {
+    background = proc = true;
+    aoe = -1;
+    base_dd_min = base_dd_max = 1.0;
+    double m = 1.0 + p->talents.touch_of_the_archmage_3->effectN( 2 ).percent();
+    base_multiplier     *= m;
+    base_aoe_multiplier /= m;
   }
 };
 
@@ -5318,6 +5347,10 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.molten_fury            = make_buff( *this, "molten_fury", mage->find_spell( 458910 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->set_chance( mage->talents.molten_fury.ok() );
+  debuffs.touch_of_the_archmage  = make_buff( *this, "touch_of_the_archmage", mage->find_spell( 1258134 ) )
+                                     ->set_tick_callback( [ mage ] ( buff_t* b, int, timespan_t )
+                                       { mage->action.touch_of_the_archmage->execute_on_target( b->player, b->check_value() ); } )
+                                     ->set_chance( mage->talents.touch_of_the_archmage_3.ok() );
   debuffs.touch_of_the_magi      = make_buff<buffs::touch_of_the_magi_t>( this );
 }
 
@@ -5451,6 +5484,9 @@ void mage_t::create_actions()
 
   if ( talents.touch_of_the_magi.ok() )
     action.touch_of_the_magi_explosion = get_action<touch_of_the_magi_explosion_t>( "touch_of_the_magi_explosion", this );
+
+  if ( talents.touch_of_the_archmage_3.ok() )
+    action.touch_of_the_archmage = get_action<touch_of_the_archmage_t>( "touch_of_the_archmage", this );
 
   if ( talents.hand_of_frost_1.ok() )
     action.hand_of_frost = get_action<hand_of_frost_t>( "hand_of_frost", this );
