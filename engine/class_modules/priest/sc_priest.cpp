@@ -2986,8 +2986,8 @@ void priest_t::init_spells()
 
   // PvP Talents
   talents.pvp.mindgames                  = find_spell( 375901 );
-  talents.pvp.mindgames_healing_reversal = find_spell( 323707 );  // TODO: Swap to new DF spells
-  talents.pvp.mindgames_damage_reversal  = find_spell( 323706 );  // TODO: Swap to new DF spells 375902 + 375904
+  talents.pvp.mindgames_healing_reversal = find_spell( 323707 );
+  talents.pvp.mindgames_damage_reversal  = find_spell( 323706 );
 
   // Archon Hero Talents (Holy/Shadow)
   talents.archon.halo                     = HT( "Halo" );
