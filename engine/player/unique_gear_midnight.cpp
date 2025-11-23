@@ -73,6 +73,104 @@ void register_special_effect( std::initializer_list<unsigned> spell_ids, custom_
 
 namespace consumables
 {
+// Food
+static constexpr unsigned food_coeff_spell_id = 1219179;
+using selector_fn = std::function<stat_e( const player_t*, util::span<const stat_e> )>;
+
+struct selector_food_buff_t : public consumable_buff_t<stat_buff_t>
+{
+
+  double amount;
+  bool highest;
+
+  selector_food_buff_t( const special_effect_t& e, bool b )
+    : consumable_buff_t( e.player, e.name(), e.driver() ), highest( b )
+  {
+    amount = e.stat_amount;
+  }
+
+  void start( int s, double v, timespan_t d ) override
+  {
+    auto stat = highest ? util::highest_stat( player, secondary_ratings )
+                        : util::lowest_stat( player, secondary_ratings );
+
+    if( !manual_stats_added )
+      add_stat( stat, amount );
+
+    consumable_buff_t::start( s, v, d );
+  }
+};
+
+custom_cb_t selector_food( unsigned id, bool highest, bool major = true )
+{
+  return [ = ]( special_effect_t& effect ) {
+    effect.spell_id = id;
+
+    auto coeff = effect.player->find_spell( food_coeff_spell_id );
+
+    effect.stat_amount = coeff->effectN( 4 ).average( effect );
+    if ( !major )
+      effect.stat_amount *= coeff->effectN( 1 ).base_value() * 0.1;
+
+    effect.custom_buff = new selector_food_buff_t( effect, highest );
+  };
+}
+
+custom_cb_t primary_food( unsigned id, stat_e stat, size_t primary_idx = 3, bool major = true )
+{
+  return [ = ]( special_effect_t& effect ) {
+    effect.spell_id = id;
+
+    auto coeff = effect.player->find_spell( food_coeff_spell_id );
+
+    auto buff = create_buff<consumable_buff_t<stat_buff_t>>( effect.player, effect.driver() );
+
+    if ( primary_idx )
+    {
+      auto _amt = coeff->effectN( primary_idx ).average( effect );
+      if ( !major )
+        _amt *= coeff->effectN( 1 ).base_value() * 0.1;
+
+      buff->add_stat( effect.player->convert_hybrid_stat( stat ), _amt );
+    }
+
+    if ( primary_idx == 3 )
+    {
+      auto _amt = coeff->effectN( 8 ).average( effect );
+      if ( !major )
+        _amt *= coeff->effectN( 1 ).base_value() * 0.1;
+
+      buff->add_stat( STAT_STAMINA, _amt );
+    }
+
+    effect.custom_buff = buff;
+  };
+}
+
+custom_cb_t secondary_food( unsigned id, stat_e stat1, stat_e stat2 = STAT_NONE )
+{
+  return [ = ]( special_effect_t& effect ) {
+    effect.spell_id = id;
+
+    auto coeff = effect.player->find_spell( food_coeff_spell_id );
+
+    auto buff = create_buff<consumable_buff_t<stat_buff_t>>( effect.player, effect.driver() );
+
+    if ( stat2 == STAT_NONE )
+    {
+      auto _amt = coeff->effectN( 4 ).average( effect );
+      buff->add_stat( stat1, _amt );
+    }
+    else
+    {
+      auto _amt = coeff->effectN( 5 ).average( effect );
+      buff->add_stat( stat1, _amt );
+      buff->add_stat( stat2, _amt );
+    }
+
+    effect.custom_buff = buff;
+  };
+}
 // Potions
 // Draught of Rampant Abandon
 // 1236998 driver & buff
@@ -539,9 +637,41 @@ void register_special_effects()
 {
   // NOTE: use unique_gear:: namespace for static consumables so we don't activate them with enable_all_item_effects
   // Food
+  unique_gear::register_special_effect( 1232257, consumables::selector_food( 1219185, true ) );  // bloom skewers / [PH] Vegetarian Recipe
+  unique_gear::register_special_effect( 1232916, consumables::selector_food( 1219185, true ) );  // braised blood hunter
+  unique_gear::register_special_effect( 1232915, consumables::selector_food( 1219185, true ) );  // crimson calamari
+  unique_gear::register_special_effect( 1219187, consumables::selector_food( 1219185, true ) );  // felberry figs
+  unique_gear::register_special_effect( 1232914, consumables::selector_food( 1219185, true ) );  // tasty smoked tetra
+  unique_gear::register_special_effect( 1232489, consumables::selector_food( 1219185, true ) );  // twilight angler's medley
+  unique_gear::register_special_effect( 1259656, consumables::primary_food( 1232324, STAT_STR_AGI_INT, 2 ) ); // blooming feast
+  unique_gear::register_special_effect( 1259657, consumables::primary_food( 1232325, STAT_STR_AGI_INT, 2 ) ); // quel'dorei medley
+  unique_gear::register_special_effect( 1259658, consumables::primary_food( 1232582, STAT_STR_AGI_INT, 2 ) ); // rootland celebration
+  unique_gear::register_special_effect( 1259659, consumables::primary_food( 1232585, STAT_STR_AGI_INT, 2 ) ); // silvermoon parade
+  unique_gear::register_special_effect( 1232919, consumables::primary_food( 1233408, STAT_INTELLECT, 3 ) ); // flora frenzy / champion's bento
+  unique_gear::register_special_effect( 1232917, consumables::primary_food( 1232584, STAT_STAMINA, 7 ) );  // royal roast
+  unique_gear::register_special_effect( 1232902, consumables::secondary_food( 1219183, STAT_CRIT_RATING ) ); // arcano cutlets
+  unique_gear::register_special_effect( 1232903, consumables::secondary_food( 1232087, STAT_HASTE_RATING ) ); // fel-kissed filet
+  unique_gear::register_special_effect( 1232905, consumables::secondary_food( 1232089, STAT_MASTERY_RATING ) ); // warped wise wings
+  unique_gear::register_special_effect( 1232906, consumables::secondary_food( 1232091, STAT_VERSATILITY_RATING ) ); // void-kissed fish rolls
+  unique_gear::register_special_effect( 1232253, consumables::secondary_food( 1232321, STAT_CRIT_RATING, STAT_VERSATILITY_RATING ) ); // spiced biscuits
+  unique_gear::register_special_effect( 1232910, consumables::secondary_food( 1232492, STAT_VERSATILITY_RATING, STAT_SPEED_RATING ) ); // buttered root crab
+  unique_gear::register_special_effect( 1232481, consumables::secondary_food( 1233400, STAT_MASTERY_RATING, STAT_HASTE_RATING ) ); // bloodthistle-wrapped cutlets
+  unique_gear::register_special_effect( 1232485, consumables::secondary_food( 1232318, STAT_MASTERY_RATING, STAT_CRIT_RATING ) ); // eversong pudding
+  unique_gear::register_special_effect( 1232246, consumables::secondary_food( 1232316, STAT_MASTERY_RATING, STAT_HASTE_RATING ) ); // farstrider rations
+  unique_gear::register_special_effect( 1232252, consumables::secondary_food( 1233403, STAT_MASTERY_RATING, STAT_VERSATILITY_RATING ) ); // silvermoon standard
+  unique_gear::register_special_effect( 1232908, consumables::secondary_food( 1232491, STAT_MASTERY_RATING, STAT_SPEED_RATING ) ); // null and void plate
+  unique_gear::register_special_effect( 1232483, consumables::secondary_food( 1233401, STAT_MASTERY_RATING, STAT_SPEED_RATING ) ); // hearthflame supper
+  unique_gear::register_special_effect( 1232251, consumables::secondary_food( 1233404, STAT_MASTERY_RATING, STAT_CRIT_RATING ) ); // forager's medley
+  unique_gear::register_special_effect( 1232487, consumables::secondary_food( 1233402, STAT_CRIT_RATING, STAT_VERSATILITY_RATING ) ); // wise tails
+  unique_gear::register_special_effect( 1232486, consumables::secondary_food( 1232318, STAT_CRIT_RATING, STAT_VERSATILITY_RATING ) ); // fried bloomtail
+  unique_gear::register_special_effect( 1232909, consumables::secondary_food( 1232493, STAT_HASTE_RATING, STAT_SPEED_RATING ) ); // glitter skewers
+  unique_gear::register_special_effect( 1232250, consumables::secondary_food( 1233405, STAT_VERSATILITY_RATING, STAT_HASTE_RATING ) ); // quick sandwich
+  unique_gear::register_special_effect( 1232907, consumables::secondary_food( 1232490, STAT_CRIT_RATING, STAT_SPEED_RATING ) ); // sun-seared lumifin
+  unique_gear::register_special_effect( 1232249, consumables::secondary_food( 1233401, STAT_CRIT_RATING, STAT_HASTE_RATING ) ); // portable snack
+  unique_gear::register_special_effect( 1232484, consumables::secondary_food( 1233405, STAT_VERSATILITY_RATING, STAT_HASTE_RATING ) ); // sunwell delight
   // Flasks
   // Potions
-  register_special_effect( 1236998, consumables::draught_of_rampant_abandon );
+  unique_gear::register_special_effect( 1236998, consumables::draught_of_rampant_abandon );
   // Oils
   // Enchants & gems
   // Embellishments & Tinkers
