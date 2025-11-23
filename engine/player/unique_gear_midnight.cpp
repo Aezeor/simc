@@ -528,8 +528,20 @@ void prismatic_focusing_iris( special_effect_t& effect )
 
 namespace trinkets
 {
+// Heart of the Wind
+// 1250599 Driver
+// 1263318 Buff
+void heart_of_the_wind( special_effect_t& effect )
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, "the_wind_awoken", effect.driver()->effectN( 1 ).trigger() )
+                  ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
 
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
+
+}  // namespace trinkets
 
 namespace weapons
 {
@@ -750,6 +762,7 @@ void register_special_effects()
   register_special_effect( 1251906, embellishments::prismatic_focusing_iris );
   register_special_effect( 1251905, DISABLED_EFFECT );  // stabilizing gemstone bandolier
   // Trinkets
+  register_special_effect( 1250599, trinkets::heart_of_the_wind );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
