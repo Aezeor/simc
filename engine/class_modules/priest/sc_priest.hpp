@@ -679,9 +679,9 @@ public:
     propagate_const<cooldown_t*> power_word_shield;
 
     // Shadow
-    propagate_const<cooldown_t*> void_bolt;
     propagate_const<cooldown_t*> mind_blast;
     propagate_const<cooldown_t*> maddening_touch_icd;
+    propagate_const<cooldown_t*> void_volley;
 
     // Discipline
     propagate_const<cooldown_t*> penance;

@@ -1688,6 +1688,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
 
     if ( priest().talents.shadow.crushing_void.enabled() )
     {
+      priest().cooldowns.void_volley->reset( true );
       priest().buffs.crushing_void->trigger();
     }
 

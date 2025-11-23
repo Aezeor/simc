@@ -2178,7 +2178,7 @@ void priest_t::create_cooldowns()
   cooldowns.holy_word_chastise            = get_cooldown( "holy_word_chastise" );
   cooldowns.holy_word_serenity            = get_cooldown( "holy_word_serenity" );
   cooldowns.holy_word_sanctify            = get_cooldown( "holy_word_sanctify" );
-  cooldowns.void_bolt                     = get_cooldown( "void_bolt" );
+  cooldowns.void_volley                   = get_cooldown( "void_volley" );
   cooldowns.mind_blast                    = get_cooldown( "mind_blast" );
   cooldowns.shadow_word_death             = get_cooldown( "shadow_word_death" );
   cooldowns.power_word_shield             = get_cooldown( "power_word_shield" );
