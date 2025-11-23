@@ -188,6 +188,72 @@ void draught_of_rampant_abandon( special_effect_t& effect )
 
   effect.custom_buff = buff;
 }
+
+// Potion of Recklessness
+// 1236994 - driver & buff
+void potion_of_recklessness( special_effect_t& effect )
+{
+  // The potion grants a positive buff to your highest secondary stat and
+  // a negative buff to your lowest secondary stat.
+  struct recklessness_buff_t : public consumable_buff_t<stat_buff_t>
+  {
+    double pos_crit = 0.0, pos_haste = 0.0, pos_vers = 0.0, pos_mast = 0.0;
+    double neg_crit = 0.0, neg_haste = 0.0, neg_vers = 0.0, neg_mast = 0.0;
+
+    recklessness_buff_t( const special_effect_t& e ) : consumable_buff_t( e.player, e.name(), e.driver() )
+    {
+      // Mapping from the driver effects
+      pos_crit = e.driver()->effectN( 2 ).average( e );
+      pos_haste = e.driver()->effectN( 3 ).average( e );
+      pos_vers  = e.driver()->effectN( 4 ).average( e );
+      pos_mast  = e.driver()->effectN( 5 ).average( e );
+
+      neg_crit = e.driver()->effectN( 6 ).average( e );
+      neg_haste = e.driver()->effectN( 7 ).average( e );
+      neg_vers  = e.driver()->effectN( 8 ).average( e );
+      neg_mast  = e.driver()->effectN( 9 ).average( e );
+
+      set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+    }
+
+    void start( int s, double v, timespan_t d ) override
+    {
+      auto high = util::highest_stat( player, secondary_ratings );
+      auto low = util::lowest_stat( player, secondary_ratings );
+
+      if ( !manual_stats_added )
+      {
+        // apply positive to highest secondary
+        switch ( high )
+        {
+          case STAT_CRIT_RATING: add_stat( STAT_CRIT_RATING, pos_crit ); break;
+          case STAT_HASTE_RATING: add_stat( STAT_HASTE_RATING, pos_haste ); break;
+          case STAT_VERSATILITY_RATING: add_stat( STAT_VERSATILITY_RATING, pos_vers ); break;
+          case STAT_MASTERY_RATING: add_stat( STAT_MASTERY_RATING, pos_mast ); break;
+          default: break;
+        }
+
+        // apply negative to lowest secondary
+        switch ( low )
+        {
+          case STAT_CRIT_RATING: add_stat( STAT_CRIT_RATING, neg_crit ); break;
+          case STAT_HASTE_RATING: add_stat( STAT_HASTE_RATING, neg_haste ); break;
+          case STAT_VERSATILITY_RATING: add_stat( STAT_VERSATILITY_RATING, neg_vers ); break;
+          case STAT_MASTERY_RATING: add_stat( STAT_MASTERY_RATING, neg_mast ); break;
+          default: break;
+        }
+      }
+
+      consumable_buff_t::start( s, v, d );
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "potion_of_recklessness" );
+  if ( !buff )
+    buff = new recklessness_buff_t( effect );
+
+  effect.custom_buff = buff;
+}
 }
 
 namespace enchants
@@ -672,6 +738,7 @@ void register_special_effects()
   // Flasks
   // Potions
   unique_gear::register_special_effect( 1236998, consumables::draught_of_rampant_abandon );
+  unique_gear::register_special_effect( 1236994, consumables::potion_of_recklessness );
   // Oils
   // Enchants & gems
   // Embellishments & Tinkers
