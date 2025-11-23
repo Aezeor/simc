@@ -555,6 +555,22 @@ void kroluks_warbanner( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Vessel of Souls
+// 1250602 Driver
+// 1265513 Area Trigger
+// 1265566 Buff
+// TODO: RNG for missing pots of souls? They spawn witnin 5 yards of the player, qutie hard to miss.
+void vessel_of_souls( special_effect_t& effect )
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, "a_restless_soul", effect.player->find_spell( 1265566 ) )
+                  ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) )
+                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -778,6 +794,7 @@ void register_special_effects()
   // Trinkets
   register_special_effect( 1250599, trinkets::heart_of_the_wind );
   register_special_effect( 1250563, trinkets::kroluks_warbanner );
+  register_special_effect( 1250602, trinkets::vessel_of_souls );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
