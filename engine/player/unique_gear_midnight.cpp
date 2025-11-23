@@ -571,6 +571,20 @@ void vessel_of_souls( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Mark of Light
+// 1250582 Driver
+// 1258226 Damage
+void mark_of_light( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "mark_of_light", effect, 1258226 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  damage->base_multiplier *= role_mult( effect );
+
+  effect.execute_action = damage;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -795,6 +809,7 @@ void register_special_effects()
   register_special_effect( 1250599, trinkets::heart_of_the_wind );
   register_special_effect( 1250563, trinkets::kroluks_warbanner );
   register_special_effect( 1250602, trinkets::vessel_of_souls );
+  register_special_effect( 1250582, trinkets::mark_of_light );  // mark of light
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
