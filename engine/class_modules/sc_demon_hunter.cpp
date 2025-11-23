@@ -2039,7 +2039,7 @@ public:
     // Shared
     ab::parse_effects( p()->buff.demon_soul );
     ab::parse_effects( p()->buff.empowered_demon_soul );
-    ab::parse_effects( p()->mastery.monster_within );
+    ab::parse_effects( p()->mastery.monster_within, p()->hero_spec.enduring_torment_buff );
 
     effect_mask_t meta_mask = effect_mask_t( true );
     if ( p()->specialization() == DEMON_HUNTER_VENGEANCE && !p()->talent.vengeance.vengeful_beast->ok() )
