@@ -298,6 +298,9 @@ public:
     double it_clearcasting_chance = 0.0938;
     double blast_clearcasting_chance = 0.0938;
     double blast_it_clearcasting_chance = 0.1618;
+    bool fof_requires_freezing = true;
+    bool il_requires_freezing = true;
+    bool il_sort_by_freezing = false;
   } options;
 
   // Pets
@@ -4023,12 +4026,30 @@ struct ice_lance_t final : public frost_mage_spell_t
     {
       frost_mage_spell_t::available_targets( tl );
 
-      range::erase_remove( tl, [ this ] ( player_t* t )
+      if ( p()->state.fingers_of_frost_active && !p()->options.fof_requires_freezing )
+        return tl.size();
+
+      if ( p()->options.il_requires_freezing )
       {
-        if ( t == target ) return false;
-        if ( auto td = find_td( t ) ) return td->debuffs.freezing->check() == 0;
-        return true;
-      } );
+        range::erase_remove( tl, [ this ] ( player_t* t )
+        {
+          if ( t == target ) return false;
+          if ( auto td = find_td( t ) ) return td->debuffs.freezing->check() == 0;
+          return true;
+        } );
+      }
+
+      if ( p()->options.il_sort_by_freezing )
+      {
+        auto value = [ this ] ( player_t* t )
+        {
+          if ( t == target ) return std::numeric_limits<int>::max();
+          if ( auto td = find_td( t ) ) return td->debuffs.freezing->check();
+          return 0;
+        };
+
+        range::sort( tl, [ value ] ( player_t* a, player_t* b ) { return value( a ) > value( b ); } );
+      }
 
       return tl.size();
     }
@@ -5549,6 +5570,9 @@ void mage_t::create_options()
   add_option( opt_float( "mage.it_clearcasting_chance", options.it_clearcasting_chance ) );
   add_option( opt_float( "mage.blast_clearcasting_chance", options.blast_clearcasting_chance ) );
   add_option( opt_float( "mage.blast_it_clearcasting_chance", options.blast_it_clearcasting_chance ) );
+  add_option( opt_bool( "mage.fof_requires_freezing", options.fof_requires_freezing ) );
+  add_option( opt_bool( "mage.il_requires_freezing", options.il_requires_freezing ) );
+  add_option( opt_bool( "mage.il_sort_by_freezing", options.il_sort_by_freezing ) );
   player_t::create_options();
 }
 
@@ -6756,7 +6780,7 @@ int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consump
 
   // TODO: With FoF, Shatter should happen even if the target has 0 Freezing stacks, this
   // is currently not the case.
-  if ( stacks == 0 )
+  if ( options.fof_requires_freezing && stacks == 0 )
     return 0;
 
   int shatter_stacks = fof ? max_consumption : std::min( max_consumption, stacks );
