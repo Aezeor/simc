@@ -541,6 +541,20 @@ void heart_of_the_wind( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Kroluk's Warbanner
+// 1250563 driver
+// 1255816 damage
+void kroluks_warbanner( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_proc_t>( "kroluks_warbanner", effect, 1255816 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  damage->base_multiplier *= role_mult( effect );
+
+  effect.execute_action = damage;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -763,6 +777,7 @@ void register_special_effects()
   register_special_effect( 1251905, DISABLED_EFFECT );  // stabilizing gemstone bandolier
   // Trinkets
   register_special_effect( 1250599, trinkets::heart_of_the_wind );
+  register_special_effect( 1250563, trinkets::kroluks_warbanner );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
