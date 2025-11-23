@@ -546,36 +546,17 @@ struct judgment_prot_t : public judgment_t
       sw_holy_power( as<int>( p->talents.sanctified_wrath->effectN( 3 ).base_value() ) ),
       hammer_and_anvil( nullptr )
   {
-    parse_options( options_str );
-    triggers_higher_calling = true;
-    if (p->talents.lightsmith.hammer_and_anvil->ok())
-    {
-      hammer_and_anvil = new hammer_and_anvil_t( p, "hammer_and_anvil_j" );
-      add_child( hammer_and_anvil );
-    }
   }
 
   void execute() override
   {
     judgment_t::execute();
-
-    if ( result_is_hit( execute_state->result ) )
-    {
-      int hopo = 0;
-      if ( p()->spec.judgment_3->ok() )
-        hopo += judge_holy_power;
-      if ( p()->talents.sanctified_wrath->ok() && ( p()->buffs.avenging_wrath->up() || p()->buffs.sentinel->up() ) )
-        hopo += sw_holy_power;
-      if ( hopo > 0 )
-        p()->resource_gain( RESOURCE_HOLY_POWER, hopo, p()->gains.judgment );
-    }
   }
 
   // Special things that happen when Judgment damages target
   void impact( action_state_t* s ) override
   {
     judgment_t::impact( s );
-    trigger_hammer_and_anvil( p(), s, hammer_and_anvil, HAA_JUDGMENT );
   }
 };
 
@@ -873,13 +854,6 @@ action_t* paladin_t::create_action_protection( util::string_view name, util::str
     else
       return new avenging_wrath_t( this, options_str );
   }
-
-
-  if ( specialization() == PALADIN_PROTECTION )
-  {
-    if ( name == "judgment" ) return new judgment_prot_t( this, "judgment", options_str );
-  }
-
   return nullptr;
 }
 

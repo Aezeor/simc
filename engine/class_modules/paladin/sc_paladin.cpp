@@ -54,7 +54,6 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
 
   cooldowns.avengers_shield                   = get_cooldown( "avengers_shield" );
   cooldowns.consecration                      = get_cooldown( "consecration" );
-  cooldowns.judgment                          = get_cooldown( "judgment" );
   cooldowns.guardian_of_ancient_kings         = get_cooldown( "guardian_of_ancient_kings" );
 
   cooldowns.blade_of_justice = get_cooldown( "blade_of_justice" );
@@ -1408,9 +1407,20 @@ void trigger_hammer_and_anvil( paladin_t* p, action_state_t* s, hammer_and_anvil
 
 // Base Judgment spell ======================================================
 
-judgment_base_t::judgment_base_t( paladin_t* p, util::string_view name, const spell_data_t* s )
-  : paladin_melee_attack_t( name, p, s ), is_how(false)
+judgment_base_t::judgment_base_t( paladin_t* p, util::string_view name, util::string_view options_str, const spell_data_t* s )
+  : paladin_melee_attack_t( name, p, s ),
+    is_how( false ),
+    judge_holy_power( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) ),
+    hammer_and_anvil( nullptr ),
+    sw_holy_power( as<int>( p->talents.sanctified_wrath->effectN( 3 ).base_value() ) )
 {
+  parse_options(options_str);
+  triggers_higher_calling = true;
+  if ( p->talents.lightsmith.hammer_and_anvil->ok() )
+  {
+    hammer_and_anvil = new hammer_and_anvil_t( p, "hammer_and_anvil_j" );
+    add_child( hammer_and_anvil );
+  }
 
 }
 
@@ -1439,16 +1449,18 @@ void judgment_base_t::impact(action_state_t* s)
   {
     p()->trigger_greater_judgment( td( s->target ) );
   }
+  trigger_hammer_and_anvil( p(), s, hammer_and_anvil, HAA_JUDGMENT );
 }
 
-judgment_t::judgment_t( paladin_t* p, util::string_view name ) :
-  judgment_base_t ( p, name, p->find_class_spell( "Judgment" ) )
+judgment_t::judgment_t( paladin_t* p, util::string_view options_str ) : judgment_base_t( p, "judgment", options_str, p->find_class_spell( "Judgment" ) )
 {
   // no weapon multiplier
   weapon_multiplier = 0.0;
   may_block = may_parry = may_dodge = false;
   // force effect 1 to be used for direct ratios
   parse_effect_data( data().effectN( 1 ) );
+
+  auto j = p->find_class_spell( "Judgment" );
 
   if ( p->cooldowns.judgment == nullptr )
     p->cooldowns.judgment = cooldown;
@@ -1479,10 +1491,21 @@ void judgment_t::execute()
   {
     p()->buffs.templar.sanctification->trigger();
   }
+
+  if ( result_is_hit( execute_state->result ) )
+  {
+    int hopo = 0;
+    if ( p()->spec.judgment_3->ok() )
+      hopo += judge_holy_power;
+    if ( p()->talents.sanctified_wrath->ok() && ( p()->buffs.avenging_wrath->up() || p()->buffs.sentinel->up() ) )
+      hopo += sw_holy_power;
+    if ( hopo > 0 )
+      p()->resource_gain( RESOURCE_HOLY_POWER, hopo, p()->gains.judgment );
+  }
 }
 
   hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view options_str )
-    : judgment_base_t( p, "Hammer of Wrath",  p->find_spell( 1241413 ) ),
+    : judgment_base_t( p, "hammer_of_wrath", options_str, p->find_spell( 1241413 ) ),
       echo( nullptr )
   {
     parse_options( options_str );
@@ -1492,6 +1515,9 @@ void judgment_t::execute()
       add_child( p->active.background_blessed_hammer );
     }
     triggers_higher_calling = true;
+    may_block = may_parry = may_dodge = false;
+    // force effect 1 to be used for direct ratios
+    parse_effect_data( data().effectN( 1 ) );
 
     if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
     {
@@ -1593,7 +1619,7 @@ void judgment_t::execute()
     if ( p()->talents.vengeful_wrath->ok() )
     {
       // ToDo Fluttershy: Verify, also verify ranks
-      ctm *= 1.0 + p()->talents.vengeful_wrath->effectN( 1 ).percent() * ( 1.0 - target->health_percentage() );
+      ctm *= 1.0 + p()->talents.vengeful_wrath->effectN( 1 ).percent() * ( 1.0 - target->health_percentage() / 100.0 );
     }
 
     return ctm;
@@ -3203,6 +3229,8 @@ action_t* paladin_t::create_action( util::string_view name, util::string_view op
     return new lay_on_hands_t( this, options_str );
   if ( name == "hammer_of_wrath" )
     return new hammer_of_wrath_t( this, options_str );
+  if ( name == "judgment" )
+    return new judgment_t( this, options_str );
   if ( name == "devotion_aura" )
     return new devotion_aura_t( this, options_str );
   if ( name == "divine_toll" )

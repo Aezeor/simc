@@ -1861,18 +1861,25 @@ struct avenging_wrath_t : public paladin_spell_t
   void execute() override;
   action_state_t* new_state() override;
 };
+struct hammer_and_anvil_t : public paladin_spell_t
+{
+  hammer_and_anvil_t( paladin_t* p, util::string_view name );
+};
 
 struct judgment_base_t : public paladin_melee_attack_t
 {
+  hammer_and_anvil_t* hammer_and_anvil;
   bool is_how;
-  judgment_base_t( paladin_t* p, util::string_view name, const spell_data_t* s = spell_data_t::nil() );
+  int judge_holy_power;
+  int sw_holy_power;
+  judgment_base_t( paladin_t* p, util::string_view name, util::string_view options_str, const spell_data_t* s = spell_data_t::nil() );
   void impact( action_state_t* s ) override;
   void execute();
 };
 
 struct judgment_t : public judgment_base_t
 {
-  judgment_t( paladin_t* p, util::string_view name );
+  judgment_t( paladin_t* p, util::string_view options_str );
 
   proc_types proc_type() const override;
   void execute() override;
@@ -1896,10 +1903,6 @@ public:
 struct shield_of_the_righteous_buff_t : public buff_t
 {
   shield_of_the_righteous_buff_t( paladin_t* p );
-};
-struct hammer_and_anvil_t : public paladin_spell_t
-{
-  hammer_and_anvil_t( paladin_t* p, util::string_view name );
 };
 void trigger_hammer_and_anvil( paladin_t* p, action_state_t* s, hammer_and_anvil_t* haa,
                                hammer_and_anvil_source haas );
