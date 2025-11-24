@@ -782,6 +782,35 @@ void idol_of_the_war_loa( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Gaze of the Alnseer
+// 1256896 Driver
+// 1266686 Alnsight Buff
+// 1266687 Primary Buff
+void gaze_of_the_alnseer( special_effect_t& effect )
+{
+  auto alnsight_spell = effect.player->find_spell( 1266686 );
+  assert( alnsight_spell && "Gaze of the Alnseer missing alnsight spell" );
+
+  auto buff = create_buff<buff_t>( effect.player, alnsight_spell );
+  auto stat = create_buff<stat_buff_t>( effect.player, "alnscorned_essence", effect.player->find_spell( 1266687 ) )
+                  ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) )
+                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
+  auto alnsight         = new special_effect_t( effect.player );
+  alnsight->name_str    = "alnsight_proc";
+  alnsight->item        = effect.item;
+  alnsight->spell_id    = alnsight_spell->id();
+  alnsight->custom_buff = stat;
+  effect.player->special_effects.push_back( alnsight );
+
+  auto alnsight_cb = new dbc_proc_callback_t( effect.player, *alnsight );
+  alnsight_cb->activate_with_buff( buff, true );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -1011,6 +1040,7 @@ void register_special_effects()
   register_special_effect( 1250604, trinkets::sapling_of_the_dawnroot );
   register_special_effect( 1250580, trinkets::seed_of_the_devouring_wild );
   register_special_effect( 1250567, trinkets::idol_of_the_war_loa );
+  register_special_effect( 1256896, trinkets::gaze_of_the_alnseer );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
