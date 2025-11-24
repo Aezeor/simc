@@ -635,6 +635,113 @@ void solarflare_prism( special_effect_t& effect )
   new solarflare_prism_cb_t( effect );
 }
 
+// Sapling of the Dawnroot
+// 1250604 Driver
+// 1263077 Pet Summon
+// 1263087 Pet Aura (Overrides Auto Attack)
+// 1263101 Auto Attack
+// 1263121 Demise Explosion
+void sapling_of_the_dawnroot( special_effect_t& effect )
+{
+  struct lightbloom_lashing_t final : public attack_t
+  {
+    lightbloom_lashing_t( pet_t* p, const special_effect_t& e, std::string_view name, action_t* a = nullptr )
+      : attack_t( name, p, e.player->find_spell( 1263101 ) )
+    {
+      auto proxy = a;
+      auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
+
+      background = repeating = not_a_proc = may_crit = true;
+      special                                        = false;
+      trigger_gcd                                    = 0_ms;
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
+      // No Role Mult currently
+      // base_multiplier *= role_mult( e );
+    }
+  };
+
+  struct sappy_demise_t final : public spell_t
+  {
+    sappy_demise_t( const special_effect_t& e, std::string_view n, pet_t* p, const spell_data_t* s, action_t* a )
+      : spell_t( n, p, s )
+    {
+      auto proxy = a;
+      auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
+
+      background = split_aoe_damage = true;
+      aoe                           = -1;
+      base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e );
+      // No Role Mult currently
+      // base_multiplier *= role_mult( e );
+    }
+  };
+
+  struct uprooted_lasher_pet_t final : public unique_gear_pet_t
+  {
+    const special_effect_t& effect;
+
+    uprooted_lasher_pet_t( const special_effect_t& e, action_t* parent = nullptr )
+      : unique_gear_pet_t( "uprooted_lasher", e, &parent->data() ), effect( e )
+    {
+      parent_action = parent;
+      main_hand_weapon.type = WEAPON_BEAST;
+      main_hand_weapon.swing_time = 2_s;
+      use_auto_attack = true;
+    }
+
+    void demise() override
+    {
+      sappy_demise->execute();
+      unique_gear_pet_t::demise();
+    }
+
+    attack_t* create_auto_attack()
+    {
+      return new lightbloom_lashing_t( this, effect, "lightbloom_lashing", parent_action );
+    }
+
+    void create_actions() override
+    {
+      unique_gear_pet_t::create_actions();
+      sappy_demise = new sappy_demise_t( effect, "sappy_demise", this, find_spell( 1263121 ), parent_action );
+    }
+
+  private:
+    action_t* sappy_demise;
+  };
+
+  struct sapling_of_the_dawnroot_t final : public generic_proc_t
+  {
+    spawner::pet_spawner_t<uprooted_lasher_pet_t> lasher;
+
+    sapling_of_the_dawnroot_t( const special_effect_t& e )
+      : generic_proc_t( e, "sapling_of_the_dawnroot", e.driver() ), lasher( "uprooted_lasher", e.player )
+    {
+      auto lasher_summon_spell = e.player->find_spell( 1263077 );
+      lasher.set_creation_callback( [ &e, this ]( player_t* ) { return new uprooted_lasher_pet_t( e, this ); } );
+      lasher.set_default_duration( lasher_summon_spell->duration() );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      lasher.spawn();
+    }
+  };
+
+  effect.execute_action = create_proc_action<sapling_of_the_dawnroot_t>( "sapling_of_the_dawnroot", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -861,6 +968,7 @@ void register_special_effects()
   register_special_effect( 1250602, trinkets::vessel_of_souls );
   register_special_effect( 1250582, trinkets::mark_of_light );
   register_special_effect( 1254640, trinkets::solarflare_prism );
+  register_special_effect( 1250604, trinkets::sapling_of_the_dawnroot );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
