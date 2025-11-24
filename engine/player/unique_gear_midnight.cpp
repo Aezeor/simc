@@ -950,6 +950,66 @@ void plume_of_beloren( special_effect_t& effect )
   } );
 }
 
+// Sealed Chaos Urn
+// 1253115 Buff & Driver
+// 1259442 Debuff
+// 1259443 Fear
+void sealed_chaos_urn( special_effect_t& effect )
+{
+  struct sealed_chaos_urn_t final : public generic_proc_t
+  {
+    buff_t* buff;
+    buff_t* fear;
+    buff_t* debuff;
+
+    sealed_chaos_urn_t( const special_effect_t& e )
+      : generic_proc_t( e, "sealed_chaos_urn", e.driver() ), buff( nullptr ), fear( nullptr ), debuff( nullptr )
+    {
+      buff                   = create_buff<stat_buff_t>( e.player, e.driver() )->set_name_reporting( "Stats" );
+      stat_buff_t* stat_buff = debug_cast<stat_buff_t*>( buff );
+      for ( auto stat : secondary_ratings )
+        stat_buff->add_stat( stat, e.driver()->effectN( 1 ).average( e ) );
+
+      fear = create_buff<buff_t>( e.player, "sealed_chaos_urn_fear", e.player->find_spell( 1259443 ) )
+                 ->set_name_reporting( "Fear" )
+                 ->set_stack_change_callback( [ e ]( buff_t*, int, int new_ ) {
+                   // Emulate the fear with a stun on the player for the duration of the fear.
+                   if ( new_ )
+                   {
+                     e.player->buffs.stunned->trigger();
+                     e.player->stun();
+                   }
+                   else
+                   {
+                     e.player->buffs.stunned->expire();
+                     e.player->schedule_ready();
+                   }
+                 } );
+
+      debuff = create_buff<buff_t>( e.player, "sealed_chaos_urn_debuff", e.driver()->effectN( 2 ).trigger() )
+                   ->set_name_reporting( "Debuff" )
+                   ->set_expire_callback( [ & ]( buff_t*, int, timespan_t d ) {
+                     if ( d == 0_ms )
+                       fear->trigger();
+                   } );
+
+      e.player->register_on_kill_callback( [ & ]( player_t* ) {
+        if ( debuff->check() )
+          debuff->expire();
+      } );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      buff->trigger();
+      debuff->trigger();
+    }
+  };
+
+  effect.execute_action = create_proc_action<sealed_chaos_urn_t>( "sealed_chaos_urn", effect );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -1186,6 +1246,7 @@ void register_special_effects()
   register_special_effect( 1251822, trinkets::heart_of_ancient_hunger );
   register_special_effect( { 1260592, 1265809 }, trinkets::plume_of_beloren ); // Radiant and Umbral Plume
   register_special_effect( { 1265806, 1265805 }, DISABLED_EFFECT ); // Radiant and Umbral Plume on use
+  register_special_effect( 1253115, trinkets::sealed_chaos_urn );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
