@@ -841,6 +841,53 @@ void resonant_roarstone( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Undreamt God's Oozing Vestige
+// 1256790 Driver
+// 1269597 AoE damage
+// 1269591 DoT
+void undreamt_gods_oozing_vestige( special_effect_t& effect )
+{
+  struct undreamt_gods_oozing_vestige_cb_t final : dbc_proc_callback_t
+  {
+    action_t* dot;
+    action_t* aoe;
+    undreamt_gods_oozing_vestige_cb_t( special_effect_t& e, action_t* a )
+      : dbc_proc_callback_t( e.player, e ), dot( nullptr ), aoe( a )
+    {
+      dot          = create_proc_action<generic_proc_t>( "volatile_phlegm", e, e.player->find_spell( 1269591 ) );
+      // Data has dot duration as infinite. Setting it to an extremely high value to get periodic behavior
+      dot->dot_duration = 900_s;
+      dot->base_td = e.driver()->effectN( 1 ).average( e );
+      dot->base_td_multiplier *= role_mult( e );
+      dot->add_child( aoe );
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      dot->execute_on_target( s->target );
+      dot_t* d = dot->get_dot( s->target );
+      if ( d && d->is_ticking() && d->at_max_stacks() )
+      {
+        d->cancel();
+        aoe->execute();
+      }
+    }
+  };
+
+  auto aoe =
+      create_proc_action<generic_aoe_proc_t>( "phlegmpocalypse", effect, effect.player->find_spell( 1269597 ), true );
+  aoe->base_dd_min = aoe->base_dd_max = effect.driver()->effectN( 2 ).average( effect );
+  aoe->base_multiplier *= role_mult( effect );
+
+  effect.player->register_on_kill_callback( [ aoe, effect ]( player_t* t ) {
+    dot_t* d = t->get_dot( "volatile_phlegm", effect.player );
+    if ( d && d->is_ticking() && !effect.player->sim->event_mgr.canceled )
+      aoe->execute();
+  } );
+
+  new undreamt_gods_oozing_vestige_cb_t( effect, aoe );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -1072,6 +1119,7 @@ void register_special_effects()
   register_special_effect( 1250567, trinkets::idol_of_the_war_loa );
   register_special_effect( 1256896, trinkets::gaze_of_the_alnseer );
   register_special_effect( 1250564, trinkets::resonant_roarstone );
+  register_special_effect( 1256790, trinkets::undreamt_gods_oozing_vestige );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
