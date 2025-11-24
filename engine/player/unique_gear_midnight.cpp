@@ -888,6 +888,20 @@ void undreamt_gods_oozing_vestige( special_effect_t& effect )
   new undreamt_gods_oozing_vestige_cb_t( effect, aoe );
 }
 
+// Light Company Guidon
+// 1251817 Driver
+// 1259633 Haste Buff
+// 1262496 Speed Buff
+// TODO: Speed buff if it matters for sims.
+void light_company_guidon( special_effect_t& effect )
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1259633 ) )
+    ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) )
+    ->set_cooldown( 0_ms );
+
+  effect.custom_buff = buff;
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -1120,6 +1134,7 @@ void register_special_effects()
   register_special_effect( 1256896, trinkets::gaze_of_the_alnseer );
   register_special_effect( 1250564, trinkets::resonant_roarstone );
   register_special_effect( 1256790, trinkets::undreamt_gods_oozing_vestige );
+  register_special_effect( 1251817, trinkets::light_company_guidon );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
