@@ -923,6 +923,33 @@ void heart_of_ancient_hunger( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Umbral & Radiant Plume
+// 1265809 Umbral Driver
+// 1260592 Radiant Driver
+// 1265808 Umbral Buff
+// 1260615 Radiant Buff
+void plume_of_beloren( special_effect_t& effect )
+{
+  auto buff_spell = effect.driver()->effectN( 1 ).trigger();
+  auto buff       = create_buff<stat_buff_t>( effect.player, buff_spell )
+                  ->set_stat_from_effect_type(
+                      A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) / buff_spell->max_stacks() )
+                  ->set_reverse( true );
+
+  buff->set_expire_callback( [ buff, effect ]( buff_t* b, int, timespan_t ) {
+    make_event( *effect.player->sim, 0_ms, [ buff ] { buff->trigger(); } );
+  } );
+
+  effect.player->register_on_arise_callback( effect.player, [ buff ] { buff->trigger(); } );
+
+  effect.player->register_on_combat_state_callback( [ buff ]( player_t* p, bool c ) {
+    if ( c )
+      buff->set_reverse( true );
+    else
+      buff->set_reverse( false );
+  } );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -1157,6 +1184,8 @@ void register_special_effects()
   register_special_effect( 1256790, trinkets::undreamt_gods_oozing_vestige );
   register_special_effect( 1251817, trinkets::light_company_guidon );
   register_special_effect( 1251822, trinkets::heart_of_ancient_hunger );
+  register_special_effect( { 1260592, 1265809 }, trinkets::plume_of_beloren ); // Radiant and Umbral Plume
+  register_special_effect( { 1265806, 1265805 }, DISABLED_EFFECT ); // Radiant and Umbral Plume on use
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
