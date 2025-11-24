@@ -767,6 +767,21 @@ void seed_of_the_devouring_wild( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Idol of the War Loa
+// 1250567 Driver
+// 1258222 Ally Speed Buff
+// 1258223 Buff
+// Speed Buff NYI, TODO: implement if it matters for sims.
+void idol_of_the_war_loa( special_effect_t& effect )
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, "nalorakks_rage", effect.player->find_spell( 1258223 ) )
+                  ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -995,6 +1010,7 @@ void register_special_effects()
   register_special_effect( 1254640, trinkets::solarflare_prism );
   register_special_effect( 1250604, trinkets::sapling_of_the_dawnroot );
   register_special_effect( 1250580, trinkets::seed_of_the_devouring_wild );
+  register_special_effect( 1250567, trinkets::idol_of_the_war_loa );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
