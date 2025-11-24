@@ -585,6 +585,56 @@ void mark_of_light( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Solarflare Prism
+// 1254640 Driver
+// 1255504 Buff
+void solarflare_prism( special_effect_t& effect )
+{
+  struct solarflare_prism_buff_t : public stat_buff_t
+  {
+    double hp_inc;
+    double max_val;
+    double hp_mult;
+
+    solarflare_prism_buff_t( std::string_view n, const special_effect_t& e )
+      : stat_buff_t( e.player, n, e.player->find_spell( 1255504 ) ), hp_inc( 0.0 ), max_val( 0.0 ), hp_mult( 0.0 )
+    {
+      set_default_value( e.driver()->effectN( 1 ).average( e ) );
+
+      hp_inc  = e.driver()->effectN( 2 ).average( e );
+      max_val = e.driver()->effectN( 4 ).average( e );
+    }
+
+    void bump( int s, double v ) override
+    {
+      for ( auto& s : stats )
+      {
+        s.amount = std::min( default_value + hp_inc * hp_mult, max_val );
+      }
+      stat_buff_t::bump( s, v );
+    }
+  };
+
+  struct solarflare_prism_cb_t final : public dbc_proc_callback_t
+  {
+    buff_t* buff;
+
+    solarflare_prism_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), buff( nullptr )
+    {
+      buff = make_buff<solarflare_prism_buff_t>( "solarflare_prism", e );
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      solarflare_prism_buff_t* sf_buff = debug_cast<solarflare_prism_buff_t*>( buff );
+      sf_buff->hp_mult                 = 100 - s->target->health_percentage();
+      sf_buff->trigger();
+    }
+  };
+
+  new solarflare_prism_cb_t( effect );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -809,7 +859,8 @@ void register_special_effects()
   register_special_effect( 1250599, trinkets::heart_of_the_wind );
   register_special_effect( 1250563, trinkets::kroluks_warbanner );
   register_special_effect( 1250602, trinkets::vessel_of_souls );
-  register_special_effect( 1250582, trinkets::mark_of_light );  // mark of light
+  register_special_effect( 1250582, trinkets::mark_of_light );
+  register_special_effect( 1254640, trinkets::solarflare_prism );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
