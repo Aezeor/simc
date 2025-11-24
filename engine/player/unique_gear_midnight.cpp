@@ -699,7 +699,9 @@ void sapling_of_the_dawnroot( special_effect_t& effect )
 
     void demise() override
     {
-      sappy_demise->execute();
+      // Dont explode if the sim has ended.
+      if( !sim->event_mgr.canceled )
+        sappy_demise->execute();
       unique_gear_pet_t::demise();
     }
 
@@ -738,6 +740,29 @@ void sapling_of_the_dawnroot( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<sapling_of_the_dawnroot_t>( "sapling_of_the_dawnroot", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Seed of the Devouring Wild
+// 1250580 Driver
+// 1259351 Values
+// 1259352 Buff
+void seed_of_the_devouring_wild( special_effect_t& effect )
+{
+  auto value_spell = effect.player->find_spell( 1259351 );
+  assert( value_spell && "Seed of the Devouring Wild missing value spell" );
+
+  auto buff =
+      create_buff<stat_buff_t>( effect.player, "seed_of_the_devouring_wild", effect.player->find_spell( 1259352 ) )
+          ->set_stat_from_effect_type( A_MOD_RATING, value_spell->effectN( 2 ).average( effect ) );
+
+  auto damage         = create_proc_action<generic_aoe_proc_t>( "seed_of_the_devouring_wild", effect, effect.driver() );
+  damage->base_dd_min = damage->base_dd_max = value_spell->effectN( 1 ).average( effect );
+  damage->base_multiplier *= role_mult( effect );
+
+  effect.execute_action = damage;
+  effect.custom_buff    = buff;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -969,6 +994,7 @@ void register_special_effects()
   register_special_effect( 1250582, trinkets::mark_of_light );
   register_special_effect( 1254640, trinkets::solarflare_prism );
   register_special_effect( 1250604, trinkets::sapling_of_the_dawnroot );
+  register_special_effect( 1250580, trinkets::seed_of_the_devouring_wild );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
