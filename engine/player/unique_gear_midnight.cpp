@@ -956,58 +956,46 @@ void plume_of_beloren( special_effect_t& effect )
 // 1259443 Fear
 void sealed_chaos_urn( special_effect_t& effect )
 {
-  struct sealed_chaos_urn_t final : public generic_proc_t
-  {
-    buff_t* buff;
-    buff_t* fear;
-    buff_t* debuff;
+  auto fear = create_buff<buff_t>( effect.player, "sealed_chaos_urn_fear", effect.player->find_spell( 1259443 ) )
+                  ->set_name_reporting( "Fear" )
+                  ->set_stack_change_callback( [ effect ]( buff_t*, int, int new_ ) {
+                    // Emulate the fear with a stun on the player for the duration of the fear.
+                    if ( new_ )
+                    {
+                      effect.player->buffs.stunned->trigger();
+                      effect.player->stun();
+                    }
+                    else
+                    {
+                      effect.player->buffs.stunned->expire();
+                      effect.player->schedule_ready();
+                    }
+                  } );
 
-    sealed_chaos_urn_t( const special_effect_t& e )
-      : generic_proc_t( e, "sealed_chaos_urn", e.driver() ), buff( nullptr ), fear( nullptr ), debuff( nullptr )
-    {
-      buff                   = create_buff<stat_buff_t>( e.player, e.driver() )->set_name_reporting( "Stats" );
-      stat_buff_t* stat_buff = debug_cast<stat_buff_t*>( buff );
-      for ( auto stat : secondary_ratings )
-        stat_buff->add_stat( stat, e.driver()->effectN( 1 ).average( e ) );
+  auto debuff = create_buff<buff_t>( effect.player, "sealed_chaos_urn_debuff", effect.driver()->effectN( 2 ).trigger() )
+                    ->set_name_reporting( "Debuff" )
+                    ->set_expire_callback( [ fear ]( buff_t*, int, timespan_t d ) {
+                      if ( d == 0_ms )
+                        fear->trigger();
+                    } );
 
-      fear = create_buff<buff_t>( e.player, "sealed_chaos_urn_fear", e.player->find_spell( 1259443 ) )
-                 ->set_name_reporting( "Fear" )
-                 ->set_stack_change_callback( [ e ]( buff_t*, int, int new_ ) {
-                   // Emulate the fear with a stun on the player for the duration of the fear.
-                   if ( new_ )
-                   {
-                     e.player->buffs.stunned->trigger();
-                     e.player->stun();
-                   }
-                   else
-                   {
-                     e.player->buffs.stunned->expire();
-                     e.player->schedule_ready();
-                   }
-                 } );
+  effect.player->register_on_kill_callback( [ debuff ]( player_t* ) {
+    if ( debuff->check() )
+      debuff->expire();
+  } );
 
-      debuff = create_buff<buff_t>( e.player, "sealed_chaos_urn_debuff", e.driver()->effectN( 2 ).trigger() )
-                   ->set_name_reporting( "Debuff" )
-                   ->set_expire_callback( [ & ]( buff_t*, int, timespan_t d ) {
-                     if ( d == 0_ms )
-                       fear->trigger();
-                   } );
+  auto buff = create_buff<stat_buff_t>( effect.player, "sealed_chaos_urn_stats", effect.driver() )
+                  ->set_name_reporting( "Stats" )
+                  ->set_stack_change_callback( [ debuff ]( buff_t*, int, int new_ ) {
+                    if ( new_ )
+                      debuff->trigger();
+                  } );
 
-      e.player->register_on_kill_callback( [ & ]( player_t* ) {
-        if ( debuff->check() )
-          debuff->expire();
-      } );
-    }
+  stat_buff_t* stat_buff = debug_cast<stat_buff_t*>( buff );
+  for ( auto stat : secondary_ratings )
+    stat_buff->add_stat( stat, effect.driver()->effectN( 1 ).average( effect ) );
 
-    void execute() override
-    {
-      generic_proc_t::execute();
-      buff->trigger();
-      debuff->trigger();
-    }
-  };
-
-  effect.execute_action = create_proc_action<sealed_chaos_urn_t>( "sealed_chaos_urn", effect );
+  effect.custom_buff = buff;
 }
 
 }  // namespace trinkets
