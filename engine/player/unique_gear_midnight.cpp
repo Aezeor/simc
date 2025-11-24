@@ -811,6 +811,36 @@ void gaze_of_the_alnseer( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Resonant Roarstone
+// 1250564 Driver
+// 1254180 Buff
+// 1254331 Stacking Buff
+void resonant_roarstone( special_effect_t& effect )
+{
+  auto last_roar_spell = effect.player->find_spell( 1254180 );
+  assert( last_roar_spell && "Resonant Roarstone missing Buff Driver" );
+
+  auto buff = create_buff<stat_buff_t>( effect.player, "xathuuxs_last_roar", last_roar_spell )
+                  ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+  auto stacking_buff = create_buff<stat_buff_t>( effect.player, "echoing_roar", effect.player->find_spell( 1254331 ) )
+                           ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) );
+
+  auto last_roar          = new special_effect_t( effect.player );
+  last_roar->name_str     = "last_roar_proc";
+  last_roar->item         = effect.item;
+  last_roar->spell_id     = last_roar_spell->id();
+  last_roar->custom_buff  = stacking_buff;
+  last_roar->proc_flags2_ = PF2_CRIT;
+  effect.player->special_effects.push_back( last_roar );
+
+  auto last_roar_cb = new dbc_proc_callback_t( effect.player, *last_roar );
+  last_roar_cb->activate_with_buff( buff, true );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -1041,6 +1071,7 @@ void register_special_effects()
   register_special_effect( 1250580, trinkets::seed_of_the_devouring_wild );
   register_special_effect( 1250567, trinkets::idol_of_the_war_loa );
   register_special_effect( 1256896, trinkets::gaze_of_the_alnseer );
+  register_special_effect( 1250564, trinkets::resonant_roarstone );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
