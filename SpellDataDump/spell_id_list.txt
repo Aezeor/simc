@@ -18217,7 +18217,7 @@ Rogue
 382503   Quick Decisions
 382504   Dark Brew
 382505   The First Dance
-382506   Replicating Shadows [NYI]
+382506   Replicating Shadows
 382507   Shrouded in Darkness
 382508   Planned Execution
 382509  *Stiletto Staccato

@@ -17194,7 +17194,7 @@ static constexpr std::array<spelltext_data_t, 28645> __spelltext_data { {
   {  382518, "$?s200758[Gloomblade][Backstab], Shuriken Storm, and Shadowstrike have $1264521s3% increased damage while Find Weakness is active.", 0, 0 },
   {  382522, "$@spelldesc382275", "Your next Blade of Justice casts Consecration.", 0 },
   {  382524, "After Shadow Dance ends, $?s200758[Gloomblade][Backstab] deals an additional $s1% damage as Shadow, fading by ${$s1/$s3}.1% per sec.", 0, 0 },
-  {  382525, "Eviscerate, Rupture, and Black Powder have $s1% increased critical strike damage bonus.", 0, 0 },
+  {  382525, "Eviscerate and Black Powder have $s1% increased critical strike damage bonus.", 0, 0 },
   {  382528, "While Shadow Dance is active, each different attack that generates or spends combo points lashes out at the target, dealing $1264397s1 Shadow damage.", 0, 0 },
   {  382536, "Enemies hit by Divine Storm take $382538s1% more damage from Consecration and Divine Hammers for $382538d. ", "Damage taken from Consecration and Divine Hammers increased by $382538s1%.", 0 },
   {  382538, "$@spelldesc382536", "$@spellaura382536", 0 },
@@ -28648,7 +28648,8 @@ static constexpr std::array<spelltext_data_t, 28645> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.0.0.64611
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  382525,  0, "Eviscerate, Rupture, and Black Powder have $s1% increased critical strike damage bonus.", "Eviscerate and Black Powder have $s1% increased critical strike damage bonus." },
 } };
 
 // Spell description variables, wow build 12.0.0.64611
