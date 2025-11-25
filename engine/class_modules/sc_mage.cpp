@@ -6232,6 +6232,13 @@ void mage_t::create_buffs()
   // TODO: adjust this
   if ( talents.memory_of_alar.ok() )
     buffs.hyperthermia->default_chance = -1.0;
+
+  if ( sets->has_set_bonus( MAGE_ARCANE, MID1, B2 ) )
+  {
+    assert( buffs.arcane_charge->default_value == buff_t::DEFAULT_VALUE() );
+    buffs.arcane_charge->set_default_value( sets->set( MAGE_ARCANE, MID1, B2 )->effectN( 1 ).percent() )
+                       ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+  }
 }
 
 void mage_t::init_gains()
