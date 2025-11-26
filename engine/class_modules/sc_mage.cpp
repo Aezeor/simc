@@ -366,6 +366,7 @@ public:
     bool fof_requires_freezing = true;
     bool il_requires_freezing = true;
     bool il_sort_by_freezing = false;
+    bool randomize_si_target = false;
   } options;
 
   // Pets
@@ -1797,6 +1798,19 @@ public:
     c *= 1.0 + p()->talents.mana_confluence->effectN( 1 ).percent();
 
     return c;
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    spell_t::available_targets( tl );
+
+    if ( tl.size() > 2 && p()->options.randomize_si_target
+      && data().affected_by( p()->talents.splitting_ice->effectN( 1 ) ) )
+    {
+      std::swap( tl[ 1 ], tl[ rng().range<size_t>( 1, tl.size() ) ] );
+    }
+
+    return tl.size();
   }
 
   void execute() override
@@ -5624,6 +5638,7 @@ void mage_t::create_options()
   add_option( opt_bool( "mage.fof_requires_freezing", options.fof_requires_freezing ) );
   add_option( opt_bool( "mage.il_requires_freezing", options.il_requires_freezing ) );
   add_option( opt_bool( "mage.il_sort_by_freezing", options.il_sort_by_freezing ) );
+  add_option( opt_bool( "mage.randomize_si_target", options.randomize_si_target ) );
   player_t::create_options();
 }
 
