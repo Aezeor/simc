@@ -1864,26 +1864,13 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
       affected_by.divine_purpose = false;  // We handle this manually
       base_execute_time          = timespan_t::from_millis( 600 ); // Still has a 600ms execute time, for whatever reasons. Not in spell data anymore.
       dual                       = true;
+      secondary_targets_only     = true;
 
       if ( p->sets->has_set_bonus( HERO_TEMPLAR, TWW3, B4 ) )
         // Both effect 2 and 4 adjust AoE. This is probably a tuning knob for Blizzard. Also maybe Ret is 2, Prot 4, who knows.
         aoe += as<int>( p->sets->set( HERO_TEMPLAR, TWW3, B4 )
                           ->effectN( p->specialization() == PALADIN_RETRIBUTION ? 4 : 2 )
                           .base_value() );
-    }
-
-    size_t available_targets( std::vector<player_t*>& tl ) const override
-    {
-      holy_power_consumer_t::available_targets( tl );
-
-      // Does not hit the main target
-      auto it = range::find( tl, target );
-      if ( it != tl.end() )
-      {
-        tl.erase( it );
-      }
-
-      return tl.size();
     }
 
     action_state_t* new_state() override
@@ -2070,28 +2057,15 @@ struct empyrean_hammer_wd_t : public paladin_spell_t
   empyrean_hammer_wd_t( paladin_t* p )
     : paladin_spell_t( "empyrean_hammer_wrathful_descent", p, p->spells.templar.empyrean_hammer_wd )
   {
-    background          = true;
-    may_crit            = false;
-    aoe                 = -1;
+    background             = true;
+    may_crit               = false;
+    aoe                    = -1;
+    secondary_targets_only = true;
 
     // ToDo (Fluttershy)
     // This spell currently deals full damage to all targets, even above 20.
     // SimC automatically reduces AoE damage above 20 targets, so may need custom execute, if this behaviour stays
     reduced_aoe_targets = -1;
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    paladin_spell_t::available_targets( tl );
-
-    // Does not hit the main target
-    auto it = range::find( tl, target );
-    if ( it != tl.end() )
-    {
-      tl.erase( it );
-    }
-
-    return tl.size();
   }
 
   void impact(action_state_t* s) override
