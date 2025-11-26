@@ -171,9 +171,7 @@ struct avengers_shield_base_t : public paladin_spell_t
     double m = paladin_spell_t::composite_da_multiplier( state );
     if ( state->chain_target == 0 )
     {
-      {
-        m *= 1.0 + p()->talents.ferren_marcuss_fervor->effectN( 1 ).percent();
-      }
+      m *= 1.0 + p()->talents.ferren_marcuss_fervor->effectN( 1 ).percent();
     }
     return m;
   }
