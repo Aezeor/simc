@@ -830,6 +830,7 @@ public:
   void cast_lesser_armament( int amount, lesser_armament usedArmament );
   void trigger_greater_judgment( paladin_td_t* targetdata, bool remove_stack = false );
   bool get_how_availability() const;
+  bool wings_up() const;
 
   std::unique_ptr<expr_t> create_consecration_expression( util::string_view expr_str );
   std::unique_ptr<expr_t> create_aw_expression( util::string_view expr_str );

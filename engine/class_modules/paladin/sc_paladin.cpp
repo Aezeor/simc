@@ -1427,6 +1427,18 @@ judgment_base_t::judgment_base_t( paladin_t* p, util::string_view name, util::st
 void judgment_base_t::execute()
 {
   paladin_melee_attack_t::execute();
+
+  if ( result_is_hit( execute_state->result ) )
+  {
+    int hopo = 0;
+    if ( p()->spec.judgment_3->ok() )
+      hopo += judge_holy_power;
+    if ( p()->talents.sanctified_wrath->ok() && p()->wings_up() )
+      hopo += sw_holy_power;
+    if ( hopo > 0 )
+      p()->resource_gain( RESOURCE_HOLY_POWER, hopo, p()->gains.judgment );
+  }
+
   if ( p()->talents.zealots_paragon->ok() )
   {
     auto extension = timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() );
@@ -1490,17 +1502,6 @@ void judgment_t::execute()
   if ( p()->talents.templar.sanctification->ok() )
   {
     p()->buffs.templar.sanctification->trigger();
-  }
-
-  if ( result_is_hit( execute_state->result ) )
-  {
-    int hopo = 0;
-    if ( p()->spec.judgment_3->ok() )
-      hopo += judge_holy_power;
-    if ( p()->talents.sanctified_wrath->ok() && ( p()->buffs.avenging_wrath->up() || p()->buffs.sentinel->up() ) )
-      hopo += sw_holy_power;
-    if ( hopo > 0 )
-      p()->resource_gain( RESOURCE_HOLY_POWER, hopo, p()->gains.judgment );
   }
 }
 
@@ -4607,10 +4608,15 @@ bool paladin_t::standing_in_consecration() const
 
 bool paladin_t::get_how_availability( ) const
 {
-  bool buffs_ok = ( buffs.avenging_wrath->up() || buffs.crusade->up() || buffs.sentinel->up() );
+  bool buffs_ok = wings_up();
   // ToDo Fluttershy: ?
   buffs_ok = buffs_ok || buffs.final_verdict->up() || buffs.herald_of_the_sun.blessing_of_anshe->up();
   return buffs_ok && talents.hammer_of_wrath->ok();
+}
+
+bool paladin_t::wings_up() const
+{
+  return buffs.avenging_wrath->up() || buffs.crusade->up() || buffs.sentinel->up();
 }
 
 // player_t::create_expression ==============================================
