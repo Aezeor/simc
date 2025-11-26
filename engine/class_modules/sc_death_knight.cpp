@@ -3154,19 +3154,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
       background = true;
       aoe = -1;
       attack_power_mod.direct = data().effectN( 3 ).ap_coeff();
-    }
-
-    size_t available_targets( std::vector<player_t*>& tl ) const override
-    {
-      claw_base_t::available_targets( tl );
-
-      auto it = range::find( tl, target );
-      if ( it != tl.end() )
-      {
-        tl.erase( it );
-      }
-
-      return tl.size();
+      target_filter_callback = secondary_targets_only();
     }
   };
 
@@ -3364,19 +3352,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       background = true;
       aoe        = -1;
       attack_power_mod.direct = data().effectN( 3 ).ap_coeff();
-    }
-
-    size_t available_targets( std::vector<player_t*>& tl ) const override
-    {
-      lesser_ghoul_claw_base_t::available_targets( tl );
-
-      auto it = range::find( tl, target );
-      if ( it != tl.end() )
-      {
-        tl.erase( it );
-      }
-
-      return tl.size();
+      target_filter_callback = secondary_targets_only();
     }
   };
 
@@ -4594,19 +4570,7 @@ struct whitemane_pet_t final : public horseman_pet_t
       aoe                     = data().max_targets() - 1;
       attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
       base_multiplier         = dk()->talent.rider.let_terror_reign->effectN( 2 ).percent();
-    }
-
-    size_t available_targets( std::vector<player_t*>& tl ) const override
-    {
-      horseman_spell_t::available_targets( tl );
-
-      auto it = range::find( tl, target );
-      if ( it != tl.end() )
-      {
-        tl.erase( it );
-      }
-
-      return tl.size();
+      target_filter_callback  = secondary_targets_only();
     }
 
     double composite_aoe_multiplier( const action_state_t* state ) const override
@@ -7541,22 +7505,10 @@ struct soul_rupture_t final : public death_knight_spell_t
   soul_rupture_t( std::string_view name, death_knight_t* p )
     : death_knight_spell_t( name, p, p->spell.soul_rupture_damage )
   {
-    background         = true;
-    cooldown->duration = 0_ms;
-    aoe                = -1;
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    death_knight_spell_t::available_targets( tl );
-
-    auto it = range::find( tl, target );
-    if ( it != tl.end() )
-    {
-      tl.erase( it );
-    }
-
-    return tl.size();
+    background             = true;
+    cooldown->duration     = 0_ms;
+    aoe                    = -1;
+    target_filter_callback = secondary_targets_only();
   }
 
   void execute() override
@@ -9066,19 +9018,7 @@ struct epidemic_damage_aoe_t final : public epidemic_damage_base_t
     // Main is one target, aoe is the other targets, so we take 1 off the max targets
     aoe                     = aoe - 1;
     attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    death_knight_spell_t::available_targets( tl );
-
-    auto it = range::find( tl, target );
-    if ( it != tl.end() )
-    {
-      tl.erase( it );
-    }
-
-    return tl.size();
+    target_filter_callback  = secondary_targets_only();
   }
 };
 
