@@ -3352,7 +3352,6 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       background = true;
       aoe        = -1;
       attack_power_mod.direct = data().effectN( 3 ).ap_coeff();
-      target_filter_callback = secondary_targets_only();
       target_filter_callback  = secondary_targets_only();
     }
   };
