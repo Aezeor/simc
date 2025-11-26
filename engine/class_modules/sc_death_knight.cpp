@@ -1768,8 +1768,8 @@ public:
       runic_power_decay( nullptr ),
       last_cast_rp_spender( nullptr ),
       deprecated_dnd_expression( false ),
-      soul_reaper_castable( false ),
       runeforge_expression_warning( false ),
+      soul_reaper_castable( false ),
       km_proc_attempts( 0 ),
       bone_shield_charges_consumed( 0 ),
       active_riders( 0 ),
@@ -1828,7 +1828,7 @@ public:
   }
 
   template <typename T>
-  static bool dot_or_debuff_active( T d, death_knight_td_t* t )
+  bool dot_or_debuff_active( T d, death_knight_td_t* t )
   {
     if constexpr ( std::is_invocable_v<T, death_knight_td_t::debuffs_t> )
       return std::invoke( d, t->debuff )->check() > 0;
@@ -1940,7 +1940,7 @@ public:
   void summon_rider( timespan_t duration, rider_of_the_apocalypse_e = rider_of_the_apocalypse_e::RANDOM );
   void extend_rider( double amount, pets::horseman_pet_t* rider );
   void trigger_whitemanes_famine( player_t* target );
-  void spread_undeath( death_knight_td_t* main_td, player_t* main_target, player_t* new_target );
+  void spread_undeath( death_knight_td_t* main_td, player_t* new_target );
   void sort_undeath_targets( std::vector<player_t*> tl );
   void start_a_feast_of_souls();
   // San'layn
@@ -3559,7 +3559,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
   void init_finished() override
   {
     death_knight_pet_t::init_finished();
-    buffs.stunned->set_expire_callback( [ this ]( buff_t*, int, timespan_t d ) { reschedule_gargoyle(); } );
+    buffs.stunned->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) { reschedule_gargoyle(); } );
   }
 
   void init_base_stats() override
@@ -5001,9 +5001,6 @@ struct abomination_pet_t : public death_knight_pet_t
   {
     return new auto_attack_melee_t<abomination_pet_t>( this, "abomination_melee" );
   }
-
-private:
-  propagate_const<action_t*> disease_cloud;
 };
 
 }  // namespace pets
@@ -8845,8 +8842,7 @@ struct death_strike_t final : public death_knight_melee_attack_t
       heal( get_action<death_strike_heal_t>( "death_strike_heal", p ) ),
       oh_attack( nullptr ),
       improved_death_strike_reduction( 0 ),
-      sanguination_pct( 0.0 ),
-      tww2_blood_4pc_cleave_targets( 0 )
+      sanguination_pct( 0.0 )
   {
     parse_options( options_str );
     may_parry = false;
@@ -8954,7 +8950,6 @@ private:
   propagate_const<action_t*> oh_attack;
   double improved_death_strike_reduction;
   double sanguination_pct;
-  int tww2_blood_4pc_cleave_targets;
 };
 
 // Disease Cloud ============================================================
@@ -10604,7 +10599,7 @@ struct pestilence_t final : public death_knight_spell_t
     return false;
   }
 
-  bool target_ready( player_t* tar ) override
+  bool target_ready( player_t* ) override
   {
     if ( available_targets( target_list() ) > 0 )
       return true;
@@ -11964,7 +11959,7 @@ void death_knight_t::trigger_rapid_variant( player_t* t )
   background_actions.rapid_variant->execute();
 
   std::sort( tl.begin(), tl.end(),
-             [ this ]( player_t* a, player_t* b ) { return a->current_health() < b->current_health(); } );
+             []( player_t* a, player_t* b ) { return a->current_health() < b->current_health(); } );
 
   for ( auto& enemy : tl )
   {
@@ -12002,7 +11997,7 @@ void death_knight_t::sudden_doom_execute_effects( bool coil )
     cooldown.putrefy->adjust( -talent.unholy.harbinger_of_doom->effectN( 3 ).time_value(), false );
 }
 
-void death_knight_t::sudden_doom_impact_effects( action_state_t* state, bool coil )
+void death_knight_t::sudden_doom_impact_effects( action_state_t* /*state*/, bool coil )
 {
   if ( !coil )
     return;
@@ -12176,10 +12171,10 @@ void death_knight_t::trigger_whitemanes_famine( player_t* main_target )
 
   std::vector<player_t*> tl = undeath_tl;
   range::erase_remove( tl, [ main_target ]( player_t* t ) { return t == main_target; } );
-  spread_undeath( td, main_target, tl[ 0 ] );
+  spread_undeath( td, tl[ 0 ] );
 }
 
-void death_knight_t::spread_undeath( death_knight_td_t* main_td, player_t* main_target, player_t* new_target )
+void death_knight_t::spread_undeath( death_knight_td_t* main_td, player_t* new_target )
 {
   death_knight_td_t* td = get_target_data( new_target );
 
@@ -12254,6 +12249,8 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* t, bool is_vampiric
         break;
       case DEATH_KNIGHT_UNHOLY:
         extension = talent.sanlayn.infliction_of_sorrow->effectN( 5 ).time_value();
+        break;
+      default:
         break;
     }
     mod = talent.sanlayn.infliction_of_sorrow->effectN( 2 ).percent();
