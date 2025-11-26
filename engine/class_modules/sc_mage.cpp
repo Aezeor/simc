@@ -97,6 +97,7 @@ struct mage_td_t final : public actor_target_data_t
     buff_t* controlled_destruction;
     buff_t* freezing;
     buff_t* molten_fury;
+    buff_t* touch_of_the_archmage;
     buff_t* touch_of_the_magi;
   } debuffs;
 
@@ -129,6 +130,68 @@ struct buff_stack_benefit_t
   }
 };
 
+struct shatter_source_t : private noncopyable
+{
+  const std::string name_str;
+  const int max_stack;
+  std::vector<simple_sample_data_t> counts;
+  std::vector<int> iteration_counts;
+
+  shatter_source_t( std::string_view name, int max_stack_ ) :
+    name_str( name ),
+    max_stack( max_stack_ ),
+    counts(),
+    iteration_counts()
+  {
+    assert( max_stack >= 0 );
+    counts.resize( max_stack + 1 );
+    iteration_counts.resize( max_stack + 1 );
+  }
+
+  void occur( int stack )
+  {
+    assert( stack >= 0 && stack <= max_stack );
+    iteration_counts[ stack ]++;
+  }
+
+  double count( int stack ) const
+  {
+    assert( stack >= 0 && stack <= max_stack );
+    return counts[ stack ].pretty_mean();
+  }
+
+  double count_total() const
+  {
+    double res = 0.0;
+    for ( const auto& c : counts )
+      res += c.pretty_mean();
+    return res;
+  }
+
+  bool active() const
+  {
+    return count_total() > 0.0;
+  }
+
+  void merge( const shatter_source_t& other )
+  {
+    assert( max_stack == other.max_stack );
+    for ( size_t i = 0; i < counts.size(); i++ )
+      counts[ i ].merge( other.counts[ i ] );
+  }
+
+  void datacollection_begin()
+  {
+    range::fill( iteration_counts, 0 );
+  }
+
+  void datacollection_end()
+  {
+    for ( size_t i = 0; i < counts.size(); i++ )
+      counts[ i ].add( as<double>( iteration_counts[ i ] ) );
+  }
+};
+
 struct mage_t final : public player_t
 {
 public:
@@ -153,6 +216,9 @@ public:
   // Ground AoE tracking
   std::array<timespan_t, AOE_MAX> ground_aoe_expiration;
 
+  // Data collection
+  auto_dispose<std::vector<shatter_source_t*> > shatter_source_list;
+
   // Cached actions
   struct actions_t
   {
@@ -173,6 +239,7 @@ public:
     action_t* splinter_dot;
     action_t* splinter_recall;
     action_t* splinterstorm;
+    action_t* touch_of_the_archmage;
     action_t* touch_of_the_magi_explosion;
 
     struct shatter_actions_t
@@ -296,6 +363,9 @@ public:
     double it_clearcasting_chance = 0.0938;
     double blast_clearcasting_chance = 0.0938;
     double blast_it_clearcasting_chance = 0.1618;
+    bool fof_requires_freezing = true;
+    bool il_requires_freezing = true;
+    bool il_sort_by_freezing = false;
   } options;
 
   // Pets
@@ -309,6 +379,9 @@ public:
   // Procs
   struct procs_t
   {
+    proc_t* salvo_applied;
+    proc_t* salvo_overflow;
+
     proc_t* heating_up_generated;         // Crits without HU/HS
     proc_t* heating_up_removed;           // Non-crits with HU >200ms after application
     proc_t* heating_up_ib_converted;      // IBs used on HU
@@ -327,9 +400,6 @@ public:
     proc_t* freezing_applied;
     proc_t* freezing_expired;
     proc_t* freezing_overflow;
-
-    // TODO: Use something nicer for this
-    std::array<proc_t*, 6> shatter;
   } procs;
 
   struct accumulated_rngs_t
@@ -779,6 +849,7 @@ public:
   void copy_from( player_t* ) override;
   void merge( player_t& ) override;
   void analyze( sim_t& ) override;
+  void datacollection_begin() override;
   void datacollection_end() override;
   void regen( timespan_t ) override;
   void moving() override;
@@ -798,6 +869,19 @@ public:
     return td;
   }
 
+  shatter_source_t* get_shatter_source( std::string_view name, int max_stack )
+  {
+    for ( auto ss : shatter_source_list )
+    {
+      if ( ss->name_str == name )
+        return ss;
+    }
+
+    auto ss = new shatter_source_t( name, max_stack );
+    shatter_source_list.push_back( ss );
+    return ss;
+  }
+
   void trigger_arcane_charge( int stacks = 1 );
   bool trigger_brain_freeze( double chance, proc_t* source, timespan_t delay = 0.15_s );
   bool trigger_crowd_control( const action_state_t* s, spell_mechanic type );
@@ -810,10 +894,9 @@ public:
   void consume_burden_of_power();
   void trigger_splinter( player_t* target, int count = -1 );
   void trigger_freezing( player_t* target, int stacks, proc_t* source, double chance = 1.0 );
-  int  trigger_shatter( player_t* target, action_t* action, int max_consumption, bool fof = false );
+  int  trigger_shatter( player_t* target, action_t* action, int max_consumption, shatter_source_t* source, bool fof = false );
   void trigger_icicle( int count = 1 );
-  // TODO: add source tracking
-  void trigger_arcane_salvo( int stacks = 1, double chance = 1.0 );
+  void trigger_arcane_salvo( proc_t* source, int stacks = 1, double chance = 1.0 );
 };
 
 namespace pets {
@@ -1322,8 +1405,18 @@ struct touch_of_the_magi_t final : public buff_t
     buff_t::expire_override( stacks, duration );
 
     auto p = debug_cast<mage_t*>( source );
-    double pct = p->talents.touch_of_the_magi->effectN( 1 ).percent();
-    p->action.touch_of_the_magi_explosion->execute_on_target( player, pct * current_value );
+    // TODO: This *should* be affected by Touch of the Archmage and provide 25%, but
+    // it currently doesn't seem to work ingame.
+    double damage = current_value * p->talents.touch_of_the_magi->effectN( 1 ).percent();
+    p->action.touch_of_the_magi_explosion->execute_on_target( player, damage );
+    if ( p->talents.touch_of_the_archmage_3.ok() )
+    {
+      auto* debuff = p->get_target_data( player )->debuffs.touch_of_the_archmage;
+      double ticks = std::round( debuff->buff_duration() / debuff->buff_period );
+      // TODO: This seems to actually be using effect2, causing it to do 4 times as much damage
+      double total = damage * p->talents.touch_of_the_archmage_3->effectN( 1 ).percent();
+      debuff->trigger( -1, total / ticks );
+    }
   }
 };
 
@@ -1462,6 +1555,8 @@ struct mage_spell_t : public spell_t
   int freezing_targets = -1;
   proc_t* freezing_source = nullptr;
 
+  proc_t* salvo_source = nullptr;
+
 public:
   mage_spell_t( std::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
@@ -1540,6 +1635,9 @@ public:
 
     if ( p()->spec.shatter->ok() )
       freezing_source = p()->get_proc( fmt::format( "Freezing applied ({})", data().name_cstr() ) );
+
+    if ( p()->talents.arcane_salvo.ok() )
+      salvo_source = p()->get_proc( fmt::format( "Arcane Salvo applied ({})", data().name_cstr() ) );
   }
 
   double action_multiplier() const override
@@ -2583,7 +2681,16 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * mana_pct, p()->gains.arcane_barrage, this );
 
     p()->buffs.arcane_charge->expire();
+    int salvo = p()->buffs.arcane_salvo->check();
+    if ( salvo && p()->talents.force_of_will.ok() )
+    {
+      // TODO: Force of Will seems to conjure one additional splinter if at
+      // least one stack of Arcane Salvo is present
+      p()->trigger_splinter( target, 1 + salvo / as<int>( p()->talents.force_of_will->effectN( 1 ).base_value() ) );
+    }
     p()->buffs.arcane_salvo->expire();
+    if ( salvo >= as<int>( p()->talents.polished_focus->effectN( 1 ).base_value() ) )
+      p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.polished_focus->effectN( 2 ).base_value() ) );
 
     if ( p()->buffs.arcane_soul->check() )
     {
@@ -2675,7 +2782,8 @@ struct arcane_blast_t final : public arcane_mage_spell_t
 
     p()->consume_burden_of_power();
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
-    p()->trigger_arcane_salvo( as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
+    p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
+    p()->trigger_splinter( p()->target );
     p()->trigger_spellfire_spheres();
     p()->trigger_mana_cascade();
 
@@ -2782,8 +2890,9 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
+    p()->trigger_splinter( p()->target ); // Also triggers from echo
     if ( !background )
-      p()->trigger_arcane_salvo( as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
+      p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
 
     if ( arcane_pulse_echo && rng().roll( p()->talents.reverberate->effectN( 1 ).percent() ) )
       make_event( *sim, 500_ms, [ this, t = target ] { arcane_pulse_echo->execute_on_target( t ); } );
@@ -2893,8 +3002,8 @@ struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_sp
   {
     custom_state_spell_t::execute();
 
-    p()->trigger_arcane_salvo();
-    p()->trigger_arcane_salvo( as<int>( p()->talents.focusing_crystal->effectN( 2 ).base_value() ),
+    p()->trigger_arcane_salvo( salvo_source );
+    p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.focusing_crystal->effectN( 2 ).base_value() ),
                                p()->talents.focusing_crystal->effectN( 1 ).percent() );
 
     if ( rng().roll( p()->talents.high_voltage->effectN( 1 ).percent() ) )
@@ -3209,10 +3318,12 @@ struct combustion_t final : public fire_mage_spell_t
 struct comet_storm_projectile_t final : public frost_mage_spell_t
 {
   int freezing_consume;
+  shatter_source_t* shatter_source;
 
   comet_storm_projectile_t( std::string_view n, mage_t* p, bool isothermic_ = false ) :
     frost_mage_spell_t( n, p, p->find_spell( isothermic_ ? 438609 : 153596 ) ),
-    freezing_consume( as<int>( p->spec.shatter->effectN( 5 ).base_value() ) )
+    freezing_consume( as<int>( p->spec.shatter->effectN( 5 ).base_value() ) ),
+    shatter_source( p->get_shatter_source( name_str, freezing_consume ) )
   {
     aoe = -1;
     background = proc = true;
@@ -3225,7 +3336,7 @@ struct comet_storm_projectile_t final : public frost_mage_spell_t
     frost_mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) && p()->action.shatter.comet_storm )
-      p()->trigger_shatter( s->target, p()->action.shatter.comet_storm, freezing_consume );
+      p()->trigger_shatter( s->target, p()->action.shatter.comet_storm, freezing_consume, shatter_source );
   }
 };
 
@@ -3872,7 +3983,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
       add_child( duality_pyroblast );
     }
 
-    if ( p->talents.flash_freezeburn.ok() )
+    if ( p->specialization() == MAGE_FROST && p->talents.flash_freezeburn.ok() )
       add_child( p->action.flash_freezeburn );
   }
 
@@ -3938,6 +4049,8 @@ struct shatter_t final : public mage_spell_t
     double am = mage_spell_t::action_multiplier();
 
     am *= 1.0 + p()->buffs.permafrost_lances->check_value();
+    if ( p()->state.fingers_of_frost_active )
+      am *= 1.0 + p()->sets->set( MAGE_FROST, MID1, B4 )->effectN( 1 ).percent();
 
     return am;
   }
@@ -3958,13 +4071,16 @@ struct ice_lance_t final : public frost_mage_spell_t
   struct ice_lance_impact_t final : public frost_mage_spell_t
   {
     int freezing_consume;
-    proc_t* polished_focus = nullptr;
+    shatter_source_t* shatter_source;
+    shatter_source_t* shatter_source_cleave;
 
     ice_lance_impact_t( std::string_view n, mage_t* p ) :
       frost_mage_spell_t( n, p, p->find_spell( 228598 ) ),
-      freezing_consume( as<int>( p->spec.shatter->effectN( 4 ).base_value() ) )
+      freezing_consume( as<int>( p->spec.shatter->effectN( 4 ).base_value() ) ),
+      shatter_source( p->get_shatter_source( name_str, freezing_consume ) ),
+      shatter_source_cleave( p->get_shatter_source( "Ice Lance cleave", freezing_consume ) )
     {
-      background = proc = true;
+      background = true;
       // Spell data contains the AoE effect which is disabled unless you pick Fractured Frost
       // Fix the spell power mod and use base_aoe_multiplier for the cleave
       double primary_coef = data().effectN( 1 ).sp_coeff();
@@ -3976,25 +4092,18 @@ struct ice_lance_t final : public frost_mage_spell_t
         aoe = 1 + as<int>( p->talents.fractured_frost->effectN( 1 ).base_value() );
     }
 
-    void init_finished() override
-    {
-      frost_mage_spell_t::init_finished();
-
-      if ( p()->talents.polished_focus.ok() )
-        polished_focus = p()->get_proc( "Freezing applied (Polished Focus)" );
-    }
-
     void impact( action_state_t* s ) override
     {
       frost_mage_spell_t::impact( s );
 
       if ( result_is_hit( s->result ) && p()->action.shatter.ice_lance )
       {
-        int stacks = p()->trigger_shatter( s->target, p()->action.shatter.ice_lance, freezing_consume, p()->state.fingers_of_frost_active );
+        int stacks = p()->trigger_shatter( s->target, p()->action.shatter.ice_lance, freezing_consume,
+                                           s->chain_target == 0 ? shatter_source : shatter_source_cleave, p()->state.fingers_of_frost_active );
         if ( s->chain_target == 0 && p()->talents.force_of_will.ok() )
           p()->trigger_splinter( s->target, stacks / as<int>( p()->talents.force_of_will->effectN( 3 ).base_value() ) );
         if ( stacks == freezing_consume )
-          p()->trigger_freezing( s->target, as<int>( p()->talents.polished_focus->effectN( 3 ).base_value() ), polished_focus );
+          p()->trigger_freezing( s->target, as<int>( p()->talents.polished_focus->effectN( 3 ).base_value() ), freezing_source );
       }
     }
 
@@ -4002,12 +4111,30 @@ struct ice_lance_t final : public frost_mage_spell_t
     {
       frost_mage_spell_t::available_targets( tl );
 
-      range::erase_remove( tl, [ this ] ( player_t* t )
+      if ( p()->state.fingers_of_frost_active && !p()->options.fof_requires_freezing )
+        return tl.size();
+
+      if ( p()->options.il_requires_freezing )
       {
-        if ( t == target ) return false;
-        if ( auto td = find_td( t ) ) return td->debuffs.freezing->check() == 0;
-        return true;
-      } );
+        range::erase_remove( tl, [ this ] ( player_t* t )
+        {
+          if ( t == target ) return false;
+          if ( auto td = find_td( t ) ) return td->debuffs.freezing->check() == 0;
+          return true;
+        } );
+      }
+
+      if ( p()->options.il_sort_by_freezing )
+      {
+        auto value = [ this ] ( player_t* t )
+        {
+          if ( t == target ) return std::numeric_limits<int>::max();
+          if ( auto td = find_td( t ) ) return td->debuffs.freezing->check();
+          return 0;
+        };
+
+        range::sort( tl, [ value ] ( player_t* a, player_t* b ) { return value( a ) > value( b ); } );
+      }
 
       return tl.size();
     }
@@ -4177,6 +4304,7 @@ struct meteor_impact_t final : public fire_mage_spell_t
   timespan_t meteor_burn_duration;
   timespan_t meteor_burn_pulse_time;
   int freezing_consume;
+  shatter_source_t* shatter_source;
 
   meteor_impact_t( std::string_view n, mage_t* p, action_t* burn, meteor_type type_ ) :
     fire_mage_spell_t( n, p, p->find_spell( type_ == meteor_type::ISOTHERMIC ? 438607 : 351140 ) ),
@@ -4184,7 +4312,8 @@ struct meteor_impact_t final : public fire_mage_spell_t
     meteor_burn( burn ),
     meteor_burn_duration( p->find_spell( 175396 )->duration() ),
     meteor_burn_pulse_time( p->find_spell( 155158 )->effectN( 1 ).period() ),
-    freezing_consume( as<int>( p->spec.shatter->effectN( 5 ).base_value() ) )
+    freezing_consume( as<int>( p->spec.shatter->effectN( 5 ).base_value() ) ),
+    shatter_source( p->get_shatter_source( name_str, freezing_consume ) )
   {
     aoe = -1;
     reduced_aoe_targets = 8;
@@ -4212,7 +4341,7 @@ struct meteor_impact_t final : public fire_mage_spell_t
     fire_mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) && p()->action.shatter.meteor )
-      p()->trigger_shatter( s->target, p()->action.shatter.meteor, freezing_consume );
+      p()->trigger_shatter( s->target, p()->action.shatter.meteor, freezing_consume, shatter_source );
   }
 };
 
@@ -4361,7 +4490,7 @@ struct duality_glacial_spike_t final : public mage_spell_t
     if ( p->talents.elemental_conduit.ok() )
       triggers.ignite = true;
 
-    if ( p->talents.flash_freezeburn.ok() )
+    if ( p->specialization() == MAGE_FIRE && p->talents.flash_freezeburn.ok() )
       add_child( p->action.flash_freezeburn );
   }
 
@@ -4493,7 +4622,7 @@ struct splintering_ray_t final : public spell_t
     spell_t( n, p, p->find_spell( 418735 ) ),
     freezing_source( p->get_proc( "Freezing applied (Splintering Ray)" ) )
   {
-    background = proc = true;
+    background = proc = secondary_targets_only = true;
     base_dd_min = base_dd_max = 1.0;
     // TODO: Seems to hit 1 fewer target
     aoe--;
@@ -4511,15 +4640,6 @@ struct splintering_ray_t final : public spell_t
   {
     // Ignore Positive Damage Taken Modifiers (321)
     return std::min( spell_t::composite_target_multiplier( target ), 1.0 );
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    spell_t::available_targets( tl );
-
-    range::erase_remove( tl, target );
-
-    return tl.size();
   }
 
   void impact( action_state_t* s ) override
@@ -4681,6 +4801,9 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
 
     if ( data().ok() )
       add_child( p->action.touch_of_the_magi_explosion );
+
+    if ( p->talents.touch_of_the_archmage_3.ok() )
+      add_child( p->action.touch_of_the_archmage );
   }
 
   void execute() override
@@ -4740,6 +4863,20 @@ struct touch_of_the_magi_explosion_t final : public spell_t
   }
 };
 
+struct touch_of_the_archmage_t final : public spell_t
+{
+  touch_of_the_archmage_t( std::string_view n, mage_t* p ) :
+    spell_t( n, p, p->find_spell( 1258036 ) )
+  {
+    background = proc = true;
+    aoe = -1;
+    base_dd_min = base_dd_max = 1.0;
+    double m = 1.0 + p->talents.touch_of_the_archmage_3->effectN( 2 ).percent();
+    base_multiplier     *= m;
+    base_aoe_multiplier /= m;
+  }
+};
+
 struct summon_water_elemental_t final : public frost_mage_spell_t
 {
   summon_water_elemental_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -4784,20 +4921,11 @@ struct frostfire_empowerment_t final : public spell_t
     spell_t( n, p, p->find_spell( 431186 ) ),
     freezing_source( p->get_proc( "Freezing applied (Frostfire Empowerment)" ) )
   {
-    background = proc = true;
+    background = proc = secondary_targets_only = true;
     aoe = -1;
     base_dd_min = base_dd_max = 1.0;
     // TODO: Check how it behaves wrt the excluded main target
     reduced_aoe_targets = p->talents.frostfire_empowerment->effectN( 5 ).base_value();
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    spell_t::available_targets( tl );
-
-    range::erase_remove( tl, target );
-
-    return tl.size();
   }
 
   void impact( action_state_t* s ) override
@@ -4818,21 +4946,12 @@ struct flash_freezeburn_t final : public spell_t
     spell_t( n, p, p->find_spell( 1278079 ) ),
     freezing_source( p->get_proc( "Freezing applied (Flash Freezeburn)" ) )
   {
-    background = proc = true;
+    background = proc = secondary_targets_only = true;
     base_dd_min = base_dd_max = 1.0;
     // TODO: Usually hits one fewer target
     // It's possible it picks 5 random targets and if one of them happens to be
     // the main target, it simply skips it. See also: Splintering Ray
     aoe--;
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    spell_t::available_targets( tl );
-
-    range::erase_remove( tl, target );
-
-    return tl.size();
   }
 
   void impact( action_state_t* s ) override
@@ -4849,21 +4968,12 @@ struct controlled_instincts_t final : public spell_t
   controlled_instincts_t( std::string_view n, mage_t* p ) :
     spell_t( n, p, p->find_spell( p->specialization() == MAGE_FROST ? 444487 : 444720 ) )
   {
-    background = proc = true;
+    background = proc = secondary_targets_only = true;
     // Only hits 5 targets despite max_targets being 6
     aoe -= 1;
     // TODO: The tooltip still mentions this, but it's untestable at the moment since it can't hit 6 or more targets
     reduced_aoe_targets = p->talents.controlled_instincts->effectN( 5 ).base_value();
     base_dd_min = base_dd_max = 1.0;
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    spell_t::available_targets( tl );
-
-    range::erase_remove( tl, target );
-
-    return tl.size();
   }
 };
 
@@ -4997,6 +5107,9 @@ struct splinter_t final : public mage_spell_t
       double pct = p()->talents.controlled_instincts->effectN( p()->specialization() == MAGE_FROST ? 4 : 1 ).percent();
       controlled_instincts->execute_on_target( s->target, pct * s->result_total );
     }
+
+    p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.infused_splinters->effectN( 3 ).base_value() ),
+                               p()->talents.infused_splinters->effectN( 1 ).percent() );
 
     auto cd = p()->specialization() == MAGE_FROST ? p()->cooldowns.frozen_orb : p()->cooldowns.arcane_orb;
     cd->adjust( -p()->talents.spellfrost_teachings->effectN( p()->specialization() == MAGE_FROST ? 2 : 1 ).time_value(), false );
@@ -5304,6 +5417,10 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.molten_fury            = make_buff( *this, "molten_fury", mage->find_spell( 458910 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->set_chance( mage->talents.molten_fury.ok() );
+  debuffs.touch_of_the_archmage  = make_buff( *this, "touch_of_the_archmage", mage->find_spell( 1258134 ) )
+                                     ->set_tick_callback( [ mage ] ( buff_t* b, int, timespan_t )
+                                       { mage->action.touch_of_the_archmage->execute_on_target( b->player, b->check_value() ); } )
+                                     ->set_chance( mage->talents.touch_of_the_archmage_3.ok() );
   debuffs.touch_of_the_magi      = make_buff<buffs::touch_of_the_magi_t>( this );
 }
 
@@ -5438,6 +5555,9 @@ void mage_t::create_actions()
   if ( talents.touch_of_the_magi.ok() )
     action.touch_of_the_magi_explosion = get_action<touch_of_the_magi_explosion_t>( "touch_of_the_magi_explosion", this );
 
+  if ( talents.touch_of_the_archmage_3.ok() )
+    action.touch_of_the_archmage = get_action<touch_of_the_archmage_t>( "touch_of_the_archmage", this );
+
   if ( talents.hand_of_frost_1.ok() )
     action.hand_of_frost = get_action<hand_of_frost_t>( "hand_of_frost", this );
 
@@ -5501,6 +5621,9 @@ void mage_t::create_options()
   add_option( opt_float( "mage.it_clearcasting_chance", options.it_clearcasting_chance ) );
   add_option( opt_float( "mage.blast_clearcasting_chance", options.blast_clearcasting_chance ) );
   add_option( opt_float( "mage.blast_it_clearcasting_chance", options.blast_it_clearcasting_chance ) );
+  add_option( opt_bool( "mage.fof_requires_freezing", options.fof_requires_freezing ) );
+  add_option( opt_bool( "mage.il_requires_freezing", options.il_requires_freezing ) );
+  add_option( opt_bool( "mage.il_sort_by_freezing", options.il_sort_by_freezing ) );
   player_t::create_options();
 }
 
@@ -5515,6 +5638,14 @@ void mage_t::merge( player_t& other )
   player_t::merge( other );
 
   mage_t& mage = dynamic_cast<mage_t&>( other );
+
+  for ( size_t i = 0; i < shatter_source_list.size(); i++ )
+  {
+    auto ours = shatter_source_list[ i ];
+    auto theirs = mage.shatter_source_list[ i ];
+    assert( ours->name_str == theirs->name_str );
+    ours->merge( *theirs );
+  }
 
   switch ( specialization() )
   {
@@ -5542,10 +5673,18 @@ void mage_t::analyze( sim_t& s )
   }
 }
 
+void mage_t::datacollection_begin()
+{
+  player_t::datacollection_begin();
+
+  range::for_each( shatter_source_list, std::mem_fn( &shatter_source_t::datacollection_begin ) );
+}
 
 void mage_t::datacollection_end()
 {
   player_t::datacollection_end();
+
+  range::for_each( shatter_source_list, std::mem_fn( &shatter_source_t::datacollection_end ) );
 
   if ( specialization() == MAGE_FIRE )
     sample_data.low_mana_iteration->add( as<double>( state.had_low_mana ) );
@@ -6034,7 +6173,8 @@ void mage_t::create_buffs()
                                       ->set_cooldown( 0_ms )
                                       ->set_affects_regen( true );
   buffs.overpowered_missiles      = make_buff( this, "overpowered_missiles", find_spell( 1277009 ) )
-                                      ->set_default_value_from_effect( 1 );
+                                      ->set_default_value_from_effect( 1 )
+                                      ->set_chance( talents.overpowered_missiles.ok() );
   buffs.presence_of_mind          = make_buff( this, "presence_of_mind", find_spell( 205025 ) )
                                       ->set_cooldown( 0_ms )
                                       ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
@@ -6157,6 +6297,13 @@ void mage_t::create_buffs()
   // TODO: adjust this
   if ( talents.memory_of_alar.ok() )
     buffs.hyperthermia->default_chance = -1.0;
+
+  if ( sets->has_set_bonus( MAGE_ARCANE, MID1, B2 ) )
+  {
+    assert( buffs.arcane_charge->default_value == buff_t::DEFAULT_VALUE() );
+    buffs.arcane_charge->set_default_value( sets->set( MAGE_ARCANE, MID1, B2 )->effectN( 1 ).percent() )
+                       ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+  }
 }
 
 void mage_t::init_gains()
@@ -6174,6 +6321,10 @@ void mage_t::init_procs()
 
   switch ( specialization() )
   {
+    case MAGE_ARCANE:
+      procs.salvo_applied  = get_proc( "Arcane Salvo applied" );
+      procs.salvo_overflow = get_proc( "Arcane Salvo overflow" );
+      break;
     case MAGE_FIRE:
       procs.heating_up_generated         = get_proc( "Heating Up generated" );
       procs.heating_up_removed           = get_proc( "Heating Up removed" );
@@ -6194,9 +6345,6 @@ void mage_t::init_procs()
       procs.freezing_applied           = get_proc( "Freezing applied" );
       procs.freezing_expired           = get_proc( "Freezing expired" );
       procs.freezing_overflow          = get_proc( "Freezing overflow" );
-
-      for ( int i = 0; i < std::size( procs.shatter ); i++ )
-        procs.shatter[ i ] = get_proc( fmt::format( "Shatter ({} stacks)", i + 1 ) );
       break;
     default:
       break;
@@ -6258,8 +6406,7 @@ void mage_t::init_finished()
   player_t::init_finished();
 
   // Sort the procs to put the proc sources next to each other.
-  if ( specialization() == MAGE_FROST )
-    range::sort( proc_list, [] ( proc_t* a, proc_t* b ) { return a->name_str < b->name_str; } );
+  range::sort( proc_list, [] ( proc_t* a, proc_t* b ) { return a->name_str < b->name_str; } );
 }
 
 void mage_t::init_action_list()
@@ -6692,7 +6839,7 @@ void mage_t::trigger_freezing( player_t* target, int stacks, proc_t* source, dou
   }
 }
 
-int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consumption, bool fof )
+int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consumption, shatter_source_t* source, bool fof )
 {
   if ( !spec.shatter->ok() || max_consumption <= 0 )
     return 0;
@@ -6702,13 +6849,16 @@ int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consump
     debuff = td->debuffs.freezing;
   int stacks = debuff ? debuff->check() : 0;
 
-  // TODO: With FoF, Shatter should happen even if the target has 0 Freezing stacks, this
-  // is currently not the case.
-  if ( stacks == 0 )
-    return 0;
-
   int shatter_stacks = fof ? max_consumption : std::min( max_consumption, stacks );
   int consume_stacks = fof ? 0 : std::min( max_consumption, stacks );
+
+  assert( source );
+  source->occur( shatter_stacks );
+
+  // TODO: With FoF, Shatter should happen even if the target has 0 Freezing stacks, this
+  // is currently not the case.
+  if ( options.fof_requires_freezing && stacks == 0 )
+    return 0;
 
   if ( shatter_stacks > 0 )
   {
@@ -6724,9 +6874,6 @@ int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consump
     hof_chance += consume_stacks * 0.1 * talents.hand_of_frost_2->effectN( 1 ).percent();
     if ( hof && rng().roll( hof_chance ) )
       hof->execute_on_target( target );
-
-    assert( shatter_stacks <= std::size( procs.shatter ) );
-    procs.shatter[ shatter_stacks - 1 ]->occur();
   }
 
   if ( debuff )
@@ -6779,15 +6926,27 @@ void mage_t::trigger_mana_cascade()
   }
 }
 
-void mage_t::trigger_arcane_salvo( int stacks, double chance )
+void mage_t::trigger_arcane_salvo( proc_t* source, int stacks, double chance )
 {
   if ( !talents.arcane_salvo->ok() || stacks <= 0 )
     return;
 
   if ( rng().roll( chance ) )
   {
-    buffs.arcane_salvo->trigger( stacks );
-    // TODOD: proc_t* stuff
+    auto buff = buffs.arcane_salvo;
+    int old_stacks = buff->check();
+    buff->trigger( stacks );
+    int new_stacks = buff->check();
+
+    assert( source );
+    for ( int i = 0; i < stacks; i++ )
+    {
+      source->occur();
+      procs.salvo_applied->occur();
+    }
+    int overflow = stacks - ( new_stacks - old_stacks );
+    for ( int i = 0; i < overflow; i++ )
+      procs.salvo_overflow->occur();
   }
 }
 
@@ -7012,12 +7171,82 @@ public:
     p( player )
   { }
 
+  void html_customsection_shatter( report::sc_html_stream& os )
+  {
+    if ( p.shatter_source_list.empty() )
+      return;
+
+    int data_cols = 0;
+    for ( const auto* source : p.shatter_source_list )
+      data_cols = std::max( data_cols, source->max_stack + 1 );
+
+    os << "<div class=\"player-section custom_section\">\n"
+          "<h3 class=\"toggle open\">Shatter</h3>\n"
+          "<div class=\"toggle-content\">\n"
+          "<table class=\"sc sort even\">\n"
+          "<thead>\n"
+          "<tr>\n"
+          "<th></th>\n"
+          "<th colspan=\"" << data_cols + 1 << "\">Count</th>\n"
+          "</tr>\n"
+          "<tr>\n"
+          "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n";
+
+    for ( int i = 0; i < data_cols; i++ )
+      os << "<th class=\"toggle-sort\">" << i << "</th>\n";
+
+    os << "<th class=\"toggle-sort\">Total</th>\n"
+          "</tr>\n"
+          "</thead>\n";
+
+    std::vector<double> totals( data_cols, 0.0 );
+    auto nonzero = [] ( double d ) { return d != 0.0 ? fmt::format( "{:.1f}", d ) : ""; };
+    for ( const auto* data : p.shatter_source_list )
+    {
+      if ( !data->active() )
+        continue;
+
+      std::string name = data->name_str;
+      if ( action_t* a = p.find_action( name ) )
+        name = report_decorators::decorated_action( *a );
+      else
+        name = util::encode_html( name );
+
+      os << "<tr>";
+      fmt::print( os, "<td class=\"left\">{}</td>", name );
+      for ( int i = 0; i < data_cols; i++ )
+      {
+        double value = i <= data->max_stack ? data->count( i ) : 0.0;
+        fmt::print( os, "<td class=\"right\">{}</td>", nonzero( value ) );
+        totals[ i ] += value;
+      }
+      fmt::print( os, "<td class=\"right\">{}</td>", nonzero( data->count_total() ) );
+      os << "</tr>\n";
+    }
+
+    os << "<td class=\"left\">All abilities</td>";
+    for ( int i = 0; i < data_cols; i++ )
+      fmt::print( os, "<td class=\"right\">{}</td>", nonzero( totals[ i ] ) );
+    fmt::print( os, "<td class=\"right\">{}</td>", nonzero( range::accumulate( totals, 0.0 ) ) );
+
+    os << "</table>\n"
+          "</div>\n"
+          "</div>\n";
+  }
+
   void html_customsection( report::sc_html_stream& os ) override
   {
     if ( p.sim->report_details == 0 )
       return;
 
-    // TODO: section for Freezing?
+    switch ( p.specialization() )
+    {
+      case MAGE_FROST:
+        html_customsection_shatter( os );
+        break;
+      default:
+        break;
+    }
   }
 private:
   mage_t& p;
