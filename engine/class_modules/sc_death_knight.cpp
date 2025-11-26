@@ -1827,6 +1827,22 @@ public:
     resource_regeneration = regen_type::DYNAMIC;
   }
 
+  template <typename T>
+  static bool dot_or_debuff_active( T d, death_knight_td_t* t )
+  {
+    if constexpr ( std::is_invocable_v<T, death_knight_td_t::debuffs_t> )
+      return std::invoke( d, t->debuff )->check() > 0;
+
+    else if constexpr ( std::is_invocable_v<T, death_knight_td_t::dots_t> )
+      return std::invoke( d, t->dot )->is_ticking();
+
+    else
+    {
+      sim->error( SEVERE, "%s dot_or_debuff_active: Unsupported type passed.\n", name() );
+      return false;
+    }
+  }
+
   // Character Definition overrides
   void init_spells() override;
   void init_action_list() override;
@@ -2790,6 +2806,14 @@ struct pet_action_t : public parse_action_effects_t<Base>
   death_knight_t* dk() const
   {
     return debug_cast<death_knight_t*>( pet()->owner );
+  }
+
+  template <typename T>
+  target_filter_callback_t dk_dot_or_debuff_only( T d )
+  {
+    return [ &, d ]( const action_t*, player_t* target ) {
+      return dk()->dot_or_debuff_active( d, dk()->get_target_data( target ) );
+    };
   }
 
   void init() override
@@ -4622,15 +4646,7 @@ struct whitemane_pet_t final : public horseman_pet_t
       aoe                     = 20;
       attack_power_mod.direct = 0;
       impact_action           = get_action<epidemic_whitemane_main_t>( "epidemic_main", p );
-      target_filter_callback  = virulent_plague_targets_only();
-    }
-
-    target_filter_callback_t virulent_plague_targets_only()
-    {
-      return [ & ]( const action_t*, player_t* target ) {
-        death_knight_td_t* td = dk()->get_target_data( target );
-        return td->dot.virulent_plague->is_ticking();
-      };
+      target_filter_callback  = dk_dot_or_debuff_only( &death_knight_td_t::dots_t::virulent_plague );
     }
 
     void execute() override
@@ -5325,34 +5341,18 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
   }
 
   template <typename T>
-  bool dot_or_debuff_active( T d, death_knight_td_t* t )
-  {
-    if constexpr ( std::is_invocable_v<T, death_knight_td_t::debuffs_t> )
-      return std::invoke( d, t->debuff )->check() > 0;
-
-    else if constexpr ( std::is_invocable_v<T, death_knight_td_t::dots_t> )
-      return std::invoke( d, t->dot )->is_ticking();
-
-    else
-    {
-      p()->sim->error( SEVERE, "%s dot_or_debuff_active: Unsupported type passed.\n", p()->name() );
-      return false;
-    }
-  }
-
-  template <typename T>
   target_filter_callback_t dot_or_debuff_only( T d )
   {
     return [ &, d ]( const action_t*, player_t* target ) {
-      return dot_or_debuff_active( d, p()->get_target_data( target ) );
+      return p()->dot_or_debuff_active( d, p()->get_target_data( target ) );
     };
   }
 
   target_filter_callback_t unholy_diseases_only()
   {
     return [ & ]( const action_t*, player_t* target ) {
-      death_knight_td_t* td = p()->get_target_data( target );
-      return td->dot.virulent_plague->is_ticking() || td->dot.dread_plague->is_ticking();
+      return p()->dot_or_debuff_active( &death_knight_td_t::dots_t::virulent_plague, p()->get_target_data( target ) ) ||
+             p()->dot_or_debuff_active( &death_knight_td_t::dots_t::dread_plague, p()->get_target_data( target ) );
     };
   }
 
