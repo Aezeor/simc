@@ -5324,19 +5324,27 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
     return nullptr;
   }
 
-  target_filter_callback_t virulent_plague_targets_only()
+  template <typename T>
+  bool dot_or_debuff_active( T d, death_knight_td_t* t )
   {
-    return [ & ]( const action_t*, player_t* target ) {
-      death_knight_td_t* td = p()->get_target_data( target );
-      return td->dot.virulent_plague->is_ticking();
-    };
+    if constexpr ( std::is_invocable_v<T, death_knight_td_t::debuffs_t> )
+      return std::invoke( d, t->debuff )->check() > 0;
+
+    else if constexpr ( std::is_invocable_v<T, death_knight_td_t::dots_t> )
+      return std::invoke( d, t->dot )->is_ticking();
+
+    else
+    {
+      p()->sim->error( SEVERE, "%s dot_or_debuff_active: Unsupported type passed.\n", p()->name() );
+      return false;
+    }
   }
 
-  target_filter_callback_t dread_plague_targets_only()
+  template <typename T>
+  target_filter_callback_t dot_or_debuff_only( T d )
   {
-    return [ & ]( const action_t*, player_t* target ) {
-      death_knight_td_t* td = p()->get_target_data( target );
-      return td->dot.dread_plague->is_ticking();
+    return [ &, d ]( const action_t*, player_t* target ) {
+      return dot_or_debuff_active( d, p()->get_target_data( target ) );
     };
   }
 
@@ -9088,7 +9096,7 @@ struct epidemic_base_t : public death_knight_spell_t
   epidemic_base_t( std::string_view n, death_knight_t* p, const spell_data_t* s )
     : death_knight_spell_t( n, p, s ), custom_reduced_aoe_targets( 8.0 ), soft_cap_multiplier( 1.0 ), sd( false )
   {
-    target_filter_callback = virulent_plague_targets_only();
+    target_filter_callback = dot_or_debuff_only( &death_knight_td_t::dots_t::virulent_plague );
   }
 
   void execute() override
