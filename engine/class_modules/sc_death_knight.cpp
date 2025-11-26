@@ -3154,7 +3154,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
       background = true;
       aoe = -1;
       attack_power_mod.direct = data().effectN( 3 ).ap_coeff();
-      target_filter_callback = secondary_targets_only();
+      target_filter_callback  = secondary_targets_only();
     }
   };
 
@@ -3353,6 +3353,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       aoe        = -1;
       attack_power_mod.direct = data().effectN( 3 ).ap_coeff();
       target_filter_callback = secondary_targets_only();
+      target_filter_callback  = secondary_targets_only();
     }
   };
 
@@ -4622,17 +4623,15 @@ struct whitemane_pet_t final : public horseman_pet_t
       aoe                     = 20;
       attack_power_mod.direct = 0;
       impact_action           = get_action<epidemic_whitemane_main_t>( "epidemic_main", p );
+      target_filter_callback  = virulent_plague_targets_only();
     }
 
-    size_t available_targets( std::vector<player_t*>& tl ) const override
+    target_filter_callback_t virulent_plague_targets_only()
     {
-      horseman_spell_t::available_targets( tl );
-
-      // Remove enemies that are not affected by virulent plague
-      range::erase_remove(
-          tl, [ this ]( player_t* t ) { return !dk()->get_target_data( t )->dot.virulent_plague->is_ticking(); } );
-
-      return tl.size();
+      return [ & ]( const action_t*, player_t* target ) {
+        death_knight_td_t* td = dk()->get_target_data( target );
+        return td->dot.virulent_plague->is_ticking();
+      };
     }
 
     void execute() override
@@ -5324,6 +5323,30 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
         return a.get();
     }
     return nullptr;
+  }
+
+  target_filter_callback_t virulent_plague_targets_only()
+  {
+    return [ & ]( const action_t*, player_t* target ) {
+      death_knight_td_t* td = p()->get_target_data( target );
+      return td->dot.virulent_plague->is_ticking();
+    };
+  }
+
+  target_filter_callback_t dread_plague_targets_only()
+  {
+    return [ & ]( const action_t*, player_t* target ) {
+      death_knight_td_t* td = p()->get_target_data( target );
+      return td->dot.dread_plague->is_ticking();
+    };
+  }
+
+  target_filter_callback_t unholy_diseases_only()
+  {
+    return [ & ]( const action_t*, player_t* target ) {
+      death_knight_td_t* td = p()->get_target_data( target );
+      return td->dot.virulent_plague->is_ticking() || td->dot.dread_plague->is_ticking();
+    };
   }
 
   template <typename... Ts>
@@ -9027,7 +9050,6 @@ struct graveyard_damage_aoe_t final : public epidemic_damage_base_t
   graveyard_damage_aoe_t( std::string_view name, death_knight_t* p )
     : epidemic_damage_base_t( name, p, p->spell.graveyard_damage )
   {
-    // Main is one target, aoe is the other targets, so we take 1 off the max targets
     aoe                     = -1;
     attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
   }
@@ -9067,16 +9089,7 @@ struct epidemic_base_t : public death_knight_spell_t
   epidemic_base_t( std::string_view n, death_knight_t* p, const spell_data_t* s )
     : death_knight_spell_t( n, p, s ), custom_reduced_aoe_targets( 8.0 ), soft_cap_multiplier( 1.0 ), sd( false )
   {
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    death_knight_spell_t::available_targets( tl );
-
-    // Remove enemies that are not affected by virulent plague
-    range::erase_remove( tl, [ this ]( player_t* t ) { return !get_td( t )->dot.virulent_plague->is_ticking(); } );
-
-    return tl.size();
+    target_filter_callback = virulent_plague_targets_only();
   }
 
   void execute() override
@@ -10540,24 +10553,13 @@ struct pestilence_t final : public death_knight_spell_t
   pestilence_t( std::string_view name, death_knight_t* p )
     : death_knight_spell_t( name, p, p->spell.pestilence ), damage_mult( 1.0 ), duration_mult( 1.0 ), dam( nullptr )
   {
-    aoe           = -1;
-    damage_mult   = p->talent.unholy.pestilence->effectN( 2 ).percent();
-    duration_mult = p->talent.unholy.pestilence->effectN( 1 ).percent();
-    dam           = get_action<pestilence_damage_t>( "pestilence_damage", p );
+    aoe                     = -1;
+    damage_mult             = p->talent.unholy.pestilence->effectN( 2 ).percent();
+    duration_mult           = p->talent.unholy.pestilence->effectN( 1 ).percent();
+    dam                     = get_action<pestilence_damage_t>( "pestilence_damage", p );
     dam->name_str_reporting = "damage";
+    target_filter_callback  = unholy_diseases_only();
     add_child( dam );
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    death_knight_spell_t::available_targets( tl );
-
-    // Remove enemies that are not affected by virulent plague or dread plague
-    range::erase_remove( tl, [ this ]( player_t* t ) {
-      return !get_td( t )->dot.virulent_plague->is_ticking() && !get_td( t )->dot.dread_plague->is_ticking();
-    } );
-
-    return tl.size();
   }
 
   void execute() override
