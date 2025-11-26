@@ -1864,7 +1864,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
       affected_by.divine_purpose = false;  // We handle this manually
       base_execute_time          = timespan_t::from_millis( 600 ); // Still has a 600ms execute time, for whatever reasons. Not in spell data anymore.
       dual                       = true;
-      secondary_targets_only     = true;
+      target_filter_callback     = secondary_targets_only();
 
       if ( p->sets->has_set_bonus( HERO_TEMPLAR, TWW3, B4 ) )
         // Both effect 2 and 4 adjust AoE. This is probably a tuning knob for Blizzard. Also maybe Ret is 2, Prot 4, who knows.
@@ -2060,7 +2060,7 @@ struct empyrean_hammer_wd_t : public paladin_spell_t
     background             = true;
     may_crit               = false;
     aoe                    = -1;
-    secondary_targets_only = true;
+    target_filter_callback = secondary_targets_only();
 
     // ToDo (Fluttershy)
     // This spell currently deals full damage to all targets, even above 20.
