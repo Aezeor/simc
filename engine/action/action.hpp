@@ -104,6 +104,9 @@ public:
   /// The amount of targets that an ability impacts on. -1 will hit all targets.
   int aoe;
 
+  /// Whether the action hits all targets or only the secondary ones.
+  bool secondary_targets_only;
+
   /// If set to true, this action will not be counted toward total amount of executes in reporting. Useful for abilities with parent/children attacks.
   bool dual;
 

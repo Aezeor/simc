@@ -345,6 +345,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     internal_id( p->get_action_id( name_str ) ),
     resource_current( RESOURCE_NONE ),
     aoe(),
+    secondary_targets_only(),
     dual(),
     callbacks( true ),
     caster_callbacks( true ),
@@ -1702,7 +1703,7 @@ int action_t::num_targets() const
 size_t action_t::available_targets( std::vector<player_t*>& tl ) const
 {
   tl.clear();
-  if ( !target->is_sleeping() && target->is_enemy() )
+  if ( !secondary_targets_only && !target->is_sleeping() && target->is_enemy() )
     tl.push_back( target );
 
   for ( auto* t : sim->target_non_sleeping_list )
