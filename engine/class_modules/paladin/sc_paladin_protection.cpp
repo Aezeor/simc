@@ -121,10 +121,12 @@ struct avengers_shield_base_t : public paladin_spell_t
 
   tyrs_enforcer_t* tyrs_enforcer;
   refining_fire_dot_t* refining_fire_dot;
+  consecration_tick_t* consecration_tick;
   avengers_shield_base_t( util::string_view n, paladin_t* p, util::string_view options_str )
     : paladin_spell_t( n, p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Avenger's Shield" ) ),
       tyrs_enforcer( nullptr ),
-      refining_fire_dot( new refining_fire_dot_t(p) )
+      refining_fire_dot( nullptr ),
+      consecration_tick( nullptr )
   {
     parse_options( options_str );
     if ( !p->has_shield_equipped() )
@@ -138,6 +140,14 @@ struct avengers_shield_base_t : public paladin_spell_t
     {
       tyrs_enforcer = new tyrs_enforcer_t( "tyrs_enforcer" + std::string( n ), p );
       add_child( tyrs_enforcer );
+    }
+    if ( p->talents.refining_fire->ok() )
+    {
+      refining_fire_dot = new refining_fire_dot_t( p );
+    }
+    if (p->talents.searing_sunlight->ok())
+    {
+      consecration_tick = new consecration_tick_t( "consecration_searing_sunlight", p );
     }
   }
 
@@ -211,6 +221,10 @@ struct avengers_shield_base_t : public paladin_spell_t
       // Buff overwrites previous buff, even if it was stronger
       p()->buffs.strength_in_adversity->expire();
       p()->buffs.strength_in_adversity->trigger( execute_state->n_targets );
+    }
+    if ( p()->talents.searing_sunlight->ok() && p()->all_active_consecrations.size() > 0 )
+    {
+      consecration_tick->execute_on_target( execute_state->target );
     }
   }
 };

@@ -308,19 +308,11 @@ void avenging_wrath_t::execute()
 
 // Consecration =============================================================
 
-struct golden_path_t : public paladin_heal_t
+golden_path_t::golden_path_t( paladin_t* p ) : paladin_heal_t( "golden_path", p, p->find_spell( 339119 ) )
 {
-  golden_path_t( paladin_t* p ) : paladin_heal_t( "golden_path", p, p->find_spell( 339119 ) )
-  {
-    background = true;
-  }
-};
-
-struct consecration_tick_t : public paladin_spell_t
-{
-  golden_path_t* heal_tick;
-
-  consecration_tick_t( util::string_view name, paladin_t* p )
+  background = true;
+}
+  consecration_tick_t::consecration_tick_t( util::string_view name, paladin_t* p )
     : paladin_spell_t( name, p, p->find_spell( 81297 ) ),
       heal_tick( new golden_path_t( p ) )
   {
@@ -333,13 +325,13 @@ struct consecration_tick_t : public paladin_spell_t
     searing_light_disabled = true;
   }
 
-  double action_multiplier() const override
+  double consecration_tick_t::action_multiplier() const
   {
     double m = paladin_spell_t::action_multiplier();
     return m;
   }
 
-  double composite_target_multiplier( player_t* target ) const override
+  double consecration_tick_t::composite_target_multiplier( player_t* target ) const
   {
     double m = paladin_spell_t::composite_target_multiplier( target );
 
@@ -356,7 +348,6 @@ struct consecration_tick_t : public paladin_spell_t
 
     return m;
   }
-};
 
 struct divine_guidance_damage_t : public paladin_spell_t
 {

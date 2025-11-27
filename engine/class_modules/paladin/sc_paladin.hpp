@@ -1906,4 +1906,15 @@ struct shield_of_the_righteous_buff_t : public buff_t
 };
 void trigger_hammer_and_anvil( paladin_t* p, action_state_t* s, hammer_and_anvil_t* haa,
                                hammer_and_anvil_source haas );
+struct golden_path_t : public paladin_heal_t
+{
+  golden_path_t( paladin_t* p );
+};
+struct consecration_tick_t : public paladin_spell_t
+{
+  golden_path_t* heal_tick;
+  consecration_tick_t( util::string_view name, paladin_t* p );
+  double action_multiplier() const override;
+  double composite_target_multiplier( player_t* target ) const override;
+};
 }  // namespace paladin
