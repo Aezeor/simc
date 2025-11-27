@@ -1684,6 +1684,10 @@ struct divine_toll_t : public paladin_spell_t
     {
       p()->buffs.divine_resonance->trigger();
     }
+    if (p()->talents.templar.divine_hammer->ok())
+    {
+      p()->buffs.templar.divine_hammer->trigger();
+    }
     if (p()->specialization() == PALADIN_PROTECTION && p()->talents.templar.lights_guidance->ok())
     {
       p()->buffs.templar.hammer_of_light_ready->trigger();
@@ -2125,6 +2129,37 @@ struct empyrean_hammer_t : public paladin_spell_t
   }
 };
 
+struct divine_hammer_tick_t : public paladin_melee_attack_t
+{
+  divine_hammer_tick_t( paladin_t* p ) : paladin_melee_attack_t( "divine_hammer_tick", p, p->find_spell( 198137 ) )
+  {
+    aoe                 = -1;
+    reduced_aoe_targets = 8;  // does not appear to have a spelldata equivalent
+    direct_tick         = true;
+    background          = true;
+    may_crit            = true;
+    if ( !p->bugs )
+    {
+      affected_by.judgment = false;
+      clears_judgment      = false;
+    }
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double ctm = paladin_melee_attack_t::composite_target_multiplier( target );
+
+    paladin_td_t* td = this->td( target );
+    if ( p()->talents.burn_to_ash->ok() && td->dots.truths_wake->is_ticking() )
+    {
+      ctm *= 1.0 + p()->talents.burn_to_ash->effectN( 2 ).percent();
+      if ( p()->bugs )
+        ctm *= 1.0 + p()->talents.burn_to_ash->effectN( 2 ).percent();
+    }
+
+    return ctm;
+  }
+};
 void paladin_t::trigger_empyrean_hammer( player_t* target, int number_to_trigger, timespan_t delay,
                                          bool random_after_first )
 {
@@ -3152,6 +3187,10 @@ void paladin_t::create_actions()
   {
     active.sacrosanct_crusade_heal = new sacrosanct_crusade_heal_t( this );
   }
+  if ( talents.templar.divine_hammer->ok() )
+  {
+    active.divine_hammer_tick = new divine_hammer_tick_t( this );
+  }
 
   if ( talents.herald_of_the_sun.dawnlight->ok() )
   {
@@ -3527,6 +3566,16 @@ void paladin_t::create_buffs()
                                  } );
 
   buffs.templar.sacrosanct_crusade = new buffs::sacrosanct_crusade_t( this );
+  buffs.templar.divine_hammer      = make_buff( this, "divine_hammer", find_spell(198034) )
+                                    ->set_tick_on_application( true )
+                                    ->set_partial_tick( true )
+                                    ->set_max_stack( 1 )
+                                    ->set_default_value( 1.0 )
+                                    ->set_period( timespan_t::from_millis( 2000 ) )
+                                    ->set_freeze_stacks( true )
+                                    ->set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+                                      active.divine_hammer_tick->schedule_execute();
+                                    } );
 
   buffs.herald_of_the_sun.morning_star_driver = make_buff( this, "morning_star_driver", find_spell( 431568 ) )
     ->set_period( timespan_t::from_seconds( 5.0 ) ) // TODO(mserrano) grab from spell data

@@ -1151,80 +1151,6 @@ struct wake_of_ashes_t : public paladin_spell_t
   }
 };
 
-struct divine_hammer_tick_t : public paladin_melee_attack_t
-{
-  divine_hammer_tick_t( paladin_t* p )
-    : paladin_melee_attack_t( "divine_hammer_tick", p, p->find_spell( 198137 ) )
-  {
-    aoe         = -1;
-    reduced_aoe_targets = 8; // does not appear to have a spelldata equivalent
-    direct_tick = true;
-    background  = true;
-    may_crit    = true;
-    if ( !p->bugs )
-    {
-      affected_by.judgment = false;
-      clears_judgment = false;
-    }
-  }
-
-  void execute() override
-  {
-    paladin_melee_attack_t::execute();
-
-    paladin_t* pal = p();
-    if ( pal->talents.templar.hammerfall->ok() && pal->cooldowns.hammerfall_icd->up() )
-    {
-      int additionalTargets = 0;
-      if ( pal->buffs.templar.shake_the_heavens->up() )
-        additionalTargets += 1; // Disappeared from spell data
-      pal->trigger_empyrean_hammer(
-          nullptr, 1 + additionalTargets,
-          timespan_t::from_millis( pal->talents.templar.hammerfall->effectN( 1 ).base_value() ),
-          true );
-      pal->cooldowns.hammerfall_icd->start();
-    }
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double ctm = paladin_melee_attack_t::composite_target_multiplier( target );
-
-    paladin_td_t* td = this->td( target );
-    if ( p()->talents.burn_to_ash->ok() && td->dots.truths_wake->is_ticking() )
-    {
-      ctm *= 1.0 + p()->talents.burn_to_ash->effectN( 2 ).percent();
-      if ( p()->bugs )
-        ctm *= 1.0 + p()->talents.burn_to_ash->effectN( 2 ).percent();
-    }
-
-    return ctm;
-  }
-};
-
-struct divine_hammer_t : public holy_power_consumer_t<paladin_spell_t>
-{
-  divine_hammer_t( paladin_t* p ) : holy_power_consumer_t<paladin_spell_t>( "divine_hammer", p, p->talents.templar.divine_hammer )
-  {
-    background = true;
-  }
-
-  divine_hammer_t( paladin_t* p, util::string_view options_str )
-    : holy_power_consumer_t<paladin_spell_t>( "divine_hammer", p, p->talents.templar.divine_hammer )
-  {
-    parse_options( options_str );
-
-    if ( !p->talents.templar.divine_hammer->ok() )
-      background = true;
-  }
-
-  void execute() override
-  {
-    holy_power_consumer_t<paladin_spell_t>::execute();
-    p()->buffs.divine_hammer->trigger();
-  }
-};
-
 struct adjudication_blessed_hammer_tick_t : public paladin_spell_t
 {
   adjudication_blessed_hammer_tick_t( paladin_t* p )
@@ -1513,8 +1439,6 @@ void paladin_t::create_ret_actions()
     {
       active.sun_sear = new sun_sear_t( this );
     }
-    active.divine_hammer = new divine_hammer_t( this );
-    active.divine_hammer_tick = new divine_hammer_tick_t( this );
   }
 }
 
@@ -1529,7 +1453,6 @@ action_t* paladin_t::create_action_retribution( util::string_view name, util::st
   if ( name == "final_reckoning"           ) return new final_reckoning_t          ( this, options_str );
   if ( name == "templar_strike"            ) return new templar_strike_t           ( this, options_str );
   if ( name == "templar_slash"             ) return new templar_slash_t            ( this, options_str );
-  if ( name == "divine_hammer"             ) return new divine_hammer_t            ( this, options_str );
   if ( name == "execution_sentence"        ) return new execution_sentence_t       ( this, options_str );
 
   if ( specialization() == PALADIN_RETRIBUTION )
@@ -1575,16 +1498,6 @@ void paladin_t::create_buffs_retribution()
   buffs.empyrean_power = make_buff( this, "empyrean_power", find_spell( 326733 ) )
                           ->set_trigger_spell( talents.empyrean_power );
   buffs.judge_jury_and_executioner = make_buff( this, "judge_jury_and_executioner", find_spell( 453433 ) );
-  buffs.divine_hammer = make_buff( this, "divine_hammer", talents.templar.divine_hammer )
-    ->set_tick_on_application( true )
-    ->set_partial_tick( true )
-    ->set_max_stack( 1 )
-    ->set_default_value( 1.0 )
-    ->set_period( timespan_t::from_millis( 2000 ) )
-    ->set_freeze_stacks( true )
-    ->set_tick_callback([this](buff_t*, int, const timespan_t&) {
-      active.divine_hammer_tick->schedule_execute();
-    });
 
   // legendaries
   buffs.empyrean_legacy = make_buff( this, "empyrean_legacy", find_spell( 387178 ) );

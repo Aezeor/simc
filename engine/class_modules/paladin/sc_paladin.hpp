@@ -132,7 +132,6 @@ public:
     action_t* expurgation;
     action_t* wrathful_sanction;
 
-    action_t* divine_hammer;
     action_t* divine_hammer_tick;
 
     action_t* sacrosanct_crusade_heal;
@@ -212,7 +211,6 @@ public:
     buff_t* empyrean_legacy_cooldown;
     buff_t* divine_arbiter;
     buff_t* judge_jury_and_executioner;
-    buff_t* divine_hammer;
 
     buff_t* echoes_of_wrath;  // DF3 4pc
 
@@ -242,6 +240,7 @@ public:
       buff_t* sanctification;
       buff_t* undisputed_ruling;
       buff_t* lights_deliverance;
+      buff_t* divine_hammer;
     } templar;
 
     struct

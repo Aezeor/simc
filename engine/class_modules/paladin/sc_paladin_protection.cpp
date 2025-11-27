@@ -269,6 +269,15 @@ struct avengers_shield_dr_t : public avengers_shield_base_t
   {
     background = true;
   }
+  void execute() override
+  {
+    avengers_shield_base_t::execute();
+    // 27.11.25 Fluttershy - Each Divine Resonance Tick currently triggers Divine Hammer
+    if (p()->bugs && p()->talents.templar.divine_hammer->ok())
+    {
+      p()->buffs.templar.divine_hammer->trigger();
+    }
+  }
 };
 
 // This struct is solely for all Avenger's Shield which are self cast.
