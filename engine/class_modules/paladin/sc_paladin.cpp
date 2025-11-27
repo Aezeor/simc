@@ -641,7 +641,10 @@ struct consecration_t : public paladin_spell_t
     }
 
     else
+    {
       make_event<ground_aoe_event_t>( *sim, p(), cons_params, true /* Immediate pulse */ );
+      damage_tick->execute();
+    }
   }
 };
 
