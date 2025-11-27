@@ -99,10 +99,32 @@ struct avengers_shield_base_t : public paladin_spell_t
     }
   };
 
+  struct refining_fire_dot_t : public residual_action::residual_periodic_action_t<paladin_spell_t>
+  {
+    using base_t = residual_action::residual_periodic_action_t<paladin_spell_t>;
+    refining_fire_dot_t( paladin_t* p ) : base_t( "refining_fire", p, p->spells.refining_fire_tick )
+    {
+      may_miss = may_crit = false;
+      dual                = true;
+      proc                = true;
+      ap_type             = attack_power_type::NO_WEAPON;
+    }
+
+    void init() override
+    {
+      base_t::init();
+      // disable the snapshot_flags for all multipliers
+      snapshot_flags = update_flags = 0;
+      snapshot_flags |= STATE_VERSATILITY;
+    }
+  };
+
   tyrs_enforcer_t* tyrs_enforcer;
+  refining_fire_dot_t* refining_fire_dot;
   avengers_shield_base_t( util::string_view n, paladin_t* p, util::string_view options_str )
     : paladin_spell_t( n, p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Avenger's Shield" ) ),
-      tyrs_enforcer( nullptr )
+      tyrs_enforcer( nullptr ),
+      refining_fire_dot( new refining_fire_dot_t(p) )
   {
     parse_options( options_str );
     if ( !p->has_shield_equipped() )
@@ -151,8 +173,11 @@ struct avengers_shield_base_t : public paladin_spell_t
 
     if ( p()->talents.refining_fire->ok() )
     {
-      p()->active.refining_fire->target = s->target;
-      p()->active.refining_fire->execute();
+      double damage = s-> result_amount;
+      // 27.11.25 Fluttershy - Currently Refining Fire ticks for 100% damage over 5s, instead of 20% (So 20% per tick)
+      if ( !p()->bugs )
+        damage *= p()->talents.refining_fire->effectN( 1 ).percent();
+      residual_action::trigger( refining_fire_dot, s->target, damage );
     }
   }
 
@@ -559,14 +584,6 @@ struct judgment_prot_t : public judgment_t
   }
 };
 
-struct refining_fire_t : public paladin_spell_t
-{
-  refining_fire_t( paladin_t* p ) : paladin_spell_t( "refining_fire", p, p->find_spell( 469882 ) )
-  {
-
-  }
-};
-
 // Sentinel
 struct sentinel_t : public paladin_spell_t
 {
@@ -794,12 +811,6 @@ void paladin_t::trigger_grand_crusader( grand_crusader_source source )
 
   double gc_proc_chance = talents.grand_crusader->effectN( 1 ).percent();
 
-  if ( source == GC_JUDGMENT )
-  {
-    // TODO: according to Woliance; proc chance not obvious in spelldata
-    gc_proc_chance = 0.5;
-  }
-
   // The bonus from First Avenger is added after Inspiring Vanguard
   bool success = rng().roll( gc_proc_chance );
   if ( ! success )
@@ -834,7 +845,6 @@ void paladin_t::create_prot_actions()
 {
   active.divine_toll = new avengers_shield_dt_t( this );
   active.divine_resonance = new avengers_shield_dr_t( this );
-  active.refining_fire    = new refining_fire_t( this );
 }
 
 action_t* paladin_t::create_action_protection( util::string_view name, util::string_view options_str )
@@ -983,6 +993,7 @@ void paladin_t::init_spells_protection()
   passives.aegis_of_light_2    = find_rank_spell( "Aegis of Light", "Rank 2" );
 
   spells.sentinel = find_spell( 389539 );
+  spells.refining_fire_tick = find_spell( 469882 );
 }
 
 // Action Priority List Generation

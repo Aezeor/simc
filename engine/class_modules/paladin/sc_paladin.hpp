@@ -145,7 +145,6 @@ public:
     action_t* sacred_weapon_proc_heal;
     action_t* lesser_weapon_proc_damage;
     action_t* lesser_weapon_proc_heal;
-    action_t* refining_fire;
     action_t* eye_for_an_eye;
 
     action_t* background_avenging_wrath;
@@ -396,6 +395,7 @@ public:
     const spell_data_t* consecrated_blade;
     const spell_data_t* crusade;
     const spell_data_t* sentinel;
+    const spell_data_t* refining_fire_tick;
 
     struct
     {
