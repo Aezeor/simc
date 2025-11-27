@@ -1623,7 +1623,6 @@ void judgment_t::execute()
 
     if ( p()->talents.vengeful_wrath->ok() )
     {
-      // ToDo Fluttershy: Verify, also verify ranks
       ctm *= 1.0 + p()->talents.vengeful_wrath->effectN( 1 ).percent() * ( 1.0 - target->health_percentage() / 100.0 );
     }
 
