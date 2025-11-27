@@ -1669,12 +1669,24 @@ struct divine_toll_t : public paladin_spell_t
     }
   }
 
+  bool target_ready(player_t* candidate_target) override
+  {
+    if ( p()->specialization() == PALADIN_PROTECTION && p()->buffs.templar.hammer_of_light_ready->up() )
+      return false;
+
+    return paladin_spell_t::target_ready( candidate_target );
+  }
+
   void execute() override
   {
     paladin_spell_t::execute();
     if ( p()->talents.divine_resonance->ok() )
     {
       p()->buffs.divine_resonance->trigger();
+    }
+    if (p()->specialization() == PALADIN_PROTECTION && p()->talents.templar.lights_guidance->ok())
+    {
+      p()->buffs.templar.hammer_of_light_ready->trigger();
     }
   }
 };
