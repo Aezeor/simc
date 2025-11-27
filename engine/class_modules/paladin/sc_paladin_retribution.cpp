@@ -1674,8 +1674,6 @@ void paladin_t::init_spells_retribution()
     spells.consecrated_blade = find_specialization_spell( 404834 );
   }
 
-  passives.boundless_conviction = find_spell( 115675 );
-
   spells.crusade = find_spell( 231895 );
   spells.highlords_judgment_hidden = find_spell( 449198 );
 

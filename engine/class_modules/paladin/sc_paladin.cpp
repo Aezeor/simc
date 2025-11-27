@@ -4015,12 +4015,15 @@ void paladin_t::init_spells()
   spells.herald_of_the_sun.dawnlight_aoe_metadata = find_spell( 431581 );
   spells.herald_of_the_sun.solar_wrath            = find_spell( 1236972 );
 
+  passives.boundless_conviction = find_spell( 115675 );
   // Manually add judgment spells to swift justice
   register_passive_affect_list( talents.swift_justice, affect_list_t( 2 ).add_spell( 20271, 275773, 275779 ) );
 
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
+
+  parse_passive_effects( passives.boundless_conviction );
 }
 
 // paladin_t::primary_role ==================================================
