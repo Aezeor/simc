@@ -457,6 +457,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       background                       = true;
       aoe                              = -1;
       trigger_gcd                      = 0_ms;  // doesn't incur GCD (HotR does that already)
+      target_filter_callback           = secondary_targets_only();
     }
 
     action_state_t* new_state() override
@@ -471,21 +472,6 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 
       da *= 1.0 + s_->blessed_assurance_mult;
       return da;
-    }
-
-    size_t available_targets( std::vector<player_t*>& tl ) const override
-    {
-      paladin_melee_attack_t::available_targets( tl );
-
-      for ( size_t i = 0; i < tl.size(); i++ )
-      {
-        if ( tl[ i ] == target )  // Cannot hit the original target.
-        {
-          tl.erase( tl.begin() + i );
-          break;
-        }
-      }
-      return tl.size();
     }
   };
 

@@ -1768,8 +1768,8 @@ public:
       runic_power_decay( nullptr ),
       last_cast_rp_spender( nullptr ),
       deprecated_dnd_expression( false ),
-      soul_reaper_castable( false ),
       runeforge_expression_warning( false ),
+      soul_reaper_castable( false ),
       km_proc_attempts( 0 ),
       bone_shield_charges_consumed( 0 ),
       active_riders( 0 ),
@@ -1825,6 +1825,22 @@ public:
     // San'layn
 
     resource_regeneration = regen_type::DYNAMIC;
+  }
+
+  template <typename T>
+  bool dot_or_debuff_active( T d, death_knight_td_t* t )
+  {
+    if constexpr ( std::is_invocable_v<T, death_knight_td_t::debuffs_t> )
+      return std::invoke( d, t->debuff )->check() > 0;
+
+    else if constexpr ( std::is_invocable_v<T, death_knight_td_t::dots_t> )
+      return std::invoke( d, t->dot )->is_ticking();
+
+    else
+    {
+      sim->error( SEVERE, "%s dot_or_debuff_active: Unsupported type passed.\n", name() );
+      return false;
+    }
   }
 
   // Character Definition overrides
@@ -1924,7 +1940,7 @@ public:
   void summon_rider( timespan_t duration, rider_of_the_apocalypse_e = rider_of_the_apocalypse_e::RANDOM );
   void extend_rider( double amount, pets::horseman_pet_t* rider );
   void trigger_whitemanes_famine( player_t* target );
-  void spread_undeath( death_knight_td_t* main_td, player_t* main_target, player_t* new_target );
+  void spread_undeath( death_knight_td_t* main_td, player_t* new_target );
   void sort_undeath_targets( std::vector<player_t*> tl );
   void start_a_feast_of_souls();
   // San'layn
@@ -2792,6 +2808,14 @@ struct pet_action_t : public parse_action_effects_t<Base>
     return debug_cast<death_knight_t*>( pet()->owner );
   }
 
+  template <typename T>
+  target_filter_callback_t dk_dot_or_debuff_only( T d )
+  {
+    return [ &, d ]( const action_t*, player_t* target ) {
+      return dk()->dot_or_debuff_active( d, dk()->get_target_data( target ) );
+    };
+  }
+
   void init() override
   {
     action_base_t::init();
@@ -3154,19 +3178,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
       background = true;
       aoe = -1;
       attack_power_mod.direct = data().effectN( 3 ).ap_coeff();
-    }
-
-    size_t available_targets( std::vector<player_t*>& tl ) const override
-    {
-      claw_base_t::available_targets( tl );
-
-      auto it = range::find( tl, target );
-      if ( it != tl.end() )
-      {
-        tl.erase( it );
-      }
-
-      return tl.size();
+      target_filter_callback  = secondary_targets_only();
     }
   };
 
@@ -3364,19 +3376,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       background = true;
       aoe        = -1;
       attack_power_mod.direct = data().effectN( 3 ).ap_coeff();
-    }
-
-    size_t available_targets( std::vector<player_t*>& tl ) const override
-    {
-      lesser_ghoul_claw_base_t::available_targets( tl );
-
-      auto it = range::find( tl, target );
-      if ( it != tl.end() )
-      {
-        tl.erase( it );
-      }
-
-      return tl.size();
+      target_filter_callback  = secondary_targets_only();
     }
   };
 
@@ -3559,7 +3559,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
   void init_finished() override
   {
     death_knight_pet_t::init_finished();
-    buffs.stunned->set_expire_callback( [ this ]( buff_t*, int, timespan_t d ) { reschedule_gargoyle(); } );
+    buffs.stunned->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) { reschedule_gargoyle(); } );
   }
 
   void init_base_stats() override
@@ -4594,19 +4594,7 @@ struct whitemane_pet_t final : public horseman_pet_t
       aoe                     = data().max_targets() - 1;
       attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
       base_multiplier         = dk()->talent.rider.let_terror_reign->effectN( 2 ).percent();
-    }
-
-    size_t available_targets( std::vector<player_t*>& tl ) const override
-    {
-      horseman_spell_t::available_targets( tl );
-
-      auto it = range::find( tl, target );
-      if ( it != tl.end() )
-      {
-        tl.erase( it );
-      }
-
-      return tl.size();
+      target_filter_callback  = secondary_targets_only();
     }
 
     double composite_aoe_multiplier( const action_state_t* state ) const override
@@ -4658,17 +4646,7 @@ struct whitemane_pet_t final : public horseman_pet_t
       aoe                     = 20;
       attack_power_mod.direct = 0;
       impact_action           = get_action<epidemic_whitemane_main_t>( "epidemic_main", p );
-    }
-
-    size_t available_targets( std::vector<player_t*>& tl ) const override
-    {
-      horseman_spell_t::available_targets( tl );
-
-      // Remove enemies that are not affected by virulent plague
-      range::erase_remove(
-          tl, [ this ]( player_t* t ) { return !dk()->get_target_data( t )->dot.virulent_plague->is_ticking(); } );
-
-      return tl.size();
+      target_filter_callback  = dk_dot_or_debuff_only( &death_knight_td_t::dots_t::virulent_plague );
     }
 
     void execute() override
@@ -5023,9 +5001,6 @@ struct abomination_pet_t : public death_knight_pet_t
   {
     return new auto_attack_melee_t<abomination_pet_t>( this, "abomination_melee" );
   }
-
-private:
-  propagate_const<action_t*> disease_cloud;
 };
 
 }  // namespace pets
@@ -5360,6 +5335,22 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
         return a.get();
     }
     return nullptr;
+  }
+
+  template <typename T>
+  target_filter_callback_t dot_or_debuff_only( T d )
+  {
+    return [ &, d ]( const action_t*, player_t* target ) {
+      return p()->dot_or_debuff_active( d, p()->get_target_data( target ) );
+    };
+  }
+
+  target_filter_callback_t unholy_diseases_only()
+  {
+    return [ & ]( const action_t*, player_t* target ) {
+      return p()->dot_or_debuff_active( &death_knight_td_t::dots_t::virulent_plague, p()->get_target_data( target ) ) ||
+             p()->dot_or_debuff_active( &death_knight_td_t::dots_t::dread_plague, p()->get_target_data( target ) );
+    };
   }
 
   template <typename... Ts>
@@ -7541,22 +7532,10 @@ struct soul_rupture_t final : public death_knight_spell_t
   soul_rupture_t( std::string_view name, death_knight_t* p )
     : death_knight_spell_t( name, p, p->spell.soul_rupture_damage )
   {
-    background         = true;
-    cooldown->duration = 0_ms;
-    aoe                = -1;
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    death_knight_spell_t::available_targets( tl );
-
-    auto it = range::find( tl, target );
-    if ( it != tl.end() )
-    {
-      tl.erase( it );
-    }
-
-    return tl.size();
+    background             = true;
+    cooldown->duration     = 0_ms;
+    aoe                    = -1;
+    target_filter_callback = secondary_targets_only();
   }
 
   void execute() override
@@ -8863,8 +8842,7 @@ struct death_strike_t final : public death_knight_melee_attack_t
       heal( get_action<death_strike_heal_t>( "death_strike_heal", p ) ),
       oh_attack( nullptr ),
       improved_death_strike_reduction( 0 ),
-      sanguination_pct( 0.0 ),
-      tww2_blood_4pc_cleave_targets( 0 )
+      sanguination_pct( 0.0 )
   {
     parse_options( options_str );
     may_parry = false;
@@ -8972,7 +8950,6 @@ private:
   propagate_const<action_t*> oh_attack;
   double improved_death_strike_reduction;
   double sanguination_pct;
-  int tww2_blood_4pc_cleave_targets;
 };
 
 // Disease Cloud ============================================================
@@ -9066,19 +9043,7 @@ struct epidemic_damage_aoe_t final : public epidemic_damage_base_t
     // Main is one target, aoe is the other targets, so we take 1 off the max targets
     aoe                     = aoe - 1;
     attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    death_knight_spell_t::available_targets( tl );
-
-    auto it = range::find( tl, target );
-    if ( it != tl.end() )
-    {
-      tl.erase( it );
-    }
-
-    return tl.size();
+    target_filter_callback  = secondary_targets_only();
   }
 };
 
@@ -9087,7 +9052,6 @@ struct graveyard_damage_aoe_t final : public epidemic_damage_base_t
   graveyard_damage_aoe_t( std::string_view name, death_knight_t* p )
     : epidemic_damage_base_t( name, p, p->spell.graveyard_damage )
   {
-    // Main is one target, aoe is the other targets, so we take 1 off the max targets
     aoe                     = -1;
     attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
   }
@@ -9127,16 +9091,7 @@ struct epidemic_base_t : public death_knight_spell_t
   epidemic_base_t( std::string_view n, death_knight_t* p, const spell_data_t* s )
     : death_knight_spell_t( n, p, s ), custom_reduced_aoe_targets( 8.0 ), soft_cap_multiplier( 1.0 ), sd( false )
   {
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    death_knight_spell_t::available_targets( tl );
-
-    // Remove enemies that are not affected by virulent plague
-    range::erase_remove( tl, [ this ]( player_t* t ) { return !get_td( t )->dot.virulent_plague->is_ticking(); } );
-
-    return tl.size();
+    target_filter_callback = dot_or_debuff_only( &death_knight_td_t::dots_t::virulent_plague );
   }
 
   void execute() override
@@ -10600,24 +10555,13 @@ struct pestilence_t final : public death_knight_spell_t
   pestilence_t( std::string_view name, death_knight_t* p )
     : death_knight_spell_t( name, p, p->spell.pestilence ), damage_mult( 1.0 ), duration_mult( 1.0 ), dam( nullptr )
   {
-    aoe           = -1;
-    damage_mult   = p->talent.unholy.pestilence->effectN( 2 ).percent();
-    duration_mult = p->talent.unholy.pestilence->effectN( 1 ).percent();
-    dam           = get_action<pestilence_damage_t>( "pestilence_damage", p );
+    aoe                     = -1;
+    damage_mult             = p->talent.unholy.pestilence->effectN( 2 ).percent();
+    duration_mult           = p->talent.unholy.pestilence->effectN( 1 ).percent();
+    dam                     = get_action<pestilence_damage_t>( "pestilence_damage", p );
     dam->name_str_reporting = "damage";
+    target_filter_callback  = unholy_diseases_only();
     add_child( dam );
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    death_knight_spell_t::available_targets( tl );
-
-    // Remove enemies that are not affected by virulent plague or dread plague
-    range::erase_remove( tl, [ this ]( player_t* t ) {
-      return !get_td( t )->dot.virulent_plague->is_ticking() && !get_td( t )->dot.dread_plague->is_ticking();
-    } );
-
-    return tl.size();
   }
 
   void execute() override
@@ -10655,7 +10599,7 @@ struct pestilence_t final : public death_knight_spell_t
     return false;
   }
 
-  bool target_ready( player_t* tar ) override
+  bool target_ready( player_t* ) override
   {
     if ( available_targets( target_list() ) > 0 )
       return true;
@@ -12015,7 +11959,7 @@ void death_knight_t::trigger_rapid_variant( player_t* t )
   background_actions.rapid_variant->execute();
 
   std::sort( tl.begin(), tl.end(),
-             [ this ]( player_t* a, player_t* b ) { return a->current_health() < b->current_health(); } );
+             []( player_t* a, player_t* b ) { return a->current_health() < b->current_health(); } );
 
   for ( auto& enemy : tl )
   {
@@ -12053,7 +11997,7 @@ void death_knight_t::sudden_doom_execute_effects( bool coil )
     cooldown.putrefy->adjust( -talent.unholy.harbinger_of_doom->effectN( 3 ).time_value(), false );
 }
 
-void death_knight_t::sudden_doom_impact_effects( action_state_t* state, bool coil )
+void death_knight_t::sudden_doom_impact_effects( action_state_t* /*state*/, bool coil )
 {
   if ( !coil )
     return;
@@ -12227,10 +12171,10 @@ void death_knight_t::trigger_whitemanes_famine( player_t* main_target )
 
   std::vector<player_t*> tl = undeath_tl;
   range::erase_remove( tl, [ main_target ]( player_t* t ) { return t == main_target; } );
-  spread_undeath( td, main_target, tl[ 0 ] );
+  spread_undeath( td, tl[ 0 ] );
 }
 
-void death_knight_t::spread_undeath( death_knight_td_t* main_td, player_t* main_target, player_t* new_target )
+void death_knight_t::spread_undeath( death_knight_td_t* main_td, player_t* new_target )
 {
   death_knight_td_t* td = get_target_data( new_target );
 
@@ -12305,6 +12249,8 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* t, bool is_vampiric
         break;
       case DEATH_KNIGHT_UNHOLY:
         extension = talent.sanlayn.infliction_of_sorrow->effectN( 5 ).time_value();
+        break;
+      default:
         break;
     }
     mod = talent.sanlayn.infliction_of_sorrow->effectN( 2 ).percent();

@@ -2687,21 +2687,7 @@ struct dawnlight_aoe_t : public paladin_spell_t
     background                       = true;
     aoe                              = -1;
     reduced_aoe_targets              = p->spells.herald_of_the_sun.dawnlight_aoe_metadata->effectN( 1 ).base_value();
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    paladin_spell_t::available_targets( tl );
-
-    for ( size_t i = 0; i < tl.size(); i++ )
-    {
-      if ( tl[ i ] == target )
-      {
-        tl.erase( tl.begin() + i );
-        break;
-      }
-    }
-    return tl.size();
+    target_filter_callback           = secondary_targets_only();
   }
 };
 
