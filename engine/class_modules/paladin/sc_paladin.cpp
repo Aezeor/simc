@@ -328,6 +328,11 @@ golden_path_t::golden_path_t( paladin_t* p ) : paladin_heal_t( "golden_path", p,
   double consecration_tick_t::action_multiplier() const
   {
     double m = paladin_spell_t::action_multiplier();
+    if ( p()->talents.vision_of_sanctity->ok() )
+    {
+      if ( paladin_spell_t::num_targets() == 1 )
+        m *= 1.0 + p()->talents.vision_of_sanctity->effectN( 1 ).percent();
+    }
     return m;
   }
 
