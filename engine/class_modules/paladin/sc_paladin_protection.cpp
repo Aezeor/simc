@@ -226,6 +226,20 @@ struct avengers_shield_base_t : public paladin_spell_t
     {
       consecration_tick->execute_on_target( execute_state->target );
     }
+    bool isApex3 = p()->buffs.avenging_wrath->up() && p()->talents.glory_of_the_vanguard_3->ok();
+    if ( ( p()->talents.glory_of_the_vanguard_1->ok() && p()->buffs.vanguard->up() ) || isApex3)
+    {
+      if (!isApex3)
+        p()->buffs.vanguard->decrement();
+
+      p()->active.glory_of_the_vanguard->execute();
+      if (p()->talents.glory_of_the_vanguard_2->ok())
+      {
+        p()->resource_gain( RESOURCE_HOLY_POWER, p()->talents.glory_of_the_vanguard_2->effectN( 2 ).base_value(),
+                            p()->gains.hp_glory_of_the_vanguard_2 );
+      }
+      p()->buffs.valor->trigger();
+    }
   }
 };
 
@@ -831,6 +845,27 @@ void paladin_t::trigger_grand_crusader( grand_crusader_source source )
   }
 }
 
+struct glory_of_the_vanguard_t : public paladin_spell_t
+{
+  glory_of_the_vanguard_t( paladin_t* p )
+    : paladin_spell_t( "glory_of_the_vanguard", p, p->spells.glory_of_the_vanguard )
+  {
+    background = true;
+    // Glory of the Vanguard hits every enemy in a line. For now, just assume it hits everything
+    // Theoretically, it also has a chance to miss completely, for whatever reasons. Drunk Paladins.
+    aoe = -1;
+  }
+};
+struct blaze_of_glory_t : public paladin_spell_t
+{
+  blaze_of_glory_t( paladin_t* p ) : paladin_spell_t( "blaze_of_glory", p, p->spells.blaze_of_glory )
+  {
+    background             = true;
+    aoe                    = p->talents.glory_of_the_vanguard_3->effectN( 1 ).base_value();
+    target_filter_callback = secondary_targets_only();
+  }
+};
+
 void paladin_t::adjust_health_percent( )
 {
   double oh             = resources.current[ RESOURCE_HEALTH ];
@@ -840,11 +875,15 @@ void paladin_t::adjust_health_percent( )
   resources.current[ RESOURCE_HEALTH ] = currentPercent * resources.max[ RESOURCE_HEALTH ];
 }
 
+
+
 // Initialization
 void paladin_t::create_prot_actions()
 {
   active.divine_toll = new avengers_shield_dt_t( this );
-  active.divine_resonance = new avengers_shield_dr_t( this );
+  active.divine_resonance      = new avengers_shield_dr_t( this );
+  active.glory_of_the_vanguard = new glory_of_the_vanguard_t( this );
+  active.blaze_of_glory        = new blaze_of_glory_t( this );
 }
 
 action_t* paladin_t::create_action_protection( util::string_view name, util::string_view options_str )
@@ -962,7 +1001,7 @@ void paladin_t::init_spells_protection()
   talents.final_stand                    = find_talent_spell( talent_tree::SPECIALIZATION, "Final Stand" );
   talents.righteous_protector            = find_talent_spell( talent_tree::SPECIALIZATION, "Righteous Protector" );
 
-  talents.glory_of_the_vanguard_1 = find_talent_spell( talent_tree::SPECIALIZATION, "Glory of the Vanguard" );
+  talents.glory_of_the_vanguard_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1267203 );
   talents.glory_of_the_vanguard_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1267211 );
   talents.glory_of_the_vanguard_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1267215 );
 
@@ -994,6 +1033,9 @@ void paladin_t::init_spells_protection()
 
   spells.sentinel = find_spell( 389539 );
   spells.refining_fire_tick = find_spell( 469882 );
+
+  spells.glory_of_the_vanguard = find_spell( 1269175 );
+  spells.blaze_of_glory        = find_spell( 1269224 );
 }
 
 // Action Priority List Generation

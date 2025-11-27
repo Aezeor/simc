@@ -1502,6 +1502,11 @@ void judgment_t::execute()
   {
     p()->buffs.templar.sanctification->trigger();
   }
+  // Proc chance for Glory of the Vanguard not in Spell Data, seems to be 20% according to Fatpala
+  if (p()->talents.glory_of_the_vanguard_1->ok() && p()->rng().roll(0.2))
+  {
+    p()->buffs.vanguard->trigger();
+  }
 }
 
   hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view options_str )
@@ -2663,6 +2668,11 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     {
       forges_reckoning->execute_on_target( target );
     }
+    if (p()->buffs.valor->up())
+    {
+      p()->active.blaze_of_glory->execute_on_target( execute_state->target );
+      p()->buffs.valor->expire();
+    }
   }
 
   double action_multiplier() const override
@@ -2674,6 +2684,15 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
       am *= 1.0 + p()->buffs.bulwark_of_righteous_fury->stack_value();
     }
     return am;
+  }
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = paladin_melee_attack_t::composite_da_multiplier( state );
+    if ( p()->buffs.valor->up() && state->chain_target == 0 )
+    {
+      m *= 1.0 + p()->buffs.valor->data().effectN( 1 ).percent();
+    }
+    return m;
   }
 };
 
@@ -3308,6 +3327,7 @@ void paladin_t::init_gains()
   gains.hp_vm                      = get_gain( "vanguards_momentum" );
   gains.hp_crusading_strikes       = get_gain( "crusading_strikes" );
   gains.hp_divine_auxiliary        = get_gain( "divine_auxiliary" );
+  gains.hp_glory_of_the_vanguard_2 = get_gain( "glory_of_the_vanguard" );
 }
 
 // paladin_t::init_procs ====================================================
@@ -3540,6 +3560,9 @@ void paladin_t::create_buffs()
           }
         } );
   }
+
+  buffs.vanguard = make_buff( this, "vanguard", find_spell( 1268810 ) );
+  buffs.valor    = make_buff( this, "valor", find_spell( 1269179 ) );
 }
 
 // paladin_t::default_potion ================================================

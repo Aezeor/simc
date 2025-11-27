@@ -149,6 +149,9 @@ public:
 
     action_t* background_avenging_wrath;
     action_t* background_crusade;
+
+    action_t* glory_of_the_vanguard;
+    action_t* blaze_of_glory;
   } active;
 
   // Buffs
@@ -184,6 +187,10 @@ public:
     buff_t* shining_light_free;
     buff_t* blessing_of_spellwarding;
     buff_t* strength_in_adversity;
+
+    // Apex
+    buff_t* vanguard;
+    buff_t* valor;
 
     // Ret
     buffs::crusade_buff_t* crusade;
@@ -277,6 +284,7 @@ public:
     gain_t* hp_crusading_strikes;
     gain_t* hp_divine_auxiliary;
     gain_t* all_in_refund;
+    gain_t* hp_glory_of_the_vanguard_2;
   } gains;
 
   // Spec Passives
@@ -426,6 +434,11 @@ public:
 
     const spell_data_t* winning_streak; // Ret TWW2 2p
     const spell_data_t* all_in; // Ret TWW2 4p
+
+    // Apex
+    const spell_data_t* glory_of_the_vanguard;
+    const spell_data_t* blaze_of_glory;
+
   } spells;
 
   struct rppms_t {
