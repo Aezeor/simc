@@ -2153,8 +2153,6 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
     if ( p()->talents.burn_to_ash->ok() && td->dots.truths_wake->is_ticking() )
     {
       ctm *= 1.0 + p()->talents.burn_to_ash->effectN( 2 ).percent();
-      if ( p()->bugs )
-        ctm *= 1.0 + p()->talents.burn_to_ash->effectN( 2 ).percent();
     }
 
     return ctm;
