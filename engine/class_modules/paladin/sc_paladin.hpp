@@ -118,6 +118,8 @@ public:
     // Covenant stuff
     action_t* divine_toll;
     action_t* divine_resonance;
+    action_t* divine_exaction_prot;
+    action_t* divine_exaction_ret;
 
     // talent stuff
     action_t* background_cons;
@@ -1904,7 +1906,7 @@ private:
   hammer_of_wrath_t* echo;
 
 public:
-  hammer_of_wrath_t( paladin_t* p, util::string_view name );
+  hammer_of_wrath_t( paladin_t* p, util::string_view name, double mul = 1.0 );
   bool target_ready( player_t* candidate_target ) override;
   void execute() override;
   double action_multiplier() const override;
@@ -1928,5 +1930,12 @@ struct consecration_tick_t : public paladin_spell_t
   consecration_tick_t( util::string_view name, paladin_t* p );
   double action_multiplier() const override;
   double composite_target_multiplier( player_t* target ) const override;
+};
+struct divine_exaction_ret_t :public paladin_spell_t
+{
+  judgment_t* judgment;
+  hammer_of_wrath_t* hammer_of_wrath;
+  divine_exaction_ret_t( paladin_t* p );
+  void execute() override;
 };
 }  // namespace paladin

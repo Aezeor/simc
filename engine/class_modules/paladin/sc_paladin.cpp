@@ -1509,126 +1509,126 @@ void judgment_t::execute()
   }
 }
 
-  hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view options_str )
-    : judgment_base_t( p, "hammer_of_wrath", options_str, p->find_spell( 1241413 ) ),
-      echo( nullptr )
+hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view options_str, double mul )
+  : judgment_base_t( p, "hammer_of_wrath", options_str, p->find_spell( 1241413 ) ),
+    echo( nullptr )
+{
+  parse_options( options_str );
+  is_how = true;
+  base_multiplier *= mul;
+  if ( p->talents.adjudication->ok() )
   {
-    parse_options( options_str );
-    is_how = true;
-    if ( p->talents.adjudication->ok() )
-    {
-      add_child( p->active.background_blessed_hammer );
-    }
-    triggers_higher_calling = true;
-    may_block = may_parry = may_dodge = false;
-    // force effect 1 to be used for direct ratios
-    parse_effect_data( data().effectN( 1 ) );
+    add_child( p->active.background_blessed_hammer );
+  }
+  triggers_higher_calling = true;
+  may_block = may_parry = may_dodge = false;
+  // force effect 1 to be used for direct ratios
+  parse_effect_data( data().effectN( 1 ) );
 
-    if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
+  if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
+  {
+    echo                          = new hammer_of_wrath_t( p, "Hammer of Wrath Echo" );
+    echo->base_multiplier         = base_multiplier;
+    echo->aoe                     = aoe;
+    echo->base_aoe_multiplier     = base_aoe_multiplier;
+    echo->crit_bonus_multiplier   = crit_bonus_multiplier;
+    echo->triggers_higher_calling = true;
+    echo->base_multiplier *= p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent();
+    echo->is_how = true;
+  }
+  if (p->specialization() == PALADIN_PROTECTION)
+  {
+    if ( p->cooldowns.judgment == nullptr )
+      p->cooldowns.judgment = cooldown;
+    else
+      cooldown = p->cooldowns.judgment;
+  }
+}
+
+bool hammer_of_wrath_t::target_ready( player_t* candidate_target )
+{
+  if ( !background && !p()->get_how_availability() )
+  {
+    return false;
+  }
+
+  return judgment_base_t::target_ready( candidate_target );
+}
+
+void hammer_of_wrath_t::execute()
+{
+  judgment_base_t::execute();
+
+  if ( p()->buffs.final_verdict->up() )
+  {
+    p()->buffs.final_verdict->expire();
+  }
+
+  if ( p()->buffs.herald_of_the_sun.blessing_of_anshe->up() )
+  {
+    p()->buffs.herald_of_the_sun.blessing_of_anshe->expire();
+  }
+}
+
+double hammer_of_wrath_t::action_multiplier() const
+{
+  double am = judgment_base_t::action_multiplier();
+
+  if ( p()->buffs.herald_of_the_sun.blessing_of_anshe->up() )
+  {
+    am *= 1.0 + p()->buffs.herald_of_the_sun.blessing_of_anshe->data().effectN( 1 ).percent();
+  }
+
+  return am;
+}
+
+void hammer_of_wrath_t::impact( action_state_t* s )
+{
+  judgment_base_t::impact( s );
+
+  if ( !result_is_hit( s->result ) )
+    return;
+
+  if ( p()->talents.vanguards_momentum->ok() )
+  {
+    if ( s->target->health_percentage() <= p()->talents.vanguards_momentum->effectN( 2 ).base_value() &&
+          s->chain_target == 0 )
     {
-      echo                          = new hammer_of_wrath_t( p, "Hammer of Wrath Echo" );
-      echo->base_multiplier         = base_multiplier;
-      echo->aoe                     = aoe;
-      echo->base_aoe_multiplier     = base_aoe_multiplier;
-      echo->crit_bonus_multiplier   = crit_bonus_multiplier;
-      echo->triggers_higher_calling = true;
-      echo->base_multiplier *= p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent();
-      echo->is_how = true;
-    }
-    if (p->specialization() == PALADIN_PROTECTION)
-    {
-      if ( p->cooldowns.judgment == nullptr )
-        p->cooldowns.judgment = cooldown;
-      else
-        cooldown = p->cooldowns.judgment;
+      // technically this is in spell 403081 for some reason
+      p()->resource_gain( RESOURCE_HOLY_POWER, 1, p()->gains.hp_vm );
     }
   }
 
-  bool hammer_of_wrath_t::target_ready( player_t* candidate_target )
+  if ( s->result == RESULT_CRIT && p()->talents.herald_of_the_sun.sun_sear->ok() &&
+        p()->specialization() == PALADIN_RETRIBUTION )
   {
-    if ( !background && !p()->get_how_availability() )
-    {
-      return false;
-    }
-
-    return judgment_base_t::target_ready( candidate_target );
+    p()->active.sun_sear->target = s->target;
+    p()->active.sun_sear->execute();
   }
 
-  void hammer_of_wrath_t::execute()
+  if ( echo != nullptr && s->chain_target == 0 && p()->cooldowns.second_sunrise_icd->up() )
   {
-    judgment_base_t::execute();
-
-    if ( p()->buffs.final_verdict->up() )
+    if ( rng().roll( p()->talents.herald_of_the_sun.second_sunrise->effectN( 1 ).percent() ) )
     {
-      p()->buffs.final_verdict->expire();
-    }
-
-    if ( p()->buffs.herald_of_the_sun.blessing_of_anshe->up() )
-    {
-      p()->buffs.herald_of_the_sun.blessing_of_anshe->expire();
+      p()->cooldowns.second_sunrise_icd->start();
+      // TODO(mserrano): verify this delay
+      echo->target = s->target;
+      echo->start_action_execute_event( 200_ms );
     }
   }
+}
 
-  double hammer_of_wrath_t::action_multiplier() const
+double hammer_of_wrath_t::composite_target_multiplier( player_t* target ) const
+{
+  double ctm = judgment_base_t::composite_target_multiplier( target );
+
+  if ( p()->talents.vengeful_wrath->ok() )
   {
-    double am = judgment_base_t::action_multiplier();
-
-    if ( p()->buffs.herald_of_the_sun.blessing_of_anshe->up() )
-    {
-      am *= 1.0 + p()->buffs.herald_of_the_sun.blessing_of_anshe->data().effectN( 1 ).percent();
-    }
-
-    return am;
+    ctm *= 1.0 + p()->talents.vengeful_wrath->effectN( 1 ).percent() * ( 1.0 - target->health_percentage() / 100.0 );
   }
 
-  void hammer_of_wrath_t::impact( action_state_t* s )
-  {
-    judgment_base_t::impact( s );
-
-    if ( !result_is_hit( s->result ) )
-      return;
-
-    if ( p()->talents.vanguards_momentum->ok() )
-    {
-      if ( s->target->health_percentage() <= p()->talents.vanguards_momentum->effectN( 2 ).base_value() &&
-           s->chain_target == 0 )
-      {
-        // technically this is in spell 403081 for some reason
-        p()->resource_gain( RESOURCE_HOLY_POWER, 1, p()->gains.hp_vm );
-      }
-    }
-
-    if ( s->result == RESULT_CRIT && p()->talents.herald_of_the_sun.sun_sear->ok() &&
-         p()->specialization() == PALADIN_RETRIBUTION )
-    {
-      p()->active.sun_sear->target = s->target;
-      p()->active.sun_sear->execute();
-    }
-
-    if ( echo != nullptr && s->chain_target == 0 && p()->cooldowns.second_sunrise_icd->up() )
-    {
-      if ( rng().roll( p()->talents.herald_of_the_sun.second_sunrise->effectN( 1 ).percent() ) )
-      {
-        p()->cooldowns.second_sunrise_icd->start();
-        // TODO(mserrano): verify this delay
-        echo->target = s->target;
-        echo->start_action_execute_event( 200_ms );
-      }
-    }
-  }
-
-  double hammer_of_wrath_t::composite_target_multiplier( player_t* target ) const
-  {
-    double ctm = judgment_base_t::composite_target_multiplier( target );
-
-    if ( p()->talents.vengeful_wrath->ok() )
-    {
-      ctm *= 1.0 + p()->talents.vengeful_wrath->effectN( 1 ).percent() * ( 1.0 - target->health_percentage() / 100.0 );
-    }
-
-    return ctm;
-  }
-
+  return ctm;
+}
 
 void paladin_t::trigger_greater_judgment( paladin_td_t* targetdata, bool remove_stack )
 {
@@ -1691,6 +1691,22 @@ struct divine_toll_t : public paladin_spell_t
     if (p()->specialization() == PALADIN_PROTECTION && p()->talents.templar.lights_guidance->ok())
     {
       p()->buffs.templar.hammer_of_light_ready->trigger();
+    }
+    if (p()->talents.templar.divine_exaction->ok())
+    {
+      if (p()->specialization() == PALADIN_RETRIBUTION)
+      {
+        make_event<delayed_execute_event_t>( *sim, p(), p()->active.divine_exaction_ret, execute_state->target,
+                                             300_ms );
+      }
+      else
+      {
+        for ( int i = 0; i < p()->talents.templar.divine_exaction->effectN( 1 ).base_value(); i++ )
+        {
+          make_event<delayed_execute_event_t>( *sim, p(), p()->active.divine_exaction_prot, execute_state->target,
+                                               300_ms * ( i + 1 ) );
+        }
+      }
     }
   }
 };

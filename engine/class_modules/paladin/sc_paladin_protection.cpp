@@ -122,7 +122,7 @@ struct avengers_shield_base_t : public paladin_spell_t
   tyrs_enforcer_t* tyrs_enforcer;
   refining_fire_dot_t* refining_fire_dot;
   consecration_tick_t* consecration_tick;
-  avengers_shield_base_t( util::string_view n, paladin_t* p, util::string_view options_str )
+  avengers_shield_base_t( util::string_view n, paladin_t* p, util::string_view options_str, double mul = 1.0 )
     : paladin_spell_t( n, p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Avenger's Shield" ) ),
       tyrs_enforcer( nullptr ),
       refining_fire_dot( nullptr ),
@@ -135,6 +135,7 @@ struct avengers_shield_base_t : public paladin_spell_t
       background = true;
     }
     may_crit = true;
+    base_multiplier *= mul;
 
     if ( p->talents.tyrs_enforcer->ok() )
     {
@@ -287,6 +288,16 @@ struct avengers_shield_t : public avengers_shield_base_t
     avengers_shield_base_t( "avengers_shield", p, options_str )
   {
     cooldown = p->cooldowns.avengers_shield;
+  }
+};
+
+struct avengers_shield_divine_exaction_t :public avengers_shield_base_t
+{
+  avengers_shield_divine_exaction_t(paladin_t* p)
+    : avengers_shield_base_t( "avengers_shield_divine_exaction", p, "",
+                              p->talents.templar.divine_exaction->effectN( 2 ).percent() )
+  {
+    background = true;
   }
 };
 
@@ -891,6 +902,7 @@ void paladin_t::create_prot_actions()
 {
   active.divine_toll = new avengers_shield_dt_t( this );
   active.divine_resonance      = new avengers_shield_dr_t( this );
+  active.divine_exaction_prot  = new avengers_shield_divine_exaction_t( this );
   active.glory_of_the_vanguard = new glory_of_the_vanguard_t( this );
   active.blaze_of_glory        = new blaze_of_glory_t( this );
 }

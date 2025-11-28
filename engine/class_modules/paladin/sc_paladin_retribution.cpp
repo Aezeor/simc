@@ -850,12 +850,13 @@ struct judgment_ret_t : public judgment_t
   int holy_power_generation;
   bool local_is_divine_toll;
 
-  judgment_ret_t( paladin_t* p, util::string_view name, util::string_view options_str ) :
+  judgment_ret_t( paladin_t* p, util::string_view name, util::string_view options_str, double mul = 1.0 ) :
     judgment_t( p, name ),
     holy_power_generation( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) ),
     local_is_divine_toll( false )
   {
     parse_options( options_str );
+    base_multiplier *= mul;
 
     if ( p->talents.blessed_champion->ok() )
     {
@@ -864,14 +865,15 @@ struct judgment_ret_t : public judgment_t
     }
   }
 
-  judgment_ret_t( paladin_t* p, util::string_view name, bool is_divine_toll ) :
-    judgment_t( p, name ),
+  judgment_ret_t( paladin_t* p, util::string_view name, bool is_divine_toll, double mul = 1.0 )
+    : judgment_t( p, name ),
       holy_power_generation( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) ),
       local_is_divine_toll( is_divine_toll )
   {
     // This is for Divine Toll's background judgments
     background = true;
-    cooldown = p->get_cooldown( "dummy_cd" );
+    cooldown   = p->get_cooldown( "dummy_cd" );
+    base_multiplier *= mul;
 
     // according to skeletor this is given the bonus of 326011
     if ( is_divine_toll )
@@ -895,15 +897,6 @@ struct judgment_ret_t : public judgment_t
 
     if ( p()->spec.judgment_3->ok() )
       p()->resource_gain( RESOURCE_HOLY_POWER, holy_power_generation, p()->gains.judgment );
-
-    if ( p()->talents.empyrean_legacy->ok() )
-    {
-      if ( ! ( p()->buffs.empyrean_legacy_cooldown->up() ) )
-      {
-        p()->buffs.empyrean_legacy->trigger();
-        p()->buffs.empyrean_legacy_cooldown->trigger();
-      }
-    }
   }
 
   void impact(action_state_t* s) override
@@ -1380,6 +1373,36 @@ void paladin_t::trigger_es_explosion( player_t* target )
   explosion->set_target( target );
   explosion->accumulated = ta;
   explosion->schedule_execute();
+}
+
+divine_exaction_ret_t::divine_exaction_ret_t( paladin_t* p )
+  : paladin_spell_t( "divine_exaction_ret", p ),
+    judgment( new judgment_ret_t( p, "judgment_divine_exaction", "",
+                                  p->talents.templar.divine_exaction->effectN( 2 ).percent() ) ),
+    hammer_of_wrath( new hammer_of_wrath_t( p, "hammer_of_wrath_divine_exaction",
+                                            p->talents.templar.divine_exaction->effectN( 2 ).percent() ) )
+{
+  background = true;
+}
+void divine_exaction_ret_t::execute()
+{
+  int times = p()->talents.templar.divine_exaction->effectN( 1 ).base_value() - 1;
+  if (p()->wings_up())
+  {
+    hammer_of_wrath->execute_on_target( execute_state->target );
+    for ( int i = 0; i < times; i++ )
+    {
+      make_event<delayed_execute_event_t>( *sim, p(), hammer_of_wrath, execute_state->target, 300_ms );
+    }
+  }
+  else
+  {
+    judgment->execute_on_target( execute_state->target );
+    for ( int i = 0; i < times; i++ )
+    {
+      make_event<delayed_execute_event_t>( *sim, p(), judgment, execute_state->target, 300_ms * ( i + 1 ) );
+    }
+  }
 }
 
 // Initialization
