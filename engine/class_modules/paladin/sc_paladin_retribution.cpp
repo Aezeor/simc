@@ -1516,8 +1516,6 @@ void paladin_t::create_buffs_retribution()
                                   ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
 
   buffs.templar_strikes = make_buff( this, "templar_strikes", find_spell( 406648 ) );
-  buffs.divine_arbiter = make_buff( this, "divine_arbiter", find_spell( 406975 ) )
-                          ->set_max_stack( as<int>( find_spell( 406975 )->effectN( 2 ).base_value() ) );
   buffs.empyrean_power = make_buff( this, "empyrean_power", find_spell( 326733 ) )
                           ->set_trigger_spell( talents.empyrean_power );
   buffs.judge_jury_and_executioner = make_buff( this, "judge_jury_and_executioner", find_spell( 453433 ) );
