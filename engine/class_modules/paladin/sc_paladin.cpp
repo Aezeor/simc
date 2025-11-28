@@ -2733,6 +2733,10 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
       p()->active.blaze_of_glory->execute_on_target( execute_state->target );
       p()->buffs.valor->expire();
     }
+    if (p()->sets->has_set_bonus(PALADIN_PROTECTION, MID1, B4))
+    {
+      p()->buffs.light_blessed_shield->trigger();
+    }
   }
 
   double action_multiplier() const override
@@ -3637,6 +3641,8 @@ void paladin_t::create_buffs()
 
   buffs.vanguard = make_buff( this, "vanguard", find_spell( 1268810 ) );
   buffs.valor    = make_buff( this, "valor", find_spell( 1269179 ) );
+  buffs.light_blessed_shield =
+      make_buff( this, "light_blessed_shield", find_spell( 1272298 ) )->set_default_value_from_effect( 1 );
 }
 
 // paladin_t::default_potion ================================================

@@ -260,6 +260,8 @@ public:
     buff_t* rise_from_ash; // Ret TWW1 4p
     buff_t* winning_streak; // Ret TWW2 2pc
     buff_t* all_in; // Ret TWW2 4pc
+
+    buff_t* light_blessed_shield; // Prot Midnight 4p
   } buffs;
 
   // Gains

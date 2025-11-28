@@ -200,6 +200,10 @@ struct avengers_shield_base_t : public paladin_spell_t
       if ( paladin_spell_t::num_targets() == 1 )
         m *= 1.0 + p()->talents.focused_enmity->effectN( 1 ).percent();
     }
+    if (p()->buffs.light_blessed_shield->up())
+    {
+      m *= 1.0 + p()->buffs.light_blessed_shield->stack_value();
+    }
     return m;
   }
 
@@ -241,6 +245,7 @@ struct avengers_shield_base_t : public paladin_spell_t
       }
       p()->buffs.valor->trigger();
     }
+    p()->buffs.light_blessed_shield->expire();
   }
 };
 
