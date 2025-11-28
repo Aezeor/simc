@@ -1417,7 +1417,7 @@ judgment_base_t::judgment_base_t( paladin_t* p, util::string_view name, util::st
   triggers_higher_calling = true;
   if ( p->talents.lightsmith.hammer_and_anvil->ok() )
   {
-    hammer_and_anvil = new hammer_and_anvil_t( p, "hammer_and_anvil_j" );
+    hammer_and_anvil = new hammer_and_anvil_t( p, "hammer_and_anvil_" + name_str );
     add_child( hammer_and_anvil );
   }
 
@@ -2700,6 +2700,10 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     {
       forges_reckoning = new forges_reckoning_t( p );
       add_child( forges_reckoning );
+    }
+    if (p->talents.glory_of_the_vanguard_3->ok())
+    {
+      add_child( p->active.blaze_of_glory );
     }
   }
 

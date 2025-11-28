@@ -252,10 +252,15 @@ struct avengers_shield_base_t : public paladin_spell_t
 // This struct is solely for all Avenger's Shields which are cast by Divine Toll.
 struct avengers_shield_dt_t : public avengers_shield_base_t
 {
-  avengers_shield_dt_t( paladin_t* p ) :
-    avengers_shield_base_t( "avengers_shield_dt", p, "" )
+  hammer_and_anvil_t* haa;
+  avengers_shield_dt_t( paladin_t* p ) : avengers_shield_base_t( "avengers_shield_dt", p, "" ), haa( nullptr )
   {
     background = true;
+    if (p->talents.lightsmith.resounding_strike->ok())
+    {
+      haa = new hammer_and_anvil_t( p, "hammer_and_anvil" );
+      add_child( haa );
+    }
   }
   void execute() override
   {
@@ -264,6 +269,11 @@ struct avengers_shield_dt_t : public avengers_shield_base_t
     // Gain 1 Holy Power for each target hit (Protection only) - Not sure if Effect 5 with a value of 1 belongs to this
     p()->resource_gain( RESOURCE_HOLY_POWER, as<int>( p()->talents.divine_toll->effectN( 5 ).base_value() ),
                         p()->gains.hp_divine_toll );
+
+    if (p()->talents.lightsmith.resounding_strike->ok())
+    {
+      trigger_hammer_and_anvil( p(), execute_state, haa, HAA_DIVINE_TOLL );
+    }
   }
 };
 
