@@ -3722,9 +3722,9 @@ std::string paladin_t::default_temporary_enchant() const
   switch ( specialization() )
   {
     case PALADIN_PROTECTION:
-      return "main_hand:algari_mana_oil_3,if=!(talent.rite_of_adjuration.enabled|talent.rite_of_sanctification.enabled)";
+      return true_level >= 81 ? "disabled" : "main_hand:algari_mana_oil_3,if=!(talent.rite_of_adjuration.enabled|talent.rite_of_sanctification.enabled)";
     case PALADIN_RETRIBUTION:
-      return "main_hand:algari_mana_oil_3";
+      return true_level >= 81 ? "disabled" : "main_hand:algari_mana_oil_3";
 
     default:
       return "main_hand:howling_rune_3";
