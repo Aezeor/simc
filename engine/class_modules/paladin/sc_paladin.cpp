@@ -2530,11 +2530,13 @@ void paladin_t::cast_holy_armaments( player_t* target, armament usedArmament, ar
   {
     buffs.lightsmith.fake_solidarity->trigger();
   }
-  if ( sets->has_set_bonus(HERO_LIGHTSMITH, TWW3, B4) && src != LS_DIVINE_INSPIRATION )
+  if ( talents.lightsmith.masterwork->ok() && src != LS_DIVINE_INSPIRATION )
   {
-    cast_lesser_armament( buffs.lightsmith.masterwork->stack(),
-                          usedArmament == SACRED_WEAPON ? LESSER_WEAPON : LESSER_BULWARK );
-    buffs.lightsmith.masterwork->expire();
+    int amount = talents.lightsmith.masterwork->effectN( 1 ).base_value();
+    if ( usedArmament == HOLY_BULWARK )
+      buffs.lightsmith.masterwork_bulwark->trigger( amount );
+    else
+      buffs.lightsmith.masterwork_weapon->trigger( amount );
   }
 
 
@@ -3532,7 +3534,8 @@ void paladin_t::create_buffs()
                                        ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
                                          trigger_laying_down_arms();
                                        } );
-  buffs.lightsmith.masterwork = make_buff( this, "masterwork", find_spell( 1238903 ) );
+  buffs.lightsmith.masterwork_weapon = make_buff( this, "masterwork_weapon", find_spell( 1271436 ) );
+  buffs.lightsmith.masterwork_bulwark = make_buff( this, "masterwork_bulwark", find_spell( 1271383 ) );
   // Not going to implement this "correctly", too much overhead for too little informational gain
   buffs.lightsmith.lesser_bulwark = make_buff<buffs::lesser_bulwark_buff_t>( this );
   buffs.lightsmith.lesser_weapon = make_buff( this, "lesser_weapon", find_spell( 1239091 ) );

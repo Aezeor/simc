@@ -227,7 +227,8 @@ public:
       buff_t* rite_of_adjuration;
       buff_t* blessing_of_the_forge;  // Sacred Weapon doodad, pseudo invisible buff
       buff_t* fake_solidarity; // Stackable buff that fakes other people having a Sacred Weapon buff
-      buff_t* masterwork;
+      buff_t* masterwork_weapon;
+      buff_t* masterwork_bulwark;
       buff_t* lesser_weapon;
       absorb_buff_t* lesser_bulwark;
       buff_t* fake_tww3_ls_bh;
@@ -1304,6 +1305,20 @@ public:
         paladin_td_t* td = this->td( s->target );
         if ( td->debuff.judgment->up() )
           td->debuff.judgment->decrement();
+      }
+      if ( p()->buffs.lightsmith.masterwork_weapon->up() )
+      {
+        p()->buffs.lightsmith.masterwork_weapon->decrement();
+        // 28.11.25 Fluttershy - Losing the last stack of Masterwork: Weapon does nothing
+        if ( !p()->bugs || p()->buffs.lightsmith.masterwork_weapon->up() )
+          p()->cast_lesser_armament( 1, LESSER_WEAPON );
+      }
+      if ( p()->buffs.lightsmith.masterwork_bulwark->up() )
+      {
+        p()->buffs.lightsmith.masterwork_bulwark->decrement();
+        // 28.11.25 Fluttershy - Losing the last stack of Masterwork: Bulwark does nothing
+        if ( !p()->bugs || p()->buffs.lightsmith.masterwork_bulwark->up() )
+          p()->cast_lesser_armament( 1, LESSER_BULWARK );
       }
     }
   }
