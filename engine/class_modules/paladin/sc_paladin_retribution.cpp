@@ -660,8 +660,7 @@ struct templars_verdict_echo_t : public paladin_melee_attack_t
       double proc_chance = data().effectN( 2 ).percent();
       if ( rng().roll( proc_chance ) )
       {
-        p()->cooldowns.hammer_of_wrath->reset( true );
-        p()->buffs.final_verdict->trigger();
+        p()->cooldowns.judgment->reset( true );
       }
     }
   }
@@ -777,8 +776,7 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       double proc_chance = data().effectN( 2 ).percent();
       if ( rng().roll( proc_chance ) )
       {
-        p()->cooldowns.hammer_of_wrath->reset( true );
-        p()->buffs.final_verdict->trigger();
+        p()->cooldowns.judgment->reset( true );
       }
     }
 

@@ -206,7 +206,6 @@ public:
     buff_t* bulwark_of_righteous_fury;
     buff_t* blessing_of_dusk;
     buff_t* blessing_of_dawn;
-    buff_t* final_verdict;
     buff_t* divine_resonance;
 
     buff_t* empyrean_legacy;

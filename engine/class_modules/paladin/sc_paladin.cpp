@@ -1558,11 +1558,6 @@ void hammer_of_wrath_t::execute()
 {
   judgment_base_t::execute();
 
-  if ( p()->buffs.final_verdict->up() )
-  {
-    p()->buffs.final_verdict->expire();
-  }
-
   if ( p()->buffs.herald_of_the_sun.blessing_of_anshe->up() )
   {
     p()->buffs.herald_of_the_sun.blessing_of_anshe->expire();
@@ -3503,7 +3498,6 @@ void paladin_t::create_buffs()
                            ->set_default_value_from_effect( 1 )
                            ->add_invalidate( CACHE_BONUS_ARMOR );
 
-  buffs.final_verdict = make_buff( this, "final_verdict", find_spell( 337228 ) );
   buffs.divine_resonance =
       make_buff( this, "divine_resonance", find_spell( 355455 ) )
           ->set_tick_callback( [ this ]( buff_t* /* b */, int /* stacks */, timespan_t /* tick_time */ ) {
