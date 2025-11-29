@@ -4701,10 +4701,7 @@ bool paladin_t::standing_in_consecration() const
 
 bool paladin_t::get_how_availability( ) const
 {
-  bool buffs_ok = wings_up();
-  // ToDo Fluttershy: ?
-  buffs_ok = buffs_ok || buffs.final_verdict->up() || buffs.herald_of_the_sun.blessing_of_anshe->up();
-  return buffs_ok && talents.hammer_of_wrath->ok();
+  return wings_up() && talents.hammer_of_wrath->ok();
 }
 
 bool paladin_t::wings_up() const
