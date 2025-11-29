@@ -6804,18 +6804,6 @@ struct melee_t : public death_knight_melee_attack_t
       return t;
   }
 
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = death_knight_melee_attack_t::composite_da_multiplier( s );
-
-    if ( p()->talent.frost.smothering_offense.ok() )
-    {
-      m *= 1.0 + ( p()->buffs.icy_talons->check() * p()->buffs.icy_talons->data().effectN( 2 ).percent() );
-    }
-
-    return m;
-  }
-
   void execute() override
   {
     if ( first )
@@ -15395,11 +15383,12 @@ void death_knight_t::apply_action_effects( action_t* a, bool pet )
       action->parse_effects( buffs.gathering_storm );
       action->parse_effects( buffs.killing_machine );
       action->parse_effects( mastery.frozen_heart );
-      action->parse_effects( talent.frost.smothering_offense );
       action->parse_effects( buffs.icy_onslaught );
       action->parse_effects( buffs.remorseless_winter );
       action->parse_effects( buffs.frozen_dominion_remorseless_winter );
       action->parse_effects( buffs.empower_rune_weapon, talent.frost.obliteration->effectN( 1 ).trigger() );
+      if ( talent.frost.smothering_offense.ok() )
+        action->parse_effects( buffs.icy_talons );
       break;
     case DEATH_KNIGHT_UNHOLY:
       action->parse_effects( buffs.sudden_doom, CONSUME_BUFF );
