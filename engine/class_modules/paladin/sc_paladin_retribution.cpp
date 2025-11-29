@@ -9,91 +9,6 @@
 //
 namespace paladin {
 
-namespace buffs {
-  crusade_buff_t::crusade_buff_t( paladin_t* p ) :
-      buff_t( p, "crusade", p->spells.crusade ),
-      damage_modifier( 0.0 ),
-      haste_bonus( 0.0 )
-  {
-    if ( !p->talents.crusade->ok() )
-    {
-      set_chance( 0 );
-    }
-    set_refresh_behavior( buff_refresh_behavior::DISABLED );
-    // TODO(mserrano): fix this when Blizzard turns the spelldata back to sane
-    //  values
-    damage_modifier = data().effectN( 1 ).percent() / 10.0;
-    haste_bonus = data().effectN( 3 ).percent() / 10.0;
-
-    // let the ability handle the cooldown
-    cooldown->duration = 0_ms;
-
-    add_invalidate( CACHE_HASTE );
-    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    add_invalidate( CACHE_MASTERY );
-  }
-}
-
-// Crusade
-struct crusade_t : public paladin_spell_t
-{
-  struct state_t : public action_state_t
-  {
-    using action_state_t::action_state_t;
-
-    proc_types2 cast_proc_type2() const override
-    {
-      // This spell can trigger on-cast procs even if it is backgrounded
-      return PROC2_CAST_GENERIC;
-    }
-  };
-
-  bool is_proc_background;
-
-  crusade_t( paladin_t* p ) : paladin_spell_t( "crusade", p, p->find_spell( 454373 ) )
-  {
-    is_proc_background = true;
-  }
-
-  crusade_t( paladin_t* p, util::string_view options_str ) :
-    paladin_spell_t( "crusade", p, p->spells.crusade )
-  {
-    parse_options( options_str );
-
-    is_proc_background = false;
-
-    if ( ! ( p->talents.crusade->ok() ) )
-      background = true;
-    if ( p->talents.radiant_glory->ok() )
-      background = true;
-  }
-
-  action_state_t* new_state() override
-  {
-    return new state_t( this, target );
-  }
-
-  void execute() override
-  {
-    paladin_spell_t::execute();
-
-    if ( is_proc_background )
-      return;
-
-    // If Visions already procced the buff and this spell is used, all stacks are reset to 1
-    // The duration is also set to its default value, there's no extending or pandemic
-    if ( p()->buffs.crusade->up() )
-      p()->buffs.crusade->expire();
-
-    p()->buffs.crusade->trigger();
-
-    if ( p()->talents.herald_of_the_sun.suns_avatar->ok() )
-    {
-      p()->apply_avatar_dawnlights();
-    }
-  }
-};
-
 // Execution Sentence =======================================================
 
 struct es_explosion_t : public paladin_spell_t
@@ -438,14 +353,6 @@ struct divine_storm_echo_tempest_t : public paladin_melee_attack_t
     base_multiplier *= p->buffs.echoes_of_wrath->data().effectN( 1 ).percent();
     clears_judgment = false;
   }
-
-  void impact( action_state_t* s ) override
-  {
-    // Tempest of the Lightbringer munches Empyrean Power without doing anything
-    if ( p()->buffs.empyrean_power->up() && p()->bugs )
-      p()->buffs.empyrean_power->expire();
-    paladin_melee_attack_t::impact( s );
-  }
 };
 
 struct divine_storm_tempest_t : public paladin_melee_attack_t
@@ -458,14 +365,6 @@ struct divine_storm_tempest_t : public paladin_melee_attack_t
     aoe = -1;
     base_multiplier *= p->talents.tempest_of_the_lightbringer->effectN( 1 ).percent();
     clears_judgment = false;
-  }
-
-  void impact(action_state_t* s) override
-  {
-    // Tempest of the Lightbringer munches Empyrean Power without doing anything
-    if ( p()->buffs.empyrean_power->up() && p()->bugs )
-      p()->buffs.empyrean_power->expire();
-    paladin_melee_attack_t::impact( s );
   }
 };
 
@@ -553,19 +452,6 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
       sunrise_echo = new divine_storm_echo_t( p, p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent() * mul );
       add_child( sunrise_echo );
     }
-  }
-
-  double action_multiplier() const override
-  {
-    double am = holy_power_consumer_t::action_multiplier();
-
-    if ( p()->buffs.empyrean_power->up() )
-      am *= 1.0 + p()->buffs.empyrean_power->data().effectN( 1 ).percent();
-
-    if ( p()->buffs.inquisitors_ire->up() )
-      am *= 1.0 + p()->buffs.inquisitors_ire->check_stack_value();
-
-    return am;
   }
 
   void execute() override
@@ -1071,17 +957,8 @@ struct wake_of_ashes_t : public paladin_spell_t
     if ( p()->talents.radiant_glory->ok() )
     {
       bool do_avatar = p()->talents.herald_of_the_sun.suns_avatar->ok() &&
-                       !( p()->buffs.avenging_wrath->up() || p()->buffs.crusade->up() );
-      if ( p()->talents.crusade->ok() )
-      {
-        if ( !p()->buffs.crusade->up() )
-        {
-          p()->active.background_crusade->execute_on_target( p() );
-        }
-        // TODO: get this from spell data
-        p()->buffs.crusade->extend_duration_or_trigger( timespan_t::from_seconds( 10 ) );
-      }
-      else if ( p()->talents.avenging_wrath->ok() )
+                       !( p()->buffs.avenging_wrath->up() );
+      if ( p()->talents.avenging_wrath->ok() )
       {
         if ( !p()->buffs.avenging_wrath->up() )
         {
@@ -1407,11 +1284,6 @@ void divine_exaction_ret_t::execute()
 
 void paladin_t::create_ret_actions()
 {
-  if ( talents.crusade->ok() )
-  {
-    active.background_crusade = new crusade_t( this );
-  }
-
   if ( talents.empyrean_legacy->ok() )
   {
     double empyrean_legacy_mult = 1.0 + talents.empyrean_legacy->effectN( 2 ).percent();
@@ -1466,7 +1338,6 @@ void paladin_t::create_ret_actions()
 action_t* paladin_t::create_action_retribution( util::string_view name, util::string_view options_str )
 {
   if ( name == "blade_of_justice"          ) return new blade_of_justice_t         ( this, options_str );
-  if ( name == "crusade"                   ) return new crusade_t                  ( this, options_str );
   if ( name == "divine_storm"              ) return new divine_storm_t             ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
   if ( name == "wake_of_ashes"             ) return new wake_of_ashes_t            ( this, options_str );
@@ -1486,21 +1357,6 @@ action_t* paladin_t::create_action_retribution( util::string_view name, util::st
 
 void paladin_t::create_buffs_retribution()
 {
-  buffs.crusade = new buffs::crusade_buff_t( this );
-  buffs.crusade->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
-    
-    if ( sets->has_set_bonus( HERO_HERALD_OF_THE_SUN, TWW3, B2 ) )
-    {
-      // 5s with Radiant Glory, 20s without
-      buffs.herald_of_the_sun.solar_wrath->trigger(
-          sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 )->effectN( 2 ).time_value() -
-          ( talents.radiant_glory->ok() ? sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 )->effectN( 5 ).time_value()
-                                        : -sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 )->effectN( 4 ).time_value() ) );
-    }
-    else
-      buffs.herald_of_the_sun.suns_avatar->expire();
-  } );
-
   buffs.rush_of_light = make_buff( this, "rush_of_light", find_spell( 407065 ) )
     ->add_invalidate( CACHE_HASTE )
     ->set_default_value( talents.rush_of_light->effectN( 1 ).percent() );
@@ -1528,6 +1384,8 @@ void paladin_t::create_buffs_retribution()
     ->set_default_value_from_effect( 1 );
   buffs.all_in = make_buff( this, "all_in", find_spell( 1216837 ) )
     ->set_default_value_from_effect( 1 );
+
+  buffs.art_of_war = make_buff( this, "art_of_war", find_spell( 406086 ) );
 }
 
 void paladin_t::init_rng_retribution()

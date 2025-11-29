@@ -11,7 +11,6 @@ struct blessing_of_sacrifice_redirect_t;
 namespace buffs
 {
 struct avenging_wrath_buff_t;
-struct crusade_buff_t;
 struct holy_avenger_buff_t;
 struct ardent_defender_buff_t;
 struct forbearance_t;
@@ -194,9 +193,10 @@ public:
     buff_t* valor;
 
     // Ret
-    buffs::crusade_buff_t* crusade;
     buffs::shield_of_vengeance_buff_t* shield_of_vengeance;
     buff_t* empyrean_power;
+
+    buff_t* art_of_war;
 
     buff_t* rush_of_light;
     buff_t* inquisitors_ire;
@@ -250,7 +250,6 @@ public:
       buff_t* dawnlight;
       buff_t* blessing_of_anshe;
       buff_t* morning_star;
-      buff_t* gleaming_rays;
       buff_t* solar_grace;
       buff_t* morning_star_driver;
       buff_t* suns_avatar;
@@ -427,7 +426,6 @@ public:
 
     struct
     {
-      const spell_data_t* gleaming_rays;
       const spell_data_t* dawnlight_aoe_metadata;
       const spell_data_t* solar_wrath;  // Herald TWW3 4p
     } herald_of_the_sun;
@@ -882,6 +880,8 @@ public:
   void create_holy_actions();
   action_t* create_action_holy( util::string_view name, util::string_view options_str );
 
+  void apply_action_effects( action_t* a );
+
   void generate_action_prio_list_prot();
   void generate_action_prio_list_holy();
   void generate_action_prio_list_holy_dps();
@@ -926,25 +926,6 @@ private:
   double damage_modifier;
   double healing_modifier;
   double crit_bonus;
-};
-
-struct crusade_buff_t : public buff_t
-{
-  crusade_buff_t( paladin_t* p );
-
-  double get_damage_mod() const
-  {
-    return damage_modifier * ( this->check() );
-  }
-
-  double get_haste_bonus() const
-  {
-    return haste_bonus * ( this->check() );
-  }
-
-private:
-  double damage_modifier;
-  double haste_bonus;
 };
 
 struct execution_sentence_debuff_t : public buff_t
@@ -1165,7 +1146,7 @@ public:
       blades_of_light, rise_from_ash; // Ret
     bool avenging_crusader;                                                                // Holy
     bool sentinel;  // Prot
-    bool gleaming_rays, solar_wrath; // Herald of the Sun
+    bool solar_wrath; // Herald of the Sun
   } affected_by;
 
   // haste scaling bools
@@ -1233,13 +1214,9 @@ public:
       this->affected_by.blades_of_light = false;
     }
 
-    if ( p->talents.herald_of_the_sun.gleaming_rays->ok() )
+    if ( this->data().ok() )
     {
-      this->affected_by.gleaming_rays = this->data().affected_by( p->spells.herald_of_the_sun.gleaming_rays->effectN( 1 ) );
-    }
-    else
-    {
-      this->affected_by.gleaming_rays = false;
+      p->apply_action_effects( this );
     }
   }
 
@@ -1328,11 +1305,6 @@ public:
   {
     double am = ab::action_multiplier();
 
-    if ( affected_by.gleaming_rays && p()->buffs.herald_of_the_sun.gleaming_rays->up() )
-    {
-      am *= 1.0 + ( p()->buffs.herald_of_the_sun.gleaming_rays->value() );
-    }
-
     if ( p()->specialization() == PALADIN_RETRIBUTION )
     {
       if ( affected_by.highlords_judgment )
@@ -1344,11 +1316,6 @@ public:
           mastery_amount *= 1.0 + (p()->talents.highlords_wrath->effectN( 3 ).percent() / p()->talents.highlords_wrath->effectN( 2 ).base_value());
         }
         am *= 1.0 + mastery_amount;
-      }
-
-      if ( affected_by.crusade && p()->buffs.crusade->up() )
-      {
-        am *= 1.0 + p()->buffs.crusade->get_damage_mod();
       }
     }
 
@@ -1370,13 +1337,6 @@ public:
     if ( affected_by.avenging_crusader )
     {
       am *= 1.0 + p()->buffs.avenging_crusader->check_value();
-    }
-
-    // Divine purpose damage increase handled here,
-    // Cost handled in holy_power_consumer_t
-    if ( affected_by.divine_purpose && p()->buffs.divine_purpose->up() )
-    {
-      am *= 1.0 + p()->spells.divine_purpose_buff->effectN( 2 ).percent();
     }
 
     if (affected_by.solar_wrath && p()->buffs.herald_of_the_sun.solar_wrath->up())
@@ -1439,11 +1399,6 @@ public:
       if ( affected_by.avenging_wrath && p()->buffs.avenging_wrath->up() )
       {
         mult /= 1.0 + p()->buffs.avenging_wrath->get_damage_mod();
-      }
-
-      if ( affected_by.crusade && p()->buffs.crusade->up() )
-      {
-        mult /= 1.0 + p()->buffs.crusade->get_damage_mod();
       }
 
       if ( affected_by.highlords_judgment )
@@ -1680,7 +1635,7 @@ public:
     bool isFreeSLDPSpender = p->buffs.divine_purpose->up() || ( is_wog && p->buffs.shining_light_free->up() ) ||
                              ( is_divine_storm && p->buffs.empyrean_power->up() );
 
-    double num_hopo_spent = as<double>( holy_power_consumer_t::cost() );
+    [[maybe_unused]] double num_hopo_spent = as<double>( holy_power_consumer_t::cost() );
     if ( is_hammer_of_light_driver && !p->buffs.templar.hammer_of_light_free->up() )
       num_hopo_spent = hol_cost;
     else if ( is_hammer_of_light )
@@ -1697,12 +1652,6 @@ public:
       {
         num_hopo_spent = 5.0;
       }
-    }
-
-    // Hammer of Light specifically gets benefit from Crusade stacks that it applies
-    if ( is_hammer_of_light_driver && num_hopo_spent > 0 && p->buffs.crusade->check() )
-    {
-      p->buffs.crusade->trigger( as<int>( num_hopo_spent ) );
     }
 
     ab::execute();
@@ -1727,11 +1676,6 @@ public:
       }
     }
 
-    if ( num_hopo_spent > 0 && p->buffs.crusade->check() && !is_hammer_of_light_driver )
-    {
-      p->buffs.crusade->trigger( as<int>( num_hopo_spent ) );
-    }
-
     if ( p->talents.tirions_devotion->ok() && p->talents.lay_on_hands->ok() && !ab::background )
     {
       timespan_t reduction =
@@ -1742,19 +1686,10 @@ public:
     // Consume Empyrean Power on Divine Storm, handled here for interaction with DP/FoJ
     // Cost reduction is still in divine_storm_t
     bool should_continue = true;
-    if ( is_divine_storm && p->bugs )
+    if ( is_divine_storm )
     {
       if ( p->buffs.empyrean_power->up() )
       {
-        p->buffs.empyrean_power->expire();
-        should_continue = false;
-      }
-    }
-    else if ( is_divine_storm )
-    {
-      if ( p->buffs.empyrean_power->up() )
-      {
-        p->buffs.empyrean_power->expire();
         should_continue = false;
       }
     }
@@ -1885,8 +1820,6 @@ private:
 public:
   hammer_of_wrath_t( paladin_t* p, util::string_view name, double mul = 1.0 );
   bool target_ready( player_t* candidate_target ) override;
-  void execute() override;
-  double action_multiplier() const override;
   void impact( action_state_t* s ) override;
   double composite_target_multiplier( player_t* target ) const override;
 };

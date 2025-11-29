@@ -1060,6 +1060,7 @@ struct melee_t : public paladin_melee_attack_t
           }
           if ( rng().roll( aow_proc_chance ) )
           {
+            p()->buffs.art_of_war->trigger();
             p()->cooldowns.art_of_war->start();
             p()->procs.art_of_war->occur();
             p()->cooldowns.blade_of_justice->reset( true );
@@ -1450,6 +1451,9 @@ void judgment_base_t::execute()
       p()->buffs.sentinel->extend_duration( p(), extension );
     }
   }
+
+  if ( p()->buffs.herald_of_the_sun.blessing_of_anshe->up() )
+    p()->buffs.herald_of_the_sun.blessing_of_anshe->expire();
 }
 void judgment_base_t::impact(action_state_t* s)
 {
@@ -1552,28 +1556,6 @@ bool hammer_of_wrath_t::target_ready( player_t* candidate_target )
   }
 
   return judgment_base_t::target_ready( candidate_target );
-}
-
-void hammer_of_wrath_t::execute()
-{
-  judgment_base_t::execute();
-
-  if ( p()->buffs.herald_of_the_sun.blessing_of_anshe->up() )
-  {
-    p()->buffs.herald_of_the_sun.blessing_of_anshe->expire();
-  }
-}
-
-double hammer_of_wrath_t::action_multiplier() const
-{
-  double am = judgment_base_t::action_multiplier();
-
-  if ( p()->buffs.herald_of_the_sun.blessing_of_anshe->up() )
-  {
-    am *= 1.0 + p()->buffs.herald_of_the_sun.blessing_of_anshe->data().effectN( 1 ).percent();
-  }
-
-  return am;
 }
 
 void hammer_of_wrath_t::impact( action_state_t* s )
@@ -2097,16 +2079,6 @@ struct empyrean_hammer_t : public paladin_spell_t
     {
       p()->buffs.templar.lights_deliverance->trigger();
     }
-  }
-
-  double action_multiplier() const override
-  {
-    double am = paladin_spell_t::action_multiplier();
-    if ( p()->buffs.templar.sanctification->up() )
-    {
-      am *= 1.0 + p()->buffs.templar.sanctification->stack_value();
-    }
-    return am;
   }
 
   double composite_target_multiplier( player_t *t ) const override
@@ -2798,14 +2770,9 @@ struct dawnlight_t : public paladin_spell_t
     if ( p()->buffs.herald_of_the_sun.morning_star->up() )
       p()->buffs.herald_of_the_sun.morning_star->expire();
 
-    if ( p()->talents.herald_of_the_sun.gleaming_rays->ok() )
-    {
-      p()->buffs.herald_of_the_sun.gleaming_rays->trigger();
-    }
-
     if ( p()->talents.herald_of_the_sun.suns_avatar->ok() )
     {
-      if ( ( !p()->buffs.herald_of_the_sun.suns_avatar->up() ) && ( p()->buffs.crusade->up() || p()->buffs.avenging_wrath->up() ) )
+      if ( ( !p()->buffs.herald_of_the_sun.suns_avatar->up() ) && p()->buffs.avenging_wrath->up() )
       {
         p()->buffs.herald_of_the_sun.suns_avatar->trigger();
       }
@@ -2828,7 +2795,7 @@ struct dawnlight_t : public paladin_spell_t
 
     if ( p()->talents.herald_of_the_sun.suns_avatar->ok() )
     {
-      if ( p()->buffs.avenging_wrath->up() || p()->buffs.crusade->up() )
+      if ( p()->buffs.avenging_wrath->up() )
       {
         mul *= 1.0 + p()->talents.herald_of_the_sun.suns_avatar->effectN( 5 ).percent();
       }
@@ -2855,11 +2822,6 @@ struct dawnlight_t : public paladin_spell_t
       if ( p()->talents.herald_of_the_sun.suns_avatar->ok() )
       {
         p()->buffs.herald_of_the_sun.suns_avatar->expire();
-      }
-
-      if ( p()->talents.herald_of_the_sun.gleaming_rays->ok() )
-      {
-        p()->buffs.herald_of_the_sun.gleaming_rays->expire();
       }
     }
 
@@ -3601,9 +3563,6 @@ void paladin_t::create_buffs()
     ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
   buffs.herald_of_the_sun.morning_star = make_buff( this, "morning_star", find_spell( 431539 ) )
     ->set_default_value_from_effect( 1 );
-  buffs.herald_of_the_sun.gleaming_rays = make_buff( this, "gleaming_rays", spells.herald_of_the_sun.gleaming_rays )
-    ->set_duration( bugs ? timespan_t::from_seconds( 30 ) : timespan_t::zero() ) // infinite duration, except it's bugged
-    ->set_default_value_from_effect( 1 );
   auto blessing_of_anshe_id = specialization() == PALADIN_RETRIBUTION ? 445206 : 445204;
   buffs.herald_of_the_sun.blessing_of_anshe = make_buff( this, "blessing_of_anshe", find_spell( blessing_of_anshe_id ) );
   buffs.herald_of_the_sun.solar_grace = make_buff( this, "solar_grace", find_spell( 439841 ) )
@@ -3617,7 +3576,7 @@ void paladin_t::create_buffs()
 
   buffs.herald_of_the_sun.solar_wrath = make_buff( this, "solar_wrath", find_spell( 1236972 ) )
                                           ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
-                                              if ( !( buffs.crusade->up() || buffs.avenging_wrath->up() ) )
+                                              if ( !( buffs.avenging_wrath->up() ) )
                                                 buffs.herald_of_the_sun.suns_avatar->expire();
                                           } );
 
@@ -3734,6 +3693,33 @@ std::string paladin_t::default_temporary_enchant() const
     default:
       return "main_hand:howling_rune_3";
   }
+}
+
+// paladin_t::apply_action_effects ==========================================
+
+void paladin_t::apply_action_effects( action_t* a ) {
+  auto action = dynamic_cast<parse_action_base_t*>( a );
+  assert( action );
+
+  // Shared
+  auto aw_effect_mask = effect_mask_t( true ).disable( 13 );
+  if ( !talents.crusade->ok() )
+    aw_effect_mask.disable( 11 );
+
+  action->parse_effects( buffs.avenging_wrath, aw_effect_mask );
+  // TODO: add in Divine Purpose - logic here is going to be complex
+
+  // Hero talents
+  action->parse_effects( buffs.herald_of_the_sun.blessing_of_anshe, CONSUME_BUFF );
+  action->parse_effects( buffs.templar.sanctification );
+
+  // Ret
+  action->parse_effects( buffs.empyrean_power, CONSUME_BUFF );
+  action->parse_effects( buffs.inquisitors_ire );
+  action->parse_effects( buffs.art_of_war, CONSUME_BUFF );
+
+  // Prot
+  // TODO
 }
 
 // paladin_t::init_actions ==================================================
@@ -4091,7 +4077,6 @@ void paladin_t::init_spells()
   spells.templar.empyrean_hammer        = find_spell( 431398 );
   spells.templar.empyrean_hammer_wd     = find_spell( 431625 );
 
-  spells.herald_of_the_sun.gleaming_rays = find_spell( 431481 );
   spells.herald_of_the_sun.dawnlight_aoe_metadata = find_spell( 431581 );
   spells.herald_of_the_sun.solar_wrath            = find_spell( 1236972 );
 
@@ -4333,9 +4318,6 @@ double paladin_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
 
-  if ( buffs.crusade->up() )
-    h /= 1.0 + buffs.crusade->get_haste_bonus();
-
   if ( buffs.herald_of_the_sun.solar_grace->up() )
     h /= 1.0 + buffs.herald_of_the_sun.solar_grace->stack_value();
 
@@ -4362,9 +4344,6 @@ double paladin_t::composite_melee_auto_attack_speed() const
 double paladin_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
-
-  if ( buffs.crusade->up() )
-    h /= 1.0 + buffs.crusade->get_haste_bonus();
 
   if ( buffs.herald_of_the_sun.solar_grace->up() )
     h /= 1.0 + buffs.herald_of_the_sun.solar_grace->stack_value();
@@ -4700,7 +4679,7 @@ bool paladin_t::get_how_availability( ) const
 
 bool paladin_t::wings_up() const
 {
-  return buffs.avenging_wrath->up() || buffs.crusade->up() || buffs.sentinel->up();
+  return buffs.avenging_wrath->up() || buffs.sentinel->up();
 }
 
 // player_t::create_expression ==============================================
