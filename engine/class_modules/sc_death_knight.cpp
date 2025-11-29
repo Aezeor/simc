@@ -797,6 +797,8 @@ public:
     propagate_const<buff_t*> frostbane;
     propagate_const<buff_t*> killing_streak;
     propagate_const<buff_t*> icy_onslaught;
+    propagate_const<buff_t*> chosen_of_frostbrood_haste;
+    propagate_const<buff_t*> chosen_of_frostbrood_fwf;
 
     // Unholy
     propagate_const<buff_t*> dark_transformation;
@@ -985,6 +987,7 @@ public:
     propagate_const<gain_t*> rage_of_the_frozen_champion;
     propagate_const<gain_t*> runic_attenuation;
     propagate_const<gain_t*> runic_empowerment;
+    propagate_const<gain_t*> chosen_of_frostbrood;
 
     // Unholy
     propagate_const<gain_t*> forbidden_knowledge;
@@ -1216,6 +1219,10 @@ public:
       player_talent_t the_long_winter;
       player_talent_t frostbane;
       player_talent_t breath_of_sindragosa;
+      // Apex
+      player_talent_t chosen_of_frostbrood_1;
+      player_talent_t chosen_of_frostbrood_2;
+      player_talent_t chosen_of_frostbrood_3;
     } frost;
 
     // Unholy
@@ -1427,6 +1434,10 @@ public:
     const spell_data_t* frostbane_damage;
     const spell_data_t* breath_of_sindragosa_erw_refund;
     const spell_data_t* killing_streak_buff;
+    const spell_data_t* chosen_of_frostbrood_haste_buff;
+    const spell_data_t* chosen_of_frostbrood_fwf_buff;
+    const spell_data_t* chosen_of_frostbrood_delay;
+    const spell_data_t* chosen_of_frostbrood_fwf_action;
 
     // Unholy
     const spell_data_t* runic_corruption;  // buff
@@ -5442,6 +5453,28 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
     return action_base_t::ready();
   }
 
+  bool action_ready() override
+  {
+    if ( !this->replacement_action )
+      return action_base_t::action_ready();
+
+    if ( this->always_replace || ( this->replacement_action_buff && this->replacement_action_buff->check() ) )
+      return this->replacement_action->action_ready();
+
+    return action_base_t::action_ready();
+  }
+
+  void queue_execute( execute_type et ) override
+  {
+    if ( !this->replacement_action )
+      return action_base_t::queue_execute( et );
+
+    if ( this->always_replace || ( this->replacement_action_buff && this->replacement_action_buff->check() ) )
+      return this->replacement_action->queue_execute( et );
+
+    return action_base_t::queue_execute( et );
+  }
+
   void execute() override
   {
     if ( this->replacement_action )
@@ -6550,6 +6583,28 @@ struct death_and_decay_buff_t : public death_knight_buff_t
   {
     death_knight_buff_t::expire_override( s, d );
     expire_buffs();
+  }
+};
+
+// Chosen of Frostbrood Haste ===============================================
+struct chosen_of_frostbrood_haste_buff_t : public death_knight_buff_t
+{
+  chosen_of_frostbrood_haste_buff_t( death_knight_t* p, std::string_view name, const spell_data_t* s )
+    : death_knight_buff_t( p, name, s )
+  {
+    set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    add_invalidate( CACHE_HASTE );
+    set_name_reporting( "Haste" );
+  }
+
+  double value() override
+  {
+    return default_value;
+  }
+
+  double check_value() const override
+  {
+    return default_value;
   }
 };
 
@@ -9383,33 +9438,109 @@ struct frostscythe_proc_t : public frostscythe_base_t
 // Frostwyrm's Fury =========================================================
 struct frostwyrms_fury_damage_t : public death_knight_spell_t
 {
-  frostwyrms_fury_damage_t( std::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->spell.frostwyrms_fury_damage )
+  frostwyrms_fury_damage_t( std::string_view name, death_knight_t* p, const spell_data_t* s )
+    : death_knight_spell_t( name, p, s )
   {
     aoe                = -1;
     background         = true;
     cooldown->duration = 0_ms;  // handled by the actions
+  }
+};
+
+struct fwf_action_base_t : public death_knight_spell_t
+{
+  fwf_action_base_t( std::string_view name, death_knight_t* p, const spell_data_t* s )
+    : death_knight_spell_t( name, p, s ), rider_dur( 0_ms ), exterm_stacks( 0 ), haste_val( 0 ), fwf_damage( nullptr )
+  {
+    if ( p->talent.rider.apocalypse_now.ok() )
+      rider_dur = p->talent.rider.apocalypse_now->effectN( 2 ).time_value();
+
+    if ( p->talent.deathbringer.echoing_fury.ok() )
+      exterm_stacks = as<int>( p->talent.deathbringer.echoing_fury->effectN( 1 ).base_value() );
+
+    if ( p->talent.frost.chosen_of_frostbrood_1.ok() )
+      haste_val = p->spell.chosen_of_frostbrood_haste_buff->effectN( 1 ).percent();
   }
 
   void execute() override
   {
     death_knight_spell_t::execute();
 
+    assert( fwf_damage && "Frostwyrms Fury Action missing Damage Action" );
+
+    if ( fwf_damage )
+      fwf_damage->execute();
+
     if ( p()->talent.rider.apocalypse_now.ok() )
+      p()->summon_rider( rider_dur, rider_of_the_apocalypse_e::ALL_RIDERS );
+
+    if ( p()->talent.deathbringer.echoing_fury.ok() )
+      p()->buffs.exterminate->trigger( exterm_stacks );
+
+    if ( p()->talent.frost.chosen_of_frostbrood_1.ok() )
     {
-      p()->summon_rider( p()->spell.apocalypse_now_data->duration(), rider_of_the_apocalypse_e::ALL_RIDERS );
+      if ( p()->buffs.chosen_of_frostbrood_haste->check() )
+        p()->buffs.chosen_of_frostbrood_haste->expire();
+
+      p()->invalidate_cache( CACHE_HASTE );
+      p()->buffs.chosen_of_frostbrood_haste->set_default_value( haste_val );
+      p()->buffs.chosen_of_frostbrood_haste->trigger();
     }
+  }
+
+public:
+  timespan_t rider_dur;
+  int exterm_stacks;
+  double haste_val;
+  action_t* fwf_damage;
+};
+
+struct chosen_of_frostbrood_fwf_t final : public fwf_action_base_t
+{
+  chosen_of_frostbrood_fwf_t( death_knight_t* p )
+    : fwf_action_base_t( "chosen_of_frostbrood", p, p->spell.chosen_of_frostbrood_fwf_action )
+  {
+    double chosen_mult = p->talent.frost.chosen_of_frostbrood_3->effectN( 2 ).percent();
+    fwf_damage = get_action<frostwyrms_fury_damage_t>( "frostwyrms_fury_recall", p, p->spell.frostwyrms_fury_damage );
+    fwf_damage->base_multiplier = chosen_mult;
+    rider_dur *= chosen_mult;
+    exterm_stacks *= chosen_mult;
+    haste_val *= chosen_mult;
+  }
+
+  void execute() override
+  {
+    fwf_action_base_t::execute();
+    if ( p()->talent.frost.chosen_of_frostbrood_2.ok() )
+      p()->replenish_rune( as<unsigned>( p()->talent.frost.chosen_of_frostbrood_2->effectN( 1 ).base_value() ),
+                           p()->gains.chosen_of_frostbrood );
+
+    p()->buffs.chosen_of_frostbrood_fwf->expire();
   }
 };
 
-struct frostwyrms_fury_t final : public death_knight_spell_t
+struct frostwyrms_fury_t final : public fwf_action_base_t
 {
   frostwyrms_fury_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_spell_t( "frostwyrms_fury", p, p->talent.frost.frostwyrms_fury )
+    : fwf_action_base_t( "frostwyrms_fury", p, p->talent.frost.frostwyrms_fury )
   {
     parse_options( options_str );
-    execute_action = get_action<frostwyrms_fury_damage_t>( "frostwyrms_fury_damage", p );
+    fwf_damage = get_action<frostwyrms_fury_damage_t>( "frostwyrms_fury_damage", p, p->spell.frostwyrms_fury_damage );
+    set_replacement_action( new chosen_of_frostbrood_fwf_t( p ), p->buffs.chosen_of_frostbrood_fwf );
     // Stun is NYI
+  }
+
+  void execute() override
+  {
+    fwf_action_base_t::execute();
+    if ( p()->talent.frost.chosen_of_frostbrood_2.ok() )
+      p()->resource_gain( RESOURCE_RUNIC_POWER,
+                          p()->talent.frost.chosen_of_frostbrood_2->effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
+                          p()->gains.chosen_of_frostbrood, this );
+
+    if ( p()->talent.frost.chosen_of_frostbrood_3.ok() )
+      make_event( *sim, p()->spell.chosen_of_frostbrood_delay->duration(),
+                  [ & ] { p()->buffs.chosen_of_frostbrood_fwf->trigger(); } );
   }
 };
 
@@ -13445,6 +13576,10 @@ void death_knight_t::init_spells()
   talent.frost.the_long_winter      = find_talent_spell( talent_tree::SPECIALIZATION, "The Long Winter" );
   talent.frost.frostbane            = find_talent_spell( talent_tree::SPECIALIZATION, "Frostbane" );
   talent.frost.breath_of_sindragosa = find_talent_spell( talent_tree::SPECIALIZATION, "Breath of Sindragosa" );
+  // Apex
+  talent.frost.chosen_of_frostbrood_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1265632 );
+  talent.frost.chosen_of_frostbrood_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1265633 );
+  talent.frost.chosen_of_frostbrood_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1265637 );
 
   //////// Unholy
   // Row 1
@@ -13708,6 +13843,11 @@ void death_knight_t::spell_lookups()
   spell.frostbane_damage                = conditional_spell_lookup( talent.frost.frostbane.ok(), 1228443 );
   spell.killing_streak_buff             = conditional_spell_lookup( talent.frost.killing_streak.ok(), 1230916 );
   spell.breath_of_sindragosa_erw_refund = conditional_spell_lookup( talent.frost.breath_of_sindragosa.ok(), 303753 );
+  // Frost Apex
+  spell.chosen_of_frostbrood_haste_buff = conditional_spell_lookup( talent.frost.chosen_of_frostbrood_1.ok(), 1265630 );
+  spell.chosen_of_frostbrood_fwf_buff = conditional_spell_lookup( talent.frost.chosen_of_frostbrood_3.ok(), 1265639 );
+  spell.chosen_of_frostbrood_delay = conditional_spell_lookup( talent.frost.chosen_of_frostbrood_3.ok(), 1265640 );
+  spell.chosen_of_frostbrood_fwf_action = conditional_spell_lookup( talent.frost.chosen_of_frostbrood_3.ok(), 1265384 );
 
   // Unholy
   spell.runic_corruption_chance         = conditional_spell_lookup( spec.unholy_death_knight->ok(), 51462 );
@@ -14529,6 +14669,14 @@ void death_knight_t::create_buffs()
           ->set_default_value( spell.killing_streak_buff->effectN( 1 ).percent() / 10 )
           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
+  buffs.chosen_of_frostbrood_haste = make_fallback<chosen_of_frostbrood_haste_buff_t>(
+      talent.frost.chosen_of_frostbrood_1.ok(), this, "chosen_of_frostbrood_haste",
+      spell.chosen_of_frostbrood_haste_buff );
+
+  buffs.chosen_of_frostbrood_fwf = make_fallback( talent.frost.chosen_of_frostbrood_3.ok(), this,
+                                                  "chosen_of_frostbrood_fwf", spell.chosen_of_frostbrood_fwf_buff )
+                                       ->set_name_reporting( "FWF" );
 
   // Unholy
   buffs.dark_transformation = make_fallback<dark_transformation_buff_t>(
