@@ -14758,6 +14758,7 @@ void death_knight_t::init_gains()
   gains.rage_of_the_frozen_champion = get_gain( "Rage of the Frozen Champion" );
   gains.runic_attenuation           = get_gain( "Runic Attenuation" );
   gains.runic_empowerment           = get_gain( "Runic Empowerment" );
+  gains.chosen_of_frostbrood        = get_gain( "Chosen of Frostbrood" );
 
   // Unholy
   gains.forbidden_knowledge = get_gain( "Forbidden Knowledge" );
