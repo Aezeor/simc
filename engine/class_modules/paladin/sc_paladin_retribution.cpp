@@ -1522,7 +1522,6 @@ void paladin_t::create_buffs_retribution()
 
   // legendaries
   buffs.empyrean_legacy = make_buff( this, "empyrean_legacy", find_spell( 387178 ) );
-  buffs.empyrean_legacy_cooldown = make_buff( this, "empyrean_legacy_cooldown", find_spell( 387441 ) );
 
   buffs.echoes_of_wrath = make_buff( this, "echoes_of_wrath", find_spell( 423590 ) );
 

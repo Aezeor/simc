@@ -296,10 +296,12 @@ void avenging_wrath_t::execute()
   p()->buffs.avenging_wrath->trigger();
   if ( p()->talents.lightsmith.blessing_of_the_forge->ok() )
     p()->buffs.lightsmith.blessing_of_the_forge->execute();
+
   if ( p()->talents.herald_of_the_sun.suns_avatar->ok() )
-  {
     p()->apply_avatar_dawnlights();
-  }
+
+  if ( p()->talents.empyrean_legacy->ok() )
+    p()->buffs.empyrean_legacy->trigger();
 }
 
 // Consecration =============================================================
