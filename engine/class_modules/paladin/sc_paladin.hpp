@@ -1299,6 +1299,11 @@ public:
           p()->cast_lesser_armament( 1, LESSER_BULWARK );
       }
     }
+
+    if ( ab::energize_resource_() == RESOURCE_HOLY_POWER && p()->talents.rush_of_light->ok() && s->result == RESULT_CRIT )
+    {
+      p()->buffs.rush_of_light->trigger();
+    }
   }
 
   double action_multiplier() const override
@@ -1596,11 +1601,6 @@ public:
   {
     paladin_t* p = ab::p();
     ab::impact( s );
-
-    if ( ab::aoe == 0 && !is_hammer_of_light_driver && p->talents.rush_of_light->ok() && s->result == RESULT_CRIT )
-    {
-      p->buffs.rush_of_light->trigger();
-    }
 
     if ( !is_hammer_of_light && p->talents.templar.hammerfall->ok() && p->cooldowns.hammerfall_icd->up() )
     {
