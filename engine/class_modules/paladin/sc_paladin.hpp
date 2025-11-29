@@ -335,7 +335,6 @@ public:
     cooldown_t* ret_aura_icd;
     cooldown_t* consecrated_blade_icd;
     cooldown_t* searing_light_icd;
-    cooldown_t* radiant_glory_icd;
     cooldown_t* righteous_cause_icd;
 
     cooldown_t* aurora_icd;
@@ -762,7 +761,6 @@ public:
   player_t* beacon_target;
 
   armament next_armament;
-  double radiant_glory_accumulator;
 
   int melee_swing_count;
   // Helper variables to not always RNG the correct target
@@ -1731,45 +1729,6 @@ public:
     if ( num_hopo_spent > 0 && p->buffs.crusade->check() && !is_hammer_of_light_driver )
     {
       p->buffs.crusade->trigger( as<int>( num_hopo_spent ) );
-    }
-
-    // Hammer of Light driver can proc it under all circumstances, but not the damage part
-    if ( p->talents.radiant_glory->ok() && ( is_hammer_of_light_driver || !is_hammer_of_light ) )
-    {
-      // This is a bit of a hack. As far as we can tell from logs,
-      // this agony-like accumulator logic matches the distribution
-      // of procs pretty closely, tested on a couple thousand TV casts.
-      // This will need periodic re-verification, but is good enough for beta
-      // purposes.
-      p->radiant_glory_accumulator += ab::rng().range( 0.0, 0.075 * num_hopo_spent );
-      if ( p->radiant_glory_accumulator >= 1.0 )
-      {
-        bool do_avatar = p->talents.herald_of_the_sun.suns_avatar->ok() && !( p->buffs.avenging_wrath->up() || p->buffs.crusade->up() );
-
-        // TODO(mserrano): get this from spell data
-        if ( p->talents.crusade->ok() )
-        {
-          if ( !p->buffs.crusade->up() )
-          {
-            p->active.background_crusade->execute_on_target( p );
-          }
-          p->buffs.crusade->extend_duration_or_trigger( timespan_t::from_seconds( 5 ) );
-        }
-        else if ( p->talents.avenging_wrath->ok() )
-        {
-          if ( !p->buffs.avenging_wrath->up() )
-          {
-            p->active.background_avenging_wrath->execute_on_target( p );
-          }
-          p->buffs.avenging_wrath->extend_duration_or_trigger( timespan_t::from_seconds( 4 ) );
-        }
-        p->radiant_glory_accumulator -= 1.0;
-
-        if ( do_avatar )
-        {
-          p->apply_avatar_dawnlights();
-        }
-      }
     }
 
     if ( p->talents.tirions_devotion->ok() && p->talents.lay_on_hands->ok() && !ab::background )

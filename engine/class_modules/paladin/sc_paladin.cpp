@@ -33,7 +33,6 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     options( options_t() ),
     beacon_target( nullptr ),
     next_armament( SACRED_WEAPON ),
-    radiant_glory_accumulator( 0.0 ),
     melee_swing_count( 0 ),
     random_weapon_target( nullptr ),
     random_bulwark_target( nullptr ),
@@ -84,9 +83,6 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
 
   cooldowns.art_of_war = get_cooldown( "art_of_war" );
   cooldowns.art_of_war->duration = find_spell( 406064 )->internal_cooldown();
-
-  cooldowns.radiant_glory_icd = get_cooldown( "radiant_glory_icd" );
-  cooldowns.radiant_glory_icd->duration = timespan_t::from_millis( 500 );
 
   cooldowns.righteous_cause_icd = get_cooldown( "righteous_cause_icd" );
   cooldowns.righteous_cause_icd->duration = find_spell( 402912 )->internal_cooldown();
@@ -3369,7 +3365,6 @@ void paladin_t::reset()
   active_aura         = nullptr;
 
   next_armament = SACRED_WEAPON;
-  radiant_glory_accumulator = 0.0;
   melee_swing_count = 0;
   random_weapon_target = nullptr;
   random_bulwark_target = nullptr;
@@ -4667,9 +4662,6 @@ void paladin_t::combat_begin()
 
   // evidently it resets to summer on combat start
   next_armament = SACRED_WEAPON;
-
-  // this does not appear to reset on combat start, so we initialize it at random
-  radiant_glory_accumulator = rng().range( 0.0, 1.0 );
 
   if ( talents.inquisitors_ire->ok() )
   {
