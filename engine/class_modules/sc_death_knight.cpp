@@ -9516,8 +9516,7 @@ struct chosen_of_frostbrood_fwf_t final : public fwf_action_base_t
   {
     fwf_action_base_t::execute();
     if ( p()->talent.frost.chosen_of_frostbrood_2.ok() )
-      p()->replenish_rune( as<unsigned>( p()->talent.frost.chosen_of_frostbrood_2->effectN( 1 ).base_value() ),
-                           p()->gains.chosen_of_frostbrood );
+      p()->buffs.killing_machine->trigger( p()->talent.frost.chosen_of_frostbrood_2->effectN( 1 ).base_value() );
 
     p()->buffs.chosen_of_frostbrood_fwf->expire();
   }
