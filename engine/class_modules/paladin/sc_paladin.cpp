@@ -1406,9 +1406,9 @@ void trigger_hammer_and_anvil( paladin_t* p, action_state_t* s, hammer_and_anvil
 
 judgment_base_t::judgment_base_t( paladin_t* p, util::string_view name, util::string_view options_str, const spell_data_t* s )
   : paladin_melee_attack_t( name, p, s ),
+    hammer_and_anvil( nullptr ),
     is_how( false ),
     judge_holy_power( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) ),
-    hammer_and_anvil( nullptr ),
     sw_holy_power( as<int>( p->talents.sanctified_wrath->effectN( 3 ).base_value() ) )
 {
   parse_options(options_str);
@@ -1469,7 +1469,8 @@ judgment_t::judgment_t( paladin_t* p, util::string_view options_str ) : judgment
   // force effect 1 to be used for direct ratios
   parse_effect_data( data().effectN( 1 ) );
 
-  auto j = p->find_class_spell( "Judgment" );
+  // todo - what's the point of this?
+  [[maybe_unused]] auto j = p->find_class_spell( "Judgment" );
 
   if ( p->cooldowns.judgment == nullptr )
     p->cooldowns.judgment = cooldown;
@@ -5017,7 +5018,7 @@ public:
   }
 
 private:
-  [[maybe_unused]] paladin_t& p;
+  paladin_t& p;
 };
 
 // PALADIN MODULE INTERFACE =================================================
@@ -5051,7 +5052,7 @@ struct paladin_module_t : public module_t
     p->debuffs.forbearance         = new buffs::forbearance_t( p, "forbearance" );
   }
 
-  void create_actions(player_t* p) const override
+  void create_actions(player_t* /* p */) const override
   {
   }
 
