@@ -9479,7 +9479,7 @@ struct fwf_action_base_t : public death_knight_spell_t
       p()->summon_rider( rider_dur, rider_of_the_apocalypse_e::ALL_RIDERS );
 
     if ( p()->talent.deathbringer.echoing_fury.ok() )
-      p()->buffs.exterminate->trigger( exterm_stacks );
+      p()->buffs.exterminate->trigger( as<int>( exterm_stacks ) );
 
     if ( p()->talent.frost.chosen_of_frostbrood_1.ok() )
     {
@@ -9494,7 +9494,7 @@ struct fwf_action_base_t : public death_knight_spell_t
 
 public:
   timespan_t rider_dur;
-  int exterm_stacks;
+  double exterm_stacks;
   double haste_val;
   action_t* fwf_damage;
 };
@@ -9516,7 +9516,8 @@ struct chosen_of_frostbrood_fwf_t final : public fwf_action_base_t
   {
     fwf_action_base_t::execute();
     if ( p()->talent.frost.chosen_of_frostbrood_2.ok() )
-      p()->buffs.killing_machine->trigger( p()->talent.frost.chosen_of_frostbrood_2->effectN( 1 ).base_value() );
+      p()->buffs.killing_machine->trigger(
+          as<int>( p()->talent.frost.chosen_of_frostbrood_2->effectN( 1 ).base_value() ) );
 
     p()->buffs.chosen_of_frostbrood_fwf->expire();
   }
