@@ -675,6 +675,10 @@ public:
     const spell_data_t* burn_to_ash;
     const spell_data_t* searing_light;
 
+    const spell_data_t* light_within_1;
+    const spell_data_t* light_within_2;
+    const spell_data_t* light_within_3;
+
     // Hero Talents
     struct
     {

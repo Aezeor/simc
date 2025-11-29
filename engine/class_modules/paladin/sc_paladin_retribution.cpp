@@ -1592,6 +1592,11 @@ void paladin_t::init_spells_retribution()
   talents.seething_flames             = find_talent_spell( talent_tree::SPECIALIZATION, "Seething Flames" );
   talents.burn_to_ash                 = find_talent_spell( talent_tree::SPECIALIZATION, "Burn to Ash" );
   talents.healing_hands  = find_talent_spell( talent_tree::CLASS, "Healing Hands" );
+
+  talents.light_within_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1261113 );
+  talents.light_within_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1261111 );
+  talents.light_within_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1261159 );
+
   // Spec passives and useful spells
   spec.retribution_paladin = find_specialization_spell( "Retribution Paladin" );
   spec.retribution_paladin_2 = specialization() == PALADIN_RETRIBUTION ? find_spell( 412314 ) : spell_data_t::not_found();
