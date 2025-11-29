@@ -1773,6 +1773,8 @@ public:
   runeforges_e oh_runeforge;
   player_t* last_target;
 
+  std::vector<player_talent_t*> apex_talents;
+
   death_knight_t( sim_t* sim, std::string_view name, race_e r )
     : parse_player_effects_t( sim, DEATH_KNIGHT, name, r ),
       active_dnd( nullptr ),
@@ -1803,7 +1805,8 @@ public:
       active_lesser_ghouls(),
       mh_runeforge( RUNEFORGE_NONE ),
       oh_runeforge( RUNEFORGE_NONE ),
-      last_target( this )
+      last_target( this ),
+      apex_talents()
   {
     // Shared
     // DnD - Default value, changed during action construction
@@ -9449,9 +9452,10 @@ struct frostwyrms_fury_damage_t : public death_knight_spell_t
 
 struct fwf_action_base_t : public death_knight_spell_t
 {
-  fwf_action_base_t( std::string_view name, death_knight_t* p, const spell_data_t* s )
+  fwf_action_base_t( std::string_view name, death_knight_t* p, const spell_data_t* s, std::string_view options_str )
     : death_knight_spell_t( name, p, s ), rider_dur( 0_ms ), exterm_stacks( 0 ), haste_val( 0 ), fwf_damage( nullptr )
   {
+    parse_options( options_str );
     if ( p->talent.rider.apocalypse_now.ok() )
       rider_dur = p->talent.rider.apocalypse_now->effectN( 2 ).time_value();
 
@@ -9497,8 +9501,8 @@ public:
 
 struct chosen_of_frostbrood_fwf_t final : public fwf_action_base_t
 {
-  chosen_of_frostbrood_fwf_t( death_knight_t* p )
-    : fwf_action_base_t( "chosen_of_frostbrood", p, p->spell.chosen_of_frostbrood_fwf_action )
+  chosen_of_frostbrood_fwf_t( death_knight_t* p, std::string_view options_str )
+    : fwf_action_base_t( "chosen_of_frostbrood", p, p->spell.chosen_of_frostbrood_fwf_action, options_str )
   {
     double chosen_mult = p->talent.frost.chosen_of_frostbrood_3->effectN( 2 ).percent();
     fwf_damage = get_action<frostwyrms_fury_damage_t>( "frostwyrms_fury_recall", p, p->spell.frostwyrms_fury_damage );
@@ -9522,11 +9526,10 @@ struct chosen_of_frostbrood_fwf_t final : public fwf_action_base_t
 struct frostwyrms_fury_t final : public fwf_action_base_t
 {
   frostwyrms_fury_t( death_knight_t* p, std::string_view options_str )
-    : fwf_action_base_t( "frostwyrms_fury", p, p->talent.frost.frostwyrms_fury )
+    : fwf_action_base_t( "frostwyrms_fury", p, p->talent.frost.frostwyrms_fury, options_str )
   {
-    parse_options( options_str );
     fwf_damage = get_action<frostwyrms_fury_damage_t>( "frostwyrms_fury_damage", p, p->spell.frostwyrms_fury_damage );
-    set_replacement_action( new chosen_of_frostbrood_fwf_t( p ), p->buffs.chosen_of_frostbrood_fwf );
+    set_replacement_action( new chosen_of_frostbrood_fwf_t( p, options_str ), p->buffs.chosen_of_frostbrood_fwf );
     // Stun is NYI
   }
 
@@ -13198,6 +13201,24 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( std::string_view name
     throw sc_invalid_apl_argument( fmt::format( "Unknown lesser_ghoul expression '{}'.", splits[ 1 ] ) );
   }
 
+  // Temporary Apex check until simc has a core solution
+  if ( util::str_compare_ci( splits[ 0 ], "apex" ) )
+  {
+    if ( util::str_compare_ci( splits[ 1 ], "1" ) )
+      if ( util::str_compare_ci( splits[ 2 ], "enabled" ) )
+        return expr_t::create_constant( "apex_1_enabled", apex_talents[ 0 ]->ok() );
+
+    if ( util::str_compare_ci( splits[ 1 ], "2" ) )
+      if ( util::str_compare_ci( splits[ 2 ], "enabled" ) )
+        return expr_t::create_constant( "apex_2_enabled", apex_talents[ 1 ]->ok() );
+
+    if ( util::str_compare_ci( splits[ 1 ], "3" ) )
+      if ( util::str_compare_ci( splits[ 2 ], "enabled" ) )
+        return expr_t::create_constant( "apex_3_enabled", apex_talents[ 2 ]->ok() );
+
+    throw sc_invalid_apl_argument( fmt::format( "Unknown apex expression '{}'.", splits[ 1 ] ) );
+  }
+
   if ( util::str_compare_ci( splits[ 0 ], "runeforge" ) && splits.size() == 2 )
   {
     auto runeforge_expr = create_runeforge_expression( splits[ 1 ], true );
@@ -13636,6 +13657,27 @@ void death_knight_t::init_spells()
   talent.unholy.forbidden_knowledge_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1242158 );
   talent.unholy.forbidden_knowledge_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1256565 );
   talent.unholy.forbidden_knowledge_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1256566 );
+
+  switch( specialization())
+  {
+    case DEATH_KNIGHT_BLOOD:
+      apex_talents.push_back( &talent.blood.dance_of_midnight_1 );
+      apex_talents.push_back( &talent.blood.dance_of_midnight_2 );
+      apex_talents.push_back( &talent.blood.dance_of_midnight_3 );
+      break;
+    case DEATH_KNIGHT_FROST:
+      apex_talents.push_back( &talent.frost.chosen_of_frostbrood_1 );
+      apex_talents.push_back( &talent.frost.chosen_of_frostbrood_2 );
+      apex_talents.push_back( &talent.frost.chosen_of_frostbrood_3 );
+      break;
+    case DEATH_KNIGHT_UNHOLY:
+      apex_talents.push_back( &talent.unholy.forbidden_knowledge_1 );
+      apex_talents.push_back( &talent.unholy.forbidden_knowledge_2 );
+      apex_talents.push_back( &talent.unholy.forbidden_knowledge_3 );
+      break;
+    default:
+      break;
+  }
 
   //////// Rider of the Apocalypse
   talent.rider.riders_champion        = find_talent_spell( talent_tree::HERO, "Rider's Champion" );
