@@ -233,8 +233,6 @@ struct expurgation_t : public paladin_spell_t
   expurgation_t( paladin_t* p ):
     paladin_spell_t( "expurgation", p, p->find_spell( 383346 ) )
   {
-    searing_light_disabled = true;
-
     // Jurisdiction doesn't increase Expurgation's damage in-game
     // It's increasing Spell Direct Amount instead of Spell Periodic Amount
     if ( p->talents.jurisdiction->ok() && p->bugs)
@@ -475,9 +473,6 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
         sunrise_echo->start_action_execute_event( 200_ms );
       }
     }
-
-    if ( p()->buffs.inquisitors_ire->up() )
-      p()->buffs.inquisitors_ire->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -489,8 +484,6 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
       paladin_td_t* target_data = td( s->target );
       if ( p()->talents.sanctify->ok() )
         target_data->debuff.sanctify->trigger();
-      if ( target_data->debuff.vanguard_of_justice->up() )
-        target_data->debuff.vanguard_of_justice->expire();
 
       if ( s->result == RESULT_CRIT && p()->talents.herald_of_the_sun.sun_sear->ok() )
       {
@@ -506,17 +499,6 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
           p()->spread_expurgation( this, s->target );
       }
     }
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double ctm = holy_power_consumer_t::composite_target_multiplier( target );
-
-    paladin_td_t* target_data = td( target );
-    if ( target_data->debuff.vanguard_of_justice->up() )
-      ctm *= 1.0 + target_data->debuff.vanguard_of_justice->stack_value();
-
-    return ctm;
   }
 };
 
@@ -547,19 +529,6 @@ struct templars_verdict_echo_t : public paladin_melee_attack_t
       {
         p()->cooldowns.judgment->reset( true );
       }
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    paladin_melee_attack_t::impact( s );
-
-    // Echo can also proc Divine Arbiter
-    if ( p()->buffs.divine_arbiter->stack() == as<int>( p()->buffs.divine_arbiter->data().effectN( 2 ).base_value() ) )
-    {
-      p()->active.divine_arbiter->set_target( s->target );
-      p()->active.divine_arbiter->schedule_execute();
-      p()->buffs.divine_arbiter->expire();
     }
   }
 };
@@ -655,18 +624,6 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       }
     }
   }
-
-  void impact( action_state_t* s ) override
-  {
-    holy_power_consumer_t::impact( s );
-
-    if ( p()->buffs.divine_arbiter->stack() == as<int>( p()->buffs.divine_arbiter->data().effectN( 2 ).base_value() ) )
-    {
-      p()->active.divine_arbiter->set_target( s->target );
-      p()->active.divine_arbiter->schedule_execute();
-      p()->buffs.divine_arbiter->expire();
-    }
-  }
 };
 
 // Judgment - Retribution =================================================================
@@ -738,32 +695,6 @@ struct judgment_ret_t : public judgment_t
     {
       p()->active.highlords_judgment->set_target( s->target );
       p()->active.highlords_judgment->execute();
-    }
-  }
-};
-
-// Justicar's Vengeance
-struct justicars_vengeance_t : public holy_power_consumer_t<paladin_melee_attack_t>
-{
-  justicars_vengeance_t( paladin_t* p, util::string_view options_str ) :
-    holy_power_consumer_t( "justicars_vengeance", p, p->talents.justicars_vengeance )
-  {
-    parse_options( options_str );
-
-    weapon_multiplier = 0; // why is this needed?
-
-    // Healing isn't implemented
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    holy_power_consumer_t::impact( s );
-
-    if ( p()->buffs.divine_arbiter->stack() == as<int>( p()->buffs.divine_arbiter->data().effectN( 2 ).base_value() ) )
-    {
-      p()->active.divine_arbiter->set_target( s->target );
-      p()->active.divine_arbiter->schedule_execute();
-      p()->buffs.divine_arbiter->expire();
     }
   }
 };
@@ -1099,43 +1030,6 @@ struct templar_slash_t : public base_templar_strike_t
   }
 };
 
-struct divine_arbiter_t : public paladin_spell_t
-{
-  divine_arbiter_t( paladin_t* p )
-    : paladin_spell_t( "divine_arbiter", p, p->find_spell( 406983 ) )
-  {
-    background = true;
-
-    // force effect 1 to be used for the direct ratios
-    parse_effect_data( data().effectN( 1 ) );
-
-    // but compute the aoe multiplier from the 2nd effect
-    base_aoe_multiplier *= data().effectN( 2 ).ap_coeff() / data().effectN( 1 ).ap_coeff();
-
-    // and do aoe, too
-    aoe = -1;
-  }
-};
-
-struct searing_light_t : public paladin_spell_t
-{
-  searing_light_t( paladin_t* p )
-    : paladin_spell_t( "searing_light", p, p->find_spell( 407478 ) )
-  {
-    background = true;
-    aoe = -1;
-    reduced_aoe_targets = 8;
-  }
-
-  void execute() override
-  {
-    paladin_spell_t::execute();
-
-    p()->active.searing_light_cons->set_target( execute_state->target );
-    p()->active.searing_light_cons->execute();
-  }
-};
-
 struct highlords_judgment_t : public paladin_spell_t
 {
   highlords_judgment_t( paladin_t* p ) : paladin_spell_t( "highlords_judgment", p, p->find_spell( 383921 ) )
@@ -1227,16 +1121,6 @@ void paladin_t::create_ret_actions()
     active.background_blessed_hammer = new adjudication_blessed_hammer_t( this );
   }
 
-  if ( talents.divine_arbiter->ok() )
-  {
-    active.divine_arbiter = new divine_arbiter_t( this );
-  }
-
-  if ( talents.searing_light->ok() )
-  {
-    active.searing_light = new searing_light_t( this );
-  }
-
   if (talents.expurgation->ok())
   {
     active.expurgation = new expurgation_t( this );
@@ -1260,7 +1144,6 @@ action_t* paladin_t::create_action_retribution( util::string_view name, util::st
   if ( name == "divine_storm"              ) return new divine_storm_t             ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
   if ( name == "wake_of_ashes"             ) return new wake_of_ashes_t            ( this, options_str );
-  if ( name == "justicars_vengeance"       ) return new justicars_vengeance_t      ( this, options_str );
   if ( name == "templar_strike"            ) return new templar_strike_t           ( this, options_str );
   if ( name == "templar_slash"             ) return new templar_slash_t            ( this, options_str );
   if ( name == "execution_sentence"        ) return new execution_sentence_t       ( this, options_str );
@@ -1278,14 +1161,6 @@ void paladin_t::create_buffs_retribution()
   buffs.rush_of_light = make_buff( this, "rush_of_light", find_spell( 407065 ) )
     ->add_invalidate( CACHE_HASTE )
     ->set_default_value( talents.rush_of_light->effectN( 1 ).percent() );
-
-  buffs.inquisitors_ire = make_buff( this, "inquisitors_ire", find_spell( 403976 ) )
-                            ->set_default_value( find_spell( 403976 )->effectN( 1 ).percent() );
-  buffs.inquisitors_ire_driver = make_buff( this, "inquisitors_ire_driver", find_spell( 403975 ) )
-                                  ->set_period( find_spell( 403975 )->effectN( 1 ).period() )
-                                  ->set_quiet( true )
-                                  ->set_tick_callback([this](buff_t*, int, const timespan_t&) { buffs.inquisitors_ire->trigger(); })
-                                  ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
 
   buffs.templar_strikes = make_buff( this, "templar_strikes", find_spell( 406648 ) );
   buffs.empyrean_power = make_buff( this, "empyrean_power", find_spell( 326733 ) )
@@ -1315,58 +1190,49 @@ void paladin_t::init_spells_retribution()
   // Talents
   talents.blade_of_justice            = find_talent_spell( talent_tree::SPECIALIZATION, "Blade of Justice" );
   talents.divine_storm                = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Storm" );
-  talents.art_of_war                  = find_talent_spell( talent_tree::SPECIALIZATION, "Art of War" );
-  talents.holy_blade                  = find_talent_spell( talent_tree::SPECIALIZATION, "Holy Blade" );
-  talents.shield_of_vengeance         = find_talent_spell( talent_tree::SPECIALIZATION, "Shield of Vengeance" );
-  talents.highlords_wrath             = find_talent_spell( talent_tree::SPECIALIZATION, "Highlord's Wrath");
-  talents.sanctify                    = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctify" );
-  talents.wake_of_ashes               = find_talent_spell( talent_tree::SPECIALIZATION, "Wake of Ashes" );
-  talents.expurgation                 = find_talent_spell( talent_tree::SPECIALIZATION, "Expurgation" );
-  talents.boundless_judgment          = find_talent_spell( talent_tree::SPECIALIZATION, "Boundless Judgment" );
-  talents.crusade                     = find_talent_spell( talent_tree::SPECIALIZATION, "Crusade" );
-  talents.radiant_glory               = find_talent_spell( talent_tree::SPECIALIZATION, "Radiant Glory" );
-  talents.empyrean_power              = find_talent_spell( talent_tree::SPECIALIZATION, "Empyrean Power" );
-  talents.tempest_of_the_lightbringer = find_talent_spell( talent_tree::SPECIALIZATION, "Tempest of the Lightbringer" );
-  talents.justicars_vengeance         = find_talent_spell( talent_tree::SPECIALIZATION, "Justicar's Vengeance" );
-  talents.execution_sentence          = find_talent_spell( talent_tree::SPECIALIZATION, "Execution Sentence" );
-  talents.empyrean_legacy             = find_talent_spell( talent_tree::SPECIALIZATION, "Empyrean Legacy" );
-  talents.final_verdict               = find_talent_spell( talent_tree::SPECIALIZATION, "Final Verdict" );
-  talents.executioners_will           = find_talent_spell( talent_tree::SPECIALIZATION, "Executioner's Will" );
-  talents.vanguards_momentum          = find_talent_spell( talent_tree::SPECIALIZATION, "Vanguard's Momentum" );
-  talents.divine_wrath                = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Wrath" );
-
   talents.swift_justice               = find_talent_spell( talent_tree::SPECIALIZATION, "Swift Justice" );
   talents.light_of_justice            = find_talent_spell( talent_tree::SPECIALIZATION, "Light of Justice" );
+  talents.expurgation                 = find_talent_spell( talent_tree::SPECIALIZATION, "Expurgation" );
   talents.judgment_of_justice         = find_talent_spell( talent_tree::SPECIALIZATION, "Judgment of Justice");
+  talents.final_verdict               = find_talent_spell( talent_tree::SPECIALIZATION, "Final Verdict" );
   talents.improved_blade_of_justice   = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Blade of Justice" );
+  talents.holy_blade                  = find_talent_spell( talent_tree::SPECIALIZATION, "Holy Blade" );
+  talents.art_of_war                  = find_talent_spell( talent_tree::SPECIALIZATION, "Art of War" );
   talents.righteous_cause             = find_talent_spell( talent_tree::SPECIALIZATION, "Righteous Cause" );
   talents.jurisdiction                = find_talent_spell( talent_tree::SPECIALIZATION, "Jurisdiction" ); // TODO: range increase
-  talents.inquisitors_ire             = find_talent_spell( talent_tree::SPECIALIZATION, "Inquisitor's Ire" );
-  talents.zealots_fervor              = find_talent_spell( talent_tree::SPECIALIZATION, "Zealot's Fervor" );
+  talents.tempest_of_the_lightbringer = find_talent_spell( talent_tree::SPECIALIZATION, "Tempest of the Lightbringer" );
   talents.rush_of_light               = find_talent_spell( talent_tree::SPECIALIZATION, "Rush of Light" );
-  talents.improved_judgment           = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Judgment" );
-  talents.blessed_champion            = find_talent_spell( talent_tree::SPECIALIZATION, "Blessed Champion" );
-  talents.judge_jury_and_executioner  = find_talent_spell( talent_tree::SPECIALIZATION, "Judge, Jury and Executioner" );
-  talents.penitence                   = find_talent_spell( talent_tree::SPECIALIZATION, "Penitence" );
-  talents.adjudication                = find_talent_spell( talent_tree::SPECIALIZATION, "Adjudication" );
-  talents.heart_of_the_crusader       = find_talent_spell( talent_tree::SPECIALIZATION, "Heart of the Crusader" );
+  talents.sanctify                    = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctify" );
   talents.holy_flames                 = find_talent_spell( talent_tree::SPECIALIZATION, "Holy Flames" );
+  talents.improved_judgment           = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Judgment" );
+  talents.boundless_judgment          = find_talent_spell( talent_tree::SPECIALIZATION, "Boundless Judgment" );
+  talents.zealots_fervor              = find_talent_spell( talent_tree::SPECIALIZATION, "Zealot's Fervor" );
+  talents.heart_of_the_crusader       = find_talent_spell( talent_tree::SPECIALIZATION, "Heart of the Crusader" );
   talents.blade_of_vengeance          = find_talent_spell( talent_tree::SPECIALIZATION, "Blade of Vengeance" );
-  talents.vanguard_of_justice         = find_talent_spell( talent_tree::SPECIALIZATION, "Vanguard of Justice" );
-  talents.aegis_of_protection         = find_talent_spell( talent_tree::SPECIALIZATION, "Aegis of Protection" );
+  talents.empyrean_power              = find_talent_spell( talent_tree::SPECIALIZATION, "Empyrean Power" );
+  talents.highlords_wrath             = find_talent_spell( talent_tree::SPECIALIZATION, "Highlord's Wrath");
+  talents.templar_strikes             = find_talent_spell( talent_tree::SPECIALIZATION, "Templar Strikes" );
+  talents.crusading_strikes           = find_talent_spell( talent_tree::SPECIALIZATION, "Crusading Strikes" );
+  talents.blessed_champion            = find_talent_spell( talent_tree::SPECIALIZATION, "Blessed Champion" );
   talents.burning_crusade             = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Crusade" );
   talents.blades_of_light             = find_talent_spell( talent_tree::SPECIALIZATION, "Blades of Light" );
-  talents.crusading_strikes           = find_talent_spell( talent_tree::SPECIALIZATION, "Crusading Strikes" );
-  talents.templar_strikes             = find_talent_spell( talent_tree::SPECIALIZATION, "Templar Strikes" );
-  talents.divine_arbiter              = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Arbiter" );
-  talents.searing_light               = find_talent_spell( talent_tree::SPECIALIZATION, "Searing Light" );
+  talents.wake_of_ashes               = find_talent_spell( talent_tree::SPECIALIZATION, "Wake of Ashes" );
+  talents.divine_wrath                = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Wrath" );
+  talents.execution_sentence          = find_talent_spell( talent_tree::SPECIALIZATION, "Execution Sentence" );
   talents.seething_flames             = find_talent_spell( talent_tree::SPECIALIZATION, "Seething Flames" );
+  talents.empyrean_legacy             = find_talent_spell( talent_tree::SPECIALIZATION, "Empyrean Legacy" );
+  talents.judge_jury_and_executioner  = find_talent_spell( talent_tree::SPECIALIZATION, "Judge, Jury and Executioner" );
+  talents.radiant_glory               = find_talent_spell( talent_tree::SPECIALIZATION, "Radiant Glory" );
   talents.burn_to_ash                 = find_talent_spell( talent_tree::SPECIALIZATION, "Burn to Ash" );
+  talents.crusade                     = find_talent_spell( talent_tree::SPECIALIZATION, "Crusade" );
+
   talents.healing_hands  = find_talent_spell( talent_tree::CLASS, "Healing Hands" );
 
   talents.light_within_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1261113 );
   talents.light_within_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1261111 );
   talents.light_within_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1261159 );
+
+  talents.shield_of_vengeance         = find_talent_spell( talent_tree::CLASS, "Shield of Vengeance" );
 
   // Spec passives and useful spells
   spec.retribution_paladin = find_specialization_spell( "Retribution Paladin" );

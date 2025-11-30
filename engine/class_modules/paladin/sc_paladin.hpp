@@ -52,8 +52,7 @@ enum consecration_source : unsigned int
 {
   HARDCAST         = 0,
   BLADE_OF_JUSTICE = 1,
-  SEARING_LIGHT    = 2,
-  HAMMER_OF_LIGHT  = 3,
+  HAMMER_OF_LIGHT  = 2,
 };
 
 enum grand_crusader_source : unsigned int
@@ -83,7 +82,6 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* sanctify;
     buff_t* crusaders_resolve;
     buff_t* empyrean_hammer;
-    buff_t* vanguard_of_justice;
     buff_t* holy_flames;
   } debuff;
 
@@ -124,9 +122,6 @@ public:
     action_t* empyrean_legacy;
     action_t* es_explosion;
     action_t* background_blessed_hammer;
-    action_t* divine_arbiter;
-    action_t* searing_light;
-    action_t* searing_light_cons;
     action_t* hammer_of_light_cons;
 
     action_t* expurgation;
@@ -198,8 +193,6 @@ public:
     buff_t* art_of_war;
 
     buff_t* rush_of_light;
-    buff_t* inquisitors_ire;
-    buff_t* inquisitors_ire_driver;
     buff_t* templar_strikes;
 
     buff_t* bulwark_of_righteous_fury;
@@ -209,7 +202,6 @@ public:
 
     buff_t* empyrean_legacy;
     buff_t* empyrean_legacy_cooldown;
-    buff_t* divine_arbiter;
     buff_t* judge_jury_and_executioner;
 
     buff_t* echoes_of_wrath;  // DF3 4pc
@@ -281,7 +273,6 @@ public:
     gain_t* judgment;
     gain_t* hp_cs;
     gain_t* hp_divine_toll;
-    gain_t* hp_vm;
     gain_t* hp_crusading_strikes;
     gain_t* hp_judge_jury_and_executioner_refund;
     gain_t* hp_glory_of_the_vanguard_2;
@@ -329,7 +320,6 @@ public:
 
     cooldown_t* ret_aura_icd;
     cooldown_t* consecrated_blade_icd;
-    cooldown_t* searing_light_icd;
     cooldown_t* righteous_cause_icd;
 
     cooldown_t* aurora_icd;
@@ -606,7 +596,6 @@ public:
     const spell_data_t* glory_of_the_vanguard_3;
 
     // Retribution
-    // 0
     const spell_data_t* blade_of_justice;
     const spell_data_t* divine_storm;
 
@@ -614,56 +603,49 @@ public:
     const spell_data_t* light_of_justice;
     const spell_data_t* expurgation;
     const spell_data_t* judgment_of_justice;
-    const spell_data_t* improved_blade_of_justice;
-    const spell_data_t* holy_blade;
+    // available up above
+    // const spell_data_t* avenging_wrath;
 
     const spell_data_t* final_verdict;
-    const spell_data_t* justicars_vengeance;
-    const spell_data_t* lights_celerity; // TODO: implement or drop
+    const spell_data_t* improved_blade_of_justice;
+    const spell_data_t* holy_blade;
     const spell_data_t* art_of_war;
     const spell_data_t* righteous_cause;
 
     const spell_data_t* jurisdiction;
-    const spell_data_t* inquisitors_ire;
     const spell_data_t* tempest_of_the_lightbringer;
-    const spell_data_t* crusade;
-    // const spell_data_t* avenging_wrath_might; // available up in prot
-    const spell_data_t* vanguards_momentum;
-    const spell_data_t* sanctify;
-    const spell_data_t* zealots_fervor;
     const spell_data_t* rush_of_light;
-    const spell_data_t* consecrated_ground_ret; // TODO: implement or drop
+    const spell_data_t* sanctify;
+    const spell_data_t* holy_flames;
 
     const spell_data_t* improved_judgment;
     const spell_data_t* boundless_judgment;
-    const spell_data_t* crusading_strikes;
-    const spell_data_t* templar_strikes;
-    const spell_data_t* divine_wrath;
-    const spell_data_t* blade_of_vengeance;
-    const spell_data_t* holy_flames;
-    const spell_data_t* empyrean_legacy;
-
-    const spell_data_t* vanguard_of_justice;
+    const spell_data_t* zealots_fervor;
     const spell_data_t* heart_of_the_crusader;
-    const spell_data_t* highlords_wrath;
-    const spell_data_t* wake_of_ashes;
-    const spell_data_t* blessed_champion;
+    const spell_data_t* blade_of_vengeance;
+
     const spell_data_t* empyrean_power;
-    const spell_data_t* judge_jury_and_executioner;
-
-    const spell_data_t* aegis_of_protection;
-    const spell_data_t* penitence;
-
-    const spell_data_t* blades_of_light;
-    const spell_data_t* execution_sentence;
-    const spell_data_t* seething_flames;
+    const spell_data_t* highlords_wrath;
+    const spell_data_t* templar_strikes;
+    const spell_data_t* crusading_strikes;
+    const spell_data_t* blessed_champion;
     const spell_data_t* burning_crusade;
 
-    const spell_data_t* divine_arbiter;
-    const spell_data_t* executioners_will;
+    const spell_data_t* blades_of_light;
+    const spell_data_t* wake_of_ashes;
+    const spell_data_t* divine_wrath;
+
+    const spell_data_t* execution_sentence;
+    const spell_data_t* seething_flames;
+    const spell_data_t* empyrean_legacy;
+
+    const spell_data_t* judge_jury_and_executioner;
     const spell_data_t* radiant_glory;
     const spell_data_t* burn_to_ash;
-    const spell_data_t* searing_light;
+    const spell_data_t* crusade;
+
+    // const spell_data_t* avenging_wrath_might; // available up in prot
+    const spell_data_t* consecrated_ground_ret; // TODO: implement or drop
 
     const spell_data_t* light_within_1;
     const spell_data_t* light_within_2;
@@ -846,7 +828,6 @@ public:
 
   ground_aoe_event_t* active_consecration;
   ground_aoe_event_t* active_boj_cons;
-  ground_aoe_event_t* active_searing_light_cons;
   std::set<ground_aoe_event_t*> all_active_consecrations;
   buff_t* active_aura;
 
@@ -1145,7 +1126,6 @@ public:
   // haste scaling bools
   bool hasted_cd;
 
-  bool searing_light_disabled;
   bool always_do_capstones;
   bool clears_judgment;
 
@@ -1156,7 +1136,6 @@ public:
     : ab( n, p, s ),
       affected_by( affected_by_t() ),
       hasted_cd( false ),
-      searing_light_disabled( false ),
       always_do_capstones(false),
       clears_judgment( false ),
       triggers_higher_calling( false ),
@@ -1239,20 +1218,6 @@ public:
   {
     ab::execute();
 
-    if ( ( this->affected_by.blades_of_light || always_do_capstones ) && p()->talents.divine_arbiter->ok() )
-    {
-      p()->buffs.divine_arbiter->trigger( 1 );
-    }
-
-    if ( ( ab::get_school() == SCHOOL_RADIANT || always_do_capstones ) && !searing_light_disabled && p()->talents.searing_light->ok() )
-    {
-      if ( ab::rng().roll( p()->talents.searing_light->proc_chance() ) && p()->cooldowns.searing_light_icd->up() )
-      {
-        p()->cooldowns.searing_light_icd->start();
-        p()->active.searing_light->set_target( ab::target );
-        p()->active.searing_light->schedule_execute();
-      }
-    }
     if ( triggers_higher_calling && p()->talents.templar.higher_calling->ok() && p()->buffs.templar.shake_the_heavens->up() )
     {
       timespan_t extension = timespan_t::from_seconds( p()->talents.templar.higher_calling->effectN( 1 ).base_value() );
@@ -1599,12 +1564,6 @@ public:
                                   timespan_t::from_millis( p->talents.templar.hammerfall->effectN( 1 ).base_value() ),
                                   true );
       p->cooldowns.hammerfall_icd->start();
-    }
-
-    if ( !is_divine_storm && p->talents.vanguard_of_justice->ok() )
-    {
-      paladin_td_t* td = p->get_target_data( s->target );
-      td->debuff.vanguard_of_justice->trigger();
     }
 
     if ( ab::result_is_hit( s->result ) && p->buffs.herald_of_the_sun.dawnlight->up() )

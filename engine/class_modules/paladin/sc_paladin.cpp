@@ -40,7 +40,6 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
 {
   active_consecration = nullptr;
   active_boj_cons = nullptr;
-  active_searing_light_cons = nullptr;
   all_active_consecrations.clear();
   active_aura         = nullptr;
 
@@ -67,9 +66,6 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
 
   cooldowns.consecrated_blade_icd = get_cooldown( "consecrated_blade_icd" );
   cooldowns.consecrated_blade_icd->duration = timespan_t::from_seconds( 10 );
-
-  cooldowns.searing_light_icd = get_cooldown( "searing_light_icd" );
-  cooldowns.searing_light_icd->duration = timespan_t::from_seconds( 15 );
 
   cooldowns.hammerfall_icd           = get_cooldown( "hammerfall_icd" );
   cooldowns.hammerfall_icd->duration = find_spell( 432463 )->internal_cooldown();
@@ -319,7 +315,6 @@ golden_path_t::golden_path_t( paladin_t* p ) : paladin_heal_t( "golden_path", p,
     background  = true;
     may_crit    = true;
     ground_aoe  = true;
-    searing_light_disabled = true;
   }
 
   double consecration_tick_t::action_multiplier() const
@@ -507,10 +502,6 @@ struct consecration_t : public paladin_spell_t
                             {
                               p()->active_boj_cons = event;
                             }
-                            else if ( source_type == SEARING_LIGHT )
-                            {
-                              p()->active_searing_light_cons = event;
-                            }
                             p()->all_active_consecrations.insert( event );
                             break;
                           case ground_aoe_params_t::EVENT_DESTRUCTED:
@@ -521,10 +512,6 @@ struct consecration_t : public paladin_spell_t
                             else if ( source_type == BLADE_OF_JUSTICE )
                             {
                               p()->active_boj_cons = nullptr;
-                            }
-                            else if ( source_type == SEARING_LIGHT )
-                            {
-                              p()->active_searing_light_cons = nullptr;
                             }
                             p()->all_active_consecrations.erase( event );
                             break;
@@ -547,12 +534,6 @@ struct consecration_t : public paladin_spell_t
     {
       p()->all_active_consecrations.erase( p()->active_boj_cons );
       event_t::cancel( p()->active_boj_cons );
-    }
-    // or if it's a searing light-triggered Cons, cancel the previous searing light-triggered cons
-    else if ( source_type == SEARING_LIGHT && p()->active_searing_light_cons != nullptr )
-    {
-      p()->all_active_consecrations.erase( p()->active_searing_light_cons );
-      event_t::cancel( p()->active_searing_light_cons );
     }
 
     /*
@@ -1563,16 +1544,6 @@ void hammer_of_wrath_t::impact( action_state_t* s )
 
   if ( !result_is_hit( s->result ) )
     return;
-
-  if ( p()->talents.vanguards_momentum->ok() )
-  {
-    if ( s->target->health_percentage() <= p()->talents.vanguards_momentum->effectN( 2 ).base_value() &&
-          s->chain_target == 0 )
-    {
-      // technically this is in spell 403081 for some reason
-      p()->resource_gain( RESOURCE_HOLY_POWER, 1, p()->gains.hp_vm );
-    }
-  }
 
   if ( s->result == RESULT_CRIT && p()->talents.herald_of_the_sun.sun_sear->ok() &&
         p()->specialization() == PALADIN_RETRIBUTION )
@@ -3064,7 +3035,6 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   debuff.sanctify              = make_buff( *this, "sanctify", paladin->find_spell( 382538 ) );
   debuff.crusaders_resolve     = make_buff( *this, "crusaders_resolve", paladin->find_spell( 383843 ) );
   debuff.empyrean_hammer = make_buff( *this, "empyrean_hammer", paladin->find_spell( 431625 ) );
-  debuff.vanguard_of_justice = make_buff( *this, "vanguard_of_justice", paladin->find_spell( 453451 ) );
 
   buffs.holy_bulwark = make_buff<buffs::holy_bulwark_buff_t>( this )
     ->set_cooldown( 0_s );
@@ -3188,7 +3158,6 @@ void paladin_t::create_actions()
   }
 
   active.background_cons = new consecration_t( this, "blade_of_justice", BLADE_OF_JUSTICE );
-  active.searing_light_cons = new consecration_t( this, "searing_light", SEARING_LIGHT );
   active.hammer_of_light_cons = new consecration_t( this, "hammer_of_light", HAMMER_OF_LIGHT );
 
   player_t::create_actions();
@@ -3316,7 +3285,6 @@ void paladin_t::reset()
 
   active_consecration = nullptr;
   active_boj_cons = nullptr;
-  active_searing_light_cons = nullptr;
   all_active_consecrations.clear();
   active_aura         = nullptr;
 
@@ -3349,7 +3317,6 @@ void paladin_t::init_gains()
   gains.judgment                   = get_gain( "judgment" );
   gains.hp_cs                      = get_gain( "crusader_strike" );
   gains.hp_divine_toll             = get_gain( "divine_toll" );
-  gains.hp_vm                      = get_gain( "vanguards_momentum" );
   gains.hp_crusading_strikes       = get_gain( "crusading_strikes" );
   gains.hp_glory_of_the_vanguard_2 = get_gain( "glory_of_the_vanguard" );
 
@@ -3711,7 +3678,6 @@ void paladin_t::apply_action_effects( action_t* a ) {
 
   // Ret
   action->parse_effects( buffs.empyrean_power, CONSUME_BUFF );
-  action->parse_effects( buffs.inquisitors_ire );
   action->parse_effects( buffs.art_of_war, CONSUME_BUFF );
 
   // Prot
@@ -4624,11 +4590,6 @@ void paladin_t::combat_begin()
 
   // evidently it resets to summer on combat start
   next_armament = SACRED_WEAPON;
-
-  if ( talents.inquisitors_ire->ok() )
-  {
-    buffs.inquisitors_ire_driver->trigger();
-  }
 
   if ( talents.herald_of_the_sun.morning_star->ok() )
   {
