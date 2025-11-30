@@ -1035,7 +1035,6 @@ struct highlords_judgment_t : public paladin_spell_t
   highlords_judgment_t( paladin_t* p ) : paladin_spell_t( "highlords_judgment", p, p->find_spell( 383921 ) )
   {
     background = true;
-    always_do_capstones = true;
     skip_es_accum = true;
   }
 };

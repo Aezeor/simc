@@ -1126,7 +1126,6 @@ public:
   // haste scaling bools
   bool hasted_cd;
 
-  bool always_do_capstones;
   bool clears_judgment;
 
   bool triggers_higher_calling;
@@ -1136,7 +1135,6 @@ public:
     : ab( n, p, s ),
       affected_by( affected_by_t() ),
       hasted_cd( false ),
-      always_do_capstones(false),
       clears_judgment( false ),
       triggers_higher_calling( false ),
       skip_es_accum( false )
