@@ -3370,7 +3370,7 @@ void paladin_t::create_buffs()
               1.0 );  // TODO: change this to spellid 221883 & see if that automatically captures details
 
   // General
-  buffs.avenging_wrath = make_buff( this, "avenging_wrath", talents.avenging_wrath )
+  buffs.avenging_wrath = make_buff( this, "avenging_wrath", spells.avenging_wrath )
     ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     ->add_invalidate( CACHE_CRIT_CHANCE )
