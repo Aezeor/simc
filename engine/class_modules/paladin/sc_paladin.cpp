@@ -112,25 +112,6 @@ paladin_td_t* paladin_t::get_target_data( player_t* target ) const
 // containing ones that require action_t definitions to function properly.
 namespace buffs
 {
-avenging_wrath_buff_t::avenging_wrath_buff_t( paladin_t* p )
-  : buff_t( p, "avenging_wrath", p->spells.avenging_wrath ),
-    damage_modifier( 0.0 ),
-    healing_modifier( 0.0 ),
-    crit_bonus( 0.0 )
-{
-  healing_modifier = p->talents.avenging_wrath->effectN( 1 ).percent();
-  damage_modifier  = p->talents.avenging_wrath->effectN( 1 ).percent();
-  crit_bonus       = p->talents.avenging_wrath->effectN( 3 ).percent();
-
-  // let the ability handle the cooldown
-  cooldown->duration = 0_ms;
-
-  // invalidate Healing
-  add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-  add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  add_invalidate( CACHE_CRIT_CHANCE );
-  add_invalidate( CACHE_MASTERY );
-}
 
 struct shield_of_vengeance_buff_t : public absorb_buff_t
 {
@@ -3389,22 +3370,29 @@ void paladin_t::create_buffs()
               1.0 );  // TODO: change this to spellid 221883 & see if that automatically captures details
 
   // General
-  buffs.avenging_wrath = new buffs::avenging_wrath_buff_t( this );
-  buffs.avenging_wrath->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
-    if (sets->has_set_bonus(HERO_HERALD_OF_THE_SUN, TWW3, B2))
-    {
-      // 5s with Radiant Glory, 10s without
-      buffs.herald_of_the_sun.solar_wrath->trigger(
-          sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 )->effectN( 2 ).time_value() -
-          ( talents.radiant_glory->ok() ? sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 )->effectN( 5 ).time_value()
+  buffs.avenging_wrath = make_buff( this, "avenging_wrath", talents.avenging_wrath )
+    ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    ->add_invalidate( CACHE_CRIT_CHANCE )
+    ->add_invalidate( CACHE_MASTERY )
+    ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
+      if (sets->has_set_bonus(HERO_HERALD_OF_THE_SUN, TWW3, B2))
+      {
+        // 5s with Radiant Glory, 10s without
+        buffs.herald_of_the_sun.solar_wrath->trigger(
+            sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 )->effectN( 2 ).time_value() -
+            ( talents.radiant_glory->ok() ? sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 )->effectN( 5 ).time_value()
                                         : 0_ms ) );
-    }
-    else
-    {
-      buffs.herald_of_the_sun.suns_avatar->expire();
-    }
-  } );
-  //.avenging_wrath_might = new buffs::avenging_wrath_buff_t( this );
+      }
+    } );
+
+  if ( talents.crusade->ok() )
+  {
+    buffs.avenging_wrath->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+    buffs.avenging_wrath->set_max_stack( 10 );
+    buffs.avenging_wrath->add_invalidate( CACHE_HASTE );
+  }
+
   buffs.divine_purpose = make_buff( this, "divine_purpose", spells.divine_purpose_buff );
   buffs.divine_shield  = make_buff( this, "divine_shield", find_class_spell( "Divine Shield" ) )
                             ->set_cooldown( 0_ms );  // Let the ability handle the CD
@@ -4215,8 +4203,8 @@ double paladin_t::composite_spell_crit_chance() const
 {
   double h = player_t::composite_spell_crit_chance();
 
-  if ( buffs.avenging_wrath -> up() )
-    h += buffs.avenging_wrath->get_crit_bonus();
+  if ( buffs.avenging_wrath->up() )
+    h += buffs.avenging_wrath->data().effectN( 3 ).percent();
 
   if ( buffs.sentinel->up() )
     h += buffs.sentinel->get_crit_bonus();
@@ -4228,8 +4216,8 @@ double paladin_t::composite_melee_crit_chance() const
 {
   double h = player_t::composite_melee_crit_chance();
 
-  if ( buffs.avenging_wrath -> up() )
-    h += buffs.avenging_wrath -> get_crit_bonus();
+  if ( buffs.avenging_wrath->up() )
+    h += buffs.avenging_wrath->data().effectN( 3 ).percent();
 
   if ( buffs.sentinel->up() )
     h += buffs.sentinel->get_crit_bonus();
@@ -4286,6 +4274,9 @@ double paladin_t::composite_melee_haste() const
   if ( buffs.rush_of_light->up() )
     h /= 1.0 + talents.rush_of_light->effectN( 1 ).percent();
 
+  if ( buffs.avenging_wrath->up() && talents.crusade->ok() )
+    h /= 1.0 + (buffs.avenging_wrath->stack() * talents.crusade->effectN( 1 ).percent());
+
   if ( buffs.templar.undisputed_ruling->up() )
     h /= 1.0 + buffs.templar.undisputed_ruling->value();
 
@@ -4312,6 +4303,9 @@ double paladin_t::composite_spell_haste() const
 
   if ( buffs.rush_of_light->up() )
     h /= 1.0 + talents.rush_of_light->effectN( 1 ).percent();
+
+  if ( buffs.avenging_wrath->up() && talents.crusade->ok() )
+    h /= 1.0 + (buffs.avenging_wrath->stack() * talents.crusade->effectN( 1 ).percent());
 
   if ( buffs.templar.undisputed_ruling->up() )
     h /= 1.0 + buffs.templar.undisputed_ruling->value();

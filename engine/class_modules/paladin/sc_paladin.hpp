@@ -10,7 +10,6 @@ struct paladin_t;
 struct blessing_of_sacrifice_redirect_t;
 namespace buffs
 {
-struct avenging_wrath_buff_t;
 struct holy_avenger_buff_t;
 struct ardent_defender_buff_t;
 struct forbearance_t;
@@ -152,7 +151,7 @@ public:
   struct buffs_t
   {
     // Shared
-    buffs::avenging_wrath_buff_t* avenging_wrath;
+    buff_t* avenging_wrath;
     buff_t* divine_purpose;
     buff_t* divine_shield;
     buff_t* divine_steed;
@@ -879,28 +878,6 @@ public:
 
 namespace buffs
 {
-struct avenging_wrath_buff_t : public buff_t
-{
-  avenging_wrath_buff_t( paladin_t* p );
-  double get_damage_mod() const
-  {
-    return damage_modifier;
-  }
-  double get_healing_mod() const
-  {
-    return healing_modifier;
-  }
-  double get_crit_bonus() const
-  {
-    return crit_bonus;
-  }
-
-private:
-  double damage_modifier;
-  double healing_modifier;
-  double crit_bonus;
-};
-
 struct execution_sentence_debuff_t : public buff_t
 {
   execution_sentence_debuff_t( paladin_td_t* td )
@@ -1283,11 +1260,6 @@ public:
       }
     }
 
-    if ( affected_by.avenging_wrath && p()->buffs.avenging_wrath->up() )
-    {
-      am *= 1.0 + p()->buffs.avenging_wrath->get_damage_mod();
-    }
-
     if (affected_by.sentinel && p()->buffs.sentinel->up())
     {
       am *= 1.0 + p()->buffs.sentinel->get_damage_mod();
@@ -1352,7 +1324,7 @@ public:
       // per bolas test Aug 17 2024
       if ( affected_by.avenging_wrath && p()->buffs.avenging_wrath->up() )
       {
-        mult /= 1.0 + p()->buffs.avenging_wrath->get_damage_mod();
+        mult /= 1.0 + p()->buffs.avenging_wrath->value();
       }
 
       if ( affected_by.highlords_judgment )
@@ -1617,6 +1589,11 @@ public:
           break;
         }
       }
+    }
+
+    if ( p->talents.crusade->ok() && p->buffs.avenging_wrath->up() )
+    {
+      p->buffs.avenging_wrath->trigger( as<int>( num_hopo_spent ) );
     }
 
     if ( p->talents.tirions_devotion->ok() && p->talents.lay_on_hands->ok() && !ab::background )
