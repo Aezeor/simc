@@ -56,7 +56,6 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.guardian_of_ancient_kings         = get_cooldown( "guardian_of_ancient_kings" );
 
   cooldowns.blade_of_justice = get_cooldown( "blade_of_justice" );
-  cooldowns.final_reckoning  = get_cooldown( "final_reckoning" );
   cooldowns.hammer_of_wrath  = get_cooldown( "hammer_of_wrath" );
   cooldowns.wake_of_ashes    = get_cooldown( "wake_of_ashes" );
   cooldowns.divine_toll      = get_cooldown( "divine_toll" );
@@ -3062,9 +3061,6 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
                                  ->set_default_value_from_effect( 1 )
                                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
-  debuff.final_reckoning       = make_buff( *this, "final_reckoning", paladin->talents.final_reckoning )
-                                ->set_cooldown( 0_ms );  // handled by ability
-
   debuff.sanctify              = make_buff( *this, "sanctify", paladin->find_spell( 382538 ) );
   debuff.crusaders_resolve     = make_buff( *this, "crusaders_resolve", paladin->find_spell( 383843 ) );
   debuff.empyrean_hammer = make_buff( *this, "empyrean_hammer", paladin->find_spell( 431625 ) );
@@ -3355,8 +3351,9 @@ void paladin_t::init_gains()
   gains.hp_divine_toll             = get_gain( "divine_toll" );
   gains.hp_vm                      = get_gain( "vanguards_momentum" );
   gains.hp_crusading_strikes       = get_gain( "crusading_strikes" );
-  gains.hp_divine_auxiliary        = get_gain( "divine_auxiliary" );
   gains.hp_glory_of_the_vanguard_2 = get_gain( "glory_of_the_vanguard" );
+
+  gains.hp_judge_jury_and_executioner_refund = get_gain( "judge_jury_and_executioner_refund" );
 }
 
 // paladin_t::init_procs ====================================================
@@ -3368,7 +3365,6 @@ void paladin_t::init_procs()
   procs.art_of_war        = get_proc( "Art of War" );
   procs.righteous_cause   = get_proc( "Righteous Cause" );
   procs.divine_purpose    = get_proc( "Divine Purpose" );
-  procs.final_reckoning   = get_proc( "Final Reckoning" );
   procs.empyrean_power    = get_proc( "Empyrean Power" );
 
   procs.as_grand_crusader         = get_proc( "Avenger's Shield: Grand Crusader" );
@@ -4488,16 +4484,6 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
 {
   double result = player_t::resource_gain( resource_type, amount, source, action );
 
-  if ( resource_type == RESOURCE_HOLY_POWER && !( source->name_str == "arcane_torrent" ) )
-  {
-    if ( talents.judge_jury_and_executioner->ok() )
-    {
-      if ( rppm.judge_jury_and_executioner->trigger() )
-      {
-        buffs.judge_jury_and_executioner->trigger();
-      }
-    }
-  }
   return result;
 }
 

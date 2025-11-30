@@ -80,7 +80,6 @@ struct paladin_td_t : public actor_target_data_t
     buffs::execution_sentence_debuff_t* execution_sentence;
     buff_t* judgment;
     buff_t* blessed_hammer;
-    buff_t* final_reckoning;
     buff_t* sanctify;
     buff_t* crusaders_resolve;
     buff_t* empyrean_hammer;
@@ -284,8 +283,7 @@ public:
     gain_t* hp_divine_toll;
     gain_t* hp_vm;
     gain_t* hp_crusading_strikes;
-    gain_t* hp_divine_auxiliary;
-    gain_t* all_in_refund;
+    gain_t* hp_judge_jury_and_executioner_refund;
     gain_t* hp_glory_of_the_vanguard_2;
   } gains;
 
@@ -323,7 +321,6 @@ public:
     cooldown_t* guardian_of_ancient_kings;  // Righteous Protector
 
     cooldown_t* blade_of_justice;
-    cooldown_t* final_reckoning;
     cooldown_t* hammer_of_wrath;
     cooldown_t* wake_of_ashes;
     cooldown_t* divine_toll;
@@ -377,7 +374,6 @@ public:
     proc_t* art_of_war;
     proc_t* righteous_cause;
     proc_t* divine_purpose;
-    proc_t* final_reckoning;
     proc_t* empyrean_power;
 
     proc_t* as_grand_crusader;
@@ -442,7 +438,6 @@ public:
   } spells;
 
   struct rppms_t {
-    real_ppm_t* judge_jury_and_executioner;
   } rppm;
 
   // Talents
@@ -660,14 +655,12 @@ public:
     const spell_data_t* penitence;
 
     const spell_data_t* blades_of_light;
-    const spell_data_t* final_reckoning;
     const spell_data_t* execution_sentence;
     const spell_data_t* seething_flames;
     const spell_data_t* burning_crusade;
 
     const spell_data_t* divine_arbiter;
     const spell_data_t* executioners_will;
-    const spell_data_t* divine_auxiliary;
     const spell_data_t* radiant_glory;
     const spell_data_t* burn_to_ash;
     const spell_data_t* searing_light;
@@ -1142,7 +1135,7 @@ public:
   struct affected_by_t
   {
     bool avenging_wrath, judgment, divine_purpose, divine_purpose_cost;  // Shared
-    bool crusade, highlords_judgment, highlords_judgment_hidden, final_reckoning_st, final_reckoning_aoe,
+    bool crusade, highlords_judgment, highlords_judgment_hidden,
       blades_of_light, rise_from_ash; // Ret
     bool avenging_crusader;                                                                // Holy
     bool sentinel;  // Prot
@@ -1181,8 +1174,6 @@ public:
 
       // Temporary damage modifiers
       this->affected_by.crusade         = this->data().affected_by( p->spells.crusade->effectN( 1 ) );
-      this->affected_by.final_reckoning_st = this->data().affected_by( p->talents.final_reckoning->effectN( 3 ) );
-      this->affected_by.final_reckoning_aoe = this->data().affected_by( p->talents.final_reckoning->effectN( 4 ) );
       this->affected_by.rise_from_ash =
           this->data().affected_by( p->find_spell( 454693 )->effectN( 1 ) );
 
@@ -1269,6 +1260,12 @@ public:
       if ( ab::id == 408385 )
         extension = 500_ms;
       p()->buffs.templar.shake_the_heavens->extend_duration( p(), extension );
+    }
+
+    if ( ab::current_resource() == RESOURCE_HOLY_POWER && ab::last_resource_cost > 0 && p()->buffs.judge_jury_and_executioner->up() )
+    {
+      p()->resource_gain( ab::current_resource(), ab::last_resource_cost, p()->gains.hp_judge_jury_and_executioner_refund );
+      p()->buffs.judge_jury_and_executioner->decrement();
     }
   }
 
@@ -1363,16 +1360,6 @@ public:
     {
       double judg_mul = 1.0 + td->debuff.judgment->default_value;
       ctm *= judg_mul;
-    }
-
-    if ( affected_by.final_reckoning_st && td->debuff.final_reckoning->up() )
-    {
-      ctm *= 1.0 + p()->talents.final_reckoning->effectN( 3 ).percent();
-    }
-
-    if ( affected_by.final_reckoning_aoe && td->debuff.final_reckoning->up() )
-    {
-      ctm *= 1.0 + p()->talents.final_reckoning->effectN( 4 ).percent();
     }
 
     return ctm;
