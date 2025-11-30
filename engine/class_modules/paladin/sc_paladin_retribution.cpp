@@ -251,48 +251,6 @@ struct expurgation_t : public paladin_spell_t
   }
 };
 
-void paladin_t::spread_expurgation( action_t* act, player_t* og )
-{
-  if ( !talents.expurgation->ok() )
-    return;
-
-  auto source = active.expurgation->get_dot( og );
-  if ( !source->is_ticking() )
-    return;
-
-  std::vector<dot_t*> expurgs;
-  for ( auto t : act->target_list() )
-    expurgs.push_back( active.expurgation->get_dot( t ) );
-
-  expurgation_t* exp = debug_cast<expurgation_t*>( active.expurgation );
-
-  std::stable_sort( expurgs.begin(), expurgs.end(), [exp]( dot_t* a, dot_t* b ) {
-    double a_amt = exp->get_bank( a );
-    double b_amt = exp->get_bank( b );
-    return a_amt < b_amt;
-  });
-
-  double source_bank = exp->get_bank( source );
-  auto targets_remaining = as<int>( talents.holy_flames->effectN( 3 ).base_value() );
-
-  for ( auto destination : expurgs )
-  {
-    if ( source == destination )
-      continue;
-
-    if ( targets_remaining-- <= 0 )
-      break;
-
-    if ( exp->get_bank( destination ) >= source_bank )
-      break;
-
-    if ( !destination->is_ticking() )
-      active.expurgation->execute_on_target( destination->target );
-    else if ( destination->remains() < source->remains() )
-      destination->adjust_duration( source->remains() - destination->remains() );
-  }
-}
-
 // Blade of Justice =========================================================
 
 struct blade_of_justice_t : public paladin_melee_attack_t
@@ -489,14 +447,6 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
       {
         p()->active.sun_sear->target = s->target;
         p()->active.sun_sear->execute();
-      }
-
-      if ( p()->talents.holy_flames->ok() && target_data->dots.expurgation->is_ticking() )
-      {
-        // Don't trigger on expurgations that were just applied
-        auto max_duration = p()->active.expurgation->composite_dot_duration( target_data->dots.expurgation->state );
-        if ( target_data->dots.expurgation->remains() < max_duration )
-          p()->spread_expurgation( this, s->target );
       }
     }
   }

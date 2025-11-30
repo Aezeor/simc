@@ -861,7 +861,6 @@ public:
   void generate_action_prio_list_holy_dps();
 
   void apply_avatar_dawnlights();
-  void spread_expurgation( action_t* act, player_t* og );
 
   target_specific_t<paladin_td_t> target_data;
 
