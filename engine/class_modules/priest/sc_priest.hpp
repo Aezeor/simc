@@ -711,7 +711,7 @@ public:
     propagate_const<gain_t*> insanity_auspicious_spirits;
     propagate_const<gain_t*> insanity_death_and_madness;
     propagate_const<gain_t*> mindbender;
-    propagate_const<gain_t*> shadowfiend;
+    propagate_const<gain_t*> depth_of_shadows;
     propagate_const<gain_t*> voidwraith;
     propagate_const<gain_t*> power_of_the_dark_side;
     propagate_const<gain_t*> insanity_idol_of_cthun_mind_flay;
