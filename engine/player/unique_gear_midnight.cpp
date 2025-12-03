@@ -254,12 +254,22 @@ void potion_of_recklessness( special_effect_t& effect )
 
   effect.custom_buff = buff;
 }
-}
+}  // namespace consumables
 
 namespace enchants
 {
+// Powerful Eversong Diamond
+// 1258209 driver
+void powerful_eversong_diamond( special_effect_t& effect )
+{
+  auto pct = effect.driver()->effectN( 1 ).percent() * unique_gem_list( effect.player, gem_colors ).size();
 
+  for ( school_e school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; school++ )
+    effect.player->base.crit_damage_multiplier[ school ] *= 1.0 + pct;
+
+  effect.player->base.crit_healing_multiplier *= 1.0 + pct;
 }
+}  // namespace enchants
 
 namespace embellishments
 {
@@ -1317,12 +1327,12 @@ void torments_duality( special_effect_t& effect )
 
   new torments_duality_cb_t( effect );
 }
-}
+}  // namespace weapons
 
 namespace armors
 {
 
-}
+}  // namespace armors
 
 namespace sets
 {
@@ -1410,7 +1420,7 @@ void root_wardens_regalia( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 };
-}
+}  // namespace sets
 
 void register_special_effects()
 {
@@ -1454,6 +1464,7 @@ void register_special_effects()
   unique_gear::register_special_effect( 1236994, consumables::potion_of_recklessness );
   // Oils
   // Enchants & gems
+  register_special_effect( 1258209, enchants::powerful_eversong_diamond );
   // Embellishments & Tinkers
   register_special_effect( 1229511, embellishments::arcanoweave_lining );
   register_special_effect( 1241711, embellishments::sunfire_silk_lining );
