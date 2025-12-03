@@ -308,14 +308,14 @@ void arcanoweave_lining( special_effect_t& effect )
     effect.player->register_precombat_begin( [ insight, uptime_pct ]( player_t* p ) {
       insight->trigger();
 
-      make_repeating_event( p->sim,
-        [ p, insight ] { return p->rng().gauss( insight->interval ); },  // gauss rng interval
-        [ insight, p, uptime_pct ] {  // gauss rng uptime check
-          if ( p->rng().roll( uptime_pct ) )
-            insight->trigger();
-          else
-            insight->expire();
-        } );
+      make_repeating_event(
+          p->sim, [ p, insight ] { return p->rng().gauss( insight->interval ); },  // gauss rng interval
+          [ insight, p, uptime_pct ] {                                             // gauss rng uptime check
+            if ( p->rng().roll( uptime_pct ) )
+              insight->trigger();
+            else
+              insight->expire();
+          } );
     } );
   }
 }
@@ -335,10 +335,10 @@ void sunfire_silk_lining( special_effect_t& effect )
   }
 
   auto acumen = make_buff<stat_buff_t>( effect.player, "radiant_acumen", effect.trigger()->effectN( 1 ).trigger() )
-    ->add_stat_from_effect_type( A_MOD_STAT, stat_amount );
+                    ->add_stat_from_effect_type( A_MOD_STAT, stat_amount );
 
   effect.custom_buff = acumen;
-  effect.spell_id = effect.trigger()->id();
+  effect.spell_id    = effect.trigger()->id();
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -352,7 +352,7 @@ void sunfire_silk_lining( special_effect_t& effect )
 void devouring_banding( special_effect_t& effect )
 {
   effect.player->sim->error( PLACEHOLDER,
-    "devouring banding damage using effect driver value instead of rppm driver value" );
+                             "devouring banding damage using effect driver value instead of rppm driver value" );
   effect.player->sim->error( PLACEHOLDER, "devouring banding buff not doubled with two copies" );
 
   auto proc_damage = effect.driver()->effectN( 1 ).average( effect );
@@ -402,7 +402,7 @@ void devouring_banding( special_effect_t& effect )
       dual = true;
 
       impact_action = create_proc_action<generic_proc_t>( "devouring_bolt", e, data().effectN( 1 ).trigger() );
-      stats = impact_action->stats;  // report the damage only
+      stats         = impact_action->stats;  // report the damage only
     }
   };
 
@@ -426,7 +426,7 @@ void devouring_banding( special_effect_t& effect )
 void blessed_pango_charm( special_effect_t& effect )
 {
   effect.player->sim->error( PLACEHOLDER,
-    "blessed pango charm buff using coeff spell value instead of effect driver value" );
+                             "blessed pango charm buff using coeff spell value instead of effect driver value" );
 
   auto stat_amount = effect.player->find_spell( 1259060 )->effectN( 1 ).average( effect );
 
@@ -438,7 +438,7 @@ void blessed_pango_charm( special_effect_t& effect )
   }
 
   auto favored = make_buff<stat_buff_t>( effect.player, "favored_by_kulzi", effect.trigger() )
-    ->add_stat_from_effect_type( A_MOD_RATING, stat_amount );
+                     ->add_stat_from_effect_type( A_MOD_RATING, stat_amount );
 
   effect.custom_buff = favored;
 
@@ -452,11 +452,11 @@ void blessed_pango_charm( special_effect_t& effect )
 // 1259130 heal
 void primal_spore_binding( special_effect_t& effect )
 {
-  effect.player->sim->error( PLACEHOLDER,
-    "primal spore binding damage and heal using effect driver value instead of rppm driver value" );
+  effect.player->sim->error(
+      PLACEHOLDER, "primal spore binding damage and heal using effect driver value instead of rppm driver value" );
 
   auto damage_amount = effect.driver()->effectN( 1 ).average( effect );
-  auto heal_amount = effect.driver()->effectN( 2 ).average( effect );
+  auto heal_amount   = effect.driver()->effectN( 2 ).average( effect );
 
   if ( auto proc = effect.player->find_action( "primal_spore_explosion" ) )
   {
@@ -477,7 +477,7 @@ void primal_spore_binding( special_effect_t& effect )
   damage->base_dd_max += damage_amount;
 
   auto heal =
-    create_proc_action<base_generic_aoe_proc_t<proc_heal_t>>( "primal_spore_explosion_heal", effect, 1259130, true );
+      create_proc_action<base_generic_aoe_proc_t<proc_heal_t>>( "primal_spore_explosion_heal", effect, 1259130, true );
   heal->base_dd_min += heal_amount;
   heal->base_dd_max += heal_amount;
   heal->name_str_reporting = "Heal";
@@ -499,7 +499,7 @@ void primal_spore_binding( special_effect_t& effect )
 void prismatic_focusing_iris( special_effect_t& effect )
 {
   effect.player->sim->error( PLACEHOLDER,
-    "prismatic focusing iris damage using rppm driver value instead of effect driver value" );
+                             "prismatic focusing iris damage using rppm driver value instead of effect driver value" );
 
   auto dot_damage = effect.trigger()->effectN( 2 ).average( effect );
 
@@ -511,7 +511,7 @@ void prismatic_focusing_iris( special_effect_t& effect )
   }
 
   auto damage_spell = effect.trigger()->effectN( 1 ).trigger();
-  auto pct_per_gem = effect.driver()->effectN( 3 ).percent();
+  auto pct_per_gem  = effect.driver()->effectN( 3 ).percent();
 
   auto dot = create_proc_action<generic_proc_t>( "prismatic_focusing_iris", effect, damage_spell );
   dot->base_td += dot_damage;
@@ -519,12 +519,43 @@ void prismatic_focusing_iris( special_effect_t& effect )
   dot->base_td_multiplier *= role_mult( effect.player, damage_spell );
   dot->base_td_multiplier *= bandolier_mul( effect.player );
 
-  effect.spell_id = effect.trigger()->id();
+  effect.spell_id       = effect.trigger()->id();
   effect.execute_action = dot;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Thalassian Phoenix Torque
+// 1251815 Driver
+// 1251907 Damage
+// 1251908 Heal
+void thalassian_phoenix_torque( special_effect_t& effect )
+{
+  auto pct_per_gem = effect.driver()->effectN( 2 ).percent();
+
+  auto damage         = create_proc_action<generic_proc_t>( "phoenix_flames", effect, 1251907 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  damage->base_multiplier *= 1.0 + ( pct_per_gem * unique_gem_list( effect.player, gem_colors ).size() );
+  damage->base_multiplier *= role_mult( effect );
+  damage->base_multiplier *= bandolier_mul( effect.player );
+
+  auto heal = create_proc_action<generic_heal_t>( "phoenix_flames", effect, effect.player->find_spell( 1251908 ) );
+  heal->base_dd_min = heal->base_dd_max = effect.driver()->effectN( 2 ).average( effect );
+  heal->base_multiplier *= 1.0 + ( pct_per_gem * unique_gem_list( effect.player, gem_colors ).size() );
+  heal->base_multiplier *= role_mult( effect );
+  heal->base_multiplier *= bandolier_mul( effect.player );
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.spell_id, [ damage, heal ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
+        if ( s->target->is_enemy() )
+          damage->execute_on_target( s->target );
+        else
+          heal->execute_on_target( s->target );
+      } );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
+}  // namespace embellishments
 
 namespace trinkets
 {
@@ -1287,6 +1318,7 @@ void register_special_effects()
   register_special_effect( 1244276, embellishments::primal_spore_binding );
   register_special_effect( 1251906, embellishments::prismatic_focusing_iris );
   register_special_effect( 1251905, DISABLED_EFFECT );  // stabilizing gemstone bandolier
+  register_special_effect( 1251815, embellishments::thalassian_phoenix_torque );
   // Trinkets
   register_special_effect( 1250599, trinkets::heart_of_the_wind );
   register_special_effect( 1250563, trinkets::kroluks_warbanner );
