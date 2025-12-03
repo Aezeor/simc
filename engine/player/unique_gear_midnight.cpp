@@ -566,7 +566,7 @@ void signet_of_azerothian_blessings( special_effect_t& effect )
   value *= bandolier_mul( effect.player );
 
   auto buff =
-      create_buff<stat_buff_t>( effect.player, "boon_of_azerothian_blessing", effect.driver()->effectN( 1 ).trigger() );
+      create_buff<stat_buff_t>( effect.player, "boon_of_azerothian_blessings", effect.driver()->effectN( 1 ).trigger() );
 
   for ( auto stat : secondary_ratings )
     buff->add_stat( stat, value );
@@ -574,6 +574,129 @@ void signet_of_azerothian_blessings( special_effect_t& effect )
   effect.custom_buff = buff;
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Loa Worshiper's Band
+// 1251904 Driver
+// 1252524 Capybara Buff - Always Available
+// 1257183 Nalorakk Buff - Garnet
+// 1252832 Nalorakk Periodic Trigger - Garnet
+// 1252814 Halazzi Damage - Amethyst
+// 1252817 Janalai Damage - Lapis
+// 1252818 Akilzon Buff - Peridot
+// TODO: Does bandolier do anything special for this?
+void loa_worshipers_band( special_effect_t& effect )
+{
+  enum loa_e : unsigned
+  {
+    LOA_CAPYBARA,
+    LOA_NALORAKK,
+    LOA_HALAZZI,
+    LOA_JANALAI,
+    LOA_AKILZON,
+    LOA_MAX
+  };
+
+  struct loa_worshipers_band_cb_t final : public dbc_proc_callback_t
+  {
+    buff_t* capybara;
+    buff_t* nalorakk;
+    action_t* halazzi;
+    action_t* janalai;
+    buff_t* akilzon;
+
+    std::vector<loa_e> loas;
+
+    loa_worshipers_band_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        capybara( nullptr ),
+        nalorakk( nullptr ),
+        halazzi( nullptr ),
+        janalai( nullptr ),
+        akilzon( nullptr ),
+        loas()
+    {
+      // Capybara is always available, even with no gems socketed.
+      loas.push_back( LOA_CAPYBARA );
+      double capy_value = effect.driver()->effectN( 2 ).average( effect );
+      capy_value *= bandolier_mul( effect.player );
+      capybara = make_buff<stat_buff_t>( e.player, "blessing_of_the_capybara", e.player->find_spell( 1252524 ) )
+                     ->add_stat_from_effect_type( A_MOD_STAT, capy_value );
+
+      if ( range::contains( unique_gem_list( e.player, gem_colors ), GEM_GARNET ) )
+      {
+        loas.push_back( LOA_NALORAKK );
+        const spell_data_t* nalorakk_spell = e.player->find_spell( 1257183 );
+        double nalo_value = nalorakk_spell->effectN( 1 ).average( e );
+        nalo_value *= bandolier_mul( effect.player );
+        auto nalorakk_stat =
+            make_buff<stat_buff_t>( e.player, "nalorakks_call_to_war", nalorakk_spell )
+                ->set_stat_from_effect_type( A_MOD_RATING, nalo_value );
+        nalorakk =
+            make_buff<buff_t>( e.player, "nalorakks_call_to_war_periodic", e.player->find_spell( 1252832 ) )
+                ->set_tick_callback( [ nalorakk_stat ]( buff_t*, int, timespan_t ) { nalorakk_stat->trigger(); } );
+      }
+
+      if ( range::contains( unique_gem_list( e.player, gem_colors ), GEM_AMETHYST ) )
+      {
+        loas.push_back( LOA_HALAZZI );
+        double halazzi_value = effect.driver()->effectN( 3 ).average( effect );
+        halazzi_value *= bandolier_mul( effect.player );
+        halazzi              = create_proc_action<generic_proc_t>( "claws_of_halazzi", e, 1252814 );
+        halazzi->base_dd_min = halazzi->base_dd_max = halazzi_value;
+        // halazzi->base_multiplier *= role_mult( e ); - Role Mult currently not applied to Loa Worshiper's Band
+      }
+
+      if ( range::contains( unique_gem_list( e.player, gem_colors ), GEM_LAPIS ) )
+      {
+        loas.push_back( LOA_JANALAI );
+        double janalai_value = effect.driver()->effectN( 4 ).average( effect );
+        janalai_value *= bandolier_mul( effect.player );
+        janalai              = create_proc_action<generic_proc_t>( "janalais_flames", e, 1252817 );
+        janalai->base_dd_min = janalai->base_dd_max = janalai_value;
+        janalai->aoe = -1;
+        // janalai->base_multiplier *= role_mult( e ); - Role Mult currently not applied to Loa Worshiper's Band
+      }
+
+      if ( range::contains( unique_gem_list( e.player, gem_colors ), GEM_PERIDOT ) )
+      {
+        loas.push_back( LOA_AKILZON );
+        const spell_data_t* akilzon_spell = e.player->find_spell( 1252818 );
+        double akilzon_value              = akilzon_spell->effectN( 1 ).average( e );
+        akilzon_value *= bandolier_mul( effect.player );
+        // Akilzon buff has the values in the buff itself.
+        akilzon = make_buff<stat_buff_t>( e.player, "akilzons_cry_of_victory", akilzon_spell )
+                      ->add_stat_from_effect( 1, akilzon_value );
+      }
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      auto loa = rng().range( loas );
+      switch ( loa )
+      {
+        case LOA_CAPYBARA:
+          capybara->trigger();
+          break;
+        case LOA_NALORAKK:
+          nalorakk->trigger();
+          break;
+        case LOA_HALAZZI:
+          halazzi->execute_on_target( s->target );
+          break;
+        case LOA_JANALAI:
+          janalai->execute_on_target( s->target );
+          break;
+        case LOA_AKILZON:
+          akilzon->trigger();
+          break;
+        default:
+          break;
+      }
+    }
+  };
+
+  new loa_worshipers_band_cb_t( effect );
 }
 
 }  // namespace embellishments
@@ -1341,6 +1464,7 @@ void register_special_effects()
   register_special_effect( 1251905, DISABLED_EFFECT );  // stabilizing gemstone bandolier
   register_special_effect( 1251815, embellishments::thalassian_phoenix_torque );
   register_special_effect( 1251902, embellishments::signet_of_azerothian_blessings );
+  register_special_effect( 1251904, embellishments::loa_worshipers_band );
   // Trinkets
   register_special_effect( 1250599, trinkets::heart_of_the_wind );
   register_special_effect( 1250563, trinkets::kroluks_warbanner );
