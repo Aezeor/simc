@@ -997,6 +997,76 @@ void sealed_chaos_urn( special_effect_t& effect )
   effect.custom_buff = buff;
 }
 
+// Lost Idol of the Hash'ey
+// 1253111 Driver
+// 1266182 Primary
+// 1266184 Secondary (Highest)
+// 1266197 Secondary (Lowest)
+// TODO: Can the different buffs overlap? Or do they expire existing ones?
+void lost_idol_of_the_hashey( special_effect_t& effect )
+{
+  struct lost_idol_of_the_hashey_cb_t final : public dbc_proc_callback_t
+  {
+    buff_t* primary;
+    std::unordered_map<stat_e, buff_t*> highest;
+    std::unordered_map<stat_e, buff_t*> lowest;
+
+    lost_idol_of_the_hashey_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ), primary( nullptr ), highest(), lowest()
+    {
+      primary = create_buff<stat_buff_t>( e.player, "bear", e.player->find_spell( 1266182 ) )
+                    ->set_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 2 ).average( e ) );
+
+      create_all_stat_buffs( e, e.player->find_spell( 1266184 ), e.driver()->effectN( 1 ).average( e ),
+                             [ & ]( stat_e s, buff_t* b ) { highest[ s ] = b; } );
+
+      create_all_stat_buffs( e, e.player->find_spell( 1266197 ), e.driver()->effectN( 1 ).average( e ),
+                             [ & ]( stat_e s, buff_t* b ) { lowest[ s ] = b; } );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      int type = rng().range( 0, 3 );
+
+      if ( type == 0 )
+        primary->trigger();
+
+      if ( type == 1 )
+      {
+        for ( auto& stat : secondary_ratings )
+          highest[ stat ]->expire();
+
+        auto stat = util::highest_stat( listener, secondary_ratings );
+        highest[ stat ]->trigger();
+      }
+
+      if ( type == 2 )
+      {
+        for ( auto& stat : secondary_ratings )
+          lowest[ stat ]->expire();
+
+        auto stat = util::lowest_stat( listener, secondary_ratings );
+        lowest[ stat ]->trigger();
+      }
+    }
+  };
+
+  new lost_idol_of_the_hashey_cb_t( effect );
+}
+
+// Withered Saptor's Paw
+// 1253110 Driver
+// 1255226 Buff
+void withered_saptors_paw( special_effect_t& effect )
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, "withered_saptors_paw", effect.player->find_spell( 1255226 ) )
+                  ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -1234,6 +1304,8 @@ void register_special_effects()
   register_special_effect( { 1260592, 1265809 }, trinkets::plume_of_beloren ); // Radiant and Umbral Plume
   register_special_effect( { 1265806, 1265805 }, DISABLED_EFFECT ); // Radiant and Umbral Plume on use
   register_special_effect( 1253115, trinkets::sealed_chaos_urn );
+  register_special_effect( 1253111, trinkets::lost_idol_of_the_hashey );
+  register_special_effect( 1253110, trinkets::withered_saptors_paw );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
