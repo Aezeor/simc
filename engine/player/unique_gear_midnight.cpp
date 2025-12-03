@@ -555,6 +555,27 @@ void thalassian_phoenix_torque( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Signet of Azerothian Blessings
+// 1251902 Driver
+// 1252202 Buff
+void signet_of_azerothian_blessings( special_effect_t& effect )
+{
+  auto value = effect.driver()->effectN( 1 ).average( effect );
+  value *= 1.0 + ( effect.driver()->effectN( 2 ).percent() * unique_gem_list( effect.player, gem_colors ).size() );
+  value *= bandolier_mul( effect.player );
+
+  auto buff =
+      create_buff<stat_buff_t>( effect.player, "boon_of_azerothian_blessing", effect.driver()->effectN( 1 ).trigger() );
+
+  for ( auto stat : secondary_ratings )
+    buff->add_stat( stat, value );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace embellishments
 
 namespace trinkets
@@ -1319,6 +1340,7 @@ void register_special_effects()
   register_special_effect( 1251906, embellishments::prismatic_focusing_iris );
   register_special_effect( 1251905, DISABLED_EFFECT );  // stabilizing gemstone bandolier
   register_special_effect( 1251815, embellishments::thalassian_phoenix_torque );
+  register_special_effect( 1251902, embellishments::signet_of_azerothian_blessings );
   // Trinkets
   register_special_effect( 1250599, trinkets::heart_of_the_wind );
   register_special_effect( 1250563, trinkets::kroluks_warbanner );
