@@ -8415,6 +8415,7 @@ struct art_of_the_glaive_t : public demon_hunter_attack_t
     {
       background = dual = true;
       aoe               = -1;
+      reduced_aoe_targets = as<int>(data().effectN( 2 ).base_value());
     }
   };
 
