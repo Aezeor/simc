@@ -4687,14 +4687,8 @@ struct immolation_aura_t : public demon_hunter_spell_t
     }
   };
 
-  // TODO: 2023-12-19: With the change from 30% to 25% proc chance, AFI seems to no longer be
-  //                   a simple deck of cards system. Need to figure out exactly how it works
-  //                   but until then we use a flat chance from spell data again.
-  double afi_chance;
-
   immolation_aura_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "immolation_aura", p, p->spell.immolation_aura, options_str ),
-      afi_chance( p->talent.havoc.a_fire_inside->effectN( 3 ).percent() )
+    : demon_hunter_spell_t( "immolation_aura", p, p->spell.immolation_aura, options_str )
   {
     may_miss     = false;
     dot_duration = timespan_t::zero();
@@ -4749,9 +4743,6 @@ struct immolation_aura_t : public demon_hunter_spell_t
   {
     p()->buff.immolation_aura->trigger();
     demon_hunter_spell_t::execute();
-
-    if ( p()->talent.havoc.a_fire_inside->ok() && rng().roll( afi_chance ) )
-      cooldown->reset( true, 1 );
 
     p()->trigger_demonsurge( demonsurge_ability::CONSUMING_FIRE );
   }
