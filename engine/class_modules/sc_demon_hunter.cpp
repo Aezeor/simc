@@ -342,7 +342,7 @@ public:
     buff_t* glaive_flurry;
     buff_t* rending_strike;
     buff_t* warblades_hunger;
-    buff_t* thrill_of_the_fight_attack_speed;
+    buff_t* thrill_of_the_fight_haste;
     buff_t* thrill_of_the_fight_damage;
     buff_t* art_of_the_glaive_first;
     buff_t* art_of_the_glaive_second_rending_strike;
@@ -872,9 +872,7 @@ public:
     const spell_data_t* warblades_hunger_buff;
     const spell_data_t* warblades_hunger_damage;
     const spell_data_t* wounded_quarry_damage;
-    const spell_data_t* thrill_of_the_fight_attack_speed_buff;
-    const spell_data_t* thrill_of_the_fight_damage_buff_havoc;
-    const spell_data_t* thrill_of_the_fight_damage_buff_vengeance;
+    const spell_data_t* thrill_of_the_fight_haste_buff;
     const spell_data_t* thrill_of_the_fight_damage_buff;
     double wounded_quarry_proc_rate;
 
@@ -2650,7 +2648,7 @@ struct art_of_the_glaive_trigger_t : public BASE
     {
       if ( BASE::p()->talent.aldrachi_reaver.thrill_of_the_fight->ok() )
       {
-        BASE::p()->buff.thrill_of_the_fight_attack_speed->trigger();
+        BASE::p()->buff.thrill_of_the_fight_haste->trigger();
 
         make_event( *BASE::p()->sim, thrill_delay,
                     [ this ] { BASE::p()->buff.thrill_of_the_fight_damage->trigger(); } );
@@ -6951,7 +6949,6 @@ struct blade_dance_base_t
         add_child( attack );
       }
 
-
       if ( first_blood_attacks.front() )
       {
         first_blood_attacks.front()->first_attack = true;
@@ -8162,6 +8159,13 @@ struct reavers_glaive_t : public soulscar_trigger_t<demon_hunter_attack_t>
     p()->buff.glaive_flurry->trigger();
     p()->buff.rending_strike->trigger();
     p()->buff.art_of_the_glaive_first->trigger();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    base_t::impact( s );
+
+    p()->buff.thrill_of_the_fight_damage->expire();
   }
 
   bool ready() override
@@ -9734,10 +9738,10 @@ void demon_hunter_t::create_buffs()
   buff.glaive_flurry    = make_buff( this, "glaive_flurry", hero_spec.glaive_flurry );
   buff.rending_strike   = make_buff( this, "rending_strike", hero_spec.rending_strike );
   buff.warblades_hunger = make_buff( this, "warblades_hunger", hero_spec.warblades_hunger_buff )->set_max_stack( 6 );
-  buff.thrill_of_the_fight_attack_speed =
-      make_buff( this, "thrill_of_the_fight_attack_speed", hero_spec.thrill_of_the_fight_attack_speed_buff )
-          ->set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED )
-          ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
+  buff.thrill_of_the_fight_haste =
+      make_buff( this, "thrill_of_the_fight_haste", hero_spec.thrill_of_the_fight_haste_buff )
+          ->set_default_value_from_effect_type( A_HASTE_ALL )
+          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buff.thrill_of_the_fight_damage =
       make_buff( this, "thrill_of_the_fight_damage", hero_spec.thrill_of_the_fight_damage_buff );
@@ -10870,37 +10874,30 @@ void demon_hunter_t::init_spells()
   }
 
   // Hero spec background spells
-  hero_spec.reavers_glaive           = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442294 );
-  hero_spec.reavers_mark             = talent_spell_lookup( talent.aldrachi_reaver.reavers_mark, 442624 );
-  hero_spec.glaive_flurry            = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442435 );
-  hero_spec.rending_strike           = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442442 );
-  hero_spec.art_of_the_glaive_buff   = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 444661 );
-  hero_spec.art_of_the_glaive_damage = talent_spell_lookup( talent.aldrachi_reaver.fury_of_the_aldrachi, 444810 );
-  hero_spec.warblades_hunger_buff    = talent_spell_lookup( talent.aldrachi_reaver.warblades_hunger, 442503 );
-  hero_spec.warblades_hunger_damage  = talent_spell_lookup( talent.aldrachi_reaver.warblades_hunger, 442507 );
-  hero_spec.wounded_quarry_damage    = talent_spell_lookup( talent.aldrachi_reaver.wounded_quarry, 442808 );
-  hero_spec.thrill_of_the_fight_attack_speed_buff =
-      talent_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight, 442695 );
-  hero_spec.thrill_of_the_fight_damage_buff_havoc =
-      talent_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight, 442688 );
-  hero_spec.thrill_of_the_fight_damage_buff_vengeance =
-      talent_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight, 1227062 );
+  hero_spec.reavers_glaive                 = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442294 );
+  hero_spec.reavers_mark                   = talent_spell_lookup( talent.aldrachi_reaver.reavers_mark, 442624 );
+  hero_spec.glaive_flurry                  = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442435 );
+  hero_spec.rending_strike                 = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442442 );
+  hero_spec.art_of_the_glaive_buff         = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 444661 );
+  hero_spec.art_of_the_glaive_damage       = talent_spell_lookup( talent.aldrachi_reaver.fury_of_the_aldrachi, 444810 );
+  hero_spec.warblades_hunger_buff          = talent_spell_lookup( talent.aldrachi_reaver.warblades_hunger, 442503 );
+  hero_spec.warblades_hunger_damage        = talent_spell_lookup( talent.aldrachi_reaver.warblades_hunger, 442507 );
+  hero_spec.wounded_quarry_damage          = talent_spell_lookup( talent.aldrachi_reaver.wounded_quarry, 442808 );
+  hero_spec.thrill_of_the_fight_haste_buff = talent_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight, 442688 );
+  hero_spec.thrill_of_the_fight_damage_buff = talent_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight, 442695 );
   switch ( specialization() )
   {
     case DEMON_HUNTER_HAVOC:
-      hero_spec.thrill_of_the_fight_damage_buff = hero_spec.thrill_of_the_fight_damage_buff_havoc;
       hero_spec.reavers_glaive_buff      = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 444686 );
       hero_spec.wounded_quarry_proc_rate = options.wounded_quarry_chance_havoc;
       break;
     case DEMON_HUNTER_VENGEANCE:
-      hero_spec.thrill_of_the_fight_damage_buff = hero_spec.thrill_of_the_fight_damage_buff_vengeance;
       hero_spec.reavers_glaive_buff      = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 444764 );
       hero_spec.wounded_quarry_proc_rate = options.wounded_quarry_chance_vengeance;
       break;
     default:
-      hero_spec.thrill_of_the_fight_damage_buff = spell_data_t::not_found();
-      hero_spec.reavers_glaive_buff             = spell_data_t::not_found();
-      hero_spec.wounded_quarry_proc_rate        = 0;
+      hero_spec.reavers_glaive_buff      = spell_data_t::not_found();
+      hero_spec.wounded_quarry_proc_rate = 0;
       break;
   }
 
@@ -12324,7 +12321,7 @@ void demon_hunter_t::parse_player_effects()
   }
 
   // Aldrachi Reaver
-  parse_effects( buff.thrill_of_the_fight_attack_speed );
+  parse_effects( buff.thrill_of_the_fight_haste );
 
   // Annihilator
   parse_effects( buff.voidfall_building );
