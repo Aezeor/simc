@@ -6801,47 +6801,25 @@ struct blade_dance_base_t
     }
   };
 
-  struct blade_dance_damage_t : public demon_hunter_attack_t
+  struct blade_dance_damage_first_blood_t : public burning_blades_trigger_t<demon_hunter_attack_t>
   {
     timespan_t delay;
     action_t* trail_of_ruin_dot;
     bool first_attack;
     bool last_attack;
-    bool from_first_blood;
     unsigned glaive_tempest_targets;
 
-    blade_dance_damage_t( util::string_view name, demon_hunter_t* p, const spelleffect_data_t& eff,
-                          const spell_data_t* first_blood_override = nullptr )
-      : demon_hunter_attack_t( name, p, first_blood_override ? first_blood_override : eff.trigger() ),
+    blade_dance_damage_first_blood_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s,
+                                      const spelleffect_data_t& eff )
+      : base_t( n, p, s ),
         delay( timespan_t::from_millis( eff.misc_value1() ) ),
         trail_of_ruin_dot( nullptr ),
         first_attack( false ),
-        last_attack( false ),
-        from_first_blood( first_blood_override != nullptr )
+        last_attack( false )
     {
       background = dual      = true;
-      aoe                    = ( from_first_blood ) ? 0 : -1;
-      reduced_aoe_targets    = p->find_spell( 199552 )->effectN( 1 ).base_value();  // Use first impact spell
+      aoe                    = 0;
       glaive_tempest_targets = as<unsigned>( p->talent.havoc.glaive_tempest->effectN( 2 ).base_value() );
-      if ( p->talent.havoc.first_blood->ok() && !from_first_blood )
-        target_filter_callback = secondary_targets_only();
-    }
-
-    double action_multiplier() const override
-    {
-      double am = demon_hunter_attack_t::action_multiplier();
-
-      if ( from_first_blood )
-      {
-        am *= 1.0 + p()->talent.havoc.first_blood->effectN( 1 ).percent();
-      }
-
-      return am;
-    }
-
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      return demon_hunter_attack_t::composite_da_multiplier( s );
     }
 
     void impact( action_state_t* s ) override
@@ -6869,8 +6847,59 @@ struct blade_dance_base_t
     }
   };
 
+  struct blade_dance_damage_t : public demon_hunter_attack_t
+  {
+    timespan_t delay;
+    action_t* trail_of_ruin_dot;
+    bool first_attack;
+    bool last_attack;
+    unsigned glaive_tempest_targets;
+
+    blade_dance_damage_t( util::string_view name, demon_hunter_t* p, const spelleffect_data_t& eff,
+                          const spell_data_t* first_blood_override = nullptr )
+      : demon_hunter_attack_t( name, p, first_blood_override ? first_blood_override : eff.trigger() ),
+        delay( timespan_t::from_millis( eff.misc_value1() ) ),
+        trail_of_ruin_dot( nullptr ),
+        first_attack( false ),
+        last_attack( false )
+    {
+      background = dual      = true;
+      aoe                    = -1;
+      reduced_aoe_targets    = p->find_spell( 199552 )->effectN( 1 ).base_value();  // Use first impact spell
+      glaive_tempest_targets = as<unsigned>( p->talent.havoc.glaive_tempest->effectN( 2 ).base_value() );
+      if ( p->talent.havoc.first_blood->ok() )
+        target_filter_callback = secondary_targets_only();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      demon_hunter_attack_t::impact( s );
+
+      if ( result_is_hit( s->result ) && td( s->target )->debuffs.essence_break->up() && first_attack )
+      {
+        p()->active.essence_break_proc->execute_on_target( target );
+      }
+
+      if ( last_attack )
+      {
+        if ( trail_of_ruin_dot )
+        {
+          trail_of_ruin_dot->execute_on_target( s->target );
+        }
+
+        // if First Blood is talented, GT will be triggered by the FB attack
+        if ( p()->talent.havoc.glaive_tempest->ok() && !p()->talent.havoc.first_blood->ok() &&
+             s->n_targets >= glaive_tempest_targets &&
+             p()->resource_available( RESOURCE_FURY, p()->talent.havoc.glaive_tempest->effectN( 1 ).base_value() ) )
+        {
+          p()->active.glaive_tempest->execute_on_target( target );
+        }
+      }
+    }
+  };
+
   std::vector<blade_dance_damage_t*> attacks;
-  std::vector<blade_dance_damage_t*> first_blood_attacks;
+  std::vector<blade_dance_damage_first_blood_t*> first_blood_attacks;
   trail_of_ruin_dot_t* trail_of_ruin_dot;
   timespan_t ability_cooldown;
 
@@ -6928,15 +6957,13 @@ struct blade_dance_base_t
     {
       for ( auto& attack : first_blood_attacks )
       {
-        attack->stats = first_blood_attacks.front()->stats;
+        add_child( attack );
       }
 
 
       if ( first_blood_attacks.front() )
       {
         first_blood_attacks.front()->first_attack = true;
-
-        add_child( first_blood_attacks.front() );
       }
 
       if ( first_blood_attacks.back() )
@@ -6979,33 +7006,41 @@ struct blade_dance_base_t
         p()->proc.blade_dance_in_essence_break->occur();
     }
 
-    if ( p()->talent.havoc.screaming_brutality->ok() )
-    {
-      for ( auto& attack : ( p()->talent.havoc.first_blood->ok() ? first_blood_attacks : attacks ) )
-      {
-        double chance = p()->talent.havoc.screaming_brutality->effectN( 2 ).percent();
-        if ( rng().roll( chance ) )
-        {
-          make_event<delayed_execute_event_t>( *sim, p(), p()->active.screaming_brutality_slash_proc_throw_glaive,
-                                               target, attack->delay );
-        }
-      }
-    }
-
     // Create Strike Events
-    if ( !p()->talent.havoc.first_blood->ok() || p()->sim->target_non_sleeping_list.size() > 1 )
-    {
-      for ( auto& attack : attacks )
-      {
-        make_event<delayed_execute_event_t>( *sim, p(), attack, target, attack->delay );
-      }
-    }
-
     if ( p()->talent.havoc.first_blood->ok() )
     {
       for ( auto& attack : first_blood_attacks )
       {
         make_event<delayed_execute_event_t>( *sim, p(), attack, target, attack->delay );
+
+        // TODO: (Topple) Clean up Screaming Brutality
+        if ( p()->talent.havoc.screaming_brutality->ok() )
+        {
+          double chance = p()->talent.havoc.screaming_brutality->effectN( 2 ).percent();
+          if ( rng().roll( chance ) )
+          {
+            make_event<delayed_execute_event_t>( *sim, p(), p()->active.screaming_brutality_slash_proc_throw_glaive,
+                                                 target, attack->delay );
+          }
+        }
+      }
+    }
+    if ( !p()->talent.havoc.first_blood->ok() || p()->sim->target_non_sleeping_list.size() > 1 )
+    {
+      for ( auto& attack : attacks )
+      {
+        make_event<delayed_execute_event_t>( *sim, p(), attack, target, attack->delay );
+
+        // TODO: (Topple) Clean up Screaming Brutality
+        if ( p()->talent.havoc.screaming_brutality->ok() && !p()->talent.havoc.first_blood->ok() )
+        {
+          double chance = p()->talent.havoc.screaming_brutality->effectN( 2 ).percent();
+          if ( rng().roll( chance ) )
+          {
+            make_event<delayed_execute_event_t>( *sim, p(), p()->active.screaming_brutality_slash_proc_throw_glaive,
+                                                 target, attack->delay );
+          }
+        }
       }
     }
 
@@ -7041,14 +7076,14 @@ struct blade_dance_t : public blade_dance_base_t
 
     if ( p->talent.havoc.first_blood->ok() && first_blood_attacks.empty() )
     {
-      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_t>(
-          "blade_dance_first_blood", data().effectN( 2 ), p->spec.first_blood_blade_dance_damage ) );
-      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_t>(
-          "blade_dance_first_blood_2", data().effectN( 3 ), p->spec.first_blood_blade_dance_damage ) );
-      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_t>(
-          "blade_dance_first_blood_3", data().effectN( 4 ), p->spec.first_blood_blade_dance_damage ) );
-      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_t>(
-          "blade_dance_first_blood_4", data().effectN( 5 ), p->spec.first_blood_blade_dance_2_damage ) );
+      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_first_blood_t>(
+          "blade_dance_first_blood", p->spec.first_blood_blade_dance_damage, data().effectN( 2 ) ) );
+      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_first_blood_t>(
+          "blade_dance_first_blood_2", p->spec.first_blood_blade_dance_damage, data().effectN( 3 ) ) );
+      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_first_blood_t>(
+          "blade_dance_first_blood_3", p->spec.first_blood_blade_dance_damage, data().effectN( 4 ) ) );
+      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_first_blood_t>(
+          "blade_dance_first_blood_4", p->spec.first_blood_blade_dance_2_damage, data().effectN( 5 ) ) );
     }
 
     if ( p->talent.havoc.screaming_brutality->ok() && p->active.screaming_brutality_blade_dance_throw_glaive )
@@ -7091,14 +7126,14 @@ struct death_sweep_t : public demonsurge_trigger_t<demonsurge_ability::DEATH_SWE
 
     if ( p->talent.havoc.first_blood->ok() && first_blood_attacks.empty() )
     {
-      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_t>(
-          "death_sweep_first_blood", data().effectN( 2 ), p->spec.first_blood_death_sweep_damage ) );
-      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_t>(
-          "death_sweep_first_blood_2", data().effectN( 3 ), p->spec.first_blood_death_sweep_damage ) );
-      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_t>(
-          "death_sweep_first_blood_3", data().effectN( 4 ), p->spec.first_blood_death_sweep_damage ) );
-      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_t>(
-          "death_sweep_first_blood_4", data().effectN( 5 ), p->spec.first_blood_death_sweep_2_damage ) );
+      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_first_blood_t>(
+          "death_sweep_first_blood", p->spec.first_blood_death_sweep_damage, data().effectN( 2 ) ) );
+      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_first_blood_t>(
+          "death_sweep_first_blood_2", p->spec.first_blood_death_sweep_damage, data().effectN( 3 ) ) );
+      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_first_blood_t>(
+          "death_sweep_first_blood_3", p->spec.first_blood_death_sweep_damage, data().effectN( 4 ) ) );
+      first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_first_blood_t>(
+          "death_sweep_first_blood_4", p->spec.first_blood_death_sweep_2_damage, data().effectN( 5 ) ) );
     }
 
     if ( p->talent.havoc.screaming_brutality->ok() && p->active.screaming_brutality_death_sweep_throw_glaive )
