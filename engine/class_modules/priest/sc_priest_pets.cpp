@@ -629,7 +629,7 @@ struct mindbender_pet_t final : public base_fiend_pet_t
       power_leech_mana( o().specialization() == PRIEST_SHADOW ? 0.0
                                                               : o().find_spell( 123051 )->effectN( 1 ).percent() / 100 )
   {
-    direct_power_mod = 0.442;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
+    direct_power_mod = 0.884;  // TODO: Verify value
 
     // Empirically tested to match 3/10/2023, actual value not available in spell data
     if ( owner->specialization() == PRIEST_DISCIPLINE )

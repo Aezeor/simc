@@ -695,7 +695,6 @@ public:
   {
     propagate_const<real_ppm_t*> idol_of_cthun;
     propagate_const<real_ppm_t*> power_of_the_dark_side;
-    propagate_const<real_ppm_t*> idol_of_yshaarj;
   } rppm;
 
   struct threshold_rngs_t
