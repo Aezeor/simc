@@ -313,10 +313,10 @@ public:
 
     struct
     {
-      const spell_data_t* shadowfiend;
+      const spell_data_t* shadowfiend_pet;
       player_talent_t mindbender;
       player_talent_t inescapable_torment;
-      player_talent_t depth_of_shadows;
+      player_talent_t shadowfiend;
     } shared;
 
     struct
@@ -711,7 +711,7 @@ public:
     propagate_const<gain_t*> insanity_auspicious_spirits;
     propagate_const<gain_t*> insanity_death_and_madness;
     propagate_const<gain_t*> mindbender;
-    propagate_const<gain_t*> depth_of_shadows;
+    propagate_const<gain_t*> shadowfiend;
     propagate_const<gain_t*> voidwraith;
     propagate_const<gain_t*> power_of_the_dark_side;
     propagate_const<gain_t*> insanity_idol_of_cthun_mind_flay;
@@ -759,7 +759,7 @@ public:
     propagate_const<proc_t*> mindgames_casts_no_mastery;
     propagate_const<proc_t*> inescapable_torment_missed_mb;
     propagate_const<proc_t*> inescapable_torment_missed_swd;
-    propagate_const<proc_t*> depth_of_shadows;
+    propagate_const<proc_t*> shadowfiend;
     propagate_const<proc_t*> void_apparition;
     propagate_const<proc_t*> void_apparition_yshaarj;
     propagate_const<proc_t*> void_apparition_horrific_vision;

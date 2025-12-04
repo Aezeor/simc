@@ -430,7 +430,7 @@ struct base_fiend_pet_t : public priest_pet_t
         gains.fiend = o().gains.mindbender;
         break;
       default:
-        gains.fiend = o().gains.depth_of_shadows;
+        gains.fiend = o().gains.shadowfiend;
         break;
     }
   }
@@ -578,7 +578,7 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
     : base_fiend_pet_t( owner, name, fiend_type::Shadowfiend ),
       power_leech_insanity( o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY ) ),
       power_leech_mana(
-          o().specialization() == PRIEST_SHADOW ? 0.0 : o().talents.shared.shadowfiend->effectN( 4 ).percent() / 10 )
+          o().specialization() == PRIEST_SHADOW ? 0.0 : o().talents.shared.shadowfiend_pet->effectN( 4 ).percent() / 10 )
   {
     direct_power_mod = 0.408;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
 
@@ -596,7 +596,7 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
   }
   double insanity_gain() const override
   {
-    if ( o().talents.shared.depth_of_shadows.enabled() )
+    if ( o().talents.shared.shadowfiend.enabled() )
     {
       return power_leech_insanity;
     }
@@ -737,7 +737,7 @@ struct fiend_melee_t : public priest_pet_melee_t
 
       p().o().trigger_atonement( s, composite_atonement_multiplier( s ) );
 
-      if ( p().o().talents.shared.depth_of_shadows.enabled() || p().o().talents.shared.mindbender.enabled() )
+      if ( p().o().talents.shared.shadowfiend.enabled() || p().o().talents.shared.mindbender.enabled() )
       {
         if ( p().o().specialization() == PRIEST_SHADOW )
         {
@@ -1142,7 +1142,7 @@ void priest_t::trigger_inescapable_torment( player_t* target, bool echo, double 
 
   auto extend = talents.shared.inescapable_torment->effectN( 2 ).time_value() * mod;
 
-  if ( talents.shared.depth_of_shadows.enabled() && pets.shadowfiend.n_active_pets() > 0 )
+  if ( talents.shared.shadowfiend.enabled() && pets.shadowfiend.n_active_pets() > 0 )
   {
     for ( auto a_pet : pets.shadowfiend )
     {

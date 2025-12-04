@@ -1122,7 +1122,6 @@ public:
   double execute_percent;
   double execute_modifier;
   propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
-  double depth_of_shadows_threshold;
   propagate_const<expiation_t*> child_expiation;
   action_t* child_searing_light;
   timespan_t execute_override;
@@ -1133,7 +1132,6 @@ public:
       execute_percent( data().effectN( 3 ).base_value() ),
       execute_modifier( data().effectN( 4 ).percent() ),
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
-      depth_of_shadows_threshold( p.talents.shared.depth_of_shadows->effectN( 2 ).base_value() ),
       child_expiation( nullptr ),
       child_searing_light( priest().background_actions.searing_light ),
       execute_override( execute_override )
@@ -1264,19 +1262,18 @@ public:
     {
       double save_health_percentage = s->target->health_percentage();
 
-      if ( priest().talents.shared.depth_of_shadows.enabled() )
+      if ( priest().talents.shared.shadowfiend.enabled() )
       {
-        double chance = 0.9;
-        // TODO: Find out the actual chance, this is a guess
+        double chance = priest().talents.shared.shadowfiend->effectN( 3 ).percent();
+
         if ( cast_state( s )->chain_number > 0 )
         {
           chance *= priest().talents.shadow.deaths_torment->effectN( 2 ).percent();
         }
 
-        // TODO: Find out the chance. Placeholder value of 90%. It is not 100% but it is is extremely high.
-        if ( ( save_health_percentage <= depth_of_shadows_threshold ) && rng().roll( chance ) )
+        if ( ( save_health_percentage <= execute_percent ) && rng().roll( chance ) )
         {
-          priest().procs.depth_of_shadows->occur();
+          priest().procs.shadowfiend->occur();
           priest().pets.shadowfiend.spawn();
         }
       }
@@ -2190,7 +2187,7 @@ void priest_t::create_gains()
 {
   gains.insanity_auspicious_spirits      = get_gain( "Auspicious Spirits" );
   gains.insanity_death_and_madness       = get_gain( "Death and Madness" );
-  gains.depth_of_shadows                 = get_gain( "Depth of Shadows" );
+  gains.shadowfiend                      = get_gain( "Shadowfiend" );
   gains.mindbender                       = get_gain( "Mindbender" );
   gains.voidwraith                       = get_gain( "Voidwraith" );
   gains.insanity_idol_of_cthun_mind_flay = get_gain( "Insanity Gained from Idol of C'thun Mind Flay's" );
@@ -2234,7 +2231,7 @@ void priest_t::create_procs()
   procs.mindgames_casts_no_mastery      = get_proc( "Mindgames casts without full Mastery value" );
   procs.inescapable_torment_missed_mb   = get_proc( "Inescapable Torment expired when Mind Blast was ready" );
   procs.inescapable_torment_missed_swd  = get_proc( "Inescapable Torment expired when Shadow Word: Death was ready" );
-  procs.depth_of_shadows                = get_proc( "Depth of Shadows spawns of your main pet" );
+  procs.shadowfiend                     = get_proc( "Shadowfiend procs from Shadow Word: Death casts" );
   procs.void_apparition                 = get_proc( "Void Apparition procs" );
   procs.void_apparition_yshaarj         = get_proc( "Idol of Y'Shaarj from Tentacle Slam" );
   procs.void_apparition_horrific_vision = get_proc( "Horrific Vision from Tentacle Slam" );
@@ -2886,8 +2883,8 @@ void priest_t::init_spells()
   // Shared Spells
   talents.shared.mindbender          = ST( "Mindbender" );
   talents.shared.inescapable_torment = ST( "Inescapable Torment" );
-  talents.shared.shadowfiend         = find_spell( 34433 );
-  talents.shared.depth_of_shadows    = ST( "Depth of Shadows" );
+  talents.shared.shadowfiend_pet     = find_spell( 34433 );
+  talents.shared.shadowfiend         = ST( "Shadowfiend" );
 
   // Generic Spells
   specs.levitate_buff     = find_spell( 111759 );
