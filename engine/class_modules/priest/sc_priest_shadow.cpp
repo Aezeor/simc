@@ -1855,28 +1855,9 @@ void priest_t::create_buffs_shadow()
             }
           } ) );
 
-  // Idol of Y'Shaarj
-  buffs.call_of_the_void = make_buff( this, "call_of_the_void", talents.shadow.call_of_the_void )
-                               ->set_default_value_from_effect( 1 )
-                               ->add_invalidate( CACHE_HASTE )
-                               ->set_refresh_duration_callback( [ this ]( const buff_t* b, timespan_t time ) {
-                                 // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1372
-                                 if ( bugs )
-                                 {
-                                   buffs.overburdened_mind->trigger();
-                                 }
-
-                                 return time;
-                               } )
-                               ->set_stack_change_callback( ( [ this ]( buff_t*, int, int new_ ) {
-                                 if ( new_ == 0 )
-                                 {
-                                   buffs.overburdened_mind->trigger();
-                                 }
-                               } ) );
-  buffs.overburdened_mind = make_buff( this, "overburdened_mind", talents.shadow.overburdened_mind )
-                                ->set_default_value_from_effect( 1 )
-                                ->add_invalidate( CACHE_HASTE );
+  buffs.idol_of_yshaarj = make_buff( this, "idol_of_yshaarj", talents.shadow.idol_of_yshaarj_buff )
+                              ->set_default_value_from_effect( 1 )
+                              ->add_invalidate( CACHE_HASTE );
 
   buffs.shattered_psyche =
       make_buff( this, "shattered_psyche", talents.shadow.shattered_psyche->effectN( 2 ).trigger() )
@@ -1997,8 +1978,7 @@ void priest_t::init_spells_shadow()
   talents.shadow.crushing_void_buff  = find_spell( 1279437 );
   // Row 10
   talents.shadow.idol_of_yshaarj        = ST( "Idol of Y'Shaarj" );
-  talents.shadow.call_of_the_void       = find_spell( 373316 );   // Idol of Y'Shaarj positive haste buff
-  talents.shadow.overburdened_mind      = find_spell( 373317 );   // Idol of Y'Shaarj negative haste buff
+  talents.shadow.idol_of_yshaarj_buff   = find_spell( 373316 );
   talents.shadow.horrific_visions       = find_spell( 1243069 );  // Idol of N'Zoth debuff
   talents.shadow.horrific_vision_damage = find_spell( 1243105 );  // Idol of N'Zoth 50 stack damage
   talents.shadow.vision_of_nzoth_damage = find_spell( 1243106 );  // Idol of N'Zoth 100 stack damage
@@ -2336,7 +2316,14 @@ void priest_t::spawn_thing_from_beyond()
 
 void priest_t::trigger_idol_of_yshaarj()
 {
-  buffs.call_of_the_void->trigger();
+  pets.shadowfiend.spawn();
+
+  // Shadowfiend will only trigger the buff if you have the talent enabled
+  // Tentacle Slam will still give this buff, even if not talented into it
+  if ( !talents.shadow.idol_of_yshaarj.enabled() )
+  {
+    buffs.idol_of_yshaarj->trigger();
+  }
 
   if ( talents.shadow.void_apparitions_1.enabled() )
   {

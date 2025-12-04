@@ -2468,14 +2468,9 @@ double priest_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
-  if ( buffs.call_of_the_void->check() )
+  if ( buffs.idol_of_yshaarj->check() )
   {
-    h *= 1.0 / ( 1.0 + buffs.call_of_the_void->check_value() );
-  }
-
-  if ( buffs.overburdened_mind->check() )
-  {
-    h *= 1.0 / ( 1.0 + buffs.overburdened_mind->check_value() );
+    h *= 1.0 / ( 1.0 + buffs.idol_of_yshaarj->check_value() );
   }
 
   if ( buffs.borrowed_time->check() )
@@ -2883,7 +2878,6 @@ void priest_t::init_spells()
   // Shared Spells
   talents.shared.mindbender          = ST( "Mindbender" );
   talents.shared.inescapable_torment = ST( "Inescapable Torment" );
-  talents.shared.shadowfiend_pet     = find_spell( 34433 );
   talents.shared.shadowfiend         = ST( "Shadowfiend" );
 
   // Generic Spells

@@ -446,11 +446,19 @@ struct base_fiend_pet_t : public priest_pet_t
   void arise() override
   {
     priest_pet_t::arise();
+
+    if ( o().talents.shadow.idol_of_yshaarj.enabled() )
+    {
+      o().buffs.idol_of_yshaarj->trigger();
+    }
   }
 
   void demise() override
   {
     priest_pet_t::demise();
+
+    // Always check expire, even without the talent, in case of void apparitions
+    o().idol_of_yshaarj_check_and_expire();
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
@@ -577,8 +585,9 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
   shadowfiend_pet_t( priest_t* owner, util::string_view name = "shadowfiend" )
     : base_fiend_pet_t( owner, name, fiend_type::Shadowfiend ),
       power_leech_insanity( o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY ) ),
-      power_leech_mana(
-          o().specialization() == PRIEST_SHADOW ? 0.0 : o().talents.shared.shadowfiend_pet->effectN( 4 ).percent() / 10 )
+      power_leech_mana( o().specialization() == PRIEST_SHADOW
+                            ? 0.0
+                            : o().find_spell( 343727 )->effectN( 1 ).resource( RESOURCE_MANA ) )
   {
     direct_power_mod = 0.408;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
 
@@ -1173,6 +1182,26 @@ void priest_t::trigger_inescapable_torment( player_t* target, bool echo, double 
   }
 }
 
+// Before we remove the haste buff ensure no other pets are active
+void priest_t::idol_of_yshaarj_check_and_expire()
+{
+  // Don't condition this on the talent in case it is triggered from tentacle slam
+  if ( buffs.idol_of_yshaarj->check() )
+  {
+    auto shadowfiend_pets = pets.shadowfiend.n_active_pets();
+    auto mindbender_pets  = pets.mindbender.n_active_pets();
+    auto voidwraith_pets  = pets.voidwraith.n_active_pets();
+
+    sim->print_debug( "checking idol_of_yshaarj status, shadowfiend: {}, mindbender: {}, voidwraith: {}",
+                      shadowfiend_pets, mindbender_pets, voidwraith_pets );
+
+    if ( shadowfiend_pets + mindbender_pets + voidwraith_pets == 0 )
+    {
+      buffs.idol_of_yshaarj->expire();
+    }
+  }
+}
+
 priest_t::priest_pets_t::priest_pets_t( priest_t& p )
   : shadowfiend( "shadowfiend", &p, []( priest_t* priest ) { return new fiend::shadowfiend_pet_t( priest ); } ),
     mindbender( "mindbender", &p, []( priest_t* priest ) { return new fiend::mindbender_pet_t( priest ); } ),
@@ -1200,7 +1229,7 @@ void priest_t::priest_pets_t::set_pet_defaults( priest_t& p )
   auto thing_from_beyond_spell = p.find_spell( 373277 );
   thing_from_beyond.set_default_duration( thing_from_beyond_spell->duration() );
 
-  auto shadowfiend_spell = p.find_spell( 34433 );
+  auto shadowfiend_spell = p.find_spell( 1280172 );
   shadowfiend.set_default_duration( shadowfiend_spell->duration() );
 
   auto mindbender_spell = p.find_spell( 200174 );
