@@ -8794,10 +8794,10 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 
     if ( !p()->buff.metamorphosis->up() )
     {
-      p()->buff.demonsurge_abilities[ demonsurge_ability::ANNIHILATION ]->trigger();
-      p()->buff.demonsurge_abilities[ demonsurge_ability::DEATH_SWEEP ]->trigger();
       p()->buff.demonsurge_demonsurge->trigger();
     }
+    p()->buff.demonsurge_abilities[ demonsurge_ability::ANNIHILATION ]->trigger();
+    p()->buff.demonsurge_abilities[ demonsurge_ability::DEATH_SWEEP ]->trigger();
 
     const timespan_t extend_duration = p()->talent.havoc.demonic->effectN( 1 ).time_value();
     p()->buff.metamorphosis->extend_duration_or_trigger( extend_duration );
