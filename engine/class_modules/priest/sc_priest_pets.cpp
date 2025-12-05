@@ -390,7 +390,7 @@ struct base_fiend_pet_t : public priest_pet_t
   double direct_power_mod;
 
   base_fiend_pet_t( priest_t* owner, util::string_view name, enum fiend_type type )
-    : priest_pet_t( owner->sim, *owner, name ),
+    : priest_pet_t( owner->sim, *owner, name, true ),
       inescapable_torment( nullptr ),
       gains(),
       fiend_type( type ),
@@ -629,13 +629,14 @@ struct mindbender_pet_t final : public base_fiend_pet_t
       power_leech_mana( o().specialization() == PRIEST_SHADOW ? 0.0
                                                               : o().find_spell( 123051 )->effectN( 1 ).percent() / 100 )
   {
-    direct_power_mod = 0.884;  // TODO: Verify value
+    direct_power_mod = 0.88;
 
     // Empirically tested to match 3/10/2023, actual value not available in spell data
     if ( owner->specialization() == PRIEST_DISCIPLINE )
     {
       direct_power_mod = 0.3;
     }
+
     npc_id = 62982;
 
     main_hand_weapon.min_dmg = owner->dbc->spell_scaling( owner->type, owner->level() ) * 2;
