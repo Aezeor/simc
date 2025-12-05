@@ -9460,7 +9460,7 @@ struct frostwyrms_fury_damage_t : public death_knight_spell_t
 struct fwf_action_base_t : public death_knight_spell_t
 {
   fwf_action_base_t( std::string_view name, death_knight_t* p, const spell_data_t* s, std::string_view options_str )
-    : death_knight_spell_t( name, p, s ), rider_dur( 0_ms ), exterm_stacks( 0 ), haste_val( 0 ), fwf_damage( nullptr )
+    : death_knight_spell_t( name, p, s ), rider_dur( 0_ms ), exterm_stacks( 0 ), haste_val( 0 ), pillar_extension( 0_ms ), fwf_damage(nullptr)
   {
     parse_options( options_str );
     if ( p->talent.rider.apocalypse_now.ok() )
@@ -9471,6 +9471,9 @@ struct fwf_action_base_t : public death_knight_spell_t
 
     if ( p->talent.frost.chosen_of_frostbrood_1.ok() )
       haste_val = p->spell.chosen_of_frostbrood_haste_buff->effectN( 1 ).percent();
+
+    if ( p->talent.frost.chosen_of_frostbrood_2.ok() )
+      pillar_extension = p->talent.frost.chosen_of_frostbrood_2->effectN( 1 ).time_value();
   }
 
   void execute() override
@@ -9497,12 +9500,16 @@ struct fwf_action_base_t : public death_knight_spell_t
       p()->buffs.chosen_of_frostbrood_haste->set_default_value( haste_val );
       p()->buffs.chosen_of_frostbrood_haste->trigger();
     }
+
+    if ( p()->talent.frost.chosen_of_frostbrood_2.ok() && p()->buffs.pillar_of_frost->check() )
+      p()->buffs.pillar_of_frost->extend_duration( p(), pillar_extension );
   }
 
 public:
   timespan_t rider_dur;
   double exterm_stacks;
   double haste_val;
+  timespan_t pillar_extension;
   action_t* fwf_damage;
 };
 
@@ -9517,14 +9524,12 @@ struct chosen_of_frostbrood_fwf_t final : public fwf_action_base_t
     rider_dur *= chosen_mult;
     exterm_stacks *= chosen_mult;
     haste_val *= chosen_mult;
+    pillar_extension *= chosen_mult;
   }
 
   void execute() override
   {
     fwf_action_base_t::execute();
-    if ( p()->talent.frost.chosen_of_frostbrood_2.ok() )
-      p()->buffs.killing_machine->trigger(
-          as<int>( p()->talent.frost.chosen_of_frostbrood_2->effectN( 1 ).base_value() ) );
 
     p()->buffs.chosen_of_frostbrood_fwf->expire();
   }
@@ -9543,10 +9548,6 @@ struct frostwyrms_fury_t final : public fwf_action_base_t
   void execute() override
   {
     fwf_action_base_t::execute();
-    if ( p()->talent.frost.chosen_of_frostbrood_2.ok() )
-      p()->resource_gain( RESOURCE_RUNIC_POWER,
-                          p()->talent.frost.chosen_of_frostbrood_2->effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
-                          p()->gains.chosen_of_frostbrood, this );
 
     if ( p()->talent.frost.chosen_of_frostbrood_3.ok() )
       make_event( *sim, p()->spell.chosen_of_frostbrood_delay->duration(),
