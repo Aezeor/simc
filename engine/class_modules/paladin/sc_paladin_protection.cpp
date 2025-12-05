@@ -666,6 +666,8 @@ struct sentinel_t : public paladin_spell_t
 
     if ( p()->talents.lightsmith.blessing_of_the_forge->ok() )
       p()->buffs.lightsmith.blessing_of_the_forge->execute();
+
+    p()->buffs.hammer_of_wrath->trigger();
   }
 };
 
@@ -679,6 +681,7 @@ void buffs::sentinel_buff_t::expire_override( int expiration_stacks, timespan_t 
     p->buffs.sentinel_decay->expire();
   }
   p->adjust_health_percent();
+  p->buffs.hammer_of_wrath->expire();
 }
 
 
