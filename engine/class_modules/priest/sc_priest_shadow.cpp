@@ -1132,10 +1132,9 @@ struct voidform_t final : public priest_spell_t
     may_miss                     = false;
     idol_of_nzoth_execute_stacks = 10;
 
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1370
-    if ( priest().bugs || priest().talents.shadow.improved_voidform.enabled() )
+    if ( priest().talents.shadow.improved_voidform.enabled() )
     {
-      energize_amount   = priest().bugs ? 60 : priest().talents.shadow.improved_voidform->effectN( 1 ).base_value();
+      energize_amount   = priest().talents.shadow.improved_voidform->effectN( 1 ).base_value();
       energize_type     = action_energize::ON_CAST;
       energize_resource = RESOURCE_INSANITY;
     }
