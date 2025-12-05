@@ -198,9 +198,6 @@ public:
   // Buffs waiting to be triggered/expired
   std::vector<buff_adjust_info_t> buff_queue;
 
-  // Splinters
-  std::vector<dot_t*> embedded_splinters;
-
   // Mana Cascade expiration events
   std::vector<event_t*> mana_cascade_expiration;
 
@@ -210,7 +207,6 @@ public:
     event_t* icicle;
     event_t* merged_buff_execute;
     event_t* meteor_burn;
-    event_t* splinterstorm;
   } events;
 
   // Ground AoE tracking
@@ -236,9 +232,6 @@ public:
     action_t* pet_freeze;
     action_t* pet_water_jet;
     action_t* splinter;
-    action_t* splinter_dot;
-    action_t* splinter_recall;
-    action_t* splinterstorm;
     action_t* touch_of_the_archmage;
     action_t* touch_of_the_magi_explosion;
 
@@ -395,7 +388,6 @@ public:
     proc_t* ignite_overwrite;  // Spread to target with existing ignite
 
     proc_t* brain_freeze;
-    proc_t* brain_freeze_splinterstorm;
     proc_t* fingers_of_frost;
     proc_t* freezing_applied;
     proc_t* freezing_expired;
@@ -445,8 +437,6 @@ public:
     bool trigger_overpowered_missiles;
     bool gained_initial_clearcasting; // Used to prevent queueing Arcane Missiles immediately after gaining the first stack Clearclasting.
     bool eureka;
-    int embedded_splinters;
-    int remaining_splinterstorm;
     int clearcasting_blp_count;
     int icicles;
   } state;
@@ -4950,113 +4940,23 @@ struct controlled_instincts_t final : public spell_t
   }
 };
 
-struct splinter_recall_t final : public spell_t
-{
-  splinter_recall_t( std::string_view n, mage_t* p ) :
-    spell_t( n, p, p->find_spell( p->specialization() == MAGE_FROST ? 443934 : 444736 ) )
-  {
-    background = proc = true;
-    base_dd_min = base_dd_max = 1.0;
-  }
-};
-
-struct embedded_splinter_t final : public mage_spell_t
-{
-  embedded_splinter_t( std::string_view n, mage_t* p ) :
-    mage_spell_t( n, p, p->find_spell( p->specialization() == MAGE_FROST ? 443740 : 444735 ) )
-  {
-    background = proc = true;
-  }
-
-  timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t duration ) const override
-  {
-    return duration;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = mage_spell_t::action_multiplier();
-
-    am *= 1.0 + p()->cache.mastery() * p()->spec.savant->effectN( 6 ).mastery_value();
-
-    return am;
-  }
-
-  void trigger_dot( action_state_t* s ) override
-  {
-    dot_t* d = get_dot( s->target );
-    int before = d->current_stack();
-    mage_spell_t::trigger_dot( s );
-    int after = d->current_stack();
-
-    if ( !range::contains( p()->embedded_splinters, d ) )
-      p()->embedded_splinters.push_back( d );
-
-    p()->state.embedded_splinters += after - before;
-    sim->print_debug( "Embedded Splinters: {} (added {})", p()->state.embedded_splinters, after - before );
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    mage_spell_t::last_tick( d );
-    int stack = d->current_stack();
-    assert( stack > 0 );
-
-    range::erase_remove( p()->embedded_splinters, d );
-
-    p()->state.embedded_splinters -= stack;
-    sim->print_debug( "Embedded Splinters: {} (removed {})", p()->state.embedded_splinters, stack );
-    assert( p()->state.embedded_splinters >= 0 );
-
-    if ( sim->event_mgr.canceled )
-      return;
-
-    // If the dot ended due to the target dying, transfer a random portion of the splinters to a nearby target.
-    if ( d->target->is_sleeping() )
-    {
-      int transfer = 1 + rng().range( stack );
-      make_event( *sim, [ this, transfer ] { p()->trigger_splinter( nullptr, transfer ); } );
-    }
-  }
-};
-
 struct splinter_t final : public mage_spell_t
 {
-  const bool splinterstorm;
   action_t* controlled_instincts = nullptr;
 
-  static unsigned spell_id( specialization_e spec, bool splinterstorm )
-  {
-    if ( spec == MAGE_FROST )
-      return splinterstorm ? 443747 : 443722;
-    else
-      return splinterstorm ? 444713 : 443763;
-  }
-
-  splinter_t( std::string_view n, mage_t* p, bool splinterstorm_ = false ) :
-    mage_spell_t( n, p, p->find_spell( spell_id( p->specialization(), splinterstorm_ ) ) ),
-    splinterstorm( splinterstorm_ )
+  splinter_t( std::string_view n, mage_t* p ) :
+    mage_spell_t( n, p, p->find_spell( p->specialization() == MAGE_FROST ? 443722 : 443763 ) )
   {
     background = proc = true;
 
     if ( p->talents.controlled_instincts.ok() )
+    {
       controlled_instincts = get_action<controlled_instincts_t>( "controlled_instincts", p );
+      add_child( controlled_instincts );
+    }
 
     freezing_chance = p->talents.infused_splinters->effectN( 2 ).percent();
     freezing_stacks = as<int>( p->talents.infused_splinters->effectN( 4 ).base_value() );
-
-    if ( splinterstorm )
-      return;
-
-    impact_action = p->action.splinter_dot;
-    add_child( impact_action );
-
-    if ( controlled_instincts )
-      add_child( controlled_instincts );
-    if ( p->action.splinter_recall )
-      add_child( p->action.splinter_recall );
-    if ( p->action.splinterstorm )
-      add_child( p->action.splinterstorm );
   }
 
   double action_multiplier() const override
@@ -5094,8 +4994,7 @@ struct splinter_t final : public mage_spell_t
 
     // Spread the splinter impacts around a bit. Note that we have to use gauss( double, double )
     // here because the timespan one doesn't produce negative values.
-    if ( !splinterstorm )
-      t += timespan_t::from_millis( rng().gauss( 0.0, 5.0 ) );
+    t += timespan_t::from_millis( rng().gauss( 0.0, 5.0 ) );
 
     return std::max( t, 0_ms );
   }
@@ -5267,72 +5166,6 @@ struct merged_buff_execute_event_t final : public mage_event_t
         b.buff->trigger( b.stacks );
     }
     mage->buff_queue.clear();
-  }
-};
-
-struct splinterstorm_event_t final : public mage_event_t
-{
-  splinterstorm_event_t( mage_t& m, timespan_t delta_time ) :
-    mage_event_t( m, delta_time )
-  { }
-
-  const char* name() const override
-  { return "splinterstorm_event"; }
-
-  static void schedule_next( mage_t* p, bool randomize = false )
-  {
-    timespan_t next = p->talents.splinterstorm->effectN( 2 ).period();
-    if ( randomize ) next *= p->rng().real();
-    p->events.splinterstorm = make_event<splinterstorm_event_t>( *p->sim, *p, next );
-  }
-
-  void execute() override
-  {
-    mage->events.splinterstorm = nullptr;
-
-    player_t* t = nullptr;
-    if ( mage->target && !mage->target->is_sleeping() && mage->target->is_enemy() )
-      t = mage->target;
-    else if ( const auto& tl = sim().target_non_sleeping_list; !tl.empty() )
-      t = rng().range( tl );
-
-    if ( t && mage->state.embedded_splinters >= as<int>( mage->talents.splinterstorm->effectN( 1 ).base_value() ) )
-    {
-      [[maybe_unused]] int splinters_state = mage->state.embedded_splinters;
-      int splinters = 0;
-      while ( !mage->embedded_splinters.empty() )
-      {
-        dot_t* d = mage->embedded_splinters.back();
-        assert( d->is_ticking() );
-
-        // calculate_tick_amount destructively modifies the state, make a copy and exclude crit damage
-        auto new_state = d->current_action->get_state( d->state );
-        new_state->result = RESULT_HIT;
-        double tick_damage = d->current_action->calculate_tick_amount( new_state, d->current_stack() );
-        action_state_t::release( new_state );
-
-        double ticks_left = d->ticks_left_fractional();
-        sim().print_debug( "Recalling splinter, tick damage: {}, remaining ticks: {}", tick_damage, ticks_left );
-        mage->action.splinter_recall->execute_on_target( d->target, ticks_left * tick_damage );
-        splinters += d->current_stack();
-        d->cancel();
-      }
-      assert( mage->state.embedded_splinters == 0 );
-      assert( splinters == splinters_state );
-
-      mage->state.remaining_splinterstorm += splinters;
-      make_repeating_event( sim(), 100_ms, [ m = mage, a = mage->action.splinterstorm, t ]
-        { a->execute_on_target( t ); m->state.remaining_splinterstorm--; }, splinters );
-
-      if ( mage->specialization() == MAGE_FROST )
-        mage->trigger_brain_freeze( mage->talents.splinterstorm->effectN( 5 ).percent(), mage->procs.brain_freeze_splinterstorm, 0_ms );
-      else
-        // Doesn't seem to be affected by Illuminated Thoughts.
-        // TODO: get more data and double check
-        mage->trigger_clearcasting( mage->talents.splinterstorm->effectN( 4 ).percent() );
-    }
-
-    schedule_next( mage );
   }
 };
 
@@ -5548,19 +5381,8 @@ void mage_t::create_actions()
       action.isothermic_meteor = get_action<meteor_t>( "isothermic_meteor", this, "", meteor_type::ISOTHERMIC );
   }
 
-  if ( talents.splinterstorm.ok() )
-    action.splinter_recall = get_action<splinter_recall_t>( "splinter_recall", this );
-
-  // Always create the splinterstorm action so that it can be referenced by the APL.
-  if ( specialization() != MAGE_FIRE )
-    action.splinterstorm = get_action<splinter_t>( "splinterstorm", this, true );
-
-  // Create Splinters last so that the previous actions can be easily added as children
   if ( talents.splintering_sorcery.ok() )
-  {
-    action.splinter_dot = get_action<embedded_splinter_t>( specialization() == MAGE_FROST ? "embedded_frost_splinter" : "embedded_arcane_splinter", this );
     action.splinter = get_action<splinter_t>( specialization() == MAGE_FROST ? "frost_splinter" : "arcane_splinter", this );
-  }
 
   if ( talents.glorious_incandescence.ok() )
     action.meteorite = get_action<meteorite_t>( "meteorite", this );
@@ -6309,12 +6131,11 @@ void mage_t::init_procs()
       procs.ignite_overwrite  = get_proc( "Ignites spread to targets with existing Ignite" );
       break;
     case MAGE_FROST:
-      procs.brain_freeze               = get_proc( "Brain Freeze" );
-      procs.brain_freeze_splinterstorm = get_proc( "Brain Freeze from Splinterstorm" );
-      procs.fingers_of_frost           = get_proc( "Fingers of Frost" );
-      procs.freezing_applied           = get_proc( "Freezing applied" );
-      procs.freezing_expired           = get_proc( "Freezing expired" );
-      procs.freezing_overflow          = get_proc( "Freezing overflow" );
+      procs.brain_freeze      = get_proc( "Brain Freeze" );
+      procs.fingers_of_frost  = get_proc( "Fingers of Frost" );
+      procs.freezing_applied  = get_proc( "Freezing applied" );
+      procs.freezing_expired  = get_proc( "Freezing expired" );
+      procs.freezing_overflow = get_proc( "Freezing overflow" );
       break;
     default:
       break;
@@ -6532,7 +6353,6 @@ void mage_t::reset()
   player_t::reset();
 
   buff_queue.clear();
-  embedded_splinters.clear();
   mana_cascade_expiration.clear();
   events = events_t();
   ground_aoe_expiration = std::array<timespan_t, AOE_MAX>();
@@ -6553,9 +6373,6 @@ void mage_t::arise()
     trigger_icicle( options.initial_icicles );
     events::icicle_event_t::schedule_next( this, true );
   }
-
-  if ( talents.splinterstorm.ok() )
-    events::splinterstorm_event_t::schedule_next( this, true );
 }
 
 void mage_t::combat_begin()
@@ -6673,18 +6490,6 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
   {
     return make_fn_expr( name, [ this ]
     { return state.icicles; } );
-  }
-
-  if ( util::str_compare_ci( name, "embedded_splinters" ) )
-  {
-    return make_fn_expr( name, [ this ]
-    { return state.embedded_splinters; } );
-  }
-
-  if ( util::str_compare_ci( name, "remaining_splinterstorm" ) )
-  {
-    return make_fn_expr( name, [ this ]
-    { return state.remaining_splinterstorm; } );
   }
 
   if ( util::str_compare_ci( name, "clearcasting_blp_remains" ) )
@@ -7007,6 +6812,7 @@ void mage_t::trigger_splinter( player_t* target, int count )
   {
     player_t* t_ = target;
     if ( !t_ )
+      // TODO: This now prefers targets recently hit by the mage
       t_ = rng().range( sim->target_non_sleeping_list );
 
     int per_conjure = ( buffs.augury_abounds->check() || buffs.arcane_surge->check() ) && rng().roll( chance ) ? 2 : 1;
