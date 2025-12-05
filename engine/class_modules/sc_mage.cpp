@@ -297,7 +297,7 @@ public:
 
 
     // Spellslinger
-    buff_t* augury_abounds;
+    buff_t* splinterstorm;
 
 
     // Sunfury
@@ -1820,7 +1820,10 @@ public:
     if ( p()->spec.clearcasting->ok() && triggers.clearcasting )
     {
       // TODO: remove me
-      p()->trigger_clearcasting( p()->spec.clearcasting->effectN( 2 ).percent(), 100_ms );
+      double chance = p()->spec.clearcasting->effectN( 2 ).percent();
+      chance += p()->talents.illuminated_thoughts->effectN( 1 ).percent();
+      chance += p()->talents.archmages_wrath->effectN( 3 ).percent();
+      p()->trigger_clearcasting( chance, 100_ms );
       return;
       // TODO: Adjust this with the new BLP data
       constexpr int cc_blp_threshold = 13;
@@ -3183,7 +3186,7 @@ struct arcane_surge_t final : public arcane_mage_spell_t
 
   void execute() override
   {
-    p()->trigger_splinter( target, as<int>( p()->talents.augury_abounds->effectN( 1 ).base_value() ) );
+    p()->trigger_splinter( target, as<int>( p()->talents.splinterstorm->effectN( 1 ).base_value() ) );
 
     // Clear any existing surge buffs to trigger the DF2 4pc buff.
     p()->buffs.arcane_surge->expire();
@@ -3799,9 +3802,6 @@ struct frostbolt_t final : public frost_mage_spell_t
   {
     double m = frost_mage_spell_t::composite_da_multiplier( s );
 
-    // TODO: This can get consumed by a Glacial Spike that hits before FFB does.
-    // The GS benefits (and consumes) only from the extra damage, the explosion
-    // still happens on FFB hit.
     // TODO: Seems to be doing +100% damage rather than the +60% mentioned in desc
     // Possibly talent's effect 1? Same goes for the Fire version
     if ( frostfire && p()->state.trigger_ff_empowerment )
@@ -4140,7 +4140,7 @@ struct ice_lance_t final : public frost_mage_spell_t
     };
 
     if ( p()->options.il_requires_freezing )
-      range::erase_remove( tl, [ value ] ( player_t* t ) { value( t ) == 0; } );
+      range::erase_remove( tl, [ value ] ( player_t* t ) { return value( t ) == 0; } );
 
     if ( p()->options.il_sort_by_freezing )
       range::sort( tl, [ value ] ( player_t* a, player_t* b ) { return value( a ) > value( b ); } );
@@ -4653,7 +4653,7 @@ struct ray_of_frost_t final : public frost_mage_spell_t
     frost_mage_spell_t::tick( d );
 
     p()->trigger_freezing( d->target, 1, freezing_source ); // Not in spell data
-    p()->trigger_splinter( d->target, as<int>( p()->talents.augury_abounds->effectN( 3 ).base_value() ) );
+    p()->trigger_splinter( d->target, as<int>( p()->talents.splinterstorm->effectN( 3 ).base_value() ) );
 
     // TODO: FoF is granted through spell 269748. Unfortunately, Blizzard forgot to change its
     // period to 2 sec when Ray of Frost was changed to 4 sec channel, so now it only grants a single FoF.
@@ -4682,7 +4682,7 @@ struct ray_of_frost_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
     p()->buffs.comet_storm->trigger();
-    p()->buffs.augury_abounds->trigger();
+    p()->buffs.splinterstorm->trigger();
   }
 
   bool ready() override
@@ -6048,8 +6048,8 @@ void mage_t::create_buffs()
 
 
   // Spellslinger
-  buffs.augury_abounds = make_buff( this, "augury_abounds", find_spell( 1247908 ) )
-                           ->set_chance( talents.augury_abounds.ok() );
+  buffs.splinterstorm = make_buff( this, "splinterstorm", find_spell( 1247908 ) )
+                          ->set_chance( talents.splinterstorm.ok() );
 
   // Sunfury
   buffs.arcane_soul            = make_buff( this, "arcane_soul", find_spell( 451038 ) )
@@ -6823,7 +6823,7 @@ void mage_t::trigger_splinter( player_t* target, int count )
   if ( count < 0 )
     count = 1; // TODO: Effect 2 of Splintering Sorcery? Unclear
 
-  double chance = talents.augury_abounds->effectN( 2 ).percent();
+  double chance = talents.splinterstorm->effectN( 2 ).percent();
   for ( int i = 0; i < count; i++ )
   {
     player_t* t_ = target;
@@ -6831,7 +6831,7 @@ void mage_t::trigger_splinter( player_t* target, int count )
       // TODO: This now prefers targets recently hit by the mage
       t_ = rng().range( sim->target_non_sleeping_list );
 
-    int per_conjure = ( buffs.augury_abounds->check() || buffs.arcane_surge->check() ) && rng().roll( chance ) ? 2 : 1;
+    int per_conjure = ( buffs.splinterstorm->check() || buffs.arcane_surge->check() ) && rng().roll( chance ) ? 2 : 1;
     for ( int j = 0; j < per_conjure; j++ )
     {
       make_event( *sim, [ this, t = t_ ] { action.splinter->execute_on_target( t ); } );
