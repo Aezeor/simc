@@ -14707,7 +14707,7 @@ void death_knight_t::create_buffs()
           ->set_name_reporting( "lesser_ghoul" );
 
   buffs.lesser_ghoul_counter =
-      make_fallback( talent.unholy.unholy_aura.ok(), this, "lesser_ghoul_counter", spell.lesser_ghoul_counter )
+      make_fallback( talent.unholy.outnumber.ok(), this, "lesser_ghoul_counter", spell.lesser_ghoul_counter )
           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buffs.forbidden_knowledge = make_fallback( talent.unholy.forbidden_knowledge_1.ok(), this, "forbidden_knowledge",
