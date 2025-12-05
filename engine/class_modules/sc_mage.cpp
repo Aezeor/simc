@@ -3875,11 +3875,22 @@ struct frozen_orb_bolt_t final : public frost_mage_spell_t
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
     background = proc = true;
-    if ( p->talents.wintertide.ok() )
-    {
-      freezing_chance = p->talents.wintertide->proc_chance();
-      freezing_stacks = 1; // Not in spell data
-    }
+  }
+
+  void init_finished() override
+  {
+    proc_fof = p()->get_proc( "Fingers of Frost from Frozen Orb Bolt" );
+    frost_mage_spell_t::init_finished();
+  }
+
+  void execute() override
+  {
+    frost_mage_spell_t::execute();
+
+    // TODO: Technically, this sould be done on impact w/ a 100 ms icd, but there's basically
+    // no practical difference
+    if ( hit_any_target )
+      p()->trigger_fof( p()->talents.everlasting_frost->effectN( 2 ).percent(), proc_fof );
   }
 };
 
@@ -3898,7 +3909,9 @@ struct frozen_orb_t final : public frost_mage_spell_t
 
   void init_finished() override
   {
+    proc_brain_freeze = p()->get_proc( "Brain Freeze from Frozen Orb" );
     proc_fof = p()->get_proc( "Fingers of Frost from Frozen Orb" );
+
     frost_mage_spell_t::init_finished();
   }
 
@@ -3918,8 +3931,9 @@ struct frozen_orb_t final : public frost_mage_spell_t
 
     p()->buffs.permafrost_lances->trigger();
     p()->buffs.freezing_rain->trigger();
+    p()->trigger_brain_freeze( p()->talents.wintertide->effectN( 1 ).percent(), proc_brain_freeze );
     if ( p()->talents.everlasting_frost.ok() )
-      p()->trigger_fof( 1.0, proc_fof );
+      p()->trigger_fof( 1.0, proc_fof, as<int>( p()->talents.everlasting_frost->effectN( 1 ).base_value() ) );
   }
 
   void impact( action_state_t* s ) override
@@ -4083,6 +4097,7 @@ struct ice_lance_t final : public frost_mage_spell_t
 
     if ( p->talents.fractured_frost.ok() )
       aoe = 1 + as<int>( p->talents.fractured_frost->effectN( 1 ).base_value() );
+      // TODO: effectiveness?
 
     if ( p->spec.shatter->ok() )
       add_child( p->action.shatter.ice_lance );
