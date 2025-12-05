@@ -923,8 +923,12 @@ public:
     propagate_const<action_t*> epidemic_main;
     propagate_const<action_t*> infected_claws;
     propagate_const<action_t*> coil_of_devastation;
-    propagate_const<action_t*> virulent_plague_erupt;
-    propagate_const<action_t*> dread_plague_erupt;
+    propagate_const<action_t*> virulent_plague_erupt_ss;
+    propagate_const<action_t*> dread_plague_erupt_ss;
+    propagate_const<action_t*> virulent_plague_erupt_bb;
+    propagate_const<action_t*> dread_plague_erupt_bb;
+    propagate_const<action_t*> virulent_plague_erupt_pest;
+    propagate_const<action_t*> dread_plague_erupt_pest;
     propagate_const<action_t*> dread_plague;
     propagate_const<action_t*> putrefy;
     propagate_const<action_t*> putrefy_aoe;
@@ -10691,6 +10695,9 @@ struct pestilence_t final : public death_knight_spell_t
     damage_mult             = p->talent.unholy.pestilence->effectN( 2 ).percent();
     duration_mult           = p->talent.unholy.pestilence->effectN( 1 ).percent();
     target_filter_callback  = unholy_diseases_only();
+
+    add_child( p->background_actions.virulent_plague_erupt_pest );
+    add_child( p->background_actions.dread_plague_erupt_pest );
   }
 
   void execute() override
@@ -10709,13 +10716,13 @@ struct pestilence_t final : public death_knight_spell_t
     if ( vp->is_ticking() )
     {
       damage = vp->tick_damage_over_time( vp->remains() * duration_mult ) * damage_mult;
-      p()->background_actions.virulent_plague_erupt->execute_on_target( s->target, damage );
+      p()->background_actions.virulent_plague_erupt_pest->execute_on_target( s->target, damage );
       vp->cancel();
     }
     if ( dp->is_ticking() )
     {
       damage = dp->tick_damage_over_time( dp->remains() * duration_mult ) * damage_mult;
-      p()->background_actions.dread_plague_erupt->execute_on_target( s->target, damage );
+      p()->background_actions.dread_plague_erupt_pest->execute_on_target( s->target, damage );
       dp->cancel();
     }
   }
@@ -10830,6 +10837,8 @@ struct putrefy_aoe_t final : public death_knight_spell_t
     {
       blightburst_dur  = p->talent.unholy.blightburst->effectN( 1 ).time_value();
       blightburst_mult = p->talent.unholy.blightburst->effectN( 2 ).percent();
+      add_child( p->background_actions.virulent_plague_erupt_bb );
+      add_child( p->background_actions.dread_plague_erupt_bb );
     }
   }
 
@@ -10853,10 +10862,10 @@ struct putrefy_aoe_t final : public death_knight_spell_t
       if ( break_early )
         return;
 
-      p()->background_actions.virulent_plague_erupt->execute_on_target(
+      p()->background_actions.virulent_plague_erupt_bb->execute_on_target(
           s->target, dk_td->dot.virulent_plague->tick_damage_over_time( blightburst_dur ) * blightburst_mult );
 
-      p()->background_actions.dread_plague_erupt->execute_on_target(
+      p()->background_actions.dread_plague_erupt_bb->execute_on_target(
           s->target, dk_td->dot.dread_plague->tick_damage_over_time( blightburst_dur ) * blightburst_mult );
 
       dk_td->dot.dread_plague->adjust_duration( blightburst_dur );
@@ -11271,7 +11280,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 
     if ( dot == td->dot.virulent_plague )
     {
-      p()->background_actions.virulent_plague_erupt->execute_on_target( s->target, dam );
+      p()->background_actions.virulent_plague_erupt_ss->execute_on_target( s->target, dam );
       for ( auto& target : target_list() )
       {
         if ( get_td( target )->dot.virulent_plague->is_ticking() )
@@ -11282,7 +11291,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
       }
     }
     else
-      p()->background_actions.dread_plague_erupt->execute_on_target( s->target, dam );
+      p()->background_actions.dread_plague_erupt_ss->execute_on_target( s->target, dam );
   }
 
 private:
@@ -11316,8 +11325,8 @@ struct scourge_strike_t final : public scourge_strike_base_t
 
     p->pets.lesser_ghoul_fs.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
 
-    add_child( p->background_actions.virulent_plague_erupt );
-    add_child( p->background_actions.dread_plague_erupt );
+    add_child( p->background_actions.virulent_plague_erupt_ss );
+    add_child( p->background_actions.dread_plague_erupt_ss );
 
     if ( p->talent.sanlayn.infliction_of_sorrow.ok() )
       add_child( p->background_actions.infliction_of_sorrow );
@@ -12772,8 +12781,23 @@ void death_knight_t::create_actions()
 
     if ( talent.unholy.scourge_strike.ok() )
     {
-      background_actions.virulent_plague_erupt = get_action<virulent_plague_erupt_t>( "virulent_plague_erupt", this );
-      background_actions.dread_plague_erupt    = get_action<dread_plague_erupt_t>( "dread_plague_erupt", this );
+      background_actions.virulent_plague_erupt_ss =
+          get_action<virulent_plague_erupt_t>( "virulent_plague_erupt", this );
+      background_actions.dread_plague_erupt_ss = get_action<dread_plague_erupt_t>( "dread_plague_erupt", this );
+    }
+
+    if ( talent.unholy.blightburst.ok() )
+    {
+      background_actions.virulent_plague_erupt_bb =
+          get_action<virulent_plague_erupt_t>( "virulent_plague_erupt_bb", this );
+      background_actions.dread_plague_erupt_bb = get_action<dread_plague_erupt_t>( "dread_plague_erupt_bb", this );
+    }
+
+    if ( talent.unholy.pestilence.ok() )
+    {
+      background_actions.virulent_plague_erupt_pest =
+          get_action<virulent_plague_erupt_t>( "virulent_plague_erupt_pest", this );
+      background_actions.dread_plague_erupt_pest = get_action<dread_plague_erupt_t>( "dread_plague_erupt_pest", this );
     }
 
     if ( spec.epidemic->ok() )
