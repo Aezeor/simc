@@ -1580,6 +1580,10 @@ struct divine_toll_t : public paladin_spell_t
     {
       add_child( p->specialization() == PALADIN_PROTECTION ? p->active.divine_exaction_prot : p->active.divine_exaction_ret);
     }
+    if (p->talents.templar.divine_hammer->ok())
+    {
+      add_child( p->active.divine_hammer_tick );
+    }
   }
 
   void impact( action_state_t* s ) override
