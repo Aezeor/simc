@@ -6093,7 +6093,8 @@ void mage_t::create_buffs()
                                ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                ->set_chance( talents.brainstorm.ok() );
   buffs.overflowing_energy = make_buff( this, "overflowing_energy", find_spell( 394195 ) )
-                               ->set_default_value_from_effect( 1 )
+                               // TODO: ABar value?
+                               ->set_default_value_from_effect( specialization() == MAGE_FIRE ? 1 : 2 )
                                ->set_chance( talents.overflowing_energy.ok() );
 
 
