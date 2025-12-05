@@ -364,7 +364,7 @@ public:
     double blast_it_clearcasting_chance = 0.1618;
     bool fof_requires_freezing = true;
     bool il_requires_freezing = true;
-    bool il_sort_by_freezing = false;
+    bool il_sort_by_freezing = true;
     bool randomize_si_target = false;
   } options;
 
@@ -4078,122 +4078,76 @@ struct shatter_t final : public mage_spell_t
 
 struct ice_lance_t final : public frost_mage_spell_t
 {
-  struct ice_lance_impact_t final : public frost_mage_spell_t
-  {
-    int freezing_consume;
-    shatter_source_t* shatter_source;
-    shatter_source_t* shatter_source_cleave;
+  int freezing_consume;
+  shatter_source_t* shatter_source;
+  shatter_source_t* shatter_source_cleave;
 
-    ice_lance_impact_t( std::string_view n, mage_t* p ) :
-      frost_mage_spell_t( n, p, p->find_spell( 228598 ) ),
-      freezing_consume( as<int>( p->spec.shatter->effectN( 4 ).base_value() ) ),
-      shatter_source( p->get_shatter_source( name_str, freezing_consume ) ),
-      shatter_source_cleave( p->get_shatter_source( "Ice Lance cleave", freezing_consume ) )
-    {
-      background = true;
-      // Spell data contains the AoE effect which is disabled unless you pick Fractured Frost
-      // Fix the spell power mod and use base_aoe_multiplier for the cleave
-      double primary_coef = data().effectN( 1 ).sp_coeff();
-      double secondary_coef = data().effectN( 2 ).sp_coeff();
-      spell_power_mod.direct = primary_coef;
-      base_aoe_multiplier = secondary_coef / primary_coef;
-
-      if ( p->talents.fractured_frost.ok() )
-        aoe = 1 + as<int>( p->talents.fractured_frost->effectN( 1 ).base_value() );
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      frost_mage_spell_t::impact( s );
-
-      if ( result_is_hit( s->result ) && p()->action.shatter.ice_lance )
-      {
-        int stacks = p()->trigger_shatter( s->target, p()->action.shatter.ice_lance, freezing_consume,
-                                           s->chain_target == 0 ? shatter_source : shatter_source_cleave, p()->state.fingers_of_frost_active );
-        if ( s->chain_target == 0 && p()->talents.force_of_will.ok() )
-          p()->trigger_splinter( s->target, stacks / as<int>( p()->talents.force_of_will->effectN( 3 ).base_value() ) );
-        if ( stacks == freezing_consume )
-          p()->trigger_freezing( s->target, as<int>( p()->talents.polished_focus->effectN( 3 ).base_value() ), freezing_source );
-      }
-    }
-
-    size_t available_targets( std::vector<player_t*>& tl ) const override
-    {
-      frost_mage_spell_t::available_targets( tl );
-
-      if ( p()->state.fingers_of_frost_active && !p()->options.fof_requires_freezing )
-        return tl.size();
-
-      if ( p()->options.il_requires_freezing )
-      {
-        range::erase_remove( tl, [ this ] ( player_t* t )
-        {
-          if ( t == target ) return false;
-          if ( auto td = find_td( t ) ) return td->debuffs.freezing->check() == 0;
-          return true;
-        } );
-      }
-
-      if ( p()->options.il_sort_by_freezing )
-      {
-        auto value = [ this ] ( player_t* t )
-        {
-          if ( t == target ) return std::numeric_limits<int>::max();
-          if ( auto td = find_td( t ) ) return td->debuffs.freezing->check();
-          return 0;
-        };
-
-        range::sort( tl, [ value ] ( player_t* a, player_t* b ) { return value( a ) > value( b ); } );
-      }
-
-      return tl.size();
-    }
-
-    std::vector<player_t*>& target_list() const override
-    {
-      // Can't cache valid targets as they could change at any moment.
-      target_cache.is_valid = false;
-      return frost_mage_spell_t::target_list();
-    }
-  };
-
-  action_t* thermal_void_il = nullptr;
-
-  ice_lance_t( std::string_view n, mage_t* p, std::string_view options_str, bool thermal_void = false ) :
-    frost_mage_spell_t( n, p, p->talents.ice_lance )
+  ice_lance_t( std::string_view n, mage_t* p, std::string_view options_str ) :
+    frost_mage_spell_t( n, p, p->talents.ice_lance ),
+    freezing_consume( as<int>( p->spec.shatter->effectN( 4 ).base_value() ) ),
+    shatter_source( p->get_shatter_source( name_str, freezing_consume ) ),
+    shatter_source_cleave( p->get_shatter_source( "Ice Lance cleave", freezing_consume ) )
   {
     parse_options( options_str );
-    impact_action = get_action<ice_lance_impact_t>( "ice_lance_impact", p );
+    enable_calculate_on_impact( 228598 );
 
-    if ( thermal_void )
-    {
-      background = proc = true;
-      cooldown->duration = 0_ms;
-      // TODO: Seems to actually consume mana despite being a proc
-      // base_costs[ RESOURCE_MANA ] = 0;
-      return;
-    }
+    if ( p->talents.fractured_frost.ok() )
+      aoe = 1 + as<int>( p->talents.fractured_frost->effectN( 1 ).base_value() );
 
-    add_child( impact_action );
     if ( p->spec.shatter->ok() )
       add_child( p->action.shatter.ice_lance );
-    if ( p->talents.thermal_void.ok() )
-      thermal_void_il = get_action<ice_lance_t>( "thermal_void_ice_lance", p, "", true );
   }
 
   void execute() override
   {
     frost_mage_spell_t::execute();
-    if ( background )
-      return;
 
     p()->state.fingers_of_frost_active = p()->buffs.fingers_of_frost->up();
     p()->buffs.fingers_of_frost->decrement();
-    if ( thermal_void_il && p()->buffs.thermal_void->check() )
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    frost_mage_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) && p()->action.shatter.ice_lance )
     {
-      p()->buffs.thermal_void->decrement();
-      make_event( *sim, 0.8_s, [ this, t = target ] { thermal_void_il->execute_on_target( t ); } );
+      int stacks = p()->trigger_shatter( s->target, p()->action.shatter.ice_lance, freezing_consume,
+                                         s->chain_target == 0 ? shatter_source : shatter_source_cleave, p()->state.fingers_of_frost_active );
+      if ( s->chain_target == 0 && p()->talents.force_of_will.ok() )
+        p()->trigger_splinter( s->target, stacks / as<int>( p()->talents.force_of_will->effectN( 3 ).base_value() ) );
     }
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    frost_mage_spell_t::available_targets( tl );
+
+    if ( p()->state.fingers_of_frost_active && !p()->options.fof_requires_freezing )
+      return tl.size();
+
+    // Priority for target selection. Main target is always chosen, rest depends on Freezing stacks.
+    auto value = [ this ] ( player_t* t )
+    {
+      if ( t == target ) return std::numeric_limits<int>::max();
+      if ( auto td = find_td( t ) ) return td->debuffs.freezing->check();
+      return 0;
+    };
+
+    if ( p()->options.il_requires_freezing )
+      range::erase_remove( tl, [ value ] ( player_t* t ) { value( t ) == 0; } );
+
+    if ( p()->options.il_sort_by_freezing )
+      range::sort( tl, [ value ] ( player_t* a, player_t* b ) { return value( a ) > value( b ); } );
+
+    return tl.size();
+  }
+
+  std::vector<player_t*>& target_list() const override
+  {
+    // Can't cache valid targets as they could change at any moment.
+    target_cache.is_valid = false;
+    return frost_mage_spell_t::target_list();
   }
 };
 
