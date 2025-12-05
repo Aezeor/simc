@@ -2977,6 +2977,8 @@ struct am_data_t
 struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_spell_t, am_data_t>
 {
   int high_voltage_energize;
+  proc_t* crystal_source = nullptr;
+  proc_t* overpowered_source = nullptr;
 
   arcane_missiles_tick_t( std::string_view n, mage_t* p ) :
     custom_state_spell_t( n, p, p->find_spell( 7268 ) ),
@@ -2988,6 +2990,17 @@ struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_sp
     // The mage could have Overpowered Missiles without Aether Attunement,
     // so we can't use talents.aether_attunement here.
     base_aoe_multiplier *= p->find_spell( 1243307 )->effectN( 1 ).percent();
+  }
+
+  void init_finished() override
+  {
+    custom_state_spell_t::init_finished();
+
+    if ( p()->talents.arcane_salvo.ok() )
+    {
+      crystal_source = p()->get_proc( "Arcane Salvo applied (Focusing Crystal)" );
+      overpowered_source = p()->get_proc( "Arcane Salvo applied (Overpowered Missiles)" );
+    }
   }
 
   int n_targets() const override
@@ -3016,8 +3029,10 @@ struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_sp
     custom_state_spell_t::execute();
 
     p()->trigger_arcane_salvo( salvo_source );
-    p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.focusing_crystal->effectN( 2 ).base_value() ),
+    p()->trigger_arcane_salvo( crystal_source, as<int>( p()->talents.focusing_crystal->effectN( 2 ).base_value() ),
                                p()->talents.focusing_crystal->effectN( 1 ).percent() );
+    if ( p()->buffs.overpowered_missiles->check() )
+      p()->trigger_arcane_salvo( overpowered_source, as<int>( p()->talents.overpowered_missiles->effectN( 2 ).base_value() ) );
 
     if ( rng().roll( p()->talents.high_voltage->effectN( 1 ).percent() ) )
       p()->trigger_arcane_charge( high_voltage_energize );
