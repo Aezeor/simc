@@ -281,7 +281,6 @@ public:
     buff_t* feel_the_burn;
     buff_t* fevered_incantation;
     buff_t* fiery_rush;
-    buff_t* frenetic_speed;
     buff_t* heating_up;
     buff_t* hot_streak;
     buff_t* hyperthermia;
@@ -529,6 +528,7 @@ public:
     player_talent_t improved_ice_barrier;
     player_talent_t improved_prismatic_barrier;
 
+
     // Arcane
     // Row 1
     player_talent_t arcane_missiles;
@@ -574,8 +574,8 @@ public:
     player_talent_t evocation;
     player_talent_t mana_adept;
     player_talent_t enlightened;
-    player_talent_t illuminated_thoughts;
     player_talent_t focusing_crystal;
+    player_talent_t illuminated_thoughts;
 
     // Row 9
     player_talent_t touch_of_the_archmage_2;
@@ -592,12 +592,14 @@ public:
     player_talent_t orb_mastery;
     player_talent_t orb_barrage;
 
+
     // Fire
     // Row 1
     player_talent_t pyroblast;
 
     // Row 2
     player_talent_t fire_blast;
+    player_talent_t firestarter;
     player_talent_t flamestrike_1;
     player_talent_t flamestrike_2;
 
@@ -612,7 +614,6 @@ public:
     player_talent_t meteor;
 
     // Row 5
-    player_talent_t firestarter;
     player_talent_t scorch;
     player_talent_t flame_on;
     player_talent_t kindling;
@@ -620,9 +621,8 @@ public:
     player_talent_t deep_impact;
 
     // Row 6
+    player_talent_t heat_shimmer;
     player_talent_t scald;
-    player_talent_t frenetic_speed;
-    player_talent_t inflame;
     player_talent_t controlled_destruction;
     player_talent_t mote_of_flame;
     player_talent_t blast_zone;
@@ -632,8 +632,7 @@ public:
     player_talent_t intensifying_flame;
     player_talent_t spontaneous_combustion;
     player_talent_t molten_fury;
-    player_talent_t mark_of_the_firelord;
-    player_talent_t pyromastery;
+    player_talent_t inflame;
 
     // Row 8
     player_talent_t fired_up_1;
@@ -644,7 +643,7 @@ public:
     // Row 9
     player_talent_t fired_up_2;
     player_talent_t master_of_flame;
-    player_talent_t feel_the_burn;
+    player_talent_t from_the_ashes;
     player_talent_t fiery_rush;
     player_talent_t flame_accelerant;
     player_talent_t pyromaniac;
@@ -652,11 +651,12 @@ public:
     // Row 10
     player_talent_t fired_up_3;
     player_talent_t burnout;
-    player_talent_t from_the_ashes;
+    player_talent_t feel_the_burn;
     player_talent_t burn_it_all;
     player_talent_t slow_burn;
     player_talent_t pyroclasm;
     player_talent_t cinderstorm;
+
 
     // Frost
     // Row 1
@@ -679,27 +679,27 @@ public:
 
     // Row 5
     player_talent_t brain_freeze;
-    player_talent_t icy_hand;
+    player_talent_t piercing_cold;
     player_talent_t ray_of_frost;
-    player_talent_t wintertide;
+    player_talent_t everlasting_frost;
     player_talent_t permafrost_lances;
 
     // Row 6
     player_talent_t frozen_touch;
     player_talent_t splitting_ice;
-    player_talent_t improved_shatter;
+    player_talent_t flash_freeze;
     player_talent_t frigid_focus;
     player_talent_t splintering_ray;
     player_talent_t winters_blessing;
-    player_talent_t everlasting_frost;
     player_talent_t freezing_rain;
+    player_talent_t cone_of_frost;
 
     // Row 7
     player_talent_t fractured_frost;
-    player_talent_t piercing_cold;
-    player_talent_t summon_water_elemental;
+    player_talent_t improved_shatter;
     player_talent_t deep_shatter;
-    player_talent_t cone_of_frost;
+    player_talent_t white_out;
+    player_talent_t wintertide;
 
     // Row 8
     player_talent_t hand_of_frost_1;
@@ -709,18 +709,22 @@ public:
 
     // Row 9
     player_talent_t hand_of_frost_2;
-    player_talent_t glacial_assault;
     player_talent_t freezing_winds;
     player_talent_t improved_flurry;
-    player_talent_t flash_freeze;
+    player_talent_t glacial_assault;
     player_talent_t crystalline_refraction;
+    player_talent_t lonely_winter;
+    player_talent_t summon_water_elemental;
+    player_talent_t glacial_chill;
+    player_talent_t glacial_shatter;
     player_talent_t hailstones;
 
     // Row 10
     player_talent_t hand_of_frost_3;
-    player_talent_t comet_storm;
     player_talent_t thermal_void;
     player_talent_t glaciate;
+    player_talent_t comet_storm;
+
 
     // Frostfire
     // Row 1
@@ -750,6 +754,7 @@ public:
     // Row 5
     player_talent_t isothermic_core;
 
+
     // Spellslinger
     // Row 1
     player_talent_t splintering_sorcery;
@@ -777,6 +782,7 @@ public:
 
     // Row 5
     player_talent_t splinterstorm;
+
 
     // Sunfury
     // Row 1
@@ -840,7 +846,6 @@ public:
   role_e primary_role() const override { return ROLE_SPELL; }
   stat_e convert_hybrid_stat( stat_e ) const override;
   double resource_regen_per_second( resource_e ) const override;
-  double stacking_movement_modifier() const override;
   double composite_player_critical_damage_multiplier( const action_state_t*, school_e school ) const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_spell_crit_chance() const override;
@@ -3663,15 +3668,6 @@ struct flamestrike_t final : public hot_streak_spell_t
     return m;
   }
 
-  double composite_ignite_multiplier( const action_state_t* s ) const override
-  {
-    double m = hot_streak_spell_t::composite_ignite_multiplier( s );
-
-    m *= 1.0 + p()->talents.mark_of_the_firelord->effectN( 1 ).percent();
-
-    return m;
-  }
-
   void execute() override
   {
     hot_streak_spell_t::execute();
@@ -5866,14 +5862,14 @@ void mage_t::init_spells()
   talents.evocation               = find_talent_spell( talent_tree::SPECIALIZATION, "Evocation"             );
   talents.mana_adept              = find_talent_spell( talent_tree::SPECIALIZATION, "Mana Adept"            );
   talents.enlightened             = find_talent_spell( talent_tree::SPECIALIZATION, "Enlightened"           );
-  talents.illuminated_thoughts    = find_talent_spell( talent_tree::SPECIALIZATION, "Illuminated Thoughts"  );
   talents.focusing_crystal        = find_talent_spell( talent_tree::SPECIALIZATION, "Focusing Crystal"      );
+  talents.illuminated_thoughts    = find_talent_spell( talent_tree::SPECIALIZATION, "Illuminated Thoughts"  );
   // Row 9
   talents.touch_of_the_archmage_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1257947                 );
   talents.prodigious_savant       = find_talent_spell( talent_tree::SPECIALIZATION, "Prodigious Savant"     );
   talents.eureka                  = find_talent_spell( talent_tree::SPECIALIZATION, "Eureka"                );
   talents.arcane_singularity      = find_talent_spell( talent_tree::SPECIALIZATION, "Arcane Singularity"    );
-  // Row 1
+  // Row 10
   talents.touch_of_the_archmage_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1257950                 );
   talents.charged_missiles        = find_talent_spell( talent_tree::SPECIALIZATION, "Charged Missiles"      );
   talents.high_voltage            = find_talent_spell( talent_tree::SPECIALIZATION, "High Voltage"          );
@@ -5887,6 +5883,7 @@ void mage_t::init_spells()
   talents.pyroblast              = find_talent_spell( talent_tree::SPECIALIZATION, "Pyroblast"              );
   // Row 2
   talents.fire_blast             = find_talent_spell( talent_tree::SPECIALIZATION, "Fire Blast"             );
+  talents.firestarter            = find_talent_spell( talent_tree::SPECIALIZATION, "Firestarter"            );
   talents.flamestrike_1          = find_talent_spell( talent_tree::SPECIALIZATION, 2120                     );
   talents.flamestrike_2          = find_talent_spell( talent_tree::SPECIALIZATION, 1254851                  );
   // Row 3
@@ -5898,16 +5895,14 @@ void mage_t::init_spells()
   talents.cauterize              = find_talent_spell( talent_tree::SPECIALIZATION, "Cauterize"              );
   talents.meteor                 = find_talent_spell( talent_tree::SPECIALIZATION, "Meteor"                 );
   // Row 5
-  talents.firestarter            = find_talent_spell( talent_tree::SPECIALIZATION, "Firestarter"            );
   talents.scorch                 = find_talent_spell( talent_tree::SPECIALIZATION, "Scorch"                 );
   talents.flame_on               = find_talent_spell( talent_tree::SPECIALIZATION, "Flame On"               );
   talents.kindling               = find_talent_spell( talent_tree::SPECIALIZATION, "Kindling"               );
   talents.critical_mass          = find_talent_spell( talent_tree::SPECIALIZATION, "Critical Mass"          );
   talents.deep_impact            = find_talent_spell( talent_tree::SPECIALIZATION, "Deep Impact"            );
   // Row 6
+  talents.heat_shimmer           = find_talent_spell( talent_tree::SPECIALIZATION, "Heat Shimmer"           );
   talents.scald                  = find_talent_spell( talent_tree::SPECIALIZATION, "Scald"                  );
-  talents.frenetic_speed         = find_talent_spell( talent_tree::SPECIALIZATION, "Frenetic Speed"         );
-  talents.inflame                = find_talent_spell( talent_tree::SPECIALIZATION, "Inflame"                );
   talents.controlled_destruction = find_talent_spell( talent_tree::SPECIALIZATION, "Controlled Destruction" );
   talents.mote_of_flame          = find_talent_spell( talent_tree::SPECIALIZATION, "Mote of Flame"          );
   talents.blast_zone             = find_talent_spell( talent_tree::SPECIALIZATION, "Blast Zone"             );
@@ -5916,8 +5911,7 @@ void mage_t::init_spells()
   talents.intensifying_flame     = find_talent_spell( talent_tree::SPECIALIZATION, "Intensifying Flame"     );
   talents.spontaneous_combustion = find_talent_spell( talent_tree::SPECIALIZATION, "Spontaneous Combustion" );
   talents.molten_fury            = find_talent_spell( talent_tree::SPECIALIZATION, "Molten Fury"            );
-  talents.mark_of_the_firelord   = find_talent_spell( talent_tree::SPECIALIZATION, "Mark of the Firelord"   );
-  talents.pyromastery            = find_talent_spell( talent_tree::SPECIALIZATION, "Pyromastery"            );
+  talents.inflame                = find_talent_spell( talent_tree::SPECIALIZATION, "Inflame"                );
   // Row 8
   talents.fired_up_1             = find_talent_spell( talent_tree::SPECIALIZATION, 1257343                  );
   talents.wildfire               = find_talent_spell( talent_tree::SPECIALIZATION, "Wildfire"               );
@@ -5926,14 +5920,14 @@ void mage_t::init_spells()
   // Row 9
   talents.fired_up_2             = find_talent_spell( talent_tree::SPECIALIZATION, 1257349                  );
   talents.master_of_flame        = find_talent_spell( talent_tree::SPECIALIZATION, "Master of Flame"        );
-  talents.feel_the_burn          = find_talent_spell( talent_tree::SPECIALIZATION, "Feel the Burn"          );
+  talents.from_the_ashes         = find_talent_spell( talent_tree::SPECIALIZATION, "From the Ashes"         );
   talents.fiery_rush             = find_talent_spell( talent_tree::SPECIALIZATION, "Fiery Rush"             );
   talents.flame_accelerant       = find_talent_spell( talent_tree::SPECIALIZATION, "Flame Accelerant"       );
   talents.pyromaniac             = find_talent_spell( talent_tree::SPECIALIZATION, "Pyromaniac"             );
   // Row 10
   talents.fired_up_3             = find_talent_spell( talent_tree::SPECIALIZATION, 1257348                  );
   talents.burnout                = find_talent_spell( talent_tree::SPECIALIZATION, "Burnout"                );
-  talents.from_the_ashes         = find_talent_spell( talent_tree::SPECIALIZATION, "From the Ashes"         );
+  talents.feel_the_burn          = find_talent_spell( talent_tree::SPECIALIZATION, "Feel the Burn"          );
   talents.burn_it_all            = find_talent_spell( talent_tree::SPECIALIZATION, "Burn It All"            );
   talents.slow_burn              = find_talent_spell( talent_tree::SPECIALIZATION, "Slow Burn"              );
   talents.pyroclasm              = find_talent_spell( talent_tree::SPECIALIZATION, "Pyroclasm"              );
@@ -5956,25 +5950,25 @@ void mage_t::init_spells()
   talents.frozen_orb             = find_talent_spell( talent_tree::SPECIALIZATION, "Frozen Orb"             );
   // Row 5
   talents.brain_freeze           = find_talent_spell( talent_tree::SPECIALIZATION, "Brain Freeze"           );
-  talents.icy_hand               = find_talent_spell( talent_tree::SPECIALIZATION, "Icy Hand"               );
+  talents.piercing_cold          = find_talent_spell( talent_tree::SPECIALIZATION, "Piercing Cold"          );
   talents.ray_of_frost           = find_talent_spell( talent_tree::SPECIALIZATION, "Ray of Frost"           );
-  talents.wintertide             = find_talent_spell( talent_tree::SPECIALIZATION, "Wintertide"             );
+  talents.everlasting_frost      = find_talent_spell( talent_tree::SPECIALIZATION, "Everlasting Frost"      );
   talents.permafrost_lances      = find_talent_spell( talent_tree::SPECIALIZATION, "Permafrost Lances"      );
   // Row 6
   talents.frozen_touch           = find_talent_spell( talent_tree::SPECIALIZATION, "Frozen Touch"           );
   talents.splitting_ice          = find_talent_spell( talent_tree::SPECIALIZATION, "Splitting Ice"          );
-  talents.improved_shatter       = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Shatter"       );
+  talents.flash_freeze           = find_talent_spell( talent_tree::SPECIALIZATION, "Flash Freeze"           );
   talents.frigid_focus           = find_talent_spell( talent_tree::SPECIALIZATION, "Frigid Focus"           );
   talents.splintering_ray        = find_talent_spell( talent_tree::SPECIALIZATION, "Splintering Ray"        );
   talents.winters_blessing       = find_talent_spell( talent_tree::SPECIALIZATION, "Winter's Blessing"      );
-  talents.everlasting_frost      = find_talent_spell( talent_tree::SPECIALIZATION, "Everlasting Frost"      );
   talents.freezing_rain          = find_talent_spell( talent_tree::SPECIALIZATION, "Freezing Rain"          );
+  talents.cone_of_frost          = find_talent_spell( talent_tree::SPECIALIZATION, "Cone of Frost"          );
   // Row 7
   talents.fractured_frost        = find_talent_spell( talent_tree::SPECIALIZATION, "Fractured Frost"        );
-  talents.piercing_cold          = find_talent_spell( talent_tree::SPECIALIZATION, "Piercing Cold"          );
-  talents.summon_water_elemental = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Water Elemental" );
+  talents.improved_shatter       = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Shatter"       );
   talents.deep_shatter           = find_talent_spell( talent_tree::SPECIALIZATION, "Deep Shatter"           );
-  talents.cone_of_frost          = find_talent_spell( talent_tree::SPECIALIZATION, "Cone of Frost"          );
+  talents.white_out              = find_talent_spell( talent_tree::SPECIALIZATION, "White Out"              );
+  talents.wintertide             = find_talent_spell( talent_tree::SPECIALIZATION, "Wintertide"             );
   // Row 8
   talents.hand_of_frost_1        = find_talent_spell( talent_tree::SPECIALIZATION, 1262935                  );
   talents.glacial_attunement     = find_talent_spell( talent_tree::SPECIALIZATION, "Glacial Attunement"     );
@@ -5982,21 +5976,24 @@ void mage_t::init_spells()
   talents.rimecaster             = find_talent_spell( talent_tree::SPECIALIZATION, "Rimecaster"             );
   // Row 9
   talents.hand_of_frost_2        = find_talent_spell( talent_tree::SPECIALIZATION, 1262981                  );
-  talents.glacial_assault        = find_talent_spell( talent_tree::SPECIALIZATION, "Glacial Assault"        );
   talents.freezing_winds         = find_talent_spell( talent_tree::SPECIALIZATION, "Freezing Winds"         );
   talents.improved_flurry        = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Flurry"        );
-  talents.flash_freeze           = find_talent_spell( talent_tree::SPECIALIZATION, "Flash Freeze"           );
+  talents.glacial_assault        = find_talent_spell( talent_tree::SPECIALIZATION, "Glacial Assault"        );
   talents.crystalline_refraction = find_talent_spell( talent_tree::SPECIALIZATION, "Crystalline Refraction" );
+  talents.lonely_winter          = find_talent_spell( talent_tree::SPECIALIZATION, "Lonely Winter"          );
+  talents.summon_water_elemental = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Water Elemental" );
+  talents.glacial_chill          = find_talent_spell( talent_tree::SPECIALIZATION, "Glacial Chill"          );
+  talents.glacial_shatter        = find_talent_spell( talent_tree::SPECIALIZATION, "Glacial Shatter"        );
   talents.hailstones             = find_talent_spell( talent_tree::SPECIALIZATION, "Hailstones"             );
   // Row 10
   talents.hand_of_frost_3        = find_talent_spell( talent_tree::SPECIALIZATION, 1263249                  );
-  talents.comet_storm            = find_talent_spell( talent_tree::SPECIALIZATION, "Comet Storm"            );
   talents.thermal_void           = find_talent_spell( talent_tree::SPECIALIZATION, "Thermal Void"           );
   talents.glaciate               = find_talent_spell( talent_tree::SPECIALIZATION, "Glaciate"               );
+  talents.comet_storm            = find_talent_spell( talent_tree::SPECIALIZATION, "Comet Storm"            );
 
   // Frostfire
   // Row 1
-  talents.frostfire_bolt        = find_talent_spell( talent_tree::HERO, 431044                  ); 
+  talents.frostfire_bolt        = find_talent_spell( talent_tree::HERO, 431044                  );
   // Row 2
   talents.imbued_warding        = find_talent_spell( talent_tree::HERO, "Imbued Warding"        );
   talents.meltdown              = find_talent_spell( talent_tree::HERO, "Meltdown"              );
@@ -6065,7 +6062,6 @@ void mage_t::init_spells()
   talents.spellfire_salvo           = find_talent_spell( talent_tree::HERO, "Spellfire Salvo"            );
   // Row 5
   talents.memory_of_alar            = find_talent_spell( talent_tree::HERO, "Memory of Al'ar"            );
-
 
   // Spec Spells
   spec.arcane_charge                 = find_specialization_spell( "Arcane Charge"                 );
@@ -6217,10 +6213,6 @@ void mage_t::create_buffs()
                                      ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
                                        { cooldowns.fire_blast->adjust_recharge_multiplier(); } )
                                      ->set_chance( talents.fiery_rush.ok() );
-  buffs.frenetic_speed           = make_buff( this, "frenetic_speed", find_spell( 236060 ) )
-                                     ->set_default_value_from_effect( 1 )
-                                     ->add_invalidate( CACHE_RUN_SPEED )
-                                     ->set_chance( talents.frenetic_speed.ok() );
   buffs.heating_up               = make_buff( this, "heating_up", find_spell( 48107 ) );
   buffs.hot_streak               = make_buff( this, "hot_streak", find_spell( 48108 ) );
   buffs.hyperthermia             = make_buff( this, "hyperthermia", find_spell( 383874 ) )
@@ -6518,15 +6510,6 @@ void mage_t::recalculate_resource_max( resource_e rt, gain_t* source )
     resources.current[ rt ] = resources.max[ rt ] * pct;
     sim->print_debug( "{} adjusts maximum mana from {} to {} ({}%)", name(), max, resources.max[ rt ], 100.0 * pct );
   }
-}
-
-double mage_t::stacking_movement_modifier() const
-{
-  double ms = player_t::stacking_movement_modifier();
-
-  ms += buffs.frenetic_speed->check_value();
-
-  return ms;
 }
 
 double mage_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
