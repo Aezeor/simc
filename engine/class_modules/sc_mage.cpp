@@ -96,6 +96,7 @@ struct mage_td_t final : public actor_target_data_t
   {
     buff_t* controlled_destruction;
     buff_t* freezing;
+    buff_t* freezing_winds;
     buff_t* molten_fury;
     buff_t* touch_of_the_archmage;
     buff_t* touch_of_the_magi;
@@ -3241,6 +3242,14 @@ struct blizzard_shard_t final : public frost_mage_spell_t
     }
   }
 
+  void impact( action_state_t* s ) override
+  {
+    frost_mage_spell_t::impact( s );
+
+    if ( p()->talents.freezing_winds.ok() )
+      get_td( s->target )->debuffs.freezing_winds->trigger();
+  }
+
   result_amount_type amount_type( const action_state_t*, bool ) const override
   {
     return result_amount_type::DMG_OVER_TIME;
@@ -4056,6 +4065,31 @@ struct shatter_t final : public mage_spell_t
     mage_spell_t( n, p, p->find_spell( 1246949 ) )
   {
     background = proc = true;
+    // Spell data contains the AoE effect which is disabled unless you pick Frostbite
+    // Fix the spell power mod and use base_aoe_multiplier for the cleave
+    double primary_coef = data().effectN( 1 ).sp_coeff();
+    double secondary_coef = data().effectN( 2 ).sp_coeff();
+    spell_power_mod.direct = primary_coef;
+    base_aoe_multiplier = secondary_coef / primary_coef;
+
+    if ( p->talents.frostbite.ok() )
+    {
+      aoe = -1;
+      // TODO: Despite the wording of the talent description, the reduced AoE damage does
+      // apply to the primary target as well (i.e. there's no full_amount_targets).
+      // TODO: Seems to be 8 target softcap rather than the 5 claimed by the description.
+      reduced_aoe_targets = p->talents.frostbite->effectN( 2 ).base_value();
+    }
+  }
+
+  void execute() override
+  {
+    // This is an unusual effect that isn't well-supported by simc; probably the best way to do it.
+    double old_multiplier = base_aoe_multiplier;
+    if ( auto td = find_td( target ); td && td->debuffs.freezing_winds->check() )
+      base_aoe_multiplier *= 1.0 + p()->talents.freezing_winds->effectN( 1 ).percent();
+    mage_spell_t::execute();
+    base_aoe_multiplier = old_multiplier;
   }
 
   double action_multiplier() const override
@@ -5235,6 +5269,9 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                            mage->procs.freezing_expired->occur();
                                        } )
                                      ->set_chance( mage->spec.shatter->ok() );
+  debuffs.freezing_winds         = make_buff( *this, "recently_damaged_by_blizzard", mage->find_spell( 1216988 ) )
+                                     ->set_chance( mage->talents.freezing_winds.ok() )
+                                     ->set_quiet( true );
   debuffs.molten_fury            = make_buff( *this, "molten_fury", mage->find_spell( 458910 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->set_chance( mage->talents.molten_fury.ok() );
