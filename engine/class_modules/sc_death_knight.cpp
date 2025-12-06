@@ -12765,6 +12765,13 @@ void death_knight_t::create_actions()
     background_actions.trollbanes_icy_fury = get_action<trollbanes_icy_fury_t>( "trollbanes_icy_fury", this );
 
     pet_summon.summon_nazgrim = get_action<summon_nazgrim_t>( "summon_nazgrim", this );
+
+    // Dummy Action for reporting purposes
+    action_t* riders_champion = new action_t( action_e::ACTION_OTHER, "riders_champion", this, talent.rider.riders_champion );
+    riders_champion->add_child( pet_summon.summon_whitemane );
+    riders_champion->add_child( pet_summon.summon_mograine );
+    riders_champion->add_child( pet_summon.summon_trollbane );
+    riders_champion->add_child( pet_summon.summon_nazgrim );
   }
 
   // San'layn
