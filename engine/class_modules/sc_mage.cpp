@@ -1802,9 +1802,9 @@ public:
     return c;
   }
 
-  size_t available_targets( std::vector<player_t*>& tl ) const override
+  std::vector<player_t*>& target_list() const override
   {
-    spell_t::available_targets( tl );
+    auto& tl = spell_t::target_list();
 
     if ( tl.size() > 2 && p()->options.randomize_si_target
       && data().affected_by( p()->talents.splitting_ice->effectN( 1 ) ) )
@@ -1812,7 +1812,7 @@ public:
       std::swap( tl[ 1 ], tl[ rng().range<size_t>( 1, tl.size() ) ] );
     }
 
-    return tl.size();
+    return tl;
   }
 
   void execute() override
@@ -4269,7 +4269,8 @@ struct ice_lance_t final : public frost_mage_spell_t
 
   std::vector<player_t*>& target_list() const override
   {
-    // Can't cache valid targets as they could change at any moment.
+    // Freezing stacks change often enough that trying to do a more
+    // fine-grained invalidation isn't worth it.
     target_cache.is_valid = false;
     return frost_mage_spell_t::target_list();
   }
