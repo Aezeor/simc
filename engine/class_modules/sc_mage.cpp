@@ -3758,6 +3758,12 @@ struct flurry_t final : public frost_mage_spell_t
       add_child( p->action.glacial_assault );
   }
 
+  void init_finished() override
+  {
+    proc_fof = p()->get_proc( "Fingers of Frost from Flurry" );
+    frost_mage_spell_t::init_finished();
+  }
+
   void execute() override
   {
     frost_mage_spell_t::execute();
@@ -3767,6 +3773,7 @@ struct flurry_t final : public frost_mage_spell_t
     if ( p()->state.brain_freeze_active )
       p()->buffs.thermal_void->trigger();
     p()->trigger_splinter( p()->target );
+    p()->trigger_fof( p()->sets->set( MAGE_FROST, MID1, B2 )->effectN( 3 ).percent(), proc_fof );
   }
 
   void impact( action_state_t* s ) override
