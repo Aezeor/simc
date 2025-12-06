@@ -235,6 +235,7 @@ public:
     action_t* splinter;
     action_t* touch_of_the_archmage;
     action_t* touch_of_the_magi_explosion;
+    action_t* winters_end;
 
     struct shatter_actions_t
     {
@@ -426,6 +427,7 @@ public:
     const spell_data_t* frost_mage;
     const spell_data_t* freeze_and_shatter;
     const spell_data_t* shatter;
+    const spell_data_t* winters_end;
   } spec;
 
   // State
@@ -4135,6 +4137,38 @@ struct shatter_t final : public mage_spell_t
   }
 };
 
+struct winters_end_t final : public mage_spell_t
+{
+  winters_end_t( std::string_view n, mage_t* p ) :
+    mage_spell_t( n, p, p->find_spell( 1280757 ) )
+  {
+    background = proc = true;
+    aoe = -1;
+    target_filter_callback = secondary_targets_only(); // Main target should be dead
+    // TODO: Check if this is actually 5 softcap
+    reduced_aoe_targets = p->spec.winters_end->effectN( 1 ).base_value();
+    // TODO: Does it benefit from Freezing Winds? Set bonus?
+  }
+
+  double action_multiplier() const override
+  {
+    double am = mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p()->buffs.permafrost_lances->check_value();
+
+    return am;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double cm = mage_spell_t::composite_crit_damage_bonus_multiplier();
+
+    cm *= 1.0 + p()->talents.deep_shatter->effectN( 1 ).percent() * p()->cache.spell_crit_chance();
+
+    return cm;
+  }
+};
+
 struct ice_lance_t final : public frost_mage_spell_t
 {
   int freezing_consume;
@@ -5283,11 +5317,19 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                      ->set_default_value( 0.1 * mage->talents.controlled_destruction->effectN( 1 ).percent() )
                                      ->set_chance( mage->talents.controlled_destruction.ok() );
   debuffs.freezing               = make_buff( *this, "freezing", mage->find_spell( 1221389 ) )
-                                     ->set_expire_callback( [ mage ] ( buff_t*, int stacks, timespan_t duration )
+                                     ->set_expire_callback( [ mage ] ( buff_t* b, int stacks, timespan_t duration )
                                        {
-                                         if ( duration != 0_ms ) return;
-                                         for ( int i = 0; i < stacks; i++ )
-                                           mage->procs.freezing_expired->occur();
+                                         if ( auto a = mage->action.winters_end; a && b->player->is_sleeping() && !b->sim->event_mgr.canceled )
+                                         {
+                                           double old_multiplier = a->base_multiplier;
+                                           a->base_multiplier *= stacks;
+                                           a->execute_on_target( b->player );
+                                           a->base_multiplier = old_multiplier;
+                                         }
+
+                                         if ( duration == 0_ms )
+                                           for ( int i = 0; i < stacks; i++ )
+                                             mage->procs.freezing_expired->occur();
                                        } )
                                      ->set_chance( mage->spec.shatter->ok() );
   debuffs.freezing_winds         = make_buff( *this, "recently_damaged_by_blizzard", mage->find_spell( 1216988 ) )
@@ -5422,6 +5464,9 @@ void mage_t::create_actions()
 
   if ( spec.ignite->ok() )
     action.ignite = get_action<ignite_t>( "ignite", this );
+
+  if ( spec.winters_end->ok() )
+    action.winters_end = get_action<winters_end_t>( "winters_end", this );
 
   if ( talents.arcane_familiar.ok() )
     action.arcane_assault = get_action<arcane_assault_t>( "arcane_assault", this );
@@ -5926,6 +5971,7 @@ void mage_t::init_spells()
   spec.pyroblast_clearcasting_driver = find_specialization_spell( "Pyroblast Clearcasting Driver" );
   spec.frost_mage                    = find_specialization_spell( "Frost Mage"                    );
   spec.shatter                       = find_specialization_spell( "Shatter"                       );
+  spec.winters_end                   = find_specialization_spell( "Winter's End"                  );
 
   // Mastery
   spec.savant             = find_mastery_spell( MAGE_ARCANE );
