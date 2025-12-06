@@ -956,6 +956,7 @@ public:
     propagate_const<action_t*> db_ghoul_epi;
     propagate_const<action_t*> putrefy_ghoul;
     propagate_const<action_t*> reanimation_magus;
+    propagate_const<action_t*> raise_skulker;
 
     // San'layn
     propagate_const<action_t*> blood_beast;
@@ -1493,6 +1494,7 @@ public:
     const spell_data_t* summon_lesser_ghoul;
     const spell_data_t* summon_magus;
     const spell_data_t* summon_reanimation_magus;
+    const spell_data_t* raise_skulker;
 
     // Unholy Tier Set Spells
     const spell_data_t* blighted_buff;
@@ -3029,7 +3031,7 @@ struct base_ghoul_pet_t : public death_knight_pet_t
 
   attack_t* create_main_hand_auto_attack() override
   {
-    return new auto_attack_melee_t<base_ghoul_pet_t>( this, "ghoul_melee" );
+    return new auto_attack_melee_t<base_ghoul_pet_t>( this, "auto_attack_mh" );
   }
 
   void init_base_stats() override
@@ -5070,7 +5072,7 @@ struct abomination_pet_t : public death_knight_pet_t
 
   attack_t* create_main_hand_auto_attack() override
   {
-    return new auto_attack_melee_t<abomination_pet_t>( this, "abomination_melee" );
+    return new auto_attack_melee_t<abomination_pet_t>( this, "auto_attack_mh" );
   }
 };
 
@@ -6054,6 +6056,21 @@ struct summon_gargoyle_t : public death_knight_summon_spell_t
     death_knight_summon_spell_t::execute();
     p()->pets.gargoyle.spawn( duration );
     set_duration( p()->pets.gargoyle.duration() );
+  }
+};
+
+struct raise_skulker_t : public death_knight_summon_spell_t
+{
+  raise_skulker_t( std::string_view n, death_knight_t* p )
+    : death_knight_summon_spell_t( n, p, p->spell.raise_skulker )
+  {
+    background = true;
+  }
+
+  void execute() override
+  {
+    death_knight_summon_spell_t::execute();
+    p()->pets.risen_skulker.spawn();
   }
 };
 
@@ -10780,8 +10797,12 @@ struct outbreak_t final : public death_knight_spell_t
     parse_options( options_str );
     aoe = 0;
 
-    add_child( p->background_actions.virulent_plague );
-    add_child( p->background_actions.dread_plague );
+    if ( !p->talent.unholy.pestilence.ok() )
+    {
+      add_child( p->background_actions.virulent_plague );
+      add_child( p->background_actions.dread_plague );
+    }
+
     if ( p->talent.unholy.pestilence.ok() )
       set_replacement_action( new pestilence_t( "pestilence", p ) );
   }
@@ -10914,6 +10935,12 @@ struct putrefy_t final : public death_knight_spell_t
     add_child( p->background_actions.putrefy_aoe );
     add_child( p->background_actions.putrefy );
 
+    if ( p->talent.unholy.pestilence.ok() )
+    {
+      add_child( p->background_actions.virulent_plague );
+      add_child( p->background_actions.dread_plague );
+    }
+
     p->cooldown.putrefy = cooldown;
 
     if ( p->talent.unholy.reanimation.ok() )
@@ -10982,9 +11009,11 @@ struct raise_dead_t final : public death_knight_summon_spell_t
     p->pets.ghoul_pet.set_event_callback(
         spawner::pet_event_type::PRE_SPAWN,
         [ this ]( spawner::pet_event_type, pets::ghoul_pet_t* p ) { p->precombat_spawn = is_precombat; } );
+
     if ( p->talent.unholy.all_will_serve.ok() )
     {
-      p->pets.risen_skulker.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+      p->pets.risen_skulker.set_creation_event_callback( pets::parent_pet_action_fn( p->pet_summon.raise_skulker ) );
+      add_child( p->pet_summon.raise_skulker );
     }
   }
 
@@ -11002,8 +11031,8 @@ struct raise_dead_t final : public death_knight_summon_spell_t
     // Summon for the duration specified in spelldata if there's one (no data = permanent pet)
     p()->pets.ghoul_pet.spawn( data().duration() );
 
-    if ( p()->talent.unholy.all_will_serve.ok() )
-      p()->pets.risen_skulker.spawn();
+    if ( p()->talent.unholy.all_will_serve.ok() && p()->pets.risen_skulker.active_pet() == nullptr )
+      p()->pet_summon.raise_skulker->execute();
   }
 
   bool ready() override
@@ -12860,6 +12889,9 @@ void death_knight_t::create_actions()
 
     if ( talent.unholy.coil_of_devastation.ok() )
       background_actions.coil_of_devastation = get_action<coil_of_devastation_t>( "coil_of_devastation", this );
+
+    if ( talent.unholy.all_will_serve.ok() )
+      pet_summon.raise_skulker = get_action<raise_skulker_t>( "raise_skulker", this );
   }
 
   else if ( specialization() == DEATH_KNIGHT_FROST )
@@ -13964,6 +13996,7 @@ void death_knight_t::spell_lookups()
   spell.summon_lesser_ghoul      = conditional_spell_lookup( talent.unholy.doomed_bidding.ok(), 275430 );
   spell.summon_magus             = conditional_spell_lookup( talent.unholy.magus_of_the_dead.ok(), 317776 );
   spell.summon_reanimation_magus = conditional_spell_lookup( talent.unholy.reanimation.ok(), 1242294 );
+  spell.raise_skulker            = conditional_spell_lookup( talent.unholy.all_will_serve.ok(), 196910 );
 
   // Unholy Tier Set Spells
   spell.blighted_buff = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, MID1, B4 ), 1271199 );

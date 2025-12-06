@@ -1933,6 +1933,7 @@ class SpellDataGenerator(DataGenerator):
           ( 377445, 0 ), # Unholy Aura debuff
           ( 1235391, 0 ), # Dark Transformation player buff
           ( 1250728, 0 ), # Mastery: Dreadblade pet crit buff
+          ( 196910, 0 ), # Raise Skulker
           # The War Within
           ( 290577, 0 ), # Abomiantion Disease Cloud
           ( 439539, 0 ), # Icy Death Torrent Damage

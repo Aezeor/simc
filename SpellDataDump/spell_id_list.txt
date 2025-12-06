@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.0.64741
+Class Spell ID List, wow build 12.0.0.64774
 
 Death Knight
 3714     Path of Frost
@@ -407,7 +407,7 @@ Death Knight
 196771   Remorseless Winter
 196780   Outbreak
 196782   Outbreak
-196910  *Raise Skulker
+196910   Raise Skulker
 197019  *Lil' Stinker
 197028  *Lil' Stinker
 197083  *Feast of the Soul

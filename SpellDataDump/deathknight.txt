@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.64741 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.64774 midnight-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -5088,6 +5088,24 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc77575
 Tooltip          : Upon expiration nearby enemies are infected by Virulent Plague.
+
+Name             : Raise Skulker (id=196910) [Spell Family (15)] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Spell Level      : 1
+Range            : 30 yards
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+Stance Mask      : 0x40000000
+Affecting Spells : Death's Messenger (437122 effect#1)
+Family Flags     : 12
+Attributes       : No Threat (42), No Aura Icon (60), Allow Dead Target (64), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=289126)   : Summon Guardian (28)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 99541 | Misc Value 2: 3721 | Radius: 0 - 5 yards | Target: at Self (18) -> Back Left in Area (84)
 
 Name             : Festering Wound (id=197147) [Spell Family (15), Passive] 
 Class            : Death Knight
@@ -16924,7 +16942,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1128872)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -30000 | Scaled Value: -30000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Raise Dead (46584), Raise Dead (46585), Lichborne (49039), Lichborne (50397), Sludge Belcher (212027)
+                   Affected Spells: Raise Dead (46584), Raise Dead (46585), Lichborne (49039), Lichborne (50397), Raise Skulker (196910), Sludge Belcher (212027)
                    Family Flags: 12, 36
 Description      : Reduces the cooldowns of Lichborne and Raise Dead by ${$s1/-1000} sec.
 
