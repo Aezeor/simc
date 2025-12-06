@@ -4117,11 +4117,11 @@ struct shatter_t final : public mage_spell_t
   void execute() override
   {
     // This is an unusual effect that isn't well-supported by simc; probably the best way to do it.
-    double old_multiplier = base_aoe_multiplier;
+    double old_mult = base_aoe_multiplier;
     if ( auto td = find_td( target ); td && td->debuffs.freezing_winds->check() )
       base_aoe_multiplier *= 1.0 + p()->talents.freezing_winds->effectN( 1 ).percent();
     mage_spell_t::execute();
-    base_aoe_multiplier = old_multiplier;
+    base_aoe_multiplier = old_mult;
   }
 
   double action_multiplier() const override
@@ -5321,10 +5321,10 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                        {
                                          if ( auto a = mage->action.winters_end; a && b->player->is_sleeping() && !b->sim->event_mgr.canceled )
                                          {
-                                           double old_multiplier = a->base_multiplier;
+                                           double old_mult = a->base_multiplier;
                                            a->base_multiplier *= stacks;
                                            a->execute_on_target( b->player );
-                                           a->base_multiplier = old_multiplier;
+                                           a->base_multiplier = old_mult;
                                          }
 
                                          if ( duration == 0_ms )
@@ -6741,13 +6741,13 @@ int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consump
   int shatter_stacks = fof ? max_consumption : std::min( max_consumption, stacks );
   int consume_stacks = fof ? 0 : std::min( max_consumption, stacks );
 
-  assert( source );
-  source->occur( shatter_stacks );
-
   // TODO: With FoF, Shatter should happen even if the target has 0 Freezing stacks, this
   // is currently not the case.
   if ( options.fof_requires_freezing && stacks == 0 )
-    return 0;
+    shatter_stacks = 0;
+
+  assert( source );
+  source->occur( shatter_stacks );
 
   if ( shatter_stacks > 0 )
   {
