@@ -12701,8 +12701,11 @@ void death_knight_t::create_actions()
   last_cast_rp_spender                 = background_actions.death_coil_damage;
 
   // Runeforges
-  if ( has_runeforge( RUNEFORGE_APOCALYPSE ) )
-    runeforge_actions.apocalypse_pestilence = get_action<runeforge_apocalypse_pestilence_t>( "pestilence", this );
+  if (has_runeforge( RUNEFORGE_APOCALYPSE ))
+  {
+    runeforge_actions.apocalypse_pestilence = get_action<runeforge_apocalypse_pestilence_t>( "pestilence_runeforge", this );
+    runeforge_actions.apocalypse_pestilence->name_str_reporting = "pestilence";
+  }
   if ( has_runeforge( RUNEFORGE_RAZORICE ) )
     runeforge_actions.razorice_damage = get_action<razorice_attack_t>( "razorice", this );
   if ( has_runeforge( RUNEFORGE_SPELLWARDING ) )
