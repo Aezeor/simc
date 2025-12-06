@@ -335,6 +335,7 @@ public:
     cooldown_t* meteor;
     cooldown_t* presence_of_mind;
     cooldown_t* pyromaniac;
+    cooldown_t* ray_of_frost;
   } cooldowns;
 
   // Gains
@@ -4220,6 +4221,17 @@ struct ice_lance_t final : public frost_mage_spell_t
 
       if ( s->chain_target == 0 && p()->talents.force_of_will.ok() )
         p()->trigger_splinter( s->target, stacks / as<int>( p()->talents.force_of_will->effectN( 3 ).base_value() ) );
+
+      // TODO: The old Polished Focus effect (1 Freezing refund on max consume) still somehow
+      // seems to be around. Definitely a bug.
+
+      if ( stacks >= 1 )
+      {
+        timespan_t whiteout = p()->talents.white_out->effectN( 1 ).time_value();
+        whiteout += stacks * p()->talents.white_out->effectN( 2 ).time_value();
+        p()->cooldowns.frozen_orb->adjust( -whiteout );
+        p()->cooldowns.ray_of_frost->adjust( -stacks * p()->talents.glaciate->effectN( 2 ).time_value() );
+      }
     }
   }
 
@@ -4758,16 +4770,6 @@ struct ray_of_frost_t final : public frost_mage_spell_t
     // period to 2 sec when Ray of Frost was changed to 4 sec channel, so now it only grants a single FoF.
     if ( p()->talents.crystalline_refraction.ok() && ( d->current_tick == 4 || d->current_tick == 8 ) )
       p()->trigger_fof( 1.0, proc_fof );
-
-    if ( p()->talents.glaciate.ok() )
-    {
-      // Seems to trigger an Icicle each tick
-      // TODO: Doesn't trigger the GS buff on its own, needs the natural Icicle regen to happen
-      p()->trigger_icicle( 1, !p()->bugs );
-      timespan_t cdr = -p()->talents.glaciate->effectN( 2 ).time_value();
-      p()->cooldowns.flurry->adjust( cdr, false );
-      p()->cooldowns.frozen_orb->adjust( cdr, false );
-    }
 
     if ( splintering_ray )
       splintering_ray->execute_on_target( d->target, p()->talents.splintering_ray->effectN( 1 ).percent() * d->state->result_total );
@@ -5377,6 +5379,7 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   cooldowns.meteor             = get_cooldown( "meteor"           );
   cooldowns.presence_of_mind   = get_cooldown( "presence_of_mind" );
   cooldowns.pyromaniac         = get_cooldown( "pyromaniac"       );
+  cooldowns.ray_of_frost       = get_cooldown( "ray_of_frost"     );
 
   // Options
   resource_regeneration = regen_type::DYNAMIC;
