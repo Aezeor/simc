@@ -4708,11 +4708,8 @@ struct pyroblast_t final : public hot_streak_spell_t
 
 struct splintering_ray_t final : public spell_t
 {
-  proc_t* freezing_source;
-
   splintering_ray_t( std::string_view n, mage_t* p ) :
-    spell_t( n, p, p->find_spell( 418735 ) ),
-    freezing_source( p->get_proc( "Freezing applied (Splintering Ray)" ) )
+    spell_t( n, p, p->find_spell( 418735 ) )
   {
     background = proc = true;
     target_filter_callback = secondary_targets_only();
@@ -4733,14 +4730,6 @@ struct splintering_ray_t final : public spell_t
   {
     // Ignore Positive Damage Taken Modifiers (321)
     return std::min( spell_t::composite_target_multiplier( target ), 1.0 );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-      debug_cast<mage_t*>( player )->trigger_freezing( s->target, 1, freezing_source );
   }
 };
 
