@@ -886,7 +886,7 @@ public:
   }
 
   void trigger_arcane_charge( int stacks = 1 );
-  bool trigger_brain_freeze( double chance, proc_t* source, timespan_t delay = 0.15_s );
+  bool trigger_brain_freeze( double chance, proc_t* source, timespan_t delay = 0_ms );
   bool trigger_crowd_control( const action_state_t* s, spell_mechanic type );
   bool trigger_clearcasting( double chance = 1.0, timespan_t delay = 0_ms, bool never_predictable = false );
   bool trigger_fof( double chance, proc_t* source, int stacks = 1 );
@@ -3846,7 +3846,7 @@ struct frostbolt_t final : public frost_mage_spell_t
     frost_mage_spell_t::execute();
 
     p()->trigger_fof( fof_chance, proc_fof );
-    p()->trigger_brain_freeze( bf_chance, proc_brain_freeze );
+    p()->trigger_brain_freeze( bf_chance, proc_brain_freeze, 150_ms );
     p()->trigger_splinter( p()->target );
 
     if ( frostfire && p()->buffs.frostfire_empowerment->check() )
@@ -3918,7 +3918,7 @@ struct frozen_orb_bolt_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    // TODO: Technically, this sould be done on impact w/ a 100 ms icd, but there's basically
+    // TODO: Technically, this sould be done w/ a 100 ms icd, but there's basically
     // no practical difference
     if ( hit_any_target )
       p()->trigger_fof( p()->talents.everlasting_frost->effectN( 2 ).percent(), proc_fof );
@@ -4055,9 +4055,8 @@ struct glacial_spike_t final : public frost_mage_spell_t
 
     p()->trigger_fof( fof_chance, proc_fof );
     p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), proc_fof );
-    p()->trigger_brain_freeze( bf_chance, proc_brain_freeze );
+    p()->trigger_brain_freeze( bf_chance, proc_brain_freeze, 150_ms );
     p()->trigger_splinter( p()->target );
-    // TODO: Currently doesn't work
     p()->trigger_splinter( p()->target, as<int>( p()->talents.signature_spell->effectN( 2 ).base_value() ) );
 
     if ( duality_pyroblast )
@@ -5088,6 +5087,7 @@ struct splinter_t final : public mage_spell_t
     p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.infused_splinters->effectN( 3 ).base_value() ),
                                p()->talents.infused_splinters->effectN( 1 ).percent() );
 
+    // TODO: This is actually 300 ms (rather than 250), not sure how
     auto cd = p()->specialization() == MAGE_FROST ? p()->cooldowns.frozen_orb : p()->cooldowns.arcane_orb;
     cd->adjust( -p()->talents.spellfrost_teachings->effectN( p()->specialization() == MAGE_FROST ? 2 : 1 ).time_value(), false );
   }
@@ -5319,6 +5319,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.freezing               = make_buff( *this, "freezing", mage->find_spell( 1221389 ) )
                                      ->set_expire_callback( [ mage ] ( buff_t* b, int stacks, timespan_t duration )
                                        {
+                                         // TODO: This currently doesn't work ingame
                                          if ( auto a = mage->action.winters_end; a && b->player->is_sleeping() && !b->sim->event_mgr.canceled )
                                          {
                                            double old_mult = a->base_multiplier;
@@ -6746,11 +6747,14 @@ int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consump
   if ( options.fof_requires_freezing && stacks == 0 )
     shatter_stacks = 0;
 
+  assert( consume_stacks <= shatter_stacks );
   assert( source );
   source->occur( shatter_stacks );
 
   if ( shatter_stacks > 0 )
   {
+    sim->print_log( "{} {} shatters {} ({} stacks, {} consumed)", *this, *action, *target, shatter_stacks, consume_stacks );
+
     double old_mult = action->base_multiplier;
     action->base_multiplier *= shatter_stacks;
     action->execute_on_target( target );
