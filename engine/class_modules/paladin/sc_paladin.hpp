@@ -142,9 +142,6 @@ public:
 
     action_t* background_avenging_wrath;
     action_t* background_crusade;
-
-    action_t* glory_of_the_vanguard;
-    action_t* blaze_of_glory;
   } active;
 
   // Buffs

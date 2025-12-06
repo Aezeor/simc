@@ -399,16 +399,16 @@ struct consecration_t : public paladin_spell_t
     add_child( damage_tick );
     if ( p->talents.lightsmith.divine_guidance->ok() )
     {
-      dg_damage = new divine_guidance_damage_t( "consecration_divine_guidance", p );
-      dg_heal   = new divine_guidance_heal_t( "consecration_divine_guidance_heal", p );
+      dg_damage = new divine_guidance_damage_t( "divine_guidance", p );
+      dg_heal   = new divine_guidance_heal_t( "divine_guidance_heal", p );
       add_child( dg_damage );
       // Maybe later: Heal?
     }
   }
 
   consecration_t( paladin_t* p, util::string_view source_name, consecration_source source )
-    : paladin_spell_t( std::string(source_name) + "_consecration", p, p->find_spell( 26573 ) ),
-      damage_tick( new consecration_tick_t( std::string(source_name) + "_consecration_tick", p ) ),
+    : paladin_spell_t( "consecration" + std::string( source_name ), p, p->find_spell( 26573 ) ),
+      damage_tick( new consecration_tick_t( "consecration_tick_" + std::string( source_name ), p ) ),
       source_type( source ),
       dg_damage( nullptr ),
       dg_heal( nullptr ),
@@ -420,13 +420,6 @@ struct consecration_t : public paladin_spell_t
     cooldown->duration = 0_ms;
 
     add_child( damage_tick );
-    if ( p->talents.lightsmith.divine_guidance->ok() )
-    {
-      dg_damage = new divine_guidance_damage_t( std::string(source_name) + "_divine_guidance", p );
-      dg_heal   = new divine_guidance_heal_t( std::string(source_name) + "_divine_guidance_heal", p );
-      add_child( dg_damage );
-      // Maybe later: Heal?
-    }
   }
 
   void init_finished() override
@@ -1984,7 +1977,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
 struct empyrean_hammer_wd_t : public paladin_spell_t
 {
   empyrean_hammer_wd_t( paladin_t* p )
-    : paladin_spell_t( "empyrean_hammer_wrathful_descent", p, p->spells.templar.empyrean_hammer_wd )
+    : paladin_spell_t( "empyrean_hammer_wd", p, p->spells.templar.empyrean_hammer_wd )
   {
     background             = true;
     may_crit               = false;
@@ -2597,8 +2590,18 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
       may_miss                     = false;
     }
   };
+  struct blaze_of_glory_t : public paladin_spell_t
+  {
+    blaze_of_glory_t( paladin_t* p ) : paladin_spell_t( "blaze_of_glory", p, p->spells.blaze_of_glory )
+    {
+      background             = true;
+      aoe                    = p->talents.glory_of_the_vanguard_3->effectN( 1 ).base_value();
+      target_filter_callback = secondary_targets_only();
+    }
+  };
 
   forges_reckoning_t* forges_reckoning;
+  blaze_of_glory_t* blaze_of_glory;
   shield_of_the_righteous_t( paladin_t* p, util::string_view options_str )
     : holy_power_consumer_t( "shield_of_the_righteous", p, p->spec.shield_of_the_righteous ), forges_reckoning( nullptr )
   {
@@ -2623,7 +2626,8 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     }
     if (p->talents.glory_of_the_vanguard_3->ok())
     {
-      add_child( p->active.blaze_of_glory );
+      blaze_of_glory = new blaze_of_glory_t( p );
+      add_child( blaze_of_glory );
     }
   }
 
@@ -2654,7 +2658,7 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     }
     if (p()->buffs.valor->up())
     {
-      p()->active.blaze_of_glory->execute_on_target( execute_state->target );
+      blaze_of_glory->execute_on_target( target );
       p()->buffs.valor->expire();
     }
     if (p()->sets->has_set_bonus(PALADIN_PROTECTION, MID1, B4))
@@ -3140,7 +3144,7 @@ void paladin_t::create_actions()
   }
 
   active.background_cons = new consecration_t( this, "blade_of_justice", BLADE_OF_JUSTICE );
-  active.hammer_of_light_cons = new consecration_t( this, "hammer_of_light", HAMMER_OF_LIGHT );
+  active.hammer_of_light_cons = new consecration_t( this, "hol", HAMMER_OF_LIGHT );
 
   player_t::create_actions();
 }
