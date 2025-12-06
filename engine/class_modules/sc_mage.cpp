@@ -239,6 +239,7 @@ public:
     struct shatter_actions_t
     {
       action_t* comet_storm;
+      action_t* glacial_spike;
       action_t* ice_lance;
       action_t* meteor;
     } shatter;
@@ -3996,9 +3997,13 @@ struct glacial_spike_t final : public frost_mage_spell_t
   double fof_chance = 0.0;
   double bf_chance = 0.0;
   action_t* duality_pyroblast = nullptr;
+  int freezing_consume;
+  shatter_source_t* shatter_source;
 
   glacial_spike_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    frost_mage_spell_t( n, p, p->find_spell( 199786 ) )
+    frost_mage_spell_t( n, p, p->find_spell( 199786 ) ),
+    freezing_consume( as<int>( p->talents.glacial_shatter->effectN( 1 ).base_value() ) ),
+    shatter_source( p->get_shatter_source( name_str, freezing_consume ) )
   {
     parse_options( options_str );
     enable_calculate_on_impact( 228600 );
@@ -4007,6 +4012,9 @@ struct glacial_spike_t final : public frost_mage_spell_t
     fof_chance = p->talents.fingers_of_frost->effectN( 1 ).percent();
     bf_chance = p->talents.brain_freeze->effectN( 1 ).percent();
     freezing_stacks = as<int>( p->spec.shatter->effectN( 3 ).base_value() );
+    if ( p->talents.glacial_shatter.ok() )
+      freezing_stacks = 0;
+
     chain_multiplier = 1.0; // The spell data value isn't used
     // TODO: GS seems to autocast if FFB hits while the GS buff is up, not sure what causes this
 
@@ -4052,11 +4060,14 @@ struct glacial_spike_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    if ( s->result == RESULT_CRIT && p()->talents.frostbite.ok() )
+    if ( s->result == RESULT_CRIT && p()->talents.frostbite.ok() && !p()->talents.glacial_shatter.ok() )
       p()->trigger_freezing( s->target, as<int>( p()->talents.frostbite->effectN( 1 ).base_value() ), freezing_source );
 
     if ( result_is_hit( s->result ) && p()->action.flash_freezeburn )
       p()->action.flash_freezeburn->execute_on_target( s->target, p()->talents.flash_freezeburn->effectN( 2 ).percent() * s->result_total );
+
+    if ( result_is_hit( s->result ) && p()->action.shatter.glacial_spike )
+      p()->trigger_shatter( s->target, p()->action.shatter.glacial_spike, freezing_consume, shatter_source );
   }
 
   bool ready() override
@@ -5403,9 +5414,10 @@ void mage_t::create_actions()
 
   if ( spec.shatter->ok() )
   {
-    action.shatter.comet_storm = get_action<shatter_t>( "shatter_comet_storm", this );
-    action.shatter.ice_lance   = get_action<shatter_t>( "shatter_ice_lance",   this );
-    action.shatter.meteor      = get_action<shatter_t>( "shatter_meteor",      this );
+    action.shatter.comet_storm   = get_action<shatter_t>( "shatter_comet_storm",   this );
+    action.shatter.glacial_spike = get_action<shatter_t>( "shatter_glacial_spike", this );
+    action.shatter.ice_lance     = get_action<shatter_t>( "shatter_ice_lance",     this );
+    action.shatter.meteor        = get_action<shatter_t>( "shatter_meteor",        this );
   }
 
   if ( spec.ignite->ok() )
