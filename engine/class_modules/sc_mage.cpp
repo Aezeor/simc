@@ -324,6 +324,7 @@ public:
   {
     cooldown_t* arcane_echo;
     cooldown_t* arcane_orb;
+    cooldown_t* augury_abounds;
     cooldown_t* combustion;
     cooldown_t* cone_of_cold;
     cooldown_t* dragons_breath;
@@ -5366,20 +5367,21 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   talents()
 {
   // Cooldowns
-  cooldowns.arcane_echo        = get_cooldown( "arcane_echo_icd"  );
-  cooldowns.arcane_orb         = get_cooldown( "arcane_orb"       );
-  cooldowns.combustion         = get_cooldown( "combustion"       );
-  cooldowns.cone_of_cold       = get_cooldown( "cone_of_cold"     );
-  cooldowns.dragons_breath     = get_cooldown( "dragons_breath"   );
-  cooldowns.fire_blast         = get_cooldown( "fire_blast"       );
-  cooldowns.flurry             = get_cooldown( "flurry"           );
-  cooldowns.from_the_ashes     = get_cooldown( "from_the_ashes"   );
-  cooldowns.frost_nova         = get_cooldown( "frost_nova"       );
-  cooldowns.frozen_orb         = get_cooldown( "frozen_orb"       );
-  cooldowns.meteor             = get_cooldown( "meteor"           );
-  cooldowns.presence_of_mind   = get_cooldown( "presence_of_mind" );
-  cooldowns.pyromaniac         = get_cooldown( "pyromaniac"       );
-  cooldowns.ray_of_frost       = get_cooldown( "ray_of_frost"     );
+  cooldowns.arcane_echo        = get_cooldown( "arcane_echo_icd"    );
+  cooldowns.arcane_orb         = get_cooldown( "arcane_orb"         );
+  cooldowns.augury_abounds     = get_cooldown( "augury_abounds_icd" );
+  cooldowns.combustion         = get_cooldown( "combustion"         );
+  cooldowns.cone_of_cold       = get_cooldown( "cone_of_cold"       );
+  cooldowns.dragons_breath     = get_cooldown( "dragons_breath"     );
+  cooldowns.fire_blast         = get_cooldown( "fire_blast"         );
+  cooldowns.flurry             = get_cooldown( "flurry"             );
+  cooldowns.from_the_ashes     = get_cooldown( "from_the_ashes"     );
+  cooldowns.frost_nova         = get_cooldown( "frost_nova"         );
+  cooldowns.frozen_orb         = get_cooldown( "frozen_orb"         );
+  cooldowns.meteor             = get_cooldown( "meteor"             );
+  cooldowns.presence_of_mind   = get_cooldown( "presence_of_mind"   );
+  cooldowns.pyromaniac         = get_cooldown( "pyromaniac"         );
+  cooldowns.ray_of_frost       = get_cooldown( "ray_of_frost"       );
 
   // Options
   resource_regeneration = regen_type::DYNAMIC;
@@ -6937,13 +6939,22 @@ void mage_t::trigger_splinter( player_t* target, int count )
     player_t* t_ = target;
     if ( !t_ )
       // TODO: This now prefers targets recently hit by the mage
-      t_ = rng().range( sim->target_non_sleeping_list );
+      // For now, let's just have it point at the mage's target.
+      t_ = this->target;
+      // t_ = rng().range( sim->target_non_sleeping_list );
 
     int per_conjure = ( buffs.splinterstorm->check() || buffs.arcane_surge->check() ) && rng().roll( chance ) ? 2 : 1;
     for ( int j = 0; j < per_conjure; j++ )
     {
       make_event( *sim, [ this, t = t_ ] { action.splinter->execute_on_target( t ); } );
     }
+  }
+
+  if ( talents.augury_abounds.ok() && cooldowns.augury_abounds->up() )
+  {
+    cooldowns.augury_abounds->start( talents.augury_abounds->internal_cooldown() );
+    if ( rng().roll( talents.augury_abounds->effectN( 1 ).percent() ) )
+      make_event( *sim, [ this ] { trigger_splinter( nullptr, as<int>( talents.augury_abounds->effectN( 2 ).base_value() ) ); } );
   }
 }
 
