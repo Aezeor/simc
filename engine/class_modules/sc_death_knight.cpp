@@ -3479,7 +3479,9 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
   {
     if ( dk()->talent.unholy.commander_of_the_dead.ok() )
       dk()->sample_data.lesser_ghoul_duration->add( this->duration.total_seconds() );
+
     base_ghoul_pet_t::arise();
+
     dk()->active_lesser_ghouls.push_back( this );
     dk()->buffs.lesser_ghoul_counter->trigger();
     dk()->sample_data.lesser_ghouls_active->add( as<unsigned>( dk()->active_lesser_ghouls.size() ) );
@@ -3488,12 +3490,17 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
   void demise() override
   {
     auto it = range::find( dk()->active_lesser_ghouls, this );
+
     if ( it != dk()->active_lesser_ghouls.end() )
       dk()->active_lesser_ghouls.erase( it );
+
     dk()->buffs.lesser_ghoul_counter->decrement();
+
     if ( dk()->talent.unholy.necromancers_cunning.ok() )
       ruptured_viscera->execute();
+
     base_ghoul_pet_t::demise();
+
     dk()->sample_data.lesser_ghouls_active->add( as<unsigned>( dk()->active_lesser_ghouls.size() ) );
   }
 
@@ -10837,9 +10844,7 @@ struct pillar_of_frost_t final : public death_knight_spell_t
 struct putrefy_aoe_t final : public death_knight_spell_t
 {
   putrefy_aoe_t( std::string_view n, death_knight_t* p )
-    : death_knight_spell_t( n, p, p->spell.putrefy_aoe ),
-      blightburst_dur( 0_s ),
-      blightburst_mult( 1.0 )
+    : death_knight_spell_t( n, p, p->spell.putrefy_aoe ), blightburst_dur( 0_s ), blightburst_mult( 1.0 )
   {
     aoe                = -1;
     radius             = data().effectN( 1 ).radius_max();
@@ -10854,35 +10859,34 @@ struct putrefy_aoe_t final : public death_knight_spell_t
     }
   }
 
+  void trigger_blightburst( action_state_t* s )
+  {
+    death_knight_td_t* dk_td = p()->get_target_data( s->target );
+
+    if ( !dk_td->dot.virulent_plague->is_ticking() )
+      p()->background_actions.virulent_plague->execute_on_target( s->target );
+    else
+    {
+      p()->background_actions.virulent_plague_erupt_bb->execute_on_target(
+          s->target, dk_td->dot.virulent_plague->tick_damage_over_time( blightburst_dur ) * blightburst_mult );
+      dk_td->dot.virulent_plague->adjust_duration( blightburst_dur );
+    }
+
+    if ( !dk_td->dot.dread_plague->is_ticking() )
+      p()->background_actions.dread_plague->execute_on_target( s->target );
+    else
+    {
+      p()->background_actions.dread_plague_erupt_bb->execute_on_target(
+          s->target, dk_td->dot.dread_plague->tick_damage_over_time( blightburst_dur ) * blightburst_mult );
+      dk_td->dot.dread_plague->adjust_duration( blightburst_dur );
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
     death_knight_spell_t::impact( s );
     if ( p()->talent.unholy.blightburst.ok() )
-    {
-      death_knight_td_t* dk_td = p()->get_target_data( s->target );
-      bool break_early         = false;
-      if ( !dk_td->dot.virulent_plague->is_ticking() )
-      {
-        p()->background_actions.virulent_plague->execute_on_target( s->target );
-        break_early = true;
-      }
-      if ( !dk_td->dot.dread_plague->is_ticking() )
-      {
-        p()->background_actions.dread_plague->execute_on_target( s->target );
-        break_early = true;
-      }
-      if ( break_early )
-        return;
-
-      p()->background_actions.virulent_plague_erupt_bb->execute_on_target(
-          s->target, dk_td->dot.virulent_plague->tick_damage_over_time( blightburst_dur ) * blightburst_mult );
-
-      p()->background_actions.dread_plague_erupt_bb->execute_on_target(
-          s->target, dk_td->dot.dread_plague->tick_damage_over_time( blightburst_dur ) * blightburst_mult );
-
-      dk_td->dot.dread_plague->adjust_duration( blightburst_dur );
-      dk_td->dot.virulent_plague->adjust_duration( blightburst_dur );
-    }
+      trigger_blightburst( s );
   }
 
 private:
