@@ -951,8 +951,10 @@ public:
 
     // Unholy
     propagate_const<action_t*> army_ghoul;
+    propagate_const<action_t*> fs_ghoul;
     propagate_const<action_t*> db_ghoul_coil;
     propagate_const<action_t*> db_ghoul_epi;
+    propagate_const<action_t*> putrefy_ghoul;
     propagate_const<action_t*> reanimation_magus;
 
     // San'layn
@@ -7745,9 +7747,10 @@ struct dark_transformation_t : public death_knight_spell_t
 
     if ( p->talent.unholy.magus_of_the_dead.ok() )
     {
-      p->pets.dt_magus.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
       summon_magus = get_action<summon_magus_t>( "dt_magus", p, p->spell.summon_magus,
                                                  magus_of_the_dead_e::MAGUS_DARK_TRANSFORMATION );
+      p->pets.dt_magus.set_creation_event_callback( pets::parent_pet_action_fn( summon_magus ) );
+      add_child( summon_magus );
     }
 
     if ( p->talent.sanlayn.the_blood_is_life.ok() )
@@ -7868,7 +7871,8 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
 
     harmful = false;
     target  = p;
-    p->pets.lesser_ghoul_army.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    p->pets.lesser_ghoul_army.set_creation_event_callback( pets::parent_pet_action_fn( p->pet_summon.army_ghoul ) );
+    add_child( p->pet_summon.army_ghoul );
     if ( p->talent.unholy.raise_abomination.ok() )
     {
       summon_abomination = get_action<summon_abomination_t>( "raise_abomination", p );
@@ -8816,7 +8820,11 @@ struct death_coil_t final : public death_coil_base_t
       add_child( p->background_actions.coil_of_devastation );
 
     if ( p->talent.unholy.doomed_bidding.ok() )
-      p->pets.lesser_ghoul_db_coil.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    {
+      p->pets.lesser_ghoul_db_coil.set_creation_event_callback(
+          pets::parent_pet_action_fn( p->pet_summon.db_ghoul_coil ) );
+      add_child( p->pet_summon.db_ghoul_coil );
+    }
   }
 };
 
@@ -9222,7 +9230,11 @@ struct epidemic_t final : public epidemic_base_t
     add_child( impact_action );
 
     if ( p->talent.unholy.doomed_bidding.ok() )
-      p->pets.lesser_ghoul_db_epi.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    {
+      p->pets.lesser_ghoul_db_epi.set_creation_event_callback(
+          pets::parent_pet_action_fn( p->pet_summon.db_ghoul_epi ) );
+      add_child( p->pet_summon.db_ghoul_epi );
+    }
   }
 };
 
@@ -10892,8 +10904,7 @@ struct putrefy_st_t final : public death_knight_spell_t
 struct putrefy_t final : public death_knight_spell_t
 {
   putrefy_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_spell_t( "putrefy", p, p->talent.unholy.putrefy ), 
-      summon_lesser_ghoul( nullptr )
+    : death_knight_spell_t( "putrefy", p, p->talent.unholy.putrefy )
   {
     parse_options( options_str );
     add_child( p->background_actions.putrefy_aoe );
@@ -10902,10 +10913,18 @@ struct putrefy_t final : public death_knight_spell_t
     p->cooldown.putrefy = cooldown;
 
     if ( p->talent.unholy.reanimation.ok() )
-      p->pets.reanimation_magus.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    {
+      p->pets.reanimation_magus.set_creation_event_callback(
+          pets::parent_pet_action_fn( p->pet_summon.reanimation_magus ) );
+      add_child( p->pet_summon.reanimation_magus );
+    }
 
     if ( p->talent.unholy.necromancers_cunning.ok() )
-      summon_lesser_ghoul = get_action<summon_lesser_ghoul_t>( "lesser_ghoul_putrefy", p, p->spell.summon_lesser_ghoul, LESSER_PUTREFY );
+    {
+      p->pets.lesser_ghoul_putrefy.set_creation_event_callback(
+          pets::parent_pet_action_fn( p->pet_summon.putrefy_ghoul ) );
+      add_child( p->pet_summon.putrefy_ghoul );
+    }
   }
 
   void execute() override
@@ -10920,7 +10939,7 @@ struct putrefy_t final : public death_knight_spell_t
       p()->buffs.blighted->trigger();
 
     if ( p()->talent.unholy.necromancers_cunning.ok() )
-      summon_lesser_ghoul->execute();
+      p()->pet_summon.putrefy_ghoul->execute();
     else
     {
       range::sort( p()->active_lesser_ghouls,
@@ -10941,9 +10960,6 @@ struct putrefy_t final : public death_knight_spell_t
 
     return death_knight_spell_t::ready();
   }
-
-private:
-  action_t* summon_lesser_ghoul;
 };
 
 // Raise Dead ===============================================================
@@ -11165,8 +11181,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 {
   scourge_strike_base_t( std::string_view name, death_knight_t* p, const spell_data_t* spell )
     : death_knight_melee_attack_t( name, p, spell ),
-      summon_ghoul( get_action<summon_lesser_ghoul_t>( "fs_ghoul", p, p->spell.summon_lesser_ghoul,
-                                                       lesser_ghoul_e::LESSER_FESTERING_STRIKE ) ),
+      summon_ghoul( nullptr ),
       errupt_mult( 1.0 )
   {
     errupt_mult = p->talent.unholy.scourge_strike->effectN( 2 ).percent();
@@ -11176,6 +11191,8 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 
     weapon = &( player->main_hand_weapon );
     aoe    = 1;
+
+    summon_ghoul = p->pet_summon.fs_ghoul;
   }
 
   int n_targets() const override
@@ -11323,7 +11340,8 @@ struct scourge_strike_t final : public scourge_strike_base_t
     if ( p->talent.sanlayn.vampiric_strike.ok() )
       set_replacement_action( new vampiric_strike_unholy_t( "vampiric_strike", p ), p->buffs.vampiric_strike );
 
-    p->pets.lesser_ghoul_fs.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    p->pets.lesser_ghoul_fs.set_creation_event_callback( pets::parent_pet_action_fn( p->pet_summon.fs_ghoul ) );
+    add_child( p->pet_summon.fs_ghoul );
 
     add_child( p->background_actions.virulent_plague_erupt_ss );
     add_child( p->background_actions.dread_plague_erupt_ss );
@@ -12784,6 +12802,8 @@ void death_knight_t::create_actions()
       background_actions.virulent_plague_erupt_ss =
           get_action<virulent_plague_erupt_t>( "virulent_plague_erupt", this );
       background_actions.dread_plague_erupt_ss = get_action<dread_plague_erupt_t>( "dread_plague_erupt", this );
+      pet_summon.fs_ghoul = get_action<summon_lesser_ghoul_t>( "fs_ghoul", this, spell.summon_lesser_ghoul,
+                                                               lesser_ghoul_e::LESSER_FESTERING_STRIKE );
     }
 
     if ( talent.unholy.blightburst.ok() )
@@ -12807,6 +12827,9 @@ void death_knight_t::create_actions()
     {
       background_actions.putrefy_aoe = get_action<putrefy_aoe_t>( "putrefy_aoe", this );
       background_actions.putrefy     = get_action<putrefy_st_t>( "putrefy_st", this );
+      if ( talent.unholy.necromancers_cunning.ok() )
+        pet_summon.putrefy_ghoul = get_action<summon_lesser_ghoul_t>( "putrefy_ghoul", this, spell.summon_lesser_ghoul,
+                                                                      lesser_ghoul_e::LESSER_PUTREFY );
     }
 
     if ( talent.unholy.army_of_the_dead.ok() )
