@@ -3250,12 +3250,6 @@ struct blizzard_shard_t final : public frost_mage_spell_t
     aoe = -1;
     reduced_aoe_targets = 8; // TODO: check if this is still the case
     background = proc = ground_aoe = true;
-
-    if ( p->talents.frostbite.ok() )
-    {
-      freezing_chance = p->talents.frostbite->proc_chance();
-      freezing_stacks = as<int>( p->talents.frostbite->effectN( 2 ).base_value() );
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -4976,27 +4970,17 @@ struct frostfire_empowerment_t final : public spell_t
 
 struct flash_freezeburn_t final : public spell_t
 {
-  proc_t* freezing_source;
-
   flash_freezeburn_t( std::string_view n, mage_t* p ) :
-    spell_t( n, p, p->find_spell( 1278079 ) ),
-    freezing_source( p->get_proc( "Freezing applied (Flash Freezeburn)" ) )
+    spell_t( n, p, p->find_spell( 1278079 ) )
   {
     background = proc = true;
+    // TODO: Currently hits the main target for some reason
     target_filter_callback = secondary_targets_only();
     base_dd_min = base_dd_max = 1.0;
-    // TODO: Usually hits one fewer target
-    // It's possible it picks 5 random targets and if one of them happens to be
-    // the main target, it simply skips it. See also: Splintering Ray
-    aoe--;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-      debug_cast<mage_t*>( player )->trigger_freezing( s->target, 1, freezing_source );
+    // TODO: Currently hits unlimited targets with a sqrt reduction
+    // after 5 targets. Nothing in the description mentions this so
+    // this is presumably a bug.
+    aoe = as<int>( p->talents.flash_freezeburn->effectN( 3 ).base_value() );
   }
 };
 
