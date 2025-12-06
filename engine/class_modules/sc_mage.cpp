@@ -438,6 +438,7 @@ public:
     bool trigger_overpowered_missiles;
     bool gained_initial_clearcasting; // Used to prevent queueing Arcane Missiles immediately after gaining the first stack Clearclasting.
     bool eureka;
+    bool thermal_void_active;
     int clearcasting_blp_count;
     int icicles;
   } state;
@@ -4135,11 +4136,14 @@ struct ice_lance_t final : public frost_mage_spell_t
   shatter_source_t* shatter_source;
   shatter_source_t* shatter_source_cleave;
 
+  static int max_consume( mage_t* p, int consume )
+  { return ( p->talents.thermal_void.ok() ? 2 : 1 ) * consume; }
+
   ice_lance_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     frost_mage_spell_t( n, p, p->talents.ice_lance ),
     freezing_consume( as<int>( p->spec.shatter->effectN( 4 ).base_value() ) ),
-    shatter_source( p->get_shatter_source( name_str, freezing_consume ) ),
-    shatter_source_cleave( p->get_shatter_source( "Ice Lance cleave", freezing_consume ) )
+    shatter_source( p->get_shatter_source( name_str, max_consume( p, freezing_consume ) ) ),
+    shatter_source_cleave( p->get_shatter_source( "Ice Lance cleave", max_consume( p, freezing_consume ) ) )
   {
     parse_options( options_str );
     enable_calculate_on_impact( 228598 );
@@ -4158,6 +4162,9 @@ struct ice_lance_t final : public frost_mage_spell_t
 
     p()->state.fingers_of_frost_active = p()->buffs.fingers_of_frost->up();
     p()->buffs.fingers_of_frost->decrement();
+
+    p()->state.thermal_void_active = p()->buffs.thermal_void->up();
+    p()->buffs.thermal_void->decrement();
   }
 
   void impact( action_state_t* s ) override
@@ -4166,8 +4173,12 @@ struct ice_lance_t final : public frost_mage_spell_t
 
     if ( result_is_hit( s->result ) && p()->action.shatter.ice_lance )
     {
-      int stacks = p()->trigger_shatter( s->target, p()->action.shatter.ice_lance, freezing_consume,
+      int consume = ( p()->state.thermal_void_active ? 2 : 1 ) * freezing_consume;
+      p()->state.thermal_void_active = false;
+
+      int stacks = p()->trigger_shatter( s->target, p()->action.shatter.ice_lance, consume,
                                          s->chain_target == 0 ? shatter_source : shatter_source_cleave, p()->state.fingers_of_frost_active );
+
       if ( s->chain_target == 0 && p()->talents.force_of_will.ok() )
         p()->trigger_splinter( s->target, stacks / as<int>( p()->talents.force_of_will->effectN( 3 ).base_value() ) );
     }
