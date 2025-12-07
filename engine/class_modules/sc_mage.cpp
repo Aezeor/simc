@@ -4037,6 +4037,9 @@ struct glacial_spike_t final : public frost_mage_spell_t
 
     if ( p->specialization() == MAGE_FROST && p->talents.flash_freezeburn.ok() )
       add_child( p->action.flash_freezeburn );
+
+    if ( p->spec.shatter->ok() )
+      add_child( p->action.shatter.glacial_spike );
   }
 
   void init_finished() override
