@@ -4131,7 +4131,7 @@ struct shatter_t final : public mage_spell_t
     double am = mage_spell_t::action_multiplier();
 
     am *= 1.0 + p()->buffs.permafrost_lances->check_value();
-    if ( p()->state.fingers_of_frost_active )
+    if ( this == p()->action.shatter.ice_lance && p()->state.fingers_of_frost_active )
       am *= 1.0 + p()->sets->set( MAGE_FROST, MID1, B4 )->effectN( 1 ).percent();
 
     return am;
