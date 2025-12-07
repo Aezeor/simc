@@ -1580,7 +1580,6 @@ public:
     const spell_data_t* pet_stun;
     // Lesser Ghouls
     const spell_data_t* unholy_devotion_buff;
-    const spell_data_t* blightburst;
     const spell_data_t* lesser_sweeping_claws;
     const spell_data_t* ruptured_viscera;
     // Gargoyle
@@ -14047,20 +14046,21 @@ void death_knight_t::spell_lookups()
 
   // Pet abilities
   // Shared
-  pet_spell.grave_mastery_buff = conditional_spell_lookup( talent.unholy.grave_mastery.ok(), 1238902 );
+  pet_spell.grave_mastery_buff    = conditional_spell_lookup( talent.unholy.grave_mastery.ok(), 1238902 );
+  pet_spell.commander_of_the_dead = conditional_spell_lookup( talent.unholy.commander_of_the_dead.ok(), 390264 );
   // Raise Dead abilities, used for both rank 1 and rank 2
-  pet_spell.ghoul_claw     = conditional_spell_lookup( talent.raise_dead.ok(), 91776 );
-  pet_spell.sweeping_claws = conditional_spell_lookup( talent.unholy.dark_transformation.ok(), 91778 );
-  pet_spell.gnaw           = conditional_spell_lookup( talent.raise_dead.ok(), 91800 );
-  pet_spell.monstrous_blow = conditional_spell_lookup( talent.unholy.dark_transformation.ok(), 91797 );
+  pet_spell.ghoul_claw           = conditional_spell_lookup( talent.raise_dead.ok(), 91776 );
+  pet_spell.sweeping_claws       = conditional_spell_lookup( talent.unholy.dark_transformation.ok(), 91778 );
+  pet_spell.gnaw                 = conditional_spell_lookup( talent.raise_dead.ok(), 91800 );
+  pet_spell.monstrous_blow       = conditional_spell_lookup( talent.unholy.dark_transformation.ok(), 91797 );
+  pet_spell.unholy_devotion_buff = conditional_spell_lookup( talent.unholy.unholy_devotion.ok(), 1270491 );
+  pet_spell.ghoulish_frenzy      = conditional_spell_lookup( talent.unholy.ghoulish_frenzy.ok(), 377589 );
   // Army of the dead
   pet_spell.army_claw =
       conditional_spell_lookup( talent.unholy.army_of_the_dead.ok() || talent.unholy.doomed_bidding.ok(), 199373 );
   // All Ghouls
   pet_spell.pet_stun = find_spell( 47466 );
   // Lesser Ghoul
-  pet_spell.unholy_devotion_buff  = conditional_spell_lookup( talent.unholy.doomed_bidding.ok(), 1270491 );
-  pet_spell.blightburst           = conditional_spell_lookup( talent.unholy.doomed_bidding.ok(), 1247379 );
   pet_spell.lesser_sweeping_claws = conditional_spell_lookup( talent.unholy.outnumber.ok(), 1278150 );
   pet_spell.ruptured_viscera      = conditional_spell_lookup( talent.unholy.necromancers_cunning.ok(), 1247379 );
   // Gargoyle
@@ -14070,15 +14070,11 @@ void death_knight_t::spell_lookups()
   pet_spell.blighted_arrow          = conditional_spell_lookup( talent.unholy.all_will_serve.ok(), 1239356 );
   pet_spell.blighted_arrow_aoe_buff = conditional_spell_lookup( talent.unholy.all_will_serve.ok(), 1239385 );
   pet_spell.blighted_arrow_st_buff  = conditional_spell_lookup( talent.unholy.all_will_serve.ok(), 1239422 );
-  // Magus of the dead (army of the damned)
+  // Magus of the dead
   pet_spell.frostbolt =
       conditional_spell_lookup( talent.unholy.magus_of_the_dead.ok() || talent.unholy.doomed_bidding.ok(), 317792 );
   pet_spell.shadow_bolt =
       conditional_spell_lookup( talent.unholy.magus_of_the_dead.ok() || talent.unholy.doomed_bidding.ok(), 317791 );
-  // Commander of the Dead Talent
-  pet_spell.commander_of_the_dead = conditional_spell_lookup( talent.unholy.commander_of_the_dead.ok(), 390264 );
-  // Ghoulish Frenzy
-  pet_spell.ghoulish_frenzy = conditional_spell_lookup( talent.unholy.ghoulish_frenzy.ok(), 377589 );
   // DRW Spells
   pet_spell.drw_heart_strike =
       conditional_spell_lookup( talent.blood.heart_strike.ok() && talent.blood.dancing_rune_weapon.ok(), 228645 );
