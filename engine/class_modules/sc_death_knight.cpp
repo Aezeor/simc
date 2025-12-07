@@ -3523,7 +3523,8 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
 
     // Default "auto-pilot" pet APL (if everything is left on auto-cast
     action_priority_list_t* def = get_action_priority_list( "default" );
-    def->add_action( "sweeping_claws" );
+    if ( dk()->talent.unholy.outnumber.ok() )
+      def->add_action( "sweeping_claws" );
     def->add_action( "claw" );
   }
 
@@ -14060,7 +14061,7 @@ void death_knight_t::spell_lookups()
   // Lesser Ghoul
   pet_spell.unholy_devotion_buff  = conditional_spell_lookup( talent.unholy.doomed_bidding.ok(), 1270491 );
   pet_spell.blightburst           = conditional_spell_lookup( talent.unholy.doomed_bidding.ok(), 1247379 );
-  pet_spell.lesser_sweeping_claws = conditional_spell_lookup( talent.unholy.doomed_bidding.ok(), 1278150 );
+  pet_spell.lesser_sweeping_claws = conditional_spell_lookup( talent.unholy.outnumber.ok(), 1278150 );
   pet_spell.ruptured_viscera      = conditional_spell_lookup( talent.unholy.necromancers_cunning.ok(), 1247379 );
   // Gargoyle
   pet_spell.gargoyle_strike  = conditional_spell_lookup( talent.unholy.summon_gargoyle.ok(), 51963 );
