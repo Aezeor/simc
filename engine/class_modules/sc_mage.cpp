@@ -6072,7 +6072,8 @@ void mage_t::create_buffs()
                                       ->set_chance( talents.arcane_familiar.ok() );
   buffs.arcane_salvo              = make_buff( this, "arcane_salvo", find_spell( 1242974 ) )
                                       ->set_default_value_from_effect( 1 )
-                                      ->set_chance( talents.arcane_salvo.ok() );
+                                      ->set_chance( talents.arcane_salvo.ok() )
+                                      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   buffs.arcane_surge              = make_buff( this, "arcane_surge", find_spell( 365362 ) )
                                       ->set_default_value_from_effect( 3 )
                                       ->set_affects_regen( true );
