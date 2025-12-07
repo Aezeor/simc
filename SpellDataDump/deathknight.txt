@@ -14718,7 +14718,7 @@ Effects          :
                    Affected Spells (Label): Commander of the Dead (390264)
 #4 (id=1290801)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Duration (1)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Misc Value 2: 6041 (Label) | Target: Self (1)
-                   Affected Spells (Label): Lesser Ghoul (275430)
+                   Affected Spells (Label): Lesser Ghoul (275430), Lesser Ghoul (1277098)
 Description      : Dark Transformation empowers your $?s207349[Dark Arbiter][Gargoyle], Abomination, Magus and Lesser Ghouls for $390264d, increasing their damage by $s2%.
 
 The duration of Lesser Ghouls are increased by $s1% of your Mastery.
@@ -24635,6 +24635,24 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.32 | Target: Targeted Enemy (6)
 Description      : $@spelldesc1247378
 
+Name             : Lesser Ghoul (id=1277098) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadow
+Spell Type       : None
+Duration         : 6 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+                 : 6041: Commander of the Dead (390259 effect#4)
+Family Flags     : 96
+Attributes       : No Threat (42), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1289252)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8.5 yards | Target: at Random (72)
+#2 (id=1289253)  : Summon Guardian (28)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 258578 | Misc Value 2: 3772 | Target: Random in Area (86)
+Description      : A mindless servant of the Scourge, raised to obey its master's commands for $d.
+
 Name             : Blood Bond (id=1277365) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
@@ -24648,6 +24666,31 @@ Effects          :
 #1 (id=1289704)  : Direct Heal% (136)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : $@spelldesc1267028
+
+Name             : Sweeping Claws (id=1278150) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadow
+Spell Type       : Melee
+Resource         : 0 Energy (3) (id=312833)
+Range            : 5 yards
+GCD              : 1 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+Stance Mask      : 0x00000040
+Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No AutoCast (AI) (49), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Not In Spellbook (143), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1290820)  : Dummy (3)
+                   Base Value: 80 | Scaled Value: 80 | Target: Targeted Enemy (6)
+#2 (id=1290821)  : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.3105 | Target: Targeted Enemy (6)
+#3 (id=1291482)  : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.201825 | Radius: 0 - 8 yards | Target: Targeted Enemy (6) -> Enemy in Area (15)
+Description      : Rakes an enemy with deformed claws, dealing $<sweepingclaw> Shadow damage to the target and $<sweepingclawSecond> Shadow damage to nearby enemies.
+Variables        : $mastery=$?s77515[${((100+$77515m1)/100)}][${1.00}]
+$sweepingclaw= ${0.85*($AP*0.207)*(1+$@versadmg)*$<mastery>}
+$sweepingclawSecond= ${0.85*($AP*0.13455)*(1+$@versadmg)*$<mastery>}
+$damage=${0.85*($AP*0.2)*(1+$@versadmg)*$<mastery>}
 
 Name             : Necromancer's Cunning (id=1278154) [Spell Family (15)] 
 Class            : Death Knight

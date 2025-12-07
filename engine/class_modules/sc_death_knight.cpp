@@ -3014,7 +3014,6 @@ struct base_ghoul_pet_t : public death_knight_pet_t
   {
     main_hand_weapon.swing_time = 2.0_s;
     main_hand_weapon.type       = WEAPON_BEAST;
-    stun_duration               = dk()->pet_spell.pet_stun->duration();
     spawn_radius                = dk()->spell.summon_lesser_ghoul->effectN( 1 ).radius();
   }
 
@@ -3042,21 +3041,6 @@ struct base_ghoul_pet_t : public death_knight_pet_t
 
     resources.base[ RESOURCE_ENERGY ]                  = 100;
     resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
-  }
-
-  void trigger_summon_stun( timespan_t dur )
-  {
-    if ( precombat_spawn_adjust > 0_s && precombat_spawn )
-    {
-      timespan_t stun_dur = dur - precombat_spawn_adjust;
-      buffs.stunned->trigger( stun_dur );
-      stun();
-    }
-    else
-    {
-      buffs.stunned->trigger( dur );
-      stun();
-    }
   }
 
   void arise() override

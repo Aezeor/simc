@@ -9,8 +9,8 @@ static const wowv_t __client_data_version { 12, 0, 0, 64774 };
 
 // Hotfix data versioning information
 
-#define CLIENT_DATA_HOTFIX_DATE "2025-12-06"
+#define CLIENT_DATA_HOTFIX_DATE "2025-12-07"
 #define CLIENT_DATA_HOTFIX_BUILD (64774)
-#define CLIENT_DATA_HOTFIX_HASH "fab888f52205271949006f2e975046f985ab48563b0331c5df466c1a1492026f"
+#define CLIENT_DATA_HOTFIX_HASH "c11cc20f8078414c5913d7bcb0e60ede8221beea51ac8fc5e74bb5c7d2b9b97c"
 
 #endif /* CLIENT_DATA_VERSION_INC*/

@@ -1738,9 +1738,9 @@ Death Knight
 1271975  Pestilence
 1272116  Pestilence
 1277016  Putrefy
-1277098 *Lesser Ghoul
+1277098  Lesser Ghoul
 1277365  Blood Bond
-1278150 *Sweeping Claws
+1278150  Sweeping Claws
 1278154  Necromancer's Cunning
 1279633  Bloody Reflection
 1279656  Bloody Reflection

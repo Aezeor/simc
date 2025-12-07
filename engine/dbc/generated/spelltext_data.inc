@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.0.64774
-static constexpr std::array<spelltext_data_t, 28620> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28622> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28511,6 +28511,7 @@ static constexpr std::array<spelltext_data_t, 28620> __spelltext_data { {
   { 1277030, "Critical strike chance increased by $s1%.", 0, 0 },
   { 1277038, "Judgment causes its primary target's successful melee attacks against you to grant a Physical absorb shield for $s1% of the damage dealt. Limit $i.", "Melee attacks against $@auracaster will grant a Physical absorb shield.", 0 },
   { 1277046, "$@spelldesc1277038", "Absorbing $w1 Physical damage.", 0 },
+  { 1277098, "A mindless servant of the Scourge, raised to obey its master's commands for $d.", 0, 0 },
   { 1277104, "$@spelldesc1271948", "Silenced.", 0 },
   { 1277108, "$@spelldesc1271948", "Unable to silence with Javelineer.", 0 },
   { 1277131, "$@spelldesc1273128", "Your next Aimed Shot will cause the target to bleed for $s1% additional damage over $1273147d.", 0 },
@@ -28546,6 +28547,7 @@ static constexpr std::array<spelltext_data_t, 28620> __spelltext_data { {
   { 1278016, "$@spelldesc1269308", "Your next Recklessness will cause you to go Berserk, increasing your Strength by $w1%.", 0 },
   { 1278047, "$@spelldesc1262028", 0, 0 },
   { 1278079, "$@spelldesc431178", 0, 0 },
+  { 1278150, "Rakes an enemy with deformed claws, dealing $<sweepingclaw> Shadow damage to the target and $<sweepingclawSecond> Shadow damage to nearby enemies.", 0, 0 },
   { 1278154, "$@spelldesc288848", "Your next Putrefy casts an additional time.", 0 },
   { 1278789, "When Frenzied Regeneration would heal you above maximum health, $s1% of its excess healing is instead converted to an absorb shield.", 0, 0 },
   { 1278800, "$@spelldesc1278789", "Absorbing $w1 damage.", 0 },
@@ -28627,7 +28629,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix
 } };
 
 // Spell description variables, wow build 12.0.0.64774
-static constexpr std::array<spelldesc_vars_data_t, 690> __spelldesc_vars_data { {
+static constexpr std::array<spelldesc_vars_data_t, 691> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29315,6 +29317,7 @@ static constexpr std::array<spelldesc_vars_data_t, 690> __spelldesc_vars_data { 
   { 1272693, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1277297, "$baselineMult=$?s137048[${1.00}][${1.00}]\r\n$colossusMult=$?s429644[${1.20}][${1.00}]\r\n$absorb=${($AP*5.6875)*(1+$@versadmg)*$<baselineMult>*$<colossusMult>}" },
   { 1277983, "$cap=${5}" },
+  { 1278150, "$mastery=$?s77515[${((100+$77515m1)/100)}][${1.00}]\r\n$sweepingclaw= ${0.85*($AP*0.207)*(1+$@versadmg)*$<mastery>}\r\n$sweepingclawSecond= ${0.85*($AP*0.13455)*(1+$@versadmg)*$<mastery>}\r\n$damage=${0.85*($AP*0.2)*(1+$@versadmg)*$<mastery>}" },
   { 1279187, "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
   { 1279408, "$pvp=$?a134735[${1.15}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
   { 1280645, "$mastery=$?s77515[${((100+$77515m1)/100)}][${1.00}]\r\n$damage=${0.39*($1247379s1)*(1+$@versadmg)*$<mastery>}" },
