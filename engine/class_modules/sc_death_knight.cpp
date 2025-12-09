@@ -1376,7 +1376,6 @@ public:
     const spell_data_t* blood_plague;
     const spell_data_t* frost_fever;
     const spell_data_t* virulent_plague;
-    const spell_data_t* virulent_erruption;
 
     // Blood
     const spell_data_t* blood_shield;
@@ -3481,8 +3480,8 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
 
     dk()->buffs.lesser_ghoul_counter->decrement();
 
-    if ( dk()->talent.unholy.necromancers_cunning.ok() )
-      ruptured_viscera->execute();
+    if ( dk()->talent.unholy.necromancers_cunning.ok() && !sim->event_mgr.canceled )
+      this->ruptured_viscera->execute();
 
     base_ghoul_pet_t::demise();
 
@@ -13866,7 +13865,6 @@ void death_knight_t::spell_lookups()
   spell.frost_fever =
       conditional_spell_lookup( talent.frost.howling_blast.ok() || talent.unholy.superstrain.ok(), 55095 );
   spell.virulent_plague    = conditional_spell_lookup( talent.unholy.outbreak.ok(), 191587 );
-  spell.virulent_erruption = conditional_spell_lookup( talent.unholy.outbreak.ok(), 191685 );
 
   // Blood
   spell.blood_shield                = conditional_spell_lookup( mastery.blood_shield->ok(), 77535 );
