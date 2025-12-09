@@ -12112,16 +12112,9 @@ void death_knight_t::trigger_rapid_variant( player_t* t )
   background_actions.rapid_variant->execute();
 
   std::sort( tl.begin(), tl.end(),
-             []( player_t* a, player_t* b ) { return a->current_health() < b->current_health(); } );
+             []( player_t* a, player_t* b ) { return a->health_percentage() < b->health_percentage(); } );
 
-  for ( auto& enemy : tl )
-  {
-    if ( enemy->is_sleeping() )
-      continue;
-
-    background_actions.rapid_variant->execute_on_target( enemy );
-    break;
-  }
+  background_actions.dread_plague->execute_on_target( tl.front() );
 }
 
 void death_knight_t::sudden_doom_execute_effects( bool coil )
