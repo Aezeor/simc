@@ -1341,6 +1341,7 @@ public:
       player_talent_t newly_turned;    // NYI
       player_talent_t vampiric_speed;  // NYI
       player_talent_t bloodsoaked_ground;
+      player_talent_t desecrate;
       player_talent_t vampiric_aura;     // NYI
       player_talent_t bloody_fortitude;  // NYI
       player_talent_t thrill_of_blood;
@@ -1348,7 +1349,7 @@ public:
       player_talent_t frenzied_bloodthirst;
       player_talent_t the_blood_is_life;
       player_talent_t visceral_strength;
-      player_talent_t desecrate;
+      player_talent_t inevitable;
       player_talent_t incite_terror;
       player_talent_t pact_of_the_sanlayn;
       player_talent_t sanguine_scent;
@@ -6975,13 +6976,12 @@ struct auto_attack_t final : public death_knight_melee_attack_t
 struct death_knight_disease_t : public death_knight_spell_t
 {
   death_knight_disease_t( std::string_view n, death_knight_t* p, const spell_data_t* s )
-    : death_knight_spell_t( n, p, s ), affected_by_contagion( false )
+    : death_knight_spell_t( n, p, s ), inevitable_mult( 0 )
   {
     background = true;
     may_miss = hasted_ticks = false;
-    // Currently non functional, likely due to whatever scripting they are using.
-    if ( !p->bugs )
-      affected_by_contagion = true;
+    if ( p->talent.sanlayn.inevitable.ok() )
+      inevitable_mult = p->talent.sanlayn.inevitable->effectN( 1 ).percent() / 90.0;
   }
 
   void tick( dot_t* d ) override
@@ -6998,7 +6998,7 @@ struct death_knight_disease_t : public death_knight_spell_t
   {
     timespan_t tt = death_knight_spell_t::tick_time( s );
 
-    if ( p()->talent.unholy.festering_scythe.ok() && affected_by_contagion )
+    if ( p()->talent.unholy.festering_scythe.ok() )
     {
       death_knight_td_t* td = get_td( s->target );
       if ( td->debuff.festering_scythe->check() )
@@ -7008,8 +7008,19 @@ struct death_knight_disease_t : public death_knight_spell_t
     return tt;
   }
 
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double mult = death_knight_spell_t::composite_ta_multiplier( s );
+
+    if ( p()->talent.sanlayn.inevitable.ok() )
+      mult *= 1.0 + ( std::min( inevitable_mult * ( 100.0 - s->target->health_percentage() ),
+                                p()->talent.sanlayn.inevitable->effectN( 1 ).percent() ) );
+
+    return mult;
+  }
+
 private:
-  bool affected_by_contagion;
+  double inevitable_mult;
 };
 
 // Blood Plague ============================================
@@ -13762,6 +13773,7 @@ void death_knight_t::init_spells()
   talent.sanlayn.newly_turned         = find_talent_spell( talent_tree::HERO, "Newly Turned" );
   talent.sanlayn.vampiric_speed       = find_talent_spell( talent_tree::HERO, "Vampiric Speed" );
   talent.sanlayn.bloodsoaked_ground   = find_talent_spell( talent_tree::HERO, "Blood-soaked Ground" );
+  talent.sanlayn.desecrate            = find_talent_spell( talent_tree::HERO, "Desecrate" );
   talent.sanlayn.thrill_of_blood      = find_talent_spell( talent_tree::HERO, "Thrill of Blood" );
   talent.sanlayn.vampiric_aura        = find_talent_spell( talent_tree::HERO, "Vampiric Aura" );
   talent.sanlayn.bloody_fortitude     = find_talent_spell( talent_tree::HERO, "Bloody Fortitude" );
@@ -13769,7 +13781,7 @@ void death_knight_t::init_spells()
   talent.sanlayn.frenzied_bloodthirst = find_talent_spell( talent_tree::HERO, "Frenzied Bloodthirst" );
   talent.sanlayn.the_blood_is_life    = find_talent_spell( talent_tree::HERO, "The Blood is Life" );
   talent.sanlayn.visceral_strength    = find_talent_spell( talent_tree::HERO, "Visceral Strength" );
-  talent.sanlayn.desecrate            = find_talent_spell( talent_tree::HERO, "Desecrate" );
+  talent.sanlayn.inevitable           = find_talent_spell( talent_tree::HERO, "Inevitable" );
   talent.sanlayn.incite_terror        = find_talent_spell( talent_tree::HERO, "Incite Terror" );
   talent.sanlayn.pact_of_the_sanlayn  = find_talent_spell( talent_tree::HERO, "Pact of the San'layn" );
   talent.sanlayn.sanguine_scent       = find_talent_spell( talent_tree::HERO, "Sanguine Scent" );
