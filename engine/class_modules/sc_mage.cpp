@@ -818,7 +818,8 @@ public:
   void create_buffs() override;
   void create_options() override;
   void init_action_list() override;
-  void init_blizzard_action_list() override;
+  parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule, const assisted_combat_step_data_t& step ) const override;
+  void parse_assisted_combat_step( const assisted_combat_step_data_t& step, action_priority_list_t* assisted_combat ) override;
   std::string default_potion() const override { return mage_apl::potion( this ); }
   std::string default_flask() const override { return mage_apl::flask( this ); }
   std::string default_food() const override { return mage_apl::food( this ); }
@@ -6355,27 +6356,56 @@ void mage_t::init_action_list()
   player_t::init_action_list();
 }
 
-void mage_t::init_blizzard_action_list()
+parsed_assisted_combat_rule_t mage_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                                                  const assisted_combat_step_data_t& step ) const
 {
-  player_t::init_blizzard_action_list();
+  if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 1271907 ) // Arcane Intellect Highlight
+    return { "aura.arcane_intellect.down" };
 
-  action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
+  if ( rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_1 == 383783 ) // Nether Precision
+    return { "" };
 
-  switch ( specialization() )
+  return player_t::parse_assisted_combat_rule( rule, step );
+}
+
+void mage_t::parse_assisted_combat_step( const assisted_combat_step_data_t& step, action_priority_list_t* assisted_combat )
+{
+  auto replace_spell = [ & ] ( unsigned source_spell_id, unsigned target_spell_id )
   {
-    case MAGE_ARCANE:
-      cooldowns->add_action( "evocation,if=cooldown.arcane_surge.remains<3*gcd.max&cooldown.touch_of_the_magi.remains<5*gcd.max" );
-      cooldowns->add_action( "arcane_surge,if=cooldown.touch_of_the_magi.remains<action.arcane_surge.execute_time" );
-      break;
-    case MAGE_FIRE:
-      cooldowns->add_action( "combustion" );
-      break;
-    case MAGE_FROST:
-      cooldowns->add_action( "icy_veins" );
-      break;
-    default:
-      break;
-  }
+    if ( step.spell_id == source_spell_id )
+    {
+      assisted_combat_step_data_t custom_step = step;
+      custom_step.spell_id = target_spell_id;
+      player_t::parse_assisted_combat_step( custom_step, assisted_combat );
+      return true;
+    }
+
+    return false;
+  };
+
+  auto conditionally_replace_spell = [ & ] ( unsigned source_spell_id, unsigned target_spell_id, assisted_combat_rule_e rule_type, unsigned rule_value )
+  {
+    if ( step.spell_id == source_spell_id )
+    {
+      for ( const auto& rule : assisted_combat_rule_data_t::data( step.id, is_ptr() ) )
+      {
+        if ( rule.condition_type == rule_type && rule.condition_value_1 == rule_value )
+          return replace_spell( source_spell_id, target_spell_id );
+      }
+    }
+
+    return false;
+  };
+
+  // Replace Arcane Explosion with Arcane Pulse
+  if ( talents.arcane_pulse.ok() && replace_spell( 1449, 1241462 ) )
+    return;
+
+  // Replace Ray of Frost with Comet Storm
+  if ( conditionally_replace_spell( 205021, 153595, AC_AURA_ON_PLAYER, 1247778 ) )
+    return;
+
+  player_t::parse_assisted_combat_step( step, assisted_combat );
 }
 
 double mage_t::resource_regen_per_second( resource_e rt ) const
