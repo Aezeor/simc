@@ -3616,7 +3616,7 @@ void player_t::init_blizzard_action_list()
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
   action_priority_list_t* default_  = get_action_priority_list( "default" );
   action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns",
-                                                                "Major cooldowns are not used by the Assisted Combat system. "
+                                                                "Some cooldowns are not used by the Assisted Combat system. "
                                                                 "This simple default cooldown usage has been provided by simc." );
   action_priority_list_t* assisted_combat = get_action_priority_list( "assisted_combat",
                                                                       "This is the default action priority list from the game's Assisted Combat system." );
@@ -3706,12 +3706,16 @@ void player_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
   std::string comment = "";
   bool show_diff = false;
   bool cooldown_allow_casting_success = false;
+  bool automation_only = false;
   bool allow_duplicates = true;
 
   for ( const auto& rule : assisted_combat_rule_data_t::data( step.id, is_ptr() ) )
   {
     if ( rule.condition_type == AC_COOLDOWN_ALLOW_CASTING_SUCCESS )
       cooldown_allow_casting_success = true;
+
+    if ( rule.condition_type == AC_AUTOMATION_ONLY )
+      automation_only = true;
 
     parsed_assisted_combat_rule_t derived_combat_rule = parse_assisted_combat_rule( rule, step );
     parsed_assisted_combat_rule_t base_combat_rule = player_t::parse_assisted_combat_rule( rule, step );
@@ -3744,6 +3748,15 @@ void player_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
 
     if ( cooldown_allow_casting_success )
       action_str += ",cooldown_allow_casting_success=1";
+
+    if ( automation_only )
+    {
+      if ( !use_cds_with_blizzard_action_list )
+        continue;
+      if ( !comment.empty() )
+        comment += " ";
+      comment += "This is for Blizzard automation and is not included in the game's Assisted Combat system.";
+    }
 
     // Optional duplicate filtering for messy action lists or duplicated overriden criteria
     if ( !allow_duplicates && range::contains( assisted_combat->action_list, action_str, []( const auto& entry ) { return entry.action_; } ) )
@@ -4088,7 +4101,7 @@ parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assist
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "health.pct<={}", v1 );
     case AC_AUTOMATION_ONLY:
-      // TODO: Add an option to enable/disable these spells.
+      // This is handled elsewhere.
       return "";
     default:
       throw std::runtime_error( fmt::format( "Unknown condition type '{}.'", rule.condition_type ) );
