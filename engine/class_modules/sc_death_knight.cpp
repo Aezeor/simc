@@ -12449,10 +12449,10 @@ void death_knight_t::trigger_sanlayn_execute_talents( bool is_vampiric )
 
   background_actions.vampiric_strike_heal->execute();
   buffs.essence_of_the_blood_queen->trigger();
+
   if ( !buffs.gift_of_the_sanlayn->check() )
-  {
     buffs.vampiric_strike->expire();
-  }
+
   if ( talent.sanlayn.transfusion.ok() )
   {
     if ( specialization() == DEATH_KNIGHT_UNHOLY )
@@ -12466,6 +12466,9 @@ void death_knight_t::trigger_sanlayn_execute_talents( bool is_vampiric )
         pets.everlasting_bond_pet.active_pet()->transfusion->trigger();
     }
   }
+
+  if ( talent.sanlayn.inevitable.ok() && specialization() == DEATH_KNIGHT_UNHOLY )
+    buffs.clawing_shadows->trigger( buffs.clawing_shadows->max_stack() );
 }
 
 void death_knight_t::trigger_reapers_mark_death( player_t* target )
