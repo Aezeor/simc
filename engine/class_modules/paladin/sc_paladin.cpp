@@ -3738,13 +3738,13 @@ void paladin_t::init_action_list()
 parsed_assisted_combat_rule_t paladin_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                                      const assisted_combat_step_data_t& step ) const
 {
-  if ( rule.condition_type == AURA_MISSING_PLAYER && rule.condition_value_1 == 188370 )
+  if ( rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_1 == 188370 )
     return { "!consecration.up", true };
 
-  if ( rule.condition_type == AURA_ON_PLAYER && rule.condition_value_1 == 427441 )
+  if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 427441 )
     return { "(buff.hammer_of_light_ready.up|buff.hammer_of_light_free.up)", true };
 
-  if ( rule.condition_type == AURA_MISSING_PLAYER && rule.condition_value_1 == 427441 )
+  if ( rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_1 == 427441 )
     return { "!(buff.hammer_of_light_ready.up|buff.hammer_of_light_free.up)", true };
 
   if ( step.spell_id == 53600 )

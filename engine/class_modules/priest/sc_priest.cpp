@@ -3516,13 +3516,13 @@ parsed_assisted_combat_rule_t priest_t::parse_assisted_combat_rule( const assist
                                                                     const assisted_combat_step_data_t& step ) const
 {
   // vampiric touch action checks if shadow crash is available
-  if ( rule.condition_type == AURA_MISSING_PLAYER && rule.condition_value_1 == 1243723 )
+  if ( rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_1 == 1243723 )
   {
     return { "(!action.tentacle_slam.in_flight)" };
   }
 
   // instead of checking for hidden void blast buff we check for entropic rift
-  if ( rule.condition_type == AURA_ON_PLAYER && rule.condition_value_1 == 450404 )
+  if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 450404 )
   {
     return { "buff.entropic_rift.up" };
   }
@@ -3572,7 +3572,7 @@ void priest_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
   bool cooldown_allow_casting_success = false;
   for ( const auto& rule : assisted_combat_rule_data_t::data( step.id, is_ptr() ) )
   {
-    if ( rule.condition_type == COOLDOWN_ALLOW_CASTING_SUCCESS )
+    if ( rule.condition_type == AC_COOLDOWN_ALLOW_CASTING_SUCCESS )
       cooldown_allow_casting_success = true;
 
     parsed_assisted_combat_rule_t derived_combat_rule = parse_assisted_combat_rule( rule, step );
