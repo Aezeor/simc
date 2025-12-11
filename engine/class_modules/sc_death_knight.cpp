@@ -9690,6 +9690,13 @@ struct frostbane_t final : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
+    // frostbane benefits from IO, and stacks it, but because its damage is delayed it will not get buffed
+    // when frostbane procs RE
+    if ( p()->talent.frost.icy_onslaught->ok() && p()->buffs.icy_onslaught->expiration_delay == nullptr )
+    {
+      p()->buffs.icy_onslaught->trigger();
+    }
+
     // 11.2 TODO drive the delays from likely misc values
     make_event<delayed_execute_event_t>( *sim, p(), frostbane_strike, target, 200_ms );
     make_event<delayed_execute_event_t>( *sim, p(), frostbane_strike, target, 250_ms );
@@ -9769,18 +9776,6 @@ struct frost_strike_t final : public death_knight_melee_attack_t
   {
     const auto td = get_td( target );
 
-    // 6/21/25 IO buffs the frost strike that procs RE so we need to delay expiration and prevent
-    // additional stacks til after the FS is resolved
-    // In game this looks like: start FS cast, check if RE proced and stack IO if it did not, finish FS cast, calc
-    // damage, expire IO
-
-    // frostbane benefits from IO, and stacks it, but because its damage is delayed it will not get buffed
-    // when frostbane procs RE
-    if ( p()->talent.frost.icy_onslaught->ok() && p()->buffs.icy_onslaught->expiration_delay == nullptr )
-    {
-      p()->buffs.icy_onslaught->trigger();
-    }
-
     if ( td->debuff.frostreaper->up() )
     {
       frostreaper->execute_on_target( target );
@@ -9803,6 +9798,18 @@ struct frost_strike_t final : public death_knight_melee_attack_t
     }
 
     death_knight_melee_attack_t::execute();
+
+    // 6/21/25 IO buffs the frost strike that procs RE so we need to delay expiration and prevent
+    // additional stacks til after the FS is resolved
+    // In game this looks like: start FS cast, check if RE proced and stack IO if it did not, finish FS cast, calc
+    // damage, expire IO
+
+    // frostbane benefits from IO, and stacks it, but because its damage is delayed it will not get buffed
+    // when frostbane procs RE
+    if ( p()->talent.frost.icy_onslaught->ok() && p()->buffs.icy_onslaught->expiration_delay == nullptr )
+    {
+      p()->buffs.icy_onslaught->trigger();
+    }
 
     if ( hit_any_target )
     {
@@ -9935,18 +9942,20 @@ private:
 struct glacial_advance_t final : public death_knight_spell_t
 {
   glacial_advance_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_spell_t( "glacial_advance", p, p->spec.glacial_advance )
+    : death_knight_spell_t( "glacial_advance", p, p->spec.glacial_advance ),
+      damage_action( get_action<glacial_advance_damage_t>( "glacial_advance_damage", p ) )
   {
     parse_options( options_str );
 
     weapon = &( p->main_hand_weapon );
 
-    execute_action = get_action<glacial_advance_damage_t>( "glacial_advance_damage", p );
-    add_child( execute_action );
+    add_child( damage_action );
   }
 
   void execute() override
   {
+    death_knight_spell_t::execute();
+
     // 6/21/25 IO buffs the frost strike that procs RE so we need to delay expiration and prevent
     // additional stacks til after the FS is resolved
     // In game this looks like: start FS cast, check if RE proced and stack IO if it did not, finish FS cast, calc
@@ -9959,7 +9968,8 @@ struct glacial_advance_t final : public death_knight_spell_t
       p()->buffs.icy_onslaught->trigger();
     }
 
-    death_knight_spell_t::execute();
+    // 12.0 TODO drive the delay from likely misc values
+    make_event<delayed_execute_event_t>( *sim, p(), damage_action, execute_state->target, 100_ms );
 
     if ( p()->buffs.pillar_of_frost->up() && p()->talent.frost.obliteration.ok() )
     {
@@ -9976,6 +9986,9 @@ struct glacial_advance_t final : public death_knight_spell_t
 
     p()->buffs.rime->trigger();
   }
+
+  private:
+  action_t* damage_action;
 };
 
 // Gorefiend's Grasp ========================================================
