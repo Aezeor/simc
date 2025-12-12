@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.64889
-static constexpr std::array<spelltext_data_t, 28634> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28637> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28621,6 +28621,9 @@ static constexpr std::array<spelltext_data_t, 28634> __spelltext_data { {
   { 1281512, "Increases damage done by $s1% and Fel Firebolt now jumps to $s2 additional targets.", "Increases damage done by $s1% and Fel Firebolt now jumps to $s2 additional targets.", 0 },
   { 1281527, "$@spelldesc1273126", "Your next Kill Command has $s1% increased critical strike chance and will deal an additional $1273126s2% damage over $1273145d.", 0 },
   { 1281559, "$@spelldesc1250897", "Your demons deal ${$w1}.1% increased damage for each demon you control.", 0 },
+  { 1281574, "Your harmful spells and abilities have a chance to unleash a Twilight Barrage at your target.", 0, 0 },
+  { 1281579, "$@spelldesc1281574", 0, 0 },
+  { 1281580, "$@spelldesc1281574", 0, 0 },
   { 1281638, "Ice Lance reduces the cooldown of Frozen Orb by ${$s1/1000}.1 sec, increased by ${$s2/1000}.1 sec for each stack of Freezing Shattered.", 0, 0 },
   { 1281949, "Heals an injured nearby raid or party member.", 0, 0 },
   { 1281950, "$@spelldesc5394", "Healing $?s147074[two injured party or raid members][an injured party or raid member] every $t1 sec.", 0 },
