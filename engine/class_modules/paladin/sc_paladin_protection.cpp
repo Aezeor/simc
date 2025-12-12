@@ -208,9 +208,7 @@ struct avengers_shield_base_t : public paladin_spell_t
     if ( p()->talents.refining_fire->ok() )
     {
       double damage = s-> result_amount;
-      // 27.11.25 Fluttershy - Currently Refining Fire ticks for 100% damage over 5s, instead of 20% (So 20% per tick)
-      if ( !p()->bugs )
-        damage *= p()->talents.refining_fire->effectN( 1 ).percent();
+      damage *= p()->talents.refining_fire->effectN( 1 ).percent();
       residual_action::trigger( refining_fire_dot, s->target, damage );
     }
   }
@@ -307,15 +305,6 @@ struct avengers_shield_dr_t : public avengers_shield_base_t
     avengers_shield_base_t( "avengers_shield_dr", p, "" )
   {
     background = true;
-  }
-  void execute() override
-  {
-    avengers_shield_base_t::execute();
-    // 27.11.25 Fluttershy - Each Divine Resonance Tick currently triggers Divine Hammer
-    if (p()->bugs && p()->talents.templar.divine_hammer->ok())
-    {
-      p()->buffs.templar.divine_hammer->trigger();
-    }
   }
 };
 
