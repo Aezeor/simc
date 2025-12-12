@@ -1417,7 +1417,6 @@ struct touch_of_the_magi_t final : public buff_t
     {
       auto* debuff = p->get_target_data( player )->debuffs.touch_of_the_archmage;
       double ticks = std::round( debuff->buff_duration() / debuff->buff_period );
-      // TODO: This seems to actually be using effect2, causing it to do 4 times as much damage
       double total = damage * p->talents.touch_of_the_archmage_3->effectN( 1 ).percent();
       debuff->trigger( -1, total / ticks );
     }
@@ -2994,9 +2993,13 @@ struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_sp
     background = proc = true;
     affected_by.savant = true;
 
-    // The mage could have Overpowered Missiles without Aether Attunement,
-    // so we can't use talents.aether_attunement here.
-    base_aoe_multiplier *= p->find_spell( 1243307 )->effectN( 1 ).percent();
+    // Spell data contains the AoE effect which is disabled unless you pick the AoE AM talents.
+    // Fix the spell power mod and use base_aoe_multiplier for the cleave
+    // TODO: Figure this out from spelldata and do it automatically in mage_spell_t/action_t
+    double primary_coef = data().effectN( 1 ).sp_coeff();
+    double secondary_coef = data().effectN( 2 ).sp_coeff();
+    spell_power_mod.direct = primary_coef;
+    base_aoe_multiplier = secondary_coef / primary_coef;
   }
 
   void init_finished() override
