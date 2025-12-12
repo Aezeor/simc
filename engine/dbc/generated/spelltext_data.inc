@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.64889
-static constexpr std::array<spelltext_data_t, 28637> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28638> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28632,6 +28632,7 @@ static constexpr std::array<spelltext_data_t, 28637> __spelltext_data { {
   { 1282502, "$@spelldesc1276163", 0, 0 },
   { 1282535, "A mindless servant of the Scourge, raised to obey its master's commands for $d.", 0, 0 },
   { 1282565, "$@spelldesc1242561", "You may not benefit from the effects of Scythe of Decay.", 0 },
+  { 1282570, "$spelldesc1256566", "Necrotic Coil and Graveyard damage increased by ${$W1}.1%.", 0 },
   { 1282660, "$@spelldesc321014", 0, 0 },
   { 1282710, "$@spelldesc468701", 0, 0 },
   { 1282741, "|cnGOLD_FONT_COLOR:Your companion has a chance during combat, via casting spells, abilities, or from slaying enemies to gain a Sanctum's Blessing. Each blessing grants $s1% increased healing and damage.\r\n\r\nUpon reaching $s6 blessings, your companion becomes a Sanctum's Champion, converting $s2% of their current health into an absorb shield that lasts for $1265780d, or until depleted. While the shield holds, increase the damage and healing conferred by Sanctum's Blessings. Upon expiration, blessings are removed.\r\n\r\nSlaying an Elite enemy grants $s4 Sanctum's Blessings, while normal foes yield $s3.|r", "Your companion has a chance during combat, via casting spells, abilities, or from slaying enemies to gain a Sanctum's Blessing. Each blessing grants $w1% increased healing and damage.\r\n\r\nUpon reaching $w6 blessings, your companion becomes a Sanctum's Champion, converting $w2% of their current health into an absorb shield that lasts for $1265780d, or until depleted. While the shield holds, increase the damage and healing conferred by Sanctum's Blessings. Upon expiration, blessings are removed.\r\n\r\nSlaying an Elite enemy grants $w4 Sanctum's Blessings, while normal foes yield $w3.", 0 },
