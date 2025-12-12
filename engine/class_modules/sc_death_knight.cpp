@@ -3497,7 +3497,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
   void init_base_stats() override
   {
     base_ghoul_pet_t::init_base_stats();
-    owner_coeff.ap_from_ap = 0.3875;
+    owner_coeff.ap_from_ap = 0.31;
     if ( name_str == "army_ghoul" )
       owner_coeff.ap_from_ap *= 2;  // Not in data, testing suggests its 2x base lesser ghoul inheritence
   }
