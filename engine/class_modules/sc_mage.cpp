@@ -1753,6 +1753,7 @@ public:
       parse_effect_data( eff );
     may_crit = !spell->flags( SX_CANNOT_CRIT );
     tick_may_crit = spell->flags( SX_TICK_MAY_CRIT );
+    rolling_periodic = spell->flags( SX_ROLLING_PERIODIC );
 
     affected_by.freeze_and_shatter_1 = spell->affected_by( p()->spec.freeze_and_shatter->effectN( 1 ) );
     affected_by.freeze_and_shatter_2 = spell->affected_by( p()->spec.freeze_and_shatter->effectN( 2 ) );
