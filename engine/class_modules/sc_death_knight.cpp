@@ -8047,7 +8047,7 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
       summon_magus = get_action<summon_magus_t>( "magus_of_the_dead", p, p->spell.summon_magus,
                                                  magus_of_the_dead_e::MAGUS_ARMY_OF_THE_DEAD );
       p->pets.army_magus.set_creation_event_callback( pets::parent_pet_action_fn( summon_magus ) );
-      magus_duration = p->spell.summon_magus->duration();
+      magus_duration = p->talent.unholy.magus_of_the_dead->effectN( 1 ).time_value();
       add_child( summon_magus );
     }
   }
