@@ -7168,11 +7168,6 @@ struct dread_plague_erupt_t final : public death_knight_spell_t
   {
     background = true;
     may_miss = may_dodge = may_parry = false;
-    if ( p->talent.unholy.superstrain.ok() )
-    {
-      aoe              = 2;
-      chain_multiplier = p->talent.unholy.superstrain->effectN( 2 ).percent();
-    }
   }
 };
 
@@ -7182,7 +7177,8 @@ struct dread_plague_t final : public death_knight_disease_t
     : death_knight_disease_t( name, p, p->spell.dread_plague ),
       sd_chance( 0 ),
       ticks_since_last_proc( 0 ),
-      last_target( nullptr )
+      last_target( nullptr ),
+      erupt( nullptr )
   {
     if ( p->talent.unholy.sudden_doom.ok() )
       sd_chance = p->pseudo_random_c_from_p( p->talent.unholy.sudden_doom->effectN( 2 ).percent() *
@@ -7191,8 +7187,13 @@ struct dread_plague_t final : public death_knight_disease_t
     add_child( p->background_actions.dread_plague_death );
 
     if ( p->talent.unholy.forbidden_knowledge_3.ok() )
-    {
       p->pets.lesser_ghoul_fk.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+
+    if ( p->talent.unholy.superstrain.ok() )
+    {
+      erupt                  = get_action<dread_plague_erupt_t>( "dread_plague_erupt_ss", p );
+      erupt->base_multiplier = p->talent.unholy.superstrain->effectN( 2 ).percent();
+      add_child( erupt );
     }
   }
 
@@ -7226,9 +7227,19 @@ struct dread_plague_t final : public death_knight_disease_t
     // for the time being. TODO: Test for longer... far longer
     if ( p()->talent.unholy.superstrain.ok() &&
          rng().roll( p()->spell.superstrain_energize->effectN( 2 ).base_value() / 10 ) )
+    {
       p()->resource_gain( RESOURCE_RUNIC_POWER,
                           p()->spell.superstrain_energize->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
                           p()->gains.superstrain, this );
+
+      if ( p()->sim->target_non_sleeping_list.size() > 1 )
+      {
+        auto tl = p()->sim->target_non_sleeping_list;
+        range::erase_remove( tl, [ d ]( player_t* t ) { return t == d->target; } );
+        auto target = rng().range( tl );
+        erupt->execute_on_target( target, d->state->result_raw );
+      }
+    }
 
     if ( p()->talent.unholy.forbidden_knowledge_3.ok() &&
          rng().roll( p()->talent.unholy.forbidden_knowledge_3->effectN( 3 ).percent() ) )
@@ -7239,6 +7250,7 @@ private:
   double sd_chance;
   int ticks_since_last_proc;
   player_t* last_target;
+  action_t* erupt;
 };
 
 // Frost Fever =======================================================
