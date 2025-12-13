@@ -11448,6 +11448,17 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     return m;
   }
 
+  double composite_energize_amount( const action_state_t* s ) const override
+  {
+    double amount = death_knight_melee_attack_t::composite_energize_amount( s );
+
+    // Unlike most things that make abilities cost 0 runes, Blightd prevents runic power from being generated.
+    if ( p()->buffs.blighted->check() )
+      amount *= 0;
+
+    return amount;
+  }
+
   void impact( action_state_t* state ) override
   {
     death_knight_melee_attack_t::impact( state );
