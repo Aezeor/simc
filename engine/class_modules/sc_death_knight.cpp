@@ -3547,6 +3547,9 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       if ( dk()->pets.ghoul_pet.active_pet() )
         dk()->pets.ghoul_pet.active_pet()->unholy_devotion->trigger();
 
+      if ( dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, MID1, B4 ) )
+        dk()->buffs.blighted->trigger();
+
       dismiss( false );
 
       if ( dk()->talent.unholy.reanimation.ok() &&
@@ -8804,7 +8807,7 @@ struct coil_of_devastation_t final : public residual_action::residual_periodic_a
 struct death_coil_damage_base_t : public death_knight_spell_t
 {
   death_coil_damage_base_t( std::string_view name, death_knight_t* p, const spell_data_t* s )
-    : death_knight_spell_t( name, p, s ), sudden_doom( false ), cod_mod( 0.0 ), reaping_hp( 0.0 ), reaping_mod( 0.0 )
+    : death_knight_spell_t( name, p, s ), triggers_effects( true ), sudden_doom( false ), cod_mod( 0.0 ), reaping_hp( 0.0 ), reaping_mod( 0.0 )
   {
     if ( p->talent.unholy.coil_of_devastation.ok() )
       cod_mod = p->talent.unholy.coil_of_devastation->effectN( 1 ).percent();
@@ -8814,19 +8817,6 @@ struct death_coil_damage_base_t : public death_knight_spell_t
       reaping_hp  = p->talent.unholy.reaping->effectN( 2 ).base_value();
       reaping_mod = p->talent.unholy.reaping->effectN( 1 ).percent();
     }
-  }
-
-  std::vector<player_t*>& target_list() const override
-  {
-    std::vector<player_t*>& current_targets = death_knight_spell_t::target_list();
-    // Don't bother ordering the list if all the valid targets will be hit
-    if ( current_targets.size() <= as<size_t>( n_targets() ) )
-      return current_targets;
-
-    // first target, the action target, needs to be left in place
-    rng().shuffle( current_targets.begin() + 1, current_targets.end() );
-
-    return current_targets;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -8845,7 +8835,8 @@ struct death_coil_damage_base_t : public death_knight_spell_t
 
     death_knight_spell_t::execute();
 
-    p()->unholy_rp_execute_effects( sudden_doom, true );
+    if ( triggers_effects )
+      p()->unholy_rp_execute_effects( sudden_doom, true );
   }
 
   void impact( action_state_t* state ) override
@@ -8856,9 +8847,12 @@ struct death_coil_damage_base_t : public death_knight_spell_t
       residual_action::trigger( p()->background_actions.coil_of_devastation, state->target,
                                 state->result_amount * cod_mod );
 
-    p()->unholy_rp_impact_effects( state, sudden_doom, true );
+    if( triggers_effects )
+      p()->unholy_rp_impact_effects( state, sudden_doom, true );
   }
 
+public:
+  bool triggers_effects;
 private:
   bool sudden_doom;
   double cod_mod;
@@ -8876,14 +8870,15 @@ struct necrotic_coil_shadow_t final : public death_coil_damage_base_t
   }
 };
 
-struct necrotic_coil_shadowstrike_t final : public death_knight_spell_t
+struct necrotic_coil_shadowstrike_t final : public death_coil_damage_base_t
 {
   necrotic_coil_shadowstrike_t( std::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->spell.necrotic_coil_physical )
+    : death_coil_damage_base_t( name, p, p->spell.necrotic_coil_physical )
   {
-    background     = true;
-    aoe            = as<int>( p->talent.unholy.forbidden_knowledge_1->effectN( 2 ).base_value() );
-    execute_action = get_action<necrotic_coil_shadow_t>( "necrotic_coil_shadow", p );
+    background       = true;
+    aoe              = as<int>( p->talent.unholy.forbidden_knowledge_1->effectN( 2 ).base_value() );
+    execute_action   = get_action<necrotic_coil_shadow_t>( "necrotic_coil_shadow", p );
+    triggers_effects = false;
   }
 };
 
@@ -11103,9 +11098,6 @@ struct putrefy_t final : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, MID1, B4 ) )
-      p()->buffs.blighted->trigger();
-
     p()->pet_summon.putrefy_ghoul->execute();
   }
 };
@@ -11130,9 +11122,6 @@ struct putrefy_sr_t : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
-
-    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, MID1, B4 ) )
-      p()->buffs.blighted->trigger();
 
     p()->pet_summon.sr_ghoul->execute();
   }
