@@ -5992,11 +5992,7 @@ struct summon_lesser_ghoul_t : public death_knight_summon_spell_t
   {
     background = true;
     set_duration( data().duration() );
-  }
-
-  void set_putrefy_instantly( bool v )
-  {
-    putrefy_instantly = v;
+    putrefy_instantly = s == p->spell.summon_putrefy_ghoul;
   }
 
   void execute() override
@@ -6029,16 +6025,13 @@ struct summon_lesser_ghoul_t : public death_knight_summon_spell_t
         p()->procs.lesser_ghoul_army->occur();
         break;
       case lesser_ghoul_e::LESSER_SOUL_REAPER:
-        putrefy_instantly = true;
         sr = true;
         p()->pets.lesser_ghoul_putrefy.spawn( duration );
         break;
       case lesser_ghoul_e::LESSER_PUTREFY:
-        putrefy_instantly = true;
         p()->pets.lesser_ghoul_putrefy.spawn( duration );
         break;
       case lesser_ghoul_e::LESSER_FORBIDDEN_KNOWLEDGE:
-        putrefy_instantly = true;
         p()->pets.lesser_ghoul_fk.spawn();
         break;
     }
