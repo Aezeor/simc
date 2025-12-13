@@ -3505,7 +3505,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
   void arise() override
   {
     if ( dk()->talent.unholy.commander_of_the_dead.ok() )
-      dk()->sample_data.lesser_ghoul_duration->add( this->duration.total_seconds() );
+      dk()->sample_data.lesser_ghoul_duration->add( duration.total_seconds() );
 
     base_ghoul_pet_t::arise();
 
@@ -7234,7 +7234,7 @@ struct dread_plague_t final : public death_knight_disease_t
 
       if ( p()->sim->target_non_sleeping_list.size() > 1 )
       {
-        auto tl = p()->sim->target_non_sleeping_list;
+        auto tl = target_list();
         range::erase_remove( tl, [ d ]( player_t* t ) { return t == d->target; } );
         auto target = rng().range( tl );
         erupt->execute_on_target( target, d->state->result_raw );
@@ -7969,7 +7969,7 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
   army_of_the_dead_t( death_knight_t* p, std::string_view options_str )
     : death_knight_summon_spell_t( "army_of_the_dead", p, p->talent.unholy.army_of_the_dead ),
       precombat_time( 2.0 ),
-      summon_duration( p->spell.summon_lesser_ghoul->duration() ),
+      summon_duration( p->spell.summon_army_ghoul->duration() ),
       summon_abomination( nullptr ),
       abomination_duration( 0_s ),
       summon_gargoyle( nullptr ),
@@ -15090,7 +15090,7 @@ void death_knight_t::init_procs()
 
   procs.lesser_ghoul_army = get_proc( "Lesser Ghoul from Army" );
   procs.lesser_ghoul_db   = get_proc( "Lesser Ghoul from Doomed Bidding" );
-  procs.lesser_ghoul_fs   = get_proc( "Lesser Ghoul from Festering Strike" );
+  procs.lesser_ghoul_fs   = get_proc( "Lesser Ghoul from Scourge Strike" );
 
   procs.rp_runic_corruption = get_proc( "Runic Corruption from Runic Power Spent" );
 
