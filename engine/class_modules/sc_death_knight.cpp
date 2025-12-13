@@ -1508,6 +1508,7 @@ public:
     const spell_data_t* summon_abomination;
     const spell_data_t* summon_army_ghoul;
     const spell_data_t* summon_lesser_ghoul;
+    const spell_data_t* summon_putrefy_ghoul;
     const spell_data_t* summon_magus;
     const spell_data_t* summon_reanimation_magus;
     const spell_data_t* raise_skulker;
@@ -5990,6 +5991,7 @@ struct summon_lesser_ghoul_t : public death_knight_summon_spell_t
     : death_knight_summon_spell_t( n, p, s ), source( type )
   {
     background = true;
+    set_duration( data().duration() );
   }
 
   void set_putrefy_instantly( bool v )
@@ -6001,7 +6003,7 @@ struct summon_lesser_ghoul_t : public death_knight_summon_spell_t
   {
     death_knight_summon_spell_t::execute();
     if ( source != LESSER_ARMY_OF_THE_DEAD )
-      set_duration( p()->spell.summon_lesser_ghoul->duration() );
+      set_duration( data().duration() );
 
     if ( p()->talent.unholy.commander_of_the_dead.ok() )
       duration *=
@@ -13008,12 +13010,12 @@ void death_knight_t::create_actions()
       background_actions.putrefy_aoe = get_action<putrefy_aoe_t>( "putrefy_aoe", this );
       background_actions.putrefy     = get_action<putrefy_st_t>( "putrefy_st", this );
       if ( talent.unholy.necromancers_cunning.ok() )
-        pet_summon.putrefy_ghoul = get_action<summon_lesser_ghoul_t>( "putrefy_ghoul", this, spell.summon_lesser_ghoul,
+        pet_summon.putrefy_ghoul = get_action<summon_lesser_ghoul_t>( "putrefy_ghoul", this, spell.summon_putrefy_ghoul,
                                                                       lesser_ghoul_e::LESSER_PUTREFY );
     }
 
     if ( talent.unholy.army_of_the_dead.ok() )
-      pet_summon.army_ghoul = get_action<summon_lesser_ghoul_t>( "army_ghoul", this, spell.summon_lesser_ghoul,
+      pet_summon.army_ghoul = get_action<summon_lesser_ghoul_t>( "army_ghoul", this, spell.summon_army_ghoul,
                                                                  lesser_ghoul_e::LESSER_ARMY_OF_THE_DEAD );
 
     if ( talent.unholy.infected_claws.ok() )
@@ -13038,7 +13040,7 @@ void death_knight_t::create_actions()
       pet_summon.raise_skulker = get_action<raise_skulker_t>( "raise_skulker", this );
 
     if ( talent.unholy.forbidden_knowledge_2.ok() )
-      pet_summon.fk_ghoul = get_action<summon_lesser_ghoul_t>( "fk_ghoul", this, spell.summon_lesser_ghoul,
+      pet_summon.fk_ghoul = get_action<summon_lesser_ghoul_t>( "fk_ghoul", this, spell.summon_putrefy_ghoul,
                                                                lesser_ghoul_e::LESSER_FORBIDDEN_KNOWLEDGE );
 
     if ( talent.unholy.soul_reaper.ok() )
@@ -13046,7 +13048,7 @@ void death_knight_t::create_actions()
       background_actions.putrefy_sr_aoe = get_action<putrefy_aoe_t>( "putrefy_sr_aoe", this );
       background_actions.putrefy_sr_st  = get_action<putrefy_st_t>( "putrefy_sr_st", this );
       background_actions.putrefy_sr     = get_action<putrefy_sr_t>( "putrefy_sr", this );
-      pet_summon.sr_ghoul = get_action<summon_lesser_ghoul_t>( "sr_ghoul", this, spell.summon_lesser_ghoul,
+      pet_summon.sr_ghoul = get_action<summon_lesser_ghoul_t>( "sr_ghoul", this, spell.summon_putrefy_ghoul,
                                                                lesser_ghoul_e::LESSER_SOUL_REAPER );
     }
   }
@@ -14170,6 +14172,7 @@ void death_knight_t::spell_lookups()
   spell.summon_abomination       = conditional_spell_lookup( talent.unholy.raise_abomination.ok(), 288853 );
   spell.summon_army_ghoul        = conditional_spell_lookup( talent.unholy.army_of_the_dead.ok(), 1282535 );
   spell.summon_lesser_ghoul      = conditional_spell_lookup( talent.unholy.doomed_bidding.ok(), 275430 );
+  spell.summon_putrefy_ghoul     = conditional_spell_lookup( talent.unholy.putrefy.ok(), 1277098 );
   spell.summon_magus             = conditional_spell_lookup( talent.unholy.magus_of_the_dead.ok(), 317776 );
   spell.summon_reanimation_magus = conditional_spell_lookup( talent.unholy.reanimation.ok(), 1242294 );
   spell.raise_skulker            = conditional_spell_lookup( talent.unholy.all_will_serve.ok(), 196910 );
@@ -14992,7 +14995,8 @@ void death_knight_t::create_buffs()
   buffs.unholy_aura_haste =
       make_fallback( talent.unholy.unholy_aura.ok(), this, "unholy_aura", spell.unholy_aura_mastery_buff )
           ->set_default_value( talent.unholy.unholy_aura->effectN( 1 ).percent() )
-          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+          ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buffs.festering_scythe =
       make_fallback( talent.unholy.festering_scythe.ok(), this, "festering_scythe", spell.festering_scythe_buff );
