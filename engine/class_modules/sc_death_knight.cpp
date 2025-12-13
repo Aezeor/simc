@@ -1986,7 +1986,7 @@ public:
   bool in_death_and_decay() const;
   void parse_player_effects();
   const spell_data_t* conditional_spell_lookup( bool fn, int id );
-  double psuedo_random_p_from_c( double c );
+  double pseudo_random_p_from_c( double c );
   double pseudo_random_c_from_p( double p );
   // Rider of the Apocalypse
   rider_of_the_apocalypse_e get_random_rider();
@@ -12745,7 +12745,7 @@ void death_knight_t::trigger_drw_action( drw_actions_e action )
   drw_action_execute( pets.everlasting_bond_pet.active_pet(), action );
 }
 
-double death_knight_t::psuedo_random_p_from_c( double c )
+double death_knight_t::pseudo_random_p_from_c( double c )
 {
   if ( c <= 0 )
     return 0.0;
@@ -12778,7 +12778,7 @@ double death_knight_t::pseudo_random_c_from_p( double p )
   while ( true )
   {
     c_mid = ( c_upper + c_lower ) * 0.5;
-    p1    = psuedo_random_p_from_c( c_mid );
+    p1    = pseudo_random_p_from_c( c_mid );
     if ( std::abs( p1 - p2 ) <= 0 )
       break;
 
