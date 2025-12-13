@@ -745,6 +745,7 @@ public:
   unsigned int
       bone_shield_charges_consumed;  // Counts how many bone shield charges have been consumed for DF1 4pc blood
   unsigned int active_riders;        // Number of active Riders of the Apocalypse pets
+  unsigned int magus_active;         // Number of active Magus of the Dead pets
 
   std::vector<player_t*> undeath_tl;
 
@@ -1773,6 +1774,7 @@ public:
   {
     std::unique_ptr<extended_sample_data_t> lesser_ghoul_duration;
     std::unique_ptr<extended_sample_data_t> lesser_ghouls_active;
+    std::unique_ptr<extended_sample_data_t> magus_active;
   } sample_data;
 
   // Death Knight Options
@@ -1812,6 +1814,7 @@ public:
       km_proc_attempts( 0 ),
       bone_shield_charges_consumed( 0 ),
       active_riders( 0 ),
+      magus_active( 0 ),
       undeath_tl(),
       buffs(),
       background_actions(),
@@ -2492,9 +2495,9 @@ struct death_knight_pet_t : public pet_t
   buff_t* grave_mastery;
   buff_t* mastery_dreadblade_crit;
 
-  death_knight_pet_t( death_knight_t* player, std::string_view name, bool guardian = true, bool auto_attack = true,
+  death_knight_pet_t( death_knight_t* player, std::string_view name, pet_e type = PET_DEATH_KNIGHT, bool guardian = true, bool auto_attack = true,
                       bool dynamic = true )
-    : pet_t( player->sim, player, name, guardian, dynamic ),
+    : pet_t( player->sim, player, name, type, guardian, dynamic ),
       use_auto_attack( auto_attack ),
       precombat_spawn( false ),
       affected_by_commander_of_the_dead( false ),
@@ -3026,8 +3029,8 @@ struct base_ghoul_pet_t : public death_knight_pet_t
   timespan_t stun_duration;
   double spawn_distance;
   double spawn_radius;
-  base_ghoul_pet_t( death_knight_t* owner, std::string_view name, bool guardian = false, bool dynamic = true )
-    : death_knight_pet_t( owner, name, guardian, true, dynamic ),
+  base_ghoul_pet_t( death_knight_t* owner, std::string_view name, pet_e type, bool guardian = false, bool dynamic = true )
+    : death_knight_pet_t( owner, name, type, guardian, true, dynamic ),
       stun_duration( 4.5_s ),
       spawn_distance( 0 ),
       spawn_radius( 0 )
@@ -3242,7 +3245,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     }
   };
 
-  ghoul_pet_t( death_knight_t* owner, bool guardian = true ) : base_ghoul_pet_t( owner, "ghoul", guardian )
+  ghoul_pet_t( death_knight_t* owner, bool guardian = true ) : base_ghoul_pet_t( owner, "ghoul", PET_GHOUL, guardian )
   {
     gnaw_cd                   = get_cooldown( "gnaw" );
     gnaw_cd->duration         = owner->pet_spell.gnaw->cooldown();
@@ -3489,7 +3492,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
   };
 
   lesser_ghoul_pet_t( death_knight_t* owner, std::string_view name = "army_ghoul" )
-    : base_ghoul_pet_t( owner, name, true )
+    : base_ghoul_pet_t( owner, name, PET_LESSER_GHOUL, true )
   {
     affected_by_commander_of_the_dead = true;
     affected_by_grave_mastery         = true;
@@ -3526,7 +3529,8 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
 
     base_ghoul_pet_t::demise();
 
-    dk()->sample_data.lesser_ghouls_active->add( as<unsigned>( dk()->active_lesser_ghouls.size() ) );
+    if ( !sim->event_mgr.canceled )
+      dk()->sample_data.lesser_ghouls_active->add( as<unsigned>( dk()->active_lesser_ghouls.size() ) );
   }
 
   void dismiss( bool expired = false ) override
@@ -3641,7 +3645,7 @@ private:
 struct gargoyle_pet_t : public death_knight_pet_t
 {
   gargoyle_pet_t( death_knight_t* owner )
-    : death_knight_pet_t( owner, "gargoyle", true, false ), gargoyle_strike( nullptr ), dark_empowerment( nullptr )
+    : death_knight_pet_t( owner, "gargoyle", PET_GARGOYOLE, true, false ), gargoyle_strike( nullptr ), dark_empowerment( nullptr )
   {
     resource_regeneration             = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
@@ -3764,7 +3768,7 @@ public:
 
 struct risen_skulker_pet_t : public death_knight_pet_t
 {
-  risen_skulker_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "risen_skulker", true, false, false )
+  risen_skulker_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "risen_skulker", PET_RISEN_SKULKER, true, false, false )
   {
     resource_regeneration       = regen_type::DISABLED;
     main_hand_weapon.type       = WEAPON_BEAST_RANGED;
@@ -4098,7 +4102,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   } ability;
 
   dancing_rune_weapon_pet_t( death_knight_t* owner, std::string_view drw_name = "dancing_rune_weapon" )
-    : death_knight_pet_t( owner, drw_name, true, false ), ability()
+    : death_knight_pet_t( owner, drw_name, PET_DANCING_RUNE_WEAPON, true, false ), ability()
   {
     // The pet wields the same weapon type as its owner for spells with weapon requirements
     main_hand_weapon.type       = owner->main_hand_weapon.type;
@@ -4202,7 +4206,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
 struct bloodworm_pet_t : public death_knight_pet_t
 {
-  bloodworm_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "bloodworm", true, true )
+  bloodworm_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "bloodworm", PET_BLOODWORMS, true, true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = 1.4_s;
@@ -4277,7 +4281,7 @@ struct magus_pet_t : public death_knight_pet_t
   };
 
   magus_pet_t( death_knight_t* owner, std::string_view name = "dt_magus" )
-    : death_knight_pet_t( owner, name, true, false )
+    : death_knight_pet_t( owner, name, PET_MAGUS_OF_THE_DEAD, true, false )
   {
     resource_regeneration             = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
@@ -4303,6 +4307,9 @@ struct magus_pet_t : public death_knight_pet_t
     dk()->buffs.unholy_aura_haste->trigger();
     if ( dk()->talent.unholy.forbidden_knowledge_3.ok() )
       dk()->buffs.forbidden_ritual->trigger();
+
+    dk()->magus_active++;
+    dk()->sample_data.magus_active->add( dk()->magus_active );
   }
 
   void demise() override
@@ -4311,6 +4318,12 @@ struct magus_pet_t : public death_knight_pet_t
     dk()->buffs.unholy_aura_haste->decrement();
     if ( dk()->talent.unholy.forbidden_knowledge_3.ok() )
       dk()->buffs.forbidden_ritual->decrement();
+
+    if ( !dk()->sim->event_mgr.canceled )
+    {
+      dk()->magus_active--;
+      dk()->sample_data.magus_active->add( dk()->magus_active );
+    }
   }
 
   void init_action_list() override
@@ -4374,7 +4387,7 @@ struct blood_beast_pet_t : public death_knight_pet_t
     }
   };
 
-  blood_beast_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "blood_beast", true, true ), accumulator( 0 )
+  blood_beast_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "blood_beast", PET_BLOOD_BEAST, true, true ), accumulator( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = 1_s;
@@ -4490,8 +4503,8 @@ struct horseman_pet_t : public death_knight_pet_t
     }
   };
 
-  horseman_pet_t( death_knight_t* owner, std::string_view name, bool guardian = true, bool dynamic = false )
-    : death_knight_pet_t( owner, name, guardian, true, dynamic ), rp_spent( 0 ), current_pool( 0 )
+  horseman_pet_t( death_knight_t* owner, std::string_view name, pet_e type, bool guardian = true, bool dynamic = false )
+    : death_knight_pet_t( owner, name, type, guardian, true, dynamic ), rp_spent( 0 ), current_pool( 0 )
   {
     main_hand_weapon.type     = WEAPON_BEAST_2H;
     owner_coeff.ap_from_ap    = 0.935;
@@ -4513,14 +4526,16 @@ struct horseman_pet_t : public death_knight_pet_t
     death_knight_pet_t::demise();
     rp_spent     = 0;
     current_pool = 0;
-    dk()->active_riders--;
+    if ( !dk()->sim->event_mgr.canceled )
+      dk()->active_riders--;
   }
 
   void reset() override
   {
     death_knight_pet_t::reset();
-    rp_spent     = 0;
-    current_pool = 0;
+    rp_spent            = 0;
+    current_pool        = 0;
+    dk()->active_riders = 0;
   }
 
   resource_e primary_resource() const override
@@ -4638,7 +4653,7 @@ struct mograine_pet_t final : public horseman_pet_t
     dnd_aura = make_buff<dnd_aura_t>( this );
   }
 
-  mograine_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "mograine" )
+  mograine_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "mograine", PET_MOGRAINE )
   {
     npc_id                      = owner->spell.summon_mograine->effectN( 1 ).misc_value1();
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -4810,7 +4825,7 @@ struct whitemane_pet_t final : public horseman_pet_t
     }
   };
 
-  whitemane_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "whitemane" )
+  whitemane_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "whitemane", PET_WHITEMANE )
   {
     npc_id                      = owner->spell.summon_whitemane->effectN( 1 ).misc_value1();
     main_hand_weapon.swing_time = 2_s;
@@ -4931,7 +4946,7 @@ struct trollbane_pet_t final : public horseman_pet_t
     }
   };
 
-  trollbane_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "trollbane" )
+  trollbane_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "trollbane", PET_TROLLBANE )
   {
     npc_id                      = owner->spell.summon_trollbane->effectN( 1 ).misc_value1();
     main_hand_weapon.swing_time = 2_s;
@@ -4974,7 +4989,7 @@ public:
 // ==========================================================================
 struct nazgrim_pet_t final : public horseman_pet_t
 {
-  nazgrim_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "nazgrim" )
+  nazgrim_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "nazgrim", PET_NAZGRIM )
   {
     npc_id                      = owner->spell.summon_nazgrim->effectN( 1 ).misc_value1();
     main_hand_weapon.swing_time = 2_s;
@@ -5070,7 +5085,7 @@ struct abomination_pet_t : public death_knight_pet_t
     abomination_pet_t* pet;
   };
 
-  abomination_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "abomination" )
+  abomination_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "abomination", PET_ABOMINATION )
   {
     npc_id                            = owner->spell.summon_abomination->effectN( 1 ).misc_value1();
     main_hand_weapon.type             = WEAPON_BEAST;
@@ -12045,6 +12060,7 @@ void death_knight_t::merge( player_t& other )
     sample_data.lesser_ghoul_duration->merge( *dk.sample_data.lesser_ghoul_duration );
 
   sample_data.lesser_ghouls_active->merge( *dk.sample_data.lesser_ghouls_active );
+  sample_data.magus_active->merge( *dk.sample_data.magus_active );
 }
 
 std::string death_knight_t::create_profile( save_e type )
@@ -12091,6 +12107,7 @@ void death_knight_t::analyze( sim_t& s )
     sample_data.lesser_ghoul_duration->analyze();
 
   sample_data.lesser_ghouls_active->analyze();
+  sample_data.magus_active->analyze();
 }
 
 bool death_knight_t::in_death_and_decay() const
@@ -15116,6 +15133,7 @@ void death_knight_t::init_uptimes()
     sample_data.lesser_ghoul_duration = std::make_unique<extended_sample_data_t>( "Lesser Ghoul Duration", false );
 
   sample_data.lesser_ghouls_active = std::make_unique<extended_sample_data_t>( "Lesser Ghouls Active", false );
+  sample_data.magus_active         = std::make_unique<extended_sample_data_t>( "Magus Active", false );
 
   // Enable detailed reporting for primary resource cap uptimes if requested
   if ( sim->report_details == 1 )
@@ -15164,6 +15182,11 @@ void death_knight_t::init_finished()
 
   if ( off_hand_weapon.type != WEAPON_NONE && oh_runeforge == RUNEFORGE_NONE )
     sim->error( TRIVIAL, "Player {} has no Off-Hand Runeforge enchanted.", name() );
+
+  if ( specialization() == DEATH_KNIGHT_UNHOLY )
+    magus_active = 0;
+
+  active_riders = 0;
 
   player_t::init_finished();
 }
@@ -15341,7 +15364,7 @@ void death_knight_t::activate()
 
 void death_knight_t::reset()
 {
-  player_t::reset();
+  parse_player_effects_t::reset();
 
   _runes.reset();
   active_dnd                   = nullptr;
@@ -15349,6 +15372,7 @@ void death_knight_t::reset()
   km_proc_attempts             = 0;
   bone_shield_charges_consumed = 0;
   active_riders                = 0;
+  magus_active                 = 0;
   dk_active_pets.clear();
   active_lesser_ghouls.clear();
 }
@@ -15357,7 +15381,7 @@ void death_knight_t::reset()
 
 void death_knight_t::assess_damage( school_e school, result_amount_type type, action_state_t* s )
 {
-  player_t::assess_damage( school, type, s );
+  parse_player_effects_t::assess_damage( school, type, s );
 
   if ( specialization() == DEATH_KNIGHT_BLOOD && s->result == RESULT_PARRY && talent.blood.bloodied_blade->ok() )
   {
@@ -15600,6 +15624,15 @@ inline double death_knight_t::rune_regen_coefficient() const
 // death_knight_t::arise ====================================================
 void death_knight_t::arise()
 {
+  active_dnd                   = nullptr;
+  runic_power_decay            = nullptr;
+  km_proc_attempts             = 0;
+  bone_shield_charges_consumed = 0;
+  active_riders                = 0;
+  magus_active                 = 0;
+  dk_active_pets.clear();
+  active_lesser_ghouls.clear();
+
   player_t::arise();
   start_inexorable_assault();
 
@@ -15854,8 +15887,8 @@ public:
   {
     // Basic Table
     os << "<div class=\"player-section custom_section\">\n";
-    os << "<h3 class=\"toggle open\">Rune waste details</h3>\n"
-       << "<div class=\"toggle-content\">\n";
+    os << "<h3 class=\"toggle\">Rune waste details</h3>\n"
+       << "<div class=\"toggle-content hide\">\n";
 
     os << "<p style=\"width: 75%\">"
        << "In the table below, &quot;Seconds per Rune&quot; denotes the time in seconds an individual "
@@ -15947,8 +15980,8 @@ public:
       return;
 
     os << "<div class=\"player-section custom_section\">\n"
-          "<h3 class=\"toggle open\">Runic Power Waste Details</h3>\n"
-          "<div class=\"toggle-content\">\n";
+          "<h3 class=\"toggle\">Runic Power Waste Details</h3>\n"
+          "<div class=\"toggle-content hide\">\n";
 
     int num_buckets = std::min( 24, static_cast<int>( 2 * ( d.max() - d.min() ) ) + 1 );
     d.create_histogram( num_buckets );
@@ -16091,13 +16124,64 @@ public:
     } );
 
     os << "<div class=\"player-section custom_section\">\n"
-          "<h3 class=\"toggle open\">Lesser Ghouls</h3>\n"
-          "<div class=\"toggle-content\">\n";
+          "<h3 class=\"toggle\">Lesser Ghouls</h3>\n"
+          "<div class=\"toggle-content hide\">\n";
 
     os << lesser_ghoul_sources.to_target_div();
     p.sim->add_chart_data( lesser_ghoul_sources );
     lesser_ghoul_duration_chart( os );
     lesser_ghoul_active_chart( os );
+
+    os << "</div>\n"
+          "</div>\n";
+  }
+
+  void magus_active_chart( report::sc_html_stream& os )
+  {
+    if ( p.specialization() != DEATH_KNIGHT_UNHOLY )
+      return;
+
+    auto& d = *p.sample_data.magus_active;
+    if ( d.count() == 0 )
+      return;
+
+    os << "<div class=\"player-section custom_section\">\n"
+          "<h3 class=\"toggle\">Magus of the Dead</h3>\n"
+          "<div class=\"toggle-content hide\">\n";
+
+    int num_buckets = std::min( 30, static_cast<int>( d.max() ) );
+    d.create_histogram( num_buckets );
+
+    highchart::histogram_chart_t chart( highchart::build_id( p, "magus_active" ), *p.sim );
+    if ( chart::generate_distribution( chart, &p, d.distribution, "Magus' Active", d.mean(), d.min(), d.max() ) )
+    {
+      chart.set( "chart.width", std::to_string( 80 + num_buckets * 20 ) );
+      os << chart.to_target_div();
+      p.sim->add_chart_data( chart );
+    }
+
+    os << "<table class=\"sc\">\n"
+       << "<tr>\n"
+       << "<th colspan=\"5\">Statistics</th>\n"
+       << "</tr>\n"
+       << "<tr>\n"
+       << "<th>Minimum</th>\n"
+       << "<th>5<sup>th</sup> percentile</th>\n"
+       << "<th>Mean / Median</th>\n"
+       << "<th>75<sup>th</sup> percentile</th>\n"
+       << "<th>95<sup>th</sup> percentile</th>\n"
+       << "<th>Maximum</th>\n"
+       << "</tr>\n";
+
+    os << "<tr>\n";
+    os.printf( "<td class=\"right\">%.3f</td>", d.min() );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .05 ) );
+    os.printf( "<td class=\"right\">%.3f / %.3f</td>", d.mean(), d.percentile( .5 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .75 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .95 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.max() );
+    os << "</tr>\n";
+    os << "</table>\n";
 
     os << "</div>\n"
           "</div>\n";
@@ -16112,6 +16196,7 @@ public:
 
       html_rp_waste( os );
       lesser_ghoul_charts( os );
+      magus_active_chart( os );
     }
   }
 
