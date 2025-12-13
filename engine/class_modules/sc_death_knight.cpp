@@ -3537,9 +3537,9 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     base_ghoul_pet_t::dismiss( expired );
   }
 
-  void putrefy_ghoul( bool log = true, bool soul_reaper = false )
+  void putrefy_ghoul( bool soul_reaper = false )
   {
-    make_event( *sim, rng().range( 1_ms, 100_ms ), [ & ]() {
+    make_event( *sim, rng().range( 1_ms, 100_ms ), [ &, soul_reaper ]() {
       if ( soul_reaper )
         dk()->background_actions.putrefy_sr_st->execute_on_target( dk()->target );
       else
@@ -3593,6 +3593,12 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     base_ghoul_pet_t::init_uptimes();
     // Merge time spent at resource cap for pets sharing the same name to reduce report clutter
     this->uptimes.primary_resource_cap = dk()->find_pet( name_str )->uptimes.primary_resource_cap;
+  }
+
+  void init_finished() override
+  {
+    base_ghoul_pet_t::init_finished();
+    transfusion->set_quiet( true );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -6005,7 +6011,6 @@ struct summon_lesser_ghoul_t : public death_knight_summon_spell_t
       duration *=
           1.0 + ( p()->cache.mastery() / 100 ) * p()->talent.unholy.commander_of_the_dead->effectN( 1 ).percent();
 
-    bool sr = false;
     switch ( source )
     {
       case lesser_ghoul_e::LESSER_DOOMED_BIDDING_COIL:
@@ -6025,19 +6030,18 @@ struct summon_lesser_ghoul_t : public death_knight_summon_spell_t
         p()->procs.lesser_ghoul_army->occur();
         break;
       case lesser_ghoul_e::LESSER_SOUL_REAPER:
-        sr = true;
         p()->pets.lesser_ghoul_putrefy.spawn( duration );
         break;
       case lesser_ghoul_e::LESSER_PUTREFY:
         p()->pets.lesser_ghoul_putrefy.spawn( duration );
         break;
       case lesser_ghoul_e::LESSER_FORBIDDEN_KNOWLEDGE:
-        p()->pets.lesser_ghoul_fk.spawn();
+        p()->pets.lesser_ghoul_fk.spawn( duration );
         break;
     }
 
     if ( putrefy_instantly )
-      p()->active_lesser_ghouls.back()->putrefy_ghoul( false, sr );
+      p()->active_lesser_ghouls.back()->putrefy_ghoul( source == lesser_ghoul_e::LESSER_SOUL_REAPER );
   }
 
 private:
@@ -7873,8 +7877,9 @@ struct dark_transformation_t : public death_knight_spell_t
 
     if ( p->talent.sanlayn.the_blood_is_life.ok() )
     {
-      p->pets.blood_beast.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
-      add_child( p->background_actions.the_blood_is_life );
+      p->pets.blood_beast.set_creation_event_callback( pets::parent_pet_action_fn( p->pet_summon.blood_beast ) );
+      add_child( p->pet_summon.blood_beast );
+      p->pet_summon.blood_beast->add_child( p->background_actions.the_blood_is_life );
     }
   }
 
@@ -12920,7 +12925,7 @@ void death_knight_t::create_actions()
   if ( talent.sanlayn.the_blood_is_life.ok() )
   {
     background_actions.the_blood_is_life = get_action<the_blood_is_life_t>( "the_blood_is_life", this );
-    pet_summon.blood_beast               = get_action<blood_beast_summon_t>( "blood_beast_summon", this );
+    pet_summon.blood_beast               = get_action<blood_beast_summon_t>( "blood_beast", this );
   }
 
   // Deathbringer
@@ -13002,9 +13007,8 @@ void death_knight_t::create_actions()
     {
       background_actions.putrefy_aoe = get_action<putrefy_aoe_t>( "putrefy_aoe", this );
       background_actions.putrefy     = get_action<putrefy_st_t>( "putrefy_st", this );
-      if ( talent.unholy.necromancers_cunning.ok() )
-        pet_summon.putrefy_ghoul = get_action<summon_lesser_ghoul_t>( "putrefy_ghoul", this, spell.summon_putrefy_ghoul,
-                                                                      lesser_ghoul_e::LESSER_PUTREFY );
+      pet_summon.putrefy_ghoul = get_action<summon_lesser_ghoul_t>( "putrefy_ghoul", this, spell.summon_putrefy_ghoul,
+                                                                    lesser_ghoul_e::LESSER_PUTREFY );
     }
 
     if ( talent.unholy.army_of_the_dead.ok() )
@@ -16015,7 +16019,7 @@ public:
     if ( d.count() == 0 )
       return;
 
-    int num_buckets = std::min( 30, static_cast<int>( 2 * ( d.max() - d.min() ) ) + 1 );
+    int num_buckets = std::min( 30, static_cast<int>( d.max() ) );
     d.create_histogram( num_buckets );
 
     highchart::histogram_chart_t chart( highchart::build_id( p, "lesser_ghoul_active" ), *p.sim );
