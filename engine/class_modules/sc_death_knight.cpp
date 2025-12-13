@@ -3504,8 +3504,14 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
   lesser_ghoul_pet_t( death_knight_t* owner, std::string_view name = "army_ghoul" )
     : base_ghoul_pet_t( owner, name, PET_LESSER_GHOUL, true )
   {
+    resource_regeneration             = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
     affected_by_grave_mastery         = true;
+  }
+
+  resource_e primary_resource() const override
+  {
+    return RESOURCE_NONE;
   }
 
   void init_base_stats() override
