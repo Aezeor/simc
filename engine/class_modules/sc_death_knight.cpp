@@ -3036,29 +3036,17 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
 
 struct base_ghoul_pet_t : public death_knight_pet_t
 {
-  timespan_t stun_duration;
   double spawn_distance;
   double spawn_radius;
+
   base_ghoul_pet_t( death_knight_t* owner, std::string_view name, pet_e type, bool guardian = false, bool dynamic = true )
     : death_knight_pet_t( owner, name, type, guardian, true, dynamic ),
-      stun_duration( 4.5_s ),
       spawn_distance( 0 ),
       spawn_radius( 0 )
   {
     main_hand_weapon.swing_time = 2.0_s;
     main_hand_weapon.type       = WEAPON_BEAST;
     spawn_radius                = dk()->spell.summon_lesser_ghoul->effectN( 1 ).radius();
-  }
-
-  void init_finished() override
-  {
-    death_knight_pet_t::init_finished();
-    buffs.stunned->set_expire_callback( [ & ]( buff_t*, int, timespan_t d ) {
-      if ( !sim->event_mgr.canceled && d == timespan_t::zero() )
-      {
-        trigger_pet_movement( spawn_distance );
-      }
-    } );
   }
 
   attack_t* create_main_hand_auto_attack() override
@@ -3098,24 +3086,23 @@ struct base_ghoul_pet_t : public death_knight_pet_t
     if ( buffs.stunned->check() )
       return buffs.stunned->remains();
 
-    // Very Dirty optimization for 0 energy cost actions the ghouls can execute.
-    // Without the resource threshold checks here, things get very slow as its returning
-    // death_knight_pet_t::available(), running all ghoul APLs every 100ms
-    if ( resource_thresholds.empty() && !in_gcd() )
-      return death_knight_pet_t::available();
-
-    if ( resource_thresholds.empty() && in_gcd() )
+    if ( in_gcd() )
       return sim->current_time() - gcd_ready;
 
-    double energy = resources.current[ RESOURCE_ENERGY ];
+    if ( primary_resource() == RESOURCE_ENERGY )
+    {
+      double energy = resources.current[ RESOURCE_ENERGY ];
 
-    if ( energy >= resource_thresholds.front() )
-      return death_knight_pet_t::available();
+      if ( energy >= resource_thresholds.front() )
+        return death_knight_pet_t::available();
 
-    timespan_t time_to_next = timespan_t::from_seconds( ( resource_thresholds.front() - energy ) /
-                                                        resource_regen_per_second( RESOURCE_ENERGY ) );
+      timespan_t time_to_next = timespan_t::from_seconds( ( resource_thresholds.front() - energy ) /
+                                                          resource_regen_per_second( RESOURCE_ENERGY ) );
 
-    return std::max( time_to_next, death_knight_pet_t::available() );
+      return std::max( time_to_next, death_knight_pet_t::available() );
+    }
+
+    return death_knight_pet_t::available();
   }
 };
 
@@ -3213,6 +3200,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
       aoe                     = -1;
       attack_power_mod.direct = data().effectN( 3 ).ap_coeff();
       target_filter_callback  = secondary_targets_only();
+      base_costs[ RESOURCE_ENERGY ] = 0;
     }
   };
 
@@ -3450,6 +3438,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       aoe                     = -1;
       attack_power_mod.direct = data().effectN( 3 ).ap_coeff();
       target_filter_callback  = secondary_targets_only();
+      base_costs[ RESOURCE_ENERGY ] = 0;
     }
   };
 
@@ -3462,7 +3451,6 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       aoe                           = 0;
       attack_power_mod.direct       = data().effectN( 2 ).ap_coeff();
       impact_action                 = new lesser_ghoul_sweeping_claws_aoe_t( p );
-      base_costs[ RESOURCE_ENERGY ] = 0;
     }
 
     bool ready() override
@@ -3516,7 +3504,8 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
 
   void init_base_stats() override
   {
-    base_ghoul_pet_t::init_base_stats();
+    // Skip base_ghoul_pet_t::init_base_stats to prevent initializing energy resource
+    death_knight_pet_t::init_base_stats();
     owner_coeff.ap_from_ap = 0.31;
     if ( name_str == "army_ghoul" )
       owner_coeff.ap_from_ap *= 2;  // Not in data, testing suggests its 2x base lesser ghoul inheritence
@@ -7229,6 +7218,7 @@ struct dread_plague_t final : public death_knight_disease_t
     {
       erupt                  = get_action<dread_plague_erupt_t>( "dread_plague_erupt_ss", p );
       erupt->base_multiplier = p->talent.unholy.superstrain->effectN( 2 ).percent();
+      erupt->target_filter_callback = secondary_targets_only();
       add_child( erupt );
     }
   }
@@ -7280,9 +7270,7 @@ struct dread_plague_t final : public death_knight_disease_t
 
       if ( p()->sim->target_non_sleeping_list.size() > 1 )
       {
-        auto tl = target_list();
-        range::erase_remove( tl, [ d ]( player_t* t ) { return t == d->target; } );
-        auto target = rng().range( tl );
+        auto target = rng().range( erupt->target_list() );
         erupt->execute_on_target( target, d->state->result_raw );
       }
     }
