@@ -7730,7 +7730,7 @@ struct reapers_mark_t final : public death_knight_spell_t
       } );
     }
     if ( p()->talent.deathbringer.deathly_blows->ok() && p()->talent.frost.bonegrinder->ok() )
-      p()->buffs.bonegrinder_frost->trigger( p()->talent.deathbringer.deathly_blows->effectN( 4 ).base_value() );
+      p()->buffs.bonegrinder_frost->trigger( as<int>( p()->talent.deathbringer.deathly_blows->effectN( 4 ).base_value() ) );
   }
 };
 
@@ -9377,16 +9377,6 @@ struct frostscythe_base_t : public death_knight_melee_attack_t
     }
   }
 
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = death_knight_melee_attack_t::composite_target_multiplier( t );
-
-    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B4 ) && t == target )
-      m *= 1.0 + p()->sets->set( DEATH_KNIGHT_FROST, TWW2, B4 )->effectN( 4 ).percent();
-
-    return m;
-  }
-
 private:
   propagate_const<action_t*> inexorable_assault;
 };
@@ -9436,33 +9426,6 @@ struct frostscythe_t : public frostscythe_base_t
 
 private:
   propagate_const<action_t*> aa_action;
-};
-
-struct frostscythe_proc_t : public frostscythe_base_t
-{
-  frostscythe_proc_t( util::string_view n, death_knight_t* p ) : frostscythe_base_t( n, p, p->find_spell( 207230 ) )
-  {
-    background         = true;
-    base_multiplier    = p->sets->set( DEATH_KNIGHT_FROST, TWW2, B4 )->effectN( 1 ).percent();
-    cooldown->duration = 0_ms;  // Override Spell data as this is a proc
-  }
-
-  void init_finished() override
-  {
-    frostscythe_base_t::init_finished();
-    // Override this here so our auto parsing doesn't mess with it
-    // PTR TODO: Might need to be removed once testing is possible, this assumes it can't
-    // proc effects based off rune spending
-    base_costs[ RESOURCE_RUNE ] = 0;
-    // Also assume it doesnt generate runic power.
-    energize_amount = 0;
-  }
-
-  double cost() const override
-  {
-    // Procs are free
-    return 0;
-  }
 };
 
 // Frostwyrm's Fury =========================================================
@@ -9545,7 +9508,7 @@ struct chosen_of_frostbrood_fwf_t final : public fwf_action_base_t
     fwf_damage = get_action<frostwyrms_fury_damage_t>( "frostwyrms_fury_recall", p, p->spell.frostwyrms_fury_damage );
     fwf_damage->base_multiplier = chosen_mult;
     rider_dur *= chosen_mult;
-    exterm_stacks *= chosen_mult;
+    exterm_stacks = as<int>(chosen_mult * exterm_stacks);
     haste_val *= chosen_mult;
     pillar_extension *= chosen_mult;
   }
@@ -12965,11 +12928,6 @@ void death_knight_t::create_actions()
     if ( talent.frost.frostbane.ok() )
     {
       background_actions.frostbane_strike = get_action<frostbane_strike_t>( "frostbane", this );
-    }
-
-    if ( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B4 ) )
-    {
-      background_actions.frostscythe_proc = get_action<frostscythe_proc_t>( "frostscythe_proc", this );
     }
 
     if ( talent.frost.arctic_assault.ok() )
