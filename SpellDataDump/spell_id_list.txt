@@ -1751,7 +1751,7 @@ Death Knight
 1282554 *Superstrain
 1282564 *Death and Decay
 1282565  Scythe of Decay
-1282570 *Forbidden Ritual
+1282570  Forbidden Ritual
 
 Demon Hunter
 1490     Chaos Brand

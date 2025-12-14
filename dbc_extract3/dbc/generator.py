@@ -1990,6 +1990,7 @@ class SpellDataGenerator(DataGenerator):
           ( 1268917, 0 ), # Unholy Aura Mastery Buff
           ( 1278150, 0 ), # Lesser Ghoul Sweeping Claws
           ( 1277098, 0 ), # Lesser Ghoul
+          ( 1282570, 0 ), # Forbidden Ritual
         ),
 
         # Shaman:

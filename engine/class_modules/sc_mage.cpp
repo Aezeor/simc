@@ -360,7 +360,6 @@ public:
     double it_clearcasting_chance = 0.0938;
     double blast_clearcasting_chance = 0.0938;
     double blast_it_clearcasting_chance = 0.1618;
-    bool fof_requires_freezing = true;
     bool il_requires_freezing = true;
     bool il_sort_by_freezing = true;
     bool randomize_si_target = false;
@@ -1409,8 +1408,6 @@ struct touch_of_the_magi_t final : public buff_t
     buff_t::expire_override( stacks, duration );
 
     auto p = debug_cast<mage_t*>( source );
-    // TODO: This *should* be affected by Touch of the Archmage and provide 25%, but
-    // it currently doesn't seem to work ingame.
     double damage = current_value * p->talents.touch_of_the_magi->effectN( 1 ).percent();
     p->action.touch_of_the_magi_explosion->execute_on_target( player, damage );
     if ( p->talents.touch_of_the_archmage_3.ok() )
@@ -1571,6 +1568,7 @@ public:
     weapon_multiplier = 0.0;
     track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
     energize_type = action_energize::NONE;
+    affected_by.savant = data().affected_by( p->spec.savant->effectN( 5 ) );
     // TODO: This could be a bit more robust; also the on-impact version
     affected_by.freeze_and_shatter_1 = data().affected_by( p->spec.freeze_and_shatter->effectN( 1 ) );
     affected_by.freeze_and_shatter_2 = data().affected_by( p->spec.freeze_and_shatter->effectN( 2 ) );
@@ -1755,6 +1753,7 @@ public:
       parse_effect_data( eff );
     may_crit = !spell->flags( SX_CANNOT_CRIT );
     tick_may_crit = spell->flags( SX_TICK_MAY_CRIT );
+    rolling_periodic = spell->flags( SX_ROLLING_PERIODIC );
 
     affected_by.freeze_and_shatter_1 = spell->affected_by( p()->spec.freeze_and_shatter->effectN( 1 ) );
     affected_by.freeze_and_shatter_2 = spell->affected_by( p()->spec.freeze_and_shatter->effectN( 2 ) );
@@ -1892,10 +1891,7 @@ public:
       trigger_molten_chill_ignite( s );
 
     if ( affected_by.overflowing_energy )
-    {
-      // TODO: For Frost, this is currently triggered by Ice Lance but consumed by FB/FFB/GS
       p()->trigger_merged_buff( p()->buffs.overflowing_energy, s->result != RESULT_CRIT );
-    }
 
     if ( p()->talents.fevered_incantation.ok() && s->result_type == result_amount_type::DMG_DIRECT )
       p()->trigger_merged_buff( p()->buffs.fevered_incantation, s->result == RESULT_CRIT );
@@ -1995,7 +1991,6 @@ public:
     if ( m <= 0.0 )
       return;
 
-    // TODO: Description says 15% (effect 1), but it seems to be doing 10% in game
     double amount = s->result_total / m * p()->talents.molten_chill->effectN( 1 ).percent();
     if ( amount <= 0.0 )
       return;
@@ -2519,7 +2514,6 @@ struct arcane_orb_bolt_t final : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_spell( 153640 ) )
   {
     background = proc = true;
-    affected_by.savant = true;
   }
 
   void impact( action_state_t* s ) override
@@ -2701,12 +2695,8 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     p()->buffs.arcane_charge->expire();
     int salvo = p()->buffs.arcane_salvo->check();
-    if ( salvo && p()->talents.force_of_will.ok() )
-    {
-      // TODO: Force of Will seems to conjure one additional splinter if at
-      // least one stack of Arcane Salvo is present
-      p()->trigger_splinter( target, 1 + salvo / as<int>( p()->talents.force_of_will->effectN( 1 ).base_value() ) );
-    }
+    if ( p()->talents.force_of_will.ok() )
+      p()->trigger_splinter( target, salvo / as<int>( p()->talents.force_of_will->effectN( 1 ).base_value() ) );
     p()->buffs.arcane_salvo->expire();
     if ( salvo >= as<int>( p()->talents.polished_focus->effectN( 1 ).base_value() ) )
       p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.polished_focus->effectN( 2 ).base_value() ) );
@@ -2849,7 +2839,6 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    affected_by.savant = true;
     triggers.clearcasting = true;
   }
 
@@ -2880,8 +2869,6 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
       background = proc = true;
       cooldown->duration = 0_ms;
       base_costs[ RESOURCE_MANA ] = 0;
-      // TODO: This is probably a bug
-      affected_by.savant = true;
       return;
     }
 
@@ -2991,7 +2978,6 @@ struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_sp
     high_voltage_energize( as<int>( p->find_spell( 461524 )->effectN( 1 ).base_value() ) )
   {
     background = proc = true;
-    affected_by.savant = true;
 
     // Spell data contains the AoE effect which is disabled unless you pick the AoE AM talents.
     // Fix the spell power mod and use base_aoe_multiplier for the cleave
@@ -3186,7 +3172,6 @@ struct arcane_surge_t final : public arcane_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    affected_by.savant = true;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
   }
 
@@ -3203,7 +3188,6 @@ struct arcane_surge_t final : public arcane_mage_spell_t
     double am = arcane_mage_spell_t::action_multiplier();
 
     double max_mana_mult = data().effectN( 2 ).base_value();
-    // TODO: Doesn't seem to work ingame, best guess at how it should work
     max_mana_mult *= 1.0 + p()->talents.mana_bomb->effectN( 1 ).percent();
     am *= 1.0 + p()->resources.pct( RESOURCE_MANA ) * ( max_mana_mult - 1.0 );
 
@@ -3784,7 +3768,6 @@ struct flurry_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    // TODO: Only fires 3 instead of 4 bolts at the secondary target
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( pulse_time )
       .target( s->target )
@@ -3837,8 +3820,6 @@ struct frostbolt_t final : public frost_mage_spell_t
   {
     double m = frost_mage_spell_t::composite_da_multiplier( s );
 
-    // TODO: Seems to be doing +100% damage rather than the +60% mentioned in desc
-    // Possibly talent's effect 1? Same goes for the Fire version
     if ( frostfire && p()->state.trigger_ff_empowerment )
       m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 3 ).percent();
 
@@ -4031,7 +4012,6 @@ struct glacial_spike_t final : public frost_mage_spell_t
       freezing_stacks = 0;
 
     chain_multiplier = 1.0; // The spell data value isn't used
-    // TODO: GS seems to autocast if FFB hits while the GS buff is up, not sure what causes this
 
     if ( p->talents.duality.ok() )
     {
@@ -4113,10 +4093,8 @@ struct shatter_t final : public mage_spell_t
     if ( p->talents.frostbite.ok() )
     {
       aoe = -1;
-      // TODO: Despite the wording of the talent description, the reduced AoE damage does
-      // apply to the primary target as well (i.e. there's no full_amount_targets).
-      // TODO: Seems to be 8 target softcap rather than the 5 claimed by the description.
       reduced_aoe_targets = p->talents.frostbite->effectN( 2 ).base_value();
+      full_amount_targets = 1;
     }
   }
 
@@ -4160,9 +4138,8 @@ struct winters_end_t final : public mage_spell_t
     background = proc = true;
     aoe = -1;
     target_filter_callback = secondary_targets_only(); // Main target should be dead
-    // TODO: Check if this is actually 5 softcap
+    // TODO: Currently deals full damage to all targets
     reduced_aoe_targets = p->spec.winters_end->effectN( 1 ).base_value();
-    // TODO: Does it benefit from Freezing Winds? Set bonus?
   }
 
   double action_multiplier() const override
@@ -4236,11 +4213,9 @@ struct ice_lance_t final : public frost_mage_spell_t
       if ( s->chain_target == 0 && p()->talents.force_of_will.ok() )
         p()->trigger_splinter( s->target, stacks / as<int>( p()->talents.force_of_will->effectN( 3 ).base_value() ) );
 
-      // TODO: The old Polished Focus effect (1 Freezing refund on max consume) still somehow
-      // seems to be around. Definitely a bug.
-
       if ( stacks >= 1 )
       {
+        // TODO: This now happens without any shattered stacks (giving the base 0.5 sec cdr)
         timespan_t whiteout = p()->talents.white_out->effectN( 1 ).time_value();
         whiteout += stacks * p()->talents.white_out->effectN( 2 ).time_value();
         p()->cooldowns.frozen_orb->adjust( -whiteout );
@@ -4252,9 +4227,6 @@ struct ice_lance_t final : public frost_mage_spell_t
   size_t available_targets( std::vector<player_t*>& tl ) const override
   {
     frost_mage_spell_t::available_targets( tl );
-
-    if ( p()->state.fingers_of_frost_active && !p()->options.fof_requires_freezing )
-      return tl.size();
 
     // Priority for target selection. Main target is always chosen, rest depends on Freezing stacks.
     auto value = [ this ] ( player_t* t )
@@ -4580,7 +4552,6 @@ struct mirror_image_t final : public mage_spell_t
 struct duality_glacial_spike_t final : public mage_spell_t
 {
   // TODO: Still seems to be using the old TWW set bonus GS
-  // TODO: Also affected by Flash Freezeburn
   duality_glacial_spike_t( std::string_view n, mage_t* p ) :
     mage_spell_t( n, p, p->find_spell( 1236209 ) )
   {
@@ -4588,18 +4559,6 @@ struct duality_glacial_spike_t final : public mage_spell_t
     background = proc = true;
     if ( p->talents.elemental_conduit.ok() )
       triggers.ignite = true;
-
-    if ( p->specialization() == MAGE_FIRE && p->talents.flash_freezeburn.ok() )
-      add_child( p->action.flash_freezeburn );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    mage_spell_t::impact( s );
-
-    // TODO: This is probably a bug
-    if ( result_is_hit( s->result ) && p()->action.flash_freezeburn )
-      p()->action.flash_freezeburn->execute_on_target( s->target, p()->talents.flash_freezeburn->effectN( 2 ).percent() * s->result_total );
   }
 };
 
@@ -4721,7 +4680,7 @@ struct splintering_ray_t final : public spell_t
     background = proc = true;
     target_filter_callback = secondary_targets_only();
     base_dd_min = base_dd_max = 1.0;
-    // TODO: Seems to hit 1 fewer target
+    // TODO: Seems to hit 1 fewer target. See flash_freezeburn_t for possible explanation.
     aoe--;
   }
 
@@ -4770,8 +4729,7 @@ struct ray_of_frost_t final : public frost_mage_spell_t
     p()->trigger_freezing( d->target, 1, freezing_source ); // Not in spell data
     p()->trigger_splinter( d->target, as<int>( p()->talents.splinterstorm->effectN( 3 ).base_value() ) );
 
-    // TODO: FoF is granted through spell 269748. Unfortunately, Blizzard forgot to change its
-    // period to 2 sec when Ray of Frost was changed to 4 sec channel, so now it only grants a single FoF.
+    // FoF is granted through spell 269748, this does more or less the same thing (except when Ray is refreshed).
     if ( p()->talents.crystalline_refraction.ok() && ( d->current_tick == 4 || d->current_tick == 8 ) )
       p()->trigger_fof( 1.0, proc_fof );
 
@@ -4819,7 +4777,6 @@ struct supernova_t final : public mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    affected_by.savant = true;
     triggers.clearcasting = true;
 
     double sn_mult = 1.0 + p->talents.supernova->effectN( 1 ).percent();
@@ -5025,13 +4982,13 @@ struct flash_freezeburn_t final : public spell_t
     spell_t( n, p, p->find_spell( 1278079 ) )
   {
     background = proc = true;
-    // TODO: Currently hits the main target for some reason
     target_filter_callback = secondary_targets_only();
     base_dd_min = base_dd_max = 1.0;
-    // TODO: Currently hits unlimited targets with a sqrt reduction
-    // after 5 targets. Nothing in the description mentions this so
-    // this is presumably a bug.
-    aoe = as<int>( p->talents.flash_freezeburn->effectN( 3 ).base_value() );
+    // TODO: Hits one fewer target. It is possible that the main target
+    // (which is not dealt damage) is counted as one of the five targets.
+    // Splintering Ray sometimes does hit 5 targets, but Flash Freezeburn
+    // doesn't seem to.
+    aoe--;
   }
 };
 
@@ -5073,7 +5030,7 @@ struct splinter_t final : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    am *= 1.0 + p()->cache.mastery() * p()->spec.savant->effectN( 7 ).mastery_value();
+    am *= 1.0 + p()->cache.mastery() * p()->spec.savant->effectN( 6 ).mastery_value();
 
     return am;
   }
@@ -5326,7 +5283,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.freezing               = make_buff( *this, "freezing", mage->find_spell( 1221389 ) )
                                      ->set_expire_callback( [ mage ] ( buff_t* b, int stacks, timespan_t duration )
                                        {
-                                         // TODO: This currently doesn't work ingame
                                          if ( auto a = mage->action.winters_end; a && b->player->is_sleeping() && !b->sim->event_mgr.canceled )
                                          {
                                            double old_mult = a->base_multiplier;
@@ -5545,7 +5501,6 @@ void mage_t::create_options()
   add_option( opt_float( "mage.it_clearcasting_chance", options.it_clearcasting_chance ) );
   add_option( opt_float( "mage.blast_clearcasting_chance", options.blast_clearcasting_chance ) );
   add_option( opt_float( "mage.blast_it_clearcasting_chance", options.blast_it_clearcasting_chance ) );
-  add_option( opt_bool( "mage.fof_requires_freezing", options.fof_requires_freezing ) );
   add_option( opt_bool( "mage.il_requires_freezing", options.il_requires_freezing ) );
   add_option( opt_bool( "mage.il_sort_by_freezing", options.il_sort_by_freezing ) );
   add_option( opt_bool( "mage.randomize_si_target", options.randomize_si_target ) );
@@ -6779,15 +6734,11 @@ int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consump
   int shatter_stacks = fof ? max_consumption : std::min( max_consumption, stacks );
   int consume_stacks = fof ? 0 : std::min( max_consumption, stacks );
 
-  // TODO: With FoF, Shatter should happen even if the target has 0 Freezing stacks, this
-  // is currently not the case.
-  if ( options.fof_requires_freezing && stacks == 0 )
-    shatter_stacks = 0;
-
   assert( consume_stacks <= shatter_stacks );
   assert( source );
   source->occur( shatter_stacks );
 
+  // TODO: HoF doesn't seem to need any shattered stacks to trigger
   if ( shatter_stacks > 0 )
   {
     sim->print_log( "{} {} shatters {} ({} stacks, {} consumed)", *this, *action, *target, shatter_stacks, consume_stacks );
@@ -6971,6 +6922,11 @@ void mage_t::trigger_splinter( player_t* target, int count )
   if ( count < 0 )
     count = 1; // TODO: Effect 2 of Splintering Sorcery? Unclear
 
+  // When multiple splinters trigger at once, they launch in a staggered fashion with
+  // about 100 ms between each.
+  constexpr timespan_t splinter_delay = 100_ms;
+  timespan_t total_delay = 0_ms;
+
   double chance = talents.splinterstorm->effectN( 2 ).percent();
   for ( int i = 0; i < count; i++ )
   {
@@ -6984,7 +6940,8 @@ void mage_t::trigger_splinter( player_t* target, int count )
     int per_conjure = ( buffs.splinterstorm->check() || buffs.arcane_surge->check() ) && rng().roll( chance ) ? 2 : 1;
     for ( int j = 0; j < per_conjure; j++ )
     {
-      make_event( *sim, [ this, t = t_ ] { action.splinter->execute_on_target( t ); } );
+      make_event( *sim, total_delay, [ this, t = t_ ] { action.splinter->execute_on_target( t ); } );
+      total_delay += splinter_delay;
     }
   }
 
