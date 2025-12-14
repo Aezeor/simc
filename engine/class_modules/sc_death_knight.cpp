@@ -898,6 +898,7 @@ public:
     action_t* wave_of_souls;
     action_t* soul_rupture;
     action_t* exterminate;
+    action_t* exterminate_aoe;
 
     // Frost
     action_t* breath_of_sindragosa_tick;
@@ -908,7 +909,6 @@ public:
     action_t* frost_strike_sb_offhand;
     propagate_const<action_t*> icy_death_torrent_damage;
     action_t* hyperpyrexia_damage;
-    propagate_const<action_t*> frostscythe_proc;
     propagate_const<action_t*> erw_projectile;
     propagate_const<action_t*> frostreaper;
     propagate_const<action_t*> frozen_dominion_remorseless_winter;
@@ -1330,7 +1330,7 @@ public:
       player_talent_t reapers_onslaught;
       player_talent_t deaths_messenger;
       player_talent_t expelling_shield;  // NYI
-      player_talent_t echoing_fury;      // NYI
+      player_talent_t echoing_fury;      
       player_talent_t exterminate;
     } deathbringer;
 
@@ -7423,7 +7423,7 @@ struct exterminate_aoe_t final : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
     if ( empowered )
-      empowered = false;
+      empowered--;
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -7440,7 +7440,7 @@ struct exterminate_aoe_t final : public death_knight_spell_t
   }
 
 public:
-  bool empowered;
+  int empowered;
 };
 
 struct exterminate_t final : public death_knight_spell_t
@@ -7467,8 +7467,7 @@ struct exterminate_t final : public death_knight_spell_t
     }
     if ( empowered )
     {
-      empowered                                               = false;
-      debug_cast<exterminate_aoe_t*>( second_hit )->empowered = true;
+      empowered--;
     }
 
     if ( p()->specialization() == DEATH_KNIGHT_BLOOD &&
@@ -7492,11 +7491,9 @@ struct exterminate_t final : public death_knight_spell_t
     return m;
   }
 
-private:
-  action_t* second_hit;
-
 public:
-  bool empowered;
+  int empowered;
+  action_t* second_hit;
 };
 
 struct reapers_mark_explosion_t final : public death_knight_spell_t
@@ -7552,10 +7549,6 @@ struct reapers_mark_explosion_t final : public death_knight_spell_t
       p()->buffs.exterminate->trigger( exterminate_stacks );
     }
 
-    // if ( p()->sets->has_set_bonus( HERO_DEATHBRINGER, TWW3, B2 ) )
-    //{
-    //   p()->buffs.empowered_soul->trigger();
-    // }
   }
 
   void impact( action_state_t* state ) override
@@ -7736,15 +7729,8 @@ struct reapers_mark_t final : public death_knight_spell_t
             1 );
       } );
     }
-
-    if ( p()->sets->has_set_bonus( HERO_DEATHBRINGER, TWW3, B2 ) )
-    {
-      const int stacks = p()->specialization() == DEATH_KNIGHT_FROST
-                             ? as<int>( p()->talent.deathbringer.echoing_fury->effectN( 1 ).base_value() )
-                             : as<int>( p()->talent.deathbringer.echoing_fury->effectN( 4 ).base_value() );
-      debug_cast<exterminate_t*>( p()->background_actions.exterminate )->empowered = true;
-      p()->buffs.exterminate->trigger( stacks );
-    }
+    if ( p()->talent.deathbringer.deathly_blows->ok() && p()->talent.frost.bonegrinder->ok() )
+      p()->buffs.bonegrinder_frost->trigger( p()->talent.deathbringer.deathly_blows->effectN( 4 ).base_value() );
   }
 };
 
@@ -9522,8 +9508,11 @@ struct fwf_action_base_t : public death_knight_spell_t
     if ( p()->talent.rider.apocalypse_now.ok() )
       p()->summon_rider( rider_dur, rider_of_the_apocalypse_e::ALL_RIDERS );
 
-    if ( p()->talent.deathbringer.echoing_fury.ok() )
-      p()->buffs.exterminate->trigger( as<int>( exterm_stacks ) );
+    if ( p()->talent.deathbringer.echoing_fury.ok() ) {
+      p()->buffs.exterminate->trigger( exterm_stacks );
+      debug_cast<exterminate_t*>( p()->background_actions.exterminate )->empowered = exterm_stacks;
+      debug_cast<exterminate_aoe_t*>( p()->background_actions.exterminate_aoe )->empowered = exterm_stacks;
+    }      
 
     if ( p()->talent.frost.chosen_of_frostbrood_1.ok() )
     {
@@ -9541,7 +9530,7 @@ struct fwf_action_base_t : public death_knight_spell_t
 
 public:
   timespan_t rider_dur;
-  double exterm_stacks;
+  int exterm_stacks;
   double haste_val;
   timespan_t pillar_extension;
   action_t* fwf_damage;
@@ -12811,6 +12800,10 @@ void death_knight_t::create_actions()
   {
     background_actions.exterminate = get_action<exterminate_t>( "exterminate", this );
   }
+  if ( talent.deathbringer.exterminate.ok() )
+  {
+    background_actions.exterminate_aoe = get_action<exterminate_aoe_t>( "exterminate_second_hit", this );
+  }
 
   // Blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
@@ -14456,8 +14449,6 @@ void death_knight_t::create_buffs()
           ->set_default_value_from_effect( 1 );
 
   // Deathbringer
-  buffs.empowered_soul = make_fallback( sets->has_set_bonus( HERO_DEATHBRINGER, TWW3, B4 ), this, "empowered_soul",
-                                        talent.deathbringer.echoing_fury->effectN( 3 ).trigger() );
 
   buffs.bind_in_darkness =
       make_fallback( talent.deathbringer.bind_in_darkness.ok(), this, "bind_in_darkness", spell.bind_in_darkness_buff )
@@ -14920,8 +14911,6 @@ void death_knight_t::init_procs()
   procs.blood_beast           = get_proc( "Blood Beast" );
   procs.vampiric_strike       = get_proc( "Vampiric Strike Proc" );
   procs.vampiric_strike_waste = get_proc( "Vampiric Strike Proc Wasted" );
-
-  procs.exterminate_reapers_mark = get_proc( "Reaper's Mark from Exterminate" );
 }
 
 // death_knight_t::init_uptimes =============================================
