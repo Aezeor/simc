@@ -778,7 +778,6 @@ public:
     propagate_const<buff_t*> bloodied_blade_stacks;
     propagate_const<buff_t*> bloodied_blade_final;
     buff_t* bone_shield;
-    propagate_const<buff_t*> bonestorm;
     propagate_const<buff_t*> coagulopathy;
     propagate_const<buff_t*> consumption;
     propagate_const<buff_t*> crimson_scourge;
@@ -844,7 +843,6 @@ public:
     propagate_const<buff_t*> vampiric_strike;
     propagate_const<buff_t*> infliction_of_sorrow;
     propagate_const<buff_t*> visceral_strength;
-    propagate_const<buff_t*> visceral_strength_unholy;
 
     // Deathbringer
     propagate_const<buff_t*> bind_in_darkness;
@@ -906,7 +904,6 @@ public:
     action_t* the_blood_is_life;
 
     // Blood
-    propagate_const<action_t*> bonestorm_tick;
     action_t* heart_strike_bloodied_blade;
 
     // Deathbringer
@@ -1002,7 +999,6 @@ public:
     propagate_const<gain_t*> start_of_combat_overflow;
 
     // Blood
-    propagate_const<gain_t*> bonestorm;
     propagate_const<gain_t*> consumption;
     propagate_const<gain_t*> drw_heart_strike;  // Blood Strike, Blizzard's hack to replicate HS rank 2 with DRW
     propagate_const<gain_t*> heartbreaker;
@@ -1407,8 +1403,6 @@ public:
     const spell_data_t* bloodied_blade_stacks_buff;
     const spell_data_t* bloodied_blade_final_buff;
     const spell_data_t* bone_shield;
-    const spell_data_t* bonestorm;
-    const spell_data_t* bonestorm_damage;
     const spell_data_t* sanguine_ground;
     const spell_data_t* ossuary_buff;
     const spell_data_t* crimson_scourge_buff;
@@ -1418,7 +1412,6 @@ public:
     const spell_data_t* voracious_buff;
     const spell_data_t* blood_draw_damage;
     const spell_data_t* blood_draw_cooldown;
-    const spell_data_t* bonestorm_heal;
     const spell_data_t* dancing_rune_weapon_buff;
     const spell_data_t* relish_in_blood_gains;
     const spell_data_t* leeching_strike_damage;
@@ -1552,7 +1545,6 @@ public:
     const spell_data_t* vampiric_strike_range;
     const spell_data_t* incite_terror_debuff;
     const spell_data_t* visceral_strength_buff;
-    const spell_data_t* visceral_strength_unholy_buff;
     const spell_data_t* bloodsoaked_ground_buff;
     const spell_data_t* transfusion_buff;
     const spell_data_t* desecrate_damage;
@@ -7609,11 +7601,6 @@ struct exterminate_t final : public death_knight_spell_t
       empowered--;
     }
 
-    if ( p()->specialization() == DEATH_KNIGHT_BLOOD &&
-         rng().roll( p()->talent.deathbringer.exterminate->effectN( 6 ).percent() ) )
-      p()->buffs.bonestorm->extend_duration_or_trigger(
-          p()->talent.deathbringer.exterminate->effectN( 7 ).time_value() );
-
     make_event<delayed_execute_event_t>( *sim, p(), second_hit, execute_state->target, 500_ms );
   }
 
@@ -8196,10 +8183,6 @@ struct blood_boil_t final : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p()->trigger_drw_action( DRW_ACTION_BLOOD_BOIL );
-
-    if ( p()->talent.sanlayn.visceral_strength->ok() &&
-         execute_state->n_targets >= p()->talent.sanlayn.visceral_strength->effectN( 2 ).base_value() )
-      p()->buffs.bone_shield->trigger( as<int>( p()->talent.sanlayn.visceral_strength->effectN( 3 ).base_value() ) );
   }
 
   void impact( action_state_t* state ) override
@@ -8260,106 +8243,12 @@ struct the_blood_is_life_t : public death_knight_spell_t
   }
 };
 
-// Bonestorm ================================================================
 
-struct bonestorm_heal_t : public death_knight_heal_t
-{
-  bonestorm_heal_t( std::string_view name, death_knight_t* p ) : death_knight_heal_t( name, p, p->spell.bonestorm_heal )
-  {
-    background = true;
-    target     = p;
-  }
-};
 
-struct bonestorm_tick_t final : public death_knight_melee_attack_t
-{
-  bonestorm_tick_t( std::string_view name, death_knight_t* p )
-    : death_knight_melee_attack_t( name, p, p->spell.bonestorm_damage ),
-      heal( get_action<bonestorm_heal_t>( "bonestorm_heal", p ) ),
-      heal_count( 0 ),
-      max_heals( p->spell.bonestorm->effectN( 4 ).base_value() )
-  {
-    background          = true;
-    aoe                 = -1;
-    reduced_aoe_targets = data().effectN( 2 ).base_value();
-    weapon              = &( player->main_hand_weapon );
-  }
 
-  void execute() override
-  {
-    heal_count = 0;
-    death_knight_melee_attack_t::execute();
 
-    p()->buffs.bone_shield->trigger();
 
-    if ( p()->talent.icy_talons.ok() )
-    {
-      p()->buffs.icy_talons->trigger();
-    }
-  }
 
-  void impact( action_state_t* state ) override
-  {
-    death_knight_melee_attack_t::impact( state );
-
-    if ( result_is_hit( state->result ) )
-    {
-      // Healing is limited at 5 occurances per tick, regardless of enemies hit
-      if ( heal_count < max_heals )
-      {
-        heal->execute();
-        heal_count++;
-      }
-    }
-  }
-
-private:
-  propagate_const<action_t*> heal;
-  int heal_count;
-  double max_heals;
-};
-
-struct bonestorm_t final : public death_knight_spell_t
-{
-  bonestorm_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_spell_t( "bonestorm", p, p->spell.bonestorm ), max_charges( 0 )
-  {
-    parse_options( options_str );
-    hasted_ticks = false;
-    max_charges  = data().effectN( 4 ).base_value();
-
-    add_child( get_action<bonestorm_tick_t>( "bonestorm_damage", p ) );
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    int charges = std::min( p()->buffs.bone_shield->check(), as<int>( max_charges ) );
-    p()->buffs.bone_shield->decrement( charges );
-
-    if ( charges > 0 )
-    {
-      if ( p()->talent.blood.insatiable_blade->ok() )
-        p()->cooldown.dancing_rune_weapon->adjust( p()->talent.blood.insatiable_blade->effectN( 1 ).time_value() *
-                                                   charges );
-
-      p()->sim->print_debug( "Bonestorm consumed {} charges of bone shield", charges );
-      p()->buffs.bonestorm->extend_duration_or_trigger( p()->spell.bonestorm->duration() * charges );
-    }
-  }
-
-  bool ready() override
-  {
-    if ( !p()->buffs.bone_shield->check() )
-      return false;
-
-    return death_knight_spell_t::ready();
-  }
-
-private:
-  double max_charges;
-};
 
 // Breath of Sindragosa =====================================================
 struct breath_of_sindragosa_tick_t final : public death_knight_spell_t
@@ -8736,12 +8625,12 @@ struct death_and_decay_base_t : public death_knight_spell_t
     if ( p()->specialization() == DEATH_KNIGHT_BLOOD && p()->buffs.crimson_scourge->up() )
     {
       p()->buffs.crimson_scourge->decrement();
+
       if ( p()->talent.blood.perseverance_of_the_ebon_blade.ok() )
         p()->buffs.perseverance_of_the_ebon_blade->trigger();
+
       if ( p()->talent.sanlayn.visceral_strength )
-      {
         p()->buffs.visceral_strength->trigger();
-      }
     }
 
     make_event<ground_aoe_event_t>(
@@ -10954,21 +10843,6 @@ struct outbreak_t final : public death_knight_spell_t
       set_replacement_action( new pestilence_t( "pestilence", p ), p->buffs.pestilence );
   }
 
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    if ( p()->buffs.visceral_strength_unholy->check() )
-    {
-      p()->last_cast_rp_spender->execute_on_target( target );
-      if ( p()->last_cast_rp_spender == p()->background_actions.death_coil_damage )
-        p()->procs.coil_vs->occur();
-      else
-        p()->procs.epi_vs->occur();
-      p()->buffs.visceral_strength_unholy->expire();
-    }
-  }
-
   void impact( action_state_t* s ) override
   {
     death_knight_spell_t::impact( s );
@@ -12977,10 +12851,7 @@ void death_knight_t::create_actions()
     {
       pet_summon.bloodworm = get_action<bloodworm_summon_t>( "bloodworm_summon", this );
     }
-    if ( talent.deathbringer.exterminate.ok() )
-    {
-      background_actions.bonestorm_tick = get_action<bonestorm_tick_t>( "bonestorm_damage", this );
-    }
+
   }
 
   // Unholy
@@ -14075,9 +13946,6 @@ void death_knight_t::spell_lookups()
   spell.bloodied_blade_stacks_buff  = conditional_spell_lookup( talent.blood.bloodied_blade->ok(), 460499 );
   spell.bloodied_blade_final_buff   = conditional_spell_lookup( talent.blood.bloodied_blade->ok(), 460500 );
   spell.bone_shield                 = conditional_spell_lookup( spec.blood_death_knight->ok(), 195181 );
-  spell.bonestorm                   = conditional_spell_lookup( talent.deathbringer.exterminate->ok(), 194844 );
-  spell.bonestorm_damage            = conditional_spell_lookup( talent.deathbringer.exterminate->ok(), 196528 );
-  spell.bonestorm_heal              = conditional_spell_lookup( talent.deathbringer.exterminate->ok(), 196545 );
   spell.sanguine_ground             = conditional_spell_lookup( talent.blood.sanguine_ground.ok(), 391459 );
   spell.ossuary_buff                = conditional_spell_lookup( talent.blood.ossuary.ok(), 219788 );
   spell.crimson_scourge_buff        = conditional_spell_lookup( spec.crimson_scourge->ok(), 81141 );
@@ -14224,8 +14092,6 @@ void death_knight_t::spell_lookups()
   spell.incite_terror_debuff          = conditional_spell_lookup( talent.sanlayn.incite_terror.ok(), 458478 );
   spell.visceral_strength_buff        = conditional_spell_lookup( talent.sanlayn.visceral_strength.ok(),
                                                            specialization() == DEATH_KNIGHT_BLOOD ? 461130 : 434159 );
-  spell.visceral_strength_unholy_buff = conditional_spell_lookup(
-      talent.sanlayn.visceral_strength.ok() && specialization() == DEATH_KNIGHT_UNHOLY, 1234532 );
   spell.bloodsoaked_ground_buff = conditional_spell_lookup( talent.sanlayn.bloodsoaked_ground.ok(), 434034 );
   spell.transfusion_buff        = conditional_spell_lookup( talent.sanlayn.transfusion.ok(), 1265577 );
   spell.desecrate_damage        = conditional_spell_lookup( talent.sanlayn.desecrate.ok(), 1232346 );
@@ -14704,10 +14570,6 @@ void death_knight_t::create_buffs()
           ->add_invalidate( CACHE_STRENGTH )
           ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
 
-  buffs.visceral_strength_unholy =
-      make_fallback( talent.sanlayn.visceral_strength.ok() && specialization() == DEATH_KNIGHT_UNHOLY, this,
-                     "visceral_strength_unholy", spell.visceral_strength_unholy_buff );
-
   buffs.bloodsoaked_ground = make_fallback( talent.sanlayn.bloodsoaked_ground.ok(), this, "bloodsoaked_ground",
                                             spell.bloodsoaked_ground_buff );
 
@@ -14747,12 +14609,6 @@ void death_knight_t::create_buffs()
             } )
             // The internal cd in spelldata is for stack loss, handled in bone_shield_handler
             ->set_cooldown( 0_ms );
-
-    buffs.bonestorm = make_buff( this, "bonestorm", spell.bonestorm )
-                          ->set_cooldown( 0_ms )  // Handled by the action
-                          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                          ->set_tick_callback(
-                              [ this ]( buff_t*, int, timespan_t ) { background_actions.bonestorm_tick->execute(); } );
 
     buffs.bloodied_blade_stacks =
         make_buff( this, "bloodied_blade_stacks", spell.bloodied_blade_stacks_buff )
@@ -15049,7 +14905,6 @@ void death_knight_t::init_gains()
   gains.coldthirst               = get_gain( "Coldthirst" );
 
   // Blood
-  gains.bonestorm        = get_gain( "Bonestorm" );
   gains.consumption      = get_gain( "Consumption" );
   gains.drw_heart_strike = get_gain( "Rune Weapon Heart Strike" );
   gains.heartbreaker     = get_gain( "Heartbreaker" );
@@ -15411,8 +15266,6 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
     buffs.bone_shield->decrement();
   }
   cooldown.bone_shield_icd->start();
-
-  cooldown.dancing_rune_weapon->adjust( talent.blood.insatiable_blade->effectN( 1 ).time_value() );
 }
 
 void death_knight_t::assess_damage_imminent( school_e, result_amount_type, action_state_t* s )
@@ -15708,7 +15561,6 @@ void death_knight_t::apply_action_effects( action_t* a, bool pet )
         action->parse_effects( buffs.a_feast_of_souls );
         break;
       case HERO_SANLAYN:
-        action->parse_effects( buffs.visceral_strength_unholy );
         action->parse_effects( buffs.essence_of_the_blood_queen, [ & ]( double v ) {
           if ( buffs.gift_of_the_sanlayn->check() )
             v *= 1.0 + buffs.gift_of_the_sanlayn->check_value();
