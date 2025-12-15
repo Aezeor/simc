@@ -736,9 +736,8 @@ struct death_knight_t : public parse_player_effects_t
 {
 public:
   // Stores the currently active death and decay ground event
-  ground_aoe_event_t* active_dnd;
+  std::vector<ground_aoe_event_t*> active_dnds;
   event_t* runic_power_decay;
-  action_t* last_cast_rp_spender;
 
   // Expression warnings
   // for old dot.death_and_decay.x expressions
@@ -1807,9 +1806,8 @@ public:
 
   death_knight_t( sim_t* sim, std::string_view name, race_e r )
     : parse_player_effects_t( sim, DEATH_KNIGHT, name, r ),
-      active_dnd( nullptr ),
+      active_dnds(),
       runic_power_decay( nullptr ),
-      last_cast_rp_spender( nullptr ),
       deprecated_dnd_expression( false ),
       runeforge_expression_warning( false ),
       soul_reaper_castable( false ),
@@ -6999,7 +6997,7 @@ struct melee_t : public death_knight_melee_attack_t
       }
 
       // Crimson scourge doesn't proc if death and decay is ticking
-      if ( get_td( s->target )->dot.blood_plague->is_ticking() && !p()->active_dnd )
+      if ( get_td( s->target )->dot.blood_plague->is_ticking() && p()->active_dnds.empty() )
       {
         if ( p()->specialization() == DEATH_KNIGHT_BLOOD && p()->buffs.crimson_scourge->trigger() )
         {
@@ -8518,18 +8516,18 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
     death_knight_spell_t::impact( s );
 
     // TODO: Double Check proc mechanics
-    if ( p()->talent.sanlayn.desecrate.ok() && p()->active_dnd &&
+    if ( p()->talent.sanlayn.desecrate.ok() && !p()->active_dnds.empty() &&
          rng().roll( p()->talent.sanlayn.desecrate->effectN( 2 ).percent() ) )
     {
-      timespan_t remaining_time = p()->active_dnd->remains();
+      timespan_t remaining_time = p()->active_dnds.front()->remains();
       double ticks_left         = remaining_time.total_seconds();
       desecrate_t* des          = debug_cast<desecrate_t*>( desecrate );
       des->ticks_remain         = ticks_left;
       desecrate->execute();
 
       make_event( *sim, 1_ms, [ & ]() {
-        if ( p()->active_dnd )
-          event_t::cancel( p()->active_dnd );
+        if ( p()->active_dnds.front() )
+          event_t::cancel( p()->active_dnds.front() );
       } );
 
       // Retrigger the buff since the event destruction expires it
@@ -8647,7 +8645,7 @@ struct death_and_decay_base_t : public death_knight_spell_t
               switch ( type )
               {
                 case ground_aoe_params_t::EVENT_CREATED:
-                  p()->active_dnd = event;
+                  p()->active_dnds.push_back( event );
                   break;
                 case ground_aoe_params_t::EVENT_STARTED:
                   p()->buffs.death_and_decay->trigger();
@@ -8656,7 +8654,7 @@ struct death_and_decay_base_t : public death_knight_spell_t
                   p()->buffs.death_and_decay->expire( 4_s );
                   break;
                 case ground_aoe_params_t::EVENT_DESTRUCTED:
-                  p()->active_dnd = nullptr;
+                  range::erase_remove( p()->active_dnds, [ event ]( ground_aoe_event_t* e ) { return e == event; } );
                   break;
                 default:
                   break;
@@ -8817,13 +8815,6 @@ struct death_coil_base_t : public death_knight_spell_t
 {
   death_coil_base_t( std::string_view n, death_knight_t* p, const spell_data_t* s ) : death_knight_spell_t( n, p, s )
   {
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    p()->last_cast_rp_spender = p()->background_actions.death_coil_damage;
   }
 };
 
@@ -9225,7 +9216,6 @@ struct epidemic_base_t : public death_knight_spell_t
 
     death_knight_spell_t::execute();
 
-    p()->last_cast_rp_spender = p()->background_actions.epidemic_main;
     p()->unholy_rp_execute_effects( sd );
   }
 
@@ -9340,7 +9330,7 @@ struct festering_scythe_t final : public festering_base_t
                 switch ( type )
                 {
                   case ground_aoe_params_t::EVENT_CREATED:
-                    p()->active_dnd = event;
+                    p()->active_dnds.push_back( event );
                     break;
                   case ground_aoe_params_t::EVENT_STARTED:
                     p()->buffs.death_and_decay->trigger();
@@ -9349,7 +9339,7 @@ struct festering_scythe_t final : public festering_base_t
                     p()->buffs.death_and_decay->expire( 4_s );
                     break;
                   case ground_aoe_params_t::EVENT_DESTRUCTED:
-                    p()->active_dnd = nullptr;
+                    range::erase_remove( p()->active_dnds, [ event ]( ground_aoe_event_t* e ) { return e == event; } );
                     break;
                   default:
                     break;
@@ -11987,10 +11977,10 @@ bool death_knight_t::in_death_and_decay() const
   if ( talent.rider.mograines_might.ok() && buffs.mograines_might->check() )
     return true;
 
-  if ( !sim->distance_targeting_enabled || !active_dnd )
-    return active_dnd != nullptr;
+  if ( !sim->distance_targeting_enabled || active_dnds.empty() )
+    return !active_dnds.empty();
 
-  return get_ground_aoe_distance( *active_dnd->pulse_state ) <= active_dnd->pulse_state->action->radius;
+  return get_ground_aoe_distance( *active_dnds.front()->pulse_state ) <= active_dnds.front()->pulse_state->action->radius;
 }
 
 unsigned death_knight_t::replenish_rune( unsigned n, gain_t* gain )
@@ -12751,7 +12741,6 @@ void death_knight_t::set_runeforges()
 void death_knight_t::create_actions()
 {
   background_actions.death_coil_damage = get_action<death_coil_damage_t>( "death_coil_damage", this );
-  last_cast_rp_spender                 = background_actions.death_coil_damage;
 
   // Runeforges
   if ( has_runeforge( RUNEFORGE_APOCALYPSE ) )
@@ -13259,14 +13248,15 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( std::string_view name
     // Returns true if there's an active dnd
     if ( util::str_compare_ci( splits[ 1 ], "ticking" ) || util::str_compare_ci( splits[ 1 ], "up" ) )
     {
-      return make_fn_expr( "dnd_ticking", [ this ]() { return active_dnd ? 1 : 0; } );
+      return make_fn_expr( "dnd_ticking", [ this ]() { return active_dnds.empty() ? 0 : 1; });
     }
 
     // Returns the remaining value on the active dnd, or 0 if there's no dnd
     if ( util::str_compare_ci( splits[ 1 ], "remains" ) )
     {
-      return make_fn_expr( "dnd_remains",
-                           [ this ]() { return active_dnd ? active_dnd->remaining_time().total_seconds() : 0; } );
+      return make_fn_expr( "dnd_remains", [ this ]() {
+        return active_dnds.empty() ? 0 : active_dnds.front()->remaining_time().total_seconds();
+      } );
     }
 
     // Returns true if there's an active dnd AND the player is inside it
@@ -13279,7 +13269,7 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( std::string_view name
     if ( util::str_compare_ci( splits[ 1 ], "active_remains" ) )
     {
       return make_fn_expr( "dnd_active_remains", [ this ]() {
-        return in_death_and_decay() ? active_dnd->remaining_time().total_seconds() : 0;
+        return in_death_and_decay() ? active_dnds.front()->remaining_time().total_seconds() : 0;
       } );
     }
 
@@ -15170,18 +15160,18 @@ void death_knight_t::activate()
       } );
 
       // This should probably be core to ground_aoe_event_t, canceling the event when leaving combat
-      if ( active_dnd != nullptr )
+      if ( !active_dnds.empty() )
       {
-        event_t::cancel( active_dnd );
+        event_t::cancel( active_dnds.front() );
         buffs.death_and_decay->expire();
         make_event( sim, 100_ms, [ this ]() { buffs.death_and_decay->trigger( 4_s ); } );
       }
     }
     else
     {
-      if ( active_dnd != nullptr )
+      if ( !active_dnds.empty() )
       {
-        event_t::cancel( active_dnd );
+        event_t::cancel( active_dnds.front() );
         buffs.death_and_decay->expire();
       }
 
@@ -15221,12 +15211,12 @@ void death_knight_t::reset()
   parse_player_effects_t::reset();
 
   _runes.reset();
-  active_dnd                   = nullptr;
   runic_power_decay            = nullptr;
   km_proc_attempts             = 0;
   bone_shield_charges_consumed = 0;
   active_riders                = 0;
   magus_active                 = 0;
+  active_dnds.clear();
   dk_active_pets.clear();
   active_lesser_ghouls.clear();
 }
@@ -15476,12 +15466,12 @@ inline double death_knight_t::rune_regen_coefficient() const
 // death_knight_t::arise ====================================================
 void death_knight_t::arise()
 {
-  active_dnd                   = nullptr;
   runic_power_decay            = nullptr;
   km_proc_attempts             = 0;
   bone_shield_charges_consumed = 0;
   active_riders                = 0;
   magus_active                 = 0;
+  active_dnds.clear();
   dk_active_pets.clear();
   active_lesser_ghouls.clear();
 
