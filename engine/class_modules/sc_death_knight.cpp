@@ -4609,18 +4609,22 @@ struct mograine_pet_t final : public horseman_pet_t
       switch ( dk()->specialization() )
       {
         case DEATH_KNIGHT_UNHOLY:
-          dots.push_back( td->dot.virulent_plague );
-          dots.push_back( td->dot.dread_plague );
+          if ( td->dot.virulent_plague->is_ticking() )
+            dots.push_back( td->dot.virulent_plague );
+          if ( td->dot.dread_plague->is_ticking() )
+            dots.push_back( td->dot.dread_plague );
           break;
         case DEATH_KNIGHT_FROST:
-          dots.push_back( td->dot.frost_fever );
+          if ( td->dot.frost_fever->is_ticking() )
+            dots.push_back( td->dot.frost_fever );
           break;
         default:
           break;
       }
 
-      for ( auto& dot : dots )
-        dot->adjust_duration( dur );
+      if ( !dots.empty() )
+        for ( auto& dot : dots )
+          dot->adjust_duration( dur );
     }
   };
 
