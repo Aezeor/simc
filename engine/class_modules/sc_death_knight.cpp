@@ -5223,20 +5223,10 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
       affected_by{}
   {
     this->may_glance = false;
-    if ( this->cooldown->duration > 0_s )
-    {
-      this->track_cd_waste = true;
-    }
-
-    if ( !this->data().flags( spell_attribute::SX_CANNOT_CRIT ) && this->harmful )
-    {
-      this->may_crit = true;
-    }
-
-    if ( this->data().flags( spell_attribute::SX_TICK_MAY_CRIT ) )
-    {
-      this->tick_may_crit = true;
-    }
+    this->track_cd_waste = this->cooldown->duration > 0_s;
+    this->may_crit = !this->data().flags( spell_attribute::SX_CANNOT_CRIT );
+    this->tick_may_crit = this->data().flags( spell_attribute::SX_TICK_MAY_CRIT );
+    this->rolling_periodic = this->data().flags( spell_attribute::SX_ROLLING_PERIODIC );
 
     // Death Knights have unique snowflake mechanism for RP energize. Base actions indicate the
     // amount as a negative value resource cost in spell data, so abuse that.
@@ -7343,7 +7333,6 @@ struct infected_claws_t final : public death_knight_disease_t
   infected_claws_t( std::string_view name, death_knight_t* p )
     : death_knight_disease_t( name, p, p->spell.infected_claws_dot )
   {
-    rolling_periodic = true;
   }
 };
 
