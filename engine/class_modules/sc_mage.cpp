@@ -845,6 +845,7 @@ public:
   double resource_regen_per_second( resource_e ) const override;
   double composite_player_critical_damage_multiplier( const action_state_t*, school_e school ) const override;
   double composite_player_multiplier( school_e ) const override;
+  double composite_player_target_multiplier( player_t*, school_e ) const override;
   double composite_spell_crit_chance() const override;
   double composite_attribute_multiplier( attribute_e ) const override;
   void arise() override;
@@ -1401,6 +1402,7 @@ struct touch_of_the_magi_t final : public buff_t
     buff_t( *td, "touch_of_the_magi", td->source->find_spell( 210824 ) )
   {
     set_default_value( 0.0 );
+    set_schools_from_effect( 2 );
   }
 
   void expire_override( int stacks, timespan_t duration ) override
@@ -4858,9 +4860,9 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      const auto& td = get_td( s->target )->debuffs;
-      td.touch_of_the_magi->expire();
-      td.touch_of_the_magi->trigger();
+      auto debuff = get_td( s->target )->debuffs.touch_of_the_magi;
+      debuff->expire();
+      debuff->trigger();
     }
   }
 
@@ -6423,6 +6425,20 @@ double mage_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.enlightened->check() && buffs.enlightened->has_common_school( school ) )
     m *= 1.0 + buffs.enlightened->check_value() * buffs.enlightened->data().effectN( 2 ).percent();
+
+  return m;
+}
+
+double mage_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+{
+  double m = player_t::composite_player_target_multiplier( target, school );
+
+  if ( auto td = find_target_data( target ) )
+  {
+    auto totm = td->debuffs.touch_of_the_magi;
+    if ( totm->check() && totm->has_common_school( school ) )
+      m *= 1.0 + totm->data().effectN( 2 ).percent();
+  }
 
   return m;
 }
