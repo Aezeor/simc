@@ -663,6 +663,7 @@ struct death_knight_td_t : public actor_target_data_t
     propagate_const<buff_t*> brittle;
 
     // Blood
+    propagate_const<buff_t*> tightening_grasp;
 
     // Frost
     propagate_const<buff_t*> everfrost;
@@ -776,6 +777,8 @@ public:
     absorb_buff_t* blood_shield;
     propagate_const<buff_t*> bloodied_blade_stacks;
     propagate_const<buff_t*> bloodied_blade_final;
+    propagate_const<buff_t*> boiling_point;
+    propagate_const<buff_t*> boiling_point_echo;
     buff_t* bone_shield;
     propagate_const<buff_t*> coagulopathy;
     propagate_const<buff_t*> consumption;
@@ -904,6 +907,7 @@ public:
 
     // Blood
     action_t* heart_strike_bloodied_blade;
+    action_t* blood_boil_boiling_point;
 
     // Deathbringer
     action_t* reapers_mark_explosion;
@@ -1401,6 +1405,8 @@ public:
     const spell_data_t* blood_shield;
     const spell_data_t* bloodied_blade_stacks_buff;
     const spell_data_t* bloodied_blade_final_buff;
+    const spell_data_t* boiling_point_buff;
+    const spell_data_t* boiling_point_echo_buff;
     const spell_data_t* bone_shield;
     const spell_data_t* sanguine_ground;
     const spell_data_t* ossuary_buff;
@@ -1408,6 +1414,7 @@ public:
     const spell_data_t* heartbreaker_rp_gain;
     const spell_data_t* heart_strike_bloodied_blade;
     const spell_data_t* perserverence_of_the_ebon_blade_buff;
+    const spell_data_t* tightening_grasp_debuff;
     const spell_data_t* voracious_buff;
     const spell_data_t* blood_draw_damage;
     const spell_data_t* blood_draw_cooldown;
@@ -4019,6 +4026,10 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     death_strike_t( std::string_view n, dancing_rune_weapon_pet_t* p )
       : drw_action_t<melee_attack_t>( p, n, p->dk()->talent.death_strike )
     {
+      // In simc, chain multiplier will reduce the damage per target hit, however in game
+      // this affect seems to be a constant reduction across all secondary targets
+      chain_multiplier = 1.0;
+      base_aoe_multiplier = p->dk()->talent.death_strike->effectN( 1 ).chain_multiplier();
     }
   };
 
@@ -8176,18 +8187,34 @@ struct blood_boil_t final : public death_knight_spell_t
     impact_action    = get_action<blood_plague_t>( "blood_plague", p );
   }
 
+  blood_boil_t( std::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->talent.blood.blood_boil )
+    {
+      aoe           = -1;
+      background    = true;
+      cooldown->duration = 0_ms;
+      impact_action = get_action<blood_plague_t>( "blood_plague", p );
+    }
+
   void execute() override
   {
     death_knight_spell_t::execute();
 
     p()->trigger_drw_action( DRW_ACTION_BLOOD_BOIL );
+
+    if ( p()->buffs.boiling_point->up() )
+    {
+      p()->buffs.boiling_point->expire();
+      p()->buffs.boiling_point_echo->trigger();
+    }
   }
 
   void impact( action_state_t* state ) override
   {
     death_knight_spell_t::impact( state );
 
-    p()->buffs.hemostasis->trigger();
+    if( !background )
+      p()->buffs.hemostasis->trigger();
   }
 };
 
@@ -8919,6 +8946,10 @@ struct death_strike_heal_t final : public death_knight_heal_t
 
   void impact( action_state_t* state ) override
   {
+    trigger_blood_shield( state );
+
+    p()->buffs.voracious->trigger();
+
     death_knight_heal_t::impact( state );
 
     auto min_heal = player->resources.max[ RESOURCE_HEALTH ] * min_heal_multiplier;
@@ -8927,8 +8958,6 @@ struct death_strike_heal_t final : public death_knight_heal_t
     // Reset timer if we healed for more than a min heal
     if ( min_heal < cur_heal )
       last_buff_consumption = sim->current_time();
-
-    trigger_blood_shield( state );
   }
 
 private:
@@ -8962,6 +8991,11 @@ struct death_strike_t final : public death_knight_melee_attack_t
 
     weapon = &( p->main_hand_weapon );
 
+    // In simc, chain multiplier will reduce the damage per target hit, however in game
+    // this affect seems to be a constant reduction across all secondary targets
+    chain_multiplier = 1.0;
+    base_aoe_multiplier = p->talent.death_strike->effectN( 1 ).chain_multiplier();
+
     if ( p->dual_wield() )
     {
       oh_attack = get_action<death_strike_offhand_t>( "death_strike_offhand", p );
@@ -8982,21 +9016,6 @@ struct death_strike_t final : public death_knight_melee_attack_t
     {
       sanguination_pct = 1 + ( 0.25 * ( 1 + p()->talent.unholy_bond->effectN( 1 ).percent() ) );
     }
-  }
-
-  double action_multiplier() const override
-  {
-    double m = death_knight_melee_attack_t::action_multiplier();
-
-    // Death Strike is affected by bloodshot, even for the applying DS.  This is because in game, blood shield gets
-    // applied before DS damage is calculated. So we apply the modifier here, but only if bloodshield is not up, to
-    // avoid double dip by the base multipler when blood shield is up and bloodshot is talented.
-    if ( p()->talent.blood.bloodshot.ok() && !p()->buffs.blood_shield->up() )
-    {
-      m *= 1.0 + p()->spell.blood_shield->effectN( 2 ).percent();
-    }
-
-    return m;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -9037,8 +9056,6 @@ struct death_strike_t final : public death_knight_melee_attack_t
 
   void execute() override
   {
-    p()->buffs.voracious->trigger();
-
     death_knight_melee_attack_t::execute();
 
     if ( oh_attack )
@@ -10019,6 +10036,15 @@ struct gorefiends_grasp_t final : public death_knight_spell_t
     parse_options( options_str );
     aoe = -1;
   }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+
+    auto td = get_td( state->target );
+    if ( td )
+      td->debuff.tightening_grasp->trigger();
+  }
 };
 
 // Heart Strike =============================================================
@@ -10040,11 +10066,15 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
 {
   heart_strike_base_t( std::string_view n, death_knight_t* p, const spell_data_t* s )
     : death_knight_melee_attack_t( n, p, s ),
-      heartbreaker_rp_gen( p->spell.heartbreaker_rp_gain->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
+      heartbreaker_rp_gen( p->spell.heartbreaker_rp_gain->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) ),
+      boiling_point_proc_attempts( 0 )
   {
     aoe             = 2;
     weapon          = &( p->main_hand_weapon );
     leeching_strike = get_action<leeching_strike_t>( "leeching_strike", p );
+
+    if ( p->talent.blood.boiling_point.ok() )
+      boiling_point_proc_chance = p->pseudo_random_c_from_p( 0.25 );  // Not in spelldata
   }
 
   int n_targets() const override
@@ -10064,6 +10094,12 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
     }
 
     p()->trigger_sanlayn_execute_talents( this->data().id() == p()->spell.vampiric_strike->id() );
+
+    if ( p()->talent.blood.boiling_point.ok() && rng().roll( boiling_point_proc_chance * ++boiling_point_proc_attempts ) )
+    {
+      p()->buffs.boiling_point->trigger();
+      boiling_point_proc_attempts = 0;
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -10095,6 +10131,8 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
 private:
   propagate_const<action_t*> leeching_strike;
   double heartbreaker_rp_gen;
+  double boiling_point_proc_chance;
+  int boiling_point_proc_attempts;
 };
 
 struct vampiric_strike_blood_t : public heart_strike_base_t
@@ -12840,7 +12878,8 @@ void death_knight_t::create_actions()
     {
       pet_summon.bloodworm = get_action<bloodworm_summon_t>( "bloodworm_summon", this );
     }
-
+    if ( talent.blood.boiling_point->ok() )
+      background_actions.blood_boil_boiling_point = get_action<blood_boil_t>( "blood_boil_boiling_point", this );
   }
 
   // Unholy
@@ -13935,11 +13974,14 @@ void death_knight_t::spell_lookups()
   spell.blood_shield                = conditional_spell_lookup( mastery.blood_shield->ok(), 77535 );
   spell.bloodied_blade_stacks_buff  = conditional_spell_lookup( talent.blood.bloodied_blade->ok(), 460499 );
   spell.bloodied_blade_final_buff   = conditional_spell_lookup( talent.blood.bloodied_blade->ok(), 460500 );
+  spell.boiling_point_buff          = conditional_spell_lookup( talent.blood.boiling_point.ok(), 1265968 );
+  spell.boiling_point_echo_buff     = conditional_spell_lookup( talent.blood.boiling_point.ok(), 1265982 );
   spell.bone_shield                 = conditional_spell_lookup( spec.blood_death_knight->ok(), 195181 );
   spell.sanguine_ground             = conditional_spell_lookup( talent.blood.sanguine_ground.ok(), 391459 );
   spell.ossuary_buff                = conditional_spell_lookup( talent.blood.ossuary.ok(), 219788 );
   spell.crimson_scourge_buff        = conditional_spell_lookup( spec.crimson_scourge->ok(), 81141 );
   spell.heartbreaker_rp_gain        = conditional_spell_lookup( talent.blood.heartbreaker.ok(), 210738 );
+  spell.tightening_grasp_debuff     = conditional_spell_lookup( talent.blood.gorefiends_grasp.ok(), 374776 );
   spell.heart_strike_bloodied_blade = conditional_spell_lookup( talent.blood.bloodied_blade.ok(), 460501 );
   spell.perserverence_of_the_ebon_blade_buff =
       conditional_spell_lookup( talent.blood.perseverance_of_the_ebon_blade.ok(), 374748 );
@@ -14351,6 +14393,7 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
           ->set_default_value_from_effect( 1 );
 
   // Blood
+  debuff.tightening_grasp = make_debuff( p.talent.blood.gorefiends_grasp.ok(), *this, "tightening_grasp", p.spell.tightening_grasp_debuff );
 
   // Frost
   debuff.everfrost =
@@ -14567,6 +14610,12 @@ void death_knight_t::create_buffs()
   if ( this->specialization() == DEATH_KNIGHT_BLOOD )
   {
     buffs.blood_shield = make_buff<blood_shield_buff_t>( this );
+
+    buffs.boiling_point = make_buff( this, "boiling_point", spell.boiling_point_buff );
+    buffs.boiling_point_echo = make_buff( this, "boiling_point_echo", spell.boiling_point_echo_buff )
+              ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
+                        background_actions.blood_boil_boiling_point->execute();
+              } );
 
     buffs.bone_shield =
         make_buff( this, "bone_shield", spell.bone_shield )
@@ -15503,6 +15552,8 @@ void death_knight_t::apply_action_effects( action_t* a, bool pet )
       // Don't auto parse coag, since there is some snapshot behavior when the DRW dies
       if ( !pet )
         action->parse_effects( buffs.coagulopathy );
+      action->parse_effects( buffs.blood_shield );
+      action->parse_effects( buffs.boiling_point );
       action->parse_effects( buffs.consumption );
       action->parse_effects( buffs.crimson_scourge );
       action->parse_effects( buffs.sanguine_ground );
@@ -15648,7 +15699,6 @@ void death_knight_t::parse_player_effects()
   {
     case DEATH_KNIGHT_BLOOD:
       parse_effects( mastery.blood_shield );
-      parse_effects( buffs.blood_shield );
       parse_effects( buffs.voracious );
       parse_effects( buffs.dancing_rune_weapon );
       parse_effects( buffs.vampiric_blood, effect_mask_t( true ).disable( 2, 4 ) );
