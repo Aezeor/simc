@@ -9511,8 +9511,7 @@ struct frostscythe_t : public frostscythe_base_t
       p()->buffs.empower_rune_weapon->expire();
     }
 
-    if ( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) &&
-         p()->pets.trollbane.active_pet() != nullptr )
+    if ( p()->talent.rider.let_terror_reign->ok() && p()->pets.trollbane.active_pet() != nullptr )
       // 11.2 TODO check delays again between patch launch and season launch
       make_event<delayed_execute_event_t>( *sim, p(), p()->pets.trollbane.active_pet()->frostscythe,
                                            execute_state->target, p()->rng().gauss( 200_ms, 50_ms ) );
@@ -10624,11 +10623,6 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
     {
       m *= 1.0 + td->debuff.razorice->check_stack_value();
     }
-    if ( !p()->bugs && p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) &&
-         td->debuff.chains_of_ice_trollbane_slow->check() )
-    {
-      m *= 1.0 + p()->sets->set( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 )->effectN( 4 ).percent();
-    }
 
     return m;
   }
@@ -10781,8 +10775,7 @@ struct obliterate_t final : public death_knight_melee_attack_t
                                            500_ms );
     }
 
-    if ( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) &&
-         p()->pets.trollbane.active_pet() != nullptr )
+    if ( p()->talent.rider.let_terror_reign->ok() && p()->pets.trollbane.active_pet() != nullptr )
     {
       p()->pets.trollbane.active_pet()->obliterate->consumed_km = p()->buffs.killing_machine->up();
       p()->pets.trollbane.active_pet()->obliterate->execute_on_target( target );
