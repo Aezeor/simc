@@ -4599,6 +4599,29 @@ struct mograine_pet_t final : public horseman_pet_t
       background = true;
       aoe        = -1;
     }
+
+    void impact( action_state_t* s ) override
+    {
+      horseman_spell_t::impact( s );
+      death_knight_td_t* td = dk()->get_target_data( s->target );
+      timespan_t dur        = dk()->talent.rider.riders_champion->effectN( 2 ).time_value();
+      std::vector<dot_t*> dots;
+      switch ( dk()->specialization() )
+      {
+        case DEATH_KNIGHT_UNHOLY:
+          dots.push_back( td->dot.virulent_plague );
+          dots.push_back( td->dot.dread_plague );
+          break;
+        case DEATH_KNIGHT_FROST:
+          dots.push_back( td->dot.frost_fever );
+          break;
+        default:
+          break;
+      }
+
+      for ( auto& dot : dots )
+        dot->adjust_duration( dur );
+    }
   };
 
   struct dnd_aura_t final : public buff_t
