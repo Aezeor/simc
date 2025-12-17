@@ -5596,8 +5596,8 @@ struct demonsurge_t : public surge_base_t
 
   void execute() override
   {
-    surge_base_t::execute();
     p()->buff.demonsurge->trigger();
+    surge_base_t::execute();
   }
 };
 
@@ -5609,8 +5609,8 @@ struct voidsurge_t : public surge_base_t
 
   void execute() override
   {
-    surge_base_t::execute();
     p()->buff.voidsurge->trigger();
+    surge_base_t::execute();
   }
 };
 
