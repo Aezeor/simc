@@ -13990,7 +13990,7 @@ void death_knight_t::spell_lookups()
   runeforge_spell.apocalypse_pestilence_damage =
       conditional_spell_lookup( has_runeforge( RUNEFORGE_APOCALYPSE ), 327093 );
   runeforge_spell.razorice_damage       = conditional_spell_lookup( has_runeforge( RUNEFORGE_RAZORICE ), 50401 );
-  runeforge_spell.razorice_debuff       = conditional_spell_lookup( has_runeforge( RUNEFORGE_RAZORICE ), 51714 );
+  runeforge_spell.razorice_debuff       = conditional_spell_lookup( spec.glacial_advance->ok() || has_runeforge( RUNEFORGE_RAZORICE ), 51714 );
   runeforge_spell.sanguination_cooldown = conditional_spell_lookup( has_runeforge( RUNEFORGE_SANGUINATION ), 326809 );
   runeforge_spell.sanguination_heal     = conditional_spell_lookup( has_runeforge( RUNEFORGE_SANGUINATION ), 326808 );
   runeforge_spell.spellwarding_absorb   = conditional_spell_lookup( has_runeforge( RUNEFORGE_SPELLWARDING ), 326855 );
