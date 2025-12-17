@@ -6448,7 +6448,9 @@ struct hungering_slash_base_t : public demon_hunter_spell_t
     hungering_slash_damage_t( util::string_view n, demon_hunter_t* p, int souls )
       : demon_hunter_spell_t( n, p, p->spec.hungering_slash_damage ), number_of_souls_to_spawn( souls )
     {
-      background = dual = true;
+      background = dual   = true;
+      aoe                 = -1;
+      reduced_aoe_targets = p->spec.hungering_slash->effectN( 2 ).base_value();
     }
 
     void execute() override
