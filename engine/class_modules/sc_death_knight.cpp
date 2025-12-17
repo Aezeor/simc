@@ -1790,7 +1790,6 @@ public:
   {
     bool disable_aotd                     = false;
     bool split_ghoul_regen                = false;
-    bool split_obliterate_schools         = true;
     double ams_absorb_percent             = 0;
     bool individual_pet_reporting         = false;
     bool amz_specified                    = false;
@@ -10603,9 +10602,9 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = death_knight_melee_attack_t::composite_da_multiplier( state );
-    // Obliterate does not list Frozen Heart in it's list of affecting spells.  So mastery does not get applied
-    // automatically.
-    if ( p()->spec.frostreaper->ok() && get_school() == SCHOOL_FROST )
+    // The phsyical portion of Obliterate does not list Frozen Heart in it's list of affecting spells so needs manual intervention when frostreaper applies.
+    if ( p()->spec.frostreaper->ok() && get_school() == SCHOOL_FROST &&
+         !data().affected_by( p()->mastery.frozen_heart ) )
     {
       m *= 1.0 + p()->cache.mastery_value();
     }
@@ -10715,6 +10714,9 @@ struct obliterate_t final : public death_knight_melee_attack_t
     const spell_data_t* mh_data =
         p->main_hand_weapon.group() == WEAPON_2H ? data().effectN( 4 ).trigger() : data().effectN( 2 ).trigger();
 
+    const spell_data_t* frost_mh_data =
+        p->main_hand_weapon.group() == WEAPON_2H ? data().effectN( 9 ).trigger() : data().effectN( 7 ).trigger();
+
     // Misc_value1 contains the delay in milliseconds for the spells being executed
     mh_delay = timespan_t::from_millis( as<int>( p->main_hand_weapon.group() == WEAPON_2H
                                                      ? data().effectN( 4 ).misc_value1()
@@ -10730,12 +10732,19 @@ struct obliterate_t final : public death_knight_melee_attack_t
     mh = new obliterate_strike_t( p, "obliterate", &( p->main_hand_weapon ), mh_data );
     add_child( mh );
 
+    frost_mh = new obliterate_strike_t( p, "obliterate_frost", &( p->main_hand_weapon ), frost_mh_data );
+    add_child( frost_mh );
+
     if ( p->off_hand_weapon.type != WEAPON_NONE )
     {
       oh = new obliterate_strike_t( p, "obliterate_offhand", &( p->off_hand_weapon ), data().effectN( 3 ).trigger() );
       add_child( oh );
+
+      frost_oh = new obliterate_strike_t( p, "obliterate_offhand_frost", &( p->off_hand_weapon ),
+                                          data().effectN( 8 ).trigger() );
+      add_child( frost_oh );
     }
-    if ( p->options.split_obliterate_schools && p->spec.frostreaper->ok() )
+    if ( p->spec.frostreaper->ok() )
     {
       km_mh         = new obliterate_strike_t( p, "obliterate_km", &( p->main_hand_weapon ), mh_data );
       km_mh->school = SCHOOL_FROST;
@@ -10763,9 +10772,13 @@ struct obliterate_t final : public death_knight_melee_attack_t
     {
       make_event<delayed_execute_event_t>( *sim, p(), p()->buffs.killing_machine->check() ? km_mh : mh,
                                            execute_state->target, mh_delay );
+      make_event<delayed_execute_event_t>( *sim, p(), frost_mh, execute_state->target, mh_delay );
       if ( oh )
+      {
         make_event<delayed_execute_event_t>( *sim, p(), p()->buffs.killing_machine->check() ? km_oh : oh,
                                              execute_state->target, oh_delay );
+        make_event<delayed_execute_event_t>( *sim, p(), frost_oh, execute_state->target, oh_delay );
+      }
     }
 
     if ( p()->buffs.exterminate->up() )
@@ -10799,7 +10812,7 @@ struct obliterate_t final : public death_knight_melee_attack_t
   }
 
 private:
-  obliterate_strike_t *mh, *oh, *km_mh, *km_oh;
+  obliterate_strike_t *mh, *oh, *km_mh, *km_oh, *frost_mh, *frost_oh;
   timespan_t mh_delay;
   timespan_t oh_delay;
   timespan_t total_delay;
@@ -11953,7 +11966,6 @@ void death_knight_t::create_options()
 
   add_option( opt_bool( "deathknight.disable_aotd", options.disable_aotd ) );
   add_option( opt_bool( "deathknight.split_ghoul_regen", options.split_ghoul_regen ) );
-  add_option( opt_bool( "deathknight.split_obliterate_schools", options.split_obliterate_schools ) );
   add_option( opt_float( "deathknight.ams_absorb_percent", options.ams_absorb_percent, 0.0, 1.0 ) );
   add_option( opt_bool( "deathknight.individual_pet_reporting", options.individual_pet_reporting ) );
   add_option( opt_float( "deathknight.average_cs_travel_time", options.average_cs_travel_time, 0.0, 5.0 ) );
