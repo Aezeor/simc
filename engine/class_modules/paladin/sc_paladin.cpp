@@ -1313,16 +1313,6 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
       am /= 1.0 + p()->spells.divine_purpose_buff->effectN( 2 ).percent();
     return am;
   }
-
-  double cost_pct_multiplier() const override
-  {
-    double c = holy_power_consumer_t::cost_pct_multiplier();
-
-    if ( p()->buffs.shining_light_free->check() )
-      c *= 1.0 + p()->buffs.shining_light_free->data().effectN( 1 ).percent();
-
-    return c;
-  }
 };
 
 // Hammer of Justice ========================================================
@@ -2650,8 +2640,6 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
         p()->buffs.shining_light_stacks->trigger();
     }
 
-    p()->buffs.bulwark_of_righteous_fury->expire();
-
     if ( p()->buffs.lightsmith.blessing_of_the_forge->up() )
     {
       forges_reckoning->execute_on_target( target );
@@ -2667,16 +2655,6 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     }
   }
 
-  double action_multiplier() const override
-  {
-    double am = holy_power_consumer_t::action_multiplier();
-    // Range increase on bulwark of righteous fury not implemented.
-    if ( p()->talents.bulwark_of_righteous_fury->ok() )
-    {
-      am *= 1.0 + p()->buffs.bulwark_of_righteous_fury->stack_value();
-    }
-    return am;
-  }
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = paladin_melee_attack_t::composite_da_multiplier( state );
@@ -3678,7 +3656,10 @@ void paladin_t::apply_action_effects( action_t* a ) {
   action->parse_effects( buffs.art_of_war, CONSUME_BUFF );
 
   // Prot
-  // TODO
+  action->parse_effects( buffs.sentinel );
+  action->parse_effects( buffs.shining_light_free ); // Buff removal handling in holy_power_consumer_t
+  action->parse_effects( buffs.bulwark_of_righteous_fury, CONSUME_BUFF );
+  action->parse_effects( buffs.light_blessed_shield, CONSUME_BUFF );
 }
 
 // paladin_t::init_actions ==================================================

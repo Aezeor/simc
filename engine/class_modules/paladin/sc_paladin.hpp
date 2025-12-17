@@ -1,5 +1,6 @@
 #pragma once
 #include "simulationcraft.hpp"
+#include "action/parse_effects.hpp"
 
 namespace paladin
 {
@@ -1079,10 +1080,10 @@ struct sentinel_decay_buff_t : public buff_t
 
 // Template for common paladin action code. See priest_action_t.
 template <class Base>
-struct paladin_action_t : public Base
+struct paladin_action_t : public parse_action_effects_t<Base>
 {
 private:
-  using ab = Base;  // action base, eg. spell_t
+  using ab = parse_action_effects_t<Base>;  // action base, eg. spell_t
 public:
   using base_t = paladin_action_t;
 
@@ -1156,7 +1157,7 @@ public:
       this->affected_by.blades_of_light = false;
     }
 
-    if ( this->data().ok() && p->specialization() == PALADIN_RETRIBUTION )
+    if ( this->data().ok() )
     {
       p->apply_action_effects( this );
     }
@@ -1252,11 +1253,6 @@ public:
         }
         am *= 1.0 + mastery_amount;
       }
-    }
-
-    if (affected_by.sentinel && p()->buffs.sentinel->up())
-    {
-      am *= 1.0 + p()->buffs.sentinel->get_damage_mod();
     }
 
     if ( affected_by.rise_from_ash && p()->buffs.rise_from_ash->up() )
