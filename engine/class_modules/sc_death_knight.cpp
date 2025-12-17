@@ -777,6 +777,7 @@ public:
     absorb_buff_t* blood_shield;
     propagate_const<buff_t*> bloodied_blade_stacks;
     propagate_const<buff_t*> bloodied_blade_final;
+    propagate_const<buff_t*> blood_mist;
     propagate_const<buff_t*> boiling_point;
     propagate_const<buff_t*> boiling_point_echo;
     buff_t* bone_shield;
@@ -788,6 +789,7 @@ public:
     propagate_const<buff_t*> ossuary;
     propagate_const<buff_t*> perseverance_of_the_ebon_blade;
     propagate_const<buff_t*> sanguine_ground;
+    propagate_const<buff_t*> sanguinary_burst;
     propagate_const<buff_t*> vampiric_blood;
     propagate_const<buff_t*> voracious;
 
@@ -870,7 +872,9 @@ public:
 
     // Blood
     cooldown_t* bone_shield_icd;  // internal cooldown between bone shield stack consumption
+    cooldown_t* blood_boil;
     cooldown_t* consumption;
+    cooldown_t* plague_infusion_icd;
     cooldown_t* dancing_rune_weapon;
     propagate_const<cooldown_t*> vampiric_blood;
     // Frost
@@ -908,6 +912,8 @@ public:
     // Blood
     action_t* heart_strike_bloodied_blade;
     action_t* blood_boil_boiling_point;
+    action_t* blood_mist_tick;
+    action_t* sanguinary_burst;
 
     // Deathbringer
     action_t* reapers_mark_explosion;
@@ -1002,6 +1008,7 @@ public:
     propagate_const<gain_t*> start_of_combat_overflow;
 
     // Blood
+    propagate_const<gain_t*> blood_mist;
     propagate_const<gain_t*> consumption;
     propagate_const<gain_t*> drw_heart_strike;  // Blood Strike, Blizzard's hack to replicate HS rank 2 with DRW
     propagate_const<gain_t*> heartbreaker;
@@ -1405,10 +1412,15 @@ public:
     const spell_data_t* blood_shield;
     const spell_data_t* bloodied_blade_stacks_buff;
     const spell_data_t* bloodied_blade_final_buff;
+    const spell_data_t* blood_mist_buff;
+    const spell_data_t* blood_mist_damage;
+    const spell_data_t* blood_mist_rp_gain;
     const spell_data_t* boiling_point_buff;
     const spell_data_t* boiling_point_echo_buff;
     const spell_data_t* bone_shield;
     const spell_data_t* sanguine_ground;
+    const spell_data_t* sanguinary_burst_buff;
+    const spell_data_t* sanguinary_burst_damage;
     const spell_data_t* ossuary_buff;
     const spell_data_t* crimson_scourge_buff;
     const spell_data_t* heartbreaker_rp_gain;
@@ -1851,7 +1863,9 @@ public:
 
     // Blood
     cooldown.bone_shield_icd     = get_cooldown( "bone_shield_icd" );
+    cooldown.blood_boil          = get_cooldown( "blood_boil" );
     cooldown.consumption         = get_cooldown( "consumption" );
+    cooldown.plague_infusion_icd = get_cooldown( "plague_infusion_icd" );
     cooldown.dancing_rune_weapon = get_cooldown( "dancing_rune_weapon" );
     cooldown.vampiric_blood      = get_cooldown( "vampiric_blood" );
 
@@ -7186,6 +7200,16 @@ struct blood_plague_t final : public death_knight_disease_t
           d->state->result_amount * ( 1.0 + p()->talent.blood.rapid_decomposition->effectN( 3 ).percent() );
       heal->execute();
     }
+
+    // Plague Infusion: Reduce Blood Boil CD on crit
+    if ( d->state->result == RESULT_CRIT && p()->talent.blood.plague_infusion.ok() )
+    {
+      if ( p()->cooldown.plague_infusion_icd->up() )
+      {
+        p()->cooldown.blood_boil->adjust( p()->talent.blood.plague_infusion->effectN( 1 ).time_value() );
+        p()->cooldown.plague_infusion_icd->start();
+      }
+    }
   }
 
 private:
@@ -8276,6 +8300,31 @@ private:
   double health_threshold;
 };
 
+// Blood Mist =========================================================
+
+struct blood_mist_t final : public death_knight_spell_t
+{
+  blood_mist_t( std::string_view name, death_knight_t* p ) : death_knight_spell_t( name, p, p->spell.blood_mist_damage ),
+  rp_gain( p->spell.blood_mist_rp_gain->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) ),
+  rp_gain_cap( p->spell.blood_mist_rp_gain->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) / p->spell.blood_mist_buff->effectN( 3 ).base_value() )
+  {
+    aoe                = -1;
+    background         = true;
+    reduced_aoe_targets = p->spell.blood_mist_buff->effectN( 4 ).base_value();
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+
+    p()->resource_gain( RESOURCE_RUNIC_POWER, rp_gain, p()->gains.blood_mist, this );
+  }
+
+private:
+  int rp_gain;
+  int rp_gain_cap;
+};
+
 // The Blood is Life ========================================================
 
 struct the_blood_is_life_t : public death_knight_spell_t
@@ -8289,13 +8338,6 @@ struct the_blood_is_life_t : public death_knight_spell_t
     reduced_aoe_targets = p->talent.sanlayn.the_blood_is_life->effectN( 3 ).base_value();
   }
 };
-
-
-
-
-
-
-
 
 // Breath of Sindragosa =====================================================
 struct breath_of_sindragosa_tick_t final : public death_knight_spell_t
@@ -8491,6 +8533,9 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
 
     if ( p()->talent.sanlayn.the_blood_is_life.ok() )
       p()->pet_summon.blood_beast->execute();
+
+    if ( p()->talent.blood.blood_mist.ok() )
+      p()->buffs.blood_mist->trigger();
   }
 
 private:
@@ -11294,6 +11339,24 @@ struct remorseless_winter_t final : public remorseless_winter_base_t
   }
 };
 
+// Sanguinary Burst =========================================================
+struct sanguinary_burst_t : public death_knight_spell_t
+{
+  sanguinary_burst_t( std::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->spell.sanguinary_burst_damage )
+    {
+      background = true;
+      aoe = data().max_targets();
+    }
+
+    void execute() override
+    {
+      death_knight_spell_t::execute();
+
+      p()->buffs.sanguinary_burst->expire();
+    }
+};
+
 // Scourge Strike and Clawing Shadows =======================================
 
 struct scourge_strike_base_t : public death_knight_melee_attack_t
@@ -11952,6 +12015,9 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
                          talent.blood.red_thirst->effectN( 2 ).base_value();
         cooldown.vampiric_blood->adjust( -sec );
       }
+
+      if ( talent.blood.sanguinary_burst.ok() && buffs.dancing_rune_weapon->check() )
+        buffs.sanguinary_burst->trigger( final_spend );
     }
   }
 
@@ -12915,6 +12981,10 @@ void death_knight_t::create_actions()
     }
     if ( talent.blood.boiling_point->ok() )
       background_actions.blood_boil_boiling_point = get_action<blood_boil_t>( "blood_boil_boiling_point", this );
+    if ( talent.blood.blood_mist.ok() )
+      background_actions.blood_mist_tick = get_action<blood_mist_t>( "blood_mist", this );
+    if ( talent.blood.sanguinary_burst.ok() )
+      background_actions.sanguinary_burst = get_action<sanguinary_burst_t>( "sanguinary_burst", this );
   }
 
   // Unholy
@@ -14009,10 +14079,15 @@ void death_knight_t::spell_lookups()
   spell.blood_shield                = conditional_spell_lookup( mastery.blood_shield->ok(), 77535 );
   spell.bloodied_blade_stacks_buff  = conditional_spell_lookup( talent.blood.bloodied_blade->ok(), 460499 );
   spell.bloodied_blade_final_buff   = conditional_spell_lookup( talent.blood.bloodied_blade->ok(), 460500 );
+  spell.blood_mist_buff             = conditional_spell_lookup( talent.blood.blood_mist.ok(), 1263729 );
+  spell.blood_mist_damage           = conditional_spell_lookup( talent.blood.blood_mist.ok(), 1263752 );
+  spell.blood_mist_rp_gain          = conditional_spell_lookup( talent.blood.blood_mist.ok(), 1263774 );
   spell.boiling_point_buff          = conditional_spell_lookup( talent.blood.boiling_point.ok(), 1265968 );
   spell.boiling_point_echo_buff     = conditional_spell_lookup( talent.blood.boiling_point.ok(), 1265982 );
   spell.bone_shield                 = conditional_spell_lookup( spec.blood_death_knight->ok(), 195181 );
   spell.sanguine_ground             = conditional_spell_lookup( talent.blood.sanguine_ground.ok(), 391459 );
+  spell.sanguinary_burst_buff       = conditional_spell_lookup( talent.blood.sanguinary_burst.ok(), 1263789 );
+  spell.sanguinary_burst_damage     = conditional_spell_lookup( talent.blood.sanguinary_burst.ok(), 1263786 );
   spell.ossuary_buff                = conditional_spell_lookup( talent.blood.ossuary.ok(), 219788 );
   spell.crimson_scourge_buff        = conditional_spell_lookup( spec.crimson_scourge->ok(), 81141 );
   spell.heartbreaker_rp_gain        = conditional_spell_lookup( talent.blood.heartbreaker.ok(), 210738 );
@@ -14249,6 +14324,9 @@ void death_knight_t::set_icds()
 {
   // Custom/Internal cooldowns default durations
   cooldown.bone_shield_icd->duration = spell.bone_shield->internal_cooldown();
+
+  if ( talent.blood.plague_infusion.ok() )
+    cooldown.plague_infusion_icd->duration = talent.blood.plague_infusion->internal_cooldown();
 
   if ( talent.frost.enduring_strength.ok() )
     cooldown.enduring_strength_icd->duration = spell.enduring_strength_cooldown->internal_cooldown();
@@ -14696,6 +14774,12 @@ void death_knight_t::create_buffs()
                                      ->add_invalidate( CACHE_STRENGTH );
     // ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
 
+    buffs.blood_mist = make_fallback( talent.blood.blood_mist->ok(), this, "blood_mist", spell.blood_mist_buff )
+          ->set_tick_callback(
+              [ this ]( buff_t*, int, timespan_t ) { background_actions.blood_mist_tick->execute(); } )
+          ->set_expire_callback(
+              [ this ]( buff_t*, int, timespan_t) { background_actions.sanguinary_burst->execute(); } );
+
     buffs.ossuary = make_buff( this, "ossuary", spell.ossuary_buff )->set_default_value_from_effect( 1, 0.1 );
 
     buffs.coagulopathy = make_buff( this, "coagulopathy", talent.blood.coagulopathy->effectN( 2 ).trigger() )
@@ -14728,6 +14812,9 @@ void death_knight_t::create_buffs()
                                 ->set_default_value_from_effect( 1 )
                                 ->set_duration( 0_ms )  // Handled by trigger_dnd_buffs() & expire_dnd_buffs()
                                 ->set_schools_from_effect( 1 );
+
+    buffs.sanguinary_burst = make_fallback( talent.blood.sanguinary_burst.ok(), this, "sanguinary_burst", spell.sanguinary_burst_buff )
+                                  ->set_max_stack( 999 );  // Set to 1 in spelldata
 
     buffs.vampiric_blood =
         make_buff( this, "vampiric_blood", talent.blood.vampiric_blood )
@@ -14979,6 +15066,7 @@ void death_knight_t::init_gains()
   gains.coldthirst               = get_gain( "Coldthirst" );
 
   // Blood
+  gains.blood_mist       = get_gain( "Blood Mist" );
   gains.consumption      = get_gain( "Consumption" );
   gains.drw_heart_strike = get_gain( "Rune Weapon Heart Strike" );
   gains.heartbreaker     = get_gain( "Heartbreaker" );
@@ -15592,6 +15680,7 @@ void death_knight_t::apply_action_effects( action_t* a, bool pet )
       action->parse_effects( buffs.consumption );
       action->parse_effects( buffs.crimson_scourge );
       action->parse_effects( buffs.sanguine_ground );
+      action->parse_effects( buffs.sanguinary_burst );
       action->parse_effects( buffs.hemostasis );
       action->parse_effects( buffs.ossuary );
       break;
@@ -15734,6 +15823,7 @@ void death_knight_t::parse_player_effects()
   {
     case DEATH_KNIGHT_BLOOD:
       parse_effects( mastery.blood_shield );
+      parse_effects( buffs.blood_mist );
       parse_effects( buffs.voracious );
       parse_effects( buffs.dancing_rune_weapon );
       parse_effects( buffs.vampiric_blood, effect_mask_t( true ).disable( 2, 4 ) );
