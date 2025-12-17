@@ -6656,17 +6656,6 @@ struct auto_attack_damage_t : public burning_blades_trigger_t<demon_hunter_attac
     }
   }
 
-  double action_multiplier() const override
-  {
-    double m = base_t::action_multiplier();
-
-    // Class Passives
-    m *= 1.0 + p()->spec.havoc_demon_hunter->effectN( 5 ).percent();
-    m *= 1.0 + p()->spec.vengeance_demon_hunter->effectN( 5 ).percent();
-
-    return m;
-  }
-
   double composite_target_da_multiplier( player_t* t ) const override
   {
     double m = base_t::composite_target_da_multiplier( t );
