@@ -9158,20 +9158,6 @@ struct empower_rune_weapon_projectile_t final : public death_knight_spell_t
     background = quiet = true;
     harmful            = false;
   }
-  void impact( action_state_t* s ) override
-  {
-    death_knight_spell_t::impact( s );
-    if ( p()->buffs.empower_rune_weapon->cooldown->is_ready() )
-    {
-      if ( p()->buffs.pillar_of_frost->check() && p()->talent.frost.obliteration->ok() )
-        p()->buffs.empower_rune_weapon->trigger();
-
-      p()->resource_gain( RESOURCE_RUNIC_POWER,
-                          data().effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
-                          p()->gains.empower_rune_weapon, this );
-      p()->trigger_killing_machine( true, p()->procs.km_from_erw, p()->procs.km_from_erw_wasted );
-    }
-  }
 };
 
 struct empower_rune_weapon_t final : public death_knight_spell_t
@@ -9192,6 +9178,17 @@ struct empower_rune_weapon_t final : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
+
+    if ( p()->buffs.empower_rune_weapon->cooldown->is_ready() )
+    {
+      if ( p()->buffs.pillar_of_frost->check() && p()->talent.frost.obliteration->ok() )
+        p()->buffs.empower_rune_weapon->trigger();
+
+      p()->resource_gain( RESOURCE_RUNIC_POWER,
+                          data().effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+                          p()->gains.empower_rune_weapon, this );
+      p()->trigger_killing_machine( true, p()->procs.km_from_erw, p()->procs.km_from_erw_wasted );
+    }
 
     projectile->execute_on_target( execute_state->target );
   }
