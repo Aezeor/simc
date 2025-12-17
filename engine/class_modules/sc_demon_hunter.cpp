@@ -6815,6 +6815,13 @@ struct blade_dance_base_t
       glaive_tempest_targets = as<unsigned>( p->talent.havoc.glaive_tempest->effectN( 2 ).base_value() );
     }
 
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = base_t::composite_da_multiplier( s );
+      m *= 1.0 + p()->talent.havoc.first_blood->effectN( 1 ).percent();
+      return m;
+    }
+
     void impact( action_state_t* s ) override
     {
       demon_hunter_attack_t::impact( s );
