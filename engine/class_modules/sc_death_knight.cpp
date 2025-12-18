@@ -9602,6 +9602,16 @@ struct frostwyrms_fury_damage_t : public death_knight_spell_t
     background         = true;
     cooldown->duration = 0_ms;  // handled by the actions
   }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_spell_t::composite_da_multiplier( state );
+    if ( p()->talent.frost.chosen_of_frostbrood_1.ok() && state->chain_target == 0 )
+    {
+      m *= 1.0 + p()->talent.frost.chosen_of_frostbrood_1->effectN( 1 ).percent();
+    }
+    return m;
+  }
 };
 
 struct fwf_action_base_t : public death_knight_spell_t
