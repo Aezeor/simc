@@ -9814,7 +9814,8 @@ void demon_hunter_t::create_buffs()
   buff.demonsurge_demonic_intensity =
       make_buff( this, "demonsurge_demonic_intensity", hero_spec.demonsurge_demonic_intensity_buff );
   buff.demonsurge        = make_buff( this, "demonsurge", hero_spec.demonsurge_stacking_buff );
-  buff.voidsurge         = make_buff( this, "voidsurge", hero_spec.voidsurge_stacking_buff );
+  buff.voidsurge  = make_buff( this, "voidsurge", hero_spec.voidsurge_stacking_buff )
+                       ->set_max_stack( hero_spec.voidsurge_stacking_buff->max_stacks() );
   buff.volatile_instinct = make_buff( this, "volatile_instinct", hero_spec.volatile_instinct );
 
   // Set Bonus Items ========================================================
