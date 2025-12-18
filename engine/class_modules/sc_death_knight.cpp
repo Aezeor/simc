@@ -8383,6 +8383,17 @@ struct breath_of_sindragosa_tick_t final : public death_knight_spell_t
     }
   }
 
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_spell_t::composite_da_multiplier( state );
+    
+    // Breath of Sindragosa has a hidden modifier to deal -20% to secondary targets
+    if ( state->chain_target > 0 )
+      m *= 0.8;
+
+    return m;
+  }
+
 private:
   double hyperpyrexia_mod;
   double hyperpyrexia_chance;
