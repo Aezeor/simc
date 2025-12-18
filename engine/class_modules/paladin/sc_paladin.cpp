@@ -36,7 +36,8 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     melee_swing_count( 0 ),
     random_weapon_target( nullptr ),
     random_bulwark_target( nullptr ),
-    divine_inspiration_next( -1 )
+    divine_inspiration_next( -1 ),
+    reflection_of_radiance_proc_chance( .2 ) // ToDo Fluttershy: Find out real proc chance
 {
   active_consecration = nullptr;
   active_boj_cons = nullptr;
@@ -2120,6 +2121,19 @@ struct sacred_weapon_proc_damage_t : public paladin_spell_t
     reduced_aoe_targets = 5;
   }
 
+  void execute() override
+  {
+    paladin_spell_t::execute();
+    double chance = p()->reflection_of_radiance_proc_chance;
+    if ( p()->options.fake_solidarity )
+      chance = 1.0 - ( std::pow( 1.0 - chance, p()->buffs.lightsmith.fake_solidarity->stack() + 1 ) );
+    if ( p()->talents.lightsmith.reflection_of_radiance->ok() && p()->rng().roll( chance ) )
+    {
+      p()->trigger_grand_crusader( GC_ROR );
+      p()->procs.grand_crusader_ror_sw->occur();
+    }
+  }
+
   double composite_aoe_multiplier(const action_state_t* state) const override
   {
     double m = paladin_spell_t::composite_aoe_multiplier( state );
@@ -3324,6 +3338,9 @@ void paladin_t::init_procs()
   procs.divine_inspiration = get_proc( "Divine Inspiration" );
 
   procs.templar_lights_judicator = get_proc( "Templar Light's Judicator LD additional stacks" );
+
+  procs.grand_crusader_ror_sw = get_proc( "Grand Crusader: Reflection of Radiance Sacred Weapon" );
+  procs.grand_crusader_ror_hb = get_proc( "Grand Crusader: Reflection of Radiance Holy Bulwark" );
 }
 
 // paladin_t::init_scaling ==================================================

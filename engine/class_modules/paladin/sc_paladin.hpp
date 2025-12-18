@@ -59,6 +59,7 @@ enum grand_crusader_source : unsigned int
 {
   GC_NORMAL   = 0,
   GC_JUDGMENT = 1,
+  GC_ROR      = 2,
 };
 
 // ==========================================================================
@@ -372,6 +373,9 @@ public:
     proc_t* divine_inspiration;
 
     proc_t* templar_lights_judicator;
+
+    proc_t* grand_crusader_ror_sw;
+    proc_t* grand_crusader_ror_hb;
   } procs;
 
   // Spells
@@ -742,6 +746,8 @@ public:
   player_t* random_bulwark_target;
   int divine_inspiration_next;
 
+  double reflection_of_radiance_proc_chance;
+
   paladin_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN );
 
   virtual void init_assessors() override;
@@ -949,8 +955,8 @@ struct holy_bulwark_absorb_t : public absorb_buff_t
     : absorb_buff_t( td->target, "holy_bulwark_absorb_" + td->source->name_str + "_" + td->target->name_str,
                      debug_cast<paladin_t*>( td->source )->spells.lightsmith.holy_bulwark_absorb )
   {
-    caster                   = debug_cast<paladin_t*>( td->source );
-    set_absorb_source( caster->get_stats( "holy_bulwark_absorb_"+td->target->name_str) );
+    caster = debug_cast<paladin_t*>( td->source );
+    set_absorb_source( caster->get_stats( "holy_bulwark_absorb_" + td->target->name_str ) );
   }
   holy_bulwark_absorb_t( paladin_t* p )
     : absorb_buff_t( p, "holy_bulwark_absorb", p->spells.lightsmith.holy_bulwark_absorb )
@@ -958,10 +964,10 @@ struct holy_bulwark_absorb_t : public absorb_buff_t
     caster = p;
     set_absorb_source( caster->get_stats( "holy_bulwark_absorb" ) );
   }
-  bool trigger(int stacks, double value, double chance, timespan_t duration) override
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
     double total_value = this->value();
-    if (value > 0)
+    if ( value > 0 )
     {
       total_value += value;
     }
@@ -970,8 +976,19 @@ struct holy_bulwark_absorb_t : public absorb_buff_t
       total_value += this->player->resources.max[ RESOURCE_HEALTH ] *
                      ( caster->spells.lightsmith.holy_bulwark->effectN( 4 ).percent() / 10.0 );
     }
-    total_value = std::min( total_value, this->player->resources.max[ RESOURCE_HEALTH ] * caster->spells.lightsmith.holy_bulwark->effectN( 5 ).percent());
+    total_value = std::min( total_value, this->player->resources.max[ RESOURCE_HEALTH ] *
+                                             caster->spells.lightsmith.holy_bulwark->effectN( 5 ).percent() );
     return absorb_buff_t::trigger( stacks, total_value, chance, duration );
+  }
+  void absorb_used( double absorbed, player_t* source ) override
+  {
+    absorb_buff_t::absorb_used( absorbed, source );
+    if ( caster->talents.lightsmith.reflection_of_radiance->ok() &&
+         caster->rng().roll( caster->reflection_of_radiance_proc_chance ) )
+    {
+      caster->trigger_grand_crusader( GC_ROR );
+      caster->procs.grand_crusader_ror_hb->occur();
+    }
   }
 };
 
