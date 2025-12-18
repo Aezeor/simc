@@ -5958,22 +5958,6 @@ void mage_t::init_spells()
   // register_passive_effect_mask( talents.flash_freezeburn,
   //   specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 1 ) : effect_mask_t( true ).disable( 4, 5 ) );
 
-  // TODO: Remove these when Midnight releases
-  register_passive_effect_mask( sets->set( HERO_FROSTFIRE, TWW3, B2 ),
-    specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 5, 6 ) : effect_mask_t( true ).disable( 3, 4 ) );
-
-  register_passive_effect_mask( sets->set( HERO_SPELLSLINGER, TWW3, B2 ),
-    specialization() == MAGE_FROST ? effect_mask_t( true ).disable( 3 ) : effect_mask_t( true ).disable( 4 ) );
-
-  register_passive_effect_mask( sets->set( HERO_SPELLSLINGER, TWW3, B4 ),
-    specialization() == MAGE_FROST ? effect_mask_t( true ).disable( 5, 6 ) : effect_mask_t( true ) );
-
-  register_passive_effect_mask( sets->set( HERO_SUNFURY, TWW3, B2 ),
-    specialization() == MAGE_ARCANE ? effect_mask_t( true ).disable( 2, 4, 8 ) : effect_mask_t( true ).disable( 1, 3, 7 ) );
-
-  register_passive_effect_mask( sets->set( HERO_SUNFURY, TWW3, B4 ),
-    specialization() == MAGE_ARCANE ? effect_mask_t( true ).disable( 2 ) : effect_mask_t( true ).disable( 1 ) );
-
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
