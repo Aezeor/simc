@@ -956,6 +956,7 @@ public:
     cooldown_t* consume;
     cooldown_t* reap;
     cooldown_t* voidblade;
+    cooldown_t* void_ray;
 
     // Havoc
     cooldown_t* blade_dance;
@@ -8917,6 +8918,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
         p()->buff.rolling_torment->trigger( p()->buff.collapsing_star_stack->stack() );
         rolling_torment_energize->execute_on_target( p() );
       }
+      p()->cooldown.void_ray->reset( false );
       p()->buff.collapsing_star_stack->expire();
       p()->buff.emptiness->expire();
       p()->buff.impending_apocalypse->expire();
@@ -11375,6 +11377,7 @@ void demon_hunter_t::create_cooldowns()
   cooldown.consume   = get_cooldown( "consume" );
   cooldown.reap      = get_cooldown( "reap" );
   cooldown.voidblade = get_cooldown( "voidblade" );
+  cooldown.void_ray  = get_cooldown( "void_ray" );
 
   // Havoc
   cooldown.blade_dance                               = get_cooldown( "blade_dance" );
