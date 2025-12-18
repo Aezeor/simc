@@ -1016,7 +1016,7 @@ void paladin_t::init_spells_protection()
   talents.ferren_marcuss_fervor          = find_talent_spell( talent_tree::SPECIALIZATION, "Ferren Marcus's Fervor" );
   talents.empyrean_authority             = find_talent_spell( talent_tree::SPECIALIZATION, "Empyrean Authority" );
   talents.zealots_paragon                = find_talent_spell( talent_tree::SPECIALIZATION, "Zealot's Paragon" );
-  talents.instrument_of_the_divine       = find_talent_spell( talent_tree::SPECIALIZATION, "Instruments of the Divine" );
+  talents.instrument_of_the_divine       = find_talent_spell( talent_tree::SPECIALIZATION, "Instrument of the Divine" );
 
   talents.sweeping_verdict               = find_talent_spell( talent_tree::SPECIALIZATION, "Sweeping Verdict" );
   talents.adjudication                   = find_talent_spell( talent_tree::SPECIALIZATION, "Adjudication" );

@@ -2664,6 +2664,18 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     }
     return m;
   }
+  double action_multiplier() const override
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+
+    if (p()->talents.instrument_of_the_divine->ok() && cost() > 3.0)
+    {
+      double overflow = std::min( p()->talents.instrument_of_the_divine->effectN( 2 ).base_value(),
+                                  cost() - 3.0 );
+      am *= 1.0 + p()->talents.instrument_of_the_divine->effectN( 1 ).percent() * overflow;
+    }
+    return am;
+  }
 };
 
 // TODO: friendly dawnlights
