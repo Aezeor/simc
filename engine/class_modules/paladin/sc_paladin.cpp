@@ -2623,6 +2623,8 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
 
   void execute() override
   {
+    bool hasDpUp = p()->buffs.divine_purpose->up();
+
     holy_power_consumer_t::execute();
 
     // Buff granted regardless of combat roll result
@@ -2652,6 +2654,13 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     if (p()->sets->has_set_bonus(PALADIN_PROTECTION, MID1, B4))
     {
       p()->buffs.light_blessed_shield->trigger();
+    }
+
+    // You will lose 2 Holy Power when using SotR with IotD talented when DP is up
+    if (p()->bugs && p()->talents.instrument_of_the_divine->ok() && hasDpUp)
+    {
+      p()->resources.current[ RESOURCE_HOLY_POWER ] =
+          std::max( p()->resources.current[ RESOURCE_HOLY_POWER ] - 2.0, 0.0 );
     }
   }
 

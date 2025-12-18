@@ -1559,6 +1559,12 @@ public:
       }
     }
 
+    // For Holy Power spending stuff, SotR with Instrument always counts as 3 Holy Power spent
+    if (p->bugs && is_sotr && p->talents.instrument_of_the_divine->ok() && cost() > 3.0)
+    {
+      num_hopo_spent = 3.0;
+    }
+
     ab::execute();
 
     // if this is a vanq-hammer-based DS, don't do this stuff
@@ -1615,6 +1621,11 @@ public:
     {
       // 2022-11-14 Free Holy Power spenders do not delay Sentinel's decay
       if ( !( p->bugs && isFreeSLDPSpender ) )
+      {
+        p->buffs.sentinel_decay->extend_duration( p, timespan_t::from_seconds( 1 ) );
+      }
+      // 2025-12-18 Instrument of the Divine talented extends Sentinel's decay by double the time, regardless of Holy Power spent.
+      if (p->bugs && p->talents.instrument_of_the_divine->ok())
       {
         p->buffs.sentinel_decay->extend_duration( p, timespan_t::from_seconds( 1 ) );
       }
