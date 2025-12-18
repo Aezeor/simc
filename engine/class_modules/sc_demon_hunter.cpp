@@ -5609,8 +5609,8 @@ struct voidsurge_t : public surge_base_t
 
   void execute() override
   {
-    p()->buff.voidsurge->trigger();
     surge_base_t::execute();
+    p()->buff.voidsurge->trigger();
   }
 };
 
