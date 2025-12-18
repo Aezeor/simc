@@ -6503,34 +6503,11 @@ struct hungering_slash_base_t : public demon_hunter_spell_t
   }
 };
 
-struct reapers_toll_t : public hungering_slash_base_t
+struct reapers_toll_t : public voidsurge_trigger_t<voidsurge_ability::REAPERS_TOLL, hungering_slash_base_t>
 {
   reapers_toll_t( demon_hunter_t* p, util::string_view o )
-    : hungering_slash_base_t( "reapers_toll", p, p->hero_spec.reapers_toll, o )
+    : base_t( "reapers_toll", p, p->hero_spec.reapers_toll, o )
   {
-  }
-
-  void execute() override
-  {
-    hungering_slash_base_t::execute();
-
-    // every Reaper's Toll triggers a Voidsurge regardless of buff
-    p()->trigger_voidsurge( voidsurge_ability::REAPERS_TOLL, false );
-  }
-
-  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
-  {
-    if ( util::str_compare_ci( name, "voidsurge_available" ) )
-    {
-      if ( p()->talent.scarred.demonsurge->ok() )
-      {
-        return make_fn_expr(
-            name, [ this ]() { return p()->buff.voidsurge_abilities[ voidsurge_ability::REAPERS_TOLL ]->check(); } );
-      }
-      return expr_t::create_constant( name, 0 );
-    }
-
-    return hungering_slash_base_t::create_expression( name );
   }
 
   bool action_ready() override
@@ -6539,7 +6516,7 @@ struct reapers_toll_t : public hungering_slash_base_t
     {
       return false;
     }
-    return hungering_slash_base_t::action_ready();
+    return base_t::action_ready();
   }
 };
 
@@ -12292,7 +12269,7 @@ void demon_hunter_t::trigger_voidsurge( const voidsurge_ability ability, timespa
 
     if ( buff.volatile_instinct->up() )
     {
-      proc.voidsurge_abilities[ ability ]->occur();
+      proc.voidsurge_abilities[ VOLATILE_INSTINCT ]->occur();
       make_event<delayed_execute_event_t>( *sim, this, active.voidsurge, target, delay );
 
       buff.volatile_instinct->expire();
