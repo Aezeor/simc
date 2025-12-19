@@ -4978,8 +4978,6 @@ struct flash_freezeburn_t final : public spell_t
     base_dd_min = base_dd_max = 1.0;
     // TODO: Hits one fewer target. It is possible that the main target
     // (which is not dealt damage) is counted as one of the five targets.
-    // Splintering Ray sometimes does hit 5 targets, but Flash Freezeburn
-    // doesn't seem to.
     aoe--;
   }
 };
@@ -4992,7 +4990,7 @@ struct controlled_instincts_t final : public spell_t
     background = proc = true;
     target_filter_callback = secondary_targets_only();
     // Only hits 5 targets despite max_targets being 6
-    aoe -= 1;
+    aoe--;
     // TODO: The tooltip still mentions this, but it's untestable at the moment since it can't hit 6 or more targets
     reduced_aoe_targets = p->talents.controlled_instincts->effectN( 5 ).base_value();
     base_dd_min = base_dd_max = 1.0;
@@ -5193,7 +5191,8 @@ struct icicle_event_t final : public mage_event_t
   static void schedule_next( mage_t* p, bool randomize = false )
   {
     timespan_t next = p->talents.icicles->effectN( 1 ).period();
-    next *= p->cache.spell_haste();  // Does not use spell speed
+    // TODO: Should be affected by spell speed as per the description; currently doesn't work
+    next *= p->cache.spell_cast_speed();
     if ( randomize ) next *= p->rng().real();
     p->events.icicle = make_event<icicle_event_t>( *p->sim, *p, next );
   }
@@ -5950,13 +5949,13 @@ void mage_t::init_spells()
   register_passive_effect_mask( talents.dualcasting_adept,
     specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 1 ) : effect_mask_t( true ).disable( 2 ) );
 
-  // TODO: The effects aren't properly disabled in game, so both CmS and Meteor get 44% extra damage
-  // register_passive_effect_mask( talents.blast_radius,
-  //   specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 1, 2 ) : effect_mask_t( true ).disable( 3, 4 ) );
+  // TODO: Blast Radius and Flash Freezeburn effects are now properly disabled on PTR and
+  // presumably also in the next beta build; double check
+  register_passive_effect_mask( talents.blast_radius,
+    specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 1, 2 ) : effect_mask_t( true ).disable( 3, 4 ) );
 
-  // TODO: The effects aren't properly disabled in game, Fire gets extra GS damage and Frost gets extra Meteor damage
-  // register_passive_effect_mask( talents.flash_freezeburn,
-  //   specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 1 ) : effect_mask_t( true ).disable( 4, 5 ) );
+  register_passive_effect_mask( talents.flash_freezeburn,
+    specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 1 ) : effect_mask_t( true ).disable( 4, 5 ) );
 
   parse_all_class_passives();
   parse_all_passive_talents();
@@ -5997,8 +5996,8 @@ void mage_t::create_buffs()
                                           action.arcane_assault->execute_on_target( target );
                                           if ( talents.energized_familiar.ok() && buffs.arcane_surge->check() )
                                           {
-                                            // TODO: talent says it does 4 instead of 1, but seems to just be +4 in game
-                                            int count = as<int>( talents.energized_familiar->effectN( 1 ).base_value() );
+                                            // TODO: Fixed on PTR, double check in the next beta build
+                                            int count = as<int>( talents.energized_familiar->effectN( 1 ).base_value() ) - 1;
                                             make_repeating_event( *sim, 75_ms, [ this ] { action.arcane_assault->execute_on_target( target ); }, count );
                                           }
                                         } )
