@@ -2477,16 +2477,6 @@ struct ignite_t final : public residual_action::residual_periodic_action_t<spell
       intensifying_flame->execute_on_target( d->target, p->talents.intensifying_flame->effectN( 2 ).percent() * tick_amount );
     }
   }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = residual_action_t::composite_target_multiplier( target );
-
-    if ( auto td = debug_cast<mage_t*>( player )->find_target_data( target ) )
-      m *= 1.0 + td->debuffs.molten_fury->check_value();
-
-    return m;
-  }
 };
 
 struct molten_chill_ignite_t final : public residual_action::residual_periodic_action_t<spell_t>
