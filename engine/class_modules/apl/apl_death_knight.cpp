@@ -323,9 +323,9 @@ void unholy( player_t* p )
   cooldowns->add_action( "army_of_the_dead,if=!talent.summon_gargoyle&!talent.gift_of_the_sanlayn|talent.summon_gargoyle&runic_power>=30|talent.gift_of_the_sanlayn&(debuff.festering_scythe_debuff.up|!talent.festering_scythe)" );
   cooldowns->add_action( "dark_transformation,if=pet.lesser_ghoul_army.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead" );
   cooldowns->add_action( "soul_reaper,if=cooldown.putrefy.charges>=1|target.health.pct<=35" );
-  cooldowns->add_action( "putrefy,if=(talent.reaping&!target.health.pct<=35|!talent.reaping)&(buff.forbidden_knowledge.up&runic_power.deficit>10)|charges=max_charges" );
+  cooldowns->add_action( "putrefy,if=(talent.reaping&!target.health.pct<=35|!talent.reaping)&(buff.forbidden_knowledge.up&runic_power.deficit>10)|charges=max_charges&!cooldown.dark_transformation.ready" );
 
-  aoe->add_action( "death_and_decay,if=!death_and_decay.ticking&talent.desecrate", "Aoe Rotation" );
+  aoe->add_action( "death_and_decay,if=!death_and_decay.ticking&talent.desecrate&!talent.scythe_of_decay", "Aoe Rotation" );
   aoe->add_action( "epidemic,if=(active_enemies>=4&!buff.forbidden_knowledge.up|active_enemies>=7&buff.forbidden_knowledge.up)&(buff.sudden_doom.react|rune<4|runic_power.deficit<20)" );
   aoe->add_action( "death_coil,if=active_enemies<7&buff.forbidden_knowledge.up&(buff.sudden_doom.react|rune<4|runic_power.deficit<20)" );
   aoe->add_action( "festering_strike,if=buff.lesser_ghoul_ready.stack=0|buff.festering_scythe.up&(buff.festering_scythe.remains<=3|debuff.festering_scythe_debuff.remains<3)" );
