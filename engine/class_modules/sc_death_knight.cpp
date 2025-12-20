@@ -194,6 +194,7 @@ enum magus_of_the_dead_e
   MAGUS_DARK_TRANSFORMATION,
   MAGUS_ARMY_OF_THE_DEAD,
   MAGUS_REANIMATION,
+  MAGUS_REANIMATION_FK,
 };
 
 enum putrefy_source_e
@@ -985,6 +986,7 @@ public:
     propagate_const<action_t*> fk_ghoul;
     propagate_const<action_t*> sr_ghoul;
     propagate_const<action_t*> reanimation_magus;
+    propagate_const<action_t*> fk_reanimation_magus;
     propagate_const<action_t*> army_magus;
     propagate_const<action_t*> raise_skulker;
 
@@ -3559,24 +3561,36 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
   void putrefy_ghoul( putrefy_source_e source )
   {
     make_event( *sim, rng().range( 1_ms, 100_ms ), [ &, source ]() {
-      if ( source == PUTREFY_SOURCE_SOUL_REAPER )
-        dk()->background_actions.putrefy_sr_st->execute_on_target( dk()->target );
-      else if ( source == PUTREFY_SOURCE_FORBIDDEN_KNOWLEDGE )
-        dk()->background_actions.putrefy_fk_st->execute_on_target( dk()->target );
-      else
-        dk()->background_actions.putrefy->execute_on_target( dk()->target );
+      // RNG roll technically not needed as its a 100% chance, but, leaving this here in case it changes in the future
+      bool reanimation_triggered          = rng().roll( dk()->talent.unholy.reanimation->effectN( 1 ).percent() );
+      action_t* magus_summon_action       = dk()->pet_summon.reanimation_magus;
+      timespan_t unholy_devotion_duration = dk()->pet_spell.unholy_devotion_buff->duration();
 
-      if ( dk()->pets.ghoul_pet.active_pet() )
-        dk()->pets.ghoul_pet.active_pet()->unholy_devotion->trigger();
+      switch ( source )
+      {
+        case PUTREFY_SOURCE_SOUL_REAPER:
+          dk()->background_actions.putrefy_sr_st->execute_on_target( dk()->target );
+          break;
+        case PUTREFY_SOURCE_FORBIDDEN_KNOWLEDGE:
+          dk()->background_actions.putrefy_fk_st->execute_on_target( dk()->target );
+          magus_summon_action = dk()->pet_summon.fk_reanimation_magus;
+          unholy_devotion_duration *= dk()->talent.unholy.forbidden_knowledge_3->effectN( 2 ).percent();
+          break;
+        default:
+          dk()->background_actions.putrefy->execute_on_target( dk()->target );
+          break;
+      }
+
+      if ( dk()->talent.unholy.reanimation.ok() && reanimation_triggered && magus_summon_action )
+        magus_summon_action->execute();
+
+      if ( dk()->talent.unholy.unholy_devotion.ok() && dk()->pets.ghoul_pet.active_pet() )
+        dk()->pets.ghoul_pet.active_pet()->unholy_devotion->trigger( unholy_devotion_duration );
 
       if ( dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, MID1, B4 ) )
         dk()->buffs.blighted->trigger();
 
       dismiss( false );
-
-      if ( dk()->talent.unholy.reanimation.ok() &&
-           rng().roll( dk()->talent.unholy.reanimation->effectN( 1 ).percent() ) )
-        dk()->pet_summon.reanimation_magus->execute();
 
       if ( dk()->talent.unholy.forbidden_knowledge_2.ok() )
       {
@@ -6121,6 +6135,8 @@ struct summon_magus_t : public death_knight_summon_spell_t
       case MAGUS_REANIMATION:
         default_duration = p->talent.unholy.reanimation->effectN( 2 ).time_value();
         break;
+      case MAGUS_REANIMATION_FK:
+        default_duration = p->talent.unholy.reanimation->effectN( 2 ).time_value() * p->talent.unholy.forbidden_knowledge_3->effectN( 2 ).percent();
     }
   }
 
@@ -6137,6 +6153,7 @@ struct summon_magus_t : public death_knight_summon_spell_t
         set_duration( default_duration );
         break;
       case magus_of_the_dead_e::MAGUS_REANIMATION:
+      case magus_of_the_dead_e::MAGUS_REANIMATION_FK:
         p()->pets.reanimation_magus.spawn( default_duration );
         break;
     }
@@ -13081,8 +13098,13 @@ void death_knight_t::create_actions()
     }
 
     if ( talent.unholy.reanimation.ok() )
+    {
       pet_summon.reanimation_magus = get_action<summon_magus_t>(
           "reanimation_magus", this, spell.summon_reanimation_magus, magus_of_the_dead_e::MAGUS_REANIMATION );
+      if ( talent.unholy.forbidden_knowledge_3.ok() )
+        pet_summon.fk_reanimation_magus = get_action<summon_magus_t>(
+            "fk_reanimation_magus", this, spell.summon_reanimation_magus, magus_of_the_dead_e::MAGUS_REANIMATION_FK );
+    }
 
     if ( talent.unholy.coil_of_devastation.ok() )
       background_actions.coil_of_devastation = get_action<coil_of_devastation_t>( "coil_of_devastation", this );
