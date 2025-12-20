@@ -335,7 +335,7 @@ void unholy( player_t* p )
   aoe->add_action( "death_coil" );
 
   single_target->add_action( "death_coil,if=buff.sudden_doom.react|(rune<3|runic_power.deficit<20|cooldown.army_of_the_dead.remains>7&runic_power.deficit<60)", "Single Target Rotation" );
-  single_target->add_action( "festering_strike,if=buff.lesser_ghoul_ready.stack=0|buff.festering_scythe.up&buff.festering_scythe.remains<=3" );
+  single_target->add_action( "festering_strike,if=buff.lesser_ghoul_ready.stack=0|buff.festering_scythe.up&(buff.festering_scythe.remains<=3|debuff.festering_scythe_debuff.remains<3)" );
   single_target->add_action( "scourge_strike,if=buff.lesser_ghoul_ready.stack>=1" );
   single_target->add_action( "putrefy,if=!talent.reaping" );
   single_target->add_action( "death_coil" );
