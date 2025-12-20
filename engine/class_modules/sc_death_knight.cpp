@@ -11584,9 +11584,9 @@ struct soul_reaper_t final : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
     p()->soul_reaper_castable = false;
-    if ( p()->cooldown.putrefy->current_charge >= 1 )
-      for ( int i = 0; i < p()->cooldown.putrefy->current_charge; i++ )
-        p()->background_actions.putrefy_sr->execute();
+    int charges               = as<int>( std::floor( p()->cooldown.putrefy->charges_fractional() ) );
+    for ( int i = 0; i < charges; i++ )
+      p()->background_actions.putrefy_sr->execute();
   }
 
   void impact( action_state_t* s ) override
