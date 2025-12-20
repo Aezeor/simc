@@ -329,7 +329,7 @@ void unholy( player_t* p )
 
   aoe->add_action( "death_and_decay,if=!death_and_decay.ticking&talent.desecrate&!talent.scythe_of_decay", "Aoe Rotation" );
   aoe->add_action( "epidemic,if=(active_enemies>=4&!buff.forbidden_knowledge.up|active_enemies>=7&buff.forbidden_knowledge.up)&(buff.sudden_doom.react|variable.spending_rp)" );
-  aoe->add_action( "death_coil,if=active_enemies<7&buff.forbidden_knowledge.up&(buff.sudden_doom.react&variable.spending_rp)" );
+  aoe->add_action( "death_coil,if=active_enemies<7&buff.forbidden_knowledge.up&(buff.sudden_doom.react|variable.spending_rp)" );
   aoe->add_action( "festering_strike,if=buff.lesser_ghoul_ready.stack=0|buff.festering_scythe.up&(buff.festering_scythe.remains<=3|debuff.festering_scythe_debuff.remains<3)" );
   aoe->add_action( "scourge_strike,if=buff.lesser_ghoul_ready.stack>=1" );
   aoe->add_action( "putrefy,if=!talent.reaping" );
