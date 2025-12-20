@@ -2011,7 +2011,7 @@ public:
   // San'layn
   void trigger_infliction_of_sorrow( player_t* target, bool is_vampiric );
   void trigger_vampiric_strike_proc( player_t* target );
-  void trigger_sanlayn_execute_talents( bool is_vampiric );
+  void trigger_sanlayn_execute_talents( bool is_vampiric, bool summoned_ghoul = false );
   // Deathbringer
   void trigger_reapers_mark_death( player_t* target );
   void reapers_mark_explosion_wrapper( player_t* target, player_t* source, int stacks );
@@ -11505,10 +11505,13 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     }
     death_knight_melee_attack_t::execute();
 
+    bool summoned_ghoul = false;
+
     if ( p()->buffs.lesser_ghoul_ready->check() )
     {
       p()->buffs.lesser_ghoul_ready->consume( this, 1 );
       summon_ghoul->execute();
+      summoned_ghoul = true;
 
       if ( p()->talent.unholy.harbinger_of_doom.ok() )
         p()->cooldown.putrefy->adjust( -p()->talent.unholy.harbinger_of_doom->effectN( 3 ).time_value(), false );
@@ -11517,7 +11520,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     if ( p()->talent.unholy.clawing_shadows.ok() )
       p()->buffs.clawing_shadows->trigger();
 
-    p()->trigger_sanlayn_execute_talents( this->data().id() == p()->spell.vampiric_strike->id() );
+    p()->trigger_sanlayn_execute_talents( this->data().id() == p()->spell.vampiric_strike->id(), summoned_ghoul );
   }
 
   void trigger_disease_effects( const action_state_t* s, const death_knight_td_t* td, dot_t* dot )
@@ -12653,7 +12656,7 @@ void death_knight_t::trigger_vampiric_strike_proc( player_t* target )
   }
 }
 
-void death_knight_t::trigger_sanlayn_execute_talents( bool is_vampiric )
+void death_knight_t::trigger_sanlayn_execute_talents( bool is_vampiric, bool summoned_ghoul )
 {
   if ( !is_vampiric )
     return;
@@ -12666,7 +12669,7 @@ void death_knight_t::trigger_sanlayn_execute_talents( bool is_vampiric )
 
   if ( talent.sanlayn.transfusion.ok() )
   {
-    if ( specialization() == DEATH_KNIGHT_UNHOLY )
+    if ( specialization() == DEATH_KNIGHT_UNHOLY && summoned_ghoul )
       active_lesser_ghouls.back()->transfusion->trigger();
 
     else if ( specialization() == DEATH_KNIGHT_BLOOD )
