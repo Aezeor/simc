@@ -421,12 +421,10 @@ public:
 
     const spell_data_t* highlords_judgment_hidden;
 
-    const spell_data_t* winning_streak; // Ret TWW2 2p
-    const spell_data_t* all_in; // Ret TWW2 4p
-
     // Apex
     const spell_data_t* glory_of_the_vanguard;
     const spell_data_t* blaze_of_glory;
+    const spell_data_t* light_within;
 
   } spells;
 
