@@ -190,6 +190,7 @@ public:
     buff_t* empyrean_power;
 
     buff_t* art_of_war;
+    buff_t* righteous_cause;
 
     buff_t* rush_of_light;
     buff_t* templar_strikes;
@@ -740,7 +741,6 @@ public:
 
   armament next_armament;
 
-  int melee_swing_count;
   // Helper variables to not always RNG the correct target
   player_t* random_weapon_target;
   player_t* random_bulwark_target;
@@ -1599,6 +1599,7 @@ public:
           p->procs.righteous_cause->occur();
           p->cooldowns.blade_of_justice->reset( true );
           p->cooldowns.righteous_cause_icd->start();
+          p->buffs.righteous_cause->trigger();
           break;
         }
       }
@@ -1745,7 +1746,7 @@ private:
   hammer_of_wrath_t* echo;
 
 public:
-  hammer_of_wrath_t( paladin_t* p, util::string_view name, double mul = 1.0 );
+  hammer_of_wrath_t( paladin_t* p, util::string_view name, util::string_view options_str, double mul = 1.0, bool bg = false );
   void impact( action_state_t* s ) override;
   double composite_target_multiplier( player_t* target ) const override;
 };
@@ -1753,7 +1754,7 @@ public:
 struct judgment_t : public judgment_base_t
 {
   hammer_of_wrath_t* hammer_of_wrath;
-  judgment_t( paladin_t* p, util::string_view options_str );
+  judgment_t( paladin_t* p, util::string_view name, util::string_view options_str, double mul = 1.0, bool bg = false );
 
   proc_types proc_type() const override;
   void execute() override;
@@ -1780,7 +1781,6 @@ struct consecration_tick_t : public paladin_spell_t
 struct divine_exaction_ret_t :public paladin_spell_t
 {
   judgment_t* judgment;
-  hammer_of_wrath_t* hammer_of_wrath;
   divine_exaction_ret_t( paladin_t* p );
   void execute() override;
 };
