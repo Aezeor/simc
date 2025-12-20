@@ -5260,6 +5260,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
   action_t* replacement_action;
   buff_t* replacement_action_buff;
   bool always_replace;
+  bool was_replaced;
 
   struct
   {
@@ -5274,6 +5275,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
       replacement_action( nullptr ),
       replacement_action_buff( nullptr ),
       always_replace( false ),
+      was_replaced( false ),
       affected_by{}
   {
     this->may_glance = false;
@@ -5671,9 +5673,12 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
         if ( !this->always_replace )
           this->stats->add_execute( 0_ms, this->target );
 
+        this->was_replaced = true;
         return;
       }
     }
+
+    this->was_replaced = false;
 
     action_base_t::execute();
     // For non tank DK's, we proc the ability on CD, attached to thier own executes, to simulate it
@@ -9323,8 +9328,13 @@ struct epidemic_base_t : public death_knight_spell_t
     // Reset target cache because of smart targetting
     target_cache.is_valid = false;
 
+    death_knight_spell_t::execute();
+
+    if ( was_replaced )
+      return;
+
     // Set the multiplier for reduced aoe soft cap
-    int targets = n_targets();
+    int targets = std::min( num_targets(), n_targets() );
     if ( targets > 0 && targets > custom_reduced_aoe_targets )
       soft_cap_multiplier = sqrt( custom_reduced_aoe_targets / std::min<int>( sim->max_aoe_enemies, targets ) );
     else
@@ -9333,10 +9343,7 @@ struct epidemic_base_t : public death_knight_spell_t
     debug_cast<epidemic_damage_base_t*>( impact_action )->soft_cap_multiplier                = soft_cap_multiplier;
     debug_cast<epidemic_damage_base_t*>( impact_action->impact_action )->soft_cap_multiplier = soft_cap_multiplier;
 
-    sd = p()->buffs.sudden_doom->check();
-
-    death_knight_spell_t::execute();
-
+    sd = p()->buffs.sudden_doom->up();
     p()->unholy_rp_execute_effects( sd );
   }
 
@@ -9411,6 +9418,9 @@ struct festering_base_t : public death_knight_melee_attack_t
   void execute() override
   {
     death_knight_melee_attack_t::execute();
+    if ( was_replaced )
+      return;
+
     int count = rng().range( min_ghouls, max_ghouls );
     p()->buffs.lesser_ghoul_ready->trigger( count );
   }
@@ -9658,6 +9668,9 @@ struct fwf_action_base_t : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
+
+    if ( was_replaced )
+      return;
 
     assert( fwf_damage && "Frostwyrms Fury Action missing Damage Action" );
 
@@ -11052,33 +11065,7 @@ struct putrefy_aoe_t final : public death_knight_spell_t
       blightburst_dur  = p->talent.unholy.blightburst->effectN( 1 ).time_value();
       blightburst_mult = p->talent.unholy.blightburst->effectN( 2 ).percent();
       if ( n == "putrefy_aoe" )
-      {
         add_child( p->background_actions.virulent_plague_erupt_bb );
-        add_child( p->background_actions.dread_plague_erupt_bb );
-      }
-    }
-  }
-
-  void trigger_blightburst( action_state_t* s )
-  {
-    death_knight_td_t* dk_td = p()->get_target_data( s->target );
-
-    if ( !dk_td->dot.virulent_plague->is_ticking() )
-      p()->background_actions.virulent_plague->execute_on_target( s->target );
-    else
-    {
-      p()->background_actions.virulent_plague_erupt_bb->execute_on_target(
-          s->target, dk_td->dot.virulent_plague->tick_damage_over_time( blightburst_dur ) * blightburst_mult );
-      dk_td->dot.virulent_plague->adjust_duration( blightburst_dur );
-    }
-
-    if ( !dk_td->dot.dread_plague->is_ticking() )
-      p()->background_actions.dread_plague->execute_on_target( s->target );
-    else
-    {
-      p()->background_actions.dread_plague_erupt_bb->execute_on_target(
-          s->target, dk_td->dot.dread_plague->tick_damage_over_time( blightburst_dur ) * blightburst_mult );
-      dk_td->dot.dread_plague->adjust_duration( blightburst_dur );
     }
   }
 
@@ -11086,7 +11073,18 @@ struct putrefy_aoe_t final : public death_knight_spell_t
   {
     death_knight_spell_t::impact( s );
     if ( p()->talent.unholy.blightburst.ok() )
-      trigger_blightburst( s );
+    {
+      death_knight_td_t* dk_td = p()->get_target_data( s->target );
+
+      if ( !dk_td->dot.virulent_plague->is_ticking() )
+        p()->background_actions.virulent_plague->execute_on_target( s->target );
+      else
+      {
+        p()->background_actions.virulent_plague_erupt_bb->execute_on_target(
+            s->target, dk_td->dot.virulent_plague->tick_damage_over_time( blightburst_dur ) * blightburst_mult );
+        dk_td->dot.virulent_plague->adjust_duration( blightburst_dur );
+      }
+    }
   }
 
 private:
@@ -11096,7 +11094,8 @@ private:
 
 struct putrefy_st_t final : public death_knight_spell_t
 {
-  putrefy_st_t( std::string_view n, death_knight_t* p ) : death_knight_spell_t( n, p, p->spell.putrefy_st )
+  putrefy_st_t( std::string_view n, death_knight_t* p )
+    : death_knight_spell_t( n, p, p->spell.putrefy_st ), blightburst_dur( 0_s ), blightburst_mult( 1.0 )
   {
     background         = true;
     cooldown->duration = 0_ms;
@@ -11106,7 +11105,38 @@ struct putrefy_st_t final : public death_knight_spell_t
       execute_action = p->background_actions.putrefy_fk_aoe;
     else
       execute_action = p->background_actions.putrefy_aoe;
+
+    if ( p->talent.unholy.blightburst.ok() )
+    {
+      blightburst_dur  = p->talent.unholy.blightburst->effectN( 1 ).time_value();
+      blightburst_mult = p->talent.unholy.blightburst->effectN( 2 ).percent();
+      if ( n == "putrefy_st" )
+        add_child( p->background_actions.dread_plague_erupt_bb );
+    }
   }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_spell_t::impact( s );
+    execute_action->execute_on_target( s->target );
+
+    if ( p()->talent.unholy.blightburst.ok() )
+    {
+      death_knight_td_t* dk_td = p()->get_target_data( s->target );
+      if ( !dk_td->dot.dread_plague->is_ticking() )
+        p()->background_actions.dread_plague->execute_on_target( s->target );
+      else
+      {
+        p()->background_actions.dread_plague_erupt_bb->execute_on_target(
+            s->target, dk_td->dot.dread_plague->tick_damage_over_time( blightburst_dur ) * blightburst_mult );
+        dk_td->dot.dread_plague->adjust_duration( blightburst_dur );
+      }
+    }
+  }
+
+private:
+  timespan_t blightburst_dur;
+  double blightburst_mult;
 };
 
 struct putrefy_t final : public death_knight_spell_t
@@ -11499,11 +11529,12 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 
   void execute() override
   {
-    if ( p()->talent.rider.whitemanes_famine.ok() && p()->sim->target_non_sleeping_list.size() > 1 )
-    {
-      p()->sort_undeath_targets( target_list() );
-    }
     death_knight_melee_attack_t::execute();
+    if ( was_replaced )
+      return;
+
+    if ( p()->talent.rider.whitemanes_famine.ok() && p()->sim->target_non_sleeping_list.size() > 1 )
+      p()->sort_undeath_targets( target_list() );
 
     bool summoned_ghoul = false;
 
@@ -12388,7 +12419,11 @@ void death_knight_t::unholy_rp_execute_effects( bool sd, bool coil )
   }
 
   if ( sd )
+  {
     sudden_doom_execute_effects( coil );
+    // Delay Sudden Doom decrement to ~100ms after the damage is done. Coil has a travel time, hence the higher delay.
+    make_event( *sim, coil ? 210_ms : 100_ms, [ & ]() { buffs.sudden_doom->decrement(); } );
+  }
 }
 
 void death_knight_t::unholy_rp_impact_effects( action_state_t* state, bool sd, bool coil )
@@ -15753,7 +15788,7 @@ void death_knight_t::apply_action_effects( action_t* a, bool pet )
         action->parse_effects( buffs.icy_talons );
       break;
     case DEATH_KNIGHT_UNHOLY:
-      action->parse_effects( buffs.sudden_doom, CONSUME_BUFF );
+      action->parse_effects( buffs.sudden_doom );
       action->parse_effects( buffs.commander_of_the_dead );
       // Dont parse effect 6 due to the way this effect works.
       action->parse_effects( mastery.dreadblade, effect_mask_t( true ).disable( 6 ) );
