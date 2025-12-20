@@ -1778,10 +1778,4 @@ struct consecration_tick_t : public paladin_spell_t
   double action_multiplier() const override;
   double composite_target_multiplier( player_t* target ) const override;
 };
-struct divine_exaction_ret_t :public paladin_spell_t
-{
-  judgment_t* judgment;
-  divine_exaction_ret_t( paladin_t* p );
-  void execute() override;
-};
 }  // namespace paladin

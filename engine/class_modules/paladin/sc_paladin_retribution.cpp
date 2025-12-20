@@ -983,10 +983,6 @@ void paladin_t::create_ret_actions()
       active.sun_sear = new sun_sear_t( this );
     }
   }
-  if (talents.templar.divine_exaction->ok())
-  {
-    active.divine_exaction_ret = new divine_exaction_ret_t( this );
-  }
 }
 
 action_t* paladin_t::create_action_retribution( util::string_view name, util::string_view options_str )

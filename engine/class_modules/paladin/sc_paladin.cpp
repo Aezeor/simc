@@ -1515,6 +1515,14 @@ struct judgment_ret_t : public judgment_t
   }
 };
 
+struct judgment_divine_exaction_t :public judgment_ret_t
+{
+  judgment_divine_exaction_t(paladin_t* p) : judgment_ret_t(p, "judgment_de", "", p->talents.templar.divine_exaction->effectN(2).percent(), true)
+  {
+    background = true;
+  }
+};
+
 hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view name, util::string_view options_str, double mul, bool bg )
   : judgment_base_t( p, name, options_str, p->find_spell( 1241413 ) ),
     echo( nullptr )
@@ -1662,43 +1670,17 @@ struct divine_toll_t : public paladin_spell_t
     {
       p()->buffs.templar.hammer_of_light_ready->trigger();
     }
-    if (p()->talents.templar.divine_exaction->ok())
+    if ( p()->talents.templar.divine_exaction->ok() )
     {
-      if (p()->specialization() == PALADIN_RETRIBUTION)
+      action_t* a = p()->specialization() == PALADIN_RETRIBUTION ? p()->active.divine_exaction_ret
+                                                                 : p()->active.divine_exaction_prot;
+      for ( int i = 0; i < p()->talents.templar.divine_exaction->effectN( 1 ).base_value(); i++ )
       {
-        make_event<delayed_execute_event_t>( *sim, p(), p()->active.divine_exaction_ret, execute_state->target,
-                                             300_ms );
-      }
-      else
-      {
-        for ( int i = 0; i < p()->talents.templar.divine_exaction->effectN( 1 ).base_value(); i++ )
-        {
-          make_event<delayed_execute_event_t>( *sim, p(), p()->active.divine_exaction_prot, execute_state->target,
-                                               300_ms * ( i + 1 ) );
-        }
+        make_event<delayed_execute_event_t>( *sim, p(), a, execute_state->target, 300_ms * ( i + 1 ) );
       }
     }
   }
 };
-
-divine_exaction_ret_t::divine_exaction_ret_t( paladin_t* p )
-  : paladin_spell_t( "divine_exaction_ret", p ),
-    judgment( new judgment_ret_t( p, "judgment_de", "",
-                                  p->talents.templar.divine_exaction->effectN( 2 ).percent(), true ) )
-{
-  background = true;
-  add_child( judgment );
-}
-void divine_exaction_ret_t::execute()
-{
-  paladin_spell_t::execute();
-  int times = p()->talents.templar.divine_exaction->effectN( 1 ).base_value() - 1;
-  judgment->execute_on_target( execute_state->target );
-  for ( int i = 0; i < times; i++ )
-  {
-    make_event<delayed_execute_event_t>( *sim, p(), judgment, execute_state->target, 300_ms * ( i + 1 ) );
-  }
-}
 
 // Rebuke ===================================================================
 
@@ -3179,6 +3161,8 @@ void paladin_t::create_actions()
     paladin_t::create_ret_actions();
     active.divine_toll =
         new judgment_ret_t( this, "judgment_dt", "", 1.0 + find_spell( 220637 )->effectN( 1 ).base_value(), true );
+    if ( talents.templar.divine_exaction->ok() )
+      active.divine_exaction_ret = new judgment_divine_exaction_t( this );
   }
 
   if ( talents.avenging_wrath->ok() )
