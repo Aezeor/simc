@@ -1102,9 +1102,7 @@ struct arcane_phoenix_spell_t : public mage_pet_spell_t
 
     if ( is_mage_spell )
     {
-      if ( o()->buffs.arcane_surge->check() )
-        m *= 1.0 + o()->buffs.arcane_surge->data().effectN( 1 ).percent();
-
+      m *= 1.0 + o()->buffs.arcane_surge->check_value();
       m *= 1.0 + o()->buffs.lingering_embers->check_stack_value();
       m *= 1.0 + o()->buffs.spellfire_sphere->check_stack_value();
     }
@@ -1644,8 +1642,8 @@ public:
   {
     double m = spell_t::action_multiplier();
 
-    if ( affected_by.arcane_surge && p()->buffs.arcane_surge->check() )
-      m *= 1.0 + p()->buffs.arcane_surge->data().effectN( 1 ).percent();
+    if ( affected_by.arcane_surge )
+      m *= 1.0 + p()->buffs.arcane_surge->check_value();
 
     if ( affected_by.hand_of_frost )
       m *= 1.0 + p()->buffs.hand_of_frost->check_stack_value();
@@ -5558,7 +5556,7 @@ void mage_t::regen( timespan_t periodicity )
     if ( base )
     {
       // Base regen was already done, so we don't need to add 1.0 to Arcane Surge's mana regen multiplier.
-      double amount = buffs.arcane_surge->check_value() * base * periodicity.total_seconds();
+      double amount = buffs.arcane_surge->data().effectN( 3 ).percent() * base * periodicity.total_seconds();
       resource_gain( RESOURCE_MANA, amount, gains.arcane_surge );
     }
   }
@@ -5999,7 +5997,7 @@ void mage_t::create_buffs()
                                       ->set_chance( talents.arcane_salvo.ok() )
                                       ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   buffs.arcane_surge              = make_buff( this, "arcane_surge", find_spell( 365362 ) )
-                                      ->set_default_value_from_effect( 3 )
+                                      ->set_default_value_from_effect( 1 )
                                       ->set_affects_regen( true );
   buffs.clearcasting              = make_buff( this, "clearcasting", find_spell( 263725 ) )
                                       ->set_default_value_from_effect( 1 )
