@@ -741,7 +741,7 @@ struct death_and_decay_tracker_t
   death_and_decay_tracker_t()
   {}
 
-  ~death_and_decay_tracker_t();
+  ~death_and_decay_tracker_t() = default;
 
   void set_dnd_event( ground_aoe_event_t* event )
   {
@@ -8722,6 +8722,11 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
     background = dual = true;
     tick_zero         = true;
     dnd               = new death_and_decay_tracker_t();
+  }
+
+  ~death_and_decay_damage_base_t()
+  {
+    delete dnd;
   }
 
   void impact( action_state_t* s ) override
