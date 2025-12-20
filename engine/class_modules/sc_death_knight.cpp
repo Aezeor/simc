@@ -857,7 +857,6 @@ public:
     propagate_const<buff_t*> rune_carved_plates_physical_buff;
     propagate_const<buff_t*> rune_carved_plates_magical_buff;
     propagate_const<buff_t*> swift_and_painful;
-    propagate_const<buff_t*> reaper_of_souls;
     propagate_const<buff_t*> empowered_soul;
 
   } buffs;
@@ -878,6 +877,7 @@ public:
     cooldown_t* plague_infusion_icd;
     cooldown_t* dancing_rune_weapon;
     propagate_const<cooldown_t*> vampiric_blood;
+    cooldown_t* bloody_reflection_icd;
     // Frost
     propagate_const<cooldown_t*> inexorable_assault_icd;  // internal cooldown to prevent multiple procs during aoe
     propagate_const<cooldown_t*>
@@ -913,6 +913,7 @@ public:
     // Blood
     action_t* heart_strike_bloodied_blade;
     action_t* blood_boil_boiling_point;
+    action_t* bloody_reflection;
     action_t* blood_mist_tick;
     action_t* sanguinary_burst;
 
@@ -1014,6 +1015,7 @@ public:
     propagate_const<gain_t*> consumption;
     propagate_const<gain_t*> drw_heart_strike;  // Blood Strike, Blizzard's hack to replicate HS rank 2 with DRW
     propagate_const<gain_t*> heartbreaker;
+    propagate_const<gain_t*> blood_mid1_2pc;
 
     // Frost
     propagate_const<gain_t*> breath_of_sindragosa;
@@ -1137,7 +1139,7 @@ public:
     player_talent_t blood_draw;
     // Row 9
     player_talent_t rune_mastery;
-    player_talent_t subuding_grasp;          // NYI
+    player_talent_t subduing_grasp;          // NYI
     player_talent_t will_of_the_necropolis;  // NYI
     // Row 10
     player_talent_t null_magic;  // NYI
@@ -1184,20 +1186,20 @@ public:
       player_talent_t blood_feast;
       // Row 8
       player_talent_t plague_infusion;
-      // 2 new talent choice node, NYI
-      player_talent_t consumption;
+      player_talent_t bloody_reflection;
+      player_talent_t iron_heart;
       player_talent_t bloodied_blade;
       player_talent_t coagulopathy;
       // Row 9
       player_talent_t blood_mist;
       player_talent_t sanguine_ground;
-      player_talent_t carnage;
-      player_talent_t iron_heart;
+      player_talent_t bloodshot;
+      player_talent_t consumption;
       player_talent_t red_thirst;
       // Row 10
       player_talent_t sanguinary_burst;
       player_talent_t purgatory;
-      player_talent_t bloodshot;
+      player_talent_t carnage;
       player_talent_t umbilicus_eternus;
       // Apex
       player_talent_t dance_of_midnight_1;  // NYI
@@ -1350,10 +1352,9 @@ public:
       player_talent_t wave_of_souls;
       player_talent_t wither_away;
       player_talent_t bind_in_darkness;
-      player_talent_t frigid_hunger;  // NYI
+      player_talent_t frigid_resolve;
       player_talent_t soul_rupture;
       player_talent_t grim_reaper;
-      player_talent_t reaper_of_souls;
       player_talent_t pact_of_the_deathbringer;  // NYI
       player_talent_t rune_carved_plates;
       player_talent_t deathly_blows;  // NYI
@@ -1417,6 +1418,7 @@ public:
     const spell_data_t* blood_mist_buff;
     const spell_data_t* blood_mist_damage;
     const spell_data_t* blood_mist_rp_gain;
+    const spell_data_t* bloody_reflection_damage;
     const spell_data_t* boiling_point_buff;
     const spell_data_t* boiling_point_echo_buff;
     const spell_data_t* bone_shield;
@@ -1435,6 +1437,9 @@ public:
     const spell_data_t* dancing_rune_weapon_buff;
     const spell_data_t* relish_in_blood_gains;
     const spell_data_t* leeching_strike_damage;
+
+    // Blood Tier Set Spells
+    const spell_data_t* rejuvenating_blood; // 2pc rp gain
 
     // Frost
     const spell_data_t* runic_empowerment_gain;
@@ -1585,7 +1590,6 @@ public:
     const spell_data_t* rune_carved_plates_physical_buff;
     const spell_data_t* rune_carved_plates_magical_buff;
     const spell_data_t* swift_and_painful_buff;
-    const spell_data_t* reapers_of_souls_buff;
   } spell;
 
   struct runeforge_spells_t
@@ -1870,6 +1874,7 @@ public:
     cooldown.plague_infusion_icd = get_cooldown( "plague_infusion_icd" );
     cooldown.dancing_rune_weapon = get_cooldown( "dancing_rune_weapon" );
     cooldown.vampiric_blood      = get_cooldown( "vampiric_blood" );
+    cooldown.bloody_reflection_icd   = get_cooldown( "bloody_reflection_icd" );
 
     // Frost
     cooldown.inexorable_assault_icd = get_cooldown( "inexorable_assault_icd" );
@@ -6236,6 +6241,12 @@ struct blood_shield_buff_t final : public absorb_buff_t
       if ( dk->talent.blood.consumption.ok() )
         dk->cooldown.consumption->reset( true );
     }
+
+    if ( dk->talent.blood.bloody_reflection.ok() && dk->cooldown.bloody_reflection_icd->up() )
+    {
+      dk->background_actions.bloody_reflection->execute_on_target( source );
+      dk->cooldown.bloody_reflection_icd->start();
+    }
   }
 };
 
@@ -6296,8 +6307,8 @@ struct death_knight_heal_t : public death_knight_action_t<heal_t>
     auto final_amount = amount + current_value;
 
     // Blood Shield caps at 50% max health
-    if ( final_amount > ( player->resources.max[ RESOURCE_HEALTH ] * 0.5 ) )
-      final_amount = player->resources.max[ RESOURCE_HEALTH ] * 0.5;
+    if ( final_amount > ( player->resources.max[ RESOURCE_HEALTH ] * p()->mastery.blood_shield->effectN( 3 ).percent() ) )
+      final_amount = player->resources.max[ RESOURCE_HEALTH ] * p()->mastery.blood_shield->effectN( 3 ).percent();
 
     sim->print_debug( "{} Blood Shield buff trigger, old_value={} added_value={} new_value={} from action={} (id={})",
                       player->name(), current_value, amount, final_amount, name(), this->data().id() );
@@ -7627,6 +7638,17 @@ struct exterminate_aoe_t final : public death_knight_spell_t
     }
   }
 
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+
+    if ( p()->specialization() == DEATH_KNIGHT_BLOOD && p()->talent.permafrost.ok() && p()->talent.deathbringer.frigid_resolve.ok() )
+    {
+      p()->background_actions.permafrost->execute_on_target(
+            p(), state->result_amount * p()->talent.deathbringer.frigid_resolve->effectN( 3 ).percent() );
+    }
+  }
+
   void execute() override
   {
     death_knight_spell_t::execute();
@@ -7663,6 +7685,17 @@ struct exterminate_t final : public death_knight_spell_t
     attack_power_mod.direct = data().effectN( effect_idx ).ap_coeff();
 
     add_child( second_hit );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+
+    if ( p()->specialization() == DEATH_KNIGHT_BLOOD && p()->talent.permafrost.ok() && p()->talent.deathbringer.frigid_resolve.ok() )
+    {
+      p()->background_actions.permafrost->execute_on_target(
+            p(), state->result_amount * p()->talent.deathbringer.frigid_resolve->effectN( 3 ).percent() );
+    }
   }
 
   void execute() override
@@ -8275,6 +8308,9 @@ struct blood_boil_t final : public death_knight_spell_t
       p()->buffs.boiling_point->expire();
       p()->buffs.boiling_point_echo->trigger();
     }
+
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID1, B2 ) )
+      p()->resource_gain( RESOURCE_RUNIC_POWER, p()->spell.rejuvenating_blood->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ), p()->gains.blood_mid1_2pc, this );
   }
 
   void impact( action_state_t* state ) override
@@ -8357,6 +8393,14 @@ private:
   int rp_gain;
   int rp_gain_cap;
   int rp_gained;
+};
+
+struct bloody_reflection_t : public death_knight_spell_t
+{
+  bloody_reflection_t( std::string_view name, death_knight_t* p ) : death_knight_spell_t( name, p, p->spell.bloody_reflection_damage )
+  {
+    background = true;
+  }
 };
 
 // The Blood is Life ========================================================
@@ -9184,6 +9228,12 @@ struct death_strike_t final : public death_knight_melee_attack_t
     if ( p()->talent.sanlayn.vampiric_strike.ok() && !p()->buffs.gift_of_the_sanlayn->check() )
     {
       p()->trigger_vampiric_strike_proc( target );
+    }
+
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID1, B4 ) &&
+            p()->rng().roll( p()->sets->set( DEATH_KNIGHT_BLOOD, MID1, B4)->effectN( 2 ).percent() ) )
+    {
+      p()->cooldown.blood_boil->reset( false );
     }
   }
 
@@ -13065,10 +13115,12 @@ void death_knight_t::create_actions()
     {
       pet_summon.bloodworm = get_action<bloodworm_summon_t>( "bloodworm_summon", this );
     }
-    if ( talent.blood.boiling_point->ok() )
+    if ( talent.blood.boiling_point.ok() )
       background_actions.blood_boil_boiling_point = get_action<blood_boil_t>( "blood_boil_boiling_point", this );
     if ( talent.blood.blood_mist.ok() )
       background_actions.blood_mist_tick = get_action<blood_mist_t>( "blood_mist", this );
+    if ( talent.blood.bloody_reflection.ok() )
+      background_actions.bloody_reflection = get_action<bloody_reflection_t>( "bloody_reflection", this );
     if ( talent.blood.sanguinary_burst.ok() )
       background_actions.sanguinary_burst = get_action<sanguinary_burst_t>( "sanguinary_burst", this );
   }
@@ -13688,6 +13740,9 @@ void death_knight_t::create_pets()
       pets.dancing_rune_weapon_pet.set_creation_callback(
           []( death_knight_t* p ) { return new pets::dancing_rune_weapon_pet_t( p, "dancing_rune_weapon" ); } );
       pets.dancing_rune_weapon_pet.set_default_duration( talent.blood.dancing_rune_weapon->duration() );
+      // As of Dec 19 2025, the first rune weapon does not get the 4s extension from everlasting bond.  Only the everlasting bond weapon does
+      if ( bugs && talent.blood.everlasting_bond.ok() )
+        pets.dancing_rune_weapon_pet.set_default_duration( talent.blood.dancing_rune_weapon->duration() - talent.blood.everlasting_bond->effectN( 2 ).time_value() );
       pets.dancing_rune_weapon_pet.set_max_pets( 1 );
 
       if ( talent.blood.everlasting_bond.ok() )
@@ -13826,7 +13881,7 @@ void death_knight_t::init_spells()
   talent.blood_draw       = find_talent_spell( talent_tree::CLASS, "Blood Draw" );
   // Row 9
   talent.rune_mastery           = find_talent_spell( talent_tree::CLASS, "Rune Mastery" );
-  talent.subuding_grasp         = find_talent_spell( talent_tree::CLASS, "Subduing Grasp" );
+  talent.subduing_grasp         = find_talent_spell( talent_tree::CLASS, "Subduing Grasp" );
   talent.will_of_the_necropolis = find_talent_spell( talent_tree::CLASS, "Will of the Necropolis" );
   // Row 10
   talent.null_magic      = find_talent_spell( talent_tree::CLASS, "Null Magic" );
@@ -13872,20 +13927,20 @@ void death_knight_t::init_spells()
   talent.blood.blood_feast      = find_talent_spell( talent_tree::SPECIALIZATION, "Blood Feast" );
   // Row 8
   talent.blood.plague_infusion = find_talent_spell( talent_tree::SPECIALIZATION, "Plague Infusion" );
-  // Choice node NYI talents
-  talent.blood.consumption    = find_talent_spell( talent_tree::SPECIALIZATION, "Consumption" );
+  talent.blood.bloody_reflection = find_talent_spell( talent_tree::SPECIALIZATION, "Bloody Reflection" );
+  talent.blood.iron_heart      = find_talent_spell( talent_tree::SPECIALIZATION, "Iron Heart" );
   talent.blood.bloodied_blade = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodied Blade" );
   talent.blood.coagulopathy   = find_talent_spell( talent_tree::SPECIALIZATION, "Coagulopathy" );
   // Row 9
   talent.blood.blood_mist      = find_talent_spell( talent_tree::SPECIALIZATION, "Blood Mist" );
   talent.blood.sanguine_ground = find_talent_spell( talent_tree::SPECIALIZATION, "Sanguine Ground" );
-  talent.blood.carnage         = find_talent_spell( talent_tree::SPECIALIZATION, "Carnage" );
-  talent.blood.iron_heart      = find_talent_spell( talent_tree::SPECIALIZATION, "Iron Heart" );
+  talent.blood.bloodshot         = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodshot" );
+  talent.blood.consumption    = find_talent_spell( talent_tree::SPECIALIZATION, "Consumption" );
   talent.blood.red_thirst      = find_talent_spell( talent_tree::SPECIALIZATION, "Red Thirst" );
   // Row 10
   talent.blood.sanguinary_burst  = find_talent_spell( talent_tree::SPECIALIZATION, "Sanguinary Burst" );
   talent.blood.purgatory         = find_talent_spell( talent_tree::SPECIALIZATION, "Purgatory" );
-  talent.blood.bloodshot         = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodshot" );
+  talent.blood.carnage         = find_talent_spell( talent_tree::SPECIALIZATION, "Carnage" );
   talent.blood.umbilicus_eternus = find_talent_spell( talent_tree::SPECIALIZATION, "Umbilicus Eternus" );
   // Apex
   talent.blood.dance_of_midnight_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1264506 );
@@ -14046,22 +14101,21 @@ void death_knight_t::init_spells()
   //////// Deathbringer
   talent.deathbringer.reapers_mark             = find_talent_spell( talent_tree::HERO, "Reaper's Mark" );
   talent.deathbringer.wave_of_souls            = find_talent_spell( talent_tree::HERO, "Wave of Souls" );
+  talent.deathbringer.wither_away              = find_talent_spell( talent_tree::HERO, "Wither Away" );
   talent.deathbringer.bind_in_darkness         = find_talent_spell( talent_tree::HERO, "Bind in Darkness" );
-  talent.deathbringer.frigid_hunger            = find_talent_spell( talent_tree::HERO, "Frigid Hunger" );
+  talent.deathbringer.frigid_resolve           = find_talent_spell( talent_tree::HERO, "Frigid Resolve" );
   talent.deathbringer.soul_rupture             = find_talent_spell( talent_tree::HERO, "Soul Rupture" );
   talent.deathbringer.grim_reaper              = find_talent_spell( talent_tree::HERO, "Grim Reaper" );
   talent.deathbringer.pact_of_the_deathbringer = find_talent_spell( talent_tree::HERO, "Pact of the Deathbringer" );
   talent.deathbringer.rune_carved_plates       = find_talent_spell( talent_tree::HERO, "Rune Carved Plates" );
   talent.deathbringer.deathly_blows            = find_talent_spell( talent_tree::HERO, "Deathly Blows" );
+  talent.deathbringer.swift_and_painful        = find_talent_spell( talent_tree::HERO, "Swift and Painful" );
   talent.deathbringer.dark_talons              = find_talent_spell( talent_tree::HERO, "Dark Talons" );
-  talent.deathbringer.wither_away              = find_talent_spell( talent_tree::HERO, "Wither Away" );
+  talent.deathbringer.reapers_onslaught        = find_talent_spell( talent_tree::HERO, "Reaper's Onslaught" );
   talent.deathbringer.deaths_messenger         = find_talent_spell( talent_tree::HERO, "Death's Messenger" );
   talent.deathbringer.expelling_shield         = find_talent_spell( talent_tree::HERO, "Expelling Shield" );
-  talent.deathbringer.exterminate              = find_talent_spell( talent_tree::HERO, "Exterminate" );
-  talent.deathbringer.reapers_onslaught        = find_talent_spell( talent_tree::HERO, "Reaper's Onslaught" );
-  talent.deathbringer.reaper_of_souls          = find_talent_spell( talent_tree::HERO, "Reaper of Souls" );
   talent.deathbringer.echoing_fury             = find_talent_spell( talent_tree::HERO, "Echoing Fury" );
-  talent.deathbringer.swift_and_painful        = find_talent_spell( talent_tree::HERO, "Swift and Painful" );
+  talent.deathbringer.exterminate              = find_talent_spell( talent_tree::HERO, "Exterminate" );
 
   ///////// San'layn
   talent.sanlayn.vampiric_strike      = find_talent_spell( talent_tree::HERO, "Vampiric Strike" );
@@ -14098,6 +14152,10 @@ void death_knight_t::init_spells()
   register_passive_effect_mask( talent.improved_death_strike, specialization() == DEATH_KNIGHT_BLOOD
                                                                   ? effect_mask_t( true ).disable( 1, 2, 3 )
                                                                   : effect_mask_t( true ).disable( 4, 5 ) );
+
+  register_passive_effect_mask( talent.deathbringer.frigid_resolve, specialization() == DEATH_KNIGHT_BLOOD
+                                                                        ? effect_mask_t( true ).disable( 2 )
+                                                                        : effect_mask_t( true ).disable( 1, 3) );
 
   if ( main_hand_weapon.group() != WEAPON_2H )
     deregister_passive_spell( spec.might_of_the_frozen_wastes );
@@ -14173,6 +14231,7 @@ void death_knight_t::spell_lookups()
   spell.blood_mist_buff             = conditional_spell_lookup( talent.blood.blood_mist.ok(), 1263729 );
   spell.blood_mist_damage           = conditional_spell_lookup( talent.blood.blood_mist.ok(), 1263752 );
   spell.blood_mist_rp_gain          = conditional_spell_lookup( talent.blood.blood_mist.ok(), 1263774 );
+  spell.bloody_reflection_damage    = conditional_spell_lookup( talent.blood.bloody_reflection.ok(), 1279656 );
   spell.boiling_point_buff          = conditional_spell_lookup( talent.blood.boiling_point.ok(), 1265968 );
   spell.boiling_point_echo_buff     = conditional_spell_lookup( talent.blood.boiling_point.ok(), 1265982 );
   spell.bone_shield                 = conditional_spell_lookup( spec.blood_death_knight->ok(), 195181 );
@@ -14190,6 +14249,9 @@ void death_knight_t::spell_lookups()
   spell.dancing_rune_weapon_buff = conditional_spell_lookup( talent.blood.dancing_rune_weapon.ok(), 81256 );
   spell.relish_in_blood_gains    = conditional_spell_lookup( talent.blood.relish_in_blood.ok(), 317614 );
   spell.leeching_strike_damage   = conditional_spell_lookup( talent.blood.leeching_strike.ok(), 377633 );
+
+  // Blood Tier set spells
+  spell.rejuvenating_blood       = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID1, B2 ), 1271198 );
 
   // Frost
   spell.murderous_efficiency_gain   = conditional_spell_lookup( talent.frost.murderous_efficiency.ok(), 207062 );
@@ -14345,7 +14407,6 @@ void death_knight_t::spell_lookups()
       conditional_spell_lookup( talent.deathbringer.rune_carved_plates.ok(), 440289 );
   spell.rune_carved_plates_magical_buff =
       conditional_spell_lookup( talent.deathbringer.rune_carved_plates.ok(), 440290 );
-  spell.reapers_of_souls_buff  = conditional_spell_lookup( talent.deathbringer.reaper_of_souls.ok(), 469172 );
   spell.swift_and_painful_buff = conditional_spell_lookup( talent.deathbringer.swift_and_painful.ok(), 469169 );
 
   // Pet abilities
@@ -14415,6 +14476,9 @@ void death_knight_t::set_icds()
 {
   // Custom/Internal cooldowns default durations
   cooldown.bone_shield_icd->duration = spell.bone_shield->internal_cooldown();
+
+  if ( talent.blood.bloody_reflection.ok() )
+    cooldown.bloody_reflection_icd->duration = 500_ms;  // Not in spelldata, found via logs Dec 12 2025
 
   if ( talent.blood.plague_infusion.ok() )
     cooldown.plague_infusion_icd->duration = talent.blood.plague_infusion->internal_cooldown();
@@ -14646,12 +14710,6 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
           ->set_expire_callback( [ & ]( buff_t* buff, int stacks, timespan_t ) {
             if ( !p.sim->event_mgr.canceled )
               p.reapers_mark_explosion_wrapper( buff->player, buff->source, stacks );
-          } )
-          ->set_stack_change_callback( [ & ]( buff_t*, int, int new_ ) {
-            if ( p.talent.deathbringer.reaper_of_souls.ok() && new_ == 1 )
-            {
-              p.buffs.reaper_of_souls->trigger();
-            }
           } );
 
   debuff.wave_of_souls = make_debuff( p.talent.deathbringer.wave_of_souls.ok(), *this, "wave_of_souls_debuff",
@@ -14774,9 +14832,6 @@ void death_knight_t::create_buffs()
 
   buffs.exterminate =
       make_fallback( talent.deathbringer.exterminate.ok(), this, "exterminate", spell.exterminate_buff );
-
-  buffs.reaper_of_souls =
-      make_fallback( talent.deathbringer.reapers_mark.ok(), this, "reaper_of_souls", spell.reapers_of_souls_buff );
 
   buffs.swift_and_painful = make_fallback( talent.deathbringer.swift_and_painful.ok(), this, "swift_and_painful",
                                            spell.swift_and_painful_buff );
@@ -15161,6 +15216,7 @@ void death_knight_t::init_gains()
   gains.consumption      = get_gain( "Consumption" );
   gains.drw_heart_strike = get_gain( "Rune Weapon Heart Strike" );
   gains.heartbreaker     = get_gain( "Heartbreaker" );
+  gains.blood_mid1_2pc   = get_gain( "Blood MID1 2pc");
 
   // Frost
   gains.breath_of_sindragosa        = get_gain( "Breath of Sindragosa" );
@@ -15810,7 +15866,6 @@ void death_knight_t::apply_action_effects( action_t* a, bool pet )
         action->parse_effects( buffs.dark_talons_shadowfrost );
         action->parse_effects( buffs.bind_in_darkness );
         action->parse_effects( buffs.exterminate );
-        action->parse_effects( buffs.reaper_of_souls );
         break;
       case HERO_RIDER_OF_THE_APOCALYPSE:
         action->parse_effects( buffs.mograines_might );
