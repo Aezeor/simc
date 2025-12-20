@@ -3470,15 +3470,6 @@ void paladin_t::create_buffs()
                              ->add_invalidate( CACHE_MASTERY )
                              ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
                                buffs.hammer_of_wrath->expire();
-                               if ( sets->has_set_bonus( HERO_HERALD_OF_THE_SUN, TWW3, B2 ) )
-                               {
-                                 // 5s with Radiant Glory, 10s without
-                                 buffs.herald_of_the_sun.solar_wrath->trigger(
-                                     sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 )->effectN( 2 ).time_value() -
-                                     ( talents.radiant_glory->ok()
-                                           ? sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 )->effectN( 5 ).time_value()
-                                           : 0_ms ) );
-                               }
                              } );
 
   if ( talents.crusade->ok() )
@@ -3968,6 +3959,14 @@ void paladin_t::init()
 
 void paladin_t::init_spells()
 {
+  // Light Within (Retribution Apex Talent 2) modifies Avenging Wrath's effect 12, possibly via server side script
+  if ( auto apex2 = find_talent_spell( talent_tree::SPECIALIZATION, 1261111 ); apex2.ok())
+  {
+    register_passive_effect_override( find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath" )->effectN( 12 ),
+                                      apex2->effectN( 1 ).base_value() );
+    register_passive_effect_override( find_spell( 454351 )->effectN( 12 ), apex2->effectN( 1 ).base_value() );
+  }
+
   player_t::init_spells();
 
   init_spells_retribution();
@@ -4114,7 +4113,11 @@ void paladin_t::init_spells()
   // Shared Passives and spells
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );
   passives.paladin              = find_spell( 137026 );
-  spells.avenging_wrath         = find_spell( 31884 );
+  if ( talents.radiant_glory->ok() )
+    spells.avenging_wrath = find_spell( 454351 );
+  else
+    spells.avenging_wrath = find_spell( 31884 );
+
   spells.judgment_2             = find_rank_spell( "Judgment", "Rank 2" );         // 327977
   spec.word_of_glory_2          = find_rank_spell( "Word of Glory", "Rank 2" );
   spells.divine_purpose_buff    = find_spell( specialization() == PALADIN_RETRIBUTION ? 408458 : 223819 );
