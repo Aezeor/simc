@@ -320,7 +320,7 @@ void unholy( player_t* p )
   default_->add_action( "call_action_list,name=single_target,if=active_enemies<4" );
 
   cooldowns->add_action( "outbreak,if=dot.virulent_plague.ticks_remain<3&!buff.pestilence.up&(!talent.blightburst|talent.blightburst&cooldown.putrefy.remains_expected>5)|buff.pestilence.up&dot.virulent_plague.ticking&(talent.infliction_of_sorrow&buff.dark_transformation.up&buff.dark_transformation.remains<gcd*2|cooldown.dark_transformation.remains<7)", "Cooldowns" );
-  cooldowns->add_action( "army_of_the_dead,if=!talent.summon_gargoyle|talent.summon_gargoyle&runic_power>=30|talent.gift_of_the_sanlayn&(debuff.festering_scythe_debuff.up|!talent.festering_scythe)" );
+  cooldowns->add_action( "army_of_the_dead,if=!talent.summon_gargoyle&!talent.gift_of_the_sanlayn|talent.summon_gargoyle&runic_power>=30|talent.gift_of_the_sanlayn&(debuff.festering_scythe_debuff.up|!talent.festering_scythe)" );
   cooldowns->add_action( "dark_transformation,if=pet.lesser_ghoul_army.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead" );
   cooldowns->add_action( "soul_reaper,if=cooldown.putrefy.charges>=1|target.health.pct<=35" );
   cooldowns->add_action( "putrefy,if=(talent.reaping&!target.health.pct<=35|!talent.reaping)&(buff.forbidden_knowledge.up&runic_power.deficit>10)|charges=max_charges" );
