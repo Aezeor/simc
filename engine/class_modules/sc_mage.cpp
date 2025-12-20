@@ -6929,12 +6929,13 @@ bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool never_p
   bool success = rng().roll( chance );
   if ( success )
   {
-    if ( !buffs.clearcasting->check() )
+    bool had_clearcasting = buffs.clearcasting->check();
+    if ( !had_clearcasting )
     {
       state.gained_initial_clearcasting = true;
       make_event( *sim, 50_ms, [ this ] { state.gained_initial_clearcasting = false; } );
     }
-    if ( delay > 0_ms && buffs.clearcasting->check() )
+    if ( delay > 0_ms && had_clearcasting )
       make_event( *sim, delay, [ this ] { buffs.clearcasting->trigger(); } );
     else
       buffs.clearcasting->trigger();
@@ -6950,7 +6951,8 @@ bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool never_p
       // If Overpowered Missiles triggers during AM channel, the buff application
       // is delayed until the channel ends (or is refreshed).
       // TODO: Should we use the delay param here?
-      if ( channeling && channeling->id == 5143 )
+      // TODO: The proc is also banked if you already had a CC stack before, likely a bug
+      if ( ( channeling && channeling->id == 5143 ) || had_clearcasting )
         state.trigger_overpowered_missiles = true;
       else
         buffs.overpowered_missiles->trigger();
