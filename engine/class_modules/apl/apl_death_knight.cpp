@@ -340,7 +340,7 @@ void unholy( player_t* p )
   single_target->add_action( "putrefy,if=!talent.reaping" );
   single_target->add_action( "death_coil" );
 
-  racials->add_action( "ancestral_call,if=pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up" );
+  racials->add_action( "ancestral_call,if=pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up", "Racials");
   racials->add_action( "arcane_pulse,if=runic_power<20&rune<2" );
   racials->add_action( "arcane_torrent,if=runic_power<20&rune<2" );
   racials->add_action( "bag_of_tricks,if=runic_power<20&rune<2" );
@@ -349,7 +349,7 @@ void unholy( player_t* p )
   racials->add_action( "fireblood,if=pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up" );
   racials->add_action( "lights_judgment,if=runic_power<20&rune<2" );
 
-  trinkets->add_action( "use_item,slot=trinket1,if=variable.trinket_1_buffs&(variable.trinket_priority=1|!variable.trinket_2_buffs|!trinket.2.has_cooldown)&(pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up)" );
+  trinkets->add_action( "use_item,slot=trinket1,if=variable.trinket_1_buffs&(variable.trinket_priority=1|!variable.trinket_2_buffs|!trinket.2.has_cooldown)&(pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up)", "Trinkets" );
   trinkets->add_action( "use_item,slot=trinket2,if=variable.trinket_2_buffs&(variable.trinket_priority=2|!variable.trinket_1_buffs|!trinket.1.has_cooldown)&(pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up)" );
   trinkets->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&(variable.damage_trinket_priority=1|!variable.trinket_2_buffs|!trinket.2.has_cooldown)" );
   trinkets->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&(variable.damage_trinket_priority=2|!variable.trinket_1_buffs|!trinket.1.has_cooldown)" );
