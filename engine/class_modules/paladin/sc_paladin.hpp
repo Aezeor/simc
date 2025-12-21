@@ -1761,6 +1761,7 @@ struct judgment_t : public judgment_base_t
 
   proc_types proc_type() const override;
   void execute() override;
+  bool action_ready() override;
 };
 
 

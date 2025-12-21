@@ -1476,7 +1476,7 @@ proc_types judgment_t::proc_type() const
 
 void judgment_t::execute()
 {
-  if ( p()->buffs.hammer_of_wrath->up() )
+  if ( p()->buffs.hammer_of_wrath->up() && hammer_of_wrath->ready() )
   {
     hammer_of_wrath->execute_on_target( target );
     stats->add_execute( 0_ms, target );
@@ -1493,6 +1493,15 @@ void judgment_t::execute()
   {
     p()->buffs.vanguard->trigger();
   }
+}
+bool judgment_t::action_ready()
+{
+  bool tr = judgment_base_t::action_ready();
+  if ( p()->buffs.hammer_of_wrath->up() )
+  {
+    tr &= hammer_of_wrath->action_ready();
+  }
+  return tr;
 }
 
 
