@@ -7181,7 +7181,8 @@ void player_t::schedule_ready( timespan_t delta_time, bool waiting )
           action_queued = true;
         }
       }
-      else if ( last_foreground_action->channeled && !last_foreground_action->interrupt_immediate_occurred )
+      else if ( last_foreground_action->channeled && last_foreground_action->apply_channel_lag &&
+                !last_foreground_action->interrupt_immediate_occurred )
       {
         lag = rng().gauss( sim->channel_lag );
       }
