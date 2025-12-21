@@ -385,6 +385,7 @@ public:
     const spell_data_t* avenging_wrath;
     const spell_data_t* divine_purpose_buff;
     const spell_data_t* judgment_debuff;
+    const spell_data_t* sanctify;
 
     const spell_data_t* sotr_buff;
 
@@ -857,6 +858,7 @@ public:
   action_t* create_action_holy( util::string_view name, util::string_view options_str );
 
   void apply_action_effects( action_t* a );
+  void apply_target_action_effects( action_t* a );
 
   void generate_action_prio_list_prot();
   void generate_action_prio_list_holy();
@@ -1156,8 +1158,7 @@ public:
       this->affected_by.sentinel         = this->data().affected_by( p->talents.sentinel->effectN( 1 ) );
     }
 
-    this->affected_by.judgment            = this->data().affected_by( p->spells.judgment_debuff->effectN( 1 ) );
-    this->clears_judgment                 = this->affected_by.judgment;
+    this->clears_judgment                 = this->data().affected_by( p->spells.judgment_debuff->effectN( 1 ) );
     this->affected_by.avenging_wrath      = this->data().affected_by( p->spells.avenging_wrath->effectN( 2 ) );
     this->affected_by.sentinel            = this->data().affected_by( p->spells.sentinel->effectN( 1 ) );
     this->affected_by.divine_purpose_cost = this->data().affected_by( p->spells.divine_purpose_buff->effectN( 1 ) );
@@ -1175,6 +1176,10 @@ public:
     if ( this->data().ok() )
     {
       p->apply_action_effects( this );
+      if (this->type == action_e::ACTION_SPELL || this->type == action_e::ACTION_ATTACK)
+      {
+        p->apply_target_action_effects( this );
+      }
     }
   }
 
@@ -1228,7 +1233,7 @@ public:
 
     if ( ab::result_is_hit( s->result ) )
     {
-      if ( affected_by.judgment && clears_judgment )
+      if ( clears_judgment )
       {
         paladin_td_t* td = this->td( s->target );
         if ( td->debuff.judgment->up() )

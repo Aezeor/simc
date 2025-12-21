@@ -102,6 +102,38 @@ paladin_td_t* paladin_t::get_target_data( player_t* target ) const
   return td;
 }
 
+template <typename T>
+static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
+{
+  if constexpr ( std::is_invocable_v<T, paladin_td_t::buffs_t> )
+  {
+    if ( stack )
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<paladin_td_t*>( t )->debuff )->check();
+      };
+    else
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<paladin_td_t*>( t )->debuff )->check() > 0;
+      };
+  }
+  else if constexpr ( std::is_invocable_v<T, paladin_td_t::dots_t> )
+  {
+    if ( stack )
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<paladin_td_t*>( t )->dot )->current_stack();
+      };
+    else
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<paladin_td_t*>( t )->dot )->is_ticking();
+      };
+  }
+  else
+  {
+    static_assert( static_false<T>, "Not a valid member of paladin_td_t" );
+    return nullptr;
+  }
+}
+
 // ==========================================================================
 // Paladin Buffs, Part One
 // ==========================================================================
@@ -317,8 +349,6 @@ golden_path_t::golden_path_t( paladin_t* p ) : paladin_heal_t( "golden_path", p,
     double m = paladin_spell_t::composite_target_multiplier( target );
 
     paladin_td_t* td = p()->get_target_data( target );
-    if ( td->debuff.sanctify->up() )
-      m *= 1.0 + td->debuff.sanctify->data().effectN( 1 ).percent();
 
     if ( p()->talents.burn_to_ash->ok() && td->dots.truths_wake->is_ticking() )
     {
@@ -1601,9 +1631,6 @@ void paladin_t::trigger_greater_judgment( paladin_td_t* targetdata, bool remove_
   if ( !targetdata->target->in_combat )
     return;
 
-  if ( !remove_stack )
-    targetdata->debuff.judgment->trigger();
-
   auto stack = spells.judgment_debuff->initial_stacks();
   if ( remove_stack )
     stack--;
@@ -2017,7 +2044,9 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
      {
        // 02.05.25 Fluttershy - If target has no Judgment Debuffs, Hammer of Light consumes one stack without damage increase
        bool removeStack = td( s->target )->debuff.judgment->stack() == 0;
-       p()->trigger_greater_judgment( td( s->target ), removeStack );
+       // 21.12.25 Fluttershy - Currently, the main target just never gets a Judgment stack
+       if ( !p()->bugs )
+         p()->trigger_greater_judgment( td( s->target ), removeStack );
 
      }
    }
@@ -3090,7 +3119,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
                                  ->set_default_value_from_effect( 1 )
                                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
-  debuff.sanctify              = make_buff( *this, "sanctify", paladin->find_spell( 382538 ) );
+  debuff.sanctify          = make_buff( *this, "sanctify", paladin->spells.sanctify );
   debuff.crusaders_resolve     = make_buff( *this, "crusaders_resolve", paladin->find_spell( 383843 ) );
   debuff.empyrean_hammer = make_buff( *this, "empyrean_hammer", paladin->find_spell( 431625 ) );
 
@@ -3767,6 +3796,15 @@ void paladin_t::apply_action_effects( action_t* a ) {
   action->parse_effects( buffs.light_blessed_shield, CONSUME_BUFF );
 }
 
+void paladin_t::apply_target_action_effects(action_t* a)
+{
+  auto action = dynamic_cast<parse_action_base_t*>( a );
+  assert( action );
+
+  action->parse_target_effects( d_fn( &paladin_td_t::buffs_t::judgment, true ), spells.judgment_debuff );
+  action->parse_target_effects( d_fn( &paladin_td_t::buffs_t::sanctify ), spells.sanctify );
+}
+
 // paladin_t::init_actions ==================================================
 
 void paladin_t::init_action_list()
@@ -4121,6 +4159,7 @@ void paladin_t::init_spells()
   spells.judgment_2             = find_rank_spell( "Judgment", "Rank 2" );         // 327977
   spec.word_of_glory_2          = find_rank_spell( "Word of Glory", "Rank 2" );
   spells.divine_purpose_buff    = find_spell( specialization() == PALADIN_RETRIBUTION ? 408458 : 223819 );
+  spells.sanctify               = find_spell( 382538 );
 
   // Hero Talent Spells
   spells.lightsmith.holy_bulwark        = find_spell( 432496 );
