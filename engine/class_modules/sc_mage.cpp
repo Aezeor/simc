@@ -997,6 +997,7 @@ struct water_jet_t final : public mage_pet_spell_t
   {
     parse_options( options_str );
     channeled = true;
+    apply_channel_lag = false;
   }
 };
 
