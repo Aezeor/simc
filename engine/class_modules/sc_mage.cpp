@@ -308,7 +308,6 @@ public:
     buff_t* hyperthermia_damage;
     buff_t* mana_cascade;
     buff_t* spellfire_sphere;
-    buff_t* spellfire_spheres;
 
 
     // Shared
@@ -888,7 +887,7 @@ public:
   void trigger_mana_cascade();
   void trigger_merged_buff( buff_t* buff, bool trigger );
   void trigger_meteor_burn( action_t* action, player_t* target, timespan_t pulse_time, timespan_t duration );
-  void trigger_spellfire_spheres();
+  void trigger_spellfire_sphere( specialization_e spec );
   void trigger_splinter( player_t* target, int count = -1 );
   void trigger_freezing( player_t* target, int stacks, proc_t* source, double chance = 1.0 );
   int  trigger_shatter( player_t* target, action_t* action, int max_consumption, shatter_source_t* source, bool fof = false );
@@ -1828,6 +1827,9 @@ public:
 
     if ( triggers.frostfire_empowerment && rng().roll( p()->talents.frostfire_empowerment->effectN( 3 ).percent() ) )
       make_event( *sim, [ this ] { p()->buffs.frostfire_empowerment->trigger(); } );
+
+    if ( !background && !harmful )
+      p()->trigger_spellfire_sphere( MAGE_ARCANE );
   }
 
   void impact( action_state_t* s ) override
@@ -2339,7 +2341,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     {
       p()->buffs.hot_streak->decrement();
 
-      p()->trigger_spellfire_spheres();
+      p()->trigger_spellfire_sphere( MAGE_FIRE );
       p()->trigger_mana_cascade();
     }
 
@@ -2348,7 +2350,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     {
       p()->cooldowns.pyromaniac->start( p()->talents.pyromaniac->internal_cooldown() );
 
-      p()->trigger_spellfire_spheres();
+      p()->trigger_spellfire_sphere( MAGE_FIRE );
       p()->trigger_mana_cascade();
 
       assert( pyromaniac_action );
@@ -2659,7 +2661,6 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
       p()->trigger_arcane_charge( arcane_soul_charges );
     }
 
-    p()->trigger_spellfire_spheres();
     p()->trigger_mana_cascade();
 
     if ( p()->buffs.glorious_incandescence->check() )
@@ -2738,7 +2739,6 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
     p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
     p()->trigger_splinter( p()->target );
-    p()->trigger_spellfire_spheres();
     p()->trigger_mana_cascade();
 
     if ( p()->buffs.presence_of_mind->up() )
@@ -6015,11 +6015,9 @@ void mage_t::create_buffs()
                                      } )
                                    ->set_chance( talents.mana_cascade.ok() );
   buffs.spellfire_sphere       = make_buff( this, "spellfire_sphere", find_spell( 448604 ) )
-                                   ->set_default_value_from_effect( specialization() == MAGE_FIRE ? 2 : 1 )
+                                   ->set_default_value_from_effect( 1 )
                                    ->set_chance( talents.spellfire_spheres.ok() )
                                    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-  buffs.spellfire_spheres      = make_buff( this, "spellfire_spheres", find_spell( 449400 ) )
-                                   ->set_chance( talents.spellfire_spheres.ok() );
 
 
   // Shared
@@ -6737,31 +6735,15 @@ void mage_t::trigger_meteor_burn( action_t* action, player_t* target, timespan_t
   e->expiration = expiration;
 }
 
-void mage_t::trigger_spellfire_spheres()
+void mage_t::trigger_spellfire_sphere( specialization_e spec )
 {
-  if ( !talents.spellfire_spheres.ok() )
+  if ( !talents.spellfire_spheres.ok() || spec != specialization() )
     return;
 
-  int max_stacks = buffs.spellfire_spheres->max_stack();
-
-  buffs.spellfire_spheres->trigger();
-
-  auto check_stacks = [ this, s = max_stacks ]
-  {
-    if ( buffs.spellfire_spheres->check() >= s )
-    {
-      buffs.spellfire_sphere->trigger();
-      buffs.spellfire_spheres->expire();
-    }
-  };
-
-  // For Arcane, casting Arcane Blast and Arcane Barrage together results in both stacks of spellfire_spheres
-  // being applied before they are consumed. This can be handled with a delay here. This does not work for Fire
-  // because Pyroblast will consume the Burden of Power that was applied by the Hot Streak that it just consumed.
-  if ( specialization() == MAGE_FIRE )
-    check_stacks();
-  else
-    make_event( *sim, 15_ms, check_stacks );
+  // TODO: Double check what procs this for Arcane
+  // TODO: Implement the BLP
+  if ( rng().roll( talents.spellfire_spheres->effectN( 1 ).percent() ) )
+    buffs.spellfire_sphere->trigger();
 }
 
 // If the target isn't specified, picks a random target.
