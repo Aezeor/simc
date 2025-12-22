@@ -306,6 +306,7 @@ public:
     buff_t* glorious_incandescence;
     buff_t* hyperthermia;
     buff_t* hyperthermia_damage;
+    buff_t* lesser_time_warp;
     buff_t* mana_cascade;
     buff_t* spellfire_sphere;
 
@@ -1237,10 +1238,12 @@ struct arcane_phoenix_pet_t final : public mage_pet_t
     if ( !o()->talents.memory_of_alar.ok() )
       return;
 
-    // TODO: Might not be tied to the pet dying anymore
+    // TODO: Move this to Arcane Surge/Combustion expire; these effects happen even when
+    // not talented into Arcane Phoenix
     auto spec = o()->specialization();
     auto buff = spec == MAGE_FIRE ? o()->buffs.hyperthermia : o()->buffs.arcane_soul;
     buff->trigger( o()->talents.memory_of_alar->effectN( spec == MAGE_FIRE ? 2 : 1 ).time_value() );
+    o()->buffs.lesser_time_warp->trigger();
   };
 
   void create_actions() override;
@@ -6016,6 +6019,10 @@ void mage_t::create_buffs()
                                      { if ( cur == 0 ) buffs.hyperthermia_damage->expire(); } );
   buffs.hyperthermia_damage    = make_buff( this, "hyperthermia_damage", find_spell( 1242220 ) )
                                    ->set_default_value_from_effect( 1 );
+  buffs.lesser_time_warp       = make_buff( this, "lesser_time_warp", find_spell( 1260277 ) )
+                                   ->set_default_value_from_effect( specialization() == MAGE_FIRE ? 2 : 1 )
+                                   ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                                   ->set_chance( talents.ashes_of_inspiration.ok() );
   buffs.mana_cascade           = make_buff( this, "mana_cascade", find_spell( specialization() == MAGE_FIRE ? 449314 : 449322 ) )
                                    ->set_default_value_from_effect( 2, 0.001 )
                                    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
