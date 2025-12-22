@@ -432,11 +432,11 @@ public:
     bool fingers_of_frost_active;
     bool had_low_mana;
     bool trigger_ff_empowerment;
-    bool trigger_glorious_incandescence;
     bool trigger_overpowered_missiles;
     bool gained_initial_clearcasting; // Used to prevent queueing Arcane Missiles immediately after gaining the first stack Clearclasting.
     bool eureka;
     bool thermal_void_active;
+    int glorious_incandescence_snapshot;
     int clearcasting_blp_count;
     int icicles;
   } state;
@@ -1973,17 +1973,16 @@ public:
     residual_action::trigger( p()->action.molten_chill_ignite, s->target, amount );
   }
 
-  void trigger_glorious_incandescence( player_t* t )
+  void trigger_meteorite( player_t* t, int count = 1 )
   {
-    if ( !p()->talents.glorious_incandescence.ok() || !p()->state.trigger_glorious_incandescence )
+    if ( !p()->talents.glorious_incandescence.ok() || count <= 0 )
       return;
 
     // TODO: Test the delay more rigorously
-    p()->action.meteorite->execute_on_target( t );
-    make_repeating_event( *sim, 75_ms, [ this, t ] { p()->action.meteorite->execute_on_target( t ); },
-      as<int>( p()->talents.glorious_incandescence->effectN( 1 ).base_value() ) - 1 );
-
-    p()->state.trigger_glorious_incandescence = false;
+    auto fn = [ a = p()->action.meteorite, t ] { a->execute_on_target( t ); };
+    make_event( *sim, fn );
+    if ( count > 1 )
+      make_repeating_event( *sim, 75_ms, fn, count - 1 );
   }
 };
 
@@ -2604,7 +2603,6 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 {
   action_t* orb_barrage = nullptr;
   int snapshot_charges = -1;
-  int glorious_incandescence_charges = 0;
   int arcane_soul_charges = 0;
   proc_t* arcane_soul_salvo = nullptr;
 
@@ -2615,7 +2613,6 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     base_aoe_multiplier *= p->talents.arcing_cleave->effectN( 2 ).percent();
     affected_by.overflowing_energy = true;
     triggers.clearcasting = true;
-    glorious_incandescence_charges = as<int>( p->find_spell( 451223 )->effectN( 1 ).base_value() );
     arcane_soul_charges = as<int>( p->find_spell( 453413 )->effectN( 1 ).base_value() );
 
     if ( p->talents.orb_barrage.ok() )
@@ -2679,15 +2676,20 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
       p()->trigger_splinter( target, salvo / as<int>( p()->talents.force_of_will->effectN( 1 ).base_value() ) );
     if ( salvo >= as<int>( p()->talents.polished_focus->effectN( 1 ).base_value() ) )
       p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.polished_focus->effectN( 2 ).base_value() ) );
+    if ( p()->talents.glorious_incandescence.ok() && salvo )
+    {
+      const auto& gi = p()->talents.glorious_incandescence;
+      int meteors_per_event = as<int>( gi->effectN( 6 ).base_value() );
+      int events_per_salvo = as<int>( gi->effectN( 4 ).base_value() );
+      // TODO: Seems to generate an additional meteor as long as at least 1 salvo stack is present
+      int meteors = meteors_per_event * ( 1 + salvo / events_per_salvo );
+      if ( meteors )
+        // TODO: During Arcane Soul, it is possible to overwrite a previous non-zero snapshot
+        // (by casting ABar before the previous one hits), essentially losing those Meteors forever.
+        p()->state.glorious_incandescence_snapshot = meteors;
+    }
 
     p()->trigger_mana_cascade();
-
-    if ( p()->buffs.glorious_incandescence->check() )
-    {
-      p()->buffs.glorious_incandescence->decrement();
-      p()->trigger_arcane_charge( glorious_incandescence_charges );
-      p()->state.trigger_glorious_incandescence = true;
-    }
 
     snapshot_charges = -1;
   }
@@ -2698,9 +2700,6 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     if ( s->n_targets > 1 )
       m *= 1.0 + ( s->n_targets - 1 ) * p()->talents.resonance->effectN( 1 ).percent();
-
-    if ( p()->buffs.glorious_incandescence->check() )
-      m *= 1.0 + p()->buffs.glorious_incandescence->data().effectN( 2 ).percent();
 
     return m;
   }
@@ -2718,8 +2717,12 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
   void impact( action_state_t* s ) override
   {
     arcane_mage_spell_t::impact( s );
+
     if ( result_is_hit( s->result ) )
-      trigger_glorious_incandescence( s->target );
+    {
+      trigger_meteorite( s->target, p()->state.glorious_incandescence_snapshot );
+      p()->state.glorious_incandescence_snapshot = 0;
+    }
   }
 };
 
@@ -4231,22 +4234,17 @@ struct fire_blast_t final : public fire_mage_spell_t
     }
   }
 
-  int n_targets() const override
-  {
-    if ( p()->buffs.glorious_incandescence->check() )
-      return as<int>( p()->buffs.glorious_incandescence->data().effectN( 3 ).base_value() );
-    else
-      return fire_mage_spell_t::n_targets();
-  }
-
   void execute() override
   {
-    if ( p()->buffs.glorious_incandescence->check() )
-      p()->state.trigger_glorious_incandescence = true;
-
     fire_mage_spell_t::execute();
 
-    p()->buffs.glorious_incandescence->decrement();
+    // Fire Blast is now Fire only, so a spec check is no longer necessary
+    if ( hit_any_target && p()->buffs.glorious_incandescence->check() )
+    {
+      trigger_meteorite( target, as<int>( p()->talents.glorious_incandescence->effectN( 1 ).base_value() ) );
+      p()->buffs.glorious_incandescence->decrement();
+    }
+
     p()->buffs.feel_the_burn->trigger();
   }
 
@@ -4256,10 +4254,6 @@ struct fire_blast_t final : public fire_mage_spell_t
       spread_ignite( s->target );
 
     fire_mage_spell_t::impact( s );
-
-    // As of 11.1, only triggers from Fire Blasts cast by Fire Mages.
-    if ( result_is_hit( s->result ) && s->chain_target == 0 && p()->specialization() == MAGE_FIRE )
-      trigger_glorious_incandescence( s->target );
   }
 
   double recharge_rate_multiplier( const cooldown_t& cd ) const override
@@ -4440,8 +4434,11 @@ struct meteorite_impact_t final : public mage_spell_t
   {
     mage_spell_t::execute();
 
+    // TODO: Now in Pyrocosm
+    /*
     if ( p()->specialization() == MAGE_FIRE )
       p()->cooldowns.fire_blast->adjust( -p()->talents.glorious_incandescence->effectN( 2 ).time_value(), true, false );
+    */
   }
 };
 
@@ -6023,7 +6020,7 @@ void mage_t::create_buffs()
   buffs.arcane_soul            = make_buff( this, "arcane_soul", find_spell( 451038 ) )
                                    ->set_chance( specialization() == MAGE_ARCANE && talents.memory_of_alar.ok() );
   buffs.glorious_incandescence = make_buff( this, "glorious_incandescence", find_spell( 451073 ) )
-                                   ->set_chance( talents.glorious_incandescence.ok() );
+                                   ->set_chance( specialization() == MAGE_FIRE && talents.glorious_incandescence.ok() );
   buffs.hyperthermia           = make_buff( this, "hyperthermia", find_spell( 383874 ) )
                                    ->set_default_value_from_effect( 2 )
                                    ->set_chance( specialization() == MAGE_FIRE && talents.memory_of_alar.ok() )
@@ -6780,7 +6777,10 @@ void mage_t::trigger_spellfire_sphere( specialization_e spec )
   // TODO: Double check what procs this for Arcane
   // TODO: Implement the BLP
   if ( rng().roll( talents.spellfire_spheres->effectN( 1 ).percent() ) )
+  {
     buffs.spellfire_sphere->trigger();
+    buffs.glorious_incandescence->trigger();
+  }
 }
 
 // If the target isn't specified, picks a random target.
