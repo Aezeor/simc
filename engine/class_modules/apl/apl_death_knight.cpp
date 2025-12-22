@@ -227,7 +227,6 @@ void frost( player_t* p )
   cooldowns->add_action( "frostwyrms_fury,if=!talent.apocalypse_now&active_enemies>=2&(talent.pillar_of_frost&buff.pillar_of_frost.up|raid_event.adds.exists&raid_event.adds.up&raid_event.adds.in<cooldown.pillar_of_frost.remains-raid_event.adds.in-raid_event.adds.duration)&variable.fwf_buffs" );
   cooldowns->add_action( "frostwyrms_fury,if=!talent.apocalypse_now&talent.obliteration&(talent.pillar_of_frost&buff.pillar_of_frost.up&!main_hand.2h|!buff.pillar_of_frost.up&main_hand.2h&cooldown.pillar_of_frost.remains|!talent.pillar_of_frost)&variable.fwf_buffs&(!raid_event.adds.exists|raid_event.adds.in>cooldown.frostwyrms_fury.duration+raid_event.adds.duration)" );
   cooldowns->add_action( "raise_dead,use_off_gcd=1" );
-  cooldowns->add_action( "soul_reaper,if=talent.reaper_of_souls&buff.reaper_of_souls.up&buff.killing_machine.react<2" );
   cooldowns->add_action( "empower_rune_weapon,use_off_gcd=1,if=(rune<2|!buff.killing_machine.react)&runic_power<35+(talent.icy_onslaught*buff.icy_onslaught.stack*5)&gcd.remains<0.5" );
   cooldowns->add_action( "empower_rune_weapon,use_off_gcd=1,if=cooldown.empower_rune_weapon.full_recharge_time<=6&buff.killing_machine.react<1+(1*talent.killing_streak)&gcd.remains<0.5" );
 

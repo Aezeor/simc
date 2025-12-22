@@ -9273,7 +9273,7 @@ struct empower_rune_weapon_t final : public death_knight_spell_t
         p()->buffs.empower_rune_weapon->trigger();
 
       p()->resource_gain( RESOURCE_RUNIC_POWER,
-                          data().effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+                          p()->buffs.empower_rune_weapon->data().effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
                           p()->gains.empower_rune_weapon, this );
       p()->trigger_killing_machine( true, p()->procs.km_from_erw, p()->procs.km_from_erw_wasted );
     }
