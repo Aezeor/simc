@@ -73,7 +73,7 @@ struct paladin_td_t : public actor_target_data_t
     dot_t* expurgation;
     dot_t* truths_wake;
     dot_t* dawnlight;
-  } dots;
+  } dot;
 
   struct buffs_t
   {
@@ -395,6 +395,7 @@ public:
     const spell_data_t* crusade;
     const spell_data_t* sentinel;
     const spell_data_t* refining_fire_tick;
+    const spell_data_t* expurgation;
 
     struct
     {
@@ -1314,7 +1315,7 @@ public:
     double cttm = ab::composite_target_ta_multiplier( target );
 
     paladin_td_t* td = this->td( target );
-    if ( p()->talents.burn_to_ash->ok() && td->dots.truths_wake->is_ticking() && ab::id != 403695 )
+    if ( p()->talents.burn_to_ash->ok() && td->dot.truths_wake->is_ticking() && ab::id != 403695 )
       cttm *= 1.0 + p()->talents.burn_to_ash->effectN( 2 ).percent();
 
     return cttm;

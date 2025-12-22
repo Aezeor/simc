@@ -231,7 +231,7 @@ struct execution_sentence_t : public paladin_melee_attack_t
 struct expurgation_t : public paladin_spell_t
 {
   expurgation_t( paladin_t* p ):
-    paladin_spell_t( "expurgation", p, p->find_spell( 383346 ) )
+    paladin_spell_t( "expurgation", p, p->spells.expurgation )
   {
     // Jurisdiction doesn't increase Expurgation's damage in-game
     // It's increasing Spell Direct Amount instead of Spell Periodic Amount
@@ -1121,6 +1121,7 @@ void paladin_t::init_spells_retribution()
   spells.crusade = find_spell( 231895 );
   spells.highlords_judgment_hidden = find_spell( 449198 );
   spells.light_within   = find_spell( 1261160 );
+  spells.expurgation               = find_spell( 383346 );
 }
 
 // Action Priority List Generation

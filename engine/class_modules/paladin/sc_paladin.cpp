@@ -350,7 +350,7 @@ golden_path_t::golden_path_t( paladin_t* p ) : paladin_heal_t( "golden_path", p,
 
     paladin_td_t* td = p()->get_target_data( target );
 
-    if ( p()->talents.burn_to_ash->ok() && td->dots.truths_wake->is_ticking() )
+    if ( p()->talents.burn_to_ash->ok() && td->dot.truths_wake->is_ticking() )
     {
       m *= 1.0 + p()->talents.burn_to_ash->effectN( 2 ).percent();
       if ( p()->bugs )
@@ -2119,7 +2119,7 @@ struct empyrean_hammer_t : public paladin_spell_t
     double ctm = paladin_spell_t::composite_target_multiplier( t );
 
     paladin_td_t* td = this->td( t );
-    if ( p()->talents.burn_to_ash->ok() && td->dots.truths_wake->is_ticking() )
+    if ( p()->talents.burn_to_ash->ok() && td->dot.truths_wake->is_ticking() )
       ctm *= 1.0 + p()->talents.burn_to_ash->effectN( 2 ).percent();
 
     return ctm;
@@ -2165,7 +2165,7 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
     double ctm = paladin_melee_attack_t::composite_target_multiplier( target );
 
     paladin_td_t* td = this->td( target );
-    if ( p()->talents.burn_to_ash->ok() && td->dots.truths_wake->is_ticking() )
+    if ( p()->talents.burn_to_ash->ok() && td->dot.truths_wake->is_ticking() )
     {
       ctm *= 1.0 + p()->talents.burn_to_ash->effectN( 2 ).percent();
     }
@@ -3154,9 +3154,9 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
     }
   }
 
-  dots.expurgation = target->get_dot( "expurgation", paladin );
-  dots.truths_wake = target->get_dot( "truths_wake", paladin );
-  dots.dawnlight = target->get_dot( "dawnlight", paladin );
+  dot.expurgation = target->get_dot( "expurgation", paladin );
+  dot.truths_wake = target->get_dot( "truths_wake", paladin );
+  dot.dawnlight = target->get_dot( "dawnlight", paladin );
 }
 
 bool paladin_td_t::standing_in_consecration()
@@ -3812,6 +3812,8 @@ void paladin_t::apply_target_action_effects(action_t* a)
 
   action->parse_target_effects( d_fn( &paladin_td_t::buffs_t::judgment, true ), spells.judgment_debuff );
   action->parse_target_effects( d_fn( &paladin_td_t::buffs_t::sanctify ), spells.sanctify );
+
+  action->parse_target_effects( d_fn( &paladin_td_t::dots_t::expurgation ), spells.expurgation );
 }
 
 // paladin_t::init_actions ==================================================
@@ -4407,7 +4409,7 @@ double paladin_t::composite_player_target_multiplier( player_t* target, school_e
     if ( talents.holy_flames->ok() )
     {
       paladin_td_t* td = get_target_data( target );
-      if ( td->dots.expurgation->is_ticking() )
+      if ( td->dot.expurgation->is_ticking() )
       {
         cptm *= 1.0 + active.expurgation->data().effectN( 2 ).percent();
       }
