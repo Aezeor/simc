@@ -1131,8 +1131,8 @@ struct arcane_phoenix_spell_t : public mage_pet_spell_t
   {
     double c = mage_pet_spell_t::composite_crit_chance();
 
-    if ( is_mage_spell )
-      c += o()->buffs.combustion->check_value();
+    if ( is_mage_spell && o()->buffs.combustion->check() )
+      c += o()->buffs.combustion->data().effectN( 1 ).percent();
 
     return c;
   }
@@ -1172,7 +1172,6 @@ struct arcane_phoenix_pet_t final : public mage_pet_t
     exceptional_actions(),
     cast_period( owner->find_spell( 448659 )->effectN( 2 ).period() ),
     spells_used(),
-    exceptional_spells_used(),
     exceptional_spells_remaining()
   {
     can_dismiss = true;
@@ -1190,9 +1189,6 @@ struct arcane_phoenix_pet_t final : public mage_pet_t
       if ( spells_used % 2 == 1 && exceptional_spells_remaining > 0 )
       {
         action = rng().range( exceptional_actions );
-        // TODO: What happens with Ignite the Future and without Codex of the Sunstriders?
-        o()->buffs.spellfire_sphere->decrement();
-        exceptional_spells_used++;
         exceptional_spells_remaining--;
       }
       else
@@ -1220,8 +1216,13 @@ struct arcane_phoenix_pet_t final : public mage_pet_t
     mage_pet_t::arise();
 
     spells_used = 0;
-    exceptional_spells_used = 0;
-    exceptional_spells_remaining = o()->talents.codex_of_the_sunstriders.ok() ? o()->buffs.spellfire_sphere->check() : 0;
+    exceptional_spells_remaining = 0;
+
+    if ( o()->talents.codex_of_the_sunstriders.ok() )
+    {
+      exceptional_spells_remaining = o()->buffs.spellfire_sphere->check();
+      o()->buffs.spellfire_sphere->expire();
+    }
 
     assert( !cast_event );
     schedule_cast();
@@ -1408,7 +1409,7 @@ struct combustion_t final : public buff_t
     multiplier() // TODO: slow burn
   {
     set_cooldown( 0_ms );
-    set_default_value_from_effect( 1 );
+    set_default_value_from_effect( 3 );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
 
     if ( p->talents.fires_ire.ok() )
@@ -1496,6 +1497,7 @@ struct mage_spell_t : public spell_t
   {
     // Temporary damage increase
     bool arcane_surge = true;
+    bool combustion = true;
     bool freeze_and_shatter_1 = false;
     bool freeze_and_shatter_2 = false;
     bool hand_of_frost = true;
@@ -1504,7 +1506,6 @@ struct mage_spell_t : public spell_t
     bool spellfire_sphere = true;
 
     // Misc
-    bool combustion = true;
     bool fires_ire = true;
     bool overflowing_energy = false;
     bool wildfire = true;
@@ -1624,6 +1625,9 @@ public:
     if ( affected_by.arcane_surge )
       m *= 1.0 + p()->buffs.arcane_surge->check_value();
 
+    if ( affected_by.combustion )
+      m *= 1.0 + p()->buffs.combustion->check_value();
+
     if ( affected_by.hand_of_frost )
       m *= 1.0 + p()->buffs.hand_of_frost->check_stack_value();
 
@@ -1666,8 +1670,8 @@ public:
   {
     double c = spell_t::composite_crit_chance();
 
-    if ( affected_by.combustion )
-      c += p()->buffs.combustion->check_value();
+    if ( affected_by.combustion && p()->buffs.combustion->check() )
+      c += p()->buffs.combustion->data().effectN( 1 ).percent();
 
     if ( affected_by.overflowing_energy )
       c += p()->buffs.overflowing_energy->check_stack_value();
@@ -3132,16 +3136,23 @@ struct arcane_surge_t final : public arcane_mage_spell_t
   {
     p()->trigger_splinter( target, as<int>( p()->talents.splinterstorm->effectN( 1 ).base_value() ) );
 
+    int spheres = p()->buffs.spellfire_sphere->check();
+    auto buff = p()->buffs.arcane_surge;
     // Clear any existing surge buffs to trigger the DF2 4pc buff.
-    p()->buffs.arcane_surge->expire();
-    timespan_t bonus_duration = p()->buffs.spellfire_sphere->check() * p()->buffs.spellfire_sphere->data().effectN( 3 ).time_value();
-    timespan_t arcane_surge_duration = p()->buffs.arcane_surge->buff_duration() + bonus_duration;
-    p()->buffs.arcane_surge->trigger( arcane_surge_duration );
+    buff->expire();
+
+    timespan_t duration = buff->buff_duration();
+    duration += spheres * p()->buffs.spellfire_sphere->data().effectN( 3 ).time_value();
+
+    double value = buff->default_value;
+    value += spheres * p()->talents.codex_of_the_sunstriders->effectN( 1 ).percent();
+
+    buff->trigger( -1, value, -1.0, duration );
 
     p()->trigger_clearcasting();
 
     if ( p()->pets.arcane_phoenix )
-      p()->pets.arcane_phoenix->summon( arcane_surge_duration ); // TODO: The extra random pet duration can sometimes result in an extra cast.
+      p()->pets.arcane_phoenix->summon( duration ); // TODO: The extra random pet duration can sometimes result in an extra cast.
 
     arcane_mage_spell_t::execute();
   }
@@ -3261,14 +3272,20 @@ struct combustion_t final : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
 
-    timespan_t bonus_duration =
-      p()->buffs.spellfire_sphere->check() * p()->buffs.spellfire_sphere->data().effectN( 3 ).time_value();
-    timespan_t combustion_duration = p()->buffs.combustion->buff_duration() + bonus_duration;
-    p()->buffs.combustion->trigger( combustion_duration );
+    int spheres = p()->buffs.spellfire_sphere->check();
+    auto buff = p()->buffs.combustion;
+
+    timespan_t duration = buff->buff_duration();
+    duration += spheres * p()->buffs.spellfire_sphere->data().effectN( 3 ).time_value();
+
+    double value = buff->default_value;
+    value += spheres * p()->talents.codex_of_the_sunstriders->effectN( 2 ).percent();
+
+    buff->trigger( -1, value, -1.0, duration );
     p()->buffs.wildfire->trigger();
     p()->cooldowns.fire_blast->reset( false, as<int>( p()->talents.spontaneous_combustion->effectN( 1 ).base_value() ) );
     if ( p()->pets.arcane_phoenix )
-      p()->pets.arcane_phoenix->summon( combustion_duration ); // TODO: The extra random pet duration can sometimes result in an extra cast.
+      p()->pets.arcane_phoenix->summon( duration ); // TODO: The extra random pet duration can sometimes result in an extra cast.
   }
 };
 
