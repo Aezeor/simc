@@ -1835,7 +1835,7 @@ public:
     if ( triggers.frostfire_empowerment && rng().roll( p()->talents.frostfire_empowerment->effectN( 3 ).percent() ) )
       make_event( *sim, [ this ] { p()->buffs.frostfire_empowerment->trigger(); } );
 
-    if ( !background && !harmful )
+    if ( !background && harmful )
       p()->trigger_spellfire_sphere( MAGE_ARCANE );
   }
 
