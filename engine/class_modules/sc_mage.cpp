@@ -3134,8 +3134,7 @@ struct arcane_surge_t final : public arcane_mage_spell_t
 
     // Clear any existing surge buffs to trigger the DF2 4pc buff.
     p()->buffs.arcane_surge->expire();
-    // TODO: fixme
-    timespan_t bonus_duration = 0_ms; // p()->buffs.spellfire_sphere->check() * p()->buffs.spellfire_sphere->data().effectN( 5 ).time_value();
+    timespan_t bonus_duration = p()->buffs.spellfire_sphere->check() * p()->buffs.spellfire_sphere->data().effectN( 3 ).time_value();
     timespan_t arcane_surge_duration = p()->buffs.arcane_surge->buff_duration() + bonus_duration;
     p()->buffs.arcane_surge->trigger( arcane_surge_duration );
 
@@ -3263,7 +3262,7 @@ struct combustion_t final : public fire_mage_spell_t
     fire_mage_spell_t::execute();
 
     timespan_t bonus_duration =
-      p()->buffs.spellfire_sphere->check() * p()->buffs.spellfire_sphere->data().effectN( 5 ).time_value();
+      p()->buffs.spellfire_sphere->check() * p()->buffs.spellfire_sphere->data().effectN( 3 ).time_value();
     timespan_t combustion_duration = p()->buffs.combustion->buff_duration() + bonus_duration;
     p()->buffs.combustion->trigger( combustion_duration );
     p()->buffs.wildfire->trigger();
@@ -6001,7 +6000,7 @@ void mage_t::create_buffs()
   buffs.hyperthermia_damage    = make_buff( this, "hyperthermia_damage", find_spell( 1242220 ) )
                                    ->set_default_value_from_effect( 1 );
   buffs.mana_cascade           = make_buff( this, "mana_cascade", find_spell( specialization() == MAGE_FIRE ? 449314 : 449322 ) )
-                                   ->set_default_value_from_effect( 2,  0.001 )
+                                   ->set_default_value_from_effect( 2, 0.001 )
                                    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                                    ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
                                      {
@@ -6650,6 +6649,8 @@ void mage_t::trigger_mana_cascade()
   if ( !talents.mana_cascade.ok() )
     return;
 
+  // This is still tied to the pet despite the other effects (Ashes of Inspiration,
+  // Memory of Al'ar) being moved to Arcane Surge/Combustion.
   int stacks = pets.arcane_phoenix && !pets.arcane_phoenix->is_sleeping() && talents.memory_of_alar.ok() ? 2 : 1;
   auto trigger_buff = [ this, s = std::min( buffs.mana_cascade->max_stack() - buffs.mana_cascade->check(), stacks ) ]
   {
