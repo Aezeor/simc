@@ -2606,6 +2606,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
   int snapshot_charges = -1;
   int glorious_incandescence_charges = 0;
   int arcane_soul_charges = 0;
+  proc_t* arcane_soul_salvo = nullptr;
 
   arcane_barrage_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     arcane_mage_spell_t( n, p, p->find_specialization_spell( "Arcane Barrage" ) )
@@ -2622,6 +2623,12 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
       orb_barrage = get_action<arcane_orb_t>( "orb_barrage_arcane_orb", p, "", ao_type::ORB_BARRAGE );
       add_child( orb_barrage );
     }
+  }
+
+  void init_finished() override
+  {
+    arcane_mage_spell_t::init_finished();
+    arcane_soul_salvo = p()->get_proc( "Arcane Salvo applied (Arcane Soul)" );
   }
 
   int n_targets() const override
@@ -2655,18 +2662,23 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * mana_pct, p()->gains.arcane_barrage, this );
 
     p()->buffs.arcane_charge->expire();
-    int salvo = p()->buffs.arcane_salvo->check();
-    if ( p()->talents.force_of_will.ok() )
-      p()->trigger_splinter( target, salvo / as<int>( p()->talents.force_of_will->effectN( 1 ).base_value() ) );
-    p()->buffs.arcane_salvo->expire();
-    if ( salvo >= as<int>( p()->talents.polished_focus->effectN( 1 ).base_value() ) )
-      p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.polished_focus->effectN( 2 ).base_value() ) );
 
+    int salvo = p()->buffs.arcane_salvo->check();
     if ( p()->buffs.arcane_soul->check() )
     {
       p()->trigger_clearcasting();
       p()->trigger_arcane_charge( arcane_soul_charges );
+      p()->trigger_arcane_salvo( arcane_soul_salvo, as<int>( p()->buffs.arcane_soul->data().effectN( 2 ).base_value() ) );
     }
+    else
+    {
+      p()->buffs.arcane_salvo->expire();
+    }
+
+    if ( p()->talents.force_of_will.ok() )
+      p()->trigger_splinter( target, salvo / as<int>( p()->talents.force_of_will->effectN( 1 ).base_value() ) );
+    if ( salvo >= as<int>( p()->talents.polished_focus->effectN( 1 ).base_value() ) )
+      p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.polished_focus->effectN( 2 ).base_value() ) );
 
     p()->trigger_mana_cascade();
 
