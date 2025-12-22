@@ -2724,6 +2724,19 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
       p()->state.glorious_incandescence_snapshot = 0;
     }
   }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = arcane_mage_spell_t::composite_target_multiplier( target );
+
+    if ( auto td = find_td( target ) )
+    {
+      if ( td->debuffs.touch_of_the_magi->check() )
+        m *= 1.0 + p()->talents.sunfury_execution->effectN( 2 ).percent();
+    }
+
+    return m;
+  }
 };
 
 struct arcane_blast_t final : public arcane_mage_spell_t
