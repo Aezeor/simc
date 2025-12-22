@@ -2991,6 +2991,9 @@ struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_sp
 
     if ( p()->talents.charged_missiles.ok() )
       p()->buffs.arcane_charge->decrement();
+
+    if ( rng().roll( p()->talents.pyrocosm->effectN( 1 ).percent() ) )
+      trigger_meteorite( target );
   }
 
   double action_multiplier() const override
@@ -3559,6 +3562,9 @@ struct fireball_t final : public fire_mage_spell_t
         p()->state.trigger_ff_empowerment = false;
         p()->action.frostfire_empowerment->execute_on_target( s->target, p()->talents.frostfire_empowerment->effectN( 2 ).percent() * s->result_total );
       }
+
+      if ( rng().roll( p()->talents.pyrocosm->effectN( 2 ).percent() ) )
+        trigger_meteorite( s->target );
     }
   }
 
@@ -4434,11 +4440,15 @@ struct meteorite_impact_t final : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    // TODO: Now in Pyrocosm
-    /*
+    if ( !p()->talents.pyrocosm.ok() )
+      return;
+
     if ( p()->specialization() == MAGE_FIRE )
-      p()->cooldowns.fire_blast->adjust( -p()->talents.glorious_incandescence->effectN( 2 ).time_value(), true, false );
-    */
+      // TODO: Double check apply_recharge_rate
+      p()->cooldowns.fire_blast->adjust( -p()->talents.pyrocosm->effectN( 4 ).time_value(), true, false );
+    else
+      // TODO: Interactions with CC proc chance increases?
+      p()->trigger_clearcasting( p()->talents.pyrocosm->effectN( 5 ).percent() );
   }
 };
 
