@@ -845,6 +845,9 @@ public:
     propagate_const<buff_t*> icy_onslaught;
     propagate_const<buff_t*> chosen_of_frostbrood_haste;
     propagate_const<buff_t*> chosen_of_frostbrood_fwf;
+    // Tier Sets
+    propagate_const<buff_t*> frost_mid1_4pc_buff;
+    propagate_const<buff_t*> empowered_strikes;
 
     // Unholy
     propagate_const<buff_t*> dark_transformation;
@@ -9275,6 +9278,15 @@ struct empower_rune_weapon_t final : public death_knight_spell_t
       p()->trigger_killing_machine( true, p()->procs.km_from_erw, p()->procs.km_from_erw_wasted );
     }
 
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, MID1, B2 ) )
+    {
+      p()->buffs.empowered_strikes->trigger();
+    }
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, MID1, B4 ) ) 
+    {
+      p()->buffs.frost_mid1_4pc_buff->consume( this );
+    }
+
     projectile->execute_on_target( execute_state->target );
   }
 
@@ -9624,6 +9636,11 @@ struct frostscythe_t : public frostscythe_base_t
       p()->buffs.exterminate->decrement();
       make_event<delayed_execute_event_t>( *sim, p(), p()->background_actions.exterminate, execute_state->target,
                                            500_ms );
+    }
+
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, MID1, B2 ) )
+    {
+      p()->buffs.empowered_strikes->consume( this, 1 );
     }
   }
 
@@ -10920,6 +10937,11 @@ struct obliterate_t final : public death_knight_melee_attack_t
     {
       p()->buffs.empower_rune_weapon->expire();
     }
+
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, MID1, B2 ) )
+    {
+      p()->buffs.empowered_strikes->consume( this, 1 );
+    }
   }
 
   // Allow on-cast procs
@@ -11059,6 +11081,12 @@ struct pillar_of_frost_t final : public death_knight_spell_t
     {
       timespan_t dur = timespan_t::from_seconds( p()->talent.rider.ride_or_die->effectN( 1 ).base_value() );
       p()->summon_rider( dur, rider_of_the_apocalypse_e::TROLLBANE );
+    }
+
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, MID1, B4 ) )
+    {
+      p()->buffs.frost_mid1_4pc_buff->trigger();
+      p()->cooldown.empower_rune_weapon->adjust_max_charges( 1 );
     }
   }
 };
@@ -15188,6 +15216,17 @@ void death_knight_t::create_buffs()
                                                   "chosen_of_frostbrood_fwf", spell.chosen_of_frostbrood_fwf_buff )
                                        ->set_name_reporting( "FWF" );
 
+  buffs.empowered_strikes =
+      make_fallback( sets->has_set_bonus( DEATH_KNIGHT_FROST, MID1, B2 ), this, "empowered_strikes",
+                     sets->set( DEATH_KNIGHT_FROST, MID1, B2 )->effectN( 1 ).trigger() );
+
+  buffs.frost_mid1_4pc_buff = make_fallback( sets->has_set_bonus( DEATH_KNIGHT_FROST, MID1, B4 ), this, "mid1_4pc_buff",
+                                             sets->set( DEATH_KNIGHT_FROST, MID1, B4 )->effectN( 2 ).trigger() )
+                                  ->set_expire_callback( [ this ]( buff_t* buff, int stacks, timespan_t duration ) {
+                                    cooldown.empower_rune_weapon->adjust_max_charges( -1 );
+                                  } );
+
+
   // Unholy
   buffs.dark_transformation = make_fallback<dark_transformation_buff_t>(
       talent.unholy.dark_transformation.ok(), this, "dark_transformation", spell.dark_transformation_player_buff );
@@ -15899,6 +15938,8 @@ void death_knight_t::apply_action_effects( action_t* a, bool pet )
       action->parse_effects( buffs.empower_rune_weapon, talent.frost.obliteration->effectN( 1 ).trigger() );
       if ( talent.frost.smothering_offense.ok() )
         action->parse_effects( buffs.icy_talons );
+      action->parse_effects( buffs.empowered_strikes );
+      action->parse_effects( buffs.frost_mid1_4pc_buff );
       break;
     case DEATH_KNIGHT_UNHOLY:
       action->parse_effects( buffs.sudden_doom );
