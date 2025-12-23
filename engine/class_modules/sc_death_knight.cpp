@@ -4956,8 +4956,11 @@ struct whitemane_pet_t final : public horseman_pet_t
   void create_actions() override
   {
     death_knight_pet_t::create_actions();
-    epidemic   = new epidemic_whitemane_t( "epidemic", this );
-    death_coil = new death_coil_whitemane_background_t( "death_coil_let_terror_reign", this );
+    if ( dk()->talent.rider.let_terror_reign.ok() && dk()->specialization() == DEATH_KNIGHT_UNHOLY )
+    {
+      epidemic   = new epidemic_whitemane_t( "epidemic", this );
+      death_coil = new death_coil_whitemane_background_t( "death_coil_let_terror_reign", this );
+    }
   }
 
 public:
@@ -5077,8 +5080,11 @@ struct trollbane_pet_t final : public horseman_pet_t
   void create_actions() override
   {
     death_knight_pet_t::create_actions();
-    obliterate  = new obliterate_background_trollbane_t( "obliterate_let_terror_reign", this );
-    frostscythe = new frostscythe_trollbane_t( "frostscythe", this );
+    if ( dk()->talent.rider.let_terror_reign.ok() && dk()->specialization() == DEATH_KNIGHT_FROST )
+    {
+      obliterate  = new obliterate_background_trollbane_t( "obliterate_let_terror_reign", this );
+      frostscythe = new frostscythe_trollbane_t( "frostscythe", this );
+    }
   }
 
 public:
