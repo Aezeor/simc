@@ -923,11 +923,6 @@ struct crusading_strike_t : public paladin_melee_attack_t
     background = true;
     trigger_gcd = 0_ms;
 
-    if ( p->talents.blades_of_light->ok() )
-    {
-      affected_by.highlords_judgment = true;
-    }
-
     if ( p->talents.blessed_champion->ok() )
     {
       aoe = as<int>( 1 + p->talents.blessed_champion->effectN( 4 ).base_value() );
@@ -1100,11 +1095,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
       has_crusader_2( p->find_specialization_spell( 342348 )->ok() )
   {
     parse_options( options_str );
-
-    if ( p->talents.blades_of_light->ok() )
-    {
-      affected_by.highlords_judgment = true;
-    }
 
     if ( p->talents.blessed_champion->ok() )
     {

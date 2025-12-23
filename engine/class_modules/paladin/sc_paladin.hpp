@@ -1105,7 +1105,7 @@ public:
   {
     bool avenging_wrath, judgment, divine_purpose, divine_purpose_cost;  // Shared
     bool crusade, highlords_judgment, highlords_judgment_hidden,
-      blades_of_light, rise_from_ash; // Ret
+      rise_from_ash; // Ret
     bool avenging_crusader;                                                                // Holy
     bool sentinel;  // Prot
     bool solar_wrath; // Herald of the Sun
@@ -1159,15 +1159,6 @@ public:
     this->affected_by.sentinel            = this->data().affected_by( p->spells.sentinel->effectN( 1 ) );
     this->affected_by.divine_purpose_cost = this->data().affected_by( p->spells.divine_purpose_buff->effectN( 1 ) );
     this->affected_by.divine_purpose      = this->data().affected_by( p->spells.divine_purpose_buff->effectN( 2 ) );
-
-    if ( p->talents.blades_of_light->ok() && this->data().affected_by( p->talents.blades_of_light->effectN( 1 ) ) )
-    {
-      this->affected_by.blades_of_light = true;
-    }
-    else
-    {
-      this->affected_by.blades_of_light = false;
-    }
 
     if ( this->data().ok() )
     {
