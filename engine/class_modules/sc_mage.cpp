@@ -1235,15 +1235,16 @@ struct arcane_phoenix_pet_t final : public mage_pet_t
 
     event_t::cancel( cast_event );
 
+    // TODO: Move all of this to Arcane Surge/Combustion expire; these effects happen even when
+    // not talented into Arcane Phoenix
+    o()->buffs.lesser_time_warp->trigger();
+
     if ( !o()->talents.memory_of_alar.ok() )
       return;
 
-    // TODO: Move this to Arcane Surge/Combustion expire; these effects happen even when
-    // not talented into Arcane Phoenix
     auto spec = o()->specialization();
     auto buff = spec == MAGE_FIRE ? o()->buffs.hyperthermia : o()->buffs.arcane_soul;
     buff->trigger( o()->talents.memory_of_alar->effectN( spec == MAGE_FIRE ? 2 : 1 ).time_value() );
-    o()->buffs.lesser_time_warp->trigger();
   };
 
   void create_actions() override;
