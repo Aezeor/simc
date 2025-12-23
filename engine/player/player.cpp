@@ -1570,6 +1570,7 @@ void player_t::init_base_stats()
     }
 
     base.attack_speed_multiplier /= get_passive_player_value( base.attack_speed_multiplier, "attack_speed" );
+    base.attack_speed_multiplier *= get_passive_player_value( base.attack_speed_multiplier, "attack_speed_modifier" );
     base.attack_power_multiplier = get_passive_player_value( base.attack_power_multiplier, "attack_power_multiplier" );
 
     base.absorb_multiplier       = get_passive_player_value( base.absorb_multiplier, "absorb_multiplier" );
@@ -15152,7 +15153,7 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { A_MOD_MELEE_AUTO_ATTACK_SPEED,            "attack_speed"                     },  // 319
   { A_APPLY_HASTED_GCD_LABEL,                 "hasted_gcd"                       },  // 320
   { A_MODIFY_CATEGORY_COOLDOWN,               "category_cooldown"                },  // 341
-  { A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED, "attack_speed"                     },  // 342
+  { A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED, "attack_speed_modifier"            },  // 342
   { A_MOD_AUTO_ATTACK_PCT,                    "auto_attack_multiplier"           },  // 344
   { A_OVERRIDE_SP_PER_AP,                     "spell_power_per_attack_power"     },  // 366
   { A_MOD_MANA_REGEN_PCT,                     "resource_regen"                   },  // 379
