@@ -925,7 +925,6 @@ struct crusading_strike_t : public paladin_melee_attack_t
 
     if ( p->talents.blessed_champion->ok() )
     {
-      aoe = as<int>( 1 + p->talents.blessed_champion->effectN( 4 ).base_value() );
       base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
     }
 
@@ -991,7 +990,6 @@ struct melee_t : public paladin_melee_attack_t
 
       if ( p->talents.blessed_champion->ok() )
       {
-        aoe = as<int>( 1 + p->talents.blessed_champion->effectN( 4 ).base_value() );
         base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
       }
     }
@@ -1096,7 +1094,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
 
     if ( p->talents.blessed_champion->ok() )
     {
-      aoe = as<int>( 1 + p->talents.blessed_champion->effectN( 4 ).base_value() );
       base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
     }
 
@@ -1490,7 +1487,6 @@ struct judgment_ret_t : public judgment_t
 
     if ( p->talents.blessed_champion->ok() )
     {
-      aoe = as<int>( 1 + p->talents.blessed_champion->effectN( 4 ).base_value() );
       base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
     }
   }
@@ -1543,6 +1539,12 @@ hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view name, util
   may_block = may_parry = may_dodge = false;
   // force effect 1 to be used for direct ratios
   parse_effect_data( data().effectN( 1 ) );
+
+  if ( p->talents.blessed_champion->ok() )
+  {
+    aoe = as<int>( 1 + p->talents.blessed_champion->effectN( 4 ).base_value() );
+    base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
+  }
 
   if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
   {
@@ -4157,6 +4159,9 @@ void paladin_t::init_spells()
   passives.boundless_conviction = find_spell( 115675 );
   // Manually add judgment spells to swift justice
   register_passive_affect_list( talents.swift_justice, affect_list_t( 2 ).add_spell( 20271, 275773, 275779 ) );
+  // Add Judgment AoE. Damage still handled manually. Hammer of Wrath also handled manually, since that AoE is 1, instead of 0
+  register_passive_affect_list( talents.blessed_champion,
+                                affect_list_t( 1 ).add_spell( 20271, 275773 ) );
 
   parse_all_class_passives();
   parse_all_passive_talents();

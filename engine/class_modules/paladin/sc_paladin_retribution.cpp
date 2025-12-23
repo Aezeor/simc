@@ -842,7 +842,6 @@ struct base_templar_strike_t : public paladin_melee_attack_t
 
     if ( p->talents.blessed_champion->ok() )
     {
-      aoe = as<int>( 1 + p->talents.blessed_champion->effectN( 4 ).base_value() );
       base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
     }
 
