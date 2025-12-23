@@ -988,8 +988,6 @@ struct melee_t : public paladin_melee_attack_t
       add_child( crusading_strike );
       execute_action = crusading_strike;
       weapon_multiplier = 0.0;
-      base_execute_time =
-          p->main_hand_weapon.swing_time * ( 1.0 - p->talents.crusading_strikes->effectN( 2 ).percent() );
 
       if ( p->talents.blessed_champion->ok() )
       {
@@ -4182,9 +4180,6 @@ void paladin_t::init_spells()
   passives.boundless_conviction = find_spell( 115675 );
   // Manually add judgment spells to swift justice
   register_passive_affect_list( talents.swift_justice, affect_list_t( 2 ).add_spell( 20271, 275773, 275779 ) );
-
-  // Crusading Strike Melee Attack speed reduce is handled incorrectly, manual handling in melee_t
-  deregister_passive_effect( talents.crusading_strikes->effectN( 2 ) );
 
   parse_all_class_passives();
   parse_all_passive_talents();
