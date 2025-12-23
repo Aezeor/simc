@@ -1428,7 +1428,7 @@ void judgment_base_t::impact(action_state_t* s)
 }
 
 judgment_t::judgment_t( paladin_t* p, util::string_view name, util::string_view options_str, double mul, bool bg )
-  : judgment_base_t( p, name, options_str, p->find_class_spell( "Judgment" ) ), hammer_of_wrath( nullptr )
+  : judgment_base_t( p, name, options_str, p->find_class_spell( "Judgment" ) )
 {
   // no weapon multiplier
   weapon_multiplier = 0.0;
@@ -1444,18 +1444,6 @@ judgment_t::judgment_t( paladin_t* p, util::string_view name, util::string_view 
     p->cooldowns.judgment = cooldown;
   else
     cooldown = p->cooldowns.judgment;
-
-  if ( p->talents.hammer_of_wrath->ok() )
-  {
-    std::string how_name = "hammer_of_wrath";
-    if (name != "judgment")
-    {
-      how_name = how_name + "_" + std::string( name );
-    }
-
-    hammer_of_wrath = new hammer_of_wrath_t( p, how_name, options_str );
-    add_child( hammer_of_wrath );
-  }
   background = bg;
 }
 
@@ -1466,12 +1454,6 @@ proc_types judgment_t::proc_type() const
 
 void judgment_t::execute()
 {
-  if ( p()->buffs.hammer_of_wrath->up() && ( background || hammer_of_wrath->ready() ) )
-  {
-    hammer_of_wrath->execute_on_target( target );
-    stats->add_execute( 0_ms, target );
-    return;
-  }
   judgment_base_t::execute();
 
   if ( p()->talents.templar.sanctification->ok() )
@@ -1486,12 +1468,7 @@ void judgment_t::execute()
 }
 bool judgment_t::action_ready()
 {
-  bool tr = judgment_base_t::action_ready();
-  if ( p()->buffs.hammer_of_wrath->up() )
-  {
-    tr &= hammer_of_wrath->action_ready();
-  }
-  return tr;
+  return judgment_base_t::action_ready() && !p()->buffs.hammer_of_wrath->up();
 }
 
 
@@ -1623,6 +1600,11 @@ double hammer_of_wrath_t::composite_target_multiplier( player_t* target ) const
   }
 
   return ctm;
+}
+
+bool hammer_of_wrath_t::action_ready()
+{
+  return judgment_base_t::action_ready() && p()->buffs.hammer_of_wrath->up();
 }
 
 void paladin_t::trigger_greater_judgment( paladin_td_t* targetdata, bool remove_stack )
@@ -3298,12 +3280,7 @@ action_t* paladin_t::create_action( util::string_view name, util::string_view op
   if ( name == "lay_on_hands" )
     return new lay_on_hands_t( this, options_str );
   if ( name == "hammer_of_wrath" )
-  {
-    if ( specialization() == PALADIN_PROTECTION )
-      return new judgment_t( this, "judgment", options_str );
-    else if ( specialization() == PALADIN_RETRIBUTION )
-      return new judgment_ret_t( this, "judgment", options_str );
-  }
+      return new hammer_of_wrath_t( this, "hammer_of_wrath", options_str );
   if ( name == "judgment" )
   {
     if ( specialization() == PALADIN_PROTECTION )

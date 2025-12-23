@@ -1739,11 +1739,11 @@ public:
   hammer_of_wrath_t( paladin_t* p, util::string_view name, util::string_view options_str, double mul = 1.0, bool bg = false );
   void impact( action_state_t* s ) override;
   double composite_target_multiplier( player_t* target ) const override;
+  bool action_ready() override;
 };
 
 struct judgment_t : public judgment_base_t
 {
-  hammer_of_wrath_t* hammer_of_wrath;
   judgment_t( paladin_t* p, util::string_view name, util::string_view options_str, double mul = 1.0, bool bg = false );
 
   proc_types proc_type() const override;
