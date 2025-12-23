@@ -11575,12 +11575,12 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 
   void execute() override
   {
+    if ( p()->talent.rider.whitemanes_famine.ok() && p()->sim->target_non_sleeping_list.size() > 1 )
+      p()->sort_undeath_targets( target_list() );
+
     death_knight_melee_attack_t::execute();
     if ( was_replaced )
       return;
-
-    if ( p()->talent.rider.whitemanes_famine.ok() && p()->sim->target_non_sleeping_list.size() > 1 )
-      p()->sort_undeath_targets( target_list() );
 
     bool summoned_ghoul = false;
 
