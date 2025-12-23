@@ -15453,6 +15453,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         pct_val = modifying_eff.percent();
         break;
       case A_MOD_TARGET_ARMOR_PCT:  // 280
+      case A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED:  // 342
         pct_val = -modifying_eff.percent();  // reversed value
         break;
 
@@ -15470,7 +15471,6 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       case A_MOD_ATTACK_POWER_PCT:  // 166
       case A_HASTE_ALL:  // 193
       case A_MOD_MELEE_AUTO_ATTACK_SPEED:  // 319
-      case A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED:  // 342
       case A_MOD_AUTO_ATTACK_PCT:  // 344
       case A_MOD_RATING_MULTIPLIER:  // 405
       case A_MOD_ABSORB_DONE_PERCENT:  // 421
