@@ -83,7 +83,6 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* sanctify;
     buff_t* crusaders_resolve;
     buff_t* empyrean_hammer;
-    buff_t* holy_flames;
   } debuff;
 
   struct
@@ -872,10 +871,6 @@ public:
   virtual const paladin_td_t* find_target_data( const player_t* target ) const override;
   virtual paladin_td_t* get_target_data( player_t* target ) const override;
 
-  bool may_benefit_from_skyfury() const override
-  {
-    return !( talents.crusading_strikes->ok() );
-  }
   dbc_proc_callback_t* create_sacred_weapon_callback( paladin_t* source, player_t* target );
   dbc_proc_callback_t* create_lesser_weapon_callback( paladin_t* source, player_t* target );
 
