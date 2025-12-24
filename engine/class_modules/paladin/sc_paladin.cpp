@@ -1516,7 +1516,7 @@ struct judgment_ret_t : public judgment_t
 };
 struct divine_toll_judgment_ret_t :judgment_ret_t
 {
-  divine_toll_judgment_ret_t( paladin_t* p ) : judgment_ret_t( p, "divine_toll_judgment", "", p->spells.judgment_ret_dt )
+  divine_toll_judgment_ret_t( paladin_t* p ) : judgment_ret_t( p, "judgment_divine_toll", "", p->spells.judgment_ret_dt )
   {
     background = true;
     aoe        = 1; // Divine Toll's Judgments don't cleave further
@@ -1524,7 +1524,7 @@ struct divine_toll_judgment_ret_t :judgment_ret_t
 };
 struct divine_resonance_judgment_t :judgment_ret_t
 {
-  divine_resonance_judgment_t(paladin_t* p) : judgment_ret_t(p, "divine_resonance_judgment", "", p->spells.judgment_ret)
+  divine_resonance_judgment_t(paladin_t* p) : judgment_ret_t(p, "judgment_divine_resonance", "", p->spells.judgment_ret)
   {
     background = true;
     base_multiplier *= p->buffs.divine_resonance->data().effectN( 2 ).percent();
@@ -1532,7 +1532,7 @@ struct divine_resonance_judgment_t :judgment_ret_t
 };
 struct divine_exaction_judgment_t : public judgment_ret_t
 {
-  divine_exaction_judgment_t( paladin_t* p ) : judgment_ret_t( p, "judgment_de", "", p->spells.judgment_ret_dt )
+  divine_exaction_judgment_t( paladin_t* p ) : judgment_ret_t( p, "judgment_divine_exaction", "", p->spells.judgment_ret_dt )
   {
     background = true;
     aoe        = 1;  // DE's Hammer of Wrath's don't cleave further
@@ -1542,7 +1542,7 @@ struct divine_exaction_judgment_t : public judgment_ret_t
 struct divine_toll_hammer_of_wrath_ret_t : hammer_of_wrath_t
 {
   divine_toll_hammer_of_wrath_ret_t( paladin_t* p )
-    : hammer_of_wrath_t( p, "divine_toll_hammer_of_wrath", "", p->spells.hammer_of_wrath_ret_dt )
+    : hammer_of_wrath_t( p, "hammer_of_wrath_divine_toll", "", p->spells.hammer_of_wrath_ret_dt )
   {
     background = true;
     aoe        = 1;  // Divine Toll's Hammer of Wraths don't cleave further
@@ -1551,7 +1551,7 @@ struct divine_toll_hammer_of_wrath_ret_t : hammer_of_wrath_t
 struct divine_resonance_hammer_of_wrath_t :hammer_of_wrath_t
 {
   divine_resonance_hammer_of_wrath_t(paladin_t* p)
-    : hammer_of_wrath_t( p, "divine_resonance_hammer_of_wrath", "" , p->spells.hammer_of_wrath_ret )
+    : hammer_of_wrath_t( p, "hammer_of_wrath_divine_resonance", "" , p->spells.hammer_of_wrath_ret )
   {
     background = true;
     base_multiplier *= p->buffs.divine_resonance->data().effectN( 2 ).percent();
@@ -1560,7 +1560,7 @@ struct divine_resonance_hammer_of_wrath_t :hammer_of_wrath_t
   struct divine_exaction_hammer_of_wrath_t :public hammer_of_wrath_t
 {
   divine_exaction_hammer_of_wrath_t(paladin_t* p)
-    : hammer_of_wrath_t(p, "hammer_of_wrath_de", "", p->spells.hammer_of_wrath_ret_dt)
+    : hammer_of_wrath_t(p, "hammer_of_wrath_divine_exaction", "", p->spells.hammer_of_wrath_ret_dt)
   {
     background = true;
     aoe        = 1; // DE's Hammer of Wrath's don't cleave further
@@ -1701,6 +1701,8 @@ struct divine_toll_t : public paladin_spell_t
       add_child( judgment );
       how = new divine_toll_hammer_of_wrath_ret_t( p );
       add_child( how );
+      add_child( p->active.divine_resonance_ret );
+      add_child( p->active.divine_resonance_ret_how );
     }
     if ( p->talents.templar.divine_exaction->ok() )
     {
