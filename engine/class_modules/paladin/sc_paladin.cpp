@@ -2103,6 +2103,11 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
                                             400_ms );
        p()->buffs.shield_of_the_righteous->execute();
      }
+     if ( p()->buffs.empyrean_legacy->up() )
+     {
+       p()->active.empyrean_legacy->schedule_execute();
+       p()->buffs.empyrean_legacy->expire();
+     }
    }
    void impact( action_state_t* s ) override
    {
