@@ -1970,7 +1970,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
       parse_options( options_str );
       background = true;
 
-      is_hammer_of_light         = true;
+      is_hammer_of_light_cleave         = true;
       aoe                        = as<int>( p->spells.templar.hammer_of_light_driver->effectN( 2 ).base_value() );
       doesnt_consume_dp          = true;   // The driver consumes DP
       affected_by.divine_purpose = false;  // We handle this manually
@@ -2047,8 +2047,8 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     : holy_power_consumer_t( "hammer_of_light", p, p->spells.templar.hammer_of_light_driver ), cleave_hammer()
   {
     parse_options( options_str );
-    is_hammer_of_light_driver = true;
-    is_hammer_of_light        = true;
+    is_hammer_of_light_main = true;
+    is_hammer_of_light_cleave        = true;
     cleave_hammer             = new hammer_of_light_cleave_t( p, options_str );
     background                = !p->talents.templar.lights_guidance->ok();
     // This is not set by definition, since cost changes by spec
@@ -3622,6 +3622,7 @@ void paladin_t::create_buffs()
   if ( talents.crusade->ok() )
   {
     buffs.avenging_wrath->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+    buffs.avenging_wrath->set_initial_stack( 1 );
     buffs.avenging_wrath->set_max_stack( 10 );
     buffs.avenging_wrath->add_invalidate( CACHE_HASTE );
   }

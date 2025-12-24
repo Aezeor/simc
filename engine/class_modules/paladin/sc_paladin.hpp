@@ -1492,8 +1492,8 @@ public:
   bool is_wog;
   bool is_sotr;
   bool doesnt_consume_dp;
-  bool is_hammer_of_light;
-  bool is_hammer_of_light_driver;
+  bool is_hammer_of_light_cleave;
+  bool is_hammer_of_light_main;
   double hol_cost;
   holy_power_consumer_t( util::string_view n, paladin_t* player, const spell_data_t* s )
     : ab( n, player, s ),
@@ -1501,8 +1501,8 @@ public:
       is_wog( false ),
       is_sotr( false ),
       doesnt_consume_dp( false ),
-      is_hammer_of_light( false ),
-      is_hammer_of_light_driver( false ),
+      is_hammer_of_light_cleave( false ),
+      is_hammer_of_light_main( false ),
       hol_cost( 3.0 )
   {
   }
@@ -1530,7 +1530,7 @@ public:
     paladin_t* p = ab::p();
     ab::impact( s );
 
-    if ( !is_hammer_of_light && p->talents.templar.hammerfall->ok() && p->cooldowns.hammerfall_icd->up() )
+    if ( !is_hammer_of_light_cleave && p->talents.templar.hammerfall->ok() && p->cooldowns.hammerfall_icd->up() )
     {
       int additionalTargets = 0;
       if ( p->buffs.templar.shake_the_heavens->up() )
@@ -1558,19 +1558,19 @@ public:
                              ( is_divine_storm && p->buffs.empyrean_power->up() );
 
     [[maybe_unused]] double num_hopo_spent = as<double>( holy_power_consumer_t::cost() );
-    if ( is_hammer_of_light_driver && !p->buffs.templar.hammer_of_light_free->up() )
+    if ( is_hammer_of_light_main && !p->buffs.templar.hammer_of_light_free->up() )
       num_hopo_spent = hol_cost;
-    else if ( is_hammer_of_light )
+    else if ( is_hammer_of_light_cleave )
       num_hopo_spent = 0.0;
     // Free spenders seem to count as 3 Holy Power, regardless the cost
     // Free Hammer of Light from Divine Purpose counts as 5 Holy Power spent, Free Hammer of Light from Light's
     // Deliverance counts as 0 Holy Power spent
     if ( isFreeSLDPSpender )
     {
-      num_hopo_spent = is_hammer_of_light_driver ? hol_cost : 3.0;
+      num_hopo_spent = is_hammer_of_light_main ? hol_cost : 3.0;
       // 2024-09-10 If Hammer of Light is affected by Divine Purpose, it counts as 5 Holy Power spent.
       if ( p->bugs && p->specialization() == PALADIN_PROTECTION && p->buffs.divine_purpose->up() &&
-           is_hammer_of_light_driver )
+           is_hammer_of_light_main )
       {
         num_hopo_spent = 5.0;
       }
@@ -1607,7 +1607,17 @@ public:
 
     if ( p->talents.crusade->ok() && p->buffs.avenging_wrath->up() )
     {
-      p->buffs.avenging_wrath->trigger( as<int>( num_hopo_spent ) );
+      int crusade_stacks = num_hopo_spent;
+      // Hammer of Light always gives 5 Stacks, even if it's free
+      if ( is_hammer_of_light_main )
+      {
+        crusade_stacks = hol_cost;
+        // 2025-12-24 Fluttershy: Currently, if HoL is cast with less then 5 stacks, you gain 10 Crusade Stacks
+        if ( p->bugs && p->buffs.avenging_wrath->stack() < 5 )
+          crusade_stacks *= 2;
+      }
+      if ( crusade_stacks > 0 )
+        p->buffs.avenging_wrath->trigger( as<int>( crusade_stacks ) );
     }
 
     if ( p->talents.tirions_devotion->ok() && p->talents.lay_on_hands->ok() && !ab::background )
@@ -1665,7 +1675,7 @@ public:
     // Roll for Divine Purpose
     // 2024-08-04 Damage event of Hammer of Light cannot proc Divine Purpose, if you're Ret
     // (Although it is also likely that the driver being able to proc Divine Purpose is also a bug, but who knows
-    if ( !( p->bugs && !is_hammer_of_light_driver && is_hammer_of_light && p->specialization() == PALADIN_RETRIBUTION ) && p->talents.divine_purpose->ok() && this->rng().roll( p->talents.divine_purpose->effectN( 1 ).percent() ) )
+    if ( !( p->bugs && !is_hammer_of_light_main && is_hammer_of_light_cleave && p->specialization() == PALADIN_RETRIBUTION ) && p->talents.divine_purpose->ok() && this->rng().roll( p->talents.divine_purpose->effectN( 1 ).percent() ) )
     {
       p->buffs.divine_purpose->trigger();
       p->procs.divine_purpose->occur();
