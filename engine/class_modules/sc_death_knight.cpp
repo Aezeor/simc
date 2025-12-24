@@ -10306,6 +10306,11 @@ struct frostbane_strike_t final : public death_knight_melee_attack_t
 
     m *= target_reduction;
 
+    if ( state->chain_target == 0 && p()->talent.frost.shattering_blade->ok() )
+    {
+      m *= 1.0 + p()->talent.frost.shattering_blade->effectN( 2 ).percent();
+    }
+
     return m;
   }
 };
@@ -10332,6 +10337,8 @@ struct frostbane_t final : public death_knight_spell_t
 
     if ( td->debuff.razorice->at_max_stacks() )
     {
+      // if frostbane hits a target with 5 stacks of razorice, it consumes the stacks and gets the shattering bonus
+      // however, it does not get the hidden bonus that shattering blade gets from razorice
       td->debuff.razorice->expire();
       td->flag.razorice_consumed = true;
     }
