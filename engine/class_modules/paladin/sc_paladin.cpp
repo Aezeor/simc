@@ -3874,7 +3874,9 @@ void paladin_t::apply_action_effects( action_t* a ) {
   assert( action );
 
   // Shared
-  auto aw_effect_mask = effect_mask_t( true ).disable( 13 );
+  auto aw_effect_mask = effect_mask_t( true );
+  if ( !talents.radiant_glory->ok() )
+    aw_effect_mask.disable( 13 );
   if ( !talents.crusade->ok() )
     aw_effect_mask.disable( 11 );
 
@@ -4106,6 +4108,12 @@ void paladin_t::init_spells()
     register_passive_effect_override( find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath" )->effectN( 12 ),
                                       apex2->effectN( 1 ).base_value() );
     register_passive_effect_override( find_spell( 454351 )->effectN( 12 ), apex2->effectN( 1 ).base_value() );
+  }
+  // Born in Sunlight probably overrides Radiant Glory Wings effect 13 via server side script
+  if (find_talent_spell(talent_tree::HERO, "Born in Sunlight")->ok() && find_talent_spell(talent_tree::SPECIALIZATION, "Radiant Glory")->ok())
+  {
+    register_passive_effect_override( find_spell( 454351 )->effectN( 13 ),
+                                      find_spell( 1264050 )->effectN( 1 ).base_value() );
   }
 
   player_t::init_spells();
