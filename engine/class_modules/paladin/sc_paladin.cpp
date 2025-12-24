@@ -1424,6 +1424,15 @@ void judgment_base_t::impact(action_state_t* s)
   trigger_hammer_and_anvil( p(), s, hammer_and_anvil, HAA_JUDGMENT );
 }
 
+judgment_t::judgment_t( paladin_t* p, util::string_view name, const spell_data_t* s ) : judgment_base_t( p, name, "", s )
+{
+  // no weapon multiplier
+  weapon_multiplier = 0.0;
+  may_block = may_parry = may_dodge = false;
+  // force effect 1 to be used for direct ratios
+  parse_effect_data( data().effectN( 1 ) );
+}
+
 judgment_t::judgment_t( paladin_t* p, util::string_view name, util::string_view options_str, const spell_data_t* s )
   : judgment_base_t( p, name, options_str, s )
 {
@@ -1433,10 +1442,11 @@ judgment_t::judgment_t( paladin_t* p, util::string_view name, util::string_view 
   // force effect 1 to be used for direct ratios
   parse_effect_data( data().effectN( 1 ) );
 
-  if ( p->cooldowns.judgment == nullptr )
-    p->cooldowns.judgment = cooldown;
-  else
-    cooldown = p->cooldowns.judgment;
+    if ( p->cooldowns.judgment == nullptr )
+      p->cooldowns.judgment = cooldown;
+    else
+      cooldown = p->cooldowns.judgment;
+  
 }
 
 proc_types judgment_t::proc_type() const
@@ -1470,6 +1480,16 @@ bool judgment_t::action_ready()
 struct judgment_ret_t : public judgment_t
 {
   int holy_power_generation;
+
+  judgment_ret_t( paladin_t* p, util::string_view name, const spell_data_t* s )
+    : judgment_t( p, name, s ),
+      holy_power_generation( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) )
+  {
+    if ( p->talents.blessed_champion->ok() )
+    {
+      base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
+    }
+  }
 
   judgment_ret_t( paladin_t* p, util::string_view name, util::string_view options_str, const spell_data_t* s )
     : judgment_t( p, name, options_str, s ),
@@ -1516,7 +1536,7 @@ struct judgment_ret_t : public judgment_t
 };
 struct divine_toll_judgment_ret_t :judgment_ret_t
 {
-  divine_toll_judgment_ret_t( paladin_t* p ) : judgment_ret_t( p, "judgment_divine_toll", "", p->spells.judgment_ret_dt )
+  divine_toll_judgment_ret_t( paladin_t* p ) : judgment_ret_t( p, "judgment_divine_toll", p->spells.judgment_ret_dt )
   {
     background = true;
     aoe        = 1; // Divine Toll's Judgments don't cleave further
@@ -1524,7 +1544,7 @@ struct divine_toll_judgment_ret_t :judgment_ret_t
 };
 struct divine_resonance_judgment_t :judgment_ret_t
 {
-  divine_resonance_judgment_t(paladin_t* p) : judgment_ret_t(p, "judgment_divine_resonance", "", p->spells.judgment_ret)
+  divine_resonance_judgment_t(paladin_t* p) : judgment_ret_t(p, "judgment_divine_resonance", p->spells.judgment_ret)
   {
     background = true;
     base_multiplier *= p->buffs.divine_resonance->data().effectN( 2 ).percent();
@@ -1532,7 +1552,7 @@ struct divine_resonance_judgment_t :judgment_ret_t
 };
 struct divine_exaction_judgment_t : public judgment_ret_t
 {
-  divine_exaction_judgment_t( paladin_t* p ) : judgment_ret_t( p, "judgment_divine_exaction", "", p->spells.judgment_ret_dt )
+  divine_exaction_judgment_t( paladin_t* p ) : judgment_ret_t( p, "judgment_divine_exaction", p->spells.judgment_ret_dt )
   {
     background = true;
     aoe        = 1;  // DE's Hammer of Wrath's don't cleave further

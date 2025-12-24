@@ -1759,6 +1759,7 @@ public:
 
 struct judgment_t : public judgment_base_t
 {
+  judgment_t( paladin_t* p, util::string_view name, const spell_data_t* s = spell_data_t::nil() );
   judgment_t( paladin_t* p, util::string_view name, util::string_view options_str,
               const spell_data_t* s = spell_data_t::nil() );
 
