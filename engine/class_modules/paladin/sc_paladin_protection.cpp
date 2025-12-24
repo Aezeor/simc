@@ -918,13 +918,8 @@ action_t* paladin_t::create_action_protection( util::string_view name, util::str
   if ( name == "blessing_of_spellwarding"  ) return new blessing_of_spellwarding_t ( this, options_str );
   if ( name == "guardian_of_ancient_kings" ) return new guardian_of_ancient_kings_t( this, options_str );
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
-  if ( name == "avenging_wrath" )
-  {
-    if ( talents.sentinel->ok() )
-      return new sentinel_t( this, options_str );
-    else
-      return new avenging_wrath_t( this, options_str );
-  }
+  if ( name == "avenging_wrath" && talents.sentinel->ok() ) // Normal wings in base function
+    return new sentinel_t( this, options_str );
   return nullptr;
 }
 

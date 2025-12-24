@@ -277,8 +277,6 @@ avenging_wrath_t::avenging_wrath_t( paladin_t* p, util::string_view options_str 
   parse_options( options_str );
   if ( !p->talents.avenging_wrath->ok() )
     background = true;
-  if ( p->talents.crusade->ok() )
-    background = true;
   if ( p->talents.avenging_crusader->ok() )
     background = true;
   if ( p->talents.sentinel->ok() )
@@ -3624,6 +3622,7 @@ void paladin_t::create_buffs()
     buffs.avenging_wrath->set_refresh_behavior( buff_refresh_behavior::DISABLED );
     buffs.avenging_wrath->set_initial_stack( 1 );
     buffs.avenging_wrath->set_max_stack( 10 );
+    buffs.avenging_wrath->set_cooldown( 0_ms ); // Handled by the ability
     buffs.avenging_wrath->add_invalidate( CACHE_HASTE );
   }
 
