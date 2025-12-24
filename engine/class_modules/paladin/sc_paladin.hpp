@@ -113,9 +113,11 @@ public:
 
     // Covenant stuff
     action_t* divine_toll;
+    action_t* divine_toll_how;
     action_t* divine_resonance;
+    action_t* divine_resonance_ret;
+    action_t* divine_resonance_ret_how;
     action_t* divine_exaction_prot;
-    action_t* divine_exaction_ret;
 
     // talent stuff
     action_t* background_cons;
@@ -427,6 +429,11 @@ public:
     const spell_data_t* blaze_of_glory;
     const spell_data_t* light_within;
 
+    // More Hammer of Wrath spell data for Ret
+    const spell_data_t* judgment_ret;
+    const spell_data_t* judgment_ret_dt;
+    const spell_data_t* hammer_of_wrath_ret;
+    const spell_data_t* hammer_of_wrath_ret_dt;
   } spells;
 
   struct rppms_t {
@@ -1730,21 +1737,24 @@ struct judgment_base_t : public paladin_melee_attack_t
   void impact( action_state_t* s ) override;
   void execute();
 };
+
 struct hammer_of_wrath_t : public judgment_base_t
 {
 private:
   hammer_of_wrath_t* echo;
 
 public:
-  hammer_of_wrath_t( paladin_t* p, util::string_view name, util::string_view options_str, double mul = 1.0, bool bg = false );
+  hammer_of_wrath_t( paladin_t* p, util::string_view name, util::string_view options_str, const spell_data_t* s = spell_data_t::nil());
   void impact( action_state_t* s ) override;
   double composite_target_multiplier( player_t* target ) const override;
   bool action_ready() override;
+  void execute() override;
 };
 
 struct judgment_t : public judgment_base_t
 {
-  judgment_t( paladin_t* p, util::string_view name, util::string_view options_str, double mul = 1.0, bool bg = false );
+  judgment_t( paladin_t* p, util::string_view name, util::string_view options_str,
+              const spell_data_t* s = spell_data_t::nil() );
 
   proc_types proc_type() const override;
   void execute() override;
