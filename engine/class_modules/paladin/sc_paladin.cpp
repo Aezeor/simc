@@ -1546,6 +1546,8 @@ struct divine_toll_hammer_of_wrath_ret_t : hammer_of_wrath_t
   {
     background = true;
     aoe        = 1;  // Divine Toll's Hammer of Wraths don't cleave further
+    triggers_second_sunrise   = false;
+    triggers_divine_resonance = false;
   }
 };
 struct divine_resonance_hammer_of_wrath_t :hammer_of_wrath_t
@@ -1555,6 +1557,8 @@ struct divine_resonance_hammer_of_wrath_t :hammer_of_wrath_t
   {
     background = true;
     base_multiplier *= p->buffs.divine_resonance->data().effectN( 2 ).percent();
+    triggers_second_sunrise = false;
+    triggers_divine_resonance = false;
   }
 };
   struct divine_exaction_hammer_of_wrath_t :public hammer_of_wrath_t
@@ -1568,6 +1572,14 @@ struct divine_resonance_hammer_of_wrath_t :hammer_of_wrath_t
   }
 };
 
+  hammer_of_wrath_t::hammer_of_wrath_t(paladin_t* p)
+    : judgment_base_t(p, "Hammer of Wrath Echo", "", p->spells.hammer_of_wrath_ret)
+  {
+    background = true;
+    triggers_divine_resonance = true;
+    triggers_second_sunrise   = false;
+  }
+
 hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view name, util::string_view options_str, const spell_data_t* s )
   : judgment_base_t( p, name, options_str, s ),
     echo( nullptr )
@@ -1578,6 +1590,8 @@ hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view name, util
     add_child( p->active.background_blessed_hammer );
   }
   triggers_higher_calling = true;
+  triggers_second_sunrise = !background;
+  triggers_divine_resonance = !background;
   may_block = may_parry = may_dodge = false;
   // force effect 1 to be used for direct ratios
   parse_effect_data( data().effectN( 1 ) );
@@ -1590,7 +1604,7 @@ hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view name, util
 
   if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
   {
-    echo                          = new hammer_of_wrath_t( p, "Hammer of Wrath Echo", "", s );
+    echo                          = new hammer_of_wrath_t( p );
     echo->base_multiplier         = base_multiplier;
     echo->aoe                     = aoe;
     echo->base_aoe_multiplier     = base_aoe_multiplier;
@@ -1611,7 +1625,7 @@ void hammer_of_wrath_t::execute()
 {
   judgment_base_t::execute();
 
-  if ( !background && p()->specialization() == PALADIN_RETRIBUTION && p()->buffs.divine_resonance->up() )
+  if ( triggers_divine_resonance && p()->specialization() == PALADIN_RETRIBUTION && p()->buffs.divine_resonance->up() )
   {
     p()->active.divine_resonance_ret_how->execute_on_target( execute_state->target );
     p()->buffs.divine_resonance->decrement();
@@ -1632,7 +1646,7 @@ void hammer_of_wrath_t::impact( action_state_t* s )
     p()->active.sun_sear->execute();
   }
 
-  if ( echo != nullptr && s->chain_target == 0 && p()->cooldowns.second_sunrise_icd->up() )
+  if ( triggers_second_sunrise && echo != nullptr && s->chain_target == 0 && p()->cooldowns.second_sunrise_icd->up() )
   {
     if ( rng().roll( p()->talents.herald_of_the_sun.second_sunrise->effectN( 1 ).percent() ) )
     {
@@ -4226,14 +4240,17 @@ void paladin_t::init_spells()
   talents.herald_of_the_sun.morning_star       = find_talent_spell( talent_tree::HERO, "Morning Star");
   talents.herald_of_the_sun.gleaming_rays      = find_talent_spell( talent_tree::HERO, "Gleaming Rays" );
   talents.herald_of_the_sun.luminosity         = find_talent_spell( talent_tree::HERO, "Luminosity" );
+  talents.herald_of_the_sun.endless_gleam      = find_talent_spell( talent_tree::HERO, "Endless Gleam" );
 
   talents.herald_of_the_sun.blessing_of_anshe  = find_talent_spell( talent_tree::HERO, "Blessing of An'she" );
   talents.herald_of_the_sun.lingering_radiance = find_talent_spell( talent_tree::HERO, "Lingering Radiance" );
   talents.herald_of_the_sun.sun_sear           = find_talent_spell( talent_tree::HERO, "Sun Sear" );
+  talents.herald_of_the_sun.solar_grace        = find_talent_spell( talent_tree::HERO, "Solar Grace" );
 
   talents.herald_of_the_sun.aurora             = find_talent_spell( talent_tree::HERO, "Aurora" );
-  talents.herald_of_the_sun.solar_grace        = find_talent_spell( talent_tree::HERO, "Solar Grace" );
+  talents.herald_of_the_sun.walk_into_light    = find_talent_spell( talent_tree::HERO, "Walk Into Light" );
   talents.herald_of_the_sun.second_sunrise     = find_talent_spell( talent_tree::HERO, "Second Sunrise" );
+  talents.herald_of_the_sun.born_in_sunlight   = find_talent_spell( talent_tree::HERO, "Born in Sunlight" );
 
   talents.herald_of_the_sun.suns_avatar        = find_talent_spell( talent_tree::HERO, "Sun's Avatar" );
 

@@ -719,16 +719,19 @@ public:
       const spell_data_t* gleaming_rays;
       const spell_data_t* eternal_flame;
       const spell_data_t* luminosity;
+      const spell_data_t* endless_gleam;
 
       const spell_data_t* illumine;
       const spell_data_t* will_of_the_dawn;
       const spell_data_t* blessing_of_anshe;
       const spell_data_t* lingering_radiance;
       const spell_data_t* sun_sear;
+      const spell_data_t* solar_grace;
 
       const spell_data_t* aurora;
-      const spell_data_t* solar_grace;
+      const spell_data_t* walk_into_light;
       const spell_data_t* second_sunrise;
+      const spell_data_t* born_in_sunlight;
 
       const spell_data_t* suns_avatar;
     } herald_of_the_sun;
@@ -1744,6 +1747,9 @@ private:
   hammer_of_wrath_t* echo;
 
 public:
+  bool triggers_second_sunrise = false;
+  bool triggers_divine_resonance = false;
+  hammer_of_wrath_t( paladin_t* p );
   hammer_of_wrath_t( paladin_t* p, util::string_view name, util::string_view options_str, const spell_data_t* s = spell_data_t::nil());
   void impact( action_state_t* s ) override;
   double composite_target_multiplier( player_t* target ) const override;
