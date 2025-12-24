@@ -46,6 +46,17 @@ action_t* get_action( std::string_view name, Actor* actor, Args&&... args )
   return a;
 }
 
+// Only to be used with empowered release spells
+template <typename Action, typename Actor, typename... Args>
+action_t* get_empower_release_action( std::string_view name, Actor* actor, Args&&... args )
+{
+  action_t* a = actor->find_action( name );
+  if ( !a )
+    a = new Action( name, actor, std::forward<Args>( args )... );
+  assert( dynamic_cast<Action*>( a ) && a->name_str == name && a->background == false );
+  return a;
+}
+
 template <typename V>
 static const spell_data_t* resolve_spell_data( V data )
 {
@@ -243,9 +254,18 @@ enum drw_actions_e
   DRW_ACTION_DEATH_STRIKE    = 2,
   DRW_ACTION_HEART_STRIKE    = 3,
   DRW_ACTION_MARROWREND      = 4,
-  DRW_ACTION_CONSUMPTION     = 5,
-  DRW_ACTION_VAMPIRIC_STRIKE = 6,
-  DRW_ACTION_MAX             = 7
+  DRW_ACTION_VAMPIRIC_STRIKE = 5,
+  DRW_ACTION_MAX             = 6
+};
+
+enum empower_e
+{
+  EMPOWER_NONE = 0,
+  EMPOWER_1    = 1,
+  EMPOWER_2,
+  EMPOWER_3,
+  EMPOWER_4,
+  EMPOWER_MAX
 };
 
 // ==========================================================================
@@ -1471,6 +1491,8 @@ public:
     const spell_data_t* dancing_rune_weapon_buff;
     const spell_data_t* relish_in_blood_gains;
     const spell_data_t* leeching_strike_damage;
+    const spell_data_t* consumption_damage;
+    const spell_data_t* consumption_leech;
 
     // Blood Tier Set Spells
     const spell_data_t* rejuvenating_blood; // 2pc rp gain
@@ -4060,16 +4082,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     }
   };
 
-  struct consumption_t : public drw_action_t<melee_attack_t>
-  {
-    consumption_t( std::string_view n, dancing_rune_weapon_pet_t* p )
-      : drw_action_t( p, n, p->dk()->talent.blood.consumption )
-    {
-      aoe                 = -1;
-      reduced_aoe_targets = data().effectN( 3 ).base_value();
-    }
-  };
-
   struct deaths_caress_t : public drw_action_t<spell_t>
   {
     int stack_gain;
@@ -4172,7 +4184,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     action_t* death_strike;
     action_t* heart_strike;
     action_t* marrowrend;
-    action_t* consumption;
     action_t* vampiric_strike;
   } ability;
 
@@ -4225,10 +4236,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       ability.marrowrend = get_action<marrowrend_t>( "marrowrend", this );
     }
-    if ( dk()->talent.blood.consumption.ok() )
-    {
-      ability.consumption = get_action<consumption_t>( "consumption", this );
-    }
     if ( dk()->talent.sanlayn.vampiric_strike.ok() )
     {
       ability.vampiric_strike = get_action<vampiric_strike_t>( "vampiric_strike", this );
@@ -4245,8 +4252,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     death_knight_pet_t::arise();
     reschedule_drw();
     dk()->buffs.dancing_rune_weapon->trigger();
-    if ( dk()->talent.sanlayn.gift_of_the_sanlayn.ok() )
-      dk()->buffs.gift_of_the_sanlayn->trigger();
   }
 
   void demise() override
@@ -5288,6 +5293,314 @@ public:
 };
 
 // ==========================================================================
+// Death Knight Empowered actions setup
+// ==========================================================================
+
+template <typename Data, typename Base = action_state_t>
+struct death_knight_empower_action_state_t : public Base, public Data
+{
+  static_assert( std::is_base_of_v<action_state_t, Base> );
+  static_assert( std::is_default_constructible_v<Data> );  // required for initialize
+  static_assert( std::is_copy_assignable_v<Data> );        // required for copy_state
+
+  using Base::Base;
+
+  void initialize() override
+  {
+    Base::initialize();
+    *static_cast<Data*>( this ) = Data{};
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    Base::debug_str( s );
+    if constexpr ( fmt::is_formattable<Data>::value )
+      fmt::print( s, " {}", *static_cast<const Data*>( this ) );
+    return s;
+  }
+
+  void copy_state( const action_state_t* o ) override
+  {
+    Base::copy_state( o );
+    *static_cast<Data*>( this ) = *static_cast<const Data*>( static_cast<const death_knight_empower_action_state_t*>( o ) );
+  }
+};
+
+struct empower_data_t
+{
+  empower_e empower;
+
+  friend void sc_format_to( const empower_data_t& data, fmt::format_context::iterator out )
+  {
+    fmt::format_to( out, "empower_level={}", static_cast<int>( data.empower ) );
+  }
+};
+
+template <class BASE>
+struct death_knight_empowered_base_t : public BASE
+{
+protected:
+  using state_t = death_knight_empower_action_state_t<empower_data_t>;
+
+public:
+  empower_e max_empower;
+
+  death_knight_empowered_base_t( std::string_view name, death_knight_t* p, const spell_data_t* spell )
+    : BASE( name, p, spell ),
+      max_empower( empower_e::EMPOWER_3 )
+  {
+    BASE::can_have_one_button_penalty = false;
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, BASE::target );
+  }
+
+  state_t* cast_state( action_state_t* s )
+  {
+    return static_cast<state_t*>( s );
+  }
+
+  const state_t* cast_state( const action_state_t* s ) const
+  {
+    return static_cast<const state_t*>( s );
+  }
+};
+
+template <class BASE>
+struct death_knight_empowered_release_t : public death_knight_empowered_base_t<BASE>
+{
+  using base = death_knight_empowered_base_t<BASE>;
+
+  death_knight_empowered_release_t( std::string_view name, death_knight_t* p, const spell_data_t* spell )
+    : death_knight_empowered_base_t<BASE>( name, p, spell )
+    {
+      base::dual = true;
+    }
+
+    empower_e empower_level( const action_state_t* s ) const
+    {
+      return base::cast_state( s )->empower;
+    }
+
+    int empower_value( const action_state_t* s ) const
+    {
+      return static_cast<int>( base::cast_state( s )->empower );
+    }
+};
+
+template <class BASE>
+struct death_knight_empowered_charge_t : public death_knight_empowered_base_t<BASE>
+{
+  using base = death_knight_empowered_base_t<BASE>;
+
+  action_t* release_spell;
+  stats_t* dummy_stat;  // used to hack channel tick time into execute time
+  stats_t* orig_stat;
+  int empower_to;
+  timespan_t base_empower_duration;
+  timespan_t lag;
+
+  void setup_empower_stats( int empower_level )
+  {
+    assert( empower_level > 0 );
+    assert( empower_level <= 5 );
+    setup_empower_stats( static_cast<empower_e>( empower_level ) );
+  }
+
+  void setup_empower_stats( empower_e empower_level )
+  {
+    empower_to = empower_level;
+    if ( static_cast<empower_e>( empower_to ) == EMPOWER_MAX )
+    {
+      base_empower_duration = max_hold_time();
+    }
+    else
+    {
+      empower_to       = std::min( static_cast<int>( base::max_empower ), empower_to );
+      base_empower_duration = base_time_to_empower( static_cast<empower_e>( empower_to ) );
+    }
+
+    // apply parsed modifiers
+    base::dot_duration = base::player->get_passive_value( base::data(), "duration" );
+    base::dot_duration.base = base_empower_duration;
+    base::base_tick_time = base::dot_duration;
+  }
+
+  death_knight_empowered_charge_t( std::string_view name, death_knight_t* p, const spell_data_t* spell, std::string_view options_str )
+    : base( name, p, spell ),
+      release_spell( nullptr ),
+      dummy_stat( p->get_stats( "dummy_stat" ) ),
+      orig_stat( base::stats ),
+      empower_to( EMPOWER_MAX ),
+      base_empower_duration( 0_ms ),
+      lag( 0_ms )
+  {
+    base::channeled = true;
+    base::add_option( opt_int( "empower_to", empower_to, EMPOWER_1, EMPOWER_MAX ) );
+
+    base::parse_options( options_str );
+
+    setup_empower_stats( empower_to );
+
+    base::gcd_type = gcd_haste_type::NONE;
+    if ( base::trigger_gcd > timespan_t::zero() )
+      base::min_gcd = base::trigger_gcd;
+  }
+
+  template <typename T>
+  void create_release_spell( std::string_view n )
+  {
+    static_assert( std::is_base_of_v<death_knight_empowered_release_t<BASE>, T>,
+                   "Empowered release spell must be dervied from empowered_release_spell_t." );
+
+    release_spell             = get_empower_release_action<T>( n, base::p() );
+    release_spell->stats      = base::stats;
+    release_spell->background = false;
+  }
+
+  timespan_t base_time_to_empower( empower_e emp ) const
+  {
+    // TODO: confirm these values and determine if they're set values or adjust based on a formula
+    // Currently all empowered spells are 2.5s base and 3.25s with empower 4
+    switch ( emp )
+    {
+      case empower_e::EMPOWER_1:
+        return 1000_ms;
+      case empower_e::EMPOWER_2:
+        return 1750_ms;
+      case empower_e::EMPOWER_3:
+        return 2500_ms;
+      case empower_e::EMPOWER_4:
+        return 3250_ms;
+      default:
+        break;
+    }
+
+    return 0_ms;
+  }
+
+  timespan_t max_hold_time() const
+  {
+    // TODO: confirm if this is affected by duration mods/haste
+    return base_time_to_empower( base::max_empower ) + 2_s;
+  }
+
+  timespan_t tick_time( const action_state_t* s ) const override
+  {
+    return composite_dot_duration( s );
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    auto dur = base::composite_dot_duration( s );
+
+    // hack so we always have a non-zero duration in order to trigger last_tick()
+    if ( dur == 0_ms )
+      return 1_ms;
+
+    return dur + lag;
+  }
+
+  timespan_t composite_time_to_empower( const action_state_t* s, empower_e emp ) const
+  {
+    auto base = base_time_to_empower( emp );
+    auto mult = composite_dot_duration( s ) / base_empower_duration;
+
+    return base * mult;
+  }
+
+  empower_e empower_level( const dot_t* d ) const
+  {
+    auto emp = empower_e::EMPOWER_NONE;
+
+    if ( !d->is_ticking() )
+      return emp;
+
+    auto s       = d->state;
+    auto elapsed = tick_time( s ) - d->time_to_next_full_tick();
+
+    if ( elapsed >= composite_time_to_empower( s, empower_e::EMPOWER_4 ) )
+      emp = empower_e::EMPOWER_4;
+    else if ( elapsed >= composite_time_to_empower( s, empower_e::EMPOWER_3 ) )
+      emp = empower_e::EMPOWER_3;
+    else if ( elapsed >= composite_time_to_empower( s, empower_e::EMPOWER_2 ) )
+      emp = empower_e::EMPOWER_2;
+    else if ( elapsed >= composite_time_to_empower( s, empower_e::EMPOWER_1 ) )
+      emp = empower_e::EMPOWER_1;
+
+    return std::min( base::max_empower, emp );
+  }
+
+  void init() override
+  {
+    base::init();
+    assert( release_spell && "Empowered charge spell must have a release spell." );
+  }
+
+  void execute() override
+  {
+    // pre-determine lag here per every execute
+    lag = base::rng().gauss( base::sim->channel_lag );
+
+    base::execute();
+  }
+
+  void tick( dot_t* d ) override
+  {
+    // For proper DPET analysis, we need to treat charge spells as non-channel, since channelled spells sum up tick
+    // times to get the execute time, but this does not work for fire breath which also has a dot component. Instead we
+    // hijack the stat obj during action_t:tick() causing the channel's tick to be recorded onto a throwaway stat obj.
+    // We then record the corresponding tick time as execute time onto the original real stat obj. See further notes in
+    // evoker_t::analyze().
+    base::stats = dummy_stat;
+    base::tick( d );
+    base::stats = orig_stat;
+
+    base::stats->iteration_total_execute_time += d->time_to_tick();
+  }
+
+  virtual player_t* get_release_target( dot_t* )
+  {
+    return base::target;
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    base::last_tick( d );
+
+    auto release_target = get_release_target( d );
+
+    // if ( empower_level( d ) == empower_e::EMPOWER_NONE || !release_target )
+    // {
+    //   base::p()->was_empowering = false;
+    //   return;
+    // }
+
+    // If we have no valid targets, do not fire off the release spell
+    if ( release_target == nullptr )
+      return;
+
+    auto emp_state        = release_spell->get_state();
+    emp_state->target     = release_target;
+    release_spell->target = release_target;
+    release_spell->snapshot_state( emp_state, release_spell->amount_type( emp_state ) );
+
+    base::cast_state( emp_state )->empower = empower_level( d );
+
+    release_spell->schedule_execute( emp_state );
+
+    // hack to prevent dot_t::last_tick() from schedule_ready()'ing the player
+    d->current_action = release_spell;
+    // hack to prevent channel lag being added when player is schedule_ready()'d after the release spell execution
+    base::p()->last_foreground_action = release_spell;
+    // Start GCD - All Empowerw have a GCD of 0.5s after completion.
+    base::start_gcd();
+  }
+};
+
+// ==========================================================================
 // Death Knight Actions
 // ==========================================================================
 
@@ -5892,6 +6205,36 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
 {
   death_knight_spell_t( std::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() )
     : death_knight_action_t( n, p, s )
+  {
+  }
+};
+
+struct death_knight_empowered_charge_spell_t : public death_knight_empowered_charge_t<death_knight_spell_t>
+{
+  using base_t = death_knight_empowered_charge_spell_t;
+
+  death_knight_empowered_charge_spell_t( std::string_view n, death_knight_t* p, const spell_data_t* s, std::string_view o )
+    : death_knight_empowered_charge_t( n, p, s, o )
+  {
+  }
+
+  player_t* get_release_target( dot_t* d ) override
+  {
+    auto t = d->state->target;
+
+    if ( t->is_sleeping() )
+      t = nullptr;
+
+    return t;
+  }
+};
+
+struct death_knight_empowered_release_spell_t : public death_knight_empowered_release_t<death_knight_spell_t>
+{
+  using base_t = death_knight_empowered_release_t<death_knight_spell_t>;
+
+  death_knight_empowered_release_spell_t( std::string_view n, death_knight_t* p, const spell_data_t* s )
+    : death_knight_empowered_release_t( n, p, s )
   {
   }
 };
@@ -8561,10 +8904,10 @@ struct chains_of_ice_t final : public death_knight_spell_t
 
 // Consumption ==============================================================
 
-struct consumption_heal_t final : public death_knight_leech_damage_heal_t
+struct consumption_leech_heal_t final : public death_knight_leech_damage_heal_t
 {
-  consumption_heal_t( std::string_view name, death_knight_t* p )
-    : death_knight_leech_damage_heal_t( name, p, p->talent.blood.consumption )
+  consumption_leech_heal_t( std::string_view name, death_knight_t* p )
+    : death_knight_leech_damage_heal_t( name, p, p->spell.consumption_leech )
   {
     background = true;
     harmful    = false;
@@ -8584,43 +8927,152 @@ struct consumption_heal_t final : public death_knight_leech_damage_heal_t
   }
 };
 
-struct consumption_t final : public death_knight_melee_attack_t
+struct consumption_leech_damage_t final : public death_knight_spell_t
 {
-  consumption_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_melee_attack_t( "consumption", p, p->talent.blood.consumption ),
-      heal( get_action<consumption_heal_t>( "consumption_heal", p ) ),
-      rune_gen( 0 )
+  int empower_level;
+  consumption_leech_damage_t( std::string_view name, death_knight_t* p )
+   : death_knight_spell_t( name, p, p->spell.consumption_leech ),
+   empower_level( 0 )
   {
-    parse_options( options_str );
-    aoe                 = -1;
-    reduced_aoe_targets = data().effectN( 3 ).base_value();
-    rune_gen            = as<unsigned int>( data().effectN( 4 ).base_value() );
+    background = true;
+
+    consumption_leech_heal = get_action<consumption_leech_heal_t>("consumption_leech_heal", p );
   }
 
   void impact( action_state_t* state ) override
   {
-    death_knight_melee_attack_t::impact( state );
+    death_knight_spell_t::impact( state );
 
-    if ( state->result_amount > 0 )
-    {
-      heal->base_dd_min = heal->base_dd_max = state->result_amount;
-      heal->execute();
-    }
+    consumption_leech_heal->base_dd_min = consumption_leech_heal->base_dd_max = state->result_amount;
+    consumption_leech_heal->execute();
   }
 
-  void execute() override
+  void reset() override
   {
-    death_knight_melee_attack_t::execute();
-
-    p()->buffs.consumption->trigger();
-    p()->replenish_rune( rune_gen, p()->gains.consumption );
-
-    p()->trigger_drw_action( DRW_ACTION_CONSUMPTION );
+    death_knight_spell_t::reset();
+    empower_level = 0;
   }
+  private:
+    action_t* consumption_leech_heal;
+};
 
-private:
-  propagate_const<action_t*> heal;
-  unsigned rune_gen;
+struct consumption_t final : public death_knight_empowered_charge_spell_t
+{
+  struct consumption_damage_t : public death_knight_empowered_release_spell_t
+  {
+    consumption_damage_t( std::string_view name, death_knight_t* p )
+      : death_knight_empowered_release_spell_t( name, p, p->spell.consumption_damage ),
+      leech_damage_accumulator( 0 ),
+      bp_consumption_multi( 0 )
+    {
+      reduced_aoe_targets = p->spell.consumption_damage->effectN( 3 ).base_value();
+
+      consumption_leech_damage = get_action<consumption_leech_damage_t>("consumption_leech", p );
+      add_child( consumption_leech_damage );
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      death_knight_empowered_release_spell_t::impact( state );
+
+      switch ( empower_value( state ) )
+      {
+        case EMPOWER_3:
+          bp_consumption_multi = p()->talent.blood.consumption->effectN( 4 ).percent();
+          break;
+        case EMPOWER_2:
+          bp_consumption_multi = p()->talent.blood.consumption->effectN( 3 ).percent();
+          break;
+        case EMPOWER_1:
+          bp_consumption_multi = p()->talent.blood.consumption->effectN( 2 ).percent();
+          break;
+        default:
+          bp_consumption_multi = p()->talent.blood.consumption->effectN( 2 ).percent();
+      }
+
+      // Player dots
+      auto td = get_td( state->target );
+      if ( td && td->dot.blood_plague->is_ticking() )
+      {
+        double leech_damage = td->dot.blood_plague->tick_damage_over_time( td->dot.blood_plague->remains() * bp_consumption_multi );
+        leech_damage_accumulator += leech_damage;
+        sim->print_debug( "Consumption blood plague consumes {} from {} with caster {}", leech_damage, state->target->name(),  td->dot.blood_plague->source->name() );
+        td->dot.blood_plague->adjust_duration(- td->dot.blood_plague->remains() * bp_consumption_multi );
+      }
+      // DRW dots
+      // Grab active DRW is we have one
+      auto drw = p()->pets.dancing_rune_weapon_pet.active_pet();
+      if ( drw )
+      {
+        auto drw_dot = drw->get_target_data( state->target )->dot.blood_plague;
+        if ( drw_dot && drw_dot->is_ticking() )
+        {
+          double drw_leech = drw_dot->tick_damage_over_time( drw_dot->remains() * bp_consumption_multi );
+          leech_damage_accumulator += drw_leech;
+          sim->print_debug( "Consumption blood plague consumes {} from {} with caster {}", drw_leech, state->target->name(), drw_dot->source->name() );
+          drw_dot->adjust_duration( -drw_dot->remains() * bp_consumption_multi );
+        }
+      }
+
+      auto everlasting_bond = p()->pets.everlasting_bond_pet.active_pet();
+      if ( everlasting_bond )
+      {
+        auto drw_dot = everlasting_bond->get_target_data( state->target )->dot.blood_plague;
+        if ( drw_dot && drw_dot->is_ticking() )
+        {
+          double drw_leech = drw_dot->tick_damage_over_time( drw_dot->remains() * bp_consumption_multi );
+          leech_damage_accumulator += drw_leech;
+          sim->print_debug( "Consumption blood plague consumes {} from {} with caster {}", drw_leech, state->target->name(), drw_dot->source->name() );
+          drw_dot->adjust_duration( -drw_dot->remains() * bp_consumption_multi );
+        }
+      }
+    }
+
+    void execute() override
+    {
+      leech_damage_accumulator = 0;
+      bp_consumption_multi = 0;
+
+      death_knight_empowered_release_spell_t::execute();
+
+      debug_cast<consumption_leech_damage_t*>(consumption_leech_damage)->empower_level = empower_value( execute_state );
+      consumption_leech_damage->base_dd_min = consumption_leech_damage->base_dd_max = leech_damage_accumulator;
+      consumption_leech_damage->execute_on_target( p()->target );
+    }
+    private:
+      double leech_damage_accumulator;
+      double bp_consumption_multi;
+      action_t* consumption_leech_damage;
+  };
+
+  consumption_t( death_knight_t* p, std::string_view options_str )
+    : death_knight_empowered_charge_spell_t( "consumption", p, p->talent.blood.consumption, options_str )
+    {
+      if ( !target )
+        target = p->sim->target;
+      create_release_spell<consumption_damage_t>( "consumption_release" );
+    }
+
+  player_t* get_release_target( dot_t* d ) override
+  {
+    auto t = d->state->target;
+
+    if ( t->is_sleeping() )
+    {
+      t = nullptr;
+
+      for ( auto enemy : p()->sim->target_non_sleeping_list )
+      {
+        if ( enemy->is_sleeping() || ( enemy->debuffs.invulnerable && enemy->debuffs.invulnerable->check() ) )
+          continue;
+
+        t = enemy;
+        break;
+      }
+    }
+
+    return t;
+  }
 };
 
 // Dancing Rune Weapon ======================================================
@@ -8666,6 +9118,9 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
 
     if ( p()->talent.blood.blood_mist.ok() )
       p()->buffs.blood_mist->trigger();
+
+    if ( p()->talent.sanlayn.gift_of_the_sanlayn.ok() )
+      p()->buffs.gift_of_the_sanlayn->trigger();
   }
 
 private:
@@ -12819,9 +13274,6 @@ void death_knight_t::drw_action_execute( pets::dancing_rune_weapon_pet_t* drw, d
     case DRW_ACTION_MARROWREND:
       drw->ability.marrowrend->execute();
       break;
-    case DRW_ACTION_CONSUMPTION:
-      drw->ability.consumption->execute();
-      break;
     case DRW_ACTION_VAMPIRIC_STRIKE:
       drw->ability.vampiric_strike->execute();
       break;
@@ -14340,6 +14792,8 @@ void death_knight_t::spell_lookups()
   spell.dancing_rune_weapon_buff = conditional_spell_lookup( talent.blood.dancing_rune_weapon.ok(), 81256 );
   spell.relish_in_blood_gains    = conditional_spell_lookup( talent.blood.relish_in_blood.ok(), 317614 );
   spell.leeching_strike_damage   = conditional_spell_lookup( talent.blood.leeching_strike.ok(), 377633 );
+  spell.consumption_damage       = conditional_spell_lookup( talent.blood.consumption.ok(), 1263825 );
+  spell.consumption_leech        = conditional_spell_lookup( talent.blood.consumption.ok(), 1263872 );
 
   // Blood Tier set spells
   spell.rejuvenating_blood       = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID1, B2 ), 1271198 );
