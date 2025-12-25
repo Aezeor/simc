@@ -13362,11 +13362,19 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
   death_and_decay_tracker_t* tracker   = dnd_damage->dnd;
   ground_aoe_params_t params;
 
+  double n_ticks    = ( dur / period ) + 1;
+  bool partial_tick = std::trunc( n_ticks ) != n_ticks;
+  if ( partial_tick )
+  {
+    n_ticks = std::floor( n_ticks );
+    params.expiration_pulse( ground_aoe_params_t::expiration_pulse_type::FULL_EXPIRATION_PULSE );
+  }
+
   params.target( target );
   params.duration( dur );
   params.action( a );
   params.pulse_time( period );
-  params.n_pulses( as<int>( dur / period ) + 1 );
+  params.n_pulses( as<int>( n_ticks ) );
   params.x( target->x_position );
   params.y( target->y_position );
 
@@ -13375,7 +13383,7 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
     active_dnds.pop();
   } );
 
-  params.state_callback( [ &, tracker ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+  params.state_callback( [ &, tracker, n_ticks ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
     switch ( type )
     {
       case ground_aoe_params_t::EVENT_CREATED:
@@ -13432,7 +13440,7 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
           des->ticks_remain         = ticks_left;
           des->schedule_execute();
 
-          event->current_pulse = 11;  // End the DnD immediately
+          event->current_pulse = n_ticks;  // End the DnD immediately
 
           // TODO: Does this trigger the 4s buff after expiration? Does it include it in its duration?
           make_event( *sim, remaining_time, [ & ]() { buffs.death_and_decay->expire(); } );
