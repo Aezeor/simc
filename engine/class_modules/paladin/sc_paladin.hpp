@@ -396,6 +396,7 @@ public:
     const spell_data_t* sentinel;
     const spell_data_t* refining_fire_tick;
     const spell_data_t* expurgation;
+    const spell_data_t* crusading_strikes_data;
 
     struct
     {

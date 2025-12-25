@@ -941,7 +941,7 @@ struct crusading_strike_t : public paladin_melee_attack_t
     {
         p()->resource_gain(
           RESOURCE_HOLY_POWER,
-          as<int>( p()->talents.crusading_strikes->effectN( 2 ).base_value() ),
+          as<int>( p()->spells.crusading_strikes_data->effectN( 1 ).base_value() ),
           p()->gains.hp_crusading_strikes
         );
     }
