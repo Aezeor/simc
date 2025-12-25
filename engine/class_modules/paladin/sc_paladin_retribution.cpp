@@ -345,15 +345,15 @@ struct blade_of_justice_t : public paladin_melee_attack_t
 
 // Divine Storm =============================================================
 
-struct divine_storm_echo_tempest_t : public paladin_melee_attack_t
+struct divine_storm_second_sunrise_tempest_t : public paladin_melee_attack_t
 {
-  divine_storm_echo_tempest_t( paladin_t* p )
-    : paladin_melee_attack_t( "divine_storm_echo_tempest", p, p->find_spell( 423593 ) )
+  divine_storm_second_sunrise_tempest_t( paladin_t* p )
+    : paladin_melee_attack_t( "divine_storm_second_sunrise_tempest", p, p->talents.divine_storm )
   {
     background = true;
 
     aoe = -1;
-    base_multiplier *= p->buffs.echoes_of_wrath->data().effectN( 1 ).percent();
+    base_multiplier *= p->talents.tempest_of_the_lightbringer->effectN( 1 ).percent();
     clears_judgment = false;
   }
 };
@@ -371,11 +371,11 @@ struct divine_storm_tempest_t : public paladin_melee_attack_t
   }
 };
 
-struct divine_storm_echo_t : public paladin_melee_attack_t
+struct divine_storm_second_sunrise_t : public paladin_melee_attack_t
 {
-  divine_storm_echo_tempest_t* tempest;
-  divine_storm_echo_t( paladin_t* p, double multiplier )
-    : paladin_melee_attack_t( "divine_storm_echo", p, p->talents.divine_storm ), tempest( nullptr )
+  divine_storm_second_sunrise_tempest_t* tempest;
+  divine_storm_second_sunrise_t( paladin_t* p, double multiplier )
+    : paladin_melee_attack_t( "divine_storm_second_sunrise", p, p->talents.divine_storm ), tempest( nullptr )
   {
     background = true;
 
@@ -386,7 +386,7 @@ struct divine_storm_echo_t : public paladin_melee_attack_t
 
     if ( p->talents.tempest_of_the_lightbringer->ok() )
     {
-      tempest = new divine_storm_echo_tempest_t( p );
+      tempest = new divine_storm_second_sunrise_tempest_t( p );
       add_child( tempest );
     }
   }
@@ -403,12 +403,11 @@ struct divine_storm_echo_t : public paladin_melee_attack_t
 struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 {
   divine_storm_tempest_t* tempest;
-  divine_storm_echo_t* echo;
-  divine_storm_echo_t* sunrise_echo;
+  divine_storm_second_sunrise_t* sunrise_echo;
 
   divine_storm_t( paladin_t* p, util::string_view options_str ) :
     holy_power_consumer_t( "divine_storm", p, p->talents.divine_storm ),
-    tempest( nullptr ), echo( nullptr ), sunrise_echo( nullptr )
+    tempest( nullptr ), sunrise_echo( nullptr )
   {
     parse_options( options_str );
 
@@ -428,14 +427,14 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
     {
-      sunrise_echo = new divine_storm_echo_t( p, p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent() );
+      sunrise_echo = new divine_storm_second_sunrise_t( p, p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent() );
       add_child( sunrise_echo );
     }
   }
 
   divine_storm_t( paladin_t* p, bool is_free, double mul ) :
     holy_power_consumer_t( "divine_storm", p, p->talents.divine_storm ),
-    tempest( nullptr ), echo( nullptr ), sunrise_echo( nullptr )
+    tempest( nullptr ), sunrise_echo( nullptr )
   {
     is_divine_storm = true;
     aoe = -1;
@@ -452,7 +451,7 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
     {
-      sunrise_echo = new divine_storm_echo_t( p, p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent() * mul );
+      sunrise_echo = new divine_storm_second_sunrise_t( p, p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent() );
       add_child( sunrise_echo );
     }
   }
@@ -463,12 +462,6 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( p()->talents.tempest_of_the_lightbringer->ok() )
       tempest->schedule_execute();
-
-    if ( p()->buffs.echoes_of_wrath->up() )
-    {
-      p()->buffs.echoes_of_wrath->expire();
-      echo->start_action_execute_event( 700_ms ); // Maybe this 700ms is Echoes of Wrath effect 2? It's more like 600-700ms
-    }
 
     if ( sunrise_echo && p()->cooldowns.second_sunrise_icd->up() )
     {
@@ -500,37 +493,6 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
   }
 };
 
-struct templars_verdict_echo_t : public paladin_melee_attack_t
-{
-  bool is_fv;
-  templars_verdict_echo_t( paladin_t* p ) :
-    paladin_melee_attack_t(( p->talents.final_verdict->ok() ) ? "final_verdict_echo" : "templars_verdict_echo",
-      p,
-      ( p->talents.final_verdict->ok() ) ? ( p->find_spell( 383328 ) ) : ( p->find_specialization_spell( "Templar's Verdict" ) ) ),
-      is_fv(p->talents.final_verdict->ok())
-  {
-    background = true;
-    base_multiplier *= p->buffs.echoes_of_wrath->data().effectN( 1 ).percent();
-    clears_judgment                   = false;
-    base_costs[ RESOURCE_HOLY_POWER ] = 0;
-  }
-
-  void execute() override
-  {
-    paladin_melee_attack_t::execute();
-
-    // FV Echo can reset Hammer of Wrath
-    if ( is_fv )
-    {
-      double proc_chance = data().effectN( 2 ).percent();
-      if ( rng().roll( proc_chance ) )
-      {
-        p()->cooldowns.judgment->reset( true );
-      }
-    }
-  }
-};
-
 struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
   // Templar's Verdict damage is stored in a different spell
@@ -547,15 +509,13 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
   };
 
   bool is_fv;
-  templars_verdict_echo_t* echo;
 
   templars_verdict_t( paladin_t* p, util::string_view options_str ) :
     holy_power_consumer_t(
       ( p->talents.final_verdict->ok() ) ? "final_verdict" : "templars_verdict",
       p,
       ( p->talents.final_verdict->ok() ) ? ( p->find_spell( 383328 ) ) : ( p->find_specialization_spell( "Templar's Verdict" ) ) ),
-    is_fv( p->talents.final_verdict->ok() ),
-    echo(nullptr)
+    is_fv( p->talents.final_verdict->ok() )
   {
     parse_options( options_str );
 
@@ -609,16 +569,6 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       if ( rng().roll( proc_chance ) )
       {
         p()->cooldowns.judgment->reset( true );
-      }
-    }
-
-    if ( !background )
-    {
-      if ( p()->buffs.echoes_of_wrath->up() )
-      {
-        p()->buffs.echoes_of_wrath->expire();
-        echo->target = execute_state->target;
-        echo->start_action_execute_event( 700_ms );
       }
     }
   }
@@ -1046,8 +996,6 @@ void paladin_t::create_buffs_retribution()
 
   // legendaries
   buffs.empyrean_legacy = make_buff( this, "empyrean_legacy", find_spell( 387178 ) );
-
-  buffs.echoes_of_wrath = make_buff( this, "echoes_of_wrath", find_spell( 423590 ) );
 
   buffs.rise_from_ash = make_buff( this, "rise_from_ash", find_spell( 454693 ) );
   buffs.winning_streak = make_buff( this, "winning_streak", find_spell( 1216828 ) )

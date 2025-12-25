@@ -127,7 +127,6 @@ public:
     action_t* hammer_of_light_cons;
 
     action_t* expurgation;
-    action_t* wrathful_sanction;
 
     action_t* divine_hammer_tick;
 
