@@ -1487,6 +1487,13 @@ public:
   bool is_hammer_of_light_cleave;
   bool is_hammer_of_light_main;
   double hol_cost;
+
+  // Because every different Divine Storm behaves differently
+  bool triggers_endless_gleam;
+  bool triggers_divine_purpose;
+  bool triggers_crusade_stacks;
+  bool triggers_righteous_cause;
+
   holy_power_consumer_t( util::string_view n, paladin_t* player, const spell_data_t* s )
     : ab( n, player, s ),
       is_divine_storm( false ),
@@ -1495,7 +1502,11 @@ public:
       doesnt_consume_dp( false ),
       is_hammer_of_light_cleave( false ),
       is_hammer_of_light_main( false ),
-      hol_cost( 3.0 )
+      hol_cost( 3.0 ),
+      triggers_endless_gleam(true),
+      triggers_divine_purpose(true),
+      triggers_crusade_stacks(true),
+      triggers_righteous_cause(true)
   {
   }
 
@@ -1520,6 +1531,12 @@ public:
   void impact( action_state_t* s ) override
   {
     paladin_t* p = ab::p();
+    dot_t* d     = this->td( s->target )->dot.dawnlight;
+    if ( triggers_endless_gleam && d && d->is_ticking() )
+    {
+      d->adjust_duration(
+          timespan_t::from_millis( p->talents.herald_of_the_sun.endless_gleam->effectN( 2 ).base_value() ) );
+    }
     ab::impact( s );
 
     if ( !is_hammer_of_light_cleave && p->talents.templar.hammerfall->ok() && p->cooldowns.hammerfall_icd->up() )
@@ -1534,10 +1551,28 @@ public:
       p->cooldowns.hammerfall_icd->start();
     }
 
-    if ( ab::result_is_hit( s->result ) && p->buffs.herald_of_the_sun.dawnlight->up() )
+    // We only apply Dawnlight on the first target hit
+    if ( ab::result_is_hit( s->result ) && p->buffs.herald_of_the_sun.dawnlight->up() && !ab::background && s->chain_target == 0 )
     {
-      p->active.dawnlight->execute_on_target( s->target );
-      p->buffs.herald_of_the_sun.dawnlight->decrement();
+      // We only apply Dawnlight if it is not already ticking on the target - Or if there is only 1 target
+      if ( !d || !d->is_ticking() || ab::target_list().size() == 1 )
+      {
+        p->active.dawnlight->execute_on_target( s->target );
+        p->buffs.herald_of_the_sun.dawnlight->decrement();
+      }
+      // If Dawnlight is already ticking on out first target, we look for another target
+      else
+      {
+        for (auto& tl : ab::target_list())
+        {
+          if (!ab::td(tl)->dot.dawnlight->is_ticking())
+          {
+            p->active.dawnlight->execute_on_target( tl );
+            p->buffs.herald_of_the_sun.dawnlight->decrement();
+            break;
+          }
+        }
+      }
     }
   }
 
@@ -1574,13 +1609,33 @@ public:
       num_hopo_spent = 3.0;
     }
 
+
     ab::execute();
 
-    // if this is a vanq-hammer-based DS, don't do this stuff
-    if ( ab::background && is_divine_storm )
-      return;
+    if ( triggers_endless_gleam && is_divine_storm && ab::execute_state->n_targets > 1 )
+    {
+      auto tl = ab::target_list();
 
-    if ( p->talents.righteous_cause->ok() && p->cooldowns.righteous_cause_icd->up() )
+      int count = 0;
+      for (auto& t : tl)
+      {
+        if ( ab::td( t )->dot.dawnlight->is_ticking() )
+          count++;
+      }
+      // Not in spell data
+      if (count > 1)
+      {
+        timespan_t ad =
+            timespan_t::from_millis( p->talents.herald_of_the_sun.endless_gleam->effectN( 3 ).base_value() );
+        for ( auto& t : tl )
+        {
+          if ( ab::td( t )->dot.dawnlight->is_ticking() )
+            ab::td( t )->dot.dawnlight->adjust_duration( ad );
+        }
+      }
+    }
+
+    if ( triggers_righteous_cause && p->talents.righteous_cause->ok() && p->cooldowns.righteous_cause_icd->up() )
     {
       // TODO: verify that this is how this works
       unsigned base_cost = as<int>( ab::base_cost() );
@@ -1597,7 +1652,7 @@ public:
       }
     }
 
-    if ( p->talents.crusade->ok() && p->buffs.avenging_wrath->up() )
+    if ( triggers_crusade_stacks && p->talents.crusade->ok() && p->buffs.avenging_wrath->up() )
     {
       int crusade_stacks = num_hopo_spent;
       // Hammer of Light always gives 5 Stacks, even if it's free
@@ -1667,7 +1722,7 @@ public:
     // Roll for Divine Purpose
     // 2024-08-04 Damage event of Hammer of Light cannot proc Divine Purpose, if you're Ret
     // (Although it is also likely that the driver being able to proc Divine Purpose is also a bug, but who knows
-    if ( !( p->bugs && !is_hammer_of_light_main && is_hammer_of_light_cleave && p->specialization() == PALADIN_RETRIBUTION ) && p->talents.divine_purpose->ok() && this->rng().roll( p->talents.divine_purpose->effectN( 1 ).percent() ) )
+    if ( triggers_divine_purpose && !( p->bugs && !is_hammer_of_light_main && is_hammer_of_light_cleave && p->specialization() == PALADIN_RETRIBUTION ) && p->talents.divine_purpose->ok() && this->rng().roll( p->talents.divine_purpose->effectN( 1 ).percent() ) )
     {
       p->buffs.divine_purpose->trigger();
       p->procs.divine_purpose->occur();

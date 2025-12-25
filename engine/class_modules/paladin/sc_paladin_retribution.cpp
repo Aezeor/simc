@@ -345,37 +345,48 @@ struct blade_of_justice_t : public paladin_melee_attack_t
 
 // Divine Storm =============================================================
 
-struct divine_storm_second_sunrise_tempest_t : public paladin_melee_attack_t
+struct divine_storm_second_sunrise_tempest_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
   divine_storm_second_sunrise_tempest_t( paladin_t* p )
-    : paladin_melee_attack_t( "divine_storm_second_sunrise_tempest", p, p->talents.divine_storm )
+    : holy_power_consumer_t<paladin_melee_attack_t>( "divine_storm_second_sunrise_tempest", p, p->talents.divine_storm )
   {
     background = true;
 
     aoe = -1;
     base_multiplier *= p->talents.tempest_of_the_lightbringer->effectN( 1 ).percent();
-    clears_judgment = false;
+    clears_judgment          = false;
+    is_divine_storm          = true;
+    triggers_endless_gleam   = false;
+    triggers_divine_purpose  = false;
+    triggers_crusade_stacks  = false;
+    triggers_righteous_cause = false;
   }
 };
 
-struct divine_storm_tempest_t : public paladin_melee_attack_t
+struct divine_storm_tempest_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
-  divine_storm_tempest_t( paladin_t* p ) :
-    paladin_melee_attack_t( "divine_storm_tempest", p, p->find_spell( 224239 ) )
+  divine_storm_tempest_t( paladin_t* p )
+    : holy_power_consumer_t<paladin_melee_attack_t>( "divine_storm_tempest", p, p->find_spell( 224239 ) )
   {
     background = true;
 
     aoe = -1;
     base_multiplier *= p->talents.tempest_of_the_lightbringer->effectN( 1 ).percent();
-    clears_judgment = false;
+    clears_judgment          = false;
+    is_divine_storm          = true;
+    triggers_endless_gleam   = false;
+    triggers_divine_purpose  = true;
+    triggers_crusade_stacks  = false;
+    triggers_righteous_cause = false;
   }
 };
 
-struct divine_storm_second_sunrise_t : public paladin_melee_attack_t
+struct divine_storm_second_sunrise_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
   divine_storm_second_sunrise_tempest_t* tempest;
   divine_storm_second_sunrise_t( paladin_t* p, double multiplier )
-    : paladin_melee_attack_t( "divine_storm_second_sunrise", p, p->talents.divine_storm ), tempest( nullptr )
+    : holy_power_consumer_t<paladin_melee_attack_t>( "divine_storm_second_sunrise", p, p->talents.divine_storm ),
+      tempest( nullptr )
   {
     background = true;
 
@@ -389,6 +400,11 @@ struct divine_storm_second_sunrise_t : public paladin_melee_attack_t
       tempest = new divine_storm_second_sunrise_tempest_t( p );
       add_child( tempest );
     }
+    is_divine_storm          = true;
+    triggers_endless_gleam   = true;
+    triggers_divine_purpose  = false;
+    triggers_crusade_stacks  = false;
+    triggers_righteous_cause = false;
   }
 
   void execute() override
@@ -430,8 +446,13 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
       sunrise_echo = new divine_storm_second_sunrise_t( p, p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent() );
       add_child( sunrise_echo );
     }
+    triggers_endless_gleam   = true;
+    triggers_divine_purpose  = true;
+    triggers_crusade_stacks  = true;
+    triggers_righteous_cause = true;
   }
 
+  // Constructor for Empyrean Legacy
   divine_storm_t( paladin_t* p, bool is_free, double mul ) :
     holy_power_consumer_t( "divine_storm", p, p->talents.divine_storm ),
     tempest( nullptr ), sunrise_echo( nullptr )
@@ -454,6 +475,10 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
       sunrise_echo = new divine_storm_second_sunrise_t( p, p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent() );
       add_child( sunrise_echo );
     }
+    triggers_endless_gleam   = true;
+    triggers_divine_purpose  = true;
+    triggers_crusade_stacks  = false;
+    triggers_righteous_cause = false;
   }
 
   void execute() override
@@ -536,6 +561,7 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       // Okay, when did this get reset to 1?
       weapon_multiplier = 0;
     }
+    triggers_endless_gleam = true;
   }
 
   void record_data( action_state_t* state ) override {
@@ -706,7 +732,8 @@ struct wake_of_ashes_t : public paladin_spell_t
 
     if ( p()->talents.herald_of_the_sun.dawnlight->ok() )
     {
-      p()->buffs.herald_of_the_sun.dawnlight->trigger( as<int>( p()->talents.herald_of_the_sun.dawnlight->effectN( 1 ).base_value() ) );
+      p()->buffs.herald_of_the_sun.dawnlight->trigger(
+          as<int>( p()->talents.herald_of_the_sun.dawnlight->effectN( 1 ).base_value() ) );
     }
 
     if ( p()->talents.herald_of_the_sun.aurora->ok() && p()->cooldowns.aurora_icd->up() )

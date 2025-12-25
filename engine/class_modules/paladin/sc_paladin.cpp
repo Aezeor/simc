@@ -3680,7 +3680,11 @@ void paladin_t::create_buffs()
   buffs.herald_of_the_sun.solar_grace = make_buff( this, "solar_grace", find_spell( 439841 ) )
     -> add_invalidate( CACHE_HASTE )
     -> set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-  buffs.herald_of_the_sun.dawnlight = make_buff( this, "dawnlight", find_spell( 431522 ) )->set_chance( 1.0 );
+  // ToDo Fluttershy: Get this from spell data again, once it reappears
+  buffs.herald_of_the_sun.dawnlight = make_buff( this, "dawnlight", find_spell( 431522 ) )
+                                          ->set_chance( 1.0 )
+                                          ->set_max_stack( 6 )
+                                          ->set_duration( timespan_t::from_seconds( 30 ) );
   buffs.vanguard = make_buff( this, "vanguard", find_spell( 1268810 ) );
   buffs.valor    = make_buff( this, "valor", find_spell( 1269179 ) );
   buffs.light_blessed_shield =
