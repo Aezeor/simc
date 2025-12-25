@@ -3796,7 +3796,7 @@ void paladin_t::apply_action_effects( action_t* a ) {
   if ( !talents.crusade->ok() )
     aw_effect_mask.disable( 11 );
 
-  action->parse_effects( buffs.avenging_wrath, aw_effect_mask );
+  action->parse_effects( buffs.avenging_wrath, aw_effect_mask, IGNORE_STACKS );
   // TODO: add in Divine Purpose - logic here is going to be complex
 
   // Hero talents
