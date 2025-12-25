@@ -76,6 +76,9 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.second_sunrise_icd = get_cooldown( "second_sunrise_icd" );
   cooldowns.second_sunrise_icd->duration = find_spell( 431474 )->internal_cooldown();
 
+  cooldowns.walk_into_light_icd = get_cooldown( "walk_into_light_icd" );
+  cooldowns.walk_into_light_icd->duration = find_spell( 1263782 )->internal_cooldown();
+
   cooldowns.art_of_war = get_cooldown( "art_of_war" );
   cooldowns.art_of_war->duration = find_spell( 406064 )->internal_cooldown();
 
@@ -267,7 +270,6 @@ avenging_wrath_t::avenging_wrath_t( paladin_t* p )
   : paladin_spell_t( "avenging_wrath", p, p->find_spell( 454351 ) )
 {
   background = true;
-  is_proc_background = true;
   harmful = false;
 }
 
@@ -285,7 +287,6 @@ avenging_wrath_t::avenging_wrath_t( paladin_t* p, util::string_view options_str 
     background = true;
 
   harmful = false;
-  is_proc_background = false;
 }
 
 action_state_t* avenging_wrath_t::new_state()
@@ -296,21 +297,25 @@ action_state_t* avenging_wrath_t::new_state()
 void avenging_wrath_t::execute()
 {
   paladin_spell_t::execute();
-  if ( is_proc_background )
-    return;
 
   p()->buffs.avenging_wrath->trigger();
   if ( p()->talents.lightsmith.blessing_of_the_forge->ok() )
     p()->buffs.lightsmith.blessing_of_the_forge->execute();
-
-  if ( p()->talents.herald_of_the_sun.suns_avatar->ok() )
-    p()->apply_avatar_dawnlights();
 
   if ( p()->talents.empyrean_legacy->ok() )
     p()->buffs.empyrean_legacy->trigger();
 
   if ( p()->talents.hammer_of_wrath->ok() )
     p()->buffs.hammer_of_wrath->trigger();
+
+  if ( p()->talents.herald_of_the_sun.walk_into_light->ok() &&
+       p()->rng().roll( p()->talents.herald_of_the_sun.walk_into_light->effectN( 1 ).percent() ) )
+  {
+    p()->resource_gain( RESOURCE_HOLY_POWER,
+                        as<int>( p()->talents.herald_of_the_sun.walk_into_light->effectN( 2 ).base_value() ),
+                        p()->gains.hp_walk_into_light );
+    p()->buffs.herald_of_the_sun.blessing_of_anshe->trigger();
+  }
 }
 
 // Consecration =============================================================
@@ -1648,6 +1653,11 @@ void hammer_of_wrath_t::execute()
     p()->active.divine_resonance_ret_how->execute_on_target( execute_state->target );
     p()->buffs.divine_resonance->decrement();
   }
+  if (p()->talents.herald_of_the_sun.walk_into_light->ok() && p()->wings_up() && p()->cooldowns.walk_into_light_icd->up())
+  {
+    p()->active.blade_of_justice->execute_on_target( execute_state->target );
+    p()->cooldowns.walk_into_light_icd->start();
+  }
 }
 
 void hammer_of_wrath_t::impact( action_state_t* s )
@@ -2920,17 +2930,27 @@ struct dawnlight_aoe_t : public paladin_spell_t
 
 struct dawnlight_t : public paladin_spell_t
 {
-  dawnlight_aoe_t* aoe_action;
-
-  dawnlight_t( paladin_t* p ) :
-    paladin_spell_t( "dawnlight", p, p->find_spell( 431380 ) ),
-    aoe_action( new dawnlight_aoe_t( p ) )
-
+  struct suns_avatar_dmg_t : public paladin_spell_t
   {
-    background = true;
+    suns_avatar_dmg_t( paladin_t* p ) : paladin_spell_t( "suns_avatar", p, p->find_spell( 431911 ) )
+    {
+      background          = true;
+      aoe                 = -1;
+      reduced_aoe_targets = p->talents.herald_of_the_sun.suns_avatar->effectN( 6 ).base_value();
+    }
+  };
+  dawnlight_aoe_t* aoe_action;
+  suns_avatar_dmg_t* suns_avatar;
+
+  dawnlight_t( paladin_t* p )
+    : paladin_spell_t( "dawnlight", p, p->find_spell( 431380 ) ),
+      aoe_action( new dawnlight_aoe_t( p ) ),
+      suns_avatar( new suns_avatar_dmg_t( p ) )
+  {
+    background                     = true;
     affected_by.highlords_judgment = true;
-    tick_may_crit = true;
-    dot_behavior = dot_behavior_e::DOT_EXTEND; // per bolas test Aug 21 2024
+    tick_may_crit                  = true;
+    dot_behavior                   = dot_behavior_e::DOT_EXTEND;  // per bolas test Aug 21 2024
   }
 
   void execute() override
@@ -2942,14 +2962,6 @@ struct dawnlight_t : public paladin_spell_t
 
     if ( p()->buffs.herald_of_the_sun.morning_star->up() )
       p()->buffs.herald_of_the_sun.morning_star->expire();
-
-    if ( p()->talents.herald_of_the_sun.suns_avatar->ok() )
-    {
-      if ( ( !p()->buffs.herald_of_the_sun.suns_avatar->up() ) && p()->buffs.avenging_wrath->up() )
-      {
-        p()->buffs.herald_of_the_sun.suns_avatar->trigger();
-      }
-    }
   }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -2962,116 +2974,24 @@ struct dawnlight_t : public paladin_spell_t
     return cpm;
   }
 
-  double dot_duration_pct_multiplier( const action_state_t* s ) const override
-  {
-    double mul = paladin_spell_t::dot_duration_pct_multiplier( s );
-
-    if ( p()->talents.herald_of_the_sun.suns_avatar->ok() )
-    {
-      if ( p()->buffs.avenging_wrath->up() )
-      {
-        mul *= 1.0 + p()->talents.herald_of_the_sun.suns_avatar->effectN( 5 ).percent();
-      }
-    }
-
-    return mul;
-  }
-
   void tick( dot_t* d ) override
   {
     paladin_spell_t::tick( d );
 
     aoe_action->base_dd_min = aoe_action->base_dd_max = d->state->result_amount * p()->spells.herald_of_the_sun.dawnlight_aoe_metadata->effectN( 1 ).percent();
     aoe_action->execute_on_target( d->target );
+    suns_avatar->execute_on_target( d->target );
   }
 
   void last_tick( dot_t* d ) override
   {
     paladin_spell_t::last_tick( d );
 
-    unsigned num_dawnlights = p()->get_active_dots( d );
-    if ( num_dawnlights == 0 )
-    {
-      if ( p()->talents.herald_of_the_sun.suns_avatar->ok() )
-      {
-        p()->buffs.herald_of_the_sun.suns_avatar->expire();
-      }
-    }
-
     if ( p()->talents.herald_of_the_sun.lingering_radiance->ok() )
     {
       paladin_td_t* target_data = td( d->target );
       target_data->debuff.judgment->trigger();
     }
-  }
-};
-
-void paladin_t::apply_avatar_dawnlights()
-{
-  if ( !talents.herald_of_the_sun.suns_avatar->ok() )
-    return;
-
-  unsigned num_dawnlights = (unsigned) as<int>( talents.herald_of_the_sun.suns_avatar->effectN( 3 ).base_value() );
-
-  // per bolas Aug 21 2024. Can't seem to find this in spelldata
-  if ( !talents.crusade->ok() )
-    num_dawnlights = 2;
-  if ( talents.radiant_glory->ok() )
-    num_dawnlights = 1;
-
-  std::vector<player_t*> tl_candidates;
-  std::vector<player_t*> tl_yes_dawnlight;
-  for ( auto* t : sim->target_non_sleeping_list )
-  {
-    if ( t->is_enemy() )
-    {
-      auto* dawnlight = active.dawnlight->get_dot( t );
-      if ( dawnlight->is_ticking() )
-        tl_yes_dawnlight.push_back( t );
-      else
-        tl_candidates.push_back( t );
-    }
-  }
-
-  if ( tl_candidates.size() < num_dawnlights )
-  {
-    auto needed = num_dawnlights - tl_candidates.size();
-
-    std::stable_sort( tl_yes_dawnlight.begin(), tl_yes_dawnlight.end(), [this]( player_t* a, player_t* b ){
-      auto* dla = active.dawnlight->get_dot( a );
-      auto* dlb = active.dawnlight->get_dot( b );
-      return dla->remains() < dlb->remains();
-    } );
-
-    auto have = tl_yes_dawnlight.size();
-    auto num_extra = have < needed ? have : needed;
-
-    for ( auto i = 0u; i < num_extra; i++ )
-      tl_candidates.push_back( tl_yes_dawnlight[ i ] );
-  }
-
-  auto have_total = tl_candidates.size();
-  if ( num_dawnlights < have_total )
-    have_total = num_dawnlights;
-
-  for ( auto i = 0u; i < have_total; i++ )
-  {
-    active.dawnlight->execute_on_target( tl_candidates[ i ] );
-  }
-
-  if ( bugs && have_total > 0 && talents.radiant_glory->ok() )
-  {
-    active.dawnlight->execute_on_target( tl_candidates[ 0 ] );
-  }
-}
-
-struct suns_avatar_dmg_t : public paladin_spell_t
-{
-  suns_avatar_dmg_t( paladin_t* p ) : paladin_spell_t( "suns_avatar", p, p->find_spell( 431911 ) )
-  {
-    background = true;
-    aoe = -1;
-    reduced_aoe_targets = p->talents.herald_of_the_sun.suns_avatar->effectN( 6 ).base_value();
   }
 };
 
@@ -3349,10 +3269,6 @@ void paladin_t::create_actions()
   {
     active.dawnlight = new dawnlight_t( this );
   }
-  if ( talents.herald_of_the_sun.suns_avatar->ok() )
-  {
-    active.suns_avatar_dmg = new suns_avatar_dmg_t( this );
-  }
 
   active.shield_of_vengeance_damage = new shield_of_vengeance_proc_t( this );
 
@@ -3535,6 +3451,7 @@ void paladin_t::init_gains()
   gains.hp_divine_toll             = get_gain( "divine_toll" );
   gains.hp_crusading_strikes       = get_gain( "crusading_strikes" );
   gains.hp_glory_of_the_vanguard_2 = get_gain( "glory_of_the_vanguard" );
+  gains.hp_walk_into_light            = get_gain( "walk_into_light" );
 
   gains.hp_judge_jury_and_executioner_refund = get_gain( "judge_jury_and_executioner_refund" );
 }
@@ -3760,35 +3677,7 @@ void paladin_t::create_buffs()
   buffs.herald_of_the_sun.solar_grace = make_buff( this, "solar_grace", find_spell( 439841 ) )
     -> add_invalidate( CACHE_HASTE )
     -> set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-  buffs.herald_of_the_sun.dawnlight = make_buff( this, "dawnlight", find_spell( 431522 ) );
-  buffs.herald_of_the_sun.suns_avatar = make_buff( this, "suns_avatar", find_spell( 431907 ) )
-    ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-        active.suns_avatar_dmg->execute_on_target( target );
-      });
-
-  buffs.herald_of_the_sun.solar_wrath = make_buff( this, "solar_wrath", find_spell( 1236972 ) )
-                                          ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
-                                              if ( !( buffs.avenging_wrath->up() ) )
-                                                buffs.herald_of_the_sun.suns_avatar->expire();
-                                          } );
-
-  if ( sets->has_set_bonus( HERO_HERALD_OF_THE_SUN, TWW3, B4 ) && talents.herald_of_the_sun.dawnlight->ok() )
-  {
-    auto solar_wrath_dawnlight_stacks = sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B4 )->effectN( 2 ).base_value();
-    if ( talents.radiant_glory->ok() )
-      solar_wrath_dawnlight_stacks -= sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B4 )->effectN( 5 ).base_value();
-    else if ( talents.crusade->ok() )
-      solar_wrath_dawnlight_stacks += sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B4 )->effectN( 4 ).base_value();
-
-    buffs.herald_of_the_sun.solar_wrath->set_stack_change_callback(
-        [ this, solar_wrath_dawnlight_stacks ]( buff_t*, int, int new_ ) {
-          if ( new_ )
-          {
-            buffs.herald_of_the_sun.dawnlight->trigger( as<int>( solar_wrath_dawnlight_stacks ) );
-          }
-        } );
-  }
-
+  buffs.herald_of_the_sun.dawnlight = make_buff( this, "dawnlight", find_spell( 431522 ) )->set_chance( 1.0 );
   buffs.vanguard = make_buff( this, "vanguard", find_spell( 1268810 ) );
   buffs.valor    = make_buff( this, "valor", find_spell( 1269179 ) );
   buffs.light_blessed_shield =

@@ -135,7 +135,7 @@ public:
     action_t* highlords_judgment;
     action_t* dawnlight;
     action_t* sun_sear;
-    action_t* suns_avatar_dmg;
+    action_t* blade_of_justice;
     action_t* armament[ NUM_ARMAMENT ];
     action_t* sacred_weapon_proc_damage;
     action_t* sacred_weapon_proc_heal;
@@ -244,8 +244,6 @@ public:
       buff_t* morning_star;
       buff_t* solar_grace;
       buff_t* morning_star_driver;
-      buff_t* suns_avatar;
-      buff_t* solar_wrath;
     } herald_of_the_sun;
 
     buff_t* rise_from_ash; // Ret TWW1 4p
@@ -277,6 +275,7 @@ public:
     gain_t* hp_crusading_strikes;
     gain_t* hp_judge_jury_and_executioner_refund;
     gain_t* hp_glory_of_the_vanguard_2;
+    gain_t* hp_walk_into_light;
   } gains;
 
   // Spec Passives
@@ -325,6 +324,7 @@ public:
 
     cooldown_t* aurora_icd;
     cooldown_t* second_sunrise_icd;
+    cooldown_t* walk_into_light_icd;
 
     cooldown_t* hammerfall_icd;
     cooldown_t* art_of_war;
@@ -874,8 +874,6 @@ public:
   void generate_action_prio_list_holy();
   void generate_action_prio_list_holy_dps();
 
-  void apply_avatar_dawnlights();
-
   target_specific_t<paladin_td_t> target_data;
 
   virtual const paladin_td_t* find_target_data( const player_t* target ) const override;
@@ -1280,11 +1278,6 @@ public:
     if ( affected_by.avenging_crusader )
     {
       am *= 1.0 + p()->buffs.avenging_crusader->check_value();
-    }
-
-    if (affected_by.solar_wrath && p()->buffs.herald_of_the_sun.solar_wrath->up())
-    {
-      am *= 1.0 + p()->sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B4 )->effectN( 1 ).percent();
     }
 
     return am;
@@ -1730,7 +1723,6 @@ struct delayed_execute_event_t : public event_t
 
 struct avenging_wrath_t : public paladin_spell_t
 {
-  bool is_proc_background;
   avenging_wrath_t( paladin_t* p );
   avenging_wrath_t( paladin_t* p, util::string_view options_str );
   void execute() override;

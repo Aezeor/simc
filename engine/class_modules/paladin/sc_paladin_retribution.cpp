@@ -257,7 +257,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
 {
   struct light_within_t :public paladin_spell_t
   {
-    light_within_t( paladin_t* p ) : paladin_spell_t( "light_within", p, p->spells.light_within )
+    light_within_t( paladin_t* p, std::string name ) : paladin_spell_t( "light_within_" + name, p, p->spells.light_within )
     {
       background          = true;
       aoe                 = -1;
@@ -274,6 +274,28 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     }
   };
   light_within_t* lw;
+  blade_of_justice_t(paladin_t* p, double mul)
+    : paladin_melee_attack_t( "blade_of_justice_walk_into_light", p, p->talents.blade_of_justice ),
+    lw(nullptr)
+  {
+    background = true;
+    base_multiplier *= mul;
+
+    if ( p->talents.blade_of_vengeance->ok() )
+    {
+      base_aoe_multiplier *= p->find_spell( 404358 )->effectN( 1 ).ap_coeff() / attack_power_mod.direct;
+      aoe                 = -1;
+      reduced_aoe_targets = 5;
+    }
+    if ( p->talents.light_within_3->ok() )
+    {
+      lw = new light_within_t( p, "boj_wil" );
+      add_child( lw );
+    }
+
+    triggers_higher_calling        = true;
+    affected_by.highlords_judgment = true;
+  }
   blade_of_justice_t( paladin_t* p, util::string_view options_str ) : paladin_melee_attack_t( "blade_of_justice", p, p->talents.blade_of_justice ), lw(nullptr)
   {
     parse_options( options_str );
@@ -286,7 +308,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     }
     if (p->talents.light_within_3->ok())
     {
-      lw = new light_within_t( p );
+      lw = new light_within_t( p, "boj" );
       add_child( lw );
     }
 
@@ -707,26 +729,9 @@ struct wake_of_ashes_t : public paladin_spell_t
 
   void execute() override
   {
-    if ( p()->talents.radiant_glory->ok() )
+    if ( p()->talents.radiant_glory->ok() && p()->talents.avenging_wrath->ok() )
     {
-      bool do_avatar = p()->talents.herald_of_the_sun.suns_avatar->ok() &&
-                       !( p()->buffs.avenging_wrath->up() );
-      if ( p()->talents.avenging_wrath->ok() )
-      {
-        if ( !p()->buffs.avenging_wrath->up() )
-        {
-          p()->active.background_avenging_wrath->execute_on_target( p() );
-        }
-        p()->buffs.avenging_wrath->extend_duration_or_trigger( timespan_t::from_seconds( 8 ) );
-
-        if ( p()->talents.hammer_of_wrath->ok() )
-          p()->buffs.hammer_of_wrath->trigger();
-      }
-
-      if ( do_avatar )
-      {
-        p()->apply_avatar_dawnlights();
-      }
+      p()->active.background_avenging_wrath->execute_on_target( p() );
     }
 
     paladin_spell_t::execute();
@@ -1007,6 +1012,11 @@ void paladin_t::create_ret_actions()
     {
       active.sun_sear = new sun_sear_t( this );
     }
+  }
+  if ( talents.herald_of_the_sun.walk_into_light->ok() )
+  {
+    active.blade_of_justice =
+        new blade_of_justice_t( this, talents.herald_of_the_sun.walk_into_light->effectN( 3 ).percent() );
   }
 }
 
