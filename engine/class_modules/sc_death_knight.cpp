@@ -13440,7 +13440,7 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
           des->ticks_remain         = ticks_left;
           des->schedule_execute();
 
-          event->current_pulse = n_ticks;  // End the DnD immediately
+          event->current_pulse = as<int>( n_ticks );  // End the DnD immediately
 
           // TODO: Does this trigger the 4s buff after expiration? Does it include it in its duration?
           make_event( *sim, remaining_time, [ & ]() { buffs.death_and_decay->expire(); } );
