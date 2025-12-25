@@ -569,6 +569,7 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       if ( rng().roll( proc_chance ) )
       {
         p()->cooldowns.judgment->reset( true );
+        p()->cooldowns.hammer_of_wrath->reset( true );
       }
     }
   }

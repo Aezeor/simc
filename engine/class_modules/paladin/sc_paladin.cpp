@@ -1445,11 +1445,10 @@ judgment_t::judgment_t( paladin_t* p, util::string_view name, util::string_view 
   // force effect 1 to be used for direct ratios
   parse_effect_data( data().effectN( 1 ) );
 
-    if ( p->cooldowns.judgment == nullptr )
-      p->cooldowns.judgment = cooldown;
-    else
-      cooldown = p->cooldowns.judgment;
-  
+  if ( p->cooldowns.judgment == nullptr )
+    p->cooldowns.judgment = cooldown;
+  else
+    cooldown = p->cooldowns.judgment;
 }
 
 proc_types judgment_t::proc_type() const
@@ -1641,6 +1640,10 @@ hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view name, util
       p->cooldowns.judgment = cooldown;
     else
       cooldown = p->cooldowns.judgment;
+  }
+  else
+  {
+    cooldown = p->cooldowns.hammer_of_wrath;
   }
 }
 
