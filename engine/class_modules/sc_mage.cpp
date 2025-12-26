@@ -883,7 +883,7 @@ public:
   void trigger_arcane_charge( int stacks = 1 );
   bool trigger_brain_freeze( double chance, proc_t* source, timespan_t delay = 0_ms );
   bool trigger_crowd_control( const action_state_t* s, spell_mechanic type );
-  bool trigger_clearcasting( double chance = 1.0, timespan_t delay = 0_ms, bool never_predictable = false );
+  bool trigger_clearcasting( double chance = 1.0, timespan_t delay = 0_ms, bool allow_predict = true );
   bool trigger_fof( double chance, proc_t* source, int stacks = 1 );
   void trigger_mana_cascade();
   void trigger_merged_buff( buff_t* buff, bool trigger );
@@ -1231,6 +1231,9 @@ struct arcane_phoenix_pet_t final : public mage_pet_t
 
   void demise() override
   {
+    if ( current.sleeping )
+      return;
+
     mage_pet_t::demise();
 
     event_t::cancel( cast_event );
@@ -1521,6 +1524,7 @@ struct mage_spell_t : public spell_t
     bool from_the_ashes = false;
     bool frostfire_empowerment = false;
     bool ignite = false;
+    bool mana_cascade = false;  // Arcane only
     bool molten_chill_ignite = false;
     bool touch_of_the_magi = true;
 
@@ -1828,13 +1832,16 @@ public:
 
       if ( proc_chance == 1.0 || !background )
       {
-        if ( p()->trigger_clearcasting( proc_chance, 100_ms, background ) )
+        if ( p()->trigger_clearcasting( proc_chance, 100_ms, !background ) )
           p()->state.clearcasting_blp_count = 0;
       }
     }
 
     if ( triggers.frostfire_empowerment && rng().roll( p()->talents.frostfire_empowerment->effectN( 3 ).percent() ) )
       make_event( *sim, [ this ] { p()->buffs.frostfire_empowerment->trigger(); } );
+
+    if ( triggers.mana_cascade && p()->specialization() == MAGE_ARCANE )
+      p()->trigger_mana_cascade();
 
     if ( !background && harmful )
       p()->trigger_spellfire_sphere( MAGE_ARCANE );
@@ -2613,7 +2620,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     parse_options( options_str );
     base_aoe_multiplier *= p->talents.arcing_cleave->effectN( 2 ).percent();
     affected_by.overflowing_energy = true;
-    triggers.clearcasting = true;
+    triggers.clearcasting = triggers.mana_cascade = true;
     arcane_soul_charges = as<int>( p->find_spell( 453413 )->effectN( 1 ).base_value() );
 
     if ( p->talents.orb_barrage.ok() )
@@ -2681,16 +2688,14 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     {
       const auto& gi = p()->talents.glorious_incandescence;
       int meteors_per_event = as<int>( gi->effectN( 6 ).base_value() );
-      int events_per_salvo = as<int>( gi->effectN( 4 ).base_value() );
+      int salvo_per_event = as<int>( gi->effectN( 4 ).base_value() );
       // TODO: Seems to generate an additional meteor as long as at least 1 salvo stack is present
-      int meteors = meteors_per_event * ( 1 + salvo / events_per_salvo );
+      int meteors = meteors_per_event * ( 1 + salvo / salvo_per_event );
       if ( meteors )
         // TODO: During Arcane Soul, it is possible to overwrite a previous non-zero snapshot
         // (by casting ABar before the previous one hits), essentially losing those Meteors forever.
         p()->state.glorious_incandescence_snapshot = meteors;
     }
-
-    p()->trigger_mana_cascade();
 
     snapshot_charges = -1;
   }
@@ -2746,7 +2751,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_specialization_spell( "Arcane Blast" ) )
   {
     parse_options( options_str );
-    triggers.clearcasting = true;
+    triggers.clearcasting = triggers.mana_cascade = true;
   }
 
   timespan_t travel_time() const override
@@ -2754,7 +2759,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     // Add a small amount of travel time so that Arcane Blast's damage can be stored
     // in a Touch of the Magi cast immediately afterwards. Because simc has a default
     // sim_t::queue_delay of 5_ms, this needs to be consistently longer than that.
-    return std::max( arcane_mage_spell_t::travel_time(), 6_ms );
+    return std::max( arcane_mage_spell_t::travel_time(), 10_ms );
   }
 
   double cost_pct_multiplier() const override
@@ -2775,7 +2780,6 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
     p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
     p()->trigger_splinter( p()->target );
-    p()->trigger_mana_cascade();
 
     if ( p()->buffs.presence_of_mind->up() )
       p()->buffs.presence_of_mind->decrement();
@@ -2832,6 +2836,7 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     triggers.clearcasting = !echo;
+    triggers.mana_cascade = true;  // Echo triggers it as well
     reduced_aoe_targets = data().effectN( 3 ).base_value();
 
     if ( echo )
@@ -3033,7 +3038,7 @@ struct arcane_missiles_t final : public custom_state_spell_t<arcane_mage_spell_t
     parse_options( options_str );
     may_miss = false;
     tick_zero = channeled = true;
-    triggers.clearcasting = true;
+    triggers.clearcasting = triggers.mana_cascade = true;
     tick_action = get_action<arcane_missiles_tick_t>( "arcane_missiles_tick", p );
     cost_reductions = { p->buffs.clearcasting };
   }
@@ -3146,6 +3151,7 @@ struct arcane_surge_t final : public arcane_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
+    triggers.mana_cascade = true;
   }
 
   timespan_t travel_time() const override
@@ -6854,7 +6860,7 @@ void mage_t::trigger_splinter( player_t* target, int count )
   }
 }
 
-bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool never_predictable )
+bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool allow_predict )
 {
   if ( specialization() != MAGE_ARCANE )
     return false;
@@ -6872,7 +6878,7 @@ bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool never_p
       make_event( *sim, delay, [ this ] { buffs.clearcasting->trigger(); } );
     else
       buffs.clearcasting->trigger();
-    if ( chance >= 1.0 && !never_predictable )
+    if ( chance >= 1.0 && allow_predict )
       buffs.clearcasting->predict();
 
     // TODO: double check timing
