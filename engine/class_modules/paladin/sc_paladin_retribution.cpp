@@ -229,7 +229,7 @@ struct execution_sentence_t : public paladin_melee_attack_t
     cooldown->duration = data().cooldown();
 
     impact_action = new es_inner_t( p );
-    impact_action->stats = stats;
+    // impact_action->stats = stats;
   }
 
   void execute() override
