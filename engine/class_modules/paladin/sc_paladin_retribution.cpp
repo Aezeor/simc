@@ -182,6 +182,36 @@ struct es_explosion_t : public paladin_spell_t
 
 struct execution_sentence_t : public paladin_melee_attack_t
 {
+  struct es_inner_t : public paladin_melee_attack_t
+  {
+    es_inner_t( paladin_t* p ) :
+      paladin_melee_attack_t( "execution_sentence_init", p, p->find_spell( 1260251 ) )
+    {
+      dual = background = true;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      paladin_melee_attack_t::impact( s );
+
+      if ( result_is_hit( s->result ) )
+      {
+        auto tgt = td( s->target );
+        if ( s->chain_target == 0 )
+          tgt->debuff.execution_sentence->trigger();
+        tgt->debuff.execution_sentence_gather->trigger();
+      }
+    }
+
+    void init() override
+    {
+      paladin_melee_attack_t::init();
+      snapshot_flags |= STATE_TARGET_NO_PET | STATE_MUL_TA | STATE_MUL_DA;
+      update_flags &= ~STATE_TARGET;
+      update_flags |= STATE_MUL_TA | STATE_MUL_DA;
+    }
+  };
+
   execution_sentence_t( paladin_t* p, util::string_view options_str ) :
     paladin_melee_attack_t( "execution_sentence", p, p->talents.execution_sentence )
   {
@@ -197,14 +227,9 @@ struct execution_sentence_t : public paladin_melee_attack_t
 
     // unclear why this is needed...
     cooldown->duration = data().cooldown();
-  }
 
-  void init() override
-  {
-    paladin_melee_attack_t::init();
-    snapshot_flags |= STATE_TARGET_NO_PET | STATE_MUL_TA | STATE_MUL_DA;
-    update_flags &= ~STATE_TARGET;
-    update_flags |= STATE_MUL_TA | STATE_MUL_DA;
+    impact_action = new es_inner_t( p );
+    impact_action->stats = stats;
   }
 
   void execute() override
@@ -216,19 +241,6 @@ struct execution_sentence_t : public paladin_melee_attack_t
     if ( p()->talents.judge_jury_and_executioner->ok() )
     {
       p()->buffs.judge_jury_and_executioner->trigger( p()->buffs.judge_jury_and_executioner->data().max_stacks() );
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    paladin_melee_attack_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-    {
-      auto tgt = td( s->target );
-      if ( s->chain_target == 0 )
-        tgt->debuff.execution_sentence->trigger();
-      tgt->debuff.execution_sentence_gather->trigger();
     }
   }
 };
