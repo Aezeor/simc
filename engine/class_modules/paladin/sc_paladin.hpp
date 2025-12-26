@@ -1793,6 +1793,7 @@ struct judgment_base_t : public paladin_melee_attack_t
   hammer_and_anvil_t* hammer_and_anvil;
   int judge_holy_power;
   int sw_holy_power;
+  judgment_base_t( paladin_t* p, util::string_view name, const spell_data_t* s = spell_data_t::nil() );
   judgment_base_t( paladin_t* p, util::string_view name, util::string_view options_str, const spell_data_t* s = spell_data_t::nil() );
   void impact( action_state_t* s ) override;
   void execute();
@@ -1806,7 +1807,7 @@ private:
 public:
   bool triggers_second_sunrise = false;
   bool triggers_divine_resonance = false;
-  hammer_of_wrath_t( paladin_t* p );
+  hammer_of_wrath_t( paladin_t* p, util::string_view name, const spell_data_t* s = spell_data_t::nil() );
   hammer_of_wrath_t( paladin_t* p, util::string_view name, util::string_view options_str, const spell_data_t* s = spell_data_t::nil());
   void impact( action_state_t* s ) override;
   double composite_target_multiplier( player_t* target ) const override;

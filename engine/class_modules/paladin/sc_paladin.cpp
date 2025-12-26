@@ -1368,6 +1368,20 @@ void trigger_hammer_and_anvil( paladin_t* p, action_state_t* s, hammer_and_anvil
 
 // Base Judgment spell ======================================================
 
+judgment_base_t::judgment_base_t( paladin_t* p, util::string_view name, const spell_data_t* s )
+  : paladin_melee_attack_t( name, p, s ),
+    hammer_and_anvil( nullptr ),
+    judge_holy_power( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) ),
+    sw_holy_power( as<int>( p->talents.sanctified_wrath->effectN( 3 ).base_value() ) )
+{
+  triggers_higher_calling = true;
+  if ( p->talents.lightsmith.hammer_and_anvil->ok() )
+  {
+    hammer_and_anvil = new hammer_and_anvil_t( p, "hammer_and_anvil_" + name_str );
+    add_child( hammer_and_anvil );
+  }
+}
+
 judgment_base_t::judgment_base_t( paladin_t* p, util::string_view name, util::string_view options_str, const spell_data_t* s )
   : paladin_melee_attack_t( name, p, s ),
     hammer_and_anvil( nullptr ),
@@ -1381,7 +1395,6 @@ judgment_base_t::judgment_base_t( paladin_t* p, util::string_view name, util::st
     hammer_and_anvil = new hammer_and_anvil_t( p, "hammer_and_anvil_" + name_str );
     add_child( hammer_and_anvil );
   }
-
 }
 
 void judgment_base_t::execute()
@@ -1567,7 +1580,7 @@ struct divine_exaction_judgment_t : public judgment_ret_t
 struct divine_toll_hammer_of_wrath_ret_t : hammer_of_wrath_t
 {
   divine_toll_hammer_of_wrath_ret_t( paladin_t* p )
-    : hammer_of_wrath_t( p, "hammer_of_wrath_divine_toll", "", p->spells.hammer_of_wrath_ret_dt )
+    : hammer_of_wrath_t( p, "hammer_of_wrath_divine_toll", p->spells.hammer_of_wrath_ret_dt)
   {
     background = true;
     aoe        = 1;  // Divine Toll's Hammer of Wraths don't cleave further
@@ -1579,7 +1592,7 @@ struct divine_toll_hammer_of_wrath_ret_t : hammer_of_wrath_t
 struct divine_resonance_hammer_of_wrath_t :hammer_of_wrath_t
 {
   divine_resonance_hammer_of_wrath_t(paladin_t* p)
-    : hammer_of_wrath_t( p, "hammer_of_wrath_divine_resonance", "" , p->spells.hammer_of_wrath_ret )
+    : hammer_of_wrath_t( p, "hammer_of_wrath_divine_resonance", p->spells.hammer_of_wrath_ret )
   {
     background = true;
     base_multiplier *= p->buffs.divine_resonance->data().effectN( 2 ).percent();
@@ -1591,7 +1604,7 @@ struct divine_resonance_hammer_of_wrath_t :hammer_of_wrath_t
   struct divine_exaction_hammer_of_wrath_t :public hammer_of_wrath_t
 {
   divine_exaction_hammer_of_wrath_t(paladin_t* p)
-    : hammer_of_wrath_t(p, "hammer_of_wrath_divine_exaction", "", p->spells.hammer_of_wrath_ret_dt)
+    : hammer_of_wrath_t(p, "hammer_of_wrath_divine_exaction", p->spells.hammer_of_wrath_ret_dt)
   {
     background = true;
     aoe        = 1; // DE's Hammer of Wrath's don't cleave further
@@ -1600,8 +1613,8 @@ struct divine_resonance_hammer_of_wrath_t :hammer_of_wrath_t
   }
 };
 
-  hammer_of_wrath_t::hammer_of_wrath_t(paladin_t* p)
-    : judgment_base_t(p, "Hammer of Wrath Echo", "", p->spells.hammer_of_wrath_ret)
+  hammer_of_wrath_t::hammer_of_wrath_t(paladin_t* p, util::string_view n, const spell_data_t* s)
+    : judgment_base_t(p, n, s)
   {
     background = true;
     triggers_divine_resonance = true;
@@ -1609,50 +1622,50 @@ struct divine_resonance_hammer_of_wrath_t :hammer_of_wrath_t
     cooldown->duration        = 0_ms;
   }
 
-hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view name, util::string_view options_str, const spell_data_t* s )
-  : judgment_base_t( p, name, options_str, s ),
-    echo( nullptr )
-{
-  parse_options( options_str );
-  if ( p->talents.adjudication->ok() )
+hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view name, util::string_view options_str,
+                                        const spell_data_t* s )
+    : judgment_base_t( p, name, options_str, s ), echo( nullptr )
   {
-    add_child( p->active.background_blessed_hammer );
-  }
-  triggers_higher_calling = true;
-  triggers_second_sunrise = !background;
-  triggers_divine_resonance = !background;
-  may_block = may_parry = may_dodge = false;
-  // force effect 1 to be used for direct ratios
-  parse_effect_data( data().effectN( 1 ) );
+    parse_options( options_str );
+    if ( p->talents.adjudication->ok() )
+    {
+      add_child( p->active.background_blessed_hammer );
+    }
+    triggers_higher_calling   = true;
+    triggers_second_sunrise   = !background;
+    triggers_divine_resonance = !background;
+    may_block = may_parry = may_dodge = false;
+    // force effect 1 to be used for direct ratios
+    parse_effect_data( data().effectN( 1 ) );
 
-  if ( p->talents.blessed_champion->ok() )
-  {
-    aoe = as<int>( 1 + p->talents.blessed_champion->effectN( 4 ).base_value() );
-    base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
-  }
+    if ( p->talents.blessed_champion->ok() )
+    {
+      aoe = as<int>( 1 + p->talents.blessed_champion->effectN( 4 ).base_value() );
+      base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
+    }
 
-  if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
-  {
-    echo                          = new hammer_of_wrath_t( p );
-    echo->base_multiplier         = base_multiplier;
-    echo->aoe                     = aoe;
-    echo->base_aoe_multiplier     = base_aoe_multiplier;
-    echo->crit_bonus_multiplier   = crit_bonus_multiplier;
-    echo->triggers_higher_calling = true;
-    echo->base_multiplier *= p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent();
-  }
-  if (p->specialization() == PALADIN_PROTECTION)
-  {
-    if ( p->cooldowns.judgment == nullptr )
-      p->cooldowns.judgment = cooldown;
+    if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
+    {
+      echo = new hammer_of_wrath_t( p, "hammer_of_wrath_second_sunrise", p->spells.hammer_of_wrath_ret );
+      echo->base_multiplier         = base_multiplier;
+      echo->aoe                     = aoe;
+      echo->base_aoe_multiplier     = base_aoe_multiplier;
+      echo->crit_bonus_multiplier   = crit_bonus_multiplier;
+      echo->triggers_higher_calling = true;
+      echo->base_multiplier *= p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent();
+    }
+    if ( p->specialization() == PALADIN_PROTECTION )
+    {
+      if ( p->cooldowns.judgment == nullptr )
+        p->cooldowns.judgment = cooldown;
+      else
+        cooldown = p->cooldowns.judgment;
+    }
     else
-      cooldown = p->cooldowns.judgment;
+    {
+      p->cooldowns.hammer_of_wrath = cooldown;
+    }
   }
-  else
-  {
-    cooldown = p->cooldowns.hammer_of_wrath;
-  }
-}
 
 void hammer_of_wrath_t::execute()
 {
