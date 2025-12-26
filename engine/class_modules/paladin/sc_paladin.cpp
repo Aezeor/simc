@@ -1542,6 +1542,7 @@ struct divine_toll_judgment_ret_t :judgment_ret_t
   {
     background = true;
     aoe        = 1; // Divine Toll's Judgments don't cleave further
+    cooldown->duration = 0_ms;
   }
 };
 struct divine_resonance_judgment_t :judgment_ret_t
@@ -1550,6 +1551,7 @@ struct divine_resonance_judgment_t :judgment_ret_t
   {
     background = true;
     base_multiplier *= p->buffs.divine_resonance->data().effectN( 2 ).percent();
+    cooldown->duration = 0_ms;
   }
 };
 struct divine_exaction_judgment_t : public judgment_ret_t
@@ -1559,6 +1561,7 @@ struct divine_exaction_judgment_t : public judgment_ret_t
     background = true;
     aoe        = 1;  // DE's Hammer of Wrath's don't cleave further
     base_multiplier *= p->talents.templar.divine_exaction->effectN( 2 ).percent();
+    cooldown->duration = 0_ms;
   }
 };
 struct divine_toll_hammer_of_wrath_ret_t : hammer_of_wrath_t
@@ -1570,6 +1573,7 @@ struct divine_toll_hammer_of_wrath_ret_t : hammer_of_wrath_t
     aoe        = 1;  // Divine Toll's Hammer of Wraths don't cleave further
     triggers_second_sunrise   = false;
     triggers_divine_resonance = false;
+    cooldown->duration        = 0_ms;
   }
 };
 struct divine_resonance_hammer_of_wrath_t :hammer_of_wrath_t
@@ -1581,6 +1585,7 @@ struct divine_resonance_hammer_of_wrath_t :hammer_of_wrath_t
     base_multiplier *= p->buffs.divine_resonance->data().effectN( 2 ).percent();
     triggers_second_sunrise = false;
     triggers_divine_resonance = false;
+    cooldown->duration        = 0_ms;
   }
 };
   struct divine_exaction_hammer_of_wrath_t :public hammer_of_wrath_t
@@ -1591,6 +1596,7 @@ struct divine_resonance_hammer_of_wrath_t :hammer_of_wrath_t
     background = true;
     aoe        = 1; // DE's Hammer of Wrath's don't cleave further
     base_multiplier *= p->talents.templar.divine_exaction->effectN( 2 ).percent();
+    cooldown->duration = 0_ms;
   }
 };
 
@@ -1600,6 +1606,7 @@ struct divine_resonance_hammer_of_wrath_t :hammer_of_wrath_t
     background = true;
     triggers_divine_resonance = true;
     triggers_second_sunrise   = false;
+    cooldown->duration        = 0_ms;
   }
 
 hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view name, util::string_view options_str, const spell_data_t* s )

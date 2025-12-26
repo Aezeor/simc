@@ -295,6 +295,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
 
     triggers_higher_calling        = true;
     affected_by.highlords_judgment = true;
+    cooldown->duration             = 0_ms;
   }
   blade_of_justice_t( paladin_t* p, util::string_view options_str ) : paladin_melee_attack_t( "blade_of_justice", p, p->talents.blade_of_justice ), lw(nullptr)
   {
