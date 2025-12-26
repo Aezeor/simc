@@ -319,6 +319,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
 
   void execute() override
   {
+    bool buff_up = p()->buffs.art_of_war->up() || p()->buffs.righteous_cause->up();
     paladin_melee_attack_t::execute();
 
     if ( p()->spells.consecrated_blade->ok() && p()->cooldowns.consecrated_blade_icd->up() )
@@ -326,7 +327,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
       p()->active.background_cons->schedule_execute();
       p()->cooldowns.consecrated_blade_icd->start();
     }
-    if (p()->talents.light_within_3->ok())
+    if ( p()->talents.light_within_3->ok() && buff_up )
     {
       make_event<delayed_execute_event_t>( *sim, p(), lw, execute_state->target, 350_ms );
     }
