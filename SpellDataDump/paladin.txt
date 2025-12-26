@@ -19131,6 +19131,24 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 Description      : You link to your Dawnlights within $s8 yds, causing $431911s1 Radiant damage to enemies or $431939s1 healing to allies that pass through the beams, reduced beyond $?c3[$s9][$s6] targets.
 
+Name             : Dawnlight (id=431460) [Spell Family (10), Passive, Hidden] 
+Class            : Paladin
+School           : Holyfire
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+Internal Cooldown: 2 seconds
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1119259)  : Apply Aura (6) | Proc Trigger Spell (42): Dawnlight
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 431522 | Target: Self (1)
+#2 (id=1119260)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Description      : After you cast $?c1[Holy Prism or Barrier of Faith]?c3[Wake of Ashes][], your next Holy Power spender is guaranteed to apply $s2 Dawnlight.
+
 Name             : Will of the Dawn (id=431462) [Spell Family (10)] 
 Class            : Paladin
 School           : Holyfire
@@ -19287,6 +19305,29 @@ Effects          :
 Description      : Every ${$t1}.1 sec, your next Dawnlight's damage or healing is increased by $431539s1%, stacking up to $431539u times.
 
 Morning Star stacks twice as fast while out of combat.
+
+Name             : Dawnlight (id=431522) [Spell Family (10)] 
+Class            : Paladin
+School           : Holyfire
+Spell Type       : None
+Duration         : 30 seconds
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+Internal Cooldown: 0.9 seconds
+Stacks           : 6 maximum
+Proc Chance      : 100%
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Triggered By     : Dawnlight (431460)
+Attributes       : Can Proc From Procs (122), Nameplate Personal Buffs/Debuffs (423)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Effects          :
+#1 (id=1119361)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+#2 (id=1133259)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 8000 | Scaled Value: 8000 | Target: Self (1)
+Description      : $@spelldesc431460
+Tooltip          : Your next Holy Power spender applies Dawnlight.
 
 Name             : Shake the Heavens (id=431533) [Spell Family (10), Passive] 
 Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=2, col=2, max_rank=1, req_points=1]
