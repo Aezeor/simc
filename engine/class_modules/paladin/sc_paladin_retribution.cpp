@@ -211,6 +211,8 @@ struct execution_sentence_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::execute();
 
+    p()->buffs.execution_sentence->trigger();
+
     if ( p()->talents.judge_jury_and_executioner->ok() )
     {
       p()->buffs.judge_jury_and_executioner->trigger( p()->buffs.judge_jury_and_executioner->data().max_stacks() );
@@ -223,7 +225,10 @@ struct execution_sentence_t : public paladin_melee_attack_t
 
     if ( result_is_hit( s->result ) )
     {
-      td( s->target )->debuff.execution_sentence->trigger();
+      auto tgt = td( s->target );
+      if ( s->chain_target == 0 )
+        tgt->debuff.execution_sentence->trigger();
+      tgt->debuff.execution_sentence_gather->trigger();
     }
   }
 };
@@ -938,10 +943,27 @@ struct sun_sear_t : public paladin_spell_t
   }
 };
 
+void paladin_t::accumulate_es_damage( action_state_t* s, double mult )
+{
+  if ( !buffs.execution_sentence->up() )
+    return;
+
+  double es_accum = buffs.execution_sentence->check_value();
+
+  double amount_accumulated = s->result_total * mult;
+
+  sim->print_debug( "{}'s Execution Sentence accumulates {} additional damage: {} -> {}", name_str,
+    amount_accumulated, es_accum, es_accum + amount_accumulated );
+
+  es_accum += amount_accumulated;
+
+  buffs.execution_sentence->current_value = es_accum;
+}
+
 void paladin_t::trigger_es_explosion( player_t* target )
 {
   double ta = 0.0;
-  double accumulated = get_target_data( target )->debuff.execution_sentence->get_accumulated_damage();
+  double accumulated = buffs.execution_sentence->check_value() * talents.execution_sentence->effectN( 2 ).percent();
 
   sim->print_debug( "{}'s execution_sentence has accumulated {} total additional damage.", target->name(), accumulated );
   ta += accumulated;
@@ -1035,6 +1057,9 @@ void paladin_t::create_buffs_retribution()
 
   buffs.art_of_war = make_buff( this, "art_of_war", find_spell( 406086 ) );
   buffs.righteous_cause = make_buff( this, "righteous_cause", find_spell( 402916 ) );
+
+  buffs.execution_sentence = make_buff( this, "execution_sentence", find_spell( 1234189 ) )
+    ->set_default_value( 0.0 );
 }
 
 void paladin_t::init_rng_retribution()

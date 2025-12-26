@@ -3171,8 +3171,9 @@ void blessing_of_sacrifice_t::execute()
 
 paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_target_data_t( target, paladin )
 {
-  debuff.blessed_hammer        = make_buff( *this, "blessed_hammer", paladin->find_spell( 204301 ) );
-  debuff.execution_sentence    = make_buff<buffs::execution_sentence_debuff_t>( this );
+  debuff.blessed_hammer = make_buff( *this, "blessed_hammer", paladin->find_spell( 204301 ) );
+  debuff.execution_sentence = make_buff<buffs::execution_sentence_debuff_t>( this );
+  debuff.execution_sentence_gather = make_buff( *this, "execution_sentence_gather", paladin->find_spell( 1260251 ) );
 
   debuff.judgment              = make_buff( *this, "judgment", paladin->spells.judgment_debuff )
                                  ->set_default_value_from_effect( 1 )

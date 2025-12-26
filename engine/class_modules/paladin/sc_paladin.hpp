@@ -78,6 +78,7 @@ struct paladin_td_t : public actor_target_data_t
   struct buffs_t
   {
     buffs::execution_sentence_debuff_t* execution_sentence;
+    buff_t* execution_sentence_gather;
     buff_t* judgment;
     buff_t* blessed_hammer;
     buff_t* sanctify;
@@ -203,6 +204,8 @@ public:
     buff_t* empyrean_legacy;
     buff_t* empyrean_legacy_cooldown;
     buff_t* judge_jury_and_executioner;
+
+    buff_t* execution_sentence;
 
     buff_t* echoes_of_wrath;  // DF3 4pc
 
@@ -750,6 +753,7 @@ public:
 
   armament next_armament;
 
+
   // Helper variables to not always RNG the correct target
   player_t* random_weapon_target;
   player_t* random_bulwark_target;
@@ -825,6 +829,7 @@ public:
   void trigger_empyrean_hammer( player_t* target, int number_to_trigger, timespan_t delay, bool random_after_first = false );
   void trigger_lights_deliverance();
   void trigger_forbearance( player_t* target );
+  void accumulate_es_damage( action_state_t* s, double mult );
   void trigger_es_explosion( player_t* target );
   int get_local_enemies( double distance ) const;
   bool standing_in_consecration() const;
@@ -890,20 +895,14 @@ namespace buffs
 struct execution_sentence_debuff_t : public buff_t
 {
   execution_sentence_debuff_t( paladin_td_t* td )
-    : buff_t( *td, "execution_sentence", debug_cast<paladin_t*>( td->source )->talents.execution_sentence ),
-      accumulated_damage( 0.0 ),
-      accum_percent( 0.0 ),
-      extended_count( 0 )
+    : buff_t( *td, "execution_sentence", debug_cast<paladin_t*>( td->source )->talents.execution_sentence )
   {
     set_cooldown( 0_ms );  // handled by the ability
-    accum_percent = data().effectN( 2 ).percent();
   }
 
   void reset() override
   {
     buff_t::reset();
-    accumulated_damage = 0.0;
-    extended_count     = 0;
   }
 
   void expire_override( int stacks, timespan_t duration ) override
@@ -912,30 +911,7 @@ struct execution_sentence_debuff_t : public buff_t
 
     paladin_t* paladin = debug_cast<paladin_t*>( source );
     paladin->trigger_es_explosion( player );
-
-    accumulated_damage = 0.0;
-    extended_count     = 0;
   }
-
-  void accumulate_damage( const action_state_t* s, double mult )
-  {
-    double amount_accumulated = s->result_total * mult;
-
-    sim->print_debug( "{}'s {} accumulates {} additional damage: {} -> {}", player->name(), name(), amount_accumulated,
-                      accumulated_damage, accumulated_damage + s->result_total );
-
-    accumulated_damage += amount_accumulated;
-  }
-
-  double get_accumulated_damage() const
-  {
-    return accumulated_damage * accum_percent;
-  }
-
-private:
-  double accumulated_damage;
-  double accum_percent;
-  int extended_count;
 };
 
 struct forbearance_t : public buff_t
@@ -1316,7 +1292,7 @@ public:
 
     paladin_td_t* td = this->td( s->target );
 
-    if ( td->debuff.execution_sentence->check() && !skip_es_accum )
+    if ( td->debuff.execution_sentence_gather->check() && dbc::is_school( ab::school, SCHOOL_HOLY ) && !skip_es_accum )
     {
       double mult = 1.0;
 
@@ -1338,7 +1314,7 @@ public:
         mult /= 1.0 + mastery_amount;
       }
 
-      td->debuff.execution_sentence->accumulate_damage( s, mult );
+      p()->accumulate_es_damage( s, mult );
     }
   }
 };
