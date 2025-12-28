@@ -9561,12 +9561,13 @@ void evoker_t::create_buffs()
                                    talent.scalecommander.unrelenting_siege_buff )
                                ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
-  buff.azure_sweep = MBF( talent.azure_sweep.ok(), this, "azure_sweep", talent.azure_sweep_buff );
-    
-  if ( sets->has_set_bonus( EVOKER_DEVASTATION, MID1, B2 ) )
+  buff.azure_sweep =
+      MBF( talent.azure_sweep.ok(), this, "azure_sweep", talent.azure_sweep_buff )->set_consume_all_stacks( false );
+
+  if ( sets->has_set_bonus( EVOKER_DEVASTATION, MID1, B4 ) )
   {
-    buff.azure_sweep->modify_initial_stack(
-        as<int>( sets->set( EVOKER_DEVASTATION, MID1, B2 )->effectN( 1 ).base_value() ) );
+    buff.azure_sweep->set_initial_stack(
+        1 + as<int>( sets->set( EVOKER_DEVASTATION, MID1, B4 )->effectN( 1 ).base_value() ) );
   }
 
   buff.strafing_run = MBF( talent.strafing_run.ok(), this, "strafing_run", talent.strafing_run_buff )
