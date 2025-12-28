@@ -3994,7 +3994,8 @@ public:
     : evoker_spell_t( fmt::format( "chrono_flame{}", suffix ), p, p->talent.chronowarden.chrono_flame_damage ),
       chrono_mult( p->talent.chronowarden.chrono_flame->effectN( p->specialization() == EVOKER_AUGMENTATION ? 3 : 1 )
                        .percent() ),
-      chrono_cap( 2.5 ),  // TODO: Parse from variable,
+      chrono_cap( ( p->talent.chronowarden.overclock->effectN( 1 ).percent() + 1 ) *
+                  2.5 ),   // TODO: Parse from variable,
       TWW3_set_cap( 4.5 )  // TODO: Parse from variable,
   {
     may_crit     = false;
@@ -9532,6 +9533,16 @@ void evoker_t::create_buffs()
           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
           ->set_default_value_from_effect( 2 )
           ->set_reverse( true );
+
+  if ( talent.chronowarden.energy_cycles.ok() )
+  {
+    buff.temporal_burst->set_tick_callback( [ this ]( buff_t* b, int t, timespan_t ) {
+      if ( t > 0 && ( t % as<int>( talent.chronowarden.temporal_burst->effectN( 1 ).base_value() ) ) == 0 )
+      {
+        buff.essence_burst->trigger();
+      }
+    } );
+  }
 
   buff.time_convergence_intellect = MBF( talent.chronowarden.time_convergence.ok(), this, "time_convergence_intellect",
                                          talent.chronowarden.time_convergence_intellect_buff )
