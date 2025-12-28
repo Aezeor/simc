@@ -75,6 +75,7 @@ namespace pets
 {
 struct evoker_pet_t;
 struct dracthyr_commando_t;
+struct duplicate_t;
 }
 
 enum empower_e
@@ -1052,6 +1053,7 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> trembling_earth;
     propagate_const<buff_t*> volcanic_upsurge;  // TWW1 2PC
     propagate_const<buff_t*> tww1_4pc_aug;
+    propagate_const<buff_t*> duplicate;
 
     // Chronowarden
     propagate_const<buff_t*> primacy;
@@ -1431,8 +1433,9 @@ struct evoker_t : public player_t
   struct pets_t
   {
     spawner::pet_spawner_t<pets::dracthyr_commando_t, evoker_t> commando_pet;
+    spawner::pet_spawner_t<pets::duplicate_t, evoker_t> duplicate_pet;
 
-    pets_t( evoker_t* e ) : commando_pet( "dracthyr_commando", e )
+    pets_t( evoker_t* e ) : commando_pet( "dracthyr_commando", e ), duplicate_pet( "duplicate", e )
     {
     }
   } pets;
@@ -2374,6 +2377,11 @@ public:
                        [ this ] { return p()->buff.risen_fury->at_max_stacks(); } );
       }
     }
+
+    if ( p()->talent.duplicate3.enabled() )
+    {
+      parse_effects( p()->buff.duplicate );
+    }
   }
 
   // Syntax: parse_target_effects( func, debuff[, spells|ignore_mask][,...] )
@@ -3265,6 +3273,180 @@ struct dracthyr_commando_t : evoker_pet_t
     return;
   }
 };
+
+struct duplicate_t : evoker_pet_t
+{
+  action_t* eruption;
+  action_t* fire_breath;
+  action_t* upheaval;
+  action_t* custom_execution_pointer;
+
+  duplicate_t( evoker_t* player )
+    : evoker_pet_t( player, "duplicate", true, false, true ), custom_execution_pointer( nullptr )
+  {
+    owner_coeff.sp_from_sp = 1.0;
+    ready_type             = READY_TRIGGER;
+    duration               = evoker()->talent.duplicate3_buff->duration();
+  }
+
+  struct eruption_t : public pet_spell_t<duplicate_t>
+  {
+    eruption_t( duplicate_t* p ) : pet_spell_t( p, "eruption", p->evoker()->talent.duplicate_eruption_spell )
+    {
+      background       = false;
+      aoe              = -1;
+      split_aoe_damage = true;
+    }
+  };
+
+  void arise() override
+  {
+    evoker_pet_t::arise();
+
+    reschedule_actor();
+
+    if ( evoker()->talent.duplicate3.enabled() )
+      evoker()->buff.duplicate->trigger();
+  }
+
+  void demise() override
+  {
+    evoker_pet_t::demise();
+
+    if ( evoker()->talent.duplicate3.enabled() && evoker()->pets.duplicate_pet.n_active_pets() == 0 )
+      evoker()->buff.duplicate->expire();
+  }
+
+  void create_buffs() override
+  {
+    evoker_pet_t::create_buffs();
+  }
+
+  void reset() override
+  {
+    evoker_pet_t::reset();
+    custom_execution_pointer = nullptr;
+  }
+
+  void create_actions() override
+  {
+    evoker_pet_t::create_actions();
+    eruption = new eruption_t( this );
+  }
+
+  void schedule_ready( timespan_t /* delta_time */, bool /* waiting */ ) override
+  {
+    reschedule_actor();
+  }
+
+  void acquire_target( retarget_source event, player_t* context ) override
+  {
+    if ( custom_execution_pointer && custom_execution_pointer->execute_event &&
+         custom_execution_pointer->target->is_sleeping() )
+    {
+      event_t::cancel( custom_execution_pointer->execute_event );
+      started_waiting = sim->current_time();
+    }
+
+    // TODO: This skips certain very custom targets (such as Soul Effigy), is it a problem (since those
+    // usually are handled in action target cache regeneration)?
+    if ( sim->debug )
+    {
+      sim->out_debug.printf( "%s retargeting event=%s context=%s current_target=%s", name(),
+                             util::retarget_event_string( event ), context ? context->name() : "NONE",
+                             target ? target->name() : "NONE" );
+    }
+
+    player_t* candidate_target    = nullptr;
+    player_t* first_invuln_target = nullptr;
+
+    // TODO: Fancier system
+    for ( auto enemy : sim->target_non_sleeping_list )
+    {
+      if ( enemy->debuffs.invulnerable != nullptr && enemy->debuffs.invulnerable->check() )
+      {
+        if ( first_invuln_target == nullptr )
+        {
+          first_invuln_target = enemy;
+        }
+        continue;
+      }
+
+      if ( !enemy->is_enemy() || enemy->is_sleeping() )
+        continue;
+
+      if ( !candidate_target || enemy->max_health() > candidate_target->max_health() )
+        candidate_target = enemy;
+
+      if ( sim->fixed_time )
+        break;
+    }
+
+    // Invulnerable targets are currently not in the target_non_sleeping_list, so fall back to
+    // checking if the first target has the invulnerability buff up, and use that as the fallback
+    auto first_target = sim->target_list.data().front();
+    if ( !first_invuln_target && first_target->debuffs.invulnerable->check() )
+    {
+      first_invuln_target = first_target;
+    }
+
+    // Only perform target acquisition if the actor's current target would change (to the candidate
+    // target).
+    if ( candidate_target )
+    {
+      if ( sim->debug )
+      {
+        sim->out_debug.printf( "%s acquiring (potentially new) target, current=%s candidate=%s", name(),
+                               target ? target->name() : "NONE", candidate_target ? candidate_target->name() : "NONE" );
+      }
+
+      target = candidate_target;
+      range::for_each( action_list, [ event, context, candidate_target ]( action_t* action ) {
+        action->acquire_target( event, context, candidate_target );
+      } );
+    }
+    // If we really cannot find any sensible target, fall back to the first invulnerable target
+    else if ( !candidate_target && first_invuln_target )
+    {
+      if ( sim->debug )
+      {
+        sim->out_debug.printf( "%s acquiring (potentially new) target, current=%s candidate=%s [invulnerable fallback]",
+                               name(), target ? target->name() : "NONE",
+                               first_invuln_target ? first_invuln_target->name() : "NONE" );
+      }
+
+      target = first_invuln_target;
+      range::for_each( action_list, [ event, context, first_invuln_target ]( action_t* action ) {
+        action->acquire_target( event, context, first_invuln_target );
+      } );
+    }
+
+    if ( candidate_target || first_invuln_target )
+    {
+      // Finally, re-acquire targeting for all dynamic targeting actions. This needs to be done
+      // separately, as their targeting is not strictly bound to player_t::target (i.e., "the players
+      // target")
+      range::for_each(
+          dynamic_target_action_list, [ event, context, candidate_target, first_invuln_target ]( action_t* action ) {
+            action->acquire_target( event, context, candidate_target ? candidate_target : first_invuln_target );
+          } );
+    }
+
+    if ( !custom_execution_pointer || !custom_execution_pointer->execute_event )
+      trigger_ready();
+  }
+
+  void reschedule_actor()
+  {
+    if ( executing || custom_execution_pointer && custom_execution_pointer->execute_event || is_sleeping() ||
+         buffs.stunned->check() )
+      return;
+
+    // Select Action
+    custom_execution_pointer = eruption;
+    custom_execution_pointer->schedule_execute();
+  }
+};
 };  // namespace pets
 
 namespace heals
@@ -3741,6 +3923,11 @@ public:
       amount *= p()->spec.ebon_might->effectN( 3 ).base_value() / p()->allies_with_my_ebon.size();
     }
 
+    if ( p()->talent.duplicate2.enabled() && p()->buff.duplicate->check() )
+    {
+      amount *= 1 + p()->buff.duplicate->check_value();
+    }
+
     return amount;
   }
 
@@ -3762,6 +3949,15 @@ public:
       auto ebon = p()->get_target_data( ally )->buffs.ebon_might;
 
       ebon->extend_duration( p(), extend );
+    }
+
+    if ( p()->talent.duplicate2.enabled() && p()->pets.duplicate_pet.n_active_pets() > 0 )
+    {
+      auto pet_extend = extend * p()->talent.duplicate2->effectN( 1 ).percent();
+      for ( auto& pet : p()->pets.duplicate_pet.active_pets() )
+      {
+        pet->adjust_duration( pet_extend );
+      }
     }
   }
 
@@ -6815,6 +7011,11 @@ struct breath_of_eons_t : public evoker_spell_t
         p()->pets.commando_pet.spawn( 4_s, 2 );
       }
 
+      if ( p()->talent.duplicate1.enabled() )
+      {
+        p()->pets.duplicate_pet.spawn();
+      }
+
       evoker_spell_t::execute();
 
       if ( ebon )
@@ -9518,6 +9719,12 @@ void evoker_t::create_buffs()
                                           1000 );
   }
 
+  buff.duplicate = MBF( talent.duplicate3.ok(), this, "duplicate", talent.duplicate3_buff )
+                       ->set_duration( 0_s )
+                       ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                       ->set_default_value_from_effect( 2, 0.01 );
+
+
   buff.momentum_shift = MBF( talent.momentum_shift.ok(), this, "momentum_shift", find_spell( 408005 ) )
                             ->set_default_value_from_effect( 1 )
                             ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
@@ -9560,7 +9767,7 @@ void evoker_t::create_buffs()
       MBF( sets->has_set_bonus( HERO_FLAMESHAPER, TWW3, B2 ), this, "inner_flame", talent.flameshaper.inner_flame_buff_base )
           ->set_default_value( talent.flameshaper.inner_flame_buff->effectN( 2 ).percent() )
           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-
+  
   // Scalecommander
   buff.mass_disintegrate_stacks = MBF( talent.scalecommander.mass_disintegrate.ok(), this, "mass_disintegrate_stacks",
                                        talent.scalecommander.mass_disintegrate_buff );
