@@ -97,11 +97,12 @@ enum spell_color_e
   SPELL_RED
 };
 
- enum mote_buffs_e : unsigned
+enum mote_buffs_e : unsigned
 {
   INFERNOS_BLESSING = 0,
   SHIFTING_SANDS,
   SYMBIOTIC_BLOOM,
+  PRESCIENCE,
   MAX
 };
 
@@ -10040,7 +10041,10 @@ void evoker_t::spawn_mote_of_possibility( player_t* prospective_player, mote_buf
     target = nullptr;
 
   if ( mote_buff == mote_buffs_e::MAX )
-    mote_buff = mote_buffs_e( rng().range<unsigned>( mote_buffs_e::MAX ) );
+  {
+    mote_buff = mote_buffs_e(
+        rng().range<unsigned>( talent.clairvoyant.enabled() ? mote_buffs_e::MAX : mote_buffs_e::PRESCIENCE ) );
+  }
 
   if ( target )
   {
@@ -10049,6 +10053,9 @@ void evoker_t::spawn_mote_of_possibility( player_t* prospective_player, mote_buf
     {
       case mote_buffs_e::INFERNOS_BLESSING:
         td->buffs.infernos_blessing->trigger();
+        return;
+      case mote_buffs_e::PRESCIENCE:
+        td->buffs.prescience->trigger();
         return;
       case mote_buffs_e::SHIFTING_SANDS:
         td->buffs.shifting_sands->current_value = cache.mastery_value();
@@ -10064,6 +10071,9 @@ void evoker_t::spawn_mote_of_possibility( player_t* prospective_player, mote_buf
     {
       case mote_buffs_e::INFERNOS_BLESSING:
         get_target_data( this )->buffs.infernos_blessing->trigger();
+        return;
+      case mote_buffs_e::PRESCIENCE:
+        get_target_data( this )->buffs.prescience->trigger();
         return;
       case mote_buffs_e::SYMBIOTIC_BLOOM:
         return;
