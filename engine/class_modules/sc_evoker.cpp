@@ -3871,7 +3871,7 @@ public:
       double_time_mult( p->talent.chronowarden.double_time->effectN( 2 ).percent() )
   {
     // Add a target so you always hit yourself.
-    aoe += 1;
+    aoe = -1;
     dot_duration = base_tick_time = 0_ms;
 
     may_crit = true;
