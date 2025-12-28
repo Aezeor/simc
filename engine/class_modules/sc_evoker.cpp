@@ -5260,6 +5260,7 @@ struct disintegrate_t : public essence_spell_t
 
   double consume_flame_mul;
   timespan_t consume_flame_duration;
+  int mass_disint_targets;
   disintegrate_t( evoker_t* p, std::string_view options_str )
     : essence_spell_t( "disintegrate", p,
                        p->talent.eruption.ok() ? spell_data_t::not_found() : p->find_class_spell( "Disintegrate" ),
@@ -5268,7 +5269,8 @@ struct disintegrate_t : public essence_spell_t
       mass_disint_mult( p->talent.scalecommander.mass_disintegrate->effectN( 2 ).percent() ),
       current_dots(),
       consume_flame_mul( p->talent.flameshaper.consume_flame->effectN( 4 ).percent() ),
-      consume_flame_duration( p->talent.flameshaper.consume_flame->effectN( 2 ).time_value() )
+      consume_flame_duration( p->talent.flameshaper.consume_flame->effectN( 2 ).time_value() ),
+      mass_disint_targets( as<int>( p->talent.scalecommander.mass_disintegrate->effectN( 1 ).base_value() ) )
   {
     channeled = tick_zero = true;
 
@@ -5311,7 +5313,8 @@ struct disintegrate_t : public essence_spell_t
 
   int max_targets() const
   {
-    return ( p()->buff.mass_disintegrate_stacks->check() > 0 ) * 3;
+    // TODO: Check if the additional target actually increases ST when its missing.
+    return ( p()->buff.mass_disintegrate_stacks->check() > 0 ) * mass_disint_targets;
   }
 
   int targets() const
