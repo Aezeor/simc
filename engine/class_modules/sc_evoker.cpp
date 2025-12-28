@@ -4788,13 +4788,6 @@ struct eruption_t : public essence_spell_t
       p()->spawn_mote_of_possibility();
     }
 
-    if ( p()->talent.regenerative_chitin.ok() && p()->last_scales_target &&
-         p()->get_target_data( p()->last_scales_target )->buffs.blistering_scales->check() )
-    {
-      p()->get_target_data( p()->last_scales_target )
-          ->buffs.blistering_scales->bump( as<int>( p()->talent.regenerative_chitin->effectN( 3 ).base_value() ) );
-    }
-
     if ( !is_overlord )
     {
       if ( p()->talent.scalecommander.mass_eruption.enabled() && p()->buff.mass_eruption_stacks->check() &&
@@ -6436,7 +6429,6 @@ struct prescience_t : public evoker_augment_t
 {
 protected:
   double anachronism_chance;
-  double golden_opportunity_chance;
   double double_time_mult;
   bool use_auto;
 
@@ -6444,12 +6436,10 @@ public:
   prescience_t( evoker_t* p, std::string_view options_str )
     : evoker_augment_t( "prescience", p, p->talent.prescience, options_str, false ),
       anachronism_chance(),
-      golden_opportunity_chance(),
       double_time_mult(),
       use_auto( false )
   {
     anachronism_chance        = p->talent.anachronism->effectN( 1 ).percent();
-    golden_opportunity_chance = p->talent.chronowarden.golden_opportunity->effectN( 1 ).percent();
     double_time_mult          = p->talent.chronowarden.double_time->effectN( 2 ).percent();
 
     may_crit = true;
@@ -7355,7 +7345,8 @@ private:
       if ( s->target->is_sleeping() )
         return;
 
-      p()->get_target_data( s->target )->buffs.blistering_scales->decrement();
+      if ( !p()->talent.blistering_scales.enabled() )
+        p()->get_target_data( s->target )->buffs.blistering_scales->decrement();
 
       p()->sim->print_debug( "{}'s blistering scales detonates for action {} from {} targeting {}", *p(), *s->action,
                              *s->action->player, *s->target );
