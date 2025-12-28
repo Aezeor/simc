@@ -3632,9 +3632,7 @@ struct flamestrike_t final : public hot_streak_spell_t
     parse_options( options_str );
     triggers.ignite = true;
     aoe = -1;
-    reduced_aoe_targets = data().effectN( 3 ).base_value();
-    // 1 ms travel delay to handle Majesty of the Phoenix correctly
-    travel_delay = 0.001;
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
 
     if ( p->talents.pyromaniac.ok() )
       pyromaniac_action = get_action<flamestrike_pyromaniac_t>( "flamestrike_pyromaniac", p );
