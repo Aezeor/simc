@@ -4217,9 +4217,14 @@ struct fire_breath_t : public empowered_charge_spell_t
         {
           p()->get_target_data( p() )->buffs.infernos_blessing->trigger();
 
-          for ( auto a : p()->allies_with_my_ebon )
+          player_t* other_player = nullptr;
+
+          if ( p()->allies_with_my_ebon.size() > 0 )
+            other_player = rng().range( p()->allies_with_my_ebon );
+
+          if ( other_player )
           {
-            p()->get_target_data( a )->buffs.infernos_blessing->trigger();
+            p()->get_target_data( other_player )->buffs.infernos_blessing->trigger();
           }
         }
       }
