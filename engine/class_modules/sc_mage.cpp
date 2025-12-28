@@ -277,6 +277,7 @@ public:
     buff_t* feel_the_burn;
     buff_t* fevered_incantation;
     buff_t* fiery_rush;
+    buff_t* heat_shimmer;
     buff_t* heating_up;
     buff_t* hot_streak;
     buff_t* wildfire;
@@ -347,6 +348,7 @@ public:
   // Options
   struct options_t
   {
+    timespan_t scorch_delay = 15_ms;
     timespan_t arcane_missiles_chain_delay = 200_ms;
     double arcane_missiles_chain_relstddev = 0.1;
     timespan_t arcane_missiles_delay = 100_ms;
@@ -433,6 +435,7 @@ public:
     bool had_low_mana;
     bool trigger_ff_empowerment;
     bool trigger_overpowered_missiles;
+    bool heat_shimmer;
     bool gained_initial_clearcasting; // Used to prevent queueing Arcane Missiles immediately after gaining the first stack Clearclasting.
     bool eureka;
     bool thermal_void_active;
@@ -2155,6 +2158,28 @@ struct fire_mage_spell_t : public mage_spell_t
           // with a guaranteed crit, let them react to the Hot Streak instantly.
           if ( guaranteed && hu_react )
             p->buffs.hot_streak->predict();
+
+          // If Scorch generates Hot Streak and the actor is currently casting Pyroblast
+          // or Flamestrike, the game will immediately finish the cast. This is presumably
+          // done to work around the buff application delay inside Combustion or with
+          // Searing Touch active. The following code is a huge hack.
+          if ( id == 2948 && p->executing && ( p->executing->id == 11366 || p->executing->id == 2120 || p->executing->id == 1254851 ) )
+          {
+            if ( p->executing->target->is_sleeping() )
+            {
+              make_event( *sim, [ p ] { p->interrupt(); } );
+            }
+            else
+            {
+              assert( p->executing->execute_event );
+              p->current_execute_type = execute_type::FOREGROUND;
+              event_t::cancel( p->executing->execute_event );
+              event_t::cancel( p->cast_while_casting_poll_event );
+              // We need to set time_to_execute to zero, start a new action execute event and
+              // adjust GCD. action_t::schedule_execute should handle all these.
+              p->executing->schedule_execute();
+            }
+          }
         }
         // Crit without HU => generate HU
         else
@@ -2267,6 +2292,9 @@ struct fire_mage_spell_t : public mage_spell_t
   {
     if ( !p()->talents.scorch.ok() )
       return false;
+
+    if ( p()->state.heat_shimmer && p()->buffs.heat_shimmer->check() )
+      return true;
 
     return target->health_percentage() <= p()->talents.scorch->effectN( 2 ).base_value() + p()->talents.sunfury_execution->effectN( 2 ).base_value();
   }
@@ -2455,6 +2483,8 @@ struct ignite_t final : public residual_action::residual_periodic_action_t<spell
     residual_action_t::tick( d );
 
     auto p = debug_cast<mage_t*>( player );
+    p->buffs.heat_shimmer->trigger();
+
     if ( p->get_active_dots( d ) <= p->talents.intensifying_flame->effectN( 1 ).base_value() )
     {
       // 2024-05-19: Intensifying Flames deals a percentage of Ignite's base tick damage and not the damage it actually ticked for.
@@ -4706,6 +4736,84 @@ struct ray_of_frost_t final : public frost_mage_spell_t
   }
 };
 
+struct scorch_data_t
+{
+  bool scorch_execute = false;
+  void debug( std::ostringstream& s ) const { s << " scorch_execute=" << scorch_execute; }
+};
+
+struct scorch_t final : public custom_state_spell_t<fire_mage_spell_t, scorch_data_t>
+{
+  scorch_t( std::string_view n, mage_t* p, std::string_view options_str ) :
+    custom_state_spell_t( n, p, p->talents.scorch )
+  {
+    parse_options( options_str );
+    triggers.hot_streak = TT_MAIN_TARGET;
+    triggers.ignite = triggers.from_the_ashes = true;
+    // There is a tiny delay between Scorch dealing damage and Hot Streak
+    // state being updated. Here we model it as a tiny travel time.
+    travel_delay = p->options.scorch_delay.total_seconds();
+  }
+
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
+  {
+    auto ss = cast_state( s );
+    ss->data.scorch_execute = scorch_execute_active( s->target );
+    custom_state_spell_t::snapshot_state( s, rt );
+  }
+
+  void schedule_execute( action_state_t* s ) override
+  {
+    custom_state_spell_t::schedule_execute( s );
+
+    // Heat Shimmer cannot be consumed or apply its benefit unless
+    // it was already active at the beginning of the Scorch cast.
+    p()->state.heat_shimmer = p()->buffs.heat_shimmer->check();
+  }
+
+  void execute() override
+  {
+    custom_state_spell_t::execute();
+
+    if ( p()->state.heat_shimmer && p()->buffs.heat_shimmer->up() )
+    {
+      p()->buffs.heat_shimmer->decrement();
+      p()->state.heat_shimmer = false;
+    }
+  }
+
+  timespan_t execute_time() const override
+  {
+    if ( p()->buffs.heat_shimmer->check() )
+      return 0_ms;
+
+    return custom_state_spell_t::execute_time();
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = custom_state_spell_t::composite_da_multiplier( s );
+
+    if ( scorch_execute_active( s->target ) )
+      m *= 1.0 + p()->talents.scald->effectN( 2 ).percent();
+
+    return m;
+  }
+
+  double composite_target_crit_chance( player_t* target ) const override
+  {
+    double c = custom_state_spell_t::composite_target_crit_chance( target );
+
+    if ( scorch_execute_active( target ) )
+      c += 1.0;
+
+    return c;
+  }
+
+  bool usable_moving() const override
+  { return true; }
+};
+
 struct shimmer_t final : public mage_spell_t
 {
   shimmer_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -5320,6 +5428,7 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
   if ( name == "flamestrike"       ) return new       flamestrike_t( name, this, options_str );
   if ( name == "meteor"            ) return new            meteor_t( name, this, options_str );
   if ( name == "pyroblast"         ) return new         pyroblast_t( name, this, options_str );
+  if ( name == "scorch"            ) return new            scorch_t( name, this, options_str );
 
   // Frost
   if ( name == "blizzard"          ) return new          blizzard_t( name, this, options_str );
@@ -5428,6 +5537,7 @@ void mage_t::create_actions()
 
 void mage_t::create_options()
 {
+  add_option( opt_timespan( "mage.scorch_delay", options.scorch_delay ) );
   add_option( opt_timespan( "mage.arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "mage.arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_timespan( "mage.arcane_missiles_delay", options.arcane_missiles_delay, 0_ms, timespan_t::max() ) );
@@ -6008,6 +6118,8 @@ void mage_t::create_buffs()
                                      ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
                                        { cooldowns.fire_blast->adjust_recharge_multiplier(); } )
                                      ->set_chance( talents.fiery_rush.ok() );
+  buffs.heat_shimmer             = make_buff( this, "heat_shimmer", find_spell( 458964 ) )
+                                     ->set_trigger_spell( talents.heat_shimmer );
   buffs.heating_up               = make_buff( this, "heating_up", find_spell( 48107 ) );
   buffs.hot_streak               = make_buff( this, "hot_streak", find_spell( 48108 ) );
   buffs.wildfire                 = make_buff( this, "wildfire", find_spell( 383492 ) )
