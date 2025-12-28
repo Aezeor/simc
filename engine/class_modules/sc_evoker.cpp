@@ -6411,6 +6411,11 @@ public:
     if ( p( s )->close_as_clutchmates )
       m *= 1 + p( s )->spec.close_as_clutchmates->effectN( 1 ).percent();
 
+    if ( p( s )->allies_with_my_ebon.size() > p( s )->spec.ebon_might->effectN( 3 ).base_value() )
+    {
+      m *= sqrt( p( s )->spec.ebon_might->effectN( 3 ).base_value() / p( s )->allies_with_my_ebon.size() );
+    }
+
     return m;
   }
 
