@@ -1437,6 +1437,7 @@ struct evoker_t : public player_t
 
     pets_t( evoker_t* e ) : commando_pet( "dracthyr_commando", e ), duplicate_pet( "duplicate", e )
     {
+      duplicate_pet.set_default_duration( e->find_spell( 1259171 )->duration() );
     }
   } pets;
 
@@ -3286,16 +3287,21 @@ struct duplicate_t : evoker_pet_t
   {
     owner_coeff.sp_from_sp = 1.0;
     ready_type             = READY_TRIGGER;
-    duration               = evoker()->talent.duplicate3_buff->duration();
   }
 
   struct eruption_t : public pet_spell_t<duplicate_t>
   {
     eruption_t( duplicate_t* p ) : pet_spell_t( p, "eruption", p->evoker()->talent.duplicate_eruption_spell )
     {
-      background       = false;
+      background       = true;
       aoe              = -1;
       split_aoe_damage = true;
+    }
+
+    void execute() override
+    {
+      pet_spell_t::execute();
+      player->schedule_ready();
     }
   };
 
@@ -3436,6 +3442,12 @@ struct duplicate_t : evoker_pet_t
       trigger_ready();
   }
 
+  action_t* execute_action() override
+  {
+    return eruption;
+  }
+
+
   void reschedule_actor()
   {
     if ( executing || custom_execution_pointer && custom_execution_pointer->execute_event || is_sleeping() ||
@@ -3443,7 +3455,7 @@ struct duplicate_t : evoker_pet_t
       return;
 
     // Select Action
-    custom_execution_pointer = eruption;
+    custom_execution_pointer = execute_action();
     custom_execution_pointer->schedule_execute();
   }
 };
@@ -3870,7 +3882,6 @@ public:
       ebon_time( ebon ),
       double_time_mult( p->talent.chronowarden.double_time->effectN( 2 ).percent() )
   {
-    // Add a target so you always hit yourself.
     aoe = -1;
     dot_duration = base_tick_time = 0_ms;
 
