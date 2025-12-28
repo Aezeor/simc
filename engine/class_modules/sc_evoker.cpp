@@ -151,8 +151,6 @@ struct evoker_td_t : public actor_target_data_t
     time_t last_accessed_second          = 0;
   } chrono_tracker;
 
-  double molten_embers_multiplier = std::numeric_limits<double>::lowest();
-
   evoker_td_t( player_t* target, evoker_t* source );
 };
 
@@ -1037,6 +1035,7 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> emerald_trance;
     propagate_const<buff_t*> jackpot;
     propagate_const<buff_t*> azure_sweep;
+    propagate_const<buff_t*> strafing_run;
 
     // Preservation
 
@@ -1193,7 +1192,8 @@ struct evoker_t : public player_t
     player_talent_t titanic_wrath;
     player_talent_t azure_celerity;
     player_talent_t power_swell;
-    player_talent_t second_exhale;  // row 10
+    player_talent_t strafing_run;  // row 10
+    const spell_data_t* strafing_run_buff;  // 1266165
     player_talent_t scorching_embers;
     player_talent_t causality;
     player_talent_t scintillation;
@@ -1381,6 +1381,7 @@ struct evoker_t : public player_t
     propagate_const<cooldown_t*> upheaval;
     propagate_const<cooldown_t*> breath_of_eons;
     propagate_const<cooldown_t*> tip_the_scales;
+    propagate_const<cooldown_t*> deep_breath;
     propagate_const<cooldown_t*> hover;
   } cooldown;
 
@@ -1517,7 +1518,6 @@ struct evoker_t : public player_t
   void spawn_mote_of_possibility( player_t* = nullptr, mote_buffs_e = mote_buffs_e::MAX,
                                   timespan_t = timespan_t::zero() );
   void extend_ebon( timespan_t );
-  double get_molten_embers_multiplier( player_t*, bool = false) const;
   void apply_bombardments( player_t* );
 
   // Utility functions
@@ -2303,7 +2303,7 @@ public:
 
     if ( p()->talent.imminent_destruction.enabled() )
     {
-      parse_effects( p()->buff.imminent_destruction );
+      parse_effects( p()->buff.imminent_destruction, IGNORE_STACKS, CONSUME_BUFF );
     }
 
     parse_effects( p()->buff.emerald_trance_stacking );
@@ -2363,7 +2363,12 @@ public:
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
   void apply_debuffs_effects()
   {
-    if ( p()->talent.scalecommander.melt_armor.ok() )
+    if ( p()->talent.scorching_embers.enabled() || p()->talent.molten_embers.enabled() )
+    {
+      parse_target_effects( d_fn( &evoker_td_t::dots_t::fire_breath ), p()->spec.fire_breath_damage );
+    }
+
+    if ( p()->talent.scalecommander.melt_armor.enabled() )
     {
       parse_target_effects( d_fn( &evoker_td_t::debuffs_t::melt_armor ), p()->talent.scalecommander.melt_armor_debuff );
     }
@@ -2407,16 +2412,6 @@ public:
   double composite_target_multiplier( player_t* t ) const override
   {
     auto mul = ab::composite_target_multiplier( t );
-
-    if ( p()->talent.molten_embers.ok() && spell_color == SPELL_BLACK )
-    {
-      mul *= p()->get_molten_embers_multiplier( t );
-    }
-
-    if ( p()->talent.scorching_embers.ok() && spell_color == SPELL_RED )
-    {
-      mul *= p()->get_molten_embers_multiplier( t );
-    }
 
     return mul;
   }
@@ -4238,21 +4233,6 @@ struct fire_breath_t : public empowered_charge_spell_t
       return mul;
     }
 
-    void trigger_dot( action_state_t* state ) override
-    {
-      base_t::trigger_dot( state );
-
-      if ( p()->talent.molten_embers.enabled() || p()->talent.scorching_embers.enabled() )
-      {
-        auto td = p()->get_target_data( state->target );
-        if ( td )
-        {
-          // auto mul_before = td->molten_embers_multiplier;
-          td->molten_embers_multiplier = p()->get_molten_embers_multiplier( state->target, true );
-        }
-      }
-    }
-
     double calculate_tick_amount( action_state_t* s, double m ) const override
     {
       auto n = std::clamp( as<double>( s->n_targets ), reduced_aoe_targets, 20.0 );
@@ -4269,22 +4249,6 @@ struct fire_breath_t : public empowered_charge_spell_t
       // TODO: confirm this doesn't have a target # based DR, or exhibit previously bugged behavior where icd is
       // triggered on check, not success
       p()->buff.burnout->trigger();
-    }
-
-    void last_tick( dot_t* d ) override
-    {
-      empowered_release_spell_t::last_tick( d );
-
-      if ( p()->talent.molten_embers.enabled() || p()->talent.scorching_embers.enabled() )
-      {
-        auto td = p()->get_target_data( d->target );
-        if ( td )
-        {
-          sim->print_debug( "{} set molten_embers_multiplier on {} to 1.0 from {}", this->name_str, target->name_str,
-                            td->molten_embers_multiplier );
-          td->molten_embers_multiplier = 1.0;
-        }
-      }
     }
 
     void impact( action_state_t* s ) override
@@ -4556,8 +4520,10 @@ struct azure_strike_t : public azure_strike_base_t
 
 struct azure_sweep_t : public azure_strike_base_t
 {
+  timespan_t mid1_es_cdr;
   azure_sweep_t( evoker_t* p, std::string_view options_str )
-    : azure_strike_base_t( "azure_sweep", p, p->talent.azure_sweep_spell, options_str )
+    : azure_strike_base_t( "azure_sweep", p, p->talent.azure_sweep_spell, options_str ),
+      mid1_es_cdr( p->sets->set( EVOKER_DEVASTATION, MID1, B4 )->effectN( 2 ).time_value() )
   {
     aoe = -1;
   }
@@ -4569,6 +4535,28 @@ struct azure_sweep_t : public azure_strike_base_t
 
     return azure_strike_base_t::action_ready();
   }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    auto da = azure_strike_base_t::composite_da_multiplier( s );
+
+    if ( s->chain_target == 0 && p()->sets->has_set_bonus( EVOKER_DEVASTATION, MID1, B2 ) )
+    {
+      da *= 1 + p()->sets->set( EVOKER_DEVASTATION, MID1, B2 )->effectN( 2 ).percent();
+    }
+
+    return da;
+  }
+
+  void execute() override
+  {
+    azure_strike_base_t::execute();
+
+    if ( p()->sets->has_set_bonus( EVOKER_DEVASTATION, MID1, B4 ) )
+    {
+      p()->cooldown.eternity_surge->adjust( mid1_es_cdr );
+    }
+  }
 };
 
 struct melt_armor_dot_t : public evoker_spell_t
@@ -4577,6 +4565,7 @@ struct melt_armor_dot_t : public evoker_spell_t
   {
     dual = background = true;
     aoe = -1;
+    dot_behavior = DOT_EXTEND;
   }
 
   bool use_full_mastery() const override
@@ -5035,16 +5024,6 @@ struct deep_breath_t : public evoker_spell_t
         td->debuffs.melt_armor->trigger();
       }
     }
-
-    void execute() override
-    {
-      evoker_spell_t::execute();
-
-      if ( p()->talent.imminent_destruction.ok() )
-      {
-        p()->buff.imminent_destruction->trigger();
-      }
-    }
   };
 
   struct deep_breath_main_t : public evoker_spell_t
@@ -5167,12 +5146,6 @@ struct deep_breath_t : public evoker_spell_t
         } );
       }
 
-      if ( p()->talent.imminent_destruction.ok() )
-      {
-        make_event( sim, player->gcd_ready - sim->current_time() - 1_ms,
-                    [ this ] { p()->buff.imminent_destruction->trigger(); } );
-      }
-
       if ( p()->talent.scalecommander.slipstream.ok() )
       {
         p()->cooldown.hover->reset( false, -1 );
@@ -5194,21 +5167,44 @@ struct deep_breath_t : public evoker_spell_t
       main_spell = p->get_secondary_action<deep_breath_main_t>( "deep_breath_trigger", options_str );
       add_child( main_spell );
 
-      if ( p->talent.scalecommander.maneuverability.ok() && p->talent.scalecommander.command_squadron.enabled() )
-      {
-        channeled      = true;
-        dot_duration   = data().duration();
-        base_tick_time = data().effectN( 5 ).period();
-      }
+      channeled      = true;
+      dot_duration   = data().duration();
+      base_tick_time = 0.2_s;
 
       trigger_gcd = p->talent.scalecommander.maneuverability.ok() ? 1.5_s : 2_s;
       gcd_type    = p->talent.scalecommander.maneuverability.ok() ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
     }
   }
 
+  void update_ready( timespan_t cd_duration ) override
+  {
+    if ( p()->buff.strafing_run->up() )
+    {
+      p()->buff.strafing_run->decrement();
+    }
+    else
+    {
+      evoker_spell_t::update_ready( cd_duration );
+    }
+  }
+
+  void reset() override
+  {
+    // Reset max charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
+    // buffs up. Do this before calling reset as that will also reset the cooldown.
+    cooldown->charges = data().charges();
+    evoker_spell_t::reset();
+  }
+
   void last_tick( dot_t* d ) override
   {
     evoker_spell_t::last_tick( d );
+
+    if ( p()->talent.imminent_destruction.ok() )
+    {
+      p()->buff.imminent_destruction->trigger();
+    }
+
     if ( p()->talent.scalecommander.command_squadron.enabled() )
     {
       for ( auto& pet : p()->pets.commando_pet.active_pets() )
@@ -5220,8 +5216,15 @@ struct deep_breath_t : public evoker_spell_t
 
   void execute() override
   {
+    auto is_strafing_run = p()->buff.strafing_run->up();
+
     evoker_spell_t::execute();
     main_spell->execute();
+
+    if ( p()->talent.strafing_run.enabled() && !is_strafing_run )
+    {
+      p()->buff.strafing_run->trigger();
+    }
 
     if ( is_precombat )
     {
@@ -6813,12 +6816,6 @@ struct breath_of_eons_t : public evoker_spell_t
         upheaval_set->schedule_execute( emp_state );
       }
 
-      if ( p()->talent.imminent_destruction.ok() )
-      {
-        make_event( sim, player->gcd_ready - sim->current_time() - 1_ms,
-                    [ this ] { p()->buff.imminent_destruction->trigger(); } );
-      }
-
       if ( p()->talent.chronowarden.time_convergence.enabled() )
       {
         p()->buff.time_convergence_intellect->trigger();
@@ -6884,6 +6881,12 @@ struct breath_of_eons_t : public evoker_spell_t
   void last_tick( dot_t* d ) override
   {
     evoker_spell_t::last_tick( d );
+
+    if ( p()->talent.imminent_destruction.ok() )
+    {
+      p()->buff.imminent_destruction->trigger();
+    }
+
     if ( p()->talent.scalecommander.command_squadron.enabled() )
     {
       for ( auto& pet : p()->pets.commando_pet.active_pets() )
@@ -7059,7 +7062,7 @@ public:
       {
         if ( td && evoker->talent.molten_embers.enabled() && td->dots.fire_breath->is_ticking() )
         {
-          tm *= evoker->get_molten_embers_multiplier( t );
+          tm *= 1 + evoker->spec.fire_breath_damage->effectN( 5 ).percent();
         }
       }
 
@@ -7772,7 +7775,8 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
   debuffs.melt_armor = make_buff_fallback( evoker->talent.scalecommander.melt_armor.ok(), *this, "melt_armor",
                                            evoker->talent.scalecommander.melt_armor_debuff )
-                           ->set_default_value_from_effect( 2, 0.01 );
+                           ->set_default_value_from_effect( 2, 0.01 )
+                           ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
   debuffs.bombardments =
       make_buff_fallback<buffs::bombardments_buff_t>( evoker->talent.scalecommander.bombardments, *this, "bombardments",
@@ -8024,6 +8028,7 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
   cooldown.breath_of_eons = get_cooldown( "breath_of_eons" );
   cooldown.tip_the_scales = get_cooldown( "tip_the_scales" );
   cooldown.hover          = get_cooldown( "hover" );
+  cooldown.deep_breath    = get_cooldown( "deep_breath" );
 
   resource_regeneration             = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ]       = true;
@@ -8931,7 +8936,8 @@ void evoker_t::init_spells()
   talent.scorching_embers             = ST( "Scorching Embers" );
   talent.scintillation                = ST( "Scintillation" );
   talent.iridescence                  = ST( "Iridescence" );
-  talent.second_exhale                = ST( "Second Exhale" );
+  talent.strafing_run                 = ST( "Strafing Run" );
+  talent.strafing_run_buff            = find_spell( 1266165 );
   // Preservation Traits
 
   // Augmentation Traits
@@ -9321,8 +9327,11 @@ void evoker_t::create_buffs()
                                  ->set_cooldown( 0_s )
                                  ->add_invalidate( CACHE_HASTE );
 
-  buff.imminent_destruction = MBF( talent.imminent_destruction.ok(), this, "imminent_destruction",
-                                   find_spell( specialization() == EVOKER_AUGMENTATION ? 459574 : 411055 ) );
+  buff.imminent_destruction =
+      MBF( talent.imminent_destruction.ok(), this, "imminent_destruction",
+           find_spell( specialization() == EVOKER_AUGMENTATION ? 459574 : 411055 ) )
+          ->set_consume_all_stacks( false )
+          ->set_initial_stack( as<int>( talent.imminent_destruction->effectN( 1 ).base_value() ) );
 
   buff.iridescence_blue = MBF( talent.iridescence.ok(), this, "iridescence_blue", find_spell( 386399 ) )
                               ->set_default_value_from_effect( 1 );
@@ -9503,6 +9512,17 @@ void evoker_t::create_buffs()
                                ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buff.azure_sweep = MBF( talent.azure_sweep.ok(), this, "azure_sweep", talent.azure_sweep_buff );
+    
+  if ( sets->has_set_bonus( EVOKER_DEVASTATION, MID1, B2 ) )
+  {
+    buff.azure_sweep->modify_initial_stack(
+        as<int>( sets->set( EVOKER_DEVASTATION, MID1, B2 )->effectN( 1 ).base_value() ) );
+  }
+
+  buff.strafing_run = MBF( talent.strafing_run.ok(), this, "strafing_run", talent.strafing_run_buff )
+                          ->add_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
+                            cooldown.deep_breath->adjust_max_charges( cur - old );
+                          } );
 }
 
 void evoker_t::create_options()
@@ -9629,17 +9649,6 @@ void evoker_t::reset()
       {
         bucket = 0;
       }
-    }
-  }
-
-  if ( talent.molten_embers.enabled() || talent.scorching_embers.enabled() )
-  {
-    for ( evoker_td_t* td : target_data.get_entries() )
-    {
-      if ( !td )
-        continue;
-
-      td->molten_embers_multiplier = std::numeric_limits<double>::lowest();
     }
   }
 }
@@ -10054,40 +10063,6 @@ void evoker_t::extend_ebon( timespan_t extend )
   {
     static_cast<spells::ebon_might_t*>( background_actions.ebon_might.get() )->extend_ebon( extend );
   }
-}
-
-double evoker_t::get_molten_embers_multiplier( player_t* target, bool recalculate ) const
-{
-  if ( !( talent.molten_embers.enabled() || talent.scorching_embers.enabled() ) )
-    return 1.0;
-
-  auto td = get_target_data( target );
-
-  if ( td->molten_embers_multiplier > 0 && !recalculate )
-    return td->molten_embers_multiplier;
-
-  double mul = 1;
-
-  if ( td && td->dots.fire_breath->is_ticking() )
-  {
-    auto fb = td->dots.fire_breath;
-
-    auto fb_state = debug_cast<evoker_action_state_t<empower_data_t>*>( fb->state );
-    auto empower  = fb_state->empower;
-
-    auto firebreath_duration = 20_s + timespan_t::from_seconds( talent.blast_furnace->effectN( 1 ).base_value() ) - ( static_cast<int>( empower ) - 1 ) * 6_s;
-
-    mul *= 1 + 2.4_s / firebreath_duration;
-
-    mul = std::min( 1.4, mul );
-
-    sim->print_debug( "{} set molten_embers_multiplier on {} to {} from {}", this->name_str, target->name_str, mul,
-                      td->molten_embers_multiplier );
-
-    td->molten_embers_multiplier = mul;
-  }
-
-  return mul;
 }
 
 // Basic Parse Effects implementation for pets.
