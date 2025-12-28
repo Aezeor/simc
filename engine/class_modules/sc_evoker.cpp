@@ -3558,15 +3558,13 @@ struct empowered_release_spell_t : public empowered_release_t<evoker_spell_t>
   using base_t = empowered_release_spell_t;
 
   timespan_t animosity_extend;
-  timespan_t animosity_max_duration;
+  double animosity_stack_mul;
 
   empowered_release_spell_t( std::string_view n, evoker_t* p, const spell_data_t* s )
-    : empowered_release_t( n, p, s ),
-      animosity_extend(),
-      animosity_max_duration()
+    : empowered_release_t( n, p, s )
   {
     animosity_extend     = p->talent.animosity->effectN( 1 ).time_value();
-    animosity_max_duration = p->talent.dragonrage->duration() + p->talent.animosity->effectN( 2 ).time_value();
+    animosity_stack_mul = 1 - p->talent.animosity->effectN( 2 ).percent();
   }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -3597,15 +3595,8 @@ struct empowered_release_spell_t : public empowered_release_t<evoker_spell_t>
 
     if ( p()->talent.animosity.ok() && p()->buff.dragonrage->check() )
     {
-      timespan_t dragonrage_time =
-          p()->buff.dragonrage->elapsed( sim->current_time() ) + p()->buff.dragonrage->remains();
-
-      timespan_t extend_by = std::min( dragonrage_time + animosity_extend, animosity_max_duration ) - dragonrage_time;
-
-      if ( extend_by > timespan_t::zero() )
-      {
-        p()->buff.dragonrage->extend_duration( p(), extend_by );
-      }
+      p()->buff.dragonrage->extend_duration( p(), animosity_extend * p()->buff.dragonrage->check_value() );
+      p()->buff.dragonrage->current_value *= animosity_stack_mul;
     }
 
     p()->buff.power_swell->trigger();
@@ -9320,7 +9311,8 @@ void evoker_t::create_buffs()
                           {
                             buff.emerald_trance_stacking->expire();
                           }
-                        } );
+                        } )
+                        ->set_default_value( 1 );
 
   buff.fury_of_the_aspects = MB( this, "fury_of_the_aspects", find_class_spell( "Fury of the Aspects" ) )
                                  ->set_default_value_from_effect( 1 )
