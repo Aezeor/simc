@@ -1036,6 +1036,8 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> jackpot;
     propagate_const<buff_t*> azure_sweep;
     propagate_const<buff_t*> strafing_run;
+    propagate_const<buff_t*> rising_fury;
+    propagate_const<buff_t*> risen_fury;
 
     // Preservation
 
@@ -1198,6 +1200,11 @@ struct evoker_t : public player_t
     player_talent_t causality;
     player_talent_t scintillation;
     player_talent_t iridescence;
+    player_talent_t rising_fury_1;
+    const spell_data_t* rising_fury_buff;  // 1271783
+    player_talent_t rising_fury_2;
+    player_talent_t rising_fury_3;
+    const spell_data_t* risen_fury_buff;  // 1271799
 
     // Preservation Traits
 
@@ -2351,6 +2358,20 @@ public:
     if ( p()->talent.azure_sweep.enabled() )
     {
       parse_effects( p()->buff.azure_sweep, CONSUME_BUFF );
+    }
+
+    if ( p()->talent.rising_fury_2.enabled() )
+    {
+      parse_effects( p()->buff.rising_fury, effect_mask_t( false ).enable( 2, 3 ),
+                     p()->talent.rising_fury_2->effectN( 1 ).percent(),
+                     [ this ] { return p()->buff.rising_fury->at_max_stacks(); } );
+
+      if ( p()->talent.rising_fury_3.enabled() )
+      {
+        parse_effects( p()->buff.risen_fury, effect_mask_t( false ).enable( 2, 3 ),
+                       p()->talent.rising_fury_2->effectN( 1 ).percent(),
+                       [ this ] { return p()->buff.risen_fury->at_max_stacks(); } );
+      }
     }
   }
 
@@ -8929,6 +8950,11 @@ void evoker_t::init_spells()
   talent.iridescence                  = ST( "Iridescence" );
   talent.strafing_run                 = ST( "Strafing Run" );
   talent.strafing_run_buff            = find_spell( 1266165 );
+  talent.rising_fury_1                = find_talent_spell( talent_tree::SPECIALIZATION, 1271687 );
+  talent.rising_fury_buff             = find_spell( 1271783 );
+  talent.rising_fury_2                = find_talent_spell( talent_tree::SPECIALIZATION, 1271796 );
+  talent.rising_fury_3                = find_talent_spell( talent_tree::SPECIALIZATION, 1271788 );
+  talent.risen_fury_buff              = find_spell( 1271799 );
   // Preservation Traits
 
   // Augmentation Traits
@@ -9313,6 +9339,38 @@ void evoker_t::create_buffs()
                           }
                         } )
                         ->set_default_value( 1 );
+
+  buff.rising_fury = MBF( talent.rising_fury_1.ok(), this, "rising_fury", talent.rising_fury_buff )
+                         ->set_duration( 0_s )
+                         ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                         ->add_stack_change_callback( [ this ]( buff_t* b, int old, int n ) {
+                           if ( old && !n && talent.rising_fury_3.ok() )
+                           {
+                             buff.risen_fury->trigger( old, old * buff.risen_fury->buff_duration() );
+                           }
+                         } )
+                         ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                         ->set_default_value_from_effect( 1 );
+
+  buff.risen_fury = MBF( talent.rising_fury_3.ok(), this, "risen_fury", talent.risen_fury_buff )
+                        ->set_freeze_stacks( false )
+                        ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { buff.essence_burst->trigger(); } )
+                        ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                        ->set_default_value_from_effect( 1 );
+
+  if ( talent.rising_fury_1.enabled() )
+  {
+    buff.dragonrage->add_stack_change_callback( [ this ]( buff_t* b, int old, int n ) {
+      if ( n && !old )
+      {
+        buff.rising_fury->trigger();
+      }
+      else
+      {
+        buff.rising_fury->expire();
+      }
+    } );
+  }
 
   buff.fury_of_the_aspects = MB( this, "fury_of_the_aspects", find_class_spell( "Fury of the Aspects" ) )
                                  ->set_default_value_from_effect( 1 )
