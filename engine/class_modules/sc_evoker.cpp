@@ -3735,10 +3735,12 @@ public:
   double ebon_int_post_dr()
   {
     auto amount = ebon_int();
-    if ( p()->allies_with_my_ebon.size() >= 2 )
+        
+    if ( p( )->allies_with_my_ebon.size() > p( )->spec.ebon_might->effectN( 3 ).base_value() )
     {
-      amount *= 2.0 / p()->allies_with_my_ebon.size();
+      amount *= p()->spec.ebon_might->effectN( 3 ).base_value() / p()->allies_with_my_ebon.size();
     }
+
     return amount;
   }
 
@@ -3774,12 +3776,7 @@ public:
 
   void update_stats()
   {
-    auto _ebon_int = ebon_int();
-
-    if ( p()->allies_with_my_ebon.size() >= 2 )
-    {
-      _ebon_int *= 2.0 / p()->allies_with_my_ebon.size();
-    }
+    auto _ebon_int = ebon_int_post_dr();
 
     for ( auto ally : p()->allies_with_my_ebon )
     {
@@ -6406,7 +6403,7 @@ public:
 
     if ( p( s )->allies_with_my_ebon.size() > p( s )->spec.ebon_might->effectN( 3 ).base_value() )
     {
-      m *= sqrt( p( s )->spec.ebon_might->effectN( 3 ).base_value() / p( s )->allies_with_my_ebon.size() );
+      m *= p( s )->spec.ebon_might->effectN( 3 ).base_value() / p( s )->allies_with_my_ebon.size();
     }
 
     return m;
