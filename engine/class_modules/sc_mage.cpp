@@ -4376,9 +4376,13 @@ struct meteor_impact_t final : public fire_mage_spell_t
 
     // With Deep Impact, Meteor deals extra damage to the target closest to the impact point.
     // For simplicity, we assume that will be the main target.
-    double m = 1.0 + p->talents.deep_impact->effectN( 1 ).percent();
-    base_multiplier     *= m;
-    base_aoe_multiplier /= m;
+    // TODO: This is currently broken and doesn't actually work in game.
+    if ( !p->bugs )
+    {
+      double m = 1.0 + p->talents.deep_impact->effectN( 1 ).percent();
+      base_multiplier     *= m;
+      base_aoe_multiplier /= m;
+    }
 
     // TODO: Seems to miss the final tick now that the duration is a multiple of the tick time once again.
     if ( p->bugs )
