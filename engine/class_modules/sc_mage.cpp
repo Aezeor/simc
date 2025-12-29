@@ -2296,7 +2296,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( p()->state.heat_shimmer && p()->buffs.heat_shimmer->check() )
       return true;
 
-    return target->health_percentage() <= p()->talents.scorch->effectN( 2 ).base_value() + p()->talents.sunfury_execution->effectN( 2 ).base_value();
+    return target->health_percentage() <= p()->talents.scorch->effectN( 2 ).base_value();
   }
 };
 
@@ -4736,16 +4736,10 @@ struct ray_of_frost_t final : public frost_mage_spell_t
   }
 };
 
-struct scorch_data_t
-{
-  bool scorch_execute = false;
-  void debug( std::ostringstream& s ) const { s << " scorch_execute=" << scorch_execute; }
-};
-
-struct scorch_t final : public custom_state_spell_t<fire_mage_spell_t, scorch_data_t>
+struct scorch_t final : public fire_mage_spell_t
 {
   scorch_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    custom_state_spell_t( n, p, p->talents.scorch )
+    fire_mage_spell_t( n, p, p->talents.scorch )
   {
     parse_options( options_str );
     triggers.hot_streak = TT_MAIN_TARGET;
@@ -4755,16 +4749,9 @@ struct scorch_t final : public custom_state_spell_t<fire_mage_spell_t, scorch_da
     travel_delay = p->options.scorch_delay.total_seconds();
   }
 
-  void snapshot_state( action_state_t* s, result_amount_type rt ) override
-  {
-    auto ss = cast_state( s );
-    ss->data.scorch_execute = scorch_execute_active( s->target );
-    custom_state_spell_t::snapshot_state( s, rt );
-  }
-
   void schedule_execute( action_state_t* s ) override
   {
-    custom_state_spell_t::schedule_execute( s );
+    fire_mage_spell_t::schedule_execute( s );
 
     // Heat Shimmer cannot be consumed or apply its benefit unless
     // it was already active at the beginning of the Scorch cast.
@@ -4773,7 +4760,7 @@ struct scorch_t final : public custom_state_spell_t<fire_mage_spell_t, scorch_da
 
   void execute() override
   {
-    custom_state_spell_t::execute();
+    fire_mage_spell_t::execute();
 
     if ( p()->state.heat_shimmer && p()->buffs.heat_shimmer->up() )
     {
@@ -4787,22 +4774,24 @@ struct scorch_t final : public custom_state_spell_t<fire_mage_spell_t, scorch_da
     if ( p()->buffs.heat_shimmer->check() )
       return 0_ms;
 
-    return custom_state_spell_t::execute_time();
+    return fire_mage_spell_t::execute_time();
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double m = custom_state_spell_t::composite_da_multiplier( s );
+    double m = fire_mage_spell_t::composite_da_multiplier( s );
 
     if ( scorch_execute_active( s->target ) )
       m *= 1.0 + p()->talents.scald->effectN( 2 ).percent();
+
+    m *= 1.0 + p()->buffs.heat_shimmer->check_value();
 
     return m;
   }
 
   double composite_target_crit_chance( player_t* target ) const override
   {
-    double c = custom_state_spell_t::composite_target_crit_chance( target );
+    double c = fire_mage_spell_t::composite_target_crit_chance( target );
 
     if ( scorch_execute_active( target ) )
       c += 1.0;
@@ -6119,6 +6108,7 @@ void mage_t::create_buffs()
                                        { cooldowns.fire_blast->adjust_recharge_multiplier(); } )
                                      ->set_chance( talents.fiery_rush.ok() );
   buffs.heat_shimmer             = make_buff( this, "heat_shimmer", find_spell( 458964 ) )
+                                     ->set_default_value_from_effect( 3 )
                                      ->set_trigger_spell( talents.heat_shimmer );
   buffs.heating_up               = make_buff( this, "heating_up", find_spell( 48107 ) );
   buffs.hot_streak               = make_buff( this, "hot_streak", find_spell( 48108 ) );
@@ -6589,7 +6579,7 @@ std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, std:
     return hp_pct_expr( talents.firestarter.ok(), talents.firestarter->effectN( 1 ).base_value(), false );
 
   if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "scorch_execute" ) )
-    return hp_pct_expr( talents.scorch.ok(), talents.scorch->effectN( 2 ).base_value() + talents.sunfury_execution->effectN( 2 ).base_value(), true );
+    return hp_pct_expr( talents.scorch.ok(), talents.scorch->effectN( 2 ).base_value(), true );
 
   return player_t::create_action_expression( action, name );
 }
