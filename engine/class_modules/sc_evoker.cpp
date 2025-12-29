@@ -9744,8 +9744,8 @@ void evoker_t::create_buffs()
 
   if ( talent.chronowarden.energy_cycles.ok() )
   {
-    buff.temporal_burst->set_tick_callback( [ this ]( buff_t* b, int t, timespan_t ) {
-      if ( t > 0 && ( t % as<int>( talent.chronowarden.temporal_burst->effectN( 1 ).base_value() ) ) == 0 )
+    buff.temporal_burst->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+      if ( ( b->current_tick % as<int>( talent.chronowarden.energy_cycles->effectN( 1 ).base_value() ) ) == 0 )
       {
         buff.essence_burst->trigger();
       }
