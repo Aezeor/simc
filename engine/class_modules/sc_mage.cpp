@@ -1869,9 +1869,6 @@ public:
     if ( freezing_targets == -1 || s->chain_target < freezing_targets )
       p()->trigger_freezing( s->target, freezing_stacks, freezing_source, freezing_chance );
 
-    if ( triggers.ignite )
-      trigger_ignite( s );
-
     if ( triggers.molten_chill_ignite )
       trigger_molten_chill_ignite( s );
 
@@ -1897,6 +1894,9 @@ public:
 
     if ( s->result_total <= 0.0 )
       return;
+
+    if ( triggers.ignite )
+      trigger_ignite( s );
 
     if ( auto td = find_td( s->target ) )
     {
@@ -4337,7 +4337,7 @@ struct meteor_burn_t final : public fire_mage_spell_t
   meteor_burn_t( std::string_view n, mage_t* p ) :
     fire_mage_spell_t( n, p, p->find_spell( 155158 ) )
   {
-    background = proc = ground_aoe = true;
+    background = proc = ground_aoe = triggers.ignite = true;
     aoe = -1;
     radius = p->find_spell( 153564 )->effectN( 1 ).radius_max();
 
