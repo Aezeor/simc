@@ -6584,7 +6584,7 @@ public:
   {
     may_dodge = may_parry = may_block = false;
     background                        = true;
-    spell_power_mod.direct            = 0.88;  // Hardcoded for some reason, 24/05/2023
+    spell_power_mod.direct            = 3.5;  // Hardcoded for some reason, 29/12/2025
   }
 };
 
