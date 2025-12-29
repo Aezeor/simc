@@ -2913,15 +2913,11 @@ struct empowered_release_t : public empowered_base_t<BASE>
   timespan_t extend_tier29_4pc;
   timespan_t extend_ebon;
   action_t* sands;
-  action_t* threads_of_fate;
 
   empowered_release_t( std::string_view name, evoker_t* p, const spell_data_t* spell )
     : ab( name, p, spell ),
       extend_ebon( p->talent.ebon_might.ok() ? p->talent.sands_of_time->effectN( 2 ).time_value() : 0_s ),
       sands( p->specialization() == EVOKER_AUGMENTATION ? p->get_secondary_action<shifting_sands_t>( "shifting_sands" )
-                                                        : nullptr ),
-      threads_of_fate( p->talent.chronowarden.threads_of_fate.enabled()
-                           ? p->get_secondary_action<threads_of_fate_t>( "threads_of_fate" )
                                                         : nullptr )
   {
     ab::dual = true;
@@ -2957,10 +2953,6 @@ struct empowered_release_t : public empowered_base_t<BASE>
 
     if ( sands )
       sands->execute();
-
-    if ( threads_of_fate && ab::p()->buff.temporal_burst->check() )
-      threads_of_fate->execute();
-
   }
 };
 
@@ -5075,7 +5067,6 @@ struct upheaval_t : public empowered_charge_spell_t
       if ( is_rumbling_earth )
       {
         sands           = nullptr;
-        threads_of_fate = nullptr;
         base_dd_multiplier *= p->talent.rumbling_earth->effectN( 1 ).percent();
         extend_ebon = 0_s;
       }
@@ -5095,7 +5086,6 @@ struct upheaval_t : public empowered_charge_spell_t
       {
         base_dd_multiplier *= p->sets->set( EVOKER_AUGMENTATION, TWW2, B2 )->effectN( 1 ).percent();
         sands           = nullptr;
-        threads_of_fate = nullptr;
         extend_ebon     = 0_s;
       }
 
