@@ -5820,6 +5820,7 @@ struct hover_t : public evoker_spell_t
     : evoker_spell_t( "hover", p, p->find_class_spell( "Hover" ), options_str )
   {
     harmful = false;
+    usable_while_casting = true;
   }
 
   
