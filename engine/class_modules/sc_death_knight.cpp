@@ -158,6 +158,7 @@ struct gargoyle_pet_t;
 struct risen_skulker_pet_t;
 struct dancing_rune_weapon_pet_t;
 struct everlasting_bond_pet_t;
+struct dance_of_midnight_pet_t;
 struct bloodworm_pet_t;
 struct magus_pet_t;
 struct blood_beast_pet_t;
@@ -844,6 +845,9 @@ public:
     propagate_const<buff_t*> vampiric_blood;
     propagate_const<buff_t*> voracious;
 
+    propagate_const<buff_t*> dance_of_midnight_1;
+    propagate_const<buff_t*> dance_of_midnight_2;
+
     // Frost
     propagate_const<buff_t*> breath_of_sindragosa;
     propagate_const<buff_t*> gathering_storm;
@@ -1256,9 +1260,9 @@ public:
       player_talent_t carnage;
       player_talent_t umbilicus_eternus;
       // Apex
-      player_talent_t dance_of_midnight_1;  // NYI
-      player_talent_t dance_of_midnight_2;  // NYI
-      player_talent_t dance_of_midnight_3;  // NYI
+      player_talent_t dance_of_midnight_1;
+      player_talent_t dance_of_midnight_2;
+      player_talent_t dance_of_midnight_3;
     } blood;
 
     // Frost
@@ -1476,6 +1480,8 @@ public:
     const spell_data_t* boiling_point_buff;
     const spell_data_t* boiling_point_echo_buff;
     const spell_data_t* bone_shield;
+    const spell_data_t* dance_of_midnight_1_buff;
+    const spell_data_t* dance_of_midnight_2_buff;
     const spell_data_t* sanguine_ground;
     const spell_data_t* sanguinary_burst_buff;
     const spell_data_t* sanguinary_burst_damage;
@@ -1493,6 +1499,8 @@ public:
     const spell_data_t* leeching_strike_damage;
     const spell_data_t* consumption_damage;
     const spell_data_t* consumption_leech;
+    const spell_data_t* everlasting_bond_summon;
+    const spell_data_t* dance_of_midnight_summon;
 
     // Blood Tier Set Spells
     const spell_data_t* rejuvenating_blood; // 2pc rp gain
@@ -1742,6 +1750,7 @@ public:
     // Blood
     spawner::pet_spawner_t<pets::dancing_rune_weapon_pet_t, death_knight_t> dancing_rune_weapon_pet;
     spawner::pet_spawner_t<pets::dancing_rune_weapon_pet_t, death_knight_t> everlasting_bond_pet;
+    spawner::pet_spawner_t<pets::dancing_rune_weapon_pet_t, death_knight_t> dance_of_midnight_pet;
     spawner::pet_spawner_t<pets::bloodworm_pet_t, death_knight_t> bloodworms;
     // Frost
 
@@ -1770,6 +1779,7 @@ public:
       : ghoul_pet( "ghoul", p ),
         dancing_rune_weapon_pet( "dancing_rune_weapon", p ),
         everlasting_bond_pet( "everlasting_bond", p ),
+        dance_of_midnight_pet( "dance_of_midnight_pet", p ),
         bloodworms( "bloodworm", p ),
         lesser_ghoul_army( "lesser_ghoul_army", p ),
         lesser_ghoul_db_coil( "lesser_ghoul_db_coil", p ),
@@ -4251,13 +4261,30 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::arise();
     reschedule_drw();
-    dk()->buffs.dancing_rune_weapon->trigger();
+    // We will let DRW and DOM drive the DRW buff
+    if ( dk()->buffs.dancing_rune_weapon->remains() < duration)
+    {
+      if ( name_str == "dancing_rune_weapon" )
+      {
+        if ( !dk()->buffs.dancing_rune_weapon->check() )
+          dk()->buffs.dancing_rune_weapon->trigger( duration );
+      }
+      else if ( name_str == "dance_of_midnight" )
+        dk()->buffs.dancing_rune_weapon->trigger( duration );
+
+      dk()->buffs.dance_of_midnight_2->trigger( duration );
+    }
+
+    if ( name_str == "dance_of_midnight" )
+    {
+      if ( dk()->buffs.gift_of_the_sanlayn->check() )
+        dk()->buffs.gift_of_the_sanlayn->expire();
+    }
   }
 
   void demise() override
   {
     death_knight_pet_t::demise();
-    dk()->buffs.dancing_rune_weapon->expire();
     if ( dk()->talent.sanlayn.gift_of_the_sanlayn.ok() )
       dk()->buffs.gift_of_the_sanlayn->expire();
   }
@@ -9026,6 +9053,18 @@ struct consumption_t final : public death_knight_empowered_charge_spell_t
           drw_dot->adjust_duration( -drw_dot->remains() * bp_consumption_multi );
         }
       }
+
+      for ( auto& dom : p()->pets.dance_of_midnight_pet.active_pets() )
+      {
+        auto drw_dot = dom->get_target_data( state->target )->dot.blood_plague;
+        if ( drw_dot && drw_dot->is_ticking() )
+        {
+          double drw_leech = drw_dot->tick_damage_over_time( drw_dot->remains() * bp_consumption_multi );
+          leech_damage_accumulator += drw_leech;
+          sim->print_debug( "Consumption blood plague consumes {} from {} with caster {}", drw_leech, state->target->name(), drw_dot->source->name() );
+          drw_dot->adjust_duration( -drw_dot->remains() * bp_consumption_multi );
+        }
+      }
     }
 
     void execute() override
@@ -9092,6 +9131,10 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
     {
       p->pets.everlasting_bond_pet.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
     }
+
+    // Consider moving this to it's own action
+    if ( p->talent.blood.dance_of_midnight_3.ok() )
+      p->pets.dance_of_midnight_pet.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
   }
 
   void execute() override
@@ -9105,12 +9148,11 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
     // Only summon the rune weapons if the buff is down.
     if ( !p()->buffs.dancing_rune_weapon->up() )
     {
-      p()->pets.dancing_rune_weapon_pet.spawn();
-
+      // As of Dec 29th, 2025 everlasting bond spawns first
       if ( p()->talent.blood.everlasting_bond.ok() )
-      {
         p()->pets.everlasting_bond_pet.spawn();
-      }
+
+      p()->pets.dancing_rune_weapon_pet.spawn();
     }
 
     if ( p()->talent.sanlayn.the_blood_is_life.ok() )
@@ -10723,6 +10765,9 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
       p()->buffs.boiling_point->trigger();
       boiling_point_proc_attempts = 0;
     }
+
+    if ( p()->talent.blood.dance_of_midnight_1.ok() )
+      p()->buffs.dance_of_midnight_1->expire();
   }
 
   void impact( action_state_t* state ) override
@@ -12490,6 +12535,16 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     {
       buffs.rune_carved_plates_magical_buff->trigger( as<int>( amount ) );
     }
+
+    // Proc rate is mentioned in patch notes, however we find that it is typically double the proc rate.  Also it seems like in
+    // rare cases, we proc the dom weapon twice, so I believe with everlasting bond, we get 2 10% rolls.
+    if ( talent.blood.dance_of_midnight_3.ok() )
+    {
+      if ( rng().roll( 0.10 ) )
+        pets.dance_of_midnight_pet.spawn();
+      if ( rng().roll( 0.10 ) )
+        pets.dance_of_midnight_pet.spawn();
+    }
   }
 
   // Procs from runes spent
@@ -13220,6 +13275,8 @@ void death_knight_t::trigger_sanlayn_execute_talents( bool is_vampiric, bool sum
         pets.dancing_rune_weapon_pet.active_pet()->transfusion->trigger();
       if ( pets.everlasting_bond_pet.active_pet() != nullptr )
         pets.everlasting_bond_pet.active_pet()->transfusion->trigger();
+      for ( auto& dom : pets.dance_of_midnight_pet.active_pets() )
+        dom->transfusion->trigger();
     }
   }
 
@@ -13291,16 +13348,22 @@ void death_knight_t::drw_action_execute( pets::dancing_rune_weapon_pet_t* drw, d
 
 void death_knight_t::trigger_drw_action( drw_actions_e action )
 {
-  if ( specialization() != DEATH_KNIGHT_BLOOD || !talent.blood.dancing_rune_weapon.ok() ||
-       pets.dancing_rune_weapon_pet.active_pet() == nullptr )
+  if ( specialization() != DEATH_KNIGHT_BLOOD || !talent.blood.dancing_rune_weapon.ok() )
     return;
 
-  drw_action_execute( pets.dancing_rune_weapon_pet.active_pet(), action );
+  if ( pets.dancing_rune_weapon_pet.active_pet() )
+    drw_action_execute( pets.dancing_rune_weapon_pet.active_pet(), action );
 
-  if ( !talent.blood.everlasting_bond.ok() || pets.everlasting_bond_pet.active_pet() == nullptr )
-    return;
+  if ( talent.blood.everlasting_bond.ok() && pets.everlasting_bond_pet.active_pet() )
+    drw_action_execute( pets.everlasting_bond_pet.active_pet(), action );
 
-  drw_action_execute( pets.everlasting_bond_pet.active_pet(), action );
+  if ( talent.blood.dance_of_midnight_3.ok() )
+  {
+    for ( auto& dom : pets.dance_of_midnight_pet.active_pets() )
+    {
+      drw_action_execute( dom, action );
+    }
+  }
 }
 
 double death_knight_t::pseudo_random_p_from_c( double c )
@@ -14299,15 +14362,23 @@ void death_knight_t::create_pets()
       pets.dancing_rune_weapon_pet.set_default_duration( talent.blood.dancing_rune_weapon->duration() );
       // As of Dec 19 2025, the first rune weapon does not get the 4s extension from everlasting bond.  Only the everlasting bond weapon does
       if ( bugs && talent.blood.everlasting_bond.ok() )
-        pets.dancing_rune_weapon_pet.set_default_duration( talent.blood.dancing_rune_weapon->duration() - talent.blood.everlasting_bond->effectN( 2 ).time_value() );
+        pets.dancing_rune_weapon_pet.set_default_duration( talent.blood.dancing_rune_weapon->duration() );
       pets.dancing_rune_weapon_pet.set_max_pets( 1 );
 
       if ( talent.blood.everlasting_bond.ok() )
       {
         pets.everlasting_bond_pet.set_creation_callback(
             []( death_knight_t* p ) { return new pets::dancing_rune_weapon_pet_t( p, "everlasting_bond" ); } );
-        pets.everlasting_bond_pet.set_default_duration( talent.blood.dancing_rune_weapon->duration() );
+        pets.everlasting_bond_pet.set_default_duration( spell.everlasting_bond_summon->duration() );
         pets.everlasting_bond_pet.set_max_pets( 1 );
+      }
+
+      if ( talent.blood.dance_of_midnight_3.ok() )
+      {
+        pets.dance_of_midnight_pet.set_creation_callback(
+            []( death_knight_t* p ) { return new pets::dancing_rune_weapon_pet_t( p, "dance_of_midnight" ); } );
+        pets.dance_of_midnight_pet.set_default_duration( spell.dance_of_midnight_summon->duration() );
+        pets.dance_of_midnight_pet.set_max_pets( 10 );
       }
     }
 
@@ -14501,8 +14572,8 @@ void death_knight_t::init_spells()
   talent.blood.umbilicus_eternus = find_talent_spell( talent_tree::SPECIALIZATION, "Umbilicus Eternus" );
   // Apex
   talent.blood.dance_of_midnight_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1264506 );
-  talent.blood.dance_of_midnight_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1264405 );
-  talent.blood.dance_of_midnight_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1264351 );
+  talent.blood.dance_of_midnight_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1264405 );
+  talent.blood.dance_of_midnight_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1264351 );
 
   //////// Frost
   // Row 1
@@ -14792,6 +14863,8 @@ void death_knight_t::spell_lookups()
   spell.boiling_point_buff          = conditional_spell_lookup( talent.blood.boiling_point.ok(), 1265968 );
   spell.boiling_point_echo_buff     = conditional_spell_lookup( talent.blood.boiling_point.ok(), 1265982 );
   spell.bone_shield                 = conditional_spell_lookup( spec.blood_death_knight->ok(), 195181 );
+  spell.dance_of_midnight_1_buff    = conditional_spell_lookup( talent.blood.dance_of_midnight_1.ok(), 1264568 );
+  spell.dance_of_midnight_2_buff    = conditional_spell_lookup( talent.blood.dance_of_midnight_2.ok(), 1264407 );
   spell.sanguine_ground             = conditional_spell_lookup( talent.blood.sanguine_ground.ok(), 391459 );
   spell.sanguinary_burst_buff       = conditional_spell_lookup( talent.blood.sanguinary_burst.ok(), 1263789 );
   spell.sanguinary_burst_damage     = conditional_spell_lookup( talent.blood.sanguinary_burst.ok(), 1263786 );
@@ -14808,6 +14881,8 @@ void death_knight_t::spell_lookups()
   spell.leeching_strike_damage   = conditional_spell_lookup( talent.blood.leeching_strike.ok(), 377633 );
   spell.consumption_damage       = conditional_spell_lookup( talent.blood.consumption.ok(), 1263825 );
   spell.consumption_leech        = conditional_spell_lookup( talent.blood.consumption.ok(), 1263872 );
+  spell.everlasting_bond_summon  = conditional_spell_lookup( talent.blood.everlasting_bond.ok(), 1237128 );
+  spell.dance_of_midnight_summon = conditional_spell_lookup( talent.blood.dance_of_midnight_3.ok(), 1264353 );
 
   // Blood Tier set spells
   spell.rejuvenating_blood       = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID1, B2 ), 1271198 );
@@ -15499,7 +15574,7 @@ void death_knight_t::create_buffs()
     buffs.dancing_rune_weapon =
         make_buff( this, "dancing_rune_weapon", spell.dancing_rune_weapon_buff )
             ->set_cooldown( 0_ms )
-            ->set_duration( 0_ms )
+            ->set_refresh_behavior( buff_refresh_behavior::DURATION )
             ->set_default_value_from_effect_type( A_MOD_PARRY_PERCENT )
             ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
               if ( talent.sanlayn.the_blood_is_life.ok() && pets.blood_beast.active_pet() != nullptr )
@@ -15557,6 +15632,13 @@ void death_knight_t::create_buffs()
             } );
 
     buffs.voracious = make_buff( this, "voracious", spell.voracious_buff )->set_trigger_spell( talent.blood.voracious );
+
+    buffs.dance_of_midnight_1 = make_fallback( talent.blood.dance_of_midnight_1.ok(), this, "dance_of_midnight_1", spell.dance_of_midnight_1_buff )
+                                  ->set_chance( 1.0 )  // handled in assess damage.  Likely bugged
+                                  ->set_cooldown( talent.blood.dance_of_midnight_1->internal_cooldown() );
+                            
+    buffs.dance_of_midnight_2 = make_fallback( talent.blood.dance_of_midnight_2.ok(), this, "dance_of_midnight_2", spell.dance_of_midnight_2_buff )
+                                  ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
     // Tier Sets
   }
@@ -16115,16 +16197,26 @@ void death_knight_t::assess_damage( school_e school, result_amount_type type, ac
 {
   parse_player_effects_t::assess_damage( school, type, s );
 
-  if ( specialization() == DEATH_KNIGHT_BLOOD && s->result == RESULT_PARRY && talent.blood.bloodied_blade->ok() )
+  if ( specialization() == DEATH_KNIGHT_BLOOD && s->result == RESULT_PARRY )
   {
-    if ( buffs.bloodied_blade_stacks->at_max_stacks() )
+    if ( talent.blood.bloodied_blade->ok() )
     {
-      buffs.bloodied_blade_stacks->expire();
-      buffs.bloodied_blade_final->trigger();
-      background_actions.heart_strike_bloodied_blade->execute_on_target( target );
+      if ( buffs.bloodied_blade_stacks->at_max_stacks() )
+      {
+        buffs.bloodied_blade_stacks->expire();
+        buffs.bloodied_blade_final->trigger();
+        background_actions.heart_strike_bloodied_blade->execute_on_target( target );
+      }
+      else if ( !buffs.bloodied_blade_final->check() )  // Can not proc while the final 10% str boost is up
+        buffs.bloodied_blade_stacks->trigger();
     }
-    else if ( !buffs.bloodied_blade_final->check() )  // Can not proc while the final 10% str boost is up
-      buffs.bloodied_blade_stacks->trigger();
+    // As of Dec 29, 2025, best we can tell there is a baseline 20% chance to proc dom 1, chance seems to be reduced
+    // per target you are in combat with
+    if ( talent.blood.dance_of_midnight_1.ok() && buffs.dancing_rune_weapon->up() && sim->target_non_sleeping_list.size() > 0 &&
+          rng().roll( 0.20 / sim->target_non_sleeping_list.size() ) )
+    {
+      buffs.dance_of_midnight_1->trigger();
+    }
   }
 }
 
@@ -16387,13 +16479,15 @@ void death_knight_t::apply_action_effects( action_t* a, bool pet )
   action->parse_effects( buffs.blood_draw );
 
   switch ( specialization() )
-  {
+    {
     case DEATH_KNIGHT_BLOOD:
       // Don't auto parse coag, since there is some snapshot behavior when the DRW dies
       if ( !pet )
         action->parse_effects( buffs.coagulopathy );
       action->parse_effects( buffs.blood_shield );
       action->parse_effects( buffs.boiling_point );
+      action->parse_effects( buffs.dance_of_midnight_1 );
+      action->parse_effects( buffs.dance_of_midnight_2 );
       action->parse_effects( buffs.consumption );
       action->parse_effects( buffs.crimson_scourge );
       action->parse_effects( buffs.sanguine_ground );
@@ -16548,6 +16642,7 @@ void death_knight_t::parse_player_effects()
       parse_effects( buffs.sanguine_ground );
       parse_effects( buffs.bone_shield, IGNORE_STACKS );
       parse_effects( buffs.perseverance_of_the_ebon_blade );
+      parse_effects( buffs.dance_of_midnight_2 );
       break;
     case DEATH_KNIGHT_FROST:
       parse_effects( buffs.bonegrinder_frost );
