@@ -6319,6 +6319,7 @@ struct voidfall_meteor_base_t : public demon_hunter_spell_t
     voidfall_meteor_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : base_t( n, p, s )
     {
       background = dual = true;
+      aoe        = -1;
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
