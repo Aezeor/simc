@@ -6243,14 +6243,6 @@ struct pyre_t : public essence_spell_t
     {
       dual = true;
       aoe  = -1;
-
-      if ( p->talent.feed_the_flames.ok() )
-      {
-        add_parse_entry( target_multiplier_effects )
-            .set_func( d_fn( &evoker_td_t::debuffs_t::in_firestorm, false ) )
-            .set_value( p->talent.feed_the_flames->effectN( 1 ).percent() )
-            .set_eff( &p->talent.feed_the_flames->effectN( 1 ) );
-      }
     }
 
     action_state_t* new_state() override
