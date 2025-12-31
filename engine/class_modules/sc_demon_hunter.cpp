@@ -6320,6 +6320,7 @@ struct voidfall_meteor_base_t : public demon_hunter_spell_t
     {
       background = dual = true;
       aoe        = -1;
+      reduced_aoe_targets = p->talent.annihilator.voidfall->effectN( 2 ).base_value();
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -6406,6 +6407,7 @@ struct meteor_shower_t : public demon_hunter_spell_t
     meteor_shower_damage_t( util::string_view n, demon_hunter_t* p ) : base_t( n, p, p->hero_spec.meteor_shower_damage )
     {
       background = dual = true;
+      aoe               = -1;
     }
   };
 
@@ -8238,6 +8240,7 @@ struct vengeful_retreat_t
     voidstep_damage_t( util::string_view n, demon_hunter_t* p )
       : demon_hunter_spell_t( n, p, p->spec.voidstep->effectN( 1 ).trigger() )
     {
+      aoe = -1;
     }
 
     void execute() override
