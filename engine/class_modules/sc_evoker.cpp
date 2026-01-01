@@ -6903,6 +6903,7 @@ public:
     double da = base::composite_da_multiplier( s );
 
     da *= 1 + p( s )->buff.reactive_hide->check_stack_value();
+    da *= 1 + p( s )->talent.regenerative_chitin->effectN( 2 ).percent();
     return da;
   }
 
@@ -7558,7 +7559,12 @@ private:
       set_duration( 0_s );
       set_cooldown( 0_s );
       set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-      set_max_stack( 1 );
+
+      if ( p()->talent.regenerative_chitin->ok() )
+      {
+        set_max_stack( 1 );
+        set_initial_stack( 1 );
+      }
     }
   };
 
@@ -7593,6 +7599,12 @@ public:
         armour->expire();
       }
     } );
+
+    if ( p()->talent.regenerative_chitin->ok() )
+    {
+      set_max_stack( 1 );
+      set_initial_stack( max_stack() );
+    }
   }
     
   void update_stat( stat_buff_t* b, double amount )
