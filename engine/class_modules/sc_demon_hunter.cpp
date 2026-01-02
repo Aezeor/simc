@@ -1190,6 +1190,8 @@ public:
   void init_scaling() override;
   void init_spells() override;
   void init_blizzard_action_list() override;
+  std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
+  std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self ) const override;
   void init_finished() override;
   bool validate_fight_style( fight_style_e style ) const override;
   void invalidate_cache( cache_e ) override;
@@ -6318,8 +6320,8 @@ struct voidfall_meteor_base_t : public demon_hunter_spell_t
   {
     voidfall_meteor_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : base_t( n, p, s )
     {
-      background = dual = true;
-      aoe        = -1;
+      background = dual   = true;
+      aoe                 = -1;
       reduced_aoe_targets = p->talent.annihilator.voidfall->effectN( 2 ).base_value();
     }
 
@@ -6507,8 +6509,7 @@ struct hungering_slash_base_t : public demon_hunter_spell_t
 
 struct reapers_toll_t : public voidsurge_trigger_t<voidsurge_ability::REAPERS_TOLL, hungering_slash_base_t>
 {
-  reapers_toll_t( demon_hunter_t* p, util::string_view o )
-    : base_t( "reapers_toll", p, p->hero_spec.reapers_toll, o )
+  reapers_toll_t( demon_hunter_t* p, util::string_view o ) : base_t( "reapers_toll", p, p->hero_spec.reapers_toll, o )
   {
   }
 
@@ -11174,6 +11175,32 @@ void demon_hunter_t::init_blizzard_action_list()
     default:
       break;
   }
+}
+
+std::vector<std::string> demon_hunter_t::action_names_from_spell_id( unsigned int spell_id ) const
+{
+  if ( spell_id == 1217605 )
+  {
+    return { "metamorphosis" };
+  }
+
+  return player_t::action_names_from_spell_id( spell_id );
+}
+
+std::string demon_hunter_t::aura_expr_from_spell_id( unsigned int spell_id, bool on_self ) const
+{
+  std::string aura_expr = player_t::aura_expr_from_spell_id( spell_id, on_self );
+
+  if ( aura_expr == "buff.void_metamorphosis" )
+  {
+    return "buff.metamorphosis";
+  }
+  if ( aura_expr == "buff.soul_immolation" )
+  {
+    return "dot.soul_immolation";
+  }
+
+  return aura_expr;
 }
 
 // demon_hunter_t::init_finished ============================================
