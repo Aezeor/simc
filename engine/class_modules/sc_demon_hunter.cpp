@@ -1190,6 +1190,7 @@ public:
   void init_scaling() override;
   void init_spells() override;
   void init_blizzard_action_list() override;
+  void init_items() override;
   std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
   std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self ) const override;
   void init_finished() override;
@@ -11201,6 +11202,21 @@ std::string demon_hunter_t::aura_expr_from_spell_id( unsigned int spell_id, bool
   }
 
   return aura_expr;
+}
+
+void demon_hunter_t::init_items()
+{
+  player_t::init_items();
+
+  // TODO: remove once Devourer has a default loadout
+  if ( load_default_gear && specialization() == DEMON_HUNTER_DEVOURER )
+  {
+    items[ SLOT_MAIN_HAND ]      = item_t( this, "" );
+    items[ SLOT_MAIN_HAND ].slot = SLOT_MAIN_HAND;
+
+    items[ SLOT_OFF_HAND ]      = item_t( this, "" );
+    items[ SLOT_OFF_HAND ].slot = SLOT_OFF_HAND;
+  }
 }
 
 // demon_hunter_t::init_finished ============================================
