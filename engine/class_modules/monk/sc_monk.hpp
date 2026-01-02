@@ -106,7 +106,6 @@ public:
   void consume_resource() override;
   void execute() override;
   void impact( action_state_t *state ) override;
-  void tick( dot_t *dot ) override;
   void trigger_mystic_touch( action_state_t *state );
 };
 
@@ -264,6 +263,14 @@ struct gift_of_the_ox_t : monk_buff_t<>
   void reset();
 };
 
+struct empowered_tiger_lightning_t : monk_buff_t<>
+{
+  empowered_tiger_lightning_t( monk_td_t & );
+
+  using monk_buff_t<>::trigger;
+  bool trigger( const action_state_t * );
+};
+
 struct aspect_of_harmony_t
 {
 private:
@@ -372,10 +379,18 @@ struct monk_effect_callback_t : dbc_proc_callback_t
 {
   monk_t *player;
 
+  using post_init_callback_fn_t = std::function<void( monk_effect_callback_t * )>;
+
+private:
+  std::vector<post_init_callback_fn_t> post_init_callbacks;
+
+public:
   monk_effect_callback_t( const special_effect_t &effect, monk_t *player );
   void trigger( action_t *action, action_state_t *state ) override;
   void execute( action_t *action, action_state_t *state ) override;
+  void initialize() override;
 
+  monk_effect_callback_t *register_post_init_callback( const post_init_callback_fn_t &fn );
   monk_effect_callback_t *register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type t,
                                                               const dbc_proc_callback_t::trigger_fn_t &fn );
   monk_effect_callback_t *register_callback_execute_function( const dbc_proc_callback_t::execute_fn_t &fn );
@@ -499,7 +514,6 @@ public:
     propagate_const<buff_t *> combo_strikes;
     propagate_const<buff_t *> dance_of_chiji;
     propagate_const<buff_t *> dance_of_chiji_hidden;  // Used for trigger DoCJ ticks
-    propagate_const<buff_t *> ferociousness;
     propagate_const<buff_t *> hit_combo;
     propagate_const<buff_t *> flurry_of_xuen;
     propagate_const<buff_t *> invoke_xuen;
@@ -957,7 +971,6 @@ public:
       const spell_data_t *jade_sanctuary_buff;
       player_talent_t celestial_conduit;
       const spell_data_t *celestial_conduit_action;
-      const spell_data_t *celestial_conduit_buff;
       const spell_data_t *celestial_conduit_damage;
       const spell_data_t *celestial_conduit_heal;
       player_talent_t inner_compass;
@@ -1184,7 +1197,6 @@ public:
 
   // Actions
   void trigger_celestial_fortune( action_state_t * );
-  void trigger_empowered_tiger_lightning( action_state_t * );
 };
 
 namespace events
