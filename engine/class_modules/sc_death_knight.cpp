@@ -786,8 +786,6 @@ public:
   bool deprecated_dnd_expression;
   // for runeforge.name expressions that call death knight runeforges instead of shadowlands legendary runeforges
   bool runeforge_expression_warning;
-  // Checking if Soul Reaper is caastable
-  bool soul_reaper_castable;
 
   // Counters
   unsigned int km_proc_attempts;  // critical auto attacks since the last KM proc
@@ -879,6 +877,7 @@ public:
     propagate_const<buff_t*> forbidden_sacrifice;
     propagate_const<buff_t*> forbidden_ritual;
     propagate_const<buff_t*> scythe_of_decay;
+    propagate_const<buff_t*> reaping;
     // Tier Sets
     propagate_const<buff_t*> blighted;
 
@@ -1889,7 +1888,6 @@ public:
       runic_power_decay( nullptr ),
       deprecated_dnd_expression( false ),
       runeforge_expression_warning( false ),
-      soul_reaper_castable( false ),
       km_proc_attempts( 0 ),
       bone_shield_charges_consumed( 0 ),
       active_riders( 0 ),
@@ -8424,7 +8422,7 @@ struct dark_transformation_t : public death_knight_spell_t
 
     if ( p()->talent.unholy.reaping.ok() && p()->talent.unholy.soul_reaper.ok() )
     {
-      p()->soul_reaper_castable = true;
+      p()->buffs.reaping->trigger();
       p()->cooldown.soul_reaper->reset( false );
     }
 
@@ -12169,7 +12167,7 @@ struct soul_reaper_t final : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
-    p()->soul_reaper_castable = false;
+    p()->buffs.reaping->decrement();
     int charges               = as<int>( std::floor( p()->cooldown.putrefy->charges_fractional() ) );
     for ( int i = 0; i < charges; i++ )
       p()->background_actions.putrefy_sr->execute();
@@ -12183,7 +12181,7 @@ struct soul_reaper_t final : public death_knight_spell_t
 
   bool target_ready( player_t* tar ) override
   {
-    if ( tar->health_percentage() > data().effectN( 2 ).base_value() && !p()->soul_reaper_castable )
+    if ( tar->health_percentage() > data().effectN( 2 ).base_value() && !p()->buffs.reaping->check() )
       return false;
 
     return death_knight_spell_t::target_ready( tar );
@@ -14957,6 +14955,7 @@ void death_knight_t::spell_lookups()
   spell.pestilence_buff                 = conditional_spell_lookup( talent.unholy.pestilence.ok(), 1271975 );
   spell.pestilence_damage               = conditional_spell_lookup( talent.unholy.pestilence.ok(), 1272116 );
   spell.scythe_of_decay_buff            = conditional_spell_lookup( talent.unholy.scythe_of_decay.ok(), 1282565 );
+  spell.reaping_buff                    = conditional_spell_lookup( talent.unholy.reaping.ok(), 1242654 );
   // Unholy Apex
   spell.forbidden_knowledge_buff = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 1242223 );
   spell.necrotic_coil_action     = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 1242174 );
@@ -15178,11 +15177,6 @@ void death_knight_t::init_blizzard_action_list()
 parsed_assisted_combat_rule_t death_knight_t::parse_assisted_combat_rule(
     const assisted_combat_rule_data_t& rule, const assisted_combat_step_data_t& step ) const
 {
-  if ( rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_1 == 1252004 )
-  {
-    return { "!talent.apocalypse" };
-  }
-
   return player_t::parse_assisted_combat_rule( rule, step );
 }
 
@@ -15828,6 +15822,8 @@ void death_knight_t::create_buffs()
 
   buffs.scythe_of_decay =
       make_fallback( talent.unholy.scythe_of_decay.ok(), this, "scythe_of_decay", spell.scythe_of_decay_buff );
+
+  buffs.reaping = make_fallback( talent.unholy.reaping.ok(), this, "reaping", spell.reaping_buff );
 
   // Tier Sets
   buffs.blighted =
