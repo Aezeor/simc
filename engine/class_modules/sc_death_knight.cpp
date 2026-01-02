@@ -12922,6 +12922,9 @@ void death_knight_t::trigger_dread_plague_death( player_t* t )
       tl.push_back( tar );
   }
 
+  if ( tl.empty() )
+    return;
+
   background_actions.dread_plague_death->execute();
 
   std::sort( tl.begin(), tl.end(),
@@ -16129,10 +16132,7 @@ void death_knight_t::activate()
       if ( !active_dnds.empty() )
       {
         for ( int i = 0; i < active_dnds.size(); i++ )
-        {
           active_dnds.front()->cancel_dnd_event( active_dnds );
-          active_dnds.pop();
-        }
         buffs.death_and_decay->expire();
         make_event( sim, 100_ms, [ this ]() { buffs.death_and_decay->trigger( 4_s ); } );
       }
