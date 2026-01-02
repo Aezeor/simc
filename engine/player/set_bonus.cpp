@@ -565,6 +565,7 @@ bool set_bonus_t::parse_set_bonus_option( util::string_view opt_str, set_bonus_t
         if ( i >= 5 )
         {
           set_name_short = it->tier;
+          set_name_long  = it->set_opt_name;
           break;
         }
       }
