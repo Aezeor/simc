@@ -4261,7 +4261,9 @@ empowered_tiger_lightning_t::empowered_tiger_lightning_t( monk_td_t &target_data
 {
   set_quiet( true );
   set_trigger_spell( target_data.monk.baseline.windwalker.empowered_tiger_lightning );
-  set_duration( 5_s );
+  set_duration( timespan_t::from_seconds(
+                    target_data.monk.baseline.windwalker.empowered_tiger_lightning->effectN( 1 ).base_value() ) +
+                1_ms );  // add small buffer to avoid expiring before tick action
   set_default_value( 0.0 );
 }
 
