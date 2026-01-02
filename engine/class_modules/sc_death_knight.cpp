@@ -12912,7 +12912,7 @@ void death_knight_t::trigger_runic_corruption( proc_t* proc, double rpcost, doub
 
 void death_knight_t::trigger_dread_plague_death( player_t* t )
 {
-  if ( sim->target_non_sleeping_list.size() == 1 || sim->event_mgr.canceled )
+  if ( sim->target_non_sleeping_list.size() <= 1 || sim->event_mgr.canceled )
     return;
 
   std::vector<player_t*> tl;
