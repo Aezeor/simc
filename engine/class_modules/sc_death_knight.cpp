@@ -5333,7 +5333,8 @@ struct death_knight_empower_action_state_t : public Base, public Data
   void copy_state( const action_state_t* o ) override
   {
     Base::copy_state( o );
-    *static_cast<Data*>( this ) = *static_cast<const Data*>( static_cast<const death_knight_empower_action_state_t*>( o ) );
+    *static_cast<Data*>( this ) =
+        *static_cast<const Data*>( static_cast<const death_knight_empower_action_state_t*>( o ) );
   }
 };
 
@@ -5357,8 +5358,7 @@ public:
   empower_e max_empower;
 
   death_knight_empowered_base_t( std::string_view name, death_knight_t* p, const spell_data_t* spell )
-    : BASE( name, p, spell ),
-      max_empower( empower_e::EMPOWER_3 )
+    : BASE( name, p, spell ), max_empower( empower_e::EMPOWER_3 )
   {
     BASE::can_have_one_button_penalty = false;
   }
@@ -5386,19 +5386,19 @@ struct death_knight_empowered_release_t : public death_knight_empowered_base_t<B
 
   death_knight_empowered_release_t( std::string_view name, death_knight_t* p, const spell_data_t* spell )
     : death_knight_empowered_base_t<BASE>( name, p, spell )
-    {
-      base::dual = true;
-    }
+  {
+    base::dual = true;
+  }
 
-    empower_e empower_level( const action_state_t* s ) const
-    {
-      return base::cast_state( s )->empower;
-    }
+  empower_e empower_level( const action_state_t* s ) const
+  {
+    return base::cast_state( s )->empower;
+  }
 
-    int empower_value( const action_state_t* s ) const
-    {
-      return static_cast<int>( base::cast_state( s )->empower );
-    }
+  int empower_value( const action_state_t* s ) const
+  {
+    return static_cast<int>( base::cast_state( s )->empower );
+  }
 };
 
 template <class BASE>
@@ -5429,17 +5429,18 @@ struct death_knight_empowered_charge_t : public death_knight_empowered_base_t<BA
     }
     else
     {
-      empower_to       = std::min( static_cast<int>( base::max_empower ), empower_to );
+      empower_to            = std::min( static_cast<int>( base::max_empower ), empower_to );
       base_empower_duration = base_time_to_empower( static_cast<empower_e>( empower_to ) );
     }
 
     // apply parsed modifiers
-    base::dot_duration = base::player->get_passive_value( base::data(), "duration" );
+    base::dot_duration      = base::player->get_passive_value( base::data(), "duration" );
     base::dot_duration.base = base_empower_duration;
-    base::base_tick_time = base::dot_duration;
+    base::base_tick_time    = base::dot_duration;
   }
 
-  death_knight_empowered_charge_t( std::string_view name, death_knight_t* p, const spell_data_t* spell, std::string_view options_str )
+  death_knight_empowered_charge_t( std::string_view name, death_knight_t* p, const spell_data_t* spell,
+                                   std::string_view options_str )
     : base( name, p, spell ),
       release_spell( nullptr ),
       dummy_stat( p->get_stats( "dummy_stat" ) ),
@@ -5466,9 +5467,9 @@ struct death_knight_empowered_charge_t : public death_knight_empowered_base_t<BA
     static_assert( std::is_base_of_v<death_knight_empowered_release_t<BASE>, T>,
                    "Empowered release spell must be dervied from empowered_release_spell_t." );
 
-    release_spell             = get_empower_release_action<T>( n, base::p() );
-    release_spell->stats      = base::stats;
-    release_spell->background = false;
+    this->release_spell             = get_empower_release_action<T>( n, base::p() );
+    this->release_spell->stats      = base::stats;
+    this->release_spell->background = false;
   }
 
   timespan_t base_time_to_empower( empower_e emp ) const
@@ -8977,6 +8978,7 @@ struct consumption_t final : public death_knight_empowered_charge_spell_t
       bp_consumption_multi( 0 )
     {
       reduced_aoe_targets = p->spell.consumption_damage->effectN( 3 ).base_value();
+      background = false;
 
       consumption_leech_damage = get_action<consumption_leech_damage_t>("consumption_leech", p );
       add_child( consumption_leech_damage );
