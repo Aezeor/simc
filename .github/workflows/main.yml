@@ -152,7 +152,7 @@ jobs:
 
   spec-test:
     needs: [ubuntu-clang-build]
-    if: github.ref_name == 'thewarwithin'
+    if: github.ref_name == 'thewarwithin' || github.ref_name == 'midnight'
     uses: ./.github/workflows/spec_test.yml
     with:
       cache-key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
