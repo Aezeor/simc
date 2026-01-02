@@ -25,7 +25,6 @@
 #include "report/highchart.hpp"
 
 #include "simulationcraft.hpp"
-#include <queue>
 
 namespace
 {  // UNNAMED NAMESPACE
@@ -773,23 +772,13 @@ struct death_and_decay_tracker_t
   {
     return dnd_event;
   }
-
-  void cancel_dnd_event( std::queue<death_and_decay_tracker_t*>& dnds )
-  {
-    if ( dnd_event )
-    {
-      event_t::cancel( dnd_event );
-      dnd_event = nullptr;
-      dnds.pop();
-    }
-  }
 };
 
 struct death_knight_t : public parse_player_effects_t
 {
 public:
   // Stores the currently active death and decay ground event
-  std::queue<death_and_decay_tracker_t*> active_dnds;
+  std::vector<std::shared_ptr<death_and_decay_tracker_t>> active_dnds;
   event_t* runic_power_decay;
 
   // Expression warnings
@@ -9216,24 +9205,21 @@ public:
 struct death_and_decay_damage_base_t : public death_knight_spell_t
 {
   death_and_decay_damage_base_t( std::string_view name, death_knight_t* p, const spell_data_t* spell )
-    : death_knight_spell_t( name, p, spell ),
-      dnd( nullptr )
+    : death_knight_spell_t( name, p, spell ), dnd( nullptr )
   {
     aoe        = -1;
     background = dual = true;
     tick_zero         = true;
-    dnd               = new death_and_decay_tracker_t();
-  }
-
-  ~death_and_decay_damage_base_t()
-  {
-    delete dnd;
+    dnd               = std::shared_ptr<death_and_decay_tracker_t>( new death_and_decay_tracker_t() );
   }
 
   void impact( action_state_t* s ) override
   {
     // Only one dnd event can deal damage at a time, but multiple can be active.
     // Assume the first dnd in the queue is the one dealing damage.
+    if ( p()->active_dnds.empty() )
+      return;
+
     if ( dnd != p()->active_dnds.front() )
       return;
 
@@ -9241,7 +9227,7 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
   }
 
 public:
-  death_and_decay_tracker_t* dnd;
+  std::shared_ptr<death_and_decay_tracker_t> dnd;
 };
 
 struct death_and_decay_damage_t final : public death_and_decay_damage_base_t
@@ -13419,7 +13405,7 @@ double death_knight_t::pseudo_random_c_from_p( double p )
 void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t period )
 {
   death_and_decay_damage_t* dnd_damage = debug_cast<death_and_decay_damage_t*>( a );
-  death_and_decay_tracker_t* tracker   = dnd_damage->dnd;
+  std::shared_ptr<death_and_decay_tracker_t> tracker = dnd_damage->dnd;
   ground_aoe_params_t params;
 
   double n_ticks    = ( dur / period ) + 1;
@@ -13440,7 +13426,7 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
 
   params.expiration_callback( [ &, tracker ]( const action_state_t* ) {
     buffs.death_and_decay->expire( 4_s );
-    active_dnds.pop();
+    range::erase_remove( active_dnds, tracker );
   } );
 
   params.state_callback( [ &, tracker, n_ticks ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
@@ -13513,7 +13499,7 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
   } );
 
   tracker->set_dnd_event( make_event<ground_aoe_event_t>( *sim, this, params, true /* Immediate pulse */ ) );
-  active_dnds.push( tracker );
+  active_dnds.push_back( tracker );
 }
 
 const spell_data_t* death_knight_t::conditional_spell_lookup( bool fn, int id )
@@ -16131,8 +16117,7 @@ void death_knight_t::activate()
       // This should probably be core to ground_aoe_event_t, canceling the event when leaving combat
       if ( !active_dnds.empty() )
       {
-        for ( int i = 0; i < active_dnds.size(); i++ )
-          active_dnds.front()->cancel_dnd_event( active_dnds );
+        active_dnds.clear();
         buffs.death_and_decay->expire();
         make_event( sim, 100_ms, [ this ]() { buffs.death_and_decay->trigger( 4_s ); } );
       }
@@ -16182,8 +16167,7 @@ void death_knight_t::reset()
   magus_active                 = 0;
   dk_active_pets.clear();
   active_lesser_ghouls.clear();
-  for ( int i = 0; i < active_dnds.size(); i++ )
-    active_dnds.pop();
+  active_dnds.clear();
 }
 
 // death_knight_t::assess_damage ============================================
@@ -16448,8 +16432,7 @@ void death_knight_t::arise()
   magus_active                 = 0;
   dk_active_pets.clear();
   active_lesser_ghouls.clear();
-  for ( int i = 0; i < active_dnds.size(); i++ )
-    active_dnds.pop();
+  active_dnds.clear();
 
   player_t::arise();
   start_inexorable_assault();
