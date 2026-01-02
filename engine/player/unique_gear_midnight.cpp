@@ -948,8 +948,6 @@ void seed_of_the_devouring_wild( special_effect_t& effect )
 
   effect.execute_action = damage;
   effect.custom_buff    = buff;
-
-  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Idol of the War Loa
