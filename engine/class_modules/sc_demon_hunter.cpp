@@ -10105,7 +10105,8 @@ void demon_hunter_t::init_absorb_priority()
 
 void demon_hunter_t::init_action_list()
 {
-  if ( main_hand_weapon.type == WEAPON_NONE || off_hand_weapon.type == WEAPON_NONE )
+  // TODO: remove Devourer check once Devourer has a default loadout
+  if ( (main_hand_weapon.type == WEAPON_NONE || off_hand_weapon.type == WEAPON_NONE) && specialization() != DEMON_HUNTER_DEVOURER )
   {
     if ( !quiet )
     {
@@ -11207,16 +11208,6 @@ std::string demon_hunter_t::aura_expr_from_spell_id( unsigned int spell_id, bool
 void demon_hunter_t::init_items()
 {
   player_t::init_items();
-
-  // TODO: remove once Devourer has a default loadout
-  if ( load_default_gear && specialization() == DEMON_HUNTER_DEVOURER )
-  {
-    items[ SLOT_MAIN_HAND ]      = item_t( this, "" );
-    items[ SLOT_MAIN_HAND ].slot = SLOT_MAIN_HAND;
-
-    items[ SLOT_OFF_HAND ]      = item_t( this, "" );
-    items[ SLOT_OFF_HAND ].slot = SLOT_OFF_HAND;
-  }
 }
 
 // demon_hunter_t::init_finished ============================================
