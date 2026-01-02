@@ -1454,10 +1454,11 @@ double action_t::calculate_tick_amount( action_state_t* state, double dot_multip
   {
     sim->print_debug(
       "{} tick amount for {} on {}: amount={:.6f} initial_amount={:.6f} base={:.7g} bonus={:.7g} s_mod={:.7g} "
-      "s_power={:.7g} a_mod={:.7g} a_power={:.7g} mult={:.7g}, tick_mult={:.7g}",
+      "s_power={:.7g} a_mod={:.7g} a_power={:.7g} mult={:.7g}, tick_mult={:.7g}, rta_mult={:.7g}",
       *player, *this, *state->target, amount, init_tick_amount, base_ta( state ), bonus_ta( state ),
       spell_tick_power_coefficient( state ), state->composite_spell_power(), attack_tick_power_coefficient( state ),
-      state->composite_attack_power(), state->composite_ta_multiplier(), dot_multiplier );
+        state->composite_attack_power(), state->composite_ta_multiplier(), dot_multiplier,
+        state->composite_rolling_ta_multiplier() );
   }
 
   return amount;

@@ -245,11 +245,17 @@ struct execution_sentence_t : public paladin_melee_attack_t
   }
 };
 
+struct expurgation_data_t
+{
+  double damage_mult;
+};
 struct expurgation_t : public paladin_spell_t
 {
+  using state_t = paladin_action_state_t<expurgation_data_t>;
   expurgation_t( paladin_t* p ):
     paladin_spell_t( "expurgation", p, p->spells.expurgation )
   {
+    background = true;
     // Jurisdiction doesn't increase Expurgation's damage in-game
     // It's increasing Spell Direct Amount instead of Spell Periodic Amount
     if ( p->talents.jurisdiction->ok() && p->bugs)
@@ -258,13 +264,23 @@ struct expurgation_t : public paladin_spell_t
     }
   }
 
-  double get_bank( dot_t* d )
+  action_state_t* new_state() override
   {
-    if ( !d->is_ticking() )
-      return 0.0;
+    return new state_t( this, target );
+  }
 
-    auto state = d->state;
-    return calculate_tick_amount( state, d->current_stack() ) * d->ticks_left_fractional();
+  double composite_rolling_ta_multiplier( const action_state_t* s ) const
+  {
+    auto da = paladin_spell_t::composite_rolling_ta_multiplier( s );
+    auto s_ = static_cast<const state_t*>( s );
+    // This is probably very wrong, baseline calculation probably needs a copy paste here
+    da *= s_->damage_mult;
+    return da;
+  }
+  void execute() override
+  {
+    snapshot_state( pre_execute_state, amount_type( pre_execute_state ) );
+    paladin_spell_t::execute();
   }
 };
 
@@ -356,8 +372,10 @@ struct blade_of_justice_t : public paladin_melee_attack_t
 
     if ( p()->talents.expurgation->ok() )
     {
-      p()->active.expurgation->target = state->target;
-      p()->active.expurgation->execute();
+      auto e_state = static_cast<paladin_action_state_t<expurgation_data_t>*>( p()->active.expurgation->get_state() );
+      e_state->damage_mult            = 1.0;
+      e_state->target = state->target;
+      p()->active.expurgation->schedule_execute( e_state );
     }
   }
 };
@@ -507,6 +525,8 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
     if ( p()->talents.tempest_of_the_lightbringer->ok() )
       tempest->schedule_execute();
 
+    bool has_echo = false;
+
     if ( sunrise_echo && p()->cooldowns.second_sunrise_icd->up() )
     {
       if ( rng().roll( p()->talents.herald_of_the_sun.second_sunrise->effectN( 1 ).percent() ) )
@@ -514,7 +534,27 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
         p()->cooldowns.second_sunrise_icd->start();
         // TODO(mserrano): validate the correct delay here
         sunrise_echo->start_action_execute_event( 200_ms );
+        has_echo = true;
       }
+    }
+    if ( !background && p()->sets->has_set_bonus( PALADIN_RETRIBUTION, MID1, B4 ) && p()->talents.expurgation->ok() )
+    {
+      // ToDo Fluttershy: If this ever gets sensible results, use spell data
+      double mult  = .5;
+      if ( p()->talents.tempest_of_the_lightbringer->ok() )
+      {
+        mult = .2;
+        if ( has_echo )
+          mult = .4;
+      }
+      else if (has_echo)
+      {
+        mult = 1.0;
+      }
+      auto e_state = static_cast<paladin_action_state_t<expurgation_data_t>*>( p()->active.expurgation->get_state() );
+      e_state->damage_mult = mult;
+      e_state->target      = execute_state->target;
+      p()->active.expurgation->schedule_execute( e_state );
     }
   }
 
@@ -600,6 +640,20 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     if ( result_is_miss( execute_state->result ) && c > 0 )
     {
       p()->resource_gain( RESOURCE_HOLY_POWER, c, p()->gains.hp_templars_verdict_refund );
+    }
+
+    
+    if ( !background && p()->sets->has_set_bonus( PALADIN_RETRIBUTION, MID1, B4 ) && p()->talents.expurgation->ok() )
+    {
+      // ToDo Fluttershy: If this ever gets sensible results, use spell data
+      double mult = 1.0;
+      if ( p()->buffs.empyrean_legacy->up() )
+        // No clue why, 1.5 would make more sense - That's why DS's damage is here, too
+        mult = 1.25;
+      auto e_state = static_cast<paladin_action_state_t<expurgation_data_t>*>( p()->active.expurgation->get_state() );
+      e_state->damage_mult = mult;
+      e_state->target      = execute_state->target;
+      p()->active.expurgation->schedule_execute( e_state );
     }
 
     if ( p()->buffs.empyrean_legacy->up() )
