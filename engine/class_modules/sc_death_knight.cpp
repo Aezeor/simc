@@ -15934,12 +15934,8 @@ void death_knight_t::init_uptimes()
   sample_data.lesser_ghouls_active = std::make_unique<extended_sample_data_t>( "Lesser Ghouls Active", false );
   sample_data.magus_active         = std::make_unique<extended_sample_data_t>( "Magus Active", false );
 
-  // Enable detailed reporting for primary resource cap uptimes if requested
-  if ( sim->report_details == 1 )
-  {
-    uptimes.primary_resource_cap->uptime_instance.change_mode( false );
-    uptimes.primary_resource_cap->uptime_sum.change_mode( false );
-  }
+  uptimes.primary_resource_cap->uptime_instance.change_mode( false );
+  uptimes.primary_resource_cap->uptime_sum.change_mode( false );
 }
 
 // death_knight_t::init_special_effects =====================================
