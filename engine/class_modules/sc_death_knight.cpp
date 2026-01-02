@@ -2753,9 +2753,7 @@ struct death_knight_pet_t : public pet_t
 
   void demise() override
   {
-    auto it = range::find( dk()->dk_active_pets, this );
-    if ( it != dk()->dk_active_pets.end() )
-      dk()->dk_active_pets.erase( it );
+    range::erase_remove( dk()->dk_active_pets, this );
     pet_t::demise();
   }
 
@@ -3609,10 +3607,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
 
   void demise() override
   {
-    auto it = range::find( dk()->active_lesser_ghouls, this );
-
-    if ( it != dk()->active_lesser_ghouls.end() )
-      dk()->active_lesser_ghouls.erase( it );
+    range::erase_remove( dk()->active_lesser_ghouls, this );
 
     dk()->buffs.lesser_ghoul_counter->decrement();
 

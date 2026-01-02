@@ -15453,7 +15453,6 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         misc_type = RESOURCE_MANA;  // hardcode to mana
         pct_val = modifying_eff.percent();
         break;
-      case A_MOD_TARGET_ARMOR_PCT:  // 280
       case A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED:  // 342
         pct_val = -modifying_eff.percent();  // reversed value
         break;
@@ -16331,8 +16330,7 @@ void player_t::parse_all_class_passives()
   // racials
   for ( const auto& racial_spell : racial_spell_entry_t::data( dbc->ptr ) )
   {
-    if ( static_cast<uint64_t>( 1U ) << ( util::race_id( race ) - 1 ) & racial_spell.mask_race &&
-         util::class_id_mask( type ) & racial_spell.mask_class )
+    if ( util::race_mask( race ) & racial_spell.mask_race && util::class_id_mask( type ) & racial_spell.mask_class )
     {
       auto spell = find_spell( racial_spell.spell_id );
       if ( spell->flags( SX_PASSIVE ) )
