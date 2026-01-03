@@ -1060,8 +1060,6 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> temporal_burst;
     propagate_const<buff_t*> time_convergence_intellect;
     // Flameshaper
-    propagate_const<buff_t*> burning_adrenaline;
-    propagate_const<buff_t*> burning_adrenaline_channel;
     propagate_const<buff_t*> inner_flame;
     // Scalecommander
     propagate_const<buff_t*> mass_disintegrate_stacks;
@@ -2235,33 +2233,6 @@ public:
       // Add time spent to stats, because it cost this much time
       ab::stats->iteration_total_execute_time += gcd_ready;
     }
-
-    if ( ab::execute_time() > timespan_t::zero() && !ab::channeled && !ab::background )
-    {
-      p()->buff.burning_adrenaline->decrement();
-      p()->buff.burning_adrenaline_channel->decrement();
-    }
-
-    if ( ab::channeled && !ab::background && ab::get_dot( ab::target )->is_ticking() )
-    {
-      p()->buff.burning_adrenaline_channel->decrement();
-      if ( p()->buff.burning_adrenaline->check() == 1 )
-      {
-        p()->buff.burning_adrenaline_channel->trigger();
-      }
-      p()->buff.burning_adrenaline->decrement();
-    }
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    ab::last_tick( d );
-
-    if ( ab::channeled && !ab::background )
-    {
-      p()->buff.burning_adrenaline->decrement();
-      p()->buff.burning_adrenaline_channel->decrement();
-    }
   }
 
   evoker_td_t* td( player_t* t ) const
@@ -2333,16 +2304,6 @@ public:
         chrono_mask.disable( 15 );
 
       parse_effects( p()->buff.temporal_burst, chrono_mask );
-    }
-
-    if ( p()->talent.flameshaper.burning_adrenaline.enabled() )
-    {
-      parse_effects( p()->buff.burning_adrenaline, IGNORE_STACKS );
-      
-      if ( ab::channeled )
-      {
-        parse_effects( p()->buff.burning_adrenaline_channel, IGNORE_STACKS );
-      }
     }
 
     if ( p()->talent.scalecommander.unrelenting_siege.enabled() )
@@ -9759,13 +9720,6 @@ void evoker_t::create_buffs()
                                          talent.chronowarden.time_convergence_intellect_buff )
                                         ->set_default_value_from_effect( 1 )
                                         ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
-
-  buff.burning_adrenaline = MBF( talent.flameshaper.burning_adrenaline.ok(), this, "burning_adrenaline",
-                                 talent.flameshaper.burning_adrenaline_buff );
-  buff.burning_adrenaline_channel = MBF( talent.flameshaper.burning_adrenaline.ok(), this, "burning_adrenaline_channel",
-                                         talent.flameshaper.burning_adrenaline_buff )
-                                        ->set_quiet( true );
-
   // Flameshaper
   buff.inner_flame =
       MBF( sets->has_set_bonus( HERO_FLAMESHAPER, TWW3, B2 ), this, "inner_flame", talent.flameshaper.inner_flame_buff_base )
