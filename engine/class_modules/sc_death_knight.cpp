@@ -15193,6 +15193,9 @@ parsed_assisted_combat_rule_t death_knight_t::parse_assisted_combat_rule(
       return { "buff.lesser_ghoul_ready.down" };
   }
 
+  if ( rule.condition_type == AC_AURA_ON_TARGET && rule.condition_value_1 == 194310 )
+    return { "", "Leftover line from old unholy, references Festering Wounds.", true };
+
   return player_t::parse_assisted_combat_rule( rule, step );
 }
 
@@ -15774,7 +15777,7 @@ void death_knight_t::create_buffs()
 
   buffs.frost_mid1_4pc_buff = make_fallback( sets->has_set_bonus( DEATH_KNIGHT_FROST, MID1, B4 ), this, "mid1_4pc_buff",
                                              sets->set( DEATH_KNIGHT_FROST, MID1, B4 )->effectN( 2 ).trigger() )
-                                  ->set_expire_callback( [ this ]( buff_t* buff, int stacks, timespan_t duration ) {
+                                  ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
                                     cooldown.empower_rune_weapon->adjust_max_charges( -1 );
                                   } );
 
