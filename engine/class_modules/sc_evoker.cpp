@@ -4184,7 +4184,7 @@ public:
 };
 
 
-  struct chrono_flame_damage_t : public evoker_spell_t
+struct chrono_flame_damage_t : public evoker_spell_t
 {
   double chrono_mult;
   double chrono_cap;
@@ -4333,6 +4333,12 @@ struct living_flame_damage_t : public living_flame_base_t<evoker_spell_t>
       chrono_flame->execute_on_target( state->target );
     }
 
+    if ( p()->talent.flameshaper.titanic_precision.ok() && state->result == RESULT_CRIT &&
+         rng().roll( p()->talent.ruby_essence_burst->effectN( 1 ).percent() ) )
+    {
+      p()->buff.essence_burst->trigger();
+      p()->proc.titanic_precision_ruby_essence_burst->occur();
+    }
   }
 };
 
@@ -4342,9 +4348,16 @@ struct living_flame_heal_t : public living_flame_base_t<heals::evoker_heal_t>
   {
   }
 
-  void execute() override
+  void impact( action_state_t* state ) override
   {
-    base_t::execute();
+    base_t::impact( state );
+
+    if ( p()->talent.flameshaper.titanic_precision.ok() && state->result == RESULT_CRIT &&
+         rng().roll( p()->talent.ruby_essence_burst->effectN( 1 ).percent() ) )
+    {
+      p()->buff.essence_burst->trigger();
+      p()->proc.titanic_precision_ruby_essence_burst->occur();
+    }
   }
 };
 
@@ -6027,14 +6040,6 @@ struct living_flame_t : public evoker_spell_t
 
       for ( int i = 0; i < total_damage_hits; i++ )
       {
-        // TODO:  Work out how this is rolled.
-        if ( p()->talent.flameshaper.titanic_precision.ok() &&
-             rng().roll( damage->composite_target_crit_chance( target ) && rng().roll( eb_chance ) ) )
-        {
-          p()->buff.essence_burst->trigger();
-          p()->proc.titanic_precision_ruby_essence_burst->occur();
-        }
-
         if ( p()->buff.dragonrage->up() || rng().roll( eb_chance ) )
         {
           p()->buff.essence_burst->trigger();
@@ -6044,14 +6049,6 @@ struct living_flame_t : public evoker_spell_t
 
       for ( int i = 0; i < total_heal_hits; i++ )
       {
-        // TODO:  Work out how this is rolled.
-        if ( p()->talent.flameshaper.titanic_precision.ok() &&
-             rng().roll( heal->composite_target_crit_chance( player ) && rng().roll( eb_chance ) ) )
-        {
-          p()->buff.essence_burst->trigger();
-          p()->proc.titanic_precision_ruby_essence_burst->occur();
-        }
-
         if ( p()->buff.dragonrage->up() || rng().roll( eb_chance ) )
         {
           p()->buff.essence_burst->trigger();
