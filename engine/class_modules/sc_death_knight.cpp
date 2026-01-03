@@ -3061,8 +3061,14 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
   {
     timespan_t t = pet_melee_attack_t<T>::execute_time();
 
-    if ( this->first && this->weapon->slot == SLOT_OFF_HAND )
-      return t * 0.5;
+    // Randomize first swing time
+    if ( this->first )
+    {
+      if ( this->weapon->slot == SLOT_OFF_HAND )
+        return t * pet()->rng().range( 0.5 );
+      else
+        return pet()->rng().range( 0_ms, t );
+    }
     else
       return t;
   }
@@ -15194,7 +15200,10 @@ parsed_assisted_combat_rule_t death_knight_t::parse_assisted_combat_rule(
   }
 
   if ( rule.condition_type == AC_AURA_ON_TARGET && rule.condition_value_1 == 194310 )
-    return { "", "Leftover line from old unholy, references Festering Wounds.", true };
+    return { "target.health.pct<=0",
+             "Leftover line from old Unholy, references Festering Wounds. Since this can never trigger in game, "
+             "giving it a condition thatll never be met.",
+             true };
 
   return player_t::parse_assisted_combat_rule( rule, step );
 }
