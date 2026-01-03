@@ -7207,8 +7207,8 @@ struct twin_flame_t : public evoker_spell_t
     background = true;
 
     aoe = p->talent.flameshaper.fire_torrent.enabled()
-              ? 0
-              : 1 + as<int>( p->talent.flameshaper.fire_torrent->effectN( 1 ).base_value() );
+              ? 1 + as<int>( p->talent.flameshaper.fire_torrent->effectN( 1 ).base_value() )
+              : 0;
   }
 };
 
