@@ -15177,6 +15177,22 @@ void death_knight_t::init_blizzard_action_list()
 parsed_assisted_combat_rule_t death_knight_t::parse_assisted_combat_rule(
     const assisted_combat_rule_data_t& rule, const assisted_combat_step_data_t& step ) const
 {
+  if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == spell.lesser_ghoul_counter->id() )
+  {
+    if ( rule.condition_value_2 >= 1 )
+      return { "buff.lesser_ghoul_counter.up" };
+    if ( rule.condition_value_2 == 0 )
+      return { "buff.lesser_ghoul_counter.down" };
+  }
+
+  if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == spell.lesser_ghoul_buff->id() )
+  {
+    if ( rule.condition_value_2 >= 1 )
+      return { "buff.lesser_ghoul_ready.up" };
+    if ( rule.condition_value_2 == 0 )
+      return { "buff.lesser_ghoul_ready.down" };
+  }
+
   return player_t::parse_assisted_combat_rule( rule, step );
 }
 
@@ -15209,6 +15225,9 @@ std::string death_knight_t::aura_expr_from_spell_id( unsigned int spell_id, bool
 {
   std::string aura_expr = player_t::aura_expr_from_spell_id( spell_id, on_self );
   if ( aura_expr == "debuff.reapers_mark" )
+    aura_expr.append( "_debuff" );
+
+  if ( aura_expr == "debuff.festering_scythe" )
     aura_expr.append( "_debuff" );
 
   return aura_expr;
