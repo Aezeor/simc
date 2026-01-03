@@ -25,8 +25,8 @@ actions.assisted_combat+=/death_coil,if=buff.sudden_doom.up&active_enemies<=3
 actions.assisted_combat+=/epidemic,if=dot.virulent_plague.ticking&active_enemies>4&buff.sudden_doom.up
 actions.assisted_combat+=/scourge_strike,if=buff.lesser_ghoul_ready.stack<=1
 actions.assisted_combat+=/festering_strike,if=buff.lesser_ghoul_ready.stack<=2
-# Leftover line from old unholy, references Festering Wounds. (Overridden from 'debuff.unknown_spell_194310.up')
-actions.assisted_combat+=/scourge_strike
+# Leftover line from old Unholy, references Festering Wounds. Since this can never trigger in game, giving it a condition thatll never be met. (Overridden from 'debuff.unknown_spell_194310.up')
+actions.assisted_combat+=/scourge_strike,if=target.health.pct<=0
 actions.assisted_combat+=/festering_strike
 actions.assisted_combat+=/death_coil
 actions.assisted_combat+=/festering_strike
