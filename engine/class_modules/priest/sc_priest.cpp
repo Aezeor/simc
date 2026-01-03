@@ -3311,7 +3311,7 @@ void priest_t::init_action_list()
   switch ( specialization() )
   {
     case PRIEST_SHADOW:
-      if ( sim->dbc->wowv() > dbc::client_data_version( false ) )
+      if ( is_ptr() )
       {
         priest_apl::shadow_ptr( this );
       }
