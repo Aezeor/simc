@@ -4606,7 +4606,8 @@ struct eternity_surge_t : public empowered_charge_spell_t
     {
       int n = s ? empower_value( s ) : max_empower;
 
-      n *= as<int>( 1 + p()->talent.eternitys_span->effectN( 2 ).percent() );
+      if ( p()->talent.eternitys_span.enabled() )
+        n *= 2;
 
       return n == 1 ? 0 : n;
     }
@@ -4635,7 +4636,7 @@ struct eternity_surge_t : public empowered_charge_spell_t
         shattering_star->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
 
         damage_state->da_multiplier *=
-            1 + cast_state( s )->empower * p()->talent.shattering_stars->effectN( 1 ).percent();
+            1 + ( cast_state( s )->empower - 1 ) * p()->talent.shattering_stars->effectN( 1 ).percent();
 
         shattering_star->schedule_execute( damage_state );
       }
