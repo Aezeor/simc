@@ -1,7 +1,7 @@
 SimulationCraft 1200-01 for World of Warcraft 12.0.0.65028 midnight-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
-bonus_id={ 3 }, base_ilevel={ 30 }, req_ilevel={ 25 }
+bonus_id={ 3 }, base_ilevel={ 18 }, req_ilevel={ 25 }, ilevel_adjust={ 5 }
 bonus_id={ 15 }, quality={ epic }, ilevel_adjust={ 4 }
 bonus_id={ 17 }, stats={ 100% Crit [0.3506] }
 bonus_id={ 18 }, stats={ 100% Haste [0.3506] }
@@ -442,7 +442,7 @@ bonus_id={ 489 }, suffix={ of the Decimator }, stats={ 100% Crit [0.7012] }
 bonus_id={ 490 }, suffix={ of the Adaptable }, stats={ 100% Vers [0.7012] }
 bonus_id={ 491 }, suffix={ of the Adaptable }, stats={ 100% Vers [0.7012] }
 bonus_id={ 492 }, suffix={ of the Adaptable }, stats={ 100% Vers [0.7012] }
-bonus_id={ 497 }, base_ilevel={ 25 }, req_ilevel={ 25 }
+bonus_id={ 497 }, base_ilevel={ 13 }, req_ilevel={ 25 }
 bonus_id={ 499 }, desc={ Warforged }, ilevel_adjust={ 1 }
 bonus_id={ 503 }, stats={ 100% Int [0.0053] }
 bonus_id={ 504 }, stats={ 100% Int [0.0106] }
@@ -528,8 +528,8 @@ bonus_id={ 644 }, desc={ Warforged }, ilevel_adjust={ 4 }
 bonus_id={ 645 }, desc={ Timewarped Warforged }, ilevel={ 5 @plvl 1 - 50 @plvl 45 }
 bonus_id={ 646 }, desc={ Warforged }, ilevel_adjust={ 6 }
 bonus_id={ 648 }, desc={ Empowered }, quality={ epic }, ilevel_adjust={ 5 }
-bonus_id={ 649 }, base_ilevel={ 50 }, req_ilevel={ 40 }, quality={ legendary }
-bonus_id={ 650 }, base_ilevel={ 53 }, req_ilevel={ 40 }, quality={ legendary }
+bonus_id={ 649 }, base_ilevel={ 25 }, req_ilevel={ 40 }, quality={ legendary }
+bonus_id={ 650 }, base_ilevel={ 28 }, req_ilevel={ 40 }, quality={ legendary }
 bonus_id={ 651 }, desc={ Warforged }, quality={ epic }, ilevel_adjust={ 3 }
 bonus_id={ 656 }, desc={ Warforged }, ilevel={ 5 @plvl 1 - 50 @plvl 45 }
 bonus_id={ 657 }, quality={ epic }
@@ -973,7 +973,7 @@ bonus_id={ 1720 }, suffix={ of the Impatient }, stats={ 100% Haste [0.7000] }
 bonus_id={ 1721 }, suffix={ of the Savant }, stats={ 100% Mastery [0.7000] }
 bonus_id={ 1723 }, base_ilevel={ 1 }
 bonus_id={ 1724 }, base_ilevel={ 4 }, quality={ rare }
-bonus_id={ 1725 }, base_ilevel={ 47 }, req_ilevel={ 30 }, quality={ epic }
+bonus_id={ 1725 }, base_ilevel={ 31 }, req_ilevel={ 30 }, quality={ epic }
 bonus_id={ 1726 }, base_ilevel={ 845 }, desc={ Heroic }
 bonus_id={ 1727 }, base_ilevel={ 865 }, desc={ Mythic }, quality={ epic }
 bonus_id={ 1729 }, ilevel={ 0 @plvl 650 - 0 @plvl 850 }
@@ -1663,7 +1663,7 @@ bonus_id={ 3452 }, base_ilevel={ 855 }, desc={ Mythic }
 bonus_id={ 3453 }, base_ilevel={ 860 }, desc={ Mythic }
 bonus_id={ 3454 }, base_ilevel={ 875 }, desc={ Mythic }
 bonus_id={ 3457 }, base_ilevel={ 810 }, quality={ rare }
-bonus_id={ 3458 }, base_ilevel={ 56 }, req_ilevel={ 45 }
+bonus_id={ 3458 }, base_ilevel={ 27 }, req_ilevel={ 45 }
 bonus_id={ 3460 }, base_ilevel={ 810 }, quality={ rare }
 bonus_id={ 3461 }, base_ilevel={ 815 }, quality={ rare }
 bonus_id={ 3462 }, base_ilevel={ 855 }, quality={ epic }
@@ -1724,7 +1724,7 @@ bonus_id={ 3522 }, socket={ 1 }
 bonus_id={ 3526 }, quality={ epic }, ilevel_adjust={ 16 }
 bonus_id={ 3527 }, quality={ rare }
 bonus_id={ 3528 }, quality={ epic }
-bonus_id={ 3530 }, base_ilevel={ 58 }, req_ilevel={ 45 }
+bonus_id={ 3530 }, base_ilevel={ 29 }, req_ilevel={ 45 }
 bonus_id={ 3531 }, quality={ legendary }
 bonus_id={ 3534 }, base_ilevel={ 900 }, desc={ Mythic 13 }, quality={ epic }
 bonus_id={ 3535 }, base_ilevel={ 905 }, desc={ Mythic 14 }, quality={ epic }
@@ -1750,7 +1750,7 @@ bonus_id={ 3565 }, base_ilevel={ 810 }, quality={ rare }
 bonus_id={ 3566 }, base_ilevel={ 810 }, quality={ rare }
 bonus_id={ 3567 }, base_ilevel={ 810 }, quality={ epic }
 bonus_id={ 3568 }, base_ilevel={ 810 }, quality={ epic }
-bonus_id={ 3570 }, base_ilevel={ 60 }, req_ilevel={ 45 }
+bonus_id={ 3570 }, base_ilevel={ 31 }, req_ilevel={ 45 }
 bonus_id={ 3571 }, ilevel_adjust={ 90 }
 bonus_id={ 3572 }
 bonus_id={ 3575 }, base_ilevel={ 855 }, desc={ Mythic }, quality={ epic }
@@ -1803,7 +1803,7 @@ bonus_id={ 3625 }, desc={ Timewarped }, ilevel={ 5 @plvl 1 - 50 @plvl 45 }
 bonus_id={ 3626 }, desc={ Warforged }, ilevel={ 5 @plvl 1 - 52 @plvl 45 }
 bonus_id={ 3627 }, desc={ Timewarped }, ilevel={ 5 @plvl 1 - 50 @plvl 45 }
 bonus_id={ 3628 }, ilevel={ 5 @plvl 1 - 50 @plvl 45 }
-bonus_id={ 3630 }, base_ilevel={ 62 }, req_ilevel={ 45 }
+bonus_id={ 3630 }, base_ilevel={ 33 }, req_ilevel={ 45 }
 bonus_id={ 3631 }, ilevel={ 1 @plvl 1 - 170 @plvl 70 }
 bonus_id={ 3632 }, ilevel={ 5 @plvl 1 - 551 @plvl 80 }
 bonus_id={ 3633 }, ilevel={ 1 @plvl 1 - 170 @plvl 70 }
@@ -2363,7 +2363,7 @@ bonus_id={ 4209 }, ilevel={ 17 @plvl 1 - 190 @plvl 70 }
 bonus_id={ 4210 }, ilevel={ 17 @plvl 1 - 190 @plvl 70 }
 bonus_id={ 4211 }, ilevel={ 17 @plvl 1 - 190 @plvl 70 }
 bonus_id={ 4212 }, recursive_bonus_ids={ 7164 }
-bonus_id={ 4213 }, base_ilevel={ 62 }, req_ilevel={ 45 }, quality={ legendary }
+bonus_id={ 4213 }, base_ilevel={ 33 }, req_ilevel={ 45 }, quality={ legendary }
 bonus_id={ 4214 }, ilevel={ 56 @plvl 1 - 56 @plvl 120 }
 bonus_id={ 4215 }, ilevel={ 60 @plvl 1 - 60 @plvl 120 }
 bonus_id={ 4216 }, ilevel={ 57 @plvl 1 - 57 @plvl 120 }
@@ -4116,8 +4116,8 @@ bonus_id={ 7159 }, quality={ legendary }, effects={ Maw Rattle (id=340197, index
 bonus_id={ 7160 }, quality={ legendary }, effects={ Rage of the Frozen Champion (id=341724, index=0, type=equip) }
 bonus_id={ 7161 }, quality={ legendary }, effects={ Measured Contemplation (id=341804, index=0, type=equip) }
 bonus_id={ 7162 }, quality={ legendary }, effects={ Talbadar's Stratagem (id=342415, index=0, type=equip) }
-bonus_id={ 7164 }, base_ilevel={ 41 }, req_ilevel={ 35 }
-bonus_id={ 7165 }, base_ilevel={ 41 }, req_ilevel={ 35 }
+bonus_id={ 7164 }, base_ilevel={ 21 }, req_ilevel={ 35 }
+bonus_id={ 7165 }, base_ilevel={ 21 }, req_ilevel={ 35 }
 bonus_id={ 7166 }, recursive_bonus_ids={ 7168 }
 bonus_id={ 7167 }, recursive_bonus_ids={ 7169 }
 bonus_id={ 7168 }, base_ilevel={ 38 }, req_ilevel={ 35 }, quality={ rare }
@@ -4127,11 +4127,11 @@ bonus_id={ 7171 }, recursive_bonus_ids={ 7168 }
 bonus_id={ 7172 }, recursive_bonus_ids={ 7169 }
 bonus_id={ 7173 }, quality={ epic }, ilevel={ 27 @plvl 1 - 200 @plvl 70 }
 bonus_id={ 7174 }, ilevel={ 168 @plvl 0 - 168 @plvl 0 }
-bonus_id={ 7175 }, base_ilevel={ 18 }, req_ilevel={ 15 }, quality={ rare }
-bonus_id={ 7176 }, base_ilevel={ 28 }, req_ilevel={ 25 }, quality={ rare }
-bonus_id={ 7177 }, base_ilevel={ 38 }, req_ilevel={ 35 }, quality={ rare }
-bonus_id={ 7178 }, base_ilevel={ 48 }, req_ilevel={ 45 }, quality={ rare }
-bonus_id={ 7179 }, base_ilevel={ 58 }, req_ilevel={ 55 }, quality={ rare }
+bonus_id={ 7175 }, base_ilevel={ 14 }, req_ilevel={ 15 }, quality={ rare }
+bonus_id={ 7176 }, base_ilevel={ 16 }, req_ilevel={ 25 }, quality={ rare }
+bonus_id={ 7177 }, base_ilevel={ 18 }, req_ilevel={ 35 }, quality={ rare }
+bonus_id={ 7178 }, base_ilevel={ 19 }, req_ilevel={ 45 }, quality={ rare }
+bonus_id={ 7179 }, base_ilevel={ 21 }, req_ilevel={ 55 }, quality={ rare }
 bonus_id={ 7180 }, base_ilevel={ 55 }
 bonus_id={ 7181 }, ilevel={ 129 @plvl 0 - 129 @plvl 0 }
 bonus_id={ 7182 }, ilevel={ 151 @plvl 0 - 151 @plvl 0 }
@@ -4140,7 +4140,7 @@ bonus_id={ 7184 }, quality={ legendary }, effects={ Escape from Reality (id=3432
 bonus_id={ 7185 }, ilevel={ 168 @plvl 0 - 168 @plvl 0 }
 bonus_id={ 7191 }, desc={ Timewarped }, quality={ rare }, ilevel={ 3 @plvl 1 - 158 @plvl 60 }
 bonus_id={ 7192 }, recursive_bonus_ids={ 6710 }
-bonus_id={ 7202 }, base_ilevel={ 33 }, req_ilevel={ 30 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 7202 }, base_ilevel={ 17 }, req_ilevel={ 30 }, desc={ Heroic }, quality={ epic }
 bonus_id={ 7215 }, quality={ epic }, ilevel={ 226 @plvl 50 - 226 @plvl 60 }
 bonus_id={ 7217 }, ilevel={ 21 @plvl 1 - 194 @plvl 70 }
 bonus_id={ 7218 }, quality={ legendary }, effects={ Darker Nature (id=346264, index=0, type=equip) }
@@ -4806,7 +4806,7 @@ bonus_id={ 8994 }, quality={ rare }, ilevel={ 21 @plvl 1 - 194 @plvl 70 }
 bonus_id={ 8995 }, quality={ rare }, ilevel={ 21 @plvl 1 - 194 @plvl 70 }
 bonus_id={ 8996 }, quality={ epic }, ilevel={ 12 @plvl 1 - 373 @plvl 70 }
 bonus_id={ 8997 }, quality={ rare }, ilevel={ 21 @plvl 1 - 194 @plvl 70 }
-bonus_id={ 8998 }, base_ilevel={ 38 }, req_ilevel={ 35 }, desc={ Heroic }, quality={ rare }
+bonus_id={ 8998 }, base_ilevel={ 18 }, req_ilevel={ 35 }, desc={ Heroic }, quality={ rare }
 bonus_id={ 8999 }, recursive_bonus_ids={ 13508 }
 bonus_id={ 9000 }, recursive_bonus_ids={ 13508 }
 bonus_id={ 9001 }, recursive_bonus_ids={ 13508 }
@@ -4818,119 +4818,119 @@ bonus_id={ 9006 }, recursive_bonus_ids={ 13508 }
 bonus_id={ 9007 }, quality={ rare }, ilevel={ 21 @plvl 1 - 194 @plvl 70 }
 bonus_id={ 9008 }, recursive_bonus_ids={ 13508 }
 bonus_id={ 9009 }, recursive_bonus_ids={ 13508 }
-bonus_id={ 9010 }, base_ilevel={ 38 }, req_ilevel={ 35 }, desc={ Heroic }, quality={ rare }
+bonus_id={ 9010 }, base_ilevel={ 18 }, req_ilevel={ 35 }, desc={ Heroic }, quality={ rare }
 bonus_id={ 9011 }, quality={ epic }, ilevel={ 12 @plvl 1 - 373 @plvl 70 }
-bonus_id={ 9012 }, base_ilevel={ 41 }, req_ilevel={ 35 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 9012 }, base_ilevel={ 21 }, req_ilevel={ 35 }, desc={ Heroic }, quality={ epic }
 bonus_id={ 9013 }, quality={ rare }, ilevel={ 21 @plvl 1 - 194 @plvl 70 }
-bonus_id={ 9014 }, base_ilevel={ 43 }, req_ilevel={ 40 }, desc={ Heroic }, quality={ rare }
-bonus_id={ 9015 }, base_ilevel={ 46 }, req_ilevel={ 40 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 9014 }, base_ilevel={ 18 }, req_ilevel={ 40 }, desc={ Heroic }, quality={ rare }
+bonus_id={ 9015 }, base_ilevel={ 21 }, req_ilevel={ 40 }, desc={ Mythic }, quality={ epic }
 bonus_id={ 9016 }, desc={ Warforged }, quality={ epic }, ilevel={ 12 @plvl 1 - 373 @plvl 70 }
-bonus_id={ 9017 }, base_ilevel={ 46 }, req_ilevel={ 40 }, desc={ Warforged }, quality={ epic }
-bonus_id={ 9018 }, base_ilevel={ 47 }, req_ilevel={ 40 }, desc={ Warforged }, quality={ epic }
+bonus_id={ 9017 }, base_ilevel={ 21 }, req_ilevel={ 40 }, desc={ Warforged }, quality={ epic }
+bonus_id={ 9018 }, base_ilevel={ 22 }, req_ilevel={ 40 }, desc={ Warforged }, quality={ epic }
 bonus_id={ 9019 }, quality={ rare }, ilevel={ 21 @plvl 1 - 194 @plvl 70 }
-bonus_id={ 9020 }, base_ilevel={ 48 }, req_ilevel={ 45 }, desc={ Heroic }, quality={ rare }
-bonus_id={ 9021 }, base_ilevel={ 51 }, req_ilevel={ 45 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 9020 }, base_ilevel={ 19 }, req_ilevel={ 45 }, desc={ Heroic }, quality={ rare }
+bonus_id={ 9021 }, base_ilevel={ 22 }, req_ilevel={ 45 }, desc={ Mythic }, quality={ epic }
 bonus_id={ 9022 }, quality={ rare }, ilevel={ 21 @plvl 1 - 194 @plvl 70 }
-bonus_id={ 9023 }, base_ilevel={ 53 }, req_ilevel={ 50 }, desc={ Heroic }, quality={ rare }
-bonus_id={ 9024 }, base_ilevel={ 56 }, req_ilevel={ 50 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 9023 }, base_ilevel={ 20 }, req_ilevel={ 50 }, desc={ Heroic }, quality={ rare }
+bonus_id={ 9024 }, base_ilevel={ 23 }, req_ilevel={ 50 }, desc={ Mythic }, quality={ epic }
 bonus_id={ 9025 }, quality={ rare }, ilevel={ 21 @plvl 1 - 194 @plvl 70 }
-bonus_id={ 9026 }, base_ilevel={ 66 }, req_ilevel={ 60 }, desc={ Mythic }, quality={ epic }
-bonus_id={ 9027 }, base_ilevel={ 63 }, req_ilevel={ 60 }, desc={ Heroic }, quality={ rare }
-bonus_id={ 9029 }, base_ilevel={ 38 }, req_ilevel={ 30 }
-bonus_id={ 9031 }, base_ilevel={ 40 }, req_ilevel={ 30 }, quality={ epic }
-bonus_id={ 9032 }, base_ilevel={ 42 }, req_ilevel={ 30 }
-bonus_id={ 9033 }, base_ilevel={ 44 }, req_ilevel={ 30 }, quality={ epic }
-bonus_id={ 9034 }, base_ilevel={ 38 }, req_ilevel={ 30 }, quality={ epic }
-bonus_id={ 9035 }, base_ilevel={ 40 }, req_ilevel={ 30 }, quality={ epic }
-bonus_id={ 9036 }, base_ilevel={ 42 }, req_ilevel={ 30 }, quality={ epic }
-bonus_id={ 9037 }, base_ilevel={ 44 }, req_ilevel={ 30 }, quality={ epic }
-bonus_id={ 9038 }, base_ilevel={ 38 }, req_ilevel={ 30 }, quality={ epic }
-bonus_id={ 9039 }, base_ilevel={ 39 }, req_ilevel={ 30 }, quality={ epic }
-bonus_id={ 9040 }, base_ilevel={ 40 }, req_ilevel={ 30 }, quality={ epic }
-bonus_id={ 9041 }, base_ilevel={ 41 }, req_ilevel={ 30 }, quality={ epic }
-bonus_id={ 9042 }, base_ilevel={ 42 }, req_ilevel={ 30 }, quality={ epic }
-bonus_id={ 9043 }, base_ilevel={ 43 }, req_ilevel={ 30 }, quality={ epic }
-bonus_id={ 9044 }, base_ilevel={ 42 }, req_ilevel={ 30 }, quality={ epic }
-bonus_id={ 9045 }, base_ilevel={ 43 }, req_ilevel={ 30 }, quality={ epic }
-bonus_id={ 9046 }, base_ilevel={ 44 }, req_ilevel={ 30 }, quality={ epic }
-bonus_id={ 9047 }, base_ilevel={ 45 }, req_ilevel={ 30 }, quality={ epic }
-bonus_id={ 9048 }, base_ilevel={ 44 }, req_ilevel={ 30 }, quality={ epic }
-bonus_id={ 9049 }, base_ilevel={ 45 }, req_ilevel={ 30 }, quality={ epic }
-bonus_id={ 9050 }, base_ilevel={ 46 }, req_ilevel={ 30 }, quality={ epic }
-bonus_id={ 9051 }, base_ilevel={ 47 }, req_ilevel={ 30 }, quality={ epic }
-bonus_id={ 9052 }, base_ilevel={ 43 }, req_ilevel={ 35 }, quality={ epic }
-bonus_id={ 9053 }, base_ilevel={ 44 }, req_ilevel={ 35 }, quality={ epic }
-bonus_id={ 9054 }, base_ilevel={ 45 }, req_ilevel={ 35 }, quality={ epic }
-bonus_id={ 9055 }, base_ilevel={ 46 }, req_ilevel={ 35 }, quality={ epic }
-bonus_id={ 9056 }, base_ilevel={ 47 }, req_ilevel={ 35 }, quality={ epic }
-bonus_id={ 9057 }, base_ilevel={ 48 }, req_ilevel={ 35 }, quality={ epic }
-bonus_id={ 9058 }, base_ilevel={ 49 }, req_ilevel={ 35 }, quality={ epic }
-bonus_id={ 9059 }, base_ilevel={ 43 }, req_ilevel={ 35 }, quality={ epic }
-bonus_id={ 9060 }, base_ilevel={ 44 }, req_ilevel={ 35 }, quality={ epic }
-bonus_id={ 9062 }, base_ilevel={ 45 }, req_ilevel={ 35 }, quality={ epic }
-bonus_id={ 9063 }, base_ilevel={ 45 }, req_ilevel={ 35 }, quality={ epic }
-bonus_id={ 9064 }, base_ilevel={ 46 }, req_ilevel={ 35 }, quality={ epic }
-bonus_id={ 9065 }, base_ilevel={ 45 }, req_ilevel={ 35 }, quality={ epic }
-bonus_id={ 9066 }, base_ilevel={ 46 }, req_ilevel={ 35 }, quality={ epic }
-bonus_id={ 9067 }, base_ilevel={ 47 }, req_ilevel={ 35 }, quality={ epic }
-bonus_id={ 9068 }, base_ilevel={ 47 }, req_ilevel={ 35 }, quality={ epic }
-bonus_id={ 9069 }, base_ilevel={ 48 }, req_ilevel={ 35 }, quality={ epic }
-bonus_id={ 9070 }, base_ilevel={ 47 }, req_ilevel={ 35 }, quality={ epic }
-bonus_id={ 9071 }, base_ilevel={ 48 }, req_ilevel={ 35 }, quality={ epic }
-bonus_id={ 9072 }, base_ilevel={ 49 }, req_ilevel={ 35 }, desc={ Heroic }, quality={ epic }
-bonus_id={ 9073 }, base_ilevel={ 50 }, req_ilevel={ 35 }, desc={ Mythic }, quality={ epic }
-bonus_id={ 9074 }, base_ilevel={ 48 }, req_ilevel={ 40 }, desc={ Raid Finder }, quality={ epic }
-bonus_id={ 9075 }, base_ilevel={ 49 }, req_ilevel={ 40 }, quality={ epic }
-bonus_id={ 9076 }, base_ilevel={ 50 }, req_ilevel={ 40 }, desc={ Heroic }, quality={ epic }
-bonus_id={ 9077 }, base_ilevel={ 51 }, req_ilevel={ 40 }, desc={ Mythic }, quality={ epic }
-bonus_id={ 9078 }, base_ilevel={ 50 }, req_ilevel={ 40 }, desc={ Raid Finder }, quality={ epic }
-bonus_id={ 9079 }, base_ilevel={ 51 }, req_ilevel={ 40 }, quality={ epic }
-bonus_id={ 9080 }, base_ilevel={ 52 }, req_ilevel={ 40 }, desc={ Heroic }, quality={ epic }
-bonus_id={ 9081 }, base_ilevel={ 53 }, req_ilevel={ 40 }, desc={ Mythic }, quality={ epic }
-bonus_id={ 9082 }, base_ilevel={ 53 }, req_ilevel={ 45 }, desc={ Raid Finder }, quality={ epic }
-bonus_id={ 9083 }, base_ilevel={ 54 }, req_ilevel={ 45 }, quality={ epic }
-bonus_id={ 9084 }, base_ilevel={ 55 }, req_ilevel={ 45 }, desc={ Heroic }, quality={ epic }
-bonus_id={ 9085 }, base_ilevel={ 56 }, req_ilevel={ 45 }, desc={ Mythic }, quality={ epic }
-bonus_id={ 9086 }, base_ilevel={ 55 }, req_ilevel={ 45 }, desc={ Raid Finder }, quality={ epic }
-bonus_id={ 9087 }, base_ilevel={ 56 }, req_ilevel={ 45 }, quality={ epic }
-bonus_id={ 9088 }, base_ilevel={ 57 }, req_ilevel={ 45 }, desc={ Heroic }, quality={ epic }
-bonus_id={ 9089 }, base_ilevel={ 58 }, req_ilevel={ 45 }, desc={ Mythic }, quality={ epic }
-bonus_id={ 9090 }, base_ilevel={ 57 }, req_ilevel={ 45 }, desc={ Raid Finder }, quality={ epic }
-bonus_id={ 9091 }, base_ilevel={ 58 }, req_ilevel={ 45 }, quality={ epic }
-bonus_id={ 9092 }, base_ilevel={ 59 }, req_ilevel={ 45 }, desc={ Heroic }, quality={ epic }
-bonus_id={ 9093 }, base_ilevel={ 60 }, req_ilevel={ 45 }, desc={ Mythic }, quality={ epic }
-bonus_id={ 9094 }, base_ilevel={ 59 }, req_ilevel={ 45 }, desc={ Raid Finder }, quality={ epic }
-bonus_id={ 9095 }, base_ilevel={ 60 }, req_ilevel={ 45 }, quality={ epic }
-bonus_id={ 9096 }, base_ilevel={ 61 }, req_ilevel={ 45 }, desc={ Heroic }, quality={ epic }
-bonus_id={ 9097 }, base_ilevel={ 62 }, req_ilevel={ 45 }, desc={ Mythic }, quality={ epic }
-bonus_id={ 9098 }, base_ilevel={ 58 }, req_ilevel={ 50 }, desc={ Raid Finder }, quality={ epic }
-bonus_id={ 9099 }, base_ilevel={ 59 }, req_ilevel={ 50 }, quality={ epic }
-bonus_id={ 9100 }, base_ilevel={ 60 }, req_ilevel={ 50 }, desc={ Heroic }, quality={ epic }
-bonus_id={ 9101 }, base_ilevel={ 61 }, req_ilevel={ 50 }, desc={ Mythic }, quality={ epic }
-bonus_id={ 9102 }, base_ilevel={ 60 }, req_ilevel={ 50 }, desc={ Raid Finder }, quality={ epic }
-bonus_id={ 9103 }, base_ilevel={ 61 }, req_ilevel={ 50 }, quality={ epic }
-bonus_id={ 9104 }, base_ilevel={ 62 }, req_ilevel={ 50 }, desc={ Heroic }, quality={ epic }
-bonus_id={ 9105 }, base_ilevel={ 63 }, req_ilevel={ 50 }, desc={ Mythic }, quality={ epic }
-bonus_id={ 9106 }, base_ilevel={ 62 }, req_ilevel={ 50 }, desc={ Raid Finder }, quality={ epic }
-bonus_id={ 9107 }, base_ilevel={ 63 }, req_ilevel={ 50 }, quality={ epic }
-bonus_id={ 9108 }, base_ilevel={ 64 }, req_ilevel={ 50 }, desc={ Heroic }, quality={ epic }
-bonus_id={ 9109 }, base_ilevel={ 65 }, req_ilevel={ 50 }, desc={ Mythic }, quality={ epic }
-bonus_id={ 9110 }, base_ilevel={ 64 }, req_ilevel={ 50 }, desc={ Raid Finder }, quality={ epic }
-bonus_id={ 9111 }, base_ilevel={ 65 }, req_ilevel={ 50 }, quality={ epic }
-bonus_id={ 9112 }, base_ilevel={ 66 }, req_ilevel={ 50 }, desc={ Heroic }, quality={ epic }
-bonus_id={ 9113 }, base_ilevel={ 67 }, req_ilevel={ 50 }, desc={ Mythic }, quality={ epic }
-bonus_id={ 9114 }, base_ilevel={ 68 }, req_ilevel={ 60 }, desc={ Raid Finder }, quality={ epic }
-bonus_id={ 9115 }, base_ilevel={ 69 }, req_ilevel={ 60 }, quality={ epic }
-bonus_id={ 9116 }, base_ilevel={ 70 }, req_ilevel={ 60 }, desc={ Heroic }, quality={ epic }
-bonus_id={ 9117 }, base_ilevel={ 71 }, req_ilevel={ 60 }, desc={ Mythic }, quality={ epic }
-bonus_id={ 9118 }, base_ilevel={ 70 }, req_ilevel={ 60 }, desc={ Raid Finder }, quality={ epic }
-bonus_id={ 9119 }, base_ilevel={ 71 }, req_ilevel={ 60 }, quality={ epic }
-bonus_id={ 9120 }, base_ilevel={ 72 }, req_ilevel={ 60 }, desc={ Heroic }, quality={ epic }
-bonus_id={ 9121 }, base_ilevel={ 73 }, req_ilevel={ 60 }, desc={ Mythic }, quality={ epic }
-bonus_id={ 9122 }, base_ilevel={ 72 }, req_ilevel={ 60 }, desc={ Raid Finder }, quality={ epic }
-bonus_id={ 9123 }, base_ilevel={ 73 }, req_ilevel={ 60 }, quality={ epic }
-bonus_id={ 9124 }, base_ilevel={ 74 }, req_ilevel={ 60 }, desc={ Heroic }, quality={ epic }
-bonus_id={ 9125 }, base_ilevel={ 75 }, req_ilevel={ 60 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 9026 }, base_ilevel={ 25 }, req_ilevel={ 60 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 9027 }, base_ilevel={ 22 }, req_ilevel={ 60 }, desc={ Heroic }, quality={ rare }
+bonus_id={ 9029 }, base_ilevel={ 22 }, req_ilevel={ 30 }
+bonus_id={ 9031 }, base_ilevel={ 24 }, req_ilevel={ 30 }, quality={ epic }
+bonus_id={ 9032 }, base_ilevel={ 26 }, req_ilevel={ 30 }
+bonus_id={ 9033 }, base_ilevel={ 28 }, req_ilevel={ 30 }, quality={ epic }
+bonus_id={ 9034 }, base_ilevel={ 22 }, req_ilevel={ 30 }, quality={ epic }
+bonus_id={ 9035 }, base_ilevel={ 24 }, req_ilevel={ 30 }, quality={ epic }
+bonus_id={ 9036 }, base_ilevel={ 26 }, req_ilevel={ 30 }, quality={ epic }
+bonus_id={ 9037 }, base_ilevel={ 28 }, req_ilevel={ 30 }, quality={ epic }
+bonus_id={ 9038 }, base_ilevel={ 22 }, req_ilevel={ 30 }, quality={ epic }
+bonus_id={ 9039 }, base_ilevel={ 23 }, req_ilevel={ 30 }, quality={ epic }
+bonus_id={ 9040 }, base_ilevel={ 24 }, req_ilevel={ 30 }, quality={ epic }
+bonus_id={ 9041 }, base_ilevel={ 25 }, req_ilevel={ 30 }, quality={ epic }
+bonus_id={ 9042 }, base_ilevel={ 26 }, req_ilevel={ 30 }, quality={ epic }
+bonus_id={ 9043 }, base_ilevel={ 27 }, req_ilevel={ 30 }, quality={ epic }
+bonus_id={ 9044 }, base_ilevel={ 26 }, req_ilevel={ 30 }, quality={ epic }
+bonus_id={ 9045 }, base_ilevel={ 27 }, req_ilevel={ 30 }, quality={ epic }
+bonus_id={ 9046 }, base_ilevel={ 28 }, req_ilevel={ 30 }, quality={ epic }
+bonus_id={ 9047 }, base_ilevel={ 29 }, req_ilevel={ 30 }, quality={ epic }
+bonus_id={ 9048 }, base_ilevel={ 28 }, req_ilevel={ 30 }, quality={ epic }
+bonus_id={ 9049 }, base_ilevel={ 29 }, req_ilevel={ 30 }, quality={ epic }
+bonus_id={ 9050 }, base_ilevel={ 30 }, req_ilevel={ 30 }, quality={ epic }
+bonus_id={ 9051 }, base_ilevel={ 31 }, req_ilevel={ 30 }, quality={ epic }
+bonus_id={ 9052 }, base_ilevel={ 23 }, req_ilevel={ 35 }, quality={ epic }
+bonus_id={ 9053 }, base_ilevel={ 24 }, req_ilevel={ 35 }, quality={ epic }
+bonus_id={ 9054 }, base_ilevel={ 25 }, req_ilevel={ 35 }, quality={ epic }
+bonus_id={ 9055 }, base_ilevel={ 26 }, req_ilevel={ 35 }, quality={ epic }
+bonus_id={ 9056 }, base_ilevel={ 27 }, req_ilevel={ 35 }, quality={ epic }
+bonus_id={ 9057 }, base_ilevel={ 28 }, req_ilevel={ 35 }, quality={ epic }
+bonus_id={ 9058 }, base_ilevel={ 29 }, req_ilevel={ 35 }, quality={ epic }
+bonus_id={ 9059 }, base_ilevel={ 23 }, req_ilevel={ 35 }, quality={ epic }
+bonus_id={ 9060 }, base_ilevel={ 24 }, req_ilevel={ 35 }, quality={ epic }
+bonus_id={ 9062 }, base_ilevel={ 25 }, req_ilevel={ 35 }, quality={ epic }
+bonus_id={ 9063 }, base_ilevel={ 25 }, req_ilevel={ 35 }, quality={ epic }
+bonus_id={ 9064 }, base_ilevel={ 26 }, req_ilevel={ 35 }, quality={ epic }
+bonus_id={ 9065 }, base_ilevel={ 25 }, req_ilevel={ 35 }, quality={ epic }
+bonus_id={ 9066 }, base_ilevel={ 26 }, req_ilevel={ 35 }, quality={ epic }
+bonus_id={ 9067 }, base_ilevel={ 27 }, req_ilevel={ 35 }, quality={ epic }
+bonus_id={ 9068 }, base_ilevel={ 27 }, req_ilevel={ 35 }, quality={ epic }
+bonus_id={ 9069 }, base_ilevel={ 28 }, req_ilevel={ 35 }, quality={ epic }
+bonus_id={ 9070 }, base_ilevel={ 27 }, req_ilevel={ 35 }, quality={ epic }
+bonus_id={ 9071 }, base_ilevel={ 28 }, req_ilevel={ 35 }, quality={ epic }
+bonus_id={ 9072 }, base_ilevel={ 29 }, req_ilevel={ 35 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 9073 }, base_ilevel={ 30 }, req_ilevel={ 35 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 9074 }, base_ilevel={ 23 }, req_ilevel={ 40 }, desc={ Raid Finder }, quality={ epic }
+bonus_id={ 9075 }, base_ilevel={ 24 }, req_ilevel={ 40 }, quality={ epic }
+bonus_id={ 9076 }, base_ilevel={ 25 }, req_ilevel={ 40 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 9077 }, base_ilevel={ 26 }, req_ilevel={ 40 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 9078 }, base_ilevel={ 25 }, req_ilevel={ 40 }, desc={ Raid Finder }, quality={ epic }
+bonus_id={ 9079 }, base_ilevel={ 26 }, req_ilevel={ 40 }, quality={ epic }
+bonus_id={ 9080 }, base_ilevel={ 27 }, req_ilevel={ 40 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 9081 }, base_ilevel={ 28 }, req_ilevel={ 40 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 9082 }, base_ilevel={ 24 }, req_ilevel={ 45 }, desc={ Raid Finder }, quality={ epic }
+bonus_id={ 9083 }, base_ilevel={ 25 }, req_ilevel={ 45 }, quality={ epic }
+bonus_id={ 9084 }, base_ilevel={ 26 }, req_ilevel={ 45 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 9085 }, base_ilevel={ 27 }, req_ilevel={ 45 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 9086 }, base_ilevel={ 26 }, req_ilevel={ 45 }, desc={ Raid Finder }, quality={ epic }
+bonus_id={ 9087 }, base_ilevel={ 27 }, req_ilevel={ 45 }, quality={ epic }
+bonus_id={ 9088 }, base_ilevel={ 28 }, req_ilevel={ 45 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 9089 }, base_ilevel={ 29 }, req_ilevel={ 45 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 9090 }, base_ilevel={ 28 }, req_ilevel={ 45 }, desc={ Raid Finder }, quality={ epic }
+bonus_id={ 9091 }, base_ilevel={ 29 }, req_ilevel={ 45 }, quality={ epic }
+bonus_id={ 9092 }, base_ilevel={ 30 }, req_ilevel={ 45 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 9093 }, base_ilevel={ 31 }, req_ilevel={ 45 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 9094 }, base_ilevel={ 30 }, req_ilevel={ 45 }, desc={ Raid Finder }, quality={ epic }
+bonus_id={ 9095 }, base_ilevel={ 31 }, req_ilevel={ 45 }, quality={ epic }
+bonus_id={ 9096 }, base_ilevel={ 32 }, req_ilevel={ 45 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 9097 }, base_ilevel={ 33 }, req_ilevel={ 45 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 9098 }, base_ilevel={ 25 }, req_ilevel={ 50 }, desc={ Raid Finder }, quality={ epic }
+bonus_id={ 9099 }, base_ilevel={ 26 }, req_ilevel={ 50 }, quality={ epic }
+bonus_id={ 9100 }, base_ilevel={ 27 }, req_ilevel={ 50 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 9101 }, base_ilevel={ 28 }, req_ilevel={ 50 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 9102 }, base_ilevel={ 27 }, req_ilevel={ 50 }, desc={ Raid Finder }, quality={ epic }
+bonus_id={ 9103 }, base_ilevel={ 28 }, req_ilevel={ 50 }, quality={ epic }
+bonus_id={ 9104 }, base_ilevel={ 29 }, req_ilevel={ 50 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 9105 }, base_ilevel={ 30 }, req_ilevel={ 50 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 9106 }, base_ilevel={ 29 }, req_ilevel={ 50 }, desc={ Raid Finder }, quality={ epic }
+bonus_id={ 9107 }, base_ilevel={ 30 }, req_ilevel={ 50 }, quality={ epic }
+bonus_id={ 9108 }, base_ilevel={ 31 }, req_ilevel={ 50 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 9109 }, base_ilevel={ 32 }, req_ilevel={ 50 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 9110 }, base_ilevel={ 31 }, req_ilevel={ 50 }, desc={ Raid Finder }, quality={ epic }
+bonus_id={ 9111 }, base_ilevel={ 32 }, req_ilevel={ 50 }, quality={ epic }
+bonus_id={ 9112 }, base_ilevel={ 33 }, req_ilevel={ 50 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 9113 }, base_ilevel={ 34 }, req_ilevel={ 50 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 9114 }, base_ilevel={ 27 }, req_ilevel={ 60 }, desc={ Raid Finder }, quality={ epic }
+bonus_id={ 9115 }, base_ilevel={ 28 }, req_ilevel={ 60 }, quality={ epic }
+bonus_id={ 9116 }, base_ilevel={ 29 }, req_ilevel={ 60 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 9117 }, base_ilevel={ 30 }, req_ilevel={ 60 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 9118 }, base_ilevel={ 29 }, req_ilevel={ 60 }, desc={ Raid Finder }, quality={ epic }
+bonus_id={ 9119 }, base_ilevel={ 30 }, req_ilevel={ 60 }, quality={ epic }
+bonus_id={ 9120 }, base_ilevel={ 31 }, req_ilevel={ 60 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 9121 }, base_ilevel={ 32 }, req_ilevel={ 60 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 9122 }, base_ilevel={ 31 }, req_ilevel={ 60 }, desc={ Raid Finder }, quality={ epic }
+bonus_id={ 9123 }, base_ilevel={ 32 }, req_ilevel={ 60 }, quality={ epic }
+bonus_id={ 9124 }, base_ilevel={ 33 }, req_ilevel={ 60 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 9125 }, base_ilevel={ 34 }, req_ilevel={ 60 }, desc={ Mythic }, quality={ epic }
 bonus_id={ 9129 }, recursive_bonus_ids={ 6658 }
 bonus_id={ 9130 }, recursive_bonus_ids={ 13473 }
 bonus_id={ 9131 }, quality={ uncommon }, effects={ Fire Whirl (id=397207, index=0, type=equip) }
@@ -5035,16 +5035,16 @@ bonus_id={ 9259 }, quality={ uncommon }, effects={ Molten Boulder (id=402436, in
 bonus_id={ 9260 }, quality={ rare }, effects={ Molten Boulder (id=402442, index=0, type=equip) }
 bonus_id={ 9261 }, quality={ epic }, effects={ Molten Boulder (id=402449, index=0, type=equip) }
 bonus_id={ 9262 }, quality={ uncommon }, effects={ Arclight Spanner (id=401219, index=0, type=equip) }
-bonus_id={ 9263 }, base_ilevel={ 38 }, req_ilevel={ 30 }, quality={ legendary }
-bonus_id={ 9264 }, base_ilevel={ 40 }, req_ilevel={ 30 }, quality={ legendary }
-bonus_id={ 9265 }, base_ilevel={ 44 }, req_ilevel={ 30 }, quality={ legendary }
-bonus_id={ 9266 }, base_ilevel={ 42 }, req_ilevel={ 30 }, quality={ legendary }
-bonus_id={ 9267 }, base_ilevel={ 43 }, req_ilevel={ 30 }, quality={ legendary }
-bonus_id={ 9268 }, base_ilevel={ 47 }, req_ilevel={ 30 }, quality={ legendary }
-bonus_id={ 9269 }, base_ilevel={ 46 }, req_ilevel={ 35 }, quality={ legendary }
-bonus_id={ 9270 }, base_ilevel={ 49 }, req_ilevel={ 35 }, quality={ legendary }
-bonus_id={ 9271 }, base_ilevel={ 50 }, req_ilevel={ 35 }, quality={ legendary }
-bonus_id={ 9272 }, base_ilevel={ 50 }, req_ilevel={ 40 }, quality={ legendary }
+bonus_id={ 9263 }, base_ilevel={ 22 }, req_ilevel={ 30 }, quality={ legendary }
+bonus_id={ 9264 }, base_ilevel={ 24 }, req_ilevel={ 30 }, quality={ legendary }
+bonus_id={ 9265 }, base_ilevel={ 28 }, req_ilevel={ 30 }, quality={ legendary }
+bonus_id={ 9266 }, base_ilevel={ 26 }, req_ilevel={ 30 }, quality={ legendary }
+bonus_id={ 9267 }, base_ilevel={ 27 }, req_ilevel={ 30 }, quality={ legendary }
+bonus_id={ 9268 }, base_ilevel={ 31 }, req_ilevel={ 30 }, quality={ legendary }
+bonus_id={ 9269 }, base_ilevel={ 26 }, req_ilevel={ 35 }, quality={ legendary }
+bonus_id={ 9270 }, base_ilevel={ 29 }, req_ilevel={ 35 }, quality={ legendary }
+bonus_id={ 9271 }, base_ilevel={ 30 }, req_ilevel={ 35 }, quality={ legendary }
+bonus_id={ 9272 }, base_ilevel={ 25 }, req_ilevel={ 40 }, quality={ legendary }
 bonus_id={ 9294 }, recursive_bonus_ids={ 13474 }
 bonus_id={ 9295 }, recursive_bonus_ids={ 13474 }
 bonus_id={ 9296 }, recursive_bonus_ids={ 13474 }
@@ -5061,7 +5061,7 @@ bonus_id={ 9306 }, recursive_bonus_ids={ 13475 }
 bonus_id={ 9307 }, recursive_bonus_ids={ 13475 }
 bonus_id={ 9308 }, recursive_bonus_ids={ 13475 }
 bonus_id={ 9309 }, recursive_bonus_ids={ 13475 }
-bonus_id={ 9310 }, base_ilevel={ 44 }, req_ilevel={ 30 }, quality={ legendary }
+bonus_id={ 9310 }, base_ilevel={ 28 }, req_ilevel={ 30 }, quality={ legendary }
 bonus_id={ 9311 }, recursive_bonus_ids={ 13489 }
 bonus_id={ 9312 }, recursive_bonus_ids={ 13488 }
 bonus_id={ 9313 }, recursive_bonus_ids={ 13476 }
@@ -5092,14 +5092,14 @@ bonus_id={ 9351 }, base_ilevel={ 408 }
 bonus_id={ 9352 }, quality={ common }, effects={ Fisticuffs (id=394019, index=0, type=equip) }
 bonus_id={ 9353 }, quality={ common }, effects={ Guard (id=385212, index=0, type=equip) }
 bonus_id={ 9354 }, ilevel={ 1 @plvl 1 - 80 @plvl 80 }
-bonus_id={ 9355 }, base_ilevel={ 49 }, req_ilevel={ 35 }, quality={ epic }
-bonus_id={ 9356 }, base_ilevel={ 44 }, req_ilevel={ 30 }, quality={ epic }
-bonus_id={ 9357 }, base_ilevel={ 44 }, req_ilevel={ 30 }, quality={ epic }
-bonus_id={ 9358 }, base_ilevel={ 50 }, req_ilevel={ 35 }, quality={ epic }
-bonus_id={ 9359 }, base_ilevel={ 53 }, req_ilevel={ 40 }, quality={ epic }
+bonus_id={ 9355 }, base_ilevel={ 29 }, req_ilevel={ 35 }, quality={ epic }
+bonus_id={ 9356 }, base_ilevel={ 28 }, req_ilevel={ 30 }, quality={ epic }
+bonus_id={ 9357 }, base_ilevel={ 28 }, req_ilevel={ 30 }, quality={ epic }
+bonus_id={ 9358 }, base_ilevel={ 30 }, req_ilevel={ 35 }, quality={ epic }
+bonus_id={ 9359 }, base_ilevel={ 28 }, req_ilevel={ 40 }, quality={ epic }
 bonus_id={ 9360 }, effects={ Unknown Effect (id=173912) }
-bonus_id={ 9362 }, base_ilevel={ 62 }, req_ilevel={ 45 }, quality={ epic }
-bonus_id={ 9363 }, base_ilevel={ 58 }, req_ilevel={ 45 }, quality={ epic }
+bonus_id={ 9362 }, base_ilevel={ 33 }, req_ilevel={ 45 }, quality={ epic }
+bonus_id={ 9363 }, base_ilevel={ 29 }, req_ilevel={ 45 }, quality={ epic }
 bonus_id={ 9364 }, quality={ common }, effects={ Hellfire (id=376361, index=0, type=equip) }
 bonus_id={ 9365 }, desc={ Ingenuity Crafted }, recursive_bonus_ids={ 13471 }
 bonus_id={ 9366 }, desc={ Shadowflame Crafted }, recursive_bonus_ids={ 13477 }
@@ -5640,7 +5640,7 @@ bonus_id={ 10214 }, ilevel_adjust={ -597 }
 bonus_id={ 10215 }, ilevel_adjust={ -598 }
 bonus_id={ 10216 }, ilevel_adjust={ -599 }
 bonus_id={ 10217 }, ilevel_adjust={ -600 }
-bonus_id={ 10222 }, base_ilevel={ 593 }, req_ilevel={ 80 }, desc={ Omen Crafted }
+bonus_id={ 10222 }, base_ilevel={ 83 }, req_ilevel={ 80 }, desc={ Omen Crafted }
 bonus_id={ 10236 }, effects={ Opportunist (id=427054, index=0, type=equip) }
 bonus_id={ 10242 }, effects={ Sunstrider's Flourish (id=429214, index=0, type=equip) }
 bonus_id={ 10249 }, desc={ Awakened Crafted }, recursive_bonus_ids={ 13496 }
@@ -5770,7 +5770,7 @@ bonus_id={ 10415 }, recursive_bonus_ids={ 13499 }
 bonus_id={ 10416 }, recursive_bonus_ids={ 13499 }
 bonus_id={ 10417 }, recursive_bonus_ids={ 13499 }
 bonus_id={ 10418 }, recursive_bonus_ids={ 13499 }
-bonus_id={ 10421 }, base_ilevel={ 593 }, req_ilevel={ 80 }
+bonus_id={ 10421 }, base_ilevel={ 83 }, req_ilevel={ 80 }
 bonus_id={ 10426 }, recursive_bonus_ids={ 6682 }
 bonus_id={ 10427 }, quality={ common }, effects={ Mana Sphere (id=431501, index=0, type=equip) }
 bonus_id={ 10428 }, quality={ common }, effects={ Searing Axe (id=432490, index=0, type=equip) }
@@ -6161,16 +6161,16 @@ bonus_id={ 10823 }, effects={ Cold Front (id=436573, index=0, type=equip) }
 bonus_id={ 10824 }, effects={ Brittle (id=436578, index=0, type=equip) }
 bonus_id={ 10825 }, effects={ Memory of Vengeance (id=436583, index=0, type=equip) }
 bonus_id={ 10826 }, effects={ Searing Light (id=436586, index=0, type=equip) }
-bonus_id={ 10827 }, base_ilevel={ 538 }, req_ilevel={ 68 }
-bonus_id={ 10828 }, base_ilevel={ 106 }, req_ilevel={ 68 }
-bonus_id={ 10829 }, base_ilevel={ 590 }, req_ilevel={ 68 }
+bonus_id={ 10827 }, base_ilevel={ 79 }, req_ilevel={ 68 }
+bonus_id={ 10828 }, base_ilevel={ 27 }, req_ilevel={ 68 }
+bonus_id={ 10829 }, base_ilevel={ 83 }, req_ilevel={ 68 }
 bonus_id={ 10835 }, socket={ 1 }
 bonus_id={ 10836 }, socket={ 2 }
 bonus_id={ 10838 }, socket={ 3 }
 bonus_id={ 10839 }, effects={ Oblivion Sphere (id=435854, index=0, type=equip) }
-bonus_id={ 10840 }, base_ilevel={ 545 }, req_ilevel={ 80 }, quality={ uncommon }
-bonus_id={ 10841 }, base_ilevel={ 558 }, req_ilevel={ 80 }, quality={ rare }
-bonus_id={ 10842 }, base_ilevel={ 597 }, req_ilevel={ 80 }, quality={ epic }
+bonus_id={ 10840 }, base_ilevel={ 79 }, req_ilevel={ 80 }, quality={ uncommon }
+bonus_id={ 10841 }, base_ilevel={ 79 }, req_ilevel={ 80 }, quality={ rare }
+bonus_id={ 10842 }, base_ilevel={ 86 }, req_ilevel={ 80 }, quality={ epic }
 bonus_id={ 10843 }, effects={ Thundering Orb (id=436789, index=0, type=equip) }
 bonus_id={ 10845 }, desc={ Timewarped }, recursive_bonus_ids={ 6682 }
 bonus_id={ 10846 }, effects={ Lifestorm (id=437014, index=0, type=equip) }
@@ -6349,9 +6349,9 @@ bonus_id={ 11136 }, mod_to_stat={ Crit (100) }
 bonus_id={ 11137 }, mod_to_stat={ Mastery (100) }
 bonus_id={ 11138 }, mod_to_stat={ Haste (100) }
 bonus_id={ 11139 }, mod_to_stat={ Vers (100) }
-bonus_id={ 11142 }, base_ilevel={ 577 }, req_ilevel={ 80 }, quality={ epic }
-bonus_id={ 11143 }, base_ilevel={ 606 }, req_ilevel={ 80 }
-bonus_id={ 11144 }, base_ilevel={ 623 }, req_ilevel={ 80 }
+bonus_id={ 11142 }, base_ilevel={ 80 }, req_ilevel={ 80 }, quality={ epic }
+bonus_id={ 11143 }, base_ilevel={ 86 }, req_ilevel={ 80 }
+bonus_id={ 11144 }, base_ilevel={ 92 }, req_ilevel={ 80 }
 bonus_id={ 11145 }, socket={ 3 }
 bonus_id={ 11146 }, socket={ 3 }
 bonus_id={ 11147 }, socket={ 3 }
@@ -6479,8 +6479,8 @@ bonus_id={ 11290 }, desc={ Rank 1/4 }, effects={ Adding (id=456561, index=0, typ
 bonus_id={ 11291 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=456971, index=0, type=use) }
 bonus_id={ 11292 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=456993, index=0, type=use) }
 bonus_id={ 11293 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=457007, index=0, type=use) }
-bonus_id={ 11295 }, base_ilevel={ 515 }, req_ilevel={ 71 }
-bonus_id={ 11297 }, base_ilevel={ 545 }, req_ilevel={ 80 }
+bonus_id={ 11295 }, base_ilevel={ 78 }, req_ilevel={ 71 }
+bonus_id={ 11297 }, base_ilevel={ 79 }, req_ilevel={ 80 }
 bonus_id={ 11299 }, effects={ Radiant Focus (id=454558, index=0, type=equip) }
 bonus_id={ 11300 }, effects={ Ascendance (id=458573, index=0, type=equip) }
 bonus_id={ 11301 }, effects={ Vivacity (id=454857, index=0, type=equip) }
@@ -6501,9 +6501,9 @@ bonus_id={ 11317 }, stats={ 100% Vers [0.3333] }
 bonus_id={ 11318 }, base_ilevel={ 545 }
 bonus_id={ 11319 }, desc={ Tier 1 }, effects={ Unknown Effect (id=188908) }
 bonus_id={ 11329 }, quality={ rare }, ilevel={ 10 @plvl 0 - 10 @plvl 1 }
-bonus_id={ 11330 }, base_ilevel={ 545 }, req_ilevel={ 74 }
-bonus_id={ 11331 }, base_ilevel={ 561 }, req_ilevel={ 80 }
-bonus_id={ 11332 }, base_ilevel={ 68 }, req_ilevel={ 65 }, quality={ rare }
+bonus_id={ 11330 }, base_ilevel={ 79 }, req_ilevel={ 74 }
+bonus_id={ 11331 }, base_ilevel={ 80 }, req_ilevel={ 80 }
+bonus_id={ 11332 }, base_ilevel={ 23 }, req_ilevel={ 65 }, quality={ rare }
 bonus_id={ 11334 }, quality={ rare }, ilevel={ 363 @plvl 55 - 554 @plvl 90 }
 bonus_id={ 11335 }, quality={ rare }, ilevel={ 363 @plvl 55 - 554 @plvl 90 }
 bonus_id={ 11336 }, quality={ rare }, ilevel={ 363 @plvl 55 - 554 @plvl 90 }
@@ -7169,28 +7169,28 @@ bonus_id={ 12011 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=46
 bonus_id={ 12012 }, quality={ epic }
 bonus_id={ 12013 }, quality={ epic }
 bonus_id={ 12014 }, quality={ epic }
-bonus_id={ 12015 }, base_ilevel={ 571 }, req_ilevel={ 80 }, quality={ uncommon }
-bonus_id={ 12016 }, base_ilevel={ 584 }, req_ilevel={ 80 }, quality={ rare }
-bonus_id={ 12017 }, base_ilevel={ 623 }, req_ilevel={ 80 }, quality={ epic }
+bonus_id={ 12015 }, base_ilevel={ 80 }, req_ilevel={ 80 }, quality={ uncommon }
+bonus_id={ 12016 }, base_ilevel={ 83 }, req_ilevel={ 80 }, quality={ rare }
+bonus_id={ 12017 }, base_ilevel={ 92 }, req_ilevel={ 80 }, quality={ epic }
 bonus_id={ 12024 }, base_ilevel={ 593 }, quality={ rare }
 bonus_id={ 12025 }, quality={ epic }
 bonus_id={ 12026 }, quality={ epic }
 bonus_id={ 12027 }, quality={ epic }
 bonus_id={ 12028 }, quality={ epic }
-bonus_id={ 12037 }, base_ilevel={ 597 }, req_ilevel={ 80 }, quality={ uncommon }
-bonus_id={ 12038 }, base_ilevel={ 610 }, req_ilevel={ 80 }, quality={ rare }
-bonus_id={ 12039 }, base_ilevel={ 649 }, req_ilevel={ 80 }, quality={ epic }
-bonus_id={ 12040 }, base_ilevel={ 632 }, req_ilevel={ 80 }, desc={ Fortune Crafted }
-bonus_id={ 12041 }, base_ilevel={ 616 }, req_ilevel={ 80 }, quality={ epic }
-bonus_id={ 12042 }, base_ilevel={ 645 }, req_ilevel={ 80 }
-bonus_id={ 12043 }, base_ilevel={ 662 }, req_ilevel={ 80 }
+bonus_id={ 12037 }, base_ilevel={ 86 }, req_ilevel={ 80 }, quality={ uncommon }
+bonus_id={ 12038 }, base_ilevel={ 89 }, req_ilevel={ 80 }, quality={ rare }
+bonus_id={ 12039 }, base_ilevel={ 100 }, req_ilevel={ 80 }, quality={ epic }
+bonus_id={ 12040 }, base_ilevel={ 92 }, req_ilevel={ 80 }, desc={ Fortune Crafted }
+bonus_id={ 12041 }, base_ilevel={ 89 }, req_ilevel={ 80 }, quality={ epic }
+bonus_id={ 12042 }, base_ilevel={ 99 }, req_ilevel={ 80 }
+bonus_id={ 12043 }, base_ilevel={ 104 }, req_ilevel={ 80 }
 bonus_id={ 12047 }, ilevel={ 15 @plvl 10 - 587 @plvl 80 }
 bonus_id={ 12048 }, ilevel={ 15 @plvl 10 - 590 @plvl 80 }
 bonus_id={ 12049 }, ilevel={ 15 @plvl 10 - 593 @plvl 80 }
-bonus_id={ 12050 }, base_ilevel={ 678 }, req_ilevel={ 80 }, desc={ Starlight Crafted }
-bonus_id={ 12051 }, base_ilevel={ 662 }, req_ilevel={ 80 }, quality={ epic }
-bonus_id={ 12052 }, base_ilevel={ 691 }, req_ilevel={ 80 }
-bonus_id={ 12053 }, base_ilevel={ 707 }, req_ilevel={ 80 }
+bonus_id={ 12050 }, base_ilevel={ 118 }, req_ilevel={ 80 }, desc={ Starlight Crafted }
+bonus_id={ 12051 }, base_ilevel={ 104 }, req_ilevel={ 80 }, quality={ epic }
+bonus_id={ 12052 }, base_ilevel={ 131 }, req_ilevel={ 80 }
+bonus_id={ 12053 }, base_ilevel={ 147 }, req_ilevel={ 80 }
 bonus_id={ 12055 }, socket={ 1 }
 bonus_id={ 12056 }, socket={ 1 }
 bonus_id={ 12057 }, ilevel={ 356 @plvl 55 - 551 @plvl 90 }
@@ -7199,7 +7199,7 @@ bonus_id={ 12062 }, quality={ common }, effects={ Celestial Barrage (id=471717, 
 bonus_id={ 12063 }, quality={ uncommon }, effects={ Celestial Barrage (id=472390, index=0, type=equip) }
 bonus_id={ 12064 }, quality={ rare }, effects={ Celestial Barrage (id=472403, index=0, type=equip) }
 bonus_id={ 12065 }, quality={ epic }, effects={ Celestial Barrage (id=472406, index=0, type=equip) }
-bonus_id={ 12066 }, base_ilevel={ 246 }, req_ilevel={ 90 }, desc={ Radiance Crafted }
+bonus_id={ 12066 }, base_ilevel={ 53 }, req_ilevel={ 90 }, desc={ Radiance Crafted }
 bonus_id={ 12067 }, quality={ rare }, ilevel={ 21 @plvl 1 - 593 @plvl 80 }
 bonus_id={ 12068 }, quality={ rare }, ilevel={ 21 @plvl 1 - 593 @plvl 80 }
 bonus_id={ 12070 }, quality={ epic }, ilevel={ 369 @plvl 55 - 554 @plvl 90 }
@@ -7281,7 +7281,7 @@ bonus_id={ 12173 }, effects={ C.H.E.T.T. List (id=1217214, index=0, type=use) }
 bonus_id={ 12174 }, effects={ C.H.E.T.T. List (id=1219241, index=0, type=unknown) }
 bonus_id={ 12175 }, quality={ rare }, stats={ 100% AgiInt [0.2045] }
 bonus_id={ 12180 }, ilevel={ 356 @plvl 55 - 551 @plvl 90 }
-bonus_id={ 12214 }, base_ilevel={ 246 }, req_ilevel={ 90 }
+bonus_id={ 12214 }, base_ilevel={ 53 }, req_ilevel={ 90 }
 bonus_id={ 12215 }, suffix={ of the Abbot }, effects={ Hallowed Tome of the Abbot (id=1223886, index=0, type=equip) }
 bonus_id={ 12216 }, suffix={ of the Zealot }, effects={ Hallowed Tome of the Zealot (id=1223899, index=0, type=equip) }
 bonus_id={ 12217 }, suffix={ of the Crusader }, effects={ Hallowed Tome of the Crusader (id=1223902, index=0, type=equip) }
@@ -7300,11 +7300,11 @@ bonus_id={ 12234 }, socket={ 3 }
 bonus_id={ 12235 }, effects={ Unknown Effect (id=206760) }
 bonus_id={ 12236 }, effects={ Unknown Effect (id=206761) }
 bonus_id={ 12237 }, effects={ Skrog Tooth (id=1223600, index=0, type=equip) }
-bonus_id={ 12245 }, base_ilevel={ 259 }, req_ilevel={ 90 }
-bonus_id={ 12247 }, base_ilevel={ 201 }, req_ilevel={ 90 }
-bonus_id={ 12249 }, base_ilevel={ 165 }, req_ilevel={ 81 }
-bonus_id={ 12252 }, base_ilevel={ 180 }, req_ilevel={ 81 }
-bonus_id={ 12253 }, base_ilevel={ 206 }, req_ilevel={ 81 }
+bonus_id={ 12245 }, base_ilevel={ 55 }, req_ilevel={ 90 }
+bonus_id={ 12247 }, base_ilevel={ 45 }, req_ilevel={ 90 }
+bonus_id={ 12249 }, base_ilevel={ 30 }, req_ilevel={ 81 }
+bonus_id={ 12252 }, base_ilevel={ 41 }, req_ilevel={ 81 }
+bonus_id={ 12253 }, base_ilevel={ 45 }, req_ilevel={ 81 }
 bonus_id={ 12255 }, stats={ 100% Mastery [0.5600] }
 bonus_id={ 12256 }, stats={ 100% Mastery [0.8000] }
 bonus_id={ 12257 }, stats={ 100% Crit [0.8000] }
@@ -7419,6 +7419,8 @@ bonus_id={ 12365 }, socket={ 1 }
 bonus_id={ 12367 }, base_ilevel={ 639 }, quality={ rare }
 bonus_id={ 12371 }, quality={ epic }
 bonus_id={ 12372 }, quality={ epic }
+bonus_id={ 12373 }, ilevel_adjust={ 6 }
+bonus_id={ 12374 }, ilevel_adjust={ 3 }
 bonus_id={ 12375 }, quality={ epic }
 bonus_id={ 12376 }, quality={ epic }
 bonus_id={ 12377 }, desc={ Timewarped }, ilevel={ 19 @plvl 1 - 632 @plvl 80 }
@@ -7427,11 +7429,11 @@ bonus_id={ 12379 }, quality={ rare }, ilevel={ 21 @plvl 1 - 632 @plvl 80 }
 bonus_id={ 12380 }, quality={ rare }, ilevel={ 21 @plvl 1 - 632 @plvl 80 }
 bonus_id={ 12384 }, effects={ Arcanoweave Lining (id=1229511, index=0, type=learn) }
 bonus_id={ 12385 }, effects={ Sunfire Silk Lining (id=1241711, index=0, type=learn) }
-bonus_id={ 12403 }, base_ilevel={ 80 }, req_ilevel={ 80 }
-bonus_id={ 12405 }, base_ilevel={ 133 }, req_ilevel={ 82 }
-bonus_id={ 12406 }, base_ilevel={ 133 }, req_ilevel={ 82 }
-bonus_id={ 12407 }, base_ilevel={ 165 }, req_ilevel={ 87 }
-bonus_id={ 12408 }, base_ilevel={ 197 }, req_ilevel={ 90 }
+bonus_id={ 12403 }, base_ilevel={ 23 }, req_ilevel={ 80 }
+bonus_id={ 12405 }, base_ilevel={ 23 }, req_ilevel={ 82 }
+bonus_id={ 12406 }, base_ilevel={ 23 }, req_ilevel={ 82 }
+bonus_id={ 12407 }, base_ilevel={ 24 }, req_ilevel={ 87 }
+bonus_id={ 12408 }, base_ilevel={ 24 }, req_ilevel={ 90 }
 bonus_id={ 12409 }, quality={ common }, effects={ Unknown Effect (id=210070) }
 bonus_id={ 12410 }, quality={ uncommon }, effects={ Unknown Effect (id=210081) }
 bonus_id={ 12411 }, quality={ rare }, effects={ Unknown Effect (id=210082) }
@@ -7513,7 +7515,7 @@ bonus_id={ 12486 }, quality={ rare }, effects={ Unknown Effect (id=210157) }
 bonus_id={ 12487 }, quality={ epic }, effects={ Unknown Effect (id=210158) }
 bonus_id={ 12488 }, quality={ legendary }, effects={ Unknown Effect (id=210159) }
 bonus_id={ 12489 }, stats={ 100% StrAgiInt [0.5259] }
-bonus_id={ 12503 }, base_ilevel={ 232 }, req_ilevel={ 81 }
+bonus_id={ 12503 }, base_ilevel={ 50 }, req_ilevel={ 81 }
 bonus_id={ 12504 }, quality={ epic }
 bonus_id={ 12505 }, desc={ Voidtouched }, stats={ 50% Crit [0.2000], -50% Haste [-0.2000] }
 bonus_id={ 12506 }, desc={ Voidtouched }, stats={ 50% Mastery [0.2000], -50% Vers [-0.2000] }
@@ -7713,46 +7715,46 @@ bonus_id={ 12765 }, quality={ rare }
 bonus_id={ 12766 }, quality={ rare }
 bonus_id={ 12767 }, quality={ rare }
 bonus_id={ 12768 }, quality={ rare }
-bonus_id={ 12769 }, base_ilevel={ 220 }, req_ilevel={ 90 }, quality={ rare }
-bonus_id={ 12770 }, base_ilevel={ 224 }, req_ilevel={ 90 }, quality={ rare }
-bonus_id={ 12771 }, base_ilevel={ 227 }, req_ilevel={ 90 }, quality={ rare }
-bonus_id={ 12772 }, base_ilevel={ 230 }, req_ilevel={ 90 }, quality={ rare }
-bonus_id={ 12773 }, base_ilevel={ 233 }, quality={ rare }
-bonus_id={ 12774 }, base_ilevel={ 237 }, quality={ rare }
-bonus_id={ 12775 }, base_ilevel={ 240 }, quality={ rare }
-bonus_id={ 12776 }, base_ilevel={ 243 }, quality={ rare }
-bonus_id={ 12777 }, base_ilevel={ 233 }, quality={ epic }
-bonus_id={ 12778 }, base_ilevel={ 237 }, quality={ epic }
-bonus_id={ 12779 }, base_ilevel={ 240 }, quality={ epic }
-bonus_id={ 12780 }, base_ilevel={ 243 }, quality={ epic }
-bonus_id={ 12781 }, base_ilevel={ 246 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12782 }, base_ilevel={ 250 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12783 }, base_ilevel={ 253 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12784 }, base_ilevel={ 256 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12785 }, base_ilevel={ 246 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12786 }, base_ilevel={ 250 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12787 }, base_ilevel={ 253 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12788 }, base_ilevel={ 256 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12789 }, base_ilevel={ 259 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12790 }, base_ilevel={ 263 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12791 }, base_ilevel={ 266 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12792 }, base_ilevel={ 269 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12793 }, base_ilevel={ 259 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12794 }, base_ilevel={ 263 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12795 }, base_ilevel={ 266 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12796 }, base_ilevel={ 269 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12797 }, base_ilevel={ 272 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12798 }, base_ilevel={ 276 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12799 }, base_ilevel={ 279 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12800 }, base_ilevel={ 282 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12801 }, base_ilevel={ 272 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12802 }, base_ilevel={ 276 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12803 }, base_ilevel={ 279 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12804 }, base_ilevel={ 282 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12805 }, base_ilevel={ 285 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12806 }, base_ilevel={ 289 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12807 }, base_ilevel={ 292 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 12808 }, base_ilevel={ 295 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12769 }, base_ilevel={ 48 }, req_ilevel={ 90 }, quality={ rare }
+bonus_id={ 12770 }, base_ilevel={ 49 }, req_ilevel={ 90 }, quality={ rare }
+bonus_id={ 12771 }, base_ilevel={ 49 }, req_ilevel={ 90 }, quality={ rare }
+bonus_id={ 12772 }, base_ilevel={ 50 }, req_ilevel={ 90 }, quality={ rare }
+bonus_id={ 12773 }, base_ilevel={ 50 }, quality={ rare }
+bonus_id={ 12774 }, base_ilevel={ 51 }, quality={ rare }
+bonus_id={ 12775 }, base_ilevel={ 52 }, quality={ rare }
+bonus_id={ 12776 }, base_ilevel={ 52 }, quality={ rare }
+bonus_id={ 12777 }, base_ilevel={ 50 }, quality={ epic }
+bonus_id={ 12778 }, base_ilevel={ 51 }, quality={ epic }
+bonus_id={ 12779 }, base_ilevel={ 52 }, quality={ epic }
+bonus_id={ 12780 }, base_ilevel={ 52 }, quality={ epic }
+bonus_id={ 12781 }, base_ilevel={ 53 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12782 }, base_ilevel={ 53 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12783 }, base_ilevel={ 54 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12784 }, base_ilevel={ 54 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12785 }, base_ilevel={ 53 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12786 }, base_ilevel={ 53 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12787 }, base_ilevel={ 54 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12788 }, base_ilevel={ 54 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12789 }, base_ilevel={ 55 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12790 }, base_ilevel={ 56 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12791 }, base_ilevel={ 56 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12792 }, base_ilevel={ 57 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12793 }, base_ilevel={ 55 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12794 }, base_ilevel={ 56 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12795 }, base_ilevel={ 56 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12796 }, base_ilevel={ 57 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12797 }, base_ilevel={ 57 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12798 }, base_ilevel={ 58 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12799 }, base_ilevel={ 59 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12800 }, base_ilevel={ 59 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12801 }, base_ilevel={ 57 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12802 }, base_ilevel={ 58 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12803 }, base_ilevel={ 59 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12804 }, base_ilevel={ 59 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12805 }, base_ilevel={ 60 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12806 }, base_ilevel={ 60 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12807 }, base_ilevel={ 61 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 12808 }, base_ilevel={ 62 }, req_ilevel={ 90 }, quality={ epic }
 bonus_id={ 12809 }, quality={ uncommon }
 bonus_id={ 12810 }, quality={ uncommon }
 bonus_id={ 12811 }, quality={ uncommon }
@@ -7976,15 +7978,15 @@ bonus_id={ 13328 }, quality={ artifact }
 bonus_id={ 13329 }, quality={ artifact }
 bonus_id={ 13330 }, quality={ artifact }
 bonus_id={ 13331 }, quality={ artifact }
-bonus_id={ 13341 }, base_ilevel={ 233 }
-bonus_id={ 13342 }, base_ilevel={ 237 }
-bonus_id={ 13343 }, base_ilevel={ 240 }
-bonus_id={ 13346 }, base_ilevel={ 250 }, req_ilevel={ 90 }
-bonus_id={ 13347 }, base_ilevel={ 253 }, req_ilevel={ 90 }
-bonus_id={ 13350 }, base_ilevel={ 263 }, req_ilevel={ 90 }
-bonus_id={ 13351 }, base_ilevel={ 266 }, req_ilevel={ 90 }
-bonus_id={ 13354 }, base_ilevel={ 276 }, req_ilevel={ 90 }
-bonus_id={ 13355 }, base_ilevel={ 279 }, req_ilevel={ 90 }
+bonus_id={ 13341 }, base_ilevel={ 50 }
+bonus_id={ 13342 }, base_ilevel={ 51 }
+bonus_id={ 13343 }, base_ilevel={ 52 }
+bonus_id={ 13346 }, base_ilevel={ 53 }, req_ilevel={ 90 }
+bonus_id={ 13347 }, base_ilevel={ 54 }, req_ilevel={ 90 }
+bonus_id={ 13350 }, base_ilevel={ 56 }, req_ilevel={ 90 }
+bonus_id={ 13351 }, base_ilevel={ 56 }, req_ilevel={ 90 }
+bonus_id={ 13354 }, base_ilevel={ 58 }, req_ilevel={ 90 }
+bonus_id={ 13355 }, base_ilevel={ 59 }, req_ilevel={ 90 }
 bonus_id={ 13357 }, quality={ epic }
 bonus_id={ 13359 }
 bonus_id={ 13360 }, effects={ Infinite Power (id=1250717, index=0, type=no_delay_use) }
@@ -7995,95 +7997,97 @@ bonus_id={ 13364 }, effects={ Infinite Power (id=1250751, index=0, type=no_delay
 bonus_id={ 13365 }, effects={ Infinite Power (id=1250760, index=0, type=no_delay_use) }
 bonus_id={ 13435 }, effects={ Infinite Power (id=1250552, index=0, type=equip) }
 bonus_id={ 13441 }, base_ilevel={ 126 }
-bonus_id={ 13442 }, base_ilevel={ 214 }, req_ilevel={ 90 }, quality={ rare }
+bonus_id={ 13442 }, base_ilevel={ 47 }, req_ilevel={ 90 }, quality={ rare }
 bonus_id={ 13443 }, quality={ epic }
 bonus_id={ 13444 }, quality={ epic }
 bonus_id={ 13445 }, quality={ epic }
 bonus_id={ 13446 }, quality={ epic }
 bonus_id={ 13453 }, effects={ Prismatic Focusing Iris (id=1251906, index=0, type=equip) }
 bonus_id={ 13454 }, effects={ Stabilizing Gemstone Bandolier (id=1251905, index=0, type=equip) }
-bonus_id={ 13470 }, base_ilevel={ 78 }, req_ilevel={ 70 }, desc={ Raid Finder }, quality={ epic }
-bonus_id={ 13471 }, base_ilevel={ 79 }, req_ilevel={ 70 }, quality={ epic }
-bonus_id={ 13472 }, base_ilevel={ 80 }, req_ilevel={ 70 }, desc={ Heroic }, quality={ epic }
-bonus_id={ 13473 }, base_ilevel={ 81 }, req_ilevel={ 70 }, desc={ Mythic }, quality={ epic }
-bonus_id={ 13474 }, base_ilevel={ 78 }, req_ilevel={ 70 }, quality={ uncommon }
-bonus_id={ 13475 }, base_ilevel={ 79 }, req_ilevel={ 70 }, quality={ rare }
-bonus_id={ 13476 }, base_ilevel={ 80 }, req_ilevel={ 70 }, quality={ epic }
-bonus_id={ 13477 }, base_ilevel={ 81 }, req_ilevel={ 70 }, quality={ epic }
-bonus_id={ 13478 }, base_ilevel={ 82 }, req_ilevel={ 70 }, quality={ epic }
-bonus_id={ 13479 }, base_ilevel={ 83 }, req_ilevel={ 70 }, quality={ epic }
-bonus_id={ 13480 }, base_ilevel={ 80 }, req_ilevel={ 70 }, quality={ uncommon }
-bonus_id={ 13481 }, base_ilevel={ 81 }, req_ilevel={ 70 }, quality={ rare }
-bonus_id={ 13482 }, base_ilevel={ 83 }, req_ilevel={ 70 }, quality={ epic }
-bonus_id={ 13483 }, base_ilevel={ 82 }, req_ilevel={ 70 }, quality={ epic }
-bonus_id={ 13484 }, base_ilevel={ 84 }, req_ilevel={ 70 }, quality={ epic }
-bonus_id={ 13485 }, base_ilevel={ 85 }, req_ilevel={ 70 }, quality={ epic }
-bonus_id={ 13486 }, base_ilevel={ 73 }, req_ilevel={ 70 }, desc={ Heroic }, quality={ rare }
-bonus_id={ 13487 }, base_ilevel={ 76 }, req_ilevel={ 70 }, desc={ Mythic }, quality={ epic }
-bonus_id={ 13488 }, base_ilevel={ 83 }, req_ilevel={ 70 }, quality={ epic }
-bonus_id={ 13489 }, base_ilevel={ 79 }, req_ilevel={ 70 }, quality={ rare }
-bonus_id={ 13490 }, base_ilevel={ 51 }, req_ilevel={ 45 }
-bonus_id={ 13491 }, base_ilevel={ 46 }, req_ilevel={ 40 }
+bonus_id={ 13468 }, ilevel_adjust={ 7 }
+bonus_id={ 13469 }, ilevel_adjust={ 3 }
+bonus_id={ 13470 }, base_ilevel={ 29 }, req_ilevel={ 70 }, desc={ Raid Finder }, quality={ epic }
+bonus_id={ 13471 }, base_ilevel={ 30 }, req_ilevel={ 70 }, quality={ epic }
+bonus_id={ 13472 }, base_ilevel={ 31 }, req_ilevel={ 70 }, desc={ Heroic }, quality={ epic }
+bonus_id={ 13473 }, base_ilevel={ 32 }, req_ilevel={ 70 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 13474 }, base_ilevel={ 29 }, req_ilevel={ 70 }, quality={ uncommon }
+bonus_id={ 13475 }, base_ilevel={ 30 }, req_ilevel={ 70 }, quality={ rare }
+bonus_id={ 13476 }, base_ilevel={ 31 }, req_ilevel={ 70 }, quality={ epic }
+bonus_id={ 13477 }, base_ilevel={ 32 }, req_ilevel={ 70 }, quality={ epic }
+bonus_id={ 13478 }, base_ilevel={ 33 }, req_ilevel={ 70 }, quality={ epic }
+bonus_id={ 13479 }, base_ilevel={ 34 }, req_ilevel={ 70 }, quality={ epic }
+bonus_id={ 13480 }, base_ilevel={ 31 }, req_ilevel={ 70 }, quality={ uncommon }
+bonus_id={ 13481 }, base_ilevel={ 32 }, req_ilevel={ 70 }, quality={ rare }
+bonus_id={ 13482 }, base_ilevel={ 34 }, req_ilevel={ 70 }, quality={ epic }
+bonus_id={ 13483 }, base_ilevel={ 33 }, req_ilevel={ 70 }, quality={ epic }
+bonus_id={ 13484 }, base_ilevel={ 35 }, req_ilevel={ 70 }, quality={ epic }
+bonus_id={ 13485 }, base_ilevel={ 36 }, req_ilevel={ 70 }, quality={ epic }
+bonus_id={ 13486 }, base_ilevel={ 24 }, req_ilevel={ 70 }, desc={ Heroic }, quality={ rare }
+bonus_id={ 13487 }, base_ilevel={ 27 }, req_ilevel={ 70 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 13488 }, base_ilevel={ 34 }, req_ilevel={ 70 }, quality={ epic }
+bonus_id={ 13489 }, base_ilevel={ 30 }, req_ilevel={ 70 }, quality={ rare }
+bonus_id={ 13490 }, base_ilevel={ 22 }, req_ilevel={ 45 }
+bonus_id={ 13491 }, base_ilevel={ 21 }, req_ilevel={ 40 }
 bonus_id={ 13492 }, recursive_bonus_ids={ 13491 }
-bonus_id={ 13493 }, base_ilevel={ 48 }, req_ilevel={ 45 }
-bonus_id={ 13494 }, base_ilevel={ 43 }, req_ilevel={ 40 }
-bonus_id={ 13495 }, base_ilevel={ 83 }, req_ilevel={ 70 }, quality={ rare }
-bonus_id={ 13496 }, base_ilevel={ 85 }, req_ilevel={ 70 }, quality={ epic }
-bonus_id={ 13497 }, base_ilevel={ 82 }, req_ilevel={ 70 }, quality={ uncommon }
-bonus_id={ 13498 }, base_ilevel={ 86 }, req_ilevel={ 70 }, quality={ epic }
-bonus_id={ 13499 }, base_ilevel={ 87 }, req_ilevel={ 70 }, quality={ epic }
-bonus_id={ 13500 }, base_ilevel={ 84 }, req_ilevel={ 70 }, quality={ epic }
+bonus_id={ 13493 }, base_ilevel={ 19 }, req_ilevel={ 45 }
+bonus_id={ 13494 }, base_ilevel={ 18 }, req_ilevel={ 40 }
+bonus_id={ 13495 }, base_ilevel={ 34 }, req_ilevel={ 70 }, quality={ rare }
+bonus_id={ 13496 }, base_ilevel={ 36 }, req_ilevel={ 70 }, quality={ epic }
+bonus_id={ 13497 }, base_ilevel={ 33 }, req_ilevel={ 70 }, quality={ uncommon }
+bonus_id={ 13498 }, base_ilevel={ 37 }, req_ilevel={ 70 }, quality={ epic }
+bonus_id={ 13499 }, base_ilevel={ 38 }, req_ilevel={ 70 }, quality={ epic }
+bonus_id={ 13500 }, base_ilevel={ 35 }, req_ilevel={ 70 }, quality={ epic }
 bonus_id={ 13501 }, effects={ Reshii Grace (id=1254906, index=0, type=equip) }
 bonus_id={ 13502 }, effects={ Reshii Grace (id=1254904, index=0, type=equip) }
 bonus_id={ 13503 }, effects={ Reshii Grace (id=1254905, index=0, type=equip) }
 bonus_id={ 13504 }, effects={ Reshii Grace (id=1235409, index=0, type=equip) }
-bonus_id={ 13505 }, base_ilevel={ 87 }, req_ilevel={ 70 }, quality={ legendary }
-bonus_id={ 13506 }, base_ilevel={ 85 }, req_ilevel={ 70 }, quality={ legendary }
-bonus_id={ 13507 }, base_ilevel={ 83 }, req_ilevel={ 70 }, quality={ legendary }
-bonus_id={ 13508 }, base_ilevel={ 81 }, req_ilevel={ 70 }, quality={ epic }
-bonus_id={ 13509 }, base_ilevel={ 76 }, req_ilevel={ 70 }, quality={ rare }
-bonus_id={ 13510 }, base_ilevel={ 76 }, req_ilevel={ 70 }, quality={ rare }
-bonus_id={ 13511 }, base_ilevel={ 70 }, req_ilevel={ 70 }, quality={ uncommon }
-bonus_id={ 13512 }, base_ilevel={ 75 }, req_ilevel={ 70 }, quality={ rare }
-bonus_id={ 13513 }, base_ilevel={ 80 }, req_ilevel={ 70 }, quality={ rare }
-bonus_id={ 13514 }, base_ilevel={ 85 }, req_ilevel={ 70 }, quality={ epic }
-bonus_id={ 13515 }, base_ilevel={ 81 }, req_ilevel={ 70 }, quality={ rare }
-bonus_id={ 13516 }, base_ilevel={ 87 }, req_ilevel={ 70 }, quality={ epic }
-bonus_id={ 13517 }, base_ilevel={ 83 }, req_ilevel={ 70 }, quality={ rare }
-bonus_id={ 13518 }, base_ilevel={ 67 }, req_ilevel={ 50 }, quality={ legendary }
+bonus_id={ 13505 }, base_ilevel={ 38 }, req_ilevel={ 70 }, quality={ legendary }
+bonus_id={ 13506 }, base_ilevel={ 36 }, req_ilevel={ 70 }, quality={ legendary }
+bonus_id={ 13507 }, base_ilevel={ 34 }, req_ilevel={ 70 }, quality={ legendary }
+bonus_id={ 13508 }, base_ilevel={ 32 }, req_ilevel={ 70 }, quality={ epic }
+bonus_id={ 13509 }, base_ilevel={ 27 }, req_ilevel={ 70 }, quality={ rare }
+bonus_id={ 13510 }, base_ilevel={ 27 }, req_ilevel={ 70 }, quality={ rare }
+bonus_id={ 13511 }, base_ilevel={ 21 }, req_ilevel={ 70 }, quality={ uncommon }
+bonus_id={ 13512 }, base_ilevel={ 26 }, req_ilevel={ 70 }, quality={ rare }
+bonus_id={ 13513 }, base_ilevel={ 31 }, req_ilevel={ 70 }, quality={ rare }
+bonus_id={ 13514 }, base_ilevel={ 36 }, req_ilevel={ 70 }, quality={ epic }
+bonus_id={ 13515 }, base_ilevel={ 32 }, req_ilevel={ 70 }, quality={ rare }
+bonus_id={ 13516 }, base_ilevel={ 38 }, req_ilevel={ 70 }, quality={ epic }
+bonus_id={ 13517 }, base_ilevel={ 34 }, req_ilevel={ 70 }, quality={ rare }
+bonus_id={ 13518 }, base_ilevel={ 34 }, req_ilevel={ 50 }, quality={ legendary }
 bonus_id={ 13524 }, quality={ epic }, stats={ 100% Sta [0.1000] }
 bonus_id={ 13534 }, socket={ 1 }
-bonus_id={ 13536 }, base_ilevel={ 71 }, req_ilevel={ 60 }, quality={ epic }
-bonus_id={ 13537 }, base_ilevel={ 66 }, req_ilevel={ 60 }, quality={ rare }
-bonus_id={ 13538 }, base_ilevel={ 73 }, req_ilevel={ 60 }, quality={ epic }
-bonus_id={ 13539 }, base_ilevel={ 68 }, req_ilevel={ 60 }, quality={ rare }
-bonus_id={ 13540 }, base_ilevel={ 75 }, req_ilevel={ 60 }, quality={ epic }
-bonus_id={ 13541 }, base_ilevel={ 70 }, req_ilevel={ 60 }, quality={ rare }
-bonus_id={ 13542 }, base_ilevel={ 72 }, req_ilevel={ 60 }, quality={ rare }
-bonus_id={ 13543 }, base_ilevel={ 77 }, req_ilevel={ 60 }, quality={ epic }
-bonus_id={ 13544 }, base_ilevel={ 61 }, req_ilevel={ 50 }, quality={ epic }
-bonus_id={ 13545 }, base_ilevel={ 63 }, req_ilevel={ 50 }, quality={ epic }
-bonus_id={ 13546 }, base_ilevel={ 65 }, req_ilevel={ 50 }, quality={ epic }
-bonus_id={ 13547 }, base_ilevel={ 67 }, req_ilevel={ 50 }, quality={ epic }
-bonus_id={ 13548 }, base_ilevel={ 56 }, req_ilevel={ 50 }, quality={ rare }
-bonus_id={ 13549 }, base_ilevel={ 58 }, req_ilevel={ 50 }, quality={ rare }
-bonus_id={ 13550 }, base_ilevel={ 60 }, req_ilevel={ 50 }, quality={ rare }
-bonus_id={ 13551 }, base_ilevel={ 62 }, req_ilevel={ 50 }, quality={ rare }
+bonus_id={ 13536 }, base_ilevel={ 30 }, req_ilevel={ 60 }, quality={ epic }
+bonus_id={ 13537 }, base_ilevel={ 25 }, req_ilevel={ 60 }, quality={ rare }
+bonus_id={ 13538 }, base_ilevel={ 32 }, req_ilevel={ 60 }, quality={ epic }
+bonus_id={ 13539 }, base_ilevel={ 27 }, req_ilevel={ 60 }, quality={ rare }
+bonus_id={ 13540 }, base_ilevel={ 34 }, req_ilevel={ 60 }, quality={ epic }
+bonus_id={ 13541 }, base_ilevel={ 29 }, req_ilevel={ 60 }, quality={ rare }
+bonus_id={ 13542 }, base_ilevel={ 31 }, req_ilevel={ 60 }, quality={ rare }
+bonus_id={ 13543 }, base_ilevel={ 36 }, req_ilevel={ 60 }, quality={ epic }
+bonus_id={ 13544 }, base_ilevel={ 28 }, req_ilevel={ 50 }, quality={ epic }
+bonus_id={ 13545 }, base_ilevel={ 30 }, req_ilevel={ 50 }, quality={ epic }
+bonus_id={ 13546 }, base_ilevel={ 32 }, req_ilevel={ 50 }, quality={ epic }
+bonus_id={ 13547 }, base_ilevel={ 34 }, req_ilevel={ 50 }, quality={ epic }
+bonus_id={ 13548 }, base_ilevel={ 23 }, req_ilevel={ 50 }, quality={ rare }
+bonus_id={ 13549 }, base_ilevel={ 25 }, req_ilevel={ 50 }, quality={ rare }
+bonus_id={ 13550 }, base_ilevel={ 27 }, req_ilevel={ 50 }, quality={ rare }
+bonus_id={ 13551 }, base_ilevel={ 29 }, req_ilevel={ 50 }, quality={ rare }
 bonus_id={ 13556 }, effects={ HU5H, Nonchalant Pup (id=1259648, index=0, type=use) }
-bonus_id={ 13558 }, base_ilevel={ 66 }, req_ilevel={ 60 }, quality={ rare }
-bonus_id={ 13559 }, base_ilevel={ 70 }, req_ilevel={ 60 }, quality={ rare }
-bonus_id={ 13560 }, base_ilevel={ 68 }, req_ilevel={ 60 }, quality={ rare }
-bonus_id={ 13561 }, base_ilevel={ 62 }, req_ilevel={ 50 }, quality={ rare }
+bonus_id={ 13558 }, base_ilevel={ 25 }, req_ilevel={ 60 }, quality={ rare }
+bonus_id={ 13559 }, base_ilevel={ 29 }, req_ilevel={ 60 }, quality={ rare }
+bonus_id={ 13560 }, base_ilevel={ 27 }, req_ilevel={ 60 }, quality={ rare }
+bonus_id={ 13561 }, base_ilevel={ 29 }, req_ilevel={ 50 }, quality={ rare }
 bonus_id={ 13562 }, effects={ Griftah's Fool-Proof Embellishing Powder (id=1260254, index=0, type=equip) }
-bonus_id={ 13563 }, base_ilevel={ 201 }, req_ilevel={ 90 }, quality={ uncommon }
+bonus_id={ 13563 }, base_ilevel={ 45 }, req_ilevel={ 90 }, quality={ uncommon }
 bonus_id={ 13564 }, base_ilevel={ 120 }, quality={ uncommon }
 bonus_id={ 13565 }, ilevel={ 15 @plvl 10 - 232 @plvl 90 }
 bonus_id={ 13566 }, ilevel={ 15 @plvl 10 - 239 @plvl 90 }
 bonus_id={ 13567 }, quality={ rare }, ilevel={ 15 @plvl 10 - 232 @plvl 90 }
 bonus_id={ 13568 }, quality={ epic }, ilevel={ 15 @plvl 10 - 239 @plvl 90 }
 bonus_id={ 13569 }, quality={ rare }, ilevel={ 15 @plvl 10 - 239 @plvl 90 }
-bonus_id={ 13570 }, base_ilevel={ 220 }, req_ilevel={ 90 }, quality={ rare }
-bonus_id={ 13571 }, base_ilevel={ 233 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 13570 }, base_ilevel={ 48 }, req_ilevel={ 90 }, quality={ rare }
+bonus_id={ 13571 }, base_ilevel={ 50 }, req_ilevel={ 90 }, quality={ epic }
 bonus_id={ 13572 }, ilevel={ 1 @plvl 1 - 655 @plvl 80 }
 bonus_id={ 13573 }, base_ilevel={ 120 }
 bonus_id={ 13576 }, socket={ 1 }
@@ -8119,20 +8123,20 @@ bonus_id={ 13614 }, base_ilevel={ 133 }, quality={ epic }
 bonus_id={ 13617 }, base_ilevel={ 1 }
 bonus_id={ 13618 }, base_ilevel={ 4 }, quality={ rare }
 bonus_id={ 13619 }, base_ilevel={ 7 }, quality={ epic }
-bonus_id={ 13620 }, base_ilevel={ 233 }, req_ilevel={ 90 }, quality={ epic }
-bonus_id={ 13621 }, base_ilevel={ 259 }, req_ilevel={ 90 }
-bonus_id={ 13622 }, base_ilevel={ 272 }, req_ilevel={ 90 }
-bonus_id={ 13623 }, base_ilevel={ 220 }, req_ilevel={ 90 }
-bonus_id={ 13629 }, base_ilevel={ 217 }, req_ilevel={ 90 }
-bonus_id={ 13634 }, base_ilevel={ 214 }, req_ilevel={ 90 }
+bonus_id={ 13620 }, base_ilevel={ 50 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 13621 }, base_ilevel={ 55 }, req_ilevel={ 90 }
+bonus_id={ 13622 }, base_ilevel={ 57 }, req_ilevel={ 90 }
+bonus_id={ 13623 }, base_ilevel={ 48 }, req_ilevel={ 90 }
+bonus_id={ 13629 }, base_ilevel={ 47 }, req_ilevel={ 90 }
+bonus_id={ 13634 }, base_ilevel={ 47 }, req_ilevel={ 90 }
 bonus_id={ 13635 }, base_ilevel={ 1 }
-bonus_id={ 13636 }, base_ilevel={ 60 }, req_ilevel={ 60 }
-bonus_id={ 13637 }, base_ilevel={ 70 }, req_ilevel={ 70 }
-bonus_id={ 13638 }, base_ilevel={ 80 }, req_ilevel={ 80 }
+bonus_id={ 13636 }, base_ilevel={ 19 }, req_ilevel={ 60 }
+bonus_id={ 13637 }, base_ilevel={ 21 }, req_ilevel={ 70 }
+bonus_id={ 13638 }, base_ilevel={ 23 }, req_ilevel={ 80 }
 bonus_id={ 13640 }, effects={ Void (id=1245052, index=0, type=equip) }
 bonus_id={ 13642 }, ilevel={ 5 @plvl 1 - 551 @plvl 80 }
 bonus_id={ 13643 }, desc={ Beginner Crafted }, ilevel={ 1 @plvl 1 - 90 @plvl 90 }
-bonus_id={ 13644 }, base_ilevel={ 201 }, req_ilevel={ 90 }
+bonus_id={ 13644 }, base_ilevel={ 45 }, req_ilevel={ 90 }
 bonus_id={ 13645 }, base_ilevel={ 126 }, quality={ rare }
 bonus_id={ 13646 }, base_ilevel={ 133 }, quality={ epic }
 bonus_id={ 13647 }, base_ilevel={ 1 }, quality={ uncommon }
