@@ -215,6 +215,19 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       item.parsed.data.req_level = scaling_entry.player_level;
       break;
     }
+    // Adjust quality, bonus item level value is in 'value_1' field, `value_3` is crafting quality. Value 2 unknown
+    case ITEM_BONUS_CRAFTING_QUALITY:
+      item.parsed.data.bonus_level += entry.value_1;
+      item.sim->print_debug( "Player {} item '{}' adjusting ilevel by {} (old={} new={})", item.player->name(),
+                             item.name(), entry.value_1, item.parsed.data.level,
+                             item.parsed.data.level + entry.value_1 );
+      item.parsed.data.level += entry.value_1;
+
+      item.sim->print_debug( "Player {} item '{}' adjusting crafting quality by {} (old={} new={})", item.player->name(),
+                             item.name(), entry.value_3, item.parsed.data.crafting_quality,
+                             item.parsed.data.crafting_quality + entry.value_3 );
+      item.parsed.data.crafting_quality = entry.value_3;
+      break;
     // Adjust ilevel, value is in 'value_1' field
     // Only seems to apply to items with midnight scaling
     case ITEM_BONUS_MIDNIGHT_ILEVEL:
@@ -224,7 +237,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       item.parsed.data.bonus_level += entry.value_1;
       item.sim->print_debug( "Player {} item '{}' adjusting ilevel by {} (old={} new={})", item.player->name(),
                              item.name(), entry.value_1, item.parsed.data.level,
-                             item.parsed.data.level + item.parsed.data.bonus_level );
+                             item.parsed.data.level + entry.value_1 );
       item.parsed.data.level += entry.value_1;
       break;
     // Adjust ilevel, value is in 'value_1' field
@@ -245,7 +258,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       item.parsed.data.bonus_level += entry.value_1;
       item.sim->print_debug( "Player {} item '{}' adjusting ilevel by {} (old={} new={})", item.player->name(),
                              item.name(), entry.value_1, item.parsed.data.level,
-                             item.parsed.data.level + item.parsed.data.bonus_level );
+                             item.parsed.data.level + entry.value_1 );
       item.parsed.data.level += entry.value_1;
       break;
     case ITEM_BONUS_SET_ILEVEL_2:
@@ -479,6 +492,40 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       break;
   }
   return true;
+}
+
+void item_database::sort_item_bonuses( item_t& item )
+{
+  // Sort bonus ids to ensure consistent application order.
+  // Need to ensure item level bonuses are applied after item level setting bonuses.
+  // 
+  // TODO: I believe the sorting should be based off of ItemBonusListGroupEntry.db2 data.
+  // Sequence Value field likely determines the order of application. Need to confirm.
+  std::sort( item.parsed.bonus_id.begin(), item.parsed.bonus_id.end(), [ &item ]( uint32_t a, uint32_t b ) {
+    auto a_entries    = item.player->dbc->item_bonus( a );
+    auto b_entries    = item.player->dbc->item_bonus( b );
+    bool a_is_scaling = false;
+    bool b_is_scaling = false;
+    for ( const auto& entry : a_entries )
+    {
+      if ( entry.type == ITEM_BONUS_ILEVEL || entry.type == ITEM_BONUS_MIDNIGHT_ILEVEL ||
+           entry.type == ITEM_BONUS_CRAFTING_QUALITY )
+      {
+        a_is_scaling = true;
+      }
+    }
+    for ( const auto& entry : b_entries )
+    {
+      if ( entry.type == ITEM_BONUS_ILEVEL || entry.type == ITEM_BONUS_MIDNIGHT_ILEVEL ||
+           entry.type == ITEM_BONUS_CRAFTING_QUALITY )
+      {
+        b_is_scaling = true;
+      }
+    }
+    if ( a_is_scaling != b_is_scaling )
+      return !a_is_scaling;  // scaling bonuses go last
+    return a < b;
+  } );
 }
 
 stat_pair_t item_database::item_enchantment_effect_stats( const item_enchantment_data_t& enchantment, int index )
@@ -1024,6 +1071,9 @@ bool item_database::load_item_from_data( item_t& item )
     }
   }
 
+  // Sort item bonuses to ensure consistent application order
+  item_database::sort_item_bonuses( item );
+
   // Item bonus for local source only. TODO: BCP API and Wowhead will need ..
   // something similar
   for ( size_t i = 0, end = item.parsed.bonus_id.size(); i < end; i++ )
@@ -1215,7 +1265,7 @@ static int get_bonus_id_ilevel( util::span<const item_bonus_entry_t> entries )
 {
   for ( const auto& entry : entries )
   {
-    if ( entry.type == ITEM_BONUS_ILEVEL || entry.type == ITEM_BONUS_MIDNIGHT_ILEVEL )
+    if ( entry.type == ITEM_BONUS_ILEVEL || entry.type == ITEM_BONUS_MIDNIGHT_ILEVEL || entry.type == ITEM_BONUS_CRAFTING_QUALITY )
     {
       return entry.value_1;
     }
@@ -1449,6 +1499,20 @@ static std::string get_bonus_mod_stat( util::span<const item_bonus_entry_t> entr
   return fmt::to_string( b );
 }
 
+static int get_bonus_crafting_quality( util::span<const item_bonus_entry_t> entries )
+{
+  for ( const auto& entry : entries )
+  {
+    if ( entry.type == ITEM_BONUS_CRAFTING_QUALITY )
+    {
+      // Crafting quality is zero-based in the bonus entry. 
+      // Add one here so that it is one-based in the output.
+      return entry.value_3 + 1;
+    }
+  }
+  return 0;
+}
+
 std::string dbc::bonus_ids_str( const dbc_t& dbc )
 {
   std::vector<unsigned> bonus_ids;
@@ -1469,12 +1533,13 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
          e.type != ITEM_BONUS_ADD_ITEM_EFFECT && e.type != ITEM_BONUS_MOD_ITEM_STAT &&
          e.type != ITEM_BONUS_SET_ILEVEL_2  && e.type != ITEM_BONUS_SQUISH_CURVE &&
          e.type != ITEM_BONUS_SCALE_CONFIG && e.type != ITEM_BONUS_APPLY_BONUS &&
-         e.type != ITEM_BONUS_SCALE_CONFIG_2 && e.type != ITEM_BONUS_MIDNIGHT_ILEVEL )
+         e.type != ITEM_BONUS_SCALE_CONFIG_2 && e.type != ITEM_BONUS_MIDNIGHT_ILEVEL &&
+         e.type != ITEM_BONUS_CRAFTING_QUALITY )
     {
       continue;
     }
 
-    if ( ( e.type == ITEM_BONUS_ILEVEL || e.type == ITEM_BONUS_MIDNIGHT_ILEVEL ) && e.value_1 == 0 )
+    if ( ( e.type == ITEM_BONUS_ILEVEL || e.type == ITEM_BONUS_MIDNIGHT_ILEVEL || e.type == ITEM_BONUS_CRAFTING_QUALITY ) && e.value_1 == 0 )
     {
       continue;
     }
@@ -1500,6 +1565,7 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
     auto power_index = get_bonus_power_index( entries );
     std::string item_effects = get_bonus_item_effect( entries, dbc );
     auto item_mod_stat = get_bonus_mod_stat( entries );
+    int crafting_quality = get_bonus_crafting_quality( entries );
     int req_level = 0;
     if ( midnight_scaling.first )
       base_ilevel = midnight_scaling.first;
@@ -1598,6 +1664,11 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
     if ( !item_mod_stat.empty() )
     {
       fields.emplace_back( fmt::format( "mod_to_stat={{ {} }}", item_mod_stat ) );
+    }
+
+    if ( crafting_quality > 0 )
+    {
+      fields.emplace_back( fmt::format( "crafting_quality={{ {} }}", crafting_quality ) );
     }
 
     fmt::format_to( std::back_inserter(s), "{}\n", fmt::join( fields, ", " ) );
