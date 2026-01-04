@@ -663,8 +663,14 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       // ToDo Fluttershy: If this ever gets sensible results, use spell data
       double mult = 1.0;
       if ( p()->buffs.empyrean_legacy->up() )
-        // No clue why, 1.5 would make more sense - That's why DS's damage is here, too
-        mult = 1.25;
+      {
+        if ( p()->talents.tempest_of_the_lightbringer->ok() )
+          // Just from testing. What even is this number?
+          mult = 0.375;
+        else
+          // No clue why, 1.5 would make more sense - That's why DS's damage is here, too
+          mult = 1.25;
+      }
       p()->trigger_expurgation( execute_state->target, mult );
     }
 
