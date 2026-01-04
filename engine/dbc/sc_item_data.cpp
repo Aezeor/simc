@@ -225,8 +225,8 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
 
       item.sim->print_debug( "Player {} item '{}' adjusting crafting quality by {} (old={} new={})", item.player->name(),
                              item.name(), entry.value_3, item.parsed.data.crafting_quality,
-                             item.parsed.data.crafting_quality + entry.value_3 );
-      item.parsed.data.crafting_quality = entry.value_3;
+                             item.parsed.data.crafting_quality + entry.value_3 + 1 );
+      item.parsed.data.crafting_quality = entry.value_3 + 1;
       break;
     // Adjust ilevel, value is in 'value_1' field
     // Only seems to apply to items with midnight scaling

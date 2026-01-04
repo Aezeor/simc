@@ -1,7 +1,7 @@
 SimulationCraft 1200-01 for World of Warcraft 12.0.0.65028 midnight-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
-bonus_id={ 3 }, base_ilevel={ 30 }, req_ilevel={ 25 }, ilevel_adjust={ 20 }, crafting_quality={ 10 }
+bonus_id={ 3 }, base_ilevel={ 30 }, req_ilevel={ 25 }, ilevel_adjust={ 20 }, crafting_quality={ 11 }
 bonus_id={ 15 }, quality={ epic }, ilevel_adjust={ 4 }
 bonus_id={ 17 }, stats={ 100% Crit [0.3506] }
 bonus_id={ 18 }, stats={ 100% Haste [0.3506] }
@@ -4708,14 +4708,14 @@ bonus_id={ 8794 }, mod_to_stat={ Mastery (100), Vers (100) }
 bonus_id={ 8795 }, mod_to_stat={ Crit (100), Vers (100) }
 bonus_id={ 8796 }, effects={ Fang Adornments (id=377708, index=0, type=equip) }
 bonus_id={ 8797 }, effects={ Toxified (id=378758, index=0, type=equip) }
-bonus_id={ 8799 }, ilevel_adjust={ 2 }, crafting_quality={ 1 }
-bonus_id={ 8800 }, ilevel_adjust={ 4 }, crafting_quality={ 2 }
-bonus_id={ 8801 }, ilevel_adjust={ 7 }, crafting_quality={ 3 }
-bonus_id={ 8802 }, ilevel_adjust={ 10 }, crafting_quality={ 4 }
-bonus_id={ 8804 }, ilevel_adjust={ 6 }, crafting_quality={ 1 }
-bonus_id={ 8805 }, ilevel_adjust={ 12 }, crafting_quality={ 2 }
-bonus_id={ 8806 }, ilevel_adjust={ 19 }, crafting_quality={ 3 }
-bonus_id={ 8807 }, ilevel_adjust={ 26 }, crafting_quality={ 4 }
+bonus_id={ 8799 }, ilevel_adjust={ 2 }, crafting_quality={ 2 }
+bonus_id={ 8800 }, ilevel_adjust={ 4 }, crafting_quality={ 3 }
+bonus_id={ 8801 }, ilevel_adjust={ 7 }, crafting_quality={ 4 }
+bonus_id={ 8802 }, ilevel_adjust={ 10 }, crafting_quality={ 5 }
+bonus_id={ 8804 }, ilevel_adjust={ 6 }, crafting_quality={ 2 }
+bonus_id={ 8805 }, ilevel_adjust={ 12 }, crafting_quality={ 3 }
+bonus_id={ 8806 }, ilevel_adjust={ 19 }, crafting_quality={ 4 }
+bonus_id={ 8807 }, ilevel_adjust={ 26 }, crafting_quality={ 5 }
 bonus_id={ 8809 }, recursive_bonus_ids={ 13508 }
 bonus_id={ 8810 }, socket={ 1 }
 bonus_id={ 8831 }
@@ -5128,10 +5128,10 @@ bonus_id={ 9384 }, recursive_bonus_ids={ 13479 }
 bonus_id={ 9385 }, recursive_bonus_ids={ 13479 }
 bonus_id={ 9399 }, effects={ Precognition (id=377360, index=0, type=equip) }
 bonus_id={ 9400 }, effects={ Determination (id=411126, index=0, type=equip) }
-bonus_id={ 9402 }, ilevel_adjust={ 3 }, crafting_quality={ 1 }
-bonus_id={ 9403 }, ilevel_adjust={ 6 }, crafting_quality={ 2 }
-bonus_id={ 9404 }, ilevel_adjust={ 9 }, crafting_quality={ 3 }
-bonus_id={ 9405 }, ilevel_adjust={ 13 }, crafting_quality={ 4 }
+bonus_id={ 9402 }, ilevel_adjust={ 3 }, crafting_quality={ 2 }
+bonus_id={ 9403 }, ilevel_adjust={ 6 }, crafting_quality={ 3 }
+bonus_id={ 9404 }, ilevel_adjust={ 9 }, crafting_quality={ 4 }
+bonus_id={ 9405 }, ilevel_adjust={ 13 }, crafting_quality={ 5 }
 bonus_id={ 9406 }, desc={ Timewarped }, recursive_bonus_ids={ 6682 }
 bonus_id={ 9407 }, desc={ Timewarped }, recursive_bonus_ids={ 6682 }
 bonus_id={ 9412 }, effects={ Reserve Parachute (id=409838, index=0, type=use) }
@@ -5246,14 +5246,14 @@ bonus_id={ 9619 }, stats={ 100% Mastery [0.9558] }
 bonus_id={ 9620 }, stats={ 100% Leech [0.9558] }
 bonus_id={ 9621 }, stats={ 100% unknown [14.3370] }
 bonus_id={ 9622 }, stats={ 100% RunSpeed [0.2390] }
-bonus_id={ 9624 }, ilevel_adjust={ 3 }, crafting_quality={ 1 }
-bonus_id={ 9625 }, ilevel_adjust={ 6 }, crafting_quality={ 2 }
-bonus_id={ 9626 }, ilevel_adjust={ 9 }, crafting_quality={ 3 }
-bonus_id={ 9627 }, ilevel_adjust={ 13 }, crafting_quality={ 4 }
-bonus_id={ 9629 }, ilevel_adjust={ 6 }, crafting_quality={ 1 }
-bonus_id={ 9630 }, ilevel_adjust={ 12 }, crafting_quality={ 2 }
-bonus_id={ 9631 }, ilevel_adjust={ 19 }, crafting_quality={ 3 }
-bonus_id={ 9632 }, ilevel_adjust={ 26 }, crafting_quality={ 4 }
+bonus_id={ 9624 }, ilevel_adjust={ 3 }, crafting_quality={ 2 }
+bonus_id={ 9625 }, ilevel_adjust={ 6 }, crafting_quality={ 3 }
+bonus_id={ 9626 }, ilevel_adjust={ 9 }, crafting_quality={ 4 }
+bonus_id={ 9627 }, ilevel_adjust={ 13 }, crafting_quality={ 5 }
+bonus_id={ 9629 }, ilevel_adjust={ 6 }, crafting_quality={ 2 }
+bonus_id={ 9630 }, ilevel_adjust={ 12 }, crafting_quality={ 3 }
+bonus_id={ 9631 }, ilevel_adjust={ 19 }, crafting_quality={ 4 }
+bonus_id={ 9632 }, ilevel_adjust={ 26 }, crafting_quality={ 5 }
 bonus_id={ 9634 }, quality={ rare }
 bonus_id={ 9637 }, ilevel={ 15 @plvl 10 - 548 @plvl 80 }
 bonus_id={ 9783 }
@@ -7535,14 +7535,14 @@ bonus_id={ 12486 }, quality={ rare }, effects={ Unknown Effect (id=210157) }
 bonus_id={ 12487 }, quality={ epic }, effects={ Unknown Effect (id=210158) }
 bonus_id={ 12488 }, quality={ legendary }, effects={ Unknown Effect (id=210159) }
 bonus_id={ 12489 }, stats={ 100% StrAgiInt [0.5259] }
-bonus_id={ 12494 }, ilevel_adjust={ 3 }, crafting_quality={ 1 }
-bonus_id={ 12495 }, ilevel_adjust={ 6 }, crafting_quality={ 2 }
-bonus_id={ 12496 }, ilevel_adjust={ 9 }, crafting_quality={ 3 }
-bonus_id={ 12497 }, ilevel_adjust={ 13 }, crafting_quality={ 4 }
-bonus_id={ 12499 }, ilevel_adjust={ 6 }, crafting_quality={ 1 }
-bonus_id={ 12500 }, ilevel_adjust={ 12 }, crafting_quality={ 2 }
-bonus_id={ 12501 }, ilevel_adjust={ 19 }, crafting_quality={ 3 }
-bonus_id={ 12502 }, ilevel_adjust={ 26 }, crafting_quality={ 4 }
+bonus_id={ 12494 }, ilevel_adjust={ 3 }, crafting_quality={ 2 }
+bonus_id={ 12495 }, ilevel_adjust={ 6 }, crafting_quality={ 3 }
+bonus_id={ 12496 }, ilevel_adjust={ 9 }, crafting_quality={ 4 }
+bonus_id={ 12497 }, ilevel_adjust={ 13 }, crafting_quality={ 5 }
+bonus_id={ 12499 }, ilevel_adjust={ 6 }, crafting_quality={ 2 }
+bonus_id={ 12500 }, ilevel_adjust={ 12 }, crafting_quality={ 3 }
+bonus_id={ 12501 }, ilevel_adjust={ 19 }, crafting_quality={ 4 }
+bonus_id={ 12502 }, ilevel_adjust={ 26 }, crafting_quality={ 5 }
 bonus_id={ 12503 }, base_ilevel={ 50 }, req_ilevel={ 81 }
 bonus_id={ 12504 }, quality={ epic }
 bonus_id={ 12505 }, desc={ Voidtouched }, stats={ 50% Crit [0.2000], -50% Haste [-0.2000] }
@@ -8155,10 +8155,10 @@ bonus_id={ 13620 }, base_ilevel={ 233 }, req_ilevel={ 90 }, quality={ epic }
 bonus_id={ 13621 }, base_ilevel={ 259 }, req_ilevel={ 90 }
 bonus_id={ 13622 }, base_ilevel={ 272 }, req_ilevel={ 90 }
 bonus_id={ 13623 }, base_ilevel={ 220 }, req_ilevel={ 90 }
-bonus_id={ 13625 }, ilevel_adjust={ 1 }, crafting_quality={ 1 }
-bonus_id={ 13626 }, ilevel_adjust={ 2 }, crafting_quality={ 2 }
-bonus_id={ 13627 }, ilevel_adjust={ 3 }, crafting_quality={ 3 }
-bonus_id={ 13628 }, ilevel_adjust={ 4 }, crafting_quality={ 4 }
+bonus_id={ 13625 }, ilevel_adjust={ 1 }, crafting_quality={ 2 }
+bonus_id={ 13626 }, ilevel_adjust={ 2 }, crafting_quality={ 3 }
+bonus_id={ 13627 }, ilevel_adjust={ 3 }, crafting_quality={ 4 }
+bonus_id={ 13628 }, ilevel_adjust={ 4 }, crafting_quality={ 5 }
 bonus_id={ 13629 }, base_ilevel={ 217 }, req_ilevel={ 90 }
 bonus_id={ 13634 }, base_ilevel={ 214 }, req_ilevel={ 90 }
 bonus_id={ 13635 }, base_ilevel={ 1 }
