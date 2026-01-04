@@ -256,12 +256,6 @@ struct expurgation_t : public paladin_spell_t
     paladin_spell_t( "expurgation", p, p->spells.expurgation )
   {
     background = true;
-    // Jurisdiction doesn't increase Expurgation's damage in-game
-    // It's increasing Spell Direct Amount instead of Spell Periodic Amount
-    if ( p->talents.jurisdiction->ok() && p->bugs)
-    {
-      base_multiplier *= 1.0 + p->talents.jurisdiction->effectN( 4 ).percent();
-    }
   }
 
   action_state_t* new_state() override
@@ -271,11 +265,31 @@ struct expurgation_t : public paladin_spell_t
 
   double composite_rolling_ta_multiplier( const action_state_t* s ) const
   {
-    auto da = paladin_spell_t::composite_rolling_ta_multiplier( s );
     auto s_ = static_cast<const state_t*>( s );
-    // This is probably very wrong, baseline calculation probably needs a copy paste here
-    da *= s_->damage_mult;
-    return da;
+    // Copied from base composite_rolling_ta_multiplier
+    
+    // Our base damage mult should be the effectiveness mult
+    double m = s_->damage_mult;
+
+    dot_t* dot = find_dot( s->target );
+    if ( dot && dot->is_ticking() )
+    {
+      double ticks_left       = dot->ticks_left_fractional();
+      timespan_t new_tick     = tick_time( s );
+      timespan_t new_duration = composite_dot_duration( s );
+      double new_base_ticks   = new_duration / new_tick;
+      // Calculate ticks_left_fractional for the DoT after it is refreshed.
+      double new_ticks_left =
+          1.0 + ( calculate_dot_refresh_duration( dot, new_duration ) - dot->time_to_next_full_tick() ) / new_tick;
+      // Roll the multiplier for the old ticks that will be lost into a multiplier for the new DoT.
+      // New base ticks should only be applied at a fraction
+      m = ( ticks_left * dot->state->rolling_ta_multiplier + new_base_ticks * s_->damage_mult ) / new_ticks_left;
+      sim->print_debug(
+          "{} {} rolling_ta_multiplier updated: old_multiplier={} to new_multiplier={} ticks_left={} new_base_ticks={} "
+          "new_ticks_left={}.",
+          *player, *this, dot->state->rolling_ta_multiplier, m, ticks_left, new_base_ticks, new_ticks_left );
+    }
+    return m;
   }
   void execute() override
   {
@@ -283,6 +297,16 @@ struct expurgation_t : public paladin_spell_t
     paladin_spell_t::execute();
   }
 };
+void paladin_t::trigger_expurgation(player_t* target, double effectiveness = 1.0)
+{
+  if ( talents.expurgation->ok() )
+  {
+    auto e_state = static_cast<paladin_action_state_t<expurgation_data_t>*>( active.expurgation->get_state() );
+    e_state->damage_mult = effectiveness;
+    e_state->target      = target;
+    active.expurgation->schedule_execute( e_state );
+  }
+}
 
 // Blade of Justice =========================================================
 
@@ -369,14 +393,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
   void impact( action_state_t* state ) override
   {
     paladin_melee_attack_t::impact( state );
-
-    if ( p()->talents.expurgation->ok() )
-    {
-      auto e_state = static_cast<paladin_action_state_t<expurgation_data_t>*>( p()->active.expurgation->get_state() );
-      e_state->damage_mult            = 1.0;
-      e_state->target = state->target;
-      p()->active.expurgation->schedule_execute( e_state );
-    }
+    p()->trigger_expurgation( state->target );
   }
 };
 
@@ -537,6 +554,7 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
         has_echo = true;
       }
     }
+    // ToDo Fluttershy: If this ever gets sensible results, move to impact
     if ( !background && p()->sets->has_set_bonus( PALADIN_RETRIBUTION, MID1, B4 ) && p()->talents.expurgation->ok() )
     {
       // ToDo Fluttershy: If this ever gets sensible results, use spell data
@@ -551,10 +569,7 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
       {
         mult = 1.0;
       }
-      auto e_state = static_cast<paladin_action_state_t<expurgation_data_t>*>( p()->active.expurgation->get_state() );
-      e_state->damage_mult = mult;
-      e_state->target      = execute_state->target;
-      p()->active.expurgation->schedule_execute( e_state );
+      p()->trigger_expurgation( execute_state->target, mult );
     }
   }
 
@@ -650,10 +665,7 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       if ( p()->buffs.empyrean_legacy->up() )
         // No clue why, 1.5 would make more sense - That's why DS's damage is here, too
         mult = 1.25;
-      auto e_state = static_cast<paladin_action_state_t<expurgation_data_t>*>( p()->active.expurgation->get_state() );
-      e_state->damage_mult = mult;
-      e_state->target      = execute_state->target;
-      p()->active.expurgation->schedule_execute( e_state );
+      p()->trigger_expurgation( execute_state->target, mult );
     }
 
     if ( p()->buffs.empyrean_legacy->up() )

@@ -824,10 +824,10 @@ public:
   virtual void copy_from( player_t* ) override;
 
   void trigger_grand_crusader( grand_crusader_source source = GC_NORMAL );
-  void trigger_holy_shield( action_state_t* s );
   void trigger_laying_down_arms();
   void trigger_empyrean_hammer( player_t* target, int number_to_trigger, timespan_t delay, bool random_after_first = false );
   void trigger_lights_deliverance();
+  void trigger_expurgation( player_t* target, double effectiveness );
   void trigger_forbearance( player_t* target );
   void accumulate_es_damage( action_state_t* s, double mult );
   void trigger_es_explosion( player_t* target );
