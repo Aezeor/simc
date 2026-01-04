@@ -4366,6 +4366,15 @@ struct fire_breath_t : public empowered_charge_spell_t
       return da + ticks * tick_damage;
     }
 
+    double composite_persistent_multiplier( const action_state_t* s ) const override
+    {
+      auto m = base_t::composite_persistent_multiplier( s );
+
+      m *= 1.0 + p()->buff.iridescence_red->check_value();
+
+      return m;
+    }
+
     void execute() override
     {
       base_t::execute();
