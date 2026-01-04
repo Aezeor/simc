@@ -1165,7 +1165,6 @@ struct arcane_phoenix_pet_t final : public mage_pet_t
   std::vector<action_t*> exceptional_actions;
   timespan_t cast_period;
   int spells_used;
-  int exceptional_spells_used;
   int exceptional_spells_remaining;
 
   arcane_phoenix_pet_t( sim_t* sim, mage_t* owner ) :
@@ -1290,6 +1289,7 @@ struct arcane_surge_t final : public arcane_phoenix_spell_t
   arcane_surge_t( std::string_view n, arcane_phoenix_pet_t* p ) :
     arcane_phoenix_spell_t( n, p, p->find_spell( 453326 ), true )
   {
+    aoe = -1;
     is_mage_spell = true;
   }
 };
