@@ -531,8 +531,9 @@ public:
     propagate_const<buff_t *> celestial_conduit;
     propagate_const<buff_t *> chijis_swiftness;
     propagate_const<buff_t *> courage_of_the_white_tiger;
-    propagate_const<buff_t *> heart_of_the_jade_serpent_cdr_celestial;
-    propagate_const<buff_t *> heart_of_the_jade_serpent_cdr;
+    propagate_const<buff_t *> heart_of_the_jade_serpent;
+    propagate_const<buff_t *> heart_of_the_jade_serpent_yulons_avatar;
+    propagate_const<buff_t *> heart_of_the_jade_serpent_unity_within;
     propagate_const<buff_t *> inner_compass_crane_stance;
     propagate_const<buff_t *> inner_compass_ox_stance;
     propagate_const<buff_t *> inner_compass_serpent_stance;
@@ -734,6 +735,7 @@ public:
       player_talent_t profound_rebuttal;
       player_talent_t summon_black_ox_statue;  // Brewmaster
       player_talent_t zenith_stomp;            // Windwalker
+      const spell_data_t *zenith_stomp_damage;
       player_talent_t ironshell_brew;
       player_talent_t expeditious_fortification;
       player_talent_t diffuse_magic;
@@ -882,6 +884,7 @@ public:
       player_talent_t drinking_horn_cover;
       player_talent_t spiritual_focus;
       player_talent_t obsidian_spiral;
+      const spell_data_t *obsidian_spiral_energize;
       player_talent_t combo_breaker;
       const spell_data_t *combo_breaker_buff;
       // Row 7
@@ -927,7 +930,7 @@ public:
       const spell_data_t *flurry_of_xuen_driver;
       player_talent_t martial_agility;
       player_talent_t airborne_rhythm;
-      const spell_data_t *airborne_rhythm_resource_gain;
+      const spell_data_t *airborne_rhythm_energize;
       player_talent_t hurricanes_vault;
       player_talent_t path_of_jade;
       player_talent_t singularly_focused_jade;
@@ -955,7 +958,6 @@ public:
       player_talent_t xuens_bond;
       player_talent_t heart_of_the_jade_serpent;
       const spell_data_t *heart_of_the_jade_serpent_buff;
-      const spell_data_t *heart_of_the_jade_serpent_celestial_buff;
       // Row 3
       player_talent_t chijis_swiftness;
       const spell_data_t *chijis_swiftness_buff;
@@ -965,6 +967,7 @@ public:
       const spell_data_t *strength_of_the_black_ox_damage;
       player_talent_t path_of_the_falling_star;
       player_talent_t yulons_avatar;
+      const spell_data_t *yulons_avatar_buff;
       // Row 4
       player_talent_t niuzaos_protection;
       player_talent_t jade_sanctuary;
@@ -982,6 +985,7 @@ public:
       // Row 5
       player_talent_t unity_within;
       const spell_data_t *unity_within_buff;
+      const spell_data_t *unity_within_heart_of_the_jade_serpent_buff;
       const spell_data_t *unity_within_dmg_mult;
     } conduit_of_the_celestials;
 

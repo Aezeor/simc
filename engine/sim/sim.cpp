@@ -1524,6 +1524,7 @@ sim_t::sim_t()
     report_all_variables( false ),
     report_rng( 0 ),
     hosted_html( 0 ),
+    offline( 0 ),
     save_raid_summary( 0 ),
     save_gear_comments( 0 ),
     statistics_level( 1 ),
@@ -3748,6 +3749,7 @@ void sim_t::create_options()
   add_option( opt_func( "json2", replace_json2 ) );
   add_option( opt_string( "html", html_file_str ) );
   add_option( opt_bool( "hosted_html", hosted_html ) );
+  add_option( opt_bool( "offline", offline ) );
   add_option( opt_int( "healing", healing ) );
   add_option( opt_bool( "log", log ) );
   add_option( opt_string( "output", output_file_str ) );

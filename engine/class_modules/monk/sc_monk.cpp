@@ -143,10 +143,10 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.invoke_xuen, effect_mask_t( false ).enable( 3 ), "Ferociousness" );
 
   // Conduit of the Celestials
-  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr,
-                 [ & ] { return !p()->buff.heart_of_the_jade_serpent_cdr_celestial->check(); } );
-  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial );
-  parse_effects( p()->tier.tww3.coc_2pc_heart_of_the_jade_serpent );
+  parse_effects( p()->buff.heart_of_the_jade_serpent,
+                 [ & ] { return !p()->buff.heart_of_the_jade_serpent_yulons_avatar->check(); } );
+  parse_effects( p()->buff.heart_of_the_jade_serpent_yulons_avatar );
+  parse_effects( p()->buff.heart_of_the_jade_serpent_unity_within );
   parse_effects( p()->buff.jade_sanctuary );
   parse_effects( p()->buff.strength_of_the_black_ox );
   if ( p()->talent.conduit_of_the_celestials.restore_balance->ok() )
@@ -611,6 +611,7 @@ flurry_strikes_t::flurry_strikes_t( bool fallback, monk_t *player )
     switch ( key )
     {
       case FLURRY_STRIKES:
+      case WISDOM_OF_THE_WALL:
         break;
       case STAND_READY:
         if ( const auto &effect = player->talent.shado_pan.stand_ready->effectN( 2 ); effect.ok() )
@@ -618,8 +619,6 @@ flurry_strikes_t::flurry_strikes_t( bool fallback, monk_t *player )
               .set_value( effect.percent() - 1.0 )
               .set_note( "Stand Ready Efficiency Multiplier" )
               .set_eff( &effect );
-        break;
-      case WISDOM_OF_THE_WALL:
         break;
       default:
         assert( false );
@@ -1362,6 +1361,9 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
       bok_totm_proc = new blackout_kick_totm_proc_t( p );
       add_child( bok_totm_proc );
     }
+
+    if ( p->talent.windwalker.obsidian_spiral->ok() )
+      parse_effect_data( p->talent.windwalker.obsidian_spiral_energize->effectN( 1 ) );
   }
 
   double composite_target_multiplier( player_t *target ) const override
@@ -2000,7 +2002,7 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
 
     p()->buff.tigers_ferocity->trigger();
 
-    p()->buff.heart_of_the_jade_serpent_cdr->trigger();
+    p()->buff.heart_of_the_jade_serpent->trigger();
     p()->buff.inner_compass_serpent_stance->trigger();
   }
 };
@@ -2664,14 +2666,7 @@ struct slicing_winds_t : public monk_melee_attack_t
     trigger_gcd = timespan_t::from_millis( 1400 );
 
     if ( player->talent.windwalker.airborne_rhythm->ok() )
-      parse_effect_data( player->talent.windwalker.airborne_rhythm_resource_gain->effectN( 1 ) );
-  }
-
-  void execute() override
-  {
-    monk_melee_attack_t::execute();
-
-    p()->tier.tww3.coc_2pc_heart_of_the_jade_serpent->trigger();
+      parse_effect_data( player->talent.windwalker.airborne_rhythm_energize->effectN( 1 ) );
   }
 };
 }  // namespace attacks
@@ -3637,19 +3632,40 @@ struct celestial_conduit_t : public monk_spell_t
 
 struct zenith_t : public monk_spell_t
 {
+  struct zenith_stomp_t : public monk_spell_t
+  {
+    zenith_stomp_t( monk_t *player ) : monk_spell_t( player, "zenith_stomp", player->talent.monk.zenith_stomp_damage )
+    {
+      aoe                 = -1;
+      reduced_aoe_targets = player->talent.monk.zenith_stomp->effectN( 1 ).base_value();
+    }
+  };
+
+  action_t *zenith_stomp;
+
   zenith_t( monk_t *player, std::string_view options_str )
-    : monk_spell_t( player, "zenith", player->talent.windwalker.zenith )
+    : monk_spell_t( player, "zenith", player->talent.windwalker.zenith ), zenith_stomp( nullptr )
   {
     parse_options( options_str );
+
+    if ( player->talent.monk.zenith_stomp->ok() )
+    {
+      zenith_stomp = new zenith_stomp_t( player );
+      add_child( zenith_stomp );
+    }
   }
 
   void execute() override
   {
+    p()->buff.heart_of_the_jade_serpent_yulons_avatar->trigger();
+
     monk_spell_t::execute();
+
+    if ( zenith_stomp )
+      zenith_stomp->execute_on_target( target );
 
     p()->buff.zenith->trigger();
     p()->cooldown.rising_sun_kick->reset( true );
-    p()->resource_gain( RESOURCE_CHI, data().effectN( 9 ).base_value(), p()->gain.zenith );
     p()->buff.stand_ready->trigger();
   }
 };
@@ -4713,7 +4729,11 @@ void monk_t::parse_player_effects()
   parse_effects( talent.windwalker.ferociousness, [ & ]( double value ) {
     if ( buff.invoke_xuen->check() )
       value *= 1.0 + talent.conduit_of_the_celestials.invoke_xuen_the_white_tiger->effectN( 3 ).percent();
-
+    return value;
+  } );
+  parse_effects( talent.windwalker.martial_agility, [ & ]( double value ) {
+    if ( buff.zenith->check() )
+      return talent.windwalker.martial_agility->effectN( 3 ).percent();
     return value;
   } );
 
@@ -4725,17 +4745,19 @@ void monk_t::parse_player_effects()
   parse_effects( buff.inner_compass_serpent_stance );
   parse_effects( buff.inner_compass_tiger_stance );
 
+  effect_mask_t em = talent.conduit_of_the_celestials.flowing_wisdom->ok() ? effect_mask_t( true )
+                                                                           : effect_mask_t( true ).disable( 8 );
+  parse_effects( buff.heart_of_the_jade_serpent, em,
+                 [ & ] { return !buff.heart_of_the_jade_serpent_yulons_avatar->check(); } );
+  parse_effects( buff.heart_of_the_jade_serpent_yulons_avatar, em );
+  parse_effects( buff.heart_of_the_jade_serpent_unity_within, em );
+
   // TWW S1 Set Effects
   parse_effects( buff.shuffle, sets->set( MONK_BREWMASTER, TWW1, B2 ) );
 
   // TWW S2 Set Effects
 
   // TWW S3 Set Effects
-  effect_mask_t em = tier.tww3.coc_4pc->ok() ? effect_mask_t( true ) : effect_mask_t( true ).disable( 8 );
-  parse_effects( buff.heart_of_the_jade_serpent_cdr, em,
-                 [ & ] { return !buff.heart_of_the_jade_serpent_cdr_celestial->check(); } );
-  parse_effects( buff.heart_of_the_jade_serpent_cdr_celestial, em );
-  parse_effects( tier.tww3.coc_2pc_heart_of_the_jade_serpent, em );
 
   // TWW S4 Set Effects
 }
@@ -5106,6 +5128,7 @@ void monk_t::init_spells()
     talent.monk.profound_rebuttal            = _CT( "Profound Rebuttal" );
     talent.monk.summon_black_ox_statue       = _CT( "Summon Black Ox Statue" );
     talent.monk.zenith_stomp                 = _CT( "Zenith Stomp" );
+    talent.monk.zenith_stomp_damage          = find_spell( 1272696 );
     talent.monk.ironshell_brew               = _CT( "Ironshell Brew" );
     talent.monk.expeditious_fortification    = _CT( "Expeditious Fortification" );
     talent.monk.diffuse_magic                = _CT( "Diffuse Magic" );
@@ -5233,6 +5256,7 @@ void monk_t::init_spells()
     talent.windwalker.drinking_horn_cover                      = _ST( "Drinking Horn Cover" );
     talent.windwalker.spiritual_focus                          = _ST( "Spiritual Focus" );
     talent.windwalker.obsidian_spiral                          = _ST( "Obsidian Spiral" );
+    talent.windwalker.obsidian_spiral_energize                 = find_spell( 1249833 );
     talent.windwalker.combo_breaker                            = _ST( "Combo Breaker" );
     talent.windwalker.combo_breaker_buff                       = find_spell( 116768 );
     talent.windwalker.dance_of_chiji                           = _ST( "Dance of Chi-Ji" );
@@ -5274,7 +5298,7 @@ void monk_t::init_spells()
     talent.windwalker.flurry_of_xuen_driver          = find_spell( 452117 );
     talent.windwalker.martial_agility                = _ST( "Martial Agility" );
     talent.windwalker.airborne_rhythm                = _ST( "Airborne Rhythm" );
-    talent.windwalker.airborne_rhythm_resource_gain  = find_spell( 1248835 );
+    talent.windwalker.airborne_rhythm_energize       = find_spell( 1248835 );
     talent.windwalker.hurricanes_vault               = _ST( "Hurricane's Vault" );
     talent.windwalker.path_of_jade                   = _ST( "Path of Jade" );
     talent.windwalker.singularly_focused_jade        = _ST( "Singularly Focused Jade" );
@@ -5282,44 +5306,45 @@ void monk_t::init_spells()
 
   // monk_t::talent::conduit_of_the_celestials
   {
-    talent.conduit_of_the_celestials.invoke_xuen_the_white_tiger              = _HT( "Invoke Xuen, the White Tiger" );
-    talent.conduit_of_the_celestials.invoke_xuen_the_white_tiger_npc          = find_spell( 132578 );
-    talent.conduit_of_the_celestials.crackling_tiger_lightning_driver         = find_spell( 123999 );
-    talent.conduit_of_the_celestials.temple_training                          = _HT( "Temple Training" );
-    talent.conduit_of_the_celestials.xuens_guidance                           = _HT( "Xuen's Guidance" );
-    talent.conduit_of_the_celestials.courage_of_the_white_tiger               = _HT( "Courage of the White Tiger" );
-    talent.conduit_of_the_celestials.courage_of_the_white_tiger_buff          = find_spell( 460127 );
-    talent.conduit_of_the_celestials.courage_of_the_white_tiger_damage        = find_spell( 457917 );
-    talent.conduit_of_the_celestials.courage_of_the_white_tiger_heal          = find_spell( 443106 );
-    talent.conduit_of_the_celestials.restore_balance                          = _HT( "Restore Balance" );
-    talent.conduit_of_the_celestials.xuens_bond                               = _HT( "Xuen's Bond" );
-    talent.conduit_of_the_celestials.heart_of_the_jade_serpent                = _HT( "Heart of the Jade Serpent" );
-    talent.conduit_of_the_celestials.heart_of_the_jade_serpent_buff           = find_spell( 443421 );
-    talent.conduit_of_the_celestials.heart_of_the_jade_serpent_celestial_buff = find_spell( 443616 );
-    talent.conduit_of_the_celestials.chijis_swiftness                         = _HT( "Chi-Ji's Swiftness" );
-    talent.conduit_of_the_celestials.chijis_swiftness_buff                    = find_spell( 443028 );
-    talent.conduit_of_the_celestials.strength_of_the_black_ox                 = _HT( "Strength of the Black Ox" );
-    talent.conduit_of_the_celestials.strength_of_the_black_ox_buff            = find_spell( 443112 );
-    talent.conduit_of_the_celestials.strength_of_the_black_ox_absorb          = find_spell( 443113 );
-    talent.conduit_of_the_celestials.strength_of_the_black_ox_damage          = find_spell( 443127 );
-    talent.conduit_of_the_celestials.path_of_the_falling_star                 = _HT( "Path of the Falling Star" );
-    talent.conduit_of_the_celestials.yulons_avatar                            = _HT( "Yu'lon's Avatar" );
-    talent.conduit_of_the_celestials.niuzaos_protection                       = _HT( "Niuzao's Protection" );
-    talent.conduit_of_the_celestials.jade_sanctuary                           = _HT( "Jade Sanctuary" );
-    talent.conduit_of_the_celestials.jade_sanctuary_buff                      = find_spell( 448508 );
-    talent.conduit_of_the_celestials.celestial_conduit                        = _HT( "Celestial Conduit" );
-    talent.conduit_of_the_celestials.celestial_conduit_action                 = find_spell( 443028 );
-    talent.conduit_of_the_celestials.celestial_conduit_damage                 = find_spell( 443038 );
-    talent.conduit_of_the_celestials.celestial_conduit_heal                   = find_spell( 443039 );
-    talent.conduit_of_the_celestials.inner_compass                            = _HT( "Inner Compass" );
-    talent.conduit_of_the_celestials.inner_compass_crane_stance_buff          = find_spell( 443572 );
-    talent.conduit_of_the_celestials.inner_compass_ox_stance_buff             = find_spell( 443574 );
-    talent.conduit_of_the_celestials.inner_compass_tiger_stance_buff          = find_spell( 443575 );
-    talent.conduit_of_the_celestials.inner_compass_serpent_stance_buff        = find_spell( 443576 );
-    talent.conduit_of_the_celestials.flowing_wisdom                           = _HT( "Flowing Wisdom" );
-    talent.conduit_of_the_celestials.unity_within                             = _HT( "Unity Within" );
-    talent.conduit_of_the_celestials.unity_within_buff                        = find_spell( 443592 );
-    talent.conduit_of_the_celestials.unity_within_dmg_mult                    = find_spell( 443591 );
+    talent.conduit_of_the_celestials.invoke_xuen_the_white_tiger       = _HT( "Invoke Xuen, the White Tiger" );
+    talent.conduit_of_the_celestials.invoke_xuen_the_white_tiger_npc   = find_spell( 132578 );
+    talent.conduit_of_the_celestials.crackling_tiger_lightning_driver  = find_spell( 123999 );
+    talent.conduit_of_the_celestials.temple_training                   = _HT( "Temple Training" );
+    talent.conduit_of_the_celestials.xuens_guidance                    = _HT( "Xuen's Guidance" );
+    talent.conduit_of_the_celestials.courage_of_the_white_tiger        = _HT( "Courage of the White Tiger" );
+    talent.conduit_of_the_celestials.courage_of_the_white_tiger_buff   = find_spell( 460127 );
+    talent.conduit_of_the_celestials.courage_of_the_white_tiger_damage = find_spell( 457917 );
+    talent.conduit_of_the_celestials.courage_of_the_white_tiger_heal   = find_spell( 443106 );
+    talent.conduit_of_the_celestials.restore_balance                   = _HT( "Restore Balance" );
+    talent.conduit_of_the_celestials.xuens_bond                        = _HT( "Xuen's Bond" );
+    talent.conduit_of_the_celestials.heart_of_the_jade_serpent         = _HT( "Heart of the Jade Serpent" );
+    talent.conduit_of_the_celestials.heart_of_the_jade_serpent_buff    = find_spell( 443421 );
+    talent.conduit_of_the_celestials.chijis_swiftness                  = _HT( "Chi-Ji's Swiftness" );
+    talent.conduit_of_the_celestials.chijis_swiftness_buff             = find_spell( 443028 );
+    talent.conduit_of_the_celestials.strength_of_the_black_ox          = _HT( "Strength of the Black Ox" );
+    talent.conduit_of_the_celestials.strength_of_the_black_ox_buff     = find_spell( 443112 );
+    talent.conduit_of_the_celestials.strength_of_the_black_ox_absorb   = find_spell( 443113 );
+    talent.conduit_of_the_celestials.strength_of_the_black_ox_damage   = find_spell( 443127 );
+    talent.conduit_of_the_celestials.path_of_the_falling_star          = _HT( "Path of the Falling Star" );
+    talent.conduit_of_the_celestials.yulons_avatar                     = _HT( "Yu'lon's Avatar" );
+    talent.conduit_of_the_celestials.yulons_avatar_buff                = find_spell( 1238904 );
+    talent.conduit_of_the_celestials.niuzaos_protection                = _HT( "Niuzao's Protection" );
+    talent.conduit_of_the_celestials.jade_sanctuary                    = _HT( "Jade Sanctuary" );
+    talent.conduit_of_the_celestials.jade_sanctuary_buff               = find_spell( 448508 );
+    talent.conduit_of_the_celestials.celestial_conduit                 = _HT( "Celestial Conduit" );
+    talent.conduit_of_the_celestials.celestial_conduit_action          = find_spell( 443028 );
+    talent.conduit_of_the_celestials.celestial_conduit_damage          = find_spell( 443038 );
+    talent.conduit_of_the_celestials.celestial_conduit_heal            = find_spell( 443039 );
+    talent.conduit_of_the_celestials.inner_compass                     = _HT( "Inner Compass" );
+    talent.conduit_of_the_celestials.inner_compass_crane_stance_buff   = find_spell( 443572 );
+    talent.conduit_of_the_celestials.inner_compass_ox_stance_buff      = find_spell( 443574 );
+    talent.conduit_of_the_celestials.inner_compass_tiger_stance_buff   = find_spell( 443575 );
+    talent.conduit_of_the_celestials.inner_compass_serpent_stance_buff = find_spell( 443576 );
+    talent.conduit_of_the_celestials.flowing_wisdom                    = _HT( "Flowing Wisdom" );
+    talent.conduit_of_the_celestials.unity_within                      = _HT( "Unity Within" );
+    talent.conduit_of_the_celestials.unity_within_buff                 = find_spell( 443592 );
+    talent.conduit_of_the_celestials.unity_within_heart_of_the_jade_serpent_buff = find_spell( 443616 );
+    talent.conduit_of_the_celestials.unity_within_dmg_mult                       = find_spell( 443591 );
   }
 
   // monk_t::talent::master_of_harmony
@@ -5463,6 +5488,7 @@ void monk_t::init_spells()
                                                                          : effect_mask_t( true ) );
 
   deregister_passive_spell( talent.windwalker.ferociousness );
+  deregister_passive_spell( talent.windwalker.martial_agility );
 
   parse_all_class_passives();
   parse_all_passive_talents();
@@ -5827,7 +5853,8 @@ void monk_t::create_buffs()
   buff.whirling_dragon_punch = make_buff_fallback<buffs::whirling_dragon_punch_buff_t>(
       talent.windwalker.whirling_dragon_punch->ok(), this, "whirling_dragon_punch" );
 
-  buff.zenith = make_buff_fallback( talent.windwalker.zenith->ok(), this, "zenith", talent.windwalker.zenith );
+  buff.zenith = make_buff_fallback( talent.windwalker.zenith->ok(), this, "zenith", talent.windwalker.zenith )
+                    ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
   buff.rushing_wind_kick = make_buff_fallback( talent.windwalker.rushing_wind_kick->ok(), this, "rushing_wind_kick",
                                                talent.windwalker.rushing_wind_kick_buff );
@@ -5845,23 +5872,23 @@ void monk_t::create_buffs()
       talent.conduit_of_the_celestials.courage_of_the_white_tiger->ok(), this, "courage_of_the_white_tiger",
       talent.conduit_of_the_celestials.courage_of_the_white_tiger_buff );
 
-  buff.heart_of_the_jade_serpent_cdr =
-      make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
-                          "heart_of_the_jade_serpent_cdr",
-                          talent.conduit_of_the_celestials.heart_of_the_jade_serpent_buff )
-          ->set_expire_callback(
-              [ & ]( buff_t *, int, timespan_t ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
+  buff.heart_of_the_jade_serpent = make_buff_fallback(
+      talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this, "heart_of_the_jade_serpent",
+      talent.conduit_of_the_celestials.heart_of_the_jade_serpent_buff );
 
-  buff.heart_of_the_jade_serpent_cdr_celestial =
-      make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
-                          "heart_of_the_jade_serpent_cdr_celestial",
-                          talent.conduit_of_the_celestials.heart_of_the_jade_serpent_celestial_buff )
+  buff.heart_of_the_jade_serpent_yulons_avatar = make_buff_fallback(
+      talent.conduit_of_the_celestials.yulons_avatar->ok(), this, "heart_of_the_jade_serpent_yulons_avatar",
+      talent.conduit_of_the_celestials.yulons_avatar_buff );
+
+  // TODO: does this cancel zenith (yulon's avatar) hotjs?
+  buff.heart_of_the_jade_serpent_unity_within =
+      make_buff_fallback( talent.conduit_of_the_celestials.unity_within->ok(), this,
+                          "heart_of_the_jade_serpent_unity_within",
+                          talent.conduit_of_the_celestials.unity_within_heart_of_the_jade_serpent_buff )
           ->set_stack_change_callback( [ & ]( buff_t *, int old_, int new_ ) {
             if ( new_ && !old_ )
-              buff.heart_of_the_jade_serpent_cdr->expire();
-          } )
-          ->set_expire_callback(
-              [ & ]( buff_t *, int, timespan_t ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
+              buff.heart_of_the_jade_serpent->expire();
+          } );
 
   buff.inner_compass_crane_stance =
       make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this, "crane_stance",
@@ -5925,7 +5952,7 @@ void monk_t::create_buffs()
                             action.strength_of_the_black_ox.celestial->execute();
                             action.courage_of_the_white_tiger.celestial->execute();
 
-                            buff.heart_of_the_jade_serpent_cdr_celestial->trigger();
+                            buff.heart_of_the_jade_serpent_unity_within->trigger();
                           } );
 
   buff.aspect_of_harmony.construct_buffs( this );
@@ -5979,13 +6006,6 @@ void monk_t::create_buffs()
 
   // TWW S3 Tier Buffs
   // CoC
-  tier.tww3.coc_2pc_heart_of_the_jade_serpent =
-      make_buff_fallback( tier.tww3.coc_2pc->ok(), this, "heart_of_the_jade_serpent_tww3_tier",
-                          tier.tww3.coc_2pc_heart_of_the_jade_serpent_data )
-          ->set_duration( tier.tww3.coc_2pc->effectN( 1 ).time_value() )
-          ->set_expire_callback(
-              [ & ]( buff_t *, int, timespan_t ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
-
   tier.tww3.coc_4pc_jade_serpents_blessing =
       make_buff_fallback( tier.tww3.coc_4pc->ok(), this, "jade_serpents_blessing_tww3_tier",
                           tier.tww3.coc_4pc_jade_serpents_blessing_data )
