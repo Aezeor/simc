@@ -1,22 +1,18 @@
-name: ubuntu-run
+name: ubuntu-test
 
 on:
   workflow_call:
-    inputs:
-      cache-sha:
-        type: string
-        required: true
 
 env:
   SIMC_PROFILE: profiles/CI.simc
   SIMC_ARGS: output=/dev/null html=/dev/null json=/dev/null
 
 jobs:
-  ubuntu-run:
+  ubuntu-test:
     name: ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
     runs-on: ${{ matrix.os }}
     env:
-      CACHE_KEY: ubuntu-${{ matrix.compiler }}-for_run-${{ inputs.cache-sha }}-cpp-${{ matrix.cppVersion }}
+      CACHE_KEY: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
       UBSAN_OPTIONS: print_stacktrace=1
 
     strategy:
