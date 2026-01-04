@@ -1316,7 +1316,6 @@ struct evoker_t : public player_t
       const spell_data_t* enkindle_damage;  // 444017
       player_talent_t conduit_of_flame;
       player_talent_t burning_adrenaline;
-      const spell_data_t* burning_adrenaline_buff;  // 444019
       player_talent_t fan_the_flames;
       player_talent_t expanded_lungs;
       player_talent_t fulminous_roar;
@@ -9260,7 +9259,6 @@ void evoker_t::init_spells()
   talent.flameshaper.enkindle_damage             = find_spell( 444017 );
   talent.flameshaper.conduit_of_flame            = HT( "Conduit of Flame" );
   talent.flameshaper.burning_adrenaline          = HT( "Burning Adrenaline" );
-  talent.flameshaper.burning_adrenaline_buff     = find_spell( 444019 );
   talent.flameshaper.fulminous_roar              = HT( "Fulminous Roar" );
   talent.flameshaper.fan_the_flames              = HT( "Fan the Flames" );
   talent.flameshaper.expanded_lungs              = HT( "Expanded Lungs" );
