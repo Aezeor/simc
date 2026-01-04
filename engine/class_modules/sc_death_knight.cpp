@@ -9378,7 +9378,8 @@ struct death_and_decay_t final : public death_and_decay_base_t
     : death_and_decay_base_t( p, "death_and_decay", p->spec.death_and_decay )
   {
     damage = get_action<death_and_decay_damage_t>( "death_and_decay_damage", p );
-
+    if ( p->talent.unholy.scythe_of_decay.ok() )
+      background = true;
     parse_options( options_str );
   }
 };
