@@ -269,6 +269,7 @@ public:
     actions::rogue_attack_t* lingering_shadow = nullptr;
     actions::rogue_attack_t* main_gauche = nullptr;
     actions::rogue_attack_t* poison_bomb = nullptr;
+    actions::rogue_attack_t* secondary_poisoning = nullptr;
     actions::shadow_blades_attack_t* shadow_blades_attack = nullptr;
     actions::rogue_spell_t* thistle_tea = nullptr;
 
@@ -381,9 +382,12 @@ public:
     buff_t* blindside;
     buff_t* deadly_momentum;
     damage_buff_t* finish_the_job;
+    buff_t* implacable;
+    buff_t* implacable_tracker;
     buff_t* improved_garrote;
     buff_t* improved_garrote_aura;
     damage_buff_t* kingsbane;
+    stat_buff_t* regicides_reward;
     buff_t* scent_of_blood;
 
     // Outlaw
@@ -468,11 +472,11 @@ public:
     gain_t* adrenaline_rush;
     gain_t* adrenaline_rush_expiry;
     gain_t* blade_rush;
-    gain_t* buried_treasure;
     gain_t* darkest_night;
     gain_t* dashing_scoundrel;
     gain_t* fatal_flourish;
     gain_t* energy_refund;
+    gain_t* implacable;
     gain_t* master_of_shadows;
     gain_t* venomous_wounds;
     gain_t* venomous_wounds_death;
@@ -598,12 +602,19 @@ public:
     const spell_data_t* deadly_poison_instant;
     const spell_data_t* finish_the_job_buff;
     const spell_data_t* improved_garrote_buff;
+    const spell_data_t* implacable_buff;
+    const spell_data_t* implacable_damage;
+    const spell_data_t* implacable_damage_physical;
+    const spell_data_t* implacable_damage_nature;
+    const spell_data_t* implacable_tracker_buff;
     const spell_data_t* internal_bleeding_debuff;
     const spell_data_t* kingsbane_buff;
     const spell_data_t* poison_bomb_driver;
     const spell_data_t* poison_bomb_damage;
     const spell_data_t* poisoners_drive_energize;
+    const spell_data_t* regicides_reward_buff;
     const spell_data_t* scent_of_blood_buff;
+    const spell_data_t* secondary_poisoning_damage;
     const spell_data_t* zoldyck_insignia;
 
     // Outlaw Spells
@@ -757,55 +768,60 @@ public:
     struct assassination_talents_t
     {
       player_talent_t deadly_poison;
-
-      player_talent_t venomous_wounds;
+      
+      player_talent_t motivated_murderer;
+      player_talent_t improved_poisons;
       player_talent_t path_of_blood;
 
-      player_talent_t rapid_injection;
-      player_talent_t improved_poisons;
-      player_talent_t bloody_mess;
-
-      player_talent_t thrown_precision;
-      player_talent_t seal_fate;
-      player_talent_t caustic_spatter;
+      player_talent_t crimson_tempest;
+      player_talent_t canny_strikes;
       player_talent_t internal_bleeding;
       player_talent_t improved_garrote;
 
-      player_talent_t crimson_tempest;
-      player_talent_t deathmark;
+      player_talent_t thrown_precision;
+      player_talent_t seal_fate;
+      player_talent_t doomblade;
+      player_talent_t razor_wire;
 
-      player_talent_t flying_daggers;
+      player_talent_t bloody_mess;
+      player_talent_t deathmark;
+      player_talent_t caustic_spatter;
+
       player_talent_t sanguine_stratagem;
-      player_talent_t fatal_concoction;
-      player_talent_t lethal_dose;
       player_talent_t intent_to_kill;
       player_talent_t iron_wire;                // No implementation
+      player_talent_t fatal_concoction;
+      player_talent_t finish_the_job;
+      player_talent_t lethal_dose;
+      player_talent_t flying_daggers;
+      player_talent_t secondary_poisoning;
+      player_talent_t poison_bomb;
 
       player_talent_t systemic_failure;
+      player_talent_t venomous_wounds;
       player_talent_t amplifying_poison;
-      player_talent_t doomblade;
-
+      
       player_talent_t blindside;
-      player_talent_t dashing_scoundrel;
+      player_talent_t kingsbane;
+      player_talent_t rapid_injection;
       player_talent_t shrouded_suffocation;
+      player_talent_t avulsion;
 
       player_talent_t zoldyck_recipe;
-      player_talent_t poison_bomb;
+      player_talent_t regicides_reward;
+      // inspiring drive NYI
+      player_talent_t poisoners_drive;
+      player_talent_t deadly_momentum;
       player_talent_t scent_of_blood;
 
-      player_talent_t kingsbane;
+      player_talent_t dashing_scoundrel;
       player_talent_t dragon_tempered_blades;
       player_talent_t sudden_demise;            // Partial NYI for "execute" mechanic
 
-      player_talent_t motivated_murderer;
-      player_talent_t canny_strikes;
-      player_talent_t razor_wire;
-      player_talent_t finish_the_job;
-      player_talent_t avulsion;
+      player_talent_t implacable_1;
+      player_talent_t implacable_2;
+      player_talent_t implacable_3;
 
-      player_talent_t poisoners_drive;
-      player_talent_t deadly_momentum;
-      
     } assassination;
 
     struct outlaw_talents_t
@@ -2132,6 +2148,7 @@ public:
   void trigger_nimble_flurry( const action_state_t* state );
   void trigger_supercharger();
   void trigger_echoing_reprimand( const action_state_t* state );
+  void trigger_secondary_poisoning( const action_state_t* state );
   void trigger_tww1_assassination_set_bonus( const action_state_t* state );
   void trigger_tww1_outlaw_set_bonus( const action_state_t* );
   void trigger_tww2_set_bonus_removal();
@@ -2721,6 +2738,9 @@ struct rogue_poison_t : public rogue_attack_t
     {
       execute_on_target( source_state->target );
     }
+
+    // MIDNIGHT TOCHECK -- Does this trigger twice with Deathmark?
+    trigger_secondary_poisoning( source_state );
   }
 
   void impact( action_state_t* state ) override
@@ -3997,6 +4017,8 @@ struct envenom_t : public rogue_attack_t
     {
       trigger_combo_point_gain( as<int>( p()->spec.poisoners_drive_energize->effectN( 1 ).base_value() ),
                                 p()->gains.poisoners_drive );
+
+      p()->buffs.implacable_tracker->trigger();
     }
 
     p()->buffs.envenom->trigger( envenom_duration );
@@ -4499,28 +4521,85 @@ struct killing_spree_t : public rogue_attack_t
 
 struct kingsbane_t : public rogue_attack_t
 {
-  kingsbane_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_attack_t( name, p, p->talent.assassination.kingsbane, options_str )
+  struct implacable_strikes_t : public rogue_attack_t
   {
+    struct implacable_strike_t : public rogue_attack_t
+    {
+      implacable_strike_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
+        rogue_attack_t( name, p, s )
+      {
+        dual = true;
+      }
+    };
+
+    implacable_strike_t* nature_strike;
+    implacable_strike_t* physical_strike;
+
+    implacable_strikes_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p->spec.implacable_damage ),
+      nature_strike( nullptr ), physical_strike( nullptr )
+    {
+      nature_strike = p->get_background_action<implacable_strike_t>( "implacable_strikes_nature", p->spec.implacable_damage_nature );
+      physical_strike = p->get_background_action<implacable_strike_t>( "implacable_strikes_physical", p->spec.implacable_damage_physical );
+
+      add_child( nature_strike );
+      add_child( physical_strike );
+    }
+
+    void tick( dot_t* d ) override
+    {
+      rogue_attack_t::tick( d );
+      nature_strike->execute_on_target( d->target );
+      physical_strike->execute_on_target( d->target );
+    }
+  };
+
+  implacable_strikes_t* implacable_strikes;
+
+  kingsbane_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
+    rogue_attack_t( name, p, p->talent.assassination.kingsbane, options_str ),
+    implacable_strikes( nullptr )
+  {
+
+    if ( p->talent.assassination.implacable_3->ok() )
+    {
+      implacable_strikes = p->get_background_action<implacable_strikes_t>( "implacable_strikes" );
+      add_child( implacable_strikes );
+    }
   }
 
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
 
-    if ( result_is_hit( state->result ) && p()->set_bonuses.tww3_fatebound_2pc->ok() )
+    if ( result_is_hit( state->result ) )
     {
-      trigger_fatebound_edge_case( state );
-    }
+      if ( p()->set_bonuses.tww3_fatebound_2pc->ok() )
+      {
+        trigger_fatebound_edge_case( state );
+      }
 
-    trigger_supercharger();
-    trigger_caustic_spatter_debuff( state ); // MIDNIGHT TOCHECK -- Timing?
-    p()->buffs.symbolic_victory->trigger();
+      if ( implacable_strikes )
+      {
+        implacable_strikes->execute_on_target( state->target );
+      }
+
+      trigger_supercharger();
+      trigger_caustic_spatter_debuff( state ); // MIDNIGHT TOCHECK -- Timing?
+      p()->buffs.symbolic_victory->trigger();
+    }
   }
 
   void last_tick( dot_t* d ) override
   {
     rogue_attack_t::last_tick( d );
+    
+    // MIDNIGHT TOCHECK -- Rounding/min stacks?
+    if ( p()->buffs.kingsbane->check() >= 5 )
+    {
+      p()->buffs.regicides_reward->trigger( p()->buffs.kingsbane->check() / 5 );
+    }
+
     p()->buffs.kingsbane->expire();
   }
 };
@@ -5834,6 +5913,16 @@ struct poison_bomb_t : public rogue_attack_t
     rogue_attack_t( name, p, p->spec.poison_bomb_damage )
   {
     aoe = -1;
+  }
+};
+
+// Secondary Poisoning ======================================================
+
+struct secondary_poisoning_t : public rogue_attack_t
+{
+  secondary_poisoning_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p->spec.secondary_poisoning_damage )
+  {
   }
 };
 
@@ -8226,6 +8315,29 @@ void actions::rogue_action_t<Base>::trigger_echoing_reprimand( const action_stat
 }
 
 template <typename Base>
+void actions::rogue_action_t<Base>::trigger_secondary_poisoning( const action_state_t* state )
+{
+  if ( !p()->talent.assassination.secondary_poisoning->ok() )
+    return;
+
+  if ( state->n_targets != 1 )
+    return;
+
+  if ( !p()->rng().roll( p()->talent.assassination.secondary_poisoning->effectN( 1 ).percent() ) )
+    return;
+
+  for ( auto t : ab::target_list() )
+  {
+    if ( t != state->target )
+    {
+      p()->active.secondary_poisoning->execute_on_target( t );
+      ab::execute_on_target( t );
+      break;
+    }
+  }
+}
+
+template <typename Base>
 void actions::rogue_action_t<Base>::trigger_tww1_assassination_set_bonus( const action_state_t* state )
 {
   if ( !p()->set_bonuses.tww1_assassination_2pc->ok() )
@@ -9135,6 +9247,11 @@ std::unique_ptr<expr_t> rogue_t::create_resource_expression( util::string_view n
           energy_regen_per_second *= 1.0 + buffs.adrenaline_rush->data().effectN( 1 ).percent();
         }
 
+        if ( buffs.implacable->check() )
+        {
+          energy_regen_per_second *= 1.0 + buffs.implacable->check_value();
+        }
+
         if ( buffs.blade_rush->check() )
         {
           energy_regen_per_second += ( buffs.blade_rush->data().effectN( 1 ).base_value() / buffs.blade_rush->buff_period.total_seconds() );
@@ -9345,55 +9462,50 @@ void rogue_t::init_spells()
   talent.rogue.toxic_stiletto = find_talent_spell( talent_tree::CLASS, "Toxic Stiletto" );
 
   // Assassination Talents
-  talent.assassination.deadly_poison = find_talent_spell( talent_tree::SPECIALIZATION, "Deadly Poison" );
-
-  talent.assassination.venomous_wounds = find_talent_spell( talent_tree::SPECIALIZATION, "Venomous Wounds" );
-  talent.assassination.path_of_blood = find_talent_spell( talent_tree::SPECIALIZATION, "Path of Blood" );
-
-  talent.assassination.rapid_injection = find_talent_spell( talent_tree::SPECIALIZATION, "Rapid Injection" );
-  talent.assassination.improved_poisons = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Poisons" );
-  talent.assassination.bloody_mess = find_talent_spell( talent_tree::SPECIALIZATION, "Bloody Mess" );
-
-  talent.assassination.thrown_precision = find_talent_spell( talent_tree::SPECIALIZATION, "Thrown Precision" );
-  talent.assassination.seal_fate = find_talent_spell( talent_tree::SPECIALIZATION, "Seal Fate" );
-  talent.assassination.caustic_spatter = find_talent_spell( talent_tree::SPECIALIZATION, "Caustic Spatter" );
-  talent.assassination.internal_bleeding = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Bleeding" );
-  talent.assassination.improved_garrote = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Garrote" );
-
-  talent.assassination.crimson_tempest = find_talent_spell( talent_tree::SPECIALIZATION, "Crimson Tempest" );
-  talent.assassination.deathmark = find_talent_spell( talent_tree::SPECIALIZATION, "Deathmark" );
-  
-  talent.assassination.flying_daggers = find_talent_spell( talent_tree::SPECIALIZATION, "Flying Daggers" );
-  talent.assassination.sanguine_stratagem = find_talent_spell( talent_tree::SPECIALIZATION, "Sanguine Stratagem" );
-  talent.assassination.fatal_concoction = find_talent_spell( talent_tree::SPECIALIZATION, "Fatal Concoction" );
-  talent.assassination.lethal_dose = find_talent_spell( talent_tree::SPECIALIZATION, "Lethal Dose" );
-  talent.assassination.intent_to_kill = find_talent_spell( talent_tree::SPECIALIZATION, "Intent to Kill" );
-  talent.assassination.iron_wire = find_talent_spell( talent_tree::SPECIALIZATION, "Iron Wire" );
-
-  talent.assassination.systemic_failure = find_talent_spell( talent_tree::SPECIALIZATION, "Systemic Failure" );
   talent.assassination.amplifying_poison = find_talent_spell( talent_tree::SPECIALIZATION, "Amplifying Poison" );
-  talent.assassination.doomblade = find_talent_spell( talent_tree::SPECIALIZATION, "Doomblade" );
-
-  talent.assassination.blindside = find_talent_spell( talent_tree::SPECIALIZATION, "Blindside" );
-  talent.assassination.dashing_scoundrel = find_talent_spell( talent_tree::SPECIALIZATION, "Dashing Scoundrel" );
-  talent.assassination.shrouded_suffocation = find_talent_spell( talent_tree::SPECIALIZATION, "Shrouded Suffocation" );
-
-  talent.assassination.zoldyck_recipe = find_talent_spell( talent_tree::SPECIALIZATION, "Zoldyck Recipe" );
-  talent.assassination.poison_bomb = find_talent_spell( talent_tree::SPECIALIZATION, "Poison Bomb" );
-  talent.assassination.scent_of_blood = find_talent_spell( talent_tree::SPECIALIZATION, "Scent of Blood" );
-
-  talent.assassination.kingsbane = find_talent_spell( talent_tree::SPECIALIZATION, "Kingsbane" );
-  talent.assassination.dragon_tempered_blades = find_talent_spell( talent_tree::SPECIALIZATION, "Dragon-Tempered Blades" );
-  talent.assassination.sudden_demise = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Demise" );
-
-  talent.assassination.motivated_murderer = find_talent_spell( talent_tree::SPECIALIZATION, "Motivated Murderer" );
-  talent.assassination.canny_strikes = find_talent_spell( talent_tree::SPECIALIZATION, "Canny Strikes" );
-  talent.assassination.razor_wire = find_talent_spell( talent_tree::SPECIALIZATION, "Razor Wire" );
-  talent.assassination.finish_the_job = find_talent_spell( talent_tree::SPECIALIZATION, "Finish the Job" );
   talent.assassination.avulsion = find_talent_spell( talent_tree::SPECIALIZATION, "Avulsion" );
-
-  talent.assassination.poisoners_drive = find_talent_spell( talent_tree::SPECIALIZATION, "Poisoner's Drive" );
+  talent.assassination.blindside = find_talent_spell( talent_tree::SPECIALIZATION, "Blindside" );
+  talent.assassination.bloody_mess = find_talent_spell( talent_tree::SPECIALIZATION, "Bloody Mess" );
+  talent.assassination.canny_strikes = find_talent_spell( talent_tree::SPECIALIZATION, "Canny Strikes" );
+  talent.assassination.caustic_spatter = find_talent_spell( talent_tree::SPECIALIZATION, "Caustic Spatter" );
+  talent.assassination.crimson_tempest = find_talent_spell( talent_tree::SPECIALIZATION, "Crimson Tempest" );
+  talent.assassination.dashing_scoundrel = find_talent_spell( talent_tree::SPECIALIZATION, "Dashing Scoundrel" );
   talent.assassination.deadly_momentum = find_talent_spell( talent_tree::SPECIALIZATION, "Deadly Momentum" );
+  talent.assassination.deadly_poison = find_talent_spell( talent_tree::SPECIALIZATION, "Deadly Poison" );
+  talent.assassination.deathmark = find_talent_spell( talent_tree::SPECIALIZATION, "Deathmark" );
+  talent.assassination.doomblade = find_talent_spell( talent_tree::SPECIALIZATION, "Doomblade" );
+  talent.assassination.dragon_tempered_blades = find_talent_spell( talent_tree::SPECIALIZATION, "Dragon-Tempered Blades" );
+  talent.assassination.fatal_concoction = find_talent_spell( talent_tree::SPECIALIZATION, "Fatal Concoction" );
+  talent.assassination.finish_the_job = find_talent_spell( talent_tree::SPECIALIZATION, "Finish the Job" );
+  talent.assassination.flying_daggers = find_talent_spell( talent_tree::SPECIALIZATION, "Flying Daggers" );
+  talent.assassination.improved_garrote = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Garrote" );
+  talent.assassination.improved_poisons = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Poisons" );
+  talent.assassination.intent_to_kill = find_talent_spell( talent_tree::SPECIALIZATION, "Intent to Kill" );
+  talent.assassination.internal_bleeding = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Bleeding" );
+  talent.assassination.iron_wire = find_talent_spell( talent_tree::SPECIALIZATION, "Iron Wire" );
+  talent.assassination.kingsbane = find_talent_spell( talent_tree::SPECIALIZATION, "Kingsbane" );
+  talent.assassination.lethal_dose = find_talent_spell( talent_tree::SPECIALIZATION, "Lethal Dose" );
+  talent.assassination.motivated_murderer = find_talent_spell( talent_tree::SPECIALIZATION, "Motivated Murderer" );
+  talent.assassination.path_of_blood = find_talent_spell( talent_tree::SPECIALIZATION, "Path of Blood" );
+  talent.assassination.poison_bomb = find_talent_spell( talent_tree::SPECIALIZATION, "Poison Bomb" );
+  talent.assassination.poisoners_drive = find_talent_spell( talent_tree::SPECIALIZATION, "Poisoner's Drive" );
+  talent.assassination.rapid_injection = find_talent_spell( talent_tree::SPECIALIZATION, "Rapid Injection" );
+  talent.assassination.razor_wire = find_talent_spell( talent_tree::SPECIALIZATION, "Razor Wire" );
+  talent.assassination.regicides_reward = find_talent_spell( talent_tree::SPECIALIZATION, "Regicide's Reward" );
+  talent.assassination.sanguine_stratagem = find_talent_spell( talent_tree::SPECIALIZATION, "Sanguine Stratagem" );
+  talent.assassination.scent_of_blood = find_talent_spell( talent_tree::SPECIALIZATION, "Scent of Blood" );
+  talent.assassination.seal_fate = find_talent_spell( talent_tree::SPECIALIZATION, "Seal Fate" );
+  talent.assassination.secondary_poisoning = find_talent_spell( talent_tree::SPECIALIZATION, "Secondary Poisoning" );
+  talent.assassination.shrouded_suffocation = find_talent_spell( talent_tree::SPECIALIZATION, "Shrouded Suffocation" );
+  talent.assassination.sudden_demise = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Demise" );
+  talent.assassination.systemic_failure = find_talent_spell( talent_tree::SPECIALIZATION, "Systemic Failure" );
+  talent.assassination.thrown_precision = find_talent_spell( talent_tree::SPECIALIZATION, "Thrown Precision" );
+  talent.assassination.venomous_wounds = find_talent_spell( talent_tree::SPECIALIZATION, "Venomous Wounds" );
+  talent.assassination.zoldyck_recipe = find_talent_spell( talent_tree::SPECIALIZATION, "Zoldyck Recipe" );
+
+  talent.assassination.implacable_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1265385 );
+  talent.assassination.implacable_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1265386 );
+  talent.assassination.implacable_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1265387 );
 
   // Outlaw Talents
   talent.outlaw.opportunity = find_talent_spell( talent_tree::SPECIALIZATION, "Opportunity" );
@@ -9627,12 +9739,19 @@ void rogue_t::init_spells()
   spec.doomblade_debuff = talent.assassination.doomblade->ok() ? find_spell( 394021 ) : spell_data_t::not_found();
   spec.finish_the_job_buff = talent.assassination.finish_the_job->ok() ? find_spell( 1249810 ) : spell_data_t::not_found();
   spec.improved_garrote_buff = talent.assassination.improved_garrote->ok() ? find_spell( 392401 ) : spell_data_t::not_found();
+  spec.implacable_buff = talent.assassination.implacable_1->ok() ? find_spell( 1265391 ) : spell_data_t::not_found();
+  spec.implacable_tracker_buff = talent.assassination.implacable_1->ok() ? find_spell( 1265389 ) : spell_data_t::not_found();
+  spec.implacable_damage = talent.assassination.implacable_3->ok() ? find_spell( 1265787 ) : spell_data_t::not_found();
+  spec.implacable_damage_nature = talent.assassination.implacable_3->ok() ? find_spell( 1265794 ) : spell_data_t::not_found();
+  spec.implacable_damage_physical = talent.assassination.implacable_3->ok() ? find_spell( 1265795 ) : spell_data_t::not_found();
   spec.internal_bleeding_debuff = talent.assassination.internal_bleeding->ok() ? find_spell( 381628 ) : spell_data_t::not_found();
   spec.kingsbane_buff = talent.assassination.kingsbane->ok() ? find_spell( 394095 ) : spell_data_t::not_found();
   spec.poison_bomb_driver = talent.assassination.poison_bomb->ok() ? find_spell( 255545 ) : spell_data_t::not_found();
   spec.poison_bomb_damage = talent.assassination.poison_bomb->ok() ? find_spell( 255546 ) : spell_data_t::not_found();
   spec.poisoners_drive_energize = talent.assassination.poisoners_drive->ok() ? find_spell( 1250319 ) : spell_data_t::not_found();
+  spec.regicides_reward_buff = talent.assassination.regicides_reward->ok() ? find_spell( 1250331 ) : spell_data_t::not_found();
   spec.scent_of_blood_buff = talent.assassination.scent_of_blood->ok() ? find_spell( 394080 ) : spell_data_t::not_found();
+  spec.secondary_poisoning_damage = talent.assassination.secondary_poisoning->ok() ? find_spell( 1250216 ) : spell_data_t::not_found();
   spec.zoldyck_insignia = talent.assassination.zoldyck_recipe->ok() ? talent.assassination.zoldyck_recipe : spell_data_t::not_found();
 
   // Outlaw
@@ -9721,33 +9840,9 @@ void rogue_t::init_spells()
   deregister_passive_spell( talent.rogue.improved_ambush );
 
   // Corrupt the blood effects are exclusive per spec
-  if ( talent.deathstalker.corrupt_the_blood->ok() )
-  {
-    auto list_assassination = affect_list_t( 1 );
-    auto list_subtlety = affect_list_t( 2 );
-    bool prop;  // dummy
-
-    auto list_assassination_spells = spells_affected_by_passive( talent.deathstalker.corrupt_the_blood->effectN( 1 ), prop );
-    for ( auto s : list_assassination_spells )
-    {
-      if ( specialization() == ROGUE_ASSASSINATION )
-        list_assassination.add_spell( s->id() );
-      else
-        list_assassination.remove_spell( s->id() );
-    }
-
-    auto list_subtlety_spells = spells_affected_by_passive( talent.deathstalker.corrupt_the_blood->effectN( 2 ), prop );
-    for ( auto s : list_subtlety_spells )
-    {
-      if ( specialization() == ROGUE_SUBTLETY )
-        list_subtlety.add_spell( s->id() );
-      else
-        list_subtlety.remove_spell( s->id() );
-    }
-    
-    register_passive_affect_list( talent.subtlety.veiltouched, list_assassination );
-    register_passive_affect_list( talent.subtlety.veiltouched, list_subtlety );
-  }
+  register_passive_effect_mask( talent.deathstalker.corrupt_the_blood, specialization() == ROGUE_ASSASSINATION ?
+                                effect_mask_t( false ).enable( 1 ) :
+                                effect_mask_t( false ).enable( 2 ) );
 
   // Veiltouched is scripted to apply to physical abilities with their school changed by Dark Brew
   if ( talent.subtlety.dark_brew.ok() && talent.subtlety.veiltouched.ok() )
@@ -9825,6 +9920,11 @@ void rogue_t::init_spells()
   if ( talent.assassination.poison_bomb->ok() )
   {
     active.poison_bomb = get_background_action<actions::poison_bomb_t>( "poison_bomb" );
+  }
+
+  if ( talent.assassination.secondary_poisoning->ok() )
+  {
+    active.secondary_poisoning = get_background_action<actions::secondary_poisoning_t>( "secondary_poisoning" );
   }
 
   // Outlaw
@@ -9953,12 +10053,12 @@ void rogue_t::init_gains()
   gains.adrenaline_rush                 = get_gain( "Adrenaline Rush" );
   gains.adrenaline_rush_expiry          = get_gain( "Adrenaline Rush (Expiry)" );
   gains.blade_rush                      = get_gain( "Blade Rush" );
-  gains.buried_treasure                 = get_gain( "Buried Treasure" );
   gains.darkest_night                   = get_gain( "Darkest Night" );
   gains.dashing_scoundrel               = get_gain( "Dashing Scoundrel" );
   gains.deal_fate                       = get_gain( "Deal Fate" );
   gains.energy_refund                   = get_gain( "Energy Refund" );
   gains.fatal_flourish                  = get_gain( "Fatal Flourish" );
+  gains.implacable                      = get_gain( "Implacable" );
   gains.improved_adrenaline_rush        = get_gain( "Improved Adrenaline Rush" );
   gains.improved_adrenaline_rush_expiry = get_gain( "Improved Adrenaline Rush (Expiry)" );
   gains.improved_ambush                 = get_gain( "Improved Ambush" );
@@ -10104,7 +10204,17 @@ void rogue_t::create_buffs()
     ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_PROC_CHANCE )
     ->set_duration( timespan_t::min() )
     ->disable_ticking( true )
-    ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+      if ( new_ == 0 && talent.assassination.implacable_1->ok() )
+      {
+        // Implacable Envenom cap bonus is hard-coded to 4x in the tooltip, not in spell data
+        const double regen_bonus = talent.assassination.implacable_1->effectN( 1 ).percent() +
+          ( talent.assassination.implacable_1->effectN( 2 ).percent() * std::min( 4, buffs.implacable_tracker->check() ) );
+        buffs.implacable->trigger( 1, regen_bonus );
+        buffs.implacable_tracker->expire();
+      }
+    } );
 
   // Outlaw =================================================================
 
@@ -10301,8 +10411,19 @@ void rogue_t::create_buffs()
 
   buffs.finish_the_job = make_buff<damage_buff_t>( this, "finish_the_job", spec.finish_the_job_buff );
 
+  buffs.implacable = make_buff( this, "implacable", spec.implacable_buff );
+  buffs.implacable_tracker = make_buff( this, "implacable_tracker", spec.implacable_tracker_buff )
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+    ->set_duration( sim->max_time / 2 ); // Set to 14s in spell data to match Envenom, makes timing easier this way
+
   buffs.kingsbane = make_buff<damage_buff_t>( this, "kingsbane", spec.kingsbane_buff );
   buffs.kingsbane->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+  
+  buffs.regicides_reward = make_buff<stat_buff_t>( this, "regicides_reward", spec.regicides_reward_buff );
+  buffs.regicides_reward->set_default_value_from_effect_type( A_HASTE_ALL )
+    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+    ->set_reverse( true )
+    ->set_reverse_stack_count( 1 );
 
   buffs.scent_of_blood = make_buff( this, "scent_of_blood", spec.scent_of_blood_buff )
     ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
@@ -11226,7 +11347,7 @@ void rogue_t::regen( timespan_t periodicity )
 
   // We handle some energy gain increases here instead of the resource_regen_per_second method in order to better track their benefits.
   // IMPORTANT NOTE: If anything is updated/added here, rogue_t::create_resource_expression() needs to be updated as well to reflect this
-  if ( ! resources.is_infinite( RESOURCE_ENERGY ) )
+  if ( !resources.is_infinite( RESOURCE_ENERGY ) )
   {
     // Multiplicative energy gains
     double mult_regen_base = periodicity.total_seconds() * resource_regen_per_second( RESOURCE_ENERGY );
@@ -11235,6 +11356,13 @@ void rogue_t::regen( timespan_t periodicity )
     {
       double energy_regen = mult_regen_base * buffs.adrenaline_rush->data().effectN( 1 ).percent();
       resource_gain( RESOURCE_ENERGY, energy_regen, gains.adrenaline_rush );
+      mult_regen_base += energy_regen;
+    }
+
+    if ( buffs.implacable->up() )
+    {
+      double energy_regen = mult_regen_base * buffs.implacable->value();
+      resource_gain( RESOURCE_ENERGY, energy_regen, gains.implacable );
       mult_regen_base += energy_regen;
     }
   }
