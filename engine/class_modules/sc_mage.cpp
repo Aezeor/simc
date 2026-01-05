@@ -6995,7 +6995,7 @@ bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool allow_p
       // is delayed until the channel ends (or is refreshed).
       // TODO: Should we use the delay param here?
       // TODO: The proc is also banked if you already had a CC stack before, likely a bug
-      if ( ( channeling && channeling->id == 5143 ) || had_clearcasting )
+      if ( ( channeling && channeling->id == 5143 ) || ( had_clearcasting && chance < 1.0 ) )
         state.trigger_overpowered_missiles = true;
       else
         buffs.overpowered_missiles->trigger();
