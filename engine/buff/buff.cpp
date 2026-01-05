@@ -750,6 +750,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
 
   if ( s_data->flags( spell_attribute::SX_IGNORE_FOR_MOD_TIME_RATE ) )
     ignore_time_modifier = true;
+  set_can_cancel( !s_data->flags( spell_attribute::SX_NO_CANCEL ) );
 
   update_trigger_calculations();
 }
