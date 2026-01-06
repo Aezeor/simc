@@ -8381,26 +8381,29 @@ struct abomination_limb_t : public death_knight_spell_t
 {
   abomination_limb_t( death_knight_t* p, std::string_view options_str = "" )
     : death_knight_spell_t( "abomination_limb", p, p->talent.blood.abomination_limb )
-    {
-      harmful = false;
-      parse_options( options_str );
-    }
+  {
+    harmful = false;
+    parse_options( options_str );
+  }
 
-    void tick( dot_t* dot ) override
-    {
-      death_knight_spell_t::tick( dot );
+  void tick( dot_t* dot ) override
+  {
+    death_knight_spell_t::tick( dot );
 
-      for ( auto& target : p()->sim->target_non_sleeping_list )
+    for ( auto& target : p()->sim->target_non_sleeping_list )
+    {
+      auto td = get_td( target );
+      if ( !td->debuff.abomination_limb->check() )
       {
-        auto td = get_td( target );
-        if ( !td->debuff.abomination_limb->check() )
-        {
-          td->debuff.tightening_grasp->trigger();
-          td->debuff.abomination_limb->trigger();
-          return;
-        }
+        td->debuff.tightening_grasp->trigger();
+        td->debuff.abomination_limb->trigger();
+        return;
       }
     }
+
+    if ( p()->talent.blood.bone_collector.ok() )
+      p()->buffs.bone_shield->trigger();
+  }
 };
 
 // Dark Transformation ======================================================
@@ -9373,6 +9376,28 @@ struct death_and_decay_t final : public death_and_decay_base_t
     if ( p->talent.unholy.scythe_of_decay.ok() )
       background = true;
     parse_options( options_str );
+  }
+};
+
+// Death Grip ===============================================================
+struct death_grip_t final : public death_knight_spell_t
+{
+  death_grip_t( death_knight_t* p, std::string_view options_str )
+    : death_knight_spell_t( "death_grip", p, p->spec.death_grip )
+  {
+    parse_options( options_str );
+    ignore_false_positive = true;
+    harmful               = false;
+    cooldown              = p->cooldown.death_grip;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_spell_t::impact( s );
+    death_knight_td_t* td = p()->get_target_data( s->target );
+    td->debuff.tightening_grasp->trigger();
+    if ( p()->talent.blood.bone_collector.ok() )
+      p()->buffs.bone_shield->trigger();
   }
 };
 
@@ -10719,6 +10744,9 @@ struct gorefiends_grasp_t final : public death_knight_spell_t
     auto td = get_td( state->target );
     if ( td )
       td->debuff.tightening_grasp->trigger();
+
+    if ( p()->talent.blood.bone_collector.ok() )
+      p()->buffs.bone_shield->trigger();
   }
 };
 
@@ -13948,6 +13976,7 @@ action_t* death_knight_t::create_action( std::string_view name, std::string_view
   // Deathbringer Actions
   if ( name == "reapers_mark" )
     return new reapers_mark_t( this, options_str );
+
   // General Actions
   if ( name == "antimagic_shell" )
     return new antimagic_shell_t( this, options_str );
@@ -13965,6 +13994,8 @@ action_t* death_knight_t::create_action( std::string_view name, std::string_view
     return new mind_freeze_t( this, options_str );
   if ( name == "raise_dead" )
     return new raise_dead_t( this, options_str );
+  if ( name == "death_grip" )
+    return new death_grip_t( this, options_str );
 
   // Blood Actions
   if ( name == "abomination_limb" )
