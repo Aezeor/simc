@@ -984,6 +984,14 @@
       { "data_type": "i", "field": "id_item_effect", "ref": "ItemEffect" }
     ]
   },
+  "ItemSquishEra": {
+    "fields": [
+      { "data_type": "i", "field":"id" },
+      { "data_type": "i", "field":"patch" },
+      { "data_type": "i", "field":"id_curve" },
+      { "data_type": "i", "field":"unk_1" }
+    ]
+  },
   "JournalEncounter": {
     "fields": [
       { "data_type": "S", "field": "name" },
