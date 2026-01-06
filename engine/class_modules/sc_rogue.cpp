@@ -24,7 +24,6 @@ enum class secondary_trigger
   SHURIKEN_TORNADO,
   INTERNAL_BLEEDING,
   MAIN_GAUCHE,
-  HIDDEN_OPPORTUNITY,
   FAN_THE_HAMMER,
   COUP_DE_GRACE,
   HAND_OF_FATE,
@@ -283,8 +282,6 @@ public:
     } weaponmaster;
     struct
     {
-      actions::rogue_attack_t* clear_the_witnesses = nullptr;
-      actions::rogue_attack_t* clear_the_witnesses_tornado = nullptr;
       actions::rogue_attack_t* deathstalkers_mark = nullptr;
       actions::rogue_attack_t* fatal_intent = nullptr;
       actions::rogue_attack_t* hunt_them_down = nullptr;
@@ -293,7 +290,6 @@ public:
     struct
     {
       actions::rogue_attack_t* fatebound_coin_tails = nullptr;
-      actions::rogue_attack_t* fate_intertwined = nullptr;
       actions::rogue_attack_t* lucky_coin = nullptr;
     } fatebound;
     struct
@@ -359,7 +355,6 @@ public:
 
     // Hero
     // Deathstalker
-    buff_t* clear_the_witnesses;
     damage_buff_t* deathstalkers_mark;
     buff_t* darkest_night;
     buff_t* lingering_darkness;
@@ -395,7 +390,6 @@ public:
     buff_t* killing_spree;
     buff_t* loaded_dice;
     buffs::rogue_buff_t* slice_and_dice;
-    damage_buff_t* summarily_dispatched;
 
     // Subtlety
     damage_buff_t* danse_macabre;
@@ -475,6 +469,7 @@ public:
     gain_t* darkest_night;
     gain_t* dashing_scoundrel;
     gain_t* fatal_flourish;
+    gain_t* flickering_steel;
     gain_t* energy_refund;
     gain_t* implacable;
     gain_t* master_of_shadows;
@@ -486,7 +481,6 @@ public:
     // CP Gains
     gain_t* ace_up_your_sleeve;
     gain_t* improved_adrenaline_rush;
-    gain_t* improved_adrenaline_rush_expiry;
     gain_t* improved_ambush;
     gain_t* killing_spree;
     gain_t* poisoners_drive;
@@ -545,8 +539,6 @@ public:
     const spell_data_t* vanish_buff;
 
     // Hero Spells
-    const spell_data_t* clear_the_witnesses_buff;
-    const spell_data_t* clear_the_witnesses_damage;
     const spell_data_t* cloud_cover_distract;
     const spell_data_t* coup_de_grace;
     const spell_data_t* coup_de_grace_damage_1;
@@ -568,7 +560,6 @@ public:
     const spell_data_t* fatebound_coin_tails;
     const spell_data_t* fatebound_lucky_coin_buff;
     const spell_data_t* fatebound_lucky_coin_damage;
-    const spell_data_t* fatebound_fate_intertwined;
     const spell_data_t* fazed_debuff;
     const spell_data_t* flawless_form_buff;
     const spell_data_t* hunt_them_down_damage;
@@ -627,6 +618,7 @@ public:
     const spell_data_t* restless_blades;
     const spell_data_t* blade_flurry;
 
+    const spell_data_t* ace_up_your_sleeve_energize;
     const spell_data_t* acrobatic_strikes_buff;
     const spell_data_t* audacity_buff;
     const spell_data_t* blade_flurry_attack;
@@ -634,15 +626,14 @@ public:
     const spell_data_t* blade_rush_attack;
     const spell_data_t* blade_rush_energize;
     const spell_data_t* doomblade_debuff;
-    const spell_data_t* hidden_opportunity_extra_attack;
+    const spell_data_t* flickering_steel_energize;
     const spell_data_t* improved_adrenaline_rush_energize;
     const spell_data_t* killing_spree_mh_attack;
     const spell_data_t* killing_spree_oh_attack;
     const spell_data_t* killing_spree_energize;
     const spell_data_t* opportunity_buff;
-    const spell_data_t* sinister_strike_extra_attack;
-    const spell_data_t* summarily_dispatched_buff;
-    const spell_data_t* ace_up_your_sleeve_energize;
+    const spell_data_t* quick_draw_energize;
+    const spell_data_t* sinister_strike_extra_attack;  
 
     const spell_data_t* one_of_a_kind;
     const spell_data_t* double_trouble;
@@ -809,7 +800,7 @@ public:
 
       player_talent_t zoldyck_recipe;
       player_talent_t regicides_reward;
-      // inspiring drive NYI
+      // Inspiring Strike NYI
       player_talent_t poisoners_drive;
       player_talent_t deadly_momentum;
       player_talent_t scent_of_blood;
@@ -865,6 +856,15 @@ public:
 
       player_talent_t hidden_opportunity;
       player_talent_t keep_it_rolling;
+
+      player_talent_t crescendo_of_violence;
+      player_talent_t preparation;
+      player_talent_t fast_action;
+      player_talent_t dragon_bone_dice;
+      player_talent_t expert_duelist;
+      player_talent_t flickering_steel;
+      player_talent_t find_an_opening;
+      player_talent_t heightened_rush;
 
     } outlaw;
 
@@ -1219,11 +1219,9 @@ public:
   // Extra attack proc chance for Outlaw mechanics (Sinister Strike, Audacity, Hidden Opportunity)
   double extra_attack_proc_chance() const
   {
-    double proc_chance = spec.sinister_strike->effectN( 3 ).percent();
+    double proc_chance = talent.outlaw.opportunity->effectN( 1 ).percent();
     if ( buffs.roll_the_bones->check() )
       proc_chance += spec.jackpot->effectN( 1 ).percent();
-    if ( talent.fatebound.destiny_defined->ok() )
-      proc_chance += talent.fatebound.destiny_defined->effectN( 2 ).percent();
     return proc_chance;
   }
 
@@ -1560,6 +1558,7 @@ public:
     bool roll_the_bones_cp = false;
     bool ruthlessness = false;          // Trigger
     bool shadow_blades_cp = false;
+    bool summarily_dispatched = false;
     bool zoldyck_insignia = false;
 
     bool tww3_fatebound_4pc = false;
@@ -1667,9 +1666,11 @@ public:
     // Outlaw
     affected_by.adrenaline_rush_gcd = ab::data().affected_by( p->talent.outlaw.adrenaline_rush->effectN( 3 ) );
 
+    affected_by.audacity = ab::data().affected_by( p->spec.audacity_buff->effectN( 1 ) );
+
     affected_by.roll_the_bones_cp = ab::data().affected_by( p->spec.jackpot->effectN( 2 ) );
 
-    affected_by.audacity = ab::data().affected_by( p->spec.audacity_buff->effectN( 1 ) );
+    affected_by.summarily_dispatched = ab::data().affected_by( p->talent.outlaw.summarily_dispatched->effectN( 2 ) );
 
     // Subtlety
     affected_by.shadow_blades_cp = ( ab::data().affected_by( p->talent.subtlety.shadow_blades->effectN( 2 ) ) ||
@@ -1758,7 +1759,6 @@ public:
     register_damage_buff( p()->buffs.momentum_of_despair );
     register_damage_buff( p()->buffs.perforated_veins );
     register_damage_buff( p()->buffs.shadow_dance );
-    register_damage_buff( p()->buffs.summarily_dispatched );
     register_damage_buff( p()->buffs.symbolic_victory );
     register_damage_buff( p()->buffs.the_rotten );
 
@@ -2126,7 +2126,6 @@ public:
   void trigger_hand_of_fate( const action_state_t*, bool biased = false );
   void execute_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result, timespan_t delay = timespan_t::zero() );
   void trigger_fatebound_edge_case( const action_state_t* state );
-  void trigger_fate_intertwined( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_blindside( const action_state_t* );
   void trigger_shadow_blades_attack( const action_state_t* );
@@ -2186,7 +2185,7 @@ public:
     timespan_t t = ab::gcd();
 
     // As per alpha notes: Now increases global cooldown recovery rate equal to your Haste while active, up to 25%.
-    // Cap is not currently reflected anywhere in spell data, dummy script periodic in AR effect 6 
+    // Cap is not currently reflected anywhere in spell data, dummy script periodic in AR effect 7 
     if ( affected_by.adrenaline_rush_gcd && t != timespan_t::zero() && p()->buffs.adrenaline_rush->check() )
     {
       double reduction_multiplier = std::clamp( ( 1.0 / p()->cache.attack_haste() ) - 1.0, 0.0, 0.25 ) / 0.25;
@@ -2231,6 +2230,13 @@ public:
     {
       m *= 1.0 + ( p()->talent.assassination.lethal_dose->effectN( 1 ).percent() *
                    td( state->target )->lethal_dose_count() );
+    }
+
+    // Summarily Dispatched
+    if ( affected_by.summarily_dispatched )
+    {
+      m *= p()->talent.outlaw.summarily_dispatched->effectN( 2 ).percent() *
+        ( 1.0 + ( p()->buffs.between_the_eyes->check() * p()->spec.between_the_eyes->effectN( 4 ).percent() ) );
     }
 
     // Follow the Blood
@@ -3355,8 +3361,7 @@ struct adrenaline_rush_t : public rogue_spell_t
     // 2020-12-02 - Using over Celerity proc'ed AR does not extend but applies base duration.
     p()->buffs.adrenaline_rush->expire();
     p()->buffs.adrenaline_rush->trigger();
-    if ( p()->talent.outlaw.loaded_dice->ok() )
-      p()->buffs.loaded_dice->trigger();
+    p()->buffs.loaded_dice->trigger();
 
     if ( precombat_seconds > 0_s && !p()->in_combat )
     {
@@ -3374,57 +3379,9 @@ struct adrenaline_rush_t : public rogue_spell_t
 
 struct ambush_t : public rogue_attack_t
 {
-  struct hidden_opportunity_extra_attack_t : public rogue_attack_t
-  {
-    hidden_opportunity_extra_attack_t( util::string_view name, rogue_t* p ) :
-      rogue_attack_t( name, p, p->spec.hidden_opportunity_extra_attack )
-    {
-    }
-
-    void impact( action_state_t* state ) override
-    {
-      rogue_attack_t::impact( state );
-      trigger_tww1_outlaw_set_bonus( execute_state );
-    }
-
-    bool procs_main_gauche() const override
-    { return true; }
-
-    bool procs_blade_flurry() const override
-    { return true; }
-  };
-
-  hidden_opportunity_extra_attack_t* extra_attack;
-  ambush_t* audacity_extra_attack;
-
   ambush_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_attack_t( name, p, p->spell.ambush, options_str ),
-    extra_attack( nullptr ), audacity_extra_attack( nullptr )
+    rogue_attack_t( name, p, p->spell.ambush, options_str )
   {
-  }
-
-  void init() override
-  {
-    rogue_attack_t::init();
-
-    if ( p()->talent.outlaw.hidden_opportunity->ok() )
-    {
-      extra_attack = p()->get_secondary_trigger_action<hidden_opportunity_extra_attack_t>(
-        secondary_trigger::HIDDEN_OPPORTUNITY, "ambush_hidden_opportunity" );
-
-      if ( !is_secondary_action() )
-      {
-        add_child( extra_attack );
-
-        // 2023-11-24 -- Self-trigger Ambush proc for Audacy override spell bug
-        if ( p()->bugs && p()->talent.outlaw.audacity->ok() )
-        {
-          audacity_extra_attack = p()->get_secondary_trigger_action<ambush_t>(
-            secondary_trigger::HIDDEN_OPPORTUNITY, "ambush_hidden_opportunity_audacity" );
-          add_child( audacity_extra_attack );
-        }
-      }
-    }
   }
 
   void execute() override
@@ -3446,12 +3403,7 @@ struct ambush_t : public rogue_attack_t
 
     if ( p()->talent.outlaw.hidden_opportunity->ok() )
     {
-      // 2023-11-24 -- The Audacity replacement spell currently triggers the normal Ambush spell from HO
-      //               This allows it to trigger up to twice, rather than just a single time
-      if ( p()->bugs && audacity_extra_attack && p()->buffs.audacity->check() )
-        trigger_opportunity( state, audacity_extra_attack, p()->talent.outlaw.hidden_opportunity->effectN( 1 ).percent() );
-      else
-        trigger_opportunity( state, extra_attack, p()->talent.outlaw.hidden_opportunity->effectN( 1 ).percent() );
+      trigger_opportunity( state, nullptr, p()->talent.outlaw.hidden_opportunity->effectN( 1 ).percent() );
     }
 
     trigger_caustic_spatter_debuff( state ); // MIDNIGHT TOCHECK -- Timing?
@@ -3561,30 +3513,9 @@ struct dispatch_t: public rogue_attack_t
   {
   }
 
-  double cost_flat_modifier() const override
-  {
-    double c = rogue_attack_t::cost_flat_modifier();
-
-    if ( p()->buffs.summarily_dispatched->check() )
-    {
-      c += p()->buffs.summarily_dispatched->check() * p()->spec.summarily_dispatched_buff->effectN( 2 ).base_value();
-    }
-
-    return c;
-  }
-
   void execute() override
   {
     rogue_attack_t::execute();
-
-    if ( p()->talent.outlaw.summarily_dispatched->ok() )
-    {
-      int cp = cast_state( execute_state )->get_combo_points();
-      if ( cp >= p()->talent.outlaw.summarily_dispatched->effectN( 2 ).base_value() )
-      {
-        p()->buffs.summarily_dispatched->trigger();
-      }
-    }
 
     if ( !is_secondary_action() )
     {
@@ -3594,12 +3525,6 @@ struct dispatch_t: public rogue_attack_t
     }
 
     trigger_cut_to_the_chase( execute_state );
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    rogue_attack_t::impact( state );
-    trigger_fate_intertwined( state );
   }
 
   bool ready() override
@@ -3649,6 +3574,7 @@ struct between_the_eyes_t : public rogue_attack_t
         {
           trigger_combo_point_gain( as<int>( p()->spec.ace_up_your_sleeve_energize->effectN( 1 ).base_value() ),
                                     p()->gains.ace_up_your_sleeve );
+          p()->cooldowns.between_the_eyes->reset( true );
         }
       }
     }
@@ -3946,11 +3872,6 @@ struct envenom_t : public rogue_attack_t
     {
       add_child( p->active.poison_bomb );
     }
-
-    if ( p->active.fatebound.fate_intertwined )
-    {
-      add_child( p->active.fatebound.fate_intertwined );
-    }
   }
   
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -4026,7 +3947,6 @@ struct envenom_t : public rogue_attack_t
     rogue_attack_t::impact( state );
 
     trigger_cut_to_the_chase( state );
-    trigger_fate_intertwined( state );
   }
 };
 
@@ -4145,11 +4065,6 @@ struct fan_of_knives_t: public rogue_attack_t
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
 
-    if ( p->talent.deathstalker.clear_the_witnesses->ok() )
-    {
-      add_child( p->active.deathstalker.clear_the_witnesses );
-    }
-
     if ( p->talent.deathstalker.follow_the_blood->ok() )
     {
       affected_by.follow_the_blood.direct = true;
@@ -4177,23 +4092,6 @@ struct fan_of_knives_t: public rogue_attack_t
       return 1.0;
 
     return rogue_attack_t::composite_poison_flat_modifier( state );
-  }
-
-  double composite_energize_amount( const action_state_t* state ) const override
-  {
-    double cp = rogue_attack_t::composite_energize_amount( state );
-    cp += p()->buffs.clear_the_witnesses->check();
-    return cp;
-  }
-
-  void execute() override
-  {
-    rogue_attack_t::execute();
-
-    if ( p()->buffs.clear_the_witnesses->check() )
-    {
-      p()->active.deathstalker.clear_the_witnesses->execute_on_target( execute_state->target );
-    }
   }
 
   void impact( action_state_t* state ) override
@@ -4625,11 +4523,6 @@ struct pistol_shot_t : public rogue_attack_t
         add_child( p()->active.fan_the_hammer );
       }
     }
-
-    if ( secondary_trigger_type == secondary_trigger::FAN_THE_HAMMER )
-    {
-      energize_amount -= p()->talent.outlaw.fan_the_hammer->effectN( 3 ).base_value();
-    }
   }
 
   double cost_pct_multiplier() const override
@@ -4651,9 +4544,10 @@ struct pistol_shot_t : public rogue_attack_t
     m *= 1.0 + p()->buffs.opportunity->value();
 
     // 2023-09-26 Pistol shot says it does 20% less damage on followup fan the hammer hits, but currently does not
+    // MIDNIGHT TOCHECK -- Still an issue??
     if ( !p()->bugs && secondary_trigger_type == secondary_trigger::FAN_THE_HAMMER )
     {
-      m *= 1.0 - p()->talent.outlaw.fan_the_hammer->effectN( 4 ).percent();
+      m *= 1.0 - p()->talent.outlaw.fan_the_hammer->effectN( 3 ).percent();
     }
 
     return m;
@@ -4665,7 +4559,7 @@ struct pistol_shot_t : public rogue_attack_t
 
     if ( p()->talent.outlaw.quick_draw->ok() && p()->buffs.opportunity->check() )
     {
-      g += p()->talent.outlaw.quick_draw->effectN( 2 ).base_value();
+      g += p()->spec.quick_draw_energize->effectN( 1 ).base_value();
     }
 
     return g;
@@ -4680,12 +4574,12 @@ struct pistol_shot_t : public rogue_attack_t
     {
       if ( p()->talent.outlaw.quick_draw->ok() )
       {
-        const int cp_gain = as<int>( p()->talent.outlaw.quick_draw->effectN( 2 ).base_value() );
+        const int cp_gain = as<int>( p()->spec.quick_draw_energize->effectN( 1 ).base_value() );
         trigger_combo_point_gain( cp_gain, p()->gains.quick_draw );
       }
 
-      // Audacity -- Currently on beta this can also trigger from Fan the Hammer procs
-      if ( p()->talent.outlaw.audacity->ok() )
+      // 2026-01-05 -- According to patch notes Audacity no longer triggers from Fan the Hammer
+      if ( p()->talent.outlaw.audacity->ok() && !is_secondary_action() )
       {
         p()->buffs.audacity->trigger( 1, buff_t::DEFAULT_VALUE(), p()->extra_attack_proc_chance() );
       }
@@ -5423,11 +5317,8 @@ struct black_powder_t: public rogue_attack_t
 
 struct shuriken_storm_t: public rogue_attack_t
 {
-  action_t* clear_the_witnesses;
-
   shuriken_storm_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ):
-    rogue_attack_t( name, p, p->spec.shuriken_storm, options_str ),
-    clear_the_witnesses( nullptr )
+    rogue_attack_t( name, p, p->spec.shuriken_storm, options_str )
   {
     energize_type = action_energize::PER_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
@@ -5445,20 +5336,6 @@ struct shuriken_storm_t: public rogue_attack_t
     }
   }
 
-  void init() override
-  {
-    rogue_attack_t::init();
-
-    clear_the_witnesses = secondary_trigger_type == secondary_trigger::SHURIKEN_TORNADO ?
-      p()->active.deathstalker.clear_the_witnesses_tornado :
-      p()->active.deathstalker.clear_the_witnesses;
-
-    if ( clear_the_witnesses )
-    {
-      add_child( clear_the_witnesses );
-    }
-  }
-
   double composite_crit_chance() const override
   {
     double c = rogue_attack_t::composite_crit_chance();    
@@ -5466,23 +5343,11 @@ struct shuriken_storm_t: public rogue_attack_t
     return c;
   }
 
-  double composite_energize_amount( const action_state_t* state ) const override
-  {
-    double cp = rogue_attack_t::composite_energize_amount( state );
-    cp += p()->buffs.clear_the_witnesses->check();
-    return cp;
-  }
-
   void execute() override
   {
     rogue_attack_t::execute();
     
     p()->buffs.silent_storm->expire();
-
-    if ( clear_the_witnesses && p()->buffs.clear_the_witnesses->check() )
-    {
-      clear_the_witnesses->execute_on_target( execute_state->target );
-    }
   }
 
   void impact( action_state_t* state ) override
@@ -6025,6 +5890,29 @@ struct keep_it_rolling_t : public rogue_spell_t
   }
 };
 
+// Preparation ==============================================================
+
+struct preparation_t : public rogue_spell_t
+{
+  preparation_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
+    rogue_spell_t( name, p, p->talent.outlaw.preparation, options_str )
+  {
+    harmful = false;
+    set_target( p );
+  }
+
+  void execute() override
+  {
+    rogue_spell_t::execute();
+
+    p()->cooldowns.adrenaline_rush->reset( false );
+    p()->cooldowns.between_the_eyes->reset( false );
+    p()->cooldowns.blade_flurry->reset( false );
+    p()->cooldowns.blade_rush->reset( false );
+    p()->cooldowns.killing_spree->reset( false );
+  }
+};
+
 // Goremaw's Bite ===========================================================
 
 struct goremaws_bite_t : public rogue_attack_t
@@ -6080,24 +5968,6 @@ struct echoing_reprimand_t : public rogue_attack_t
 };
 
 // Deathstalker =============================================================
-
-struct clear_the_witnesses_t : public rogue_attack_t
-{
-  clear_the_witnesses_t( util::string_view name, rogue_t* p ) :
-    rogue_attack_t( name, p, p->spell.clear_the_witnesses_damage )
-  {
-    aoe = -1;
-  }
-
-  void execute() override
-  {
-    rogue_attack_t::execute();
-    p()->buffs.clear_the_witnesses->expire();
-  }
-
-  bool procs_shadow_blades_damage() const override
-  { return false; }
-};
 
 struct deathstalkers_mark_t : public rogue_attack_t
 {
@@ -6228,30 +6098,6 @@ struct fatebound_lucky_coin_t : public rogue_attack_t
 
   bool procs_blade_flurry() const override
   { return true; }
-};
-
-struct fate_intertwined_t : public rogue_attack_t
-{
-  fate_intertwined_t( util::string_view name, rogue_t* p ) :
-    rogue_attack_t( name, p, p->spell.fatebound_fate_intertwined )
-  {
-    base_dd_min = base_dd_max = 1;
-    aoe = as<int>( p->talent.fatebound.fate_intertwined->effectN( 2 ).base_value() );
-    radius = data().effectN( 1 ).radius();
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    rogue_attack_t::available_targets( tl );
-
-    // Does not hit the primary target if it hits additional enemies
-    if( tl.size() > 1 )
-    {
-      range::erase_remove( tl, target );
-    }
-
-    return tl.size();
-  }
 };
 
 // Trickster ================================================================
@@ -6449,15 +6295,6 @@ struct coup_de_grace_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-    
-    if ( p()->talent.outlaw.summarily_dispatched->ok() )
-    {
-      int cp = cast_state( execute_state )->get_combo_points();
-      if ( cp >= p()->talent.outlaw.summarily_dispatched->effectN( 2 ).base_value() )
-      {
-        p()->buffs.summarily_dispatched->trigger();
-      }
-    }
 
     // Extra Flawless Form stacks are currently granted prior to the impact, so self-affecting
     // Use Execute() instead of Trigger() to avoid async stack trigger aura delay
@@ -6887,7 +6724,7 @@ struct adrenaline_rush_t : public rogue_buff_t
     buff_t::start( stacks, value, duration );
 
     rogue_t* rogue = debug_cast<rogue_t*>( source );
-    rogue->resources.temporary[ RESOURCE_ENERGY ] += data().effectN( 4 ).base_value();
+    rogue->resources.temporary[ RESOURCE_ENERGY ] += data().effectN( 6 ).base_value();
     rogue->recalculate_resource_max( RESOURCE_ENERGY );
 
     if ( rogue->talent.outlaw.improved_adrenaline_rush->ok() )
@@ -6902,14 +6739,8 @@ struct adrenaline_rush_t : public rogue_buff_t
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
     rogue_t* rogue = debug_cast<rogue_t*>( source );
-    rogue->resources.temporary[ RESOURCE_ENERGY ] -= data().effectN( 4 ).base_value();
+    rogue->resources.temporary[ RESOURCE_ENERGY ] -= data().effectN( 6 ).base_value();
     rogue->recalculate_resource_max( RESOURCE_ENERGY, rogue->gains.adrenaline_rush_expiry );
-
-    if ( rogue->talent.outlaw.improved_adrenaline_rush->ok() )
-    {
-      const double energy_gain = rogue->resources.max[ RESOURCE_ENERGY ];
-      rogue->resource_gain( RESOURCE_ENERGY, energy_gain, rogue->gains.improved_adrenaline_rush_expiry );
-    }
   }
 };
 
@@ -6961,15 +6792,14 @@ struct stealth_like_buff_t : public BuffBase
       if ( rogue->talent.subtlety.premeditation->ok() )
         rogue->buffs.premeditation->trigger();
 
-      if ( rogue->talent.subtlety.shot_in_the_dark->ok() )
-        rogue->buffs.shot_in_the_dark->trigger();
-
       if ( rogue->talent.subtlety.silent_storm->ok() )
         rogue->buffs.silent_storm->trigger();
     }
 
-    if ( rogue->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) )
+    if ( rogue->stealthed( STEALTH_VANISH | STEALTH_SHADOW_DANCE ) )
     {
+      if ( rogue->talent.subtlety.shot_in_the_dark->ok() )
+        rogue->buffs.shot_in_the_dark->trigger();
     }
   }
 
@@ -7641,7 +7471,7 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
   // Compute Blade Flurry modifier
   double multiplier = p()->buffs.blade_flurry->check_value();
 
-  // 2024-08-12 -- This effect is multiplicative, even though it uses the same tooltip as additive mods
+  // 2024-08-12 -- This effect is whitelisted damage modifer in the Flawless Form buff
   if ( p()->talent.trickster.nimble_flurry->ok() && p()->buffs.flawless_form->check() )
   {
     multiplier *= 1.0 + p()->spell.flawless_form_buff->effectN( 3 ).percent();
@@ -7761,7 +7591,7 @@ void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* 
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_opportunity( const action_state_t* state, actions::rogue_attack_t* action, double modifier )
 {
-  if ( !p()->talent.outlaw.opportunity->ok() || !ab::result_is_hit( state->result ) || !action )
+  if ( !p()->talent.outlaw.opportunity->ok() || !ab::result_is_hit( state->result ) )
     return;
 
   const int stacks = 1 + as<int>( p()->talent.outlaw.fan_the_hammer->effectN( 1 ).base_value() );
@@ -7772,7 +7602,18 @@ void actions::rogue_action_t<Base>::trigger_opportunity( const action_state_t* s
       trigger_combo_point_gain( as<int>( p()->talent.fatebound.deal_fate->effectN( 1 ).base_value() ),
                                 p()->gains.deal_fate );
     }
-    action->trigger_secondary_action( state->target, 300_ms );
+
+    if ( p()->talent.outlaw.flickering_steel->ok() )
+    {
+      p()->resource_gain( RESOURCE_ENERGY, p()->spec.flickering_steel_energize->effectN( 1 ).resource( RESOURCE_ENERGY ),
+                          p()->gains.flickering_steel, state->action );
+    }
+
+    // Hidden Opportunity no longer strikes when it triggers the buff
+    if ( action )
+    {
+      action->trigger_secondary_action( state->target, 300_ms );
+    }
   }
 }
 
@@ -7886,19 +7727,6 @@ void actions::rogue_action_t<Base>::trigger_fatebound_edge_case( const action_st
   {
     execute_fatebound_coinflip( state, fatebound_t::coinflip_e::EDGE, 200_ms );
   }
-}
-
-template <typename Base>
-void actions::rogue_action_t<Base>::trigger_fate_intertwined( const action_state_t* state )
-{
-  if ( !p()->talent.fatebound.fate_intertwined->ok() )
-    return;
-
-  if ( state->result != RESULT_CRIT )
-    return;
-
-  const double multiplier = p()->talent.fatebound.fate_intertwined->effectN( 1 ).percent();
-  p()->active.fatebound.fate_intertwined->trigger_residual_action( state, multiplier );
 }
 
 template <typename Base>
@@ -8214,8 +8042,6 @@ bool actions::rogue_action_t<Base>::trigger_deathstalkers_mark_debuff( const act
 
   debuff = p()->get_target_data( state->target )->debuffs.deathstalkers_mark;
   debuff->trigger( stacks );
-
-  p()->buffs.clear_the_witnesses->trigger();
 
   return true;
 }
@@ -8906,6 +8732,7 @@ action_t* rogue_t::create_action( util::string_view name, util::string_view opti
   if ( name == "mutilate"               ) return new mutilate_t               ( name, this, options_str );
   if ( name == "pistol_shot"            ) return new pistol_shot_t            ( name, this, options_str );
   if ( name == "poisoned_knife"         ) return new poisoned_knife_t         ( name, this, options_str );
+  if ( name == "preparation"            ) return new preparation_t            ( name, this, options_str );
   if ( name == "roll_the_bones"         ) return new roll_the_bones_t         ( name, this, options_str );
   if ( name == "rupture"                ) return new rupture_t                ( name, this, spec.rupture, options_str );
   if ( name == "secret_technique"       ) return new secret_technique_t       ( name, this, options_str );
@@ -9548,6 +9375,15 @@ void rogue_t::init_spells()
   talent.outlaw.hidden_opportunity = find_talent_spell( talent_tree::SPECIALIZATION, "Hidden Opportunity" );
   talent.outlaw.keep_it_rolling = find_talent_spell( talent_tree::SPECIALIZATION, "Keep it Rolling" );
 
+  talent.outlaw.crescendo_of_violence = find_talent_spell( talent_tree::SPECIALIZATION, "Crescendo of Violence" );
+  talent.outlaw.preparation = find_talent_spell( talent_tree::SPECIALIZATION, "Preparation" );
+  talent.outlaw.fast_action = find_talent_spell( talent_tree::SPECIALIZATION, "Fast Action" );
+  talent.outlaw.dragon_bone_dice = find_talent_spell( talent_tree::SPECIALIZATION, "Dragon-Bone Dice" );
+  talent.outlaw.expert_duelist = find_talent_spell( talent_tree::SPECIALIZATION, "Expert Duelist" );
+  talent.outlaw.flickering_steel = find_talent_spell( talent_tree::SPECIALIZATION, "Flickering Steel" );
+  talent.outlaw.find_an_opening = find_talent_spell( talent_tree::SPECIALIZATION, "Find an Opening" );
+  talent.outlaw.heightened_rush = find_talent_spell( talent_tree::SPECIALIZATION, "Heightened Rush" );
+
   // Subtlety Talents
   talent.subtlety.find_weakness = find_talent_spell( talent_tree::SPECIALIZATION, "Find Weakness" );
 
@@ -9688,8 +9524,6 @@ void rogue_t::init_spells()
 
   // Hero Talent Background Spells
   // Deathstalker
-  spell.clear_the_witnesses_buff = talent.deathstalker.clear_the_witnesses->ok() ? find_spell( 457178 ) : spell_data_t::not_found();
-  spell.clear_the_witnesses_damage = talent.deathstalker.clear_the_witnesses->ok() ? find_spell( 457179 ) : spell_data_t::not_found();
   spell.darkest_night_buff = talent.deathstalker.darkest_night->ok() ? find_spell( 457280 ) : spell_data_t::not_found();
   spell.deathstalkers_mark_buff = talent.deathstalker.deathstalkers_mark->ok() ? find_spell( 457160 ) : spell_data_t::not_found();
   spell.deathstalkers_mark_damage = talent.deathstalker.deathstalkers_mark->ok() ? find_spell( 457157 ) : spell_data_t::not_found();
@@ -9709,7 +9543,6 @@ void rogue_t::init_spells()
   spell.fatebound_coin_tails = talent.fatebound.hand_of_fate->ok() ? find_spell( 452538 ) : spell_data_t::not_found();
   spell.fatebound_lucky_coin_buff = spell_data_t::not_found(); // TODO Lucky Coin
   spell.fatebound_lucky_coin_damage = spell_data_t::not_found(); // TODO Lucky Coin
-  spell.fatebound_fate_intertwined = talent.fatebound.fate_intertwined->ok() ? find_spell( 456306 ) : spell_data_t::not_found();
 
   // Trickster
   spell.cloud_cover_distract = talent.trickster.cloud_cover->ok() ? find_spell( as<unsigned>( talent.trickster.cloud_cover->effectN( 1 ).base_value() ) ) : spell_data_t::not_found();
@@ -9762,15 +9595,15 @@ void rogue_t::init_spells()
     ( talent.outlaw.deft_maneuvers->ok() ? find_spell( 429951 ) : find_spell( 331850 ) ) : spell_data_t::not_found();
   spec.blade_rush_attack = talent.outlaw.blade_rush->ok() ? find_spell( 271881 ) : spell_data_t::not_found();
   spec.blade_rush_energize = talent.outlaw.blade_rush->ok() ? find_spell( 271896 ) : spell_data_t::not_found();
-  spec.hidden_opportunity_extra_attack = talent.outlaw.hidden_opportunity->ok() ? find_spell( 385897 ) : spell_data_t::not_found();
+  spec.flickering_steel_energize = talent.outlaw.flickering_steel->ok() ? find_spell( 1259493 ) : spell_data_t::not_found();
   spec.improved_adrenaline_rush_energize = talent.outlaw.improved_adrenaline_rush->ok() ? find_spell( 395424 ) : spell_data_t::not_found();
   // TOCHECK -- Killing Spree spell ids could change over 11.2 PTR, new spell 1248604 exists but not used in logs yet
   spec.killing_spree_mh_attack = talent.outlaw.killing_spree->ok() ? find_spell( 57841 ) : spell_data_t::not_found();
   spec.killing_spree_oh_attack = talent.outlaw.killing_spree->ok() ? find_spell( 57842 ) : spell_data_t::not_found();
   spec.killing_spree_energize = talent.outlaw.killing_spree->ok() ? find_spell( 1235074 ) : spell_data_t::not_found();
   spec.opportunity_buff = talent.outlaw.opportunity->ok() ? find_spell( 195627 ) : spell_data_t::not_found();
+  spec.quick_draw_energize = talent.outlaw.quick_draw->ok() ? find_spell( 1254567 ) : spell_data_t::not_found();
   spec.sinister_strike_extra_attack = talent.outlaw.opportunity->ok() ? find_spell( 197834 ) : spell_data_t::not_found();
-  spec.summarily_dispatched_buff = talent.outlaw.summarily_dispatched->ok() ? find_spell( 386868 ) : spell_data_t::not_found();
   spec.ace_up_your_sleeve_energize = talent.outlaw.ace_up_your_sleeve->ok() ? find_spell( 394120 ) : spell_data_t::not_found();
 
   spec.one_of_a_kind = spec.roll_the_bones->ok() ? find_spell( 1214933 ) : spell_data_t::not_found();
@@ -9838,6 +9671,9 @@ void rogue_t::init_spells()
 
   // Extra CP from improved ambush is reported separatedly and manually handled within the action
   deregister_passive_spell( talent.rogue.improved_ambush );
+
+  // Summarily Dispatched effect 2 needs special handling due to the dynamic modifier from Between the Eyes
+  register_passive_effect_mask( talent.outlaw.summarily_dispatched, effect_mask_t( false ).enable( 2 ) );
 
   // Corrupt the blood effects are exclusive per spec
   register_passive_effect_mask( talent.deathstalker.corrupt_the_blood, specialization() == ROGUE_ASSASSINATION ?
@@ -9969,15 +9805,6 @@ void rogue_t::init_spells()
   }
 
   // Deathstalker
-  if ( talent.deathstalker.clear_the_witnesses->ok() )
-  {
-    active.deathstalker.clear_the_witnesses = get_background_action<actions::clear_the_witnesses_t>( "clear_the_witnesses" );
-    if ( talent.subtlety.shuriken_tornado->ok() )
-    {
-      active.deathstalker.clear_the_witnesses_tornado = get_background_action<actions::clear_the_witnesses_t>( "clear_the_witnesses_tornado" );
-    }
-  }
-
   if ( talent.deathstalker.deathstalkers_mark->ok() )
   {
     active.deathstalker.deathstalkers_mark = get_background_action<actions::deathstalkers_mark_t>( "deathstalkers_mark" );
@@ -10010,11 +9837,6 @@ void rogue_t::init_spells()
 
     // Stats wrapper to group these for reporting purposes
     get_background_action<actions::hand_of_fate_t>( "hand_of_fate" );
-  }
-
-  if ( talent.fatebound.fate_intertwined->ok() )
-  {
-    active.fatebound.fate_intertwined = get_background_action<actions::fate_intertwined_t>( "fate_intertwined" );
   }
 
   // Trickster
@@ -10058,9 +9880,9 @@ void rogue_t::init_gains()
   gains.deal_fate                       = get_gain( "Deal Fate" );
   gains.energy_refund                   = get_gain( "Energy Refund" );
   gains.fatal_flourish                  = get_gain( "Fatal Flourish" );
+  gains.flickering_steel                = get_gain( "Flickering Steel" );
   gains.implacable                      = get_gain( "Implacable" );
   gains.improved_adrenaline_rush        = get_gain( "Improved Adrenaline Rush" );
-  gains.improved_adrenaline_rush_expiry = get_gain( "Improved Adrenaline Rush (Expiry)" );
   gains.improved_ambush                 = get_gain( "Improved Ambush" );
   gains.killing_spree                   = get_gain( "Killing Spree" );
   gains.master_of_shadows               = get_gain( "Master of Shadows" );
@@ -10234,11 +10056,6 @@ void rogue_t::create_buffs()
   buffs.opportunity = make_buff( this, "opportunity", spec.opportunity_buff )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
 
-  buffs.summarily_dispatched = make_buff<damage_buff_t>( this, "summarily_dispatched", spec.summarily_dispatched_buff );
-  buffs.summarily_dispatched
-    ->set_duration( timespan_t::from_seconds( talent.outlaw.summarily_dispatched->effectN( 3 ).base_value() ) )
-    ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
-
   // Roll the Bones Buffs
   buffs.one_of_a_kind = make_buff( this, "one_of_a_kind", spec.one_of_a_kind );
   buffs.double_trouble = make_buff<damage_buff_t>( this, "double_trouble", spec.double_trouble );
@@ -10298,8 +10115,6 @@ void rogue_t::create_buffs()
 
   // Hero
   // Deathstalker
-
-  buffs.clear_the_witnesses = make_buff( this, "clear_the_witnesses", spell.clear_the_witnesses_buff );
 
   buffs.darkest_night = make_buff( this, "darkest_night", spell.darkest_night_buff );
 
