@@ -3213,6 +3213,37 @@ struct student_of_suffering_trigger_t : public BASE
   }
 };
 
+template <typename BASE>
+struct otherworldly_focus_benefit_t : public BASE
+{
+  using base_t = otherworldly_focus_benefit_t<BASE>;
+
+  otherworldly_focus_benefit_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                                  util::string_view o = {} )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = BASE::composite_da_multiplier( s );
+
+    if ( BASE::p()->talent.annihilator.otherworldly_focus->ok() )
+    {
+      // 1 target is always effect 1 %
+      // 2 target is effect 1 % - effect 2 %
+      // 3 target is effect 1 % - (effect 2 % * 2)
+      // etc until reaching 0 benefit
+      auto num_target_reduction_percent =
+          BASE::p()->talent.annihilator.otherworldly_focus->effectN( 2 ).percent() * ( std::max(std::min( s->n_targets - 1, 10U ), 0U) );
+      m *= 1.0 + std::max( 0.0, BASE::p()->talent.annihilator.otherworldly_focus->effectN( 1 ).percent() -
+                                    num_target_reduction_percent );
+    }
+
+    return m;
+  }
+};
+
 struct demon_hunter_heal_t : public demon_hunter_action_t<heal_t>
 {
   demon_hunter_heal_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
@@ -5177,7 +5208,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
 
 struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
 {
-  struct spirit_bomb_damage_t : public dark_matter_trigger_t<demon_hunter_spell_t>
+  struct spirit_bomb_damage_t : public otherworldly_focus_benefit_t<dark_matter_trigger_t<demon_hunter_spell_t>>
   {
     spirit_bomb_damage_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spec.spirit_bomb_damage )
     {
@@ -5195,25 +5226,6 @@ struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
       {
         td( s->target )->debuffs.frailty->trigger();
       }
-    }
-
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double m = base_t::composite_da_multiplier( s );
-
-      if ( p()->talent.annihilator.otherworldly_focus->ok() )
-      {
-        // 1 target is always effect 1 %
-        // 2 target is effect 1 % - effect 2 %
-        // 3 target is effect 1 % - (effect 2 % * 2)
-        // etc until reaching 0 benefit
-        auto num_target_reduction_percent =
-            p()->talent.annihilator.otherworldly_focus->effectN( 2 ).percent() * ( s->n_targets - 1 );
-        m *= 1.0 + std::max( 0.0, p()->talent.annihilator.otherworldly_focus->effectN( 1 ).percent() -
-                                      num_target_reduction_percent );
-      }
-
-      return m;
     }
   };
 
@@ -6222,7 +6234,7 @@ struct void_ray_t
 
 struct collapsing_star_t : public demon_hunter_spell_t
 {
-  struct collapsing_star_damage_t : public dark_matter_trigger_t<demon_hunter_spell_t>
+  struct collapsing_star_damage_t : public otherworldly_focus_benefit_t<dark_matter_trigger_t<demon_hunter_spell_t>>
   {
     collapsing_star_damage_t( std::string_view n, demon_hunter_t* p ) : base_t( n, p, p->spec.collapsing_star_damage )
     {
@@ -6250,18 +6262,6 @@ struct collapsing_star_t : public demon_hunter_spell_t
       if ( s->chain_target == 0 )
       {
         m *= 1.0 + p()->spec.collapsing_star_spell->effectN( 2 ).percent();
-      }
-
-      if ( p()->talent.annihilator.otherworldly_focus->ok() )
-      {
-        // 1 target is always effect 1 %
-        // 2 target is effect 1 % - effect 2 %
-        // 3 target is effect 1 % - (effect 2 % * 2)
-        // etc until reaching 0 benefit
-        auto num_target_reduction_percent =
-            p()->talent.annihilator.otherworldly_focus->effectN( 2 ).percent() * ( s->n_targets - 1 );
-        m *= 1.0 + std::max( 0.0, p()->talent.annihilator.otherworldly_focus->effectN( 1 ).percent() -
-                                      num_target_reduction_percent );
       }
 
       return m;
@@ -6324,32 +6324,13 @@ struct collapsing_star_t : public demon_hunter_spell_t
 
 struct voidfall_meteor_base_t : public demon_hunter_spell_t
 {
-  struct voidfall_meteor_damage_t : public catastrophe_trigger_t<demon_hunter_spell_t>
+  struct voidfall_meteor_damage_t : public otherworldly_focus_benefit_t<catastrophe_trigger_t<demon_hunter_spell_t>>
   {
     voidfall_meteor_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : base_t( n, p, s )
     {
       background = dual   = true;
       aoe                 = -1;
       reduced_aoe_targets = p->talent.annihilator.voidfall->effectN( 2 ).base_value();
-    }
-
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double m = base_t::composite_da_multiplier( s );
-
-      if ( p()->talent.annihilator.otherworldly_focus->ok() )
-      {
-        // 1 target is always effect 1 %
-        // 2 target is effect 1 % - effect 2 %
-        // 3 target is effect 1 % - (effect 2 % * 2)
-        // etc until reaching 0 benefit
-        auto num_target_reduction_percent =
-            p()->talent.annihilator.otherworldly_focus->effectN( 2 ).percent() * ( s->n_targets - 1 );
-        m *= 1.0 + std::max( 0.0, p()->talent.annihilator.otherworldly_focus->effectN( 1 ).percent() -
-                                      num_target_reduction_percent );
-      }
-
-      return m;
     }
   };
 
@@ -6412,12 +6393,17 @@ struct catastrophe_t : public residual_action::residual_periodic_action_t<demon_
 
 struct meteor_shower_t : public demon_hunter_spell_t
 {
-  struct meteor_shower_damage_t : public catastrophe_trigger_t<demon_hunter_spell_t>
+  struct meteor_shower_damage_t : public otherworldly_focus_benefit_t<catastrophe_trigger_t<demon_hunter_spell_t>>
   {
     meteor_shower_damage_t( util::string_view n, demon_hunter_t* p ) : base_t( n, p, p->hero_spec.meteor_shower_damage )
     {
       background = dual = true;
       aoe               = -1;
+    }
+
+    void execute() override
+    {
+      base_t::execute();
     }
   };
 
