@@ -169,7 +169,7 @@ parsed_assisted_combat_rule_t monk_t::parse_assisted_combat_rule( const assisted
     return { base_t::parse_assisted_combat_rule( rule_copy, step ), "Extended range check to 10 yards (from 5)." };
   }
 
-  if ( step.spell_id == 100780 && rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 116768 &&
+  if ( step.spell_id == 100784 && rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 116768 &&
        rule.condition_value_2 == 0 && rule.condition_value_3 == 0 )
     return {
         "buff.combo_breaker.up",
