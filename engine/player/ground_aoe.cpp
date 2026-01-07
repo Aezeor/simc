@@ -213,10 +213,17 @@ void ground_aoe_event_t::execute()
                        pulse_time( false ).total_seconds() );
   }
 
+  // Compute nd initialize number of targets hit for amount multipliers based on it
+  std::vector<player_t*>& tl = spell_->target_list();
+  const int max_targets = as<int>( tl.size() );
+  auto num_targets = spell_->n_targets();
+  num_targets = ( num_targets < 0 ) ? max_targets : std::min( max_targets, num_targets );
+
   // Manually snapshot the state so we can adjust the x and y coordinates of the snapshotted
   // object. This is relevant if sim -> distance_targeting_enabled is set, since then we need to
   // use the ground object's x, y coordinates, instead of the source actor's.
   pulse_state->target = params->target();
+  pulse_state->n_targets = as<unsigned>( num_targets );
   pulse_state->original_x = params->x();
   pulse_state->original_y = params->y();
   spell_->update_state( pulse_state, spell_->amount_type( pulse_state ) );
