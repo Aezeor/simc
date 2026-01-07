@@ -178,7 +178,7 @@ parsed_assisted_combat_rule_t monk_t::parse_assisted_combat_rule( const assisted
 
   if ( step.spell_id == 100780 && rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_1 == 261916 &&
        rule.condition_value_2 == 0 && rule.condition_value_3 == 0 )
-    return { "1", "Checks for Blackout Kick Rank 2 being known, which is assumed to be true.", true };
+    return { "level>=17", "Checks for Blackout Kick Rank 2 being known, which is learned at level 17.", true };
 
   if ( rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_2 == 0 && rule.condition_value_3 == 0 )
   {
