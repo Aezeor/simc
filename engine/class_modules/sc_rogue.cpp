@@ -245,6 +245,10 @@ class rogue_t : public player_t
   double rogue_ready_trigger_threshold;
 
 public:
+
+  // Deadly Pursuit CDR list
+  std::vector<cooldown_t*> deadly_pursuit_cooldowns;
+
   // Shadow Techniques swing counter;
   unsigned shadow_techniques_counter;
 
@@ -332,6 +336,9 @@ public:
     buff_t* between_the_eyes;
     buffs::rogue_buff_t* blade_flurry;
     buff_t* blade_rush;
+    buff_t* deadly_pursuit;
+    buff_t* deadly_pursuit_cdr;
+    buff_t* deadly_pursuit_tracker;
     buff_t* opportunity;
     buff_t* roll_the_bones;
     // Roll the bones buffs
@@ -386,9 +393,12 @@ public:
 
     // Outlaw
     buff_t* audacity;
+    buff_t* gravedigger;
     buff_t* killing_spree;
     buff_t* loaded_dice;
+    buff_t* palmed_bullets;
     buffs::rogue_buff_t* slice_and_dice;
+    damage_buff_t* zero_in;
 
     // Subtlety
     damage_buff_t* danse_macabre;
@@ -479,6 +489,7 @@ public:
 
     // CP Gains
     gain_t* ace_up_your_sleeve;
+    gain_t* gravedigger;
     gain_t* improved_adrenaline_rush;
     gain_t* improved_ambush;
     gain_t* killing_spree;
@@ -589,6 +600,7 @@ public:
     double dashing_scoundrel_gain = 0.0;
     const spell_data_t* deadly_momentum_buff;
     const spell_data_t* deadly_poison_instant;
+    const spell_data_t* doomblade_debuff;
     const spell_data_t* finish_the_job_buff;
     const spell_data_t* improved_garrote_buff;
     const spell_data_t* implacable_buff;
@@ -623,15 +635,21 @@ public:
     const spell_data_t* blade_flurry_instant_attack;
     const spell_data_t* blade_rush_attack;
     const spell_data_t* blade_rush_energize;
-    const spell_data_t* doomblade_debuff;
+    const spell_data_t* deadly_pursuit_buff;
+    const spell_data_t* deadly_pursuit_cdr_buff;
     const spell_data_t* flickering_steel_energize;
+    const spell_data_t* gravedigger_buff;
+    const spell_data_t* gravedigger_energize;
     const spell_data_t* improved_adrenaline_rush_energize;
     const spell_data_t* killing_spree_mh_attack;
     const spell_data_t* killing_spree_oh_attack;
     const spell_data_t* killing_spree_energize;
     const spell_data_t* opportunity_buff;
+    const spell_data_t* palmed_bullets_buff;
     const spell_data_t* quick_draw_energize;
+    const spell_data_t* scoundrel_strike_attack;
     const spell_data_t* sinister_strike_extra_attack;  
+    const spell_data_t* zero_in_buff;
 
     const spell_data_t* one_of_a_kind;
     const spell_data_t* double_trouble;
@@ -863,6 +881,13 @@ public:
       player_talent_t flickering_steel;
       player_talent_t find_an_opening;
       player_talent_t heightened_rush;
+      player_talent_t deadly_pursuit;
+      player_talent_t menacing_rush;
+      player_talent_t zero_in;
+
+      player_talent_t gravedigger_1;
+      player_talent_t gravedigger_2;
+      player_talent_t gravedigger_3;
 
     } outlaw;
 
@@ -1541,6 +1566,7 @@ public:
     bool darkest_night = false;         // Damage
     bool darkest_night_crit = false;    // Crit%
     bool dashing_scoundrel = false;
+    bool deadly_pursuit = false;        // Cooldown Reduction
     bool deathmark = false;
     bool deepening_shadows = false;     // Trigger
     bool fazed_damage = false;
@@ -1550,6 +1576,8 @@ public:
     bool improved_ambush = false;
     bool lethal_dose = false;
     bool maim_mangle = false;           // Renamed Systemic Failure for DF talent
+    bool menacing_rush = false;
+    bool menacing_rush_label = false;
     bool momentum_of_despair = false;   // Crit Damage Multiplier
     bool planned_execution = false;     // Crit Damage Multiplier
     bool relentless_strikes = false;    // Trigger
@@ -1670,6 +1698,14 @@ public:
 
     affected_by.summarily_dispatched = ab::data().affected_by( p->talent.outlaw.summarily_dispatched->effectN( 2 ) );
 
+    affected_by.deadly_pursuit = ab::data().affected_by( p->spec.deadly_pursuit_cdr_buff->effectN( 2 ) );
+
+    if ( p->talent.outlaw.menacing_rush->ok() )
+    {
+      affected_by.menacing_rush = ab::data().affected_by( p->talent.outlaw.adrenaline_rush->effectN( 4 ) );
+      affected_by.menacing_rush_label = ab::data().affected_by_label( p->talent.outlaw.adrenaline_rush->effectN( 5 ) );
+    }
+
     // Subtlety
     affected_by.shadow_blades_cp = ( ab::data().affected_by( p->talent.subtlety.shadow_blades->effectN( 2 ) ) ||
                                      ab::data().affected_by( p->talent.subtlety.shadow_blades->effectN( 3 ) ) ||
@@ -1727,6 +1763,14 @@ public:
       perforated_veins_consumed_proc = p()->get_proc( "Perforated Veins " + ab::name_str );
     }
 
+    if ( affected_by.deadly_pursuit && ab::cooldown && ab::cooldown->action == this )
+    {
+      if ( !range::contains( p()->deadly_pursuit_cooldowns, ab::cooldown ) )
+      {
+        p()->deadly_pursuit_cooldowns.emplace_back( ab::cooldown );
+      }
+    }
+
     auto register_damage_buff = [ this ]( damage_buff_t* buff ) {
       if ( buff->is_affecting_direct( ab::s_data ) )
         direct_damage_buffs.push_back( buff );
@@ -1759,6 +1803,7 @@ public:
     register_damage_buff( p()->buffs.shadow_dance );
     register_damage_buff( p()->buffs.symbolic_victory );
     register_damage_buff( p()->buffs.the_rotten );
+    register_damage_buff( p()->buffs.zero_in );
 
     register_damage_buff( p()->buffs.double_trouble );
     register_damage_buff( p()->buffs.triple_threat );
@@ -2193,6 +2238,18 @@ public:
     return t;
   }
 
+  double recharge_rate_multiplier( const cooldown_t& cd ) const override
+  {
+    double m = ab::recharge_rate_multiplier( cd );
+
+    if ( affected_by.deadly_pursuit && p()->buffs.deadly_pursuit_cdr->check() && ab::cooldown == &cd )
+    {
+      m /= 1.0 + p()->spec.deadly_pursuit_cdr_buff->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
   virtual double combo_point_da_multiplier( const action_state_t* s ) const
   {
     if ( ab::base_costs[ RESOURCE_COMBO_POINT ] )
@@ -2228,6 +2285,17 @@ public:
     {
       m *= 1.0 + ( p()->talent.assassination.lethal_dose->effectN( 1 ).percent() *
                    td( state->target )->lethal_dose_count() );
+    }
+
+    // Menacing Rush
+    if ( affected_by.menacing_rush && p()->buffs.adrenaline_rush->check() )
+    {
+      m *= p()->talent.outlaw.adrenaline_rush->effectN( 4 ).percent();
+    }
+
+    if ( affected_by.menacing_rush_label && p()->buffs.adrenaline_rush->check() )
+    {
+      m *= p()->talent.outlaw.adrenaline_rush->effectN( 5 ).percent();
     }
 
     // Summarily Dispatched
@@ -3221,6 +3289,11 @@ struct melee_t : public rogue_attack_t
         p()->active.deathstalker.hunt_them_down->execute_on_target( state->target );
       }
     }
+
+    if ( p()->talent.outlaw.zero_in->ok() && state->result == RESULT_CRIT )
+    {
+      p()->buffs.zero_in->trigger();
+    }
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -3499,9 +3572,25 @@ struct backstab_t : public rogue_attack_t
 
 struct dispatch_t: public rogue_attack_t
 {
-  dispatch_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_attack_t( name, p, p->spec.dispatch, options_str )
+  struct scoundrel_strike_t : public rogue_attack_t
   {
+    scoundrel_strike_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p->spec.scoundrel_strike_attack )
+    {
+    }
+  };
+
+  scoundrel_strike_t* scoundrel_strike;
+
+  dispatch_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
+    rogue_attack_t( name, p, p->spec.dispatch, options_str ),
+    scoundrel_strike( nullptr )
+  {
+    if ( p->talent.outlaw.gravedigger_2->ok() )
+    {
+      scoundrel_strike = p->get_background_action<scoundrel_strike_t>( "scoundrel_strike" );
+      add_child( scoundrel_strike );
+    }
   }
 
   void execute() override
@@ -3516,6 +3605,17 @@ struct dispatch_t: public rogue_attack_t
     }
 
     trigger_cut_to_the_chase( execute_state );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    // MIDNIGHT TOCHECK -- Does this use Supercharger CP?
+    if ( scoundrel_strike && cast_state( state )->get_combo_points() >= p()->talent.outlaw.gravedigger_2->effectN( 1 ).base_value() )
+    {
+      scoundrel_strike->execute_on_target( state->target );
+    }
   }
 
   bool ready() override
@@ -3544,6 +3644,15 @@ struct between_the_eyes_t : public rogue_attack_t
     ap_type = attack_power_type::WEAPON_BOTH;
   }
 
+  double cost_pct_multiplier() const override
+  {
+    double c = rogue_attack_t::cost_pct_multiplier();
+
+    c *= 1.0 + p()->buffs.gravedigger->check_value();
+
+    return c;
+  }
+
   void execute() override
   {
     rogue_attack_t::execute();
@@ -3559,6 +3668,11 @@ struct between_the_eyes_t : public rogue_attack_t
       // 2026-01-04 -- Updated from 3x CP spend to 2s base + 2s per CP
       p()->buffs.between_the_eyes->trigger( data().duration() * ( cp_spend + 1 ) );
 
+      if ( p()->talent.outlaw.gravedigger_1->ok() && rng().roll( p()->talent.outlaw.gravedigger_1->effectN( 1 ).percent() ) )
+      {
+        p()->buffs.between_the_eyes->trigger( data().duration() * ( cp_spend + 1 ) );
+      }
+
       if ( p()->talent.outlaw.ace_up_your_sleeve->ok() )
       {
         if ( rng().roll( p()->talent.outlaw.ace_up_your_sleeve->effectN( 1 ).percent() * cp_spend ) )
@@ -3568,7 +3682,17 @@ struct between_the_eyes_t : public rogue_attack_t
           p()->cooldowns.between_the_eyes->reset( true );
         }
       }
+
+      if ( p()->buffs.gravedigger->up() )
+      {
+        trigger_combo_point_gain( as<int>( p()->spec.gravedigger_energize->effectN( 1 ).base_value() ),
+                                  p()->gains.gravedigger );
+        p()->cooldowns.between_the_eyes->reset( false );
+      }
     }
+
+    p()->buffs.zero_in->expire();
+    p()->buffs.gravedigger->expire();
   }
 
   bool procs_poison() const override
@@ -7083,8 +7207,9 @@ struct roll_the_bones_t : public buff_t
       // Loaded Dice appears to increase the rolled tier by one
       // Sleight of Hand is currently TBD, thought to mean a 20% increased chance to be elevated currently
       rogue->options.fixed_rtb_odds = { 50.0, 40.0, 9.0, 1.0 };
-      rogue->sim->print_log( "{} {} odds set to {:.1f}% one, {:.1f}% two and {:.1f}% five buffs",
-                             *rogue, *this, rogue->options.fixed_rtb_odds[ 0 ], rogue->options.fixed_rtb_odds[ 1 ], rogue->options.fixed_rtb_odds[ 4 ] );
+      rogue->sim->print_log( "{} {} odds set to {:.1f}% / {:.1f}% / {:.1f}% / {:.1f}% buffs",
+                             *rogue, *this, rogue->options.fixed_rtb_odds[ 0 ], rogue->options.fixed_rtb_odds[ 1 ],
+                             rogue->options.fixed_rtb_odds[ 2 ], rogue->options.fixed_rtb_odds[ 3 ] );
     }
 
     if ( !rogue->options.fixed_rtb_odds.empty() )
@@ -7265,6 +7390,18 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
        p()->rng().roll( p()->talent.assassination.deadly_momentum->effectN( 1 ).percent() * rs->get_combo_points() ) )
   {
     p()->buffs.deadly_momentum->trigger();
+  }
+
+  // MIDNIGHT TOCHECK -- Does this use Supercharger CP?
+  //                     Double check what happens when you spend when the initial 4s timer is active, if it refreshes or is lost.
+  //                     Does CP spend that cancels an existing buff count towards the new counter?
+  if ( p()->talent.outlaw.deadly_pursuit->ok() )
+  {
+    p()->buffs.deadly_pursuit_cdr->expire();
+    if ( p()->buffs.deadly_pursuit->check() )
+      p()->buffs.deadly_pursuit->refresh();
+    else
+      p()->buffs.deadly_pursuit_tracker->trigger( as<int>( max_spend ) );
   }
 }
 
@@ -9214,66 +9351,55 @@ void rogue_t::init_spells()
   mastery.executioner = find_mastery_spell( ROGUE_SUBTLETY );
 
   // Class Talents
-  talent.rogue.shiv = find_talent_spell( talent_tree::CLASS, "Shiv" );
-  talent.rogue.blind = find_talent_spell( talent_tree::CLASS, "Blind" );
-  talent.rogue.cloak_of_shadows = find_talent_spell( talent_tree::CLASS, "Cloak of Shadows" );
-
-  talent.rogue.evasion = find_talent_spell( talent_tree::CLASS, "Evasion" );
-  talent.rogue.gouge = find_talent_spell( talent_tree::CLASS, "Gouge" );
   talent.rogue.airborne_irritant = find_talent_spell( talent_tree::CLASS, "Airborne Irritant" );
-  talent.rogue.thrill_seeking = find_talent_spell( talent_tree::CLASS, "Thrill Seeking" );
-
-  talent.rogue.master_poisoner = find_talent_spell( talent_tree::CLASS, "Master Poisoner" );
-  talent.rogue.cheat_death = find_talent_spell( talent_tree::CLASS, "Cheat Death" );
-  talent.rogue.elusiveness = find_talent_spell( talent_tree::CLASS, "Elusiveness" );
-  talent.rogue.tricks_of_the_trade = find_talent_spell( talent_tree::CLASS, "Tricks of the Trade" );
-  talent.rogue.blackjack = find_talent_spell( talent_tree::CLASS, "Blackjack" );
-
-  talent.rogue.improved_wound_poison = find_talent_spell( talent_tree::CLASS, "Improved Wound Poison" );
-  talent.rogue.nimble_fingers = find_talent_spell( talent_tree::CLASS, "Nimble Fingers" );
-  talent.rogue.improved_sprint = find_talent_spell( talent_tree::CLASS, "Improved Sprint" );
-  talent.rogue.shadowrunner = find_talent_spell( talent_tree::CLASS, "Shadowrunner" );
-
-  talent.rogue.superior_mixture = find_talent_spell( talent_tree::CLASS, "Superior Mixture" );
-  talent.rogue.fleet_footed = find_talent_spell( talent_tree::CLASS, "Fleet Footed" );
-  talent.rogue.iron_stomach = find_talent_spell( talent_tree::CLASS, "Iron Stomach" );
-  talent.rogue.unbreakable_stride = find_talent_spell( talent_tree::CLASS, "Unbreakable Stride" );
-  talent.rogue.featherfoot = find_talent_spell( talent_tree::CLASS, "Featherfoot" );
-  
-  talent.rogue.numbing_poison = find_talent_spell( talent_tree::CLASS, "Numbing Poison" );
-  talent.rogue.atrophic_poison = find_talent_spell( talent_tree::CLASS, "Atrophic Poison" );
-  talent.rogue.deadened_nerves = find_talent_spell( talent_tree::CLASS, "Deadened Nerves" );
-  talent.rogue.graceful_guile = find_talent_spell( talent_tree::CLASS, "Graceful Guile" );
-  talent.rogue.stillshroud = find_talent_spell( talent_tree::CLASS, "Stillshroud" );
-
-  talent.rogue.deadly_precision = find_talent_spell( talent_tree::CLASS, "Deadly Precision" );
-  talent.rogue.virulent_poisons = find_talent_spell( talent_tree::CLASS, "Virulent Poisons" );
-  talent.rogue.improved_ambush = find_talent_spell( talent_tree::CLASS, "Improved Ambush" );
-  talent.rogue.tight_spender = find_talent_spell( talent_tree::CLASS, "Tight Spender" );
-
-  talent.rogue.leeching_poison = find_talent_spell( talent_tree::CLASS, "Leeching Poison" );
-  talent.rogue.lethality = find_talent_spell( talent_tree::CLASS, "Lethality" );
-  talent.rogue.recuperator = find_talent_spell( talent_tree::CLASS, "Recuperator" );
   talent.rogue.alacrity = find_talent_spell( talent_tree::CLASS, "Alacrity" );
-  talent.rogue.soothing_darkness = find_talent_spell( talent_tree::CLASS, "Soothing Darkness" );
-
-  talent.rogue.swift_slasher = find_talent_spell( talent_tree::CLASS, "Swift Slasher" );
-
-  talent.rogue.vigor = find_talent_spell( talent_tree::CLASS, "Vigor" );
-  talent.rogue.supercharger = find_talent_spell( talent_tree::CLASS, "Supercharger" );
-  talent.rogue.subterfuge = find_talent_spell( talent_tree::CLASS, "Subterfuge" );
-
-  talent.rogue.thistle_tea = find_talent_spell( talent_tree::CLASS, "Thistle Tea" );
-  talent.rogue.echoing_reprimand = find_talent_spell( talent_tree::CLASS, "Echoing Reprimand" );
-  talent.rogue.forced_induction = find_talent_spell( talent_tree::CLASS, "Forced Induction" );
-  talent.rogue.deeper_stratagem = find_talent_spell( talent_tree::CLASS, "Deeper Stratagem" );
-  talent.rogue.without_a_trace = find_talent_spell( talent_tree::CLASS, "Without a Trace" );
-
+  talent.rogue.atrophic_poison = find_talent_spell( talent_tree::CLASS, "Atrophic Poison" );
+  talent.rogue.blackjack = find_talent_spell( talent_tree::CLASS, "Blackjack" );
+  talent.rogue.blind = find_talent_spell( talent_tree::CLASS, "Blind" );
+  talent.rogue.cheat_death = find_talent_spell( talent_tree::CLASS, "Cheat Death" );
+  talent.rogue.cloak_of_shadows = find_talent_spell( talent_tree::CLASS, "Cloak of Shadows" );
   talent.rogue.cold_blooded_killer = find_talent_spell( talent_tree::CLASS, "Cold Blooded Killer" );
   talent.rogue.danger_sense = find_talent_spell( talent_tree::CLASS, "Danger Sense" );
+  talent.rogue.deadened_nerves = find_talent_spell( talent_tree::CLASS, "Deadened Nerves" );
+  talent.rogue.deadly_precision = find_talent_spell( talent_tree::CLASS, "Deadly Precision" );
   talent.rogue.deep_cuts = find_talent_spell( talent_tree::CLASS, "Deep Cuts" );
+  talent.rogue.deeper_stratagem = find_talent_spell( talent_tree::CLASS, "Deeper Stratagem" );
+  talent.rogue.echoing_reprimand = find_talent_spell( talent_tree::CLASS, "Echoing Reprimand" );
+  talent.rogue.elusiveness = find_talent_spell( talent_tree::CLASS, "Elusiveness" );
+  talent.rogue.evasion = find_talent_spell( talent_tree::CLASS, "Evasion" );
+  talent.rogue.featherfoot = find_talent_spell( talent_tree::CLASS, "Featherfoot" );
+  talent.rogue.fleet_footed = find_talent_spell( talent_tree::CLASS, "Fleet Footed" );
+  talent.rogue.forced_induction = find_talent_spell( talent_tree::CLASS, "Forced Induction" );
+  talent.rogue.gouge = find_talent_spell( talent_tree::CLASS, "Gouge" );
+  talent.rogue.graceful_guile = find_talent_spell( talent_tree::CLASS, "Graceful Guile" );
+  talent.rogue.improved_ambush = find_talent_spell( talent_tree::CLASS, "Improved Ambush" );
+  talent.rogue.improved_sprint = find_talent_spell( talent_tree::CLASS, "Improved Sprint" );
+  talent.rogue.improved_wound_poison = find_talent_spell( talent_tree::CLASS, "Improved Wound Poison" );
+  talent.rogue.iron_stomach = find_talent_spell( talent_tree::CLASS, "Iron Stomach" );
+  talent.rogue.leeching_poison = find_talent_spell( talent_tree::CLASS, "Leeching Poison" );
+  talent.rogue.lethality = find_talent_spell( talent_tree::CLASS, "Lethality" );
+  talent.rogue.master_poisoner = find_talent_spell( talent_tree::CLASS, "Master Poisoner" );
+  talent.rogue.nimble_fingers = find_talent_spell( talent_tree::CLASS, "Nimble Fingers" );
+  talent.rogue.numbing_poison = find_talent_spell( talent_tree::CLASS, "Numbing Poison" );
   talent.rogue.quick_fingers = find_talent_spell( talent_tree::CLASS, "Quick Fingers" );
+  talent.rogue.recuperator = find_talent_spell( talent_tree::CLASS, "Recuperator" );
+  talent.rogue.shadowrunner = find_talent_spell( talent_tree::CLASS, "Shadowrunner" );
+  talent.rogue.shiv = find_talent_spell( talent_tree::CLASS, "Shiv" );
+  talent.rogue.soothing_darkness = find_talent_spell( talent_tree::CLASS, "Soothing Darkness" );
+  talent.rogue.stillshroud = find_talent_spell( talent_tree::CLASS, "Stillshroud" );
+  talent.rogue.subterfuge = find_talent_spell( talent_tree::CLASS, "Subterfuge" );
+  talent.rogue.supercharger = find_talent_spell( talent_tree::CLASS, "Supercharger" );
+  talent.rogue.superior_mixture = find_talent_spell( talent_tree::CLASS, "Superior Mixture" );
+  talent.rogue.swift_slasher = find_talent_spell( talent_tree::CLASS, "Swift Slasher" );
+  talent.rogue.thistle_tea = find_talent_spell( talent_tree::CLASS, "Thistle Tea" );
+  talent.rogue.thrill_seeking = find_talent_spell( talent_tree::CLASS, "Thrill Seeking" );
+  talent.rogue.tight_spender = find_talent_spell( talent_tree::CLASS, "Tight Spender" );
   talent.rogue.toxic_stiletto = find_talent_spell( talent_tree::CLASS, "Toxic Stiletto" );
+  talent.rogue.tricks_of_the_trade = find_talent_spell( talent_tree::CLASS, "Tricks of the Trade" );
+  talent.rogue.unbreakable_stride = find_talent_spell( talent_tree::CLASS, "Unbreakable Stride" );
+  talent.rogue.vigor = find_talent_spell( talent_tree::CLASS, "Vigor" );
+  talent.rogue.virulent_poisons = find_talent_spell( talent_tree::CLASS, "Virulent Poisons" );
+  talent.rogue.without_a_trace = find_talent_spell( talent_tree::CLASS, "Without a Trace" );
 
   // Assassination Talents
   talent.assassination.amplifying_poison = find_talent_spell( talent_tree::SPECIALIZATION, "Amplifying Poison" );
@@ -9322,106 +9448,93 @@ void rogue_t::init_spells()
   talent.assassination.implacable_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1265387 );
 
   // Outlaw Talents
-  talent.outlaw.opportunity = find_talent_spell( talent_tree::SPECIALIZATION, "Opportunity" );
-
+  talent.outlaw.ace_up_your_sleeve = find_talent_spell( talent_tree::SPECIALIZATION, "Ace Up Your Sleeve" );
+  talent.outlaw.acrobatic_strikes = find_talent_spell( talent_tree::SPECIALIZATION, "Acrobatic Strikes" );
   talent.outlaw.adrenaline_rush = find_talent_spell( talent_tree::SPECIALIZATION, "Adrenaline Rush" );
-
-  talent.outlaw.retractable_hook = find_talent_spell( talent_tree::SPECIALIZATION, "Retractable Hook" );
+  talent.outlaw.audacity = find_talent_spell( talent_tree::SPECIALIZATION, "Audacity" );
+  talent.outlaw.blade_rush = find_talent_spell( talent_tree::SPECIALIZATION, "Blade Rush" );
+  talent.outlaw.blinding_powder = find_talent_spell( talent_tree::SPECIALIZATION, "Blinding Powder" );
   talent.outlaw.combat_potency = find_talent_spell( talent_tree::SPECIALIZATION, "Combat Potency" );
   talent.outlaw.combat_stamina = find_talent_spell( talent_tree::SPECIALIZATION, "Combat Stamina" );
-  talent.outlaw.hit_and_run = find_talent_spell( talent_tree::SPECIALIZATION, "Hit and Run" );
-
-  talent.outlaw.blinding_powder = find_talent_spell( talent_tree::SPECIALIZATION, "Blinding Powder" );
-  talent.outlaw.precision_shot = find_talent_spell( talent_tree::SPECIALIZATION, "Precision Shot" );
-
-  talent.outlaw.heavy_hitter = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Hitter" );
-  talent.outlaw.devious_stratagem = find_talent_spell( talent_tree::SPECIALIZATION, "Devious Stratagem" );
-  talent.outlaw.killing_spree = find_talent_spell( talent_tree::SPECIALIZATION, "Killing Spree" );
-  talent.outlaw.fatal_flourish = find_talent_spell( talent_tree::SPECIALIZATION, "Fatal Flourish" );
-  talent.outlaw.quick_draw = find_talent_spell( talent_tree::SPECIALIZATION, "Quick Draw" );
-  talent.outlaw.deft_maneuvers = find_talent_spell( talent_tree::SPECIALIZATION, "Deft Maneuvers" );
-
-  talent.outlaw.acrobatic_strikes = find_talent_spell( talent_tree::SPECIALIZATION, "Acrobatic Strikes" );
-
-  talent.outlaw.ruthlessness = find_talent_spell( talent_tree::SPECIALIZATION, "Ruthlessness" );
-  talent.outlaw.loaded_dice = find_talent_spell( talent_tree::SPECIALIZATION, "Loaded Dice" );
-  talent.outlaw.sleight_of_hand = find_talent_spell( talent_tree::SPECIALIZATION, "Sleight of Hand" );
-  talent.outlaw.thiefs_versatility = find_talent_spell( talent_tree::SPECIALIZATION, "Thief's Versatility" );
-  talent.outlaw.improved_between_the_eyes = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Between the Eyes" );
-
-  talent.outlaw.audacity = find_talent_spell( talent_tree::SPECIALIZATION, "Audacity" );
-  talent.outlaw.improved_adrenaline_rush = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Adrenaline Rush" );
-  talent.outlaw.dancing_steel = find_talent_spell( talent_tree::SPECIALIZATION, "Dancing Steel" );
-
-  talent.outlaw.ace_up_your_sleeve = find_talent_spell( talent_tree::SPECIALIZATION, "Ace Up Your Sleeve" );
-  talent.outlaw.blade_rush = find_talent_spell( talent_tree::SPECIALIZATION, "Blade Rush" );
-
-  talent.outlaw.summarily_dispatched = find_talent_spell( talent_tree::SPECIALIZATION, "Summarily Dispatched" );
-  talent.outlaw.fan_the_hammer = find_talent_spell( talent_tree::SPECIALIZATION, "Fan the Hammer" );
-
-  talent.outlaw.hidden_opportunity = find_talent_spell( talent_tree::SPECIALIZATION, "Hidden Opportunity" );
-  talent.outlaw.keep_it_rolling = find_talent_spell( talent_tree::SPECIALIZATION, "Keep it Rolling" );
-
   talent.outlaw.crescendo_of_violence = find_talent_spell( talent_tree::SPECIALIZATION, "Crescendo of Violence" );
-  talent.outlaw.preparation = find_talent_spell( talent_tree::SPECIALIZATION, "Preparation" );
-  talent.outlaw.fast_action = find_talent_spell( talent_tree::SPECIALIZATION, "Fast Action" );
+  talent.outlaw.dancing_steel = find_talent_spell( talent_tree::SPECIALIZATION, "Dancing Steel" );
+  talent.outlaw.deadly_pursuit = find_talent_spell( talent_tree::SPECIALIZATION, "Deadly Pursuit" );
+  talent.outlaw.deft_maneuvers = find_talent_spell( talent_tree::SPECIALIZATION, "Deft Maneuvers" );
+  talent.outlaw.devious_stratagem = find_talent_spell( talent_tree::SPECIALIZATION, "Devious Stratagem" );
   talent.outlaw.dragon_bone_dice = find_talent_spell( talent_tree::SPECIALIZATION, "Dragon-Bone Dice" );
   talent.outlaw.expert_duelist = find_talent_spell( talent_tree::SPECIALIZATION, "Expert Duelist" );
-  talent.outlaw.flickering_steel = find_talent_spell( talent_tree::SPECIALIZATION, "Flickering Steel" );
+  talent.outlaw.fan_the_hammer = find_talent_spell( talent_tree::SPECIALIZATION, "Fan the Hammer" );
+  talent.outlaw.fast_action = find_talent_spell( talent_tree::SPECIALIZATION, "Fast Action" );
+  talent.outlaw.fatal_flourish = find_talent_spell( talent_tree::SPECIALIZATION, "Fatal Flourish" );
   talent.outlaw.find_an_opening = find_talent_spell( talent_tree::SPECIALIZATION, "Find an Opening" );
+  talent.outlaw.flickering_steel = find_talent_spell( talent_tree::SPECIALIZATION, "Flickering Steel" );
+  talent.outlaw.heavy_hitter = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Hitter" );
   talent.outlaw.heightened_rush = find_talent_spell( talent_tree::SPECIALIZATION, "Heightened Rush" );
+  talent.outlaw.hidden_opportunity = find_talent_spell( talent_tree::SPECIALIZATION, "Hidden Opportunity" );
+  talent.outlaw.hit_and_run = find_talent_spell( talent_tree::SPECIALIZATION, "Hit and Run" );
+  talent.outlaw.improved_adrenaline_rush = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Adrenaline Rush" );
+  talent.outlaw.improved_between_the_eyes = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Between the Eyes" );
+  talent.outlaw.keep_it_rolling = find_talent_spell( talent_tree::SPECIALIZATION, "Keep it Rolling" );
+  talent.outlaw.killing_spree = find_talent_spell( talent_tree::SPECIALIZATION, "Killing Spree" );
+  talent.outlaw.loaded_dice = find_talent_spell( talent_tree::SPECIALIZATION, "Loaded Dice" );
+  talent.outlaw.menacing_rush = find_talent_spell( talent_tree::SPECIALIZATION, "Menacing Rush" );
+  talent.outlaw.opportunity = find_talent_spell( talent_tree::SPECIALIZATION, "Opportunity" );
+  talent.outlaw.precision_shot = find_talent_spell( talent_tree::SPECIALIZATION, "Precision Shot" );
+  talent.outlaw.preparation = find_talent_spell( talent_tree::SPECIALIZATION, "Preparation" );
+  talent.outlaw.quick_draw = find_talent_spell( talent_tree::SPECIALIZATION, "Quick Draw" );
+  talent.outlaw.retractable_hook = find_talent_spell( talent_tree::SPECIALIZATION, "Retractable Hook" );
+  talent.outlaw.ruthlessness = find_talent_spell( talent_tree::SPECIALIZATION, "Ruthlessness" );
+  talent.outlaw.sleight_of_hand = find_talent_spell( talent_tree::SPECIALIZATION, "Sleight of Hand" );
+  talent.outlaw.summarily_dispatched = find_talent_spell( talent_tree::SPECIALIZATION, "Summarily Dispatched" );
+  talent.outlaw.thiefs_versatility = find_talent_spell( talent_tree::SPECIALIZATION, "Thief's Versatility" );
+  talent.outlaw.zero_in = find_talent_spell( talent_tree::SPECIALIZATION, "Zero In" );
+
+  talent.outlaw.gravedigger_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1265861 );
+  talent.outlaw.gravedigger_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1265862 );
+  talent.outlaw.gravedigger_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1265863 );
 
   // Subtlety Talents
-  talent.subtlety.find_weakness = find_talent_spell( talent_tree::SPECIALIZATION, "Find Weakness" );
-
-  talent.subtlety.improved_backstab = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Backstab" );
-  talent.subtlety.shadow_blades = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Blades" );
-  talent.subtlety.improved_shuriken_storm = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Shuriken Storm" );
-
-  talent.subtlety.shot_in_the_dark = find_talent_spell( talent_tree::SPECIALIZATION, "Shot in the Dark" );
-  talent.subtlety.quick_decisions = find_talent_spell( talent_tree::SPECIALIZATION, "Quick Decisions" );
+  talent.subtlety.cloaked_in_shadow = find_talent_spell( talent_tree::SPECIALIZATION, "Cloaked in Shadow" );
+  talent.subtlety.danse_macabre = find_talent_spell( talent_tree::SPECIALIZATION, "Danse Macabre" );
+  talent.subtlety.dark_brew = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Brew" );
+  talent.subtlety.dark_shadow = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Shadow" );
+  talent.subtlety.death_perception = find_talent_spell( talent_tree::SPECIALIZATION, "Death Perception" );
+  talent.subtlety.deepening_shadows = find_talent_spell( talent_tree::SPECIALIZATION, "Deepening Shadows" );
+  talent.subtlety.deeper_daggers = find_talent_spell( talent_tree::SPECIALIZATION, "Deeper Daggers" );
+  talent.subtlety.double_dance = find_talent_spell( talent_tree::SPECIALIZATION, "Double Dance" );
   talent.subtlety.ephemeral_bond = find_talent_spell( talent_tree::SPECIALIZATION, "Ephemeral Bonds" );
   talent.subtlety.exhilarating_execution = find_talent_spell( talent_tree::SPECIALIZATION, "Exhilarating Execution" );
-
-  talent.subtlety.shrouded_in_darkness = find_talent_spell( talent_tree::SPECIALIZATION, "Shrouded in Darkness" );
-  talent.subtlety.shadow_focus = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Focus" );
   talent.subtlety.fade_to_nothing = find_talent_spell( talent_tree::SPECIALIZATION, "Fade to Nothing" );
-  talent.subtlety.cloaked_in_shadow = find_talent_spell( talent_tree::SPECIALIZATION, "Cloaked in Shadow" );
-  talent.subtlety.night_terrors = find_talent_spell( talent_tree::SPECIALIZATION, "Night Terrors" );
-  talent.subtlety.terrifying_pace = find_talent_spell( talent_tree::SPECIALIZATION, "Terrifying Pace" );
-
-  talent.subtlety.gloomblade = find_talent_spell( talent_tree::SPECIALIZATION, "Gloomblade" );
-  talent.subtlety.relentless_strikes = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Strikes" );
-  talent.subtlety.silent_storm = find_talent_spell( talent_tree::SPECIALIZATION, "Silent Storm" );
-
-  talent.subtlety.premeditation = find_talent_spell( talent_tree::SPECIALIZATION, "Premeditation" );
-  talent.subtlety.planned_execution = find_talent_spell( talent_tree::SPECIALIZATION, "Planned Execution" );
-  talent.subtlety.warning_signs = find_talent_spell( talent_tree::SPECIALIZATION, "Warning Signs" );
-  talent.subtlety.double_dance = find_talent_spell( talent_tree::SPECIALIZATION, "Double Dance" );
-  talent.subtlety.shadowed_finishers = find_talent_spell( talent_tree::SPECIALIZATION, "Shadowed Finishers" );
-  talent.subtlety.secret_stratagem = find_talent_spell( talent_tree::SPECIALIZATION, "Secret Stratagem" );
-  talent.subtlety.replicating_shadows = find_talent_spell( talent_tree::SPECIALIZATION, "Replicating Shadows" );
-
-  talent.subtlety.weaponmaster = find_talent_spell( talent_tree::SPECIALIZATION, "Weaponmaster", ROGUE_SUBTLETY );
-  talent.subtlety.the_first_dance = find_talent_spell( talent_tree::SPECIALIZATION, "The First Dance" );
-  talent.subtlety.master_of_shadows = find_talent_spell( talent_tree::SPECIALIZATION, "Master of Shadows" );
-  talent.subtlety.deepening_shadows = find_talent_spell( talent_tree::SPECIALIZATION, "Deepening Shadows" );
-  talent.subtlety.veiltouched = find_talent_spell( talent_tree::SPECIALIZATION, "Veiltouched" );
-  talent.subtlety.shuriken_tornado = find_talent_spell( talent_tree::SPECIALIZATION, "Shuriken Tornado" );
-
-  talent.subtlety.perforated_veins = find_talent_spell( talent_tree::SPECIALIZATION, "Perforated Veins" );
-  talent.subtlety.lingering_shadow = find_talent_spell( talent_tree::SPECIALIZATION, "Lingering Shadow" );
-  talent.subtlety.deeper_daggers = find_talent_spell( talent_tree::SPECIALIZATION, "Deeper Daggers" );
-
-  talent.subtlety.death_perception = find_talent_spell( talent_tree::SPECIALIZATION, "Death Perception" );
-  talent.subtlety.dark_shadow = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Shadow" );
   talent.subtlety.finality = find_talent_spell( talent_tree::SPECIALIZATION, "Finality" );
-
-  talent.subtlety.the_rotten = find_talent_spell( talent_tree::SPECIALIZATION, "The Rotten" );
-  talent.subtlety.shadowcraft = find_talent_spell( talent_tree::SPECIALIZATION, "Shadowcraft" );
-  talent.subtlety.danse_macabre = find_talent_spell( talent_tree::SPECIALIZATION, "Danse Macabre" );
+  talent.subtlety.find_weakness = find_talent_spell( talent_tree::SPECIALIZATION, "Find Weakness" );
+  talent.subtlety.gloomblade = find_talent_spell( talent_tree::SPECIALIZATION, "Gloomblade" );
   talent.subtlety.goremaws_bite = find_talent_spell( talent_tree::SPECIALIZATION, "Goremaw's Bite" );
-  talent.subtlety.dark_brew = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Brew" );
+  talent.subtlety.improved_backstab = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Backstab" );
+  talent.subtlety.improved_shuriken_storm = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Shuriken Storm" );
+  talent.subtlety.lingering_shadow = find_talent_spell( talent_tree::SPECIALIZATION, "Lingering Shadow" );
+  talent.subtlety.master_of_shadows = find_talent_spell( talent_tree::SPECIALIZATION, "Master of Shadows" );
+  talent.subtlety.night_terrors = find_talent_spell( talent_tree::SPECIALIZATION, "Night Terrors" );
+  talent.subtlety.perforated_veins = find_talent_spell( talent_tree::SPECIALIZATION, "Perforated Veins" );
+  talent.subtlety.planned_execution = find_talent_spell( talent_tree::SPECIALIZATION, "Planned Execution" );
+  talent.subtlety.premeditation = find_talent_spell( talent_tree::SPECIALIZATION, "Premeditation" );
+  talent.subtlety.quick_decisions = find_talent_spell( talent_tree::SPECIALIZATION, "Quick Decisions" );
+  talent.subtlety.relentless_strikes = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Strikes" );
+  talent.subtlety.replicating_shadows = find_talent_spell( talent_tree::SPECIALIZATION, "Replicating Shadows" );
+  talent.subtlety.secret_stratagem = find_talent_spell( talent_tree::SPECIALIZATION, "Secret Stratagem" );
+  talent.subtlety.shadow_blades = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Blades" );
+  talent.subtlety.shadow_focus = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Focus" );
+  talent.subtlety.shadowcraft = find_talent_spell( talent_tree::SPECIALIZATION, "Shadowcraft" );
+  talent.subtlety.shadowed_finishers = find_talent_spell( talent_tree::SPECIALIZATION, "Shadowed Finishers" );
+  talent.subtlety.shot_in_the_dark = find_talent_spell( talent_tree::SPECIALIZATION, "Shot in the Dark" );
+  talent.subtlety.shrouded_in_darkness = find_talent_spell( talent_tree::SPECIALIZATION, "Shrouded in Darkness" );
+  talent.subtlety.shuriken_tornado = find_talent_spell( talent_tree::SPECIALIZATION, "Shuriken Tornado" );
+  talent.subtlety.silent_storm = find_talent_spell( talent_tree::SPECIALIZATION, "Silent Storm" );
+  talent.subtlety.terrifying_pace = find_talent_spell( talent_tree::SPECIALIZATION, "Terrifying Pace" );
+  talent.subtlety.the_first_dance = find_talent_spell( talent_tree::SPECIALIZATION, "The First Dance" );
+  talent.subtlety.the_rotten = find_talent_spell( talent_tree::SPECIALIZATION, "The Rotten" );
+  talent.subtlety.veiltouched = find_talent_spell( talent_tree::SPECIALIZATION, "Veiltouched" );
+  talent.subtlety.warning_signs = find_talent_spell( talent_tree::SPECIALIZATION, "Warning Signs" );
+  talent.subtlety.weaponmaster = find_talent_spell( talent_tree::SPECIALIZATION, "Weaponmaster", ROGUE_SUBTLETY );
 
   // Shared Talents
   spell.shadowstep = find_spell( 36554 );     // Base spell with 0 charges
@@ -9574,6 +9687,7 @@ void rogue_t::init_spells()
   spec.zoldyck_insignia = talent.assassination.zoldyck_recipe->ok() ? talent.assassination.zoldyck_recipe : spell_data_t::not_found();
 
   // Outlaw
+  spec.ace_up_your_sleeve_energize = talent.outlaw.ace_up_your_sleeve->ok() ? find_spell( 394120 ) : spell_data_t::not_found();
   spec.acrobatic_strikes_buff = talent.outlaw.acrobatic_strikes->ok() ? find_spell( 455144 ) : spell_data_t::not_found();
   spec.audacity_buff = talent.outlaw.audacity->ok() ? find_spell( 386270 ) : spell_data_t::not_found();
   spec.blade_flurry_attack = spec.blade_flurry->ok() ? find_spell( 22482 ) : spell_data_t::not_found();
@@ -9581,16 +9695,22 @@ void rogue_t::init_spells()
     ( talent.outlaw.deft_maneuvers->ok() ? find_spell( 429951 ) : find_spell( 331850 ) ) : spell_data_t::not_found();
   spec.blade_rush_attack = talent.outlaw.blade_rush->ok() ? find_spell( 271881 ) : spell_data_t::not_found();
   spec.blade_rush_energize = talent.outlaw.blade_rush->ok() ? find_spell( 271896 ) : spell_data_t::not_found();
+  spec.deadly_pursuit_buff = talent.outlaw.deadly_pursuit->ok() ? find_spell( 1259613 ) : spell_data_t::not_found();
+  spec.deadly_pursuit_cdr_buff = talent.outlaw.deadly_pursuit->ok() ? find_spell( 1259614 ) : spell_data_t::not_found();
   spec.flickering_steel_energize = talent.outlaw.flickering_steel->ok() ? find_spell( 1259493 ) : spell_data_t::not_found();
+  spec.gravedigger_buff = talent.outlaw.gravedigger_3->ok() ? find_spell( 1265935 ) : spell_data_t::not_found();
+  spec.gravedigger_energize = talent.outlaw.gravedigger_3->ok() ? find_spell( 1279356 ) : spell_data_t::not_found();
   spec.improved_adrenaline_rush_energize = talent.outlaw.improved_adrenaline_rush->ok() ? find_spell( 395424 ) : spell_data_t::not_found();
   // TOCHECK -- Killing Spree spell ids could change over 11.2 PTR, new spell 1248604 exists but not used in logs yet
   spec.killing_spree_mh_attack = talent.outlaw.killing_spree->ok() ? find_spell( 57841 ) : spell_data_t::not_found();
   spec.killing_spree_oh_attack = talent.outlaw.killing_spree->ok() ? find_spell( 57842 ) : spell_data_t::not_found();
   spec.killing_spree_energize = talent.outlaw.killing_spree->ok() ? find_spell( 1235074 ) : spell_data_t::not_found();
   spec.opportunity_buff = talent.outlaw.opportunity->ok() ? find_spell( 195627 ) : spell_data_t::not_found();
+  spec.palmed_bullets_buff = talent.outlaw.gravedigger_3->ok() ? find_spell( 1265931 ) : spell_data_t::not_found();
   spec.quick_draw_energize = talent.outlaw.quick_draw->ok() ? find_spell( 1254567 ) : spell_data_t::not_found();
+  spec.scoundrel_strike_attack = talent.outlaw.gravedigger_2->ok() ? find_spell( 1265918 ) : spell_data_t::not_found();
   spec.sinister_strike_extra_attack = talent.outlaw.opportunity->ok() ? find_spell( 197834 ) : spell_data_t::not_found();
-  spec.ace_up_your_sleeve_energize = talent.outlaw.ace_up_your_sleeve->ok() ? find_spell( 394120 ) : spell_data_t::not_found();
+  spec.zero_in_buff = talent.outlaw.zero_in->ok() ? find_spell( 1259486 ) : spell_data_t::not_found();
 
   spec.one_of_a_kind = spec.roll_the_bones->ok() ? find_spell( 1214933 ) : spell_data_t::not_found();
   spec.double_trouble = spec.roll_the_bones->ok() ? find_spell( 1214934 ) : spell_data_t::not_found();
@@ -9657,6 +9777,9 @@ void rogue_t::init_spells()
 
   // Extra CP from improved ambush is reported separatedly and manually handled within the action
   deregister_passive_spell( talent.rogue.improved_ambush );
+
+  // Vigor value is divided by 10 due to ancient scripted support for the per-CP spend mechanics
+  register_passive_effect_override( talent.rogue.alacrity->effectN( 1 ), talent.rogue.alacrity->effectN( 1 ).base_value() / 10 );
 
   // Summarily Dispatched effect 2 needs special handling due to the dynamic modifier from Between the Eyes
   register_passive_effect_mask( talent.outlaw.summarily_dispatched, effect_mask_t( false ).enable( 2 ) );
@@ -9867,6 +9990,7 @@ void rogue_t::init_gains()
   gains.energy_refund                   = get_gain( "Energy Refund" );
   gains.fatal_flourish                  = get_gain( "Fatal Flourish" );
   gains.flickering_steel                = get_gain( "Flickering Steel" );
+  gains.gravedigger                     = get_gain( "Gravedigger" );
   gains.implacable                      = get_gain( "Implacable" );
   gains.improved_adrenaline_rush        = get_gain( "Improved Adrenaline Rush" );
   gains.improved_ambush                 = get_gain( "Improved Ambush" );
@@ -10039,8 +10163,60 @@ void rogue_t::create_buffs()
       resource_gain( RESOURCE_ENERGY, b->check_value(), gains.blade_rush );
     } );
 
+  buffs.deadly_pursuit = make_buff( this, "deadly_pursuit", spec.deadly_pursuit_buff )
+    ->set_expire_callback( [ this ]( buff_t*, double, timespan_t d ) {
+      if( d == 0_s )
+      {
+        buffs.deadly_pursuit_cdr->trigger();
+      }
+    } );
+
+  buffs.deadly_pursuit_cdr = make_buff( this, "deadly_pursuit_cdr", spec.deadly_pursuit_cdr_buff )
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
+      range::for_each( deadly_pursuit_cooldowns, []( cooldown_t* cd ) {
+        cd->adjust_recharge_multiplier();
+      } );
+    } );
+
+  // Hidden tracker buff for CP spent, doesn't exist in-game just for SimC tracking
+  buffs.deadly_pursuit_tracker = make_buff( this, "deadly_pursuit_tracker", spec.deadly_pursuit_buff );
+  if ( talent.outlaw.deadly_pursuit->ok() )
+  {
+    buffs.deadly_pursuit_tracker
+      ->set_max_stack( as<int>( talent.outlaw.deadly_pursuit->effectN( 1 ).base_value() ) )
+      ->set_expire_at_max_stack( true )
+      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+      ->set_duration( sim->max_time / 2 )
+      ->set_expire_callback( [ this ]( buff_t* b, double stack, timespan_t ) {
+        if ( b && stack == b->max_stack() )
+        {
+          buffs.deadly_pursuit->trigger();
+        }
+      } );
+  }
+
   buffs.opportunity = make_buff( this, "opportunity", spec.opportunity_buff )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
+
+  buffs.zero_in = make_buff<damage_buff_t>( this, "zero_in", spec.zero_in_buff );
+
+  // Gravedigger 3
+  buffs.palmed_bullets = make_buff( this, "palmed_bullets", spec.palmed_bullets_buff );
+  if ( spec.palmed_bullets_buff->ok() )
+  {
+    buffs.palmed_bullets
+      ->set_max_stack( spec.palmed_bullets_buff->effectN( 1 ).misc_value2() )
+      ->set_expire_at_max_stack( true )
+      ->set_expire_callback( [ this ]( buff_t* b, double stack, timespan_t ) {
+        if ( b && stack == b->max_stack() )
+        {
+          buffs.gravedigger->trigger();
+        }
+      } );
+  }
+
+  buffs.gravedigger = make_buff( this, "gravedigger", spec.gravedigger_buff )
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST_1 );
 
   // Roll the Bones Buffs
   buffs.one_of_a_kind = make_buff( this, "one_of_a_kind", spec.one_of_a_kind );
