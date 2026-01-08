@@ -2205,7 +2205,8 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     tokens.emplace_back(
       fmt::format( "From Rating: {}", util::stat_type_abbrev( util::translate_rating_mod( e->misc_value1() ) ) ) );
   }
-  else if ( e->subtype() == A_MOD_MECHANIC_RESISTANCE || e->subtype() == A_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT )
+  else if ( e->subtype() == A_MOD_MECHANIC_RESISTANCE || e->subtype() == A_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT ||
+            e->subtype() == A_MOD_MECHANIC_DAMAGE_DONE_PERCENT )
   {
     tokens.emplace_back( fmt::format( "Mechanic: {}", mechanic_str( e->misc_value1() ) ) );
   }
