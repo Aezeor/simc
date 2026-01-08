@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65028 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65294 midnight-BETA
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -17768,6 +17768,7 @@ Effects          :
 Description      : Smite extends the duration of an active Atonement by ${$s1/1000}.1 sec.
 
 Name             : Evangelism (id=472433) [Spell Family (6)] 
+Hotfixed         : Max stacks (3 -> 2)
 Talent Entry     : Discipline [tree=spec, row=7, col=2, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
@@ -17780,7 +17781,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 118
                  : 292
-Stacks           : 3 maximum
+Stacks           : 2 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Affecting Spells : Renew (139 effect#2), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effects: #1, #2)

@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65028 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65294 midnight-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, base_ilevel={ 30 }, req_ilevel={ 25 }, ilevel_adjust={ 20 }, crafting_quality={ 11 }
@@ -7322,9 +7322,9 @@ bonus_id={ 12236 }, effects={ Unknown Effect (id=206761) }
 bonus_id={ 12237 }, effects={ Skrog Tooth (id=1223600, index=0, type=equip) }
 bonus_id={ 12245 }, base_ilevel={ 259 }, req_ilevel={ 90 }
 bonus_id={ 12247 }, base_ilevel={ 201 }, req_ilevel={ 90 }
-bonus_id={ 12249 }, base_ilevel={ 30 }, req_ilevel={ 81 }
-bonus_id={ 12252 }, base_ilevel={ 41 }, req_ilevel={ 81 }
-bonus_id={ 12253 }, base_ilevel={ 45 }, req_ilevel={ 81 }
+bonus_id={ 12249 }, base_ilevel={ 165 }, req_ilevel={ 81 }
+bonus_id={ 12252 }, base_ilevel={ 180 }, req_ilevel={ 81 }
+bonus_id={ 12253 }, base_ilevel={ 206 }, req_ilevel={ 81 }
 bonus_id={ 12255 }, stats={ 100% Mastery [0.5600] }
 bonus_id={ 12256 }, stats={ 100% Mastery [0.8000] }
 bonus_id={ 12257 }, stats={ 100% Crit [0.8000] }
@@ -7543,7 +7543,7 @@ bonus_id={ 12499 }, ilevel_adjust={ 6 }, crafting_quality={ 2 }
 bonus_id={ 12500 }, ilevel_adjust={ 12 }, crafting_quality={ 3 }
 bonus_id={ 12501 }, ilevel_adjust={ 19 }, crafting_quality={ 4 }
 bonus_id={ 12502 }, ilevel_adjust={ 26 }, crafting_quality={ 5 }
-bonus_id={ 12503 }, base_ilevel={ 50 }, req_ilevel={ 81 }
+bonus_id={ 12503 }, base_ilevel={ 232 }, req_ilevel={ 81 }
 bonus_id={ 12504 }, quality={ epic }
 bonus_id={ 12505 }, desc={ Voidtouched }, stats={ 50% Crit [0.2000], -50% Haste [-0.2000] }
 bonus_id={ 12506 }, desc={ Voidtouched }, stats={ 50% Mastery [0.2000], -50% Vers [-0.2000] }

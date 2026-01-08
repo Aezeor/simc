@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65028 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65294 midnight-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1072,11 +1072,12 @@ Effects          :
 Description      : Disrupt generates $218903s1 Fury on a successful interrupt.
 
 Name             : Throw Glaive (id=185123) [Spell Family (107)] 
+Hotfixed         : Learn Level (16 -> 12), Required Level (16 -> 12)
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
 Resource         : 25 Fury (17) (id=265651) w/ Furious Throws (id=393029)
-Spell Level      : 16
+Spell Level      : 12
 Range            : 30 yards
 GCD              : 1.5 seconds
 Charges          : 1 (9 seconds cooldown)
@@ -1229,11 +1230,12 @@ Armor increased by $w8%.
 $?s235893[Versatility increased by $w5%. ][]$?s263642[Fracture][Shear] generates $w4 additional Fury and one additional Lesser Soul Fragment.
 
 Name             : Blade Dance (id=188499) [Spell Family (107)] 
+Hotfixed         : Learn Level (0 -> 14), Required Level (12 -> 14)
 Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : Melee
 Resource         : 35 Fury (17) (id=10434)
-Spell Level      : 12
+Spell Level      : 14
 GCD              : 1.5 seconds
 Duration         : 1 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, War Glaive, Fist Weapon
