@@ -759,6 +759,7 @@ static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
 struct death_and_decay_tracker_t
 {
   ground_aoe_event_t* dnd_event = nullptr;
+  timespan_t buff_expiration_time = 4_s;
   death_and_decay_tracker_t()
   {}
 
@@ -769,9 +770,19 @@ struct death_and_decay_tracker_t
     dnd_event = event;
   }
 
+  void set_expire_time( timespan_t time )
+  {
+    buff_expiration_time = time;
+  }
+
   ground_aoe_event_t* get_dnd_event()
   {
     return dnd_event;
+  }
+
+  timespan_t get_expire_time()
+  {
+    return buff_expiration_time;
   }
 };
 
@@ -13493,16 +13504,13 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
   params.x( target->x_position );
   params.y( target->y_position );
 
-  params.expiration_callback( [ &, tracker ]( const action_state_t* ) {
-    buffs.death_and_decay->expire( 4_s );
-    range::erase_remove( active_dnds, tracker );
-  } );
-
-  params.state_callback( [ &, tracker, n_ticks ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+  params.state_callback( [ &, tracker, n_ticks, partial_tick, period ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
     switch ( type )
     {
       case ground_aoe_params_t::EVENT_CREATED:
         tracker->set_dnd_event( event );
+        // Set the initial expire time to the default 4s after dnd ends. Ensures theres no accidental carryover between dnds.
+        tracker->set_expire_time( 4_s );
         break;
       case ground_aoe_params_t::EVENT_STARTED:
         buffs.death_and_decay->trigger();
@@ -13511,6 +13519,9 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
         break;
       case ground_aoe_params_t::EVENT_DESTRUCTED:
         if ( tracker != active_dnds.front() )
+          break;
+
+        if ( !talent.sanlayn.desecrate.ok() )
           break;
       {
         int n_dots = 0;
@@ -13550,21 +13561,27 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
         if ( desecrate_triggred )
         {
           timespan_t remaining_time = event->remaining_time();
-          double ticks_left         = remaining_time.total_seconds();
+          double ticks_left         = remaining_time.total_seconds() * period.total_seconds();
+          if( partial_tick )
+            ticks_left += 1.0;
           desecrate_t* des          = debug_cast<desecrate_t*>( background_actions.desecrate );
           des->ticks_remain         = ticks_left;
           des->schedule_execute();
 
-          event->current_pulse = as<int>( n_ticks );  // End the DnD immediately
+          event->expired = true;
 
-          // TODO: Does this trigger the 4s buff after expiration? Does it include it in its duration?
-          make_event( *sim, remaining_time, [ & ]() { buffs.death_and_decay->expire(); } );
+          tracker->set_expire_time( remaining_time + 4_s );
         }
       }
       break;
       default:
         break;
     }
+  } );
+
+  params.expiration_callback( [ &, tracker ]( const action_state_t* ) {
+    buffs.death_and_decay->expire( tracker->get_expire_time() );
+    range::erase_remove( active_dnds, tracker );
   } );
 
   tracker->set_dnd_event( make_event<ground_aoe_event_t>( *sim, this, params, true /* Immediate pulse */ ) );
