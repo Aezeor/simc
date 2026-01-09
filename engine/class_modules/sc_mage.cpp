@@ -268,6 +268,7 @@ public:
     buff_t* clearcasting;
     buff_t* enlightened;
     buff_t* evocation;
+    buff_t* intuition;
     buff_t* overpowered_missiles;
     buff_t* presence_of_mind;
 
@@ -549,13 +550,14 @@ public:
     player_talent_t charged_orb;
 
     // Row 6
-    player_talent_t arcane_tempo;
+    player_talent_t intuition;
     player_talent_t touch_of_the_magi;
     player_talent_t energized_familiar;
     player_talent_t expanded_mind;
 
     // Row 7
     player_talent_t consortiums_bauble;
+    player_talent_t arcane_tempo;
     player_talent_t aether_attunement;
     player_talent_t aegwynns_technique;
     player_talent_t arcane_echo;
@@ -2746,6 +2748,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     am *= arcane_charge_multiplier( true );
     am *= 1.0 + p()->buffs.arcane_salvo->check_stack_value();
+    am *= 1.0 + p()->buffs.intuition->check_value();
 
     return am;
   }
@@ -3850,6 +3853,9 @@ struct frostbolt_t final : public frost_mage_spell_t
       p()->state.trigger_ff_empowerment = false;
       p()->action.frostfire_empowerment->execute_on_target( s->target, p()->talents.frostfire_empowerment->effectN( 2 ).percent() * s->result_total );
     }
+
+    // TODO: If the GS buff is up and a cleave FFB projectile deals damage, a GS will
+    // be automatically cast at the cleave target (for some reason)
   }
 
   bool ready() override
@@ -5758,12 +5764,13 @@ void mage_t::init_spells()
   talents.arcane_familiar         = find_talent_spell( talent_tree::SPECIALIZATION, "Arcane Familiar"       );
   talents.charged_orb             = find_talent_spell( talent_tree::SPECIALIZATION, "Charged Orb"           );
   // Row 6
-  talents.arcane_tempo            = find_talent_spell( talent_tree::SPECIALIZATION, "Arcane Tempo"          );
+  talents.intuition               = find_talent_spell( talent_tree::SPECIALIZATION, "Intuition"             );
   talents.touch_of_the_magi       = find_talent_spell( talent_tree::SPECIALIZATION, "Touch of the Magi"     );
   talents.energized_familiar      = find_talent_spell( talent_tree::SPECIALIZATION, "Energized Familiar"    );
   talents.expanded_mind           = find_talent_spell( talent_tree::SPECIALIZATION, "Expanded Mind"         );
   // Row 7
   talents.consortiums_bauble      = find_talent_spell( talent_tree::SPECIALIZATION, "Consortium's Bauble"   );
+  talents.arcane_tempo            = find_talent_spell( talent_tree::SPECIALIZATION, "Arcane Tempo"          );
   talents.aether_attunement       = find_talent_spell( talent_tree::SPECIALIZATION, "Aether Attunement"     );
   talents.aegwynns_technique      = find_talent_spell( talent_tree::SPECIALIZATION, "Aegwynn's Technique"   );
   talents.arcane_echo             = find_talent_spell( talent_tree::SPECIALIZATION, "Arcane Echo"           );
@@ -6086,6 +6093,9 @@ void mage_t::create_buffs()
                                       ->set_default_value_from_effect( 1 )
                                       ->set_cooldown( 0_ms )
                                       ->set_affects_regen( true );
+  buffs.intuition                 = make_buff( this, "intuition", find_spell( 1223797 ) )
+                                      ->set_default_value_from_effect( 1 )
+                                      ->set_chance( talents.intuition.ok() );
   buffs.overpowered_missiles      = make_buff( this, "overpowered_missiles", find_spell( 1277009 ) )
                                       ->set_default_value_from_effect( 1 )
                                       ->set_chance( talents.overpowered_missiles.ok() );
@@ -6852,6 +6862,9 @@ void mage_t::trigger_arcane_salvo( proc_t* source, int stacks, double chance )
     int old_stacks = buff->check();
     buff->trigger( stacks );
     int new_stacks = buff->check();
+
+    if ( buff->at_max_stacks() && old_stacks < new_stacks )
+      buffs.intuition->trigger();
 
     assert( source );
     for ( int i = 0; i < stacks; i++ )
