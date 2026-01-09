@@ -8378,7 +8378,8 @@ struct reapers_mark_t final : public death_knight_spell_t
             1 );
       } );
     }
-    if ( p()->talent.deathbringer.deathly_blows->ok() && p()->talent.frost.bonegrinder->ok() )
+
+    if ( p()->talent.deathbringer.deathly_blows->ok() && p()->talent.frost.bonegrinder->ok() && sim->dbc->wowv() >= wowv_t( 12, 0, 1 ) )
       p()->buffs.bonegrinder_frost->trigger( as<int>( p()->talent.deathbringer.deathly_blows->effectN( 4 ).base_value() ) );
   }
 };
