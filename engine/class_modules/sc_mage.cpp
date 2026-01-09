@@ -360,6 +360,7 @@ public:
     bool il_requires_freezing = true;
     bool il_sort_by_freezing = true;
     bool randomize_si_target = false;
+    bool override_intuition = false;  // TODO: Remove when beta has the talent tree hotfixes
   } options;
 
   // Pets
@@ -5558,6 +5559,7 @@ void mage_t::create_options()
   add_option( opt_bool( "mage.il_requires_freezing", options.il_requires_freezing ) );
   add_option( opt_bool( "mage.il_sort_by_freezing", options.il_sort_by_freezing ) );
   add_option( opt_bool( "mage.randomize_si_target", options.randomize_si_target ) );
+  add_option( opt_bool( "mage.override_intuition", options.override_intuition ) );
   player_t::create_options();
 }
 
@@ -6095,7 +6097,7 @@ void mage_t::create_buffs()
                                       ->set_affects_regen( true );
   buffs.intuition                 = make_buff( this, "intuition", find_spell( 1223797 ) )
                                       ->set_default_value_from_effect( 1 )
-                                      ->set_chance( talents.intuition.ok() );
+                                      ->set_chance( talents.intuition.ok() || options.override_intuition );
   buffs.overpowered_missiles      = make_buff( this, "overpowered_missiles", find_spell( 1277009 ) )
                                       ->set_default_value_from_effect( 1 )
                                       ->set_chance( talents.overpowered_missiles.ok() );
