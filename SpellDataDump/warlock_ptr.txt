@@ -45,7 +45,8 @@ Effects          :
 #2 (id=198373)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 #3 (id=830260)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.25875 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.292387 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (0.25875 -> 0.292387)
 Description      : Corrupts the target, causing $s3 Shadow damage and $?a196103[$146739s1 Shadow damage every $146739t1 sec.][an additional $146739o1 Shadow damage over $146739d.]
 
 Name             : Immolate (id=348) [Spell Family (5)] 
@@ -91,7 +92,8 @@ Family Flags     : 0, 49
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=267)      : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.702 | PvP Coefficient: 2.47 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.74096 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (0.702 -> 1.74096), PvP Coefficient (2.47 -> 1)
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.$?c2[
 
 |cFFFFFFFFGenerates 1 Soul Shard.|r][]
@@ -3926,17 +3928,20 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 12 | Misc Value 2: 1166 (Label) | Target: Self (1)
                    Affected Spells (Label): Demon Armor (285933)
 #6 (id=261077)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 253 | Scaled Value: 253 | Target: Self (1)
+                   Base Value: 42 | Scaled Value: 42 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506), Malefic Grasp (1261153)
                    Family Flags: 0
+Hotfixed         : Base Value (253 -> 42)
 #7 (id=261078)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 13 | Scaled Value: 13 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Corruption (172), Corruption (146739), Deliberate Corruption (367831), Wither (445468), Wither (445474), Corruption (1261158), Wither (1279686)
                    Family Flags: 1
+Hotfixed         : Base Value (13 -> 0)
 #8 (id=261079)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 13 | Scaled Value: 13 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Corruption (172), Corruption (146739), Deliberate Corruption (367831), Wither (445468), Wither (445474), Corruption (1261158), Wither (1279686)
                    Family Flags: 1
+Hotfixed         : Base Value (13 -> 0)
 #9 (id=261080)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -20 | Scaled Value: -20 | Misc Value 2: 3444 (Label) | Target: Self (1)
                    Affected Spells (Label): Wither (445468)
@@ -3978,9 +3983,10 @@ Effects          :
 #4 (id=191029)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=191030)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 148 | Scaled Value: 148 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506), Malefic Grasp (1261153)
                    Family Flags: 0
+Hotfixed         : Base Value (148 -> 0)
 
 Name             : Destruction Warlock (id=137046) [Spell Family (5), Passive, Hidden] 
 Class            : Destruction Warlock
@@ -4062,7 +4068,8 @@ Family Flags     : 1, 49
 Attributes       : Aura Is Debuff (26), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Aura Never Bounces (148), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Taps immediately (215), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=198369)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds | Attributes: Is Harmful (12)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.24375 | Target: Current Target (25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.275438 | Target: Current Target (25)
+Hotfixed         : SP Coefficient (0.24375 -> 0.275438)
 Description      : $@spelldesc172
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 

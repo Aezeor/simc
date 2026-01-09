@@ -1756,11 +1756,13 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
 Affecting Spells : Arcane Charge (36032 effects: #2, #3), Mage (137018 effect#1), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #3, #4), Lonely Winter (205024 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Arcane Harmony (332777 effect#1), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Nether Precision (383783 effect#1), Arcane Harmony (384455 effect#1), Overflowing Energy (394195 effect#3), Touch of Ice (394994 effects: #1, #2), Bursting Energy (395006 effect#1), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Spellfire Sphere (448604 effects: #1, #2), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Arcane Debilitation (453599 effect#2), Mage Arcane 11.0 Class Set 2pc (453723 effect#1), Blessing of the Phoenix (455134 effect#1), Intuition (455681 effect#1), Molten Fury (458910 effect#1), Clarity (1216178 effects: #1, #2), Rollin' Hot (1219035 effects: #1, #2), Arcane Soul (1223522 effect#1), Intuition (1223797 effect#1), Nether Flux (1233452 effect#1), Arcane Salvo (1242974 effect#1), Charm of Aegwynn (1244105 effect#1), Arcane Mage (1256909 effects: #1, #2), Fire Mage (1256911 effects: #1, #2), Frost Mage (1256913 effects: #1, #2), Polished Focus (1261082 effect#4), Mage - Midnight PrePatch - 11.2 Class Set 2pc (1283634 effects: #1, #2), Mage - Midnight PrePatch - 11.2 Class Set 4pc (1283635 effects: #1, #2)
+Triggered By     : Arcane Salvo (1242974)
 Family Flags     : 3, 47
 Attributes       : Not Shapeshifted (16), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=36330)    : School Damage (2): arcane | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.25 | PvP Coefficient: 1.4812 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.0625 | PvP Coefficient: 1.4812 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (1.25 -> 1.0625)
                    Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=726826)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | Chain Multiplier: 1 | Target: Targeted Enemy (6)
@@ -5057,7 +5059,7 @@ Effects          :
 Description      : Your Fireball and Pyroblast spells always deal a critical strike when the target is above $s1% health.
 
 Name             : Resonance (id=205028) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=7, col=4, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=7, col=5, max_rank=1, req_points=8]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -10894,7 +10896,7 @@ Description      : $@spelldesc337275
 Tooltip          : Movement speed increased by $w%
 
 Name             : Arcane Echo (id=342231) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=300]
+Talent Entry     : Arcane [tree=spec, row=7, col=4, max_rank=1, req_points=8, select_idx=300]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -12559,7 +12561,7 @@ Effects          :
 Description      : Damaging an enemy with Fireball, Pyroblast, or Flamestrike increases the damage it receives from Ignite by ${$s2/100}.1%. Stacks up to $453268u times.
 
 Name             : Impetus (id=383676) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=7, col=6, max_rank=1, req_points=8]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -12780,7 +12782,7 @@ Description      : Combustion grants mastery equal to $s1% of your Critical Stri
 Combustion causes your spells to apply Ignite at $s2% increased effectiveness.
 
 Name             : Arcane Tempo (id=383980) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Arcane [tree=spec, row=6, col=1, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=7, col=2, max_rank=1, req_points=8]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -17995,7 +17997,7 @@ Name             : Intuition (id=1223797) [Spell Family (3)]
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Duration         : 5 seconds
+Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -18006,11 +18008,27 @@ Proc Flags       : Magic Hostile Spell
 Attributes       : Can Proc From Procs (122), Allow Cast While Casting (135), Allow Cast While Channeling (308), Can Proc from Suppressed Caster Procs (385), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1212060)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.4 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.4 | Target: Self (1)
                    Affected Spells: Arcane Barrage (44425)
                    Family Flags: 47
+Hotfixed         : Base Value (50 -> 25)
 Description      : $@spelldesc453724
 Tooltip          : Your next Arcane Barrage deals $s1% increased damage.
+
+Name             : Intuition (id=1223798) [Spell Family (3), Passive, Hidden] 
+Talent Entry     : Arcane [tree=spec, row=6, col=1, max_rank=1, req_points=8]
+Class            : Mage
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Can Proc from Suppressed Caster Procs (385)
+Effects          :
+#1 (id=1212061)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+Hotfixed         : Base Value (5 -> 25)
+Description      : Upon reaching maximum stacks of Arcane Salvo, your next Arcane Barrage deals $s1% increased damage.
 
 Name             : Intuition (id=1223799) [Spell Family (3), Hidden] 
 Class            : Mage
@@ -18323,13 +18341,16 @@ Effects          :
                    Modified By: Arcane Singularity (1244001 effect#1)
 #2 (id=1244153)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+#3 (id=1300304)  : Apply Aura (6) | Set Action Button Spell Count (408): Arcane Barrage
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 44425 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc1242975
 Tooltip          : Increases the damage of your next Arcane Barrage by $s1%.$?a384858[
 
 Arcane Barrage has a ${$s2*$384858s1 }% chance to also fire an Arcane Orb.][]
 
 Name             : Aether Attunement (id=1243307) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Arcane [tree=spec, row=7, col=2, max_rank=2, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=7, col=3, max_rank=2, req_points=8]
                  : Effect#2 [op=set, values=(2, 4)]
 Class            : Mage
 School           : Physical
@@ -18396,7 +18417,7 @@ Each Arcane Charge increases damage by $36032s1%, radius by $36032s6 yds, and ma
 |cFFFFFFFFGenerates $s1 Arcane Charge.|r][]
 
 Name             : Aegwynn's Technique (id=1243507) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Arcane [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Arcane [tree=spec, row=7, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Mage
 School           : Arcane
 Spell Type       : None

@@ -19726,6 +19726,7 @@ Effects          :
 Description      : Your Hearthstone cooldown is reduced by ${$s2/-60000} min and gains an additional charge.
 
 Name             : Carnage (id=458752) [Spell Family (15), Passive, Hidden] 
+Hotfixed         : Proc Flags 1 (40 -> 664232)
 Talent Entry     : Blood [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Physical
@@ -19735,7 +19736,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 101%
 Real PPM         : 1.1 (Haste multiplier)
-Proc Flags       : White Melee Taken, Yellow Melee Taken
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1164979)  : Apply Aura (6) | Dummy (4)
@@ -22879,6 +22880,7 @@ Effects          :
 Tooltip          : Damage of Sanguinary Burst increased by $w1%.
 
 Name             : Consumption (id=1263824) [Spell Family (15)] 
+Hotfixed         : Affecting Spells
 Talent Entry     : Blood [tree=spec, row=9, col=4, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Shadow
@@ -22890,6 +22892,7 @@ Cooldown         : 45 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
+Family Flags     : 125
 Attributes       : Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), Force Display Castbar (155), Allow Actions During Channel (160), Do Not Consume Resources (197), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Do Not Display Power Cost (303), Reset cooldown upon ending an encounter (333), Allow Defense While Channeling (338)
 Channel Interrupt: Sheathing (10), Interacting (11), Attacking (13), Action (Delayed) (17)
 Effects          :

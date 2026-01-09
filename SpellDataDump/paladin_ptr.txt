@@ -1187,6 +1187,7 @@ Description      : You are protected from all physical attacks for $d, but canno
 Tooltip          : Immune to physical attacks.  Cannot attack or use physical abilities.
 
 Name             : Crusader Strike (id=35395) [Spell Family (10)] 
+Hotfixed         : Charges (1 -> 2)
 Class            : Paladin
 School           : Physical
 Spell Type       : Melee
@@ -1198,8 +1199,8 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Charges          : 1 (6 seconds cooldown)
-Category         : 1627 (Type 0x5): Paladin (137026 effect#4), Avenging Crusader (216331 effect#11), Swift Justice (383228 effect#2), Improved Crusader Strike (383254 effect#1), Templar Strikes (406646 effect#2), Retribution Paladin (1258011 effect#6), Holy Paladin (1258016 effect#14)
+Charges          : 2 (6 seconds cooldown)
+Category         : 1627 (Type 0x5): Paladin (137026 effect#4), Swift Justice (383228 effect#2), Templar Strikes (406646 effect#2), Retribution Paladin (1258011 effect#6), Holy Paladin (1258016 effect#14)
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 189
@@ -1212,7 +1213,8 @@ Family Flags     : 47, 65
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), No Aura Log (202), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=25579)    : School Damage (2): physical | Attributes: Chain from Initial Target (7)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.071 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.4 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (1.071 -> 1.4)
 #2 (id=25580)    : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: holy_power | Target: Self (1)
 Description      : Strike the target for $<damage> $?s403664 [Holystrike][Physical] damage.$?a196926[
@@ -4225,9 +4227,10 @@ Effects          :
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779), Boundless Judgment (383970), Judgment (383991), Hammer of Wrath (1241413)
                    Family Flags: 23
 #14 (id=1266249) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -10 | Scaled Value: -10 | Target: Self (1)
+                   Base Value: -31 | Scaled Value: -31 | Target: Self (1)
                    Affected Spells: Crusader Strike (35395), Crusader Strike (132331), Crusader Strike (1279187)
                    Family Flags: 47
+Hotfixed         : Base Value (-10 -> -31)
 #15 (id=1266250) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
                    Affected Spells: Consecration (26573), Consecration (81297), Consecration (243597), Consecration (387881), Consecration (419810)
@@ -6867,13 +6870,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #10 (id=1034571) : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#11 (id=1164875) : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1627 (Category) | Target: Self (1)
-                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480), Crusader Strike (1279187)
-#12 (id=1283538) : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
+#11 (id=1164875) : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-#13 (id=1291584) : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Crusader Strike overrides Avenging Crusader
+Hotfixed         : Sub Type (411 -> 129), Base Value (1 -> 30), Misc Value (1627 -> 0)
+#12 (id=1283538) : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Crusader Strike overrides Avenging Crusader
                    Base Value: 1279187 | Scaled Value: 1279187 | Misc Value: 216331 | Target: Self (1)
+Hotfixed         : Sub Type (129 -> 332), Base Value (30 -> 1279187), Misc Value (0 -> 216331)
 Description      : You become the ultimate crusader of light, for $d. Judgment and Crusader Strike heal up to $s6 injured allies within $216371A yds for $s5% of the damage done, split evenly among them.
 
 This spell is replaced with Crusader Strike while active.
@@ -13898,21 +13900,6 @@ Effects          :
                    Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480), Crusader Strike (1279187)
 Description      : Reduces the cooldown of Judgment by ${$s1/-1000} sec and Crusader Strike by ${$s2/-1000} sec.
 
-Name             : Improved Crusader Strike (id=383254) [Spell Family (10), Passive] 
-Class            : Retribution Paladin
-School           : Holy
-Spell Type       : None
-Spell Level      : 10
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-Attributes       : Passive (6), Not In Spellbook (143)
-Effects          :
-#1 (id=1015039)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1627 (Category) | Target: Self (1)
-                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480), Crusader Strike (1279187)
-Description      : Crusader Strike now has ${$s1+1} charges.
-
 Name             : Ashes to Dust (id=383283) [Spell Family (10)] 
 Class            : Paladin
 School           : Physical
@@ -17310,6 +17297,7 @@ Description      : $@spelldesc404834
 Tooltip          : Cannot benefit from Consecrated Blade.
 
 Name             : Templar Strike (id=407480) [Spell Family (10)] 
+Hotfixed         : Charges (1 -> 2)
 Class            : Paladin
 School           : Holyfire
 Spell Type       : Melee
@@ -17318,8 +17306,8 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Charges          : 1 (6 seconds cooldown)
-Category         : 1627 (Type 0x5): Paladin (137026 effect#4), Avenging Crusader (216331 effect#11), Swift Justice (383228 effect#2), Improved Crusader Strike (383254 effect#1), Templar Strikes (406646 effect#2), Retribution Paladin (1258011 effect#6), Holy Paladin (1258016 effect#14)
+Charges          : 2 (6 seconds cooldown)
+Category         : 1627 (Type 0x5): Paladin (137026 effect#4), Swift Justice (383228 effect#2), Templar Strikes (406646 effect#2), Retribution Paladin (1258011 effect#6), Holy Paladin (1258016 effect#14)
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 189
@@ -23644,6 +23632,7 @@ Effects          :
 Description      : While out of combat, Divine Steed grants Shield of the Righteous for its duration and an additional ${$s1/1000}.1 sec after it fades.
 
 Name             : Valiant Crusade (id=1246042) [Spell Family (10)] 
+Hotfixed         : Aura Interrupt
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -23654,7 +23643,7 @@ Labels           : 16: Class Spells
                  : 292
 Triggered By     : Valiant Crusade (1245979)
 Attributes       : Not In Spellbook (143), Do Not Log on Learn (355)
-Aura Interrupt   : Attacking (12), Enter Combat (28), Change Specialization (38), Change Talent (46), Proc or Periodic Attack (53)
+Aura Interrupt   : Attacking (12), Enter Combat (28), Change Specialization (38), Proc or Periodic Attack (53)
 Effects          :
 #1 (id=1247411)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -24810,9 +24799,10 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1289007)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 23 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Shield of the Righteous (132403)
                    Family Flags: 107
+Hotfixed         : Base Value (10 -> -10)
 Description      : Shield of the Righteous reduces magical damage taken by $s1%.
 
 Name             : Adjudication (id=1277005) [Spell Family (10), Passive] 
@@ -24945,6 +24935,7 @@ Effects          :
 Description      : Your healing is increased by up to $s2%, based on the average health percentage of allies with your Beacon of Light.
 
 Name             : Crusader Strike (id=1279187) [Spell Family (10)] 
+Hotfixed         : Charges (1 -> 2)
 Class            : Paladin
 School           : Physical
 Spell Type       : Melee
@@ -24956,8 +24947,8 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Charges          : 1 (6 seconds cooldown)
-Category         : 1627 (Type 0x5): Paladin (137026 effect#4), Avenging Crusader (216331 effect#11), Swift Justice (383228 effect#2), Improved Crusader Strike (383254 effect#1), Templar Strikes (406646 effect#2), Retribution Paladin (1258011 effect#6), Holy Paladin (1258016 effect#14)
+Charges          : 2 (6 seconds cooldown)
+Category         : 1627 (Type 0x5): Paladin (137026 effect#4), Swift Justice (383228 effect#2), Templar Strikes (406646 effect#2), Retribution Paladin (1258011 effect#6), Holy Paladin (1258016 effect#14)
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 189

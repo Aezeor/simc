@@ -7467,6 +7467,7 @@ Effects          :
 Description      : $@spelldesc259381
 
 Name             : Kill Command (id=259489) [Spell Family (9)] 
+Hotfixed         : Charges (1 -> 2), Charge Cooldown (0 -> 5000)
 Talent Entry     : Survival [tree=spec, row=1, col=1, max_rank=1, req_points=0, replace="Steady Shot" (id=56641)]
 Class            : Hunter
 School           : Physical
@@ -7474,7 +7475,7 @@ Spell Type       : None
 Spell Level      : 11
 Range            : 50 yards
 GCD              : 1.5 seconds
-Charges          : 1
+Charges          : 2 (5 seconds cooldown)
 Category         : 1171 (Type 0x1): Hunter (137014 effect#11), Alpha Predator (269737 effect#1)
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
@@ -7507,6 +7508,7 @@ Talent Entry     : Survival [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
+Resource         : 20 Focus (2) (id=313118)[Hotfixed: NEW POWER]
 Spell Level      : 20
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -11515,7 +11517,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
 #1 (id=808436)   : Apply Aura (6) | Modify Power Regen (110)
-                   Base Value: 50 | Scaled Value: 50 | Resource: focus | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | Resource: focus | Target: Self (1)
+Hotfixed         : Base Value (50 -> 75)
 Description      : Barbed Shot now instantly grants $1282660s1 Focus.
 
 Passive Focus generation increased by $s1%.
@@ -20339,6 +20342,7 @@ Talent Entry     : Survival [tree=spec, row=9, col=1, max_rank=1, req_points=20]
 Class            : Hunter
 School           : Fire
 Spell Type       : Magic
+Resource         : 20 Focus (2) (id=313119)[Hotfixed: NEW POWER]
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 25 yards/sec
@@ -21543,7 +21547,7 @@ Talent Entry     : Survival [tree=spec, row=4, col=2, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Resource         : 30 Focus (2) (id=312325)
+Resource         : 50 Focus (2) (id=312325)[Hotfixed: Cost (30 -> 50)]
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
@@ -23033,7 +23037,8 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1296583)  : Energize Power (30)
-                   Base Value: 20 | Scaled Value: 20 | Resource: focus | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Resource: focus | Target: Self (1)
+Hotfixed         : Base Value (20 -> 25)
 Description      : $@spelldesc321014
 
 Name             : Serpentine Strikes (id=1282710) [Spell Family (9)] 
