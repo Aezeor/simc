@@ -16148,6 +16148,12 @@ bool death_knight_t::validate_fight_style( fight_style_e fight ) const
 // death_kight_t::validate_actor ======================================
 bool death_knight_t::validate_actor()
 {
+  if ( specialization() == DEATH_KNIGHT_UNHOLY && sim->dbc->wowv() == wowv_t( 12, 0, 0 ) )
+  {
+    throw sc_invalid_player_argument( "Unholy Death Knight sims are non functional for Midnight prepatch" );
+    return false;
+  }
+
   if ( talent.frost.frostbane.ok() )
   {
     sim->error( error_level_e::SEVERE, "The precise proc chance of Frostbane is unknown. Results will be incorrect." );
