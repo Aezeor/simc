@@ -15148,6 +15148,7 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { A_MODIFY_SCHOOL,                          "school"                           },  // 220
   { A_MOD_EXPERTISE,                          "expertise"                        },  // 240
   { A_MOD_BLOCK_PCT,                          "block_reduction"                  },  // 272
+  { A_MOD_MECHANIC_DAMAGE_DONE_PERCENT,       "mechanic_damage_done"             },  // 276
   { A_MOD_TARGET_ARMOR_PCT,                   "armor_penetration"                },  // 280
   { A_MOD_ALL_CRIT_CHANCE,                    "all_crit"                         },  // 290
   { A_MOD_MASTERY_PCT,                        "mastery"                          },  // 318
@@ -15198,10 +15199,16 @@ std::string resource_formatter( int type )
   return util::resource_type_string( static_cast<resource_e>( type ) );
 }
 
+std::string mechanic_formatter( int type )
+{
+  return std::string( spell_info::mechanic_str( as<unsigned>( type ) ) );
+}
+
 enum misc_expansion_e
 {
   MISC_EXPANSION_NONE = -1,
   MISC_TYPE_RESOURCE,
+  MISC_TYPE_MECHANIC,
   MISC_LIST_ATTR,
   MISC_BITMAP_ATTR,
   MISC_BITMAP_RATING,
@@ -15215,7 +15222,7 @@ struct misc_expansion_t
   std::function<std::string( int )> formatter;
 };
 
-static const std::array<misc_expansion_t, 10> misc_expansion_map = { {
+static const std::array<misc_expansion_t, 11> misc_expansion_map = { {
   { "attribute_value",           MISC_LIST_ATTR,     &attr_formatter     },
   { "base_attribute_multiplier", MISC_LIST_ATTR,     &attr_formatter     },
   { "attribute_multiplier",      MISC_BITMAP_ATTR,   &attr_formatter     },
@@ -15226,6 +15233,7 @@ static const std::array<misc_expansion_t, 10> misc_expansion_map = { {
   { "resource_max",              MISC_TYPE_RESOURCE, &resource_formatter },
   { "resource_multiplier",       MISC_TYPE_RESOURCE, &resource_formatter },
   { "resource_regen",            MISC_TYPE_RESOURCE, &resource_formatter },
+  { "mechanic_damage_done",      MISC_TYPE_MECHANIC, &mechanic_formatter },
 } };
 
 std::string_view get_field_from_type( int type )
@@ -15470,6 +15478,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       case A_MOD_CRIT_DAMAGE_MULTIPLIER:  // 163
       case A_MOD_ATTACK_POWER_PCT:  // 166
       case A_HASTE_ALL:  // 193
+      case A_MOD_MECHANIC_DAMAGE_DONE_PERCENT:  // 276
       case A_MOD_MELEE_AUTO_ATTACK_SPEED:  // 319
       case A_MOD_AUTO_ATTACK_PCT:  // 344
       case A_MOD_RATING_MULTIPLIER:  // 405
@@ -15653,6 +15662,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         return true;
       }
       case MISC_TYPE_RESOURCE:
+      case MISC_TYPE_MECHANIC:
       {
         auto [ prev, now ] =
           add_passive_effect_modifier( passive_player_modifiers_, id_type, misc_type, 0, flat_val, pct_val );

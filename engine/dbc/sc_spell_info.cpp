@@ -1825,16 +1825,6 @@ static constexpr auto _scaling_class_strings = util::make_static_map<int, std::s
   { -10, "Restore Mana"            },
 } );
 
-std::string mechanic_str( unsigned mechanic )
-{
-  auto it = _mechanic_strings.find( mechanic );
-  if ( it != _mechanic_strings.end() )
-  {
-    return std::string( it->second );
-  }
-  return fmt::format( "UnknownMechanic({})", mechanic );
-}
-
 std::string label_str( int label, const dbc_t& dbc, size_t wrap )
 {
   auto it = _label_strings.find( label );
@@ -3776,6 +3766,14 @@ std::string_view spell_info::effect_property_str( const spelleffect_data_t* effe
 {
   auto it = _property_type_strings.find( effect->property_type() );
   if ( it != _property_type_strings.end() )
+    return it->second;
+  return {};
+}
+
+std::string_view spell_info::mechanic_str( unsigned mechanic )
+{
+  auto it = _mechanic_strings.find( mechanic );
+  if ( it != _mechanic_strings.end() )
     return it->second;
   return {};
 }

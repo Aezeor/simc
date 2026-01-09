@@ -784,6 +784,16 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   base_crit_bonus += crit_bonus_mod[ 1 ];
   crit_bonus_multiplier *= crit_bonus_mod[ 2 ];
 
+  // handle mechanic modifiers (currently only bleed is found in relevant spell data)
+  // as the effect (subtype 276) is player scoped, we call get_passive_player_value()
+  // only the spell's mechanic field is checked, the effect's mechanic field is not sufficient for this effect subtype
+  if ( spell_data.mechanic() )
+  {
+    auto mechanic_mul = player->get_passive_player_value( 1.0, "mechanic_damage_done", spell_data.mechanic() );
+    base_dd_multiplier *= mechanic_mul;
+    base_td_multiplier *= mechanic_mul;
+  }
+
   for ( const spelleffect_data_t& ed : spell_data.effects() )
   {
     parse_effect_data( ed );
