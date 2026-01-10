@@ -21,12 +21,12 @@ enum class secondary_trigger
   WEAPONMASTER,
   SECRET_TECHNIQUE,
   SECRET_TECHNIQUE_CLONE,
-  SHURIKEN_TORNADO,
   INTERNAL_BLEEDING,
   MAIN_GAUCHE,
   FAN_THE_HAMMER,
   COUP_DE_GRACE,
   HAND_OF_FATE,
+  SHADOW_CLONE,
 };
 
 enum stealth_type_e
@@ -281,9 +281,15 @@ public:
     struct
     {
       actions::rogue_attack_t* backstab = nullptr;
+      actions::rogue_attack_t* black_powder = nullptr;
+      actions::rogue_attack_t* eviscerate = nullptr;
       actions::rogue_attack_t* gloomblade = nullptr;
+      actions::rogue_attack_t* goremaws_bite = nullptr;
+      actions::rogue_attack_t* secret_technique = nullptr;
       actions::rogue_attack_t* shadowstrike = nullptr;
-    } weaponmaster;
+      actions::rogue_attack_t* shuriken_storm = nullptr;
+      actions::rogue_attack_t* shuriken_toss = nullptr;
+    } shadow_clone_attack;
     struct
     {
       actions::rogue_attack_t* deathstalkers_mark = nullptr;
@@ -347,9 +353,10 @@ public:
     damage_buff_t* triple_threat;
     damage_buff_t* jackpot;
     // Subtlety
+    buff_t* ancient_arts;
     buff_t* find_weakness;
     buff_t* shadow_blades;
-    damage_buff_t* shadow_dance;
+    buff_t* shadow_dance;
 
     // Talents
     // Shared
@@ -410,8 +417,7 @@ public:
     buff_t* secret_technique;   // Only to simplify APL tracking
     buff_t* shadow_techniques;  // Internal tracking buff
     buff_t* shot_in_the_dark;
-    buff_t* shuriken_tornado;
-    buff_t* silent_storm;
+    damage_buff_t* silent_storm;
     buff_t* the_first_dance;
     damage_buff_t* the_rotten;
 
@@ -459,7 +465,6 @@ public:
     cooldown_t* shadow_dance;
     cooldown_t* shadowstep;
     cooldown_t* shiv;
-    cooldown_t* shuriken_tornado;
     cooldown_t* sprint;
     cooldown_t* thistle_tea;
     cooldown_t* unseen_blade_icd;
@@ -668,6 +673,7 @@ public:
     const spell_data_t* shuriken_storm_rank_2;
     const spell_data_t* shuriken_toss;
 
+    const spell_data_t* ancient_arts_buff;
     const spell_data_t* black_powder_shadow_attack;
     const spell_data_t* deepening_shadows_buff;
     const spell_data_t* eviscerate_shadow_attack;
@@ -688,6 +694,16 @@ public:
     const spell_data_t* shot_in_the_dark_buff;
     const spell_data_t* silent_storm_buff;
     const spell_data_t* the_first_dance_buff;
+
+    const spell_data_t* shadow_clone_backstab_attack;
+    const spell_data_t* shadow_clone_black_powder_attack;
+    const spell_data_t* shadow_clone_eviscerate_attack;
+    const spell_data_t* shadow_clone_gloomblade_attack;
+    const spell_data_t* shadow_clone_goremaws_bite_attack;
+    const spell_data_t* shadow_clone_secret_technique_attack;
+    const spell_data_t* shadow_clone_shadowstrike_attack;
+    const spell_data_t* shadow_clone_shuriken_storm_attack;
+    const spell_data_t* shadow_clone_shuriken_toss_attack;
 
     // Multi-Spec
     const spell_data_t* rupture;      // Assassination + Subtlety
@@ -946,6 +962,12 @@ public:
       player_talent_t potent_powder;
       player_talent_t improved_secret_technique;
 
+      player_talent_t umbral_edge;
+
+      player_talent_t ancient_arts_1;
+      player_talent_t ancient_arts_2;
+      player_talent_t ancient_arts_3;
+
     } subtlety;
 
     struct deathstalker_talents_t
@@ -1133,7 +1155,6 @@ public:
     cooldowns.shadow_dance              = get_cooldown( "shadow_dance" );
     cooldowns.shadowstep                = get_cooldown( "shadowstep" );
     cooldowns.shiv                      = get_cooldown( "shiv" );
-    cooldowns.shuriken_tornado          = get_cooldown( "shuriken_tornado" );
     cooldowns.sprint                    = get_cooldown( "sprint" );   
     cooldowns.thistle_tea               = get_cooldown( "thistle_tea" );
     cooldowns.unseen_blade_icd          = get_cooldown( "unseen_blade_icd" );
@@ -1777,6 +1798,11 @@ public:
       cold_blood_consumed_proc = p()->get_proc( "Cold Blood " + ab::name_str );
     }
 
+    if ( !is_secondary_action() && shadow_clone_attack() )
+    {
+      ab::add_child( shadow_clone_attack() );
+    }
+
     if ( affected_by.deadly_pursuit && ab::cooldown && ab::cooldown->action == this )
     {
       if ( !range::contains( p()->deadly_pursuit_cooldowns, ab::cooldown ) )
@@ -1813,8 +1839,8 @@ public:
     register_damage_buff( p()->buffs.flawless_form );
     register_damage_buff( p()->buffs.kingsbane );
     register_damage_buff( p()->buffs.momentum_of_despair );
-    register_damage_buff( p()->buffs.shadow_dance );
     register_damage_buff( p()->buffs.shadow_focus );
+    register_damage_buff( p()->buffs.silent_storm );
     register_damage_buff( p()->buffs.symbolic_victory );
     register_damage_buff( p()->buffs.the_rotten );
     register_damage_buff( p()->buffs.zero_in );
@@ -1865,6 +1891,7 @@ public:
     register_consume_buff( p()->buffs.deathstalkers_mark, p()->buffs.deathstalkers_mark->is_affecting( &ab::data() ),
                            nullptr, 1_ms, true ); // Works with WM
     register_consume_buff( p()->buffs.goremaws_bite, affected_by.goremaws_bite );
+    register_consume_buff( p()->buffs.silent_storm, p()->buffs.silent_storm->is_affecting_crit_chance( &ab::data() ), nullptr, 1_ms ); // MIDNIGHT TOCHECK Shadow Clone timing
     register_consume_buff( p()->buffs.symbolic_victory, p()->buffs.symbolic_victory->is_affecting( &ab::data() ),
                            nullptr, p()->bugs ? 0_ms : 1_ms, false, true ); // 2024-08-12 -- Consumed immediatey, does not work with Shadowy Finishers
     register_consume_buff( p()->buffs.the_rotten, p()->buffs.the_rotten->is_affecting_direct( &ab::data() ), nullptr, 1_ms, false, true );
@@ -2127,6 +2154,10 @@ public:
   virtual bool procs_deal_fate() const
   { return false; }
 
+  // Placeholder for actions which trigger Subtlety Shadow Clone attacks to be overridden
+  virtual rogue_attack_t* shadow_clone_attack() const
+  { return nullptr; }
+
   // Overridable wrapper for checking stealth requirement
   virtual bool requires_stealth() const
   {
@@ -2173,7 +2204,8 @@ public:
   void trigger_ruthlessness_cp( const action_state_t* );
   void trigger_combo_point_gain( int, gain_t* gain = nullptr );
   void trigger_shadow_techniques( const action_state_t* );
-  void trigger_weaponmaster( const action_state_t*, rogue_attack_t* action );
+  void trigger_shadow_techniques_cp( const action_state_t* );
+  void trigger_weaponmaster( const action_state_t* );
   void trigger_opportunity( const action_state_t*, rogue_attack_t* action, double modifier = 1.0 );
   void trigger_restless_blades( const action_state_t* );
   void trigger_hand_of_fate( const action_state_t*, bool biased = false );
@@ -2201,6 +2233,7 @@ public:
   void trigger_supercharger();
   void trigger_echoing_reprimand( const action_state_t* state );
   void trigger_secondary_poisoning( const action_state_t* state );
+  bool trigger_shadow_clone( const action_state_t* state, rogue_attack_t* action = nullptr, double chance = 0.0 );
   void trigger_tww1_assassination_set_bonus( const action_state_t* state );
   void trigger_tww1_outlaw_set_bonus( const action_state_t* );
   void trigger_tww2_set_bonus_removal();
@@ -2509,7 +2542,7 @@ public:
 
     if ( affected_by.planned_execution && p()->buffs.shadow_dance->check() )
     {
-      cm *= 1.0 + p()->talent.subtlety.planned_execution->effectN( 1 ).percent();
+      cm *= 1.0 + p()->spec.shadow_dance->effectN( 9 ).percent();
     }
 
     return cm;
@@ -2623,16 +2656,7 @@ public:
         }
 
         // Shadow Techniques gains are the last thing to be evaluated in order to reduce buff stack consume waste
-        if ( p()->spec.shadow_techniques->ok() && p()->buffs.shadow_techniques->up() && ab::energize_amount > 0 )
-        {
-          auto consume_stacks = std::min( p()->buffs.shadow_techniques->check(),
-                                          std::max( 0, as<int>( p()->consume_cp_max() - p()->current_cp() ) ) );
-          if ( consume_stacks > 0 )
-          {
-            trigger_combo_point_gain( consume_stacks, p()->gains.shadow_techniques );
-            p()->buffs.shadow_techniques->decrement( consume_stacks );
-          }
-        }
+        trigger_shadow_techniques_cp( ab::execute_state );
 
         if ( p()->talent.rogue.cold_blooded_killer->ok() && ab::energize_amount > 0 && ab::execute_state->result == RESULT_CRIT )
         {
@@ -3521,6 +3545,31 @@ struct ambush_t : public rogue_attack_t
   { return true; }
 };
 
+// Shadow Clone Attacks =====================================================
+
+struct shadow_clone_t : public rogue_attack_t
+{
+  shadow_clone_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
+    rogue_attack_t( name, p, s )
+  {
+    base_multiplier = 0.5; // All current triggers default to half damage
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    // MIDNIGHT TOCHECK -- Check final functionality once bugs are fixed, currently a bit wonky
+    //                     Does not currently appear to work with Shadowcraft bonuses
+    if ( p()->talent.subtlety.ancient_arts_2->ok() && rng().roll( p()->talent.subtlety.ancient_arts_2->effectN( 1 ).percent() ) )
+    {
+      double energy_gain = p()->spec.shadow_techniques_energize->effectN( 2 ).base_value();
+      p()->resource_gain( RESOURCE_ENERGY, energy_gain, p()->gains.shadow_techniques, execute_state->action );
+      p()->buffs.shadow_techniques->trigger(); // Combo Point storage
+    }
+  }
+};
+
 // Lashe Macabre ============================================================
 
 struct lashe_macabre_t : public rogue_attack_t
@@ -3557,11 +3606,6 @@ struct backstab_t : public rogue_attack_t
 
     if ( !is_secondary_action() )
     {
-      if ( p()->active.weaponmaster.backstab )
-      {
-        add_child( p()->active.weaponmaster.backstab );
-      }
-
       if ( p()->active.lingering_shadow && !p()->talent.subtlety.gloomblade->ok() )
       {
         add_child( p()->active.lingering_shadow );
@@ -3591,7 +3635,7 @@ struct backstab_t : public rogue_attack_t
     rogue_attack_t::impact( state );
 
     trigger_unseen_blade( state );
-    trigger_weaponmaster( state, p()->active.weaponmaster.backstab );
+    trigger_weaponmaster( state );
     trigger_echoing_reprimand( state );
 
     if ( state->result == RESULT_CRIT && p()->talent.subtlety.improved_backstab->ok() && p()->position() == POSITION_BACK )
@@ -3614,6 +3658,9 @@ struct backstab_t : public rogue_attack_t
   // 2024-9-04 -- Currently does not proc from Weaponmaster hits
   bool procs_nimble_flurry() const override
   { return !p()->bugs || !is_secondary_action(); }
+
+  rogue_attack_t* shadow_clone_attack() const override
+  { return p()->active.shadow_clone_attack.backstab; }
 };
 
 // Dispatch =================================================================
@@ -4238,6 +4285,9 @@ struct eviscerate_t : public rogue_attack_t
 
   bool procs_nimble_flurry() const override
   { return true; }
+
+  rogue_attack_t* shadow_clone_attack() const override
+  { return p()->active.shadow_clone_attack.eviscerate; }
 };
 
 // Fan of Knives ============================================================
@@ -4414,11 +4464,6 @@ struct gloomblade_t : public rogue_attack_t
 
     if ( !is_secondary_action() )
     {
-      if ( p()->active.weaponmaster.gloomblade )
-      {
-        add_child( p()->active.weaponmaster.gloomblade );
-      }
-
       if ( p()->active.lingering_shadow && p()->talent.subtlety.gloomblade->ok() )
       {
         add_child( p()->active.lingering_shadow );
@@ -4436,7 +4481,7 @@ struct gloomblade_t : public rogue_attack_t
     rogue_attack_t::impact( state );
 
     trigger_unseen_blade( state );
-    trigger_weaponmaster( state, p()->active.weaponmaster.gloomblade );
+    trigger_weaponmaster( state );
     trigger_echoing_reprimand( state );
 
     if ( state->result == RESULT_CRIT && p()->talent.subtlety.improved_backstab->ok() )
@@ -4450,6 +4495,9 @@ struct gloomblade_t : public rogue_attack_t
 
   bool procs_nimble_flurry() const override
   { return true; }
+
+  rogue_attack_t* shadow_clone_attack() const override
+  { return p()->active.shadow_clone_attack.gloomblade; }
 };
 
 // Kick =====================================================================
@@ -5177,6 +5225,9 @@ struct secret_technique_t : public rogue_attack_t
 
   bool consumes_supercharger() const override
   { return true; }
+
+  rogue_attack_t* shadow_clone_attack() const override
+  { return p()->active.shadow_clone_attack.secret_technique; }
 };
 
 // Shadow Blades ============================================================
@@ -5306,23 +5357,12 @@ struct shadowstrike_t : public rogue_attack_t
   {
   }
 
-  void init() override
-  {
-    rogue_attack_t::init();
-
-    if ( !is_secondary_action() )
-    {
-      if ( p()->active.weaponmaster.shadowstrike )
-        add_child( p()->active.weaponmaster.shadowstrike );
-    }
-  }
-
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
 
     trigger_unseen_blade( state );
-    trigger_weaponmaster( state, p()->active.weaponmaster.shadowstrike );
+    trigger_weaponmaster( state );
     trigger_find_weakness( state );
     trigger_deathstalkers_mark_debuff( state );
   }
@@ -5358,6 +5398,9 @@ struct shadowstrike_t : public rogue_attack_t
   // 2024-9-04 -- Currently does not proc from Weaponmaster hits
   bool procs_nimble_flurry() const override
   { return !p()->bugs || !is_secondary_action(); }
+
+  rogue_attack_t* shadow_clone_attack() const override
+  { return p()->active.shadow_clone_attack.shadowstrike; }
 };
 
 // Black Powder =============================================================
@@ -5449,14 +5492,20 @@ struct black_powder_t: public rogue_attack_t
 
   bool procs_poison() const override
   { return true; }
+
+  rogue_attack_t* shadow_clone_attack() const override
+  { return p()->active.shadow_clone_attack.black_powder; }
 };
 
 // Shuriken Storm ===========================================================
 
 struct shuriken_storm_t: public rogue_attack_t
 {
+  action_t* clone_attack;
+
   shuriken_storm_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ):
-    rogue_attack_t( name, p, p->spec.shuriken_storm, options_str )
+    rogue_attack_t( name, p, p->spec.shuriken_storm, options_str ),
+    clone_attack( nullptr )
   {
     energize_type = action_energize::PER_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
@@ -5486,18 +5535,14 @@ struct shuriken_storm_t: public rogue_attack_t
     return m;
   }
 
-  double composite_crit_chance() const override
-  {
-    double c = rogue_attack_t::composite_crit_chance();    
-    c += p()->buffs.silent_storm->stack_value();
-    return c;
-  }
-
   void execute() override
   {
     rogue_attack_t::execute();
     
-    p()->buffs.silent_storm->expire();
+    if ( p()->talent.subtlety.shuriken_tornado->ok() )
+    {
+      trigger_shadow_clone( execute_state, shadow_clone_attack(), p()->talent.subtlety.shuriken_tornado->effectN( 1 ).percent() );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -5518,31 +5563,9 @@ struct shuriken_storm_t: public rogue_attack_t
 
   bool procs_poison() const override
   { return true; }
-};
 
-// Shuriken Tornado =========================================================
-
-struct shuriken_tornado_t : public rogue_spell_t
-{
-  shuriken_tornado_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_spell_t( name, p, p->talent.subtlety.shuriken_tornado, options_str )
-  {
-    dot_duration = timespan_t::zero();
-    aoe = -1;
-
-    // Trigger action is created in the buff, but it can't be parented then, just look it up here
-    action_t* trigger_action = p->find_secondary_trigger_action<shuriken_storm_t>( secondary_trigger::SHURIKEN_TORNADO );
-    if ( trigger_action )
-    {
-      add_child( trigger_action );
-    }
-  }
-
-  void execute() override
-  {
-    rogue_spell_t::execute();
-    p()->buffs.shuriken_tornado->trigger();
-  }
+  rogue_attack_t* shadow_clone_attack() const override
+  { return p()->active.shadow_clone_attack.shuriken_storm; }
 };
 
 // Shuriken Toss ============================================================
@@ -5557,6 +5580,9 @@ struct shuriken_toss_t : public rogue_attack_t
 
   bool procs_seal_fate() const override
   { return false; }
+
+  rogue_attack_t* shadow_clone_attack() const override
+  { return p()->active.shadow_clone_attack.shuriken_toss; }
 };
 
 // Sinister Strike ==========================================================
@@ -5859,11 +5885,19 @@ struct kidney_shot_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    if ( !state->target->is_boss() && p()->active.internal_bleeding )
+    if ( !state->target->is_boss() )
     {
-      // 2023-10-05 -- Currently when triggerd by an ER cast, only uses base combo points
-      p()->active.internal_bleeding->trigger_secondary_action( state->target,
-                                                               cast_state( state )->get_combo_points( p()->bugs ) );
+      if ( p()->active.internal_bleeding )
+      {
+        // 2023-10-05 -- Currently when triggerd by an ER cast, only uses base combo points
+        p()->active.internal_bleeding->trigger_secondary_action( state->target,
+                                                                 cast_state( state )->get_combo_points( p()->bugs ) );
+      }
+
+      if ( p()->talent.subtlety.umbral_edge->ok() )
+      {
+        trigger_shadow_clone( state, p()->active.shadow_clone_attack.eviscerate );
+      }
     }
   }
 };
@@ -5889,6 +5923,11 @@ struct cheap_shot_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
     trigger_find_weakness( state );
+
+    if ( p()->talent.subtlety.umbral_edge->ok() )
+    {
+      trigger_shadow_clone( state, p()->active.shadow_clone_attack.shadowstrike );
+    }
   }
 };
 
@@ -6096,6 +6135,9 @@ struct goremaws_bite_t : public rogue_attack_t
 
   bool procs_nimble_flurry() const override
   { return true; }
+
+  rogue_attack_t* shadow_clone_attack() const override
+  { return p()->active.shadow_clone_attack.goremaws_bite; }
 };
 
 // Echoing Reprimand ========================================================
@@ -7028,7 +7070,7 @@ struct vanish_t : public stealth_like_buff_t<buff_t>
 };
 
 // Shadow dance acts like "stealth like abilities"
-struct shadow_dance_t : public stealth_like_buff_t<damage_buff_t>
+struct shadow_dance_t : public stealth_like_buff_t<buff_t>
 {
   shadow_dance_t( rogue_t* p ) :
     base_t( p, "shadow_dance", p->spec.shadow_dance )
@@ -7052,7 +7094,7 @@ struct shadow_dance_t : public stealth_like_buff_t<damage_buff_t>
       h = rogue->apply_combat_rating_dr( RATING_MELEE_HASTE, h );
       h = 1.0 / ( 1.0 + h );
       h *= rogue->current.melee_haste;
-      bd *= rogue->spec.deepening_shadows_buff->effectN( 3 ).percent() * h;
+      bd *= 1.0 + rogue->spec.deepening_shadows_buff->effectN( 3 ).percent() * ( 1.0 - h);
     }
 
     return bd;
@@ -7087,29 +7129,6 @@ struct shadow_dance_t : public stealth_like_buff_t<damage_buff_t>
 
     // These buffs do not persist after Shadow Dance expires, unlike normal Stealth
     rogue->buffs.improved_garrote->expire();
-  }
-};
-
-struct shuriken_tornado_t : public buff_t
-{
-  rogue_t* rogue;
-  actions::shuriken_storm_t* shuriken_storm_action;
-
-  shuriken_tornado_t( rogue_t* r ) :
-    buff_t( r, "shuriken_tornado", r->talent.subtlety.shuriken_tornado ),
-    rogue( r ),
-    shuriken_storm_action( nullptr )
-  {
-    set_cooldown( timespan_t::zero() );
-    set_period( timespan_t::from_seconds( 1.0 ) ); // Not explicitly in spell data
-
-    shuriken_storm_action = r->get_secondary_trigger_action<actions::shuriken_storm_t>(
-      secondary_trigger::SHURIKEN_TORNADO, "shuriken_storm_tornado" );
-    shuriken_storm_action->not_a_proc = true; // 2023-10-19 -- Now appears to be a scripted foreground cast
-    shuriken_storm_action->affected_by.shadow_blades_cp = false; // 2023-10-11 -- No longer generates increased CP
-    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-      shuriken_storm_action->trigger_secondary_action( rogue->target );
-    } );
   }
 };
 
@@ -7721,9 +7740,41 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* state, actions::rogue_attack_t* action )
+void actions::rogue_action_t<Base>::trigger_shadow_techniques_cp( const action_state_t* state )
 {
-  if ( !p()->talent.subtlety.weaponmaster->ok() || !ab::result_is_hit( state->result ) || !action )
+  if ( !p()->spec.shadow_techniques->ok() || !p()->buffs.shadow_techniques->up() || ab::energize_amount == 0 )
+    return;
+
+  auto consume_stacks = std::min( p()->buffs.shadow_techniques->check(),
+                                  std::max( 0, as<int>( p()->consume_cp_max() - p()->current_cp() ) ) );
+  if ( consume_stacks == 0 )
+    return;
+    
+  trigger_combo_point_gain( consume_stacks, p()->gains.shadow_techniques );
+  p()->buffs.shadow_techniques->decrement( consume_stacks );
+    
+  if ( p()->talent.subtlety.ancient_arts_1->ok() )
+  {
+    const double trigger_chance = p()->talent.subtlety.ancient_arts_1->effectN( 1 ).percent() * consume_stacks;
+    trigger_shadow_clone( ab::execute_state, shadow_clone_attack(), trigger_chance );
+  }
+
+  if ( p()->talent.subtlety.ancient_arts_3->ok() &&
+       p()->buffs.shadow_techniques->check() >= p()->talent.subtlety.ancient_arts_3->effectN( 1 ).base_value() )
+  {
+    p()->buffs.ancient_arts->trigger();
+  }
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* state )
+{
+  if ( !p()->talent.subtlety.weaponmaster->ok() || !ab::result_is_hit( state->result ) )
+    return;
+
+  actions::rogue_attack_t* action = shadow_clone_attack();
+  assert( action );
+  if ( !action )
     return;
 
   // 2022-02-24 -- 9.2 now allows this to trigger with a per-target ICD
@@ -7731,16 +7782,29 @@ void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* 
   if ( !tcd || tcd->down() )
     return;
 
-  if ( !p()->rng().roll( p()->talent.subtlety.weaponmaster->proc_chance() ) )
+  if ( !trigger_shadow_clone( state, action, p()->talent.subtlety.weaponmaster->effectN( 1 ).percent() ) )
     return;
 
   p()->procs.weaponmaster->occur();
   tcd->start();
 
   p()->sim->print_log( "{} procs weaponmaster for {}", *p(), *this );
+}
 
-  // Direct damage re-computes on execute
-  action->trigger_secondary_action( state->target, cast_state( state )->get_combo_points() );
+template <typename Base>
+bool actions::rogue_action_t<Base>::trigger_shadow_clone( const action_state_t* state, actions::rogue_attack_t* action, double chance )
+{
+  assert( action );
+
+  if ( p()->specialization() != ROGUE_SUBTLETY || !ab::result_is_hit( state->result ) || !action || chance <= 0.0 )
+    return false;
+
+  if ( !p()->rng().roll( chance ) )
+    return false;
+
+  p()->sim->print_log( "{} triggers shadow clone attack {} on {}", *p(), *action, *state->target );
+  action->trigger_secondary_action( state->target );
+  return true;
 }
 
 template <typename Base>
@@ -8089,12 +8153,13 @@ void actions::rogue_action_t<Base>::trigger_caustic_spatter_debuff( const action
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_ancient_arts( const action_state_t* )
 {
-  return;
-
-  if ( /*!p()->talent.subtlety.ancient_arts_3->ok() ||*/ !ab::hit_any_target )
+  if ( !p()->talent.subtlety.ancient_arts_3->ok() || !ab::hit_any_target )
     return;
 
   if ( ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 )
+    return;
+
+  if ( !ab::has_amount_result() )
     return;
 
   // Needs to be delayed as consume_resource for finishers doesn't trigger until post-impact
@@ -8104,8 +8169,17 @@ void actions::rogue_action_t<Base>::trigger_ancient_arts( const action_state_t* 
     {
       trigger_combo_point_gain( current_deficit, p()->gains.shadow_techniques_ancient_arts );
       p()->buffs.shadow_techniques->decrement( current_deficit );
+
+      // MIDNIGHT TOCHECK -- Assume this is intended to trigger off Ancient Arts 3 as well?
+      if ( p()->talent.subtlety.ancient_arts_1->ok() )
+      {
+        const double trigger_chance = p()->talent.subtlety.ancient_arts_1->effectN( 1 ).percent() * current_deficit;
+        trigger_shadow_clone( ab::execute_state, shadow_clone_attack(), trigger_chance );
+      }
     }
   } );
+
+  p()->buffs.ancient_arts->expire();
 }
 
 template <typename Base>
@@ -8903,7 +8977,6 @@ action_t* rogue_t::create_action( util::string_view name, util::string_view opti
   if ( name == "shadowstep"             ) return new shadowstep_t             ( name, this, options_str );
   if ( name == "shadowstrike"           ) return new shadowstrike_t           ( name, this, options_str );
   if ( name == "shuriken_storm"         ) return new shuriken_storm_t         ( name, this, options_str );
-  if ( name == "shuriken_tornado"       ) return new shuriken_tornado_t       ( name, this, options_str );
   if ( name == "shuriken_toss"          ) return new shuriken_toss_t          ( name, this, options_str );
   if ( name == "sinister_strike"        ) return new sinister_strike_t        ( name, this, options_str );
   if ( name == "slice_and_dice"         ) return new slice_and_dice_t         ( name, this, options_str );
@@ -9549,12 +9622,14 @@ void rogue_t::init_spells()
   talent.subtlety.gloomblade = find_talent_spell( talent_tree::SPECIALIZATION, "Gloomblade" );
   talent.subtlety.goremaws_bite = find_talent_spell( talent_tree::SPECIALIZATION, "Goremaw's Bite" );
   talent.subtlety.improved_backstab = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Backstab" );
+  talent.subtlety.improved_secret_technique = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Secret Technique" );
   talent.subtlety.improved_shuriken_storm = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Shuriken Storm" );
   talent.subtlety.lingering_shadow = find_talent_spell( talent_tree::SPECIALIZATION, "Lingering Shadow" );
   talent.subtlety.master_of_shadows = find_talent_spell( talent_tree::SPECIALIZATION, "Master of Shadows" );
   talent.subtlety.night_terrors = find_talent_spell( talent_tree::SPECIALIZATION, "Night Terrors" );
   talent.subtlety.perforated_veins = find_talent_spell( talent_tree::SPECIALIZATION, "Perforated Veins" );
   talent.subtlety.planned_execution = find_talent_spell( talent_tree::SPECIALIZATION, "Planned Execution" );
+  talent.subtlety.potent_powder = find_talent_spell( talent_tree::SPECIALIZATION, "Potent Powder" );
   talent.subtlety.premeditation = find_talent_spell( talent_tree::SPECIALIZATION, "Premeditation" );
   talent.subtlety.quick_decisions = find_talent_spell( talent_tree::SPECIALIZATION, "Quick Decisions" );
   talent.subtlety.relentless_strikes = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Strikes" );
@@ -9571,12 +9646,14 @@ void rogue_t::init_spells()
   talent.subtlety.terrifying_pace = find_talent_spell( talent_tree::SPECIALIZATION, "Terrifying Pace" );
   talent.subtlety.the_first_dance = find_talent_spell( talent_tree::SPECIALIZATION, "The First Dance" );
   talent.subtlety.the_rotten = find_talent_spell( talent_tree::SPECIALIZATION, "The Rotten" );
+  talent.subtlety.umbral_edge = find_talent_spell( talent_tree::SPECIALIZATION, "Umbral Edge" );
   talent.subtlety.veiltouched = find_talent_spell( talent_tree::SPECIALIZATION, "Veiltouched" );
   talent.subtlety.warning_signs = find_talent_spell( talent_tree::SPECIALIZATION, "Warning Signs" );
   talent.subtlety.weaponmaster = find_talent_spell( talent_tree::SPECIALIZATION, "Weaponmaster", ROGUE_SUBTLETY );
 
-  talent.subtlety.potent_powder = find_talent_spell( talent_tree::SPECIALIZATION, "Potent Powder" );
-  talent.subtlety.improved_secret_technique = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Secret Technique" );
+  talent.subtlety.ancient_arts_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1268932 );
+  talent.subtlety.ancient_arts_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1268936 );
+  talent.subtlety.ancient_arts_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1268939 );
 
   // Shared Talents
   spell.shadowstep = find_spell( 36554 );     // Base spell with 0 charges
@@ -9743,7 +9820,7 @@ void rogue_t::init_spells()
   spec.gravedigger_buff = talent.outlaw.gravedigger_3->ok() ? find_spell( 1265935 ) : spell_data_t::not_found();
   spec.gravedigger_energize = talent.outlaw.gravedigger_3->ok() ? find_spell( 1279356 ) : spell_data_t::not_found();
   spec.improved_adrenaline_rush_energize = talent.outlaw.improved_adrenaline_rush->ok() ? find_spell( 395424 ) : spell_data_t::not_found();
-  // TOCHECK -- Killing Spree spell ids could change over 11.2 PTR, new spell 1248604 exists but not used in logs yet
+  // MIDNIGHT TOCHECK -- Killing Spree spell ids could change over 11.2 PTR, new spell 1248604 exists but not used in logs yet
   spec.killing_spree_mh_attack = talent.outlaw.killing_spree->ok() ? find_spell( 57841 ) : spell_data_t::not_found();
   spec.killing_spree_oh_attack = talent.outlaw.killing_spree->ok() ? find_spell( 57842 ) : spell_data_t::not_found();
   spec.killing_spree_energize = talent.outlaw.killing_spree->ok() ? find_spell( 1235074 ) : spell_data_t::not_found();
@@ -9760,11 +9837,11 @@ void rogue_t::init_spells()
   spec.jackpot = spec.roll_the_bones->ok() ? find_spell( 1214937 ) : spell_data_t::not_found();
 
   // Subtlety
+  spec.ancient_arts_buff = talent.subtlety.ancient_arts_3->ok() ? find_spell( 1269163 ) : spell_data_t::not_found();
   spec.black_powder_shadow_attack = talent.subtlety.shadowed_finishers->ok() ? find_spell( 319190 ) : spell_data_t::not_found();
   spec.deepening_shadows_buff = talent.subtlety.deepening_shadows->ok() ? find_spell( 1271702 ) : spell_data_t::not_found();
   spec.eviscerate_shadow_attack = talent.subtlety.shadowed_finishers->ok() ? find_spell( 328082 ) : spell_data_t::not_found();
-  spec.find_weakness_buff = talent.subtlety.find_weakness->ok() ?
-    ( talent.subtlety.death_perception->ok() || talent.subtlety.perforated_veins->ok() ? find_spell( 1264521 ) : find_spell( 316220 ) ) : spell_data_t::not_found();
+  spec.find_weakness_buff = talent.subtlety.find_weakness->ok() ? find_spell( 1264521 ) : spell_data_t::not_found();
   spec.goremaws_bite_buff = talent.subtlety.goremaws_bite->effectN( 2 ).trigger();
   spec.lashe_macabre_attack = talent.subtlety.danse_macabre->ok() ? find_spell( 1264397 ) : spell_data_t::not_found();
   spec.lingering_shadow_attack = talent.subtlety.lingering_shadow->ok() ? find_spell( 386081 ) : spell_data_t::not_found();
@@ -9781,6 +9858,16 @@ void rogue_t::init_spells()
   spec.shot_in_the_dark_buff = talent.subtlety.shot_in_the_dark->ok() ? find_spell( 257506 ) : spell_data_t::not_found();
   spec.silent_storm_buff = talent.subtlety.silent_storm->ok() ? find_spell( 385727 ) : spell_data_t::not_found();
   spec.the_first_dance_buff = talent.subtlety.the_first_dance->ok() ? find_spell( 470678 ) : spell_data_t::not_found();
+
+  spec.shadow_clone_backstab_attack = find_spell( 1269209, ROGUE_SUBTLETY );
+  spec.shadow_clone_black_powder_attack = find_spell( 1269565, ROGUE_SUBTLETY );
+  spec.shadow_clone_eviscerate_attack = find_spell( 1269205, ROGUE_SUBTLETY );
+  spec.shadow_clone_gloomblade_attack = find_spell( 1269214, ROGUE_SUBTLETY );
+  spec.shadow_clone_goremaws_bite_attack = find_spell( 1269217, ROGUE_SUBTLETY );
+  spec.shadow_clone_secret_technique_attack = find_spell( 1269560, ROGUE_SUBTLETY );
+  spec.shadow_clone_shadowstrike_attack = find_spell( 1269336, ROGUE_SUBTLETY );
+  spec.shadow_clone_shuriken_storm_attack = find_spell( 1269340, ROGUE_SUBTLETY );
+  spec.shadow_clone_shuriken_toss_attack = find_spell( 1269343, ROGUE_SUBTLETY );
 
   // Set Bonus Items ========================================================
 
@@ -9897,15 +9984,39 @@ void rogue_t::init_spells()
   }
 
   // Subtlety
+  if ( specialization() == ROGUE_SUBTLETY )
+  {
+    active.shadow_blades_attack = get_background_action<actions::shadow_blades_attack_t>( "shadow_blades_attack" );
+
+    active.shadow_clone_attack.backstab = get_secondary_trigger_action<actions::shadow_clone_t>(
+      secondary_trigger::SHADOW_CLONE, "shadow_clone_backstab", spec.shadow_clone_backstab_attack );
+    active.shadow_clone_attack.black_powder = get_secondary_trigger_action<actions::shadow_clone_t>(
+      secondary_trigger::SHADOW_CLONE, "shadow_clone_black_powder", spec.shadow_clone_black_powder_attack );
+    active.shadow_clone_attack.eviscerate = get_secondary_trigger_action<actions::shadow_clone_t>(
+      secondary_trigger::SHADOW_CLONE, "shadow_clone_eviscerate", spec.shadow_clone_eviscerate_attack );
+    active.shadow_clone_attack.gloomblade = get_secondary_trigger_action<actions::shadow_clone_t>(
+      secondary_trigger::SHADOW_CLONE, "shadow_clone_gloomblade", spec.shadow_clone_gloomblade_attack );
+    active.shadow_clone_attack.goremaws_bite = get_secondary_trigger_action<actions::shadow_clone_t>(
+      secondary_trigger::SHADOW_CLONE, "shadow_clone_goremaws_bite", spec.shadow_clone_goremaws_bite_attack );
+    active.shadow_clone_attack.secret_technique = get_secondary_trigger_action<actions::shadow_clone_t>(
+      secondary_trigger::SHADOW_CLONE, "shadow_clone_secret_technique", spec.shadow_clone_secret_technique_attack );
+    active.shadow_clone_attack.shadowstrike = get_secondary_trigger_action<actions::shadow_clone_t>(
+      secondary_trigger::SHADOW_CLONE, "shadow_clone_shadowstrike", spec.shadow_clone_shadowstrike_attack );
+    active.shadow_clone_attack.shuriken_storm = get_secondary_trigger_action<actions::shadow_clone_t>(
+      secondary_trigger::SHADOW_CLONE, "shadow_clone_shuriken_storm", spec.shadow_clone_shuriken_storm_attack );
+    active.shadow_clone_attack.shuriken_toss = get_secondary_trigger_action<actions::shadow_clone_t>(
+      secondary_trigger::SHADOW_CLONE, "shadow_clone_shuriken_toss", spec.shadow_clone_shuriken_toss_attack );
+
+    active.shadow_clone_attack.black_powder->aoe = active.shadow_clone_attack.secret_technique->aoe =
+      active.shadow_clone_attack.shuriken_storm->aoe = -1;
+
+    active.shadow_clone_attack.shuriken_storm->reduced_aoe_targets = spec.shadow_clone_shuriken_storm_attack->effectN( 4 ).base_value();
+    active.shadow_clone_attack.black_powder->reduced_aoe_targets = spec.shadow_clone_black_powder_attack->effectN( 4 ).base_value();
+  }
+
   if ( talent.subtlety.weaponmaster->ok() )
   {
     cooldowns.weaponmaster->base_duration = talent.subtlety.weaponmaster->internal_cooldown();
-    active.weaponmaster.backstab = get_secondary_trigger_action<actions::backstab_t>(
-      secondary_trigger::WEAPONMASTER, "backstab_weaponmaster" );
-    active.weaponmaster.gloomblade = get_secondary_trigger_action<actions::gloomblade_t>(
-      secondary_trigger::WEAPONMASTER, "gloomblade_weaponmaster" );
-    active.weaponmaster.shadowstrike = get_secondary_trigger_action<actions::shadowstrike_t>(
-      secondary_trigger::WEAPONMASTER, "shadowstrike_weaponmaster" );
   }
 
   if ( talent.subtlety.danse_macabre->ok() )
@@ -9916,11 +10027,6 @@ void rogue_t::init_spells()
   if ( talent.subtlety.lingering_shadow->ok() )
   {
     active.lingering_shadow = get_background_action<actions::lingering_shadow_t>( "lingering_shadow" );
-  }
-
-  if ( specialization() == ROGUE_SUBTLETY )
-  {
-    active.shadow_blades_attack = get_background_action<actions::shadow_blades_attack_t>( "shadow_blades_attack" );
   }
 
   // Deathstalker
@@ -10239,9 +10345,10 @@ void rogue_t::create_buffs()
 
   // Subtlety ===============================================================
 
-  // Find Weakness is technically only a damage buff with Death Perception spell ID
+  buffs.ancient_arts = make_buff( this, "ancient_arts", spec.ancient_arts_buff );
+
   buffs.find_weakness = make_buff( this, "find_weakness", spec.find_weakness_buff )
-    ->set_default_value_from_effect_type( A_MOD_IGNORE_ARMOR_PCT );
+    ->set_default_value_from_effect_type( A_MOD_TARGET_ARMOR_PCT );
 
   buffs.shadow_blades = make_buff( this, "shadow_blades", talent.subtlety.shadow_blades )
     ->set_default_value_from_effect( 1 ) // Bonus Damage%
@@ -10466,17 +10573,14 @@ void rogue_t::create_buffs()
 
   buffs.shot_in_the_dark = make_buff( this, "shot_in_the_dark", spec.shot_in_the_dark_buff );
 
-  buffs.silent_storm = make_buff( this, "silent_storm", spec.silent_storm_buff )
-    ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_CRIT )
-    ->add_invalidate( CACHE_CRIT_CHANCE )
+  buffs.silent_storm = make_buff<damage_buff_t>( this, "silent_storm", spec.silent_storm_buff );
+  buffs.silent_storm
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_duration( sim->max_time / 2 );
 
   buffs.secret_technique = make_buff( this, "secret_technique", spec.secret_technique )
     ->set_cooldown( timespan_t::zero() )
     ->set_quiet( true );
-
-  buffs.shuriken_tornado = new buffs::shuriken_tornado_t( this );
 
   buffs.the_first_dance = make_buff( this, "the_first_dance", spec.the_first_dance_buff )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
