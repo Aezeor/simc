@@ -1893,8 +1893,6 @@ public:
   runeforges_e oh_runeforge;
   player_t* last_target;
 
-  std::vector<player_talent_t*> apex_talents;
-
   death_knight_t( sim_t* sim, std::string_view name, race_e r )
     : parse_player_effects_t( sim, DEATH_KNIGHT, name, r ),
       active_dnds(),
@@ -1924,8 +1922,7 @@ public:
       active_lesser_ghouls(),
       mh_runeforge( RUNEFORGE_NONE ),
       oh_runeforge( RUNEFORGE_NONE ),
-      last_target( this ),
-      apex_talents()
+      last_target( this )
   {
     // Shared
     // DnD - Default value, changed during action construction
@@ -14277,24 +14274,6 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( std::string_view name
     throw sc_invalid_apl_argument( fmt::format( "Unknown lesser_ghoul expression '{}'.", splits[ 1 ] ) );
   }
 
-  // Temporary Apex check until simc has a core solution
-  if ( util::str_compare_ci( splits[ 0 ], "apex" ) )
-  {
-    if ( util::str_compare_ci( splits[ 1 ], "1" ) )
-      if ( util::str_compare_ci( splits[ 2 ], "enabled" ) )
-        return expr_t::create_constant( "apex_1_enabled", apex_talents[ 0 ]->ok() );
-
-    if ( util::str_compare_ci( splits[ 1 ], "2" ) )
-      if ( util::str_compare_ci( splits[ 2 ], "enabled" ) )
-        return expr_t::create_constant( "apex_2_enabled", apex_talents[ 1 ]->ok() );
-
-    if ( util::str_compare_ci( splits[ 1 ], "3" ) )
-      if ( util::str_compare_ci( splits[ 2 ], "enabled" ) )
-        return expr_t::create_constant( "apex_3_enabled", apex_talents[ 2 ]->ok() );
-
-    throw sc_invalid_apl_argument( fmt::format( "Unknown apex expression '{}'.", splits[ 1 ] ) );
-  }
-
   if ( util::str_compare_ci( splits[ 0 ], "runeforge" ) && splits.size() == 2 )
   {
     auto runeforge_expr = create_runeforge_expression( splits[ 1 ], true );
@@ -14761,27 +14740,6 @@ void death_knight_t::init_spells()
   talent.unholy.forbidden_knowledge_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1242158 );
   talent.unholy.forbidden_knowledge_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1256565 );
   talent.unholy.forbidden_knowledge_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1256566 );
-
-  switch ( specialization() )
-  {
-    case DEATH_KNIGHT_BLOOD:
-      apex_talents.push_back( &talent.blood.dance_of_midnight_1 );
-      apex_talents.push_back( &talent.blood.dance_of_midnight_2 );
-      apex_talents.push_back( &talent.blood.dance_of_midnight_3 );
-      break;
-    case DEATH_KNIGHT_FROST:
-      apex_talents.push_back( &talent.frost.chosen_of_frostbrood_1 );
-      apex_talents.push_back( &talent.frost.chosen_of_frostbrood_2 );
-      apex_talents.push_back( &talent.frost.chosen_of_frostbrood_3 );
-      break;
-    case DEATH_KNIGHT_UNHOLY:
-      apex_talents.push_back( &talent.unholy.forbidden_knowledge_1 );
-      apex_talents.push_back( &talent.unholy.forbidden_knowledge_2 );
-      apex_talents.push_back( &talent.unholy.forbidden_knowledge_3 );
-      break;
-    default:
-      break;
-  }
 
   //////// Rider of the Apocalypse
   talent.rider.riders_champion        = find_talent_spell( talent_tree::HERO, "Rider's Champion" );
