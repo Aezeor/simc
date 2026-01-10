@@ -3928,38 +3928,40 @@ struct crimson_tempest_t : public rogue_attack_t
     }
   }
 
+  void clone_dot( std::function<dot_t*( rogue_td_t* )> dot_selector )
+  {
+    std::vector<player_t*> tl = target_list();
+    size_t num_copies = std::min( tl.size(), as<size_t>( data().effectN( 2 ).base_value() ) );
+
+    range::sort( tl, [ this, dot_selector ]( player_t* l, player_t* r ) {
+      auto lr = dot_selector( td( l ) )->remains();
+      auto rr = dot_selector( td( r ) )->remains();
+      if ( lr == rr )
+        return l < r;
+      else
+        return lr < rr;
+    } );
+
+    for ( size_t i = 0; i < num_copies; ++i )
+    {
+      auto dot = dot_selector( td( tl.back() ) );
+      if ( !dot->is_ticking() || dot_selector( td( tl[ 1 ] ) )->remains() >= dot->remains() )
+        break;
+
+      dot->copy( tl[ i ], DOT_COPY_START );
+      p()->sim->print_log( "{} {} cloning {} from {} to {} with remains={:.3f}",
+                           *p(), *this, *dot, *tl.back(), *tl[ i ], dot->remains().total_seconds() );
+    }
+  }
+
   void execute() override
   {
     rogue_attack_t::execute();
 
     if ( target_list().size() > 1 )
     {
-      std::vector<player_t*> tl = target_list();
-      size_t num_copies = std::min( tl.size(), as<size_t>( data().effectN( 2 ).base_value() ) );
-
-      range::sort( tl, [ this ]( player_t* l, player_t* r ) {
-        return td( l )->dots.rupture->remains() < td( r )->dots.rupture->remains();
-      } );
-
-      for ( size_t i = 0; i < num_copies; ++i )
-      {
-        if ( tl.back() != tl[ i ] )
-        {
-          td( tl.back() )->dots.rupture->copy( tl[ i ], DOT_COPY_CLONE );
-        }
-      }
-
-      range::sort( tl, [ this ]( player_t* l, player_t* r ) {
-        return td( l )->dots.garrote->remains() < td( r )->dots.garrote->remains();
-      } );
-
-      for ( size_t i = 0; i < num_copies; ++i )
-      {
-        if ( tl.back() != tl[ i ] )
-        {
-          td( tl.back() )->dots.garrote->copy( tl[ i ], DOT_COPY_CLONE );
-        }
-      }
+      clone_dot( []( rogue_td_t* td ) { return td->dots.rupture; } );
+      clone_dot( []( rogue_td_t* td ) { return td->dots.garrote; } );
     }
     
     trigger_tww2_set_bonus_removal();
