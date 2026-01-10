@@ -333,7 +333,7 @@ public:
     buff_t* envenom;
     // Outlaw
     buffs::rogue_buff_t* adrenaline_rush;
-    buff_t* between_the_eyes;
+    damage_buff_t* between_the_eyes;
     buffs::rogue_buff_t* blade_flurry;
     buff_t* blade_rush;
     buff_t* deadly_pursuit;
@@ -1805,6 +1805,7 @@ public:
     crit_chance_buffs.clear();
 
     register_damage_buff( p()->buffs.acrobatic_strikes );
+    register_damage_buff( p()->buffs.between_the_eyes );
     register_damage_buff( p()->buffs.cold_blood );
     register_damage_buff( p()->buffs.deathstalkers_mark );
     register_damage_buff( p()->buffs.fatebound_coin_heads );
@@ -10146,7 +10147,10 @@ void rogue_t::create_buffs()
 
   // Outlaw =================================================================
 
-  buffs.between_the_eyes = make_buff<damage_buff_t>( this, "between_the_eyes", spec.between_the_eyes )
+  buffs.between_the_eyes = make_buff<damage_buff_t>( this, "between_the_eyes", spec.between_the_eyes, false )
+    ->set_direct_mod( spec.between_the_eyes, 2 )
+    ->set_periodic_mod( spec.between_the_eyes, 3 );
+  buffs.between_the_eyes
     ->set_cooldown( timespan_t::zero() )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
