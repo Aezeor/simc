@@ -10407,6 +10407,18 @@ struct frostbane_strike_t final : public death_knight_melee_attack_t
 
     return m;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_melee_attack_t::impact( s );
+
+    if ( p()->talent.frost.hyperpyrexia->ok() && s->result_amount > 0 &&
+         p()->rng().roll( p()->talent.frost.hyperpyrexia->proc_chance() ) )
+    {
+      residual_action::trigger( p()->background_actions.hyperpyrexia_damage, s->target,
+                                s->result_amount * p()->talent.frost.hyperpyrexia->effectN( 1 ).percent() );
+    }
+  }
 };
 
 struct frostbane_t final : public death_knight_spell_t
