@@ -2103,7 +2103,7 @@ public:
 
       if ( affected_by.shadow_blades_cp && p()->buffs.shadow_blades->check() )
       {
-        cp += p()->buffs.shadow_blades->data().effectN( 2 ).base_value();
+        cp += ab::energize_amount * ( p()->buffs.shadow_blades->data().effectN( 2 ).base_value() - 1.0 );
       }
 
       if ( affected_by.improved_ambush )
@@ -2634,9 +2634,10 @@ public:
 
       if ( ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
       {
-        if ( affected_by.shadow_blades_cp && p()->buffs.shadow_blades->up() )
+        if ( affected_by.shadow_blades_cp && ab::energize_amount > 0 && p()->buffs.shadow_blades->up() )
         {
-          trigger_combo_point_gain( as<int>( p()->buffs.shadow_blades->data().effectN( 2 ).base_value() ), p()->gains.shadow_blades );
+          const int shadow_blades_cp = ab::energize_amount * ( p()->buffs.shadow_blades->data().effectN( 2 ).base_value() - 1.0 );
+          trigger_combo_point_gain( shadow_blades_cp, p()->gains.shadow_blades );
         }
 
         if ( affected_by.roll_the_bones_cp && p()->buffs.roll_the_bones->check_value() >= 2 )
@@ -3555,6 +3556,17 @@ struct shadow_clone_t : public rogue_attack_t
     base_multiplier = 0.5; // All current triggers default to half damage
   }
 
+  virtual double combo_point_da_multiplier( const action_state_t* s ) const
+  {
+    const int cp = cast_state( s )->get_combo_points();
+    if ( cp > 0 )
+    {
+      return static_cast<double>( cp );
+    }
+    
+    return 1.0;
+  }
+
   void execute() override
   {
     rogue_attack_t::execute();
@@ -4300,8 +4312,6 @@ struct fan_of_knives_t: public rogue_attack_t
     energize_type     = action_energize::ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount   = data().effectN( 2 ).base_value();
-    // 2021-10-07 - Not in the whitelist but confirmed as working as of 9.1.5 PTR
-    affected_by.shadow_blades_cp = true;
 
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
@@ -7803,7 +7813,7 @@ bool actions::rogue_action_t<Base>::trigger_shadow_clone( const action_state_t* 
     return false;
 
   p()->sim->print_log( "{} triggers shadow clone attack {} on {}", *p(), *action, *state->target );
-  action->trigger_secondary_action( state->target );
+  action->trigger_secondary_action( state->target, cast_state( state )->get_combo_points() );
   return true;
 }
 
