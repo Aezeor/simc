@@ -2188,6 +2188,7 @@ public:
   void trigger_keep_it_rolling();
   void trigger_lingering_shadow( const action_state_t* state );
   void trigger_danse_macabre( const action_state_t* state );
+  void trigger_scent_of_blood();
   void trigger_caustic_spatter( const action_state_t* state );
   void trigger_caustic_spatter_debuff( const action_state_t* state );
   void trigger_ancient_arts( const action_state_t* state );
@@ -3945,13 +3946,22 @@ struct crimson_tempest_t : public rogue_attack_t
 
     for ( size_t i = 0; i < num_copies; ++i )
     {
-      auto dot = dot_selector( td( tl.back() ) );
-      if ( !dot->is_ticking() || dot_selector( td( tl[ 1 ] ) )->remains() >= dot->remains() )
+      auto source_dot = dot_selector( td( tl.back() ) );
+      auto target_dot = dot_selector( td( tl[ i ] ) );
+      if ( !source_dot->is_ticking() || source_dot->remains() <= target_dot->remains() )
         break;
 
-      dot->copy( tl[ i ], DOT_COPY_START );
+      if ( target_dot->is_ticking() )
+      {
+        target_dot->adjust_duration( source_dot->remains() - target_dot->remains() );
+      }
+      else
+      {
+        source_dot->copy( tl[ i ], DOT_COPY_CLONE );
+      }
+      
       p()->sim->print_log( "{} {} cloning {} from {} to {} with remains={:.3f}",
-                           *p(), *this, *dot, *tl.back(), *tl[ i ], dot->remains().total_seconds() );
+                           *p(), *this, *source_dot, *tl.back(), *tl[ i ], source_dot->remains().total_seconds() );
     }
   }
 
@@ -3963,6 +3973,7 @@ struct crimson_tempest_t : public rogue_attack_t
     {
       clone_dot( []( rogue_td_t* td ) { return td->dots.rupture; } );
       clone_dot( []( rogue_td_t* td ) { return td->dots.garrote; } );
+      trigger_scent_of_blood(); // Force recalculate since no Rupture actions are triggered
     }
     
     trigger_tww2_set_bonus_removal();
@@ -5022,33 +5033,6 @@ struct rupture_t : public rogue_attack_t
     }
 
     return rogue_attack_t::create_expression( name );
-  }
-
-  void trigger_scent_of_blood()
-  {
-    if ( !p()->talent.assassination.scent_of_blood->ok() )
-      return;
-
-    const int current_stacks = p()->buffs.scent_of_blood->check();
-    int desired_stacks = p()->get_active_dots( td( this->target )->dots.rupture );
-
-    desired_stacks = std::min( p()->buffs.scent_of_blood->max_stack(),
-                               desired_stacks * as<int>( p()->talent.assassination.scent_of_blood->effectN( 1 ).base_value() ) );
-
-    if ( current_stacks != desired_stacks )
-    {
-      p()->sim->print_log( "{} adjusting Scent of Blood stacks from {} to {}",
-                           *p(), current_stacks, desired_stacks );
-    }
-
-    if ( desired_stacks < current_stacks )
-    {
-      p()->buffs.scent_of_blood->decrement( current_stacks - desired_stacks );
-    }
-    else if ( desired_stacks > current_stacks )
-    {
-      p()->buffs.scent_of_blood->increment( desired_stacks - current_stacks );
-    }
   }
 };
 
@@ -8036,6 +8020,34 @@ void actions::rogue_action_t<Base>::trigger_danse_macabre( const action_state_t*
 
   p()->danse_macabre_tracker.push_back( ab::data().id() );
   p()->active.lashe_macabre->execute_on_target( s->target );
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_scent_of_blood()
+{
+  if ( !p()->talent.assassination.scent_of_blood->ok() )
+    return;
+
+  const int current_stacks = p()->buffs.scent_of_blood->check();
+  int desired_stacks = p()->get_active_dots( td( this->target )->dots.rupture );
+
+  desired_stacks = std::min( p()->buffs.scent_of_blood->max_stack(),
+                             desired_stacks * as<int>( p()->talent.assassination.scent_of_blood->effectN( 1 ).base_value() ) );
+
+  if ( current_stacks != desired_stacks )
+  {
+    p()->sim->print_log( "{} adjusting Scent of Blood stacks from {} to {}",
+                         *p(), current_stacks, desired_stacks );
+  }
+
+  if ( desired_stacks < current_stacks )
+  {
+    p()->buffs.scent_of_blood->decrement( current_stacks - desired_stacks );
+  }
+  else if ( desired_stacks > current_stacks )
+  {
+    p()->buffs.scent_of_blood->increment( desired_stacks - current_stacks );
+  }
 }
 
 template <typename Base>
