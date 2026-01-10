@@ -1791,6 +1791,7 @@ class SpellDataGenerator(DataGenerator):
             ( 1214933, 0 ),         # Roll the Bones - One of a Kind
             ( 1214934, 0 ),         # Roll the Bones - Double Trouble
             ( 1214935, 0 ),         # Roll the Bones - Triple Threat
+            ( 1249093, 0 ),         # Fatebound Coin flips tracker buff
         ),
 
         # Priest:
