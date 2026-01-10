@@ -4107,8 +4107,14 @@ struct envenom_t : public rogue_attack_t
 
     if ( p()->buffs.envenom->check() )
     {
-      trigger_combo_point_gain( as<int>( p()->spec.poisoners_drive_energize->effectN( 1 ).base_value() ),
-                                p()->gains.poisoners_drive );
+      if ( p()->talent.assassination.poisoners_drive->ok() )
+      {
+        // Needs to be delayed as consume_resource for finishers doesn't trigger until post-impact
+        make_event( *p()->sim, [ this ] {
+          trigger_combo_point_gain( as<int>( p()->spec.poisoners_drive_energize->effectN( 1 ).base_value() ),
+                                    p()->gains.poisoners_drive );
+        } );
+      }
 
       p()->buffs.implacable_tracker->trigger();
     }
