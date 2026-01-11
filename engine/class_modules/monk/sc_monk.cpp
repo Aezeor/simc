@@ -4697,7 +4697,7 @@ void monk_t::parse_player_effects()
   parse_effects( talent.brewmaster.heart_of_the_ox, [ & ]( double value ) {
     if ( buff.invoke_niuzao->check() )
       // value not available in spell data :(
-      value *= 1.0 + 1.0;
+      value *= 1.0 + talent.brewmaster.invoke_niuzao_the_black_ox->effectN( 6 ).percent();
     return value;
   } );
 
