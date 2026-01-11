@@ -3403,7 +3403,7 @@ void priest_t::init_blizzard_action_list()
         break;
       case PRIEST_SHADOW:
         cooldowns->add_action( "use_items,if=buff.voidform.up" );
-        cooldowns->add_action( "voidform" );
+        cooldowns->add_action( "voidform,if=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking" );
         cooldowns->add_action( "power_infusion,if=buff.voidform.up" );
         break;
       default:
