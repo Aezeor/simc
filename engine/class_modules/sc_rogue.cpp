@@ -436,6 +436,8 @@ public:
     damage_buff_t* tww3_deathstalker_2pc;
     buff_t* tww3_trickster_4pc;
 
+    damage_buff_t* mid1_outlaw_4pc;
+
   } buffs;
 
   // Cooldowns
@@ -1104,6 +1106,13 @@ public:
     const spell_data_t* tww3_trickster_2pc;
     const spell_data_t* tww3_trickster_4pc;
 
+    const spell_data_t* mid1_assassination_2pc;
+    const spell_data_t* mid1_assassination_4pc;
+    const spell_data_t* mid1_outlaw_2pc;
+    const spell_data_t* mid1_outlaw_4pc;
+    const spell_data_t* mid1_subtlety_2pc;
+    const spell_data_t* mid1_subtlety_4pc;
+
   } set_bonuses;
 
   // Options
@@ -1620,6 +1629,7 @@ public:
     bool zoldyck_insignia = false;
 
     bool tww3_fatebound_4pc = false;
+    bool mid1_assassination_4pc = false;
 
     damage_affect_data follow_the_blood;
     damage_affect_data mastery_executioner;
@@ -1867,6 +1877,7 @@ public:
     register_damage_buff( p()->buffs.tww2_outlaw_2pc );
     register_damage_buff( p()->buffs.tww2_subtlety_2pc );
     register_damage_buff( p()->buffs.tww3_deathstalker_2pc );
+    register_damage_buff( p()->buffs.mid1_outlaw_4pc );
 
     if ( ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 )
     {
@@ -2414,6 +2425,19 @@ public:
          p()->buffs.shadow_dance->check() && p()->buffs.tww2_subtlety_2pc->check() )
     {
       m *= 1.0 + ( affected_by.tww2_subtlety_4pc.direct_percent * p()->buffs.tww2_subtlety_2pc->check() );
+    }
+
+    // MID1 Set Bonuses
+    if ( affected_by.mid1_assassination_4pc && p()->set_bonuses.mid1_assassination_4pc->ok() &&
+         td( state->target )->is_poisoned() )
+    {
+      m *= 1.0 + p()->set_bonuses.mid1_assassination_4pc->effectN( 2 ).percent();
+    }
+
+    if ( p()->set_bonuses.mid1_subtlety_2pc->ok() )
+    {
+      // MIDNIGHT TOCHECK -- Supercharger?
+      m *= 1.0 + p()->set_bonuses.mid1_subtlety_2pc->effectN( 1 ).percent() * cast_state( state )->get_combo_points();
     }
 
     return m;
@@ -3515,6 +3539,7 @@ struct ambush_t : public rogue_attack_t
   ambush_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->spell.ambush, options_str )
   {
+    affected_by.mid1_assassination_4pc = true;
   }
 
   void execute() override
@@ -3949,6 +3974,7 @@ struct blade_rush_t : public rogue_attack_t
     {
       rogue_attack_t::execute();
       p()->buffs.blade_rush->trigger();
+      p()->buffs.mid1_outlaw_4pc->trigger();
     }
 
     double composite_da_multiplier( const action_state_t* state ) const override
@@ -4311,6 +4337,7 @@ struct fan_of_knives_t: public rogue_attack_t
 
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
+    affected_by.mid1_assassination_4pc = true;
 
     if ( p->talent.deathstalker.follow_the_blood->ok() )
     {
@@ -4406,6 +4433,13 @@ struct garrote_t : public rogue_attack_t
   void tick( dot_t* d ) override
   {
     rogue_attack_t::tick( d );
+
+    // MIDNIGHT TOCHECK -- Does this happen before or after VW?
+    if ( p()->set_bonuses.mid1_assassination_2pc->ok() )
+    {
+      trigger_poisons( d->state );
+    }
+
     trigger_venomous_wounds( d->state );
   }
 
@@ -4899,6 +4933,7 @@ struct mutilate_t : public rogue_attack_t
     mutilate_strike_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
       rogue_attack_t( name, p, s )
     {
+      affected_by.mid1_assassination_4pc = true;
     }
 
     void impact( action_state_t* state ) override
@@ -9937,6 +9972,13 @@ void rogue_t::init_spells()
   spec.tww3_deathstalker_2pc_buff = set_bonuses.tww3_deathstalker_2pc->ok() ?
     ( specialization() == ROGUE_ASSASSINATION ? find_spell( 1239231 ) : find_spell( 1239232 ) ) : spell_data_t::not_found();
 
+  set_bonuses.mid1_assassination_2pc = sets->set( ROGUE_ASSASSINATION, MID1, B2 );
+  set_bonuses.mid1_assassination_4pc = sets->set( ROGUE_ASSASSINATION, MID1, B4 );
+  set_bonuses.mid1_outlaw_2pc = sets->set( ROGUE_OUTLAW, MID1, B2 );
+  set_bonuses.mid1_outlaw_4pc = sets->set( ROGUE_OUTLAW, MID1, B4 );
+  set_bonuses.mid1_subtlety_2pc = sets->set( ROGUE_SUBTLETY, MID1, B2 );
+  set_bonuses.mid1_subtlety_4pc = sets->set( ROGUE_SUBTLETY, MID1, B4 );
+
   // Register passives ======================================================
 
   // Extra CP from improved ambush is reported separatedly and manually handled within the action
@@ -10718,6 +10760,8 @@ void rogue_t::create_buffs()
           buffs.escalating_blade->expire(); // Technically this is the same buff in-game
       } );
   }
+
+  buffs.mid1_outlaw_4pc = make_buff<damage_buff_t>( this, "whirl_of_blades", set_bonuses.mid1_outlaw_4pc->effectN(2).trigger() );
 }
 
 // rogue_t::invalidate_cache =========================================
