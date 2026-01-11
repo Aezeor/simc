@@ -5237,6 +5237,9 @@ struct secret_technique_t : public rogue_attack_t
   bool consumes_supercharger() const override
   { return true; }
 
+  bool has_amount_result() const override
+  { return true; }
+
   rogue_attack_t* shadow_clone_attack() const override
   { return p()->active.shadow_clone_attack.secret_technique; }
 };
