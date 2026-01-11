@@ -1628,14 +1628,13 @@ struct pet_action_t : public parse_action_effects_t<Base>
   }
 };
 template <typename T_PET>
-
 struct pet_spell_t : public pet_action_t<T_PET, spell_t>
 {
   pet_spell_t( T_PET* p, std::string_view name, const spell_data_t* spell = spell_data_t::nil() )
     : pet_action_t<T_PET, spell_t>( p, name, spell )
   {
-   /* this->tick_may_crit = true;
-    this->hasted_ticks  = false;*/
+    /* this->tick_may_crit = true;
+     this->hasted_ticks  = false;*/
   }
 };
 
@@ -3248,6 +3247,19 @@ struct duplicate_t : evoker_pet_t
       background       = true;
       aoe              = -1;
       split_aoe_damage = true;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double da = base_t::composite_da_multiplier( s );
+
+      if ( evoker()->talent.ricocheting_pyroclast.ok() )
+      {
+        da *= 1 + std::min( static_cast<double>( s->n_targets ),
+                            evoker()->talent.ricocheting_pyroclast->effectN( 2 ).base_value() ) *
+                      evoker()->talent.ricocheting_pyroclast->effectN( 1 ).percent();
+      }
+      return da;
     }
 
     void execute() override
@@ -10327,6 +10339,18 @@ template <class T_PET, class Base>
 void pets::pet_action_t<T_PET, Base>::apply_pet_action_effects()
 {
   parse_effects( evoker()->buff.ebon_might_self_buff );
+  parse_effects( evoker()->buff.burnout );
+  parse_effects( evoker()->buff.essence_burst );
+
+  if ( evoker()->talent.scalecommander.unrelenting_siege.enabled() )
+  {
+    parse_effects( evoker()->buff.unrelenting_siege );
+  }
+
+  if ( evoker()->talent.duplicate3.enabled() )
+  {
+    parse_effects( evoker()->buff.duplicate, IGNORE_STACKS );
+  }
 }
 
 template <class T_PET, class Base>
