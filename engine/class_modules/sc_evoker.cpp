@@ -10272,58 +10272,64 @@ void evoker_t::spawn_mote_of_possibility( player_t* prospective_player, mote_buf
   }
   else
   {
+    target                        = this;
+    std::vector<player_t*> helper = sim->player_non_sleeping_list.data();
+    helper.erase( std::remove_if( helper.begin(), helper.end(), [ this ]( player_t* t ) { return t->is_pet(); } ),
+                  helper.end() );
+
     switch ( mote_buff )
     {
       case mote_buffs_e::INFERNOS_BLESSING:
-        get_target_data( this )->buffs.infernos_blessing->trigger();
+      case mote_buffs_e::PRESCIENCE:
+      case mote_buffs_e::SYMBIOTIC_BLOOM:
+
+        // Add a 3 copies of yourself. 50%~ for M+, relatively low in Raid.
+        // TODO: Rework this entire system to use actions with travel times.
+        helper.push_back( this );
+        helper.push_back( this );
+        helper.push_back( this );
+        target = rng().range( helper );
+        break;
+      case mote_buffs_e::SHIFTING_SANDS:
+        rng().shuffle( helper.begin(), helper.end() );
+
+        auto sands = std::partition( helper.begin(), helper.end(), [ this ]( player_t* t ) {
+          return !get_target_data( t )->buffs.shifting_sands->check();
+        } );
+
+        std::partition( helper.begin(), std::min( helper.end(), sands ), []( player_t* t ) {
+          return t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK &&
+                 t->specialization() != EVOKER_AUGMENTATION;
+        } );
+
+        target = helper.front();
+        break;
+    }
+
+    assert( target && "Target should be non-null" );
+        
+
+    switch ( mote_buff )
+    {
+      case mote_buffs_e::INFERNOS_BLESSING:
+        get_target_data( target )->buffs.infernos_blessing->trigger();
         return;
       case mote_buffs_e::PRESCIENCE:
-        get_target_data( this )->buffs.prescience->trigger();
+        get_target_data( target )->buffs.prescience->trigger();
         return;
       case mote_buffs_e::SYMBIOTIC_BLOOM:
         return;
       case mote_buffs_e::SHIFTING_SANDS:
-        if ( !target && allies_with_my_ebon.size() > 0 )
-        {
-          std::vector<player_t*> helper = allies_with_my_ebon.data();
-          rng().shuffle( helper.begin(), helper.end() );
-          auto it = range::partition( helper, [ this ]( player_t* t ) { 
-              return !get_target_data( t )->buffs.shifting_sands->check();
-          } );
-          
-          if ( it != helper.begin() )
-          {
-            std::partition( helper.begin(), it, []( player_t* t ) {
-              return t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK &&
-                     t->specialization() != EVOKER_AUGMENTATION;
-            } );
-          }
-          else
-          {
-            spawn_mote_of_possibility( this, mote_buff );
-            return;
-          }
-
-          auto td                                 = get_target_data( helper.front() );
-          td->buffs.shifting_sands->current_value = cache.mastery_value();
-          td->buffs.shifting_sands->trigger();
-        }
-        else
-        {
-          // Use loose Exponential Backoff to delay the event until Ebon Might becomes active.
-          timespan_t new_delay = rng().range( 0_s, 1_s ) + delay * 1.1;
-          make_event( sim, new_delay,
-                      [ this, mote_buff, new_delay ] { spawn_mote_of_possibility( nullptr, mote_buff, new_delay ); } );
-          return;
-        }
+      {
+        auto td                                 = get_target_data( target );
+        td->buffs.shifting_sands->current_value = cache.mastery_value();
+        td->buffs.shifting_sands->trigger();
         return;
+      }
       default:
         return;
     }
   }
-  
-
-
 }
 
 void evoker_t::extend_ebon( timespan_t extend )
