@@ -1036,6 +1036,10 @@ public:
       player_talent_t no_scruples;
       player_talent_t nimble_flurry;
 
+      player_talent_t clever_combatant;
+      player_talent_t flashing_steel;
+      player_talent_t hoodwink;
+
       player_talent_t coup_de_grace;
 
     } trickster;
@@ -3669,10 +3673,6 @@ struct backstab_t : public rogue_attack_t
     return rogue_attack_t::verify_actor_spec();
   }
 
-  // 2024-9-04 -- Currently does not proc from Weaponmaster hits
-  bool procs_nimble_flurry() const override
-  { return !p()->bugs || !is_secondary_action(); }
-
   rogue_attack_t* shadow_clone_attack() const override
   { return p()->active.shadow_clone_attack.backstab; }
 };
@@ -4249,9 +4249,6 @@ struct eviscerate_t : public rogue_attack_t
 
       return c;
     }
-
-    bool procs_nimble_flurry() const override
-    { return true; }
   };
 
   eviscerate_bonus_t* bonus_attack;
@@ -4296,9 +4293,6 @@ struct eviscerate_t : public rogue_attack_t
 
     return rogue_attack_t::ready();
   }
-
-  bool procs_nimble_flurry() const override
-  { return true; }
 
   rogue_attack_t* shadow_clone_attack() const override
   { return p()->active.shadow_clone_attack.eviscerate; }
@@ -4506,9 +4500,6 @@ struct gloomblade_t : public rogue_attack_t
 
     trigger_lingering_shadow( state );
   }
-
-  bool procs_nimble_flurry() const override
-  { return true; }
 
   rogue_attack_t* shadow_clone_attack() const override
   { return p()->active.shadow_clone_attack.gloomblade; }
@@ -4848,6 +4839,11 @@ struct pistol_shot_t : public rogue_attack_t
       {
         p()->active.fan_the_hammer->trigger_secondary_action( execute_state->target, 0.1_s * ( 1 + i ) );
       }
+    }
+
+    if ( p()->talent.trickster.clever_combatant->ok() )
+    {
+      trigger_unseen_blade( execute_state );
     }
   }
 
@@ -5412,10 +5408,6 @@ struct shadowstrike_t : public rogue_attack_t
     return 0;
   }
 
-  // 2024-9-04 -- Currently does not proc from Weaponmaster hits
-  bool procs_nimble_flurry() const override
-  { return !p()->bugs || !is_secondary_action(); }
-
   rogue_attack_t* shadow_clone_attack() const override
   { return p()->active.shadow_clone_attack.shadowstrike; }
 };
@@ -5575,6 +5567,11 @@ struct shuriken_storm_t: public rogue_attack_t
     if ( state->result == RESULT_CRIT && p()->talent.deathstalker.momentum_of_despair->ok() )
     {
       p()->buffs.momentum_of_despair->trigger();
+    }
+
+    if ( p()->talent.trickster.clever_combatant->ok() )
+    {
+      trigger_unseen_blade( state );
     }
   }
 
@@ -6149,9 +6146,6 @@ struct goremaws_bite_t : public rogue_attack_t
     rogue_attack_t::execute();
     p()->buffs.goremaws_bite->trigger();
   }
-
-  bool procs_nimble_flurry() const override
-  { return true; }
 
   rogue_attack_t* shadow_clone_attack() const override
   { return p()->active.shadow_clone_attack.goremaws_bite; }
@@ -8361,6 +8355,12 @@ void actions::rogue_action_t<Base>::trigger_unseen_blade( const action_state_t* 
     p()->active.trickster.unseen_blade->execute_on_target( state->target );
   }
 
+  if ( p()->talent.trickster.flashing_steel->ok() &&
+       p()->rng().roll( p()->talent.trickster.flashing_steel->effectN( 2 ).percent() ) )
+  {
+    p()->active.trickster.unseen_blade->execute_on_target( state->target );
+  }
+
   if ( p()->buffs.disorienting_strikes->check() )
     p()->buffs.disorienting_strikes->decrement();
   else
@@ -8386,6 +8386,7 @@ void actions::rogue_action_t<Base>::trigger_nimble_flurry( const action_state_t*
   double multiplier = p()->talent.trickster.nimble_flurry->effectN( 3 ).percent();
 
   // 2025-08-02 -- Not yet in spell data descriptions, but in patch notes and appears to work
+  // MIDNIGHT TOCHECK -- Is this still true?
   if ( p()->buffs.shadow_blades->check() )
   {
     multiplier *= 1.0 + p()->buffs.shadow_blades->check_value();
@@ -9745,25 +9746,24 @@ void rogue_t::init_spells()
   talent.fatebound.destiny_defined = find_talent_spell( talent_tree::HERO, "Destiny Defined" );
 
   // Trickster Talents
-  talent.trickster.unseen_blade = find_talent_spell( talent_tree::HERO, "Unseen Blade" );
-
-  talent.trickster.surprising_strikes = find_talent_spell( talent_tree::HERO, "Surprising Strikes" );
-  talent.trickster.smoke = find_talent_spell( talent_tree::HERO, "Smoke" );
-  talent.trickster.mirrors = find_talent_spell( talent_tree::HERO, "Mirrors" );
-  talent.trickster.flawless_form = find_talent_spell( talent_tree::HERO, "Flawless Form" );
-
-  talent.trickster.so_tricky = find_talent_spell( talent_tree::HERO, "So Tricky" );
-  talent.trickster.dont_be_suspicious = find_talent_spell( talent_tree::HERO, "Don't Be Suspicious" );
-  talent.trickster.devious_distractions = find_talent_spell( talent_tree::HERO, "Devious Distractions" );
-  talent.trickster.thousand_cuts = find_talent_spell( talent_tree::HERO, "Thousand Cuts" );
-  talent.trickster.flickerstrike = find_talent_spell( talent_tree::HERO, "Flickerstrike" );
-
-  talent.trickster.disorienting_strikes = find_talent_spell( talent_tree::HERO, "Disorienting Strikes" );
+  talent.trickster.clever_combatant = find_talent_spell( talent_tree::HERO, "Clever Combatant" );
   talent.trickster.cloud_cover = find_talent_spell( talent_tree::HERO, "Cloud Cover" );
-  talent.trickster.no_scruples = find_talent_spell( talent_tree::HERO, "No Scruples" );
-  talent.trickster.nimble_flurry = find_talent_spell( talent_tree::HERO, "Nimble Flurry" );
-
   talent.trickster.coup_de_grace = find_talent_spell( talent_tree::HERO, "Coup de Grace" );
+  talent.trickster.devious_distractions = find_talent_spell( talent_tree::HERO, "Devious Distractions" );
+  talent.trickster.disorienting_strikes = find_talent_spell( talent_tree::HERO, "Disorienting Strikes" );
+  talent.trickster.dont_be_suspicious = find_talent_spell( talent_tree::HERO, "Don't Be Suspicious" );
+  talent.trickster.flashing_steel = find_talent_spell( talent_tree::HERO, "Flashing Steel" );
+  talent.trickster.flawless_form = find_talent_spell( talent_tree::HERO, "Flawless Form" );
+  talent.trickster.flickerstrike = find_talent_spell( talent_tree::HERO, "Flickerstrike" );
+  talent.trickster.hoodwink = find_talent_spell( talent_tree::HERO, "Hoodwink" );
+  talent.trickster.mirrors = find_talent_spell( talent_tree::HERO, "Mirrors" );
+  talent.trickster.nimble_flurry = find_talent_spell( talent_tree::HERO, "Nimble Flurry" );
+  talent.trickster.no_scruples = find_talent_spell( talent_tree::HERO, "No Scruples" );
+  talent.trickster.smoke = find_talent_spell( talent_tree::HERO, "Smoke" );
+  talent.trickster.so_tricky = find_talent_spell( talent_tree::HERO, "So Tricky" );
+  talent.trickster.surprising_strikes = find_talent_spell( talent_tree::HERO, "Surprising Strikes" );
+  talent.trickster.thousand_cuts = find_talent_spell( talent_tree::HERO, "Thousand Cuts" );
+  talent.trickster.unseen_blade = find_talent_spell( talent_tree::HERO, "Unseen Blade" );
 
   // Class Background Spells
   spell.cold_blood_buff = talent.rogue.cold_blooded_killer->effectN( 1 ).trigger();
