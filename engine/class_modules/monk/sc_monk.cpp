@@ -1364,16 +1364,13 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
 
     if ( p->talent.windwalker.obsidian_spiral->ok() )
       parse_effect_data( p->talent.windwalker.obsidian_spiral_energize->effectN( 1 ) );
-  }
 
-  double composite_target_multiplier( player_t *target ) const override
-  {
-    double m = base_t::composite_target_multiplier( target );
-
-    if ( target != p()->target && p()->talent.windwalker.shadowboxing_treads->ok() )
-      m *= p()->talent.windwalker.shadowboxing_treads->effectN( 3 ).percent();
-
-    return m;
+    if ( const auto &effect = p->talent.windwalker.shadowboxing_treads->effectN( 3 ); effect.ok() )
+      add_parse_entry( target_multiplier_effects )
+          .set_func( [ this ]( actor_target_data_t *target_data ) { return target_data->target != target; } )
+          .set_value( effect.percent() - 1.0 )
+          .set_note( "Secondary Target Reduction" )
+          .set_eff( &effect );
   }
 
   void consume_resource() override
@@ -2214,6 +2211,9 @@ struct auto_attack_t : public monk_melee_attack_t
         base_hit -= 0.19;
 
       parent->add_child( this );
+
+      if ( const auto &effect = player->talent.monk.tiger_fang->effectN( 1 ); effect.ok() )
+        add_parse_entry( crit_chance_effects ).set_value( effect.percent() ).set_eff( &effect );
     }
 
     void reset() override
@@ -2328,8 +2328,8 @@ struct keg_smash_t : monk_melee_attack_t
       p()->proc.blackout_combo_keg_smash->occur();
     }
     p()->buff.blackout_combo->expire();
-
     p()->baseline.brewmaster.brews.adjust( reduction );
+    p()->action.chi_wave->execute();
   }
 
   void impact( action_state_t *state ) override
@@ -2923,43 +2923,24 @@ struct crackling_jade_lightning_t : public monk_spell_t
 
     min_gcd = timespan_t::from_millis( 750 );
 
-    // TODO: Implement Jade Flash
-    // if ( player->talent.mistweaver.jade_empowerment->ok() )
-    // {
-    //   aoe_dot = new aoe_dot_t( player );
-    //   add_child( aoe_dot );
-    // }
+    if ( player->talent.brewmaster.jade_flash->ok() )
+    {
+      aoe_dot = new aoe_dot_t( player );
+      add_child( aoe_dot );
+    }
   }
 
   void execute() override
   {
     monk_spell_t::execute();
 
-    // TODO: Implement Jade Flash
-    if ( false )
+    if ( aoe_dot )
     {
-      const auto &tl = target_list();
-      int count      = 0;
-
-      int cleave_targets = 0;
-      // if ( const buff_t *buff = p()->buff.jade_empowerment; !buff->is_fallback )
-      //   cleave_targets += as<int>( buff->data().effectN( 1 ).base_value() );
-
-      for ( auto &t : tl )
-      {
-        // Don't apply AoE version to primary target
-        if ( t == target )
-          continue;
-
-        if ( count >= cleave_targets )
-          break;
-
-        if ( count < cleave_targets )
-        {
-          aoe_dot->execute_on_target( t );
-          count++;
-        }
-      }
+      auto &tl = target_list();
+      range::erase_remove( tl, [ this ]( const auto &t ) { return t == target; } );
+      size_t count = std::min( tl.size(), as<size_t>( p()->talent.brewmaster.jade_flash->effectN( 2 ).base_value() ) );
+      for ( size_t i = 0; i < count; ++i )
+        aoe_dot->execute_on_target( tl[ i ] );
     }
   }
 
@@ -2967,19 +2948,14 @@ struct crackling_jade_lightning_t : public monk_spell_t
   {
     monk_spell_t::last_tick( dot );
 
-    // TODO: Implement Jade Flash
-    if ( false )
-      // delay expiration so it occurs after final tick of cjl aoe
+    // delay expiration so it occurs after final tick of cjl aoe
+    if ( aoe_dot )
       make_event<events::delayed_cb_event_t>( *sim, p(), 1_ms, [ & ]() {
         // buff expire
         const auto &tl = target_list();
         for ( const auto &t : tl )
           get_td( t )->dot.crackling_jade_lightning_aoe->cancel();
       } );
-    else
-    {
-    }
-    // buff expire
 
     // Reset swing timer
     if ( player->main_hand_attack )
@@ -3288,7 +3264,7 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
 
     double pool_size      = p()->find_stagger( "Stagger" )->pool_size();
     double purify_percent = data().effectN( 1 ).percent();
-    double purify_amount  = std::max(pool_size * purify_percent, p()->max_health() * data().effectN( 2 ).percent());
+    double purify_amount  = std::max( pool_size * purify_percent, p()->max_health() * data().effectN( 2 ).percent() );
     double cleared        = p()->find_stagger( "Stagger" )->purify_flat( purify_amount, "purifying_brew" );
 
     double healed = cleared * p()->talent.brewmaster.gai_plins_imperial_brew->effectN( 1 ).percent();
@@ -4718,6 +4694,12 @@ void monk_t::parse_player_effects()
 
   // brewmaster talent auras
   parse_effects( buff.pretense_of_instability );
+  parse_effects( talent.brewmaster.heart_of_the_ox, [ & ]( double value ) {
+    if ( buff.invoke_niuzao->check() )
+      // value not available in spell data :(
+      value *= 1.0 + 1.0;
+    return value;
+  } );
 
   // windwalker talent auras
   parse_effects( buff.memory_of_the_monastery );
@@ -5483,6 +5465,9 @@ void monk_t::init_spells()
                                                                          ? effect_mask_t( true ).disable( 5 )
                                                                          : effect_mask_t( true ) );
 
+  // brewmaster
+  deregister_passive_spell( talent.brewmaster.heart_of_the_ox );
+  // windwalker
   deregister_passive_spell( talent.windwalker.ferociousness );
   deregister_passive_spell( talent.windwalker.martial_agility );
 
@@ -5586,26 +5571,10 @@ struct self_damage_override : stagger_impl::self_damage_t<monk_t>
   self_damage_override( monk_t *player, stagger_impl::stagger_effect_t<monk_t> *stagger_effect )
     : stagger_impl::self_damage_t<monk_t>( player, stagger_effect )
   {
+    // not automatic
     dot_duration = player->baseline.brewmaster.heavy_stagger->duration();
     dot_duration +=
         timespan_t::from_seconds( player->talent.brewmaster.bob_and_weave->effectN( 1 ).base_value() / 10.0 );
-  }
-};
-
-struct debuff_override : stagger_impl::debuff_t<monk_t>
-{
-  using base_t = stagger_impl::debuff_t<monk_t>;
-  debuff_override( monk_t *player, const stagger_data_t *parent_data, const level_data_t *data )
-    : base_t( player, parent_data, data )
-  {
-    set_default_value_from_effect_type( A_HASTE_ALL );
-    set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-    set_stack_change_callback( [ player ]( buff_t *, int old_, int new_ ) {
-      if ( old_ )
-        player->buff.training_of_niuzao->expire();
-      if ( new_ )
-        player->buff.training_of_niuzao->trigger();
-    } );
   }
 };
 
@@ -5628,7 +5597,7 @@ struct training_of_niuzao_buff : buffs::monk_buff_t<>
 
 void monk_t::create_buffs()
 {
-  create_stagger<debuff_override, self_damage_override>(
+  create_stagger<stagger_impl::debuff_t<monk_t>, self_damage_override>(
       { baseline.brewmaster.stagger_self_damage,
         { { baseline.brewmaster.light_stagger, 0.0 },
           { baseline.brewmaster.moderate_stagger, 0.2 },
@@ -5643,7 +5612,8 @@ void monk_t::create_buffs()
           return true;
         },
         [ this ]( school_e school, result_amount_type, action_state_t *state ) {
-          double stagger_rating = agility() * talent.monk.stagger->effectN( 1 ).percent();
+          double multiplier     = talent.monk.stagger->effectN( 1 ).percent();
+          double stagger_rating = agility() * multiplier;
 
           if ( talent.brewmaster.fortifying_brew_determination->ok() && buff.fortifying_brew->up() )
             stagger_rating *= 1.0 + talent.monk.fortifying_brew_buff->effectN( 6 ).percent();
