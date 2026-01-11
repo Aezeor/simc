@@ -7769,16 +7769,16 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques_cp( const action_s
 
   auto consume_stacks = std::min( p()->buffs.shadow_techniques->check(),
                                   std::max( 0, as<int>( p()->consume_cp_max() - p()->current_cp() ) ) );
-  if ( consume_stacks == 0 )
-    return;
-    
-  trigger_combo_point_gain( consume_stacks, p()->gains.shadow_techniques );
-  p()->buffs.shadow_techniques->decrement( consume_stacks );
-    
-  if ( p()->talent.subtlety.ancient_arts_1->ok() )
+  if ( consume_stacks > 0 )
   {
-    const double trigger_chance = p()->talent.subtlety.ancient_arts_1->effectN( 1 ).percent() * consume_stacks;
-    trigger_shadow_clone( ab::execute_state, shadow_clone_attack(), trigger_chance );
+    trigger_combo_point_gain( consume_stacks, p()->gains.shadow_techniques );
+    p()->buffs.shadow_techniques->decrement( consume_stacks );
+
+    if ( p()->talent.subtlety.ancient_arts_1->ok() )
+    {
+      const double trigger_chance = p()->talent.subtlety.ancient_arts_1->effectN( 1 ).percent() * consume_stacks;
+      trigger_shadow_clone( ab::execute_state, shadow_clone_attack(), trigger_chance );
+    }
   }
 
   if ( p()->talent.subtlety.ancient_arts_3->ok() &&
@@ -10510,7 +10510,6 @@ void rogue_t::create_buffs()
   buffs.escalating_blade = make_buff( this, "escalating_blade", spell.escalating_blade_buff );
 
   buffs.flawless_form = make_buff<damage_buff_t>( this, "flawless_form", spell.flawless_form_buff );
-  buffs.flawless_form->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   buffs.unseen_blade_cd = make_buff( this, "unseen_blade_cooldown", spell.unseen_blade_buff )
     ->set_quiet( true );
