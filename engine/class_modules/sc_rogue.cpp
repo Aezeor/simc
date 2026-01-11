@@ -8175,10 +8175,10 @@ void actions::rogue_action_t<Base>::trigger_ancient_arts( const action_state_t* 
   if ( !p()->talent.subtlety.ancient_arts_3->ok() || !ab::hit_any_target )
     return;
 
-  if ( ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 )
+  if ( ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 || !this->has_amount_result() )
     return;
 
-  if ( !this->has_amount_result() )
+  if ( p()->buffs.ancient_arts->check() )
     return;
 
   // Needs to be delayed as consume_resource for finishers doesn't trigger until post-impact
@@ -9931,6 +9931,9 @@ void rogue_t::init_spells()
 
   // Summarily Dispatched effect 2 needs special handling due to the dynamic modifier from Between the Eyes
   register_passive_effect_mask( talent.outlaw.summarily_dispatched, effect_mask_t( true ).disable( 2 ) );
+
+  // Improved Secret Technique effect 1 does not directly affect the pet damage spell
+  register_passive_affect_list( talent.subtlety.improved_secret_technique, affect_list_t( 1 ).remove_spell( 282449 ) );
 
   // Corrupt the blood effects are exclusive per spec
   register_passive_effect_mask( talent.deathstalker.corrupt_the_blood, specialization() == ROGUE_ASSASSINATION ?
