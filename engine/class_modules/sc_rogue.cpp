@@ -8603,7 +8603,7 @@ double rogue_t::composite_melee_auto_attack_speed() const
 
   if ( talent.subtlety.warning_signs->ok() && buffs.shadow_dance->up() )
   {
-    h *= 1.0 + talent.subtlety.warning_signs->effectN( 1 ).percent();
+    h *= 1.0 / ( 1.0 + spec.shadow_dance->effectN( 8 ).percent() );
   }
 
   return h;
