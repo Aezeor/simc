@@ -153,7 +153,6 @@ public:
     buff_t* crippling_poison;
     damage_buff_t* deathmark;
     buff_t* deathstalkers_mark;
-    buff_t* fatal_intent;
     damage_buff_t* fazed;
     buff_t* numbing_poison;
     buff_t* wound_poison;
@@ -294,8 +293,8 @@ public:
     struct
     {
       actions::rogue_attack_t* deathstalkers_mark = nullptr;
-      actions::rogue_attack_t* fatal_intent = nullptr;
       actions::rogue_attack_t* hunt_them_down = nullptr;
+      actions::rogue_attack_t* mass_casualty = nullptr;
       actions::rogue_attack_t* singular_focus = nullptr;
     } deathstalker;
     struct
@@ -370,11 +369,11 @@ public:
 
     // Hero
     // Deathstalker
-    damage_buff_t* deathstalkers_mark;
     buff_t* darkest_night;
     buff_t* lingering_darkness;
     damage_buff_t* momentum_of_despair;
     damage_buff_t* symbolic_victory;
+    damage_buff_t* unshakeable_drive;
 
     // Fatebound
     damage_buff_t* fatebound_coin_heads;
@@ -562,12 +561,9 @@ public:
     const spell_data_t* coup_de_grace_damage_bonus_2;
     const spell_data_t* coup_de_grace_damage_bonus_3;
     const spell_data_t* darkest_night_buff;
-    const spell_data_t* deathstalkers_mark_buff;
     const spell_data_t* deathstalkers_mark_damage;
     const spell_data_t* deathstalkers_mark_debuff;
     const spell_data_t* escalating_blade_buff;
-    const spell_data_t* fatal_intent_damage;
-    const spell_data_t* fatal_intent_debuff;
     const spell_data_t* fatebound_coin_heads_buff;
     const spell_data_t* fatebound_coin_heads_initial_buff;
     const spell_data_t* fatebound_coin_tails_buff;
@@ -578,12 +574,14 @@ public:
     const spell_data_t* flawless_form_buff;
     const spell_data_t* hunt_them_down_damage;
     const spell_data_t* lingering_darkness_buff;
+    const spell_data_t* mass_casualty_damage;
     const spell_data_t* momentum_of_despair_buff;
     const spell_data_t* nimble_flurry_damage;
     const spell_data_t* singular_focus_damage;
     const spell_data_t* symbolic_victory_buff;
     const spell_data_t* unseen_blade;
     const spell_data_t* unseen_blade_buff;
+    const spell_data_t* unshakeable_drive_buff;
 
   } spell;
 
@@ -979,7 +977,6 @@ public:
       player_talent_t hunt_them_down;
       player_talent_t singular_focus;
 
-      player_talent_t fatal_intent;
       player_talent_t corrupt_the_blood;
       player_talent_t lingering_darkness;
       player_talent_t symbolic_victory;
@@ -990,6 +987,11 @@ public:
       player_talent_t follow_the_blood;
       player_talent_t shadewalker;
       player_talent_t shroud_of_night;      // No implementation
+
+      player_talent_t precise_killer;
+      player_talent_t unshakeable_drive;
+      player_talent_t quietus_celeris;
+      player_talent_t mass_casualty;
 
       player_talent_t darkest_night;
 
@@ -1834,7 +1836,6 @@ public:
     register_damage_buff( p()->buffs.acrobatic_strikes );
     register_damage_buff( p()->buffs.between_the_eyes );
     register_damage_buff( p()->buffs.cold_blood );
-    register_damage_buff( p()->buffs.deathstalkers_mark );
     register_damage_buff( p()->buffs.fatebound_coin_heads );
     register_damage_buff( p()->buffs.finish_the_job );
     register_damage_buff( p()->buffs.flawless_form );
@@ -1844,6 +1845,7 @@ public:
     register_damage_buff( p()->buffs.silent_storm );
     register_damage_buff( p()->buffs.symbolic_victory );
     register_damage_buff( p()->buffs.the_rotten );
+    register_damage_buff( p()->buffs.unshakeable_drive );
     register_damage_buff( p()->buffs.zero_in );
 
     register_damage_buff( p()->buffs.double_trouble );
@@ -1889,7 +1891,7 @@ public:
                                                     ( secondary_trigger_type != secondary_trigger::COUP_DE_GRACE ||
                                                       ab::data().id() == p()->spell.coup_de_grace_damage_3->id() ) ),
                            cold_blood_consumed_proc );
-    register_consume_buff( p()->buffs.deathstalkers_mark, p()->buffs.deathstalkers_mark->is_affecting( &ab::data() ),
+    register_consume_buff( p()->buffs.unshakeable_drive, p()->buffs.unshakeable_drive->is_affecting( &ab::data() ),
                            nullptr, 1_ms, true ); // Works with WM
     register_consume_buff( p()->buffs.goremaws_bite, affected_by.goremaws_bite );
     register_consume_buff( p()->buffs.silent_storm, p()->buffs.silent_storm->is_affecting_crit_chance( &ab::data() ), nullptr, 1_ms ); // MIDNIGHT TOCHECK Shadow Clone timing
@@ -2396,7 +2398,7 @@ public:
     // Darkest Night
     if ( affected_by.darkest_night )
     {
-      if ( p()->buffs.darkest_night->up() && cast_state( state )->get_combo_points() >= p()->consume_cp_max() )
+      if ( p()->buffs.darkest_night->up() && cast_state( state )->get_combo_points() >= COMBO_POINT_MAX )
       {
         m *= 1.0 + p()->spell.darkest_night_buff->effectN( 2 ).percent() *
           ( 1.0 + p()->buffs.tww3_deathstalker_2pc->check() * p()->spec.tww3_deathstalker_2pc_buff->effectN( 3 ).percent() );
@@ -2517,7 +2519,7 @@ public:
 
     if ( affected_by.darkest_night_crit && p()->buffs.darkest_night->up() )
     {
-      if ( ab::pre_execute_state && cast_state( ab::pre_execute_state )->get_combo_points() >= p()->consume_cp_max() )
+      if ( ab::pre_execute_state && cast_state( ab::pre_execute_state )->get_combo_points() >= COMBO_POINT_MAX )
       {
         c += 1.0 + p()->spell.darkest_night_buff->effectN( 4 ).percent();
       }
@@ -3534,7 +3536,6 @@ struct ambush_t : public rogue_attack_t
     }
 
     trigger_caustic_spatter_debuff( state ); // MIDNIGHT TOCHECK -- Timing?
-    trigger_deathstalkers_mark_debuff( state );
   }
 
   bool procs_main_gauche() const override
@@ -4428,6 +4429,8 @@ struct garrote_t : public rogue_attack_t
       trigger_combo_point_gain( as<int>( p()->talent.assassination.shrouded_suffocation->effectN( 2 ).base_value() ),
                                 p()->gains.shrouded_suffocation );
     }
+
+    trigger_deathstalkers_mark_debuff( execute_state );
   }
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
@@ -5482,7 +5485,7 @@ struct black_powder_t: public rogue_attack_t
   {
     double m = cast_state( state )->get_combo_points();
 
-    // MIDNIGHT TOCHECK -- Does this affect Shadowed Finishers?
+    // MIDNIGHT TOCHECK -- Does this affect Shadowed Finishers? Appears not currently but likely a bug.
     if ( p()->talent.subtlety.potent_powder->ok() && m >= p()->talent.subtlety.potent_powder->effectN( 2 ).base_value() )
     {
       m *= 1.0 + ( p()->cache.mastery_value() * p()->talent.subtlety.potent_powder->effectN( 1 ).percent() );
@@ -6178,35 +6181,43 @@ struct deathstalkers_mark_t : public rogue_attack_t
     rogue_attack_t( name, p, p->spell.deathstalkers_mark_damage )
   {
   }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    if ( p()->active.deathstalker.mass_casualty )
+    {
+      add_child( p()->active.deathstalker.mass_casualty );
+    }
+  }
 };
 
-struct fatal_intent_t : public rogue_attack_t
+struct mass_casualty_t : public rogue_attack_t
 {
-  fatal_intent_t( util::string_view name, rogue_t* p ) :
-    rogue_attack_t( name, p, p->spell.fatal_intent_damage )
+  target_filter_callback_t rupture_targets_only()
   {
+    return [ & ]( const action_t*, player_t* target ) {
+      return p()->get_target_data( target )->dots.rupture->is_ticking();
+    };
   }
 
-  double composite_target_multiplier( player_t* target ) const override
+  mass_casualty_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p->spell.mass_casualty_damage )
   {
-    double m = rogue_attack_t::composite_target_multiplier( target );
+    aoe = -1;
+    reduced_aoe_targets = 5; // MIDNIGHT TOCHECK -- Only in patch notes
 
-    m *= td( target )->debuffs.fatal_intent->stack();
-
-    return m;
+    if ( p->specialization() == ROGUE_ASSASSINATION )
+    {
+      base_multiplier *= p->talent.deathstalker.mass_casualty->effectN( 1 ).percent();
+      target_filter_callback = rupture_targets_only();
+    }
+    else
+    {
+      base_multiplier *= p->talent.deathstalker.mass_casualty->effectN( 2 ).percent();
+    }
   }
-
-  void execute() override
-  {
-    rogue_attack_t::execute();
-    td( execute_state->target )->debuffs.fatal_intent->expire();
-  }
-
-  bool procs_shadow_blades_damage() const override
-  { return false; }
-
-  bool procs_caustic_spatter() const override
-  { return false; }
 };
 
 struct hunt_them_down_t : public rogue_attack_t
@@ -8178,7 +8189,7 @@ void actions::rogue_action_t<Base>::trigger_ancient_arts( const action_state_t* 
   if ( ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 || !this->has_amount_result() )
     return;
 
-  if ( p()->buffs.ancient_arts->check() )
+  if ( !p()->buffs.ancient_arts->check() )
     return;
 
   // Needs to be delayed as consume_resource for finishers doesn't trigger until post-impact
@@ -8240,17 +8251,28 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
 
   // 2025-06-28 -- Deathstalker's Mark can be consumed via Symbols of Death with the TWW3 4pc set bonus
   player_t* mark_target = state->target->is_enemy() ? state->target : p()->target;
+  const bool consume_darkest_night = affected_by.darkest_night && p()->buffs.darkest_night->check() &&
+    cast_state( state )->get_combo_points() >= COMBO_POINT_MAX;
 
-  // 2024-11-30 -- When Darkest Night is active, Deathstalker's Mark cannot be reduced below the application stacks
-  const bool darkest_night_bug = ( p()->bugs && p()->buffs.darkest_night->check() &&
-                                   ( p()->get_target_data( mark_target )->debuffs.deathstalkers_mark->check() <=
-                                     p()->spell.darkest_night_buff->effectN( 3 ).base_value() ) );
-  if ( !darkest_night_bug && p()->get_target_data( mark_target )->debuffs.deathstalkers_mark->check() &&
+  if ( p()->get_target_data( mark_target )->debuffs.deathstalkers_mark->check() &&
        ( ignore_cp || cast_state( state )->get_combo_points() >= as<int>( p()->talent.deathstalker.deathstalkers_mark->effectN( 2 ).base_value() ) ) )
   {
-    p()->get_target_data( mark_target )->debuffs.deathstalkers_mark->decrement();
-    p()->buffs.deathstalkers_mark->trigger();
+    // Envenom/Eviscerate cast with Darkest Night does not consume a stack of active Deathstalker's Marks
+    // MIDNIGHT TOCHECK -- Does this still trigger Unshakeable Drive or damage?
+    if ( !consume_darkest_night )
+    {
+      p()->get_target_data( mark_target )->debuffs.deathstalkers_mark->decrement();
+    }
+    p()->buffs.unshakeable_drive->trigger();
     p()->active.deathstalker.deathstalkers_mark->execute_on_target( mark_target );
+
+    if ( p()->talent.deathstalker.mass_casualty->ok() )
+    {
+      if ( p()->specialization() == ROGUE_ASSASSINATION || ab::data().id() == p()->spec.black_powder->id() )
+      {
+        p()->active.deathstalker.mass_casualty->execute_on_target( mark_target );
+      }
+    }
 
     if ( p()->talent.deathstalker.shadewalker->ok() )
     {
@@ -8268,8 +8290,7 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
     }
   }
 
-  if ( ( affected_by.darkest_night || affected_by.darkest_night_crit ) && p()->buffs.darkest_night->check() &&
-       cast_state( state )->get_combo_points() >= p()->consume_cp_max() )
+  if ( consume_darkest_night )
   {
     trigger_deathstalkers_mark_debuff( state, true );
     p()->buffs.darkest_night->expire( 1_ms ); // Expire with delay for potential Shadowy Finishers support
@@ -8300,6 +8321,18 @@ bool actions::rogue_action_t<Base>::trigger_deathstalkers_mark_debuff( const act
 
   debuff = p()->get_target_data( state->target )->debuffs.deathstalkers_mark;
   debuff->trigger( stacks );
+
+  // MIDNIGHT TOCHECK -- Is this just normal applications or also Darkest Night?
+  if ( p()->talent.deathstalker.quietus_celeris->ok() )
+  {
+    const double consume_chance = p()->talent.deathstalker.quietus_celeris->effectN( 1 ).base_value() /
+      p()->talent.deathstalker.quietus_celeris->effectN( 2 ).base_value();
+
+    if ( p()->rng().roll( consume_chance ) )
+    {
+      trigger_deathstalkers_mark( state, true );
+    }
+  }
 
   return true;
 }
@@ -8534,8 +8567,6 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     ->set_refresh_behavior( buff_refresh_behavior::DURATION ); // TOCHECK
 
   debuffs.deathstalkers_mark = make_buff( *this, "deathstalkers_mark", source->spell.deathstalkers_mark_debuff );
-  debuffs.fatal_intent = make_buff( *this, "fatal_intent", source->spell.fatal_intent_debuff )
-    ->set_default_value( source->talent.deathstalker.fatal_intent->effectN( 1 ).ap_coeff() );
   debuffs.fazed = make_buff<damage_buff_t>( *this, "fazed", source->spell.fazed_debuff );
   debuffs.fazed->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
     return std::min( b->remains() + d, 10_s );  // Capped to 10 seconds, not in spell data
@@ -9675,41 +9706,27 @@ void rogue_t::init_spells()
   talent.subtlety.ancient_arts_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1268939 );
 
   // Shared Talents
-  spell.shadowstep = find_spell( 36554 );     // Base spell with 0 charges
-
-  /* None currently, but leaving this just in case...
-  auto find_shared_talent = []( std::vector<player_talent_t*> talents ) {
-    for ( const auto t : talents )
-    {
-      if ( t->ok() )
-      {
-        return *t;
-      }
-    }
-    return *talents[ 0 ];
-  };
-  */
+  spell.shadowstep = find_spell( 36554 ); // Base spell with 0 charges
 
   // Deathstalker Talents
-  talent.deathstalker.deathstalkers_mark = find_talent_spell( talent_tree::HERO, "Deathstalker's Mark" );
-  
-  talent.deathstalker.clear_the_witnesses = find_talent_spell( talent_tree::HERO, "Clear the Witnesses" );
-  talent.deathstalker.hunt_them_down = find_talent_spell( talent_tree::HERO, "Hunt Them Down" );
-  talent.deathstalker.singular_focus = find_talent_spell( talent_tree::HERO, "Singular Focus" );
-
-  talent.deathstalker.fatal_intent = find_talent_spell( talent_tree::HERO, "Fatal Intent" );
-  talent.deathstalker.corrupt_the_blood = find_talent_spell( talent_tree::HERO, "Corrupt the Blood" );
-  talent.deathstalker.lingering_darkness = find_talent_spell( talent_tree::HERO, "Lingering Darkness" );
-  talent.deathstalker.symbolic_victory = find_talent_spell( talent_tree::HERO, "Symbolic Victory" );
-
-  talent.deathstalker.ethereal_cloak = find_talent_spell( talent_tree::HERO, "Ethereal Cloak" );
   talent.deathstalker.bait_and_switch = find_talent_spell( talent_tree::HERO, "Bait and Switch" );
-  talent.deathstalker.momentum_of_despair = find_talent_spell( talent_tree::HERO, "Momentum of Despair" );
+  talent.deathstalker.clear_the_witnesses = find_talent_spell( talent_tree::HERO, "Clear the Witnesses" );
+  talent.deathstalker.corrupt_the_blood = find_talent_spell( talent_tree::HERO, "Corrupt the Blood" );
+  talent.deathstalker.darkest_night = find_talent_spell( talent_tree::HERO, "Darkest Night" );
+  talent.deathstalker.deathstalkers_mark = find_talent_spell( talent_tree::HERO, "Deathstalker's Mark" );
+  talent.deathstalker.ethereal_cloak = find_talent_spell( talent_tree::HERO, "Ethereal Cloak" );
   talent.deathstalker.follow_the_blood = find_talent_spell( talent_tree::HERO, "Follow the Blood" );
+  talent.deathstalker.hunt_them_down = find_talent_spell( talent_tree::HERO, "Hunt Them Down" );
+  talent.deathstalker.lingering_darkness = find_talent_spell( talent_tree::HERO, "Lingering Darkness" );
+  talent.deathstalker.mass_casualty = find_talent_spell( talent_tree::HERO, "Mass Casualty" );
+  talent.deathstalker.momentum_of_despair = find_talent_spell( talent_tree::HERO, "Momentum of Despair" );
+  talent.deathstalker.precise_killer = find_talent_spell( talent_tree::HERO, "Precise Killer" );
+  talent.deathstalker.quietus_celeris = find_talent_spell( talent_tree::HERO, "Quietus Celeris" );
   talent.deathstalker.shadewalker = find_talent_spell( talent_tree::HERO, "Shadewalker" );
   talent.deathstalker.shroud_of_night = find_talent_spell( talent_tree::HERO, "Shroud of Night" );
-
-  talent.deathstalker.darkest_night = find_talent_spell( talent_tree::HERO, "Darkest Night" );
+  talent.deathstalker.singular_focus = find_talent_spell( talent_tree::HERO, "Singular Focus" );
+  talent.deathstalker.symbolic_victory = find_talent_spell( talent_tree::HERO, "Symbolic Victory" );
+  talent.deathstalker.unshakeable_drive = find_talent_spell( talent_tree::HERO, "Unshakeable Drive" );
 
   // Fatebound Talents
   talent.fatebound.hand_of_fate = find_talent_spell( talent_tree::HERO, "Hand of Fate" );
@@ -9762,13 +9779,12 @@ void rogue_t::init_spells()
   // Hero Talent Background Spells
   // Deathstalker
   spell.darkest_night_buff = talent.deathstalker.darkest_night->ok() ? find_spell( 457280 ) : spell_data_t::not_found();
-  spell.deathstalkers_mark_buff = talent.deathstalker.deathstalkers_mark->ok() ? find_spell( 457160 ) : spell_data_t::not_found();
+  spell.unshakeable_drive_buff = talent.deathstalker.deathstalkers_mark->ok() ? find_spell( 457160 ) : spell_data_t::not_found();
   spell.deathstalkers_mark_damage = talent.deathstalker.deathstalkers_mark->ok() ? find_spell( 457157 ) : spell_data_t::not_found();
   spell.deathstalkers_mark_debuff = talent.deathstalker.deathstalkers_mark->ok() ? find_spell( 457129 ) : spell_data_t::not_found();
-  spell.fatal_intent_damage = talent.deathstalker.fatal_intent->ok() ? find_spell( 461984 ) : spell_data_t::not_found();
-  spell.fatal_intent_debuff = talent.deathstalker.fatal_intent->ok() ? find_spell( 461981 ) : spell_data_t::not_found();
   spell.hunt_them_down_damage = talent.deathstalker.hunt_them_down->ok() ? find_spell( 457193 ) : spell_data_t::not_found();
   spell.lingering_darkness_buff = talent.deathstalker.lingering_darkness->ok() ? find_spell( 457273 ) : spell_data_t::not_found();
+  spell.mass_casualty_damage = talent.deathstalker.mass_casualty->ok() ? find_spell( 1273061 ) : spell_data_t::not_found();
   spell.momentum_of_despair_buff = talent.deathstalker.momentum_of_despair->effectN( 1 ).trigger();
   spell.singular_focus_damage = talent.deathstalker.singular_focus->ok() ? find_spell( 457236 ) : spell_data_t::not_found();
   spell.symbolic_victory_buff = talent.deathstalker.symbolic_victory->ok() ? find_spell( 457167 ) : spell_data_t::not_found();
@@ -10059,14 +10075,14 @@ void rogue_t::init_spells()
     active.deathstalker.deathstalkers_mark = get_background_action<actions::deathstalkers_mark_t>( "deathstalkers_mark" );
   }
 
-  if ( talent.deathstalker.fatal_intent->ok() )
-  {
-    active.deathstalker.fatal_intent = get_background_action<actions::fatal_intent_t>( "fatal_intent" );
-  }
-
   if ( talent.deathstalker.hunt_them_down->ok() )
   {
     active.deathstalker.hunt_them_down = get_background_action<actions::hunt_them_down_t>( "hunt_them_down" );
+  }
+
+  if ( talent.deathstalker.mass_casualty->ok() )
+  {
+    active.deathstalker.mass_casualty = get_background_action<actions::mass_casualty_t>( "mass_casualty" );
   }
 
   if ( talent.deathstalker.singular_focus->ok() )
@@ -10417,7 +10433,7 @@ void rogue_t::create_buffs()
 
   buffs.darkest_night = make_buff( this, "darkest_night", spell.darkest_night_buff );
 
-  buffs.deathstalkers_mark = make_buff<damage_buff_t>( this, "deathstalkers_mark_buff", spell.deathstalkers_mark_buff );
+  buffs.unshakeable_drive = make_buff<damage_buff_t>( this, "unshakable_drive", spell.unshakeable_drive_buff );
 
   buffs.lingering_darkness = make_buff( this, "lingering_darkness", spell.lingering_darkness_buff )
     ->set_default_value_from_effect( 1 )
@@ -10687,7 +10703,7 @@ void rogue_t::create_buffs()
   buffs.tww3_deathstalker_2pc->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   if ( spec.tww3_deathstalker_2pc_buff->ok() )
   {
-    buffs.deathstalkers_mark->apply_dynamic_buff_multiplier( buffs.tww3_deathstalker_2pc );
+    buffs.unshakeable_drive->apply_dynamic_buff_multiplier( buffs.tww3_deathstalker_2pc );
     buffs.momentum_of_despair->apply_dynamic_buff_multiplier( buffs.tww3_deathstalker_2pc );
     buffs.symbolic_victory->apply_dynamic_buff_multiplier( buffs.tww3_deathstalker_2pc );
   }
@@ -10962,46 +10978,6 @@ void rogue_t::init_special_effects()
       special_effect_t* effect = weapon_data[ WEAPON_OFF_HAND ].item_data[ WEAPON_SECONDARY ] -> parsed.special_effects[ i ];
       unique_gear::initialize_special_effect_2( effect );
     }
-  }
-
-  if ( talent.deathstalker.fatal_intent->ok() )
-  {
-    auto const fatal_intent_driver = new special_effect_t( this );
-    fatal_intent_driver->name_str = "fatal_intent_driver";
-    fatal_intent_driver->spell_id = talent.deathstalker.fatal_intent->id();
-    fatal_intent_driver->proc_flags_ = talent.deathstalker.fatal_intent->proc_flags();
-    fatal_intent_driver->proc_flags2_ = PF2_ALL_CAST;
-    special_effects.push_back( fatal_intent_driver );
-
-    struct fatal_intent_driver_cb_t : public dbc_proc_callback_t
-    {
-      rogue_t* rogue;
-      double health_threshold;
-
-      fatal_intent_driver_cb_t( rogue_t* p, const special_effect_t& e )
-        : dbc_proc_callback_t( p, e ), rogue( p ), health_threshold( p->talent.deathstalker.fatal_intent->effectN( 3 ).base_value() )
-      {
-      }
-
-      void execute( action_t* a, action_state_t* s ) override
-      {
-        dbc_proc_callback_t::execute( a, s );
-        if ( s->target && s->target->is_enemy() )
-        {
-          if ( s->target->health_percentage() >= health_threshold )
-          {
-            rogue->get_target_data( s->target )->debuffs.fatal_intent->trigger();
-          }
-          else if ( rogue->get_target_data( s->target )->debuffs.fatal_intent->check() )
-          {
-            rogue->active.deathstalker.fatal_intent->execute_on_target( s->target );
-          }
-        }
-      }
-    };
-
-    auto cb = new fatal_intent_driver_cb_t( this, *fatal_intent_driver );
-    cb->initialize();
   }
 
   if ( talent.trickster.thousand_cuts->ok() )
