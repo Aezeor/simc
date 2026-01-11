@@ -9167,14 +9167,16 @@ struct shattered_souls_callback_t : public demon_hunter_proc_callback_t
 
     double chance = shattered_souls->effectN( 1 ).percent();
 
-    // Normalize Void Ray Soul Generation
     if ( action->id == p()->spec.void_ray_tick->id() || action->id == p()->spec.void_ray_tick_meta->id() )
-      chance /= state->n_targets;
-
-    if ( p()->talent.devourer.waste_not->ok() && ( action->data().id() == p()->spec.void_ray_tick->id() ||
-                                                   action->data().id() == p()->spec.void_ray_tick_meta->id() ) )
     {
-      chance *= 1.0 + p()->talent.devourer.waste_not->effectN( 1 ).percent();
+      if ( p()->talent.devourer.waste_not->ok() )
+      {
+        chance *= 1.0 + p()->talent.devourer.waste_not->effectN( 1 ).percent();
+      }
+
+      // Reduce Void Ray Soul Generation - Estimate is approximately n^(0.3 ~ 0.33)
+      // Todo: Further refine this.
+      chance *= pow( state->n_targets, -0.7 );
     }
 
     if ( rng().roll( chance ) )
