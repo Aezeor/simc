@@ -951,6 +951,7 @@ public:
     cooldown_t* sigil_of_misery;
     cooldown_t* metamorphosis;
     cooldown_t* throw_glaive;
+    cooldown_t* vengeful_retreat;
 
     // Devourer
     cooldown_t* consume;
@@ -3219,7 +3220,7 @@ struct otherworldly_focus_benefit_t : public BASE
   using base_t = otherworldly_focus_benefit_t<BASE>;
 
   otherworldly_focus_benefit_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
-                                  util::string_view o = {} )
+                                util::string_view o = {} )
     : BASE( n, p, s, o )
   {
   }
@@ -3234,8 +3235,8 @@ struct otherworldly_focus_benefit_t : public BASE
       // 2 target is effect 1 % - effect 2 %
       // 3 target is effect 1 % - (effect 2 % * 2)
       // etc until reaching 0 benefit
-      auto num_target_reduction_percent =
-          BASE::p()->talent.annihilator.otherworldly_focus->effectN( 2 ).percent() * ( std::max(std::min( s->n_targets - 1, 10U ), 0U) );
+      auto num_target_reduction_percent = BASE::p()->talent.annihilator.otherworldly_focus->effectN( 2 ).percent() *
+                                          ( std::max( std::min( s->n_targets - 1, 10U ), 0U ) );
       m *= 1.0 + std::max( 0.0, BASE::p()->talent.annihilator.otherworldly_focus->effectN( 1 ).percent() -
                                     num_target_reduction_percent );
     }
@@ -8262,20 +8263,11 @@ struct vengeful_retreat_t
 
   struct vengeful_retreat_damage_t : public demon_hunter_spell_t
   {
-    voidstep_damage_t* voidstep;
-
     vengeful_retreat_damage_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->talent.demon_hunter.vengeful_retreat->effectN( 1 ).trigger() ),
-        voidstep( nullptr )
+      : demon_hunter_spell_t( name, p, p->talent.demon_hunter.vengeful_retreat->effectN( 1 ).trigger() )
     {
       background = dual = true;
       aoe               = -1;
-
-      if ( p->talent.devourer.hungering_slash->ok() )
-      {
-        voidstep = p->get_background_action<voidstep_damage_t>( "voidstep" );
-        add_child( voidstep );
-      }
     }
 
     void execute() override
@@ -8292,16 +8284,14 @@ struct vengeful_retreat_t
       demon_hunter_spell_t::execute();
 
       p()->buff.tactical_retreat->trigger();
-
-      if ( p()->buff.voidstep->up() )
-      {
-        voidstep->execute_on_target( target );
-      }
     }
   };
 
+    voidstep_damage_t* voidstep;
+
   vengeful_retreat_t( demon_hunter_t* p, util::string_view options_str )
-    : base_t( "vengeful_retreat", p, p->talent.demon_hunter.vengeful_retreat, options_str )
+  : base_t( "vengeful_retreat", p, p->talent.demon_hunter.vengeful_retreat, options_str ),
+      voidstep( nullptr )
   {
     execute_action = p->get_background_action<vengeful_retreat_damage_t>( "vengeful_retreat_damage" );
     add_child( execute_action );
@@ -8317,11 +8307,22 @@ struct vengeful_retreat_t
     movement_directionality                       = movement_direction_type::OMNI;
     p->buff.vengeful_retreat_move->distance_moved = base_teleport_distance;
 
+    if ( p->talent.devourer.hungering_slash->ok() )
+    {
+      voidstep = p->get_background_action<voidstep_damage_t>( "voidstep" );
+      add_child( voidstep );
+    }
     // Add damage modifiers in vengeful_retreat_damage_t, not here.
   }
 
   void execute() override
   {
+    // base_t::execute() will expire the voidstep buff so we do the damage before
+    if ( p()->buff.voidstep->up() )
+    {
+      voidstep->execute_on_target( target );
+    }
+
     base_t::execute();
 
     // Fel Rush and VR share a 1 second GCD when one or the other is triggered
@@ -8354,6 +8355,29 @@ struct vengeful_retreat_t
       return false;
 
     return base_t::ready();
+  }
+
+  void update_ready( timespan_t cd_duration ) override
+  {
+    // Decrementing a stack of Voidstep will consume a max charge. Consuming a max charge loses you a current
+    // charge. Therefore update_ready needs to not be called in that case.
+    if ( p()->buff.voidstep->up() )
+    {
+      p()->buff.voidstep->decrement();
+    }
+    else
+    {
+      base_t::update_ready( cd_duration );
+    }
+  }
+
+  void reset() override
+  {
+    // Reset max charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
+    // buffs up. Do this before calling reset as that will also reset the cooldown.
+    cooldown->charges = std::max(data().charges(), 1U);
+
+    base_t::reset();
   }
 };
 
@@ -9589,7 +9613,12 @@ void demon_hunter_t::create_buffs()
 
   buff.hungering_slash = make_buff( this, "hungering_slash", spec.hungering_slash_buff );
 
-  buff.voidstep = make_buff( this, "voidstep", spec.voidstep );
+  buff.voidstep =
+      make_buff( this, "voidstep", spec.voidstep )->set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
+        // adjust the max charges of vengeful retreat whenever voidstep is applied/removed.
+        cooldown.vengeful_retreat->adjust_max_charges( cur - old );
+      } );
+  buff.voidstep->reactable = true;
 
   // TODO: Measure this slow duration instead of guessing.
   buff.voidrush =
@@ -10115,7 +10144,8 @@ void demon_hunter_t::init_absorb_priority()
 void demon_hunter_t::init_action_list()
 {
   // TODO: remove Devourer check once Devourer has a default loadout
-  if ( (main_hand_weapon.type == WEAPON_NONE || off_hand_weapon.type == WEAPON_NONE) && specialization() != DEMON_HUNTER_DEVOURER )
+  if ( ( main_hand_weapon.type == WEAPON_NONE || off_hand_weapon.type == WEAPON_NONE ) &&
+       specialization() != DEMON_HUNTER_DEVOURER )
   {
     if ( !quiet )
     {
@@ -11389,14 +11419,15 @@ std::string demon_hunter_t::default_temporary_enchant() const
 void demon_hunter_t::create_cooldowns()
 {
   // General
-  cooldown.sigil_of_spite  = get_cooldown( "sigil_of_spite" );
-  cooldown.felblade        = get_cooldown( "felblade" );
-  cooldown.immolation_aura = get_cooldown( "immolation_aura" );
-  cooldown.the_hunt        = get_cooldown( "the_hunt" );
-  cooldown.sigil_of_flame  = get_cooldown( "sigil_of_flame" );
-  cooldown.sigil_of_misery = get_cooldown( "sigil_of_misery" );
-  cooldown.throw_glaive    = get_cooldown( "throw_glaive" );
-  cooldown.metamorphosis   = get_cooldown( "metamorphosis" );
+  cooldown.sigil_of_spite   = get_cooldown( "sigil_of_spite" );
+  cooldown.felblade         = get_cooldown( "felblade" );
+  cooldown.immolation_aura  = get_cooldown( "immolation_aura" );
+  cooldown.the_hunt         = get_cooldown( "the_hunt" );
+  cooldown.sigil_of_flame   = get_cooldown( "sigil_of_flame" );
+  cooldown.sigil_of_misery  = get_cooldown( "sigil_of_misery" );
+  cooldown.throw_glaive     = get_cooldown( "throw_glaive" );
+  cooldown.vengeful_retreat = get_cooldown( "vengeful_retreat" );
+  cooldown.metamorphosis    = get_cooldown( "metamorphosis" );
 
   // Devourer
   cooldown.consume   = get_cooldown( "consume" );
