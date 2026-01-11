@@ -282,6 +282,7 @@ public:
     {
       actions::rogue_attack_t* backstab = nullptr;
       actions::rogue_attack_t* black_powder = nullptr;
+      actions::rogue_attack_t* coup_de_grace = nullptr;
       actions::rogue_attack_t* eviscerate = nullptr;
       actions::rogue_attack_t* gloomblade = nullptr;
       actions::rogue_attack_t* goremaws_bite = nullptr;
@@ -6538,6 +6539,9 @@ struct coup_de_grace_t : public rogue_attack_t
 
   bool consumes_supercharger() const override
   { return true; }
+
+  rogue_attack_t* shadow_clone_attack() const override
+  { return p()->active.shadow_clone_attack.coup_de_grace; }
 };
 
 // TWW1 Set Bonus ===========================================================
@@ -8171,7 +8175,7 @@ void actions::rogue_action_t<Base>::trigger_ancient_arts( const action_state_t* 
   if ( ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 )
     return;
 
-  if ( !ab::has_amount_result() )
+  if ( !this->has_amount_result() )
     return;
 
   // Needs to be delayed as consume_resource for finishers doesn't trigger until post-impact
@@ -10004,6 +10008,8 @@ void rogue_t::init_spells()
       secondary_trigger::SHADOW_CLONE, "shadow_clone_backstab", spec.shadow_clone_backstab_attack );
     active.shadow_clone_attack.black_powder = get_secondary_trigger_action<actions::shadow_clone_t>(
       secondary_trigger::SHADOW_CLONE, "shadow_clone_black_powder", spec.shadow_clone_black_powder_attack );
+    active.shadow_clone_attack.coup_de_grace = get_secondary_trigger_action<actions::shadow_clone_t>(
+      secondary_trigger::SHADOW_CLONE, "shadow_clone_coup_de_grace", spec.shadow_clone_eviscerate_attack ); // MIDNIGHT TOCHECK
     active.shadow_clone_attack.eviscerate = get_secondary_trigger_action<actions::shadow_clone_t>(
       secondary_trigger::SHADOW_CLONE, "shadow_clone_eviscerate", spec.shadow_clone_eviscerate_attack );
     active.shadow_clone_attack.gloomblade = get_secondary_trigger_action<actions::shadow_clone_t>(
