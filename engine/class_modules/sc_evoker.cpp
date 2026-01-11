@@ -2341,7 +2341,7 @@ public:
 
     if ( p()->talent.duplicate3.enabled() )
     {
-      parse_effects( p()->buff.duplicate );
+      parse_effects( p()->buff.duplicate, IGNORE_STACKS );
     }
   }
 
@@ -3271,8 +3271,8 @@ struct duplicate_t : evoker_pet_t
   {
     evoker_pet_t::demise();
 
-    if ( evoker()->talent.duplicate3.enabled() && evoker()->pets.duplicate_pet.n_active_pets() == 0 )
-      evoker()->buff.duplicate->expire();
+    if ( evoker()->talent.duplicate3.enabled() )
+      evoker()->buff.duplicate->decrement();
   }
 
   void create_buffs() override
@@ -9692,6 +9692,7 @@ void evoker_t::create_buffs()
   }
 
   buff.duplicate = MBF( talent.duplicate3.ok(), this, "duplicate", talent.duplicate3_buff )
+                       ->set_max_stack( 99 )
                        ->set_duration( 0_s )
                        ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
                        ->set_default_value_from_effect( 2, 0.01 );
