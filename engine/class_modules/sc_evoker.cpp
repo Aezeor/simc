@@ -1497,6 +1497,7 @@ struct evoker_t : public player_t
   void create_actions() override;
   void create_buffs() override;
   void create_options() override;
+  void create_permanent_actors() override;
   void create_pets() override;
   // void arise() override;
   void moving() override;
@@ -8596,26 +8597,9 @@ std::string evoker_t::aura_expr_from_spell_id( unsigned int spell_id, bool on_se
   return aura_expr;
 }
 
-void evoker_t::create_pets()
+void evoker_t::create_permanent_actors()
 {
-  player_t::create_pets();
-
-  pets.commando_pet.set_max_pets( 4 );
-
-  if ( sets->has_set_bonus( HERO_SCALECOMMANDER, TWW3, B2 ) )
-  {
-    timespan_t duration =
-        timespan_t::from_seconds( sets->set( HERO_SCALECOMMANDER, TWW3, B2 )->effectN( 1 ).base_value() );
-
-    if ( sets->has_set_bonus( HERO_SCALECOMMANDER, TWW3, B4 ) )
-    {
-      auto added_duration = sets->set( HERO_SCALECOMMANDER, TWW3, B4 )->effectN( 2 ).time_value();
-      duration += added_duration;
-    }
-
-    pets.commando_pet.set_default_duration( duration );
-  }
-
+    
   if ( specialization() == EVOKER_AUGMENTATION && sim->player_no_pet_list.size() == 1 &&
        option.make_simplified_if_alone && !sim->single_actor_batch )
   {
@@ -8677,6 +8661,27 @@ void evoker_t::create_pets()
         }
       }
     }
+  }
+}
+
+void evoker_t::create_pets()
+{
+  player_t::create_pets();
+
+  pets.commando_pet.set_max_pets( 4 );
+
+  if ( sets->has_set_bonus( HERO_SCALECOMMANDER, TWW3, B2 ) )
+  {
+    timespan_t duration =
+        timespan_t::from_seconds( sets->set( HERO_SCALECOMMANDER, TWW3, B2 )->effectN( 1 ).base_value() );
+
+    if ( sets->has_set_bonus( HERO_SCALECOMMANDER, TWW3, B4 ) )
+    {
+      auto added_duration = sets->set( HERO_SCALECOMMANDER, TWW3, B4 )->effectN( 2 ).time_value();
+      duration += added_duration;
+    }
+
+    pets.commando_pet.set_default_duration( duration );
   }
 }
 
