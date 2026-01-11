@@ -4284,6 +4284,17 @@ struct living_flame_damage_t : public living_flame_base_t<evoker_spell_t>
     return da;
   }
 
+  void execute() override
+  {
+    base_t::execute();
+
+    if ( st_only && rng().roll( p()->talent.ruby_essence_burst->effectN( 1 ).percent() ) )
+    {
+      p()->buff.essence_burst->trigger();
+      p()->proc.ruby_essence_burst->occur();
+    }
+  }
+
   void impact( action_state_t* state ) override
   {
     base_t::impact( state );
