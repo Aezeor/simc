@@ -514,18 +514,34 @@ struct simplified_player_t : public player_t
       return it->second;
     }
 
-    return bob_settings[ "default" ];
+    return bob_settings.at( "default" );
+  }
+
+  const bob_settings_t& get_variant_settings() const
+  {
+    auto it = bob_settings.find( option.variant );
+    if ( it != bob_settings.end() )
+    {
+      return it->second;
+    }
+
+    return bob_settings.at( "default" );
   }
 
   void init() override
   {
     player_t::init();
 
-    role = get_variant_settings().role;
-    has_hasted_gcds = get_variant_settings().hasted_gcds;
-    haste_modifier  = get_variant_settings().haste_modifier;
+    role              = get_variant_settings().role;
+    has_hasted_gcds   = get_variant_settings().hasted_gcds;
+    haste_modifier    = get_variant_settings().haste_modifier;
     execute_threshold = get_variant_settings().execute_threshold;
     execute_amount    = get_variant_settings().execute_mod;
+  }
+
+  role_e primary_role() const override
+  {
+    return get_variant_settings().role;
   }
 
   void init_defence()
@@ -853,11 +869,6 @@ struct simplified_player_t : public player_t
       trigger_ready();
   }
   
-  role_e primary_role() const override
-  {
-    return role;
-  }
-
   void invalidate_cache( cache_e cache ) override
   {
     player_t::invalidate_cache( cache );
