@@ -4332,8 +4332,20 @@ struct ice_nova_t final : public frost_mage_spell_t
   }
 };
 
+struct conflagration_t final : public mage_spell_t
+{
+  conflagration_t( std::string_view n, mage_t* p ) :
+    mage_spell_t( n, p, p->find_spell( 1271173 ) )
+  {
+    aoe = as<int>( p->talents.conflagration->effectN( 1 ).base_value() );
+    background = proc = true;
+  }
+};
+
 struct fire_blast_t final : public fire_mage_spell_t
 {
+  action_t* conflagration = nullptr;
+
   fire_blast_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     fire_mage_spell_t( n, p, p->talents.fire_blast.ok() ? p->talents.fire_blast : p->find_class_spell( "Fire Blast" ) )
   {
@@ -4346,6 +4358,9 @@ struct fire_blast_t final : public fire_mage_spell_t
       base_crit += 1.0;
       usable_while_casting = true;
     }
+
+    if ( p->talents.conflagration.ok() )
+      conflagration = get_action<conflagration_t>( "conflagration", p );
   }
 
   void execute() override
@@ -4368,6 +4383,9 @@ struct fire_blast_t final : public fire_mage_spell_t
       spread_ignite( s->target );
 
     fire_mage_spell_t::impact( s );
+
+    if ( conflagration )
+      conflagration->execute_on_target( s->target );
   }
 
   double recharge_rate_multiplier( const cooldown_t& cd ) const override
