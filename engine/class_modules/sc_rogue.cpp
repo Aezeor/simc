@@ -1630,6 +1630,7 @@ public:
 
     bool tww3_fatebound_4pc = false;
     bool mid1_assassination_4pc = false;
+    bool mid1_subtlety_2pc = false;
 
     damage_affect_data follow_the_blood;
     damage_affect_data mastery_executioner;
@@ -1798,6 +1799,11 @@ public:
       affected_by.tww2_subtlety_4pc.periodic = ab::data().affected_by( buff_spell->effectN( 3 ) ) ||
         ab::data().affected_by_label( buff_spell->effectN( 5 ) ) ||
         ab::data().affected_by_label( buff_spell->effectN( 7 ) );
+    }
+
+    if ( p->set_bonuses.mid1_subtlety_2pc->ok() )
+    {
+      affected_by.mid1_subtlety_2pc = ab::base_costs[ RESOURCE_COMBO_POINT ] > 0;
     }
   }
 
@@ -2434,7 +2440,7 @@ public:
       m *= 1.0 + p()->set_bonuses.mid1_assassination_4pc->effectN( 2 ).percent();
     }
 
-    if ( p()->set_bonuses.mid1_subtlety_2pc->ok() )
+    if ( affected_by.mid1_subtlety_2pc )
     {
       // MIDNIGHT TOCHECK -- Supercharger?
       m *= 1.0 + ( p()->set_bonuses.mid1_subtlety_2pc->effectN( 1 ).percent() / 10.0 ) * cast_state( state )->get_combo_points();
@@ -3585,6 +3591,7 @@ struct shadow_clone_t : public rogue_attack_t
     rogue_attack_t( name, p, s )
   {
     base_multiplier = 0.5; // All current triggers default to half damage
+    affected_by.mid1_subtlety_2pc = true;
   }
 
   virtual double combo_point_da_multiplier( const action_state_t* s ) const
@@ -4244,6 +4251,7 @@ struct eviscerate_t : public rogue_attack_t
       affected_by.darkest_night = !p->bugs;
       // 2024-09-01 -- Note: This works but needs custom composite_crit_chance() handling below
       affected_by.darkest_night_crit = false;
+      affected_by.mid1_subtlety_2pc = true;
 
       if ( p->talent.subtlety.shadowed_finishers->ok() )
       {
@@ -5141,6 +5149,7 @@ struct secret_technique_t : public rogue_attack_t
       aoe = -1;
       full_amount_targets = 1; // 2025-05-30 -- Primary target is not reduced by sqrt scaling
       reduced_aoe_targets = p->spec.secret_technique->effectN( 6 ).base_value() - 1;
+      affected_by.mid1_subtlety_2pc = true;
     }
 
     double composite_player_multiplier( const action_state_t* state ) const override
@@ -5462,6 +5471,7 @@ struct black_powder_t: public rogue_attack_t
       callbacks = false; // 2021-07-19 -- Does not appear to trigger normal procs
       aoe = -1;
       reduced_aoe_targets = p->spec.black_powder->effectN( 4 ).base_value();
+      affected_by.mid1_subtlety_2pc = true;
 
       if ( p->talent.subtlety.shadowed_finishers->ok() )
       {
@@ -6405,6 +6415,7 @@ struct coup_de_grace_t : public rogue_attack_t
       last_cp( 1 )
     {
       dual = true;
+      affected_by.mid1_subtlety_2pc = true;
 
       if ( p->talent.subtlety.shadowed_finishers->ok() )
       {
@@ -6436,6 +6447,8 @@ struct coup_de_grace_t : public rogue_attack_t
       rogue_attack_t( name, p, s ),
       bonus_attack( nullptr )
     {
+      affected_by.mid1_subtlety_2pc = true;
+
       if ( p->talent.subtlety.shadowed_finishers->ok() )
       {
         auto formatted_name = fmt::format( "eviscerate_{}", name );
