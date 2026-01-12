@@ -246,6 +246,7 @@ public:
       buff_t* morning_star;
       buff_t* solar_grace;
       buff_t* morning_star_driver;
+      buff_t* born_in_sunlight; // Hidden passive buff
     } herald_of_the_sun;
 
     buff_t* rise_from_ash; // Ret TWW1 4p

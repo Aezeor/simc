@@ -316,6 +316,9 @@ void avenging_wrath_t::execute()
                         p()->gains.hp_walk_into_light );
     p()->buffs.herald_of_the_sun.blessing_of_anshe->trigger();
   }
+
+  if ( p()->talents.herald_of_the_sun.born_in_sunlight->ok() )
+    p()->buffs.herald_of_the_sun.born_in_sunlight->trigger();
 }
 
 // Consecration =============================================================
@@ -3562,6 +3565,7 @@ void paladin_t::create_buffs()
                              ->add_invalidate( CACHE_MASTERY )
                              ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
                                buffs.hammer_of_wrath->expire();
+                               buffs.herald_of_the_sun.born_in_sunlight->expire();
                              } );
 
   if ( talents.crusade->ok() )
@@ -3712,6 +3716,8 @@ void paladin_t::create_buffs()
   buffs.valor    = make_buff( this, "valor", find_spell( 1269179 ) );
   buffs.light_blessed_shield =
       make_buff( this, "light_blessed_shield", find_spell( 1272298 ) )->set_default_value_from_effect( 1 );
+  buffs.herald_of_the_sun.born_in_sunlight =
+      make_buff( this, "born_in_sunlight", find_spell( 1264050 ) )->set_default_value_from_effect( 1 );
 }
 
 // paladin_t::default_potion ================================================
@@ -3825,6 +3831,7 @@ void paladin_t::apply_action_effects( action_t* a ) {
   // Hero talents
   action->parse_effects( buffs.herald_of_the_sun.blessing_of_anshe, CONSUME_BUFF );
   action->parse_effects( buffs.templar.sanctification );
+  action->parse_effects( buffs.herald_of_the_sun.born_in_sunlight );
 
   // Ret
   action->parse_effects( buffs.empyrean_power, CONSUME_BUFF );
@@ -4047,12 +4054,6 @@ void paladin_t::init_spells()
     register_passive_effect_override( find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath" )->effectN( 12 ),
                                       apex2->effectN( 1 ).base_value() );
     register_passive_effect_override( find_spell( 454351 )->effectN( 12 ), apex2->effectN( 1 ).base_value() );
-  }
-  // Born in Sunlight probably overrides Radiant Glory Wings effect 13 via server side script
-  if (find_talent_spell(talent_tree::HERO, "Born in Sunlight")->ok() && find_talent_spell(talent_tree::SPECIALIZATION, "Radiant Glory")->ok())
-  {
-    register_passive_effect_override( find_spell( 454351 )->effectN( 13 ),
-                                      find_spell( 1264050 )->effectN( 1 ).base_value() );
   }
 
   player_t::init_spells();
