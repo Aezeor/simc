@@ -2437,7 +2437,7 @@ public:
     if ( p()->set_bonuses.mid1_subtlety_2pc->ok() )
     {
       // MIDNIGHT TOCHECK -- Supercharger?
-      m *= 1.0 + p()->set_bonuses.mid1_subtlety_2pc->effectN( 1 ).percent() * cast_state( state )->get_combo_points();
+      m *= 1.0 + ( p()->set_bonuses.mid1_subtlety_2pc->effectN( 1 ).percent() / 10.0 ) * cast_state( state )->get_combo_points();
     }
 
     return m;
