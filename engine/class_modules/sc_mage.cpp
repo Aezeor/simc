@@ -2311,6 +2311,14 @@ struct fire_mage_spell_t : public mage_spell_t
 
     return target->health_percentage() <= p()->talents.scorch->effectN( 2 ).base_value();
   }
+
+  bool fireball_execute_active( player_t* target ) const
+  {
+    if ( !p()->talents.scald.ok() )
+      return false;
+
+    return target->health_percentage() <= p()->talents.scald->effectN( 3 ).base_value();
+  }
 };
 
 struct hot_streak_data_t
@@ -3653,7 +3661,7 @@ struct fireball_t final : public fire_mage_spell_t
   {
     double c = fire_mage_spell_t::composite_target_crit_chance( target );
 
-    if ( firestarter_active( target ) )
+    if ( firestarter_active( target ) || fireball_execute_active( target ) )
       c += 1.0;
 
     return c;
@@ -3668,6 +3676,9 @@ struct fireball_t final : public fire_mage_spell_t
 
     if ( frostfire && p()->state.trigger_ff_empowerment )
       m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 3 ).percent();
+
+    if ( fireball_execute_active( s->target ) )
+      m *= 1.0 + p()->talents.scald->effectN( 1 ).percent();
 
     return m;
   }
