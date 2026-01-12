@@ -2233,10 +2233,15 @@ struct fire_mage_spell_t : public mage_spell_t
     return ignite_state->tick_amount * ignite->ticks_left_fractional();
   }
 
-  void spread_ignite( player_t* primary )
+  // TODO: Test the target priorities and target capping.
+  // TODO: Double check spread_multiplier behavior.
+  void spread_ignite( player_t* primary, int num_targets = -1, double spread_multiplier = -1.0 )
   {
     if ( !p()->action.ignite )
       return;
+
+    if ( spread_multiplier < 0 )
+      spread_multiplier = p()->spec.ignite->effectN( 2 ).percent();
 
     auto source = p()->action.ignite->get_dot( primary );
     if ( source->is_ticking() )
@@ -2251,11 +2256,12 @@ struct fire_mage_spell_t : public mage_spell_t
       std::stable_sort( ignites.begin(), ignites.end(), [] ( dot_t* a, dot_t* b )
       { return ignite_bank( a ) < ignite_bank( b ); } );
 
-      auto source_bank = ignite_bank( source );
+      auto source_bank = ignite_bank( source ) * spread_multiplier;
       auto source_tick_amount = debug_cast<residual_action::residual_periodic_state_t*>( source->state )->tick_amount;
-      auto targets_remaining = as<int>( p()->spec.ignite->effectN( 4 ).base_value() );
-      if ( p()->buffs.combustion->check() )
-        targets_remaining += as<int>( p()->talents.master_of_flame->effectN( 2 ).base_value() );
+
+      int targets_remaining = num_targets;
+      if ( targets_remaining < 0 )
+        targets_remaining = as<int>( p()->spec.ignite->effectN( 5 ).base_value() );
 
       for ( auto destination : ignites )
       {
