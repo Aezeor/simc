@@ -3008,7 +3008,8 @@ struct dawnlight_t : public paladin_spell_t
 
     aoe_action->base_dd_min = aoe_action->base_dd_max = d->state->result_amount * p()->spells.herald_of_the_sun.dawnlight_aoe_metadata->effectN( 1 ).percent();
     aoe_action->execute_on_target( d->target );
-    suns_avatar->execute_on_target( d->target );
+    if ( p()->talents.herald_of_the_sun.suns_avatar->ok() )
+      suns_avatar->execute_on_target( d->target );
   }
 
   void last_tick( dot_t* d ) override
