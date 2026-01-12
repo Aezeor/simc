@@ -2427,6 +2427,14 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     if ( p()->buffs.hyperthermia->check() )
       p()->buffs.hyperthermia_damage->trigger();
   }
+
+  void impact( action_state_t* s ) override
+  {
+    custom_state_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+      get_td( s->target )->debuffs.controlled_destruction->trigger();
+  }
 };
 
 
@@ -4678,14 +4686,6 @@ struct pyroblast_t final : public hot_streak_spell_t
   {
     timespan_t t = hot_streak_spell_t::travel_time();
     return std::min( t, 0.75_s );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    hot_streak_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-      get_td( s->target )->debuffs.controlled_destruction->trigger();
   }
 
   void execute() override
