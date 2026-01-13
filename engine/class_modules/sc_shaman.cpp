@@ -1569,6 +1569,7 @@ public:
     player_talent_t ancestral_guidance;
     player_talent_t creation_core; // TODO: NYI
     player_talent_t call_of_the_elements;
+    player_talent_t instinctive_imbuements;
 
     // Spec - Shared
     player_talent_t ancestral_wolf_affinity; // TODO: NYI
@@ -11519,6 +11520,7 @@ void shaman_t::init_spells()
   talent.ancestral_guidance      = _CT( "Ancestral Guidance" );
   talent.creation_core           = _CT( "Creation Core" );
   talent.call_of_the_elements = _CT( "Call of the Elements" );
+  talent.instinctive_imbuements = _CT( "Instinctive Imbuements" );
 
   // Spec - Shared
   talent.ancestral_wolf_affinity = _ST( "Ancestral Wolf Affinity" );
@@ -13621,6 +13623,7 @@ bool shaman_t::validate_actor()
 void shaman_t::apply_player_effects()
 {
   // Shared
+  eff::source_eff_builder_t( buff.lightning_shield ).build( this );
 
   // Enhancement
   eff::source_eff_builder_t( buff.flurry ).set_flag( IGNORE_STACKS ).build( this );
