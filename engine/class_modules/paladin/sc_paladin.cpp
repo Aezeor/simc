@@ -2017,12 +2017,6 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
       base_execute_time          = timespan_t::from_millis( 600 ); // Still has a 600ms execute time, for whatever reasons. Not in spell data anymore.
       dual                       = true;
       target_filter_callback     = secondary_targets_only();
-
-      if ( p->sets->has_set_bonus( HERO_TEMPLAR, TWW3, B4 ) )
-        // Both effect 2 and 4 adjust AoE. This is probably a tuning knob for Blizzard. Also maybe Ret is 2, Prot 4, who knows.
-        aoe += as<int>( p->sets->set( HERO_TEMPLAR, TWW3, B4 )
-                          ->effectN( p->specialization() == PALADIN_RETRIBUTION ? 4 : 2 )
-                          .base_value() );
     }
 
     action_state_t* new_state() override
@@ -3203,7 +3197,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
     cb->activate_with_buff( buffs.sacred_weapon, true );
   }
 
-  if (paladin->sets->has_set_bonus(HERO_LIGHTSMITH, TWW3, B4))
+  if (paladin->talents.lightsmith.masterwork->ok())
   {
     buffs.lesser_bulwark = make_buff<buffs::lesser_bulwark_buff_t>( this );
     buffs.lesser_weapon = make_buff( *this, "lesser_weapon_" + paladin->name_str + "_" + target->name_str,
@@ -4229,7 +4223,6 @@ void paladin_t::init_spells()
   spells.templar.empyrean_hammer_wd     = find_spell( 431625 );
 
   spells.herald_of_the_sun.dawnlight_aoe_metadata = find_spell( 431581 );
-  spells.herald_of_the_sun.solar_wrath            = find_spell( 1236972 );
 
   passives.boundless_conviction = find_spell( 115675 );
   // Manually add judgment spells to swift justice

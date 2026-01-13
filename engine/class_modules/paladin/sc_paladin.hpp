@@ -224,7 +224,6 @@ public:
       buff_t* masterwork_bulwark;
       buff_t* lesser_weapon;
       absorb_buff_t* lesser_bulwark;
-      buff_t* fake_tww3_ls_bh;
     } lightsmith;
 
     struct
@@ -423,7 +422,6 @@ public:
     struct
     {
       const spell_data_t* dawnlight_aoe_metadata;
-      const spell_data_t* solar_wrath;  // Herald TWW3 4p
     } herald_of_the_sun;
 
     const spell_data_t* highlords_judgment_hidden;
@@ -1093,7 +1091,6 @@ public:
       rise_from_ash; // Ret
     bool avenging_crusader;                                                                // Holy
     bool sentinel;  // Prot
-    bool solar_wrath; // Herald of the Sun
   } affected_by;
 
   // haste scaling bools
@@ -1126,9 +1123,6 @@ public:
       this->affected_by.crusade         = this->data().affected_by( p->spells.crusade->effectN( 1 ) );
       this->affected_by.rise_from_ash =
           this->data().affected_by( p->find_spell( 454693 )->effectN( 1 ) );
-
-      this->affected_by.solar_wrath    = p->sets->has_set_bonus( HERO_HERALD_OF_THE_SUN, TWW3, B4 ) &&
-                                      this->data().affected_by( p->spells.herald_of_the_sun.solar_wrath->effectN( 1 ) );
     }
     if ( p->specialization() == PALADIN_HOLY )
     {
