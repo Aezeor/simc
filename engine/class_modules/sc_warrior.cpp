@@ -750,7 +750,7 @@ public:
       player_talent_t practiced_strikes;
       player_talent_t precise_might;
       player_talent_t mountain_of_muscle_and_scars;
-      player_talent_t celeritous_conclusion;  // NYI
+      player_talent_t celeritous_conclusion;
       player_talent_t dominance_of_the_colossus;
     } colossus;
 
@@ -869,6 +869,7 @@ public:
   double composite_parry_rating() const override;
   double composite_parry() const override;
   double composite_attack_power_multiplier() const override;
+  double composite_player_multiplier( school_e s ) const override;
   double composite_crit_block() const override;
   double composite_melee_crit_chance() const override;
   double composite_leech() const override;
@@ -3610,17 +3611,6 @@ struct demolish_damage_t : public warrior_attack_t
     if ( data().id() == 440888 && p()->talents.colossus.decimator->ok() ) // Third Attack
       p()->active.deep_wounds->execute_on_target( state->target );
   }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    if( data().id() == 440888 )
-    {
-      p()->buff.celeritous_conclusion_haste->trigger();
-      p()->buff.celeritous_conclusion_crit->trigger();
-    }
-  }
 };
 
 struct demolish_t : public warrior_attack_t
@@ -5431,7 +5421,7 @@ struct ravager_tick_t : public warrior_attack_t
   double rage_from_ravager;
   ravager_tick_t( warrior_t* p, util::string_view name )
     : warrior_attack_t( name, p, p->find_spell( 156287 ) ),
-      rage_from_ravager( p->find_spell( 334934 )->effectN( 1 ).resource( RESOURCE_RAGE ) )
+      rage_from_ravager( p->specialization() == WARRIOR_PROTECTION ? p->find_spell( 334934 )->effectN( 1 ).resource( RESOURCE_RAGE ) : 0 )
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
@@ -8668,6 +8658,18 @@ double warrior_t::composite_attack_power_multiplier() const
   if ( talents.warrior.battlefield_commander.ok() )
     ap *= 1.0 + talents.warrior.battlefield_commander->effectN( 6 ).percent();
   return ap;
+}
+
+// warrior_t::composite_attack_power_multiplier ==============================
+double warrior_t::composite_player_multiplier( school_e s ) const
+{
+  double multi = parse_player_effects_t::composite_player_multiplier( s );
+
+  if ( mastery.master_of_arms->ok() )
+  {
+    multi *= 1.0 + mastery.master_of_arms->effectN( 1 ).mastery_value() * cache.mastery();
+  }
+  return multi;
 }
 
 // warrior_t::composite_crit_block =====================================
