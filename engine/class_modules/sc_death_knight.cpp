@@ -9243,7 +9243,8 @@ struct desecrate_t final : public death_knight_spell_t
   {
     double m = death_knight_spell_t::composite_da_multiplier( s );
 
-    m *= ticks_remain;
+    if( ticks_remain > 0 )
+      m *= ticks_remain;
 
     return m;
   }
