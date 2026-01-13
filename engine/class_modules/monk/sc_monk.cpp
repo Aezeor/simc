@@ -479,6 +479,74 @@ struct monk_snapshot_stats_t : public snapshot_stats_t
   }
 };
 
+namespace spells
+{
+template <typename base_action_t>
+struct harmonic_surge_t : public base_action_t
+{
+  using base_t = harmonic_surge_t<base_action_t>;
+
+  template <typename TBase>
+  struct impact_t : TBase
+  {
+    impact_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
+      : TBase( player, fmt::format( "harmonic_surge_{}", name ), spell_data )
+    {
+      TBase::aoe              = -1;
+      TBase::split_aoe_damage = true;
+
+      size_t offset = 1;
+
+      switch ( spell_data->effectN( 1 ).type() )
+      {
+        case E_SCHOOL_DAMAGE:
+          break;
+        case E_HEAL:
+          offset++;
+          break;
+        default:
+          assert( false );
+      }
+
+      if ( const spelleffect_data_t &effect = player->talent.master_of_harmony.harmonic_surge->effectN( offset );
+           effect.ok() )
+        add_parse_entry( TBase::da_multiplier_effects ).set_value( effect.percent() - 1.0 ).set_eff( &effect );
+    }
+  };
+
+  action_t *damage;
+  action_t *heal;
+
+  template <typename... Args>
+  harmonic_surge_t( monk_t *player, std::string_view name, Args &&...args )
+    : base_action_t( player, name, std::forward<Args>( args )... ), damage( nullptr ), heal( nullptr )
+  {
+    if ( !player->talent.master_of_harmony.harmonic_surge->ok() )
+      return;
+
+    damage = new impact_t<monk_spell_t>( player, fmt::format( "damage_{}", name ),
+                                         player->talent.master_of_harmony.harmonic_surge_damage );
+    heal   = new impact_t<monk_heal_t>( player, fmt::format( "heal_{}", name ),
+                                        player->talent.master_of_harmony.harmonic_surge_heal );
+
+    base_action_t::add_child( damage );
+    base_action_t::add_child( heal );
+  }
+
+  void execute() override
+  {
+    base_action_t::execute();
+
+    if ( !base_action_t::p()->buff.harmonic_surge->up() )
+      return;
+
+    base_action_t::p()->buff.harmonic_surge->decrement();
+    damage->execute();
+    heal->execute();
+  }
+};
+}  // namespace spells
+
 namespace attacks
 {
 namespace
@@ -678,59 +746,12 @@ struct overwhelming_force_t : base_action_t
   }
 };
 
-struct harmonic_surge_t : public monk_spell_t
-{
-  template <typename TBase>
-  struct impact_t : TBase
-  {
-    impact_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
-      : TBase( player, name, spell_data )
-    {
-      TBase::aoe              = -1;
-      TBase::split_aoe_damage = true;
-
-      unsigned offset = 0;
-
-      if ( spell_data->effectN( 1 ).type() == E_SCHOOL_DAMAGE )
-        offset += 0;
-      if ( spell_data->effectN( 1 ).type() == E_HEAL )
-        offset += 1;
-
-      offset += 1;
-
-      assert( offset != 0 );
-
-      // if ( const spelleffect_data_t &effect = player->tier.tww3.moh_2pc->effectN( offset ); effect.ok() )
-      //   add_parse_entry( TBase::da_multiplier_effects ).set_value( effect.percent() - 1.0 ).set_eff( &effect );
-    }
-  };
-
-  action_t *damage;
-  action_t *heal;
-
-  harmonic_surge_t( monk_t *player )
-    : monk_spell_t( player, "harmonic_surge", spell_data_t::nil() ),
-      damage( new impact_t<monk_spell_t>( player, "harmonic_surge_damage", spell_data_t::nil() ) ),
-      heal( new impact_t<monk_heal_t>( player, "harmonic_surge_heal", spell_data_t::nil() ) )
-  {
-  }
-
-  void execute() override
-  {
-    monk_spell_t::execute();
-
-    damage->execute();
-    heal->execute();
-  }
-};
-
-struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
+struct tiger_palm_t : public spells::harmonic_surge_t<overwhelming_force_t<monk_melee_attack_t>>
 {
   bool face_palm;
-  action_t *harmonic_surge;
 
   tiger_palm_t( monk_t *p, std::string_view options_str )
-    : base_t( p, "tiger_palm", p->baseline.monk.tiger_palm ), face_palm( false ), harmonic_surge( nullptr )
+    : base_t( p, "tiger_palm", p->baseline.monk.tiger_palm ), face_palm( false )
   {
     parse_options( options_str );
 
@@ -773,9 +794,6 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
       p()->action.courage_of_the_white_tiger.base->execute();
 
     base_t::execute();
-
-    if ( harmonic_surge )
-      harmonic_surge->execute();
 
     p()->buff.blackout_combo->expire();
 
@@ -2204,6 +2222,9 @@ struct keg_smash_t : monk_melee_attack_t
     p()->buff.blackout_combo->expire();
     p()->baseline.brewmaster.brews.adjust( reduction );
     p()->action.chi_wave->execute();
+
+    if ( p()->talent.master_of_harmony.potential_energy->ok() )
+      p()->buff.harmonic_surge->trigger();
   }
 
   void impact( action_state_t *state ) override
@@ -3513,9 +3534,9 @@ struct zenith_t : public monk_spell_t
 
 namespace heals
 {
-struct vivify_t : public monk_heal_t
+struct vivify_t : public spells::harmonic_surge_t<monk_heal_t>
 {
-  vivify_t( monk_t *p, std::string_view options_str ) : monk_heal_t( p, "vivify", p->baseline.monk.vivify )
+  vivify_t( monk_t *p, std::string_view options_str ) : base_t( p, "vivify", p->baseline.monk.vivify )
   {
     parse_options( options_str );
 
@@ -3527,7 +3548,7 @@ struct vivify_t : public monk_heal_t
 
   void execute() override
   {
-    monk_heal_t::execute();
+    base_t::execute();
 
     p()->action.chi_wave->execute();
   }
@@ -3649,6 +3670,10 @@ struct absorb_brew_t : public brew_t<monk_absorb_t>
 
     p()->buff.pretense_of_instability->trigger();
     p()->action.special_delivery->execute();
+
+    if ( p()->talent.master_of_harmony.harmonic_surge->ok() )
+      p()->buff.harmonic_surge->trigger(
+          as<int>( p()->talent.master_of_harmony.harmonic_surge->effectN( 5 ).base_value() ) );
   }
 };
 
@@ -5200,6 +5225,9 @@ void monk_t::init_spells()
     talent.master_of_harmony.balanced_stratagem_magic      = find_spell( 451508 );
     talent.master_of_harmony.balanced_stratagem_physical   = find_spell( 451514 );
     talent.master_of_harmony.harmonic_surge                = _HT( "Harmonic Surge" );
+    talent.master_of_harmony.harmonic_surge_buff           = find_spell( 1270990 );
+    talent.master_of_harmony.harmonic_surge_damage         = find_spell( 1271011 );
+    talent.master_of_harmony.harmonic_surge_heal           = find_spell( 1271045 );
     talent.master_of_harmony.tigers_vigor                  = _HT( "Tiger's Vigor" );
     talent.master_of_harmony.roar_from_the_heavens         = _HT( "Roar from the Heavens" );
     talent.master_of_harmony.endless_draught               = _HT( "Endless Draught" );
@@ -5744,6 +5772,10 @@ void monk_t::create_buffs()
   buff.balanced_stratagem_physical =
       make_buff_fallback( talent.master_of_harmony.balanced_stratagem->ok(), this, "balanced_stratagem_physical",
                           talent.master_of_harmony.balanced_stratagem_physical );
+
+  // Master of Harmony
+  buff.harmonic_surge = make_buff_fallback( talent.master_of_harmony.harmonic_surge->ok(), this, "harmonic_surge",
+                                            talent.master_of_harmony.harmonic_surge_buff );
 
   // Shado-Pan
   buff.flurry_charge =
