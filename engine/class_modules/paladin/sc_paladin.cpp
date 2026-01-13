@@ -1638,6 +1638,7 @@ hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view name, util
     triggers_higher_calling   = true;
     triggers_second_sunrise   = !background;
     triggers_divine_resonance = !background;
+    triggers_sanctification   = p->specialization() == PALADIN_PROTECTION;
     may_block = may_parry = may_dodge = false;
     // force effect 1 to be used for direct ratios
     parse_effect_data( data().effectN( 1 ) );
