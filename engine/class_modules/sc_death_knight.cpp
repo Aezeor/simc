@@ -3333,7 +3333,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     gnaw_cd                   = get_cooldown( "gnaw" );
     gnaw_cd->duration         = owner->pet_spell.gnaw->cooldown();
     affected_by_grave_mastery = true;
-    owner_coeff.ap_from_ap    = 0.6318;
+    owner_coeff.ap_from_ap    = 0.47385;
     if ( owner->spec.raise_dead->ok() )
     {
       dynamic = false;
@@ -3591,9 +3591,9 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
   {
     // Skip base_ghoul_pet_t::init_base_stats to prevent initializing energy resource
     death_knight_pet_t::init_base_stats();
-    owner_coeff.ap_from_ap = 0.31;
+    owner_coeff.ap_from_ap = 0.2325;
     if ( name_str == "army_ghoul" )
-      owner_coeff.ap_from_ap *= 2;  // Not in data, testing suggests its 2x base lesser ghoul inheritence
+      owner_coeff.ap_from_ap *= 1.75;
   }
 
   void arise() override
@@ -4403,7 +4403,7 @@ struct magus_pet_t : public death_knight_pet_t
   void init_base_stats() override
   {
     death_knight_pet_t::init_base_stats();
-    owner_coeff.ap_from_ap = 0.6154731;
+    owner_coeff.ap_from_ap = 0.466;
   }
 
   void arise() override
@@ -4497,7 +4497,7 @@ struct blood_beast_pet_t : public death_knight_pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = 1_s;
     npc_id                      = owner->find_spell( 434237 )->effectN( 1 ).misc_value1();
-    owner_coeff.ap_from_ap      = 0.775;
+    owner_coeff.ap_from_ap      = owner->specialization() == DEATH_KNIGHT_UNHOLY ? 0.2325 : 0.775; // TODO: Test on Blood
     resource_regeneration       = regen_type::DISABLED;
     blood_beast_mod             = dk()->specialization() == DEATH_KNIGHT_BLOOD
                                       ? dk()->talent.sanlayn.the_blood_is_life->effectN( 1 ).percent()
@@ -4612,9 +4612,9 @@ struct horseman_pet_t : public death_knight_pet_t
     : death_knight_pet_t( owner, name, type, guardian, true, dynamic ), rp_spent( 0 ), current_pool( 0 )
   {
     main_hand_weapon.type     = WEAPON_BEAST_2H;
-    owner_coeff.ap_from_ap    = 0.935;
+    owner_coeff.ap_from_ap    = 0.70125;
     resource_regeneration     = regen_type::DISABLED;
-    auto_attack_multiplier    = 1.25;
+    auto_attack_multiplier    = 1;
     affected_by_grave_mastery = true;
   }
 
@@ -5230,7 +5230,7 @@ struct abomination_pet_t : public death_knight_pet_t
     main_hand_weapon.swing_time       = 3.6_s;
     affected_by_commander_of_the_dead = true;
     affected_by_grave_mastery         = true;
-    owner_coeff.ap_from_ap            = 3.12;
+    owner_coeff.ap_from_ap            = 2.34;
     resource_regeneration             = regen_type::DISABLED;
 
     register_on_combat_state_callback( [ this ]( player_t* /* p */, bool in_combat ) {
