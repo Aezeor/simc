@@ -3429,13 +3429,13 @@ void paladin_t::init_base_stats()
   base.attack_power_per_strength = 1.0;
   base.spell_power_per_intellect = 1.0;
 
-  player_t::init_base_stats();
-
   // Ignore mana for non-holy
   if ( specialization() != PALADIN_HOLY )
   {
     resources.active_resource[ RESOURCE_MANA ] = false;
   }
+
+  player_t::init_base_stats();
 }
 
 // paladin_t::reset =========================================================
