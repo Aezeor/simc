@@ -1115,72 +1115,6 @@ struct rising_sun_kick_t : monk_melee_attack_t
   }
 };
 
-struct blackout_kick_totm_proc_t : public monk_melee_attack_t
-{
-  blackout_kick_totm_proc_t( monk_t *p )
-    : monk_melee_attack_t( p, "blackout_kick_totm_proc", p->talent.windwalker.teachings_of_the_monastery_blackout_kick )
-  {
-    ww_mastery         = false;
-    cooldown->duration = timespan_t::zero();
-    background = dual = true;
-    trigger_gcd       = timespan_t::zero();
-  }
-
-  void init_finished() override
-  {
-    monk_melee_attack_t::init_finished();
-    action_t *bok = player->find_action( "blackout_kick" );
-    if ( bok )
-    {
-      attack_power_mod = bok->attack_power_mod;
-      bok->add_child( this );
-    }
-  }
-
-  double composite_target_multiplier( player_t *target ) const override
-  {
-    double m = base_t::composite_target_multiplier( target );
-
-    if ( target != p()->target && p()->talent.windwalker.shadowboxing_treads->ok() )
-      m *= p()->talent.windwalker.shadowboxing_treads->effectN( 3 ).percent();
-
-    return m;
-  }
-
-  // Force 100 milliseconds for the animation, but not delay the overall GCD
-  timespan_t execute_time() const override
-  {
-    return timespan_t::from_millis( 100 );
-  }
-
-  double cost() const override
-  {
-    return 0;
-  }
-
-  void execute() override
-  {
-    monk_melee_attack_t::execute();
-    p()->buff.memory_of_the_monastery->trigger();
-  }
-
-  void impact( action_state_t *s ) override
-  {
-    monk_melee_attack_t::impact( s );
-
-    if ( p()->talent.windwalker.teachings_of_the_monastery->ok() )
-    {
-      double totm_reset_chance = p()->talent.windwalker.teachings_of_the_monastery->effectN( 1 ).percent();
-
-      if ( rng().roll( totm_reset_chance ) )
-      {
-        p()->cooldown.rising_sun_kick->reset( true );
-        p()->proc.rsk_reset_totm->occur();
-      }
-    }
-  }
-};
-
 template <class base_action_t>
 struct charred_passions_t : base_action_t
 {
@@ -1213,10 +1147,8 @@ struct charred_passions_t : base_action_t
 
     chp_cooldown = player->get_cooldown( "charred_passions" );
     chp_damage   = new damage_t( player, base_action_t::name_str );
-    // TODO: Have a more resilient way to re-map stats objects.
-    // Issue: When SCK tick stats replace the action stats of SCK channel, adding
-    // a child of SCK tick breaks reporting.
-    // base_action_t::add_child( damage );
+
+    base_action_t::add_child( chp_damage );
   }
 
   void execute() override
@@ -1246,35 +1178,19 @@ struct charred_passions_t : base_action_t
   }
 };
 
-struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_attack_t>>
+struct base_blackout_kick_t : monk_melee_attack_t
 {
-  blackout_kick_totm_proc_t *bok_totm_proc;
+  cooldown_t *rising_sun_kick;
+  proc_t *rising_sun_kick_reset;
 
-  blackout_kick_t( monk_t *p, std::string_view options_str )
-    : base_t( p, "blackout_kick",
-              ( p->specialization() == MONK_BREWMASTER ? p->baseline.brewmaster.blackout_kick
-                                                       : p->baseline.monk.blackout_kick ) )
+  base_blackout_kick_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
+    : monk_melee_attack_t( player, name, spell_data ), rising_sun_kick( nullptr ), rising_sun_kick_reset( nullptr )
   {
-    parse_options( options_str );
+    // TODO: check this
+    ap_type    = attack_power_type::WEAPON_BOTH;
+    ww_mastery = true;
 
-    ap_type          = attack_power_type::WEAPON_BOTH;
-    ww_mastery       = true;
-    may_combo_strike = true;
-    cast_during_sck  = true;
-
-    if ( p->talent.brewmaster.charred_passions->ok() )
-      add_child( base_t::chp_damage );
-
-    if ( p->talent.windwalker.teachings_of_the_monastery->ok() )
-    {
-      bok_totm_proc = new blackout_kick_totm_proc_t( p );
-      add_child( bok_totm_proc );
-    }
-
-    if ( p->talent.windwalker.obsidian_spiral->ok() )
-      parse_effect_data( p->talent.windwalker.obsidian_spiral_energize->effectN( 1 ) );
-
-    if ( const auto &effect = p->talent.windwalker.shadowboxing_treads->effectN( 3 ); effect.ok() )
+    if ( const auto &effect = player->talent.windwalker.shadowboxing_treads->effectN( 3 ); effect.ok() )
       add_parse_entry( target_multiplier_effects )
           .set_func( [ this ]( actor_target_data_t *target_data ) { return target_data->target != target; } )
           .set_value( effect.percent() - 1.0 )
@@ -1282,13 +1198,98 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
           .set_eff( &effect );
   }
 
-  void consume_resource() override
+  void init() override
   {
-    base_t::consume_resource();
+    monk_melee_attack_t::init();
 
-    // Register how much chi is saved without actually refunding the chi
-    if ( p()->buff.combo_breaker->up() )
-      p()->gain.combo_breaker->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
+    if ( !p()->talent.windwalker.teachings_of_the_monastery->ok() )
+      return;
+
+    rising_sun_kick       = p()->get_cooldown( "rising_sun_kick" );
+    rising_sun_kick_reset = p()->get_proc( "Teachings of the Monastery - Rising Sun Kick Reset" );
+  }
+
+  void impact( action_state_t *state ) override
+  {
+    monk_melee_attack_t::impact( state );
+
+    if ( !p()->talent.windwalker.teachings_of_the_monastery->ok() )
+      return;
+
+    double chance = p()->talent.windwalker.teachings_of_the_monastery->effectN( 1 ).percent();
+    if ( rng().roll( chance ) )
+    {
+      rising_sun_kick->reset( true );
+      rising_sun_kick_reset->occur();
+    }
+  }
+};
+
+template <typename TBase>
+struct teachings_of_the_monastery_t : TBase
+{
+  struct damage_t : base_blackout_kick_t
+  {
+    damage_t( monk_t *player )
+      : base_blackout_kick_t( player, "teachings_of_the_monastery",
+                              player->talent.windwalker.teachings_of_the_monastery_blackout_kick )
+    {
+      ww_mastery = false;
+      background = dual = true;
+    }
+  };
+
+  action_t *damage;
+
+  template <typename... Args>
+  teachings_of_the_monastery_t( monk_t *player, Args &&...args )
+    : TBase( player, std::forward<Args>( args )... ), damage( nullptr )
+  {
+    if ( !player->talent.windwalker.teachings_of_the_monastery->ok() )
+      return;
+
+    damage = new damage_t( player );
+    TBase::add_child( damage );
+  }
+
+  void execute() override
+  {
+    TBase::execute();
+
+    double chance = TBase::p()->talent.conduit_of_the_celestials.xuens_guidance->effectN( 1 ).percent();
+    unsigned proc = 0;
+    if ( unsigned count = as<unsigned>( TBase::p()->buff.teachings_of_the_monastery->stack() ); count )
+    {
+      TBase::p()->buff.teachings_of_the_monastery->expire();
+      for ( unsigned i = 0; i < count; ++i )
+      {
+        make_event<events::delayed_execute_event_t>( *TBase::sim, TBase::p(), damage, TBase::p()->target, i * 100_ms );
+        if ( TBase::p()->rng().roll( chance ) )
+          proc++;
+      }
+    }
+
+    if ( proc )
+      TBase::p()->buff.teachings_of_the_monastery->trigger( proc );
+  }
+};
+
+struct blackout_kick_t : overwhelming_force_t<charred_passions_t<teachings_of_the_monastery_t<base_blackout_kick_t>>>
+{
+  blackout_kick_t( monk_t *player, std::string_view options_str )
+    : base_t( player, "blackout_kick",
+              ( player->specialization() == MONK_BREWMASTER ? player->baseline.brewmaster.blackout_kick
+                                                            : player->baseline.monk.blackout_kick ) )
+  {
+    parse_options( options_str );
+
+    ww_mastery       = true;
+    may_combo_strike = true;
+    cast_during_sck  = true;
+
+    // only bok not totm
+    if ( player->talent.windwalker.obsidian_spiral->ok() )
+      parse_effect_data( player->talent.windwalker.obsidian_spiral_energize->effectN( 1 ) );
   }
 
   void execute() override
@@ -1302,39 +1303,25 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
         timespan_t::from_seconds( p()->baseline.brewmaster.blackout_kick->effectN( 2 ).base_value() ) );
 
     p()->buff.blackout_combo->trigger();
+
     if ( !result_is_hit( execute_state->result ) )
       return;
 
     if ( p()->buff.combo_breaker->up() )
     {
-      if ( p()->rng().roll( p()->talent.windwalker.rushing_wind_kick->effectN( 1 ).percent() ) )
+      double rwk_chance = p()->talent.windwalker.rushing_wind_kick->effectN( 1 ).percent();
+      if ( p()->rng().roll( rwk_chance ) )
         p()->buff.rushing_wind_kick->trigger();
 
-      if ( p()->rng().roll( p()->talent.windwalker.energy_burst->effectN( 1 ).percent() ) )
+      double eb_chance = p()->talent.windwalker.energy_burst->effectN( 1 ).percent();
+      if ( p()->rng().roll( eb_chance ) )
         p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.energy_burst->effectN( 2 ).base_value(),
                             p()->gain.energy_burst );
 
       p()->buff.combo_breaker->decrement();
     }
 
-    if ( p()->buff.teachings_of_the_monastery->check() )
-    {
-      int stacks = p()->buff.teachings_of_the_monastery->stack();
-
-      if ( p()->bugs )
-        p()->buff.memory_of_the_monastery->expire();
-      p()->buff.teachings_of_the_monastery->expire();
-
-      for ( int i = 0; i < stacks; ++i )
-      {
-        // quick estimate for delay between totm activations, not rigorously tested for
-        make_event<events::delayed_execute_event_t>( *sim, p(), bok_totm_proc, p()->target, i * 100_ms );
-        if ( p()->rng().roll( p()->talent.conduit_of_the_celestials.xuens_guidance->effectN( 1 ).percent() ) )
-          p()->buff.teachings_of_the_monastery->trigger();
-      }
-    }
-
-    if ( p()->specialization() == MONK_WINDWALKER && p()->buff.strength_of_the_black_ox->check() )
+    if ( p()->action.strength_of_the_black_ox.base )
       p()->action.strength_of_the_black_ox.base->execute();
   }
 
@@ -1358,17 +1345,6 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
           ->purify_flat(
               s->composite_attack_power() * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent() * m,
               "staggering_strikes" );
-    }
-
-    if ( p()->talent.windwalker.teachings_of_the_monastery->ok() )
-    {
-      double totm_reset_chance = p()->talent.windwalker.teachings_of_the_monastery->effectN( 1 ).percent();
-
-      if ( rng().roll( totm_reset_chance ) )
-      {
-        p()->cooldown.rising_sun_kick->reset( true );
-        p()->proc.rsk_reset_totm->occur();
-      }
     }
   }
 };
@@ -1463,15 +1439,13 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     may_combo_strike = true;
     tick_zero        = true;
     tick_action      = new sck_tick_action_t( p, "spinning_crane_kick_tick", data().effectN( 1 ).trigger() );
+    add_child( tick_action );
 
     interrupt_auto_attack = p->specialization() != MONK_WINDWALKER;
     if ( p->specialization() == MONK_BREWMASTER )
     {
       dot_behavior    = DOT_EXTEND;
       cast_during_sck = true;
-
-      if ( p->talent.brewmaster.charred_passions->ok() )
-        add_child( debug_cast<sck_tick_action_t *>( tick_action )->chp_damage );
     }
 
     if ( p->specialization() == MONK_WINDWALKER )
@@ -3284,64 +3258,46 @@ struct strength_of_the_black_ox_t : conduit_of_the_celestials_container_t
     CELESTIAL
   };
 
-  template <class base_action_t, sotbo_source_e source_effect>
-  struct impact_t : base_action_t
+  template <sotbo_source_e source_effect>
+  struct impact_t : monk_spell_t
   {
-    sotbo_source_e source;
-
-    template <typename... Args>
-    impact_t( monk_t *player, Args &&...args ) : base_action_t( player, std::forward<Args>( args )... )
+    impact_t( monk_t *player )
+      : monk_spell_t( player, fmt::format( "strength_of_the_black_ox_damage{}", BASE ? "" : "_celestial" ),
+                      player->talent.conduit_of_the_celestials.strength_of_the_black_ox_damage )
     {
-      source                    = source_effect;
-      base_action_t::background = true;
+      background = true;
+      aoe        = -1;
+      reduced_aoe_targets =
+          player->talent.conduit_of_the_celestials.strength_of_the_black_ox->effectN( 2 ).base_value();
 
-      if constexpr ( std::is_same_v<monk_absorb_t, base_action_t> )
-      {
-        base_action_t::aoe         = as<int>( base_action_t::data().effectN( 3 ).base_value() );
-        base_action_t::base_dd_min = base_action_t::base_dd_max =
-            player->max_health() * base_action_t::data().effectN( 2 ).percent();
-      }
-
-      if constexpr ( std::is_same_v<monk_spell_t, base_action_t> )
-      {
-        base_action_t::aoe = -1;
-        base_action_t::reduced_aoe_targets =
-            player->talent.conduit_of_the_celestials.strength_of_the_black_ox->effectN( 2 ).base_value();
-      }
-
-      if ( source == CELESTIAL )
+      if constexpr ( source_effect == CELESTIAL )
         if ( const auto &effect = player->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 );
              effect.ok() )
-          add_parse_entry( base_action_t::da_multiplier_effects )
-              .set_value( effect.percent() - 1.0 )
-              .set_eff( &effect );
+          add_parse_entry( da_multiplier_effects ).set_value( effect.percent() - 1.0 ).set_eff( &effect );
     }
 
     void execute() override
     {
-      base_action_t::execute();
+      monk_spell_t::execute();
 
-      if ( source == BASE )
+      if constexpr ( source_effect == BASE )
       {
-        base_action_t::p()->buff.strength_of_the_black_ox->expire();
-        base_action_t::p()->buff.inner_compass_ox_stance->trigger();
+        if ( !p()->buff.strength_of_the_black_ox->up() )
+          return;
+
+        p()->buff.strength_of_the_black_ox->expire();
+        p()->buff.inner_compass_ox_stance->trigger();
       }
 
-      if ( base_action_t::p()->specialization() == MONK_WINDWALKER )
-        base_action_t::p()->buff.teachings_of_the_monastery->trigger(
-            as<int>( base_action_t::p()
-                         ->talent.conduit_of_the_celestials.strength_of_the_black_ox->effectN( 3 )
-                         .base_value() ) );
+      p()->buff.teachings_of_the_monastery->trigger(
+          as<int>( p()->talent.conduit_of_the_celestials.strength_of_the_black_ox->effectN( 3 ).base_value() ) );
     }
   };
 
   strength_of_the_black_ox_t( monk_t *player ) : conduit_of_the_celestials_container_t( player )
   {
-    base      = new impact_t<monk_spell_t, BASE>( player, "strength_of_the_black_ox_dmg",
-                                                  player->talent.conduit_of_the_celestials.strength_of_the_black_ox_damage );
-    celestial = new impact_t<monk_spell_t, CELESTIAL>(
-        player, "strength_of_the_black_ox_celestial_dmg",
-        player->talent.conduit_of_the_celestials.strength_of_the_black_ox_damage );
+    base      = new impact_t<BASE>( player );
+    celestial = new impact_t<CELESTIAL>( player );
   }
 };
 
@@ -5564,7 +5520,8 @@ void monk_t::create_buffs()
   buff.invoke_niuzao = make_buff_fallback( talent.brewmaster.invoke_niuzao_the_black_ox->ok(), this,
                                            "invoke_niuzao_the_black_ox", talent.brewmaster.invoke_niuzao_the_black_ox )
                            ->set_default_value_from_effect( 2 )
-                           ->set_cooldown( timespan_t::zero() );
+                           ->set_cooldown( timespan_t::zero() )
+                           ->add_invalidate( CACHE_MASTERY );
 
   buff.press_the_advantage =
       make_buff_fallback( talent.brewmaster.press_the_advantage->ok(), this, "press_the_advantage",
@@ -5809,7 +5766,6 @@ void monk_t::init_procs()
   proc.counterstrike_tp           = get_proc( "Counterstrike - Tiger Palm" );
   proc.counterstrike_sck          = get_proc( "Counterstrike - Spinning Crane Kick" );
   proc.elusive_footwork_proc      = get_proc( "Elusive Footwork" );
-  proc.rsk_reset_totm             = get_proc( "Rising Sun Kick TotM Reset" );
   proc.salsalabims_strength       = get_proc( "Sal'salabim Breath of Fire Reset" );
   proc.tranquil_spirit_expel_harm = get_proc( "Tranquil Spirit - Expel Harm" );
   proc.tranquil_spirit_goto       = get_proc( "Tranquil Spirit - Gift of the Ox" );
