@@ -2986,7 +2986,7 @@ struct mortal_strike_t : public warrior_attack_t
     if( !background )
       p()->buff.tactical_edge->decrement();
 
-    if ( p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
     {
       p()->buff.master_of_warfare_proc->trigger();
       p()->master_of_warfare_attempts_since_last_proc = 0;
@@ -3376,7 +3376,7 @@ struct slam_base_t : public warrior_attack_t
     if ( p()->talents.arms.martial_prowess.ok() )
       p()->buff.martial_prowess->trigger();
 
-    if ( p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
     {
       p()->buff.master_of_warfare_proc->trigger();
       p()->master_of_warfare_attempts_since_last_proc = 0;
@@ -3399,6 +3399,12 @@ struct heroic_strike_t : public slam_base_t
     : slam_base_t( "heroic_strike", p, p->spell.heroic_strike, options_str )
   {
 
+  }
+
+  heroic_strike_t( std::string_view name, warrior_t* p )
+    : slam_base_t( name, p, p->spell.heroic_strike )
+  {
+    background = true;
   }
 
   void execute() override
@@ -3426,7 +3432,12 @@ struct slam_t : public slam_base_t
   : slam_base_t( name, p, p->spell.slam )
   {
     background = true;
-    // TODO check if fervor slams automatically upgrade to heroic strike
+    std::string heroic_strike_name = "heroic_strike_";
+    if ( util::starts_with( name, "slam_") )
+      heroic_strike_name += name.substr(5);
+    else
+      heroic_strike_name += name;
+    set_replacement_action( get_action<heroic_strike_t>( heroic_strike_name, p ), p->buff.master_of_warfare_proc );
   }
 };
 
@@ -4085,7 +4096,7 @@ struct execute_arms_t : public warrior_attack_t
         lightning_strike->execute();
       }
 
-    if ( p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
     {
       p()->buff.master_of_warfare_proc->trigger();
       p()->master_of_warfare_attempts_since_last_proc = 0;
@@ -4729,6 +4740,9 @@ struct raging_blow_t : public warrior_attack_t
         // cast with opportunist up.
         if ( p()->talents.slayer.opportunist->ok() && !opportunist_up )
           p()->buff.opportunist->trigger();
+
+        if ( p()->talents.fury.surge_of_adrenaline->ok() )
+          p()->buff.surge_of_adrenaline->trigger();
       }
     }
     else if ( p()->talents.fury.improved_raging_blow->ok() )
@@ -4884,6 +4898,9 @@ struct crushing_blow_t : public warrior_attack_t
         // cast with opportunist up.
         if ( p()->talents.slayer.opportunist->ok() && !opportunist_up )
           p()->buff.opportunist->trigger();
+
+        if ( p()->talents.fury.surge_of_adrenaline->ok() )
+          p()->buff.surge_of_adrenaline->trigger();
       }
     }
     else if ( p()->talents.fury.improved_raging_blow->ok() && rng().roll( cd_reset_chance ) )
@@ -5157,7 +5174,7 @@ struct overpower_t : public warrior_attack_t
     if ( p()->talents.arms.martial_prowess.ok() )
       p()->buff.martial_prowess->trigger();
 
-    if ( p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
     {
       p()->buff.master_of_warfare_proc->trigger();
       p()->master_of_warfare_attempts_since_last_proc = 0;
@@ -7823,11 +7840,12 @@ void warrior_t::create_buffs()
   buff.spell_reflection = make_buff( this, "spell_reflection", talents.warrior.spell_reflection )
     -> set_cooldown( 0_ms ); // handled by the ability
 
-  buff.sweeping_strikes = make_buff( this, "sweeping_strikes", spec.sweeping_strikes);
+  buff.sweeping_strikes = make_buff( this, "sweeping_strikes", spec.sweeping_strikes)
+                              ->set_cooldown( 0_s );  // Handled by the action
 
   buff.tactical_edge = make_buff( this, "tactical_edge", talents.arms.tactical_edge->effectN( 1 ).trigger() )
                           ->set_default_value_from_effect( 1 )
-                          ->set_initial_stack( talents.arms.tactical_edge->effectN( 1 ).trigger()->max_stacks() );
+                          ->set_initial_stack( talents.arms.tactical_edge.ok() ? talents.arms.tactical_edge->effectN( 1 ).trigger()->max_stacks() : 1 );
 
   buff.ignore_pain = new ignore_pain_buff_t( this );
 
