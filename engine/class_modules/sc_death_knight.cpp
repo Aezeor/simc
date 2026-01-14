@@ -10090,6 +10090,9 @@ struct festering_strike_t final : public festering_base_t
   {
     festering_base_t::execute();
 
+    if ( was_replaced )
+      return;
+
     if ( p()->talent.unholy.festering_scythe.ok() )
       p()->buffs.festering_scythe->trigger();
   }
@@ -10331,6 +10334,9 @@ struct frostwyrms_fury_t final : public fwf_action_base_t
   void execute() override
   {
     fwf_action_base_t::execute();
+
+    if ( was_replaced )
+      return;
 
     if ( p()->talent.frost.chosen_of_frostbrood_3.ok() )
       make_event( *sim, p()->spell.chosen_of_frostbrood_delay->duration(),
