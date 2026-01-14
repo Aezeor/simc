@@ -11074,10 +11074,9 @@ void demon_hunter_t::init_spells()
     active.void_buildup = get_background_action<void_buildup_t>( "void_buildup" );
   }
 
-  if ( talent.havoc.burning_wound->ok() )
-  {
-    active.burning_wound = get_background_action<burning_wound_t>( "burning_wound" );
-  }
+  // this can't be conditional because APL uses `active_dot.burning_wound` which looks for an
+  // action
+  active.burning_wound = get_background_action<burning_wound_t>( "burning_wound" );
 
   if ( talent.havoc.collective_anguish->ok() )
   {
