@@ -3811,12 +3811,13 @@ struct eye_beam_base_t : public student_of_suffering_trigger_t<final_breath_trig
     // Trigger Meta before the execute so that the channel duration is affected by Meta haste
     p()->trigger_demonic();
 
+    base_t::execute();
+
     if ( p()->talent.havoc.cycle_of_hatred->ok() )
     {
       p()->buff.cycle_of_hatred->trigger();
     }
 
-    base_t::execute();
     timespan_t duration = composite_dot_duration( execute_state );
 
     // Since Demonic triggers Meta with 5s + hasted duration, need to extend by the hasted duration after have an
