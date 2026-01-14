@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.1.65337
+Class Spell ID List, wow build 12.0.1.64914
 
 Death Knight
 3714     Path of Frost
@@ -1573,14 +1573,14 @@ Death Knight
 1235371 *Frost Fever
 1235372 *Blood Plague
 1235391  Dark Transformation
-1236253 *Death Knight Deathbringer 11.2 Class Set 2pc
-1236254 *Death Knight Deathbringer 11.2 Class Set 4pc
+1236253  Death Knight Deathbringer 11.2 Class Set 2pc
+1236254  Death Knight Deathbringer 11.2 Class Set 4pc
 1236259  Death Knight San'layn 11.2 Class Set 2pc
 1236260  Death Knight San'layn 11.2 Class Set 4pc
-1236355 *Death Knight Rider of the Apocalypse 11.2 Class Set 2pc
-1236356 *Death Knight Rider of the Apocalypse 11.2 Class Set 4pc
-1236992 *Death Knight Deathbringer 11.2 Class Set 4pc
-1236996 *Empowered Soul
+1236355  Death Knight Rider of the Apocalypse 11.2 Class Set 2pc
+1236356  Death Knight Rider of the Apocalypse 11.2 Class Set 4pc
+1236992  Death Knight Deathbringer 11.2 Class Set 4pc
+1236996  Empowered Soul
 1237032  Dancing Rune Weapon
 1237128  Dancing Rune Weapon
 1237172  Epidemic
@@ -1638,7 +1638,6 @@ Death Knight
 1242866  Raise Dead
 1242998  Lesser Ghoul
 1244030 *Putrefy
-1244102  Disease Cloud
 1244158  March of Madness
 1244347  Disease Cloud
 1244516 *Forbidden Knowledge
@@ -1753,8 +1752,6 @@ Death Knight
 1282564 *Death and Decay
 1282565  Scythe of Decay
 1282570  Forbidden Ritual
-1283621  Death Knight - Midnight PrePatch - 11.2 Class Set 2pc
-1283622  Death Knight - Midnight PrePatch - 11.2 Class Set 4pc
 
 Demon Hunter
 1490     Chaos Brand
@@ -2985,6 +2982,8 @@ Demon Hunter
 1232309 *Beckon
 1232310  Feast of Souls
 1234195  Void Nova
+1234199 *Last Rites
+1234220 *Last Rites
 1234441 *Power Siphon
 1234521 *Power Siphon
 1234522 *Power Siphon
@@ -2996,16 +2995,16 @@ Demon Hunter
 1235554 *Sunder
 1235555 *Sunder
 1235614 *Relentless Hunt
-1236358 *Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc
+1236358  Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc
 1236360  Demon Hunter Aldrachi Reaver 11.2 Class Set 4pc
-1236361 *Demon Hunter Fel-Scarred 11.2 Class Set 2pc
-1236362 *Demon Hunter Fel-Scarred 11.2 Class Set 4pc
+1236361  Demon Hunter Fel-Scarred 11.2 Class Set 2pc
+1236362  Demon Hunter Fel-Scarred 11.2 Class Set 4pc
 1237270  Feast of Souls
-1238462 *Scarred Strikes
+1238462  Scarred Strikes
 1238488  Moment of Craving
 1238495  Moment of Craving
-1238675 *Demon Soul
-1238676 *Demon Soul
+1238675  Demon Soul
+1238676  Demon Soul
 1238696  Demonsurge
 1238732 *Shattered Souls
 1238733  Shattered Souls
@@ -3222,8 +3221,6 @@ Demon Hunter
 1279200  Eradicate
 1279247  Harness the Cosmos
 1283344  Reaver's Glaive
-1283625  Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc
-1283628  Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc
 
 Druid
 99       Incapacitating Roar
@@ -5180,30 +5177,30 @@ Druid
 1233272  Lunar Eclipse
 1233346  Solar Eclipse
 1233353  Lunar Eclipse Override
-1236330 *Druid Druid of the Claw 11.2 Class Set 4pc
-1236331 *Druid Druid of the Claw 11.2 Class Set 2pc
-1236332 *Druid Elune's Chosen 11.2 Class Set 2pc
-1236333 *Druid Elune's Chosen 11.2 Class Set 4pc
-1236334 *Druid Keeper of the Grove 11.2 Class Set 2pc
-1236336 *Druid Keeper of the Grove 11.2 Class Set 4pc
-1236337 *Druid Wildstalker 11.2 Class Set 2pc
-1236338 *Druid Wildstalker 11.2 Class Set 4pc
-1236342 *Preparing to Strike
-1236556 *Dryad
+1236330  Druid Druid of the Claw 11.2 Class Set 4pc
+1236331  Druid Druid of the Claw 11.2 Class Set 2pc
+1236332  Druid Elune's Chosen 11.2 Class Set 2pc
+1236333  Druid Elune's Chosen 11.2 Class Set 4pc
+1236334  Druid Keeper of the Grove 11.2 Class Set 2pc
+1236336  Druid Keeper of the Grove 11.2 Class Set 4pc
+1236337  Druid Wildstalker 11.2 Class Set 2pc
+1236338  Druid Wildstalker 11.2 Class Set 4pc
+1236342  Preparing to Strike
+1236556  Dryad
 1236573  Tranquility
 1236574  Tranquility
-1236607 *Starfall
-1236608 *Starfall
-1236613 *Starfall
+1236607  Starfall
+1236608  Starfall
+1236613  Starfall
 1236640 *Starsurge
 1236647  Regrowth
-1236671 *Ravage Rampage
-1236807 *Dryad's Favor
-1236851 *Dryad's Favor
-1236853 *Dryad's Favor
+1236671  Ravage Rampage
+1236807  Dryad's Favor
+1236851  Dryad's Favor
+1236853  Dryad's Favor
 1236917  Starsurge
-1236989 *Gathering Moonlight
-1236990 *Moonlight Suffusion
+1236989  Gathering Moonlight
+1236990  Moonlight Suffusion
 1239669  Eclipse
 1240185  Celestial Fire
 1240188  Sculpt the Stars
@@ -5253,7 +5250,7 @@ Druid
 1251407  Persistence
 1251876  Gift of an Ancient Guardian
 1251877  Gift of an Ancient Guardian
-1252024 *Dryad's Favor
+1252024  Dryad's Favor
 1252871  Red Moon
 1252994  Killing Blow
 1253035  Harnessed Rage
@@ -5371,10 +5368,6 @@ Druid
 1280213  Fungal Growth
 1280316  Panther's Guile
 1280352  Panther's Guile
-1283647  Druid - Midnight PrePatch - 11.2 Class Set 2pc
-1283648  Druid - Midnight PrePatch - 11.2 Class Set 4pc
-1283649  Druid - Midnight PrePatch - 11.2 Class Set 2pc - Healing
-1283650  Druid - Midnight PrePatch - 11.2 Class Set 4pc - Healing
 
 Evoker
 351338   Quell
@@ -6129,21 +6122,21 @@ Evoker
 1219723  Azure Celerity
 1235842 *Command Squadron
 1235843 *Command Squadron
-1236364 *Evoker Flameshaper 11.2 Class Set 2pc
-1236365 *Evoker Flameshaper 11.2 Class Set 4pc
-1236366 *Evoker Scalecommander 11.2 Class Set 2pc
-1236367 *Evoker Scalecommander 11.2 Class Set 4pc
-1236368 *Evoker Chronowarden 11.2 Class Set 2pc
-1236369 *Evoker Chronowarden 11.2 Class Set 4pc
-1236776 *Inner Flame
-1236792 *Essence Bomb
-1236803 *Essence Bomb
+1236364  Evoker Flameshaper 11.2 Class Set 2pc
+1236365  Evoker Flameshaper 11.2 Class Set 4pc
+1236366  Evoker Scalecommander 11.2 Class Set 2pc
+1236367  Evoker Scalecommander 11.2 Class Set 4pc
+1236368  Evoker Chronowarden 11.2 Class Set 2pc
+1236369  Evoker Chronowarden 11.2 Class Set 4pc
+1236776  Inner Flame
+1236792  Essence Bomb
+1236803  Essence Bomb
 1236943  Deep Breath
 1236949  Disintegrate
 1236970  Pyre
 1237036 *Command Squadron
 1237081 *Command Squadron
-1237201 *Evoker Scalecommander 11.2 Class Set 2pc
+1237201  Evoker Scalecommander 11.2 Class Set 2pc
 1237211 *Azure Strike
 1237241 *Draconic Inspiration
 1237269  Temporal Cycle
@@ -6224,10 +6217,6 @@ Evoker
 1271799  Risen Fury
 1271912  Blessing of the Bronze Highlight
 1279796  Azure Sweep
-1283651  Evoker - Midnight PrePatch - 11.2 Class Set 2pc
-1283652  Evoker - Midnight PrePatch - 11.2 Class Set 4pc
-1283653  Evoker - Midnight PrePatch - 11.2 Class Set 2pc - Healing
-1283654  Evoker - Midnight PrePatch - 11.2 Class Set 4pc - Healing
 
 Hunter
 75       Auto Shot
@@ -8565,18 +8554,18 @@ Hunter
 1234337  Glyph of the Strix
 1235388  Bestial Wrath
 1235397  Umbral Reach
-1236370 *Hunter Dark Ranger 11.2 Class Set 2pc
-1236371 *Hunter Dark Ranger 11.2 Class Set 4pc
+1236370  Hunter Dark Ranger 11.2 Class Set 2pc
+1236371  Hunter Dark Ranger 11.2 Class Set 4pc
 1236372  Hunter Pack Leader 11.2 Class Set 2pc
-1236373 *Hunter Pack Leader 11.2 Class Set 4pc
+1236373  Hunter Pack Leader 11.2 Class Set 4pc
 1236374  Hunter Sentinel 11.2 Class Set 2pc
-1236375 *Hunter Sentinel 11.2 Class Set 4pc
+1236375  Hunter Sentinel 11.2 Class Set 4pc
 1236564  Grizzled Fur
 1236565  Hasted Hooves
 1236566  Sharpened Fangs
 1236644  Boon of Elune
-1236975 *Blighted Quiver
-1236976 *Blighted Quiver
+1236975  Blighted Quiver
+1236976  Blighted Quiver
 1241871  Master's Call
 1244922 *Track Pets
 1245926 *Harmonize
@@ -8766,15 +8755,6 @@ Hunter
 1282660  Barbed Shot
 1282710  Serpentine Strikes
 1282747  Heart of the Pack
-1283629  Hunter- Midnight PrePatch - 11.2 Class Set 2pc
-1283630  Hunter- Midnight PrePatch - 11.2 Class Set 4pc
-1283720 *Threat Buff
-1283814 *Dire Beast
-1283816 *Dire Beast
-1283817 *Dire Beast
-1283818 *Dire Beast
-1283872  Fortitude of the Bear
-1284992 *Pet Damage
 
 Mage
 66       Invisibility
@@ -9373,7 +9353,6 @@ Mage
 86799   *Crystalline Missiles
 86852   *Tunnel
 86949    Cauterize
-87023    Cauterize
 87024    Cauterized
 87833    Invisibility Speed
 88082    Fireball
@@ -10936,7 +10915,7 @@ Mage
 1222947 *Aether Fragment
 1223522  Arcane Soul
 1223797  Intuition
-1223798  Intuition
+1223798 *Intuition
 1223799  Intuition
 1223800 *Arcane Rebound
 1223801  Arcane Rebound
@@ -10947,17 +10926,17 @@ Mage
 1233452  Nether Flux
 1233627 *Power Surge
 1233666 *Power Surge
-1235959 *Mage Spellslinger 11.2 Class Set 2pc
-1235962 *Mage Sunfury 11.2 Class Set 2pc
-1235963 *Mage Frostfire 11.2 Class Set 2pc
-1235964 *Mage Spellslinger 11.2 Class Set 4pc
-1235965 *Mage Sunfury 11.2 Class Set 4pc
-1235966 *Mage Frostfire 11.2 Class Set 4pc
-1236145 *Flame Quills
+1235959  Mage Spellslinger 11.2 Class Set 2pc
+1235962  Mage Sunfury 11.2 Class Set 2pc
+1235963  Mage Frostfire 11.2 Class Set 2pc
+1235964  Mage Spellslinger 11.2 Class Set 4pc
+1235965  Mage Sunfury 11.2 Class Set 4pc
+1235966  Mage Frostfire 11.2 Class Set 4pc
+1236145  Flame Quills
 1236160  Ignite
 1236209  Glacial Spike
 1236211  Glacial Spike
-1236212 *Pyroblast
+1236212  Pyroblast
 1236231 *Lesser Time Warp
 1238171 *Pyromastery
 1238187 *Pyromastery
@@ -11000,7 +10979,7 @@ Mage
 1247025  Deep Shatter
 1247055  Frigid Focus
 1247090  Cone of Frost
-1247525 *Spherical Sorcery
+1247525  Spherical Sorcery
 1247544  Crystalline Refraction
 1247554  Freezing Winds
 1247690  Artisanal Blink Trap
@@ -11063,7 +11042,7 @@ Mage
 1262843  Duality
 1262844  Molten Chill
 1262845  Elemental Conduit
-1262860  Glacial Spike
+1262860 *Glacial Spike
 1262862  Glacial Spike
 1262863  Pyroblast
 1262887  Ignite
@@ -11105,9 +11084,6 @@ Mage
 1280780  Glacial Shatter
 1281638  White Out
 1282339 *Portal: Stormwind
-1283634  Mage - Midnight PrePatch - 11.2 Class Set 2pc
-1283635  Mage - Midnight PrePatch - 11.2 Class Set 4pc
-1284108 *Conjure Refreshment Table
 
 Monk
 8647     Mystic Touch
@@ -12776,10 +12752,10 @@ Monk
 1222923  Windwalker Monk
 1226058  Luck of the Draw!
 1236377  Monk Master of Harmony 11.2 Class Set 2pc
-1236378 *Monk Master of Harmony 11.2 Class Set 4pc
-1236379 *Monk Shado-Pan 11.2 Class Set 2pc
-1236380 *Monk Shado-Pan 11.2 Class Set 4pc
-1236381 *Monk Conduit of the Celestials 11.2 Class Set 2pc
+1236378  Monk Master of Harmony 11.2 Class Set 4pc
+1236379  Monk Shado-Pan 11.2 Class Set 2pc
+1236380  Monk Shado-Pan 11.2 Class Set 4pc
+1236381  Monk Conduit of the Celestials 11.2 Class Set 2pc
 1236382  Monk Conduit of the Celestials 11.2 Class Set 4pc
 1237196  Flurry Charge
 1238851  Renewing Mist
@@ -12960,10 +12936,6 @@ Monk
 1277444  Chi Warding
 1277446  Chi Warding
 1280297  Mistline
-1283664  Monk - Midnight PrePatch - 11.2 Class Set 2pc
-1283665  Monk - Midnight PrePatch - 11.2 Class Set 4pc
-1283666  Monk - Midnight PrePatch - 11.2 Class Set 2pc - Healing
-1283667  Monk - Midnight PrePatch - 11.2 Class Set 4pc - Healing
 
 Paladin
 465      Devotion Aura
@@ -14389,7 +14361,7 @@ Paladin
 383185  *Exorcism
 383208  *Exorcism
 383228   Swift Justice
-383254  *Improved Crusader Strike
+383254   Improved Crusader Strike
 383259  *Swift Crusader
 383263  *Blade of Condemnation
 383271  *Highlord's Judgment
@@ -15007,11 +14979,11 @@ Paladin
 1235934  Hammer of Light
 1236383  Paladin Herald of the Sun 11.2 Class Set 2pc
 1236384  Paladin Herald of the Sun 11.2 Class Set 4pc
-1236389 *Paladin Lightsmith 11.2 Class Set 2pc
+1236389  Paladin Lightsmith 11.2 Class Set 2pc
 1236390  Paladin Lightsmith 11.2 Class Set 4pc
-1236391 *Paladin Templar 11.2 Class Set 2pc
-1236392 *Paladin Templar 11.2 Class Set 4pc
-1236748 *Paladin Templar 11.2 Class Set 4pc Driver
+1236391  Paladin Templar 11.2 Class Set 2pc
+1236392  Paladin Templar 11.2 Class Set 4pc
+1236748  Paladin Templar 11.2 Class Set 4pc Driver
 1236942  Divine Hammer
 1236972  Solar Wrath
 1238903  Masterwork
@@ -15130,10 +15102,6 @@ Paladin
 1279303 *Beacon of Fath
 1279408  Hammer of Wrath
 1280173  Beacon of the Savior
-1283659  Paladin - Midnight PrePatch - 11.2 Class Set 2pc
-1283660  Paladin - Midnight PrePatch - 11.2 Class Set 4pc
-1283662  Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing
-1283663  Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing
 
 Priest
 17       Power Word: Shield
@@ -16979,17 +16947,17 @@ Priest
 1235176 *Ethereal State
 1235193  Holy Ray
 1235211  Shadow Tap
-1236394 *Priest Oracle 11.2 Class Set 2pc
-1236395 *Priest Oracle 11.2 Class Set 4pc
-1236396 *Priest Voidweaver 11.2 Class Set 2pc
+1236394  Priest Oracle 11.2 Class Set 2pc
+1236395  Priest Oracle 11.2 Class Set 4pc
+1236396  Priest Voidweaver 11.2 Class Set 2pc
 1236397  Priest Voidweaver 11.2 Class Set 4pc
-1236398 *Priest Archon 11.2 Class Set 2pc
-1236399 *Priest Archon 11.2 Class Set 4pc
+1236398  Priest Archon 11.2 Class Set 2pc
+1236399  Priest Archon 11.2 Class Set 4pc
 1237615  Overflowing Void
 1238052  Holy Priest
-1239336 *Ascension
-1239608 *Prompt Prognosis
-1239609 *Visionary Velocity
+1239336  Ascension
+1239608  Prompt Prognosis
+1239609  Visionary Velocity
 1239622 *Light-Infused
 1240008 *Shadow Word: Death
 1240364  Death's Torment
@@ -17101,11 +17069,6 @@ Priest
 1280134  Searing Light
 1280137  Mindbender
 1280172  Shadowfiend
-1283668  Priest - Midnight PrePatch - 11.2 Class Set 2pc
-1283669  Priest - Midnight PrePatch - 11.2 Class Set 4pc
-1283670  Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing
-1283671  Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing
-1284817  Benediction
 
 Rogue
 53       Backstab
@@ -18599,14 +18562,14 @@ Rogue
 1235074  Killing Spree
 1235097  Killing Spree
 1235100  Killing Spree
-1236400 *Rogue Deathstalker 11.2 Class Set 2pc
-1236401 *Rogue Deathstalker 11.2 Class Set 4pc
-1236402 *Rogue Fatebound 11.2 Class Set 2pc
-1236403 *Rogue Fatebound 11.2 Class Set 4pc
-1236404 *Rogue Trickster 11.2 Class Set 2pc
-1236405 *Rogue Trickster 11.2 Class Set 4pc
-1239231 *Death's Study
-1239232 *Death's Study
+1236400  Rogue Deathstalker 11.2 Class Set 2pc
+1236401  Rogue Deathstalker 11.2 Class Set 4pc
+1236402  Rogue Fatebound 11.2 Class Set 2pc
+1236403  Rogue Fatebound 11.2 Class Set 4pc
+1236404  Rogue Trickster 11.2 Class Set 2pc
+1236405  Rogue Trickster 11.2 Class Set 4pc
+1239231  Death's Study
+1239232  Death's Study
 1247227  Crimson Tempest
 1247993  Motivated Murderer
 1248603  Killing Spree
@@ -18616,7 +18579,7 @@ Rogue
 1248793  Clear the Witnesses
 1248970  Lucky Coin
 1248971  Lucky Coin
-1249093  Fatebound Coin Flips
+1249093 *Fatebound Coin Flips
 1249190  Overflowing Purse
 1249194  Delivered Doom
 1249201  Chosen's Revelry
@@ -18732,8 +18695,6 @@ Rogue
 1279401  Shuriken Storm
 1279444  Improved Secret Technique
 1281468  Umbral Edge
-1283637  Rogue - Midnight PrePatch - 11.2 Class Set 2pc
-1283639  Rogue - Midnight PrePatch - 11.2 Class Set 4pc
 
 Shaman
 370      Purge
@@ -19034,7 +18995,7 @@ Shaman
 98007    Spirit Link Totem
 98008    Spirit Link Totem
 98017    Spirit Link
-98020   *Spirit Link
+98020    Spirit Link
 98021   *Spirit Link
 99190   *Item - Shaman T12 Restoration 2P Bonus
 99195   *Item - Shaman T12 Restoration 4P Bonus
@@ -20633,21 +20594,21 @@ Shaman
 1223927 *Stormstrike
 1223950 *Windstrike
 1231772  Elemental Shaman
-1235836 *Storm's Eye
-1235840 *Storm's Eye
-1236406 *Shaman Farseer 11.2 Class Set 2pc
-1236407 *Shaman Farseer 11.2 Class Set 4pc
-1236408 *Shaman Stormbringer 11.2 Class Set 2pc
-1236409 *Shaman Stormbringer 11.2 Class Set 4pc
-1236410 *Shaman Totemic 11.2 Class Set 2pc
+1235836  Storm's Eye
+1235840  Storm's Eye
+1236406  Shaman Farseer 11.2 Class Set 2pc
+1236407  Shaman Farseer 11.2 Class Set 4pc
+1236408  Shaman Stormbringer 11.2 Class Set 2pc
+1236409  Shaman Stormbringer 11.2 Class Set 4pc
+1236410  Shaman Totemic 11.2 Class Set 2pc
 1236411  Shaman Totemic 11.2 Class Set 4pc
 1238133  Awakening Storms
-1238156 *Shaman Stormbringer 11.2 Class Set 4pc
+1238156  Shaman Stormbringer 11.2 Class Set 4pc
 1238269  Call of the Ancestors
-1238279 *Ancestral Wisdom
-1238285 *Shaman Farseer 11.2 Class Set 2pc
+1238279  Ancestral Wisdom
+1238285  Shaman Farseer 11.2 Class Set 2pc
 1239170  Elemental Overflow
-1239315 *Storm's Eye
+1239315  Storm's Eye
 1246131  Call of Al'Akir
 1247053  Windfury Attack
 1249016 *Elemental Strikes
@@ -20732,13 +20693,6 @@ Shaman
 1271904  Skyfury Highlight
 1272101  Thunderous Velocity
 1273485  Lava Flows
-1283655  Shaman - Midnight PrePatch - 11.2 Class Set 2pc
-1283656  Shaman - Midnight PrePatch - 11.2 Class Set 4pc
-1283657  Shaman - Midnight PrePatch - 11.2 Class Set 2pc - Healing
-1283658  Shaman - Midnight PrePatch - 11.2 Class Set 4pc - Healing
-1283721 *Rumbling Roar
-1283722 *Kapara Smash
-1283723 *Stomp
 
 Warlock
 126      Eye of Kilrogg
@@ -22466,17 +22420,17 @@ Warlock
 1219036  Warlock Affliction 11.1 Class Set 4pc
 1219045  Unstable Affliction
 1224133 *Bloodstone
-1236413 *Warlock Hellcaller 11.2 Class Set 2pc
-1236414 *Warlock Hellcaller 11.2 Class Set 4pc
-1236415 *Warlock Soul Harvester 11.2 Class Set 2pc
-1236416 *Warlock Soul Harvester 11.2 Class Set 4pc
-1236417 *Warlock Diabolist 11.2 Class Set 2pc
-1236418 *Warlock Diabolist 11.2 Class Set 4pc
-1238810 *Demonic Oculus
-1239510 *Eye Blast
-1239569 *Demonic Intelligence
-1239577 *Maintained Withering
-1239689 *Rampaging Demonic Soul
+1236413  Warlock Hellcaller 11.2 Class Set 2pc
+1236414  Warlock Hellcaller 11.2 Class Set 4pc
+1236415  Warlock Soul Harvester 11.2 Class Set 2pc
+1236416  Warlock Soul Harvester 11.2 Class Set 4pc
+1236417  Warlock Diabolist 11.2 Class Set 2pc
+1236418  Warlock Diabolist 11.2 Class Set 4pc
+1238810  Demonic Oculus
+1239510  Eye Blast
+1239569  Demonic Intelligence
+1239577  Maintained Withering
+1239689  Rampaging Demonic Soul
 1239714  Soul Swipe
 1239715  Demonic Soul
 1239756 *Soul Step
@@ -22713,8 +22667,6 @@ Warlock
 1282536 *Fixate
 1282748 *Blaze
 1282757 *Shadow Nova
-1283640  Warlock - Midnight PrePatch - 11.2 Class Set 2pc
-1283641  Warlock - Midnight PrePatch - 11.2 Class Set 4pc
 
 Warrior
 71       Vanguard
@@ -24443,15 +24395,15 @@ Warrior
 1235088  Heavy Handed
 1235113  Whirling Blade
 1235657  Thunderstruck
-1236419 *Warrior Colossus 11.2 Class Set 2pc
-1236420 *Warrior Colossus 11.2 Class Set 4pc
-1236421 *Warrior Mountain Thane 11.2 Class Set 2pc
-1236422 *Warrior Mountain Thane 11.2 Class Set 4pc
-1236423 *Warrior Slayer 11.2 Class Set 2pc
-1236424 *Warrior Slayer 11.2 Class Set 4pc
-1238042 *Ionizing Strike
-1239144 *Critical Conclusion
-1239153 *Deeper Wounds
+1236419  Warrior Colossus 11.2 Class Set 2pc
+1236420  Warrior Colossus 11.2 Class Set 4pc
+1236421  Warrior Mountain Thane 11.2 Class Set 2pc
+1236422  Warrior Mountain Thane 11.2 Class Set 4pc
+1236423  Warrior Slayer 11.2 Class Set 2pc
+1236424  Warrior Slayer 11.2 Class Set 4pc
+1238042  Ionizing Strike
+1239144  Critical Conclusion
+1239153  Deeper Wounds
 1243657 *Rend
 1243658 *Deft Strikes
 1243659  Last Stand
@@ -24461,7 +24413,7 @@ Warrior
 1244157  Piercing Howl
 1245364 *Retaliation
 1245365 *Retaliation
-1252096 *Severe Thunder
+1252096  Severe Thunder
 1256919  Arms Warrior
 1256935  Protection Warrior
 1257520  Fury Warrior
@@ -24506,10 +24458,10 @@ Warrior
 1265560  Surge of Adrenaline
 1265570  Executioner's Wrath
 1265575  Executioner's Wrath
-1265579  Rampaging Ruin
-1265580  Rampaging Ruin
-1265581  Rampaging Ruin
-1265582  Rampaging Ruin
+1265579  Rampage
+1265580  Rampage
+1265581  Rampage
+1265582  Rampage
 1265598  Kill or Be Killed
 1265600  Kill or Be Killed
 1265641  Kill or Be Killed
@@ -24558,6 +24510,3 @@ Warrior
 1277983  Devastating Focus
 1278009  Phalanx
 1280961  Stance Mastery
-1283442  Bloodthirst Heal
-1283642  Warrior - Midnight PrePatch - 11.2 Class Set 2pc
-1283643  Warrior - Midnight PrePatch - 11.2 Class Set 4pc
