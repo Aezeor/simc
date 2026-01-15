@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65294 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65390 midnight-BETA
 Name             : Arcane Resistance (desc=Racial Passive) (id=822) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Blood Elf (0x200)
@@ -986,7 +986,7 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 219
                  : 292
-                 : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381753 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
+                 : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
                  : 4638
 Category Cooldown: 45 seconds
 Affecting Spells : Cat Form (768 effect#5), Starfall (191034 effect#2), Time Spiral (375230 effects: #1, #2)
@@ -7779,9 +7779,10 @@ Labels           : 16: Class Spells
 Triggered By     : Blessing of the Bronze (364342)
 Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1012789)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cooldown (11)
-                   Base Value: -15 | Scaled Value: -15 | Misc Value: 11 | Misc Value 2: 1381 (Label) | Radius: 100 yards | Target: Raid in Area (56)
-                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Leap of Faith (73325), Spiritwalker's Grace (79206), Angelic Feather (121536), Aspect of the Cheetah (186257), Gust of Wind (192063), Tiger Dash (252216)
+#1 (id=1012789)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 2308 (Category) | Radius: 100 yards | Target: Raid in Area (56)
+                   Affected Spells (Category): Leap of Faith (73325), Leap of Faith (336471)
+Hotfixed         : Sub Type (218 -> 454), Misc Value (11 -> 2308), Misc Value 2 (1381 -> 0)
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Leap of Faith reduced by $s1%.
 
@@ -15215,6 +15216,7 @@ Description      : $@spelldesc1242745
 Tooltip          : Healing over time increased by $s1%. Chance to trigger Essence Burst increased by $s2%.
 
 Name             : Twin Echoes (desc=Bronze) (id=1242759) [Spell Family (224)] 
+Hotfixed         : Max stacks (0 -> 2), Proc Stacks (1 -> 0), Attributes
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -15222,14 +15224,17 @@ Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
-Stacks           : 1 initial, 1 maximum
+Stacks           : 2 maximum
 Proc Chance      : 100%
 Proc Flags       : Magic Heal
+Attributes       : Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1242457)  : Apply Aura (6) | Dummy (4)
+#1 (id=1242457)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=1242458)  : Dummy (3)
+Hotfixed         : Attribute (0 -> 64)
+#2 (id=1242458)  : Dummy (3) | Attributes: Suppress Points Stacking (6)
                    Base Value: 100 | Scaled Value: 100
+Hotfixed         : Attribute (0 -> 64)
 Description      : $@spelldesc1242031
 Tooltip          : Your next Echo applies to $s1 additional target at $s2% effectiveness.
 

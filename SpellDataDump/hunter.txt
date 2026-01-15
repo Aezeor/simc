@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65294 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65390 midnight-BETA
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -4174,7 +4174,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 219
                  : 292
-                 : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381753 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
+                 : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
                  : 4638
 Affecting Spells : Call of the Wild (206332 effect#1), Born To Be Wild (266921 effect#1), Call of the Wild (336742 effect#1), Time Spiral (375238 effect#1), Conditioning (1253887 effect#2), Catlike Reflexes (1258404 effect#1), Improved Aspect of the Cheetah (1258407 effect#1)
 Family Flags     : 21, 40

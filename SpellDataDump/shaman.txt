@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65294 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65390 midnight-BETA
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1717,7 +1717,7 @@ Labels           : 16: Class Spells
                  : 219
                  : 292
                  : 930
-                 : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381753 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
+                 : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
                  : 4638
 Stance Mask      : 0x00008000
 Affecting Spells : Time Spiral (375256 effect#1)
@@ -2598,7 +2598,7 @@ Cooldown         : 120 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-                 : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381753 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
+                 : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
                  : 4638
 Affecting Spells : Graceful Spirit (192088 effects: #1, #2), Time Spiral (375256 effect#1)
 Family Flags     : 93
@@ -5115,7 +5115,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 219
                  : 292
-                 : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381753 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
+                 : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
                  : 1783
                  : 4638
 Affecting Spells : Time Spiral (375256 effect#1)
@@ -16866,8 +16866,9 @@ Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1145116)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=1282470)  : Apply Aura (6) | Modify Base Attribute% (80)
+#2 (id=1282470)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 0 | Scaled Value: 0 | Stat: Int | Target: Self (1)
+Hotfixed         : Sub Type (80 -> 137), Misc Value (3 -> 0), Misc Value 2 (0 -> 8)
                    Modified By: Ancestral Influence (1270446 effect#1)
 Description      : $@spelldesc443450
 Tooltip          : An Ancestor is at your side. Whenever you cast a spell, the Ancestor will cast a similar spell.$?$W2>0[
@@ -21775,8 +21776,9 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1281157)  : Apply Aura (6) | Modify Base Attribute% (80)
+#1 (id=1281157)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 3 | Scaled Value: 3 | Stat: Int | Target: Self (1)
+Hotfixed         : Sub Type (80 -> 137), Misc Value (3 -> 0), Misc Value 2 (0 -> 8)
 Description      : Increases your Intellect by $s1%.
 
 Name             : Instinctive Imbuements (id=1270350) [Spell Family (11), Passive, Hidden] 

@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.0.65294 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.0.65390 midnight-BETA
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -2419,12 +2419,12 @@ Range            : 40 yards
 Duration         : 4 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (90 seconds cooldown)
-Category         : 2308 (Type 0x1): Move with Grace (337678 effect#1), Time Spiral (375254 effect#1), Time Spiral (375254 effect#2), Move with Grace (390620 effect#1), Save the Day (458650 effect#1), Save the Day (458650 effect#2)
+Category         : 2308 (Type 0x1): Move with Grace (337678 effect#1), Time Spiral (375254 effect#1), Time Spiral (375254 effect#2), Blessing of the Bronze (381753 effect#1), Move with Grace (390620 effect#1), Save the Day (458650 effect#1), Save the Day (458650 effect#2)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 954
-                 : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381753 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
+                 : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
                  : 4638
 Stance Mask      : 0x88000000
 Mechanic         : Knockback
@@ -3341,7 +3341,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 219
                  : 292
-                 : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381753 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
+                 : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
 Proc Chance      : 101%
 Stance Mask      : 0x88000000
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Not In Spellbook Until Learned (269), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Multi-Click Ground Targeting (340), Allow Class Ability Procs (416)
@@ -10504,7 +10504,7 @@ Spell Type       : Magic
 Range            : 40 yards
 Cooldown         : 1.5 seconds
 Charges          : 1 (90 seconds cooldown)
-Category         : 2308 (Type 0x1): Move with Grace (337678 effect#1), Time Spiral (375254 effect#1), Time Spiral (375254 effect#2), Move with Grace (390620 effect#1), Save the Day (458650 effect#1), Save the Day (458650 effect#2)
+Category         : 2308 (Type 0x1): Move with Grace (337678 effect#1), Time Spiral (375254 effect#1), Time Spiral (375254 effect#2), Blessing of the Bronze (381753 effect#1), Move with Grace (390620 effect#1), Save the Day (458650 effect#1), Save the Day (458650 effect#2)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
