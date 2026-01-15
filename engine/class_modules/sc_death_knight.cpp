@@ -9822,6 +9822,41 @@ struct empower_rune_weapon_t final : public death_knight_spell_t
     min_gcd = trigger_gcd = 0_ms;
   }
 
+  bool ready() override
+  {
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, MID1, B4 ) && p()->buffs.frost_mid1_4pc_buff->up() && internal_cooldown->is_ready() )
+      return true;
+    return death_knight_spell_t::ready();
+  }
+
+  void update_ready( timespan_t cd_duration ) override
+  {
+    if ( p()->buffs.frost_mid1_4pc_buff->up() )
+    {
+      p()->buffs.frost_mid1_4pc_buff->decrement();
+      if ( internal_cooldown->duration > 0_ms )
+      {
+        internal_cooldown->start( this );
+
+        sim->print_debug( "{} starts internal_cooldown for {} ({}). Will be ready at {}", *player, *this,
+                          *internal_cooldown, internal_cooldown->ready );
+      }
+    }
+    else
+    {
+      death_knight_spell_t::update_ready( cd_duration );
+    }
+  }
+
+  // yoinked from evoker
+  void reset() override
+  {
+    // Reset max charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
+    // buffs up. Do this before calling reset as that will also reset the cooldown.
+    cooldown->charges = data().charges();
+    death_knight_spell_t::reset();
+  }
+
   void execute() override
   {
     death_knight_spell_t::execute();
@@ -11680,7 +11715,6 @@ struct pillar_of_frost_t final : public death_knight_spell_t
     if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, MID1, B4 ) )
     {
       p()->buffs.frost_mid1_4pc_buff->trigger();
-      p()->cooldown.empower_rune_weapon->adjust_max_charges( 1 );
     }
   }
 };
@@ -15872,10 +15906,7 @@ void death_knight_t::create_buffs()
                      sets->set( DEATH_KNIGHT_FROST, MID1, B2 )->effectN( 1 ).trigger() );
 
   buffs.frost_mid1_4pc_buff = make_fallback( sets->has_set_bonus( DEATH_KNIGHT_FROST, MID1, B4 ), this, "mid1_4pc_buff",
-                                             sets->set( DEATH_KNIGHT_FROST, MID1, B4 )->effectN( 2 ).trigger() )
-                                  ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
-                                    cooldown.empower_rune_weapon->adjust_max_charges( -1 );
-                                  } );
+                                             sets->set( DEATH_KNIGHT_FROST, MID1, B4 )->effectN( 2 ).trigger() );
 
 
   // Unholy
