@@ -360,7 +360,6 @@ public:
     bool il_requires_freezing = true;
     bool il_sort_by_freezing = true;
     bool randomize_si_target = false;
-    bool override_intuition = false;  // TODO: Remove when beta has the talent tree hotfixes
   } options;
 
   // Pets
@@ -1815,17 +1814,25 @@ public:
 
     if ( p()->spec.clearcasting->ok() && triggers.clearcasting )
     {
-      // In Midnight, Clearcasting has an unmentioned 2% increased trigger rate, resulting in the base rate being 12% and 15% with Illuminated Thoughts.
-      // The quadratic expression is an approximation based upon what was visible in-game, tailored between the ranges of 10 to 18 percent -- it isn't 100% accurate, but close.
-      // https://www.desmos.com/calculator/gi5dgjw9ui, with Y-values representing the random proc chance needed with a BLP of 13 to match expected total.
+      // In Midnight, Clearcasting has an unmentioned 2% increased trigger rate, resulting in
+      // the base rate being 12% and 15% with Illuminated Thoughts.
+      //
+      // The quadratic expression is an approximation based upon what was visible in-game,
+      // tailored between the ranges of 10 to 18 percent -- it isn't 100% accurate, but close.
+      // https://www.desmos.com/calculator/gi5dgjw9ui, with Y-values representing the random
+      // proc chance needed with a BLP of 13 to match expected total.
       double proc_chance = p()->spec.clearcasting->effectN( 2 ).percent() + p()->talents.illuminated_thoughts->effectN( 1 ).percent() + 0.02;
       proc_chance = ( 0.41342 * ( proc_chance * proc_chance ) ) + ( 0.325242 * proc_chance ) - 0.0264015;
 
-      // TODO: Sometime near the beginning of December 2025, the BLP threshold was removed. We're unsure whether or not the random proc chance was increased to match the expected rate.
+      // TODO: Sometime near the beginning of December 2025, the BLP threshold was removed.
+      // We're unsure whether or not the random proc chance was increased to match the expected rate.
       // With just Clearcasting talented (without Illuminated Thoughts or Archmage's Wrath), 
-      // the old expression above (0.41342x^2 + 0.325242x - 0.0264015 -- previously used before the removal) matches the ~11.35% expected total seen in-game.
-      // However, it's hard to tell with IT and/or AW talented as their initial proc chances being higher leads to less deviation from the 15% total.
-      // For the moment, the equation above is accurate enough for pretty much 99% of purposes, the result is losing around 40 total applications out of thousands -- totally inconsequential.
+      // the old expression above (0.41342x^2 + 0.325242x - 0.0264015 -- previously used before the removal)
+      // matches the ~11.35% expected total seen in-game.
+      //
+      // However, it's hard to tell with IT and/or AW talented as their initial proc chances being higher
+      // leads to less deviation from the 15% total.  For the moment, the equation above is accurate enough
+      // for pretty much 99% of purposes, the result is losing around 40 total applications out of thousands.
       // We just need more data -- specifically for IT/AW -- which takes a bunch of time.
       p()->state.clearcasting_blp_count++;
       if ( p()->state.clearcasting_blp_count == p()->options.clearcasting_blp_threshold )
@@ -2624,7 +2631,8 @@ struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arc
     if ( p()->talents.splintering_orbs.ok() )
     {
       int count = as<int>( p()->talents.splintering_orbs->effectN( 4 ).base_value() );
-      int max_count = as<int>( p()->talents.splintering_orbs->effectN( 1 ).base_value() );
+      // TODO: Conjures up to 4 splinters despite spelldata claiming 2
+      int max_count = p()->bugs ? 2 * count : as<int>( p()->talents.splintering_orbs->effectN( 1 ).base_value() );
       assert( count > 0 );
       if ( s->chain_target < max_count / count )
         p()->trigger_splinter( s->target, count );
@@ -2723,12 +2731,20 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
       const auto& gi = p()->talents.glorious_incandescence;
       int meteors_per_event = as<int>( gi->effectN( 6 ).base_value() );
       int salvo_per_event = as<int>( gi->effectN( 4 ).base_value() );
+      int events = salvo / salvo_per_event;
       // TODO: Seems to generate an additional meteor as long as at least 1 salvo stack is present
-      int meteors = meteors_per_event * ( 1 + salvo / salvo_per_event );
+      if ( p()->bugs )
+        events++;
+      int meteors = meteors_per_event * events;
       if ( meteors )
+      {
         // TODO: During Arcane Soul, it is possible to overwrite a previous non-zero snapshot
         // (by casting ABar before the previous one hits), essentially losing those Meteors forever.
-        p()->state.glorious_incandescence_snapshot = meteors;
+        if ( p()->bugs )
+          p()->state.glorious_incandescence_snapshot = meteors;
+        else
+          p()->state.glorious_incandescence_snapshot += meteors;
+      }
     }
 
     snapshot_charges = -1;
@@ -3038,7 +3054,12 @@ struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_sp
     p()->trigger_arcane_salvo( crystal_source, as<int>( p()->talents.focusing_crystal->effectN( 2 ).base_value() ),
                                p()->talents.focusing_crystal->effectN( 1 ).percent() );
     if ( p()->buffs.overpowered_missiles->check() )
-      p()->trigger_arcane_salvo( overpowered_source, as<int>( p()->talents.overpowered_missiles->effectN( 2 ).base_value() ) );
+    {
+      int stacks = as<int>( p()->talents.overpowered_missiles->effectN( 2 ).base_value() );
+      if ( p()->talents.spellfire_salvo.ok() )
+        stacks += 1;  // Not in spelldata
+      p()->trigger_arcane_salvo( overpowered_source, stacks );
+    }
 
     if ( rng().roll( p()->talents.high_voltage->effectN( 1 ).percent() ) )
       p()->trigger_arcane_charge( high_voltage_energize );
@@ -4142,7 +4163,8 @@ struct winters_end_t final : public mage_spell_t
     aoe = -1;
     target_filter_callback = secondary_targets_only(); // Main target should be dead
     // TODO: Currently deals full damage to all targets
-    reduced_aoe_targets = p->spec.winters_end->effectN( 1 ).base_value();
+    if ( !p->bugs )
+      reduced_aoe_targets = p->spec.winters_end->effectN( 1 ).base_value();
   }
 
   double action_multiplier() const override
@@ -4183,8 +4205,14 @@ struct ice_lance_t final : public frost_mage_spell_t
     enable_calculate_on_impact( 228598 );
 
     if ( p->talents.fractured_frost.ok() )
+    {
       aoe = 1 + as<int>( p->talents.fractured_frost->effectN( 1 ).base_value() );
       // TODO: effectiveness?
+      // TODO: Still seems to be doing 90% damage to the secondary target, despite no longer
+      // having 0.9 chain multiplier (and the talent description)
+      if ( p->bugs )
+        chain_multiplier = 0.9;
+    }
 
     if ( p->spec.shatter->ok() )
       add_child( p->action.shatter.ice_lance );
@@ -4216,7 +4244,7 @@ struct ice_lance_t final : public frost_mage_spell_t
       if ( s->chain_target == 0 && p()->talents.force_of_will.ok() )
         p()->trigger_splinter( s->target, stacks / as<int>( p()->talents.force_of_will->effectN( 3 ).base_value() ) );
 
-      if ( stacks >= 1 )
+      if ( stacks >= 1 || p()->bugs )
       {
         // TODO: This now happens without any shattered stacks (giving the base 0.5 sec cdr)
         timespan_t whiteout = p()->talents.white_out->effectN( 1 ).time_value();
@@ -4672,7 +4700,8 @@ struct splintering_ray_t final : public spell_t
     target_filter_callback = secondary_targets_only();
     base_dd_min = base_dd_max = 1.0;
     // TODO: Seems to hit 1 fewer target. See flash_freezeburn_t for possible explanation.
-    aoe--;
+    if ( p->bugs )
+      aoe--;
   }
 
   void init() override
@@ -5044,7 +5073,8 @@ struct flash_freezeburn_t final : public spell_t
     base_dd_min = base_dd_max = 1.0;
     // TODO: Hits one fewer target. It is possible that the main target
     // (which is not dealt damage) is counted as one of the five targets.
-    aoe--;
+    if ( p->bugs )
+      aoe--;
   }
 };
 
@@ -5056,7 +5086,8 @@ struct controlled_instincts_t final : public spell_t
     background = proc = true;
     target_filter_callback = secondary_targets_only();
     // Only hits 5 targets despite max_targets being 6
-    aoe--;
+    if ( p->bugs )
+      aoe--;
     // TODO: The tooltip still mentions this, but it's untestable at the moment since it can't hit 6 or more targets
     reduced_aoe_targets = p->talents.controlled_instincts->effectN( 5 ).base_value();
     base_dd_min = base_dd_max = 1.0;
@@ -5107,9 +5138,13 @@ struct splinter_t final : public mage_spell_t
     p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.infused_splinters->effectN( 3 ).base_value() ),
                                p()->talents.infused_splinters->effectN( 1 ).percent() );
 
-    // TODO: This is actually 300 ms (rather than 250), not sure how
     auto cd = p()->specialization() == MAGE_FROST ? p()->cooldowns.frozen_orb : p()->cooldowns.arcane_orb;
-    cd->adjust( -p()->talents.spellfrost_teachings->effectN( p()->specialization() == MAGE_FROST ? 2 : 1 ).time_value(), false );
+    // TODO: This is actually 300 ms (rather than 250), not sure how
+    auto cdr = p()->talents.spellfrost_teachings->effectN( p()->specialization() == MAGE_FROST ? 2 : 1 ).time_value();
+    if ( p()->bugs )
+      // Best guess: some rounding issue; adjust as needed
+      cdr = 100_ms * std::round( 0.01 * cdr.total_millis() );
+    cd->adjust( -cdr, false );
   }
 
   timespan_t travel_time() const override
@@ -5258,7 +5293,8 @@ struct icicle_event_t final : public mage_event_t
   {
     timespan_t next = p->talents.icicles->effectN( 1 ).period();
     // TODO: Should be affected by spell speed as per the description; currently doesn't work
-    next *= p->cache.spell_cast_speed();
+    if ( !p->bugs )
+      next *= p->cache.spell_cast_speed();
     if ( randomize ) next *= p->rng().real();
     p->events.icicle = make_event<icicle_event_t>( *p->sim, *p, next );
   }
@@ -5560,7 +5596,6 @@ void mage_t::create_options()
   add_option( opt_bool( "mage.il_requires_freezing", options.il_requires_freezing ) );
   add_option( opt_bool( "mage.il_sort_by_freezing", options.il_sort_by_freezing ) );
   add_option( opt_bool( "mage.randomize_si_target", options.randomize_si_target ) );
-  add_option( opt_bool( "mage.override_intuition", options.override_intuition ) );
   player_t::create_options();
 }
 
@@ -6098,7 +6133,7 @@ void mage_t::create_buffs()
                                       ->set_affects_regen( true );
   buffs.intuition                 = make_buff( this, "intuition", find_spell( 1223797 ) )
                                       ->set_default_value_from_effect( 1 )
-                                      ->set_chance( talents.intuition.ok() || options.override_intuition );
+                                      ->set_chance( talents.intuition.ok() );
   buffs.overpowered_missiles      = make_buff( this, "overpowered_missiles", find_spell( 1277009 ) )
                                       ->set_default_value_from_effect( 1 )
                                       ->set_chance( talents.overpowered_missiles.ok() );
@@ -6783,7 +6818,6 @@ int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consump
   assert( source );
   source->occur( shatter_stacks );
 
-  // TODO: HoF doesn't seem to need any shattered stacks to trigger
   if ( shatter_stacks > 0 )
   {
     sim->print_log( "{} {} shatters {} ({} stacks, {} consumed)", *this, *action, *target, shatter_stacks, consume_stacks );
@@ -6792,7 +6826,11 @@ int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consump
     action->base_multiplier *= shatter_stacks;
     action->execute_on_target( target );
     action->base_multiplier = old_mult;
+  }
 
+  // TODO: HoF doesn't seem to need any shattered stacks to trigger
+  if ( shatter_stacks > 0 || bugs )
+  {
     action_t* hof = this->action.hand_of_frost;
     double hof_chance = talents.hand_of_frost_1->effectN( 1 ).percent();
     // TODO: Seems to be based on actually consumed stacks, so Fingers of Frost doesn't increase
@@ -7011,7 +7049,7 @@ bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool allow_p
       // is delayed until the channel ends (or is refreshed).
       // TODO: Should we use the delay param here?
       // TODO: The proc is also banked if you already had a CC stack before, likely a bug
-      if ( ( channeling && channeling->id == 5143 ) || ( had_clearcasting && chance < 1.0 ) )
+      if ( ( channeling && channeling->id == 5143 ) || ( bugs && had_clearcasting && chance < 1.0 ) )
         state.trigger_overpowered_missiles = true;
       else
         buffs.overpowered_missiles->trigger();
