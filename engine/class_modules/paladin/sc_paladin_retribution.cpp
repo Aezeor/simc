@@ -557,18 +557,13 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
     // ToDo Fluttershy: If this ever gets sensible results, move to impact
     if ( !background && p()->sets->has_set_bonus( PALADIN_RETRIBUTION, MID1, B4 ) && p()->talents.expurgation->ok() )
     {
-      // ToDo Fluttershy: If this ever gets sensible results, use spell data
+      // ToDo Fluttershy: Rewrite to spell data later
       double mult  = .5;
+      if ( has_echo )
+        mult *= 2;
       if ( p()->talents.tempest_of_the_lightbringer->ok() )
-      {
-        mult = .2;
-        if ( has_echo )
-          mult = .4;
-      }
-      else if (has_echo)
-      {
-        mult = 1.0;
-      }
+        mult *= 1.2;
+
       p()->trigger_expurgation( execute_state->target, mult );
     }
   }
@@ -660,16 +655,11 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     
     if ( !background && p()->sets->has_set_bonus( PALADIN_RETRIBUTION, MID1, B4 ) && p()->talents.expurgation->ok() )
     {
-      // ToDo Fluttershy: If this ever gets sensible results, use spell data
+      // ToDo Fluttershy: Rewrite to spell data later
       double mult = 1.0;
       if ( p()->buffs.empyrean_legacy->up() )
       {
-        if ( p()->talents.tempest_of_the_lightbringer->ok() )
-          // Just from testing. What even is this number?
-          mult = 0.375;
-        else
-          // No clue why, 1.5 would make more sense - That's why DS's damage is here, too
-          mult = 1.25;
+        mult = p()->talents.tempest_of_the_lightbringer->ok() ? 1.6875 : 1.625;
       }
       p()->trigger_expurgation( execute_state->target, mult );
     }
