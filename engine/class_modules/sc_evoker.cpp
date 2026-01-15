@@ -377,10 +377,10 @@ struct simplified_player_t : public player_t
   } option;
 
   std::map<std::string, bob_settings_t> bob_settings = {
-      { "default", { ROLE_SPELL, 15.4, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, 0.1, 0.2, {} } },
-      { "tank", { ROLE_TANK, 6.1, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, 0, 0, {} } },
-      { "healer", { ROLE_HEAL, 1.8, true, 1.5_s, 0.25, -1, 5, 1, 0.0, 20000.0, 0.0011, 0, 0, {} } },
-      { "shadow_archon", { ROLE_SPELL, 9.14, true, 1.5_s, 0.45, -1, 12, 1, 0.0, 20000.0, 0.0011, 0.1, 0.35,
+      { "default", { ROLE_SPELL, 24.64, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, 0.1, 0.2, {} } },
+      { "tank", { ROLE_TANK, 9.76, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, 0, 0, {} } },
+      { "healer", { ROLE_HEAL, 2.88, true, 1.5_s, 0.25, -1, 5, 1, 0.0, 20000.0, 0.0011, 0, 0, {} } },
+      { "shadow_archon", { ROLE_SPELL, 14.624, true, 1.5_s, 0.45, -1, 12, 1, 0.0, 20000.0, 0.0011, 0.1, 0.35,
           { { "two_mins_cds", 0.3, 15_s, 120_s, 3_s, bob_buff_type_e::BUFF_HASTE },
             { "one_mins_cds", 0.4, 25_s, 60_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "one_mins_cds_lingering", 0.1, 35_s, 60_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
@@ -388,7 +388,7 @@ struct simplified_player_t : public player_t
           } }
       },
       { "shadow",
-        { ROLE_SPELL, 6.95, true, 1.5_s, 0.45, -1, 12, 1, 0.0,  20000.0, 0.0011, 0.1, 0.35,
+        { ROLE_SPELL, 11.12, true, 1.5_s, 0.45, -1, 12, 1, 0.0,  20000.0, 0.0011, 0.1, 0.35,
           { { "two_mins_cds", 0.2, 15_s, 123_s, 3_s, bob_buff_type_e::BUFF_HASTE },
             { "30s_cds", 0.3, 12_s, 30.75_s, 5_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "30s_cds_two", 1.1, 13_s, 30.75_s, 4_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
@@ -398,24 +398,24 @@ struct simplified_player_t : public player_t
           } }
       },
       { "bm",
-        { ROLE_SPELL, 10.1, true, 1.5_s, 0.45, -1, 8, 1, 0.5, 14000.0, 0.0011, 0, 0,
+        { ROLE_SPELL, 16.16, true, 1.5_s, 0.45, -1, 8, 1, 0.5, 14000.0, 0.0011, 0, 0,
           { { "beastial_wrath", 0.45, 15_s, 23_s, 2_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE } 
           } }
       },
       { "assa",
-        { ROLE_SPELL, 6.7, false, 1_s, 0.5, -1, 8, 1, 0.8, 11100.0, 0.0011, 0.25, 0.35,
+        { ROLE_SPELL, 10.72, false, 1_s, 0.5, -1, 8, 1, 0.8, 11100.0, 0.0011, 0.25, 0.35,
           { { "two_mins_cds", 0.9, 20_s, 120_s, 6_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "one_mins_cds", 0.65, 14_s, 60_s, 8_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE } 
           } }
       },
       { "unh",
-        { ROLE_SPELL, 9.2, true, 1.5_s, 0.5, -1, 8, 1, 0.0, 18000.0, 0.0011, 0.05, 0.35,
+        { ROLE_SPELL, 14.72, true, 1.5_s, 0.5, -1, 8, 1, 0.0, 18000.0, 0.0011, 0.05, 0.35,
           { { "90s_cds", 1.1, 20_s, 90_s, 7_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "45s_cds", 0.6, 20_s, 45_s, 8_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE } 
           } } 
       },
       { "arcane",
-        { ROLE_SPELL, 6, true, 1.5_s, 0.45, -1,  8, 1, 0.0, 20000.0, 0.0011, 0.15, 0.35,
+        { ROLE_SPELL, 9.6, true, 1.5_s, 0.45, -1,  8, 1, 0.0, 20000.0, 0.0011, 0.15, 0.35,
           { { "haste_buff", 0.2, 120_s, 120_s, 2_s, bob_buff_type_e::BUFF_HASTE },
             { "80s_cds", 0.8, 12_s, 80_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "80s_cds_gcd", 0.3, 1.5_s, 80_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
@@ -424,7 +424,7 @@ struct simplified_player_t : public player_t
             { "40s_cds_gcd_two", 0.4, 1.5_s, 40_s, 7_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "80s_cds_lingering", 0.5, 20_s, 80_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE } } } },
       { "dk_frost",
-        { ROLE_SPELL, 9.6, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 13900.0, 0.0011, 0.05, 0.35,
+        { ROLE_SPELL, 16.9, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 13900.0, 0.0011, 0.05, 0.35,
           { { "120s_trinket", 0.15, 20_s, 45_s * 3, 3_s, bob_buff_type_e::BUFF_BASE_PRIMARY },
             { "90s_window", 0.1, 20_s, 90_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "90s_window_rider", 0.25, 30_s, 90_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
