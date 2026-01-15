@@ -1825,7 +1825,7 @@ public:
       // https://www.desmos.com/calculator/gi5dgjw9ui, with Y-values representing the random
       // proc chance needed with a BLP of 13 to match expected total.
       double proc_chance = p()->spec.clearcasting->effectN( 2 ).percent() + p()->talents.illuminated_thoughts->effectN( 1 ).percent() + 0.02;
-      proc_chance = ( 0.41342 * ( proc_chance * proc_chance ) ) + ( 0.325242 * proc_chance ) - 0.0264015;
+      proc_chance = 0.41342 * proc_chance * proc_chance + 0.325242 * proc_chance - 0.0264015;
 
       // TODO: Sometime near the beginning of December 2025, the BLP threshold was removed.
       // We're unsure whether or not the random proc chance was increased to match the expected rate.
@@ -6974,7 +6974,7 @@ void mage_t::trigger_spellfire_sphere( specialization_e m_spec, bool background 
   double proc_chance = talents.spellfire_spheres->effectN( 1 ).percent();
   if ( bugs )
     proc_chance -= spec.fire_mage->effectN( 7 ).percent();
-  proc_chance = ( -0.202381 * ( proc_chance * proc_chance ) ) + ( 0.550833 * proc_chance ) - 0.0481071;
+  proc_chance = -0.202381 * proc_chance * proc_chance + 0.550833 * proc_chance - 0.0481071;
 
   state.sphere_blp_count++;
   proc_chance *= state.sphere_blp_count;
@@ -6982,7 +6982,7 @@ void mage_t::trigger_spellfire_sphere( specialization_e m_spec, bool background 
   sim->print_debug( "Sphere proc chance: {}% ({}/{} BLP)", 
     proc_chance * 100, state.sphere_blp_count, options.sphere_blp_threshold );
 
-  if ( ( state.sphere_blp_count == options.sphere_blp_threshold ) || ( !background && rng().roll( proc_chance ) ) )
+  if ( state.sphere_blp_count == options.sphere_blp_threshold || ( !background && rng().roll( proc_chance ) ) )
   {
     buffs.spellfire_sphere->trigger();
     buffs.glorious_incandescence->trigger();
