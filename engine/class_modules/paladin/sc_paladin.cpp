@@ -1042,6 +1042,8 @@ struct melee_t : public paladin_melee_attack_t
           }
           if ( rng().roll( aow_proc_chance ) )
           {
+            if ( p()->buffs.art_of_war->up() )
+              p()->procs.art_of_war_wasted->occur();
             p()->buffs.art_of_war->trigger();
             p()->cooldowns.art_of_war->start();
             p()->procs.art_of_war->occur();
@@ -3491,6 +3493,7 @@ void paladin_t::init_procs()
   player_t::init_procs();
 
   procs.art_of_war        = get_proc( "Art of War" );
+  procs.art_of_war_wasted = get_proc( "Art of War wasted" );
   procs.righteous_cause   = get_proc( "Righteous Cause" );
   procs.divine_purpose    = get_proc( "Divine Purpose" );
   procs.empyrean_power    = get_proc( "Empyrean Power" );

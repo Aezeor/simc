@@ -365,6 +365,7 @@ public:
   struct procs_t
   {
     proc_t* art_of_war;
+    proc_t* art_of_war_wasted;
     proc_t* righteous_cause;
     proc_t* divine_purpose;
     proc_t* empyrean_power;
