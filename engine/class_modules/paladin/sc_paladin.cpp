@@ -1406,17 +1406,6 @@ void judgment_base_t::execute()
 {
   paladin_melee_attack_t::execute();
 
-  if ( result_is_hit( execute_state->result ) )
-  {
-    int hopo = 0;
-    if ( p()->spec.judgment_3->ok() )
-      hopo += judge_holy_power;
-    if ( p()->talents.sanctified_wrath->ok() && p()->wings_up() )
-      hopo += sw_holy_power;
-    if ( hopo > 0 )
-      p()->resource_gain( RESOURCE_HOLY_POWER, hopo, p()->gains.judgment );
-  }
-
   if ( p()->talents.zealots_paragon->ok() )
   {
     auto extension = timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() );
@@ -1477,6 +1466,17 @@ proc_types judgment_t::proc_type() const
 void judgment_t::execute()
 {
   judgment_base_t::execute();
+
+  if ( result_is_hit( execute_state->result ) )
+  {
+    int hopo = 0;
+    if ( p()->spec.judgment_3->ok() )
+      hopo += judge_holy_power;
+    if ( p()->talents.sanctified_wrath->ok() && p()->wings_up() )
+      hopo += sw_holy_power;
+    if ( hopo > 0 )
+      p()->resource_gain( RESOURCE_HOLY_POWER, hopo, p()->gains.judgment );
+  }
 
   if ( p()->talents.templar.sanctification->ok() )
   {
@@ -1677,6 +1677,11 @@ hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view name, util
 void hammer_of_wrath_t::execute()
 {
   judgment_base_t::execute();
+
+  // Hammer of Wrath generates an additional Holy Power for Prot with Sanctified Wrath
+  if ( result_is_hit( execute_state->result ) && p()->talents.sanctified_wrath->ok() && p()->wings_up() )
+    p()->resource_gain( RESOURCE_HOLY_POWER, 1, p()->gains.judgment );
+  
 
   if ( triggers_divine_resonance && p()->specialization() == PALADIN_RETRIBUTION && p()->buffs.divine_resonance->up() )
   {
