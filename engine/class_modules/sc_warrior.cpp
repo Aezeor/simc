@@ -357,6 +357,7 @@ public:
     gain_t* critical_block;
     gain_t* execute;
     gain_t* frothing_berserker;
+    gain_t* just_warming_up;
     gain_t* melee_crit;
     gain_t* melee_main_hand;
     gain_t* melee_off_hand;
@@ -407,6 +408,7 @@ public:
 
     // Arms
     const spell_data_t* heroic_strike;
+    const spell_data_t* master_of_warfare_2_buff;
 
     // Fury
 
@@ -619,38 +621,38 @@ public:
       // Row 1
       player_talent_t bloodthirst;
       // Row 2
-      player_talent_t frenzied_enrage;
-      player_talent_t powerful_enrage;
       player_talent_t raging_blow;
       // Row 3
-      player_talent_t fresh_meat;
-      player_talent_t enraged_regeneration;
-      player_talent_t improved_raging_blow;
+      player_talent_t sudden_death;
+      player_talent_t frenzied_enrage;
+      player_talent_t powerful_enrage;
+      player_talent_t improved_execute;
       // Row 4
       player_talent_t focus_in_chaos;
-      player_talent_t sudden_death;
+      player_talent_t enraged_regeneration;
       player_talent_t warpaint;
-      player_talent_t invigorating_fury;
-      player_talent_t improved_execute;
       player_talent_t improved_whirlwind;
       // Row 5
-      player_talent_t improved_bloodthirst;
+      player_talent_t massacre;
+      player_talent_t fresh_meat;
+      player_talent_t invigorating_fury;
       player_talent_t rampage;
-      player_talent_t cruelty;
+      player_talent_t improved_raging_blow;
       player_talent_t rampaging_ruin;
       // Row 6
-      player_talent_t cold_steel_hot_blood;
+      player_talent_t deep_wounds;
+      player_talent_t spite;
       player_talent_t scent_of_blood;
       player_talent_t kill_or_be_killed;  // NYI
       player_talent_t hack_and_slash;
-      player_talent_t bloodcraze;
-      // Row 7
-      player_talent_t ragedrinker;
-      player_talent_t deep_wounds;
-      player_talent_t recklessness;
-      player_talent_t massacre;
-      player_talent_t wrath_and_fury;
+      player_talent_t cruelty;
       player_talent_t meat_cleaver;
+      // Row 7
+      player_talent_t cold_steel_hot_blood;
+      player_talent_t ragedrinker;
+      player_talent_t recklessness;
+      player_talent_t bloodcraze;
+      player_talent_t wrath_and_fury;
       // Row 8
       player_talent_t deft_experience;
       player_talent_t frenzy;
@@ -869,7 +871,6 @@ public:
   double composite_parry_rating() const override;
   double composite_parry() const override;
   double composite_attack_power_multiplier() const override;
-  double composite_player_multiplier( school_e s ) const override;
   double composite_crit_block() const override;
   double composite_melee_crit_chance() const override;
   double composite_leech() const override;
@@ -1034,10 +1035,10 @@ public:
         parse_effects( p()->mastery.master_of_arms );
 
       parse_effects( p()->buff.collateral_damage );
-      parse_effects( p()->buff.crushing_combo );
       parse_effects( p()->buff.ravager, effect_mask_t( false ).enable( 4 ) );
       parse_effects( p()->buff.executioners_precision );
       parse_effects( p()->buff.martial_prowess );
+      parse_effects( p()->buff.master_of_warfare );
     }
     else if ( p()->specialization() == WARRIOR_FURY )
     {
@@ -2378,7 +2379,7 @@ struct ignore_pain_t : public warrior_spell_t
 
 struct bloodthirst_heal_t : public warrior_heal_t
 {
-  bloodthirst_heal_t( warrior_t* p ) : warrior_heal_t( "bloodthirst_heal", p, p->find_spell( 117313 ) )
+  bloodthirst_heal_t( warrior_t* p, const spell_data_t* s ) : warrior_heal_t( "bloodthirst_heal", p, s )
   {
     base_pct_heal = data().effectN( 1 ).percent();
     background    = true;
@@ -2405,6 +2406,7 @@ struct gushing_wound_dot_t : public warrior_attack_t
 struct bloodthirst_t : public warrior_attack_t
 {
   bloodthirst_heal_t* bloodthirst_heal;
+  bloodthirst_heal_t* ragedrinker_heal;
   warrior_attack_t* gushing_wound;
   int aoe_targets;
   double enrage_chance;
@@ -2429,7 +2431,9 @@ struct bloodthirst_t : public warrior_attack_t
     radius = 5;
     if ( p->non_dps_mechanics )
     {
-      bloodthirst_heal = new bloodthirst_heal_t( p );
+      bloodthirst_heal = new bloodthirst_heal_t( p, p->find_spell( 117313 ) );
+      if ( p->talents.fury.ragedrinker.ok() )
+        ragedrinker_heal = new bloodthirst_heal_t( p, p->find_spell( 1265356 ) );
     }
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
 
@@ -2454,6 +2458,7 @@ struct bloodthirst_t : public warrior_attack_t
   bloodthirst_t( util::string_view name, warrior_t* p )
     : warrior_attack_t( name, p, p->talents.fury.bloodthirst ),
       bloodthirst_heal( nullptr ),
+      ragedrinker_heal( nullptr ),
       gushing_wound( nullptr ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       enrage_chance( p->talents.fury.bloodthirst->effectN( 3 ).percent() ),
@@ -2467,7 +2472,9 @@ struct bloodthirst_t : public warrior_attack_t
     radius = 5;
     if ( p->non_dps_mechanics )
     {
-      bloodthirst_heal = new bloodthirst_heal_t( p );
+      bloodthirst_heal = new bloodthirst_heal_t( p, p->find_spell( 117313 ) );
+      if ( p->talents.fury.ragedrinker.ok() )
+        ragedrinker_heal = new bloodthirst_heal_t( p, p->find_spell( 1265356 ) );
     }
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
 
@@ -2517,6 +2524,11 @@ struct bloodthirst_t : public warrior_attack_t
       am *= 1.0 + ( p()->talents.fury.vicious_contempt->effectN( 1 ).percent() );
     }
 
+    if ( p()->talents.fury.cruelty->ok() && p()->buff.enrage->check() )
+    {
+      am *= 1.0 + p()->talents.fury.cruelty->effectN( 1 ).percent();
+    }
+
     return am;
   }
 
@@ -2561,14 +2573,13 @@ struct bloodthirst_t : public warrior_attack_t
     if ( execute_state && result_is_hit( execute_state->result ) )
     {
       if ( bloodthirst_heal )
-      {
         bloodthirst_heal->execute();
-      }
+
+      if ( ragedrinker_heal )
+        ragedrinker_heal->execute();
 
       if ( rng().roll( enrage_chance ) )
-      {
         p()->enrage();
-      }
     }
     if( execute_state && !td( execute_state->target )->hit_by_fresh_meat )
     {
@@ -2607,7 +2618,7 @@ struct bloodthirst_t : public warrior_attack_t
 
     if ( p()->talents.slayer.reap_the_storm->ok() )
     {
-      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->effectN( 3 ).percent() ) )
+      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->effectN( 4 ).percent() ) )
       {
         reap_the_storm->execute();
         p()->cooldown.reap_the_storm_icd->start();
@@ -2643,6 +2654,7 @@ struct bloodbath_dot_t : public warrior_attack_t
 struct bloodbath_t : public warrior_attack_t
 {
   bloodthirst_heal_t* bloodthirst_heal;
+  bloodthirst_heal_t* ragedrinker_heal;
   warrior_attack_t* gushing_wound;
   warrior_attack_t* bloodbath_dot;
   int aoe_targets;
@@ -2654,6 +2666,7 @@ struct bloodbath_t : public warrior_attack_t
   bloodbath_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "bloodbath", p, p->spec.bloodbath ),
       bloodthirst_heal( nullptr ),
+      ragedrinker_heal( nullptr ),
       gushing_wound( nullptr ),
       bloodbath_dot( nullptr ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
@@ -2671,7 +2684,9 @@ struct bloodbath_t : public warrior_attack_t
     track_cd_waste = true;
     if ( p->non_dps_mechanics )
     {
-      bloodthirst_heal = new bloodthirst_heal_t( p );
+      bloodthirst_heal = new bloodthirst_heal_t( p, p->find_spell( 117313 ) );
+      if ( p->talents.fury.ragedrinker.ok() )
+        ragedrinker_heal = new bloodthirst_heal_t( p, p->find_spell( 1265356 ) );
     }
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
 
@@ -2712,7 +2727,9 @@ struct bloodbath_t : public warrior_attack_t
     radius = 5;
     if ( p->non_dps_mechanics )
     {
-      bloodthirst_heal = new bloodthirst_heal_t( p );
+      bloodthirst_heal = new bloodthirst_heal_t( p, p->find_spell( 117313 ) );
+      if ( p->talents.fury.ragedrinker.ok() )
+        ragedrinker_heal = new bloodthirst_heal_t( p, p->find_spell( 1265356 ) );
     }
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
 
@@ -2764,6 +2781,11 @@ struct bloodbath_t : public warrior_attack_t
       am *= 1.0 + ( p()->talents.fury.vicious_contempt->effectN( 1 ).percent() );
     }
 
+    if ( p()->talents.fury.cruelty->ok() && p()->buff.enrage->check() )
+    {
+      am *= 1.0 + p()->talents.fury.cruelty->effectN( 1 ).percent();
+    }
+
     return am;
   }
 
@@ -2813,14 +2835,13 @@ struct bloodbath_t : public warrior_attack_t
     if ( execute_state && result_is_hit( execute_state->result ) )
     {
       if ( bloodthirst_heal )
-      {
         bloodthirst_heal->execute();
-      }
+
+      if ( ragedrinker_heal )
+        ragedrinker_heal->execute();
 
       if ( rng().roll( enrage_chance ) )
-      {
         p()->enrage();
-      }
     }
 
     if ( p()->buff.enrage->up() )
@@ -2853,7 +2874,7 @@ struct bloodbath_t : public warrior_attack_t
 
     if ( p()->talents.slayer.reap_the_storm->ok() )
     {
-      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->effectN( 3 ).percent() ) )
+      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->effectN( 4 ).percent() ) )
       {
         reap_the_storm->execute();
         p()->cooldown.reap_the_storm_icd->start();
@@ -3546,6 +3567,12 @@ struct cleave_t : public warrior_attack_t
         p()->cooldown.reap_the_storm_icd->start();
       }
     }
+
+    if( p()->buff.crushing_combo->up() )
+    {
+      p()->cooldown.cleave->reset( true );
+      p()->buff.crushing_combo->decrement();
+    }
   }
 };
 
@@ -3580,10 +3607,13 @@ struct colossus_smash_t : public warrior_attack_t
       p()->buff.tactical_edge->trigger();
 
     if ( p()->talents.arms.crushing_combo.ok() )
-      p()->buff.crushing_combo->trigger();
+      p()->buff.crushing_combo->trigger( p()->talents.arms.crushing_combo->effectN( 1 ).trigger()->max_stacks() );
 
     if ( p()->talents.arms.broad_strokes.ok() )
       p()->buff.sweeping_strikes->trigger( p()->spec.sweeping_strikes->max_stacks() );
+
+    if ( p()->talents.arms.just_warming_up.ok() )
+      p()->resource_gain(RESOURCE_RAGE, p()->talents.arms.just_warming_up->effectN( 1 ).resource( RESOURCE_RAGE ), p()->gain.just_warming_up );
   }
 };
 
@@ -4005,6 +4035,7 @@ struct execute_arms_t : public warrior_attack_t
   execute_damage_t* trigger_attack;
   action_t* lightning_strike;
   action_t* slayers_strike;
+  action_t* reap_the_storm;
   double max_rage;
   double execute_pct;
   double shield_slam_reset;
@@ -4013,6 +4044,7 @@ struct execute_arms_t : public warrior_attack_t
     trigger_attack( nullptr ),
     lightning_strike( nullptr ),
     slayers_strike( nullptr ),
+    reap_the_storm( nullptr ),
     max_rage( 40 ),
     execute_pct( 20 ),
     shield_slam_reset( p -> talents.protection.strategist -> effectN( 1 ).percent() )
@@ -4042,6 +4074,12 @@ struct execute_arms_t : public warrior_attack_t
     {
       // For some reason on PTR strategist is referencing shield slam reset chance from devastator
       shield_slam_reset = p->spell.devastator->effectN( 2 ).percent();
+    }
+
+    if ( p->talents.slayer.reap_the_storm->ok() && p->talents.slayer.imminent_demise.ok() )
+    {
+      reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_execute", p );
+      add_child( reap_the_storm );
     }
   }
 
@@ -4078,9 +4116,17 @@ struct execute_arms_t : public warrior_attack_t
     if ( p()->buff.sudden_death->up() )
     {
       p()->buff.sudden_death->decrement();
+
       if ( p()->talents.slayer.imminent_demise->ok() && p()->talents.shared.sudden_death->ok() )
-      {
         p()->buff.imminent_demise->trigger();
+
+      if ( p()->talents.slayer.reap_the_storm->ok() && p()->talents.slayer.imminent_demise.ok() )
+      {
+        if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.imminent_demise->effectN( 2 ).percent() ) )
+        {
+          reap_the_storm->execute();
+          p()->cooldown.reap_the_storm_icd->start();
+        }
       }
     }
 
@@ -4226,6 +4272,7 @@ struct execute_fury_t : public warrior_attack_t
   execute_off_hand_t* oh_attack;
   action_t* lightning_strike;
   action_t* slayers_strike;
+  action_t* reap_the_storm;
   bool improved_execute;
   double execute_pct;
   //double cost_rage;
@@ -4236,6 +4283,7 @@ struct execute_fury_t : public warrior_attack_t
       oh_attack( nullptr ),
       lightning_strike( nullptr ),
       slayers_strike( nullptr ),
+      reap_the_storm( nullptr ),
       improved_execute( false ),
       execute_pct( 20 ),
       max_rage( 40 )
@@ -4259,6 +4307,12 @@ struct execute_fury_t : public warrior_attack_t
     {
       lightning_strike = get_action<lightning_strike_t>( "lightning_strike_execute", p );
       add_child( lightning_strike );
+    }
+
+    if ( p->talents.slayer.reap_the_storm->ok() && p->talents.slayer.imminent_demise.ok() )
+    {
+      reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_execute", p );
+      add_child( reap_the_storm );
     }
   }
 
@@ -4286,9 +4340,17 @@ struct execute_fury_t : public warrior_attack_t
     if ( p() -> buff.sudden_death -> up() )
     {
       p()->buff.sudden_death->decrement();
+
       if ( p()->talents.slayer.imminent_demise->ok() && p()->talents.shared.sudden_death->ok() )
-      {
         p()->buff.imminent_demise->trigger();
+
+      if ( p()->talents.slayer.reap_the_storm->ok() && p()->talents.slayer.imminent_demise.ok() )
+      {
+        if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.imminent_demise->effectN( 2 ).percent() ) )
+        {
+          reap_the_storm->execute();
+          p()->cooldown.reap_the_storm_icd->start();
+        }
       }
     }
 
@@ -4652,7 +4714,6 @@ struct raging_blow_attack_t : public warrior_attack_t
     dual                                         = true;
     background = true;
 
-    //base_multiplier *= 1.0 + p->talents.cruelty->effectN( 1 ).percent();
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
   }
 
@@ -6948,6 +7009,7 @@ void warrior_t::init_spells()
   spell.deep_wounds_dot         = find_spell( 262115 );
   spell.fatal_mark_debuff       = find_spell( 383704 );
   spell.heroic_strike           = find_spell( 1269383 );
+  spell.master_of_warfare_2_buff= find_spell( 1269394 );
 
   // Fury Spells
   mastery.unshackled_fury       = find_mastery_spell( WARRIOR_FURY );
@@ -7111,43 +7173,43 @@ void warrior_t::init_spells()
   // Row 1
   talents.fury.bloodthirst           = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodthirst" );
   // Row 2
-  talents.fury.frenzied_enrage       = find_talent_spell( talent_tree::SPECIALIZATION, "Frenzied Enrage" );
-  talents.fury.powerful_enrage       = find_talent_spell( talent_tree::SPECIALIZATION, "Powerful Enrage" );
   talents.fury.raging_blow           = find_talent_spell( talent_tree::SPECIALIZATION, "Raging Blow" );
   // Row 3
-  talents.fury.fresh_meat            = find_talent_spell( talent_tree::SPECIALIZATION, "Fresh Meat" );
-  talents.fury.enraged_regeneration  = find_talent_spell( talent_tree::SPECIALIZATION, "Enraged Regeneration" );
-  talents.fury.improved_raging_blow  = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Raging Blow" );
+  talents.fury.sudden_death          = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Death", WARRIOR_FURY );
+  talents.fury.frenzied_enrage       = find_talent_spell( talent_tree::SPECIALIZATION, "Frenzied Enrage" );
+  talents.fury.powerful_enrage       = find_talent_spell( talent_tree::SPECIALIZATION, "Powerful Enrage" );
+  talents.fury.improved_execute      = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Execute", WARRIOR_FURY );
   // Row 4
   talents.fury.focus_in_chaos        = find_talent_spell( talent_tree::SPECIALIZATION, "Focus in Chaos" );
-  talents.fury.sudden_death          = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Death", WARRIOR_FURY );
+  talents.fury.enraged_regeneration  = find_talent_spell( talent_tree::SPECIALIZATION, "Enraged Regeneration" );
   talents.fury.warpaint              = find_talent_spell( talent_tree::SPECIALIZATION, "Warpaint" );
-  talents.fury.invigorating_fury     = find_talent_spell( talent_tree::SPECIALIZATION, "Invigorating Fury" );
-  talents.fury.improved_execute      = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Execute", WARRIOR_FURY );
   talents.fury.improved_whirlwind    = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Whirlwind" );
   // Row 5
-  talents.fury.improved_bloodthirst  = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Bloodthirst" );
+  talents.fury.massacre              = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre", WARRIOR_FURY );
+  talents.fury.fresh_meat            = find_talent_spell( talent_tree::SPECIALIZATION, "Fresh Meat" );
+  talents.fury.invigorating_fury     = find_talent_spell( talent_tree::SPECIALIZATION, "Invigorating Fury" );
   talents.fury.rampage               = find_talent_spell( talent_tree::SPECIALIZATION, "Rampage" );
-  talents.fury.cruelty               = find_talent_spell( talent_tree::SPECIALIZATION, "Cruelty" );
+  talents.fury.improved_raging_blow  = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Raging Blow" );
   talents.fury.rampaging_ruin        = find_talent_spell( talent_tree::SPECIALIZATION, "Rampaging Ruin" );
   // Row 6
-  talents.fury.cold_steel_hot_blood  = find_talent_spell( talent_tree::SPECIALIZATION, "Cold Steel, Hot Blood" );
+  talents.fury.deep_wounds           = find_talent_spell( talent_tree::SPECIALIZATION, "Deep Wounds", WARRIOR_FURY );
+  talents.fury.spite                 = find_talent_spell( talent_tree::SPECIALIZATION, "Spite" );
   talents.fury.scent_of_blood        = find_talent_spell( talent_tree::SPECIALIZATION, "Scent of Blood" );
   talents.fury.kill_or_be_killed     = find_talent_spell( talent_tree::SPECIALIZATION, "Kill or Be Killed" );
   talents.fury.hack_and_slash        = find_talent_spell( talent_tree::SPECIALIZATION, "Hack and Slash" );
-  talents.fury.bloodcraze            = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodcraze" );
-  // Row 7
-  talents.fury.ragedrinker           = find_talent_spell( talent_tree::SPECIALIZATION, "Ragedrinker" );
-  talents.fury.deep_wounds           = find_talent_spell( talent_tree::SPECIALIZATION, "Deep Wounds", WARRIOR_FURY );
-  talents.fury.recklessness          = find_talent_spell( talent_tree::SPECIALIZATION, "Recklessness" );
-  talents.fury.massacre              = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre", WARRIOR_FURY );
-  talents.fury.wrath_and_fury        = find_talent_spell( talent_tree::SPECIALIZATION, "Wrath and Fury" );
+  talents.fury.cruelty               = find_talent_spell( talent_tree::SPECIALIZATION, "Cruelty" );
   talents.fury.meat_cleaver          = find_talent_spell( talent_tree::SPECIALIZATION, "Meat Cleaver" );
+  // Row 7
+  talents.fury.cold_steel_hot_blood  = find_talent_spell( talent_tree::SPECIALIZATION, "Cold Steel, Hot Blood" );
+  talents.fury.ragedrinker           = find_talent_spell( talent_tree::SPECIALIZATION, "Ragedrinker" );
+  talents.fury.recklessness          = find_talent_spell( talent_tree::SPECIALIZATION, "Recklessness" );
+  talents.fury.bloodcraze            = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodcraze" );
+  talents.fury.wrath_and_fury        = find_talent_spell( talent_tree::SPECIALIZATION, "Wrath and Fury" );
   // Row 8
   talents.fury.deft_experience       = find_talent_spell( talent_tree::SPECIALIZATION, "Deft Experience", WARRIOR_FURY );
   talents.fury.frenzy                = find_talent_spell( talent_tree::SPECIALIZATION, "Frenzy" );
   talents.fury.critical_thinking     = find_talent_spell( talent_tree::SPECIALIZATION, "Critical Thinking", WARRIOR_FURY );
-  // Row 9
+  //Row 9
   talents.fury.vicious_contempt      = find_talent_spell( talent_tree::SPECIALIZATION, "Vicious Contempt" );
   talents.fury.odyns_fury            = find_talent_spell( talent_tree::SPECIALIZATION, "Odyn's Fury" );
   talents.fury.bloodborne            = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodborne", WARRIOR_FURY );
@@ -7336,6 +7398,22 @@ void warrior_t::init_spells()
   {
     register_passive_effect_override( talents.arms.master_of_warfare_2->effectN( 1 ), talents.arms.master_of_warfare_2->effectN( 1 ).base_value() / 10 );
     register_passive_effect_override( talents.arms.master_of_warfare_2->effectN( 2 ), talents.arms.master_of_warfare_2->effectN( 2 ).base_value() / 10 );
+  }
+
+  if ( talents.fury.spite.ok() )
+  {
+    register_passive_effect_override( talents.fury.spite->effectN( 1 ),
+                                        talents.fury.spite->effectN( 1 ).base_value() / 10 );
+    register_passive_effect_override( talents.fury.spite->effectN( 2 ),
+                                        talents.fury.spite->effectN( 2 ).base_value() / 10 );
+  }
+
+  if ( talents.arms.master_of_warfare_2.ok() )
+  {
+    register_passive_effect_override( spell.master_of_warfare_2_buff->effectN( 2 ),
+                                        talents.arms.master_of_warfare_2->effectN( 1 ).base_value() );
+    register_passive_effect_override( spell.master_of_warfare_2_buff->effectN( 3 ),
+                                        talents.arms.master_of_warfare_2->effectN( 2 ).base_value() );
   }
 
   parse_all_class_passives();
@@ -7941,7 +8019,7 @@ void warrior_t::create_buffs()
                                         ->set_trigger_spell( talents.arms.master_of_warfare_1 )
                                         ->set_cooldown( talents.arms.master_of_warfare_1->internal_cooldown() );
 
-  buff.master_of_warfare = make_buff( this, "master_of_warfare", find_spell( 1269394 ) )
+  buff.master_of_warfare = make_buff( this, "master_of_warfare", spell.master_of_warfare_2_buff )
                                 ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 }
 
@@ -8022,6 +8100,7 @@ void warrior_t::init_gains()
   gain.critical_block                   = get_gain( "critical_block" );
   gain.execute                          = get_gain( "execute" );
   gain.frothing_berserker               = get_gain( "frothing_berserker" );
+  gain.just_warming_up                  = get_gain( "just_warming_up" );
   gain.melee_crit                       = get_gain( "melee_crit" );
   gain.melee_main_hand                  = get_gain( "melee_main_hand" );
   gain.melee_off_hand                   = get_gain( "melee_off_hand" );
@@ -8679,18 +8758,6 @@ double warrior_t::composite_attack_power_multiplier() const
   if ( talents.warrior.battlefield_commander.ok() )
     ap *= 1.0 + talents.warrior.battlefield_commander->effectN( 6 ).percent();
   return ap;
-}
-
-// warrior_t::composite_attack_power_multiplier ==============================
-double warrior_t::composite_player_multiplier( school_e s ) const
-{
-  double multi = parse_player_effects_t::composite_player_multiplier( s );
-
-  if ( mastery.master_of_arms->ok() )
-  {
-    multi *= 1.0 + mastery.master_of_arms->effectN( 1 ).mastery_value() * cache.mastery();
-  }
-  return multi;
 }
 
 // warrior_t::composite_crit_block =====================================
