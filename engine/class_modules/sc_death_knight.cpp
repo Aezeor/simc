@@ -10380,6 +10380,13 @@ struct frostwyrms_fury_t final : public fwf_action_base_t
 };
 
 // Frost Strike =============================================================
+struct frostreaper_t : public death_knight_spell_t
+{
+  frostreaper_t( std::string_view n, death_knight_t* p ) : death_knight_spell_t( n, p, p->spell.frostreaper_damage )
+  {
+    background = true;
+  }
+};
 
 struct frost_strike_strike_t final : public death_knight_melee_attack_t
 {
@@ -10426,7 +10433,7 @@ struct frostbane_strike_t final : public death_knight_melee_attack_t
   frostbane_strike_t( std::string_view n, death_knight_t* p )
     : death_knight_melee_attack_t( n, p, p->spell.frostbane_damage )
   {
-    background = true;
+    background = dual = true;
     aoe        = -1;
   }
 
@@ -10445,7 +10452,7 @@ struct frostbane_strike_t final : public death_knight_melee_attack_t
 
     m *= target_reduction;
 
-    if ( state->chain_target == 0 && p()->talent.frost.shattering_blade->ok() )
+    if ( state->chain_target == 0 && p()->talent.frost.shattering_blade->ok() && ri )
     {
       m *= 1.0 + p()->talent.frost.shattering_blade->effectN( 2 ).percent();
     }
@@ -10466,10 +10473,65 @@ struct frostbane_strike_t final : public death_knight_melee_attack_t
   }
 };
 
-struct frostbane_t final : public death_knight_spell_t
+struct frost_strike_base_t : public death_knight_melee_attack_t
+{
+  frost_strike_base_t( std::string_view n, death_knight_t* p, const spell_data_t* s )
+    : death_knight_melee_attack_t( n, p, s )
+  {
+
+  }
+
+  void execute() override
+  {
+    death_knight_melee_attack_t::execute();
+
+    if ( was_replaced )
+      return;
+
+    // 6/21/25 IO buffs the frost strike that procs RE so we need to delay expiration and prevent
+    // additional stacks til after the FS is resolved
+    // In game this looks like: start FS cast, check if RE proced and stack IO if it did not, finish FS cast, calc
+    // damage, expire IO
+
+    // frostbane benefits from IO, and stacks it, but because its damage is delayed it will not get buffed
+    // when frostbane procs RE
+    if ( p()->talent.frost.icy_onslaught->ok() && p()->buffs.icy_onslaught->expiration_delay == nullptr )
+    {
+      p()->buffs.icy_onslaught->trigger();
+    }
+
+    const auto td = get_td( target );
+
+    if ( td->debuff.frostreaper->up() )
+    {
+      get_action<frostreaper_t>("frostreaper", p())->execute_on_target( target );
+      for ( auto t : target_list() )
+      {
+        get_td( t )->debuff.frostreaper->expire();
+      }
+    }
+
+    if ( p()->buffs.pillar_of_frost->up() && p()->talent.frost.obliteration.ok() )
+    {
+      p()->trigger_killing_machine( true, p()->procs.km_from_obliteration_fs,
+                                    p()->procs.km_from_obliteration_fs_wasted );
+
+      // Obliteration's rune generation
+      if ( rng().roll( p()->talent.frost.obliteration->effectN( 2 ).percent() ) )
+      {
+        p()->replenish_rune( as<int>( p()->spell.obliteration_gains->effectN( 1 ).base_value() ),
+                             p()->gains.obliteration );
+      }
+    }
+
+    p()->buffs.rime->trigger();
+  }
+};
+
+struct frostbane_t final : public frost_strike_base_t
 {
   frostbane_t( std::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->spell.frostbane_driver ),
+    : frost_strike_base_t( name, p, p->spell.frostbane_driver ),
       frostbane_strike( p->background_actions.frostbane_strike )
   {
     if ( data().ok() )
@@ -10477,11 +10539,12 @@ struct frostbane_t final : public death_knight_spell_t
       add_child( frostbane_strike );
     }
     aoe = -1;
+
   }
 
   void impact( action_state_t* s ) override
   {
-    death_knight_spell_t::impact( s );
+    frost_strike_base_t::impact( s );
 
     auto td                    = get_td( s->target );
     td->flag.razorice_consumed = false;
@@ -10497,47 +10560,31 @@ struct frostbane_t final : public death_knight_spell_t
 
   void execute() override
   {
-    death_knight_spell_t::execute();
-
-    // frostbane benefits from IO, and stacks it, but because its damage is delayed it will not get buffed
-    // when frostbane procs RE
-    if ( p()->talent.frost.icy_onslaught->ok() && p()->buffs.icy_onslaught->expiration_delay == nullptr )
-    {
-      p()->buffs.icy_onslaught->trigger();
-    }
+    frost_strike_base_t::execute();
 
     // 11.2 TODO drive the delays from likely misc values
     make_event<delayed_execute_event_t>( *sim, p(), frostbane_strike, target, 200_ms );
     make_event<delayed_execute_event_t>( *sim, p(), frostbane_strike, target, 250_ms );
     p()->buffs.frostbane->expire();
 
-    p()->buffs.rime->trigger();
   }
 
 private:
   action_t* frostbane_strike;
 };
 
-struct frostreaper_t : public death_knight_spell_t
-{
-  frostreaper_t( std::string_view n, death_knight_t* p ) : death_knight_spell_t( n, p, p->spell.frostreaper_damage )
-  {
-    background = true;
-  }
-};
-
-struct frost_strike_t final : public death_knight_melee_attack_t
+struct frost_strike_t final : public frost_strike_base_t
 {
   frost_strike_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_melee_attack_t( "frost_strike", p, p->talent.frost.frost_strike ),
+    : frost_strike_base_t( "frost_strike", p, p->talent.frost.frost_strike ),
       mh( p->background_actions.frost_strike_main ),
       oh( p->background_actions.frost_strike_offhand ),
       mh_sb( p->background_actions.frost_strike_sb_main ),
       oh_sb( p->background_actions.frost_strike_sb_offhand ),
-      frostbane( new frostbane_t( "frostbane", p ) ),
-      frostreaper( p->background_actions.frostreaper ),
+      frostbane( new frostbane_t( "frostbane", p ) ),      
       mh_delay( 0_ms ),
       oh_delay( 0_ms ),
+      frostreaper( p->background_actions.frostreaper ),
       sb( false )
   {
     parse_options( options_str );
@@ -10570,54 +10617,32 @@ struct frost_strike_t final : public death_knight_melee_attack_t
           add_child( oh_sb );
         }
       }
-      if ( p->talent.frost.frostbane.ok() )
-      {
-        add_child( frostbane );
-      }
       if ( p->talent.frost.frostreaper.ok() )
       {
         add_child( frostreaper );
       }
+      if ( p->talent.frost.frostbane.ok() )
+      {
+        set_replacement_action( frostbane, p->buffs.frostbane );
+        add_child( frostbane );
+      }
+
     }
   }
 
   void execute() override
   {
-    const auto td = get_td( target );
 
-    if ( td->debuff.frostreaper->up() )
-    {
-      frostreaper->execute_on_target( target );
-      for ( auto t : target_list() )
-      {
-        get_td( t )->debuff.frostreaper->expire();
-      }
-    }
+    frost_strike_base_t::execute();
 
-    if ( p()->buffs.frostbane->up() )
-    {
-      frostbane->execute_on_target( target );
+    if ( was_replaced )
       return;
-    }
 
+    auto td = get_td( target );
     if ( p()->talent.frost.shattering_blade.ok() && td->debuff.razorice->at_max_stacks() )
     {
       sb = true;
       td->debuff.razorice->expire();
-    }
-
-    death_knight_melee_attack_t::execute();
-
-    // 6/21/25 IO buffs the frost strike that procs RE so we need to delay expiration and prevent
-    // additional stacks til after the FS is resolved
-    // In game this looks like: start FS cast, check if RE proced and stack IO if it did not, finish FS cast, calc
-    // damage, expire IO
-
-    // frostbane benefits from IO, and stacks it, but because its damage is delayed it will not get buffed
-    // when frostbane procs RE
-    if ( p()->talent.frost.icy_onslaught->ok() && p()->buffs.icy_onslaught->expiration_delay == nullptr )
-    {
-      p()->buffs.icy_onslaught->trigger();
     }
 
     if ( hit_any_target )
@@ -10640,21 +10665,6 @@ struct frost_strike_t final : public death_knight_melee_attack_t
         sb = false;
       }
     }
-
-    if ( p()->buffs.pillar_of_frost->up() && p()->talent.frost.obliteration.ok() )
-    {
-      p()->trigger_killing_machine( true, p()->procs.km_from_obliteration_fs,
-                                    p()->procs.km_from_obliteration_fs_wasted );
-
-      // Obliteration's rune generation
-      if ( rng().roll( p()->talent.frost.obliteration->effectN( 2 ).percent() ) )
-      {
-        p()->replenish_rune( as<int>( p()->spell.obliteration_gains->effectN( 1 ).base_value() ),
-                             p()->gains.obliteration );
-      }
-    }
-
-    p()->buffs.rime->trigger();
   }
 
 private:
