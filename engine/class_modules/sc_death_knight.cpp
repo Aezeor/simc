@@ -801,10 +801,12 @@ public:
 
   // Counters
   unsigned int km_proc_attempts;  // critical auto attacks since the last KM proc
-  unsigned int
-      bone_shield_charges_consumed;  // Counts how many bone shield charges have been consumed for DF1 4pc blood
-  unsigned int active_riders;        // Number of active Riders of the Apocalypse pets
-  unsigned int magus_active;         // Number of active Magus of the Dead pets
+  unsigned int dom_proc_attempts; // Counts how many attempts to proc dance of midnight have been made
+  unsigned int active_riders;     // Number of active Riders of the Apocalypse pets
+  unsigned int magus_active;      // Number of active Magus of the Dead pets
+
+  // Dance of Midnight Proc Chance
+  double dance_of_midnight_proc_chance;
 
   std::vector<player_t*> undeath_tl;
 
@@ -1900,9 +1902,10 @@ public:
       deprecated_dnd_expression( false ),
       runeforge_expression_warning( false ),
       km_proc_attempts( 0 ),
-      bone_shield_charges_consumed( 0 ),
+      dom_proc_attempts( 0 ),
       active_riders( 0 ),
       magus_active( 0 ),
+      dance_of_midnight_proc_chance( pseudo_random_c_from_p( 0.10 ) ),  // Hard coded, not found anywhere in spelldata.  Was mentioned in patch notes during midnight beta
       undeath_tl(),
       buffs(),
       background_actions(),
@@ -4122,26 +4125,14 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
   struct heart_strike_t : public drw_action_t<melee_attack_t>
   {
-    double blood_strike_rp_generation;
-
     heart_strike_t( std::string_view n, dancing_rune_weapon_pet_t* p )
-      : drw_action_t<melee_attack_t>( p, n, p->dk()->pet_spell.drw_heart_strike ),
-        // DRW is still using an old spell called "Blood Strike" for the 5 additional RP generation on Heart Strike
-        blood_strike_rp_generation(
-            dk()->pet_spell.drw_heart_strike_rp_gen->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
+      : drw_action_t<melee_attack_t>( p, n, p->dk()->pet_spell.drw_heart_strike )
     {
     }
 
     int n_targets() const override
     {
       return dk()->buffs.death_and_decay->up() ? aoe + as<int>( dk()->spell.dnd_buff->effectN( 3 ).base_value() ) : aoe;
-    }
-
-    void execute() override
-    {
-      drw_action_t::execute();
-
-      dk()->resource_gain( RESOURCE_RUNIC_POWER, blood_strike_rp_generation, dk()->gains.drw_heart_strike, this );
     }
   };
 
@@ -4261,23 +4252,9 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     reschedule_drw();
     // We will let DRW and DOM drive the DRW buff
     if ( dk()->buffs.dancing_rune_weapon->remains() < duration)
-    {
-      if ( name_str == "dancing_rune_weapon" )
-      {
-        if ( !dk()->buffs.dancing_rune_weapon->check() )
-          dk()->buffs.dancing_rune_weapon->trigger( duration );
-      }
-      else if ( name_str == "dance_of_midnight" )
         dk()->buffs.dancing_rune_weapon->trigger( duration );
 
-      dk()->buffs.dance_of_midnight_2->trigger( duration );
-    }
-
-    if ( name_str == "dance_of_midnight" )
-    {
-      if ( dk()->buffs.gift_of_the_sanlayn->check() )
-        dk()->buffs.gift_of_the_sanlayn->expire();
-    }
+    dk()->buffs.dance_of_midnight_2->trigger( duration );
   }
 
   void demise() override
@@ -8977,9 +8954,6 @@ struct consumption_leech_heal_t final : public death_knight_leech_damage_heal_t
   void impact( action_state_t* state ) override
   {
     death_knight_leech_damage_heal_t::impact( state );
-
-    if ( p()->talent.blood.carnage.ok() )
-      trigger_blood_shield( state );
   }
 };
 
@@ -9101,6 +9075,22 @@ struct consumption_t final : public death_knight_empowered_charge_spell_t
       debug_cast<consumption_leech_damage_t*>(consumption_leech_damage)->empower_level = empower_value( state );
       consumption_leech_damage->base_dd_min = consumption_leech_damage->base_dd_max = leech_damage_accumulator;
       consumption_leech_damage->execute_on_target( state->target );
+
+      if ( p()->talent.blood.carnage.ok() )
+      {
+        double amount = state->result_raw * std::abs( p()->talent.blood.carnage->effectN( 1 ).percent() );
+        double current_value = p()->buffs.blood_shield->current_value;
+
+        double final_amount = amount + current_value;
+
+        // Blood Shield caps at 50% max health
+        if ( final_amount > ( player->resources.max[ RESOURCE_HEALTH ] * p()->mastery.blood_shield->effectN( 3 ).percent() ) )
+          final_amount = player->resources.max[ RESOURCE_HEALTH ] * p()->mastery.blood_shield->effectN( 3 ).percent();
+
+        sim->print_debug( "{} Blood Shield buff trigger, old_value={} added_value={} new_value={} from action={} (id={})",
+                      player->name(), current_value, amount, final_amount, name(), this->data().id() );
+        p()->buffs.blood_shield->trigger( 1, final_amount );
+      }
     }
 
     void execute() override
@@ -9189,12 +9179,7 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
       p()->buffs.gift_of_the_sanlayn->trigger();
 
     if ( p()->talent.deathbringer.echoing_fury.ok() )
-    {
       p()->buffs.exterminate->trigger();
-      // Currently bugged to give 2 stacks.
-      if ( p()->bugs )
-        p()->buffs.exterminate->trigger();
-    }
   }
 
 private:
@@ -12661,14 +12646,14 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
       buffs.rune_carved_plates_magical_buff->trigger( as<int>( amount ) );
     }
 
-    // Proc rate is mentioned in patch notes, however we find that it is typically double the proc rate.  Also it seems like in
-    // rare cases, we proc the dom weapon twice, so I believe with everlasting bond, we get 2 10% rolls.
     if ( talent.blood.dance_of_midnight_3.ok() )
     {
-      if ( rng().roll( 0.10 ) )
+      double proc_chance = dance_of_midnight_proc_chance * ++dom_proc_attempts * std::max( amount, 1.0 );
+      if ( rng().roll( proc_chance ) )
+      {
+        dom_proc_attempts = 0;
         pets.dance_of_midnight_pet.spawn();
-      if ( rng().roll( 0.10 ) )
-        pets.dance_of_midnight_pet.spawn();
+      }
     }
   }
 
@@ -15777,7 +15762,8 @@ void death_knight_t::create_buffs()
                                   ->set_cooldown( talent.blood.dance_of_midnight_1->internal_cooldown() );
                             
     buffs.dance_of_midnight_2 = make_fallback( talent.blood.dance_of_midnight_2.ok(), this, "dance_of_midnight_2", spell.dance_of_midnight_2_buff )
-                                  ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+                                  ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
     // Tier Sets
   }
@@ -16318,7 +16304,7 @@ void death_knight_t::reset()
   _runes.reset();
   runic_power_decay            = nullptr;
   km_proc_attempts             = 0;
-  bone_shield_charges_consumed = 0;
+  dom_proc_attempts            = 0;
   active_riders                = 0;
   magus_active                 = 0;
   dk_active_pets.clear();
@@ -16583,7 +16569,7 @@ void death_knight_t::arise()
 {
   runic_power_decay            = nullptr;
   km_proc_attempts             = 0;
-  bone_shield_charges_consumed = 0;
+  dom_proc_attempts            = 0;
   active_riders                = 0;
   magus_active                 = 0;
   dk_active_pets.clear();
