@@ -3466,11 +3466,12 @@ class SpellDataGenerator(DataGenerator):
             # Add spell flags
             fields += [ '{ %s }' % ', '.join(misc.field('flags_1', 'flags_2', 'flags_3', 'flags_4',
                 'flags_5', 'flags_6', 'flags_7', 'flags_8', 'flags_9', 'flags_10', 'flags_11',
-                'flags_12', 'flags_13', 'flags_14', 'flags_15')) ]
+                'flags_12', 'flags_13', 'flags_14', 'flags_15', 'flags_16', 'flags_17')) ]
             # Note, bunch up the flags checking into one field,
             hotfix.add(misc,
                 (('flags_1', 'flags_2', 'flags_3',  'flags_4',  'flags_5',  'flags_6',  'flags_7',
-                  'flags_8', 'flags_9', 'flags_10', 'flags_11', 'flags_12', 'flags_13', 'flags_14', 'flags_15'), 35))
+                  'flags_8', 'flags_9', 'flags_10', 'flags_11', 'flags_12', 'flags_13', 'flags_14',
+                  'flags_15', 'flags_16', 'flags_17'), 35))
 
             class_opt_entry = spell.child_ref('SpellClassOptions', field='id_spell')
             fields += [ '{ %s }' % ', '.join(class_opt_entry.field('flags_1', 'flags_2', 'flags_3', 'flags_4')) ]
