@@ -1896,6 +1896,7 @@ void priest_t::create_buffs_shadow()
 
   buffs.horrific_vision = make_buff( this, "horrific_vision", talents.shadow.horrific_vision_buff )
                               ->set_default_value_from_effect( 1 )
+                              ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                               ->set_freeze_stacks( true )
                               ->set_period( talents.shadow.horrific_vision_buff->effectN( 1 ).period() )
                               ->set_tick_callback( [ this ]( buff_t* buff, int, timespan_t ) {
@@ -1905,6 +1906,7 @@ void priest_t::create_buffs_shadow()
                               } );
   buffs.vision_of_nzoth = make_buff( this, "vision_of_nzoth", talents.shadow.vision_of_nzoth_buff )
                               ->set_default_value_from_effect( 1 )
+                              ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                               ->set_freeze_stacks( true )
                               ->set_period( talents.shadow.vision_of_nzoth_buff->effectN( 1 ).period() )
                               ->set_tick_callback( [ this ]( buff_t* buff, int, timespan_t ) {
