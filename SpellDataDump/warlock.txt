@@ -1932,7 +1932,7 @@ Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Affecting Spells : Improved Conjuration (1244025 effect#1)
 Family Flags     : 53
-Attributes       : Not Shapeshifted (16), No Aura Cancel (31), No Threat (42), No AutoCast (AI) (49), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), No Aura Cancel (31), No Threat (42), No AutoCast (AI) (49), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Unknown (491)
 Aura Interrupt   : Leave World (19), Enter World (22), Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=48273)    : Apply Aura (6) | Temporary Thread Reduction (103)
@@ -2893,7 +2893,7 @@ Labels           : 16: Class Spells
                  : 1284
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Strength of Will (317138 effect#1), Dark Accord (386659 effect#1)
 Family Flags     : 54, 67
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow While Stunned (163), Allow While Fleeing (177), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow While Stunned (163), Allow While Fleeing (177), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (491), Unknown (512)
 Aura Interrupt   : Enter World (22), Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=114369)   : Apply Aura (6) | Mechanic Immunity (77)
@@ -5298,7 +5298,7 @@ Labels           : 16: Class Spells
                  : 1387
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Xalan's Cruelty (440040 effect#1), Eye Contract (1279521 effect#1)
 Family Flags     : 88
-Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Ignore Line of Sight (66), Suppress Caster Procs (112), No Harmful Threat (132), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Ignore Line of Sight (66), Suppress Caster Procs (112), No Harmful Threat (132), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Unknown (491)
 Effects          :
 #1 (id=302908)   : Summon Guardian (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 103673 | Misc Value 2: 3766 | Radius: 3 yards | Target: Right of Self (49)
@@ -7343,7 +7343,7 @@ Labels           : 16: Class Spells
                  : 690: Major Cooldowns
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Soulbound Tyrant (334585 effect#1), Master Summoner (1240189 effect#1), Reign of Tyranny (1276748 effect#1)
 Family Flags     : 81
-Attributes       : Not Shapeshifted (16), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Unknown (491)
 Effects          :
 #1 (id=709184)   : Summon Guardian (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 135002 | Misc Value 2: 4255 | Radius: 5 yards | Target: Front Left of Self (44)
@@ -11910,7 +11910,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 690: Major Cooldowns
-Attributes       : No AutoCast (AI) (49), No Aura Icon (60), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Missile Speed is Delay (in sec) (292), Spellcast Override In Spellbook (310), No Summon Log (326), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+Attributes       : No AutoCast (AI) (49), No Aura Icon (60), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Missile Speed is Delay (in sec) (292), Spellcast Override In Spellbook (310), No Summon Log (326), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Unknown (491)
 Effects          :
 #1 (id=911563)   : Summon Guardian (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 47319 | Misc Value 2: 1881 | Target: at Area (87)
@@ -19375,7 +19375,7 @@ Stacks           : 99 maximum
 Proc Chance      : 101%
 Affecting Spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Epidemic (184922 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xavius' Gambit (416615 effects: #1, #2, #3), Xalan's Cruelty (440040 effects: #1, #3, #4), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Jackpot! (1219034 effects: #2, #3), Affliction Warlock (1256906 effects: #1, #2), Demonology Warlock (1256907 effects: #1, #2), Destruction Warlock (1256908 effects: #1, #2), Potent Soul Shards (1259815 effects: #1, #2), Shard Instability (1260269 effects: #1, #2, #3), Warlock Affliction 12.0 Class Set 2pc (1264869 effect#2), Through the Felvine (1266799 effects: #1, #2), Demonic Touch (1269221 effect#1), Darkglare Presence (1280663 effects: #1, #2), Warlock - Midnight PrePatch - 11.2 Class Set 2pc (1283640 effects: #1, #2), Warlock - Midnight PrePatch - 11.2 Class Set 4pc (1283641 effects: #1, #2)
 Family Flags     : 40, 49
-Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (456)
+Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (456), Unknown (490)
 Effects          :
 #1 (id=1269007)  : Dummy (3)
                    Base Value: 3447 | Scaled Value: 3447 | Target: Targeted Enemy (6)
