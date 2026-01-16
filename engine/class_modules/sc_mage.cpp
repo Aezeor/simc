@@ -33,6 +33,17 @@ action_t* get_action( std::string_view name, Actor* actor, Args&&... args )
   return a;
 }
 
+// Returns the remaining damage in an Ignite DoT.
+// TODO: When an Ignite has a partial tick, how is the bank amount calculated to determine valid spread targets?
+static double ignite_bank( dot_t* ignite )
+{
+  if ( !ignite->is_ticking() )
+    return 0.0;
+
+  auto ignite_state = debug_cast<residual_action::residual_periodic_state_t*>( ignite->state );
+  return ignite_state->tick_amount * ignite->ticks_left_fractional();
+}
+
 enum ground_aoe_type_e
 {
   AOE_BLIZZARD = 0,
@@ -221,6 +232,7 @@ public:
   {
     action_t* arcane_assault;
     action_t* arcane_echo;
+    action_t* burnout;
     action_t* flash_freezeburn;
     action_t* frostfire_empowerment;
     action_t* glacial_assault;
@@ -1440,6 +1452,16 @@ struct combustion_t final : public buff_t
         player->stat_loss( STAT_MASTERY_RATING, current_amount );
         current_amount = 0.0;
         p->buffs.fiery_rush->expire();
+        if ( p->talents.burnout.ok() )
+        {
+          for ( auto t : p->action.ignite->target_list() )
+          {
+            auto ignite = p->action.ignite->get_dot( t );
+            auto damage = ignite_bank( ignite ) * p->talents.burnout->effectN( 1 ).percent();
+            if ( damage > 0.0 )
+              p->action.burnout->execute_on_target( t, damage );
+          }
+        }
       }
     } );
 
@@ -2223,16 +2245,6 @@ struct fire_mage_spell_t : public mage_spell_t
     }
   }
 
-  // TODO: When an Ignite has a partial tick, how is the bank amount calculated to determine valid spread targets?
-  static double ignite_bank( dot_t* ignite )
-  {
-    if ( !ignite->is_ticking() )
-      return 0.0;
-
-    auto ignite_state = debug_cast<residual_action::residual_periodic_state_t*>( ignite->state );
-    return ignite_state->tick_amount * ignite->ticks_left_fractional();
-  }
-
   // TODO: Test the target priorities and target capping.
   // TODO: Double check spread_multiplier behavior.
   void spread_ignite( player_t* primary, int num_targets = -1, double spread_multiplier = -1.0 )
@@ -2499,6 +2511,26 @@ struct intensifying_flame_t final : public spell_t
 
     // Despite only being flagged with Ignore Positive Damage Taken Modifiers (321),
     // this spell does not appear to double dip negative damage taken multipliers.
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+  }
+};
+
+// TODO: This spell hasn't yet been hotfixed on beta.
+//       Double check the behavior once this hotfix is in.
+struct burnout_t final : public spell_t
+{
+  burnout_t( std::string_view n, mage_t* p ) :
+    spell_t( n, p, p->find_spell( 1271335 ) )
+  {
+    background = proc = true;
+    base_dd_min = base_dd_max = 1.0;
+  }
+
+  void init() override
+  {
+    spell_t::init();
+
+    // TODO: Check this this is correct in all cases.
     snapshot_flags &= STATE_NO_MULTIPLIER;
   }
 };
@@ -5609,6 +5641,9 @@ void mage_t::create_actions()
   if ( specialization() == MAGE_FROST && talents.molten_chill.ok() )
     action.molten_chill_ignite = get_action<molten_chill_ignite_t>( "molten_chill_ignite", this );
 
+  if ( talents.burnout.ok() )
+    action.burnout = get_action<burnout_t>( "burnout", this );
+
   player_t::create_actions();
 }
 
@@ -6389,6 +6424,7 @@ void mage_t::init_rng()
   player_t::init_rng();
 
   // Accumulated RNG is also not present in the game data.
+  // TODO: Double check that this RNG is the same in Midnight.
   accumulated_rng.pyromaniac = get_accumulated_rng( "pyromaniac", talents.pyromaniac.ok() ? 0.00605 : 0.0 );
 }
 
