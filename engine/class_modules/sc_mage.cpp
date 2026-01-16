@@ -2128,7 +2128,7 @@ struct fire_mage_spell_t : public mage_spell_t
       if ( triggers.from_the_ashes && p()->talents.from_the_ashes.ok() && p()->cooldowns.from_the_ashes->up() )
       {
         p()->cooldowns.from_the_ashes->start( p()->talents.from_the_ashes->internal_cooldown() );
-        // TODO: Fire Blast cdr
+        p()->cooldowns.fire_blast->adjust( -p()->talents.from_the_ashes->effectN( 1 ).time_value(), false, false );
       }
     }
   }
