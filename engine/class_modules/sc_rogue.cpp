@@ -1822,13 +1822,14 @@ public:
     register_consume_buff( p()->buffs.blindside, affected_by.blindside );
     // Special case for Coup de Grace as it is not consumed until the final impact
     // Killing Spree does not consume until the last_tick
+    // Delayed for 1ms as it apppears to work with Black Powder Shadow Damage
     register_consume_buff( p()->buffs.cold_blood, ( p()->buffs.cold_blood->is_affecting( &ab::data() ) &&
                                                     ab::data().id() != p()->spec.secret_technique->id() &&
                                                     ab::data().id() != p()->talent.outlaw.killing_spree->id() &&
                                                     ab::data().id() != p()->spell.coup_de_grace->id() &&
                                                     ( secondary_trigger_type != secondary_trigger::COUP_DE_GRACE ||
                                                       ab::data().id() == p()->spell.coup_de_grace_damage_3->id() ) ),
-                           cold_blood_consumed_proc );
+                           cold_blood_consumed_proc, 1_ms );
     register_consume_buff( p()->buffs.unshakeable_drive, p()->buffs.unshakeable_drive->is_affecting( &ab::data() ),
                            nullptr, 1_ms, true ); // Works with WM
     register_consume_buff( p()->buffs.goremaws_bite, affected_by.goremaws_bite );
@@ -2129,48 +2130,50 @@ public:
   // Ability triggers
   void spend_combo_points( const action_state_t* );
   void trigger_auto_attack( const action_state_t* );
-  void trigger_poisons( const action_state_t* );
-  void trigger_seal_fate( const action_state_t* );
-  void trigger_main_gauche( const action_state_t* );
-  void trigger_fatal_flourish( const action_state_t* );
-  void trigger_energy_refund();
-  void trigger_doomblade( const action_state_t* );
-  void trigger_poison_bomb( const action_state_t* );
-  void trigger_venomous_wounds( const action_state_t* );
-  void trigger_blade_flurry( const action_state_t* );
-  void trigger_ruthlessness_cp( const action_state_t* );
   void trigger_combo_point_gain( int, gain_t* gain = nullptr );
-  void trigger_shadow_techniques( const action_state_t* );
-  void trigger_shadow_techniques_cp( const action_state_t* );
-  void trigger_weaponmaster( const action_state_t* );
-  void trigger_opportunity( const action_state_t*, rogue_attack_t* action, double modifier = 1.0 );
-  void trigger_restless_blades( const action_state_t* );
-  void trigger_hand_of_fate( const action_state_t*, bool biased = false, timespan_t current_delay = timespan_t::zero() );
-  void execute_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result, timespan_t delay = timespan_t::zero() );
-  void trigger_fatebound_edge_case( const action_state_t* state );
-  void trigger_relentless_strikes( const action_state_t* );
+  void trigger_energy_refund();
+  void trigger_poisons( const action_state_t* );
+
+  void trigger_ancient_arts( const action_state_t* state );
+  void trigger_blade_flurry( const action_state_t* );
   void trigger_blindside( const action_state_t* );
-  void trigger_shadow_blades_attack( const action_state_t* );
-  void trigger_find_weakness( const action_state_t* state, timespan_t duration = timespan_t::min() );
-  void trigger_master_of_shadows();
-  void trigger_dashing_scoundrel( const action_state_t* state );
-  void trigger_keep_it_rolling();
-  void trigger_lingering_shadow( const action_state_t* state );
-  void trigger_danse_macabre( const action_state_t* state );
-  void trigger_scent_of_blood();
   void trigger_caustic_spatter( const action_state_t* state );
   void trigger_caustic_spatter_debuff( const action_state_t* state );
-  void trigger_ancient_arts( const action_state_t* state );
-  void trigger_cut_to_the_chase( const action_state_t* state );
   void trigger_cloud_cover( const action_state_t* state );
+  void trigger_cold_blood( const action_state_t* state );
+  void trigger_cut_to_the_chase( const action_state_t* state );
+  void trigger_danse_macabre( const action_state_t* state );
+  void trigger_dashing_scoundrel( const action_state_t* state );
   void trigger_deathstalkers_mark( const action_state_t* state, bool ignore_cp = false );
   bool trigger_deathstalkers_mark_debuff( const action_state_t* state, bool from_darkest_night = false );
-  void trigger_unseen_blade( const action_state_t* state );
-  void trigger_nimble_flurry( const action_state_t* state );
-  void trigger_supercharger();
+  void trigger_doomblade( const action_state_t* );
   void trigger_echoing_reprimand( const action_state_t* state );
+  void trigger_fatal_flourish( const action_state_t* );
+  void trigger_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result, timespan_t delay = timespan_t::zero() );
+  void trigger_fatebound_edge_case( const action_state_t* state );
+  void trigger_find_weakness( const action_state_t* state, timespan_t duration = timespan_t::min() );
+  void trigger_hand_of_fate( const action_state_t*, bool biased = false, timespan_t current_delay = timespan_t::zero() );
+  void trigger_keep_it_rolling();
+  void trigger_lingering_shadow( const action_state_t* state );
+  void trigger_main_gauche( const action_state_t* );
+  void trigger_master_of_shadows();
+  void trigger_nimble_flurry( const action_state_t* state );
+  void trigger_opportunity( const action_state_t*, rogue_attack_t* action, double modifier = 1.0 );
+  void trigger_poison_bomb( const action_state_t* );
+  void trigger_relentless_strikes( const action_state_t* );
+  void trigger_restless_blades( const action_state_t* );
+  void trigger_ruthlessness_cp( const action_state_t* );
+  void trigger_scent_of_blood();
+  void trigger_seal_fate( const action_state_t* );
   void trigger_secondary_poisoning( const action_state_t* state );
-  bool trigger_shadow_clone( const action_state_t* state, rogue_attack_t* action = nullptr, double chance = 0.0 );
+  void trigger_shadow_blades_attack( const action_state_t* );
+  bool trigger_shadow_clone( const action_state_t* state, rogue_attack_t* action = nullptr, double chance = 0.0, timespan_t delay = 0_ms );
+  void trigger_shadow_techniques( const action_state_t* );
+  void trigger_shadow_techniques_cp( const action_state_t* );
+  void trigger_supercharger();
+  void trigger_unseen_blade( const action_state_t* state );
+  void trigger_venomous_wounds( const action_state_t* );
+  void trigger_weaponmaster( const action_state_t* );
 
   // General Methods ==========================================================
 
@@ -2581,11 +2584,6 @@ public:
 
         // Shadow Techniques gains are the last thing to be evaluated in order to reduce buff stack consume waste
         trigger_shadow_techniques_cp( ab::execute_state );
-
-        if ( p()->talent.rogue.cold_blooded_killer->ok() && ab::energize_amount > 0 && ab::execute_state->result == RESULT_CRIT )
-        {
-          p()->buffs.cold_blood->trigger();
-        }
       }
 
       trigger_danse_macabre( ab::execute_state );
@@ -2713,6 +2711,7 @@ struct rogue_attack_t : public rogue_action_t<melee_attack_t>
     trigger_caustic_spatter( state );
     trigger_cloud_cover( state );
     trigger_deathstalkers_mark( state );
+    trigger_cold_blood( state );
   }
 
   void tick( dot_t* d ) override
@@ -5483,7 +5482,8 @@ struct shuriken_storm_t: public rogue_attack_t
     
     if ( p()->talent.subtlety.shuriken_tornado->ok() )
     {
-      trigger_shadow_clone( execute_state, shadow_clone_attack(), p()->talent.subtlety.shuriken_tornado->effectN( 1 ).percent() );
+      trigger_shadow_clone( execute_state, shadow_clone_attack(),
+                            p()->talent.subtlety.shuriken_tornado->effectN( 1 ).percent(), 200_ms );
     }
   }
 
@@ -7364,6 +7364,19 @@ void actions::rogue_action_t<Base>::trigger_auto_attack( const action_state_t* /
 }
 
 template <typename Base>
+void actions::rogue_action_t<Base>::trigger_combo_point_gain( int cp, gain_t* gain )
+{
+  p()->resource_gain( RESOURCE_COMBO_POINT, cp, gain, this );
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_energy_refund()
+{
+  double energy_restored = ab::last_resource_cost * 0.80;
+  p()->resource_gain( RESOURCE_ENERGY, energy_restored, p()->gains.energy_refund );
+}
+
+template <typename Base>
 void actions::rogue_action_t<Base>::trigger_poisons( const action_state_t* state )
 {
   if ( !ab::result_is_hit( state->result ) )
@@ -7465,13 +7478,6 @@ void actions::rogue_action_t<Base>::trigger_fatal_flourish( const action_state_t
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_energy_refund()
-{
-  double energy_restored = ab::last_resource_cost * 0.80;
-  p()->resource_gain( RESOURCE_ENERGY, energy_restored, p()->gains.energy_refund );
-}
-
-template <typename Base>
 void actions::rogue_action_t<Base>::trigger_doomblade( const action_state_t* state )
 {
   if ( !p()->talent.assassination.doomblade->ok() || !ab::result_is_hit( state->result ) )
@@ -7548,12 +7554,6 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
   }
 
   p()->active.blade_flurry->trigger_residual_action( state, multiplier );
-}
-
-template <typename Base>
-void actions::rogue_action_t<Base>::trigger_combo_point_gain( int cp, gain_t* gain )
-{
-  p()->resource_gain( RESOURCE_COMBO_POINT, cp, gain, this );
 }
 
 template <typename Base>
@@ -7636,7 +7636,7 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques_cp( const action_s
     if ( p()->talent.subtlety.ancient_arts_1->ok() )
     {
       const double trigger_chance = p()->talent.subtlety.ancient_arts_1->effectN( 1 ).percent() * consume_stacks;
-      trigger_shadow_clone( ab::execute_state, shadow_clone_attack(), trigger_chance );
+      trigger_shadow_clone( ab::execute_state, shadow_clone_attack(), trigger_chance, 200_ms );
     }
   }
 
@@ -7663,7 +7663,7 @@ void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* 
   if ( !tcd || tcd->down() )
     return;
 
-  if ( !trigger_shadow_clone( state, action, p()->talent.subtlety.weaponmaster->effectN( 1 ).percent() ) )
+  if ( !trigger_shadow_clone( state, action, p()->talent.subtlety.weaponmaster->effectN( 1 ).percent(), 200_ms ) )
     return;
 
   p()->procs.weaponmaster->occur();
@@ -7673,7 +7673,7 @@ void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* 
 }
 
 template <typename Base>
-bool actions::rogue_action_t<Base>::trigger_shadow_clone( const action_state_t* state, actions::rogue_attack_t* action, double chance )
+bool actions::rogue_action_t<Base>::trigger_shadow_clone( const action_state_t* state, actions::rogue_attack_t* action, double chance, timespan_t delay )
 {
   assert( action );
 
@@ -7684,7 +7684,7 @@ bool actions::rogue_action_t<Base>::trigger_shadow_clone( const action_state_t* 
     return false;
 
   p()->sim->print_log( "{} triggers shadow clone attack {} on {}", *p(), *action, *state->target );
-  action->trigger_secondary_action( state->target, cast_state( state )->get_combo_points() );
+  action->trigger_secondary_action( state->target, cast_state( state )->get_combo_points(), delay );
   return true;
 }
 
@@ -7789,7 +7789,7 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
       current_is_heads ? fatebound_t::coinflip_e::TAILS : fatebound_t::coinflip_e::HEADS;
   }
 
-  execute_fatebound_coinflip( state, result, current_delay );
+  trigger_fatebound_coinflip( state, result, current_delay );
 
   if ( p()->talent.fatebound.controlled_chaos->ok() )
   {
@@ -7798,13 +7798,13 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
          p()->buffs.fatebound_coin_heads->total_stack() >= streak && result == fatebound_t::coinflip_e::TAILS )
     {
       // 250ms so it does not coincide with an Overflowing Purse roll at the same time for now
-      execute_fatebound_coinflip( state, result, 250_ms + current_delay );
+      trigger_fatebound_coinflip( state, result, 250_ms + current_delay );
     }
   }
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::execute_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result, timespan_t delay )
+void actions::rogue_action_t<Base>::trigger_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result, timespan_t delay )
 {
   auto coin_target = state->target->is_enemy() ? state->target : p()->target;
   make_event( *p()->sim, delay, [ this, coin_target, result ] {
@@ -7854,7 +7854,7 @@ void actions::rogue_action_t<Base>::trigger_fatebound_edge_case( const action_st
   if ( !p()->talent.fatebound.edge_case->ok() )
     return;
 
-  execute_fatebound_coinflip( state, fatebound_t::coinflip_e::EDGE );
+  trigger_fatebound_coinflip( state, fatebound_t::coinflip_e::EDGE );
 }
 
 template <typename Base>
@@ -8085,7 +8085,7 @@ void actions::rogue_action_t<Base>::trigger_ancient_arts( const action_state_t* 
       if ( p()->talent.subtlety.ancient_arts_1->ok() )
       {
         const double trigger_chance = p()->talent.subtlety.ancient_arts_1->effectN( 1 ).percent() * current_deficit;
-        trigger_shadow_clone( ab::execute_state, shadow_clone_attack(), trigger_chance );
+        trigger_shadow_clone( ab::execute_state, shadow_clone_attack(), trigger_chance, 500_ms );
       }
     }
   } );
@@ -8334,6 +8334,24 @@ void actions::rogue_action_t<Base>::trigger_secondary_poisoning( const action_st
       break;
     }
   }
+}
+
+template<typename Base>
+void actions::rogue_action_t<Base>::trigger_cold_blood( const action_state_t* state )
+{
+  if ( !p()->talent.rogue.cold_blooded_killer->ok() )
+    return;
+
+  if ( ab::energize_type == action_energize::NONE || ab::energize_resource != RESOURCE_COMBO_POINT || ab::energize_amount == 0 )
+    return;
+
+  if ( state->result != RESULT_CRIT )
+    return;
+
+  if ( p()->buffs.cold_blood->check() )
+    return;
+
+  p()->buffs.cold_blood->trigger();
 }
 
 // ==========================================================================
