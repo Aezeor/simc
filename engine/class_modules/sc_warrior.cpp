@@ -134,6 +134,8 @@ struct warrior_td_t : public actor_target_data_t
   buff_t* debuffs_callous_reprisal;
   buff_t* debuffs_overwhelmed;
   buff_t* debuffs_wrecked;  // Dominance of the Colossus
+  buff_t* debuffs_devastating_focus;
+  buff_t* debuffs_phalanx;
   bool hit_by_fresh_meat;
 
   warrior_t& warrior;
@@ -269,6 +271,9 @@ public:
 
     // Fury Apex
     buff_t* berserk;
+
+    // Protection Apex
+    buff_t* phalanx;
 
     buff_t* seeing_red;
     buff_t* seeing_red_tracking;
@@ -413,6 +418,9 @@ public:
     // Fury
 
     // Protection
+    const spell_data_t* devastating_focus_debuff;
+    const spell_data_t* phalanx_buff;
+    const spell_data_t* phalanx_debuff;
 
     // Extra Spells To Make Things Work
 
@@ -611,9 +619,9 @@ public:
       player_talent_t mortal_wounds;
       player_talent_t avatar;
       // Apex
-      player_talent_t master_of_warfare_1;  // NYI
-      player_talent_t master_of_warfare_2;  // NYI
-      player_talent_t master_of_warfare_3;  // NYI
+      player_talent_t master_of_warfare_1;
+      player_talent_t master_of_warfare_2;
+      player_talent_t master_of_warfare_3;
     } arms;
 
     struct fury_talents_t
@@ -688,7 +696,7 @@ public:
       // Row 4
       player_talent_t disrupting_shout;  // NYI
       player_talent_t strategist;
-      player_talent_t devastating_focus;  // NYI
+      player_talent_t devastating_focus;
       // Row 5
       player_talent_t brutal_vitality;
       player_talent_t instigate;
@@ -730,9 +738,9 @@ public:
       player_talent_t whirling_blade;
       player_talent_t ravager;
       // Apex
-      player_talent_t phalanx_1;  // NYI
-      player_talent_t phalanx_2;  // NYI
-      player_talent_t phalanx_3;  // NYI
+      player_talent_t phalanx_1;
+      player_talent_t phalanx_2;
+      player_talent_t phalanx_3;
     } protection;
 
     struct colossus_talents_t
@@ -1079,6 +1087,8 @@ public:
 
       parse_effects( p()->buff.best_served_cold );
       parse_effects( p()->buff.ravager, effect_mask_t( false ).enable( 5 ) );
+
+      parse_effects( p()->buff.shield_block, effect_mask_t( false ).enable( 2, 4 ) );
     }
 
     // Colossus
@@ -1132,6 +1142,10 @@ public:
     // Protection
     parse_target_effects( d_fn( &warrior_td_t::debuffs_demoralizing_shout ),
                           p()->talents.protection.demoralizing_shout );
+    parse_target_effects( d_fn( &warrior_td_t::debuffs_devastating_focus ),
+                          p()->spell.devastating_focus_debuff );
+    parse_target_effects( d_fn( &warrior_td_t::debuffs_phalanx ),
+                          p()->spell.phalanx_debuff );
 
     // Colossus
     if ( p()->talents.colossus.demolish->ok() )
@@ -1612,7 +1626,7 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
     // TODO confirm slayers strike proc rate, currently this is just reading 15% from effect 1
     // However, I am pretty sure this is using pseudo_random_c_from_p from dk module
     if ( p()->talents.slayer.slayers_dominance->ok() && s->target == p()->target && 
-          p()->cooldown.slayers_dominance_icd->up() &&
+          p()->cooldown.slayers_dominance_icd->up() && !background &&
           p()->rng().roll( slayers_strike_proc_chance * ++p()->slayers_strike_attempts_since_last_proc ) )
     {
       p()->slayers_strike_attempts_since_last_proc = 0;
@@ -1628,7 +1642,7 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
     if ( !special )  // Procs below only trigger on special attacks, not autos
       return;
 
-    if ( ( p()->talents.shared.sudden_death.ok() )
+    if ( ( p()->talents.shared.sudden_death.ok() && !background )
            && p()->cooldown.sudden_death_icd->up() && p()->rppm.sudden_death->trigger() )
     {
       p()->buff.sudden_death->trigger();
@@ -1825,6 +1839,31 @@ struct devastator_t : warrior_attack_t
     warrior_attack_t::init_finished();
 
     gain = p()->gain.instigate;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+
+    if ( p()->talents.protection.devastating_focus.ok() )
+    {
+      auto target_data = td( state->target );
+      // If we do not currently have devastating focus on our target, scan the list of enemies, if any of them have it
+      // Clear it, then apply it to our current target
+      if ( target_data )
+      {
+        if ( !target_data->debuffs_devastating_focus->up() )
+        {
+          for ( auto t : p()->sim->target_non_sleeping_list )
+          {
+            warrior_td_t* dev_focus_td = p()->get_target_data( t );
+            if ( dev_focus_td->debuffs_devastating_focus->up() )
+              dev_focus_td->debuffs_devastating_focus->expire();
+          }
+        }
+      }
+      target_data->debuffs_devastating_focus->trigger();
+    }
   }
 
   void execute() override
@@ -2713,6 +2752,7 @@ struct bloodbath_t : public warrior_attack_t
   bloodbath_t( util::string_view name, warrior_t* p )
     : warrior_attack_t( name, p, p->spec.bloodbath ),
       bloodthirst_heal( nullptr ),
+      ragedrinker_heal( nullptr ),
       gushing_wound( nullptr ),
       bloodbath_dot( nullptr ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
@@ -3845,6 +3885,8 @@ struct thunder_blast_t : public warrior_attack_t
     if ( p()->talents.mountain_thane.capacitance->ok() && p()->buff.avatar->up() )
       p()->buff.avatar->extend_duration_or_trigger( p()->talents.mountain_thane.capacitance->effectN( 1 ).time_value() );
 
+    if ( p()->talents.protection.phalanx_1.ok() )
+      p()->buff.phalanx->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -3949,6 +3991,9 @@ struct thunder_clap_t : public warrior_attack_t
         lightning_strike->execute();
       }
     }
+
+    if ( p()->talents.protection.phalanx_1.ok() )
+      p()->buff.phalanx->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -5785,6 +5830,9 @@ struct shield_charge_t : public warrior_attack_t
     // If we have more than one target, trigger aoe as well
     if ( sim -> target_non_sleeping_list.size() > 1 )
       shield_charge_damage_aoe->execute_on_target( target );
+
+    if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, MID1, B4 ) )
+      p()->buff.revenge->trigger();
   }
 
   bool ready() override
@@ -5799,16 +5847,37 @@ struct shield_charge_t : public warrior_attack_t
 };
 
 // Shield Slam ==============================================================
+struct phalanx_t : public warrior_attack_t
+{
+  phalanx_t( std::string_view name, warrior_t* p )
+    : warrior_attack_t( name, p, p->find_spell( 1270116 ) )
+    {
+      background = true;
+      aoe = -1;
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      warrior_attack_t::impact( state );
+
+      auto target_data = td( state->target );
+      if ( target_data )
+        target_data->debuffs_phalanx->trigger();
+    }
+};
 
 struct shield_slam_t : public warrior_attack_t
 {
   double rage_gain;
   int aoe_targets;
   action_t* ignore_pain;
+  action_t* phalanx;
   shield_slam_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "shield_slam", p, p->spell.shield_slam ),
     rage_gain( p->spell.shield_slam->effectN( 3 ).resource( RESOURCE_RAGE ) ),
-    aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
+    aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
+    ignore_pain( nullptr ),
+    phalanx( nullptr )
   {
     parse_options( options_str );
     energize_type = action_energize::NONE;
@@ -5820,6 +5889,12 @@ struct shield_slam_t : public warrior_attack_t
     {
       ignore_pain = get_action<ignore_pain_t>( "ignore_pain_violent_outburst", p );
     }
+
+    if ( p->talents.protection.phalanx_1.ok() )
+    {
+      phalanx = get_action<phalanx_t>( "phalanx", p );
+      add_child(phalanx);
+    }
   }
 
   int n_targets() const override
@@ -5829,19 +5904,6 @@ struct shield_slam_t : public warrior_attack_t
       return aoe_targets + 1;
     }
     return warrior_attack_t::n_targets();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p() -> buff.shield_block->up() )
-    {
-      double sb_increase = p() -> spell.shield_block_buff -> effectN( 2 ).percent();
-      am *= 1.0 + sb_increase;
-    }
-
-    return am;
   }
 
   void execute() override
@@ -5881,6 +5943,12 @@ struct shield_slam_t : public warrior_attack_t
     }
 
     p()->buff.celeritous_conclusion_crit->expire();
+
+    if ( p()->talents.protection.phalanx_1.ok() && p()->buff.phalanx->up() )
+    {
+      phalanx->execute_on_target( p()->target );
+      p()->buff.phalanx->expire();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -7032,6 +7100,9 @@ void warrior_t::init_spells()
   spec.shield_block_2           = find_specialization_spell( 231847 ); // extra charge
   spell.shield_wall             = find_spell( 871 );
   spell.devastator              = find_spell( 236279 );
+  spell.devastating_focus_debuff= find_spell( 1277983 );
+  spell.phalanx_buff            = find_spell( 1278009 );
+  spell.phalanx_debuff          = find_spell( 1270116 );
 
   // Shared Spells
   spell.bloodsurge_energize     = find_spell( 384362 );
@@ -7808,6 +7879,10 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
 
   debuffs_taunt = make_buff( *this, "taunt", p.find_class_spell( "Taunt" ) );
 
+  debuffs_devastating_focus = make_buff( *this, "devastating_focus", p.spell.devastating_focus_debuff );
+
+  debuffs_phalanx = make_buff( *this, "phalanx_debuff", p.spell.phalanx_debuff );
+
   // Colossus
   debuffs_wrecked              = make_buff( *this, "wrecked", p.spell.wrecked_debuff )
                                     ->set_refresh_behavior( buff_refresh_behavior::DURATION );
@@ -8021,6 +8096,9 @@ void warrior_t::create_buffs()
 
   buff.master_of_warfare = make_buff( this, "master_of_warfare", spell.master_of_warfare_2_buff )
                                 ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
+  // Protection Apex
+  buff.phalanx = make_buff( this, "phalanx", spell.phalanx_buff );
 }
 
 // warrior_t::init_special_effects() ====================================
