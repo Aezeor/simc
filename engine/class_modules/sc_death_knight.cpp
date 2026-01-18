@@ -5891,7 +5891,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
     for ( auto& a : p()->action_list )
     {
       if ( a->data().id() == id )
-        return a.get();
+        return a;
     }
     return nullptr;
   }
@@ -9994,7 +9994,6 @@ struct graveyard_t final : public epidemic_base_t
 {
   graveyard_t( std::string_view n, death_knight_t* p ) : epidemic_base_t( n, p, p->spell.graveyard_action )
   {
-    background    = true;
     impact_action = get_action<graveyard_damage_main_t>( "graveyard_main", p );
     add_child( impact_action );
     add_child( impact_action->impact_action );
@@ -10008,7 +10007,7 @@ struct epidemic_t final : public epidemic_base_t
     parse_options( options_str );
     impact_action = p->background_actions.epidemic_main;
 
-    set_replacement_action( get_action<graveyard_t>( "graveyard", p ), p->buffs.forbidden_knowledge );
+    set_replacement_action( new graveyard_t( "graveyard", p ), p->buffs.forbidden_knowledge );
 
     add_child( impact_action );
 
@@ -10273,6 +10272,13 @@ struct fwf_action_base_t : public death_knight_spell_t
 
     if ( p->talent.frost.chosen_of_frostbrood_2.ok() )
       pillar_extension = p->talent.frost.chosen_of_frostbrood_2->effectN( 1 ).time_value();
+  }
+
+  void init_finished() override
+  {
+    death_knight_spell_t::init_finished();
+    // Wait til init finished to get the fwf damage action
+    add_child( fwf_damage );
   }
 
   void execute() override
