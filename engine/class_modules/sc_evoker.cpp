@@ -4381,6 +4381,7 @@ struct fire_breath_t : public empowered_charge_spell_t
 
       dot_duration = 20_s;  // base * 10? or hardcoded to 20s?
       dot_duration += timespan_t::from_seconds( p->talent.blast_furnace->effectN( 1 ).base_value() );
+      dot_duration += timespan_t::from_seconds( p->talent.flameshaper.deep_exhalation->effectN( 1 ).base_value() );
 
       if ( p->talent.chronowarden.afterimage.enabled() )
       {
