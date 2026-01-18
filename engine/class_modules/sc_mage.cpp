@@ -832,6 +832,7 @@ public:
   void init_action_list() override;
   parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule, const assisted_combat_step_data_t& step ) const override;
   void parse_assisted_combat_step( const assisted_combat_step_data_t& step, action_priority_list_t* assisted_combat ) override;
+  std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
   std::string default_potion() const override { return mage_apl::potion( this ); }
   std::string default_flask() const override { return mage_apl::flask( this ); }
   std::string default_food() const override { return mage_apl::food( this ); }
@@ -6514,6 +6515,14 @@ void mage_t::parse_assisted_combat_step( const assisted_combat_step_data_t& step
     return;
 
   player_t::parse_assisted_combat_step( step, assisted_combat );
+}
+
+std::vector<std::string> mage_t::action_names_from_spell_id( unsigned int spell_id ) const
+{
+  if ( spell_id == 116 ) // Frostbolt
+    return { "glacial_spike", "frostbolt" };
+
+  return player_t::action_names_from_spell_id( spell_id );
 }
 
 double mage_t::resource_regen_per_second( resource_e rt ) const
