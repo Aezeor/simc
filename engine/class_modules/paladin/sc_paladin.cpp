@@ -1358,7 +1358,7 @@ hammer_and_anvil_t::hammer_and_anvil_t( paladin_t* p, util::string_view n )
   aoe                          = -1;
 }
 
-void trigger_hammer_and_anvil( paladin_t* p, action_state_t* s, hammer_and_anvil_t* haa,
+bool trigger_hammer_and_anvil( paladin_t* p, action_state_t* s, hammer_and_anvil_t* haa,
                                hammer_and_anvil_source haas = HAA_JUDGMENT )
 {
   if ( p->talents.lightsmith.hammer_and_anvil->ok() )
@@ -1367,8 +1367,10 @@ void trigger_hammer_and_anvil( paladin_t* p, action_state_t* s, hammer_and_anvil
     {
       haa->set_target( s->target );
       haa->execute();
+      return true;
     }
   }
+  return false;
 }
 
 // Base Judgment spell ======================================================
@@ -1431,7 +1433,6 @@ void judgment_base_t::impact(action_state_t* s)
   {
     p()->trigger_greater_judgment( td( s->target ) );
   }
-  trigger_hammer_and_anvil( p(), s, hammer_and_anvil, HAA_JUDGMENT );
 }
 
 judgment_t::judgment_t( paladin_t* p, util::string_view name, const spell_data_t* s ) : judgment_base_t( p, name, "", s )
@@ -1486,6 +1487,21 @@ void judgment_t::execute()
   if (p()->talents.glory_of_the_vanguard_1->ok() && p()->rng().roll(0.2))
   {
     p()->buffs.vanguard->trigger();
+  }
+}
+void judgment_t::impact(action_state_t* s)
+{
+  judgment_base_t::impact( s );
+  if ( p()->talents.lightsmith.hammer_and_anvil->ok() )
+  {
+    if ( !triggered_hammer_and_anvil && trigger_hammer_and_anvil( p(), s, hammer_and_anvil, HAA_JUDGMENT ) )
+    {
+      triggered_hammer_and_anvil = true;
+    }
+    if ( s->chain_target == n_targets() - 1 || s->chain_target == num_targets() - 1 )
+    {
+      triggered_hammer_and_anvil = false;
+    }
   }
 }
 bool judgment_t::action_ready()

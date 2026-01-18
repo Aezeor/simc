@@ -1759,7 +1759,6 @@ struct hammer_and_anvil_t : public paladin_spell_t
 {
   hammer_and_anvil_t( paladin_t* p, util::string_view name );
 };
-
 struct judgment_base_t : public paladin_melee_attack_t
 {
   hammer_and_anvil_t* hammer_and_anvil;
@@ -1791,12 +1790,15 @@ public:
 
 struct judgment_t : public judgment_base_t
 {
+  bool triggered_hammer_and_anvil;
+
   judgment_t( paladin_t* p, util::string_view name, const spell_data_t* s = spell_data_t::nil() );
   judgment_t( paladin_t* p, util::string_view name, util::string_view options_str,
               const spell_data_t* s = spell_data_t::nil() );
 
   proc_types proc_type() const override;
   void execute() override;
+  void impact( action_state_t* s ) override;
   bool action_ready() override;
 };
 
@@ -1805,7 +1807,7 @@ struct shield_of_the_righteous_buff_t : public buff_t
 {
   shield_of_the_righteous_buff_t( paladin_t* p );
 };
-void trigger_hammer_and_anvil( paladin_t* p, action_state_t* s, hammer_and_anvil_t* haa,
+bool trigger_hammer_and_anvil( paladin_t* p, action_state_t* s, hammer_and_anvil_t* haa,
                                hammer_and_anvil_source haas );
 struct golden_path_t : public paladin_heal_t
 {
