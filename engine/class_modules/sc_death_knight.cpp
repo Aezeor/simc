@@ -9543,7 +9543,6 @@ struct necrotic_coil_t final : public death_coil_base_t
   necrotic_coil_t( std::string_view n, death_knight_t* p ) : death_coil_base_t( n, p, p->spell.necrotic_coil_action )
   {
     execute_action = get_action<necrotic_coil_shadowstrike_t>( "necrotic_coil_shadowstrike", p );
-    background     = true;
     add_child( execute_action );
     add_child( execute_action->execute_action );
   }
@@ -9560,7 +9559,7 @@ struct death_coil_t final : public death_coil_base_t
     execute_action->stats = stats;
     stats->action_list.push_back( execute_action );
 
-    set_replacement_action( get_action<necrotic_coil_t>( "necrotic_coil", p ), p->buffs.forbidden_knowledge );
+    set_replacement_action( new necrotic_coil_t( "necrotic_coil", p ), p->buffs.forbidden_knowledge );
 
     if ( p->talent.unholy.coil_of_devastation.ok() )
       add_child( p->background_actions.coil_of_devastation );
