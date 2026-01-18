@@ -6991,6 +6991,9 @@ void mage_t::trigger_arcane_salvo( proc_t* source, int stacks, double chance )
     buff->trigger( stacks );
     int new_stacks = buff->check();
 
+    if ( chance >= 1.0 )
+      buff->predict();
+
     if ( buff->at_max_stacks() && old_stacks < new_stacks )
       buffs.intuition->trigger();
 
