@@ -9600,11 +9600,12 @@ void evoker_t::create_buffs()
                                  ->set_cooldown( 0_s )
                                  ->add_invalidate( CACHE_HASTE );
 
-  buff.imminent_destruction =
-      MBF( talent.imminent_destruction.ok(), this, "imminent_destruction",
-           find_spell( specialization() == EVOKER_AUGMENTATION ? 459574 : 411055 ) )
-          ->set_consume_all_stacks( false )
-          ->set_initial_stack( as<int>( talent.imminent_destruction->effectN( 1 ).base_value() ) );
+  buff.imminent_destruction = MBF( talent.imminent_destruction.ok(), this, "imminent_destruction",
+                                   find_spell( specialization() == EVOKER_AUGMENTATION ? 459574 : 411055 ) )
+                                  ->set_consume_all_stacks( false );
+
+  if ( talent.imminent_destruction.ok() )
+    buff.imminent_destruction->set_initial_stack( as<int>( talent.imminent_destruction->effectN( 1 ).base_value() ) );
 
   buff.iridescence_blue = MBF( talent.iridescence.ok(), this, "iridescence_blue", find_spell( 386399 ) )
                               ->set_default_value_from_effect( 1 );
