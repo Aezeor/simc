@@ -9813,6 +9813,19 @@ struct empower_rune_weapon_t final : public death_knight_spell_t
     return death_knight_spell_t::ready();
   }
 
+  void queue_execute( execute_type et ) override
+  {
+    // need to bypass the default behavior to account for the tier set granting a free charge
+    // otherwise, erw sits there queued until the real cooldown is ready
+    if ( et == execute_type::FOREGROUND && p()->buffs.frost_mid1_4pc_buff->up() )
+    {
+      schedule_execute();
+    }
+    else {
+      death_knight_spell_t::queue_execute( et );
+    }
+  }
+
   void update_ready( timespan_t cd_duration ) override
   {
     if ( p()->buffs.frost_mid1_4pc_buff->up() )
