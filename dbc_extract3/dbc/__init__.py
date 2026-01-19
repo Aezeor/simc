@@ -101,7 +101,8 @@ KEY_FIELD_HOTFIX_RECORD = {
     'SpecializationSpells'        : 'spec_id',
     'ItemModifiedAppearance'      : 'id_item',
     'JournalEncounterItem'        : 'id_encounter',
-    'JournalEncounterCreature'    : 'id',
+    'JournalEncounterCreature'    : 'id_journal_encounter',
+    'JournalTierXInstance'        : 'id_journal_tier',
     'AzeritePowerSetMember'       : 'unk_28366',
     'RenownRewards'               : 'id_covenant',
     'GarrTalent'                  : 'id_garr_talent_tree',
@@ -122,12 +123,12 @@ KEY_FIELD_HOTFIX_RECORD = {
     'TraitTreeLoadoutEntry'       : 'id_trait_tree_loadout',
     'TraitTreeXTraitCurrency'     : 'id_trait_tree',
     'TraitTree'                   : 'unk_3',
-    'TraitEdge'                   : 'id',
+    'TraitEdge'                   : 'id_left_trait_node',
     'ModifiedCraftingSpellSlot'   : 'id_spell',
     'CharacterLoadoutItem'        : 'id_loadout',
     'UiTextureAtlasMember'        : 'id_ui_texture_atlas_element',
     'AssistedCombatStep'          : 'id_assisted_combat',
-    'Achievement'                 : 'id',
+    'Achievement'                 : 'ui_order',
 }
 
 # Some DB2 files seem to be expanded to 4 byte fields for the hotfix data for

@@ -1088,7 +1088,7 @@
   "JournalTierXInstance": {
     "parent": "JournalTier",
     "fields": [
-      { "data_type": "i", "field": "id_journal_tier" },
+      { "data_type": "H", "field": "id_journal_tier" },
       { "data_type": "H", "field": "id_journal_instance", "ref": "JournalInstance" },
       { "data_type": "i", "field": "order" },
       { "data_type": "i", "field": "availability_condition" }
