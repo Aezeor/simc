@@ -15305,7 +15305,6 @@ void death_knight_t::init_blizzard_action_list()
       cooldowns->add_action( "raise_dead" );
       break;
     case DEATH_KNIGHT_UNHOLY:
-      cooldowns->add_action( "army_of_the_dead" );
       break;
     default:
       break;

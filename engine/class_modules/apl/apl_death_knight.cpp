@@ -12,7 +12,7 @@ std::string potion( const player_t* p )
 {
   std::string frost_potion = ( p->true_level >= 81 ) ? "disabled" : "tempered_potion_3";
 
-  std::string unholy_potion = ( p->true_level >= 81 ) ? "disabled" : "tempered_potion_3";
+  std::string unholy_potion = ( p->true_level >= 81 ) ? "potion_of_recklessness_2" : "tempered_potion_3";
 
   std::string blood_potion = ( p->true_level >= 81 ) ? "disabled" : "tempered_potion_3";
 
@@ -31,7 +31,7 @@ std::string flask( const player_t* p )
 {
   std::string frost_flask = ( p->true_level >= 81 ) ? "disabled" : "flask_of_alchemical_chaos_3";
 
-  std::string unholy_flask = ( p->true_level >= 81 ) ? "disabled" : "flask_of_alchemical_chaos_3";
+  std::string unholy_flask = ( p->true_level >= 81 ) ? "flask_of_the_shattered_sun_2" : "flask_of_alchemical_chaos_3";
 
   std::string blood_flask = ( p->true_level >= 81 ) ? "disabled" : "flask_of_alchemical_chaos_3";
 
@@ -54,8 +54,8 @@ std::string food( const player_t* p )
 
   if ( p->true_level >= 81 )
   {
-    frost_food = "disabled";
-    unholy_food = "disabled";
+    frost_food = "rootland_celebration";
+    unholy_food = "rootland_celebration";
     blood_food = "disabled";
   }
   else
@@ -79,7 +79,7 @@ std::string food( const player_t* p )
 
 std::string rune( const player_t* p )
 {
-  return ( p->true_level >= 81 ) ? "disabled" : "crystallized";
+  return ( p->true_level >= 81 ) ? "void_touched" : "crystallized";
 }
 
 std::string temporary_enchant( const player_t* p )
@@ -89,7 +89,7 @@ std::string temporary_enchant( const player_t* p )
                                             : "main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3";
 
   std::string unholy_temporary_enchant =
-      ( p->true_level >= 81 ) ? "disabled" : "main_hand:algari_mana_oil_3";
+      ( p->true_level >= 81 ) ? "main_hand:thalassian_phoenix_oil_2" : "main_hand:algari_mana_oil_3";
 
   std::string blood_temporary_enchant =
       ( p->true_level >= 81 ) ? "disabled" : "main_hand:ironclaw_whetstone_3";
@@ -321,7 +321,8 @@ void unholy( player_t* p )
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_->add_action( "call_action_list,name=single_target,if=active_enemies<4" );
 
-  cooldowns->add_action( "outbreak,if=dot.virulent_plague.ticks_remain<3&!buff.pestilence.up&(!talent.blightburst|talent.blightburst&cooldown.putrefy.remains_expected>5)|buff.pestilence.up&dot.virulent_plague.ticking&(talent.infliction_of_sorrow&buff.dark_transformation.up&buff.dark_transformation.remains<gcd*2|cooldown.dark_transformation.remains<7)", "Cooldowns" );
+  cooldowns->add_action( "potion,if=talent.army_of_the_dead&pet.lesser_ghoul_army.active|!talent.army_of_the_dead&buff.dark_transformation.up", "Cooldowns" );
+  cooldowns->add_action( "outbreak,if=dot.virulent_plague.ticks_remain<3&!buff.pestilence.up&(!talent.blightburst|talent.blightburst&cooldown.putrefy.remains_expected>5)|buff.pestilence.up&dot.virulent_plague.ticking&(talent.infliction_of_sorrow&buff.dark_transformation.up&buff.dark_transformation.remains<gcd*2|cooldown.dark_transformation.remains<7)" );
   cooldowns->add_action( "army_of_the_dead,if=!talent.summon_gargoyle&!talent.gift_of_the_sanlayn|talent.summon_gargoyle&runic_power>=30|talent.gift_of_the_sanlayn&(debuff.festering_scythe_debuff.up|!talent.festering_scythe)" );
   cooldowns->add_action( "dark_transformation,if=pet.lesser_ghoul_army.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead" );
   cooldowns->add_action( "soul_reaper,if=cooldown.putrefy.charges>=1|target.health.pct<=35" );
