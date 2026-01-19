@@ -10445,11 +10445,6 @@ struct frostbane_strike_t final : public death_knight_melee_attack_t
     double m      = death_knight_melee_attack_t::composite_da_multiplier( state );
     const auto ri = get_td( state->target )->flag.razorice_consumed;
 
-    if ( ri )
-    {
-      m *= 1.0 + p()->talent.frost.shattering_blade->effectN( 1 ).percent();
-    }
-
     double target_reduction = 1 - ( state->chain_target * p()->talent.frost.frostbane->effectN( 4 ).percent() );
     target_reduction        = std::max( target_reduction, p()->talent.frost.frostbane->effectN( 5 ).percent() );
 
@@ -10458,6 +10453,11 @@ struct frostbane_strike_t final : public death_knight_melee_attack_t
     if ( state->chain_target == 0 && p()->talent.frost.shattering_blade->ok() && ri )
     {
       m *= 1.0 + p()->talent.frost.shattering_blade->effectN( 2 ).percent();
+    }
+
+    else if ( ri )
+    {
+      m *= 1.0 + p()->talent.frost.shattering_blade->effectN( 1 ).percent();
     }
 
     return m;
