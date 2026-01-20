@@ -494,6 +494,7 @@ public:
     propagate_const<buff_t *> blackout_combo;
     propagate_const<buff_t *> charred_passions;
     propagate_const<buff_t *> counterstrike;
+    propagate_const<buff_t *> elixir_of_determination;
     propagate_const<buff_t *> elusive_brawler;
     propagate_const<buff_t *> exploding_keg;
     propagate_const<buff_t *> fortifying_brew;
@@ -551,7 +552,9 @@ public:
 
     // Shado-Pan
     propagate_const<buff_t *> flurry_charge;
+    propagate_const<buff_t *> predictive_training;
     propagate_const<buff_t *> stand_ready;
+    propagate_const<buff_t *> whirling_steel;
   } buff;
 
   struct
@@ -764,6 +767,7 @@ public:
       player_talent_t staggering_strikes;
       player_talent_t quick_sip;
       player_talent_t elixir_of_determination;
+      const spell_data_t *elixir_of_determination_cooldown;
       player_talent_t improved_blackout_kick;
       player_talent_t swift_as_a_coursing_river;
       // row 4
