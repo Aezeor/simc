@@ -6186,18 +6186,6 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
     special    = true;
     may_glance = false;
   }
-
-  void impact( action_state_t* state ) override
-  {
-    death_knight_action_t::impact( state );
-
-    if ( state->result_amount > 0 && callbacks && weapon &&
-         ( ( p()->mh_runeforge == RUNEFORGE_RAZORICE && weapon->slot == SLOT_MAIN_HAND ) ||
-           ( p()->oh_runeforge == RUNEFORGE_RAZORICE && weapon->slot == SLOT_OFF_HAND ) ) )
-    {
-      make_event<delayed_execute_event_t>( *sim, p(), p()->runeforge_actions.razorice_damage, state->target, 0_ms );
-    }
-  }
 };
 
 // ==========================================================================
@@ -13797,8 +13785,7 @@ void death_knight_t::create_actions()
         get_action<runeforge_apocalypse_pestilence_t>( "pestilence_runeforge", this );
     runeforge_actions.apocalypse_pestilence->name_str_reporting = "pestilence";
   }
-  if ( has_runeforge( RUNEFORGE_RAZORICE ) )
-    runeforge_actions.razorice_damage = get_action<razorice_attack_t>( "razorice", this );
+
   if ( has_runeforge( RUNEFORGE_SPELLWARDING ) )
     runeforge_actions.spellwarding_absorb = get_action<spellwarding_absorb_t>( "spellwarding", this );
   if ( has_runeforge( RUNEFORGE_SANGUINATION ) )
