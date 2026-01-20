@@ -1474,7 +1474,7 @@ public:
   rng::rng_t& rng();
   rng::rng_t& rng() const;
   virtual timespan_t time_to_move() const;
-  virtual void trigger_movement( double distance, movement_direction_type);
+  virtual void trigger_movement( double distance, movement_direction_type );
   virtual void update_movement( timespan_t duration );
   virtual void teleport( double yards, timespan_t duration = timespan_t::zero() );
   virtual movement_direction_type movement_direction() const

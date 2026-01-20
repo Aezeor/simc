@@ -2030,6 +2030,7 @@ public:
   void analyze( sim_t& sim ) override;
   void apply_action_effects( action_t* a, bool pet = false );
   void apply_target_action_effects( action_t* a, bool pet = false );
+  void trigger_movement( double distance, movement_direction_type ) override;
 
   // Default consumables
   std::string default_flask() const override
@@ -15482,6 +15483,7 @@ static inline buff_t* make_fallback( Args&&... args )
 void death_knight_t::create_buffs()
 {
   player_t::create_buffs();
+  
   using namespace buffs;
 
   // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
@@ -16519,6 +16521,20 @@ stat_e death_knight_t::convert_hybrid_stat( stat_e s ) const
         return STAT_NONE;
     default:
       return s;
+  }
+}
+
+void death_knight_t::trigger_movement( double distance, movement_direction_type t )
+{
+  player_t::trigger_movement( distance, t );
+  // Expire all active dnds if moving more than 10 yards
+  if ( !active_dnds.empty() && distance > 10 )
+  {
+    for ( auto& dnd : active_dnds )
+      dnd->get_dnd_event()->expired = true;
+
+    active_dnds.clear();
+    buffs.death_and_decay->expire();
   }
 }
 
