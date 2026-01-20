@@ -16532,9 +16532,6 @@ void death_knight_t::trigger_movement( double distance, movement_direction_type 
   {
     for ( auto& dnd : active_dnds )
       dnd->get_dnd_event()->expired = true;
-
-    active_dnds.clear();
-    buffs.death_and_decay->expire();
   }
 }
 
