@@ -16253,11 +16253,8 @@ void death_knight_t::activate()
 
       // This should probably be core to ground_aoe_event_t, canceling the event when leaving combat
       if ( !active_dnds.empty() )
-      {
-        active_dnds.clear();
-        buffs.death_and_decay->expire();
-        make_event( sim, 100_ms, [ this ]() { buffs.death_and_decay->trigger( 4_s ); } );
-      }
+        for ( auto& dnd : active_dnds )
+          dnd->get_dnd_event()->expired = true;
     }
     else
     {
