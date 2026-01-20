@@ -8926,7 +8926,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     {
       p()->resources.current[ RESOURCE_FURY ] = 0;
       p()->buff.collapsing_star_ready->expire();
-      if ( p()->talent.devourer.rolling_torment->ok() )
+      if ( p()->talent.devourer.rolling_torment->ok() && p()->buff.collapsing_star_stack->up() )
       {
         p()->buff.rolling_torment->trigger( p()->buff.collapsing_star_stack->stack() );
         rolling_torment_energize->execute_on_target( p() );
@@ -10946,14 +10946,14 @@ void demon_hunter_t::init_spells()
       hero_spec.voidfall_meteor      = talent_spell_lookup( talent.annihilator.voidfall, 1256304 );
       hero_spec.catastrophe_dot      = talent_spell_lookup( talent.annihilator.catastrophe, 1256676 );
       hero_spec.meteor_shower_driver = talent_spell_lookup( talent.annihilator.dark_matter, 1264126 );
-      hero_spec.meteor_shower_damage = hero_spec.meteor_shower_driver->effectN( 2 ).trigger();
+      hero_spec.meteor_shower_damage = hero_spec.meteor_shower_driver->effectN( 1 ).trigger();
       hero_spec.world_killer         = talent_spell_lookup( talent.annihilator.world_killer, 1256618 );
       break;
     case DEMON_HUNTER_VENGEANCE:
       hero_spec.voidfall_meteor      = talent_spell_lookup( talent.annihilator.voidfall, 1256303 );
       hero_spec.catastrophe_dot      = talent_spell_lookup( talent.annihilator.catastrophe, 1256667 );
       hero_spec.meteor_shower_driver = talent_spell_lookup( talent.annihilator.dark_matter, 1264128 );
-      hero_spec.meteor_shower_damage = hero_spec.meteor_shower_driver->effectN( 2 ).trigger();
+      hero_spec.meteor_shower_damage = hero_spec.meteor_shower_driver->effectN( 1 ).trigger();
       hero_spec.world_killer         = talent_spell_lookup( talent.annihilator.world_killer, 1256616 );
       break;
     default:
