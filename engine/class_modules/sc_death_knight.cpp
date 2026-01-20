@@ -13559,97 +13559,104 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
   params.x( target->x_position );
   params.y( target->y_position );
 
-  params.state_callback( [ &, tracker, n_ticks, partial_tick, period ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
-    switch ( type )
-    {
-      case ground_aoe_params_t::EVENT_CREATED:
-        tracker->set_dnd_event( event );
-        // Set the initial expire time to the default 4s after dnd ends. Ensures theres no accidental carryover between dnds.
-        tracker->set_expire_time( 4_s );
-        break;
-      case ground_aoe_params_t::EVENT_STARTED:
-        buffs.death_and_decay->trigger();
-        break;
-      case ground_aoe_params_t::EVENT_STOPPED:
-        break;
-      case ground_aoe_params_t::EVENT_DESTRUCTED:
-        if ( tracker != active_dnds.front() )
-          break;
-
-        if ( !talent.sanlayn.desecrate.ok() )
-          break;
-      {
-        int n_dots = 0;
-        switch ( specialization() )
+  params.state_callback(
+      [ &, tracker, n_ticks, partial_tick, period ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+        switch ( type )
         {
-          // Assume all enemies are in the dnd area of effect
-          case DEATH_KNIGHT_UNHOLY:
-            for ( auto& t : sim->target_non_sleeping_list )
-            {
-              death_knight_td_t* td = get_target_data( t );
-              if ( td->dot.dread_plague->is_ticking() || td->dot.virulent_plague->is_ticking() )
-                ++n_dots;
-            }
+          case ground_aoe_params_t::EVENT_CREATED:
+            tracker->set_dnd_event( event );
+            // Set the initial expire time to the default 4s after dnd ends. Ensures theres no accidental carryover
+            // between dnds.
+            tracker->set_expire_time( 4_s );
             break;
-          case DEATH_KNIGHT_BLOOD:
-            for ( auto& t : sim->target_non_sleeping_list )
+          case ground_aoe_params_t::EVENT_STARTED:
+            buffs.death_and_decay->trigger();
+            break;
+          case ground_aoe_params_t::EVENT_STOPPED:
+            break;
+          case ground_aoe_params_t::EVENT_DESTRUCTED:
+            if ( tracker != active_dnds.front() )
+              break;
+
+            if ( !talent.sanlayn.desecrate.ok() )
+              break;
             {
-              death_knight_td_t* td = get_target_data( t );
-              if ( td->dot.blood_plague->is_ticking() )
-                ++n_dots;
+              int n_dots = 0;
+              // Get the target list based on distance targeting setting
+              std::vector<player_t*> tl =
+                  sim->distance_targeting_enabled
+                      ? event->params->action()->targets_in_range_list( event->params->action()->target_list() )
+                      : event->params->action()->target_list();
+
+              switch ( specialization() )
+              {
+                case DEATH_KNIGHT_UNHOLY:
+                  for ( auto& t : tl )
+                  {
+                    death_knight_td_t* td = get_target_data( t );
+                    if ( td->dot.dread_plague->is_ticking() || td->dot.virulent_plague->is_ticking() )
+                      ++n_dots;
+                  }
+                  break;
+                case DEATH_KNIGHT_BLOOD:
+                  for ( auto& t : tl )
+                  {
+                    death_knight_td_t* td = get_target_data( t );
+                    if ( td->dot.blood_plague->is_ticking() )
+                      ++n_dots;
+                  }
+                  break;
+                default:
+                  break;
+              }
+
+              bool desecrate_triggred = false;
+              for ( int i = 0; i < n_dots; ++i )
+              {
+                if ( rng().roll( talent.sanlayn.desecrate->effectN( 2 ).percent() ) )
+                {
+                  desecrate_triggred = true;
+                  break;
+                }
+              }
+
+              if ( desecrate_triggred )
+              {
+                timespan_t remaining_time = event->remaining_time();
+                double ticks_left         = remaining_time.total_seconds() / period.total_seconds();
+                if ( partial_tick )
+                  ticks_left = std::ceil( ticks_left );
+
+                // Via in game testing, we find that
+                // Unholy desecrate does damage as if it had 1 less tick
+                // Blood without rapid decomp does damage as if it equaled the number of remaining ticks
+                // Blood with rapid decomp does damage as if it had 2 less ticks
+                switch ( specialization() )
+                {
+                  case DEATH_KNIGHT_UNHOLY:
+                    ticks_left -= 1;
+                    break;
+                  case DEATH_KNIGHT_BLOOD:
+                    if ( talent.blood.rapid_decomposition.ok() )
+                      ticks_left -= 2;
+                    break;
+                  default:
+                    break;
+                }
+                desecrate_t* des  = debug_cast<desecrate_t*>( background_actions.desecrate );
+                des->ticks_remain = std::max( ticks_left, 1.0 );  // At least 1 ticks worth always
+                des->schedule_execute();
+
+                event->expired = true;
+
+                tracker->set_expire_time( remaining_time + 4_s );
+              }
             }
             break;
           default:
             break;
         }
-
-        bool desecrate_triggred = false;
-        for ( int i = 0; i < n_dots; ++i )
-        {
-          if ( rng().roll( talent.sanlayn.desecrate->effectN( 2 ).percent() ) )
-          {
-            desecrate_triggred = true;
-            break;
-          }
-        }
-
-        if ( desecrate_triggred )
-        {
-          timespan_t remaining_time = event->remaining_time();
-          double ticks_left         = remaining_time.total_seconds() / period.total_seconds();
-          if( partial_tick )
-            ticks_left = std::ceil( ticks_left );
-
-          // Via in game testing, we find that
-          // Unholy desecrate does damage as if it had 1 less tick
-          // Blood without rapid decomp does damage as if it equaled the number of remaining ticks
-          // Blood with rapid decomp does damage as if it had 2 less ticks
-          switch ( specialization() )
-          {
-            case DEATH_KNIGHT_UNHOLY:
-              ticks_left -= 1;
-              break;
-            case DEATH_KNIGHT_BLOOD:
-              if ( talent.blood.rapid_decomposition.ok() )
-                ticks_left -= 2;
-              break;
-            default:
-              break;
-          }
-          desecrate_t* des          = debug_cast<desecrate_t*>( background_actions.desecrate );
-          des->ticks_remain         = std::max( ticks_left, 1.0 );  // At least 1 ticks worth always
-          des->schedule_execute();
-
-          event->expired = true;
-
-          tracker->set_expire_time( remaining_time + 4_s );
-        }
-      }
-      break;
-      default:
-        break;
-    }
-  } );
+      } );
 
   params.expiration_callback( [ &, tracker ]( const action_state_t* ) {
     // Need to expire the buff before we set it with an expiration time, as it does not seem to extend
@@ -14241,34 +14248,6 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( std::string_view name
     }
   }
 
-  // Check if IQD execute is disabled
-  if ( util::str_compare_ci( splits[ 0 ], "death_knight" ) && splits.size() > 1 )
-  {
-    if ( util::str_compare_ci( splits[ 1 ], "disable_iqd_execute" ) && splits.size() == 2 )
-      return expr_t::create_constant( " disable_iqd_execute_expression ", sim->shadowlands_opts.disable_iqd_execute );
-  }
-
-  // Expose AMS Absorb Percent to the APL to enable decisions based on anticipated resource generation
-  if ( util::str_compare_ci( splits[ 0 ], "death_knight" ) && splits.size() > 1 )
-  {
-    if ( util::str_compare_ci( splits[ 1 ], "ams_absorb_percent" ) && splits.size() == 2 )
-      return expr_t::create_constant( "ams_absorb_percent", options.ams_absorb_percent );
-  }
-
-  // Expose AMZ Specified to the APL to prevent its use.
-  if ( util::str_compare_ci( splits[ 0 ], "death_knight" ) && splits.size() > 1 )
-  {
-    if ( util::str_compare_ci( splits[ 1 ], "amz_specified" ) && splits.size() == 2 )
-      return expr_t::create_constant( "amz_specified", options.amz_specified );
-  }
-
-  // Expose first AMS cast to the APL to prevent its use.
-  if ( util::str_compare_ci( splits[ 0 ], "death_knight" ) && splits.size() > 1 )
-  {
-    if ( util::str_compare_ci( splits[ 1 ], "first_ams_cast" ) && splits.size() == 2 )
-      return expr_t::create_constant( "first_ams_cast", options.first_ams_cast.total_seconds() );
-  }
-
   // Death Knight special expressions
   if ( util::str_compare_ci( splits[ 0 ], "death_knight" ) && splits.size() > 1 )
   {
@@ -14284,26 +14263,37 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( std::string_view name
         return runeforge_expr;
     }
 
+    // Expose AMS Absorb Percent to the APL to enable decisions based on anticipated resource generation
+    if ( util::str_compare_ci( splits[ 1 ], "ams_absorb_percent" ) && splits.size() == 2 )
+      return expr_t::create_constant( "ams_absorb_percent", options.ams_absorb_percent );
+
+    // Expose AMZ Specified to the APL to prevent its use.
+    if ( util::str_compare_ci( splits[ 1 ], "amz_specified" ) && splits.size() == 2 )
+      return expr_t::create_constant( "amz_specified", options.amz_specified );
+
+    // Expose first AMS cast to the APL to prevent its use.
+    if ( util::str_compare_ci( splits[ 1 ], "first_ams_cast" ) && splits.size() == 2 )
+      return expr_t::create_constant( "first_ams_cast", options.first_ams_cast.total_seconds() );
+
     throw sc_invalid_apl_argument( fmt::format( "Unknown death_knight expression '{}'.", splits[ 1 ] ) );
   }
 
   if ( util::str_compare_ci( splits[ 0 ], "drw" ) && splits.size() > 1 )
   {
     if ( util::str_compare_ci( splits[ 1 ], "bp_ticking" ) && splits.size() == 2 )
-      return make_fn_expr( "dancing_rune_weapon_blood_plague_ticking_expression", [ this ]() {
+      return make_fn_expr( "drw_blood_plague_ticking_expression", [ this ]() {
         return pets.dancing_rune_weapon_pet.active_pet() != nullptr &&
                pets.dancing_rune_weapon_pet.active_pet()->get_target_data( target )->dot.blood_plague->is_ticking();
       } );
   }
 
   // Death and Decay/Defile expressions
-  if ( ( util::str_compare_ci( splits[ 0 ], "defile" ) || util::str_compare_ci( splits[ 0 ], "death_and_decay" ) ) &&
-       splits.size() == 2 )
+  if ( util::str_compare_ci( splits[ 0 ], "death_and_decay" ) && splits.size() == 2 )
   {
     // Returns true if there's an active dnd
     if ( util::str_compare_ci( splits[ 1 ], "ticking" ) || util::str_compare_ci( splits[ 1 ], "up" ) )
     {
-      return make_fn_expr( "dnd_ticking", [ this ]() { return active_dnds.empty() ? 0 : 1; });
+      return make_fn_expr( "dnd_ticking", [ this ]() { return !active_dnds.empty(); } );
     }
 
     // Returns the remaining value on the active dnd, or 0 if there's no dnd
@@ -14317,7 +14307,7 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( std::string_view name
     // Returns true if there's an active dnd AND the player is inside it
     if ( util::str_compare_ci( splits[ 1 ], "active" ) )
     {
-      return make_fn_expr( "dnd_active", [ this ]() { return in_death_and_decay() ? 1 : 0; } );
+      return make_fn_expr( "dnd_active", [ this ]() { return in_death_and_decay(); } );
     }
 
     // Returns the remaining value on the active dnd if the player is inside it, or 0 otherwise
@@ -14333,7 +14323,6 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( std::string_view name
 
   if ( util::str_compare_ci( splits[ 0 ], "lesser_ghoul" ) )
   {
-    // Returns the number of runes that will be generated by the next blood tap
     if ( util::str_compare_ci( splits[ 1 ], "count" ) )
     {
       return make_fn_expr( "lesser_ghoul_count", [ this ]() { return active_lesser_ghouls.size(); } );
