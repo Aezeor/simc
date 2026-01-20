@@ -1197,6 +1197,7 @@ public:
   std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self ) const override;
   void init_finished() override;
   bool validate_fight_style( fight_style_e style ) const override;
+  bool validate_actor() override;
   void invalidate_cache( cache_e ) override;
   resource_e primary_resource() const override;
   role_e primary_role() const override;
@@ -11267,6 +11268,7 @@ bool demon_hunter_t::validate_fight_style( fight_style_e style ) const
   {
     throw sc_invalid_fight_style(
         "Dungeon Slice is disabled for Demon Hunter. To force enable, use enable_dungeon_slice=1 option." );
+    return false;
   }
 #endif
 
@@ -11284,6 +11286,20 @@ bool demon_hunter_t::validate_fight_style( fight_style_e style ) const
     default:
       return false;
   }
+}
+
+// demon_hunter_t::validate_actor =====================================
+
+bool demon_hunter_t::validate_actor()
+{
+#ifdef NDEBUG
+  if ( sim->dbc->wowv() == wowv_t( 12, 0, 0 ) )
+  {
+    throw sc_invalid_player_argument( "Demon Hunter sims are non-functional for Midnight prepatch" );
+    return false;
+  }
+#endif
+  return player_t::validate_actor();
 }
 
 // demon_hunter_t::invalidate_cache =========================================
