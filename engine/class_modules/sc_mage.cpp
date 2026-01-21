@@ -3749,6 +3749,7 @@ struct fireball_t final : public fire_mage_spell_t
   }
 };
 
+// TODO: Check if Ignition's Ignite bonus applies here.
 struct flamestrike_pyromaniac_t final : public fire_mage_spell_t
 {
   flamestrike_pyromaniac_t( std::string_view n, mage_t* p ) :
@@ -3773,6 +3774,16 @@ struct flamestrike_t final : public hot_streak_spell_t
 
     if ( p->talents.pyromaniac.ok() )
       pyromaniac_action = get_action<flamestrike_pyromaniac_t>( "flamestrike_pyromaniac", p );
+  }
+
+  double composite_ignite_multiplier( const action_state_t* s ) const override
+  {
+    double m = hot_streak_spell_t::composite_ignite_multiplier( s );
+
+    // TODO: This 50% is applied to Ignite's effect#4. In the future, it may be better to use that value here instead.
+    m *= 1.0 + p()->talents.ignition->effectN( 2 ).percent();
+
+    return m;
   }
 
   void execute() override
