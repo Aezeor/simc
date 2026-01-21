@@ -2300,7 +2300,7 @@ public:
 
     if ( p()->talent.imminent_destruction.enabled() )
     {
-      parse_effects( p()->buff.imminent_destruction, IGNORE_STACKS, CONSUME_BUFF );
+      parse_effects( p()->buff.imminent_destruction, IGNORE_STACKS );
     }
 
     parse_effects( p()->buff.emerald_trance_stacking );
@@ -2537,6 +2537,13 @@ struct essence_base_t : public BASE
       {
         BASE::p()->buff.essence_burst->trigger();
         BASE::p()->proc.hoarded_power->occur();
+      }
+    }
+    else
+    {
+      if ( BASE::p()->buff.imminent_destruction->up() )
+      {
+        BASE::p()->buff.imminent_destruction->decrement();
       }
     }
   }
