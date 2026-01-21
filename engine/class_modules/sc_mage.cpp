@@ -1439,6 +1439,7 @@ struct combustion_t final : public buff_t
     set_cooldown( 0_ms );
     set_default_value_from_effect( 3 );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
+    set_freeze_stacks( true );
 
     if ( p->talents.fires_ire.ok() )
       add_invalidate( CACHE_CRIT_CHANCE );
@@ -1453,6 +1454,7 @@ struct combustion_t final : public buff_t
       {
         player->stat_loss( STAT_MASTERY_RATING, current_mastery_amount );
         current_mastery_amount = 0.0;
+        current_sp_amount = 0.0;
         p->buffs.fiery_rush->expire();
         if ( p->talents.burnout.ok() )
         {
@@ -1484,7 +1486,7 @@ struct combustion_t final : public buff_t
       {
         double new_amount = p->talents.burn_it_all->effectN( 1 ).percent() * p->composite_spell_crit_chance();
         double diff = new_amount - current_sp_amount;
-        sim->print_debug( "{} adjusts Burn It All SP from {} to {} ({})", p->name(), current_sp_amount, new_amount, diff );
+        sim->print_debug( "{} adjusts Burn It All SP from {} to {} ({} + {})", p->name(), current_sp_amount, new_amount, current_value, diff );
         current_value += diff; // The buff's value is applied as spell damage.
         current_sp_amount = new_amount;
       }
@@ -1496,7 +1498,6 @@ struct combustion_t final : public buff_t
   {
     buff_t::reset();
     current_mastery_amount = 0.0;
-    current_value -= current_sp_amount;
     current_sp_amount = 0.0;
   }
 };
