@@ -5345,8 +5345,14 @@ struct deep_breath_t : public evoker_spell_t
 
       evoker_spell_t::execute();
 
-      if ( ebon )
+      if ( p()->buff.ebon_might_self_buff->check() )
+      {
+        p()->extend_ebon( p->talent.sands_of_time->effectN( 3 ).time_value() );
+      }
+      else if ( ebon )
+      {
         ebon->execute();
+      }
 
       if ( upheaval_set )
       {
@@ -7033,8 +7039,14 @@ struct breath_of_eons_t : public evoker_spell_t
         p()->buff.imminent_destruction->trigger();
       }
 
-      if ( ebon )
+      if ( p()->buff.ebon_might_self_buff->check() )
+      {
+        p()->extend_ebon( p->talent.sands_of_time->effectN( 3 ).time_value() );
+      }
+      else if ( ebon )
+      {
         ebon->execute();
+      }
 
       if ( upheaval_set )
       {
