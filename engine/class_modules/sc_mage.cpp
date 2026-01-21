@@ -3749,6 +3749,7 @@ struct fireball_t final : public fire_mage_spell_t
   }
 };
 
+// TODO: Check if Fuel the Fire's damage bonus applies here
 // TODO: Check if Ignition's Ignite bonus applies here.
 struct flamestrike_pyromaniac_t final : public fire_mage_spell_t
 {
@@ -3774,6 +3775,17 @@ struct flamestrike_t final : public hot_streak_spell_t
 
     if ( p->talents.pyromaniac.ok() )
       pyromaniac_action = get_action<flamestrike_pyromaniac_t>( "flamestrike_pyromaniac", p );
+  }
+
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = hot_streak_spell_t::composite_da_multiplier( s );
+
+    unsigned scaling_targets = std::min( s->n_targets, as<unsigned>( p()->talents.fuel_the_fire->effectN( 3 ).base_value() ) );
+    m *= 1.0 + p()->talents.fuel_the_fire->effectN( 2 ).percent() * scaling_targets;
+
+    return m;
   }
 
   double composite_ignite_multiplier( const action_state_t* s ) const override
