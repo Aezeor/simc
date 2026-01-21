@@ -1966,7 +1966,6 @@ public:
   double non_stacking_movement_modifier() const override;
   double stacking_movement_modifier() const override;
   double composite_attribute( attribute_e ) const override;
-  double composite_player_critical_damage_multiplier( const action_state_t* state, school_e school ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double composite_maelstrom_gain_coefficient( const action_state_t* /* state */ = nullptr ) const
   { return 1.0; }
@@ -2535,6 +2534,35 @@ public:
     }
 
     ab::snapshot_state( s, rt );
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = ab::composite_crit_damage_bonus_multiplier();
+
+    if ( p()->talent.overcharge.ok() && dbc::is_school( SCHOOL_NATURE, this->get_school() ) )
+    {
+      double crit_chance = 0.0;
+      switch ( this->type )
+      {
+        case ACTION_ATTACK:
+          crit_chance = this->player->cache.attack_crit_chance() *
+            this->player->composite_melee_crit_chance_multiplier();
+          break;
+        case ACTION_SPELL:
+          crit_chance = this->player->cache.spell_crit_chance() *
+            this->player->composite_spell_crit_chance_multiplier();
+          break;
+        default:
+          break;
+      }
+      this->sim->out_debug.print( "{} {} overcharge crit_chance={} crit_damage_bonus={}",
+        p()->name(), this->name(), crit_chance, m );
+      m += p()->talent.overcharge->effectN( 2 ).percent() * crit_chance;
+      this->sim->out_debug.print( "{} {} overcharge crit_chance={} crit_damage_bonus={}",
+        p()->name(), this->name(), crit_chance, m );
+    }
+    return m;
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -12847,34 +12875,6 @@ double shaman_t::composite_attribute( attribute_e attr ) const
   }
 
   return a;
-}
-
-// shaman_t::composite_player_critical_damage_multiplier =====================
-
-double shaman_t::composite_player_critical_damage_multiplier( const action_state_t* state, school_e school ) const
-{
-  double m = parse_player_effects_t::composite_player_critical_damage_multiplier( state, school );
-
-  // TODO-midnight: May be "delayed" up to 1 second in game, implement?
-  // TODO-midnight: Do target-based multipliers work?
-  if ( talent.overcharge.ok() && dbc::is_school( SCHOOL_NATURE, school ) )
-  {
-    double crit_chance = 0.0;
-    switch ( state->action->type )
-    {
-      case ACTION_ATTACK:
-        crit_chance = cache.attack_crit_chance() * composite_melee_crit_chance_multiplier();
-        break;
-      case ACTION_SPELL:
-        crit_chance = cache.spell_crit_chance() * composite_spell_crit_chance_multiplier();
-        break;
-      default:
-        break;
-    }
-    m += talent.overcharge->effectN( 2 ).percent() * crit_chance;
-  }
-
-  return m;
 }
 
 // shaman_t::composite_player_target_multiplier ==============================
