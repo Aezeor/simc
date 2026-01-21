@@ -2441,6 +2441,9 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
   {
     custom_state_spell_t::execute();
 
+    if ( p()->sets->set( MAGE_FIRE, MID1, B4 )->ok() )
+      p()->cooldowns.fire_blast->adjust( -p()->sets->set( MAGE_FIRE, MID1, B4 )->effectN( 1 ).time_value(), false, false );
+
     if ( time_to_execute > 0_ms )
       p()->buffs.pyroclasm->decrement();
 
