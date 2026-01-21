@@ -5450,6 +5450,13 @@ struct deep_breath_t : public evoker_spell_t
     evoker_spell_t::execute();
     main_spell->execute();
 
+    if ( !( p()->talent.scalecommander.maneuverability.ok() &&
+            p()->talent.scalecommander.command_squadron.enabled() ) &&
+         p()->talent.imminent_destruction.ok() )
+    {
+      p()->buff.imminent_destruction->trigger();
+    }
+
     if ( p()->talent.strafing_run.enabled() && !is_strafing_run )
     {
       p()->buff.strafing_run->trigger();
@@ -7011,6 +7018,13 @@ struct breath_of_eons_t : public evoker_spell_t
       }
 
       evoker_spell_t::execute();
+
+      if ( !( p()->talent.scalecommander.maneuverability.ok() &&
+              p()->talent.scalecommander.command_squadron.enabled() ) &&
+           p()->talent.imminent_destruction.ok() )
+      {
+        p()->buff.imminent_destruction->trigger();
+      }
 
       if ( ebon )
         ebon->execute();
