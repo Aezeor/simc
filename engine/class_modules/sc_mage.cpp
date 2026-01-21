@@ -6519,7 +6519,7 @@ void mage_t::parse_assisted_combat_step( const assisted_combat_step_data_t& step
 
 std::vector<std::string> mage_t::action_names_from_spell_id( unsigned int spell_id ) const
 {
-  if ( spell_id == 116 ) // Frostbolt
+  if ( spell_id == 116 && specialization() == MAGE_FROST ) // Frostbolt actions also need to cast Glacial Spike for Frost Mage
     return { "glacial_spike", "frostbolt" };
 
   return player_t::action_names_from_spell_id( spell_id );
