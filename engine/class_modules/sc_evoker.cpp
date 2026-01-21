@@ -5343,16 +5343,22 @@ struct deep_breath_t : public evoker_spell_t
         p()->pets.commando_pet.spawn( 4_s, 2 );
       }
 
-      evoker_spell_t::execute();
+      if ( p()->talent.duplicate1.enabled() )
+      {
+        p()->pets.duplicate_pet.spawn();
+      }
 
       if ( p()->buff.ebon_might_self_buff->check() )
       {
-        p()->extend_ebon( p->talent.sands_of_time->effectN( 3 ).time_value() );
+        p()->extend_ebon( p()->talent.sands_of_time->effectN( 3 ).time_value() );
       }
       else if ( ebon )
       {
         ebon->execute();
       }
+
+      evoker_spell_t::execute();
+
 
       if ( upheaval_set )
       {
@@ -7025,9 +7031,18 @@ struct breath_of_eons_t : public evoker_spell_t
         p()->pets.commando_pet.spawn( 4_s, 2 );
       }
 
+      if ( p()->buff.ebon_might_self_buff->check() )
+      {
+        p()->extend_ebon( p()->talent.sands_of_time->effectN( 3 ).time_value() );
+      }
+
       if ( p()->talent.duplicate1.enabled() )
       {
         p()->pets.duplicate_pet.spawn();
+      }
+      else if ( ebon )
+      {
+        ebon->execute();
       }
 
       evoker_spell_t::execute();
@@ -7037,15 +7052,6 @@ struct breath_of_eons_t : public evoker_spell_t
            p()->talent.imminent_destruction.ok() )
       {
         p()->buff.imminent_destruction->trigger();
-      }
-
-      if ( p()->buff.ebon_might_self_buff->check() )
-      {
-        p()->extend_ebon( p->talent.sands_of_time->effectN( 3 ).time_value() );
-      }
-      else if ( ebon )
-      {
-        ebon->execute();
       }
 
       if ( upheaval_set )
