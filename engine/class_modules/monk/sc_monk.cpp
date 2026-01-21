@@ -2027,6 +2027,33 @@ struct auto_attack_t : public monk_melee_attack_t
       first = false;
     }
 
+    void impact( action_state_t *state ) override
+    {
+      monk_melee_attack_t::impact( state );
+
+      if ( !p()->talent.shado_pan.flurry_strikes->ok() || result_is_miss( state->result ) )
+        return;
+
+      unsigned flurry_charges = 0;
+      switch ( monk_melee_attack_t::weapon->group() )
+      {
+        case WEAPON_1H:
+          flurry_charges = p()->talent.shado_pan.flurry_strikes->effectN( 1 ).base_value();
+          break;
+        case WEAPON_2H:
+          flurry_charges = p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value();
+          break;
+        default:
+          assert( false );
+      }
+
+      if ( state->result == RESULT_CRIT )
+        flurry_charges *= 1.0 + p()->talent.shado_pan.one_versus_many->effectN( 1 ).base_value();
+
+      if ( flurry_charges )
+        p()->buff.flurry_charge->trigger( flurry_charges );
+    }
+
     timespan_t execute_time() const override
     {
       timespan_t time = monk_melee_attack_t::execute_time();
