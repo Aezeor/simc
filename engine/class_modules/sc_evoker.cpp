@@ -5347,7 +5347,7 @@ struct deep_breath_t : public evoker_spell_t
 
       if ( p()->buff.ebon_might_self_buff->check() )
       {
-        p()->extend_ebon( p->talent.sands_of_time->effectN( 3 ).time_value() );
+        p()->extend_ebon( p()->talent.sands_of_time->effectN( 3 ).time_value() );
       }
       else if ( ebon )
       {
