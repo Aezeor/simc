@@ -116,7 +116,7 @@ void devourer( player_t* p )
   illicit_doping->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains|trinket.2.is.spymasters_web|trinket.2.cooldown.duration=0)&(!variable.trinket_1_ogcd_cast)" );
   illicit_doping->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|trinket.1.is.spymasters_web|trinket.1.cooldown.duration=0)&(!variable.trinket_2_ogcd_cast)" );
 
-  math_for_wizards->add_action( "variable,name=should_use_star,op=set,value=active_enemies>1|apex.1|buff.dark_matter.up|talent.star_fragments&talent.emptiness|active_enemies>1,if=talent.collapsing_star" );
+  math_for_wizards->add_action( "variable,name=should_use_star,op=set,value=1,if=talent.collapsing_star&(active_enemies>1|apex.1|buff.dark_matter.up|talent.otherworldly_focus|talent.star_fragments&talent.emptiness)" );
 
   melee_combo->add_action( "vengeful_retreat,if=buff.voidstep.up" );
   melee_combo->add_action( "hungering_slash" );
