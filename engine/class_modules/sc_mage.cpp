@@ -1427,13 +1427,13 @@ struct touch_of_the_magi_t final : public buff_t
 
 struct combustion_t final : public buff_t
 {
-  double current_amount; // Amount of mastery rating granted by the buff
-  double multiplier;
+  double current_mastery_amount; // amount of mastery rating gained by Slow Burn
+  double current_sp_amount; // amount of spell damage gained by Burn it All
 
   combustion_t( mage_t* p ) :
     buff_t( p, "combustion", p->find_spell( 190319 ) ),
-    current_amount(),
-    multiplier() // TODO: slow burn
+    current_mastery_amount(),
+    current_sp_amount()
   {
     set_cooldown( 0_ms );
     set_default_value_from_effect( 3 );
@@ -1450,8 +1450,8 @@ struct combustion_t final : public buff_t
       }
       else if ( cur == 0 )
       {
-        player->stat_loss( STAT_MASTERY_RATING, current_amount );
-        current_amount = 0.0;
+        player->stat_loss( STAT_MASTERY_RATING, current_mastery_amount );
+        current_mastery_amount = 0.0;
         p->buffs.fiery_rush->expire();
         if ( p->talents.burnout.ok() )
         {
@@ -1466,22 +1466,37 @@ struct combustion_t final : public buff_t
       }
     } );
 
-    set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
+    set_tick_callback( [ this, p ] ( buff_t*, int, timespan_t )
     {
-      double new_amount = multiplier * player->composite_spell_crit_rating();
-      double diff = new_amount - current_amount;
+      if ( p->talents.slow_burn.ok() )
+      {
+        double new_amount = p->talents.slow_burn->effectN( 1 ).percent() * p->composite_spell_crit_rating();
+        double diff = new_amount - current_mastery_amount;
 
-      if ( diff > 0.0 ) player->stat_gain( STAT_MASTERY_RATING,  diff );
-      if ( diff < 0.0 ) player->stat_loss( STAT_MASTERY_RATING, -diff );
+        if ( diff > 0.0 ) player->stat_gain( STAT_MASTERY_RATING,  diff );
+        if ( diff < 0.0 ) player->stat_loss( STAT_MASTERY_RATING, -diff );
 
-      current_amount = new_amount;
+        current_mastery_amount = new_amount;
+      }
+
+      if ( p->talents.burn_it_all.ok() )
+      {
+        double new_amount = p->talents.burn_it_all->effectN( 1 ).percent() * p->composite_spell_crit_chance();
+        double diff = new_amount - current_sp_amount;
+        sim->print_debug( "{} adjusts Burn It All SP from {} to {} ({})", p->name(), current_sp_amount, new_amount, diff );
+        current_value += diff; // The buff's value is applied as spell damage.
+        current_sp_amount = new_amount;
+      }
+
     } );
   }
 
   void reset() override
   {
     buff_t::reset();
-    current_amount = 0.0;
+    current_mastery_amount = 0.0;
+    current_value -= current_sp_amount;
+    current_sp_amount = 0.0;
   }
 };
 }  // buffs
@@ -1958,6 +1973,9 @@ public:
   virtual double composite_ignite_multiplier( const action_state_t* s ) const
   {
     double m = base_ignite_multiplier;
+
+    if ( p()->buffs.combustion->check() )
+      m *= 1.0 + p()->talents.slow_burn->effectN( 2 ).percent();
 
     if ( !p()->buffs.combustion->check() )
       m *= 1.0 + p()->talents.master_of_flame->effectN( 1 ).percent();
