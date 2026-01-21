@@ -4417,7 +4417,10 @@ struct fire_blast_t final : public fire_mage_spell_t
     }
 
     if ( p->talents.conflagration.ok() )
+    {
       conflagration = get_action<conflagration_t>( "conflagration", p );
+      add_child( conflagration );
+    }
   }
 
   void execute() override
@@ -6640,7 +6643,6 @@ double mage_t::composite_spell_crit_chance() const
 {
   double c = player_t::composite_spell_crit_chance();
 
-  // TODO: Check the passive parsing and make sure we don't apply it twice
   if ( !buffs.combustion->check() && talents.fires_ire.ok() )
   {
     if ( bugs )
