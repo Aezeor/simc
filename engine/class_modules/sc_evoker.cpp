@@ -7674,9 +7674,11 @@ public:
   prescience_buff_t( evoker_td_t& td )
     : bb( td, "prescience", static_cast<evoker_t*>( td.source )->talent.prescience_buff )
   {
-    set_default_value( p()->talent.prescience_buff->effectN( 1 ).percent() );
+    set_default_value( p()->talent.prescience->effectN( 1 ).percent() );
     set_pct_buff_type( STAT_PCT_BUFF_CRIT );
     set_chance( 1.0 );
+    set_duration( p()->talent.prescience_buff->duration() *
+                  ( 1.0 + p()->talent.chronowarden.golden_opportunity->effectN( 2 ).percent() ) );
   };
 
   timespan_t buff_duration() const override
