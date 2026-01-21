@@ -6138,6 +6138,9 @@ void mage_t::init_spells()
   // Arcane aura mana regen includes points per level adjustment, handled manually in mage_t::resource_regen_per_second
   deregister_passive_effect( spec.arcane_mage->effectN( 5 ) );
 
+  // Fire's Ire is dynamic and should not be applied as a passive
+  deregister_passive_spell( talents.fires_ire );
+
   register_passive_effect_mask( talents.elemental_affinity,
     specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 3 ) : effect_mask_t( false ).enable( 3 ) );
 
