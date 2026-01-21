@@ -293,6 +293,7 @@ public:
     buff_t* heat_shimmer;
     buff_t* heating_up;
     buff_t* hot_streak;
+    buff_t* pyroclasm;
     buff_t* wildfire;
 
 
@@ -2411,6 +2412,9 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
 
     m *= 1.0 + p()->buffs.hyperthermia_damage->check_stack_value();
 
+    if ( time_to_execute > 0_ms )
+      m *= 1.0 + p()->buffs.pyroclasm->check_value();
+
     return m;
   }
 
@@ -2437,9 +2441,13 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
   {
     custom_state_spell_t::execute();
 
+    if ( time_to_execute > 0_ms )
+      p()->buffs.pyroclasm->decrement();
+
     if ( last_hot_streak )
     {
       p()->buffs.hot_streak->decrement();
+      p()->buffs.pyroclasm->trigger();
 
       p()->trigger_spellfire_sphere( MAGE_FIRE );
       p()->trigger_mana_cascade();
@@ -6289,6 +6297,9 @@ void mage_t::create_buffs()
                                      ->set_trigger_spell( talents.heat_shimmer );
   buffs.heating_up               = make_buff( this, "heating_up", find_spell( 48107 ) );
   buffs.hot_streak               = make_buff( this, "hot_streak", find_spell( 48108 ) );
+  buffs.pyroclasm                = make_buff( this, "pyroclasm", find_spell( 269651 ) )
+                                     ->set_default_value_from_effect( 1 )
+                                     ->set_chance( talents.pyroclasm->effectN( 1 ).percent() ); // TODO: test proc chance
   buffs.wildfire                 = make_buff( this, "wildfire", find_spell( 383492 ) )
                                      ->set_default_value( talents.wildfire->effectN( 3 ).percent() )
                                      ->set_chance( talents.wildfire.ok() );
