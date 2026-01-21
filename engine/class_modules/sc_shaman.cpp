@@ -29,6 +29,7 @@
 #include "player/player_scaling.hpp"
 #include "player/set_bonus.hpp"
 #include "report/decorators.hpp"
+#include "sc_enums.hpp"
 #include "sim/cooldown.hpp"
 #include "sim/proc.hpp"
 #include "sim/proc_rng.hpp"
@@ -47,7 +48,7 @@
 // TODO-midnight-talent: Ride the Lightning interactions with Arc Discharge, Thorim's etc?
 //
 // Elemental
-// TODO-midnight-talents: 
+// TODO-midnight-talents:
 
 namespace eff
 {
@@ -3892,7 +3893,7 @@ struct storm_elemental_t : public primal_elemental_t
       : super( player, "wind_gust", player->find_spell( 157331 ), options )
     { }
   };
-  
+
   struct call_lightning_t : public pet_spell_t<storm_elemental_t>
   {
     call_lightning_t( storm_elemental_t* player, util::string_view options )
@@ -10425,7 +10426,7 @@ void shaman_t::init_spells()
   talent.ancestral_guidance      = _CT( "Ancestral Guidance" );
   talent.creation_core           = _CT( "Creation Core" );
   talent.call_of_the_elements = _CT( "Call of the Elements" );
-  talent.instinctive_imbuements  = _CT( "Instinctive Imbuements" ); 
+  talent.instinctive_imbuements  = _CT( "Instinctive Imbuements" );
 
   // Spec - Shared
   talent.ancestral_wolf_affinity = _ST( "Ancestral Wolf Affinity" );
@@ -12140,8 +12141,6 @@ bool shaman_t::validate_actor()
                    util::role_type_string( primary_role() ), util::specialization_string( specialization() ) );
     return false;
   }
-  auto test = ( specialization() == SHAMAN_ELEMENTAL );
-  auto test2 = ( sim->dbc->wowv() >= wowv_t( 12, 0, 0 ) );
   if ( ( specialization() == SHAMAN_ELEMENTAL ) && ( sim->dbc->wowv() >= wowv_t( 12, 0, 0 ) ) )
   {
     throw sc_invalid_player_argument( "Elemental Shaman sims are non functional for Midnight prepatch" );
@@ -12860,7 +12859,19 @@ double shaman_t::composite_player_critical_damage_multiplier( const action_state
   // TODO-midnight: Do target-based multipliers work?
   if ( talent.overcharge.ok() && dbc::is_school( SCHOOL_NATURE, school ) )
   {
-    m += talent.overcharge->effectN( 2 ).percent() * state->crit_chance;
+    double crit_chance = 0.0;
+    switch ( state->action->type )
+    {
+      case ACTION_ATTACK:
+        crit_chance = cache.attack_crit_chance() * composite_melee_crit_chance_multiplier();
+        break;
+      case ACTION_SPELL:
+        crit_chance = cache.spell_crit_chance() * composite_spell_crit_chance_multiplier();
+        break;
+      default:
+        break;
+    }
+    m += talent.overcharge->effectN( 2 ).percent() * crit_chance;
   }
 
   return m;
@@ -12895,7 +12906,7 @@ void shaman_t::invalidate_cache( cache_e c )
         parse_player_effects_t::invalidate_cache( CACHE_PET_DAMAGE_MULTIPLIER );
         parse_player_effects_t::invalidate_cache( CACHE_GUARDIAN_DAMAGE_MULTIPLIER );
       }
-        
+
       break;
     default:
       break;
