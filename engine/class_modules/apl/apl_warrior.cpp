@@ -19,6 +19,8 @@ void fury( player_t* p )
 
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "berserker_stance,toggle=on" );
+  precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.treacherous_transmitter" );
+  precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.treacherous_transmitter" );
   precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff" );
   precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff" );
   precombat->add_action( "variable,name=trinket_1_duration,op=setif,value=0,value_else=trinket.1.proc.any_dps.duration,condition=0" );
@@ -147,6 +149,8 @@ void arms( player_t* p )
   action_priority_list_t* variables = p->get_action_priority_list( "variables" );
 
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.treacherous_transmitter" );
+  precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.treacherous_transmitter" );
   precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff" );
   precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff" );
   precombat->add_action( "variable,name=trinket_1_duration,op=setif,value=0,value_else=trinket.1.proc.any_dps.duration,condition=0" );
