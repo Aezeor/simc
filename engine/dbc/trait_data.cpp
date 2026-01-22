@@ -16,34 +16,9 @@
 #include "generated/trait_data_ptr.inc"
 #endif
 
-util::span<const trait_data_t*const> trait_data_t::children( const trait_data_t* td, bool ptr )
-{
-  return td->relatives( &trait_data_t::_children, ptr );
-}
-
-size_t trait_data_t::child_count() const
-{
-  return relative_count( &trait_data_t::_children );
-}
-
-util::span<const trait_data_t* const> trait_data_t::parents( const trait_data_t* td, bool ptr )
-{
-  return td->relatives( &trait_data_t::_parents, ptr );
-}
-
-size_t trait_data_t::parent_count() const
-{
-  return relative_count( &trait_data_t::_parents );
-}
-
 util::span<const trait_data_t> trait_data_t::data( bool ptr )
 {
   return SC_DBC_GET_DATA( __trait_data_data, __ptr_trait_data_data, ptr );
-}
-
-util::span<const trait_data_t* const> trait_data_t::reference_data( bool ptr )
-{
-  return SC_DBC_GET_DATA( __trait_data_references_data, __ptr_trait_data_references_data, ptr );
 }
 
 util::span<const trait_data_t> trait_data_t::data( talent_tree tree, bool ptr )
@@ -63,6 +38,14 @@ util::span<const trait_data_t> trait_data_t::data( unsigned class_id, talent_tre
   return { _class_range.first, _class_range.second };
 }
 
+util::span<const trait_data_t> trait_data_t::data( unsigned node_id, unsigned class_id, talent_tree tree, bool ptr )
+{
+  auto _class_span = data( class_id, tree, ptr );
+  auto _node_range = range::equal_range( _class_span, node_id, {}, &trait_data_t::id_node );
+
+  return { _node_range.first, _node_range.second };
+}
+
 const trait_data_t* trait_data_t::find( unsigned trait_node_entry_id, bool ptr )
 {
   auto _data = data( ptr );
@@ -76,12 +59,8 @@ const trait_data_t* trait_data_t::find( unsigned trait_node_entry_id, bool ptr )
   return &( nil() );
 }
 
-const trait_data_t* trait_data_t::find(
-    talent_tree       tree,
-    std::string_view name,
-    unsigned          class_id,
-    specialization_e  spec,
-    bool              ptr )
+const trait_data_t* trait_data_t::find( talent_tree tree, std::string_view name, unsigned class_id,
+                                        specialization_e spec, bool ptr, bool tokenize, unsigned index )
 {
   std::vector<const trait_data_t*> _traits;
 
@@ -89,7 +68,7 @@ const trait_data_t* trait_data_t::find(
 
   for ( const auto& entry : _data )
   {
-    if ( util::str_compare_ci( name, entry.name ) )
+    if ( util::str_compare_ci( name, tokenize ? util::tokenize_fn( entry.name ) : entry.name ) )
     {
       if ( entry.id_spec[ 0 ] == 0 || range::contains( entry.id_spec, static_cast<unsigned>( spec ) ) )
       {
@@ -104,24 +83,31 @@ const trait_data_t* trait_data_t::find(
   }
   else if ( !_traits.empty() )
   {
-    for ( auto trait : _traits )
+    // There are two situations where you can have multiple traits with the same name:
+    //  1) tiered nodes (apex) with multiple traits of the same name
+    //  2) 'dirty' talent code where a choice node is split up and a duplicate entry is left behind
+
+    // If index is passed, return the n-1'th matching node as the generated arrays are already sorted by selection index.
+    // Note there is no check to see if traits are actually apex traits or on the same node - this is done on purpose to
+    // allow usage of index argument for other name clash resolution uses
+    if ( index && index <= _traits.size() )
     {
-      // check for trait in the same x/y coordinates
-      auto _it = range::find_if( _data, [ trait ]( const trait_data_t& entry ) {
-        return entry.id_trait_node_entry != trait->id_trait_node_entry && entry.row == trait->row &&
-               entry.col == trait->col;
-      } );
-
-      // if none is found, that means this is a correct entry
-      if ( _it == _data.end() )
+      return _traits[ index - 1 ];
+    }
+    else
+    {
+      for ( auto trait : _traits )
       {
-        return trait;
-      }
+        // find all entries on the same node
+        auto _entries = trait_data_t::data( trait->id_node, class_id, tree, ptr );
 
-      // if the trait has higher node entry id, it is the correct entry
-      if ( ( _it )->id_trait_node_entry < trait->id_trait_node_entry )
-      {
-        return trait;
+        // if this is the only entry on the node, assume it's the correct one
+        if ( _entries.size() == 1 )
+          return trait;
+
+        // if this is the first entry on the node, assume it's the correct one
+        if ( trait->id_trait_node_entry == _entries.front().id_trait_node_entry )
+          return trait;
       }
     }
   }
@@ -129,68 +115,8 @@ const trait_data_t* trait_data_t::find(
   return &( nil() );
 }
 
-const trait_data_t* trait_data_t::find_tokenized(
-    talent_tree       tree,
-    std::string_view name,
-    unsigned          class_id,
-    specialization_e  spec,
-    bool              ptr )
-{
-  std::vector<const trait_data_t*> _traits;
-
-  auto _data = data( class_id, tree, ptr );
-
-  for ( const auto& entry : _data )
-  {
-    std::string tokenized_name = entry.name;
-    util::tokenize( tokenized_name );
-
-    if ( util::str_compare_ci( name, tokenized_name ) )
-    {
-      if ( entry.id_spec[ 0 ] == 0 || range::contains( entry.id_spec, static_cast<unsigned>( spec ) ) )
-      {
-        _traits.push_back( &entry );
-      }
-    }
-  }
-
-  if ( _traits.size() == 1 )
-  {
-    return _traits.front();
-  }
-  else if ( !_traits.empty() )
-  {
-    for ( auto trait : _traits )
-    {
-      // check for trait in the same x/y coordinates
-      auto _it = range::find_if( _data, [ trait ]( const trait_data_t& entry ) {
-        return entry.id_trait_node_entry != trait->id_trait_node_entry && entry.row == trait->row &&
-               entry.col == trait->col;
-      } );
-
-      // if none is found, that means this is a correct entry
-      if ( _it == _data.end() )
-      {
-        return trait;
-      }
-
-      // if the trait has higher node entry id, it is the correct entry
-      if ( ( _it )->id_trait_node_entry < trait->id_trait_node_entry )
-      {
-        return trait;
-      }
-    }
-  }
-
-  return &( nil() );
-}
-
-std::vector<const trait_data_t*> trait_data_t::find_by_spell(
-    talent_tree      tree,
-    unsigned         spell_id,
-    unsigned         class_id,
-    specialization_e spec,
-    bool             ptr )
+std::vector<const trait_data_t*> trait_data_t::find_by_spell( talent_tree tree, unsigned spell_id, unsigned class_id,
+                                                              specialization_e spec, bool ptr )
 {
   const auto _data = data( ptr );
   const auto _index = SC_DBC_GET_DATA( __trait_spell_id_index, __ptr_trait_spell_id_index, ptr );

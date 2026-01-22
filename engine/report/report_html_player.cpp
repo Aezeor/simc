@@ -1901,12 +1901,13 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
   if ( !p.collected_data.fight_length.mean() || p.player_traits.empty() )
     return;
 
-  static constexpr unsigned TREE_ROWS = 11;
+  static constexpr unsigned CLASS_TREE_ROWS = 10;
+  static constexpr unsigned SPEC_TREE_ROWS = 11;
   static constexpr unsigned HERO_TREE_ROWS = 5;
   using talentrank_t = std::pair<const trait_data_t*, unsigned>;
 
-  std::array<std::vector<talentrank_t>, TREE_ROWS> class_traits;
-  std::array<std::vector<talentrank_t>, TREE_ROWS> spec_traits;
+  std::array<std::vector<talentrank_t>, CLASS_TREE_ROWS> class_traits;
+  std::array<std::vector<talentrank_t>, SPEC_TREE_ROWS> spec_traits;
   std::map<unsigned, std::array<std::vector<talentrank_t>, HERO_TREE_ROWS>> hero_traits;
   size_t class_points = 0;
   size_t spec_points = 0;

@@ -228,9 +228,6 @@ struct player_t : public actor_t
   // Player added dbc sub tree traits ids that don't require activated sub tree ids
   std::vector<unsigned> player_sub_traits;
 
-  // Apex traits
-  std::array<player_talent_t, 3> apex_talent;
-
   // Profs
   std::array<int, PROFESSION_MAX> profession;
 
@@ -1086,7 +1083,9 @@ public:
   const spell_data_t* find_rank_spell( util::string_view name, util::string_view rank,
                                        specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_pet_spell( util::string_view name ) const;
-  player_talent_t find_talent_spell( talent_tree tree, util::string_view name, specialization_e s = SPEC_NONE, bool name_tokenized = false ) const;
+  player_talent_t find_talent_spell( talent_tree tree, std::string_view name, specialization_e s = SPEC_NONE,
+                                     bool name_tokenized = false, unsigned index = 0 ) const;
+  player_talent_t find_talent_spell( talent_tree tree, std::string_view name, unsigned index ) const;
   player_talent_t find_talent_spell( talent_tree tree, unsigned spell_id, specialization_e s = SPEC_NONE  ) const;
   player_talent_t find_talent_spell( unsigned talent_entry_id ) const;
 

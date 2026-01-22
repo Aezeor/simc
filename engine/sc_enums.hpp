@@ -1482,6 +1482,14 @@ enum trait_definition_op : int
   TRAIT_OP_MUL
 };
 
+enum trait_node_type_e
+{
+  NODE_NORMAL = 0,
+  NODE_TIERED = 1,
+  NODE_CHOICE = 2,
+  NODE_SELECTION = 3
+};
+
 // sim_t::error() severity level
 enum error_level_e : unsigned short
 {

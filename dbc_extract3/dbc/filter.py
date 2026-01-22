@@ -438,10 +438,8 @@ class TraitSet(DataSet):
             'tree': 0,
             'row': -1,
             'col': -1,
-            'selection_index': -1,
-            'req_points': 0,
-            'children': set(),
-            'parents': set()
+            'selection_index': 0,
+            'req_points': 0
         })
 
         for group in _trait_node_groups.values():
@@ -490,19 +488,16 @@ class TraitSet(DataSet):
                     _traits[key]['class_'] = class_id if class_id else node_class_id
                     _traits[key]['specs'] |= group_specs | node_specs
                     _traits[key]['starter'] |= group_starter | node_starter
-                    _traits[key]['children'] = { n.id_right_trait_node for n in node['node'].child_refs('TraitEdge', 'id_left_trait_node') }
-                    _traits[key]['parents'] = { n.id_left_trait_node for n in node['node'].child_refs('TraitEdge', 'id_right_trait_node') }
 
                     if tree_index != 0 and _traits[key]['tree'] == 0:
                         _traits[key]['tree'] = tree_index
 
                     _traits[key]['req_points'] = max([_traits[key]['req_points']] + [cond.req_points for cond in (node['cond'] | group['cond'])])
 
-                    if node['node'].type == 2:
-                        # Note that it's possible to have nodes with entries that have the same selection index.
-                        # In such cases it seems random which entry the game assigns as the first entry, and this
-                        # can vary build by build with no changes to the underlying data. 
-                        _traits[key]['selection_index'] = entry.child_ref('TraitNodeXTraitNodeEntry').index
+                    # Note that it's possible to have nodes with entries that have the same selection index.
+                    # In such cases it seems random which entry the game assigns as the first entry, and this
+                    # can vary build by build with no changes to the underlying data.
+                    _traits[key]['selection_index'] = entry.child_ref('TraitNodeXTraitNodeEntry').index
 
         _coords = {}
         for entry in _traits.values():

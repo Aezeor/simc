@@ -2460,7 +2460,7 @@ static std::string trait_data_to_str( const dbc_t& dbc, const spell_data_t* spel
     nibbles.emplace_back( fmt::format( "max_rank={}", trait->max_ranks ) );
     nibbles.emplace_back( fmt::format( "req_points={}", trait->req_points ) );
 
-    if ( trait->selection_index != -1 )
+    if ( trait->node_type == NODE_TIERED || trait->node_type == NODE_CHOICE )
     {
       nibbles.emplace_back( fmt::format( "select_idx={}", trait->selection_index ) );
     }
@@ -3305,6 +3305,7 @@ std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const trait_data_
   s << "Class        : " << util::player_type_string( util::translate_class_id( talent->id_class ) ) << std::endl;
   s << "Column       : " << talent->col << std::endl;
   s << "Row          : " << talent->row << std::endl;
+  s << "Req. Points  : " << talent->req_points << std::endl;
   s << "Max Rank     : " << talent->max_ranks << std::endl;
   s << "Spell        : " << talent->id_spell << std::endl;
   if ( talent->id_replace_spell > 0 )
@@ -3316,7 +3317,7 @@ std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const trait_data_
     s << "Overriden by : " << talent->id_override_spell << std::endl;
   }
   s << "Subtree      : " << talent->id_sub_tree << std::endl;
-  // s << "Spec         : " << util::specialization_string( talent -> specialization() ) << std::endl;
+  s << "Sel. Index   : " << talent->selection_index << std::endl;
   s << std::endl;
 
   return s.str();

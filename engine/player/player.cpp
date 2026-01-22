@@ -2524,6 +2524,50 @@ void player_t::activate_action_list( action_priority_list_t* a, execute_type et 
   a->used = true;
 }
 
+static void allocate_trait( player_t* player, const trait_data_t* trait, talent_tree tree, unsigned ranks )
+{
+  auto it = range::find_if( player->player_traits, [ trait ]( const auto& entry ) {
+    return std::get<1>( entry ) == trait->id_trait_node_entry;
+  } );
+
+  auto id_entry = trait->id_trait_node_entry;
+
+  if ( it != player->player_traits.end() )
+  {
+    auto entry = std::make_tuple( tree, id_entry, std::min( ranks, trait->max_ranks ) );
+
+    if ( std::get<2>( *it ) != std::get<2>( entry ) )
+    {
+      player->sim->print_log( "Overwriting talent {} ({}), rank {} -> {}", trait->name, id_entry,
+                              std::get<2>( *it ), std::get<2>( entry ) );
+    }
+
+    *it = entry;
+  }
+  else if ( ranks )
+  {
+    auto entry = std::make_tuple( tree, id_entry, std::min( ranks, trait->max_ranks ) );
+
+    player->player_traits.push_back( entry );
+    player->sim->print_debug( "{} adding {} talent {} (node={} entry={} rank={}/{})", *player,
+                              util::talent_tree_string( tree ), trait->name, trait->id_node, trait->id_trait_node_entry,
+                              ranks, trait->max_ranks );
+
+    if ( tree == talent_tree::HERO )
+    {
+      player->player_sub_traits.push_back( id_entry );
+
+      auto _ret = player->player_sub_trees.insert( trait->id_sub_tree );
+      if ( _ret.second )
+      {
+        player->sim->print_debug( "{} activating sub tree {} ({})", *player,
+                                  trait_data_t::get_hero_tree_name( trait->id_sub_tree, player->is_ptr() ),
+                                  trait->id_sub_tree );
+      }
+    }
+  }
+}
+
 static void parse_traits( talent_tree tree, const std::string& opt_str, player_t* player )
 {
   auto talents = util::string_split<std::string_view>( opt_str, "/" );
@@ -2554,7 +2598,7 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
       if ( is_spell_id )
       {
         auto objs = trait_data_t::find_by_spell( tree, entry_id, util::class_id( player->type ),
-                                                 player->specialization(), player->dbc->ptr );
+                                                 player->specialization(), player->is_ptr() );
         if ( objs.empty() )
         {
           trait_obj = &( trait_data_t::nil() );
@@ -2571,13 +2615,13 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
       }
       else
       {
-        trait_obj = trait_data_t::find( entry_id, player->dbc->ptr );
+        trait_obj = trait_data_t::find( entry_id, player->is_ptr() );
       }
     }
     else
     {
-      trait_obj = trait_data_t::find_tokenized( tree, talent_split[ 0 ], util::class_id( player->type ),
-                                                player->specialization(), player->dbc->ptr );
+      trait_obj = trait_data_t::find( tree, talent_split[ 0 ], util::class_id( player->type ), player->specialization(),
+                                      player->is_ptr(), true );
     }
 
     if ( trait_obj->id_spell == 0 )
@@ -2586,44 +2630,22 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
     }
     else
     {
-      auto it = range::find_if( player->player_traits, [ trait_obj ]( const auto& entry ) {
-        return std::get<1>( entry ) == trait_obj->id_trait_node_entry;
-      } );
-
-      auto id_entry = trait_obj->id_trait_node_entry;
-
-      if ( it != player->player_traits.end() )
+      if ( trait_obj->node_type == NODE_TIERED )
       {
-        auto entry = std::make_tuple( tree, id_entry, std::min( ranks, trait_obj->max_ranks ) );
-
-        if ( std::get<2>( *it ) != std::get<2>( entry ) )
+        auto _entries = trait_data_t::data( trait_obj->id_node, util::class_id( player->type ), tree, player->is_ptr() );
+        for ( const auto& trait : _entries )
         {
-          player->sim->print_log( "Overwriting talent {} ({}), rank {} -> {}", trait_obj->name, id_entry,
-                                  std::get<2>( *it ), std::get<2>( entry ) );
-        }
+          auto allocated = std::min( ranks, trait.max_ranks );
+          allocate_trait( player, &trait, tree, allocated );
 
-        *it = entry;
+          ranks -= allocated;
+          if ( !ranks )
+            break;
+        }
       }
-      else if ( ranks )
+      else
       {
-        auto entry = std::make_tuple( tree, id_entry, std::min( ranks, trait_obj->max_ranks ) );
-
-        player->player_traits.push_back( entry );
-        player->sim->print_debug( "{} adding {} talent {}", *player, util::talent_tree_string( tree ),
-                                  trait_obj->name );
-
-        if ( tree == talent_tree::HERO )
-        {
-          player->player_sub_traits.push_back( id_entry );
-
-          auto _ret = player->player_sub_trees.insert( trait_obj->id_sub_tree );
-          if ( _ret.second )
-          {
-            player->sim->print_debug( "{} activating sub tree {} ({})", *player,
-                                      trait_data_t::get_hero_tree_name( trait_obj->id_sub_tree, player->is_ptr() ),
-                                      trait_obj->id_sub_tree );
-          }
-        }
+        allocate_trait( player, trait_obj, tree, ranks );
       }
     }
   }
@@ -2663,39 +2685,14 @@ static bool generate_tree_nodes( player_t* player,
       tree_nodes[ trait.id_node ].emplace_back( &trait, 0 );
   }
 
+  // Different entries within the same node are allowed to have non-unique selection indices.
+  // Manually resolve such conflicts here by re-arranging tree_nodes[ node id ] to match in-game ordering.
+  // ***THIS WILL NEED TO BE CONFIRMED AND UPDATED EVERY NEW BUILD***
+
   player->sim->print_debug( "{}: {} tree nodes generated for spec {}.", *player, tree_nodes.size(),
                             util::specialization_string( spec ) );
 
   return true;
-}
-
-// Different entries within the same node are allowed to have non-unique selection indices.
-// Manually resolve such conflicts here.
-// ***THIS WILL NEED TO BE CONFIRMED AND UPDATED EVERY NEW BUILD***
-static bool sort_node_entries( const trait_data_t* a, const trait_data_t* b, bool /* is_ptr */ )
-{
-  auto get_index = [ = ]( const trait_data_t* t ) -> short {
-    if ( t->selection_index == -1 )
-    {
-      // Voidweaver Devour Matter / Darkening Horizon clash resolution
-      // Darkening Horizon data was not fully removed after being moved out of the node
-      // The lower ID trait is the correct one; return lower index to get it sorted first
-      if ( t->id_trait_node_entry == 117271 )
-        return 1;
-      else if ( t->id_trait_node_entry == 117298 )
-        return 2;
-    }
-
-    return t->selection_index;
-  };
-
-  auto a_idx = get_index( a );
-  auto b_idx = get_index( b );
-
-  if ( a_idx != -1 && b_idx != -1 )
-    return a_idx < b_idx;
-  else
-    return a->id_trait_node_entry > b->id_trait_node_entry;
 }
 
 namespace
@@ -2769,24 +2766,30 @@ static std::string generate_traits_hash( player_t* player )
 
   for ( auto& [ id, node ] : tree_nodes )
   {
-    if ( node.size() > 1 )
-    {
-      range::sort( node, [ ptr ]( const auto& a, const auto& b ) {
-        return sort_node_entries( a.first, b.first, ptr );
-      } );
-    }
-
-    const trait_data_t* trait = nullptr;
     unsigned rank = 0;
+    unsigned max_rank = 0;
+    unsigned init_rank = 0;
     unsigned index = 0;
-    bool is_choice = node.size() > 0 ? node[ 0 ].first->node_type == 2 || node[ 0 ].first->node_type == 3 : false;
+    bool is_choice = node.size() > 0
+                       ? node[ 0 ].first->node_type == NODE_CHOICE || node[ 0 ].first->node_type == NODE_SELECTION
+                       : false;
 
     for ( size_t i = 0; i < node.size(); i++ )
     {
-      rank = node[ i ].second;
-      if ( rank )
+      auto _entry_trait = node[ i ].first;
+      auto _entry_rank = node[ i ].second;
+
+      // tiered nodes add up ranks of all entries
+      if ( _entry_trait->node_type == NODE_TIERED )
       {
-        trait = node[ i ].first;
+        rank += _entry_rank;
+        max_rank += _entry_trait->max_ranks;
+      }
+      else if ( _entry_rank )
+      {
+        rank = _entry_rank;
+        max_rank = _entry_trait->max_ranks;
+        init_rank = trait_data_t::is_granted( _entry_trait, player->type, player->specialization(), ptr ) ? 1U : 0U;
         index = as<unsigned>( i );
         break;
       }
@@ -2803,7 +2806,7 @@ static std::string generate_traits_hash( player_t* player )
     }
 
     // is node purchased? granted nodes are baseline 1 rank.
-    if ( rank > ( trait_data_t::is_granted( trait, player->type, player->specialization(), ptr ) ? 1U : 0U ) )
+    if ( rank > init_rank )
     {
       put_bit( 1, 1 );
     }
@@ -2813,7 +2816,7 @@ static std::string generate_traits_hash( player_t* player )
       continue;
     }
 
-    if ( rank == trait->max_ranks )  // is node partially ranked?
+    if ( rank == max_rank )  // is node partially ranked?
     {
       put_bit( 1, 0 );
     }
@@ -2911,18 +2914,11 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
   {
     if ( get_bit( 1 ) )  // selected
     {
-      // it is possible to have multiple entries per node that are not choice node.
-      // default assumption is that the higher trait entry id is used.
-      // if this is not the case, clashes must be resolved manually in sort_node_entries().
-      if ( node.size() > 1 )
-      {
-        range::sort( node, [ player ]( std::pair<const trait_data_t*, unsigned> a, std::pair<const trait_data_t*, unsigned> b ) {
-          return sort_node_entries( a.first, b.first, player->is_ptr() );
-        } );
-      }
-
       auto trait = node.front().first;
-      size_t rank = trait->max_ranks;
+      auto max_rank = trait->node_type == NODE_TIERED
+                        ? range::accumulate( node, 0U, []( const auto& n ) { return n.first->max_ranks; } )
+                        : trait->max_ranks;
+      size_t rank = max_rank;
       auto _tree = static_cast<talent_tree>( trait->tree_index );
       bool throwaway = false;  // read bits but don't add to player_traits
 
@@ -2954,7 +2950,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
       {
         if ( get_bit( 1 ) )  // partially ranked normal trait
         {
-          if ( node.size() > 1 )
+          if ( trait->node_type != NODE_TIERED && node.size() > 1 )
           {
             do_error( fmt::format( "Non-choice node {} has multiple entries.", id ) );
             return;
@@ -2962,13 +2958,13 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
 
           rank = get_bit( rank_bits );
 
-          if ( rank > trait->max_ranks )
+          if ( rank > max_rank )
           {
-            do_error( fmt::format( "{} ranks selected for node {}, {} ranks max.", rank, id, trait->max_ranks ) );
+            do_error( fmt::format( "{} ranks selected for node {}, {} ranks max.", rank, id, max_rank ) );
             return;
           }
 
-          if ( rank == trait->max_ranks )
+          if ( rank == max_rank )
           {
             do_error( fmt::format( "Partial rank for node {} but all {} ranks are allocated.", id, rank ) );
             return;
@@ -2977,7 +2973,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
 
         if ( get_bit( 1 ) )  // choice trait
         {
-          if ( node[ 0 ].first->node_type != 2 && node[ 0 ].first->node_type != 3 )
+          if ( node[ 0 ].first->node_type != NODE_CHOICE && node[ 0 ].first->node_type != NODE_SELECTION )
           {
             do_error( fmt::format( "Node {} is not a choice node but has index selection.", id ) );
             return;
@@ -2997,7 +2993,22 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
       if ( throwaway )
         continue;
 
-      player->player_traits.emplace_back( _tree, trait->id_trait_node_entry, as<unsigned>( rank ) );
+      if ( trait->node_type == NODE_TIERED )
+      {
+        for ( const auto& n : node )
+        {
+          auto allocated = std::min( as<unsigned>( rank ), n.first->max_ranks );
+          player->player_traits.emplace_back( _tree, n.first->id_trait_node_entry, allocated );
+
+          rank -= allocated;
+          if ( !rank )
+            break;
+        }
+      }
+      else
+      {
+        player->player_traits.emplace_back( _tree, trait->id_trait_node_entry, as<unsigned>( rank ) );
+      }
 
       if ( _tree == talent_tree::SELECTION )
       {
@@ -3007,11 +3018,10 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
                                   trait_data_t::get_hero_tree_name( trait->id_sub_tree, player->is_ptr() ),
                                   trait->id_sub_tree );
       }
-      else
-      {
-        player->sim->print_debug( "{} adding {} talent {} (node={} entry={})", *player, util::talent_tree_string( _tree ),
-                                  trait->name, trait->id_node, trait->id_trait_node_entry );
-      }
+
+      player->sim->print_debug( "{} adding {} talent {} (node={} entry={} rank={}/{})", *player,
+                                util::talent_tree_string( _tree ), trait->name, trait->id_node,
+                                trait->id_trait_node_entry, rank, trait->max_ranks );
     }
   }
 }
@@ -3049,7 +3059,9 @@ static void enable_all_talents( player_t* player )
         }
         else
         {
-          player->sim->print_debug( "{} adding {} talent {}", *player, util::talent_tree_string( _tree ), trait->name );
+          player->sim->print_debug( "{} adding {} talent {} (node={} entry={} rank={}/{})", *player,
+                                    util::talent_tree_string( _tree ), trait->name, trait->id_node,
+                                    trait->id_trait_node_entry, trait->max_ranks, trait->max_ranks );
         }
       }
     }
@@ -3064,7 +3076,7 @@ static void enable_default_talents( player_t* player )
 
   for ( size_t i = 0; i < traits.size(); i++ )
   {
-    if ( ( i + 1 ) < traits.size() && traits[ i ].id_trait_node_entry == traits[ i + 1 ].id_trait_node_entry )
+    while ( ( i + 1 ) < traits.size() && traits[ i ].id_trait_node_entry == traits[ i + 1 ].id_trait_node_entry )
       i++;
 
     auto trait = trait_data_t::find( traits[ i ].id_trait_node_entry, player->is_ptr() );
@@ -3077,10 +3089,31 @@ static void enable_default_talents( player_t* player )
     else
     {
       auto tree = static_cast<talent_tree>( trait->tree_index );
+      auto ranks = traits[ i ].rank;
 
-      player->player_traits.emplace_back( tree, traits[ i ].id_trait_node_entry, traits[ i ].rank );
-      player->sim->print_debug( "{} adding {} talent {} ({})", *player, util::talent_tree_string( tree ), trait->name,
-                                traits[ i ].rank );
+      if ( trait->node_type == NODE_TIERED )
+      {
+        auto _entries = trait_data_t::data( trait->id_node, util::class_id( player->type ), tree, player->is_ptr() );
+        for ( const auto& entry : _entries )
+        {
+          auto allocated = std::min( ranks, entry.max_ranks );
+          player->player_traits.emplace_back( tree, entry.id_trait_node_entry, allocated );
+          player->sim->print_debug( "{} adding {} talent {} (node={} entry={} rank={}/{})", *player,
+                                    util::talent_tree_string( tree ), entry.name, entry.id_node,
+                                    entry.id_trait_node_entry, allocated, entry.max_ranks );
+
+          ranks -= allocated;
+          if ( !ranks )
+            break;
+        }
+      }
+      else
+      {
+        player->player_traits.emplace_back( tree, traits[ i ].id_trait_node_entry, ranks );
+        player->sim->print_debug( "{} adding {} talent {} (node={} entry={} rank={}/{})", *player,
+                                  util::talent_tree_string( tree ), trait->name, trait->id_node,
+                                  trait->id_trait_node_entry, ranks, trait->max_ranks );
+      }
     }
   }
 }
@@ -3111,51 +3144,6 @@ static void enable_hero_tree( player_t* player, unsigned hero_tree_id )
 
     player->player_traits.emplace_back( talent_tree::HERO, trait.id_trait_node_entry, trait.max_ranks );
     player->sim->print_debug( "{} adding hero talent {}", *player, trait.name );
-  }
-}
-
-static void recurse_apex_talent( player_t* player, size_t index )
-{
-  const player_talent_t& talent = player->apex_talent[ index ];
-  if ( !talent.ok() )
-    return;
-
-  const trait_data_t* trait = talent.trait();
-  auto get_rank = [ &player ] ( auto next ) {
-    if ( auto entry = range::find_if(
-             player->player_traits,
-             [ &next ]( auto trait_entry ) { return std::get<1>( trait_entry ) == next->id_trait_node_entry; } );
-         entry != player->player_traits.end() )
-      return std::get<2>( *entry );
-    return 0U;
-  };
-  auto next_if = [ & ]( size_t rank, size_t _index ) {
-    auto children = trait_data_t::children( trait, player->is_ptr() );
-    if ( auto next =
-             range::find_if( children, [ &rank ]( auto _trait ) { return _trait->max_ranks == rank; } );
-         next != children.end() )
-      player->apex_talent[ _index ] = player_talent_t( player, *next, get_rank( *next ) );
-    else
-      assert( false );
-  };
-
-  switch ( trait->child_count() )
-  {
-    case 0:
-      return;
-    case 1:
-    {
-      const trait_data_t* next = trait_data_t::children( trait, player->is_ptr() ).front();
-      player->apex_talent[ ++index ] = player_talent_t( player, next, get_rank( next ) );
-      recurse_apex_talent( player, index );
-      return;
-    }
-    case 2:
-      next_if( 2, 1 );
-      next_if( 1, 2 );
-      return;
-    default:
-      assert( false );
   }
 }
 
@@ -3368,24 +3356,6 @@ void player_t::init_talents()
         default:
           assert( 0 );
       }
-    }
-  }
-
-  // Populate generic apex talent handler
-  for ( const auto& player_trait : player_traits )
-  {
-    unsigned rank = std::get<2>( player_trait );
-    if ( rank == 0 )
-      continue;
-
-    const trait_data_t* trait = trait_data_t::find( std::get<1>( player_trait ), is_ptr() );
-    assert( trait );
-
-    if ( trait->parent_count() == 0 && trait->req_points == 20 )
-    {
-      apex_talent[ 0 ] = player_talent_t( this, trait, rank );
-      recurse_apex_talent( this, 0 );
-      break;
     }
   }
 }
@@ -3865,15 +3835,24 @@ parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assist
       assert( v2 == 0 && v3 == 0 );
       if ( v1 )
       {
-        // Check first if `v1` refers to an apex talent, as their names are identical
-        for ( size_t i = 0; i < apex_talent.size(); ++i )
-          if ( apex_talent[ i ]->id() == v1 )
-            return fmt::format( "apex.{}", i );
         for ( const auto& tree : { talent_tree::CLASS, talent_tree::SPECIALIZATION, talent_tree::HERO } )
         {
           const auto& traits = trait_data_t::find_by_spell( tree, v1, util::class_id( type ), specialization(), is_ptr() );
           if ( traits.size() > 0 )
-            return fmt::format( "talent.{}", tokenize_spell( v1 ) );
+          {
+            auto tok_name = tokenize_spell( v1 );
+
+            // Resolve tiered talent names by adding a _# suffix to the tokenized name.
+            if ( traits.front()->node_type == trait_node_type_e::NODE_TIERED )
+            {
+              auto _entries = trait_data_t::data( traits.front()->id_node, util::class_id( type ), tree, is_ptr() );
+              auto _index = std::distance( _entries.begin(), range::find( _entries, v1, &trait_data_t::id_spell ) );
+
+              tok_name += "_" + util::to_string( _index + 1 );
+            }
+
+            return fmt::format( "talent.{}", tok_name );
+          }
         }
         // TODO: Are there any other types of passives to check here?
         // TODO: What happens when Blizzard uses an aura here like they did with Mind Flay: Insanity?
@@ -11602,25 +11581,11 @@ static player_talent_t create_talent_obj( const player_t* player, const trait_da
   return { player, trait, rank };
 }
 
-player_talent_t player_t::find_talent_spell(
-    talent_tree        tree,
-    util::string_view name,
-    specialization_e  s,
-    bool              name_tokenized ) const
+player_talent_t player_t::find_talent_spell( talent_tree tree, std::string_view name, specialization_e s,
+                                             bool name_tokenized, unsigned index ) const
 {
-  const trait_data_t* trait;
-  uint32_t class_idx, spec_idx;
-
-  dbc->spec_idx( s == SPEC_NONE ? _spec : s, class_idx, spec_idx );
-
-  if ( name_tokenized )
-  {
-    trait = trait_data_t::find_tokenized( tree, name, class_idx, s == SPEC_NONE ? _spec : s, dbc->ptr );
-  }
-  else
-  {
-    trait = trait_data_t::find( tree, name, class_idx, s == SPEC_NONE ? _spec : s, dbc->ptr );
-  }
+  auto trait = trait_data_t::find( tree, name, util::class_id( type ), s == SPEC_NONE ? _spec : s, dbc->ptr,
+                                   name_tokenized, index );
 
   if ( trait == &trait_data_t::nil() )
   {
@@ -11632,17 +11597,17 @@ player_talent_t player_t::find_talent_spell(
   return create_talent_obj( this, trait );
 }
 
-player_talent_t player_t::find_talent_spell(
-  talent_tree      tree,
-  unsigned         spell_id,
-  specialization_e s ) const
+player_talent_t player_t::find_talent_spell( talent_tree tree, std::string_view name, unsigned index ) const
 {
-  uint32_t class_idx, spec_idx;
+  return find_talent_spell( tree, name, SPEC_NONE, false, index );
+}
 
-  dbc->spec_idx( s == SPEC_NONE ? _spec : s, class_idx, spec_idx );
+player_talent_t player_t::find_talent_spell( talent_tree tree, unsigned spell_id, specialization_e s ) const
+{
+  auto traits =
+    trait_data_t::find_by_spell( tree, spell_id, util::class_id( type ), s == SPEC_NONE ? _spec : s, dbc->ptr );
 
-  auto traits = trait_data_t::find_by_spell( tree, spell_id, class_idx, s == SPEC_NONE ? _spec : s, dbc->ptr );
-  if ( traits.size() == 0 )
+    if ( traits.size() == 0 )
   {
     sim->print_debug( "Player {}: Can't find {} talent with spell_id '{}'.", this->name(),
         util::talent_tree_string( tree ), spell_id );
@@ -12531,46 +12496,55 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   // *** Variable-Length expressions from here on ***
 
   // talents
-  if ( splits.size() >= 2 && splits[ 0 ] == "apex" )
+  if ( splits.size() >= 2 && ( splits[ 0 ] == "apex" || splits[ 0 ] == "talent" ) )
   {
-    unsigned index = util::to_unsigned( splits[ 1 ] ) - 1;
-    if ( index >= apex_talent.size() )
-      throw sc_invalid_apl_argument( fmt::format( "Invalid apex talent expression '{}'.", splits[ 1 ] ) );
+    player_talent_t _talent;
 
-    bool value       = apex_talent[ index ]->ok();
-    std::string name = "enabled";
-    if ( splits.size() == 3 )
+    if ( splits[ 0 ] == "apex" )
     {
-      if ( splits[ 2 ] == "disabled" )
+      // assume apex talents are always on the spec tree, and that each spec tree only has a single apex talent
+      auto _data_range = trait_data_t::data( util::class_id( type ), talent_tree::SPECIALIZATION, is_ptr() );
+      auto _apex_range = range::equal_range( _data_range, static_cast<unsigned>( trait_node_type_e::NODE_TIERED ), {},
+                                             &trait_data_t::node_type );
+      auto apex_traits = util::span<const trait_data_t>( _apex_range.first, _apex_range.second );
+
+      auto index = util::to_unsigned( splits[ 1 ] ) - 1;
+      if ( index >= apex_traits.size() )
+        throw sc_invalid_apl_argument( fmt::format( "Apex talent index '{}' not found.", splits[ 1 ] ) );
+
+      _talent = create_talent_obj( this, &apex_traits[ index ] );
+    }
+    else if ( splits[ 0 ] == "talent" )
+    {
+      auto _index = 0U;
+      if ( auto _split = util::string_split<std::string_view>( splits[ 1 ], "_" );
+           _split.size() >= 2 && util::is_number( _split.back() ) )
       {
-        value = !value;
-        name  = "disabled";
+        _index = util::to_unsigned( _split.back() );
       }
-      else if ( splits[ 2 ] != "enabled" )
-        throw sc_invalid_apl_argument( fmt::format( "Invalid apex talent expression '{}'.", splits[ 2 ] ) );
+
+      _talent = find_talent_spell( talent_tree::SPECIALIZATION, splits[ 1 ], specialization(), true, _index );
+      if ( _talent.invalid() )
+        _talent = find_talent_spell( talent_tree::HERO, splits[ 1 ], specialization(), true, _index );
+      if ( _talent.invalid() )
+        _talent = find_talent_spell( talent_tree::CLASS, splits[ 1 ], specialization(), true, _index );
+
+      if ( _talent.invalid() )
+        throw sc_invalid_apl_argument( fmt::format( "Talent '{}' not found.", splits[ 1 ] ) );
     }
 
-    return expr_t::create_constant( fmt::format( "apex_{}_{}", index, name ), value );
-  }
-
-  if ( splits.size() >= 2 && splits[ 0 ] == "talent" )
-  {
-    const auto ctalent = find_talent_spell( talent_tree::CLASS, splits[ 1 ], specialization(), true );
-    const auto stalent = find_talent_spell( talent_tree::SPECIALIZATION, splits[ 1 ], specialization(), true );
-    const auto htalent = find_talent_spell( talent_tree::HERO, splits[ 1 ], specialization(), true );
-
-    if ( ctalent.invalid() && stalent.invalid() && htalent.invalid() )
+    if ( splits.size() == 2 )
     {
-      throw sc_invalid_apl_argument( fmt::format( "Talent '{}' not found.", splits[ 1 ] ) );
+      return expr_t::create_constant( expression_str, _talent.enabled() );
     }
-
-    if ( splits.size() == 2 || ( splits.size() == 3 && splits[ 2 ] == "enabled" ) )
+    else if ( splits.size() == 3 )
     {
-      return expr_t::create_constant( expression_str, ctalent.enabled() || stalent.enabled() || htalent.enabled() );
-    }
-    else if ( splits.size() == 3 && splits[ 2 ] == "rank" )
-    {
-      return expr_t::create_constant( expression_str, std::max( { ctalent.rank(), stalent.rank(), htalent.rank() } ) );
+      if ( splits[ 2 ] == "enabled" )
+        return expr_t::create_constant( expression_str, _talent.enabled() );
+      else if ( splits[ 2 ] == "disabled" )
+        return expr_t::create_constant( expression_str, !_talent.enabled() );
+      else if ( splits[ 2 ] == "rank" )
+        return expr_t::create_constant( expression_str, _talent.rank() );
     }
 
     throw sc_invalid_apl_argument( fmt::format( "Invalid talent expression '{}'.", splits[ 2 ] ) );
