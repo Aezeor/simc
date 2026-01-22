@@ -2540,7 +2540,7 @@ public:
   {
     double m = ab::composite_crit_damage_bonus_multiplier();
 
-    if ( p()->talent.overcharge.ok() && dbc::is_school( SCHOOL_NATURE, this->get_school() ) )
+    if ( p()->talent.overcharge.ok() && dbc::is_school( this->get_school(), SCHOOL_NATURE ) )
     {
       double crit_chance = 0.0;
       switch ( this->type )
