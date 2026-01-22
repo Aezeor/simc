@@ -5021,11 +5021,11 @@ struct trollbane_pet_t final : public horseman_pet_t
 
     void execute() override
     {
-      if ( dk()->main_hand_weapon.group() == WEAPON_2H && consumed_km )
+      if ( sim->dbc->wowv() >= wowv_t( 12, 0, 1 ) && consumed_km )
         set_school_override( SCHOOL_FROST );
       horseman_melee_t::execute();
 
-      if ( dk()->main_hand_weapon.group() == WEAPON_2H && consumed_km )
+      if ( sim->dbc->wowv() >= wowv_t( 12, 0, 1 ) && consumed_km )
         clear_school_override();
 
       consumed_km = false;
