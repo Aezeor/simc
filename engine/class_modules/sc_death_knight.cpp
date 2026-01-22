@@ -15958,7 +15958,8 @@ void death_knight_t::create_buffs()
           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   buffs.forbidden_ritual =
-      make_fallback( talent.unholy.forbidden_knowledge_3.ok(), this, "forbidden_ritual", spell.forbidden_ritual );
+      make_fallback( talent.unholy.forbidden_knowledge_3.ok(), this, "forbidden_ritual", spell.forbidden_ritual )
+          ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buffs.scythe_of_decay =
       make_fallback( talent.unholy.scythe_of_decay.ok(), this, "scythe_of_decay", spell.scythe_of_decay_buff );
