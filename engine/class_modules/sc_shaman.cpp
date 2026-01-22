@@ -2556,11 +2556,7 @@ public:
         default:
           break;
       }
-      this->sim->out_debug.print( "{} {} overcharge crit_chance={} crit_damage_bonus={}",
-        p()->name(), this->name(), crit_chance, m );
       m += p()->talent.overcharge->effectN( 2 ).percent() * crit_chance;
-      this->sim->out_debug.print( "{} {} overcharge crit_chance={} crit_damage_bonus={}",
-        p()->name(), this->name(), crit_chance, m );
     }
     return m;
   }
