@@ -9416,7 +9416,7 @@ void evoker_t::init_spells()
 
   register_passive_effect_mask( spec.close_as_clutchmates, effect_mask_t( true ).disable( 1, 2 ) );
 
-  register_passive_affect_list( talent.natural_convergence, affect_list_t( 3 ).remove_spell( 1259172 ) );
+  // register_passive_affect_list( talent.natural_convergence, affect_list_t( 3 ).remove_spell( 1259172 ) );
 
   // Register passives
   parse_all_class_passives();
@@ -10408,8 +10408,7 @@ void evoker_t::extend_ebon( timespan_t extend )
 template <class T_PET, class Base>
 void pets::pet_action_t<T_PET, Base>::apply_pet_action_effects()
 {
-  // parse_effects( evoker()->buff.ebon_might_self_buff );
-  parse_effects( evoker()->buff.essence_burst, effect_mask_t( true ).disable( 5 ) );
+  parse_effects( evoker()->buff.ebon_might_self_buff );
 
   if ( evoker()->talent.scalecommander.unrelenting_siege.enabled() )
   {
