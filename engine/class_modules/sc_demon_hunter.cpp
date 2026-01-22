@@ -10596,9 +10596,9 @@ void demon_hunter_t::init_spells()
   talent.devourer.eradicate    = find_talent_spell( talent_tree::SPECIALIZATION, "Eradicate" );
 
   // Devouer Apex Talents
-  talent.devourer.midnight1 = find_talent_spell( talent_tree::SPECIALIZATION, 1242486 );
-  talent.devourer.midnight2 = find_talent_spell( talent_tree::SPECIALIZATION, 1250088 );
-  talent.devourer.midnight3 = find_talent_spell( talent_tree::SPECIALIZATION, 1250094 );
+  talent.devourer.midnight1 = find_talent_spell( talent_tree::SPECIALIZATION, "Midnight", 1 );
+  talent.devourer.midnight2 = find_talent_spell( talent_tree::SPECIALIZATION, "Midnight", 2 );
+  talent.devourer.midnight3 = find_talent_spell( talent_tree::SPECIALIZATION, "Midnight", 3 );
 
   // Havoc Talents
 
@@ -10657,9 +10657,9 @@ void demon_hunter_t::init_spells()
   talent.havoc.screaming_brutality = find_talent_spell( talent_tree::SPECIALIZATION, "Screaming Brutality" );
   talent.havoc.a_fire_inside       = find_talent_spell( talent_tree::SPECIALIZATION, "A Fire Inside" );
 
-  talent.havoc.eternal_hunt_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1270898 );
-  talent.havoc.eternal_hunt_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1270900 );
-  talent.havoc.eternal_hunt_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1270901 );
+  talent.havoc.eternal_hunt_1 = find_talent_spell( talent_tree::SPECIALIZATION, "Eternal Hunt", 1 );
+  talent.havoc.eternal_hunt_2 = find_talent_spell( talent_tree::SPECIALIZATION, "Eternal Hunt", 2 );
+  talent.havoc.eternal_hunt_3 = find_talent_spell( talent_tree::SPECIALIZATION, "Eternal Hunt", 3 );
 
   // Vengeance Talents
 
@@ -10719,9 +10719,9 @@ void demon_hunter_t::init_spells()
   talent.vengeance.down_in_flames = find_talent_spell( talent_tree::SPECIALIZATION, "Down in Flames" );
 
   // Vengeance Apex Talents
-  talent.vengeance.untethered_rage1 = find_talent_spell( talent_tree::SPECIALIZATION, 1270444 );
-  talent.vengeance.untethered_rage2 = find_talent_spell( talent_tree::SPECIALIZATION, 1270448 );
-  talent.vengeance.untethered_rage3 = find_talent_spell( talent_tree::SPECIALIZATION, 1270449 );
+  talent.vengeance.untethered_rage1 = find_talent_spell( talent_tree::SPECIALIZATION, "Untethered Rage", 1 );
+  talent.vengeance.untethered_rage2 = find_talent_spell( talent_tree::SPECIALIZATION, "Untethered Rage", 2 );
+  talent.vengeance.untethered_rage3 = find_talent_spell( talent_tree::SPECIALIZATION, "Untethered Rage", 3 );
 
   // Hero Talents ===========================================================
 
