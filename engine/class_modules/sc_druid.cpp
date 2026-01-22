@@ -11012,17 +11012,14 @@ void druid_t::init_spells()
 
   // Talents ================================================================
 
-  auto CT = [ this ]( std::string_view n ) {
-    return find_talent_spell( talent_tree::CLASS, n );
+  auto CT = [ this ]( std::string_view n, auto... s ) {
+    return find_talent_spell( talent_tree::CLASS, n, s... );
   };
-  auto ST = [ this ]( std::string_view n, specialization_e s = SPEC_NONE ) {
-    return find_talent_spell( talent_tree::SPECIALIZATION, n, s );
+  auto ST = [ this ]( std::string_view n, auto... s ) {
+    return find_talent_spell( talent_tree::SPECIALIZATION, n, s... );
   };
-  auto HT = [ this ]( std::string_view n ) {
-    return find_talent_spell( talent_tree::HERO, n );
-  };
-  auto AT = [ this ]( std::string_view n, unsigned i ) {
-    return find_talent_spell( talent_tree::SPECIALIZATION, n, i );
+  auto HT = [ this ]( std::string_view n, auto... s ) {
+    return find_talent_spell( talent_tree::HERO, n, s... );
   };
 
   // Class tree
