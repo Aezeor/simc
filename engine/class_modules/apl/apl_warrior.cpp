@@ -59,9 +59,10 @@ void fury( player_t* p )
   slayer->add_action( "whirlwind,if=active_enemies>=2&talent.improved_whirlwind&buff.whirlwind.stack=0" );
   slayer->add_action( "execute" );
   slayer->add_action( "rampage,if=rage>115" );
+  slayer->add_action( "odyns_fury" );
+  slayer->add_action( "rend,if=dot.rend.duration<6&active.enemies=>2" );
   slayer->add_action( "crushing_blow" );
   slayer->add_action( "raging_blow" );
-  slayer->add_action( "odyns_fury" );
   slayer->add_action( "champions_leap,if=buff.enrage.up" );
   slayer->add_action( "champions_spear,if=buff.enrage.up" );
   slayer->add_action( "rampage" );
