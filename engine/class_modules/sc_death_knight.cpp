@@ -14691,9 +14691,9 @@ void death_knight_t::init_spells()
   talent.blood.carnage         = find_talent_spell( talent_tree::SPECIALIZATION, "Carnage" );
   talent.blood.umbilicus_eternus = find_talent_spell( talent_tree::SPECIALIZATION, "Umbilicus Eternus" );
   // Apex
-  talent.blood.dance_of_midnight_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1264506 );
-  talent.blood.dance_of_midnight_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1264405 );
-  talent.blood.dance_of_midnight_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1264351 );
+  talent.blood.dance_of_midnight_1 = find_talent_spell( talent_tree::SPECIALIZATION, "Dance of Midnight", 1 );
+  talent.blood.dance_of_midnight_2 = find_talent_spell( talent_tree::SPECIALIZATION, "Dance of Midnight", 2 );
+  talent.blood.dance_of_midnight_3 = find_talent_spell( talent_tree::SPECIALIZATION, "Dance of Midnight", 3 );
 
   //////// Frost
   // Row 1
@@ -14746,9 +14746,9 @@ void death_knight_t::init_spells()
   talent.frost.frostbane            = find_talent_spell( talent_tree::SPECIALIZATION, "Frostbane" );
   talent.frost.breath_of_sindragosa = find_talent_spell( talent_tree::SPECIALIZATION, "Breath of Sindragosa" );
   // Apex
-  talent.frost.chosen_of_frostbrood_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1265632 );
-  talent.frost.chosen_of_frostbrood_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1265633 );
-  talent.frost.chosen_of_frostbrood_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1265637 );
+  talent.frost.chosen_of_frostbrood_1 = find_talent_spell( talent_tree::SPECIALIZATION, "Chosen of Frostbrood", 1 );
+  talent.frost.chosen_of_frostbrood_2 = find_talent_spell( talent_tree::SPECIALIZATION, "Chosen of Frostbrood", 2 );
+  talent.frost.chosen_of_frostbrood_3 = find_talent_spell( talent_tree::SPECIALIZATION, "Chosen of Frostbrood", 3 );
 
   //////// Unholy
   // Row 1
@@ -14802,9 +14802,9 @@ void death_knight_t::init_spells()
   talent.unholy.reanimation = find_talent_spell( talent_tree::SPECIALIZATION, "Reanimation" );
   talent.unholy.outnumber   = find_talent_spell( talent_tree::SPECIALIZATION, "Outnumber" );
   // Apex
-  talent.unholy.forbidden_knowledge_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1242158 );
-  talent.unholy.forbidden_knowledge_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1256565 );
-  talent.unholy.forbidden_knowledge_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1256566 );
+  talent.unholy.forbidden_knowledge_1 = find_talent_spell( talent_tree::SPECIALIZATION, "Forbidden Knowledge", 1 );
+  talent.unholy.forbidden_knowledge_2 = find_talent_spell( talent_tree::SPECIALIZATION, "Forbidden Knowledge", 2 );
+  talent.unholy.forbidden_knowledge_3 = find_talent_spell( talent_tree::SPECIALIZATION, "Forbidden Knowledge", 3 );
 
   //////// Rider of the Apocalypse
   talent.rider.riders_champion        = find_talent_spell( talent_tree::HERO, "Rider's Champion" );
