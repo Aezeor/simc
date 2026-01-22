@@ -11226,6 +11226,11 @@ std::vector<std::string> demon_hunter_t::action_names_from_spell_id( unsigned in
     return { "metamorphosis" };
   }
 
+  if ( spell_id == 203782 || spell_id == 203783 )
+  {
+    return { "fracture" };
+  }
+
   return player_t::action_names_from_spell_id( spell_id );
 }
 
