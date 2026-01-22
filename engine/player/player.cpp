@@ -12503,16 +12503,22 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     if ( splits[ 0 ] == "apex" )
     {
       // assume apex talents are always on the spec tree, and that each spec tree only has a single apex talent
-      auto _data_range = trait_data_t::data( util::class_id( type ), talent_tree::SPECIALIZATION, is_ptr() );
-      auto _apex_range = range::equal_range( _data_range, static_cast<unsigned>( trait_node_type_e::NODE_TIERED ), {},
-                                             &trait_data_t::node_type );
-      auto apex_traits = util::span<const trait_data_t>( _apex_range.first, _apex_range.second );
+      std::vector<const trait_data_t*> apex_traits;
+
+      for ( const auto& _entry : trait_data_t::data( util::class_id( type ), talent_tree::SPECIALIZATION, is_ptr() ) )
+      {
+        if ( _entry.node_type == trait_node_type_e::NODE_TIERED &&
+             range::contains( _entry.id_spec, static_cast<unsigned>( specialization() ) ) )
+        {
+          apex_traits.push_back( &_entry );
+        }
+      }
 
       auto index = util::to_unsigned( splits[ 1 ] ) - 1;
       if ( index >= apex_traits.size() )
         throw sc_invalid_apl_argument( fmt::format( "Apex talent index '{}' not found.", splits[ 1 ] ) );
 
-      _talent = create_talent_obj( this, &apex_traits[ index ] );
+      _talent = create_talent_obj( this, apex_traits[ index ] );
     }
     else if ( splits[ 0 ] == "talent" )
     {
