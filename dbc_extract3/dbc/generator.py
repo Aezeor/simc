@@ -2382,14 +2382,13 @@ class SpellDataGenerator(DataGenerator):
           ( 1271222, 1 ), # Star Cascade surge?
           # Feral
           ( 1244038, 2 ), ( 1244046, 2 ), ( 1244050, 2 ), # Flicker Clone
-          ( 1248419, 2 ), # Rake (unused?)
+          ( 1244475, 2 ), # Panther's Guile
+          ( 1248419, 2 ), ( 1280133, 2 ), # Rake (unused?)
           # Guardian
           ( 1250913, 3 ), # Memory of Ysera heal
           ( 1252994, 3 ), # Killing Blow (unused?)
           ( 1269633, 3 ), ( 1269645, 3 ), ( 1269648, 3 ), # Apex talent echoes
           # Restoration
-          ( 1236574, 4 ), ( 1264623, 4 ), ( 1264659, 4 ), # Dryad Tranquility
-          ( 1236647, 4 ), # Dryad Regrowth
         ),
         # Demon Hunter:
         (
@@ -4860,7 +4859,7 @@ class TraitGenerator(DataGenerator):
     def generate(self, data=None):
         sorted_data = sorted(
             data.values(),
-            key=lambda v: (v['tree'], v['class_'], v['node'].id, v['selection_index'])
+            key=lambda v: (v['tree'], v['class_'], v['node'].id, v['selection_index'], v['entry'].id)
         )
 
         subtrees = set()

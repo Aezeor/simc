@@ -5193,12 +5193,12 @@ Druid
 1236342 *Preparing to Strike
 1236556 *Dryad
 1236573  Tranquility
-1236574  Tranquility
+1236574 *Tranquility
 1236607 *Starfall
 1236608 *Starfall
 1236613 *Starfall
 1236640 *Starsurge
-1236647  Regrowth
+1236647 *Regrowth
 1236671 *Ravage Rampage
 1236807 *Dryad's Favor
 1236851 *Dryad's Favor
@@ -5235,7 +5235,7 @@ Druid
 1244393  Chomp Enabler
 1244394  Chomp Disabler
 1244470  Everbloom
-1244475 *Panther's Guile
+1244475  Panther's Guile
 1244483  Sudden Ambush
 1244532  Blood Spattered
 1244544  Focused Frenzy
@@ -5308,9 +5308,9 @@ Druid
 1264376  Nature's Bounty
 1264614  Sylvan Beckoning
 1264618  Sylvan Beckoning
-1264623  Tranquility
+1264623 *Tranquility
 1264649  Intensity
-1264659  Tranquility
+1264659 *Tranquility
 1264664  Regrowth
 1264671  Starfall
 1264673  Starfall
@@ -5368,7 +5368,7 @@ Druid
 1278800  Natural Resilience
 1278914  Dream Guide
 1278969  Frantic Frenzy
-1280133 *Rake
+1280133  Rake
 1280212  Sunseeker Mushroom
 1280213  Fungal Growth
 1280316  Panther's Guile

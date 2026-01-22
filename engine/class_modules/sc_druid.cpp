@@ -11012,12 +11012,18 @@ void druid_t::init_spells()
 
   // Talents ================================================================
 
-  auto CT  = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::CLASS, n ); };
-  auto ST  = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::SPECIALIZATION, n ); };
-  auto STS = [ this ]( std::string_view n, specialization_e s ) {
+  auto CT = [ this ]( std::string_view n ) {
+    return find_talent_spell( talent_tree::CLASS, n );
+  };
+  auto ST = [ this ]( std::string_view n, specialization_e s = SPEC_NONE ) {
     return find_talent_spell( talent_tree::SPECIALIZATION, n, s );
   };
-  auto HT = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::HERO, n ); };
+  auto HT = [ this ]( std::string_view n ) {
+    return find_talent_spell( talent_tree::HERO, n );
+  };
+  auto AT = [ this ]( std::string_view n, unsigned i ) {
+    return find_talent_spell( talent_tree::SPECIALIZATION, n, i );
+  };
 
   // Class tree
   sim->print_debug( "Initializing class talents..." );
@@ -11116,7 +11122,7 @@ void druid_t::init_spells()
   talent.shooting_stars                 = ST( "Shooting Stars" );
   talent.solar_beam                     = ST( "Solar Beam" );
   talent.solstice                       = ST( "Solstice" );
-  talent.soul_of_the_forest_moonkin     = STS( "Soul of the Forest", DRUID_BALANCE );
+  talent.soul_of_the_forest_moonkin     = ST( "Soul of the Forest", DRUID_BALANCE );
   talent.starlord                       = ST( "Starlord" );
   talent.starweaver                     = ST( "Starweaver" );
   talent.stellar_amplification          = ST( "Stellar Amplification" );
@@ -11145,19 +11151,19 @@ void druid_t::init_spells()
   talent.bloodtalons                    = ST( "Bloodtalons" );
   talent.brutal_slash                   = ST( "Brutal Slash" );
   talent.carnivorous_instinct           = ST( "Carnivorous Instinct" );
-  talent.circle_of_life_and_death_cat   = STS( "Circle of Life and Death", DRUID_FERAL );
+  talent.circle_of_life_and_death_cat   = ST( "Circle of Life and Death", DRUID_FERAL );
   talent.coiled_to_spring               = ST( "Coiled to Spring" );
   talent.doubleclawed_rake              = ST( "Double-Clawed Rake" );
   talent.dreadful_bleeding              = ST( "Dreadful Bleeding" );
   talent.feral_frenzy                   = ST( "Feral Frenzy" );
   talent.frantic_momentum               = ST( "Frantic Momentum" );
   talent.incarnation_cat                = ST( "Incarnation: Avatar of Ashamane" );
-  talent.infected_wounds_cat            = STS( "Infected Wounds", DRUID_FERAL );
+  talent.infected_wounds_cat            = ST( "Infected Wounds", DRUID_FERAL );
   talent.lions_strength                 = ST( "Lion's Strength" );
   talent.lunar_inspiration              = ST( "Lunar Inspiration" );
   talent.merciless_claws                = ST( "Merciless Claws" );
   talent.moment_of_clarity              = ST( "Moment of Clarity" );
-  talent.omen_of_clarity_cat            = STS( "Omen of Clarity", DRUID_FERAL );
+  talent.omen_of_clarity_cat            = ST( "Omen of Clarity", DRUID_FERAL );
   talent.pouncing_strikes               = ST( "Pouncing Strikes" );
   talent.predatory_swiftness            = ST( "Predatory Swiftness" );
   talent.primal_wrath                   = ST( "Primal Wrath" );
@@ -11168,7 +11174,7 @@ void druid_t::init_spells()
   talent.saber_jaws                     = ST( "Saber Jaws" );
   talent.sabertooth                     = ST( "Sabertooth" );
   talent.savage_fury                    = ST( "Savage Fury" );
-  talent.soul_of_the_forest_cat         = STS( "Soul of the Forest", DRUID_FERAL );
+  talent.soul_of_the_forest_cat         = ST( "Soul of the Forest", DRUID_FERAL );
   talent.sudden_ambush                  = ST( "Sudden Ambush" );
   talent.taste_for_blood                = ST( "Taste for Blood" );
   talent.thrashing_claws                = ST( "Thrashing Claws" );
@@ -11188,8 +11194,8 @@ void druid_t::init_spells()
   talent.blood_frenzy                   = ST( "Blood Frenzy" );
   talent.brambles                       = ST( "Brambles" );
   talent.bristling_fur                  = ST( "Bristling Fur" );
-  talent.circle_of_life_and_death_bear  = STS( "Circle of Life and Death", DRUID_GUARDIAN );
-  talent.dream_of_cenarius_bear         = STS( "Dream of Cenarius", DRUID_GUARDIAN );
+  talent.circle_of_life_and_death_bear  = ST( "Circle of Life and Death", DRUID_GUARDIAN );
+  talent.dream_of_cenarius_bear         = ST( "Dream of Cenarius", DRUID_GUARDIAN );
   talent.earthwarden                    = ST( "Earthwarden" );
   talent.elunes_favored                 = ST( "Elune's Favored" );
   talent.flashing_claws                 = ST( "Flashing Claws" );
@@ -11200,7 +11206,7 @@ void druid_t::init_spells()
   talent.guardian_of_elune              = ST( "Guardian of Elune" );
   talent.improved_survival_instincts    = ST( "Improved Survival Instincts" );
   talent.incarnation_bear               = ST( "Incarnation: Guardian of Ursoc" );
-  talent.infected_wounds_bear           = STS( "Infected Wounds", DRUID_GUARDIAN );
+  talent.infected_wounds_bear           = ST( "Infected Wounds", DRUID_GUARDIAN );
   talent.innate_resolve                 = ST( "Innate Resolve" );
   talent.lunar_beam                     = ST( "Lunar Beam" );
   talent.mangle                         = ST( "Mangle" );
@@ -11213,7 +11219,7 @@ void druid_t::init_spells()
   talent.reinvigoration                 = ST( "Reinvigoration" );
   talent.rend_and_tear                  = ST( "Rend and Tear" );
   talent.scintillating_moonlight        = ST( "Scintillating Moonlight" );
-  talent.soul_of_the_forest_bear        = STS( "Soul of the Forest", DRUID_GUARDIAN );
+  talent.soul_of_the_forest_bear        = ST( "Soul of the Forest", DRUID_GUARDIAN );
   talent.survival_of_the_fittest        = ST( "Survival of the Fittest" );
   talent.thorns_of_iron                 = ST( "Thorns of Iron" );
   talent.tooth_and_claw                 = ST( "Tooth and Claw" );
@@ -11234,7 +11240,7 @@ void druid_t::init_spells()
   talent.cenarion_ward                  = ST( "Cenarion Ward" );
   talent.cenarius_guidance              = ST( "Cenarius' Guidance" );  // TODO: Incarn bonus NYI
   talent.cultivation                    = ST( "Cultivation" );
-  talent.dream_of_cenarius_tree         = STS( "Dream of Cenarius", DRUID_RESTORATION );  // TODO: NYI
+  talent.dream_of_cenarius_tree         = ST( "Dream of Cenarius", DRUID_RESTORATION );  // TODO: NYI
   talent.dreamstate                     = ST( "Dreamstate" );  // TODO: NYI
   talent.efflorescence                  = ST( "Efflorescence" );
   talent.embrace_of_the_dream           = ST( "Embrace of the Dream" );  // TODO: NYI
@@ -11258,7 +11264,7 @@ void druid_t::init_spells()
   talent.natures_swiftness              = ST( "Nature's Swiftness" );
   talent.nourish                        = ST( "Nourish" );
   talent.nurturing_dormancy             = ST( "Nurturing Dormancy" );  // TODO: NYI
-  talent.omen_of_clarity_tree           = STS( "Omen of Clarity", DRUID_RESTORATION );
+  talent.omen_of_clarity_tree           = ST( "Omen of Clarity", DRUID_RESTORATION );
   talent.overgrowth                     = ST( "Overgrowth" );
   talent.passing_seasons                = ST( "Passing Seasons" );
   talent.photosynthesis                 = ST( "Photosynthesis" );
@@ -11268,7 +11274,7 @@ void druid_t::init_spells()
   talent.reforestation                  = ST( "Reforestation" );  // TODO: NYI
   talent.regenesis                      = ST( "Regenesis" );  // TODO: NYI
   talent.regenerative_heartwood         = ST( "Regenerative Heartwood" );  // TODO: NYI
-  talent.soul_of_the_forest_tree        = STS( "Soul of the Forest", DRUID_RESTORATION );
+  talent.soul_of_the_forest_tree        = ST( "Soul of the Forest", DRUID_RESTORATION );
   talent.spring_blossoms                = ST( "Spring Blossoms" );
   talent.stonebark                      = ST( "Stonebark" );
   talent.thriving_vegetation            = ST( "Thriving Vegetation" );  // TODO: NYI

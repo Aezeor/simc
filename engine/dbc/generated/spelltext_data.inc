@@ -1,5 +1,5 @@
-// Spell text, wow build 12.0.0.65459
-static constexpr std::array<spelltext_data_t, 28331> __spelltext_data { {
+// Spell text, wow build 12.0.0.65512
+static constexpr std::array<spelltext_data_t, 28328> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26016,7 +26016,6 @@ static constexpr std::array<spelltext_data_t, 28331> __spelltext_data { {
   { 1236565, "$@spelldesc1236372", "Your Haste is increased by $s1%.", 0 },
   { 1236566, "$@spelldesc1236372", "Your critical strike chance is increased by $s1%.", 0 },
   { 1236573, "$@spelldesc740", "Heals $w2 damage every $t2 sec.", 0 },
-  { 1236574, "Heals all allies within $a2 yards for ${$1236573s1*5} over $d. Each heal heals the target for another $157982o2 over $157982d, stacking.\r\n\r\nHealing decreased beyond $s3 targets.", "Healing all allies within $a1 yards for $157982s1 every $t1 sec.", 0 },
   { 1236590, "Restores ${$s1-$s1%$s3} health and $s2 mana.", 0, 0 },
   { 1236600, "$@spelldesc1232721", 0, 0 },
   { 1236607, "Calls down waves of falling stars upon enemies within $1236608A1 yds, dealing ${$1236613s1*11} Astral damage over $d.", "Calling down falling stars on nearby enemies.", 0 },
@@ -26024,7 +26023,6 @@ static constexpr std::array<spelltext_data_t, 28331> __spelltext_data { {
   { 1236613, "$@spelldesc1236607", 0, 0 },
   { 1236616, "Drink to increase your primary stat by $s1 for $d.", "Primary stat increased by $w1.", 0 },
   { 1236644, "$@spelldesc1236374", "Your next $?c2[Aimed Shot][Wildfire Bomb] deals Arcane damage and its damage is increased by $?c2[$s1][$s3]%.", 0 },
-  { 1236647, "Heals a friendly target for $s1 and another $o2 over $d.", "Heals $w2 every $t2 sec.", 0 },
   { 1236648, "Restores $s1 mana.", 0, 0 },
   { 1236652, "Drink to slow your falling speed for $d.", "Slowing fall speed.", 0 },
   { 1236689, "$@spelldesc1235500", 0, 0 },
@@ -26481,6 +26479,7 @@ static constexpr std::array<spelltext_data_t, 28331> __spelltext_data { {
   { 1244444, "$@spelldesc1235566\r\n\r\n", 0, 0 },
   { 1244448, "$@spelldesc1235566", 0, 0 },
   { 1244460, "Increases the duration of Havoc by ${$s1/1000} sec and increases the damage Havoc victims are dealt by an additional $s2%.", 0, 0 },
+  { 1244475, "Mastery increased by $s1%.", 0, 0 },
   { 1244483, "$@spelldesc384667", "The direct damage of your next Rake, Shred, or Swipe in increased by $w2% and will critically strike.", 0 },
   { 1244519, "$@spelldesc377514", "Soul Reaper can be used on any target, regardless of their health.", 0 },
   { 1244532, "Ferocious Bite's damage to its primary target increased by $s1% for each enemy affected by your Rip, up to $s2.", 0, 0 },
@@ -27602,9 +27601,7 @@ static constexpr std::array<spelltext_data_t, 28331> __spelltext_data { {
   { 1264613, "$@spelldesc1250541", "Haunted by the Evercurse, suffering $w1 Shadow damage every $t1 sec.\r\n\r\nIf you die while haunted, the curse will transfer to a new victim and grow stronger.", 0 },
   { 1264614, "$?c1[Entering an Eclipse summons a Dryad to assist you for $1264618d, casting Starsurge dealing $1264677s1 astral damage and Starfall at $s2% effectiveness.][Your periodic heals have a chance to empower your next Swiftmend to summon a Dryad to assist you, casting Tranquility at $s1% effectiveness and Regrowth to heal $1264664s1 damage onto your lowest health ally.]", 0, 0 },
   { 1264618, "$@spelldesc1264614", "A dryad is assisting you!", 0 },
-  { 1264623, "Heals all allies within $a2 yards for ${$1236573s1*5} over $d.\r\n\r\nHealing decreased beyond $s3 targets.", "Healing all allies within $a1 yards for $157982s1 every $t1 sec.", 0 },
   { 1264649, "When Regrowth critically heals, it is ${$s1+200}% effective instead of the usual 200%.", 0, 0 },
-  { 1264659, "$@spelldesc1264623", 0, 0 },
   { 1264664, "Heals a friendly target for $s1.", 0, 0 },
   { 1264671, "Calls down waves of falling stars upon enemies within $1236608A1 yds, dealing ${$1236613s1*11} Astral damage over $d.", "Calling down falling stars on nearby enemies.", 0 },
   { 1264673, "$@spelldesc1264671", 0, 0 },
@@ -28333,12 +28330,12 @@ static constexpr std::array<spelltext_data_t, 28331> __spelltext_data { {
   { 1283719, "$@spelldesc357208", "Burning for $w2 Fire damage every $t2 sec.$?$W3=1[ Silenced.][]", "Red" },
 } };
 
-// spelltext hotfix entries, wow build 12.0.0.65459
+// spelltext hotfix entries, wow build 12.0.0.65512
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 12.0.0.65459
-static constexpr std::array<spelldesc_vars_data_t, 683> __spelldesc_vars_data { {
+// Spell description variables, wow build 12.0.0.65512
+static constexpr std::array<spelldesc_vars_data_t, 681> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -28956,7 +28953,6 @@ static constexpr std::array<spelldesc_vars_data_t, 683> __spelldesc_vars_data { 
   { 1236094, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1236108, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1236110, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
-  { 1236574, "$healing=$?s429400[${6*$157982s1}][${5*$157982s1}]" },
   { 1236607, "$damage=$?s429400[${11*$191037s1}][${9*$191037s1}]" },
   { 1237003, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1237004, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
@@ -29005,7 +29001,6 @@ static constexpr std::array<spelldesc_vars_data_t, 683> __spelldesc_vars_data { 
   { 1260647, "$cap=${($SP*3.5)*(1+$@versadmg)}" },
   { 1262628, "$absorb=${($AP*6)*(1+$@versadmg)}\r\n" },
   { 1264376, "$NSmult=$?a132158[${1+$132158s2/100}][${1}]\r\n$CCmult=$?a16870[${1+$16870s2/100}][${1}]\r\n$mult=${$<NSmult>*$<CCmult>}" },
-  { 1264623, "$healing=$?s429400[${6*$157982s1}][${5*$157982s1}]" },
   { 1264671, "$damage=$?s429400[${11*$191037s1}][${9*$191037s1}]" },
   { 1265924, "$baseAbsorb=${15*$AP}\r\n$fragmentAbsorb=${3*$AP}" },
   { 1266257, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
@@ -29024,7 +29019,7 @@ static constexpr std::array<spelldesc_vars_data_t, 683> __spelldesc_vars_data { 
   { 1283718, "$bD=$?s375510[${$375510s1}][${0}]\r\n$bF=$?s375510[${$375510s1/2}][${0}]\r\n$bE=$?s1264321[${$1264321s1}][${0}]\r\n$dE=$?s1264321[${$1264321s1/2}][${0}]\r\n$dmI=${$357209s1}\r\n$doI=${$357209o2*(10+$<bF>+$<dE>)}\r\n$duI=${20+$<bD>+$<bE>}\r\n$dmII=${$357209s1+($357209o2*3)}\r\n$doII=${$357209o2*(7+$<bF>+$<dE>)}\r\n$duII=${14+$<bD>+$<bE>}\r\n$dmIII=${$357209s1+($357209o2*6)}\r\n$doIII=${$357209o2*(4+$<bF>+$<dE>)}\r\n$duIII=${8+$<bD>+$<bE>}\r\n$dmIV=${$357209s1+($357209o2*9)}\r\n$doIV=${$357209o2*(1+$<bF>+$<dE>)}\r\n$duIV=${2+$<bD>+$<bE>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.0.65459
+// spelldesc_vars hotfix entries, wow build 12.0.0.65512
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
