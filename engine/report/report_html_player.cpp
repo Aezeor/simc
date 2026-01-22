@@ -1843,18 +1843,38 @@ std::string base64_to_url( std::string_view s )
   return str;
 }
 
-// TODO: update once TWW trees are finalized
+// for mini render
 int raidbots_talent_render_width( specialization_e spec, int height, bool mini = false )
 {
+  double mult = 1.4;
+
   switch ( spec )
   {
     // narrower trees
-    case HUNTER_BEAST_MASTERY: return static_cast<int>( mini ? height * 1.45 : height * 1.60 );
+
     // wider trees
-    case DRUID_RESTORATION:    return static_cast<int>( mini ? height * 1.80 : height * 1.95 );
-    // default size
-    default:                   return static_cast<int>( mini ? height * 1.60 : height * 1.75 );
+    case DRUID_RESTORATION: mult = 1.6; break;
+    default: break;
   }
+
+  return static_cast<int>( height * mult );
+}
+
+// for main render
+int raidbots_talent_render_height( specialization_e spec, int width )
+{
+  double mult = 0.6;
+
+  switch ( spec )
+  {
+    // narrower trees
+
+    // wider trees
+    case DRUID_RESTORATION: mult = 0.55; break;
+    default: break;
+  }
+
+  return static_cast<int>( width * mult );
 }
 
 std::string raidbots_domain( [[maybe_unused]] bool ptr )
@@ -1965,9 +1985,9 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
   auto num_players = p.sim->players_by_name.size();
   if ( num_players == 1 )
   {
-    auto w_ = raidbots_talent_render_width( p.specialization(), 600 );
-    os.format( R"(<iframe src="{}" width="{}" height="600"></iframe>)",
-               raidbots_talent_render_src( p.talents_str, p.true_level, w_, false, p.dbc->ptr ), w_ );
+    auto h_ = raidbots_talent_render_height( p.specialization(), 1165 );
+    os.format( R"(<iframe src="{}" width="1165" height="{}"></iframe>)",
+               raidbots_talent_render_src( p.talents_str, p.true_level, 1165, false, p.dbc->ptr ), h_ );
 
     // Hide the talent table only if the Raidbots talent iframe is present.
     os << "<h3 class=\"toggle\">Talent Tables</h3>\n"
@@ -3736,7 +3756,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
 
   if ( p.sim->players_by_name.size() == 1 && p.is_player() )
   {
-    auto w_ = raidbots_talent_render_width( p.specialization(), 125, true );
+    auto w_ = raidbots_talent_render_width( p.specialization(), 125 );
     os.format(
       R"(<iframe src="{}" width="{}" height="125" style="margin-right: 8px; margin-top: 5px; float: left"></iframe>)",
       raidbots_talent_render_src( p.talents_str, p.true_level, w_, true, p.dbc->ptr ), w_ );
