@@ -2346,11 +2346,13 @@ void player_t::init_resources( bool force )
 
       resources.current[ resource ] = actual_resource;
     }
-    else
+    else if ( !is_enemy() )
     {
       // Actual "current" resource can never exceed the computed maximum resource for the actor
       resources.current[ resource ] = std::min( max_resource, resources.start_at[ resource ] );
     }
+    else
+      resources.current[ resource ] = max_resource;
   }
 
   // Only collect pet resource timelines if they get reported separately
