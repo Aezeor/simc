@@ -949,7 +949,7 @@ struct crusading_strike_t : public paladin_melee_attack_t
         );
     }
 
-    if ( execute_state->result == RESULT_HIT && p()->talents.empyrean_power->ok() )
+    if ( result_is_hit( execute_state->result ) && p()->talents.empyrean_power->ok() )
     {
       if ( rng().roll( p()->talents.empyrean_power->effectN( 2 ).percent() ) )
       {
@@ -1128,7 +1128,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
                           p()->gains.hp_cs );
     }
 
-    if ( execute_state->result == RESULT_HIT && p()->talents.empyrean_power->ok() )
+    if ( result_is_hit( execute_state->result ) && p()->talents.empyrean_power->ok() )
     {
       if ( rng().roll( p()->talents.empyrean_power->effectN( 1 ).percent() ) )
       {
