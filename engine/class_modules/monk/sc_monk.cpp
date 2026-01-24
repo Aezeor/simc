@@ -1424,6 +1424,13 @@ struct fists_of_fury_t : monk_melee_attack_t
                 [ & ]( double ) { return ( 1.0 / p()->composite_melee_haste() - 1.0 ) * effect.percent(); } )
             .set_eff( &effect );
 
+      parse_effects( player->buff.tigereye_brew_3 );
+      if ( const auto &effect = player->talent.windwalker.tigereye_brew_3->effectN( 1 ); effect.ok() )
+        add_parse_entry( da_multiplier_effects )
+            .set_value_func(
+                [ & ]( double ) { return ( p()->composite_melee_crit_chance() ) * effect.percent(); } )
+            .set_eff( &effect );
+
       add_parse_entry( da_multiplier_effects )
           .set_value( player->talent.windwalker.fists_of_fury->effectN( 6 ).percent() - 1.0 )
           .set_func( [] { return false; } )
@@ -1446,6 +1453,7 @@ struct fists_of_fury_t : monk_melee_attack_t
       monk_melee_attack_t::impact( state );
 
       p()->buff.momentum_boost_damage->trigger();
+      p()->buff.tigereye_brew_3->trigger();
     }
   };
 
@@ -1530,6 +1538,7 @@ struct fists_of_fury_t : monk_melee_attack_t
     make_event( p()->sim, timespan_t::from_millis( 1 ), [ & ] {
       p()->buff.momentum_boost_damage->expire();
       p()->buff.momentum_boost_speed->trigger();
+      p()->buff.tigereye_brew_3->expire();
     } );
   }
 };
@@ -3387,6 +3396,8 @@ struct zenith_t : public monk_spell_t
   {
     parse_options( options_str );
 
+    parse_effects( player->buff.tigereye_brew_1 );
+
     if ( player->talent.monk.zenith_stomp->ok() )
     {
       zenith_stomp = new zenith_stomp_t( player );
@@ -4541,6 +4552,7 @@ void monk_t::parse_player_effects()
       return talent.windwalker.martial_agility->effectN( 3 ).percent();
     return value;
   } );
+  parse_effects( talent.windwalker.tigereye_brew_2 );
 
   // Shadopan
   parse_effects( buff.whirling_steel );
@@ -5113,6 +5125,11 @@ void monk_t::init_spells()
     talent.windwalker.hurricanes_vault               = _ST( "Hurricane's Vault" );
     talent.windwalker.path_of_jade                   = _ST( "Path of Jade" );
     talent.windwalker.singularly_focused_jade        = _ST( "Singularly Focused Jade" );
+    talent.windwalker.tigereye_brew_1                = _ST( "Tigereye Brew" );
+    talent.windwalker.tigereye_brew_1_buff           = find_spell( 1261724 );
+    talent.windwalker.tigereye_brew_2                = _STID( 1261844 );
+    talent.windwalker.tigereye_brew_3                = _STID( 1261849 );
+    talent.windwalker.tigereye_brew_3_buff           = find_spell( 1262042 );
   }
 
   // monk_t::talent::conduit_of_the_celestials
@@ -5629,6 +5646,12 @@ void monk_t::create_buffs()
 
   buff.rushing_wind_kick = make_buff_fallback( talent.windwalker.rushing_wind_kick->ok(), this, "rushing_wind_kick",
                                                talent.windwalker.rushing_wind_kick_buff );
+
+  buff.tigereye_brew_1 = make_buff_fallback( talent.windwalker.tigereye_brew_1->ok(), this, "tigereye_brew_1",
+                                             talent.windwalker.tigereye_brew_1_buff );
+
+  buff.tigereye_brew_3 = make_buff_fallback( talent.windwalker.tigereye_brew_3->ok(), this, "tigereye_brew_3",
+                                             talent.windwalker.tigereye_brew_3_buff );
 
   // Conduit of the Celestials
   buff.celestial_conduit =

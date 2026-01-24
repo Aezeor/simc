@@ -529,6 +529,8 @@ public:
     propagate_const<buff_t *> whirling_dragon_punch;
     propagate_const<buff_t *> zenith;
     propagate_const<buff_t *> rushing_wind_kick;
+    propagate_const<buff_t *> tigereye_brew_1;
+    propagate_const<buff_t *> tigereye_brew_3;
 
     // Conduit of the Celestials
     propagate_const<buff_t *> celestial_conduit;
@@ -939,8 +941,10 @@ public:
       player_talent_t singularly_focused_jade;
       // Apex
       player_talent_t tigereye_brew_1;
+      const spell_data_t *tigereye_brew_1_buff;
       player_talent_t tigereye_brew_2;
       player_talent_t tigereye_brew_3;
+      const spell_data_t *tigereye_brew_3_buff;
     } windwalker;
 
     // Conduit of the Celestials
