@@ -35,7 +35,7 @@ action_t* get_action( std::string_view name, Actor* actor, Args&&... args )
 
 // Returns the remaining damage in an Ignite DoT.
 // TODO: When an Ignite has a partial tick, how is the bank amount calculated to determine valid spread targets?
-static double ignite_bank( dot_t* ignite )
+double ignite_bank( dot_t* ignite )
 {
   if ( !ignite->is_ticking() )
     return 0.0;
@@ -3709,7 +3709,6 @@ struct fireball_t final : public fire_mage_spell_t
     if ( frostfire && p()->buffs.frostfire_empowerment->check() )
     {
       // Buff is decremented with a short delay, allowing two spells to benefit.
-      // TODO: Double check this later
       make_event( *sim, 15_ms, [ this ] { p()->buffs.frostfire_empowerment->decrement(); } );
       p()->state.trigger_ff_empowerment = true;
     }
@@ -3974,7 +3973,6 @@ struct frostbolt_t final : public frost_mage_spell_t
     if ( frostfire && p()->buffs.frostfire_empowerment->check() )
     {
       // Buff is decremented with a short delay, allowing two spells to benefit.
-      // TODO: Double check this later
       make_event( *sim, 15_ms, [ this ] { p()->buffs.frostfire_empowerment->decrement(); } );
       p()->state.trigger_ff_empowerment = true;
     }
@@ -4323,7 +4321,6 @@ struct ice_lance_t final : public frost_mage_spell_t
     if ( p->talents.fractured_frost.ok() )
     {
       aoe = 1 + as<int>( p->talents.fractured_frost->effectN( 1 ).base_value() );
-      // TODO: effectiveness?
       // TODO: Still seems to be doing 90% damage to the secondary target, despite no longer
       // having 0.9 chain multiplier (and the talent description)
       if ( p->bugs )
@@ -5214,7 +5211,7 @@ struct controlled_instincts_t final : public spell_t
   {
     background = proc = true;
     target_filter_callback = secondary_targets_only();
-    // Only hits 5 targets despite max_targets being 6
+    // TODO: Only hits 5 targets despite max_targets being 6
     if ( p->bugs )
       aoe--;
     // TODO: The tooltip still mentions this, but it's untestable at the moment since it can't hit 6 or more targets
@@ -6190,8 +6187,6 @@ void mage_t::init_spells()
   register_passive_effect_mask( talents.dualcasting_adept,
     specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 1 ) : effect_mask_t( true ).disable( 2 ) );
 
-  // TODO: Blast Radius and Flash Freezeburn effects are now properly disabled on PTR and
-  // presumably also in the next beta build; double check
   register_passive_effect_mask( talents.blast_radius,
     specialization() == MAGE_FIRE ? effect_mask_t( true ).disable( 1, 2 ) : effect_mask_t( true ).disable( 3, 4 ) );
 
@@ -6237,7 +6232,6 @@ void mage_t::create_buffs()
                                           action.arcane_assault->execute_on_target( target );
                                           if ( talents.energized_familiar.ok() && buffs.arcane_surge->check() )
                                           {
-                                            // TODO: Fixed on PTR, double check in the next beta build
                                             int count = as<int>( talents.energized_familiar->effectN( 1 ).base_value() ) - 1;
                                             make_repeating_event( *sim, 75_ms, [ this ] { action.arcane_assault->execute_on_target( target ); }, count );
                                           }
