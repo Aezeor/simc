@@ -40,6 +40,7 @@ WINDWALKER:
 #include "report/charts.hpp"
 #include "report/highchart.hpp"
 #include "sc_enums.hpp"
+#include "dbc/trait_data.hpp"
 
 #include <deque>
 
@@ -142,6 +143,7 @@ void monk_action_t<Base>::apply_buff_effects()
                                               p()->talent.windwalker.teachings_of_the_monastery_blackout_kick->id() ) );
   parse_effects( p()->buff.zenith );
   parse_effects( p()->buff.invoke_xuen, effect_mask_t( false ).enable( 3 ), "Ferociousness" );
+  parse_effects( p()->buff.dance_of_chiji );
 
   // Conduit of the Celestials
   parse_effects( p()->buff.heart_of_the_jade_serpent,
@@ -373,8 +375,8 @@ void monk_action_t<Base>::consume_resource()
   if ( !base_t::execute_state )  // Fixes rare crashes at combat_end.
     return;
 
-  if ( current_resource() == RESOURCE_CHI )
-    p()->buff.dance_of_chiji->trigger();
+  if ( current_resource() == RESOURCE_CHI && p()->talent.windwalker.dance_of_chiji->ok() )
+    p()->buff.dance_of_chiji->trigger(); 
 
   // Chi Savings on Dodge & Parry & Miss
   if ( base_t::last_resource_cost > 0 )
@@ -1301,13 +1303,6 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
     aoe                 = -1;
     reduced_aoe_targets = p->baseline.monk.spinning_crane_kick->effectN( 1 ).base_value();
     ap_type             = attack_power_type::WEAPON_BOTH;
-
-    // dance of chiji is scripted
-    if ( const auto &effect = p->talent.windwalker.dance_of_chiji_buff->effectN( 2 ); effect.ok() )
-      add_parse_entry( da_multiplier_effects )
-          .set_func( [ &b = p->buff.dance_of_chiji_hidden ]() { return b->check(); } )
-          .set_value( effect.percent() )
-          .set_eff( &effect );
   }
 
   result_amount_type report_amount_type( const action_state_t * ) const override
@@ -1374,30 +1369,20 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     return true;
   }
 
-  double cost_flat_modifier() const override
-  {
-    double c = monk_melee_attack_t::cost_flat_modifier();
-
-    c += p()->buff.dance_of_chiji_hidden->check_value();  // saved as -2
-
-    return c;
-  }
-
   void execute() override
   {
+    monk_melee_attack_t::execute();
+
     if ( p()->specialization() == MONK_WINDWALKER )
     {
       if ( p()->buff.dance_of_chiji->up() )
       {
         p()->buff.dance_of_chiji->decrement();
-        p()->buff.dance_of_chiji_hidden->trigger();
 
         if ( p()->rng().roll( p()->talent.windwalker.sequenced_strikes->effectN( 1 ).percent() ) )
           p()->buff.combo_breaker->increment();  // increment is used to directly trigger without rolling chance
       }
     }
-
-    monk_melee_attack_t::execute();
 
     if ( p()->specialization() == MONK_WINDWALKER )
       p()->action.flurry_strikes->execute( flurry_strikes_t::WISDOM_OF_THE_WALL );
@@ -1413,8 +1398,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   void last_tick( dot_t *dot ) override
   {
     monk_melee_attack_t::last_tick( dot );
-
-    p()->buff.dance_of_chiji_hidden->expire();
 
     p()->buff.chi_energy->expire();
   }
@@ -1471,7 +1454,7 @@ struct fists_of_fury_t : monk_melee_attack_t
     jadefire_stomp_t( monk_t *player )
       : monk_melee_attack_t( player, "jadefire_stomp", player->talent.windwalker.jadefire_stomp_damage )
     {
-      aoe        = player->talent.windwalker.jadefire_stomp_targeting->effectN( 1 ).base_value();
+      aoe        = as<int>(player->talent.windwalker.jadefire_stomp_targeting->effectN( 1 ).base_value());
       background = dual = true;
       ww_mastery        = true;
 
@@ -1926,15 +1909,10 @@ struct auto_attack_t : public monk_melee_attack_t
         damage = tf;
       else
         damage = new damage_t( player );
-    }
 
-    void init() override
-    {
-      TBase::init();
-
-      if ( action_t *wdp = TBase::p()->find_action( "whirling_dragon_punch" ); wdp )
+      if ( action_t *wdp = TBase::player->find_action( "whirling_dragon_punch" ); wdp )
         wdp->add_child( damage );
-      else if ( action_t *sotwl = TBase::p()->find_action( "strike_of_the_windlord" ); sotwl )
+      else if ( action_t *sotwl = TBase::player->find_action( "strike_of_the_windlord" ); sotwl )
         sotwl->add_child( damage );
     }
 
@@ -2013,17 +1991,17 @@ struct auto_attack_t : public monk_melee_attack_t
       switch ( monk_melee_attack_t::weapon->group() )
       {
         case WEAPON_1H:
-          flurry_charges = p()->talent.shado_pan.flurry_strikes->effectN( 1 ).base_value();
+          flurry_charges = as<int>(p()->talent.shado_pan.flurry_strikes->effectN( 1 ).base_value());
           break;
         case WEAPON_2H:
-          flurry_charges = p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value();
+          flurry_charges = as<int>(p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value());
           break;
         default:
           assert( false );
       }
 
       if ( state->result == RESULT_CRIT )
-        flurry_charges *= 1.0 + p()->talent.shado_pan.one_versus_many->effectN( 1 ).base_value();
+        flurry_charges *= as<int>(1.0 + p()->talent.shado_pan.one_versus_many->effectN( 1 ).base_value());
 
       if ( flurry_charges )
         p()->buff.flurry_charge->trigger( flurry_charges );
@@ -2631,7 +2609,7 @@ struct special_delivery_t : public monk_spell_t
       : monk_spell_t( player, "celestial_flames", player->talent.brewmaster.celestial_flames_damage )
     {
       background = dual = true;
-      aoe               = player->talent.brewmaster.celestial_flames->effectN( 2 ).base_value();
+      aoe               = as<int>(player->talent.brewmaster.celestial_flames->effectN( 2 ).base_value());
     }
   };
 
@@ -5600,13 +5578,9 @@ void monk_t::create_buffs()
   // sources.
   buff.dance_of_chiji = make_buff_fallback( specialization() == MONK_WINDWALKER, this, "dance_of_chiji",
                                             talent.windwalker.dance_of_chiji_buff )
-                            ->set_trigger_spell( talent.windwalker.dance_of_chiji );
-
-  buff.dance_of_chiji_hidden =
-      make_buff_fallback( specialization() != MONK_BREWMASTER, this, "dance_of_chiji_hidden" )
-          ->set_default_value( talent.windwalker.dance_of_chiji_buff->effectN( 1 ).base_value() )
-          ->set_duration( timespan_t::from_seconds( 1.5 ) )
-          ->set_quiet( true );
+                            ->set_trigger_spell( talent.windwalker.dance_of_chiji )
+                            ->set_chance(            
+                                !talent.windwalker.dance_of_chiji->ok() ? 1.0 : talent.windwalker.dance_of_chiji->proc_chance());
 
   buff.hit_combo =
       make_buff_fallback( talent.windwalker.hit_combo->ok(), this, "hit_combo", talent.windwalker.hit_combo_buff )
@@ -6394,8 +6368,6 @@ void monk_t::assess_damage( school_e school, result_amount_type dtype, action_st
 
 void monk_t::target_mitigation( school_e school, result_amount_type dt, action_state_t *s )
 {
-  monk_td_t *target_td = get_target_data( s->action->player );
-
   // Touch of Karma Absorbtion
   if ( buff.touch_of_karma->up() )
   {

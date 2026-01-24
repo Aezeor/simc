@@ -517,7 +517,6 @@ public:
     propagate_const<buff_t *> combat_wisdom;
     propagate_const<buff_t *> combo_strikes;
     propagate_const<buff_t *> dance_of_chiji;
-    propagate_const<buff_t *> dance_of_chiji_hidden;  // Used for trigger DoCJ ticks
     propagate_const<buff_t *> hit_combo;
     propagate_const<buff_t *> flurry_of_xuen;
     propagate_const<buff_t *> invoke_xuen;
