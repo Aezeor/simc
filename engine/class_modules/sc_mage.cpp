@@ -4538,8 +4538,8 @@ struct meteor_impact_t final : public fire_mage_spell_t
     meteor_burn( burn ),
     meteor_burn_duration( p->find_spell( 175396 )->duration() ),
     meteor_burn_pulse_time( p->find_spell( 155158 )->effectN( 1 ).period() ),
-    // TODO: Seems to consume 2 (sometimes 3) extra stacks compared to what the description says
-    freezing_consume( as<int>( p->spec.shatter->effectN( 5 ).base_value() ) + ( p->bugs ? 2 : 0 ) ),
+    // TODO: Seems to use the Ice Lance value rather than the CmS/Meteor value
+    freezing_consume( as<int>( p->spec.shatter->effectN( p->bugs ? 4 : 5 ).base_value() ) ),
     shatter_source( p->get_shatter_source( name_str, freezing_consume ) )
   {
     aoe = -1;
