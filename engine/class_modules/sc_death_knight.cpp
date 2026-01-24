@@ -2096,6 +2096,7 @@ public:
   void trigger_killing_machine( bool predictable, proc_t* proc, proc_t* wasted_proc );
   void consume_killing_machine( proc_t* proc, timespan_t total_delay, action_t* aa_action );
   void trigger_runic_empowerment( double rpcost );
+  void trigger_bonegrinder( int stacks );
   // Unholy
   void trigger_runic_corruption( proc_t* proc, double rpcost, double override_chance = -1.0,
                                  bool death_trigger = false );
@@ -8343,7 +8344,7 @@ struct reapers_mark_t final : public death_knight_spell_t
     }
 
     if ( p()->talent.deathbringer.deathly_blows->ok() && p()->talent.frost.bonegrinder->ok() && sim->dbc->wowv() >= wowv_t( 12, 0, 1 ) )
-      p()->buffs.bonegrinder_crit->trigger( as<int>( p()->talent.deathbringer.deathly_blows->effectN( 4 ).base_value() ) );
+      p()->trigger_bonegrinder( ( as<int>( p()->talent.deathbringer.deathly_blows->effectN( 4 ).base_value() ) ) );
   }
 };
 
@@ -12947,15 +12948,9 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
       buffs.breath_of_sindragosa->extend_duration( this, base_extension * decrement_count );
     }
 
-    if ( talent.frost.bonegrinder.ok() && !buffs.bonegrinder_frost->up() )
-    {
-      buffs.bonegrinder_crit->trigger( decrement_count );
-      if ( buffs.bonegrinder_crit->at_max_stacks() )
-      {
-        buffs.bonegrinder_frost->trigger();
-        buffs.bonegrinder_crit->expire();
-      }
-    }
+
+    trigger_bonegrinder( decrement_count );
+
 
     for ( int i = decrement_count; i > 0; --i )
     {
@@ -13016,6 +13011,20 @@ void death_knight_t::trigger_runic_empowerment( double rpcost )
         100_ms );  // Delay needed to push icy_onslaughts expiration to after frost strike is resolved
   }
 }
+
+void death_knight_t::trigger_bonegrinder( int stacks )
+{
+  if ( buffs.bonegrinder_frost->check() )
+    return;
+
+  buffs.bonegrinder_crit->trigger( stacks );
+  if ( buffs.bonegrinder_crit->at_max_stacks() )
+  {
+    buffs.bonegrinder_frost->trigger();
+    buffs.bonegrinder_crit->expire();
+  }
+}
+
 
 void death_knight_t::trigger_runic_corruption( proc_t* proc, double rpcost, double override_chance, bool death_trigger )
 {
