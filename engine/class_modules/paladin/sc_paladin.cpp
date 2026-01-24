@@ -1356,6 +1356,7 @@ hammer_and_anvil_t::hammer_and_anvil_t( paladin_t* p, util::string_view n )
   background = proc = may_crit = true;
   may_miss                     = false;
   aoe                          = -1;
+  reduced_aoe_targets          = 5;
 }
 
 bool trigger_hammer_and_anvil( paladin_t* p, action_state_t* s, hammer_and_anvil_t* haa,
