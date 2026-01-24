@@ -8644,7 +8644,7 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
       timespan_t abom_summon_time = summon_interval * ( as<int>( data().effectN( 1 ).base_value() ) - n_ghoul - 1 );
       summon_abomination_t* summon_abomination_cast = debug_cast<summon_abomination_t*>( summon_abomination );
       summon_abomination_cast->set_duration( abomination_dur );
-      // Abomination spawns with the final ghoul have spawn
+      // Abomination spawns with the final ghoul spawn
       make_event( *sim, abom_summon_time, [ this ]() { summon_abomination->execute(); } );
     }
 
@@ -8653,7 +8653,7 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
       timespan_t gargoyle_summon_time = summon_interval * ( as<int>( data().effectN( 1 ).base_value() ) - n_ghoul - 1 );
       summon_gargoyle_t* summon_gargoyle_cast = debug_cast<summon_gargoyle_t*>( summon_gargoyle );
       summon_gargoyle_cast->set_duration( gargoyle_dur );
-      // Gargoyle spawns with the final ghoul have spawn
+      // Gargoyle spawns with the final ghoul spawn
       make_event( *sim, gargoyle_summon_time, [ this ]() { summon_gargoyle->execute(); } );
     }
 
