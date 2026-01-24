@@ -1709,6 +1709,13 @@ void hammer_of_wrath_t::execute()
   {
     p()->buffs.templar.sanctification->trigger();
   }
+  // 24.01.26 Fluttershy - Hammer of Wrath extends Shake by an additional second
+  if ( p()->bugs && p()->specialization() == PALADIN_PROTECTION && p()->talents.templar.higher_calling->ok() &&
+       p()->buffs.templar.shake_the_heavens->up() )
+  {
+    p()->buffs.templar.shake_the_heavens->extend_duration(
+        p(), timespan_t::from_seconds( p()->talents.templar.higher_calling->effectN( 1 ).base_value() ) );
+  }
 }
 
 void hammer_of_wrath_t::impact( action_state_t* s )
