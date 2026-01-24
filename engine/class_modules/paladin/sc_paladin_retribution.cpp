@@ -911,12 +911,10 @@ struct base_templar_strike_t : public paladin_melee_attack_t
 
     triggers_higher_calling = true;
   }
-
-  void impact( action_state_t *s ) override
+  void execute() override
   {
-    paladin_melee_attack_t::impact( s );
-
-    if ( result_is_hit( s->result ) && p()->talents.empyrean_power->ok() )
+    paladin_melee_attack_t::execute();
+    if ( execute_state->result == RESULT_HIT && p()->talents.empyrean_power->ok() )
     {
       if ( rng().roll( p()->talents.empyrean_power->effectN( 1 ).percent() ) )
       {

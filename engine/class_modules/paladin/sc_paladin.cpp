@@ -948,13 +948,8 @@ struct crusading_strike_t : public paladin_melee_attack_t
           p()->gains.hp_crusading_strikes
         );
     }
-  }
 
-  void impact( action_state_t* s ) override
-  {
-    paladin_melee_attack_t::impact( s );
-
-    if ( result_is_hit( s->result ) && p()->talents.empyrean_power->ok() )
+    if ( execute_state->result == RESULT_HIT && p()->talents.empyrean_power->ok() )
     {
       if ( rng().roll( p()->talents.empyrean_power->effectN( 2 ).percent() ) )
       {
@@ -1121,15 +1116,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
       timespan_t cm_cdr = p()->talents.crusaders_might->effectN( 1 ).time_value();
       p()->cooldowns.holy_shock->adjust( cm_cdr );
     }
-
-   if ( result_is_hit( s->result ) && p()->talents.empyrean_power->ok() )
-    {
-      if ( rng().roll( p()->talents.empyrean_power->effectN( 1 ).percent() ) )
-      {
-        p()->procs.empyrean_power->occur();
-        p()->buffs.empyrean_power->trigger();
-      }
-    }
   }
 
   void execute() override
@@ -1140,6 +1126,15 @@ struct crusader_strike_t : public paladin_melee_attack_t
     {
       p()->resource_gain( RESOURCE_HOLY_POWER, p()->spec.retribution_paladin->effectN( 14 ).base_value(),
                           p()->gains.hp_cs );
+    }
+
+    if ( execute_state->result == RESULT_HIT && p()->talents.empyrean_power->ok() )
+    {
+      if ( rng().roll( p()->talents.empyrean_power->effectN( 1 ).percent() ) )
+      {
+        p()->procs.empyrean_power->occur();
+        p()->buffs.empyrean_power->trigger();
+      }
     }
 
     p()->trigger_grand_crusader();
