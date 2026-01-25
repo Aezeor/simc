@@ -3077,15 +3077,13 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
     timespan_t t = pet_melee_attack_t<T>::execute_time();
 
     // Randomize first swing time
-    if ( this->first )
+    if ( first )
     {
-      if ( this->weapon->slot == SLOT_OFF_HAND )
-        return t * pet()->rng().range( 0.5 );
-      else
-        return pet()->rng().range( 0_ms, t );
+      timespan_t delay = ( weapon->slot == SLOT_OFF_HAND ) ? pet()->rng().range( 10_ms, t * 0.5 ) : 0_ms;
+      return t + delay;
     }
-    else
-      return t;
+
+    return t;
   }
 
   T* pet() const
@@ -7400,8 +7398,8 @@ struct melee_t : public death_knight_melee_attack_t
 
     if ( first && !sync_weapons )
     {
-      timespan_t delay = p()->rng().range( 10_ms, t * 0.5 );
-      return ( weapon->slot == SLOT_OFF_HAND ) ? delay : 0_ms;
+      timespan_t delay = ( weapon->slot == SLOT_OFF_HAND ) ? p()->rng().range( 10_ms, t * 0.5 ) : 0_ms;
+      return t + delay;
     }
     else
       return t;
