@@ -1868,6 +1868,7 @@ public:
   struct sample_data_t
   {
     std::unique_ptr<extended_sample_data_t> lesser_ghoul_duration;
+    std::unique_ptr<extended_sample_data_t> lesser_ghouls_summoned;
     std::unique_ptr<extended_sample_data_t> lesser_ghouls_active;
     std::unique_ptr<extended_sample_data_t> magus_active;
   } sample_data;
@@ -1894,6 +1895,7 @@ public:
   runeforges_e mh_runeforge;
   runeforges_e oh_runeforge;
   player_t* last_target;
+  int lesser_ghouls_summoned;
 
   death_knight_t( sim_t* sim, std::string_view name, race_e r )
     : parse_player_effects_t( sim, DEATH_KNIGHT, name, r ),
@@ -1925,7 +1927,8 @@ public:
       active_lesser_ghouls(),
       mh_runeforge( RUNEFORGE_NONE ),
       oh_runeforge( RUNEFORGE_NONE ),
-      last_target( this )
+      last_target( this ),
+      lesser_ghouls_summoned( 0 )
   {
     // Shared
     // DnD - Default value, changed during action construction
@@ -3604,6 +3607,8 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     if ( dk()->talent.unholy.commander_of_the_dead.ok() )
       dk()->sample_data.lesser_ghoul_duration->add( duration.total_seconds() );
 
+    dk()->lesser_ghouls_summoned++;
+
     base_ghoul_pet_t::arise();
 
     dk()->active_lesser_ghouls.push_back( this );
@@ -3674,17 +3679,6 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     } );
   }
 
-  void init_gains() override
-  {
-    base_ghoul_pet_t::init_gains();
-
-    // Group Energy regen for the same pets together to reduce report clutter
-    if ( !dk()->options.split_ghoul_regen && dk()->find_pet( name_str ) )
-    {
-      this->gains.resource_regen = dk()->find_pet( name_str )->gains.resource_regen;
-    }
-  }
-
   void init_action_list() override
   {
     base_ghoul_pet_t::init_action_list();
@@ -3694,13 +3688,6 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     if ( dk()->talent.unholy.outnumber.ok() )
       def->add_action( "sweeping_claws" );
     def->add_action( "claw" );
-  }
-
-  void init_uptimes() override
-  {
-    base_ghoul_pet_t::init_uptimes();
-    // Merge time spent at resource cap for pets sharing the same name to reduce report clutter
-    this->uptimes.primary_resource_cap = dk()->find_pet( name_str )->uptimes.primary_resource_cap;
   }
 
   void init_finished() override
@@ -7791,6 +7778,7 @@ struct infected_claws_t final : public death_knight_spell_t
   infected_claws_t( std::string_view name, death_knight_t* p )
     : death_knight_spell_t( name, p, p->spell.infected_claws_dot )
   {
+    background = true;
   }
 };
 
@@ -12821,6 +12809,7 @@ void death_knight_t::merge( player_t& other )
   if ( talent.unholy.commander_of_the_dead.ok() )
     sample_data.lesser_ghoul_duration->merge( *dk.sample_data.lesser_ghoul_duration );
 
+  sample_data.lesser_ghouls_summoned->merge( *dk.sample_data.lesser_ghouls_summoned );
   sample_data.lesser_ghouls_active->merge( *dk.sample_data.lesser_ghouls_active );
   sample_data.magus_active->merge( *dk.sample_data.magus_active );
 }
@@ -12868,6 +12857,7 @@ void death_knight_t::analyze( sim_t& s )
   if ( talent.unholy.commander_of_the_dead.ok() )
     sample_data.lesser_ghoul_duration->analyze();
 
+  sample_data.lesser_ghouls_summoned->analyze();
   sample_data.lesser_ghouls_active->analyze();
   sample_data.magus_active->analyze();
 }
@@ -16082,8 +16072,9 @@ void death_knight_t::init_uptimes()
   if ( talent.unholy.commander_of_the_dead.ok() )
     sample_data.lesser_ghoul_duration = std::make_unique<extended_sample_data_t>( "Lesser Ghoul Duration", false );
 
-  sample_data.lesser_ghouls_active = std::make_unique<extended_sample_data_t>( "Lesser Ghouls Active", false );
-  sample_data.magus_active         = std::make_unique<extended_sample_data_t>( "Magus Active", false );
+  sample_data.lesser_ghouls_summoned = std::make_unique<extended_sample_data_t>( "Lesser Ghouls Summoned", false );
+  sample_data.lesser_ghouls_active   = std::make_unique<extended_sample_data_t>( "Lesser Ghouls Active", false );
+  sample_data.magus_active           = std::make_unique<extended_sample_data_t>( "Magus Active", false );
 
   uptimes.primary_resource_cap->uptime_instance.change_mode( false );
   uptimes.primary_resource_cap->uptime_sum.change_mode( false );
@@ -16310,11 +16301,14 @@ void death_knight_t::reset()
   parse_player_effects_t::reset();
 
   _runes.reset();
-  runic_power_decay            = nullptr;
-  km_proc_attempts             = 0;
-  dom_proc_attempts            = 0;
-  active_riders                = 0;
-  magus_active                 = 0;
+  runic_power_decay = nullptr;
+  km_proc_attempts  = 0;
+  dom_proc_attempts = 0;
+  active_riders     = 0;
+  magus_active      = 0;
+  if ( lesser_ghouls_summoned > 0 )
+    sample_data.lesser_ghouls_summoned->add( lesser_ghouls_summoned );
+  lesser_ghouls_summoned = 0;
   dk_active_pets.clear();
   active_lesser_ghouls.clear();
   active_dnds.clear();
@@ -17014,6 +17008,48 @@ public:
     os << "</table>\n";
   }
 
+    void lesser_ghoul_summoned_chart( report::sc_html_stream& os )
+  {
+    auto& d = *p.sample_data.lesser_ghouls_summoned;
+    if ( d.count() == 0 )
+      return;
+
+    int num_buckets = std::min( 30, static_cast<int>( 2 * ( d.max() - d.min() ) ) + 1 );
+    d.create_histogram( num_buckets );
+
+    highchart::histogram_chart_t chart( highchart::build_id( p, "lesser_ghouls_summoned" ), *p.sim );
+    if ( chart::generate_distribution( chart, &p, d.distribution, "Lesser Ghouls Summoned", d.mean(), d.min(),
+                                       d.max() ) )
+    {
+      chart.set( "chart.width", std::to_string( 80 + num_buckets * 20 ) );
+      os << chart.to_target_div();
+      p.sim->add_chart_data( chart );
+    }
+
+    os << "<table class=\"sc\">\n"
+       << "<tr>\n"
+       << "<th colspan=\"5\">Statistics</th>\n"
+       << "</tr>\n"
+       << "<tr>\n"
+       << "<th>Minimum</th>\n"
+       << "<th>5<sup>th</sup> percentile</th>\n"
+       << "<th>Mean / Median</th>\n"
+       << "<th>75<sup>th</sup> percentile</th>\n"
+       << "<th>95<sup>th</sup> percentile</th>\n"
+       << "<th>Maximum</th>\n"
+       << "</tr>\n";
+
+    os << "<tr>\n";
+    os.printf( "<td class=\"right\">%.3f</td>", d.min() );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .05 ) );
+    os.printf( "<td class=\"right\">%.3f / %.3f</td>", d.mean(), d.percentile( .5 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .75 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .95 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.max() );
+    os << "</tr>\n";
+    os << "</table>\n";
+  }
+
   void lesser_ghoul_active_chart( report::sc_html_stream& os )
   {
     auto& d = *p.sample_data.lesser_ghouls_active;
@@ -17097,6 +17133,7 @@ public:
 
     os << lesser_ghoul_sources.to_target_div();
     p.sim->add_chart_data( lesser_ghoul_sources );
+    lesser_ghoul_summoned_chart( os );
     lesser_ghoul_duration_chart( os );
     lesser_ghoul_active_chart( os );
 
