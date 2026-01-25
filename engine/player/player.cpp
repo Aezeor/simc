@@ -2632,7 +2632,7 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
     }
     else
     {
-      if ( trait_obj->node_type == NODE_TIERED )
+      if ( !entry_id && trait_obj->node_type == NODE_TIERED )
       {
         auto _entries = trait_data_t::data( trait_obj->id_node, util::class_id( player->type ), tree, player->is_ptr() );
         for ( const auto& trait : _entries )
