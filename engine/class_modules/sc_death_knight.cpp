@@ -10429,7 +10429,8 @@ struct frostbane_strike_t final : public death_knight_melee_attack_t
   frostbane_strike_t( std::string_view n, death_knight_t* p )
     : death_knight_melee_attack_t( n, p, p->spell.frostbane_damage )
   {
-    background = dual = true;
+    dual       = true;
+    background = true;
     aoe        = -1;
   }
 
@@ -10534,8 +10535,6 @@ struct frostbane_t final : public frost_strike_base_t
     {
       add_child( frostbane_strike );
     }
-    aoe = -1;
-
   }
 
   void impact( action_state_t* s ) override
@@ -10620,7 +10619,6 @@ struct frost_strike_t final : public frost_strike_base_t
       if ( p->talent.frost.frostbane.ok() )
       {
         set_replacement_action( frostbane, p->buffs.frostbane );
-        add_child( frostbane );
       }
 
     }
