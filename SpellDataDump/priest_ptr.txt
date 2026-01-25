@@ -112,7 +112,7 @@ Effects          :
 Description      : Dispels harmful effects on the target, removing all Magic$?s390632[ and Disease][] effects.
 
 Name             : Dispel Magic (id=528) [Spell Family (6)] 
-Talent Entry     : Generic [tree=class, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=2, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -159,7 +159,7 @@ Description      : Smites an enemy for $s1 Holy damage$?s231682[ and absorbs the
 Variables        : $shield=${($SPS*$231682s1/100)*(1+$@versadmg)}
 
 Name             : Fade (id=586) [Spell Family (6)] 
-Talent Entry     : Generic [tree=class, row=7, col=4, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=7, col=7, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -223,7 +223,7 @@ Description      : A word of darkness that causes $?a390707[${$s1*(1+$390707s1/1
 Tooltip          : Suffering $w2 Shadow damage every $t2 sec.
 
 Name             : Prayer of Healing (id=596) [Spell Family (6)] 
-Talent Entry     : Holy [tree=spec, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=3, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -250,7 +250,7 @@ Effects          :
 Description      : A powerful prayer that heals your target and ${$s3-1} injured allies within $A2 yards for $s2.
 
 Name             : Mind Control (id=605) [Spell Family (6)] 
-Talent Entry     : Generic [tree=class, row=4, col=6, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Generic [tree=class, row=4, col=8, max_rank=1, req_points=0, select_idx=100]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -314,7 +314,7 @@ Description      : Levitates a party or raid member for $111759d, floating a few
 Tooltip          : Levitating.
 
 Name             : Holy Word: Serenity (id=2050) [Spell Family (6)] 
-Talent Entry     : Holy [tree=spec, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=1, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -507,7 +507,7 @@ Effects          :
 Description      : Removes any Charm, Fear and Sleep effect. $?s195710[This effect shares a 30 sec cooldown with other similar effects.][]
 
 Name             : Mind Blast (id=8092) [Spell Family (6)] 
-Talent Entry     : Discipline, Shadow [free=(Discipline, Shadow), tree=class, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Discipline, Shadow [free=(Discipline, Shadow), tree=class, row=1, col=7, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -541,7 +541,7 @@ Description      : Blast the target's mind for $s1 Shadow damage.$?c1[ Costs a h
 Variables        : $shield=${($SPS*$231682s1/100)*(1+$@versadmg)}
 
 Name             : Psychic Scream (id=8122) [Spell Family (6)] 
-Talent Entry     : Generic [free=(Shadow), tree=class, row=2, col=4, max_rank=1, req_points=0]
+Talent Entry     : Generic [free=(Shadow), tree=class, row=2, col=8, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -572,7 +572,7 @@ Description      : Lets out a psychic scream, causing all enemies within $A1 yar
 Tooltip          : Disoriented.
 
 Name             : Shackle Horror (id=9484) [Spell Family (6)] 
-Talent Entry     : Generic [tree=class, row=5, col=7, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=9, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -599,7 +599,7 @@ Description      : Shackles an aberration or undead enemy for $d, preventing all
 Tooltip          : Shackled.
 
 Name             : Power Infusion (id=10060) [Spell Family (6)] 
-Talent Entry     : Generic [tree=class, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=3, col=5, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -630,7 +630,7 @@ Tooltip          : Haste increased by $w1%.$?$w2>0[
 Mind Blast and Void Bolt damage increased by $w2%.][]
 
 Name             : Holy Fire (id=14914) [Spell Family (6)] 
-Talent Entry     : Holy [tree=class, row=1, col=3, max_rank=1, req_points=0, replace="Shadow Word: Pain" (id=589)]
+Talent Entry     : Holy [tree=class, row=1, col=7, max_rank=1, req_points=0, replace="Shadow Word: Pain" (id=589)]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -756,7 +756,7 @@ Description      : Silences the target, preventing them from casting spells for 
 Tooltip          : Silenced.
 
 Name             : Desperate Prayer (id=19236) [Spell Family (6)] 
-Talent Entry     : Generic [tree=class, row=7, col=1, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=7, col=3, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -1223,7 +1223,7 @@ Description      : Heals the target for $s2% of the caster's total health over $
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Mass Dispel (id=32375) [Spell Family (6)] 
-Talent Entry     : Generic [tree=class, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=4, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -1256,7 +1256,7 @@ Effects          :
 Description      : Dispels magic in a $32375a1 yard radius, removing all harmful Magic from $s4 friendly targets and $32592m1 beneficial Magic $leffect:effects; from $s4 enemy targets. Potent enough to remove Magic that is normally undispellable.
 
 Name             : Shadow Word: Death (id=32379) [Spell Family (6)] 
-Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=6, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -1385,7 +1385,7 @@ Effects          :
 Description      : $@spelldesc33076
 
 Name             : Pain Suppression (id=33206) [Spell Family (6)] 
-Talent Entry     : Discipline [tree=spec, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Discipline [tree=spec, row=2, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -1458,7 +1458,7 @@ Summons a Shadowfiend to attack your target for $1280172d.$?c3[
 |cFFFFFFFFGenerates ${$343727m1/100}.1% mana each time the Shadowfiend attacks.|r]
 
 Name             : Holy Word: Sanctify (id=34861) [Spell Family (6)] 
-Talent Entry     : Holy [tree=spec, row=2, col=1, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=2, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -1809,7 +1809,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 47666 | Target: Self (1)
 
 Name             : Guardian Spirit (id=47788) [Spell Family (6)] 
-Talent Entry     : Holy [tree=spec, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=2, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -1857,7 +1857,7 @@ Effects          :
 Description      : $@spelldesc47788
 
 Name             : Mirror Image (id=55342) [Spell Family (3)] 
-Talent Entry     : Generic [tree=class, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=4, col=6, max_rank=1, req_points=0]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Mechagnome (0x4000)
 School           : Arcane
@@ -1892,7 +1892,7 @@ Taking direct damage will cause one of your images to dissipate
 Tooltip          : Mirror Images are reducing your threat generated.
 
 Name             : Petrifying Scream (id=55676) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=3, col=6, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Generic [tree=class, row=3, col=9, max_rank=1, req_points=0, select_idx=200]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -2134,7 +2134,7 @@ Effects          :
 Description      : Removes all stun effects. $?s195710[This effect shares a 90 sec cooldown with other similar effects.][]
 
 Name             : Power Word: Barrier (id=62618) [Spell Family (6)] 
-Talent Entry     : Discipline [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Discipline [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -2195,7 +2195,7 @@ Prayer of Healing reduces the cooldown on Holy Word: Sanctify by $34861s3 sec.
 Smite and Holy Nova reduce the cooldown of Holy Word: Chastise by $88625s2 sec.
 
 Name             : Body and Soul (id=64129) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=4, col=2, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=4, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -2411,7 +2411,7 @@ Effects          :
 Description      : Dispels magic in a $32375a1 yard radius, removing all harmful spells from each friendly target and $32592m1 beneficial $lspell:spells; from each enemy target.  Affects a maximum of $32375i friendly targets and $32375i enemy targets.  This dispel is potent enough to remove Magic effects that are normally undispellable.
 
 Name             : Leap of Faith (id=73325) [Spell Family (6)] 
-Talent Entry     : Generic [tree=class, row=3, col=2, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=3, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -2558,7 +2558,7 @@ Description      : $@spelldesc197862
 Tooltip          : Healing and absorption increased by $s1%.
 
 Name             : Atonement (id=81749) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Discipline [tree=spec, row=1, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -2636,7 +2636,7 @@ Description      : $@spelldesc131556
 Tooltip          : Fleeing in terror.
 
 Name             : Holy Word: Chastise (id=88625) [Spell Family (6)] 
-Talent Entry     : Holy [tree=spec, row=2, col=3, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=2, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -2844,7 +2844,7 @@ Effects          :
 Description      : Reduces the effects of your Shadowform.
 
 Name             : Phantasm (id=108942) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=9, col=4, max_rank=1, req_points=23]
+Talent Entry     : Generic [tree=class, row=9, col=7, max_rank=1, req_points=23]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -2860,7 +2860,7 @@ Effects          :
 Description      : Activating Fade removes all snare effects.
 
 Name             : Angelic Bulwark (id=108945) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=10, col=1, max_rank=1, req_points=23]
+Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=23]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -2900,7 +2900,7 @@ Effects          :
 Description      : Swap health percentages with your ally. Increases the lower health percentage of the two to $s1% if below that amount.
 
 Name             : Surge of Light (id=109186) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=4, col=1, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=4, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -3184,7 +3184,7 @@ Effects          :
 Description      : $@spelldesc108968
 
 Name             : Halo (id=120517) [Spell Family (6)] 
-Talent Entry     : Archon (Holy) [free=(Holy), tree=hero, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Archon (Holy) [free=(Holy), tree=hero, row=1, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -3237,7 +3237,7 @@ Effects          :
 Description      : Your Levitate targets will appear to be riding on a cloud for the duration of the spell.
 
 Name             : Halo (id=120644) [Spell Family (6)] 
-Talent Entry     : Archon (Shadow) [free=(Shadow), tree=hero, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Archon (Shadow) [free=(Shadow), tree=hero, row=1, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -3331,7 +3331,7 @@ Description      : $@spelldesc28880
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Angelic Feather (id=121536) [Spell Family (6)] 
-Talent Entry     : Generic [tree=class, row=1, col=2, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=1, col=5, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -3609,7 +3609,7 @@ Effects          :
 Description      : When your Vampiric Touch is dispelled, the dispeller is instantly feared in horror for $87204d.
 
 Name             : Holy Nova (id=132157) [Spell Family (6)] 
-Talent Entry     : Generic [free=(Holy), tree=class, row=2, col=1, max_rank=1, req_points=0]
+Talent Entry     : Generic [free=(Holy), tree=class, row=2, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -4397,7 +4397,7 @@ Description      : $@spelldesc186263
 Tooltip          : Losing $w1 temporary health per $t1 sec.
 
 Name             : Protective Light (id=193063) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=8, col=2, max_rank=1, req_points=23]
+Talent Entry     : Generic [tree=class, row=8, col=4, max_rank=1, req_points=23]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -4430,7 +4430,7 @@ Description      : $@spelldesc193063
 Tooltip          : Damage taken reduced by $w1%.
 
 Name             : Castigation (id=193134) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=6, col=2, max_rank=1, req_points=8]
+Talent Entry     : Discipline [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -4461,7 +4461,7 @@ Effects          :
 Description      : You regenerate mana $s1% faster.
 
 Name             : Light's Resurgence (id=193157) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=5, col=5, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -4593,7 +4593,7 @@ Description      : $@spelldesc81749
 Tooltip          : Healed whenever $@auracaster damages an enemy.
 
 Name             : Power Word: Radiance (id=194509) [Spell Family (6)] 
-Talent Entry     : Discipline [tree=spec, row=2, col=1, max_rank=1, req_points=0]
+Talent Entry     : Discipline [tree=spec, row=2, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holyfire
 Spell Type       : Magic
@@ -4687,7 +4687,7 @@ Effects          :
 Description      : $@spelldesc196684
 
 Name             : Psychic Voice (id=196704) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=4, col=7, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Generic [tree=class, row=4, col=9, max_rank=1, req_points=0, select_idx=100]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -4899,7 +4899,7 @@ Effects          :
 Description      : The cooldowns of your Holy Words are reduced by an additional $s1% when you cast the relevant spells.
 
 Name             : Shield Discipline (id=197045) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=4, col=2, max_rank=1, req_points=0]
+Talent Entry     : Discipline [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -4933,7 +4933,7 @@ Effects          :
 Description      : When you heal with Penance, everyone with your Atonement is healed for $s2.
 
 Name             : Archangel (id=197862) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=8, col=3, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Discipline [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=100]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -4948,7 +4948,7 @@ Effects          :
 Description      : Evangelism increases your healing and absorption effects by $81700s1% for $81700d.
 
 Name             : Power of the Dark Side (id=198068) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=2, col=3, max_rank=1, req_points=0]
+Talent Entry     : Discipline [tree=spec, row=2, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -5017,7 +5017,7 @@ Effects          :
 Description      : $@spelldesc199428
 
 Name             : Psychic Link (id=199484) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=2, col=1, max_rank=1, req_points=0]
+Talent Entry     : Shadow [tree=spec, row=2, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -5131,7 +5131,7 @@ Description      : Summons a Mindbender to attack the target for $d.
 |cFFFFFFFFGenerates ${$200010s1/100} Insanity each time the Mindbender attacks.|r
 
 Name             : Apotheosis (id=200183) [Spell Family (6)] 
-Talent Entry     : Holy [tree=spec, row=7, col=2, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=7, col=3, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -5207,7 +5207,7 @@ Description      : $@spelldesc88625
 Tooltip          : Incapacitated.
 
 Name             : Censure (id=200199) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=3, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -5243,7 +5243,7 @@ Description      : $@spelldesc88625
 Tooltip          : Stunned.
 
 Name             : Guardian Angel (id=200209) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=3, col=2, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Holy [tree=spec, row=3, col=3, max_rank=1, req_points=0, select_idx=200]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -5379,7 +5379,7 @@ Tooltip          : Dealing $s1 Shadow damage to the target every $t sec.
 Insanity drain temporarily stopped.
 
 Name             : Dominate Mind (id=205364) [Spell Family (6)] 
-Talent Entry     : Generic [tree=class, row=4, col=6, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Generic [tree=class, row=4, col=8, max_rank=1, req_points=0, select_idx=200]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -5819,7 +5819,7 @@ Description      : Wards the friendly target against the next full loss of contr
 Tooltip          : Warded against the next full loss of control effect.
 
 Name             : Purify Disease (id=213634) [Spell Family (6)] 
-Talent Entry     : Shadow [tree=class, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Shadow [tree=class, row=3, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -6208,7 +6208,7 @@ Effects          :
 Description      : $@spelldesc228049
 
 Name             : Voidform (id=228260) [Spell Family (6)] 
-Talent Entry     : Shadow [tree=spec, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Shadow [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -6310,7 +6310,7 @@ Effects          :
 Description      : $@spelldesc228260
 
 Name             : Sanctuary (id=231682) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=3, col=2, max_rank=1, req_points=0]
+Talent Entry     : Discipline [tree=spec, row=3, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -6516,7 +6516,7 @@ Effects          :
 Description      : $@spelldesc200128
 
 Name             : Miracle Worker (id=235587) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=8, col=2, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -6597,7 +6597,7 @@ Description      : $@spelldesc236545
 Tooltip          : Shadow Word: Death deals $s2% increased damage and can be used on any target.
 
 Name             : Lenience (id=238063) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=5, col=2, max_rank=1, req_points=8]
+Talent Entry     : Discipline [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -6613,8 +6613,8 @@ Effects          :
 Description      : Atonement reduces damage taken by $s1%.
 
 Name             : Angel's Mercy (id=238100) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=class, row=8, col=1, max_rank=1, req_points=23]
-                 : Discipline, Holy [tree=class, row=8, col=1, max_rank=1, req_points=23]
+Talent Entry     : Shadow [tree=class, row=8, col=2, max_rank=1, req_points=23]
+                 : Discipline, Holy [tree=class, row=8, col=2, max_rank=1, req_points=23]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -6629,7 +6629,7 @@ Effects          :
 Description      : Reduces the cooldown of Desperate Prayer by ${$s1/-1000} sec.
 
 Name             : Eternal Barrier (id=238135) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Talent Entry     : Discipline [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -6649,7 +6649,7 @@ Effects          :
 Description      : Power Word: Shield absorbs $s1% additional damage and lasts ${$s2/1000} sec longer.
 
 Name             : Cosmic Ripple (id=238136) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=4, col=2, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -6663,7 +6663,7 @@ Effects          :
 Description      : When Holy Word: Serenity $?a1246517[finishes its][or Holy Word: Sanctify finish their] cooldown, you emit a burst of light that heals up to $s1 injured targets within $243241A1 yards for $243241s1.
 
 Name             : Misery (id=238558) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=2, col=2, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Shadow [tree=spec, row=2, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -7493,7 +7493,7 @@ Effects          :
 Description      : $@spelldesc262484
 
 Name             : Void Torrent (id=263165) [Spell Family (6)] 
-Talent Entry     : Voidweaver (Shadow) [free=(Shadow), tree=hero, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Voidweaver (Shadow) [free=(Shadow), tree=hero, row=1, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -8880,7 +8880,7 @@ Description      : $@spelldesc272788
 Tooltip          : Movement speed reduced by $s1%.
 
 Name             : Intangibility (id=288733) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=2, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Shadow [tree=spec, row=2, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -9527,7 +9527,7 @@ Description      : $@spelldesc315879
 Tooltip          : Movement speed increased by $w2%.
 
 Name             : Death and Madness (id=321291) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Shadow [tree=spec, row=8, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -9705,7 +9705,7 @@ Tooltip          : Shadow spells damage and healing increased by $w2%.
 Halo, Divine Star, and Penance are converted to Shadow spells.
 
 Name             : Light's Promise (id=322115) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Discipline [tree=spec, row=3, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -10200,7 +10200,7 @@ Tooltip          : The cooldown of a major ability recovers $s1% faster.
 Follows $@auracaster's $?c2[Flash Heal][Shadow Mend].
 
 Name             : Shadow Word: Madness (id=335467) [Spell Family (6)] 
-Talent Entry     : Shadow [tree=spec, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Shadow [tree=spec, row=1, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -10622,7 +10622,7 @@ Effects          :
 Description      : Unholy Transfusion lasts ${$m2/1000} sec longer and deals |cFFFFFFFF${$s1}.1%|r more damage and healing.
 
 Name             : Mental Agility (id=341167) [Spell Family (6), Passive] 
-Talent Entry     : Generic [tree=class, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -10699,7 +10699,7 @@ Effects          :
 Description      : $@spelldesc341491
 
 Name             : Shadowy Apparitions (id=341491) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Shadow [tree=spec, row=3, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -11887,7 +11887,7 @@ Effects          :
 Description      : $@spelldesc363469
 
 Name             : Binding Heals (id=368275) [Spell Family (6), Passive] 
-Talent Entry     : Generic [tree=class, row=6, col=2, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=4, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -12074,7 +12074,7 @@ Description      : $@spelldesc372616
 Tooltip          : Your next Holy Fire costs no mana, incurs no cooldown, and is cast instantly.
 
 Name             : Holy Ray (id=372969) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=5, col=1, max_rank=1, req_points=8]
+Talent Entry     : Discipline [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -12106,7 +12106,7 @@ Effects          :
 Description      : Mind Blast has a $s1% chance to grant Power of the Dark Side and deals $s2% additional damage.
 
 Name             : Pain Transformation (id=372991) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=3, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Discipline [tree=spec, row=3, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -12156,7 +12156,7 @@ Effects          :
 Description      : Shadow Word: Pain deals $s1% additional damage and spreads to $s2 additional $Ltarget:targets; when you cast Penance to its target.
 
 Name             : Protector of the Frail (id=373035) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=3, col=3, max_rank=1, req_points=0, select_idx=300]
+Talent Entry     : Discipline [tree=spec, row=3, col=4, max_rank=1, req_points=0, select_idx=300]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -12193,7 +12193,7 @@ Effects          :
 Description      : $@spelldesc373035
 
 Name             : Indemnity (id=373049) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=6, col=3, max_rank=1, req_points=8]
+Talent Entry     : Discipline [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -12207,7 +12207,7 @@ Effects          :
 Description      : Atonements granted by Power Word: Shield last an additional $s1 sec.
 
 Name             : Abyssal Reverie (id=373054) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=7, col=3, max_rank=2, req_points=8]
+Talent Entry     : Discipline [tree=spec, row=7, col=4, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Priest
 School           : Shadow
@@ -12282,7 +12282,7 @@ Effects          :
 Description      : $@spelldesc373129
 
 Name             : Harsh Discipline (id=373180) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=7, col=1, max_rank=2, req_points=8]
+Talent Entry     : Discipline [tree=spec, row=7, col=2, max_rank=2, req_points=8]
                  : Effect#2 [op=set, values=(1, 2)]
 Class            : Priest
 School           : Holy
@@ -12321,7 +12321,7 @@ Description      : $@spelldesc373180
 Tooltip          : Penance bolts increased by $w2.
 
 Name             : Mind Devourer (id=373202) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=8, col=3, max_rank=1, req_points=20]
+Talent Entry     : Shadow [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -12355,7 +12355,7 @@ Description      : $@spelldesc373202
 Tooltip          : Your next Shadow Word: Madness costs no Insanity and deals $w2% additional damage.
 
 Name             : Insidious Ire (id=373212) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=9, col=6, max_rank=2, req_points=20]
+Talent Entry     : Shadow [tree=spec, row=9, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(13, 25)]
 Class            : Priest
 School           : Shadow
@@ -12392,7 +12392,7 @@ Description      : $@spelldesc342415
 Tooltip          : Increases the damage done by Mind Blast, Void Torrent, Mind Flay, and Void Volley by $s1%.
 
 Name             : Sanguine Teachings (id=373218) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=8, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -12407,7 +12407,7 @@ Effects          :
 Description      : Increases your Leech by $s1%.
 
 Name             : Tithe Evasion (id=373223) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=7, col=3, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=7, col=6, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -12421,7 +12421,7 @@ Effects          :
 Description      : Shadow Word: Death deals $s1% less damage to you.
 
 Name             : Idol of Yogg-Saron (id=373273) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Shadow [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -12502,7 +12502,7 @@ Effects          :
 Description      : Hurls a bolt of dark magic, dealing $s1 Shadow damage and ${$s1*$s2/100} Shadow damage to all enemies within $a1 yards of the target. Damage reduced beyond $s3 targets.
 
 Name             : Idol of N'Zoth (id=373280) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=10, col=2, max_rank=1, req_points=20]
+Talent Entry     : Shadow [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -12558,7 +12558,7 @@ Tooltip          : Haste increased by $w1%.
 
 Name             : Inescapable Torment (id=373427) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Shadow [tree=spec, row=9, col=1, max_rank=1, req_points=20]
-                 : Discipline [tree=spec, row=9, col=6, max_rank=1, req_points=20]
+                 : Discipline [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -12626,7 +12626,7 @@ Effects          :
 Description      : $@spelldesc373427
 
 Name             : Translucent Image (id=373446) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=10, col=4, max_rank=1, req_points=23]
+Talent Entry     : Generic [tree=class, row=10, col=8, max_rank=1, req_points=23]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -12657,7 +12657,7 @@ Description      : Damage taken reduced.
 Tooltip          : Damage taken reduced by $w%.
 
 Name             : Light's Inspiration (id=373450) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=23]
+Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=1, req_points=23]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -12677,7 +12677,7 @@ Effects          :
 Description      : Increases the maximum health gained from Desperate Prayer by $s1%.
 
 Name             : Unwavering Will (id=373456) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=2, req_points=23]
+Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=2, req_points=23]
                  : Effect#1 [op=set, values=(-5, -10)]
                  : Effect#2 [op=set, values=(75, 75)]
                  : Effect#3 [op=set, values=(-5, -10)]
@@ -12702,7 +12702,7 @@ Effects          :
 Description      : While above $s2% health, the cast time of your $?a137033[Flash Heal is]?a137032[Flash Heal and Smite are][Flash Heal, Prayer of Healing, and Smite are] reduced by $s1%.
 
 Name             : Twins of the Sun Priestess (id=373466) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=4, col=5, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -12766,7 +12766,7 @@ Effects          :
 Description      : Shadow Word: Madness causes your Shadow Word: Pain and Vampiric Touch to deal damage $s1% faster on all targets for $393919d.
 
 Name             : Shadowy Insight (id=375888) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=5, col=1, max_rank=1, req_points=8]
+Talent Entry     : Shadow [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -12928,7 +12928,7 @@ Description      : $@spelldesc375888
 Tooltip          : Your next Mind Blast is instant cast.
 
 Name             : Mental Decay (id=375994) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=5, col=5, max_rank=1, req_points=8]
+Talent Entry     : Shadow [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -12981,7 +12981,7 @@ Description      : Flap upward, gaining height at the cost of some momentum.
 |cFFFFFFFFMax 1 Charge|r
 
 Name             : Mental Fortitude (id=377065) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=2, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Shadow [tree=spec, row=2, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -12998,7 +12998,7 @@ Effects          :
 Description      : Healing from Vampiric Touch and Shadow Word: Madness when you are at maximum health will shield you for the same amount. The shield cannot exceed $s1% of your maximum health.
 
 Name             : Idol of C'Thun (id=377349) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Shadow [tree=spec, row=10, col=5, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -13177,7 +13177,7 @@ Effects          :
 Description      : $@spelldesc376744
 
 Name             : Move with Grace (id=390620) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=5, col=2, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=3, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -13207,7 +13207,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Improved Purify (id=390632) [Passive, Hidden] 
-Talent Entry     : Discipline, Holy [tree=class, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Discipline, Holy [tree=class, row=3, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -13221,7 +13221,7 @@ Effects          :
 Description      : Purify additionally removes all Disease effects.
 
 Name             : Spell Warding (id=390667) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=2, req_points=23]
+Talent Entry     : Generic [tree=class, row=9, col=5, max_rank=2, req_points=23]
                  : Effect#1 [op=set, values=(-2, -4)]
 Class            : Priest
 School           : Physical
@@ -13237,7 +13237,7 @@ Effects          :
 Description      : Reduces all magic damage taken by $s1%.
 
 Name             : Improved Fade (id=390670) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=8, col=5, max_rank=2, req_points=23]
+Talent Entry     : Generic [tree=class, row=8, col=8, max_rank=2, req_points=23]
                  : Effect#1 [op=set, values=(-5000, -10000)]
 Class            : Priest
 School           : Physical
@@ -13254,7 +13254,7 @@ Effects          :
 Description      : Reduces the cooldown of Fade by ${$s1/-1000)} sec.
 
 Name             : Inspiration (id=390676) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=6, col=1, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=2, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -13407,7 +13407,7 @@ Description      : $@spelldesc390691
 Tooltip          : Haste increased by $w1%.
 
 Name             : Inner Focus (id=390693) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=8, col=2, max_rank=1, req_points=20]
+Talent Entry     : Discipline [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -13480,7 +13480,7 @@ Description      : $@spelldesc390705
 Tooltip          : The damage of your next Shadow spell is increased by $s1%.
 
 Name             : Weal and Woe (id=390786) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=10, col=2, max_rank=1, req_points=20]
+Talent Entry     : Discipline [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -13570,7 +13570,7 @@ Effects          :
 Description      : $@spelldesc110744
 
 Name             : Sheer Terror (id=390919) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=3, col=6, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Generic [tree=class, row=3, col=9, max_rank=1, req_points=0, select_idx=100]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -13618,7 +13618,7 @@ Effects          :
 Description      : $@spelldesc120517
 
 Name             : Prismatic Echoes (id=390967) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=9, col=4, max_rank=2, req_points=20]
+Talent Entry     : Holy [tree=spec, row=9, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(8, 15)]
                  : Effect#2 [op=set, values=(20, 40)]
 Class            : Priest
@@ -13655,7 +13655,7 @@ Effects          :
 Description      : $@spelldesc120517
 
 Name             : Twist of Fate (id=390972) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=7, col=2, max_rank=2, req_points=8]
+Talent Entry     : Generic [tree=class, row=7, col=5, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(5, 10)]
                  : Effect#2 [op=set, values=(5, 10)]
 Class            : Priest
@@ -13682,7 +13682,7 @@ Effects          :
 Description      : After damaging or healing a target below $s3% health, gain $s1% increased damage and healing for $390978d.
 
 Name             : Prayers of the Virtuous (id=390977) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=7, col=3, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=7, col=4, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -13745,7 +13745,7 @@ Effects          :
 Description      : $@spelldesc110744
 
 Name             : Lightweaver (id=390992) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -13814,7 +13814,7 @@ $?S120517&!?a1246517[Creating a Halo reduces the cooldown of Holy Word: Sanctify
 ][]Holy Fire reduces the cooldown of Holy Word: Chastise by $s3 sec.
 
 Name             : Shattered Psyche (id=391090) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=6, col=7, max_rank=1, req_points=8]
+Talent Entry     : Shadow [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -13858,7 +13858,7 @@ Description      : $@spelldesc391090
 Tooltip          : The critical strike chance of your next Mind Blast is increased by $w1%.
 
 Name             : Dark Evangelism (id=391099) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=6, col=6, max_rank=1, req_points=8]
+Talent Entry     : Shadow [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -13914,7 +13914,7 @@ Description      : Increases your non-periodic Shadow damage by $s1% for $d.
 Tooltip          : Your non-periodic Shadow damage is increased by $w1%$?$w2>0[ and all damage is increased by $w2%][]. $?s341240[Critical strike chance increased by ${$W4}.1%.][]
 
 Name             : Restitution (id=391124) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=3, col=2, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Holy [tree=spec, row=3, col=3, max_rank=1, req_points=0, select_idx=100]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -14060,7 +14060,7 @@ Effects          :
 Description      : Prayer of Mending heals $s1% more for each bounce remaining.
 
 Name             : Tormented Spirits (id=391284) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=9, col=5, max_rank=1, req_points=20]
+Talent Entry     : Shadow [tree=spec, row=9, col=4, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -14076,7 +14076,7 @@ Description      : Your Shadow Word: Pain damage has a chance to create Shadowy 
 Critical strikes increase the chance by $s1%.
 
 Name             : Desperate Times (id=391381) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=9, col=5, max_rank=2, req_points=20]
+Talent Entry     : Holy [tree=spec, row=9, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Priest
 School           : Physical
@@ -14093,7 +14093,7 @@ Effects          :
 Description      : Increases healing by $s1% on friendly targets at or below $s2% health.
 
 Name             : Surge of Insanity (id=391399) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Shadow [tree=spec, row=4, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -14170,7 +14170,7 @@ Description      : Assaults the target's mind with Shadow energy, causing $o1 Sh
 Tooltip          : Movement speed slowed by $s2% and taking Shadow damage every $t1 sec.
 
 Name             : Deathspeaker (id=392507) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Shadow [tree=spec, row=8, col=3, max_rank=1, req_points=20, select_idx=100]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -14335,7 +14335,7 @@ Description      : Devouring Plague increases your haste by $394963s1% for $3949
 
 
 Name             : Improved Flash Heal (id=393870) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [free=(Discipline, Holy), tree=class, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Generic [free=(Discipline, Holy), tree=class, row=1, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -14888,7 +14888,7 @@ Effects          :
 Description      : Enables Worgen to switch between Worgen and Human forms.
 
 Name             : Thought Harvester (id=406788) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Shadow [tree=spec, row=3, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -14903,7 +14903,7 @@ Effects          :
 Description      : Mind Blast gains an additional charge.
 
 Name             : Voidtouched (id=407430) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=5, col=2, max_rank=1, req_points=8]
+Talent Entry     : Shadow [tree=spec, row=5, col=3, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -14938,7 +14938,7 @@ Effects          :
 Description      : Shadow Apparitions deal $s1% increased damage to targets affected by your Shadow Word: Madness.
 
 Name             : Mind's Eye (id=407470) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Shadow [tree=spec, row=7, col=4, max_rank=1, req_points=8, select_idx=100]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -14969,7 +14969,7 @@ Description      : $@spelldesc403385
 Tooltip          : Your debuffs and harmful periodic spells and abilities have a chance to grant you $s1 $pri for $403386d.
 
 Name             : Distorted Reality (id=409044) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Shadow [tree=spec, row=7, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -15163,7 +15163,7 @@ Effects          :
 Description      : $@spelldesc231644
 
 Name             : Epiphany (id=414553) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=10, col=5, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -15203,7 +15203,7 @@ Description      : $@spelldesc414553
 Tooltip          : Your next Prayer of Mending incurs no cooldown.
 
 Name             : Benevolence (id=415416) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=23, select_idx=100]
+Talent Entry     : Generic [tree=class, row=10, col=4, max_rank=1, req_points=23, select_idx=100]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -15332,7 +15332,7 @@ Effects          :
 Description      : $@spelldesc421453
 
 Name             : Ultimate Penitence (id=421453) [Spell Family (6)] 
-Talent Entry     : Discipline [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Discipline [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -15965,7 +15965,7 @@ Description      : $?a137032[Increases the duration of Atonement by ${$s1/1000} 
 
 
 Name             : Waste No Time (id=440681) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=2, col=3, max_rank=1, req_points=0]
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=2, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -16004,7 +16004,7 @@ Effects          :
 Description      : Grants Premonition of Insight, Piety, and Solace at $428940s2% effectiveness.
 
 Name             : Foreseen Circumstances (id=440738) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=3, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -16024,7 +16024,7 @@ Effects          :
 Description      : $?a137032[Pain Suppression reduces damage taken by an additional $s1%.][Guardian Spirit lasts an additional ${$s2/1000} sec.]
 
 Name             : Twinsight (id=440742) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=5, col=1, max_rank=1, req_points=0]
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=5, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -16098,7 +16098,7 @@ Effects          :
 Description      : $@spelldesc1246802
 
 Name             : Entropic Rift (id=447444) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Voidweaver (Discipline) [free=(Discipline), tree=hero, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Voidweaver (Discipline) [free=(Discipline), tree=hero, row=1, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -16197,7 +16197,7 @@ Effects          :
 Description      : $@spelldesc448278
 
 Name             : Collapsing Void (id=448403) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=5, col=1, max_rank=1, req_points=0]
+Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=5, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -16250,7 +16250,7 @@ Effects          :
 Description      : When you gain experience for exploring a location, gain $s1% additional exploration experience.
 
 Name             : Divine Halo (id=449806) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=5, col=1, max_rank=1, req_points=0]
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=5, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -17080,7 +17080,7 @@ Effects          :
 Description      : Devouring Plague increases your damage done by $454638s1% for $454638d, multiple applications may overlap.
 
 Name             : Word of Supremacy (id=453726) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=3, col=2, max_rank=1, req_points=0, select_idx=100]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -17095,7 +17095,7 @@ Effects          :
 Description      : Power Word: Fortitude grants you an additional $s1% stamina.
 
 Name             : Heightened Alteration (id=453729) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=3, col=2, max_rank=1, req_points=0, select_idx=200]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -17116,7 +17116,7 @@ Effects          :
 Description      : $?a137031[Increases the duration of Spirit of Redemption by ${$s1/1000} sec.][Increases the duration of Dispersion by ${$s2/1000} sec.]
 
 Name             : Manifested Power (id=453783) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=2, col=3, max_rank=1, req_points=0]
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=2, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -17140,7 +17140,7 @@ $@spellicon109186 $@spellname109186
 $@spelldesc109186]
 
 Name             : Empowered Surges (id=453799) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=3, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -17161,7 +17161,7 @@ Description      : $?a137033[Increases the damage done by Mind Flay: Insanity by
 ][Your spells affected by Surge of Light heal for $s1% while Surge of Light is active.]
 
 Name             : Energy Cycle (id=453828) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=4, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -17555,7 +17555,7 @@ Effects          :
 Description      : $@spelldesc447444
 
 Name             : Phantom Reach (id=459559) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=23]
+Talent Entry     : Generic [tree=class, row=10, col=6, max_rank=1, req_points=23]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -17768,7 +17768,7 @@ Effects          :
 Description      : Smite extends the duration of an active Atonement by ${$s1/1000}.1 sec.
 
 Name             : Evangelism (id=472433) [Spell Family (6)] 
-Talent Entry     : Discipline [tree=spec, row=7, col=2, max_rank=1, req_points=8]
+Talent Entry     : Discipline [tree=spec, row=7, col=4, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -17805,7 +17805,7 @@ Description      : Immediately Power Word: Radiance your target at $s2% effectiv
 Tooltip          : Power Word: Radiance is instant cast and mana cost reduced by $s3%.
 
 Name             : Encroaching Shadows (id=472568) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=3, col=5, max_rank=1, req_points=0]
+Talent Entry     : Discipline [tree=spec, row=3, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -18171,7 +18171,7 @@ Effects          :
 Description      : $@spelldesc1215500
 
 Name             : Tentacle Slam (id=1227280) [Spell Family (6)] 
-Talent Entry     : Shadow [tree=spec, row=3, col=2, max_rank=1, req_points=0]
+Talent Entry     : Shadow [tree=spec, row=3, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -18507,7 +18507,7 @@ Description      : $@spelldesc372969
 Tooltip          : Penance damage and healing increased by $s1%.
 
 Name             : Shadow Tap (id=1235211) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Discipline [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -18635,7 +18635,7 @@ Tooltip          : The voidbroken offers its gratitude. Healing $/5;s2% every $t
 
 Name             : Death's Torment (id=1240364) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Shadow [tree=spec, row=9, col=3, max_rank=1, req_points=20]
-                 : Discipline [tree=spec, row=9, col=5, max_rank=1, req_points=20]
+                 : Discipline [tree=spec, row=9, col=4, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -18726,7 +18726,7 @@ Effects          :
 Description      : $@spelldesc1242173
 
 Name             : Descending Darkness (id=1242666) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=4, col=2, max_rank=1, req_points=0]
+Talent Entry     : Shadow [tree=spec, row=4, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -18744,7 +18744,7 @@ Effects          :
 Description      : Increases Tentacle Slam damage by $s1%.
 
 Name             : Phantom Menace (id=1242779) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=6, col=5, max_rank=1, req_points=8]
+Talent Entry     : Shadow [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -18764,7 +18764,7 @@ Effects          :
 Description      : Increases the critical strike chance of Shadowy Apparitions by $s1% and their critical strike damage by $s2%.
 
 Name             : Instilled Doubt (id=1242862) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=7, col=5, max_rank=2, req_points=8]
+Talent Entry     : Shadow [tree=spec, row=7, col=4, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(8, 15)]
                  : Effect#2 [op=set, values=(20, 40)]
 Class            : Priest
@@ -18874,7 +18874,7 @@ Effects          :
 Description      : $@spelldesc373280
 
 Name             : Ultimate Serenity (id=1246517) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=10, col=2, max_rank=1, req_points=20, replace="Holy Word: Sanctify" (id=34861)]
+Talent Entry     : Holy [tree=spec, row=10, col=3, max_rank=1, req_points=20, replace="Holy Word: Sanctify" (id=34861)]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -18982,7 +18982,7 @@ Effects          :
 Description      : $?a137032[The first bolt of each Penance cast damages or heals for $s1% more.][$@spelldesc1246798]
 
 Name             : Piety (id=1246802) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=4, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -19017,7 +19017,7 @@ Effects          :
 Description      : Reduces the mana cost of Prayer of Healing by $s1%.
 
 Name             : Healing Focus (id=1247166) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=6, col=2, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19033,7 +19033,7 @@ Effects          :
 Description      : Reduces the mana cost of Flash Heal by $s1%.
 
 Name             : Spiritwell (id=1247178) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=4, col=4, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=4, col=2, max_rank=1, req_points=0, select_idx=200]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -19087,7 +19087,7 @@ Description      : |cnNORMAL_FONT_COLOR:Resets all equipped gear to their origin
 |cnGREEN_FONT_COLOR:<Right Click to toggle lock appearance>|r
 
 Name             : Cosmic Wave (id=1248418) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=5, col=2, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=5, col=3, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19103,7 +19103,7 @@ Effects          :
 Description      : Increases Cosmic Ripple healing by $s1%.
 
 Name             : Guiding Light (id=1248423) [Spell Family (6), Passive] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=1, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -19122,7 +19122,7 @@ Description      : $?a137032[Penance][Prayer of Mending] gains an additional cha
 
 
 Name             : Focused Power (id=1249230) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=23, select_idx=200]
+Talent Entry     : Generic [tree=class, row=10, col=4, max_rank=1, req_points=23, select_idx=200]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19142,7 +19142,7 @@ Effects          :
 Description      : Increases the damage of your spells by $s1%.
 
 Name             : Everlasting Light (id=1249233) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=5, col=1, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=2, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19193,7 +19193,7 @@ Effects          :
 Description      : Shadow damage and healing done increased by $s1%.
 
 Name             : Spectral Illusion (id=1250378) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=8, col=4, max_rank=1, req_points=23]
+Talent Entry     : Generic [tree=class, row=8, col=7, max_rank=1, req_points=23]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19227,7 +19227,7 @@ Description      : $@spelldesc1250378
 Tooltip          : An illusion of you is drawing enemy attention.
 
 Name             : Tormenting Whispers (id=1250492) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=4, col=1, max_rank=1, req_points=0]
+Talent Entry     : Shadow [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19260,7 +19260,7 @@ Effects          :
 Description      : $@spelldesc1246517
 
 Name             : Uplifting Words (id=1250562) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=5, col=1, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -19276,7 +19276,7 @@ Effects          :
 Description      : Increases the critical strike chance of your Holy Word: Serenity$?a1246517[] [ and Holy Word: Sanctify] by $s1%.
 
 Name             : Angelic Touch (id=1250565) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=7, col=1, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=7, col=2, max_rank=1, req_points=8]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -19315,7 +19315,7 @@ Effects          :
 Description      : $@spelldesc1246517
 
 Name             : Radiant Plea (id=1250684) [Spell Family (6), Passive] 
-Talent Entry     : Holy [tree=spec, row=9, col=6, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -19331,7 +19331,7 @@ Effects          :
 Description      : Increases Prayer of Mending healing by $s1%.
 
 Name             : Void Tendrils (id=1250691) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=4, col=7, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Generic [tree=class, row=4, col=9, max_rank=1, req_points=0, select_idx=200]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -19347,7 +19347,7 @@ Effects          :
 Description      : Call shadowy tendrils to constrict enemies when Psychic Scream ends, rooting them in place for $114404d.
 
 Name             : False Autonomy (id=1250806) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=5, col=6, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=8, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19361,7 +19361,7 @@ Effects          :
 Description      : Increases the duration of Mind Control and Dominate Mind against enemy creatures by ${$s1/1000} sec.
 
 Name             : Spiritual Guidance (id=1250818) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=2, col=6, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19375,7 +19375,7 @@ Effects          :
 Description      : Increases your Intellect by $s1%.
 
 Name             : Strength of Soul (id=1250820) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=4, col=5, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=4, col=6, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19389,7 +19389,7 @@ Effects          :
 Description      : Increases your Stamina by $s1%.
 
 Name             : Dark Enlightenment (id=1250835) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=5, col=5, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=7, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19403,7 +19403,7 @@ Effects          :
 Description      : Increases your haste by $s1%.
 
 Name             : Mindpierce (id=1251029) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=8, col=3, max_rank=1, req_points=23]
+Talent Entry     : Generic [tree=class, row=8, col=6, max_rank=1, req_points=23]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19423,7 +19423,7 @@ Effects          :
 Description      : Increases the damage of $?a137033[Mind Flay][Smite] by $s1%.
 
 Name             : Painful Invocation (id=1251030) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=3, col=5, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=3, col=7, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19443,7 +19443,7 @@ Effects          :
 Description      : Increases the damage of $?a137031&?s14914[Holy Fire]?a137031&!s14914[Holy Fire and Shadow Word: Pain][Shadow Word: Pain] by $s1%.
 
 Name             : Twin Disciplines (id=1251077) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=5, max_rank=1, req_points=8]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -19504,7 +19504,7 @@ Description      : $@spelldesc1252215
 Tooltip          : Your next Flash Heal is upgraded to Shadow Mend.
 
 Name             : Master the Darkness (id=1253590) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Discipline [tree=spec, row=11, col=4, max_rank=1, req_points=20, select_idx=100]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -19635,7 +19635,7 @@ Description      : $@spelldesc1253724
 Tooltip          : $?a450193[Void Blast][Smite] damage increased by $w1%.
 
 Name             : Master the Darkness (id=1253827) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
+Talent Entry     : Discipline [tree=spec, row=11, col=4, max_rank=1, req_points=20, select_idx=300]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -19666,7 +19666,7 @@ Effects          :
 Description      : $@spelldesc1253593
 
 Name             : Master the Darkness (id=1253845) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
+Talent Entry     : Discipline [tree=spec, row=11, col=4, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
@@ -19786,7 +19786,7 @@ Effects          :
 Description      : $@spelldesc55342
 
 Name             : Benediction (id=1262755) [Spell Family (6), Passive] 
-Talent Entry     : Holy [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Holy [tree=spec, row=11, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -19805,7 +19805,7 @@ Effects          :
 Description      : Prayer of Mending healing has a chance to upgrade your next Flash Heal to Benediction, healing the target for $s1% more and causing a Cosmic Ripple.
 
 Name             : Benediction (id=1262758) [Spell Family (6), Passive] 
-Talent Entry     : Holy [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=300]
+Talent Entry     : Holy [tree=spec, row=11, col=3, max_rank=2, req_points=20, select_idx=300]
                  : Effect#1 [op=set, values=(15, 30)]
                  : Effect#2 [op=mul, values=(1, 2)]
                  : Effect#3 [op=mul, values=(1, 2)]
@@ -19840,7 +19840,7 @@ Description      : Cosmic Ripple healing increased by $s1%.
 All healing done increased by $s2%.
 
 Name             : Benediction (id=1262760) [Spell Family (6), Passive] 
-Talent Entry     : Holy [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=400]
+Talent Entry     : Holy [tree=spec, row=11, col=3, max_rank=1, req_points=20, select_idx=400]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -19914,7 +19914,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Void Apparitions (id=1264096) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Shadow [tree=spec, row=11, col=4, max_rank=1, req_points=20, select_idx=100]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -19931,7 +19931,7 @@ Effects          :
 Description      : When an effect from an Idol is activated, conjure Shadowy Apparitions.
 
 Name             : Void Apparitions (id=1264104) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=11, col=1, max_rank=2, req_points=20, select_idx=200]
+Talent Entry     : Shadow [tree=spec, row=11, col=4, max_rank=2, req_points=20, select_idx=200]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Priest
 School           : Shadow
@@ -19953,7 +19953,7 @@ $@spellicon1264177 $@spellname1264177
 $@spelldesc1264177
 
 Name             : Void Apparitions (id=1264107) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=11, col=1, max_rank=1, req_points=20, select_idx=300]
+Talent Entry     : Shadow [tree=spec, row=11, col=4, max_rank=1, req_points=20, select_idx=300]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -20239,7 +20239,7 @@ Effects          :
 Description      : Power Surge lasts an additional ${$s1/1000} sec.
 
 Name             : Focused Outburst (id=1272320) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=2, col=4, max_rank=1, req_points=0]
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=2, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -20269,7 +20269,7 @@ Effects          :
 Description      : $?c2[Prayer of Healing mana cost reduced by $s1% and its cast time is reduced by $s2%.][Void Volley damage increased by $s3% and its cooldown is reduced by ${$s4/-1000} sec.]
 
 Name             : Realized Potential (id=1272326) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=4, col=4, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Archon (Holy, Shadow) [tree=hero, row=4, col=2, max_rank=1, req_points=0, select_idx=100]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -20299,7 +20299,7 @@ Description      : $?c2[Flash Heal healing increased by $s1%.
 Healing spells and Smite have an additional $s2% chance to grant Surge of Light.][Shadow Word: Death damage increased by $s3% and its cooldown is reduced by ${$s4/-1000} sec.]
 
 Name             : Words of the Wise (id=1272352) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=2, col=4, max_rank=1, req_points=0]
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=2, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -20321,7 +20321,7 @@ Description      : $?a137031&?a1246517[Holy Word: Serenity healing increased by 
 
 
 Name             : Prophet's Insight (id=1272359) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=3, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -20347,7 +20347,7 @@ Description      : $?c2[Reduces the cooldown of your Holy Words by ${$s1/-1000} 
 
 
 Name             : Unfolding Vision (id=1272363) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=4, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -20376,7 +20376,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Invoked Nightmare (id=1279350) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=2, col=2, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Shadow [tree=spec, row=2, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -20412,7 +20412,7 @@ Effects          :
 Description      : Tentacle Slam afflicts your target with Shadow Word: Madness at $s1% effectiveness.
 
 Name             : Crushing Void (id=1279354) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=9, col=7, max_rank=1, req_points=20]
+Talent Entry     : Shadow [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -20480,7 +20480,7 @@ Description      : $@spelldesc1279354
 Tooltip          : Void Volley is available!
 
 Name             : Searing Light (id=1280131) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Discipline [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -20515,7 +20515,7 @@ Description      : $@spelldesc47540
 Tooltip          : Suffering $w1 Holy damage every $t1 sec.
 
 Name             : Mindbender (id=1280137) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Discipline [tree=spec, row=8, col=3, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Discipline [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=200]
 Class            : Priest
 School           : Physical
 Spell Type       : None
