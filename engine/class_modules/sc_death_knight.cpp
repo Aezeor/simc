@@ -3061,8 +3061,8 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
     else
       pet_melee_attack_t<T>::execute();
 
-    if ( first )
-      first = false;
+    if ( this->first )
+      this->first = false;
   }
 
   void reset() override
@@ -3077,9 +3077,9 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
     timespan_t t = pet_melee_attack_t<T>::execute_time();
 
     // Randomize first swing time
-    if ( first )
+    if ( this->first )
     {
-      timespan_t delay = ( weapon->slot == SLOT_OFF_HAND ) ? pet()->rng().range( 10_ms, t * 0.5 ) : 0_ms;
+      timespan_t delay = ( this->weapon->slot == SLOT_OFF_HAND ) ? pet()->rng().range( 10_ms, t * 0.5 ) : 0_ms;
       return t + delay;
     }
 
