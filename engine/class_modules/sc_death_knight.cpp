@@ -8341,7 +8341,7 @@ struct reapers_mark_t final : public death_knight_spell_t
       } );
     }
 
-    if ( p()->talent.deathbringer.deathly_blows->ok() && p()->talent.frost.bonegrinder->ok() && sim->dbc->wowv() >= wowv_t( 12, 0, 1 ) )
+    if ( p()->talent.deathbringer.deathly_blows.ok() && sim->dbc->wowv() >= wowv_t( 12, 0, 1 ) )
       p()->trigger_bonegrinder( ( as<int>( p()->talent.deathbringer.deathly_blows->effectN( 4 ).base_value() ) ) );
   }
 };
@@ -13014,6 +13014,9 @@ void death_knight_t::trigger_runic_empowerment( double rpcost )
 
 void death_knight_t::trigger_bonegrinder( int stacks )
 {
+  if ( !talent.frost.bonegrinder.ok() )
+    return;
+
   if ( buffs.bonegrinder_frost->check() )
     return;
 
