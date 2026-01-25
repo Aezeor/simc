@@ -1863,14 +1863,14 @@ int raidbots_talent_render_width( specialization_e spec, int height, bool mini =
 // for main render
 int raidbots_talent_render_height( specialization_e spec, int width )
 {
-  double mult = 0.6;
+  double mult = 0.65;
 
   switch ( spec )
   {
     // narrower trees
 
     // wider trees
-    case DRUID_RESTORATION: mult = 0.55; break;
+    case DRUID_RESTORATION: mult = 0.6; break;
     default: break;
   }
 
@@ -3758,7 +3758,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
   {
     auto w_ = raidbots_talent_render_width( p.specialization(), 125 );
     os.format(
-      R"(<iframe src="{}" width="{}" height="125" style="margin-right: 8px; margin-top: 5px; float: left"></iframe>)",
+      R"(<iframe src="{}" width="{}" height="131" style="margin-right: 8px; margin-top: 5px; float: left"></iframe>)",
       raidbots_talent_render_src( p.talents_str, p.true_level, w_, true, p.dbc->ptr ), w_ );
 
     os << "\n";
