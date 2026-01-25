@@ -7786,10 +7786,10 @@ private:
 };
 
 // Infected Claws =====================================================
-struct infected_claws_t final : public death_knight_disease_t
+struct infected_claws_t final : public death_knight_spell_t
 {
   infected_claws_t( std::string_view name, death_knight_t* p )
-    : death_knight_disease_t( name, p, p->spell.infected_claws_dot )
+    : death_knight_spell_t( name, p, p->spell.infected_claws_dot )
   {
   }
 };
