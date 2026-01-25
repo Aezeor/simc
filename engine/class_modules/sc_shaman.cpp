@@ -12443,19 +12443,19 @@ void shaman_t::init_action_list_enhancement()
   aoe->add_action( "lava_lash,if=talent.splitstream.enabled&buff.hot_hand.up" );
   aoe->add_action( "tempest,if=buff.maelstrom_weapon.stack>=10&(!buff.ascendance.up|!buff.doom_winds.up)" );
   aoe->add_action( "primordial_storm,if=buff.maelstrom_weapon.stack>=10" );
+  aoe->add_action( "voltaic_blaze,if=talent.fire_nova.enabled" );
   aoe->add_action( "crash_lightning" );
   aoe->add_action( "windstrike" );
   aoe->add_action( "stormstrike,if=buff.doom_winds.up" );
   aoe->add_action( "chain_lightning,if=buff.maelstrom_weapon.stack>=(9+1*talent.surging_totem.enabled)" );
   aoe->add_action( "sundering,if=talent.feral_spirit.enabled" );
+  aoe->add_action( "voltaic_blaze" );
   aoe->add_action( "lava_lash,if=pet.searing_totem.active" );
   aoe->add_action( "stormstrike,if=charges_fractional>=1.8" );
   aoe->add_action( "sundering,if=cooldown.surging_totem.remains>25" );
-  aoe->add_action( "voltaic_blaze,if=talent.fire_nova.enabled" );
   aoe->add_action( "stormstrike,if=!talent.surging_totem.enabled" );
   aoe->add_action( "lava_lash" );
   aoe->add_action( "stormstrike" );
-  aoe->add_action( "voltaic_blaze" );
   aoe->add_action( "chain_lightning,if=buff.maelstrom_weapon.stack>=5" );
 
   // Buffs
