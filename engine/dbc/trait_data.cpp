@@ -60,7 +60,7 @@ const trait_data_t* trait_data_t::find( unsigned trait_node_entry_id, bool ptr )
 }
 
 const trait_data_t* trait_data_t::find( talent_tree tree, std::string_view name, unsigned class_id,
-                                        specialization_e spec, bool ptr, bool tokenize, unsigned index )
+                                        specialization_e spec, bool ptr, bool tokenize, unsigned index, unsigned sub_tree_id )
 {
   std::vector<const trait_data_t*> _traits;
 
@@ -68,6 +68,11 @@ const trait_data_t* trait_data_t::find( talent_tree tree, std::string_view name,
 
   for ( const auto& entry : _data )
   {
+    if ( sub_tree_id != 0 && entry.id_sub_tree != 0 && entry.id_sub_tree != sub_tree_id )
+    {
+      continue;
+    }
+
     if ( util::str_compare_ci( name, tokenize ? util::tokenize_fn( entry.name ) : entry.name ) )
     {
       if ( entry.id_spec[ 0 ] == 0 || range::contains( entry.id_spec, static_cast<unsigned>( spec ) ) )
