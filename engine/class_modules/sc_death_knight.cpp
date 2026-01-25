@@ -12951,16 +12951,20 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
 
     trigger_bonegrinder( decrement_count );
 
+    if ( talent.frost.arctic_assault.ok() )
+    {
+      // Arctic Assault fires on a delay after consuming Killing Machine.
+      // Uncertain from logs if its tied to the Obliterate execute or the consumption, leaving it here for now.
+      make_event( *sim, 500_ms, [ aa_action, decrement_count ]() {
+        aa_action->base_multiplier *= decrement_count;
+        aa_action->execute();
+        aa_action->base_multiplier /= decrement_count;
+      } );
+    }
 
     for ( int i = decrement_count; i > 0; --i )
     {
       proc->occur();
-      if ( talent.frost.arctic_assault.ok() )
-      {
-        // Arctic Assault fires on a delay after consuming Killing Machine.
-        // Uncertain from logs if its tied to the Obliterate execute or the consumption, leaving it here for now.
-        make_event( *sim, 500_ms, [ aa_action ]() { aa_action->execute(); } );
-      }
 
       if ( rng().roll( talent.frost.murderous_efficiency->effectN( 1 ).percent() ) )
       {
