@@ -8771,8 +8771,8 @@ private:
 struct blood_mist_t final : public death_knight_spell_t
 {
   blood_mist_t( std::string_view name, death_knight_t* p ) : death_knight_spell_t( name, p, p->spell.blood_mist_damage ),
-  rp_gain( p->spell.blood_mist_rp_gain->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) ),
-  rp_gain_cap( p->spell.blood_mist_rp_gain->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) * p->spell.blood_mist_buff->effectN( 3 ).base_value() ),
+  rp_gain( as<int>( p->spell.blood_mist_rp_gain->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) ) ),
+  rp_gain_cap( as<int>( p->spell.blood_mist_rp_gain->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) * p->spell.blood_mist_buff->effectN( 3 ).base_value() ) ),
   rp_gained( 0 )
   {
     aoe                = -1;
@@ -12778,7 +12778,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
       }
 
       if ( talent.blood.sanguinary_burst.ok() && buffs.dancing_rune_weapon->check() )
-        buffs.sanguinary_burst->trigger( final_spend );
+        buffs.sanguinary_burst->trigger( as<int>( final_spend ) );
     }
   }
 
