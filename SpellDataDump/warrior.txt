@@ -138,7 +138,7 @@ Effects          :
 Description      : Reduces Arcane damage taken by $s1%.
 
 Name             : Cleave (id=845) [Spell Family (4)] 
-Talent Entry     : Arms [tree=spec, row=6, col=5, max_rank=1, req_points=8, replace="Whirlwind" (id=1680)]
+Talent Entry     : Arms [tree=spec, row=6, col=6, max_rank=1, req_points=8, replace="Whirlwind" (id=1680)]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -161,7 +161,7 @@ Effects          :
 Description      : Strikes all enemies in front of you for $s1 Physical damage. Deals reduced damage beyond $s2 targets.
 
 Name             : Shield Wall (id=871) [Spell Family (4)] 
-Talent Entry     : Protection [tree=spec, row=5, col=4, max_rank=1, req_points=8]
+Talent Entry     : Protection [tree=spec, row=5, col=5, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -692,7 +692,7 @@ Effects          :
 Description      : Increases your Strength, Agility, and Intellect by $s1 (scales with level).
 
 Name             : Revenge (id=6572) [Spell Family (4)] 
-Talent Entry     : Protection [tree=spec, row=2, col=5, max_rank=1, req_points=0, replace="Slam" (id=1464)]
+Talent Entry     : Protection [tree=spec, row=2, col=7, max_rank=1, req_points=0, replace="Slam" (id=1464)]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -852,7 +852,7 @@ Spurs all allies within $1244157A1 yards, increasing their movement speed by $12
 Tooltip          : Movement slowed by $s1%.
 
 Name             : Improved Whirlwind (id=12950) [Spell Family (4), Passive] 
-Talent Entry     : Fury [tree=spec, row=4, col=5, max_rank=1, req_points=0]
+Talent Entry     : Fury [tree=spec, row=4, col=7, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -1436,8 +1436,8 @@ Description      : Heals the target for $s2% of the caster's total health over $
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Sudden Death (id=29725) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Protection [tree=spec, row=6, col=5, max_rank=1, req_points=8, select_idx=300]
-                 : Arms [tree=spec, row=2, col=4, max_rank=1, req_points=0]
+Talent Entry     : Protection [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=300]
+                 : Arms [tree=spec, row=2, col=5, max_rank=1, req_points=0]
                  : Fury [tree=spec, row=3, col=2, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
@@ -2694,9 +2694,9 @@ Effects          :
 Description      : Hurls your weapon at an enemy, causing $s1 Physical damage and stunning for $132169d.$?s436162[ Also hits 2 additional nearby targets, stunning for 2 sec.][]
 
 Name             : Avatar (id=107574) [Spell Family (4)] 
-Talent Entry     : Fury [tree=spec, row=10, col=5, max_rank=1, req_points=20, select_idx=100]
-                 : Protection [tree=spec, row=8, col=5, max_rank=1, req_points=20]
-                 : Arms [tree=spec, row=10, col=5, max_rank=1, req_points=20]
+Talent Entry     : Fury [tree=spec, row=10, col=6, max_rank=1, req_points=20, select_idx=100]
+                 : Protection [tree=spec, row=8, col=8, max_rank=1, req_points=20]
+                 : Arms [tree=spec, row=10, col=6, max_rank=1, req_points=20]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -2904,7 +2904,7 @@ Effects          :
 Description      : Bloodthirst heals the Warrior for $s1% of their health.
 
 Name             : Die by the Sword (id=118038) [Spell Family (4)] 
-Talent Entry     : Arms [tree=spec, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Arms [tree=spec, row=3, col=5, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -3967,7 +3967,7 @@ Variables        : $damage=${$199667s1+$44949s1+(2*($199852s1+$199851s1))}
 $maxRage=${$190411s1+($190411s2*$190411s3)}
 
 Name             : Ignore Pain (id=190456) [Spell Family (4)] 
-Talent Entry     : Protection [tree=spec, row=1, col=4, max_rank=1, req_points=0]
+Talent Entry     : Protection [tree=spec, row=1, col=5, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -4393,7 +4393,7 @@ Effects          :
 Description      : $@spelldesc184367
 
 Name             : Indomitable (id=202095) [Spell Family (4), Passive] 
-Talent Entry     : Protection [tree=spec, row=9, col=4, max_rank=1, req_points=20]
+Talent Entry     : Protection [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -4510,7 +4510,7 @@ Description      : Instantly attack the target, causing $s1 damage and healing y
 Killing an enemy that yields experience or honor resets the cooldown of Impending Victory and makes it cost no Rage.
 
 Name             : Fervor of Battle (id=202316) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Arms [tree=spec, row=4, col=5, max_rank=1, req_points=0]
+Talent Entry     : Arms [tree=spec, row=4, col=6, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -4526,7 +4526,7 @@ Effects          :
 Description      : If Cleave or Whirlwind hits $s1 or more targets you also Slam your primary target. This Slam deals $s2% additional damage.
 
 Name             : Best Served Cold (id=202560) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Protection [tree=spec, row=5, col=5, max_rank=1, req_points=8]
+Talent Entry     : Protection [tree=spec, row=5, col=8, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -5566,7 +5566,7 @@ Effects          :
 Description      : $@spelldesc215096
 
 Name             : Bladestorm (id=227847) [Spell Family (4)] 
-Talent Entry     : Fury [tree=spec, row=10, col=5, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Fury [tree=spec, row=10, col=6, max_rank=1, req_points=20, select_idx=200]
                  : Arms [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=100]
 Class            : Warrior
 School           : Physical
@@ -5603,7 +5603,7 @@ Immune to crowd control.
 Variables        : $dmg=$?c2[${(1+($d/$t))*($50622sw1+($95738sw1/2))}][${(1+($d/$t))*$50622sw1}]
 
 Name             : Ravager (id=228920) [Spell Family (4)] 
-Talent Entry     : Protection [tree=spec, row=10, col=5, max_rank=1, req_points=20, select_idx=300]
+Talent Entry     : Protection [tree=spec, row=10, col=8, max_rank=1, req_points=20, select_idx=300]
                  : Arms [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=200]
 Class            : Warrior
 School           : Physical
@@ -5790,7 +5790,7 @@ Description      : $@spelldesc100
 Tooltip          : Movement slowed by $s1%.
 
 Name             : Devastator (id=236279) [Passive] 
-Talent Entry     : Protection [tree=spec, row=3, col=5, max_rank=1, req_points=0, replace="Devastate" (id=20243)]
+Talent Entry     : Protection [tree=spec, row=3, col=8, max_rank=1, req_points=0, replace="Devastate" (id=20243)]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -7007,7 +7007,7 @@ Description      : Invoke the spirits of your ancestors, granting you their powe
 Tooltip          : Increases mastery by $w1.
 
 Name             : Punish (id=275334) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Protection [tree=spec, row=6, col=5, max_rank=1, req_points=8]
+Talent Entry     : Protection [tree=spec, row=6, col=8, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -7048,7 +7048,7 @@ Description      : $@spelldesc275334
 Tooltip          : Punished, dealing $w1% less damage to $@auracaster.
 
 Name             : Storm Surge (id=275336) [Spell Family (4), Passive] 
-Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=2, col=5, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -7730,7 +7730,7 @@ Effects          :
 Description      : $@spelldesc280128
 
 Name             : Meat Cleaver (id=280392) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Fury [tree=spec, row=6, col=5, max_rank=1, req_points=8]
+Talent Entry     : Fury [tree=spec, row=6, col=7, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -7914,7 +7914,7 @@ If your foe survives, $s2% of the Rage spent is refunded.][]
 Variables        : $damage=${2.0*$260798s1}
 
 Name             : Massacre (id=281001) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Arms [tree=spec, row=7, col=4, max_rank=1, req_points=8]
+Talent Entry     : Arms [tree=spec, row=7, col=5, max_rank=1, req_points=8]
                  : Protection [tree=spec, row=9, col=1, max_rank=1, req_points=20]
 Class            : Warrior
 School           : Physical
@@ -8997,7 +8997,7 @@ Effects          :
 Description      : $@spelldesc215568
 
 Name             : Improved Execute (id=316402) [Spell Family (4), Passive] 
-Talent Entry     : Fury [tree=spec, row=3, col=5, max_rank=1, req_points=0]
+Talent Entry     : Fury [tree=spec, row=3, col=6, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -9021,7 +9021,7 @@ Effects          :
 Description      : Execute no longer costs Rage and now generates ${$s3/10} Rage.
 
 Name             : Improved Execute (id=316405) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Arms [tree=spec, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Arms [tree=spec, row=4, col=5, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -9838,7 +9838,7 @@ Tooltip          : Leech increased by $w1%.
 Immune to crowd control effects.
 
 Name             : Collateral Damage (id=334779) [Spell Family (4), Passive] 
-Talent Entry     : Arms [tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Arms [tree=spec, row=7, col=7, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -12120,7 +12120,7 @@ If you have Rend, Mortal Strike inflicts Rend on targets below $s3% health.
 
 
 Name             : Improved Sweeping Strikes (id=383155) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Arms [tree=spec, row=6, col=5, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Arms [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=100]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -12182,7 +12182,7 @@ Effects          :
 Description      : Bloodthirst's critical strike chance increased by $s1% and if you are Enraged, Bloodthirst extends your Enrage by ${$s2/1000}.1 sec. This extension is doubled if Bloodthirst critically strikes your primary target.
 
 Name             : Critical Thinking (id=383297) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Fury [tree=spec, row=8, col=5, max_rank=2, req_points=20]
+Talent Entry     : Fury [tree=spec, row=8, col=6, max_rank=2, req_points=20]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Warrior
@@ -12204,7 +12204,7 @@ Effects          :
 Description      : Raging Blow's critical strike chance increased by $s1% and critical strike damage increased by $s2%.
 
 Name             : Sharpened Blades (id=383341) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Arms [tree=spec, row=6, col=4, max_rank=2, req_points=8]
+Talent Entry     : Arms [tree=spec, row=6, col=5, max_rank=2, req_points=8]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Warrior
@@ -12226,7 +12226,7 @@ Effects          :
 Description      : Mortal Strike, Cleave, and Execute damage increased by $s1% and critical strike damage increased by $s2%.
 
 Name             : Impale (id=383430) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Arms [tree=spec, row=5, col=5, max_rank=1, req_points=8]
+Talent Entry     : Arms [tree=spec, row=5, col=6, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -12276,7 +12276,7 @@ Effects          :
 Description      : While Enraged, your auto-attacks can no longer miss.
 
 Name             : Fatality (id=383703) [Spell Family (4), Passive] 
-Talent Entry     : Arms [tree=spec, row=9, col=5, max_rank=1, req_points=20]
+Talent Entry     : Arms [tree=spec, row=9, col=7, max_rank=1, req_points=20]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -12368,7 +12368,7 @@ Effects          :
 Description      : Bloodthirst and Raging Blow damage increased by ${$s1/10}% and critical strike damage increased by ${$s2/10}%.
 
 Name             : Improved Raging Blow (id=383854) [Spell Family (4), Passive] 
-Talent Entry     : Fury [tree=spec, row=5, col=5, max_rank=1, req_points=8]
+Talent Entry     : Fury [tree=spec, row=5, col=6, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -12526,7 +12526,7 @@ Description      : $s1% of damage you deal adds to your active Ignore Pain or th
 Your next Ignore Pain can be increased by up to ${$mhp*($190456s4/100)*($s2/100)}.
 
 Name             : Strategist (id=384041) [Spell Family (4), Passive] 
-Talent Entry     : Protection [tree=spec, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Protection [tree=spec, row=4, col=5, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -12540,7 +12540,7 @@ Effects          :
 Description      : Devastate, Thunder Clap, Revenge, and Execute have a $236279s2% chance to reset the remaining cooldown on Shield Slam.
 
 Name             : Enduring Alacrity (id=384063) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Protection [tree=spec, row=8, col=5, max_rank=1, req_points=20]
+Talent Entry     : Protection [tree=spec, row=8, col=7, max_rank=1, req_points=20]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -12683,7 +12683,7 @@ Description      : Gain Strength equal to $?c3[$s3][$s2]% of your Armor.
 
 Name             : Bloodsurge (id=384361) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Arms [tree=spec, row=4, col=2, max_rank=1, req_points=0]
-                 : Protection [tree=spec, row=5, col=5, max_rank=1, req_points=8]
+                 : Protection [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -12953,7 +12953,7 @@ Effects          :
 Description      : Bloodthirst causes your Bleeds to deal $1265406s1% additional damage for $1265406d.
 
 Name             : Bloodborne (id=385704) [Spell Family (4), Passive] 
-Talent Entry     : Protection [tree=spec, row=6, col=5, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Protection [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=200]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -13093,7 +13093,7 @@ Description      : $@spelldesc385952
 Tooltip          : Stunned.
 
 Name             : Shield Specialization (id=386011) [Passive] 
-Talent Entry     : Protection [tree=spec, row=8, col=4, max_rank=1, req_points=20]
+Talent Entry     : Protection [tree=spec, row=8, col=5, max_rank=1, req_points=20]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -13110,7 +13110,7 @@ Effects          :
 Description      : Increases Block chance by $s1% and your Block value by $s2%.
 
 Name             : Enduring Defenses (id=386027) [Spell Family (4), Passive] 
-Talent Entry     : Protection [tree=spec, row=7, col=4, max_rank=2, req_points=8]
+Talent Entry     : Protection [tree=spec, row=7, col=5, max_rank=2, req_points=8]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Warrior
 School           : Physical
@@ -13321,7 +13321,7 @@ $?a137048[][Damage done reduced by $s2%.]$?e3[
 Attacks dealing more than $s5% or more of your maximum health in damage will be reduced by $s6%.][]
 
 Name             : Battle-Scarred Veteran (id=386394) [Spell Family (4), Passive] 
-Talent Entry     : Protection [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Protection [tree=spec, row=10, col=5, max_rank=1, req_points=20]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -13394,7 +13394,7 @@ Effects          :
 Description      : $@spelldesc376744
 
 Name             : Violent Outburst (id=386477) [Spell Family (4), Passive] 
-Talent Entry     : Protection [tree=spec, row=9, col=5, max_rank=1, req_points=20]
+Talent Entry     : Protection [tree=spec, row=9, col=7, max_rank=1, req_points=20]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -13454,7 +13454,7 @@ Description      : $@spelldesc386477
 Tooltip          : ${$w1~} Rage spent for Violent Outburst.
 
 Name             : Unhinged (id=386628) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=4, col=5, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -13546,7 +13546,7 @@ Description      : $@spelldesc386634
 Tooltip          : Mortal Strike damage increased by $w1%.
 
 Name             : Executioner's Precision (id=386634) [Spell Family (4), Passive] 
-Talent Entry     : Arms [tree=spec, row=9, col=4, max_rank=1, req_points=20]
+Talent Entry     : Arms [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -13636,7 +13636,7 @@ Description      : Whirlwind has a ${$s1/1000}.1 sec cooldown, but deals $s3% in
 Slam has a ${$s2/1000}.1 sec cooldown and generates ${$s6/10} Rage, but deals $s4% increased damage.
 
 Name             : Critical Thinking (id=389306) [Spell Family (4), Passive] 
-Talent Entry     : Arms [tree=spec, row=8, col=5, max_rank=2, req_points=20]
+Talent Entry     : Arms [tree=spec, row=8, col=6, max_rank=2, req_points=20]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Warrior
@@ -13770,7 +13770,7 @@ Effects          :
 Description      : $@spelldesc392792
 
 Name             : Cruelty (id=392931) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Fury [tree=spec, row=6, col=5, max_rank=2, req_points=8]
+Talent Entry     : Fury [tree=spec, row=6, col=6, max_rank=2, req_points=8]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Warrior
 School           : Physical
@@ -13787,7 +13787,7 @@ Effects          :
 Description      : While Enraged, Bloodthirst and Raging Blow deal $s1% increased damage.
 
 Name             : Wrath and Fury (id=392936) [Spell Family (4), Passive] 
-Talent Entry     : Fury [tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Fury [tree=spec, row=7, col=7, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -14951,7 +14951,7 @@ Description      : Colossal Might increases damage dealt by your next Demolish b
 $?c1[Mortal Strike][Shield Slam] grants a stack of Colossal Might and $?c1[Cleave][Revenge] grants a stack of Colossal Might when it strikes $s1 or more targets.
 
 Name             : Dominance of the Colossus (id=429636) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=5, col=2, max_rank=1, req_points=0]
+Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=5, col=3, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -15006,7 +15006,7 @@ Effects          :
 Description      : Critical strike damage of your abilities is increased by $s1% and the amount of damage blocked by your critical blocks is increased by $s2%.
 
 Name             : Boneshaker (id=429639) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=2, col=4, max_rank=1, req_points=1, select_idx=100]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -15036,7 +15036,7 @@ Effects          :
 Description      : Colossal Might increases the damage of your $?c1[Overpower][Revenge] by $?c1[$440989s3][$440989s4]% per stack.
 
 Name             : Mountain of Muscle and Scars (id=429642) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=4, col=4, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -15065,7 +15065,7 @@ Description      : You deal $s1% more damage and take $s4% less damage.
 Size increased by $s5%.
 
 Name             : No Stranger to Pain (id=429644) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=3, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -15124,7 +15124,7 @@ Effects          :
 Description      : $?c1[Mortal Strike][Shield Slam] critical strikes grant an additional stack of Colossal Might.
 
 Name             : Lightning Strikes (id=434969) [Spell Family (4), Passive] 
-Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=1, col=2, max_rank=1, req_points=0]
+Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -15145,7 +15145,7 @@ Description      : Damaging enemies with Thunder Clap, $?a137048[Revenge, ][Ragi
 Lightning Strikes occur $s2% more often during Avatar.
 
 Name             : Steadfast as the Peaks (id=434970) [Spell Family (4), Passive] 
-Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=3, col=2, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -15288,7 +15288,7 @@ Effects          :
 Description      : $@spelldesc434969
 
 Name             : Ground Current (id=436148) [Spell Family (4), Passive] 
-Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=2, col=1, max_rank=1, req_points=0]
+Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=2, col=2, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -15303,7 +15303,7 @@ Effects          :
 Description      : Lightning Strikes also deal $460670s1 Nature damage to enemies near their target. Damage reduced beyond $460670s2 targets.
 
 Name             : Thorim's Might (id=436152) [Spell Family (4), Passive] 
-Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=4, col=1, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=4, col=2, max_rank=1, req_points=0, select_idx=200]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -15325,7 +15325,7 @@ Description      : Lightning Strikes generate ${$s1/10} Rage.
 $?a137048[Revenge][Raging Blow] and Execute damage increased by $s2%.
 
 Name             : Storm Bolts (id=436162) [Spell Family (4), Passive] 
-Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=3, col=1, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=3, col=2, max_rank=1, req_points=0, select_idx=100]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -15348,7 +15348,7 @@ Effects          :
 Description      : Storm Bolt also hits $s1 additional nearby $Ltarget:targets;, stunning them for $s2 sec, but its cooldown is increased by ${$s3/1000} sec.
 
 Name             : Gathering Clouds (id=436201) [Spell Family (4), Passive] 
-Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=4, col=1, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=4, col=2, max_rank=1, req_points=0, select_idx=100]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -15433,7 +15433,7 @@ $healing=${$cond($gt($SP,$AP),$SP*1,$AP*1)*$pctD*(1+$@versadmg)}
 $spike=${$cond($gt($SP,$AP),$SP*0.75,$AP*0.75)*$pctD*(1+$@versadmg)}
 
 Name             : Demolish (id=436358) [Spell Family (4)] 
-Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=1, col=2, max_rank=1, req_points=0]
+Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -15536,7 +15536,7 @@ Thunder Clap damage increased by $s4%$?a137050[, no longer costs Rage, and now g
 Improved Whirlwind, Meat Cleaver, and Barbaric Training affect Thunder Clap in addition to Whirlwind.][]
 
 Name             : Strength of the Mountain (id=437068) [Spell Family (4), Passive] 
-Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=2, col=4, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -15584,7 +15584,7 @@ Effects          :
 Description      : Thunder Blast calls down a Lightning Strike on an enemy it hits.
 
 Name             : Burst of Power (id=437118) [Spell Family (4), Passive] 
-Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=4, col=2, max_rank=1, req_points=0]
+Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=4, col=4, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -15632,7 +15632,7 @@ Description      : $@spelldesc437118
 Tooltip          : Your next $U $?a137048[Shield Slams][Bloodthirsts] have no cooldown$?a137050[, deal $s2% increased damage, and generate ${$s3/10} additional Rage][].
 
 Name             : Avatar of the Storm (id=437134) [Spell Family (4), Passive] 
-Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=5, col=2, max_rank=1, req_points=0]
+Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=5, col=3, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -15686,7 +15686,7 @@ Description      : $@spelldesc434970
 Tooltip          : Maximum health increased by $s3%.
 
 Name             : Keep Your Feet on the Ground (id=438590) [Spell Family (4), Passive] 
-Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=3, col=2, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -15728,7 +15728,7 @@ Description      : $@spelldesc438590
 Tooltip          : Damage taken reduced by $w1%.
 
 Name             : Storm Shield (id=438597) [Spell Family (4), Passive] 
-Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=3, col=1, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=3, col=2, max_rank=1, req_points=0, select_idx=200]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -15868,7 +15868,7 @@ $?(a429641&c1)[Damage dealt by Overpower increased by $w3%.]?$?(a429641&c3)[Dama
 $?a440995[Damage dealt by Rend and Deep Wounds increased by $w2%.][]
 
 Name             : Earthquaker (id=440992) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=2, col=4, max_rank=1, req_points=1, select_idx=200]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -15884,7 +15884,7 @@ Effects          :
 Description      : Shockwave also knocks enemies into the air and its cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Veteran Vitality (id=440993) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=3, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -15966,7 +15966,7 @@ Effects          :
 Description      : $@spelldesc6544
 
 Name             : Slayer's Dominance (id=444767) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=1, col=2, max_rank=1, req_points=0]
+Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -16046,7 +16046,7 @@ Effects          :
 Description      : Each strike of Bladestorm applies Overwhelmed to all enemies affected, increasing damage you deal to them by $445836s1% for $445836d, max $445836u stacks.
 
 Name             : Fierce Followthrough (id=444773) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=3, col=2, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -16064,7 +16064,7 @@ Description      : $?c1[Mortal Strike][Bloodthirst] critical strikes increase th
 
 
 Name             : Opportunist (id=444774) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=3, col=2, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -16102,7 +16102,7 @@ Description      : $?c1[Mortal Strike and Cleave when it hits $s2 or more target
 
 
 Name             : Relentless Pursuit (id=444776) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=2, col=2, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=2, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -16120,7 +16120,7 @@ Charge removes all movement impairing effects, this effect cannot occur more tha
 
 
 Name             : Vicious Agility (id=444777) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=2, col=2, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=2, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -16152,7 +16152,7 @@ Effects          :
 Description      : Each strike of Bladestorm deals an additional $s1% damage evenly split across all targets.
 
 Name             : Slayer's Malice (id=444779) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=4, col=2, max_rank=1, req_points=0]
+Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=4, col=4, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -16173,7 +16173,7 @@ Effects          :
 Description      : $?c1[Overpower][Raging Blow] and Execute damage increased by $?c1[$s1][$s2]%.
 
 Name             : Unrelenting Onslaught (id=444780) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=5, col=2, max_rank=1, req_points=0]
+Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=5, col=3, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -16522,7 +16522,7 @@ Effects          :
 Description      : $@spelldesc436344
 
 Name             : Fight Through the Flames (id=452494) [Spell Family (4), Passive] 
-Talent Entry     : Protection [tree=spec, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Protection [tree=spec, row=3, col=6, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -17779,7 +17779,7 @@ Description      : Void elves are suffused with cosmic energy while within the V
 Tooltip          : Void elves are suffused with cosmic energy while within the Voidstorm, reducing Spatial Rift's cooldown by 120 seconds.
 
 Name             : Armor Specialization (id=1234769) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Protection [tree=spec, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Protection [tree=spec, row=3, col=4, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -17852,7 +17852,7 @@ Effects          :
 Description      : You have a $s2% chance to disrupt magic damage dealt to you, reducing the damage it deals by $s3%.
 
 Name             : Unyielding Stance (id=1235047) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Protection [tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Protection [tree=spec, row=7, col=8, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -17867,7 +17867,7 @@ Effects          :
 Description      : Defensive Stance reduces damage taken by an additional $s1%.
 
 Name             : Heavy Handed (id=1235088) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Protection [tree=spec, row=9, col=5, max_rank=1, req_points=20]
+Talent Entry     : Protection [tree=spec, row=9, col=9, max_rank=1, req_points=20]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -17887,7 +17887,7 @@ Effects          :
 Description      : Execute hits up to $s1 additional $Ltarget:targets; for $s2% damage.
 
 Name             : Whirling Blade (id=1235113) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Protection [tree=spec, row=10, col=5, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Protection [tree=spec, row=10, col=8, max_rank=1, req_points=20, select_idx=200]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -17942,7 +17942,7 @@ Description      : $@spelldesc28880
 Tooltip          : The voidbroken offers its gratitude. Healing $/5;s2% every $t1 seconds.
 
 Name             : Last Stand (id=1243659) [Spell Family (4), Passive] 
-Talent Entry     : Protection [tree=spec, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Protection [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -18298,7 +18298,7 @@ Effects          :
 Description      : Colossus Smash grants you Sweeping Strikes.
 
 Name             : Powerful Momentum (id=1261050) [Spell Family (4), Passive] 
-Talent Entry     : Arms [tree=spec, row=6, col=5, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Arms [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=200]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -18362,7 +18362,7 @@ Effects          :
 Description      : Tactician has a $s1% increased chance to trigger.
 
 Name             : Deep Wounds (id=1261060) [Spell Family (4), Passive] 
-Talent Entry     : Protection [tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Protection [tree=spec, row=7, col=9, max_rank=1, req_points=8]
                  : Arms [tree=spec, row=7, col=3, max_rank=1, req_points=8]
                  : Fury [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Warrior
@@ -18509,7 +18509,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Devastating Focus (id=1264330) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Protection [tree=spec, row=4, col=5, max_rank=1, req_points=0]
+Talent Entry     : Protection [tree=spec, row=4, col=7, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -18686,7 +18686,7 @@ Effects          :
 Description      : Bloodthirst critical strikes restore $1283442s1% additional health and increase the damage of Raging Blow by $1265403s1% for $1265403d.
 
 Name             : Rampaging Ruin (id=1265357) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Fury [tree=spec, row=5, col=5, max_rank=1, req_points=8]
+Talent Entry     : Fury [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -18700,7 +18700,7 @@ Effects          :
 Description      : While Improved Whirlwind is active Rampage instead strikes all targets in front of you for ${$1265579s1+$1265580s1+$1265581s1+$1265582s1} Physical damage. Deals reduced damage beyond $s1 targets.
 
 Name             : Surge of Adrenaline (id=1265359) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Fury [tree=spec, row=9, col=5, max_rank=1, req_points=20]
+Talent Entry     : Fury [tree=spec, row=9, col=7, max_rank=1, req_points=20]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -19012,7 +19012,7 @@ Effects          :
 Description      : $@spelldesc1265361
 
 Name             : Decimator (id=1270704) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=2, col=4, max_rank=1, req_points=0]
+Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=2, col=5, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -19026,7 +19026,7 @@ Effects          :
 Description      : Demolish's final strike applies Deep Wounds to all targets, at $s1% effectiveness.
 
 Name             : Cut to the Bone (id=1270709) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=3, col=5, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -19043,7 +19043,7 @@ Effects          :
 Description      : $?c1[Mortal Strike][Shield Slam] critical strikes increase your Rend and Deep Wounds damage by $1270840s1% for $1270840d.
 
 Name             : Celeritous Conclusion (id=1270710) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=4, col=5, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -19057,7 +19057,7 @@ Effects          :
 Description      : Demolish's final strike grants $1270843s1% Haste for $1270843d and increases the critical strike chance of your next $?c1[Mortal Strike][Shield Slam] by $1270846s1%.
 
 Name             : Violent Euphoria (id=1270717) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=2, col=3, max_rank=1, req_points=0]
+Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=2, col=5, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -19071,7 +19071,7 @@ Effects          :
 Description      : Bladestorm puts you into a battle trance, granting you 15% haste for 8 sec after you stop Bladestorming.
 
 Name             : Deadly Focus (id=1270718) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=3, col=5, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -19086,7 +19086,7 @@ Effects          :
 Description      : Executioner's duration is increased by ${$s1/1000} sec.
 
 Name             : Conductivity (id=1270723) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=3, col=2, max_rank=1, req_points=0]
+Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=3, col=5, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -19104,7 +19104,7 @@ Effects          :
 Description      : Lightning Strike damage increased by $s1% and critical strike damage increased by $s2%.
 
 Name             : Capacitance (id=1270724) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=4, col=2, max_rank=1, req_points=0]
+Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=4, col=5, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -19373,7 +19373,7 @@ Effects          :
 Description      : Overpower and Slam increase the damage of your next Mortal Strike by $316440s1%, stacking up to 3 times.
 
 Name             : Mass Execution (id=1273075) [Spell Family (4), Passive] 
-Talent Entry     : Arms [tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Arms [tree=spec, row=7, col=6, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None

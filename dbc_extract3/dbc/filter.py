@@ -530,13 +530,13 @@ class TraitSet(DataSet):
                 if pos_y < 0:
                     continue
 
-                # assume up to 5% variance in data coordinate values
+                # assume up to +/-50 pixel variance in data coordinate values
                 # _coords[key]["x"] and ["y"] contains all potential grid coordinates of the tree
                 # _x_map and _y_map are used to fast access the nearest grid coordinate to the data coordinate
                 if pos_x not in _x_map[key]:
                     new_x = True
                     for _x in _coords[key]["x"]:
-                        if abs(_x - pos_x) < _x * 0.05:
+                        if abs(_x - pos_x) < 50:
                             _x_map[key][pos_x] = _x
                             new_x = False
                             continue
@@ -548,7 +548,7 @@ class TraitSet(DataSet):
                 if pos_y not in _y_map[key]:
                     new_y = True
                     for _y in _coords[key]["y"]:
-                        if abs(_y - pos_y) < _y * 0.05:
+                        if abs(_y - pos_y) < 50:
                             _y_map[key][pos_y] = _y
                             new_y = False
                             continue

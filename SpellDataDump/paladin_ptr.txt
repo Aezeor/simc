@@ -995,7 +995,7 @@ $@spellname317920: Affected allies immune to interrupts and silences.
 Tooltip          : Aura effectiveness increased.
 
 Name             : Ardent Defender (id=31850) [Spell Family (10)] 
-Talent Entry     : Protection [tree=spec, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Protection [tree=spec, row=4, col=4, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Physical
 Spell Type       : Magic
@@ -1035,9 +1035,9 @@ The next attack that would otherwise kill you will instead bring you to $w2% of 
 Healing taken increased by $w4%.][]
 
 Name             : Avenging Wrath (id=31884) [Spell Family (10)] 
-Talent Entry     : Protection [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=100, override="Avenging Wrath" (id=31884)]
-                 : Retribution [tree=spec, row=3, col=4, max_rank=1, req_points=0, override="Avenging Wrath" (id=31884)]
-                 : Holy [tree=spec, row=8, col=5, max_rank=1, req_points=20, select_idx=100, override="Avenging Wrath" (id=31884)]
+Talent Entry     : Protection [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=100, override="Avenging Wrath" (id=31884)]
+                 : Retribution [tree=spec, row=3, col=5, max_rank=1, req_points=0, override="Avenging Wrath" (id=31884)]
+                 : Holy [tree=spec, row=8, col=6, max_rank=1, req_points=20, select_idx=100, override="Avenging Wrath" (id=31884)]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -1106,7 +1106,7 @@ $damage=$?a137027[${$s2*$<retribution>}][$s2]
 $crit=$?a137027[${$s4*$<retribution>}][$s4]
 
 Name             : Avenger's Shield (id=31935) [Spell Family (10)] 
-Talent Entry     : Protection [tree=spec, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Protection [tree=spec, row=1, col=4, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -1415,7 +1415,7 @@ Description      : Each time you cast a spell, there is a chance you will gain u
 
 Name             : Sanctified Wrath (id=53376) [Spell Family (10), Passive] 
 Talent Entry     : Holy [tree=spec, row=9, col=5, max_rank=1, req_points=20, select_idx=100]
-                 : Protection [tree=spec, row=8, col=4, max_rank=1, req_points=20]
+                 : Protection [tree=spec, row=8, col=5, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -1529,7 +1529,7 @@ $@spellname19750: healing increased by $54149s1% and becomes instant cast.
 $@spellname275773: Greater Judgment prevents an additional ${$54149s4-100}% damage dealt by the target and generates $54149s6 additional Holy Power.
 
 Name             : Hammer of the Righteous (id=53595) [Spell Family (10)] 
-Talent Entry     : Protection [tree=spec, row=2, col=4, max_rank=1, req_points=0, select_idx=100, replace="Crusader Strike" (id=35395)]
+Talent Entry     : Protection [tree=spec, row=2, col=5, max_rank=1, req_points=0, select_idx=100, replace="Crusader Strike" (id=35395)]
 Class            : Paladin
 School           : Physical
 Spell Type       : Melee
@@ -2468,7 +2468,7 @@ Description      : A powerful but expensive spell, healing a friendly target for
 |cFFFFFFFFGenerates $88852s1 Holy Power.][]
 
 Name             : Grand Crusader (id=85043) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=spec, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Protection [tree=spec, row=3, col=4, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -2488,7 +2488,7 @@ Effects          :
 Description      : When you avoid a melee attack or use $?S53595[Hammer of the Righteous]?S204019[Blessed Hammer][Crusader Strike], you have a $s1% chance to reset the remaining cooldown on Avenger's Shield$?S393022[ and increase your Strength by $393019s1% for $393019d.][.]
 
 Name             : Light of Dawn (id=85222) [Spell Family (10)] 
-Talent Entry     : Holy [tree=spec, row=2, col=5, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=2, col=6, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -2654,7 +2654,7 @@ Description      : Reduces all damage taken by $s2%.
 Tooltip          : The Guardian of Ancient Kings is protecting you, reducing all damage taken by $s2%.
 
 Name             : Guardian of Ancient Kings (id=86659) [Spell Family (10)] 
-Talent Entry     : Protection [tree=spec, row=7, col=3, max_rank=1, req_points=8]
+Talent Entry     : Protection [tree=spec, row=7, col=4, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -5190,7 +5190,7 @@ Description      : Sacrifice a portion of your own health to instantly heal an a
 Does not cause your Beacon of Light to be healed. Cannot be cast on yourself.
 
 Name             : Blade of Justice (id=184575) [Spell Family (10)] 
-Talent Entry     : Retribution [tree=spec, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Retribution [tree=spec, row=1, col=4, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
@@ -5598,7 +5598,7 @@ Description      : $@spelldesc20271
 Tooltip          : Taking $w1% increased damage from $@auracaster's next Holy Power ability.
 
 Name             : Beacon of the Lightbringer (id=197446) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=3, col=6, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=3, col=7, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -6027,7 +6027,7 @@ Effects          :
 Description      : Avenger's Shield hits $s1 additional targets, and grants you an absorb shield for $s2% of all damage it deals.
 
 Name             : Blessing of Spellwarding (id=204018) [Spell Family (10)] 
-Talent Entry     : Protection [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Protection [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -6066,7 +6066,7 @@ Shares a cooldown with Blessing of Protection.
 Tooltip          : Immune to magical damage and harmful effects.
 
 Name             : Blessed Hammer (id=204019) [Spell Family (10)] 
-Talent Entry     : Protection [tree=spec, row=2, col=4, max_rank=1, req_points=0, select_idx=200, replace="Crusader Strike" (id=35395)]
+Talent Entry     : Protection [tree=spec, row=2, col=5, max_rank=1, req_points=0, select_idx=200, replace="Crusader Strike" (id=35395)]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -6094,7 +6094,7 @@ Description      : Throws a Blessed Hammer that spirals outward, dealing $204301
 Variables        : $shield=${$AP*$s1/100}
 
 Name             : Crusader's Judgment (id=204023) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=spec, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Protection [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -6140,7 +6140,7 @@ Effects          :
 Description      : Your Consecration is $s1% larger, and enemies within it have $s2% reduced movement speed.
 
 Name             : Righteous Protector (id=204074) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Protection [tree=spec, row=10, col=7, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -6163,7 +6163,7 @@ Description      : Avenging Wrath and Sentinel have $s1% reduced cooldown and $s
 Variables        : $reduction=${$m1/100*3}.1
 
 Name             : Final Stand (id=204077) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Protection [tree=spec, row=10, col=5, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -8390,7 +8390,7 @@ Effects          :
 Tooltip          : Knocks down, stunning for $d.
 
 Name             : Wake of Ashes (id=255937) [Spell Family (10)] 
-Talent Entry     : Retribution [tree=spec, row=8, col=3, max_rank=1, req_points=20]
+Talent Entry     : Retribution [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
@@ -10686,7 +10686,7 @@ Effects          :
 Description      : When you cast Word of Glory on yourself, it is increased by up to $s1% based on your missing health and $s2% of the mana cost is refunded.
 
 Name             : Hand of the Protector (id=315924) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=spec, row=7, col=4, max_rank=1, req_points=8]
+Talent Entry     : Protection [tree=spec, row=7, col=5, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -13588,7 +13588,7 @@ Effects          :
 Description      : $@spelldesc378285
 
 Name             : Light of the Titans (id=378405) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Protection [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=100]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -13629,7 +13629,7 @@ Description      : $@spelldesc378405
 Tooltip          : Healing for $w1 every $t1 sec.
 
 Name             : Uther's Counsel (id=378425) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Protection [tree=spec, row=8, col=4, max_rank=1, req_points=20]
+Talent Entry     : Protection [tree=spec, row=8, col=6, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -13713,7 +13713,7 @@ Description      : $?c2[Shield of the Righteous][Word of Glory] grants $s1% bonu
 Tooltip          : Armor increased by $w1%.
 
 Name             : Sanctuary (id=379021) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Protection [tree=spec, row=7, col=4, max_rank=1, req_points=8]
+Talent Entry     : Protection [tree=spec, row=7, col=7, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -13732,7 +13732,7 @@ Effects          :
 Description      : While in your Consecration and for ${$s1/1000}.1 sec after leaving it, your damage taken is reduced by $s2%.
 
 Name             : Consecration in Flame (id=379022) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Protection [tree=spec, row=6, col=4, max_rank=2, req_points=8]
+Talent Entry     : Protection [tree=spec, row=6, col=6, max_rank=2, req_points=8]
                  : Effect#2 [op=set, values=(15, 15, 30)]
 Class            : Paladin
 School           : Physical
@@ -13854,7 +13854,7 @@ Description      : $@spelldesc382275
 Tooltip          : Your next Blade of Justice casts Consecration.
 
 Name             : Sanctify (id=382536) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Retribution [tree=spec, row=5, col=4, max_rank=1, req_points=8]
+Talent Entry     : Retribution [tree=spec, row=5, col=5, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -14018,7 +14018,7 @@ Effects          :
 Description      : $@spelldesc383328
 
 Name             : Holy Blade (id=383342) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Retribution [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Retribution [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -14034,7 +14034,7 @@ Effects          :
 Description      : Blade of Justice generates $s1 additional Holy Power.
 
 Name             : Expurgation (id=383344) [Spell Family (10), Passive] 
-Talent Entry     : Retribution [tree=spec, row=2, col=4, max_rank=1, req_points=0]
+Talent Entry     : Retribution [tree=spec, row=2, col=5, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -14394,7 +14394,7 @@ Effects          :
 Description      : $@spelldesc384815
 
 Name             : Seal of Charity (id=384815) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=spec, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Protection [tree=spec, row=3, col=6, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -14832,7 +14832,7 @@ $DP=$?a223819[${1+$223819s2/100}][${1}]
 $mult=${$<Mastery>*$<DP>}
 
 Name             : Empyrean Legacy (id=387170) [Spell Family (10), Passive] 
-Talent Entry     : Retribution [tree=spec, row=9, col=4, max_rank=1, req_points=20]
+Talent Entry     : Retribution [tree=spec, row=9, col=6, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -15067,7 +15067,7 @@ Description      : $@spelldesc387801
 Tooltip          : Damage taken reduced by $w%.
 
 Name             : Divine Glimpse (id=387805) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=7, col=6, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=7, col=7, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -15084,7 +15084,7 @@ Effects          :
 Description      : Holy Shock and Judgment have a $s1% increased critical strike chance.
 
 Name             : Divine Revelations (id=387808) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=7, col=6, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -15248,7 +15248,7 @@ Description      : $@spelldesc340458
 Tooltip          : Your next Light of the Martyr also heals your Beacon of Light and its healing is increased by $s1%.
 
 Name             : Sentinel (id=389539) [Spell Family (10)] 
-Talent Entry     : Protection [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200, override="Sentinel" (id=389539)]
+Talent Entry     : Protection [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=200, override="Sentinel" (id=389539)]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -15354,7 +15354,7 @@ Effects          :
 Description      : Petition the Light on the behalf of a fallen ally, restoring spirit to body and allowing them to reenter battle with $s2% health and at least $s1% mana.
 
 Name             : Zealot's Paragon (id=391142) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=spec, row=9, col=4, max_rank=2, req_points=20]
+Talent Entry     : Protection [tree=spec, row=9, col=6, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(500, 1000)]
                  : Effect#2 [op=set, values=(5, 10)]
 Class            : Paladin
@@ -15464,7 +15464,7 @@ Effects          :
 Description      : $@spelldesc392902
 
 Name             : Inflorescence of the Sunwell (id=392907) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=10, col=6, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=10, col=8, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -15496,7 +15496,7 @@ Effects          :
 Description      : The cooldown of Aura Mastery is reduced by ${$s1/-1000} sec.
 
 Name             : Tirion's Devotion (id=392928) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Protection [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=200]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -15557,7 +15557,7 @@ Description      : $@spelldesc392938
 Tooltip          : Hammer of Wrath can be used on any target.
 
 Name             : Imbued Infusions (id=392961) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=5, col=6, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -15571,7 +15571,7 @@ Effects          :
 Description      : Consuming Infusion of Light reduces the cooldown of Holy Shock by ${$s1/-1000}.1 sec.
 
 Name             : Divine Image (id=392988) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Paladin, Priest
 School           : Physical
 Spell Type       : None
@@ -15729,7 +15729,7 @@ Description      : Empowers you with the spirit of ancient kings, reducing all d
 Tooltip          : Damage taken reduced by $86657s2%.
 
 Name             : Improved Ardent Defender (id=393114) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Protection [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Protection [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=100]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -15877,7 +15877,7 @@ Description      : $@spelldesc378279
 Tooltip          : Gift of the Golden Val'kyr has ended and will not activate.
 
 Name             : Avenging Crusader (id=394088) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=8, col=5, max_rank=1, req_points=20, select_idx=200, override="Avenging Crusader" (id=216331)]
+Talent Entry     : Holy [tree=spec, row=8, col=6, max_rank=1, req_points=20, select_idx=200, override="Avenging Crusader" (id=216331)]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -16064,7 +16064,7 @@ Description      : $@spelldesc385414
 Tooltip          : ${$w1~} Holy Power spent.
 
 Name             : Righteous Cause (id=402912) [Spell Family (10), Passive] 
-Talent Entry     : Retribution [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Retribution [tree=spec, row=4, col=6, max_rank=1, req_points=0, select_idx=100]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -16134,7 +16134,7 @@ Description      : $?s383328[Final Verdict][Templar's Verdict] and Blade of Just
 The range of $?s383328[Final Verdict and ][]Blade of Justice is increased to $s3 yds.
 
 Name             : Blessed Champion (id=403010) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Retribution [tree=spec, row=7, col=4, max_rank=1, req_points=8]
+Talent Entry     : Retribution [tree=spec, row=7, col=5, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -16156,7 +16156,7 @@ Effects          :
 Description      : Crusader Strike and Judgment hit an additional $s4 targets but deal $s3% reduced damage to secondary targets.
 
 Name             : Burning Crusade (id=403026) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Retribution [tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Retribution [tree=spec, row=7, col=7, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -16206,7 +16206,7 @@ Effects          :
 Description      : Divine Storm heals you and up to $s2 nearby allies for $403460s1.
 
 Name             : Judgment of Justice (id=403495) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Retribution [tree=spec, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Retribution [tree=spec, row=3, col=4, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -16346,7 +16346,7 @@ Effects          :
 Description      : Wake of Ashes also causes targets to burn for an additional $403695o2 Radiant damage over $403695d.
 
 Name             : Improved Blade of Justice (id=403745) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Retribution [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Retribution [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -16361,7 +16361,7 @@ Effects          :
 Description      : Blade of Justice now has ${$s1+1} charges.
 
 Name             : Blade of Vengeance (id=403826) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Retribution [tree=spec, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Retribution [tree=spec, row=6, col=6, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -16533,7 +16533,7 @@ Effects          :
 Description      : Mastery: Highlord's Judgment is ${$s3/2}% more effective on Judgment and Hammer of Wrath. Judgment applies an additional stack of Greater Judgment if it is known.
 
 Name             : Crusading Strikes (id=404542) [Spell Family (10), Passive] 
-Talent Entry     : Retribution [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=200, replace="Crusader Strike" (id=35395)]
+Talent Entry     : Retribution [tree=spec, row=7, col=4, max_rank=1, req_points=8, select_idx=200, replace="Crusader Strike" (id=35395)]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -16704,7 +16704,7 @@ Description      : $@spelldesc255937
 
 
 Name             : Seething Flames (id=405355) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Retribution [tree=spec, row=9, col=3, max_rank=1, req_points=20]
+Talent Entry     : Retribution [tree=spec, row=9, col=4, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Holyfire
 Spell Type       : None
@@ -16891,7 +16891,7 @@ Description      : $@spelldesc392988
 Tooltip          : A Naaru is at your side. Whenever you cast a spell, the Naaru will cast a similar spell.
 
 Name             : Art of War (id=406064) [Spell Family (10), Passive] 
-Talent Entry     : Retribution [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Retribution [tree=spec, row=4, col=6, max_rank=1, req_points=0, select_idx=200]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -17009,7 +17009,7 @@ Effects          :
 Description      : $@spelldesc379017
 
 Name             : Heart of the Crusader (id=406154) [Spell Family (10), Passive] 
-Talent Entry     : Retribution [tree=spec, row=6, col=4, max_rank=2, req_points=8]
+Talent Entry     : Retribution [tree=spec, row=6, col=5, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(10, 20)]
                  : Effect#2 [op=set, values=(10, 20)]
                  : Effect#3 [op=set, values=(10, 20)]
@@ -17095,7 +17095,7 @@ Effects          :
 Description      : $?s2812[Denounce][Shield of the Righteous] heals you and up to $s3 nearby allies for $403460s1.
 
 Name             : Holy Flames (id=406545) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Retribution [tree=spec, row=5, col=5, max_rank=1, req_points=8]
+Talent Entry     : Retribution [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -17111,7 +17111,7 @@ Effects          :
 Description      : You deal $383346s2% increased Holy damage to targets burning from your Expurgation.
 
 Name             : Templar Strikes (id=406646) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Retribution [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Retribution [tree=spec, row=7, col=4, max_rank=1, req_points=8, select_idx=100]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -17197,7 +17197,7 @@ Description      : $@spelldesc404542
 Tooltip          : $@spelldesc404542
 
 Name             : Divine Wrath (id=406872) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Retribution [tree=spec, row=8, col=4, max_rank=2, req_points=20]
+Talent Entry     : Retribution [tree=spec, row=8, col=6, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(3000, 4000)]
 Class            : Paladin
 School           : Physical
@@ -17250,7 +17250,7 @@ Description      : $@spelldesc407067
 Tooltip          : Haste increased by $s1%.
 
 Name             : Rush of Light (id=407067) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Retribution [tree=spec, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Retribution [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -17892,7 +17892,7 @@ Effects          :
 Description      : $@spelldesc392938
 
 Name             : Shining Righteousness (id=414443) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=6, col=6, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=6, col=8, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -18098,7 +18098,7 @@ Effects          :
 Description      : $@spelldesc414720
 
 Name             : Reclamation (id=415364) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=8, col=6, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=8, col=8, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -18232,7 +18232,7 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 
 Name             : Awestruck (id=417855) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=4, col=6, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=4, col=8, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -18580,7 +18580,7 @@ Effects          :
 Description      : $@spelldesc422896
 
 Name             : Light's Deliverance (id=425518) [Spell Family (10), Passive] 
-Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=5, col=2, max_rank=1, req_points=1]
+Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=5, col=3, max_rank=1, req_points=1]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -18624,7 +18624,7 @@ Description      : $@spelldesc427453
 Tooltip          : You can cast Hammer of Light.
 
 Name             : Light's Guidance (id=427445) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=1, col=2, max_rank=1, req_points=1]
+Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -18800,7 +18800,7 @@ Effects          :
 Description      : $@spelldesc427453
 
 Name             : Dawnlight (id=431377) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Herald of the Sun (Holy, Retribution) [tree=hero, row=1, col=2, max_rank=1, req_points=1]
+Talent Entry     : Herald of the Sun (Holy, Retribution) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Paladin
 School           : Holyfire
 Spell Type       : None
@@ -18927,7 +18927,7 @@ Effects          :
 Description      : $@spelldesc431377
 
 Name             : Luminosity (id=431402) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Herald of the Sun (Holy, Retribution) [tree=hero, row=2, col=2, max_rank=1, req_points=1]
+Talent Entry     : Herald of the Sun (Holy, Retribution) [tree=hero, row=2, col=4, max_rank=1, req_points=1]
 Class            : Paladin
 School           : Holyfire
 Spell Type       : None
@@ -18947,7 +18947,7 @@ Effects          :
 Description      : $?c1[Critical Strike chance of Holy Shock and Light of Dawn increased by $s1%.]?c3[Critical Strike chance of Hammer of Wrath and Divine Storm increased by $s2%.][]
 
 Name             : Solar Grace (id=431404) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Herald of the Sun (Holy, Retribution) [tree=hero, row=3, col=3, max_rank=1, req_points=1]
+Talent Entry     : Herald of the Sun (Holy, Retribution) [tree=hero, row=3, col=5, max_rank=1, req_points=1]
 Class            : Paladin
 School           : Holyfire
 Spell Type       : None
@@ -19001,7 +19001,7 @@ Effects          :
 Description      : Dawnlight leaves an Eternal Flame for ${$s1/1000} sec on allies or a Greater Judgment on enemies when it expires or is extended.
 
 Name             : Sun Sear (id=431413) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Herald of the Sun (Holy, Retribution) [tree=hero, row=3, col=2, max_rank=1, req_points=1]
+Talent Entry     : Herald of the Sun (Holy, Retribution) [tree=hero, row=3, col=4, max_rank=1, req_points=1]
 Class            : Paladin
 School           : Holyfire
 Spell Type       : None
@@ -19071,7 +19071,7 @@ Effects          :
 Description      : Dawnlight reduces the movement speed of enemies by $431380s3% and increases the movement speed of allies by $431381s3%.
 
 Name             : Sun's Avatar (id=431425) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Herald of the Sun (Holy, Retribution) [tree=hero, row=5, col=2, max_rank=1, req_points=1]
+Talent Entry     : Herald of the Sun (Holy, Retribution) [tree=hero, row=5, col=3, max_rank=1, req_points=1]
 Class            : Paladin
 School           : Holyfire
 Spell Type       : None
@@ -19196,7 +19196,7 @@ Effects          :
 Description      : $@spelldesc431463
 
 Name             : Second Sunrise (id=431474) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Herald of the Sun (Holy, Retribution) [tree=hero, row=4, col=2, max_rank=1, req_points=1]
+Talent Entry     : Herald of the Sun (Holy, Retribution) [tree=hero, row=4, col=4, max_rank=1, req_points=1]
 Class            : Paladin
 School           : Holyfire
 Spell Type       : None
@@ -19354,7 +19354,7 @@ Description      : $@spelldesc431482
 Tooltip          : The damage and healing of your next Dawnlight is increased by $w1%.
 
 Name             : Wrathful Descent (id=431551) [Passive] 
-Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=2, col=2, max_rank=1, req_points=1]
+Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=2, col=4, max_rank=1, req_points=1]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -19777,7 +19777,7 @@ Effects          :
 Description      : $@spelldesc432502
 
 Name             : Undisputed Ruling (id=432626) [Spell Family (10), Passive] 
-Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=4, col=2, max_rank=1, req_points=1]
+Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=4, col=4, max_rank=1, req_points=1]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -19922,7 +19922,7 @@ Effects          :
 Description      : Consuming $?a137028[Shining Light][Infusion of Light] reduces the cooldown of Holy Armaments by ${$s1/1000}.1 sec.
 
 Name             : Divine Hammer (id=432929) [Spell Family (10), Passive] 
-Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=2, col=2, max_rank=1, req_points=1]
+Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=2, col=5, max_rank=1, req_points=1]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -19978,7 +19978,7 @@ Description      : Casting Judgment increases the damage of Empyrean Hammer by $
 Multiple applications may overlap.
 
 Name             : Unrelenting Charger (id=432990) [Spell Family (10), Passive] 
-Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=3, col=2, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=3, col=4, max_rank=1, req_points=1, select_idx=200]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -19991,7 +19991,7 @@ Effects          :
 Description      : Divine Steed lasts ${$s1/1000} sec longer and increases your movement speed by an additional $442221s1% for the first $442221d.
 
 Name             : Bonds of Fellowship (id=432992) [Spell Family (10), Passive] 
-Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=3, col=2, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=3, col=4, max_rank=1, req_points=1, select_idx=100]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -20019,7 +20019,7 @@ Effects          :
 Description      : Avenging Wrath summons an additional Sacred Weapon, and during Avenging Wrath your Sacred Weapon casts spells on your target and echoes the effects of your Holy Power abilities.
 
 Name             : Blessed Assurance (id=433015) [Spell Family (10), Passive] 
-Talent Entry     : Lightsmith (Holy, Protection) [tree=hero, row=2, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Lightsmith (Holy, Protection) [tree=hero, row=2, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -20057,7 +20057,7 @@ Description      : $@spelldesc433015
 Tooltip          : Damage and healing of your next $?s204019[Blessed Hammer]?s53595[Hammer of the Righteous]?s137029[Holy Shock][Crusader Strike] increased by $w1%.
 
 Name             : Divine Guidance (id=433106) [Spell Family (10), Passive] 
-Talent Entry     : Lightsmith (Holy, Protection) [tree=hero, row=2, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Lightsmith (Holy, Protection) [tree=hero, row=2, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -20264,7 +20264,7 @@ Effects          :
 Description      : $@spelldesc433718
 
 Name             : Hammer and Anvil (id=433718) [Spell Family (10), Passive] 
-Talent Entry     : Lightsmith (Holy, Protection) [tree=hero, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Lightsmith (Holy, Protection) [tree=hero, row=3, col=5, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -20629,7 +20629,7 @@ Tooltip          : Your next Judgment's damage is increased by $s1%$?1263782[
 Hammer of Wrath casts Blade of Justice if a charge is available.][.]
 
 Name             : Burn to Ash (id=446663) [Spell Family (10), Passive] 
-Talent Entry     : Retribution [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Retribution [tree=spec, row=10, col=5, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -20712,7 +20712,7 @@ Effects          :
 Description      : Deals $s1 damage to enemy targets. Reduced above $s2 targets.
 
 Name             : Light of the Martyr (id=447985) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=5, col=6, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=5, col=9, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -20785,7 +20785,7 @@ Description      : $@spelldesc447985
 Tooltip          : Absorbing $w1 healing and preventing your Beacon of Light from transferring healing to you.
 
 Name             : Bestow Light (id=448040) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=7, col=6, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=7, col=9, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -21553,7 +21553,7 @@ Description      : Draws upon your inner energy, restoring ${$s1*$d}% of your ma
 Tooltip          : Restores ${$s1}% health and ${$w2/5} mana per second.
 
 Name             : Light's Protection (id=461243) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=6, col=5, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=6, col=6, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -21567,7 +21567,7 @@ Effects          :
 Description      : Allies with Beacon of Light receive $s1% less damage.
 
 Name             : Overflowing Light (id=461244) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=6, col=6, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=6, col=7, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -21605,7 +21605,7 @@ Effects          :
 Description      : Holy Shock has a $s1% chance to refund a charge when cast and its healing is increased by $s2%.
 
 Name             : Truth Prevails (id=461273) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=9, col=6, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=9, col=8, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -22333,7 +22333,7 @@ Effects          :
 Description      : The radius of your auras is increased by $s1 yds.
 
 Name             : Tempered in Battle (id=469701) [Spell Family (10), Passive] 
-Talent Entry     : Lightsmith (Holy, Protection) [tree=hero, row=3, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Lightsmith (Holy, Protection) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -22500,7 +22500,7 @@ Effects          :
 Description      : $@spelldesc469882
 
 Name             : Authoritative Rebuke (id=469886) [Spell Family (10), Passive] 
-Talent Entry     : Lightsmith (Holy, Protection) [tree=hero, row=3, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Lightsmith (Holy, Protection) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -23237,7 +23237,7 @@ Description      : $@spelldesc28880
 Tooltip          : The voidbroken offers its gratitude. Healing $/5;s2% every $t1 seconds.
 
 Name             : Tyr's Deliverance (id=1241275) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=10, col=5, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Holy [tree=spec, row=10, col=6, max_rank=1, req_points=20, select_idx=100]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -23349,7 +23349,7 @@ $retribution=$?a137027[${1.00*$<pvp>}][${1}]
 $damage=${$s1*$<retribution>}
 
 Name             : Call of the Righteous (id=1241511) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=9, col=6, max_rank=2, req_points=20]
+Talent Entry     : Holy [tree=spec, row=9, col=7, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(-15000, -30000)]
                  : Effect#2 [op=set, values=(-4000, -8000)]
                  : Effect#3 [op=set, values=(-7500, -15000)]
@@ -23507,7 +23507,7 @@ Effects          :
 Description      : Hammer of Wrath deals up to $s1% additional damage based on its target's health. Lower health targets receive more damage.
 
 Name             : Hand of Divinity (id=1242008) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=10, col=5, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Holy [tree=spec, row=10, col=6, max_rank=1, req_points=20, select_idx=200]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -23569,7 +23569,7 @@ Effects          :
 Description      : $@spelldesc1244019
 
 Name             : Searing Sunlight (id=1244070) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=spec, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Protection [tree=spec, row=4, col=5, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holyfire
 Spell Type       : None
@@ -23656,7 +23656,7 @@ Damage taken reduced by $w4%.][]$?e4[
 Healed for $w6 every $t6 sec.][]
 
 Name             : Vision of Sanctity (id=1245354) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=spec, row=5, col=4, max_rank=1, req_points=8]
+Talent Entry     : Protection [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -23727,7 +23727,7 @@ Tooltip          : Absorbs $w1 damage.
 Damage taken reduced by $w2%.
 
 Name             : Solace (id=1245891) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=spec, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Protection [tree=spec, row=4, col=6, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -23804,7 +23804,7 @@ Effects          :
 Description      : $@spelldesc1245979
 
 Name             : Empyrean Authority (id=1246481) [Passive] 
-Talent Entry     : Protection [tree=spec, row=9, col=3, max_rank=1, req_points=20]
+Talent Entry     : Protection [tree=spec, row=9, col=4, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -23930,7 +23930,7 @@ Effects          :
 Description      : $@spelldesc406157
 
 Name             : Crusade (id=1253598) [Spell Family (10), Passive] 
-Talent Entry     : Retribution [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Retribution [tree=spec, row=10, col=6, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -24255,7 +24255,7 @@ Description      : $@spelldesc343527
 Tooltip          : $w2% of the Holy damage taken from $@auracaster will be dealt to the target of their Execution Sentence.
 
 Name             : Divine Exaction (id=1260429) [Spell Family (10), Passive] 
-Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=4, col=5, max_rank=1, req_points=1, select_idx=100]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -24272,7 +24272,7 @@ Description      : Divine Toll casts $s1 additional $ltime:times; on your target
 Variables        : $dmg=${$198137s1*$ceil($198034d/$198034t1)}
 
 Name             : Light Within (id=1261111) [Spell Family (10), Passive] 
-Talent Entry     : Retribution [tree=spec, row=11, col=3, max_rank=2, req_points=20, select_idx=200]
+Talent Entry     : Retribution [tree=spec, row=11, col=4, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Paladin
 School           : Physical
@@ -24287,7 +24287,7 @@ Effects          :
 Description      : Avenging Wrath further increases the damage of $?s383328[Final Verdict][Templar's Verdict] and Divine Storm by $s1%.
 
 Name             : Light Within (id=1261113) [Spell Family (10), Passive] 
-Talent Entry     : Retribution [tree=spec, row=11, col=3, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Retribution [tree=spec, row=11, col=4, max_rank=1, req_points=20, select_idx=100]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -24302,7 +24302,7 @@ Effects          :
 Description      : $?s402912[Righteous Cause][Art of War] increases the damage of your next Blade of Justice by $s1%.
 
 Name             : Light Within (id=1261159) [Spell Family (10), Passive] 
-Talent Entry     : Retribution [tree=spec, row=11, col=3, max_rank=1, req_points=20, select_idx=300]
+Talent Entry     : Retribution [tree=spec, row=11, col=4, max_rank=1, req_points=20, select_idx=300]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -24332,7 +24332,7 @@ Effects          :
 Description      : $@spelldesc1261159
 
 Name             : Light's Judicator (id=1261525) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=3, col=2, max_rank=1, req_points=1]
+Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=3, col=5, max_rank=1, req_points=1]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -24370,7 +24370,7 @@ $@spellicon184662$@spellname184662
 $@spelldesc184662
 
 Name             : Seal of the Templar (id=1263252) [Spell Family (10), Passive] 
-Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=4, col=5, max_rank=1, req_points=1, select_idx=200]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -24420,7 +24420,7 @@ Description      : You have a $s1% chance to $?c3[gain Blessing of An'she and ][
 During Avenging Wrath, Hammer of Wrath casts Blade of Justice at $s3% effectiveness.][]
 
 Name             : Endless Gleam (id=1263787) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Herald of the Sun (Holy, Retribution) [tree=hero, row=2, col=3, max_rank=1, req_points=1]
+Talent Entry     : Herald of the Sun (Holy, Retribution) [tree=hero, row=2, col=5, max_rank=1, req_points=1]
 Class            : Paladin
 School           : Holyfire
 Spell Type       : None
@@ -24454,7 +24454,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Born in Sunlight (id=1263920) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Herald of the Sun (Holy, Retribution) [tree=hero, row=4, col=3, max_rank=1, req_points=1]
+Talent Entry     : Herald of the Sun (Holy, Retribution) [tree=hero, row=4, col=5, max_rank=1, req_points=1]
 Class            : Paladin
 School           : Holyfire
 Spell Type       : None
@@ -24697,7 +24697,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Glory of the Vanguard (id=1267203) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=spec, row=11, col=3, max_rank=1, req_points=20, select_idx=0]
+Talent Entry     : Protection [tree=spec, row=11, col=4, max_rank=1, req_points=20, select_idx=0]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -24713,7 +24713,7 @@ Effects          :
 Description      : Judgment has a chance to grant you Vanguard, causing your next Avenger's Shield to leave an echoing bolt of light in a line between you and the initial target, piercing any enemies for $1269175s1 Holy damage.
 
 Name             : Glory of the Vanguard (id=1267211) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=spec, row=11, col=3, max_rank=2, req_points=20, select_idx=100]
+Talent Entry     : Protection [tree=spec, row=11, col=4, max_rank=2, req_points=20, select_idx=100]
                  : Effect#1 [op=set, values=(10, 20)]
                  : Effect#2 [op=set, values=(1, 3)]
 Class            : Paladin
@@ -24736,7 +24736,7 @@ Effects          :
 Description      : Judgment deals $s1% increased damage. When you consume Vanguard you gain $s2 Holy Power.
 
 Name             : Glory of the Vanguard (id=1267215) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=spec, row=11, col=3, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Protection [tree=spec, row=11, col=4, max_rank=1, req_points=20, select_idx=200]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -24965,7 +24965,7 @@ Description      : While Avenging Wrath is not active, you gain $s1% Mastery.
 While Avenging Wrath is active, you gain $s2% movement speed.
 
 Name             : Divine Overload (id=1271077) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=9, col=6, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=9, col=9, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -24985,7 +24985,7 @@ Effects          :
 Description      : Holy Light's healing is increased by $s1%, but its mana cost is increased by $s2%.
 
 Name             : Unending Light (id=1271221) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=4, col=5, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=4, col=6, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -25019,7 +25019,7 @@ Description      : $@spelldesc1236390
 Tooltip          : Your next $s1 $Lspell:spells; or $Lability:abilities; will also cast a Lesser Bulwark.
 
 Name             : Masterwork (id=1271387) [Spell Family (10), Passive] 
-Talent Entry     : Lightsmith (Holy, Protection) [tree=hero, row=2, col=4, max_rank=1, req_points=0]
+Talent Entry     : Lightsmith (Holy, Protection) [tree=hero, row=2, col=5, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -25055,7 +25055,7 @@ Description      : $@spelldesc1271387
 Tooltip          : Your next $s1 $Lspell:spells; or $Lability:abilities; will also cast a Lesser Weapon.
 
 Name             : Reflection of Radiance (id=1271466) [Spell Family (10), Passive] 
-Talent Entry     : Lightsmith (Holy, Protection) [tree=hero, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Lightsmith (Holy, Protection) [tree=hero, row=4, col=4, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -25071,7 +25071,7 @@ Effects          :
 Description      : When your Holy Bulwark absorbs damage or your Sacred Weapon deals damage or healing, you have a chance to gain $?c2[Grand Crusader][Awakening].
 
 Name             : Resounding Strike (id=1271553) [Spell Family (10), Passive] 
-Talent Entry     : Lightsmith (Holy, Protection) [tree=hero, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Lightsmith (Holy, Protection) [tree=hero, row=4, col=5, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -25277,7 +25277,7 @@ Description      : $@spelldesc1277038
 Tooltip          : Absorbing $w1 Physical damage.
 
 Name             : Instrument of the Divine (id=1277162) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=spec, row=9, col=4, max_rank=1, req_points=20]
+Talent Entry     : Protection [tree=spec, row=9, col=7, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Physical
 Spell Type       : None

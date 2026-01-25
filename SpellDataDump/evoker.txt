@@ -2825,7 +2825,7 @@ Description      : Tear into an enemy with a blast of blue magic, inflicting $o1
 Tooltip          : Suffering $w1 Spellfrost damage every $t1 sec.
 
 Name             : Time Dilation (desc=Bronze) (id=357170) [Spell Family (224)] 
-Talent Entry     : Preservation [tree=spec, row=4, col=5, max_rank=1, req_points=0]
+Talent Entry     : Preservation [tree=spec, row=4, col=6, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -3307,7 +3307,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Eternity Surge (desc=Blue) (id=359073) [Spell Family (224)] 
-Talent Entry     : Devastation [tree=spec, row=3, col=5, max_rank=1, req_points=0]
+Talent Entry     : Devastation [tree=spec, row=3, col=6, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Spellfrost
 Spell Type       : None
@@ -4122,7 +4122,7 @@ Effects          :
 Description      : Healing done to allies is increased by ${$s1}.1% while their health percentage is lower than your own.
 
 Name             : Rewind (desc=Bronze) (id=363534) [Spell Family (224)] 
-Talent Entry     : Preservation [tree=spec, row=3, col=5, max_rank=1, req_points=0]
+Talent Entry     : Preservation [tree=spec, row=3, col=6, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -4666,7 +4666,7 @@ Description      : $@spelldesc357208
 Tooltip          : Preparing to release a Fire Breath.
 
 Name             : Time of Need (id=368412) [Spell Family (224), Passive] 
-Talent Entry     : Preservation [tree=spec, row=8, col=5, max_rank=1, req_points=20]
+Talent Entry     : Preservation [tree=spec, row=8, col=7, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -5180,7 +5180,7 @@ Description      : $@spelldesc370455
 Tooltip          : Your next Pyre deals $s1% more damage.
 
 Name             : Charged Blast (id=370455) [Spell Family (224), Passive, Hidden] 
-Talent Entry     : Devastation [tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Devastation [tree=spec, row=7, col=6, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -5325,7 +5325,7 @@ Effects          :
 Description      : Enemies affected by Fire Breath's damage over time effect take $s1% increased damage from your Red spells.
 
 Name             : Scintillation (id=370821) [Spell Family (224), Passive] 
-Talent Entry     : Devastation [tree=spec, row=10, col=5, max_rank=1, req_points=20]
+Talent Entry     : Devastation [tree=spec, row=10, col=6, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -5364,7 +5364,7 @@ Effects          :
 Description      : Living Flame deals $s2% increased damage and healing and its cast time is reduced by ${$s1/-1000}.1 sec.
 
 Name             : Power Swell (id=370839) [Spell Family (224), Passive] 
-Talent Entry     : Devastation [tree=spec, row=9, col=5, max_rank=1, req_points=20]
+Talent Entry     : Devastation [tree=spec, row=9, col=6, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -5394,7 +5394,7 @@ Description      : $@spelldesc376138
 Tooltip          : Essence regeneration rate increased by $w1%.
 
 Name             : Spellweaver's Dominance (id=370845) [Spell Family (224), Passive] 
-Talent Entry     : Devastation [tree=spec, row=8, col=4, max_rank=1, req_points=20]
+Talent Entry     : Devastation [tree=spec, row=8, col=5, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -5410,7 +5410,7 @@ Effects          :
 Description      : Your damaging critical strikes deal ${$s1+200}% damage instead of the usual 200%.
 
 Name             : Iridescence (id=370867) [Spell Family (224), Passive] 
-Talent Entry     : Devastation [tree=spec, row=10, col=5, max_rank=1, req_points=20]
+Talent Entry     : Devastation [tree=spec, row=10, col=7, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -5562,7 +5562,7 @@ Effects          :
 Description      : Deep Breath's damage is increased by $s1%.
 
 Name             : Honed Aggression (id=371038) [Spell Family (224), Passive] 
-Talent Entry     : Devastation [tree=spec, row=6, col=4, max_rank=2, req_points=8]
+Talent Entry     : Devastation [tree=spec, row=6, col=5, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(2, 4)]
 Class            : Evoker
 School           : Physical
@@ -5802,7 +5802,7 @@ Removes $s1 Enrage effect from each enemy.][]
 Tooltip          : The duration of incoming crowd control effects are increased by $s2%.
 
 Name             : Energy Loop (id=372233) [Spell Family (224), Passive] 
-Talent Entry     : Preservation [tree=spec, row=8, col=5, max_rank=1, req_points=20]
+Talent Entry     : Preservation [tree=spec, row=8, col=6, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -6101,7 +6101,7 @@ Effects          :
 Description      : Dream Breath healing increased by $s1%, and Living Flame healing increased by $s2%.
 
 Name             : Temporal Anomaly (desc=Bronze) (id=373861) [Spell Family (224)] 
-Talent Entry     : Preservation [tree=spec, row=5, col=5, max_rank=1, req_points=8]
+Talent Entry     : Preservation [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -6888,7 +6888,7 @@ Description      : $@spelldesc369990
 Tooltip          : The cast time of your next Living Flame is reduced by $w1%.
 
 Name             : Arcane Intensity (desc=Blue) (id=375618) [Spell Family (224), Passive] 
-Talent Entry     : Devastation [tree=spec, row=4, col=5, max_rank=2, req_points=0]
+Talent Entry     : Devastation [tree=spec, row=4, col=7, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(8, 16)]
 Class            : Evoker
 School           : Spellfrost
@@ -6909,7 +6909,7 @@ Effects          :
 Description      : Disintegrate and Azure Strike deal $s1% more damage.
 
 Name             : Azure Essence Burst (id=375721) [Spell Family (224), Passive] 
-Talent Entry     : Devastation [tree=spec, row=2, col=4, max_rank=1, req_points=0]
+Talent Entry     : Devastation [tree=spec, row=2, col=5, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -6923,9 +6923,9 @@ Effects          :
 Description      : Azure Strike has a $s1% chance to cause an Essence Burst, making your next Disintegrate or Pyre cost no Essence.
 
 Name             : Essence Attunement (id=375722) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Augmentation [tree=spec, row=3, col=5, max_rank=1, req_points=0]
                  : Preservation [tree=spec, row=4, col=4, max_rank=1, req_points=0]
-                 : Devastation [tree=spec, row=5, col=5, max_rank=1, req_points=8]
+                 : Devastation [tree=spec, row=5, col=6, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -6963,7 +6963,7 @@ Effects          :
 Description      : Fire Breath deals $s1% more damage.
 
 Name             : Eternity's Span (id=375757) [Spell Family (224), Passive] 
-Talent Entry     : Devastation [tree=spec, row=6, col=5, max_rank=1, req_points=8]
+Talent Entry     : Devastation [tree=spec, row=6, col=6, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Spellfrost
 Spell Type       : None
@@ -7171,7 +7171,7 @@ Effects          :
 Description      : Red spells deal $s1% additional damage and healing.
 
 Name             : Just in Time (id=376204) [Spell Family (224), Passive] 
-Talent Entry     : Preservation [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Preservation [tree=spec, row=5, col=6, max_rank=1, req_points=8, select_idx=200]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -7191,7 +7191,7 @@ Effects          :
 Description      : Time Dilation gains an additional charge, and its cooldown is reduced by ${$s2/-1000} sec.
 
 Name             : Delay Harm (id=376207) [Spell Family (224), Passive] 
-Talent Entry     : Preservation [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Preservation [tree=spec, row=5, col=6, max_rank=1, req_points=8, select_idx=100]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -7206,7 +7206,7 @@ Description      : $s1% of delayed damage from Time Dilation is absorbed.
 Variables        : $base=${50}
 
 Name             : Resonating Sphere (id=376236) [Spell Family (224), Passive] 
-Talent Entry     : Preservation [tree=spec, row=6, col=5, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Preservation [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=100]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -7222,7 +7222,7 @@ Effects          :
 Description      : Temporal Anomaly applies Echo at $s1% effectiveness to the first $s2 allies it passes through.
 
 Name             : Nozdormu's Teachings (id=376237) [Spell Family (224), Passive] 
-Talent Entry     : Preservation [tree=spec, row=6, col=5, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Preservation [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=200]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -7236,7 +7236,7 @@ Effects          :
 Description      : Temporal Anomaly reduces the cooldowns of your empower spells by $s1 sec.
 
 Name             : Grace Period (id=376239) [Spell Family (224), Passive] 
-Talent Entry     : Preservation [tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Preservation [tree=spec, row=7, col=6, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -7252,7 +7252,7 @@ Effects          :
 Description      : Your healing is increased by $s1% on targets with your Reversion.
 
 Name             : Timeless Magic (id=376240) [Spell Family (224), Passive] 
-Talent Entry     : Preservation [tree=spec, row=9, col=5, max_rank=2, req_points=20]
+Talent Entry     : Preservation [tree=spec, row=9, col=6, max_rank=2, req_points=20]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
                  : Effect#3 [op=mul, values=(1, 2)]
@@ -8180,7 +8180,7 @@ Effects          :
 Description      : Deep Breath forms a wall of fire for 8 sec, preventing line of sight through the wall. Enemies who cross through the wall are damaged for $s2.
 
 Name             : Flow State (id=385696) [Spell Family (224), Passive] 
-Talent Entry     : Preservation [tree=spec, row=6, col=5, max_rank=2, req_points=8]
+Talent Entry     : Preservation [tree=spec, row=6, col=6, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Evoker
 School           : Physical
@@ -8855,7 +8855,7 @@ Effects          :
 Description      : $@spelldesc358267
 
 Name             : Ebon Might (desc=Black) (id=395152) [Spell Family (224)] 
-Talent Entry     : Augmentation [tree=spec, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Augmentation [tree=spec, row=1, col=4, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Firestorm
 Spell Type       : Magic
@@ -9075,7 +9075,7 @@ Effects          :
                    Family Flags: 34
 
 Name             : Essence Burst (id=396187) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=2, col=3, max_rank=1, req_points=0]
+Talent Entry     : Augmentation [tree=spec, row=2, col=5, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -9243,7 +9243,7 @@ Effects          :
 Description      : Living Flame restores $s1% of its mana cost when striking an enemy.
 
 Name             : Draconic Attunements (id=403208) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=6, col=3, max_rank=1, req_points=8]
+Talent Entry     : Augmentation [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -9382,7 +9382,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Breath of Eons (desc=Bronze) (id=403631) [Spell Family (224)] 
-Talent Entry     : Augmentation [tree=spec, row=4, col=3, max_rank=1, req_points=0, replace="Deep Breath" (id=357210)]
+Talent Entry     : Augmentation [tree=spec, row=4, col=4, max_rank=1, req_points=0, replace="Deep Breath" (id=357210)]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -9511,7 +9511,7 @@ Description      : $@spelldesc371806
 Tooltip          : Able to travel back in time to your takeoff location.
 
 Name             : Defy Fate (id=404195) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Augmentation [tree=spec, row=4, col=6, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -9601,7 +9601,7 @@ Effects          :
 Description      : $@spelldesc412774
 
 Name             : Time Skip (desc=Bronze) (id=404977) [Spell Family (224)] 
-Talent Entry     : Augmentation [tree=spec, row=9, col=3, max_rank=1, req_points=20]
+Talent Entry     : Augmentation [tree=spec, row=9, col=4, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -10038,7 +10038,7 @@ Removes $s1 Enrage effect from each enemy.
 Tooltip          : The duration of incoming crowd control effects are increased by $s2%.
 
 Name             : Aspects' Favor (id=407243) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=7, col=3, max_rank=2, req_points=8]
+Talent Entry     : Augmentation [tree=spec, row=7, col=4, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(1, 2)]
                  : Effect#2 [op=set, values=(15, 30)]
 Class            : Evoker
@@ -10114,7 +10114,7 @@ Effects          :
 Description      : $@spelldesc406732
 
 Name             : Pupil of Alexstrasza (id=407814) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=3, col=4, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Augmentation [tree=spec, row=3, col=6, max_rank=1, req_points=0, select_idx=100]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -10144,7 +10144,7 @@ Effects          :
 Description      : $?s403631[Breath of Eons][Deep Breath] grants you Fury of the Aspects for $s1 sec after you land, without causing Exhaustion.
 
 Name             : Anachronism (id=407869) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=8, col=4, max_rank=1, req_points=20]
+Talent Entry     : Augmentation [tree=spec, row=8, col=6, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -10289,7 +10289,7 @@ Description      : $@spelldesc403385
 Tooltip          : Your debuffs and harmful periodic spells and abilities have a chance to grant you $s1 $pri for $403386d.
 
 Name             : Bestow Weyrnstone (desc=Bronze) (id=408233) [Spell Family (224)] 
-Talent Entry     : Augmentation [tree=spec, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Augmentation [tree=spec, row=5, col=5, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -10336,7 +10336,7 @@ Effects          :
 Description      : Essence Burst reduces the cast time of Eruption by $s1% and increases its damage by $s3%.
 
 Name             : Motes of Possibility (id=409267) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=8, col=3, max_rank=1, req_points=20]
+Talent Entry     : Augmentation [tree=spec, row=8, col=5, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -10370,7 +10370,7 @@ Effects          :
 Description      : $@spelldesc409267
 
 Name             : Prescience (desc=Bronze) (id=409311) [Spell Family (224)] 
-Talent Entry     : Augmentation [tree=spec, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Augmentation [tree=spec, row=6, col=6, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -10451,7 +10451,7 @@ Effects          :
 Description      : $@spelldesc403631
 
 Name             : Chrono Ward (id=409676) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Augmentation [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -10720,7 +10720,7 @@ Tooltip          : $?$W1>0[$@auracaster is increasing your critical strike chanc
 ][]$?e1[Your abilities have a chance to echo $412774s1% of their damage and healing.][]
 
 Name             : Perilous Fate (id=410253) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Augmentation [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=100]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -10753,7 +10753,7 @@ Description      : $@spelldesc409329
 Tooltip          : Blistering Scales deals $w1% increased damage.
 
 Name             : Overlord (id=410260) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Augmentation [tree=spec, row=10, col=5, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -10769,7 +10769,7 @@ Effects          :
 Description      : $?s403631[Breath of Eons][Deep Breath] casts an Eruption at the first $s1 enemies struck. These Eruptions have a $s2% chance to create a Mote of Possibility.
 
 Name             : Inferno's Blessing (id=410261) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=9, col=4, max_rank=1, req_points=20]
+Talent Entry     : Augmentation [tree=spec, row=9, col=6, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Fire
 Spell Type       : None
@@ -11023,7 +11023,7 @@ Description      : $@spelldesc410643
 Tooltip          : Absorbing $w1 damage.
 
 Name             : Symbiotic Bloom (id=410685) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=7, col=4, max_rank=2, req_points=8]
+Talent Entry     : Augmentation [tree=spec, row=7, col=7, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(3, 6)]
 Class            : Evoker
 School           : Physical
@@ -11062,7 +11062,7 @@ Description      : $@spelldesc410685
 Tooltip          : Healing received increased by $w1%.
 
 Name             : Prolong Life (id=410687) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Augmentation [tree=spec, row=8, col=7, max_rank=1, req_points=20, select_idx=100]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -11076,7 +11076,7 @@ Effects          :
 Description      : Your effects that extend Ebon Might also extend Symbiotic Bloom.
 
 Name             : Echoing Strike (id=410784) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=3, col=4, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Augmentation [tree=spec, row=3, col=6, max_rank=1, req_points=0, select_idx=200]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -11115,7 +11115,7 @@ Description      : $@spelldesc370781
 Tooltip          : Essence costs of Disintegrate and Pyre are reduced by $s1.
 
 Name             : Event Horizon (id=411164) [Spell Family (224), Passive] 
-Talent Entry     : Devastation [tree=spec, row=6, col=5, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Devastation [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=200]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -11131,7 +11131,7 @@ Effects          :
 Description      : Eternity Surge's cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Eye of Infinity (id=411165) [Spell Family (224), Passive] 
-Talent Entry     : Devastation [tree=spec, row=6, col=5, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Devastation [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=100]
 Class            : Evoker
 School           : Spellfrost
 Spell Type       : None
@@ -11224,7 +11224,7 @@ Effects          :
 Description      : $@spelldesc395152
 
 Name             : Timelessness (desc=Bronze) (id=412710) [Spell Family (224)] 
-Talent Entry     : Augmentation [tree=spec, row=5, col=4, max_rank=1, req_points=8]
+Talent Entry     : Augmentation [tree=spec, row=5, col=6, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -11263,7 +11263,7 @@ Effects          :
 Description      : $@spelldesc412710
 
 Name             : Interwoven Threads (desc=Bronze) (id=412713) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=200, replace="Time Skip" (id=404977)]
+Talent Entry     : Augmentation [tree=spec, row=10, col=4, max_rank=1, req_points=20, select_idx=200, replace="Time Skip" (id=404977)]
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -11300,7 +11300,7 @@ Effects          :
 Description      : The cooldowns of your spells are reduced by $s1%.
 
 Name             : Tomorrow, Today (id=412723) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Augmentation [tree=spec, row=10, col=4, max_rank=1, req_points=20, select_idx=100]
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -11337,7 +11337,7 @@ Effects          :
 Description      : Upheaval cannot be interrupted, and has an additional $s1% chance to critically strike.
 
 Name             : Fate Mirror (desc=Bronze) (id=412774) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=7, col=4, max_rank=1, req_points=8]
+Talent Entry     : Augmentation [tree=spec, row=7, col=6, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -11544,7 +11544,7 @@ Effects          :
 Description      : Ebon Might increases allies' primary stat by an additional ${$s1}.1% of your own.
 
 Name             : Dream of Spring (id=414969) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Augmentation [tree=spec, row=8, col=7, max_rank=1, req_points=20, select_idx=200]
 Class            : Evoker
 School           : Nature
 Spell Type       : None
@@ -12156,7 +12156,7 @@ Effects          :
 Description      : $@spelldesc359073
 
 Name             : Chrono Flame (desc=Bronze) (id=431442) [Spell Family (224), Passive] 
-Talent Entry     : Chronowarden (Preservation) [tree=hero, row=1, col=2, max_rank=1, req_points=1]
+Talent Entry     : Chronowarden (Preservation) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -12293,7 +12293,7 @@ Effects          :
 Description      : $@spelldesc431442
 
 Name             : Reverberations (desc=Bronze) (id=431615) [Spell Family (224), Passive] 
-Talent Entry     : Chronowarden (Preservation) [tree=hero, row=2, col=4, max_rank=1, req_points=1]
+Talent Entry     : Chronowarden (Preservation) [tree=hero, row=2, col=5, max_rank=1, req_points=1]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -12347,7 +12347,7 @@ Description      : $@spelldesc431657
 Tooltip          : Haste increased by $s1%.
 
 Name             : Primacy (desc=Bronze) (id=431657) [Spell Family (224), Passive] 
-Talent Entry     : Chronowarden (Preservation) [tree=hero, row=3, col=4, max_rank=1, req_points=1]
+Talent Entry     : Chronowarden (Preservation) [tree=hero, row=3, col=5, max_rank=1, req_points=1]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -12537,7 +12537,7 @@ Effects          :
 Description      : $?c2[When Dream Breath or Fire Breath critically strike, their duration is extended by $s1 sec, up to a maximum of ${$s1*6} sec.][Ebon Might and Prescience gain a chance equal to your critical strike chance to grant $s2% additional stats.]
 
 Name             : Afterimage (desc=Bronze) (id=431875) [Spell Family (224), Passive] 
-Talent Entry     : Chronowarden (Preservation) [tree=hero, row=5, col=2, max_rank=1, req_points=1]
+Talent Entry     : Chronowarden (Preservation) [tree=hero, row=5, col=3, max_rank=1, req_points=1]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -12609,7 +12609,7 @@ Description      : $@spelldesc431984
 Tooltip          : Intellect increased by $s1%.
 
 Name             : Golden Opportunity (desc=Bronze) (id=432004) [Spell Family (224), Passive] 
-Talent Entry     : Chronowarden (Preservation) [tree=hero, row=4, col=4, max_rank=1, req_points=1]
+Talent Entry     : Chronowarden (Preservation) [tree=hero, row=4, col=5, max_rank=1, req_points=1]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -12778,7 +12778,7 @@ Effects          :
 Description      : $@spelldesc412774
 
 Name             : Maneuverability (desc=Black) (id=433871) [Spell Family (224), Passive] 
-Talent Entry     : Scalecommander (Devastation) [tree=hero, row=5, col=2, max_rank=1, req_points=0]
+Talent Entry     : Scalecommander (Devastation) [tree=hero, row=5, col=3, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Firestorm
 Spell Type       : None
@@ -12853,7 +12853,7 @@ Increases the duration of your active Ebon Might effects by ${$395153s3/1000} se
 Tooltip          : Spewing molten cinders. Immune to crowd control.
 
 Name             : Bombardments (desc=Black) (id=434300) [Spell Family (224), Passive] 
-Talent Entry     : Scalecommander (Devastation) [tree=hero, row=2, col=1, max_rank=1, req_points=0]
+Talent Entry     : Scalecommander (Devastation) [tree=hero, row=2, col=2, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Firestorm
 Spell Type       : None
@@ -12948,7 +12948,7 @@ Variables        : $flight=$?a375517[${$375517s1/1000}][${0}]
 $dura=$?a406380[${6*(1+$406380s2/100)+$<flight>}.1][${6+$<flight>}]
 
 Name             : Mass Disintegrate (desc=Black) (id=436335) [Spell Family (224), Passive] 
-Talent Entry     : Scalecommander (Devastation) [tree=hero, row=1, col=2, max_rank=1, req_points=0]
+Talent Entry     : Scalecommander (Devastation) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -13286,7 +13286,7 @@ Description      : $@spelldesc441181
 Tooltip          : Damage done to $@auracaster reduced by $s1%.
 
 Name             : Wingleader (desc=Black) (id=441206) [Spell Family (224), Passive] 
-Talent Entry     : Scalecommander (Devastation) [tree=hero, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Scalecommander (Devastation) [tree=hero, row=3, col=2, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Firestorm
 Spell Type       : None
@@ -13303,7 +13303,7 @@ Effects          :
 Description      : Bombardments reduce the cooldown of $?c1[Deep Breath][Breath of Eons] by $s1 sec for each target struck, up to $s2 sec.
 
 Name             : Extended Battle (desc=Black) (id=441212) [Spell Family (224), Passive] 
-Talent Entry     : Scalecommander (Devastation) [tree=hero, row=4, col=1, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Scalecommander (Devastation) [tree=hero, row=4, col=2, max_rank=1, req_points=0, select_idx=100]
 Class            : Evoker
 School           : Firestorm
 Spell Type       : None
@@ -13320,7 +13320,7 @@ Effects          :
 Description      : Essence abilities extend Bombardments by $s1 sec.
 
 Name             : Diverted Power (desc=Black) (id=441219) [Spell Family (224), Passive] 
-Talent Entry     : Scalecommander (Devastation) [tree=hero, row=4, col=1, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Scalecommander (Devastation) [tree=hero, row=4, col=2, max_rank=1, req_points=0, select_idx=200]
 Class            : Evoker
 School           : Firestorm
 Spell Type       : None
@@ -13335,7 +13335,7 @@ Effects          :
 Description      : Bombardments have a chance to generate Essence Burst.
 
 Name             : Onslaught (desc=Black) (id=441245) [Spell Family (224), Passive] 
-Talent Entry     : Scalecommander (Devastation) [tree=hero, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Scalecommander (Devastation) [tree=hero, row=2, col=4, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Firestorm
 Spell Type       : None
@@ -13350,7 +13350,7 @@ Effects          :
 Description      : Entering combat grants a charge of Burnout, causing your next Living Flame to cast instantly.
 
 Name             : Unrelenting Siege (desc=Black) (id=441246) [Spell Family (224), Passive] 
-Talent Entry     : Scalecommander (Devastation) [tree=hero, row=3, col=2, max_rank=1, req_points=0]
+Talent Entry     : Scalecommander (Devastation) [tree=hero, row=3, col=4, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Firestorm
 Spell Type       : None
@@ -13393,7 +13393,7 @@ Description      : $@spelldesc441246
 Tooltip          : Azure Strike, Living Flame, and $?c1[Disintegrate][Eruption] deal $w1% increased damage.
 
 Name             : Nimble Flyer (desc=Black) (id=441253) [Spell Family (224), Passive] 
-Talent Entry     : Scalecommander (Devastation) [tree=hero, row=4, col=2, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Scalecommander (Devastation) [tree=hero, row=4, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Evoker
 School           : Firestorm
 Spell Type       : None
@@ -13410,7 +13410,7 @@ Effects          :
 Description      : While Hovering, damage taken from area of effect attacks is reduced by ${$s1/-1}%.
 
 Name             : Slipstream (desc=Black) (id=441257) [Spell Family (224), Passive] 
-Talent Entry     : Scalecommander (Devastation) [tree=hero, row=4, col=2, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Scalecommander (Devastation) [tree=hero, row=4, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Evoker
 School           : Firestorm
 Spell Type       : None
@@ -13623,7 +13623,7 @@ Description      : $@spelldesc434300
 Tooltip          : Damage taken has a chance to summon air support from the Dracthyr.
 
 Name             : Enkindle (desc=Red) (id=444016) [Spell Family (224), Passive, Hidden] 
-Talent Entry     : Flameshaper (Devastation, Preservation) [tree=hero, row=2, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Flameshaper (Devastation, Preservation) [tree=hero, row=2, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -13761,7 +13761,7 @@ Description      : $@spelldesc357208
 Tooltip          : Burning for $w2 Fire damage every $t2 sec.$?$W3=1[ Silenced.][]$?$w4>0[ Suffering $w4% increased damage from Red spells.][]$?$w5>0[ Suffering $w5% increased damage from Black spells.][]
 
 Name             : Lifecinders (desc=Red) (id=444322) [Spell Family (224), Passive, Hidden] 
-Talent Entry     : Flameshaper (Devastation, Preservation) [tree=hero, row=4, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Flameshaper (Devastation, Preservation) [tree=hero, row=4, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -13810,7 +13810,7 @@ Effects          :
 Description      : Critical strike chance against targets above $s2% health increased by $s1%.
 
 Name             : Expanded Lungs (desc=Red) (id=444845) [Spell Family (224), Passive, Hidden] 
-Talent Entry     : Flameshaper (Devastation, Preservation) [tree=hero, row=2, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Flameshaper (Devastation, Preservation) [tree=hero, row=2, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -13927,7 +13927,7 @@ Description      : $@spelldesc444016
 Tooltip          : Healing for $w1 every $t1 sec.
 
 Name             : Draconic Instincts (desc=Red) (id=445958) [Spell Family (224), Passive, Hidden] 
-Talent Entry     : Flameshaper (Devastation, Preservation) [tree=hero, row=4, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Flameshaper (Devastation, Preservation) [tree=hero, row=4, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -14202,7 +14202,7 @@ Effects          :
 Description      : Disintegrate damage increased by $s1% and Pyre damage increased by $s2%.
 
 Name             : Arcane Reach (id=454983) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=7, col=3, max_rank=1, req_points=8]
+Talent Entry     : Augmentation [tree=spec, row=7, col=5, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -14387,7 +14387,7 @@ Description      : $@spelldesc459537
 Tooltip          : Eruption essence cost reduced by $s1.
 
 Name             : Molten Embers (id=459725) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Augmentation [tree=spec, row=10, col=7, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Fire
 Spell Type       : None
@@ -14721,7 +14721,7 @@ Description      : $@spelldesc1215692
 Tooltip          : Empower spell damage increased by $w1%.
 
 Name             : Fulminous Roar (desc=Red) (id=1218447) [Spell Family (224), Passive, Hidden] 
-Talent Entry     : Flameshaper (Devastation, Preservation) [tree=hero, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Flameshaper (Devastation, Preservation) [tree=hero, row=3, col=4, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -14794,7 +14794,7 @@ Effects          :
 Description      : $@spelldesc396286
 
 Name             : Azure Celerity (id=1219723) [Spell Family (224), Passive] 
-Talent Entry     : Devastation [tree=spec, row=9, col=4, max_rank=1, req_points=20]
+Talent Entry     : Devastation [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -15056,7 +15056,7 @@ Effects          :
 Description      : $@spelldesc369939
 
 Name             : Tempo Charged (id=1237978) [Spell Family (224), Passive, Hidden] 
-Talent Entry     : Preservation [tree=spec, row=10, col=5, max_rank=1, req_points=20]
+Talent Entry     : Preservation [tree=spec, row=10, col=7, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -15285,7 +15285,7 @@ Description      : |cnNORMAL_FONT_COLOR:Resets all equipped gear to their origin
 |cnGREEN_FONT_COLOR:<Right Click to toggle lock appearance>|r
 
 Name             : Clairvoyant (id=1250914) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=9, col=3, max_rank=1, req_points=20]
+Talent Entry     : Augmentation [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -15427,7 +15427,7 @@ Effects          :
 Description      : $@spelldesc55342
 
 Name             : Chronoboon (desc=Bronze) (id=1260484) [Spell Family (224), Passive] 
-Talent Entry     : Chronowarden (Preservation) [tree=hero, row=2, col=3, max_rank=1, req_points=1]
+Talent Entry     : Chronowarden (Preservation) [tree=hero, row=2, col=4, max_rank=1, req_points=1]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -15445,7 +15445,7 @@ Effects          :
 Description      : Tip the Scales' cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Energy Cycles (desc=Bronze) (id=1260568) [Spell Family (224), Passive] 
-Talent Entry     : Chronowarden (Preservation) [tree=hero, row=3, col=3, max_rank=1, req_points=1]
+Talent Entry     : Chronowarden (Preservation) [tree=hero, row=3, col=4, max_rank=1, req_points=1]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -15461,7 +15461,7 @@ Effects          :
 Description      : Temporal Burst grants Essence Burst every $s1 sec.
 
 Name             : Overclock (desc=Bronze) (id=1260647) [Spell Family (224), Passive] 
-Talent Entry     : Chronowarden (Preservation) [tree=hero, row=4, col=3, max_rank=1, req_points=1]
+Talent Entry     : Chronowarden (Preservation) [tree=hero, row=4, col=4, max_rank=1, req_points=1]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -15481,7 +15481,7 @@ Description      : Chrono Flames' maximum damage or healing is increased by $s1%
 Variables        : $cap=${($SP*3.5)*(1+$@versadmg)}
 
 Name             : Command Squadron (desc=Black) (id=1260745) [Spell Family (224), Passive] 
-Talent Entry     : Scalecommander (Devastation) [tree=hero, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Scalecommander (Devastation) [tree=hero, row=2, col=5, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Firestorm
 Spell Type       : None
@@ -15501,7 +15501,7 @@ Effects          :
 Description      : While flying during $?s403631[Breath of Eons][Deep Breath] you are assisted by a squadron of Dracthyr who assault enemies with Pyre, dealing $1236970s1 Fire damage to nearby enemies up to $s3 times.
 
 Name             : Concentrated Power (desc=Black) (id=1261448) [Spell Family (224), Passive] 
-Talent Entry     : Scalecommander (Devastation) [tree=hero, row=3, col=2, max_rank=1, req_points=0]
+Talent Entry     : Scalecommander (Devastation) [tree=hero, row=3, col=5, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Firestorm
 Spell Type       : None
@@ -15518,7 +15518,7 @@ Effects          :
 Description      : $?c1[Mass Disintegrate][Mass Eruption] strikes $s1 additional $Ltarget:targets;.
 
 Name             : Refined Essence (desc=Black) (id=1261452) [Spell Family (224), Passive] 
-Talent Entry     : Scalecommander (Devastation) [tree=hero, row=4, col=2, max_rank=1, req_points=0]
+Talent Entry     : Scalecommander (Devastation) [tree=hero, row=4, col=5, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Firestorm
 Spell Type       : None
@@ -15750,7 +15750,7 @@ Effects          :
 Description      : Verdant Embrace grows an Emerald Blossom on your target at $s1% effectiveness.
 
 Name             : Shattering Stars (id=1265802) [Spell Family (224), Passive] 
-Talent Entry     : Devastation [tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Devastation [tree=spec, row=7, col=7, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Spellfrost
 Spell Type       : None
@@ -15785,7 +15785,7 @@ Effects          :
 Description      : Exhale a bolt of concentrated power from your mouth at the target for $s2 Spellfrost damage.
 
 Name             : Star Salvo (id=1265826) [Spell Family (224), Passive] 
-Talent Entry     : Devastation [tree=spec, row=8, col=5, max_rank=1, req_points=20]
+Talent Entry     : Devastation [tree=spec, row=8, col=7, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Spellfrost
 Spell Type       : None
@@ -15804,7 +15804,7 @@ Description      : Increases Shattering Star damage by $s1%.
 Shattering Stars are exhaled at all of your Eternity Surge targets.
 
 Name             : Azure Sweep (id=1265867) [Spell Family (224), Passive] 
-Talent Entry     : Devastation [tree=spec, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Devastation [tree=spec, row=4, col=5, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Spellfrost
 Spell Type       : None
@@ -15869,7 +15869,7 @@ Effects          :
 Description      : Concentrate azure energy into your tail and sweep to release pure magic upon an enemy and nearby targets for $s2 Spellfrost damage. Damage reduced beyond $s1 targets.
 
 Name             : Twin Flame (desc=Red) (id=1265979) [Spell Family (224), Passive, Hidden] 
-Talent Entry     : Flameshaper (Devastation, Preservation) [tree=hero, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Flameshaper (Devastation, Preservation) [tree=hero, row=3, col=5, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -15923,7 +15923,7 @@ Effects          :
 Description      : $@spelldesc1265979
 
 Name             : Fire Torrent (desc=Red) (id=1265992) [Spell Family (224), Passive, Hidden] 
-Talent Entry     : Flameshaper (Devastation, Preservation) [tree=hero, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Flameshaper (Devastation, Preservation) [tree=hero, row=4, col=5, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -15939,7 +15939,7 @@ Effects          :
 Description      : Twin Flame bounces to up to $s1 additional targets.
 
 Name             : Essence Well (desc=Red) (id=1265993) [Spell Family (224), Passive, Hidden] 
-Talent Entry     : Flameshaper (Devastation, Preservation) [tree=hero, row=2, col=4, max_rank=1, req_points=0]
+Talent Entry     : Flameshaper (Devastation, Preservation) [tree=hero, row=2, col=5, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -16012,7 +16012,7 @@ Effects          :
 Description      : Glide speed and height increased by $s1%.
 
 Name             : Improved Defy Fate (id=1268881) [Spell Family (224), Passive] 
-Talent Entry     : Augmentation [tree=spec, row=5, col=4, max_rank=1, req_points=8]
+Talent Entry     : Augmentation [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None

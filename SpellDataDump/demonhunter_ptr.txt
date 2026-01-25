@@ -3062,7 +3062,7 @@ Effects          :
 Description      : Soul Cleave heals you for an additional $207693o1 over $207693d.
 
 Name             : Burning Alive (id=207739) [Spell Family (107), Passive] 
-Talent Entry     : Vengeance [tree=spec, row=8, col=6, max_rank=1, req_points=20]
+Talent Entry     : Vengeance [tree=spec, row=8, col=7, max_rank=1, req_points=20]
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : None
@@ -8620,7 +8620,7 @@ Effects          :
 Description      : $@spelldesc329554
 
 Name             : Charred Flesh (id=336639) [Spell Family (107), Passive] 
-Talent Entry     : Vengeance [tree=spec, row=9, col=6, max_rank=2, req_points=20]
+Talent Entry     : Vengeance [tree=spec, row=9, col=7, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(250, 500)]
 Class            : Demon Hunter
 School           : Physical
@@ -9104,7 +9104,7 @@ Effects          :
 Description      : $@spelldesc342817
 
 Name             : Revel in Pain (id=343014) [Spell Family (107), Passive] 
-Talent Entry     : Vengeance [tree=spec, row=5, col=7, max_rank=1, req_points=8]
+Talent Entry     : Vengeance [tree=spec, row=5, col=9, max_rank=1, req_points=8]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -10631,7 +10631,7 @@ Effects          :
 Description      : Gain critical strike damage equal to $s2% of your critical strike chance.
 
 Name             : Fiery Demise (id=389220) [Spell Family (107), Passive] 
-Talent Entry     : Vengeance [tree=spec, row=7, col=6, max_rank=2, req_points=8]
+Talent Entry     : Vengeance [tree=spec, row=7, col=7, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(15, 30)]
                  : Effect#2 [op=set, values=(15, 30)]
 Class            : Demon Hunter
@@ -10732,7 +10732,7 @@ Effects          :
 Description      : Reduces magic damage taken by $s1%.
 
 Name             : Fel Flame Fortification (id=389705) [Spell Family (107), Passive] 
-Talent Entry     : Vengeance [tree=spec, row=6, col=6, max_rank=1, req_points=8]
+Talent Entry     : Vengeance [tree=spec, row=6, col=8, max_rank=1, req_points=8]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -10782,7 +10782,7 @@ Effects          :
 Description      : When consuming a Soul Fragment would heal you above full health it shields you instead, up to a maximum of ${$MHP*$s1/100}.
 
 Name             : Chains of Anger (id=389715) [Spell Family (107), Passive] 
-Talent Entry     : Vengeance [tree=spec, row=7, col=7, max_rank=1, req_points=8]
+Talent Entry     : Vengeance [tree=spec, row=7, col=9, max_rank=1, req_points=8]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -10802,7 +10802,7 @@ Effects          :
 Description      : Increases the duration of your Sigils by ${$s2/1000} sec and radius by $s1 yds.
 
 Name             : Cycle of Binding (id=389718) [Spell Family (107), Passive] 
-Talent Entry     : Vengeance [tree=spec, row=8, col=6, max_rank=1, req_points=20]
+Talent Entry     : Vengeance [tree=spec, row=8, col=8, max_rank=1, req_points=20]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -10847,7 +10847,7 @@ Effects          :
 Description      : Demon Spikes reduces damage taken by $S1% while active.
 
 Name             : Felfire Fist (id=389724) [Spell Family (107), Passive] 
-Talent Entry     : Vengeance [tree=spec, row=4, col=6, max_rank=1, req_points=0]
+Talent Entry     : Vengeance [tree=spec, row=4, col=8, max_rank=1, req_points=0]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -10863,7 +10863,7 @@ Effects          :
 Description      : Activating Infernal Strike out of combat or within $1265759d of entering combat places a Sigil of Flame at the target location.
 
 Name             : Retaliation (id=389729) [Spell Family (107), Passive, Hidden] 
-Talent Entry     : Vengeance [tree=spec, row=4, col=6, max_rank=1, req_points=0]
+Talent Entry     : Vengeance [tree=spec, row=4, col=7, max_rank=1, req_points=0]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -10877,7 +10877,7 @@ Effects          :
 Description      : While Demon Spikes is active, melee attacks against you cause the attacker to take $391159s1 Physical damage. Generates high threat.
 
 Name             : Down in Flames (id=389732) [Spell Family (107), Passive] 
-Talent Entry     : Vengeance [tree=spec, row=10, col=6, max_rank=1, req_points=20]
+Talent Entry     : Vengeance [tree=spec, row=10, col=7, max_rank=1, req_points=20]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -11377,7 +11377,7 @@ Effects          :
 Description      : $@spelldesc388107
 
 Name             : Burning Blood (id=390213) [Spell Family (107), Passive] 
-Talent Entry     : Vengeance [tree=spec, row=5, col=6, max_rank=1, req_points=8]
+Talent Entry     : Vengeance [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -12139,7 +12139,7 @@ Effects          :
 Description      : $?a388114[Chaos][Nature]
 
 Name             : Soul Sigils (id=395446) [Spell Family (107), Passive] 
-Talent Entry     : Vengeance [tree=spec, row=6, col=6, max_rank=1, req_points=8, select_idx=300]
+Talent Entry     : Vengeance [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=300]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -13264,7 +13264,7 @@ Effects          :
 Description      : $@spelldesc428557
 
 Name             : Ascending Flame (id=428603) [Spell Family (107), Passive] 
-Talent Entry     : Vengeance [tree=spec, row=3, col=6, max_rank=1, req_points=0]
+Talent Entry     : Vengeance [tree=spec, row=3, col=7, max_rank=1, req_points=0]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -13502,7 +13502,7 @@ Effects          :
 Description      : $@spelldesc436897
 
 Name             : Art of the Glaive (id=442290) [Spell Family (107), Passive] 
-Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=1, col=2, max_rank=1, req_points=1]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -13622,7 +13622,7 @@ Effects          :
 Description      : Reaver's Glaive generates $s1 Fury.
 
 Name             : Warblade's Hunger (id=442502) [Spell Family (107), Passive] 
-Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=4, col=3, max_rank=1, req_points=1]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=4, col=5, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -13711,7 +13711,7 @@ Description      : $@spelldesc442679
 Tooltip          : Taking $w1% increased damage from $@auracaster.
 
 Name             : Reaver's Mark (id=442679) [Spell Family (107), Passive] 
-Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=2, col=2, max_rank=1, req_points=1]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=2, col=4, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -13747,7 +13747,7 @@ Effects          :
 Description      : The second enhanced ability in a pattern shatters an additional Soul Fragment.
 
 Name             : Thrill of the Fight (id=442686) [Spell Family (107), Passive] 
-Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=5, col=2, max_rank=1, req_points=1]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=5, col=3, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -13885,7 +13885,7 @@ Description      : $@spelldesc442736
 Tooltip          : Absorbing $w1 damage.
 
 Name             : Wounded Quarry (id=442806) [Spell Family (107), Passive] 
-Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=3, col=2, max_rank=1, req_points=1]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=3, col=4, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14214,8 +14214,8 @@ Effects          :
 Description      : $@spelldesc436344
 
 Name             : Demonsurge (id=452402) [Spell Family (107), Passive] 
-Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=1, col=2, max_rank=1, req_points=1]
-                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=1, col=2, max_rank=1, req_points=1, name="Voidsurge"]
+Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=1, col=3, max_rank=1, req_points=1, name="Voidsurge"]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14293,8 +14293,8 @@ Description      : $?a212612[Demonsurge][Voidsurge] deals $s1% increased damage 
 Each additional target reduces this bonus by $s2%.
 
 Name             : Set Fire to the Pain (id=452406) [Spell Family (107), Passive] 
-Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=100]
-                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=2, col=4, max_rank=1, req_points=1, select_idx=100]
+                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=2, col=4, max_rank=1, req_points=1, select_idx=100]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14319,8 +14319,8 @@ Description      : $s2% of all non-Fire damage taken is instead taken as Fire da
 Fire damage taken reduced by $S3%.
 
 Name             : Improved Soul Rending (id=452407) [Spell Family (107), Passive] 
-Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=200]
-                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=2, col=4, max_rank=1, req_points=1, select_idx=200]
+                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=2, col=4, max_rank=1, req_points=1, select_idx=200]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14378,8 +14378,8 @@ Effects          :
 Description      : $?a212612[When you activate Metamorphosis, reset the cooldown of Immolation Aura][Entering Void Metamorphosis resets the cooldown of Voidblade and The Hunt].
 
 Name             : Enduring Torment (id=452410) [Spell Family (107), Passive] 
-Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=3, col=3, max_rank=1, req_points=1]
-                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=3, col=3, max_rank=1, req_points=1]
+Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=3, col=4, max_rank=1, req_points=1]
+                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=3, col=4, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14464,8 +14464,8 @@ Effects          :
 Description      : $?a212612[Immolation Aura][Hungering Slash] has $s1 yd increased radius and $s2% increased critical strike damage bonus.
 
 Name             : Monster Rising (id=452414) [Spell Family (107), Passive] 
-Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=4, col=3, max_rank=1, req_points=1]
-                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=4, col=3, max_rank=1, req_points=1]
+Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=4, col=4, max_rank=1, req_points=1]
+                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=4, col=4, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14480,8 +14480,8 @@ Effects          :
 Description      : $?a212612[Agility][Intellect] increased by $?a212612[$452550s1][$452550s2]% while not in demon form.
 
 Name             : Demonic Intensity (id=452415) [Spell Family (107), Passive] 
-Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=5, col=2, max_rank=1, req_points=1]
-                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=5, col=2, max_rank=1, req_points=1]
+Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=5, col=3, max_rank=1, req_points=1]
+                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=5, col=3, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -15743,7 +15743,7 @@ Description      : $@spelldesc427641
 Tooltip          : Your next Fel Rush or Felblade increases your damage by $427641s1% for $427641d.
 
 Name             : Predator's Thirst (id=1215617) [Spell Family (107), Passive, Hidden] 
-Talent Entry     : Devourer [tree=spec, row=2, col=4, max_rank=1, req_points=0]
+Talent Entry     : Devourer [tree=spec, row=2, col=5, max_rank=1, req_points=0]
 Class            : Demon Hunter
 School           : Spellshadow
 Spell Type       : Ranged
@@ -16234,7 +16234,7 @@ Effects          :
 Description      : $@spelldesc1223412
 
 Name             : Waste Not (id=1223918) [Spell Family (107), Passive, Hidden] 
-Talent Entry     : Devourer [tree=spec, row=5, col=4, max_rank=1, req_points=8]
+Talent Entry     : Devourer [tree=spec, row=5, col=5, max_rank=1, req_points=8]
 Class            : Demon Hunter
 School           : Spellshadow
 Spell Type       : None
@@ -16385,7 +16385,7 @@ Reap gathers up to $1227619s2 nearby souls.$?a1246558[
 |CFFffffffGenerates $1261679s1 Fury.|R][]
 
 Name             : Eradicate (id=1226033) [Spell Family (107), Passive, Hidden] 
-Talent Entry     : Devourer [tree=spec, row=10, col=5, max_rank=1, req_points=20]
+Talent Entry     : Devourer [tree=spec, row=10, col=6, max_rank=1, req_points=20]
 Class            : Demon Hunter
 School           : Cosmic
 Spell Type       : None
@@ -16698,7 +16698,7 @@ Description      : Fury of the Aldrachi further empowers $?a212613[Soul Cleave][
 Reaver's Mark now stacks up to $442624u times and further empowers $?s263642[Fracture]?a212613[Shear][Chaos Strike] when cast after $?a212613[Soul Cleave][Blade Dance], applying an additional stack for $s4% of normal duration.
 
 Name             : Feast of Souls (id=1237270) [Spell Family (107), Passive, Hidden] 
-Talent Entry     : Devourer [tree=spec, row=3, col=5, max_rank=1, req_points=0]
+Talent Entry     : Devourer [tree=spec, row=3, col=6, max_rank=1, req_points=0]
 Class            : Demon Hunter
 School           : Spellshadow
 Spell Type       : None
@@ -16712,7 +16712,7 @@ Effects          :
 Description      : Soul Fragments grant $1232310s1% increased damage for $1232310d. Multiple applications may overlap.
 
 Name             : Moment of Craving (id=1238488) [Spell Family (107), Passive, Hidden] 
-Talent Entry     : Devourer [tree=spec, row=4, col=5, max_rank=1, req_points=0]
+Talent Entry     : Devourer [tree=spec, row=4, col=6, max_rank=1, req_points=0]
 Class            : Demon Hunter
 School           : Spellshadow
 Spell Type       : None
@@ -16781,7 +16781,7 @@ Effects          :
 Description      : $@spelldesc178940
 
 Name             : Soulshaper (id=1238739) [Spell Family (107), Passive, Hidden] 
-Talent Entry     : Devourer [tree=spec, row=5, col=5, max_rank=1, req_points=8]
+Talent Entry     : Devourer [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Demon Hunter
 School           : Cosmic
 Spell Type       : None
@@ -17024,7 +17024,7 @@ Effects          :
 Description      : Damage from Voidblade and the Hunt increases the damage your target takes from you by $1241532s1% for $1241532d. Multiple applications may overlap.
 
 Name             : Voidglare Boon (id=1240202) [Spell Family (107), Passive, Hidden] 
-Talent Entry     : Devourer [tree=spec, row=8, col=5, max_rank=1, req_points=20]
+Talent Entry     : Devourer [tree=spec, row=8, col=6, max_rank=1, req_points=20]
 Class            : Demon Hunter
 School           : Cosmic
 Spell Type       : None
@@ -17038,7 +17038,7 @@ Effects          :
 Description      : After fully channeling Void Ray, gain $1241922s1 Fury.
 
 Name             : Focused Ray (id=1240203) [Spell Family (107), Passive, Hidden] 
-Talent Entry     : Devourer [tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Devourer [tree=spec, row=7, col=6, max_rank=1, req_points=8]
 Class            : Demon Hunter
 School           : Cosmic
 Spell Type       : None
@@ -17054,7 +17054,7 @@ Effects          :
 Description      : Void Ray deals $s1% more damage when damaging a single target.
 
 Name             : Star Fragments (id=1240204) [Spell Family (107), Passive, Hidden] 
-Talent Entry     : Devourer [tree=spec, row=9, col=5, max_rank=1, req_points=20]
+Talent Entry     : Devourer [tree=spec, row=9, col=6, max_rank=1, req_points=20]
 Class            : Demon Hunter
 School           : Cosmic
 Spell Type       : None
@@ -17220,7 +17220,7 @@ Effects          :
 Description      : Every soul consumed in Void Metamorphosis grants ${$s1/100}.2% haste, up to $s1%.
 
 Name             : Calamitous (id=1242495) [Spell Family (107), Passive, Hidden] 
-Talent Entry     : Devourer [tree=spec, row=9, col=4, max_rank=1, req_points=20]
+Talent Entry     : Devourer [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Demon Hunter
 School           : Cosmic
 Spell Type       : None
@@ -17252,7 +17252,7 @@ Effects          :
 Tooltip          : Haste increased by ${$w1}.2%.
 
 Name             : Sweet Release (id=1242768) [Spell Family (107), Passive, Hidden] 
-Talent Entry     : Devourer [tree=spec, row=6, col=5, max_rank=2, req_points=8]
+Talent Entry     : Devourer [tree=spec, row=6, col=6, max_rank=2, req_points=8]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Demon Hunter
 School           : Cosmic
@@ -17298,7 +17298,7 @@ Effects          :
 Description      : Your Mastery is increased by $s1%.
 
 Name             : Voidpurge (id=1244220) [Spell Family (107), Passive, Hidden] 
-Talent Entry     : Devourer [tree=spec, row=6, col=5, max_rank=1, req_points=8]
+Talent Entry     : Devourer [tree=spec, row=6, col=7, max_rank=1, req_points=8]
 Class            : Demon Hunter
 School           : Cosmic
 Spell Type       : None
@@ -17314,7 +17314,7 @@ Effects          :
 Description      : Void Ray's cooldown during Void Metamorphosis is reduced by ${-$s1/1000}.1 sec.
 
 Name             : Devourer's Edge (id=1244222) [Spell Family (107), Passive, Hidden] 
-Talent Entry     : Devourer [tree=spec, row=8, col=4, max_rank=2, req_points=20]
+Talent Entry     : Devourer [tree=spec, row=8, col=5, max_rank=2, req_points=20]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Demon Hunter
@@ -17360,7 +17360,7 @@ Description      : $@spelldesc1244237
 Tooltip          : All damage dealt increased by ${$w1}.1%.
 
 Name             : Rolling Torment (id=1244237) [Spell Family (107), Passive, Hidden] 
-Talent Entry     : Devourer [tree=spec, row=8, col=5, max_rank=1, req_points=20]
+Talent Entry     : Devourer [tree=spec, row=8, col=7, max_rank=1, req_points=20]
 Class            : Demon Hunter
 School           : Cosmic
 Spell Type       : None
@@ -18089,7 +18089,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Voidfall (id=1253304) [Spell Family (107), Passive] 
-Talent Entry     : Annihilator (Generic) [tree=hero, row=1, col=2, max_rank=1, req_points=0]
+Talent Entry     : Annihilator (Generic) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Mage, Demon Hunter
 School           : None
 Spell Type       : None
@@ -18185,7 +18185,7 @@ Effects          :
 Description      : $?a212613[Torment][Shift] has $m1 additional $Lcharge:charges;.
 
 Name             : Celestial Echoes (id=1253415) [Spell Family (107), Passive] 
-Talent Entry     : Annihilator (Generic) [tree=hero, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Annihilator (Generic) [tree=hero, row=3, col=5, max_rank=1, req_points=0]
 Class            : Demon Hunter
 School           : None
 Spell Type       : None
@@ -18233,7 +18233,7 @@ Effects          :
 Description      : Each stack of Voidfall grants $s1% Haste.
 
 Name             : Doomsayer (id=1253676) [Spell Family (107), Passive] 
-Talent Entry     : Annihilator (Generic) [tree=hero, row=3, col=2, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Annihilator (Generic) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Demon Hunter
 School           : None
 Spell Type       : None
@@ -18251,7 +18251,7 @@ Effects          :
 Description      : Activating $?a212613[Infernal Strike][Void Ray] out of combat or within $?a1213636[${$1265768d*$s2} sec][$1265768d] of entering combat calls down $?a212613[$s3][$s1] Voidfall $LMeteor:Meteors;$?a212613[][ over its duration].
 
 Name             : Catastrophe (id=1253769) [Spell Family (107), Passive] 
-Talent Entry     : Annihilator (Generic) [tree=hero, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Annihilator (Generic) [tree=hero, row=2, col=4, max_rank=1, req_points=0]
 Class            : Demon Hunter
 School           : None
 Spell Type       : None
@@ -18283,7 +18283,7 @@ Effects          :
 Description      : Passive bonuses granted by each stack of Voidfall persist for $1256322d after being consumed.
 
 Name             : Otherworldly Focus (id=1253817) [Spell Family (107), Passive] 
-Talent Entry     : Annihilator (Generic) [tree=hero, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Annihilator (Generic) [tree=hero, row=4, col=5, max_rank=1, req_points=0]
 Class            : Demon Hunter
 School           : None
 Spell Type       : None
@@ -18302,7 +18302,7 @@ Description      : $?a212613[Spirit Bomb][Collapsing Star] and Voidfall meteors 
 Each additional target reduces this bonus by $s2%.
 
 Name             : Phase Shift (id=1256245) [Spell Family (107), Passive] 
-Talent Entry     : Annihilator (Generic) [tree=hero, row=2, col=3, max_rank=1, req_points=0]
+Talent Entry     : Annihilator (Generic) [tree=hero, row=2, col=5, max_rank=1, req_points=0]
 Class            : Mage, Demon Hunter
 School           : None
 Spell Type       : None
@@ -18466,7 +18466,7 @@ Effects          :
 Description      : $@spelldesc1253304
 
 Name             : Dark Matter (id=1256307) [Spell Family (107), Passive] 
-Talent Entry     : Annihilator (Generic) [tree=hero, row=4, col=2, max_rank=1, req_points=0]
+Talent Entry     : Annihilator (Generic) [tree=hero, row=4, col=4, max_rank=1, req_points=0]
 Class            : Mage, Demon Hunter
 School           : None
 Spell Type       : None
@@ -18583,7 +18583,7 @@ $?a1253399[
 Movement speed increased by $s4%.][]
 
 Name             : World Killer (id=1256353) [Spell Family (107), Passive] 
-Talent Entry     : Annihilator (Generic) [tree=hero, row=5, col=2, max_rank=1, req_points=0]
+Talent Entry     : Annihilator (Generic) [tree=hero, row=5, col=3, max_rank=1, req_points=0]
 Class            : Demon Hunter
 School           : None
 Spell Type       : None
@@ -19209,7 +19209,7 @@ Description      : $@spelldesc343014
 Tooltip          : Absorbs $w1 damage.
 
 Name             : Soul Barrier (id=1265924) [Spell Family (107), Passive] 
-Talent Entry     : Vengeance [tree=spec, row=6, col=6, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Vengeance [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=100]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -19746,7 +19746,7 @@ Effects          :
 Description      : $@spelldesc1264882
 
 Name             : Keen Edge (id=1272138) [Spell Family (107), Passive] 
-Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=3, col=3, max_rank=1, req_points=1]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=3, col=5, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -19774,7 +19774,7 @@ Effects          :
 Description      : Reaver's Glaive damage is increased by $s1% and other Physical-only damage is increased by $s2%.
 
 Name             : Broken Spirit (id=1272143) [Spell Family (107), Passive] 
-Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=2, col=3, max_rank=1, req_points=1]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=2, col=5, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -19799,7 +19799,7 @@ Effects          :
 Description      : $?a212613[Sigil of Spite][The Hunt] shatters $?a212613[$s1 additional][$s2] Soul $LFragment:Fragments;. $?a212613[Soul Cleave has][Blade Dance and Chaos Strike have] a $?a212613[$s3][$s4]% chance to shatter a Soul Fragment.
 
 Name             : Bladecraft (id=1272153) [Spell Family (107), Passive] 
-Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=4, col=2, max_rank=1, req_points=1]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=4, col=4, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -19824,8 +19824,8 @@ Description      : Fury of the Aldrachi further empowers $?a212613[Soul Cleave][
 Reaver's Mark now stacks up to $442624u times and further empowers $?a212613[Fracture][Chaos Strike] when cast after $?a212613[Soul Cleave][Blade Dance], applying an additional stack.
 
 Name             : Blind Focus (id=1272364) [Spell Family (107), Passive] 
-Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=2, col=4, max_rank=1, req_points=1]
-                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=2, col=4, max_rank=1, req_points=1]
+Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=2, col=5, max_rank=1, req_points=1]
+                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=2, col=5, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -19860,8 +19860,8 @@ Description      : $?a212612[Fire][Cosmic] damage increased by $?a212612[$s1][$s
 Effect is doubled while in demon form.
 
 Name             : Undying Embers (id=1272405) [Spell Family (107), Passive] 
-Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=3, col=4, max_rank=1, req_points=1]
-                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=3, col=4, max_rank=1, req_points=1]
+Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=3, col=5, max_rank=1, req_points=1]
+                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=3, col=5, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -19913,8 +19913,8 @@ Effects          :
 Description      : Hungering Slash and Voidblade's critical strike chance is increased by $s1%.
 
 Name             : Volatile Instinct (id=1272453) [Spell Family (107), Passive] 
-Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=4, col=4, max_rank=1, req_points=1]
-                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=4, col=4, max_rank=1, req_points=1]
+Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=4, col=5, max_rank=1, req_points=1]
+                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=4, col=5, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -19993,7 +19993,7 @@ Effects          :
 Tooltip          : Your Fury drain is dramatically reduced.
 
 Name             : Improved Consume (id=1272817) [Spell Family (107), Passive, Hidden] 
-Talent Entry     : Devourer [tree=spec, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Devourer [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Demon Hunter
 School           : Cosmic
 Spell Type       : None
@@ -20157,7 +20157,7 @@ Effects          :
 Description      : $@spelldesc1225826
 
 Name             : Harness the Cosmos (id=1279247) [Spell Family (107), Passive] 
-Talent Entry     : Annihilator (Generic) [tree=hero, row=3, col=2, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Annihilator (Generic) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Demon Hunter
 School           : None
 Spell Type       : None

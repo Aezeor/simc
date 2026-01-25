@@ -255,7 +255,7 @@ Effects          :
 Description      : Reduces Arcane damage taken by $s1%.
 
 Name             : Agony (id=980) [Spell Family (5)] 
-Talent Entry     : Affliction [tree=spec, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Affliction [tree=spec, row=1, col=4, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -498,7 +498,7 @@ Description      : Let loose a terrifying howl, causing $?a1270255[${$i+$1270255
 Tooltip          : Disoriented.
 
 Name             : Rain of Fire (id=5740) [Spell Family (5)] 
-Talent Entry     : Destruction [tree=spec, row=2, col=4, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Destruction [tree=spec, row=2, col=5, max_rank=1, req_points=0, select_idx=100]
 Class            : Warlock
 School           : Fire
 Spell Type       : Magic
@@ -1420,7 +1420,7 @@ Description      : Increases your haste by $s1% for $d.
 Tooltip          : Haste increased by $s1%.
 
 Name             : Seed of Corruption (id=27243) [Spell Family (5)] 
-Talent Entry     : Affliction [tree=spec, row=2, col=4, max_rank=1, req_points=0]
+Talent Entry     : Affliction [tree=spec, row=2, col=5, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -1584,7 +1584,7 @@ If dispelled, deals ${$233490s1*$s1/100} damage to the dispeller and silences th
 |cFFFFFFFFRefunds $231791m1 Soul $LShard:Shards; if the target dies while afflicted.|r][]
 
 Name             : Summon Felguard (desc=Summon) (id=30146) [Spell Family (5)] 
-Talent Entry     : Demonology [tree=spec, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Demonology [tree=spec, row=4, col=6, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -1853,7 +1853,7 @@ Effects          :
 Description      : $@spelldesc27243
 
 Name             : Haunt (id=48181) [Spell Family (5)] 
-Talent Entry     : Affliction [tree=spec, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Affliction [tree=spec, row=3, col=4, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -2818,7 +2818,7 @@ Effects          :
 Description      : Corrupts all of your Warlock fire spells, infusing them with fel magic.
 
 Name             : Call Dreadstalkers (id=104316) [Spell Family (5)] 
-Talent Entry     : Demonology [tree=spec, row=2, col=3, max_rank=1, req_points=0]
+Talent Entry     : Demonology [tree=spec, row=2, col=5, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -3180,8 +3180,8 @@ $@spellname111897 Interrupts its target.$?c2[
 $@spellname111898 Stuns its target.][]
 
 Name             : Grimoire of Sacrifice (id=108503) [Spell Family (5)] 
-Talent Entry     : Destruction [tree=spec, row=7, col=4, max_rank=1, req_points=8, select_idx=100]
-                 : Affliction [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Destruction [tree=spec, row=7, col=6, max_rank=1, req_points=8, select_idx=100]
+                 : Affliction [tree=spec, row=6, col=6, max_rank=1, req_points=8, select_idx=200]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -4111,7 +4111,7 @@ Effects          :
 Description      : You are able to maintain control over even greater demons indefinitely, allowing you to summon a Doomguard or Infernal as a permanent pet.
 
 Name             : Cataclysm (id=152108) [Spell Family (5)] 
-Talent Entry     : Destruction [tree=spec, row=5, col=5, max_rank=1, req_points=8]
+Talent Entry     : Destruction [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic
@@ -4757,7 +4757,7 @@ Effects          :
 Description      : $@spelldesc108503
 
 Name             : Absolute Corruption (id=196103) [Spell Family (5), Passive] 
-Talent Entry     : Affliction [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Affliction [tree=spec, row=4, col=6, max_rank=1, req_points=0, select_idx=100]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -4781,7 +4781,7 @@ Description      : $?a445465[Wither][Corruption] is now permanent and deals $s2%
 Duration reduced to $s1 sec against players.
 
 Name             : Sow the Seeds (id=196226) [Spell Family (5), Passive] 
-Talent Entry     : Affliction [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Affliction [tree=spec, row=10, col=7, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -4844,7 +4844,7 @@ Effects          :
 Description      : $@spelldesc105174
 
 Name             : Implosion (id=196277) [Spell Family (5)] 
-Talent Entry     : Demonology [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Demonology [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic
@@ -4966,7 +4966,7 @@ Effects          :
 Description      : Conflagrate reduces the cast time of your next Incinerate, Chaos Bolt, or Soul Fire by $117828s1%. Maximum $?s267115[$s2][$s1] charges.
 
 Name             : Fire and Brimstone (id=196408) [Spell Family (5), Passive] 
-Talent Entry     : Destruction [tree=spec, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Destruction [tree=spec, row=6, col=6, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -4992,7 +4992,7 @@ Effects          :
 Description      : Incinerate now also hits all enemies near your target for $s1% damage.
 
 Name             : Channel Demonfire (id=196447) [Spell Family (5)] 
-Talent Entry     : Destruction [tree=spec, row=9, col=5, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Destruction [tree=spec, row=9, col=7, max_rank=1, req_points=20, select_idx=100]
 Class            : Warlock
 School           : Fire
 Spell Type       : Magic
@@ -5295,7 +5295,7 @@ Description      : Places a phantom singularity above the target, which consumes
 Tooltip          : Dealing damage to all nearby targets every $t1 sec and healing the casting Warlock.
 
 Name             : Summon Darkglare (id=205180) [Spell Family (5)] 
-Talent Entry     : Affliction [tree=spec, row=6, col=3, max_rank=1, req_points=8]
+Talent Entry     : Affliction [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -6311,7 +6311,7 @@ Tooltip          : Suffering $s1 Shadow damage every $t1 seconds.
 Restoring health to the Warlock.
 
 Name             : Death's Embrace (id=234876) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Affliction [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Affliction [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -7146,7 +7146,7 @@ Tooltip          : Healing for $m1% of maximum health every $t1 sec.
 Spell casts are not delayed by taking damage.
 
 Name             : Creeping Death (id=264000) [Spell Family (5), Passive] 
-Talent Entry     : Affliction [tree=spec, row=5, col=4, max_rank=2, req_points=8]
+Talent Entry     : Affliction [tree=spec, row=5, col=5, max_rank=2, req_points=8]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Warlock
 School           : Physical
@@ -7164,7 +7164,7 @@ Effects          :
 Description      : Your Agony, $?a445465[Wither][Corruption], and Unstable Affliction deal damage $s1% faster.
 
 Name             : Dreadlash (id=264078) [Spell Family (5), Passive] 
-Talent Entry     : Demonology [tree=spec, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Demonology [tree=spec, row=3, col=6, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : None
@@ -7180,7 +7180,7 @@ Effects          :
 Description      : When your Dreadstalkers charge into battle, their Dreadbite attack now hits all targets within $271971A1 yards and deals $s1% more damage.
 
 Name             : Power Siphon (id=264130) [Spell Family (5)] 
-Talent Entry     : Demonology [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Demonology [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -7337,7 +7337,7 @@ Description      : Encases the Voidwalker in shadow energy, reducing physical da
 Tooltip          : Damage taken reduced by $s1%.
 
 Name             : Summon Demonic Tyrant (id=265187) [Spell Family (5)] 
-Talent Entry     : Demonology [tree=spec, row=6, col=3, max_rank=1, req_points=8]
+Talent Entry     : Demonology [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -12331,7 +12331,7 @@ Effects          :
 Description      : Hand of Gul'dan has a $s1% chance to generate a charge of Demonic Core.
 
 Name             : Carnivorous Stalkers (id=386194) [Spell Family (5), Passive] 
-Talent Entry     : Demonology [tree=spec, row=5, col=3, max_rank=2, req_points=8]
+Talent Entry     : Demonology [tree=spec, row=5, col=5, max_rank=2, req_points=8]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Warlock
 School           : Physical
@@ -12621,7 +12621,7 @@ Effects          :
 Description      : Shadow Bolt and Drain Soul deal $s1% increased damage, up to ${$s1*$s2}%, per damage over time effect you have active on the target.
 
 Name             : Sacrolash's Dark Strike (id=386986) [Spell Family (5), Passive] 
-Talent Entry     : Affliction [tree=spec, row=7, col=4, max_rank=1, req_points=8]
+Talent Entry     : Affliction [tree=spec, row=7, col=6, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -12923,7 +12923,7 @@ Description      : $@spelldesc387156
 Tooltip          : $@spelldesc387156
 
 Name             : Raging Demonfire (id=387166) [Spell Family (5), Passive] 
-Talent Entry     : Destruction [tree=spec, row=10, col=5, max_rank=1, req_points=20]
+Talent Entry     : Destruction [tree=spec, row=10, col=7, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -12945,7 +12945,7 @@ Effects          :
 Description      : Channel Demonfire fires an additional $s1 bolts. Each bolt increases the remaining duration of $?a445465[Wither][Immolate] on all targets hit by ${$s2/1000}.1 sec.
 
 Name             : Diabolic Embers (id=387173) [Spell Family (5), Passive] 
-Talent Entry     : Destruction [tree=spec, row=9, col=4, max_rank=1, req_points=20]
+Talent Entry     : Destruction [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -12959,7 +12959,7 @@ Effects          :
 Description      : Incinerate now generates $s1% additional Soul Shard Fragments.
 
 Name             : Ashen Remains (id=387252) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Destruction [tree=spec, row=5, col=4, max_rank=2, req_points=8]
+Talent Entry     : Destruction [tree=spec, row=5, col=5, max_rank=2, req_points=8]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Warlock
 School           : Physical
@@ -13659,7 +13659,7 @@ Effects          :
 Description      : Reduces the cooldown of Conflagrate by ${$s1/-1000} sec.
 
 Name             : Scalding Flames (id=388832) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Destruction [tree=spec, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Destruction [tree=spec, row=4, col=6, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -13778,7 +13778,7 @@ Description      : $@spelldesc389609
 Tooltip          : Damage taken is reduced by $s1%.
 
 Name             : Gorefiend's Resolve (id=389623) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Soul Harvester (Affliction, Demonology) [tree=hero, row=3, col=2, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Soul Harvester (Affliction, Demonology) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -15158,7 +15158,7 @@ Effects          :
 Description      : Enemies damaged by your Overlord have their souls cloven, increasing damage taken by you and your pets by $434424s1% for $434424d.
 
 Name             : Secrets of the Coven (id=428518) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Diabolist (Demonology, Destruction) [tree=hero, row=2, col=3, max_rank=1, req_points=0]
+Talent Entry     : Diabolist (Demonology, Destruction) [tree=hero, row=2, col=4, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -15280,7 +15280,7 @@ Effects          :
 Description      : Howl of Terror cooldown is reduced by ${$s1/-1000} sec and range is increased by $s2 yds.
 
 Name             : Infernal Vitality (id=429115) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Diabolist (Demonology, Destruction) [tree=hero, row=3, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Diabolist (Demonology, Destruction) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -15296,7 +15296,7 @@ Effects          :
 Description      : Unending Resolve heals you for ${$434559s1*($434559d/$434559t1)}% of your maximum health over $434559d.
 
 Name             : Infernal Bulwark (id=429130) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Diabolist (Demonology, Destruction) [tree=hero, row=3, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Diabolist (Demonology, Destruction) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -15382,7 +15382,7 @@ Description      : Demonic Art increases the damage of your next $?s137044[Hand 
 $?s137044[][Casting Chaos Bolt reduces the duration of Diabolic Ritual by $s3 additional sec.]
 
 Name             : Gloom of Nathreza (id=429899) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Diabolist (Demonology, Destruction) [tree=hero, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Diabolist (Demonology, Destruction) [tree=hero, row=4, col=4, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -15430,7 +15430,7 @@ Effects          :
 Description      : Spending Soul Shards on damaging spells while your $?s137044[Demonic Tyrant][Infernal] is active decreases the duration of Diabolic Ritual by ${$s1/1000} additional sec.
 
 Name             : Malevolence (id=430014) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=5, col=2, max_rank=1, req_points=0, override="Malevolence" (id=442726)]
+Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=5, col=3, max_rank=1, req_points=0, override="Malevolence" (id=442726)]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -16041,7 +16041,7 @@ Effects          :
 Description      : Unleashes a powerful beam of fel magic that sears the enemy target's soul, dealing $s1 Chaos damage.
 
 Name             : Xalan's Cruelty (id=440040) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=2, col=4, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -16077,7 +16077,7 @@ Effects          :
 Description      : Shadow damage dealt by your spells and abilities is increased by $s3% and your Shadow spells gain $s1% more critical strike chance from all sources.
 
 Name             : Blackened Soul (id=440043) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=2, col=1, max_rank=1, req_points=0]
+Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=2, col=2, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -16137,7 +16137,7 @@ Effects          :
 Description      : Fire damage dealt by your spells and abilities is increased by $s1% and your Fire spells gain $s4% more critical strike chance from all sources.
 
 Name             : Mark of Peroth'arn (id=440045) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=4, col=2, max_rank=1, req_points=0]
+Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=4, col=4, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -16189,7 +16189,7 @@ Description      : $?s980[Agony damage increased by $s1%.][Wither damage increas
 Blackened Soul deals $s3% increased damage per stack of Wither.
 
 Name             : Hatefury Rituals (id=440048) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=3, col=1, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=3, col=2, max_rank=1, req_points=0, select_idx=100]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -16207,7 +16207,7 @@ Effects          :
 Description      : Wither deals $s1% increased periodic damage but its duration is $s2% shorter.
 
 Name             : Bleakheart Tactics (id=440051) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=3, col=1, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=3, col=2, max_rank=1, req_points=0, select_idx=200]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -16227,7 +16227,7 @@ Effects          :
 Description      : Wither damage increased $s1%. When Wither gains a stack from Blackened Soul, it has a chance to gain an additional stack.
 
 Name             : Seeds of Their Demise (id=440055) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=4, col=1, max_rank=1, req_points=0]
+Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=4, col=2, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -16282,7 +16282,7 @@ Effects          :
 Description      : While Unending Resolve is active, enemies within $449587a1 yds are affected by Curse of Tongues and Curse of Weakness at $s1% effectiveness.
 
 Name             : Zevrim's Resilience (id=440065) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=3, col=2, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -16296,7 +16296,7 @@ Effects          :
 Description      : Dark Pact heals you for $108416s5 every $108416t5 sec while active.
 
 Name             : Illhoof's Design (id=440070) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=3, col=2, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -16434,7 +16434,7 @@ Effects          :
 Description      : $@spelldesc430014
 
 Name             : Wither (id=445465) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=1, col=2, max_rank=1, req_points=0, override="Wither" (id=445468)]
+Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=1, col=3, max_rank=1, req_points=0, override="Wither" (id=445468)]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -16587,7 +16587,7 @@ Description      : $@spelldesc440059
 Tooltip          : Time between attacks increased $w1% and casting speed increased by $w2%.
 
 Name             : Demonic Soul (id=449614) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Soul Harvester (Affliction, Demonology) [tree=hero, row=1, col=2, max_rank=1, req_points=0]
+Talent Entry     : Soul Harvester (Affliction, Demonology) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -16655,7 +16655,7 @@ Description      : Unleashing your demonic soul bestows a fiendish entity unto t
 If this effect is reapplied, any remaining damage will be added to the new Soul Anathema.
 
 Name             : Demoniac's Fervor (id=449629) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Soul Harvester (Affliction, Demonology) [tree=hero, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Soul Harvester (Affliction, Demonology) [tree=hero, row=2, col=4, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -16713,7 +16713,7 @@ Description      : Soul Anathema damage increased by $s1% and is dealt $s2% fast
 Consuming $?s137043[Nightfall][Demonic Core] activates Shared Fate or Feast of Souls.
 
 Name             : Sataiel's Volition (id=449637) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Soul Harvester (Affliction, Demonology) [tree=hero, row=4, col=2, max_rank=1, req_points=0]
+Talent Entry     : Soul Harvester (Affliction, Demonology) [tree=hero, row=4, col=4, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -16735,7 +16735,7 @@ Effects          :
 Description      : $?s137043[Corruption deals damage $s1% faster and Haunt grants Nightfall.][Wild Imp damage increased by $s2% and Wild Imps that are imploded have an additional $s3% chance to grant a Demonic Core.]
 
 Name             : Shadow of Death (id=449638) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Soul Harvester (Affliction, Demonology) [tree=hero, row=5, col=2, max_rank=1, req_points=0]
+Talent Entry     : Soul Harvester (Affliction, Demonology) [tree=hero, row=5, col=3, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -16817,7 +16817,7 @@ Effects          :
 Description      : When you kill a target, you have a chance to generate a Soul Shard that is guaranteed to be a Succulent Soul.
 
 Name             : Eternal Servitude (id=449707) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Soul Harvester (Affliction, Demonology) [tree=hero, row=3, col=2, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Soul Harvester (Affliction, Demonology) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -17205,7 +17205,7 @@ Effects          :
 Description      : $@spelldesc6201
 
 Name             : Siphon Life (id=452999) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Affliction [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Affliction [tree=spec, row=4, col=6, max_rank=1, req_points=0, select_idx=200]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -17278,7 +17278,7 @@ Effects          :
 Description      : Increases the critical strike chance of Agony, $?a445465[Wither][Corruption], and Unstable Affliction by $s1%.
 
 Name             : Contagion (id=453096) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Affliction [tree=spec, row=7, col=4, max_rank=1, req_points=8]
+Talent Entry     : Affliction [tree=spec, row=7, col=7, max_rank=1, req_points=8]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Warlock
 School           : Physical
@@ -17295,8 +17295,8 @@ Effects          :
 Description      : Increases critical strike damage dealt by Agony, $?a445465[Wither][Corruption], and Unstable Affliction by $s1%.
 
 Name             : Summoner's Embrace (id=453105) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Destruction [tree=spec, row=7, col=4, max_rank=1, req_points=8, select_idx=0]
-                 : Affliction [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Destruction [tree=spec, row=7, col=6, max_rank=1, req_points=8, select_idx=0]
+                 : Affliction [tree=spec, row=6, col=6, max_rank=1, req_points=8, select_idx=100]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -17468,7 +17468,7 @@ Effects          :
 Description      : Incinerate critical strike chance increased by $s1%. Conflagrate critical strike chance increased by $s2%.
 
 Name             : Flametouched (id=453699) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Demonology [tree=spec, row=7, col=4, max_rank=1, req_points=8]
+Talent Entry     : Demonology [tree=spec, row=7, col=6, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -17528,7 +17528,7 @@ Effects          :
 Description      : Reduces the cast time of Shadow Bolt by $s1% and increases its damage by $s2%.
 
 Name             : Improved Demonic Tactics (id=453800) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Demonology [tree=spec, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Demonology [tree=spec, row=6, col=6, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -17561,7 +17561,7 @@ Effects          :
 Description      : Damaging critical strikes dealt by you and your demons deal ${$s1+200}% damage instead of the usual 200%.
 
 Name             : Devastation (id=454735) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Destruction [tree=spec, row=8, col=4, max_rank=2, req_points=20]
+Talent Entry     : Destruction [tree=spec, row=8, col=6, max_rank=2, req_points=20]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Warlock
 School           : Physical
@@ -17578,7 +17578,7 @@ Effects          :
 Description      : Increases the critical strike chance of your Destruction spells by $s1%.
 
 Name             : Emberstorm (id=454744) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Destruction [tree=spec, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Destruction [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -17602,7 +17602,7 @@ Effects          :
 Description      : Increases the damage done by your Fire spells by $s1% and reduces the cast time of your Incinerate spell by $s2%.
 
 Name             : Mark of Shatug (id=455449) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Demonology [tree=spec, row=10, col=4, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Demonology [tree=spec, row=10, col=7, max_rank=1, req_points=20, select_idx=100]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -17621,7 +17621,7 @@ $@spellicon455489 $@spellname455489
 $@spelldesc455489
 
 Name             : Mark of F'harg (id=455450) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Demonology [tree=spec, row=10, col=4, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Demonology [tree=spec, row=10, col=7, max_rank=1, req_points=20, select_idx=200]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -17874,7 +17874,7 @@ Effects          :
 Description      : $@spelldesc456975
 
 Name             : Improved Haunt (id=458034) [Spell Family (5), Passive] 
-Talent Entry     : Affliction [tree=spec, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Affliction [tree=spec, row=4, col=4, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -17909,7 +17909,7 @@ Effects          :
 Description      : Your Hearthstone cooldown is reduced by ${$s2/-60000} min and gains an additional charge.
 
 Name             : Ravenous Afflictions (id=459440) [Spell Family (5), Passive] 
-Talent Entry     : Affliction [tree=spec, row=9, col=3, max_rank=1, req_points=20]
+Talent Entry     : Affliction [tree=spec, row=9, col=4, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18195,7 +18195,7 @@ Effects          :
 Description      : $@spelldesc428514
 
 Name             : Demonfire Infusion (id=1214442) [Spell Family (5), Passive] 
-Talent Entry     : Destruction [tree=spec, row=9, col=5, max_rank=1, req_points=20, select_idx=0]
+Talent Entry     : Destruction [tree=spec, row=9, col=7, max_rank=1, req_points=20, select_idx=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18217,7 +18217,7 @@ Description      : Periodic damage from $?a445465[Wither][Immolate] has a $s1% c
 Incinerate has a $s2% chance to fire a Demonfire bolt at $s3% increased effectiveness.
 
 Name             : Rain of Fire (id=1214467) [Spell Family (5)] 
-Talent Entry     : Destruction [tree=spec, row=2, col=4, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Destruction [tree=spec, row=2, col=5, max_rank=1, req_points=0, select_idx=200]
 Class            : Warlock
 School           : Fire
 Spell Type       : Magic
@@ -18701,7 +18701,7 @@ Description      : $@spelldesc28880
 Tooltip          : The voidbroken offers its gratitude. Healing $/5;s2% every $t1 seconds.
 
 Name             : Master Summoner (id=1240189) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Demonology [tree=spec, row=8, col=3, max_rank=1, req_points=20]
+Talent Entry     : Demonology [tree=spec, row=8, col=5, max_rank=1, req_points=20]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Warlock
@@ -18721,7 +18721,7 @@ Effects          :
 Description      : Increases Mastery by $s2% and reduces the cast time of your Summon Demonic Tyrant and Summon Felguard by ${$s1/-1000}.1 sec.
 
 Name             : Practiced Chaos (id=1244284) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Destruction [tree=spec, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Destruction [tree=spec, row=3, col=5, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Fire
 Spell Type       : None
@@ -18735,7 +18735,7 @@ Effects          :
 Description      : Increases Mastery by $s1%.
 
 Name             : Roaring Blaze (id=1244310) [Spell Family (5), Passive] 
-Talent Entry     : Destruction [tree=spec, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Destruction [tree=spec, row=3, col=6, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18819,7 +18819,7 @@ Description      : $@spelldesc1244788
 Tooltip          : Reduces the cast time of your next Incinerate by $s1%.
 
 Name             : Lake of Fire (id=1244877) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Destruction [tree=spec, row=6, col=5, max_rank=1, req_points=8]
+Talent Entry     : Destruction [tree=spec, row=6, col=7, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Fire
 Spell Type       : None
@@ -18889,7 +18889,7 @@ Description      : $@spelldesc1244877
 Tooltip          : Damage taken by $?a445465[Wither][Immolate] is increased by $s1%.
 
 Name             : Destructive Rapidity (id=1244928) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Destruction [tree=spec, row=8, col=4, max_rank=1, req_points=20]
+Talent Entry     : Destruction [tree=spec, row=8, col=5, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Fire
 Spell Type       : None
@@ -18909,7 +18909,7 @@ Effects          :
 Description      : Increases how quickly Rain of Fire deals damage by $s1% and how quickly your Infernal's Immolation deals damage by $s2%.
 
 Name             : Alythess's Ire (id=1244941) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Destruction [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Destruction [tree=spec, row=10, col=5, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Fire
 Spell Type       : None
@@ -19052,7 +19052,7 @@ Description      : |cnNORMAL_FONT_COLOR:Resets all equipped gear to their origin
 |cnGREEN_FONT_COLOR:<Right Click to toggle lock appearance>|r
 
 Name             : Hand of Gul'dan (id=1250273) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Demonology [tree=spec, row=1, col=3, max_rank=1, req_points=0, replace="Corruption" (id=172), override="Hand of Gul'dan" (id=105174)]
+Talent Entry     : Demonology [tree=spec, row=1, col=4, max_rank=1, req_points=0, replace="Corruption" (id=172), override="Hand of Gul'dan" (id=105174)]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -19080,7 +19080,7 @@ Effects          :
 Description      : Increases your Intellect by $s1%.
 
 Name             : Practiced Rituals (id=1250375) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Demonology [tree=spec, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Demonology [tree=spec, row=3, col=5, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -19143,7 +19143,7 @@ Effects          :
 Description      : Your demons deal ${$1281559s1}.1% increased damage for each demon you control.
 
 Name             : Antoran Armaments (id=1250921) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Demonology [tree=spec, row=7, col=3, max_rank=1, req_points=8]
+Talent Entry     : Demonology [tree=spec, row=7, col=5, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -19197,7 +19197,7 @@ Effects          :
 Description      : $@spelldesc104316
 
 Name             : Summon Vilefiend (id=1251778) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Demonology [tree=spec, row=9, col=4, max_rank=1, req_points=20]
+Talent Entry     : Demonology [tree=spec, row=9, col=7, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -19330,7 +19330,7 @@ Effects          :
                    Base Value: 32 | Scaled Value: 32 | Misc Value: 1 | Misc Value 2: 3445 (Label) | Target: Self (1)
 
 Name             : Dark Harvest (id=1257052) [Spell Family (5)] 
-Talent Entry     : Affliction [tree=spec, row=5, col=4, max_rank=1, req_points=8]
+Talent Entry     : Affliction [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic
@@ -19417,7 +19417,7 @@ Effects          :
 Description      : Mastery increased by $s1%.
 
 Name             : Potent Soul Shards (id=1259815) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Affliction [tree=spec, row=8, col=4, max_rank=1, req_points=20]
+Talent Entry     : Affliction [tree=spec, row=8, col=5, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -19437,7 +19437,7 @@ Effects          :
 Description      : Increases damage dealt by Unstable Affliction and Seed of Corruption by $s1%.
 
 Name             : Shared Agony (id=1259825) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Affliction [tree=spec, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Affliction [tree=spec, row=3, col=6, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -19455,7 +19455,7 @@ Effects          :
 Description      : Increases Agony damage by $s1% and Agony now hits another nearby enemy within $s2 yds of the target.
 
 Name             : Seeds of Destruction (id=1259838) [Spell Family (5), Passive] 
-Talent Entry     : Affliction [tree=spec, row=9, col=4, max_rank=2, req_points=20]
+Talent Entry     : Affliction [tree=spec, row=9, col=6, max_rank=2, req_points=20]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Warlock
@@ -19477,7 +19477,7 @@ Effects          :
 Description      : Reduces the cast time of Seed of Corruption by ${$abs($s1)/1000}.2 sec and increases its damage by $s2%.
 
 Name             : Cull the Weak (id=1259886) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Affliction [tree=spec, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Affliction [tree=spec, row=6, col=7, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -19588,7 +19588,7 @@ Description      : $@spelldesc1260264
 Tooltip          : Your next Unstable Affliction is instant cast and costs no Soul Shards.
 
 Name             : Nocturnal Yield (id=1260271) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Affliction [tree=spec, row=8, col=4, max_rank=1, req_points=20]
+Talent Entry     : Affliction [tree=spec, row=8, col=7, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -19650,7 +19650,7 @@ Description      : $@spelldesc108558
 Tooltip          : Your next Seed of Corruption is instant. Your next $?s388667[Drain Soul drains $s3% faster and][Shadow Bolt is instant and] deals $s2% increased damage.
 
 Name             : Patient Zero (id=1260285) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Affliction [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Affliction [tree=spec, row=10, col=5, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -19694,7 +19694,7 @@ Description      : $@spelldesc1261124
 Tooltip          : Haste is increased by $s1%.
 
 Name             : Malefic Grasp (id=1261149) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Affliction [tree=spec, row=7, col=3, max_rank=1, req_points=8]
+Talent Entry     : Affliction [tree=spec, row=7, col=4, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -19786,7 +19786,7 @@ Description      : $@spelldesc1259790
 Tooltip          : $@spellaura1259790
 
 Name             : Shadow of Nathreza (id=1261984) [Spell Family (5), Passive] 
-Talent Entry     : Affliction [tree=spec, row=11, col=3, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Affliction [tree=spec, row=11, col=4, max_rank=1, req_points=20, select_idx=100]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Warlock
@@ -19806,7 +19806,7 @@ Description      : Haunt now calls upon a demonic soul from within the Twisting 
 The soul is unstable and ravenous, dealing ${$1262710s1*($48181d/$48181t5)} Shadow damage to its host and ${$1262710x1-1} enemies within $1278047a1 yards suffering from your $?a445465[Wither][Corruption] over its duration.
 
 Name             : Shadow of Nathreza (id=1261990) [Spell Family (5), Passive] 
-Talent Entry     : Affliction [tree=spec, row=11, col=3, max_rank=2, req_points=20, select_idx=200]
+Talent Entry     : Affliction [tree=spec, row=11, col=4, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Warlock
@@ -19838,7 +19838,7 @@ Effects          :
 Description      : Increases the initial damage of Haunt by $s1% and Haunt increases damage dealt to its host by an additional $s2%.
 
 Name             : Shadow of Nathreza (id=1261992) [Spell Family (5), Passive] 
-Talent Entry     : Affliction [tree=spec, row=11, col=3, max_rank=1, req_points=20, select_idx=300]
+Talent Entry     : Affliction [tree=spec, row=11, col=4, max_rank=1, req_points=20, select_idx=300]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -19944,7 +19944,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Fel Armaments (id=1263935) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Demonology [tree=spec, row=5, col=4, max_rank=1, req_points=8]
+Talent Entry     : Demonology [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -20314,7 +20314,7 @@ Description      : $@spelldesc1265772
 Tooltip          : Visions of the Titans' destruction fill your mind, increasing your haste by $w1% and your critical strike by $w2%.
 
 Name             : Through the Felvine (id=1266799) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=2, col=5, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -20354,7 +20354,7 @@ Description      : Increases the damage of $?s1259790[Unstable Affliction by $s1
 This effect is doubled while Malevolence is active.
 
 Name             : Alzzin's Iniquity (id=1266803) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=4, col=2, max_rank=1, req_points=0]
+Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=4, col=5, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -20372,7 +20372,7 @@ Effects          :
 Description      : Malevolence grants an additional $s1% Haste and when cast increases the stack count of active Withers by an additional $s2 stacks. 
 
 Name             : Devil Fruit (id=1266805) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=3, col=2, max_rank=1, req_points=0]
+Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=3, col=5, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -20389,7 +20389,7 @@ Effects          :
 Description      : Periodic damage dealt by Wither has a chance to grant Malevolence for $s1 sec.
 
 Name             : Diabolic Oculi (id=1268709) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Diabolist (Demonology, Destruction) [tree=hero, row=2, col=4, max_rank=1, req_points=0]
+Talent Entry     : Diabolist (Demonology, Destruction) [tree=hero, row=2, col=5, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -20407,7 +20407,7 @@ Description      : You summon a Diabolic Oculus, up to $1269643u, each time the 
 Diabolic Oculi explode when consuming Demonic Art, dealing $1269800s1 Fire damage to all enemies within $1269800a1 yds of the target. Damage reduced beyond $s1 targets.
 
 Name             : Looks That Kill (id=1268713) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Diabolist (Demonology, Destruction) [tree=hero, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Diabolist (Demonology, Destruction) [tree=hero, row=3, col=5, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -20424,7 +20424,7 @@ $@spellicon1269892 $@spellname1269892
 $@spelldesc1269892
 
 Name             : Mind's Eyes (id=1268716) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Diabolist (Demonology, Destruction) [tree=hero, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Diabolist (Demonology, Destruction) [tree=hero, row=4, col=5, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -20438,7 +20438,7 @@ Effects          :
 Description      : Your Diabolic Oculi observe the battlefield and collect information that is imparted to you upon being exploded, each Diabolic Oculi increasing your Intellect by $1269879s1% for $1269879d.
 
 Name             : Manifested Avarice (id=1268884) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Soul Harvester (Affliction, Demonology) [tree=hero, row=2, col=3, max_rank=1, req_points=0]
+Talent Entry     : Soul Harvester (Affliction, Demonology) [tree=hero, row=2, col=5, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -20455,7 +20455,7 @@ $@spellicon1269049 $@spellname1269049
 $@spelldesc1269049
 
 Name             : Shared Vessel (id=1268889) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Soul Harvester (Affliction, Demonology) [tree=hero, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Soul Harvester (Affliction, Demonology) [tree=hero, row=3, col=5, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -20473,7 +20473,7 @@ Description      : Increases your Mastery by $s1%.
 This effect is doubled while the demonic entity is aiding you in combat.
 
 Name             : Eternal Hunger (id=1268903) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Soul Harvester (Affliction, Demonology) [tree=hero, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Soul Harvester (Affliction, Demonology) [tree=hero, row=4, col=5, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -20931,7 +20931,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Dominion of Argus (id=1276163) [Spell Family (5), Passive] 
-Talent Entry     : Demonology [tree=spec, row=11, col=3, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Demonology [tree=spec, row=11, col=4, max_rank=1, req_points=20, select_idx=100]
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : None
@@ -20986,7 +20986,7 @@ Effects          :
 Description      : $@spelldesc1276163
 
 Name             : Dominion of Argus (id=1276190) [Spell Family (5), Passive] 
-Talent Entry     : Demonology [tree=spec, row=11, col=3, max_rank=2, req_points=20, select_idx=200]
+Talent Entry     : Demonology [tree=spec, row=11, col=4, max_rank=2, req_points=20, select_idx=200]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Warlock
@@ -21009,7 +21009,7 @@ Effects          :
 Description      : Increases the duration of Dominion of Argus by ${$s1/1000} sec and increases damage dealt by Hand of Gul'dan by $s2%.
 
 Name             : Dominion of Argus (id=1276222) [Spell Family (5), Passive] 
-Talent Entry     : Demonology [tree=spec, row=11, col=3, max_rank=1, req_points=20, select_idx=300]
+Talent Entry     : Demonology [tree=spec, row=11, col=4, max_rank=1, req_points=20, select_idx=300]
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : None
@@ -21094,7 +21094,7 @@ Effects          :
 Description      : Increases damage dealt by Hand of Gul'dan to its main target by $s1%.
 
 Name             : Grimoire: Imp Lord (id=1276452) [Spell Family (5)] 
-Talent Entry     : Demonology [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Demonology [tree=spec, row=9, col=5, max_rank=1, req_points=20, select_idx=100]
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -21121,7 +21121,7 @@ Description      : Summons an Imp Lord to assist you in combat for $d and will r
 Transforms into Singe Magic while on cooldown.
 
 Name             : Grimoire: Fel Ravager (id=1276467) [Spell Family (5)] 
-Talent Entry     : Demonology [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Demonology [tree=spec, row=9, col=5, max_rank=1, req_points=20, select_idx=200]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -21177,7 +21177,7 @@ Description      : $@spelldesc1276467
 Tooltip          : Grimoire: Imp Lord is transformed into Singe Magic while on cooldown.
 
 Name             : Stabilized Portals (id=1276661) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Demonology [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Demonology [tree=spec, row=10, col=5, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -21237,7 +21237,7 @@ Effects          :
 Description      : Your Demonic Tyrant also empowers you while active, increasing your haste by $1276767s1%.
 
 Name             : Reign of Tyranny (id=1276748) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Demonology [tree=spec, row=8, col=3, max_rank=1, req_points=20]
+Talent Entry     : Demonology [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -21290,7 +21290,7 @@ Description      : $@spelldesc265187
 Tooltip          : Damage dealt increased by $s1%.
 
 Name             : Demonic Calling (id=1276947) [Spell Family (5), Passive] 
-Talent Entry     : Demonology [tree=spec, row=8, col=4, max_rank=2, req_points=20]
+Talent Entry     : Demonology [tree=spec, row=8, col=6, max_rank=2, req_points=20]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
                  : Effect#3 [op=mul, values=(1, 2)]
@@ -21315,7 +21315,7 @@ Effects          :
 Description      : Call Dreadstalkers costs $s1 less $lSoul Shard:Soul Shards; and its cast time is reduced by $s3%.
 
 Name             : Blighted Maw (id=1276956) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Demonology [tree=spec, row=6, col=3, max_rank=1, req_points=8]
+Talent Entry     : Demonology [tree=spec, row=6, col=5, max_rank=1, req_points=8]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Warlock
 School           : Shadowstorm
@@ -21401,7 +21401,7 @@ Effects          :
 Description      : Increases the duration of Summon Darkglare by ${$s1/1000}.1 sec.
 
 Name             : Empowered Felstorm (id=1279575) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Demonology [tree=spec, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Demonology [tree=spec, row=6, col=7, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -21492,7 +21492,7 @@ Effects          :
 Description      : $@spelldesc205180
 
 Name             : Nether Plating (id=1280733) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Affliction [tree=spec, row=7, col=4, max_rank=1, req_points=8]
+Talent Entry     : Affliction [tree=spec, row=7, col=5, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
