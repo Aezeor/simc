@@ -2709,7 +2709,10 @@ void paladin_t::cast_holy_armaments( player_t* target, armament usedArmament, ar
 
   if (options.fake_solidarity)
   {
-    buffs.lightsmith.fake_solidarity->trigger();
+    if ( usedArmament == SACRED_WEAPON )
+      buffs.lightsmith.fake_solidarity->trigger();
+    else
+      buffs.lightsmith.fake_solidarity_bulwark->trigger();
   }
   if ( talents.lightsmith.masterwork->ok() && src != LS_DIVINE_INSPIRATION )
   {
@@ -3676,6 +3679,12 @@ void paladin_t::create_buffs()
                                          ->set_chance( 1 )
                                          ->set_max_stack( 10 )
                                          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
+  buffs.lightsmith.fake_solidarity_bulwark = make_buff( this, "fake_solidarity_bulwark" )
+                                                 ->set_duration( buffs.lightsmith.holy_bulwark->base_buff_duration )
+                                                 ->set_chance( 1 )
+                                                 ->set_max_stack( 10 )
+                                                 ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   buffs.templar.hammer_of_light_ready =
       make_buff( this, "hammer_of_light_ready", find_spell( 427441 ) )
@@ -4791,6 +4800,7 @@ void paladin_t::create_options()
   add_option( opt_int( "max_dg_heal_targets", options.max_dg_heal_targets, 0, 5 ) );
   add_option( opt_bool( "fake_solidarity", options.fake_solidarity ) );
   add_option( opt_float( "blessed_hammer_strikes", options.blessed_hammer_strikes, 1, 3 ) );
+  add_option( opt_float( "ror_bulwark_additional_proc_chance", options.ror_bulwark_additional_proc_chance, 0, 1 ) );
 
   player_t::create_options();
 }
