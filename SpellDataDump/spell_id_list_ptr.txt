@@ -8655,7 +8655,7 @@ Hunter
 1257011  Vulnerability
 1257703  Precise Shots
 1258338  Stampede!
-1258344 *Stampede
+1258344  Stampede
 1258345 *Stampede
 1258402  Touch of Grass
 1258404  Catlike Reflexes

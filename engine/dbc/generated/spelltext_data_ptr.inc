@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.65448
-static constexpr std::array<spelltext_data_t, 28590> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28591> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27198,6 +27198,7 @@ static constexpr std::array<spelltext_data_t, 28590> __ptr_spelltext_data { {
   { 1258235, "$@spelldesc14161", 0, 0 },
   { 1258283, "Invoke the litany to apply Beacon of Lightblind Wrath to an enemy for $d. Your next $u harmful spells call down a blast of Light to deal $1258275s1 Holy damage to the target.\r\n\r\n$1263727i injured allies are shielded for the same amount, absorbing $1263727s2% of damage taken while the shield holds.", "$@auracaster's harmful spells cause additional Holy damage and shield 5 injured allies.", 0 },
   { 1258338, "$@spelldesc472741", "Consuming Howl of the Pack Leader will summon a Stampede!", 0 },
+  { 1258344, "Summon a herd of stampeding animals from the wilds around you that deal ${$201594s1*3} Physical damage to your enemies over $d.", 0, 0 },
   { 1258398, "While wielding a two-handed weapon, you deal ${$s1}.1% additional damage.", 0, 0 },
   { 1258402, "Your maximum health is increased by $s1%.", 0, 0 },
   { 1258404, "Aspect of the Cheetah's initial burst of speed is increased by ${$s2/1000}.1 sec.", 0, 0 },
