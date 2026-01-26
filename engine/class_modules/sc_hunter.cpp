@@ -8643,6 +8643,8 @@ action_t* hunter_t::create_action( util::string_view name, util::string_view opt
   if ( name == "moonlight_chakram"     ) return new      moonlight_chakram_t( this, options_str );
   if ( name == "muzzle"                ) return new                 muzzle_t( this, options_str );
   if ( name == "rapid_fire"            ) return new             rapid_fire_t( this, options_str );
+  if ( name == "raptor_strike"         ) return new           raptor_strike_t( this, options_str );
+  if ( name == "raptor_strike_eagle"   ) return new     raptor_strike_eagle_t( this, options_str );
   if ( name == "spearhead"             ) return new              spearhead_t( this, options_str );
   if ( name == "steady_shot"           ) return new            steady_shot_t( this, options_str );
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
@@ -8671,22 +8673,6 @@ action_t* hunter_t::create_action( util::string_view name, util::string_view opt
       return new kill_shot_t( this, options_str );
     else
       return new black_arrow_t( this, options_str );
-  }
-
-  if ( name == "raptor_strike" || name == "mongoose_bite" || name == "raptor_bite" || name == "mongoose_strike" )
-  {
-    if ( talents.mongoose_bite.ok() )
-      return new mongoose_bite_t( this, options_str );
-    else
-      return new raptor_strike_t( this, options_str );
-  }
-
-  if ( name == "raptor_strike_eagle" || name == "mongoose_bite_eagle" || name == "raptor_bite_eagle" || name == "mongoose_strike_eagle" )
-  {
-    if ( talents.mongoose_bite.ok() )
-      return new mongoose_bite_eagle_t( this, options_str );
-    else
-      return new raptor_strike_eagle_t( this, options_str );
   }
 
   if ( name == "multishot" )
