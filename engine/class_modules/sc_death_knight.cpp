@@ -2743,6 +2743,33 @@ struct death_knight_pet_t : public pet_t
     return nullptr;
   }
 
+  timespan_t available() const override
+  {
+    if ( is_moving() )
+      return time_to_move();
+
+    if ( buffs.stunned->check() )
+      return buffs.stunned->remains();
+
+    if ( in_gcd() )
+      return sim->current_time() - gcd_ready;
+
+    if ( primary_resource() == RESOURCE_ENERGY )
+    {
+      double energy = resources.current[ RESOURCE_ENERGY ];
+
+      if ( energy >= resource_thresholds.front() )
+        return pet_t::available();
+
+      timespan_t time_to_next = timespan_t::from_seconds( ( resource_thresholds.front() - energy ) /
+                                                          resource_regen_per_second( RESOURCE_ENERGY ) );
+
+      return std::max( time_to_next, pet_t::available() );
+    }
+
+    return pet_t::available();
+  }
+
   void arise() override
   {
     pet_t::arise();
@@ -3167,33 +3194,6 @@ struct base_ghoul_pet_t : public death_knight_pet_t
   resource_e primary_resource() const override
   {
     return RESOURCE_ENERGY;
-  }
-
-  timespan_t available() const override
-  {
-    if ( is_moving() )
-      return time_to_move();
-
-    if ( buffs.stunned->check() )
-      return buffs.stunned->remains();
-
-    if ( in_gcd() )
-      return sim->current_time() - gcd_ready;
-
-    if ( primary_resource() == RESOURCE_ENERGY )
-    {
-      double energy = resources.current[ RESOURCE_ENERGY ];
-
-      if ( energy >= resource_thresholds.front() )
-        return death_knight_pet_t::available();
-
-      timespan_t time_to_next = timespan_t::from_seconds( ( resource_thresholds.front() - energy ) /
-                                                          resource_regen_per_second( RESOURCE_ENERGY ) );
-
-      return std::max( time_to_next, death_knight_pet_t::available() );
-    }
-
-    return death_knight_pet_t::available();
   }
 };
 
