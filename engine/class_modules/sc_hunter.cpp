@@ -549,6 +549,7 @@ public:
     buff_t* wyverns_cry;
     buff_t* hogstrider;
     buff_t* stampede;
+    buff_t* stampede_incoming;
     buff_t* lead_from_the_front;
 
     // Sentinel
@@ -1064,7 +1065,7 @@ public:
     spell_data_ptr_t sharpened_fangs;
     
     spell_data_ptr_t stampede;
-    spell_data_ptr_t stampede_buff;
+    spell_data_ptr_t stampede_incoming_buff;
     spell_data_ptr_t stampede_trigger;
     spell_data_ptr_t stampede_dmg;
     
@@ -4157,9 +4158,10 @@ bool hunter_t::consume_howl_of_the_pack_leader( player_t* target )
     cooldowns.barbed_shot->adjust( -talents.pack_mentality->effectN( 2 ).time_value() * up );
     cooldowns.wildfire_bomb->adjust( -talents.pack_mentality->effectN( 3 ).time_value() * up );
 
-    if ( buffs.stampede->check() )
+    if ( buffs.stampede_incoming->check() )
     {
-      buffs.stampede->expire();
+      buffs.stampede_incoming->expire();
+      buffs.stampede->trigger();
       actions.stampede->execute_on_target( target );
     }
   }
@@ -7315,7 +7317,7 @@ struct takedown_t : public hunter_spell_t
       pet->actions.takedown->execute_on_target( target );
 
     if ( p()->talents.stampede.ok() )
-      p()->buffs.stampede->trigger();
+      p()->buffs.stampede_incoming->trigger();
 
     if ( p()->talents.moonlight_chakram.ok() )
       p()->buffs.moonlight_chakram->trigger();
@@ -7860,7 +7862,7 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
       p()->buffs.wailing_arrow->trigger();
 
     if ( p()->talents.stampede.ok() )
-      p()->buffs.stampede->trigger();
+      p()->buffs.stampede_incoming->trigger();
   }
 
   bool ready() override
@@ -8641,6 +8643,8 @@ action_t* hunter_t::create_action( util::string_view name, util::string_view opt
   if ( name == "moonlight_chakram"     ) return new      moonlight_chakram_t( this, options_str );
   if ( name == "muzzle"                ) return new                 muzzle_t( this, options_str );
   if ( name == "rapid_fire"            ) return new             rapid_fire_t( this, options_str );
+  if ( name == "raptor_strike"         ) return new           raptor_strike_t( this, options_str );
+  if ( name == "raptor_strike_eagle"   ) return new     raptor_strike_eagle_t( this, options_str );
   if ( name == "spearhead"             ) return new              spearhead_t( this, options_str );
   if ( name == "steady_shot"           ) return new            steady_shot_t( this, options_str );
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
@@ -8669,22 +8673,6 @@ action_t* hunter_t::create_action( util::string_view name, util::string_view opt
       return new kill_shot_t( this, options_str );
     else
       return new black_arrow_t( this, options_str );
-  }
-
-  if ( name == "raptor_strike" || name == "mongoose_bite" || name == "raptor_bite" || name == "mongoose_strike" )
-  {
-    if ( talents.mongoose_bite.ok() )
-      return new mongoose_bite_t( this, options_str );
-    else
-      return new raptor_strike_t( this, options_str );
-  }
-
-  if ( name == "raptor_strike_eagle" || name == "mongoose_bite_eagle" || name == "raptor_bite_eagle" || name == "mongoose_strike_eagle" )
-  {
-    if ( talents.mongoose_bite.ok() )
-      return new mongoose_bite_eagle_t( this, options_str );
-    else
-      return new raptor_strike_eagle_t( this, options_str );
   }
 
   if ( name == "multishot" )
@@ -9164,11 +9152,8 @@ void hunter_t::init_spells()
     talents.sharpened_fangs                               = find_talent_spell( talent_tree::HERO, "Sharpened Fangs" );
 
     talents.stampede                                      = find_talent_spell( talent_tree::HERO, "Stampede!" );
-    talents.stampede_buff                                 = talents.stampede.ok() ? find_spell( 1258338 ) : spell_data_t::not_found();
-    /* 2026-01-19: New trigger spell (1258344) is not currently in simc's spell data, use the old one for now.
-                   The spells are identical as of writing this so behaviour should be unaffected.
-                   TODO reconfirm before launch. */
-    talents.stampede_trigger                              = talents.stampede.ok() ? find_spell( 1250068 ) : spell_data_t::not_found();
+    talents.stampede_incoming_buff                        = talents.stampede.ok() ? find_spell( 1258338 ) : spell_data_t::not_found();
+    talents.stampede_trigger                              = talents.stampede.ok() ? find_spell( 1258344 ) : spell_data_t::not_found();
     talents.stampede_dmg                                  = talents.stampede.ok() ? find_spell( 201594 ) : spell_data_t::not_found();
 
     //TODO Remove
@@ -9729,9 +9714,12 @@ void hunter_t::create_buffs()
     make_buff( this, "hogstrider", talents.hogstrider_buff )
       ->set_default_value_from_effect( 1 );
 
-  buffs.stampede = 
-    make_buff( this, "stampede", talents.stampede_buff )
+  buffs.stampede_incoming = 
+    make_buff( this, "stampede_incoming", talents.stampede_incoming_buff )
       ->set_default_value_from_effect( 1 );
+
+  buffs.stampede = 
+        make_buff( this, "stampede", talents.stampede_trigger );
   
   buffs.lead_from_the_front =
     make_buff( this, "lead_from_the_front", talents.lead_from_the_front_buff )
