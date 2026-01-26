@@ -11430,11 +11430,6 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
       td->debuff.chains_of_ice_trollbane_slow->expire();
       p()->background_actions.trollbanes_icy_fury->execute_on_target( state->target );
     }
-
-    if ( p()->talent.rider.whitemanes_famine.ok() && td->dot.undeath->is_ticking() )
-    {
-      p()->trigger_whitemanes_famine( state->target );
-    }
   }
 
   void execute() override
@@ -11548,6 +11543,11 @@ struct obliterate_t final : public death_knight_melee_attack_t
     {
       p()->pets.trollbane.active_pet()->obliterate->consumed_km = p()->buffs.killing_machine->up();
       p()->pets.trollbane.active_pet()->obliterate->execute_on_target( target );
+    }
+
+    if ( p()->talent.rider.whitemanes_famine.ok() && get_td( execute_state->target )->dot.undeath->is_ticking() )
+    {
+      p()->trigger_whitemanes_famine( execute_state->target );
     }
 
     if ( p()->buffs.killing_machine->up() )
