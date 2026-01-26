@@ -11502,12 +11502,12 @@ struct obliterate_t final : public death_knight_melee_attack_t
     }
     if ( p->spec.frostreaper->ok() )
     {
-      km_mh         = new obliterate_strike_t( p, "obliterate_km", &( p->main_hand_weapon ), mh_data );
+      km_mh         = new obliterate_strike_t( p, "obliterate", &( p->main_hand_weapon ), mh_data );
       km_mh->school = SCHOOL_FROST;
       add_child( km_mh );
       if ( p->off_hand_weapon.type != WEAPON_NONE )
       {
-        km_oh         = new obliterate_strike_t( p, "obliterate_offhand_km", &( p->off_hand_weapon ),
+        km_oh         = new obliterate_strike_t( p, "obliterate_offhand", &( p->off_hand_weapon ),
                                                  data().effectN( 3 ).trigger() );
         km_oh->school = SCHOOL_FROST;
         add_child( km_oh );
