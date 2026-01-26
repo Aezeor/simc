@@ -596,13 +596,10 @@ public:
   struct gains_t
   {
     gain_t* barbed_shot;
-
+    gain_t* pack_tactics;
     gain_t* terms_of_engagement;
-
     gain_t* invigorating_pulse;
-
     gain_t* serpentine_strikes;
-
     gain_t* lethal_barbs;
   } gains;
 
@@ -738,6 +735,7 @@ public:
     spell_data_ptr_t the_beast_within;
     spell_data_ptr_t thrill_of_the_hunt;
     spell_data_ptr_t pack_tactics;
+    spell_data_ptr_t pack_tactics_energize;
     spell_data_ptr_t barbed_scales;
 
     spell_data_ptr_t aspect_of_the_beast;
@@ -5458,6 +5456,9 @@ struct barbed_shot_base_t : public hunter_ranged_attack_t
       pet->actions.brutal_companion_ba->execute_on_target( target );
 
     p()->trigger_natures_ally_3();
+
+    if ( p()->talents.pack_tactics )
+      p()->resource_gain( RESOURCE_FOCUS, p()->talents.pack_tactics_energize->effectN( 1 ).base_value(), p()->gains.pack_tactics, this );
   }
 
   void tick( dot_t* d ) override
@@ -8720,6 +8721,7 @@ void hunter_t::init_spells()
     talents.the_beast_within                  = find_talent_spell( talent_tree::SPECIALIZATION, "The Beast Within", HUNTER_BEAST_MASTERY );
     talents.thrill_of_the_hunt                = find_talent_spell( talent_tree::SPECIALIZATION, "Thrill of the Hunt", HUNTER_BEAST_MASTERY );
     talents.pack_tactics                      = find_talent_spell( talent_tree::SPECIALIZATION, "Pack Tactics", HUNTER_BEAST_MASTERY );
+    talents.pack_tactics_energize             = talents.pack_tactics.ok() ? find_spell( 1282660 ) : spell_data_t::not_found();
     talents.barbed_scales                     = find_talent_spell( talent_tree::SPECIALIZATION, "Barbed Scales", HUNTER_BEAST_MASTERY );
 
     talents.aspect_of_the_beast               = find_talent_spell( talent_tree::SPECIALIZATION, "Aspect of the Beast", HUNTER_BEAST_MASTERY );
@@ -9661,13 +9663,10 @@ void hunter_t::init_gains()
   player_t::init_gains();
 
   gains.barbed_shot               = get_gain( "Barbed Shot" );
-
+  gains.pack_tactics              = get_gain( "Pack Tactics" );
   gains.terms_of_engagement       = get_gain( "Terms of Engagement" );
-
   gains.invigorating_pulse        = get_gain( "Invigorating Pulse" );
-
   gains.serpentine_strikes        = get_gain( "Serpentine Strikes" );
-
   gains.lethal_barbs              = get_gain( "Lethal Barbs" );
 }
 
