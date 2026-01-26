@@ -996,7 +996,6 @@ public:
     propagate_const<action_t*> erw_projectile;
     propagate_const<action_t*> frostreaper;
     propagate_const<action_t*> frozen_dominion_remorseless_winter;
-    propagate_const<action_t*> frostbane_strike;
     propagate_const<action_t*> arctic_assault_obliterate;
     propagate_const<action_t*> arctic_assault_frostscythe;
 
@@ -10513,10 +10512,11 @@ struct frost_strike_base_t : public death_knight_melee_attack_t
 
 struct frostbane_t final : public frost_strike_base_t
 {
-  frostbane_t( std::string_view name, death_knight_t* p )
-    : frost_strike_base_t( name, p, p->spell.frostbane_driver ),
-      frostbane_strike( p->background_actions.frostbane_strike )
+  frostbane_t( death_knight_t* p, std::string_view options_str )
+    : frost_strike_base_t( "frostbane", p, p->spell.frostbane_driver ),
+      frostbane_strike( new frostbane_strike_t( "frostbane_strike", p ) )
   {
+    parse_options( options_str );
     if ( data().ok() )
     {
       add_child( frostbane_strike );
@@ -10550,6 +10550,14 @@ struct frostbane_t final : public frost_strike_base_t
 
   }
 
+  bool ready() override
+  {
+    if ( !p()->buffs.frostbane->up() )
+      return false;
+
+    return frost_strike_base_t::ready();
+  }
+
 private:
   action_t* frostbane_strike;
 };
@@ -10562,10 +10570,8 @@ struct frost_strike_t final : public frost_strike_base_t
       oh( p->background_actions.frost_strike_offhand ),
       mh_sb( p->background_actions.frost_strike_sb_main ),
       oh_sb( p->background_actions.frost_strike_sb_offhand ),
-      frostbane( new frostbane_t( "frostbane", p ) ),      
       mh_delay( 0_ms ),
       oh_delay( 0_ms ),
-      frostreaper( p->background_actions.frostreaper ),
       sb( false )
   {
     parse_options( options_str );
@@ -10598,13 +10604,12 @@ struct frost_strike_t final : public frost_strike_base_t
           add_child( oh_sb );
         }
       }
-      if ( p->talent.frost.frostreaper.ok() )
-      {
-        add_child( frostreaper );
-      }
       if ( p->talent.frost.frostbane.ok() )
       {
-        set_replacement_action( frostbane, p->buffs.frostbane );
+        if ( p->find_action( "frostbane" ) )
+          set_replacement_action( "frostbane", p->buffs.frostbane );
+        else
+          set_replacement_action( new frostbane_t( p, options_str ), p->buffs.frostbane );
       }
 
     }
@@ -10649,8 +10654,6 @@ struct frost_strike_t final : public frost_strike_base_t
 
 private:
   action_t *&mh, *&oh, *&mh_sb, *&oh_sb;
-  action_t* frostbane;
-  action_t* frostreaper;
   timespan_t mh_delay;
   timespan_t oh_delay;
   bool sb;
@@ -14063,11 +14066,6 @@ void death_knight_t::create_actions()
           get_action<frozen_dominion_remorseless_winter_t>( "remorseless_winter_frozen_dominion", this );
     }
 
-    if ( talent.frost.frostbane.ok() )
-    {
-      background_actions.frostbane_strike = get_action<frostbane_strike_t>( "frostbane", this );
-    }
-
     if ( talent.frost.arctic_assault.ok() )
     {
       background_actions.arctic_assault_obliterate =
@@ -14151,6 +14149,8 @@ action_t* death_knight_t::create_action( std::string_view name, std::string_view
     return new pillar_of_frost_t( this, options_str );
   if ( name == "remorseless_winter" )
     return new remorseless_winter_t( this, options_str );
+  if (name == "frostbane" )
+    return new frostbane_t( this, options_str );
 
   // Unholy Actions
   if ( name == "army_of_the_dead" )
