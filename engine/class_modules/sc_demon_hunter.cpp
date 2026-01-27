@@ -975,6 +975,7 @@ public:
     cooldown_t* sigil_of_chains;
     cooldown_t* sigil_of_silence;
     cooldown_t* volatile_flameblood_icd;
+    cooldown_t* explosion_of_the_soul_icd;
 
     // Aldrachi Reaver
     cooldown_t* art_of_the_glaive_consumption_icd;
@@ -6359,7 +6360,7 @@ struct voidfall_meteor_t : public voidfall_meteor_base_t
   voidfall_meteor_t( util::string_view n, demon_hunter_t* p )
     : voidfall_meteor_base_t( n, p, p->hero_spec.voidfall_meteor )
   {
-    if (p->talent.annihilator.world_killer->ok() && p->active.world_killer)
+    if ( p->talent.annihilator.world_killer->ok() && p->active.world_killer )
     {
       add_child( p->active.world_killer );
     }
@@ -6556,6 +6557,7 @@ struct explosion_of_the_soul_t : public demon_hunter_spell_t
     : demon_hunter_spell_t( n, p, p->set_bonuses.explosion_of_the_soul )
   {
     background = dual   = true;
+    aoe = -1;
     reduced_aoe_targets = as<int>( p->set_bonuses.mid1_vengeance_4pc->effectN( 2 ).base_value() );
   }
 };
@@ -7840,11 +7842,12 @@ struct fracture_t : public voidfall_building_trigger_t<
         p()->buff.warblades_hunger->expire();
       }
 
-      double percent = p()->set_bonuses.mid1_vengeance_4pc->effectN( 1 ).percent();
       if ( p()->set_bonuses.mid1_vengeance_4pc->ok() &&
-           rng().roll( p()->set_bonuses.mid1_vengeance_4pc->effectN( 1 ).percent() ) )
+           rng().roll( p()->set_bonuses.mid1_vengeance_4pc->effectN( 1 ).percent() ) &&
+           p()->cooldown.explosion_of_the_soul_icd->up() )
       {
         explosion_of_the_soul->execute_on_target( target );
+        p()->cooldown.explosion_of_the_soul_icd->start( p()->set_bonuses.mid1_vengeance_4pc->internal_cooldown() );
       }
     }
   }
@@ -11040,8 +11043,8 @@ void demon_hunter_t::init_spells()
   set_bonuses.mid1_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, MID1, B4 );
 
   // Set Bonus Auxilliary ===================================================
-  set_bonuses.stars_fury = conditional_spell_lookup( sets->has_set_bonus( DEMON_HUNTER_DEVOURER, MID1, B4 ),
-                                                     1271663 );  // Stars' Fury (set bonus)
+  set_bonuses.stars_fury            = conditional_spell_lookup( sets->has_set_bonus( DEMON_HUNTER_DEVOURER, MID1, B4 ),
+                                                                1271663 );  // Stars' Fury (set bonus)
   set_bonuses.explosion_of_the_soul = conditional_spell_lookup( set_bonuses.mid1_vengeance_4pc->ok(), 1276488 );
 
   // Wounded Quarry (442808) is affected by Demon Hide.
@@ -11496,12 +11499,13 @@ void demon_hunter_t::create_cooldowns()
   cooldown.felblade_vengeful_retreat_movement_shared = get_cooldown( "felblade_vengeful_retreat_movement_shared" );
 
   // Vengeance
-  cooldown.demon_spikes            = get_cooldown( "demon_spikes" );
-  cooldown.spirit_bomb             = get_cooldown( "demon_spikes" );
-  cooldown.sigil_of_chains         = get_cooldown( "sigil_of_chains" );
-  cooldown.sigil_of_silence        = get_cooldown( "sigil_of_silence" );
-  cooldown.fel_devastation         = get_cooldown( "fel_devastation" );
-  cooldown.volatile_flameblood_icd = get_cooldown( "volatile_flameblood_icd" );
+  cooldown.demon_spikes              = get_cooldown( "demon_spikes" );
+  cooldown.spirit_bomb               = get_cooldown( "demon_spikes" );
+  cooldown.sigil_of_chains           = get_cooldown( "sigil_of_chains" );
+  cooldown.sigil_of_silence          = get_cooldown( "sigil_of_silence" );
+  cooldown.fel_devastation           = get_cooldown( "fel_devastation" );
+  cooldown.volatile_flameblood_icd   = get_cooldown( "volatile_flameblood_icd" );
+  cooldown.explosion_of_the_soul_icd = get_cooldown( "explosion_of_the_soul_icd" );
 
   // Aldrachi Reaver
   cooldown.art_of_the_glaive_consumption_icd = get_cooldown( "art_of_the_glaive_consumption_icd" );
