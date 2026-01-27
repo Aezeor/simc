@@ -1627,6 +1627,9 @@ struct divine_resonance_hammer_of_wrath_t :hammer_of_wrath_t
     background = true;
     aoe        = 1; // DE's Hammer of Wrath's don't cleave further
     base_multiplier *= p->talents.templar.divine_exaction->effectN( 2 ).percent();
+    triggers_second_sunrise   = false;
+    triggers_divine_resonance = false;
+    triggers_sanctification   = true;
     cooldown->duration = 0_ms;
   }
 };
