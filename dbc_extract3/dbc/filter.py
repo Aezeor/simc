@@ -487,6 +487,7 @@ class TraitSet(DataSet):
                     _traits[key]['spell'] = definition.ref('id_spell')
                     _traits[key]['class_'] = class_id if class_id else node_class_id
                     _traits[key]['specs'] |= group_specs | node_specs
+                    _traits[key]['specs'].discard(0)
                     _traits[key]['starter'] |= group_starter | node_starter
 
                     if tree_index != 0 and _traits[key]['tree'] == 0:
