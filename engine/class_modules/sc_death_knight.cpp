@@ -10269,7 +10269,8 @@ struct fwf_action_base_t : public death_knight_spell_t
   {
     death_knight_spell_t::init_finished();
     // Wait til init finished to get the fwf damage action
-    add_child( fwf_damage );
+    fwf_damage->stats = stats;
+    stats->action_list.push_back( fwf_damage );
   }
 
   void execute() override
@@ -10375,8 +10376,8 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
                          bool shattering_blade )
     : death_knight_melee_attack_t( n, p, s ), sb( shattering_blade )
   {
-    background = special = true;
-    weapon               = w;
+    background = special = dual = true;
+    weapon                      = w;
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -10460,7 +10461,6 @@ struct frost_strike_base_t : public death_knight_melee_attack_t
   frost_strike_base_t( std::string_view n, death_knight_t* p, const spell_data_t* s )
     : death_knight_melee_attack_t( n, p, s )
   {
-
   }
 
   void execute() override
@@ -10514,12 +10514,17 @@ struct frostbane_t final : public frost_strike_base_t
 {
   frostbane_t( death_knight_t* p, std::string_view options_str )
     : frost_strike_base_t( "frostbane", p, p->spell.frostbane_driver ),
-      frostbane_strike( new frostbane_strike_t( "frostbane_strike", p ) )
+      frostbane_strike( new frostbane_strike_t( "frostbane_strike", p ) ),
+      delay_1( 0_ms ),
+      delay_2( 0_ms )
   {
     parse_options( options_str );
     if ( data().ok() )
     {
-      add_child( frostbane_strike );
+      frostbane_strike->stats = stats;
+      stats->action_list.push_back( frostbane_strike );
+      delay_1 = timespan_t::from_millis( data().effectN( 4 ).misc_value1() );
+      delay_2 = timespan_t::from_millis( data().effectN( 5 ).misc_value1() );
     }
   }
 
@@ -10543,11 +10548,9 @@ struct frostbane_t final : public frost_strike_base_t
   {
     frost_strike_base_t::execute();
 
-    // 11.2 TODO drive the delays from likely misc values
-    make_event<delayed_execute_event_t>( *sim, p(), frostbane_strike, target, 200_ms );
-    make_event<delayed_execute_event_t>( *sim, p(), frostbane_strike, target, 250_ms );
+    make_event<delayed_execute_event_t>( *sim, p(), frostbane_strike, target, delay_1 );
+    make_event<delayed_execute_event_t>( *sim, p(), frostbane_strike, target, delay_2 );
     p()->buffs.frostbane->expire();
-
   }
 
   bool ready() override
@@ -10560,6 +10563,8 @@ struct frostbane_t final : public frost_strike_base_t
 
 private:
   action_t* frostbane_strike;
+  timespan_t delay_1;
+  timespan_t delay_2;
 };
 
 struct frost_strike_t final : public frost_strike_base_t
@@ -10581,28 +10586,22 @@ struct frost_strike_t final : public frost_strike_base_t
     if ( data().ok() )
     {
       if ( p->main_hand_weapon.group() == WEAPON_2H )
-      {
         mh_delay = timespan_t::from_millis( as<int>( data().effectN( 4 ).misc_value1() ) );
-      }
 
       if ( p->off_hand_weapon.type != WEAPON_NONE )
-      {
         oh_delay = timespan_t::from_millis( as<int>( data().effectN( 3 ).misc_value1() ) );
-      }
 
-      add_child( mh );
+      mh->stats = stats;
+      stats->action_list.push_back( mh );
+
       if ( p->talent.frost.shattering_blade.ok() )
-      {
         add_child( mh_sb );
-      }
 
       if ( p->off_hand_weapon.type != WEAPON_NONE && p->main_hand_weapon.group() != WEAPON_2H )
       {
         add_child( oh );
         if ( p->talent.frost.shattering_blade.ok() )
-        {
           add_child( oh_sb );
-        }
       }
       if ( p->talent.frost.frostbane.ok() )
       {
@@ -11345,12 +11344,15 @@ struct mind_freeze_t final : public death_knight_spell_t
 
 struct obliterate_strike_t final : public death_knight_melee_attack_t
 {
-  obliterate_strike_t( death_knight_t* p, std::string_view name, weapon_t* w, const spell_data_t* s )
+  obliterate_strike_t( std::string_view name, death_knight_t* p, weapon_t* w, const spell_data_t* s )
     : death_knight_melee_attack_t( name, p, s )
   {
-    background = special = true;
-    may_miss             = false;
-    weapon               = w;
+    background = true;
+    special    = true;
+    if ( name == "obliterate_damage" )
+      dual = true;
+    may_miss   = false;
+    weapon     = w;
 
     inexorable_assault = get_action<inexorable_assault_damage_t>( "inexorable_assault", p );
   }
@@ -11397,8 +11399,7 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
 
     if ( p()->buffs.inexorable_assault->up() && p()->cooldown.inexorable_assault_icd->is_ready() )
     {
-      inexorable_assault->set_target( target );
-      inexorable_assault->schedule_execute();
+      inexorable_assault->execute_on_target( state->target );
       p()->buffs.inexorable_assault->decrement();
       p()->cooldown.inexorable_assault_icd->start();
     }
@@ -11432,16 +11433,6 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
     }
   }
 
-  void execute() override
-  {
-    if ( p()->talent.rider.whitemanes_famine.ok() && p()->sim->target_non_sleeping_list.size() > 1 )
-    {
-      p()->sort_undeath_targets( target_list() );
-    }
-
-    death_knight_melee_attack_t::execute();
-  }
-
 private:
   propagate_const<action_t*> inexorable_assault;
 };
@@ -11452,8 +11443,6 @@ struct obliterate_t final : public death_knight_melee_attack_t
     : death_knight_melee_attack_t( "obliterate", p, p->talent.frost.obliterate ),
       mh( nullptr ),
       oh( nullptr ),
-      km_mh( nullptr ),
-      km_oh( nullptr ),
       mh_delay( 0_ms ),
       oh_delay( 0_ms ),
       total_delay( 0_ms ),
@@ -11473,63 +11462,46 @@ struct obliterate_t final : public death_knight_melee_attack_t
                                                      ? data().effectN( 4 ).misc_value1()
                                                      : data().effectN( 2 ).misc_value1() ) );
     if ( p->off_hand_weapon.type != WEAPON_NONE )
-    {
       oh_delay = timespan_t::from_millis( as<int>( data().effectN( 3 ).misc_value1() ) );
-    }
 
     // Snag total delay to schedule Killing Machine for after the final hit
     total_delay = mh_delay + oh_delay;
 
-    mh = new obliterate_strike_t( p, "obliterate", &( p->main_hand_weapon ), mh_data );
-    add_child( mh );
+    mh        = get_action<obliterate_strike_t>( "obliterate_damage", p, &( p->main_hand_weapon ), mh_data );
+    mh->stats = stats;
+    stats->action_list.push_back( mh );
 
-    frost_mh = new obliterate_strike_t( p, "obliterate_frost", &( p->main_hand_weapon ), frost_mh_data );
-    add_child( frost_mh );
+    mh->execute_action =
+        get_action<obliterate_strike_t>( "obliterate_frost", p, &( p->main_hand_weapon ), frost_mh_data );
+    add_child( mh->execute_action );
 
     if ( p->off_hand_weapon.type != WEAPON_NONE )
     {
-      oh = new obliterate_strike_t( p, "obliterate_offhand", &( p->off_hand_weapon ), data().effectN( 3 ).trigger() );
+      oh = get_action<obliterate_strike_t>( "obliterate_offhand", p, &( p->off_hand_weapon ),
+                                            data().effectN( 3 ).trigger() );
       add_child( oh );
 
-      frost_oh = new obliterate_strike_t( p, "obliterate_offhand_frost", &( p->off_hand_weapon ),
-                                          data().effectN( 8 ).trigger() );
-      add_child( frost_oh );
-    }
-    if ( p->spec.frostreaper->ok() )
-    {
-      km_mh         = new obliterate_strike_t( p, "obliterate", &( p->main_hand_weapon ), mh_data );
-      km_mh->school = SCHOOL_FROST;
-      add_child( km_mh );
-      if ( p->off_hand_weapon.type != WEAPON_NONE )
-      {
-        km_oh         = new obliterate_strike_t( p, "obliterate_offhand", &( p->off_hand_weapon ),
-                                                 data().effectN( 3 ).trigger() );
-        km_oh->school = SCHOOL_FROST;
-        add_child( km_oh );
-      }
+      oh->execute_action = get_action<obliterate_strike_t>( "obliterate_offhand_frost", p, &( p->off_hand_weapon ),
+                                                            data().effectN( 8 ).trigger() );
+      add_child( oh->execute_action );
     }
 
     if ( p->talent.frost.arctic_assault.ok() )
-    {
       add_child( aa_action );
-    }
   }
 
   void execute() override
   {
+    if ( p()->talent.rider.whitemanes_famine.ok() && p()->sim->target_non_sleeping_list.size() > 1 )
+      p()->sort_undeath_targets( target_list() );
+
     death_knight_melee_attack_t::execute();
 
     if ( hit_any_target )
     {
-      make_event<delayed_execute_event_t>( *sim, p(), p()->buffs.killing_machine->check() ? km_mh : mh,
-                                           execute_state->target, mh_delay );
-      make_event<delayed_execute_event_t>( *sim, p(), frost_mh, execute_state->target, mh_delay );
+      make_event<delayed_execute_event_t>( *sim, p(), mh, execute_state->target, mh_delay );
       if ( oh )
-      {
-        make_event<delayed_execute_event_t>( *sim, p(), p()->buffs.killing_machine->check() ? km_oh : oh,
-                                             execute_state->target, oh_delay );
-        make_event<delayed_execute_event_t>( *sim, p(), frost_oh, execute_state->target, oh_delay );
-      }
+        make_event<delayed_execute_event_t>( *sim, p(), oh, execute_state->target, oh_delay );
     }
 
     if ( p()->buffs.exterminate->up() )
@@ -11546,24 +11518,16 @@ struct obliterate_t final : public death_knight_melee_attack_t
     }
 
     if ( p()->talent.rider.whitemanes_famine.ok() && get_td( execute_state->target )->dot.undeath->is_ticking() )
-    {
       p()->trigger_whitemanes_famine( execute_state->target );
-    }
 
     if ( p()->buffs.killing_machine->up() )
-    {
       p()->consume_killing_machine( p()->procs.killing_machine_oblit, total_delay, aa_action );
-    }
 
     if ( p()->talent.frost.obliteration.ok() && p()->buffs.empower_rune_weapon->check() )
-    {
       p()->buffs.empower_rune_weapon->expire();
-    }
 
     if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, MID1, B2 ) )
-    {
       p()->buffs.empowered_strikes->consume( this, 1 );
-    }
   }
 
   // Allow on-cast procs
@@ -11573,7 +11537,7 @@ struct obliterate_t final : public death_knight_melee_attack_t
   }
 
 private:
-  obliterate_strike_t *mh, *oh, *km_mh, *km_oh, *frost_mh, *frost_oh;
+  action_t *mh, *oh;
   timespan_t mh_delay;
   timespan_t oh_delay;
   timespan_t total_delay;
@@ -14023,7 +13987,7 @@ void death_knight_t::create_actions()
       const spell_data_t* mh_data =
           main_hand_weapon.group() == WEAPON_2H ? spell.frost_strike_2h : spell.frost_strike_mh;
       background_actions.frost_strike_main =
-          get_action<frost_strike_strike_t>( "frost_strike", this, &( main_hand_weapon ), mh_data, false );
+          get_action<frost_strike_strike_t>( "frost_strike_damage", this, &( main_hand_weapon ), mh_data, false );
       if ( off_hand_weapon.type != WEAPON_NONE )
       {
         background_actions.frost_strike_offhand = get_action<frost_strike_strike_t>(
