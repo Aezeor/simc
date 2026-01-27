@@ -922,7 +922,7 @@ public:
 
     // Vengeance
     const spell_data_t* mid1_vengeance_4pc;
-    const spell_data_t* mid1_vengeance_4pc_damage;
+    const spell_data_t* explosion_of_the_soul;
     // Auxilliary
   } set_bonuses;
 
@@ -6553,7 +6553,7 @@ struct hungering_slash_t : public hungering_slash_base_t
 struct explosion_of_the_soul_t : public demon_hunter_spell_t
 {
   explosion_of_the_soul_t( util::string_view n, demon_hunter_t* p )
-    : demon_hunter_spell_t( n, p, p->set_bonuses.mid1_vengeance_4pc_damage )
+    : demon_hunter_spell_t( n, p, p->set_bonuses.explosion_of_the_soul )
   {
     background = dual   = true;
     reduced_aoe_targets = as<int>( p->set_bonuses.mid1_vengeance_4pc->effectN( 2 ).base_value() );
@@ -11028,7 +11028,7 @@ void demon_hunter_t::init_spells()
       break;
   }
 
-  spell.sigil_of_flame = conditional_spell_lookup( specialization() != DEMON_HUNTER_DEVOURER, 204596 );
+  spell.sigil_of_flame = find_spell( 204596, DEMON_HUNTER_VENGEANCE );
 
   spec.sigil_of_spite_damage = talent_spell_lookup( talent.vengeance.sigil_of_spite, 389860 );
   spec.sigil_of_misery       = talent.demon_hunter.sigil_of_misery;
@@ -11042,7 +11042,7 @@ void demon_hunter_t::init_spells()
   // Set Bonus Auxilliary ===================================================
   set_bonuses.stars_fury = conditional_spell_lookup( sets->has_set_bonus( DEMON_HUNTER_DEVOURER, MID1, B4 ),
                                                      1271663 );  // Stars' Fury (set bonus)
-  set_bonuses.mid1_vengeance_4pc_damage = conditional_spell_lookup( set_bonuses.mid1_vengeance_4pc->ok(), 1276488 );
+  set_bonuses.explosion_of_the_soul = conditional_spell_lookup( set_bonuses.mid1_vengeance_4pc->ok(), 1276488 );
 
   // Wounded Quarry (442808) is affected by Demon Hide.
   register_passive_affect_list( talent.havoc.demon_hide,
