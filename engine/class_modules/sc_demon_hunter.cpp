@@ -5241,6 +5241,11 @@ struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
 
     damage = p->get_background_action<spirit_bomb_damage_t>( "spirit_bomb_damage" );
     add_child( damage );
+
+    if ( p->talent.annihilator.dark_matter->ok() && p->active.meteor_shower )
+    {
+      add_child( p->active.meteor_shower );
+    }
   }
 
   void execute() override
@@ -5968,7 +5973,7 @@ struct eradicate_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
   {
     cooldown = p->cooldown.reap;
 
-    damage_action      = p->get_background_action<eradicate_damage_t>( "eradicate_damage", p->spec.eradicate_damage );
+    damage_action      = p->get_background_action<eradicate_damage_t>( "eradicate_reap", p->spec.eradicate_damage );
     damage_action->aoe = -1;
     damage_action->reduced_aoe_targets = p->spec.eradicate->effectN( 1 ).base_value();
     add_child( damage_action );
@@ -5976,7 +5981,7 @@ struct eradicate_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
     if ( p->talent.devourer.void_metamorphosis->ok() )
     {
       damage_action_meta =
-          p->get_background_action<eradicate_damage_t>( "eradicate_damage_meta", p->spec.eradicate_damage_meta );
+          p->get_background_action<eradicate_damage_t>( "eradicate_cull", p->spec.eradicate_damage_meta );
       damage_action_meta->aoe                 = -1;
       damage_action_meta->reduced_aoe_targets = p->spec.eradicate->effectN( 1 ).base_value();
       add_child( damage_action_meta );
@@ -6303,6 +6308,11 @@ struct collapsing_star_t : public demon_hunter_spell_t
       execute_energize_action =
           p->get_background_action<demon_hunter_energize_t>( "stars_fury", p->set_bonuses.stars_fury );
     }
+
+    if ( p->talent.annihilator.dark_matter->ok() && p->active.meteor_shower )
+    {
+      add_child( p->active.meteor_shower );
+    }
   }
 
   void execute() override
@@ -6349,6 +6359,10 @@ struct voidfall_meteor_t : public voidfall_meteor_base_t
   voidfall_meteor_t( util::string_view n, demon_hunter_t* p )
     : voidfall_meteor_base_t( n, p, p->hero_spec.voidfall_meteor )
   {
+    if (p->talent.annihilator.world_killer->ok() && p->active.world_killer)
+    {
+      add_child( p->active.world_killer );
+    }
   }
 };
 
@@ -6414,6 +6428,7 @@ struct meteor_shower_t : public demon_hunter_spell_t
     : demon_hunter_spell_t( n, p, p->hero_spec.meteor_shower_driver )
   {
     damage = p->get_background_action<meteor_shower_damage_t>( fmt::format( "{}_damage", name() ) );
+    add_child( damage );
   }
 
   void execute() override
@@ -8287,11 +8302,10 @@ struct vengeful_retreat_t
     }
   };
 
-    voidstep_damage_t* voidstep;
+  voidstep_damage_t* voidstep;
 
   vengeful_retreat_t( demon_hunter_t* p, util::string_view options_str )
-  : base_t( "vengeful_retreat", p, p->talent.demon_hunter.vengeful_retreat, options_str ),
-      voidstep( nullptr )
+    : base_t( "vengeful_retreat", p, p->talent.demon_hunter.vengeful_retreat, options_str ), voidstep( nullptr )
   {
     execute_action = p->get_background_action<vengeful_retreat_damage_t>( "vengeful_retreat_damage" );
     add_child( execute_action );
@@ -8375,7 +8389,7 @@ struct vengeful_retreat_t
   {
     // Reset max charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
     // buffs up. Do this before calling reset as that will also reset the cooldown.
-    cooldown->charges = std::max(data().charges(), 1U);
+    cooldown->charges = std::max( data().charges(), 1U );
 
     base_t::reset();
   }
@@ -11162,6 +11176,10 @@ void demon_hunter_t::init_spells()
     active.wounded_quarry = get_background_action<wounded_quarry_t>( "wounded_quarry" );
   }
 
+  if ( talent.annihilator.world_killer->ok() )
+  {
+    active.world_killer = get_background_action<world_killer_t>( "world_killer" );
+  }
   if ( talent.annihilator.voidfall->ok() )
   {
     active.voidfall_meteor = get_background_action<voidfall_meteor_t>( "voidfall_meteor" );
@@ -11173,10 +11191,6 @@ void demon_hunter_t::init_spells()
   if ( talent.annihilator.dark_matter->ok() )
   {
     active.meteor_shower = get_background_action<meteor_shower_t>( "meteor_shower" );
-  }
-  if ( talent.annihilator.world_killer->ok() )
-  {
-    active.world_killer = get_background_action<world_killer_t>( "world_killer" );
   }
 
   if ( talent.scarred.burning_blades->ok() )
