@@ -10459,8 +10459,10 @@ struct frostbane_strike_t final : public death_knight_melee_attack_t
 struct frost_strike_base_t : public death_knight_melee_attack_t
 {
   frost_strike_base_t( std::string_view n, death_knight_t* p, const spell_data_t* s )
-    : death_knight_melee_attack_t( n, p, s )
+    : death_knight_melee_attack_t( n, p, s ), frostreaper( nullptr )
   {
+    if ( p->talent.frost.frostreaper.ok() )
+      frostreaper = get_action<frostreaper_t>( "frostreaper", p );
   }
 
   void execute() override
@@ -10478,18 +10480,17 @@ struct frost_strike_base_t : public death_knight_melee_attack_t
     // frostbane benefits from IO, and stacks it, but because its damage is delayed it will not get buffed
     // when frostbane procs RE
     if ( p()->talent.frost.icy_onslaught->ok() && p()->buffs.icy_onslaught->expiration_delay == nullptr )
-    {
       p()->buffs.icy_onslaught->trigger();
-    }
 
-    const auto td = get_td( target );
-
-    if ( td->debuff.frostreaper->up() )
+    if ( p()->talent.frost.frostreaper.ok() )
     {
-      get_action<frostreaper_t>("frostreaper", p())->execute_on_target( target );
-      for ( auto t : target_list() )
+      const auto td = get_td( target );
+
+      if ( td->debuff.frostreaper->up() )
       {
-        get_td( t )->debuff.frostreaper->expire();
+        frostreaper->execute_on_target( target );
+        for ( auto t : target_list() )
+          get_td( t )->debuff.frostreaper->expire();
       }
     }
 
@@ -10508,6 +10509,9 @@ struct frost_strike_base_t : public death_knight_melee_attack_t
 
     p()->buffs.rime->trigger();
   }
+
+private:
+  action_t* frostreaper;
 };
 
 struct frostbane_t final : public frost_strike_base_t
