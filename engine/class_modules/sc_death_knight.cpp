@@ -10376,8 +10376,8 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
                          bool shattering_blade )
     : death_knight_melee_attack_t( n, p, s ), sb( shattering_blade )
   {
-    background = special = dual = true;
-    weapon                      = w;
+    background = special = true;
+    weapon               = w;
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -11353,8 +11353,6 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
   {
     background = true;
     special    = true;
-    if ( name == "obliterate_damage" )
-      dual = true;
     may_miss   = false;
     weapon     = w;
 
