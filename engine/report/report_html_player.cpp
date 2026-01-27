@@ -1899,9 +1899,12 @@ void print_html_talent_table( report::sc_html_stream& os, const player_t& p, std
     if ( offset && ( row == 0 || row == traits.size() - 1 ) )
     {
       const auto& entry = traits[ row ][ offset ];
-      os.format( "<td colspan=\"{}\">{} [{}]</td>\n", max_col,
-                 report_decorators::decorated_spell_data( *p.sim, p.find_spell( entry.first->id_spell ) ),
-                 entry.second );
+      if ( !entry.first )
+        os << "<td></td>\n";
+      else
+        os.format( "<td colspan=\"{}\">{} [{}]</td>\n", max_col,
+                   report_decorators::decorated_spell_data( *p.sim, p.find_spell( entry.first->id_spell ) ),
+                   entry.second );
       continue;
     }
 
