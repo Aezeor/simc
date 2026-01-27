@@ -683,7 +683,7 @@ public:
       player_talent_t monster_rising;
 
       player_talent_t blind_focus;     // Partial implementation (no Meta)
-      player_talent_t undying_embers;  // Partial implementation (Devourer)
+      player_talent_t undying_embers;
       player_talent_t volatile_instinct;
 
       player_talent_t demonic_intensity;
@@ -6557,7 +6557,7 @@ struct explosion_of_the_soul_t : public demon_hunter_spell_t
     : demon_hunter_spell_t( n, p, p->set_bonuses.explosion_of_the_soul )
   {
     background = dual   = true;
-    aoe = -1;
+    aoe                 = -1;
     reduced_aoe_targets = as<int>( p->set_bonuses.mid1_vengeance_4pc->effectN( 2 ).base_value() );
   }
 };
@@ -8704,7 +8704,9 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
   };
 
   std::vector<immolation_aura_functional_buff_t*> immos;
-  immolation_aura_buff_t( demon_hunter_t* p ) : base_t( *p, "immolation_aura", p->spell.immolation_aura ), immos()
+  double undying_embers_proc_chance;
+  immolation_aura_buff_t( demon_hunter_t* p )
+    : base_t( *p, "immolation_aura", p->spell.immolation_aura ), immos(), undying_embers_proc_chance( 0.0 )
   {
     set_cooldown( timespan_t::zero() );
     set_tick_behavior( buff_tick_behavior::NONE );
@@ -8732,9 +8734,30 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
       set_max_stack( 1 );
     }
 
+    if ( p->talent.scarred.undying_embers->ok() )
+    {
+      undying_embers_proc_chance = p->talent.scarred.undying_embers->effectN( 1 ).percent();
+    }
+
     for ( int i = 0; i < max_stack(); i++ )
     {
-      immos.push_back( new immolation_aura_functional_buff_t( p, fmt::format( "immolation_aura{}", i + 1 ) ) );
+      auto functional_buff = new immolation_aura_functional_buff_t( p, fmt::format( "immolation_aura{}", i + 1 ) );
+      // this talent is a pain
+      if ( p->talent.scarred.undying_embers->ok() )
+      {
+        functional_buff->set_expire_callback( [ this, p ]( buff_t*, int, timespan_t ) {
+          if ( rng().roll( undying_embers_proc_chance ) && p->cooldown.immolation_aura->up() )
+          {
+            p->proc.undying_embers->occur();
+            // retriggers the buff and consumes a cooldown charge but does not count as a cast
+            make_event( sim, [ this, p ] {
+              trigger();
+              p->cooldown.immolation_aura->start( p->cooldown.immolation_aura->action );
+            } );
+          }
+        } );
+      }
+      immos.push_back( functional_buff );
     }
   }
 
