@@ -622,6 +622,10 @@ public:
     proc_t* release_and_reload_stacks;
     proc_t* crescent_steel_stacks;
     proc_t* overwatch_implosions;
+
+    proc_t* dire_beast_spawn;
+    proc_t* dark_minion_spawn;
+    proc_t* dark_hound_spawn;
   } procs;
 
   struct rppm_t
@@ -1988,6 +1992,13 @@ struct dark_minion_t final : public hunter_pet_t
     def->add_action( "shoot" );
   }
 
+  void summon( timespan_t duration = 0_ms ) override
+  {
+    hunter_pet_t::summon( duration );
+
+    o()->procs.dark_minion_spawn->occur();
+  }
+
   void arise() override
   {
     pet_t::arise();
@@ -2025,6 +2036,8 @@ struct dire_critter_t : public hunter_pet_t
     resource_regeneration = regen_type::DISABLED;
   }
 
+  bool triggers_heart_of_the_pack = false;
+
   void create_buffs() override
   {
     hunter_pet_t::create_buffs();
@@ -2043,6 +2056,9 @@ struct dire_critter_t : public hunter_pet_t
 
     if ( o()->talents.wildspeaker.ok() && o()->buffs.bestial_wrath->check() )
       buffs.bestial_wrath->trigger( o()->buffs.bestial_wrath->remains() );
+
+    if ( triggers_heart_of_the_pack && o()->talents.heart_of_the_pack.ok() )
+      o()->buffs.heart_of_the_pack->trigger();
     
     if ( main_hand_attack )
       main_hand_attack->execute();
@@ -2079,6 +2095,14 @@ struct dark_hound_t final : public dire_critter_t
     auto_attack_multiplier = 3.99;
     // Best guess estimates based on logs and testing
     // TODO reconfirm before launch
+    triggers_heart_of_the_pack = true;
+  }
+
+  void summon( timespan_t duration = 0_ms ) override
+  {
+    dire_critter_t::summon( duration );
+
+    o()->procs.dark_hound_spawn->occur();
   }
 
   void init_spells() override;
@@ -2098,14 +2122,14 @@ struct dire_beast_t final : public dire_critter_t
     // 13-10-22 Dire Beast damage increased by 50%. (60% -> 90%)
     // 22-7-24 Dire Beast damage increased by 10% (90% -> 100%)
     owner_coeff.ap_from_ap = 1;
+    triggers_heart_of_the_pack = true;
   }
 
   void summon( timespan_t duration = 0_ms ) override
   {
     dire_critter_t::summon( duration );
 
-    if ( o()->talents.heart_of_the_pack.ok() )
-      o()->buffs.heart_of_the_pack->trigger();
+    o()->procs.dire_beast_spawn->occur();
   }
 
   double composite_owner_pet_damage_multiplier( const action_state_t* s ) const override
@@ -2219,6 +2243,7 @@ struct bear_t final : public dire_critter_t
     owner_coeff.ap_from_ap = 1;
     auto_attack_multiplier = 7;
     main_hand_weapon.swing_time = 1.5_s;
+    triggers_heart_of_the_pack = true;
   }
 
   void summon( timespan_t duration = 0_ms ) override
@@ -9782,6 +9807,15 @@ void hunter_t::init_procs()
 
   if ( talents.overwatch.ok() )
     procs.overwatch_implosions = get_proc( "Overwatch Implosion" );
+
+  if ( talents.dire_beast_summon.ok() )
+    procs.dire_beast_spawn = get_proc( "Dire Beast" );
+
+  if ( talents.corpsecaller_minion_summon.ok() )
+    procs.dark_minion_spawn = get_proc( "Dark Minion" );
+
+  if ( talents.corpsecaller_hound_summon.ok() )
+    procs.dark_hound_spawn = get_proc( "Dark Hound" );
 }
 
 void hunter_t::init_rng()
