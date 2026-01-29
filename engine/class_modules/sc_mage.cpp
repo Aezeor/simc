@@ -2709,7 +2709,6 @@ struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arc
 
     // TODO: PTR check
     if ( sim->dbc->wowv() >= wowv_t{ 12, 0, 1 } )
-    if ( type != ao_type::ORB_BARRAGE )
       p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 2 ).base_value() ) );
 
     p()->trigger_arcane_charge();
