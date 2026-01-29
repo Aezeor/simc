@@ -2257,6 +2257,8 @@ struct bear_t final : public dire_critter_t
 
     if ( actions.rend_flesh )
       actions.rend_flesh->execute_on_target( target );
+
+    o()->trigger_huntmasters_call();
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -7686,6 +7688,9 @@ struct kill_command_t: public hunter_spell_t
     tip_stacks += as<int>( p()->talents.primal_surge->effectN( 1 ).base_value() );
     p()->buffs.tip_of_the_spear->trigger( tip_stacks );
 
+    /* 2026-01-29: BLP introduced to this with no spell data. 
+                   Log testing needed to figure out rates. 
+                   TODO reconfirm before launch */  
     if ( p()->talents.dire_command && rng().roll( dire_command.chance ) )
     {
       p()->spawn_dire_beast( p()->talents.dire_beast_summon->duration() );
@@ -7915,7 +7920,7 @@ struct wild_thrash_t : public hunter_spell_t
     {
       p()->buffs.beast_cleave->trigger();
 
-      for ( auto pet : pets::active<pets::hunter_pet_t>( p()->pets.main, p()->pets.animal_companion ) )
+      for ( auto pet : pets::active<pets::hunter_pet_t>( p()->pets.main, p()->pets.animal_companion, p()->pets.natures_ally_pet.active_pet() ) )
         pet->buffs.beast_cleave->trigger();
     }
   }
