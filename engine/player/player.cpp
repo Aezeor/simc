@@ -14133,47 +14133,64 @@ void player_t::reset_resource_callbacks()
 /**
  * Checks if a resource callback condition has been met and if yes activate it.
  */
-void player_t::check_resource_change_for_callback(resource_e resource, double previous_amount, double previous_pct_points)
- {
-   for (auto& callback : resource_callbacks)
-   {
-     if (callback.is_consumed)
-       continue;
-     if (callback.resource != resource)
-       continue;
+void player_t::check_resource_change_for_callback( resource_e resource, double previous_amount,
+                                                   double previous_pct_points )
+{
+  for ( auto& callback : resource_callbacks )
+  {
+    if ( callback.is_consumed )
+      continue;
 
-     // Evaluate if callback condition is met.
-     bool callback_condition_valid = false;
-     if (callback.is_pct)
-     {
-       double current_pct_points = resources.current[ resource ] / resources.max[ resource ] * 100.0;
-       if ((callback.value < previous_pct_points && callback.value >= current_pct_points) ||
-           (callback.value >= previous_pct_points && callback.value < current_pct_points))
-       {
-         callback_condition_valid = true;
-       }
-     }
-     else
-     {
-       double current_amount = resources.current[ resource ];
-       if ((callback.value < previous_amount && callback.value >= current_amount) ||
-           (callback.value >= previous_amount && callback.value < current_amount))
-       {
-         callback_condition_valid = true;
-       }
-     }
-     if (!callback_condition_valid)
-     {
-       continue;
-     }
+      if ( callback.resource != resource )
+      continue;
 
-     sim->print_debug("{} resource callback triggered.", name());
-     // We have a callback event, trigger stuff.
-     callback.callback();
-     if (callback.fire_once)
-     {
-       callback.is_consumed = true;
-     }
+    // Evaluate if callback condition is met.
+    bool callback_condition_valid = false;
+    bool increasing;
+
+    if ( callback.is_pct )
+    {
+      double current_pct_points = resources.current[ resource ] / resources.max[ resource ] * 100.0;
+      if ( callback.value < previous_pct_points && callback.value >= current_pct_points )
+      {
+        callback_condition_valid = true;
+        increasing = false;
+      }
+      else if ( callback.value >= previous_pct_points && callback.value < current_pct_points )
+      {
+        callback_condition_valid = true;
+        increasing = true;
+      }
+    }
+    else
+    {
+      double current_amount = resources.current[ resource ];
+      if ( callback.value < previous_amount && callback.value >= current_amount )
+      {
+        callback_condition_valid = true;
+        increasing = false;
+      }
+      else if ( callback.value >= previous_amount && callback.value < current_amount )
+      {
+        callback_condition_valid = true;
+        increasing = true;
+      }
+    }
+
+    if ( !callback_condition_valid )
+    {
+      continue;
+    }
+
+    sim->print_debug( "{} resource callback triggered.", name() );
+
+    // We have a callback event, trigger stuff.
+    callback.callback( increasing );
+
+    if ( callback.fire_once )
+    {
+      callback.is_consumed = true;
+    }
   }
 
   check_resource_callback_deactivation();
