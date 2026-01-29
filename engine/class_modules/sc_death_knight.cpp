@@ -12235,11 +12235,14 @@ struct scourge_strike_t final : public scourge_strike_base_t
     if ( p->talent.sanlayn.vampiric_strike.ok() )
       set_replacement_action( new vampiric_strike_unholy_t( "vampiric_strike", p ), p->buffs.vampiric_strike );
 
-    p->pets.lesser_ghoul_fs.set_creation_event_callback( pets::parent_pet_action_fn( p->pet_summon.fs_ghoul ) );
-    add_child( p->pet_summon.fs_ghoul );
+    if ( data().ok() )
+    {
+      p->pets.lesser_ghoul_fs.set_creation_event_callback( pets::parent_pet_action_fn( p->pet_summon.fs_ghoul ) );
+      add_child( p->pet_summon.fs_ghoul );
 
-    add_child( p->background_actions.virulent_plague_erupt_ss );
-    add_child( p->background_actions.dread_plague_erupt_ss );
+      add_child( p->background_actions.virulent_plague_erupt_ss );
+      add_child( p->background_actions.dread_plague_erupt_ss );
+    }
 
     if ( p->talent.sanlayn.infliction_of_sorrow.ok() )
       add_child( p->background_actions.infliction_of_sorrow );
