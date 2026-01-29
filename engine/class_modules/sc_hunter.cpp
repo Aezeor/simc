@@ -8825,10 +8825,10 @@ void hunter_t::init_spells()
     talents.bloody_frenzy_buff                = talents.bloody_frenzy.ok() ? find_spell( 1265063 ) : spell_data_t::not_found();
     talents.piercing_fangs                    = find_talent_spell( talent_tree::SPECIALIZATION, "Piercing Fangs", HUNTER_BEAST_MASTERY );
 
-    talents.natures_ally_1                    = find_talent_spell( talent_tree::SPECIALIZATION, 1273043, HUNTER_BEAST_MASTERY );
+    talents.natures_ally_1                    = find_talent_spell( talent_tree::SPECIALIZATION, "Nature's Ally", 1 );
     talents.natures_ally_1_summon             = talents.natures_ally_1.ok() ? find_spell( 1282474 ) : spell_data_t::not_found();
-    talents.natures_ally_2                    = find_talent_spell( talent_tree::SPECIALIZATION, 1273065, HUNTER_BEAST_MASTERY );
-    talents.natures_ally_3                    = find_talent_spell( talent_tree::SPECIALIZATION, 1273126, HUNTER_BEAST_MASTERY );
+    talents.natures_ally_2                    = find_talent_spell( talent_tree::SPECIALIZATION, "Nature's Ally", 2 );
+    talents.natures_ally_3                    = find_talent_spell( talent_tree::SPECIALIZATION, "Nature's Ally", 3 );
     talents.natures_ally_3_buff               = talents.natures_ally_3.ok() ? find_spell( 1276720 ) : spell_data_t::not_found();
 
     //TODO Removed
@@ -8895,7 +8895,6 @@ void hunter_t::init_spells()
     talents.deadeye                           = find_talent_spell( talent_tree::SPECIALIZATION, "Deadeye", HUNTER_MARKSMANSHIP );
     talents.deathblow                         = find_talent_spell( talent_tree::SPECIALIZATION, "Deathblow", HUNTER_MARKSMANSHIP );
 
-    talents.take_aim_1                       = find_talent_spell( talent_tree::SPECIALIZATION, 1273132, HUNTER_MARKSMANSHIP );
     talents.unmatched_precision               = find_talent_spell( talent_tree::SPECIALIZATION, "Unmatched Precision", HUNTER_MARKSMANSHIP );
     talents.bullseye                          = find_talent_spell( talent_tree::SPECIALIZATION, "Bullseye", HUNTER_MARKSMANSHIP );
     talents.bullseye_buff                     = talents.bullseye->effectN( 1 ).trigger();
@@ -8904,7 +8903,6 @@ void hunter_t::init_spells()
     talents.small_game_hunter                 = find_talent_spell( talent_tree::SPECIALIZATION, "Small Game Hunter", HUNTER_MARKSMANSHIP );
     talents.eagles_accuracy                   = find_talent_spell( talent_tree::SPECIALIZATION, "Eagle's Accuracy", HUNTER_MARKSMANSHIP );
 
-    talents.take_aim_2                       = find_talent_spell( talent_tree::SPECIALIZATION, 1273129, HUNTER_MARKSMANSHIP );
     talents.focused_aim                       = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Aim", HUNTER_MARKSMANSHIP );
     talents.bulletstorm                       = find_talent_spell( talent_tree::SPECIALIZATION, "Bulletstorm", HUNTER_MARKSMANSHIP );
     talents.bulletstorm_buff                  = talents.bulletstorm.ok() ? find_spell( 389020 ) : spell_data_t::not_found();
@@ -8915,7 +8913,6 @@ void hunter_t::init_spells()
     talents.focus_fire                        = find_talent_spell( talent_tree::SPECIALIZATION, "Focus Fire", HUNTER_MARKSMANSHIP );
     talents.focus_fire_buff                   = talents.focus_fire.ok() ? find_spell( 1277549 ) : spell_data_t::not_found();
 
-    talents.take_aim_3                       = find_talent_spell( talent_tree::SPECIALIZATION, 1273128, HUNTER_MARKSMANSHIP );
     talents.windrunner_quiver                 = find_talent_spell( talent_tree::SPECIALIZATION, "Windrunner Quiver", HUNTER_MARKSMANSHIP );
     talents.incendiary_ammunition             = find_talent_spell( talent_tree::SPECIALIZATION, "Incendiary Ammunition", HUNTER_MARKSMANSHIP );
     talents.double_tap                        = find_talent_spell( talent_tree::SPECIALIZATION, "Double Tap", HUNTER_MARKSMANSHIP );
@@ -8924,6 +8921,10 @@ void hunter_t::init_spells()
     talents.bullet_hell                       = find_talent_spell( talent_tree::SPECIALIZATION, "Bullet Hell", HUNTER_MARKSMANSHIP );
     talents.shrapnel_shot                     = find_talent_spell( talent_tree::SPECIALIZATION, "Shrapnel Shot", HUNTER_MARKSMANSHIP );
     talents.unload                            = find_talent_spell( talent_tree::SPECIALIZATION, "Unload", HUNTER_MARKSMANSHIP );
+
+    talents.take_aim_1                        = find_talent_spell( talent_tree::SPECIALIZATION, "Take Aim", 1 );
+    talents.take_aim_2                        = find_talent_spell( talent_tree::SPECIALIZATION, "Take Aim", 2 );
+    talents.take_aim_3                        = find_talent_spell( talent_tree::SPECIALIZATION, "Take Aim", 3 );
 
     //TODO Remove
     talents.ammo_conservation                 = find_talent_spell( talent_tree::SPECIALIZATION, "Ammo Conservation", HUNTER_MARKSMANSHIP );
@@ -8956,9 +8957,9 @@ void hunter_t::init_spells()
     talents.raptor_strike                     = find_talent_spell( talent_tree::SPECIALIZATION, "Raptor Strike", HUNTER_SURVIVAL );
     talents.raptor_strike_eagle               = talents.raptor_strike.ok() ? find_spell( 265189 ) : spell_data_t::not_found();
 
-    talents.raptor_swipe_1                    = find_talent_spell( talent_tree::SPECIALIZATION, 1259003, HUNTER_SURVIVAL );
-    talents.raptor_swipe_2                    = find_talent_spell( talent_tree::SPECIALIZATION, 1259017, HUNTER_SURVIVAL );
-    talents.raptor_swipe_3                    = find_talent_spell( talent_tree::SPECIALIZATION, 1259019, HUNTER_SURVIVAL );
+    talents.raptor_swipe_1                    = find_talent_spell( talent_tree::SPECIALIZATION, "Raptor Swipe", 1 );
+    talents.raptor_swipe_2                    = find_talent_spell( talent_tree::SPECIALIZATION, "Raptor Swipe", 2 );
+    talents.raptor_swipe_3                    = find_talent_spell( talent_tree::SPECIALIZATION, "Raptor Swipe", 3 );
     talents.raptor_swipe_spell                = talents.raptor_swipe_1.ok() ? find_spell( 1262293 ) : spell_data_t::not_found();
     talents.raptor_swipe_buff                 = talents.raptor_swipe_1.ok() ? find_spell( 1273155 ) : spell_data_t::not_found();
 
