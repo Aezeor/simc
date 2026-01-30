@@ -5770,7 +5770,8 @@ struct voidblade_t : public voidblade_base_t
 
   bool action_ready() override
   {
-    if ( p()->buff.metamorphosis->check() && p()->talent.scarred.demonsurge->ok() )
+    if ( ( p()->buff.metamorphosis->check() && p()->talent.scarred.demonsurge->ok() ) ||
+         p()->buff.hungering_slash->up() )
     {
       return false;
     }
