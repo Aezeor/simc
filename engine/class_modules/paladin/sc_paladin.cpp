@@ -1751,7 +1751,8 @@ double hammer_of_wrath_t::composite_target_multiplier( player_t* target ) const
 {
   double ctm = judgment_base_t::composite_target_multiplier( target );
 
-  if ( p()->talents.vengeful_wrath->ok() )
+  // 30.01.26 Fluttershy - Talent currently does not work for Ret
+  if ( p()->talents.vengeful_wrath->ok() && p()->specialization() == PALADIN_PROTECTION )
   {
     ctm *= 1.0 + p()->talents.vengeful_wrath->effectN( 1 ).percent() * ( 1.0 - target->health_percentage() / 100.0 );
   }
