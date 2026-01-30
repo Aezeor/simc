@@ -3862,7 +3862,7 @@ struct risen_skulker_pet_t : public death_knight_pet_t
   {
     resource_regeneration       = regen_type::DISABLED;
     main_hand_weapon.type       = WEAPON_BEAST_RANGED;
-    main_hand_weapon.swing_time = 2.7_s;
+    main_hand_weapon.swing_time = 3_s;
 
     affected_by_grave_mastery         = true;
     affected_by_commander_of_the_dead = true;
@@ -3958,7 +3958,7 @@ struct risen_skulker_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::init_base_stats();
 
-    owner_coeff.ap_from_ap = 1.0;
+    owner_coeff.ap_from_ap = 0.75;
   }
 
   void create_buffs() override
