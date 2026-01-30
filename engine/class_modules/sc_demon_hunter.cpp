@@ -11090,6 +11090,9 @@ void demon_hunter_t::init_spells()
       break;
   }
 
+  // gives things hasted cd that should not
+  deregister_passive_effect( spec.devourer_demon_hunter->effectN( 6 ) );
+
   // Critical Chaos eff#2 (dummy script) overwrites the value of eff#1 (add flat: proc chance)
   deregister_passive_effect( talent.havoc.critical_chaos->effectN( 1 ) );
 
