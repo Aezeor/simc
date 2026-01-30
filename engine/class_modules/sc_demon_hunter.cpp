@@ -8974,12 +8974,17 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
         p()->buff.rolling_torment->trigger( p()->buff.collapsing_star_stack->stack() );
         rolling_torment_energize->execute_on_target( p() );
       }
-      p()->cooldown.void_ray->reset( false );
       p()->buff.collapsing_star_stack->expire();
       p()->buff.emptiness->expire();
       p()->buff.impending_apocalypse->expire();
       event_t::cancel( p()->devourer_fury_state.next_drain_event );
       p()->devourer_fury_state.clear_state();
+
+      // Void Ray doesn't reset on beta, does on prepatch
+      if ( sim->dbc->wowv() < wowv_t( 12, 0, 1 ) )
+      {
+        p()->cooldown.void_ray->reset( false );
+      }
     }
 
     for ( demonsurge_ability ability : demonsurge_abilities )
