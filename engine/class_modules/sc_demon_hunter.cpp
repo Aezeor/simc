@@ -8979,12 +8979,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       p()->buff.impending_apocalypse->expire();
       event_t::cancel( p()->devourer_fury_state.next_drain_event );
       p()->devourer_fury_state.clear_state();
-
-      // Void Ray doesn't reset on beta, does on prepatch
-      if ( sim->dbc->wowv() < wowv_t( 12, 0, 1 ) )
-      {
-        p()->cooldown.void_ray->reset( false );
-      }
+      p()->cooldown.void_ray->reset( false );
     }
 
     for ( demonsurge_ability ability : demonsurge_abilities )
@@ -11101,7 +11096,7 @@ void demon_hunter_t::init_spells()
                                                                 .remove_spell( spec.cull->id() )
                                                                 .remove_spell( spec.eradicate->id() )
                                                                 .remove_spell( spec.the_hunt->id() )
-                                                                .remove_spell( hero_spec.pierce_the_veil->id() ));
+                                                                .remove_spell( hero_spec.pierce_the_veil->id() ) );
 
   // Critical Chaos eff#2 (dummy script) overwrites the value of eff#1 (add flat: proc chance)
   deregister_passive_effect( talent.havoc.critical_chaos->effectN( 1 ) );
