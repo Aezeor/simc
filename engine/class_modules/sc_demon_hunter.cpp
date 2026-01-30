@@ -11095,8 +11095,13 @@ void demon_hunter_t::init_spells()
       break;
   }
 
-  // gives things hasted cd that should not
-  deregister_passive_effect( spec.devourer_demon_hunter->effectN( 6 ) );
+  // Reap variants and The Hunt are not hasted
+  register_passive_affect_list( spec.devourer_demon_hunter, affect_list_t( 6 )
+                                                                .remove_spell( spec.reap->id() )
+                                                                .remove_spell( spec.cull->id() )
+                                                                .remove_spell( spec.eradicate->id() )
+                                                                .remove_spell( spec.the_hunt->id() )
+                                                                .remove_spell( hero_spec.pierce_the_veil->id() ));
 
   // Critical Chaos eff#2 (dummy script) overwrites the value of eff#1 (add flat: proc chance)
   deregister_passive_effect( talent.havoc.critical_chaos->effectN( 1 ) );
