@@ -682,7 +682,7 @@ public:
       player_talent_t flamebound;
       player_talent_t monster_rising;
 
-      player_talent_t blind_focus;     // Partial implementation (no Meta)
+      player_talent_t blind_focus;  // Partial implementation (no Meta)
       player_talent_t undying_embers;
       player_talent_t volatile_instinct;
 
@@ -5660,7 +5660,9 @@ struct consume_base_t : public voidfall_building_trigger_t<demon_hunter_spell_t>
 
     if ( p()->talent.devourer.predators_thirst->ok() )
     {
-      p()->spawn_soul_fragment( soul_fragment::LESSER, as<unsigned int>( p()->spec.shattered_souls->effectN( 3 ).base_value() ) );
+      p()->spawn_soul_fragment( soul_fragment::LESSER,
+                                as<unsigned int>( p()->spec.shattered_souls->effectN( 3 ).base_value() +
+                                                  p()->talent.devourer.predators_thirst->effectN( 2 ).base_value() ) );
     }
   }
 };
