@@ -94,14 +94,17 @@ void devourer( player_t* p )
 
   default_->add_action( "call_action_list,name=math_for_wizards" );
   default_->add_action( "call_action_list,name=illicit_doping" );
+  default_->add_action( "voidblade,if=buff.void_metamorphosis_stack.at_max_stacks" );
+  default_->add_action( "the_hunt,if=buff.void_metamorphosis_stack.at_max_stacks" );
   default_->add_action( "metamorphosis" );
   default_->add_action( "void_ray" );
-  default_->add_action( "collapsing_star,if=(cooldown.pierce_the_veil.up&cooldown.predators_wake.remains&talent.voidrush&!buff.hungering_slash.up|!talent.devourers_bite)&variable.should_use_star" );
+  default_->add_action( "collapsing_star,if=(cooldown.pierce_the_veil.up&cooldown.predators_wake.remains&talent.voidrush&!buff.hungering_slash.up|!talent.devourers_bite)&variable.should_use_star&(!talent.voidrush|cooldown.voidblade.remains>=6|buff.collapsing_star_stacking.stack>=38)" );
   default_->add_action( "call_action_list,name=melee_combo,if=talent.devourers_bite" );
   default_->add_action( "eradicate,if=buff.voidfall_spending.react|active_enemies>1" );
   default_->add_action( "call_action_list,name=melee_combo" );
   default_->add_action( "call_action_list,name=reaps,if=buff.voidfall_spending.react" );
-  default_->add_action( "call_action_list,name=reaps,if=!talent.voidfall&soul_fragments>=4&(talent.scythes_embrace|!buff.metamorphosis.up&!buff.void_metamorphosis_stack.at_max_stacks&(buff.void_metamorphosis_stack.stack+action.reap.souls_consumed)>=buff.void_metamorphosis_stack.max_stack|buff.metamorphosis.up&!buff.collapsing_star_ready.up&(buff.collapsing_star_stacking.stack+action.reap.souls_consumed>=30)&variable.should_use_star)" );
+  default_->add_action( "call_action_list,name=reaps,if=!talent.voidfall&soul_fragments>=4&(!buff.metamorphosis.up&(buff.void_metamorphosis_stack.stack+action.reap.souls_consumed)>=buff.void_metamorphosis_stack.max_stack|buff.metamorphosis.up&!buff.collapsing_star_ready.up&(buff.collapsing_star_stacking.stack+action.reap.souls_consumed>=30)&variable.should_use_star)", "Reap to generate a Collapsing Star quicker" );
+  default_->add_action( "call_action_list,name=reaps,if=action.reap.souls_consumed>=4&!talent.voidfall&buff.metamorphosis.up&(!buff.moment_of_craving.up|action.reap.souls_consumed>=9|!variable.should_use_star)", "Reap good in meta for VS" );
   default_->add_action( "soul_immolation,if=refreshable&!buff.metamorphosis.up" );
   default_->add_action( "devour" );
   default_->add_action( "consume" );
@@ -116,15 +119,15 @@ void devourer( player_t* p )
   illicit_doping->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains|trinket.2.is.spymasters_web|trinket.2.cooldown.duration=0)&(!variable.trinket_1_ogcd_cast)" );
   illicit_doping->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|trinket.1.is.spymasters_web|trinket.1.cooldown.duration=0)&(!variable.trinket_2_ogcd_cast)" );
 
-  math_for_wizards->add_action( "variable,name=should_use_star,op=set,value=1,if=talent.collapsing_star&(active_enemies>1|apex.1|buff.dark_matter.up|talent.otherworldly_focus|talent.star_fragments&talent.emptiness)" );
+  math_for_wizards->add_action( "variable,name=should_use_star,op=set,value=active_enemies>1|apex.1|buff.dark_matter.up|talent.star_fragments&talent.emptiness|active_enemies>1,if=talent.collapsing_star" );
 
   melee_combo->add_action( "vengeful_retreat,if=buff.voidstep.up" );
   melee_combo->add_action( "hungering_slash" );
   melee_combo->add_action( "reapers_toll" );
-  melee_combo->add_action( "the_hunt,if=buff.metamorphosis.up|talent.violent_transformation" );
+  melee_combo->add_action( "the_hunt,if=active_enemies>1" );
   melee_combo->add_action( "pierce_the_veil" );
   melee_combo->add_action( "predators_wake" );
-  melee_combo->add_action( "voidblade,if=talent.duty_eternal&active_enemies=1|talent.hungering_slash" );
+  melee_combo->add_action( "voidblade,if=(talent.duty_eternal&active_enemies=1|talent.hungering_slash)&(!talent.devourers_bite|active_enemies>1)" );
 
   reaps->add_action( "eradicate" );
   reaps->add_action( "cull" );
