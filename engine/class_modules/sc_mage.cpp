@@ -3994,9 +3994,6 @@ struct frostbolt_t final : public frost_mage_spell_t
       p()->state.trigger_ff_empowerment = false;
       p()->action.frostfire_empowerment->execute_on_target( s->target, p()->talents.frostfire_empowerment->effectN( 2 ).percent() * s->result_total );
     }
-
-    // TODO: If the GS buff is up and a cleave FFB projectile deals damage, a GS will
-    // be automatically cast at the cleave target (for some reason)
   }
 
   bool ready() override
@@ -4520,6 +4517,11 @@ struct meteor_burn_t final : public fire_mage_spell_t
     // tick on each pulse.
     dot_duration = base_tick_time = 1_ms;
     hasted_ticks = false;
+
+    // Hard to say how the new tick_zero attribute is supposed to work with
+    // Meteor Burn, but it definitely shouldn't make it tick ~12 times.
+    if ( p->bugs )
+      dot_duration = 3_ms;
   }
 };
 
