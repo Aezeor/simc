@@ -4518,9 +4518,9 @@ struct meteor_burn_t final : public fire_mage_spell_t
     dot_duration = base_tick_time = 1_ms;
     hasted_ticks = false;
 
-    // Hard to say how the new tick_zero attribute is supposed to work with
+    // TODO: Hard to say how the new tick_zero attribute is supposed to work with
     // Meteor Burn, but it definitely shouldn't make it tick ~12 times.
-    if ( p->bugs )
+    if ( p->bugs && sim->dbc->wowv() >= wowv_t{ 12, 0, 1 } )
       dot_duration = 3_ms;
   }
 };
