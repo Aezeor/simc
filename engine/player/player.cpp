@@ -5071,7 +5071,7 @@ void player_t::create_buffs()
     // Dragonflight Raid Damage Modifier Debuffs
     debuffs.hunters_mark = make_buff( this, "hunters_mark", find_spell( 257284 ) )
         ->disable_ticking( true )
-        ->set_default_value_from_effect( 1 );
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
   }
 
   // set up always since this can be applied by enemy actions and raid events.
