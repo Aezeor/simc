@@ -9618,7 +9618,8 @@ void demon_hunter_t::create_buffs()
   buff.empowered_demon_soul = make_buff( this, "empowered_demon_soul", spell.demon_soul_empowered );
   buff.immolation_aura      = make_buff<buffs::immolation_aura_buff_t>( this );
   buff.metamorphosis        = make_buff<buffs::metamorphosis_buff_t>( this );
-  buff.soul_fragments       = make_buff( this, "soul_fragments", spec.soul_fragments_buff );
+  buff.soul_fragments       = make_buff( this, "soul_fragments", spec.soul_fragments_buff )
+                            ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   // Devourer ===============================================================
 
