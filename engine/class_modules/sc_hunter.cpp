@@ -3518,6 +3518,23 @@ struct bloodshed_t : hunter_pet_attack_t<hunter_main_pet_base_t>
   bloodshed_t( hunter_main_pet_base_t* p ) : hunter_pet_attack_t( "bloodshed", p, p->o()->talents.bloodshed_dot )
   {
     background = true;
+
+    /* 2026-01-31: Bloodshed is affected by Unnatural Causes but this is not reflected in spell data.
+                   TODO reconfirm before launch */ 
+    if ( o()->bugs )
+      affected_by.unnatural_causes.tick = as<uint8_t>( 2 );
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double am = hunter_pet_attack_t::composite_ta_multiplier( s );
+
+    /* 2026-01-31: Bloodshed is double-dipping Jagged Wounds' modifier.
+                   TODO reconfirm before launch */ 
+    if ( o()->bugs && o()->talents.jagged_wounds.ok() )
+      am *= 1 + o()->talents.jagged_wounds->effectN( 1 ).percent();
+
+    return am;
   }
 };
 
