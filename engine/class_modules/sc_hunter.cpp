@@ -1125,6 +1125,8 @@ public:
   struct specs_t
   {
     spell_data_ptr_t critical_strikes;
+    spell_data_ptr_t mail_specialization;
+    spell_data_ptr_t control_pet; // Does nothing for sim purposes as of 2026-01-30 but adding for completeness
     spell_data_ptr_t hunter;
     spell_data_ptr_t beast_mastery_hunter;
     spell_data_ptr_t marksmanship_hunter;
@@ -9223,6 +9225,8 @@ void hunter_t::init_spells()
 
   // Spec spells
   specs.critical_strikes     = find_spell( 157443 );
+  specs.mail_specialization  = find_spell( 86538 );
+  specs.control_pet          = find_spell( 93321 );
   specs.hunter               = find_spell( 137014 );
   specs.beast_mastery_hunter = find_specialization_spell( "Beast Mastery Hunter" );
   specs.marksmanship_hunter  = find_specialization_spell( "Marksmanship Hunter" );
@@ -9317,6 +9321,10 @@ void hunter_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
+
+  parse_passive_effects( specs.critical_strikes );
+  parse_passive_effects( specs.mail_specialization );
+  parse_passive_effects( specs.control_pet );
 }
 
 void hunter_t::init_base_stats()
