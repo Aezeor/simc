@@ -294,7 +294,6 @@ public:
     buff_t* heating_up;
     buff_t* hot_streak;
     buff_t* pyroclasm;
-    buff_t* wildfire;
 
 
     // Frost
@@ -1142,8 +1141,6 @@ struct arcane_phoenix_spell_t : public mage_pet_spell_t
           value = std::floor( value );
         m *= 1.0 + value * 0.01;
       }
-
-      m *= 1.0 + o()->buffs.wildfire->check_value();
     }
 
     return m;
@@ -1562,7 +1559,6 @@ struct mage_spell_t : public spell_t
     // Misc
     bool fires_ire = true;
     bool overflowing_energy = false;
-    bool wildfire = true;
   } affected_by;
 
   struct triggers_t
@@ -1748,9 +1744,6 @@ public:
         value = std::floor( value );
       m *= 1.0 + value * 0.01;
     }
-
-    if ( affected_by.wildfire )
-      m *= 1.0 + p()->buffs.wildfire->check_value();
 
     return m;
   }
@@ -3473,7 +3466,6 @@ struct combustion_t final : public fire_mage_spell_t
     value += spheres * p()->talents.codex_of_the_sunstriders->effectN( 2 ).percent();
 
     buff->trigger( -1, value, -1.0, duration );
-    p()->buffs.wildfire->trigger();
     p()->cooldowns.fire_blast->reset( false, as<int>( p()->talents.spontaneous_combustion->effectN( 1 ).base_value() ) );
     if ( p()->pets.arcane_phoenix )
       p()->pets.arcane_phoenix->summon( duration ); // TODO: The extra random pet duration can sometimes result in an extra cast.
@@ -6304,9 +6296,6 @@ void mage_t::create_buffs()
   buffs.pyroclasm                = make_buff( this, "pyroclasm", find_spell( 269651 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->set_chance( talents.pyroclasm->effectN( 1 ).percent() ); // TODO: test proc chance
-  buffs.wildfire                 = make_buff( this, "wildfire", find_spell( 383492 ) )
-                                     ->set_default_value( talents.wildfire->effectN( 3 ).percent() )
-                                     ->set_chance( talents.wildfire.ok() );
 
 
   // Frost
