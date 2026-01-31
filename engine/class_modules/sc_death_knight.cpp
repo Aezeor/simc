@@ -3269,6 +3269,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
       : dt_melee_ability_t( p, name, spell, dt )
     {
       triggers_infected_claws = triggers_apocalypse = true;
+      base_multiplier *= 0.85;
     }
   };
 
@@ -3338,7 +3339,9 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     gnaw_cd                   = get_cooldown( "gnaw" );
     gnaw_cd->duration         = owner->pet_spell.gnaw->cooldown();
     affected_by_grave_mastery = true;
-    owner_coeff.ap_from_ap    = 0.47385;
+    owner_coeff.ap_from_ap    = 0.474;
+    // 25% nerf caused auto attacks from the ghoul to be nerfed twice. 
+    auto_attack_multiplier    = 0.75;
     if ( owner->spec.raise_dead->ok() )
     {
       dynamic = false;
@@ -3558,6 +3561,8 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       : lesser_ghoul_claw_base_t( p, "claw", p->dk()->pet_spell.army_claw )
     {
       parse_options( options_str );
+      // Claw seems to just do ~37.5% less damage than expected in game.
+      base_multiplier *= 0.625;
     }
 
     bool ready() override
@@ -3576,6 +3581,8 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     {
       background = true;
       aoe        = -1;
+      // Ruptured Viscera seems to just do ~37.5% less damage than expected in game.
+      base_multiplier *= 0.625;
     }
   };
 
@@ -3879,6 +3886,7 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     {
       background = true;
       repeating  = true;
+      base_multiplier *= 0.75;
     }
 
     int n_targets() const override
@@ -4308,6 +4316,9 @@ struct magus_pet_t : public death_knight_pet_t
       parse_options( options_str );
       // There's a 1 energy cost in spelldata but it might as well be ignored
       base_costs[ RESOURCE_ENERGY ] = 0;
+      // Magus spells seem to be doing 25% less damage than expected. Potentially a consequence of the 25% nerfs being
+      // applied twice somehow? AP% inheritence has been checked and is correct.
+      base_multiplier *= 0.75;
     }
   };
 
@@ -4577,7 +4588,7 @@ struct horseman_pet_t : public death_knight_pet_t
     main_hand_weapon.type     = WEAPON_BEAST_2H;
     owner_coeff.ap_from_ap    = 0.70125;
     resource_regeneration     = regen_type::DISABLED;
-    auto_attack_multiplier    = 1;
+    auto_attack_multiplier    = 0.75;
     affected_by_grave_mastery = true;
   }
 
@@ -5194,6 +5205,7 @@ struct abomination_pet_t : public death_knight_pet_t
     affected_by_commander_of_the_dead = true;
     affected_by_grave_mastery         = true;
     owner_coeff.ap_from_ap            = 2.34;
+    auto_attack_multiplier            = 0.675;
     resource_regeneration             = regen_type::DISABLED;
 
     register_on_combat_state_callback( [ this ]( player_t* /* p */, bool in_combat ) {
@@ -7642,7 +7654,8 @@ struct dread_plague_t final : public death_knight_disease_t
   {
     if ( p->talent.unholy.sudden_doom.ok() )
       sd_chance = p->pseudo_random_c_from_p( p->talent.unholy.sudden_doom->effectN( 2 ).percent() *
-                                             ( 1 + p->talent.unholy.harbinger_of_doom->effectN( 2 ).percent() ) );
+                                             ( 1 + p->talent.unholy.harbinger_of_doom->effectN( 2 ).percent() ) *
+                                             ( 1.0 + p->talent.unholy.ebon_fever->effectN( 1 ).percent() ) );
 
     add_child( p->background_actions.dread_plague_death );
 
@@ -7651,8 +7664,8 @@ struct dread_plague_t final : public death_knight_disease_t
 
     if ( p->talent.unholy.superstrain.ok() )
     {
-      erupt                  = get_action<dread_plague_erupt_t>( "dread_plague_erupt_ss", p );
-      erupt->base_multiplier = p->talent.unholy.superstrain->effectN( 2 ).percent();
+      erupt                         = get_action<dread_plague_erupt_t>( "dread_plague_erupt_ss", p );
+      erupt->base_multiplier        = p->talent.unholy.superstrain->effectN( 2 ).percent();
       erupt->target_filter_callback = secondary_targets_only();
       add_child( erupt );
     }
@@ -7696,13 +7709,14 @@ struct dread_plague_t final : public death_knight_disease_t
 
     // Proc rate testing shows this at ~50% chance with limited testing. Assuming effect 2 divided by 10 is the chance
     // for the time being. TODO: Test for longer... far longer
-    if ( p()->talent.unholy.superstrain.ok() &&
-         rng().roll( p()->spell.superstrain_energize->effectN( 2 ).base_value() / 10 ) )
+    if ( p()->talent.unholy.superstrain.ok() )
     {
-      p()->resource_gain( RESOURCE_RUNIC_POWER,
-                          p()->spell.superstrain_energize->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
-                          p()->gains.superstrain, this );
-
+      if ( rng().roll( p()->spell.superstrain_energize->effectN( 2 ).base_value() / 10 ) )
+      {
+        p()->resource_gain( RESOURCE_RUNIC_POWER,
+                            p()->spell.superstrain_energize->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+                            p()->gains.superstrain, this );
+      }
       if ( p()->sim->target_non_sleeping_list.size() > 1 )
       {
         auto target = rng().range( erupt->target_list() );
