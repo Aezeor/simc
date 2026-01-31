@@ -9295,6 +9295,12 @@ void hunter_t::init_spells()
   cooldowns.sentinels_mark->duration = 500_ms;
 
   // Register passives
+  register_passive_effect_mask( talents.precision_strikes, 
+                                specialization() == HUNTER_BEAST_MASTERY ||
+                                specialization() == HUNTER_MARKSMANSHIP
+                                                    ? effect_mask_t( true ).disable( 2 )
+                                                    : effect_mask_t( true ).disable( 1 ) );
+
   register_passive_effect_mask( talents.better_together, 
                                 specialization() == HUNTER_BEAST_MASTERY
                                                     ? effect_mask_t( true ).disable( 2, 3 )
