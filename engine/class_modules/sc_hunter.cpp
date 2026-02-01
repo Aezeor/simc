@@ -3552,6 +3552,13 @@ struct bestial_wrath_t : hunter_pet_attack_t<hunter_main_pet_base_t>
   {
     background = true;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_pet_attack_t::impact( s );
+
+    trigger_beast_cleave( s );
+  }
 };
 
 // Kill Command - Wildspeaker ( Dire Beast ) ===============================
