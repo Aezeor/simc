@@ -9758,6 +9758,9 @@ void rogue_t::init_spells()
   parse_all_passive_talents();
   parse_all_passive_sets();
 
+  parse_passive_effects( spell.critical_strikes );
+  parse_passive_effects( spell.leather_specialization );
+
   // Active Spells ==========================================================
 
   auto_attack = new actions::auto_melee_attack_t( this, "" );
