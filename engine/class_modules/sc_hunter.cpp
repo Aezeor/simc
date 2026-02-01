@@ -8383,13 +8383,8 @@ struct wildfire_bomb_t: public wildfire_bomb_base_t
 
     if ( p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap )
     {
-      /* 2026-01-19: Extending Wyvern's Cry is entirely bugged and not working.
-                     TODO reconfirm before launch */
-      if ( !p()->bugs )
-      {
-        p()->buffs.wyverns_cry->extend_duration( p(), fury_of_the_wyvern.extension );
-        p()->state.fury_of_the_wyvern_extension += fury_of_the_wyvern.extension;
-      }
+      p()->buffs.wyverns_cry->extend_duration( p(), fury_of_the_wyvern.extension );
+      p()->state.fury_of_the_wyvern_extension += fury_of_the_wyvern.extension;
     }
 
     if ( p()->tier_set.mid_s1_sv_4pc.ok() )
