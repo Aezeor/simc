@@ -7859,8 +7859,13 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
 
     if ( p()->talents.thundering_hooves.ok() )
     {
-      for ( auto pet : pets::active<pets::stable_pet_t>( p()->pets.main, p()->pets.animal_companion, p()->pets.natures_ally_pet.active_pet() ) )
-        pet->actions.thundering_hooves->execute();
+      // 01/02/2026 - The pet summoned by Nature's Ally does not benefit from Thundering Hooves 
+      if( !p()->bugs )
+        for ( auto pet : pets::active<pets::stable_pet_t>( p()->pets.main, p()->pets.animal_companion, p()->pets.natures_ally_pet.active_pet() ) )
+          pet->actions.thundering_hooves->execute();
+      else
+        for ( auto pet : pets::active<pets::stable_pet_t>( p()->pets.main, p()->pets.animal_companion ) )
+          pet->actions.thundering_hooves->execute();
     }
 
     if ( p()->talents.withering_fire.ok() )
