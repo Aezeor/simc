@@ -574,6 +574,7 @@ public:
     cooldown_t* volley;
     cooldown_t* salvo;
     
+    cooldown_t* dire_beast;
     cooldown_t* kill_command;
     cooldown_t* wild_thrash;
 
@@ -1217,6 +1218,7 @@ public:
     cooldowns.kill_command  = get_cooldown( "kill_command" );
     cooldowns.barbed_shot   = get_cooldown( "barbed_shot" );
     cooldowns.bestial_wrath = get_cooldown( "bestial_wrath" );
+    cooldowns.dire_beast    = get_cooldown( "dire_beast" );
     cooldowns.wild_thrash   = get_cooldown( "wild_thrash" );
 
     cooldowns.wildfire_bomb       = get_cooldown( "wildfire_bomb" );
@@ -1754,8 +1756,9 @@ public:
   {
     ab::tick( dot );
 
-    if ( p()->rng().roll( dire_beast_chance ) )
+    if ( p()->rng().roll( dire_beast_chance ) && p()->cooldowns.dire_beast->up() )
       p()->spawn_dire_beast( p()->talents.dire_beast_summon->duration() );
+      p()->cooldowns.dire_beast->start();
   }
 
   void update_ready( timespan_t cd ) override
@@ -2972,8 +2975,9 @@ public:
   {
     ab::tick( dot );
 
-    if ( o()->rng().roll( dire_beast_chance ) )
+    if ( o()->rng().roll( dire_beast_chance ) && o()->cooldowns.dire_beast->up() )
       o()->spawn_dire_beast( o()->talents.dire_beast_summon->duration() );
+      o()->cooldowns.dire_beast->start();
   }
 
   T_PET* p() { return static_cast<T_PET*>( ab::player ); }
@@ -9284,8 +9288,9 @@ void hunter_t::init_spells()
   cooldowns.target_acquisition->duration = talents.target_acquisition->internal_cooldown();
   cooldowns.salvo->duration = talents.volley->duration();
 
-  cooldowns.strike_as_one->duration = talents.strike_as_one->internal_cooldown();
+  cooldowns.dire_beast->duration = talents.dire_beast->internal_cooldown();
 
+  cooldowns.strike_as_one->duration = talents.strike_as_one->internal_cooldown();
   cooldowns.ruthless_marauder->duration = talents.ruthless_marauder->internal_cooldown();
 
   cooldowns.bleak_powder->duration = talents.bleak_powder->internal_cooldown();
