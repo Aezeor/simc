@@ -1030,7 +1030,7 @@
       { "data_type": "b", "field": "flags_2" },
       { "data_type": "i", "field": "flags_3" },
       { "data_type": "b", "field": "flags_1" },
-      { "data_type": "i", "field": "id_display_season" },
+      { "data_type": "H", "field": "id_display_season" },
       { "data_type": "i", "field": "id_world_state_expression" }
     ]
   },
