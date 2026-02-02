@@ -2629,9 +2629,6 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
   {
     hunter_main_pet_base_t::summon( duration );
 
-    if ( o()->talents.trigger_finger.ok() )
-      o()->invalidate_cache( CACHE_AUTO_ATTACK_SPEED );
-
     o() -> pets.main = this;
     
     if ( o()->talents.solitary_companion.ok() )
@@ -2657,9 +2654,6 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
       o() -> pets.main = nullptr;
 
       spec_passive() -> expire();
-
-      if ( !sim->event_mgr.canceled && o()->talents.trigger_finger.ok() )
-        o()->invalidate_cache( CACHE_AUTO_ATTACK_SPEED );
     }
     if ( o() -> pets.animal_companion )
       o() -> pets.animal_companion -> demise();
@@ -9333,7 +9327,6 @@ void hunter_t::init_spells()
                                                     ? effect_mask_t( true ).disable( 2 )
                                                     : effect_mask_t( true ).disable( 1 ) );
 
-  deregister_passive_spell( talents.trigger_finger );
   deregister_passive_spell( talents.penetrating_shots );
 
   parse_all_class_passives();
