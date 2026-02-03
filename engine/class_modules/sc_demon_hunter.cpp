@@ -609,9 +609,9 @@ public:
       player_talent_t darkglare_boon;
       player_talent_t down_in_flames;
 
-      player_talent_t untethered_rage1;
-      player_talent_t untethered_rage2;
-      player_talent_t untethered_rage3;
+      player_talent_t untethered_rage_1;
+      player_talent_t untethered_rage_2;
+      player_talent_t untethered_rage_3;
     } vengeance;
 
     struct aldrachi_reaver_talents_t
@@ -2476,7 +2476,7 @@ public:
 
   bool trigger_untethered_rage( const int souls_consumed )
   {
-    if ( souls_consumed <= 0 || !p()->talent.vengeance.untethered_rage1->ok() )
+    if ( souls_consumed <= 0 || !p()->talent.vengeance.untethered_rage_1->ok() )
       return false;
 
     // TODO: CHECK IF THIS PERCENTAGE IS RIGHT
@@ -2487,7 +2487,7 @@ public:
       return true;
     }
 
-    if ( !p()->buff.untethered_rage->up() && p()->talent.vengeance.untethered_rage3->ok() )
+    if ( !p()->buff.untethered_rage->up() && p()->talent.vengeance.untethered_rage_3->ok() )
     {
       p()->buff.seething_anger->trigger();
     }
@@ -10763,9 +10763,9 @@ void demon_hunter_t::init_spells()
   talent.vengeance.down_in_flames = find_talent_spell( talent_tree::SPECIALIZATION, "Down in Flames" );
 
   // Vengeance Apex Talents
-  talent.vengeance.untethered_rage1 = find_talent_spell( talent_tree::SPECIALIZATION, "Untethered Rage", 1 );
-  talent.vengeance.untethered_rage2 = find_talent_spell( talent_tree::SPECIALIZATION, "Untethered Rage", 2 );
-  talent.vengeance.untethered_rage3 = find_talent_spell( talent_tree::SPECIALIZATION, "Untethered Rage", 3 );
+  talent.vengeance.untethered_rage_1 = find_talent_spell( talent_tree::SPECIALIZATION, "Untethered Rage", 1 );
+  talent.vengeance.untethered_rage_2 = find_talent_spell( talent_tree::SPECIALIZATION, "Untethered Rage", 2 );
+  talent.vengeance.untethered_rage_3 = find_talent_spell( talent_tree::SPECIALIZATION, "Untethered Rage", 3 );
 
   // Hero Talents ===========================================================
 
@@ -10934,8 +10934,8 @@ void demon_hunter_t::init_spells()
   spec.fel_devastation_heal            = talent_spell_lookup( talent.vengeance.fel_devastation, 212106 );
   spec.felfire_fist_in_combat_buff     = talent_spell_lookup( talent.vengeance.felfire_fist, 1265759 );
   spec.felfire_fist_out_of_combat_buff = talent_spell_lookup( talent.vengeance.felfire_fist, 1265751 );
-  spec.untethered_rage_buff            = talent_spell_lookup( talent.vengeance.untethered_rage1, 1270476 );
-  spec.seething_anger_buff             = talent_spell_lookup( talent.vengeance.untethered_rage3, 1270547 );
+  spec.untethered_rage_buff            = talent_spell_lookup( talent.vengeance.untethered_rage_1, 1270476 );
+  spec.seething_anger_buff             = talent_spell_lookup( talent.vengeance.untethered_rage_3, 1270547 );
 
   switch ( specialization() )
   {
