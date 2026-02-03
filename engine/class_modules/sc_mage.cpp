@@ -3873,6 +3873,9 @@ struct flurry_t final : public frost_mage_spell_t
     may_miss = false;
     triggers.frostfire_empowerment = true; // Doesn't seem to need Heat Sink
 
+    // Used when creating the pulse events; doesn't actually do anything otherwise
+    chain_multiplier = p->talents.splitting_ice->effectN( 2 ).percent();
+
     add_child( flurry_bolt );
     if ( p->talents.glacial_assault.ok() )
       add_child( p->action.glacial_assault );
@@ -3900,11 +3903,16 @@ struct flurry_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+    auto e = make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( pulse_time )
       .target( s->target )
       .n_pulses( pulses )
       .action( flurry_bolt ), true );
+
+    // This is a bit of a hack to ensure that all the secondary Flurry projectiles get affected
+    // by Splitting Ice's effectiveness reduction.
+    if ( s->chain_target > 0 )
+      e->pulse_state->persistent_multiplier *= std::pow( chain_multiplier, s->chain_target );
   }
 };
 
@@ -3927,6 +3935,11 @@ struct frostbolt_t final : public frost_mage_spell_t
     fof_chance = p->talents.fingers_of_frost->effectN( 1 ).percent();
     bf_chance = p->talents.brain_freeze->effectN( 1 ).percent();
     freezing_stacks = as<int>( p->spec.shatter->effectN( 1 ).base_value() );
+
+    chain_multiplier = p->talents.splitting_ice->effectN( 2 ).percent();
+    // TODO: Doesn't seem to affect Frostbolt for some reason
+    if ( p->bugs && !frostfire )
+      chain_multiplier = 1.0;
 
     if ( data().ok() && p->talents.frostfire_empowerment.ok() )
       add_child( p->action.frostfire_empowerment );
