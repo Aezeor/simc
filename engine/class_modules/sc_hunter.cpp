@@ -4020,14 +4020,8 @@ int hunter_t::ticking_dots( hunter_td_t* td )
   int dots = 0;
 
   auto hunter_dots = td->dots;
-  dots += hunter_dots.serpent_sting->is_ticking();
   dots += hunter_dots.wildfire_bomb->is_ticking();
-  dots += hunter_dots.merciless_blow->is_ticking();
-  dots += hunter_dots.spearhead->is_ticking();
-  dots += hunter_dots.cull_the_herd->is_ticking();
-
-  if ( auto bear = pets.bear.active_pet() )
-    dots += bear->get_target_data( td->target )->dots.rend_flesh->is_ticking();
+  dots += hunter_dots.sanctified_armaments->is_ticking();
 
   return dots;
 }
@@ -8513,7 +8507,7 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
     -> set_default_value_from_effect( 1 );
 
   dots.serpent_sting = t -> get_dot( "serpent_sting", p );
-  dots.wildfire_bomb = t -> get_dot( "wildfire_bomb_dot", p );
+  dots.wildfire_bomb = t->get_dot( p->talents.shrapnel_bomb ? "wildfire_bomb_bleed" : "wildfire_bomb_dot", p );
   dots.sanctified_armaments = t->get_dot( "sanctified_armaments", p );
   dots.black_arrow = t -> get_dot( "black_arrow_dot", p );
   dots.barbed_shot = t -> get_dot( "barbed_shot", p );
