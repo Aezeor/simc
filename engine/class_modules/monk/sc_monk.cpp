@@ -5700,7 +5700,9 @@ void monk_t::create_buffs()
           ->set_trigger_spell( talent.windwalker.teachings_of_the_monastery )
           ->set_default_value_from_effect( 1 );
 
-  buff.combo_breaker = make_buff_fallback( talent.windwalker.combo_breaker->ok(), this, "combo_breaker",
+  // Create the buff even if untalented - it is possible to get a Blackout Kick! proc without the talent from other
+  // sources.
+  buff.combo_breaker = make_buff_fallback( specialization() == MONK_WINDWALKER, this, "combo_breaker",
                                            talent.windwalker.combo_breaker_buff )
                            ->set_trigger_spell( talent.windwalker.combo_breaker )
                            ->set_chance( talent.windwalker.combo_breaker->effectN( 1 ).percent() );
