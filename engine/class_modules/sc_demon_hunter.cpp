@@ -8931,11 +8931,13 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
                                 as<unsigned int>( p()->talent.devourer.midnight3->effectN( 1 ).base_value() ) );
     }
 
-    if ( p()->specialization() == DEMON_HUNTER_HAVOC && p()->talent.scarred.monster_rising->ok() )
+    if ( ( sim->dbc->wowv() >= wowv_t( 12, 0, 1 ) || p()->specialization() == DEMON_HUNTER_HAVOC ) &&
+         p()->talent.scarred.monster_rising->ok() )
     {
       p()->buff.monster_rising->expire();
     }
-    if ( p()->specialization() == DEMON_HUNTER_HAVOC && p()->talent.scarred.enduring_torment->ok() )
+    if ( ( sim->dbc->wowv() >= wowv_t( 12, 0, 1 ) || p()->specialization() == DEMON_HUNTER_HAVOC ) &&
+         p()->talent.scarred.enduring_torment->ok() )
     {
       p()->buff.enduring_torment->expire();
     }
