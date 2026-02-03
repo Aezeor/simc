@@ -1,5 +1,5 @@
-// Spell text, wow build 12.0.1.65617
-static constexpr std::array<spelltext_data_t, 28594> __ptr_spelltext_data { {
+// Spell text, wow build 12.0.1.65701
+static constexpr std::array<spelltext_data_t, 28595> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28586,6 +28586,7 @@ static constexpr std::array<spelltext_data_t, 28594> __ptr_spelltext_data { {
   { 1283718, "$@spelldesc357208", 0, "Red" },
   { 1283719, "$@spelldesc357208", "Burning for $w2 Fire damage every $t2 sec.$?$W3=1[ Silenced.][]", "Red" },
   { 1284260, "Opens your mind to the touch of the Void. This effect enhances your appearance for $s2 sec to $d  but has no bearing on your combat abilities.", "Communing with the Void.", 0 },
+  { 1284992, 0, "Damage increased by $s1%.", 0 },
   { 1284999, "When applied to your fishing pole, increases Midnight Fishing by $450401s1 for 10 min.", 0, 0 },
   { 1285660, "Sheilun's Gift and Vivify healing is increased by $s1% on yourself.", 0, 0 },
   { 1285825, "$@spelldesc421373", "Heals $w2 every $t2 sec.", 0 },
@@ -28596,7 +28597,7 @@ static constexpr std::array<spelltext_data_t, 28594> __ptr_spelltext_data { {
   { 1286623, "$@spelldesc1241711\r\n", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.0.1.65617
+// spelltext hotfix entries, wow build 12.0.1.65701
 static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __ptr_spelltext_hotfix_data { {
   {  114052,  0, "Transform into a Water Ascendant for $d, immediately healing for $294020s1.\r\n\r\nWhile ascended, casting Riptide causes your next Healing Wave or Chain Heal to be instant, Healing Wave and Chain Heal apply Riptide to your target, and all healing done is increased by $s9%.", "Immediately heals for $294020s1 split between allies within $294020A1 yds and transforms into a Water Ascendant for $d.\r\n\r\nWhile ascended, Chain Heal jumps to $s9 additional allies with $s17% healing reduced for all jumps, Healing Wave always critical heals and heals $s14 additional $Lally:allies; at $s15% effectiveness, and the mana cost of Chain Heal and Healing Wave is reduced by $s16%." },
   {  114052,  1, "Transformed into a powerful Water Ascendant. Casting Riptide causes your next Healing Wave or Chain Heal to be instant, Healing Wave and Chain Heal apply Riptide to your target, and all healing done is increased by $s9%.$?a462443[\r\n\r\nHaste increased by $w3%.][]", "Transformed into a powerful Water Ascendant. Chain Heal jumps to $s9 additional allies with no healing reduced per jump, Healing Wave always critical heals and heals $s14 additional $Lally:allies; at $s15% effectiveness, and the mana cost of Chain Heal and Healing Wave is reduced by $s16%.$?a462443[\r\n\r\nHaste increased by $w3%.][]" },
@@ -28605,7 +28606,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __ptr_spelltext_ho
   { 1264946,  1, "Your next Aimed Shot is a Wailing Arrow.", "$?c2[Trueshot][Takedown] is replaced with Moonlight Chakram." },
 } };
 
-// Spell description variables, wow build 12.0.1.65617
+// Spell description variables, wow build 12.0.1.65701
 static constexpr std::array<spelldesc_vars_data_t, 691> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29300,7 +29301,7 @@ static constexpr std::array<spelldesc_vars_data_t, 691> __ptr_spelldesc_vars_dat
   { 1283718, "$bD=$?s375510[${$375510s1}][${0}]\r\n$bF=$?s375510[${$375510s1/2}][${0}]\r\n$bE=$?s1264321[${$1264321s1}][${0}]\r\n$dE=$?s1264321[${$1264321s1/2}][${0}]\r\n$dmI=${$357209s1}\r\n$doI=${$357209o2*(10+$<bF>+$<dE>)}\r\n$duI=${20+$<bD>+$<bE>}\r\n$dmII=${$357209s1+($357209o2*3)}\r\n$doII=${$357209o2*(7+$<bF>+$<dE>)}\r\n$duII=${14+$<bD>+$<bE>}\r\n$dmIII=${$357209s1+($357209o2*6)}\r\n$doIII=${$357209o2*(4+$<bF>+$<dE>)}\r\n$duIII=${8+$<bD>+$<bE>}\r\n$dmIV=${$357209s1+($357209o2*9)}\r\n$doIV=${$357209o2*(1+$<bF>+$<dE>)}\r\n$duIV=${2+$<bD>+$<bE>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.1.65617
+// spelldesc_vars hotfix entries, wow build 12.0.1.65701
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

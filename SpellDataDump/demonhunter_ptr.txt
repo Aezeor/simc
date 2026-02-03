@@ -1,4 +1,4 @@
-SimulationCraft 1200-01 for World of Warcraft 12.0.1.65617 midnight-BETA
+SimulationCraft 1200-01 for World of Warcraft 12.0.1.65701 midnight-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -16446,9 +16446,10 @@ Proc Chance      : 101%
 Attributes       : Can Proc From Procs (122), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1217697)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Collapsing Star (1221162)
                    Family Flags: 103
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1217698)  : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1227707
@@ -17106,9 +17107,10 @@ Proc Chance      : 101%
 Attributes       : DoT Stacking Rule (103), Can Proc From Procs (122), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (490)
 Effects          :
 #1 (id=1240554)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 12 | Scaled Value: 12 | Target: Targeted Enemy (6)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.4167 | Target: Targeted Enemy (6)
                    Affected Spells: Consume (473662), Void Ray (1213649), Void Ray (1214595), Devour (1217610), Collapsing Star (1221162), Reap (1225823), Eradicate (1225827), Hungering Slash (1239127), Voidblade (1245414), Cull (1245455), Voidsurge (1246160), The Hunt (1246168), The Hunt (1246169), Voidfall Meteor (1256305), World Killer (1256619), Meteor Shower (1264129), Eradicate (1279200)
                    Family Flags: 95
+Hotfixed         : PvP Coefficient (1 -> 0.4167)
 Description      : $@spelldesc1240201
 Tooltip          : Receiving $s1% increased damage from $@auracaster.
 
@@ -18774,13 +18776,15 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1264720)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: -8 | Scaled Value: -8 | Target: Self (1)
                    Affected Spells: Consume (473662), Void Ray (1213649), Void Ray (1214595), Devour (1217610), Collapsing Star (1221162), Reap (1225823), Eradicate (1225827), Hungering Slash (1239127), Voidblade (1245414), Cull (1245455), Voidsurge (1246160), The Hunt (1246168), The Hunt (1246169), Voidfall Meteor (1256305), World Killer (1256619), Meteor Shower (1264129), Eradicate (1279200)
                    Family Flags: 95
+Hotfixed         : Base Value (0 -> -8)
 #2 (id=1266631)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
+                   Base Value: -8 | Scaled Value: -8 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Consume (473662), Void Ray (1213649), Void Ray (1214595), Devour (1217610), Collapsing Star (1221162), Reap (1225823), Eradicate (1225827), Hungering Slash (1239127), Voidblade (1245414), Cull (1245455), Voidsurge (1246160), The Hunt (1246168), The Hunt (1246169), Voidfall Meteor (1256305), World Killer (1256619), Meteor Shower (1264129), Eradicate (1279200)
                    Family Flags: 95
+Hotfixed         : Base Value (0 -> -8)
 
 Name             : Devourer Demon Hunter (id=1256968) [Spell Family (107), Passive, Hidden] 
 Class            : Devourer Demon Hunter
