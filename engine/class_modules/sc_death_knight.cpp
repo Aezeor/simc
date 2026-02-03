@@ -1870,6 +1870,8 @@ public:
     std::unique_ptr<extended_sample_data_t> lesser_ghouls_summoned;
     std::unique_ptr<extended_sample_data_t> lesser_ghouls_active;
     std::unique_ptr<extended_sample_data_t> magus_active;
+    std::unique_ptr<extended_sample_data_t> pest_dp_dur;
+    std::unique_ptr<extended_sample_data_t> pest_vp_dur;
   } sample_data;
 
   // Death Knight Options
@@ -11602,12 +11604,14 @@ struct pestilence_t final : public death_knight_spell_t
     double damage         = 0.0;
     if ( vp->is_ticking() )
     {
+      p()->sample_data.pest_vp_dur->add( vp->remains().total_seconds() );
       damage = vp->tick_damage_over_time( vp->remains() * duration_mult ) * damage_mult;
       p()->background_actions.virulent_plague_erupt_pest->execute_on_target( s->target, damage );
       vp->cancel();
     }
     if ( dp->is_ticking() )
     {
+      p()->sample_data.pest_dp_dur->add( dp->remains().total_seconds() );
       damage = dp->tick_damage_over_time( dp->remains() * duration_mult ) * damage_mult;
       p()->background_actions.dread_plague_erupt_pest->execute_on_target( s->target, damage );
       dp->cancel();
@@ -12845,6 +12849,12 @@ void death_knight_t::analyze( sim_t& s )
   sample_data.lesser_ghouls_summoned->analyze();
   sample_data.lesser_ghouls_active->analyze();
   sample_data.magus_active->analyze();
+
+  if ( talent.unholy.pestilence.ok() )
+  {
+    sample_data.pest_dp_dur->analyze();
+    sample_data.pest_vp_dur->analyze();
+  }
 }
 
 bool death_knight_t::in_death_and_decay() const
@@ -16058,6 +16068,12 @@ void death_knight_t::init_uptimes()
   sample_data.lesser_ghouls_active   = std::make_unique<extended_sample_data_t>( "Lesser Ghouls Active", false );
   sample_data.magus_active           = std::make_unique<extended_sample_data_t>( "Magus Active", false );
 
+  if ( talent.unholy.pestilence.ok() )
+  {
+    sample_data.pest_dp_dur = std::make_unique<extended_sample_data_t>( "Dread Plague Consume Duration", false );
+    sample_data.pest_vp_dur = std::make_unique<extended_sample_data_t>( "Virulent Plague Consume Duration", false );
+  }
+
   uptimes.primary_resource_cap->uptime_instance.change_mode( false );
   uptimes.primary_resource_cap->uptime_sum.change_mode( false );
 }
@@ -17174,6 +17190,112 @@ public:
           "</div>\n";
   }
 
+  void dread_plague_dur_chart( report::sc_html_stream& os )
+  {
+    auto& d = *p.sample_data.pest_dp_dur;
+    if ( d.count() == 0 )
+      return;
+
+    int num_buckets = std::min( 30, static_cast<int>( d.max() ) );
+    d.create_histogram( num_buckets );
+
+    highchart::histogram_chart_t chart( highchart::build_id( p, "dp_dur" ), *p.sim );
+    if ( chart::generate_distribution( chart, &p, d.distribution, "Dread Plague Consumed Duration", d.mean(), d.min(),
+                                       d.max() ) )
+    {
+      chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+      chart.set( "chart.width", std::to_string( 80 + num_buckets * 20 ) );
+      os << chart.to_target_div();
+      p.sim->add_chart_data( chart );
+    }
+
+    os << "<table class=\"sc\">\n"
+       << "<tr>\n"
+       << "<th colspan=\"5\">Statistics</th>\n"
+       << "</tr>\n"
+       << "<tr>\n"
+       << "<th>Minimum</th>\n"
+       << "<th>5<sup>th</sup> percentile</th>\n"
+       << "<th>Mean / Median</th>\n"
+       << "<th>75<sup>th</sup> percentile</th>\n"
+       << "<th>95<sup>th</sup> percentile</th>\n"
+       << "<th>Maximum</th>\n"
+       << "</tr>\n";
+
+    os << "<tr>\n";
+    os.printf( "<td class=\"right\">%.3f</td>", d.min() );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .05 ) );
+    os.printf( "<td class=\"right\">%.3f / %.3f</td>", d.mean(), d.percentile( .5 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .75 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .95 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.max() );
+    os << "</tr>\n";
+    os << "</table>\n";
+
+  }
+
+  void virulent_plague_dur_chart( report::sc_html_stream& os )
+  {
+    auto& d = *p.sample_data.pest_vp_dur;
+    if ( d.count() == 0 )
+      return;
+
+    int num_buckets = std::min( 30, static_cast<int>( d.max() ) );
+    d.create_histogram( num_buckets );
+
+    highchart::histogram_chart_t chart( highchart::build_id( p, "vp_dur" ), *p.sim );
+    if ( chart::generate_distribution( chart, &p, d.distribution, "Virulent Plague Consumed Duration", d.mean(), d.min(),
+                                       d.max() ) )
+    {
+      chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+      chart.set( "chart.width", std::to_string( 80 + num_buckets * 20 ) );
+      os << chart.to_target_div();
+      p.sim->add_chart_data( chart );
+    }
+
+    os << "<table class=\"sc\">\n"
+       << "<tr>\n"
+       << "<th colspan=\"5\">Statistics</th>\n"
+       << "</tr>\n"
+       << "<tr>\n"
+       << "<th>Minimum</th>\n"
+       << "<th>5<sup>th</sup> percentile</th>\n"
+       << "<th>Mean / Median</th>\n"
+       << "<th>75<sup>th</sup> percentile</th>\n"
+       << "<th>95<sup>th</sup> percentile</th>\n"
+       << "<th>Maximum</th>\n"
+       << "</tr>\n";
+
+    os << "<tr>\n";
+    os.printf( "<td class=\"right\">%.3f</td>", d.min() );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .05 ) );
+    os.printf( "<td class=\"right\">%.3f / %.3f</td>", d.mean(), d.percentile( .5 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .75 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .95 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.max() );
+    os << "</tr>\n";
+    os << "</table>\n";
+  }
+
+  void pestilence_charts( report::sc_html_stream& os )
+  {
+    if ( p.specialization() != DEATH_KNIGHT_UNHOLY )
+      return;
+
+    if ( !p.talent.unholy.pestilence.ok() )
+      return;
+
+    os << "<div class=\"player-section custom_section\">\n"
+          "<h3 class=\"toggle\">Pestilence</h3>\n"
+          "<div class=\"toggle-content hide\">\n";
+
+    dread_plague_dur_chart( os );
+    virulent_plague_dur_chart( os );
+
+    os << "</div>\n"
+          "</div>\n";
+  }
+
   void html_customsection( report::sc_html_stream& os ) override
   {
     if ( p.sim->report_details == 1 )
@@ -17184,6 +17306,7 @@ public:
       html_rp_waste( os );
       lesser_ghoul_charts( os );
       magus_active_chart( os );
+      pestilence_charts( os );
     }
   }
 
