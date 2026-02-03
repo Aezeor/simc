@@ -4142,7 +4142,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
     if ( p->talents.glacial_shatter.ok() )
       freezing_stacks = 0;
 
-    chain_multiplier = 1.0; // The spell data value isn't used
+    chain_multiplier = p->talents.splitting_ice->effectN( 2 ).percent();
 
     if ( p->talents.duality.ok() )
     {
@@ -5416,9 +5416,7 @@ struct icicle_event_t final : public mage_event_t
   static void schedule_next( mage_t* p, bool randomize = false )
   {
     timespan_t next = p->talents.icicles->effectN( 1 ).period();
-    // TODO: Should be affected by spell speed as per the description; currently doesn't work
-    if ( !p->bugs )
-      next *= p->cache.spell_cast_speed();
+    next *= p->cache.spell_cast_speed();
     if ( randomize ) next *= p->rng().real();
     p->events.icicle = make_event<icicle_event_t>( *p->sim, *p, next );
   }
