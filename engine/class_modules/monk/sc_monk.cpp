@@ -5705,7 +5705,8 @@ void monk_t::create_buffs()
   buff.combo_breaker = make_buff_fallback( specialization() == MONK_WINDWALKER, this, "combo_breaker",
                                            talent.windwalker.combo_breaker_buff )
                            ->set_trigger_spell( talent.windwalker.combo_breaker )
-                           ->set_chance( talent.windwalker.combo_breaker->effectN( 1 ).percent() );
+                           ->set_chance( talent.windwalker.combo_breaker->ok() ? 1.0 
+                               : talent.windwalker.combo_breaker->effectN( 1 ).percent() );
 
   buff.chi_energy =
       make_buff_fallback( talent.windwalker.jade_ignition->ok(), this, "chi_energy", talent.windwalker.chi_energy_buff )
