@@ -2786,8 +2786,10 @@ struct death_knight_pet_t : public pet_t
     range::erase_remove( dk()->dk_active_pets, this );
     pet_t::demise();
 
-    // 2026-02-03: Dynamic pets dont seem to reset their auto attack on despawn, leading to incorrect schedule_execute() durations
-    // for their first auto attack the next time they spawn
+    // 2026-02-03: Dynamic pets by default dont seem to reset their auto attack on despawn, leading to incorrect
+    // schedule_execute() durations for their first auto attack the next time they spawn.
+    // Override that behavior here to get the correct behavior where they always execute their "first" auto attack
+    // almost immediately after spawning (excluding movement time if applicable).
     if ( dynamic )
     {
       if ( main_hand_attack )
@@ -7689,7 +7691,6 @@ struct dread_plague_t final : public death_knight_disease_t
     if ( p->talent.unholy.superstrain.ok() )
     {
       erupt                         = get_action<dread_plague_erupt_t>( "dread_plague_erupt_ss", p );
-      erupt->base_multiplier        = p->talent.unholy.superstrain->effectN( 2 ).percent();
       erupt->target_filter_callback = secondary_targets_only();
       add_child( erupt );
     }
@@ -7740,7 +7741,8 @@ struct dread_plague_t final : public death_knight_disease_t
       if ( p()->sim->target_non_sleeping_list.size() > 1 )
       {
         auto target = rng().range( erupt->target_list() );
-        erupt->execute_on_target( target, d->state->result_raw );
+        erupt->execute_on_target( target,
+                                  d->state->result_raw * p()->talent.unholy.superstrain->effectN( 2 ).percent() );
       }
     }
 
@@ -11709,7 +11711,7 @@ struct pillar_of_frost_t final : public death_knight_spell_t
 // Putrefy ==================================================================
 struct putrefy_aoe_t final : public death_knight_spell_t
 {
-  putrefy_aoe_t( std::string_view n, death_knight_t* p )
+  putrefy_aoe_t( std::string_view n, death_knight_t* p, putrefy_source_e source )
     : death_knight_spell_t( n, p, p->spell.putrefy_aoe ), blightburst_dur( 0_s ), blightburst_mult( 1.0 )
   {
     aoe        = -1;
@@ -11719,8 +11721,22 @@ struct putrefy_aoe_t final : public death_knight_spell_t
     {
       blightburst_dur  = p->talent.unholy.blightburst->effectN( 1 ).time_value();
       blightburst_mult = p->talent.unholy.blightburst->effectN( 2 ).percent();
-      if ( n == "putrefy_aoe" )
-        add_child( p->background_actions.virulent_plague_erupt_bb );
+    }
+
+    switch ( source )
+    {
+      case PUTREFY_SOURCE_PUTREFY:
+        if ( p->talent.unholy.blightburst.ok() )
+          add_child( p->background_actions.virulent_plague_erupt_bb );
+        break;
+      case PUTREFY_SOURCE_SOUL_REAPER:
+        break;
+      case PUTREFY_SOURCE_FORBIDDEN_KNOWLEDGE:
+        if ( p->talent.unholy.blightburst.ok() )
+          blightburst_dur *= p->talent.unholy.forbidden_knowledge_3->effectN( 2 ).percent();
+        break;
+      default:
+        break;
     }
   }
 
@@ -11749,24 +11765,34 @@ private:
 
 struct putrefy_st_t final : public death_knight_spell_t
 {
-  putrefy_st_t( std::string_view n, death_knight_t* p )
+  putrefy_st_t( std::string_view n, death_knight_t* p, putrefy_source_e source )
     : death_knight_spell_t( n, p, p->spell.putrefy_st ), blightburst_dur( 0_s ), blightburst_mult( 1.0 )
   {
     background         = true;
     cooldown->duration = 0_ms;
-    if ( n == "putrefy_sr_st" )
-      execute_action = p->background_actions.putrefy_sr_aoe;
-    else if ( n == "putrefy_fk_st" )
-      execute_action = p->background_actions.putrefy_fk_aoe;
-    else
-      execute_action = p->background_actions.putrefy_aoe;
-
     if ( p->talent.unholy.blightburst.ok() )
     {
       blightburst_dur  = p->talent.unholy.blightburst->effectN( 1 ).time_value();
       blightburst_mult = p->talent.unholy.blightburst->effectN( 2 ).percent();
-      if ( n == "putrefy_st" )
-        add_child( p->background_actions.dread_plague_erupt_bb );
+    }
+
+    switch ( source )
+    {
+      case PUTREFY_SOURCE_PUTREFY:
+        execute_action = p->background_actions.putrefy_aoe;
+        if ( p->talent.unholy.blightburst.ok() )
+          add_child( p->background_actions.dread_plague_erupt_bb );
+        break;
+      case PUTREFY_SOURCE_SOUL_REAPER:
+        execute_action = p->background_actions.putrefy_sr_aoe;
+        break;
+      case PUTREFY_SOURCE_FORBIDDEN_KNOWLEDGE:
+        execute_action = p->background_actions.putrefy_fk_aoe;
+        if ( p->talent.unholy.blightburst.ok() )
+          blightburst_dur *= p->talent.unholy.forbidden_knowledge_3->effectN( 2 ).percent();
+        break;
+      default:
+        break;
     }
   }
 
@@ -13937,8 +13963,8 @@ void death_knight_t::create_actions()
 
     if ( talent.unholy.putrefy.ok() )
     {
-      background_actions.putrefy_aoe = get_action<putrefy_aoe_t>( "putrefy_aoe", this );
-      background_actions.putrefy     = get_action<putrefy_st_t>( "putrefy_st", this );
+      background_actions.putrefy_aoe = get_action<putrefy_aoe_t>( "putrefy_aoe", this, PUTREFY_SOURCE_PUTREFY );
+      background_actions.putrefy     = get_action<putrefy_st_t>( "putrefy_st", this, PUTREFY_SOURCE_PUTREFY );
       pet_summon.putrefy_ghoul = get_action<summon_lesser_ghoul_t>( "putrefy_ghoul", this, spell.summon_putrefy_ghoul,
                                                                     lesser_ghoul_e::LESSER_PUTREFY );
     }
@@ -13975,8 +14001,8 @@ void death_knight_t::create_actions()
 
     if ( talent.unholy.forbidden_knowledge_3.ok() )
     {
-      background_actions.putrefy_fk_aoe                  = get_action<putrefy_aoe_t>( "putrefy_fk_aoe", this );
-      background_actions.putrefy_fk_st                   = get_action<putrefy_st_t>( "putrefy_fk_st", this );
+      background_actions.putrefy_fk_aoe                  = get_action<putrefy_aoe_t>( "putrefy_fk_aoe", this, PUTREFY_SOURCE_FORBIDDEN_KNOWLEDGE );
+      background_actions.putrefy_fk_st                   = get_action<putrefy_st_t>( "putrefy_fk_st", this, PUTREFY_SOURCE_FORBIDDEN_KNOWLEDGE );
       background_actions.putrefy_fk_st->base_multiplier  = talent.unholy.forbidden_knowledge_3->effectN( 2 ).percent();
       background_actions.putrefy_fk_aoe->base_multiplier = talent.unholy.forbidden_knowledge_3->effectN( 2 ).percent();
       pet_summon.fk_ghoul = get_action<summon_lesser_ghoul_t>( "fk_ghoul", this, spell.summon_putrefy_ghoul,
@@ -13985,8 +14011,8 @@ void death_knight_t::create_actions()
 
     if ( talent.unholy.soul_reaper.ok() )
     {
-      background_actions.putrefy_sr_aoe = get_action<putrefy_aoe_t>( "putrefy_sr_aoe", this );
-      background_actions.putrefy_sr_st  = get_action<putrefy_st_t>( "putrefy_sr_st", this );
+      background_actions.putrefy_sr_aoe = get_action<putrefy_aoe_t>( "putrefy_sr_aoe", this, PUTREFY_SOURCE_SOUL_REAPER );
+      background_actions.putrefy_sr_st  = get_action<putrefy_st_t>( "putrefy_sr_st", this, PUTREFY_SOURCE_SOUL_REAPER );
       background_actions.putrefy_sr     = get_action<putrefy_sr_t>( "putrefy_sr", this );
       pet_summon.sr_ghoul = get_action<summon_lesser_ghoul_t>( "sr_ghoul", this, spell.summon_putrefy_ghoul,
                                                                lesser_ghoul_e::LESSER_SOUL_REAPER );
