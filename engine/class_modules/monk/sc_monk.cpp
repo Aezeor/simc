@@ -5725,8 +5725,7 @@ void monk_t::create_buffs()
       make_buff_fallback( specialization() == MONK_WINDWALKER, this, "dance_of_chiji",
                           talent.windwalker.dance_of_chiji_buff )
           ->set_trigger_spell( talent.windwalker.dance_of_chiji )
-          ->set_chance( !talent.windwalker.dance_of_chiji->ok() ? 1.0
-                                                                : talent.windwalker.dance_of_chiji->proc_chance() );
+          ->set_rppm( !talent.windwalker.dance_of_chiji->ok() ? RPPM_NONE : RPPM_HASTE );
 
   buff.hit_combo =
       make_buff_fallback( talent.windwalker.hit_combo->ok(), this, "hit_combo", talent.windwalker.hit_combo_buff )
