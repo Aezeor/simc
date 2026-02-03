@@ -783,7 +783,8 @@ struct tiger_palm_t : public harmonic_surge_t<overwhelming_force_t<monk_melee_at
     if ( result_is_miss( execute_state->result ) )
       return;
 
-    p()->buff.combo_breaker->trigger();
+    if ( p()->talent.windwalker.combo_breaker->ok() )
+      p()->buff.combo_breaker->trigger();
 
     // Reduces the remaining cooldown on your Brews by 1 sec
     p()->baseline.brewmaster.brews.adjust(
