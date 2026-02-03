@@ -2750,9 +2750,6 @@ struct death_knight_pet_t : public pet_t
     if ( buffs.stunned->check() )
       return buffs.stunned->remains();
 
-    if ( in_gcd() )
-      return sim->current_time() - gcd_ready;
-
     if ( primary_resource() == RESOURCE_ENERGY )
     {
       double energy = resources.current[ RESOURCE_ENERGY ];
@@ -2786,6 +2783,16 @@ struct death_knight_pet_t : public pet_t
   {
     range::erase_remove( dk()->dk_active_pets, this );
     pet_t::demise();
+
+    // 2026-02-03: Dynamic pets dont seem to reset their auto attack on despawn, leading to incorrect schedule_execute() durations
+    // for their first auto attack the next time they spawn
+    if ( dynamic )
+    {
+      if ( main_hand_attack )
+        main_hand_attack->reset();
+      if ( off_hand_attack )
+        off_hand_attack->reset();
+    }
   }
 
   void trigger_pet_movement( double dist )
@@ -3109,7 +3116,7 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
     if ( this->first )
     {
       timespan_t delay = ( this->weapon->slot == SLOT_OFF_HAND ) ? pet()->rng().range( 10_ms, t * 0.5 ) : 0_ms;
-      return t + delay;
+      return delay;
     }
 
     return t;
@@ -3520,6 +3527,14 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
         }
       }
     }
+
+    bool ready() override
+    {
+      if ( pet()->putrefied )
+        return false;
+
+      return pet_melee_attack_t<lesser_ghoul_pet_t>::ready();
+    }
   };
 
   struct lesser_ghoul_sweeping_claws_aoe_t : public lesser_ghoul_claw_base_t
@@ -3587,7 +3602,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
   };
 
   lesser_ghoul_pet_t( death_knight_t* owner, std::string_view name = "army_ghoul" )
-    : base_ghoul_pet_t( owner, name, PET_LESSER_GHOUL, true )
+    : base_ghoul_pet_t( owner, name, PET_LESSER_GHOUL, true ), ruptured_viscera( nullptr ), putrefied( false )
   {
     resource_regeneration             = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
@@ -3639,12 +3654,16 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     if ( dk()->talent.unholy.necromancers_cunning.ok() && expired && !sim->event_mgr.canceled )
       ruptured_viscera->execute();
 
+    putrefied = false;
+
     base_ghoul_pet_t::dismiss( expired );
   }
 
   void putrefy_ghoul( putrefy_source_e source )
   {
-    make_event( *sim, rng().range( 1_ms, 100_ms ), [ &, source ]() {
+    putrefied = true;
+    timespan_t travel_time = timespan_t::from_seconds( spawn_distance / dk()->pet_spell.leap->missile_speed() );
+    make_event( *sim, travel_time + rng().range( 0_ms, 100_ms ), [ &, source ]() {
       // RNG roll technically not needed as its a 100% chance, but, leaving this here in case it changes in the future
       bool reanimation_triggered          = rng().roll( dk()->talent.unholy.reanimation->effectN( 1 ).percent() );
       action_t* magus_summon_action       = dk()->pet_summon.reanimation_magus;
@@ -3734,6 +3753,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
 
 private:
   action_t* ruptured_viscera;
+  bool putrefied;
 };
 
 // ==========================================================================
@@ -7397,7 +7417,7 @@ struct melee_t : public death_knight_melee_attack_t
     if ( first && !sync_weapons )
     {
       timespan_t delay = ( weapon->slot == SLOT_OFF_HAND ) ? p()->rng().range( 10_ms, t * 0.5 ) : 0_ms;
-      return t + delay;
+      return delay;
     }
     else
       return t;
@@ -7647,15 +7667,17 @@ struct dread_plague_t final : public death_knight_disease_t
 {
   dread_plague_t( std::string_view name, death_knight_t* p )
     : death_knight_disease_t( name, p, p->spell.dread_plague ),
-      sd_chance( 0 ),
-      ticks_since_last_proc( 0 ),
       last_target( nullptr ),
-      erupt( nullptr )
+      erupt( nullptr ),
+      sudden_doom_rng( nullptr )
   {
     if ( p->talent.unholy.sudden_doom.ok() )
-      sd_chance = p->pseudo_random_c_from_p( p->talent.unholy.sudden_doom->effectN( 2 ).percent() *
-                                             ( 1 + p->talent.unholy.harbinger_of_doom->effectN( 2 ).percent() ) *
-                                             ( 1.0 + p->talent.unholy.ebon_fever->effectN( 1 ).percent() ) );
+    {
+      double sd_chance = p->pseudo_random_c_from_p( p->talent.unholy.sudden_doom->effectN( 2 ).percent() *
+                                                    ( 1 + p->talent.unholy.harbinger_of_doom->effectN( 2 ).percent() ) *
+                                                    ( 1.0 + p->talent.unholy.ebon_fever->effectN( 1 ).percent() ) );
+      sudden_doom_rng  = p->get_accumulated_rng( "sudden_doom", sd_chance );
+    }
 
     add_child( p->background_actions.dread_plague_death );
 
@@ -7700,12 +7722,8 @@ struct dread_plague_t final : public death_knight_disease_t
   {
     death_knight_disease_t::tick( d );
 
-    // Assume it works like the auto attack version of sudden doom, with a pseudo random proc chance
-    if ( p()->talent.unholy.sudden_doom.ok() && rng().roll( sd_chance * ++ticks_since_last_proc ) )
-    {
+    if ( p()->talent.unholy.sudden_doom.ok() && sudden_doom_rng->trigger() )
       p()->buffs.sudden_doom->trigger();
-      ticks_since_last_proc = 0;
-    }
 
     // Proc rate testing shows this at ~50% chance with limited testing. Assuming effect 2 divided by 10 is the chance
     // for the time being. TODO: Test for longer... far longer
@@ -7729,18 +7747,10 @@ struct dread_plague_t final : public death_knight_disease_t
       p()->pet_summon.fk_ghoul->execute();
   }
 
-  void reset() override
-  {
-    death_knight_disease_t::reset();
-
-    ticks_since_last_proc = 0;
-  }
-
 private:
-  double sd_chance;
-  int ticks_since_last_proc;
   player_t* last_target;
   action_t* erupt;
+  accumulated_rng_t* sudden_doom_rng;
 };
 
 // Frost Fever =======================================================
