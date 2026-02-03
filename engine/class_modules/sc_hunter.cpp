@@ -637,6 +637,11 @@ public:
     real_ppm_t* let_fly;
   } rppm;
 
+  struct accumulated_rngs_t
+  {
+    accumulated_rng_t* dire_command;
+  } accumulated_rng;
+
   struct talents_t
   {
     // Hunter Tree
@@ -7657,20 +7662,6 @@ struct kill_command_t: public hunter_spell_t
     timespan_t cap = 0_s;
   } fury_of_the_wyvern;
 
-  /* 2026-02-02: 
-    Dire Command has a hidden BLP mechanic.
-    From many hours of log testing, it is most likely to be a PRD (pseudo-random distribution) system.
-    Each failed attempt at a proc grants n% increased chance to proc the next time, linearly.
-    Calculating the accumulating chance is slow, so it has been precomputed using...
-    death_knight_t::pseudo_random_c_from_p() based on the nominal chance (20%) and hard coded.
-    A trivial error will be thrown if the nominal value changes.
-  */
-  struct
-  {
-    unsigned int attempt_number = 0;
-    const double chance_modifier = 0.055704042949781851858398652;
-  } dire_command_blp;
-
   kill_command_t( hunter_t* p, util::string_view options_str, const spell_data_t* s ) : hunter_spell_t( "kill_command", p, s )
   {
     parse_options( options_str );
@@ -7718,9 +7709,8 @@ struct kill_command_t: public hunter_spell_t
     tip_stacks += as<int>( p()->talents.primal_surge->effectN( 1 ).base_value() );
     p()->buffs.tip_of_the_spear->trigger( tip_stacks );
 
-    if ( p()->talents.dire_command && rng().roll( ++dire_command_blp.attempt_number * dire_command_blp.chance_modifier ) )
+    if ( p()->talents.dire_command && p()->accumulated_rng.dire_command->trigger() )
     {
-      dire_command_blp.attempt_number = 0;
       p()->spawn_dire_beast( p()->talents.dire_beast_summon->duration() );
       p()->procs.dire_command->occur();
     }
@@ -9858,8 +9848,15 @@ void hunter_t::init_rng()
 {
   player_t::init_rng();
   
-  rppm.corpsecaller  = get_rppm( "Corpsecaller", talents.corpsecaller );
-  rppm.let_fly       = get_rppm( "Let Fly", tier_set.mid_s1_mm_4pc );
+  rppm.corpsecaller = get_rppm( "Corpsecaller", talents.corpsecaller );
+  rppm.let_fly      = get_rppm( "Let Fly", tier_set.mid_s1_mm_4pc );
+
+  /* 2026-02-03:
+    Dire Command's accumulating chance has been precomputed using...
+    death_knight_t::pseudo_random_c_from_p() based on the nominal chance (20%) and hard coded.
+    A trivial error will be thrown if the nominal value changes.
+  */
+  accumulated_rng.dire_command = get_accumulated_rng( "Dire Command", talents.dire_command.ok() ? 0.055704042949781851858398652 : 0 );
 }
 
 void hunter_t::init_scaling()
