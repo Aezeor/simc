@@ -3246,6 +3246,45 @@ struct otherworldly_focus_benefit_t : public BASE
   }
 };
 
+template <typename BASE>
+struct shattered_souls_trigger_t : public BASE
+{
+  using base_t = shattered_souls_trigger_t<BASE>;
+
+  double shattered_souls_base_chance;
+
+  shattered_souls_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                             util::string_view o = {} )
+    : BASE( n, p, s, o ), shattered_souls_base_chance( p->spec.shattered_souls->effectN( 1 ).percent() )
+  {
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    BASE::impact( s );
+
+    if ( BASE::p()->specialization() != DEMON_HUNTER_DEVOURER)
+      return;
+
+    if ( !BASE::result_is_hit( s->result ) || s->proc_type() == PROC1_PERIODIC || s->result_total <= 0 )
+      return;
+
+    double chance = shattered_souls_chance( s );
+    if ( BASE::rng().roll( chance ) )
+    {
+      BASE::p()->sim->print_debug( "{} proc-ed Shattered Souls with {} ({}) chance: {:.3f}", BASE::p()->name(), BASE::name(),
+                       BASE::data().id(), chance );
+      BASE::p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
+      BASE::p()->proc.shattered_souls->occur();
+    }
+  }
+
+  virtual double shattered_souls_chance( action_state_t* s )
+  {
+    return shattered_souls_base_chance;
+  }
+};
+
 struct demon_hunter_heal_t : public demon_hunter_action_t<heal_t>
 {
   demon_hunter_heal_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
@@ -5644,7 +5683,7 @@ struct voidsurge_t : public surge_base_t
   }
 };
 
-struct consume_base_t : public voidfall_building_trigger_t<demon_hunter_spell_t>
+struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigger_t<demon_hunter_spell_t>>
 {
   consume_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
     : base_t( n, p, s, o )
@@ -5712,7 +5751,7 @@ struct consume_t : public consume_base_t
 
 struct voidblade_base_t : public voidrush_trigger_t<hungering_slash_trigger_t<demon_hunter_spell_t>>
 {
-  struct voidblade_damage_t : public burning_blades_trigger_t<demon_hunter_spell_t>
+  struct voidblade_damage_t : public shattered_souls_trigger_t<burning_blades_trigger_t<demon_hunter_spell_t>>
   {
     voidblade_damage_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spec.voidblade )
     {
@@ -5888,7 +5927,7 @@ struct spontaneous_immolation_t : public soul_immolation_base_t
 
 struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<demon_hunter_spell_t>>
 {
-  struct reap_damage_t : public burning_blades_trigger_t<demon_hunter_spell_t>
+  struct reap_damage_t : public shattered_souls_trigger_t<burning_blades_trigger_t<demon_hunter_spell_t>>
   {
     reap_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : base_t( n, p, s, "" )
     {
@@ -5962,7 +6001,7 @@ struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
 
 struct eradicate_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<demon_hunter_spell_t>>
 {
-  struct eradicate_damage_t : public burning_blades_trigger_t<demon_hunter_spell_t>
+  struct eradicate_damage_t : public shattered_souls_trigger_t<burning_blades_trigger_t<demon_hunter_spell_t>>
   {
     eradicate_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : base_t( n, p, s, "" )
     {
@@ -6098,17 +6137,19 @@ struct reap_t : public reap_base_t
 struct void_ray_t
   : public student_of_suffering_trigger_t<final_breath_trigger_t<doomsayer_trigger_t<demon_hunter_spell_t>>>
 {
-  struct void_ray_tick_t : public demon_hunter_spell_t
+  struct void_ray_tick_t : public shattered_souls_trigger_t<demon_hunter_spell_t>
   {
-    void_ray_tick_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : demon_hunter_spell_t( n, p, s )
+    void_ray_tick_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : base_t( n, p, s )
     {
       background = dual = true;
       aoe               = -1;
+
+      shattered_souls_base_chance *= p->talent.devourer.waste_not->effectN( 1 ).percent();
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
     {
-      double m = demon_hunter_spell_t::composite_da_multiplier( s );
+      double m = base_t::composite_da_multiplier( s );
 
       if ( p()->talent.devourer.focused_ray->ok() &&
            s->n_targets <= as<unsigned int>( p()->talent.devourer.focused_ray->effectN( 2 ).base_value() ) )
@@ -6130,6 +6171,22 @@ struct void_ray_t
     {
       // handled at the action level
       return 0;
+    }
+
+    double shattered_souls_chance( action_state_t* s ) override
+    {
+      double m = base_t::shattered_souls_chance( s );
+
+      if ( p()->talent.devourer.waste_not->ok() )
+      {
+        m *= 1.0 + p()->talent.devourer.waste_not->effectN( 1 ).percent();
+      }
+
+      // Reduce Void Ray Soul Generation - Estimate is approximately n^(0.3 ~ 0.33)
+      // Todo: Further refine this.
+      m *= pow( s->n_targets, -0.7 );
+
+      return m;
     }
   };
 
@@ -6245,7 +6302,7 @@ struct void_ray_t
 
 struct collapsing_star_t : public demon_hunter_spell_t
 {
-  struct collapsing_star_damage_t : public otherworldly_focus_benefit_t<dark_matter_trigger_t<demon_hunter_spell_t>>
+  struct collapsing_star_damage_t : public shattered_souls_trigger_t<otherworldly_focus_benefit_t<dark_matter_trigger_t<demon_hunter_spell_t>>>
   {
     collapsing_star_damage_t( std::string_view n, demon_hunter_t* p ) : base_t( n, p, p->spec.collapsing_star_damage )
     {
@@ -6340,7 +6397,7 @@ struct collapsing_star_t : public demon_hunter_spell_t
 
 struct voidfall_meteor_base_t : public demon_hunter_spell_t
 {
-  struct voidfall_meteor_damage_t : public otherworldly_focus_benefit_t<catastrophe_trigger_t<demon_hunter_spell_t>>
+  struct voidfall_meteor_damage_t : public shattered_souls_trigger_t<otherworldly_focus_benefit_t<catastrophe_trigger_t<demon_hunter_spell_t>>>
   {
     voidfall_meteor_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : base_t( n, p, s )
     {
@@ -6413,7 +6470,7 @@ struct catastrophe_t : public residual_action::residual_periodic_action_t<demon_
 
 struct meteor_shower_t : public demon_hunter_spell_t
 {
-  struct meteor_shower_damage_t : public otherworldly_focus_benefit_t<catastrophe_trigger_t<demon_hunter_spell_t>>
+  struct meteor_shower_damage_t : public shattered_souls_trigger_t<otherworldly_focus_benefit_t<catastrophe_trigger_t<demon_hunter_spell_t>>>
   {
     meteor_shower_damage_t( util::string_view n, demon_hunter_t* p ) : base_t( n, p, p->hero_spec.meteor_shower_damage )
     {
@@ -6461,12 +6518,12 @@ struct meteor_shower_t : public demon_hunter_spell_t
 
 struct hungering_slash_base_t : public demon_hunter_spell_t
 {
-  struct hungering_slash_damage_t : public demon_hunter_spell_t
+  struct hungering_slash_damage_t : public shattered_souls_trigger_t<demon_hunter_spell_t>
   {
     int number_of_souls_to_spawn;
 
     hungering_slash_damage_t( util::string_view n, demon_hunter_t* p, int souls )
-      : demon_hunter_spell_t( n, p, p->spec.hungering_slash_damage ), number_of_souls_to_spawn( souls )
+      : base_t( n, p, p->spec.hungering_slash_damage ), number_of_souls_to_spawn( souls )
     {
       background = dual   = true;
       aoe                 = -1;
@@ -6475,14 +6532,14 @@ struct hungering_slash_base_t : public demon_hunter_spell_t
 
     void execute() override
     {
-      demon_hunter_spell_t::execute();
+      base_t::execute();
 
       p()->spawn_soul_fragment( soul_fragment::LESSER, number_of_souls_to_spawn );
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
     {
-      double m = demon_hunter_spell_t::composite_da_multiplier( s );
+      double m = base_t::composite_da_multiplier( s );
 
       if ( p()->talent.devourer.singular_strikes->ok() && s->chain_target == 0 )
       {
@@ -8267,17 +8324,17 @@ struct burning_blades_t : public residual_action::residual_periodic_action_t<dem
 struct vengeful_retreat_t
   : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exergy_trigger_t<demon_hunter_spell_t>>>
 {
-  struct voidstep_damage_t : public demon_hunter_spell_t
+  struct voidstep_damage_t : public shattered_souls_trigger_t<demon_hunter_spell_t>
   {
     voidstep_damage_t( util::string_view n, demon_hunter_t* p )
-      : demon_hunter_spell_t( n, p, p->spec.voidstep->effectN( 1 ).trigger() )
+      : base_t( n, p, p->spec.voidstep->effectN( 1 ).trigger() )
     {
       aoe = -1;
     }
 
     void execute() override
     {
-      demon_hunter_spell_t::execute();
+      base_t::execute();
 
       p()->buff.voidstep->expire();
     }
@@ -9214,48 +9271,6 @@ struct demon_hunter_proc_callback_t : public dbc_proc_callback_t
   demon_hunter_t* p()
   {
     return debug_cast<demon_hunter_t*>( listener );
-  }
-};
-
-struct shattered_souls_callback_t : public demon_hunter_proc_callback_t
-{
-  const spell_data_t* shattered_souls;
-
-  shattered_souls_callback_t( const special_effect_t& e ) : demon_hunter_proc_callback_t( e )
-  {
-    shattered_souls = p()->spec.shattered_souls;
-  }
-
-  void execute( action_t* action, action_state_t* state ) override
-  {
-    demon_hunter_proc_callback_t::execute( action, state );
-
-    if ( state->proc_type() == PROC1_PERIODIC || state->result_total <= 0 )
-    {
-      return;
-    }
-
-    double chance = shattered_souls->effectN( 1 ).percent();
-
-    if ( action->id == p()->spec.void_ray_tick->id() || action->id == p()->spec.void_ray_tick_meta->id() )
-    {
-      if ( p()->talent.devourer.waste_not->ok() )
-      {
-        chance *= 1.0 + p()->talent.devourer.waste_not->effectN( 1 ).percent();
-      }
-
-      // Reduce Void Ray Soul Generation - Estimate is approximately n^(0.3 ~ 0.33)
-      // Todo: Further refine this.
-      chance *= pow( state->n_targets, -0.7 );
-    }
-
-    if ( rng().roll( chance ) )
-    {
-      p()->sim->print_debug( "{} proc-ed Shattered Souls with {} ({}) chance: {:.3f}", p()->name(), action->name(),
-                             action->data().id(), chance );
-      p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
-      p()->proc.shattered_souls->occur();
-    }
   }
 };
 
@@ -10342,16 +10357,6 @@ void demon_hunter_t::init_special_effects()
   base_t::init_special_effects();
 
   // Devourer
-  if ( specialization() == DEMON_HUNTER_DEVOURER )
-  {
-    auto effect          = new special_effect_t( this );
-    effect->name_str     = "shattered_souls";
-    effect->spell_id     = spec.shattered_souls->id();
-    effect->proc_flags2_ = PF2_ALL_HIT;
-    special_effects.push_back( effect );
-
-    new shattered_souls_callback_t( *effect );
-  }
   if ( talent.devourer.spontaneous_immolation->ok() )
   {
     auto effect            = new special_effect_t( this );
