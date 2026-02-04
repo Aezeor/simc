@@ -5465,7 +5465,7 @@ struct predators_wake_t : public voidsurge_trigger_t<voidsurge_ability::PREDATOR
 
   bool action_ready() override
   {
-    if ( !p()->buff.metamorphosis->check() )
+    if ( !p()->talent.scarred.demonic_intensity->ok() || !p()->buff.metamorphosis->check() )
     {
       return false;
     }
