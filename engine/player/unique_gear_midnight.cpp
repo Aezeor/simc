@@ -765,44 +765,53 @@ void rot( special_effect_t& effect )
       : generic_proc_t( e, "root_rot", s )
     {
       base_td = value_driver->effectN( 1 ).average( e );
+      dot_max_stack = 1; // Override Max Stacks to 1, this behavior is handled by the asyncronous debuff
     }
 
     double composite_ta_multiplier( const action_state_t* s ) const override
     {
       double m = generic_proc_t::composite_ta_multiplier( s );
 
-      // TODO: I hate this
-      m *= const_cast<root_rot_t*>( this )->get_debuff( s->target )->check();
+      m *= find_debuff( s->target )->check();
 
       return m;
     }
 
     buff_t* create_debuff( player_t* target ) override
     {
-      return make_buff<buff_t>( actor_pair_t( target, player ), "root_rot_debuff", target->find_spell( 1247411 ) )
-          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-    }
-
-    dot_t* get_dot( player_t* ) override
-    {
-      auto dot = generic_proc_t::get_dot();
-      if( dot )
-        dot->max_stack = 1;  // Override Max Stacks to 1, this behavior is handled by the asyncronous debuff
-      return dot;
+      return make_buff<buff_t>( actor_pair_t( target, player ), "root_rot_debuff", player->find_spell( 1247411 ) )
+          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+          ->set_duration( data().duration() + 1_ms );  // Extra 1ms to avoid expiration before next tick
     }
 
     void execute() override
     {
       generic_proc_t::execute();
-      get_debuff( execute_state->target )->trigger();
+      get_debuff( execute_state->target )->execute();
     }
   };
 
   effect.execute_action =
-      create_proc_action<root_rot_t>( "root_rot_dot", effect, effect.player->find_spell( 1247411 ), effect.driver() );
+      create_proc_action<root_rot_t>( "root_rot", effect, effect.player->find_spell( 1247411 ), effect.driver() );
 
   effect.spell_id = 1244332;
 
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Void
+// 1245052 Embellishment Driver
+// 1244254 Trinket Driver
+// 1244253 RPPM
+// 1244617 Asyncronous Buff
+void void_( special_effect_t& effect )
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, "void_glass", effect.player->find_spell( 1244617 ) )
+                  ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) )
+                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
+  effect.custom_buff = buff;
+  effect.spell_id    = 1244253;
   new dbc_proc_callback_t( effect.player, effect );
 }
 
@@ -1574,6 +1583,7 @@ void register_special_effects()
   // Darkmoon Trinkets & Embellishments
   register_special_effect( { 1245001, 1245053 }, darkmoon::blood );
   register_special_effect( { 1245055, 1245051 }, darkmoon::rot );
+  register_special_effect( { 1245052, 1244254 }, darkmoon::void_ );
   // Trinkets
   register_special_effect( 1250599, trinkets::heart_of_the_wind );
   register_special_effect( 1250563, trinkets::kroluks_warbanner );
