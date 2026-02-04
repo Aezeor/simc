@@ -4547,7 +4547,8 @@ struct meteor_impact_t final : public fire_mage_spell_t
     meteor_burn_duration( p->find_spell( 175396 )->duration() ),
     meteor_burn_pulse_time( p->find_spell( 155158 )->effectN( 1 ).period() ),
     // TODO: Seems to use the Ice Lance value rather than the CmS/Meteor value
-    freezing_consume( as<int>( p->spec.shatter->effectN( p->bugs ? 4 : 5 ).base_value() ) ),
+    // TODO: Fixed on beta, remove PTR check
+    freezing_consume( as<int>( p->spec.shatter->effectN( p->bugs && sim->dbc->wowv() < wowv_t{ 12, 0, 1 } ? 4 : 5 ).base_value() ) ),
     shatter_source( p->get_shatter_source( name_str, freezing_consume ) )
   {
     aoe = -1;
@@ -5429,7 +5430,9 @@ struct icicle_event_t final : public mage_event_t
   static void schedule_next( mage_t* p, bool randomize = false )
   {
     timespan_t next = p->talents.icicles->effectN( 1 ).period();
-    next *= p->cache.spell_cast_speed();
+    // TODO: PTR check
+    if ( !p->bugs || p->dbc->wowv() >= wowv_t{ 12, 0, 1 } )
+      next *= p->cache.spell_cast_speed();
     if ( randomize ) next *= p->rng().real();
     p->events.icicle = make_event<icicle_event_t>( *p->sim, *p, next );
   }
