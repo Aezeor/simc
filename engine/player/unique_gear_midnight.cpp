@@ -378,7 +378,7 @@ void devouring_banding( special_effect_t& effect )
 
     seized_power_t( const special_effect_t& e ) : generic_proc_t( e, "seized_power", 1259229 )
     {
-      quiet = true;
+      quiet             = true;
       double buff_value = data().effectN( 1 ).trigger()->effectN( 1 ).average( e );
       // Damage is created after the buff, we can use this to check if there are 2 copies
       if ( auto proc = e.player->find_action( "devouring_bolt" ) )
@@ -386,8 +386,8 @@ void devouring_banding( special_effect_t& effect )
         buff_value += buff_value;
       }
 
-      // TODO: adjust buff value increase with two copies
-      create_all_stat_buffs( e, data().effectN( 1 ).trigger(), buff_value, [ this ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
+      create_all_stat_buffs( e, data().effectN( 1 ).trigger(), buff_value,
+                             [ this ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
     }
 
     void impact( action_state_t* ) override
@@ -577,8 +577,8 @@ void signet_of_azerothian_blessings( special_effect_t& effect )
   value *= 1.0 + ( effect.driver()->effectN( 2 ).percent() * unique_gem_list( effect.player, gem_colors ).size() );
   value *= bandolier_mul( effect.player );
 
-  auto buff =
-      create_buff<stat_buff_t>( effect.player, "boon_of_azerothian_blessings", effect.driver()->effectN( 1 ).trigger() );
+  auto buff = create_buff<stat_buff_t>( effect.player, "boon_of_azerothian_blessings",
+                                        effect.driver()->effectN( 1 ).trigger() );
 
   for ( auto stat : secondary_ratings )
     buff->add_stat( stat, value );
@@ -621,71 +621,70 @@ void loa_worshipers_band( special_effect_t& effect )
 
     loa_worshipers_band_cb_t( const special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ),
-        capybara( nullptr ),
-        nalorakk( nullptr ),
-        halazzi( nullptr ),
-        janalai( nullptr ),
-        akilzon( nullptr ),
-        loas()
+      capybara( nullptr ),
+      nalorakk( nullptr ),
+      halazzi( nullptr ),
+      janalai( nullptr ),
+      akilzon( nullptr ),
+      loas()
     {
       // Capybara is always available, even with no gems socketed.
       loas.push_back( LOA_CAPYBARA );
       double capy_value = effect.driver()->effectN( 2 ).average( effect );
       capy_value *= bandolier_mul( effect.player );
       capybara = make_buff<stat_buff_t>( e.player, "blessing_of_the_capybara", e.player->find_spell( 1252524 ) )
-                     ->add_stat_from_effect_type( A_MOD_STAT, capy_value );
+        ->add_stat_from_effect_type( A_MOD_STAT, capy_value );
 
-      if ( range::contains( unique_gem_list( e.player, gem_colors ), GEM_GARNET ) )
+      if (range::contains( unique_gem_list( e.player, gem_colors ), GEM_GARNET ))
       {
         loas.push_back( LOA_NALORAKK );
         const spell_data_t* nalorakk_spell = e.player->find_spell( 1257183 );
         double nalo_value = nalorakk_spell->effectN( 1 ).average( e );
         nalo_value *= bandolier_mul( effect.player );
-        auto nalorakk_stat =
-            make_buff<stat_buff_t>( e.player, "nalorakks_call_to_war", nalorakk_spell )
-                ->set_stat_from_effect_type( A_MOD_RATING, nalo_value );
+        auto nalorakk_stat = make_buff<stat_buff_t>( e.player, "nalorakks_call_to_war", nalorakk_spell )
+          ->set_stat_from_effect_type( A_MOD_RATING, nalo_value );
         nalorakk =
-            make_buff<buff_t>( e.player, "nalorakks_call_to_war_periodic", e.player->find_spell( 1252832 ) )
-                ->set_tick_callback( [ nalorakk_stat ]( buff_t*, int, timespan_t ) { nalorakk_stat->trigger(); } );
+          make_buff<buff_t>( e.player, "nalorakks_call_to_war_periodic", e.player->find_spell( 1252832 ) )
+          ->set_tick_callback( [ nalorakk_stat ]( buff_t*, int, timespan_t ) { nalorakk_stat->trigger(); } );
       }
 
-      if ( range::contains( unique_gem_list( e.player, gem_colors ), GEM_AMETHYST ) )
+      if (range::contains( unique_gem_list( e.player, gem_colors ), GEM_AMETHYST ))
       {
         loas.push_back( LOA_HALAZZI );
         double halazzi_value = effect.driver()->effectN( 3 ).average( effect );
         halazzi_value *= bandolier_mul( effect.player );
-        halazzi              = create_proc_action<generic_proc_t>( "claws_of_halazzi", e, 1252814 );
+        halazzi = create_proc_action<generic_proc_t>( "claws_of_halazzi", e, 1252814 );
         halazzi->base_dd_min = halazzi->base_dd_max = halazzi_value;
         // halazzi->base_multiplier *= role_mult( e ); - Role Mult currently not applied to Loa Worshiper's Band
       }
 
-      if ( range::contains( unique_gem_list( e.player, gem_colors ), GEM_LAPIS ) )
+      if (range::contains( unique_gem_list( e.player, gem_colors ), GEM_LAPIS ))
       {
         loas.push_back( LOA_JANALAI );
         double janalai_value = effect.driver()->effectN( 4 ).average( effect );
         janalai_value *= bandolier_mul( effect.player );
-        janalai              = create_proc_action<generic_proc_t>( "janalais_flames", e, 1252817 );
+        janalai = create_proc_action<generic_proc_t>( "janalais_flames", e, 1252817 );
         janalai->base_dd_min = janalai->base_dd_max = janalai_value;
         janalai->aoe = -1;
         // janalai->base_multiplier *= role_mult( e ); - Role Mult currently not applied to Loa Worshiper's Band
       }
 
-      if ( range::contains( unique_gem_list( e.player, gem_colors ), GEM_PERIDOT ) )
+      if (range::contains( unique_gem_list( e.player, gem_colors ), GEM_PERIDOT ))
       {
         loas.push_back( LOA_AKILZON );
         const spell_data_t* akilzon_spell = e.player->find_spell( 1252818 );
-        double akilzon_value              = akilzon_spell->effectN( 1 ).average( e );
+        double akilzon_value = akilzon_spell->effectN( 1 ).average( e );
         akilzon_value *= bandolier_mul( effect.player );
         // Akilzon buff has the values in the buff itself.
         akilzon = make_buff<stat_buff_t>( e.player, "akilzons_cry_of_victory", akilzon_spell )
-                      ->add_stat_from_effect( 1, akilzon_value );
+          ->add_stat_from_effect( 1, akilzon_value );
       }
     }
 
     void execute( action_t*, action_state_t* s ) override
     {
       auto loa = rng().range( loas );
-      switch ( loa )
+      switch (loa)
       {
         case LOA_CAPYBARA:
           capybara->trigger();
@@ -712,6 +711,47 @@ void loa_worshipers_band( special_effect_t& effect )
 }
 
 }  // namespace embellishments
+
+namespace darkmoon
+{
+// Blood
+// 1245053 Embellishment Driver
+// 1245001 Trinket Driver
+// 1245012 RPPM
+// 1245025 Stat Buff
+// TODO: What happens with both the trinket, and embellishment active?
+void blood( special_effect_t& effect )
+{
+  struct blood_cb_t : public dbc_proc_callback_t
+  {
+    std::unordered_map<stat_e, buff_t*> buffs;
+    blood_cb_t( const special_effect_t& e, const spell_data_t* value_driver ) : dbc_proc_callback_t( e.player, e )
+    {
+      create_all_stat_buffs( e, e.player->find_spell( 1245025 ), value_driver->effectN( 1 ).average( e ),
+                             [ this ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      auto stat = util::lowest_stat( listener, secondary_ratings );
+      for ( auto [ s, b ] : buffs )
+      {
+        if ( s == stat )
+          b->trigger();
+        else
+          b->expire();
+      }
+    }
+  };
+
+  auto value_driver = effect.driver();
+
+  effect.spell_id = 1245012;
+
+  new blood_cb_t( effect, value_driver );
+}
+
+}  // namespace darkmoon
 
 namespace trinkets
 {
@@ -1476,6 +1516,8 @@ void register_special_effects()
   register_special_effect( 1251815, embellishments::thalassian_phoenix_torque );
   register_special_effect( 1251902, embellishments::signet_of_azerothian_blessings );
   register_special_effect( 1251904, embellishments::loa_worshipers_band );
+  // Darkmoon Trinkets & Embellishments
+  register_special_effect( { 1245001, 1245053 }, darkmoon::blood );
   // Trinkets
   register_special_effect( 1250599, trinkets::heart_of_the_wind );
   register_special_effect( 1250563, trinkets::kroluks_warbanner );
