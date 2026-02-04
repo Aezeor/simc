@@ -1169,8 +1169,8 @@ public:
     double soul_fragment_from_shattered_souls_chance = 0.4;
     int entropy_starting_souls                       = -1;
     int channel_tick_cutoff_benefit                  = 2;
-    double void_metamorphosis_initial_drain          = 7.5;
-    double void_metamorphosis_exp_stack_mul          = 0.0058;
+    double void_metamorphosis_initial_drain          = 8.0;
+    double void_metamorphosis_drain_per_stack        = 0.025;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -1344,8 +1344,8 @@ public:
     event_t* next_drain_event;
     int drain_stacks;
     demon_hunter_t* actor;
-    double initial_drain   = 0.0;
-    double exp_stack_mul = 0.0;
+    double initial_drain   = 10.0;
+    double drain_per_stack = 0.012;
 
     fury_state_t( demon_hunter_t* a )
       : next_drain_event( nullptr ),
@@ -1359,11 +1359,13 @@ public:
     void init()
     {
       initial_drain   = p()->options.void_metamorphosis_initial_drain;
-      exp_stack_mul = p()->options.void_metamorphosis_exp_stack_mul;
+      drain_per_stack = p()->options.void_metamorphosis_drain_per_stack;
 
       if ( p()->talent.devourer.soul_glutton.enabled() )
+
       {
-        initial_drain /= ( 1 + p()->talent.devourer.soul_glutton->effectN( 2 ).percent() );
+        // This is negative and lowers something to 75% for some reason
+        initial_drain *= 1 - p()->talent.devourer.soul_glutton->effectN( 2 ).percent();
       }
     }
 
@@ -1387,7 +1389,7 @@ public:
 
     double base_fury_drain_per_second( int stacks ) const
     {
-      return initial_drain + exp( exp_stack_mul * stacks );
+      return initial_drain + drain_per_stack * stacks;
     }
 
     timespan_t base_time_to_next_tick( int stacks ) const
@@ -10164,7 +10166,7 @@ void demon_hunter_t::create_options()
   add_option( opt_int( "channel_tick_cutoff_benefit", options.channel_tick_cutoff_benefit, 0, 10 ) );
 
   add_option( opt_float( "void_metamorphosis_initial_drain", options.void_metamorphosis_initial_drain, 0, 100 ) );
-  add_option( opt_float( "void_metamorphosis_exp_stack_mul", options.void_metamorphosis_exp_stack_mul, 0, 100 ) );
+  add_option( opt_float( "void_metamorphosis_drain_per_stack", options.void_metamorphosis_drain_per_stack, 0, 100 ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
