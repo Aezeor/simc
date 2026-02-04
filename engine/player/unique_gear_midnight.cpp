@@ -361,10 +361,6 @@ void sunfire_silk_lining( special_effect_t& effect )
 // 1259230 buff
 void devouring_banding( special_effect_t& effect )
 {
-  effect.player->sim->error( PLACEHOLDER,
-                             "devouring banding damage using effect driver value instead of rppm driver value" );
-  effect.player->sim->error( PLACEHOLDER, "devouring banding buff not doubled with two copies" );
-
   auto proc_damage = effect.driver()->effectN( 1 ).average( effect );
   // auto proc_damage = effect.trigger()->effectN( 1 ).average( effect );
 
@@ -401,13 +397,13 @@ void devouring_banding( special_effect_t& effect )
     }
   };
 
-  // effect.trigger() == 1259213
-  // ->effectN( 1 ).trigger() == 1259216
-  // ->effectN( 1 ).trigger() == 1259218
+  // 1259213 damage driver
+  // 1259216 missile
+  // 1259218 damage
   struct devouring_bolt_t : public generic_proc_t
   {
     devouring_bolt_t( const special_effect_t& e )
-      : generic_proc_t( e, "devouring_bolt_missile", e.trigger()->effectN( 1 ).trigger() )
+      : generic_proc_t( e, "devouring_bolt_missile", e.player->find_spell( 1259216 ) )
     {
       dual = true;
 
