@@ -724,6 +724,7 @@ public:
   struct spec_t
   {
     // General
+    const spell_data_t* consume_soul;
     const spell_data_t* consume_soul_greater_energize;
     const spell_data_t* consume_soul_greater_heal;
     const spell_data_t* consume_soul_lesser_energize;
@@ -1634,7 +1635,7 @@ struct soul_fragment_t
 
   timespan_t get_travel_time( bool activation = false ) const
   {
-    double velocity = dh->spec.consume_soul_greater_heal->missile_speed();
+    double velocity = dh->spec.consume_soul->missile_speed();
     if ( ( activation && consume_on_activation ) || velocity == 0 )
       return timespan_t::zero();
 
@@ -4988,7 +4989,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
       // Evaluate if_expr to make sure the actor still wants to consume.
       if ( frag && frag->active() && ( !expr || expr->eval() ) && dh->active.consume_soul_greater )
       {
-        frag->consume( true );
+        frag->consume( false );
       }
 
       dh->soul_fragment_pick_up = nullptr;
@@ -10449,6 +10450,7 @@ void demon_hunter_t::init_spells()
   {
     case DEMON_HUNTER_HAVOC:
       spell.throw_glaive                 = find_class_spell( "Throw Glaive" );
+      spec.consume_soul                  = find_spell( 178963 );
       spec.consume_soul_greater_heal     = find_spell( 178963 );
       spec.consume_soul_greater_energize = spec.consume_soul_greater_heal->effectN( 2 ).trigger();
       spec.consume_soul_lesser_heal      = find_spell( 228532 );
@@ -10460,6 +10462,7 @@ void demon_hunter_t::init_spells()
       break;
     case DEMON_HUNTER_VENGEANCE:
       spell.throw_glaive                 = find_specialization_spell( "Throw Glaive" );
+      spec.consume_soul                  = find_spell( 210042 );
       spec.consume_soul_greater_heal     = find_spell( 210042 );
       spec.consume_soul_greater_energize = spell_data_t::not_found();
       spec.consume_soul_lesser_heal      = find_spell( 203794 );
@@ -10471,6 +10474,7 @@ void demon_hunter_t::init_spells()
       break;
     case DEMON_HUNTER_DEVOURER:
       spell.throw_glaive                 = find_class_spell( "Throw Glaive" );
+      spec.consume_soul                  = find_spell( 1223423 );
       spec.consume_soul_greater_heal     = find_spell( 1266301 );
       spec.consume_soul_greater_energize = find_spell( 1223628 );
       spec.consume_soul_lesser_heal      = find_spell( 1266301 );
@@ -12306,7 +12310,7 @@ void demon_hunter_t::activate_soul_fragment( soul_fragment_t* frag )
       {
         if ( it->is_type( soul_fragment::LESSER ) && it->active() )
         {
-          it->consume( true );
+          it->consume( false );
 
           if ( sim->debug )
           {
