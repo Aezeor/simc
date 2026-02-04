@@ -751,6 +751,61 @@ void blood( special_effect_t& effect )
   new blood_cb_t( effect, value_driver );
 }
 
+// Rot
+// 1245055 Embellishment Driver
+// 1245051 Trinket Driver
+// 1244332 RPPM
+// 1247411 Asyncronous DoT
+// TODO: What happens with both the trinket, and embellishment active?
+void rot( special_effect_t& effect )
+{
+  struct root_rot_t : public generic_proc_t
+  {
+    root_rot_t( const special_effect_t& e, const spell_data_t* s, const spell_data_t* value_driver )
+      : generic_proc_t( e, "root_rot", s )
+    {
+      base_td = value_driver->effectN( 1 ).average( e );
+    }
+
+    double composite_ta_multiplier( const action_state_t* s ) const override
+    {
+      double m = generic_proc_t::composite_ta_multiplier( s );
+
+      // TODO: I hate this
+      m *= const_cast<root_rot_t*>( this )->get_debuff( s->target )->check();
+
+      return m;
+    }
+
+    buff_t* create_debuff( player_t* target ) override
+    {
+      return make_buff<buff_t>( actor_pair_t( target, player ), "root_rot_debuff", target->find_spell( 1247411 ) )
+          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+    }
+
+    dot_t* get_dot( player_t* ) override
+    {
+      auto dot = generic_proc_t::get_dot();
+      if( dot )
+        dot->max_stack = 1;  // Override Max Stacks to 1, this behavior is handled by the asyncronous debuff
+      return dot;
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      get_debuff( execute_state->target )->trigger();
+    }
+  };
+
+  effect.execute_action =
+      create_proc_action<root_rot_t>( "root_rot_dot", effect, effect.player->find_spell( 1247411 ), effect.driver() );
+
+  effect.spell_id = 1244332;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace darkmoon
 
 namespace trinkets
@@ -1518,6 +1573,7 @@ void register_special_effects()
   register_special_effect( 1251904, embellishments::loa_worshipers_band );
   // Darkmoon Trinkets & Embellishments
   register_special_effect( { 1245001, 1245053 }, darkmoon::blood );
+  register_special_effect( { 1245055, 1245051 }, darkmoon::rot );
   // Trinkets
   register_special_effect( 1250599, trinkets::heart_of_the_wind );
   register_special_effect( 1250563, trinkets::kroluks_warbanner );
