@@ -6,6 +6,8 @@
 #include "action/parse_effects.hpp"
 #include "class_modules/apl/apl_demon_hunter.hpp"
 
+#include <valarray>
+
 #include "simulationcraft.hpp"
 
 namespace
@@ -609,7 +611,7 @@ public:
       player_talent_t darkglare_boon;
       player_talent_t down_in_flames;
 
-      player_talent_t untethered_rage_1;
+      player_talent_t untethered_rage_1; // Partial implementation - missing free Meta casts
       player_talent_t untethered_rage_2;
       player_talent_t untethered_rage_3;
     } vengeance;
@@ -2480,8 +2482,8 @@ public:
     if ( souls_consumed <= 0 || !p()->talent.vengeance.untethered_rage_1->ok() )
       return false;
 
-    // TODO: CHECK IF THIS PERCENTAGE IS RIGHT
-    double chance_to_proc = 0.1 * ( 1.0 + p()->buff.seething_anger->stack_value() ) * souls_consumed;
+    // TODO: refine this as needed
+    double chance_to_proc = souls_consumed * 0.0075 * pow( 1.35, p()->buff.seething_anger->up() );
     if ( ab::rng().roll( chance_to_proc ) )
     {
       p()->buff.untethered_rage->trigger();
