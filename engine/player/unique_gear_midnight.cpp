@@ -379,9 +379,15 @@ void devouring_banding( special_effect_t& effect )
     seized_power_t( const special_effect_t& e ) : generic_proc_t( e, "seized_power", 1259229 )
     {
       quiet = true;
+      double buff_value = data().effectN( 1 ).trigger()->effectN( 1 ).average( e );
+      // Damage is created after the buff, we can use this to check if there are 2 copies
+      if ( auto proc = e.player->find_action( "devouring_bolt" ) )
+      {
+        buff_value += buff_value;
+      }
 
       // TODO: adjust buff value increase with two copies
-      create_all_stat_buffs( e, data().effectN( 1 ).trigger(), 0, [ this ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
+      create_all_stat_buffs( e, data().effectN( 1 ).trigger(), buff_value, [ this ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
     }
 
     void impact( action_state_t* ) override
@@ -412,10 +418,10 @@ void devouring_banding( special_effect_t& effect )
     }
   };
 
+  auto buff   = create_proc_action<seized_power_t>( "seized_power", effect );
   auto damage = create_proc_action<devouring_bolt_t>( "devouring_bolt_missile", effect );
   damage->base_dd_min += proc_damage;
   damage->base_dd_max += proc_damage;
-  auto buff = create_proc_action<seized_power_t>( "seized_power", effect );
 
   effect.spell_id = effect.trigger()->id();
   effect.player->callbacks.register_callback_execute_function( effect.spell_id, [ damage, buff ]( auto, auto, auto s ) {
@@ -1460,7 +1466,7 @@ void register_special_effects()
   // Enchants & gems
   register_special_effect( 1258209, enchants::powerful_eversong_diamond );
   // Embellishments & Tinkers
-  register_special_effect( 1229511, embellishments::arcanoweave_lining );
+  register_special_effect( 1283697, embellishments::arcanoweave_lining );
   register_special_effect( 1241711, embellishments::sunfire_silk_lining );
   register_special_effect( 1244238, embellishments::devouring_banding );
   register_special_effect( 1244243, embellishments::blessed_pango_charm );
