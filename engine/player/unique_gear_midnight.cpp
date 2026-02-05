@@ -898,7 +898,7 @@ void hunt( special_effect_t& effect )
           e.player->sim->error(
               error_level_e::SEVERE,
               fmt::format( "midnight.darkmoon_hunt_race has invalid race {}. Valid races are {}. Using targets actual race instead.",
-                           e.player->midnight_opts.darkmoon_hunt_race, fmt::join( valid_strings, ", " ) ) );
+                           listener->midnight_opts.darkmoon_hunt_race, fmt::join( valid_strings, ", " ) ) );
           mode = MODE_ACTUAL;
         }
       }
