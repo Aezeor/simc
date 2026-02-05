@@ -894,12 +894,11 @@ void hunt( special_effect_t& effect )
           for ( auto r : valid_races )
             valid_strings.emplace_back( util::race_type_string( r ) );
 
-          const std::string& race  = listener->midnight_opts.darkmoon_hunt_race;
-
-          e.player->sim->error( error_level_e::SEVERE,
-                                fmt::format( "midnight.darkmoon_hunt_race has invalid race type '{}'. Valid race types "
-                                             "are {}. Defaulting to targets actual race.",
-                                             race, fmt::join( valid_strings, ", " ) ) );
+          e.player->sim->error(
+              error_level_e::SEVERE,
+              fmt::format( "midnight.darkmoon_hunt_race has invalid race type '{}'. Valid race types "
+                           "are {}. Defaulting to targets actual race.",
+                           listener->midnight_opts.darkmoon_hunt_race, fmt::join( valid_strings, ", " ) ) );
           mode = MODE_ACTUAL;
         }
       }
