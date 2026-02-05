@@ -657,6 +657,8 @@ public:
 
   buff_t* find_debuff( player_t* target ) const;
 
+  buff_t* get_debuff( player_t* target ) const;
+
   bool is_aoe() const
   {
     const int num_targets = n_targets();

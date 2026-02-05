@@ -4872,6 +4872,23 @@ buff_t* action_t::find_debuff( player_t* t ) const
   return target_specific_debuff[ t ];
 }
 
+buff_t* action_t::get_debuff( player_t* t ) const
+{
+  if ( !t )
+    t = target;
+  if ( !t )
+    return nullptr;
+
+  buff_t*& debuff = target_specific_debuff[ t ];
+  // If the debuff is not found, create it.
+  // This is a bit of an ugly solution to allow const action_t::get_debuff() usage.
+  // Due to snapshot_internal running pre_execute, if the debuff isnt already created it will segfault
+  // if trying to use `find_debuff()` in a composite function called during snapshotting.
+  if ( !debuff )
+    debuff = const_cast<action_t*>( this )->create_debuff( t );
+  return debuff;
+}
+
 void action_t::add_child( action_t* child )
 {
   if ( child == nullptr )
