@@ -8159,20 +8159,24 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
   if ( !consumes_combo_points() && !ignore_cp )
     return;
 
+  // Darkest Night checks take priority and no stacks can be removed if Darkest Night is active
+  if ( p()->buffs.darkest_night->check())
+  {
+    if ( affected_by.darkest_night && cast_state( state )->get_combo_points() >= COMBO_POINT_MAX )
+    {
+      trigger_deathstalkers_mark_debuff( state, true );
+      p()->buffs.darkest_night->expire( 1_ms ); // Expire with delay for potential Shadowy Finishers support
+    }
+
+    return;
+  }
+
   // 2025-06-28 -- Deathstalker's Mark can be consumed via Symbols of Death with the TWW3 4pc set bonus
   player_t* mark_target = state->target->is_enemy() ? state->target : p()->target;
-  const bool consume_darkest_night = affected_by.darkest_night && p()->buffs.darkest_night->check() &&
-    cast_state( state )->get_combo_points() >= COMBO_POINT_MAX;
-
   if ( p()->get_target_data( mark_target )->debuffs.deathstalkers_mark->check() &&
        ( ignore_cp || cast_state( state )->get_combo_points() >= as<int>( p()->talent.deathstalker.deathstalkers_mark->effectN( 2 ).base_value() ) ) )
   {
-    // Envenom/Eviscerate cast with Darkest Night does not consume a stack of active Deathstalker's Marks
-    // MIDNIGHT TOCHECK -- Does this still trigger Unshakeable Drive or damage?
-    if ( !consume_darkest_night )
-    {
-      p()->get_target_data( mark_target )->debuffs.deathstalkers_mark->decrement();
-    }
+    p()->get_target_data( mark_target )->debuffs.deathstalkers_mark->decrement();
     p()->buffs.unshakeable_drive->trigger();
     p()->active.deathstalker.deathstalkers_mark->execute_on_target( mark_target );
 
@@ -8196,14 +8200,7 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
       make_event( *p()->sim, 1_ms, [ this ] {
         p()->buffs.darkest_night->trigger();
       } );
-      return; // Note: Cannot immediately trigger and consume Darkest Night
     }
-  }
-
-  if ( consume_darkest_night )
-  {
-    trigger_deathstalkers_mark_debuff( state, true );
-    p()->buffs.darkest_night->expire( 1_ms ); // Expire with delay for potential Shadowy Finishers support
   }
 }
 
@@ -10985,7 +10982,8 @@ bool rogue_t::stealthed( uint32_t stealth_mask, bool check_lag ) const
   if ( ( stealth_mask & STEALTH_VANISH ) && buffs.vanish->check() )
     return true;
 
-  if ( ( stealth_mask & STEALTH_SHADOW_DANCE ) && buffs.shadow_dance->check() && ( !check_lag || buffs.shadow_dance->elapsed( sim->current_time() ) > 0.2_s ) )
+  if ( ( stealth_mask & STEALTH_SHADOW_DANCE ) && buffs.shadow_dance->check() &&
+       ( !check_lag || buffs.shadow_dance->elapsed( sim->current_time() ) > world_lag.mean ) )
     return true;
 
   if ( ( stealth_mask & STEALTH_SUBTERFUGE ) && buffs.subterfuge->check() )
