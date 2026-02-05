@@ -822,9 +822,9 @@ void void_( special_effect_t& effect )
 // 1245054 Embellishment Driver
 // 1245050 Trinket Driver
 // 1252457 RPPM
-// 1252486 Haste Buff - Elemental
+// 1252486 Haste Buff - Elemental, Aberration
 // 1252487 Crit Buff - Mechanical
-// 1252488 Mastery Buff - Humanoid, Beast
+// 1252488 Mastery Buff - Humanoid, Beast, Dragonkin
 // 1252489 Versatility Buff - Undead
 // TODO: What happens with both the trinket, and embellishment active?
 // TODO: Figure out what Giant, and Demon trigger.
@@ -832,23 +832,6 @@ void hunt( special_effect_t& effect )
 {
   struct hunt_cb_t : public dbc_proc_callback_t
   {
-    buff_t* haste_buff;
-    buff_t* crit_buff;
-    buff_t* mastery_buff;
-    buff_t* vers_buff;
-
-    race_e race;
-
-    // Only randomize between these 4 for now, until more races have known buffs.
-    std::array<race_e, 4> available_races = { RACE_BEAST, RACE_ELEMENTAL, RACE_MECHANICAL, RACE_UNDEAD };
-
-    // TODO Add L'ura's race mapping when known.
-    std::array<race_e, 8> raid_races = { RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,   RACE_DRAGONKIN,
-                                         RACE_HUMANOID,   RACE_HUMANOID,   RACE_ABERRATION, RACE_ELEMENTAL };
-
-    std::array<race_e, 9> valid_races = { RACE_BEAST,      RACE_ELEMENTAL, RACE_MECHANICAL, RACE_UNDEAD, RACE_HUMANOID,
-                                          RACE_ABERRATION, RACE_DRAGONKIN, RACE_GIANT,      RACE_DEMON };
-
     enum mode_e
     {
       MODE_SPECIFIED,
@@ -857,7 +840,19 @@ void hunt( special_effect_t& effect )
       MODE_RAID_RANDOM
     };
 
+    buff_t* haste_buff;
+    buff_t* crit_buff;
+    buff_t* mastery_buff;
+    buff_t* vers_buff;
+    race_e race;
     mode_e mode;
+
+    // TODO Add L'ura's race mapping when known.
+    std::array<race_e, 8> raid_races = { RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,   RACE_DRAGONKIN,
+                                         RACE_HUMANOID,   RACE_HUMANOID,   RACE_ABERRATION, RACE_ELEMENTAL };
+
+    std::array<race_e, 9> valid_races = { RACE_BEAST,      RACE_ELEMENTAL, RACE_MECHANICAL, RACE_UNDEAD, RACE_HUMANOID,
+                                          RACE_ABERRATION, RACE_DRAGONKIN, RACE_GIANT,      RACE_DEMON };
 
     hunt_cb_t( const special_effect_t& e, const spell_data_t* value_driver )
       : dbc_proc_callback_t( e.player, e ),
@@ -910,7 +905,7 @@ void hunt( special_effect_t& effect )
 
     void pick_random_race()
     {
-      race = rng().range( available_races );
+      race = rng().range( valid_races );
     }
 
     void pick_random_raid_race()
