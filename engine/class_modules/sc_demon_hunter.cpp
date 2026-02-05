@@ -611,7 +611,7 @@ public:
       player_talent_t darkglare_boon;
       player_talent_t down_in_flames;
 
-      player_talent_t untethered_rage_1;  // Partial implementation - missing free Meta casts
+      player_talent_t untethered_rage_1;
       player_talent_t untethered_rage_2;
       player_talent_t untethered_rage_3;
     } vengeance;
@@ -1053,6 +1053,7 @@ public:
     proc_t* eye_beam_canceled;
 
     // Vengeance
+    proc_t* untethered_rage;
     proc_t* soul_fragment_expire;
     proc_t* soul_fragment_overflow;
     proc_t* soul_fragment_from_shear;
@@ -2487,7 +2488,9 @@ public:
     double chance_to_proc = souls_consumed * 0.0075 * pow( 1.35, p()->buff.seething_anger->up() );
     if ( ab::rng().roll( chance_to_proc ) )
     {
+      p()->buff.seething_anger->expire();
       p()->buff.untethered_rage->trigger();
+      p()->proc.untethered_rage->occur();
       return true;
     }
 
@@ -4940,6 +4943,9 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
 
   void execute() override
   {
+    // Snapshot untethered_rage before base execute, since update_ready() expires the buff during base_t::execute()
+    bool untethered = p()->buff.untethered_rage->up();
+
     base_t::execute();
 
     switch ( p()->specialization() )
@@ -4997,7 +5003,17 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
         }
         break;
       case DEMON_HUNTER_VENGEANCE:
-        p()->buff.metamorphosis->trigger();
+        if ( untethered )
+        {
+          // Untethered Rage uses a shorter duration, matching Demonic's extend_duration_or_trigger pattern
+          timespan_t ur_duration = timespan_t::from_seconds(
+              p()->talent.vengeance.untethered_rage_1->effectN( 1 ).base_value() );
+          p()->buff.metamorphosis->extend_duration_or_trigger( ur_duration );
+        }
+        else
+        {
+          p()->buff.metamorphosis->trigger();
+        }
         p()->buff.dark_matter->trigger();
         break;
       default:
@@ -5012,6 +5028,29 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
       return false;
     }
     return base_t::action_ready();
+  }
+
+  void update_ready( timespan_t cd_duration ) override
+  {
+    // Expiring untethered_rage removes the temporary max charge via adjust_max_charges, which also
+    // loses a current charge. Skip base_t::update_ready to avoid consuming a real charge on top.
+    if ( p()->buff.untethered_rage->up() )
+    {
+      p()->buff.untethered_rage->expire();
+    }
+    else
+    {
+      base_t::update_ready( cd_duration );
+    }
+  }
+
+  void reset() override
+  {
+    // Reset max charges to initial value, since adjust_max_charges from untethered_rage can leave charges out of
+    // sync when a previous iteration ends with the buff active.
+    cooldown->charges = std::max( data().charges(), 1U );
+
+    base_t::reset();
   }
 };
 
@@ -9803,7 +9842,11 @@ void demon_hunter_t::create_buffs()
           ->set_quiet( true )
           ->set_allow_precombat( true );
 
-  buff.untethered_rage = make_buff( this, "untethered_rage", spec.untethered_rage_buff );
+  buff.untethered_rage = make_buff( this, "untethered_rage", spec.untethered_rage_buff )
+      ->set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
+        // Grant/remove a temporary charge of Metamorphosis when Untethered Rage is gained/lost.
+        cooldown.metamorphosis->adjust_max_charges( cur - old );
+      } );
   buff.seething_anger =
       make_buff( this, "seething_anger", spec.seething_anger_buff )->set_default_value_from_effect( 1 );
 
@@ -10313,6 +10356,7 @@ void demon_hunter_t::init_procs()
   proc.eye_beam_canceled               = get_proc( "eye_beam_canceled" );
 
   // Vengeance
+  proc.untethered_rage                    = get_proc( "untethered_rage" );
   proc.soul_fragment_expire               = get_proc( "soul_fragment_expire" );
   proc.soul_fragment_overflow             = get_proc( "soul_fragment_overflow" );
   proc.soul_fragment_from_shear           = get_proc( "soul_fragment_from_shear" );
