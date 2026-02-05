@@ -1133,6 +1133,7 @@ public:
     spell_data_ptr_t critical_strikes;
     spell_data_ptr_t mail_specialization;
     spell_data_ptr_t control_pet; // Does nothing for sim purposes as of 2026-01-30 but adding for completeness
+    spell_data_ptr_t pet_damage; // 2026-02-03: Generic "Pet Damage" buff, used as a tuning knob for Dire Beasts
     spell_data_ptr_t hunter;
     spell_data_ptr_t beast_mastery_hunter;
     spell_data_ptr_t marksmanship_hunter;
@@ -2033,6 +2034,7 @@ struct dire_critter_t : public hunter_pet_t
   struct buffs_t
   {
     buff_t* bestial_wrath;
+    buff_t* pet_damage;
   } buffs;
 
   struct actions_t
@@ -2040,13 +2042,17 @@ struct dire_critter_t : public hunter_pet_t
     action_t* kill_command = nullptr;
   } actions;
 
+  bool triggers_heart_of_the_pack = false;
+
   dire_critter_t( hunter_t* owner, util::string_view n = "dire_beast" )
     : hunter_pet_t( owner, n, PET_HUNTER, true /* GUARDIAN */, true /* dynamic */ )
   {
     resource_regeneration = regen_type::DISABLED;
   }
 
-  bool triggers_heart_of_the_pack = false;
+  // Used to trigger any behaviour that needs to run after base summon() but before auto attacks start...
+  // for inheriting child classes.
+  virtual void additional_summon_behavior() {};
 
   void create_buffs() override
   {
@@ -2055,13 +2061,17 @@ struct dire_critter_t : public hunter_pet_t
     buffs.bestial_wrath =
       make_buff( this, "bestial_wrath", o()->talents.wildspeaker_bestial_wrath )
         ->set_default_value_from_effect( 1 );
+
+    buffs.pet_damage = 
+      make_buff( this, "pet_damage", o()->specs.pet_damage )
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE );
   }
 
   void summon( timespan_t duration = 0_ms ) override
   {
     hunter_pet_t::summon( duration );
 
-    if( o()->talents.dire_cleave.ok() )
+    if ( o()->talents.dire_cleave.ok() )
       hunter_pet_t::buffs.beast_cleave->trigger( o()->talents.dire_cleave->effectN( 2 ).time_value() );
 
     if ( o()->talents.wildspeaker.ok() && o()->buffs.bestial_wrath->check() )
@@ -2069,7 +2079,11 @@ struct dire_critter_t : public hunter_pet_t
 
     if ( triggers_heart_of_the_pack && o()->talents.heart_of_the_pack.ok() )
       o()->buffs.heart_of_the_pack->trigger();
+
+    buffs.pet_damage->trigger();
     
+    additional_summon_behavior();
+
     if ( main_hand_attack )
       main_hand_attack->execute();
   }
@@ -2077,6 +2091,12 @@ struct dire_critter_t : public hunter_pet_t
   double composite_player_multiplier( school_e school ) const override
   {
     double m = hunter_pet_t::composite_player_multiplier( school );
+
+    if ( o()->talents.dire_frenzy.ok() )
+      m *= 1 + o()->talents.dire_frenzy->effectN( 2 ).percent();
+
+    if ( buffs.pet_damage->check() )
+      m *= 1 + buffs.pet_damage->check_value();
 
     if ( buffs.bestial_wrath->has_common_school( school ) )
       m *= 1 + buffs.bestial_wrath->check_value();
@@ -2102,7 +2122,7 @@ struct dark_hound_t final : public dire_critter_t
   {
     resource_regeneration  = regen_type::DISABLED;
     owner_coeff.ap_from_ap = 2.006;
-    auto_attack_multiplier = 3.99;
+    auto_attack_multiplier = 4;
     // Best guess estimates based on logs and testing
     // TODO reconfirm before launch
     triggers_heart_of_the_pack = true;
@@ -2140,16 +2160,6 @@ struct dire_beast_t final : public dire_critter_t
     dire_critter_t::summon( duration );
 
     o()->procs.dire_beast_spawn->occur();
-  }
-
-  double composite_owner_pet_damage_multiplier( const action_state_t* s ) const override
-  {
-    double dm = dire_critter_t::composite_owner_pet_damage_multiplier( s );
-
-    if ( o()->talents.dire_frenzy.ok() )
-      dm *= 1 + o()->talents.dire_frenzy->effectN( 2 ).percent();
-
-    return dm;
   }
 };
 
@@ -2250,25 +2260,25 @@ struct bear_t final : public dire_critter_t
 
   bear_t( hunter_t* owner, util::string_view n = "bear" ) : dire_critter_t( owner, n )
   {
-    owner_coeff.ap_from_ap = 1;
-    auto_attack_multiplier = 7;
+    owner_coeff.ap_from_ap = 0.60133481646;
+    auto_attack_multiplier = 7.0193236715;
     main_hand_weapon.swing_time = 1.5_s;
     triggers_heart_of_the_pack = true;
+  }
+
+  void additional_summon_behavior() override
+  {
+    buffs.bear_summon->trigger();
+
+    o()->trigger_huntmasters_call();
   }
 
   void summon( timespan_t duration = 0_ms ) override
   {
     dire_critter_t::summon( duration );
-    
-    if ( !o()->buffs.lead_from_the_front->check() && o()->talents.lead_from_the_front->ok() )
-      o()->procs.bear_without_lftf->occur();
-
-    buffs.bear_summon->trigger( -1, buffs.bear_summon->default_value + ( o()->buffs.lead_from_the_front->check() ? o()->talents.lead_from_the_front_buff->effectN( 3 ).percent() : 0 ) );
 
     if ( actions.rend_flesh )
       actions.rend_flesh->execute_on_target( target );
-
-    o()->trigger_huntmasters_call();
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -3608,6 +3618,18 @@ struct ravenous_leap_t : public hunter_pet_attack_t<fenryr_t>
     background = true;
     dire_beast_chance = -1;
   }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double am = hunter_pet_attack_t::composite_ta_multiplier( s );
+
+    /* 2026-02-05: Ravenous Leap is double-dipping Jagged Wounds' modifier.
+                   TODO reconfirm before launch */
+    if ( o()->bugs && o()->talents.jagged_wounds.ok() )
+      am *= 1 + o()->talents.jagged_wounds->effectN( 1 ).percent();
+
+    return am;
+  }
 };
 
 // Rend Flesh (Bear) ===================================================
@@ -3642,6 +3664,18 @@ struct rend_flesh_t : public hunter_pet_attack_t<bear_t>
       return nullptr;
 
     return p()->get_target_data( t )->dots.rend_flesh;
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double am = hunter_pet_attack_t::composite_ta_multiplier( s );
+
+    /* 2026-02-05: Rend Flesh is double-dipping Jagged Wounds' modifier.
+                   TODO reconfirm before launch */
+    if ( o()->bugs && o()->talents.jagged_wounds.ok() )
+      am *= 1 + o()->talents.jagged_wounds->effectN( 1 ).percent();
+
+    return am;
   }
 
   void impact( action_state_t* s ) override
@@ -9220,6 +9254,7 @@ void hunter_t::init_spells()
   specs.critical_strikes     = find_spell( 157443 );
   specs.mail_specialization  = find_spell( 86538 );
   specs.control_pet          = find_spell( 93321 );
+  specs.pet_damage           = find_spell( 1284992 );
   specs.hunter               = find_spell( 137014 );
   specs.beast_mastery_hunter = find_specialization_spell( "Beast Mastery Hunter" );
   specs.marksmanship_hunter  = find_specialization_spell( "Marksmanship Hunter" );
