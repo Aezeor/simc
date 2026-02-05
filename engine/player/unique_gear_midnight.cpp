@@ -772,7 +772,10 @@ void rot( special_effect_t& effect )
     {
       double m = generic_proc_t::composite_ta_multiplier( s );
 
-      m *= get_debuff( s->target )->check();
+      if ( auto debuff = find_debuff( s->target ) )
+        m *= debuff->check();
+      else
+        m = 0.0;
 
       return m;
     }
