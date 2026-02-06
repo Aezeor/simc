@@ -7488,7 +7488,7 @@ struct flamefang_pitch_t : public hunter_spell_t
 
     // 2026-01-18: Grenade Juggler is refunding the unhasted cooldown of a bomb instead of a charge.
     if ( p()->talents.grenade_juggler.ok() )
-      p()->cooldowns.wildfire_bomb->adjust( p()->cooldowns.wildfire_bomb->base_duration );
+      p()->cooldowns.wildfire_bomb->adjust( -p()->cooldowns.wildfire_bomb->base_duration );
   }
 };
 
