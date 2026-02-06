@@ -1194,6 +1194,7 @@ public:
     event_t* precision_detonation_expiry = nullptr;
     howl_of_the_pack_leader_beast howl_of_the_pack_leader_next_beast = WYVERN;
     timespan_t fury_of_the_wyvern_extension = 0_s;
+    bool fury_of_the_wyvern_extendable = false;
   } state;
 
   struct options_t {
@@ -7753,10 +7754,11 @@ struct kill_command_t: public hunter_spell_t
 
     p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( p(), -p()->talents.dire_summons->effectN( p()->specialization() == HUNTER_BEAST_MASTERY ? 1 : 2 ).time_value() );
     
-    if ( p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap )
+    if ( p()->buffs.wyverns_cry->check() && p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap )
     {
       p()->buffs.wyverns_cry->extend_duration( p(), fury_of_the_wyvern.extension );
       p()->state.fury_of_the_wyvern_extension += fury_of_the_wyvern.extension;
+      p()->state.fury_of_the_wyvern_extendable = p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap;
     }
 
     p()->buffs.natures_ally_3->expire();
@@ -8397,10 +8399,11 @@ struct wildfire_bomb_t: public wildfire_bomb_base_t
   {
     wildfire_bomb_base_t::execute();
 
-    if ( p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap )
+    if ( p()->buffs.wyverns_cry->check() && p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap )
     {
       p()->buffs.wyverns_cry->extend_duration( p(), fury_of_the_wyvern.extension );
       p()->state.fury_of_the_wyvern_extension += fury_of_the_wyvern.extension;
+      p()->state.fury_of_the_wyvern_extendable = p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap;
     }
 
     if ( p()->tier_set.mid_s1_sv_4pc.ok() )
@@ -8645,6 +8648,10 @@ std::unique_ptr<expr_t> hunter_t::create_expression( util::string_view expressio
           return make_fn_expr( expression_str, [ this ] { return state.howl_of_the_pack_leader_next_beast == howl_of_the_pack_leader_beast::BEAR; } );
       }
     }
+  }
+  else if ( splits.size() == 1 && splits[ 0 ] == "fury_of_the_wyvern_extendable" )
+  {
+    return make_fn_expr( expression_str, [ this ] { return state.fury_of_the_wyvern_extendable; } );
   }
 
   return player_t::create_expression( expression_str );
@@ -9754,8 +9761,17 @@ void hunter_t::create_buffs()
       ->add_invalidate( CACHE_PET_DAMAGE_MULTIPLIER )
       ->set_stack_change_callback(
         [ this ]( buff_t*, int, int cur ) {
-          if ( cur == 0 )
+          // Expiration only because...
+          if ( cur == 0 ) 
+          {
             state.fury_of_the_wyvern_extension = 0_s;
+            state.fury_of_the_wyvern_extendable = false;
+          }
+          // ...Wyvern's Cry starts at a variable stack count
+          else if ( cur == as<int>( talents.howl_of_the_pack_leader->effectN( 3 ).base_value() ) ) 
+          {
+            state.fury_of_the_wyvern_extendable = talents.fury_of_the_wyvern.ok();
+          }
         } );
 
   buffs.hogstrider =
