@@ -5602,7 +5602,9 @@ struct cobra_shot_base_t: public hunter_ranged_attack_t
     double m = hunter_ranged_attack_t::composite_da_multiplier( s );
 
     m *= 1 + p()->buffs.serpentine_rhythm->check_stack_value();
-    m *= 1 + p()->talents.hogstrider_buff->effectN( 1 ).percent();
+
+    if ( p()->buffs.hogstrider->up() )
+      m *= 1 + p()->talents.hogstrider_buff->effectN( 1 ).percent();
 
     return m;
   }
@@ -6773,7 +6775,8 @@ struct hatchet_toss_t final : public hunter_ranged_attack_t
   {
     double am = hunter_ranged_attack_t::composite_da_multiplier( s );
 
-    am *= 1 + p()->talents.hogstrider_buff->effectN( 2 ).percent();
+    if ( p()->buffs.hogstrider->up() )
+      am *= 1 + p()->talents.hogstrider_buff->effectN( 2 ).percent();
 
     return am;
   }
