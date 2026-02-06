@@ -7013,6 +7013,7 @@ void mage_t::trigger_icicle( int count, bool grant_buff )
     buffs.glacial_spike->trigger();
 }
 
+// TODO: Does this still have bugs with Pyromaniac, or can it just be buff_stack_behavior::ASYNCHRONOUS now?
 void mage_t::trigger_mana_cascade()
 {
   if ( !talents.mana_cascade.ok() )
