@@ -2122,7 +2122,7 @@ struct dark_hound_t final : public dire_critter_t
   dark_hound_t( hunter_t* owner, util::string_view n = "dark_hound" ) : dire_critter_t( owner, n )
   {
     resource_regeneration  = regen_type::DISABLED;
-    owner_coeff.ap_from_ap = 2.006;
+    owner_coeff.ap_from_ap = 2;
     auto_attack_multiplier = 4;
     // Best guess estimates based on logs and testing
     // TODO reconfirm before launch
@@ -2261,8 +2261,8 @@ struct bear_t final : public dire_critter_t
 
   bear_t( hunter_t* owner, util::string_view n = "bear" ) : dire_critter_t( owner, n )
   {
-    owner_coeff.ap_from_ap = 0.60133481646;
-    auto_attack_multiplier = 7.0193236715;
+    owner_coeff.ap_from_ap = 0.6;
+    auto_attack_multiplier = 7;
     main_hand_weapon.swing_time = 1.5_s;
     triggers_heart_of_the_pack = true;
   }
@@ -3675,6 +3675,15 @@ struct rend_flesh_t : public hunter_pet_attack_t<bear_t>
                    TODO reconfirm before launch */
     if ( o()->bugs && o()->talents.jagged_wounds.ok() )
       am *= 1 + o()->talents.jagged_wounds->effectN( 1 ).percent();
+
+    /* 2026-02-07: Rend Flesh is double-dipping Spirit Bond's modifier.
+                   TODO reconfirm before launch */
+    if ( o()->mastery.spirit_bond.ok() )
+    {
+      double bonus = o()->cache.mastery() * o()->mastery.spirit_bond->effectN( affected_by.spirit_bond.tick ).mastery_value();
+      bonus *= 1 + o()->mastery.spirit_bond_buff->effectN( 3 ).percent();
+      am *= 1 + bonus;
+    }
 
     return am;
   }
