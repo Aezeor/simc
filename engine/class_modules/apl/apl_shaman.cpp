@@ -56,7 +56,7 @@ void elemental( player_t* p )
   default_->add_action( "ancestral_call,if=!talent.ascendance|buff.ascendance.up|cooldown.ascendance.remains>50" );
   default_->add_action( "use_item,slot=trinket1,use_off_gcd=1,if=variable.trinket_1_buffs&(cooldown.ascendance.remains>trinket.1.cooldown.duration-5|buff.ascendance.remains>12|fight_remains<21)", "Normal buff trinkets" );
   default_->add_action( "use_item,slot=trinket2,use_off_gcd=1,if=variable.trinket_2_buffs&(cooldown.ascendance.remains>trinket.2.cooldown.duration-5|buff.ascendance.remains>12|fight_remains<21)" );
-  default_->add_action( "use_item,slot=main_hand,use_off_gcd=1,if=(1|cooldown.stormkeeper.remains>10)&cooldown.ascendance.remains>15|buff.ascendance.remains>12", "Normal weapons" );
+  default_->add_action( "use_item,slot=main_hand,use_off_gcd=1,if=(buff.fury_of_storms.up|!talent.fury_of_the_storms|cooldown.stormkeeper.remains>10)&cooldown.ascendance.remains>15|buff.ascendance.remains>12", "Normal weapons" );
   default_->add_action( "use_item,slot=trinket1,use_off_gcd=1,if=!variable.trinket_1_buffs&(cooldown.ascendance.remains>20|trinket.2.cooldown.remains>20)", "Dmg trinkets" );
   default_->add_action( "use_item,slot=trinket2,use_off_gcd=1,if=!variable.trinket_2_buffs&(cooldown.ascendance.remains>20|trinket.1.cooldown.remains>20)" );
   default_->add_action( "lightning_shield,if=buff.lightning_shield.down" );
@@ -71,16 +71,16 @@ void elemental( player_t* p )
   aoe->add_action( "ancestral_swiftness" );
   aoe->add_action( "flame_shock,if=active_dot.flame_shock=0&spell_targets.chain_lightning<=3&cooldown.ascendance.remains>10" );
   aoe->add_action( "voltaic_blaze,if=active_dot.flame_shock=0|talent.purging_flames" );
-  aoe->add_action( "ascendance,if=cooldown.stormkeeper.remains>10" );
+  aoe->add_action( "ascendance,if=cooldown.stormkeeper>10" );
   aoe->add_action( "tempest,target_if=min:debuff.lightning_rod.remains,if=buff.tempest.stack=2" );
-  aoe->add_action( "earthquake,if=(maelstrom>variable.mael_cap-10*(spell_targets.chain_lightning+1)|buff.master_of_the_elements.up|buff.ascendance.up&buff.ascendance.remains<3|fight_remains<5)&(1&(!talent.elemental_blast|active_enemies>1+3*talent.tempest))", "Spend if you are close to cap, Master of the Elements buff is up or Ascendance is about to expire." );
+  aoe->add_action( "earthquake,if=(maelstrom>variable.mael_cap-10*(spell_targets.chain_lightning+1)|buff.master_of_the_elements.up|buff.ascendance.up&buff.ascendance.remains<3|fight_remains<5)&(buff.echoes_of_great_sundering.up|!talent.echoes_of_great_sundering&(!talent.elemental_blast|active_enemies>1+3*talent.tempest))", "Spend if you are close to cap, Master of the Elements buff is up or Ascendance is about to expire." );
   aoe->add_action( "elemental_blast,target_if=min:debuff.lightning_rod.remains,if=(maelstrom>variable.mael_cap-10*(spell_targets.chain_lightning+1)|buff.master_of_the_elements.up|buff.ascendance.up&buff.ascendance.remains<3|fight_remains<5)" );
   aoe->add_action( "earth_shock,target_if=min:debuff.lightning_rod.remains,if=(maelstrom>variable.mael_cap-10*(spell_targets.chain_lightning+1)|buff.master_of_the_elements.up|buff.ascendance.up&buff.ascendance.remains<3|fight_remains<5)" );
-  aoe->add_action( "earthquake,if=talent.lightning_rod&lightning_rod<active_enemies&(buff.stormkeeper.up|buff.tempest.up)&(1&(!talent.elemental_blast|active_enemies>1+3*talent.tempest))", "Spend to spread Lightning Rod if Tempest or Stormkeeper is up." );
+  aoe->add_action( "earthquake,if=talent.lightning_rod&lightning_rod<active_enemies&(buff.stormkeeper.up|buff.tempest.up)&(buff.echoes_of_great_sundering.up|!talent.echoes_of_great_sundering&(!talent.elemental_blast|active_enemies>1+3*talent.tempest))", "Spend to spread Lightning Rod if Tempest or Stormkeeper is up." );
   aoe->add_action( "elemental_blast,target_if=min:debuff.lightning_rod.remains,if=talent.lightning_rod&lightning_rod<active_enemies&(buff.stormkeeper.up|buff.tempest.up)" );
   aoe->add_action( "earth_shock,target_if=min:debuff.lightning_rod.remains,if=talent.lightning_rod&lightning_rod<active_enemies&(buff.stormkeeper.up|buff.tempest.up)" );
   aoe->add_action( "lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&!buff.master_of_the_elements.up&talent.master_of_the_elements&active_enemies<=3", "[2-3t] Use Lava Surge procs to buff <anything> with MotE on 2-3 targets." );
-  aoe->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=!buff.master_of_the_elements.up&talent.master_of_the_elements&(buff.stormkeeper.up|buff.tempest.up|maelstrom>82-10*talent.eye_of_the_storm|maelstrom>52-5*talent.eye_of_the_storm&(0|!talent.elemental_blast))&active_enemies<=3&!talent.lightning_rod&talent.call_of_the_ancestors", "[2-3t]{Farseer} Use all Lava Bursts to buff spenders, SK_CL and Tempest with MotE on 2-3 targets if not talented into Lightning Rod." );
+  aoe->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=!buff.master_of_the_elements.up&talent.master_of_the_elements&(buff.stormkeeper.up|buff.tempest.up|maelstrom>82-10*talent.eye_of_the_storm|maelstrom>52-5*talent.eye_of_the_storm&(buff.echoes_of_great_sundering_eb.up|!talent.elemental_blast))&active_enemies<=3&!talent.lightning_rod&talent.call_of_the_ancestors", "[2-3t]{Farseer} Use all Lava Bursts to buff spenders, SK_CL and Tempest with MotE on 2-3 targets if not talented into Lightning Rod." );
   aoe->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=!buff.master_of_the_elements.up&active_enemies=2", "[2t] Use all Lava Bursts to buff <anything> with MotE on 2 targets." );
   aoe->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=buff.purging_flames.up&(buff.ascendance.up&buff.ascendance.remains<3|buff.lava_surge.up)", "AoE Lava Burst goes brrrrr." );
   aoe->add_action( "lightning_bolt,if=buff.stormkeeper.up&!buff.call_of_the_ancestors.up&spell_targets.chain_lightning=2" );
@@ -94,12 +94,12 @@ void elemental( player_t* p )
   single_target->add_action( "ancestral_swiftness" );
   single_target->add_action( "flame_shock,if=active_dot.flame_shock=0&!buff.master_of_the_elements.up", "Apply Flame shock if it is not up." );
 
-  single_target->add_action( "voltaic_blaze,if=active_dot.flame_shock=0" );
+  aoe->add_action( "voltaic_blaze,if=active_dot.flame_shock=0" );
 
-  single_target->add_action( "ascendance,if=cooldown.stormkeeper.remains>10" );
+  single_target->add_action( "ascendance,if=cooldown.stormkeeper>10" );
   single_target->add_action( "elemental_blast,if=maelstrom>variable.mael_cap-15|buff.master_of_the_elements.up", "Spend if close to overcaping or MotE buff is up. Friendship ended with Echoes of Great Sundering." );
   single_target->add_action( "earth_shock,if=maelstrom>variable.mael_cap-15|buff.master_of_the_elements.up" );
-  single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>=2,if=!buff.master_of_the_elements.up&(buff.lava_surge.up|buff.tempest.up|buff.stormkeeper.up|cooldown.lava_burst.charges_fractional>1.8|maelstrom>variable.mael_cap-30|(maelstrom>52-5*talent.eye_of_the_storm*(1+talent.elemental_blast)+30*talent.elemental_blast))", "Use Lava Burst to proc Master of the Elements." );
+  single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>=2,if=!buff.master_of_the_elements.up&(buff.lava_surge.up|buff.tempest.up|buff.stormkeeper.up|cooldown.lava_burst.charges_fractional>1.8|maelstrom>variable.mael_cap-30|(maelstrom>52-5*talent.eye_of_the_storm*(1+talent.elemental_blast)+30*talent.elemental_blast)", "Use Lava Burst to proc Master of the Elements." );
   single_target->add_action( "tempest" );
   single_target->add_action( "lightning_bolt", "Filler spell. Always available. Always the bottom line." );
   single_target->add_action( "flame_shock,moving=1,target_if=refreshable" );
@@ -135,7 +135,7 @@ void elemental_ptr( player_t* p )
   default_->add_action( "ancestral_call,if=!talent.ascendance|buff.ascendance.up|cooldown.ascendance.remains>50" );
   default_->add_action( "use_item,slot=trinket1,use_off_gcd=1,if=variable.trinket_1_buffs&(cooldown.ascendance.remains>trinket.1.cooldown.duration-5|buff.ascendance.remains>12|fight_remains<21)", "Normal buff trinkets" );
   default_->add_action( "use_item,slot=trinket2,use_off_gcd=1,if=variable.trinket_2_buffs&(cooldown.ascendance.remains>trinket.2.cooldown.duration-5|buff.ascendance.remains>12|fight_remains<21)" );
-  default_->add_action( "use_item,slot=main_hand,use_off_gcd=1,if=(1|cooldown.stormkeeper.remains>10)&cooldown.ascendance.remains>15|buff.ascendance.remains>12", "Normal weapons" );
+  default_->add_action( "use_item,slot=main_hand,use_off_gcd=1,if=(buff.fury_of_storms.up|!talent.fury_of_the_storms|cooldown.stormkeeper.remains>10)&cooldown.ascendance.remains>15|buff.ascendance.remains>12", "Normal weapons" );
   default_->add_action( "use_item,slot=trinket1,use_off_gcd=1,if=!variable.trinket_1_buffs&(cooldown.ascendance.remains>20|trinket.2.cooldown.remains>20)", "Dmg trinkets" );
   default_->add_action( "use_item,slot=trinket2,use_off_gcd=1,if=!variable.trinket_2_buffs&(cooldown.ascendance.remains>20|trinket.1.cooldown.remains>20)" );
   default_->add_action( "lightning_shield,if=buff.lightning_shield.down" );
@@ -150,16 +150,16 @@ void elemental_ptr( player_t* p )
   aoe->add_action( "ancestral_swiftness" );
   aoe->add_action( "flame_shock,if=active_dot.flame_shock=0&spell_targets.chain_lightning<=3&cooldown.ascendance.remains>10" );
   aoe->add_action( "voltaic_blaze,if=active_dot.flame_shock=0|talent.purging_flames" );
-  aoe->add_action( "ascendance,if=cooldown.stormkeeper.remains>10" );
+  aoe->add_action( "ascendance,if=cooldown.stormkeeper>10" );
   aoe->add_action( "tempest,target_if=min:debuff.lightning_rod.remains,if=buff.tempest.stack=2" );
-  aoe->add_action( "earthquake,if=(maelstrom>variable.mael_cap-10*(spell_targets.chain_lightning+1)|buff.master_of_the_elements.up|buff.ascendance.up&buff.ascendance.remains<3|fight_remains<5)&(1&(!talent.elemental_blast|active_enemies>1+3*talent.tempest))", "Spend if you are close to cap, Master of the Elements buff is up or Ascendance is about to expire." );
+  aoe->add_action( "earthquake,if=(maelstrom>variable.mael_cap-10*(spell_targets.chain_lightning+1)|buff.master_of_the_elements.up|buff.ascendance.up&buff.ascendance.remains<3|fight_remains<5)&(buff.echoes_of_great_sundering.up|!talent.echoes_of_great_sundering&(!talent.elemental_blast|active_enemies>1+3*talent.tempest))", "Spend if you are close to cap, Master of the Elements buff is up or Ascendance is about to expire." );
   aoe->add_action( "elemental_blast,target_if=min:debuff.lightning_rod.remains,if=(maelstrom>variable.mael_cap-10*(spell_targets.chain_lightning+1)|buff.master_of_the_elements.up|buff.ascendance.up&buff.ascendance.remains<3|fight_remains<5)" );
   aoe->add_action( "earth_shock,target_if=min:debuff.lightning_rod.remains,if=(maelstrom>variable.mael_cap-10*(spell_targets.chain_lightning+1)|buff.master_of_the_elements.up|buff.ascendance.up&buff.ascendance.remains<3|fight_remains<5)" );
-  aoe->add_action( "earthquake,if=talent.lightning_rod&lightning_rod<active_enemies&(buff.stormkeeper.up|buff.tempest.up)&(1&(!talent.elemental_blast|active_enemies>1+3*talent.tempest))", "Spend to spread Lightning Rod if Tempest or Stormkeeper is up." );
+  aoe->add_action( "earthquake,if=talent.lightning_rod&lightning_rod<active_enemies&(buff.stormkeeper.up|buff.tempest.up)&(buff.echoes_of_great_sundering.up|!talent.echoes_of_great_sundering&(!talent.elemental_blast|active_enemies>1+3*talent.tempest))", "Spend to spread Lightning Rod if Tempest or Stormkeeper is up." );
   aoe->add_action( "elemental_blast,target_if=min:debuff.lightning_rod.remains,if=talent.lightning_rod&lightning_rod<active_enemies&(buff.stormkeeper.up|buff.tempest.up)" );
   aoe->add_action( "earth_shock,target_if=min:debuff.lightning_rod.remains,if=talent.lightning_rod&lightning_rod<active_enemies&(buff.stormkeeper.up|buff.tempest.up)" );
   aoe->add_action( "lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&!buff.master_of_the_elements.up&talent.master_of_the_elements&active_enemies<=3", "[2-3t] Use Lava Surge procs to buff <anything> with MotE on 2-3 targets." );
-  aoe->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=!buff.master_of_the_elements.up&talent.master_of_the_elements&(buff.stormkeeper.up|buff.tempest.up|maelstrom>82-10*talent.eye_of_the_storm|maelstrom>52-5*talent.eye_of_the_storm&(0|!talent.elemental_blast))&active_enemies<=3&!talent.lightning_rod&talent.call_of_the_ancestors", "[2-3t]{Farseer} Use all Lava Bursts to buff spenders, SK_CL and Tempest with MotE on 2-3 targets if not talented into Lightning Rod." );
+  aoe->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=!buff.master_of_the_elements.up&talent.master_of_the_elements&(buff.stormkeeper.up|buff.tempest.up|maelstrom>82-10*talent.eye_of_the_storm|maelstrom>52-5*talent.eye_of_the_storm&(buff.echoes_of_great_sundering_eb.up|!talent.elemental_blast))&active_enemies<=3&!talent.lightning_rod&talent.call_of_the_ancestors", "[2-3t]{Farseer} Use all Lava Bursts to buff spenders, SK_CL and Tempest with MotE on 2-3 targets if not talented into Lightning Rod." );
   aoe->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=!buff.master_of_the_elements.up&active_enemies=2", "[2t] Use all Lava Bursts to buff <anything> with MotE on 2 targets." );
   aoe->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=buff.purging_flames.up&(buff.ascendance.up&buff.ascendance.remains<3|buff.lava_surge.up)", "AoE Lava Burst goes brrrrr." );
   aoe->add_action( "lightning_bolt,if=buff.stormkeeper.up&!buff.call_of_the_ancestors.up&spell_targets.chain_lightning=2" );
@@ -173,9 +173,9 @@ void elemental_ptr( player_t* p )
   single_target->add_action( "ancestral_swiftness" );
   single_target->add_action( "flame_shock,if=active_dot.flame_shock=0&!buff.master_of_the_elements.up", "Apply Flame shock if it is not up." );
 
-  single_target->add_action( "voltaic_blaze,if=active_dot.flame_shock=0" );
+  aoe->add_action( "voltaic_blaze,if=active_dot.flame_shock=0" );
 
-  single_target->add_action( "ascendance,if=cooldown.stormkeeper.remains>10" );
+  single_target->add_action( "ascendance,if=cooldown.stormkeeper>10" );
   single_target->add_action( "elemental_blast,if=maelstrom>variable.mael_cap-15|buff.master_of_the_elements.up", "Spend if close to overcaping or MotE buff is up. Friendship ended with Echoes of Great Sundering." );
   single_target->add_action( "earth_shock,if=maelstrom>variable.mael_cap-15|buff.master_of_the_elements.up" );
   single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>=2,if=!buff.master_of_the_elements.up&(buff.lava_surge.up|buff.tempest.up|buff.stormkeeper.up|cooldown.lava_burst.charges_fractional>1.8|maelstrom>variable.mael_cap-30|(maelstrom>52-5*talent.eye_of_the_storm*(1+talent.elemental_blast)+30*talent.elemental_blast)", "Use Lava Burst to proc Master of the Elements." );
