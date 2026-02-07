@@ -2,9 +2,9 @@ name: CI
 
 on:
   pull_request:
-    branches: [thewarwithin, midnight]
+    branches: [midnight]
   push:
-    branches: [thewarwithin, midnight]
+    branches: [midnight]
     paths-ignore:
       - "ActionPriorityLists/**"
       - "SpellDataDump/*.txt"
