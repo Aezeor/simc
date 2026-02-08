@@ -930,13 +930,13 @@ buff_t* buff_t::set_max_stack( int max_stack )
   {
     if ( data().ok() )
     {
-      if ( data().max_stacks() != 0 )
+      if ( data().max_stacks() > 0 )
       {
         _max_stack = data().max_stacks();
       }
-      else if ( data().initial_stacks() != 0 )
+      else if ( data().initial_stacks() > 0 )
       {
-        _max_stack = std::abs( data().initial_stacks() );
+        _max_stack = data().initial_stacks();
       }
       else
       {
@@ -1087,7 +1087,7 @@ buff_t* buff_t::set_internal_cooldown( timespan_t duration )
 
   if ( duration == timespan_t::min() )  // min() called in buff_t constructor
   {
-    if ( data().ok() && data().internal_cooldown() != 0_ms )
+    if ( data().ok() && data().internal_cooldown() > 0_ms )
     {
       _dur = data().internal_cooldown();
     }

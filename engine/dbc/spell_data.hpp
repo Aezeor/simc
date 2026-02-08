@@ -398,7 +398,7 @@ struct spelleffect_data_t
 
   double average_no_item( const player_t* p, unsigned level ) const;
   double delta_no_item( const player_t* p, unsigned level ) const;
-  
+
   bool override_field( util::string_view field, double value );
   double get_field( util::string_view field ) const;
 
@@ -470,11 +470,11 @@ struct spell_data_t
   // SpellDuration.dbc
   double      _duration;           // Spell duration in milliseconds
   // SpellAuraOptions.dbc
-  unsigned    _max_stack;          // Maximum stack size for spell
+  int         _max_stack;          // Maximum stack size for spell
   unsigned    _proc_chance;        // Spell proc chance in percent
   int         _proc_charges;       // Per proc charge amount
   uint64_t    _proc_flags;         // Proc flags
-  unsigned    _internal_cooldown;  // ICD
+  int         _internal_cooldown;  // ICD
   double      _rppm;               // Base real procs per minute
   // SpellEquippedItems.dbc
   unsigned    _equipped_class;
@@ -574,7 +574,7 @@ struct spell_data_t
   unsigned max_aura_level() const
   { return _max_aura_level; }
 
-  uint32_t max_stacks() const
+  int32_t max_stacks() const
   { return _max_stack; }
 
   double missile_speed() const
