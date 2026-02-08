@@ -1101,7 +1101,7 @@ public:
     heal_t* consume_soul_lesser          = nullptr;
     heal_t* consume_soul_greater_demon   = nullptr;
     heal_t* consume_soul_empowered_demon = nullptr;
-    spell_t* immolation_aura             = nullptr;
+    spell_t* immolation_aura_tick        = nullptr;
     spell_t* immolation_aura_initial     = nullptr;
     spell_t* collective_anguish          = nullptr;
 
@@ -1251,16 +1251,9 @@ public:
   void analyze( sim_t& sim ) override;
 
   // custom demon_hunter_t functions
-  const spelleffect_data_t* find_spelleffect( const spell_data_t* spell, effect_subtype_t subtype = A_MAX,
-                                              int misc_value               = P_GENERIC,
-                                              const spell_data_t* affected = spell_data_t::nil(),
-                                              effect_type_t type           = E_APPLY_AURA );
-  const spell_data_t* find_spell_override( const spell_data_t* base, std::vector<const spell_data_t*> passives );
-  const spell_data_t* conditional_spell_lookup( bool fn, int id );
-  const spell_data_t* talent_spell_lookup( player_talent_t t, int id );
-  const spell_data_t* spec_talent_spell_lookup( specialization_e s, const player_talent_t& t, int id );
-  const spell_data_t* spell_lookup_by_spec( const spell_data_t* devourer, const spell_data_t* havoc,
-                                            const spell_data_t* vengeance );
+  const spell_data_t* conditional_spell_lookup( bool fn, int id ) const;
+  const spell_data_t* talent_spell_lookup( player_talent_t t, int id ) const;
+  const spell_data_t* spec_talent_spell_lookup( specialization_e s, const player_talent_t& t, int id ) const;
   void set_out_of_range( timespan_t duration );
   void adjust_movement();
   double calculate_expected_max_health() const;
@@ -1350,9 +1343,9 @@ public:
     double drain_per_stack = 0.012;
 
     fury_state_t( demon_hunter_t* a )
-      : next_drain_event( nullptr ),
-        start_time( timespan_t::min() ),
+      : start_time( timespan_t::min() ),
         last_tick( timespan_t::min() ),
+        next_drain_event( nullptr ),
         drain_stacks( 0 ),
         actor( a )
     {
@@ -1948,6 +1941,8 @@ public:
             break;
           case P_TICK_DAMAGE:
             flags.periodic = true;
+            break;
+          default:
             break;
         }
       }
@@ -2886,13 +2881,6 @@ struct voidfall_spending_trigger_t : public BASE
     if ( !BASE::p()->buff.voidfall_spending->up() )
       return;
 
-    int stacks                  = BASE::p()->buff.voidfall_spending->stack();
-    int stacks_for_world_killer = 0;
-    if ( BASE::p()->talent.annihilator.world_killer->ok() )
-    {
-      stacks_for_world_killer += 1;
-    }
-
     BASE::p()->sim->print_debug( "{} triggering Voidfall spending", BASE::p()->name() );
 
     BASE::p()->buff.voidfall_spending->decrement();
@@ -3821,13 +3809,14 @@ struct eye_beam_base_t : public student_of_suffering_trigger_t<final_breath_trig
     ability_lag = p->world_lag;
 
     tick = p->get_background_action<eye_beam_tick_t>( name_str + "_tick", name_str, p->spec.eye_beam_damage,
-                                                             as<int>( data().effectN( 5 ).base_value() ) );
+                                                      as<int>( data().effectN( 5 ).base_value() ) );
     add_child( tick );
 
     if ( p->talent.havoc.eternal_hunt_1->ok() )
     {
-      empowered_tick = p->get_background_action<eye_beam_tick_t>( name_str + "_empowered_tick", name_str, p->spec.empowered_eye_beam_damage,
-                                                                   as<int>( data().effectN( 5 ).base_value() ) );
+      empowered_tick = p->get_background_action<eye_beam_tick_t>( name_str + "_empowered_tick", name_str,
+                                                                  p->spec.empowered_eye_beam_damage,
+                                                                  as<int>( data().effectN( 5 ).base_value() ) );
       add_child( empowered_tick );
     }
 
@@ -4788,6 +4777,14 @@ struct immolation_aura_t : public demon_hunter_spell_t
     }
   };
 
+  struct ragefire_t : public demon_hunter_spell_t
+  {
+    ragefire_t( util::string_view name, demon_hunter_t* p ) : demon_hunter_spell_t( name, p, p->spec.ragefire_damage )
+    {
+      aoe = -1;
+    }
+  };
+
   immolation_aura_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_spell_t( "immolation_aura", p, p->spell.immolation_aura, options_str )
   {
@@ -4807,11 +4804,11 @@ struct immolation_aura_t : public demon_hunter_spell_t
         break;
     }
 
-    if ( !p->active.immolation_aura )
+    if ( !p->active.immolation_aura_tick )
     {
-      p->active.immolation_aura = p->get_background_action<immolation_aura_damage_t>(
+      p->active.immolation_aura_tick = p->get_background_action<immolation_aura_damage_t>(
           "immolation_aura_tick", data().effectN( 1 ).trigger(), false );
-      add_child( p->active.immolation_aura );
+      add_child( p->active.immolation_aura_tick );
     }
 
     if ( !p->active.immolation_aura_initial && p->spell.immolation_aura_damage->ok() )
@@ -4827,8 +4824,9 @@ struct immolation_aura_t : public demon_hunter_spell_t
       add_child( p->active.infernal_armor );
     }
 
-    if ( p->talent.havoc.ragefire->ok() )
+    if ( p->talent.havoc.ragefire->ok() && !p->active.ragefire )
     {
+      p->active.ragefire = p->get_background_action<ragefire_t>( "ragefire" );
       add_child( p->active.ragefire );
     }
 
@@ -5006,8 +5004,8 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
         if ( untethered )
         {
           // Untethered Rage uses a shorter duration, matching Demonic's extend_duration_or_trigger pattern
-          timespan_t ur_duration = timespan_t::from_seconds(
-              p()->talent.vengeance.untethered_rage_1->effectN( 1 ).base_value() );
+          timespan_t ur_duration =
+              timespan_t::from_seconds( p()->talent.vengeance.untethered_rage_1->effectN( 1 ).base_value() );
           p()->buff.metamorphosis->extend_duration_or_trigger( ur_duration );
         }
         else
@@ -5093,7 +5091,6 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     }
   };
 
-  std::vector<soul_fragment_t*>::iterator it;
   soul_fragment_select_mode select_mode;
   soul_fragment type;
 
@@ -7975,16 +7972,6 @@ struct fracture_t : public voidfall_building_trigger_t<
   }
 };
 
-// Ragefire Talent ==========================================================
-
-struct ragefire_t : public demon_hunter_spell_t
-{
-  ragefire_t( util::string_view name, demon_hunter_t* p ) : demon_hunter_spell_t( name, p, p->spec.ragefire_damage )
-  {
-    aoe = -1;
-  }
-};
-
 // Inner Demon Talent =======================================================
 
 struct inner_demon_t : public demon_hunter_spell_t
@@ -8761,19 +8748,19 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
       set_quiet( true );
 
       if ( p->talent.havoc.growing_inferno->ok() )
-        growing_inferno_max_ticks = (int)( 10 / p->talent.havoc.growing_inferno->effectN( 1 ).percent() );
+        growing_inferno_max_ticks = static_cast<int>( 10 / p->talent.havoc.growing_inferno->effectN( 1 ).percent() );
 
       set_tick_callback( [ this, p ]( buff_t*, int, timespan_t ) {
         ragefire_crit_accumulator = 0;
 
-        state_t* s = static_cast<state_t*>( p->active.immolation_aura->get_state() );
+        state_t* s = static_cast<state_t*>( p->active.immolation_aura_tick->get_state() );
 
         s->target                     = p->target;
         s->growing_inferno_multiplier = 1 + growing_inferno_ticks * growing_inferno_multiplier;
         s->immolation_aura            = this;
 
-        p->active.immolation_aura->snapshot_state( s, p->active.immolation_aura->amount_type( s ) );
-        p->active.immolation_aura->schedule_execute( s );
+        p->active.immolation_aura_tick->snapshot_state( s, p->active.immolation_aura_tick->amount_type( s ) );
+        p->active.immolation_aura_tick->schedule_execute( s );
 
         if ( growing_inferno_ticks < growing_inferno_max_ticks )
           growing_inferno_ticks++;
@@ -9641,11 +9628,11 @@ void demon_hunter_t::activate()
     if ( talent.devourer.entropy.enabled() )
     {
       register_precombat_begin( [ this ]( player_t* ) {
-        int soul_fragments = options.entropy_starting_souls == -1
+        int starting_souls = options.entropy_starting_souls == -1
                                  ? as<int>( talent.devourer.entropy->effectN( 2 ).base_value() )
                                  : options.entropy_starting_souls;
-        if ( soul_fragments > 0 )
-          buff.void_metamorphosis_stack->trigger( soul_fragments );
+        if ( starting_souls > 0 )
+          buff.void_metamorphosis_stack->trigger( starting_souls );
       } );
     }
   }
@@ -9843,10 +9830,10 @@ void demon_hunter_t::create_buffs()
           ->set_allow_precombat( true );
 
   buff.untethered_rage = make_buff( this, "untethered_rage", spec.untethered_rage_buff )
-      ->set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
-        // Grant/remove a temporary charge of Metamorphosis when Untethered Rage is gained/lost.
-        cooldown.metamorphosis->adjust_max_charges( cur - old );
-      } );
+                             ->set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
+                               // Grant/remove a temporary charge of Metamorphosis when Untethered Rage is gained/lost.
+                               cooldown.metamorphosis->adjust_max_charges( cur - old );
+                             } );
   buff.seething_anger =
       make_buff( this, "seething_anger", spec.seething_anger_buff )->set_default_value_from_effect( 1 );
 
@@ -9990,79 +9977,6 @@ void demon_hunter_t::create_buffs()
 
   // Set Bonus Items ========================================================
 }
-
-struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
-{
-  demon_hunter_t* dh;
-  double cooldown_multiplier;
-
-  metamorphosis_adjusted_cooldown_expr_t( demon_hunter_t* p, util::string_view name_str )
-    : expr_t( name_str ), dh( p ), cooldown_multiplier( 1.0 )
-  {
-  }
-
-  void calculate_multiplier()
-  {
-    double reduction_per_second = 0.0;
-    cooldown_multiplier         = 1.0 / ( 1.0 + reduction_per_second );
-  }
-
-  double evaluate() override
-  {
-    return dh->cooldown.metamorphosis->remains().total_seconds() * cooldown_multiplier;
-  }
-};
-
-struct eye_beam_adjusted_cooldown_expr_t : public expr_t
-{
-  demon_hunter_t* dh;
-  double cooldown_multiplier;
-
-  eye_beam_adjusted_cooldown_expr_t( demon_hunter_t* p, util::string_view name_str )
-    : expr_t( name_str ), dh( p ), cooldown_multiplier( 1.0 )
-  {
-  }
-
-  void calculate_multiplier()
-  {
-    double reduction_per_second = 0.0;
-
-    if ( dh->talent.havoc.cycle_of_hatred->ok() )
-    {
-      /* NYI
-      action_t* chaos_strike = dh->find_action( "chaos_strike" );
-      assert( chaos_strike );
-
-      // Fury estimates are on the conservative end, intended to be rough approximation only
-      double approx_fury_per_second = 15.5;
-
-      // Use base haste only for approximation, don't want to calculate with temp buffs
-      const double base_haste = 1.0 / dh->collected_data.buffed_stats_snapshot.attack_haste;
-      approx_fury_per_second *= base_haste;
-
-      // Assume 90% of Fury used on Chaos Strike/Annihilation
-      const double approx_seconds_per_refund = ( chaos_strike->cost() / ( approx_fury_per_second * 0.9 ) )
-        / dh->spec.chaos_strike_refund->proc_chance();
-
-      if ( dh->talent.cycle_of_hatred->ok() )
-        reduction_per_second += dh->talent.cycle_of_hatred->effectN( 1 ).base_value() / approx_seconds_per_refund;
-        */
-    }
-
-    cooldown_multiplier = 1.0 / ( 1.0 + reduction_per_second );
-  }
-
-  double evaluate() override
-  {
-    // Need to calculate shoulders on first evaluation because we don't have crit/haste values on init
-    if ( cooldown_multiplier == 1 && dh->talent.havoc.cycle_of_hatred->ok() )
-    {
-      calculate_multiplier();
-    }
-
-    return dh->cooldown.eye_beam->remains().total_seconds() * cooldown_multiplier;
-  }
-};
 
 // demon_hunter_t::create_expression ========================================
 
@@ -11239,10 +11153,6 @@ void demon_hunter_t::init_spells()
   if ( talent.havoc.inner_demon->ok() )
   {
     active.inner_demon = get_background_action<inner_demon_t>( "inner_demon" );
-  }
-  if ( talent.havoc.ragefire->ok() )
-  {
-    active.ragefire = get_background_action<ragefire_t>( "ragefire" );
   }
   if ( talent.havoc.soulscar->ok() )
   {
@@ -12631,50 +12541,7 @@ void demon_hunter_t::analyze( sim_t& sim )
 
 // Utility functions ========================================================
 
-// Utility function to search spell data for matching effect.
-// NOTE: This will return the FIRST effect that matches parameters.
-const spelleffect_data_t* demon_hunter_t::find_spelleffect( const spell_data_t* spell, effect_subtype_t subtype,
-                                                            int misc_value, const spell_data_t* affected,
-                                                            effect_type_t type )
-{
-  for ( size_t i = 1; i <= spell->effect_count(); i++ )
-  {
-    const auto& eff = spell->effectN( i );
-
-    if ( affected->ok() && !affected->affected_by_all( eff ) )
-      continue;
-
-    if ( eff.type() == type && ( eff.subtype() == subtype || subtype == A_MAX ) &&
-         ( eff.misc_value1() == misc_value || misc_value == 0 ) )
-    {
-      return &eff;
-    }
-  }
-
-  return &spelleffect_data_t::nil();
-}
-
-// Return the appropriate spell when `base` is overriden to another spell by `passive`
-const spell_data_t* demon_hunter_t::find_spell_override( const spell_data_t* base,
-                                                         std::vector<const spell_data_t*> passives )
-{
-  if ( !base->ok() )
-    return base;
-
-  for ( auto passive : passives )
-  {
-    if ( !passive->ok() )
-      continue;
-
-    auto id = as<unsigned>( find_spelleffect( passive, A_OVERRIDE_ACTION_SPELL, base->id() )->base_value() );
-    if ( id )
-      return find_spell( id );
-  }
-
-  return base;
-}
-
-const spell_data_t* demon_hunter_t::conditional_spell_lookup( bool fn, int id )
+const spell_data_t* demon_hunter_t::conditional_spell_lookup( bool fn, int id ) const
 {
   if ( !fn )
   {
@@ -12683,31 +12550,15 @@ const spell_data_t* demon_hunter_t::conditional_spell_lookup( bool fn, int id )
   return find_spell( id );
 }
 
-const spell_data_t* demon_hunter_t::talent_spell_lookup( player_talent_t t, int id )
+const spell_data_t* demon_hunter_t::talent_spell_lookup( player_talent_t t, int id ) const
 {
   return conditional_spell_lookup( t->ok(), id );
 }
 
 const spell_data_t* demon_hunter_t::spec_talent_spell_lookup( const specialization_e s, const player_talent_t& t,
-                                                              const int id )
+                                                              const int id ) const
 {
   return conditional_spell_lookup( specialization() == s && t->ok(), id );
-}
-
-const spell_data_t* demon_hunter_t::spell_lookup_by_spec( const spell_data_t* devourer, const spell_data_t* havoc,
-                                                          const spell_data_t* vengeance )
-{
-  switch ( specialization() )
-  {
-    case DEMON_HUNTER_DEVOURER:
-      return devourer;
-    case DEMON_HUNTER_HAVOC:
-      return havoc;
-    case DEMON_HUNTER_VENGEANCE:
-      return vengeance;
-    default:
-      return spell_data_t::not_found();
-  }
 }
 
 /* Report Extension Class
@@ -12720,7 +12571,7 @@ public:
   {
   }
 
-  void cdwaste_table_header( report::sc_html_stream& os )
+  static void cdwaste_table_header( report::sc_html_stream& os )
   {
     os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
        << "<tr>\n"
@@ -12739,12 +12590,12 @@ public:
        << "</tr>\n";
   }
 
-  void cdwaste_table_footer( report::sc_html_stream& os )
+  static void cdwaste_table_footer( report::sc_html_stream& os )
   {
     os << "</table>\n";
   }
 
-  void cdwaste_table_contents( report::sc_html_stream& os )
+  void cdwaste_table_contents( report::sc_html_stream& os ) const
   {
     size_t n = 0;
     for ( size_t i = 0; i < p.cd_waste_exec.size(); i++ )
