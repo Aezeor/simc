@@ -906,6 +906,10 @@ struct player_t : public actor_t
     // "random" picks a random valid race.
     // "none" will use the targets actual race.
     player_option_t<std::string> darkmoon_hunt_race = "raid_random";
+    // Set the average duration after getting the sealed chaos urn fear effect where it is dispelled.
+    timespan_t sealed_chaos_urn_dispell_time = 2.5_s;
+    // Set weather you expect to be dispelled by a healer when getting the sealed chaos urn fear.
+    bool sealed_chaos_urn_dispell = false;
   } midnight_opts;
 
 private:

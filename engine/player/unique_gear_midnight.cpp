@@ -1420,9 +1420,18 @@ void sealed_chaos_urn( special_effect_t& effect )
 
   auto debuff = create_buff<buff_t>( effect.player, "sealed_chaos_urn_debuff", effect.driver()->effectN( 2 ).trigger() )
                     ->set_name_reporting( "Debuff" )
-                    ->set_expire_callback( [ fear ]( buff_t*, int, timespan_t d ) {
+                    ->set_expire_callback( [ &effect, fear ]( buff_t*, int, timespan_t d ) {
                       if ( d == 0_ms )
-                        fear->trigger();
+                      {
+                        if ( effect.player->midnight_opts.sealed_chaos_urn_dispell )
+                        {
+                          timespan_t dur = effect.player->rng().gauss_ab(
+                              effect.player->midnight_opts.sealed_chaos_urn_dispell_time, 1_s, 500_ms, 4.5_s );
+                          fear->trigger( dur );
+                        }
+                        else
+                          fear->trigger();
+                      }
                     } );
 
   effect.player->register_on_kill_callback( [ debuff ]( player_t* ) {
