@@ -848,7 +848,7 @@ public:
     spell_data_ptr_t bullseye;
     spell_data_ptr_t bullseye_buff;
     spell_data_ptr_t calling_the_shots;
-    spell_data_ptr_t unerring_vision; /* Spelldata now scuffed because of Streamline's removal, manual parsing likely needed
+    spell_data_ptr_t unerring_vision; /* Spelldata now scuffed because of Streamline's removal, this is also reflected in-game.
                                          TODO reconfirm before launch */
     spell_data_ptr_t small_game_hunter;
     spell_data_ptr_t eagles_accuracy;
@@ -1429,7 +1429,7 @@ public:
     
     affected_by.sniper_training = parse_damage_affecting_aura( this, p->mastery.sniper_training );
     affected_by.headshot = parse_damage_affecting_aura( this, p->talents.headshot_debuff );
-    affected_by.trueshot_crit_damage_bonus = check_affected_by( this, p->talents.trueshot->effectN( 5 ) );
+    affected_by.trueshot_crit_damage_bonus = check_affected_by( this, p->talents.trueshot->effectN( 4 ) );
     affected_by.bullseye_crit_chance = check_affected_by( this, p->talents.bullseye->effectN( 1 ).trigger()->effectN( 1 ) );
 
     affected_by.bestial_wrath = parse_damage_affecting_aura( this, p->talents.bestial_wrath );
@@ -1679,7 +1679,7 @@ public:
     double cm = ab::composite_crit_damage_bonus_multiplier();
 
     if ( affected_by.trueshot_crit_damage_bonus && p()->buffs.trueshot->check() )
-      cm *= 1 + p()->talents.trueshot->effectN( 5 ).percent();
+      cm *= 1 + p()->talents.trueshot->effectN( 4 ).percent();
 
     if ( affected_by.stargazer && p()->buffs.stargazer->check() )
       cm *= 1 + p()->buffs.stargazer->stack_value();
@@ -4467,18 +4467,6 @@ struct auto_shot_base_t : public auto_attack_base_t<ranged_attack_t>
     return am;
   }
 
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-      double cdm = auto_attack_base_t::composite_crit_damage_bonus_multiplier();
-
-      /* Auto Shot is missing from Lethality's spelldata as of 2026-01-11
-         TODO reconfirm before launch */
-      if ( p()->talents.lethality.ok() )
-        cdm *= 1 + p()->talents.lethality->effectN( 1 ).percent();
-
-      return cdm;
-  }
-
   timespan_t execute_time_flat_modifier() const override
   {
     timespan_t m = auto_attack_base_t::execute_time_flat_modifier();
@@ -6306,7 +6294,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     double m = aimed_shot_base_t::recharge_rate_multiplier( cd );
 
     if ( p() -> buffs.trueshot -> check() )
-      m /= 1 + p() -> talents.trueshot -> effectN( 3 ).percent();
+      m /= 1 + p() -> talents.trueshot -> effectN( 2 ).percent();
 
     return m;
   }
@@ -10278,7 +10266,7 @@ double hunter_t::composite_melee_crit_chance() const
   double crit = player_t::composite_melee_crit_chance();
 
   if ( buffs.trueshot->check() )
-    crit += talents.trueshot->effectN( 4 ).percent();
+    crit += talents.trueshot->effectN( 3 ).percent();
 
   return crit;
 }
@@ -10288,7 +10276,7 @@ double hunter_t::composite_spell_crit_chance() const
   double crit = player_t::composite_spell_crit_chance();
 
   if ( buffs.trueshot->check() )
-    crit += talents.trueshot->effectN( 4 ).percent();
+    crit += talents.trueshot->effectN( 3 ).percent();
 
   return crit;
 }
