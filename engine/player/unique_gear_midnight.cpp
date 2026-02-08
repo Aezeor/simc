@@ -1108,8 +1108,7 @@ void sapling_of_the_dawnroot( special_effect_t& effect )
       special                                        = false;
       trigger_gcd                                    = 0_ms;
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
-      // No Role Mult currently
-      // base_multiplier *= role_mult( e );
+      base_multiplier *= role_mult( e );
     }
   };
 
@@ -1128,8 +1127,7 @@ void sapling_of_the_dawnroot( special_effect_t& effect )
       background = split_aoe_damage = true;
       aoe                           = -1;
       base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e );
-      // No Role Mult currently
-      // base_multiplier *= role_mult( e );
+      base_multiplier *= role_mult( e );
     }
   };
 
