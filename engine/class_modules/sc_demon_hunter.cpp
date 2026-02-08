@@ -5,6 +5,8 @@
 
 #include "action/parse_effects.hpp"
 #include "class_modules/apl/apl_demon_hunter.hpp"
+#include "report/charts.hpp"
+#include "report/highchart.hpp"
 
 #include <valarray>
 
@@ -1035,10 +1037,11 @@ public:
     proc_t* soul_splitter;
     proc_t* felblade_reset;
     proc_t* soul_sigils;
-    proc_t* shattered_souls;
+    proc_t* shattered_souls_death;
 
     // Devourer
     proc_t* spontaneous_immolation;
+    std::unordered_map<std::string, proc_t*> shattered_souls;
 
     // Havoc
     proc_t* demonic_appetite;
@@ -3246,11 +3249,18 @@ struct shattered_souls_trigger_t : public BASE
   using base_t = shattered_souls_trigger_t<BASE>;
 
   double shattered_souls_base_chance;
+  proc_t* shattered_souls_proc;
 
   shattered_souls_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
                              util::string_view o = {} )
     : BASE( n, p, s, o ), shattered_souls_base_chance( p->spec.shattered_souls->effectN( 1 ).percent() )
   {
+    std::string proc_name = base_t::shattered_souls_ability_name();
+    if ( !p->proc.shattered_souls[ proc_name ] )
+    {
+      p->proc.shattered_souls[ proc_name ] = p->get_proc( fmt::format( "shattered_souls_{}", proc_name ) );
+    }
+    shattered_souls_proc = p->proc.shattered_souls[ proc_name ];
   }
 
   void impact( action_state_t* s ) override
@@ -3269,8 +3279,13 @@ struct shattered_souls_trigger_t : public BASE
       BASE::p()->sim->print_debug( "{} proc-ed Shattered Souls with {} ({}) chance: {:.3f}", BASE::p()->name(),
                                    BASE::name(), BASE::data().id(), chance );
       BASE::p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
-      BASE::p()->proc.shattered_souls->occur();
+      shattered_souls_proc->occur();
     }
+  }
+
+  virtual std::string shattered_souls_ability_name()
+  {
+    return BASE::name_str;
   }
 
   virtual double shattered_souls_chance( action_state_t* s )
@@ -9428,7 +9443,7 @@ void demon_hunter_td_t::target_demise()
   if ( dh().rng().roll( dh().options.soul_fragment_from_shattered_souls_chance ) )
   {
     dh().spawn_soul_fragment( soul_fragment::GREATER );
-    dh().proc.shattered_souls->occur();
+    dh().proc.shattered_souls_death->occur();
   }
 }
 
@@ -10252,7 +10267,7 @@ void demon_hunter_t::init_procs()
   proc.soul_splitter                 = get_proc( "soul_splitter" );
   proc.felblade_reset                = get_proc( "felblade_reset" );
   proc.soul_sigils                   = get_proc( "soul_sigils" );
-  proc.shattered_souls               = get_proc( "shattered_souls" );
+  proc.shattered_souls_death         = get_proc( "shattered_souls_death" );
 
   // Devourer
   proc.spontaneous_immolation = get_proc( "spontaneous_immolation" );
@@ -12635,23 +12650,97 @@ public:
     }
   }
 
-  void html_customsection( report::sc_html_stream& os ) override
+  void shattered_souls_piechart( report::sc_html_stream& os ) const
   {
-    (void)p;
-    os << "\t\t\t\t<div class=\"player-section custom_section\">\n";
+    highchart::pie_chart_t shattered_souls_sources( highchart::build_id( p, "shattered_souls_source" ), *p.sim );
+    shattered_souls_sources.set_title( "Shattered Souls Sources" );
+    shattered_souls_sources.set( "plotOptions.pie.dataLabels.format", "{point.name}: {point.percentage:.1f}%" );
+
+    std::vector<proc_t*> shattered_souls_procs( p.proc.shattered_souls.size() );
+    std::transform( p.proc.shattered_souls.begin(), p.proc.shattered_souls.end(), shattered_souls_procs.begin(),
+                    []( auto entry ) { return entry.second; } );
+
+    double sum = 0.0;
+
+    // Get total amount of Shattered Souls
+    for ( const auto entry : shattered_souls_procs )
+    {
+      sum += entry->count.mean();
+    }
+
+    // Sort the dataset so it looks better in the chart
+    range::sort( shattered_souls_procs, []( const auto& left, const auto& right ) {
+      if ( left->count.mean() == right->count.mean() )
+      {
+        return left->name_str < right->name_str;
+      }
+
+      return left->count.mean() > right->count.mean();
+    } );
+
+    // Populate the pie chart with each entry
+    range::for_each( shattered_souls_procs, [ this, &shattered_souls_sources, sum ]( const auto& entry ) {
+      if ( entry->count.mean() == 0.0 )
+        return;
+
+      std::string prefix = "shattered_souls_";
+      color::rgb color   = color::school_color( SCHOOL_SHADOW );
+
+      js::sc_js_t e;
+      e.set( "color", color.str() );
+      e.set( "y", util::round( ( entry->count.mean() / sum ) * 100, p.sim->report_precision ) );
+      e.set( "name", report_decorators::decorate_html_string(
+                         util::encode_html( entry->name_str.substr( prefix.length() ) ), color ) );
+
+      shattered_souls_sources.add( "series.0.data", e );
+    } );
+    shattered_souls_sources.set( "series.0.name", "Percentage" );
+
+    os << shattered_souls_sources.to_target_div();
+    p.sim->add_chart_data( shattered_souls_sources );
+  }
+
+  void html_customsection_shattered_souls( report::sc_html_stream& os ) const
+  {
+    os << "<div class=\"player-section custom_section\">\n"
+          "<h3 class=\"toggle open\">Shattered Souls</h3>\n"
+          "<div class=\"toggle-content\">\n";
+
+    shattered_souls_piechart( os );
+
+    os << "</div>\n"
+          "</div>\n";
+  }
+
+  void html_customsection_cd_waste( report::sc_html_stream& os ) const
+  {
+    os << "<div class=\"player-section custom_section\">\n";
     if ( !p.cd_waste_exec.empty() )
     {
-      os << "\t\t\t\t\t<h3 class=\"toggle open\">Cooldown Waste Details</h3>\n"
-         << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+      os << "<h3 class=\"toggle open\">Cooldown Waste Details</h3>\n"
+         << "<div class=\"toggle-content\">\n";
 
       cdwaste_table_header( os );
       cdwaste_table_contents( os );
       cdwaste_table_footer( os );
 
-      os << "\t\t\t\t\t</div>\n";
+      os << "</div>\n";
       os << "<div class=\"clear\"></div>\n";
     }
-    os << "\t\t\t\t\t</div>\n";
+    os << "</div>\n";
+  }
+
+  void html_customsection( report::sc_html_stream& os ) override
+  {
+    if ( p.sim->report_details == 0 )
+      return;
+
+    // html_customsection_cd_waste( os );
+
+    if ( p.specialization() == DEMON_HUNTER_DEVOURER )
+    {
+      html_customsection_shattered_souls( os );
+    }
   }
 
 private:
