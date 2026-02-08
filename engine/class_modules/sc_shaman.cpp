@@ -11970,8 +11970,7 @@ void shaman_t::create_buffs()
   buff.molten_weapon = make_buff( this, "molten_weapon", find_spell( 224125 ) )
     ->set_trigger_spell( talent.feral_spirit );
   buff.crackling_surge  = make_buff( this, "crackling_surge", find_spell( 224127 ) )
-    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-    ->set_trigger_spell( talent.feral_spirit );
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
   buff.converging_storms = make_buff( this, "converging_storms", find_spell( 198300 ) )
       ->set_default_value_from_effect( 1 );
   // Buffs stormstrike and lava lash after using crash lightning
@@ -12563,7 +12562,7 @@ void shaman_t::init_action_list_enhancement()
   buffs->add_action( "fireblood,if=(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains%%action.fireblood.cooldown<=action.fireblood.duration)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))" );
   buffs->add_action( "ancestral_call,if=(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains%%action.ancestral_call.cooldown<=action.ancestral_call.duration)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))" );
   buffs->add_action( "invoke_external_buff,name=power_infusion,if=((talent.deeply_rooted_elements.enabled&buff.ascendance.remains>7.5)|(!talent.deeply_rooted_elements.enabled&(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active))|(fight_remains%%120<=20)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))" );
-  
+
   // Stormbringer Single Target
   single_sb->add_action( "primordial_storm,if=(buff.maelstrom_weapon.stack>=9|buff.primordial_storm.remains<=4&buff.maelstrom_weapon.stack>=5)" );
   single_sb->add_action( "voltaic_blaze,if=dot.flame_shock.remains=0&time<5" );
