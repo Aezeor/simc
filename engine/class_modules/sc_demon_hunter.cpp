@@ -191,7 +191,7 @@ const std::vector<demonsurge_ability> demonsurge_abilities{
     demonsurge_ability::SIGIL_OF_DOOM, demonsurge_ability::CONSUMING_FIRE, demonsurge_ability::ABYSSAL_GAZE,
     demonsurge_ability::ANNIHILATION, demonsurge_ability::DEATH_SWEEP };
 
-std::string demonsurge_ability_name( demonsurge_ability ability )
+std::string demonsurge_ability_action_name( demonsurge_ability ability )
 {
   switch ( ability )
   {
@@ -212,6 +212,27 @@ std::string demonsurge_ability_name( demonsurge_ability ability )
   }
 }
 
+std::string demonsurge_ability_proc_name( demonsurge_ability ability )
+{
+  switch ( ability )
+  {
+    case demonsurge_ability::SIGIL_OF_DOOM:
+      return "Demonsurge: Sigil of Doom";
+    case demonsurge_ability::CONSUMING_FIRE:
+      return "Demonsurge: Consuming Fire";
+    case demonsurge_ability::ABYSSAL_GAZE:
+      return "Demonsurge: Abyssal Gaze";
+    case demonsurge_ability::ANNIHILATION:
+      return "Demonsurge: Annihilation";
+    case demonsurge_ability::DEATH_SWEEP:
+      return "Demonsurge: Death Sweep";
+    case demonsurge_ability::ENTER_META:
+      return "Demonsurge: Volatile Instinct";
+    default:
+      return "demonsurge_unknown";
+  }
+}
+
 enum voidsurge_ability
 {
   PREDATORS_WAKE,
@@ -223,7 +244,7 @@ enum voidsurge_ability
 const std::vector<voidsurge_ability> voidsurge_abilities{
     voidsurge_ability::REAPERS_TOLL, voidsurge_ability::PREDATORS_WAKE, voidsurge_ability::PIERCE_THE_VEIL };
 
-std::string voidsurge_ability_name( voidsurge_ability ability )
+std::string voidsurge_ability_action_name( voidsurge_ability ability )
 {
   switch ( ability )
   {
@@ -237,6 +258,23 @@ std::string voidsurge_ability_name( voidsurge_ability ability )
       return "voidsurge_volatile_instinct";
     default:
       return "voidsurge_unknown";
+  }
+}
+
+std::string voidsurge_ability_proc_name( voidsurge_ability ability )
+{
+  switch ( ability )
+  {
+    case voidsurge_ability::PREDATORS_WAKE:
+      return "Voidsurge: Predator's Wake";
+    case voidsurge_ability::PIERCE_THE_VEIL:
+      return "Voidsurge: Pierce the Veil";
+    case voidsurge_ability::REAPERS_TOLL:
+      return "Voidsurge: Reaper's Toll";
+    case voidsurge_ability::VOLATILE_INSTINCT:
+      return "Voidsurge: Volatile Instinct";
+    default:
+      return "Voidsurge: Unknown";
   }
 }
 
@@ -1035,7 +1073,7 @@ public:
     proc_t* soul_fragment_empowered_demon;
     proc_t* soul_fragment_lesser;
     proc_t* soul_splitter;
-    proc_t* felblade_reset;
+    proc_t* unhindered_assault;
     proc_t* soul_sigils;
     proc_t* shattered_souls_death;
 
@@ -3258,7 +3296,7 @@ struct shattered_souls_trigger_t : public BASE
     std::string proc_name = base_t::shattered_souls_ability_name();
     if ( !p->proc.shattered_souls[ proc_name ] )
     {
-      p->proc.shattered_souls[ proc_name ] = p->get_proc( fmt::format( "shattered_souls_{}", proc_name ) );
+      p->proc.shattered_souls[ proc_name ] = p->get_proc( fmt::format( "Shattered Souls: {}", proc_name ) );
     }
     shattered_souls_proc = p->proc.shattered_souls[ proc_name ];
   }
@@ -8480,7 +8518,7 @@ struct vengeful_retreat_t
 
     if ( p()->talent.aldrachi_reaver.unhindered_assault->ok() )
     {
-      p()->proc.felblade_reset->occur();
+      p()->proc.unhindered_assault->occur();
       p()->cooldown.felblade->reset( true );
     }
   }
@@ -9975,12 +10013,12 @@ void demon_hunter_t::create_buffs()
   for ( demonsurge_ability ability : demonsurge_abilities )
   {
     buff.demonsurge_abilities[ ability ] =
-        make_buff( this, demonsurge_ability_name( ability ), hero_spec.demonsurge_demonsurge_buff )->set_quiet( true );
+        make_buff( this, demonsurge_ability_action_name( ability ), hero_spec.demonsurge_demonsurge_buff )->set_quiet( true );
   }
   for ( voidsurge_ability ability : voidsurge_abilities )
   {
     buff.voidsurge_abilities[ ability ] =
-        make_buff( this, voidsurge_ability_name( ability ), hero_spec.demonsurge_demonsurge_buff )->set_quiet( true );
+        make_buff( this, voidsurge_ability_action_name( ability ), hero_spec.demonsurge_demonsurge_buff )->set_quiet( true );
   }
 
   buff.demonsurge_demonsurge = make_buff( this, "demonsurge_demonsurge", hero_spec.demonsurge_demonsurge_buff );
@@ -10259,69 +10297,69 @@ void demon_hunter_t::init_procs()
   base_t::init_procs();
 
   // General
-  proc.delayed_aa_range              = get_proc( "delayed_aa_out_of_range" );
-  proc.soul_fragment_greater         = get_proc( "soul_fragment_greater" );
-  proc.soul_fragment_greater_demon   = get_proc( "soul_fragment_greater_demon" );
-  proc.soul_fragment_empowered_demon = get_proc( "soul_fragment_empowered_demon" );
-  proc.soul_fragment_lesser          = get_proc( "soul_fragment_lesser" );
-  proc.soul_splitter                 = get_proc( "soul_splitter" );
-  proc.felblade_reset                = get_proc( "felblade_reset" );
-  proc.soul_sigils                   = get_proc( "soul_sigils" );
-  proc.shattered_souls_death         = get_proc( "shattered_souls_death" );
+  proc.delayed_aa_range              = get_proc( "Delayed AA out of range" );
+  proc.soul_fragment_greater         = get_proc( "Soul Fragment (Greater)" );
+  proc.soul_fragment_greater_demon   = get_proc( "Soul Fragment (Greater Demon)" );
+  proc.soul_fragment_empowered_demon = get_proc( "Soul Fragment (Empowered Demon)" );
+  proc.soul_fragment_lesser          = get_proc( "Soul Fragment" );
+  proc.soul_splitter                 = get_proc( "Soul Splitter" );
+  proc.unhindered_assault            = get_proc( "Unhindered Assault" );
+  proc.soul_sigils                   = get_proc( "Soul Sigils" );
+  proc.shattered_souls_death         = get_proc( "Shattered Souls (Death)" );
 
   // Devourer
-  proc.spontaneous_immolation = get_proc( "spontaneous_immolation" );
+  proc.spontaneous_immolation = get_proc( "Spontaneous Immolation" );
 
   // Havoc
-  proc.demonic_appetite                = get_proc( "demonic_appetite" );
-  proc.chaos_strike_in_essence_break   = get_proc( "chaos_strike_in_essence_break" );
-  proc.annihilation_in_essence_break   = get_proc( "annihilation_in_essence_break" );
-  proc.blade_dance_in_essence_break    = get_proc( "blade_dance_in_essence_break" );
-  proc.death_sweep_in_essence_break    = get_proc( "death_sweep_in_essence_break" );
-  proc.chaos_strike_in_serrated_glaive = get_proc( "chaos_strike_in_serrated_glaive" );
-  proc.annihilation_in_serrated_glaive = get_proc( "annihilation_in_serrated_glaive" );
-  proc.throw_glaive_in_serrated_glaive = get_proc( "throw_glaive_in_serrated_glaive" );
-  proc.shattered_destiny               = get_proc( "shattered_destiny" );
-  proc.eye_beam_canceled               = get_proc( "eye_beam_canceled" );
+  proc.demonic_appetite                = get_proc( "Demonic Appetite" );
+  proc.chaos_strike_in_essence_break   = get_proc( "Chaos Strike in Essence Break" );
+  proc.annihilation_in_essence_break   = get_proc( "Annihilation in Essence Break" );
+  proc.blade_dance_in_essence_break    = get_proc( "Blade Dance in Essence Break" );
+  proc.death_sweep_in_essence_break    = get_proc( "Death Sweep in Essence Break" );
+  proc.chaos_strike_in_serrated_glaive = get_proc( "Chaos Strike in Serrated Glaive" );
+  proc.annihilation_in_serrated_glaive = get_proc( "Annihilation in Serrated Glaive" );
+  proc.throw_glaive_in_serrated_glaive = get_proc( "Throw Glaive in Serrated Glaive" );
+  proc.shattered_destiny               = get_proc( "Shattered Destiny" );
+  proc.eye_beam_canceled               = get_proc( "Eye Beam canceled" );
 
   // Vengeance
-  proc.untethered_rage                    = get_proc( "untethered_rage" );
-  proc.soul_fragment_expire               = get_proc( "soul_fragment_expire" );
-  proc.soul_fragment_overflow             = get_proc( "soul_fragment_overflow" );
-  proc.soul_fragment_from_shear           = get_proc( "soul_fragment_from_shear" );
-  proc.soul_fragment_from_fracture        = get_proc( "soul_fragment_from_fracture" );
-  proc.soul_fragment_from_sigil_of_spite  = get_proc( "soul_fragment_from_sigil_of_spite" );
-  proc.soul_fragment_from_fallout         = get_proc( "soul_fragment_from_fallout" );
-  proc.soul_fragment_from_meta            = get_proc( "soul_fragment_from_meta" );
-  proc.soul_fragment_from_bulk_extraction = get_proc( "soul_fragment_from_bulk_extraction" );
-  proc.feed_the_demon                     = get_proc( "feed_the_demon" );
+  proc.untethered_rage                    = get_proc( "Untethered Rage" );
+  proc.soul_fragment_expire               = get_proc( "Soul Fragment expiration" );
+  proc.soul_fragment_overflow             = get_proc( "Soul Fragment overflow" );
+  proc.soul_fragment_from_shear           = get_proc( "Soul Fragment from Shear" );
+  proc.soul_fragment_from_fracture        = get_proc( "Soul Fragment from Fracture" );
+  proc.soul_fragment_from_meta            = get_proc( "Soul Fragment from Fracture (Meta)" );
+  proc.soul_fragment_from_sigil_of_spite  = get_proc( "Soul Fragment from Sigil of Spite" );
+  proc.soul_fragment_from_fallout         = get_proc( "Soul Fragment from Fallout" );
+  proc.soul_fragment_from_bulk_extraction = get_proc( "Soul Fragment from Bulk Extraction" );
+  proc.feed_the_demon                     = get_proc( "Feed the Demon" );
 
   // Aldrachi Reaver
-  proc.soul_fragment_from_aldrachi_tactics = get_proc( "soul_fragment_from_aldrachi_tactics" );
-  proc.soul_fragment_from_broken_spirit    = get_proc( "soul_fragment_from_broken_spirit" );
-  proc.soul_fragment_from_wounded_quarry   = get_proc( "soul_fragment_from_wounded_quarry" );
-  proc.wounded_quarry_accumulator_reset    = get_proc( "wounded_quarry_accumulator_reset" );
+  proc.soul_fragment_from_aldrachi_tactics = get_proc( "Soul Fragment from Aldrachi Tactics" );
+  proc.soul_fragment_from_broken_spirit    = get_proc( "Soul Fragment from Broken Spirit" );
+  proc.soul_fragment_from_wounded_quarry   = get_proc( "Soul Fragment from Wounded Quarry" );
+  proc.wounded_quarry_accumulator_reset    = get_proc( "Wounded Quarry Accumulator Reset" );
 
   // Annihilator
-  proc.soul_fragment_from_meteoric_rise = get_proc( "soul_fragment_from_meteoric_rise" );
+  proc.soul_fragment_from_meteoric_rise = get_proc( "Soul Fragment from Meteoric Rise" );
 
   // Scarred
   for ( demonsurge_ability ability : demonsurge_abilities )
   {
-    proc.demonsurge_abilities[ ability ] = get_proc( demonsurge_ability_name( ability ) );
+    proc.demonsurge_abilities[ ability ] = get_proc( demonsurge_ability_proc_name( ability ) );
   }
   proc.demonsurge_abilities[ demonsurge_ability::ENTER_META ] =
-      get_proc( demonsurge_ability_name( demonsurge_ability::ENTER_META ) );
+      get_proc( demonsurge_ability_proc_name( demonsurge_ability::ENTER_META ) );
 
   for ( voidsurge_ability ability : voidsurge_abilities )
   {
-    proc.voidsurge_abilities[ ability ] = get_proc( voidsurge_ability_name( ability ) );
+    proc.voidsurge_abilities[ ability ] = get_proc( voidsurge_ability_proc_name( ability ) );
   }
   proc.voidsurge_abilities[ voidsurge_ability::REAPERS_TOLL ] =
-      get_proc( voidsurge_ability_name( voidsurge_ability::REAPERS_TOLL ) );
+      get_proc( voidsurge_ability_proc_name( voidsurge_ability::REAPERS_TOLL ) );
   proc.voidsurge_abilities[ voidsurge_ability::VOLATILE_INSTINCT ] =
-      get_proc( voidsurge_ability_name( voidsurge_ability::VOLATILE_INSTINCT ) );
-  proc.undying_embers = get_proc( "undying_embers" );
+      get_proc( voidsurge_ability_proc_name( voidsurge_ability::VOLATILE_INSTINCT ) );
+  proc.undying_embers = get_proc( "Undying Embers" );
 
   // Set Bonuses
 }
@@ -12683,7 +12721,7 @@ public:
       if ( entry->count.mean() == 0.0 )
         return;
 
-      std::string prefix = "shattered_souls_";
+      std::string prefix = "Shattered Souls: ";
       color::rgb color   = color::school_color( SCHOOL_SHADOW );
 
       js::sc_js_t e;
@@ -12735,7 +12773,7 @@ public:
     if ( p.sim->report_details == 0 )
       return;
 
-    // html_customsection_cd_waste( os );
+    html_customsection_cd_waste( os );
 
     if ( p.specialization() == DEMON_HUNTER_DEVOURER )
     {
