@@ -1072,17 +1072,28 @@ public:
     proc_t* soul_fragment_greater_demon;
     proc_t* soul_fragment_empowered_demon;
     proc_t* soul_fragment_lesser;
-    proc_t* soul_splitter;
+    proc_t* soul_fragment_from_soul_splitter;
     proc_t* unhindered_assault;
-    proc_t* soul_sigils;
-    proc_t* shattered_souls_death;
+    proc_t* soul_fragment_from_soul_sigils;
+    proc_t* soul_fragment_from_death;
+    proc_t* soul_fragment_expire;
+    proc_t* soul_fragment_overflow;
 
     // Devourer
     proc_t* spontaneous_immolation;
+    proc_t* soul_fragment_from_consume;
+    proc_t* soul_fragment_from_devour;
+    proc_t* soul_fragment_from_soul_immolation;
+    proc_t* soul_fragment_from_shattered_souls;
+    proc_t* soul_fragment_from_star_fragments;
+    proc_t* soul_fragment_from_hungering_slash;
+    proc_t* soul_fragment_from_reapers_toll;
+    proc_t* soul_fragment_from_void_metamorphosis;
+    proc_t* soul_fragment_from_entropy;
     std::unordered_map<std::string, proc_t*> shattered_souls;
 
     // Havoc
-    proc_t* demonic_appetite;
+    proc_t* soul_fragment_from_demonic_appetite;
     proc_t* chaos_strike_in_essence_break;
     proc_t* annihilation_in_essence_break;
     proc_t* blade_dance_in_essence_break;
@@ -1095,24 +1106,22 @@ public:
 
     // Vengeance
     proc_t* untethered_rage;
-    proc_t* soul_fragment_expire;
-    proc_t* soul_fragment_overflow;
-    proc_t* soul_fragment_from_shear;
     proc_t* soul_fragment_from_fracture;
+    proc_t* soul_fragment_from_fracture_meta;
     proc_t* soul_fragment_from_sigil_of_spite;
+    proc_t* soul_fragment_from_soul_carver;
     proc_t* soul_fragment_from_fallout;
-    proc_t* soul_fragment_from_meta;
-    proc_t* soul_fragment_from_bulk_extraction;
     proc_t* feed_the_demon;
 
     // Aldrachi Reaver
     proc_t* soul_fragment_from_aldrachi_tactics;
     proc_t* soul_fragment_from_wounded_quarry;
-    proc_t* wounded_quarry_accumulator_reset;
     proc_t* soul_fragment_from_broken_spirit;
+    proc_t* wounded_quarry_accumulator_reset;
 
     // Annihilator
     proc_t* soul_fragment_from_meteoric_rise;
+    proc_t* soul_fragment_from_world_killer;
 
     // Scarred
     std::unordered_map<demonsurge_ability, proc_t*> demonsurge_abilities;
@@ -1305,8 +1314,7 @@ public:
   unsigned get_inactive_soul_fragments( soul_fragment = soul_fragment::ANY ) const;
   unsigned get_total_soul_fragments( soul_fragment = soul_fragment::ANY ) const;
   void activate_soul_fragment( soul_fragment_t* );
-  void spawn_soul_fragment( soul_fragment, unsigned = 1, bool = false );
-  void spawn_soul_fragment( soul_fragment, unsigned, player_t* target, bool = false );
+  void spawn_soul_fragment( proc_t*, soul_fragment, unsigned = 1, bool = false );
   void trigger_demonic() const;
   void trigger_demonsurge( demonsurge_ability, bool = true );
   void trigger_demonsurge( demonsurge_ability, timespan_t, bool = true );
@@ -2707,8 +2715,7 @@ struct art_of_the_glaive_trigger_t : public BASE
       }
       if ( BASE::p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
       {
-        BASE::p()->proc.soul_fragment_from_aldrachi_tactics->occur();
-        BASE::p()->spawn_soul_fragment( soul_fragment::LESSER );
+        BASE::p()->spawn_soul_fragment( BASE::p()->proc.soul_fragment_from_aldrachi_tactics, soul_fragment::LESSER );
       }
     }
   }
@@ -3316,7 +3323,7 @@ struct shattered_souls_trigger_t : public BASE
     {
       BASE::p()->sim->print_debug( "{} proc-ed Shattered Souls with {} ({}) chance: {:.3f}", BASE::p()->name(),
                                    BASE::name(), BASE::data().id(), chance );
-      BASE::p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
+      BASE::p()->spawn_soul_fragment( BASE::p()->proc.soul_fragment_from_shattered_souls, soul_fragment::LESSER, 1 );
       shattered_souls_proc->occur();
     }
   }
@@ -3409,11 +3416,7 @@ struct demon_hunter_sigil_t : public demon_hunter_spell_t
     if ( hit_any_target && p()->talent.vengeance.soul_sigils->ok() )
     {
       unsigned num_souls = as<unsigned>( p()->talent.vengeance.soul_sigils->effectN( 1 ).base_value() );
-      p()->spawn_soul_fragment( soul_fragment::LESSER, num_souls, false );
-      for ( unsigned i = 0; i < num_souls; i++ )
-      {
-        p()->proc.soul_sigils->occur();
-      }
+      p()->spawn_soul_fragment( p()->proc.soul_fragment_from_soul_sigils, soul_fragment::LESSER, num_souls, false );
     }
   }
 
@@ -4114,8 +4117,7 @@ struct fel_devastation_t : public final_breath_trigger_t<demon_hunter_spell_t>
       int ticks_per_soul_fragment = as<int>( d->num_ticks() / soul_fragments_from_meteoric_rise );
       if ( d->num_ticks() % ticks_per_soul_fragment == 0 )
       {
-        p()->spawn_soul_fragment( soul_fragment::LESSER );
-        p()->proc.soul_fragment_from_meteoric_rise->occur();
+        p()->spawn_soul_fragment( p()->proc.soul_fragment_from_meteoric_rise, soul_fragment::LESSER );
       }
     }
   }
@@ -4782,8 +4784,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
         if ( initial && spawn_fallout_soul )
         {
-          p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
-          p()->proc.soul_fragment_from_fallout->occur();
+          p()->spawn_soul_fragment( p()->proc.soul_fragment_from_fallout, soul_fragment::LESSER, 1 );
         }
 
         if ( p()->talent.vengeance.charred_flesh->ok() )
@@ -5457,11 +5458,8 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
     void execute() override
     {
       demon_hunter_sigil_t::execute();
-      p()->spawn_soul_fragment( soul_fragment::LESSER, soul_fragments_to_spawn );
-      for ( unsigned i = 0; i < soul_fragments_to_spawn; i++ )
-      {
-        p()->proc.soul_fragment_from_sigil_of_spite->occur();
-      }
+      p()->spawn_soul_fragment( p()->proc.soul_fragment_from_sigil_of_spite, soul_fragment::LESSER,
+                                soul_fragments_to_spawn );
     }
   };
 
@@ -5533,8 +5531,7 @@ struct the_hunt_base_t
 
       if ( s->chain_target == 0 && p()->talent.aldrachi_reaver.broken_spirit->ok() )
       {
-        p()->spawn_soul_fragment( soul_fragment::LESSER );
-        p()->proc.soul_fragment_from_broken_spirit->occur();
+        p()->spawn_soul_fragment( p()->proc.soul_fragment_from_broken_spirit, soul_fragment::LESSER );
       }
     }
   };
@@ -5793,8 +5790,10 @@ struct voidsurge_t : public surge_base_t
 
 struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigger_t<demon_hunter_spell_t>>
 {
+  proc_t* soul_fragment_generation_proc;
+
   consume_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
-    : base_t( n, p, s, o )
+    : base_t( n, p, s, o ), soul_fragment_generation_proc( nullptr )
   {
     cooldown = p->cooldown.consume;
 
@@ -5808,7 +5807,7 @@ struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigg
 
     if ( p()->talent.devourer.predators_thirst->ok() )
     {
-      p()->spawn_soul_fragment( soul_fragment::LESSER,
+      p()->spawn_soul_fragment( soul_fragment_generation_proc, soul_fragment::LESSER,
                                 as<unsigned int>( p()->spec.shattered_souls->effectN( 3 ).base_value() +
                                                   p()->talent.devourer.predators_thirst->effectN( 2 ).base_value() ) );
     }
@@ -5822,6 +5821,13 @@ struct devour_t : public consume_base_t
   devour_t( demon_hunter_t* p, util::string_view o ) : consume_base_t( "devour", p, p->spec.devour, o )
   {
     reap_cdr = timespan_t::from_millis( p->spec.void_metamorphosis->effectN( 14 ).base_value() );
+  }
+
+  void init_finished() override
+  {
+    consume_base_t::init_finished();
+
+    soul_fragment_generation_proc = p()->proc.soul_fragment_from_devour;
   }
 
   void execute() override
@@ -5845,6 +5851,13 @@ struct consume_t : public consume_base_t
 {
   consume_t( demon_hunter_t* p, util::string_view o ) : consume_base_t( "consume", p, p->spec.consume, o )
   {
+  }
+
+  void init_finished() override
+  {
+    consume_base_t::init_finished();
+
+    soul_fragment_generation_proc = p()->proc.soul_fragment_from_consume;
   }
 
   bool action_ready() override
@@ -5979,7 +5992,7 @@ struct soul_immolation_base_t : public demon_hunter_spell_t
     // seems to spawn a soul fragment every other tick, starting with the first tick
     if ( d->current_tick % 2 == 0 )
     {
-      p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
+      p()->spawn_soul_fragment( p()->proc.soul_fragment_from_soul_immolation, soul_fragment::LESSER, 1 );
     }
   }
 
@@ -6451,7 +6464,8 @@ struct collapsing_star_t : public demon_hunter_spell_t
       if ( p()->talent.devourer.star_fragments->ok() )
       {
         unsigned fragments_to_spawn = as<unsigned>( p()->talent.devourer.star_fragments->effectN( 1 ).base_value() );
-        p()->spawn_soul_fragment( soul_fragment::LESSER, fragments_to_spawn );
+        p()->spawn_soul_fragment( p()->proc.soul_fragment_from_star_fragments, soul_fragment::LESSER,
+                                  fragments_to_spawn );
       }
 
       if ( p()->talent.devourer.voidrush->ok() )
@@ -6551,7 +6565,7 @@ struct world_killer_t : public voidfall_meteor_base_t
     switch ( p()->specialization() )
     {
       case DEMON_HUNTER_DEVOURER:
-        p()->spawn_soul_fragment( soul_fragment::LESSER,
+        p()->spawn_soul_fragment( p()->proc.soul_fragment_from_world_killer, soul_fragment::LESSER,
                                   as<int>( p()->talent.annihilator.world_killer->effectN( 4 ).base_value() ) );
         break;
       case DEMON_HUNTER_VENGEANCE:
@@ -6632,9 +6646,12 @@ struct hungering_slash_base_t : public demon_hunter_spell_t
   struct hungering_slash_damage_t : public shattered_souls_trigger_t<demon_hunter_spell_t>
   {
     int number_of_souls_to_spawn;
+    proc_t* soul_generation_proc;
 
     hungering_slash_damage_t( util::string_view n, demon_hunter_t* p, int souls )
-      : base_t( n, p, p->spec.hungering_slash_damage ), number_of_souls_to_spawn( souls )
+      : base_t( n, p, p->spec.hungering_slash_damage ),
+        number_of_souls_to_spawn( souls ),
+        soul_generation_proc( nullptr )
     {
       background = dual   = true;
       aoe                 = -1;
@@ -6645,7 +6662,7 @@ struct hungering_slash_base_t : public demon_hunter_spell_t
     {
       base_t::execute();
 
-      p()->spawn_soul_fragment( soul_fragment::LESSER, number_of_souls_to_spawn );
+      p()->spawn_soul_fragment( soul_generation_proc, soul_fragment::LESSER, number_of_souls_to_spawn );
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -6696,6 +6713,14 @@ struct reapers_toll_t : public voidsurge_trigger_t<voidsurge_ability::REAPERS_TO
   {
   }
 
+  void init_finished() override
+  {
+    base_t::init_finished();
+
+    debug_cast<hungering_slash_damage_t*>( execute_action )->soul_generation_proc =
+        p()->proc.soul_fragment_from_reapers_toll;
+  }
+
   bool action_ready() override
   {
     if ( !p()->buff.metamorphosis->check() )
@@ -6711,6 +6736,14 @@ struct hungering_slash_t : public hungering_slash_base_t
   hungering_slash_t( demon_hunter_t* p, util::string_view o )
     : hungering_slash_base_t( "hungering_slash", p, p->spec.hungering_slash, o )
   {
+  }
+
+  void init_finished() override
+  {
+    base_t::init_finished();
+
+    debug_cast<hungering_slash_damage_t*>( execute_action )->soul_generation_proc =
+        p()->proc.soul_fragment_from_hungering_slash;
   }
 
   bool action_ready() override
@@ -7202,12 +7235,10 @@ struct blade_dance_base_t
     if ( p()->talent.aldrachi_reaver.broken_spirit->ok() &&
          rng().roll( p()->talent.aldrachi_reaver.broken_spirit->effectN( 4 ).percent() ) )
     {
-      p()->proc.soul_fragment_from_broken_spirit->occur();
-      p()->spawn_soul_fragment( soul_fragment::LESSER );
+      p()->spawn_soul_fragment( p()->proc.soul_fragment_from_broken_spirit, soul_fragment::LESSER );
     }
 
     // Eternal Hunt buff expires ~500ms after Blade Dance is used
-
     if ( p()->buff.eternal_hunt->up() )
     {
       make_event( *p()->sim, 500_ms, [ this ] {
@@ -7527,15 +7558,13 @@ struct chaos_strike_base_t
     // Demonic Appetite
     if ( p()->rppm.demonic_appetite->trigger() )
     {
-      p()->proc.demonic_appetite->occur();
-      p()->spawn_soul_fragment( soul_fragment::LESSER );
+      p()->spawn_soul_fragment( p()->proc.soul_fragment_from_demonic_appetite, soul_fragment::LESSER );
     }
 
     if ( p()->talent.aldrachi_reaver.broken_spirit->ok() &&
          rng().roll( p()->talent.aldrachi_reaver.broken_spirit->effectN( 4 ).percent() ) )
     {
-      p()->proc.soul_fragment_from_broken_spirit->occur();
-      p()->spawn_soul_fragment( soul_fragment::LESSER );
+      p()->spawn_soul_fragment( p()->proc.soul_fragment_from_broken_spirit, soul_fragment::LESSER );
     }
 
     if ( p()->buff.inner_demon->check() )
@@ -7922,11 +7951,7 @@ struct fracture_t : public voidfall_building_trigger_t<
     {
       demon_hunter_attack_t::impact( s );
 
-      p()->spawn_soul_fragment( soul_fragment::LESSER, soul_fragments_to_spawn );
-      for ( int i = 0; i < soul_fragments_to_spawn; i++ )
-      {
-        p()->proc.soul_fragment_from_fracture->occur();
-      }
+      p()->spawn_soul_fragment( p()->proc.soul_fragment_from_fracture, soul_fragment::LESSER, soul_fragments_to_spawn );
     }
   };
 
@@ -8003,8 +8028,7 @@ struct fracture_t : public voidfall_building_trigger_t<
       {
         // In all reviewed logs, it's always 500ms (based on Fires of Fel application)
         make_event( sim, 500_ms, [ this ]() {
-          p()->spawn_soul_fragment( soul_fragment::LESSER );
-          p()->proc.soul_fragment_from_meta->occur();
+          p()->spawn_soul_fragment( p()->proc.soul_fragment_from_fracture_meta, soul_fragment::LESSER );
         } );
       }
 
@@ -8587,14 +8611,16 @@ struct soul_carver_t : public demon_hunter_attack_t
     if ( !result_is_hit( s->result ) )
       return;
 
-    p()->spawn_soul_fragment( soul_fragment::LESSER, as<unsigned int>( data().effectN( 3 ).base_value() ) );
+    p()->spawn_soul_fragment( p()->proc.soul_fragment_from_soul_carver, soul_fragment::LESSER,
+                              as<unsigned int>( data().effectN( 3 ).base_value() ) );
   }
 
   void tick( dot_t* d ) override
   {
     demon_hunter_attack_t::tick( d );
 
-    p()->spawn_soul_fragment( soul_fragment::LESSER, as<unsigned int>( data().effectN( 4 ).base_value() ) );
+    p()->spawn_soul_fragment( p()->proc.soul_fragment_from_soul_carver, soul_fragment::LESSER,
+                              as<unsigned int>( data().effectN( 4 ).base_value() ) );
   }
 };
 
@@ -8723,8 +8749,7 @@ struct wounded_quarry_t : public demon_hunter_attack_t
 
     if ( rng().roll( chance ) )
     {
-      p()->proc.soul_fragment_from_wounded_quarry->occur();
-      p()->spawn_soul_fragment( soul_fragment::LESSER );
+      p()->spawn_soul_fragment( p()->proc.soul_fragment_from_wounded_quarry, soul_fragment::LESSER );
     }
   }
 };
@@ -9086,7 +9111,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       p()->buff.collapsing_star_ready->trigger();
       p()->buff.collapsing_star_stack->trigger(
           as<int>( p()->talent.devourer.collapsing_star->effectN( 1 ).base_value() ) );
-      p()->spawn_soul_fragment( soul_fragment::LESSER,
+      p()->spawn_soul_fragment( p()->proc.soul_fragment_from_void_metamorphosis, soul_fragment::LESSER,
                                 as<unsigned int>( p()->talent.devourer.midnight3->effectN( 1 ).base_value() ) );
     }
 
@@ -9480,8 +9505,8 @@ void demon_hunter_td_t::target_demise()
     return;
   if ( dh().rng().roll( dh().options.soul_fragment_from_shattered_souls_chance ) )
   {
-    dh().spawn_soul_fragment( soul_fragment::GREATER );
-    dh().proc.shattered_souls_death->occur();
+    dh().spawn_soul_fragment( dh().proc.soul_fragment_from_death, soul_fragment::GREATER );
+    dh().proc.soul_fragment_from_death->occur();
   }
 }
 
@@ -10013,12 +10038,14 @@ void demon_hunter_t::create_buffs()
   for ( demonsurge_ability ability : demonsurge_abilities )
   {
     buff.demonsurge_abilities[ ability ] =
-        make_buff( this, demonsurge_ability_action_name( ability ), hero_spec.demonsurge_demonsurge_buff )->set_quiet( true );
+        make_buff( this, demonsurge_ability_action_name( ability ), hero_spec.demonsurge_demonsurge_buff )
+            ->set_quiet( true );
   }
   for ( voidsurge_ability ability : voidsurge_abilities )
   {
     buff.voidsurge_abilities[ ability ] =
-        make_buff( this, voidsurge_ability_action_name( ability ), hero_spec.demonsurge_demonsurge_buff )->set_quiet( true );
+        make_buff( this, voidsurge_ability_action_name( ability ), hero_spec.demonsurge_demonsurge_buff )
+            ->set_quiet( true );
   }
 
   buff.demonsurge_demonsurge = make_buff( this, "demonsurge_demonsurge", hero_spec.demonsurge_demonsurge_buff );
@@ -10297,44 +10324,52 @@ void demon_hunter_t::init_procs()
   base_t::init_procs();
 
   // General
-  proc.delayed_aa_range              = get_proc( "Delayed AA out of range" );
-  proc.soul_fragment_greater         = get_proc( "Soul Fragment (Greater)" );
-  proc.soul_fragment_greater_demon   = get_proc( "Soul Fragment (Greater Demon)" );
-  proc.soul_fragment_empowered_demon = get_proc( "Soul Fragment (Empowered Demon)" );
-  proc.soul_fragment_lesser          = get_proc( "Soul Fragment" );
-  proc.soul_splitter                 = get_proc( "Soul Splitter" );
-  proc.unhindered_assault            = get_proc( "Unhindered Assault" );
-  proc.soul_sigils                   = get_proc( "Soul Sigils" );
-  proc.shattered_souls_death         = get_proc( "Shattered Souls (Death)" );
+  proc.delayed_aa_range                 = get_proc( "Delayed AA out of range" );
+  proc.soul_fragment_greater            = get_proc( "Soul Fragment (Greater)" );
+  proc.soul_fragment_greater_demon      = get_proc( "Soul Fragment (Greater Demon)" );
+  proc.soul_fragment_empowered_demon    = get_proc( "Soul Fragment (Empowered Demon)" );
+  proc.soul_fragment_lesser             = get_proc( "Soul Fragment" );
+  proc.soul_fragment_from_soul_splitter = get_proc( "Soul Fragment from Soul Splitter" );
+  proc.soul_fragment_from_death         = get_proc( "Soul Fragment from Death" );
+  proc.soul_fragment_expire             = get_proc( "Soul Fragment expiration" );
+  proc.soul_fragment_overflow           = get_proc( "Soul Fragment overflow" );
 
   // Devourer
-  proc.spontaneous_immolation = get_proc( "Spontaneous Immolation" );
+  proc.spontaneous_immolation                = get_proc( "Spontaneous Immolation" );
+  proc.soul_fragment_from_consume            = get_proc( "Soul Fragment from Consume" );
+  proc.soul_fragment_from_devour             = get_proc( "Soul Fragment from Devour" );
+  proc.soul_fragment_from_soul_immolation    = get_proc( "Soul Fragment from Soul Immolation" );
+  proc.soul_fragment_from_shattered_souls    = get_proc( "Soul Fragment from Shattered Souls" );
+  proc.soul_fragment_from_star_fragments     = get_proc( "Soul Fragment from Star Fragments" );
+  proc.soul_fragment_from_hungering_slash    = get_proc( "Soul Fragment from Hungering Slash" );
+  proc.soul_fragment_from_reapers_toll       = get_proc( "Soul Fragment from Reaper's Toll" );
+  proc.soul_fragment_from_void_metamorphosis = get_proc( "Soul Fragment from Void Metamorphosis" );
+  proc.soul_fragment_from_entropy            = get_proc( "Soul Fragment from Entropy" );
 
   // Havoc
-  proc.demonic_appetite                = get_proc( "Demonic Appetite" );
-  proc.chaos_strike_in_essence_break   = get_proc( "Chaos Strike in Essence Break" );
-  proc.annihilation_in_essence_break   = get_proc( "Annihilation in Essence Break" );
-  proc.blade_dance_in_essence_break    = get_proc( "Blade Dance in Essence Break" );
-  proc.death_sweep_in_essence_break    = get_proc( "Death Sweep in Essence Break" );
-  proc.chaos_strike_in_serrated_glaive = get_proc( "Chaos Strike in Serrated Glaive" );
-  proc.annihilation_in_serrated_glaive = get_proc( "Annihilation in Serrated Glaive" );
-  proc.throw_glaive_in_serrated_glaive = get_proc( "Throw Glaive in Serrated Glaive" );
-  proc.shattered_destiny               = get_proc( "Shattered Destiny" );
-  proc.eye_beam_canceled               = get_proc( "Eye Beam canceled" );
+  proc.soul_fragment_from_demonic_appetite = get_proc( "Soul Fragment from Demonic Appetite" );
+  proc.chaos_strike_in_essence_break       = get_proc( "Chaos Strike in Essence Break" );
+  proc.annihilation_in_essence_break       = get_proc( "Annihilation in Essence Break" );
+  proc.blade_dance_in_essence_break        = get_proc( "Blade Dance in Essence Break" );
+  proc.death_sweep_in_essence_break        = get_proc( "Death Sweep in Essence Break" );
+  proc.chaos_strike_in_serrated_glaive     = get_proc( "Chaos Strike in Serrated Glaive" );
+  proc.annihilation_in_serrated_glaive     = get_proc( "Annihilation in Serrated Glaive" );
+  proc.throw_glaive_in_serrated_glaive     = get_proc( "Throw Glaive in Serrated Glaive" );
+  proc.shattered_destiny                   = get_proc( "Shattered Destiny" );
+  proc.eye_beam_canceled                   = get_proc( "Eye Beam canceled" );
 
   // Vengeance
-  proc.untethered_rage                    = get_proc( "Untethered Rage" );
-  proc.soul_fragment_expire               = get_proc( "Soul Fragment expiration" );
-  proc.soul_fragment_overflow             = get_proc( "Soul Fragment overflow" );
-  proc.soul_fragment_from_shear           = get_proc( "Soul Fragment from Shear" );
-  proc.soul_fragment_from_fracture        = get_proc( "Soul Fragment from Fracture" );
-  proc.soul_fragment_from_meta            = get_proc( "Soul Fragment from Fracture (Meta)" );
-  proc.soul_fragment_from_sigil_of_spite  = get_proc( "Soul Fragment from Sigil of Spite" );
-  proc.soul_fragment_from_fallout         = get_proc( "Soul Fragment from Fallout" );
-  proc.soul_fragment_from_bulk_extraction = get_proc( "Soul Fragment from Bulk Extraction" );
-  proc.feed_the_demon                     = get_proc( "Feed the Demon" );
+  proc.untethered_rage                   = get_proc( "Untethered Rage" );
+  proc.soul_fragment_from_soul_sigils    = get_proc( "Soul Sigils" );
+  proc.soul_fragment_from_fracture       = get_proc( "Soul Fragment from Fracture" );
+  proc.soul_fragment_from_fracture_meta  = get_proc( "Soul Fragment from Fracture (Meta)" );
+  proc.soul_fragment_from_sigil_of_spite = get_proc( "Soul Fragment from Sigil of Spite" );
+  proc.soul_fragment_from_fallout        = get_proc( "Soul Fragment from Fallout" );
+  proc.soul_fragment_from_soul_carver    = get_proc( "Soul Fragment from Soul Carver" );
+  proc.feed_the_demon                    = get_proc( "Feed the Demon" );
 
   // Aldrachi Reaver
+  proc.unhindered_assault                  = get_proc( "Unhindered Assault" );
   proc.soul_fragment_from_aldrachi_tactics = get_proc( "Soul Fragment from Aldrachi Tactics" );
   proc.soul_fragment_from_broken_spirit    = get_proc( "Soul Fragment from Broken Spirit" );
   proc.soul_fragment_from_wounded_quarry   = get_proc( "Soul Fragment from Wounded Quarry" );
@@ -10342,6 +10377,7 @@ void demon_hunter_t::init_procs()
 
   // Annihilator
   proc.soul_fragment_from_meteoric_rise = get_proc( "Soul Fragment from Meteoric Rise" );
+  proc.soul_fragment_from_world_killer  = get_proc( "Soul Fragment from World Killer" );
 
   // Scarred
   for ( demonsurge_ability ability : demonsurge_abilities )
@@ -11810,8 +11846,9 @@ void demon_hunter_t::combat_begin()
   {
     timespan_t initial_delay = timespan_t::from_millis( rng().range( 0, 5250 ) );
     make_event( sim, initial_delay, [ this ] {
-      make_repeating_event( sim, talent.devourer.entropy->effectN( 1 ).period(),
-                            [ this ] { spawn_soul_fragment( soul_fragment::LESSER, 1 ); } );
+      make_repeating_event( sim, talent.devourer.entropy->effectN( 1 ).period(), [ this ] {
+        spawn_soul_fragment( proc.soul_fragment_from_entropy, soul_fragment::LESSER, 1 );
+      } );
     } );
   }
 }
@@ -12367,7 +12404,8 @@ void demon_hunter_t::activate_soul_fragment( soul_fragment_t* frag )
 
 // demon_hunter_t::spawn_soul_fragment ======================================
 
-void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, bool consume_on_activation )
+void demon_hunter_t::spawn_soul_fragment( proc_t* source_proc, soul_fragment type, unsigned n,
+                                          bool consume_on_activation )
 {
   if ( type == soul_fragment::GREATER && sim->target->race == RACE_DEMON )
   {
@@ -12388,11 +12426,13 @@ void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, bool c
       break;
     default:
       soul_proc = proc.soul_fragment_lesser;
+      break;
   }
 
   for ( unsigned i = 0; i < n; i++ )
   {
     soul_fragments.push_back( new soul_fragment_t( this, type, consume_on_activation ) );
+    source_proc->occur();
     soul_proc->occur();
   }
 
@@ -12404,22 +12444,12 @@ void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, bool c
   {
     soul_fragments.push_back( new soul_fragment_t( this, soul_fragment::LESSER, consume_on_activation ) );
     proc.soul_fragment_lesser->occur();
-    proc.soul_splitter->occur();
+    proc.soul_fragment_from_soul_splitter->occur();
 
     sim->print_log( "{} creates an additional {} from Soul Splitter. active={} total={}", *this,
                     get_soul_fragment_str( type ), get_active_soul_fragments( type ),
                     get_total_soul_fragments( type ) );
   }
-}
-
-void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, player_t* target, bool consume_on_activation )
-{
-  if ( type == soul_fragment::GREATER && target->race == RACE_DEMON )
-  {
-    type = soul_fragment::GREATER_DEMON;
-  }
-
-  demon_hunter_t::spawn_soul_fragment( type, n, consume_on_activation );
 }
 
 // demon_hunter_t::trigger_demonic ==========================================
@@ -12738,13 +12768,102 @@ public:
     p.sim->add_chart_data( shattered_souls_sources );
   }
 
-  void html_customsection_shattered_souls( report::sc_html_stream& os ) const
+  void soul_fragment_generation_piechart( report::sc_html_stream& os ) const
+  {
+    highchart::pie_chart_t soul_fragment_generation_sources( highchart::build_id( p, "soul_fragment_sources" ),
+                                                             *p.sim );
+    soul_fragment_generation_sources.set_title( "Soul Fragment Sources" );
+    soul_fragment_generation_sources.set( "plotOptions.pie.dataLabels.format",
+                                          "{point.name}: {point.percentage:.1f}%" );
+
+    std::vector<proc_t*> soul_fragment_generation_procs{
+        // general
+        p.proc.soul_fragment_from_soul_splitter,
+        p.proc.soul_fragment_from_death,
+
+        // devourer
+        p.proc.soul_fragment_from_consume,
+        p.proc.soul_fragment_from_devour,
+        p.proc.soul_fragment_from_soul_immolation,
+        p.proc.soul_fragment_from_shattered_souls,
+        p.proc.soul_fragment_from_star_fragments,
+        p.proc.soul_fragment_from_hungering_slash,
+        p.proc.soul_fragment_from_reapers_toll,
+        p.proc.soul_fragment_from_void_metamorphosis,
+        p.proc.soul_fragment_from_entropy,
+
+        // havoc
+        p.proc.soul_fragment_from_demonic_appetite,
+
+        // vengeance
+        p.proc.soul_fragment_from_fracture,
+        p.proc.soul_fragment_from_fracture_meta,
+        p.proc.soul_fragment_from_sigil_of_spite,
+        p.proc.soul_fragment_from_soul_carver,
+        p.proc.soul_fragment_from_fallout,
+
+        // aldrachi reaver
+        p.proc.soul_fragment_from_aldrachi_tactics,
+        p.proc.soul_fragment_from_wounded_quarry,
+        p.proc.soul_fragment_from_broken_spirit,
+
+        // annihilator
+        p.proc.soul_fragment_from_meteoric_rise,
+        p.proc.soul_fragment_from_world_killer,
+
+        // scarred
+    };
+
+    double sum = 0.0;
+
+    // Get total amount of Shattered Souls
+    for ( const auto entry : soul_fragment_generation_procs )
+    {
+      sum += entry->count.mean();
+    }
+
+    // Sort the dataset so it looks better in the chart
+    range::sort( soul_fragment_generation_procs, []( const auto& left, const auto& right ) {
+      if ( left->count.mean() == right->count.mean() )
+      {
+        return left->name_str < right->name_str;
+      }
+
+      return left->count.mean() > right->count.mean();
+    } );
+
+    // Populate the pie chart with each entry
+    range::for_each( soul_fragment_generation_procs,
+                     [ this, &soul_fragment_generation_sources, sum ]( const auto& entry ) {
+                       if ( entry->count.mean() == 0.0 )
+                         return;
+
+                       std::string prefix = "Soul Fragment from ";
+                       color::rgb color   = color::school_color( SCHOOL_SHADOW );
+
+                       js::sc_js_t e;
+                       e.set( "color", color.str() );
+                       e.set( "y", util::round( ( entry->count.mean() / sum ) * 100, p.sim->report_precision ) );
+                       e.set( "name", report_decorators::decorate_html_string(
+                                          util::encode_html( entry->name_str.substr( prefix.length() ) ), color ) );
+
+                       soul_fragment_generation_sources.add( "series.0.data", e );
+                     } );
+    soul_fragment_generation_sources.set( "series.0.name", "Percentage" );
+
+    os << soul_fragment_generation_sources.to_target_div();
+    p.sim->add_chart_data( soul_fragment_generation_sources );
+  }
+
+  void html_customsection_soul_fragment_generation( report::sc_html_stream& os ) const
   {
     os << "<div class=\"player-section custom_section\">\n"
-          "<h3 class=\"toggle open\">Shattered Souls</h3>\n"
+          "<h3 class=\"toggle open\">Soul Fragment Generation</h3>\n"
           "<div class=\"toggle-content\">\n";
 
-    shattered_souls_piechart( os );
+    soul_fragment_generation_piechart( os );
+    if ( p.specialization() == DEMON_HUNTER_DEVOURER )
+      shattered_souls_piechart( os );
 
     os << "</div>\n"
           "</div>\n";
@@ -12775,10 +12894,7 @@ public:
 
     html_customsection_cd_waste( os );
 
-    if ( p.specialization() == DEMON_HUNTER_DEVOURER )
-    {
-      html_customsection_shattered_souls( os );
-    }
+    html_customsection_soul_fragment_generation( os );
   }
 
 private:
