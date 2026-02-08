@@ -36,7 +36,6 @@
 #include "util/string_view.hpp"
 
 #include <cassert>
-#include <regex>
 #include <string>
 #include <sstream>
 
@@ -1252,6 +1251,7 @@ public:
     buff_t* lightning_strikes;
     buff_t* surging_elements;
     buff_t* storm_unleashed;
+    buff_t* lively_totems;
 
     buff_t* tww2_enh_2pc; // Winning Streak!
     buff_t* tww2_enh_4pc; // Electrostatic Wager (visible buff)
@@ -3004,7 +3004,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     return m;
   }
 
-  
+
   double execute_time_pct_multiplier() const override
   {
     auto mul = base_t::execute_time_pct_multiplier();
@@ -3998,9 +3998,9 @@ struct storm_elemental_t : public primal_elemental_t
       def->add_action( "stormfury,if=buff.call_lightning.remains>=10" );
     }
     def->add_action( "call_lightning" );
-    
+
     def->add_action( "wind_gust" );
-    
+
   }
 
   void create_buffs() override
@@ -4031,7 +4031,7 @@ struct storm_elemental_t : public primal_elemental_t
       return new call_lightning_t( this, options_str );
     if ( name == "wind_gust" )
       return new wind_gust_t( this, options_str );
-    
+
 
     return primal_elemental_t::create_action( name, options_str );
   }
@@ -4925,7 +4925,12 @@ struct lava_lash_t : public shaman_attack_t
     {
       // 2024-07-10: Searing Totem death seems to be delayed from basically nothing to approximately
       // 850ms. Makes it possible to get an extra searing bolt if the timing is right.
-      p()->pet.searing_totem.spawn( timespan_t::from_seconds( 8.0 + rng().range( 0.85 ) ) );
+      auto duration = p()->buff.lively_totems->buff_duration() +
+        timespan_t::from_seconds( rng().range( 0.85 ) );
+      p()->pet.searing_totem.spawn( duration );
+      // 2026-02-08: In-game, the Lively Totems buff is not synchronized to Searing Totem duration,
+      // and will fade before the totem does.
+      p()->buff.lively_totems->trigger();
       proc_lively_totems->occur();
     }
 
@@ -9527,7 +9532,7 @@ struct voltaic_blaze_t : public shaman_spell_t
     if ( p() ->talent.purging_flames.ok() )
     {
       p()->buff.purging_flames->trigger();
-    }   
+    }
 
     p()->trigger_lively_totems( execute_state );
   }
@@ -12070,6 +12075,8 @@ void shaman_t::create_buffs()
                         ->set_trigger_spell( spell.tww3_stormbringer_4pc )
                         ->set_max_stack(6);  //TODO: retest. assumption is that 6 is max
 
+  buff.lively_totems = make_buff( this, "lively_totems", find_spell( 461242 ) )
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
   //
   // Restoration
   //
@@ -12261,9 +12268,9 @@ bool shaman_t::validate_actor()
     {
       throw sc_invalid_player_argument( "Elemental Shaman sims are non functional for Midnight prepatch" );
       return false;
-    }  
+    }
 
-  
+
 #endif  // !NDEBUG
 
   // Restoration isn't supported atm
@@ -13526,6 +13533,9 @@ shaman_t::pets_t::pets_t( shaman_t* s ) :
 {
   fire_wolves.set_replacement_strategy( spawner::pet_replacement_strategy::REPLACE_OLDEST );
   lightning_wolves.set_replacement_strategy( spawner::pet_replacement_strategy::REPLACE_OLDEST );
+
+  searing_totem.set_replacement_strategy( spawner::pet_replacement_strategy::REPLACE_OLDEST );
+  searing_totem.set_max_pets( s->find_spell( 461242 )->max_stacks() );
 
   auto event_fn = [ s ]( spawner::pet_event_type t, pet::base_wolf_t* pet ) {
     auto it = range::find_if( s->pet.all_wolves, [ pet ]( const auto entry ) {
