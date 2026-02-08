@@ -229,7 +229,6 @@ struct gift_of_the_ox_t : monk_buff_t<>
   {
     orb_t( monk_t *player, std::string_view name, const spell_data_t *spell_data );
 
-    double action_multiplier() const override;
     void impact( action_state_t *state ) override;
   };
 
@@ -462,6 +461,7 @@ public:
     propagate_const<heal_t *> celestial_fortune;
     propagate_const<action_t *> exploding_keg;
     propagate_const<heal_t *> refreshing_drink;
+    propagate_const<action_t *> vital_flame;
     propagate_const<action_t *> walk_with_the_ox;
     propagate_const<accumulated_rng_t *> walk_with_the_ox_rng;
 
@@ -505,6 +505,7 @@ public:
     propagate_const<buffs::gift_of_the_ox_t *> gift_of_the_ox;
     propagate_const<buff_t *> expel_harm_accumulator;
     propagate_const<buff_t *> invoke_niuzao;
+    propagate_const<buff_t *> niuzaos_resolve;
     propagate_const<buff_t *> press_the_advantage;
     propagate_const<buff_t *> pretense_of_instability;
     propagate_const<buff_t *> refreshing_drink;
@@ -788,6 +789,7 @@ public:
       player_talent_t celestial_brew;
       player_talent_t celestial_infusion;
       player_talent_t niuzaos_resolve;
+      const spell_data_t *niuzaos_resolve_hot;
       player_talent_t celestial_flames;
       const spell_data_t *celestial_flames_damage;
       player_talent_t shadowboxing_treads;
@@ -831,6 +833,7 @@ public:
       const spell_data_t *ox_stance_buff;
       player_talent_t awakening_spirit;
       player_talent_t vital_flame;
+      const spell_data_t *vital_flame_heal;
       player_talent_t invoke_niuzao_the_black_ox;
       const spell_data_t *invoke_niuzao_the_black_ox_npc;
       const spell_data_t *invoke_niuzao_the_black_ox_stomp;

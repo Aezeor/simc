@@ -48,6 +48,23 @@ WINDWALKER:
 
 namespace monk
 {
+namespace functions
+{
+struct missing_health_percentage_t
+{
+  monk_t *player;
+
+  missing_health_percentage_t( monk_t *player ) : player( player )
+  {
+  }
+
+  double operator()( double base ) const
+  {
+    return 1.0 + ( 1.0 - std::max( player->health_percentage() / 100.0, 0.0 ) ) * base;
+  }
+};
+}  // namespace functions
+
 namespace actions
 {
 template <class Base>
@@ -479,6 +496,23 @@ struct monk_snapshot_stats_t : public snapshot_stats_t
   void execute() override
   {
     snapshot_stats_t::execute();
+  }
+};
+
+struct vital_flame_t : public monk_heal_t
+{
+  vital_flame_t( monk_t *player ) : monk_heal_t( player, "vital_flame", player->talent.brewmaster.vital_flame_heal )
+  {
+    background      = true;
+    proc            = true;
+    target          = player;
+    base_multiplier = player->talent.brewmaster.vital_flame->effectN( 1 ).percent();
+  }
+
+  void init() override
+  {
+    monk_heal_t::init();
+    update_flags = snapshot_flags = STATE_NO_MULTIPLIER | STATE_MUL_SPELL_DA;
   }
 };
 
@@ -1242,8 +1276,8 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<teachings_of_th
 
     if ( p()->talent.brewmaster.staggering_strikes->ok() )
     {
-      double missing_health_percentage = 1.0 - std::max( p()->health_percentage() / 100.0, 0.0 );
-      double m = 1.0 + missing_health_percentage * p()->talent.brewmaster.staggering_strikes->effectN( 3 ).percent();
+      double m = functions::missing_health_percentage_t( p() )(
+          p()->talent.brewmaster.staggering_strikes->effectN( 3 ).percent() );
 
       p()->find_stagger( "Stagger" )
           ->purify_flat(
@@ -3558,17 +3592,13 @@ struct expel_harm_t : monk_heal_t
       background = true;
 
     add_child( damage );
-  }
 
-  double action_multiplier() const override
-  {
-    double am = monk_heal_t::action_multiplier();
-    if ( !p()->talent.monk.strength_of_spirit->ok() )
-      return am;
-    // TODO: convert to parse_effects
-    am *=
-        1.0 + ( 1.0 - p()->health_percentage() / 100.0 ) * p()->talent.monk.strength_of_spirit->effectN( 1 ).percent();
-    return am;
+    if ( const auto &effect = player->talent.monk.strength_of_spirit->effectN( 1 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_value( effect.percent() )
+          .set_value_func( functions::missing_health_percentage_t( player ) )
+          .set_eff( &effect )
+          .set_note( "Missing Health Scaling" );
   }
 
   void execute() override
@@ -3863,19 +3893,24 @@ gift_of_the_ox_t::orb_t::orb_t( monk_t *player, std::string_view name, const spe
   : monk_heal_t( player, name, spell_data )
 {
   background = true;
-}
 
-double gift_of_the_ox_t::orb_t::action_multiplier() const
-{
-  double am = monk_heal_t::action_multiplier();
-  if ( p()->talent.monk.strength_of_spirit->ok() && p()->buff.expel_harm_accumulator->check() )
-    am *= 1.0 + ( 1.0 - std::max( p()->health_percentage() / 100.0, 0.0 ) ) *
-                    p()->talent.monk.strength_of_spirit->effectN( 1 ).percent();
-  return am;
+  if ( const auto &effect = player->talent.monk.strength_of_spirit->effectN( 1 ); effect.ok() )
+    add_parse_entry( da_multiplier_effects )
+        .set_func( [ & ] { return p()->buff.expel_harm_accumulator->check(); } )
+        .set_value( effect.percent() )
+        .set_value_func( functions::missing_health_percentage_t( player ) )
+        .set_eff( &effect )
+        .set_note( "Missing Health Scaling" );
 }
 
 void gift_of_the_ox_t::orb_t::impact( action_state_t *state )
 {
+  if ( p()->talent.brewmaster.niuzaos_resolve->ok() )
+  {
+    p()->buff.niuzaos_resolve->trigger();
+    return;
+  }
+
   monk_heal_t::impact( state );
 
   if ( p()->talent.brewmaster.tranquil_spirit->ok() )
@@ -4581,6 +4616,59 @@ absorb_buff_t *fractional_absorb_t::set_absorb_fraction( double fraction )
   absorb_fraction = fraction;
   return this;
 }
+
+struct niuzaos_resolve_t : buffs::monk_buff_t<>
+{
+  struct heal_t : actions::monk_heal_t
+  {
+    heal_t( monk_t *player ) : monk_heal_t( player, "niuzaos_resolve", player->talent.brewmaster.niuzaos_resolve_hot )
+    {
+      background = true;
+      proc       = true;
+      may_crit   = true;
+      target     = player;
+
+      // Convert from a HoT to a direct heal, triggered by the buff
+      attack_power_mod.direct = attack_power_mod.tick;
+      attack_power_mod.tick   = 0.0;
+      base_tick_time          = timespan_t::zero();
+      dot_duration            = timespan_t::zero();
+
+      if ( const auto &effect = player->talent.brewmaster.niuzaos_resolve->effectN( 1 ); effect.ok() )
+        add_parse_entry( da_multiplier_effects )
+            .set_value( effect.percent() )
+            .set_value_func( functions::missing_health_percentage_t( player ) )
+            .set_eff( &effect )
+            .set_note( "Missing Health Scaling" );
+    }
+  };
+
+  action_t *heal;
+
+  niuzaos_resolve_t( monk_t *player )
+    : monk_buff_t<>( player, "niuzaos_resolve", player->talent.brewmaster.niuzaos_resolve_hot ),
+      heal( new heal_t( player ) )
+  {
+    set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+    set_refresh_behavior( buff_refresh_behavior::DURATION );
+    set_period( player->talent.brewmaster.niuzaos_resolve_hot->effectN( 1 ).period() );
+    set_tick_behavior( buff_tick_behavior::REFRESH );
+    set_partial_tick( true );
+
+    freeze_stacks = true;
+
+    set_tick_callback( [ & ]( buff_t *buff, int, timespan_t tick_time ) {
+      // Handle partial ticks
+      double m = tick_time / buff->buff_period;
+
+      // Amplify by the current number of stacks
+      m *= buff->check();
+
+      heal->base_multiplier = m;
+      heal->execute();
+    } );
+  }
+};
 }  // namespace buffs
 }  // end namespace monk
 
@@ -4842,7 +4930,7 @@ void monk_t::trigger_celestial_fortune( action_state_t *s )
     sim->print_debug( "triggering celestial fortune from (id: {}, name: {}) with (amount: {}) damage base",
                       s->action->id, s->action->name_str, s->result_amount );
     action.celestial_fortune->base_dd_max = action.celestial_fortune->base_dd_min = s->result_amount;
-    action.celestial_fortune->schedule_execute();
+    action.celestial_fortune->execute();
   }
 }
 
@@ -5131,6 +5219,7 @@ void monk_t::init_spells()
     talent.brewmaster.celestial_brew                   = _ST( "Celestial Brew" );
     talent.brewmaster.celestial_infusion               = _ST( "Celestial Infusion" );
     talent.brewmaster.niuzaos_resolve                  = _ST( "Niuzao's Resolve" );
+    talent.brewmaster.niuzaos_resolve_hot              = find_spell( 1241109 );
     talent.brewmaster.celestial_flames                 = _ST( "Celestial Flames" );
     talent.brewmaster.celestial_flames_damage          = find_spell( 1263667 );
     talent.brewmaster.shadowboxing_treads              = _ST( "Shadowboxing Treads" );
@@ -5170,6 +5259,7 @@ void monk_t::init_spells()
     talent.brewmaster.ox_stance_buff                   = find_spell( 455071 );
     talent.brewmaster.awakening_spirit                 = _ST( "Awakening Spirit" );
     talent.brewmaster.vital_flame                      = _ST( "Vital Flame" );
+    talent.brewmaster.vital_flame_heal                 = find_spell( 1263408 );
     talent.brewmaster.invoke_niuzao_the_black_ox       = _ST( "Invoke Niuzao, the Black Ox" );
     talent.brewmaster.invoke_niuzao_the_black_ox_npc   = find_spell( 123904 );
     talent.brewmaster.invoke_niuzao_the_black_ox_stomp = find_spell( 227291 );
@@ -5485,6 +5575,7 @@ void monk_t::init_background_actions()
     action.celestial_fortune = new celestial_fortune_t( this );
     action.exploding_keg     = new exploding_keg_proc_t( this );
     action.refreshing_drink  = new refreshing_drink_t( this );
+    action.vital_flame       = new vital_flame_t( this );
     action.walk_with_the_ox  = new stomp_t( this );
   }
 
@@ -5608,7 +5699,7 @@ void monk_t::create_buffs()
 
           // multiplier is not available in spell data :(
           if ( talent.brewmaster.zen_state->ok() )
-            stagger_rating *= 1.0 + 1.3 * ( 1.0 - current_health() );
+            stagger_rating *= functions::missing_health_percentage_t( this )( 1.3 );
 
           double k = dbc->armor_mitigation_constant( state->target->level() );
           k *= dbc->get_armor_constant_mod( difficulty_e::MYTHIC );
@@ -5703,6 +5794,9 @@ void monk_t::create_buffs()
                            ->set_cooldown( timespan_t::zero() )
                            ->add_invalidate( CACHE_MASTERY );
 
+  buff.niuzaos_resolve =
+      make_buff_fallback<buffs::niuzaos_resolve_t>( talent.brewmaster.niuzaos_resolve->ok(), this, "niuzaos_resolve" );
+
   buff.press_the_advantage =
       make_buff_fallback( talent.brewmaster.press_the_advantage->ok(), this, "press_the_advantage",
                           talent.brewmaster.press_the_advantage->effectN( 2 ).trigger() )
@@ -5737,8 +5831,9 @@ void monk_t::create_buffs()
   buff.combo_breaker = make_buff_fallback( specialization() == MONK_WINDWALKER, this, "combo_breaker",
                                            talent.windwalker.combo_breaker_buff )
                            ->set_trigger_spell( talent.windwalker.combo_breaker )
-                           ->set_chance( !talent.windwalker.combo_breaker->ok() ? 1.0 
-                               : talent.windwalker.combo_breaker->effectN( 1 ).percent() );
+                           ->set_chance( !talent.windwalker.combo_breaker->ok()
+                                             ? 1.0
+                                             : talent.windwalker.combo_breaker->effectN( 1 ).percent() );
 
   buff.chi_energy =
       make_buff_fallback( talent.windwalker.jade_ignition->ok(), this, "chi_energy", talent.windwalker.chi_energy_buff )
@@ -6297,6 +6392,24 @@ void monk_t::init_special_effects()
             } )
         ->register_callback_execute_function(
             [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) { buff.whirling_steel->trigger(); } );
+
+  if ( talent.brewmaster.vital_flame->ok() )
+    create_proc_callback( { talent.brewmaster.vital_flame, static_cast<proc_flag>( PF_ALL_DAMAGE | PF_PERIODIC ),
+                            static_cast<proc_flag2>( PF2_ALL_HIT | PF2_PERIODIC_DAMAGE ) } )
+        ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
+                                              []( const dbc_proc_callback_t *, action_t *action, action_state_t * ) {
+                                                if ( action->school != SCHOOL_FIRE && action->school != SCHOOL_NATURE )
+                                                  return false;
+
+                                                if ( action->allow_class_ability_procs )
+                                                  return true;
+
+                                                return false;
+                                              } )
+        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+          action.vital_flame->base_dd_max = action.vital_flame->base_dd_min = state->result_amount;
+          action.vital_flame->execute();
+        } );
 
   if ( talent.brewmaster.bring_me_another_1->ok() )
     create_proc_callback( { talent.brewmaster.bring_me_another_1, PF_CAST_SUCCESSFUL,
