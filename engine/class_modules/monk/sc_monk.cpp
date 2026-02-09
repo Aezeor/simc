@@ -3193,7 +3193,6 @@ struct courage_of_the_white_tiger_t : conduit_of_the_celestials_container_t
   {
     struct heal_t : monk_heal_t
     {
-      template <typename... Args>
       heal_t( monk_t *player, std::string_view name )
         : monk_heal_t( player, fmt::format( "{}_heal", name ),
                        player->talent.conduit_of_the_celestials.courage_of_the_white_tiger_heal )
@@ -3223,14 +3222,14 @@ struct courage_of_the_white_tiger_t : conduit_of_the_celestials_container_t
 
     void execute() override
     {
-      monk_melee_attack_t::execute();
-
       if ( source == BASE )
       {
         p()->buff.strength_of_the_black_ox->trigger();
         p()->buff.inner_compass_tiger_stance->trigger();
         p()->buff.courage_of_the_white_tiger->expire();
       }
+
+      monk_melee_attack_t::execute();
     }
 
     void impact( action_state_t *state ) override
@@ -3307,19 +3306,21 @@ struct strength_of_the_black_ox_t : conduit_of_the_celestials_container_t
     CELESTIAL
   };
 
-  template <sotbo_source_e source_effect>
   struct impact_t : monk_spell_t
   {
-    impact_t( monk_t *player )
+    sotbo_source_e source;
+
+    impact_t( monk_t *player, sotbo_source_e source )
       : monk_spell_t( player, fmt::format( "strength_of_the_black_ox_damage{}", BASE ? "" : "_celestial" ),
-                      player->talent.conduit_of_the_celestials.strength_of_the_black_ox_damage )
+                      player->talent.conduit_of_the_celestials.strength_of_the_black_ox_damage ),
+        source( source )
     {
       background = true;
       aoe        = -1;
       reduced_aoe_targets =
           player->talent.conduit_of_the_celestials.strength_of_the_black_ox->effectN( 2 ).base_value();
 
-      if constexpr ( source_effect == CELESTIAL )
+      if ( source == CELESTIAL )
         if ( const auto &effect = player->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 );
              effect.ok() )
           add_parse_entry( da_multiplier_effects ).set_value( effect.percent() - 1.0 ).set_eff( &effect );
@@ -3327,9 +3328,7 @@ struct strength_of_the_black_ox_t : conduit_of_the_celestials_container_t
 
     void execute() override
     {
-      monk_spell_t::execute();
-
-      if constexpr ( source_effect == BASE )
+      if ( source == BASE )
       {
         if ( !p()->buff.strength_of_the_black_ox->up() )
           return;
@@ -3338,6 +3337,8 @@ struct strength_of_the_black_ox_t : conduit_of_the_celestials_container_t
         p()->buff.inner_compass_ox_stance->trigger();
       }
 
+      monk_spell_t::execute();
+
       p()->buff.teachings_of_the_monastery->trigger(
           as<int>( p()->talent.conduit_of_the_celestials.strength_of_the_black_ox->effectN( 3 ).base_value() ) );
     }
@@ -3345,8 +3346,8 @@ struct strength_of_the_black_ox_t : conduit_of_the_celestials_container_t
 
   strength_of_the_black_ox_t( monk_t *player ) : conduit_of_the_celestials_container_t( player )
   {
-    base      = new impact_t<BASE>( player );
-    celestial = new impact_t<CELESTIAL>( player );
+    base      = new impact_t( player, BASE );
+    celestial = new impact_t( player, CELESTIAL );
   }
 };
 
@@ -3405,7 +3406,7 @@ struct celestial_conduit_t : public monk_spell_t
   struct tick_action_t : TBase
   {
     tick_action_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
-      : TBase( player, name, spell_data )
+      : TBase( player, fmt::format( "celestial_conduit_{}", name ), spell_data )
     {
       TBase::background = true;
 
@@ -3418,19 +3419,34 @@ struct celestial_conduit_t : public monk_spell_t
 
       if constexpr ( std::is_same_v<TBase, monk_heal_t> )
         TBase::target = player;
+
+      if ( const auto &effect = player->talent.conduit_of_the_celestials.path_of_the_falling_star->effectN( 1 );
+           effect.ok() )
+        add_parse_entry( TBase::da_multiplier_effects )
+            .set_func( [] { return false; } )
+            .set_value( effect.percent() )
+            .set_eff( &effect )
+            .set_note( "Target Count Scaling" );
     }
 
     double composite_aoe_multiplier( const action_state_t *state ) const override
     {
       double cam = TBase::composite_aoe_multiplier( state );
 
-      if ( state->n_targets )
-        cam *=
-            1 +
-            ( TBase::p()->talent.conduit_of_the_celestials.celestial_conduit_action->effectN( 1 ).percent() *
-              std::min(
-                  as<double>( state->n_targets ),
-                  TBase::p()->talent.conduit_of_the_celestials.celestial_conduit_action->effectN( 3 ).base_value() ) );
+      if ( const spell_data_t *spell = TBase::p()->talent.conduit_of_the_celestials.celestial_conduit_action;
+           state->n_targets && spell->ok() )
+      {
+        double target_scalar = std::min( as<double>( state->n_targets ), spell->effectN( 3 ).base_value() );
+        cam *= 1.0 + spell->effectN( 1 ).percent() * target_scalar;
+      }
+
+      if ( const player_talent_t &talent = TBase::p()->talent.conduit_of_the_celestials.path_of_the_falling_star;
+           talent->ok() )
+      {
+        double multiplier =
+            std::max( 0.0, talent->effectN( 1 ).percent() - state->n_targets * talent->effectN( 2 ).percent() );
+        cam *= 1.0 + multiplier;
+      }
 
       return cam;
     }
@@ -3441,9 +3457,9 @@ struct celestial_conduit_t : public monk_spell_t
 
   celestial_conduit_t( monk_t *player, std::string_view options_str )
     : monk_spell_t( player, "celestial_conduit", player->talent.conduit_of_the_celestials.celestial_conduit_action ),
-      damage( new tick_action_t<monk_spell_t>( player, "celestial_conduit_damage",
+      damage( new tick_action_t<monk_spell_t>( player, "damage",
                                                player->talent.conduit_of_the_celestials.celestial_conduit_damage ) ),
-      heal( new tick_action_t<monk_heal_t>( player, "celestial_conduit_heal",
+      heal( new tick_action_t<monk_heal_t>( player, "heal",
                                             player->talent.conduit_of_the_celestials.celestial_conduit_heal ) )
   {
     parse_options( options_str );
@@ -3457,8 +3473,7 @@ struct celestial_conduit_t : public monk_spell_t
 
   bool ready() override
   {
-    return p()->talent.conduit_of_the_celestials.celestial_conduit->ok() && p()->buff.celestial_conduit->check() &&
-           monk_spell_t::ready();
+    return p()->buff.celestial_conduit->check() && monk_spell_t::ready();
   }
 
   bool usable_moving() const override
@@ -4772,7 +4787,6 @@ void monk_t::parse_player_effects()
   parse_effects( buff.predictive_training );
 
   // Conduit of the Celestials
-  parse_effects( buff.inner_compass_crane_stance );
   parse_effects( buff.inner_compass_ox_stance );
   parse_effects( buff.inner_compass_serpent_stance );
   parse_effects( buff.inner_compass_tiger_stance );
@@ -5364,7 +5378,6 @@ void monk_t::init_spells()
     talent.conduit_of_the_celestials.heart_of_the_jade_serpent         = _HT( "Heart of the Jade Serpent" );
     talent.conduit_of_the_celestials.heart_of_the_jade_serpent_buff    = find_spell( 443421 );
     talent.conduit_of_the_celestials.chijis_swiftness                  = _HT( "Chi-Ji's Swiftness" );
-    talent.conduit_of_the_celestials.chijis_swiftness_buff             = find_spell( 443028 );
     talent.conduit_of_the_celestials.strength_of_the_black_ox          = _HT( "Strength of the Black Ox" );
     talent.conduit_of_the_celestials.strength_of_the_black_ox_buff     = find_spell( 443112 );
     talent.conduit_of_the_celestials.strength_of_the_black_ox_absorb   = find_spell( 443113 );
@@ -5380,7 +5393,6 @@ void monk_t::init_spells()
     talent.conduit_of_the_celestials.celestial_conduit_damage          = find_spell( 443038 );
     talent.conduit_of_the_celestials.celestial_conduit_heal            = find_spell( 443039 );
     talent.conduit_of_the_celestials.inner_compass                     = _HT( "Inner Compass" );
-    talent.conduit_of_the_celestials.inner_compass_crane_stance_buff   = find_spell( 443572 );
     talent.conduit_of_the_celestials.inner_compass_ox_stance_buff      = find_spell( 443574 );
     talent.conduit_of_the_celestials.inner_compass_tiger_stance_buff   = find_spell( 443575 );
     talent.conduit_of_the_celestials.inner_compass_serpent_stance_buff = find_spell( 443576 );
@@ -5890,10 +5902,6 @@ void monk_t::create_buffs()
       make_buff_fallback( talent.conduit_of_the_celestials.celestial_conduit->ok(), this, "celestial_conduit",
                           talent.conduit_of_the_celestials.celestial_conduit->effectN( 1 ).trigger() );
 
-  buff.chijis_swiftness =
-      make_buff_fallback( talent.conduit_of_the_celestials.chijis_swiftness->ok(), this, "chijis_swiftness",
-                          talent.conduit_of_the_celestials.chijis_swiftness_buff );
-
   buff.courage_of_the_white_tiger = make_buff_fallback(
       talent.conduit_of_the_celestials.courage_of_the_white_tiger->ok(), this, "courage_of_the_white_tiger",
       talent.conduit_of_the_celestials.courage_of_the_white_tiger_buff );
@@ -5906,7 +5914,6 @@ void monk_t::create_buffs()
       talent.conduit_of_the_celestials.yulons_avatar->ok(), this, "heart_of_the_jade_serpent_yulons_avatar",
       talent.conduit_of_the_celestials.yulons_avatar_buff );
 
-  // TODO: does this cancel zenith (yulon's avatar) hotjs?
   buff.heart_of_the_jade_serpent_unity_within =
       make_buff_fallback( talent.conduit_of_the_celestials.unity_within->ok(), this,
                           "heart_of_the_jade_serpent_unity_within",
@@ -5916,25 +5923,12 @@ void monk_t::create_buffs()
               buff.heart_of_the_jade_serpent->expire();
           } );
 
-  buff.inner_compass_crane_stance =
-      make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this, "crane_stance",
-                          talent.conduit_of_the_celestials.inner_compass_crane_stance_buff )
-          ->set_stack_change_callback( [ this ]( buff_t *, int old_, int ) {
-            if ( old_ == 0 )
-            {
-              buff.inner_compass_ox_stance->expire();
-              buff.inner_compass_serpent_stance->expire();
-              buff.inner_compass_tiger_stance->expire();
-            }
-          } );
-
   buff.inner_compass_ox_stance =
       make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this, "ox_stance",
                           talent.conduit_of_the_celestials.inner_compass_ox_stance_buff )
           ->set_stack_change_callback( [ this ]( buff_t *, int old_, int ) {
             if ( old_ == 0 )
             {
-              buff.inner_compass_crane_stance->expire();
               buff.inner_compass_serpent_stance->expire();
               buff.inner_compass_tiger_stance->expire();
             }
@@ -5946,7 +5940,6 @@ void monk_t::create_buffs()
           ->set_stack_change_callback( [ this ]( buff_t *, int old_, int ) {
             if ( old_ == 0 )
             {
-              buff.inner_compass_crane_stance->expire();
               buff.inner_compass_ox_stance->expire();
               buff.inner_compass_tiger_stance->expire();
             }
@@ -5958,7 +5951,6 @@ void monk_t::create_buffs()
           ->set_stack_change_callback( [ this ]( buff_t *, int old_, int ) {
             if ( old_ == 0 )
             {
-              buff.inner_compass_crane_stance->expire();
               buff.inner_compass_ox_stance->expire();
               buff.inner_compass_serpent_stance->expire();
             }
@@ -5975,6 +5967,7 @@ void monk_t::create_buffs()
                                           talent.conduit_of_the_celestials.unity_within_buff )
                           ->set_expire_callback( [ this ]( buff_t *, double, timespan_t ) {
                             buff.jade_sanctuary->trigger();
+
                             action.strength_of_the_black_ox.celestial->execute();
                             action.courage_of_the_white_tiger.celestial->execute();
 
@@ -6239,7 +6232,6 @@ void monk_t::init_special_effects()
                                                        state->action->id != action.empowered_tiger_lightning->id;
                                               } )
         ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-          action.flurry_of_xuen->set_target( state->target );
           buff.flurry_of_xuen->trigger();
         } );
 
