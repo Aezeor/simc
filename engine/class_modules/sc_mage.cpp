@@ -2775,6 +2775,10 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
   void execute() override
   {
+    // Polished Focus refund is based on salvo stacks prior to Orb Barrage proc,
+    // unlike any of the other effects that depend on salvo stacks.
+    int old_salvo = p()->buffs.arcane_salvo->check();
+
     // Arcane Orb from Orb Barrage executes before Arcane Barrage does. The extra
     // Arcane Charge from the Orb cast increases Barrage damage, but does not change
     // how many targets it hits. Snapshot the buff stacks before executing the Orb.
@@ -2814,7 +2818,8 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     if ( p()->talents.force_of_will.ok() )
       p()->trigger_splinter( target, salvo / as<int>( p()->talents.force_of_will->effectN( 1 ).base_value() ) );
-    if ( salvo >= as<int>( p()->talents.polished_focus->effectN( 1 ).base_value() ) )
+    // See above wrt old_salvo
+    if ( old_salvo >= as<int>( p()->talents.polished_focus->effectN( 1 ).base_value() ) )
       p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.polished_focus->effectN( 2 ).base_value() ) );
     if ( p()->talents.glorious_incandescence.ok() && salvo )
     {
