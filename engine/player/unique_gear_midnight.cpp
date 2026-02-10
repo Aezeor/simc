@@ -362,31 +362,26 @@ void sunfire_silk_lining( special_effect_t& effect )
 void devouring_banding( special_effect_t& effect )
 {
   auto proc_damage = effect.driver()->effectN( 1 ).average( effect );
-  // auto proc_damage = effect.trigger()->effectN( 1 ).average( effect );
-
-  if ( auto proc = effect.player->find_action( "devouring_bolt" ) )
-  {
-    // add damage from 2nd copy of embellishment
-    proc->base_dd_min += proc_damage;
-    proc->base_dd_max += proc_damage;
-    return;
-  }
 
   struct seized_power_t : public generic_proc_t
   {
     std::unordered_map<stat_e, buff_t*> buffs;
+    double buff_value;
+    const special_effect_t& effect;
 
-    seized_power_t( const special_effect_t& e ) : generic_proc_t( e, "seized_power", 1259229 )
+    seized_power_t( const special_effect_t& e )
+      : generic_proc_t( e, "seized_power", 1259229 ), buff_value( 0 ), effect( e )
     {
       quiet             = true;
-      double buff_value = data().effectN( 1 ).trigger()->effectN( 1 ).average( e );
-      // Damage is created after the buff, we can use this to check if there are 2 copies
-      if ( auto proc = e.player->find_action( "devouring_bolt" ) )
-      {
-        buff_value += buff_value;
-      }
+      buff_value = data().effectN( 1 ).trigger()->effectN( 1 ).average( e );
+    }
 
-      create_all_stat_buffs( e, data().effectN( 1 ).trigger(), buff_value,
+    void init_finished() override
+    {
+      generic_proc_t::init_finished();
+      // Wait til init finished to create buffs since we need to know if theres multiple copies of the embellishment for
+      // the buff value
+      create_all_stat_buffs( effect, data().effectN( 1 ).trigger(), buff_value,
                              [ this ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
     }
 
@@ -417,6 +412,20 @@ void devouring_banding( special_effect_t& effect )
       stats         = impact_action->stats;  // report the damage only
     }
   };
+
+  if ( auto proc = effect.player->find_action( "devouring_bolt" ) )
+  {
+    // add damage from 2nd copy of embellishment
+    proc->base_dd_min += proc_damage;
+    proc->base_dd_max += proc_damage;
+    if ( auto missile = effect.player->find_action( "seized_power" ) )
+    {
+      auto buff_action = debug_cast<seized_power_t*>( missile );
+      // add stat from 2nd copy of embellishment
+      buff_action->buff_value += buff_action->buff_value;
+    }
+    return;
+  }
 
   auto buff   = create_proc_action<seized_power_t>( "seized_power", effect );
   auto damage = create_proc_action<devouring_bolt_t>( "devouring_bolt_missile", effect );
