@@ -67,8 +67,6 @@ std::string temporary_enchant( const player_t* p )
          "disabled";
 }
 
-} // namespace hunter_apl
-
 //beast_mastery_apl_start
 void beast_mastery( player_t* p )
 {
