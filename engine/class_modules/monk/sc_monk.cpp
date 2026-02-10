@@ -1241,13 +1241,6 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<teachings_of_th
     timespan_t reduction = 0_s;
     reduction += timespan_t::from_seconds( p()->talent.windwalker.sharp_reflexes->effectN( 1 ).base_value() );
 
-    if ( p()->buff.zenith->up() )
-    {
-      p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.obsidian_spiral_energize->effectN( 1 ).base_value() );
-
-      if ( reduction != 0_s )
-        reduction -= p()->talent.windwalker.zenith->effectN( 3 ).time_value();
-    }
     p()->cooldown.rising_sun_kick->adjust( reduction );
     p()->cooldown.fists_of_fury->adjust( reduction );
 
@@ -1267,6 +1260,14 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<teachings_of_th
 
     if ( p()->action.strength_of_the_black_ox.base )
       p()->action.strength_of_the_black_ox.base->execute();
+
+    if ( p()->buff.zenith->up() )
+    {
+      p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.obsidian_spiral_energize->effectN( 1 ).base_value() );
+
+      if ( reduction != 0_s )
+        reduction -= p()->talent.windwalker.zenith->effectN( 3 ).time_value();
+    }
   }
 
   void impact( action_state_t *s ) override
@@ -6673,7 +6674,11 @@ void monk_t::combat_begin()
 
   if ( talent.windwalker.tigereye_brew_1->ok() )
   {
-    make_repeating_event( sim, talent.windwalker.tigereye_brew_1->effectN( 1 ).period(),
+    // Period is hasted
+    auto period = talent.windwalker.tigereye_brew_1->effectN( 1 ).period() / ( 1 / composite_melee_haste() ); 
+    // TODO: potentially need to adjust for temporary haste buffs that can occur during combat, but this is a good start
+    // and better than nothing
+    make_repeating_event( sim, period,
                           [ & ] { buff.tigereye_brew_1->trigger(); } );
     buff.tigereye_brew_1->trigger( 10 );
   }
