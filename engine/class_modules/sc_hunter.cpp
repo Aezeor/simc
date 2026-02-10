@@ -1638,7 +1638,7 @@ struct hunter_melee_attack_t : public hunter_action_t<melee_attack_t>
     if ( weapon )
     {
       const weapon_e group = weapon->group();
-      if ( group != WEAPON_2H && group != WEAPON_1H )
+      if ( group != WEAPON_2H && group != WEAPON_1H && group != WEAPON_SMALL )
         background = true;
     }
   }
@@ -5905,7 +5905,7 @@ struct harpoon_t : public hunter_ranged_attack_t
     movement_directionality = movement_direction_type::OMNI;
 
     const weapon_e group = p->main_hand_weapon.group();
-    if ( group != WEAPON_2H && group != WEAPON_1H )
+    if ( group != WEAPON_2H && group != WEAPON_1H && group != WEAPON_SMALL )
       background = true;
   }
 
@@ -8243,13 +8243,13 @@ void hunter_t::init_action_list()
   if ( specialization() == HUNTER_SURVIVAL )
   {
     const weapon_e mh_group = main_hand_weapon.group();
-    if ( mh_group != WEAPON_2H && mh_group != WEAPON_1H && mh_group != WEAPON_DAGGER )
+    if ( mh_group != WEAPON_2H && mh_group != WEAPON_1H && mh_group != WEAPON_SMALL )
       sim->error( "Player {} does not have a proper weapon at the Main Hand slot: {}.", name(), main_hand_weapon.type );
 
     if ( off_hand_attack )
     {
       const weapon_e oh_group = off_hand_weapon.group();
-      if ( oh_group != WEAPON_1H && oh_group != WEAPON_DAGGER )
+      if ( oh_group != WEAPON_1H && oh_group != WEAPON_SMALL )
         sim->error( "Player {} does not have a proper weapon at the Off Hand slot: {}.", name(), off_hand_weapon.type );
     }
   }
