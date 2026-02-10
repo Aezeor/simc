@@ -227,9 +227,6 @@ void print_html_report( const player_t& player, const player_data_t& data, repor
 // Hunter
 // ==========================================================================
 
-// in-game the buffs are actually 8 distinct spells, so the player can't get more than 8 simultaneously
-constexpr unsigned BARBED_SHOT_BUFFS_MAX = 8;
-
 enum howl_of_the_pack_leader_beast
 {
   WYVERN,
@@ -440,7 +437,7 @@ public:
     buff_t* focus_fire;
 
     // Beast Mastery Tree
-    std::array<buff_t*, BARBED_SHOT_BUFFS_MAX> barbed_shot;
+    buff_t* barbed_shot;
     buff_t* bestial_wrath;
     buff_t* beast_cleave; 
     buff_t* huntmasters_call;
@@ -629,6 +626,7 @@ public:
     spell_data_ptr_t animal_companion;
     spell_data_ptr_t solitary_companion;
     spell_data_ptr_t barbed_shot;
+    spell_data_ptr_t barbed_shot_buff;
 
     spell_data_ptr_t alpha_predator;
     spell_data_ptr_t dire_beast;
@@ -5009,12 +5007,7 @@ struct barbed_shot_base_t : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    // trigger regen buff
-    auto it = range::find_if( p()->buffs.barbed_shot, []( buff_t* b ) { return !b->check(); } );
-    if ( it != p()->buffs.barbed_shot.end() )
-      ( *it )->trigger();
-    else if ( sim->debug )
-      sim->out_debug.print( "{} {} unable to trigger excess Barbed Shot buff", player->name(), name() );
+    p()->buffs.barbed_shot->trigger();
 
     auto pet = p()->pets.main;
     if ( pet && p()->rng().roll( p()->talents.brutal_companion->effectN( 1 ).percent() ) )
@@ -7400,6 +7393,7 @@ void hunter_t::init_spells()
     talents.animal_companion                  = find_talent_spell( talent_tree::SPECIALIZATION, "Animal Companion", HUNTER_BEAST_MASTERY );
     talents.solitary_companion                = find_talent_spell( talent_tree::SPECIALIZATION, "Solitary Companion", HUNTER_BEAST_MASTERY );
     talents.barbed_shot                       = find_talent_spell( talent_tree::SPECIALIZATION, "Barbed Shot", HUNTER_BEAST_MASTERY );
+    talents.barbed_shot_buff                  = talents.barbed_shot.ok() ? find_spell( 246152 ) : spell_data_t::not_found();
 
     talents.alpha_predator                    = find_talent_spell( talent_tree::SPECIALIZATION, "Alpha Predator", HUNTER_BEAST_MASTERY );
     talents.dire_beast                        = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Beast", HUNTER_BEAST_MASTERY );
@@ -7934,17 +7928,14 @@ void hunter_t::create_buffs()
 
   // Beast Mastery Tree
 
-  const spell_data_t* barbed_shot = find_spell( 246152 );
-  for ( size_t i = 0; i < buffs.barbed_shot.size(); i++ )
-  {
-    buffs.barbed_shot[ i ] =
-      make_buff( this, fmt::format( "barbed_shot_{}", i + 1 ), barbed_shot )
-        -> set_default_value( barbed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS ) )
-        -> set_tick_callback(
-          [ this ]( buff_t* b, int, timespan_t ) {
-            resource_gain( RESOURCE_FOCUS, b -> default_value, gains.barbed_shot, actions.barbed_shot );
+  buffs.barbed_shot = 
+    make_buff( this, "barbed_shot", talents.barbed_shot_buff )
+      ->set_default_value( talents.barbed_shot_buff->effectN( 1 ).resource( RESOURCE_FOCUS ) )
+      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+      ->set_freeze_stacks( true )
+      ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+            resource_gain( RESOURCE_FOCUS, b->check_stack_value(), gains.barbed_shot, actions.barbed_shot );
           } );
-  }
 
   buffs.bestial_wrath =
     make_buff( this, "bestial_wrath", talents.bestial_wrath )
