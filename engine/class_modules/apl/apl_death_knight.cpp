@@ -10,11 +10,11 @@ namespace death_knight_apl
 
 std::string potion( const player_t* p )
 {
-  std::string frost_potion = ( p->true_level >= 81 ) ? "disabled" : "tempered_potion_3";
+  std::string frost_potion = ( p->true_level >= 81 ) ? "lights_potential_2" : "tempered_potion_3";
 
-  std::string unholy_potion = ( p->true_level >= 81 ) ? "potion_of_recklessness_2" : "tempered_potion_3";
+  std::string unholy_potion = ( p->true_level >= 81 ) ? "lights_potential_2" : "tempered_potion_3";
 
-  std::string blood_potion = ( p->true_level >= 81 ) ? "disabled" : "tempered_potion_3";
+  std::string blood_potion = ( p->true_level >= 81 ) ? "lights_potential_2" : "tempered_potion_3";
 
   switch ( p->specialization() )
   {
@@ -29,7 +29,7 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  std::string frost_flask = ( p->true_level >= 81 ) ? "disabled" : "flask_of_alchemical_chaos_3";
+  std::string frost_flask = ( p->true_level >= 81 ) ? "flask_of_the_shattered_sun_2" : "flask_of_alchemical_chaos_3";
 
   std::string unholy_flask = ( p->true_level >= 81 ) ? "flask_of_the_shattered_sun_2" : "flask_of_alchemical_chaos_3";
 
@@ -54,9 +54,9 @@ std::string food( const player_t* p )
 
   if ( p->true_level >= 81 )
   {
-    frost_food = "rootland_celebration";
-    unholy_food = "rootland_celebration";
-    blood_food = "disabled";
+    frost_food = "silvermoon_parade";
+    unholy_food = "silvermoon_parade";
+    blood_food = "silvermoon_parade";
   }
   else
   {
