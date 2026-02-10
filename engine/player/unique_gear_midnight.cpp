@@ -432,8 +432,8 @@ void devouring_banding( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-// 1244243 driver
-// 1259060 coeff (real driver?)
+// 1244243 rppm driver
+// 1259060 equip driver
 // 1259061 buff
 void blessed_pango_charm( special_effect_t& effect )
 {
@@ -449,10 +449,11 @@ void blessed_pango_charm( special_effect_t& effect )
     return;
   }
 
-  auto favored = make_buff<stat_buff_t>( effect.player, "favored_by_kulzi", effect.trigger() )
+  auto favored = make_buff<stat_buff_t>( effect.player, "favored_by_kulzi", effect.player->find_spell( 1259061 ) )
                      ->add_stat_from_effect_type( A_MOD_RATING, stat_amount );
 
   effect.custom_buff = favored;
+  effect.spell_id    = 1244243;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
