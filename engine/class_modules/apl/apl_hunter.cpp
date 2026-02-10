@@ -5,7 +5,12 @@ namespace hunter_apl {
 
 std::string potion( const player_t* p )
 {
-  return ( p -> true_level > 80 ) ? "disabled" : // Disabled for level 90
+  // Spec-specific logic for Level 90 Potions
+  std::string lvl90_potion = ( p -> specialization() == HUNTER_SURVIVAL )      ? "lights_potential_2" :
+                             ( p -> specialization() == HUNTER_MARKSMANSHIP )  ? "lights_potential_2" :
+                             "draught_of_rampant_abandon_2"; // Beast Mastery
+
+  return ( p -> true_level > 80 ) ? lvl90_potion :
          ( p -> true_level > 70 ) ? "tempered_potion_3" : 
          ( p -> true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : 
          ( p -> true_level > 50 ) ? "spectral_agility" :
@@ -15,7 +20,12 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  return ( p -> true_level > 80 ) ? "disabled" : // Disabled for level 90
+  // Spec-specific logic for Level 90 Flasks
+  std::string lvl90_flask = ( p -> specialization() == HUNTER_SURVIVAL )      ? "flask_of_the_magisters_2" :
+                            ( p -> specialization() == HUNTER_MARKSMANSHIP )  ? "flask_of_the_shattered_sun_2" :
+                            "flask_of_the_magisters_2"; // Beast Mastery
+
+  return ( p -> true_level > 80 ) ? lvl90_flask :
          ( p -> true_level > 70 ) ? "flask_of_alchemical_chaos_3" : 
          ( p -> true_level > 60 ) ? "iced_phial_of_corrupting_rage_3" : 
          ( p -> true_level > 50 ) ? "spectral_flask_of_power" :
@@ -25,7 +35,7 @@ std::string flask( const player_t* p )
 
 std::string food( const player_t* p )
 {
-  return ( p -> true_level > 80 ) ? "disabled" : // Disabled for level 90
+  return ( p -> true_level > 80 ) ? "silvermoon_parade" :
          ( p -> true_level > 70 ) ? "the_sushi_special" : 
          ( p -> true_level > 60 ) ? "fated_fortune_cookie" : 
          ( p -> true_level > 50 ) ? "feast_of_gluttonous_hedonism" :
@@ -35,7 +45,7 @@ std::string food( const player_t* p )
 
 std::string rune( const player_t* p )
 {
-  return ( p -> true_level > 80 ) ? "disabled" : // Disabled for level 90
+  return ( p -> true_level > 80 ) ? "void_touched" :
          ( p -> true_level > 70 ) ? "crystallized" : 
          ( p -> true_level > 60 ) ? "draconic" :
          ( p -> true_level > 50 ) ? "veiled" :
@@ -45,7 +55,7 @@ std::string rune( const player_t* p )
 
 std::string temporary_enchant( const player_t* p )
 {
-  std::string lvl90_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "disabled" : "disabled"; // Disabled for level 90
+  std::string lvl90_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:thalassian_phoenix_oil_2" : "main_hand:thalassian_phoenix_oil_2";
   std::string lvl80_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:ironclaw_whetstone_3" : "main_hand:algari_mana_oil_3";
   std::string lvl70_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:howling_rune_3" : "main_hand:completely_safe_rockets_3";
   std::string lvl60_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:shaded_sharpening_stone" : "main_hand:shadowcore_oil";
@@ -56,6 +66,8 @@ std::string temporary_enchant( const player_t* p )
          ( p -> true_level >= 60 ) ? lvl60_temp_enchant :
          "disabled";
 }
+
+} // namespace hunter_apl
 
 //beast_mastery_apl_start
 void beast_mastery( player_t* p )
