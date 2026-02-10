@@ -5686,7 +5686,8 @@ struct rapid_fire_t: public hunter_ranged_attack_t
       {
         unload.black_arrow = p->get_background_action<black_arrow_unload_t>( "black_arrow_unload" );
       }
-      else
+      // Unload only fires Kill Shots with Kill Shot talented
+      else if ( p->talents.kill_shot.ok() )
       {
         unload.kill_shot = p->get_background_action<kill_shot_unload_t>( "kill_shot_unload" );
       }
