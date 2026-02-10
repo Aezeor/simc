@@ -11612,7 +11612,7 @@ void demon_hunter_t::create_cooldowns()
 
   // Vengeance
   cooldown.demon_spikes              = get_cooldown( "demon_spikes" );
-  cooldown.spirit_bomb               = get_cooldown( "demon_spikes" );
+  cooldown.spirit_bomb               = get_cooldown( "spirit_bomb" );
   cooldown.sigil_of_chains           = get_cooldown( "sigil_of_chains" );
   cooldown.sigil_of_silence          = get_cooldown( "sigil_of_silence" );
   cooldown.fel_devastation           = get_cooldown( "fel_devastation" );
