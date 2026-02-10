@@ -2331,7 +2331,6 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
     may_crit            = true;
     if ( !p->bugs )
     {
-      affected_by.judgment = false;
       clears_judgment      = false;
     }
   }
@@ -3888,7 +3887,7 @@ void paladin_t::apply_target_action_effects(action_t* a)
   auto action = dynamic_cast<parse_action_base_t*>( a );
   assert( action );
 
-  action->parse_target_effects( d_fn( &paladin_td_t::buffs_t::judgment, true ), spells.judgment_debuff );
+  action->parse_target_effects( d_fn( &paladin_td_t::buffs_t::judgment, false ), spells.judgment_debuff );
   action->parse_target_effects( d_fn( &paladin_td_t::buffs_t::sanctify ), spells.sanctify );
 
   action->parse_target_effects( d_fn( &paladin_td_t::dots_t::expurgation ), spells.expurgation );

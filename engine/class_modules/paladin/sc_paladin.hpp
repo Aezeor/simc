@@ -1095,7 +1095,7 @@ public:
   // Damage increase whitelists
   struct affected_by_t
   {
-    bool avenging_wrath, judgment, divine_purpose, divine_purpose_cost;  // Shared
+    bool avenging_wrath, divine_purpose, divine_purpose_cost;  // Shared
     bool crusade, highlords_judgment, highlords_judgment_hidden,
       rise_from_ash; // Ret
     bool avenging_crusader;                                                                // Holy
@@ -1261,22 +1261,6 @@ public:
     }
 
     return am;
-  }
-
-  virtual double composite_target_multiplier( player_t* t ) const override
-  {
-    double ctm = ab::composite_target_multiplier( t );
-
-    paladin_td_t* td = this->td( t );
-
-    // Handles both holy and ret judgment
-    if ( affected_by.judgment && td->debuff.judgment->up() )
-    {
-      double judg_mul = 1.0 + td->debuff.judgment->default_value;
-      ctm *= judg_mul;
-    }
-
-    return ctm;
   }
 
   virtual double composite_target_ta_multiplier( player_t* target ) const override
