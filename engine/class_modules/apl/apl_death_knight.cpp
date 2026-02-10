@@ -324,11 +324,11 @@ void unholy( player_t* p )
   default_->add_action( "call_action_list,name=single_target,if=active_enemies<4" );
 
   cooldowns->add_action( "potion,if=talent.army_of_the_dead&pet.lesser_ghoul_army.active|!talent.army_of_the_dead&buff.dark_transformation.up", "Cooldowns" );
-  cooldowns->add_action( "outbreak,if=dot.virulent_plague.ticks_remain<3&!buff.pestilence.up&(!talent.blightburst|talent.blightburst&cooldown.putrefy.remains_expected>5)|buff.pestilence.up&dot.virulent_plague.ticking&(talent.infliction_of_sorrow&buff.dark_transformation.up&buff.dark_transformation.remains<gcd*2|cooldown.dark_transformation.remains<7)" );
+  cooldowns->add_action( "outbreak,if=dot.virulent_plague.ticks_remain<3&!buff.pestilence.up&fight_remains>5&(!talent.blightburst|talent.blightburst&cooldown.putrefy.remains_expected>5)|buff.pestilence.up&dot.virulent_plague.ticking&(!talent.infliction_of_sorrow&cooldown.dark_transformation.remains<3|talent.infliction_of_sorrow&!buff.gift_of_the_sanlayn.up|fight_remains<3|raid_event.adds.exists&raid_event.adds.remains<3)" );
   cooldowns->add_action( "army_of_the_dead,if=!talent.summon_gargoyle&!talent.gift_of_the_sanlayn|talent.summon_gargoyle&runic_power>=30|talent.gift_of_the_sanlayn&(debuff.festering_scythe_debuff.up|!talent.festering_scythe)" );
   cooldowns->add_action( "dark_transformation,if=pet.lesser_ghoul_army.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead" );
-  cooldowns->add_action( "soul_reaper,if=cooldown.putrefy.charges>=1|target.health.pct<=35" );
-  cooldowns->add_action( "putrefy,if=(talent.soul_reaper&!target.health.pct<=35|!talent.soul_reaper)&(buff.forbidden_knowledge.up&runic_power.deficit>10)|charges=max_charges&(!buff.reaping.up&!cooldown.dark_transformation.remains<gcd.max|!talent.reaping)" );
+  cooldowns->add_action( "soul_reaper,if=(!talent.pestilence|!talent.infliction_of_sorrow)&cooldown.putrefy.charges>=1|talent.pestilence&talent.infliction_of_sorrow&buff.dark_transformation.remains<5|target.health.pct<=35" );
+  cooldowns->add_action( "putrefy,if=(talent.soul_reaper&!target.health.pct<=35|!talent.soul_reaper)&(buff.forbidden_knowledge.up&runic_power.deficit>10)|charges=max_charges&time>10&(!buff.reaping.up&!cooldown.dark_transformation.remains<gcd.max|!talent.reaping|buff.reaping.up&talent.infliction_of_sorrow&talent.pestilence&buff.dark_transformation.remains>10&charges=max_charges)" );
 
   aoe->add_action( "death_and_decay,if=!death_and_decay.ticking&talent.desecrate", "Aoe Rotation" );
   aoe->add_action( "festering_strike,if=talent.festering_scythe&(buff.festering_scythe.up&(buff.festering_scythe.remains<=3|debuff.festering_scythe_debuff.remains<3)|!buff.festering_scythe.up&debuff.festering_scythe_debuff.remains<3)" );
