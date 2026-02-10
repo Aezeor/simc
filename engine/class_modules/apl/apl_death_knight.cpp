@@ -324,6 +324,7 @@ void unholy( player_t* p )
   default_->add_action( "call_action_list,name=single_target,if=active_enemies<4" );
 
   cooldowns->add_action( "potion,if=talent.army_of_the_dead&pet.lesser_ghoul_army.active|!talent.army_of_the_dead&buff.dark_transformation.up", "Cooldowns" );
+  cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up", "Use<a href = 'https://www.wowhead.com/spell=10060/power-infusion'> Power Infusion</ a> while<a href = 'https://www.wowhead.com/spell=1233448/dark-transformation'> Dark Transformation</ a> is up" );
   cooldowns->add_action( "outbreak,if=dot.virulent_plague.ticks_remain<3&!buff.pestilence.up&fight_remains>5&(!talent.blightburst|talent.blightburst&cooldown.putrefy.remains_expected>5)|buff.pestilence.up&dot.virulent_plague.ticking&(!talent.infliction_of_sorrow&cooldown.dark_transformation.remains<3|talent.infliction_of_sorrow&!buff.gift_of_the_sanlayn.up|fight_remains<3|raid_event.adds.exists&raid_event.adds.remains<3)" );
   cooldowns->add_action( "army_of_the_dead,if=!talent.summon_gargoyle&!talent.gift_of_the_sanlayn|talent.summon_gargoyle&runic_power>=30|talent.gift_of_the_sanlayn&(debuff.festering_scythe_debuff.up|!talent.festering_scythe)" );
   cooldowns->add_action( "dark_transformation,if=pet.lesser_ghoul_army.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead" );
