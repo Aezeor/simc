@@ -895,7 +895,7 @@ Proc Chance      : 101%
 Stance Mask      : 0x01000000
 Affecting Spells : Anti-Magic Barrier (205727 effects: #1, #2), Volatile Shielding (207188 effect#1), Acherus Drapes (210852 effect#1), Runic Barrier (280010 effect#3), Runic Barrier (280132 effect#1), Death's Embrace (334728 effect#1), Osmosis (454835 effect#1), Unyielding Will (457574 effect#2)
 Family Flags     : 17
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Cannot Be Stolen (134), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491), Unknown (512)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Cannot Be Stolen (134), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Effects          :
 #1 (id=40863)    : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.75 | Misc Value: 0x7e | Target: Self (1)
@@ -970,7 +970,7 @@ Stance Mask      : 0x01000000
 Proc Flags       : Killing Blow, White Melee, White Melee Taken, Yellow Melee, Yellow Melee Taken, White Ranged Taken, Yellow Ranged, Yellow Ranged Taken, Generic Heal, Generic Heal Taken, Generic Hostile Spell, Generic Hostile Spell Taken, Magic Heal, Magic Heal Taken, Magic Hostile Spell, Magic Hostile Spell Taken, Periodic, Periodic Taken, Helpful Periodic, Helpful Periodic Taken
 Affecting Spells : Cold Hearted (288425 effect#2)
 Family Flags     : 20
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity Purges Effect (47), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Allow Cast While Channeling (308), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491), Unknown (512)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity Purges Effect (47), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Allow Cast While Channeling (308), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=40963)    : Apply Aura (6) | Mechanic Immunity (77)
@@ -1846,7 +1846,7 @@ Labels           : 16: Class Spells
 Stance Mask      : 0x01000000
 Affecting Spells : Improved Vampiric Blood (317133 effects: #1, #2, #3), Vampiric Aura (334547 effects: #2, #3)
 Family Flags     : 35
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Important Spell (C_Spell.IsSpellImportant) (491), Unknown (512)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Effects          :
 #1 (id=48161)    : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f | Target: Self (1)
@@ -14139,7 +14139,7 @@ Labels           : 16: Class Spells
                  : 1619
 Stacks           : 20 maximum
 Proc Chance      : 101%
-Attributes       : No Aura Cancel (31), Allow Low Level Buff (67), Aura Points On Client (268), Only Proc From Class Abilities (415), Unknown (490)
+Attributes       : No Aura Cancel (31), Allow Low Level Buff (67), Aura Points On Client (268), Only Proc From Class Abilities (415), Asynchronous Buff (490)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1005518)  : Apply Aura (6) | Modify Total Stat% (137)
@@ -20912,7 +20912,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 20 maximum
 Proc Chance      : 101%
-Attributes       : Include In Advanced Combat Log (72), Can Proc From Procs (122), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Unknown (490)
+Attributes       : Include In Advanced Combat Log (72), Can Proc From Procs (122), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Asynchronous Buff (490)
 Effects          :
 #1 (id=1222641)  : Apply Aura (6) | Modify Ranged and Melee Haste% (192)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
@@ -21877,7 +21877,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered By     : Festering Scythe (458128)
-Attributes       : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66), DoT Stacking Rule (103), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Suppress Weapon Procs (151), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (490)
+Attributes       : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66), DoT Stacking Rule (103), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Suppress Weapon Procs (151), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Asynchronous Buff (490)
 Effects          :
 #1 (id=1239845)  : Apply Aura (6) | Dummy (4)
                    Base Value: -35 | Scaled Value: -35 | Target: Targeted Enemy (6)
@@ -23757,7 +23757,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 20 maximum
 Proc Chance      : 101%
-Attributes       : Do Not Log (8), No Aura Cancel (31), No Threat (42), Allow Aura While Dead (116), No Cast Log (128), Do Not Log Caster (141), Not In Spellbook (143), Extra Initial Period (169), No Aura Log (202), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), No Summon Log (326), Do Not Log on Learn (355), Allow Harmful on Friendly (373), Allow Class Ability Procs (416), Unknown (490)
+Attributes       : Do Not Log (8), No Aura Cancel (31), No Threat (42), Allow Aura While Dead (116), No Cast Log (128), Do Not Log Caster (141), Not In Spellbook (143), Extra Initial Period (169), No Aura Log (202), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), No Summon Log (326), Do Not Log on Learn (355), Allow Harmful on Friendly (373), Allow Class Ability Procs (416), Asynchronous Buff (490)
 Effects          :
 #1 (id=1282546)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)

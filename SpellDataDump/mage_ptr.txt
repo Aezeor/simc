@@ -1917,7 +1917,7 @@ Labels           : 16: Class Spells
 Mechanic         : Invulnerable
 Affecting Spells : Cryo-Freeze (382292 effect#1)
 Family Flags     : 39, 67
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity Purges Effect (47), Fail on all targets immune (85), Can't Crit (93), Ignore Healing Modifiers (219), No Client Fail While Stunned, Fleeing, Confused (244), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow While Banished Aura State (299), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442), Unknown (512)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity Purges Effect (47), Fail on all targets immune (85), Can't Crit (93), Ignore Healing Modifiers (219), No Client Fail While Stunned, Fleeing, Confused (244), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow While Banished Aura State (299), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=37396)    : Apply Aura (6) | Stun (12)
@@ -10992,7 +10992,7 @@ Labels           : 16: Class Spells
                  : 892: Master of Time (342249 effect#1), Time Twist (1255166 effect#1)
                  : 930
 Family Flags     : 67
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Trigger Cooldown On Spell Start (407), Allow Class Ability Procs (416), Unknown (512)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Trigger Cooldown On Spell Start (407), Allow Class Ability Procs (416), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Effects          :
 #1 (id=843168)   : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 58542 | Misc Value 2: 3189 | Target: at Self (18) -> at Area (87)
@@ -12549,7 +12549,7 @@ Labels           : 16: Class Spells
 Stacks           : 100 maximum
 Proc Chance      : 101%
 Triggered By     : Feel the Burn (383391)
-Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Unknown (490)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Buff (490)
 Effects          :
 #1 (id=1015295)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -14028,7 +14028,7 @@ Labels           : 16: Class Spells
 Mechanic         : Invulnerable
 Affecting Spells : Cryo-Freeze (382292 effect#1)
 Family Flags     : 39, 67
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity Purges Effect (47), Fail on all targets immune (85), Can't Crit (93), Ignore Healing Modifiers (219), No Client Fail While Stunned, Fleeing, Confused (244), Allow While Banished Aura State (299), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442), Unknown (512)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity Purges Effect (47), Fail on all targets immune (85), Can't Crit (93), Ignore Healing Modifiers (219), No Client Fail While Stunned, Fleeing, Confused (244), Allow While Banished Aura State (299), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1083946)  : Apply Aura (6) | Dummy (4)
@@ -15711,7 +15711,7 @@ Labels           : 16: Class Spells
                  : 4117
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Unknown (490)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Buff (490)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1148339)  : Apply Aura (6) | Modify All Haste% (193)
@@ -15732,7 +15732,7 @@ Labels           : 16: Class Spells
                  : 4117
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Unknown (490)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Buff (490)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1148348)  : Apply Aura (6) | Modify All Haste% (193)
@@ -17411,7 +17411,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Attributes       : Unknown (490)
+Attributes       : Asynchronous Buff (490)
 Effects          :
 #1 (id=1170073)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 1 | Scaled Value: 1 | Stat: Int | Target: Self (1)
@@ -19857,7 +19857,7 @@ Labels           : 16: Class Spells
                  : 5652: Path to Oblivion (1253399 effect#1), Swift Erasure (1253668 effect#1), Phase Shift (1256245 effect#1)
 Stacks           : 20 maximum
 Proc Chance      : 101%
-Attributes       : No Aura Cancel (31), Not In Spellbook (143), Do Not Log on Learn (355), Unknown (490)
+Attributes       : No Aura Cancel (31), Not In Spellbook (143), Do Not Log on Learn (355), Asynchronous Buff (490)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1263799)  : Apply Aura (6) | Dummy (4)
@@ -20112,7 +20112,7 @@ Labels           : 16: Class Spells
                  : 5671
 Stacks           : 100 maximum
 Proc Chance      : 101%
-Attributes       : Allow Class Ability Procs (416), Unknown (490)
+Attributes       : Allow Class Ability Procs (416), Asynchronous Buff (490)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1265238)  : Apply Aura (6) | Modify Damage Done% (79)
@@ -20638,7 +20638,7 @@ Labels           : 16: Class Spells
                  : 5786: Hand of Frost (1262981 effect#2), Hand of Frost (1262981 effect#3)
 Stacks           : 100 maximum
 Proc Chance      : 101%
-Attributes       : Allow Class Ability Procs (416), Unknown (490)
+Attributes       : Allow Class Ability Procs (416), Asynchronous Buff (490)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1273807)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)

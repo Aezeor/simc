@@ -773,7 +773,7 @@ Category Cooldown: 90 seconds
 Stance Mask      : 0x08000000
 Affecting Spells : Light's Inspiration (373450 effects: #1, #2), Light Weaving (394609 effect#1)
 Family Flags     : 24
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Ignore Caster Modifiers (125), Ignore Healing Modifiers (219), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Always Allow Negative Healing Percent Modifiers (442), Important Spell (C_Spell.IsSpellImportant) (491), Unknown (512)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Ignore Caster Modifiers (125), Ignore Healing Modifiers (219), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Always Allow Negative Healing Percent Modifiers (442), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Effects          :
 #1 (id=10552)    : Apply Aura (6) | Increase Health% (133)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
@@ -1404,7 +1404,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Foreseen Circumstances (440738 effect#1)
 Family Flags     : 60
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Vehicle Immunity Category (218), Reset cooldown upon ending an encounter (333), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Unknown (499), Unknown (512)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Vehicle Immunity Category (218), Reset cooldown upon ending an encounter (333), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), External Defensive (C_Spell.IsExternalDefensive) (499), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Effects          :
 #1 (id=23040)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 0x7f | Target: Targeted Ally (21)
@@ -1825,7 +1825,7 @@ Labels           : 16: Class Spells
 Stance Mask      : 0x80000000
 Affecting Spells : Phyrix's Embrace (234689 effects: #1, #2), Foreseen Circumstances (440738 effect#2)
 Family Flags     : 75
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Absorb Cannot Be Ignore (214), Vehicle Immunity Category (218), Do Not Count For PvP Scoreboard (252), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Ignore Target Absorb Modifiers (371), Allow While Stunned by Stun Mechanic (378), Hide Damage Absorb UI (380), Allow Class Ability Procs (416), Unknown (499)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Absorb Cannot Be Ignore (214), Vehicle Immunity Category (218), Do Not Count For PvP Scoreboard (252), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Ignore Target Absorb Modifiers (371), Allow While Stunned by Stun Mechanic (378), Hide Damage Absorb UI (380), Allow Class Ability Procs (416), External Defensive (C_Spell.IsExternalDefensive) (499)
 Effects          :
 #1 (id=40042)    : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 0x7f | Target: Targeted Ally (21)
@@ -18889,7 +18889,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 4 maximum
 Proc Chance      : 101%
-Attributes       : No Aura Icon (60), Allow Class Ability Procs (416), Do Not Display Cast Time (441), Unknown (490)
+Attributes       : No Aura Icon (60), Allow Class Ability Procs (416), Do Not Display Cast Time (441), Asynchronous Buff (490)
 Effects          :
 #1 (id=1243041)  : Apply Aura (6) | Periodic Energize Power (24): every 0.75 seconds
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 13 | Target: Self (1)
@@ -18907,7 +18907,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 4 maximum
 Proc Chance      : 101%
-Attributes       : No Aura Icon (60), Allow Class Ability Procs (416), Do Not Display Cast Time (441), Unknown (490)
+Attributes       : No Aura Icon (60), Allow Class Ability Procs (416), Do Not Display Cast Time (441), Asynchronous Buff (490)
 Effects          :
 #1 (id=1243042)  : Apply Aura (6) | Periodic Energize Power (24): every 0.25 seconds
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 13 | Target: Self (1)

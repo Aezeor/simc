@@ -178,7 +178,7 @@ Labels           : 16: Class Spells
                  : 1284
 Affecting Spells : Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Honed Reflexes (391271 effect#1), Demolish (436358 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11, 13
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Aura Points On Client (268), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491), Unknown (512)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Aura Points On Client (268), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=364)      : Apply Aura (6) | Modify Damage Taken% (87)
@@ -2924,7 +2924,7 @@ Labels           : 16: Class Spells
                  : 1284
 Affecting Spells : Bladestorm (227847 effect#3), Honed Reflexes (391271 effect#1), Demolish (436358 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11, 97
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491), Unknown (512)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Effects          :
 #1 (id=134224)   : Apply Aura (6) | Modify Parry% (47)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
@@ -9939,7 +9939,7 @@ Labels           : 16: Class Spells
 Stacks           : 4 maximum
 Proc Chance      : 101%
 Triggered By     : Frenzy (335077)
-Attributes       : Aura Points On Client (268), Unknown (490)
+Attributes       : Aura Points On Client (268), Asynchronous Buff (490)
 Effects          :
 #1 (id=831419)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -16265,7 +16265,7 @@ Labels           : 16: Class Spells
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Triggered By     : Slayer's Strike (445579)
-Attributes       : Aura Points On Client (268), Unknown (490)
+Attributes       : Aura Points On Client (268), Asynchronous Buff (490)
 Effects          :
 #1 (id=1142521)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.33334 | Target: Self (1)
@@ -19248,7 +19248,7 @@ Labels           : 16: Class Spells
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Triggered By     : Rampaging Berserker (1269308)
-Attributes       : Aura Points On Client (268), Unknown (490)
+Attributes       : Aura Points On Client (268), Asynchronous Buff (490)
 Aura Interrupt   : Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1281122)  : Apply Aura (6) | Modify Total Stat% (137)
@@ -19314,7 +19314,7 @@ Labels           : 16: Class Spells
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Triggered By     : Heroic Strike (1269383)
-Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Unknown (490)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Buff (490)
 Aura Interrupt   : Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1281196)  : Apply Aura (6) | Modify Target Armor% (280)

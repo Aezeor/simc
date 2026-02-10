@@ -2840,7 +2840,7 @@ Labels           : 16: Class Spells
                  : 1467: Bronze Evoker Spells
 Affecting Spells : Timeless Magic (376240 effects: #1, #2)
 Family Flags     : 19
-Attributes       : Include In Advanced Combat Log (72), Absorb Cannot Be Ignore (214), Vehicle Immunity Category (218), Do Not Count For PvP Scoreboard (252), Aura Points On Client (268), Hide Damage Absorb UI (380), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (499), Unknown (512)
+Attributes       : Include In Advanced Combat Log (72), Absorb Cannot Be Ignore (214), Vehicle Immunity Category (218), Do Not Count For PvP Scoreboard (252), Aura Points On Client (268), Hide Damage Absorb UI (380), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), External Defensive (C_Spell.IsExternalDefensive) (499), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Effects          :
 #1 (id=891504)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Targeted Ally (21)
@@ -4194,7 +4194,7 @@ Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Mastery: Timewalker (406380 effect#2), Hardened Scales (441180 effect#1)
 Family Flags     : 39, 67
-Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491), Unknown (512)
+Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=903598)   : Apply Aura (6) | Modify Damage Taken% (87)

@@ -1721,7 +1721,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Attributes       : Is Ability (4), Not Shapeshifted (16), No Threat (42), Include In Advanced Combat Log (72), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Stunned By Horror Mechanic (342), Do Not Log on Learn (355), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Unknown (499), Unknown (512)
+Attributes       : Is Ability (4), Not Shapeshifted (16), No Threat (42), Include In Advanced Combat Log (72), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Stunned By Horror Mechanic (342), Do Not Log on Learn (355), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), External Defensive (C_Spell.IsExternalDefensive) (499), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=46148)    : Apply Aura (6) | Modify Damage Taken% (87)
@@ -6643,7 +6643,7 @@ Labels           : 16: Class Spells
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Family Flags     : 89
-Attributes       : Is Ability (4), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416), Unknown (490)
+Attributes       : Is Ability (4), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Buff (490)
 Effects          :
 #1 (id=374725)   : Apply Aura (6) | Periodic Energize Power (24): every 2 seconds
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 2 | Target: Self (1)
@@ -7454,7 +7454,7 @@ Stacks           : 20 maximum
 Proc Chance      : 101%
 Affecting Spells : Bloody Claws (385737 effect#1)
 Family Flags     : 64
-Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (490)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Asynchronous Buff (490)
 Effects          :
 #1 (id=483865)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -8731,7 +8731,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Lone Survivor (388039 effect#1), Shell Cover (472707 effects: #1, #2)
 Family Flags     : 44
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Do Not Display Range (126), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), No Client Fail on No Pet (376), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491), Unknown (512)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Do Not Display Range (126), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), No Client Fail on No Pet (376), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Effects          :
 #1 (id=708480)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.833333 | Misc Value: 0x7f | Target: Self (1)
@@ -20965,7 +20965,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 100 maximum
 Proc Chance      : 101%
-Attributes       : Unknown (490)
+Attributes       : Asynchronous Buff (490)
 Effects          :
 #1 (id=1259757)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 15 | Target: Self (1)
@@ -21107,7 +21107,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
                  : 3993: Unnatural Causes (459529 effect#2)
-Attributes       : Aura Is Debuff (26), DoT Stacking Rule (103), Not In Spellbook (143), Allow Proc While Sitting (147), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428), Unknown (490)
+Attributes       : Aura Is Debuff (26), DoT Stacking Rule (103), Not In Spellbook (143), Allow Proc While Sitting (147), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428), Asynchronous Buff (490)
 Effects          :
 #1 (id=1259912)  : Apply Aura (6) | Periodic Damage (3): arcane every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -21770,7 +21770,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 100 maximum
 Proc Chance      : 101%
-Attributes       : Allow Class Ability Procs (416), Unknown (490)
+Attributes       : Allow Class Ability Procs (416), Asynchronous Buff (490)
 Effects          :
 #1 (id=1272485)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -22138,7 +22138,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 295
                  : 5061
-Attributes       : Allow Class Ability Procs (416), Unknown (490)
+Attributes       : Allow Class Ability Procs (416), Asynchronous Buff (490)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1276351)  : Apply Aura (6) | Modify Mastery% (318)
@@ -23471,7 +23471,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 100 maximum
 Proc Chance      : 101%
-Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Unknown (490)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Buff (490)
 Effects          :
 #1 (id=1296701)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
