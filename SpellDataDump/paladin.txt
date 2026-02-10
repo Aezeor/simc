@@ -47,7 +47,7 @@ Labels           : 16: Class Spells
                  : 1284
 Affecting Spells : Unbreakable Spirit (114154 effect#1), Retribution Paladin (412314 effect#6), Inspired Guard (469439 effect#2), Retribution Paladin (1258011 effect#8), Shield of Vengeance (1261562 effect#1)
 Family Flags     : 72
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Fail on all targets immune (85), Remove Entering Arena (162), Aura Points On Client (268), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Unknown (491)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Fail on all targets immune (85), Remove Entering Arena (162), Aura Points On Client (268), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=211)      : Apply Aura (6) | Modify Damage Taken% (87)
@@ -1010,7 +1010,7 @@ Labels           : 16: Class Spells
                  : 2371: Improved Ardent Defender (393114 effect#1)
 Affecting Spells : Unbreakable Spirit (114154 effect#1), Pillars of Inmost Ligiht (281291 effect#1), The Ardent Protector's Sanctum (337838 effect#1), Inspired Guard (469439 effect#1)
 Family Flags     : 87
-Attributes       : Is Ability (4), No Threat (42), Absorb Cannot Be Ignore (214), Do Not Count For PvP Scoreboard (252), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Allow Class Ability Procs (416), Unknown (491), Unknown (512)
+Attributes       : Is Ability (4), No Threat (42), Absorb Cannot Be Ignore (214), Do Not Count For PvP Scoreboard (252), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491), Unknown (512)
 Effects          :
 #1 (id=21513)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.5 | Misc Value: 0x7f | Target: Self (1)
@@ -1053,7 +1053,7 @@ Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
 Affecting Spells : Sanctified Wrath (53376 effect#1), Righteous Protector (204074 effects: #1, #2), Light's Decree (286231 effect#2), Avenging Wrath (317872 effect#1), Divine Wrath (406872 effect#1), Retribution Paladin (412314 effect#11), Call of the Righteous (1241511 effects: #1, #2), Retribution Paladin (1258011 effect#10), Holy Paladin (1258016 effects: #8, #9, #10)
 Family Flags     : 40
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428), Unknown (491)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428), Important Spell (C_Spell.IsSpellImportant) (491)
 Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=21556)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
@@ -1724,7 +1724,7 @@ Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Affecting Spells : Improved Conjuration (1244025 effect#1)
 Family Flags     : 53
-Attributes       : Not Shapeshifted (16), No Aura Cancel (31), No Threat (42), No AutoCast (AI) (49), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Unknown (491)
+Attributes       : Not Shapeshifted (16), No Aura Cancel (31), No Threat (42), No AutoCast (AI) (49), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
 Aura Interrupt   : Leave World (19), Enter World (22), Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=48273)    : Apply Aura (6) | Temporary Thread Reduction (103)
@@ -6839,7 +6839,7 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Affecting Spells : Sanctified Wrath (53376 effect#1), Divine Purpose (408458 effect#1), Call of the Righteous (1241511 effects: #3, #4)
 Family Flags     : 102
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Aura Points On Client (268), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (491)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Aura Points On Client (268), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491)
 Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=321878)   : Apply Aura (6) | Dummy (4)
@@ -7423,7 +7423,7 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
 Affecting Spells : Light's Decree (286231 effect#2), Sanctified Wrath (317866 effect#3), Avenging Wrath (317872 effect#1), Avenging Wrath (384376 effect#4), Divine Wrath (406872 effect#1)
 Family Flags     : 45
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (491)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491)
 Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=349842)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -15252,7 +15252,7 @@ Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Affecting Spells : Sanctified Wrath (53376 effect#1), Righteous Protector (204074 effects: #1, #2), Avenging Wrath (384376 effects: #1, #2, #3)
 Family Flags     : 76
-Attributes       : Do Not Sheath (18), No Threat (42), Aura Is Buff (140), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428), Unknown (491)
+Attributes       : Do Not Sheath (18), No Threat (42), Aura Is Buff (140), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428), Important Spell (C_Spell.IsSpellImportant) (491)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1025850)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
@@ -16381,7 +16381,7 @@ Labels           : 16: Class Spells
                  : 1284
 Affecting Spells : Unbreakable Spirit (114154 effect#1), Retribution Paladin (412314 effect#6), Inspired Guard (469439 effect#2), Retribution Paladin (1258011 effect#8), Shield of Vengeance (1261562 effect#1)
 Family Flags     : 72
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Fail on all targets immune (85), Remove Entering Arena (162), Aura Points On Client (268), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Unknown (491)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Fail on all targets immune (85), Remove Entering Arena (162), Aura Points On Client (268), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1051100)  : Apply Aura (6) | Modify Damage Taken% (87)
@@ -21175,7 +21175,7 @@ Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
 Affecting Spells : Sanctified Wrath (53376 effect#1), Righteous Protector (204074 effects: #1, #2), Light's Decree (286231 effect#2), Avenging Wrath (317872 effect#1), Divine Wrath (406872 effect#1), Retribution Paladin (412314 effect#11), Call of the Righteous (1241511 effects: #1, #2), Retribution Paladin (1258011 effect#10), Holy Paladin (1258016 effects: #8, #9, #10)
 Family Flags     : 40
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (491)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491)
 Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1156816)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -21262,7 +21262,7 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
 Affecting Spells : Light's Decree (286231 effect#2), Sanctified Wrath (317866 effect#3), Avenging Wrath (317872 effect#1), Avenging Wrath (384376 effect#4), Divine Wrath (406872 effect#1)
 Family Flags     : 45
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (491)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491)
 Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1156860)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)

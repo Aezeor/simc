@@ -1442,7 +1442,7 @@ Labels           : 16: Class Spells
 Category Cooldown: 90 seconds
 Affecting Spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
 Family Flags     : 48
-Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Suppress Target Procs (113), Do Not Display Range (126), Allow Class Ability Procs (416), Unknown (491)
+Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Suppress Target Procs (113), Do Not Display Range (126), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
 Effects          :
 #1 (id=43877)    : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (20)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -1577,7 +1577,7 @@ Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Affecting Spells : Improved Conjuration (1244025 effect#1)
 Family Flags     : 53
-Attributes       : Not Shapeshifted (16), No Aura Cancel (31), No Threat (42), No AutoCast (AI) (49), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Unknown (491)
+Attributes       : Not Shapeshifted (16), No Aura Cancel (31), No Threat (42), No AutoCast (AI) (49), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
 Aura Interrupt   : Leave World (19), Enter World (22), Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=48273)    : Apply Aura (6) | Temporary Thread Reduction (103)
@@ -2926,7 +2926,7 @@ Labels           : 16: Class Spells
                  : 1284
 Affecting Spells : Astral Shift (263786 effect#1), Astral Bulwark (377933 effect#1), Planes Traveler (381647 effect#1)
 Family Flags     : 43
-Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (491), Unknown (512)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491), Unknown (512)
 Effects          :
 #1 (id=119326)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 0x7f | Target: Self (1)
@@ -2952,7 +2952,7 @@ Labels           : 16: Class Spells
                  : 930
 Affecting Spells : Praetorian's Tidecallers (210604 effect#1), Ancestral Wolf Affinity (382197 effect#1), First Ascendant (462440 effect#1), Preeminence (462443 effects: #1, #3)
 Family Flags     : 29, 113
-Attributes       : Is Ability (4), Not Shapeshifted (16), No Aura Icon (60), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow While Banished Aura State (299), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Unknown (491)
+Attributes       : Is Ability (4), Not Shapeshifted (16), No Aura Icon (60), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow While Banished Aura State (299), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Important Spell (C_Spell.IsSpellImportant) (491)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=119337)   : Summon Guardian (28)
@@ -5295,7 +5295,7 @@ Labels           : 16: Class Spells
                  : 690: Major Cooldowns
 Affecting Spells : Everlasting Elements (462867 effect#1), Stormwell (1264762 effect#1)
 Family Flags     : 124
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No Aura Icon (60), No Category Cooldown Mods (223), Can Be Multi Cast (229), Ignore Totem Requirements for Casting (293), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Unknown (491)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No Aura Icon (60), No Category Cooldown Mods (223), Can Be Multi Cast (229), Ignore Totem Requirements for Casting (293), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
 Effects          :
 #1 (id=282046)   : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (20)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -5530,7 +5530,7 @@ Labels           : 16: Class Spells
                  : 690: Major Cooldowns
 Affecting Spells : Everlasting Elements (462867 effect#1)
 Family Flags     : 55
-Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Suppress Target Procs (113), Do Not Display Range (126), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Unknown (491)
+Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Suppress Target Procs (113), Do Not Display Range (126), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
 Effects          :
 #1 (id=291096)   : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (20)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)

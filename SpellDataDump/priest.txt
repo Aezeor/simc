@@ -773,7 +773,7 @@ Category Cooldown: 90 seconds
 Stance Mask      : 0x08000000
 Affecting Spells : Light's Inspiration (373450 effects: #1, #2), Light Weaving (394609 effect#1)
 Family Flags     : 24
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Ignore Caster Modifiers (125), Ignore Healing Modifiers (219), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Always Allow Negative Healing Percent Modifiers (442), Unknown (491), Unknown (512)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Ignore Caster Modifiers (125), Ignore Healing Modifiers (219), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Always Allow Negative Healing Percent Modifiers (442), Important Spell (C_Spell.IsSpellImportant) (491), Unknown (512)
 Effects          :
 #1 (id=10552)    : Apply Aura (6) | Increase Health% (133)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
@@ -1876,7 +1876,7 @@ Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Affecting Spells : Improved Conjuration (1244025 effect#1)
 Family Flags     : 53
-Attributes       : Not Shapeshifted (16), No Aura Cancel (31), No Threat (42), No AutoCast (AI) (49), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Unknown (491)
+Attributes       : Not Shapeshifted (16), No Aura Cancel (31), No Threat (42), No AutoCast (AI) (49), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
 Aura Interrupt   : Leave World (19), Enter World (22), Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=48273)    : Apply Aura (6) | Temporary Thread Reduction (103)
@@ -2227,7 +2227,7 @@ Labels           : 16: Class Spells
 Stance Mask      : 0x80000000
 Affecting Spells : Kam Xi'raff (281457 effect#1), Seraphic Crescendo (419110 effect#1)
 Family Flags     : 54
-Attributes       : Not Shapeshifted (16), Is Channelled (34), Is Self Channelled (38), Name in Channel Bar (61), Ignore Line of Sight (66), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Do Not Display Range (126), Cannot Be Stolen (134), Extra Initial Period (169), Spell Haste Affects Periodic (173), Haste Affects Duration (273), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Unknown (491)
+Attributes       : Not Shapeshifted (16), Is Channelled (34), Is Self Channelled (38), Name in Channel Bar (61), Ignore Line of Sight (66), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Do Not Display Range (126), Cannot Be Stolen (134), Extra Initial Period (169), Spell Haste Affects Periodic (173), Haste Affects Duration (273), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Important Spell (C_Spell.IsSpellImportant) (491)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13)
 Effects          :
 #1 (id=59162)    : Apply Aura (6) | Periodic Trigger Spell (23): Divine Hymn every 1.25 seconds
@@ -4530,7 +4530,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Affecting Spells : Iridi's Empowerment (224999 effects: #2, #3), Improved Voidform (341240 effects: #2, #3), Perfected Form (453917 effects: #1, #2)
 Family Flags     : 89
-Attributes       : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Do Not Consume Resources (197), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Do Not Display Power Cost (303), Spellcast Override In Spellbook (310), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Personal Buffs/Debuffs (423), Unknown (491)
+Attributes       : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Do Not Consume Resources (197), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Do Not Display Power Cost (303), Spellcast Override In Spellbook (310), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=285130)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
@@ -6223,7 +6223,7 @@ Labels           : 16: Class Spells
 Stance Mask      : 0x08000000
 Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Voidform (194249 effect#7), Heart of the Void (248296 effect#1), Dark Ascension (391109 effect#1)
 Family Flags     : 36
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Unknown (491)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
 Effects          :
 #1 (id=343555)   : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 1 | Scaled Value: 1 | Radius: 10 yards | Target: Targeted Enemy (6)
@@ -13887,7 +13887,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 690: Major Cooldowns
 Family Flags     : 27
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (491)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491)
 Effects          :
 #1 (id=1028403)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
