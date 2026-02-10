@@ -458,6 +458,7 @@ public:
     int clearcasting_blp_count;
     int sphere_blp_count;
     int icicles;
+    int fired_up_count; // number of Fired Up procs in this Combustion
   } state;
 
   // Talents
@@ -1448,6 +1449,7 @@ struct combustion_t final : public buff_t
       if ( old == 0 )
       {
         p->buffs.fiery_rush->trigger();
+        p->state.fired_up_count = 0;
       }
       else if ( cur == 0 )
       {
@@ -7049,9 +7051,14 @@ void mage_t::trigger_fired_up()
   if ( !talents.fired_up_1.ok() )
     return;
 
-  // TODO: add Combustion bonus chance from Rank 4
-  // TODO: check if this is really a flat chance or if there is something more complicated here.
-  double chance = talents.fired_up_1->effectN( 1 ).percent();
+  // TODO: Fit an equation or get more accurate numbers here. This list of probabilities is from logged data on target dummies.
+  constexpr std::array<double, 6> combustion_chance = { 0.889, 0.764, 0.483, 0.241, 0.0957, 0.027 };
+  double chance;
+  // TOOD: This is bugged and seems to apply its changes to the proc chance during Combustion even when the the talent is not learned.
+  if ( buffs.combustion->check() && ( bugs || talents.fired_up_3.ok() ) )
+    chance = state.fired_up_count < combustion_chance.size() ? combustion_chance[ state.fired_up_count ] : 0.0;
+  else
+    chance = talents.fired_up_1->effectN( 1 ).percent();
 
   if ( rng().roll( chance ) )
   {
@@ -7061,6 +7068,9 @@ void mage_t::trigger_fired_up()
 
     if ( pets.arcane_phoenix && !pets.arcane_phoenix->is_sleeping() )
       pets.arcane_phoenix->adjust_duration( talents.fired_up_1->effectN( 3 ).time_value() );
+
+    if ( buffs.combustion->check() )
+      state.fired_up_count++;
   }
 }
 
