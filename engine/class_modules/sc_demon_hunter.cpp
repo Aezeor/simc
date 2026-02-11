@@ -6337,6 +6337,12 @@ struct void_ray_t
                                                                                    p->spec.voidglare_boon_energize );
     }
 
+    // forces hasted cooldown due to the spell baseline having no cooldown duration
+    if ( data().affected_by( p->spec.devourer_demon_hunter->effectN( 6 ) ) )
+    {
+      cooldown->hasted = true;
+    }
+
     // Add damage modifiers in voidray_tick_t, not here.
   }
 
