@@ -7531,14 +7531,14 @@ struct auto_attack_t final : public death_knight_melee_attack_t
 struct death_knight_disease_t : public death_knight_spell_t
 {
   death_knight_disease_t( std::string_view n, death_knight_t* p, const spell_data_t* s )
-    : death_knight_spell_t( n, p, s ), inevitable_mult( 0 )
+    : death_knight_spell_t( n, p, s ), inevitable_mult( 0 ), inevitable_idx( 0 )
   {
     background = true;
     may_miss = hasted_ticks = false;
     if ( p->talent.sanlayn.inevitable.ok() )
     {
-      unsigned idx    = p->specialization() == DEATH_KNIGHT_BLOOD ? 2 : 1;
-      inevitable_mult = p->talent.sanlayn.inevitable->effectN( idx ).percent() / 90.0;
+      inevitable_idx    = p->specialization() == DEATH_KNIGHT_BLOOD ? 2 : 1;
+      inevitable_mult = p->talent.sanlayn.inevitable->effectN( inevitable_idx ).percent() / 90.0;
     }
   }
 
@@ -7572,13 +7572,14 @@ struct death_knight_disease_t : public death_knight_spell_t
 
     if ( p()->talent.sanlayn.inevitable.ok() )
       mult *= 1.0 + ( std::min( inevitable_mult * ( 100.0 - s->target->health_percentage() ),
-                                p()->talent.sanlayn.inevitable->effectN( 1 ).percent() ) );
+                                p()->talent.sanlayn.inevitable->effectN( inevitable_idx ).percent() ) );
 
     return mult;
   }
 
 private:
   double inevitable_mult;
+  unsigned inevitable_idx;
 };
 
 // Blood Plague ============================================
