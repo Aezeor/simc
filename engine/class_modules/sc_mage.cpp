@@ -210,9 +210,6 @@ public:
   // Buffs waiting to be triggered/expired
   std::vector<buff_adjust_info_t> buff_queue;
 
-  // Mana Cascade expiration events
-  std::vector<event_t*> mana_cascade_expiration;
-
   // Events
   struct events_t
   {
@@ -6359,16 +6356,6 @@ void mage_t::create_buffs()
   buffs.mana_cascade           = make_buff( this, "mana_cascade", find_spell( specialization() == MAGE_FIRE ? 449314 : 449322 ) )
                                    ->set_default_value_from_effect( 2, 0.001 )
                                    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                                   ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
-                                     {
-                                       if ( cur == 0 )
-                                       {
-                                         for ( auto e : mana_cascade_expiration )
-                                           event_t::cancel( e );
-
-                                         mana_cascade_expiration.clear();
-                                       }
-                                     } )
                                    ->set_chance( talents.mana_cascade.ok() );
   buffs.spellfire_sphere       = make_buff( this, "spellfire_sphere", find_spell( 448604 ) )
                                    ->set_default_value_from_effect( 1 )
@@ -6708,7 +6695,6 @@ void mage_t::reset()
   player_t::reset();
 
   buff_queue.clear();
-  mana_cascade_expiration.clear();
   events = events_t();
   ground_aoe_expiration = std::array<timespan_t, AOE_MAX>();
   state = state_t();
@@ -7015,7 +7001,7 @@ void mage_t::trigger_icicle( int count, bool grant_buff )
     buffs.glacial_spike->trigger();
 }
 
-// TODO: Does this still have bugs with Pyromaniac, or can it just be buff_stack_behavior::ASYNCHRONOUS now?
+// TODO: Does this still have bugs with Pyromaniac?
 void mage_t::trigger_mana_cascade()
 {
   if ( !talents.mana_cascade.ok() )
@@ -7024,26 +7010,7 @@ void mage_t::trigger_mana_cascade()
   // This is still tied to the pet despite the other effects (Ashes of Inspiration,
   // Memory of Al'ar) being moved to Arcane Surge/Combustion.
   int stacks = pets.arcane_phoenix && !pets.arcane_phoenix->is_sleeping() && talents.memory_of_alar.ok() ? 2 : 1;
-  auto trigger_buff = [ this, s = std::min( buffs.mana_cascade->max_stack() - buffs.mana_cascade->check(), stacks ) ]
-  {
-    buffs.mana_cascade->trigger( s );
-    mana_cascade_expiration.push_back( make_event( *sim, buffs.mana_cascade->buff_duration(), [ this, s ]
-    {
-      mana_cascade_expiration.erase( mana_cascade_expiration.begin() );
-      buffs.mana_cascade->decrement( s );
-    } ) );
-  };
-
-  if ( buffs.mana_cascade->check() < buffs.mana_cascade->max_stack() )
-  {
-    // If this is triggered twice within a small enough time frame,
-    // erroneous expiration events can be scheduled. This currently
-    // only happens with Pyromaniac.
-    if ( bugs )
-      make_event( *sim, trigger_buff );
-    else
-      trigger_buff();
-  }
+  buffs.mana_cascade->trigger( stacks );
 }
 
 void mage_t::trigger_fired_up()
