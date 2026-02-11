@@ -7536,7 +7536,10 @@ struct death_knight_disease_t : public death_knight_spell_t
     background = true;
     may_miss = hasted_ticks = false;
     if ( p->talent.sanlayn.inevitable.ok() )
-      inevitable_mult = p->talent.sanlayn.inevitable->effectN( 1 ).percent() / 90.0;
+    {
+      unsigned idx    = p->specialization() == DEATH_KNIGHT_BLOOD ? 2 : 1;
+      inevitable_mult = p->talent.sanlayn.inevitable->effectN( idx ).percent() / 90.0;
+    }
   }
 
   void tick( dot_t* d ) override
