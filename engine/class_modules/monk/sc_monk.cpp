@@ -796,9 +796,6 @@ struct tiger_palm_t : public harmonic_surge_t<overwhelming_force_t<monk_melee_at
     may_combo_strike = true;
     cast_during_sck  = true;
 
-    if ( const auto &effect = player->talent.brewmaster.face_palm->effectN( 2 ); effect.ok() && !player->bugs )
-      add_parse_entry( da_multiplier_effects ).set_value( effect.percent() ).set_eff( &effect );
-
     parse_effects( player->buff.combat_wisdom );
   }
 
@@ -1241,6 +1238,15 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<teachings_of_th
     timespan_t reduction = 0_s;
     reduction += timespan_t::from_seconds( p()->talent.windwalker.sharp_reflexes->effectN( 1 ).base_value() );
 
+    if ( p()->buff.zenith->up() )
+    {
+      if ( p()->talent.windwalker.obsidian_spiral->ok() )
+        p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.obsidian_spiral_energize->effectN( 1 ).base_value() );
+
+      if ( reduction != 0_s )
+        reduction -= p()->talent.windwalker.zenith->effectN( 3 ).time_value();
+    }
+
     p()->cooldown.rising_sun_kick->adjust( reduction );
     p()->cooldown.fists_of_fury->adjust( reduction );
 
@@ -1260,14 +1266,6 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<teachings_of_th
 
     if ( p()->action.strength_of_the_black_ox.base )
       p()->action.strength_of_the_black_ox.base->execute();
-
-    if ( p()->buff.zenith->up() )
-    {
-      p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.obsidian_spiral_energize->effectN( 1 ).base_value() );
-
-      if ( reduction != 0_s )
-        reduction -= p()->talent.windwalker.zenith->effectN( 3 ).time_value();
-    }
   }
 
   void impact( action_state_t *s ) override
@@ -1764,14 +1762,9 @@ struct auto_attack_t : public monk_melee_attack_t
     struct damage_t : public monk_spell_t
     {
       bool allowed;
-      bool triggered;
-      double chance;
 
       damage_t( monk_t *player )
-        : monk_spell_t( player, "dual_threat", player->talent.windwalker.dual_threat_damage ),
-          allowed( false ),
-          triggered( false ),
-          chance( player->talent.windwalker.dual_threat->effectN( 1 ).percent() )
+        : monk_spell_t( player, "dual_threat", player->talent.windwalker.dual_threat_damage ), allowed( false )
       {
         background                = true;
         allow_class_ability_procs = false;
@@ -1784,25 +1777,23 @@ struct auto_attack_t : public monk_melee_attack_t
         allowed = false;
       }
 
-      void execute() override
+      void impact( action_state_t *state ) override
       {
-        if ( allowed && p()->rng().roll( chance ) )
-        {
-          monk_spell_t::execute();
-          allowed   = false;
-          triggered = true;
-        }
-        else
-          allowed = true;
+        // We attribute all DT melees to MH weapon type, but it will be technically
+        // accurate as you cannot equip a 2h in your offhand :)
+        p()->buff.flurry_charge->trigger( state, &p()->main_hand_weapon );
       }
     };
 
     damage_t *damage;
-    bool allowed;
+    double chance;
 
     template <typename... Args>
     dual_threat_t( monk_t *player, weapon_t *weapon, Args &&...args )
-      : TBase( player, weapon, std::forward<Args>( args )... ), damage( nullptr ), allowed( false )
+      : TBase( player, weapon, std::forward<Args>( args )... ),
+        damage( nullptr ),
+        chance( player->talent.windwalker.dual_threat->effectN( 1 ).percent() )
+
     {
       if ( !player->talent.windwalker.dual_threat->ok() )
         return;
@@ -1818,17 +1809,17 @@ struct auto_attack_t : public monk_melee_attack_t
 
     void impact( action_state_t *state ) override
     {
-      if ( damage && result_is_hit( state->result ) )
+      if ( damage && damage->allowed && result_is_hit( state->result ) && TBase::p()->rng().roll( chance ) )
       {
         damage->execute_on_target( state->target );
-        if ( damage->triggered )
-        {
-          damage->triggered = false;
-          return;
-        }
+        damage->allowed = false;
       }
-
-      TBase::impact( state );
+      else
+      {
+        TBase::impact( state );
+        if ( damage )
+          damage->allowed = true;
+      }
     }
   };
 
@@ -1852,9 +1843,6 @@ struct auto_attack_t : public monk_melee_attack_t
         background = dual = true;
 
         if ( const auto &effect = player->buff.press_the_advantage->data().effectN( 2 ); effect.ok() )
-          add_parse_entry( da_multiplier_effects ).set_value( effect.percent() ).set_eff( &effect );
-
-        if ( const auto &effect = player->talent.brewmaster.face_palm->effectN( 2 ); effect.ok() && !player->bugs )
           add_parse_entry( da_multiplier_effects ).set_value( effect.percent() ).set_eff( &effect );
       }
     };
@@ -1997,27 +1985,7 @@ struct auto_attack_t : public monk_melee_attack_t
     {
       monk_melee_attack_t::impact( state );
 
-      if ( !p()->talent.shado_pan.flurry_strikes->ok() || result_is_miss( state->result ) )
-        return;
-
-      unsigned flurry_charges = 0;
-      switch ( monk_melee_attack_t::weapon->group() )
-      {
-        case WEAPON_1H:
-          flurry_charges = as<int>( p()->talent.shado_pan.flurry_strikes->effectN( 1 ).base_value() );
-          break;
-        case WEAPON_2H:
-          flurry_charges = as<int>( p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value() );
-          break;
-        default:
-          assert( false );
-      }
-
-      if ( state->result == RESULT_CRIT )
-        flurry_charges *= as<int>( 1.0 + p()->talent.shado_pan.one_versus_many->effectN( 1 ).base_value() );
-
-      if ( flurry_charges )
-        p()->buff.flurry_charge->trigger( flurry_charges );
+      p()->buff.flurry_charge->trigger( state, weapon );
     }
 
     timespan_t execute_time() const override
@@ -4725,6 +4693,36 @@ struct niuzaos_resolve_t : buffs::monk_buff_t<>
     } );
   }
 };
+
+flurry_charge_t::flurry_charge_t( monk_t *player )
+  : monk_buff_t<>( player, "flurry_charge", player->talent.shado_pan.flurry_charge )
+{
+  set_default_value_from_effect( 1 );
+}
+
+bool flurry_charge_t::trigger( action_state_t *state, weapon_t *weapon )
+{
+  if ( !p().talent.shado_pan.flurry_strikes->ok() || action_t::result_is_miss( state->result ) )
+    return false;
+
+  unsigned flurry_charges = 0;
+  switch ( weapon->group() )
+  {
+    case WEAPON_1H:
+      flurry_charges = as<int>( p().talent.shado_pan.flurry_strikes->effectN( 1 ).base_value() );
+      break;
+    case WEAPON_2H:
+      flurry_charges = as<int>( p().talent.shado_pan.flurry_strikes->effectN( 2 ).base_value() );
+      break;
+    default:
+      assert( false );
+  }
+
+  if ( state->result == RESULT_CRIT )
+    flurry_charges *= as<int>( 1.0 + p().talent.shado_pan.one_versus_many->effectN( 1 ).base_value() );
+
+  return trigger( flurry_charges );
+}
 }  // namespace buffs
 }  // end namespace monk
 
@@ -5519,7 +5517,6 @@ void monk_t::init_spells()
     talent.shado_pan.predictive_training                      = _HT( "Predictive Training" );
     talent.shado_pan.stand_ready                              = _HT( "Stand Ready" );
     talent.shado_pan.stand_ready_buff                         = find_spell( 1237196 );
-    talent.shado_pan.stand_ready_driver                       = find_spell( 1237196 );
     talent.shado_pan.against_all_odds                         = _HT( "Against All Odds" );
     talent.shado_pan.efficient_training                       = _HT( "Efficient Training" );
     talent.shado_pan.vigilant_watch                           = _HT( "Vigilant Watch" );
@@ -6053,9 +6050,8 @@ void monk_t::create_buffs()
                                             talent.master_of_harmony.harmonic_surge_buff );
 
   // Shado-Pan
-  buff.flurry_charge =
-      make_buff_fallback( talent.shado_pan.flurry_strikes->ok(), this, "flurry_charge", talent.shado_pan.flurry_charge )
-          ->set_default_value_from_effect( 1 );
+  // unconditionally construct, fallback-lite behaviour handled in custom trigger
+  buff.flurry_charge = make_buff<buffs::flurry_charge_t>( this );
 
   buff.predictive_training =
       make_buff_fallback( talent.shado_pan.predictive_training->ok(), this, "predictive_training",
@@ -6296,9 +6292,8 @@ void monk_t::init_special_effects()
                                                 return state->action->id != action.flurry_of_xuen->id &&
                                                        state->action->id != action.empowered_tiger_lightning->id;
                                               } )
-        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-          buff.flurry_of_xuen->trigger();
-        } );
+        ->register_callback_execute_function(
+            [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) { buff.flurry_of_xuen->trigger(); } );
 
   if ( talent.monk.chi_burst->ok() && specialization() == MONK_WINDWALKER )
     create_proc_callback( { talent.monk.chi_burst.spell() } );
@@ -6375,7 +6370,7 @@ void monk_t::init_special_effects()
   }
 
   if ( talent.shado_pan.stand_ready->ok() )
-    create_proc_callback( { talent.shado_pan.stand_ready_driver } )
+    create_proc_callback( { talent.shado_pan.stand_ready_buff } )
         ->register_callback_trigger_function(
             dbc_proc_callback_t::trigger_fn_type::CONDITION,
             [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) { return buff.stand_ready->check(); } )
@@ -6675,11 +6670,18 @@ void monk_t::combat_begin()
   if ( talent.windwalker.tigereye_brew_1->ok() )
   {
     // Period is hasted
-    auto period = talent.windwalker.tigereye_brew_1->effectN( 1 ).period() / ( 1 / composite_melee_haste() ); 
-    // TODO: potentially need to adjust for temporary haste buffs that can occur during combat, but this is a good start
-    // and better than nothing
-    make_repeating_event( sim, period,
-                          [ & ] { buff.tigereye_brew_1->trigger(); } );
+    auto callback = [ & ] {
+      const auto internal = [ this ]( const auto &fn ) -> void {
+        buff.tigereye_brew_1->trigger();
+        timespan_t period = talent.windwalker.tigereye_brew_1->effectN( 1 ).period() * composite_melee_haste();
+        auto wrapped_fn   = [ fn ] { fn( fn ); };
+        make_event<events::delayed_cb_event_t>( *this->sim, this, period, wrapped_fn );
+      };
+      internal( internal );
+    };
+    timespan_t initial_period =
+        talent.windwalker.tigereye_brew_1->effectN( 1 ).period() * composite_melee_haste();
+    make_event<events::delayed_cb_event_t>( *sim, this, initial_period, callback );
     buff.tigereye_brew_1->trigger( 10 );
   }
 
