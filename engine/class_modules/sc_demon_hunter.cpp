@@ -9771,7 +9771,8 @@ void demon_hunter_t::create_buffs()
   buff.feast_of_souls = make_buff( this, "feast_of_souls", spec.feast_of_souls_buff )
                             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-                            ->disable_ticking( true );
+                            ->disable_ticking( true )
+                            ->set_disable_async_expire_events_removal( true );
   buff.eradicate = make_buff( this, "eradicate", spec.eradicate_buff );
   buff.moment_of_craving =
       make_buff( this, "moment_of_craving", spec.moment_of_craving_buff )->set_default_value_from_effect( 1 );
