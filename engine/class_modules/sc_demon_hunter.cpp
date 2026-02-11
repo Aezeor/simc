@@ -6477,6 +6477,7 @@ struct collapsing_star_t : public demon_hunter_spell_t
     void impact( action_state_t* s ) override
     {
       base_t::impact( s );
+
       if ( p()->talent.devourer.impending_apocalypse->ok() && s->chain_target == 0 )
       {
         make_event( *p()->sim, 1.2_s, [ this ] { p()->buff.impending_apocalypse->trigger(); } );
@@ -9777,6 +9778,7 @@ void demon_hunter_t::create_buffs()
                             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                             ->disable_ticking( true )
                             ->set_disable_async_expire_events_removal( true );
+
   buff.eradicate = make_buff( this, "eradicate", spec.eradicate_buff );
   buff.moment_of_craving =
       make_buff( this, "moment_of_craving", spec.moment_of_craving_buff )->set_default_value_from_effect( 1 );
