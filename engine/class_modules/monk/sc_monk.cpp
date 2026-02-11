@@ -3547,6 +3547,8 @@ struct zenith_t : public monk_spell_t
   {
     parse_options( options_str );
 
+    may_combo_strike = true;
+
     if ( player->talent.monk.zenith_stomp->ok() )
     {
       zenith_stomp = new zenith_stomp_t( player );
