@@ -368,7 +368,7 @@ public:
     arcane_phoenix_rotation arcane_phoenix_rotation_override = arcane_phoenix_rotation::DEFAULT;
     int clearcasting_blp_threshold = -1;
     int sphere_blp_threshold = 11;
-    bool il_requires_freezing = true;
+    bool il_requires_freezing = false;
     bool il_sort_by_freezing = true;
     bool randomize_si_target = false;
   } options;
