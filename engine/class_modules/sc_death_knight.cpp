@@ -3473,9 +3473,9 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
                           ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
     unholy_devotion = make_buff( this, "unholy_devotion", dk()->pet_spell.unholy_devotion_buff )
-                          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                           ->set_default_value_from_effect_type( A_HASTE_ALL )
-                          ->add_invalidate( CACHE_HASTE );
+                          ->add_invalidate( CACHE_HASTE )
+                          ->set_disable_async_expire_events_removal( true );
   }
 
 private:
@@ -15138,8 +15138,9 @@ void death_knight_t::spell_lookups()
   spell.visceral_strength_buff        = conditional_spell_lookup( talent.sanlayn.visceral_strength.ok(),
                                                            specialization() == DEATH_KNIGHT_BLOOD ? 461130 : 434159 );
   spell.bloodsoaked_ground_buff = conditional_spell_lookup( talent.sanlayn.bloodsoaked_ground.ok(), 434034 );
-  spell.transfusion_buff        = conditional_spell_lookup( talent.sanlayn.transfusion.ok(), 1265577 );
-  spell.desecrate_damage        = conditional_spell_lookup( talent.sanlayn.desecrate.ok(), 1232346 );
+  spell.transfusion_buff              = conditional_spell_lookup( talent.sanlayn.transfusion.ok(),
+                                                     specialization() == DEATH_KNIGHT_BLOOD ? 1265577 : 1280386 );
+  spell.desecrate_damage              = conditional_spell_lookup( talent.sanlayn.desecrate.ok(), 1232346 );
 
   // Deathbringer Spells
   spell.reapers_mark_debuff          = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 434765 );
@@ -15773,7 +15774,7 @@ void death_knight_t::create_buffs()
                             
     buffs.dance_of_midnight_2 = make_fallback( talent.blood.dance_of_midnight_2.ok(), this, "dance_of_midnight_2", spell.dance_of_midnight_2_buff )
                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+                                  ->set_disable_async_expire_events_removal( true );
 
     // Tier Sets
   }
@@ -15897,7 +15898,7 @@ void death_knight_t::create_buffs()
       make_fallback( talent.frost.killing_streak.ok(), this, "killing_streak", spell.killing_streak_buff )
           ->set_default_value( spell.killing_streak_buff->effectN( 1 ).percent() / 10 )
           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+          ->set_disable_async_expire_events_removal( true );
 
   buffs.chosen_of_frostbrood_haste = make_fallback<chosen_of_frostbrood_haste_buff_t>(
       talent.frost.chosen_of_frostbrood_1.ok(), this, "chosen_of_frostbrood_haste",
@@ -15952,7 +15953,7 @@ void death_knight_t::create_buffs()
           ->set_default_value( talent.unholy.ancient_power->effectN( 1 ).percent() / 100 )
           ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
           ->add_invalidate( CACHE_STRENGTH )
-          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+          ->set_disable_async_expire_events_removal( true );
 
   buffs.unholy_aura_haste =
       make_fallback( talent.unholy.unholy_aura.ok(), this, "unholy_aura", spell.unholy_aura_mastery_buff )
@@ -15970,7 +15971,7 @@ void death_knight_t::create_buffs()
           ->set_default_value( talent.unholy.forbidden_knowledge_2->effectN( 1 ).base_value() )
           ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
           ->add_invalidate( CACHE_MASTERY )
-          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+          ->set_disable_async_expire_events_removal( true );
 
   buffs.forbidden_ritual =
       make_fallback( talent.unholy.forbidden_knowledge_3.ok(), this, "forbidden_ritual", spell.forbidden_ritual )
