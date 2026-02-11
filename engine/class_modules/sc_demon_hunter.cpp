@@ -11435,19 +11435,9 @@ bool demon_hunter_t::validate_fight_style( fight_style_e style ) const
 bool demon_hunter_t::validate_actor()
 {
 #ifdef NDEBUG
-  if ( sim->dbc->wowv() < wowv_t( 12, 0, 1 ) )
+  if ( !is_ptr() && specialization() == DEMON_HUNTER_HAVOC )
   {
-    if ( specialization() == DEMON_HUNTER_DEVOURER )
-    {
-      sim->error(
-          "Warning: The Devourer Specialisation implementation is still a work in progress and sim results may not "
-          "necessarily be perfectly accurate. There will be no additional support offered for Prepatch Simulations." );
-    }
-    else
-    {
-      throw sc_invalid_player_argument( "Demon Hunter sims are non-functional for Midnight prepatch" );
-      return false;
-    }
+    throw sc_invalid_player_argument( "Havoc sims are only supported on PTR" );
   }
 #endif
   return player_t::validate_actor();
