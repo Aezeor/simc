@@ -2702,11 +2702,8 @@ struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arc
 
     custom_state_spell_t::execute();
 
-    // TODO: PTR check
-    if ( p()->dbc->wowv() >= wowv_t{ 12, 0, 1 } )
-      p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 2 ).base_value() ) );
-
     p()->trigger_arcane_charge();
+    p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 2 ).base_value() ) );
     clearcasting_snapshot = false;
   }
 
@@ -4515,7 +4512,7 @@ struct meteor_burn_t final : public fire_mage_spell_t
 
     // TODO: Hard to say how the new tick_zero attribute is supposed to work with
     // Meteor Burn, but it definitely shouldn't make it tick ~12 times.
-    if ( p->bugs && p->dbc->wowv() >= wowv_t{ 12, 0, 1 } )
+    if ( p->bugs )
       dot_duration = 3_ms;
   }
 };
@@ -4536,9 +4533,7 @@ struct meteor_impact_t final : public fire_mage_spell_t
     meteor_burn( burn ),
     meteor_burn_duration( p->find_spell( 175396 )->duration() ),
     meteor_burn_pulse_time( p->find_spell( 155158 )->effectN( 1 ).period() ),
-    // TODO: Seems to use the Ice Lance value rather than the CmS/Meteor value
-    // TODO: Fixed on beta, remove PTR check
-    freezing_consume( as<int>( p->spec.shatter->effectN( p->bugs && p->dbc->wowv() < wowv_t{ 12, 0, 1 } ? 4 : 5 ).base_value() ) ),
+    freezing_consume( as<int>( p->spec.shatter->effectN( 5 ).base_value() ) ),
     shatter_source( p->get_shatter_source( name_str, freezing_consume ) )
   {
     aoe = -1;
@@ -5420,9 +5415,7 @@ struct icicle_event_t final : public mage_event_t
   static void schedule_next( mage_t* p, bool randomize = false )
   {
     timespan_t next = p->talents.icicles->effectN( 1 ).period();
-    // TODO: PTR check
-    if ( !p->bugs || p->dbc->wowv() >= wowv_t{ 12, 0, 1 } )
-      next *= p->cache.spell_cast_speed();
+    next *= p->cache.spell_cast_speed();
     if ( randomize ) next *= p->rng().real();
     p->events.icicle = make_event<icicle_event_t>( *p->sim, *p, next );
   }
