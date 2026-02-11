@@ -2014,6 +2014,8 @@ struct auto_attack_t : public monk_melee_attack_t
     add_option( opt_bool( "sync_weapons", sync_weapons ) );
     parse_options( options_str );
 
+    trigger_gcd = 0_ms;
+
     // these pointers register themselves in places which cause them to get properly destructed
     new dual_threat_t<press_the_advantage_t<thunderfist_t<melee_t>>>( player, &player->main_hand_weapon, this );
     if ( player->off_hand_weapon.type != WEAPON_NONE )
