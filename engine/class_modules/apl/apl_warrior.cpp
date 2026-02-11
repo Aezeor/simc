@@ -90,7 +90,6 @@ void fury( player_t* p )
   thane->add_action( "champions_leap" );
   thane->add_action( "champions_spear" );
   thane->add_action( "crushing_blow,if=action.raging_blow.charges=2&(buff.ragedrinker.up|(talent.surge_of_adrenaline&!buff.surge_of_adrenaline.up))" );
-  thane->add_action( "crushing_blow,if=action.raging_blow.charges=2&buff.ragedrinker.up&talent.thorims_might))" );
   thane->add_action( "rampage,if=buff.recklessness.up&rage>=90" );
   thane->add_action( "crushing_blow,if=talent.surge_of_adrenaline&!buff.surge_of_adrenaline.up" );
   thane->add_action( "rampage,if=buff.recklessness.up" );
