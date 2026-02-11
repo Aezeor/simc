@@ -6281,7 +6281,6 @@ void mage_t::create_buffs()
   buffs.feel_the_burn            = make_buff( this, "feel_the_burn", find_spell( 383395 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-                                     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                      ->set_cooldown( find_spell( 383391 )->internal_cooldown() )
                                      ->set_chance( talents.feel_the_burn.ok() );
   buffs.fevered_incantation      = make_buff( this, "fevered_incantation", find_spell( 383811 ) )
@@ -6295,7 +6294,6 @@ void mage_t::create_buffs()
                                      ->set_chance( talents.fiery_rush.ok() );
   buffs.fired_up                 = make_buff( this, "fired_up", find_spell( 1257350 ) )
                                      ->set_default_value_from_effect( 1 )
-                                     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                      ->set_chance( talents.fired_up_1.ok() );
   buffs.heat_shimmer             = make_buff( this, "heat_shimmer", find_spell( 458964 ) )
@@ -6319,7 +6317,6 @@ void mage_t::create_buffs()
                                ->set_chance( talents.icicles.ok() );
   buffs.hand_of_frost      = make_buff( this, "hand_of_frost", find_spell( 1263263 ) )
                                ->set_default_value_from_effect( 1 )
-                               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                ->set_chance( talents.hand_of_frost_2.ok() );
   buffs.permafrost_lances  = make_buff( this, "permafrost_lances", find_spell( 455122 ) )
                                ->set_default_value_from_effect( 1 )
@@ -6356,6 +6353,7 @@ void mage_t::create_buffs()
   buffs.mana_cascade           = make_buff( this, "mana_cascade", find_spell( specialization() == MAGE_FIRE ? 449314 : 449322 ) )
                                    ->set_default_value_from_effect( 2, 0.001 )
                                    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                                   ->set_disable_async_expire_events_removal( bugs )
                                    ->set_chance( talents.mana_cascade.ok() );
   buffs.spellfire_sphere       = make_buff( this, "spellfire_sphere", find_spell( 448604 ) )
                                    ->set_default_value_from_effect( 1 )
@@ -6367,7 +6365,7 @@ void mage_t::create_buffs()
   buffs.brainstorm         = make_buff( this, "brainstorm", find_spell( 461531 ) )
                                ->set_default_value_from_effect( 1 )
                                ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
-                               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                               ->set_disable_async_expire_events_removal( bugs )
                                ->set_chance( talents.brainstorm.ok() );
   buffs.overflowing_energy = make_buff( this, "overflowing_energy", find_spell( 394195 ) )
                                // TODO: ABar value?
