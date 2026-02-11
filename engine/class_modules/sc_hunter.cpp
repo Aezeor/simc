@@ -6942,6 +6942,9 @@ struct wildfire_bomb_base_t : public hunter_ranged_attack_t
     {
       background = dual = true;
 
+      // 2026-02-11: Wildfire Bomb's direct damage is not buffed by Unnatural Causes in game, despite being in spell data
+      affected_by.unnatural_causes.direct = as<uint8_t>( 0 );
+
       aoe = -1;
       reduced_aoe_targets = p -> talents.wildfire_bomb -> effectN( 2 ).base_value();
       radius = 5; // XXX: It's actually a circle + cone, but we sadly can't really model that
