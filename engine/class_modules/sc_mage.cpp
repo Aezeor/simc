@@ -2407,7 +2407,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
 
     m *= 1.0 + p()->buffs.hyperthermia_damage->check_stack_value();
 
-    if ( time_to_execute > 0_ms )
+    if ( time_to_execute > 0_ms && ( !p()->bugs || !p()->buffs.hyperthermia->check() ) )
       m *= 1.0 + p()->buffs.pyroclasm->check_value();
 
     return m;
@@ -2439,7 +2439,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     if ( p()->sets->set( MAGE_FIRE, MID1, B4 )->ok() )
       p()->cooldowns.fire_blast->adjust( -p()->sets->set( MAGE_FIRE, MID1, B4 )->effectN( 1 ).time_value(), false, false );
 
-    if ( time_to_execute > 0_ms )
+    if ( time_to_execute > 0_ms && ( !p()->bugs || !p()->buffs.hyperthermia->check() ) )
       p()->buffs.pyroclasm->decrement();
 
     if ( last_hot_streak )
