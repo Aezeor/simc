@@ -15075,7 +15075,7 @@ void death_knight_t::spell_lookups()
   spell.ancient_runes_buff              = conditional_spell_lookup( talent.unholy.ancient_power.ok(), 377591 );
   spell.disease_cloud_debuff            = conditional_spell_lookup( talent.unholy.raise_abomination.ok(), 1244102 );
   spell.disease_cloud_area              = conditional_spell_lookup( talent.unholy.raise_abomination.ok(), 1244103 );
-  spell.festering_scythe_debuff         = conditional_spell_lookup( talent.unholy.raise_abomination.ok(), 1241077 );
+  spell.festering_scythe_debuff         = conditional_spell_lookup( talent.unholy.festering_scythe.ok(), 1241077 );
   spell.dread_plague_death_damage       = conditional_spell_lookup( talent.unholy.outbreak.ok(), 1242564 );
   spell.unholy_aura_mastery_buff        = conditional_spell_lookup( talent.unholy.unholy_aura.ok(), 1268917 );
   spell.putrefy_st                      = conditional_spell_lookup( talent.unholy.putrefy.ok(), 1277016 );
