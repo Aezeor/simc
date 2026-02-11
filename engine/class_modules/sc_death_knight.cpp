@@ -3566,7 +3566,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
 
     bool ready() override
     {
-      if ( !dk()->buffs.dark_transformation->check() )
+      if ( !dk()->buffs.dark_transformation->check() && dk()->talent.unholy.outnumber.ok() )
         return false;
 
       return lesser_ghoul_claw_base_t::ready();
@@ -3583,7 +3583,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
 
     bool ready() override
     {
-      if ( dk()->buffs.dark_transformation->check() )
+      if ( dk()->buffs.dark_transformation->check() && dk()->talent.unholy.outnumber.ok() )
         return false;
 
       return lesser_ghoul_claw_base_t::ready();
