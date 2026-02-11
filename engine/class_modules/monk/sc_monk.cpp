@@ -917,9 +917,8 @@ struct rising_sun_kick_t : monk_melee_attack_t
       if ( !damage )
         return;
 
-      // TODO: Is this the correct way to get character sheet haste %?
       double chance = TBase::p()->talent.windwalker.glory_of_the_dawn->effectN( 2 ).percent() *
-                      ( 1.0 / TBase::p()->composite_spell_haste() - 1.0 );
+                      ( ( 1.0 / TBase::p()->composite_melee_haste() ) - 1.0 );
       if ( TBase::rng().roll( chance ) )
         damage->execute();
     }
@@ -1445,7 +1444,7 @@ struct fists_of_fury_t : monk_melee_attack_t
       if ( const auto &effect = player->talent.windwalker.momentum_boost->effectN( 1 ); effect.ok() )
         add_parse_entry( da_multiplier_effects )
             .set_value_func(
-                [ & ]( double ) { return ( 1.0 / p()->composite_melee_haste() - 1.0 ) * effect.percent(); } )
+                [ & ]( double ) { return ( ( 1.0 / p()->composite_melee_haste() ) - 1.0 ) * effect.percent(); } )
             .set_eff( &effect );
 
       parse_effects( player->buff.tigereye_brew_3 );
@@ -4131,7 +4130,7 @@ struct whirling_dragon_punch_buff_t : monk_buff_t<>
 
     if ( buff_duration > 0_ms )
       return monk_buff_t::trigger( -1, DEFAULT_VALUE(), -1.0,
-                                   base_buff_duration / ( 1 + p().composite_spell_haste() ) + buff_duration );
+                                   ( base_buff_duration * p().composite_melee_haste() ) + buff_duration );
 
     return false;
   }
