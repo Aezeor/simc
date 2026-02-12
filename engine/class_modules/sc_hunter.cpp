@@ -8356,12 +8356,12 @@ parsed_assisted_combat_rule_t hunter_t::parse_assisted_combat_rule( const assist
 
 std::vector<std::string> hunter_t::action_names_from_spell_id( unsigned int spell_id ) const
 {
-  if ( spell_id == 53351 && specialization() != HUNTER_SURVIVAL )
+  if ( spell_id == 53351 )
   {
     return { "kill_shot", "black_arrow" };
   }
 
-  if( spell_id == 19574 && specialization() == HUNTER_BEAST_MASTERY )
+  if( spell_id == 19574 )
   {
     return { "bestial_wrath", "wailing_arrow" };
   }
