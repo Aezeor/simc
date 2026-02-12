@@ -7029,6 +7029,11 @@ struct wildfire_bomb_t: public wildfire_bomb_base_t
 
   void execute() override
   {
+    // Tip of the Spear is decremented in execute() so run here
+    if ( p()->tier_set.mid_s1_sv_4pc.ok() && p()->buffs.tip_of_the_spear->check() )
+      if ( auto pet = p()->pets.main )
+        pet->actions.strike_as_one->execute_on_target( target );
+
     wildfire_bomb_base_t::execute();
 
     if ( p()->buffs.wyverns_cry->check() && p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap )
@@ -7037,10 +7042,6 @@ struct wildfire_bomb_t: public wildfire_bomb_base_t
       p()->state.fury_of_the_wyvern_extension += fury_of_the_wyvern.extension;
       p()->state.fury_of_the_wyvern_extendable = p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap;
     }
-
-    if ( p()->tier_set.mid_s1_sv_4pc.ok() )
-      if ( auto pet = p()->pets.main )
-        pet->actions.strike_as_one->execute_on_target( target );
   }
 };
 
@@ -7080,7 +7081,9 @@ struct auto_attack_t: public action_t
     ignore_false_positive = true;
     trigger_gcd = 0_ms;
 
+  #ifdef NDEBUG
     assert( p->main_hand_weapon.type != WEAPON_NONE );
+  #endif
 
     if ( p->main_hand_weapon.group() == WEAPON_RANGED )
     {
