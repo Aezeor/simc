@@ -5809,8 +5809,7 @@ struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigg
     if ( p()->talent.devourer.predators_thirst->ok() )
     {
       p()->spawn_soul_fragment( soul_fragment_generation_proc, soul_fragment::LESSER,
-                                as<unsigned int>( p()->spec.shattered_souls->effectN( 3 ).base_value() +
-                                                  p()->talent.devourer.predators_thirst->effectN( 2 ).base_value() ) );
+                                as<unsigned int>( p()->spec.shattered_souls->effectN( 3 ).base_value() ) );
     }
   }
 };
