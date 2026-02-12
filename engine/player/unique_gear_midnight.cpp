@@ -332,6 +332,27 @@ void stonebound_artistry( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Jan'alai's Precision
+// 1236724 Rank 1 Driver
+// 1236725 Rank 2 Driver
+// 1241722 RPPM
+// 1241761 Buff
+void janalais_precision( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "precision_of_the_dragonhawk" );
+  if ( !buff )
+  {
+    buff =
+        create_buff<stat_buff_t>( effect.player, "precision_of_the_dragonhawk", effect.player->find_spell( 1241761 ) )
+            ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) );
+  }
+
+  effect.custom_buff = buff;
+  effect.spell_id    = 1241722;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace enchants
 
 namespace embellishments
@@ -1878,6 +1899,7 @@ void register_special_effects()
   register_special_effect( { 1236727, 1236728 }, enchants::berserkers_rage );
   register_special_effect( { 1236741, 1236742 }, enchants::acuity_of_the_rendorei );
   register_special_effect( { 1236712, 1236721 }, enchants::stonebound_artistry );
+  register_special_effect( { 1236724, 1236725 }, enchants::janalais_precision );
   // Embellishments & Tinkers
   register_special_effect( 1283697, embellishments::arcanoweave_lining );
   register_special_effect( 1241711, embellishments::sunfire_silk_lining );
