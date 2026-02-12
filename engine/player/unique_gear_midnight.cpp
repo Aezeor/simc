@@ -312,12 +312,12 @@ void acuity_of_the_rendorei( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-// Stonebound Artistry
+// Arcane Mastery
 // 1236712 Rank 1 Driver
 // 1236721 Rank 2 Driver
 // 1241729 RPPM
 // 1241759 Buff
-void stonebound_artistry( special_effect_t& effect )
+void arcane_mastery( special_effect_t& effect )
 {
   auto buff = buff_t::find( effect.player, "genius_insight" );
   if ( !buff )
@@ -1898,7 +1898,7 @@ void register_special_effects()
   register_special_effect( 1258209, enchants::powerful_eversong_diamond );
   register_special_effect( { 1236727, 1236728 }, enchants::berserkers_rage );
   register_special_effect( { 1236741, 1236742 }, enchants::acuity_of_the_rendorei );
-  register_special_effect( { 1236712, 1236721 }, enchants::stonebound_artistry );
+  register_special_effect( { 1236712, 1236721 }, enchants::arcane_mastery );
   register_special_effect( { 1236724, 1236725 }, enchants::janalais_precision );
   // Embellishments & Tinkers
   register_special_effect( 1283697, embellishments::arcanoweave_lining );
