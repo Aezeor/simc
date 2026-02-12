@@ -1684,6 +1684,61 @@ void shadow_of_the_empyrean_requiem( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Void Execution Mandate
+// 1250557 Driver & Haste Buff
+// 1263355 Debuff
+// 1263357 Stacking Crit Buff
+void void_execution_mandate( special_effect_t& effect )
+{
+  struct marked_for_execution_t : public generic_proc_t
+  {
+    buff_t* buff;
+    marked_for_execution_t( const special_effect_t& e, std::string_view n, const spell_data_t* s, buff_t* b )
+      : generic_proc_t( e, n, s ), buff( b )
+    {
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      get_debuff( s->target )->trigger();
+      buff->trigger();
+    }
+  };
+
+  auto crit_buff =
+      create_buff<stat_buff_t>( effect.player, "impending_execution", effect.player->find_spell( 1263357 ) )
+          ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) )
+          ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+
+  auto haste_buff = create_buff<stat_buff_t>( effect.player, "void_execution_mandate", effect.driver() )
+                        ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 3 ).average( effect ) )
+                        ->set_expire_callback( [ crit_buff ]( buff_t*, int, timespan_t ) { crit_buff->expire(); } );
+
+  auto debuff = create_proc_action<marked_for_execution_t>( "marked_for_execution", effect, "makred_for_execution",
+                                                            effect.driver()->effectN( 1 ).trigger(), haste_buff );
+
+  effect.execute_action = debuff;
+
+  auto impending          = new special_effect_t( effect.player );
+  impending->name_str     = "impending_execution_proc";
+  impending->item         = effect.item;
+  impending->spell_id     = effect.driver()->id();
+  impending->cooldown_    = 0_ms; // Cooldown is for on use effect, not the equip effect.
+  impending->custom_buff  = crit_buff;
+  impending->proc_flags2_ = PF2_ALL_HIT;
+  effect.player->special_effects.push_back( impending );
+
+  auto impending_cb = new dbc_proc_callback_t( effect.player, *impending );
+  impending_cb->initialize();
+  impending_cb->activate();
+  effect.player->callbacks.register_callback_execute_function( effect.driver()->id(),
+                                                               [ debuff, crit_buff ]( auto, auto, auto s ) {
+                                                                 if ( debuff->get_debuff( s->target )->check() )
+                                                                   crit_buff->trigger();
+                                                               } );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -1958,6 +2013,7 @@ void register_special_effects()
   register_special_effect( 1253111, trinkets::lost_idol_of_the_hashey );
   register_special_effect( 1253110, trinkets::withered_saptors_paw );
   register_special_effect( 1259518, trinkets::shadow_of_the_empyrean_requiem );
+  register_special_effect( 1250557, trinkets::void_execution_mandate );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
