@@ -4819,8 +4819,10 @@ struct boar_charge_t final : hunter_ranged_attack_t
       background = dual = true;
       travel_speed = 50; // 2026-01-19: Not in spelldata, estimating based on log data.
 
-      // 2026-02-12: Boar Charge's Cleave is uncapped when it should be capped to 8.
-      aoe = p->bugs ? -1 : as<int>( data().effectN( 2 ).base_value() );
+      // 2026-02-12: Boar Charge's Cleave is softcapped when it should be capped to 8.
+      const double cleave_targets = data().effectN( 2 ).base_value();
+      aoe = p->bugs ? -1 : as<int>( cleave_targets );
+      reduced_aoe_targets = cleave_targets;
 
       // TODO 31/1/25: currently hits primary target
       // 2026-01-19: still hits primary target
