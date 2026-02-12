@@ -1739,6 +1739,58 @@ void void_execution_mandate( special_effect_t& effect )
                                                                } );
 }
 
+// Emberwing Feather
+// 1250508 Driver & Haste Buff
+// 1255853 Crit Debuff
+// 1255856 Mastery Debuff
+// 1255857 Vers Debuff
+// TODO: What is the low chance? Not in data, needs testing.
+void emberwing_feather( special_effect_t& effect )
+{
+  struct emberwing_heatwave_t : public generic_proc_t
+  {
+    buff_t* buff;
+    std::array<buff_t*, 3> debuffs;
+
+    emberwing_heatwave_t( const special_effect_t& e, std::string_view n, const spell_data_t* s )
+      : generic_proc_t( e, n, s ), buff( nullptr )
+    {
+      cooldown->duration = 0_ms;  // Handled by the special effect
+
+      buff = make_buff<stat_buff_t>( e.player, "emberwing_heatwave", s )
+                 ->set_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) )
+                 ->set_cooldown( 0_ms );
+
+      buff_t* crit_debuff = make_buff<stat_buff_t>( e.player, "emberwing_burn_crit", e.player->find_spell( 1255853 ) )
+                                ->set_stat_from_effect_type( A_MOD_RATING, -e.driver()->effectN( 2 ).average( e ) )
+                                ->set_name_reporting( "Crit" );
+      debuffs[ 0 ] = crit_debuff;
+
+      buff_t* mast_debuff = make_buff<stat_buff_t>( e.player, "emberwing_burn_mast", e.player->find_spell( 1255856 ) )
+                                ->set_stat_from_effect_type( A_MOD_RATING, -e.driver()->effectN( 2 ).average( e ) )
+                                ->set_name_reporting( "Mastery" );
+      debuffs[ 1 ] = mast_debuff;
+
+      buff_t* vers_debuff = make_buff<stat_buff_t>( e.player, "emberwing_burn_vers", e.player->find_spell( 1255857 ) )
+                                ->set_stat_from_effect_type( A_MOD_RATING, -e.driver()->effectN( 2 ).average( e ) )
+                                ->set_name_reporting( "Vers" );
+      debuffs[ 2 ] = vers_debuff;
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      buff->trigger();
+      // Assume "low" chance means flat 10% chance for now until we have more testing data
+      if ( rng().roll( 0.1 ) )
+        rng().range( debuffs )->trigger();
+    }
+  };
+
+  effect.execute_action =
+      create_proc_action<emberwing_heatwave_t>( "emberwing_heatwave", effect, "emberwing_heatwave", effect.driver() );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -2014,6 +2066,7 @@ void register_special_effects()
   register_special_effect( 1253110, trinkets::withered_saptors_paw );
   register_special_effect( 1259518, trinkets::shadow_of_the_empyrean_requiem );
   register_special_effect( 1250557, trinkets::void_execution_mandate );
+  register_special_effect( 1250508, trinkets::emberwing_feather );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
