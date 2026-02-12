@@ -3983,6 +3983,24 @@ struct frostbolt_t final : public frost_mage_spell_t
     freezing_stacks = as<int>( p->spec.shatter->effectN( 1 ).base_value() );
 
     chain_multiplier = p->talents.splitting_ice->effectN( 2 ).percent();
+    // TODO: Splitting Ice has a couple of issues that affect Frostbolt and Frostfire Bolt
+    //
+    // 1) Frostbolt cleave distance is much smaller than the other SI spells (including FFB)
+    // 2) The secondary target reduction is applied by keeping track of the target
+    // of the last cast. The impact spell then deals full damage if its target matches the one
+    // above. This has its own set of (rather meaningless) bugs, e.g. casting another spell
+    // before the previous one hits can change how the previous spell deals damage.
+    //
+    // However, the bigger issue is that it's currently only Frostfire Bolt that sets this tracked
+    // target. Frostbolt uses it to deal damage but doesn't set it. This has the following consequences:
+    //
+    // * If you cast Frostfire Bolt and then switch to Spellslinger, your Frostbolt will only ever
+    // deal full damage to the last FFB target.
+    // * If you never cast Frostfire Bolt, Frostbolt simply deals full damage to everything.
+    //
+    // Since the last behavior is the most common one, that's what we'll model in simc.
+    if ( p->bugs && !frostfire )
+      chain_multiplier = 1.0;
 
     if ( data().ok() && p->talents.frostfire_empowerment.ok() )
       add_child( p->action.frostfire_empowerment );
@@ -4010,18 +4028,6 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     if ( frostfire && p()->state.trigger_ff_empowerment )
       m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 3 ).percent();
-
-    // TODO: Splitting Ice behaves really weirdly with Frostbolt
-    // Firstly, the cleave distance is much smaller than the other SI spells.
-    // Secondly, the SI reduction can apply to the main target (and not apply
-    // to the secondary, though that seems to be rarer), sometimes even if
-    // Frostbolt doesn't actually cleave.
-    //
-    // It seems that when Frostbolt hits, it checks to see if there's another target
-    // within the SI cleave distance (the full distance, not the smaller bugged one)
-    // and applies the reduction if so.
-    if ( p()->bugs && !frostfire && s->n_targets > 1 && s->chain_target == 0 )
-      m *= chain_multiplier;
 
     return m;
   }
