@@ -1645,9 +1645,10 @@ void shadow_of_the_empyrean_requiem( special_effect_t& effect )
   struct shadow_of_the_empyrean_requiem_damage_t : public generic_proc_t
   {
     buff_t* haste_buff;
+    const special_effect_t& effect;
     shadow_of_the_empyrean_requiem_damage_t( const special_effect_t& e, std::string_view n, const spell_data_t* s,
                                              buff_t* buff )
-      : generic_proc_t( e, n, s ), haste_buff( buff )
+      : generic_proc_t( e, n, s ), haste_buff( buff ), effect( e )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
       base_multiplier *= role_mult( e );
@@ -1659,7 +1660,7 @@ void shadow_of_the_empyrean_requiem( special_effect_t& effect )
     void impact( action_state_t* s ) override
     {
       generic_proc_t::impact( s );
-      if ( s->target->health_percentage() < effect->driver()->effectN( 3 ).base_value() )
+      if ( s->target->health_percentage() < effect.driver()->effectN( 3 ).base_value() )
         haste_buff->trigger();
     }
   };
