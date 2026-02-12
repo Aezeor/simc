@@ -269,6 +269,28 @@ void powerful_eversong_diamond( special_effect_t& effect )
 
   effect.player->base.crit_healing_multiplier *= 1.0 + pct;
 }
+
+// Berserker's Rage
+// 1236727 Rank 1 Driver
+// 1236728 Rank 2 Driver
+// 1241723 RPPM
+// 1241762 Buff
+// TODO: What happens if you equip 2? does it double the rppm, the value, or both?
+void berserkers_rage( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "frenzied_focus" );
+  if ( !buff )
+  {
+    buff = create_buff<stat_buff_t>( effect.player, "frenzied_focus", effect.player->find_spell( 1241762 ) )
+               ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) );
+  }
+
+  effect.custom_buff = buff;
+  effect.spell_id    = 1241723;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace enchants
 
 namespace embellishments
@@ -1812,6 +1834,7 @@ void register_special_effects()
   // Oils
   // Enchants & gems
   register_special_effect( 1258209, enchants::powerful_eversong_diamond );
+  register_special_effect( { 1236727, 1236728 }, enchants::berserkers_rage );
   // Embellishments & Tinkers
   register_special_effect( 1283697, embellishments::arcanoweave_lining );
   register_special_effect( 1241711, embellishments::sunfire_silk_lining );
