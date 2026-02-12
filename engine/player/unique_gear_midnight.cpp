@@ -1696,6 +1696,7 @@ void void_execution_mandate( special_effect_t& effect )
     marked_for_execution_t( const special_effect_t& e, std::string_view n, const spell_data_t* s, buff_t* b )
       : generic_proc_t( e, n, s ), buff( b )
     {
+      target_debuff = s;
     }
 
     void impact( action_state_t* s ) override
@@ -1715,7 +1716,7 @@ void void_execution_mandate( special_effect_t& effect )
                         ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 3 ).average( effect ) )
                         ->set_expire_callback( [ crit_buff ]( buff_t*, int, timespan_t ) { crit_buff->expire(); } );
 
-  auto debuff = create_proc_action<marked_for_execution_t>( "marked_for_execution", effect, "makred_for_execution",
+  auto debuff = create_proc_action<marked_for_execution_t>( "marked_for_execution", effect, "marked_for_execution",
                                                             effect.driver()->effectN( 1 ).trigger(), haste_buff );
 
   effect.execute_action = debuff;
@@ -1725,7 +1726,6 @@ void void_execution_mandate( special_effect_t& effect )
   impending->item         = effect.item;
   impending->spell_id     = effect.driver()->id();
   impending->cooldown_    = 0_ms; // Cooldown is for on use effect, not the equip effect.
-  impending->custom_buff  = crit_buff;
   impending->proc_flags2_ = PF2_ALL_HIT;
   effect.player->special_effects.push_back( impending );
 
