@@ -6706,19 +6706,32 @@ void monk_t::combat_begin()
 
   if ( talent.windwalker.tigereye_brew_1->ok() )
   {
-    // Period is hasted
     auto callback = [ & ] {
       const auto internal = [ this ]( const auto &fn ) -> void {
-        buff.tigereye_brew_1->trigger();
-        timespan_t period = talent.windwalker.tigereye_brew_1->effectN( 1 ).period() * composite_melee_haste();
+        // Alleviate unneccessary calculations by initializing the period to 2 seconds for out of combat.
+        timespan_t period = 2_s;
+        if ( sim->active_enemies == 0 )
+        {
+          // While out of combat, trigger the buff every 2 seconds until it hits 10 stacks.
+          if ( buff.tigereye_brew_1->stack() < talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() )
+            buff.tigereye_brew_1->trigger();
+        }
+        else
+        {
+          // Period is hasted
+          period = talent.windwalker.tigereye_brew_1->effectN( 1 ).period() * composite_melee_haste();
+          buff.tigereye_brew_1->trigger();
+        }
+
         auto wrapped_fn   = [ fn ] { fn( fn ); };
         make_event<events::delayed_cb_event_t>( *this->sim, this, period, wrapped_fn );
       };
       internal( internal );
     };
+    // Period is hasted
     timespan_t initial_period = talent.windwalker.tigereye_brew_1->effectN( 1 ).period() * composite_melee_haste();
+    buff.tigereye_brew_1->trigger( as<int>( talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() ) );
     make_event<events::delayed_cb_event_t>( *sim, this, initial_period, callback );
-    buff.tigereye_brew_1->trigger( 10 );
   }
 
   if ( specialization() == MONK_WINDWALKER )
