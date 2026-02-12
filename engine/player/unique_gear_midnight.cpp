@@ -1531,6 +1531,54 @@ void withered_saptors_paw( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Shadow of the Empyrean Requiem
+// 1259518 Driver
+// 1264325 Main target damage
+// 1268775 Second target damage
+// 1264337 Haste Buff
+void shadow_of_the_empyrean_requiem( special_effect_t& effect )
+{
+  struct shadow_of_the_empyrean_requiem_damage_t : public generic_proc_t
+  {
+    buff_t* haste_buff;
+    shadow_of_the_empyrean_requiem_damage_t( const special_effect_t& e, std::string_view n, const spell_data_t* s,
+                                             buff_t* buff )
+      : generic_proc_t( e, n, s ), haste_buff( buff )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
+      base_multiplier *= role_mult( e );
+      // Ensure secondary damage doesnt hit the same target as the main hit
+      if ( s->id() == 1268775 )
+        target_filter_callback = secondary_targets_only();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      if ( s->target->health_percentage() < effect->driver()->effectN( 3 ).base_value() )
+        haste_buff->trigger();
+    }
+  };
+
+  auto buff = create_buff<stat_buff_t>( effect.player, "empyrean_swiftness", effect.player->find_spell( 1264337 ) )
+                  ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) );
+
+  auto main_target_damage = create_proc_action<shadow_of_the_empyrean_requiem_damage_t>(
+      "shadow_of_the_empyrean_requiem", effect, "shadow_of_the_empyrean_requiem",
+      effect.player->find_spell( 1264325 ), buff );
+
+  auto second_target_damage = create_proc_action<shadow_of_the_empyrean_requiem_damage_t>(
+      "shadow_of_the_empyrean_requiem_secondary", effect, "shadow_of_the_empyrean_requiem_secondary",
+      effect.player->find_spell( 1268775 ), buff );
+
+  main_target_damage->execute_action = second_target_damage;
+  main_target_damage->add_child( second_target_damage );
+
+  effect.execute_action = main_target_damage;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -1799,6 +1847,7 @@ void register_special_effects()
   register_special_effect( 1253115, trinkets::sealed_chaos_urn );
   register_special_effect( 1253111, trinkets::lost_idol_of_the_hashey );
   register_special_effect( 1253110, trinkets::withered_saptors_paw );
+  register_special_effect( 1259518, trinkets::shadow_of_the_empyrean_requiem );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
