@@ -353,6 +353,26 @@ void janalais_precision( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Worldsoul Tenacity
+// 1236729 Rank 1 Driver
+// 1236730 Rank 2 Driver
+// 1241727 RPPM
+// 1241764 Buff
+void worldsoul_tenacity( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "natures_tenacity" );
+  if ( !buff )
+  {
+    buff = create_buff<stat_buff_t>( effect.player, "natures_tenacity", effect.player->find_spell( 1241764 ) )
+            ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) );
+  }
+
+  effect.custom_buff = buff;
+  effect.spell_id    = 1241727;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace enchants
 
 namespace embellishments
@@ -1900,6 +1920,7 @@ void register_special_effects()
   register_special_effect( { 1236741, 1236742 }, enchants::acuity_of_the_rendorei );
   register_special_effect( { 1236712, 1236721 }, enchants::arcane_mastery );
   register_special_effect( { 1236724, 1236725 }, enchants::janalais_precision );
+  register_special_effect( { 1236729, 1236730 }, enchants::worldsoul_tenacity );
   // Embellishments & Tinkers
   register_special_effect( 1283697, embellishments::arcanoweave_lining );
   register_special_effect( 1241711, embellishments::sunfire_silk_lining );
