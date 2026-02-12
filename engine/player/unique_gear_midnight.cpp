@@ -1699,6 +1699,26 @@ void root_wardens_regalia( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 };
+
+// Voidlight Bindings
+// 1281574 Driver
+// 1281581 Value Spell
+// 1281580 Area Trigger
+// 1281579 Damage
+void voidlight_bindings( special_effect_t& effect )
+{
+  auto value_spell    = effect.player->find_spell( 1281581 );
+  assert( value_spell && "Voidlight Bindings missing value spell" );
+
+  auto damage = create_proc_action<generic_aoe_proc_t>( "twilight_barrage", effect, 1281579 );
+  damage->base_dd_min = damage->base_dd_max = value_spell->effectN( 1 ).average( effect );
+  // No Role multiplier currently
+  //damage->base_multiplier *= role_mult( effect );
+
+  effect.execute_action = damage;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace sets
 
 void register_special_effects()
@@ -1786,7 +1806,7 @@ void register_special_effects()
   register_special_effect( 1244021, sets::root_wardens_regalia );
   register_special_effect( 1253358, DISABLED_EFFECT );  // torments duality
   // Sets
-
+  register_special_effect( 1281574, sets::voidlight_bindings );
 }
 
 void register_target_data_initializers( sim_t& )
