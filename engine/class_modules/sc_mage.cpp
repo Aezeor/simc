@@ -3983,9 +3983,6 @@ struct frostbolt_t final : public frost_mage_spell_t
     freezing_stacks = as<int>( p->spec.shatter->effectN( 1 ).base_value() );
 
     chain_multiplier = p->talents.splitting_ice->effectN( 2 ).percent();
-    // TODO: Doesn't seem to affect Frostbolt for some reason
-    if ( p->bugs && !frostfire )
-      chain_multiplier = 1.0;
 
     if ( data().ok() && p->talents.frostfire_empowerment.ok() )
       add_child( p->action.frostfire_empowerment );
@@ -4013,6 +4010,18 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     if ( frostfire && p()->state.trigger_ff_empowerment )
       m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 3 ).percent();
+
+    // TODO: Splitting Ice behaves really weirdly with Frostbolt
+    // Firstly, the cleave distance is much smaller than the other SI spells.
+    // Secondly, the SI reduction can apply to the main target (and not apply
+    // to the secondary, though that seems to be rarer), sometimes even if
+    // Frostbolt doesn't actually cleave.
+    //
+    // It seems that when Frostbolt hits, it checks to see if there's another target
+    // within the SI cleave distance (the full distance, not the smaller bugged one)
+    // and applies the reduction if so.
+    if ( p()->bugs && !frostfire && s->n_targets > 1 && s->chain_target == 0 )
+      m *= chain_multiplier;
 
     return m;
   }
