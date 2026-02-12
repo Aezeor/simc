@@ -8336,7 +8336,6 @@ void hunter_t::init_blizzard_action_list()
   switch ( specialization() )
   {
     case HUNTER_BEAST_MASTERY:
-      cooldowns->add_action( "bestial_wrath" );
       break;
     case HUNTER_MARKSMANSHIP:
       cooldowns->add_action( "trueshot" );
@@ -8360,6 +8359,11 @@ std::vector<std::string> hunter_t::action_names_from_spell_id( unsigned int spel
   if ( spell_id == 53351 && specialization() != HUNTER_SURVIVAL )
   {
     return { "kill_shot", "black_arrow" };
+  }
+
+  if( spell_id == 19574 && specialization() == HUNTER_BEAST_MASTERY )
+  {
+    return { "bestial_wrath", "wailing_arrow" };
   }
 
   return player_t::action_names_from_spell_id( spell_id );
