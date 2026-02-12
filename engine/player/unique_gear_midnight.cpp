@@ -291,6 +291,27 @@ void berserkers_rage( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Acuity of the Ren'dorei
+// 1236741 Rank 1 Driver
+// 1236742 Rank 2 Driver
+// 1241710 RPPM
+// 1241715 Buff
+// TODO: What happens if you equip 2? does it double the rppm, the value, or both?
+void acuity_of_the_rendorei( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "might_of_the_void" );
+  if ( !buff )
+  {
+    buff = create_buff<stat_buff_t>( effect.player, "might_of_the_void", effect.player->find_spell( 1241715 ) )
+               ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) );
+  }
+
+  effect.custom_buff = buff;
+  effect.spell_id    = 1241710;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace enchants
 
 namespace embellishments
@@ -1835,6 +1856,7 @@ void register_special_effects()
   // Enchants & gems
   register_special_effect( 1258209, enchants::powerful_eversong_diamond );
   register_special_effect( { 1236727, 1236728 }, enchants::berserkers_rage );
+  register_special_effect( { 1236741, 1236742 }, enchants::acuity_of_the_rendorei );
   // Embellishments & Tinkers
   register_special_effect( 1283697, embellishments::arcanoweave_lining );
   register_special_effect( 1241711, embellishments::sunfire_silk_lining );
