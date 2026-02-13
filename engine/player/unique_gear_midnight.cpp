@@ -1906,6 +1906,72 @@ void eye_of_the_drowning_void( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Latch's Crooked Hook
+// 1254193 Use Driver
+// 1255379 Values
+// 1255298 Ground Impact Damage
+// 1254328 Main damage
+// TODO: Does the aoe effect increase per target hit?
+void latchs_crooked_hook( special_effect_t& effect )
+{
+  struct latchs_crooked_hook_t : public generic_proc_t
+  {
+    action_t* main_damage;
+    action_t* impact_damage;
+
+    latchs_crooked_hook_t( const special_effect_t& e, std::string_view n ) : generic_proc_t( e, n, e.driver() )
+    {
+      auto values = e.player->find_spell( 1255379 );
+      assert( values && "Latch's Cooked Hook unable to find Value Spell" );
+
+      target_debuff      = e.driver();
+      cooldown->duration = 0_ms;  // Handled by the special effect
+      aoe                = -1;
+
+      main_damage              = create_proc_action<generic_proc_t>( "latchs_crooked_hook", e, "latchs_crooked_hook",
+                                                                     e.player->find_spell( 1254328 ) );
+      main_damage->base_dd_min = main_damage->base_dd_max = values->effectN( 2 ).average( e );
+      main_damage->base_multiplier *= role_mult( e );
+
+      impact_damage = create_proc_action<generic_aoe_proc_t>(
+          "latchs_crooked_hook_impact", e, "latchs_crooked_hook_impact", e.player->find_spell( 1255298 ) );
+      impact_damage->base_dd_min = impact_damage->base_dd_max = values->effectN( 1 ).average( e );
+      impact_damage->base_multiplier *= role_mult( e );
+      impact_damage->split_aoe_damage = true;
+
+      main_damage->add_child( impact_damage );
+    }
+
+    buff_t* create_debuff( player_t* target ) override
+    {
+      auto debuff = generic_proc_t::create_debuff( target );
+      debuff->set_expire_callback( [ &, target ]( buff_t*, int, timespan_t d ) {
+        if ( d == 0_ms )
+          impact_damage->execute_on_target( target );
+      } );
+
+      return debuff;
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      assert( execute_state && "Latch's Crooked Hook unable to get execute state" );
+      get_debuff( execute_state->target )->trigger();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      main_damage->execute_on_target( s->target );
+    }
+  };
+
+  auto missile = create_proc_action<latchs_crooked_hook_t>( "latchs_crooked_hook_missile", effect, "latchs_crooked_hook_missile" );
+
+  effect.execute_action = missile;
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -2186,6 +2252,7 @@ void register_special_effects()
   register_special_effect( 1260266, trinkets::ranger_captains_iridescent_insignia );
   register_special_effect( 1260265, DISABLED_EFFECT ); // Ranger-Captain's Iridescent Insignia equip driver
   register_special_effect( 1250601, trinkets::eye_of_the_drowning_void );
+  register_special_effect( 1254193, trinkets::latchs_crooked_hook );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
