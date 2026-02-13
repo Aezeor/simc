@@ -1791,6 +1791,78 @@ void emberwing_feather( special_effect_t& effect )
       create_proc_action<emberwing_heatwave_t>( "emberwing_heatwave", effect, "emberwing_heatwave", effect.driver() );
 }
 
+// Ranger-Captain's Iridescent Insignia
+// 1260265 Equip/Value Driver
+// 1260266 Damage / On use Driver
+void ranger_captains_iridescent_insignia( special_effect_t& effect )
+{
+  auto equip_driver = effect.player->find_spell( 1260265 );
+  assert( equip_driver && "Ranger-Captain's Iridescent Insignia missing equip driver" );
+
+  struct ranger_captains_iridescent_insignia_cb_t : public dbc_proc_callback_t
+  {
+    cooldown_t* cooldown;
+    timespan_t cdr;
+
+    ranger_captains_iridescent_insignia_cb_t( const special_effect_t& effect )
+      : dbc_proc_callback_t( effect.player, effect ), cooldown( nullptr ), cdr( 0_s )
+    {
+      // Dont find the cooldown til init finished, as it wont exist when this is created.
+      effect.player->register_init_finished_callback(
+          [ & ]( player_t* p ) { cooldown = effect.player->find_cooldown( "silverstrike_trick_shot_1260266" ); } );
+
+      cdr = timespan_t::from_seconds( -effect.player->find_spell( 1260265 )->effectN( 2 ).base_value() );
+    }
+
+    void execute( action_t*, action_state_t* )
+    {
+      assert( cooldown && "Ranger-Captain's Iridescent Insignia couldnt find item cooldown" );
+      if ( cooldown )
+        cooldown->adjust( cdr );
+    }
+  };
+
+  struct silverstrike_trick_shot_t : public generic_proc_t
+  {
+    silverstrike_trick_shot_t( const special_effect_t& e, std::string_view n, const spell_data_t* val )
+      : generic_proc_t( e, n, e.driver() )
+    {
+      base_dd_min = base_dd_max = val->effectN( 1 ).average( e );
+      cooldown->duration        = 0_s;  // Handled by the special effect
+      base_multiplier *= role_mult( e );
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = generic_proc_t::composite_da_multiplier( s );
+
+      // Assume this uses the highest crit chance
+      if ( player->cache.spell_crit_chance() > player->cache.attack_crit_chance() )
+        m *= 1.0 + player->cache.spell_crit_chance();
+
+      else
+        m *= 1.0 + player->cache.attack_crit_chance();
+
+      return m;
+    }
+  };
+
+  auto equip          = new special_effect_t( effect.player );
+  equip->name_str     = "iridescent_insignia_cdr_proc";
+  equip->item         = effect.item;
+  equip->spell_id     = equip_driver->id();
+  equip->proc_flags2_ = PF2_CRIT;
+  effect.player->special_effects.push_back( equip );
+
+  auto equip_cb = new ranger_captains_iridescent_insignia_cb_t( *equip );
+  equip_cb->initialize();
+  equip_cb->activate();
+
+  auto damage           = create_proc_action<silverstrike_trick_shot_t>( "silverstrike_trick_shot", effect,
+                                                                         "silverstrike_trick_shot", equip_driver );
+  effect.execute_action = damage;
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -2067,6 +2139,8 @@ void register_special_effects()
   register_special_effect( 1259518, trinkets::shadow_of_the_empyrean_requiem );
   register_special_effect( 1250557, trinkets::void_execution_mandate );
   register_special_effect( 1250508, trinkets::emberwing_feather );
+  register_special_effect( 1260266, trinkets::ranger_captains_iridescent_insignia );
+  register_special_effect( 1260265, DISABLED_EFFECT ); // Ranger-Captain's Iridescent Insignia equip driver
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
