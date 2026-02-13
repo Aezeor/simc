@@ -1274,6 +1274,7 @@ public:
   std::string default_temporary_enchant() const override;
 
   // overridden player_t stat functions
+  double composite_mastery_value() const override;
   double composite_armor() const override;
   double composite_armor_multiplier() const override;
   double composite_player_multiplier( school_e ) const override;
@@ -2095,7 +2096,7 @@ public:
     // Shared
     ab::parse_effects( p()->buff.demon_soul );
     ab::parse_effects( p()->buff.empowered_demon_soul );
-    ab::parse_effects( p()->mastery.monster_within, p()->hero_spec.enduring_torment_buff );
+    ab::parse_effects( p()->mastery.monster_within );
 
     effect_mask_t meta_mask = effect_mask_t( true );
     if ( p()->specialization() == DEMON_HUNTER_VENGEANCE && !p()->talent.vengeance.vengeful_beast->ok() )
@@ -6637,9 +6638,9 @@ struct meteor_shower_t : public demon_hunter_spell_t
     ground_aoe_params_t::hasted_with hasted = p()->specialization() == DEMON_HUNTER_DEVOURER
                                                   ? ground_aoe_params_t::SPELL_HASTE
                                                   : ground_aoe_params_t::ATTACK_HASTE;
-    int tick_count = as<int>( p()->talent.annihilator.dark_matter->effectN( 1 ).base_value() );
-    timespan_t duration = timespan_t::from_seconds( tick_count / 2 );
-    timespan_t pulse_time = duration / tick_count;
+    int tick_count                          = as<int>( p()->talent.annihilator.dark_matter->effectN( 1 ).base_value() );
+    timespan_t duration                     = timespan_t::from_seconds( tick_count / 2 );
+    timespan_t pulse_time                   = duration / tick_count;
 
     make_event<ground_aoe_event_t>( *sim, p(),
                                     ground_aoe_params_t()
@@ -8074,8 +8075,9 @@ struct inner_demon_t : public demon_hunter_spell_t
 
 // Soul Cleave ==============================================================
 
-struct soul_cleave_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
-                           art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>>>
+struct soul_cleave_t
+  : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
+        art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>>>
 {
   struct soul_cleave_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
   {
@@ -10012,14 +10014,14 @@ void demon_hunter_t::create_buffs()
 
   // Scarred ============================================================
 
-  buff.enduring_torment = make_buff( this, "enduring_torment", hero_spec.enduring_torment_buff )
-                              ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-                              ->set_allow_precombat( true )
-                              ->set_quiet( true );
-  if ( specialization() == DEMON_HUNTER_HAVOC )
-  {
-    buff.enduring_torment->set_default_value_from_effect_type( A_HASTE_ALL )->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-  }
+  buff.enduring_torment =
+      make_buff( this, "enduring_torment", hero_spec.enduring_torment_buff )
+          ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+          ->set_allow_precombat( true )
+          ->set_quiet( true )
+          ->set_default_value_from_effect_type( specialization() == DEMON_HUNTER_HAVOC ? A_HASTE_ALL
+                                                                                       : A_ADD_PCT_LABEL_MODIFIER )
+          ->set_pct_buff_type( specialization() == DEMON_HUNTER_HAVOC ? STAT_PCT_BUFF_HASTE : STAT_PCT_BUFF_MASTERY );
 
   buff.monster_rising = make_buff( this, "monster_rising", hero_spec.monster_rising_buff )
                             ->set_allow_precombat( true )
@@ -11673,6 +11675,18 @@ void demon_hunter_t::create_benefits()
 // ==========================================================================
 // overridden player_t stat functions
 // ==========================================================================
+
+double demon_hunter_t::composite_mastery_value() const
+{
+  double m = base_t::composite_mastery_value();
+
+  if ( buff.enduring_torment->check() )
+  {
+    m *= 1.0 + hero_spec.enduring_torment_buff->effectN( 3 ).percent();
+  }
+
+  return m;
+}
 
 // demon_hunter_t::composite_armor ==========================================
 
