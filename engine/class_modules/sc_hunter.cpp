@@ -1624,7 +1624,7 @@ public:
         if ( !tl.empty() && aoe > 0 )
         {
           const size_t cap = std::min<size_t>( aoe, tl.size() );
-          const size_t t   = p()->rng().range<size_t>( 0, cap );
+          const size_t t   = p()->rng().template range<size_t>( 0, cap );
           return tl[ t ];
         }
         break;
