@@ -1890,6 +1890,22 @@ void ranger_captains_iridescent_insignia( special_effect_t& effect )
   effect.execute_action = damage;
 }
 
+// Eye of the Drowning Void
+// 1250601 Driver
+// 1255476 Damage
+// TODO: Does this have the increased damage per target hit?
+void eye_of_the_drowning_void( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "eye_of_the_drowning_void", effect, "eye_of_the_drowning_void",
+                                                        effect.driver()->effectN( 1 ).trigger() );
+  damage->base_multiplier *= role_mult( effect );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  damage->split_aoe_damage                  = true;
+
+  effect.execute_action = damage;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -2169,6 +2185,7 @@ void register_special_effects()
   register_special_effect( 1250508, trinkets::emberwing_feather );
   register_special_effect( 1260266, trinkets::ranger_captains_iridescent_insignia );
   register_special_effect( 1260265, DISABLED_EFFECT ); // Ranger-Captain's Iridescent Insignia equip driver
+  register_special_effect( 1250601, trinkets::eye_of_the_drowning_void );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
