@@ -966,9 +966,8 @@ void void_( special_effect_t& effect )
 // 1252486 Haste Buff - Elemental, Aberration, Demon
 // 1252487 Crit Buff - Mechanical
 // 1252488 Mastery Buff - Humanoid, Beast, Dragonkin
-// 1252489 Versatility Buff - Undead, Giant
+// 1252489 Versatility Buff - Undead, Giant, Not Specified
 // TODO: What happens with both the trinket, and embellishment active?
-// TODO: Figure out what not specified (Naaru) triggers.
 void hunt( special_effect_t& effect )
 {
   struct hunt_cb_t : public dbc_proc_callback_t
@@ -988,9 +987,9 @@ void hunt( special_effect_t& effect )
     race_e race;
     mode_e mode;
 
-    // TODO Add L'ura's race mapping when known.
-    std::array<race_e, 8> raid_races = { RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,   RACE_DRAGONKIN,
-                                         RACE_HUMANOID,   RACE_HUMANOID,   RACE_ABERRATION, RACE_ELEMENTAL };
+    // L'ura emulated as Undead, as we dont classify using CreatureType.db2 data. Not Specified triggers the vers buff like Undead and Giant.
+    std::array<race_e, 9> raid_races = { RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,   RACE_DRAGONKIN,
+                                         RACE_HUMANOID,   RACE_HUMANOID,   RACE_ABERRATION, RACE_ELEMENTAL, RACE_UNDEAD };
 
     std::array<race_e, 9> valid_races = { RACE_BEAST,      RACE_ELEMENTAL, RACE_MECHANICAL, RACE_UNDEAD, RACE_HUMANOID,
                                           RACE_ABERRATION, RACE_DRAGONKIN, RACE_GIANT,      RACE_DEMON };
@@ -1028,7 +1027,11 @@ void hunt( special_effect_t& effect )
 
       if ( mode == MODE_SPECIFIED )
       {
-        race = util::parse_race_type( e.player->midnight_opts.darkmoon_hunt_race );
+        // Not specified type triggers Vers. Since we dont classify by CreatureType, this is a bit of a workaround to get the proper buff.
+        if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "not_specified" ) )
+          race == RACE_UNDEAD;
+        else
+          race = util::parse_race_type( e.player->midnight_opts.darkmoon_hunt_race );
         if ( !range::contains( valid_races, race ) )
         {
           std::vector<std::string> valid_strings;
