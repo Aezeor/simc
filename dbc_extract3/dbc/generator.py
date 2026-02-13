@@ -1530,6 +1530,7 @@ class SpellDataGenerator(DataGenerator):
          1252524, 1257183, 1252814, 1252817, 1252818, 1252832, # Loa Worshipers Band
          1252486, 1252487, 1252488, 1252489, # Darkmoon Deck: Hunt
          1255853, 1255857, 1255856, # Emberwing Feather
+         1255298, 1254328, 1250561, 1255379, # Latch's Crooked Hook
         ),
 
         # Warrior:
