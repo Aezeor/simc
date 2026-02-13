@@ -317,6 +317,7 @@ void acuity_of_the_rendorei( special_effect_t& effect )
 // 1236721 Rank 2 Driver
 // 1241729 RPPM
 // 1241759 Buff
+// TODO: What happens if you equip 2? does it double the rppm, the value, or both?
 void arcane_mastery( special_effect_t& effect )
 {
   auto buff = buff_t::find( effect.player, "genius_insight" );
@@ -337,6 +338,7 @@ void arcane_mastery( special_effect_t& effect )
 // 1236725 Rank 2 Driver
 // 1241722 RPPM
 // 1241761 Buff
+// TODO: What happens if you equip 2? does it double the rppm, the value, or both?
 void janalais_precision( special_effect_t& effect )
 {
   auto buff = buff_t::find( effect.player, "precision_of_the_dragonhawk" );
@@ -358,6 +360,7 @@ void janalais_precision( special_effect_t& effect )
 // 1236730 Rank 2 Driver
 // 1241727 RPPM
 // 1241764 Buff
+// TODO: What happens if you equip 2? does it double the rppm, the value, or both?
 void worldsoul_tenacity( special_effect_t& effect )
 {
   auto buff = buff_t::find( effect.player, "natures_tenacity" );
@@ -369,6 +372,30 @@ void worldsoul_tenacity( special_effect_t& effect )
 
   effect.custom_buff = buff;
   effect.spell_id    = 1241727;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Strength of Halazzi
+// 1236733 Rank 1 Driver
+// 1236734 Rank 2 Driver
+// 1241721 RPPM
+// 1241784 Damage
+// TODO: What happens if you equip 2? does it double the rppm, the value, or both?
+void strength_of_halazzi( special_effect_t& effect )
+{
+  auto damage = effect.player->find_action( "halazzis_claws" );
+  if ( !damage )
+  {
+    damage          = create_proc_action<generic_proc_t>( "halazzis_claws", effect, "halazzis_claws",
+                                                          effect.player->find_spell( 1241784 ) );
+    damage->base_td = effect.driver()->effectN( 1 ).average( effect );
+    // No Role Mult currently
+    // damage->base_ta_multiplier *= role_mult( effect );
+  }
+
+  effect.execute_action = damage;
+  effect.spell_id       = 1241721;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -2101,6 +2128,7 @@ void register_special_effects()
   register_special_effect( { 1236712, 1236721 }, enchants::arcane_mastery );
   register_special_effect( { 1236724, 1236725 }, enchants::janalais_precision );
   register_special_effect( { 1236729, 1236730 }, enchants::worldsoul_tenacity );
+  register_special_effect( { 1236733, 1236734 }, enchants::strength_of_halazzi );
   // Embellishments & Tinkers
   register_special_effect( 1283697, embellishments::arcanoweave_lining );
   register_special_effect( 1241711, embellishments::sunfire_silk_lining );
