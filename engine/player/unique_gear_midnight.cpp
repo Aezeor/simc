@@ -1995,6 +1995,35 @@ void lightspire_core( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Magister's Alchemist Stone
+// 1280591 Driver
+// 299788 Strength Buff
+// 299789 Agility Buff
+// 299790 Int Buff
+void magisters_alchemist_stone( special_effect_t& e )
+{
+  auto stat = e.player->convert_hybrid_stat( STAT_STR_AGI_INT );
+  const spell_data_t* buff_spell;
+  switch ( stat )
+  {
+    case STAT_STRENGTH:
+      buff_spell = e.player->find_spell( 299788 );
+      break;
+    case STAT_AGILITY:
+      buff_spell = e.player->find_spell( 299789 );
+      break;
+    default:
+      buff_spell = e.player->find_spell( 299790 );
+      break;
+  }
+
+  auto buff = create_buff<stat_buff_t>( e.player, buff_spell )
+                  ->add_stat_from_effect_type( A_MOD_STAT, buff_spell->effectN( 1 ).average( e ) );
+
+  e.custom_buff = buff;
+  new dbc_proc_callback_t( e.player, e );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -2277,6 +2306,7 @@ void register_special_effects()
   register_special_effect( 1250601, trinkets::eye_of_the_drowning_void );
   register_special_effect( 1254193, trinkets::latchs_crooked_hook );
   register_special_effect( 1250527, trinkets::lightspire_core );
+  register_special_effect( 1280591, trinkets::magisters_alchemist_stone );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
