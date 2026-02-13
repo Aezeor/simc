@@ -1274,7 +1274,6 @@ public:
   std::string default_temporary_enchant() const override;
 
   // overridden player_t stat functions
-  double composite_mastery_value() const override;
   double composite_armor() const override;
   double composite_armor_multiplier() const override;
   double composite_player_multiplier( school_e ) const override;
@@ -2096,7 +2095,11 @@ public:
     // Shared
     ab::parse_effects( p()->buff.demon_soul );
     ab::parse_effects( p()->buff.empowered_demon_soul );
-    ab::parse_effects( p()->mastery.monster_within );
+    ab::parse_effects( p()->mastery.monster_within, [this](double v) {
+      if (p()->buff.enduring_torment->check())
+        v *= 1.0 + p()->buff.enduring_torment->check_value();
+      return v;
+    } );
 
     effect_mask_t meta_mask = effect_mask_t( true );
     if ( p()->specialization() == DEMON_HUNTER_VENGEANCE && !p()->talent.vengeance.vengeful_beast->ok() )
@@ -11675,18 +11678,6 @@ void demon_hunter_t::create_benefits()
 // ==========================================================================
 // overridden player_t stat functions
 // ==========================================================================
-
-double demon_hunter_t::composite_mastery_value() const
-{
-  double m = base_t::composite_mastery_value();
-
-  if ( buff.enduring_torment->check() )
-  {
-    m *= 1.0 + hero_spec.enduring_torment_buff->effectN( 3 ).percent();
-  }
-
-  return m;
-}
 
 // demon_hunter_t::composite_armor ==========================================
 
