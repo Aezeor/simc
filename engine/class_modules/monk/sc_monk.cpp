@@ -165,8 +165,7 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.dance_of_chiji );
 
   // Conduit of the Celestials
-  parse_effects( p()->buff.heart_of_the_jade_serpent,
-                 [ & ] { return !p()->buff.heart_of_the_jade_serpent_yulons_avatar->check(); } );
+  parse_effects( p()->buff.heart_of_the_jade_serpent );
   parse_effects( p()->buff.heart_of_the_jade_serpent_yulons_avatar );
   parse_effects( p()->buff.heart_of_the_jade_serpent_unity_within );
   parse_effects( p()->buff.jade_sanctuary );
@@ -1516,7 +1515,7 @@ struct fists_of_fury_t : monk_melee_attack_t
     jadefire_stomp_t( monk_t *player )
       : monk_melee_attack_t( player, "jadefire_stomp", player->talent.windwalker.jadefire_stomp_damage )
     {
-      aoe        = as<int>( player->talent.windwalker.jadefire_stomp_targeting->effectN( 1 ).base_value() );
+      aoe        = as<int>( player->talent.windwalker.jadefire_stomp->effectN( 2 ).base_value() );
       background = dual = true;
       ww_mastery        = true;
 
@@ -4883,12 +4882,21 @@ void monk_t::parse_player_effects()
   parse_effects( buff.inner_compass_serpent_stance );
   parse_effects( buff.inner_compass_tiger_stance );
 
-  effect_mask_t em = talent.conduit_of_the_celestials.flowing_wisdom->ok() ? effect_mask_t( true )
-                                                                           : effect_mask_t( true ).disable( 8 );
-  parse_effects( buff.heart_of_the_jade_serpent, em,
-                 [ & ] { return !buff.heart_of_the_jade_serpent_yulons_avatar->check(); } );
+  effect_mask_t em = effect_mask_t( true ).disable( 8 );
+  parse_effects( buff.heart_of_the_jade_serpent, em );
   parse_effects( buff.heart_of_the_jade_serpent_yulons_avatar, em );
   parse_effects( buff.heart_of_the_jade_serpent_unity_within, em );
+
+  if ( talent.conduit_of_the_celestials.flowing_wisdom->ok() )
+  {
+    effect_mask_t em = effect_mask_t( false ).enable( 8 );
+    parse_effects( talent.conduit_of_the_celestials.heart_of_the_jade_serpent_buff, em, [ & ]( double value ) {
+      double stacks =
+          buff.heart_of_the_jade_serpent->check() ||
+          buff.heart_of_the_jade_serpent_unity_within->check() + buff.heart_of_the_jade_serpent_yulons_avatar->check();
+      return std::pow( value, stacks );
+    } );
+  }
 
   // Midnight S1 Set Effects
   // Midnight S2 Set Effects
@@ -6707,31 +6715,26 @@ void monk_t::combat_begin()
   if ( talent.windwalker.tigereye_brew_1->ok() )
   {
     auto callback = [ & ] {
-      const auto internal = [ this ]( const auto &fn ) -> void {
-        // Alleviate unneccessary calculations by initializing the period to 2 seconds for out of combat.
-        timespan_t period = 2_s;
-        if ( sim->active_enemies == 0 )
-        {
-          // While out of combat, trigger the buff every 2 seconds until it hits 10 stacks.
-          if ( buff.tigereye_brew_1->stack() < talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() )
-            buff.tigereye_brew_1->trigger();
-        }
-        else
-        {
-          // Period is hasted
-          period = talent.windwalker.tigereye_brew_1->effectN( 1 ).period() * composite_melee_haste();
-          buff.tigereye_brew_1->trigger();
-        }
+      const auto out_of_combat = [ & ] { buff.tigereye_brew_1->trigger(); };
 
+      const auto internal = [ this, &out_of_combat ]( const auto &fn ) -> void {
         auto wrapped_fn   = [ fn ] { fn( fn ); };
-        make_event<events::delayed_cb_event_t>( *this->sim, this, period, wrapped_fn );
+        timespan_t period = talent.windwalker.tigereye_brew_1->effectN( 1 ).period() * composite_melee_haste();
+
+        if ( !sim->active_enemies &&
+             buff.tigereye_brew_1->stack() < talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() )
+          make_event<events::delayed_cb_event_t>( *sim, this, 2_s, out_of_combat );
+
+        buff.tigereye_brew_1->trigger();
+        make_event<events::delayed_cb_event_t>( *sim, this, period, wrapped_fn );
       };
       internal( internal );
     };
     // Period is hasted
     timespan_t initial_period = talent.windwalker.tigereye_brew_1->effectN( 1 ).period() * composite_melee_haste();
-    buff.tigereye_brew_1->trigger( as<int>( talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() ) );
     make_event<events::delayed_cb_event_t>( *sim, this, initial_period, callback );
+
+    buff.tigereye_brew_1->trigger( as<int>( talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() ) );
   }
 
   if ( specialization() == MONK_WINDWALKER )
