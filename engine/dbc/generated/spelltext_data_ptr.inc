@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.65867
-static constexpr std::array<spelltext_data_t, 28624> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28625> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27640,6 +27640,7 @@ static constexpr std::array<spelltext_data_t, 28624> __ptr_spelltext_data { {
   { 1263729, 0, "Surrounded by a mist of blood, increasing your chance to Parry by $s2% and dealing $1263752s1 Shadow damage every $t1 sec to nearby enemies.", 0 },
   { 1263743, "When you cast Dancing Rune Weapon, you become enveloped in a blood mist that surrounds you for $1263729d, increasing your Parry by $1263729s2%. \r\n\r\nDeals $1263752s1 Shadow damage every $1263729t1 sec to enemies within $1263752A1 yds. Every time it deals damage you gain ${$1263774s1/10} Runic Power, up to a maximum of ${$1263774s1/10*$1263729s3} Runic Power. Deals reduced damage beyond $1263729s4 targets.", 0, 0 },
   { 1263752, "$@spelldesc1263743", 0, 0 },
+  { 1263768, 0, "Mastery increased by increased by $w1.", 0 },
   { 1263774, "$@spelldesc1263743", 0, 0 },
   { 1263781, "When Blood Mist ends it deals $1263786s1 Shadow damage to $1263786i nearby enemies, healing you for ${$1263786e*100}% of the damage dealt. The damage is increased by $1263789s1% for every $s1 Runic Power spent while Blood Mist was active.", 0, 0 },
   { 1263782, "You have a $s1% chance to $?c3[gain Blessing of An'she and ][]generate $s2 Holy Power after casting Avenging Wrath.$?c3[\r\n\r\nDuring Avenging Wrath, Hammer of Wrath casts Blade of Justice at $s3% effectiveness.][]", 0, 0 },

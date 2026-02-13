@@ -1972,6 +1972,29 @@ void latchs_crooked_hook( special_effect_t& effect )
   effect.execute_action = missile;
 }
 
+// Lightspire Core
+// 1250527 Driver & Passive Mastery Buff
+// 1263768 Light mastery buff
+// 1263762 Area Trigger
+// TODO: Emulate not standing in the light
+void lightspire_core( special_effect_t& effect )
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, "lightspire_core", effect.driver() )
+                  ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) )
+                  ->set_rppm( RPPM_DISABLE )
+                  ->set_chance( 1.01 );
+
+  effect.player->register_on_arise_callback( effect.player, [ buff ] { buff->trigger(); } );
+
+  auto light_buff = create_buff<stat_buff_t>( effect.player, "lights_blessing", effect.player->find_spell( 1263768 ) )
+                        ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 3 ).average( effect ) )
+                        ->set_duration( effect.player->find_spell( 1263762 )->duration() );
+
+  effect.custom_buff = light_buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -2253,6 +2276,7 @@ void register_special_effects()
   register_special_effect( 1260265, DISABLED_EFFECT ); // Ranger-Captain's Iridescent Insignia equip driver
   register_special_effect( 1250601, trinkets::eye_of_the_drowning_void );
   register_special_effect( 1254193, trinkets::latchs_crooked_hook );
+  register_special_effect( 1250527, trinkets::lightspire_core );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
