@@ -1029,7 +1029,7 @@ void hunt( special_effect_t& effect )
       {
         // Not specified type triggers Vers. Since we dont classify by CreatureType, this is a bit of a workaround to get the proper buff.
         if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "not_specified" ) )
-          race == RACE_UNDEAD;
+          race = RACE_UNDEAD;
         else
           race = util::parse_race_type( e.player->midnight_opts.darkmoon_hunt_race );
         if ( !range::contains( valid_races, race ) )
