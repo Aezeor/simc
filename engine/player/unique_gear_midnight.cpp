@@ -963,12 +963,12 @@ void void_( special_effect_t& effect )
 // 1245054 Embellishment Driver
 // 1245050 Trinket Driver
 // 1252457 RPPM
-// 1252486 Haste Buff - Elemental, Aberration
+// 1252486 Haste Buff - Elemental, Aberration, Demon
 // 1252487 Crit Buff - Mechanical
 // 1252488 Mastery Buff - Humanoid, Beast, Dragonkin
-// 1252489 Versatility Buff - Undead
+// 1252489 Versatility Buff - Undead, Giant
 // TODO: What happens with both the trinket, and embellishment active?
-// TODO: Figure out what Giant, and Demon trigger.
+// TODO: Figure out what not specified (Naaru) triggers.
 void hunt( special_effect_t& effect )
 {
   struct hunt_cb_t : public dbc_proc_callback_t
@@ -1083,16 +1083,16 @@ void hunt( special_effect_t& effect )
           break;
         case RACE_ABERRATION:
         case RACE_ELEMENTAL:
+        case RACE_DEMON:
           haste_buff->trigger();
           break;
         case RACE_MECHANICAL:
           crit_buff->trigger();
           break;
+        case RACE_GIANT:
         case RACE_UNDEAD:
           vers_buff->trigger();
           break;
-        case RACE_DEMON:
-        case RACE_GIANT:
         default:
           break;
       }
