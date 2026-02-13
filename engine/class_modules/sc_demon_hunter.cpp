@@ -550,7 +550,7 @@ public:
 
       player_talent_t desperate_instincts;  // No Implementation
       player_talent_t netherwalk;           // No Implementation
-      player_talent_t deflecting_dance;     // NYI
+      player_talent_t deflecting_dance;     // No Implementation
       player_talent_t mortal_dance;         // No Implementation
 
       player_talent_t initiative;
@@ -668,7 +668,7 @@ public:
 
       player_talent_t aldrachi_tactics;
       player_talent_t army_unto_oneself;     // No Implementation
-      player_talent_t incorruptible_spirit;  // NYI
+      player_talent_t incorruptible_spirit;  // No Implementation
       player_talent_t wounded_quarry;
       player_talent_t keen_edge;
 
@@ -712,7 +712,7 @@ public:
       player_talent_t wave_of_debilitation;  // No Implementation
       player_talent_t pursuit_of_angriness;
       player_talent_t focused_hatred;
-      player_talent_t set_fire_to_the_pain;  // NYI
+      player_talent_t set_fire_to_the_pain;  // No Implementation
       player_talent_t improved_soul_rending;
 
       player_talent_t burning_blades;
@@ -724,7 +724,7 @@ public:
       player_talent_t flamebound;
       player_talent_t monster_rising;
 
-      player_talent_t blind_focus;  // Partial implementation (no Meta)
+      player_talent_t blind_focus;
       player_talent_t undying_embers;
       player_talent_t volatile_instinct;
 
