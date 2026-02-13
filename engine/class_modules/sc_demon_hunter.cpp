@@ -2165,6 +2165,11 @@ public:
     ab::parse_effects( p()->buff.demonsurge_demonic_intensity );
     ab::parse_effects( p()->buff.demonsurge );
     ab::parse_effects( p()->buff.voidsurge );
+    ab::parse_effects( p()->talent.scarred.blind_focus, [this](double v) {
+      if (p()->buff.metamorphosis->check())
+        v *= 1.0 + p()->spec.void_metamorphosis->effectN( 16 ).percent();
+      return v;
+    } );
 
     // Tier sets
   }
@@ -11204,6 +11209,9 @@ void demon_hunter_t::init_spells()
                                                                 .remove_spell( spec.eradicate->id() )
                                                                 .remove_spell( spec.the_hunt->id() )
                                                                 .remove_spell( hero_spec.pierce_the_veil->id() ) );
+
+  // Blind Focus is done via parse_effects
+  deregister_passive_spell( talent.scarred.blind_focus );
 
   // Critical Chaos eff#2 (dummy script) overwrites the value of eff#1 (add flat: proc chance)
   deregister_passive_effect( talent.havoc.critical_chaos->effectN( 1 ) );
