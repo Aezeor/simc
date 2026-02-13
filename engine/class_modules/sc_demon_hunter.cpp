@@ -6308,11 +6308,6 @@ struct void_ray_t
     {
       double m = base_t::shattered_souls_chance( s );
 
-      if ( p()->talent.devourer.waste_not->ok() )
-      {
-        m *= 1.0 + p()->talent.devourer.waste_not->effectN( 1 ).percent();
-      }
-
       // Reduce Void Ray Soul Generation - Estimate is approximately n^(0.3 ~ 0.33)
       // Todo: Further refine this.
       m *= pow( s->n_targets, -0.7 );
