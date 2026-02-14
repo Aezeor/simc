@@ -2077,6 +2077,7 @@ public:
   double pseudo_random_p_from_c( double c );
   double pseudo_random_c_from_p( double p );
   void create_dnd_event( action_t* a, timespan_t dur, timespan_t period );
+  void trigger_rune_of_the_apocalypse( player_t* target );
   // Rider of the Apocalypse
   rider_of_the_apocalypse_e get_random_rider();
   void summon_rider( timespan_t duration, rider_of_the_apocalypse_e = rider_of_the_apocalypse_e::RANDOM );
@@ -3234,28 +3235,8 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
            rng().roll( dk()->spell.infected_claws_driver->proc_chance() ) )
         dk()->background_actions.infected_claws->execute_on_target( state->target );
 
-      if ( triggers_apocalypse && dk()->has_runeforge( RUNEFORGE_APOCALYPSE ) )
-      {
-        int n = as<int>( std::floor( pet()->rng().range( 0, runeforge_apocalypse_e::MAX ) ) );
-
-        death_knight_td_t* td = dk()->get_target_data( state->target );
-
-        switch ( n )
-        {
-          case runeforge_apocalypse_e::DEATH:
-            td->debuff.apocalypse_death->trigger();
-            break;
-          case runeforge_apocalypse_e::FAMINE:
-            td->debuff.apocalypse_famine->trigger();
-            break;
-          case runeforge_apocalypse_e::PESTILENCE:
-            dk()->runeforge_actions.apocalypse_pestilence->execute_on_target( state->target );
-            break;
-          case runeforge_apocalypse_e::WAR:
-            td->debuff.apocalypse_war->trigger();
-            break;
-        }
-      }
+      if ( triggers_apocalypse  )
+        dk()->trigger_rune_of_the_apocalypse( state->target );
     }
 
     bool ready() override
@@ -3507,28 +3488,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       if ( dk()->talent.unholy.infected_claws.ok() && rng().roll( dk()->spell.infected_claws_driver->proc_chance() ) )
         dk()->background_actions.infected_claws->execute_on_target( s->target );
 
-      if ( dk()->has_runeforge( RUNEFORGE_APOCALYPSE ) )
-      {
-        int n = as<int>( std::floor( pet()->rng().range( 0, runeforge_apocalypse_e::MAX ) ) );
-
-        death_knight_td_t* td = dk()->get_target_data( s->target );
-
-        switch ( n )
-        {
-          case runeforge_apocalypse_e::DEATH:
-            td->debuff.apocalypse_death->trigger();
-            break;
-          case runeforge_apocalypse_e::FAMINE:
-            td->debuff.apocalypse_famine->trigger();
-            break;
-          case runeforge_apocalypse_e::PESTILENCE:
-            dk()->runeforge_actions.apocalypse_pestilence->execute_on_target( s->target );
-            break;
-          case runeforge_apocalypse_e::WAR:
-            td->debuff.apocalypse_war->trigger();
-            break;
-        }
-      }
+      dk()->trigger_rune_of_the_apocalypse( s->target );
     }
 
     bool ready() override
@@ -11785,29 +11745,8 @@ struct putrefy_aoe_t final : public death_knight_spell_t
         dk_td->dot.virulent_plague->adjust_duration( blightburst_dur );
       }
 
-      // TODO: Does the ST hit apply too?
-      if ( p()->has_runeforge( RUNEFORGE_APOCALYPSE ) )
-      {
-        int n = as<int>( std::floor( p()->rng().range( 0, runeforge_apocalypse_e::MAX ) ) );
-
-        death_knight_td_t* td = p()->get_target_data( s->target );
-
-        switch ( n )
-        {
-          case runeforge_apocalypse_e::DEATH:
-            td->debuff.apocalypse_death->trigger();
-            break;
-          case runeforge_apocalypse_e::FAMINE:
-            td->debuff.apocalypse_famine->trigger();
-            break;
-          case runeforge_apocalypse_e::PESTILENCE:
-            p()->runeforge_actions.apocalypse_pestilence->execute_on_target( s->target );
-            break;
-          case runeforge_apocalypse_e::WAR:
-            td->debuff.apocalypse_war->trigger();
-            break;
-        }
-      }
+      // TODO: Does the ST hit apply these too?
+      p()->trigger_rune_of_the_apocalypse( s->target );
     }
   }
 
@@ -13751,6 +13690,32 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
 
   tracker->set_dnd_event( make_event<ground_aoe_event_t>( *sim, this, params, true /* Immediate pulse */ ) );
   active_dnds.push_back( tracker );
+}
+
+void death_knight_t::trigger_rune_of_the_apocalypse( player_t* t )
+{
+  if ( !has_runeforge( RUNEFORGE_APOCALYPSE ) )
+    return;
+
+  int n = as<int>( std::floor( rng().range( 0, runeforge_apocalypse_e::MAX ) ) );
+
+  death_knight_td_t* td = get_target_data( t );
+
+  switch ( n )
+  {
+    case runeforge_apocalypse_e::DEATH:
+      td->debuff.apocalypse_death->trigger();
+      break;
+    case runeforge_apocalypse_e::FAMINE:
+      td->debuff.apocalypse_famine->trigger();
+      break;
+    case runeforge_apocalypse_e::PESTILENCE:
+      runeforge_actions.apocalypse_pestilence->execute_on_target( t );
+      break;
+    case runeforge_apocalypse_e::WAR:
+      td->debuff.apocalypse_war->trigger();
+      break;
+  }
 }
 
 const spell_data_t* death_knight_t::conditional_spell_lookup( bool fn, int id )
