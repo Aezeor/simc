@@ -1901,7 +1901,7 @@ struct dark_hound_t final : public dire_critter_t
   dark_hound_t( hunter_t* owner, util::string_view n = "dark_hound" ) : dire_critter_t( owner, n )
   {
     resource_regeneration  = regen_type::DISABLED;
-    owner_coeff.ap_from_ap = 2;
+    owner_coeff.ap_from_ap = 1.5; // TEMP Unconfirmed until logs are available
     auto_attack_multiplier = 4;
     // Best guess estimates based on logs and testing
     // TODO reconfirm before launch
