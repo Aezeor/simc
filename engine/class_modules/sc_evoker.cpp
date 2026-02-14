@@ -9392,7 +9392,8 @@ void evoker_t::init_spells()
   // Scalecommander
   talent.scalecommander.mass_disintegrate               = HT( "Mass Disintegrate" );
   talent.scalecommander.mass_disintegrate_buff          = find_spell( 436336 );
-  talent.scalecommander.mass_eruption                   = HT( "Mass Eruption" );
+  talent.scalecommander.mass_eruption =
+      specialization() == EVOKER_AUGMENTATION ? HT( "Mass Eruption" ) : player_talent_t();
   talent.scalecommander.mass_eruption_damage            = find_spell( 438653 );
   talent.scalecommander.mass_eruption_buff              = find_spell( 438588 );
   talent.scalecommander.mass_disintegrate_buff          = find_spell( 436336 );
