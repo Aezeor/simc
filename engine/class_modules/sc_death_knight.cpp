@@ -13728,38 +13728,7 @@ const spell_data_t* death_knight_t::conditional_spell_lookup( bool fn, int id )
 
 bool death_knight_t::has_runeforge( runeforges_e rf ) const
 {
-  bool has_runeforge = false;
-  switch ( rf )
-  {
-    case RUNEFORGE_NONE:
-      has_runeforge = false;
-      break;
-    case RUNEFORGE_APOCALYPSE:
-      has_runeforge = mh_runeforge == RUNEFORGE_APOCALYPSE || oh_runeforge == RUNEFORGE_APOCALYPSE;
-      break;
-    case RUNEFORGE_FALLEN_CRUSADER:
-      has_runeforge = mh_runeforge == RUNEFORGE_FALLEN_CRUSADER || oh_runeforge == RUNEFORGE_FALLEN_CRUSADER;
-      break;
-    case RUNEFORGE_RAZORICE:
-      has_runeforge = mh_runeforge == RUNEFORGE_RAZORICE || oh_runeforge == RUNEFORGE_RAZORICE;
-      break;
-    case RUNEFORGE_SANGUINATION:
-      has_runeforge = mh_runeforge == RUNEFORGE_SANGUINATION || oh_runeforge == RUNEFORGE_SANGUINATION;
-      break;
-    case RUNEFORGE_SPELLWARDING:
-      has_runeforge = mh_runeforge == RUNEFORGE_SPELLWARDING || oh_runeforge == RUNEFORGE_SPELLWARDING;
-      break;
-    case RUNEFORGE_STONESKIN_GARGOYLE:
-      has_runeforge = mh_runeforge == RUNEFORGE_STONESKIN_GARGOYLE || oh_runeforge == RUNEFORGE_STONESKIN_GARGOYLE;
-      break;
-    case RUNEFORGE_UNENDING_THIRST:
-      has_runeforge = mh_runeforge == RUNEFORGE_UNENDING_THIRST || oh_runeforge == RUNEFORGE_UNENDING_THIRST;
-      break;
-    default:
-      break;
-  }
-
-  return has_runeforge;
+  return mh_runeforge == rf || oh_runeforge == rf;
 }
 
 void death_knight_t::set_runeforges()
