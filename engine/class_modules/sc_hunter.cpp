@@ -3698,7 +3698,7 @@ void hunter_t::consume_precise_shots()
   if ( !buffs.precise_shots->check() )
     return;
 
-  cooldowns.aimed_shot->adjust( -talents.focused_aim->effectN( 1 ).time_value() * buffs.precise_shots->check() );
+  cooldowns.aimed_shot->adjust( -talents.focused_aim->effectN( 1 ).time_value() );
 
   buffs.precise_shots->expire();
   buffs.stargazer->trigger();
@@ -4891,6 +4891,7 @@ struct lunar_storm_t : hunter_ranged_attack_t
   {
     background = dual = true;
     aoe = -1;
+    reduced_aoe_targets = 8; // TEMP use spelldata when it exists
   }
 };
 
