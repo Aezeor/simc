@@ -36,7 +36,8 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     random_weapon_target( nullptr ),
     random_bulwark_target( nullptr ),
     divine_inspiration_next( -1 ),
-    reflection_of_radiance_proc_chance( .2 ) // ToDo Fluttershy: Find out real proc chance
+    reflection_of_radiance_proc_chance( .2 ), // ToDo Fluttershy: Find out real proc chance
+    es_accum( 0 )
 {
   active_consecration = nullptr;
   active_boj_cons = nullptr;
@@ -3488,6 +3489,7 @@ void paladin_t::reset()
   random_weapon_target = nullptr;
   random_bulwark_target = nullptr;
   divine_inspiration_next = -1;
+  es_accum                = 0;
   fake_lesser_weapon_set.clear();
 }
 

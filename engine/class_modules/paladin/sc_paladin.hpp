@@ -205,8 +205,6 @@ public:
     buff_t* empyrean_legacy_cooldown;
     buff_t* judge_jury_and_executioner;
 
-    buff_t* execution_sentence;
-
     buff_t* echoes_of_wrath;  // DF3 4pc
 
     // TWW Hero Talents
@@ -762,6 +760,7 @@ public:
   int divine_inspiration_next;
 
   double reflection_of_radiance_proc_chance;
+  double es_accum;
 
   paladin_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN );
 
@@ -911,7 +910,6 @@ struct execution_sentence_debuff_t : public buff_t
   void expire_override( int stacks, timespan_t duration ) override
   {
     buff_t::expire_override( stacks, duration );
-
     paladin_t* paladin = debug_cast<paladin_t*>( source );
     paladin->trigger_es_explosion( player );
   }
@@ -1108,15 +1106,13 @@ public:
   bool clears_judgment;
 
   bool triggers_higher_calling;
-  bool skip_es_accum;
 
   paladin_action_t( util::string_view n, paladin_t* p, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, p, s ),
       affected_by( affected_by_t() ),
       hasted_cd( false ),
       clears_judgment( false ),
-      triggers_higher_calling( false ),
-      skip_es_accum( false )
+      triggers_higher_calling( false )
   {
     ab::track_cd_waste = s->cooldown() > 0_ms || s->charge_cooldown() > 0_ms;
 
@@ -1280,29 +1276,10 @@ public:
 
     paladin_td_t* td = this->td( s->target );
 
-    if ( td->debuff.execution_sentence_gather->check() && dbc::is_school( ab::school, SCHOOL_HOLY ) && !skip_es_accum )
+    if ( td->debuff.execution_sentence_gather->check() && !dbc::is_school( ab::school, SCHOOL_PHYSICAL ) )
     {
-      double mult = 1.0;
-
-      // ES counts damage before wings & mastery, but after most other multipliers,
-      // per bolas test Aug 17 2024
-      if ( affected_by.avenging_wrath && p()->buffs.avenging_wrath->up() )
-      {
-        mult /= 1.0 + p()->buffs.avenging_wrath->value();
-      }
-
-      if ( affected_by.highlords_judgment )
-      {
-        double mastery_amount = p()->cache.mastery_value();
-        if ( affected_by.highlords_judgment_hidden && p()->talents.highlords_wrath->ok() )
-        {
-          // TODO: this has gotta be wrong. Where's the actual spell data for this?
-          mastery_amount *= 1.0 + (p()->talents.highlords_wrath->effectN( 3 ).percent() / p()->talents.highlords_wrath->effectN( 2 ).base_value());
-        }
-        mult /= 1.0 + mastery_amount;
-      }
-
-      p()->accumulate_es_damage( s, mult );
+      // Damage is accumulated as is now
+      p()->accumulate_es_damage( s, 1.0 );
     }
   }
 };

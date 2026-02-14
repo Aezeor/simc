@@ -192,8 +192,6 @@ struct execution_sentence_t : public paladin_melee_attack_t
 
     void impact( action_state_t* s ) override
     {
-      paladin_melee_attack_t::impact( s );
-
       if ( result_is_hit( s->result ) )
       {
         auto tgt = td( s->target );
@@ -201,6 +199,7 @@ struct execution_sentence_t : public paladin_melee_attack_t
           tgt->debuff.execution_sentence->trigger();
         tgt->debuff.execution_sentence_gather->trigger();
       }
+      paladin_melee_attack_t::impact( s );
     }
 
     void init() override
@@ -234,9 +233,8 @@ struct execution_sentence_t : public paladin_melee_attack_t
 
   void execute() override
   {
+    p()->es_accum = 0.0;
     paladin_melee_attack_t::execute();
-
-    p()->buffs.execution_sentence->trigger();
 
     if ( p()->talents.judge_jury_and_executioner->ok() )
     {
@@ -1002,7 +1000,6 @@ struct highlords_judgment_t : public paladin_spell_t
   highlords_judgment_t( paladin_t* p ) : paladin_spell_t( "highlords_judgment", p, p->find_spell( 383921 ) )
   {
     background = true;
-    skip_es_accum = true;
   }
 };
 
@@ -1017,25 +1014,22 @@ struct sun_sear_t : public paladin_spell_t
 
 void paladin_t::accumulate_es_damage( action_state_t* s, double mult )
 {
-  if ( !buffs.execution_sentence->up() )
-    return;
-
-  double es_accum = buffs.execution_sentence->check_value();
-
   double amount_accumulated = s->result_total * mult;
 
   sim->print_debug( "{}'s Execution Sentence accumulates {} additional damage: {} -> {}", name_str,
     amount_accumulated, es_accum, es_accum + amount_accumulated );
 
   es_accum += amount_accumulated;
-
-  buffs.execution_sentence->current_value = es_accum;
 }
 
 void paladin_t::trigger_es_explosion( player_t* target )
 {
   double ta = 0.0;
-  double accumulated = buffs.execution_sentence->check_value() * talents.execution_sentence->effectN( 2 ).percent();
+  double perc        = talents.execution_sentence->effectN( 2 ).percent();
+  // 14.02.26 Fluttershy - ES still only accumulates 10% of the damage
+  if ( bugs )
+    perc = .1;
+  double accumulated = es_accum * perc;
 
   sim->print_debug( "{}'s execution_sentence has accumulated {} total additional damage.", target->name(), accumulated );
   ta += accumulated;
@@ -1129,9 +1123,6 @@ void paladin_t::create_buffs_retribution()
 
   buffs.art_of_war = make_buff( this, "art_of_war", find_spell( 406086 ) );
   buffs.righteous_cause = make_buff( this, "righteous_cause", find_spell( 402916 ) );
-
-  buffs.execution_sentence = make_buff( this, "execution_sentence", find_spell( 1234189 ) )
-    ->set_default_value( 0.0 );
 }
 
 void paladin_t::init_rng_retribution()
