@@ -602,7 +602,7 @@ public:
                  ( distance < 0 && distance >= -m_max_draw );
         } ) == pos.end();
 
-        if ( ++shuffle_attempts > 10 )
+        if ( ++shuffle_attempts > 100 )
         {
           range::fill( entries, FAIL );
           position = entries.begin();
