@@ -2041,7 +2041,6 @@ public:
   void action_init_finished( action_t& action ) override;
   void analyze( sim_t& sim ) override;
   void datacollection_end() override;
-
   const spell_data_t* conditional_spell_lookup( bool fn, int id );
 
   // APL releated methods
@@ -12803,6 +12802,11 @@ std::vector<std::string> shaman_t::action_names_from_spell_id( unsigned int spel
 parsed_assisted_combat_rule_t shaman_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                                     const assisted_combat_step_data_t& step ) const
 {
+  // 2026-02-15 Buff (Voltaic Blaze) no longer exists but it still referenced in the client data
+  if ( rule.condition_value_1 == 470058 )
+  {
+    return { "0" };
+  }
 
   if ( step.spell_id == 318038 && rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 382027 )
     return { "talent.flametongue_weapon" };
