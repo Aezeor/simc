@@ -1022,7 +1022,7 @@ void paladin_t::accumulate_es_damage( action_state_t* s, double mult )
 
   double amount_accumulated = s->result_total * mult;
 
-  sim->print_log( "{}'s Execution Sentence accumulates {} additional damage: {} -> {}", name_str,
+  sim->print_debug( "{}'s Execution Sentence accumulates {} additional damage: {} -> {}", name_str,
     amount_accumulated, es_accum, es_accum + amount_accumulated );
 
   es_accum += amount_accumulated;
@@ -1039,7 +1039,7 @@ void paladin_t::trigger_es_explosion( player_t* target )
     perc = .1;
   double accumulated = buffs.execution_sentence->check_value() * perc;
 
-  sim->print_log( "{}'s execution_sentence has accumulated {} total additional damage.", target->name(), accumulated );
+  sim->print_debug( "{}'s execution_sentence has accumulated {} total additional damage.", target->name(), accumulated );
   ta += accumulated;
 
   es_explosion_t* explosion = static_cast<es_explosion_t*>( active.es_explosion );
