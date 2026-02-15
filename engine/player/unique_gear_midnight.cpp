@@ -736,7 +736,7 @@ void signet_of_azerothian_blessings( special_effect_t& effect )
         count++;
 
     values.at( stat ) =
-        base_value * ( 1.0 + count * effect.driver()->effectN( 2 ).base_value() ) * bandolier_mul( effect.player );
+        base_value * ( 1.0 + count * effect.driver()->effectN( 2 ).percent() ) * bandolier_mul( effect.player );
 
     buff->add_stat( stat, values.at( stat ) );
   }
