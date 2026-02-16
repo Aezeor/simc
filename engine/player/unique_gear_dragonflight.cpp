@@ -4980,6 +4980,7 @@ void hellsteel_plating( special_effect_t& e )
   damage->split_aoe_damage = false;
   damage->aoe              = 5;
   auto buff                = create_buff<buff_t>( e.player, e.driver() )
+                  ->set_reverse( true )
                   ->set_stack_change_callback( [ damage ]( buff_t* b, int old, int new_ ) {
                     // buff decrements so subtract
                     auto diff = old - new_;
@@ -4988,8 +4989,6 @@ void hellsteel_plating( special_effect_t& e )
                       damage->execute_on_target( b->player->target );
                     }
                   } );
-  buff->set_initial_stack( buff->max_stack() );
-  buff->set_reverse( true );
 
   e.custom_buff = buff;
 }

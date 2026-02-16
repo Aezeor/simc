@@ -3657,8 +3657,8 @@ void paladin_t::create_buffs()
             } );
   else
   {
-    buffs.divine_resonance = make_buff( this, "divine_resonance", find_spell( 1266308 ) );
-    buffs.divine_resonance->set_initial_stack( buffs.divine_resonance->max_stack() );
+    buffs.divine_resonance = make_buff( this, "divine_resonance", find_spell( 1266308 ) )
+                              ->set_initial_stack_to_max_stack();
   }
 
   buffs.hammer_of_wrath = make_buff( this, "hammer_of_wrath", find_spell( 1277026 ) );
@@ -3716,9 +3716,9 @@ void paladin_t::create_buffs()
 
   buffs.templar.hammer_of_light_ready =
       make_buff( this, "hammer_of_light_ready", find_spell( 427441 ) )
+          ->set_initial_stack_to_max_stack()
           ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) { trigger_lights_deliverance();
         });
-  buffs.templar.hammer_of_light_ready->set_initial_stack( buffs.templar.hammer_of_light_ready->max_stack() );
 
   buffs.templar.hammer_of_light_free =
       make_buff( this, "hammer_of_light_free", find_spell( 433732 ) )->set_default_value_from_effect(1);

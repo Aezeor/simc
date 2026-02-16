@@ -9664,17 +9664,17 @@ void evoker_t::create_buffs()
     buff.imminent_destruction->set_initial_stack( as<int>( talent.imminent_destruction->effectN( 1 ).base_value() ) );
 
   buff.iridescence_blue = MBF( talent.iridescence.ok(), this, "iridescence_blue", find_spell( 386399 ) )
-                              ->set_default_value_from_effect( 1 );
-  buff.iridescence_blue->set_initial_stack( buff.iridescence_blue->max_stack() );
+                              ->set_default_value_from_effect( 1 )
+                              ->set_initial_stack_to_max_stack();
 
   buff.iridescence_blue_disintegrate =
       MBF( talent.iridescence.ok(), this, "iridescence_blue_disintegrate", find_spell( 399370 ) )
           ->set_quiet( true )
           ->set_default_value( buff.iridescence_blue->default_value );
 
-  buff.iridescence_red =
-      MBF( talent.iridescence.ok(), this, "iridescence_red", find_spell( 386353 ) )->set_default_value_from_effect( 1 );
-  buff.iridescence_red->set_initial_stack( buff.iridescence_red->max_stack() );
+  buff.iridescence_red = MBF( talent.iridescence.ok(), this, "iridescence_red", find_spell( 386353 ) )
+                           ->set_default_value_from_effect( 1 )
+                           ->set_initial_stack_to_max_stack();
 
   buff.limitless_potential =
       MBF( sets->has_set_bonus( EVOKER_DEVASTATION, DF1, B2 ), this, "limitless_potential", find_spell( 394402 ) )

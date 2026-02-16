@@ -8105,7 +8105,7 @@ void warrior_t::create_buffs()
   buff.thunder_blast          = make_buff( this, "thunder_blast", find_spell( 435615 ) );
   buff.steadfast_as_the_peaks = new buffs::steadfast_as_the_peaks_buff_t( *this, "steadfast_as_the_peaks", find_spell( 437152 ) );
   buff.burst_of_power         = make_buff( this, "burst_of_power", find_spell( 437121 ) )
-                                  ->set_initial_stack( find_spell( 437121 )->max_stacks() )
+                                  ->set_initial_stack_to_max_stack()
                                   ->set_cooldown( talents.mountain_thane.burst_of_power -> internal_cooldown() )
                                   ->set_chance( talents.mountain_thane.burst_of_power->proc_chance() );
 
