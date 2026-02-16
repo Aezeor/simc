@@ -950,8 +950,8 @@ void void_( special_effect_t& effect )
 // 1245050 Trinket Driver
 // 1252457 RPPM
 // 1252486 Haste Buff - Elemental, Aberration, Demon
-// 1252487 Crit Buff - Mechanical
-// 1252488 Mastery Buff - Humanoid, Beast, Dragonkin
+// 1252487 Crit Buff - Beast, Mechanical
+// 1252488 Mastery Buff - Humanoid, Dragonkin
 // 1252489 Versatility Buff - Undead, Giant, Not Specified
 // TODO: What happens with both the trinket, and embellishment active?
 void hunt( special_effect_t& effect )
