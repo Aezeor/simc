@@ -404,61 +404,30 @@ void strength_of_halazzi( special_effect_t& effect )
 
 namespace embellishments
 {
-// 1229511 driver
+// 1283697 Driver
+// 1229511 rppm
 // 1229746 buff
 // 1230205 area trigger
 void arcanoweave_lining( special_effect_t& effect )
 {
-  effect.player->sim->error( error_level_e::PLACEHOLDER, "midnight.arcanoweave_lining_uptime set to 0.9" );
-
-  auto buff_amount = effect.driver()->effectN( 1 ).average( effect );
-
-  struct arcanoweave_insight_buff_t : public stat_buff_t
-  {
-    rng::truncated_gauss_t interval;
-
-    arcanoweave_insight_buff_t( const special_effect_t& e )
-      : stat_buff_t( e.player, "arcanoweave_insight", e.player->find_spell( 1229746 ) ),
-        interval( e.player->midnight_opts.arcanoweave_lining_update_interval,
-                  e.player->midnight_opts.arcanoweave_lining_update_stddev )
-    {
-      set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-    }
-  };
-
-  auto uptime_pct = effect.player->midnight_opts.arcanoweave_lining_uptime;
-  if ( uptime_pct <= 0.0 )
-    return;
+  // EffectN 2 percent goes to the player
+  // EffectN 3 percent goes to the ally
+  auto buff_amount = effect.driver()->effectN( 1 ).average( effect ) * effect.driver()->effectN( 2 ).percent();
 
   if ( auto buff = buff_t::find( effect.player, "arcanoweave_insight" ) )
   {
     // add stat from 2nd copy of embellishment
-    debug_cast<arcanoweave_insight_buff_t*>( buff )->add_stat_from_effect_type( A_MOD_STAT, buff_amount );
+    debug_cast<stat_buff_t*>( buff )->add_stat_from_effect_type( A_MOD_STAT, buff_amount );
     return;
   }
 
-  auto insight = make_buff<arcanoweave_insight_buff_t>( effect );
-  insight->add_stat_from_effect_type( A_MOD_STAT, buff_amount );
+  auto buff = create_buff<stat_buff_t>( effect.player, "arcanoweave_insight", effect.player->find_spell( 1229746 ) )
+                  ->add_stat_from_effect_type( A_MOD_STAT, buff_amount );
 
-  if ( uptime_pct >= 1.0 )
-  {
-    effect.player->register_precombat_begin( [ insight ]( player_t* ) { insight->trigger(); } );
-  }
-  else
-  {
-    effect.player->register_precombat_begin( [ insight, uptime_pct ]( player_t* p ) {
-      insight->trigger();
+  effect.custom_buff = buff;
+  effect.spell_id    = 1229511;
 
-      make_repeating_event(
-          p->sim, [ p, insight ] { return p->rng().gauss( insight->interval ); },  // gauss rng interval
-          [ insight, p, uptime_pct ] {                                             // gauss rng uptime check
-            if ( p->rng().roll( uptime_pct ) )
-              insight->trigger();
-            else
-              insight->expire();
-          } );
-    } );
-  }
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // 1241711 driver
