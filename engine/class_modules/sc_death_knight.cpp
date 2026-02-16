@@ -2588,25 +2588,30 @@ static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
 
 struct death_knight_pet_t : public pet_t
 {
-  bool use_auto_attack, precombat_spawn, affected_by_commander_of_the_dead, guardian;
+  struct
+  {
+    bool commander_of_the_dead = false;
+    bool grave_mastery = false;
+    bool mastery_dreadblade_crit = false;
+  } affected_by;
+
+  bool use_auto_attack, precombat_spawn, guardian;
   timespan_t precombat_spawn_adjust;
   bool is_magus;
   double commander_value;
-  bool affected_by_grave_mastery;
   buff_t* grave_mastery;
   buff_t* mastery_dreadblade_crit;
 
   death_knight_pet_t( death_knight_t* player, std::string_view name, pet_e type = PET_DEATH_KNIGHT, bool guardian = true, bool auto_attack = true,
                       bool dynamic = true )
     : pet_t( player->sim, player, name, type, guardian, dynamic ),
+      affected_by(),
       use_auto_attack( auto_attack ),
       precombat_spawn( false ),
-      affected_by_commander_of_the_dead( false ),
       guardian( guardian ),
       precombat_spawn_adjust( 0_s ),
       is_magus( false ),
       commander_value( 0 ),
-      affected_by_grave_mastery( false ),
       grave_mastery( nullptr ),
       mastery_dreadblade_crit( nullptr )
   {
@@ -2619,6 +2624,8 @@ struct death_knight_pet_t : public pet_t
     {
       commander_value = 1.0 + player->pet_spell.commander_of_the_dead->effectN( 1 ).percent();
     }
+
+    affected_by.mastery_dreadblade_crit = player->mastery.dreadblade_pet_crit->ok();
   }
 
   target_specific_t<death_knight_pet_td_t> target_data;
@@ -2776,10 +2783,10 @@ struct death_knight_pet_t : public pet_t
 
     dk()->dk_active_pets.push_back( this );
 
-    if ( dk()->mastery.dreadblade->ok() )
+    if ( dk()->mastery.dreadblade->ok() && affected_by.mastery_dreadblade_crit )
       mastery_dreadblade_crit->trigger();
 
-    if ( dk()->talent.unholy.grave_mastery.ok() && affected_by_grave_mastery )
+    if ( dk()->talent.unholy.grave_mastery.ok() && affected_by.grave_mastery )
       grave_mastery->trigger();
   }
 
@@ -2815,7 +2822,7 @@ struct death_knight_pet_t : public pet_t
   {
     double m = pet_t::composite_player_multiplier( s );
 
-    if ( dk()->specialization() == DEATH_KNIGHT_UNHOLY && affected_by_commander_of_the_dead &&
+    if ( dk()->specialization() == DEATH_KNIGHT_UNHOLY && affected_by.commander_of_the_dead &&
          dk()->buffs.commander_of_the_dead->check() )
     {
       m *= commander_value;
@@ -3331,7 +3338,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
   {
     gnaw_cd                   = get_cooldown( "gnaw" );
     gnaw_cd->duration         = owner->pet_spell.gnaw->cooldown();
-    affected_by_grave_mastery = true;
+    affected_by.grave_mastery = true;
     owner_coeff.ap_from_ap    = 0.474;
     if ( owner->spec.raise_dead->ok() )
     {
@@ -3592,8 +3599,8 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     : base_ghoul_pet_t( owner, name, PET_LESSER_GHOUL, true ), ruptured_viscera( nullptr ), putrefied( false )
   {
     resource_regeneration             = regen_type::DISABLED;
-    affected_by_commander_of_the_dead = true;
-    affected_by_grave_mastery         = true;
+    affected_by.commander_of_the_dead = true;
+    affected_by.grave_mastery         = true;
   }
 
   resource_e primary_resource() const override
@@ -3638,6 +3645,10 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
 
   void dismiss( bool expired = false ) override
   {
+    // These expire before ruptured viscera triggers
+    mastery_dreadblade_crit->expire();
+    grave_mastery->expire();
+
     if ( dk()->talent.unholy.necromancers_cunning.ok() && expired && !sim->event_mgr.canceled )
       ruptured_viscera->execute();
 
@@ -3752,8 +3763,8 @@ struct gargoyle_pet_t : public death_knight_pet_t
     : death_knight_pet_t( owner, "gargoyle", PET_GARGOYOLE, true, false ), gargoyle_strike( nullptr ), dark_empowerment( nullptr )
   {
     resource_regeneration             = regen_type::DISABLED;
-    affected_by_commander_of_the_dead = true;
-    affected_by_grave_mastery         = true;
+    affected_by.commander_of_the_dead = true;
+    affected_by.grave_mastery         = true;
   }
 
   struct gargoyle_strike_t : public pet_spell_t<gargoyle_pet_t>
@@ -3878,8 +3889,8 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     main_hand_weapon.type       = WEAPON_BEAST_RANGED;
     main_hand_weapon.swing_time = 3_s;
 
-    affected_by_grave_mastery         = true;
-    affected_by_commander_of_the_dead = true;
+    affected_by.grave_mastery         = true;
+    affected_by.commander_of_the_dead = true;
 
     // Using a background repeating action as a replacement for a foreground action. Change Ready Type to trigger so we
     // can wake up the pet when it needs to re-execute this action.
@@ -4358,11 +4369,13 @@ struct magus_pet_t : public death_knight_pet_t
   magus_pet_t( death_knight_t* owner, std::string_view name = "dt_magus" )
     : death_knight_pet_t( owner, name, PET_MAGUS_OF_THE_DEAD, true, false )
   {
-    resource_regeneration             = regen_type::DISABLED;
-    affected_by_commander_of_the_dead = true;
-    affected_by_grave_mastery         = true;
-    is_magus                          = true;
-    npc_id                            = 163366;
+    resource_regeneration               = regen_type::DISABLED;
+    affected_by.commander_of_the_dead   = true;
+    affected_by.grave_mastery           = true;
+    if ( dk()->bugs )
+      affected_by.mastery_dreadblade_crit = false;
+    is_magus                            = true;
+    npc_id                              = 163366;
   }
 
   resource_e primary_resource() const override
@@ -4373,7 +4386,7 @@ struct magus_pet_t : public death_knight_pet_t
   void init_base_stats() override
   {
     death_knight_pet_t::init_base_stats();
-    owner_coeff.ap_from_ap = 0.56;
+    owner_coeff.ap_from_ap = 0.5594;
   }
 
   void arise() override
@@ -4473,7 +4486,7 @@ struct blood_beast_pet_t : public death_knight_pet_t
                                       ? dk()->talent.sanlayn.the_blood_is_life->effectN( 1 ).percent()
                                       : dk()->talent.sanlayn.the_blood_is_life->effectN( 2 ).percent();
 
-    affected_by_grave_mastery = true;
+    affected_by.grave_mastery = true;
   }
 
   void demise() override
@@ -4585,7 +4598,7 @@ struct horseman_pet_t : public death_knight_pet_t
     owner_coeff.ap_from_ap    = 0.70125;
     resource_regeneration     = regen_type::DISABLED;
     auto_attack_multiplier    = 0.75;
-    affected_by_grave_mastery = true;
+    affected_by.grave_mastery = true;
   }
 
   void arise() override
@@ -5198,9 +5211,9 @@ struct abomination_pet_t : public death_knight_pet_t
     npc_id                            = owner->spell.summon_abomination->effectN( 1 ).misc_value1();
     main_hand_weapon.type             = WEAPON_BEAST;
     main_hand_weapon.swing_time       = 3.6_s;
-    affected_by_commander_of_the_dead = true;
-    affected_by_grave_mastery         = true;
-    owner_coeff.ap_from_ap            = 2.4;
+    affected_by.commander_of_the_dead = true;
+    affected_by.grave_mastery         = true;
+    owner_coeff.ap_from_ap            = 2.34;
     resource_regeneration             = regen_type::DISABLED;
 
     register_on_combat_state_callback( [ this ]( player_t* /* p */, bool in_combat ) {
@@ -5218,10 +5231,6 @@ struct abomination_pet_t : public death_knight_pet_t
 
   void arise() override
   {
-    death_knight_pet_t::arise();
-    // Assume precombat abominations have to walk far further than normal
-    double dist = precombat_spawn ? 15 : rng().range( 0, dk()->spell.summon_abomination->effectN( 1 ).radius() );
-    trigger_pet_movement( dist );
     // Period information hasnt been found in data, hard coding for now.
     make_event<disease_cloud_event_t>( *sim, this, 2_s );
     for ( auto& target : sim->target_non_sleeping_list )
@@ -5230,6 +5239,10 @@ struct abomination_pet_t : public death_knight_pet_t
       if ( !td->debuff.disease_cloud->check() )
         td->debuff.disease_cloud->trigger();
     }
+    death_knight_pet_t::arise();
+    // Assume precombat abominations have to walk far further than normal
+    double dist = precombat_spawn ? 15 : rng().range( 0, dk()->spell.summon_abomination->effectN( 1 ).radius() );
+    trigger_pet_movement( dist );
   }
 
   void demise() override
