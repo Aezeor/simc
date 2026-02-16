@@ -683,7 +683,7 @@ void thalassian_phoenix_torque( special_effect_t& effect )
 // 1252202 Buff
 void signet_of_azerothian_blessings( special_effect_t& effect )
 {
-  auto base_value = effect.driver()->effectN( 1 ).average( effect ) / 4;
+  auto base_value = effect.driver()->effectN( 1 ).average( effect );
   std::unordered_map<stat_e, double> values    = { { STAT_HASTE_RATING, 1.0 },
                                                    { STAT_CRIT_RATING, 1.0 },
                                                    { STAT_MASTERY_RATING, 1.0 },
