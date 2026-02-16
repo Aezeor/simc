@@ -1065,7 +1065,6 @@ void hunt( special_effect_t& effect )
     {
       switch ( r )
       {
-        case RACE_BEAST:
         case RACE_HUMANOID:
         case RACE_DRAGONKIN:
           mastery_buff->trigger();
@@ -1075,6 +1074,7 @@ void hunt( special_effect_t& effect )
         case RACE_DEMON:
           haste_buff->trigger();
           break;
+        case RACE_BEAST:
         case RACE_MECHANICAL:
           crit_buff->trigger();
           break;
