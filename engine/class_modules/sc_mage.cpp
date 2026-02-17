@@ -7033,8 +7033,7 @@ int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consump
     action->base_multiplier = old_mult;
   }
 
-  // TODO: HoF doesn't seem to need any shattered stacks to trigger
-  if ( shatter_stacks > 0 || bugs )
+  if ( shatter_stacks > 0 )
   {
     action_t* hof = this->action.hand_of_frost;
     double hof_chance = talents.hand_of_frost_1->effectN( 1 ).percent();
