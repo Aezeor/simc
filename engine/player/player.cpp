@@ -1312,8 +1312,8 @@ player_t::base_initial_current_t::base_initial_current_t() :
   healing_received_multiplier( 1.0 ),
   armor_penetration( 1.0 ),
   movement_speed( 0 ),
-  stacking_movement_speed_modifier( 1.0 ),
-  non_stacking_movement_speed_modifier( 1.0 ),
+  stacking_movement_speed_modifier( 0.0 ),
+  non_stacking_movement_speed_modifier( 0.0 ),
   position( POSITION_BACK )
 {
   range::fill( attribute_multiplier, 1.0 );
