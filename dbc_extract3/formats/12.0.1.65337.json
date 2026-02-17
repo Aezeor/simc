@@ -791,6 +791,12 @@
       { "data_type": "i", "field": "id_item" }
     ]
   },
+  "ItemCreationContext": {
+    "fields": [
+      { "data_type": "i", "field": "id" },
+      { "data_type": "B", "field": "item_context" }
+    ]
+  },
   "ItemDamageOneHand": {
     "fields": [
       { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } },
