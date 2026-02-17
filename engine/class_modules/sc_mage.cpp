@@ -2723,8 +2723,7 @@ struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arc
     if ( p()->talents.splintering_orbs.ok() )
     {
       int count = as<int>( p()->talents.splintering_orbs->effectN( 4 ).base_value() );
-      // TODO: Conjures up to 4 splinters despite spelldata claiming 2
-      int max_count = p()->bugs ? 2 * count : as<int>( p()->talents.splintering_orbs->effectN( 1 ).base_value() );
+      int max_count = as<int>( p()->talents.splintering_orbs->effectN( 1 ).base_value() );
       assert( count > 0 );
       if ( s->chain_target < max_count / count )
         p()->trigger_splinter( s->target, count );
@@ -7197,10 +7196,8 @@ void mage_t::trigger_spellfire_sphere( specialization_e m_spec, bool background 
   
   // https://www.desmos.com/calculator/7akzzy14fg;
   // the expression approximates the random proc chance needed to match the final expected rate with a BLP cap.
-  // Bug: Fire's total rate is 12%, not the tooltip's 20% -- Sphere's effectN1 in-game is (probably?) unmodified by 137019's effectN7.
+  // TODO: Does Fire use the same BLP formula?
   double proc_chance = talents.spellfire_spheres->effectN( 1 ).percent();
-  if ( bugs )
-    proc_chance -= spec.fire_mage->effectN( 7 ).percent();
   proc_chance = -0.202381 * proc_chance * proc_chance + 0.550833 * proc_chance - 0.0481071;
 
   state.sphere_blp_count++;
