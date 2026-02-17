@@ -14136,7 +14136,7 @@ void player_t::check_resource_change_for_callback( resource_e resource, double p
     if ( callback.is_consumed )
       continue;
 
-      if ( callback.resource != resource )
+    if ( callback.resource != resource )
       continue;
 
     // Evaluate if callback condition is met.
