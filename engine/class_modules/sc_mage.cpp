@@ -4423,14 +4423,10 @@ struct ice_lance_t final : public frost_mage_spell_t
       if ( s->chain_target == 0 && p()->talents.force_of_will.ok() )
         p()->trigger_splinter( s->target, stacks / as<int>( p()->talents.force_of_will->effectN( 3 ).base_value() ) );
 
-      if ( stacks >= 1 || p()->bugs )
-      {
-        // TODO: This now happens without any shattered stacks (giving the base 0.5 sec cdr)
-        timespan_t whiteout = p()->talents.white_out->effectN( 1 ).time_value();
-        whiteout += stacks * p()->talents.white_out->effectN( 2 ).time_value();
-        p()->cooldowns.frozen_orb->adjust( -whiteout );
-        p()->cooldowns.ray_of_frost->adjust( -stacks * p()->talents.glaciate->effectN( 2 ).time_value() );
-      }
+      timespan_t whiteout = p()->talents.white_out->effectN( 1 ).time_value();
+      whiteout += stacks * p()->talents.white_out->effectN( 2 ).time_value();
+      p()->cooldowns.frozen_orb->adjust( -whiteout );
+      p()->cooldowns.ray_of_frost->adjust( -stacks * p()->talents.glaciate->effectN( 2 ).time_value() );
     }
   }
 
