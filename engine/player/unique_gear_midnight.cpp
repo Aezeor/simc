@@ -300,7 +300,7 @@ void potion_of_zealotry( special_effect_t& effect )
     }
   };
 
-  auto buff = create_buff<buff_t>( effect.player, "potion_of_zealotry", effect.driver() );
+  auto buff = create_buff<buff_t>( effect.player, "potion_of_zealotry", effect.driver() )->set_rppm( RPPM_DISABLE );
 
   auto burst_of_zealotry            = new special_effect_t( effect.player );
   burst_of_zealotry->name_str       = "burst_of_zealotry_proc";
