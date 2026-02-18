@@ -5941,6 +5941,14 @@ struct muzzle_t : public hunter_melee_attack_t
     is_interrupt = true;
   }
 
+  void impact( action_state_t* s ) override
+  {
+    if( s->target->debuffs.casting->check() && p()->talents.disruptive_rounds.ok() )
+      p()->resource_gain( RESOURCE_FOCUS, p()->talents.disruptive_rounds->effectN( 1 ).base_value(), p()->gains.disruptive_rounds,  this );
+
+    hunter_melee_attack_t::impact( s );
+  }
+
   bool target_ready( player_t* candidate_target ) override
   {
     if ( !candidate_target->debuffs.casting || !candidate_target->debuffs.casting->check() ) return false;
