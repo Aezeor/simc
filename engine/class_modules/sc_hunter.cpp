@@ -565,7 +565,7 @@ public:
     spell_data_ptr_t hunters_avoidance; //Utility talent, won't implement
 
     spell_data_ptr_t wilderness_medicine; //Utility talent, won't implement
-    spell_data_ptr_t combat_experience; //TODO fix runtime error
+    spell_data_ptr_t combat_experience;
     spell_data_ptr_t improved_aspect_of_the_cheetah; //Utility talent, won't implement
     spell_data_ptr_t concussive_shot; //TODO Not implemented - probably not needed
 
@@ -727,7 +727,7 @@ public:
     spell_data_ptr_t obsidian_arrowhead;
     spell_data_ptr_t on_target;
     spell_data_ptr_t trueshot;
-    spell_data_ptr_t kill_shot; //TODO Moved to MM exclusive 
+    spell_data_ptr_t kill_shot;
 
     spell_data_ptr_t target_acquisition;
     spell_data_ptr_t critical_precision;
