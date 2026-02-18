@@ -2264,6 +2264,16 @@ struct natures_ally_pet_t final : public hunter_main_pet_base_t
     resource_regeneration = regen_type::DISABLED;
   }
 
+  void create_buffs() override
+  {
+    hunter_main_pet_base_t::create_buffs();
+
+    // Nature's Ally pets have a unique Bestial Wrath aura
+    buffs.bestial_wrath =
+      make_buff( this, "bestial_wrath_apex", find_spell( 1285912 ) )
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE );
+  }
+
   void summon( timespan_t duration = 0_ms ) override
   {
     hunter_main_pet_base_t::summon( duration );
@@ -6645,11 +6655,11 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion, p()->pets.natures_ally_pet.active_pet() ) )
     {
+      trigger_buff( pet->buffs.bestial_wrath, precast_time );
+
       // Assume the pet is out of range / not engaged when precasting.
       if ( !is_precombat )
         pet -> actions.bestial_wrath -> execute_on_target( target );
-
-      trigger_buff( pet -> buffs.bestial_wrath, precast_time );
     }
 
     if ( p()->talents.wildspeaker.ok() )
