@@ -1603,7 +1603,8 @@ void sealed_chaos_urn( special_effect_t& effect )
                     else
                     {
                       effect.player->buffs.stunned->expire();
-                      effect.player->schedule_ready();
+                      if( !effect.player->readying )
+                        effect.player->schedule_ready();
                     }
                   } );
 
