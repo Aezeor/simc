@@ -2859,7 +2859,7 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
       {
         clearcasting_gain = p->get_gain( "Clearcasting" );
 
-        parse_effects( p->buff.clearcasting_cat, PARSE_CALLBACK_POST_SNAPSHOT, [ this, p = p ]( action_state_t* s ) {
+        parse_effects( p->buff.clearcasting_cat, PARSE_CALLBACK_POST_SNAPSHOT, [ this, p = p ]( action_state_t* ) {
           clearcasting_gain->add( RESOURCE_ENERGY, base_cost() * ( 1.0 + p->buff.incarnation_cat->check_value() ) );
         } );
       }
@@ -8151,7 +8151,7 @@ struct starfall_t final : public ap_spender_t
 
   struct meteorites_t final : public druid_spell_t
   {
-    meteorites_t( druid_t* p, std::string_view n, flag_e f ) : druid_spell_t( n, p, p->find_spell( 1240913 ) )
+    meteorites_t( druid_t* p, std::string_view n, flag_e f ) : druid_spell_t( n, p, p->find_spell( 1240913 ), f )
     {
       name_str_reporting = "meteorites";
     }
@@ -11029,7 +11029,7 @@ void druid_t::create_buffs()
       ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST_1 )
       ->set_stack_change_callback(
         [ this, ag_dur = timespan_t::from_seconds( find_spell( 421440 )->effectN( 1 ).base_value() ) ]
-        ( buff_t*, int old_, int new_ ) {
+        ( buff_t*, int, int new_ ) {
           if ( !new_ )
           {
             gain.overflowing_power->overflow[ RESOURCE_COMBO_POINT ] += buff.overflowing_power->check();
@@ -13769,7 +13769,7 @@ const spell_data_t* druid_t::apply_override( const spell_data_t* base_spell, con
 
   for ( const auto& eff : passive_spell->effects() )
     if ( eff.type() == E_APPLY_AURA && eff.subtype() == A_OVERRIDE_ACTION_SPELL )
-      if ( eff.misc_value1() == base_spell->id() || base_spell->affected_by( eff ) )
+      if ( eff.misc_value1() == as<int>( base_spell->id() ) || base_spell->affected_by( eff ) )
         return find_spell( as<unsigned>( eff.base_value() ) );
 
   return spell_data_t::not_found();
