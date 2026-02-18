@@ -526,6 +526,7 @@ public:
     gain_t* invigorating_pulse;
     gain_t* serpentine_strikes;
     gain_t* lethal_barbs;
+    gain_t* disruptive_rounds;
   } gains;
 
   struct procs_t
@@ -567,16 +568,16 @@ public:
     spell_data_ptr_t wilderness_medicine; //Utility talent, won't implement
     spell_data_ptr_t combat_experience;
     spell_data_ptr_t improved_aspect_of_the_cheetah; //Utility talent, won't implement
-    spell_data_ptr_t concussive_shot; //TODO Not implemented - probably not needed
+    spell_data_ptr_t concussive_shot; //Not implemented - probably not needed
 
     spell_data_ptr_t precision_strikes;
     spell_data_ptr_t counter_shot;
     spell_data_ptr_t muzzle;
     spell_data_ptr_t serrated_tips;
 
-    spell_data_ptr_t tranquilizing_shot; //TODO Not implemented - probably not needed
+    spell_data_ptr_t tranquilizing_shot; //Not implemented - probably not needed
     spell_data_ptr_t pathfinding; //Utility talent, won't implement
-    spell_data_ptr_t disruptive_rounds; //TODO Not implemented
+    spell_data_ptr_t disruptive_rounds;
     spell_data_ptr_t improved_feign_death; //Utility talent, won't implement
     spell_data_ptr_t misdirection; //Utility talent, won't implement
 
@@ -1924,8 +1925,6 @@ struct dark_hound_t final : public dire_critter_t
 
 struct dire_beast_t final : public dire_critter_t
 {
-  const spell_data_t* energize = find_spell( 281036 );
-
   dire_beast_t( hunter_t* owner, util::string_view n = "dire_beast" ) : dire_critter_t( owner, n )
   {
     // 11-10-22 Dire Beast - Damage increased by 400%. (15% -> 60%)
@@ -4248,6 +4247,14 @@ struct counter_shot_t : public hunter_ranged_attack_t
 
     may_miss = may_block = may_dodge = may_parry = false;
     is_interrupt = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    if( s->target->debuffs.casting->check() && p()->talents.disruptive_rounds.ok() )
+      p()->resource_gain( RESOURCE_FOCUS, p()->talents.disruptive_rounds->effectN( 1 ).base_value(), p()->gains.disruptive_rounds,  this );
+
+    hunter_ranged_attack_t::impact( s );
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -7429,8 +7436,6 @@ void hunter_t::init_spells()
 
   talents.unnatural_causes                  = find_talent_spell( talent_tree::CLASS, "Unnatural Causes" );
   talents.unnatural_causes_debuff           = talents.unnatural_causes.ok() ? find_spell( 459529 ) : spell_data_t::not_found();
-
-  //TODO Remove 
 
   talents.blackrock_munitions               = find_talent_spell( talent_tree::CLASS, "Blackrock Munitions" );
   talents.born_to_be_wild                   = find_talent_spell( talent_tree::CLASS, "Born To Be Wild" );
