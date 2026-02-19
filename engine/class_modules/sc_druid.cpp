@@ -10436,7 +10436,7 @@ void druid_t::init_spells()
   spec.cat_form_passive_2       = find_spell( 106840 );
   spec.cat_form_speed           = find_spell( 113636 );
   spec.improved_prowl           = find_specialization_spell( "Improved Prowl" );
-  spec.moonfire                 = find_class_spell( "Moonfire" );
+  spec.moonfire                 = talent.red_moon.ok() ? find_spell( 8921 ) : find_class_spell( "Moonfire" );
   spec.moonfire_dmg             = find_spell( 164812 );
   spec.sunfire_dmg              = check( talent.sunfire, 164815 );
   spec.thrash                   = find_class_spell( "Thrash" );
@@ -11572,7 +11572,7 @@ void druid_t::create_actions()
   if ( talent.galactic_guardian.ok() || sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
   {
     // hardcode moonfire ID since red moon replaces normal moonfire
-    auto gg = get_secondary_action<moonfire_t>( "galactic_guardian", find_spell( 8921 ), flag_e::GALACTIC );
+    auto gg = get_secondary_action<moonfire_t>( "galactic_guardian", flag_e::GALACTIC );
     gg->s_data_reporting =
       talent.galactic_guardian.ok() ? talent.galactic_guardian.spell() : sets->set( DRUID_GUARDIAN, MID1, B4 );
     gg->proc = true;
