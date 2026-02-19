@@ -515,6 +515,44 @@ struct grimoire_fel_ravager_t : public warlock_pet_t
   double composite_player_multiplier( school_e ) const override;
   double composite_player_critical_damage_multiplier( const action_state_t*, school_e ) const override;
 };
+
+struct dominion_of_argus_pet_t : public warlock_pet_t
+{
+  action_t* main_action;
+
+  dominion_of_argus_pet_t( warlock_t*, std::string_view n, pet_e type );
+  void set_main_action( action_t* a );
+  void reschedule_main_action();
+  resource_e primary_resource() const override;
+  void schedule_ready( timespan_t = 0_ms, bool = false ) override;
+  void finish_moving() override;
+  void arise() override;
+};
+
+struct lady_sacrolash_t : public dominion_of_argus_pet_t
+{
+  lady_sacrolash_t( warlock_t* );
+  void create_actions() override;
+};
+
+struct grand_warlock_alythess_t : public dominion_of_argus_pet_t
+{
+  grand_warlock_alythess_t( warlock_t* );
+  void create_actions() override;
+};
+
+struct antoran_inquisitor_t : public dominion_of_argus_pet_t
+{
+  antoran_inquisitor_t( warlock_t* );
+  void create_actions() override;
+};
+
+struct antoran_jailer_t : public dominion_of_argus_pet_t
+{
+  antoran_jailer_t( warlock_t* );
+  void create_actions() override;
+};
+
 }  // namespace demonology
 
 namespace destruction

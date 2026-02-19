@@ -8,6 +8,17 @@
 
 namespace warlock
 {
+
+enum dominion_of_argus_pet_e
+{
+  DOA_PET_RANDOM = -1,
+  DOA_PET_JAILER,
+  DOA_PET_SACROLASH,
+  DOA_PET_GRAND_WARLOCK,
+  DOA_PET_INQUISITOR,
+  DOA_PET_MAX
+};
+
 struct warlock_t;
 
 // Finds an action with the given name. If no action exists, a new one will
@@ -175,6 +186,10 @@ public:
     spawner::pet_spawner_t<pets::demonology::grimoire_fel_ravager_t, warlock_t> grimoire_fel_ravagers;
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
     spawner::pet_spawner_t<pets::demonology::doomguard_t, warlock_t> doomguards;
+    spawner::pet_spawner_t<pets::demonology::lady_sacrolash_t, warlock_t> lady_sacrolash;
+    spawner::pet_spawner_t<pets::demonology::grand_warlock_alythess_t, warlock_t> grand_warlock_alythess;
+    spawner::pet_spawner_t<pets::demonology::antoran_inquisitor_t, warlock_t> antoran_inquisitor;
+    spawner::pet_spawner_t<pets::demonology::antoran_jailer_t, warlock_t> antoran_jailer;
 
     spawner::pet_spawner_t<pets::destruction::shadowy_tear_t, warlock_t> shadow_rifts;
     spawner::pet_spawner_t<pets::destruction::unstable_tear_t, warlock_t> unstable_rifts;
@@ -361,9 +376,12 @@ public:
     const spell_data_t* infernal_presence;
     const spell_data_t* infernal_presence_dmg;
 
+    // Demo Apex Talents
     player_talent_t dominion_of_argus_1;
     player_talent_t dominion_of_argus_2;
     player_talent_t dominion_of_argus_3;
+    const spell_data_t* dominion_of_argus_1_buff;
+    const spell_data_t* dominion_of_argus_3_gain;
 
     // Destruction
     player_talent_t chaos_bolt;
@@ -588,6 +606,14 @@ public:
     action_t* blighted_maw;
   } proc_actions;
 
+  struct pet_summons_t
+  {
+    propagate_const<action_t*> lady_sacrolash;
+    propagate_const<action_t*> grand_warlock_alythess;
+    propagate_const<action_t*> antoran_inquisitor;
+    propagate_const<action_t*> antoran_jailer;
+  } summon;
+
   struct tier_sets_t
   {
     const spell_data_t* wl_affliction_12_0_class_set_2pc;
@@ -637,6 +663,7 @@ public:
     propagate_const<buff_t*> grimoire_fel_ravager;
     propagate_const<buff_t*> doomguard;
     propagate_const<buff_t*> tyrant; // Buff for tracking if Demonic Tyrant is currently out
+    propagate_const<buff_t*> dominion_of_argus;
 
     // Destruction Buffs
     propagate_const<buff_t*> backdraft;
@@ -692,6 +719,7 @@ public:
     gain_t* infernal;
     gain_t* shadowburn_refund;
     gain_t* summon_overfiend;
+    gain_t* dominion_of_argus;
 
     // Diabolist
 
@@ -853,6 +881,7 @@ public:
   player_t* get_smart_target( const std::vector<player_t*>& tl, propagate_const<dot_t*> warlock_td_t::dots_t::* dot, player_t* exclude = nullptr, double range = 0.0, bool really_smart = false );
   double resource_gain( resource_e resource_type, double amount, gain_t* source = nullptr, action_t* action = nullptr ) override;
   void feast_of_souls_gain();
+  void summon_dominion_of_argus_pet( dominion_of_argus_pet_e pet );
 
   bool affliction() const;
   bool demonology() const;

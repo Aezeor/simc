@@ -2375,7 +2375,7 @@ using namespace helpers;
       {
         // NOTE: Some effects only affects one of HoG's hits in AoE (bug?), randomly selected
         const std::vector<player_t*>& tl = target_list();
-        state.last_hit_random_target = rng().range( as<int>( tl.size() ) );
+        state.last_hit_random_target     = rng().range( as<int>( tl.size() ) );
 
         warlock_spell_t::execute();
       }
@@ -2524,6 +2524,14 @@ using namespace helpers;
         p()->buffs.demonic_core->trigger();
         p()->procs.demonic_knowledge->occur();
       }
+
+      // TODO: Are these execute, or impact? Check ingame timings to see when these effects are applied
+      if ( p()->talents.dominion_of_argus_1.ok() && p()->buffs.dominion_of_argus->check() )
+        p()->buffs.dominion_of_argus->trigger();
+
+      if ( p()->talents.dominion_of_argus_3.ok() && p()->buffs.dominion_of_argus->check() )
+        p()->resource_gain( RESOURCE_SOUL_SHARD, p()->talents.dominion_of_argus_3_gain->effectN( 1 ).resource(),
+                            p()->gains.dominion_of_argus );
     }
 
     void impact( action_state_t* s ) override
@@ -2611,7 +2619,7 @@ using namespace helpers;
       }
 
       if ( p()->talents.summon_doomguard.ok() && p()->buffs.demonic_core->check() )
-        p()->cooldowns.summon_doomguard->adjust( -p()->talents.summon_doomguard->effectN( 2 ).time_value() );
+        p()->cooldowns.summon_doomguard->adjust( timespan_t::from_seconds( -p()->talents.summon_doomguard->effectN( 2 ).base_value() ) );
 
       p()->buffs.demonic_core->decrement();
 
@@ -3048,6 +3056,10 @@ using namespace helpers;
         for ( int i = 0; i < as<int>( gain ); i++ )
           p()->procs.succulent_soul->occur();
       }
+
+      if ( p()->talents.dominion_of_argus_1.ok() )
+        p()->buffs.dominion_of_argus->trigger();
+
     }
   };
 
@@ -3065,7 +3077,7 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      p()->warlock_pet_list.grimoire_imp_lords.spawn( p()->talents.grimoire_imp_lord->duration() );
+      p()->warlock_pet_list.grimoire_imp_lords.spawn( data().duration() );
     }
   };
 
@@ -3083,7 +3095,7 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      p()->warlock_pet_list.grimoire_fel_ravagers.spawn( p()->talents.grimoire_fel_ravager->duration() );
+      p()->warlock_pet_list.grimoire_fel_ravagers.spawn( data().duration() );
     }
   };
 
@@ -3101,7 +3113,7 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      p()->warlock_pet_list.doomguards.spawn( p()->talents.summon_doomguard->duration() );
+      p()->warlock_pet_list.doomguards.spawn( data().duration() );
     }
   };
 
@@ -3113,6 +3125,70 @@ using namespace helpers;
       background = dual = true;
       aoe = -1;
       reduced_aoe_targets = p->talents.doom->effectN( 2 ).base_value();
+    }
+  };
+
+  struct summon_lady_sacrolash_t : public warlock_spell_t
+  {
+    summon_lady_sacrolash_t( std::string_view n, warlock_t* p ) 
+      : warlock_spell_t( n, p, p->find_spell( 1282501 ) )
+    {
+      harmful = may_crit = false;
+      background = not_a_proc = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+      p()->warlock_pet_list.lady_sacrolash.spawn( data().duration() );
+    }
+  };
+
+  struct summon_grand_warlock_alythess_t : public warlock_spell_t
+  {
+    summon_grand_warlock_alythess_t( std::string_view n, warlock_t* p ) 
+      : warlock_spell_t( n, p, p->find_spell( 1282502 ) )
+    {
+      harmful = may_crit = false;
+      background = not_a_proc = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+      p()->warlock_pet_list.grand_warlock_alythess.spawn( data().duration() );
+    }
+  };
+
+  struct summon_antoran_inquisitor_t : public warlock_spell_t
+  {
+    summon_antoran_inquisitor_t( std::string_view n, warlock_t* p ) 
+      : warlock_spell_t( n, p, p->find_spell( 1276283 ) )
+    {
+      harmful = may_crit = false;
+      background = not_a_proc = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+      p()->warlock_pet_list.antoran_inquisitor.spawn( data().duration() );
+    }
+  };
+
+  struct summon_antoran_jailer_t : public warlock_spell_t
+  {
+    summon_antoran_jailer_t( std::string_view n, warlock_t* p ) 
+      : warlock_spell_t( n, p, p->find_spell( 1276182 ) )
+    {
+      harmful = may_crit = false;
+      background = not_a_proc = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+      p()->warlock_pet_list.antoran_jailer.spawn( data().duration() );
     }
   };
 
@@ -4771,8 +4847,13 @@ using namespace helpers;
 
   void warlock_t::create_demonology_proc_actions()
   {
-    proc_actions.doom_proc = new doom_t( this );
+    proc_actions.doom_proc    = new doom_t( this );
     proc_actions.blighted_maw = new blighted_maw_t( this );
+    summon.antoran_inquisitor = get_action<summon_antoran_inquisitor_t>( "dominion_of_argus_antoran_inquisitor", this );
+    summon.antoran_jailer     = get_action<summon_antoran_jailer_t>( "dominion_of_argus_antoran_jailer", this );
+    summon.lady_sacrolash     = get_action<summon_lady_sacrolash_t>( "dominion_of_argus_lady_sacrolash", this );
+    summon.grand_warlock_alythess =
+        get_action<summon_grand_warlock_alythess_t>( "dominion_of_argus_grand_warlock_alythess", this );
   }
 
   void warlock_t::create_destruction_proc_actions()

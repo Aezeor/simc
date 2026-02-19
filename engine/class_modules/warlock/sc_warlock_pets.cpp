@@ -1678,6 +1678,224 @@ double grimoire_fel_ravager_t::composite_player_critical_damage_multiplier( cons
 
 /// Grimoire: Fel Ravager End
 
+/// Dominion of Argus Pet Base begin
+struct dominion_of_argus_spell_base_t : public warlock_pet_spell_t
+{
+  dominion_of_argus_spell_base_t( std::string_view name, dominion_of_argus_pet_t* p, const spell_data_t* data )
+    : warlock_pet_spell_t( name, p, data )
+  {
+    background = repeating = true;
+  }
+};
+
+  dominion_of_argus_pet_t::dominion_of_argus_pet_t( warlock_t* owner, std::string_view n, pet_e type )
+  : warlock_pet_t( owner, n, type, true )
+{
+  resource_regeneration = regen_type::DISABLED;
+}
+
+void dominion_of_argus_pet_t::set_main_action( action_t* a )
+{
+  this->main_action = a;
+}
+
+// Use APL-less logic to schedule the action executes since they only cast one spell.
+// This significantly speeds up sim time when the pet is active, since we don't have to evaluate the APL every GCD.
+void dominion_of_argus_pet_t::reschedule_main_action()
+{
+  if ( executing || is_sleeping() || player_t::buffs.movement->check() || player_t::buffs.stunned->check() )
+    return;
+
+  timespan_t gcd_adjust = gcd_ready - sim->current_time();
+  if ( gcd_adjust > 0_ms )
+  {
+    make_event( sim, gcd_adjust, [ this ]() {
+      main_action->set_target( o()->target );
+      main_action->schedule_execute();
+    } );
+  }
+  else
+  {
+    main_action->set_target( o()->target );
+    main_action->schedule_execute();
+  }
+}
+
+resource_e dominion_of_argus_pet_t::primary_resource() const
+{
+  return RESOURCE_NONE;
+}
+
+void dominion_of_argus_pet_t::schedule_ready( timespan_t /* delta_time */, bool /* waiting */ )
+{
+  reschedule_main_action();
+}
+
+void dominion_of_argus_pet_t::finish_moving()
+{
+  warlock_pet_t::finish_moving();
+
+  reschedule_main_action();
+}
+
+void dominion_of_argus_pet_t::arise()
+{
+  warlock_pet_t::arise();
+  // Start casting their main action
+  main_action->set_target( o()->target );
+  main_action->schedule_execute();
+}
+/// Dominion of Argus Pet Base end
+
+/// Lady Sacrolash Begin
+struct shadow_nova_t : public dominion_of_argus_spell_base_t
+{
+  shadow_nova_t( dominion_of_argus_pet_t* p )
+    : dominion_of_argus_spell_base_t( "Shadow Nova", p, p->find_spell( 1282507 ) )
+  {
+    aoe                 = -1;
+    reduced_aoe_targets = as<int>( data().effectN( 2 ).base_value() );
+  }
+};
+
+lady_sacrolash_t::lady_sacrolash_t( warlock_t* owner )
+  : dominion_of_argus_pet_t( owner, "lady_sacrolash", PET_LADY_SACROLASH )
+{
+  owner_coeff.sp_from_sp = 1.0;
+}
+
+void lady_sacrolash_t::create_actions()
+{
+  dominion_of_argus_pet_t::create_actions();
+  set_main_action( new shadow_nova_t( this ) );
+}
+/// Lady Sacrolash End
+
+/// Grand Warlock Alythess Begin
+struct blaze_t : public warlock_pet_spell_t
+{
+  blaze_t( dominion_of_argus_pet_t* p ) 
+    : warlock_pet_spell_t( "Blaze", p, p->find_spell( 1282534 ) )
+  {
+    aoe                 = -1;
+    background          = true;
+    reduced_aoe_targets = as<int>( data().effectN( 2 ).base_value() );
+  }
+};
+
+struct blaze_missile_t : public dominion_of_argus_spell_base_t
+{
+  blaze_missile_t( dominion_of_argus_pet_t* p ) 
+    : dominion_of_argus_spell_base_t( "Blaze Missile", p, p->find_spell( 1282533 ) )
+  {
+    impact_action = new blaze_t( p );
+    // Merge the two actions in the HTML report for cleaner reporting
+    impact_action->stats = stats;
+    stats->action_list.push_back( impact_action );
+    name_str_reporting = "blaze";
+  }
+};
+
+grand_warlock_alythess_t::grand_warlock_alythess_t( warlock_t* owner )
+  : dominion_of_argus_pet_t( owner, "grand_warlock_alythess", PET_GRAND_WARLOCK_ALYTHESS )
+{
+  owner_coeff.sp_from_sp = 1.0;
+}
+
+void grand_warlock_alythess_t::create_actions()
+{
+  dominion_of_argus_pet_t::create_actions();
+  set_main_action( new blaze_missile_t( this ) );
+}
+/// Grand Warlock Alythess End
+
+/// Antoran Inquisitor Begin
+struct mind_sear_t : public warlock_pet_spell_t
+{
+  mind_sear_t( dominion_of_argus_pet_t* p ) 
+    : warlock_pet_spell_t( "Mind Sear", p, p->find_spell( 1280460 ) )
+  {
+    background = true;
+    aoe = -1;
+  }
+};
+
+struct mind_sear_channel_t : public dominion_of_argus_spell_base_t
+{
+  mind_sear_channel_t( dominion_of_argus_pet_t* p )
+    : dominion_of_argus_spell_base_t( "Mind Sear Channel", p, p->find_spell( 1280457 ) )
+  {
+    tick_action  = new mind_sear_t( p );
+    hasted_ticks = false;
+    tick_zero = channeled = true;
+    base_tick_time        = data().effectN( 1 ).period();
+    base_execute_time     = data().duration();
+    name_str_reporting    = "mind_sear";
+  }
+};
+
+antoran_inquisitor_t::antoran_inquisitor_t( warlock_t* owner )
+  : dominion_of_argus_pet_t( owner, "antoran_inquisitor", PET_ANTORAN_INQUISITOR )
+{
+  owner_coeff.sp_from_sp = 1.0;
+}
+
+void antoran_inquisitor_t::create_actions()
+{
+  dominion_of_argus_pet_t::create_actions();
+  set_main_action( new mind_sear_channel_t( this ) );
+}
+    /// Antoran Inquisitor End
+
+/// Antoran Jailer Begin
+struct soul_barrage_t : public warlock_pet_spell_t
+{
+  soul_barrage_t( dominion_of_argus_pet_t* p ) 
+    : warlock_pet_spell_t( "Soul Barrage", p, p->find_spell( 1277099 ) )
+  {
+    background = true;
+  }
+};
+
+struct soul_barrage_cast_t : public dominion_of_argus_spell_base_t
+{
+  action_t* soul_barrage;
+  soul_barrage_cast_t( dominion_of_argus_pet_t* p )
+    : dominion_of_argus_spell_base_t( "Soul Barrage Cast", p, p->find_spell( 1280307 ) ), soul_barrage( nullptr )
+  {
+    soul_barrage = new soul_barrage_t( p );
+    // Merge the two actions in the HTML report for cleaner reporting
+    soul_barrage->stats = stats;
+    stats->action_list.push_back( soul_barrage );
+    name_str_reporting = "soul_barrage";
+  }
+
+  void execute() override
+  {
+    dominion_of_argus_spell_base_t::execute();
+    for ( int i = 0; i < data().effectN( 1 ).base_value(); i++ )
+      soul_barrage->execute_on_target( execute_state->target );
+
+    for ( auto& target : target_list() )
+      for ( int i = 0; i < data().effectN( 2 ).base_value(); i++ )
+        soul_barrage->execute_on_target( target );
+  }
+};
+
+antoran_jailer_t::antoran_jailer_t( warlock_t* owner )
+  : dominion_of_argus_pet_t( owner, "antoran_jailer", PET_ANTORAN_JAILER )
+{
+  owner_coeff.sp_from_sp = 1.0;
+}
+
+void antoran_jailer_t::create_actions()
+{
+  dominion_of_argus_pet_t::create_actions();
+  set_main_action( new soul_barrage_cast_t( this ) );
+}
+
+/// Antoran Jailer End
+
 }  // namespace demonology
 
 namespace destruction

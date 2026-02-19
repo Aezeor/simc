@@ -306,10 +306,11 @@ namespace warlock
     talents.infernal_presence = conditional_spell_lookup( talents.mark_of_fharg.ok(), 428453 );
     talents.infernal_presence_dmg = conditional_spell_lookup( talents.mark_of_fharg.ok(), 428455 );
 
-    // TODO: Not Yet Implemented
     talents.dominion_of_argus_1 = find_talent_spell( talent_tree::SPECIALIZATION, "Dominion of Argus", 1 ); // Should be ID 1276163 (I)
     talents.dominion_of_argus_2 = find_talent_spell( talent_tree::SPECIALIZATION, "Dominion of Argus", 2 ); // Should be ID 1276190 (II)
     talents.dominion_of_argus_3 = find_talent_spell( talent_tree::SPECIALIZATION, "Dominion of Argus", 3 ); // Should be ID 1276222 (III)
+    talents.dominion_of_argus_1_buff = conditional_spell_lookup( talents.dominion_of_argus_1.ok(), 1276166 );
+    talents.dominion_of_argus_3_gain = conditional_spell_lookup( talents.dominion_of_argus_3.ok(), 1276318 );
 
     // Additional Tier Set spell data
     tier.wl_demonology_12_0_class_set_2pc = sets->set( WARLOCK_DEMONOLOGY, MID1, B2 ); // Should be ID 1264871
@@ -703,6 +704,16 @@ namespace warlock
     buffs.hellbent_commander = make_buff( this, "hellbent_commander", talents.hellbent_commander_buff )
                                    ->set_default_value_from_effect( 1 );
 
+    buffs.dominion_of_argus = make_buff( this, "dominion_of_argus", talents.dominion_of_argus_1_buff )
+                                  ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+                                  ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur ) {
+                                    if ( cur == b->max_stack() )
+                                    {
+                                      make_event( *sim, 0_ms, [ b ] { b->decrement( b->max_stack() - 1 ); } );
+                                      summon_dominion_of_argus_pet( dominion_of_argus_pet_e::DOA_PET_RANDOM );
+                                    }
+                                  } );
+
     // Pet tracking buffs
     buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );
 
@@ -948,6 +959,7 @@ namespace warlock
   void warlock_t::init_gains_demonology()
   {
     gains.soul_strike = get_gain( "soul_strike" );
+    gains.dominion_of_argus = get_gain( "dominion_of_argus" );
   }
 
   void warlock_t::init_gains_destruction()

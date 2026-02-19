@@ -859,6 +859,34 @@ void warlock_t::feast_of_souls_gain()
   procs.feast_of_souls->occur();
 }
 
+// Setup to allow taking specific pets from Dominion of Argus, or a random one if the random enum is passed in.
+// This is just to future proof this in case of a tier set, talent or something else that summons a specific pet from
+// Dominion of Argus being added.
+void warlock_t::summon_dominion_of_argus_pet( dominion_of_argus_pet_e pet )
+{
+  dominion_of_argus_pet_e actual_pet = pet;
+  if ( pet == DOA_PET_RANDOM )
+    actual_pet = static_cast<dominion_of_argus_pet_e>( rng().range( 0, DOA_PET_MAX ) );
+
+  switch ( actual_pet )
+  {
+    case DOA_PET_JAILER:
+      summon.antoran_jailer->execute();
+      break;
+    case DOA_PET_SACROLASH:
+      summon.lady_sacrolash->execute();
+      break;
+    case DOA_PET_GRAND_WARLOCK:
+      summon.grand_warlock_alythess->execute();
+      break;
+    case DOA_PET_INQUISITOR:
+      summon.antoran_inquisitor->execute();
+      break;
+    default:
+      break;
+  }
+}
+
 std::vector<player_t*> warlock_t::get_smart_targets( const std::vector<player_t*>& _tl, propagate_const<dot_t*> warlock_td_t::dots_t::* dot, int n_targets, player_t* exclude, double dis, bool really_smart )
 {
   if ( n_targets < 1 || !_tl.size() )
@@ -975,6 +1003,10 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     grimoire_fel_ravagers( "demonic_fel_ravager", w ),
     wild_imps( "wild_imp", w ),
     doomguards( "Doomguard", w ),
+    lady_sacrolash( "lady_sacrolash", w ),
+    grand_warlock_alythess( "grand_warlock_alythess", w ),
+    antoran_inquisitor( "antoran_inquisitor", w ),
+    antoran_jailer( "antoran_jailer", w ),
     shadow_rifts( "shadowy_tear", w ),
     unstable_rifts( "unstable_tear", w ),
     chaos_rifts( "chaos_tear", w ),
