@@ -2836,9 +2836,10 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
       {
         clearcasting_gain = p->get_gain( "Clearcasting" );
 
-        parse_effects( p->buff.clearcasting_cat, PARSE_CALLBACK_POST_SNAPSHOT, [ this, p = p ]( action_state_t* ) {
-          clearcasting_gain->add( RESOURCE_ENERGY, base_cost() * ( 1.0 + p->buff.incarnation_cat->check_value() ) );
-        } );
+        parse_effects(
+          p->buff.clearcasting_cat, CONSUME_BUFF, PARSE_CALLBACK_POST_SNAPSHOT, [ this, p = p ]( action_state_t* ) {
+            clearcasting_gain->add( RESOURCE_ENERGY, base_cost() * ( 1.0 + p->buff.incarnation_cat->check_value() ) );
+          } );
       }
 
       snapshots.tigers_fury = parse_persistent_effects( p->buff.tigers_fury,
