@@ -4254,7 +4254,10 @@ struct glacial_spike_t final : public frost_mage_spell_t
       duality_pyroblast->execute_on_target( target );
 
     if ( p()->talents.flash_freezeburn.ok() )
+    {
       p()->buffs.frostfire_empowerment->trigger();
+      p()->buffs.frostfire_empowerment->predict();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -4702,7 +4705,10 @@ struct meteor_t final : public fire_mage_spell_t
     fire_mage_spell_t::execute();
 
     if ( !background && p()->talents.flash_freezeburn.ok() )
+    {
       p()->buffs.frostfire_empowerment->trigger();
+      p()->buffs.frostfire_empowerment->predict();
+    }
 
     if ( p()->action.isothermic_comet_storm )
       p()->action.isothermic_comet_storm->execute_on_target( target );
