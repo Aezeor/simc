@@ -6,6 +6,8 @@
 #include "action/parse_effects.hpp"
 #include "class_modules/apl/warlock.hpp"
 
+#include <random>
+
 namespace warlock
 {
 
