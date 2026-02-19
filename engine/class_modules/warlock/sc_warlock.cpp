@@ -865,13 +865,16 @@ void warlock_t::feast_of_souls_gain()
 void warlock_t::summon_dominion_of_argus_pet( dominion_of_argus_pet_e pet )
 {
   dominion_of_argus_pet_e actual_pet = pet;
-  // Inquisitor seems to have about twice the odds to spawn as the other 3 pets, so weight the random accordingly
-  // last tested 2026-02-19
+  // Odds for each pet currently seem to be
+  // Jailer: 30%, Sacrolash: 20%, Grand Warlock Alythess: 20%, Inquisitor: 30% (last tested 2026-02-19)
+  // More testing required for more accurate rates.
+  // Probably better to do a better weighted random selection than this. 
   if ( pet == DOA_PET_RANDOM )
   {
-    const std::array<dominion_of_argus_pet_e, 5> pets = { DOA_PET_JAILER, DOA_PET_SACROLASH, DOA_PET_GRAND_WARLOCK,
-                                                          DOA_PET_INQUISITOR, DOA_PET_INQUISITOR };
-    actual_pet                                        = rng().range( pets );
+    const std::array<dominion_of_argus_pet_e, 10> pets = {
+        DOA_PET_JAILER,        DOA_PET_JAILER,        DOA_PET_JAILER,     DOA_PET_SACROLASH,  DOA_PET_SACROLASH,
+        DOA_PET_GRAND_WARLOCK, DOA_PET_GRAND_WARLOCK, DOA_PET_INQUISITOR, DOA_PET_INQUISITOR, DOA_PET_INQUISITOR };
+    actual_pet = rng().range( pets );
   }
 
   switch ( actual_pet )
