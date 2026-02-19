@@ -631,7 +631,7 @@ struct druid_t final : public parse_player_effects_t
     action_t* rampancy;
     action_t* star_cascade;
     action_t* sylvan_beckoning;
-    std::array<action_t*, 4> sylvan_beckoning_starfall;
+    action_t* sylvan_beckoning_starfall_driver;
     action_t* the_light_of_elune;
     action_t* treants_of_the_moon_mf;
   } active;
@@ -1251,6 +1251,7 @@ struct druid_t final : public parse_player_effects_t
     const spell_data_t* atmospheric_exposure;  // atmospheric exposure debuff
     const spell_data_t* bloodseeker_vines;
     const spell_data_t* dreadful_wound;
+    const spell_data_t* sylvan_beckoning_sf;
   } spec;
 
   struct uptimes_t
@@ -1511,7 +1512,6 @@ struct sylvan_beckoning_t final : public pet_t
     }
   };
 
-  action_t* starfall_action = nullptr;
   buff_t* starfall_buff = nullptr;
   unsigned starsurge_count = 0;
 
@@ -1525,7 +1525,6 @@ struct sylvan_beckoning_t final : public pet_t
   druid_t* o() { return static_cast<druid_t*>( owner ); }
 
   void arise() override;
-  void demise() override;
   void create_buffs() override;
   action_t* create_action( std::string_view n, std::string_view opt ) override;
 };
@@ -9464,37 +9463,18 @@ void sylvan_beckoning_t::arise()
   pet_t::arise();
 
   starsurge_count = 0;
-
-  // there should always be an open slot as you shouldn't be able to summon more than 4 dryads
-  assert( range::any_of( o()->active.sylvan_beckoning_starfall, []( action_t* a ) {
-    return !static_cast<spells::starfall_t*>( a )->buff;
-  } ) );
-
-  for ( auto a : o()->active.sylvan_beckoning_starfall )
-  {
-    if ( auto sf = static_cast<spells::starfall_t*>( a ); !sf->buff )
-    {
-      starfall_action = sf;
-      sf->buff = starfall_buff;
-      sf->execute();
-      break;
-    }
-  }
-}
-
-void sylvan_beckoning_t::demise()
-{
-  pet_t::demise();
-
-  static_cast<spells::starfall_t*>( starfall_action )->buff = nullptr;
+  starfall_buff->trigger();
 }
 
 void sylvan_beckoning_t::create_buffs()
 {
   pet_t::create_buffs();
 
-  starfall_buff = make_buff( actor_pair_t( this, owner ), "starfall", find_spell( 1264671 ) )
-    ->set_freeze_stacks( true );
+  starfall_buff = make_buff( actor_pair_t( this, owner ), "starfall", o()->spec.sylvan_beckoning_sf )
+    ->set_freeze_stacks( true )
+    ->set_tick_callback( [ this ]( auto, auto, auto ) {
+      o()->active.sylvan_beckoning_starfall_driver->execute();
+    } );
 }
 
 action_t* sylvan_beckoning_t::create_action( std::string_view n, std::string_view opt )
@@ -10503,6 +10483,7 @@ void druid_t::init_spells()
   spec.atmospheric_exposure     = check( talent.atmospheric_exposure, 430589 );
   spec.bloodseeker_vines        = check( talent.thriving_growth, 439531 );
   spec.dreadful_wound           = check( talent.dreadful_wound, specialization() == DRUID_FERAL ? 441812 : 451177 );
+  spec.sylvan_beckoning_sf      = check( talent.sylvan_beckoning, 1264671 );
 
   // Masteries ==============================================================
   mastery.harmony             = find_mastery_spell( DRUID_RESTORATION );
@@ -11729,19 +11710,13 @@ void druid_t::create_actions()
   {
     active.sylvan_beckoning = new sylvan_beckoning_t( this );
 
-    // do not use get_secondary_action so we can create two actions with the same name to use the same stat obj
-    for ( size_t i = 0; i < active.sylvan_beckoning_starfall.size(); i++ )
-    {
-      auto sf =
-        new starfall_t( this, "sylvan_beckoning_starfall", find_spell( 1264671 ), flag_e::NONE, find_spell( 1264676 ) );
-      sf->background = sf->proc = true;
-      sf->buff = nullptr;
-      sf->hail_dur = 0_ms;
-      sf->name_str_reporting = "starfall";
-
-      active.sylvan_beckoning->add_child( sf );
-      active.sylvan_beckoning_starfall[ i ] = sf;
-    }
+    auto driver = get_secondary_action<starfall_t::starfall_driver_t>(
+      "sylvan_beckoning_starfall_driver", find_trigger( spec.sylvan_beckoning_sf ).trigger(), find_spell( 1264676 ),
+      flag_e::NONE );
+    driver->name_str_reporting = "starfall";
+    replace_stats( driver, driver->damage );
+    active.sylvan_beckoning->add_child( driver );
+    active.sylvan_beckoning_starfall_driver = driver;
   }
 
   player_t::create_actions();
