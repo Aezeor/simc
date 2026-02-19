@@ -6235,9 +6235,6 @@ void mage_t::init_spells()
   cooldowns.arcane_echo->duration = find_spell( 464515 )->internal_cooldown();
 
   // Register passives
-  // Arcane aura mana regen includes points per level adjustment, handled manually in mage_t::resource_regen_per_second
-  deregister_passive_effect( spec.arcane_mage->effectN( 5 ) );
-
   // Fire's Ire is dynamic and should not be applied as a passive
   deregister_passive_spell( talents.fires_ire );
 
@@ -6642,7 +6639,6 @@ double mage_t::resource_regen_per_second( resource_e rt ) const
 
   if ( specialization() == MAGE_ARCANE && rt == RESOURCE_MANA )
   {
-    reg *= 1.0 + 0.01 * spec.arcane_mage->effectN( 5 ).average( this );
     reg *= 1.0 + cache.mastery() * spec.savant->effectN( 4 ).mastery_value();
     reg *= 1.0 + buffs.evocation->check_value();
     if ( buffs.enlightened->check() )
