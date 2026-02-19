@@ -595,6 +595,7 @@ void devouring_banding( special_effect_t& effect )
 
   effect.spell_id = effect.trigger()->id();
   effect.player->callbacks.register_callback_execute_function( effect.spell_id, [ damage, buff ]( auto, auto, auto s ) {
+    assert( s->target->is_enemy() );
     damage->execute_on_target( s->target );
     buff->execute_on_target( s->target );
   } );
@@ -722,7 +723,8 @@ void thalassian_phoenix_torque( special_effect_t& effect )
   damage->base_multiplier *= role_mult( effect );
   damage->base_multiplier *= bandolier_mul( effect.player );
 
-  auto heal = create_proc_action<generic_heal_t>( "phoenix_flames", effect, effect.player->find_spell( 1251908 ) );
+  auto heal = create_proc_action<generic_heal_t>( "phoenix_flames_heal", effect, effect.player->find_spell( 1251908 ) );
+  heal->name_str_reporting = "Heal";
   heal->base_dd_min = heal->base_dd_max = effect.driver()->effectN( 2 ).average( effect );
   heal->base_multiplier *= 1.0 + ( pct_per_gem * unique_gem_list( effect.player, gem_colors ).size() );
   heal->base_multiplier *= role_mult( effect );
