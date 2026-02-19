@@ -1877,8 +1877,12 @@ struct soul_barrage_cast_t : public dominion_of_argus_spell_base_t
       soul_barrage->execute_on_target( execute_state->target );
 
     for ( auto& target : target_list() )
+    {
+      if ( target == execute_state->target )
+        continue;
       for ( int i = 0; i < data().effectN( 2 ).base_value(); i++ )
         soul_barrage->execute_on_target( target );
+    }
   }
 };
 
