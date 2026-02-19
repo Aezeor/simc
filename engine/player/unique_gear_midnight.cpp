@@ -2167,10 +2167,10 @@ namespace sets
 // 1259276 tonic heal
 namespace
 {
-template <typename T>
+template <typename T, typename U>
 action_t* create_mrm_action( std::string n, const special_effect_t& e, unsigned id, double a )
 {
-  auto missile = create_proc_action<generic_proc_t>( n + "_missile", e, id );
+  auto missile = create_proc_action<U>( n + "_missile", e, id );
   auto impact = create_proc_action<T>( n, e, missile->data().effectN( 1 ).trigger() );
   impact->base_dd_min = impact->base_dd_max = a;
   missile->dual = true;
@@ -2194,12 +2194,12 @@ void murder_row_materials( special_effect_t& effect )
   auto crystal_amount = effect.trigger()->effectN( 2 ).average( effect );
   auto tonic_amount = effect.trigger()->effectN( 3 ).average( effect );
 
-  auto shiv =
-    create_mrm_action<generic_proc_t>( "murder_row_shiv", effect, 1259504, shiv_amount );
-  auto crystal =
-    create_mrm_action<generic_aoe_proc_t>( "slightlystabilized_arcanocrystal", effect, 1259503, crystal_amount );
-  auto tonic =
-    create_mrm_action<generic_heal_t>( "emergency_healing_tonic", effect, 1259508, tonic_amount );
+  auto shiv = create_mrm_action<generic_proc_t, generic_proc_t>(
+    "murder_row_shiv", effect, 1259504, shiv_amount );
+  auto crystal = create_mrm_action<generic_aoe_proc_t, generic_proc_t>(
+    "slightlystabilized_arcanocrystal",effect, 1259503, crystal_amount );
+  auto tonic = create_mrm_action<generic_heal_t, generic_heal_t>(
+    "emergency_healing_tonic", effect, 1259508, tonic_amount );
 
   effect.proc_flags2_ = PF2_CRIT;
   effect.player->callbacks.register_callback_execute_function( effect.spell_id,
