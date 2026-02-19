@@ -666,7 +666,7 @@ BUFF* create_buff( player_t* p, const spell_data_t* s, ARGS&&... args )
 
 template <typename T = stat_buff_t>
 void create_all_stat_buffs( const special_effect_t& effect, const spell_data_t* buff_data, double amount,
-                            std::function<std::string( std::string_view, const spelleffect_data_t& )> name_fn,
+                            std::function<std::string( std::string, const spelleffect_data_t& )> name_fn,
                             std::function<void( stat_e, buff_t* )> add_fn, bool add_to_list = true )
 {
   static_assert( std::is_base_of_v<stat_buff_t, T> );

@@ -195,64 +195,38 @@ void potion_of_recklessness( special_effect_t& effect )
 {
   // The potion grants a positive buff to your highest secondary stat and
   // a negative buff to your lowest secondary stat.
-  struct recklessness_buff_t : public consumable_buff_t<stat_buff_t>
+  struct recklessness_t : public generic_proc_t
   {
-    double pos_crit = 0.0, pos_haste = 0.0, pos_vers = 0.0, pos_mast = 0.0;
-    double neg_crit = 0.0, neg_haste = 0.0, neg_vers = 0.0, neg_mast = 0.0;
+    std::unordered_map<stat_e, buff_t*> pos_map, neg_map;
 
-    recklessness_buff_t( const special_effect_t& e ) : consumable_buff_t( e.player, e.name(), e.driver() )
+    recklessness_t( const special_effect_t& e ) : generic_proc_t( e, e.driver()->name_cstr(), e.driver() )
     {
-      // Mapping from the driver effects
-      pos_crit = e.driver()->effectN( 2 ).average( e );
-      pos_haste = e.driver()->effectN( 3 ).average( e );
-      pos_vers  = e.driver()->effectN( 4 ).average( e );
-      pos_mast  = e.driver()->effectN( 5 ).average( e );
+      quiet = true;
 
-      neg_crit = e.driver()->effectN( 6 ).average( e );
-      neg_haste = e.driver()->effectN( 7 ).average( e );
-      neg_vers  = e.driver()->effectN( 8 ).average( e );
-      neg_mast  = e.driver()->effectN( 9 ).average( e );
-
-      set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+      // create and populate bonus/penalty maps. penalties will get '_penalty' suffix and ' Penalty' for reporting
+      create_all_stat_buffs( e, &data(), 0.0,
+        []( std::string n, const spelleffect_data_t& e ) {
+          return e.m_coefficient() < 0.0 ? fmt::format( "{}_penalty", n ) : n;
+        },
+        [ this ]( stat_e s, buff_t* b ) {
+          if ( static_cast<stat_buff_t*>( b )->stats.front().amount < 0.0 )
+            neg_map[ s ] = b->set_name_reporting( b->name_str_reporting + " Penalty" );
+          else
+            pos_map[ s ] = b;
+        } );
     }
 
-    void start( int s, double v, timespan_t d ) override
+    void execute() override
     {
-      auto high = util::highest_stat( source, secondary_ratings );
-      auto low = util::lowest_stat( source, secondary_ratings );
+      generic_proc_t::execute();
 
-      if ( !manual_stats_added )
-      {
-        // apply positive to highest secondary
-        switch ( high )
-        {
-          case STAT_CRIT_RATING: add_stat( STAT_CRIT_RATING, pos_crit ); break;
-          case STAT_HASTE_RATING: add_stat( STAT_HASTE_RATING, pos_haste ); break;
-          case STAT_VERSATILITY_RATING: add_stat( STAT_VERSATILITY_RATING, pos_vers ); break;
-          case STAT_MASTERY_RATING: add_stat( STAT_MASTERY_RATING, pos_mast ); break;
-          default: break;
-        }
-
-        // apply negative to lowest secondary
-        switch ( low )
-        {
-          case STAT_CRIT_RATING: add_stat( STAT_CRIT_RATING, neg_crit ); break;
-          case STAT_HASTE_RATING: add_stat( STAT_HASTE_RATING, neg_haste ); break;
-          case STAT_VERSATILITY_RATING: add_stat( STAT_VERSATILITY_RATING, neg_vers ); break;
-          case STAT_MASTERY_RATING: add_stat( STAT_MASTERY_RATING, neg_mast ); break;
-          default: break;
-        }
-      }
-
-      consumable_buff_t::start( s, v, d );
+      pos_map[ util::highest_stat( player, secondary_ratings ) ]->trigger();
+      neg_map[ util::lowest_stat( player, secondary_ratings ) ]->trigger();
     }
   };
 
-  auto buff = buff_t::find( effect.player, "potion_of_recklessness" );
-  if ( !buff )
-    buff = new recklessness_buff_t( effect );
-
-  effect.custom_buff = buff;
+  effect.disable_buff();
+  effect.execute_action = create_proc_action<recklessness_t>( "potion_of_recklessness", effect );
 }
 
 // Potion of Zealotry
@@ -921,7 +895,7 @@ void blood( special_effect_t& effect )
                              [ this ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
     }
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( action_t*, action_state_t* ) override
     {
       auto stat = util::lowest_stat( listener, secondary_ratings );
       for ( auto [ s, b ] : buffs )
@@ -1165,7 +1139,6 @@ void hunt( special_effect_t& effect )
 
   new hunt_cb_t( effect, value_driver );
 }
-
 }  // namespace darkmoon
 
 namespace trinkets
@@ -2082,23 +2055,14 @@ void vaelgors_final_stare( special_effect_t& effect )
 {
   struct nullsight_t final : public stat_buff_t
   {
-    const special_effect_t& effect;
-    const spell_data_t* value_spell;
-    int current_tick;
     double buff_val;
     double decrease;
 
-    nullsight_t( const special_effect_t& e )
-      : stat_buff_t( e.player, "nullsight", e.player->find_spell( 1260459 ) ),
-        effect( e ),
-        value_spell( nullptr ),
-        current_tick( 0 ),
-        buff_val( 0 ),
-        decrease( 0 )
-      {
-      value_spell  = e.driver();
+    nullsight_t( player_t* p, std::string_view n, const special_effect_t& e )
+      : stat_buff_t( p, n, e.player->find_spell( 1260459 ) ), buff_val( 0 ), decrease( 0 )
+    {
       auto n_ticks = data().duration() / data().effectN( 3 ).period();
-      buff_val     = value_spell->effectN( 1 ).average( e );
+      buff_val     = e.driver()->effectN( 1 ).average( e );
       decrease     = buff_val / n_ticks;
       set_stat_from_effect( 1, buff_val );
       set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { recalculate(); } );
@@ -2112,7 +2076,6 @@ void vaelgors_final_stare( special_effect_t& effect )
 
     void recalculate()
     {
-      current_tick++;
       for ( auto& buff_stat : stats )
       {
         player->stat_loss( buff_stat.stat, decrease, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
@@ -2141,17 +2104,10 @@ void vaelgors_final_stare( special_effect_t& effect )
       // Skip stat_buff_t::expire_override() since we are manually handling stat changes.
       buff_t::expire_override( s, d );
       recalculate_expiry();
-      current_tick = 0;
-    }
-
-    void reset() override
-    {
-      stat_buff_t::reset();
-      current_tick = 0;
     }
   };
 
-  effect.custom_buff = make_buff<nullsight_t>( effect );
+  effect.custom_buff = create_buff<nullsight_t>( effect.player, "nullsight", effect );
 }
 
 }  // namespace trinkets
