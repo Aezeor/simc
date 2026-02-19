@@ -774,7 +774,6 @@ struct druid_t final : public parse_player_effects_t
     // Restoration
     buff_t* abundance;
     buff_t* clearcasting_tree;
-    buff_t* flourish;
     buff_t* incarnation_tree;
     buff_t* natures_swiftness;
     buff_t* soul_of_the_forest_tree;
@@ -2694,12 +2693,6 @@ public:
 
 struct druid_heal_t : public druid_spell_base_t<heal_t>
 {
-  struct
-  {
-    bool flourish;  // true if tick_rate is affected by flourish, NOTE: extension is handled in flourish_t
-    bool soul_of_the_forest;
-  } affected_by;
-
   double forestwalk_mul;  // % healing from forestwalk
   double imp_fr_mul;      // % healing from improved frenzied regeneration
   double photo_mul;       // tick rate multiplier when lb is on self
@@ -2709,7 +2702,6 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
 
   druid_heal_t( std::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(), flag_e f = flag_e::NONE )
     : base_t( n, p, s, f ),
-      affected_by(),
       forestwalk_mul( find_effect( p->buff.forestwalk, A_MOD_HEALING_RECEIVED_PCT ).percent() ),
       imp_fr_mul( find_effect( p->talent.verdant_heart, A_ADD_FLAT_MODIFIER, P_EFFECT_2 ).percent() ),
       photo_mul( p->talent.photosynthesis->effectN( 1 ).percent() ),
@@ -2725,9 +2717,6 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
 
     if ( p->talent.stonebark.ok() && find_effect( p->talent.ironbark, this, A_MOD_HEALING_RECEIVED_FROM_SPELL ).ok() )
       iron_mul = find_effect( p->talent.stonebark, A_ADD_FLAT_MODIFIER, P_EFFECT_2 ).percent();
-
-    if ( p->talent.flourish.ok() )
-      affected_by.flourish = find_effect( p->talent.flourish, this, A_ADD_PCT_MODIFIER, P_TICK_TIME ).ok();
   }
 
   virtual double harmony_multiplier( player_t* t ) const
@@ -2771,10 +2760,6 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
   {
     auto mul = base_t::tick_time_pct_multiplier( s );
 
-    // flourish effect is a negative percent modifier, so multiply here
-    if ( affected_by.flourish && p()->buff.flourish->check() )
-      mul *= 1.0 + p()->buff.flourish->default_value;
-
     // photo effect is a positive dummy value, so divide here
     if ( auto _td = td( player ); photo_mul && _td && _td->hots.lifebloom->is_ticking() )
       mul /= 1.0 + photo_mul;
@@ -2793,14 +2778,6 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
       if ( lb->is_ticking() )
         lb->current_action->last_tick( lb );
     }
-  }
-
-  void execute() override
-  {
-    base_t::execute();
-
-    if ( affected_by.soul_of_the_forest && p()->buff.soul_of_the_forest_tree->up() )
-      p()->buff.soul_of_the_forest_tree->consume( this );
   }
 };
 
@@ -5999,36 +5976,6 @@ struct elunes_favored_heal_t final : public druid_residual_action_t<druid_heal_t
   }
 };
 
-// Flourish =================================================================
-struct flourish_t final : public druid_heal_t
-{
-  timespan_t ext;
-
-  DRUID_ABILITY( flourish_t, druid_heal_t, "flourish", p->talent.flourish ),
-    ext( timespan_t::from_seconds( data().effectN( 1 ).base_value() ) )
-  {
-    dot_duration = 0_ms;
-  }
-
-  void execute() override
-  {
-    druid_heal_t::execute();
-
-    p()->buff.flourish->trigger();
-
-    for ( const auto& t : sim->player_non_sleeping_list )
-    {
-      auto hots = td( t )->hots;
-      hots.cultivation->adjust_duration( ext );
-      hots.germination->adjust_duration( ext );
-      hots.lifebloom->adjust_duration( ext );
-      hots.regrowth->adjust_duration( ext );
-      hots.rejuvenation->adjust_duration( ext );
-      hots.wild_growth->adjust_duration( ext );
-    }
-  }
-};
-
 // Ironbark =================================================================
 struct ironbark_t final : public druid_heal_t
 {
@@ -6150,21 +6097,6 @@ struct natures_swiftness_t final : public trigger_control_of_the_dream_t<druid_h
   }
 };
 
-// Nourish ==================================================================
-struct nourish_t final : public druid_heal_t
-{
-  double harmony_mult;
-
-  nourish_t( druid_t* p )
-    : druid_heal_t( "nourish", p, p->find_spell( 422090 ) ), harmony_mult( 1.0 + data().effectN( 2 ).percent() )
-  {} 
-
-  double harmony_multiplier( player_t* t ) const override
-  {
-    return druid_heal_t::harmony_multiplier( t ) * harmony_mult;
-  }
-};
-
 // Regrowth =================================================================
 struct regrowth_t final : public trigger_thriving_growth_t<use_dot_list_t<druid_heal_t>>
 {
@@ -6181,7 +6113,6 @@ struct regrowth_t final : public trigger_thriving_growth_t<use_dot_list_t<druid_
   {
     form_mask = NO_FORM | MOONKIN_FORM;
 
-    affected_by.soul_of_the_forest = true;
     dot_list = &p->dot_lists.regrowth;
 
     // dream guide snapshots the hot
@@ -6337,8 +6268,6 @@ struct rejuvenation_base_t : public druid_heal_t
       cult_pct( p->talent.cultivation->effectN( 1 ).base_value() ),
       sotf_mul( p->buff.soul_of_the_forest_tree->data().effectN( 1 ).percent() )
   {
-    affected_by.soul_of_the_forest = true;
-
     if ( p->talent.cultivation.ok() )
       cult_hot = p->get_secondary_action<cultivation_t>( "cultivation" );
   }
@@ -6512,8 +6441,6 @@ struct wild_growth_t final : public druid_heal_t
 
     // '0-tick' coeff, also unknown if this is hard set to 0.175 or based on a formula as below
     spell_power_mod.tick += decay_coeff / 2.0;
-
-    affected_by.soul_of_the_forest = true;
   }
 
   double spell_tick_power_coefficient( const action_state_t* s ) const override
@@ -10041,10 +9968,8 @@ action_t* druid_t::create_action( std::string_view name, std::string_view opt )
 
   // Restoration
   else if ( name == "efflorescence"                 ) a =                new efflorescence_t( this );
-  else if ( name == "flourish"                      ) a =                     new flourish_t( this );
   else if ( name == "lifebloom"                     ) a =                    new lifebloom_t( this );
   else if ( name == "natures_cure"                  ) a =                 new natures_cure_t( this );
-  else if ( name == "nourish"                       ) a =                      new nourish_t( this );
   else if ( name == "swiftmend"                     ) a =                    new swiftmend_t( this );
   else if ( name == "tranquility"                   ) a =                  new tranquility_t( this );
 
@@ -11312,9 +11237,6 @@ void druid_t::create_buffs()
       ->set_chance( find_trigger( talent.omen_of_clarity_tree ).percent() )
       ->set_name_reporting( "clearcasting" );
 
-  buff.flourish = make_fallback( talent.flourish.ok(), this, "flourish", talent.flourish )
-    ->set_default_value_from_effect( 2 );
-
   buff.incarnation_tree =
     make_fallback( talent.incarnation_tree.ok(), this, "incarnation_tree_of_life", find_spell( 5420 ) )
       ->set_duration( find_spell( 117679 )->duration() )  // 117679 is the generic incarnation shift proxy spell
@@ -11555,6 +11477,9 @@ void druid_t::create_actions()
     active.moons->name_str_reporting = "Talent";
   }
 
+  if ( talent.orbital_strike.ok() )
+    active.orbital_strike = get_secondary_action<orbital_strike_t>( "orbital_strike" );
+
   if ( talent.shooting_stars.ok() )
   {
     auto shs_proxy = new action_t( action_e::ACTION_OTHER, "shooting_stars", this, talent.shooting_stars );
@@ -11581,17 +11506,7 @@ void druid_t::create_actions()
       shs_proxy->add_child(fm );
       active.orbit_breaker = fm;
     }
-
-    if ( sets->has_set_bonus( DRUID_BALANCE, MID1, B4 ) )
-    {
-      auto mid1 = get_secondary_action<shooting_stars_mid1_t>( "shooting_stars_exploding" );
-      shs_proxy->add_child( mid1 );
-      active.shooting_stars_mid1 = mid1;
-    }
   }
-
-  if ( talent.orbital_strike.ok() )
-    active.orbital_strike = get_secondary_action<orbital_strike_t>( "orbital_strike" );
 
   if ( talent.sundered_firmament.ok() )
   {
@@ -11612,6 +11527,9 @@ void druid_t::create_actions()
     sunseeker->proc = true;
     active.sunseeker_mushroom = sunseeker;
   }
+
+  if ( sets->has_set_bonus( DRUID_BALANCE, MID1, B4 ) )
+    active.shooting_stars_mid1 = get_secondary_action<shooting_stars_mid1_t>( "shooting_stars_exploding" );
 
   // Feral
   if ( talent.apex_predators_craving.ok() )
@@ -11651,11 +11569,12 @@ void druid_t::create_actions()
     active.thrash_flashing = flash;
   }
 
-  if ( talent.galactic_guardian.ok() )
+  if ( talent.galactic_guardian.ok() || sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
   {
     // hardcode moonfire ID since red moon replaces normal moonfire
     auto gg = get_secondary_action<moonfire_t>( "galactic_guardian", find_spell( 8921 ), flag_e::GALACTIC );
-    gg->s_data_reporting = talent.galactic_guardian;
+    gg->s_data_reporting =
+      talent.galactic_guardian.ok() ? talent.galactic_guardian.spell() : sets->set( DRUID_GUARDIAN, MID1, B4 );
     gg->proc = true;
     active.galactic_guardian = gg;
 
@@ -11822,6 +11741,7 @@ void druid_t::create_actions()
   find_parent( active.echo_of_ravage, "wild_guardian" );
   find_parent( active.echo_of_raze, "wild_guardian" );
   find_parent( active.ferocious_bite_apex, "ferocious_bite" );
+  find_parent( active.shooting_stars_mid1, "shooting_stars" );
   find_parent( active.sundering_roar_thrash, "sundering_roar" );
   find_parent( active.the_light_of_elune, "moonfire" );
   find_parent( active.thrash_flashing, "thrash" );
@@ -12473,10 +12393,12 @@ void druid_t::init_special_effects()
       }
     };
 
+    auto driver_data = talent.galactic_guardian.ok() ? talent.galactic_guardian.spell() : find_spell( 203964 );
+
     const auto driver = new special_effect_t( this );
-    driver->name_str = talent.galactic_guardian->name_cstr();
-    driver->spell_id = talent.galactic_guardian->id();
-    driver->proc_chance_ = talent.galactic_guardian->effectN( 1 ).percent();
+    driver->name_str = driver_data->name_cstr();
+    driver->spell_id = driver_data->id();
+    driver->proc_chance_ = driver_data->effectN( 1 ).percent();
     special_effects.push_back( driver );
 
     new galactic_guardian_cb_t( this, *driver );
