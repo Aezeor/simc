@@ -2040,7 +2040,7 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
   if ( num_players == 1 )
   {
     auto max_col = class_columns( p.specialization(), p.is_ptr() ) + spec_columns( p.specialization(), p.is_ptr() );
-    auto h_ = static_cast<int>( 1165 - max_col * 29.125 );
+    auto h_ = static_cast<int>( 1165 - max_col * 29 );
     os.format( R"(<iframe src="{}" width="1165" height="{}"></iframe>)",
                raidbots_talent_render_src( p.talents_str, p.true_level, 1165, false, p.dbc->ptr ), h_ );
 
@@ -3823,7 +3823,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
   if ( p.sim->players_by_name.size() == 1 && p.is_player() )
   {
     auto max_col = class_columns( p.specialization(), p.is_ptr() ) + spec_columns( p.specialization(), p.is_ptr() );
-    auto w_ = static_cast<int>( max_col * 12.5 - 25 );
+    auto w_ = static_cast<int>( max_col * 12.5 - 20 );
     os.format(
       R"(<iframe src="{}" width="{}" height="125" style="margin-right: 8px; margin-top: 5px; float: left"></iframe>)",
       raidbots_talent_render_src( p.talents_str, p.true_level, w_, true, p.dbc->ptr ), w_ );
