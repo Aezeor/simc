@@ -4068,7 +4068,7 @@ struct chomp_t final : public cat_attack_t
 
   bool ready() override
   {
-    return !p()->buff.chomp_enabler->check() && cat_attack_t::ready();
+    return p()->buff.chomp_enabler->check() && cat_attack_t::ready();
   }
 };
 
@@ -9828,12 +9828,12 @@ void druid_t::activate()
     auto chomp_pct = spec.chomp_controller->effectN( 1 ).base_value() + 1;
     auto chomp_grace = buff.chomp_enabler->data().effectN( 1 ).time_value();
 
-    register_resource_callback( RESOURCE_ENERGY, chomp_pct, [ this, chomp_grace ] ( bool inc ) {
+    register_resource_callback( RESOURCE_ENERGY, chomp_pct, [ this, chomp_grace ]( bool inc ) {
       if ( inc && buff.chomp_enabler->check() )
-          buff.chomp_enabler->trigger( chomp_grace );
+        buff.chomp_enabler->trigger( chomp_grace );
       else if ( !inc )
         buff.chomp_enabler->trigger();
-    }, true );
+    }, true, false );
   }
 
   if ( talent.hunger_for_battle.ok() && talent.rip.ok() )
