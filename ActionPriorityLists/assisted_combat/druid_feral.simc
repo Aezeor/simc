@@ -29,10 +29,10 @@ actions.assisted_combat+=/frantic_frenzy,if=combo_points<=1&target.distance<=8&b
 actions.assisted_combat+=/frantic_frenzy,if=combo_points<=1&target.distance<=8&!cooldown.tigers_fury.ready
 actions.assisted_combat+=/convoke_the_spirits,if=target.distance<=5&combo_points<=3&buff.tigers_fury.up
 actions.assisted_combat+=/rake,if=!dot.rake.ticking
-actions.assisted_combat+=/moonfire,if=talent.lunar_inspiration&!dot.moonfire.ticking
+actions.assisted_combat+=/lunar_inspiration,if=talent.lunar_inspiration&!dot.moonfire.ticking
 actions.assisted_combat+=/swipe,if=target.distance<=8&active_enemies>3
 actions.assisted_combat+=/shred
-actions.assisted_combat+=/moonfire,if=talent.lunar_inspiration&target.distance>15
+actions.assisted_combat+=/lunar_inspiration,if=talent.lunar_inspiration&target.distance>15
 actions.assisted_combat+=/rake
 
 # Some cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
