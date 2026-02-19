@@ -580,6 +580,7 @@ struct druid_t final : public parse_player_effects_t
     action_t* shift_to_moonkin;
 
     // Balance
+    action_t* ascendant_eclipses;  // placeholder action
     action_t* denizen_of_the_dream;  // placeholder action
     action_t* lunar_bolt;
     action_t* moons;  // placeholder action
@@ -6991,6 +6992,9 @@ struct celestial_alignment_base_t : public trigger_control_of_the_dream_t<druid_
   {
     base_t::execute();
 
+    if ( p()->active.ascendant_eclipses )
+      p()->active.ascendant_eclipses->stats->iteration_num_executes++;
+
     if ( p()->buff.eclipse_lunar->check() && p()->buff.eclipse_solar->check() )
       p()->buff.dreamstate->trigger();
 
@@ -7067,6 +7071,17 @@ struct eclipse_base_t : public druid_spell_t
   bool ready() override
   {
     return get_eclipse_buff()->check() ? false : druid_spell_t::ready();
+  }
+
+  void start_gcd() override
+  {
+    druid_spell_t::start_gcd();
+
+    if ( p()->active.ascendant_eclipses )
+    {
+      p()->active.ascendant_eclipses->stats->iteration_num_executes++;
+      p()->active.ascendant_eclipses->stats->iteration_total_execute_time += player->gcd_ready - sim->current_time();
+    }
   }
 
   void execute() override
@@ -11468,14 +11483,15 @@ void druid_t::create_actions()
   // Balance
   if ( talent.ascendant_eclipses_3.ok() )
   {
-    auto proxy = new action_t( action_e::ACTION_OTHER, "ascendant_eclipses", this, talent.ascendant_eclipses_3 );
+    active.ascendant_eclipses =
+      new action_t( action_e::ACTION_OTHER, "ascendant_eclipses", this, talent.ascendant_eclipses_3 );
 
     auto lunar = get_secondary_action<lunar_bolt_t>( "lunar_bolt" );
-    proxy->add_child( lunar );
+    active.ascendant_eclipses->add_child( lunar );
     active.lunar_bolt = lunar;
 
     auto solar = get_secondary_action<solar_bolt_t>( "solar_bolt" );
-    proxy->add_child( solar );
+    active.ascendant_eclipses->add_child( solar );
     active.solar_bolt = solar;
   }
 
