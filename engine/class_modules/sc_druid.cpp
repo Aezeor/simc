@@ -7349,6 +7349,11 @@ struct lunar_bolt_t final : public druid_spell_t
       aoe = -1;
       reduced_aoe_targets = LUNAR_BOLT_REDUCED_AOE;
     }
+
+    result_e calculate_result( action_state_t* ) const override
+    {
+      return result_e::RESULT_CRIT;
+    }
   };
 
   lunar_bolt_t( druid_t* p ) : druid_spell_t( "lunar_bolt", p, p->find_spell( 1261700 ) )
@@ -8023,6 +8028,11 @@ struct solar_bolt_t final : public druid_spell_t
 
     if ( p->talent.ascendant_eclipses_3->effectN( 2 ).base_value() > 1.0 )
       aoe = as<int>( p->talent.ascendant_eclipses_3->effectN( 2 ).base_value() );
+  }
+
+  result_e calculate_result( action_state_t* ) const override
+  {
+    return result_e::RESULT_CRIT;
   }
 };
 
