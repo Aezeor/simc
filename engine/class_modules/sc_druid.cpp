@@ -12648,6 +12648,9 @@ void druid_t::init_blizzard_action_list()
 // druid_t::action_names_from_spell_id ======================================
 std::vector<std::string> druid_t::action_names_from_spell_id( unsigned int spell_id ) const
 {
+  if ( specialization() == DRUID_FERAL && spell_id == 8921 )
+    return { "lunar_inspiration" };
+
   if ( spell_id == 274281 )
     return { "new_moon", "half_moon", "full_moon" };
 
