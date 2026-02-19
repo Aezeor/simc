@@ -11053,6 +11053,7 @@ void druid_t::create_buffs()
 
   buff.stalking_predator = make_fallback( talent.unseen_predator_3.ok(),
     this, "stalking_predator", find_trigger( talent.unseen_predator_3 ).trigger() )
+      ->set_initial_stack_to_max_stack()
       ->set_consume_all_stacks( false );
 
   buff.sudden_ambush =
