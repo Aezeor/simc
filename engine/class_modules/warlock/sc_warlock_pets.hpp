@@ -65,6 +65,11 @@ static std::function<int( actor_target_data_t* )> pet_d_fn( T d, bool stack = tr
 
 struct warlock_pet_t : public pet_t
 {
+  struct affected_by_t
+  {
+    bool demonic_brutality = true;
+  } affected_by;
+
   action_t* special_action; // Used for pet interrupts (Axe Toss, Spell Lock)
   melee_attack_t* melee_attack;
   stats_t* summon_stats;
@@ -92,6 +97,7 @@ struct warlock_pet_t : public pet_t
   double composite_melee_auto_attack_speed() const override;
   double composite_melee_crit_chance() const override;
   double composite_spell_crit_chance() const override;
+  double composite_player_critical_damage_multiplier( const action_state_t*, school_e ) const override;
   void arise() override;
   void demise() override;
 
