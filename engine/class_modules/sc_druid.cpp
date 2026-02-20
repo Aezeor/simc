@@ -3578,14 +3578,14 @@ T* druid_t::get_secondary_action( std::string_view n, Ts&&... args )
 
   T* a;
 
-  if constexpr ( std::is_constructible_v<T, druid_t*, std::string_view, Ts...> )
+  if constexpr ( std::is_constructible_v<T, std::string_view, Ts...> )
+    a = new T( n, std::forward<Ts>( args )... );
+  else if constexpr ( std::is_constructible_v<T, druid_t*, std::string_view, Ts...> )
     a = new T( this, n, std::forward<Ts>( args )... );
   else if constexpr ( std::is_constructible_v<T, druid_t*, Ts...> )
     a = new T( this, std::forward<Ts>( args )... );
   else if constexpr ( std::is_constructible_v<T, druid_t*, std::string_view, const spell_data_t*, Ts...> )
     a = new T( this, n, nullptr, std::forward<Ts>( args )... );
-  else if constexpr ( std::is_constructible_v<T, std::string_view, Ts...> )
-    a = new T( n, std::forward<Ts>( args )... );
   else if constexpr ( std::is_constructible_v<T, Ts...> )
     a = new T( std::forward<Ts>( args )... );
   else
@@ -5838,7 +5838,6 @@ struct vicious_brambles_t final : residual_action::residual_periodic_action_t<be
     proc = true;
   }
 };
-
 } // end namespace bear_attacks
 
 namespace heals
@@ -12043,6 +12042,8 @@ void druid_t::init_resources( bool force )
 // druid_t::init_special_effects ============================================
 void druid_t::init_special_effects()
 {
+  using trigger_type = dbc_proc_callback_t::trigger_fn_type;
+
   struct druid_cb_t : public dbc_proc_callback_t
   {
     druid_cb_t( druid_t* p, const special_effect_t& e ) : dbc_proc_callback_t( p, e ) {}
@@ -12054,61 +12055,25 @@ void druid_t::init_special_effects()
   // bear form rage from being attacked
   if ( uses_bear_form() )
   {
-    struct rage_from_being_attacked_cb_t final : public druid_cb_t
-    {
-      gain_t* gain;
-      double rage;
-
-      rage_from_being_attacked_cb_t( druid_t* p, const special_effect_t& e )
-        : druid_cb_t( p, e ),
-          gain( p->get_gain( "Rage from being attacked" ) ),
-          rage( p->spec.bear_form_passive->effectN( 3 ).base_value() )
-      {}
-
-      void execute( action_t*, action_state_t* ) override
-      {
-        p()->resource_gain( RESOURCE_RAGE, rage, gain );
-      }
-    };
-
     const auto driver = new special_effect_t( this );
     driver->name_str = "rage_from_being_attacked";
     driver->spell_id = spec.bear_form_passive->id();
     special_effects.push_back( driver );
 
-    auto cb = new rage_from_being_attacked_cb_t( this, *driver );
+    auto _gain = get_gain( "Rage from being attacked" );
+    auto _rage = spec.bear_form_passive->effectN( 3 ).base_value();
+
+    callbacks.register_callback_execute_function( driver->spell_id, [ this, _gain, _rage ]( auto, auto, auto ) {
+      resource_gain( RESOURCE_RAGE, _rage, _gain );
+    } );
+
+    auto cb = new dbc_proc_callback_t( this, *driver );
     cb->activate_with_buff( buff.bear_form );
   }
 
   // Balance
   if ( talent.ascendant_eclipses_2.ok() )
   {
-    struct ascendant_eclipses_cb_t final : public druid_cb_t
-    {
-      struct astral_smolder_t : public residual_action::residual_periodic_action_t<druid_spell_t>
-      {
-        astral_smolder_t( druid_t* p ) : residual_action_t( "astral_smolder", p, p->find_spell( 1263250 ) )
-        {
-          proc = true;
-        }
-      };
-
-      action_t* smolder;
-      double smolder_mul;
-
-      ascendant_eclipses_cb_t( druid_t* p, const special_effect_t& e )
-        : druid_cb_t( p, e ),
-          smolder( p->get_secondary_action<astral_smolder_t>( "astral_smolder" ) ),
-          smolder_mul( p->talent.ascendant_eclipses_2->effectN( 1 ).percent() )
-      {}
-
-      void execute( action_t*, action_state_t* s ) override
-      {
-        if ( s->result_amount )
-          residual_action::trigger( smolder, s->target, s->result_amount * smolder_mul );
-      }
-    };
-
     const auto driver = new special_effect_t( this );
     driver->name_str = talent.ascendant_eclipses_2->name_cstr();
     driver->spell_id = talent.ascendant_eclipses_2->id();
@@ -12116,14 +12081,25 @@ void druid_t::init_special_effects()
     special_effects.push_back( driver );
 
     callbacks.register_callback_trigger_function(
-      driver->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION, [ this ]( auto, action_t* a, auto ) {
+      driver->spell_id, trigger_type::CONDITION, [ this ]( auto, action_t* a, auto ) {
         auto tmp = dynamic_cast<druid_action_data_t*>( a );
         assert( tmp && "Non-Druid action attempting to proc Ascendant Eclipses." );
 
         return !tmp->has_flag( flag_e::SYLVAN );
       } );
 
-    auto cb = new ascendant_eclipses_cb_t( this, *driver );
+    auto _damage = get_secondary_action<residual_action::residual_periodic_action_t<druid_spell_t>>(
+      "astral_smolder", this, find_spell( 1263250 ) );
+    _damage->proc = true;
+    auto _mul = talent.ascendant_eclipses_2->effectN( 1 ).percent();
+
+    callbacks.register_callback_execute_function(
+      driver->spell_id, [ this, _damage, _mul ]( auto, auto, const action_state_t* s ) {
+        if ( s->result_amount )
+          residual_action::trigger( _damage, s->target, s->result_amount * _mul );
+      } );
+
+    auto cb = new dbc_proc_callback_t( this, *driver );
     cb->deactivate();
 
     buff.eclipse_lunar->add_stack_change_callback( [ this, cb ]( buff_t* b, int, int ) {
@@ -12136,49 +12112,30 @@ void druid_t::init_special_effects()
 
   if ( talent.denizen_of_the_dream.ok() )
   {
-    struct denizen_of_the_dream_cb_t final : public druid_cb_t
-    {
-      proc_t* catto_proc;
-
-      denizen_of_the_dream_cb_t( druid_t* p, const special_effect_t& e )
-        : druid_cb_t( p, e ), catto_proc( p->get_proc( "Denizen of the Dream" )->collect_count() )
-      {}
-
-      void trigger( action_t* a, action_state_t* s ) override
-      {
-        if ( a->id == p()->spec.moonfire_dmg->id() || a->id == p()->spec.sunfire_dmg->id() )
-          dbc_proc_callback_t::trigger( a, s );
-      }
-
-      void execute( action_t*, action_state_t* ) override
-      {
-        p()->active.denizen_of_the_dream->execute();
-        p()->buff.denizen_of_the_dream->trigger();
-        catto_proc->occur();
-      }
-    };
-
     const auto driver = new special_effect_t( this );
     driver->name_str = talent.denizen_of_the_dream->name_cstr();
     driver->spell_id = talent.denizen_of_the_dream->id();
     special_effects.push_back( driver );
 
-    new denizen_of_the_dream_cb_t( this, *driver );
+    callbacks.register_callback_trigger_function(
+      driver->spell_id, trigger_type::CONDITION, [ this ]( auto, action_t* a, auto ) {
+        return a->id == spec.moonfire_dmg->id() || a->id == spec.sunfire_dmg->id();
+      } );
+
+    auto _proc = get_proc( "Denizen of the Dream" )->collect_count();
+
+    callbacks.register_callback_execute_function(
+      driver->spell_id, [ this, _proc ]( auto, auto, auto ) {
+        active.denizen_of_the_dream->execute();
+        buff.denizen_of_the_dream->trigger();
+        _proc->occur();
+      } );
+
+    new dbc_proc_callback_t( this, *driver );
   }
 
   if ( specialization() == DRUID_BALANCE && talent.moonkin_form.ok() )
   {
-    struct owlkin_frenzy_cb_t final : public druid_cb_t
-    {
-      owlkin_frenzy_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e ) {}
-
-      void trigger( action_t* a, action_state_t* s ) override
-      {
-        if ( s->n_targets == 1 )
-          druid_cb_t::trigger( a, s );
-      }
-    };
-
     const auto driver = new special_effect_t( this );
     driver->name_str = buff.owlkin_frenzy->name();
     driver->spell_id = talent.moonkin_form->id();
@@ -12187,7 +12144,12 @@ void druid_t::init_special_effects()
     driver->custom_buff = buff.owlkin_frenzy;
     special_effects.push_back( driver );
 
-    auto cb = new owlkin_frenzy_cb_t( this, *driver );
+    callbacks.register_callback_trigger_function(
+      driver->spell_id, trigger_type::CONDITION, [ this ]( auto, auto, const action_state_t* s ) {
+        return s->n_targets == 1;
+      } );
+
+    auto cb = new dbc_proc_callback_t( this, *driver );
     cb->activate_with_buff( buff.moonkin_form );
   }
 
@@ -12196,79 +12158,57 @@ void druid_t::init_special_effects()
   // Guardian
   if ( mastery.natures_guardian->ok() )
   {
-    struct natures_guardian_cb_t final : public druid_cb_t
-    {
-      struct natures_guardian_t final : public druid_heal_t
-      {
-        natures_guardian_t( druid_t* p ) : druid_heal_t( "natures_guardian", p, p->find_spell( 227034 ) )
-        {
-          background = proc = true;
-          callbacks = false;
-          target = p;
-        }
-      };
-
-      action_t* heal;
-
-      natures_guardian_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e )
-      {
-        heal = p->get_secondary_action<natures_guardian_t>( "natures_guardian" );
-      }
-
-      void trigger( action_t* a, action_state_t* s ) override
-      {
-        if ( a->id <= 0 || s->result_total <= 0 || a->harmful )
-          return;
-
-        if ( auto pct_heal = debug_cast<heal_t*>( a ); pct_heal->base_pct_heal || pct_heal->tick_pct_heal )
-          return;
-
-        druid_cb_t::trigger( a, s );
-      }
-
-      void execute( action_t*, action_state_t* s ) override
-      {
-        heal->base_dd_min = heal->base_dd_max = s->result_total * p()->cache.mastery_value();
-        heal->schedule_execute();
-      }
-    };
-
     const auto driver = new special_effect_t( this );
     driver->name_str = "natures_guardian";
     driver->spell_id = mastery.natures_guardian->id();
     driver->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_HEAL;
     special_effects.push_back( driver );
 
-    new natures_guardian_cb_t( this, *driver );
+    callbacks.register_callback_trigger_function(
+      driver->spell_id, trigger_type::CONDITION, [ this ]( auto, action_t* a, const action_state_t* s ) {
+        if ( a->id <= 0 || s->result_total <= 0 || a->harmful )
+          return false;
+
+        auto pct_heal = debug_cast<heal_t*>( a );
+        assert( pct_heal && "Non-heal action attempting to trigger Nature's Guardian." );
+
+        return !pct_heal->base_pct_heal && !pct_heal->tick_pct_heal;
+      } );
+
+    auto _heal = get_secondary_action<druid_heal_t>( "natures_guardian", this, find_spell( 227034 ) );
+    _heal->background = _heal->proc = true;
+    _heal->callbacks = false;
+    _heal->target = this;
+
+    callbacks.register_callback_execute_function(
+      driver->spell_id, [ this, _heal ]( auto, auto, const action_state_t* s ) {
+        _heal->base_dd_min = _heal->base_dd_max = s->result_total * cache.mastery_value();
+        _heal->schedule_execute();
+      } );
+
+    new dbc_proc_callback_t( this, *driver );
   }
 
   if ( talent.bristling_fur.ok() )
   {
-    struct bristling_fur_cb_t final : public druid_cb_t
-    {
-      gain_t* gain;
-      action_t* action;
-
-      bristling_fur_cb_t( druid_t* p, const special_effect_t& e )
-        : druid_cb_t( p, e ), gain( p->get_gain( "Bristling Fur" ) ), action( p->find_action( "bristling_fur" ) )
-      {}
-
-      void execute( action_t*, action_state_t* s ) override
-      {
-        // 1 rage per 1% of maximum health taken
-        auto pct = s->result_amount / p()->resources.max[ RESOURCE_HEALTH ];
-
-        p()->resource_gain( RESOURCE_RAGE, pct * 100, gain, action );
-      }
-    };
-
     const auto driver = new special_effect_t( this );
     driver->name_str = talent.bristling_fur->name_cstr();
     driver->spell_id = talent.bristling_fur->id();
     driver->cooldown_ = 0_ms;
     special_effects.push_back( driver );
 
-    auto cb = new bristling_fur_cb_t( this, *driver );
+    auto _gain = get_gain( "Bristling Fur" );
+    auto _action = find_action( "bristling_fur" );
+
+    callbacks.register_callback_execute_function(
+      driver->spell_id, [ this, _gain, _action ]( auto, auto, const action_state_t* s ) {
+        // 1 rage per 1% of maximum health taken
+        auto pct = s->result_amount / resources.max[ RESOURCE_HEALTH ];
+
+        resource_gain( RESOURCE_RAGE, pct * 100, _gain, _action );
+      } );
+
+    auto cb = new dbc_proc_callback_t( this, *driver );
     cb->activate_with_buff( buff.bristling_fur );
   }
 
@@ -12285,6 +12225,7 @@ void druid_t::init_special_effects()
 
   if ( talent.dream_of_cenarius_bear.ok() )
   {
+    // derived class needed as registered trigger_fn passes const dbc_proc_callback_t* and we need to adjust proc_chance
     struct dream_of_cenarius_cb_t final : public druid_cb_t
     {
       dream_of_cenarius_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e ) {}
@@ -12309,42 +12250,29 @@ void druid_t::init_special_effects()
 
   if ( talent.elunes_favored.ok() )
   {
-    struct elunes_favored_cb_t final : public druid_cb_t
-    {
-      double mul;
-
-      elunes_favored_cb_t( druid_t* p, const special_effect_t& e )
-        : druid_cb_t( p, e ), mul( p->talent.elunes_favored->effectN( 1 ).percent() )
-      {}
-
-      void trigger( action_t* a, action_state_t* s ) override
-      {
-        if ( p()->form != BEAR_FORM || !s->result_amount )
-          return;
-
-        // Elune's Favored heals off both arcane & nature damage
-        if ( !dbc::has_common_school( a->get_school(), SCHOOL_ASTRAL ) )
-          return;
-
-        druid_cb_t::trigger( a, s );
-      }
-
-      void execute( action_t*, action_state_t* s ) override
-      {
-        p()->buff.elunes_favored->current_value += s->result_amount * mul;
-      }
-    };
-
     const auto driver = new special_effect_t( this );
     driver->name_str = talent.elunes_favored->name_cstr();
     driver->spell_id = spec.elunes_favored->id();
     special_effects.push_back( driver );
 
-    new elunes_favored_cb_t( this, *driver );
+    callbacks.register_callback_trigger_function(
+      driver->spell_id, trigger_type::CONDITION, [ this ]( auto, action_t* a, auto ) {
+        return dbc::has_common_school( a->get_school(), SCHOOL_ASTRAL );
+      } );
+
+    auto _mul = talent.elunes_favored->effectN( 1 ).percent();
+    callbacks.register_callback_execute_function(
+      driver->spell_id, [ this, _mul ]( auto, auto, const action_state_t* s ) {
+          buff.elunes_favored->current_value += s->result_amount * _mul;
+      } );
+
+    auto cb = new dbc_proc_callback_t( this, *driver );
+    cb->activate_with_buff( buff.bear_form );
   }
 
   if ( talent.galactic_guardian.ok() || sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
   {
+    // derived class needed as registered trigger_fn passes const dbc_proc_callback_t* and we need to adjust proc_chance
     struct galactic_guardian_cb_t final : public druid_cb_t
     {
       proc_t* gg_proc;
@@ -12474,49 +12402,35 @@ void druid_t::init_special_effects()
 
   if ( talent.waking_nightmare.ok() )
   {
-    struct waking_nightmare_cb_t final : public druid_cb_t
-    {
-      waking_nightmare_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e ) {}
-
-      void execute( action_t*, action_state_t* ) override
-      {
-        p()->active.waking_nightmare->execute();
-        p()->buff.waking_nightmare->trigger();
-      }
-    };
-
     const auto driver = new special_effect_t( this );
     driver->name_str = talent.waking_nightmare->name_cstr();
     driver->spell_id = talent.waking_nightmare->id();
     special_effects.push_back( driver );
 
-    new waking_nightmare_cb_t( this, * driver );
+    callbacks.register_callback_execute_function( driver->spell_id, [ this ]( auto, auto, auto ) {
+      active.waking_nightmare->execute();
+      buff.waking_nightmare->trigger();
+    } );
+
+    new dbc_proc_callback_t( this, * driver );
   }
 
   // Hero talents
   if ( talent.boundless_moonlight.ok() && talent.lunar_beam.ok() )
   {
-    struct boundless_moonlight_heal_cb_t final : public druid_cb_t
-    {
-      double mul;
-
-      boundless_moonlight_heal_cb_t( druid_t* p, const special_effect_t& e )
-        : druid_cb_t( p, e ), mul( p->buff.boundless_moonlight_heal->data().effectN( 1 ).percent() )
-      {}
-
-      void execute( action_t*, action_state_t* s ) override
-      {
-        p()->buff.boundless_moonlight_heal->current_value += s->result_amount * mul;
-      }
-    };
-
     const auto driver = new special_effect_t( this );
     driver->name_str = talent.boundless_moonlight->name_cstr();
     // TODO: confirm if driver lasts for 12s as per spell data
     driver->spell_id = 425217;
     special_effects.push_back( driver );
 
-    auto cb = new boundless_moonlight_heal_cb_t( this, *driver );
+    auto _mul = buff.boundless_moonlight_heal->data().effectN( 1 ).percent();
+    callbacks.register_callback_execute_function(
+      driver->spell_id, [ this, _mul ]( auto, auto, const action_state_t* s ) {
+        buff.boundless_moonlight_heal->current_value += s->result_amount * _mul;
+      } );
+
+    auto cb = new dbc_proc_callback_t( this, *driver );
     cb->activate_with_buff( buff.lunar_beam );
 
     buff.lunar_beam->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
@@ -12529,48 +12443,30 @@ void druid_t::init_special_effects()
 
   if ( talent.implant.ok() && active.bloodseeker_vines_implant )
   {
-    struct implant_cb_t final : public druid_cb_t
-    {
-      implant_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e ) {}
-
-      // TODO: whitelist aoe spells as necessary if they can trigger
-      void trigger( action_t* a, action_state_t* s ) override
-      {
-        if ( s->result_amount > 0 && ( a->aoe == 0 || a->aoe == 1 ) )
-          druid_cb_t::trigger( a, s );
-      }
-
-      void execute( action_t* a, action_state_t* s ) override
-      {
-        p()->active.bloodseeker_vines_implant->execute_on_target( target( s, p()->active.bloodseeker_vines_implant ) );
-        p()->buff.implant->consume( a );
-      }
-    };
-
     const auto driver = new special_effect_t( this );
     driver->name_str = talent.implant->name_cstr();
     driver->spell_id = buff.implant->data().id();
     driver->proc_flags2_ = PF2_CAST_DAMAGE;
     special_effects.push_back( driver );
 
-    auto cb = new implant_cb_t( this, *driver );
+    // TODO: whitelist aoe spells as necessary if they can trigger
+    callbacks.register_callback_trigger_function(
+      driver->spell_id, trigger_type::CONDITION, [ this ]( auto, action_t* a, const action_state_t* s ) {
+        return ( s->result_amount > 0 && ( a->aoe == 0 || a->aoe == 1 ) );
+      } );
+
+    callbacks.register_callback_execute_function(
+      driver->spell_id, [ this ]( const dbc_proc_callback_t* cb, action_t* a, const action_state_t* s ) {
+        active.bloodseeker_vines_implant->execute_on_target( cb->target( s, active.bloodseeker_vines_implant ) );
+        buff.implant->consume( a );
+      } );
+
+    auto cb = new dbc_proc_callback_t( this, *driver );
     cb->activate_with_buff( buff.implant );
   };
 
   if ( talent.twin_claw.ok() )
   {
-    struct twin_claw_cb_t final : public druid_cb_t
-    {
-      twin_claw_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p ,e ) {}
-
-      void trigger( action_t* a, action_state_t* s ) override
-      {
-        // only raze can trigger despite being aoe
-        if ( s->result_amount && ( a->id == 400254 || a->aoe == 0 || a->aoe == 1 ) )
-          druid_cb_t::trigger( a, s );
-      }
-    };
-
     const auto driver = new special_effect_t( this );
     driver->name_str = talent.twin_claw->name_cstr();
     driver->spell_id = talent.twin_claw->id();
@@ -12594,7 +12490,13 @@ void druid_t::init_special_effects()
 
     special_effects.push_back( driver );
 
-    new twin_claw_cb_t( this, *driver );
+    callbacks.register_callback_trigger_function(
+      driver->spell_id, trigger_type::CONDITION, [ this ]( auto, action_t* a, const action_state_t* s ) {
+        // raze can trigger despite being aoe
+        return s->result_amount && ( a->id == talent.raze->id() || a->aoe == 0 || a->aoe == 1 );
+      } );
+
+    new dbc_proc_callback_t( this, *driver );
   }
 
   // NOTE: this must come after all dbc_proc_callback creation in order to properly initialize them all
