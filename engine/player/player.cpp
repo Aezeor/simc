@@ -12535,18 +12535,21 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     }
     else if ( splits[ 0 ] == "talent" )
     {
+      auto _name = splits[ 1 ];  // make a copy view
       auto _index = 0U;
+
       if ( auto _split = util::string_split<std::string_view>( splits[ 1 ], "_" );
            _split.size() >= 2 && util::is_number( _split.back() ) )
       {
+        _name = _name.substr( 0, _name.size() - _split.back().size() - 1 );
         _index = util::to_unsigned( _split.back() );
       }
 
-      _talent = find_talent_spell( talent_tree::SPECIALIZATION, splits[ 1 ], specialization(), true, _index );
+      _talent = find_talent_spell( talent_tree::SPECIALIZATION, _name, specialization(), true, _index );
       if ( _talent.invalid() )
-        _talent = find_talent_spell( talent_tree::HERO, splits[ 1 ], specialization(), true, _index );
+        _talent = find_talent_spell( talent_tree::HERO, _name, specialization(), true, _index );
       if ( _talent.invalid() )
-        _talent = find_talent_spell( talent_tree::CLASS, splits[ 1 ], specialization(), true, _index );
+        _talent = find_talent_spell( talent_tree::CLASS, _name, specialization(), true, _index );
 
       if ( _talent.invalid() )
         throw sc_invalid_apl_argument( fmt::format( "Talent '{}' not found.", splits[ 1 ] ) );
