@@ -567,6 +567,10 @@ void devouring_banding( special_effect_t& effect )
   damage->base_dd_max += proc_damage;
 
   effect.spell_id = effect.trigger()->id();
+  // TODO: Can this proc off of self damage?
+  effect.player->callbacks.register_callback_trigger_function(
+      effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      []( const dbc_proc_callback_t*, action_t*, action_state_t* s ) { return s->target->is_enemy(); } );
   effect.player->callbacks.register_callback_execute_function( effect.spell_id, [ damage, buff ]( auto, auto, auto s ) {
     assert( s->target->is_enemy() );
     damage->execute_on_target( s->target );
