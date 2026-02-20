@@ -12515,13 +12515,6 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
     if ( splits[ 0 ] == "apex" )
     {
-      // temporary hack to allow apex.# in prepatch apls
-      if ( sim->dbc->wowv() < wowv_t( 12, 0, 1 ) )
-      {
-        _talent = player_talent_t( this );
-      }
-      else
-      {
       // assume apex talents are always on the spec tree, and that each spec tree only has a single apex talent
       std::vector<const trait_data_t*> apex_traits;
 
@@ -12539,7 +12532,6 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
         throw sc_invalid_apl_argument( fmt::format( "Apex talent index '{}' not found.", splits[ 1 ] ) );
 
       _talent = create_talent_obj( this, apex_traits[ index ] );
-      }
     }
     else if ( splits[ 0 ] == "talent" )
     {
