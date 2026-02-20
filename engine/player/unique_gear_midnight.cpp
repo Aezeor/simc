@@ -886,14 +886,21 @@ namespace darkmoon
 // TODO: What happens with both the trinket, and embellishment active?
 void blood( special_effect_t& effect )
 {
+  // skip setup if callback has been created by already having trinket or embellishment
+  bool do_setup = find_special_effect( effect.player, effect.trigger()->id() ) == nullptr;
+
+  std::unordered_map<stat_e, buff_t*> buffs;
+
+  create_all_stat_buffs( effect, effect.player->find_spell( 1245025 ), effect.driver()->effectN( 1 ).average( effect ),
+    [ &buffs ]( stat_e s, buff_t* b ) { buffs[ s ] = b; }, do_setup );
+
   struct blood_cb_t : public dbc_proc_callback_t
   {
     std::unordered_map<stat_e, buff_t*> buffs;
-    blood_cb_t( const special_effect_t& e, const spell_data_t* value_driver ) : dbc_proc_callback_t( e.player, e )
-    {
-      create_all_stat_buffs( e, e.player->find_spell( 1245025 ), value_driver->effectN( 1 ).average( e ),
-                             [ this ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
-    }
+
+    blood_cb_t( const special_effect_t& e, std::unordered_map<stat_e, buff_t*> map )
+      : dbc_proc_callback_t( e.player, e ), buffs( map )
+    {}
 
     void execute( action_t*, action_state_t* ) override
     {
@@ -908,11 +915,13 @@ void blood( special_effect_t& effect )
     }
   };
 
-  auto value_driver = effect.driver();
+  if ( do_setup )
+  {
+    effect.spell_id = effect.trigger()->id();
 
-  effect.spell_id = 1245012;
-
-  new blood_cb_t( effect, value_driver );
+    // buff map passed as value
+    new blood_cb_t( effect, buffs );
+  }
 }
 
 // Rot
@@ -923,13 +932,14 @@ void blood( special_effect_t& effect )
 // TODO: What happens with both the trinket, and embellishment active?
 void rot( special_effect_t& effect )
 {
+  // skip setup if callback has been created by already having trinket or embellishment
+  bool do_setup = find_special_effect( effect.player, effect.trigger()->id() ) == nullptr;
+
   struct root_rot_t : public generic_proc_t
   {
-    root_rot_t( const special_effect_t& e, const spell_data_t* s, const spell_data_t* value_driver )
-      : generic_proc_t( e, "root_rot", s )
+    root_rot_t( const special_effect_t& e ) : generic_proc_t( e, "root_rot", e.trigger()->effectN( 1 ).trigger() )
     {
-      base_td = value_driver->effectN( 1 ).average( e );
-      dot_max_stack = 1; // Override Max Stacks to 1, this behavior is handled by the asyncronous debuff
+      dot_max_stack = 1;  // Override Max Stacks to 1, this behavior is handled by the asyncronous debuff
     }
 
     double composite_ta_multiplier( const action_state_t* s ) const override
@@ -946,9 +956,8 @@ void rot( special_effect_t& effect )
 
     buff_t* create_debuff( player_t* target ) override
     {
-      return make_buff<buff_t>( actor_pair_t( target, player ), "root_rot_debuff", player->find_spell( 1247411 ) )
-          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-          ->set_duration( data().duration() + 1_ms );  // Extra 1ms to avoid expiration before next tick
+      return make_buff<buff_t>( actor_pair_t( target, player ), "root_rot_debuff", &data() )
+        ->set_duration( data().duration() + 1_ms );  // Extra 1ms to avoid expiration before next tick
     }
 
     void execute() override
@@ -958,12 +967,16 @@ void rot( special_effect_t& effect )
     }
   };
 
-  effect.execute_action =
-      create_proc_action<root_rot_t>( "root_rot", effect, effect.player->find_spell( 1247411 ), effect.driver() );
+  auto dot = create_proc_action<root_rot_t>( "root_rot", effect );
+  dot->base_td += effect.driver()->effectN( 1 ).average( effect );
 
-  effect.spell_id = 1244332;
+  if ( do_setup )
+  {
+    effect.spell_id = effect.trigger()->id();
+    effect.execute_action = dot;
 
-  new dbc_proc_callback_t( effect.player, effect );
+    new dbc_proc_callback_t( effect.player, effect );
+  }
 }
 
 // Void
@@ -973,13 +986,19 @@ void rot( special_effect_t& effect )
 // 1244617 Asyncronous Buff
 void void_( special_effect_t& effect )
 {
-  auto buff = create_buff<stat_buff_t>( effect.player, "void_glass", effect.player->find_spell( 1244617 ) )
-                  ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) )
-                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+  // skip setup if callback has been created by already having trinket or embellishment
+  bool do_setup = find_special_effect( effect.player, effect.trigger()->id() ) == nullptr;
 
-  effect.custom_buff = buff;
-  effect.spell_id    = 1244253;
-  new dbc_proc_callback_t( effect.player, effect );
+  auto buff = create_buff<stat_buff_t>( effect.player, "void_glass", effect.trigger()->effectN( 1 ).trigger() )
+    ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+
+  if ( do_setup )
+  {
+    effect.custom_buff = buff;
+    effect.spell_id = effect.trigger()->id();
+
+    new dbc_proc_callback_t( effect.player, effect );
+  }
 }
 
 // Hunt
@@ -993,6 +1012,31 @@ void void_( special_effect_t& effect )
 // TODO: What happens with both the trinket, and embellishment active?
 void hunt( special_effect_t& effect )
 {
+  // skip setup if callback has been created by already having trinket or embellishment
+  bool do_setup = find_special_effect( effect.player, effect.trigger()->id() ) == nullptr;
+
+  auto haste_buff = create_buff<stat_buff_t>( effect.player, "hasty_hunt", effect.player->find_spell( 1252486 ) )
+    ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+
+  auto crit_buff = create_buff<stat_buff_t>( effect.player, "focused_hunt", effect.player->find_spell( 1252487 ) )
+    ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+
+  auto mastery_buff = create_buff<stat_buff_t>( effect.player, "masterful_hunt", effect.player->find_spell( 1252488 ) )
+    ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+
+  auto vers_buff = create_buff<stat_buff_t>( effect.player, "versatile_hunt", effect.player->find_spell( 1252489 ) )
+    ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+
+  // L'ura emulated as Undead, as we dont classify using CreatureType.db2 data. Not Specified triggers the vers buff
+  // like Undead and Giant.
+  static constexpr std::array<race_e, 9> raid_races = { RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,
+                                                        RACE_DRAGONKIN,  RACE_HUMANOID,   RACE_HUMANOID,
+                                                        RACE_ABERRATION, RACE_ELEMENTAL,  RACE_UNDEAD };
+
+  static constexpr std::array<race_e, 9> valid_races = { RACE_BEAST,     RACE_ELEMENTAL, RACE_MECHANICAL,
+                                                         RACE_UNDEAD,    RACE_HUMANOID,  RACE_ABERRATION,
+                                                         RACE_DRAGONKIN, RACE_GIANT,     RACE_DEMON };
+
   struct hunt_cb_t : public dbc_proc_callback_t
   {
     enum mode_e
@@ -1010,34 +1054,15 @@ void hunt( special_effect_t& effect )
     race_e race;
     mode_e mode;
 
-    // L'ura emulated as Undead, as we dont classify using CreatureType.db2 data. Not Specified triggers the vers buff like Undead and Giant.
-    std::array<race_e, 9> raid_races = { RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,   RACE_DRAGONKIN,
-                                         RACE_HUMANOID,   RACE_HUMANOID,   RACE_ABERRATION, RACE_ELEMENTAL, RACE_UNDEAD };
-
-    std::array<race_e, 9> valid_races = { RACE_BEAST,      RACE_ELEMENTAL, RACE_MECHANICAL, RACE_UNDEAD, RACE_HUMANOID,
-                                          RACE_ABERRATION, RACE_DRAGONKIN, RACE_GIANT,      RACE_DEMON };
-
-    hunt_cb_t( const special_effect_t& e, const spell_data_t* value_driver )
+    hunt_cb_t( const special_effect_t& e, buff_t* haste, buff_t* crit, buff_t* mastery, buff_t* vers )
       : dbc_proc_callback_t( e.player, e ),
-        haste_buff( nullptr ),
-        crit_buff( nullptr ),
-        mastery_buff( nullptr ),
-        vers_buff( nullptr ),
+        haste_buff( haste ),
+        crit_buff( crit ),
+        mastery_buff( mastery ),
+        vers_buff( vers ),
         race( RACE_NONE ),
         mode( MODE_RAID_RANDOM )
     {
-      haste_buff = make_buff<stat_buff_t>( e.player, "hasty_hunt", e.player->find_spell( 1252486 ) )
-                       ->add_stat_from_effect_type( A_MOD_RATING, value_driver->effectN( 1 ).average( e ) );
-
-      crit_buff = make_buff<stat_buff_t>( e.player, "focused_hunt", e.player->find_spell( 1252487 ) )
-                      ->add_stat_from_effect_type( A_MOD_RATING, value_driver->effectN( 1 ).average( e ) );
-
-      mastery_buff = make_buff<stat_buff_t>( e.player, "masterful_hunt", e.player->find_spell( 1252488 ) )
-                         ->add_stat_from_effect_type( A_MOD_RATING, value_driver->effectN( 1 ).average( e ) );
-
-      vers_buff = make_buff<stat_buff_t>( e.player, "versatile_hunt", e.player->find_spell( 1252489 ) )
-                      ->add_stat_from_effect_type( A_MOD_RATING, value_driver->effectN( 1 ).average( e ) );
-
       if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "none" ) ||
            listener->sim->fight_style == fight_style_e::FIGHT_STYLE_DUNGEON_ROUTE )
         mode = MODE_ACTUAL;
@@ -1046,36 +1071,33 @@ void hunt( special_effect_t& effect )
       else if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "raid_random" ) )
         mode = MODE_RAID_RANDOM;
       else
+      {
         mode = MODE_SPECIFIED;
 
-      if ( mode == MODE_SPECIFIED )
-      {
-        // Not specified type triggers Vers. Since we dont classify by CreatureType, this is a bit of a workaround to get the proper buff.
+        // Not specified type triggers Vers. Since we dont classify by CreatureType, this is a bit of a workaround to
+        // get the proper buff.
         if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "not_specified" ) )
           race = RACE_UNDEAD;
         else
           race = util::parse_race_type( e.player->midnight_opts.darkmoon_hunt_race );
+
         if ( !range::contains( valid_races, race ) )
         {
           std::vector<std::string> valid_strings;
-          for (auto r : valid_races)
+          for ( auto r : valid_races )
           {
             std::string val = util::race_type_string( r );
             valid_strings.emplace_back( val );
           }
 
           e.player->sim->error( error_level_e::SEVERE,
-                                "midnight.darkmoon_hunt_race has invalid race type '{}'. Valid race types "
-                                "are {}. Defaulting to targets actual race.",
+                                "midnight.darkmoon_hunt_race has invalid race type '{}'. Valid race types are {}. "
+                                "Defaulting to targets actual race.",
                                 listener->midnight_opts.darkmoon_hunt_race, fmt::join( valid_strings, ", " ) );
-              
+
           mode = MODE_ACTUAL;
         }
       }
-      if ( mode == MODE_RANDOM )
-        pick_random_race();
-      if ( mode == MODE_RAID_RANDOM )
-        pick_random_raid_race();
     }
 
     void pick_random_race()
@@ -1094,7 +1116,7 @@ void hunt( special_effect_t& effect )
       // Pick a new random race each iteration
       if ( mode == MODE_RANDOM )
         pick_random_race();
-      if ( mode == MODE_RAID_RANDOM )
+      else if ( mode == MODE_RAID_RANDOM )
         pick_random_raid_race();
     }
 
@@ -1133,11 +1155,12 @@ void hunt( special_effect_t& effect )
     }
   };
 
-  auto value_driver = effect.driver();
+  if ( do_setup )
+  {
+    effect.spell_id = effect.trigger()->id();
 
-  effect.spell_id = 1252457;
-
-  new hunt_cb_t( effect, value_driver );
+    new hunt_cb_t( effect, haste_buff, crit_buff, mastery_buff, vers_buff );
+  }
 }
 }  // namespace darkmoon
 
