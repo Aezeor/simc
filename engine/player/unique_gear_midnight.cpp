@@ -434,7 +434,6 @@ void strength_of_halazzi( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
-
 }  // namespace enchants
 
 namespace embellishments
@@ -919,8 +918,7 @@ void blood( special_effect_t& effect )
   {
     effect.spell_id = effect.trigger()->id();
 
-    // buff map passed as value
-    new blood_cb_t( effect, buffs );
+    new blood_cb_t( effect, std::move( buffs ) );
   }
 }
 
@@ -1015,17 +1013,16 @@ void hunt( special_effect_t& effect )
   // skip setup if callback has been created by already having trinket or embellishment
   bool do_setup = find_special_effect( effect.player, effect.trigger()->id() ) == nullptr;
 
-  auto haste_buff = create_buff<stat_buff_t>( effect.player, "hasty_hunt", effect.player->find_spell( 1252486 ) )
-    ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+  std::unordered_map<stat_e, buff_t*> buffs;
 
-  auto crit_buff = create_buff<stat_buff_t>( effect.player, "focused_hunt", effect.player->find_spell( 1252487 ) )
-    ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+  for ( auto id : { 1252486, 1252487, 1252488, 1252489 } )
+  {
+    auto spell = effect.player->find_spell( id );
+    auto buff = create_buff<stat_buff_t>( effect.player, util::tokenize_fn( spell->name_cstr() ), spell )
+      ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
 
-  auto mastery_buff = create_buff<stat_buff_t>( effect.player, "masterful_hunt", effect.player->find_spell( 1252488 ) )
-    ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
-
-  auto vers_buff = create_buff<stat_buff_t>( effect.player, "versatile_hunt", effect.player->find_spell( 1252489 ) )
-    ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+    buffs[ buff->stats.front().stat ] = buff;
+  }
 
   // L'ura emulated as Undead, as we dont classify using CreatureType.db2 data. Not Specified triggers the vers buff
   // like Undead and Giant.
@@ -1047,21 +1044,12 @@ void hunt( special_effect_t& effect )
       MODE_RAID_RANDOM
     };
 
-    buff_t* haste_buff;
-    buff_t* crit_buff;
-    buff_t* mastery_buff;
-    buff_t* vers_buff;
+    std::unordered_map<stat_e, buff_t*> buffs;
     race_e race;
     mode_e mode;
 
-    hunt_cb_t( const special_effect_t& e, buff_t* haste, buff_t* crit, buff_t* mastery, buff_t* vers )
-      : dbc_proc_callback_t( e.player, e ),
-        haste_buff( haste ),
-        crit_buff( crit ),
-        mastery_buff( mastery ),
-        vers_buff( vers ),
-        race( RACE_NONE ),
-        mode( MODE_RAID_RANDOM )
+    hunt_cb_t( const special_effect_t& e, std::unordered_map<stat_e, buff_t*> map )
+      : dbc_proc_callback_t( e.player, e ), buffs( map ), race( RACE_NONE ), mode( MODE_RAID_RANDOM )
     {
       if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "none" ) ||
            listener->sim->fight_style == fight_style_e::FIGHT_STYLE_DUNGEON_ROUTE )
@@ -1126,20 +1114,20 @@ void hunt( special_effect_t& effect )
       {
         case RACE_HUMANOID:
         case RACE_DRAGONKIN:
-          mastery_buff->trigger();
+          buffs[ STAT_MASTERY_RATING ]->trigger();
           break;
         case RACE_ABERRATION:
         case RACE_ELEMENTAL:
         case RACE_DEMON:
-          haste_buff->trigger();
+          buffs[ STAT_HASTE_RATING ]->trigger();
           break;
         case RACE_BEAST:
         case RACE_MECHANICAL:
-          crit_buff->trigger();
+          buffs[ STAT_CRIT_RATING ]->trigger();
           break;
         case RACE_GIANT:
         case RACE_UNDEAD:
-          vers_buff->trigger();
+          buffs[ STAT_VERSATILITY_RATING ]->trigger();
           break;
         default:
           break;
@@ -1159,7 +1147,7 @@ void hunt( special_effect_t& effect )
   {
     effect.spell_id = effect.trigger()->id();
 
-    new hunt_cb_t( effect, haste_buff, crit_buff, mastery_buff, vers_buff );
+    new hunt_cb_t( effect, std::move( buffs ) );
   }
 }
 }  // namespace darkmoon
