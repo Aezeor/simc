@@ -4713,7 +4713,7 @@ struct meteor_t final : public fire_mage_spell_t
     if ( p()->action.isothermic_comet_storm )
       p()->action.isothermic_comet_storm->execute_on_target( target );
     
-    if ( p()->talents.sunfury_execution.ok() )
+    if ( p()->talents.pyroclasm.ok() && p()->talents.sunfury_execution.ok() )
        p()->buffs.pyroclasm->execute();
   }
 };
