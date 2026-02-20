@@ -8131,7 +8131,7 @@ struct starfall_t final : public ap_spender_t
       auto pre = name_str.substr( 0, name_str.find_last_of( '_' ) );
       damage = p->get_secondary_action<starfall_damage_t>( pre + "_damage", damage_spell, f );
 
-      if ( p->talent.meteorites.ok() )
+      if ( p->talent.meteorites.ok() && !has_flag( flag_e::SYLVAN ) )
         meteorites = p->get_secondary_action<meteorites_t>( pre + "_meteorite", f );
     }
 
@@ -11721,7 +11721,7 @@ void druid_t::create_actions()
 
     auto driver = get_secondary_action<starfall_t::starfall_driver_t>(
       "sylvan_beckoning_starfall_driver", find_trigger( spec.sylvan_beckoning_sf ).trigger(), find_spell( 1264676 ),
-      flag_e::NONE );
+      flag_e::SYLVAN );
     driver->name_str_reporting = "starfall";
     replace_stats( driver, driver->damage );
     active.sylvan_beckoning->add_child( driver );
@@ -12120,6 +12120,14 @@ void druid_t::init_special_effects()
           smolder( p->get_secondary_action<astral_smolder_t>( "astral_smolder" ) ),
           smolder_mul( p->talent.ascendant_eclipses_2->effectN( 1 ).percent() )
       {}
+
+      void trigger( action_t* a, action_state_t* s ) override
+      {
+        if ( auto tmp = dynamic_cast<druid_action_data_t*>( a ); tmp->has_flag( flag_e::SYLVAN ) )
+          return;
+
+        druid_cb_t::trigger( a, s );
+      }
 
       void execute( action_t*, action_state_t* s ) override
       {
