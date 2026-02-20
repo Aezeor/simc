@@ -2,14 +2,12 @@
 
 #include "config.hpp"
 
-#include "generated/active_spells.inc"
-#include "generated/passive_spells.inc"
+#include "generated/class_spells.inc"
 #include "util/util.hpp"
 
 #include <array>
 #if SC_USE_PTR == 1
-#include "generated/active_spells_ptr.inc"
-#include "generated/passive_spells_ptr.inc"
+#include "generated/class_spells_ptr.inc"
 #endif
 
 namespace
