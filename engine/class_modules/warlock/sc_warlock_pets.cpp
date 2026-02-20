@@ -18,6 +18,8 @@ warlock_pet_t::warlock_pet_t( warlock_t* owner, util::string_view pet_name, pet_
   owner_coeff.sp_from_sp = 1.0;
   owner_coeff.health = 0.5;
 
+  affected_by.demonic_brutality = owner->talents.demonic_brutality.ok();
+
   register_on_arise_callback( this, [ owner ]() { owner->n_active_pets++; } );
   register_on_demise_callback( this, [ owner ]( const player_t* ) { owner->n_active_pets--; } );
 }
@@ -313,19 +315,6 @@ imp_pet_t::imp_pet_t( warlock_t* owner, util::string_view name )
   owner_coeff.health = 0.45;
 
   is_main_pet = true;
-}
-
-double imp_pet_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
-{
-  double m = warlock_pet_t::composite_player_critical_damage_multiplier( s, school );
-
-  // NOTE: Demonic Brutality is dealing 260% critical damage instead the expected 230% (bug?)
-  if ( bugs )
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent();
-  else
-    m += o()->talents.demonic_brutality->effectN( 2 ).percent() / 2.0;
-
-  return m;
 }
 
 action_t* imp_pet_t::create_action( util::string_view name, util::string_view options_str )
