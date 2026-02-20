@@ -4277,7 +4277,6 @@ void paladin_t::init_spells()
   else
     spells.avenging_wrath = find_spell( 31884 );
 
-  spells.judgment_2             = find_rank_spell( "Judgment", "Rank 2" );         // 327977
   spec.word_of_glory_2          = find_rank_spell( "Word of Glory", "Rank 2" );
   spells.divine_purpose_buff    = find_spell( specialization() == PALADIN_RETRIBUTION ? 408458 : 223819 );
   spells.sanctify               = find_spell( 382538 );
@@ -4296,7 +4295,6 @@ void paladin_t::init_spells()
 
   spells.herald_of_the_sun.dawnlight_aoe_metadata = find_spell( 431581 );
 
-  passives.boundless_conviction = find_spell( 115675 );
   // Manually add judgment spells to swift justice
   register_passive_affect_list( talents.swift_justice, affect_list_t( 2 ).add_spell( 20271, 275773, 275779 ) );
   // Add Judgment AoE. Damage still handled manually. Hammer of Wrath also handled manually, since that AoE is 1, instead of 0
@@ -4306,8 +4304,6 @@ void paladin_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
-
-  parse_passive_effects( passives.boundless_conviction );
 }
 
 // paladin_t::primary_role ==================================================

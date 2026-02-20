@@ -6264,11 +6264,6 @@ void mage_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
-
-  // Wizardry
-  parse_passive_effects( find_spell( 89744 ) );
-  // Mana Attunement
-  parse_passive_effects( find_spell( 121039 ) );
 }
 
 void mage_t::init_base_stats()

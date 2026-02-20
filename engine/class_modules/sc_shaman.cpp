@@ -1500,7 +1500,6 @@ public:
     const spell_data_t* elemental_shaman;   // general spec multiplier
     const spell_data_t* elemental_shaman2;  // .. and another
     const spell_data_t* elemental_shaman3;  // ...... and another
-    const spell_data_t* lightning_bolt_2;   // casttime reduction
     const spell_data_t* lava_burst_2;       // 7.1 Lava Burst autocrit with FS passive
     const spell_data_t* maelstrom;
     const spell_data_t* lava_surge;
@@ -10609,7 +10608,6 @@ void shaman_t::init_spells()
   spec.elemental_shaman3 = find_specialization_spell( 1231772 );
   spec.maelstrom         = find_specialization_spell( 343725 );
   spec.lava_surge        = find_specialization_spell( "Lava Surge" );
-  spec.lightning_bolt_2  = find_rank_spell( "Lightning Bolt", "Rank 2" );
   spec.lava_burst_2      = find_rank_spell( "Lava Burst", "Rank 2" );
   spec.inundate          = find_specialization_spell( "Inundate" );
   spec.stormkeeper_2     = find_spell( 383009 );

@@ -17,7 +17,7 @@
 #include "action/spell.hpp"
 #include "action/variable.hpp"
 #include "buff/buff.hpp"
-#include "dbc/active_spells.hpp"
+#include "dbc/class_spells.hpp"
 #include "dbc/azerite.hpp"
 #include "dbc/character_loadout.hpp"
 #include "dbc/dbc.hpp"
@@ -16420,17 +16420,13 @@ void player_t::register_passive_affect_list( const spell_data_t* spell, const af
 
 void player_t::parse_all_class_passives()
 {
-  // class aura
-  parse_passive_effects( find_spell( dbc::get_class_aura_id( type ) ), false, PARSE_SOURCE_CLASS );
-
-  // class-wide rank spells
-  for ( const auto& rank_spell : rank_class_spell_t::data( dbc->ptr ) )
+  // class passives
+  for ( const auto& passive_spell : passive_class_spell_t::data( dbc->ptr ) )
   {
-    if ( as<int>( rank_spell.class_id ) == util::class_id( type ) && rank_spell.spec_id == 0 )
+    if ( as<int>( passive_spell.class_id ) == util::class_id( type ) )
     {
-      auto spell = find_spell( rank_spell.spell_id );
-      if ( spell->flags( SX_PASSIVE ) )
-        parse_passive_effects( spell, false, PARSE_SOURCE_CLASS );
+      auto spell = find_spell( passive_spell.spell_id );
+      parse_passive_effects( spell, false, PARSE_SOURCE_CLASS );
     }
   }
 
