@@ -1958,6 +1958,7 @@ public:
       case 197628:  // starfire offspec
       case 383410:  // celestial alignment orbital strike
       case 390414:  // incarnation orbital strike
+      case 1252871: // red moon
         return true;
       default:
         return false;
