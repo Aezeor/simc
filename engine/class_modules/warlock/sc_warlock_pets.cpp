@@ -1558,7 +1558,7 @@ struct dominion_of_argus_spell_base_t : public warlock_pet_spell_t
 };
 
   dominion_of_argus_pet_t::dominion_of_argus_pet_t( warlock_t* owner, std::string_view n, pet_e type )
-  : warlock_pet_t( owner, n, type, true )
+  : warlock_pet_t( owner, n, type, true ), main_action( nullptr )
 {
   resource_regeneration = regen_type::DISABLED;
   affected_by.demonic_brutality = false;
@@ -2300,6 +2300,7 @@ namespace diabolist
     : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true )
   {
     is_diabolist_guardian = true;
+    affected_by.demonic_brutality = false;
 
     action_list_str = "chaos_salvo";
   }
@@ -2379,6 +2380,7 @@ namespace diabolist
     : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true )
   {
     is_diabolist_guardian = true;
+    affected_by.demonic_brutality = false;
     resource_regeneration = regen_type::DISABLED;
 
     action_list_str = "felseeker";
@@ -2576,10 +2578,11 @@ struct soul_swipe_t : public soul_swipe_base_t
 rampaging_demonic_soul_t::rampaging_demonic_soul_t( warlock_t* owner, std::string_view name )
   : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true ), summon_spell( nullptr )
 {
-  resource_regeneration  = regen_type::DISABLED;
-  action_list_str        = "soul_swipe";
-  owner_coeff.sp_from_sp = 1.0;
-  summon_spell           = owner->find_spell( 1269042 ); // Rampaging Demonic Soul
+  resource_regeneration         = regen_type::DISABLED;
+  affected_by.demonic_brutality = false;
+  action_list_str               = "soul_swipe";
+  owner_coeff.sp_from_sp        = 1.0;
+  summon_spell                  = owner->find_spell( 1269042 );  // Rampaging Demonic Soul
 }
 
 void rampaging_demonic_soul_t::arise()
