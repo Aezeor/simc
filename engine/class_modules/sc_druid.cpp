@@ -8818,13 +8818,15 @@ struct wrath_t final : public umbral_embrace_t<wrath_base_t>
       // as simc only looks at the average, apply a half strength modifier.
       auto val = p->talent.arcane_affinity->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + val * 0.5;
-      sim->print_debug( "{} base_dd_multiplier modified by {}%", *this, val * 50 );
+      sim->print_debug( "Arcane Affinity ({}) eff#1 modifying {} ({}) direct damage by {:.7g}%",
+                        p->talent.arcane_affinity->id(), *this, data().id(), val * 50 );
 
       // arcane affinity applies fully to umbral embrace'd wrath
       if ( umbral )
       {
         umbral->base_dd_multiplier *= 1.0 + val;
-        sim->print_debug( "{} base_dd_multiplier modified by {}%", *umbral, val * 100 );
+        sim->print_debug( "Arcane Affinity ({}) eff#1 modifying {} ({}) direct damage by {:.7g}%",
+                          p->talent.arcane_affinity->id(), *umbral, umbral->data().id(), val * 100 );
       }
     }
 
