@@ -12090,27 +12090,6 @@ void druid_t::init_special_effects()
         astral_smolder_t( druid_t* p ) : residual_action_t( "astral_smolder", p, p->find_spell( 1263250 ) )
         {
           proc = true;
-          /* TODO: determine if these bugs still exist
-          // eclipse snapshot script seems to be overriding all damage modifications including standard whitelists
-          if ( p->bugs )
-          {
-            da_multiplier_effects.clear();
-            ta_multiplier_effects.clear();
-            target_multiplier_effects.clear();
-            persistent_multiplier_effects.clear();
-          }
-
-          // double dips and snapshots eclipse via script
-          add_parse_entry( persistent_multiplier_effects )
-            .set_buff( p->buff.eclipse_lunar )
-            .set_type( USE_CURRENT )
-            .set_eff( &p->spec.eclipse_lunar->effectN( 7 ) );
-
-          add_parse_entry( persistent_multiplier_effects )
-            .set_buff( p->buff.eclipse_solar )
-            .set_type( USE_CURRENT )
-            .set_eff( &p->spec.eclipse_solar->effectN( 8 ) );
-          */
         }
       };
 
