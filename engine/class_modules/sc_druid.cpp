@@ -8999,8 +8999,8 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
   } actions;
 
   std::vector<convoke_cast_e> cast_list;
-  std::vector<convoke_cast_e> offspec_list;
   std::vector<std::pair<convoke_cast_e, double>> chances;
+  std::vector<std::pair<convoke_cast_e, double>> offspec;
 
   shuffled_rng_t* deck = nullptr;
 
@@ -9171,11 +9171,13 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
   void _execute_bear()
   {
     main_count   = 0;
-    offspec_list = { CAST_HEAL, CAST_HEAL, CAST_RAKE, CAST_WRATH };
-    chances      = { { CAST_THRASH, guidance ? 0.85 : 0.95 },
-                     { CAST_IRONFUR, 1.0 },
-                     { CAST_MANGLE, 1.0 }
-                   };
+
+    chances = { { CAST_THRASH, guidance ? 0.85 : 0.95 },
+                { CAST_IRONFUR, 1.0 },
+                { CAST_MANGLE, 1.0 } };
+    offspec = { { CAST_HEAL, 0.5 },
+                { CAST_RAKE, 0.25 },
+                { CAST_WRATH, 0.25 } };
 
     cast_list.insert( cast_list.end(),
                       static_cast<int>( rng().range( guidance ? 3.5 : 5, guidance ? 6 : 7 ) ),
@@ -9188,8 +9190,10 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
   {
     convoke_cast_e type_ = base_type == CAST_EXCEPTIONAL ? CAST_MAUL : base_type;
 
-    if ( type_ == CAST_OFFSPEC && !offspec_list.empty() )
-      type_ = rng().range( offspec_list );
+    if ( type_ == CAST_OFFSPEC )
+    {
+      type_ = get_cast_from_dist( offspec );
+    }
     else if ( type_ == CAST_SPEC )
     {
       auto dist = chances;  // local copy of distribution
@@ -9222,11 +9226,11 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
 
   void _execute_cat()
   {
-    offspec_list = { CAST_HEAL, CAST_HEAL, CAST_WRATH, CAST_MOONFIRE };
-    chances      = { { CAST_SHRED, 0.10 },
-                     { CAST_THRASH, 0.0588 },
-                     { CAST_RAKE, 0.22 }
-                   };
+    chances = { { CAST_SHRED, 0.10 },
+                { CAST_RAKE,  0.22 } };
+    offspec = { { CAST_HEAL, 0.35 },
+                { CAST_MOONFIRE, 0.5 },
+                { CAST_WRATH, 0.15 } };
 
     cast_list.insert( cast_list.end(),
                       static_cast<size_t>( rng().range( guidance ? 2.5 : 4, guidance ? 7.5 : 9 ) ),
@@ -9234,20 +9238,19 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
 
     insert_exceptional();
 
-    cast_list.insert(
-        cast_list.end(),
-        static_cast<size_t>( rng().gauss_ab( guidance ? 3 : 4.2, guidance ? 0.8 : 0.9360890055, as<double>( 0 ),
-                                             as<double>( max_ticks - cast_list.size() ) ) ),
-        CAST_MAIN );
+    auto bites = rng().gauss_ab( guidance ? 3 : 4.2, guidance ? 0.8 : 0.9360890055, 0.0,
+                                 as<double>( max_ticks - cast_list.size() ) );
+
+    cast_list.insert( cast_list.end(), static_cast<size_t>( bites ), CAST_MAIN );
   }
 
   convoke_cast_e _tick_cat( convoke_cast_e base_type, const std::vector<player_t*>& tl, player_t*& conv_tar )
   {
     convoke_cast_e type_ = base_type == CAST_EXCEPTIONAL ? CAST_FERAL_FRENZY : base_type;
 
-    if ( base_type == CAST_OFFSPEC && !offspec_list.empty() )
+    if ( base_type == CAST_OFFSPEC )
     {
-      type_ = rng().range( offspec_list );
+      type_ = get_cast_from_dist( offspec );
     }
     else if ( base_type == CAST_MAIN )
     {
@@ -9256,8 +9259,7 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
     }
     else if ( base_type == CAST_SPEC )
     {
-      auto dist = chances;
-      type_ = get_cast_from_dist( dist );
+      type_ = get_cast_from_dist( chances );
     }
     else if ( base_type == CAST_FERAL_FRENZY )
     {
