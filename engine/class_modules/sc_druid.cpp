@@ -7738,7 +7738,7 @@ struct moonfire_t final : public druid_spell_t
     auto m_data = p->get_modified_spell( &data() )
       ->parse_effects( p->buff.galactic_guardian );
 
-    if ( p->spec.astral_power->ok() && !has_flag( flag_e::TWIN ) )
+    if ( p->spec.astral_power->ok() && !has_flag( flag_e::TWIN ) && !has_flag( flag_e::TREANT ) )
     {
       energize_type = action_energize::ON_CAST;
       energize_resource = RESOURCE_ASTRAL_POWER;
