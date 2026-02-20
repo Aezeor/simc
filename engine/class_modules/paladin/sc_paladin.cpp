@@ -1702,12 +1702,9 @@ void hammer_of_wrath_t::execute()
     p()->buffs.templar.shake_the_heavens->extend_duration(
         p(), timespan_t::from_seconds( p()->talents.templar.higher_calling->effectN( 1 ).base_value() ) );
   }
-  if (crit_any_target)
+  if ( crit_any_target )
   {
-    if (!(p()->bugs && p()->talents.sweeping_verdict->ok()))
-    {
-      trigger_hammer_and_anvil( p(), execute_state->target, hammer_and_anvil, HAA_JUDGMENT );
-    }
+    trigger_hammer_and_anvil( p(), execute_state->target, hammer_and_anvil, HAA_JUDGMENT );
   }
 }
 
