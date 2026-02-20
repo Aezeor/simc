@@ -12102,14 +12102,6 @@ void druid_t::init_special_effects()
           smolder_mul( p->talent.ascendant_eclipses_2->effectN( 1 ).percent() )
       {}
 
-      void trigger( action_t* a, action_state_t* s ) override
-      {
-        if ( auto tmp = dynamic_cast<druid_action_data_t*>( a ); tmp->has_flag( flag_e::SYLVAN ) )
-          return;
-
-        druid_cb_t::trigger( a, s );
-      }
-
       void execute( action_t*, action_state_t* s ) override
       {
         if ( s->result_amount )
@@ -12122,6 +12114,14 @@ void druid_t::init_special_effects()
     driver->spell_id = talent.ascendant_eclipses_2->id();
     driver->proc_flags2_ = PF2_CRIT;
     special_effects.push_back( driver );
+
+    callbacks.register_callback_trigger_function(
+      driver->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION, [ this ]( auto, action_t* a, auto ) {
+        auto tmp = dynamic_cast<druid_action_data_t*>( a );
+        assert( tmp && "Non-Druid action attempting to proc Ascendant Eclipses." );
+
+        return !tmp->has_flag( flag_e::SYLVAN );
+      } );
 
     auto cb = new ascendant_eclipses_cb_t( this, *driver );
     cb->deactivate();
