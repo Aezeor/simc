@@ -9248,20 +9248,20 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
   {
     convoke_cast_e type_ = base_type == CAST_EXCEPTIONAL ? CAST_FERAL_FRENZY : base_type;
 
-    if ( base_type == CAST_OFFSPEC )
+    if ( type_ == CAST_OFFSPEC )
     {
       type_ = get_cast_from_dist( offspec );
     }
-    else if ( base_type == CAST_MAIN )
+    else if ( type_ == CAST_MAIN )
     {
       type_ = CAST_FEROCIOUS_BITE;
       conv_tar = p()->target;
     }
-    else if ( base_type == CAST_SPEC )
+    else if ( type_ == CAST_SPEC )
     {
       type_ = get_cast_from_dist( chances );
     }
-    else if ( base_type == CAST_FERAL_FRENZY )
+    else if ( type_ == CAST_FERAL_FRENZY )
     {
       conv_tar = p()->target;
     }
