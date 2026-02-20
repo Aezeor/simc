@@ -10504,8 +10504,6 @@ void druid_t::init_spells()
   register_passive_effect_mask( talent.circle_of_the_heavens, circle_mask );
   register_passive_effect_mask( talent.circle_of_the_wild, circle_mask );
 
-  register_passive_effect_mask( talent.bask_in_moonlight, specialization() == DRUID_BALANCE
-    ? effect_mask_t( false ).enable( 1, 2 ) : effect_mask_t( false ).enable( 3, 4 ) );
   register_passive_effect_mask( talent.patient_custodian, specialization() == DRUID_FERAL
     ? effect_mask_t( false ).enable( 1, 2 ) : effect_mask_t( false ).enable( 3, 4 ) );
   register_passive_effect_mask( talent.strike_for_the_heart, specialization() == DRUID_FERAL
@@ -10517,12 +10515,20 @@ void druid_t::init_spells()
   if ( specialization() == DRUID_RESTORATION )
     deregister_passive_spell( talent.spirit_of_the_thicket );
 
-  // TODO: 100% increased effectiveness from Wild Guardian 3 doesn't seem to apply
-  if ( bugs )
-    register_passive_effect_mask( talent.wild_guardian_3, effect_mask_t( true ).disable( 2 ) );
-
   // Appears to be some kind of normalization factor but in reverse, disabled via script
   deregister_passive_effect( talent.rattle_the_stars->effectN( 3 ) );
+
+  if ( bugs )
+  {
+    // TODO: 100% increased effectiveness from Wild Guardian 3 doesn't seem to apply
+    register_passive_effect_mask( talent.wild_guardian_3, effect_mask_t( true ).disable( 2 ) );
+  }
+  else
+  {
+    // Bask in Moonlight is bugged and doesn't disable other spec's effects
+    register_passive_effect_mask( talent.bask_in_moonlight, specialization() == DRUID_BALANCE
+      ? effect_mask_t( false ).enable( 1, 2 ) : effect_mask_t( false ).enable( 3, 4 ) );
+  }
 
   parse_all_class_passives();
   parse_all_passive_talents();
