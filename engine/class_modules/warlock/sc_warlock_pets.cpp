@@ -1090,6 +1090,9 @@ vilefiend_t::vilefiend_t( warlock_t* owner )
   action_list_str += "/travel";
   action_list_str += "/headbutt";
 
+  // Currently bugged and not being affected by the crit bonus
+  affected_by.demonic_brutality = false;
+
   // 2026-02-17: Validated coefficients
   owner_coeff.ap_from_sp = 0.45;
   owner_coeff.sp_from_sp = 1.95;
