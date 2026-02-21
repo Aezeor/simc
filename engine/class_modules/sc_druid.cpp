@@ -7244,6 +7244,7 @@ struct fury_of_elune_t final : public druid_spell_t
       if ( p->talent.the_eternal_moon.ok() )
       {
         auto power = p->specialization() == DRUID_GUARDIAN ? POWER_RAGE : POWER_ASTRAL_POWER;
+        energize_resource = util::power_type_to_resource( power );
         energize_amount = find_effect( this, E_ENERGIZE, A_MAX, power ).resource();
       }
       else
