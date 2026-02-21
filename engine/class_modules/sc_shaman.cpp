@@ -9516,6 +9516,18 @@ struct tempest_overload_t : public elemental_overload_spell_t
       accumulate_lightning_rod_damage( state );
     }
   }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = shaman_spell_t::composite_target_multiplier( t );
+    if ( p()->talent.inferno_arc.ok() )
+    {
+      m *= 1.0 + td( t )->dot.flame_shock->is_ticking() * p()->talent.inferno_arc->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
 };
 
 struct tempest_t : public shaman_spell_t
@@ -9695,6 +9707,17 @@ struct tempest_t : public shaman_spell_t
       // is pretty ugly it's the only way we believe to be able to model this.
       base_t::schedule_travel( s );
     }
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = shaman_spell_t::composite_target_multiplier( t );
+    if ( p()->talent.inferno_arc.ok() )
+    {
+      m *= 1.0 + td( t )->dot.flame_shock->is_ticking() * p()->talent.inferno_arc->effectN( 1 ).percent();
+    }
+
+    return m;
   }
 
 };
