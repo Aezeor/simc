@@ -12202,7 +12202,7 @@ void druid_t::init_special_effects()
     callbacks.register_callback_execute_function(
       driver->spell_id, [ this, _gain, _action ]( auto, auto, const action_state_t* s ) {
         // 1 rage per 1% of maximum health taken
-        auto pct = s->result_amount / resources.max[ RESOURCE_HEALTH ];
+        auto pct = std::min( 1.0, s->result_amount / resources.max[ RESOURCE_HEALTH ] );
 
         resource_gain( RESOURCE_RAGE, pct * 100, _gain, _action );
       } );
