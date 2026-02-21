@@ -3427,21 +3427,6 @@ struct demon_hunter_sigil_t : public demon_hunter_spell_t
     }
   }
 
-  void trigger_cycle_of_binding_event()
-  {
-    p()->sim->print_debug( "triggering cycle of binding event" );
-    // this is an event so that cooldown tracking occurs correctly
-    make_event( *p()->sim, 0_ms, [ this ]() {
-      std::vector<cooldown_t*> sigils_on_cooldown;
-      range::copy_if( this->sigil_cooldowns, std::back_inserter( sigils_on_cooldown ),
-                      []( cooldown_t* c ) { return c->down(); } );
-      for ( auto sigil_cooldown : sigils_on_cooldown )
-      {
-        sigil_cooldown->adjust( this->sigil_cooldown_adjust );
-      }
-    } );
-  }
-
   std::unique_ptr<expr_t> create_sigil_expression( util::string_view name );
 };
 
@@ -4347,16 +4332,6 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
       dot_behavior        = dot_behavior_e::DOT_REFRESH_DURATION;
     }
 
-    void execute() override
-    {
-      demon_hunter_sigil_t::execute();
-
-      if ( hit_any_target && p()->talent.vengeance.cycle_of_binding->ok() )
-      {
-        trigger_cycle_of_binding_event();
-      }
-    }
-
     void impact( action_state_t* s ) override
     {
       demon_hunter_sigil_t::impact( s );
@@ -4383,8 +4358,11 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
   sigil_of_flame_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_spell_t( "sigil_of_flame", p, p->spec.sigil_of_flame, options_str ), sigil( nullptr )
   {
-    sigil = p->get_background_action<sigil_of_flame_damage_t>( "sigil_of_flame_damage" );
-    add_child( sigil );
+    if ( p->spec.sigil_of_flame_damage->ok() )
+    {
+      sigil = p->get_background_action<sigil_of_flame_damage_t>( "sigil_of_flame_damage" );
+      add_child( sigil );
+    }
 
     may_miss = false;
     cooldown = p->cooldown.sigil_of_flame;
@@ -8810,9 +8788,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
           {
             p->proc.undying_embers->occur();
             // retriggers the buff but is not a cast
-            make_event( sim, [ this ] {
-              trigger();
-            } );
+            make_event( sim, [ this ] { trigger(); } );
           }
         } );
       }
