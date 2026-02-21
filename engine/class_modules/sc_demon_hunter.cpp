@@ -11291,7 +11291,9 @@ bool demon_hunter_t::validate_actor()
 #ifdef NDEBUG
   if ( !is_ptr() && specialization() == DEMON_HUNTER_HAVOC )
   {
-    throw sc_invalid_player_argument( "Havoc sims are only supported on PTR" );
+    sim->error(
+        "Warning: The Havoc specialisation implementation is still a work in progress and sim results may not "
+        "necessarily be perfectly accurate. There will be no additional support offered for prepatch simulations." );
   }
 #endif
   return player_t::validate_actor();
