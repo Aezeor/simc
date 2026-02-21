@@ -5842,6 +5842,7 @@ struct soul_immolation_base_t : public demon_hunter_spell_t
 
       // retriggers the DoT but doesn't count as a cast/execute
       action_state_t* undying_embers_state = get_state();
+      undying_embers_state->target = d->state->target;
       snapshot_state( undying_embers_state, result_amount_type::DMG_OVER_TIME );
 
       make_event( sim, [ undying_embers_state, this ]() mutable {
