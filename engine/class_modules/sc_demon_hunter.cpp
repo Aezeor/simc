@@ -1159,7 +1159,6 @@ public:
     // Havoc
     spell_t* burning_wound                                         = nullptr;
     attack_t* demon_blades                                         = nullptr;
-    spell_t* fel_barrage                                           = nullptr;
     spell_t* inner_demon                                           = nullptr;
     spell_t* ragefire                                              = nullptr;
     actions::attacks::relentless_onslaught_t* relentless_onslaught = nullptr;
