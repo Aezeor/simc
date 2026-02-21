@@ -11653,6 +11653,7 @@ void druid_t::create_actions()
     active.echo_of_ravage =
       get_secondary_action<echo_of_maul_t<ravage_base_t<maul_base_t, use_dot_list_t<bear_attack_t>>>>(
         "echo_of_ravage", find_spell( 1269973 ) );
+    active.echo_of_ravage->name_str_reporting.clear();
   }
 
   if ( talent.wild_guardian_2.ok() )
