@@ -4973,13 +4973,6 @@ public:
     : BASE( n, p, s, f ), p_( p )
   {}
 
-  void init() override
-  {
-    BASE::add_child( repeat_action );
-
-    BASE::init();
-  }
-
   void execute() override
   {
     BASE::execute();
@@ -5615,8 +5608,9 @@ struct maul_ravage_base_t : public BASE
 
       if ( p->sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
       {
-        repeat_action = p->get_secondary_action<celestial_might_maul_t<maul_base_t>>( "maul_repeat", &data() );
+        repeat_action = p->get_secondary_action<celestial_might_maul_t<maul_base_t>>( name_str + "_repeat", &data() );
         repeat_action->name_str_reporting = "Celestial";
+        add_child( repeat_action );
       }
     }
   };
@@ -5674,8 +5668,9 @@ struct maul_t final : public trigger_wild_guardian_echo_t<
 
     if ( p->sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
     {
-      repeat_action = p->get_secondary_action<celestial_might_maul_t<maul_base_t>>( "maul_repeat", &data() );
+      repeat_action = p->get_secondary_action<celestial_might_maul_t<maul_base_t>>( name_str + "_repeat", &data() );
       repeat_action->name_str_reporting = "Celestial";
+      add_child( repeat_action );
     }
   }
 
@@ -5704,8 +5699,9 @@ struct raze_t final : public trigger_wild_guardian_echo_t<
 
     if ( p->sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
     {
-      repeat_action = p->get_secondary_action<celestial_might_maul_t<raze_base_t>>( "raze_repeat", &data() );
+      repeat_action = p->get_secondary_action<celestial_might_maul_t<raze_base_t>>( name_str + "_repeat", &data() );
       repeat_action->name_str_reporting = "Celestial";
+      add_child( repeat_action );
     }
   }
 };
