@@ -8425,6 +8425,15 @@ struct stormkeeper_t : public shaman_spell_t
 
   void execute() override
   {
+    // If Stormkeeper buff is already active, casting Stormkeeper does not generate Maelstrom.
+    auto original_maelstrom_gain = maelstrom_gain;
+    bool reset_maelstrom_gain = false;
+    if ( p()->bugs && p()->talent.stormwell.ok() && p()->buff.stormkeeper->up() )
+    {
+      maelstrom_gain = 0.0;
+      reset_maelstrom_gain = true;
+    }
+
     shaman_spell_t::execute();
 
     if ( p()->talent.fury_of_the_storms.ok() )
@@ -8437,6 +8446,11 @@ struct stormkeeper_t : public shaman_spell_t
     p()->buff.stormkeeper->trigger( data().effectN( 5 ).base_value() );
 
     p()->buff.mid1_ele_2pc->trigger();
+
+    if ( reset_maelstrom_gain )
+    {
+      maelstrom_gain = original_maelstrom_gain;
+    }
 
   }
 
