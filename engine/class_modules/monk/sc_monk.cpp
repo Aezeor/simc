@@ -3249,14 +3249,6 @@ struct empty_the_cellar_t : public monk_spell_t
       damage = new damage_t( player );
   }
 
-  void init() override
-  {
-    monk_spell_t::init();
-
-    if ( action_t *parent = p()->find_action( "exploding_keg" ); parent )
-      parent->add_child( this );
-  }
-
   bool ready() override
   {
     return p()->buff.empty_the_cellar->up();
@@ -4483,9 +4475,12 @@ void aspect_of_harmony_t::construct_actions( monk_t *player )
   heal   = new spender_t::tick_t<actions::monk_heal_t>( player, "aspect_of_harmony_heal",
                                                         player->talent.master_of_harmony.aspect_of_harmony_heal );
 
-  purified_spirit = new spender_t::purified_spirit_t<actions::monk_spell_t>(
-      player, player->talent.master_of_harmony.purified_spirit_damage, this );
-  damage->add_child( purified_spirit );
+  if ( player->talent.master_of_harmony.purified_spirit->ok() )
+  {
+    purified_spirit = new spender_t::purified_spirit_t<actions::monk_spell_t>(
+        player, player->talent.master_of_harmony.purified_spirit_damage, this );
+    damage->add_child( purified_spirit );
+  }
 }
 
 void aspect_of_harmony_t::trigger( action_state_t *state )
@@ -4504,9 +4499,7 @@ void aspect_of_harmony_t::trigger_flat( double amount )
   if ( fallback || spender->check() )
     return;
 
-  accumulator->sim->print_debug( "Aspect of Harmony +A: {}, P: {}, T: {}", amount, accumulator->current_value,
-                                 accumulator->current_value + amount );
-  accumulator->current_value += amount;
+  accumulator->adjust( amount );
 }
 
 void aspect_of_harmony_t::trigger_spend()
@@ -4538,6 +4531,18 @@ aspect_of_harmony_t::accumulator_t::accumulator_t( monk_t *player, aspect_of_har
     aspect_of_harmony( aspect_of_harmony )
 {
   set_default_value( 0.0 );
+
+  set_refresh_behavior( buff_refresh_behavior::DURATION );
+  set_period( 1_s );
+  set_tick_behavior( buff_tick_behavior::REFRESH );
+  set_partial_tick( true );
+
+  freeze_stacks = true;
+
+  set_tick_callback( [ = ]( buff_t *buff, int, timespan_t ) {
+    if ( buff->sim->current_iteration == 0 )  // only collect data from the first iteration
+      pool_size_percent.add_max( buff->sim->current_time(), buff->check_value() / buff->player->max_health() );
+  } );
 }
 
 void aspect_of_harmony_t::accumulator_t::trigger_with_state( action_state_t *state )
@@ -4579,11 +4584,22 @@ void aspect_of_harmony_t::accumulator_t::trigger_with_state( action_state_t *sta
 
   multiplier *= 1.0 + p().talent.master_of_harmony.coalescence->effectN( 3 ).percent();
 
-  double amount = std::min( check_value() + state->result_amount * multiplier, p().max_health() );
-  sim->print_debug( "Aspect of Harmony +A: {}, P: {}, T: {}", state->result_amount * multiplier, check_value(),
-                    check_value() + state->result_amount * multiplier );
+  adjust( state->result_amount * multiplier );
   sim->print_debug( "AoH does_gen: {} {}", state->action->name(), state->action->id );
-  monk_buff_t::trigger( -1, amount );
+}
+
+void aspect_of_harmony_t::accumulator_t::adjust( double amount )
+{
+  double previous = check_value();
+
+  double value = std::max( std::min( previous + amount, p().max_health() ), 0.0 );
+
+  if ( value > 0.0 )
+    monk_buff_t::trigger( -1, value );
+  else
+    monk_buff_t::expire();
+
+  sim->print_debug( "Aspect of Harmony +A: {}, P: {}, T: {}", amount, previous, value );
 }
 
 aspect_of_harmony_t::spender_t::spender_t( monk_t *player, aspect_of_harmony_t *aspect_of_harmony )
@@ -4593,7 +4609,7 @@ aspect_of_harmony_t::spender_t::spender_t( monk_t *player, aspect_of_harmony_t *
 {
   set_default_value( 0.0 );
 
-  if ( player->talent.master_of_harmony.purified_spirit->ok() )
+  if ( aspect_of_harmony->purified_spirit )
     set_stack_change_callback( [ = ]( buff_t *, int, int new_ ) {
       if ( !new_ )
         aspect_of_harmony->purified_spirit->execute();
@@ -4610,6 +4626,9 @@ void aspect_of_harmony_t::spender_t::reset()
 
 bool aspect_of_harmony_t::spender_t::trigger( int stacks, double, double chance, timespan_t duration )
 {
+  if ( check() && aspect_of_harmony->purified_spirit )
+    aspect_of_harmony->purified_spirit->execute();
+
   pool = aspect_of_harmony->accumulator->check_value();
   aspect_of_harmony->accumulator->expire();
 
@@ -4625,7 +4644,7 @@ void aspect_of_harmony_t::spender_t::trigger_with_state( action_state_t *state )
     {
       double amount = std::min( state->result_amount * p().talent.master_of_harmony.coalescence->effectN( 2 ).percent(),
                                 aspect_of_harmony->accumulator->check_value() );
-      aspect_of_harmony->accumulator->current_value -= amount;
+      aspect_of_harmony->accumulator->adjust( -amount );
       residual_action::trigger( aspect_of_harmony->damage, state->target, amount );
     }
 
@@ -4715,10 +4734,18 @@ void aspect_of_harmony_t::spender_t::purified_spirit_t<base_action_t>::init()
 template <class base_action_t>
 void aspect_of_harmony_t::spender_t::purified_spirit_t<base_action_t>::execute()
 {
-  base_action_t::base_td = aspect_of_harmony->spender->current_value / 4.0 / as<double>( base_action_t::num_targets() );
+  // Avoid overwriting base_td with zero values.
+  // It's possible for Purified Spirit to be executed from depleting the current spender while the PS DoT is still
+  // ticking from a previous spender expiring.
+  if ( !aspect_of_harmony->spender->current_value )
+    return;
+
+  double ticks = aspect_of_harmony->purified_spirit->dot_duration / aspect_of_harmony->purified_spirit->base_tick_time;
+  base_action_t::base_td =
+      aspect_of_harmony->spender->current_value / ticks / as<double>( base_action_t::num_targets() );
   base_action_t::sim->print_debug( "Purified Spirit consuming rest of pool. Pool: {} TA: {}",
                                    aspect_of_harmony->spender->current_value,
-                                   aspect_of_harmony->spender->current_value / 4.0 );
+                                   aspect_of_harmony->spender->current_value / ticks );
   aspect_of_harmony->spender->current_value = 0.0;
   if ( base_action_t::base_td > 0.0 )
     base_action_t::execute();
@@ -6455,13 +6482,15 @@ void monk_t::init_special_effects()
         ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::TRIGGER,
                                               [ & ]( const dbc_proc_callback_t *, action_t *action, action_state_t * ) {
                                                 // TODO: don't hardcode these ids
-                                                constexpr std::array<unsigned, 6> blacklist = {
+                                                constexpr std::array<unsigned, 8> blacklist = {
                                                     216521,  // celestial fortune
                                                     178173,  // goto expire
                                                     124507,  // goto trigger
                                                     387621,  // dragonfire brew
                                                     115129,  // expel harm damage
                                                     124255,  // stagger
+                                                    450820,  // purified spirit
+                                                    450763,  // aspect of harmony tick
                                                 };
                                                 if ( range::contains( blacklist, action->id ) )
                                                   return false;
@@ -6987,11 +7016,10 @@ public:
     ReportIssue( "Memory of the Monastery stacks are overwritten each time the buff is applied", "2024-08-01", true );
     ReportIssue( "Chi Burst consumes both stacks of the buff on use", "2024-08-09", true );
     ReportIssue( "Stand Ready buff is consumed but does not trigger Flurry Strikes", "2026-02-09", true );
-    ReportIssue( "Face Palm does not increase the damage of Tiger Palm", "2026-02-09", true );
     ReportIssue( "Press the Advantage Tiger Palm does not trigger Overwhelming Force", "2026-02-09", true );
 
     os << "<div class=\"player-section\">\n";
-    os << "<h2 class=\"toggle\">Known Bugs and Issues</h2>\n";
+    os << "<h3 class=\"toggle\">Known Bugs and Issues</h3>\n";
     os << "<div class=\"toggle-content hide\">\n";
 
     for ( auto issue : issues )
@@ -7022,9 +7050,33 @@ public:
     os << "</div>\n";
   }
 
+  void aspect_of_harmony_accumulator( report::sc_html_stream &os )
+  {
+    if ( !p.talent.master_of_harmony.aspect_of_harmony.ok() )
+      return;
+
+    os << "<div class=\"player-section aspect_of_harmony\">\n";
+    os << "<h3 class=\"toggle\">Aspect of Harmony Vitality</h3>\n";
+    os << "<div class=\"toggle-content hide\">\n";
+    os << "<p>Note that this graph only displays data for a single iteration.</p>\n";
+
+    highchart::time_series_t chart_( highchart::build_id( p, "AoH_pool" ), *p.sim );
+    chart::generate_actor_timeline( chart_, p, "Vitality", color::resource_color( RESOURCE_HEALTH ),
+                                    p.buff.aspect_of_harmony.pool_size_percent() );
+    chart_.set_yaxis_title( "Vitality / Max Health" );
+    chart_.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+    chart_.set( "chart.width", "575" );
+    os << chart_.to_target_div();
+    p.sim->add_chart_data( chart_ );
+
+    os << "</div>\n";
+    os << "</div>\n";
+  }
+
   void html_customsection( report::sc_html_stream &os ) override
   {
     monk_bugreport( os );
+    aspect_of_harmony_accumulator( os );
   }
 
 private:
