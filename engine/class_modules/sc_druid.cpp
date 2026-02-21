@@ -11209,7 +11209,7 @@ void druid_t::create_buffs()
   buff.sundering_roar = make_fallback( talent.sundering_roar.ok(), this, "sundering_roar", talent.sundering_roar )
     ->set_cooldown( 0_ms )
     ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_MAX_STACKS )
-    ->set_expire_callback( [ this, orig_max_stack = spec.thrash_bleed->max_stacks() ]( buff_t*, int, timespan_t ) {
+    ->set_expire_callback( [ this, orig_max_stack = as<int>( spec.thrash_bleed->max_stacks() ) ]( auto, auto, auto ) {
       for ( auto dot : dot_lists.thrash )
       {
         if ( auto excess = dot->current_stack() - orig_max_stack; excess > 0 )
