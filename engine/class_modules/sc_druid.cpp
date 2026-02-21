@@ -10501,6 +10501,9 @@ void druid_t::init_spells()
   // Arcane affinity is bugged with wrath and manually handled in wrath_t
   register_passive_affect_list( talent.arcane_affinity, affect_list_t( 1 ).remove_family_flag( 0 ) );
 
+  // Effect is cosmetic for tooltip purposes
+  register_passive_effect_mask( talent.wild_guardian_3, effect_mask_t( true ).disable( 2 ) );
+
   // Circle of the Heavens/Wild have different values for restoration
   auto circle_mask = specialization() == DRUID_RESTORATION
     ? effect_mask_t( false ).enable( 3, 4 ) : effect_mask_t( false ).enable( 1, 2 );
@@ -10521,12 +10524,7 @@ void druid_t::init_spells()
   // Appears to be some kind of normalization factor but in reverse, disabled via script
   deregister_passive_effect( talent.rattle_the_stars->effectN( 3 ) );
 
-  if ( bugs )
-  {
-    // TODO: 100% increased effectiveness from Wild Guardian 3 doesn't seem to apply
-    register_passive_effect_mask( talent.wild_guardian_3, effect_mask_t( true ).disable( 2 ) );
-  }
-  else
+  if ( !bugs )
   {
     // Bask in Moonlight is bugged and doesn't disable other spec's effects
     register_passive_effect_mask( talent.bask_in_moonlight, specialization() == DRUID_BALANCE
