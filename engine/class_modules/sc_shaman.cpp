@@ -9552,6 +9552,10 @@ struct tempest_t : public shaman_spell_t
     {
       storms_eye = new storms_eye_t( player );
     }
+    if ( p()->bugs && p()->talent.stormwell->ok() )
+    {
+      maelstrom_gain = p()->talent.stormwell->effectN(2).base_value();
+    }
 
     switch ( exec_type )
     {
