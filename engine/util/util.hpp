@@ -283,6 +283,8 @@ std::string inverse_tokenize( util::string_view name );
 
 bool is_number( util::string_view s );
 
+int effect_idx_from_property_type( property_type_t type );
+
 void fuzzy_stats( std::string& encoding, util::string_view description );
 
 template <class T>
