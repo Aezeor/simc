@@ -4973,6 +4973,13 @@ public:
     : BASE( n, p, s, f ), p_( p )
   {}
 
+  void init() override
+  {
+    BASE::add_child( repeat_action );
+
+    BASE::init();
+  }
+
   void execute() override
   {
     BASE::execute();
@@ -5049,6 +5056,13 @@ public:
   {
     if ( num_repeat )
       repeat_delay = p->talent.wild_guardian_3->effectN( 4 ).time_value() / num_repeat;
+  }
+
+  void init() override
+  {
+    BASE::add_child( echo_action );
+
+    BASE::init();
   }
 
   void execute() override
@@ -10444,6 +10458,7 @@ void druid_t::init_spells()
   spec.cat_form_passive_2       = find_spell( 106840 );
   spec.cat_form_speed           = find_spell( 113636 );
   spec.improved_prowl           = find_specialization_spell( "Improved Prowl" );
+  // hardcoded since red moon replaces
   spec.moonfire                 = talent.red_moon.ok() ? find_spell( 8921 ) : find_class_spell( "Moonfire" );
   spec.moonfire_dmg             = find_spell( 164812 );
   spec.sunfire_dmg              = check( talent.sunfire, 164815 );
@@ -11588,12 +11603,10 @@ void druid_t::create_actions()
     active.thrash_flashing = flash;
   }
 
-  if ( talent.galactic_guardian.ok() || sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
+  if ( talent.galactic_guardian.ok() )
   {
-    // hardcode moonfire ID since red moon replaces normal moonfire
     auto gg = get_secondary_action<moonfire_t>( "galactic_guardian", flag_e::GALACTIC );
-    gg->s_data_reporting =
-      talent.galactic_guardian.ok() ? talent.galactic_guardian.spell() : sets->set( DRUID_GUARDIAN, MID1, B4 );
+    gg->s_data_reporting = talent.galactic_guardian;
     gg->proc = true;
     active.galactic_guardian = gg;
 
@@ -12270,7 +12283,7 @@ void druid_t::init_special_effects()
     cb->activate_with_buff( buff.bear_form );
   }
 
-  if ( talent.galactic_guardian.ok() || sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
+  if ( talent.galactic_guardian.ok() )
   {
     // derived class needed as registered trigger_fn passes const dbc_proc_callback_t* and we need to adjust proc_chance
     struct galactic_guardian_cb_t final : public druid_cb_t
@@ -12305,9 +12318,6 @@ void druid_t::init_special_effects()
           default: break;
         }
 
-        if ( !proc_chance )
-          return;
-
         druid_cb_t::trigger( a, s );
 
         proc_chance = orig_proc_chance;
@@ -12322,12 +12332,9 @@ void druid_t::init_special_effects()
       }
     };
 
-    auto driver_data = talent.galactic_guardian.ok() ? talent.galactic_guardian.spell() : find_spell( 203964 );
-
     const auto driver = new special_effect_t( this );
-    driver->name_str = driver_data->name_cstr();
-    driver->spell_id = driver_data->id();
-    driver->proc_chance_ = driver_data->effectN( 1 ).percent();
+    driver->name_str = talent.galactic_guardian->name_cstr();
+    driver->spell_id = talent.galactic_guardian->id();
     special_effects.push_back( driver );
 
     new galactic_guardian_cb_t( this, *driver );
