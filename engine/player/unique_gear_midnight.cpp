@@ -2060,21 +2060,21 @@ void magisters_alchemist_stone( special_effect_t& e )
 
 // Vaelgor's Final Stare
 // 1259293 Driver
-// 1260459 Nullsight 
+// 1260459 Nullsight
 void nullsight( special_effect_t& e )
 {
   unsigned equip_id = 1259293;
-  auto equip = find_special_effect( e.player, equip_id );
+  auto equip        = find_special_effect( e.player, equip_id );
   assert( equip && "Vaelgor's final stance missing equip effect" );
-  auto buff_spell = e.driver();
-  int stacks = buff_spell->duration() / buff_spell->effectN( 3 ).period();
-  double buff_val = equip->driver()->effectN(1).average( e );
-  double buff_stacks = buff_val/stacks;
+  auto buff_spell    = e.driver();
+  int stacks         = buff_spell->duration() / buff_spell->effectN( 3 ).period();
+  double buff_val    = equip->driver()->effectN( 1 ).average( e );
+  double buff_stacks = buff_val / stacks;
 
-  e.custom_buff = create_buff<stat_buff_t>(e.player, buff_spell)
-                  ->set_stat_from_effect_type(A_MOD_RATING, buff_stacks)
-                  ->set_max_stack(stacks)
-                  ->set_reverse(true);
+  e.custom_buff = create_buff<stat_buff_t>( e.player, buff_spell )
+                      ->set_stat_from_effect_type( A_MOD_RATING, buff_stacks )
+                      ->set_max_stack( stacks )
+                      ->set_reverse( true );
 }
 
 }  // namespace trinkets
