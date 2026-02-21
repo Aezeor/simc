@@ -11214,9 +11214,11 @@ void druid_t::create_buffs()
       {
         if ( auto excess = dot->current_stack() - orig_max_stack; excess > 0 )
         {
-          auto num_tick = dot->remains() / dot->current_action->tick_time( dot->state );
-          auto per_tick = dot->state->result_raw;
-          auto damage = num_tick * per_tick * excess;
+          auto _state = dot->current_action->get_state( dot->state );
+          auto num_tick = dot->ticks_left_fractional();
+          auto per_tick = dot->current_action->calculate_tick_amount( _state, excess );
+          auto damage = num_tick * per_tick;
+          action_state_t::release( _state );
 
           if ( sim->debug )
           {
