@@ -11775,10 +11775,10 @@ std::string druid_t::default_flask() const
 {
   switch ( specialization() )
   {
-    case DRUID_BALANCE:     return "disabled";
-    case DRUID_FERAL:       return "disabled";
-    case DRUID_GUARDIAN:    return "disabled";
-    case DRUID_RESTORATION: return "disabled";
+    case DRUID_BALANCE:     return "magisters_2";
+    case DRUID_FERAL:       return "magisters_2";
+    case DRUID_GUARDIAN:    return "blood_knights_2";
+    case DRUID_RESTORATION: return "blood_knights_2";
     default:                return "disabled";
   }
 }
@@ -11787,10 +11787,10 @@ std::string druid_t::default_potion() const
 {
   switch ( specialization() )
   {
-    case DRUID_BALANCE:     return "disabled";
-    case DRUID_FERAL:       return "disabled";
-    case DRUID_GUARDIAN:    return "disabled";
-    case DRUID_RESTORATION: return "disabled";
+    case DRUID_BALANCE:     return "lights_potential_2";
+    case DRUID_FERAL:       return "lights_potential_2";
+    case DRUID_GUARDIAN:    return "lights_potential_2";
+    case DRUID_RESTORATION: return "lights_potential_2";
     default:                return "disabled";
   }
 }
@@ -11818,10 +11818,10 @@ std::string druid_t::default_temporary_enchant() const
 
   switch ( specialization() )
   {
-    case DRUID_BALANCE:     return "disabled";
-    case DRUID_FERAL:       return "disabled";
-    case DRUID_GUARDIAN:    return "disabled";
-    case DRUID_RESTORATION: return "disabled";
+    case DRUID_BALANCE:     return str + "thalassian_phoenix_oil_2";
+    case DRUID_FERAL:       return str + "thalassian_phoenix_oil_2";
+    case DRUID_GUARDIAN:    return str + "thalassian_phoenix_oil_2";
+    case DRUID_RESTORATION: return str + "thalassian_phoenix_oil_2";
     default:                return "disabled";
   }
 }
