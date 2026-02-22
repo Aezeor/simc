@@ -1461,7 +1461,8 @@ struct dread_shade_t : public pet_t
   {
     druid_t* o;
 
-    dire_echo_t( pet_t* p ) : parse_action_effects_t( "dire_echo", p, p->find_spell( 1253489 ) )
+    dire_echo_t( pet_t* p )
+      : parse_action_effects_t( "dire_echo", p, p->find_spell( 1253489 ) ), o( static_cast<druid_t*>( p->owner ) )
     {
       aoe = -1;
 
@@ -1470,6 +1471,13 @@ struct dread_shade_t : public pet_t
       o->parse_action_effects( this );
       o->parse_action_target_effects( this );
     }
+
+    void init() override
+    {
+      parse_action_effects_t<spell_t>::init();
+
+      snapshot_flags &= ~STATE_MUL_PET;  // doesn't get pet multiplier
+    }
   };
 
   action_t* dire_echo;
@@ -1477,13 +1485,14 @@ struct dread_shade_t : public pet_t
 
   dread_shade_t( druid_t* p ) : pet_t( p->sim, p, "Dread Shade", true, true )
   {
-    dire_echo = new dire_echo_t( this );
+    owner_coeff.sp_from_sp = 1.0;
   }
 
   druid_t* o() { return static_cast<druid_t*>( owner ); }
 
   void arise() override;
   void create_buffs() override;
+  void create_actions() override;
 };
 
 // Sylvan Beckoning =========================================================
@@ -5800,7 +5809,7 @@ struct thrash_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
     if ( rng().roll( fc_pct ) )
       make_event( *sim, 500_ms, [ this ]() { p()->active.thrash_flashing->execute_on_target( target ); } );
 
-    if ( p()->talent.waking_nightmare.ok() )
+    if ( p()->talent.waking_nightmare.ok() && p()->pets.dread_shade.n_active_pets() )
     {
       if ( p()->bugs )  // only the latest summon casts dire echo
       {
@@ -9461,6 +9470,13 @@ void dread_shade_t::create_buffs()
     ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       o()->active.waking_nightmare_pulse->execute();
     } );
+}
+
+void dread_shade_t::create_actions()
+{
+  pet_t::create_actions();
+
+  dire_echo = new dire_echo_t( this );
 }
 
 void sylvan_beckoning_t::arise()
