@@ -10296,7 +10296,7 @@ void druid_t::init_spells()
   talent.ursocs_guidance                = ST( "Ursoc's Guidance" );
   talent.ursols_warding                 = ST( "Ursol's Warding" );  // TODO: NYI
   talent.vulnerable_flesh               = ST( "Vulnerable Flesh" );
-  talent.waking_dream                   = ST( "Waking Nightmare" );
+  talent.waking_nightmare               = ST( "Waking Nightmare" );
   talent.ward_of_the_forest             = ST( "Ward of the Forest" );
   talent.wild_guardian_1                = ST( "Wild Guardian", 1 );
   talent.wild_guardian_2                = ST( "Wild Guardian", 2 );
