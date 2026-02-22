@@ -4019,7 +4019,7 @@ struct bloodseeker_vines_t final : public cat_attack_t
 
     int stacks = dot_stacks;
 
-    // execute() instead of trigger() to avoid proc delay, and add 1ms to ensure final tick is buffed
+    // add 1ms to ensure final tick is buffed
     if ( rng().roll( twin_pct ) && orig_dur == dot_duration )
     {
       if ( target_list().size() > 1 )
@@ -4029,7 +4029,7 @@ struct bloodseeker_vines_t final : public cat_attack_t
           auto state_ = get_state( s );
           state_->target = tar;
           cat_attack_t::trigger_dot( state_ );
-          td( tar )->debuff.bloodseeker_vines->execute( 1, buff_t::DEFAULT_VALUE(), dot_duration + 1_ms );
+          td( tar )->debuff.bloodseeker_vines->trigger( dot_duration + 1_ms );
           action_state_t::release( state_ );
         }
         else
@@ -4043,7 +4043,7 @@ struct bloodseeker_vines_t final : public cat_attack_t
       }
     }
 
-    td( s->target )->debuff.bloodseeker_vines->execute( stacks, buff_t::DEFAULT_VALUE(), dot_duration + 1_ms );
+    td( s->target )->debuff.bloodseeker_vines->trigger( dot_duration + 1_ms );
   }
 
   void tick( dot_t* d ) override
@@ -13445,6 +13445,7 @@ struct bloodseeker_vines_debuff_t : public buffs::druid_buff_t
     : buffs::druid_buff_t( td, "bloodseeker_vines", p->spec.bloodseeker_vines ), target_data( &td )
   {
     set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+    set_activated( true );
 
     // bursting growth needs to be executed first so it benefits from the expiring root network. note that in-game logs
     // show root network expiring first, but bursting growth damage is calculated before buff expiration.
