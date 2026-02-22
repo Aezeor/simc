@@ -8192,7 +8192,9 @@ struct starfall_t final : public ap_spender_t
     player_t* random_affected_target()
     {
       // no need to reshuffle again
-      return rng().range( druid_spell_t::target_list() );
+      const auto& tl = druid_spell_t::target_list();
+
+      return tl.empty() ? nullptr : rng().range( tl );
     }
 
     void execute() override
@@ -8200,9 +8202,11 @@ struct starfall_t final : public ap_spender_t
       druid_spell_t::execute();
 
       if ( meteorites )
-        meteorites->execute_on_target( random_affected_target() );
+      {
+        if ( auto _tar = random_affected_target() )
+          meteorites->execute_on_target( _tar );
+      }
     }
-
 
     // fake travel time to simulate execution delay for individual stars
     timespan_t travel_time() const override
