@@ -3426,16 +3426,8 @@ struct cinderstorm_t final : public fire_mage_spell_t
   {
     background = proc = true;
     triggers.ignite = true;
+    base_ignite_multiplier *= p->talents.cinderstorm->effectN( 5 ).percent();
   };
-
-  double composite_ignite_multiplier( const action_state_t* s ) const override
-  {
-    double m = fire_mage_spell_t::composite_ignite_multiplier( s );
-
-    m *= p()->talents.cinderstorm->effectN( 5 ).percent();
-
-    return m;
-  }
 
   void impact( action_state_t* s ) override
   {
@@ -3828,11 +3820,12 @@ struct flamestrike_t final : public hot_streak_spell_t
     triggers.ignite = true;
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
+    // TODO: This 50% is applied to Ignite's effect#4. In the future, it may be better to use that value here instead.
+    base_ignite_multiplier *= 1.0 + p->talents.ignition->effectN( 2 ).percent();
 
     if ( p->talents.pyromaniac.ok() )
       pyromaniac_action = get_action<flamestrike_pyromaniac_t>( "flamestrike_pyromaniac", p );
   }
-
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
@@ -3840,16 +3833,6 @@ struct flamestrike_t final : public hot_streak_spell_t
 
     unsigned scaling_targets = std::min( s->n_targets, as<unsigned>( p()->talents.fuel_the_fire->effectN( 3 ).base_value() ) );
     m *= 1.0 + p()->talents.fuel_the_fire->effectN( 2 ).percent() * scaling_targets;
-
-    return m;
-  }
-
-  double composite_ignite_multiplier( const action_state_t* s ) const override
-  {
-    double m = hot_streak_spell_t::composite_ignite_multiplier( s );
-
-    // TODO: This 50% is applied to Ignite's effect#4. In the future, it may be better to use that value here instead.
-    m *= 1.0 + p()->talents.ignition->effectN( 2 ).percent();
 
     return m;
   }
