@@ -4091,6 +4091,30 @@ struct chomp_t final : public cat_attack_t
 
 struct frantic_frenzy_t final : public cat_attack_t
 {
+  struct flicker_event_t final : public event_t
+  {
+    action_state_t* state;
+    cat_attack_t* action;
+
+    flicker_event_t( druid_t* p, cat_attack_t* a, action_state_t* s )
+      : event_t( *p, FERAL_FLICKER_DELAY ), action( a ), state( s )
+    {}
+
+    const char* name() const override { return "flicker_event"; }
+
+    void execute() override
+    {
+      action->cat_attack_t::trigger_dot( state );
+      action_state_t::release( state );
+    }
+
+    ~flicker_event_t()
+    {
+      if ( state )
+        action_state_t::release( state );
+    }
+  };
+
   struct frantic_frenzy_tick_t final : public cat_attack_t
   {
     bool is_direct_damage = false;
@@ -4141,14 +4165,8 @@ struct frantic_frenzy_t final : public cat_attack_t
 
   void trigger_dot( action_state_t* s )
   {
-    // make a copy as the state will be released after impact()
-    auto _state = get_state( s );
-
     // wild ass guess on delay before the 'pet' spawns
-    make_event( *sim, FERAL_FLICKER_DELAY, [ this, _state ]() mutable {
-      cat_attack_t::trigger_dot( _state );
-      action_state_t::release( _state );
-    } );
+    make_event<flicker_event_t>( *sim, p(), this, get_state( s ) );
   }
 };
 
