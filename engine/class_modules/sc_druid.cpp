@@ -5084,10 +5084,8 @@ public:
   {
     BASE::execute();
 
-    if ( echo_action && echo_buff->check() )
+    if ( echo_action && echo_buff->consume( this ) )
     {
-      echo_buff->expire();
-
       make_event( *BASE::sim, echo_delay, [ this ] { echo_action->execute_on_target( BASE::target ); } );
 
       if ( repeat_delay > 0_ms )
@@ -11206,17 +11204,20 @@ void druid_t::create_buffs()
   buff.gift_of_frenzied_regeneration =
     make_fallback( talent.wild_guardian_1.ok() && ( talent.berserk_bear.ok() || talent.incarnation_bear.ok() ),
       this,"gift_of_frenzied_regeneration", find_spell( 1269661 ) )
-        ->set_initial_stack_to_max_stack();
+        ->set_initial_stack_to_max_stack()
+        ->set_consume_all_stacks( false );
 
   buff.gift_of_ironfur =
     make_fallback( talent.wild_guardian_1.ok() && ( talent.berserk_bear.ok() || talent.incarnation_bear.ok() ),
       this, "gift_of_ironfur", find_spell( 1269659 ) )
-        ->set_initial_stack_to_max_stack();
+        ->set_initial_stack_to_max_stack()
+        ->set_consume_all_stacks( false );
 
   buff.gift_of_maul =
     make_fallback( talent.wild_guardian_1.ok() && ( talent.berserk_bear.ok() || talent.incarnation_bear.ok() ),
       this, "gift_of_maul", find_spell( 1269660 ) )
-        ->set_initial_stack_to_max_stack();
+        ->set_initial_stack_to_max_stack()
+        ->set_consume_all_stacks( false );
 
   buff.gore = make_fallback( talent.gore.ok(), this, "gore", find_spell( 93622 ) )
     ->set_trigger_spell( talent.gore );
