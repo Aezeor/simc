@@ -4811,6 +4811,8 @@ struct swipe_cat_t final : public trigger_claw_rampage_t<DRUID_FERAL,
 
     if ( p->specialization() == DRUID_FERAL )
       name_str_reporting = "swipe";
+    else
+      name_str_reporting = "Cat";
   }
 };
 
@@ -5765,6 +5767,8 @@ struct swipe_bear_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
 
     if ( p->specialization() == DRUID_GUARDIAN )
       name_str_reporting = "swipe";
+    else
+      name_str_reporting = "Bear";
   }
 };
 
