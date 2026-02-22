@@ -32,8 +32,8 @@ static constexpr timespan_t HAIL_OF_STARS_FREE_DURATION = 1000_ms;
 static constexpr double WILD_MUSHROOM_AP_PER_HIT = 5.0;
 // lunar bolt reduced_aoe_targets
 static constexpr double LUNAR_BOLT_REDUCED_AOE = 5;
-// summon+jump+fixate delay in seconds for fake summon spells like frantic frenzy & apex talent
-static constexpr double FERAL_FLICKER_DELAY = 0.5;
+// summon+jump+fixate delay for fake summon spells like frantic frenzy & apex talent
+static constexpr timespan_t FERAL_FLICKER_DELAY = 500_ms;
 // unseen attack # of targets for unseen attack to proc swipe instead of slash
 static constexpr size_t UNSEEN_SWIPE_TARGETS = 3;
 // unseen swipe reduced_aoe_targets
@@ -2948,9 +2948,17 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     p()->active.unseen_swipe->set_target( _tar );
 
     if ( p()->active.unseen_swipe->target_list().size() > UNSEEN_SWIPE_TARGETS )
-      p()->active.unseen_swipe->execute();
+    {
+      make_event( *sim, FERAL_FLICKER_DELAY, [ this ] {
+        p()->active.unseen_swipe->execute();
+      } );
+    }
     else
-      p()->active.unseen_slash->execute_on_target( _tar );
+    {
+      make_event( *sim, FERAL_FLICKER_DELAY, [ this, _tar ] {
+        p()->active.unseen_slash->execute_on_target( _tar );
+      } );
+    }
   }
 
   void execute() override
@@ -4120,16 +4128,27 @@ struct frantic_frenzy_t final : public cat_attack_t
         track_cd_waste = true;
 
       // scripted so must be manually configured
-      base_tick_time = 200_ms;                          // wild ass guess
-      dot_duration = 1000_ms;                           // ticks 6 times despite tooltip saying 5
-      tick_zero = true;                                 // this zero tick may be a bug?
-      tick_action->travel_delay = FERAL_FLICKER_DELAY;  // more wild ass guess
+      base_tick_time = 200_ms;  // wild ass guess
+      dot_duration = 1000_ms;   // ticks 6 times despite tooltip saying 5
+      tick_zero = true;         // this zero tick may be a bug?
 
       const auto& energize_eff = find_effect( p->find_spell( 1278969 ), E_ENERGIZE );
       energize_type = action_energize::PER_TICK;
       energize_resource = energize_eff.resource_gain_type();
       energize_amount = energize_eff.resource( energize_resource );
     }
+  }
+
+  void trigger_dot( action_state_t* s )
+  {
+    // make a copy as the state will be released after impact()
+    auto _state = get_state( s );
+
+    // wild ass guess on delay before the 'pet' spawns
+    make_event( *sim, FERAL_FLICKER_DELAY, [ this, _state ]() mutable {
+      cat_attack_t::trigger_dot( _state );
+      action_state_t::release( _state );
+    } );
   }
 };
 
@@ -4834,7 +4853,6 @@ struct unseen_attack_t : public cat_attack_t
     : cat_attack_t( n, p, s, f )
   {
     proc = true;
-    travel_delay = FERAL_FLICKER_DELAY;  // wild ass guess
 
     range = p->talent.unseen_predator_1->effectN( 2 ).base_value();
   }
