@@ -4297,8 +4297,6 @@ void paladin_t::init_spells()
 
   spells.herald_of_the_sun.dawnlight_aoe_metadata = find_spell( 431581 );
 
-  // Manually add judgment spells to swift justice
-  register_passive_affect_list( talents.swift_justice, affect_list_t( 2 ).add_spell( 20271, 275773, 275779 ) );
   // Add Judgment AoE. Damage still handled manually. Hammer of Wrath also handled manually, since that AoE is 1, instead of 0
   register_passive_affect_list( talents.blessed_champion,
                                 affect_list_t( 1 ).add_spell( 20271, 275773 ) );

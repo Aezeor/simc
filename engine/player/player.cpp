@@ -15268,9 +15268,11 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { A_MOD_CRIT_DAMAGE_MULTIPLIER,             "crit_damage_multiplier"           },  // 163
   { A_MOD_ATTACK_POWER_PCT,                   "attack_power_multiplier",         },  // 166
   { A_MOD_SPEED_NOT_STACK,                    "non_stacking_move_speed_modifier" },  // 171
+  { A_MOD_RECHARGE_TIME_PCT_CATEGORY_MASK,    "charge_cooldown"                  },  // 173
   { A_MOD_MAX_MANA_PCT,                       "resource_multiplier"              },  // 178
   { A_MOD_ATTACKER_MELEE_CRIT_CHANCE,         "crit_avoidance"                   },  // 187
   { A_HASTE_ALL,                              "all_haste"                        },  // 193
+  { A_MOD_RECHARGE_TIME_CATEGORY_MASK,        "charge_cooldown"                  },  // 205
   { A_MODIFY_SCHOOL,                          "school"                           },  // 220
   { A_MOD_EXPERTISE,                          "expertise"                        },  // 240
   { A_MOD_BLOCK_PCT,                          "block_reduction"                  },  // 272
@@ -15468,6 +15470,20 @@ std::vector<const spell_data_t*> player_t::spells_affected_by_passive( const spe
     case A_HASTED_COOLDOWN:  // 416
     case A_HASTED_GCD:  // 417
       affected_spells = dbc->effect_affects_spells( eff.spell()->class_family(), &eff );
+      break;
+    case A_MOD_RECHARGE_TIME_PCT_CATEGORY_MASK:  // 173
+    case A_MOD_RECHARGE_TIME_CATEGORY_MASK:  // 205
+      if ( auto _mask = as<unsigned>( eff.misc_value1() ) )
+      {
+        for ( unsigned i = 1; _mask; _mask >>= 1, i++ )
+        {
+          if ( _mask & 1 )
+          {
+            auto span_ = dbc->spells_by_category_mask_bit( i );
+            affected_spells.insert( affected_spells.end(), span_.begin(), span_.end() );
+          }
+        }
+      }
       break;
     case A_ADD_PCT_LABEL_MODIFIER:  // 218
     case A_ADD_FLAT_LABEL_MODIFIER:  // 219
@@ -15860,11 +15876,13 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           field_type2 = P_COOLDOWN;
         }
         break;
+      case A_MOD_RECHARGE_TIME_CATEGORY_MASK:  // 205
       case A_MOD_MAX_CHARGES:  // 411
       case A_MOD_RECHARGE_TIME_CATEGORY:  // 453
         flat_val = modifying_eff.average( this );
         field = get_field_from_type( sub_type );
         break;
+      case A_MOD_RECHARGE_TIME_PCT_CATEGORY_MASK:  // 173
       case A_MOD_RECHARGE_TIME_PCT_CATEGORY:  // 454
         pct_val = modifying_eff.average( this );
         field = get_field_from_type( sub_type );

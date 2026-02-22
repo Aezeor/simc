@@ -84,6 +84,7 @@ spell_mapping_reference_t<short> spell_label_index;
 
 // Categories -> spell mappings
 spell_mapping_reference_t<unsigned> spell_categories_index;
+spell_mapping_reference_t<unsigned> spell_category_mask_index;
 
 } // ANONYMOUS namespace ====================================================
 
@@ -114,6 +115,17 @@ static void generate_indices( bool ptr )
     if ( spell.category() != 0 )
     {
       spell_categories_index.add_spell( spell.category(), &spell, ptr );
+
+      if ( auto _mask = spell.category_type() )
+      {
+        for ( unsigned i = 1; _mask; _mask >>= 1, i++ )
+        {
+          if ( _mask & 1 )
+          {
+            spell_category_mask_index.add_spell( i, &spell, ptr );
+          }
+        }
+      }
     }
 
     for ( const spelllabel_data_t& label : spell.labels() )
@@ -148,6 +160,8 @@ static void generate_indices( bool ptr )
       }
     }
   }
+
+  auto a = &spell_category_mask_index;
 }
 
 /* Initialize database
@@ -2063,4 +2077,9 @@ util::span<const spell_data_t* const> dbc_t::spells_by_label( size_t label ) con
 util::span<const spell_data_t* const> dbc_t::spells_by_category( unsigned category ) const
 {
   return spell_categories_index.affects_spells( category, ptr );
+}
+
+util::span<const spell_data_t* const> dbc_t::spells_by_category_mask_bit( unsigned bit ) const
+{
+  return spell_category_mask_index.affects_spells( bit, ptr );
 }
