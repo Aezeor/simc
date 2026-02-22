@@ -3371,7 +3371,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
   {
     double haste = base_ghoul_pet_t::composite_melee_haste();
 
-    if ( unholy_devotion->check() )
+    if ( unholy_devotion->check() && bugs )
       haste /= 1.0 + unholy_devotion->check_stack_value();
 
     return haste;
@@ -3383,6 +3383,9 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
 
     if ( ghoulish_frenzy->check() )
       haste /= 1.0 + ghoulish_frenzy->data().effectN( 1 ).percent();
+
+    if ( unholy_devotion->check() && !bugs )
+      haste /= 1.0 + unholy_devotion->check_stack_value();
 
     return haste;
   }
