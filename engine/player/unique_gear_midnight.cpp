@@ -959,13 +959,14 @@ void rot( special_effect_t& effect )
     buff_t* create_debuff( player_t* target ) override
     {
       return make_buff<buff_t>( actor_pair_t( target, player ), "root_rot_debuff", &data() )
+        ->set_activated( true )
         ->set_duration( data().duration() + 1_ms );  // Extra 1ms to avoid expiration before next tick
     }
 
     void execute() override
     {
       generic_proc_t::execute();
-      get_debuff( execute_state->target )->execute();
+      get_debuff( execute_state->target )->trigger();
     }
   };
 
