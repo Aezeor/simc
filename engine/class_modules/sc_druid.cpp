@@ -4104,7 +4104,9 @@ struct frantic_frenzy_t final : public cat_attack_t
 
     void execute() override
     {
-      action->cat_attack_t::trigger_dot( state );
+      if ( !state->target->is_sleeping() )
+        action->cat_attack_t::trigger_dot( state );
+
       action_state_t::release( state );
     }
 
