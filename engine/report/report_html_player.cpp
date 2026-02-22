@@ -972,6 +972,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                  "<li><span>min_gcd:</span>{:.4f}</li>"
                  "<li><span>cooldown:</span>{:.3f}</li>"
                  "<li><span>cooldown hasted:</span>{}</li>"
+                 "<li><span>category cooldown:</span>{}</li>"
                  "<li><span>charges:</span>{}</li>"
                  "<li><span>base_recharge_multiplier:</span>{:.3f}</li>"
                  "<li><span>base_execute_time:</span>{:.2f}</li>"
@@ -989,6 +990,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                  a->min_gcd.total_seconds(),
                  a->cooldown->duration.total_seconds(),
                  a->cooldown->hasted ? "true" : "false",
+                 a->cooldown->category ? "true" : "false",
                  a->cooldown->charges,
                  a->base_recharge_multiplier,
                  a->base_execute_time.total_seconds(),
