@@ -421,7 +421,9 @@ void worker_t::execute()
     }
   }
 
+  m_mutex.lock();
   m_done = true;
+  m_mutex.unlock();
 
   m_master->notify_worker();
 }
