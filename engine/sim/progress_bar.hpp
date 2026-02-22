@@ -9,7 +9,6 @@
 
 #include "sc_enums.hpp"
 #include "util/chrono.hpp"
-#include "util/concurrency.hpp"
 
 #include <string>
 #include <shared_mutex>
