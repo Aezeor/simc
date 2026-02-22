@@ -3430,7 +3430,7 @@ parsed_assisted_combat_rule_t priest_t::parse_assisted_combat_rule( const assist
   // guard against buff.power_word_fortitude_highlight, base sim handles this
   if ( step.spell_id == 21562 && rule.condition_value_1 == 1271911 )
   {
-    return { "0" };
+    return { "aura.power_word_fortitude.down" };
   }
 
   return player_t::parse_assisted_combat_rule( rule, step );
