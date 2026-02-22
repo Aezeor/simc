@@ -337,7 +337,7 @@ public:
     buff_t* moment_of_craving;
     buff_t* emptiness;
     buff_t* collapsing_star_stack;
-    buff_t* collapsing_star_ready;
+    buff_t* collapsing_star;
     buff_t* void_metamorphosis_stack;
     buff_t* rolling_torment;
     buff_t* impending_apocalypse;
@@ -803,7 +803,7 @@ public:
     const spell_data_t* voidglare_boon_energize;
     const spell_data_t* collapsing_star_damage;
     const spell_data_t* collapsing_star_spell;
-    const spell_data_t* collapsing_star_ready_buff;
+    const spell_data_t* collapsing_star_buff;
     const spell_data_t* collapsing_star_stacking_buff;
     const spell_data_t* emptiness_buff;
     const spell_data_t* impending_apocalypse_buff;
@@ -6350,14 +6350,14 @@ struct collapsing_star_t : public demon_hunter_spell_t
 
   void execute() override
   {
-    p()->buff.collapsing_star_ready->expire();
+    p()->buff.collapsing_star->expire();
     p()->buff.collapsing_star_stack->decrement( soul_cost );
     demon_hunter_spell_t::execute();
   }
 
   bool action_ready() override
   {
-    if ( !p()->buff.collapsing_star_ready->check() )
+    if ( !p()->buff.collapsing_star->check() )
     {
       return false;
     }
@@ -8968,7 +8968,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 
     if ( p()->talent.devourer.midnight3->ok() )
     {
-      p()->buff.collapsing_star_ready->trigger();
+      p()->buff.collapsing_star->trigger();
       p()->buff.collapsing_star_stack->trigger(
           as<int>( p()->talent.devourer.collapsing_star->effectN( 1 ).base_value() ) );
       p()->spawn_soul_fragment( p()->proc.soul_fragment_from_void_metamorphosis, soul_fragment::LESSER,
@@ -9014,7 +9014,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     if ( p()->specialization() == DEMON_HUNTER_DEVOURER )
     {
       p()->resources.current[ RESOURCE_FURY ] = 0;
-      p()->buff.collapsing_star_ready->expire();
+      p()->buff.collapsing_star->expire();
       if ( p()->talent.devourer.rolling_torment->ok() && p()->buff.collapsing_star_stack->up() )
       {
         p()->buff.rolling_torment->trigger( p()->buff.collapsing_star_stack->stack() );
@@ -9092,7 +9092,7 @@ struct collapsing_star_stacking_t : public demon_hunter_buff_t<buff_t>
     add_stack_change_callback( [ this ]( buff_t* b, int old, int new_ ) {
       if ( new_ >= trigger_threshold && old < trigger_threshold )
       {
-        this->p()->buff.collapsing_star_ready->trigger();
+        this->p()->buff.collapsing_star->trigger();
       }
     } );
   }
@@ -9651,8 +9651,8 @@ void demon_hunter_t::create_buffs()
                                   ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
                                   ->disable_ticking( true );
 
-  buff.collapsing_star_ready = make_buff( this, "collapsing_star_ready", spec.collapsing_star_ready_buff )
-                                   ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  buff.collapsing_star = make_buff( this, "collapsing_star", spec.collapsing_star_buff )
+                             ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buff.collapsing_star_stack = make_buff<collapsing_star_stacking_t>( this );
 
@@ -10807,7 +10807,7 @@ void demon_hunter_t::init_spells()
       conditional_spell_lookup( talent.devourer.collapsing_star->ok() || talent.devourer.midnight3->ok(), 1221162 );
   spec.collapsing_star_spell =
       conditional_spell_lookup( talent.devourer.collapsing_star->ok() || talent.devourer.midnight3->ok(), 1221150 );
-  spec.collapsing_star_ready_buff =
+  spec.collapsing_star_buff =
       conditional_spell_lookup( talent.devourer.collapsing_star->ok() || talent.devourer.midnight3->ok(), 1221171 );
   spec.collapsing_star_stacking_buff =
       conditional_spell_lookup( talent.devourer.collapsing_star->ok() || talent.devourer.midnight3->ok(), 1227702 );
