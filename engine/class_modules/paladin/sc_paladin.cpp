@@ -1557,7 +1557,8 @@ struct divine_toll_judgment_ret_t :judgment_ret_t
   divine_toll_judgment_ret_t( paladin_t* p ) : judgment_ret_t( p, "judgment_divine_toll", p->spells.judgment_ret_dt )
   {
     background = true;
-    aoe        = 1; // Divine Toll's Judgments don't cleave further
+    aoe        = 1;  // Divine Toll's Judgments don't cleave further
+    base_multiplier *= 1.0 + p->talents.divine_toll->effectN( 6 ).percent();
     cooldown->duration = 0_ms;
   }
 };
@@ -1576,7 +1577,13 @@ struct divine_exaction_judgment_t : public judgment_ret_t
   {
     background = true;
     aoe        = 1;  // DE's Hammer of Wrath's don't cleave further
-    base_multiplier *= p->talents.templar.divine_exaction->effectN( 2 ).percent();
+    // 22.02.26 Fluttershy - We are thinking Divine Toll Judgment/HoW are 150% increased effectiveness from base damage, instead of 50% increased effectiveness from buffed damage (which should be 300%, instead of 250%)
+    if (!p->bugs)
+      base_multiplier *= 1.0 + p->talents.divine_toll->effectN( 6 ).percent();
+    double de_mult = p->talents.templar.divine_exaction->effectN( 2 ).percent();
+    if ( p->bugs )
+      de_mult += 1.0;
+    base_multiplier *= de_mult;
     cooldown->duration = 0_ms;
   }
 };
@@ -1587,6 +1594,7 @@ struct divine_toll_hammer_of_wrath_ret_t : hammer_of_wrath_t
   {
     background = true;
     aoe        = 1;  // Divine Toll's Hammer of Wraths don't cleave further
+    base_multiplier *= 1.0 + p->talents.divine_toll->effectN( 6 ).percent();
     triggers_second_sunrise   = false;
     triggers_divine_resonance = false;
     cooldown->duration        = 0_ms;
@@ -1611,7 +1619,13 @@ struct divine_resonance_hammer_of_wrath_t :hammer_of_wrath_t
   {
     background = true;
     aoe        = 1; // DE's Hammer of Wrath's don't cleave further
-    base_multiplier *= p->talents.templar.divine_exaction->effectN( 2 ).percent();
+    // 22.02.26 Fluttershy - We are thinking Divine Toll Judgment/HoW are 150% increased effectiveness from base damage, instead of 50% increased effectiveness from buffed damage (which should be 300%, instead of 250%)
+    if ( !p->bugs )
+      base_multiplier *= 1.0 + p->talents.divine_toll->effectN( 6 ).percent();
+    double de_mult = p->talents.templar.divine_exaction->effectN( 2 ).percent();
+    if ( p->bugs )
+      de_mult += 1.0;
+    base_multiplier *= de_mult;
     triggers_second_sunrise   = false;
     triggers_divine_resonance = false;
     cooldown->duration = 0_ms;
