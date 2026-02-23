@@ -5630,10 +5630,12 @@ struct raze_base_t : public maul_base_t
 template <typename BASE>
 struct maul_ravage_base_t : public BASE
 {
+  using ravage_t = ravage_base_t<maul_base_t, use_dot_list_t<bear_attack_t>>;
+
   struct ravage_maul_t final : public trigger_wild_guardian_echo_t<
                                       trigger_vicious_brambles_t<
                                       trigger_celestial_might_repeat_t<
-                                      ravage_base_t<maul_base_t, use_dot_list_t<bear_attack_t>>>>>
+                                      ravage_t>>>
   {
     ravage_maul_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->find_spell( 441605 ), f )
     {
@@ -5652,7 +5654,7 @@ struct maul_ravage_base_t : public BASE
 
       if ( p->sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
       {
-        repeat_action = p->get_secondary_action<celestial_might_maul_t<maul_base_t>>( name_str + "_repeat", &data() );
+        repeat_action = p->get_secondary_action<celestial_might_maul_t<ravage_t>>( name_str + "_repeat", &data() );
         repeat_action->name_str_reporting = "Celestial";
         add_child( repeat_action );
       }
