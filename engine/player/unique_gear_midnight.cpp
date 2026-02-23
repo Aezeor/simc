@@ -2445,10 +2445,11 @@ void register_special_effects()
   // Armor
   register_special_effect( 1271211, armors::eternal_voidsong_chain );
   // Sets
-  register_special_effect( 1281574, sets::voidlight_bindings );
-  register_special_effect( 1244005, sets::murder_row_materials );
-  register_special_effect( 1244021, sets::root_wardens_regalia );
-  register_special_effect( 1253358, DISABLED_EFFECT );  // torments duality
+  // NOTE: use unique_gear:: namespace for sets as they are activated with enable_all_sets and not enable_all_item_effects
+  unique_gear::register_special_effect( 1281574, sets::voidlight_bindings );
+  unique_gear::register_special_effect( 1244005, sets::murder_row_materials );
+  unique_gear::register_special_effect( 1244021, sets::root_wardens_regalia );
+  unique_gear::register_special_effect( 1253358, DISABLED_EFFECT );  // torments duality
 }
 
 void register_target_data_initializers( sim_t& )
