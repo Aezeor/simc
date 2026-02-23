@@ -4399,7 +4399,10 @@ struct crash_lightning_attack_t : public shaman_attack_t
   {
     double m = shaman_attack_t::action_multiplier();
 
-    m *= 1.0 + as<double>( p()->buff.crash_lightning->stack() );
+    if ( p()->buff.crash_lightning->up() )
+    {
+      m *= as<double>( p()->buff.crash_lightning->check() );
+    }
 
     if ( strike_type == strike_variant::STORMFLURRY )
     {
