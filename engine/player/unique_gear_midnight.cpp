@@ -1031,13 +1031,15 @@ void hunt( special_effect_t& effect )
 
   // L'ura emulated as Undead, as we dont classify using CreatureType.db2 data. Not Specified triggers the vers buff
   // like Undead and Giant.
-  static constexpr std::array<race_e, 9> raid_races = { RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,
-                                                        RACE_DRAGONKIN,  RACE_HUMANOID,   RACE_HUMANOID,
-                                                        RACE_ABERRATION, RACE_ELEMENTAL,  RACE_UNDEAD };
+  static constexpr std::array<race_e, 9> raid_races = {
+    RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,  RACE_DRAGONKIN, RACE_HUMANOID,
+    RACE_HUMANOID,   RACE_ABERRATION, RACE_ELEMENTAL, RACE_NOT_SPECIFIED
+  };
 
-  static constexpr std::array<race_e, 9> valid_races = { RACE_BEAST,     RACE_ELEMENTAL, RACE_MECHANICAL,
-                                                         RACE_UNDEAD,    RACE_HUMANOID,  RACE_ABERRATION,
-                                                         RACE_DRAGONKIN, RACE_GIANT,     RACE_DEMON };
+  static constexpr std::array<race_e, 10> valid_races = {
+    RACE_ABERRATION, RACE_BEAST,    RACE_DEMON,      RACE_DRAGONKIN, RACE_ELEMENTAL,
+    RACE_GIANT,      RACE_HUMANOID, RACE_MECHANICAL, RACE_UNDEAD,    RACE_NOT_SPECIFIED
+  };
 
   struct hunt_cb_t : public dbc_proc_callback_t
   {
@@ -1066,13 +1068,7 @@ void hunt( special_effect_t& effect )
       else
       {
         mode = MODE_SPECIFIED;
-
-        // Not specified type triggers Vers. Since we dont classify by CreatureType, this is a bit of a workaround to
-        // get the proper buff.
-        if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "not_specified" ) )
-          race = RACE_UNDEAD;
-        else
-          race = util::parse_race_type( e.player->midnight_opts.darkmoon_hunt_race );
+        race = util::parse_race_type( e.player->midnight_opts.darkmoon_hunt_race );
 
         if ( !range::contains( valid_races, race ) )
         {
