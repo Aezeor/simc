@@ -9627,10 +9627,12 @@ struct tempest_t : public shaman_spell_t
 
     // Bug: If Tempest would apply a new Stormkeeper buff (so none was present beforehand), it'll generate Maelstrom
     auto original_maelstrom_gain = maelstrom_gain;
+    auto original_maelstrom_gain_per_target = maelstrom_gain_per_target;
     bool buggy_maelstrom_gain = false;
     if ( p()->bugs && p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.stormwell.ok() && p()->talent.arc_discharge.ok() && !p()->buff.stormkeeper->up() )
     {
       maelstrom_gain = p()->talent.stormwell->effectN(2).base_value();
+      maelstrom_gain_per_target = false;
       buggy_maelstrom_gain = true;
     }
 
@@ -9650,6 +9652,7 @@ struct tempest_t : public shaman_spell_t
     if ( p()->bugs && buggy_maelstrom_gain )
     {
       maelstrom_gain = original_maelstrom_gain;
+      maelstrom_gain_per_target = original_maelstrom_gain_per_target;
     }
 
     if ( p()->talent.storm_swell.ok() )
