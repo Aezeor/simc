@@ -55,7 +55,6 @@ actions.sentst+=/boomstick,if=buff.tip_of_the_spear.up
 actions.sentst+=/moonlight_chakram,if=buff.tip_of_the_spear.up
 actions.sentst+=/flamefang_pitch,if=talent.flamefang_pitch
 actions.sentst+=/raptor_strike,if=buff.tip_of_the_spear.up|!buff.raptor_swipe.up
-#actions.sentst+=/kill_command,if=cooldown.takedown.remains
 actions.sentst+=/takedown
 
 
