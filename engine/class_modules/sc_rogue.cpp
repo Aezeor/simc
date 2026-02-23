@@ -2574,7 +2574,7 @@ public:
       {
         if ( affected_by.shadow_blades_cp && ab::energize_amount > 0 && p()->buffs.shadow_blades->up() )
         {
-          const int shadow_blades_cp = ab::energize_amount * ( p()->buffs.shadow_blades->data().effectN( 2 ).base_value() - 1.0 );
+          const int shadow_blades_cp = as<int>( ab::energize_amount * ( p()->buffs.shadow_blades->data().effectN( 2 ).base_value() - 1.0 ) );
           trigger_combo_point_gain( shadow_blades_cp, p()->gains.shadow_blades );
         }
 
@@ -3503,11 +3503,9 @@ struct shadow_clone_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    // MIDNIGHT TOCHECK -- Check final functionality once bugs are fixed, currently a bit wonky
-    //                     Does not currently appear to work with Shadowcraft bonuses    
     if ( p()->talent.subtlety.ancient_arts_2->ok() && rng().roll( p()->talent.subtlety.ancient_arts_2->effectN( 1 ).percent() ) )
     {
-      trigger_shadow_techniques_buff( execute_state, true );
+      trigger_shadow_techniques_buff( execute_state );
     }
   }
 };
@@ -4146,8 +4144,7 @@ struct eviscerate_t : public rogue_attack_t
       rogue_attack_t( name, p, p->spec.eviscerate_shadow_attack ),
       last_cp( 1 )
     {
-      // 2024-08-12 -- Currently is not affected by the Darkest Night damage bonus
-      affected_by.darkest_night = !p->bugs;
+      affected_by.darkest_night = true;
       // 2024-09-01 -- Note: This works but needs custom composite_crit_chance() handling below
       affected_by.darkest_night_crit = false;
       affected_by.mid1_subtlety_2pc = true;
@@ -5042,6 +5039,26 @@ struct scoundrel_strike_t : public rogue_attack_t
 
 struct secret_technique_t : public rogue_attack_t
 {
+  struct secret_technique_shadow_clone_t : public shadow_clone_t
+  {
+    secret_technique_shadow_clone_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
+      shadow_clone_t( name, p, s )
+    {
+      aoe = -1;
+    }
+
+    // 02-12-2026 -- The shadow clone attack mirrors the primary vs. AoE damage scaling
+    double composite_target_multiplier( player_t* target ) const override
+    {
+      double m = shadow_clone_t::composite_target_multiplier( target );
+
+      if ( target != this->target )
+        m *= p()->spec.secret_technique->effectN( 3 ).percent();
+
+      return m;
+    }
+  };
+
   struct secret_technique_attack_t : public rogue_attack_t
   {
     secret_technique_attack_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
@@ -5099,12 +5116,10 @@ struct secret_technique_t : public rogue_attack_t
     {
       rogue_attack_t::execute();
 
-      // MIDNIGHT TOCHECK -- Check final functionality once bugs are fixed, currently a bit wonky
-      //                     Does not currently appear to work with Shadowcraft bonuses
       if ( hit_any_target && secondary_trigger_type == secondary_trigger::SECRET_TECHNIQUE_CLONE &&
            p()->talent.subtlety.ancient_arts_2->ok() && rng().roll( p()->talent.subtlety.ancient_arts_2->effectN( 1 ).percent() ) )
       {
-        trigger_shadow_techniques_buff( execute_state, true );
+        trigger_shadow_techniques_buff( execute_state );
       }
     }
 
@@ -5370,6 +5385,28 @@ struct shadowstrike_t : public rogue_attack_t
 
 struct black_powder_t: public rogue_attack_t
 {
+  struct black_powder_shadow_clone_t : public shadow_clone_t
+  {
+    black_powder_shadow_clone_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
+      shadow_clone_t( name, p, s )
+    {
+      aoe = -1;
+      reduced_aoe_targets = p->spec.shadow_clone_black_powder_attack->effectN( 4 ).base_value();
+    }
+
+    double combo_point_da_multiplier( const action_state_t* state ) const override
+    {
+      double m = cast_state( state )->get_combo_points();
+
+      if ( p()->talent.subtlety.potent_powder->ok() && m >= p()->talent.subtlety.potent_powder->effectN( 2 ).base_value() )
+      {
+        m *= 1.0 + ( p()->cache.mastery_value() * p()->talent.subtlety.potent_powder->effectN( 1 ).percent() );
+      }
+
+      return m;
+    }
+  };
+
   struct black_powder_bonus_t : public rogue_attack_t
   {
     int last_cp;
@@ -5403,7 +5440,14 @@ struct black_powder_t: public rogue_attack_t
 
     double combo_point_da_multiplier( const action_state_t* ) const override
     {
-      return as<double>( last_cp );
+      double m = as<double>( last_cp );
+
+      if ( p()->talent.subtlety.potent_powder->ok() && m >= p()->talent.subtlety.potent_powder->effectN( 2 ).base_value() )
+      {
+        m *= 1.0 + ( p()->cache.mastery_value() * p()->talent.subtlety.potent_powder->effectN( 1 ).percent() );
+      }
+
+      return m;
     }
   };
 
@@ -5432,7 +5476,6 @@ struct black_powder_t: public rogue_attack_t
   {
     double m = cast_state( state )->get_combo_points();
 
-    // MIDNIGHT TOCHECK -- Does this affect Shadowed Finishers? Appears not currently but likely a bug.
     if ( p()->talent.subtlety.potent_powder->ok() && m >= p()->talent.subtlety.potent_powder->effectN( 2 ).base_value() )
     {
       m *= 1.0 + ( p()->cache.mastery_value() * p()->talent.subtlety.potent_powder->effectN( 1 ).percent() );
@@ -9885,7 +9928,7 @@ void rogue_t::init_spells()
 
     active.shadow_clone_attack.backstab = get_secondary_trigger_action<actions::shadow_clone_t>(
       secondary_trigger::SHADOW_CLONE, "shadow_clone_backstab", spec.shadow_clone_backstab_attack );
-    active.shadow_clone_attack.black_powder = get_secondary_trigger_action<actions::shadow_clone_t>(
+    active.shadow_clone_attack.black_powder = get_secondary_trigger_action<actions::black_powder_t::black_powder_shadow_clone_t>(
       secondary_trigger::SHADOW_CLONE, "shadow_clone_black_powder", spec.shadow_clone_black_powder_attack );
     active.shadow_clone_attack.coup_de_grace = get_secondary_trigger_action<actions::shadow_clone_t>(
       secondary_trigger::SHADOW_CLONE, "shadow_clone_coup_de_grace", spec.shadow_clone_eviscerate_attack ); // MIDNIGHT TOCHECK
@@ -9895,7 +9938,7 @@ void rogue_t::init_spells()
       secondary_trigger::SHADOW_CLONE, "shadow_clone_gloomblade", spec.shadow_clone_gloomblade_attack );
     active.shadow_clone_attack.goremaws_bite = get_secondary_trigger_action<actions::shadow_clone_t>(
       secondary_trigger::SHADOW_CLONE, "shadow_clone_goremaws_bite", spec.shadow_clone_goremaws_bite_attack );
-    active.shadow_clone_attack.secret_technique = get_secondary_trigger_action<actions::shadow_clone_t>(
+    active.shadow_clone_attack.secret_technique = get_secondary_trigger_action<actions::secret_technique_t::secret_technique_shadow_clone_t>(
       secondary_trigger::SHADOW_CLONE, "shadow_clone_secret_technique", spec.shadow_clone_secret_technique_attack );
     active.shadow_clone_attack.shadowstrike = get_secondary_trigger_action<actions::shadow_clone_t>(
       secondary_trigger::SHADOW_CLONE, "shadow_clone_shadowstrike", spec.shadow_clone_shadowstrike_attack );
@@ -9904,11 +9947,11 @@ void rogue_t::init_spells()
     active.shadow_clone_attack.shuriken_toss = get_secondary_trigger_action<actions::shadow_clone_t>(
       secondary_trigger::SHADOW_CLONE, "shadow_clone_shuriken_toss", spec.shadow_clone_shuriken_toss_attack );
 
-    active.shadow_clone_attack.black_powder->aoe = active.shadow_clone_attack.secret_technique->aoe =
-      active.shadow_clone_attack.shuriken_storm->aoe = -1;
+    active.shadow_clone_attack.eviscerate->affected_by.darkest_night = true;
+    active.shadow_clone_attack.eviscerate->affected_by.darkest_night_crit = true;
 
+    active.shadow_clone_attack.shuriken_storm->aoe = -1;
     active.shadow_clone_attack.shuriken_storm->reduced_aoe_targets = spec.shadow_clone_shuriken_storm_attack->effectN( 4 ).base_value();
-    active.shadow_clone_attack.black_powder->reduced_aoe_targets = spec.shadow_clone_black_powder_attack->effectN( 4 ).base_value();
   }
 
   if ( talent.subtlety.weaponmaster->ok() )
