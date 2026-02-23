@@ -4399,6 +4399,8 @@ struct crash_lightning_attack_t : public shaman_attack_t
   {
     double m = shaman_attack_t::action_multiplier();
 
+    m *= 1.0 + as<double>( p()->buff.crash_lightning->stack() );
+
     if ( strike_type == strike_variant::STORMFLURRY )
     {
       m *= p()->talent.stormflurry->effectN( 2 ).percent();
@@ -4414,11 +4416,17 @@ struct crash_lightning_attack_t : public shaman_attack_t
     may_proc_hot_hand = false;
   }
 
+  // Inherit "strike type" from the ability that triggers the aoe Crash Lightning proc
   void trigger( const action_state_t* strike_state, strike_variant st )
   {
     strike_type = st;
     set_target( strike_state->target );
-    schedule_execute();
+
+    // Snapshot state here as Crash Lightning buff may be scheduled to expire on the same timestamp.
+    auto state = get_state();
+    state->target = strike_state->target;
+    snapshot_state( state, result_amount_type::DMG_DIRECT );
+    schedule_execute( state );
   }
 };
 
@@ -12139,10 +12147,7 @@ void shaman_t::trigger_crash_lightning_proc( const action_state_t* state, strike
     return;
   }
 
-  for ( int i = 0; i < buff.crash_lightning->check(); ++i )
-  {
-    debug_cast<crash_lightning_attack_t*>( action.crash_lightning_aoe )->trigger( state, t );
-  }
+  debug_cast<crash_lightning_attack_t*>( action.crash_lightning_aoe )->trigger( state, t );
 }
 
 // shaman_t::init_buffs =====================================================
@@ -12529,7 +12534,7 @@ void shaman_t::init_rng()
     if ( talent.tempest.ok() && specialization() == SHAMAN_ELEMENTAL )
   {
       unsigned int successes_per_deck = 2;
-      double tempest_chance           = talent.tempest->effectN( 1 ).percent() * 0.01; 
+      double tempest_chance           = talent.tempest->effectN( 1 ).percent() * 0.01;
       unsigned int deck_size          = static_cast<unsigned int>( successes_per_deck / tempest_chance );
     rng_obj.tempest_ele
         .set_param_fn( [&]( rng::deck_rng_wrapper_t<rng::dre_deck_rng_t>& obj ) {
