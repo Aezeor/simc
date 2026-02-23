@@ -1281,7 +1281,7 @@ struct druid_t final : public parse_player_effects_t
   }
 
   // hide player_t::is_ptr()
-  bool is_ptr() const { return dbc->wowv() > dbc::client_data_version( false ); }
+  // bool is_ptr() const { return dbc->wowv() > dbc::client_data_version( false ); }
 
   // Character Definition
   void activate() override;
