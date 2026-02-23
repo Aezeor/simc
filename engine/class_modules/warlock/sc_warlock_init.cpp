@@ -115,6 +115,7 @@ namespace warlock
     parse_all_class_passives();
     parse_all_passive_talents();
     parse_all_passive_sets();
+    parse_raid_buffs();
 
     // NOTE: 2026-02-17 Mark of Perotharn is being applied twice in what appears to be a bug
     if ( bugs )

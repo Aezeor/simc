@@ -11048,6 +11048,7 @@ void demon_hunter_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
+  parse_raid_buffs();
 
   // Spell Initialization ===================================================
 

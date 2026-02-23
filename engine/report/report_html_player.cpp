@@ -3668,7 +3668,7 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
 
     for ( const auto* b : ri.constant_buffs )
     {
-       os << "<tbody>\n";
+      os << "<tbody>\n";
       print_html_player_buff( os, *b, p.sim->report_details, p, true );
       os << "</tbody>\n";
     }

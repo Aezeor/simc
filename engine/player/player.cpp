@@ -16522,6 +16522,20 @@ void player_t::parse_all_passive_sets()
           parse_passive_effects( data.spell, false, PARSE_SOURCE_SET );
 }
 
+void player_t::parse_raid_buffs()
+{
+  // blessing of the bronze
+  if ( sim->overrides.blessing_of_the_bronze )
+  {
+    // classes are assigned alphabetically starting from eff#1
+    auto spell = find_spell( 364342 )->effectN( static_cast<unsigned>( type ) ).trigger();
+    parse_passive_effects( spell, true );
+
+    auto buff = make_buff( this, "blessing_of_the_bronze", spell );
+    register_precombat_begin( [ buff ]( auto ) { buff->override_buff(); } );
+  }
+}
+
 void player_t::register_passive_spell_override( const spell_data_t& spell, double value, std::string_view field )
 {
   dbc_override_->register_spell( *dbc, spell.id(), field, value );

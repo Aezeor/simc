@@ -7502,6 +7502,7 @@ void warrior_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
+  parse_raid_buffs();
 
   // Shared Talents - needed when using the same spell data with a spec check (ravager)
 
