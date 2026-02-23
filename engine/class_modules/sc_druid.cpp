@@ -2169,7 +2169,7 @@ public:
   trigger_aggravate_wounds_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
     : BASE( n, p, s, f )
   {
-    if ( p->specialization() == S && p->talent.aggravate_wounds.ok() )
+    if ( BASE::data().ok() && p->specialization() == S && p->talent.aggravate_wounds.ok() )
     {
       if constexpr ( S == DRUID_FERAL )
       {
