@@ -2172,9 +2172,14 @@ public:
     if ( p->specialization() == S && p->talent.aggravate_wounds.ok() )
     {
       if constexpr ( S == DRUID_FERAL )
+      {
+        assert( BASE::base_costs[ RESOURCE_ENERGY ] > 0 );
         dot_ext = p->talent.aggravate_wounds->effectN( 2 ).time_value();
+      }
       else if constexpr ( S == DRUID_GUARDIAN )
+      {
         dot_ext = p->talent.aggravate_wounds->effectN( 1 ).time_value();
+      }
 
       max_ext = timespan_t::from_seconds( p->talent.aggravate_wounds->effectN( 3 ).base_value() );
     }
@@ -4086,7 +4091,7 @@ struct chomp_t final : public cat_attack_t
 
 // Feral/Frantic Frenzy ===========================================================
 
-struct frantic_frenzy_t final : public cat_attack_t
+struct frantic_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, cat_attack_t>
 {
   struct flicker_event_t final : public event_t
   {
@@ -4140,7 +4145,7 @@ struct frantic_frenzy_t final : public cat_attack_t
     }
   };
 
-  DRUID_ABILITY( frantic_frenzy_t, cat_attack_t, "frantic_frenzy", p->talent.frantic_frenzy )
+  DRUID_ABILITY( frantic_frenzy_t, base_t, "frantic_frenzy", p->talent.frantic_frenzy )
   {
     if ( data().ok() )
     {
@@ -4169,7 +4174,7 @@ struct frantic_frenzy_t final : public cat_attack_t
   }
 };
 
-struct feral_frenzy_t final : public cat_attack_t
+struct feral_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, cat_attack_t>
 {
   // despite generating CP, does not actually proc cp generated related effects
   struct feral_frenzy_tick_t final : public cat_attack_t
@@ -4198,7 +4203,7 @@ struct feral_frenzy_t final : public cat_attack_t
     }
   };
 
-  DRUID_ABILITY( feral_frenzy_t, cat_attack_t, "feral_frenzy", p->talent.feral_frenzy )
+  DRUID_ABILITY( feral_frenzy_t, base_t, "feral_frenzy", p->talent.feral_frenzy )
   {
     if ( data().ok() )
     {
@@ -4212,7 +4217,7 @@ struct feral_frenzy_t final : public cat_attack_t
 
   void init() override
   {
-    cat_attack_t::init();
+    base_t::init();
 
     if ( tick_action )
       tick_action->gain = gain;
@@ -4220,7 +4225,7 @@ struct feral_frenzy_t final : public cat_attack_t
 
   bool ready() override
   {
-    return p()->talent.frantic_frenzy.ok() ? false : cat_attack_t::ready();
+    return p()->talent.frantic_frenzy.ok() ? false : base_t::ready();
   }
 };
 
