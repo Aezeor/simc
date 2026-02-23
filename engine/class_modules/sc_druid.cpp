@@ -12071,6 +12071,27 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
 bool druid_t::validate_actor()
 {
   sim->error( error_level_e::SEVERE, "Druid sims are untested and full of bugs. RESULTS ARE UNRELIABLE." );
+  
+  static constexpr std::string_view placeholders[] = {
+  // balance bugs
+    "arcane affinity increases the maximum damage of wrath cast without umbral embrace",
+  // feral bugs
+    "frantic frenzy attacks 6 times",
+    "frantic frenzy does not proc overflowing power",
+    "frantic frenzy does not proc coiled to spring",
+    "primal fury does not proc from 2nd rake with double-clawed rake",
+  // guardian bugs
+    "red moon does not generate rage when the target is hit with mangle",
+    "killing blow excess rage does not trigger memory of ysera",
+    "when multiple dread shades are active only the latest one casts dire echo",
+    "bask in moonlight applies balance effects while in guardian spec",
+    "the eternal moon increase to lunar beam mastery rounds up",
+    "bear ravage has a 1s gcd",
+    "4th rank of wild guardian does increase the effectiveness of each echo"
+  };
+
+  for ( auto ph : placeholders )
+    sim->error( error_level_e::PLACEHOLDER, "{}", ph );
 
   return true;
 }
