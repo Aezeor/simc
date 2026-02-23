@@ -1322,9 +1322,6 @@ struct druid_t final : public parse_player_effects_t
   void combat_begin() override;
   void analyze( sim_t& ) override;
   timespan_t available() const override;
-  double composite_damage_versatility() const override;
-  double composite_heal_versatility() const override;
-  double composite_mitigation_versatility() const override;
   double composite_armor() const override;
   double composite_block() const override { return 0; }
   double composite_dodge_rating() const override;
@@ -10594,6 +10591,14 @@ void druid_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
+
+  if ( talent.gift_of_the_wild.ok() )
+  {
+    auto eff = sim->auras.mark_of_the_wild->data().effectN( 1 );
+    auto val = eff.base_value() * ( 1.0 + talent.gift_of_the_wild->effectN( 1 ).percent() );
+    register_passive_effect_override( eff, val );
+  }
+
   parse_raid_buffs();
 
   parse_passive_effects( spec.ashamanes_guidance );
@@ -12931,37 +12936,6 @@ void druid_t::invalidate_cache( cache_e c )
 }
 
 // Composite combat stat override functions =================================
-
-// Versatility ==============================================================
-double druid_t::composite_damage_versatility() const
-{
-  double v = player_t::composite_damage_versatility();
-
-  if ( talent.gift_of_the_wild.ok() )
-    v += sim->auras.mark_of_the_wild->check_value() * talent.gift_of_the_wild->effectN( 1 ).percent();
-
-  return v;
-}
-
-double druid_t::composite_heal_versatility() const
-{
-  double v = player_t::composite_heal_versatility();
-
-  if ( talent.gift_of_the_wild.ok() )
-    v += sim->auras.mark_of_the_wild->check_value() * talent.gift_of_the_wild->effectN( 1 ).percent();
-
-  return v;
-}
-
-double druid_t::composite_mitigation_versatility() const
-{
-  double v = player_t::composite_mitigation_versatility();
-
-  if ( talent.gift_of_the_wild.ok() )
-    v += sim->auras.mark_of_the_wild->check_value() * talent.gift_of_the_wild->effectN( 1 ).percent() / 2;
-
-  return v;
-}
 
 // Armor ====================================================================
 double druid_t::composite_armor() const

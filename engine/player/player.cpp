@@ -5701,11 +5701,6 @@ double player_t::composite_damage_versatility() const
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
     cdv += b->check_stack_value();
 
-  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
-  {
-    cdv += sim->auras.mark_of_the_wild->check_value();
-  }
-
   if ( buffs.dmf_well_fed )
     cdv += buffs.dmf_well_fed->check_value();
 
@@ -5722,11 +5717,6 @@ double player_t::composite_heal_versatility() const
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
     chv += b->check_stack_value();
 
-  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
-  {
-    chv += sim->auras.mark_of_the_wild->check_value();
-  }
-
   if ( buffs.dmf_well_fed )
     chv += buffs.dmf_well_fed->check_value();
 
@@ -5742,11 +5732,6 @@ double player_t::composite_mitigation_versatility() const
 
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
     cmv += b->check_stack_value() / 2;
-
-  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
-  {
-    cmv += sim->auras.mark_of_the_wild->check_value() / 2;
-  }
 
   if ( buffs.dmf_well_fed )
     cmv += buffs.dmf_well_fed->check_value() / 2;
@@ -16533,6 +16518,15 @@ void player_t::parse_raid_buffs()
 
     auto buff = make_buff( this, "blessing_of_the_bronze", spell );
     register_precombat_begin( [ buff ]( auto ) { buff->override_buff(); } );
+  }
+
+  // mark of the wild
+  if ( sim->overrides.mark_of_the_wild )
+  {
+    // if overrides are registered for the 'self-buff' talents, use the cloned spell_data_t
+    auto spell = dbc_override->find_spell( sim->auras.mark_of_the_wild->data().id(), is_ptr() );
+
+    parse_passive_effects( spell ? spell : &sim->auras.mark_of_the_wild->data(), true );
   }
 }
 
