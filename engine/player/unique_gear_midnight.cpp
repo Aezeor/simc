@@ -1128,6 +1128,7 @@ void hunt( special_effect_t& effect )
           break;
         case RACE_GIANT:
         case RACE_UNDEAD:
+        case RACE_NOT_SPECIFIED:
           buffs[ STAT_VERSATILITY_RATING ]->trigger();
           break;
         default:
