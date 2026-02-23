@@ -7425,27 +7425,6 @@ struct lunar_bolt_t final : public druid_spell_t
   }
 };
 
-// Mark of the Wild =========================================================
-struct mark_of_the_wild_t final : public druid_spell_t
-{
-  DRUID_ABILITY( mark_of_the_wild_t, druid_spell_t, "mark_of_the_wild", p->find_class_spell( "Mark of the Wild" ) )
-  {
-    harmful = false;
-    ignore_false_positive = true;
-
-    if ( sim->overrides.mark_of_the_wild )
-      background = true;
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    if ( !sim->overrides.mark_of_the_wild )
-      sim->auras.mark_of_the_wild->trigger();
-  }
-};
-
 // Moon Spells ==============================================================
 struct moon_base_t : public druid_spell_t
 {
@@ -10077,7 +10056,6 @@ action_t* druid_t::create_action( std::string_view name, std::string_view opt )
   else if ( name == "ferocious_bite"                ) a =               new ferocious_bite_t( this );
   else if ( name == "growl"                         ) a =                        new growl_t( this );
   else if ( name == "mangle"                        ) a =                       new mangle_t( this );
-  else if ( name == "mark_of_the_wild"              ) a =             new mark_of_the_wild_t( this );
   else if ( name == "moonfire"                      ) a =                     new moonfire_t( this );
   else if ( name == "prowl"                         ) a =                        new prowl_t( this );
   else if ( name == "regrowth"                      ) a =                     new regrowth_t( this );
@@ -12615,13 +12593,16 @@ void druid_t::init_blizzard_action_list()
 // druid_t::action_names_from_spell_id ======================================
 std::vector<std::string> druid_t::action_names_from_spell_id( unsigned int spell_id ) const
 {
-  if ( specialization() == DRUID_FERAL && spell_id == 8921 )
+  if ( spell_id == 1126 )  // mark of the wild
+    return {};
+
+  if ( specialization() == DRUID_FERAL && spell_id == 8921 )  // moonfire
     return { "lunar_inspiration" };
 
-  if ( spell_id == 274281 )
+  if ( spell_id == 274281 )  // new moon
     return { "new_moon", "half_moon", "full_moon" };
 
-  if ( spell_id == 1249752 )
+  if ( spell_id == 1249752 )  // waiting for energy
     return { "pool_resource" };
 
   return player_t::action_names_from_spell_id( spell_id );
@@ -12633,7 +12614,6 @@ void druid_t::parse_assisted_combat_step( const assisted_combat_step_data_t& ste
   switch ( step.spell_id )
   {
     case 768:    // cat form
-    case 1126:   // motw
     case 5487:   // bear form
     case 24858:  // moonkin form
       if ( step.order_index <= 1 )
@@ -12652,10 +12632,6 @@ void druid_t::parse_assisted_combat_step( const assisted_combat_step_data_t& ste
 parsed_assisted_combat_rule_t druid_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                                    const assisted_combat_step_data_t& step ) const
 {
-  // adjust for motw being raid aura
-  if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 1271910 )
-    return { "aura.mark_of_the_wild.down" };
-
   // adjust for unused obsolete spell id for apex predator buff
   if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_2 == 252752 )
   {
