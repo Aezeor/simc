@@ -4043,7 +4043,7 @@ struct bloodseeker_vines_t final : public cat_attack_t
       }
     }
 
-    td( s->target )->debuff.bloodseeker_vines->trigger( dot_duration + 1_ms );
+    td( s->target )->debuff.bloodseeker_vines->trigger( stacks, dot_duration + 1_ms );
   }
 
   void tick( dot_t* d ) override
@@ -4093,8 +4093,8 @@ struct frantic_frenzy_t final : public cat_attack_t
 {
   struct flicker_event_t final : public event_t
   {
-    action_state_t* state;
     cat_attack_t* action;
+    action_state_t* state;
 
     flicker_event_t( druid_t* p, cat_attack_t* a, action_state_t* s )
       : event_t( *p, FERAL_FLICKER_DELAY ), action( a ), state( s )

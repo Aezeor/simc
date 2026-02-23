@@ -487,6 +487,12 @@ const char* util::race_type_string( race_e type )
     case RACE_ZANDALARI_TROLL:     return "zandalari_troll";
     case RACE_UNKNOWN:             return "unknown";
     case RACE_MAX:                 return "unknown";
+    // trivial npcs
+    case RACE_CRITTER:             return "critter";
+    case RACE_UNKNOWN_10:          return "unknown_10";
+    case RACE_NON_COMBAT_PET:      return "non_combat_pet";
+    case RACE_GAS_CLOUD:           return "gas_cloud";
+    case RACE_WILD_PET:            return "wild_pet";
     // no default statement so we get warnings if something is missing.
   }
   return "unknown";
