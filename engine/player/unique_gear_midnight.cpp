@@ -2333,7 +2333,10 @@ void voidlight_bindings( special_effect_t& effect )
   assert( value_spell && "Voidlight Bindings missing value spell" );
 
   auto damage = create_proc_action<generic_aoe_proc_t>( "twilight_barrage", effect, 1281579 );
-  damage->base_dd_min = damage->base_dd_max = value_spell->effectN( 1 ).average( effect );
+  damage->base_dd_min = damage->base_dd_max = value_spell->effectN( 1 ).average( effect.player );
+
+  effect.player->sim->error( PLACEHOLDER,
+                             "voidlight bindings damage scaling off player level as item level scaling is unknown" );
   // No Role multiplier currently
   //damage->base_multiplier *= role_mult( effect );
 
