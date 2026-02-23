@@ -5447,6 +5447,36 @@ struct mangle_t final : public use_fluid_form_t<BEAR_FORM,
 };
 
 // Maul / Raze ==============================================================
+/*
+maul_base_t:trigger_aggravate_wounds:trigger_ursocs_fury:trigger_gore:rage_spender
+|
+|->maul_ravage_base_t:trigger_wild_guardian_echo:trigger_celestial_might_repeat
+|  |
+|  |->maul_t "maul"
+|
+|->echo_of_maul_t "echo_of_maul"
+|
+|->celestial_might_maul_t "maul_repeat"
+|
+|->raze_base_t
+|  |
+|  |->maul_ravage_base_t:trigger_wild_guardian_echo:trigger_celestial_might_repeat
+|  |  |
+|  |  |->raze_t "raze"
+|  |
+|  |->celestial_might_raze_t "raze_repeat"
+|  |
+|  |->echo_of_maul_t "echo_of_raze"
+|
+|->ravage_base_t
+   |
+   |->ravage_maul_t:trigger_wild_guardian_echo:trigger_celestial_might_repeat "ravage_maul"
+   |
+   |->celestial_might_maul_t "ravage_repeat"
+   |
+   |->echo_of_maul_t "echo_of_ravage"
+*/
+
 struct maul_data_t
 {
   double rage_mul = 0.0;
@@ -5622,8 +5652,17 @@ struct raze_base_t : public maul_base_t
 using ravage_t = ravage_base_t<maul_base_t, use_dot_list_t<bear_attack_t>>;
 
 template <typename BASE>
-struct maul_ravage_base_t : public BASE
+struct maul_ravage_base_t : public trigger_wild_guardian_echo_t<
+                                   trigger_celestial_might_repeat_t<
+                                   BASE>>
 {
+private:
+  using ab = trigger_wild_guardian_echo_t<trigger_celestial_might_repeat_t<BASE>>;
+
+protected:
+  using base_t = maul_ravage_base_t<BASE>;
+
+public:
   struct ravage_maul_t final : public trigger_wild_guardian_echo_t<
                                       trigger_celestial_might_repeat_t<
                                       ravage_t>>
@@ -5654,41 +5693,39 @@ struct maul_ravage_base_t : public BASE
 
   ravage_maul_t* ravage = nullptr;
 
-  maul_ravage_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f ) : BASE( n, p, s, f )
+  maul_ravage_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f ) : ab( n, p, s, f )
   {
     if ( !p->buff.ravage_maul->is_fallback )
     {
-      ravage = p->get_secondary_action<ravage_maul_t>( "ravage_" + BASE::name_str, f );
-      BASE::add_child( ravage );
+      ravage = p->get_secondary_action<ravage_maul_t>( "ravage_" + ab::name_str, f );
+      ab::add_child( ravage );
     }
   }
 
   void start_gcd() override
   {
     // TODO: bear ravage is bugged and has 1s gcd
-    if ( ravage && BASE::p()->buff.ravage_maul->check() )
+    if ( ravage && ab::p()->buff.ravage_maul->check() )
       ravage->start_gcd();
     else
-      BASE::start_gcd();
+      ab::start_gcd();
   }
 
   void execute() override
   {
-    if ( ravage && BASE::p()->buff.ravage_maul->check() )
+    if ( ravage && ab::p()->buff.ravage_maul->check() )
     {
-      ravage->execute_on_target( BASE::target );
-      BASE::p()->buff.ravage_maul->consume( this );
+      ravage->execute_on_target( ab::target );
+      ab::p()->buff.ravage_maul->consume( this );
 
       return;
     }
 
-    BASE::execute();
+    ab::execute();
   }
 };
 
-struct maul_t final : public trigger_wild_guardian_echo_t<
-                             trigger_celestial_might_repeat_t<
-                             maul_ravage_base_t<maul_base_t>>>
+struct maul_t final : public maul_ravage_base_t<maul_base_t>
 {
   DRUID_ABILITY( maul_t, base_t, "maul", p->talent.maul )
   {
@@ -5716,9 +5753,7 @@ struct maul_t final : public trigger_wild_guardian_echo_t<
   }
 };
 
-struct raze_t final : public trigger_wild_guardian_echo_t<
-                             trigger_celestial_might_repeat_t<
-                             maul_ravage_base_t<raze_base_t>>>
+struct raze_t final : public maul_ravage_base_t<raze_base_t>
 {
   DRUID_ABILITY( raze_t, base_t, "raze", p->talent.raze )
   {
