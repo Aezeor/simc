@@ -5115,29 +5115,6 @@ public:
   }
 };
 
-template <typename BASE>
-struct trigger_vicious_brambles_t : public BASE
-{
-private:
-  double mul;
-
-protected:
-  using base_t = trigger_vicious_brambles_t<BASE>;
-
-public:
-  trigger_vicious_brambles_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
-    : BASE( n, p, s, f ), mul( p->talent.wild_guardian_2->effectN( 2 ).percent() )
-  {}
-
-  void impact( action_state_t* s ) override
-  {
-    BASE::impact( s );
-
-    if ( mul && s->result_amount )
-      residual_action::trigger( BASE::p()->active.vicious_brambles, s->target, s->result_amount * mul );
-  }
-};
-
 // Berserk (Bear) ===========================================================
 struct berserk_bear_base_t : public bear_attack_t
 {
@@ -5505,12 +5482,14 @@ struct maul_base_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
   double kb_excess_rage = 0.0;
   double kb_max_excess_rage = 0.0;
   double kb_excess_rage_mul = 0.0;
+  double vb_mul = 0.0;
   bool max_rage = false;
 
   maul_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
     : base_t( n, p, s, f ),
       hr_rage_threshold( p->talent.harnessed_rage->effectN( 1 ).base_value() ),
-      hr_gore_chance_pct( p->talent.harnessed_rage->effectN( 2 ).percent() )
+      hr_gore_chance_pct( p->talent.harnessed_rage->effectN( 2 ).percent() ),
+      vb_mul( p->talent.wild_guardian_2->effectN( 2 ).percent() )
   {
     add_option( opt_bool( "max_rage", max_rage ) );
 
@@ -5556,6 +5535,14 @@ struct maul_base_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
       kb_excess_rage = std::min( kb_max_excess_rage, p()->resources.current[ RESOURCE_RAGE ] - cost() );
 
     base_t::execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    base_t::impact( s );
+
+    if ( vb_mul && s->result_amount )
+      residual_action::trigger( p()->active.vicious_brambles, s->target, s->result_amount * vb_mul );
   }
 
   void consume_resource() override
@@ -5627,15 +5614,14 @@ struct raze_base_t : public maul_base_t
   }
 };
 
+using ravage_t = ravage_base_t<maul_base_t, use_dot_list_t<bear_attack_t>>;
+
 template <typename BASE>
 struct maul_ravage_base_t : public BASE
 {
-  using ravage_t = ravage_base_t<maul_base_t, use_dot_list_t<bear_attack_t>>;
-
   struct ravage_maul_t final : public trigger_wild_guardian_echo_t<
-                                      trigger_vicious_brambles_t<
                                       trigger_celestial_might_repeat_t<
-                                      ravage_t>>>
+                                      ravage_t>>
   {
     ravage_maul_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->find_spell( 441605 ), f )
     {
@@ -5696,9 +5682,8 @@ struct maul_ravage_base_t : public BASE
 };
 
 struct maul_t final : public trigger_wild_guardian_echo_t<
-                             trigger_vicious_brambles_t<
                              trigger_celestial_might_repeat_t<
-                             maul_ravage_base_t<maul_base_t>>>>
+                             maul_ravage_base_t<maul_base_t>>>
 {
   DRUID_ABILITY( maul_t, base_t, "maul", p->talent.maul )
   {
@@ -5727,9 +5712,8 @@ struct maul_t final : public trigger_wild_guardian_echo_t<
 };
 
 struct raze_t final : public trigger_wild_guardian_echo_t<
-                             trigger_vicious_brambles_t<
                              trigger_celestial_might_repeat_t<
-                             maul_ravage_base_t<raze_base_t>>>>
+                             maul_ravage_base_t<raze_base_t>>>
 {
   DRUID_ABILITY( raze_t, base_t, "raze", p->talent.raze )
   {
@@ -11686,9 +11670,7 @@ void druid_t::create_actions()
   {
     active.echo_of_maul = get_secondary_action<echo_of_maul_t<maul_base_t>>( "echo_of_maul", find_spell( 1269648 ) );
     active.echo_of_raze = get_secondary_action<echo_of_maul_t<raze_base_t>>( "echo_of_raze", find_spell( 1269972 ) );
-    active.echo_of_ravage =
-      get_secondary_action<echo_of_maul_t<ravage_base_t<maul_base_t, use_dot_list_t<bear_attack_t>>>>(
-        "echo_of_ravage", find_spell( 1269973 ) );
+    active.echo_of_ravage = get_secondary_action<echo_of_maul_t<ravage_t>>( "echo_of_ravage", find_spell( 1269973 ) );
     active.echo_of_ravage->name_str_reporting.clear();
   }
 
