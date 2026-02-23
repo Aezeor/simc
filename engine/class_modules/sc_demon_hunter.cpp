@@ -7621,10 +7621,10 @@ struct essence_break_t : public demon_hunter_attack_t
 
 struct felblade_t : public inertia_trigger_t<demon_hunter_attack_t>
 {
-  struct felblade_damage_t : public demon_hunter_attack_t
+  struct felblade_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
   {
     felblade_damage_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_attack_t( name, p, p->spell.felblade_damage )
+      : base_t( name, p, p->spell.felblade_damage )
     {
       background = dual               = true;
       gain                            = p->get_gain( "felblade" );
