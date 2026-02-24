@@ -9631,10 +9631,10 @@ public:
       ooc_chance *= 1.0 + p->talent.moment_of_clarity->effectN( 2 ).percent();
 
     // Assuming pseudo random distribution with the following nominal probability and C-values:
-    // Feral baseline:           4.973750% 0.003762469356807
-    // Feral limb from limb:     6.465875% 0.006299389453876
-    // Guardian baseline:        9.947500% 0.014596017582337
-    // Guardian limb from limb: 12.931750% 0.024235656532117
+    // Feral baseline:           5.0% 0.003801658303553
+    // Feral limb from limb:     6.5% 0.006364707054314
+    // Guardian baseline:       10.0% 0.014745844781073
+    // Guardian limb from limb: 13.0% 0.024482409502286
 
     // *** Outdated Info Below **
     // Feral: 0.286% via community testing (~197k auto attacks)
@@ -9645,12 +9645,12 @@ public:
       auto c = 0.0;
       if ( p->specialization() == DRUID_FERAL )
       {
-        c = p->talent.limb_from_limb.ok() ? 0.006299389453876 : 0.003762469356807;
+        c = p->talent.limb_from_limb.ok() ? 0.006364707054314 : 0.003801658303553;
         ravage_buff = p->buff.ravage_fb;
       }
       else if ( p->specialization() == DRUID_GUARDIAN )
       {
-        c = p->talent.limb_from_limb.ok() ? 0.024235656532117 : 0.014596017582337;
+        c = p->talent.limb_from_limb.ok() ? 0.024482409502286 : 0.014745844781073;
         ravage_buff = p->buff.ravage_maul;
       }
 
