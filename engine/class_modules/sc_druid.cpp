@@ -20,6 +20,7 @@ namespace
 // Forward declarations
 struct druid_t;
 struct druid_spell_t;
+struct druid_heal_t;
 struct bear_attack_t;
 struct cat_attack_t;
 
@@ -41,9 +42,7 @@ static constexpr double UNSEEN_SWIPE_REDUCED_AOE = 5;
 // ursoc's fury & natural resilience cap as percentage of max hp
 static constexpr double GUARDIAN_SHIELD_CAP_HP_PCT = 0.3;
 // wild guardian echo delays
-static constexpr timespan_t WILD_GUARDIAN_FR_ECHO_DELAY = 500_ms;
-static constexpr timespan_t WILD_GUARDIAN_IF_ECHO_DELAY = 250_ms;
-static constexpr timespan_t WILD_GUARDIAN_MAUL_ECHO_DELAY = 500_ms;
+static constexpr std::array<timespan_t, 2> WILD_GUARDIAN_ECHO_DELAY = { 300_ms, 400_ms };
 
 namespace pets
 {
@@ -602,8 +601,6 @@ struct druid_t final : public parse_player_effects_t
     action_t* after_the_wildfire_heal;
     action_t* blazing_thorns;
     action_t* brambles_reflect;
-    action_t* echo_of_frenzied_regeneration;
-    action_t* echo_of_ironfur;
     action_t* echo_of_maul;
     action_t* echo_of_ravage;
     action_t* echo_of_raze;
@@ -1685,6 +1682,9 @@ std::function<void( pet_t* )> parent_pet_action_fn( action_t* parent )
 template <typename Base = buff_t, typename = std::enable_if_t<std::is_base_of_v<buff_t, Base>>>
 struct druid_buff_base_t : public Base
 {
+private:
+  bool can_proc_from_procs = false;
+
 protected:
   using base_t = druid_buff_base_t<Base>;
 
@@ -1702,6 +1702,8 @@ public:
   druid_t* p() { return static_cast<druid_t*>( Base::source ); }
 
   const druid_t* p() const { return static_cast<druid_t*>( Base::source ); }
+
+  base_t* set_can_proc_from_procs( bool b ) { can_proc_from_procs = b; return this; }
 
   bool can_trigger( action_t* a ) const override
   {
@@ -1723,11 +1725,13 @@ public:
 
     if ( a->proc && !a->not_a_proc )
     {
+      // forced override
+      if ( can_proc_from_procs )
+        return true;
+
       // allow if the driver can proc from procs
       if ( Base::get_trigger_data()->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
-      {
         return true;
-      }
 
       // allow if the action is from convoke and the driver procs from cast successful
       if ( ( Base::get_trigger_data()->proc_flags() & PF_CAST_SUCCESSFUL ) &&
@@ -1760,6 +1764,10 @@ public:
 
     if ( a->proc && !a->not_a_proc )
     {
+      // forced override
+      if ( can_proc_from_procs )
+        return true;
+
       // allow if either the buff or the driver can proc from procs
       if ( Base::data().flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) ||
            Base::get_trigger_data()->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
@@ -2596,6 +2604,56 @@ public:
         break;
       default:
         break;
+    }
+  }
+};
+
+template <typename BASE>
+struct trigger_wild_guardian_echo_t : public BASE
+{
+private:
+  buff_t* echo_buff = nullptr;
+  timespan_t repeat_delay = 0_ms;
+  int num_repeat;
+
+protected:
+  using base_t = trigger_wild_guardian_echo_t<BASE>;
+  action_t* echo_action = nullptr;
+
+public:
+  trigger_wild_guardian_echo_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
+    : BASE( n, p, s, f ), num_repeat( as<int>( p->talent.wild_guardian_3->effectN( 3 ).base_value() ) )
+  {
+    if ( p->talent.wild_guardian_1.ok() )
+    {
+      if constexpr ( std::is_base_of_v<druid_spell_t, BASE> )  // ironfur
+        echo_buff = p->buff.gift_of_frenzied_regeneration;
+      else if constexpr ( std::is_base_of_v<druid_heal_t, BASE> )  // frenzied regeneration
+        echo_buff = p->buff.gift_of_ironfur;
+      else  // maul/raze/ravage
+        echo_buff = p->buff.gift_of_maul;
+    }
+
+    if ( num_repeat )
+      repeat_delay = p->talent.wild_guardian_3->effectN( 4 ).time_value() / num_repeat;
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    if ( echo_action && echo_buff->consume( this ) )
+    {
+      make_event( *BASE::sim, BASE::rng().range( WILD_GUARDIAN_ECHO_DELAY ), [ this ] {
+        echo_action->execute_on_target( BASE::target );
+
+        if ( repeat_delay > 0_ms )
+        {
+          make_repeating_event( *BASE::sim, repeat_delay, [ this ] {
+            echo_action->execute_on_target( BASE::target );
+          }, num_repeat );
+        }
+      } );
     }
   }
 };
@@ -5010,34 +5068,6 @@ public:
 };
 
 template <typename BASE>
-struct trigger_celestial_might_repeat_t : public BASE
-{
-private:
-  druid_t* p_;
-
-protected:
-  using base_t = trigger_celestial_might_repeat_t<BASE>;
-  action_t* repeat_action = nullptr;
-
-public:
-  trigger_celestial_might_repeat_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
-    : BASE( n, p, s, f ), p_( p )
-  {}
-
-  void execute() override
-  {
-    BASE::execute();
-
-    if ( repeat_action && p_->buff.celestial_might->check() )
-    {
-      p_->buff.celestial_might->expire();
-
-      repeat_action->execute_on_target( BASE::target );
-    }
-  }
-};
-
-template <typename BASE>
 struct trigger_ursocs_fury_t : public BASE
 {
 private:
@@ -5077,46 +5107,6 @@ public:
     BASE::tick( d );
 
     trigger_ursocs_fury( d->state );
-  }
-};
-
-template <typename BASE>
-struct trigger_wild_guardian_echo_t : public BASE
-{
-private:
-  druid_t* p_;
-  timespan_t repeat_delay = 0_ms;
-  int num_repeat;
-
-protected:
-  using base_t = trigger_wild_guardian_echo_t<BASE>;
-  action_t* echo_action = nullptr;
-  buff_t* echo_buff = nullptr;
-  timespan_t echo_delay = 0_ms;
-
-public:
-  trigger_wild_guardian_echo_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
-    : BASE( n, p, s, f ), p_( p ), num_repeat( as<int>( p->talent.wild_guardian_3->effectN( 3 ).base_value() ) )
-  {
-    if ( num_repeat )
-      repeat_delay = p->talent.wild_guardian_3->effectN( 4 ).time_value() / num_repeat;
-  }
-
-  void execute() override
-  {
-    BASE::execute();
-
-    if ( echo_action && echo_buff->consume( this ) )
-    {
-      make_event( *BASE::sim, echo_delay, [ this ] { echo_action->execute_on_target( BASE::target ); } );
-
-      if ( repeat_delay > 0_ms )
-      {
-        make_repeating_event( *BASE::sim, repeat_delay, [ this ] {
-            echo_action->execute_on_target( BASE::target );
-          }, num_repeat );
-      }
-    }
   }
 };
 
@@ -5259,11 +5249,7 @@ struct ironfur_t final : public trigger_wild_guardian_echo_t<rage_spender_t<drui
     harmful = may_miss = may_dodge = may_parry = may_block = false;
 
     if ( p->talent.wild_guardian_1.ok() )
-    {
       echo_action = p->get_secondary_action<echo_of_ironfur_t>( "echo_of_ironfur" );
-      echo_buff = p->buff.gift_of_ironfur;
-      echo_delay = WILD_GUARDIAN_IF_ECHO_DELAY;
-    }
   }
 
   void execute() override
@@ -5450,29 +5436,29 @@ struct mangle_t final : public use_fluid_form_t<BEAR_FORM,
 /*
 maul_base_t:trigger_aggravate_wounds:trigger_ursocs_fury:trigger_gore:rage_spender
 |
-|->maul_ravage_base_t:trigger_wild_guardian_echo:trigger_celestial_might_repeat
+|->maul_ravage_base_t:trigger_maul_echo_t
 |  |
 |  |->maul_t "maul"
 |
 |->echo_of_maul_t "echo_of_maul"
 |
-|->celestial_might_maul_t "maul_repeat"
+|->celestial_might_maul_t:trigger_wild_guardian_echo_t "maul_repeat"
 |
 |->raze_base_t
 |  |
-|  |->maul_ravage_base_t:trigger_wild_guardian_echo:trigger_celestial_might_repeat
+|  |->maul_ravage_base_t:trigger_maul_echo_t
 |  |  |
 |  |  |->raze_t "raze"
 |  |
-|  |->celestial_might_raze_t "raze_repeat"
+|  |->celestial_might_raze_t:trigger_wild_guardian_echo_t "raze_repeat"
 |  |
 |  |->echo_of_maul_t "echo_of_raze"
 |
 |->ravage_base_t
    |
-   |->ravage_maul_t:trigger_wild_guardian_echo:trigger_celestial_might_repeat "ravage_maul"
+   |->ravage_maul_t:trigger_maul_echo_t "ravage_maul"
    |
-   |->celestial_might_maul_t "ravage_repeat"
+   |->celestial_might_maul_t:trigger_wild_guardian_echo_t "ravage_repeat"
    |
    |->echo_of_maul_t "echo_of_ravage"
 */
@@ -5488,6 +5474,41 @@ struct maul_data_t
 };
 
 template <typename BASE>
+struct trigger_maul_echo_t : public trigger_wild_guardian_echo_t<BASE>
+{
+private:
+  using ab = trigger_wild_guardian_echo_t<BASE>;
+  druid_t* p_;
+
+protected:
+  using base_t = trigger_maul_echo_t<BASE>;
+  action_t* repeat_action = nullptr;
+
+public:
+  trigger_maul_echo_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f ) : ab( n, p, s, f ), p_( p ) {}
+
+  void execute() override
+  {
+    auto gift_stacks = p_->buff.gift_of_maul->check();
+
+    ab::execute();
+
+    if ( repeat_action && p_->buff.celestial_might->consume( this ) )
+    {
+      auto delay = ab::rng().range( WILD_GUARDIAN_ECHO_DELAY );
+
+      // if gift was consumed for an echo, the repeat is delayed until after the echo
+      if ( gift_stacks - p_->buff.gift_of_maul->check() > 0 )
+        delay += ab::rng().range( WILD_GUARDIAN_ECHO_DELAY );
+
+      make_event( *ab::sim, delay, [ this ] {
+        repeat_action->execute_on_target( ab::target );
+      } );
+    }
+  }
+};
+
+template <typename BASE>
 struct echo_of_maul_t : public BASE
 {
   echo_of_maul_t( druid_t* p, std::string_view n, const spell_data_t* s ) : BASE( n, p, s, flag_e::WILDGUARDIAN )
@@ -5498,12 +5519,25 @@ struct echo_of_maul_t : public BASE
 };
 
 template <typename BASE>
-struct celestial_might_maul_t : public BASE
+struct celestial_might_maul_t : public trigger_wild_guardian_echo_t<BASE>
 {
-  celestial_might_maul_t( druid_t* p, std::string_view n, const spell_data_t* s ) : BASE( n, p, s, flag_e::CELESTIAL )
+private:
+  using ab = trigger_wild_guardian_echo_t<BASE>;
+
+public:
+  celestial_might_maul_t( druid_t* p, std::string_view n, const spell_data_t* s, action_t* echo )
+    : ab( n, p, s, flag_e::CELESTIAL )
   {
-    BASE::proc = true;
-    BASE::base_multiplier *= find_trigger( p->sets->set( DRUID_GUARDIAN, MID1, B4 ) ).trigger()->effectN( 1 ).percent();
+    ab::proc = true;
+    ab::base_multiplier *= find_trigger( p->sets->set( DRUID_GUARDIAN, MID1, B4 ) ).trigger()->effectN( 1 ).percent();
+    ab::name_str_reporting = "Celestial";
+
+    ab::echo_action = echo;
+  }
+
+  void execute() override
+  {
+    ab::execute();
   }
 };
 
@@ -5652,20 +5686,16 @@ struct raze_base_t : public maul_base_t
 using ravage_t = ravage_base_t<maul_base_t, use_dot_list_t<bear_attack_t>>;
 
 template <typename BASE>
-struct maul_ravage_base_t : public trigger_wild_guardian_echo_t<
-                                   trigger_celestial_might_repeat_t<
-                                   BASE>>
+struct maul_ravage_base_t : public trigger_maul_echo_t<BASE>
 {
 private:
-  using ab = trigger_wild_guardian_echo_t<trigger_celestial_might_repeat_t<BASE>>;
+  using ab = trigger_maul_echo_t<BASE>;
 
 protected:
   using base_t = maul_ravage_base_t<BASE>;
 
 public:
-  struct ravage_maul_t final : public trigger_wild_guardian_echo_t<
-                                      trigger_celestial_might_repeat_t<
-                                      ravage_t>>
+  struct ravage_maul_t final : public trigger_maul_echo_t<ravage_t>
   {
     ravage_maul_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->find_spell( 441605 ), f )
     {
@@ -5676,16 +5706,12 @@ public:
       gcd_type = gcd_haste_type::ATTACK_HASTE;
 
       if ( p->talent.wild_guardian_1.ok() )
-      {
         echo_action = p->active.echo_of_ravage;
-        echo_buff = p->buff.gift_of_maul;
-        echo_delay = WILD_GUARDIAN_MAUL_ECHO_DELAY;
-      }
 
       if ( p->sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
       {
-        repeat_action = p->get_secondary_action<celestial_might_maul_t<ravage_t>>( name_str + "_repeat", &data() );
-        repeat_action->name_str_reporting = "Celestial";
+        repeat_action = p->get_secondary_action<celestial_might_maul_t<ravage_t>>(
+          name_str + "_repeat", &data(), p->active.echo_of_ravage );
         add_child( repeat_action );
       }
     }
@@ -5733,16 +5759,12 @@ struct maul_t final : public maul_ravage_base_t<maul_base_t>
       return;
 
     if ( p->talent.wild_guardian_1.ok() )
-    {
       echo_action = p->active.echo_of_maul;
-      echo_buff = p->buff.gift_of_maul;
-      echo_delay = WILD_GUARDIAN_MAUL_ECHO_DELAY;
-    }
 
     if ( p->sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
     {
-      repeat_action = p->get_secondary_action<celestial_might_maul_t<maul_base_t>>( name_str + "_repeat", &data() );
-      repeat_action->name_str_reporting = "Celestial";
+      repeat_action = p->get_secondary_action<celestial_might_maul_t<maul_base_t>>(
+        name_str + "_repeat", &data(), p->active.echo_of_maul );
       add_child( repeat_action );
     }
   }
@@ -5761,16 +5783,12 @@ struct raze_t final : public maul_ravage_base_t<raze_base_t>
       return;
 
     if ( p->talent.wild_guardian_1.ok() )
-    {
       echo_action = p->active.echo_of_raze;
-      echo_buff = p->buff.gift_of_maul;
-      echo_delay = WILD_GUARDIAN_MAUL_ECHO_DELAY;
-    }
 
     if ( p->sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
     {
-      repeat_action = p->get_secondary_action<celestial_might_maul_t<raze_base_t>>( name_str + "_repeat", &data() );
-      repeat_action->name_str_reporting = "Celestial";
+      repeat_action = p->get_secondary_action<celestial_might_maul_t<raze_base_t>>(
+        name_str + "_repeat", &data(), p->active.echo_of_raze );
       add_child( repeat_action );
     }
   }
@@ -6578,7 +6596,7 @@ struct yseras_gift_t final : public druid_heal_t
 
 // Frenzied Regeneration ====================================================
 // NOTE: this must come after regrowth and rejuvenation due to reinvigoration
-struct frenzied_regeneration_t final : public bear_attacks::trigger_wild_guardian_echo_t<
+struct frenzied_regeneration_t final : public trigger_wild_guardian_echo_t<
                                               bear_attacks::rage_spender_t<
                                               druid_heal_t>>
 {
@@ -6629,11 +6647,7 @@ struct frenzied_regeneration_t final : public bear_attacks::trigger_wild_guardia
     }
 
     if ( p->talent.wild_guardian_1.ok() )
-    {
       echo_action = p->get_secondary_action<echo_of_frenzied_regeneration_t>( "echo_of_frenzied_regeneration" );
-      echo_buff = p->buff.gift_of_frenzied_regeneration;
-      echo_delay = WILD_GUARDIAN_FR_ECHO_DELAY;
-    }
   }
 
   template <typename T>
@@ -11252,6 +11266,8 @@ void druid_t::create_buffs()
       this, "gift_of_maul", find_spell( 1269660 ) )
         ->set_initial_stack_to_max_stack()
         ->set_consume_all_stacks( false );
+  if ( !buff.gift_of_maul->is_fallback )
+    debug_cast<druid_buff_t*>( buff.gift_of_maul )->set_can_proc_from_procs( true );
 
   buff.gore = make_fallback( talent.gore.ok(), this, "gore", find_spell( 93622 ) )
     ->set_trigger_spell( talent.gore );
@@ -12079,6 +12095,7 @@ bool druid_t::validate_actor()
     "frantic frenzy attacks 6 times",
     "frantic frenzy does not proc overflowing power",
     "frantic frenzy does not proc coiled to spring",
+    "frantic frenzy/unseen attacks assumed to have 500ms delay",
     "primal fury does not proc from 2nd rake with double-clawed rake",
   // guardian bugs
     "red moon does not generate rage when the target is hit with mangle",
@@ -12087,7 +12104,10 @@ bool druid_t::validate_actor()
     "bask in moonlight applies balance effects while in guardian spec",
     "the eternal moon increase to lunar beam mastery rounds up",
     "bear ravage has a 1s gcd",
-    "4th rank of wild guardian does increase the effectiveness of each echo"
+    "4th rank of wild guardian does not increase the effectiveness of each echo",
+    "all echoed maul/raze/ravage from wild guardians are at 50% effectiveness",
+    "echoes from wild guardians/tier 4pc assumed to have 300ms or 400ms delay",
+    "tier 4pc repeats can proc wild guardian echoes",
   };
 
   for ( auto ph : placeholders )
