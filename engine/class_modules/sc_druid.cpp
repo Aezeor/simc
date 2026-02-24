@@ -9630,9 +9630,11 @@ public:
     if ( p->talent.moment_of_clarity.ok() )
       ooc_chance *= 1.0 + p->talent.moment_of_clarity->effectN( 2 ).percent();
 
-    // Assuming pseudo random distribution with nominal probability of 5%, resulting in C-value of 0.00380166.
-    // Limb from Limb assumed to use nominal probability of 6.5%, resulting in C-value of 0.00636471.
-    // Guardian assumed to be 10%/13% resulting in C-value of 0.01474584/0.02448241.
+    // Assuming pseudo random distribution with the following nominal probability and C-values:
+    // Feral baseline:           4.973750% 0.003762469356807
+    // Feral limb from limb:     6.465875% 0.006299389453876
+    // Guardian baseline:        9.947500% 0.014596017582337
+    // Guardian limb from limb: 12.931750% 0.024235656532117
 
     // *** Outdated Info Below **
     // Feral: 0.286% via community testing (~197k auto attacks)
@@ -9643,12 +9645,12 @@ public:
       auto c = 0.0;
       if ( p->specialization() == DRUID_FERAL )
       {
-        c = p->talent.limb_from_limb.ok() ? 0.00636471 : 0.00380166;
+        c = p->talent.limb_from_limb.ok() ? 0.006299389453876 : 0.003762469356807;
         ravage_buff = p->buff.ravage_fb;
       }
       else if ( p->specialization() == DRUID_GUARDIAN )
       {
-        c = p->talent.limb_from_limb.ok() ? 0.02448241 : 0.01474584;
+        c = p->talent.limb_from_limb.ok() ? 0.024235656532117 : 0.014596017582337;
         ravage_buff = p->buff.ravage_maul;
       }
 
@@ -13869,11 +13871,12 @@ void druid_t::parse_action_effects( action_t* action )
 
   // Balance
   _a->parse_effects( mastery.astral_invocation,
-                     // arcane passive mastery (eff#1) and nature passive mastery (eff#3) apply to orbital strike &
-                     // goldrinn's fang (label 2391) via hidden script
-                     affect_list_t( 1, 3 ).add_label( 2391 ),
-                     // nature passive mastery (eff#3) applies to dream burst (433850) via hidden script
-                     affect_list_t( 3 ).add_spell( 433850 ) );
+                     // arcane passive mastery (eff#1) applies to orbital strike, goldrinn's fang (label 2391)
+                     // and lunar bolt (1263137)
+                     affect_list_t( 1 ).add_label( 2391 ).add_spell( 1263137 ),
+                     // nature passive mastery (eff#3) applies to orbital strike, goldrinn's fang (label 2391)
+                     // and dream burst (433850) and solar bolt (1261573)
+                     affect_list_t( 3 ).add_label( 2391 ).add_spell( 433850 ).add_spell( 1261573 ) );
 
   _a->parse_effects( buff.ascendant_fires, CONSUME_BUFF );
   _a->parse_effects( buff.ascendant_stars, CONSUME_BUFF );
@@ -13893,16 +13896,17 @@ void druid_t::parse_action_effects( action_t* action )
   // instead of data value
   _a->parse_effects( buff.eclipse_lunar, effect_mask_t( true ).disable( 1, 2 ) );
   _a->parse_effects( buff.eclipse_lunar, effect_mask_t( false ).enable( 1, 2 ), USE_CURRENT,
-                     // damage (eff#1) applies to orbital strike and goldrinn's fang (label 2391) via hidden script
-                     affect_list_t( 1 ).add_label( 2391 ) );
+                     // damage (eff#1) applies to orbital strike, goldrinn's fang (label 2391)
+                     // and lunar bolt (1263137)
+                     affect_list_t( 1 ).add_label( 2391 ).add_spell( 1263137 ) );
 
   // due to harmony of the heavens, we parse the damage effects (#1/#2) separately and use the current buff value
   // instead of data value
   _a->parse_effects( buff.eclipse_solar, effect_mask_t( true ).disable( 1, 2 ) );
   _a->parse_effects( buff.eclipse_solar, effect_mask_t( false ).enable( 1, 2 ), USE_CURRENT,
-                     // damage (eff#1) applies to orbital strike and goldrinn's fang (label 2391) and dream burst (433850)
-                     // via hidden script
-                     affect_list_t( 1 ).add_label( 2391 ).add_spell( 433850 ) );
+                     // damage (eff#1) applies to orbital strike, goldrinn's fang (label 2391)
+                     // and dream burst (433850) and solar bolt (1261573)
+                     affect_list_t( 1 ).add_label( 2391 ).add_spell( 433850 ).add_spell( 1261573 ) );
 
   _a->parse_effects( buff.elunes_challenge );
 
