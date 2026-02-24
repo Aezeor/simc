@@ -29,6 +29,8 @@ struct cat_attack_t;
 // ==========================================================================
 // hail of stars solstice duration for free casts
 static constexpr timespan_t HAIL_OF_STARS_FREE_DURATION = 1000_ms;
+// umbral embrace proc chance
+static constexpr double UMBRAL_EMBRACE_PROC_CHANCE = 0.2;
 // wild mushroom AP per hit
 static constexpr double WILD_MUSHROOM_AP_PER_HIT = 5.0;
 // lunar bolt reduced_aoe_targets
@@ -11029,7 +11031,7 @@ void druid_t::create_buffs()
   buff.umbral_embrace =
     make_fallback( talent.umbral_embrace.ok(), this, "umbral_embrace", find_trigger( talent.umbral_embrace ).trigger() )
       ->set_trigger_spell( talent.umbral_embrace )
-      ->set_chance( 0.2 )        // TODO: harcoded value
+      ->set_chance( UMBRAL_EMBRACE_PROC_CHANCE )
       ->set_default_value( 0 );  // value used to indicate if the proc happened during eclipse (1) or not (0)
 
   // Feral buffs
