@@ -11350,18 +11350,7 @@ void druid_t::create_buffs()
       {
         if ( auto excess = dot->current_stack() - orig_max_stack; excess > 0 )
         {
-          auto _state = dot->current_action->get_state( dot->state );
-          auto num_tick = dot->ticks_left_fractional();
-          auto per_tick = dot->current_action->calculate_tick_amount( _state, excess );
-          auto damage = num_tick * per_tick;
-          action_state_t::release( _state );
-
-          if ( sim->debug )
-          {
-            sim->print_debug( "{} Sundering Roar excess thrash on {}: excess={}, num_tick={}, per_tick={}, damage={}",
-                              *this, *dot->target, excess, num_tick, per_tick, damage );
-          }
-
+          auto damage = dot->tick_damage_over_remaining_time( excess );
           active.sundering_roar_thrash->execute_on_target( dot->target, damage );
           dot->decrement( excess );
           dot->max_stack = orig_max_stack;
