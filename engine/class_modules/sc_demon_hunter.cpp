@@ -5727,6 +5727,16 @@ struct voidblade_base_t : public voidrush_trigger_t<hungering_slash_trigger_t<de
     execute_action = p->get_background_action<voidblade_damage_t>( fmt::format( "{}_damage", n ) );
     add_child( execute_action );
   }
+
+  bool action_ready() override
+  {
+    if ( p()->buff.hungering_slash->check() )
+    {
+      return false;
+    }
+
+    return base_t::action_ready();
+  }
 };
 
 struct pierce_the_veil_t : public voidsurge_trigger_t<voidsurge_ability::PIERCE_THE_VEIL, voidblade_base_t>
@@ -5756,8 +5766,7 @@ struct voidblade_t : public voidblade_base_t
 
   bool action_ready() override
   {
-    if ( ( p()->buff.metamorphosis->check() && p()->talent.scarred.demonsurge->ok() ) ||
-         p()->buff.hungering_slash->up() )
+    if ( p()->talent.scarred.demonsurge->ok() && p()->buff.metamorphosis->check() )
     {
       return false;
     }
@@ -6596,7 +6605,7 @@ struct hungering_slash_t : public hungering_slash_base_t
 
   bool action_ready() override
   {
-    if ( p()->buff.metamorphosis->check() && p()->talent.scarred.demonsurge->ok() )
+    if ( p()->talent.scarred.demonsurge->ok() && p()->buff.metamorphosis->check() )
     {
       return false;
     }
@@ -7623,8 +7632,7 @@ struct felblade_t : public inertia_trigger_t<demon_hunter_attack_t>
 {
   struct felblade_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
   {
-    felblade_damage_t( util::string_view name, demon_hunter_t* p )
-      : base_t( name, p, p->spell.felblade_damage )
+    felblade_damage_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spell.felblade_damage )
     {
       background = dual               = true;
       gain                            = p->get_gain( "felblade" );
