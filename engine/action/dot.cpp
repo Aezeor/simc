@@ -856,7 +856,7 @@ void dot_t::schedule_tick()
 
 double dot_t::tick_damage_over_time( timespan_t dur, int stacks ) const
 {
-  if ( !ticking || dur <= 0_ms )
+  if ( !ticking || ( dur != timespan_t::min() && dur <= 0_ms ) )
     return 0.0;
 
   action_state_t* as = current_action->get_state( state );
@@ -883,6 +883,12 @@ double dot_t::tick_damage_over_time( timespan_t dur, int stacks ) const
   double damage = ticks * tick_base_damage;
 
   action_state_t::release( as );
+
+  if ( sim.debug )
+  {
+    sim.print_debug( "{} {} on {} tick damage over time: tick_base_damage={} ticks={} total={}", *source, *this,
+                     *target, tick_base_damage, ticks, damage );
+  }
 
   return damage;
 }
