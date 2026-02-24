@@ -11510,7 +11510,7 @@ struct pestilence_t final : public death_knight_spell_t
     if ( vp->is_ticking() )
     {
       p()->sample_data.pest_vp_dur->add( vp->remains().total_seconds() );
-      if ( duration_mult = 1.0 )
+      if ( duration_mult == 1.0 )
         damage = vp->tick_damage_over_remaining_time() * damage_mult;
       else
         damage = vp->tick_damage_over_time( vp->remains() * duration_mult ) * damage_mult;
