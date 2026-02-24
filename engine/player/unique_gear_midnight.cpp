@@ -2196,6 +2196,57 @@ void wraps_of_cosmic_madness( special_effect_t& e )
   e.execute_action = create_proc_action<cosmic_madness_channel_t>( "wraps_of_cosmic_madness_channel", e );
 }
 
+// 1253113 driver
+// 1266394 dot
+// 1266403 crit buff
+// 1266407 remaining dot pop
+void voidreapers_libram( special_effect_t& effect )
+{
+  effect.player->sim->error( PLACEHOLDER,
+                             "void-reaper's libram assumed to be able to proc while sacred duty buff is up" );
+
+  struct voidreapers_libram_cb_t : public dbc_proc_callback_t
+  {
+    action_t* dot_action;
+    action_t* pop_action;
+    buff_t* crit_buff;
+
+    voidreapers_libram_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {
+      dot_action = create_proc_action<generic_proc_t>( "sacred_text", e, e.player->find_spell( 1266394 ) );
+      dot_action->base_td = e.driver()->effectN( 1 ).average( e );
+
+      pop_action = create_proc_action<generic_proc_t>( "text_ignite", e, e.player->find_spell( 1266407 ) );
+      dot_action->add_child( pop_action );
+
+      crit_buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 1266403 ) )
+        ->set_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 2 ).average( e ) );
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      if ( auto dot = dot_action->find_dot( s->target ); dot && dot->is_ticking() )
+      {
+        assert( dot->current_action == dot_action );
+
+        auto _state = dot_action->get_state( dot->state );
+        auto num_tick = dot->ticks_left_fractional();
+        auto per_tick = dot_action->calculate_tick_amount( _state, 1.0 );
+        auto damage = num_tick * per_tick;
+        action_state_t::release( _state );
+
+        pop_action->execute_on_target( s->target, damage );
+        crit_buff->trigger();
+      }
+      else
+      {
+        dot_action->execute_on_target( s->target );
+      }
+    }
+  };
+
+  new voidreapers_libram_cb_t( effect );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -2514,6 +2565,7 @@ void register_special_effects()
   register_special_effect( 1259314, trinkets::locuswalkers_ribbon);
   register_special_effect( 1259153, trinkets::wraps_of_cosmic_madness);
   register_special_effect( 1259103, DISABLED_EFFECT); // Wraps of the Cosmic Madness equip driver
+  register_special_effect( 1253113, trinkets::voidreapers_libram );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
