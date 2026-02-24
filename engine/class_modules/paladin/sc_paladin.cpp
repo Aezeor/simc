@@ -558,7 +558,7 @@ struct consecration_t : public paladin_spell_t
     // Divine Guidance seems to prioritise Healing, so count healing targets first
     std::vector<player_t*> healingAllies;
     int totalTargets = 0;
-    if ( p()->buffs.lightsmith.divine_guidance->up() )
+    if ( dg_damage && dg_heal && p()->buffs.lightsmith.divine_guidance->up() )
     {
       for (auto friendly : sim->player_non_sleeping_list)
       {
@@ -599,7 +599,7 @@ struct consecration_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     // Damage events come after Consecration cast
-    if ( p()->buffs.lightsmith.divine_guidance->up() )
+    if ( dg_damage && p()->buffs.lightsmith.divine_guidance->up() )
     {
       // Only create damage events when we're dealing damage, so not to proc stuff accidentally
       if ( dg_damage->base_dd_multiplier > 0 )
