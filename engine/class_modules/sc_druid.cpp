@@ -8303,6 +8303,8 @@ struct starfall_t final : public ap_spender_t
       assert( driver->damage );
       replace_stats( this, driver, false );
       replace_stats( this, driver->damage );
+      if ( driver->meteorites )
+        add_child( driver->meteorites );
     }
 
     weaver_buff = p->buff.starweaver_starfall;
