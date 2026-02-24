@@ -2229,13 +2229,7 @@ void voidreapers_libram( special_effect_t& effect )
       {
         assert( dot->current_action == dot_action );
 
-        auto _state = dot_action->get_state( dot->state );
-        auto num_tick = dot->ticks_left_fractional();
-        auto per_tick = dot_action->calculate_tick_amount( _state, 1.0 );
-        auto damage = num_tick * per_tick;
-        action_state_t::release( _state );
-
-        pop_action->execute_on_target( s->target, damage );
+        pop_action->execute_on_target( s->target, dot->tick_damage_over_remaining_time() );
         crit_buff->trigger();
       }
       else
