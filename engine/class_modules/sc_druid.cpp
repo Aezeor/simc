@@ -12144,7 +12144,7 @@ bool druid_t::validate_actor()
   };
 
   for ( auto ph : placeholders )
-    sim->error( error_level_e::PLACEHOLDER, "{}", ph );
+    sim->error( error_level_e::IMPLEMENTATION_NOTES, "{}", ph );
 
   return true;
 }

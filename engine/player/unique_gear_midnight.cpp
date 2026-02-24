@@ -594,28 +594,16 @@ void devouring_banding( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-// 1244243 rppm driver
 // 1259060 equip driver
+// 1244243 rppm driver
 // 1259061 buff
 void blessed_pango_charm( special_effect_t& effect )
 {
-  effect.player->sim->error( PLACEHOLDER,
-                             "blessed pango charm buff using coeff spell value instead of effect driver value" );
+  auto stat_amount = effect.driver()->effectN( 1 ).average( effect );
 
-  auto stat_amount = effect.player->find_spell( 1259060 )->effectN( 1 ).average( effect );
-
-  if ( auto buff = buff_t::find( effect.player, "favored_by_kulzi" ) )
-  {
-    // add stat from 2nd copy of embellishment
-    debug_cast<stat_buff_t*>( buff )->add_stat_from_effect_type( A_MOD_RATING, stat_amount );
-    return;
-  }
-
-  auto favored = make_buff<stat_buff_t>( effect.player, "favored_by_kulzi", effect.player->find_spell( 1259061 ) )
-                     ->add_stat_from_effect_type( A_MOD_RATING, stat_amount );
-
-  effect.custom_buff = favored;
-  effect.spell_id    = 1244243;
+  effect.spell_id    = effect.trigger()->id();
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1259061 ) )
+    ->add_stat_from_effect_type( A_MOD_RATING, stat_amount );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -627,8 +615,8 @@ void blessed_pango_charm( special_effect_t& effect )
 // 1259130 heal
 void primal_spore_binding( special_effect_t& effect )
 {
-  effect.player->sim->error(
-      PLACEHOLDER, "primal spore binding damage and heal using effect driver value instead of rppm driver value" );
+  effect.player->sim->error( UNVERIFIED_VALUE,
+    "Primal Spore Binding: Damage has only been verified to the tooltip and not to actual in-game damage." );
 
   auto damage_amount = effect.driver()->effectN( 1 ).average( effect );
   auto heal_amount   = effect.driver()->effectN( 2 ).average( effect );
@@ -648,11 +636,13 @@ void primal_spore_binding( special_effect_t& effect )
   }
 
   auto damage = create_proc_action<generic_aoe_proc_t>( "primal_spore_explosion", effect, 1259128, true );
+  damage->base_multiplier *= role_mult( effect );
   damage->base_dd_min += damage_amount;
   damage->base_dd_max += damage_amount;
 
   auto heal =
       create_proc_action<base_generic_aoe_proc_t<proc_heal_t>>( "primal_spore_explosion_heal", effect, 1259130, true );
+  heal->base_multiplier *= role_mult( effect );
   heal->base_dd_min += heal_amount;
   heal->base_dd_max += heal_amount;
   heal->name_str_reporting = "Heal";
@@ -673,11 +663,8 @@ void primal_spore_binding( special_effect_t& effect )
 // 1252389 dot
 void prismatic_focusing_iris( special_effect_t& effect )
 {
-  effect.player->sim->error( PLACEHOLDER,
-                             "prismatic focusing iris damage using rppm driver value instead of effect driver value" );
-
   // It appears that in game, it's taking the damage from spelldata, and dividing by 5 to get damage per tick
-  auto dot_damage = effect.trigger()->effectN( 2 ).average( effect ) / 5;
+  auto dot_damage = effect.driver()->effectN( 1 ).average( effect ) / 5;
 
   if ( auto proc = effect.player->find_action( "prismatic_focusing_iris" ) )
   {
@@ -1392,15 +1379,15 @@ void sapling_of_the_dawnroot( special_effect_t& effect )
 // 1259352 Buff
 void seed_of_the_devouring_wild( special_effect_t& effect )
 {
-  auto value_spell = effect.player->find_spell( 1259351 );
-  assert( value_spell && "Seed of the Devouring Wild missing value spell" );
+  auto equip = find_special_effect( effect.player, 1259351 );
+  assert( equip && "Seed of the Devouring Wild missing equip effect" );
 
   auto buff =
       create_buff<stat_buff_t>( effect.player, "seed_of_the_devouring_wild", effect.player->find_spell( 1259352 ) )
-          ->set_stat_from_effect_type( A_MOD_RATING, value_spell->effectN( 2 ).average( effect ) );
+          ->set_stat_from_effect_type( A_MOD_RATING, equip->driver()->effectN( 2 ).average( effect ) );
 
   auto damage         = create_proc_action<generic_aoe_proc_t>( "seed_of_the_devouring_wild", effect, effect.driver() );
-  damage->base_dd_min = damage->base_dd_max = value_spell->effectN( 1 ).average( effect );
+  damage->base_dd_min = damage->base_dd_max = equip->driver()->effectN( 1 ).average( effect );
   damage->base_multiplier *= role_mult( effect );
 
   effect.execute_action = damage;
@@ -1426,15 +1413,14 @@ void idol_of_the_war_loa( special_effect_t& effect )
 // 1256896 Driver
 // 1266686 Alnsight Buff
 // 1266687 Primary Buff
+// 1266701 vfx
 void gaze_of_the_alnseer( special_effect_t& effect )
 {
-  auto alnsight_spell = effect.player->find_spell( 1266686 );
-  assert( alnsight_spell && "Gaze of the Alnseer missing alnsight spell" );
+  auto alnsight_spell = effect.trigger();
 
   auto buff = create_buff<buff_t>( effect.player, alnsight_spell );
   auto stat = create_buff<stat_buff_t>( effect.player, "alnscorned_essence", effect.player->find_spell( 1266687 ) )
-                  ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) )
-                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+                  ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
 
   auto alnsight         = new special_effect_t( effect.player );
   alnsight->name_str    = "alnsight_proc";
@@ -1451,19 +1437,19 @@ void gaze_of_the_alnseer( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-// Resonant Roarstone
+// Resonant Bellowstone
 // 1250564 Driver
 // 1254180 Buff
 // 1254331 Stacking Buff
-void resonant_roarstone( special_effect_t& effect )
+void resonant_bellowstone( special_effect_t& effect )
 {
-  auto last_roar_spell = effect.player->find_spell( 1254180 );
-  assert( last_roar_spell && "Resonant Roarstone missing Buff Driver" );
+  auto last_roar_spell = effect.trigger();
+  auto echoing_roar = last_roar_spell->effectN( 2 ).trigger();
 
-  auto buff = create_buff<stat_buff_t>( effect.player, "xathuuxs_last_roar", last_roar_spell )
-                  ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
-  auto stacking_buff = create_buff<stat_buff_t>( effect.player, "echoing_roar", effect.player->find_spell( 1254331 ) )
-                           ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) );
+  auto buff = create_buff<stat_buff_t>( effect.player, last_roar_spell )
+                ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+  auto stacking_buff = create_buff<stat_buff_t>( effect.player, echoing_roar )
+                         ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) );
 
   auto last_roar          = new special_effect_t( effect.player );
   last_roar->name_str     = "last_roar_proc";
@@ -1956,7 +1942,7 @@ void eye_of_the_drowning_void( special_effect_t& effect )
 
 // Latch's Crooked Hook
 // 1254193 Use Driver
-// 1255379 Values
+// 1255379 Equip
 // 1255298 Ground Impact Damage
 // 1254328 Main damage
 // TODO: Does the aoe effect increase per target hit?
@@ -1969,23 +1955,21 @@ void latchs_crooked_hook( special_effect_t& effect )
 
     latchs_crooked_hook_t( const special_effect_t& e, std::string_view n ) : generic_proc_t( e, n, e.driver() )
     {
-      auto values = e.player->find_spell( 1255379 );
-      assert( values && "Latch's Cooked Hook unable to find Value Spell" );
+      auto equip = find_special_effect( e.player, 1255379 );
+      assert( equip && "Latch's Cooked Hook missing equip effect" );
 
       target_debuff      = e.driver();
       cooldown->duration = 0_ms;  // Handled by the special effect
       aoe                = -1;
 
-      main_damage              = create_proc_action<generic_proc_t>( "latchs_crooked_hook", e, "latchs_crooked_hook",
-                                                                     e.player->find_spell( 1254328 ) );
-      main_damage->base_dd_min = main_damage->base_dd_max = values->effectN( 2 ).average( e );
+      main_damage = create_proc_action<generic_proc_t>( "latchs_crooked_hook", e, e.player->find_spell( 1254328 ) );
+      main_damage->base_dd_min = main_damage->base_dd_max = equip->driver()->effectN( 2 ).average( e );
       main_damage->base_multiplier *= role_mult( e );
 
-      impact_damage = create_proc_action<generic_aoe_proc_t>(
-          "latchs_crooked_hook_impact", e, "latchs_crooked_hook_impact", e.player->find_spell( 1255298 ) );
-      impact_damage->base_dd_min = impact_damage->base_dd_max = values->effectN( 1 ).average( e );
+      impact_damage =
+        create_proc_action<generic_aoe_proc_t>( "latchs_crooked_hook_impact", e, e.player->find_spell( 1255298 ) );
+      impact_damage->base_dd_min = impact_damage->base_dd_max = equip->driver()->effectN( 1 ).average( e );
       impact_damage->base_multiplier *= role_mult( e );
-      impact_damage->split_aoe_damage = true;
 
       main_damage->add_child( impact_damage );
     }
@@ -2147,7 +2131,8 @@ void locuswalkers_ribbon( special_effect_t& e )
 // 1263614 Missile
 // 1263393 Damage Spell (Cosmic Barrage)
 // 1259103 Equip Driver
-void wraps_of_cosmic_madness( special_effect_t& e )
+// 1263475 vfx?
+void wraps_of_cosmic_madness( special_effect_t& effect )
 {
   struct cosmic_madness_channel_t : public proc_spell_t
   {
@@ -2156,22 +2141,16 @@ void wraps_of_cosmic_madness( special_effect_t& e )
     {
       unsigned equip_id = 1259103;
       auto equip        = find_special_effect( e.player, equip_id );
-      assert( equip && "missing equip effect" );
+      assert( equip && "Wraps of Cosmic Madness missing equip effect" );
 
       channeled = true;
 
       auto missile_spell = e.player->find_spell( 1263614 );
-      assert( missile_spell && "missing missile spell 1263614" );
-
-      auto damage_spell = e.player->find_spell( 1263393 );
-      assert( damage_spell && "missing damage spell 1263393" );
-
-      auto cosmic_barrage = create_proc_action<generic_proc_t>( "cosmic_barrage_missile", e, "cosmic_barrage_missile", missile_spell );
-
-      cosmic_barrage->impact_action = create_proc_action<generic_aoe_proc_t>( "cosmic_barrage", e, "cosmic_barrage", damage_spell, true );
-      
+      auto damage_spell = missile_spell->effectN( 1 ).trigger();
       auto missile_damage = equip->driver()->effectN( 1 ).average( e );
 
+      auto cosmic_barrage = create_proc_action<generic_proc_t>( "cosmic_barrage_missile", e, missile_spell );
+      cosmic_barrage->impact_action = create_proc_action<generic_aoe_proc_t>( "cosmic_barrage", e, damage_spell );
       cosmic_barrage->impact_action->base_dd_min = cosmic_barrage->impact_action->base_dd_max = missile_damage;
 
       tick_action = cosmic_barrage;
@@ -2186,14 +2165,9 @@ void wraps_of_cosmic_madness( special_effect_t& e )
       if ( was_channeling && !player->readying )
         player->schedule_ready( rng().gauss( sim->channel_lag ) );
     }
-
-    void reset() override 
-    {
-      proc_spell_t::reset();
-    }
   };
 
-  e.execute_action = create_proc_action<cosmic_madness_channel_t>( "wraps_of_cosmic_madness_channel", e );
+  effect.execute_action = create_proc_action<cosmic_madness_channel_t>( "wraps_of_cosmic_madness_channel", effect );
 }
 
 // 1253113 driver
@@ -2202,8 +2176,8 @@ void wraps_of_cosmic_madness( special_effect_t& e )
 // 1266407 remaining dot pop
 void voidreapers_libram( special_effect_t& effect )
 {
-  effect.player->sim->error( PLACEHOLDER,
-                             "void-reaper's libram assumed to be able to proc while sacred duty buff is up" );
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Void-Reaper's Libram: Sacred Text dot is assumed to be able to proc while Sacred Duty buff is up." );
 
   struct voidreapers_libram_cb_t : public dbc_proc_callback_t
   {
@@ -2293,7 +2267,9 @@ void torments_duality( special_effect_t& effect )
   }
   else if ( effect.driver()->id() == 1253359 )  // radiant foil
   {
-    effect.player->sim->error( PLACEHOLDER, "radiant foil base_dd_adder increased per void tear stack" );
+    effect.player->sim->error( UNVERIFIED_VALUE,
+      "Torment's Duality: Damage increase to Radiant Foil per purified Void Tear is assumed to be added to the base "
+      "damage before multipliers." );
 
     auto damage = create_proc_action<generic_proc_t>( "radiant_foil", effect, effect.trigger() );
     damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
@@ -2320,15 +2296,13 @@ void torments_duality( special_effect_t& effect )
 
 namespace armors
 {
-
 // Eternal Voidsong Chain
 // 1271211 Driver
 // 1271226 DoT
 void eternal_voidsong_chain( special_effect_t& effect )
 {
-  effect.player->sim->error( PLACEHOLDER,
-                             "Eternal Voidsong Chain's implementation is speculative, and has not been tested. Sim "
-                             "results may be inaccurate." );
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Eternal Voidsong Chain: Implementation is speculative and has not been tested. Sim results may be inaccurate." );
 
   auto dot     = create_proc_action<generic_proc_t>( "voidstalker_sting", effect, 1271226 );
   dot->base_td = effect.driver()->effectN( 1 ).average( effect );
@@ -2345,7 +2319,6 @@ void eternal_voidsong_chain( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
-
 }  // namespace armors
 
 namespace sets
@@ -2376,16 +2349,21 @@ action_t* create_mrm_action( std::string n, const special_effect_t& e, unsigned 
 
 void murder_row_materials( special_effect_t& effect )
 {
-  effect.player->sim->error( PLACEHOLDER, "murder row materials proc effect based on trigger action" );
-  effect.player->sim->error( PLACEHOLDER, "murder row materials item level scaling unknown" );
-  effect.player->sim->error( PLACEHOLDER, "murder row materials shiv assumed to use effect#1 coeff" );
-  effect.player->sim->error( PLACEHOLDER, "murder row materials crystal assumed to use effect#2 coeff" );
-  effect.player->sim->error( PLACEHOLDER, "murder row materials crystal assumed to split + increase per target " );
-  effect.player->sim->error( PLACEHOLDER, "murder row materials tonic assumed to use effect#3 coeff" );
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Murder Row Materials: What determines the proc you get (shiv, crystal, tonic) is unknown. "
+    "Currently implemented that single target hits proc shiv, aoe hits proc crystal, and heals proc tonic. "
+    "Crystal (aoe) is assumed to split damage and increase by 30% per target hit." );
+  effect.player->sim->error( UNVERIFIED_VALUE,
+    "Murder Row Materials: What determines the damage/heal value of the procs is unknown. "
+    "Crystal (aoe) is assumed to have the lowest value, then Shiv (ST), and Tonic (heal) has the highest. "
+    "How the damage/heal values scale with item level is unknown. "
+    "Currently implemented to scale off player level and values have not been verified in-game." );
 
-  auto shiv_amount = effect.trigger()->effectN( 1 ).average( effect );
-  auto crystal_amount = effect.trigger()->effectN( 2 ).average( effect );
-  auto tonic_amount = effect.trigger()->effectN( 3 ).average( effect );
+  auto coeffs = effect.player->find_spell( 1259297 );
+  // ilevel scaling unknown, using player level scaling as placeholder
+  auto shiv_amount = coeffs->effectN( 1 ).average( effect.player );
+  auto crystal_amount = coeffs->effectN( 2 ).average( effect.player );
+  auto tonic_amount = coeffs->effectN( 3 ).average( effect.player );
 
   auto shiv = create_mrm_action<generic_proc_t, generic_proc_t>(
     "murder_row_shiv", effect, 1259504, shiv_amount );
@@ -2415,8 +2393,14 @@ void murder_row_materials( special_effect_t& effect )
 // 1258890 crit
 void root_wardens_regalia( special_effect_t& effect )
 {
-  effect.player->sim->error( PLACEHOLDER, "root wardens regalia buffs are not mutually exclusive" );
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Root Warden's Regalia: Implementation assumes you can proc while a buff is already up, "
+    "including proccing the same buff again which will refresh the buff." );
+  effect.player->sim->error( UNVERIFIED_VALUE,
+    "Root Warden's Regalia: How the stat buff values scale with item level is unknown. "
+    "Currently implemented to scale off player level and values have not been verified in-game." );
 
+  // driver does not have SX_SCALE_ILEVEL so average() scales from player level
   auto stat_amount = effect.driver()->effectN( 1 ).average( effect );
 
   std::vector<stat_buff_t*> buffs;
@@ -2446,10 +2430,12 @@ void voidlight_bindings( special_effect_t& effect )
   assert( value_spell && "Voidlight Bindings missing value spell" );
 
   auto damage = create_proc_action<generic_aoe_proc_t>( "twilight_barrage", effect, 1281579 );
+  // ilevel scaling unknown, using player level scaling as placeholder
   damage->base_dd_min = damage->base_dd_max = value_spell->effectN( 1 ).average( effect.player );
 
-  effect.player->sim->error( PLACEHOLDER,
-                             "voidlight bindings damage scaling off player level as item level scaling is unknown" );
+  effect.player->sim->error( UNVERIFIED_VALUE,
+    "Voidlight Bindings: How the damage scales with item level is unknown."
+    "Currently implemented to scale off player level and values have not been verified in-game." );
   // No Role multiplier currently
   //damage->base_multiplier *= role_mult( effect );
 
@@ -2514,7 +2500,7 @@ void register_special_effects()
   register_special_effect( 1283697, embellishments::arcanoweave_lining );
   register_special_effect( 1241711, embellishments::sunfire_silk_lining );
   register_special_effect( 1244238, embellishments::devouring_banding );
-  register_special_effect( 1244243, embellishments::blessed_pango_charm );
+  register_special_effect( 1259060, embellishments::blessed_pango_charm );
   register_special_effect( 1244276, embellishments::primal_spore_binding );
   register_special_effect( 1251906, embellishments::prismatic_focusing_iris );
   register_special_effect( 1251905, DISABLED_EFFECT );  // stabilizing gemstone bandolier
@@ -2534,9 +2520,10 @@ void register_special_effects()
   register_special_effect( 1254640, trinkets::solarflare_prism );
   register_special_effect( 1250604, trinkets::sapling_of_the_dawnroot );
   register_special_effect( 1250580, trinkets::seed_of_the_devouring_wild );
+  register_special_effect( 1259351, DISABLED_EFFECT );  // Seed of the Devouring Wild equip driver
   register_special_effect( 1250567, trinkets::idol_of_the_war_loa );
   register_special_effect( 1256896, trinkets::gaze_of_the_alnseer );
-  register_special_effect( 1250564, trinkets::resonant_roarstone );
+  register_special_effect( 1250564, trinkets::resonant_bellowstone );
   register_special_effect( 1256790, trinkets::undreamt_gods_oozing_vestige );
   register_special_effect( 1251817, trinkets::light_company_guidon );
   register_special_effect( 1251822, trinkets::heart_of_ancient_hunger );
@@ -2552,6 +2539,7 @@ void register_special_effects()
   register_special_effect( 1260265, DISABLED_EFFECT ); // Ranger-Captain's Iridescent Insignia equip driver
   register_special_effect( 1250601, trinkets::eye_of_the_drowning_void );
   register_special_effect( 1254193, trinkets::latchs_crooked_hook );
+  register_special_effect( 1255379, DISABLED_EFFECT );  // latch's crooked hook equip driver
   register_special_effect( 1250527, trinkets::lightspire_core );
   register_special_effect( 1280591, trinkets::magisters_alchemist_stone );
   register_special_effect( 1259293, DISABLED_EFFECT ); // Vaelgor's Final Stare equip driver
@@ -2560,6 +2548,7 @@ void register_special_effects()
   register_special_effect( 1259153, trinkets::wraps_of_cosmic_madness);
   register_special_effect( 1259103, DISABLED_EFFECT); // Wraps of the Cosmic Madness equip driver
   register_special_effect( 1253113, trinkets::voidreapers_libram );
+  register_special_effect( 1258275, DISABLED_EFFECT );  // litany of lightblind wrath
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   // Armor
