@@ -3491,7 +3491,7 @@ struct eclipse_buff_base_t : public druid_buff_t
 
     trigger_boat_buff();
 
-    if ( bolt_cd->up() )
+    if ( bolt_cd && bolt_cd->up() )
     {
       execute_bolt_action();
       bolt_cd->start();
