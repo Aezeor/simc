@@ -854,7 +854,7 @@ void dot_t::schedule_tick()
   }
 }
 
-double dot_t::tick_damage_over_time( timespan_t dur ) const
+double dot_t::tick_damage_over_time( timespan_t dur, int stacks ) const
 {
   if ( !ticking || dur <= 0_ms )
     return 0.0;
@@ -863,9 +863,9 @@ double dot_t::tick_damage_over_time( timespan_t dur ) const
 
   assert( as && "Dot tick damage calculation requires a valid action state." );
 
-  current_action->calculate_tick_amount( as, current_stack() );
-  double tick_base_damage = as->result_raw;
+  current_action->calculate_tick_amount( as, stacks == -1 ? current_stack() : stacks );
 
+  double tick_base_damage = as->result_raw;
   double ticks;
 
   // calculate for full remaining dot
@@ -887,9 +887,9 @@ double dot_t::tick_damage_over_time( timespan_t dur ) const
   return damage;
 }
 
-double dot_t::tick_damage_over_remaining_time() const
+double dot_t::tick_damage_over_remaining_time( int stacks ) const
 {
-  return tick_damage_over_time();
+  return tick_damage_over_time( timespan_t::min(), stacks );
 }
 
 void dot_t::start( timespan_t duration )
