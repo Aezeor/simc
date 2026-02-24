@@ -35,6 +35,8 @@ static constexpr double UMBRAL_EMBRACE_PROC_CHANCE = 0.2;
 static constexpr double WILD_MUSHROOM_AP_PER_HIT = 5.0;
 // lunar bolt reduced_aoe_targets
 static constexpr double LUNAR_BOLT_REDUCED_AOE = 5;
+// lunar bolt delay between bolts
+static constexpr timespan_t LUNAR_BOLT_DELAY = 200_ms;
 // summon+jump+fixate delay for fake summon spells like frantic frenzy & apex talent
 static constexpr timespan_t FERAL_FLICKER_DELAY = 500_ms;
 // unseen attack # of targets for unseen attack to proc swipe instead of slash
@@ -3431,9 +3433,11 @@ struct celestial_alignment_buff_t final : public druid_buff_t
 struct eclipse_buff_base_t : public druid_buff_t
 {
   buff_t* boat_buff = nullptr;
+  cooldown_t* bolt_cd = nullptr;
   double challenge_ap;
   double harmony_val, harmony_cap;
   double harmony_cur = 0.0;
+  unsigned num_bolts = 0;
 
   eclipse_buff_base_t( druid_t* p, std::string_view n, const spell_data_t* s )
     : base_t( p, n, s ),
@@ -3444,6 +3448,12 @@ struct eclipse_buff_base_t : public druid_buff_t
     set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
     set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+
+    if ( p->talent.ascendant_eclipses_3.ok() )
+    {
+      bolt_cd = p->get_cooldown( name_str + "_bolt_cd" );
+      bolt_cd->duration = p->talent.ascendant_eclipses_3->internal_cooldown();
+    }
   }
 
   double check_value() const override
@@ -3480,7 +3490,12 @@ struct eclipse_buff_base_t : public druid_buff_t
     }
 
     trigger_boat_buff();
-    execute_bolt_action();
+
+    if ( bolt_cd->up() )
+    {
+      execute_bolt_action();
+      bolt_cd->start();
+    }
 
     p()->buff.ascendant_fires->trigger();
     p()->buff.ascendant_stars->trigger();
@@ -3508,7 +3523,10 @@ struct eclipse_buff_base_t : public druid_buff_t
 
 struct eclipse_lunar_t final : public eclipse_buff_base_t
 {
-  eclipse_lunar_t( druid_t* p ) : eclipse_buff_base_t( p, "eclipse_lunar", p->spec.eclipse_lunar ) {}
+  eclipse_lunar_t( druid_t* p ) : eclipse_buff_base_t( p, "eclipse_lunar", p->spec.eclipse_lunar )
+  {
+    num_bolts = static_cast<unsigned>( p->talent.ascendant_eclipses_3->effectN( 3 ).base_value() );
+  }
 
   void trigger_boat_buff() override
   {
@@ -3518,13 +3536,22 @@ struct eclipse_lunar_t final : public eclipse_buff_base_t
   void execute_bolt_action() override
   {
     if ( p()->active.lunar_bolt )
+    {
       p()->active.lunar_bolt->execute();
+
+      make_repeating_event( *sim, LUNAR_BOLT_DELAY, [ bolt = p()->active.lunar_bolt ] {
+        bolt->execute();
+      }, num_bolts - 1 );
+    }
   }
 };
 
 struct eclipse_solar_t final : public eclipse_buff_base_t
 {
-  eclipse_solar_t( druid_t* p ) : eclipse_buff_base_t( p, "eclipse_solar", p->spec.eclipse_solar ) {}
+  eclipse_solar_t( druid_t* p ) : eclipse_buff_base_t( p, "eclipse_solar", p->spec.eclipse_solar )
+  {
+    num_bolts = static_cast<unsigned>( p->talent.ascendant_eclipses_3->effectN( 2 ).base_value() );
+  }
 
   void trigger_boat_buff() override
   {
@@ -7444,7 +7471,7 @@ struct lunar_bolt_t final : public druid_spell_t
   {
     lunar_bolt_damage_t( druid_t* p, const spell_data_t* s ) : druid_spell_t( "lunar_bolt_damage", p, s )
     {
-      background = true;
+      background = dual = true;
       aoe = -1;
       reduced_aoe_targets = LUNAR_BOLT_REDUCED_AOE;
     }
@@ -7457,13 +7484,18 @@ struct lunar_bolt_t final : public druid_spell_t
 
   lunar_bolt_t( druid_t* p ) : druid_spell_t( "lunar_bolt", p, p->find_spell( 1261700 ) )
   {
-    internal_cooldown->duration = p->talent.ascendant_eclipses_3->internal_cooldown();
     range = p->talent.ascendant_eclipses_3->effectN( 1 ).base_value();
+    impact_action = p->get_secondary_action<lunar_bolt_damage_t>( "lunar_bolt_damage", find_trigger( this ).trigger() );
 
-    aoe = as<int>( p->talent.ascendant_eclipses_3->effectN( 3 ).base_value() );
-    impact_action =
-      p->get_secondary_action<lunar_bolt_damage_t>( "lunar_bolt_damage", find_trigger( this ).trigger() );
     replace_stats( this, impact_action );
+  }
+
+  void execute() override
+  {
+    // hits random target
+    set_target( rng().range( target_list() ) );
+
+    druid_spell_t::execute();
   }
 };
 
@@ -8102,16 +8134,19 @@ struct solar_bolt_t final : public druid_spell_t
 {
   solar_bolt_t( druid_t* p ) : druid_spell_t( "solar_bolt", p, p->find_spell( 1261573 ) )
   {
-    internal_cooldown->duration = p->talent.ascendant_eclipses_3->internal_cooldown();
     range = p->talent.ascendant_eclipses_3->effectN ( 1 ).base_value();
-
-    if ( p->talent.ascendant_eclipses_3->effectN( 2 ).base_value() > 1.0 )
-      aoe = as<int>( p->talent.ascendant_eclipses_3->effectN( 2 ).base_value() );
   }
 
   result_e calculate_result( action_state_t* ) const override
   {
     return result_e::RESULT_CRIT;
+  }
+
+  void execute() override
+  {
+    set_target( p()->target );
+
+    druid_spell_t::execute();
   }
 };
 
