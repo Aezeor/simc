@@ -10935,7 +10935,7 @@ void druid_t::create_buffs()
 
   buff.ascendant_stars =
     make_fallback( talent.ascendant_eclipses_1.ok(), this, "ascendant_stars", find_spell( 1263382 ) )
-      ->set_reverse( true )
+      ->set_initial_stack_to_max_stack()
       ->set_consume_all_stacks( false );
 
   buff.ascendant_stars_starfall =
