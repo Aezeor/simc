@@ -8206,6 +8206,8 @@ struct starfall_t final : public ap_spender_t
   {
     meteorites_t( druid_t* p, std::string_view n, flag_e f ) : druid_spell_t( n, p, p->find_spell( 1240913 ), f )
     {
+      proc = true;
+
       name_str_reporting = "meteorites";
     }
 
