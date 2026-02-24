@@ -2199,14 +2199,15 @@ public:
 
   void execute() override
   {
-    BASE::execute();
-
+    // extends even if you hit nothing
     if ( dot_ext > 0_ms )
     {
       range::for_each( BASE::p()->dot_lists.dreadful_wound, [ this ]( dot_t* d ) {
         d->adjust_duration( dot_ext, max_ext );
       } );
     }
+
+    BASE::execute();
   }
 };
 
