@@ -866,14 +866,30 @@ double dot_t::tick_damage_over_time( timespan_t dur ) const
   current_action->calculate_tick_amount( as, current_stack() );
   double tick_base_damage = as->result_raw;
 
-  timespan_t dot_tick_time = current_action->tick_time( as );
+  double ticks;
 
-  double ticks = dur / dot_tick_time;
+  // calculate for full remaining dot
+  if ( dur == timespan_t::min() )
+  {
+    ticks = ticks_left_fractional();
+  }
+  else
+  {
+    timespan_t dot_tick_time = current_action->tick_time( as );
+
+    ticks = dur / dot_tick_time;
+  }
+
   double damage = ticks * tick_base_damage;
 
   action_state_t::release( as );
 
   return damage;
+}
+
+double dot_t::tick_damage_over_remaining_time() const
+{
+  return tick_damage_over_time();
 }
 
 void dot_t::start( timespan_t duration )
