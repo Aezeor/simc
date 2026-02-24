@@ -12578,10 +12578,12 @@ void druid_t::init_special_effects()
 
     special_effects.push_back( driver );
 
+    auto _form = specialization() == DRUID_FERAL ? CAT_FORM : BEAR_FORM;
+
     callbacks.register_callback_trigger_function(
-      driver->spell_id, trigger_type::CONDITION, [ this ]( auto, action_t* a, const action_state_t* s ) {
+      driver->spell_id, trigger_type::CONDITION, [ this, _form ]( auto, action_t* a, const action_state_t* s ) {
         // raze can trigger despite being aoe
-        return s->result_amount && ( a->id == talent.raze->id() || a->aoe == 0 || a->aoe == 1 );
+        return form == _form && s->result_amount && ( a->id == talent.raze->id() || a->aoe == 0 || a->aoe == 1 );
       } );
 
     new dbc_proc_callback_t( this, *driver );
