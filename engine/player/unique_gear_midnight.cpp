@@ -1814,8 +1814,7 @@ void ranger_captains_iridescent_insignia( special_effect_t& effect )
 // TODO: Does this have the increased damage per target hit?
 void eye_of_the_drowning_void( special_effect_t& effect )
 {
-  auto damage = create_proc_action<generic_aoe_proc_t>( "eye_of_the_drowning_void", effect,
-                                                        effect.driver()->effectN( 1 ).trigger() );
+  auto damage = create_proc_action<generic_aoe_proc_t>( "eye_of_the_drowning_void", effect, effect.trigger() );
   damage->base_multiplier *= role_mult( effect );
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
 
@@ -2146,6 +2145,27 @@ void echo_of_the_evercurse( special_effect_t& effect )
     }
   } );
 }
+
+// 1250546 driver
+// 1264374 aoe
+// 1264404 buff
+void mindpiercers_sigil( special_effect_t& effect )
+{
+  auto aoe = create_proc_action<generic_aoe_proc_t>( "voidtorn_eruption", effect, 1264374 );
+  aoe->base_dd_min = aoe->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1264404 ) )
+    ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 2 ).average( effect ) );
+
+  effect.player->callbacks.register_callback_execute_function(
+    effect.spell_id, [ aoe, buff ]( auto, auto, const action_state_t* s ) {
+      aoe->execute_on_target( s->target );
+      buff->trigger();
+    } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace trinkets
 
 namespace weapons
@@ -2504,6 +2524,7 @@ void register_special_effects()
   register_special_effect( 1258275, DISABLED_EFFECT );  // litany of lightblind wrath
   register_special_effect( 1250589, trinkets::crawling_plague );  // tumor of the swarm
   register_special_effect( 1250541, trinkets::echo_of_the_evercurse );  // soulcatcher's charm
+  register_special_effect( 1250546, trinkets::mindpiercers_sigil );  // mindpiercer's sigil
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );
