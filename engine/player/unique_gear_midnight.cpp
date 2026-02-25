@@ -1927,11 +1927,15 @@ void ranger_captains_iridescent_insignia( special_effect_t& effect )
   // set up the equip
   equip->proc_flags2_ = PF2_CRIT;
 
+  // set up the cooldown reduction, note both action and item cooldowns must be adjusted
   auto cdr = -timespan_t::from_seconds( equip->driver()->effectN( 2 ).base_value() );
+  auto action_cd = damage->cooldown;
+  auto item_cd = effect.player->get_cooldown( effect.cooldown_name() );
 
   effect.player->callbacks.register_callback_execute_function(
-    equip->spell_id, [ cdr, cooldown = damage->cooldown ]( auto, auto, auto ) {
-        cooldown->adjust( cdr );
+    equip->spell_id, [ cdr, item_cd, action_cd ]( auto, auto, auto ) {
+        action_cd->adjust( cdr );
+        item_cd->adjust( cdr );
     } );
 
   new dbc_proc_callback_t( effect.player, *equip );
