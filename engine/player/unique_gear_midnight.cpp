@@ -2113,6 +2113,39 @@ void crawling_plague( special_effect_t& effect )
   } );
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 1250541 driver
+// 1264613 dot
+void echo_of_the_evercurse( special_effect_t& effect )
+{
+  auto dot = create_proc_action<generic_proc_t>( "echo_of_the_evercurse", effect, 1264613 );
+  auto orig_td = effect.driver()->effectN( 1 ).average( effect );
+  dot->base_td = orig_td;
+
+  effect.execute_action = dot;
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+  auto _mul = effect.driver()->effectN( 2 ).percent();
+
+  effect.player->register_on_kill_callback( [ dot, orig_td, _mul ]( player_t* t ) {
+    if ( auto d = dot->find_dot( t ); d && d->is_ticking() )
+    {
+      auto dam = d->tick_damage_over_remaining_time() * _mul;
+      auto ticks = d->ticks_left_fractional();
+      auto new_td = dam / ticks;
+
+      if ( const auto& tl = dot->target_list(); !tl.empty() )
+      {
+        auto new_target = dot->rng().range( tl );
+        dot->base_td = new_td;
+        dot->execute_on_target( new_target );
+        dot->base_td = orig_td;
+      }
+    }
+  } );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -2470,6 +2503,7 @@ void register_special_effects()
   register_special_effect( 1253113, trinkets::voidreapers_libram );
   register_special_effect( 1258275, DISABLED_EFFECT );  // litany of lightblind wrath
   register_special_effect( 1250589, trinkets::crawling_plague );  // tumor of the swarm
+  register_special_effect( 1250541, trinkets::echo_of_the_evercurse );  // soulcatcher's charm
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );
