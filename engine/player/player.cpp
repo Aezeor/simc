@@ -11151,15 +11151,16 @@ struct invoke_external_buff_t : public action_t
     trigger_gcd           = timespan_t::zero();
     ignore_false_positive = true;
 
+  }
+
+  void init_finished() override
+  {
+    action_t::init_finished();
+
     if ( buff_str.empty() )
     {
       throw sc_invalid_apl_argument( "Missing external buff name." );
     }
-  }
-
-  void init() override
-  {
-    action_t::init();
 
     buff = buff_t::find( player, buff_str );
     if ( !buff )
@@ -12423,7 +12424,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     }
     else if ( splits[ 0 ] == "cooldown" )
     {
-      if ( cooldown_t* cooldown = find_cooldown( splits[ 1 ] ) )
+      if ( cooldown_t* cooldown = get_cooldown( splits[ 1 ] ) )
       {
         return cooldown->create_expression( splits[ 2 ] );
       }
