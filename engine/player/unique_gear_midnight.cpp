@@ -376,6 +376,9 @@ void powerful_eversong_diamond( special_effect_t& effect )
 // 1241784 Damage
 void strength_of_halazzi( special_effect_t& effect )
 {
+  effect.player->sim->error( IMPLEMENTATION_NOTES,
+    "Strength of the Halazzi: Currently not penalized by tank role multiplier in-game, and implemented to match." );
+
   auto proc_data = effect.trigger()->effectN( 1 ).trigger();
   auto proc_value = effect.driver()->effectN( 1 ).average( effect );
 
@@ -392,6 +395,56 @@ void strength_of_halazzi( special_effect_t& effect )
   // damage->base_ta_multiplier *= role_mult( effect );
 
   effect.execute_action = damage;
+  effect.spell_id = effect.trigger()->id();
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 1236739 r1 driver
+// 1236740 r2 driver
+// 1241728 rppm
+// 1242127 dot
+// 1277263 unknonw (vfx?)
+// 1242129 aoe
+void flames_of_the_sindorei( special_effect_t& effect )
+{
+  struct phoenix_fire_t : public generic_proc_t
+  {
+    action_t* aoe;
+
+    phoenix_fire_t( const special_effect_t& e, action_t* aoe )
+      : generic_proc_t( e, "phoenix_fire", e.trigger()->effectN( 1 ).trigger() ), aoe( aoe )
+    {
+      assert( data().effectN( 1 ).subtype() == A_PERIODIC_DAMAGE );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      generic_proc_t::last_tick( d );
+
+      aoe->execute_on_target( d->target );
+    }
+  };
+
+  auto dot_value = effect.driver()->effectN( 1 ).average( effect );
+  auto aoe_value = effect.driver()->effectN( 2 ).average( effect );
+
+  auto aoe = create_proc_action<generic_aoe_proc_t>( "phoenix_fire_aoe", effect, 1242129 );
+  aoe->name_str_reporting = "AoE";
+  aoe->base_dd_min = aoe->base_dd_min += aoe_value;
+
+  auto dot = create_proc_action<phoenix_fire_t>( "phoenix_fire", effect, aoe );
+  dot->base_td += dot_value;
+
+  // skip setup if callback has been created by already having another copy of the enchant
+  if ( find_special_effect( effect.player, effect.trigger()->id() ) )
+    return;
+
+  dot->base_multiplier *= role_mult( effect );
+  dot->add_child( aoe );
+  aoe->base_multiplier *= role_mult( effect );
+
+  effect.execute_action = dot;
   effect.spell_id = effect.trigger()->id();
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -2626,6 +2679,7 @@ void register_special_effects()
   // Enchants & gems
   register_special_effect( 1258209, enchants::powerful_eversong_diamond );
   register_special_effect( { 1236733, 1236734 }, enchants::strength_of_halazzi );
+  register_special_effect( { 1236739, 1236740 }, enchants::flames_of_the_sindorei );
   register_special_effect( { 1236741, 1236742,    // Acuity of the Ren'dorei (Primary)
                              1236727, 1236728,    // Berserker's Rage (Haste)
                              1236712, 1236721,    // Arcane Mastery (Mastery)
