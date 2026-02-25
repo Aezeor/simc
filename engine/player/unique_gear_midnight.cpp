@@ -296,6 +296,24 @@ void laced_zoomshots( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// 1237009 r1 driver
+// 1237010 r1 damage
+// 1237012 r2 driver
+// 1237013 r2 damage
+void smugglers_enchanted_edge( special_effect_t& effect )
+{
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Smuggler's Enchanted Edge: Implemented assuming that coating both weapons will results in two indepedent procs. "
+    "This has not be verified in-game." );
+
+  auto dam = create_proc_action<generic_proc_t>( "smugglers_enchanted_edge", effect, effect.trigger() );
+  dam->base_dd_min = dam->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+
+  effect.execute_action = dam;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace consumables
 
 namespace enchants
@@ -2559,6 +2577,7 @@ void register_special_effects()
   register_special_effect( 1238443, consumables::potion_of_zealotry );
   // Oils
   register_special_effect( { 1262056, 1262111 }, consumables::laced_zoomshots );
+  register_special_effect( { 1237009, 1237012 }, consumables::smugglers_enchanted_edge );
   // Enchants & gems
   register_special_effect( 1258209, enchants::powerful_eversong_diamond );
   register_special_effect( { 1236733, 1236734 }, enchants::strength_of_halazzi );
