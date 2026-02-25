@@ -333,6 +333,27 @@ void smugglers_lynxeye( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// 1262120 r1 driver
+// 1262140 r1 missile
+// 1262142 r1 aoe
+// 1262141 r2 driver
+// 1262147 r2 missile
+// 1262146 r2 aoe
+void weighted_boomshots( special_effect_t& effect )
+{
+  auto missile = create_proc_action<generic_proc_t>( "weighted_boomshots_missile", effect, effect.trigger() );
+
+  // assumed to not split so use generic_proc_t and just set aoe = -1;
+  auto aoe = create_proc_action<generic_proc_t>( "weighted_boomshots", effect, missile->data().effectN( 1 ).trigger() );
+  aoe->aoe = -1;
+  missile->stats = aoe->stats;  // just report the damage
+  missile->impact_action = aoe;
+
+  effect.execute_action = missile;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace consumables
 
 namespace enchants
@@ -2601,6 +2622,7 @@ void register_special_effects()
   register_special_effect( { 1262056, 1262111 }, consumables::laced_zoomshots );
   register_special_effect( { 1237009, 1237012 }, consumables::smugglers_enchanted_edge );
   register_special_effect( { 1262295, 1262298 }, consumables::smugglers_lynxeye );
+  register_special_effect( { 1262120, 1262141 }, consumables::weighted_boomshots );
   // Enchants & gems
   register_special_effect( 1258209, enchants::powerful_eversong_diamond );
   register_special_effect( { 1236733, 1236734 }, enchants::strength_of_halazzi );
