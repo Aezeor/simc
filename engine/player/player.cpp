@@ -12424,7 +12424,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     }
     else if ( splits[ 0 ] == "cooldown" )
     {
-      if ( cooldown_t* cooldown = get_cooldown( splits[ 1 ] ) )
+      if ( cooldown_t* cooldown = find_cooldown( splits[ 1 ] ) )
       {
         return cooldown->create_expression( splits[ 2 ] );
       }
