@@ -7588,8 +7588,7 @@ struct dread_plague_t final : public death_knight_disease_t
 
     if ( p->talent.unholy.forbidden_knowledge_3.ok() )
     {
-      double fk_chance = p->pseudo_random_c_from_p( p->talent.unholy.forbidden_knowledge_3->effectN( 3 ).percent() *
-                                                    ( 1.0 + p->talent.unholy.ebon_fever->effectN( 1 ).percent() ) );
+      double fk_chance = p->pseudo_random_c_from_p( p->talent.unholy.forbidden_knowledge_3->effectN( 3 ).percent() );
       forbidden_knowledge_rng = p->get_accumulated_rng( "forbidden_knowledge", fk_chance );
       p->pets.lesser_ghoul_fk.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
     }
