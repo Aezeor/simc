@@ -440,9 +440,7 @@ void flames_of_the_sindorei( special_effect_t& effect )
   if ( find_special_effect( effect.player, effect.trigger()->id() ) )
     return;
 
-  dot->base_multiplier *= role_mult( effect );
   dot->add_child( aoe );
-  aoe->base_multiplier *= role_mult( effect );
 
   effect.execute_action = dot;
   effect.spell_id = effect.trigger()->id();
