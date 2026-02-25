@@ -11169,11 +11169,6 @@ struct invoke_external_buff_t : public action_t
 
     // Initialise an action cooldown per buff type.
     cooldown = player->get_cooldown( "invoke_external_buff_" + buff_str );
-  }
-
-  void init_finished() override
-  {
-    action_t::init_finished();
 
     if ( use_pool )
     {
