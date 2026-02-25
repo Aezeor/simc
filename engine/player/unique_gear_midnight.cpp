@@ -2094,6 +2094,25 @@ void voidreapers_libram( special_effect_t& effect )
 
   new voidreapers_libram_cb_t( effect );
 }
+
+// 1250589 driver
+// 1264146 aoe
+// 1264156 heal
+void crawling_plague( special_effect_t& effect )
+{
+  auto aoe = create_proc_action<generic_aoe_proc_t>( "crawling_plague", effect, 1264146 );
+  aoe->base_dd_min = aoe->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+
+  auto heal = create_proc_action<generic_heal_t>( "crawling_plague_heal", effect, 1264156 );
+  heal->base_dd_min = heal->base_dd_max = effect.driver()->effectN( 2 ).average( effect );
+  heal->name_str_reporting = "Heal";
+
+  effect.player->callbacks.register_callback_execute_function( effect.spell_id, [ aoe, heal ]( auto, auto, auto ) {
+    aoe->execute();
+    heal->execute();
+  } );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }  // namespace trinkets
 
 namespace weapons
@@ -2450,6 +2469,7 @@ void register_special_effects()
   register_special_effect( 1259103, DISABLED_EFFECT); // Wraps of the Cosmic Madness equip driver
   register_special_effect( 1253113, trinkets::voidreapers_libram );
   register_special_effect( 1258275, DISABLED_EFFECT );  // litany of lightblind wrath
+  register_special_effect( 1250589, trinkets::crawling_plague );  // tumor of the swarm
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );
