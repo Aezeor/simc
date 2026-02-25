@@ -288,7 +288,6 @@ void potion_of_zealotry( special_effect_t& effect )
 
   effect.custom_buff = buff;
 }
-
 }  // namespace consumables
 
 namespace enchants
@@ -298,117 +297,10 @@ namespace enchants
 void powerful_eversong_diamond( special_effect_t& effect )
 {
   auto pct = effect.driver()->effectN( 1 ).percent() * unique_gem_list( effect.player, gem_colors ).size();
+  const auto& crit_eff = effect.driver()->effectN( 2 );
 
-  for ( school_e school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; school++ )
-    effect.player->base.crit_damage_multiplier[ school ] *= 1.0 + pct;
-
-  effect.player->base.crit_healing_multiplier *= 1.0 + pct;
-}
-
-// Berserker's Rage
-// 1236727 Rank 1 Driver
-// 1236728 Rank 2 Driver
-// 1241723 RPPM
-// 1241762 Buff
-// TODO: What happens if you equip 2? does it double the rppm, the value, or both?
-void berserkers_rage( special_effect_t& effect )
-{
-  auto buff = buff_t::find( effect.player, "frenzied_focus" );
-  if ( !buff )
-  {
-    buff = create_buff<stat_buff_t>( effect.player, "frenzied_focus", effect.player->find_spell( 1241762 ) )
-               ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) );
-  }
-
-  effect.custom_buff = buff;
-  effect.spell_id    = 1241723;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-// Acuity of the Ren'dorei
-// 1236741 Rank 1 Driver
-// 1236742 Rank 2 Driver
-// 1241710 RPPM
-// 1241715 Buff
-// TODO: What happens if you equip 2? does it double the rppm, the value, or both?
-void acuity_of_the_rendorei( special_effect_t& effect )
-{
-  auto buff = buff_t::find( effect.player, "might_of_the_void" );
-  if ( !buff )
-  {
-    buff = create_buff<stat_buff_t>( effect.player, "might_of_the_void", effect.player->find_spell( 1241715 ) )
-               ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) );
-  }
-
-  effect.custom_buff = buff;
-  effect.spell_id    = 1241710;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-// Arcane Mastery
-// 1236712 Rank 1 Driver
-// 1236721 Rank 2 Driver
-// 1241729 RPPM
-// 1241759 Buff
-// TODO: What happens if you equip 2? does it double the rppm, the value, or both?
-void arcane_mastery( special_effect_t& effect )
-{
-  auto buff = buff_t::find( effect.player, "genius_insight" );
-  if ( !buff )
-  {
-    buff = create_buff<stat_buff_t>( effect.player, "genius_insight", effect.player->find_spell( 1241759 ) )
-               ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) );
-  }
-
-  effect.custom_buff = buff;
-  effect.spell_id    = 1241729;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-// Jan'alai's Precision
-// 1236724 Rank 1 Driver
-// 1236725 Rank 2 Driver
-// 1241722 RPPM
-// 1241761 Buff
-// TODO: What happens if you equip 2? does it double the rppm, the value, or both?
-void janalais_precision( special_effect_t& effect )
-{
-  auto buff = buff_t::find( effect.player, "precision_of_the_dragonhawk" );
-  if ( !buff )
-  {
-    buff =
-        create_buff<stat_buff_t>( effect.player, "precision_of_the_dragonhawk", effect.player->find_spell( 1241761 ) )
-            ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) );
-  }
-
-  effect.custom_buff = buff;
-  effect.spell_id    = 1241722;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-// Worldsoul Tenacity
-// 1236729 Rank 1 Driver
-// 1236730 Rank 2 Driver
-// 1241727 RPPM
-// 1241764 Buff
-// TODO: What happens if you equip 2? does it double the rppm, the value, or both?
-void worldsoul_tenacity( special_effect_t& effect )
-{
-  auto buff = buff_t::find( effect.player, "natures_tenacity" );
-  if ( !buff )
-  {
-    buff = create_buff<stat_buff_t>( effect.player, "natures_tenacity", effect.player->find_spell( 1241764 ) )
-            ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) );
-  }
-
-  effect.custom_buff = buff;
-  effect.spell_id    = 1241727;
-
-  new dbc_proc_callback_t( effect.player, effect );
+  effect.player->register_passive_item_effect_override( crit_eff, pct );
+  effect.player->parse_passive_item_effect( effect.driver() );
 }
 
 // Strength of Halazzi
@@ -416,21 +308,53 @@ void worldsoul_tenacity( special_effect_t& effect )
 // 1236734 Rank 2 Driver
 // 1241721 RPPM
 // 1241784 Damage
-// TODO: What happens if you equip 2? does it double the rppm, the value, or both?
 void strength_of_halazzi( special_effect_t& effect )
 {
-  auto damage = effect.player->find_action( "halazzis_claws" );
-  if ( !damage )
-  {
-    damage          = create_proc_action<generic_proc_t>( "halazzis_claws", effect, "halazzis_claws",
-                                                          effect.player->find_spell( 1241784 ) );
-    damage->base_td = effect.driver()->effectN( 1 ).average( effect );
-    // No Role Mult currently
-    // damage->base_ta_multiplier *= role_mult( effect );
-  }
+  auto proc_data = effect.trigger()->effectN( 1 ).trigger();
+  auto proc_value = effect.driver()->effectN( 1 ).average( effect );
+
+  assert( proc_data->effectN( 1 ).subtype() == A_PERIODIC_DAMAGE );
+
+  auto damage = create_proc_action<generic_proc_t>( "halazzis_claws", effect, proc_data );
+  damage->base_td += proc_value;
+
+  // skip setup if callback has been created by already having another copy of the enchant
+  if ( find_special_effect( effect.player, effect.trigger()->id() ) )
+    return;
+
+  // No Role Mult currently
+  // damage->base_ta_multiplier *= role_mult( effect );
 
   effect.execute_action = damage;
-  effect.spell_id       = 1241721;
+  effect.spell_id = effect.trigger()->id();
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void stat_weapon_enchant( special_effect_t& effect )
+{
+  auto proc_value = effect.driver()->effectN( 1 ).average( effect );
+
+  // Arcane Mastery rank 1 looks bugged and triggers rank 2 instead of the rppm driver. After getting the value,
+  // manually set the effect spell_id to the rank 2 spell, which has correct data. It's currently unknown if this data
+  // bug has any detrimental effect on the enchant in-game.
+  if ( effect.spell_id == 1236712 )
+    effect.spell_id = 1236721;
+
+  auto proc_data = effect.trigger()->effectN( 1 ).trigger();
+  auto proc_subtype = proc_data->effectN( 1 ).subtype();
+
+  assert( proc_value && ( proc_subtype == A_MOD_RATING || proc_subtype == A_MOD_STAT ) );
+
+  auto buff = create_buff<stat_buff_t>( effect.player, proc_data )
+    ->add_stat_from_effect_type( proc_subtype, proc_value );
+
+  // skip setup if callback has been created by already having another copy of the enchant
+  if ( find_special_effect( effect.player, effect.trigger()->id() ) )
+    return;
+
+  effect.custom_buff = buff;
+  effect.spell_id = effect.trigger()->id();
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -438,16 +362,10 @@ void strength_of_halazzi( special_effect_t& effect )
 // Eyes of the Eagle
 // 1236700 Driver rank 1
 // 1236701 Driver rank 2
-void eyes_of_the_eagle( special_effect_t& e ) 
-{  
-  auto pct = e.driver()->effectN( 1 ).percent();
-
-  for ( school_e school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; school++ )
-    e.player->base.crit_damage_multiplier[ school ] *= 1.0 + pct;
-
-  e.player->base.crit_healing_multiplier *= 1.0 + pct;
+void eyes_of_the_eagle( special_effect_t& effect )
+{
+  effect.player->parse_passive_item_effect( effect.driver() );
 }
-
 }  // namespace enchants
 
 namespace embellishments
@@ -2489,12 +2407,13 @@ void register_special_effects()
   // Oils
   // Enchants & gems
   register_special_effect( 1258209, enchants::powerful_eversong_diamond );
-  register_special_effect( { 1236727, 1236728 }, enchants::berserkers_rage );
-  register_special_effect( { 1236741, 1236742 }, enchants::acuity_of_the_rendorei );
-  register_special_effect( { 1236712, 1236721 }, enchants::arcane_mastery );
-  register_special_effect( { 1236724, 1236725 }, enchants::janalais_precision );
-  register_special_effect( { 1236729, 1236730 }, enchants::worldsoul_tenacity );
   register_special_effect( { 1236733, 1236734 }, enchants::strength_of_halazzi );
+  register_special_effect( { 1236741, 1236742,    // Acuity of the Ren'dorei (Primary)
+                             1236727, 1236728,    // Berserker's Rage (Haste)
+                             1236712, 1236721,    // Arcane Mastery (Mastery)
+                             1236724, 1236725,    // Janalai's Precision (Crit)
+                             1236729, 1236730 },  // Worldsoul Tenacity (Vers)
+                           enchants::stat_weapon_enchant );
   register_special_effect( { 1236700, 1236701 }, enchants::eyes_of_the_eagle );
   // Embellishments & Tinkers
   register_special_effect( 1283697, embellishments::arcanoweave_lining );
