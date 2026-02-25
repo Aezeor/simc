@@ -281,6 +281,21 @@ void potion_of_zealotry( special_effect_t& effect )
 
   effect.custom_buff = buff;
 }
+
+// 1262056 r1 driver
+// 1262108 r1 dot
+// 1262111 r2 driver
+// 1262109 r2 dot
+void laced_zoomshots( special_effect_t& effect )
+{
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Laced Zoomshots: Implemented using spell data which indicates it procs from all damage, not just auto-attacks. "
+    "This has not be verified in-game." );
+
+  effect.execute_action = create_proc_action<generic_proc_t>( "laced_zoomshots", effect, effect.trigger() );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace consumables
 
 namespace enchants
@@ -2539,10 +2554,11 @@ void register_special_effects()
   unique_gear::register_special_effect( 1232484, consumables::secondary_food( 1233405, STAT_VERSATILITY_RATING, STAT_HASTE_RATING ) ); // sunwell delight
   // Flasks
   // Potions
-  unique_gear::register_special_effect( 1236998, consumables::draught_of_rampant_abandon );
-  unique_gear::register_special_effect( 1236994, consumables::potion_of_recklessness );
-  unique_gear::register_special_effect( 1238443, consumables::potion_of_zealotry );
+  register_special_effect( 1236998, consumables::draught_of_rampant_abandon );
+  register_special_effect( 1236994, consumables::potion_of_recklessness );
+  register_special_effect( 1238443, consumables::potion_of_zealotry );
   // Oils
+  register_special_effect( { 1262056, 1262111 }, consumables::laced_zoomshots );
   // Enchants & gems
   register_special_effect( 1258209, enchants::powerful_eversong_diamond );
   register_special_effect( { 1236733, 1236734 }, enchants::strength_of_halazzi );
