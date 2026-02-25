@@ -2166,6 +2166,66 @@ void mindpiercers_sigil( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 1258283 on-use
+// 1258275 equip
+// 1263721 damage driver
+// 1263725 damage
+// 1263727 shield NYI
+void litany_of_lightblind_wrath( special_effect_t& effect )
+{
+  auto equip = find_special_effect( effect.player, 1258275 );
+  assert( equip && "Litany of Lightblind Wrath missing equip effect" );
+
+  struct beacon_of_lightblind_wrath_buff_t : public buff_t
+  {
+    player_t* target = nullptr;
+
+    beacon_of_lightblind_wrath_buff_t( player_t* p, std::string_view n, const spell_data_t* s ) : buff_t( p, n, s )
+    {
+      set_initial_stack_to_max_stack();
+    }
+
+    bool trigger( int s, double v, double c, timespan_t d ) override
+    {
+      auto ret = buff_t::trigger( s, v, c, d );
+      if ( ret )
+        target = player->target;
+
+      return ret;
+    }
+
+    void reset() override
+    {
+      buff_t::reset();
+      target = nullptr;
+    }
+  };
+
+  // create on-use stacks
+  auto beacon = create_buff<beacon_of_lightblind_wrath_buff_t>( effect.player, effect.driver() );
+  effect.custom_buff = beacon;
+
+  // create damage
+  auto damage = create_proc_action<generic_proc_t>( "beacon_of_lightblind_wrath", effect, 1263725 );
+  damage->base_dd_min = damage->base_dd_max = equip->driver()->effectN( 1 ).average( effect );
+
+  // set up driver to proc damage & consume stacks
+  auto driver = new special_effect_t( effect.player );
+  driver->name_str = "litany_of_lightblind_wrath_driver";
+  driver->spell_id = effect.trigger()->id();
+  effect.player->special_effects.push_back( driver );
+
+  effect.player->callbacks.register_callback_execute_function(
+    driver->spell_id, [ beacon, damage ]( auto, auto, auto ) {
+      assert( beacon->target && "Beacon of Lightblind Wrath has no target." );
+
+      damage->execute_on_target( beacon->target );
+      beacon->decrement();
+    } );
+
+  auto cb = new dbc_proc_callback_t( effect.player, *driver );
+  cb->activate_with_buff( beacon );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -2525,6 +2585,8 @@ void register_special_effects()
   register_special_effect( 1250589, trinkets::crawling_plague );  // tumor of the swarm
   register_special_effect( 1250541, trinkets::echo_of_the_evercurse );  // soulcatcher's charm
   register_special_effect( 1250546, trinkets::mindpiercers_sigil );  // mindpiercer's sigil
+  register_special_effect( 1258283, trinkets::litany_of_lightblind_wrath );  // litany of lightblind wrath on-use
+  register_special_effect( 1258275, DISABLED_EFFECT );  // litany of lightblind wrath equip driver
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );
