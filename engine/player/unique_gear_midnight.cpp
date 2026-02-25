@@ -959,7 +959,31 @@ void b0p_curator_of_booms( special_effect_t& effect )
     } );
 
   new dbc_proc_callback_t( effect.player, effect );
+}
 
+// 1246309 on-use
+// 1279407 damage
+void b1p_scorcher_of_souls( special_effect_t& effect )
+{
+  struct b1p_scorcher_of_souls_t : public generic_proc_t
+  {
+    b1p_scorcher_of_souls_t( const special_effect_t& e ) : generic_proc_t( e, "b1p_scorcher_of_souls", e.driver() )
+    {
+      // no split or increase # target so use generic_proc_t with aoe = -1
+      tick_action = create_proc_action<generic_proc_t>( "b1p_scorcher_of_souls_tick", e, e.trigger() );
+      tick_action->aoe = -1;
+    }
+
+    void execute() override
+    {
+      // this might blow up, in which case we'll need to figure out another workaround
+      start_gcd();
+
+      generic_proc_t::execute();
+    }
+  };
+
+  effect.execute_action = create_proc_action<b1p_scorcher_of_souls_t>( "b1p_scorcher_of_souls", effect );
 }
 }  // namespace embellishments
 
@@ -2126,11 +2150,11 @@ void magisters_alchemist_stone( special_effect_t& effect )
 // Vaelgor's Final Stare
 // 1259293 Driver
 // 1260459 Nullsight
-void nullsight( special_effect_t& e )
+void vaelgors_final_stare( special_effect_t& e )
 {
   unsigned equip_id = 1259293;
   auto equip        = find_special_effect( e.player, equip_id );
-  assert( equip && "Vaelgor's final stance missing equip effect" );
+  assert( equip && "Vaelgor's final stare missing equip effect" );
 
   auto buff_spell    = e.driver();
   int stacks         = static_cast<int>( buff_spell->duration() / buff_spell->effectN( 3 ).period() );
@@ -2758,6 +2782,7 @@ void register_special_effects()
   register_special_effect( 1251902, embellishments::signet_of_azerothian_blessings );
   register_special_effect( 1251904, embellishments::loa_worshipers_band );
   register_special_effect( 1261968, embellishments::b0p_curator_of_booms );
+  register_special_effect( 1246309, embellishments::b1p_scorcher_of_souls );
   // Darkmoon Trinkets & Embellishments
   register_special_effect( { 1245001, 1245053 }, darkmoon::blood );
   register_special_effect( { 1245055, 1245051 }, darkmoon::rot );
@@ -2794,8 +2819,8 @@ void register_special_effects()
   register_special_effect( 1255379, DISABLED_EFFECT );  // latch's crooked hook equip driver
   register_special_effect( 1250527, trinkets::lightspire_core );
   register_special_effect( 1280591, trinkets::magisters_alchemist_stone );
+  register_special_effect( 1260459, trinkets::vaelgors_final_stare );
   register_special_effect( 1259293, DISABLED_EFFECT ); // Vaelgor's Final Stare equip driver
-  register_special_effect( 1260459, trinkets::nullsight );
   register_special_effect( 1259314, trinkets::locuswalkers_ribbon);
   register_special_effect( 1259153, trinkets::wraps_of_cosmic_madness);
   register_special_effect( 1259103, DISABLED_EFFECT); // Wraps of the Cosmic Madness equip driver
