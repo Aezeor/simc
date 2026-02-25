@@ -906,6 +906,63 @@ void loa_worshipers_band( special_effect_t& effect )
   new loa_worshipers_band_cb_t( effect );
 }
 
+// 1261968 driver
+// 1262512 rppm
+// 1262515 damage
+// 1262513 heal
+void b0p_curator_of_booms( special_effect_t& effect )
+{
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "B0P Curator of Booms: Implemented assuming procs on enemies will only fire damaging bombs, "
+    "and procs on allies will only fire healing bombs. Each proc will randomly do 20%-100% of maximum amount. "
+    "This has not be verified in-game." );
+
+  auto damage_eff = effect.driver()->effectN( 2 );
+  auto heal_eff = effect.driver()->effectN( 3 );
+
+  auto max_bombs = as<int>( effect.driver()->effectN( 1 ).base_value() );
+
+  auto damage = create_proc_action<generic_proc_t>( "big_boom", effect, damage_eff.trigger() );
+  damage->base_dd_min += damage_eff.average( effect );
+  damage->base_dd_max += damage_eff.average( effect );
+
+  auto heal = create_proc_action<generic_heal_t>( "big_boom_heal", effect, heal_eff.trigger() );
+  heal->name_str_reporting = "Heal";
+  heal->base_dd_min += heal_eff.average( effect );
+  heal->base_dd_max += heal_eff.average( effect );
+
+  // skip setup if callback has been created by already having another copy of the embellishment
+  if ( find_special_effect( effect.player, effect.trigger()->id() ) )
+    return;
+
+  effect.spell_id = effect.trigger()->id();
+
+  effect.player->callbacks.register_callback_execute_function(
+    effect.spell_id, [ damage, heal, max_bombs ]( auto, auto, const action_state_t* s ) {
+      auto _bombs = s->action->rng().range( max_bombs ) + 1;
+      auto _mul = as<double>( _bombs ) / max_bombs;
+
+      s->action->sim->print_debug( "{} launching {} BIG BOMBS", *s->action->player, _bombs );
+
+      if ( s->target->is_enemy() )
+      {
+        auto orig_mul = damage->base_multiplier;
+        damage->base_multiplier *= _mul;
+        damage->execute_on_target( s->target );
+        damage->base_multiplier = orig_mul;
+      }
+      else
+      {
+        auto orig_mul = heal->base_multiplier;
+        heal->base_multiplier *= _mul;
+        heal->execute_on_target( s->target );
+        heal->base_multiplier = orig_mul;
+      }
+    } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+}
 }  // namespace embellishments
 
 namespace darkmoon
@@ -2702,6 +2759,7 @@ void register_special_effects()
   register_special_effect( 1251815, embellishments::thalassian_phoenix_torque );
   register_special_effect( 1251902, embellishments::signet_of_azerothian_blessings );
   register_special_effect( 1251904, embellishments::loa_worshipers_band );
+  register_special_effect( 1261968, embellishments::b0p_curator_of_booms );
   // Darkmoon Trinkets & Embellishments
   register_special_effect( { 1245001, 1245053 }, darkmoon::blood );
   register_special_effect( { 1245055, 1245051 }, darkmoon::rot );
