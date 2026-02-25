@@ -2231,7 +2231,11 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
        // 21.12.25 Fluttershy - Currently, the main target just never gets a Judgment stack
        if ( !p()->bugs )
          p()->trigger_greater_judgment( td( s->target ), removeStack );
-
+     }
+     // 25.02.26 Fluttershy - Same bug which affects Ret now also affects Prot. We will lose a Judgment stack for free.
+     else if ( p()->bugs && p()->specialization() == PALADIN_PROTECTION && p()->talents.greater_judgment->ok() )
+     {
+       make_event( *sim, 600_ms, [ this, s ]() { td( s->target )->debuff.judgment->decrement(); } );
      }
    }
 };
