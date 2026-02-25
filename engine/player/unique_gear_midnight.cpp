@@ -2226,6 +2226,31 @@ void litany_of_lightblind_wrath( special_effect_t& effect )
   auto cb = new dbc_proc_callback_t( effect.player, *driver );
   cb->activate_with_buff( beacon );
 }
+
+// 71563 on-use
+// 71564 buff + driver
+void deadly_precision( special_effect_t& effect )
+{
+  // create buff
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 71564 ), effect.item )
+    ->set_initial_stack_to_max_stack();
+
+  effect.custom_buff = buff;
+
+  // setup the driver to consume the buff
+  auto driver = new special_effect_t( effect.player );
+  driver->name_str = "deadly_precision_driver";
+  driver->spell_id = buff->data().id();
+  driver->proc_flags2_ = PF2_CRIT;
+  effect.player->special_effects.push_back( driver );
+
+  effect.player->callbacks.register_callback_execute_function( driver->spell_id, [ buff ]( auto, auto, auto ) {
+    buff->decrement();
+  } );
+
+  auto cb = new dbc_proc_callback_t( effect.player, *driver );
+  cb->activate_with_buff( buff );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -2587,6 +2612,7 @@ void register_special_effects()
   register_special_effect( 1250546, trinkets::mindpiercers_sigil );  // mindpiercer's sigil
   register_special_effect( 1258283, trinkets::litany_of_lightblind_wrath );  // litany of lightblind wrath on-use
   register_special_effect( 1258275, DISABLED_EFFECT );  // litany of lightblind wrath equip driver
+  register_special_effect( 71563, trinkets::deadly_precision );  // nevermelting ice crystal on-use
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );
