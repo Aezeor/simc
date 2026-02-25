@@ -314,6 +314,25 @@ void smugglers_enchanted_edge( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// 1262295 r1 driver
+// 1262294 r1 buff
+// 1262298 r2 driver
+// 1262299 r2 buff
+void smugglers_lynxeye( special_effect_t& effect )
+{
+  // Smuggler's Lynxeye rank 2 looks bugged and grants the rank 1 buff instead of the rank 1 buff. Manually set the
+  // trigger_spell_id to the rank 2 buff.
+  if ( effect.spell_id == 12622298 )
+  {
+    assert( effect.trigger()->id() == 1262294 && "Smuggler's Lynxeye Rank 2 fix no longer necessary." );
+    effect.trigger_spell_id = 1262299;
+  }
+
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger(), effect.item );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace consumables
 
 namespace enchants
@@ -365,7 +384,10 @@ void stat_weapon_enchant( special_effect_t& effect )
   // manually set the effect spell_id to the rank 2 spell, which has correct data. It's currently unknown if this data
   // bug has any detrimental effect on the enchant in-game.
   if ( effect.spell_id == 1236712 )
+  {
+    assert( effect.trigger()->id() == 1236721 && "Arcane Mastery Rank 1 fix no longer necessary." );
     effect.spell_id = 1236721;
+  }
 
   auto proc_data = effect.trigger()->effectN( 1 ).trigger();
   auto proc_subtype = proc_data->effectN( 1 ).subtype();
@@ -2578,6 +2600,7 @@ void register_special_effects()
   // Oils
   register_special_effect( { 1262056, 1262111 }, consumables::laced_zoomshots );
   register_special_effect( { 1237009, 1237012 }, consumables::smugglers_enchanted_edge );
+  register_special_effect( { 1262295, 1262298 }, consumables::smugglers_lynxeye );
   // Enchants & gems
   register_special_effect( 1258209, enchants::powerful_eversong_diamond );
   register_special_effect( { 1236733, 1236734 }, enchants::strength_of_halazzi );
