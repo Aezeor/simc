@@ -3478,8 +3478,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     void impact( action_state_t* s ) override
     {
       pet_melee_attack_t<lesser_ghoul_pet_t>::impact( s );
-      if ( dk()->talent.unholy.infected_claws.ok() && rng().roll( dk()->spell.infected_claws_driver->proc_chance() ) )
-        dk()->background_actions.infected_claws->execute_on_target( s->target );
+      pet()->trigger_infected_claws( s->target );
 
       dk()->trigger_rune_of_the_apocalypse( s->target );
     }
