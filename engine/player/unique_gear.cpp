@@ -3542,8 +3542,6 @@ void unique_gear::initialize_special_effect( special_effect_t& effect, unsigned 
     dbitem->cb_obj->initialize( effect );
     // Set as passive so second phase initialization doesn't happen
     effect.type = SPECIAL_EFFECT_PASSIVE;
-    // Add to effect so the cb_obj will be safely destroyed when the effect is reset;
-    effect.custom_init_object.push_back( dbitem->cb_obj );
   }
 
   // No further processing is necessary for passive effects.
@@ -4815,9 +4813,12 @@ void unique_gear::register_special_effects()
 
 void unique_gear::unregister_special_effects()
 {
-  for ( auto& dbitem: __special_effect_db )
+  for ( auto& dbitem : __special_effect_db )
     delete dbitem.cb_obj;
-}
+
+  for ( auto& dbitem : __passive_effect_db )
+    delete dbitem.cb_obj;
+  }
 
 action_t* unique_gear::create_action( player_t* player, util::string_view name, util::string_view options )
 {
