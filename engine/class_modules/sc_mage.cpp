@@ -5333,7 +5333,8 @@ struct splinter_t final : public mage_spell_t
 
     if ( p()->talents.augury_abounds.ok() && p()->cooldowns.augury_abounds->up() )
     {
-      p()->cooldowns.augury_abounds->start( p()->talents.augury_abounds->internal_cooldown() );
+      // Add a millisecond so that it the ICD doesn't perfectly align with delayed splinters.
+      p()->cooldowns.augury_abounds->start( p()->talents.augury_abounds->internal_cooldown() + 1_ms );
       if ( rng().roll( p()->talents.augury_abounds->effectN( 1 ).percent() ) )
         make_event( *sim, [ this ] { p()->trigger_splinter( nullptr, as<int>( p()->talents.augury_abounds->effectN( 2 ).base_value() ) ); } );
     }
