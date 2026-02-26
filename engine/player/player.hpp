@@ -906,9 +906,13 @@ struct player_t : public actor_t
     bool sealed_chaos_urn_dispell = false;
     // Arcanoweave trappings
     double arcanoweave_trappings_uptime = 0.7;
-    // Interval between checking arcanowevae trappings uptime
+    // Interval between checking arcanoweave trappings uptime
     timespan_t arcanoweave_trappings_update_interval = 10_s;
     timespan_t arcanoweave_trappings_update_interval_stddev = 2.5_s;
+    double sunfire_silk_trappings_uptime = 0.7;
+    // Interval between checking sunfire silk trappings uptime
+    timespan_t sunfire_silk_trappings_update_interval = 10_s;
+    timespan_t sunfire_silk_trappings_update_interval_stddev = 2.5_s;
   } midnight_opts;
 
 private:
