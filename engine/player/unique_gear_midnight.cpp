@@ -431,7 +431,8 @@ void flames_of_the_sindorei( special_effect_t& effect )
 
   auto aoe = create_proc_action<generic_aoe_proc_t>( "phoenix_fire_aoe", effect, 1242129 );
   aoe->name_str_reporting = "AoE";
-  aoe->base_dd_min = aoe->base_dd_min += aoe_value;
+  aoe->base_dd_min += aoe_value;
+  aoe->base_dd_max += aoe_value;
 
   auto dot = create_proc_action<phoenix_fire_t>( "phoenix_fire", effect, aoe );
   dot->base_td += dot_value;
@@ -1977,7 +1978,7 @@ void ranger_captains_iridescent_insignia( special_effect_t& effect )
     silverstrike_trick_shot_t( const special_effect_t& e, std::string_view n ) : generic_proc_t( e, n, e.driver() )
     {}
 
-    result_e calculate_result( action_state_t* s ) const override
+    result_e calculate_result( action_state_t* ) const override
     {
       return RESULT_CRIT;
     }
