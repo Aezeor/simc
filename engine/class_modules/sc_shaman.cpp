@@ -1214,6 +1214,7 @@ public:
     action_t* stormflurry_ws;
 
     action_t* stormblast;
+    action_t* ascendance_damage;
 
     // Legendaries
     action_t* dre_ascendance; // Deeply Rooted Elements
@@ -1264,6 +1265,7 @@ public:
     action_t* stormblast;
     action_t* thorims_invocation;
     action_t* ride_the_lightning;
+    action_t* deeply_rooted_elements;
   } dummy;
 
   // Pets
@@ -8390,6 +8392,7 @@ struct ascendance_t : public shaman_spell_t
 
     if ( p()->specialization() == SHAMAN_ENHANCEMENT )
     {
+      p()->action.ascendance_damage->execute_on_target( target );
       p()->action.doom_winds_asc->execute_on_target( target );
     }
   }
@@ -10440,6 +10443,20 @@ void shaman_t::create_actions()
   action.flame_shock->background = true;
   action.flame_shock->cooldown = get_cooldown( "flame_shock_secondary" );
   action.flame_shock->base_costs[ RESOURCE_MANA ] = 0;
+
+  if ( talent.deeply_rooted_elements.ok() )
+  {
+    dummy.deeply_rooted_elements = new dummy_action_t( this, talent.deeply_rooted_elements,
+      "deeply_rooted_elements" );
+    action.ascendance_damage = new ascendance_damage_t( this, "ascendance_damage" );
+
+    dummy.deeply_rooted_elements->add_child( action.ascendance_damage );
+  }
+  else if ( talent.ascendance.ok() )
+  {
+    action.ascendance_damage = new ascendance_damage_t( this, "ascendance_damage" );
+    action.ascendance->add_child( action.ascendance_damage );
+  }
 }
 
 // shaman_t::create_options =================================================
