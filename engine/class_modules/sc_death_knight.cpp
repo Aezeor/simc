@@ -1090,6 +1090,7 @@ public:
     // Unholy
     propagate_const<gain_t*> forbidden_knowledge;
     propagate_const<gain_t*> superstrain;
+    propagate_const<gain_t*> lesser_ghoul_energy;
 
     // Rider of the Apocalypse
     propagate_const<gain_t*> antimagic_shell_horsemen;  // RP from magic damage absorbed
@@ -1890,6 +1891,7 @@ public:
 
   // Runes
   runes_t _runes;
+  // Other
   rider_of_the_apocalypse_e last_summoned_rider;
   std::vector<pets::death_knight_pet_t*> dk_active_pets;
   std::vector<pets::lesser_ghoul_pet_t*> active_lesser_ghouls;
@@ -1897,6 +1899,7 @@ public:
   runeforges_e oh_runeforge;
   player_t* last_target;
   int lesser_ghouls_summoned;
+  uptime_t* lesser_ghoul_uptimes;
 
   death_knight_t( sim_t* sim, std::string_view name, race_e r )
     : parse_player_effects_t( sim, DEATH_KNIGHT, name, r ),
@@ -1929,7 +1932,8 @@ public:
       mh_runeforge( RUNEFORGE_NONE ),
       oh_runeforge( RUNEFORGE_NONE ),
       last_target( this ),
-      lesser_ghouls_summoned( 0 )
+      lesser_ghouls_summoned( 0 ),
+      lesser_ghoul_uptimes( nullptr )
   {
     // Shared
     // DnD - Default value, changed during action construction
@@ -3473,6 +3477,8 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     lesser_ghoul_claw_base_t( lesser_ghoul_pet_t* p, std::string_view name, const spell_data_t* spell )
       : pet_melee_attack_t( p, name, spell )
     {
+      // Data has these as 0 cost. They cost 40 in game. 
+      base_costs[ RESOURCE_ENERGY ] = 40;
     }
 
     void impact( action_state_t* s ) override
@@ -3511,8 +3517,6 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       : lesser_ghoul_claw_base_t( p, "sweeping_claws", p->dk()->pet_spell.lesser_sweeping_claws )
     {
       parse_options( options_str );
-      trigger_gcd                   = 2.5_s;
-      gcd_type                      = gcd_haste_type::HASTE;
       aoe                           = 0;
       attack_power_mod.direct       = data().effectN( 2 ).ap_coeff();
       impact_action                 = new lesser_ghoul_sweeping_claws_aoe_t( p );
@@ -3533,8 +3537,6 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       : lesser_ghoul_claw_base_t( p, "claw", p->dk()->pet_spell.army_claw )
     {
       parse_options( options_str );
-      trigger_gcd = 2.5_s;
-      gcd_type    = gcd_haste_type::HASTE;
     }
 
     bool ready() override
@@ -3566,23 +3568,38 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
   lesser_ghoul_pet_t( death_knight_t* owner, std::string_view name = "army_ghoul" )
     : base_ghoul_pet_t( owner, name, PET_LESSER_GHOUL, true ), ruptured_viscera( nullptr ), putrefied( false )
   {
-    resource_regeneration             = regen_type::DISABLED;
     affected_by.commander_of_the_dead = true;
     affected_by.grave_mastery         = true;
   }
 
-  resource_e primary_resource() const override
-  {
-    return RESOURCE_NONE;
-  }
-
   void init_base_stats() override
   {
-    // Skip base_ghoul_pet_t::init_base_stats to prevent initializing energy resource
-    death_knight_pet_t::init_base_stats();
+    base_ghoul_pet_t::init_base_stats();
     owner_coeff.ap_from_ap = 0.2325;
     if ( name_str == "army_ghoul" )
       owner_coeff.ap_from_ap *= 1.75;
+  }
+
+  void init_gains() override
+  {
+    base_ghoul_pet_t::init_gains();
+
+    // Merge gains for all lesser ghouls to cleanup reporting
+    if( !dk()->gains.lesser_ghoul_energy )
+      dk()->gains.lesser_ghoul_energy = gains.resource_regen[ RESOURCE_ENERGY ];
+    else
+      gains.resource_regen[ RESOURCE_ENERGY ] = dk()->gains.lesser_ghoul_energy;
+  }
+
+  void init_uptimes() override
+  {
+    base_ghoul_pet_t::init_uptimes();
+
+    // Merge Uptimes for all lesser ghouls to cleanup reporting.
+    if ( !dk()->lesser_ghoul_uptimes )
+      dk()->lesser_ghoul_uptimes = uptimes.primary_resource_cap;
+    else
+      uptimes.primary_resource_cap = dk()->lesser_ghoul_uptimes;
   }
 
   void arise() override
