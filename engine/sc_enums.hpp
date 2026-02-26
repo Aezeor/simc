@@ -865,6 +865,7 @@ enum set_bonus_type_e
   TWW_WDawn,
   TWW2,
   TWW3,
+  MID_AT,
   TWW_SOTV,
   MID_MRM,
   MID_RWR,

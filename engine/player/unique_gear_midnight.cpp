@@ -2868,6 +2868,43 @@ void voidlight_bindings( special_effect_t& effect )
   effect.execute_action = damage;
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// 1241262 driver
+// 1241227 coeff (unused?)
+// 1241289 buff
+void arcanoweave_trappings( special_effect_t& effect )
+{
+  effect.player->sim->error(
+    UNVERIFIED_VALUE,
+    "Arcanoweave Trappings: How the buff value scales with item level is unknown. "
+    "Currently implemented to scale off player level and values have not been verified in-game." );
+
+  struct arcanoweave_trappings_t : public stat_buff_t
+  {
+    rng::truncated_gauss_t interval;
+
+    arcanoweave_trappings_t( player_t* p, std::string_view n, const spell_data_t* s )
+      : stat_buff_t( p, n, s ),
+        interval( p->midnight_opts.arcanoweave_trappings_update_interval,
+                  p->midnight_opts.arcanoweave_trappings_update_interval_stddev )
+    {}
+  };
+
+  auto buff = create_buff<arcanoweave_trappings_t>( effect.player, effect.trigger() );
+
+  effect.player->register_precombat_begin( [ buff ]( player_t* p ) {
+    buff->trigger();
+
+    make_repeating_event( *p->sim,
+      [ p, buff ] { return p->rng().gauss( buff->interval ); },
+      [ p, buff ] {
+        if ( p->rng().roll( p->midnight_opts.arcanoweave_trappings_uptime ) )
+          buff->trigger();
+        else
+          buff->expire();
+      } );
+  } );
+}
 }  // namespace sets
 
 void register_special_effects()
@@ -3003,6 +3040,7 @@ void register_special_effects()
   unique_gear::register_special_effect( 1281574, sets::voidlight_bindings );
   unique_gear::register_special_effect( 1244005, sets::murder_row_materials );
   unique_gear::register_special_effect( 1244021, sets::root_wardens_regalia );
+  unique_gear::register_special_effect( 1241262, sets::arcanoweave_trappings );
   unique_gear::register_special_effect( 1253358, DISABLED_EFFECT );  // torments duality
 }
 
