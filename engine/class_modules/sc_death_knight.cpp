@@ -3162,11 +3162,6 @@ struct base_ghoul_pet_t : public death_knight_pet_t
     spawn_radius                = dk()->spell.summon_lesser_ghoul->effectN( 1 ).radius();
   }
 
-  attack_t* create_main_hand_auto_attack() override
-  {
-    return new auto_attack_melee_t<base_ghoul_pet_t>( this, "auto_attack_mh" );
-  }
-
   void init_base_stats() override
   {
     death_knight_pet_t::init_base_stats();
@@ -3178,6 +3173,24 @@ struct base_ghoul_pet_t : public death_knight_pet_t
     resources.hasted[ RESOURCE_ENERGY ]                = true;
   }
 
+  struct ghoul_auto_t final : public auto_attack_melee_t<base_ghoul_pet_t>
+  {
+    ghoul_auto_t( base_ghoul_pet_t* p, std::string_view name ) : auto_attack_melee_t( p, name )
+    {
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      auto_attack_melee_t<base_ghoul_pet_t>::impact( state );
+      pet()->trigger_infected_claws( state->target );
+    }
+  };
+
+  attack_t* create_main_hand_auto_attack() override
+  {
+    return new ghoul_auto_t( this, "auto_attack_mh" );
+  }
+
   void arise() override
   {
     death_knight_pet_t::arise();
@@ -3185,6 +3198,12 @@ struct base_ghoul_pet_t : public death_knight_pet_t
     double dist    = precombat_spawn ? 0 : rng().range( -spawn_radius, spawn_radius );
     spawn_distance = std::max( 0.0, dk()->base.distance + dist );
     trigger_pet_movement( spawn_distance );
+  }
+
+  void trigger_infected_claws( player_t* target )
+  {
+    if ( dk()->talent.unholy.infected_claws.ok() && rng().roll( dk()->spell.infected_claws_driver->proc_chance() ) )
+      dk()->background_actions.infected_claws->execute_on_target( target );
   }
 
   resource_e primary_resource() const override
@@ -3206,7 +3225,6 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
                         bool usable_in_dt = true )
       : pet_melee_attack_t( p, name, spell ),
         usable_in_dt( usable_in_dt ),
-        triggers_infected_claws( false ),
         triggers_apocalypse( false )
     {
     }
@@ -3215,9 +3233,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     {
       pet_melee_attack_t<ghoul_pet_t>::impact( state );
 
-      if ( triggers_infected_claws && dk()->talent.unholy.infected_claws.ok() &&
-           rng().roll( dk()->spell.infected_claws_driver->proc_chance() ) )
-        dk()->background_actions.infected_claws->execute_on_target( state->target );
+      pet()->trigger_infected_claws( state->target );
 
       if ( triggers_apocalypse  )
         dk()->trigger_rune_of_the_apocalypse( state->target );
@@ -3245,7 +3261,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
                  bool dt = false )
       : dt_melee_ability_t( p, name, spell, dt )
     {
-      triggers_infected_claws = triggers_apocalypse = true;
+      triggers_apocalypse = true;
       base_multiplier *= 0.85;
     }
   };
@@ -3304,13 +3320,6 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     }
   };
 
-  struct dt_auto_t final : public auto_attack_melee_t<ghoul_pet_t>
-  {
-    dt_auto_t( ghoul_pet_t* p, std::string_view name ) : auto_attack_melee_t( p, name )
-    {
-    }
-  };
-
   ghoul_pet_t( death_knight_t* owner, bool guardian = true ) : base_ghoul_pet_t( owner, "ghoul", PET_GHOUL, guardian )
   {
     gnaw_cd                   = get_cooldown( "gnaw" );
@@ -3321,11 +3330,6 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     {
       dynamic = false;
     }
-  }
-
-  attack_t* create_main_hand_auto_attack() override
-  {
-    return new dt_auto_t( this, "auto_attack_mh" );
   }
 
   double composite_player_multiplier( school_e school ) const override
