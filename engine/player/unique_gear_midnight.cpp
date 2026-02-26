@@ -2699,26 +2699,36 @@ void azerothian_power( special_effect_t& effect )
   pickup->set_can_proc_from_procs( false );
   effect.player->special_effects.push_back( pickup );
 
-  // trigger only if the action is usable while moving
-  effect.player->callbacks.register_callback_trigger_function(
-    pickup->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION, []( auto, action_t* a, auto ) {
-      // we can't just use usable_moving() since it returns false for melee abilities
-      return ( a->trigger_gcd > 0_ms && a->execute_time() == 0_ms ) || ( a->channeled && a->usable_moving() );
-    } );
+  struct azerothian_power_pickup_cb_t : public dbc_proc_callback_t
+  {
+    std::unordered_map<stat_e, buff_t*> buffs;
+    buff_t* orb;
 
-  // wait until the end of the action's gcd then trigger the buff and consume an orb
-  effect.player->callbacks.register_callback_execute_function(
-    pickup->spell_id, [ buffs, orb ]( auto, action_t* a, auto ) {
+    azerothian_power_pickup_cb_t( const special_effect_t& e, std::unordered_map<stat_e, buff_t*> map, buff_t* b )
+      : dbc_proc_callback_t( e.player, e ), buffs( std::move( map ) ), orb( b )
+    {}
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      // trigger only if the action is usable while moving
+      // we can't just use usable_moving() since it returns false for melee abilities
+      if ( ( a->trigger_gcd > 0_ms && a->execute_time() == 0_ms ) || ( a->channeled && a->usable_moving() ) )
+        dbc_proc_callback_t::trigger( a, s );
+    }
+
+    void execute( action_t* a, action_state_t* ) override
+    {
       if ( auto move_delay = a->gcd() - 10_ms; orb->remains_gt( move_delay ) )
       {
-        make_event( *a->sim, move_delay, [ buffs, orb ] {
+        make_event( *a->sim, move_delay, [ this ] {
           buffs.at( util::highest_stat( orb->player, secondary_ratings ) )->trigger();
           orb->decrement();
         } );
       }
-    } );
+    }
+  };
 
-  auto cb = new dbc_proc_callback_t( effect.player, *pickup );
+  auto cb = new azerothian_power_pickup_cb_t( *pickup, buffs, orb );
   cb->activate_with_buff( orb );
 };
 }  // namespace armors
