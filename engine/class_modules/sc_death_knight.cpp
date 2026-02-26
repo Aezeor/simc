@@ -3556,28 +3556,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     {
       pet_spell_t<lesser_ghoul_pet_t>::impact( s );
 
-      if ( dk()->has_runeforge( RUNEFORGE_APOCALYPSE ) )
-      {
-        int n = as<int>( std::floor( pet()->rng().range( 0, runeforge_apocalypse_e::MAX ) ) );
-
-        death_knight_td_t* td = dk()->get_target_data( s->target );
-
-        switch ( n )
-        {
-          case runeforge_apocalypse_e::DEATH:
-            td->debuff.apocalypse_death->trigger();
-            break;
-          case runeforge_apocalypse_e::FAMINE:
-            td->debuff.apocalypse_famine->trigger();
-            break;
-          case runeforge_apocalypse_e::PESTILENCE:
-            dk()->runeforge_actions.apocalypse_pestilence->execute_on_target( s->target );
-            break;
-          case runeforge_apocalypse_e::WAR:
-            td->debuff.apocalypse_war->trigger();
-            break;
-        }
-      }
+      dk()->trigger_rune_of_the_apocalypse( s->target );
     }
   };
 
