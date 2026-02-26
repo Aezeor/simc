@@ -2666,6 +2666,61 @@ void rangergenerals_call( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// 1243903 driver
+// 1246714 orb duration
+// 1246739 buffs
+void azerothian_power( special_effect_t& effect )
+{
+  // create all the stat buffs
+  std::unordered_map<stat_e, buff_t*> buffs;
+
+  create_all_stat_buffs( effect, effect.player->find_spell( 1246739 ), 0.0, [ &buffs ]( stat_e s, buff_t* b ) {
+    buffs[ s ] = b;
+  } );
+
+  // create the fake tracker buff to track orb spawns
+  auto orb = create_buff<buff_t>( effect.player, "azerothian_power_orb", effect.trigger() )
+    ->set_quiet( true )
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+    ->set_max_stack( 10 );  // sufficiently high
+
+  effect.custom_buff = orb;
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+  // create a fake callback to proc on next ability that can be cast while moving
+  auto pickup = new special_effect_t( effect.player );
+  pickup->name_str = "azerothian_power_pickup";
+  pickup->spell_id = orb->data().id();
+  pickup->proc_flags_ = PF_CAST_SUCCESSFUL;
+  pickup->proc_chance_ = 1.0;
+  pickup->set_can_only_proc_from_class_abilites( true );
+  pickup->set_can_proc_from_procs( false );
+  effect.player->special_effects.push_back( pickup );
+
+  // trigger only if the action is usable while moving
+  effect.player->callbacks.register_callback_trigger_function(
+    pickup->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION, []( auto, action_t* a, auto ) {
+      // we can't just use usable_moving() since it returns false for melee abilities
+      return ( a->trigger_gcd > 0_ms && a->execute_time() == 0_ms ) || ( a->channeled && a->usable_moving() );
+    } );
+
+  // wait until the end of the action's gcd then trigger the buff and consume an orb
+  effect.player->callbacks.register_callback_execute_function(
+    pickup->spell_id, [ buffs, orb ]( auto, action_t* a, auto ) {
+      if ( auto move_delay = a->gcd() - 10_ms; orb->remains_gt( move_delay ) )
+      {
+        make_event( *a->sim, move_delay, [ buffs, orb ] {
+          buffs.at( util::highest_stat( orb->player, secondary_ratings ) )->trigger();
+          orb->decrement();
+        } );
+      }
+    } );
+
+  auto cb = new dbc_proc_callback_t( effect.player, *pickup );
+  cb->activate_with_buff( orb );
+};
 }  // namespace armors
 
 namespace sets
@@ -2917,6 +2972,7 @@ void register_special_effects()
   register_special_effect( 1271211, armors::eternal_voidsong_chain );
   register_special_effect( 1243883, armors::necrotic_hexweave );
   register_special_effect( 1243876, armors::rangergenerals_call );
+  register_special_effect( 1243903, armors::azerothian_power );
   // Sets
   // NOTE: use unique_gear:: namespace for sets as they are activated with enable_all_sets and not enable_all_item_effects
   unique_gear::register_special_effect( 1281574, sets::voidlight_bindings );
