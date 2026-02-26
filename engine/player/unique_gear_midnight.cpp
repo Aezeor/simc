@@ -58,17 +58,17 @@ static constexpr unsigned __gem_colors[] = { GEM_PERIDOT, GEM_GARNET, GEM_LAPIS,
 static constexpr util::span<const unsigned> gem_colors = util::make_span( __gem_colors );
 
 // can be called via unqualified lookup
-void register_special_effect( unsigned spell_id, custom_cb_t init_callback, bool fallback = false )
+void register_special_effect( unsigned spell_id, custom_cb_t init_callback, bool fallback = false, bool passive = false )
 {
-  unique_gear::register_special_effect( spell_id, init_callback, fallback, version_min, version_max );
+  unique_gear::register_special_effect( spell_id, init_callback, fallback, passive, version_min, version_max );
   __mid_special_effect_ids.push_back( spell_id );
 }
 
 void register_special_effect( std::initializer_list<unsigned> spell_ids, custom_cb_t init_callback,
-                              bool fallback = false )
+                              bool fallback = false, bool passive = false )
 {
   for ( auto id : spell_ids )
-    register_special_effect( id, init_callback, fallback );
+    register_special_effect( id, init_callback, fallback, passive );
 }
 
 namespace consumables
@@ -362,10 +362,10 @@ namespace enchants
 // 1258209 driver
 void powerful_eversong_diamond( special_effect_t& effect )
 {
-  auto pct = effect.driver()->effectN( 1 ).percent() * unique_gem_list( effect.player, gem_colors ).size();
-  const auto& crit_eff = effect.driver()->effectN( 2 );
+  auto pct = effect.driver()->effectN( 1 ).base_value() * unique_gem_list( effect.player, gem_colors ).size();
 
-  effect.player->register_passive_item_effect_override( crit_eff, pct );
+  effect.player->register_passive_item_effect_override( effect.driver()->effectN( 2 ), pct );
+  effect.player->register_passive_item_effect_override( effect.driver()->effectN( 3 ), pct );
   effect.player->parse_passive_item_effect( effect.driver() );
 }
 
@@ -2903,7 +2903,7 @@ void register_special_effects()
   register_special_effect( { 1262295, 1262298 }, consumables::smugglers_lynxeye );
   register_special_effect( { 1262120, 1262141 }, consumables::weighted_boomshots );
   // Enchants & gems
-  register_special_effect( 1258209, enchants::powerful_eversong_diamond );
+  register_special_effect( 1258209, enchants::powerful_eversong_diamond, false, true );
   register_special_effect( { 1236733, 1236734 }, enchants::strength_of_halazzi );
   register_special_effect( { 1236739, 1236740 }, enchants::flames_of_the_sindorei );
   register_special_effect( { 1236741, 1236742,    // Acuity of the Ren'dorei (Primary)
@@ -2912,7 +2912,7 @@ void register_special_effects()
                              1236724, 1236725,    // Janalai's Precision (Crit)
                              1236729, 1236730 },  // Worldsoul Tenacity (Vers)
                            enchants::stat_weapon_enchant );
-  register_special_effect( { 1236700, 1236701 }, enchants::eyes_of_the_eagle );
+  register_special_effect( { 1236700, 1236701 }, enchants::eyes_of_the_eagle, false, true );
   // Embellishments & Tinkers
   register_special_effect( 1283697, embellishments::arcanoweave_lining );
   register_special_effect( 1241711, embellishments::sunfire_silk_lining );

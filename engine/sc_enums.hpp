@@ -597,6 +597,7 @@ enum special_effect_e
   SPECIAL_EFFECT_NONE = -1,
   SPECIAL_EFFECT_EQUIP,
   SPECIAL_EFFECT_USE,
+  SPECIAL_EFFECT_PASSIVE,
   SPECIAL_EFFECT_FALLBACK // Internal use only for fallback special effects
 };
 
