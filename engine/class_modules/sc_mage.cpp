@@ -4996,7 +4996,14 @@ struct scorch_t final : public fire_mage_spell_t
     double m = fire_mage_spell_t::composite_da_multiplier( s );
 
     if ( scorch_execute_active( s->target ) )
-      m *= 1.0 + p()->talents.scald->effectN( 2 ).percent();
+    {
+      double scald = p()->talents.scald->effectN( 2 ).percent();
+      // TODO: Scald only seems to provide +150% damage (rather than +250%) when
+      // Heat Shimmer isn't active.
+      if ( p()->bugs && p()->talents.scald.ok() && !p()->buffs.heat_shimmer->check() )
+        scald -= 1.0;
+      m *= 1.0 + scald;
+    }
 
     m *= 1.0 + p()->buffs.heat_shimmer->check_value();
 
