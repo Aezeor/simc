@@ -3542,6 +3542,8 @@ void unique_gear::initialize_special_effect( special_effect_t& effect, unsigned 
     dbitem->cb_obj->initialize( effect );
     // Set as passive so second phase initialization doesn't happen
     effect.type = SPECIAL_EFFECT_PASSIVE;
+    // Add to effect so the cb_obj will be safely destroyed when the effect is reset;
+    effect.custom_init_object.push_back( dbitem->cb_obj );
   }
 
   // No further processing is necessary for passive effects.
@@ -3609,6 +3611,9 @@ void unique_gear::initialize_special_effect( special_effect_t& effect, unsigned 
 // effects, or calls the custom initialization function given in the first phase initialization.
 void unique_gear::initialize_special_effect_2( special_effect_t* effect )
 {
+  if ( effect->type == SPECIAL_EFFECT_PASSIVE )
+    return;
+
   if ( effect -> custom_init || !effect -> custom_init_object.empty() )
   {
     if ( effect -> custom_init )
