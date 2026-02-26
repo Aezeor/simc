@@ -2607,6 +2607,7 @@ void necrotic_hexweave( special_effect_t& effect )
     {
       dot = create_proc_action<generic_proc_t>( "necrotic_hex", e, 1258604 );
       dot->base_td = e.driver()->effectN( 1 ).average( e );
+      dot->base_multiplier *= role_mult( e );
 
       target_debuff = e.trigger();
     }
@@ -2642,6 +2643,28 @@ void necrotic_hexweave( special_effect_t& effect )
   };
 
   new necrotic_hexweave_cb_t( effect );
+}
+
+// 1243876 driver
+// 1258545 delay
+// 1258556 damage
+void rangergenerals_call( special_effect_t& effect )
+{
+  auto damage =
+    create_proc_action<generic_proc_t>( "surprise_attack", effect, effect.trigger()->effectN( 1 ).trigger() );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  damage->base_multiplier *= role_mult( effect );
+
+  auto delay = timespan_t::from_millis( effect.trigger()->effectN( 1 ).misc_value1() );
+
+  effect.player->callbacks.register_callback_execute_function( effect.spell_id,
+    [ damage, delay ]( auto, auto, const action_state_t* s ) {
+      make_event( *s->action->sim, delay, [ damage, s ] {
+        damage->execute_on_target( s->target );
+      } );
+    } );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 }  // namespace armors
 
@@ -2893,6 +2916,7 @@ void register_special_effects()
   // Armor
   register_special_effect( 1271211, armors::eternal_voidsong_chain );
   register_special_effect( 1243883, armors::necrotic_hexweave );
+  register_special_effect( 1243876, armors::rangergenerals_call );
   // Sets
   // NOTE: use unique_gear:: namespace for sets as they are activated with enable_all_sets and not enable_all_item_effects
   unique_gear::register_special_effect( 1281574, sets::voidlight_bindings );
