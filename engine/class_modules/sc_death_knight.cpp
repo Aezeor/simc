@@ -3479,6 +3479,8 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     {
       // Data has these as 0 cost. They cost 40 in game. 
       base_costs[ RESOURCE_ENERGY ] = 40;
+      // Data has no gcd on these. They have a 1.5s gcd in game.
+      trigger_gcd                   = 1.5_s;
     }
 
     void impact( action_state_t* s ) override
@@ -3508,6 +3510,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       attack_power_mod.direct = data().effectN( 3 ).ap_coeff();
       target_filter_callback  = secondary_targets_only();
       base_costs[ RESOURCE_ENERGY ] = 0;
+      trigger_gcd                   = 0_ms;
     }
   };
 
