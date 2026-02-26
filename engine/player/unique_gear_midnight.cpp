@@ -2562,6 +2562,19 @@ void lightless_lament( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// 1250529 driver
+// 1250528 damage
+void murder_row_fishhook( special_effect_t& effect )
+{
+  auto dot = create_proc_action<generic_proc_t>( "murder_row_fishhook", effect, effect.trigger() );
+  dot->base_dd_min = dot->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  dot->base_multiplier *= role_mult( effect );
+
+  effect.execute_action = dot;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace weapons
 
 namespace armors
@@ -2979,6 +2992,7 @@ void register_special_effects()
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );
+  register_special_effect( 1250529, weapons::murder_row_fishhook );
   // Armor
   register_special_effect( 1271211, armors::eternal_voidsong_chain );
   register_special_effect( 1243883, armors::necrotic_hexweave );
