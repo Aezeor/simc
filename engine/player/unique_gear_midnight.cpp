@@ -2745,6 +2745,16 @@ void azerothian_power( special_effect_t& effect )
   auto cb = new azerothian_power_pickup_cb_t( *pickup, buffs, orb );
   cb->activate_with_buff( orb );
 };
+
+// 1241529 driver
+// 1241530 buff
+void arcanoweave_cord( special_effect_t& effect )
+{
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
+    ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+
+  new dbc_proc_callback_t( effect.player, effect );
+};
 }  // namespace armors
 
 namespace sets
@@ -3035,6 +3045,7 @@ void register_special_effects()
   register_special_effect( 1243883, armors::necrotic_hexweave );
   register_special_effect( 1243876, armors::rangergenerals_call );
   register_special_effect( 1243903, armors::azerothian_power );
+  register_special_effect( 1241529, armors::arcanoweave_cord );
   // Sets
   // NOTE: use unique_gear:: namespace for sets as they are activated with enable_all_sets and not enable_all_item_effects
   unique_gear::register_special_effect( 1281574, sets::voidlight_bindings );
