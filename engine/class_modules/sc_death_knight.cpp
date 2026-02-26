@@ -3508,6 +3508,8 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       : lesser_ghoul_claw_base_t( p, "sweeping_claws", p->dk()->pet_spell.lesser_sweeping_claws )
     {
       parse_options( options_str );
+      cooldown->duration            = 2.5_s;
+      cooldown->hasted              = true;
       aoe                           = 0;
       attack_power_mod.direct       = data().effectN( 2 ).ap_coeff();
       impact_action                 = new lesser_ghoul_sweeping_claws_aoe_t( p );
@@ -3528,6 +3530,9 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       : lesser_ghoul_claw_base_t( p, "claw", p->dk()->pet_spell.army_claw )
     {
       parse_options( options_str );
+      cooldown->duration = 2.5_s;
+      cooldown->hasted   = true;
+      gcd_type    = gcd_haste_type::HASTE;
     }
 
     bool ready() override
