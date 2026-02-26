@@ -2588,6 +2588,61 @@ void eternal_voidsong_chain( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// 1243883 driver
+// 1258590 spread counter debuff
+// 1258604 dot
+// 1258845 direct damage (unknown?)
+void necrotic_hexweave( special_effect_t& effect )
+{
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Necrotic Hexweave: Implementation assumes hex can only be spread to non-hexed targets, "
+    "and each spread applies a full duration hex that cannot spread further." );
+
+  struct necrotic_hexweave_cb_t : public dbc_proc_callback_t
+  {
+    action_t* dot;
+
+    necrotic_hexweave_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {
+      dot = create_proc_action<generic_proc_t>( "necrotic_hex", e, 1258604 );
+      dot->base_td = e.driver()->effectN( 1 ).average( e );
+
+      target_debuff = e.trigger();
+    }
+
+    buff_t* create_debuff( player_t* t ) override
+    {
+      return dbc_proc_callback_t::create_debuff( t )
+        ->set_initial_stack_to_max_stack()
+        ->set_tick_callback( [ this ]( buff_t* b, auto, auto ) {
+          if ( b->check() )  // last stack must remain
+          {
+            auto tl = dot->target_list();  // make a copy
+            rng().shuffle( tl.begin(), tl.end() );
+            for ( auto t : tl )
+            {
+              auto target_dot = dot->find_dot( t );
+              if ( !target_dot || !target_dot->is_ticking() )
+              {
+                b->decrement();
+                dot->execute_on_target( t );
+                break;
+              }
+            }
+          }
+        } );
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      dot->execute_on_target( s->target );
+      get_debuff( s->target )->trigger();
+    }
+  };
+
+  new necrotic_hexweave_cb_t( effect );
+}
 }  // namespace armors
 
 namespace sets
@@ -2837,6 +2892,7 @@ void register_special_effects()
   register_special_effect( 1266257, weapons::lightless_lament );
   // Armor
   register_special_effect( 1271211, armors::eternal_voidsong_chain );
+  register_special_effect( 1243883, armors::necrotic_hexweave );
   // Sets
   // NOTE: use unique_gear:: namespace for sets as they are activated with enable_all_sets and not enable_all_item_effects
   unique_gear::register_special_effect( 1281574, sets::voidlight_bindings );
