@@ -3013,17 +3013,9 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     p()->active.unseen_swipe->set_target( _tar );
 
     if ( p()->active.unseen_swipe->target_list().size() > UNSEEN_SWIPE_TARGETS )
-    {
-      make_event( *sim, FERAL_FLICKER_DELAY, [ this ] {
-        p()->active.unseen_swipe->execute();
-      } );
-    }
+      p()->active.unseen_swipe->execute();
     else
-    {
-      make_event( *sim, FERAL_FLICKER_DELAY, [ this, _tar ] {
-        p()->active.unseen_slash->execute_on_target( _tar );
-      } );
-    }
+      p()->active.unseen_slash->execute_on_target( _tar );
   }
 
   void execute() override
@@ -4965,6 +4957,7 @@ struct unseen_attack_t : public cat_attack_t
     : cat_attack_t( n, p, s, f )
   {
     proc = true;
+    travel_delay = FERAL_FLICKER_DELAY.total_seconds();
 
     range = p->talent.unseen_predator_1->effectN( 2 ).base_value();
   }
