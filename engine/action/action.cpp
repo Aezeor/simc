@@ -4489,11 +4489,6 @@ void action_t::trigger_dot( action_state_t* s )
   if ( snapshot_flags & STATE_ROLLING_TA )
     s->rolling_ta_multiplier = composite_rolling_ta_multiplier( s );
 
-  // To simulate precasting HoTs, remove one tick worth of duration if precombat.
-  // We also add a fake zero_tick in dot_t::check_tick_zero().
-  if ( !harmful && is_precombat && !tick_zero && !tick_on_application )
-    duration -= tick_time( s );
-
   dot_t* dot = get_dot( s->target );
 
   if ( dot_behavior == DOT_CLIP )
