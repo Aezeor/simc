@@ -28,6 +28,7 @@ enum class secondary_trigger
   HAND_OF_FATE,
   SCOUNDREL_STRIKE,
   SHADOW_CLONE,
+  SHADOWED_FINISHERS,
 };
 
 enum stealth_type_e
@@ -1384,19 +1385,25 @@ struct secondary_action_trigger_t : public event_t
 
     action->set_target( action_target );
 
+    assert( !action->pre_execute_state );
+
     // No state, construct one and grab combo points from the event instead of current CP amount.
     if ( !state )
     {
-      state = action->get_state();
-      state->target = action_target;
-      action->cast_state( state )->set_combo_points( cp, cp );
+      // Set pre_execute_state prior to snapshot so CP is available in composite functions
+      action->pre_execute_state = action->get_state();
+      action->pre_execute_state->target = action_target;
+      action->cast_state( action->pre_execute_state )->set_combo_points( cp, cp );
+      
       // Calling snapshot_internal, snapshot_state would overwrite CP.
-      action->snapshot_internal( state, action->snapshot_flags, action->amount_type( state ) );
+      action->snapshot_internal( action->pre_execute_state, action->snapshot_flags,
+                                 action->amount_type( action->pre_execute_state ) );
+    }
+    else
+    {
+      action->pre_execute_state = state;
     }
     
-    assert( !action->pre_execute_state );
-
-    action->pre_execute_state = state;
     action->execute();
     state = nullptr;
   }
@@ -4138,15 +4145,10 @@ struct eviscerate_t : public rogue_attack_t
 {
   struct eviscerate_bonus_t : public rogue_attack_t
   {
-    int last_cp;
-
     eviscerate_bonus_t( util::string_view name, rogue_t* p ) :
-      rogue_attack_t( name, p, p->spec.eviscerate_shadow_attack ),
-      last_cp( 1 )
+      rogue_attack_t( name, p, p->spec.eviscerate_shadow_attack )
     {
-      affected_by.darkest_night = true;
-      // 2024-09-01 -- Note: This works but needs custom composite_crit_chance() handling below
-      affected_by.darkest_night_crit = false;
+      affected_by.darkest_night = affected_by.darkest_night_crit = true;
       affected_by.mid1_subtlety_2pc = true;
 
       if ( p->talent.subtlety.shadowed_finishers->ok() )
@@ -4156,28 +4158,9 @@ struct eviscerate_t : public rogue_attack_t
       }
     }
 
-    void reset() override
+    double combo_point_da_multiplier( const action_state_t* state ) const override
     {
-      rogue_attack_t::reset();
-      last_cp = 1;
-    }
-
-    double combo_point_da_multiplier( const action_state_t* ) const override
-    {
-      return as<double>( last_cp );
-    }
-
-    double composite_crit_chance() const override
-    {
-      double c = rogue_attack_t::composite_crit_chance();
-
-      // Custom handling using last_eviscerate_cp snapshot CP value from the initial cast
-      if ( p()->buffs.darkest_night->up() && last_cp >= p()->consume_cp_max() )
-      {
-        c += 1.0 + p()->spell.darkest_night_buff->effectN( 4 ).percent();
-      }
-
-      return c;
+      return static_cast<double>( cast_state( state )->get_combo_points() );
     }
   };
 
@@ -4191,7 +4174,8 @@ struct eviscerate_t : public rogue_attack_t
 
     if ( p->talent.subtlety.shadowed_finishers->ok() )
     {
-      bonus_attack = p->get_background_action<eviscerate_bonus_t>( "eviscerate_bonus" );
+      bonus_attack = p->get_secondary_trigger_action<eviscerate_bonus_t>(
+        secondary_trigger::SHADOWED_FINISHERS, "eviscerate_bonus" );
       add_child( bonus_attack );
     }
   }
@@ -4209,8 +4193,7 @@ struct eviscerate_t : public rogue_attack_t
 
     if ( bonus_attack && p()->buffs.find_weakness->up() && result_is_hit( state->result ) )
     {
-      bonus_attack->last_cp = cast_state( state )->get_combo_points();
-      bonus_attack->execute_on_target( state->target );
+      bonus_attack->trigger_secondary_action( state->target, cast_state( state )->get_combo_points() );
     }
   }
 
@@ -5409,11 +5392,8 @@ struct black_powder_t: public rogue_attack_t
 
   struct black_powder_bonus_t : public rogue_attack_t
   {
-    int last_cp;
-
     black_powder_bonus_t( util::string_view name, rogue_t* p ) :
-      rogue_attack_t( name, p, p->spec.black_powder_shadow_attack ),
-      last_cp( 1 )
+      rogue_attack_t( name, p, p->spec.black_powder_shadow_attack )
     {
       callbacks = false; // 2021-07-19 -- Does not appear to trigger normal procs
       aoe = -1;
@@ -5432,15 +5412,9 @@ struct black_powder_t: public rogue_attack_t
       }
     }
 
-    void reset() override
+    double combo_point_da_multiplier( const action_state_t* state ) const override
     {
-      rogue_attack_t::reset();
-      last_cp = 1;
-    }
-
-    double combo_point_da_multiplier( const action_state_t* ) const override
-    {
-      double m = as<double>( last_cp );
+      double m = static_cast<double>( cast_state( state )->get_combo_points() );
 
       if ( p()->talent.subtlety.potent_powder->ok() && m >= p()->talent.subtlety.potent_powder->effectN( 2 ).base_value() )
       {
@@ -5462,7 +5436,8 @@ struct black_powder_t: public rogue_attack_t
 
     if ( p->talent.subtlety.shadowed_finishers->ok() )
     {
-      bonus_attack = p->get_background_action<black_powder_bonus_t>( "black_powder_bonus" );
+      bonus_attack = p->get_secondary_trigger_action<black_powder_bonus_t>(
+        secondary_trigger::SHADOWED_FINISHERS, "black_powder_bonus" );
       add_child( bonus_attack );
     }
 
@@ -5490,8 +5465,7 @@ struct black_powder_t: public rogue_attack_t
 
     if ( bonus_attack && p()->buffs.find_weakness->up() )
     {
-      bonus_attack->last_cp = cast_state( execute_state )->get_combo_points();
-      bonus_attack->execute_on_target( execute_state->target );
+      bonus_attack->trigger_secondary_action( execute_state->target, cast_state( execute_state )->get_combo_points() );
     }
   }
 
@@ -6333,11 +6307,8 @@ struct coup_de_grace_t : public rogue_attack_t
 
   struct coup_de_grace_bonus_t : public rogue_attack_t
   {
-    int last_cp;
-
     coup_de_grace_bonus_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
-      rogue_attack_t( name, p, s ),
-      last_cp( 1 )
+      rogue_attack_t( name, p, s )
     {
       dual = true;
       affected_by.mid1_subtlety_2pc = true;
@@ -6349,15 +6320,9 @@ struct coup_de_grace_t : public rogue_attack_t
       }
     }
 
-    void reset() override
+    double combo_point_da_multiplier( const action_state_t* state ) const override
     {
-      rogue_attack_t::reset();
-      last_cp = 1;
-    }
-
-    double combo_point_da_multiplier( const action_state_t* ) const override
-    {
-      return as<double>( last_cp );
+      return static_cast<double>( cast_state( state )->get_combo_points() );
     }
 
     bool procs_nimble_flurry() const override
@@ -6378,7 +6343,8 @@ struct coup_de_grace_t : public rogue_attack_t
       {
         auto formatted_name = fmt::format( "eviscerate_{}", name );
         util::replace_all( formatted_name, "damage", "bonus" );
-        bonus_attack = p->get_background_action<coup_de_grace_bonus_t>( formatted_name, bonus);
+        bonus_attack = p->get_secondary_trigger_action<coup_de_grace_bonus_t>(
+          secondary_trigger::SHADOWED_FINISHERS, formatted_name, bonus );
       }
     }
 
@@ -6393,8 +6359,7 @@ struct coup_de_grace_t : public rogue_attack_t
 
       if ( bonus_attack && p()->buffs.find_weakness->up() && result_is_hit( state->result ) )
       {
-        bonus_attack->last_cp = cast_state( state )->get_combo_points();
-        bonus_attack->execute_on_target( state->target );
+        bonus_attack->trigger_secondary_action( state->target, cast_state( state )->get_combo_points() );
       }
     }
 
