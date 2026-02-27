@@ -10789,7 +10789,7 @@ struct cancel_buff_t : public action_t
     {
       throw sc_invalid_apl_argument( fmt::format( "Buff '{}' not found.", buff_name ) );
     }
-    else if ( !buff->can_cancel )
+    else if ( !buff->is_fallback && !buff->can_cancel )
     {
       throw sc_invalid_apl_argument( fmt::format( "Buff '{}' cannot be cancelled.", buff_name ) );
     }
