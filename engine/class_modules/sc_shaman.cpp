@@ -12626,7 +12626,9 @@ bool shaman_t::validate_actor()
 
   if ( !is_ptr() && specialization() == SHAMAN_ELEMENTAL)
   {
-    throw sc_invalid_player_argument( "Elemental Shaman sims are non functional for Midnight prepatch" );
+#ifdef NDEBUG
+    throw sc_unsupported_specialization( "Elemental Shaman sims are non functional for Midnight prepatch" );
+#endif
     return false;
   }
 

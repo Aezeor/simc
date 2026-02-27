@@ -4036,7 +4036,9 @@ bool paladin_t::validate_actor()
   wowv_t v = sim->dbc->wowv();
   if ( !is_ptr() && v.expansion == 12 && v.major == 0 && v.minor == 1 )
   {
+#ifdef NDEBUG
     throw sc_unsupported_specialization( "Paladin sims are non functional for Midnight prepatch" );
+#endif
     return false;
   }
   return player_t::validate_actor();
