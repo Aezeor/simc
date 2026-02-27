@@ -4958,11 +4958,9 @@ struct rupture_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    // 2023-10-05 -- Currently when triggerd by an ER cast, only uses base combo points
     if ( p()->active.internal_bleeding )
     {
-      p()->active.internal_bleeding->trigger_secondary_action( state->target,
-                                                               cast_state( state )->get_combo_points( p()->bugs ) );
+      p()->active.internal_bleeding->trigger_secondary_action( state->target, cast_state( state )->get_combo_points() );
     }
   }
 
