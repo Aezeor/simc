@@ -876,7 +876,7 @@ void paladin_t::trigger_grand_crusader( grand_crusader_source source )
   else
     procs.as_grand_crusader_wasted->occur();
 
-  if ( talents.crusaders_judgment->ok() && cooldowns.judgment->current_charge < cooldowns.judgment->charges )
+  if ( cooldowns.judgment != nullptr && talents.crusaders_judgment->ok() && cooldowns.judgment->current_charge < cooldowns.judgment->charges )
   {
     cooldowns.judgment->adjust( -( talents.crusaders_judgment->effectN( 2 ).time_value() ), true );
   }
