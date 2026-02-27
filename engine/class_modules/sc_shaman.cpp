@@ -10296,20 +10296,13 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
 
 void shaman_t::create_actions()
 {
-  // After actor validation, initialize secondary actions for various things
-  if ( validate_actor() )
-  {
-    windfury_mh = new windfury_attack_t( "windfury_attack", this, find_spell( 25504 ), &( main_hand_weapon ) );
-    flametongue = new flametongue_weapon_spell_t( "flametongue_attack", this,
-        specialization() == SHAMAN_ENHANCEMENT
-        ? &( off_hand_weapon )
-        : &( main_hand_weapon ) );
-  }
-  else {
-    quiet = true;
-  }
-
   parse_player_effects_t::create_actions();
+
+  windfury_mh = new windfury_attack_t( "windfury_attack", this, find_spell( 25504 ), &( main_hand_weapon ) );
+  flametongue = new flametongue_weapon_spell_t( "flametongue_attack", this,
+      specialization() == SHAMAN_ENHANCEMENT
+      ? &( off_hand_weapon )
+      : &( main_hand_weapon ) );
 
   if ( talent.voltaic_blaze.ok() )
   {
