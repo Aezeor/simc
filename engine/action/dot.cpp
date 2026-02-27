@@ -957,10 +957,12 @@ void dot_t::check_tick_zero( bool start )
   // by using a first tick.
   // We also reduce the duration by one tick interval in
   // action_t::trigger_dot().
-  bool fake_first_tick = !current_action->harmful && current_action->is_precombat;
+  //
+  // * Removed for now as precombat casting should be handled on a case by case basis within the class modules.
+  //
+  // bool fake_first_tick = !current_action->harmful && current_action->is_precombat;
 
-  if ( ( current_action->tick_zero || ( current_action->tick_on_application && start ) ) ||
-       fake_first_tick )
+  if ( current_action->tick_zero || ( current_action->tick_on_application && start ) )
   {
     tick();
   }

@@ -2590,7 +2590,6 @@ void eternal_voidsong_chain( special_effect_t& effect )
   auto dot     = create_proc_action<generic_proc_t>( "voidstalker_sting", effect, 1271226 );
   dot->base_td = effect.driver()->effectN( 1 ).average( effect );
   dot->base_td_multiplier *= role_mult( effect );
-  dot->rolling_periodic = true;
 
   effect.execute_action = dot;
 

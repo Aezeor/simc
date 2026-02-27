@@ -4173,32 +4173,6 @@ struct chomp_t final : public cat_attack_t
 
 struct frantic_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, cat_attack_t>
 {
-  struct flicker_event_t final : public event_t
-  {
-    cat_attack_t* action;
-    action_state_t* state;
-
-    flicker_event_t( druid_t* p, cat_attack_t* a, action_state_t* s )
-      : event_t( *p, FERAL_FLICKER_DELAY ), action( a ), state( s )
-    {}
-
-    const char* name() const override { return "flicker_event"; }
-
-    void execute() override
-    {
-      if ( !state->target->is_sleeping() )
-        action->cat_attack_t::trigger_dot( state );
-
-      action_state_t::release( state );
-    }
-
-    ~flicker_event_t()
-    {
-      if ( state )
-        action_state_t::release( state );
-    }
-  };
-
   struct frantic_frenzy_tick_t final : public cat_attack_t
   {
     bool is_direct_damage = false;
@@ -4207,6 +4181,7 @@ struct frantic_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, c
     {
       background = dual = proc = true;
       direct_bleed = false;
+      travel_delay = FERAL_FLICKER_DELAY.total_seconds();
 
       dot_name = "frantic_frenzy_tick";
     }
@@ -4245,12 +4220,6 @@ struct frantic_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, c
       energize_resource = energize_eff.resource_gain_type();
       energize_amount = energize_eff.resource( energize_resource );
     }
-  }
-
-  void trigger_dot( action_state_t* s )
-  {
-    // wild ass guess on delay before the 'pet' spawns
-    make_event<flicker_event_t>( *sim, p(), this, get_state( s ) );
   }
 };
 
