@@ -2754,6 +2754,21 @@ void arcanoweave_cord( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 };
+
+// 1241503 driver
+// 1241522 rppm
+// 1241502 damage
+void sunfire_sash( special_effect_t& effect )
+{
+  auto damage =
+    create_proc_action<generic_proc_t>( "radiant_conflagration", effect, effect.trigger()->effectN( 1 ).trigger() );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+
+  effect.execute_action = damage;
+  effect.spell_id = effect.trigger()->id();
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace armors
 
 namespace sets
@@ -3081,6 +3096,7 @@ void register_special_effects()
   register_special_effect( 1243876, armors::rangergenerals_call );
   register_special_effect( 1243903, armors::azerothian_power );
   register_special_effect( 1241529, armors::arcanoweave_cord );
+  register_special_effect( 1241503, armors::sunfire_sash );
   // Sets
   // NOTE: use unique_gear:: namespace for sets as they are activated with enable_all_sets and not enable_all_item_effects
   unique_gear::register_special_effect( 1281574, sets::voidlight_bindings );
