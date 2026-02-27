@@ -7775,8 +7775,18 @@ bool actions::rogue_action_t<Base>::trigger_shadow_clone( const action_state_t* 
   if ( !p()->rng().roll( chance ) )
     return false;
 
-  p()->sim->print_log( "{} triggers shadow clone attack {} on {}", *p(), *action, *state->target );
-  action->trigger_secondary_action( state->target, cast_state( state )->get_combo_points(), delay );
+  const int trigger_cp = cast_state( state )->get_combo_points();
+
+  p()->sim->print_log( "{} triggers shadow clone attack {} on {} with {} cp and delay of {}",
+                       *p(), *action, *state->target, trigger_cp, delay );
+
+  // Snapshot as clone attacks can benefit from buffs like Darkest Night and Cold Blood despite their delay
+  auto clone_state = action->get_state();
+  clone_state->target = state->target;
+  action->cast_state( clone_state )->set_combo_points( trigger_cp, trigger_cp );
+  action->snapshot_internal( clone_state, action->snapshot_flags, action->amount_type( clone_state ) );
+  action->trigger_secondary_action( clone_state, delay );
+
   return true;
 }
 
@@ -8228,7 +8238,7 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
     if ( affected_by.darkest_night && cast_state( state )->get_combo_points() >= COMBO_POINT_MAX )
     {
       trigger_deathstalkers_mark_debuff( state, true );
-      p()->buffs.darkest_night->expire( 201_ms ); // Expire with delay for Shadowy Finishers and Shadow Clones
+      p()->buffs.darkest_night->expire( 1_ms ); // Expire with delay for Shadowy Finishers and Shadow Clones
     }
 
     return;
