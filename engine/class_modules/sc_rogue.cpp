@@ -4594,6 +4594,9 @@ struct kingsbane_t : public rogue_attack_t
       {
         dual = true;
       }
+
+      bool procs_cold_blood() const override
+      { return false; }
     };
 
     implacable_strike_t* nature_strike;
