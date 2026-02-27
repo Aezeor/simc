@@ -2103,6 +2103,10 @@ public:
   virtual bool procs_deal_fate() const
   { return false; }
 
+  // Generic rules for proccing Cold-Blooded Killer, used by rogue_t::trigger_cold_blood()
+  virtual bool procs_cold_blood() const
+  { return ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT && ab::energize_amount > 0; }
+
   // Placeholder for actions which trigger Subtlety Shadow Clone attacks to be overridden
   virtual rogue_attack_t* shadow_clone_attack() const
   { return nullptr; }
@@ -4824,6 +4828,9 @@ struct mutilate_t : public rogue_attack_t
     { return true; }
 
     bool procs_deal_fate() const override
+    { return true; }
+
+    bool procs_cold_blood() const override
     { return true; }
   };
 
@@ -8423,13 +8430,10 @@ void actions::rogue_action_t<Base>::trigger_cold_blood( const action_state_t* st
   if ( !p()->talent.rogue.cold_blooded_killer->ok() )
     return;
 
-  if ( ab::energize_type == action_energize::NONE || ab::energize_resource != RESOURCE_COMBO_POINT || ab::energize_amount == 0 )
+  if ( !procs_cold_blood() )
     return;
 
   if ( state->result != RESULT_CRIT )
-    return;
-
-  if ( p()->buffs.cold_blood->check() )
     return;
 
   p()->buffs.cold_blood->trigger();
@@ -10291,6 +10295,10 @@ void rogue_t::create_buffs()
   buffs.cold_blood
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_duration( sim->max_time / 2 );
+  if ( talent.rogue.cold_blooded_killer->ok() )
+  {
+    buffs.cold_blood->set_internal_cooldown( talent.rogue.cold_blooded_killer->internal_cooldown() );
+  }
 
   buffs.echoing_reprimand = make_buff( this, "echoing_reprimand", spell.echoing_reprimand_buff );
 
