@@ -8026,7 +8026,7 @@ struct shooting_stars_t : public druid_spell_t
     {
       energize->add_parse_entry()
         .set_func( [ p ]( const action_t*, const action_state_t* ) {
-          return p->buff.eclipse_solar->check() && p->buff.eclipse_lunar->check();
+          return !p->buff.eclipse_solar->check() && !p->buff.eclipse_lunar->check();
         } )
         .set_flat( true )
         .set_value( eff.base_value() )
