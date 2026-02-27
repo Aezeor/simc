@@ -8562,9 +8562,10 @@ parsed_assisted_combat_rule_t evoker_t::parse_assisted_combat_rule( const assist
     return { "!dot.fire_breath_damage.ticking" };
   }
   // recall buff check for deep breath
-  if ( rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_1 == 371807 )
+  if ( rule.condition_type == AC_AURA_MISSING_PLAYER &&
+       ( rule.condition_value_1 == 371807 || rule.condition_value_1 == 403760 ) )
   {
-    return { "" };
+    return { "", true };
   }
 
   // if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 410089 )
