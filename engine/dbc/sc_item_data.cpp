@@ -252,7 +252,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       break;
     // Adjust ilevel, value is in 'value_1' field
     // Only seems to apply to items with midnight scaling
-    case ITEM_BONUS_MIDNIGHT_ILEVEL:
+    case ITEM_BONUS_POST_SQUISH_ITEM_LEVEL:
       if ( !item.parsed.has_midnight_scaling )
         break;
 
@@ -520,7 +520,7 @@ void item_database::sort_item_bonuses( item_t& item )
 {
   // Sort bonus ids to ensure consistent application order.
   // Need to ensure item level bonuses are applied after item level setting bonuses.
-  // 
+  //
   // TODO: I believe the sorting should be based off of ItemBonusListGroupEntry.db2 data.
   // Sequence Value field likely determines the order of application. Need to confirm.
   std::sort( item.parsed.bonus_id.begin(), item.parsed.bonus_id.end(), [ &item ]( uint32_t a, uint32_t b ) {
@@ -529,21 +529,12 @@ void item_database::sort_item_bonuses( item_t& item )
     bool a_is_scaling = false;
     bool b_is_scaling = false;
     for ( const auto& entry : a_entries )
-    {
-      if ( entry.type == ITEM_BONUS_ILEVEL || entry.type == ITEM_BONUS_MIDNIGHT_ILEVEL ||
-           entry.type == ITEM_BONUS_CRAFTING_QUALITY )
-      {
+      if ( entry.type == ITEM_BONUS_POST_SQUISH_ITEM_LEVEL || entry.type == ITEM_BONUS_CRAFTING_QUALITY )
         a_is_scaling = true;
-      }
-    }
     for ( const auto& entry : b_entries )
-    {
-      if ( entry.type == ITEM_BONUS_ILEVEL || entry.type == ITEM_BONUS_MIDNIGHT_ILEVEL ||
-           entry.type == ITEM_BONUS_CRAFTING_QUALITY )
-      {
+      if ( entry.type == ITEM_BONUS_POST_SQUISH_ITEM_LEVEL || entry.type == ITEM_BONUS_CRAFTING_QUALITY )
         b_is_scaling = true;
-      }
-    }
+
     if ( a_is_scaling != b_is_scaling )
       return !a_is_scaling;  // scaling bonuses go last
     return a < b;
@@ -1287,7 +1278,7 @@ static int get_bonus_id_ilevel( util::span<const item_bonus_entry_t> entries )
 {
   for ( const auto& entry : entries )
   {
-    if ( entry.type == ITEM_BONUS_ILEVEL || entry.type == ITEM_BONUS_MIDNIGHT_ILEVEL || entry.type == ITEM_BONUS_CRAFTING_QUALITY )
+    if ( entry.type == ITEM_BONUS_ILEVEL || entry.type == ITEM_BONUS_POST_SQUISH_ITEM_LEVEL || entry.type == ITEM_BONUS_CRAFTING_QUALITY )
     {
       return entry.value_1;
     }
@@ -1555,13 +1546,13 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
          e.type != ITEM_BONUS_ADD_ITEM_EFFECT && e.type != ITEM_BONUS_MOD_ITEM_STAT &&
          e.type != ITEM_BONUS_SET_ILEVEL_2  && e.type != ITEM_BONUS_SQUISH_CURVE &&
          e.type != ITEM_BONUS_SCALE_CONFIG && e.type != ITEM_BONUS_APPLY_BONUS &&
-         e.type != ITEM_BONUS_SCALE_CONFIG_2 && e.type != ITEM_BONUS_MIDNIGHT_ILEVEL &&
+         e.type != ITEM_BONUS_SCALE_CONFIG_2 && e.type != ITEM_BONUS_POST_SQUISH_ITEM_LEVEL &&
          e.type != ITEM_BONUS_CRAFTING_QUALITY )
     {
       continue;
     }
 
-    if ( ( e.type == ITEM_BONUS_ILEVEL || e.type == ITEM_BONUS_MIDNIGHT_ILEVEL || e.type == ITEM_BONUS_CRAFTING_QUALITY ) && e.value_1 == 0 )
+    if ( ( e.type == ITEM_BONUS_ILEVEL || e.type == ITEM_BONUS_POST_SQUISH_ITEM_LEVEL || e.type == ITEM_BONUS_CRAFTING_QUALITY ) && e.value_1 == 0 )
     {
       continue;
     }
