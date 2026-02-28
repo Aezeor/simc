@@ -1850,6 +1850,7 @@ public:
     const spell_data_t* ascendance_mw_passive;
     const spell_data_t* resurgence;
     const spell_data_t* maelstrom_weapon;
+    const spell_data_t* maelstrom_weapon_driver;
     const spell_data_t* feral_spirit;
     const spell_data_t* earth_elemental;
     const spell_data_t* fire_elemental;
@@ -2602,7 +2603,7 @@ public:
     }
 
     auto mw_stacks = std::min(
-      as<int>( this->p()->spell.maelstrom_weapon->effectN( 2 ).base_value() ),
+      as<int>( this->p()->spell.maelstrom_weapon_driver->effectN( 2 ).base_value() ),
       this->p()->buff.maelstrom_weapon->check()
     );
 
@@ -11124,6 +11125,7 @@ void shaman_t::init_spells()
   spell.ascendance_mw_passive = find_spell( 1252197 );
   spell.resurgence          = find_spell( 101033 );
   spell.maelstrom_weapon    = find_spell( 187881 );
+  spell.maelstrom_weapon_driver = find_spell( 187880 );
   spell.feral_spirit        = find_spell( 228562 );
   spell.fire_elemental      = find_spell( 188592 );
   spell.storm_elemental     = find_spell( 157299 );
