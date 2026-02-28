@@ -194,25 +194,47 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       break;
     }
     case ITEM_BONUS_SCALE_CONFIG:
+    {
+      const auto& scaling_entries = item_scaling_config_data_t::find( entry.value_1, item.player->dbc->ptr );
+      if ( scaling_entries.size() == 0 )
+        break;
+      const auto& scaling_entry = scaling_entries[ 0 ];
+      const auto& offset_entries =
+          item_offset_curve_data_t::find( scaling_entry.item_offset_curve_id, item.player->dbc->ptr );
+      if ( offset_entries.size() == 0 )
+        break;
+      const auto& offset_entry = offset_entries[ 0 ];
+      if ( entry.value_2 != 0 && scaling_entries[ 0 ].player_level <= 80 )
+        item.parsed.data.level = as<int>(
+            util::round( curve_point_value( *item.player->dbc, SQUISH_CURVE_MIDNIGHT, scaling_entry.item_level ) ) );
+      else
+        item.parsed.data.level = as<int>(
+            util::round( curve_point_value( *item.player->dbc, offset_entry.curve_id, scaling_entry.item_level ) ) );
+      item.parsed.data.level += offset_entry.offset;
+      item.parsed.has_midnight_scaling = true;
+      item.parsed.data.req_level       = scaling_entry.player_level;
+      break;
+    }
     case ITEM_BONUS_SCALE_CONFIG_2:
     {
       const auto& scaling_entries = item_scaling_config_data_t::find( entry.value_1, item.player->dbc->ptr );
       if ( scaling_entries.size() == 0 )
         break;
       const auto& scaling_entry = scaling_entries[ 0 ];
-      const auto& offset_entries = item_offset_curve_data_t::find( scaling_entry.item_offset_curve_id, item.player->dbc->ptr );
+      const auto& offset_entries =
+          item_offset_curve_data_t::find( scaling_entry.item_offset_curve_id, item.player->dbc->ptr );
       if ( offset_entries.size() == 0 )
         break;
       const auto& offset_entry = offset_entries[ 0 ];
-      // For type 49, apply the midnight squish curve to lower player level items
-      if ( entry.type == ITEM_BONUS_SCALE_CONFIG && entry.value_2 != 0 && scaling_entries[ 0 ].player_level <= 80 )
-        item.parsed.data.level = as<int>( util::round( curve_point_value( *item.player->dbc, SQUISH_CURVE_MIDNIGHT, scaling_entry.item_level ) ) );
-      // For type 51, apply the specified curve
+      if ( !item.option_drop_level_str.empty() )
+        item.parsed.data.level = as<int>( util::round(
+            curve_point_value( *item.player->dbc, offset_entry.curve_id, std::stoi( item.option_drop_level_str ) ) ) );
       else
-        item.parsed.data.level = as<int>( util::round( curve_point_value( *item.player->dbc, offset_entry.curve_id, scaling_entry.item_level ) ) );
+        item.parsed.data.level = as<int>(
+            util::round( curve_point_value( *item.player->dbc, offset_entry.curve_id, scaling_entry.item_level ) ) );
       item.parsed.data.level += offset_entry.offset;
       item.parsed.has_midnight_scaling = true;
-      item.parsed.data.req_level = scaling_entry.player_level;
+      item.parsed.data.req_level       = scaling_entry.player_level;
       break;
     }
     // Adjust quality, bonus item level value is in 'value_1' field, `value_3` is crafting quality. Value 2 unknown
