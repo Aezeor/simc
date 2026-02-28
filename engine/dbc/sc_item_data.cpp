@@ -226,9 +226,8 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       if ( offset_entries.size() == 0 )
         break;
       const auto& offset_entry = offset_entries[ 0 ];
-      if ( !item.option_drop_level_str.empty() )
-        item.parsed.data.level = as<int>( util::round(
-            curve_point_value( *item.player->dbc, offset_entry.curve_id, std::stoi( item.option_drop_level_str ) ) ) );
+      if ( item.parsed.drop_level > 0 )
+        item.parsed.data.level = as<int>( util::round( curve_point_value( *item.player->dbc, offset_entry.curve_id, item.parsed.drop_level ) ) );
       else
         item.parsed.data.level = as<int>(
             util::round( curve_point_value( *item.player->dbc, offset_entry.curve_id, scaling_entry.item_level ) ) );
