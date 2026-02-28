@@ -12107,8 +12107,10 @@ bool druid_t::validate_actor()
     "tier 4pc repeats can proc wild guardian echoes",
   };
 
+#ifdef NDEBUG
   for ( auto ph : placeholders )
     sim->error( error_level_e::IMPLEMENTATION_NOTES, "{}", ph );
+#endif
 
   return true;
 }
