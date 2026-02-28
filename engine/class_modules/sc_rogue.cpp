@@ -4299,9 +4299,9 @@ struct garrote_t : public rogue_attack_t
   {
   }
 
-  double composite_persistent_multiplier( const action_state_t* state ) const override
+  double composite_persistent_multiplier( const action_state_t* s ) const override
   {
-    double m = rogue_attack_t::composite_persistent_multiplier( state );
+    double m = rogue_attack_t::composite_persistent_multiplier( s );
 
     if ( p()->talent.assassination.improved_garrote->ok() &&
          p()->stealthed( STEALTH_IMPROVED_GARROTE ) )
@@ -4310,6 +4310,17 @@ struct garrote_t : public rogue_attack_t
     }
 
     return m;
+  }
+
+  double composite_poison_flat_modifier( const action_state_t* s ) const override
+  {
+    // Set bonus guarantees application of poisons on cast, rather than the normal rate
+    if ( p()->set_bonuses.mid1_assassination_2pc->ok() )
+    {
+      return 1.0;
+    }
+
+    return rogue_attack_t::composite_poison_flat_modifier( s );
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -4322,13 +4333,6 @@ struct garrote_t : public rogue_attack_t
   void tick( dot_t* d ) override
   {
     rogue_attack_t::tick( d );
-
-    // MIDNIGHT TOCHECK -- Does this happen before or after VW?
-    if ( p()->set_bonuses.mid1_assassination_2pc->ok() )
-    {
-      trigger_poisons( d->state );
-    }
-
     trigger_venomous_wounds( d->state );
   }
 
@@ -4940,9 +4944,9 @@ struct rupture_t : public rogue_attack_t
     return duration;
   }
 
-  double composite_persistent_multiplier( const action_state_t* state ) const override
+  double composite_persistent_multiplier( const action_state_t* s ) const override
   {
-    double m = rogue_attack_t::composite_persistent_multiplier( state );
+    double m = rogue_attack_t::composite_persistent_multiplier( s );
     return m;
   }
 
@@ -5836,10 +5840,10 @@ struct internal_bleeding_t : public rogue_attack_t
     return duration;
   }
 
-  double composite_persistent_multiplier( const action_state_t* state ) const override
+  double composite_persistent_multiplier( const action_state_t* s ) const override
   {
-    double m = rogue_attack_t::composite_persistent_multiplier( state );
-    m *= std::max( 1, cast_state( state )->get_combo_points() );
+    double m = rogue_attack_t::composite_persistent_multiplier( s );
+    m *= std::max( 1, cast_state( s )->get_combo_points() );
     return m;
   }
 };
