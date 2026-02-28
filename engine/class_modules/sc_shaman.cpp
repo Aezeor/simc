@@ -6276,21 +6276,22 @@ struct chained_base_t : public shaman_spell_t
 struct chain_lightning_t : public chained_base_t
 {
   chain_lightning_t( shaman_t* player, util::string_view options_str ) :
-    chain_lightning_t( player, "chain_lightning", variant_flag( spell_variant::NORMAL ),
-      options_str )
+    chain_lightning_t( player, "chain_lightning", player->talent.chain_lightning,
+      variant_flag( spell_variant::NORMAL ), options_str )
   { }
 
-  chain_lightning_t( shaman_t* player, unsigned t ) :
-    chain_lightning_t( player, "chain_lightning", t, "" )
+  chain_lightning_t( shaman_t* player, const spell_data_t* spell, unsigned variant_flags ) :
+    chain_lightning_t( player, "chain_lightning", spell, variant_flags, "" )
   { }
 
-  chain_lightning_t( shaman_t* player, unsigned t, util::string_view name_str ) :
-    chain_lightning_t( player, name_str, t, "" )
+  chain_lightning_t( shaman_t* player, const spell_data_t* spell, unsigned variant_flags,
+      util::string_view name_str ) :
+    chain_lightning_t( player, name_str, spell, variant_flags, "" )
   { }
 
-  chain_lightning_t( shaman_t* player, util::string_view name_str, unsigned t,
-      util::string_view options_str )
-    : chained_base_t( player, name_str, t, player->talent.chain_lightning,
+  chain_lightning_t( shaman_t* player, util::string_view name_str, const spell_data_t* spell,
+    unsigned t, util::string_view options_str )
+    : chained_base_t( player, name_str, t, spell,
         player->spec.maelstrom->effectN( 5 ).resource( RESOURCE_MAELSTROM ), options_str )
   {
     if ( player->mastery.elemental_overload->ok() )
@@ -10385,7 +10386,7 @@ void shaman_t::create_actions()
     action.lightning_bolt_ti = new lightning_bolt_t( this,
       variant_flag( spell_variant::THORIMS_INVOCATION ) );
     action.tempest_ti = new tempest_t( this, variant_flag( spell_variant::THORIMS_INVOCATION ) );
-    action.chain_lightning_ti = new chain_lightning_t( this,
+    action.chain_lightning_ti = new chain_lightning_t( this, talent.chain_lightning,
       variant_flag( spell_variant::THORIMS_INVOCATION ) );
   }
 
@@ -10443,11 +10444,11 @@ void shaman_t::create_actions()
   if ( talent.arc_discharge.ok() && specialization() == SHAMAN_ENHANCEMENT )
   {
     dummy.arc_discharge = new dummy_action_t( this, talent.arc_discharge, "arc_discharge" );
-    action.chain_lightning_ad = new chain_lightning_t( this,
+    action.chain_lightning_ad = new chain_lightning_t( this, talent.chain_lightning,
       variant_flag( spell_variant::ARC_DISCHARGE ) );
     if ( talent.ride_the_lightning.ok() )
     {
-      action.chain_lightning_rtl_ad = new chain_lightning_t( this,
+      action.chain_lightning_rtl_ad = new chain_lightning_t( this, find_spell( 211094 ),
         variant_flag( spell_variant::ARC_DISCHARGE, spell_variant::RIDE_THE_LIGHTNING ) );
     }
   }
@@ -10466,7 +10467,7 @@ void shaman_t::create_actions()
   {
     action.lightning_bolt_ps = new lightning_bolt_t( this,
       variant_flag( spell_variant::PRIMORDIAL_STORM ) );
-    action.chain_lightning_ps = new chain_lightning_t( this,
+    action.chain_lightning_ps = new chain_lightning_t( this, talent.chain_lightning,
       variant_flag( spell_variant::PRIMORDIAL_STORM ) );
   }
 
@@ -10474,11 +10475,11 @@ void shaman_t::create_actions()
   {
     dummy.ride_the_lightning = new dummy_action_t( this,
       talent.ride_the_lightning, "ride_the_lightning" );
-    action.chain_lightning_ll_rtl = new chain_lightning_t( this,
+    action.chain_lightning_ll_rtl = new chain_lightning_t( this, find_spell( 211094 ),
       variant_flag( spell_variant::RIDE_THE_LIGHTNING ), "chain_lightning_ll" );
-    action.chain_lightning_ss_rtl = new chain_lightning_t( this,
+    action.chain_lightning_ss_rtl = new chain_lightning_t( this, find_spell( 211094 ),
       variant_flag( spell_variant::RIDE_THE_LIGHTNING ), "chain_lightning_ss" );
-    action.chain_lightning_ws_rtl = new chain_lightning_t( this,
+    action.chain_lightning_ws_rtl = new chain_lightning_t( this, find_spell( 211094 ),
       variant_flag( spell_variant::RIDE_THE_LIGHTNING ), "chain_lightning_ws" );
   }
 
