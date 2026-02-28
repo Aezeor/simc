@@ -2228,7 +2228,7 @@ void wraps_of_cosmic_madness( special_effect_t& effect )
   struct cosmic_madness_channel_t : public proc_spell_t
   {
     cosmic_madness_channel_t( const special_effect_t& e ) :
-      proc_spell_t( "wraps_of_cosmic_madness_channel", e.player, e.driver() )
+      proc_spell_t( "wraps_of_cosmic_madness", e.player, e.driver() )
     {
       unsigned equip_id = 1259103;
       auto equip        = find_special_effect( e.player, equip_id );
@@ -2241,24 +2241,40 @@ void wraps_of_cosmic_madness( special_effect_t& effect )
       auto missile_damage = equip->driver()->effectN( 1 ).average( e );
 
       auto cosmic_barrage = create_proc_action<generic_proc_t>( "cosmic_barrage_missile", e, missile_spell );
-      cosmic_barrage->impact_action = create_proc_action<generic_aoe_proc_t>( "cosmic_barrage", e, damage_spell );
-      cosmic_barrage->impact_action->base_dd_min = cosmic_barrage->impact_action->base_dd_max = missile_damage;
+      auto damage = create_proc_action<generic_aoe_proc_t>( "cosmic_barrage_damage", e, damage_spell );
+      damage->base_dd_min = damage->base_dd_max = missile_damage;
+      damage->dual = true;
 
       tick_action = cosmic_barrage;
+      cosmic_barrage->impact_action = damage;
+      damage->stats = stats;
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      // cancel the player-ready event triggered by use_item_t
+      event_t::cancel( player->readying );
+
+      // prevent auto attacks while channeling
+      player->reset_auto_attacks( composite_dot_duration( execute_state ) );
     }
 
     void last_tick( dot_t* d ) override 
     {
+      // cache first since last_tick() will null out player->channeling
       bool was_channeling = player->channeling == this;
 
       proc_spell_t::last_tick( d );
 
+      // restart the player since the player-ready from use_item_t was canceled
       if ( was_channeling && !player->readying )
         player->schedule_ready( rng().gauss( sim->channel_lag ) );
     }
   };
 
-  effect.execute_action = create_proc_action<cosmic_madness_channel_t>( "wraps_of_cosmic_madness_channel", effect );
+  effect.execute_action = create_proc_action<cosmic_madness_channel_t>( "wraps_of_cosmic_madness", effect );
 }
 
 // 1253113 driver
