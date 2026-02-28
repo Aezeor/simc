@@ -2153,6 +2153,7 @@ public:
   void trigger_energy_refund();
   void trigger_poisons( const action_state_t* );
 
+  void consume_supercharger( const action_state_t* state );
   void trigger_ancient_arts( const action_state_t* state );
   void trigger_blade_flurry( const action_state_t* );
   void trigger_blindside( const action_state_t* );
@@ -3719,6 +3720,12 @@ struct between_the_eyes_t : public rogue_attack_t
       if ( p()->talent.outlaw.gravedigger_1->ok() && rng().roll( p()->talent.outlaw.gravedigger_1->effectN( 1 ).percent() ) )
       {
         p()->buffs.between_the_eyes->trigger( data().duration() * ( cp_spend + 1 ) );
+        
+        // 2026-02-26 -- Gravedigger_1 causes the second Supercharger stack to mistakenly be consumed
+        if ( p()->bugs )
+        {
+          consume_supercharger( execute_state );
+        }
       }
 
       if ( p()->talent.outlaw.ace_up_your_sleeve->ok() )
@@ -7371,25 +7378,8 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
 
   p()->sim->print_log( "{} consumes {} {} for {} ({})", *p(), max_spend, util::resource_type_string( RESOURCE_COMBO_POINT ),
                        *this, p()->current_cp() );
-
   // Remove Supercharger Buffs
-  if ( p()->talent.rogue.supercharger->ok() && consumes_supercharger() )
-  {
-    if ( rs->get_combo_points() > rs->get_combo_points( true ) )
-    {
-      // Consume from the end of the list
-      for ( auto it = p()->buffs.supercharger.rbegin(); it != p()->buffs.supercharger.rend(); ++it )
-      {
-        if ( ( *it )->check() )
-        {
-          ( *it )->expire();
-          supercharged_cp_proc->occur();
-          p()->buffs.echoing_reprimand->trigger();
-          break;
-        }
-      }
-    }
-  }
+  consume_supercharger( state );
 
   // MIDNIGHT TOCHECK -- Does this use Supercharger CP?
   if ( p()->talent.assassination.deadly_momentum->ok() &&
@@ -8391,6 +8381,30 @@ void actions::rogue_action_t<Base>::trigger_supercharger()
   if ( trigger_buffs > 0 )
   {
     p()->procs.supercharger_wasted->occur();
+  }
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::consume_supercharger( const action_state_t* state )
+{
+  if ( !p()->talent.rogue.supercharger->ok() || !consumes_supercharger() )
+    return;
+
+  const auto rs = cast_state( state );
+
+  if ( rs->get_combo_points() > rs->get_combo_points( true ) )
+  {
+    // Consume from the end of the list
+    for ( auto it = p()->buffs.supercharger.rbegin(); it != p()->buffs.supercharger.rend(); ++it )
+    {
+      if ( ( *it )->check() )
+      {
+        ( *it )->expire();
+        supercharged_cp_proc->occur();
+        p()->buffs.echoing_reprimand->trigger();
+        break;
+      }
+    }
   }
 }
 
