@@ -5136,7 +5136,6 @@ struct lava_lash_t : public shaman_attack_t
     shaman_attack_t::execute();
 
     p()->trigger_elemental_assault( execute_state );
-    p()->trigger_lively_totems( execute_state );
 
     p()->trigger_whirling_fire( execute_state );
 
@@ -5154,6 +5153,8 @@ struct lava_lash_t : public shaman_attack_t
       p()->buff.lively_totems->trigger();
       proc_lively_totems->occur();
     }
+
+    p()->trigger_lively_totems( execute_state );
 
     if ( p()->sets->has_set_bonus( HERO_TOTEMIC, TWW3, B4 ) || p()->talent.primal_catalyst.ok() )
     {
