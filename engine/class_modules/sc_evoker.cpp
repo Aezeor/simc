@@ -6806,37 +6806,19 @@ public:
     {
       auto& tl = target_list();
 
-      std::sort( tl.begin(), tl.end(), [ this ]( player_t* p1, player_t* p2 ) {
-        auto td1 = p()->get_target_data( p1 );
-        auto td2 = p()->get_target_data( p2 );
-
-        return !td1->buffs.prescience->check() || td2->buffs.prescience->check();
+      // first split into [has buff] vs [no buff]
+      auto it = range::partition( tl, [ this ]( player_t* t ) {
+        return !p()->get_target_data( t )->buffs.prescience->check();
       } );
 
-      auto it = std::find_if( tl.begin(), tl.end(), [ this ]( player_t* tar ) {
-        return p()->get_target_data( tar )->buffs.prescience->check();
-      } );
+      auto is_dps = []( player_t* p ) {
+        return p->primary_role() != ROLE_HYBRID && p->primary_role() != ROLE_HEAL && p->primary_role() != ROLE_TANK &&
+               p->specialization() != EVOKER_AUGMENTATION;
+      };
 
-      std::sort( tl.begin(), it, []( player_t* p1, player_t* p2 ) {
-        auto p1_dps = p1->primary_role() != ROLE_HYBRID && p1->primary_role() != ROLE_HEAL && p1->primary_role() != ROLE_TANK &&
-                      p1->specialization() != EVOKER_AUGMENTATION;
-        auto p2_dps = p2->primary_role() != ROLE_HYBRID && p2->primary_role() != ROLE_HEAL && p2->primary_role() != ROLE_TANK &&
-                      p2->specialization() != EVOKER_AUGMENTATION;
+      std::partition( tl.begin(), it, [ & ]( player_t* t ) { return is_dps( t ); } );
+      std::partition( it, tl.end(), [ & ]( player_t* t ) { return is_dps( t ); } );
 
-        return p1_dps || !p2_dps;
-      } );
-
-      if ( it < tl.end() )
-      {
-        std::sort( it, tl.end(), []( player_t* p1, player_t* p2 ) {
-          auto p1_dps = p1->primary_role() != ROLE_HYBRID && p1->primary_role() != ROLE_HEAL && p1->primary_role() != ROLE_TANK &&
-                        p1->specialization() != EVOKER_AUGMENTATION;
-          auto p2_dps = p2->primary_role() != ROLE_HYBRID && p2->primary_role() != ROLE_HEAL && p2->primary_role() != ROLE_TANK &&
-                        p2->specialization() != EVOKER_AUGMENTATION;
-
-          return p1_dps || !p2_dps;
-        } );
-      }
       target = tl.front();
 
       auto potential_target =
