@@ -1819,15 +1819,35 @@ void shadow_of_the_empyrean_requiem( special_effect_t& effect )
   {
     buff_t* haste_buff;
     double hp_threshold;
+    action_t* cleave;
 
-    shadow_of_the_empyrean_requiem_damage_t( const special_effect_t& e, std::string_view n, unsigned id, buff_t* buff )
-      : generic_proc_t( e, n, id ), haste_buff( buff ), hp_threshold( e.driver()->effectN( 3 ).base_value() )
+    shadow_of_the_empyrean_requiem_damage_t( const special_effect_t& e, std::string_view n, unsigned id, buff_t* buff,
+                                             action_t* cleave = nullptr )
+      : generic_proc_t( e, n, id ),
+        haste_buff( buff ),
+        hp_threshold( e.driver()->effectN( 3 ).base_value() ),
+        cleave( cleave )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
       base_multiplier *= role_mult( e );
-      // Ensure secondary damage doesnt hit the same target as the main hit
-      if ( id == 1268775 )
-        target_filter_callback = secondary_targets_only();
+      if ( cleave )
+        add_child( cleave );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      if ( cleave && sim->target_non_sleeping_list.size() > 1 )
+      {
+        for ( auto& target : sim->target_non_sleeping_list )
+        {
+          if ( target != execute_state->target )
+          {
+            cleave->execute_on_target( target );
+            return;
+          }
+        }
+      }
     }
 
     void impact( action_state_t* s ) override
@@ -1842,15 +1862,12 @@ void shadow_of_the_empyrean_requiem( special_effect_t& effect )
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1264337 ) )
                   ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) );
 
-  auto main_target_damage = create_proc_action<shadow_of_the_empyrean_requiem_damage_t>(
-    "shadow_of_the_empyrean_requiem", effect, 1264325, buff );
-
   auto second_target_damage = create_proc_action<shadow_of_the_empyrean_requiem_damage_t>(
-    "shadow_of_the_empyrean_requiem_secondary", effect, 1268775, buff );
+      "shadow_of_the_empyrean_requiem_secondary", effect, 1268775, buff );
   second_target_damage->name_str_reporting = "Cleave";
 
-  main_target_damage->execute_action = second_target_damage;
-  main_target_damage->add_child( second_target_damage );
+  auto main_target_damage = create_proc_action<shadow_of_the_empyrean_requiem_damage_t>(
+      "shadow_of_the_empyrean_requiem", effect, 1264325, buff, second_target_damage );
 
   effect.execute_action = main_target_damage;
 
