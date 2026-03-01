@@ -2331,10 +2331,7 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
     direct_tick         = true;
     background          = true;
     may_crit            = true;
-    if ( !p->bugs )
-    {
-      clears_judgment      = false;
-    }
+    clears_judgment     = false;
   }
 
   double composite_target_multiplier( player_t* target ) const override
