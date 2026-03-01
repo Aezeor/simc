@@ -1,0 +1,75 @@
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat=snapshot_stats
+actions.precombat+=/flametongue_weapon
+actions.precombat+=/lightning_shield
+actions.precombat+=/thunderstrike_ward
+actions.precombat+=/variable,name=mael_cap,value=100+50*talent.swelling_maelstrom+25*talent.primordial_capacity
+actions.precombat+=/stormkeeper
+
+# Executed every time the actor is available.
+# Enable more movement.
+actions=spiritwalkers_grace,moving=1,if=movement.distance>6
+# Interrupt of casts.
+actions+=/wind_shear
+actions+=/blood_fury
+actions+=/berserking
+actions+=/fireblood
+actions+=/ancestral_call
+# Normal buff trinkets
+actions+=/use_item,slot=trinket1,use_off_gcd=1
+actions+=/use_item,slot=trinket2,use_off_gcd=1
+# Normal weapons
+actions+=/use_item,slot=main_hand,use_off_gcd=1
+actions+=/lightning_shield,if=buff.lightning_shield.down
+actions+=/natures_swiftness
+# Use Power Infusion on Cooldown.
+actions+=/invoke_external_buff,name=power_infusion
+actions+=/potion
+actions+=/run_action_list,name=aoe,if=spell_targets.chain_lightning>=2
+actions+=/run_action_list,name=single_target
+
+actions.aoe=fire_elemental
+actions.aoe+=/stormkeeper
+actions.aoe+=/ancestral_swiftness
+actions.aoe+=/flame_shock,if=active_dot.flame_shock=0&spell_targets.chain_lightning<=3&cooldown.ascendance.remains>10
+actions.aoe+=/voltaic_blaze,if=active_dot.flame_shock=0|talent.purging_flames
+actions.aoe+=/ascendance,if=cooldown.stormkeeper.remains>10
+actions.aoe+=/tempest,target_if=min:debuff.lightning_rod.remains,if=buff.tempest.stack=2
+# Spend if you are close to cap, Master of the Elements buff is up or Ascendance is about to expire.
+actions.aoe+=/earthquake
+actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains>2,if=buff.purging_flames.up&(buff.ascendance.up&buff.ascendance.remains<3|buff.lava_surge.up)
+actions.aoe+=/lightning_bolt,if=buff.stormkeeper.up&!buff.call_of_the_ancestors.up&spell_targets.chain_lightning=2
+actions.aoe+=/chain_lightning
+actions.aoe+=/flame_shock,moving=1,target_if=refreshable
+actions.aoe+=/voltaic_blaze,moving=1,target_if=refreshable
+actions.aoe+=/frost_shock,moving=1
+
+actions.single_target=fire_elemental
+actions.single_target+=/stormkeeper
+actions.single_target+=/ancestral_swiftness
+# Apply Flame shock if it is not up.
+actions.single_target+=/flame_shock,if=active_dot.flame_shock=0&!buff.master_of_the_elements.up
+actions.single_target+=/voltaic_blaze,if=active_dot.flame_shock=0
+actions.single_target+=/ascendance,if=cooldown.stormkeeper.remains>10
+# Spend if close to overcaping or MotE buff is up. Friendship ended with Echoes of Great Sundering.
+actions.single_target+=/elemental_blast,if=maelstrom>variable.mael_cap-15|buff.master_of_the_elements.up
+actions.single_target+=/earth_shock,if=maelstrom>variable.mael_cap-15|buff.master_of_the_elements.up
+# Use Lava Burst to proc Master of the Elements.
+actions.single_target+=/lava_burst,target_if=dot.flame_shock.remains>=2,if=!buff.master_of_the_elements.up
+actions.single_target+=/tempest
+# Filler spell. Always available. Always the bottom line.
+actions.single_target+=/lightning_bolt
+actions.single_target+=/flame_shock,moving=1,target_if=refreshable
+actions.single_target+=/voltaic_blaze,moving=1,target_if=refreshable
+actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
+actions.single_target+=/voltaic_blaze,moving=1,if=movement.distance>6
+# Frost Shock is our movement filler.
+actions.single_target+=/frost_shock,moving=1
