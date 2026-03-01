@@ -1,3 +1,18 @@
+mage="MID1_Mage_Fire_Frostfire"
+source=default
+spec=fire
+level=90
+race=orc
+role=spell
+position=ranged_back
+talents=C8DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMDZmZGAAAmZZGzMLzCEAAwiZmx2YmZGAAAAAgNzMzMDAAGzYmZmZmZ2AmZADzYMYwA
+
+# Default consumables
+potion=lights_potential_2
+flask=flask_of_the_magisters_2
+food=queldorei_medley
+augmentation=void_touched_augment_rune
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -129,3 +144,33 @@ actions.sf_filler+=/meteor,if=(!talent.blast_zone&talent.sunfury_execution&coold
 actions.sf_filler+=/scorch,if=talent.scald&target.health.pct<30|buff.heat_shimmer.react&(target.health.pct>=90|prev_gcd.1.pyroblast|prev_gcd.1.flamestrike)
 actions.sf_filler+=/fireball
 actions.sf_filler+=/call_action_list,name=fireblast
+
+head=voidbreakers_veil,id=250060,bonus_id=1808/12214/12667/13575/13575/13575/12497,ilevel=289,gem_id=240967,enchant_id=7991
+neck=amulet_of_the_abyssal_hymn,id=250247,ilevel=289,gem_id=240892/240900
+shoulders=voidbreakers_leyline_nexi,id=250058,bonus_id=40/12675/12806/13335/13340/13574/13574/13574,ilevel=289,enchant_id=7973
+back=adherents_silken_shroud,id=239656,bonus_id=8793/8960/12214/12384,ilevel=285,crafted_stats=36/32
+chest=robes_of_endless_oblivion,id=249912,bonus_id=40/12676/12806/13335/13336,ilevel=289,enchant_id=7987
+wrists=martyrs_bindings,id=239648,bonus_id=1808/8960/12066/12214/12214/12214/12214/12384/12667/12497,ilevel=285,gem_id=240900,crafted_stats=36/49
+hands=voidbreakers_gloves,id=250061,bonus_id=40/12675/12806/13335/13337/13574/13574/13574,ilevel=289
+waist=whisperinscribed_sash,id=249376,bonus_id=1808,ilevel=289,gem_id=240900
+legs=voidbreakers_britches,id=250059,bonus_id=40/12676/12806/13335/13339/13575/13575/13575,ilevel=289,enchant_id=7935
+feet=voidbreakers_treads,id=250062,bonus_id=40/12806/13335,ilevel=289,enchant_id=8019
+finger1=eye_of_midnight,id=249920,ilevel=289,gem_id=240906/240900,enchant_id=7967
+finger2=bond_of_light,id=249369,ilevel=289,gem_id=240916,enchant_id=7967
+trinket1=emberwing_feather,id=250144,bonus_id=40/12806/13440,ilevel=289
+trinket2=gaze_of_the_alnseer,id=249343,bonus_id=40/12806/13335,ilevel=289
+main_hand=brazier_of_the_dissonant_dirge,id=249286,bonus_id=12792/13448/13452,ilevel=289,enchant_id=8039
+
+# Gear Summary
+# gear_ilvl=288.47
+# gear_stamina=17604
+# gear_intellect=1661
+# gear_crit_rating=83
+# gear_haste_rating=1185
+# gear_mastery_rating=1187
+# gear_versatility_rating=55
+# gear_speed_rating=98
+# gear_avoidance_rating=407
+# gear_armor=531
+# set_bonus=midnight_season_1_2pc=1
+# set_bonus=midnight_season_1_4pc=1
