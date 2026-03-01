@@ -6327,7 +6327,6 @@ struct chain_lightning_t : public chained_base_t
           parent->add_child( this );
         }
       }
-      assert( 0 );
     }
 
     if ( is_variant( spell_variant::ARC_DISCHARGE ) )
