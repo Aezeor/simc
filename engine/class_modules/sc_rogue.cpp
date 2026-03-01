@@ -1574,6 +1574,7 @@ public:
     bool death_perception_shadow_dance = false;
     bool death_perception_shadow_blades = false;
     bool deathmark = false;
+    bool dragon_tempered_blades = false;
     bool fazed_damage = false;
     bool fazed_crit_chance = false;
     bool fazed_crit_damage = false;
@@ -1683,6 +1684,11 @@ public:
     if ( p->talent.assassination.deathmark->ok() )
     {
       affected_by.deathmark = ab::data().affected_by( p->talent.assassination.deathmark->effectN( 2 ) );
+    }
+
+    if ( p->talent.assassination.dragon_tempered_blades->ok() )
+    {
+      //affected_by.dragon_tempered_blades = ab::data().affected_by( p->talent.assassination.dragon_tempered_blades->effectN( 2 ) );
     }
 
     // Outlaw
@@ -2786,6 +2792,12 @@ struct rogue_poison_t : public rogue_attack_t
     auto chance = base_proc_chance;
     chance += p()->buffs.envenom->stack_value();
 
+    // Dragon-Tempered Blades' percent modifier applies after and to runtime buffs like Envenom
+    if ( affected_by.dragon_tempered_blades )
+    {
+      chance *= 1.0 + p()->talent.assassination.dragon_tempered_blades->effectN( 2 ).percent();
+    }
+
     // Applied after Dragon-Tempered Blades' modifer for Thrown Precision and Poisoned Knife
     return chance.value() + rogue_t::cast_attack( source_state->action )->composite_poison_flat_modifier( source_state );
   }
@@ -3475,8 +3487,6 @@ struct ambush_t : public rogue_attack_t
     {
       trigger_opportunity( state, nullptr, p()->talent.outlaw.hidden_opportunity->effectN( 1 ).percent() );
     }
-
-    trigger_caustic_spatter_debuff( state ); // MIDNIGHT TOCHECK -- Timing?
   }
 
   bool procs_main_gauche() const override
@@ -4143,6 +4153,7 @@ struct envenom_t : public rogue_attack_t
     }
 
     p()->buffs.envenom->trigger( envenom_duration );
+    trigger_caustic_spatter_debuff( state ); // Appears to be before impact and poisons
 
     rogue_attack_t::impact( state );
 
@@ -9839,7 +9850,10 @@ void rogue_t::init_spells()
 
   // Extra CPs from Improved Ambush is reported separatedly and manually handled within the action
   register_passive_effect_mask( talent.rogue.improved_ambush, effect_mask_t( true ).disable( 1 ) );
-    
+  
+  // Dragon-Tempered Blades percentage effect needs to modify the dynamic flat buffs, not just be passive
+  //register_passive_effect_mask( talent.assassination.dragon_tempered_blades, effect_mask_t( true ).disable( 2 ) );
+
   // Summarily Dispatched effect 2 needs special handling due to the dynamic modifier from Between the Eyes
   register_passive_effect_mask( talent.outlaw.summarily_dispatched, effect_mask_t( true ).disable( 2 ) );
 
