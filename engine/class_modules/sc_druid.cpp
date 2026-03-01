@@ -1232,7 +1232,6 @@ struct druid_t final : public parse_player_effects_t
     const spell_data_t* wild_mushroom;
 
     // Feral
-    const spell_data_t* ashamanes_guidance;
     const spell_data_t* berserk_cat;  // berserk cast/buff spell
     const spell_data_t* chomp_controller;
     const spell_data_t* predatory_swiftness;
@@ -1245,7 +1244,6 @@ struct druid_t final : public parse_player_effects_t
     const spell_data_t* ursine_adept;
 
     // Resto
-    const spell_data_t* cenarius_guidance;
 
     // Hero Talent
     const spell_data_t* atmospheric_exposure;  // atmospheric exposure debuff
@@ -10553,7 +10551,6 @@ void druid_t::init_spells()
   spec.stellar_amplification    = check( talent.stellar_amplification, 450214 );
 
   // Feral Abilities
-  spec.ashamanes_guidance       = check( talent.ashamanes_guidance, talent.convoke_the_spirits.ok() ? 391538 : 1244546 );
   spec.berserk_cat              = talent.berserk_cat.find_override_spell();
   spec.chomp_controller         = check( talent.chomp, 1244292 );
   spec.predatory_swiftness      = find_specialization_spell( "Predatory Swiftness" );
@@ -10566,7 +10563,6 @@ void druid_t::init_spells()
   spec.ursine_adept             = find_specialization_spell( "Ursine Adept" );
 
   // Restoration Abilities
-  spec.cenarius_guidance        = check( talent.cenarius_guidance, talent.convoke_the_spirits.ok() ? 393374 : 393381 );
 
   // Hero Talents
   spec.atmospheric_exposure     = check( talent.atmospheric_exposure, 430589 );
@@ -10627,8 +10623,11 @@ void druid_t::init_spells()
 
   parse_raid_buffs();
 
-  parse_passive_effects( spec.ashamanes_guidance );
-  parse_passive_effects( spec.cenarius_guidance );
+  if ( talent.ashamanes_guidance.ok() )
+    parse_passive_effects( find_spell( talent.convoke_the_spirits.ok() ? 391538 : 1244546 ) );
+
+  if ( talent.chomp.ok() )
+    parse_passive_effects( find_spell( 1244292 ) );  // chomp controller
 
   // Fury of Nature talent applies value to the passive via script
   if ( talent.fury_of_nature.ok() )
