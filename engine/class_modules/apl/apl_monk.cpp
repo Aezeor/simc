@@ -368,7 +368,7 @@ parsed_assisted_combat_rule_t monk_t::parse_assisted_combat_rule( const assisted
 std::vector<std::string> monk_t::action_names_from_spell_id( unsigned int spell_id ) const
 {
   if ( spell_id == 107428 && specialization() == MONK_WINDWALKER )
-   return { "rising_sun_kick", "rushing_wind_kick" };
+    return { "rising_sun_kick", "rushing_wind_kick" };
 
   return base_t::action_names_from_spell_id( spell_id );
 }
