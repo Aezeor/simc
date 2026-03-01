@@ -1135,7 +1135,7 @@ void paladin_t::create_buffs_retribution()
     ->set_default_value_from_effect( 1 );
 
   buffs.art_of_war = make_buff( this, "art_of_war", find_spell( 406086 ) );
-  buffs.righteous_cause = make_buff( this, "righteous_cause", find_spell( 402916 ) );
+  buffs.righteous_cause = make_buff( this, "righteous_cause", find_spell( 402916 ) )->set_chance( 1.0 );
 
   buffs.execution_sentence = make_buff( this, "execution_sentence", find_spell( 1234189 ) )
     ->set_default_value( 0.0 )
