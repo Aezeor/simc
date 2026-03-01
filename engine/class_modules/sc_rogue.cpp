@@ -1055,6 +1055,7 @@ public:
 
     // Assassination
     proc_t* amplifying_poison_consumed;
+    proc_t* rapid_injection_applied;
 
     // Subtlety
     proc_t* weaponmaster;
@@ -1688,7 +1689,7 @@ public:
 
     if ( p->talent.assassination.dragon_tempered_blades->ok() )
     {
-      //affected_by.dragon_tempered_blades = ab::data().affected_by( p->talent.assassination.dragon_tempered_blades->effectN( 2 ) );
+      affected_by.dragon_tempered_blades = ab::data().affected_by( p->talent.assassination.dragon_tempered_blades->effectN( 2 ) );
     }
 
     // Outlaw
@@ -4109,6 +4110,12 @@ struct envenom_t : public rogue_attack_t
         tdata->debuffs.amplifying_poison->decrement( consume_stacks );
         p()->procs.amplifying_poison_consumed->occur();
       }
+    }
+
+    // Rapid Injection proc-based benefit tracking
+    if ( p()->talent.assassination.rapid_injection->ok() && p()->buffs.envenom->check() )
+    {
+      p()->procs.rapid_injection_applied->occur();
     }
   }
 
@@ -9852,7 +9859,7 @@ void rogue_t::init_spells()
   register_passive_effect_mask( talent.rogue.improved_ambush, effect_mask_t( true ).disable( 1 ) );
   
   // Dragon-Tempered Blades percentage effect needs to modify the dynamic flat buffs, not just be passive
-  //register_passive_effect_mask( talent.assassination.dragon_tempered_blades, effect_mask_t( true ).disable( 2 ) );
+  register_passive_effect_mask( talent.assassination.dragon_tempered_blades, effect_mask_t( true ).disable( 2 ) );
 
   // Summarily Dispatched effect 2 needs special handling due to the dynamic modifier from Between the Eyes
   register_passive_effect_mask( talent.outlaw.summarily_dispatched, effect_mask_t( true ).disable( 2 ) );
@@ -10105,6 +10112,7 @@ void rogue_t::init_procs()
   procs.weaponmaster                          = get_proc( "Weaponmaster" );
 
   procs.amplifying_poison_consumed            = get_proc( "Amplifying Poison Consumed" );
+  procs.rapid_injection_applied               = get_proc( "Rapid Injection Applied" );
 }
 
 // rogue_t::init_scaling ====================================================
