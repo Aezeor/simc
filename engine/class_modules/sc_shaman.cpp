@@ -6319,8 +6319,6 @@ struct chain_lightning_t : public chained_base_t
       background = true;
       base_execute_time = 0_s;
       base_costs[ RESOURCE_MANA ] = 0;
-      chain_multiplier *= 1.0 - p()->talent.ride_the_lightning->effectN( 1 ).percent();
-      base_multiplier *= p()->talent.ride_the_lightning->effectN( 2 ).percent();
       // Arc Discharge + Ride The Lightning CL gets grouped under AD in reports
       if ( !is_variant( spell_variant::ARC_DISCHARGE ) )
       {
