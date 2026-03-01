@@ -10938,6 +10938,7 @@ void shaman_t::init_spells()
     { talent.storms_wrath,           "Storm's Wrath"          },
     // Row 7
     { talent.chaining_storms,        "Chaining Storms"        },
+    { talent.converging_storms,      "Converging Storms"      },
     { talent.stormflurry,            "Stormflurry"            },
     { talent.stormbind,              "Stormbind"              },
     { talent.elemental_weapons,      "Elemental Weapons"      },
