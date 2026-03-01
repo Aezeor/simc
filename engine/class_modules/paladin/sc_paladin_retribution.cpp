@@ -386,6 +386,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     if ( p()->talents.light_within_3->ok() && buff_up )
     {
       make_event<delayed_execute_event_t>( *sim, p(), lw, execute_state->target, 350_ms );
+      p()->buffs.righteous_cause->expire();
     }
   }
 
