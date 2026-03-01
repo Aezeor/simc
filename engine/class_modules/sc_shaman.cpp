@@ -12975,7 +12975,7 @@ void shaman_t::init_action_list_enhancement()
   aoe->add_action( "sundering,if=talent.feral_spirit.enabled" );
   aoe->add_action( "voltaic_blaze" );
   aoe->add_action( "lava_lash,if=pet.searing_totem.active" );
-  aoe->add_action( "stormstrike,if=charges_fractional>=1.8" );
+  aoe->add_action( "stormstrike,if=charges_fractional>=1.8|buff.converging_storms.stack=buff.converging_storms.max_stack" );
   aoe->add_action( "sundering,if=cooldown.surging_totem.remains>25" );
   aoe->add_action( "stormstrike,if=!talent.surging_totem.enabled" );
   aoe->add_action( "lava_lash" );
