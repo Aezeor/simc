@@ -4276,6 +4276,7 @@ struct fan_of_knives_t: public rogue_attack_t
 
   double composite_poison_flat_modifier( const action_state_t* state ) const override
   {
+    // 2025-05-01 -- Implemented in rogue_poison_t::trigger() with discovery that this functions as a distinct roll
     if( !p()->bugs && p()->talent.assassination.thrown_precision->ok() && state->result == RESULT_CRIT )
       return 1.0;
 
@@ -4624,6 +4625,12 @@ struct kingsbane_t : public rogue_attack_t
         dual = true;
       }
 
+      double composite_poison_flat_modifier( const action_state_t* ) const override
+      { return 1.0; }
+
+      bool procs_poison() const override
+      { return true; }
+
       bool procs_cold_blood() const override
       { return false; }
     };
@@ -4637,9 +4644,6 @@ struct kingsbane_t : public rogue_attack_t
     {
       nature_strike = p->get_background_action<implacable_strike_t>( "implacable_strikes_nature", p->spec.implacable_damage_nature );
       physical_strike = p->get_background_action<implacable_strike_t>( "implacable_strikes_physical", p->spec.implacable_damage_physical );
-
-      add_child( nature_strike );
-      add_child( physical_strike );
     }
 
     void tick( dot_t* d ) override
@@ -4660,7 +4664,8 @@ struct kingsbane_t : public rogue_attack_t
     if ( p->talent.assassination.implacable_3->ok() )
     {
       implacable_strikes = p->get_background_action<implacable_strikes_t>( "implacable_strikes" );
-      add_child( implacable_strikes );
+      add_child( implacable_strikes->nature_strike );
+      add_child( implacable_strikes->physical_strike );
     }
   }
 
