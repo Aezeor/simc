@@ -1,3 +1,18 @@
+deathknight="MID1_Death_Knight_Blood_Deathbringer"
+source=default
+spec=blood
+level=90
+race=mechagnome
+role=tank
+position=front
+talents=CoPAAAAAAAAAAAAAAAAAAAAAAwYWGzMmZmZmhZbmZmmZxMjxMGAAAAYmZmZGmZGzMjBAMzMzAAAYMbDMglglhJwwCgZYGAAzMAgB
+
+# Default consumables
+potion=draught_of_rampant_abandon_2
+flask=flask_of_the_shattered_sun_2
+food=silvermoon_parade
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -65,3 +80,32 @@ actions.sanlayn+=/consumption,empower_to=1
 actions.sanlayn+=/heart_strike,if=rune>=2
 actions.sanlayn+=/blood_boil
 actions.sanlayn+=/heart_strike
+
+head=relentless_riders_crown,id=249970,ilevel=289,gem_id=240983
+neck=eternal_voidsong_chain,id=249368,ilevel=289,gem_id=240902/240902
+shoulders=relentless_riders_dreadthorns,id=249968,ilevel=289
+back=adherents_silken_shroud,id=239656,ilevel=285,embellishment=arcanoweave_lining,crafted_stats=32/49
+chest=relentless_riders_cuirass,id=249973,ilevel=289,enchant=enchant_chest__mark_of_the_worldsoul_2
+wrists=spellbreakers_bracers,id=237834,ilevel=285,gem_id=240902,embellishment=arcanoweave_lining,crafted_stats=32/40
+hands=voidclaw_gauntlets,id=151332,ilevel=289
+waist=relentless_riders_chain,id=249967,ilevel=289,gem_id=240902
+legs=relentless_riders_legguards,id=249969,ilevel=289,enchant=forest_hunters_armor_kit_2
+feet=sabatons_of_furious_revenge,id=251091,ilevel=289,enchant=enchant_boots__farstriders_hunt_2
+finger1=platinum_star_band,id=193708,ilevel=289,gem_id=240902/240902,enchant=enchant_ring__natures_fury_2
+finger2=sindorei_band_of_hope,id=249919,ilevel=289,gem_id=240902/240902,enchant=enchant_ring__natures_fury_2
+trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
+trinket2=dragon_games_equipment,id=193719,ilevel=289
+main_hand=liferippers_cutlass,id=251168,ilevel=289,enchant=rune_of_sanguination
+
+# Gear Summary
+# gear_ilvl=288.47
+# gear_strength=1243
+# gear_stamina=17604
+# gear_crit_rating=924
+# gear_haste_rating=649
+# gear_mastery_rating=766
+# gear_versatility_rating=229
+# gear_speed_rating=11
+# gear_armor=1863
+# set_bonus=midnight_season_1_2pc=1
+# set_bonus=midnight_season_1_4pc=1
