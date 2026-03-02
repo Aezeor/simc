@@ -4928,6 +4928,14 @@ struct unseen_attack_t : public cat_attack_t
 
     range = p->talent.unseen_predator_1->effectN( 2 ).base_value();
   }
+
+  void impact( action_state_t* s ) override
+  {
+    cat_attack_t::impact( s );
+
+    if ( s->chain_target == 0 )
+      p()->buff.unseen_predators_craving->trigger();
+  }
 };
 
 struct unseen_slash_t final : public unseen_attack_t
