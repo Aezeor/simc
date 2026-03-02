@@ -4933,6 +4933,8 @@ struct unseen_attack_t : public cat_attack_t
   {
     cat_attack_t::impact( s );
 
+    // Unseen Predator 2 has a 0.1s ICD so it can only proc once per execute, we can instead just have it proc only on
+    // the first target hit.
     if ( s->chain_target == 0 )
       p()->buff.unseen_predators_craving->trigger();
   }
