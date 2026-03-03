@@ -16444,7 +16444,8 @@ void player_t::parse_all_class_passives()
   // racials
   for ( const auto& racial_spell : racial_spell_entry_t::data( dbc->ptr ) )
   {
-    if ( util::race_mask( race ) & racial_spell.mask_race && util::class_id_mask( type ) & racial_spell.mask_class )
+    if ( util::race_mask( race ) & racial_spell.mask_race &&
+         ( !racial_spell.mask_class || util::class_id_mask( type ) & racial_spell.mask_class ) )
     {
       auto spell = find_spell( racial_spell.spell_id );
       if ( spell->flags( SX_PASSIVE ) )
