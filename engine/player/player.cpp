@@ -1919,7 +1919,7 @@ void player_t::init_items()
     matching_gear_slots[ i ] = !util::is_match_slot( i );
 
   // Override with item slot overrides. Note this will completely replace any player-scoped item options
-  if ( is_player() )
+  if ( is_player() && type != PLAYER_SIMPLIFIED )
   {
     for ( const auto& [ override_slot, override_str ] : sim->item_slot_overrides )
     {
@@ -2237,7 +2237,7 @@ void player_t::create_special_effects()
     special_effects.push_back( new special_effect_t( effect ) );
   }
 
-  if ( sim->enable_all_item_effects )
+  if ( sim->enable_all_item_effects && type != PLAYER_SIMPLIFIED )
   {
     for ( auto id : unique_gear::midnight::__mid_special_effect_ids )
     {
