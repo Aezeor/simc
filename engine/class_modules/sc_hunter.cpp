@@ -515,8 +515,6 @@ public:
 
     cooldown_t* black_arrow;
     cooldown_t* bleak_powder;
-
-    cooldown_t* sentinels_mark;
   } cooldowns;
 
   struct gains_t
@@ -1058,8 +1056,6 @@ public:
 
     cooldowns.black_arrow = get_cooldown( "black_arrow" );
     cooldowns.bleak_powder = get_cooldown( "bleak_powder_icd" );
-
-    cooldowns.sentinels_mark = get_cooldown( "sentinels_mark_icd" );
 
     base_gcd = 1.5_s;
 
@@ -3695,9 +3691,6 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
     return;
   }
 
-  if ( cooldowns.sentinels_mark->down() )
-    return;
-
   auto spec = specialization();
   double chance = 0;
   double lunar_calling_bonus = talents.lunar_calling->effectN( spec == HUNTER_MARKSMANSHIP ? 1 : 2 ).percent();
@@ -3729,7 +3722,6 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
   {
     auto td = get_target_data( target );
     sentinel ? td->debuffs.sentinels_mark->trigger() : td->debuffs.spotters_mark->trigger();
-    cooldowns.sentinels_mark->start();
 
     cooldowns.aimed_shot->adjust( -talents.moons_blessing->effectN( 2 ).time_value() );
     cooldowns.wildfire_bomb->adjust( -talents.moons_blessing->effectN( 3 ).time_value() );
@@ -4098,20 +4090,6 @@ struct steady_shot_t: public hunter_ranged_attack_t
 
 struct arcane_shot_base_t: public hunter_ranged_attack_t
 {
-  arcane_shot_base_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->specs.arcane_shot ) {}
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double am = hunter_ranged_attack_t::composite_da_multiplier( s );
-
-    am *= 1 + p()->buffs.precise_shots->check_stack_value();
-
-    return am;
-  }
-};
-
-struct arcane_shot_t : public arcane_shot_base_t
-{
   struct state_data_t
   {
     bool empowered_by_precise_shots = false;
@@ -4123,6 +4101,40 @@ struct arcane_shot_t : public arcane_shot_base_t
   };
   using state_t = hunter_action_state_t<state_data_t>;
 
+  arcane_shot_base_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->specs.arcane_shot ) {}
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double am = hunter_ranged_attack_t::composite_da_multiplier( s );
+
+    am *= 1 + p()->buffs.precise_shots->check_stack_value();
+
+    return am;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    if ( debug_cast<state_t*>( s )->empowered_by_precise_shots )
+      p()->trigger_eagles_mark( s->target, p()->talents.sentinel.ok() );
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
+  {
+    hunter_ranged_attack_t::snapshot_internal( s, flags, rt );
+
+    debug_cast<state_t*>( s )->empowered_by_precise_shots = p()->buffs.precise_shots->up();
+  }
+};
+
+struct arcane_shot_t : public arcane_shot_base_t
+{
   struct arcane_shot_aspect_of_the_hydra_t : arcane_shot_base_t
   {
     arcane_shot_aspect_of_the_hydra_t( util::string_view n, hunter_t* p ) : arcane_shot_base_t( n, p )
@@ -4163,8 +4175,6 @@ struct arcane_shot_t : public arcane_shot_base_t
 
     if ( debug_cast<state_t*>( s )->empowered_by_precise_shots )
     {
-      p()->trigger_eagles_mark( s->target, p()->talents.sentinel.ok() );
-
       if ( p()->tier_set.mid_s1_mm_4pc.ok() && p()->rppm.let_fly->trigger() )
         make_event( sim, 300_ms, [ this ]() { p()->actions.let_fly->execute_on_target( target ); } );
     }
@@ -4188,18 +4198,6 @@ struct arcane_shot_t : public arcane_shot_base_t
       g *= 1 + p()->talents.precise_shots_buff->effectN( 4 ).percent();
     
     return std::max( min_gcd, g );
-  }
-
-  action_state_t* new_state() override
-  {
-    return new state_t( this, target );
-  }
-
-  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
-  {
-    arcane_shot_base_t::snapshot_internal( s, flags, rt );
-
-    debug_cast<state_t*>( s )->empowered_by_precise_shots = p()->buffs.precise_shots->up();
   }
 };
 
@@ -5621,8 +5619,11 @@ struct rapid_fire_t: public hunter_ranged_attack_t
       arcane_shot_base_t::impact( s );
 
       // Despite not consuming Precise Shots, these Arcanes can trigger Let Fly.
-      if ( p()->tier_set.mid_s1_mm_4pc.ok() && p()->buffs.precise_shots->check() && p()->rppm.let_fly->trigger() )
-        make_event( sim, 300_ms, [ this, s ]() { p()->actions.let_fly->execute_on_target( s->target ); } );
+      if ( debug_cast<state_t*>( s )->empowered_by_precise_shots )
+      {
+        if ( p()->tier_set.mid_s1_mm_4pc.ok() && p()->rppm.let_fly->trigger() )
+          make_event( sim, 300_ms, [ this ]() { p()->actions.let_fly->execute_on_target( target ); } );
+      }
     }
   };
 
@@ -7797,9 +7798,6 @@ void hunter_t::init_spells()
   cooldowns.strike_as_one->duration = talents.strike_as_one->internal_cooldown();
 
   cooldowns.bleak_powder->duration = talents.bleak_powder->internal_cooldown();
-
-  // Sentinel Owl has an ICD but it doesn't seem to be in spelldata, using 500ms as an estimate. 
-  cooldowns.sentinels_mark->duration = 500_ms;
 
   // Register passives
   register_passive_effect_mask( talents.precision_strikes, 
