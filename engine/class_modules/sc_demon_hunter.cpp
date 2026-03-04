@@ -9022,6 +9022,13 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       event_t::cancel( p()->devourer_fury_state.next_drain_event );
       p()->devourer_fury_state.clear_state();
       p()->cooldown.void_ray->reset( false );
+
+      action_t* executing = p()->executing;
+      if ( executing &&
+           ( executing->id == p()->spec.devour->id() || executing->id == p()->hero_spec.predators_wake->id() ) )
+      {
+        p()->interrupt();
+      }
     }
 
     for ( demonsurge_ability ability : demonsurge_abilities )
