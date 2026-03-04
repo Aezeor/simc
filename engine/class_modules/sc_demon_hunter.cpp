@@ -10959,7 +10959,8 @@ void demon_hunter_t::init_spells()
   hero_spec.student_of_suffering_buff  = talent_spell_lookup( talent.scarred.student_of_suffering, 453239 );
   hero_spec.monster_rising_buff        = talent_spell_lookup( talent.scarred.monster_rising, 452550 );
   hero_spec.enduring_torment_buff      = talent_spell_lookup( talent.scarred.enduring_torment, 453314 );
-  hero_spec.demonsurge_demonsurge_buff = talent_spell_lookup( talent.scarred.demonsurge, 452435 );
+  // 2026-03-04 -- This only buffs Devourer spells and Havoc doesn't get a baseline damage buff from Demonsurge.
+  hero_spec.demonsurge_demonsurge_buff = spec_talent_spell_lookup( DEMON_HUNTER_DEVOURER, talent.scarred.demonsurge,452435 );
   hero_spec.demonsurge_trigger = spec_talent_spell_lookup( DEMON_HUNTER_HAVOC, talent.scarred.demonsurge, 453323 );
   hero_spec.demonsurge_damage  = hero_spec.demonsurge_trigger->effectN( 1 ).trigger();
   hero_spec.demonsurge_stacking_buff = hero_spec.demonsurge_damage;
