@@ -1865,7 +1865,7 @@ public:
 
       // TODO: Sometime near the beginning of December 2025, the BLP threshold was removed.
       // We're unsure whether or not the random proc chance was increased to match the expected rate.
-      // With just Clearcasting talented (without Illuminated Thoughts or Archmage's Wrath), 
+      // With just Clearcasting talented (without Illuminated Thoughts or Archmage's Wrath),
       // the old expression above (0.41342x^2 + 0.325242x - 0.0264015 -- previously used before the removal)
       // matches the ~11.35% expected total seen in-game.
       //
@@ -1879,7 +1879,7 @@ public:
       else
         proc_chance *= p()->state.clearcasting_blp_count;
 
-      sim->print_debug( "Clearcasting proc chance: {}% ({}/{} BLP)", 
+      sim->print_debug( "Clearcasting proc chance: {}% ({}/{} BLP)",
         proc_chance * 100, p()->state.clearcasting_blp_count, p()->options.clearcasting_blp_threshold );
 
       if ( proc_chance == 1.0 || !background )
@@ -3017,7 +3017,8 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
 
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
     p()->trigger_splinter( p()->target ); // Also triggers from echo
-    p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
+    if ( !background )
+      p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
 
     if ( arcane_pulse_echo && rng().roll( p()->talents.reverberate->effectN( 1 ).percent() ) )
       make_event( *sim, 500_ms, [ this, t = target ] { arcane_pulse_echo->execute_on_target( t ); } );
@@ -4612,7 +4613,7 @@ struct meteor_impact_t final : public fire_mage_spell_t
     double m = 1.0 + p->talents.deep_impact->effectN( 1 ).percent();
     base_multiplier     *= m;
     base_aoe_multiplier /= m;
-    
+
     // TODO: Seems to miss the final tick now that the duration is a multiple of the tick time once again.
     if ( p->bugs )
       meteor_burn_duration -= 1.0_s;
@@ -4707,7 +4708,7 @@ struct meteor_t final : public fire_mage_spell_t
 
     if ( p()->action.isothermic_comet_storm )
       p()->action.isothermic_comet_storm->execute_on_target( target );
-    
+
     if ( p()->talents.pyroclasm.ok() && p()->talents.sunfury_execution.ok() )
        p()->buffs.pyroclasm->execute();
   }
@@ -7189,7 +7190,7 @@ void mage_t::trigger_spellfire_sphere( specialization_e m_spec, bool background 
 {
   if ( !talents.spellfire_spheres.ok() || m_spec != specialization() )
     return;
-  
+
   // https://www.desmos.com/calculator/7akzzy14fg;
   // the expression approximates the random proc chance needed to match the final expected rate with a BLP cap.
   // TODO: Does Fire use the same BLP formula?
@@ -7199,7 +7200,7 @@ void mage_t::trigger_spellfire_sphere( specialization_e m_spec, bool background 
   state.sphere_blp_count++;
   proc_chance *= state.sphere_blp_count;
 
-  sim->print_debug( "Sphere proc chance: {}% ({}/{} BLP)", 
+  sim->print_debug( "Sphere proc chance: {}% ({}/{} BLP)",
     proc_chance * 100, state.sphere_blp_count, options.sphere_blp_threshold );
 
   if ( state.sphere_blp_count == options.sphere_blp_threshold || ( !background && rng().roll( proc_chance ) ) )
@@ -7279,15 +7280,16 @@ bool mage_t::trigger_clearcasting( double chance, bool allow_predict, bool has_d
     // Due to Brainstorm being async in sims, its trigger will be scheduled w/ make_event ~30ms later, whereas CC is instantaneous.
     // In-game, Blast (triggering CC + BS) into a queued Barrage will lead to CC + BS to be applied AFTER the Barrage.
     // However, in sims, CC will be active prior to the Barrage.
-    // If Clearcasting would directly grant Intellect: in sims, the queued Barrage would benefit from Clearcasting; in game, the Barrage wouldn't.  
-    if ( talents.brainstorm.ok() )
+    // If Clearcasting would directly grant Intellect: in sims, the queued Barrage would benefit from Clearcasting; in game, the Barrage wouldn't.
+    // TODO: Currently doesn't trigger for Arcane at all
+    if ( talents.brainstorm.ok() && !bugs )
     {
       // TODO: we don't know what happens if a single spell triggers two (or more) separate sources of guaranteed Clearcastings.
       // Since there's no such thing in-game yet, we can't know with certainty whether brainstorm will trigger once or twice.
       if ( !has_double_proc_delay || state.last_random_clearcasting != sim->current_time() )
         buffs.brainstorm->trigger();
       else
-        sim->print_debug("Gaining Clearcasting in {}_s; Brainstorm won't be triggered due to double proc delay.", delay );
+        sim->print_debug( "Gaining Clearcasting in {} s; Brainstorm trigger skipped.", delay );
     }
 
     trigger_splinter( target, as<int>( talents.shifting_shards->effectN( 1 ).base_value() ) );
