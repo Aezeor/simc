@@ -2160,7 +2160,8 @@ void magisters_alchemist_stone( special_effect_t& effect )
       break;
   }
 
-  effect.custom_buff = create_buff<stat_buff_t>( effect.player, buff_spell, effect.item );
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, buff_spell )
+    ->add_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
