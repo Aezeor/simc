@@ -3475,7 +3475,7 @@ void register_special_effects()
   register_special_effect( 71563, trinkets::deadly_precision );  // nevermelting ice crystal on-use
   register_special_effect( 1272091, trinkets::crucible_of_erratic_energies );
   register_special_effect( 1253114, trinkets::evercollapsing_void_fissure );
-  register_special_effect( 1255278, trinkets::tangle_of_vibrant_vines);
+  register_special_effect( 1255278, trinkets::tangle_of_vibrant_vines );
   register_special_effect( 1254752, trinkets::refueling_orb );
   register_special_effect( 1258535, trinkets::volatile_void_suffuser );
   register_special_effect( 1272693, trinkets::astalors_anguish_agitator );
