@@ -26130,7 +26130,7 @@ static constexpr std::array<spelltext_data_t, 28628> __spelltext_data { {
   { 1238281, "Empower Rune Weapon causes your next damaging Rune spending ability to cost no Runes, but now generates ${$s1/-10} less Runic Power.", 0, 0 },
   { 1238443, "For the next $d your damaging abilities have a chance to deal $s3 Holy damage and mark the target with $@spellname1237886. $@spellname1237886 increases the damage taken from $@spellname1237158 by $s4%. Damaging a new target will remove $@spellname1237886 from the previous target.", "Abilities have a chance to deal $s3 Holy damage.", 0 },
   { 1238467, "$@spelldesc1237885", "Healing $s2 every $t2 sec.", 0 },
-  { 1238474, "$@spelldesc1237885", "Enduring $s2 Nature damage every $t2 sec.", 0 },
+  { 1238474, "$@spelldesc1237885", "Enduring $w2 Nature damage every $t2 sec.", 0 },
   { 1238488, "After fully channeling Void Ray, the cooldown of Reap is reset and your next Reap will collect up to $1238495s1 additional Soul Fragments.", 0, 0 },
   { 1238495, "$@spelldesc1238488", "Your next Reap can collect $s1 additional souls.", 0 },
   { 1238623, "Increases critical strike damage by $s1%. Increases critical strike healing by $s2%.", 0, 0 },
@@ -28631,7 +28631,8 @@ static constexpr std::array<spelltext_data_t, 28628> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.0.1.66220
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  { 1238474,  1, "Enduring $s2 Nature damage every $t2 sec.", "Enduring $w2 Nature damage every $t2 sec." },
 } };
 
 // Spell description variables, wow build 12.0.1.66220
