@@ -2522,6 +2522,21 @@ void deadly_precision( special_effect_t& effect )
   cb->activate_with_buff( buff );
 }
 
+// 1258535 driver
+// 1258534 buff
+void volatile_void_suffuser( special_effect_t& effect )
+{
+  // create buff
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1258534 ) );
+  buff->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
+    buff->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+    
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Volatile Void Suffuser: Implementation may incorrectly over trigger on some DPS specs. Flags are Yellow Melee, Heal, Helpful Periodic." );
+
+  effect.custom_buff = buff;
+}
+
 // 1254752 Driver
 // 1254577 Buff - Create the buff {target, target} -> it's a shared buff.
 // 1254534 Projectile
@@ -3266,6 +3281,8 @@ void register_special_effects()
   register_special_effect( 1272091, trinkets::crucible_of_erratic_energies );
   register_special_effect( 1253114, trinkets::evercollapsing_void_fissure );
   register_special_effect( 1254752, trinkets::refueling_orb );
+  register_special_effect( 1258535, trinkets::volatile_void_suffuser );
+  
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );
