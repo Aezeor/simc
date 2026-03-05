@@ -1719,11 +1719,14 @@ public:
     if ( Base::is_fallback || !a->data().ok() || !Base::get_trigger_data()->ok() )
       return false;
 
-    if ( Base::get_trigger_data()->flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) &&
-         !a->allow_class_ability_procs )
+    if ( !a->allow_class_ability_procs &&
+         Base::get_trigger_data()->flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
     {
       return false;
     }
+
+    if ( a->suppress_caster_procs && !Base::get_trigger_data()->flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED ) )
+      return false;
 
     if ( a->proc && !a->not_a_proc )
     {
@@ -1761,7 +1764,10 @@ public:
     if ( Base::is_fallback || !a->data().ok() || !Base::data().ok() )
       return false;
 
-    if ( Base::data().flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) && !a->allow_class_ability_procs )
+    if ( !a->allow_class_ability_procs && Base::data().flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
+      return false;
+
+    if ( a->suppress_caster_procs && !Base::data().flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED ) )
       return false;
 
     if ( a->proc && !a->not_a_proc )
