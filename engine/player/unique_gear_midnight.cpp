@@ -2537,20 +2537,23 @@ void volatile_void_suffuser( special_effect_t& effect )
   effect.custom_buff = buff;
 }
 
-// Driver 1272693
-// Spell 1272720
+// On use Driver 1272693
+// Other Driver 1272690
+// Damage Spell 1272720
 // Leech Buff 1272698
 void astalors_anguish_agitator( special_effect_t& e )
 {
+  auto other_driver = e.player->find_spell( 1272690 );
+
   auto proj_spell = e.player->find_spell( 1272720 );
   auto buff_spell = e.player->find_spell( 1272698 );
 
-  auto projectile =
-      create_proc_action<generic_proc_t>( proj_spell->name_cstr(), e, proj_spell->name_cstr(), proj_spell );
-  projectile->base_dd_min = projectile->base_dd_max = e.driver()->effectN( 1 ).average( e );
+  auto projectile = create_proc_action<generic_proc_t>( util::tokenize_fn( proj_spell->name_cstr() ), e,
+                                                                proj_spell->name_cstr(), proj_spell );
+  projectile->base_dd_min = projectile->base_dd_max = other_driver->effectN( 1 ).average( e );
 
-  auto leech_buff = create_buff<stat_buff_t>( e.player, buff_spell->name_cstr(), buff_spell );
-  leech_buff->set_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 2 ).average( e ) );
+  auto leech_buff = create_buff<stat_buff_t>( e.player, util::tokenize_fn( buff_spell->name_cstr() ), buff_spell );
+  leech_buff->set_stat_from_effect_type( A_MOD_RATING, other_driver->effectN( 2 ).average( e ) );
 
   e.execute_action = projectile;
   e.custom_buff    = leech_buff;
@@ -3302,6 +3305,7 @@ void register_special_effects()
   register_special_effect( 1254752, trinkets::refueling_orb );
   register_special_effect( 1258535, trinkets::volatile_void_suffuser );
   register_special_effect( 1272693, trinkets::astalors_anguish_agitator );
+  register_special_effect( 1272690, DISABLED_EFFECT ); // Astalors Anguish Agitator Passive Driver
   
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
