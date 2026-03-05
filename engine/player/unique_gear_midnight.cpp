@@ -3306,6 +3306,8 @@ void register_special_effects()
   register_special_effect( 1258535, trinkets::volatile_void_suffuser );
   register_special_effect( 1272693, trinkets::astalors_anguish_agitator );
   register_special_effect( 1272690, DISABLED_EFFECT ); // Astalors Anguish Agitator Passive Driver
+  register_special_effect( 1247311, DISABLED_EFFECT ); // Drum of Renewed Bonds on use
+  
   
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
