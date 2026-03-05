@@ -8331,8 +8331,14 @@ struct starfire_base_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( p->specialization() == DRUID_BALANCE ? 5 : 3 ).base_value();
-    base_aoe_multiplier *= data().effectN( p->specialization() == DRUID_BALANCE ? 3 : 2 ).percent() /
-                           ( 1.0 + find_effect( p->talent.lunar_calling, &data() ).percent() );
+
+    // offspec starfire seems to do same splash as balance starfire
+    if ( p->bugs )
+      base_aoe_multiplier *= p->find_spell( 194153 )->effectN( 3 ).percent();
+    else
+      base_aoe_multiplier *= data().effectN( p->specialization() == DRUID_BALANCE ? 3 : 2 ).percent();
+
+    base_aoe_multiplier /= 1.0 + find_effect( p->talent.lunar_calling, &data() ).percent();
 
     auto m_data = p->get_modified_spell( &data() );
     set_energize( m_data );
