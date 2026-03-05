@@ -2580,7 +2580,7 @@ void refueling_orb( special_effect_t& e )
 
     void execute( action_t*, action_state_t* ) override
     {
-      if ( effect.player->sim->single_actor_batch || effect.player->sim->player_non_sleeping_list.size() == 1 )
+      if ( effect.player->sim->player_non_sleeping_list.size() == 1 )
       {
         trigger_buff( effect.player );
       }
