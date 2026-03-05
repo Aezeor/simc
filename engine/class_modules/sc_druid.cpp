@@ -8348,7 +8348,6 @@ struct starfire_base_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
     {
       const auto& eff = p->talent.master_shapeshifter->effectN( 2 );
       add_parse_entry( da_multiplier_effects )
-        .set_func( [ p = p ] { return p->form == NO_FORM || p->form == MOONKIN_FORM; } )
         .set_value( eff.percent() )
         .set_eff( &eff )
         .print_debug( this );
@@ -8441,7 +8440,6 @@ struct starsurge_offspec_t final : public druid_spell_t
     {
       const auto& eff = p->talent.master_shapeshifter->effectN( 2 );
       add_parse_entry( da_multiplier_effects )
-        .set_func( [ p = p ] { return p->form == NO_FORM || p->form == MOONKIN_FORM; } )
         .set_value( eff.percent() )
         .set_eff( &eff )
         .print_debug( this );
@@ -8490,6 +8488,15 @@ struct starsurge_t final : public ap_spender_t
       auto suf = get_suffix( name_str, "starsurge" );
       goldrinn = p->get_secondary_action<goldrinns_fang_t>( "goldrinns_fang" + suf, f );
       add_child( goldrinn );
+    }
+
+    if ( p->talent.master_shapeshifter.ok() )
+    {
+      const auto& eff = p->talent.master_shapeshifter->effectN( 2 );
+      add_parse_entry( da_multiplier_effects )
+        .set_value( eff.percent() )
+        .set_eff( &eff )
+        .print_debug( this );
     }
 
     weaver_buff = p->buff.starweaver_starsurge;
@@ -8869,7 +8876,6 @@ struct wrath_base_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
     {
       const auto& eff = p->talent.master_shapeshifter->effectN( 2 );
       add_parse_entry( da_multiplier_effects )
-        .set_func( [ p = p ] { return p->form == NO_FORM || p->form == MOONKIN_FORM; } )
         .set_value( eff.percent() )
         .set_eff( &eff )
         .print_debug( this );
