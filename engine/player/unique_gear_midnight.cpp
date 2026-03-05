@@ -2784,6 +2784,38 @@ void refueling_orb( special_effect_t& e )
   new refueling_orb_cb_t( e );
 }
 
+// Driver 1253112
+// Damage 1266366
+// Missile 1 1266370
+// Missile 2 1266371
+// Missile 3 1266372
+void sylvan_wakrapuku( special_effect_t& effect )
+{
+  auto damage         = create_proc_action<generic_aoe_proc_t>( "DiveBomb", effect, 1266366 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  damage->base_multiplier *= role_mult( effect );
+
+  struct sylvan_wakrapuku_cb_t : public dbc_proc_callback_t
+  {
+    action_t* divebomb;
+    sylvan_wakrapuku_cb_t( const special_effect_t& e, action_t* divebomb )
+      : dbc_proc_callback_t( e.player, e ), divebomb( divebomb )
+    {
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      for ( auto travel_time : { 0.5, 1.0, 1.5 } )
+      {
+        divebomb->min_travel_time = travel_time;
+        divebomb->execute_on_target( s->target );
+      }
+    }
+  };
+
+  new sylvan_wakrapuku_cb_t( effect, damage );
+}
+
 // 1272091 driver
 // 1277482 buff
 // 1255685 protocol of violence (higher rppm?)
@@ -3433,7 +3465,9 @@ void register_special_effects()
   register_special_effect( 1272693, trinkets::astalors_anguish_agitator );
   register_special_effect( 1272690, DISABLED_EFFECT ); // Astalors Anguish Agitator Passive Driver
   register_special_effect( 1247311, DISABLED_EFFECT ); // Drum of Renewed Bonds on use
-  register_special_effect( 1253120, trinkets::glorious_crusaders_keepsake );  
+  register_special_effect( 1253120, trinkets::glorious_crusaders_keepsake ); 
+  register_special_effect( 1253112, trinkets::sylvan_wakrapuku );
+  
   
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
