@@ -11003,11 +11003,13 @@ void druid_t::create_buffs()
   buff.solstice = make_fallback( talent.solstice.ok(), this, "solstice", find_trigger( talent.solstice ).trigger() )
     ->set_default_value( find_trigger( talent.solstice ).percent() );
 
-  buff.starfall = make_fallback( spec.starfall->ok(), this, "starfall", spec.starfall )
-    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-    ->set_freeze_stacks( true )
-    ->set_partial_tick( true )                           // TODO: confirm true?
-    ->set_tick_behavior( buff_tick_behavior::REFRESH );  // TODO: confirm true?
+  // lookup via spell_id for convoke
+  buff.starfall = make_fallback( spec.starfall->ok() || ( talent.convoke_the_spirits.ok() && talent.moonkin_form.ok() ),
+    this, "starfall", find_spell( 191034 ) )
+      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+      ->set_freeze_stacks( true )
+      ->set_partial_tick( true )                           // TODO: confirm true?
+      ->set_tick_behavior( buff_tick_behavior::REFRESH );  // TODO: confirm true?
 
   buff.starlord = make_fallback( talent.starlord.ok(), this, "starlord", find_spell( 279709 ) )
     ->set_default_value( talent.starlord->effectN( 1 ).percent() )
