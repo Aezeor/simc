@@ -5328,7 +5328,7 @@ struct splinter_t final : public mage_spell_t
       // Add a millisecond so that the ICD doesn't perfectly align with delayed splinters.
       p()->cooldowns.augury_abounds->start( p()->talents.augury_abounds->internal_cooldown() + 1_ms );
       if ( rng().roll( p()->talents.augury_abounds->effectN( 1 ).percent() ) )
-        make_event( *sim, [ this ] { p()->trigger_splinter( nullptr, as<int>( p()->talents.augury_abounds->effectN( 2 ).base_value() ) ); } );
+        make_event( *sim, 100_ms, [ this ] { p()->trigger_splinter( nullptr, as<int>( p()->talents.augury_abounds->effectN( 2 ).base_value() ) ); } );
     }
   }
 
