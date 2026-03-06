@@ -315,17 +315,6 @@ void smugglers_enchanted_edge( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-// 1262295 r1 driver
-// 1262294 r1 buff
-// 1262298 r2 driver
-// 1262299 r2 buff
-void smugglers_lynxeye( special_effect_t& effect )
-{
-  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger(), effect.item );
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
 // 1262120 r1 driver
 // 1262140 r1 missile
 // 1262142 r1 aoe
@@ -478,6 +467,28 @@ void stat_weapon_enchant( special_effect_t& effect )
 void eyes_of_the_eagle( special_effect_t& effect )
 {
   effect.player->parse_passive_item_effect( effect.driver() );
+}
+
+// 1262295 r1 driver
+// 1262294 r1 buff
+// 1262298 r2 driver
+// 1262299 r2 buff
+void smugglers_lynxeye( special_effect_t& effect )
+{
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger(), effect.item );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 1262337 r1 driver
+// 1262336 r1 buff
+// 1262339 r2 driver
+// 1262338 r2 buff
+void farstriders_hawkeye( special_effect_t& effect )
+{
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger(), effect.item );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 }  // namespace enchants
 
@@ -3390,7 +3401,6 @@ void register_special_effects()
   // Oils
   register_special_effect( { 1262056, 1262111 }, consumables::laced_zoomshots );
   register_special_effect( { 1237009, 1237012 }, consumables::smugglers_enchanted_edge );
-  register_special_effect( { 1262295, 1262298 }, consumables::smugglers_lynxeye );
   register_special_effect( { 1262120, 1262141 }, consumables::weighted_boomshots );
   // Enchants & gems
   register_special_effect( 1258209, enchants::powerful_eversong_diamond, false, true );
@@ -3403,6 +3413,8 @@ void register_special_effects()
                              1236729, 1236730 },  // Worldsoul Tenacity (Vers)
                            enchants::stat_weapon_enchant );
   register_special_effect( { 1236700, 1236701 }, enchants::eyes_of_the_eagle, false, true );
+  register_special_effect( { 1262295, 1262298 }, enchants::smugglers_lynxeye );
+  register_special_effect( { 1262337, 1262339 }, enchants::farstriders_hawkeye );
   // Embellishments & Tinkers
   register_special_effect( 1283697, embellishments::arcanoweave_lining );
   register_special_effect( 1241711, embellishments::sunfire_silk_lining );
