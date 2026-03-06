@@ -3233,13 +3233,6 @@ void murder_row_materials( special_effect_t& effect )
 // 1258890 crit
 void root_wardens_regalia( special_effect_t& effect )
 {
-  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
-    "Root Warden's Regalia: Implementation assumes you can proc while a buff is already up, "
-    "including proccing the same buff again which will refresh the buff." );
-  effect.player->sim->error( UNVERIFIED_VALUE,
-    "Root Warden's Regalia: How the stat buff values scale with item level is unknown. "
-    "Currently implemented to scale off player level and values have not been verified in-game." );
-
   // driver does not have SX_SCALE_ILEVEL so average() scales from player level
   auto stat_amount = effect.driver()->effectN( 1 ).average( effect );
 
