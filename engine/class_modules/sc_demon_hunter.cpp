@@ -2165,7 +2165,7 @@ public:
 
     // 2026-03-05 -- Blind Focus does not get the extra benefit to direct damage in Meta currently.
     effect_mask_t blind_focus_direct_mask = effect_mask_t( false ).enable( 1, 3 );
-    ab::parse_effects( p()->talent.scarred.blind_focus, blind_focus_direct_mask );
+    ab::parse_effects( p()->talent.scarred.blind_focus, blind_focus_direct_mask, USE_CURRENT );
 
     effect_mask_t blind_focus_periodic_mask = effect_mask_t( false ).enable( 2, 4 );
     ab::parse_effects( p()->talent.scarred.blind_focus, [ this ]( double v ) {
