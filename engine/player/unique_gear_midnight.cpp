@@ -2893,10 +2893,6 @@ void sylvan_wakrapuku( special_effect_t& effect )
 // 1255688 protocol of predation (higher buff value?)
 void crucible_of_erratic_energies( special_effect_t& effect )
 {
-  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
-    "Crucible of Erratic Energies: It is unknown whether Protocol effects apply inside instances. "
-    "They are currently not implemented." );
-
   double stat_value = effect.driver()->effectN( 1 ).average( effect );
   // Predation increases the crit rating provided by 20%. 
   if ( effect.player->midnight_opts.crucible_of_erratic_energies_predation )
