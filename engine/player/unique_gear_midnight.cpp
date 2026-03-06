@@ -2897,10 +2897,21 @@ void crucible_of_erratic_energies( special_effect_t& effect )
     "Crucible of Erratic Energies: It is unknown whether Protocol effects apply inside instances. "
     "They are currently not implemented." );
 
-  // leech & movement NYI
-  // TODO: does this actually have a rolemult?
+  double stat_value = effect.driver()->effectN( 1 ).average( effect );
+  // Predation increases the crit rating provided by 20%. 
+  if ( effect.player->midnight_opts.crucible_of_erratic_energies_predation )
+    stat_value *= 1.0 + effect.driver()->effectN( 4 ).percent();
+
+  // Without Voilence selected, this behaves as if it were 2rppm, not 4rppm.
+  if ( !effect.player->midnight_opts.crucible_of_erratic_energies_violence )
+    effect.rppm_modifier_ = 1.0 / effect.driver()->effectN( 3 ).base_value();
+
   auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
-    ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+    ->set_stat_from_effect_type( A_MOD_RATING, stat_value );
+
+  // Protocol of Sustenance doubles the buff duration.
+  if ( effect.player->midnight_opts.crucible_of_erratic_energies_sustenance )
+    buff->set_duration( buff->data().duration() * effect.driver()->effectN( 5 ).base_value() );
 
   effect.custom_buff = buff;
 
