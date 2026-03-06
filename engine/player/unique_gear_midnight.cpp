@@ -321,14 +321,6 @@ void smugglers_enchanted_edge( special_effect_t& effect )
 // 1262299 r2 buff
 void smugglers_lynxeye( special_effect_t& effect )
 {
-  // Smuggler's Lynxeye rank 2 looks bugged and grants the rank 1 buff instead of the rank 1 buff. Manually set the
-  // trigger_spell_id to the rank 2 buff.
-  if ( effect.spell_id == 12622298 )
-  {
-    assert( effect.trigger()->id() == 1262294 && "Smuggler's Lynxeye Rank 2 fix no longer necessary." );
-    effect.trigger_spell_id = 1262299;
-  }
-
   effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger(), effect.item );
 
   new dbc_proc_callback_t( effect.player, effect );
