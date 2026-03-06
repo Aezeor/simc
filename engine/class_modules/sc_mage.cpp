@@ -4886,6 +4886,7 @@ struct splintering_ray_t final : public spell_t
     background = proc = true;
     target_filter_callback = secondary_targets_only();
     base_dd_min = base_dd_max = 1.0;
+    aoe = as<int>( p->talents.splintering_ray->effectN( 2 ).base_value() );
   }
 
   void init() override
@@ -5243,6 +5244,7 @@ struct flash_freezeburn_t final : public spell_t
     background = proc = true;
     target_filter_callback = secondary_targets_only();
     base_dd_min = base_dd_max = 1.0;
+    aoe = as<int>( p->talents.flash_freezeburn->effectN( 3 ).base_value() );
   }
 };
 
@@ -5253,11 +5255,20 @@ struct controlled_instincts_t final : public spell_t
   {
     background = proc = true;
     target_filter_callback = secondary_targets_only();
-    // TODO: Only hits 5 targets despite max_targets being 6
+
+    // TODO: Description says the spell does reduced damage beyond 5 targets but
+    // in game it's a 5 target hardcap.
+    int cap = as<int>( p->talents.controlled_instincts->effectN( 5 ).base_value() );
     if ( p->bugs )
-      aoe--;
-    // TODO: The tooltip still mentions this, but it's untestable at the moment since it can't hit 6 or more targets
-    reduced_aoe_targets = p->talents.controlled_instincts->effectN( 5 ).base_value();
+    {
+      aoe = cap;
+    }
+    else
+    {
+      aoe = -1;
+      reduced_aoe_targets = cap;
+    }
+
     base_dd_min = base_dd_max = 1.0;
   }
 };
