@@ -8396,7 +8396,7 @@ struct starfire_base_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
   {
     base_t::execute();
 
-    if ( p()->buff.owlkin_frenzy->up() )
+    if ( !p()->buff.ascendant_fires->check() && p()->buff.owlkin_frenzy->up() )
       p()->buff.owlkin_frenzy->expire();
 
     p()->buff.lunar_eclipse_override->trigger();
