@@ -510,10 +510,77 @@ void arcanoweave_lining( special_effect_t& effect )
   if ( find_special_effect( effect.player, effect.trigger()->id() ) )
     return;
 
-  effect.custom_buff = buff;
-  effect.spell_id    = effect.trigger()->id();
+  struct arcanoweave_lining_cb_t : public dbc_proc_callback_t
+  {
+    target_specific_t<buff_t> buffs;
+    double ally_conversion_multiplier;
+    arcanoweave_lining_cb_t( const special_effect_t& e, buff_t* personal_buff )
+      : dbc_proc_callback_t( e.player, e ),
+        buffs{ false },
+        ally_conversion_multiplier( e.driver()->effectN( 3 ).percent() / e.driver()->effectN( 2 ).percent() )
+    {
+      buffs[ e.player ] = personal_buff;
+    }
 
-  new dbc_proc_callback_t( effect.player, effect );
+    double ally_buff_size()
+    {
+      return debug_cast<stat_buff_t*>( get_buff( effect.player ) )->stats[ 0 ].amount * ally_conversion_multiplier;
+    }
+
+    buff_t* get_buff( player_t* buff_player )
+    {
+      if ( buffs[ buff_player ] )
+        return buffs[ buff_player ];
+
+      if ( auto buff = buff_t::find( buff_player, "arcanoweave_insight", effect.player ) )
+      {
+        buffs[ buff_player ] = buff;
+        return buff;
+      }
+
+      auto buff_spell = effect.player->find_spell( 1229746 );
+
+      auto buff = make_buff<stat_buff_t>( actor_pair_t{ buff_player, effect.player }, "arcanoweave_insight", buff_spell );
+      buff->set_stat_from_effect_type( A_MOD_RATING, ally_buff_size() );
+
+      buffs[ buff_player ] = buff;
+
+      return buff;
+    }
+
+    void trigger_buff( player_t* buff_player )
+    {
+      if ( buff_player->is_sleeping() )
+        return;
+
+      auto buff               = get_buff( buff_player );
+      buff->trigger();
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      trigger_buff( effect.player );
+
+      if ( effect.player->sim->player_non_sleeping_list.size() > 1 && !effect.player->sim->single_actor_batch )
+      {
+        std::vector<player_t*> helper_vector = effect.player->sim->player_non_sleeping_list.data();
+        rng().shuffle( helper_vector.begin(), helper_vector.end() );
+
+        for ( auto* player : helper_vector )
+        {
+          if ( player->is_pet() || player == effect.player )
+            continue;
+
+          trigger_buff( player );
+          break;
+        }
+      }
+    }
+  };
+
+  effect.spell_id = effect.trigger()->id();
+
+  new arcanoweave_lining_cb_t( effect, buff );
 }
 
 // 1241711 driver
@@ -2570,7 +2637,7 @@ void glorious_crusaders_keepsake( special_effect_t& e )
   struct glorious_crusaders_keepsake_cb_t : public dbc_proc_callback_t
   {
     target_specific_t<std::unordered_map<stat_e, buff_t*>> buffs;
-    std::unordered_map<int, bool> valid_party_targets;
+    std::unordered_map<size_t, bool> valid_party_targets;
 
 
     glorious_crusaders_keepsake_cb_t( const special_effect_t& e )
