@@ -5167,6 +5167,12 @@ struct lava_lash_t : public shaman_attack_t
     {
       p()->generate_maelstrom_weapon( this, 1 );
     }
+
+    if ( p()->talent.ashen_catalyst.ok() &&
+      td( execute_state->target )->dot.flame_shock->is_ticking() )
+    {
+      p()->cooldown.lava_lash->adjust( -p()->talent.ashen_catalyst->effectN( 1 ).time_value() );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -5183,11 +5189,6 @@ struct lava_lash_t : public shaman_attack_t
     }
 
     p()->trigger_ride_the_lightning( state, p()->action.chain_lightning_ll_rtl );
-
-    if ( p()->talent.ashen_catalyst.ok() && td( target )->dot.flame_shock->is_ticking() )
-    {
-      p()->cooldown.lava_lash->adjust( -p()->talent.ashen_catalyst->effectN( 1 ).time_value() );
-    }
   }
 
   void move_random_target( std::vector<player_t*>& in, std::vector<player_t*>& out ) const
