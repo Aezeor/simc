@@ -2911,6 +2911,8 @@ void crucible_of_erratic_energies( special_effect_t& effect )
 
   effect.custom_buff = buff;
 
+  effect.proc_flags2_ = PF2_LANDED;
+
   new dbc_proc_callback_t( effect.player, effect );
 }
 
