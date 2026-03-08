@@ -3,9 +3,9 @@ action_priority_list_t* def = get_action_priority_list( "default" );
 action_priority_list_t* aoe_builder = get_action_priority_list( "aoe_builder" );
 action_priority_list_t* aoe_finisher = get_action_priority_list( "aoe_finisher" );
 action_priority_list_t* builder = get_action_priority_list( "builder" );
+action_priority_list_t* finisher = get_action_priority_list( "finisher" );
 action_priority_list_t* cd_variable = get_action_priority_list( "cd_variable" );
 action_priority_list_t* cooldown = get_action_priority_list( "cooldown" );
-action_priority_list_t* finisher = get_action_priority_list( "finisher" );
 action_priority_list_t* custom_timers = get_action_priority_list( "custom_timers" );
 
 precombat->add_action( "variable,name=regrowth,op=reset","optional variable that sends regrowth casts. Turned off by default" );
@@ -34,7 +34,7 @@ def->add_action( "call_action_list,name=cooldown" );
 def->add_action( "ferocious_bite,if=buff.apex_predators_craving.up","cast bite with apex procs asap" );
 def->add_action( "call_action_list,name=finisher,if=spell_targets=1" );
 def->add_action( "call_action_list,name=aoe_finisher,if=combo_points>=4&spell_targets>=2" );
-def->add_action( "call_action_list,name=builder,if=spell_targets=1&combo_points<4" );
+def->add_action( "call_action_list,name=builder,if=spell_targets=1&combo_points<=4" );
 def->add_action( "call_action_list,name=aoe_builder,if=spell_targets>1&combo_points<=4" );
 def->add_action( "regrowth,if=buff.predatory_swiftness.up&variable.regrowth" );
 
@@ -52,6 +52,12 @@ builder->add_action( "shadowmeld,if=!buff.prowl.up&(action.rake.pmultiplier<1.6|
 builder->add_action( "rake,if=(buff.tigers_fury.up|remains<variable.tfRemains)&(refreshable&persistent_multiplier>=pmultiplier|remains<2|persistent_multiplier>pmultiplier)","freely upgrade rakes" );
 builder->add_action( "moonfire_cat,if=(buff.tigers_fury.up|remains<variable.tfRemains)&(refreshable&persistent_multiplier>=pmultiplier|remains<2|persistent_multiplier>pmultiplier)","freely upgrade li" );
 builder->add_action( "shred" );
+
+finisher->add_action( "rip,if=combo_points>=4&refreshable&(buff.tigers_fury.up|dot.rip.remains<variable.tfRemains)","maintain rip in single-target. 5cp rips is a ~0.3% loss for dotc" );
+finisher->add_action( "pool_resource,for_next=1" );
+finisher->add_action( "ferocious_bite,if=combo_points>=4+buff.bs_inc.up&(!talent.saber_jaws|buff.bs_inc.up)","ferocious bite asap, dont pool" );
+finisher->add_action( "pool_resource,for_next=1","&(!talent.saber_jaws|!buff.ravage.up)" );
+finisher->add_action( "ferocious_bite,max_energy=1,if=combo_points>=5-talent.panthers_guile&!buff.bs_inc.up","with sj + without panthers guile, its a sizable increase to do 5cp bite" );
 
 cd_variable->add_action( "variable,name=convokeCountRemaining,value=floor(((fight_remains-variable.convoke_cd)%cooldown.convoke_the_spirits.duration)+(fight_remains>cooldown.convoke_the_spirits.remains))","TLDR, maximize number of cooldown overlaps whilst minimizing number of casts lost." );
 cd_variable->add_action( "variable,name=zerkCountRemaining,value=floor(((fight_remains-variable.bs_inc_cd)%cooldown.bs_inc.duration)+(fight_remains>cooldown.bs_inc.remains))" );
@@ -85,12 +91,6 @@ cooldown->add_action( "berserk,if=buff.tigers_fury.up&!variable.holdBerserk&!var
 cooldown->add_action( "feral_frenzy,if=combo_points<=2+(2*buff.bs_inc.up)","0/1/2 combo points outside zerk, 0-4 combo points inside zerk" );
 cooldown->add_action( "frantic_frenzy,if=combo_points<=2+(2*buff.bs_inc.up)" );
 cooldown->add_action( "convoke_the_spirits,if=fight_remains<5|buff.bs_inc.up&buff.bs_inc.remains<5-talent.ashamanes_guidance|buff.tigers_fury.up&!variable.holdConvoke&(prev_gcd.1.rip|prev_gcd.1.ferocious_bite)|variable.use_custom_timers&variable.nextTFTimer+cooldown.convoke_the_spirits.duration-10>variable.nextBSTimer&combo_points<=2","always line up convoke with berserk if you can. If we are using jank tigers fury timings, send naked convoke" );
-
-finisher->add_action( "rip,if=combo_points>=4&refreshable&(buff.tigers_fury.up|dot.rip.remains<variable.tfRemains)","maintain rip in single-target" );
-finisher->add_action( "pool_resource,for_next=1" );
-finisher->add_action( "ferocious_bite,if=combo_points>=4&(!talent.saber_jaws|!buff.ravage.up)","ferocious bite asap, dont pool" );
-finisher->add_action( "pool_resource,for_next=1" );
-finisher->add_action( "ferocious_bite,max_energy=1,if=combo_points>=4" );
 
 custom_timers->add_action( "variable,name=currentTFTimer,default=-10,op=set,if=time>variable.nextTFTimer,value=variable.nextTFTimer","hold our current timer" );
 custom_timers->add_action( "variable,name=currentBSTimer,default=-10,op=set,if=time>variable.nextBSTimer,value=variable.nextBSTimer" );
