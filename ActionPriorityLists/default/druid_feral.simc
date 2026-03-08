@@ -47,7 +47,7 @@ actions+=/call_action_list,name=cooldown
 actions+=/ferocious_bite,if=buff.apex_predators_craving.up
 actions+=/call_action_list,name=finisher,if=spell_targets=1
 actions+=/call_action_list,name=aoe_finisher,if=combo_points>=4&spell_targets>=2
-actions+=/call_action_list,name=builder,if=spell_targets=1&combo_points<4
+actions+=/call_action_list,name=builder,if=spell_targets=1&combo_points<=4
 actions+=/call_action_list,name=aoe_builder,if=spell_targets>1&combo_points<=4
 actions+=/regrowth,if=buff.predatory_swiftness.up&variable.regrowth
 
@@ -154,10 +154,12 @@ actions.custom_timers+=/variable,name=tfNow,default=0,op=set,value=variable.use_
 # we are clear to use berserk. This is the same timer < time < timer + 2, so if our timer is 121s, then its true between 121 and 125 seconds.
 actions.custom_timers+=/variable,name=zerkNow,default=0,op=set,value=variable.use_custom_timers*(variable.currentBSTimer+4>time&time>=variable.currentBSTimer)
 
-# maintain rip in single-target
+# maintain rip in single-target. 5cp rips is a ~0.3% loss for dotc
 actions.finisher=rip,if=combo_points>=4&refreshable&(buff.tigers_fury.up|dot.rip.remains<variable.tfRemains)
 actions.finisher+=/pool_resource,for_next=1
 # ferocious bite asap, dont pool
-actions.finisher+=/ferocious_bite,if=combo_points>=4&(!talent.saber_jaws|!buff.ravage.up)
+actions.finisher+=/ferocious_bite,if=combo_points>=4+buff.bs_inc.up&(!talent.saber_jaws|buff.bs_inc.up)
+# &(!talent.saber_jaws|!buff.ravage.up)
 actions.finisher+=/pool_resource,for_next=1
-actions.finisher+=/ferocious_bite,max_energy=1,if=combo_points>=4
+# with sj + without panthers guile, its a sizable increase to do 5cp bite
+actions.finisher+=/ferocious_bite,max_energy=1,if=combo_points>=5-talent.panthers_guile&!buff.bs_inc.up
