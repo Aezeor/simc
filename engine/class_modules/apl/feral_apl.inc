@@ -9,7 +9,7 @@ action_priority_list_t* finisher = get_action_priority_list( "finisher" );
 action_priority_list_t* custom_timers = get_action_priority_list( "custom_timers" );
 
 precombat->add_action( "variable,name=regrowth,op=reset","optional variable that sends regrowth casts. Turned off by default" );
-precombat->add_action( "variable,name=use_custom_timers,op=set,value=1","toggle this to 1 if you are setting static timers for tigers fury/berserk. Convoke will automatically be paired with berserk." );
+precombat->add_action( "variable,name=use_custom_timers,op=set,value=0","toggle this to 1 if you are setting static timers for tigers fury/berserk. Convoke will automatically be paired with berserk." );
 precombat->add_action( "variable,name=nextTFTimer,op=set,value=0","set timer for the very first cast of each (value=) if using custom timers" );
 precombat->add_action( "variable,name=nextBSTimer,op=set,value=1" );
 precombat->add_action( "variable,name=dotc_rake_threshold,op=set,value=5" );
