@@ -188,7 +188,7 @@ void accumulated_rng_t::reset( reset_type_e /* reset_type */)
 int accumulated_rng_t::trigger( action_state_t* state )
 {
   if ( proc_chance <= 0 )
-    return false;
+    return ARNG_FAIL;
 
   trigger_count++;
 
@@ -208,9 +208,14 @@ int accumulated_rng_t::trigger( action_state_t* state )
   }
 
   if ( result )
+  {
     reset( reset_type_e::COMBAT );
-
-  return result;
+    return chance >= 1.0 ? ARNG_GUARANTEED : ARNG_SUCCESS;
+  }
+  else
+  {
+    return ARNG_FAIL;
+  }
 }
 
 threshold_rng_t::threshold_rng_t( std::string_view n, player_t* p, double increment_max, threshold_rng_fn fn,

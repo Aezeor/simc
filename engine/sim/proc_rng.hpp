@@ -256,6 +256,14 @@ constexpr double find_constant( double p, unsigned K = 0 )
 // trigger after a successful proc will have a trigger count of initial_count + 1.
 using accumulated_rng_fn = std::function<double( double, unsigned, action_state_t* )>;
 
+// Extra information about the outcome of accumulated_rng_t::trigger.
+enum accumulated_rng_e : int
+{
+  ARNG_FAIL = 0,
+  ARNG_SUCCESS = 1,
+  ARNG_GUARANTEED = 2
+};
+
 struct accumulated_rng_t : public proc_rng_t
 {
 private:
