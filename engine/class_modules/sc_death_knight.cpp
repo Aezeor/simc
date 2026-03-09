@@ -800,7 +800,6 @@ public:
   bool runeforge_expression_warning;
 
   // Counters
-  unsigned int km_proc_attempts;  // critical auto attacks since the last KM proc
   unsigned int active_riders;     // Number of active Riders of the Apocalypse pets
   unsigned int magus_active;      // Number of active Magus of the Dead pets
 
@@ -1746,6 +1745,7 @@ public:
     // Blood
     accumulated_rng_t* dance_of_midnight;
     // Frost
+    accumulated_rng_t* killing_machine;
     // Unholy
     accumulated_rng_t* sudden_doom;
     accumulated_rng_t* forbidden_knowledge;
@@ -1914,7 +1914,6 @@ public:
       runic_power_decay( nullptr ),
       deprecated_dnd_expression( false ),
       runeforge_expression_warning( false ),
-      km_proc_attempts( 0 ),
       active_riders( 0 ),
       magus_active( 0 ),
       undeath_tl(),
@@ -7261,7 +7260,7 @@ using death_knight_debuff_t = death_knight_buff_base_t<buff_t>;
 struct melee_t : public death_knight_melee_attack_t
 {
   melee_t( const char* name, death_knight_t* p, int sw )
-    : death_knight_melee_attack_t( name, p ), sync_weapons( sw ), first( true ), km_chance( 0 ), idt_chance( 0 )
+    : death_knight_melee_attack_t( name, p ), sync_weapons( sw ), first( true ), idt_chance( 0 )
   {
     school                    = SCHOOL_PHYSICAL;
     may_crit                  = true;
@@ -7273,11 +7272,6 @@ struct melee_t : public death_knight_melee_attack_t
     trigger_gcd               = 0_ms;
     special                   = false;
     weapon_multiplier         = 1.0;
-
-    if ( p->talent.frost.killing_machine.ok() )
-    {
-      km_chance = p->spec.might_of_the_frozen_wastes->ok() && p->main_hand_weapon.group() == WEAPON_2H ? 1.0 : 0.3;
-    }
 
     if ( p->talent.frost.icy_death_torrent.ok() )
     {
@@ -7337,17 +7331,12 @@ struct melee_t : public death_knight_melee_attack_t
 
       if ( s->result == RESULT_CRIT )
       {
-        if ( p()->talent.frost.killing_machine.ok() && rng().roll( km_chance * ++p()->km_proc_attempts ) )
-        {
+        if ( p()->talent.frost.killing_machine.ok() && p()->pseudo_random.killing_machine->trigger() )
           p()->trigger_killing_machine( false, p()->procs.km_from_crit_aa, p()->procs.km_from_crit_aa_wasted );
-          p()->km_proc_attempts = 0;
-        }
 
         // TODO: verify proc rate close to launch, as of build 55288 it is 100% for 2h and 50% for dw
         if ( p()->talent.frost.icy_death_torrent.ok() && rng().roll( idt_chance ) )
-        {
           p()->background_actions.icy_death_torrent_damage->execute();
-        }
 
         if ( p()->talent.frost.the_long_winter.ok() && p()->buffs.pillar_of_frost->check() )
         {
@@ -7369,7 +7358,6 @@ struct melee_t : public death_knight_melee_attack_t
 private:
   int sync_weapons;
   bool first;
-  double km_chance;
   double idt_chance;
 };
 
@@ -14397,6 +14385,8 @@ void death_knight_t::init_rng()
   pseudo_random.dance_of_midnight =
       get_accumulated_rng( "dance_of_midnight", prd::find_constant( 0.10 ) );  // 10% chance, not in data.
   // Frost
+  pseudo_random.killing_machine = get_accumulated_rng(
+      "killing_machine", spec.might_of_the_frozen_wastes->ok() && main_hand_weapon.group() == WEAPON_2H ? 1.0 : 0.3 );
   // Unholy
   pseudo_random.sudden_doom = get_accumulated_rng(
       "sudden_doom", prd::find_constant( talent.unholy.sudden_doom->effectN( 2 ).percent() *
@@ -16187,7 +16177,6 @@ void death_knight_t::reset()
 
   _runes.reset();
   runic_power_decay = nullptr;
-  km_proc_attempts  = 0;
   active_riders     = 0;
   magus_active      = 0;
   if ( lesser_ghouls_summoned > 0 && options.extra_unholy_reporting )
@@ -16461,7 +16450,6 @@ inline double death_knight_t::rune_regen_coefficient() const
 void death_knight_t::arise()
 {
   runic_power_decay            = nullptr;
-  km_proc_attempts             = 0;
   active_riders                = 0;
   magus_active                 = 0;
   dk_active_pets.clear();
