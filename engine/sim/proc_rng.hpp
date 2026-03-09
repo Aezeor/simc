@@ -246,8 +246,11 @@ constexpr double find_constant( double p, unsigned K = 0 )
 // where trigger_count is the number of trigger attempts since the last success, including the current attempt.
 // Thefirst trigger attempt after a successful proc will have a trigger count of 1.
 //
+// cap is an optional parameter that sets the maximum number of attempts before the proc is guaranteed. If set
+// to a nonzero value, it guarantees a proc when trigger_count == cap (even if proc_chance * trigger_count < 1).
+//
 // accumulator_fn is an optional functor that takes the proc chance and current trigger count and returns the chance of
-// success.
+// success. Overrides the previous cap behavior if present.
 //
 // initial_count is an optional parameter that sets the initial trigger count. If initial_count is set, the first
 // trigger after a successful proc will have a trigger count of initial_count + 1.
@@ -258,14 +261,15 @@ struct accumulated_rng_t : public proc_rng_t
 private:
   accumulated_rng_fn accumulator_fn;
   double proc_chance;
+  unsigned max_count;
   unsigned initial_count;
   unsigned trigger_count;
 
 public:
   static constexpr rng_type_e rng_type = RNG_ACCUMULATE;
 
-  accumulated_rng_t( std::string_view n, player_t* p, double c, accumulated_rng_fn fn = nullptr,
-                     unsigned initial_count = 0 );
+  accumulated_rng_t( std::string_view n, player_t* p, double c, unsigned cap = 0,
+                     accumulated_rng_fn fn = nullptr, unsigned initial_count = 0 );
 
   void reset( reset_type_e reset_type ) override;
   int trigger( action_state_t* = nullptr ) override;

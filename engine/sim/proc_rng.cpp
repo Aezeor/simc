@@ -170,11 +170,12 @@ int shuffled_rng_t::entry_remains()
   return as<int>( std::distance( position, entries.end() ) );
 }
 
-accumulated_rng_t::accumulated_rng_t( std::string_view n, player_t* p, double c, accumulated_rng_fn fn,
-                                      unsigned initial_count )
+accumulated_rng_t::accumulated_rng_t( std::string_view n, player_t* p, double c, unsigned cap,
+                                      accumulated_rng_fn fn, unsigned initial_count )
   : proc_rng_t( rng_type, n, p ),
     accumulator_fn( std::move( fn ) ),
     proc_chance( c ),
+    max_count( cap ),
     initial_count( initial_count ),
     trigger_count( initial_count )
 {}
@@ -191,14 +192,19 @@ int accumulated_rng_t::trigger( action_state_t* state )
 
   trigger_count++;
 
-  double chance = accumulator_fn ? accumulator_fn( proc_chance, trigger_count, state ) : proc_chance * trigger_count;
+  double chance;
+  if ( accumulator_fn )
+    chance = accumulator_fn( proc_chance, trigger_count, state );
+  else
+    chance = max_count > 0 && trigger_count >= max_count ? 1.0 : proc_chance * trigger_count;
+
   assert( !std::isnan( chance ) ); // nan check
   bool result = player->rng().roll( chance );
 
   if ( player->sim->debug )
   {
-    player->sim->print_debug( "Accumulated RNG: {}, base={:.3f} count={} chance={:.5f}%", name(), proc_chance,
-                              trigger_count, chance * 100.0 );
+    player->sim->print_debug( "Accumulated RNG: {}, base={:.3f} cap={} count={} chance={:.5f}%", name(),
+                              proc_chance, max_count, trigger_count, chance * 100.0 );
   }
 
   if ( result )
