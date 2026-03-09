@@ -1858,7 +1858,7 @@ public:
       int result = p()->accumulated_rng.clearcasting->trigger();
       if ( result == ARNG_GUARANTEED || ( !background && result ) )
       {
-        p()->trigger_clearcasting( 1.0, !background );
+        p()->trigger_clearcasting( 1.0, false );
         p()->state.last_random_clearcasting = sim->current_time();
       }
     }
