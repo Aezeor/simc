@@ -8422,7 +8422,7 @@ struct starfire_base_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
     // for precombat we hack it to manually energize 100ms later to get around AP capping on combat start. this must be
     // done in starfire_base_t as opposed to starfire_t as it's possible to get an umbral proc from 2x wrath resulting
     // in umbral shunt during execute().
-    if ( is_precombat && energize_resource_() == RESOURCE_ASTRAL_POWER )
+    if ( is_precombat && energize_resource_() == RESOURCE_ASTRAL_POWER && s->chain_target == 0 )
     {
       starfire_base_t::base_t::schedule_travel( s );
 
