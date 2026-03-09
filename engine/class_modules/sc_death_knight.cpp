@@ -1912,7 +1912,7 @@ public:
       dom_proc_attempts( 0 ),
       active_riders( 0 ),
       magus_active( 0 ),
-      dance_of_midnight_proc_chance( pseudo_random_c_from_p( 0.10 ) ),  // Hard coded, not found anywhere in spelldata.  Was mentioned in patch notes during midnight beta
+      dance_of_midnight_proc_chance( prd::find_constant( 0.10 ) ),  // Hard coded, not found anywhere in spelldata.  Was mentioned in patch notes during midnight beta
       undeath_tl(),
       buffs(),
       background_actions(),
@@ -2079,8 +2079,6 @@ public:
   bool in_death_and_decay() const;
   void parse_player_effects();
   const spell_data_t* conditional_spell_lookup( bool fn, int id );
-  double pseudo_random_p_from_c( double c );
-  double pseudo_random_c_from_p( double p );
   void create_dnd_event( action_t* a, timespan_t dur, timespan_t period );
   void trigger_rune_of_the_apocalypse( player_t* target );
   // Rider of the Apocalypse
@@ -7567,9 +7565,9 @@ struct dread_plague_t final : public death_knight_disease_t
   {
     if ( p->talent.unholy.sudden_doom.ok() )
     {
-      double sd_chance = p->pseudo_random_c_from_p( p->talent.unholy.sudden_doom->effectN( 2 ).percent() *
-                                                    ( 1 + p->talent.unholy.harbinger_of_doom->effectN( 2 ).percent() ) *
-                                                    ( 1.0 + p->talent.unholy.ebon_fever->effectN( 1 ).percent() ) );
+      double sd_chance = prd::find_constant( p->talent.unholy.sudden_doom->effectN( 2 ).percent() *
+                                             ( 1 + p->talent.unholy.harbinger_of_doom->effectN( 2 ).percent() ) *
+                                             ( 1.0 + p->talent.unholy.ebon_fever->effectN( 1 ).percent() ) );
       sudden_doom_rng  = p->get_accumulated_rng( "sudden_doom", sd_chance );
     }
 
@@ -7577,7 +7575,7 @@ struct dread_plague_t final : public death_knight_disease_t
 
     if ( p->talent.unholy.forbidden_knowledge_3.ok() )
     {
-      double fk_chance = p->pseudo_random_c_from_p( p->talent.unholy.forbidden_knowledge_3->effectN( 3 ).percent() );
+      double fk_chance        = prd::find_constant( p->talent.unholy.forbidden_knowledge_3->effectN( 3 ).percent() );
       forbidden_knowledge_rng = p->get_accumulated_rng( "forbidden_knowledge", fk_chance );
       p->pets.lesser_ghoul_fk.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
     }
@@ -13429,58 +13427,6 @@ void death_knight_t::trigger_drw_action( drw_actions_e action )
       drw_action_execute( dom, action );
     }
   }
-}
-
-double death_knight_t::pseudo_random_p_from_c( double c )
-{
-  if ( c <= 0 )
-    return 0.0;
-
-  double p_proc_on_n       = 0;
-  double p_proc_by_n       = 0;
-  double sum_n_p_proc_on_n = 0;
-
-  int max_fails = as<int>( std::ceil( 1 / c ) );
-  for ( int n = 1; n <= max_fails; ++n )
-  {
-    p_proc_on_n = std::min( 1.0, n * c ) * ( 1 - p_proc_by_n );
-    p_proc_by_n += p_proc_on_n;
-    sum_n_p_proc_on_n += n * p_proc_on_n;
-  }
-
-  return ( 1 / sum_n_p_proc_on_n );
-}
-
-double death_knight_t::pseudo_random_c_from_p( double p )
-{
-  if ( p <= 0 )
-    return 0.0;
-
-  double c_upper = p;
-  double c_lower = 0;
-  double c_mid;
-  double p1;
-  double p2 = 1;
-  while ( true )
-  {
-    c_mid = ( c_upper + c_lower ) * 0.5;
-    p1    = pseudo_random_p_from_c( c_mid );
-    if ( std::abs( p1 - p2 ) <= 0 )
-      break;
-
-    if ( p1 > p )
-    {
-      c_upper = c_mid;
-    }
-    else
-    {
-      c_lower = c_mid;
-    }
-
-    p2 = p1;
-  }
-
-  return c_mid;
 }
 
 void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t period )
