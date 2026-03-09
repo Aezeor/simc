@@ -169,9 +169,9 @@ public:
 
 namespace prd {
 // Computes the expected number of attempts before getting a proc given the
-// PRD constant C and a cap after which the proc is guaranteed. Returns the
+// PRD constant C and a cap K after which the proc is guaranteed. Returns the
 // expectation and its derivative with respect to C.
-constexpr std::pair<double, double> expected_attempts( double C, int K )
+constexpr std::pair<double, double> expected_attempts( double C, unsigned K )
 {
   double chain = 1.0;   // Chance of getting a chain of unsuccessful procs
   double d_chain = 0.0; // and its derivative
@@ -179,7 +179,7 @@ constexpr std::pair<double, double> expected_attempts( double C, int K )
   double expected = 0.0;
   double d_expected = 0.0;
 
-  for ( int i = 1; i <= K; i++ )
+  for ( unsigned i = 1; i <= K; i++ )
   {
     expected += chain;
     d_expected += d_chain;
@@ -188,7 +188,7 @@ constexpr std::pair<double, double> expected_attempts( double C, int K )
     if ( p >= 1.0 )
       break;
 
-    d_chain = d_chain * ( 1 - p ) - chain * i; // Chain rule
+    d_chain = d_chain * ( 1 - p ) - chain * i; // Product rule
     chain *= 1 - p;
   }
 
@@ -196,16 +196,19 @@ constexpr std::pair<double, double> expected_attempts( double C, int K )
 }
 
 // Finds the PRD constant C given the average proc rate p and a cap K
-// after which a proc is guaranteed. K <= 0 is treated as no cap.
-constexpr double find_constant( double p, int K = 0 )
+// after which a proc is guaranteed. K == 0 is treated as no cap.
+constexpr double find_constant( double p, unsigned K = 0 )
 {
   // This isn't strictly speaking correct for really small p values
   // (< 0.05%) but such values aren't realistic in the sim setting.
-  if ( K <= 0 )
-    K = 100000;
+  constexpr unsigned max_K = 100000;
+  if ( K == 0 || K > max_K )
+    K = max_K;
 
-  if ( p <= 1.0 / K )
+  if ( p <= 0.0 )
     return 0.0;
+  if ( p <= 1.0 / K )
+    return 1e-300; // Non-zero value to indicate that procs can occur
   if ( p >= 1.0 )
     return 1.0;
 
