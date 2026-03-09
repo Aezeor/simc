@@ -169,9 +169,9 @@ public:
 
 namespace prd {
 // Computes the expected number of attempts before getting a proc given the
-// PRD constant C and a cap after which the proc is guaranteed. Returns the
+// PRD constant C and a cap K after which the proc is guaranteed. Returns the
 // expectation and its derivative with respect to C.
-constexpr std::pair<double, double> expected_attempts( double C, int K )
+constexpr std::pair<double, double> expected_attempts( double C, unsigned K )
 {
   double chain = 1.0;   // Chance of getting a chain of unsuccessful procs
   double d_chain = 0.0; // and its derivative
@@ -179,7 +179,7 @@ constexpr std::pair<double, double> expected_attempts( double C, int K )
   double expected = 0.0;
   double d_expected = 0.0;
 
-  for ( int i = 1; i <= K; i++ )
+  for ( unsigned i = 1; i <= K; i++ )
   {
     expected += chain;
     d_expected += d_chain;
@@ -188,7 +188,7 @@ constexpr std::pair<double, double> expected_attempts( double C, int K )
     if ( p >= 1.0 )
       break;
 
-    d_chain = d_chain * ( 1 - p ) - chain * i; // Chain rule
+    d_chain = d_chain * ( 1 - p ) - chain * i; // Product rule
     chain *= 1 - p;
   }
 
@@ -196,16 +196,19 @@ constexpr std::pair<double, double> expected_attempts( double C, int K )
 }
 
 // Finds the PRD constant C given the average proc rate p and a cap K
-// after which a proc is guaranteed. K <= 0 is treated as no cap.
-constexpr double find_constant( double p, int K = 0 )
+// after which a proc is guaranteed. K == 0 is treated as no cap.
+constexpr double find_constant( double p, unsigned K = 0 )
 {
   // This isn't strictly speaking correct for really small p values
   // (< 0.05%) but such values aren't realistic in the sim setting.
-  if ( K <= 0 )
-    K = 100000;
+  constexpr unsigned max_K = 100000;
+  if ( K == 0 || K > max_K )
+    K = max_K;
 
-  if ( p <= 1.0 / K )
+  if ( p <= 0.0 )
     return 0.0;
+  if ( p <= 1.0 / K )
+    return 1e-300; // Non-zero value to indicate that procs can occur
   if ( p >= 1.0 )
     return 1.0;
 
@@ -243,26 +246,38 @@ constexpr double find_constant( double p, int K = 0 )
 // where trigger_count is the number of trigger attempts since the last success, including the current attempt.
 // Thefirst trigger attempt after a successful proc will have a trigger count of 1.
 //
+// cap is an optional parameter that sets the maximum number of attempts before the proc is guaranteed. If set
+// to a nonzero value, it guarantees a proc when trigger_count == cap (even if proc_chance * trigger_count < 1).
+//
 // accumulator_fn is an optional functor that takes the proc chance and current trigger count and returns the chance of
-// success.
+// success. Overrides the previous cap behavior if present.
 //
 // initial_count is an optional parameter that sets the initial trigger count. If initial_count is set, the first
 // trigger after a successful proc will have a trigger count of initial_count + 1.
 using accumulated_rng_fn = std::function<double( double, unsigned, action_state_t* )>;
+
+// Extra information about the outcome of accumulated_rng_t::trigger.
+enum accumulated_rng_e : int
+{
+  ARNG_FAIL = 0,
+  ARNG_SUCCESS = 1,
+  ARNG_GUARANTEED = 2
+};
 
 struct accumulated_rng_t : public proc_rng_t
 {
 private:
   accumulated_rng_fn accumulator_fn;
   double proc_chance;
+  unsigned max_count;
   unsigned initial_count;
   unsigned trigger_count;
 
 public:
   static constexpr rng_type_e rng_type = RNG_ACCUMULATE;
 
-  accumulated_rng_t( std::string_view n, player_t* p, double c, accumulated_rng_fn fn = nullptr,
-                     unsigned initial_count = 0 );
+  accumulated_rng_t( std::string_view n, player_t* p, double c, unsigned cap = 0,
+                     accumulated_rng_fn fn = nullptr, unsigned initial_count = 0 );
 
   void reset( reset_type_e reset_type ) override;
   int trigger( action_state_t* = nullptr ) override;
