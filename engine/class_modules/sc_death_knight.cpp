@@ -801,7 +801,6 @@ public:
 
   // Counters
   unsigned int km_proc_attempts;  // critical auto attacks since the last KM proc
-  unsigned int dom_proc_attempts; // Counts how many attempts to proc dance of midnight have been made
   unsigned int active_riders;     // Number of active Riders of the Apocalypse pets
   unsigned int magus_active;      // Number of active Magus of the Dead pets
 
@@ -1916,7 +1915,6 @@ public:
       deprecated_dnd_expression( false ),
       runeforge_expression_warning( false ),
       km_proc_attempts( 0 ),
-      dom_proc_attempts( 0 ),
       active_riders( 0 ),
       magus_active( 0 ),
       undeath_tl(),
@@ -12557,11 +12555,9 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
 
     if ( talent.blood.dance_of_midnight_3.ok() )
     {
-      if ( pseudo_random.dance_of_midnight->trigger() )
-      {
-        dom_proc_attempts = 0;
-        pets.dance_of_midnight_pet.spawn();
-      }
+      for ( int i = 0; i < as<int>( amount ); i++ )
+        if ( pseudo_random.dance_of_midnight->trigger() )
+          pets.dance_of_midnight_pet.spawn();
     }
   }
 
@@ -16192,7 +16188,6 @@ void death_knight_t::reset()
   _runes.reset();
   runic_power_decay = nullptr;
   km_proc_attempts  = 0;
-  dom_proc_attempts = 0;
   active_riders     = 0;
   magus_active      = 0;
   if ( lesser_ghouls_summoned > 0 && options.extra_unholy_reporting )
@@ -16467,7 +16462,6 @@ void death_knight_t::arise()
 {
   runic_power_decay            = nullptr;
   km_proc_attempts             = 0;
-  dom_proc_attempts            = 0;
   active_riders                = 0;
   magus_active                 = 0;
   dk_active_pets.clear();
