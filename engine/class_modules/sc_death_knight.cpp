@@ -805,9 +805,6 @@ public:
   unsigned int active_riders;     // Number of active Riders of the Apocalypse pets
   unsigned int magus_active;      // Number of active Magus of the Dead pets
 
-  // Dance of Midnight Proc Chance
-  double dance_of_midnight_proc_chance;
-
   std::vector<player_t*> undeath_tl;
 
   // Buffs
@@ -1745,6 +1742,16 @@ public:
     real_ppm_t* frostreaper;
   } rppm;
 
+  struct pseudo_random_t
+  {
+    // Blood
+    accumulated_rng_t* dance_of_midnight;
+    // Frost
+    // Unholy
+    accumulated_rng_t* sudden_doom;
+    accumulated_rng_t* forbidden_knowledge;
+  } pseudo_random;
+
   // Pets and Guardians
   struct pets_t
   {
@@ -1912,7 +1919,6 @@ public:
       dom_proc_attempts( 0 ),
       active_riders( 0 ),
       magus_active( 0 ),
-      dance_of_midnight_proc_chance( prd::find_constant( 0.10 ) ),  // Hard coded, not found anywhere in spelldata.  Was mentioned in patch notes during midnight beta
       undeath_tl(),
       buffs(),
       background_actions(),
@@ -1923,6 +1929,7 @@ public:
       talent(),
       spell(),
       pet_spell(),
+      pseudo_random(),
       pets( this ),
       procs(),
       options(),
@@ -7559,24 +7566,12 @@ struct dread_plague_t final : public death_knight_disease_t
   dread_plague_t( std::string_view name, death_knight_t* p )
     : death_knight_disease_t( name, p, p->spell.dread_plague ),
       last_target( nullptr ),
-      erupt( nullptr ),
-      sudden_doom_rng( nullptr ),
-      forbidden_knowledge_rng( nullptr )
+      erupt( nullptr )
   {
-    if ( p->talent.unholy.sudden_doom.ok() )
-    {
-      double sd_chance = prd::find_constant( p->talent.unholy.sudden_doom->effectN( 2 ).percent() *
-                                             ( 1 + p->talent.unholy.harbinger_of_doom->effectN( 2 ).percent() ) *
-                                             ( 1.0 + p->talent.unholy.ebon_fever->effectN( 1 ).percent() ) );
-      sudden_doom_rng  = p->get_accumulated_rng( "sudden_doom", sd_chance );
-    }
-
     add_child( p->background_actions.dread_plague_death );
 
     if ( p->talent.unholy.forbidden_knowledge_3.ok() )
     {
-      double fk_chance        = prd::find_constant( p->talent.unholy.forbidden_knowledge_3->effectN( 3 ).percent() );
-      forbidden_knowledge_rng = p->get_accumulated_rng( "forbidden_knowledge", fk_chance );
       p->pets.lesser_ghoul_fk.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
     }
 
@@ -7617,7 +7612,7 @@ struct dread_plague_t final : public death_knight_disease_t
   {
     death_knight_disease_t::tick( d );
 
-    if ( p()->talent.unholy.sudden_doom.ok() && sudden_doom_rng->trigger() )
+    if ( p()->talent.unholy.sudden_doom.ok() && p()->pseudo_random.sudden_doom->trigger() )
       p()->buffs.sudden_doom->trigger();
 
     // Proc rate testing shows this at ~50% chance with limited testing. Assuming effect 2 divided by 10 is the chance
@@ -7638,15 +7633,13 @@ struct dread_plague_t final : public death_knight_disease_t
       }
     }
 
-    if ( p()->talent.unholy.forbidden_knowledge_3.ok() && forbidden_knowledge_rng->trigger() )
+    if ( p()->talent.unholy.forbidden_knowledge_3.ok() && p()->pseudo_random.forbidden_knowledge->trigger() )
       p()->pet_summon.fk_ghoul->execute();
   }
 
 private:
   player_t* last_target;
   action_t* erupt;
-  accumulated_rng_t* sudden_doom_rng;
-  accumulated_rng_t* forbidden_knowledge_rng;
 };
 
 // Frost Fever =======================================================
@@ -12564,8 +12557,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
 
     if ( talent.blood.dance_of_midnight_3.ok() )
     {
-      double proc_chance = dance_of_midnight_proc_chance * ++dom_proc_attempts * std::max( amount, 1.0 );
-      if ( rng().roll( proc_chance ) )
+      if ( pseudo_random.dance_of_midnight->trigger() )
       {
         dom_proc_attempts = 0;
         pets.dance_of_midnight_pet.spawn();
@@ -14404,6 +14396,19 @@ void death_knight_t::init_rng()
   rppm.carnage     = get_rppm( "carnage", talent.blood.carnage );
   rppm.blood_beast = get_rppm( "blood_beast", talent.sanlayn.the_blood_is_life );
   rppm.frostreaper = get_rppm( "frostreaper", talent.frost.frostreaper );
+
+  // Blood
+  pseudo_random.dance_of_midnight =
+      get_accumulated_rng( "dance_of_midnight", prd::find_constant( 0.10 ) );  // 10% chance, not in data.
+  // Frost
+  // Unholy
+  pseudo_random.sudden_doom = get_accumulated_rng(
+      "sudden_doom", prd::find_constant( talent.unholy.sudden_doom->effectN( 2 ).percent() *
+                                         ( 1.0 + talent.unholy.harbinger_of_doom->effectN( 2 ).percent() ) *
+                                         ( 1.0 + talent.unholy.ebon_fever->effectN( 1 ).percent() ) ) );
+
+  pseudo_random.forbidden_knowledge = get_accumulated_rng(
+      "forbidden_knowledge", prd::find_constant( talent.unholy.forbidden_knowledge_3->effectN( 3 ).percent() ) );
 }
 
 // death_knight_t::init_base ================================================
