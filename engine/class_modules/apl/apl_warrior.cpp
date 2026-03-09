@@ -33,13 +33,11 @@ void fury( player_t* p )
   precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&talent.recklessness&trinket.2.cooldown.duration%%cooldown.recklessness.duration=0" );
   precombat->add_action( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs&(trinket.2.has_cooldown|!trinket.1.has_cooldown)|variable.trinket_2_buffs&((trinket.2.cooldown.duration%variable.trinket_2_duration)*(1.5+trinket.2.has_buff.strength)*(variable.trinket_2_sync)*(variable.trinket_2_high_value)*(1+((trinket.2.ilvl-trinket.1.ilvl)%100)))>((trinket.1.cooldown.duration%variable.trinket_1_duration)*(1.5+trinket.1.has_buff.strength)*(variable.trinket_1_sync)*(variable.trinket_1_high_value)*(1+((trinket.1.ilvl-trinket.2.ilvl)%100)))" );
   precombat->add_action( "variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs&trinket.2.ilvl>=trinket.1.ilvl" );
-  precombat->add_action( "recklessness" );
-  precombat->add_action( "avatar,if=!equipped.cursed_stone_idol" );
 
   default_->add_action( "auto_attack" );
   default_->add_action( "charge,if=time<=0.5|movement.distance>5" );
   default_->add_action( "heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)" );
-  default_->add_action( "potion,if=target.time_to_die>300|target.time_to_die<300&target.health.pct<35&buff.recklessness.up|target.time_to_die<25" );
+  default_->add_action( "potion,if=target.time_to_die>300|buff.recklessness.up|target.time_to_die<25" );
   default_->add_action( "pummel,if=target.debuff.casting.react" );
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "call_action_list,name=variables" );
