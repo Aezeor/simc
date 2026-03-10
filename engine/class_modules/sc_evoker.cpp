@@ -1088,6 +1088,7 @@ struct evoker_t : public player_t
     int eternity_surge_default_rank                            = 0;
     int upheaval_default_rank                                  = 0;
     bool allow_precombat_buffs_for_debug                       = false;
+    int estimated_raid_dps_allies                              = 13;
   } option;
 
   // Action pointers
@@ -7164,10 +7165,20 @@ public:
     if ( p( s )->close_as_clutchmates )
       m *= 1 + p( s )->spec.close_as_clutchmates->effectN( 1 ).percent();
 
-    if ( p( s )->allies_with_my_ebon.size() > p( s )->spec.ebon_might->effectN( 3 ).base_value() )
+    size_t player_count = p( s )->allies_with_my_ebon.size();
+
+    // Depower Breath of Eons in Raid Encounters
+    if ( p( s ) == s->action->player && player_count > p( s )->spec.ebon_might->effectN( 3 ).base_value() &&
+         p( s )->option.estimated_raid_dps_allies > player_count )
     {
-      m *= p( s )->spec.ebon_might->effectN( 3 ).base_value() / p( s )->allies_with_my_ebon.size();
+      player_count = p( s )->option.estimated_raid_dps_allies;
     }
+    
+    if ( player_count > p( s )->spec.ebon_might->effectN( 3 ).base_value() )
+    {
+      m *= p( s )->spec.ebon_might->effectN( 3 ).base_value() / player_count;
+    }
+
 
     return m;
   }
@@ -9105,25 +9116,18 @@ void evoker_t::create_permanent_actors()
       option.force_clutchmates = "no";
       close_as_clutchmates     = false;
 
-      bobs = { { "Bob UHDK1", "unh" },
-               { "Bob UHDK2", "unh" },
-               { "Bob FDK1", "dk_frost" },
-               { "Bob Arcane", "arcane" },
-               { "Bob Assa", "assa" },
-               { "Bob Flat1", "default" },
-               { "Bob Flat2", "default" },
-               { "Bob Flat3", "default" },
-               { "Bob Flat4", "default" },
-               { "Bob Flat5", "default" },
-               { "Bob BM", "bm" },
-               { "Bob ShadowA", "shadow_archon" }, // These exist to Sandbag because Shadow sucks right now. This will more accurately represent what the game looks like in a normal comp.
-               { "Bob ShadowVW", "shadow" },
-               { "Bob Tank1", "tank" },
-               { "Bob Tank2", "tank" },
-               { "Bob Healer1", "healer" },
-               { "Bob Healer2", "healer" },
-               { "Bob Healer3", "healer" },
-               { "Bob Healer4", "healer" },
+      // Spawn in a vastly reduced Raid Cohort and estimate Breath of Eons instead.
+      // This will slightly over-estimate the power of Ebon Might but makes the sims significantly faster.
+      bobs = {
+          { "Bob UHDK1", "unh" },
+          { "Bob UHDK2", "unh" },
+          { "Bob FDK1", "dk_frost" },
+          { "Bob BM", "bm" },
+          { "Bob Flat1", "default" },
+          { "Bob ShadowA", "shadow_archon" },  // These exist to Sandbag because Shadow sucks right now. This will
+                                               // more accurately represent what the game looks like in a normal comp.
+          { "Bob Healer1", "healer" },
+          { "Bob Tank1", "tank" },
       };
     }
 
@@ -10324,6 +10328,7 @@ void evoker_t::create_options()
   add_option( opt_int( "evoker.eternity_surge_default_rank", option.eternity_surge_default_rank, 0, 5 ) );
   add_option( opt_int( "evoker.upheaval_default_rank", option.upheaval_default_rank, 0, 5 ) );
   add_option( opt_bool( "evoker.allow_precombat_buffs_for_debug", option.allow_precombat_buffs_for_debug ) );
+  add_option( opt_int( "evoker.estimated_raid_dps_allies", option.estimated_raid_dps_allies ) );
 }
 
 void evoker_t::analyze( sim_t& sim )
