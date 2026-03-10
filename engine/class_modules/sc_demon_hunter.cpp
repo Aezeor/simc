@@ -11913,8 +11913,6 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
 
       s->result_amount *= 1.0 + buff.painbringer->check_value();
 
-      s->result_amount *= 1.0 + buff.demon_spikes->check() * spec.demon_spikes_buff->effectN( 3 ).percent();
-
       if ( td->dots.fiery_brand && td->dots.fiery_brand->is_ticking() )
       {
         s->result_amount *= 1.0 + spec.fiery_brand_debuff->effectN( 1 ).percent();
@@ -11927,12 +11925,6 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
       break;
     default:
       break;
-  }
-
-  if ( talent.annihilator.phase_shift->ok() )
-  {
-    s->result_amount *= 1.0 + buff.voidfall_building->check_stack_value();
-    s->result_amount *= 1.0 + buff.voidfall_final_hour->check_stack_value();
   }
 }
 
