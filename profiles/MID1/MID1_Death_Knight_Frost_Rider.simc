@@ -1,11 +1,11 @@
-deathknight="MID1_Death_Knight_Frost"
+deathknight="MID1_Death_Knight_Frost_Rider"
 source=default
 spec=frost
 level=90
 race=pandaren
 role=attack
 position=back
-talents=CsPAAAAAAAAAAAAAAAAAAAAAAMDwMjZMmZY2mZmZmZxMjMjxMDzw4BMzgZmZmZAAAAAAAAAwY2GYALglhJkxCmZMzMwMAGmZAmBM
+talents=CsPAAAAAAAAAAAAAAAAAAAAAAMDwMjZMmZY2mZmZmZxMjMjxMDzw4BMzgZmZmZAAAAAAAAAwY2mFzyMMWYYZmtphmxGmZMzMwMAGmZwMzMgB
 
 # Default consumables
 potion=potion_of_recklessness_2
@@ -129,17 +129,17 @@ actions.variables+=/variable,name=frostscythe_priority,value=3
 actions.variables+=/variable,name=breath_of_sindragosa_check,value=!talent.breath_of_sindragosa|(cooldown.breath_of_sindragosa.remains>20|(cooldown.breath_of_sindragosa.remains<1*gcd.max&runic_power>=(60-20*hero_tree.deathbringer)))
 
 head=relentless_riders_crown,id=249970,bonus_id=40/6935/12676/12806/13335/13338/13575,gem_id=240983
-neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=6935/13355/13468/13469,gem_id=240908/240908
+neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=6935/13355/13468/13469,gem_id=240890/240890
 shoulders=shoulderplates_of_frozen_blood,id=50234,bonus_id=12806/13577
 back=adherents_silken_shroud,id=239656,bonus_id=8791/8960/12066/12214/12384/13622/13667/9627
 chest=relentless_riders_cuirass,id=249973,bonus_id=40/12676/12806/13335/13336/13575,enchant_id=7987
-wrists=spellbreakers_bracers,id=237834,bonus_id=8791/8960/12066/12384/13622/12497,gem_id=240908
+wrists=spellbreakers_bracers,id=237834,bonus_id=8791/8960/12066/12384/13622/12497,gem_id=240890
 hands=relentless_riders_bonegrasps,id=249971,bonus_id=40/12675/12806/13335/13337/13574
-waist=relentless_riders_chain,id=249967,bonus_id=6935/13355/13468/13469,gem_id=240908
+waist=relentless_riders_chain,id=249967,bonus_id=6935/13355/13468/13469,gem_id=240890
 legs=relentless_riders_legguards,id=249969,bonus_id=40/12676/12806/13335/13339/13575,enchant_id=8159
 feet=greaves_of_the_unformed,id=249381,bonus_id=13355/13468/13469
-finger1=platinum_star_band,id=193708,bonus_id=6935/13355/13468/13469,gem_id=240908,enchant_id=7967
-finger2=sindorei_band_of_hope,id=249919,bonus_id=6935/13355/13468/13469,gem_id=240908,enchant_id=7967
+finger1=platinum_star_band,id=193708,bonus_id=6935/13355/13468/13469,gem_id=240890,enchant_id=7967
+finger2=sindorei_band_of_hope,id=249919,bonus_id=6935/13355/13468/13469,gem_id=240890,enchant_id=7967
 trinket1=gaze_of_the_alnseer,id=249343,bonus_id=13355/13468/13469
 trinket2=light_company_guidon,id=249344,bonus_id=13355/13468/13469
 main_hand=bellamys_final_judgement,id=249277,bonus_id=12806/13577,enchant_id=3368
@@ -148,9 +148,9 @@ main_hand=bellamys_final_judgement,id=249277,bonus_id=12806/13577,enchant_id=336
 # gear_ilvl=288.47
 # gear_strength=1243
 # gear_stamina=17372
-# gear_crit_rating=994
-# gear_haste_rating=319
-# gear_mastery_rating=1179
+# gear_crit_rating=952
+# gear_haste_rating=391
+# gear_mastery_rating=1149
 # gear_avoidance_rating=266
 # gear_armor=1863
 # set_bonus=midnight_season_1_2pc=1
