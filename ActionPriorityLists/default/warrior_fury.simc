@@ -86,10 +86,10 @@ actions.thane+=/thunder_blast,if=buff.thunder_blast.stack=2
 actions.thane+=/bloodbath
 actions.thane+=/rampage,if=buff.recklessness.up
 actions.thane+=/thunder_blast,if=buff.avatar.up
-actions.thane+=/crushing_blow
 actions.thane+=/bloodthirst
-actions.thane+=/thunder_blast
 actions.thane+=/execute
+actions.thane+=/crushing_blow
+actions.thane+=/thunder_blast
 actions.thane+=/rampage
 actions.thane+=/raging_blow
 actions.thane+=/thunder_clap
