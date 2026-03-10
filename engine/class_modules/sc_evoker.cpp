@@ -9120,10 +9120,10 @@ void evoker_t::create_permanent_actors()
       // This will slightly over-estimate the power of Ebon Might but makes the sims significantly faster.
       bobs = {
           { "Bob UHDK1", "unh" },
-          { "Bob UHDK2", "unh" },
           { "Bob FDK1", "dk_frost" },
           { "Bob BM", "bm" },
           { "Bob Flat1", "default" },
+          { "Bob Flat2", "default" },
           { "Bob ShadowA", "shadow_archon" },  // These exist to Sandbag because Shadow sucks right now. This will
                                                // more accurately represent what the game looks like in a normal comp.
           { "Bob Healer1", "healer" },
