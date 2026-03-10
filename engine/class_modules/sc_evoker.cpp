@@ -4480,9 +4480,9 @@ public:
 
   double ebon_int()
   {
-    sim->print_debug( "{} ebon might current int: {}, base percent: {}, crit_mod: {}, aug_4pc_value: {}",
+    sim->print_debug( "{} ebon might current int: {}, base percent: {}, crit_mod: {}, aug_4pc_value: {}, active_buffs: {}",
                       player->name_str, p()->cache.intellect(), p()->spec.ebon_might->effectN( 1 ).percent(),
-                      p()->buff.ebon_might_self_buff->check_value(), p()->buff.tww1_4pc_aug->check_stack_value() );
+                      p()->buff.ebon_might_self_buff->check_value(), p()->buff.tww1_4pc_aug->check_stack_value(), p()->allies_with_my_ebon.size() );
 
     if ( p()->allied_ebons_on_me.empty() )
       return p()->cache.intellect() * ebon_value();
@@ -4550,6 +4550,8 @@ public:
   {
     if ( ebon->check() && ebon->stats[ 0 ].amount != _ebon_int )
     {
+      sim->print_debug( "{} updating em values on player {}. New amount: {}, was: {}", *p(), *ebon->player, _ebon_int,
+                        ebon->stats[ 0 ].amount );
       ebon->stats[ 0 ].amount = _ebon_int;
       adjust_int( ebon );
     }
