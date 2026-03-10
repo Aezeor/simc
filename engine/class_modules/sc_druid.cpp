@@ -4216,6 +4216,7 @@ struct frantic_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, c
     frantic_frenzy_tick_t( druid_t* p, std::string_view n, flag_e f ) : cat_attack_t( n, p, p->find_spell( 1244079 ), f )
     {
       background = dual = proc = true;
+      aoe = -1;
       direct_bleed = false;
       travel_delay = FERAL_FLICKER_DELAY.total_seconds();
 
