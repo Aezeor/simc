@@ -3084,6 +3084,14 @@ struct empowered_release_t : public empowered_base_t<BASE>
         aoe = 1;
     }
 
+    void execute() override
+    {
+      target_cache.is_valid = false;
+      select_target();
+
+      evoker_augment_t::execute();
+    }
+
     void impact( action_state_t* s ) override
     {
       evoker_augment_t::impact( s );
@@ -3094,100 +3102,41 @@ struct empowered_release_t : public empowered_base_t<BASE>
 
     size_t available_targets( std::vector<player_t*>& target_list ) const override
     {
-      std::vector<player_t*> helper_list;
-
       target_list.clear();
-
-      if ( as<int>( sim->player_no_pet_list.size() ) <= n_targets() )
-      {
-        for ( const auto& t : sim->player_no_pet_list )
-        {
-          if ( !t->is_sleeping() )
-            target_list.push_back( t );
-        }
-
-        return target_list.size();
-      }
 
       for ( const auto& t : sim->player_no_pet_list )
       {
-        if ( !t->is_sleeping() && t != player )
-        {
-          if ( t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL && t->primary_role() != ROLE_TANK &&
-               t->specialization() != EVOKER_AUGMENTATION && p()->get_target_data( t )->buffs.ebon_might->check() &&
-               !p()->get_target_data( t )->buffs.shifting_sands->check() &&
-               std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
-                             [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.shifting_sands->up(); } ) )
-          {
-            target_list.push_back( t );
-          }
-          else
-          {
-            helper_list.push_back( t );
-          }
-        }
+        if ( t->is_sleeping() )
+          continue;
+        target_list.push_back( t );
       }
 
-      if ( as<int>( target_list.size() ) >= n_targets() )
-      {
-        if ( as<int>( target_list.size() ) > n_targets() )
-        {
-          rng().shuffle( target_list.begin(), target_list.end() );
-        }
+      if ( target_list.size() <= n_targets() )
         return target_list.size();
+
+      auto shifting_point = std::partition( target_list.begin(), target_list.end(), [ & ]( player_t* t ) {
+        return std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
+                             [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.shifting_sands->up(); } );
+      } );
+
+      // if (shifting_point)
+
+      if ( shifting_point > target_list.begin() )
+      {
+        rng().shuffle( target_list.begin(), shifting_point );
+        std::partition( target_list.begin(), shifting_point, [ & ]( player_t* t ) {
+          return t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL && t->primary_role() != ROLE_TANK &&
+                 t->specialization() != EVOKER_AUGMENTATION;
+        } );
       }
 
-      std::vector<std::function<bool( player_t* )>> lambdas = {
-          [ this ]( player_t* t ) {
-            return p()->get_target_data( t )->buffs.ebon_might->check() &&
-                   !p()->get_target_data( t )->buffs.shifting_sands->check() &&
-                   std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
-                                 [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.shifting_sands->up(); } );
-          },
-          [ this ]( player_t* t ) {
-            return t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL &&
-                   t->primary_role() != ROLE_TANK && t->specialization() != EVOKER_AUGMENTATION &&
-                   !p()->get_target_data( t )->buffs.shifting_sands->check() &&
-                   std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
-                                 [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.shifting_sands->up(); } );
-          },
-          [ this ]( player_t* t ) {
-            return !p()->get_target_data( t )->buffs.shifting_sands->check() &&
-                   std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
-                                 [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.shifting_sands->up(); } );
-          },
-          []( player_t* t ) {
-            return t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL &&
-                   t->primary_role() != ROLE_TANK && t->specialization() != EVOKER_AUGMENTATION;
-          },
-          []( player_t* ) { return true; } };
-
-      for ( auto& fn : lambdas )
+      if ( shifting_point < target_list.end() )
       {
-        auto pos = target_list.size();
-
-        for ( size_t i = 0; i < helper_list.size(); )
-        {
-          if ( fn( helper_list[ i ] ) )
-          {
-            target_list.push_back( helper_list[ i ] );
-            erase_unordered( helper_list, helper_list.begin() + i );
-          }
-          else
-          {
-            i++;
-          }
-        }
-
-        if ( as<int>( target_list.size() ) >= n_targets() )
-        {
-          if ( target_list.size() - pos > 1 )
-          {
-            rng().shuffle( target_list.begin() + pos + 1, target_list.end() );
-          }
-
-          return target_list.size();
-        }
+        rng().shuffle( shifting_point, target_list.end() );
+        std::partition( shifting_point, target_list.end(), [ & ]( player_t* t ) {
+          return t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL && t->primary_role() != ROLE_TANK &&
+                 t->specialization() != EVOKER_AUGMENTATION;
+        } );
       }
 
       return target_list.size();
