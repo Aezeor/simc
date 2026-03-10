@@ -97,10 +97,10 @@ void fury( player_t* p )
   thane->add_action( "bloodbath" );
   thane->add_action( "rampage,if=buff.recklessness.up" );
   thane->add_action( "thunder_blast,if=buff.avatar.up" );
-  thane->add_action( "crushing_blow" );
   thane->add_action( "bloodthirst" );
-  thane->add_action( "thunder_blast" );
   thane->add_action( "execute" );
+  thane->add_action( "crushing_blow" );
+  thane->add_action( "thunder_blast" );
   thane->add_action( "rampage" );
   thane->add_action( "raging_blow" );
   thane->add_action( "thunder_clap" );
