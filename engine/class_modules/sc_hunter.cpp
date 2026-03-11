@@ -5500,9 +5500,7 @@ struct aimed_shot_t : public aimed_shot_base_t
       for ( auto pet : p()->pets.dark_minion.active_pets() )
         pet->actions.blighted_arrow->execute();
 
-    //Consume lock and load if it proc'd before the cast started
-    //11/03/2026 - Consume procs generated mid-cast too without benefit.
-    if ( lock_and_loaded || p()->bugs && p()->buffs.lock_and_load->check() )
+    if ( lock_and_loaded )
     {
       p()->buffs.lock_and_load->decrement();
     }
