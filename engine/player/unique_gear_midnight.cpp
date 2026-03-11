@@ -3580,7 +3580,7 @@ void register_special_effects()
   register_special_effect( 1259297, DISABLED_EFFECT );  // murder row materials equip effect
   register_special_effect( 1244021, sets::root_wardens_regalia );
   register_special_effect( 1241262, sets::arcanoweave_trappings );
-  register_special_effect( 1270977, sets::sunfiresilk_trappings );
+  register_special_effect( 1270977, sets::sunfire_silk_trappings );
   register_special_effect( 1253358, DISABLED_EFFECT );  // torments duality
 }
 
