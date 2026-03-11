@@ -283,10 +283,11 @@ void marksmanship( player_t* p )
   drst->add_action( "rapid_fire" );
   drst->add_action( "steady_shot" );
 
+  sentaoe->add_action( "trueshot,if=!buff.double_tap.up&(fight_remains>100-30*talent.calling_the_shots.enabled|target.health.pct<20|fight_remains<20)&talent.bullseye.enabled" );
   sentaoe->add_action( "rapid_fire,if=talent.unload.enabled&((buff.precise_shots.up&talent.no_scope.disabled)&buff.bulletstorm.stack<10|target.health.pct<20)" );
   sentaoe->add_action( "multishot,target_if=1+debuff.sentinels_mark.down,if=buff.precise_shots.up&!talent.aspect_of_the_hydra.enabled|buff.trick_shots.down" );
   sentaoe->add_action( "rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time" );
-  sentaoe->add_action( "trueshot,target_if=1+debuff.sentinels_mark.down,if=!buff.double_tap.up" );
+  sentaoe->add_action( "trueshot,target_if=1+debuff.sentinels_mark.down,if=!buff.double_tap.up&!talent.bullseye.enabled" );
   sentaoe->add_action( "volley,if=!buff.double_tap.up" );
   sentaoe->add_action( "aimed_shot,target_if=1+debuff.sentinels_mark.remains" );
   sentaoe->add_action( "moonlight_chakram" );
@@ -294,11 +295,11 @@ void marksmanship( player_t* p )
   sentaoe->add_action( "steady_shot" );
 
   sentst->add_action( "volley,if=!buff.double_tap.up&active_enemies=1&buff.bulletstorm.stack<11" );
+  sentst->add_action( "trueshot,if=!buff.double_tap.up&(fight_remains>100-30*talent.calling_the_shots.enabled|target.health.pct<20|fight_remains<20)&talent.bullseye.enabled" );
   sentst->add_action( "rapid_fire,if=talent.unload.enabled&((buff.precise_shots.up&talent.no_scope.disabled)&buff.bulletstorm.stack<10|target.health.pct<20)" );
-  sentst->add_action( "multishot,target_if=1+debuff.sentinels_mark.down,if=active_enemies>1&buff.precise_shots.up&!talent.aspect_of_the_hydra.enabled|buff.trick_shots.down&active_enemies>2&talent.trick_shots.enabled" );
   sentst->add_action( "arcane_shot,target_if=1+debuff.sentinels_mark.down,if=buff.precise_shots.up" );
   sentst->add_action( "rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time" );
-  sentst->add_action( "trueshot,target_if=1+debuff.sentinels_mark.down,if=!buff.double_tap.up" );
+  sentst->add_action( "trueshot,target_if=1+debuff.sentinels_mark.down,if=!buff.double_tap.up&!talent.bullseye.enabled" );
   sentst->add_action( "volley,if=!buff.double_tap.up" );
   sentst->add_action( "aimed_shot,target_if=1+debuff.sentinels_mark.remains" );
   sentst->add_action( "moonlight_chakram" );
@@ -370,10 +371,11 @@ void marksmanship_ptr( player_t* p )
   drst->add_action( "rapid_fire" );
   drst->add_action( "steady_shot" );
 
+  sentaoe->add_action( "trueshot,if=!buff.double_tap.up&(fight_remains>100-30*talent.calling_the_shots.enabled|target.health.pct<20|fight_remains<20)&talent.bullseye.enabled" );
   sentaoe->add_action( "rapid_fire,if=talent.unload.enabled&((buff.precise_shots.up&talent.no_scope.disabled)&buff.bulletstorm.stack<10|target.health.pct<20)" );
   sentaoe->add_action( "multishot,target_if=1+debuff.sentinels_mark.down,if=buff.precise_shots.up&!talent.aspect_of_the_hydra.enabled|buff.trick_shots.down" );
   sentaoe->add_action( "rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time" );
-  sentaoe->add_action( "trueshot,target_if=1+debuff.sentinels_mark.down,if=!buff.double_tap.up" );
+  sentaoe->add_action( "trueshot,target_if=1+debuff.sentinels_mark.down,if=!buff.double_tap.up&!talent.bullseye.enabled" );
   sentaoe->add_action( "volley,if=!buff.double_tap.up" );
   sentaoe->add_action( "aimed_shot,target_if=1+debuff.sentinels_mark.remains" );
   sentaoe->add_action( "moonlight_chakram" );
@@ -381,11 +383,11 @@ void marksmanship_ptr( player_t* p )
   sentaoe->add_action( "steady_shot" );
 
   sentst->add_action( "volley,if=!buff.double_tap.up&active_enemies=1&buff.bulletstorm.stack<11" );
+  sentst->add_action( "trueshot,if=!buff.double_tap.up&(fight_remains>100-30*talent.calling_the_shots.enabled|target.health.pct<20|fight_remains<20)&talent.bullseye.enabled" );
   sentst->add_action( "rapid_fire,if=talent.unload.enabled&((buff.precise_shots.up&talent.no_scope.disabled)&buff.bulletstorm.stack<10|target.health.pct<20)" );
-  sentst->add_action( "multishot,target_if=1+debuff.sentinels_mark.down,if=active_enemies>1&buff.precise_shots.up&!talent.aspect_of_the_hydra.enabled|buff.trick_shots.down&active_enemies>2&talent.trick_shots.enabled" );
   sentst->add_action( "arcane_shot,target_if=1+debuff.sentinels_mark.down,if=buff.precise_shots.up" );
   sentst->add_action( "rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time" );
-  sentst->add_action( "trueshot,target_if=1+debuff.sentinels_mark.down,if=!buff.double_tap.up" );
+  sentst->add_action( "trueshot,target_if=1+debuff.sentinels_mark.down,if=!buff.double_tap.up&!talent.bullseye.enabled" );
   sentst->add_action( "volley,if=!buff.double_tap.up" );
   sentst->add_action( "aimed_shot,target_if=1+debuff.sentinels_mark.remains" );
   sentst->add_action( "moonlight_chakram" );

@@ -48,10 +48,11 @@ actions.drst+=/wailing_arrow
 actions.drst+=/rapid_fire
 actions.drst+=/steady_shot
 
-actions.sentaoe=rapid_fire,if=talent.unload.enabled&((buff.precise_shots.up&talent.no_scope.disabled)&buff.bulletstorm.stack<10|target.health.pct<20)
+actions.sentaoe=trueshot,if=!buff.double_tap.up&(fight_remains>100-30*talent.calling_the_shots.enabled|target.health.pct<20|fight_remains<20)&talent.bullseye.enabled
+actions.sentaoe+=/rapid_fire,if=talent.unload.enabled&((buff.precise_shots.up&talent.no_scope.disabled)&buff.bulletstorm.stack<10|target.health.pct<20)
 actions.sentaoe+=/multishot,target_if=1+debuff.sentinels_mark.down,if=buff.precise_shots.up&!talent.aspect_of_the_hydra.enabled|buff.trick_shots.down
 actions.sentaoe+=/rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time
-actions.sentaoe+=/trueshot,target_if=1+debuff.sentinels_mark.down,if=!buff.double_tap.up
+actions.sentaoe+=/trueshot,target_if=1+debuff.sentinels_mark.down,if=!buff.double_tap.up&!talent.bullseye.enabled
 actions.sentaoe+=/volley,if=!buff.double_tap.up
 actions.sentaoe+=/aimed_shot,target_if=1+debuff.sentinels_mark.remains
 actions.sentaoe+=/moonlight_chakram
@@ -59,11 +60,11 @@ actions.sentaoe+=/rapid_fire
 actions.sentaoe+=/steady_shot
 
 actions.sentst=volley,if=!buff.double_tap.up&active_enemies=1&buff.bulletstorm.stack<11
+actions.sentst+=/trueshot,if=!buff.double_tap.up&(fight_remains>100-30*talent.calling_the_shots.enabled|target.health.pct<20|fight_remains<20)&talent.bullseye.enabled
 actions.sentst+=/rapid_fire,if=talent.unload.enabled&((buff.precise_shots.up&talent.no_scope.disabled)&buff.bulletstorm.stack<10|target.health.pct<20)
-actions.sentst+=/multishot,target_if=1+debuff.sentinels_mark.down,if=active_enemies>1&buff.precise_shots.up&!talent.aspect_of_the_hydra.enabled|buff.trick_shots.down&active_enemies>2&talent.trick_shots.enabled
 actions.sentst+=/arcane_shot,target_if=1+debuff.sentinels_mark.down,if=buff.precise_shots.up
 actions.sentst+=/rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time
-actions.sentst+=/trueshot,target_if=1+debuff.sentinels_mark.down,if=!buff.double_tap.up
+actions.sentst+=/trueshot,target_if=1+debuff.sentinels_mark.down,if=!buff.double_tap.up&!talent.bullseye.enabled
 actions.sentst+=/volley,if=!buff.double_tap.up
 actions.sentst+=/aimed_shot,target_if=1+debuff.sentinels_mark.remains
 actions.sentst+=/moonlight_chakram
