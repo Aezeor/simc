@@ -1,11 +1,11 @@
-warlock="MID1_Warlock_Destruction_Hellcaller"
+warlock="MID1_Warlock_Destruction_Diabolist"
 source=default
 spec=destruction
 level=90
 race=Dwarf
 role=spell
 position=ranged_back
-talents=CsQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZjhZmZmlZjxMLGjFzAAgZmxMzsYBGYWMaMDgZL2YAAgxAjNAgZGYmxYAAAYmZmBAwMDD
+talents=CsQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZjhZmZmlZjxMLGjFzAAgZmxMzsAGzYYhMw2wGNWYAAgxAjNAMzAYmxYAAAYmZmBAwMDD
 
 # Default consumables
 potion=lights_potential_2
