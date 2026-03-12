@@ -254,7 +254,7 @@ void arms( player_t* p )
   colossus_st->add_action( "slam" );
 
   slayer_aoe->add_action( "rend,if=!dot.rend_dot.remains&talent.rend" );
-  slayer_aoe->add_action( "sweeping_strikes,if=!buff.sweeping_strikes.up&cooldown.colossus_smash.remains>4|!talent.broad_strokes)" );
+  slayer_aoe->add_action( "sweeping_strikes,if=!buff.sweeping_strikes.up&cooldown.colossus_smash.remains>4|!talent.broad_strokes" );
   slayer_aoe->add_action( "avatar" );
   slayer_aoe->add_action( "champions_spear" );
   slayer_aoe->add_action( "colossus_smash" );
