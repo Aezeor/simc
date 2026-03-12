@@ -8804,7 +8804,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
       add_invalidate( CACHE_ARMOR );
     }
 
-    if ( p->talent.havoc.a_fire_inside )
+    if ( p->talent.havoc.a_fire_inside->ok() )
     {
       set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
       set_max_stack( 5 );
