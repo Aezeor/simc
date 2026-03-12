@@ -16008,8 +16008,8 @@ void death_knight_t::init_finished()
   {
     std::array<stat_e, 4> offensive_stats = { STAT_CRIT_RATING, STAT_HASTE_RATING, STAT_MASTERY_RATING,
                                               STAT_VERSATILITY_RATING };
-    if ( util::str_compare_ci( potion_str, "potion_of_recklessness" ) ||
-         util::str_compare_ci( potion_str, "potion_of_recklessness_2" ) &&
+    if ( ( util::str_compare_ci( potion_str, "potion_of_recklessness" ) ||
+         util::str_compare_ci( potion_str, "potion_of_recklessness_2" ) ) &&
              util::highest_stat( this, offensive_stats ) != STAT_MASTERY_RATING )
       sim->error( MODERATE,
                   "Player {} has selected Potion of Recklessness but does not have Mastery as their highest offensive "
