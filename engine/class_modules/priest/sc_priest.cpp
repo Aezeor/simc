@@ -3760,7 +3760,7 @@ void priest_t::trigger_divine_aegis( action_state_t* s )
 
 void priest_t::spawn_idol_of_cthun( action_state_t* s )
 {
-  if ( !talents.shadow.idol_of_cthun.enabled() )
+  if ( !talents.shadow.idol_of_cthun.enabled() && !talents.shadow.void_apparitions_3.enabled() )
     return;
 
   if ( s->action->target_list().size() > 2 )
