@@ -12711,7 +12711,9 @@ void shaman_t::apply_action_effects( parse_effects_t* a )
   eff::source_eff_builder_t( buff.ascendance ).build( a );
   eff::source_eff_builder_t( buff.hot_hand ).build( a );
   eff::source_eff_builder_t( buff.arc_discharge ).build( a );
-  eff::source_eff_builder_t( buff.whirling_earth ).build( a );
+  eff::source_eff_builder_t( buff.whirling_earth )
+    .add_affect_list( affect_list_t( 1 ).remove_spell( 467283 ) ) // Splitstream Sundering
+    .build( a );
 
 /*eff::source_eff_builder_t( talent.enhanced_imbues )
     .set_state_fn( [ this ] { return buff.flametongue_weapon->check(); } )
