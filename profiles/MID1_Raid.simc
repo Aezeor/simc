@@ -26,11 +26,10 @@ MID1_Evoker_Devastation.simc
 # MID1_Evoker_Devastation_SC.simc
 MID1_Evoker_Devastation_FS.simc
 
-# MID1_Hunter_Beast_Mastery_Pack_Leader.simc
-# # MID1_Hunter_Beast_Mastery_Dark_Ranger.simc
-# MID1_Hunter_Beast_Mastery.simc
-# MID1_Hunter_Marksmanship.simc
-# MID1_Hunter_Survival.simc
+MID1_Hunter_Beast_Mastery.simc
+MID1_Hunter_Marksmanship.simc
+MID1_Hunter_Survival_Sentinel_2H.simc
+MID1_Hunter_Survival_PackLeader_DW.simc
 
 MID1_Mage_Arcane.simc
 MID1_Mage_Arcane_Sunfury.simc
