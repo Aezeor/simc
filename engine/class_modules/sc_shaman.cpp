@@ -5147,9 +5147,8 @@ struct lava_lash_t : public shaman_attack_t
     if ( p()->talent.ashen_catalyst.ok() &&
       td( execute_state->target )->dot.flame_shock->is_ticking() )
     {
-      // Ashen Catalyst does not get the Lava Lash recharge multiplier applied to it
       p()->cooldown.lava_lash->adjust( -p()->talent.ashen_catalyst->effectN( 1 ).time_value(),
-        false, false );
+        false );
     }
   }
 
@@ -11473,10 +11472,10 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
   {
     cooldown.strike->adjust(
       timespan_t::from_seconds( -1.0 * stacks * talent.elemental_tempo->effectN( 3 ).base_value() / 1000.0 ),
-      false, false );
+      false );
     cooldown.lava_lash->adjust(
       timespan_t::from_seconds( -1.0 * stacks * talent.elemental_tempo->effectN( 3 ).base_value() / 1000.0 ),
-      false, false );
+      false );
   }
 
   if ( talent.lightning_strikes.ok() && stacks > 0 )
