@@ -2668,15 +2668,13 @@ void priest_t::create_pets()
 
 void priest_t::init_base_stats()
 {
-  // Halo has a 30 yard range
-  // Divine Star gets two hits if used at or below 24yd, only 1 up to 28yd. 0 hits from 29-30yd
   if ( base.distance < 1 )
   {
     // Bug: Halo is a few yards short
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/1225
     if ( talents.archon.halo.enabled() )
     {
-      base.distance = ( bugs ? 28.0 : 30.0 ) + ( talents.archon.power_surge.enabled() ? 10.0 : 0.0 );
+      base.distance = ( bugs ? 38.0 : 40.0 );
     }
 
     if ( talents.phantom_reach.enabled() )
