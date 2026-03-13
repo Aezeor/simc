@@ -22,7 +22,6 @@ temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=arcane_intellect
-actions.precombat+=/snapshot_stats
 actions.precombat+=/variable,name=cast_remains_time,value=0.2
 actions.precombat+=/variable,name=pooling_time,value=10*gcd.max
 # Flamestrike at 4 targets during Combustion. Do at 3 targets if you don't care about prio dmg.
@@ -165,10 +164,10 @@ main_hand=brazier_of_the_dissonant_dirge,id=249286,bonus_id=12792/13448/13452,il
 # gear_ilvl=288.47
 # gear_stamina=17604
 # gear_intellect=1661
-# gear_crit_rating=83
-# gear_haste_rating=1185
-# gear_mastery_rating=1187
-# gear_versatility_rating=55
+# gear_crit_rating=87
+# gear_haste_rating=1201
+# gear_mastery_rating=1205
+# gear_versatility_rating=59
 # gear_speed_rating=98
 # gear_avoidance_rating=407
 # gear_armor=531
