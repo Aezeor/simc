@@ -11480,11 +11480,20 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
 
   if ( talent.lightning_strikes.ok() && stacks > 0 )
   {
-    ls_counter += as<unsigned>( stacks );
-    if ( ls_counter >= as<unsigned>( talent.lightning_strikes->effectN( 2 ).base_value() ) )
+    // [BUG] 2026-03-13: Lightning Strikes in-game only triggers if you consume exactly 10 stacks.
+    // There is no counter-based mechanism.
+    if ( bugs && stacks == as<int>( talent.lightning_strikes->effectN( 2 ).base_value() ) )
     {
-      ls_counter -= as<unsigned>( talent.lightning_strikes->effectN( 2 ).base_value() );
       buff.lightning_strikes->trigger();
+    }
+    else if ( !bugs )
+    {
+      ls_counter += as<unsigned>( stacks );
+      if ( ls_counter >= as<unsigned>( talent.lightning_strikes->effectN( 2 ).base_value() ) )
+      {
+        ls_counter -= as<unsigned>( talent.lightning_strikes->effectN( 2 ).base_value() );
+        buff.lightning_strikes->trigger();
+      }
     }
   }
 
