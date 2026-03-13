@@ -8,11 +8,11 @@ position=ranged_back
 talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMbLzMzMzMLbbDMmZAAAAAbmZbzMzwmhFmtZmGamNAYWmZmxYbxEmZ2GLzMzMGWmlZsYmhZWAAGAzMzMGGG
 
 # Default consumables
-potion=draught_of_rampant_abandon
+potion=lights_potential_2
 flask=flask_of_the_magister_2
-food=blooming_feast
+food=harandar_celebration
 augmentation=void_touched
-temporary_enchant=disabled
+temporary_enchant=main_hand:thalassian_phoenix_oil_2,if=!talent.flametongue_weapon
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -111,8 +111,8 @@ off_hand=ward_of_the_spellbreaker,id=251105,bonus_id=12806/13577
 # gear_strength=62
 # gear_stamina=17574
 # gear_intellect=1661
-# gear_crit_rating=871
-# gear_haste_rating=370
+# gear_crit_rating=887
+# gear_haste_rating=386
 # gear_mastery_rating=1188
 # gear_versatility_rating=68
 # gear_speed_rating=76
