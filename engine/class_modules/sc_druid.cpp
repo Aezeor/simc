@@ -11503,7 +11503,7 @@ void druid_t::create_actions()
       _owl->name_str_reporting = "Moonkin";
 
       auto _owl_driver = get_secondary_action<starfall_t::starfall_driver_t>(
-        "heart_of_the_wild_owl_driver", find_trigger( _owl ).trigger(), nullptr, flag_e::NONE );
+        "heart_of_the_wild_owl_driver", find_trigger( _owl ).trigger(), find_spell( 1286243 ), flag_e::NONE );
       _owl_driver->damage->name_str_reporting = "HotW";
       _owl_driver->damage->base_multiplier *= talent.heart_of_the_wild->effectN( 5 ).percent();
 
