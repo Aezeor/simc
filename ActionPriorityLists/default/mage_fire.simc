@@ -7,7 +7,6 @@
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=arcane_intellect
-actions.precombat+=/snapshot_stats
 actions.precombat+=/variable,name=cast_remains_time,value=0.2
 actions.precombat+=/variable,name=pooling_time,value=10*gcd.max
 # Flamestrike at 4 targets during Combustion. Do at 3 targets if you don't care about prio dmg.
