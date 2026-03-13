@@ -6,7 +6,17 @@
 namespace demon_hunter_apl
 {
 
-std::string potion( const player_t* p )
+std::string potion_devourer( const player_t* p )
+{
+  return ( p->true_level > 80 ) ? "potion_of_recklessness_2" : "tempered_potion_3";
+}
+
+std::string potion_havoc( const player_t* p )
+{
+  return ( p->true_level > 80 ) ? "potion_of_recklessness_2" : "tempered_potion_3";
+}
+
+std::string potion_vengeance( const player_t* p )
 {
   return ( p->true_level > 80 ) ? "lights_potential_2" : "tempered_potion_3";
 }

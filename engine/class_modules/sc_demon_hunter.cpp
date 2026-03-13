@@ -11442,12 +11442,14 @@ std::string demon_hunter_t::default_flask() const
 {
   switch ( specialization() )
   {
-    case DEMON_HUNTER_VENGEANCE:
-      return demon_hunter_apl::flask_vengeance( this );
     case DEMON_HUNTER_DEVOURER:
       return demon_hunter_apl::flask_devourer( this );
-    default:
+    case DEMON_HUNTER_HAVOC:
       return demon_hunter_apl::flask_havoc( this );
+    case DEMON_HUNTER_VENGEANCE:
+      return demon_hunter_apl::flask_vengeance( this );
+    default:
+      return "disabled";
   }
 }
 
@@ -11455,7 +11457,17 @@ std::string demon_hunter_t::default_flask() const
 
 std::string demon_hunter_t::default_potion() const
 {
-  return demon_hunter_apl::potion( this );
+  switch ( specialization() )
+  {
+    case DEMON_HUNTER_DEVOURER:
+      return demon_hunter_apl::potion_devourer( this );
+    case DEMON_HUNTER_HAVOC:
+      return demon_hunter_apl::potion_havoc( this );
+    case DEMON_HUNTER_VENGEANCE:
+      return demon_hunter_apl::potion_vengeance( this );
+    default:
+      return "disabled";
+  }
 }
 
 // demon_hunter_t::default_food ====================================================
@@ -11464,12 +11476,14 @@ std::string demon_hunter_t::default_food() const
 {
   switch ( specialization() )
   {
-    case DEMON_HUNTER_VENGEANCE:
-      return demon_hunter_apl::food_vengeance( this );
     case DEMON_HUNTER_DEVOURER:
       return demon_hunter_apl::food_devourer( this );
-    default:
+    case DEMON_HUNTER_HAVOC:
       return demon_hunter_apl::food_havoc( this );
+    case DEMON_HUNTER_VENGEANCE:
+      return demon_hunter_apl::food_vengeance( this );
+    default:
+      return "disabled";
   }
 }
 
@@ -11486,12 +11500,14 @@ std::string demon_hunter_t::default_temporary_enchant() const
 {
   switch ( specialization() )
   {
-    case DEMON_HUNTER_VENGEANCE:
-      return demon_hunter_apl::temporary_enchant_vengeance( this );
     case DEMON_HUNTER_DEVOURER:
       return demon_hunter_apl::temporary_enchant_devourer( this );
-    default:
+    case DEMON_HUNTER_HAVOC:
       return demon_hunter_apl::temporary_enchant_havoc( this );
+    case DEMON_HUNTER_VENGEANCE:
+      return demon_hunter_apl::temporary_enchant_vengeance( this );
+    default:
+      return "disabled";
   }
 }
 
