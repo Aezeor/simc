@@ -6256,6 +6256,8 @@ struct chained_base_t : public shaman_spell_t
 
 struct chain_lightning_t : public chained_base_t
 {
+  strike_variant sv;
+
   chain_lightning_t( shaman_t* player, util::string_view options_str ) :
     chain_lightning_t( player, "chain_lightning", player->talent.chain_lightning,
       variant_flag( spell_variant::NORMAL ), options_str )
@@ -6273,7 +6275,8 @@ struct chain_lightning_t : public chained_base_t
   chain_lightning_t( shaman_t* player, util::string_view name_str, const spell_data_t* spell,
     unsigned t, util::string_view options_str )
     : chained_base_t( player, name_str, t, spell,
-        player->spec.maelstrom->effectN( 5 ).resource( RESOURCE_MAELSTROM ), options_str )
+        player->spec.maelstrom->effectN( 5 ).resource( RESOURCE_MAELSTROM ), options_str ),
+        sv( strike_variant::NORMAL )
   {
     if ( player->mastery.elemental_overload->ok() )
     {
@@ -6329,6 +6332,13 @@ struct chain_lightning_t : public chained_base_t
         ps_action->add_child( this );
       }
     }
+  }
+
+  void trigger( strike_variant sv_, player_t* target )
+  {
+    sv = sv_;
+
+    execute_on_target( target );
   }
 
   void proc_lightning_rod()
@@ -6393,6 +6403,11 @@ struct chain_lightning_t : public chained_base_t
     if ( is_variant( spell_variant::PRIMORDIAL_STORM ) )
     {
       m *= p()->talent.primordial_storm->effectN( 2 ).percent();
+    }
+
+    if ( sv == strike_variant::STORMFLURRY )
+    {
+      m *= p()->talent.stormflurry->effectN( 2 ).percent();
     }
 
     return m;
@@ -12199,7 +12214,19 @@ void shaman_t::trigger_ride_the_lightning( const action_state_t* state, action_t
     return;
   }
 
-  trigger->execute_on_target( state->target );
+  auto cl = debug_cast<chain_lightning_t*>( trigger );
+  switch( state->action->id )
+  {
+    case 60103: // Lava Lash
+      cl->trigger( strike_variant::NORMAL, state->target );
+      break;
+    default: // Strikes
+    {
+      auto strike = debug_cast<stormstrike_base_t*>( state->action );
+      cl->trigger( strike->strike_type, state->target );
+      break;
+    }
+  }
 }
 
 void shaman_t::trigger_thorims_invocation( const action_state_t* state )
