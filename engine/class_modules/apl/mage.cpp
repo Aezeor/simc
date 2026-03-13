@@ -151,7 +151,6 @@ void fire( player_t* p )
   action_priority_list_t* sf_filler = p->get_action_priority_list( "sf_filler" );
 
   precombat->add_action( "arcane_intellect" );
-  precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=cast_remains_time,value=0.2" );
   precombat->add_action( "variable,name=pooling_time,value=10*gcd.max" );
   precombat->add_action( "variable,name=ff_combustion_flamestrike,if=!talent.spellfire_spheres,value=4+(999*!talent.fuel_the_fire)", "Flamestrike at 4 targets during Combustion. Do at 3 targets if you don't care about prio dmg." );
