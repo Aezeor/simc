@@ -2101,6 +2101,7 @@ public:
   void init_action_list() override;
   void init_action_list_enhancement();
   void init_action_list_restoration_dps();
+  void init_blizzard_action_list() override;
   std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
   parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                             const assisted_combat_step_data_t& step ) const override;
@@ -13096,6 +13097,27 @@ void shaman_t::init_action_list_restoration_dps()
   def->add_action( this, "Frost Shock", "moving=1" );
 }
 
+// shaman_t::init_blizzard_action_list ======================================
+
+void shaman_t::init_blizzard_action_list()
+{
+  parse_player_effects_t::init_blizzard_action_list();
+
+  if ( !use_cds_with_blizzard_action_list )
+  {
+    return;
+  }
+
+  action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
+
+  cooldowns->add_action( "ascendance" );
+  if ( specialization() == SHAMAN_ENHANCEMENT )
+  {
+    cooldowns->add_action( "doom_winds" );
+  }
+}
+
+
 // shaman_t::init_actions ===================================================
 
 void shaman_t::init_action_list()
@@ -13203,10 +13225,18 @@ void shaman_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
   }
 
   // Make Lightning bolt equivalent lines for tempest
-  if ( step.spell_id == 188196 && talent.tempest.ok() )
+  if ( step.spell_id == 188196 )
   {
     auto custom_step = step;
     custom_step.spell_id = 452201;
+    player_t::parse_assisted_combat_step( custom_step, assisted_combat );
+  }
+
+  // Add Windstrike lines by copying Stormstrike lines
+  if ( step.spell_id == 17364 )
+  {
+    auto custom_step = step;
+    custom_step.spell_id = 115356;
     player_t::parse_assisted_combat_step( custom_step, assisted_combat );
   }
 
