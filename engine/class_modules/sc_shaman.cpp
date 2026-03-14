@@ -12969,6 +12969,7 @@ void shaman_t::init_action_list_enhancement()
 
   // AOE
   aoe->add_action( "voltaic_blaze,if=talent.surging_totem.enabled&dot.flame_shock.remains=0" );
+  aoe->add_action( "flame_shock,if=!ticking" );
   aoe->add_action( "surging_totem" );
   aoe->add_action( "ascendance,if=ti_chain_lightning" );
   aoe->add_action( "call_action_list,name=buffs" );
@@ -12995,6 +12996,7 @@ void shaman_t::init_action_list_enhancement()
   aoe->add_action( "lava_lash" );
   aoe->add_action( "stormstrike" );
   aoe->add_action( "chain_lightning,if=buff.maelstrom_weapon.stack>=5" );
+  aoe->add_action( "flame_shock" );
 
   // Buffs
   buffs->add_action( "use_item,name=algethar_puzzle_box,use_off_gcd=1,if=(talent.ascendance.enabled&(cooldown.ascendance.remains<2*gcd.max))|(talent.doom_winds.enabled&!talent.ascendance.enabled&(cooldown.doom_winds.remains<2*gcd.max))|(fight_remains%%120<=20)" );
@@ -13011,6 +13013,7 @@ void shaman_t::init_action_list_enhancement()
   // Stormbringer Single Target
   single_sb->add_action( "primordial_storm,if=(buff.maelstrom_weapon.stack>=9|buff.primordial_storm.remains<=4&buff.maelstrom_weapon.stack>=5)" );
   single_sb->add_action( "voltaic_blaze,if=dot.flame_shock.remains=0&time<5" );
+  single_sb->add_action( "flame_shock,if=!ticking" );
   single_sb->add_action( "lava_lash,if=!debuff.lashing_flames.up&time<5" );
   single_sb->add_action( "call_action_list,name=buffs" );
   single_sb->add_action( "sundering,if=talent.surging_elements.enabled|talent.feral_spirit.enabled" );
@@ -13031,9 +13034,11 @@ void shaman_t::init_action_list_enhancement()
   single_sb->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack>=8" );
   single_sb->add_action( "crash_lightning" );
   single_sb->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack>=5" );
+  single_sb->add_action( "flame_shock" );
 
   // Totemic Single Target
   single_totemic->add_action( "voltaic_blaze,if=dot.flame_shock.remains=0" );
+  single_totemic->add_action( "flame_shock,if=!ticking" );
   single_totemic->add_action( "surging_totem" );
   single_totemic->add_action( "call_action_list,name=buffs" );
   single_totemic->add_action( "lava_lash,if=buff.whirling_fire.up|buff.hot_hand.up" );
@@ -13053,6 +13058,7 @@ void shaman_t::init_action_list_enhancement()
   single_totemic->add_action( "voltaic_blaze" );
   single_totemic->add_action( "crash_lightning" );
   single_totemic->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack>=5" );
+  single_totemic->add_action( "flame_shock" );
 
 // def->add_action( "call_action_list,name=opener" );
 }
