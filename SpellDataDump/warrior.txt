@@ -12981,7 +12981,7 @@ Effects          :
 #3 (id=1289791)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #4 (id=1300777)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : $?c1[Mortal Strike and Cleave when it hits $s2 or more targets have][Bloodthirst has] a $?c1[$s3][$s4]% chance to cause you to unleash a flurry of steel, striking all nearby enemies for $446005s1 Physical damage and applying Overwhelmed. Deals reduced damage beyond $s1 targets.
 
 
