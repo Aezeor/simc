@@ -132,27 +132,6 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.empty_barrel );
 
   // Windwalker
-  if ( const auto &effect = p()->baseline.windwalker.mastery->effectN( 1 ); effect.ok() )
-  {
-    auto mastery_parse_entry = [ & ]( std::vector<player_effect_t> &effect_list ) {
-      const std::array<unsigned, 3> rsk_ids = {
-          p()->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id(),
-          p()->talent.windwalker.rushing_wind_kick_action->effectN( 1 ).trigger()->id(),
-          p()->talent.windwalker.glory_of_the_dawn_damage->id() };
-
-      double value = effect.mastery_value();
-      if ( range::contains( rsk_ids, base_t::id ) && p()->talent.windwalker.sunfire_spiral->ok() )
-        value *= 1.0 + p()->talent.windwalker.sunfire_spiral->effectN( 1 ).percent();
-      add_parse_entry( effect_list )
-          .set_buff( p()->buff.combo_strikes )
-          .set_func( [ & ] { return ww_mastery; } )
-          .set_value( value )
-          .set_mastery( true )
-          .set_eff( &effect );
-    };
-    mastery_parse_entry( base_t::da_multiplier_effects );
-    mastery_parse_entry( base_t::ta_multiplier_effects );
-  }
   parse_effects( p()->buff.hit_combo );
   parse_effects( p()->buff.press_the_advantage );
   parse_effects( p()->buff.combo_breaker, affect_list_t( 1, 2, 3 ).remove_spell(
@@ -876,6 +855,13 @@ struct rising_sun_kick_t : monk_melee_attack_t
             .set_note( "Nearby Enemy Scaling" )
             .set_eff( &effect );
       }
+      if ( const auto &effect = player->talent.windwalker.sunfire_spiral->effectN( 1 ); effect.ok() )
+        add_parse_entry( da_multiplier_effects )
+            .set_buff( p()->buff.combo_strikes )
+            .set_value( effect.percent() )
+            .set_func( [] { return false; } )
+            .set_note( "Mastery Active" )
+            .set_eff( &effect );
     }
 
     void impact( action_state_t *state ) override
@@ -5128,7 +5114,7 @@ bool monk_t::validate_actor()
   int expected = 13;
   for ( const auto &hero_tree : player_sub_trees )
   {
-    int count = range::count_if( player_traits,
+    int count = (int)( range::count_if( player_traits,
                                  [ is_ptr = is_ptr(), hero_tree ]( std::tuple<talent_tree, unsigned, unsigned> entry ) {
                                    if ( std::get<talent_tree>( entry ) != talent_tree::HERO )
                                      return false;
@@ -5136,7 +5122,7 @@ bool monk_t::validate_actor()
                                    if ( !trait )
                                      return false;
                                    return static_cast<hero_tree_e>( trait->id_sub_tree ) == hero_tree;
-                                 } );
+                                 } ) );
 
     // Report without counting the hidden talent that activates the subtree
     count -= 1;
