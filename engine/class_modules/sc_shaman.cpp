@@ -13165,13 +13165,13 @@ void shaman_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
     return;
 
   auto replace_spell = [ & ]( unsigned source_spell_id, unsigned target_spell_id ) {
-  if ( step.spell_id == source_spell_id )
-  {
-    assisted_combat_step_data_t custom_step = step;
-    custom_step.spell_id                    = target_spell_id;
-    player_t::parse_assisted_combat_step( custom_step, assisted_combat );
-    return true;
-  }
+    if ( step.spell_id == source_spell_id )
+    {
+      assisted_combat_step_data_t custom_step = step;
+      custom_step.spell_id                    = target_spell_id;
+      player_t::parse_assisted_combat_step( custom_step, assisted_combat );
+      return true;
+    }
 
     return false;
   };
@@ -13200,6 +13200,14 @@ void shaman_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
   if ( conditionally_replace_spell( 197214, 1218090, AC_AURA_ON_PLAYER, 1218125 ) )
   {
     return;
+  }
+
+  // Make Lightning bolt equivalent lines for tempest
+  if ( step.spell_id == 188196 && talent.tempest.ok() )
+  {
+    auto custom_step = step;
+    custom_step.spell_id = 452201;
+    player_t::parse_assisted_combat_step( custom_step, assisted_combat );
   }
 
   player_t::parse_assisted_combat_step( step, assisted_combat );
