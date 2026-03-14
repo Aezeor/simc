@@ -17290,73 +17290,73 @@ struct death_knight_module_t : public module_t
      */
   }
 
-  /*
+  
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Death Knight", "2026-2-13", "Virulent Plague nerfed 18%", 281049,
+    hotfix::register_effect( "Death Knight", "2026-3-13", "Virulent Plague buffed 15%", 281049,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "ap_coefficient" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.2177715 )
-        .verification_value( 0.265575 );
+        .modifier( 0.2504378 )
+        .verification_value( 0.217772 );
 
-    hotfix::register_effect( "Death Knight", "2026-2-13", "Dread Plague nerfed 18%", 1239728,
+    hotfix::register_effect( "Death Knight", "2026-3-13", "Epidemic (main) buffed 10%", 315517,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "ap_coefficient" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.365925 )
-        .verification_value( 0.44625 );
+        .modifier( 0.6255216 )
+        .verification_value( 0.568656 );
 
-    hotfix::register_effect( "Death Knight", "2026-2-13", "Pestilence Nerfed to 100% Remaining damage", 1285178,
+    hotfix::register_effect( "Death Knight", "2026-3-13", "Epidemic (AoE) buffed 10%", 872659,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0.2502115 )
+        .verification_value( 0.227465 );
+
+    hotfix::register_effect( "Death Knight", "2026-3-13", "Graveyard (main) buffed 10%", 1015149,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1.123155 )
+        .verification_value( 1.02105 );
+
+    hotfix::register_effect( "Death Knight", "2026-3-13", "Graveyard (AoE) buffed 10%", 1274362,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0.4492664 )
+        .verification_value( 0.408424 );
+
+    hotfix::register_effect( "Death Knight", "2026-3-13", "Direct Damage Aura Nerfed 20%", 179690,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 100 )
-        .verification_value( 150 );
+        .modifier( -26 )
+        .verification_value( -8 );
 
-    hotfix::register_effect( "Death Knight", "2026-2-13", "Epidemic (Main) nerfed 10%", 315517,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.568656 )
-        .verification_value( 0.63184 );
-
-    hotfix::register_effect( "Death Knight", "2026-2-13", "Epidemic (AoE) nerfed 10%", 872659,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.2274651 )
-        .verification_value( 0.252739 );
-
-    hotfix::register_effect( "Death Knight", "2026-2-13", "Graveyard (Main) nerfed 10%", 1015149,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 1.02105 )
-        .verification_value( 1.1345 );
-
-    hotfix::register_effect( "Death Knight", "2026-2-13", "Graveyard (AoE) nerfed 10%", 1274362,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.4084245 )
-        .verification_value( 0.453805 );
-
-    hotfix::register_effect( "Death Knight", "2026-2-13", "Visceral Strength reduced to 4% Strength", 1123972,
+    hotfix::register_effect( "Death Knight", "2026-3-13", "Periodic Damage Aura Nerfed 20%", 191170,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 4 )
-        .verification_value( 8 );
+        .modifier( -26 )
+        .verification_value( -8 );
 
-    hotfix::register_spell( "Death Knight", "2026-2-13", "Incite Terror max stack reduced to 3", 458478,
+    hotfix::register_effect( "Death Knight", "2026-3-13", "Pet Damage Aura Nerfed 20%", 191171,
                              hotfix::HOTFIX_FLAG_LIVE )
-        .field( "max_stack" )
+        .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 3 )
-        .verification_value( 5 );
+        .modifier( -26 )
+        .verification_value( -8 );
+
+    hotfix::register_effect( "Death Knight", "2026-3-13", "Guardian Damage Aura Nerfed 20%", 1032341,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( -26 )
+        .verification_value( -8 );
   }
-  */
+  
 
   void init( player_t* ) const override
   {
