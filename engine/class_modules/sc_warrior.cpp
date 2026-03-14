@@ -9407,7 +9407,7 @@ struct warrior_module_t : public module_t
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 10 )
+        .modifier( 20 )
         .verification_value( 30 );
   }
 
