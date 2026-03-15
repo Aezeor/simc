@@ -144,7 +144,7 @@ actions.variables+=/variable,name=execute_phase,value=(talent.massacre.enabled&t
 actions.variables+=/variable,name=on_gcd_racials,value=buff.recklessness.down&buff.recklessness.down&rage<80&buff.sudden_death.down&!cooldown.bladestorm.ready&(!cooldown.execute.ready|!variable.execute_phase)
 
 head=night_enders_tusks,id=249952,bonus_id=12806/13335,gem_id=240983,enchant_id=8017
-neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13335,gem_id=240900/240900
+neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13335,gem_id=240900
 shoulders=night_enders_pauldrons,id=249950,bonus_id=12806/13335,enchant_id=8031
 back=rigid_scale_greatcloak,id=258575,bonus_id=12806/13335
 chest=night_enders_breastplate,id=249955,bonus_id=12806/13335,enchant_id=7987
@@ -165,8 +165,8 @@ off_hand=blood_knights_impetus,id=237847,bonus_id=8960/12066/12693/13622/9627,en
 # gear_strength=1365
 # gear_stamina=19221
 # gear_crit_rating=617
-# gear_haste_rating=960
-# gear_mastery_rating=953
+# gear_haste_rating=953
+# gear_mastery_rating=937
 # gear_versatility_rating=56
 # gear_leech_rating=166
 # gear_avoidance_rating=56
