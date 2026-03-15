@@ -1366,7 +1366,7 @@ void vessel_of_souls( special_effect_t& effect )
     ->set_quiet( true )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
     ->set_max_stack( 15 )  // sufficiently high??
-    ->set_chance( 1.0 - effect.player->midnight_opts.veessel_of_tortured_souls_miss_chance );
+    ->set_chance( 1.0 - effect.player->midnight_opts.vessel_of_tortured_souls_miss_chance );
 
   effect.custom_buff = orb;
 
