@@ -4916,7 +4916,7 @@ public:
   {
     BASE::impact( s );
 
-    if ( BASE::td( s->target )->dots.red_moon->is_ticking() )
+    if ( !BASE::proc && BASE::td( s->target )->dots.red_moon->is_ticking() )
     {
       if ( p_->buff.lunar_wrath->consume( this ) )
       {
@@ -5335,7 +5335,7 @@ struct mangle_t final : public use_fluid_form_t<BEAR_FORM,
   {
     base_t::impact( s );
 
-    if ( red_moon_extend > 0_ms )
+    if ( !proc && red_moon_extend > 0_ms )
     {
       auto _dot = td( s->target )->dots.red_moon;
       if ( _dot->is_ticking() )
