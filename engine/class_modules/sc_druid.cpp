@@ -11486,9 +11486,9 @@ void druid_t::create_actions()
 
   if ( talent.heart_of_the_wild.ok() )
   {
-    // set up cat
     if ( specialization() == DRUID_GUARDIAN || specialization() == DRUID_RESTORATION )
     {
+      // set up cat
       auto _cat = get_secondary_action<druid_attack_t<melee_attack_t>>(
         "heart_of_the_wild_cat", this, apply_override( talent.heart_of_the_wild, spec.cat_form ), flag_e::NONE );
       _cat->name_str_reporting = "Cat";
@@ -11498,11 +11498,8 @@ void druid_t::create_actions()
       _cat->tick_action->base_multiplier *= talent.heart_of_the_wild->effectN( 2 ).percent();
 
       active.hotw_cat = _cat;
-    }
 
-    // set up owl
-    if ( specialization() != DRUID_BALANCE )
-    {
+      // set up owl
       auto _owl =
         new action_t( action_e::ACTION_OTHER, "heart_of_the_wild_owl", this, &buff.heart_of_the_wild_owl->data() );
       _owl->name_str_reporting = "Moonkin";
