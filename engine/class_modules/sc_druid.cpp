@@ -38,7 +38,7 @@ static constexpr double LUNAR_BOLT_REDUCED_AOE = 5;
 // lunar bolt delay between bolts
 static constexpr timespan_t LUNAR_BOLT_DELAY = 200_ms;
 // summon+jump+fixate delay for fake summon spells like frantic frenzy & apex talent
-static constexpr timespan_t FERAL_FLICKER_DELAY = 500_ms;
+static constexpr std::array<timespan_t, 2> FERAL_FLICKER_DELAY = { 400_ms, 500_ms };
 // unseen attack # of targets for unseen attack to proc swipe instead of slash
 static constexpr size_t UNSEEN_SWIPE_TARGETS = 3;
 // unseen swipe reduced_aoe_targets
@@ -4095,7 +4095,6 @@ struct frantic_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, c
       background = dual = proc = true;
       aoe = -1;
       direct_bleed = false;
-      travel_delay = FERAL_FLICKER_DELAY.total_seconds();
 
       dot_name = "frantic_frenzy_tick";
     }
@@ -4104,6 +4103,11 @@ struct frantic_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, c
     result_amount_type report_amount_type( const action_state_t* s ) const override
     {
       return is_direct_damage ? result_amount_type::DMG_DIRECT : s->result_type;
+    }
+
+    timespan_t travel_time() const override
+    {
+      return rng().range( FERAL_FLICKER_DELAY );
     }
 
     void execute() override
@@ -4126,8 +4130,7 @@ struct frantic_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, c
 
       // scripted so must be manually configured
       base_tick_time = 200_ms;  // wild ass guess
-      dot_duration = 1000_ms;   // ticks 6 times despite tooltip saying 5
-      tick_zero = true;         // this zero tick may be a bug?
+      dot_duration = base_tick_time * p->talent.frantic_frenzy->effectN( 1 ).base_value();
 
       const auto& energize_eff = find_effect( p->find_spell( 1278969 ), E_ENERGIZE );
       energize_type = action_energize::PER_TICK;
@@ -4841,9 +4844,13 @@ struct unseen_attack_t : public cat_attack_t
     : cat_attack_t( n, p, s, f )
   {
     proc = true;
-    travel_delay = FERAL_FLICKER_DELAY.total_seconds();
 
     range = p->talent.unseen_predator_1->effectN( 2 ).base_value();
+  }
+
+  timespan_t travel_time() const override
+  {
+    return rng().range( FERAL_FLICKER_DELAY );
   }
 
   void impact( action_state_t* s ) override
@@ -12041,25 +12048,14 @@ bool druid_t::validate_actor()
 {
   sim->error( error_level_e::MODERATE, "Druid sims are not fully tested and may still have bugs." );
   
-  static constexpr std::string_view feral[] = {
-    "frantic frenzy does not proc overflowing power",
-    "frantic frenzy does not proc coiled to spring",
-    "frantic frenzy/unseen attacks assumed to have 500ms delay",
-  };
-
   static constexpr std::string_view guardian[] = {
     "when multiple dread shades are active only the latest one casts dire echo",
-    "echoes from wild guardians/tier 4pc assumed to have 300ms or 400ms delay",
     "tier 4pc repeats can proc wild guardian echoes",
   };
 
 #ifdef NDEBUG
   switch ( specialization() )
   {
-    case DRUID_FERAL:
-      for ( auto ph : feral )
-        sim->error( error_level_e::IMPLEMENTATION_NOTES, "{}", ph );
-      break;
     case DRUID_GUARDIAN:
       for ( auto ph : guardian )
         sim->error( error_level_e::IMPLEMENTATION_NOTES, "{}", ph );
@@ -12925,10 +12921,6 @@ double druid_t::resource_gain( resource_e r, double amount, gain_t* g, action_t*
 
   if ( r == RESOURCE_COMBO_POINT )
   {
-    // frantic frenzy does not proc overflowing power nor coiled to spring
-    if ( bugs && a && a->data().id() == 1244079 )
-      return actual;
-
     auto over = amount - actual;
 
     if ( g != gain.overflowing_power && over > 0 && buff.b_inc_cat->check() )
