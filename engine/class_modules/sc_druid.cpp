@@ -5540,9 +5540,7 @@ struct maul_base_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
       p()->resource_loss( RESOURCE_RAGE, kb_excess_rage );
       stats->consume_resource( RESOURCE_RAGE, kb_excess_rage );
 
-      if ( !p()->bugs )
-        consume_rage_memory_of_ysera( kb_excess_rage );
-
+      consume_rage_memory_of_ysera( kb_excess_rage );
       consume_rage_after_the_wildfire( kb_excess_rage );
       consume_rage_ursocs_guidance( kb_excess_rage );
     }
@@ -12050,7 +12048,6 @@ bool druid_t::validate_actor()
   };
 
   static constexpr std::string_view guardian[] = {
-    "killing blow excess rage does not trigger memory of ysera",
     "when multiple dread shades are active only the latest one casts dire echo",
     "echoes from wild guardians/tier 4pc assumed to have 300ms or 400ms delay",
     "tier 4pc repeats can proc wild guardian echoes",
