@@ -3606,12 +3606,6 @@ struct duplicate_t : evoker_pet_t
       return da;
     }
 
-    void start_gcd()
-    {
-      pet_spell_t::start_gcd();
-      p()->sim->print_debug( "{} starts gcd with action {}. GCD Size: {}, player ready: {}", *p(), *this, gcd(), p()->gcd_ready );
-    }
-
     void execute() override
     {
       pet_spell_t::execute();
