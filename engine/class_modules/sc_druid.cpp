@@ -7971,9 +7971,9 @@ struct shooting_stars_t : public druid_spell_t
     }
   }
 
-  void impact( action_state_t* s ) override
+  void execute() override
   {
-    druid_spell_t::impact( s );
+    druid_spell_t::execute();
 
     p()->buff.orbit_breaker->trigger();
 
