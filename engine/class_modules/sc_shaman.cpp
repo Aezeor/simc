@@ -6465,7 +6465,7 @@ struct chain_lightning_t : public chained_base_t
     }
 
     // Track last cast for LB / CL because of Thorim's Invocation
-    if ( p()->talent.thorims_invocation.ok() && is_variant( spell_variant::NORMAL ) )
+    if ( p()->talent.thorims_invocation.ok() && ( is_variant( spell_variant::NORMAL ) || is_variant( spell_variant::PRIMORDIAL_STORM ) ) )
     {
       p()->action.ti_trigger = p()->action.chain_lightning_ti;
     }
@@ -7209,7 +7209,7 @@ struct lightning_bolt_t : public shaman_spell_t
     }
 
     // Track last cast for LB / CL because of Thorim's Invocation
-    if ( p()->talent.thorims_invocation.ok() && is_variant( spell_variant::NORMAL ) )
+    if ( p()->talent.thorims_invocation.ok() && ( is_variant( spell_variant::NORMAL ) || is_variant( spell_variant::PRIMORDIAL_STORM ) ) )
     {
       p()->action.ti_trigger = p()->action.lightning_bolt_ti;
     }
