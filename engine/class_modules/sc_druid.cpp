@@ -13280,8 +13280,6 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name )
         return make_fn_expr( "eclipse_down", [ _buff ] { return _buff()->check() <= 0; } );
       else if ( util::str_compare_ci( splits[ 2 ], "value" ) )
         return make_fn_expr( "eclipse_value", [ _buff ] { return _buff()->check_value(); } );
-      else
-        throw sc_invalid_apl_argument( fmt::format( "Unsupported buff.eclipse expression '{}'.", splits[ 2 ] ) );
     }
 
     if ( splits.size() >= 2 && util::str_compare_ci( splits[ 0 ], "cooldown" ) &&
@@ -13293,13 +13291,21 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name )
       return druid_t::create_expression( util::string_join( splits, "." ) );
     }
 
+    if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "eclipse" ) )
+    {
+      if ( util::str_compare_ci( splits[ 1 ], "solar" ) )
+        return make_fn_expr( "eclipse_solar", [ this ] { return !buff.lunar_eclipse_override->check(); } );
+      else if ( util::str_compare_ci( splits[ 1 ], "lunar" ) )
+        return make_fn_expr( "eclipse_lunar", [ this ] { return buff.lunar_eclipse_override->check(); } );
+    }
+
     // New Moon stage related expressions
     if ( util::str_compare_ci( name, "new_moon" ) )
-      return make_fn_expr( name, [ this ]() { return moon_stage == NEW_MOON; } );
+      return make_fn_expr( name, [ this ] { return moon_stage == NEW_MOON; } );
     else if ( util::str_compare_ci( name, "half_moon" ) )
-      return make_fn_expr( name, [ this ]() { return moon_stage == HALF_MOON; } );
+      return make_fn_expr( name, [ this ] { return moon_stage == HALF_MOON; } );
     else if ( util::str_compare_ci( name, "full_moon" ) )
-      return make_fn_expr( name, [ this ]() { return moon_stage >= FULL_MOON; } );
+      return make_fn_expr( name, [ this ] { return moon_stage >= FULL_MOON; } );
 
     // automatic resolution of Celestial Alignment vs talented Incarnation
     if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "ca_inc" ) )
@@ -13314,13 +13320,13 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name )
     {
       if ( util::str_compare_ci( splits[ 2 ], "stack" ) )
       {
-        return make_fn_expr( name, [ this ]() {
+        return make_fn_expr( name, [ this ] {
           return buff.fury_of_elune->check() + buff.sundered_firmament->check();
         } );
       }
       else if ( util::str_compare_ci( splits[ 2 ], "remains" ) )
       {
-        return make_fn_expr( name, [ this ]() {
+        return make_fn_expr( name, [ this ] {
           return std::max( buff.fury_of_elune->remains(), buff.sundered_firmament->remains() );
         } );
       }
