@@ -66,7 +66,8 @@ ec_st->add_action( "new_moon,if=astral_power.deficit>energize_amount" );
 ec_st->add_action( "half_moon,if=astral_power.deficit>energize_amount" );
 ec_st->add_action( "full_moon,if=astral_power.deficit>energize_amount" );
 ec_st->add_action( "wild_mushroom,if=buff.eclipse_solar.up|cooldown.wild_mushroom.full_recharge_time<cooldown.ca_inc.remains" );
-ec_st->add_action( "starfire" );
+ec_st->add_action( "starfire,if=!variable.eclipse_down" );
+ec_st->add_action( "wrath,if=variable.eclipse_down" );
 
 kotg_st->add_action( "celestial_alignment,if=prev_gcd.1.force_of_nature|fight_remains<20","Cooldowns" );
 kotg_st->add_action( "moonfire,target_if=remains<2|refreshable&variable.eclipse_down","Dots" );
