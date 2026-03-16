@@ -7662,7 +7662,8 @@ struct dread_plague_t final : public death_knight_disease_t
     {
       erupt                         = get_action<dread_plague_erupt_t>( "dread_plague_erupt_ss", p );
       erupt->target_filter_callback = secondary_targets_only();
-      add_child( erupt );
+      if ( !p->options.wcl_reporting_mode )
+        add_child( erupt );
     }
 
     if ( p->options.wcl_reporting_mode )
