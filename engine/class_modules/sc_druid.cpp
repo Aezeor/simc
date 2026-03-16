@@ -13263,6 +13263,27 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name )
     if ( util::str_compare_ci( name, "astral_power" ) )
       return make_ref_expr( name, resources.current[ RESOURCE_ASTRAL_POWER ] );
 
+    auto _buff = [ this ] { return buff.eclipse_lunar->check() ? buff.eclipse_lunar : buff.eclipse_solar; };
+
+    if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "buff" ) &&
+         util::str_compare_ci( splits[ 1 ], "eclipse" ) )
+    {
+      if ( util::str_compare_ci( splits[ 2 ], "duration" ) )
+        return make_fn_expr( "eclipse_duration", [ _buff ] { return _buff()->buff_duration(); } );
+      else if ( util::str_compare_ci( splits[ 2 ], "elapsed" ) )
+        return make_fn_expr( "eclipse_elapsed", [ _buff, this ] { return _buff()->elapsed( sim->current_time() ); } );
+      else if ( util::str_compare_ci( splits[ 2 ], "remains" ) )
+        return make_fn_expr( "eclipse_remains", [ _buff ] { return _buff()->remains(); } );
+      else if ( util::str_compare_ci( splits[ 2 ], "up" ) )
+        return make_fn_expr( "eclipse_up", [ _buff ] { return _buff()->check() > 0; } );
+      else if ( util::str_compare_ci( splits[ 2 ], "down" ) )
+        return make_fn_expr( "eclipse_down", [ _buff ] { return _buff()->check() <= 0; } );
+      else if ( util::str_compare_ci( splits[ 2 ], "value" ) )
+        return make_fn_expr( "eclipse_value", [ _buff ] { return _buff()->check_value(); } );
+      else
+        throw sc_invalid_apl_argument( fmt::format( "Unsupported buff.eclipse expression '{}'.", splits[ 2 ] ) );
+    }
+
     // New Moon stage related expressions
     if ( util::str_compare_ci( name, "new_moon" ) )
       return make_fn_expr( name, [ this ]() { return moon_stage == NEW_MOON; } );
