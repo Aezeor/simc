@@ -13284,6 +13284,15 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name )
         throw sc_invalid_apl_argument( fmt::format( "Unsupported buff.eclipse expression '{}'.", splits[ 2 ] ) );
     }
 
+    if ( splits.size() >= 2 && util::str_compare_ci( splits[ 0 ], "cooldown" ) &&
+         ( util::str_compare_ci( splits[ 1 ], "solar_eclipse" ) ||
+           util::str_compare_ci( splits[ 1 ], "lunar_eclipse" ) ) )
+    {
+      splits[ 1 ] = "eclipse";
+
+      return druid_t::create_expression( util::string_join( splits, "." ) );
+    }
+
     // New Moon stage related expressions
     if ( util::str_compare_ci( name, "new_moon" ) )
       return make_fn_expr( name, [ this ]() { return moon_stage == NEW_MOON; } );
