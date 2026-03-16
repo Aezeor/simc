@@ -9175,6 +9175,7 @@ struct voidfall_building_buff_t : public demon_hunter_buff_t<buff_t>
   {
     base_t::set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
     disable_ticking( true );
+    set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   }
 
   void bump( int stacks, double value ) override
@@ -9196,6 +9197,7 @@ struct voidfall_spending_buff_t : public demon_hunter_buff_t<buff_t>
   voidfall_spending_buff_t( demon_hunter_t* p ) : base_t( *p, "voidfall_spending", p->hero_spec.voidfall_spending_buff )
   {
     disable_ticking( true );
+    set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   }
 
   void decrement( int stacks, double value ) override
@@ -9632,7 +9634,7 @@ void demon_hunter_t::activate()
   {
     register_on_combat_state_callback( [ this ]( player_t*, bool ) { devourer_fury_state.reschedule_drain(); } );
 
-    if ( talent.devourer.entropy.enabled() )
+    if ( talent.devourer.entropy->ok() )
     {
       register_precombat_begin( [ this ]( player_t* ) {
         int starting_souls = options.entropy_starting_souls == -1
@@ -9913,6 +9915,7 @@ void demon_hunter_t::create_buffs()
                                  ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
                                  ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                                 ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
                                  ->disable_ticking( true );
   buff.dark_matter         = make_buff( this, "dark_matter", hero_spec.dark_matter_buff );
   buff.doomsayer_in_combat = make_buff( this, "doomsayer_in_combat", hero_spec.doomsayer_in_combat_buff )
@@ -10314,9 +10317,9 @@ void demon_hunter_t::init_procs()
   // Annihilator
   proc.soul_fragment_from_meteoric_rise = get_proc( "Soul Fragment from Meteoric Rise" );
   proc.soul_fragment_from_world_killer  = get_proc( "Soul Fragment from World Killer" );
-  proc.voidfall_from_builder = get_proc( "Voidfall from Builder" );
-  proc.voidfall_from_mass_acceleration = get_proc( "Voidfall from Mass Acceleration" );
-  proc.voidfall_from_meteoric_rise = get_proc( "Voidfall from Meteoric Rise" );
+  proc.voidfall_from_builder            = get_proc( "Voidfall from Builder" );
+  proc.voidfall_from_mass_acceleration  = get_proc( "Voidfall from Mass Acceleration" );
+  proc.voidfall_from_meteoric_rise      = get_proc( "Voidfall from Meteoric Rise" );
 
   // Scarred
   for ( demonsurge_ability ability : demonsurge_abilities )
