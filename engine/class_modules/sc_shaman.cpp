@@ -8566,11 +8566,6 @@ struct doom_winds_t : public shaman_attack_t
     }
     else
     {
-      if ( player->action.doom_winds == nullptr )
-      {
-        p()->action.doom_winds = new doom_winds_damage_t( player,
-          variant_flag( spell_variant::NORMAL ) );
-      }
       add_child( player->action.doom_winds );
     }
   }
@@ -10502,6 +10497,11 @@ void shaman_t::create_actions()
   {
     action.ascendance_damage = new ascendance_damage_t( this, "ascendance_damage" );
     action.ascendance->add_child( action.ascendance_damage );
+  }
+
+  if ( specialization() == SHAMAN_ENHANCEMENT )
+  {
+    action.doom_winds = new doom_winds_damage_t( this, variant_flag( spell_variant::NORMAL ) );
   }
 }
 
