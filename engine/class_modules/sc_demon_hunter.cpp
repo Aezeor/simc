@@ -6204,7 +6204,6 @@ struct void_ray_t
       if ( p()->options.shattered_souls_chance_aoe_reduction_linear )
         m /= s->n_targets;
 
-
       // Reduce Void Ray Soul Generation - Estimate is approximately n^(0.3 ~ 0.33)
       // Todo: Further refine this.
       else
@@ -9909,7 +9908,8 @@ void demon_hunter_t::create_buffs()
   buff.dark_matter         = make_buff( this, "dark_matter", hero_spec.dark_matter_buff );
   buff.doomsayer_in_combat = make_buff( this, "doomsayer_in_combat", hero_spec.doomsayer_in_combat_buff )
                                  ->set_quiet( true )
-                                 ->set_allow_precombat( true );
+                                 ->set_allow_precombat( true )
+                                 ->set_duration_multiplier( talent.annihilator.doomsayer->effectN( 2 ).base_value() );
   buff.doomsayer_out_of_combat = make_buff( this, "doomsayer_out_of_combat", hero_spec.doomsayer_out_of_combat_buff )
                                      ->set_quiet( true )
                                      ->set_allow_precombat( true );
