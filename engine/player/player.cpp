@@ -12417,12 +12417,16 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     }
     else if ( splits[ 0 ] == "cooldown" )
     {
-      if ( cooldown_t* cooldown = get_cooldown( splits[ 1 ] ) )
+      // since we have no fallback system for cooldowns, all cooldowns must be created if not found.
+      auto _cooldown = find_cooldown( splits[ 1 ] );
+
+      if ( !_cooldown )
       {
-        return cooldown->create_expression( splits[ 2 ] );
+        sim->print_debug( "{} cooldown '{}' not found, creating placeholder.", *this, splits[ 1 ] );
+        _cooldown = get_cooldown( splits[ 1 ] );
       }
 
-      throw sc_invalid_apl_argument( fmt::format( "Cooldown '{}' not found.", splits[ 1 ] ) );
+      return _cooldown->create_expression( splits[ 2 ] );
     }
     else if ( splits[ 0 ] == "swing" )
     {
