@@ -7673,7 +7673,7 @@ struct dread_plague_t final : public death_knight_disease_t
   void init_finished() override
   {
     death_knight_disease_t::init_finished();
-    if ( p()->talent.unholy.forbidden_knowledge_3.ok() )
+    if ( p()->talent.unholy.forbidden_knowledge_3.ok() && !p()->options.wcl_reporting_mode )
     {
       add_child( p()->background_actions.putrefy_fk_st );
       add_child( p()->background_actions.putrefy_fk_aoe );
