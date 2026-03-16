@@ -1124,6 +1124,9 @@ public:
     // Annihilator
     proc_t* soul_fragment_from_meteoric_rise;
     proc_t* soul_fragment_from_world_killer;
+    proc_t* voidfall_from_builder;
+    proc_t* voidfall_from_meteoric_rise;
+    proc_t* voidfall_from_mass_acceleration;
 
     // Scarred
     std::unordered_map<demonsurge_ability, proc_t*> demonsurge_abilities;
@@ -2964,6 +2967,7 @@ struct voidfall_building_trigger_t : public BASE
       return;
     }
 
+    BASE::p()->proc.voidfall_from_builder->occur();
     BASE::p()->buff.voidfall_building->trigger(
         as<int>( BASE::p()->talent.annihilator.voidfall->effectN( 1 ).base_value() ) );
   }
@@ -3118,6 +3122,7 @@ struct mass_acceleration_trigger_t : public BASE
     if ( !BASE::p()->talent.annihilator.mass_acceleration->ok() )
       return;
 
+    BASE::p()->proc.voidfall_from_mass_acceleration->occur();
     BASE::p()->buff.voidfall_building->trigger(
         as<int>( BASE::p()->talent.annihilator.mass_acceleration->effectN( 1 ).base_value() ) );
 
@@ -6277,6 +6282,7 @@ struct void_ray_t
 
       if ( p()->talent.annihilator.meteoric_rise->ok() )
       {
+        p()->proc.voidfall_from_meteoric_rise->occur();
         p()->buff.voidfall_building->trigger();
       }
     }
@@ -10308,6 +10314,9 @@ void demon_hunter_t::init_procs()
   // Annihilator
   proc.soul_fragment_from_meteoric_rise = get_proc( "Soul Fragment from Meteoric Rise" );
   proc.soul_fragment_from_world_killer  = get_proc( "Soul Fragment from World Killer" );
+  proc.voidfall_from_builder = get_proc( "Voidfall from Builder" );
+  proc.voidfall_from_mass_acceleration = get_proc( "Voidfall from Mass Acceleration" );
+  proc.voidfall_from_meteoric_rise = get_proc( "Voidfall from Meteoric Rise" );
 
   // Scarred
   for ( demonsurge_ability ability : demonsurge_abilities )
