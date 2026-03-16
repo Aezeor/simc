@@ -1968,11 +1968,13 @@ public:
     if ( can_trigger_lunation() )
     {
       assert( p()->talent.lunation->effects().size() == 3 );
-      auto eff = p()->talent.lunation->effects().begin();
 
-      for ( auto cd : { p()->cooldown.fury_of_elune, p()->cooldown.moon_cd, p()->cooldown.lunar_beam } )
-        if ( cd )
-          cd->adjust( ( *eff++ ).time_value() );
+      static constexpr std::array<cooldown_t* druid_t::cooldowns_t::*, 3> lunation_cds = {
+        &druid_t::cooldowns_t::fury_of_elune, &druid_t::cooldowns_t::moon_cd, &druid_t::cooldowns_t::lunar_beam };
+
+      for ( auto eff : p()->talent.lunation->effects() )
+        if ( auto cd = std::invoke( lunation_cds[ eff.index() ], p()->cooldown ) )
+          cd->adjust( eff.time_value() );
     }
   }
 
