@@ -9169,16 +9169,19 @@ struct voidfall_building_buff_t : public demon_hunter_buff_t<buff_t>
   {
     base_t::set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
     disable_ticking( true );
-    expire_at_max_stack = true;
   }
 
-  void expire( timespan_t d ) override
+  void bump( int stacks, double value ) override
   {
-    int stacks = current_stack;
+    base_t::bump( stacks, value );
 
-    base_t::expire( d );
-
-    p()->buff.voidfall_spending->trigger( stacks );
+    if ( at_max_stacks() )
+    {
+      make_event( *sim, [ this ] {
+        expire();
+        p()->buff.voidfall_spending->trigger( max_stack() );
+      } );
+    }
   }
 };
 
