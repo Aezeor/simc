@@ -8,10 +8,9 @@ namespace evoker_apl
 
 std::string potion( const player_t* p )
 {
-  if ( p->specialization() == EVOKER_AUGMENTATION )
-    return ( p->true_level > 89 ) ? "lights_potential_2" : "tempered_potion_3";
+  return ( p->true_level > 89 ) ? "lights_potential_2" : "tempered_potion_3";
 
-  return ( p->true_level > 89 ) ? "potion_of_recklessness_2" : "tempered_potion_3";
+  // return ( p->true_level > 89 ) ? "potion_of_recklessness_2" : "tempered_potion_3";
 }
 
 std::string flask( const player_t* p )
@@ -21,10 +20,8 @@ std::string flask( const player_t* p )
 
 std::string food( const player_t* p )
 {
-  if ( p->specialization() == EVOKER_AUGMENTATION )
-    return ( p->true_level > 89 ) ? "silvermoon_parade" : "feast_of_the_divine_day";
-
-  return ( p->true_level > 89 ) ? "blooming_feast" : "feast_of_the_divine_day";
+  return ( p->true_level > 89 ) ? "silvermoon_parade" : "feast_of_the_divine_day";
+  // return ( p->true_level > 89 ) ? "blooming_feast" : "feast_of_the_divine_day";
 }
 
 std::string rune( const player_t* p )
@@ -215,6 +212,7 @@ void augmentation( player_t* p )
   default_->add_action( "variable,name=eons_remains,op=setif,value=cooldown.allied_virtual_cd_time.remains,value_else=cooldown.breath_of_eons.remains,condition=variable.enforce_timings,if=talent.breath_of_eons" );
   default_->add_action( "cancel_buff,name=tip_the_scales,if=cooldown.upheaval.remains>0&(talent.energy_cycles|talent.temporal_burst)" );
   default_->add_action( "hover,use_off_gcd=1,if=gcd.remains>=0.5&(!raid_event.movement.exists|raid_event.movement.in<=6)" );
+  default_->add_action( "invoke_external_buff,name=power_infusion,if=buff.duplicate.up" );
   default_->add_action( "ebon_might,if=((buff.ebon_might_self.remains-cast_time)<=buff.ebon_might_self.duration*variable.ebon_might_pandemic_threshold)&(active_enemies>0|raid_event.adds.in<=3)&(buff.ebon_might_self.value<=0.05|(buff.ebon_might_self.remains-cast_time)<=buff.ebon_might_self.duration*0.3)" );
   default_->add_action( "prescience,target_if=min:(debuff.prescience.remains-200*(target.role.attack|target.role.spell|target.role.dps)+50*target.spec.augmentation),if=debuff.prescience.remains<gcd.max*2&time<=8" );
   default_->add_action( "potion,if=variable.eons_remains<=0|cooldown.breath_of_eons.remains>=90|fight_remains<=30&!fight_style.dungeonroute" );
