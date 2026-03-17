@@ -5570,7 +5570,7 @@ struct maul_base_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
 
   virtual double rage_modifier() const
   {
-    return kb_excess_rage / kb_max_excess_rage;
+    return kb_max_excess_rage ? kb_excess_rage / kb_max_excess_rage : 0.0;
   }
 
   void execute() override
