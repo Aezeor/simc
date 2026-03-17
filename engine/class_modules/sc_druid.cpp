@@ -1993,6 +1993,7 @@ public:
       case 77758:   // thrash
         return p()->talent.lunar_calling.ok();
       case 8921:    // moonfire
+        return !has_flag( flag_e::GALACTIC | flag_e::TWIN );
       case 191034:  // starfall
       case 194153:  // starfire
       case 197628:  // starfire offspec
