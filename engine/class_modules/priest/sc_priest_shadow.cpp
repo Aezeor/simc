@@ -348,6 +348,14 @@ public:
           m *= 1 + priest().talents.shadow.spectral_horrors->effectN( 1 ).percent();
       }
 
+      // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1386
+      if ( priest().bugs )
+      {
+        const priest_td_t* td = priest().find_target_data( t );
+        if ( td->dots.shadow_word_madness->is_ticking() )
+          m *= 1 + priest().dot_spells.shadow_word_madness->effectN( 2 ).percent();
+      }
+
       // Apply mod for Void Apparition
       m *= mod;
 
