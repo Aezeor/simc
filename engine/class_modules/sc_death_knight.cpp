@@ -7047,7 +7047,7 @@ struct runic_corruption_buff_t final : public death_knight_buff_t
   {
     timespan_t initial_duration = death_knight_buff_t::buff_duration();
 
-    return initial_duration * p()->cache.attack_haste();
+    return initial_duration * ( p()->bugs ? 1.0 : p()->cache.attack_haste() );
   }
 };
 
