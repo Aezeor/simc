@@ -150,7 +150,7 @@ proc_types spell_base_t::proc_type() const
   else if ( is_heal && has_amount_result() )
     return PROC1_MAGIC_HEAL;
 
-  return PROC1_NONE_HARMFUL_TAKEN;
+  return PROC1_NONE_HARMFUL;
 }
 
 // ==========================================================================
