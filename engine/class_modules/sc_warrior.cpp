@@ -4596,7 +4596,7 @@ struct impending_victory_heal_t : public warrior_heal_t
 
   proc_types proc_type() const override
   {
-    return PROC1_NONE_HEAL;
+    return PROC1_NONE_HELPFUL;
   }
 
   resource_e current_resource() const override

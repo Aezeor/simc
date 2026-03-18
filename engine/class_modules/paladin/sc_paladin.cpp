@@ -4082,7 +4082,7 @@ void paladin_t::init_special_effects()
     divine_inspiration_driver->rppm_scale_ = RPPM_HASTE;
     divine_inspiration_driver->type        = SPECIAL_EFFECT_EQUIP;
     divine_inspiration_driver->proc_flags_ =
-        PF_MELEE_ABILITY | PF_RANGED | PF_RANGED_ABILITY | PF_NONE_SPELL | PF_MAGIC_SPELL | PF_ALL_HEAL;
+        PF_MELEE_ABILITY | PF_RANGED | PF_RANGED_ABILITY | PF_NONE_HARMFUL | PF_MAGIC_SPELL | PF_ALL_HEAL;
     special_effects.push_back( divine_inspiration_driver );
 
     auto cb = new divine_inspiration_cb_t( this, *divine_inspiration_driver );

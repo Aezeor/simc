@@ -6312,11 +6312,11 @@ monk_effect_callback_t *monk_t::create_proc_callback( monk_callback_init_t param
       // e.g., the driver for a debuff uses MELEE_ABILITY_TAKEN instead of MELEE_ABILITY
 
       const std::unordered_map<uint64_t, uint64_t> translation_map = {
-          { PF_MELEE_TAKEN, PF_MELEE },           { PF_MELEE_ABILITY_TAKEN, PF_MELEE_ABILITY },
-          { PF_RANGED_TAKEN, PF_RANGED },         { PF_RANGED_ABILITY_TAKEN, PF_RANGED_ABILITY },
-          { PF_NONE_HEAL_TAKEN, PF_NONE_HEAL },   { PF_NONE_SPELL_TAKEN, PF_NONE_SPELL },
-          { PF_MAGIC_HEAL_TAKEN, PF_MAGIC_HEAL }, { PF_MAGIC_SPELL_TAKEN, PF_MAGIC_SPELL },
-          { PF_PERIODIC_TAKEN, PF_PERIODIC },     { PF_DAMAGE_TAKEN, PF_ALL_DAMAGE },
+          { PF_MELEE_TAKEN, PF_MELEE },               { PF_MELEE_ABILITY_TAKEN, PF_MELEE_ABILITY },
+          { PF_RANGED_TAKEN, PF_RANGED },             { PF_RANGED_ABILITY_TAKEN, PF_RANGED_ABILITY },
+          { PF_NONE_HELPFUL_TAKEN, PF_NONE_HELPFUL }, { PF_NONE_HARMFUL_TAKEN, PF_NONE_HARMFUL },
+          { PF_MAGIC_HEAL_TAKEN, PF_MAGIC_HEAL },     { PF_MAGIC_SPELL_TAKEN, PF_MAGIC_SPELL },
+          { PF_PERIODIC_TAKEN, PF_PERIODIC },         { PF_DAMAGE_TAKEN, PF_ALL_DAMAGE },
       };
 
       for ( auto t : translation_map )
