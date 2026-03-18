@@ -9457,6 +9457,9 @@ struct necrotic_coil_shadow_t final : public death_coil_damage_base_t
   {
     background = true;
     aoe        = -1;
+    // Necrotic Coil is using Melee defensive types rather than spell defensive types, so it can be blocked, parried and 
+    // dodged.
+    may_block = may_dodge = may_parry = true;
   }
 };
 
@@ -9468,6 +9471,9 @@ struct necrotic_coil_shadowstrike_t final : public death_coil_damage_base_t
     background       = true;
     aoe              = as<int>( p->talent.unholy.forbidden_knowledge_1->effectN( 2 ).base_value() );
     execute_action   = get_action<necrotic_coil_shadow_t>( "necrotic_coil_shadow", p );
+    // Necrotic Coil is using Melee defensive types rather than spell defensive types, so it can be blocked, parried and
+    // dodged.
+    may_block = may_dodge = may_parry = true;
     triggers_effects = false;
   }
 };
@@ -12758,7 +12764,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
       // Free Death Coils are still handled in the action
       for ( auto& gargoyle : pets.gargoyle )
       {
-        gargoyle->increase_power( calc_rp_cost );
+        gargoyle->increase_power( bugs ? actual_amount : calc_rp_cost );
       }
     }
 
@@ -12770,13 +12776,13 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     if ( talent.rider.fury_of_the_horsemen.ok() )
     {
       if ( pets.whitemane.active_pet() != nullptr )
-        extend_rider( calc_rp_cost, pets.whitemane.active_pet() );
+        extend_rider( bugs && specialization() == DEATH_KNIGHT_UNHOLY ? actual_amount : calc_rp_cost, pets.whitemane.active_pet() );
       if ( pets.mograine.active_pet() != nullptr )
-        extend_rider( calc_rp_cost, pets.mograine.active_pet() );
+        extend_rider( bugs && specialization() == DEATH_KNIGHT_UNHOLY ? actual_amount : calc_rp_cost, pets.mograine.active_pet() );
       if ( pets.nazgrim.active_pet() != nullptr )
-        extend_rider( calc_rp_cost, pets.nazgrim.active_pet() );
+        extend_rider( bugs && specialization() == DEATH_KNIGHT_UNHOLY ? actual_amount : calc_rp_cost, pets.nazgrim.active_pet() );
       if ( pets.trollbane.active_pet() != nullptr )
-        extend_rider( calc_rp_cost, pets.trollbane.active_pet() );
+        extend_rider( bugs && specialization() == DEATH_KNIGHT_UNHOLY ? actual_amount : calc_rp_cost, pets.trollbane.active_pet() );
     }
 
     if ( talent.unholy.ancient_power.ok() )
