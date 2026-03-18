@@ -2669,14 +2669,24 @@ struct death_knight_pet_t : public pet_t
 
     double value() override
     {
-      return pet()->dk()->mastery.dreadblade->effectN( 6 ).percent() +
-             ( pet()->dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * pet()->composite_mastery_value() );
+      double v = ( pet()->dk()->mastery.dreadblade->effectN( 6 ).percent() +
+                   ( pet()->dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * pet()->composite_mastery_value() ) );
+
+      if ( pet()->dk()->bugs )
+        v *= 0.5;
+
+      return v;
     }
 
     double check_value() const override
     {
-      return pet()->dk()->mastery.dreadblade->effectN( 6 ).percent() +
-             ( pet()->dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * pet()->composite_mastery_value() );
+      double v = ( pet()->dk()->mastery.dreadblade->effectN( 6 ).percent() +
+                   ( pet()->dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * pet()->composite_mastery_value() ) );
+
+      if ( pet()->dk()->bugs )
+        v *= 0.5;
+
+      return v;
     }
   };
 
