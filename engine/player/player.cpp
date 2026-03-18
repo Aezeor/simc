@@ -15666,6 +15666,9 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     }
 
     auto do_debug = [ & ]( std::string type_str, const auto& prev, const auto& now ) {
+      if ( !sim->debug )
+        return;
+
       std::string field_str = type_str.empty() ? id_field : fmt::format( "{}_{}", type_str, id_field );
       std::string _tmp_full_message_tmp_ = fmt::format(
         "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
@@ -15673,7 +15676,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         remove ? "reverting" : "modifying", *this, field_str, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%",
         now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat, now.pct * 100 );
       sim->print_debug( "{}", _tmp_full_message_tmp_ );
-      _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
+      registered_passive_debug_printout.push_back( _tmp_full_message_tmp_ );
     };
 
     auto add_reporting = [ & ]( int type ) {
@@ -15978,11 +15981,14 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     }
 
     auto do_debug = [ & ]( std::string msg ) {
+      if ( !sim->debug )
+        return;
+
       std::string _tmp_full_message_tmp_ = fmt::format(
         "{} ({}) eff#{} {} {} ({}) {}", modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
         remove ? "reverting" : "modifying", spell->name_cstr(), spell->id(), msg );
       sim->print_debug( "{}", _tmp_full_message_tmp_ );
-      _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
+      registered_passive_debug_printout.push_back( _tmp_full_message_tmp_ );
     };
 
     auto add_reporting = [ & ]( std::string field ) {
