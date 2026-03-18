@@ -17385,7 +17385,7 @@ struct death_knight_module_t : public module_t
      */
   }
 
-  
+  /*
   void register_hotfixes() const override
   {
     hotfix::register_effect( "Death Knight", "2026-3-13", "Virulent Plague buffed 15%", 281049,
@@ -17500,7 +17500,7 @@ struct death_knight_module_t : public module_t
         .modifier( 30 )
         .verification_value( 10 );
   }
-  
+  */
 
   void init( player_t* ) const override
   {
