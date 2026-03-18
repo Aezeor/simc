@@ -1576,8 +1576,8 @@ struct tentacle_slam_t final : public priest_spell_t
 
   tentacle_slam_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "tentacle_slam", p, p.talents.shadow.tentacle_slam ),
-      tentacle_slam_damage( nullptr ),
       tentacle_slam_dots( nullptr ),
+      tentacle_slam_damage( nullptr ),
       child_swm( nullptr )
   {
     parse_options( options_str );

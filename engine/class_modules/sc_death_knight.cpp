@@ -13576,7 +13576,7 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
   params.y( target->y_position );
 
   params.state_callback(
-      [ &, tracker, n_ticks, partial_tick, period ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+      [ &, tracker, partial_tick, period ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
         switch ( type )
         {
           case ground_aoe_params_t::EVENT_CREATED:

@@ -6801,7 +6801,7 @@ struct recklessness_t : public warrior_spell_t
       p()->buff.thunder_blast->trigger();
 
     if ( p()->talents.fury.rampaging_berserker_3->ok() )
-      p()->buff.berserk->trigger( p()->talents.fury.rampaging_berserker_3->effectN( 2 ).base_value() );
+      p()->buff.berserk->trigger( as<int>( p()->talents.fury.rampaging_berserker_3->effectN( 2 ).base_value() ) );
   }
 };
 

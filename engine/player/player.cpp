@@ -6377,7 +6377,7 @@ void player_t::combat_begin()
           if ( first_cast )
           {
             if ( !is_enemy() )
-              sequence_add( action, action->target, [ action ]( std::string& a_str, std::string& t_str ) {
+              sequence_add( action, action->target, [ action ]( std::string&, std::string& t_str ) {
                 t_str = action->target->name_str;
               } );
 
@@ -6392,7 +6392,7 @@ void player_t::combat_begin()
         else
         {
           if ( !is_enemy() )
-            sequence_add( action, action->target, [ action ]( std::string& a_str, std::string& t_str ) { 
+            sequence_add( action, action->target, [ action ]( std::string&, std::string& t_str ) {
               t_str = action->target->name_str; 
             } );
 
@@ -7649,7 +7649,7 @@ action_t* player_t::execute_action()
         off_gcdactions.push_back( action );
 
       if ( !is_enemy() )
-        sequence_add( action, action->target, [ action ]( std::string& a_str, std::string& t_str ) {
+        sequence_add( action, action->target, [ action ]( std::string&, std::string& t_str ) {
           t_str = action->target->name_str;
         } );
     }
