@@ -3263,6 +3263,9 @@ std::unique_ptr<expr_t> action_t::create_expression( std::string_view name )
   if ( name == "cost" )
     return make_mem_fn_expr( name, *this, &action_t::cost );
 
+  if ( name == "base_cost" )
+    return make_mem_fn_expr( name, *this, &action_t::base_cost );
+
   if ( name == "cost_affordable" )
     return make_mem_fn_expr( name, *this, &action_t::cost_affordable );
 
