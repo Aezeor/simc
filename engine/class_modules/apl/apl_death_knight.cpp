@@ -313,6 +313,7 @@ void unholy( player_t* p )
   default_->add_action( "auto_attack" );
   default_->add_action( "call_action_list,name=variables", "Choose Action list to run" );
   default_->add_action( "call_action_list,name=racials" );
+  default_->add_action( "potion,if=(variable.st_planning|variable.adds_remain)&variable.cds_active&(variable.trinket_priority=1&trinket.1.has_use_buff&!trinket.1.proc.mastery.duration>0|variable.trinket_priority=2&trinket.2.has_use_buff&!trinket.2.proc.mastery.duration>0)" );
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "call_action_list,name=cooldowns" );
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
