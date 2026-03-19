@@ -11356,8 +11356,8 @@ bool demon_hunter_t::validate_fight_style( fight_style_e style ) const
       return style == FIGHT_STYLE_PATCHWERK || style == FIGHT_STYLE_DUNGEON_ROUTE ||
              style == FIGHT_STYLE_CASTING_PATCHWERK || style == FIGHT_STYLE_HECTIC_ADD_CLEAVE;
     case DEMON_HUNTER_VENGEANCE:
-      return style == FIGHT_STYLE_PATCHWERK || style == FIGHT_STYLE_CASTING_PATCHWERK ||
-             style == FIGHT_STYLE_HECTIC_ADD_CLEAVE;
+      return style == FIGHT_STYLE_PATCHWERK || style == FIGHT_STYLE_DUNGEON_ROUTE ||
+             style == FIGHT_STYLE_CASTING_PATCHWERK || style == FIGHT_STYLE_HECTIC_ADD_CLEAVE;
     default:
       return false;
   }
