@@ -1124,9 +1124,9 @@ void rot( special_effect_t& effect )
       return m;
     }
 
-    buff_t* create_debuff( player_t* target ) override
+    buff_t* create_debuff( player_t* t ) override
     {
-      return make_buff<buff_t>( actor_pair_t( target, player ), "root_rot_debuff", &data() )
+      return make_buff<buff_t>( actor_pair_t( t, player ), "root_rot_debuff", &data() )
         ->set_activated( true )
         ->set_duration( data().duration() + 1_ms );  // Extra 1ms to avoid expiration before next tick
     }
@@ -1450,9 +1450,9 @@ void solarflare_prism( special_effect_t& effect )
 
     void bump( int s, double v ) override
     {
-      for ( auto& s : stats )
+      for ( auto& stat : stats )
       {
-        s.amount = std::min( default_value + hp_inc * hp_mult, max_val );
+        stat.amount = std::min( default_value + hp_inc * hp_mult, max_val );
       }
       stat_buff_t::bump( s, v );
     }
@@ -2207,12 +2207,12 @@ void latchs_crooked_hook( special_effect_t& effect )
       main_damage->add_child( impact_damage );
     }
 
-    buff_t* create_debuff( player_t* target ) override
+    buff_t* create_debuff( player_t* t ) override
     {
-      auto debuff = generic_proc_t::create_debuff( target );
-      debuff->set_expire_callback( [ &, target ]( buff_t*, int, timespan_t d ) {
+      auto debuff = generic_proc_t::create_debuff( t );
+      debuff->set_expire_callback( [ &, t ]( buff_t*, int, timespan_t d ) {
         if ( d == 0_ms )
-          impact_damage->execute_on_target( target );
+          impact_damage->execute_on_target( t );
       } );
 
       return debuff;
@@ -2698,7 +2698,7 @@ void glorious_crusaders_keepsake( special_effect_t& e )
     }
 
     // Adapted create all buffs.
-    void create_all_buffs( player_t* target, const special_effect_t& effect, const spell_data_t* buff_data,
+    void create_all_buffs( player_t* target, const special_effect_t& effect_, const spell_data_t* buff_data,
                            double amount, std::function<void( stat_e, buff_t* )> add_fn )
     {
       auto buff_name = util::tokenize_fn( buff_data->name_cstr() );
@@ -2722,10 +2722,10 @@ void glorious_crusaders_keepsake( special_effect_t& e )
         }
 
         auto buff = make_buff<stat_buff_t>( actor_pair_t{ target, target }, name, buff_data )
-                        ->add_stat( stats.front(), amount ? amount : eff.average( effect ) )
+                        ->add_stat( stats.front(), amount ? amount : eff.average( effect_ ) )
                         ->set_name_reporting( util::string_join( stat_strs ) );
 
-        if ( target != effect.player )
+        if ( target != effect_.player )
           buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
         if ( add_fn )

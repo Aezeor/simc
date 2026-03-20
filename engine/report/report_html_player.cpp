@@ -1291,9 +1291,9 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
     if ( !item.parsed.azerite_ids.empty() )
     {
       std::stringstream s;
-      for ( size_t i = 0; i < item.parsed.azerite_ids.size(); ++i )
+      for ( size_t j = 0; j < item.parsed.azerite_ids.size(); ++j )
       {
-        const auto& power = item.player -> dbc->azerite_power( item.parsed.azerite_ids[ i ] );
+        const auto& power = item.player -> dbc->azerite_power( item.parsed.azerite_ids[ j ] );
         if ( power.id == 0 || ! item.player -> azerite -> is_enabled( power.id ) )
         {
           continue;
@@ -1303,7 +1303,7 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
 
         s << report_decorators::decorated_spell_data_item(*item.sim, spell, item);
 
-        if ( i < item.parsed.azerite_ids.size() - 1 )
+        if ( j < item.parsed.azerite_ids.size() - 1 )
         {
           s << ", ";
         }
@@ -1328,13 +1328,13 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
         std::stringstream s2;
         auto spell_list = item.player->azerite_essence->enabled_essences();
 
-        for ( size_t i = 0; i < spell_list.size(); ++i )
+        for ( size_t j = 0; j < spell_list.size(); ++j )
         {
-          const auto spell = item.player->find_spell( spell_list[ i ] );
+          const auto spell = item.player->find_spell( spell_list[ j ] );
 
           s2 << report_decorators::decorated_spell_data_item(*item.sim, spell, item);
 
-          if ( i < spell_list.size() - 1 )
+          if ( j < spell_list.size() - 1 )
             s2 << ", ";
         }
 

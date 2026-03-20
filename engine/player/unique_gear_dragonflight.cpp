@@ -6165,8 +6165,7 @@ void ashes_of_the_embersoul( special_effect_t& e )
 
     bool ready() override
     {
-      return available;
-      generic_proc_t::ready();
+      return available ? generic_proc_t::ready() : available;
     }
   };
 
@@ -6459,15 +6458,15 @@ void dancing_dream_blossoms( special_effect_t& effect )
       double total_stats = 0;
 
       // populate current stat array & total stats
-      for ( const auto& s : stats )
+      for ( const auto& stat : stats )
       {
-        auto v = util::stat_value( player, s.stat );
+        auto amt = util::stat_value( player, stat.stat );
 
-        player_stats[ s.stat ] = v;
-        total_stats += v;
+        player_stats[ stat.stat ] = amt;
+        total_stats += amt;
 
         if ( sim->debug )
-          sim->print_debug( "Dancing Dream Blossoms: player stat {}:{}", util::stat_type_abbrev( s.stat ), v );
+          sim->print_debug( "Dancing Dream Blossoms: player stat {}:{}", util::stat_type_abbrev( stat.stat ), amt );
       }
 
       // sort buff stats vector by current rating
@@ -6476,12 +6475,12 @@ void dancing_dream_blossoms( special_effect_t& effect )
       } );
 
       auto set_amount = [ & ]( size_t b, size_t p ) {
-        auto v = player_stats[ stats[ p ].stat ] / total_stats * full_value;
+        auto amt = player_stats[ stats[ p ].stat ] / total_stats * full_value;
 
         if ( sim->debug )
-          sim->print_debug( "Dancing Dream Blossoms: buff stat {}:{}", util::stat_type_abbrev( stats[ b ].stat ), v );
+          sim->print_debug( "Dancing Dream Blossoms: buff stat {}:{}", util::stat_type_abbrev( stats[ b ].stat ), amt );
 
-        stats[ b ].amount = v;
+        stats[ b ].amount = amt;
       };
 
       // highest buff stat corresponds to highest player stat
@@ -10747,10 +10746,10 @@ void cloak_of_infinite_potential( special_effect_t& effect )
 
     std::array<int, 4> ilvls = { default_ilvl, default_ilvl, default_ilvl, default_ilvl };
 
-    auto splits = util::string_split<std::string_view>( effect.player->dragonflight_opts.windweaver_party_ilvls, "/" );
+    auto isplits = util::string_split<std::string_view>( effect.player->dragonflight_opts.windweaver_party_ilvls, "/" );
 
     int i = 0;
-    for ( auto s : splits )
+    for ( auto s : isplits )
     {
       auto ilvl = util::to_int( s );
       if ( ilvl > 0 )
@@ -10763,20 +10762,20 @@ void cloak_of_infinite_potential( special_effect_t& effect )
       }
     }
 
-    for ( int i = 0; i < effect.player->dragonflight_opts.windweaver_party; i++ )
+    for ( int j = 0; j < effect.player->dragonflight_opts.windweaver_party; j++ )
     {
       auto* fake_special_effect     = new special_effect_t( effect.player );
       fake_special_effect->spell_id = 443770;
       item_t fake_item              = item_t( effect.player, "" );
       fake_special_effect->type     = SPECIAL_EFFECT_EQUIP;
       fake_special_effect->source   = SPECIAL_EFFECT_SOURCE_ITEM;
-      fake_special_effect->name_str = fmt::format( "windweaver_party{}", i + 1 );
-      fake_item.parsed.data.level   = ilvls[ i ];
+      fake_special_effect->name_str = fmt::format( "windweaver_party{}", j + 1 );
+      fake_item.parsed.data.level   = ilvls[ j ];
       // Wristwraps of the Dynast - Dummy to make it behave.
       fake_item.parsed.data.id             = 214355;
       fake_item.parsed.data.inventory_type = inventory_type::INVTYPE_WRISTS;
       fake_special_effect->item            = &fake_item;
-      fake_special_effect->custom_buff     = make_buff<windweaver_buff_t>( *fake_special_effect, i + 1 );
+      fake_special_effect->custom_buff     = make_buff<windweaver_buff_t>( *fake_special_effect, j + 1 );
       effect.player->special_effects.push_back( fake_special_effect );
 
       new dbc_proc_callback_t( effect.player, *fake_special_effect );

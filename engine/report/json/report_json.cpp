@@ -1015,25 +1015,25 @@ void profileset_json2( const profileset::profilesets_t& profileset, const sim_t&
 
                      if ( profileset->results() > 1 )
                      {
-                       auto results2 = obj[ "additional_metrics" ].make_array();
+                       auto more_results = obj[ "additional_metrics" ].make_array();
                        for ( size_t midx = 1; midx < sim.profileset_metric.size(); ++midx )
                        {
-                         auto obj2 = results2.add();
-                         const auto& result = profileset->result( sim.profileset_metric[ midx ] );
+                         auto obj2 = more_results.add();
+                         const auto& result2 = profileset->result( sim.profileset_metric[ midx ] );
 
                          obj2[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric[ midx ] );
-                         obj2[ "mean" ] = result.mean();
-                         obj2[ "min" ] = result.min();
-                         obj2[ "max" ] = result.max();
-                         obj2[ "stddev" ] = result.stddev();
-                         obj2[ "mean_stddev" ] = result.mean_stddev();
-                         obj2[ "mean_error" ] = result.mean_stddev() * sim.confidence_estimator;
+                         obj2[ "mean" ] = result2.mean();
+                         obj2[ "min" ] = result2.min();
+                         obj2[ "max" ] = result2.max();
+                         obj2[ "stddev" ] = result2.stddev();
+                         obj2[ "mean_stddev" ] = result2.mean_stddev();
+                         obj2[ "mean_error" ] = result2.mean_stddev() * sim.confidence_estimator;
 
-                         if ( result.median() != 0 )
+                         if ( result2.median() != 0 )
                          {
-                           obj2[ "median" ] = result.median();
-                           obj2[ "first_quartile" ] = result.first_quartile();
-                           obj2[ "third_quartile" ] = result.third_quartile();
+                           obj2[ "median" ] = result2.median();
+                           obj2[ "first_quartile" ] = result2.first_quartile();
+                           obj2[ "third_quartile" ] = result2.third_quartile();
                          }
                        }
                      }
@@ -1063,24 +1063,24 @@ void profileset_json3( const profileset::profilesets_t& profilesets, const sim_t
                      {
                        const auto& result = profileset->result( sim.profileset_metric[ midx ] );
 
-                       auto&& obj = results_obj.add();
+                       auto&& obj2 = results_obj.add();
 
-                       obj[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric[ midx ] );
-                       obj[ "mean" ] = result.mean();
-                       obj[ "min" ] = result.min();
-                       obj[ "max" ] = result.max();
-                       obj[ "stddev" ] = result.stddev();
-                       obj[ "mean_stddev" ] = result.mean_stddev();
-                       obj[ "mean_error" ] = result.mean_stddev() * sim.confidence_estimator;
+                       obj2[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric[ midx ] );
+                       obj2[ "mean" ] = result.mean();
+                       obj2[ "min" ] = result.min();
+                       obj2[ "max" ] = result.max();
+                       obj2[ "stddev" ] = result.stddev();
+                       obj2[ "mean_stddev" ] = result.mean_stddev();
+                       obj2[ "mean_error" ] = result.mean_stddev() * sim.confidence_estimator;
 
                        if ( result.median() != 0 )
                        {
-                         obj[ "median" ] = result.median();
-                         obj[ "first_quartile" ] = result.first_quartile();
-                         obj[ "third_quartile" ] = result.third_quartile();
+                         obj2[ "median" ] = result.median();
+                         obj2[ "first_quartile" ] = result.first_quartile();
+                         obj2[ "third_quartile" ] = result.third_quartile();
                        }
 
-                       obj[ "iterations" ] = as<uint64_t>( result.iterations() );
+                       obj2[ "iterations" ] = as<uint64_t>( result.iterations() );
                      }
 
                      // Optional override ouput data

@@ -31,8 +31,6 @@ static const spell_data_t* resolve_spell_data( V data )
     return &data->data();
   else
     static_assert( static_false<V>, "Could not resolve find_effect argument to spell data." );
-
-  return nullptr;
 }
 
 // finds a spell effect
@@ -62,8 +60,6 @@ static const spelleffect_data_t& find_effect( T val, U type, Ts&&... args )
     else
       return spell_data_t::find_spelleffect( *data, *affected, E_APPLY_AURA );
   }
-
-  return spelleffect_data_t::nil();
 }
 
 // Forward declarations
