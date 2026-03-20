@@ -7308,7 +7308,7 @@ struct force_of_nature_t final : public trigger_control_of_the_dream_t<druid_spe
       }
 
       for ( const auto& eff : data().effects() )
-        if ( eff.type() == E_TRIGGER_SPELL && eff.trigger()->id() == 2428280 )
+        if ( eff.type() == E_TRIGGER_SPELL && eff.trigger()->id() == 248280 )
           summon_delays.push_back( timespan_t::from_millis( eff.misc_value1() ) );
 
       p->pets.force_of_nature.set_default_duration( find_trigger( this ).trigger()->duration() + 1_ms );
