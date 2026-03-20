@@ -5438,7 +5438,7 @@ maul_base_t:trigger_aggravate_wounds:trigger_ursocs_fury:trigger_gore:rage_spend
 |
 |->echo_of_maul_t "echo_of_maul"
 |
-|->celestial_might_maul_t:trigger_wild_guardian_echo_maul_t "maul_repeat"
+|->celestial_might_maul_t "maul_repeat"
 |
 |->raze_base_t
 |  |
@@ -5446,7 +5446,7 @@ maul_base_t:trigger_aggravate_wounds:trigger_ursocs_fury:trigger_gore:rage_spend
 |  |  |
 |  |  |->raze_t "raze"
 |  |
-|  |->celestial_might_raze_t:trigger_wild_guardian_echo_maul_t "raze_repeat"
+|  |->celestial_might_raze_t "raze_repeat"
 |  |
 |  |->echo_of_maul_t "echo_of_raze"
 |
@@ -5454,7 +5454,7 @@ maul_base_t:trigger_aggravate_wounds:trigger_ursocs_fury:trigger_gore:rage_spend
    |
    |->ravage_maul_t:trigger_celestial_might_repeat_t:trigger_wild_guardian_echo_maul_t "ravage_maul"
    |
-   |->celestial_might_maul_t:trigger_wild_guardian_echo_maul_t "ravage_repeat"
+   |->celestial_might_maul_t "ravage_repeat"
    |
    |->echo_of_maul_t "echo_of_ravage"
 */
@@ -5565,22 +5565,17 @@ struct echo_of_maul_t : public BASE
 };
 
 template <typename BASE>
-struct celestial_might_maul_t : public trigger_wild_guardian_echo_maul_t<BASE>
+struct celestial_might_maul_t : public BASE
 {
-private:
-  using ab = trigger_wild_guardian_echo_maul_t<BASE>;
-
 public:
   celestial_might_maul_t( druid_t* p, std::string_view n, const spell_data_t* s, action_t* echo )
-    : ab( n, p, s, flag_e::CELESTIAL )
+    : BASE( n, p, s, flag_e::CELESTIAL )
   {
-    ab::proc = ab::background = true;
-    ab::base_multiplier *= find_trigger( p->sets->set( DRUID_GUARDIAN, MID1, B4 ) ).trigger()->effectN( 1 ).percent();
-    ab::name_str_reporting = "Celestial";
+    BASE::proc = BASE::background = true;
+    BASE::base_multiplier *= find_trigger( p->sets->set( DRUID_GUARDIAN, MID1, B4 ) ).trigger()->effectN( 1 ).percent();
+    BASE::name_str_reporting = "Celestial";
 
-    ab::kb_excess_rage_mul = 0.0;  // repeats snapshot the kb rage multiplier and don't need to re-calculate
-
-    ab::echo_action = echo;
+    BASE::kb_excess_rage_mul = 0.0;  // repeats snapshot the kb rage multiplier and don't need to re-calculate
   }
 };
 
