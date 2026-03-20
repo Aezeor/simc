@@ -693,6 +693,11 @@ public:
     threshold_rng_t* auspicious_spirits;
   } threshold_rng;
 
+  struct deck_rngs_t
+  {
+    shuffled_rng_t* random_idol;
+  } deck_rng;
+
   // Gains
   struct
   {
