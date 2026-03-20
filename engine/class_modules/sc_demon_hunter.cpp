@@ -1003,6 +1003,7 @@ public:
     cooldown_t* reap;
     cooldown_t* voidblade;
     cooldown_t* void_ray;
+    cooldown_t* soul_immolation;
 
     // Havoc
     cooldown_t* blade_dance;
@@ -5478,6 +5479,13 @@ struct the_hunt_base_t
       if ( s->chain_target == 0 && p()->talent.aldrachi_reaver.broken_spirit->ok() )
       {
         p()->spawn_soul_fragment( p()->proc.soul_fragment_from_broken_spirit, soul_fragment::LESSER );
+      }
+
+      if ( s->chain_target == 0 && p()->specialization() == DEMON_HUNTER_DEVOURER && p()->is_ptr() &&
+           p()->talent.scarred.violent_transformation->ok() )
+      {
+        // only resets one charge of Soul Immo
+        p()->cooldown.soul_immolation->reset( true, 1 );
       }
     }
   };
@@ -11595,10 +11603,11 @@ void demon_hunter_t::create_cooldowns()
   cooldown.metamorphosis    = get_cooldown( "metamorphosis" );
 
   // Devourer
-  cooldown.consume   = get_cooldown( "consume" );
-  cooldown.reap      = get_cooldown( "reap" );
-  cooldown.voidblade = get_cooldown( "voidblade" );
-  cooldown.void_ray  = get_cooldown( "void_ray" );
+  cooldown.consume         = get_cooldown( "consume" );
+  cooldown.reap            = get_cooldown( "reap" );
+  cooldown.voidblade       = get_cooldown( "voidblade" );
+  cooldown.void_ray        = get_cooldown( "void_ray" );
+  cooldown.soul_immolation = get_cooldown( "soul_immolation" );
 
   // Havoc
   cooldown.blade_dance                               = get_cooldown( "blade_dance" );
