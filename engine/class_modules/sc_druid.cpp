@@ -1313,7 +1313,7 @@ struct druid_t final : public parse_player_effects_t
   }
 
   // hide player_t::is_ptr()
-  // bool is_ptr() const { return dbc->wowv() > dbc::client_data_version( false ); }
+  bool is_ptr() const { return dbc->wowv() > dbc::client_data_version( false ); }
 
   // Character Definition
   void activate() override;
@@ -2907,7 +2907,7 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
       snapshot_tracker = benefit_tracker_t::get_tracker<SNAPSHOT_TRACKER>( p(), this );
   }
 
-  void trigger_unseen_attack()
+  void trigger_unseen_attack( int cp, double energy_mul )
   {
     assert( p()->active.unseen_slash && p()->active.unseen_swipe );
 
@@ -2918,9 +2918,23 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     p()->active.unseen_swipe->set_target( _tar );
 
     if ( p()->active.unseen_swipe->target_list().size() > UNSEEN_SWIPE_TARGETS )
-      p()->active.unseen_swipe->execute();
+    {
+      snapshot_and_execute( p()->active.unseen_swipe, nullptr, false, [ this, cp, energy_mul ]( auto, auto to ) {
+        auto state = cast_state( to );
+        state->combo_points = cp;
+        state->energy_mul = energy_mul;
+      } );
+    }
     else
-      p()->active.unseen_slash->execute_on_target( _tar );
+    {
+      snapshot_and_execute( p()->active.unseen_slash, nullptr, false, [ this, cp, energy_mul, _tar ]( auto, auto to ) {
+        auto state = cast_state( to );
+        state->combo_points = cp;
+        state->energy_mul = energy_mul;
+        state->target = _tar;
+        p()->active.unseen_slash->set_target( _tar );
+      } );
+    }
   }
 
   void execute() override
@@ -3779,7 +3793,7 @@ public:
     base_t::execute();
 
     if ( p()->buff.stalking_predator->consume( this ) )
-      trigger_unseen_attack();
+      trigger_unseen_attack( as<int>( p()->resources.max[ RESOURCE_COMBO_POINT ] ), 1.0 );
   }
 
   double gain_energize_resource( resource_e rt, double a, gain_t* g ) override
@@ -4309,8 +4323,19 @@ struct ferocious_bite_base_t : public cp_spender_t
       }
     }
 
-    if ( unseen_chance && rng().roll( unseen_chance * cast_state( s )->combo_points ) )
-      trigger_unseen_attack();  
+    if ( unseen_chance )
+    {
+      auto _state = cast_state( s );
+      auto _cp = _state->combo_points;
+
+      if ( rng().roll( unseen_chance * _cp ) )
+      {
+        if ( p()->is_ptr() )
+          trigger_unseen_attack( _cp, _state->energy_mul - 1.0 );  // unseen attacks only do damage based on excess energy
+        else
+          trigger_unseen_attack( as<int>( p()->resources.max[ RESOURCE_COMBO_POINT ] ), 1.0 );
+      }
+    }
   }
 
   void consume_resource() override
@@ -4835,7 +4860,7 @@ struct unseen_attack_t : public cat_attack_t
   unseen_attack_t( druid_t* p, std::string_view n, const spell_data_t* s, flag_e f = flag_e::NONE )
     : cat_attack_t( n, p, s, f )
   {
-    proc = true;
+    proc = background = true;
 
     range = p->talent.unseen_predator_1->effectN( 2 ).base_value();
   }
@@ -4852,7 +4877,28 @@ struct unseen_attack_t : public cat_attack_t
     // Unseen Predator 2 has a 0.1s ICD so it can only proc once per execute, we can instead just have it proc only on
     // the first target hit.
     if ( s->chain_target == 0 )
-      p()->buff.unseen_predators_craving->trigger();
+    {
+      auto dur = p()->buff.unseen_predators_craving->buff_duration();
+
+      if ( p()->is_ptr() )
+        dur *= cast_state( s )->combo_points;
+
+      p()->buff.unseen_predators_craving->trigger( dur );
+    }
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    auto da = cat_attack_t::composite_da_multiplier( s );
+
+    if ( p()->is_ptr() )
+    {
+      auto state = cast_state( s );
+      da *= state->combo_points / p()->resources.max[ RESOURCE_COMBO_POINT ];
+      da *= state->energy_mul;
+    }
+
+    return da;
   }
 };
 
@@ -4893,6 +4939,7 @@ private:
   buff_t* atw_buff;
   double moy_hp_pct_per_rage = 0.0;
   double ug_cdr;
+  double lw_rage_bucket = 0.0;
 
 protected:
   using base_t = rage_spender_t<BASE>;
@@ -4909,6 +4956,9 @@ public:
       moy_hp_pct_per_rage =
         p->talent.memory_of_ysera->effectN( 1 ).percent() * 0.01 / p->talent.memory_of_ysera->effectN( 2 ).base_value();
     }
+
+    if ( p->is_ptr() && p->talent.galactic_guardian.ok() && p->talent.red_moon.ok() )
+      lw_rage_bucket = p->talent.galactic_guardian->effectN( 3 ).base_value();
   }
 
   void impact( action_state_t* s ) override
@@ -4917,10 +4967,39 @@ public:
 
     if ( !BASE::proc && BASE::td( s->target )->dots.red_moon->is_ticking() )
     {
-      if ( p_->buff.lunar_wrath->consume( this ) )
+      if ( p_->is_ptr() )
       {
-        p_->active.lunar_wrath_heal->execute();
-        p_->active.lunar_wrath->execute_on_target( s->target );
+        if ( lw_rage_bucket )
+        {
+          auto _stacks = static_cast<int>( BASE::last_resource_cost / lw_rage_bucket );
+          if ( p_->buff.lunar_wrath->consume( this, _stacks ) )
+          {
+            for ( int i = 0; i < _stacks; ++i )
+            {
+              if ( p_->bugs )  // only one proc for every 2 stacks
+              {
+                if ( i % 2 == 0 )
+                {
+                  p_->active.lunar_wrath_heal->execute();
+                  p_->active.lunar_wrath->execute_on_target( s->target );
+                }
+              }
+              else
+              {
+                p_->active.lunar_wrath_heal->execute();
+                p_->active.lunar_wrath->execute_on_target( s->target );
+              }
+            }
+          }
+        }
+      }
+      else
+      {
+        if ( p_->buff.lunar_wrath->consume( this ) )
+        {
+          p_->active.lunar_wrath_heal->execute();
+          p_->active.lunar_wrath->execute_on_target( s->target );
+        }
       }
     }
   }
@@ -5522,7 +5601,8 @@ struct maul_base_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
     : base_t( n, p, s, f ),
       hr_rage_threshold( p->talent.harnessed_rage->effectN( 1 ).base_value() ),
       hr_gore_chance_pct( p->talent.harnessed_rage->effectN( 2 ).percent() ),
-      vb_mul( p->talent.wild_guardian_2->effectN( 2 ).percent() )
+      vb_mul( p->is_ptr() ? p->talent.wild_guardian_3->effectN( 1 ).percent()
+                          : p->talent.wild_guardian_2->effectN( 2 ).percent() )
   {
     add_option( opt_bool( "max_rage", max_rage ) );
 
@@ -5596,6 +5676,7 @@ struct maul_base_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
     {
       p()->resource_loss( RESOURCE_RAGE, kb_excess_rage );
       stats->consume_resource( RESOURCE_RAGE, kb_excess_rage );
+      last_resource_cost += kb_excess_rage;
 
       consume_rage_memory_of_ysera( kb_excess_rage );
       consume_rage_after_the_wildfire( kb_excess_rage );
@@ -6169,13 +6250,12 @@ struct regrowth_t final : public trigger_thriving_growth_t<use_dot_list_t<druid_
     // dream guide snapshots the hot
     if ( !p->buff.dream_guide->is_fallback )
     {
-      auto eff = &find_effect( p->buff.dream_guide, this, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE );
-      assert( eff->index() + 1 == 3 && "Adjust dream guide effect_mask_t in parse_action_effects." );
-
+      const auto& eff = p->buff.dream_guide->data().effectN( 2 );
       add_parse_entry( persistent_multiplier_effects )
         .set_buff( p->buff.dream_guide )
-        .set_value( eff->percent() )
-        .set_eff( eff )
+        .set_value( eff.percent() )
+        .set_use_stacks( false )
+        .set_eff( &eff )
         .print_debug( this );
     }
 
@@ -7223,8 +7303,6 @@ struct entangling_roots_t final : public druid_spell_t
 // Force of Nature ==========================================================
 struct force_of_nature_t final : public trigger_control_of_the_dream_t<druid_spell_t>
 {
-  static constexpr size_t fon_summon_delay_offset = 1;
-
   std::vector<timespan_t> summon_delays;
   unsigned num;
   unsigned dream_surge_num = 0;
@@ -7242,15 +7320,9 @@ struct force_of_nature_t final : public trigger_control_of_the_dream_t<druid_spe
         set_energize( m_data );
       }
 
-      for ( unsigned i = 0; i < num; i++ )
-      {
-        const auto& eff = data().effectN( i + 1 + fon_summon_delay_offset );
-
-        // validate trigger summon spell effect indices
-        assert( eff.type() == E_TRIGGER_SPELL && eff.trigger()->id() == 248280 );
-
-        summon_delays.push_back( timespan_t::from_millis( eff.misc_value1() ) );
-      }
+      for ( const auto& eff : data().effects() )
+        if ( eff.type() == E_TRIGGER_SPELL && eff.trigger()->id() == 2428280 )
+          summon_delays.push_back( timespan_t::from_millis( eff.misc_value1() ) );
 
       p->pets.force_of_nature.set_default_duration( find_trigger( this ).trigger()->duration() + 1_ms );
       p->pets.force_of_nature.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
@@ -8180,10 +8252,11 @@ struct starfall_t final : public ap_spender_t
   {
     starfall_damage_t* damage;
     meteorites_t* meteorites = nullptr;
+    size_t num_meteorites;
 
     starfall_driver_t( druid_t* p, std::string_view n, const spell_data_t* s, const spell_data_t* damage_spell,
                        flag_e f )
-      : druid_spell_t( n, p, s, f )
+      : druid_spell_t( n, p, s, f ), num_meteorites( as<size_t>( p->talent.meteorites->effectN( 1 ).base_value() ) )
     {
       background = proc = dual = true;
 
@@ -8204,12 +8277,17 @@ struct starfall_t final : public ap_spender_t
       return tl;
     }
 
-    player_t* random_affected_target()
+    util::span<player_t*> random_affected_target( size_t num ) const
     {
-      // no need to reshuffle again
-      const auto& tl = druid_spell_t::target_list();
+      auto& tl = druid_spell_t::target_list();
 
-      return tl.empty() ? nullptr : rng().range( tl );
+      if ( tl.empty() )
+        return {};
+
+      // list is already shuffled, just randomly rotate and take the first num targets
+      std::rotate( tl.begin(), tl.begin() + rng().range( tl.size() ), tl.end() );
+
+      return util::make_span( tl ).subspan( 0, std::min( num, tl.size() ) );
     }
 
     void execute() override
@@ -8218,8 +8296,8 @@ struct starfall_t final : public ap_spender_t
 
       if ( meteorites )
       {
-        if ( auto _tar = random_affected_target() )
-          meteorites->execute_on_target( _tar );
+        for ( auto _tar : random_affected_target( num_meteorites ) )
+           meteorites->execute_on_target( _tar );
       }
     }
 
@@ -8269,7 +8347,7 @@ struct starfall_t final : public ap_spender_t
 
   player_t* mid1_4pc_target() override
   {
-    return driver->random_affected_target();
+    return driver->random_affected_target( 1 ).front();
   }
 
   void execute() override
@@ -8694,7 +8772,8 @@ struct wild_guardian_t final : public druid_spell_t
 
   DRUID_ABILITY( wild_guardian_t, druid_spell_t, "wild_guardian",
                  p->talent.wild_guardian_1.ok() ? p->find_spell( 1269658 ) : spell_data_t::not_found() ),
-    dream_charges( as<int>( p->talent.wild_guardian_3->effectN( 1 ).base_value() ) )
+    dream_charges( as<int>( p->is_ptr() ? p->talent.wild_guardian_2->effectN( 2 ).base_value()
+                                        : p->talent.wild_guardian_3->effectN( 1 ).base_value() ) )
   {}
 
   bool ready() override
@@ -11734,7 +11813,7 @@ void druid_t::create_actions()
     active.echo_of_ravage->name_str_reporting.clear();
   }
 
-  if ( talent.wild_guardian_2.ok() )
+  if ( is_ptr() ? talent.wild_guardian_3.ok() : talent.wild_guardian_2.ok() )
     active.vicious_brambles = get_secondary_action<vicious_brambles_t>( "vicious_brambles", this ); 
 
   // Restoration
@@ -14138,7 +14217,8 @@ void druid_t::parse_action_effects( action_t* action )
   }
 
   // snapshots regrowth hot, so disable the effect
-  _a->parse_effects( buff.dream_guide, effect_mask_t( true ).disable( 3 ), CONSUME_BUFF );
+  if ( !is_ptr() )
+    _a->parse_effects( buff.dream_guide, effect_mask_t( true ).disable( 3 ), CONSUME_BUFF );
   _a->parse_effects( buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ), CONSUME_BUFF );
 
   _a->parse_effects( buff.gory_fur, CONSUME_BUFF );

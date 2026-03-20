@@ -2524,7 +2524,7 @@ bool buff_t::can_consume( action_t* action ) const
 
 int buff_t::consume( action_t* action, int stacks )
 {
-  if ( !check() )
+  if ( !stacks || !check() )
     return 0;
 
   if ( internal_cooldown && internal_cooldown->down() )
