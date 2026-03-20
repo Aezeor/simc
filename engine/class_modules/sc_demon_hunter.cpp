@@ -3071,6 +3071,64 @@ struct burning_blades_trigger_t : public BASE
 };
 
 template <typename BASE>
+struct burning_blades_live_trigger_t : public BASE
+{
+  using base_t = burning_blades_live_trigger_t<BASE>;
+
+  burning_blades_live_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                            util::string_view o = {} )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    BASE::impact( s );
+
+    if ( BASE::p()->is_ptr() )
+      return;
+
+    if ( !BASE::p()->talent.scarred.burning_blades->ok() )
+      return;
+
+    if ( !action_t::result_is_hit( s->result ) )
+      return;
+
+    const double dot_damage = s->result_amount * BASE::p()->talent.scarred.burning_blades->effectN( 1 ).percent();
+    residual_action::trigger( BASE::p()->active.burning_blades, s->target, dot_damage );
+  }
+};
+
+template <typename BASE>
+struct burning_blades_ptr_trigger_t : public BASE
+{
+  using base_t = burning_blades_ptr_trigger_t<BASE>;
+
+  burning_blades_ptr_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                            util::string_view o = {} )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    BASE::impact( s );
+
+    if ( !BASE::p()->is_ptr() )
+      return;
+
+    if ( !BASE::p()->talent.scarred.burning_blades->ok() )
+      return;
+
+    if ( !action_t::result_is_hit( s->result ) )
+      return;
+
+    const double dot_damage = s->result_amount * BASE::p()->talent.scarred.burning_blades->effectN( 1 ).percent();
+    residual_action::trigger( BASE::p()->active.burning_blades, s->target, dot_damage );
+  }
+};
+
+template <typename BASE>
 struct catastrophe_trigger_t : public BASE
 {
   using base_t = catastrophe_trigger_t<BASE>;
@@ -5949,7 +6007,7 @@ struct spontaneous_immolation_t : public soul_immolation_base_t
 
 struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<demon_hunter_spell_t>>
 {
-  struct reap_damage_t : public shattered_souls_trigger_t<burning_blades_trigger_t<demon_hunter_spell_t>>
+  struct reap_damage_t : public shattered_souls_trigger_t<burning_blades_live_trigger_t<demon_hunter_spell_t>>
   {
     reap_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : base_t( n, p, s, "" )
     {
@@ -6023,7 +6081,7 @@ struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
 
 struct eradicate_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<demon_hunter_spell_t>>
 {
-  struct eradicate_damage_t : public shattered_souls_trigger_t<burning_blades_trigger_t<demon_hunter_spell_t>>
+  struct eradicate_damage_t : public shattered_souls_trigger_t<burning_blades_live_trigger_t<demon_hunter_spell_t>>
   {
     eradicate_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : base_t( n, p, s, "" )
     {
@@ -6550,7 +6608,7 @@ struct meteor_shower_t : public demon_hunter_spell_t
 
 struct hungering_slash_base_t : public demon_hunter_spell_t
 {
-  struct hungering_slash_damage_t : public shattered_souls_trigger_t<demon_hunter_spell_t>
+  struct hungering_slash_damage_t : public shattered_souls_trigger_t<burning_blades_ptr_trigger_t<demon_hunter_spell_t>>
   {
     int number_of_souls_to_spawn;
     proc_t* soul_generation_proc;
