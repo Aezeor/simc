@@ -5568,8 +5568,7 @@ template <typename BASE>
 struct celestial_might_maul_t : public BASE
 {
 public:
-  celestial_might_maul_t( druid_t* p, std::string_view n, const spell_data_t* s, action_t* echo )
-    : BASE( n, p, s, flag_e::CELESTIAL )
+  celestial_might_maul_t( druid_t* p, std::string_view n, const spell_data_t* s ) : BASE( n, p, s, flag_e::CELESTIAL )
   {
     BASE::proc = BASE::background = true;
     BASE::base_multiplier *= find_trigger( p->sets->set( DRUID_GUARDIAN, MID1, B4 ) ).trigger()->effectN( 1 ).percent();
@@ -5745,8 +5744,7 @@ public:
 
       if ( p->sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
       {
-        repeat_action = p->get_secondary_action<celestial_might_maul_t<ravage_t>>(
-          name_str + "_repeat", &data(), p->active.echo_of_ravage );
+        repeat_action = p->get_secondary_action<celestial_might_maul_t<ravage_t>>( name_str + "_repeat", &data() );
         add_child( repeat_action );
       }
     }
@@ -5798,8 +5796,7 @@ struct maul_t final : public maul_ravage_base_t<maul_base_t>
 
     if ( p->sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
     {
-      repeat_action = p->get_secondary_action<celestial_might_maul_t<maul_base_t>>(
-        name_str + "_repeat", &data(), p->active.echo_of_maul );
+      repeat_action = p->get_secondary_action<celestial_might_maul_t<maul_base_t>>( name_str + "_repeat", &data() );
       add_child( repeat_action );
     }
   }
@@ -5830,8 +5827,7 @@ struct raze_t final : public maul_ravage_base_t<raze_base_t>
 
     if ( p->sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
     {
-      repeat_action = p->get_secondary_action<celestial_might_maul_t<raze_base_t>>(
-        name_str + "_repeat", &data(), p->active.echo_of_raze );
+      repeat_action = p->get_secondary_action<celestial_might_maul_t<raze_base_t>>( name_str + "_repeat", &data() );
       add_child( repeat_action );
     }
   }
