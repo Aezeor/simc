@@ -9949,7 +9949,11 @@ void rogue_t::init_spells()
   register_passive_effect_mask( talent.outlaw.summarily_dispatched, effect_mask_t( true ).disable( 2 ) );
 
   // Improved Secret Technique effect 1 does not directly affect the pet damage spell
-  register_passive_affect_list( talent.subtlety.improved_secret_technique, affect_list_t( 1 ).remove_spell( 282449 ) );
+  // 2026-03-20 -- Appears this is now double-dipping in-game
+  if ( !bugs )
+  {
+    register_passive_affect_list( talent.subtlety.improved_secret_technique, affect_list_t( 1 ).remove_spell( 282449 ) );
+  }
 
   // Corrupt the blood effects are exclusive per spec
   register_passive_effect_mask( talent.deathstalker.corrupt_the_blood, specialization() == ROGUE_ASSASSINATION ?
