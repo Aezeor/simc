@@ -1607,6 +1607,14 @@ public:
     affected_by.freeze_and_shatter_1 = data().affected_by( p->spec.freeze_and_shatter->effectN( 1 ) );
     affected_by.freeze_and_shatter_2 = data().affected_by( p->spec.freeze_and_shatter->effectN( 2 ) );
 
+    if ( p->talents.splitting_ice.ok() && range::any_of( p->talents.splitting_ice->effects(),
+          [ this ] ( const auto& eff ) { return data().affected_by_all( eff ); } ) )
+    {
+      // TODO: This isn't uniform across all spells (Frostbolt's radius is smaller, for some reason)
+      // but this should be good enough for split cleave sims
+      radius = 8;
+    }
+
     if ( p->talents.molten_chill.ok() && school == SCHOOL_FROSTFIRE )
     {
       base_ignite_multiplier *= 1.0 + p->talents.molten_chill->effectN( 2 ).percent();
@@ -1780,8 +1788,15 @@ public:
   {
     calculate_on_impact = true;
     auto spell = player->find_spell( spell_id );
+
+    // Radius is given by the parent spell, not by the child.
+    // Restore it after parse_effect_data finishes.
+    auto radius_copy = radius;
     for ( const auto& eff : spell->effects() )
       parse_effect_data( eff );
+    if ( radius_copy > 0 )
+      radius = radius_copy;
+
     may_crit = !spell->flags( SX_CANNOT_CRIT );
     tick_may_crit = spell->flags( SX_TICK_MAY_CRIT );
     rolling_periodic = spell->flags( SX_ROLLING_PERIODIC );
