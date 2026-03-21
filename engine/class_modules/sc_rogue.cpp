@@ -5563,11 +5563,30 @@ struct black_powder_t: public rogue_attack_t
 
 struct shuriken_storm_t: public rogue_attack_t
 {
-  action_t* clone_attack;
+  struct shuriken_storm_shadow_clone_t : public shadow_clone_t
+  {
+    shuriken_storm_shadow_clone_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
+      shadow_clone_t( name, p, s )
+    {
+      aoe = -1;
+      reduced_aoe_targets = data().effectN( 4 ).base_value();
+    }
+
+    double action_multiplier() const override
+    {
+      double m = rogue_attack_t::action_multiplier();
+
+      if ( p()->stealthed( STEALTH_STANCE ) )
+      {
+        m *= 1.0 + p()->spec.shuriken_storm_rank_2->effectN( 1 ).percent();
+      }
+
+      return m;
+    }
+  };
 
   shuriken_storm_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ):
-    rogue_attack_t( name, p, p->spec.shuriken_storm, options_str ),
-    clone_attack( nullptr )
+    rogue_attack_t( name, p, p->spec.shuriken_storm, options_str )
   {
     energize_type = action_energize::PER_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
@@ -5589,7 +5608,7 @@ struct shuriken_storm_t: public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
-    if ( p()->stealthed( STEALTH_BASIC ) )
+    if ( p()->stealthed( STEALTH_STANCE ) )
     {
       m *= 1.0 + p()->spec.shuriken_storm_rank_2->effectN( 1 ).percent();
     }
@@ -10037,16 +10056,13 @@ void rogue_t::init_spells()
       secondary_trigger::SHADOW_CLONE, "shadow_clone_secret_technique", spec.shadow_clone_secret_technique_attack );
     active.shadow_clone_attack.shadowstrike = get_secondary_trigger_action<actions::shadow_clone_t>(
       secondary_trigger::SHADOW_CLONE, "shadow_clone_shadowstrike", spec.shadow_clone_shadowstrike_attack );
-    active.shadow_clone_attack.shuriken_storm = get_secondary_trigger_action<actions::shadow_clone_t>(
+    active.shadow_clone_attack.shuriken_storm = get_secondary_trigger_action<actions::shuriken_storm_t::shuriken_storm_shadow_clone_t>(
       secondary_trigger::SHADOW_CLONE, "shadow_clone_shuriken_storm", spec.shadow_clone_shuriken_storm_attack );
     active.shadow_clone_attack.shuriken_toss = get_secondary_trigger_action<actions::shadow_clone_t>(
       secondary_trigger::SHADOW_CLONE, "shadow_clone_shuriken_toss", spec.shadow_clone_shuriken_toss_attack );
 
     active.shadow_clone_attack.eviscerate->affected_by.darkest_night = true;
     active.shadow_clone_attack.eviscerate->affected_by.darkest_night_crit = true;
-
-    active.shadow_clone_attack.shuriken_storm->aoe = -1;
-    active.shadow_clone_attack.shuriken_storm->reduced_aoe_targets = spec.shadow_clone_shuriken_storm_attack->effectN( 4 ).base_value();
   }
 
   if ( talent.subtlety.weaponmaster->ok() )
