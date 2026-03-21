@@ -2814,10 +2814,7 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
         } );
       }
 
-      snapshot_tigers_fury =
-        parse_persistent_effects( p->buff.tigers_fury, PARSE_CALLBACK_POST_SNAPSHOT, [ this ]( action_state_t* s ) {
-          cast_state( s )->snapshots |= snapshot_e::TIGERS_FURY;
-        } );
+      snapshot_tigers_fury = parse_tigers_fury();
     }
   }
 
@@ -2893,6 +2890,14 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
                                                       "Snapshots (DOT)" );
     base_t::template print_parsed_type<cat_attack_t>( os, &cat_attack_t::persistent_direct_effects,
                                                       "Snapshots (Direct)" );
+  }
+
+  virtual bool parse_tigers_fury()
+  {
+    return parse_persistent_effects( p()->buff.tigers_fury, PARSE_CALLBACK_POST_SNAPSHOT,
+      [ this ]( action_state_t* s ) {
+        cast_state( s )->snapshots |= snapshot_e::TIGERS_FURY;
+      } );
   }
 
   void init_finished() override
@@ -4861,6 +4866,14 @@ struct unseen_attack_t : public cat_attack_t
     range = p->talent.unseen_predator_1->effectN( 2 ).base_value();
   }
 
+  bool parse_tigers_fury() override
+  {
+    // unseen attacks do not snapshot tiger's fury
+    parse_effects( p()->buff.tigers_fury );
+    return false;
+  }
+
+
   timespan_t travel_time() const override
   {
     return rng().range( FERAL_FLICKER_DELAY );
@@ -4905,6 +4918,13 @@ struct unseen_slash_t final : public unseen_attack_t
     unseen_slash_bleed_t( druid_t* p ) : cat_attack_t( "unseen_slash_bleed", p, p->find_spell( 1271863 ) )
     {
       background = dual = proc = true;
+    }
+
+    bool parse_tigers_fury() override
+    {
+      // unseen attacks do not snapshot tiger's fury
+      parse_effects( p()->buff.tigers_fury );
+      return false;
     }
 
     double composite_rolling_ta_multiplier( const action_state_t* s ) const override
