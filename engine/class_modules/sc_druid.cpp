@@ -357,6 +357,11 @@ struct druid_action_state_t : public Base, public Data
     Base::copy_state( o );
     *static_cast<Data*>( this ) = *static_cast<const Data*>( static_cast<const druid_action_state_t*>( o ) );
   }
+
+  void copy_data( const druid_action_state_t* o )
+  {
+    *static_cast<Data*>( this ) = *static_cast<const Data*>( o );
+  }
 };
 
 // Static helper functions
@@ -510,8 +515,7 @@ static void replace_stats( action_t* source, action_t* target, bool add = true )
 }
 
 static void snapshot_and_execute( action_t* a, const action_state_t* s, bool is_dot,
-                                  std::function<void( const action_state_t*, action_state_t* )> pre = nullptr,
-                                  std::function<void( const action_state_t*, action_state_t* )> post = nullptr )
+                                  std::function<void( const action_state_t*, action_state_t* )> pre = nullptr )
 {
   auto state = a->get_state();
 
@@ -522,10 +526,6 @@ static void snapshot_and_execute( action_t* a, const action_state_t* s, bool is_
     pre( s, state );
 
   a->snapshot_state( state, a->amount_type( state, is_dot ) );
-
-  if ( post )
-    post( s, state );
-
   a->schedule_execute( state );
 }
 
@@ -4906,12 +4906,39 @@ struct unseen_slash_t final : public unseen_attack_t
     {
       background = dual = proc = true;
     }
+
+    double composite_rolling_ta_multiplier( const action_state_t* s ) const override
+    {
+      auto ta = cat_attack_t::composite_rolling_ta_multiplier( s );
+
+      if ( p()->is_ptr() )
+      {
+        auto state = cast_state( s );
+
+        // composite rolling ta uses a value of 1.0 to represent the base dot damage. since not having full cp & energy
+        // reduces the base dot amount, we subtract penalty from the composite rolling ta.
+        ta += state->combo_points / p()->resources.max[ RESOURCE_COMBO_POINT ] * state->energy_mul - 1.0;
+      }
+
+      return ta;
+    }
   };
+
+  unseen_slash_bleed_t* bleed;
 
   unseen_slash_t( druid_t* p ) : unseen_attack_t( p, "unseen_slash", p->find_spell( 1263890 ) )
   {
-    impact_action = p->get_secondary_action<unseen_slash_bleed_t>( "unseen_slash_bleed" );
-    replace_stats( this, impact_action );
+    bleed = p->get_secondary_action<unseen_slash_bleed_t>( "unseen_slash_bleed" );
+    replace_stats( this, bleed );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    unseen_attack_t::impact( s );
+
+    snapshot_and_execute( bleed, s, true, [ this ]( auto from, auto to ) {
+      cast_state( to )->copy_data( cast_state( from ) );
+    } );
   }
 };
 
