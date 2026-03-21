@@ -1,5 +1,6 @@
 optimal_raid=1
 default_actions=1
+single_actor_batch=1
 
 MID1_Death_Knight_Blood.simc
 MID1_Death_Knight_Blood_Deathbringer.simc
