@@ -2987,11 +2987,12 @@ struct voidfall_spending_trigger_t : public BASE
     if ( !BASE::p()->buff.voidfall_spending->up() )
       return;
 
+    if ( BASE::p()->buff.voidfall_spending->at_max_stacks() && BASE::p()->talent.annihilator.meteoric_fall->ok() )
+      return;
+
     BASE::p()->sim->print_debug( "{} triggering Voidfall spending", BASE::p()->name() );
 
-    BASE::p()->buff.voidfall_spending->decrement();
-
-    if ( BASE::p()->buff.voidfall_spending->stack() == 0 && BASE::p()->talent.annihilator.world_killer->ok() )
+    if ( BASE::p()->buff.voidfall_spending->stack() == 1 && BASE::p()->talent.annihilator.world_killer->ok() && !BASE::p()->talent.annihilator.meteoric_fall->ok() )
     {
       BASE::p()->active.world_killer->execute_on_target( BASE::target );
     }
@@ -3030,8 +3031,6 @@ struct meteoric_fall_trigger_t : public BASE
     {
       stacks -= 1;
     }
-
-    BASE::p()->buff.voidfall_spending->expire();
 
     for ( int i = 0; i < stacks; ++i )
     {
@@ -5294,9 +5293,9 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
 
 // Spirit Bomb ==============================================================
 
-struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
+struct spirit_bomb_t : public demon_hunter_spell_t
 {
-  struct spirit_bomb_damage_t : public otherworldly_focus_benefit_t<dark_matter_trigger_t<demon_hunter_spell_t>>
+  struct spirit_bomb_damage_t : public meteoric_fall_trigger_t<otherworldly_focus_benefit_t<dark_matter_trigger_t<demon_hunter_spell_t>>>
   {
     spirit_bomb_damage_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spec.spirit_bomb_damage )
     {
@@ -5321,7 +5320,7 @@ struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
   unsigned max_fragments_consumed;
 
   spirit_bomb_t( demon_hunter_t* p, util::string_view options_str )
-    : base_t( "spirit_bomb", p, p->talent.vengeance.spirit_bomb, options_str ),
+    : demon_hunter_spell_t( "spirit_bomb", p, p->talent.vengeance.spirit_bomb, options_str ),
       max_fragments_consumed( static_cast<unsigned>( data().effectN( 2 ).base_value() ) )
   {
     may_miss = proc = callbacks = false;
@@ -5337,7 +5336,7 @@ struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
 
   void execute() override
   {
-    base_t::execute();
+    demon_hunter_spell_t::execute();
 
     // Soul fragments consumed are capped for Spirit Bomb
     const int fragments_consumed = p()->consume_soul_fragments( soul_fragment::ANY, true, max_fragments_consumed );
@@ -5360,7 +5359,7 @@ struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
     if ( p()->get_active_soul_fragments() < 1 )
       return false;
 
-    return base_t::action_ready();
+    return demon_hunter_spell_t::action_ready();
   }
 
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
@@ -5373,7 +5372,7 @@ struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
         return std::min( p()->get_active_soul_fragments( soul_fragment::ANY ), max_fragments_consumed );
       } );
 
-    return base_t::create_expression( name );
+    return demon_hunter_spell_t::create_expression( name );
   }
 };
 
@@ -6573,6 +6572,13 @@ struct voidfall_meteor_base_t : public demon_hunter_spell_t
     impact_action = p->get_background_action<voidfall_meteor_damage_t>( fmt::format( "{}_damage", name() ),
                                                                          s->effectN( 2 ).trigger() );
     add_child( impact_action );
+  }
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+
+    p()->buff.voidfall_spending->decrement();
   }
 };
 
@@ -8090,13 +8096,13 @@ struct inner_demon_t : public demon_hunter_spell_t
 // Soul Cleave ==============================================================
 
 struct soul_cleave_t
-  : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
-        art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>>>
+  : public
+        art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>
 {
-  struct soul_cleave_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
+  struct soul_cleave_damage_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<burning_blades_trigger_t<demon_hunter_attack_t>>>
   {
     soul_cleave_damage_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
-      : burning_blades_trigger_t( name, p, s )
+      : base_t( name, p, s )
     {
       background = dual = true;
     }
