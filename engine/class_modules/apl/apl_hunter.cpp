@@ -241,7 +241,7 @@ void marksmanship( player_t* p )
   precombat->add_action( "aimed_shot,if=active_enemies<3|talent.black_arrow&talent.headshot" );
   precombat->add_action( "steady_shot" );
 
-  default_->add_action( "variable,name=trueshot_ready,value=!talent.bullseye|fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack|fight_remains<25" );
+  default_->add_action( "variable,name=trueshot_ready,value=!talent.bullseye|fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack|fight_remains<25|time<10" );
   default_->add_action( "auto_shot" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "call_action_list,name=trinkets" );
@@ -327,7 +327,7 @@ void marksmanship_ptr( player_t* p )
   precombat->add_action( "aimed_shot,if=active_enemies<3|talent.black_arrow&talent.headshot" );
   precombat->add_action( "steady_shot" );
 
-  default_->add_action( "variable,name=trueshot_ready,value=!talent.bullseye|fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack|fight_remains<25" );
+  default_->add_action( "variable,name=trueshot_ready,value=!talent.bullseye|fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack|fight_remains<25|time<10" );
   default_->add_action( "auto_shot" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "call_action_list,name=trinkets" );
