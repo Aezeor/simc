@@ -13,7 +13,7 @@ actions.precombat+=/aimed_shot,if=active_enemies<3|talent.black_arrow&talent.hea
 actions.precombat+=/steady_shot
 
 # Executed every time the actor is available.
-actions=variable,name=trueshot_ready,value=!talent.bullseye|fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack|fight_remains<25
+actions=variable,name=trueshot_ready,value=!talent.bullseye|fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack|fight_remains<25|time<10
 actions+=/auto_shot
 actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=trinkets
