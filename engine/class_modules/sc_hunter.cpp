@@ -6722,15 +6722,23 @@ struct wild_thrash_t : public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion, p()->pets.natures_ally_pet.active_pet() ) )
+    for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion ) )
       pet->actions.wild_thrash->execute();
+
+    // 2026-03-22: Blizz broke Apex pets, they don't Wild Thrash anymore...
+    if ( !p()->bugs && p()->pets.natures_ally_pet.active_pet() )
+      p()->pets.natures_ally_pet.active_pet()->actions.wild_thrash->execute();
 
     if ( p()->talents.beast_cleave->ok() )
     {
       p()->buffs.beast_cleave->trigger();
 
-      for ( auto pet : pets::active<pets::hunter_pet_t>( p()->pets.main, p()->pets.animal_companion, p()->pets.natures_ally_pet.active_pet() ) )
+      for ( auto pet : pets::active<pets::hunter_pet_t>( p()->pets.main, p()->pets.animal_companion ) )
         pet->buffs.beast_cleave->trigger();
+
+      // 2026-03-22: ...They don't gain Beast Cleave either
+      if ( !p()->bugs && p()->pets.natures_ally_pet.active_pet() )
+        debug_cast<pets::hunter_pet_t*>( p()->pets.natures_ally_pet.active_pet() )->buffs.beast_cleave->trigger();
     }
   }
 
