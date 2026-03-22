@@ -15114,7 +15114,7 @@ void death_knight_t::spell_lookups()
   spell.summon_gargoyle          = conditional_spell_lookup( talent.unholy.summon_gargoyle.ok(), 49206 );
   spell.summon_abomination       = conditional_spell_lookup( talent.unholy.raise_abomination.ok(), 288853 );
   spell.summon_army_ghoul        = conditional_spell_lookup( talent.unholy.army_of_the_dead.ok(), 1282535 );
-  spell.summon_lesser_ghoul      = conditional_spell_lookup( talent.unholy.doomed_bidding.ok(), 275430 );
+  spell.summon_lesser_ghoul      = conditional_spell_lookup( talent.unholy.scourge_strike.ok(), 275430 );
   spell.summon_putrefy_ghoul     = conditional_spell_lookup( talent.unholy.putrefy.ok(), 1277098 );
   spell.summon_magus             = conditional_spell_lookup( talent.unholy.magus_of_the_dead.ok(), 317776 );
   spell.summon_reanimation_magus = conditional_spell_lookup( talent.unholy.reanimation.ok(), 1242294 );
