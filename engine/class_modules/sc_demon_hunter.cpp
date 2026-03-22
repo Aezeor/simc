@@ -2992,7 +2992,8 @@ struct voidfall_spending_trigger_t : public BASE
 
     BASE::p()->sim->print_debug( "{} triggering Voidfall spending", BASE::p()->name() );
 
-    if ( BASE::p()->buff.voidfall_spending->stack() == 1 && BASE::p()->talent.annihilator.world_killer->ok() && !BASE::p()->talent.annihilator.meteoric_fall->ok() )
+    if ( BASE::p()->buff.voidfall_spending->stack() == 1 && BASE::p()->talent.annihilator.world_killer->ok() &&
+         !BASE::p()->talent.annihilator.meteoric_fall->ok() )
     {
       BASE::p()->active.world_killer->execute_on_target( BASE::target );
     }
@@ -5295,7 +5296,8 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
 
 struct spirit_bomb_t : public demon_hunter_spell_t
 {
-  struct spirit_bomb_damage_t : public meteoric_fall_trigger_t<otherworldly_focus_benefit_t<dark_matter_trigger_t<demon_hunter_spell_t>>>
+  struct spirit_bomb_damage_t
+    : public meteoric_fall_trigger_t<otherworldly_focus_benefit_t<dark_matter_trigger_t<demon_hunter_spell_t>>>
   {
     spirit_bomb_damage_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spec.spirit_bomb_damage )
     {
@@ -6570,7 +6572,7 @@ struct voidfall_meteor_base_t : public demon_hunter_spell_t
     : demon_hunter_spell_t( n, p, s )
   {
     impact_action = p->get_background_action<voidfall_meteor_damage_t>( fmt::format( "{}_damage", name() ),
-                                                                         s->effectN( 2 ).trigger() );
+                                                                        s->effectN( 2 ).trigger() );
     add_child( impact_action );
   }
 
@@ -6600,7 +6602,7 @@ struct world_killer_t : public voidfall_meteor_base_t
   {
   }
 
-  void impact(action_state_t* s) override
+  void impact( action_state_t* s ) override
   {
     voidfall_meteor_base_t::impact( s );
 
@@ -8096,13 +8098,12 @@ struct inner_demon_t : public demon_hunter_spell_t
 // Soul Cleave ==============================================================
 
 struct soul_cleave_t
-  : public
-        art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>
+  : public art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>
 {
-  struct soul_cleave_damage_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<burning_blades_trigger_t<demon_hunter_attack_t>>>
+  struct soul_cleave_damage_t
+    : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<burning_blades_trigger_t<demon_hunter_attack_t>>>
   {
-    soul_cleave_damage_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
-      : base_t( name, p, s )
+    soul_cleave_damage_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s ) : base_t( name, p, s )
     {
       background = dual = true;
     }
@@ -9689,7 +9690,7 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
   if ( name == "pierce_the_veil" )
     return new pierce_the_veil_t( this, options_str );
   if ( name == "soul_immolation" && is_ptr() )
-    return new soul_immolation_heal_t(this, options_str);
+    return new soul_immolation_heal_t( this, options_str );
   if ( name == "soul_immolation" && !is_ptr() )
     return new soul_immolation_t( this, options_str );
   if ( name == "eradicate" )
@@ -10538,7 +10539,8 @@ void demon_hunter_t::init_scaling()
 {
   base_t::init_scaling();
 
-  scaling->enable( STAT_WEAPON_OFFHAND_DPS );
+  if ( specialization() != DEMON_HUNTER_DEVOURER )
+    scaling->enable( STAT_WEAPON_OFFHAND_DPS );
 
   if ( specialization() == DEMON_HUNTER_VENGEANCE )
     scaling->enable( STAT_BONUS_ARMOR );
