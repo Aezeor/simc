@@ -6594,9 +6594,9 @@ struct world_killer_t : public voidfall_meteor_base_t
   {
   }
 
-  void execute() override
+  void impact(action_state_t* s) override
   {
-    voidfall_meteor_base_t::execute();
+    voidfall_meteor_base_t::impact( s );
 
     switch ( p()->specialization() )
     {
