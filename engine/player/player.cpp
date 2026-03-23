@@ -2310,7 +2310,6 @@ void player_t::create_special_effects()
     coached->source      = SPECIAL_EFFECT_SOURCE_ITEM;
     coached->spell_id    = 386578;
     coached->name_str    = "coached_ally";
-    coached->custom_buff = buff;
     special_effects.push_back( coached );
 
     new emerald_coachs_whistle_cb_t( *coached, buff, stat_amount );
@@ -2320,10 +2319,9 @@ void player_t::create_special_effects()
     coached2->source      = SPECIAL_EFFECT_SOURCE_ITEM;
     coached2->spell_id    = 386578;
     coached2->name_str    = "whistle_ally";
-    coached2->custom_buff = buff;
-    special_effects.push_back( coached );
+    special_effects.push_back( coached2 );
 
-    new emerald_coachs_whistle_cb_t( *coached, buff, stat_amount );
+    new emerald_coachs_whistle_cb_t( *coached2, buff, stat_amount );
   }
 
   unique_gear::initialize_racial_effects( this );

@@ -1535,7 +1535,6 @@ void emerald_coachs_whistle( special_effect_t& effect )
   coached->type        = SPECIAL_EFFECT_EQUIP;
   coached->source      = SPECIAL_EFFECT_SOURCE_ITEM;
   coached->spell_id    = 386578;
-  coached->custom_buff = buff;
   effect.player->special_effects.push_back( coached );
 
   new emerald_coachs_whistle_cb_t( *coached, buff, stat_amount );
