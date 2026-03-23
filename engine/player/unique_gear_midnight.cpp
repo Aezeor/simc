@@ -1631,7 +1631,7 @@ void gaze_of_the_alnseer( special_effect_t& effect )
 
   auto buff = create_buff<buff_t>( effect.player, alnsight_spell );
   auto stat = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1266687 ) )
-                ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
+                  ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
 
   auto alnsight         = new special_effect_t( effect.player );
   alnsight->name_str    = "alnsight_proc";
@@ -1644,6 +1644,9 @@ void gaze_of_the_alnseer( special_effect_t& effect )
   alnsight_cb->activate_with_buff( buff, true );
 
   effect.custom_buff = buff;
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.driver()->id(), [ stat ]( auto, auto, const action_state_t* s ) { stat->trigger(); } );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
