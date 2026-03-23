@@ -8451,8 +8451,9 @@ struct starfire_base_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
   {
     base_t::execute();
 
-    if ( !p()->buff.ascendant_fires->check() && p()->buff.owlkin_frenzy->up() )
-      p()->buff.owlkin_frenzy->expire();
+    if ( !p()->buff.ascendant_fires->consume( this ) )
+      if ( p()->buff.owlkin_frenzy->up() )
+        p()->buff.owlkin_frenzy->expire();
 
     p()->buff.lunar_eclipse_override->trigger();
   }
@@ -8991,6 +8992,8 @@ struct wrath_base_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
   void execute() override
   {
     base_t::execute();
+
+    p()->buff.ascendant_fires->consume( this );
 
     if ( !p()->talent.lunar_calling.ok() )
       p()->buff.lunar_eclipse_override->expire();
@@ -14174,7 +14177,7 @@ void druid_t::parse_action_effects( action_t* action )
                      // and dream burst (433850) and solar bolt (1261573)
                      affect_list_t( 3 ).add_label( 2391 ).add_spell( 433850 ).add_spell( 1261573 ) );
 
-  _a->parse_effects( buff.ascendant_fires, CONSUME_BUFF );
+  _a->parse_effects( buff.ascendant_fires );  // consumption handled within starfire_base_t/wrath_base_t
   _a->parse_effects( buff.ascendant_stars, CONSUME_BUFF );
   _a->parse_effects( buff.astral_communion );
 
