@@ -48,7 +48,6 @@
 
 class dbc_t;
 struct player_t;
-struct pet_t;
 struct item_t;
 
 struct stat_data_t
