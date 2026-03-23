@@ -1638,6 +1638,7 @@ void gaze_of_the_alnseer( special_effect_t& effect )
   alnsight->item        = effect.item;
   alnsight->spell_id    = alnsight_spell->id();
   alnsight->custom_buff = stat;
+  alnsight->cooldown_   = 0_ms; // Seems to ignore the 0.75s ICD in data
   effect.player->special_effects.push_back( alnsight );
 
   auto alnsight_cb = new dbc_proc_callback_t( effect.player, *alnsight );
@@ -2953,7 +2954,7 @@ void crucible_of_erratic_energies( special_effect_t& effect )
   if ( !effect.player->midnight_opts.crucible_of_erratic_energies_violence )
     effect.rppm_modifier_ = 1.0 / effect.driver()->effectN( 3 ).base_value();
 
-  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1277482 ) )
     ->set_stat_from_effect_type( A_MOD_RATING, stat_value );
 
   // Protocol of Sustenance doubles the buff duration.

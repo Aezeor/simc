@@ -1496,22 +1496,48 @@ void irideus_fragment( special_effect_t& effect )
 // 398396 = On-use
 void emerald_coachs_whistle( special_effect_t& effect )
 {
+  auto stat_amount = effect.driver()->effectN( 2 ).average( effect.item );
+
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 383799 ) )
-    ->set_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
+                  ->set_stat_from_effect( 1, stat_amount );
 
-  effect.custom_buff = buff;
+  struct emerald_coachs_whistle_cb_t : public dbc_proc_callback_t
+  {
+    double buff_size;
 
-  new dbc_proc_callback_t( effect.player, effect );
+    stat_buff_t* buff;
+
+    emerald_coachs_whistle_cb_t( const special_effect_t& e, stat_buff_t* buff, double buff_size )
+      : dbc_proc_callback_t( e.player, e ), buff( buff ), buff_size( buff_size )
+    {
+      deactivate_with_buff( buff );
+    }
+
+    void trigger( action_t* a, action_state_t* state ) override
+    {
+      if ( buff->check() )
+        return;
+
+      dbc_proc_callback_t::trigger( a, state );
+    }
+
+    void execute( action_t* a, action_state_t* state ) override
+    {
+      buff->stats[ 0 ].amount = buff_size;
+      buff->trigger();
+    }
+  };
+
+  new emerald_coachs_whistle_cb_t( effect, buff, stat_amount );
 
   // Pretend we are our bonded partner for the sake of procs from partner
-  auto coached = new special_effect_t( effect.player );
-  coached->type = SPECIAL_EFFECT_EQUIP;
-  coached->source = SPECIAL_EFFECT_SOURCE_ITEM;
-  coached->spell_id = 386578;
-  coached->custom_buff = buff;
+  auto coached         = new special_effect_t( effect.player );
+  coached->type        = SPECIAL_EFFECT_EQUIP;
+  coached->source      = SPECIAL_EFFECT_SOURCE_ITEM;
+  coached->spell_id    = 386578;
   effect.player->special_effects.push_back( coached );
 
-  new dbc_proc_callback_t( effect.player, *coached );
+  new emerald_coachs_whistle_cb_t( *coached, buff, stat_amount );
 }
 
 // 401183 => Item Driver

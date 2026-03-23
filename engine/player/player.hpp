@@ -820,6 +820,7 @@ struct player_t : public actor_t
     int windweaver_party = 4;
     // Tinker Ilvls of party members using the Windweaver Tinker. If not specified they will be your Main Hands ilvl.
     player_option_t<std::string> windweaver_party_ilvls = "";
+    int emerald_coachs_whistle_ally_ilvl                = -1;
   } dragonflight_opts;
 
   struct thewarwithin_opt_t

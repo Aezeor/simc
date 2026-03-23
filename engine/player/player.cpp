@@ -2252,6 +2252,77 @@ void player_t::create_special_effects()
     }
   }
 
+  if ( dragonflight_opts.emerald_coachs_whistle_ally_ilvl > 0 )
+  {
+    auto stat_amount =
+        find_spell( 383798 )->effectN( 2 ).average_no_item( this, dragonflight_opts.emerald_coachs_whistle_ally_ilvl );
+
+    auto buff_spell = find_spell( 383799 );
+    auto buff_name  = util::tokenize_fn( buff_spell->name_cstr() );
+
+    auto b = buff_t::find( this, buff_name );
+
+    stat_buff_t* buff = nullptr;
+
+    if ( b )
+    {
+      buff = debug_cast<stat_buff_t*>( b );
+    }
+    else
+    {
+      buff = make_buff<stat_buff_t>( this, buff_name, buff_spell )->set_stat_from_effect( 1, stat_amount );
+    }
+
+    // Copy the code out of unique gear.
+    struct emerald_coachs_whistle_cb_t : public dbc_proc_callback_t
+    {
+      double buff_size;
+
+      stat_buff_t* buff;
+
+      emerald_coachs_whistle_cb_t( const special_effect_t& e, stat_buff_t* buff, double buff_size )
+        : dbc_proc_callback_t( e.player, e ), buff( buff ), buff_size( buff_size )
+      {
+        deactivate_with_buff( buff );
+      }
+
+      void trigger( action_t* a, action_state_t* state ) override
+      {
+        if ( buff->check() )
+          return;
+
+        dbc_proc_callback_t::trigger( a, state );
+      }
+
+      void execute( action_t* a, action_state_t* state ) override
+      {
+        buff->stats[ 0 ].amount = buff_size;
+        buff->trigger();
+      }
+    };
+
+    // Create multiple copies of the coached buff as it has all flags.
+    // We will just pretend we are the ally multiple times for the sake of driving the buff.
+    // We assume that if the current actor is unable to act the buff(ing) player would also be unable to act.
+
+    auto coached         = new special_effect_t( this );
+    coached->type        = SPECIAL_EFFECT_EQUIP;
+    coached->source      = SPECIAL_EFFECT_SOURCE_ITEM;
+    coached->spell_id    = 386578;
+    coached->name_str    = "coached_ally";
+    special_effects.push_back( coached );
+
+    new emerald_coachs_whistle_cb_t( *coached, buff, stat_amount );
+
+    auto coached2         = new special_effect_t( this );
+    coached2->type        = SPECIAL_EFFECT_EQUIP;
+    coached2->source      = SPECIAL_EFFECT_SOURCE_ITEM;
+    coached2->spell_id    = 386578;
+    coached2->name_str    = "whistle_ally";
+    special_effects.push_back( coached2 );
+
+    new emerald_coachs_whistle_cb_t( *coached2, buff, stat_amount );
+  }
 
   unique_gear::initialize_racial_effects( this );
 
@@ -13722,6 +13793,7 @@ void player_t::create_options()
   add_option( opt_int( "dragonflight.brilliance_party", dragonflight_opts.brilliance_party, 0, 4 ) );
   add_option( opt_int( "dragonflight.windweaver_party", dragonflight_opts.windweaver_party, 0, 4 ) );
   add_option( opt_string( "dragonflight.windweaver_party_ilvls", dragonflight_opts.windweaver_party_ilvls ) );
+  add_option( opt_int( "dragonflight.emerald_coachs_whistle_ally_ilvl", dragonflight_opts.emerald_coachs_whistle_ally_ilvl ) );
 
   // The War Within options
   add_option( opt_string( "thewarwithin.sikrans_endless_arsenal_stance",
