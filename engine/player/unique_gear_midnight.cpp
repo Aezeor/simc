@@ -1638,6 +1638,7 @@ void gaze_of_the_alnseer( special_effect_t& effect )
   alnsight->item        = effect.item;
   alnsight->spell_id    = alnsight_spell->id();
   alnsight->custom_buff = stat;
+  alnsight->cooldown_   = 0_ms; // Seems to ignore the 0.75s ICD in data
   effect.player->special_effects.push_back( alnsight );
 
   auto alnsight_cb = new dbc_proc_callback_t( effect.player, *alnsight );
