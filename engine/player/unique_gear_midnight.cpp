@@ -1643,13 +1643,14 @@ void gaze_of_the_alnseer( special_effect_t& effect )
   auto alnsight_cb = new dbc_proc_callback_t( effect.player, *alnsight );
   alnsight_cb->activate_with_buff( buff, true );
 
-  effect.custom_buff = buff;
-
-  effect.player->callbacks.register_callback_execute_function( effect.driver()->id(),
-                                                               [ stat ]( auto, auto, const action_state_t* s ) {
-                                                                 if ( stat->check() )
-                                                                   stat->trigger();
-                                                               } );
+  effect.player->callbacks.register_callback_execute_function(
+      effect.driver()->id(), [ &effect, stat, buff ]( auto, auto, const action_state_t* ) {
+        buff->trigger();
+        if ( stat->check() )
+        {
+          stat->trigger();
+        }
+      } );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
