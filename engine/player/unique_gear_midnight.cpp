@@ -1645,8 +1645,11 @@ void gaze_of_the_alnseer( special_effect_t& effect )
 
   effect.custom_buff = buff;
 
-  effect.player->callbacks.register_callback_execute_function(
-      effect.driver()->id(), [ stat ]( auto, auto, const action_state_t* s ) { stat->trigger(); } );
+  effect.player->callbacks.register_callback_execute_function( effect.driver()->id(),
+                                                               [ stat ]( auto, auto, const action_state_t* s ) {
+                                                                 if ( stat->check() )
+                                                                   stat->trigger();
+                                                               } );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
