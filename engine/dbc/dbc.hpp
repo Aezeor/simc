@@ -48,6 +48,7 @@
 
 class dbc_t;
 struct player_t;
+struct pet_t;
 struct item_t;
 
 struct stat_data_t
@@ -612,7 +613,7 @@ const spell_data_t* find_spell( const T* obj, U data )
     if constexpr ( std::is_base_of_v<T, player_t> )
     {
       if ( obj->sim->dbc_override->find_spell( spell_id, obj->dbc->ptr ) == return_spell )
-        return_spell = T::clone_dbc_override_spell( obj, return_spell );
+        return_spell = T::clone_dbc_override_spell( obj->get_owner_or_self(), return_spell );
     }
 
     return return_spell;
@@ -638,7 +639,7 @@ const spell_data_t* find_spell( const T* obj, U data )
          ( as<int>( return_spell->class_family() ) == dbc::get_class_spell_family( obj->type ) ||
            return_spell->affected_by_label( dbc::get_class_spell_label( obj->type ) ) ) )
     {
-      return_spell = T::clone_dbc_override_spell( obj, return_spell );
+      return_spell = T::clone_dbc_override_spell( obj->get_owner_or_self(), return_spell );
     }
   }
 
