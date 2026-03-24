@@ -237,7 +237,6 @@ void marksmanship( player_t* p )
   action_priority_list_t* drst = p->get_action_priority_list( "drst" );
   action_priority_list_t* sentaoe = p->get_action_priority_list( "sentaoe" );
   action_priority_list_t* sentst = p->get_action_priority_list( "sentst" );
-  action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "summon_pet,if=talent.unbreakable_bond" );
@@ -301,15 +300,10 @@ void marksmanship( player_t* p )
   sentst->add_action( "rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time" );
   sentst->add_action( "trueshot,if=!buff.double_tap.up&active_enemies>1&variable.trueshot_ready" );
   sentst->add_action( "volley,if=!buff.double_tap.up&active_enemies>1" );
-  sentst->add_action( "aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=cooldown.volley.remains>2|buff.trueshot.up" );
+  sentst->add_action( "aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=cooldown.volley.remains>2|buff.trueshot.up|!talent.volley" );
   sentst->add_action( "moonlight_chakram" );
   sentst->add_action( "rapid_fire" );
   sentst->add_action( "steady_shot" );
-
-  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&this_trinket.cooldown.duration%%cooldown.trueshot.duration=0&(buff.trueshot.remains>14|this_trinket.is.algethar_puzzle_box&variable.trueshot_ready&cooldown.trueshot.remains<5)" );
-  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&other_trinket.cooldown.duration%%cooldown.trueshot.duration=0&(buff.trueshot.remains>14&other_trinket.cooldown.remains|cooldown.trueshot.remains>20&other_trinket.cooldown.remains<=cooldown.trueshot.remains)" );
-  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&(buff.trueshot.remains>14|buff.trueshot.up&fight_remains<cooldown.trueshot.remains+15|fight_remains<21)" );
-  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage&cooldown.trueshot.remains>20" );
 }
 //marksmanship_apl_end
 
@@ -323,7 +317,6 @@ void marksmanship_ptr( player_t* p )
   action_priority_list_t* drst = p->get_action_priority_list( "drst" );
   action_priority_list_t* sentaoe = p->get_action_priority_list( "sentaoe" );
   action_priority_list_t* sentst = p->get_action_priority_list( "sentst" );
-  action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "summon_pet,if=talent.unbreakable_bond" );
@@ -387,15 +380,10 @@ void marksmanship_ptr( player_t* p )
   sentst->add_action( "rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time" );
   sentst->add_action( "trueshot,if=!buff.double_tap.up&active_enemies>1&variable.trueshot_ready" );
   sentst->add_action( "volley,if=!buff.double_tap.up&active_enemies>1" );
-  sentst->add_action( "aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=cooldown.volley.remains>2|buff.trueshot.up" );
+  sentst->add_action( "aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=cooldown.volley.remains>2|buff.trueshot.up|!talent.volley" );
   sentst->add_action( "moonlight_chakram" );
   sentst->add_action( "rapid_fire" );
   sentst->add_action( "steady_shot" );
-
-  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&this_trinket.cooldown.duration%%cooldown.trueshot.duration=0&(buff.trueshot.remains>14|this_trinket.is.algethar_puzzle_box&variable.trueshot_ready&cooldown.trueshot.remains<5)" );
-  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&other_trinket.cooldown.duration%%cooldown.trueshot.duration=0&(buff.trueshot.remains>14&other_trinket.cooldown.remains|cooldown.trueshot.remains>20&other_trinket.cooldown.remains<=cooldown.trueshot.remains)" );
-  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&(buff.trueshot.remains>14|buff.trueshot.up&fight_remains<cooldown.trueshot.remains+15|fight_remains<21)" );
-  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage&cooldown.trueshot.remains>20" );
 }
 //marksmanship_ptr_apl_end
 
@@ -412,6 +400,8 @@ void survival( player_t* p )
 
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats" );
+  precombat->add_action( "use_item,name=algethar_puzzle_box" );
+  precombat->add_action( "wildfire_bomb" );
 
   default_->add_action( "auto_attack" );
   default_->add_action( "call_action_list,name=cds" );
@@ -431,12 +421,14 @@ void survival( player_t* p )
   cds->add_action( "aspect_of_the_eagle,if=target.distance>=6" );
 
   plst->add_action( "kill_command,if=buff.tip_of_the_spear.stack<2&(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains)", "ST - PL" );
+  plst->add_action( "wildfire_bomb,if=fury_of_the_wyvern_extendable&buff.wyverns_cry.remains<gcd" );
   plst->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
+  plst->add_action( "raptor_strike,if=!buff.raptor_swipe.up&cooldown.takedown.remains<gcd" );
+  plst->add_action( "boomstick,if=buff.tip_of_the_spear.up|cooldown.takedown.remains<gcd&talent.twin_fangs" );
   plst->add_action( "takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs" );
   plst->add_action( "flamefang_pitch" );
-  plst->add_action( "boomstick,if=buff.tip_of_the_spear.up" );
-  plst->add_action( "wildfire_bomb,if=fury_of_the_wyvern_extendable&buff.tip_of_the_spear.up" );
-  plst->add_action( "raptor_strike,if=buff.tip_of_the_spear.up|!buff.raptor_swipe.up" );
+  plst->add_action( "wildfire_bomb,if=fury_of_the_wyvern_extendable&buff.tip_of_the_spear.up&!buff.takedown.remains" );
+  plst->add_action( "raptor_strike,if=(buff.tip_of_the_spear.up|!buff.raptor_swipe.up)" );
   plst->add_action( "kill_command,if=cooldown.takedown.remains" );
   plst->add_action( "wildfire_bomb" );
   plst->add_action( "takedown" );
@@ -491,6 +483,8 @@ void survival_ptr( player_t* p )
 
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats" );
+  precombat->add_action( "use_item,name=algethar_puzzle_box" );
+  precombat->add_action( "wildfire_bomb" );
 
   default_->add_action( "auto_attack" );
   default_->add_action( "call_action_list,name=cds" );
@@ -510,12 +504,14 @@ void survival_ptr( player_t* p )
   cds->add_action( "aspect_of_the_eagle,if=target.distance>=6" );
 
   plst->add_action( "kill_command,if=buff.tip_of_the_spear.stack<2&(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains)", "ST - PL" );
+  plst->add_action( "wildfire_bomb,if=fury_of_the_wyvern_extendable&buff.wyverns_cry.remains<gcd" );
   plst->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
+  plst->add_action( "raptor_strike,if=!buff.raptor_swipe.up&cooldown.takedown.remains<gcd" );
+  plst->add_action( "boomstick,if=buff.tip_of_the_spear.up|cooldown.takedown.remains<gcd&talent.twin_fangs" );
   plst->add_action( "takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs" );
   plst->add_action( "flamefang_pitch" );
-  plst->add_action( "boomstick,if=buff.tip_of_the_spear.up" );
-  plst->add_action( "wildfire_bomb,if=fury_of_the_wyvern_extendable&buff.tip_of_the_spear.up" );
-  plst->add_action( "raptor_strike,if=buff.tip_of_the_spear.up|!buff.raptor_swipe.up" );
+  plst->add_action( "wildfire_bomb,if=fury_of_the_wyvern_extendable&buff.tip_of_the_spear.up&!buff.takedown.remains" );
+  plst->add_action( "raptor_strike,if=(buff.tip_of_the_spear.up|!buff.raptor_swipe.up)" );
   plst->add_action( "kill_command,if=cooldown.takedown.remains" );
   plst->add_action( "wildfire_bomb" );
   plst->add_action( "takedown" );
