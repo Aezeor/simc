@@ -101,7 +101,8 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                                ->set_tick_behavior( buff_tick_behavior::REFRESH )
                                ->set_freeze_stacks( true );
 
-  debuffs.wither = make_buff( *this, "wither", p.hero.wither_dot ); // Dummy debuff
+  debuffs.wither = make_buff( *this, "wither", p.hero.wither_dot )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION ); // Dummy debuff
 
   // Soul Harvester
   dots.soul_anathema = target->get_dot( "soul_anathema", &p );
