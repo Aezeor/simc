@@ -3415,7 +3415,11 @@ struct eclipse_buff_base_t : public druid_buff_t
     p()->buff.astral_communion->trigger();
     p()->buff.cenarius_might->trigger();
     p()->buff.parting_skies->trigger();
-    p()->buff.solstice->trigger();
+
+    p()->buff.solstice->expire();
+
+    if ( p()->talent.solstice.ok() )
+      p()->buff.solstice->trigger();
 
     return true;
   }
@@ -11078,8 +11082,10 @@ void druid_t::create_buffs()
   buff.shooting_stars_sunfire = make_fallback<shooting_stars_buff_t>( talent.shooting_stars.ok() && talent.sunfire.ok(),
     this, "shooting_stars_sunfire", dot_lists.sunfire, active.shooting_stars_sunfire );
 
-  buff.solstice = make_fallback( talent.solstice.ok(), this, "solstice", find_trigger( talent.solstice ).trigger() )
-    ->set_default_value( find_trigger( talent.solstice ).percent() );
+  // lookup via spell_id since hail of stars can proc solstice without solstice talented
+  buff.solstice =
+    make_fallback( talent.solstice.ok() || talent.hail_of_stars.ok(), this, "solstice", find_spell( 343648 ) )
+      ->set_default_value( find_spell( 343647 )->effectN( 1 ).percent() );
 
   // lookup via spell_id for convoke
   buff.starfall = make_fallback( spec.starfall->ok() || ( talent.convoke_the_spirits.ok() && talent.moonkin_form.ok() ),
