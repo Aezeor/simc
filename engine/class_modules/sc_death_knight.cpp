@@ -10483,6 +10483,7 @@ struct frostbane_t final : public frost_strike_base_t
       delay_2( 0_ms )
   {
     parse_options( options_str );
+    aoe = -1;
     if ( data().ok() )
     {
       frostbane_strike->stats = stats;
