@@ -354,6 +354,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     suppress_caster_procs(),
     suppress_target_procs(),
     suppress_callback_from_energize(),
+    suppress_callback_from_trigger_dot(),
     enable_proc_from_suppressed(),
     allow_class_ability_procs(),
     not_a_proc(),
@@ -4527,7 +4528,13 @@ void action_t::trigger_dot( action_state_t* s )
   }
 
   dot->trigger( duration );
-  player->trigger_callbacks( PROC1_NONE_HARMFUL, PROC2_LANDED, this, dot->state );
+
+  if ( callbacks && caster_callbacks && !suppress_callback_from_trigger_dot )
+  {
+    // TODO: should this be based on whether the action is harmful or not?
+    player->trigger_callbacks( s->target->is_enemy() ? PROC1_NONE_HARMFUL : PROC1_NONE_HELPFUL, PROC2_LANDED, this,
+                               dot->state );
+  }
 }
 
 /**

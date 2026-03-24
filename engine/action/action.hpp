@@ -124,6 +124,9 @@ public:
   /// engerize_power effects can trigger generic helpful procs. if true, disable this behavior for the action.
   bool suppress_callback_from_energize;
 
+  /// trigger_dot can trigger generic helpful/harmful procs. if true, disable this behavior for the action.
+  bool suppress_callback_from_trigger_dot;
+
   /// can trigger callbacks on caster even if suppress_caster_proc is true, as long as the callback has can_proc_from_suppressed = true.
   /// TODO: determine if equivalent for suppressed target procs is needed.
   bool enable_proc_from_suppressed;
