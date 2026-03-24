@@ -1,7 +1,7 @@
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=summon_pet
 actions.precombat+=/snapshot_stats
-actions.precombat+=/wildfire_bomb,if=talent.howl_of_the_pack_leader&talent.twin_fangs
+actions.precombat+=/wildfire_bomb
 actions.precombat+=/use_item,name=algethar_puzzle_box
 
 actions=auto_attack
