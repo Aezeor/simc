@@ -502,68 +502,34 @@ void arcanoweave_lining( special_effect_t& effect )
 
   struct arcanoweave_lining_cb_t : public dbc_proc_callback_t
   {
-    target_specific_t<buff_t> buffs;
+    stat_buff_t* buff;
     double ally_conversion_multiplier;
-    arcanoweave_lining_cb_t( const special_effect_t& e, buff_t* personal_buff )
+
+    arcanoweave_lining_cb_t( const special_effect_t& e, stat_buff_t* personal_buff )
       : dbc_proc_callback_t( e.player, e ),
-        buffs{ false },
+        buff( personal_buff ),
         ally_conversion_multiplier( e.driver()->effectN( 3 ).percent() / e.driver()->effectN( 2 ).percent() )
+    {}
+
+    buff_t* create_debuff( player_t* t ) override
     {
-      buffs[ e.player ] = personal_buff;
-    }
+      // don't cache in ctor so we can grab double value for double embellishment
+      auto ally_stat_amount = buff->stats.front().amount * ally_conversion_multiplier;
 
-    double ally_buff_size()
-    {
-      return debug_cast<stat_buff_t*>( get_buff( effect.player ) )->stats[ 0 ].amount * ally_conversion_multiplier;
-    }
-
-    buff_t* get_buff( player_t* buff_player )
-    {
-      if ( buffs[ buff_player ] )
-        return buffs[ buff_player ];
-
-      if ( auto buff = buff_t::find( buff_player, "arcanoweave_insight", effect.player ) )
-      {
-        buffs[ buff_player ] = buff;
-        return buff;
-      }
-
-      auto buff_spell = effect.player->find_spell( 1229746 );
-
-      auto buff = make_buff<stat_buff_t>( actor_pair_t{ buff_player, effect.player }, "arcanoweave_insight", buff_spell );
-      buff->set_stat_from_effect_type( A_MOD_STAT, ally_buff_size() );
-
-      buffs[ buff_player ] = buff;
-
-      return buff;
-    }
-
-    void trigger_buff( player_t* buff_player )
-    {
-      if ( buff_player->is_sleeping() )
-        return;
-
-      auto buff               = get_buff( buff_player );
-      buff->trigger();
+      return make_buff<stat_buff_t>( actor_pair_t( t, listener ), "arcanoweave_insight_ally", &buff->data() )
+        ->set_stat_from_effect_type( A_MOD_STAT, ally_stat_amount )
+        ->set_name_reporting( "Ally" );
     }
 
     void execute( action_t*, action_state_t* ) override
     {
-      trigger_buff( effect.player );
+      buff->trigger();
 
       if ( effect.player->sim->player_non_sleeping_list.size() > 1 && !effect.player->sim->single_actor_batch )
       {
-        std::vector<player_t*> helper_vector = effect.player->sim->player_non_sleeping_list.data();
-        rng().shuffle( helper_vector.begin(), helper_vector.end() );
-
-        for ( auto* player : helper_vector )
-        {
-          if ( player->is_pet() || player == effect.player )
-            continue;
-
-          trigger_buff( player );
-          break;
-        }
+        auto allies = effect.player->sim->player_non_sleeping_list.data();  // make a copy
+        range::erase_remove( allies, effect.player );
+        get_debuff( rng().range( allies ) )->trigger();
       }
     }
   };
