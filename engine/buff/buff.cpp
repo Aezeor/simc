@@ -722,7 +722,12 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
   set_rppm( RPPM_NONE, -1, -1 );
 
   if ( s_data->flags( spell_attribute::SX_REFRESH_EXTENDS_DURATION ) )
+  {
     set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+    // Reset this after parsing the flag since the `set_refresh_behavior` call will set `refresh_behavior_overridden` to
+    // true, which we don't want in this case.
+    refresh_behavior_overridden = false;
+  }
 
   set_period( timespan_t::min() );
 
