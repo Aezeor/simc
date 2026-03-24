@@ -69,7 +69,7 @@ actions.sentst+=/arcane_shot,target_if=max:debuff.sentinels_mark.down|action.aim
 actions.sentst+=/rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time
 actions.sentst+=/trueshot,if=!buff.double_tap.up&active_enemies>1&variable.trueshot_ready
 actions.sentst+=/volley,if=!buff.double_tap.up&active_enemies>1
-actions.sentst+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=cooldown.volley.remains>2|buff.trueshot.up
+actions.sentst+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=cooldown.volley.remains>2|buff.trueshot.up|!talent.volley
 actions.sentst+=/moonlight_chakram
 actions.sentst+=/rapid_fire
 actions.sentst+=/steady_shot
