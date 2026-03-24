@@ -2127,7 +2127,7 @@ public:
   { return false; }
 
   // Generic rules for proccing Cold-Blooded Killer, used by rogue_t::trigger_cold_blood()
-  virtual bool procs_cold_blood() const
+  virtual bool procs_cold_blood( const action_state_t* ) const
   { return ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT && ab::energize_amount > 0; }
 
   // Placeholder for actions which trigger Subtlety Shadow Clone attacks to be overridden
@@ -3558,6 +3558,11 @@ struct shadow_clone_t : public rogue_attack_t
       trigger_shadow_techniques_buff( execute_state );
     }
   }
+
+  bool procs_cold_blood( const action_state_t* s ) const override
+  {
+    return cast_state( s )->get_combo_points() == 0;
+  }
 };
 
 // Lashe Macabre ============================================================
@@ -4661,7 +4666,7 @@ struct kingsbane_t : public rogue_attack_t
       bool procs_poison() const override
       { return true; }
 
-      bool procs_cold_blood() const override
+      bool procs_cold_blood( const action_state_t* ) const override
       { return false; }
     };
 
@@ -4908,7 +4913,7 @@ struct mutilate_t : public rogue_attack_t
     bool procs_deal_fate() const override
     { return true; }
 
-    bool procs_cold_blood() const override
+    bool procs_cold_blood( const action_state_t* ) const override
     { return true; }
   };
 
@@ -8550,7 +8555,7 @@ void actions::rogue_action_t<Base>::trigger_cold_blood( const action_state_t* st
   if ( !p()->talent.rogue.cold_blooded_killer->ok() )
     return;
 
-  if ( !procs_cold_blood() )
+  if ( !procs_cold_blood( state ) )
     return;
 
   if ( state->result != RESULT_CRIT )
