@@ -7264,8 +7264,7 @@ bool mage_t::trigger_clearcasting( double chance, bool allow_predict, bool has_d
     // In-game, Blast (triggering CC + BS) into a queued Barrage will lead to CC + BS to be applied AFTER the Barrage.
     // However, in sims, CC will be active prior to the Barrage.
     // If Clearcasting would directly grant Intellect: in sims, the queued Barrage would benefit from Clearcasting; in game, the Barrage wouldn't.
-    // TODO: Currently doesn't trigger for Arcane at all
-    if ( talents.brainstorm.ok() && !bugs )
+    if ( talents.brainstorm.ok() )
     {
       // TODO: we don't know what happens if a single spell triggers two (or more) separate sources of guaranteed Clearcastings.
       // Since there's no such thing in-game yet, we can't know with certainty whether brainstorm will trigger once or twice.
