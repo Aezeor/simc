@@ -721,6 +721,9 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
   // If there's no overridden proc chance (%), setup any potential custom RPPM-affecting attribute
   set_rppm( RPPM_NONE, -1, -1 );
 
+  if ( s_data->flags( spell_attribute::SX_REFRESH_EXTENDS_DURATION ) )
+    set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+
   set_period( timespan_t::min() );
 
   set_tick_on_application( s_data->flags( spell_attribute::SX_TICK_ON_APPLICATION ) );
@@ -728,12 +731,10 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
   set_tick_behavior( buff_tick_behavior::NONE );
 
   if ( s_data->flags( spell_attribute::SX_DOT_HASTED ) )
-  {
     set_tick_time_behavior( buff_tick_time_behavior::HASTED );
-  }
 
   // Refresh behavior can be set during the `set_period` call above. If it wasn't, set it now.
-  if( refresh_behavior == buff_refresh_behavior::NONE )
+  if ( refresh_behavior == buff_refresh_behavior::NONE )
     set_refresh_behavior( buff_refresh_behavior::NONE );
 
   set_stack_behavior( buff_stack_behavior::DEFAULT );
@@ -1399,7 +1400,7 @@ buff_t* buff_t::set_refresh_behavior( buff_refresh_behavior b )
   if ( b == buff_refresh_behavior::NONE )
   {
     // In wod, default behavior for ticking buffs is to pandemic-extend the duration
-    if ( buff_period > timespan_t::zero() || data().flags( SX_REFRESH_EXTENDS_DURATION ) )
+    if ( buff_period > timespan_t::zero() )
     {
       refresh_behavior = buff_refresh_behavior::PANDEMIC;
     }
