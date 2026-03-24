@@ -1399,7 +1399,7 @@ buff_t* buff_t::set_refresh_behavior( buff_refresh_behavior b )
   if ( b == buff_refresh_behavior::NONE )
   {
     // In wod, default behavior for ticking buffs is to pandemic-extend the duration
-    if ( buff_period > timespan_t::zero() )
+    if ( buff_period > timespan_t::zero() || data().flags( SX_REFRESH_EXTENDS_DURATION ) )
     {
       refresh_behavior = buff_refresh_behavior::PANDEMIC;
     }
