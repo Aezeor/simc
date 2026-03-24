@@ -1629,7 +1629,9 @@ void gaze_of_the_alnseer( special_effect_t& effect )
 {
   auto alnsight_spell = effect.trigger();
 
-  auto buff = create_buff<buff_t>( effect.player, alnsight_spell );
+  auto buff =
+      create_buff<buff_t>( effect.player, alnsight_spell )->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+
   auto stat = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1266687 ) )
                   ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
 
@@ -2365,15 +2367,16 @@ void locuswalkers_ribbon( special_effect_t& effect )
     locuswalkers_ribbon_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
     {
       stack_buff = create_buff<buff_t>( e.player, e.trigger()->effectN( 2 ).trigger() )
-                     ->set_freeze_stacks( true )
-                     ->set_default_value( e.driver()->effectN( 2 ).percent() )
-                     ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-                       if ( !stack_buff->player->in_combat && stack_buff->check() )
-                         stack_buff->decrement();
-                     } );
+                       ->set_freeze_stacks( true )
+                       ->set_default_value( e.driver()->effectN( 2 ).percent() )
+                       ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                         if ( !stack_buff->player->in_combat && stack_buff->check() )
+                           stack_buff->decrement();
+                       } );
 
       stat_buff = create_buff<riftwalkers_temptation_t>( e.player, e.trigger(), stack_buff )
-                    ->set_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e ) );
+                      ->set_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e ) );
+      stat_buff->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
     }
 
     void execute( action_t*, action_state_t* ) override
