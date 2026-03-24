@@ -237,6 +237,7 @@ void marksmanship( player_t* p )
   action_priority_list_t* drst = p->get_action_priority_list( "drst" );
   action_priority_list_t* sentaoe = p->get_action_priority_list( "sentaoe" );
   action_priority_list_t* sentst = p->get_action_priority_list( "sentst" );
+  action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "summon_pet,if=talent.unbreakable_bond" );
@@ -304,6 +305,11 @@ void marksmanship( player_t* p )
   sentst->add_action( "moonlight_chakram" );
   sentst->add_action( "rapid_fire" );
   sentst->add_action( "steady_shot" );
+
+  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&this_trinket.cooldown.duration%%cooldown.trueshot.duration=0&(buff.trueshot.remains>14|this_trinket.is.algethar_puzzle_box&variable.trueshot_ready&cooldown.trueshot.remains<5)" );
+  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&other_trinket.cooldown.duration%%cooldown.trueshot.duration=0&(buff.trueshot.remains>14&other_trinket.cooldown.remains|cooldown.trueshot.remains>20&other_trinket.cooldown.remains<=cooldown.trueshot.remains)" );
+  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&(buff.trueshot.remains>14|buff.trueshot.up&fight_remains<cooldown.trueshot.remains+15|fight_remains<21)" );
+  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage&cooldown.trueshot.remains>20" );
 }
 //marksmanship_apl_end
 
@@ -317,6 +323,7 @@ void marksmanship_ptr( player_t* p )
   action_priority_list_t* drst = p->get_action_priority_list( "drst" );
   action_priority_list_t* sentaoe = p->get_action_priority_list( "sentaoe" );
   action_priority_list_t* sentst = p->get_action_priority_list( "sentst" );
+  action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "summon_pet,if=talent.unbreakable_bond" );
@@ -384,6 +391,11 @@ void marksmanship_ptr( player_t* p )
   sentst->add_action( "moonlight_chakram" );
   sentst->add_action( "rapid_fire" );
   sentst->add_action( "steady_shot" );
+
+  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&this_trinket.cooldown.duration%%cooldown.trueshot.duration=0&(buff.trueshot.remains>14|this_trinket.is.algethar_puzzle_box&variable.trueshot_ready&cooldown.trueshot.remains<5)" );
+  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&other_trinket.cooldown.duration%%cooldown.trueshot.duration=0&(buff.trueshot.remains>14&other_trinket.cooldown.remains|cooldown.trueshot.remains>20&other_trinket.cooldown.remains<=cooldown.trueshot.remains)" );
+  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&(buff.trueshot.remains>14|buff.trueshot.up&fight_remains<cooldown.trueshot.remains+15|fight_remains<21)" );
+  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage&cooldown.trueshot.remains>20" );
 }
 //marksmanship_ptr_apl_end
 
