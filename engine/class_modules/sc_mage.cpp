@@ -7260,20 +7260,7 @@ bool mage_t::trigger_clearcasting( double chance, bool allow_predict, bool has_d
     if ( chance >= 1.0 && allow_predict )
       buffs.clearcasting->predict();
 
-    // Due to Brainstorm being async in sims, its trigger will be scheduled w/ make_event ~30ms later, whereas CC is instantaneous.
-    // In-game, Blast (triggering CC + BS) into a queued Barrage will lead to CC + BS to be applied AFTER the Barrage.
-    // However, in sims, CC will be active prior to the Barrage.
-    // If Clearcasting would directly grant Intellect: in sims, the queued Barrage would benefit from Clearcasting; in game, the Barrage wouldn't.
-    if ( talents.brainstorm.ok() )
-    {
-      // TODO: we don't know what happens if a single spell triggers two (or more) separate sources of guaranteed Clearcastings.
-      // Since there's no such thing in-game yet, we can't know with certainty whether brainstorm will trigger once or twice.
-      if ( !has_double_proc_delay || state.last_random_clearcasting != sim->current_time() )
-        buffs.brainstorm->trigger();
-      else
-        sim->print_debug( "Gaining Clearcasting in {} s; Brainstorm trigger skipped.", delay );
-    }
-
+    buffs.brainstorm->trigger();
     trigger_splinter( target, as<int>( talents.shifting_shards->effectN( 1 ).base_value() ) );
 
     if ( rng().roll( talents.overpowered_missiles->effectN( 1 ).percent() ) )
