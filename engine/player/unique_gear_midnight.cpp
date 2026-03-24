@@ -1655,8 +1655,6 @@ void gaze_of_the_alnseer( special_effect_t& effect )
   };
 
   auto buff = create_buff<buff_t>( effect.player, alnsight_spell );
-  auto buff =
-      create_buff<buff_t>( effect.player, alnsight_spell )->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   auto stat = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1266687 ) )
                   ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
