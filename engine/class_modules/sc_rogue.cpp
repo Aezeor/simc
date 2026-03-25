@@ -246,6 +246,9 @@ class rogue_t : public player_t
 
 public:
 
+  // Venomous Wounds energy refund overflow
+  double venomous_wounds_accumulator;
+
   // Deadly Pursuit CDR list
   std::vector<cooldown_t*> deadly_pursuit_cooldowns;
 
@@ -1090,6 +1093,7 @@ public:
   rogue_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
     rogue_ready_trigger_threshold( 25 ),
+    venomous_wounds_accumulator( 0 ),
     shadow_techniques_counter( 0 ),
     deathstalkers_mark_debuff( nullptr ),
     auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
@@ -4397,18 +4401,25 @@ struct garrote_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    // 2022-11-28 -- Currently does not work correctly at all without Improved Garrote
-    //               Additionally works every global of Improved Garrote regardless of Subterfuge
     if ( p()->talent.assassination.shrouded_suffocation->ok() && !is_secondary_action() &&
-         ( !p()->bugs || p()->stealthed( STEALTH_IMPROVED_GARROTE ) ) &&
-         ( p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) ||
-           ( p()->bugs && p()->stealthed( STEALTH_IMPROVED_GARROTE ) ) ) )
+         p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) )
     {
       trigger_combo_point_gain( as<int>( p()->talent.assassination.shrouded_suffocation->effectN( 2 ).base_value() ),
                                 p()->gains.shrouded_suffocation );
     }
 
     trigger_deathstalkers_mark_debuff( execute_state );
+  }
+
+  virtual void update_state( action_state_t* s, unsigned flags, result_amount_type rt ) override
+  {
+    // 2026-03-24 -- Improved Garrote causes the entire damage calculation to snapshot
+    if ( p()->talent.assassination.improved_garrote->ok() && s->persistent_multiplier > 1.0 )
+    {
+      flags &= ~( STATE_AP | STATE_VERSATILITY | STATE_MUL_TA );
+    }
+
+    rogue_attack_t::update_state( s, flags, rt );
   }
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
@@ -7421,14 +7432,27 @@ void rogue_t::trigger_venomous_wounds_death( player_t* target )
   unsigned full_ticks_remaining =
       (unsigned)( td->dots.rupture->remains() / td->dots.rupture->current_action->base_tick_time );
 
-  // 2025-04-12 -- The death effect was never updated to use the new VW value of 8 Energy, and still uses the old value of 10
   // MIDNIGHT TOCHECK -- Assume this was revised with the new tick values based on patch notes, maybe reduced more
-  int replenish = as<int>( talent.assassination.venomous_wounds->effectN( 1 ).base_value() );
-  
-  sim->print_log( "{} venomous_wounds replenish on death: full_ticks={}, ticks_left={}, vw_replenish={}, remaining_time={}",
-                  *this, full_ticks_remaining, td->dots.rupture->ticks_left(), replenish, td->dots.rupture->remains() );
+  double poisoned_bleeds = 0;
+  for ( auto t : sim->target_non_sleeping_list )
+  {
+    rogue_td_t* tdata = get_target_data( t );
+    if ( tdata->is_poisoned() )
+    {
+      poisoned_bleeds += tdata->dots.garrote->is_ticking() + tdata->dots.rupture->is_ticking();
+    }
+  }
 
-  resource_gain( RESOURCE_ENERGY, full_ticks_remaining * replenish, gains.venomous_wounds_death,
+  // 2026-03-24 -- Logs indicate the descripted formula is closer to #bleeds / 2 rather than #bleeds
+  const double refund_amount = poisoned_bleeds <= 2 ?
+    talent.assassination.venomous_wounds->effectN( 1 ).base_value() :
+    talent.assassination.venomous_wounds->effectN( 1 ).base_value() /
+    std::pow( poisoned_bleeds / 2.0, talent.assassination.venomous_wounds->effectN( 3 ).percent() );
+
+  sim->print_log( "{} venomous_wounds replenish on death: full_ticks={}, ticks_left={}, vw_replenish={}, remaining_time={}",
+                  *this, full_ticks_remaining, td->dots.rupture->ticks_left(), refund_amount, td->dots.rupture->remains() );
+
+  resource_gain( RESOURCE_ENERGY, full_ticks_remaining * refund_amount, gains.venomous_wounds_death,
                  td->dots.rupture->current_action );
 }
 
@@ -7657,24 +7681,31 @@ void actions::rogue_action_t<Base>::trigger_venomous_wounds( const action_state_
   if ( !p()->rng().roll( chance ) )
     return;
 
-  int poisoned_bleeds = 1;
+  double poisoned_bleeds = 0;
   for ( auto t : ab::sim->target_non_sleeping_list )
   {
-    if ( t == state->target )
-      continue;
-
     rogue_td_t* tdata = p()->get_target_data( t );
-    if ( tdata->is_lethal_poisoned() )
+    if ( tdata->is_poisoned() )
     {
       poisoned_bleeds += tdata->dots.garrote->is_ticking() + tdata->dots.rupture->is_ticking();
     }
   }
 
-  // MIDNIGHT TOCHECK -- Currently diminishes to 1 when any AoE units are present
-  double energy_gain = ( poisoned_bleeds > 1 ?
-                         p()->talent.assassination.venomous_wounds->effectN( 2 ).base_value() :
-                         p()->talent.assassination.venomous_wounds->effectN( 1 ).base_value() );
-  p()->resource_gain( RESOURCE_ENERGY, energy_gain, p()->gains.venomous_wounds );
+  // 2026-03-24 -- Logs indicate the descripted formula is closer to #bleeds / 2 rather than #bleeds
+  const double refund_amount = poisoned_bleeds <= 2 ?
+    p()->talent.assassination.venomous_wounds->effectN( 1 ).base_value() :
+    p()->talent.assassination.venomous_wounds->effectN( 1 ).base_value() /
+    std::pow( poisoned_bleeds / 2.0, p()->talent.assassination.venomous_wounds->effectN( 3 ).percent() );
+
+  p()->venomous_wounds_accumulator += refund_amount;
+  p()->sim->print_debug( "{} {} accumulates {} Venomous Wounds ({})", *p(), *this, refund_amount, p()->venomous_wounds_accumulator );
+
+  const int energize = as<int>( std::floor( p()->venomous_wounds_accumulator ) );
+  if ( energize >= 1 )
+  {
+    p()->resource_gain( RESOURCE_ENERGY, energize, p()->gains.venomous_wounds );
+    p()->venomous_wounds_accumulator -= energize;
+  }
 }
 
 template <typename Base>
@@ -11038,6 +11069,8 @@ void rogue_t::init_finished()
 void rogue_t::reset()
 {
   player_t::reset();
+
+  venomous_wounds_accumulator = 0;
 
   if( options.initial_shadow_techniques >= 0 )
     shadow_techniques_counter = options.initial_shadow_techniques;
