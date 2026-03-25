@@ -1580,8 +1580,8 @@ buff_t* buff_t::apply_time_rate_modifier( const spell_data_t* spell )
 
     if ( sim->debug )
     {
-      sim->print_debug( "{} {} time rate modified by {} to {} from {} ({}) eff#{}", *source, *this, mul,
-                        base_time_duration_multiplier, spell->name_cstr(), spell->id(), effect.index() + 1 );
+      sim->print_debug( "{} {} time rate modified by {} to {} from {} eff#{}", *source, *this, mul,
+                        base_time_duration_multiplier, *spell, effect.index() + 1 );
     }
   }
 

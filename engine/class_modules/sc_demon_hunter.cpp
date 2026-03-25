@@ -2175,9 +2175,8 @@ public:
         auto added_entry = add_parse_entry( ab::da_multiplier_effects )
                                .set_buff( buff )
                                .set_value( effect.percent() )
-                               .set_eff( &effect );
-        ab::debug_message( added_entry, "direct damage", fmt::format( "{:.1f}%", effect.base_value() ), &buff->data(),
-                           idx );
+                               .set_eff( &effect )
+                               .print_debug( this );
       }
     };
     std::vector<int> art_of_the_glaive_glaive_flurry_affected_list  = { 199552, 200685, 391374, 391378, 210153,

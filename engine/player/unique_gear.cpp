@@ -5063,7 +5063,7 @@ const spell_data_t* unique_gear::spell_from_spell_text( const special_effect_t& 
       auto id = as<unsigned>( std::stoi( m.str( 1 ) ) );
       auto spell = e.player->find_spell( id );
 
-      e.player->sim->print_debug( "parsed spell for special effect '{}': {} ({})", e.name(), spell->name_cstr(), id );
+      e.player->sim->print_debug( "parsed spell for special effect '{}': {}", e.name(), *spell );
       return spell;
     }
   }

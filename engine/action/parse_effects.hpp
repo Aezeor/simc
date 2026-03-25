@@ -680,9 +680,9 @@ public:
                                                            const pack_t<target_effect_t>& pack ) = 0;
 
   virtual void debug_message( const player_effect_t& data, std::string_view type_str, std::string_view val_str,
-                              const spell_data_t* s_data, size_t i ) = 0;
+                              const spelleffect_data_t& eff ) = 0;
   virtual void debug_message( const target_effect_t& /* data */, std::string_view type_str, std::string_view val_str,
-                              const spell_data_t* s_data, size_t i ) = 0;
+                              const spelleffect_data_t& eff ) = 0;
 
   virtual void throw_passive_error( const spell_data_t* s ) = 0;
 
@@ -771,10 +771,8 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<target_effect_t>* get_effect_vector( const spelleffect_data_t&, target_effect_t&, double&, std::string&,
                                                    bool&, bool, const pack_t<target_effect_t>& ) override;
 
-  void debug_message( const player_effect_t&, std::string_view, std::string_view, const spell_data_t*,
-                      size_t ) override;
-  void debug_message( const target_effect_t&, std::string_view, std::string_view, const spell_data_t*,
-                      size_t ) override;
+  void debug_message( const player_effect_t&, std::string_view, std::string_view, const spelleffect_data_t& ) override;
+  void debug_message( const target_effect_t&, std::string_view, std::string_view, const spelleffect_data_t& ) override;
 
   void throw_passive_error( const spell_data_t* s ) override;
 
@@ -852,10 +850,8 @@ public:
   std::vector<target_effect_t>* get_effect_vector( const spelleffect_data_t&, target_effect_t&, double&, std::string&,
                                                    bool&, bool, const pack_t<target_effect_t>& ) override;
 
-  void debug_message( const player_effect_t&, std::string_view, std::string_view, const spell_data_t*,
-                      size_t ) override;
-  void debug_message( const target_effect_t&, std::string_view, std::string_view, const spell_data_t*,
-                      size_t ) override;
+  void debug_message( const player_effect_t&, std::string_view, std::string_view, const spelleffect_data_t& ) override;
+  void debug_message( const target_effect_t&, std::string_view, std::string_view, const spelleffect_data_t& ) override;
 
   void throw_passive_error( const spell_data_t* s ) override;
 
@@ -920,9 +916,8 @@ struct parse_action_effects_t : public BASE, public parse_action_base_t
   {
     for ( const auto& data : vec )
     {
-      BASE::sim->print_debug( "action-effects: non-damage action {} ({}) removing {} entry from {} ({}#{})",
-                              BASE::name(), BASE::id, vec_name, data.eff->spell()->name_cstr(), data.eff->spell_id(),
-                              data.eff->index() );
+      BASE::sim->print_debug( "action-effects: non-damage action {} removing {} entry from {}", *this, vec_name,
+                              *data.eff );
     }
 
     vec.clear();

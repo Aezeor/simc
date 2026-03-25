@@ -15104,8 +15104,8 @@ void player_t::register_creature_type_buff( buff_t* buff, const spell_data_t* s_
 
   assert( _strs.size() );
 
-  sim->print_debug( "{} {} ({}) granting {}% increased damage {}against creature type: {}", *this, s_data->name_cstr(),
-                    s_data->id(), effect.base_value(), buff ? "with buff '" + std::string( buff->name() ) + "' " : "",
+  sim->print_debug( "{} {} granting {}% increased damage {}against creature type: {}", *this, *s_data,
+                    effect.base_value(), buff ? "with buff '" + std::string( buff->name() ) + "' " : "",
                     fmt::join( _strs, ", " ) );
 
   buffs.creature_type_buffs.emplace_back( buff, effect.misc_value1(), effect.percent() );
@@ -15753,10 +15753,10 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
 
       std::string field_str = type_str.empty() ? id_field : fmt::format( "{}_{}", type_str, id_field );
       std::string _tmp_full_message_tmp_ = fmt::format(
-        "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
-        modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
-        remove ? "reverting" : "modifying", *this, field_str, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%",
-        now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat, now.pct * 100 );
+        "{} eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
+        *modifying_spell, modifying_eff.index() + 1, remove ? "reverting" : "modifying", *this, field_str,
+        flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", now.orig, prev.value(), prev.flat, prev.pct * 100,
+        now.value(), now.flat, now.pct * 100 );
       sim->print_debug( "{}", _tmp_full_message_tmp_ );
       registered_passive_debug_printout.push_back( _tmp_full_message_tmp_ );
     };
@@ -16066,9 +16066,9 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       if ( !sim->debug )
         return;
 
-      std::string _tmp_full_message_tmp_ = fmt::format(
-        "{} ({}) eff#{} {} {} ({}) {}", modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
-        remove ? "reverting" : "modifying", spell->name_cstr(), spell->id(), msg );
+      std::string _tmp_full_message_tmp_ =
+        fmt::format( "{} eff#{} {} {} {}", *modifying_spell, modifying_eff.index() + 1,
+                     remove ? "reverting" : "modifying", *spell, msg );
       sim->print_debug( "{}", _tmp_full_message_tmp_ );
       registered_passive_debug_printout.push_back( _tmp_full_message_tmp_ );
     };
@@ -16269,9 +16269,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     {
       if ( as<int>( spell->effect_count() ) < eff_idx )
       {
-        sim->print_debug( "{} ({}) only has {} effects, but {} ({}) is trying to modify eff#{}, ignoring.",
-                          spell->name_cstr(), spell->id(), spell->effect_count(), modifying_spell->name_cstr(),
-                          modifying_spell->id(), eff_idx );
+        sim->print_debug( "{} only has {} effects, but {} is trying to modify eff#{}, ignoring.", *spell,
+                          spell->effect_count(), *modifying_spell, eff_idx );
         continue;
       }
       // populate all effects in case of P_EFFECTS
@@ -16294,8 +16293,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         {
           if ( sim->debug )
           {
-            sim->print_debug( "De-register {} ({}) eff#{}", eff->spell()->name_cstr(), eff->spell()->id(),
-                              eff->index() + 1 );
+            sim->print_debug( "De-register {} eff#{}", *eff->spell(), eff->index() + 1 );
           }
 
           register_passive_effect( *eff, true );
@@ -16324,8 +16322,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         // re-register if necessary
         if ( deregister )
         {
-          sim->print_debug( "Re-register {} ({}) eff#{}", eff->spell()->name_cstr(), eff->spell()->id(),
-                            eff->index() + 1 );
+          sim->print_debug( "Re-register {} eff#{}", *eff, eff->index() + 1 );
 
           register_passive_effect( *eff );
         }
@@ -16344,19 +16341,19 @@ void player_t::parse_passive_effects( const spell_data_t* spell, bool force, par
   if ( !force &&
        range::contains( registered_passive_spells_, spell->id(), &std::pair<unsigned, parse_source_e>::first ) )
   {
-    sim->error( "Unable to register {} ({}), spell already registered.", spell->name_cstr(), spell->id() );
+    sim->error( "Unable to register {}, spell already registered.", *spell );
     return;
   }
 
   if ( !force && range::contains( deregistered_passive_spells_, spell->id() ) )
   {
-    sim->print_debug( "Unable to register {} ({}), spell has been de-registered.", spell->name_cstr(), spell->id() );
+    sim->print_debug( "Unable to register {}, spell has been de-registered.", *spell );
     return;
   }
 
   if ( !force && !spell->flags( SX_PASSIVE ) )
   {
-    sim->error( "Unable to register {} ({}), spell is not passive.", spell->name_cstr(), spell->id() );
+    sim->error( "Unable to register {}, spell is not passive.", *spell );
     return;
   }
 
@@ -16368,8 +16365,7 @@ void player_t::parse_passive_effects( const spell_data_t* spell, bool force, par
     // filter out ignore list
     if ( range::contains( registered_effect_ignore_list_, eff.id() ) )
     {
-      sim->print_debug( "Skipping {} ({}) eff#{} ({}), effect has been de-registered.", spell->name_cstr(), spell->id(),
-                        eff.index() + 1, eff.id() );
+      sim->print_debug( "Skipping {} eff#{} ({}), effect has been de-registered.", *spell, eff.index() + 1, eff.id() );
       continue;
     }
 
@@ -16389,8 +16385,7 @@ void player_t::deregister_passive_spell( const spell_data_t* spell )
   if ( !spell || !spell->ok() || range::contains( deregistered_passive_spells_, spell->id() ) )
     return;
 
-  sim->print_debug( "De-registering {} ({}), current and all future parsing on this spell blocked.", spell->name_cstr(),
-                    spell->id() );
+  sim->print_debug( "De-registering {}, current and all future parsing on this spell blocked.", *spell );
 
   deregistered_passive_spells_.push_back( spell->id() );
 
@@ -16423,8 +16418,8 @@ void player_t::deregister_passive_effect( const spelleffect_data_t& effect )
   bool deregister =
     range::contains( registered_passive_spells_, effect.spell()->id(), &std::pair<unsigned, parse_source_e>::first );
 
-  sim->print_debug( "De-registering {} ({}) eff#{} ({}), current and all future parsing of this effect blocked.",
-                    effect.spell()->name_cstr(), effect.spell()->id(), effect.index() + 1, effect.id() );
+  sim->print_debug( "De-registering {} eff#{} ({}), current and all future parsing of this effect blocked.",
+                    *effect.spell(), effect.index() + 1, effect.id() );
 
   registered_effect_ignore_list_.push_back( effect.id() );
 
@@ -16446,8 +16441,7 @@ void player_t::register_passive_effect_mask( const spell_data_t* spell, uint32_t
     if ( mask_ & 1 )
       msg.push_back( std::to_string( i ) );
 
-  sim->print_debug( "Registering {} ({}) effect_mask eff#{} ({:#b})", spell->name_cstr(), spell->id(),
-                    util::string_join( msg, "," ), mask );
+  sim->print_debug( "Registering {} effect_mask eff#{} ({:#b})", *spell, util::string_join( msg, "," ), mask );
 
   for ( const auto& eff : spell->effects() )
   {
@@ -16457,8 +16451,7 @@ void player_t::register_passive_effect_mask( const spell_data_t* spell, uint32_t
 
       if ( deregister )
       {
-        sim->print_debug( "De-register {} ({}) eff#{} ({})", spell->name_cstr(), spell->id(), eff.index() + 1,
-                          eff.id() );
+        sim->print_debug( "De-register {} eff#{} ({})", *spell, eff.index() + 1, eff.id() );
         register_passive_effect( eff, true );
       }
     }
@@ -16481,8 +16474,8 @@ void player_t::register_passive_affect_list( const spell_data_t* spell, const af
   if ( !mod.family.empty() )
     list_str.push_back( fmt::format( "family_flag={}", fmt::join( mod.family, ", " ) ) );
 
-  sim->print_debug( "Registering {} ({}) eff#{} affect_list ({})", spell->name_cstr(), spell->id(),
-                    fmt::join( mod.idx, "," ), fmt::join( list_str, ", " ) );
+  sim->print_debug( "Registering {} eff#{} affect_list ({})", *spell, fmt::join( mod.idx, "," ),
+                    fmt::join( list_str, ", " ) );
 
   for ( auto idx : mod.idx )
   {
@@ -16510,7 +16503,7 @@ void player_t::register_passive_affect_list( const spell_data_t* spell, const af
       {
         if ( deregister )
         {
-          sim->print_debug( "De-register {} ({}) eff#{}", spell->name_cstr(), spell->id(), idx );
+          sim->print_debug( "De-register {} eff#{}", *spell, idx );
           register_passive_effect( eff, true );
         }
 
@@ -16518,7 +16511,7 @@ void player_t::register_passive_affect_list( const spell_data_t* spell, const af
 
         if ( deregister )
         {
-          sim->print_debug( "Re-register {} ({}) eff#{}", spell->name_cstr(), spell->id(), idx );
+          sim->print_debug( "Re-register {} eff#{}", *spell, idx );
           register_passive_effect( eff );
         }
       }

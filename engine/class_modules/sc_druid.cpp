@@ -2032,9 +2032,8 @@ public:
       {
         energize = &e;
         ab::energize_amount = energize->resource();
-        ab::sim->print_debug( "{} energize {} {} from {}#{}", *this,
-                              util::resource_type_string( ab::energize_resource ), ab::energize_amount,
-                              m_data->_spell.id(), eff.index() + 1 );
+        ab::sim->print_debug( "{} energize {} {} from {}", *this, util::resource_type_string( ab::energize_resource ),
+                              ab::energize_amount, eff );
 
         return;
       }
@@ -2849,20 +2848,20 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
         persistent_multiplier_effects.push_back( ta_multiplier_effects.back() );
         ta_multiplier_effects.pop_back();
         da_multiplier_effects.pop_back();
-        p()->sim->print_debug( "persistent-effects: {} ({}) damage modified by {}% with buff {} ({})", name(), id,
+        p()->sim->print_debug( "persistent-effects: {} damage modified by {}% with buff {} ({})", *this,
                                persistent_multiplier_effects.back().value * 100.0, buff->name(), buff->data().id() );
       }
       else  // values are different
       {
         persistent_direct_effects.push_back( da_multiplier_effects.back() );
         da_multiplier_effects.pop_back();
-        p()->sim->print_debug( "persistent-effects: {} ({}) direct damage modified by {}% with buff {} ({})", name(),
-                               id, persistent_direct_effects.back().value * 100.0, buff->name(), buff->data().id() );
+        p()->sim->print_debug( "persistent-effects: {} direct damage modified by {}% with buff {} ({})", *this,
+                               persistent_direct_effects.back().value * 100.0, buff->name(), buff->data().id() );
 
         persistent_periodic_effects.push_back( ta_multiplier_effects.back() );
         ta_multiplier_effects.pop_back();
-        p()->sim->print_debug( "persistent-effects: {} ({}) periodic damage modified by {}% with buff {} ({})", name(),
-                               id, persistent_periodic_effects.back().value * 100.0, buff->name(), buff->data().id() );
+        p()->sim->print_debug( "persistent-effects: {} periodic damage modified by {}% with buff {} ({})", *this,
+                               persistent_periodic_effects.back().value * 100.0, buff->name(), buff->data().id() );
       }
 
       return true;
