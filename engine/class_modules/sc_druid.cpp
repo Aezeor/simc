@@ -7338,11 +7338,9 @@ struct entangling_roots_t final : public druid_spell_t
 struct force_of_nature_t final : public trigger_control_of_the_dream_t<druid_spell_t>
 {
   std::vector<timespan_t> summon_delays;
-  unsigned num;
   unsigned dream_surge_num = 0;
 
-  DRUID_ABILITY( force_of_nature_t, base_t, "force_of_nature", p->talent.force_of_nature ),
-    num( as<unsigned>( p->talent.force_of_nature->effectN( 1 ).base_value() ) )
+  DRUID_ABILITY( force_of_nature_t, base_t, "force_of_nature", p->talent.force_of_nature )
   {
     if ( data().ok() )
     {
@@ -7355,8 +7353,13 @@ struct force_of_nature_t final : public trigger_control_of_the_dream_t<druid_spe
       }
 
       for ( const auto& eff : data().effects() )
+      {
         if ( eff.type() == E_TRIGGER_SPELL && eff.trigger()->id() == 248280 )
           summon_delays.push_back( timespan_t::from_millis( eff.misc_value1() ) );
+
+        if ( summon_delays.size() >= as<size_t>( p->talent.force_of_nature->effectN( 1 ).base_value() ) )
+          break;
+      }
 
       p->pets.force_of_nature.set_default_duration( find_trigger( this ).trigger()->duration() + 1_ms );
       p->pets.force_of_nature.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
