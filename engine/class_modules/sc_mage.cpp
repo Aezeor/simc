@@ -2598,8 +2598,11 @@ struct molten_chill_ignite_t final : public residual_action::residual_periodic_a
 
 struct arcane_orb_bolt_t final : public arcane_mage_spell_t
 {
-  arcane_orb_bolt_t( std::string_view n, mage_t* p ) :
-    arcane_mage_spell_t( n, p, p->find_spell( 153640 ) )
+  const ao_type type;
+
+  arcane_orb_bolt_t( std::string_view n, mage_t* p, ao_type type_ ) :
+    arcane_mage_spell_t( n, p, p->find_spell( 153640 ) ),
+    type( type_ )
   {
     background = proc = true;
   }
@@ -2616,7 +2619,7 @@ struct arcane_orb_bolt_t final : public arcane_mage_spell_t
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
-    if ( p()->state.eureka )
+    if ( p()->state.eureka || type == ao_type::ORB_MASTERY )
       am *= 1.0 + p()->talents.eureka->effectN( 1 ).percent();
 
     return am;
@@ -2661,7 +2664,7 @@ struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arc
         break;
     }
 
-    impact_action = get_action<arcane_orb_bolt_t>( bolt_name, p );
+    impact_action = get_action<arcane_orb_bolt_t>( bolt_name, p, type );
     add_child( impact_action );
 
     if ( type != ao_type::NORMAL )
