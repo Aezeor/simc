@@ -15545,6 +15545,7 @@ void death_knight_t::create_buffs()
           ->set_default_value( talent.icy_talons->effectN( 1 ).percent() )
           ->set_cooldown( talent.icy_talons->internal_cooldown() )
           ->set_trigger_spell( talent.icy_talons )
+          ->increase_max_stack_uptime( as<int>( talent.deathbringer.dark_talons->effectN( 2 ).base_value() ) )
           ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
             if ( talent.deathbringer.dark_talons.ok() )
             {

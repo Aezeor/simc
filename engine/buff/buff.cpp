@@ -994,6 +994,13 @@ buff_t* buff_t::modify_max_stack( int max_stack )
   return this;
 }
 
+// TODO: find less blunt & hacky way to handle this
+buff_t* buff_t::increase_max_stack_uptime( int max_stack_uptime )
+{
+  stack_uptime.resize( stack_uptime.size() + max_stack_uptime );
+  return this;
+}
+
 buff_t* buff_t::set_initial_stack( int initial_stack )
 {
   // _initial_stack is initialized at -1, then set_initial_stack is called in the buff_t base constructor
