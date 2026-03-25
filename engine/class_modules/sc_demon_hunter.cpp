@@ -5347,7 +5347,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
       action_state_t* damage_state = damage->get_state();
       damage_state->target         = target;
       damage->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
-      damage_state->da_multiplier *= fragments_consumed;
+      damage_state->da_multiplier *= 1.0 + ( data().effectN( 1 ).percent() * fragments_consumed );
       damage->schedule_execute( damage_state );
       damage->execute_event->reschedule( timespan_t::from_seconds( 1.0 ) );
     }
