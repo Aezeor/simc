@@ -989,8 +989,21 @@ struct parse_action_effects_t : public BASE, public parse_action_base_t
   {
     auto ta = BASE::composite_ta_multiplier( s );
 
-    for ( const auto& i : ta_multiplier_effects )
-      ta *= 1.0 + get_effect_value( i, true );
+    if ( BASE::sim->debug )
+    {
+      for ( const auto& i : ta_multiplier_effects )
+      {
+        auto val = get_effect_value( i, true );
+        BASE::sim->print_debug( "{} ta_multiplier_effects: {} from {}{}", *this, val, *i.eff,
+                                i.func ? " (Conditional)" : "" );
+        ta *= 1.0 + val;
+      }
+    }
+    else
+    {
+      for ( const auto& i : ta_multiplier_effects )
+        ta *= 1.0 + get_effect_value( i, true );
+    }
 
     return ta;
   }
@@ -999,8 +1012,21 @@ struct parse_action_effects_t : public BASE, public parse_action_base_t
   {
     auto da = BASE::composite_da_multiplier( s );
 
-    for ( const auto& i : da_multiplier_effects )
-      da *= 1.0 + get_effect_value( i, true );
+    if ( BASE::sim->debug )
+    {
+      for ( const auto& i : da_multiplier_effects )
+      {
+        auto val = get_effect_value( i, true );
+        BASE::sim->print_debug( "{} da_multiplier_effects: {} from {}{}", *this, val, *i.eff,
+                                i.func ? " (Conditional)" : "" );
+        da *= 1.0 + val;
+      }
+    }
+    else
+    {
+      for ( const auto& i : da_multiplier_effects )
+        da *= 1.0 + get_effect_value( i, true );
+    }
 
     return da;
   }
