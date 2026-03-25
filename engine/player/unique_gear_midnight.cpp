@@ -2818,88 +2818,58 @@ void refueling_orb( special_effect_t& e )
 {
   struct refueling_orb_cb_t : public dbc_proc_callback_t
   {
-    target_specific_t<stat_buff_t> buffs;
     double refueling_orb_heal_chance;
     int chain_targets;
     double velocity;
     timespan_t min_travel;
-    double buff_size;
+    const spell_data_t* buff_data;
+    double stat_amount;
+
     refueling_orb_cb_t( const special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ),
-        buffs{ false },
         refueling_orb_heal_chance( effect.player->midnight_opts.refueling_orb_heal_chance ),
         chain_targets( effect.player->find_spell( 1254534 )->effectN( 1 ).chain_target() ),
         velocity( effect.player->find_spell( 1254534 )->missile_speed() ),
         min_travel( timespan_t::from_seconds( effect.player->find_spell( 1254534 )->missile_min_duration() ) ),
-        buff_size( effect.driver()->effectN( 2 ).average( effect ) )
+        buff_data( effect.player->find_spell( 1254577 ) ),
+        stat_amount( effect.driver()->effectN( 2 ).average( effect ) )
+    {}
+
+    buff_t* create_debuff( player_t* t ) override
     {
-      get_buff( effect.player );
-    }
-
-    stat_buff_t* get_buff( player_t* buff_player )
-    {
-      if ( buffs[ buff_player ] )
-        return buffs[ buff_player ];
-
-      auto buff_spell = effect.player->find_spell( 1254577 );
-
-      if ( auto buff = buff_t::find( buff_player, "refueling_orb" ) )
-      {
-        buffs[ buff_player ] = dynamic_cast<stat_buff_t*>( buff );
-        return buffs[ buff_player ];
-      }
-
-      auto buff = make_buff<stat_buff_t>( actor_pair_t{ buff_player, buff_player }, "refueling_orb", buff_spell );
-      buff->set_stat_from_effect_type( A_MOD_RATING, buff_size );
-
-      buffs[ buff_player ] = buff;
-
-      return buff;
-    }
-
-    void trigger_buff( player_t* buff_player )
-    {
-      if ( buff_player->is_sleeping() )
-          return;
-
-      auto buff               = get_buff( buff_player );
-      buff->stats[ 0 ].amount = buff_size;
-      buff->trigger();
+      return make_buff<stat_buff_t>( actor_pair_t( t, listener ), "refueling_orb", buff_data )
+        ->set_stat_from_effect_type( A_MOD_RATING, stat_amount );
     }
 
     void execute( action_t*, action_state_t* ) override
     {
       if ( effect.player->sim->player_non_sleeping_list.size() == 1 )
       {
-        trigger_buff( effect.player );
+        get_debuff( effect.player )->trigger();
       }
       else
       {
-        std::vector<player_t*> helper_vector = effect.player->sim->player_non_sleeping_list.data();
-        rng().shuffle( helper_vector.begin(), helper_vector.end() );
+        auto allies = effect.player->sim->player_non_sleeping_list.data(); // make a copy
 
-        auto it = std::find( helper_vector.begin(), helper_vector.end(), effect.player );
-
-        if ( it != helper_vector.end() )
-        {
-          std::iter_swap( it, std::prev( helper_vector.end() ) );
-        }
+        if ( auto it = std::find( allies.begin(), allies.end(), effect.player ); it != allies.end() )
+          std::iter_swap( it, std::prev ( allies.end() ) );
 
         timespan_t total_travel_time = 0_s;
         player_t* previous_target    = effect.player;
 
         for ( int i = 0; i < chain_targets; i++ )
         {
-          auto target_iterator = rng().range( helper_vector.begin(), std::prev( helper_vector.end() ) );
+          auto target_iterator = rng().range( allies.begin(), std::prev( allies.end() ) );
           player_t* target     = *target_iterator;
-          std::iter_swap( target_iterator, std::prev( helper_vector.end() ) );
+          std::iter_swap( target_iterator, std::prev( allies.end() ) );
 
           total_travel_time += std::max(
               min_travel, timespan_t::from_seconds( previous_target->get_player_distance( *target ) / velocity ) );
 
           if ( !rng().roll( refueling_orb_heal_chance ) )
-            make_event( effect.player->sim, total_travel_time,
-                        std::bind( &refueling_orb_cb_t::trigger_buff, this, target ) );
+          {
+            make_event( effect.player->sim, total_travel_time, [ this, target ] { get_debuff( target )->trigger(); } );
+          }
 
           previous_target = target;
         }
