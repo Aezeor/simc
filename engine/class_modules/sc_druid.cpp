@@ -4231,9 +4231,9 @@ struct ferocious_bite_base_t : public cp_spender_t
   double max_excess_energy;
   double saber_jaws_mul;
   double rf_energy_mod_pct;
-  double spattered_mul;
-  double spattered_cap;
   double unseen_chance;
+  double spattered_mul;
+  size_t spattered_cap;
   bool max_energy = false;
 
   ferocious_bite_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
@@ -4241,9 +4241,9 @@ struct ferocious_bite_base_t : public cp_spender_t
       max_excess_energy( find_effect( this, E_POWER_BURN ).resource() ),
       saber_jaws_mul( p->talent.saber_jaws->effectN( 1 ).percent() ),
       rf_energy_mod_pct( p->talent.rampant_ferocity->effectN( 2 ).percent() ),
+      unseen_chance( p->talent.unseen_predator_1->effectN( 1 ).percent() ),
       spattered_mul( p->talent.blood_spattered->effectN( 1 ).percent() ),
-      spattered_cap( p->talent.blood_spattered->effectN( 2 ).percent() ),
-      unseen_chance( p->talent.unseen_predator_1->effectN( 1 ).percent() )
+      spattered_cap( as<size_t>( p->talent.blood_spattered->effectN( 2 ).percent() ) )
   {
     add_option( opt_bool( "max_energy", max_energy ) );
 
@@ -4379,7 +4379,7 @@ struct ferocious_bite_base_t : public cp_spender_t
     da *= cast_state( s )->energy_mul;
 
     if ( spattered_mul && s->chain_target == 0 )
-      da *= 1.0 + ( std::min( spattered_cap, spattered_mul * p()->dot_lists.rip.size() ) );
+      da *= 1.0 + spattered_mul * std::min( spattered_cap, p()->dot_lists.rip.size() );
 
     return da;
   }
