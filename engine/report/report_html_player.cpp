@@ -4268,6 +4268,7 @@ void output_player_heal_summary( report::sc_html_stream& os, const player_t& act
   sorttable_help_header( os, "HPS%", "help-hps-pct" );
   sorttable_help_header( os, "Execute", "help-execute" );
   sorttable_help_header( os, "Interval", "help-interval", SORT_FLAG_ASC );
+  sorttable_help_header( os, "Total Time", "help-total-time" );
   sorttable_help_header( os, "HPE", "help-hpe" );
   sorttable_help_header( os, "HPET", "help-hpet" );
   // Optional columns being here
