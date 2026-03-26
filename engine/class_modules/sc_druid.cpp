@@ -4243,7 +4243,7 @@ struct ferocious_bite_base_t : public cp_spender_t
       rf_energy_mod_pct( p->talent.rampant_ferocity->effectN( 2 ).percent() ),
       unseen_chance( p->talent.unseen_predator_1->effectN( 1 ).percent() ),
       spattered_mul( p->talent.blood_spattered->effectN( 1 ).percent() ),
-      spattered_cap( as<size_t>( p->talent.blood_spattered->effectN( 2 ).percent() ) )
+      spattered_cap( as<size_t>( p->talent.blood_spattered->effectN( 2 ).base_value() ) )
   {
     add_option( opt_bool( "max_energy", max_energy ) );
 
