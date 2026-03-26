@@ -103,11 +103,6 @@ enum flag_e : uint32_t
   SYLVAN       = 0x00020000,  // sylvan beckoning dryad starfall
   WILDGUARDIAN = 0x00040000,  // wild guardian echo
   CELESTIAL    = 0x00080000,  // bear mid1 4pc
-  // free casts
-  APEX         = 0x01000000,  // apex predators's craving
-
-  FREE_PROCS   = 0x00FFFF00,
-  FREE_CASTS   = 0x0F000000
 };
 
 template <typename T>
@@ -612,7 +607,6 @@ struct druid_t final : public parse_player_effects_t
     action_t* sunseeker_mushroom;
 
     // Feral
-    action_t* ferocious_bite_apex;  // free bite from apex predator's crazing
     action_t* unseen_slash;
     action_t* unseen_swipe;
 
@@ -2060,7 +2054,7 @@ public:
 
   void check_autoshift()
   {
-    if ( has_flag( flag_e::FREE_PROCS ) )
+    if ( is_free() )
       return;
 
     if ( !check_form_restriction() )
@@ -2160,7 +2154,7 @@ public:
   use_fluid_form_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
     : BASE( n, p, s, f )
   {
-    if ( p->talent.fluid_form.ok() && !BASE::has_flag( flag_e::FREE_PROCS ) )
+    if ( p->talent.fluid_form.ok() && !BASE::is_free() )
     {
       if constexpr ( FORM == MOONKIN_FORM )
         delayed_shift = p->active.shift_to_moonkin ? true : false;
@@ -3813,9 +3807,13 @@ public:
 
 struct cp_spender_t : public trigger_aggravate_wounds_t<DRUID_FERAL, cat_attack_t>
 {
+private:
   gain_t* sotf_gain = nullptr;
+  double sotf_energy;
 
-  cp_spender_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE ) : base_t( n, p, s, f )
+public:
+  cp_spender_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
+    : base_t( n, p, s, f ), sotf_energy( p->talent.soul_of_the_forest_cat->effectN( 1 ).resource( RESOURCE_ENERGY ) )
   {
     if ( p->talent.soul_of_the_forest_cat.ok() )
       sotf_gain = p->get_gain( "Soul of the Forest" );
@@ -3824,10 +3822,13 @@ struct cp_spender_t : public trigger_aggravate_wounds_t<DRUID_FERAL, cat_attack_
   // used during state snapshot
   virtual int _combo_points() const
   {
-    if ( is_free() )
-      return as<int>( p()->resources.max[ RESOURCE_COMBO_POINT ] );
-    else
-      return as<int>( p()->resources.current[ RESOURCE_COMBO_POINT ] );
+    return as<int>( p()->resources.current[ RESOURCE_COMBO_POINT ] );
+  }
+
+  // used during consume resource
+  virtual int _consumed_combo_points() const
+  {
+    return _combo_points();
   }
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
@@ -3851,19 +3852,6 @@ struct cp_spender_t : public trigger_aggravate_wounds_t<DRUID_FERAL, cat_attack_
     return buff->trigger( this, 1, buff_t::DEFAULT_VALUE(), buff->default_chance * cp );
   }
 
-  void execute() override
-  {
-    base_t::execute();
-
-    if ( !has_flag( flag_e::CONVOKE ) )
-      p()->buff.overflowing_power->consume( this );
-  }
-
-  virtual int consumed_combo_points() const
-  {
-    return _combo_points();
-  }
-
   void consume_resource() override
   {
     base_t::consume_resource();
@@ -3871,30 +3859,25 @@ struct cp_spender_t : public trigger_aggravate_wounds_t<DRUID_FERAL, cat_attack_
     if ( background || !hit_any_target )
       return;
 
-    auto consumed = consumed_combo_points();
+    auto cp = _combo_points();
+    auto consumed = _consumed_combo_points();
 
-    if ( p()->talent.soul_of_the_forest_cat.ok() )
+    if ( sotf_gain )
+      p()->resource_gain( RESOURCE_ENERGY, cp * sotf_energy, sotf_gain );
+
+    trigger_with_chance_per_cp( p()->buff.frantic_momentum, cp );
+    trigger_with_chance_per_cp( p()->buff.predatory_swiftness, cp );
+    trigger_with_chance_per_cp( p()->buff.sudden_ambush, cp );
+
+    if ( consumed )
     {
-      p()->resource_gain( RESOURCE_ENERGY,
-                          consumed * p()->talent.soul_of_the_forest_cat->effectN( 1 ).resource( RESOURCE_ENERGY ),
-                          sotf_gain );
-    }
-
-    trigger_with_chance_per_cp( p()->buff.frantic_momentum, consumed );
-    trigger_with_chance_per_cp( p()->buff.predatory_swiftness, consumed );
-    trigger_with_chance_per_cp( p()->buff.sudden_ambush, consumed );
-
-    if ( !is_free() )
-    {
-      p()->resource_loss( RESOURCE_COMBO_POINT, consumed, nullptr, this );
-
       if ( sim->log )
-      {
-        sim->print_log( "{} consumes {} {} for {} (0)", player->name(), consumed,
-                        util::resource_type_string( RESOURCE_COMBO_POINT ), name() );
-      }
+        sim->print_log( "{} consumes {} combo_points for {} (0)", *player, consumed, *this );
 
+      p()->resource_loss( RESOURCE_COMBO_POINT, consumed, nullptr, this );
       stats->consume_resource( RESOURCE_COMBO_POINT, consumed );
+
+      p()->buff.overflowing_power->consume( this );
     }
 
     p()->buff.tigers_tenacity->consume( this );
@@ -4227,6 +4210,9 @@ struct ferocious_bite_base_t : public cp_spender_t
   };
 
   rampant_ferocity_t* rampant_ferocity = nullptr;
+  action_t* apex_proxy = nullptr;
+  stats_t* apex_stats = nullptr;
+  stats_t* orig_stats;
   double excess_energy = 0.0;
   double max_excess_energy;
   double saber_jaws_mul;
@@ -4238,6 +4224,7 @@ struct ferocious_bite_base_t : public cp_spender_t
 
   ferocious_bite_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
     : cp_spender_t( n, p, s, f ),
+      orig_stats( stats ),
       max_excess_energy( find_effect( this, E_POWER_BURN ).resource() ),
       saber_jaws_mul( p->talent.saber_jaws->effectN( 1 ).percent() ),
       rf_energy_mod_pct( p->talent.rampant_ferocity->effectN( 2 ).percent() ),
@@ -4247,11 +4234,27 @@ struct ferocious_bite_base_t : public cp_spender_t
   {
     add_option( opt_bool( "max_energy", max_energy ) );
 
+    if ( p->talent.apex_predators_craving.ok() )
+    {
+      auto apex_name = name_str + "_apex";
+
+      apex_proxy = p->get_secondary_action<action_t>( apex_name, action_e::ACTION_OTHER, apex_name, p, &data() );
+      apex_proxy->name_str_reporting = "Apex";
+
+      apex_stats = p->get_stats( apex_name, apex_proxy );
+      stats->add_child( apex_stats );
+    }
+
     if ( p->talent.rampant_ferocity.ok() )
     {
       rampant_ferocity = p->get_secondary_action<rampant_ferocity_t>( "rampant_ferocity_" + name_str );
       add_child( rampant_ferocity );
     }
+  }
+
+  bool _is_free() const
+  {
+    return p()->buff.apex_predators_craving->check() || is_free();
   }
 
   void init_finished() override
@@ -4294,7 +4297,18 @@ struct ferocious_bite_base_t : public cp_spender_t
   {
     excess_energy = get_excess_energy();
 
-    cp_spender_t::execute();
+    if ( !is_free() && p()->buff.apex_predators_craving->check() )
+    {
+      stats = apex_stats;
+      cp_spender_t::execute();
+      stats = orig_stats;
+
+      p()->buff.apex_predators_craving->consume( this );
+    }
+    else
+    {
+      cp_spender_t::execute();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -4340,11 +4354,25 @@ struct ferocious_bite_base_t : public cp_spender_t
     }
   }
 
+  void record_data( action_state_t* s ) override
+  {
+    if ( p()->buff.apex_predators_craving->check() )
+    {
+      stats = apex_stats;
+      cp_spender_t::record_data( s );
+      stats = orig_stats;
+    }
+    else
+    {
+      cp_spender_t::record_data( s );
+    }
+  }
+
   void consume_resource() override
   {
     // Extra energy consumption happens first. In-game it happens before the skill even casts but let's not do that
     // because its dumb.
-    if ( hit_any_target && !is_free() )
+    if ( hit_any_target && !is_free() && !p()->buff.apex_predators_craving->check() )
     {
       p()->resource_loss( RESOURCE_ENERGY, excess_energy );
       stats->consume_resource( RESOURCE_ENERGY, excess_energy );
@@ -4353,9 +4381,25 @@ struct ferocious_bite_base_t : public cp_spender_t
     cp_spender_t::consume_resource();
   }
 
+  int _combo_points() const override
+  {
+    if ( _is_free() )
+      return as<int>( p()->resources.max[ RESOURCE_COMBO_POINT ] );
+    else
+      return cp_spender_t::_combo_points();
+  }
+
+  int _consumed_combo_points() const override
+  {
+    if ( _is_free() )
+      return 0;
+    else
+      return cp_spender_t::_consumed_combo_points();
+  }
+
   virtual double energy_modifier( const action_state_t*, bool saber ) const
   {
-    if ( is_free() )
+    if ( _is_free() )
       return 1.0;
     else if ( !saber )
       return excess_energy / max_excess_energy;
@@ -4418,16 +4462,6 @@ struct ferocious_bite_t final : public ferocious_bite_base_t
 
   void execute() override
   {
-    if ( !has_flag( flag_e::APEX ) && p()->buff.apex_predators_craving->check() &&
-         p()->buff.apex_predators_craving->can_consume( this ) )
-    {
-      p()->last_foreground_action = p()->active.ferocious_bite_apex;
-      p()->active.ferocious_bite_apex->execute_on_target( target );
-      p()->buff.apex_predators_craving->expire();
-
-      return;
-    }
-
     if ( ravage && p()->buff.ravage_fb->check() )
     {
       ravage->execute_on_target( target );
@@ -6828,7 +6862,7 @@ void druid_action_t<Base>::init()
     ab::target = ab::player;
 
   // ensure secondary actions from convoke actions are also procs
-  if ( has_flag( flag_e::FREE_PROCS ) )
+  if ( is_free() )
     ab::proc = true;
 }
 
@@ -6952,9 +6986,8 @@ public:
       umbral_proxy = p->get_secondary_action<action_t>( umbral_name, action_e::ACTION_OTHER, umbral_name, p, &data() );
       umbral_proxy->name_str_reporting = "Umbral";
 
-      umbral_stats = p->get_stats( umbral_name );
+      umbral_stats = p->get_stats( umbral_name, umbral_proxy );
       umbral_stats->school = SCHOOL_ASTRAL;
-      umbral_stats->action_list.push_back( umbral_proxy );
       stats->add_child( umbral_stats );
 
       fake_umbral = p->get_proc( util::inverse_tokenize( name_str ) + " (False Astral)" );
@@ -7015,9 +7048,6 @@ public:
     if ( rng().roll( touch_pct ) )
       p()->buff.touch_the_cosmos->trigger( this );
 
-    auto a = p()->buff.umbral_embrace->check();
-    auto b = p()->buff.eclipse_lunar->check();
-    auto c = p()->buff.eclipse_solar->check();
     if ( umbral_embrace_check() )
     {
       // preserve original school for lunar amplification/lunation
@@ -11732,13 +11762,6 @@ void druid_t::create_actions()
     active.shooting_stars_mid1 = get_secondary_action<shooting_stars_mid1_t>( "shooting_stars_exploding" );
 
   // Feral
-  if ( talent.apex_predators_craving.ok() )
-  {
-    auto apex = get_secondary_action<ferocious_bite_t>( "apex_predators_craving", flag_e::APEX );
-    apex->s_data_reporting = talent.apex_predators_craving;
-    active.ferocious_bite_apex = apex;
-  }
-
   if ( talent.unseen_predator_1.ok() )
   {
     active.unseen_slash = get_secondary_action<unseen_slash_t>( "unseen_slash" );
@@ -11931,7 +11954,6 @@ void druid_t::create_actions()
   find_parent( active.echo_of_maul, "wild_guardian" );
   find_parent( active.echo_of_ravage, "wild_guardian" );
   find_parent( active.echo_of_raze, "wild_guardian" );
-  find_parent( active.ferocious_bite_apex, "ferocious_bite" );
   find_parent( active.shooting_stars_mid1, "shooting_stars" );
   find_parent( active.sundering_roar_thrash, "sundering_roar" );
   find_parent( active.the_light_of_elune, "moonfire" );
