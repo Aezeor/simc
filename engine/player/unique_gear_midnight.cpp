@@ -1594,32 +1594,6 @@ void idol_of_the_war_loa( special_effect_t& effect )
 void gaze_of_the_alnseer( special_effect_t& effect )
 {
   auto alnsight_spell = effect.trigger();
-
-  struct alnsight_cb_t : public dbc_proc_callback_t
-  {
-    bool refreshed;
-    cooldown_t* icd;
-    alnsight_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), refreshed( false ), icd( nullptr )
-    {
-      icd = e.player->get_cooldown( e.cooldown_name() );
-    }
-
-    void execute( action_t*, action_state_t* ) override
-    {
-      effect.custom_buff->trigger();
-      // This is a complete guess at the rate, but, if refreshed, occasionally youll get multiple procs that seem to
-      // ignore the internal cooldown. Its not that often, and its not consistent at all. Need more data.
-      if ( refreshed && rng().roll( 0.05 ) )
-      {
-        make_event( *effect.player->sim, 1_ms, [ this ] {
-          // Randomly reset the ICD if refreshed to emulate the behavior where we see extra stacks being generated.
-          if ( icd )
-            icd->reset( false );
-        } );
-      }
-    }
-  };
-
   auto buff = create_buff<buff_t>( effect.player, alnsight_spell );
 
   auto stat = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1266687 ) )
@@ -1633,20 +1607,10 @@ void gaze_of_the_alnseer( special_effect_t& effect )
   alnsight->proc_flags2_ = PF2_LANDED;
   effect.player->special_effects.push_back( alnsight );
 
-  auto alnsight_cb = new alnsight_cb_t( *alnsight );
+  auto alnsight_cb = new dbc_proc_callback_t( effect.player, *alnsight );
   alnsight_cb->activate_with_buff( buff, true );
 
-  buff->set_expire_callback( [ alnsight_cb ]( buff_t*, int, timespan_t ) { alnsight_cb->refreshed = false; } );
-
-  effect.player->callbacks.register_callback_execute_function(
-      effect.driver()->id(), [ &effect, stat, buff, alnsight_cb ]( auto, auto, const action_state_t* ) {
-        buff->trigger();
-        if ( stat->check() )
-        {
-          stat->trigger();
-          alnsight_cb->refreshed = true;
-        }
-      } );
+  effect.custom_buff = buff;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
