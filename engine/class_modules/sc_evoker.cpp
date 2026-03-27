@@ -1085,6 +1085,7 @@ struct evoker_t : public player_t
     int upheaval_default_rank                                  = 0;
     bool allow_precombat_buffs_for_debug                       = false;
     int estimated_raid_dps_allies                              = 13;
+    bool patchwerk_in_dungeon                                  = false;
   } option;
 
   // Action pointers
@@ -9053,7 +9054,7 @@ void evoker_t::create_permanent_actors()
 
     std::vector<std::pair<std::string_view, std::string_view>> bobs;
 
-    if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE || sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE )
+    if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE || sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE || option.patchwerk_in_dungeon )
     {
       option.force_clutchmates = "yes";
       close_as_clutchmates     = true;
@@ -10279,6 +10280,7 @@ void evoker_t::create_options()
   add_option( opt_int( "evoker.upheaval_default_rank", option.upheaval_default_rank, 0, 5 ) );
   add_option( opt_bool( "evoker.allow_precombat_buffs_for_debug", option.allow_precombat_buffs_for_debug ) );
   add_option( opt_int( "evoker.estimated_raid_dps_allies", option.estimated_raid_dps_allies ) );
+  add_option( opt_bool( "evoker.patchwerk_in_dungeon", option.patchwerk_in_dungeon ) );
 }
 
 void evoker_t::analyze( sim_t& sim )
