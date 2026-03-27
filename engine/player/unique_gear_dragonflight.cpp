@@ -1503,9 +1503,8 @@ void emerald_coachs_whistle( special_effect_t& effect )
 
   struct emerald_coachs_whistle_cb_t : public dbc_proc_callback_t
   {
-    double buff_size;
-
     stat_buff_t* buff;
+    double buff_size;
 
     emerald_coachs_whistle_cb_t( const special_effect_t& e, stat_buff_t* buff, double buff_size )
       : dbc_proc_callback_t( e.player, e ), buff( buff ), buff_size( buff_size )
