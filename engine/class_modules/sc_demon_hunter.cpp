@@ -1229,8 +1229,6 @@ public:
     bool shattered_souls_chance_aoe_reduction_linear = false;
     int entropy_starting_souls                       = -1;
     int channel_tick_cutoff_benefit                  = 2;
-    double void_metamorphosis_initial_drain          = 8.5;
-    double void_metamorphosis_drain_per_stack        = 0.025;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -1392,16 +1390,16 @@ public:
   struct fury_state_t final
   {
     timespan_t start_time;
-    timespan_t last_tick;
     event_t* next_drain_event;
     int drain_stacks;
     demon_hunter_t* actor;
-    double initial_drain   = 10.0;
-    double drain_per_stack = 0.012;
+    double meta_drain_multiplier = 1.0;
+    double initial_drain      = 15.0;
+    double exp_factor         = 1.455;
+    double exp_power          = 0.075;
 
     fury_state_t( demon_hunter_t* a )
       : start_time( timespan_t::min() ),
-        last_tick( timespan_t::min() ),
         next_drain_event( nullptr ),
         drain_stacks( 0 ),
         actor( a )
@@ -1410,15 +1408,21 @@ public:
 
     void init()
     {
-      initial_drain   = p()->options.void_metamorphosis_initial_drain;
-      drain_per_stack = p()->options.void_metamorphosis_drain_per_stack;
-
       if ( p()->talent.devourer.soul_glutton.enabled() )
-
       {
-        // This is negative and lowers something to 75% for some reason
-        initial_drain *= 1 - p()->talent.devourer.soul_glutton->effectN( 2 ).percent();
+        // Why separate multiplier - Easier to find stuff in the future. 
+        meta_drain_multiplier /= 1 + p()->talent.devourer.soul_glutton->effectN( 2 ).percent();
       }
+
+      p()->sim->print_debug( "{} applying overall drain multiplier of {} to initial drain of {}, result: {}", *p(),
+                             meta_drain_multiplier, initial_drain, initial_drain * meta_drain_multiplier );
+
+      p()->sim->print_debug( "{} applying overall drain multiplier of {} to exp_factor of {}, result: {}", *p(),
+                             meta_drain_multiplier, exp_factor, exp_factor * meta_drain_multiplier );
+
+      // Handled here to do less runtime math later - If formula changes, may need to move Drain Multiplier into the calculation.
+      initial_drain *= meta_drain_multiplier;
+      exp_factor *= meta_drain_multiplier;
     }
 
     void clear_state();
@@ -1439,19 +1443,14 @@ public:
       return actor;
     }
 
+    timespan_t time_to_next_tick( int stacks ) const;
+
     double base_fury_drain_per_second( int stacks ) const
     {
-      return initial_drain + drain_per_stack * stacks;
-    }
-
-    timespan_t base_time_to_next_tick( int stacks ) const
-    {
-      return timespan_t::from_seconds( 1.0 / ( base_fury_drain_per_second( stacks ) ) );
+      return initial_drain + exp_factor * exp( exp_power * stacks );
     }
 
     double fury_drain_per_second( int stacks ) const;
-
-    timespan_t time_to_next_tick( int stacks ) const;
 
     void drain();
 
@@ -9054,12 +9053,20 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 {
   actions::demon_hunter_energize_t* rolling_torment_energize;
 
-  metamorphosis_buff_t( demon_hunter_t* p )
-    : base_t( *p, "metamorphosis", p->spec.metamorphosis_buff ), rolling_torment_energize( nullptr )
+  metamorphosis_buff_t( demon_hunter_t* dh )
+    : base_t( *dh, "metamorphosis", dh->spec.metamorphosis_buff ), rolling_torment_energize( nullptr )
   {
     set_cooldown( timespan_t::zero() );
-    buff_period   = timespan_t::zero();
-    tick_behavior = buff_tick_behavior::NONE;
+
+    if ( dh->specialization() != DEMON_HUNTER_DEVOURER )
+    {
+      disable_ticking( true );
+    }
+    else
+    {
+      freeze_stacks = true;
+      set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { p()->devourer_fury_state.drain_stacks++; } );
+    }
     // Spell 187827 has a Periodic Dummy effect (#7, 2s period) for visual/server logic that
     // SimC doesn't model. Without this override, init() -> set_period() detects the periodic
     // effect and sets refresh_behavior=TICK, but tick_behavior=NONE means no tick_event is
@@ -9067,12 +9074,11 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     // hardcasting Meta during an active Untethered Rage-procced Meta).
     set_refresh_behavior( buff_refresh_behavior::DURATION );
 
-    switch ( p->specialization() )
+    switch ( dh->specialization() )
     {
       case DEMON_HUNTER_DEVOURER:
         set_duration( timespan_t::zero() );
         set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-        disable_ticking( true );
         break;
       case DEMON_HUNTER_HAVOC:
         demon_hunter_buff_t::set_default_value_from_effect_type( A_HASTE_ALL );
@@ -9087,15 +9093,15 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
         break;
     }
 
-    if ( p->talent.demon_hunter.soul_rending->ok() )
+    if ( dh->talent.demon_hunter.soul_rending->ok() )
     {
       add_invalidate( CACHE_LEECH );
     }
 
-    if ( p->talent.devourer.rolling_torment->ok() )
+    if ( dh->talent.devourer.rolling_torment->ok() )
     {
       rolling_torment_energize =
-          p->get_background_action<actions::spells::rolling_torment_energize_t>( "rolling_torment_energize" );
+          dh->get_background_action<actions::spells::rolling_torment_energize_t>( "rolling_torment_energize" );
     }
   }
 
@@ -10276,8 +10282,9 @@ void demon_hunter_t::create_options()
   add_option( opt_int( "entropy_starting_souls", options.entropy_starting_souls, -1, 50 ) );
   add_option( opt_int( "channel_tick_cutoff_benefit", options.channel_tick_cutoff_benefit, 0, 10 ) );
 
-  add_option( opt_float( "void_metamorphosis_initial_drain", options.void_metamorphosis_initial_drain, 0, 100 ) );
-  add_option( opt_float( "void_metamorphosis_drain_per_stack", options.void_metamorphosis_drain_per_stack, 0, 100 ) );
+  add_option( opt_float( "void_metamorphosis_initial_drain", devourer_fury_state.initial_drain, 0, 100 ) );
+  add_option( opt_float( "void_metamorphosis_exp_factor", devourer_fury_state.exp_factor, 0, 100 ) );
+  add_option( opt_float( "void_metamorphosis_exp_power", devourer_fury_state.exp_power, 0, 100 ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
@@ -12334,7 +12341,6 @@ void demon_hunter_t::fury_state_t::schedule_tick()
 {
   assert( !next_drain_event );
 
-  last_tick        = actor->sim->current_time();
   next_drain_event = make_event<drain_event_t>( *actor->sim, actor, time_to_next_tick( drain_stacks ) );
 }
 
@@ -12352,10 +12358,10 @@ double demon_hunter_t::fury_state_t::fury_drain_per_second( int stacks ) const
     drain *= 0.15;
   }
 
-  if ( drain_stacks < 6 )
+  if ( drain_stacks < 1 )
   {
     // Slow after meta cast
-    drain *= 0.4;
+    drain = 15;
   }
 
   return drain;
@@ -12363,7 +12369,9 @@ double demon_hunter_t::fury_state_t::fury_drain_per_second( int stacks ) const
 
 timespan_t demon_hunter_t::fury_state_t::time_to_next_tick( int stacks ) const
 {
-  return 1.0_s / fury_drain_per_second( stacks );
+  // 2 as it currently drains 2 per event.
+  // TODO: Don't hardcode this.
+  return 2.0_s / fury_drain_per_second( stacks );
 }
 
 void demon_hunter_t::fury_state_t::reschedule_drain()
@@ -12389,7 +12397,7 @@ void demon_hunter_t::fury_state_t::reschedule_drain()
 void demon_hunter_t::fury_state_t::clear_state()
 {
   drain_stacks = 0;
-  start_time = last_tick = timespan_t::min();
+  start_time = timespan_t::min();
 }
 
 void demon_hunter_t::fury_state_t::stop()
@@ -12405,8 +12413,6 @@ void demon_hunter_t::fury_state_t::reset()
 
 void demon_hunter_t::fury_state_t::drain()
 {
-  last_tick = p()->sim->current_time();
-  drain_stacks++;
 
   p()->active.void_buildup->stats->add_execute( 0_s, p() );
   p()->active.void_buildup->consume_resource();
