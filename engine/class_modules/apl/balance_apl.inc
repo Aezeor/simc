@@ -18,7 +18,8 @@ precombat->add_action( "wrath" );
 precombat->add_action( "wrath,if=talent.dream_surge&enemies=1" );
 precombat->add_action( "starfire,if=hero_tree.elunes_chosen|enemies>1" );
 
-def->add_action( "use_items,if=buff.ca_inc.up&(buff.harmony_of_the_grove.up|!talent.dream_surge)|fight_remains<cooldown.ca_inc.remains","Items, Racials & PI" );
+def->add_action( "use_items,if=(!trinket.1.is.wraps_of_cosmic_madness|!trinket.2.is.wraps_of_cosmic_madness)&(buff.ca_inc.up|(trinket.1.cooldown.duration=60|trinket.2.cooldown.duration=60)&buff.harmony_of_the_grove.up)|variable.ec|fight_remains<cooldown.ca_inc.remains","Items, Racials & PI" );
+def->add_action( "use_item,name=wraps_of_cosmic_madness,if=!buff.eclipse.up" );
 def->add_action( "potion,if=buff.harmony_of_the_grove.up&buff.ca_inc.up&!variable.ec|buff.ca_inc.up&variable.ec|variable.opener&prev_gcd.1.solar_eclipse|fight_remains<=30" );
 def->add_action( "berserking,if=buff.ca_inc.up&(buff.harmony_of_the_grove.up|!talent.dream_surge)|fight_remains<cooldown.ca_inc.remains" );
 def->add_action( "invoke_external_buff,name=power_infusion,if=buff.ca_inc.up" );
