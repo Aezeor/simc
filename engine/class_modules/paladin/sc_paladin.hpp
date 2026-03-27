@@ -835,7 +835,7 @@ public:
   void adjust_health_percent();
   void cast_holy_armaments( player_t* target, armament usedArmament, armament_source src );
   void cast_lesser_armament( int amount, lesser_armament usedArmament );
-  void trigger_greater_judgment( paladin_td_t* targetdata, bool remove_stack = false );
+  void trigger_greater_judgment( paladin_td_t* targetdata );
   bool get_how_availability() const;
   bool wings_up() const;
 
