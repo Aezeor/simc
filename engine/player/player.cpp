@@ -2265,6 +2265,7 @@ void player_t::create_special_effects()
           p, fmt::format( ",id=193718,ilevel={}", p->dragonflight_opts.emerald_coachs_whistle_ally_ilvl ) );
         _item->parse_options();
         _item->initialize_data();
+        _item->init();
 
         // validate data
         auto it = range::find( _item->parsed.data.effects, ITEM_SPELLTRIGGER_ON_EQUIP, &item_effect_t::type );
@@ -2274,7 +2275,8 @@ void player_t::create_special_effects()
             "Cannot find on-equip effect on item id=193718 for 'dragonflight.emerald_coachs_whistle_ally_ilvl'." );
         }
 
-        spell_id = it->spell_id;
+        spell_id = p->dragonflight_opts.emerald_coachs_whistle_ally_is_healer ? 386578 : it->spell_id;
+        name_str = "emerald_coachs_whistle_ally";
         item = _item.get();
 
         unique_gear::initialize_special_effect( *this, spell_id );
@@ -13752,6 +13754,7 @@ void player_t::create_options()
   add_option( opt_int( "dragonflight.windweaver_party", dragonflight_opts.windweaver_party, 0, 4 ) );
   add_option( opt_string( "dragonflight.windweaver_party_ilvls", dragonflight_opts.windweaver_party_ilvls ) );
   add_option( opt_int( "dragonflight.emerald_coachs_whistle_ally_ilvl", dragonflight_opts.emerald_coachs_whistle_ally_ilvl ) );
+  add_option( opt_bool( "dragonflight.emerald_coachs_whistle_ally_is_healer", dragonflight_opts.emerald_coachs_whistle_ally_is_healer ) );
 
   // The War Within options
   add_option( opt_string( "thewarwithin.sikrans_endless_arsenal_stance",

@@ -1496,7 +1496,7 @@ void irideus_fragment( special_effect_t& effect )
 // 398396 = On-use
 void emerald_coachs_whistle( special_effect_t& effect )
 {
-  auto stat_amount = effect.driver()->effectN( 2 ).average( effect.item );
+  auto stat_amount = effect.driver()->effectN( effect.spell_id == 386578 ? 1 : 2 ).average( effect.item );
 
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 383799 ) )
                   ->set_stat_from_effect( 1, stat_amount );
@@ -1534,6 +1534,7 @@ void emerald_coachs_whistle( special_effect_t& effect )
   coached->type        = SPECIAL_EFFECT_EQUIP;
   coached->source      = SPECIAL_EFFECT_SOURCE_ITEM;
   coached->spell_id    = 386578;
+  coached->name_str    = effect.name() + "_coached";
   effect.player->special_effects.push_back( coached );
 
   new emerald_coachs_whistle_cb_t( *coached, buff, stat_amount );
@@ -11530,7 +11531,7 @@ void register_special_effects()
   register_special_effect( 396391, items::conjured_chillglobe );
   register_special_effect( 388931, items::globe_of_jagged_ice );
   register_special_effect( 383941, items::irideus_fragment );
-  register_special_effect( 383798, items::emerald_coachs_whistle );
+  register_special_effect( { 383798, 386578 }, items::emerald_coachs_whistle );
   register_special_effect( 381471, items::erupting_spear_fragment );
   register_special_effect( 383920, items::furious_ragefeather );
   register_special_effect( 402813, items::igneous_flowstone );
