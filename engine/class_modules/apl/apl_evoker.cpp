@@ -15,7 +15,7 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  return ( p->true_level > 89 ) ? "flask_of_the_blood_knights_2" : "flask_of_alchemical_chaos_3";
+  return ( p->true_level > 89 ) ? "flask_of_the_shattered_sun_2" : "flask_of_alchemical_chaos_3";
 }
 
 std::string food( const player_t* p )
