@@ -6885,7 +6885,7 @@ public:
   {
     if ( p->talent.hail_of_stars.ok() )
     {
-      if ( has_flag( flag_e::CONVOKE ) )
+      if ( is_free() )
         hail_dur = HAIL_OF_STARS_FREE_DURATION;
       else
         hail_dur = p->talent.hail_of_stars->effectN( 1 ).time_value();
@@ -8569,6 +8569,14 @@ struct starsurge_cascade_t final : public druid_spell_t
     internal_cooldown->duration = p->talent.star_cascade->internal_cooldown();
 
     base_multiplier = p->talent.star_cascade->effectN( p->specialization() == DRUID_BALANCE ? 3 : 4 ).percent();
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    if ( p()->talent.hail_of_stars.ok() )
+      p()->buff.solstice->extend_duration_or_trigger( HAIL_OF_STARS_FREE_DURATION );
   }
 };
 
