@@ -12726,7 +12726,17 @@ void shaman_t::apply_player_effects()
 
   // Enhancement
   eff::source_eff_builder_t( buff.flurry ).set_flag( IGNORE_STACKS ).build( this );
-  eff::source_eff_builder_t( buff.crash_lightning ).build( this );
+  // Enable attack speed bonus individually, so we can apply a bug to the mastery bonus (12.0 4PC)
+  eff::source_eff_builder_t( buff.crash_lightning )
+    .set_effect_mask( effect_mask_t( false ).enable( 2 ) )
+    .build( this );
+  // [20260328] BUG: Enhancement 12.0 4PC gives half as much mastery as is on the tin
+  eff::source_eff_builder_t( buff.crash_lightning )
+    .set_effect_mask( effect_mask_t( false ).enable( 3 ) )
+    .set_value( [ this ]( double value ) -> double {
+      return value * ( bugs ? 0.5 : 1.0 );
+    } )
+    .build( this );
 
   // Elemental
   eff::source_eff_builder_t( mastery.elemental_overload ).build( this );
