@@ -2508,8 +2508,7 @@ public:
         while ( dh()->shattered_destiny_accumulator >= threshold )
         {
           dh()->shattered_destiny_accumulator -= threshold;
-          dh()->buff.metamorphosis->extend_duration( dh(),
-                                                    dh()->talent.havoc.shattered_destiny->effectN( 1 ).time_value() );
+          dh()->buff.metamorphosis->extend_duration( dh()->talent.havoc.shattered_destiny->effectN( 1 ).time_value() );
           dh()->proc.shattered_destiny->occur();
         }
       }
@@ -4028,7 +4027,7 @@ struct eye_beam_base_t : public student_of_suffering_trigger_t<final_breath_trig
     // execute_state
     if ( dh()->talent.havoc.demonic->ok() )
     {
-      dh()->buff.metamorphosis->extend_duration( dh(), duration );
+      dh()->buff.metamorphosis->extend_duration( duration );
     }
 
     if ( dh()->talent.havoc.blind_fury->ok() )
@@ -7370,7 +7369,7 @@ struct death_sweep_t : public demonsurge_trigger_t<demonsurge_ability::DEATH_SWE
     // If Metamorphosis has less than 950ms remaining, it gets extended so the whole Death Sweep happens during Meta.
     if ( dh()->buff.metamorphosis->remains_lt( ds_extension ) )
     {
-      dh()->buff.metamorphosis->extend_duration( dh(), ds_extension - dh()->buff.metamorphosis->remains() );
+      dh()->buff.metamorphosis->extend_duration( ds_extension - dh()->buff.metamorphosis->remains() );
     }
 
     base_t::execute();
@@ -9127,9 +9126,9 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     dh()->buff.metamorphosis->extend_duration_or_trigger( extend_duration );
   }
 
-  void extend_duration_or_trigger( timespan_t duration, player_t* player ) override
+  void extend_duration_or_trigger( timespan_t duration ) override
   {
-    demon_hunter_buff_t::extend_duration_or_trigger( duration, player );
+    demon_hunter_buff_t::extend_duration_or_trigger( duration );
 
     dh()->buff.inner_demon->trigger();
   }
@@ -12206,7 +12205,7 @@ void demon_hunter_t::set_out_of_range( timespan_t duration )
   {
     if ( buff.out_of_range->check() )
     {
-      buff.out_of_range->extend_duration( this, duration - buff.out_of_range->remains() );
+      buff.out_of_range->extend_duration( duration - buff.out_of_range->remains() );
       buff.out_of_range->default_value = cache.run_speed();
     }
     else

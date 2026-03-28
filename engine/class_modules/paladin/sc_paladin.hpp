@@ -1185,7 +1185,7 @@ public:
       // If Crusading Strikes is triggering, extension is only 500ms
       if ( ab::id == 408385 )
         extension = 500_ms;
-      p()->buffs.templar.shake_the_heavens->extend_duration( p(), extension );
+      p()->buffs.templar.shake_the_heavens->extend_duration( extension );
     }
 
     if ( ab::current_resource() == RESOURCE_HOLY_POWER && ab::last_resource_cost > 0 && p()->buffs.judge_jury_and_executioner->up() )
@@ -1623,12 +1623,12 @@ public:
       // 2022-11-14 Free Holy Power spenders do not delay Sentinel's decay
       if ( !( p->bugs && isFreeSLDPSpender ) )
       {
-        p->buffs.sentinel_decay->extend_duration( p, timespan_t::from_seconds( 1 ) );
+        p->buffs.sentinel_decay->extend_duration( timespan_t::from_seconds( 1 ) );
       }
       // 2025-12-18 Instrument of the Divine talented extends Sentinel's decay by double the time, regardless of Holy Power spent.
       if (p->bugs && p->talents.instrument_of_the_divine->ok())
       {
-        p->buffs.sentinel_decay->extend_duration( p, timespan_t::from_seconds( 1 ) );
+        p->buffs.sentinel_decay->extend_duration( timespan_t::from_seconds( 1 ) );
       }
     }
 

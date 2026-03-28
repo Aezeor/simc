@@ -1581,7 +1581,7 @@ public:
     const bool triggered = buff -> trigger(duration);
     if ( triggered && ab::is_precombat && !in_combat && precast_time > 0_ms )
     {
-      buff -> extend_duration( ab::player, -std::min( precast_time, buff -> buff_duration() ) );
+      buff -> extend_duration( -std::min( precast_time, buff -> buff_duration() ) );
       buff -> cooldown -> adjust( -precast_time );
     }
     return triggered;
@@ -4974,7 +4974,7 @@ struct cobra_shot_base_t: public hunter_ranged_attack_t
     if ( p()->talents.barbed_scales.ok() )
       p()->cooldowns.barbed_shot->adjust( -p()->talents.barbed_scales->effectN( 1 ).time_value() );
 
-    p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( p(), -p()->talents.dire_summons->effectN( 3 ).time_value() );
+    p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( -p()->talents.dire_summons->effectN( 3 ).time_value() );
 
     p()->buffs.hogstrider->expire();
 
@@ -6002,7 +6002,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
   {
     hunter_melee_attack_t::execute();
 
-    p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( p(), -p()->talents.dire_summons->effectN( 4 ).time_value() );
+    p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( -p()->talents.dire_summons->effectN( 4 ).time_value() );
   }
 
   bool ready() override
@@ -6550,11 +6550,11 @@ struct kill_command_t: public hunter_spell_t
 
     p()->cooldowns.wildfire_bomb->adjust( -p()->talents.wildfire_infusion->effectN( 1 ).time_value() );
 
-    p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( p(), -p()->talents.dire_summons->effectN( p()->specialization() == HUNTER_BEAST_MASTERY ? 1 : 2 ).time_value() );
+    p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( -p()->talents.dire_summons->effectN( p()->specialization() == HUNTER_BEAST_MASTERY ? 1 : 2 ).time_value() );
     
     if ( p()->buffs.wyverns_cry->check() && p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap )
     {
-      p()->buffs.wyverns_cry->extend_duration( p(), fury_of_the_wyvern.extension );
+      p()->buffs.wyverns_cry->extend_duration( fury_of_the_wyvern.extension );
       p()->state.fury_of_the_wyvern_extension += fury_of_the_wyvern.extension;
       p()->state.fury_of_the_wyvern_extendable = p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap;
     }
@@ -7064,7 +7064,7 @@ struct wildfire_bomb_t: public wildfire_bomb_base_t
 
     if ( p()->buffs.wyverns_cry->check() && p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap )
     {
-      p()->buffs.wyverns_cry->extend_duration( p(), fury_of_the_wyvern.extension );
+      p()->buffs.wyverns_cry->extend_duration( fury_of_the_wyvern.extension );
       p()->state.fury_of_the_wyvern_extension += fury_of_the_wyvern.extension;
       p()->state.fury_of_the_wyvern_extendable = p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap;
     }

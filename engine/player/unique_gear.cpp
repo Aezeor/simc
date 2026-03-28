@@ -296,11 +296,11 @@ void enchants::mark_of_the_thunderlord( special_effect_t& effect )
       extensions( 0 ), max_extensions( max_ext )
     { }
 
-    void extend_duration( player_t* p, timespan_t extend_duration ) override
+    void extend_duration( timespan_t extend_duration ) override
     {
       if ( extensions < max_extensions )
       {
-        stat_buff_t::extend_duration( p, extend_duration );
+        stat_buff_t::extend_duration( extend_duration );
         extensions++;
       }
     }
@@ -360,7 +360,7 @@ void enchants::mark_of_the_thunderlord( special_effect_t& effect )
     void execute( action_t*, action_state_t* ) override
     {
       if ( proc_buff -> check() )
-        proc_buff -> extend_duration( listener, timespan_t::from_seconds( 2 ) );
+        proc_buff -> extend_duration( timespan_t::from_seconds( 2 ) );
     }
   };
 

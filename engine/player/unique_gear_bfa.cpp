@@ -964,7 +964,7 @@ void items::bygone_bee_almanac( special_effect_t& effect )
         return;
       }
 
-      bba_buff->extend_duration( listener, adjust );
+      bba_buff->extend_duration( adjust );
     }
   };
 

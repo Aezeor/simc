@@ -8395,7 +8395,7 @@ struct ascendance_t : public shaman_spell_t
         }
       }
       assert( ( duration != timespan_t::zero() ) );
-      p()->buff.ascendance->extend_duration_or_trigger( duration, player );
+      p()->buff.ascendance->extend_duration_or_trigger( duration );
     }
     else
     {
@@ -11250,8 +11250,7 @@ void shaman_t::summon_elemental( elemental type, timespan_t override_duration )
     timespan_t new_duration = spawner_ptr->active_pet()->expiration->remains();
     new_duration += override_duration > 0_ms ? override_duration : elemental_buff->buff_duration();
 
-    elemental_buff->extend_duration( this,
-      override_duration > 0_ms ? override_duration : elemental_buff->buff_duration() );
+    elemental_buff->extend_duration( override_duration > 0_ms ? override_duration : elemental_buff->buff_duration() );
     spawner_ptr->active_pet()->expiration->reschedule( new_duration );
     for (auto action : spawner_ptr->active_pet()->action_list)
     {
@@ -11539,7 +11538,7 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
     auto extension = timespan_t::from_seconds(
       talent.totemic_momentum->effectN( 1 ).base_value() * 0.001 * stacks );
 
-    buff.hot_hand->extend_duration( this, extension );
+    buff.hot_hand->extend_duration( extension );
 
   }
 }
@@ -11799,7 +11798,7 @@ void shaman_t::trigger_whirling_fire( const action_state_t* state )
     // Mote of Fire extends an existing Hot Hand buff, or triggers a new one with its duration
     if ( buff.hot_hand->check() )
     {
-      buff.hot_hand->extend_duration( this, buff.whirling_fire->data().effectN( 1 ).time_value() );
+      buff.hot_hand->extend_duration( buff.whirling_fire->data().effectN( 1 ).time_value() );
     }
     else
     {

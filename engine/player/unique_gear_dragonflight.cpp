@@ -6896,8 +6896,7 @@ void time_thiefs_gambit( special_effect_t& effect )
       {
         effect.player->sim->print_debug( "{} kills an enemy, extending Paradox by {} seconds.", effect.player->name(),
                                          effect.driver()->effectN( 3 ).base_value() );
-        paradox->extend_duration( effect.player,
-                                  timespan_t::from_seconds( effect.driver()->effectN( 3 ).base_value() ) );
+        paradox->extend_duration( timespan_t::from_seconds( effect.driver()->effectN( 3 ).base_value() ) );
       }
     }
   } );
