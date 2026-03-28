@@ -6870,12 +6870,10 @@ namespace spells
 {
 struct ap_spender_t : public druid_spell_t
 {
-private:
-  double mid1_4pc_chance = 0.0;
-
 protected:
   using base_t = ap_spender_t;
   buff_t* weaver_buff = nullptr;
+  double mid1_4pc_chance;
 
 public:
   timespan_t hail_dur = 0_ms;
@@ -6902,8 +6900,6 @@ public:
       p()->buff.solstice->extend_duration_or_trigger( hail_dur );
   }
 
-  virtual player_t* mid1_4pc_target() { return target; }
-
   void execute() override
   {
     assert( weaver_buff );
@@ -6921,9 +6917,6 @@ public:
     if ( !weaver_buff->consume( this ) )
       if ( !p()->buff.touch_the_cosmos->consume( this ) )
         p()->buff.astral_communion->consume( this );
-
-    if ( rng().roll( mid1_4pc_chance ) )
-      p()->active.shooting_stars_mid1->execute_on_target( mid1_4pc_target() );
   }
 };
 
@@ -8415,11 +8408,6 @@ struct starfall_t final : public ap_spender_t
     weaver_buff = p->buff.starweaver_starfall;
   }
 
-  player_t* mid1_4pc_target() override
-  {
-    return driver->random_affected_target( 1 ).front();
-  }
-
   void execute() override
   {
     if ( p()->talent.aetherial_kindling.ok() )
@@ -8432,6 +8420,10 @@ struct starfall_t final : public ap_spender_t
 
     buff->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { driver->execute(); } );
     buff->trigger();
+
+    // technically triggered by buff application, do it in action so we can easily grab the driver targets
+    if ( rng().roll( mid1_4pc_chance ) )
+      p()->active.shooting_stars_mid1->execute_on_target( driver->random_affected_target( 1 ).front() );
 
     p()->buff.starweaver_starsurge->trigger( this );
 
@@ -8670,6 +8662,9 @@ struct starsurge_t final : public trigger_call_of_the_elder_druid_t<ap_spender_t
 
     if ( p()->talent.stellar_amplification.ok() )
       td( s->target )->debuff.stellar_amplification->trigger( this );
+
+    if ( rng().roll( mid1_4pc_chance ) )
+      p()->active.shooting_stars_mid1->execute_on_target( s->target );
   }
 };
 
