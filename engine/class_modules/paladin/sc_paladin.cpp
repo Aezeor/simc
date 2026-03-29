@@ -2067,9 +2067,12 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
            p()->talents.greater_judgment->ok() )
       {
         auto tl   = target_list();
-        for ( int i = 0; i < n_targets(); i++ )
+        if ( tl.size() )
         {
-          p()->trigger_greater_judgment( td( tl[ i ] ) );
+          for ( int i = 0; i < n_targets(); i++ )
+          {
+            p()->trigger_greater_judgment( td( tl[ i ] ) );
+          }
         }
       }
       snapshot_state( pre_execute_state, amount_type( pre_execute_state ) );
@@ -2147,7 +2150,9 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
      if ( p()->specialization() == PALADIN_RETRIBUTION && p()->talents.templar.undisputed_ruling->ok() &&
           p()->talents.greater_judgment->ok() )
      {
-       p()->trigger_greater_judgment( td( target_list()[ 0 ] ) );
+       auto tl = target_list();
+       if ( tl.size() )
+        p()->trigger_greater_judgment( td( tl[ 0 ] ) );
      }
      holy_power_consumer_t<paladin_melee_attack_t>::execute();
      auto state    = static_cast<state_t*>( cleave_hammer->get_state() );
