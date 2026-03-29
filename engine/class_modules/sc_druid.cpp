@@ -7084,6 +7084,15 @@ public:
 
     if ( cast_state( s )->dream_burst )
       p()->active.dream_burst->execute_on_target( s->target );
+
+    // has an icd to prevent multiple procs, but we can just check only on the main target instead
+    if ( !proc && s->chain_target == 0 && rng().roll( cascade_chance ) )
+    {
+      if ( time_to_execute > 0_ms )
+        p()->spell_queued.star_cascade = target;
+      else
+        p()->active.star_cascade->execute_on_target( target );
+    }
   }
 
   void record_data( action_state_t* s ) override
@@ -7099,20 +7108,6 @@ public:
       druid_spell_t::record_data( s );
     }
   }
-
-  double gain_energize_resource( resource_e rt, double a, gain_t* g ) override
-  {
-    auto ret = druid_spell_t::gain_energize_resource( rt, a, g );
-    if ( ret && rng().roll( cascade_chance ) )
-    {
-      if ( time_to_execute > 0_ms )
-        p()->spell_queued.star_cascade = target;
-      else
-        p()->active.star_cascade->execute_on_target( target );
-    }
-
-    return ret;
-  }  
 
   void reset() override { druid_spell_t::reset(); dreamstate = false; }
 
