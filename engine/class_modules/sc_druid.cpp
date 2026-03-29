@@ -1274,6 +1274,8 @@ struct druid_t final : public parse_player_effects_t
 
   struct uptimes_t
   {
+    uptime_t* atmospheric_exposure;
+    uptime_t* stellar_amplification;
   } uptime;
 
   auto_dispose<std::vector<modified_spell_data_t*>> modified_spells;
@@ -2224,19 +2226,22 @@ public:
 template <typename BASE>
 struct trigger_atmospheric_exposure_t : public BASE
 {
+private:
+  bool has_talent;
+
 protected:
   using base_t = trigger_atmospheric_exposure_t<BASE>;
 
 public:
   trigger_atmospheric_exposure_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f )
+    : BASE( n, p, s, f ), has_talent( p->talent.atmospheric_exposure.ok() )
   {}
 
   void impact( action_state_t* s ) override
   {
     BASE::impact( s );
 
-    if ( s->result_total )
+    if ( has_talent && s->result_total )
       BASE::td( s->target )->debuff.atmospheric_exposure->trigger( this );
   }
 
@@ -2244,7 +2249,7 @@ public:
   {
     BASE::tick( d );
 
-    if ( d->state->result_total )
+    if ( has_talent && d->state->result_total )
       BASE::td( d->target )->debuff.atmospheric_exposure->trigger( this );
   }
 };
@@ -12398,6 +12403,12 @@ void druid_t::init_procs()
 void druid_t::init_uptimes()
 {
   player_t::init_uptimes();
+
+  if ( talent.atmospheric_exposure.ok() )
+    uptime.atmospheric_exposure = get_uptime( "Atmospheric Exposure" );
+
+  if ( talent.stellar_amplification.ok() )
+    uptime.stellar_amplification = get_uptime( "Stellar Amplification" );
 }
 
 // druid_t::init_resources ==================================================
@@ -13866,7 +13877,13 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
 
   debuff.atmospheric_exposure = make_debuff( source.talent.atmospheric_exposure.ok(),
     *this, "atmospheric_exposure", source.spec.atmospheric_exposure )
-      ->set_trigger_spell( source.talent.atmospheric_exposure );
+      ->set_trigger_spell( source.talent.atmospheric_exposure )
+      ->set_stack_change_callback( [ p = &source ]( auto, int old_, int new_ ) {
+        if ( new_ )
+          p->uptime.atmospheric_exposure->update( true, p->sim->current_time() );
+        else if ( old_ )
+          p->uptime.atmospheric_exposure->update( false, p->sim->current_time() );
+      } );
 
   debuff.bloodseeker_vines = make_debuff<bloodseeker_vines_debuff_t>( source.talent.thriving_growth.ok(),
     *this, "bloodseeker_vines", &source );
@@ -13881,7 +13898,13 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
       ->set_refresh_duration_callback(
         [ dur = source.talent.stellar_amplification->effectN( 1 ).time_value() ]( const buff_t* b, timespan_t d ) {
           return std::min( dur, b->remains() + d );
-        } );
+        } )
+      ->set_stack_change_callback( [ p = &source ]( auto, int old_, int new_ ) {
+        if ( new_ )
+          p->uptime.stellar_amplification->update( true, p->sim->current_time() );
+        else if ( old_ )
+          p->uptime.stellar_amplification->update( false, p->sim->current_time() );
+      } );
 
   buff.ironbark =
     make_buff_fallback( source.talent.ironbark.ok() && !target.is_enemy(), *this, "ironbark", source.talent.ironbark )
