@@ -8574,6 +8574,13 @@ struct starsurge_cascade_t final : public druid_spell_t
 
     if ( p()->talent.hail_of_stars.ok() )
       p()->buff.solstice->extend_duration_or_trigger( HAIL_OF_STARS_FREE_DURATION );
+
+    if ( p()->buff.eclipse_lunar->check() )
+      debug_cast<buffs::eclipse_lunar_t*>( p()->buff.eclipse_lunar )->trigger_harmony();
+
+    if ( p()->buff.eclipse_solar->check() )
+      debug_cast<buffs::eclipse_solar_t*>( p()->buff.eclipse_solar )->trigger_harmony();
+
   }
 };
 
