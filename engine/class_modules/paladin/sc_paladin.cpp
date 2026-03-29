@@ -2066,13 +2066,10 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
       if ( p()->specialization() == PALADIN_RETRIBUTION && p()->talents.templar.undisputed_ruling->ok() &&
            p()->talents.greater_judgment->ok() )
       {
-        auto tl   = target_list();
-        if ( tl.size() )
+        auto tl = target_list();
+        for ( size_t i = 0; i < std::min( as<size_t>( n_targets() ), tl.size() ); i++ )
         {
-          for ( int i = 0; i < n_targets(); i++ )
-          {
-            p()->trigger_greater_judgment( td( tl[ i ] ) );
-          }
+          p()->trigger_greater_judgment( td( tl[ i ] ) );
         }
       }
       snapshot_state( pre_execute_state, amount_type( pre_execute_state ) );
