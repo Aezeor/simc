@@ -2063,6 +2063,15 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
     void execute() override
     {
+      if ( p()->specialization() == PALADIN_RETRIBUTION && p()->talents.templar.undisputed_ruling->ok() &&
+           p()->talents.greater_judgment->ok() )
+      {
+        auto tl   = target_list();
+        for ( int i = 0; i < n_targets(); i++ )
+        {
+          p()->trigger_greater_judgment( td( tl[ i ] ) );
+        }
+      }
       snapshot_state( pre_execute_state, amount_type( pre_execute_state ) );
       holy_power_consumer_t::execute();
       if ( p()->talents.templar.shake_the_heavens->ok() )
@@ -2078,22 +2087,6 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
         else
           p()->buffs.templar.shake_the_heavens->execute();
       }
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      if ( p()->specialization() == PALADIN_RETRIBUTION && p()->talents.templar.undisputed_ruling->ok() &&
-           p()->talents.greater_judgment->ok() )
-      {
-        bool needsRecalc = td( s->target )->debuff.judgment->stack() == 0;
-        p()->trigger_greater_judgment( td( s->target ) );
-        if ( needsRecalc )
-        {
-          s->target_da_multiplier = composite_target_da_multiplier( s->target );
-          s->result_amount        = calculate_direct_amount( s );
-        }
-      }
-      holy_power_consumer_t<paladin_melee_attack_t>::impact( s );
     }
   };
 
@@ -2151,6 +2144,11 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
    void execute() override
    {
+     if ( p()->specialization() == PALADIN_RETRIBUTION && p()->talents.templar.undisputed_ruling->ok() &&
+          p()->talents.greater_judgment->ok() )
+     {
+       p()->trigger_greater_judgment( td( target_list()[ 0 ] ) );
+     }
      holy_power_consumer_t<paladin_melee_attack_t>::execute();
      auto state    = static_cast<state_t*>( cleave_hammer->get_state() );
      state->target = execute_state->target;
@@ -2202,18 +2200,6 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
    }
    void impact( action_state_t* s ) override
    {
-     if ( p()->specialization() == PALADIN_RETRIBUTION && p()->talents.templar.undisputed_ruling->ok() &&
-          p()->talents.greater_judgment->ok() )
-     {
-       bool needsRecalc = td( s->target )->debuff.judgment->stack() == 0;
-       p()->trigger_greater_judgment( td( s->target ) );
-       if ( needsRecalc )
-       {
-         s->target_da_multiplier = composite_target_da_multiplier( s->target );
-         s->result_amount        = calculate_direct_amount( s );
-       }
-     }
-
      holy_power_consumer_t<paladin_melee_attack_t>::impact( s );
 
      if ( p()->talents.templar.undisputed_ruling->ok() )
