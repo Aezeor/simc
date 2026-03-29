@@ -2085,10 +2085,14 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
       if ( p()->specialization() == PALADIN_RETRIBUTION && p()->talents.templar.undisputed_ruling->ok() &&
            p()->talents.greater_judgment->ok() )
       {
-        // This currently does not recalculate damage, needs fix later
+        bool needsRecalc = td( s->target )->debuff.judgment->stack() == 0;
         p()->trigger_greater_judgment( td( s->target ) );
+        if ( needsRecalc )
+        {
+          s->target_da_multiplier = composite_target_da_multiplier( s->target );
+          s->result_amount        = calculate_direct_amount( s );
+        }
       }
-
       holy_power_consumer_t<paladin_melee_attack_t>::impact( s );
     }
   };
@@ -2201,8 +2205,13 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
      if ( p()->specialization() == PALADIN_RETRIBUTION && p()->talents.templar.undisputed_ruling->ok() &&
           p()->talents.greater_judgment->ok() )
      {
-       // This currently does not recalculate damage, needs fix later
+       bool needsRecalc = td( s->target )->debuff.judgment->stack() == 0;
        p()->trigger_greater_judgment( td( s->target ) );
+       if ( needsRecalc )
+       {
+         s->target_da_multiplier = composite_target_da_multiplier( s->target );
+         s->result_amount        = calculate_direct_amount( s );
+       }
      }
 
      holy_power_consumer_t<paladin_melee_attack_t>::impact( s );
