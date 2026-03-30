@@ -6073,7 +6073,8 @@ void monk_t::create_buffs()
                              ->set_default_value( talent.windwalker.tigereye_brew_1_buff->effectN( 1 ).percent() );
 
   buff.tigereye_brew_3 = make_buff_fallback( talent.windwalker.tigereye_brew_3->ok(), this, "tigereye_brew_3",
-                                             talent.windwalker.tigereye_brew_3_buff );
+                                             talent.windwalker.tigereye_brew_3_buff )
+                             ->set_cooldown( talent.windwalker.tigereye_brew_3->internal_cooldown() );
 
   // Conduit of the Celestials
   buff.celestial_conduit =
