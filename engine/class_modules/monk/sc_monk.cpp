@@ -3629,6 +3629,7 @@ struct zenith_t : public monk_spell_t
     {
       aoe                 = -1;
       reduced_aoe_targets = player->talent.monk.zenith_stomp->effectN( 1 ).base_value();
+      ww_mastery          = true;
     }
   };
 
