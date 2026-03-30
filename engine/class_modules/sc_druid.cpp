@@ -12676,6 +12676,9 @@ void druid_t::init_special_effects()
 
       void trigger( action_t* a, action_state_t* s ) override
       {
+        if ( !s || !s->result_amount )
+          return;
+
         assert( proc_chance == orig_proc_chance );
 
         switch ( a->id )
