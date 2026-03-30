@@ -3654,12 +3654,12 @@ struct zenith_t : public monk_spell_t
 
     monk_spell_t::execute();
 
-    if ( zenith_stomp )
-      zenith_stomp->execute_on_target( target );
-
     p()->buff.zenith->trigger();
     p()->cooldown.rising_sun_kick->reset( true );
     p()->buff.stand_ready->trigger();
+
+    if ( zenith_stomp )
+      zenith_stomp->execute_on_target( target );
   }
 };
 
