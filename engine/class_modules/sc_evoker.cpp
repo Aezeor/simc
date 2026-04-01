@@ -1364,6 +1364,7 @@ struct evoker_t : public player_t
     const spell_data_t* fate_mirror_damage;
     player_talent_t rumbling_earth;
     player_talent_t molten_embers;
+    player_talent_t mighty_inferno;
     player_talent_t duplicate1;
     const spell_data_t* duplicate_eruption_spell;     // 1259172
     const spell_data_t* duplicate_fire_breath_charge_spell;  // 1283718
@@ -1399,6 +1400,7 @@ struct evoker_t : public player_t
       player_talent_t chronoboon;
       player_talent_t overclock;
       player_talent_t energy_cycles;
+      player_talent_t chronal_dynamo;
     } chronowarden;
 
     struct flameshaper_t
@@ -4852,6 +4854,9 @@ struct living_flame_damage_t : public living_flame_base_t<evoker_spell_t>
 
     da *= 1.0 + p()->buff.iridescence_red->check_value();
 
+    // TODO: Require Instant Cast.
+    da *= 1.0 + p()->talent.chronowarden.chronal_dynamo->effectN( 2 ).percent();
+
     return da;
   }
 
@@ -7093,6 +7098,15 @@ public:
     background                        = true;
     spell_power_mod.direct            = 3.5;  // Hardcoded for some reason, 29/12/2025
   }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double da = base::composite_da_multiplier( s );
+
+    da *= 1.0 + p( s )->talent.mighty_inferno->effectN( 1 ).percent();
+
+    return da;
+  }
 };
 
 struct breath_of_eons_damage_t : public evoker_external_action_t<spell_t>
@@ -7416,8 +7430,8 @@ public:
   {
     double da = base::composite_da_multiplier( s );
 
-    da *= 1 + p( s )->buff.reactive_hide->check_stack_value();
-    da *= 1 + p( s )->talent.regenerative_chitin->effectN( 2 ).percent();
+    da *= 1.0 + p( s )->buff.reactive_hide->check_stack_value();
+    da *= 1.0 + p( s )->talent.regenerative_chitin->effectN( 2 ).percent();
     return da;
   }
 
@@ -9684,6 +9698,7 @@ void evoker_t::init_spells()
   talent.fate_mirror_damage = find_spell( 404908 );
   talent.rumbling_earth     = ST( "Rumbling Earth" );
   talent.molten_embers      = ST( "Molten Embers" );
+  talent.mighty_inferno     = ST( "Mighty Inferno" );
   talent.clairvoyant        = ST( "Clairvoyant" );
 
   // Apex
@@ -9748,6 +9763,7 @@ void evoker_t::init_spells()
   talent.chronowarden.chronoboon                      = HT( "Chronoboon" );
   talent.chronowarden.energy_cycles                   = HT( "Energy Cycles" );
   talent.chronowarden.overclock                       = HT( "Overclock" );
+  talent.chronowarden.chronal_dynamo                  = HT( "Chronal Dynamo" );
 
   // flameshaper
   talent.flameshaper.trailblazer              = HT( "Trailblazer" );
