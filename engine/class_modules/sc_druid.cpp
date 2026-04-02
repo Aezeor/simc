@@ -7228,7 +7228,9 @@ struct solar_eclipse_t final : public eclipse_base_t
 
 struct eclipse_t final : public eclipse_base_t
 {
-  DRUID_ABILITY( eclipse_t, eclipse_base_t, "eclipse", p->find_spell( 1233346 ) ) {}
+  DRUID_ABILITY( eclipse_t, eclipse_base_t, "eclipse",
+                 p->find_spell( p->talent.lunar_calling.ok() ? 1233272 : 1233346 ) )
+  {}
 
   buff_t* get_eclipse_buff( bool flip ) const override
   {
