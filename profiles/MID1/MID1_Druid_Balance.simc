@@ -1,3 +1,19 @@
+druid="MID1_Druid_Balance"
+source=default
+spec=balance
+level=90
+race=night_elf
+timeofday=night
+role=spell
+position=back
+talents=CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWoMbNjxMDwsYmZmZhBjZZmlZYmZswyMLzMGzshhBYstMzgxsNCMBAAAYxMzMzgNDjxAAwMDMA
+
+# Default consumables
+potion=lights_potential_2
+flask=magisters_2
+food=harandar_celebration
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -158,3 +174,35 @@ actions.opener_kotg+=/wrath,if=astral_power<100-20*talent.fury_of_elune&!talent.
 actions.opener_kotg+=/fury_of_elune
 actions.opener_kotg+=/force_of_nature
 actions.opener_kotg+=/celestial_alignment
+
+head=branches_of_the_luminous_bloom,id=250024,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant_id=8017
+neck=amulet_of_the_abyssal_hymn,id=250247,ilevel=289,gem_id=240983
+shoulders=seedpods_of_the_luminous_bloom,id=250022,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289,enchant_id=8031
+back=adherents_silken_shroud,id=239656,bonus_id=8960/12066/12214/12384/13622/13667/9627,crafted_stats=32/36
+chest=trunk_of_the_luminous_bloom,id=250027,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
+wrists=voidskinned_bracers,id=249327,bonus_id=1808,ilevel=289,gem_id=240908
+hands=gloves_of_viscous_goo,id=251113,ilevel=289
+waist=snapvine_cinch,id=251082,bonus_id=1808,ilevel=289,gem_id=240918
+legs=phloemwraps_of_the_luminous_bloom,id=250023,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7935
+feet=canopy_walkers_footwraps,id=249382,ilevel=289,enchant_id=7963
+finger1=occlusion_of_void,id=251217,ilevel=289,gem_id=240908,enchant_id=7997
+finger2=omission_of_light,id=251093,bonus_id=12806/13577/13668,ilevel=289,gem_id=240900,enchant_id=7969
+trinket1=vaelgors_final_stare,id=249346,ilevel=289
+trinket2=gaze_of_the_alnseer,id=249343,bonus_id=40/12806/13335,ilevel=289
+main_hand=splitshroud_stinger,id=251111,ilevel=289,enchant_id=8039
+off_hand=alnhara_lantern,id=245769,bonus_id=8960/12066/12214/12214/12214/12214/12214/12214/12214/12214/12693/9627,ilevel=285,crafted_stats=32/49
+
+# Gear Summary
+# gear_ilvl=288.50
+# gear_stamina=17609
+# gear_intellect=1698
+# gear_crit_rating=807
+# gear_haste_rating=599
+# gear_mastery_rating=1119
+# gear_versatility_rating=16
+# gear_leech_rating=166
+# gear_avoidance_rating=109
+# gear_armor=874
+# set_bonus=voidlight_bindings_2pc=1
+# set_bonus=midnight_season_1_2pc=1
+# set_bonus=midnight_season_1_4pc=1
