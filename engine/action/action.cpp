@@ -4522,10 +4522,9 @@ void action_t::trigger_dot( action_state_t* s )
   // TODO: does proc suppression matter for aura applied triggers?
   if ( callbacks && caster_callbacks && ( !suppress_caster_procs || enable_proc_from_suppressed ) )
   {
-    // Current implementation splits helpful PF2_LANDED into PF1_HIT and PF1_CRIT so we need to adjust here
     // TODO: assumption is that PROC1_NONE_HELPFUL actually applies to all aura application, whether hostile or not
     // NOTE: we don't pass state since this is an aura_applied trigger
-    player->trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_HIT, proc_data, dot->target, TRIGGER_AURA_APPLIED );
+    player->trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_LANDED, proc_data, dot->target, TRIGGER_AURA_APPLIED );
   }
 }
 
