@@ -458,6 +458,7 @@ public:
     cooldown_t* secret_technique;
     cooldown_t* shadow_blades;
     cooldown_t* shadow_dance;
+    cooldown_t* shadow_techniques_icd;
     cooldown_t* shadowstep;
     cooldown_t* shiv;
     cooldown_t* sprint;
@@ -1133,6 +1134,7 @@ public:
     cooldowns.secret_technique          = get_cooldown( "secret_technique" );
     cooldowns.shadow_blades             = get_cooldown( "shadow_blades" );
     cooldowns.shadow_dance              = get_cooldown( "shadow_dance" );
+    cooldowns.shadow_techniques_icd     = get_cooldown( "shadow_techniques_icd" );
     cooldowns.shadowstep                = get_cooldown( "shadowstep" );
     cooldowns.shiv                      = get_cooldown( "shiv" );
     cooldowns.sprint                    = get_cooldown( "sprint" );   
@@ -7785,11 +7787,22 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
   const unsigned shadowcraft_adjustment = ( p()->talent.subtlety.shadowcraft->ok() && p()->buffs.shadow_dance->check() ) ? 1 : 0;
   const unsigned shadow_techniques_upper = 4 - shadowcraft_adjustment;
   const unsigned shadow_techniques_lower = 3 - shadowcraft_adjustment;
-  if ( ++p()->shadow_techniques_counter >= shadow_techniques_upper || ( p()->shadow_techniques_counter == shadow_techniques_lower && p()->rng().roll( 0.5 ) ) )
+  if ( ++p()->shadow_techniques_counter >= shadow_techniques_upper ||
+       ( p()->shadow_techniques_counter == shadow_techniques_lower && p()->rng().roll( 0.5 ) ) )
   {
-    p()->sim->print_debug( "{} trigger_shadow_techniques proc'd at {}, resetting counter to 0", *p(), p()->shadow_techniques_counter );
-    p()->shadow_techniques_counter = 0;
+    // Trigger ICD only appears to be enforced on AA triggers, not Apex-triggered stacks
+    if ( p()->cooldowns.shadow_techniques_icd->down() )
+    {
+      p()->sim->print_debug( "{} trigger_shadow_techniques from {} skipped due to internal cooldown ({} remains)",
+                             *p(), *this, p()->cooldowns.shadow_techniques_icd->remains() );
+      return;
+    }
+
     trigger_shadow_techniques_buff( state );
+    p()->sim->print_debug( "{} trigger_shadow_techniques proc'd at {}, resetting counter to 0", *p(), p()->shadow_techniques_counter );
+
+    p()->shadow_techniques_counter = 0;
+    p()->cooldowns.shadow_techniques_icd->start();
   }
 }
 
@@ -7804,13 +7817,14 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques_buff( const action
                                             p()->buffs.shadow_dance->check() &&
                                             !ignore_shadowcraft ) ? 1 : 0;
 
+  // Trigger the buff stacks for Combo Point storage 
+  p()->buffs.shadow_techniques->trigger( 1 + shadowcraft_adjustment );
   p()->resource_gain( RESOURCE_ENERGY, energy_gain, p()->gains.shadow_techniques, state->action );
   // 2024-11-28 -- Shadowcraft's implementation appears to trigger the energize twice
   if ( shadowcraft_adjustment > 0 )
   {
     p()->resource_gain( RESOURCE_ENERGY, energy_gain, p()->gains.shadow_techniques, state->action );
   }
-  p()->buffs.shadow_techniques->trigger( 1 + shadowcraft_adjustment ); // Combo Point storage
 }
 
 template <typename Base>
@@ -10100,6 +10114,8 @@ void rogue_t::init_spells()
 
     active.shadow_clone_attack.eviscerate->affected_by.darkest_night = true;
     active.shadow_clone_attack.eviscerate->affected_by.darkest_night_crit = true;
+
+    cooldowns.shadow_techniques_icd->duration = spec.shadow_techniques_energize->internal_cooldown();
   }
 
   if ( talent.subtlety.weaponmaster->ok() )
