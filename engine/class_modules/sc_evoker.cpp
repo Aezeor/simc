@@ -10399,6 +10399,7 @@ void evoker_t::reset()
   allies_with_my_prescience.clear_without_callbacks();
   allies_with_my_shifting_sands.clear_without_callbacks();
   allied_ebons_on_me.clear();
+  active_infernos_blessings.clear();
   last_scales_target = nullptr;
   was_empowering     = false;
 
@@ -10543,6 +10544,10 @@ std::unique_ptr<expr_t> evoker_t::create_expression( std::string_view expr_str )
   {
     if ( util::str_compare_ci( splits[ 0 ], "evoker" ) )
     {
+      if ( util::str_compare_ci( splits[ 1 ], "active_infernos_blessings" ) )
+      {
+        return make_fn_expr( "active_infernos_blessings", [ this ] { return active_infernos_blessings.size(); } );
+      }
       if ( util::str_compare_ci( splits[ 1 ], "allied_cds_up" ) )
       {
         return make_fn_expr( "allied_cds_up", [ this ] {
