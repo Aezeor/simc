@@ -1617,12 +1617,72 @@ void gaze_of_the_alnseer( special_effect_t& effect )
   alnsight->proc_flags2_ = PF2_LANDED;
   effect.player->special_effects.push_back( alnsight );
 
-  auto alnsight_cb = new dbc_proc_callback_t( effect.player, *alnsight );
+  struct alnsight_cb_t : public dbc_proc_callback_t
+  {
+    cooldown_t* orig_cd = nullptr;
+    bool refreshed = false;
+
+    alnsight_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {}
+
+    void initialize() override
+    {
+      dbc_proc_callback_t::initialize();
+
+      orig_cd = cooldown;
+    }
+
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
+    {
+      // when bugged, the next trigger does not obey the icd
+      if ( refreshed )
+      {
+        refreshed = false;
+        cooldown = nullptr;
+      }
+      else if ( !cooldown )
+      {
+        cooldown = orig_cd;
+      }
+
+      proc_buff->trigger();
+    }
+
+    void reset() override
+    {
+      cooldown = orig_cd;
+      refreshed = false;
+    }
+  };
+
+  auto alnsight_cb = new alnsight_cb_t( *alnsight );
   alnsight_cb->activate_with_buff( buff, true );
 
   effect.custom_buff = buff;
 
-  new dbc_proc_callback_t( effect.player, effect );
+  struct gaze_of_the_alnseer_cb_t : public dbc_proc_callback_t
+  {
+    alnsight_cb_t* proc_cb;
+
+    gaze_of_the_alnseer_cb_t( const special_effect_t& e, alnsight_cb_t* cb )
+      : dbc_proc_callback_t( e.player, e ), proc_cb( cb )
+    {}
+
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
+    {
+      // if alnsight is refreshed while it's icd is down, bug it out
+      // TODO: what happens if it's refreshed again while it's bugged?
+      if ( proc_buff->check() && proc_cb->cooldown && proc_cb->cooldown->down() )
+      {
+        assert( proc_cb->active );
+        proc_cb->refreshed = true;
+      }
+
+      proc_buff->trigger();
+    }
+  };
+
+  new gaze_of_the_alnseer_cb_t( effect, alnsight_cb );
 }
 
 
