@@ -1967,12 +1967,18 @@ public:
     if ( !check_form_restriction() )
     {
       if ( autoshift )
+      {
         autoshift->execute();
+      }
       else if ( !has_flag( flag_e::NOUNSHIFT ) && form_mask & NO_FORM )
+      {
         p()->active.shift_to_caster->execute();
+      }
       else
-        throw sc_runtime_error( fmt::format( "{} executed in wrong form with no valid form to shift to!", *this ) );
-        //assert( false && "Action executed in wrong form with no valid form to shift to!" );
+      {
+        throw sc_runtime_error( fmt::format( "{} executed in wrong form {:#010x} with no valid form to shift to!",
+                                             *this, static_cast<unsigned>( p()->form ) ) );
+      }
     }
   }
 
