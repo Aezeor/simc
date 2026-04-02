@@ -10938,7 +10938,8 @@ void druid_t::create_buffs()
   buff.denizen_of_the_dream =
     make_fallback( talent.denizen_of_the_dream.ok(), this, "denizen_of_the_dream", find_spell( 394076 ) )
       ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-      ->set_max_stack( 10 );
+      ->set_max_stack( 10 )
+      ->set_proc_callbacks( false );
 
   buff.dreamstate = make_fallback( talent.natures_grace.ok(), this, "dreamstate", find_spell( 450346 ) )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
@@ -11331,7 +11332,8 @@ void druid_t::create_buffs()
     debug_cast<druid_absorb_buff_t*>( buff.ursocs_fury )->set_cumulative( true );
 
   buff.waking_nightmare = make_fallback( talent.waking_nightmare.ok(),
-    this, "waking_nightmare", find_trigger( talent.waking_nightmare ).trigger() );
+    this, "waking_nightmare", find_trigger( talent.waking_nightmare ).trigger() )
+      ->set_proc_callbacks( false );
 
   buff.wild_guardian = make_fallback( talent.wild_guardian_1.ok(), this, "wild_guardian", find_spell( 1269616 ) );
 
