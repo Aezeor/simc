@@ -3068,11 +3068,13 @@ void priest_t::create_buffs()
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
   buffs.twist_of_fate_heal_ally_fake = make_buff( this, "twist_of_fate_can_trigger_on_ally_heal" )
-                                           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+                                           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                                           ->set_proc_callbacks( false );
 
   // TODO: Extend functionality to use this.
   buffs.twist_of_fate_heal_self_fake = make_buff( this, "twist_of_fate_can_trigger_on_self_heal" )
-                                           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+                                           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                                           ->set_proc_callbacks( false );
 
   buffs.protective_light =
       make_buff( this, "protective_light", talents.protective_light_buff )->set_default_value_from_effect( 1 );

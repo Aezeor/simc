@@ -1989,7 +1989,8 @@ void priest_t::create_buffs_shadow()
   // Tracking buff to see if the free reset is available for SW:D with DaM talented.
   buffs.death_and_madness_reset =
       make_buff( this, "death_and_madness_reset", talents.shadow.death_and_madness_reset_buff )
-          ->set_trigger_spell( talents.shadow.death_and_madness );
+          ->set_trigger_spell( talents.shadow.death_and_madness )
+          ->set_proc_callbacks( false );
 
   buffs.crushing_void = make_buff( this, "crushing_void", talents.shadow.crushing_void_buff );
 
