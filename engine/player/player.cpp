@@ -8857,20 +8857,20 @@ void player_t::trigger_callbacks( proc_types pt, proc_types2 pt2, action_t* acti
                                   proc_trigger_type_e pt_type )
 {
   assert( action && state && state->target );
-  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], action->proc_data, state->target, state, pt_type );
+  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], action->proc_data, this, state->target, state, pt_type );
 }
 
 void player_t::trigger_callbacks( proc_types pt, proc_types2 pt2, buff_t* buff, proc_trigger_type_e pt_type )
 {
   assert( buff && buff->player );
-  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], buff->proc_data, buff->player, nullptr, pt_type );
+  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], buff->proc_data, this, buff->player, nullptr, pt_type );
 }
 
 void player_t::trigger_callbacks( proc_types pt, proc_types2 pt2, const proc_data_t& data, player_t* t,
                                   proc_trigger_type_e pt_type )
 {
   assert( t );
-  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], data, t, nullptr, pt_type );
+  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], data, this, t, nullptr, pt_type );
 }
 
 void player_t::trigger_aura_applied_callbacks( const proc_data_t& data, player_t* t )
