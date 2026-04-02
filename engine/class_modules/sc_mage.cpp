@@ -3941,6 +3941,10 @@ struct flurry_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
+    // TODO: Flurry cleave doesn't seem to work against boss enemies
+    if ( p()->bugs && s->chain_target > 0 && !p()->trigger_crowd_control( s, MECHANIC_SLOW ) )
+      return;
+
     auto e = make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( pulse_time )
       .target( s->target )
