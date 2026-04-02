@@ -9840,7 +9840,7 @@ void demon_hunter_t::create_buffs()
 
   buff.impending_apocalypse = make_buff( this, "impending_apocalypse", spec.impending_apocalypse_buff )
                                   ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-                                  ->disable_ticking( true )
+                                  ->set_tick_behavior( buff_tick_behavior::NONE )
                                   ->set_stack_change_callback( [ this ]( buff_t* b, int old, int new_ ) {
                                     if ( !buff.metamorphosis->up() )
                                     {
