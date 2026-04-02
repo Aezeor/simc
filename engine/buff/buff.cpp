@@ -635,6 +635,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, std::string_view
     consume_all_stacks( true ),
     ignore_time_modifier( false ),
     reverse_stack_reduction( 1 ),
+    proc_callbacks( true ),
     proc_data( s_data ),
     can_only_proc_from_class_abilities( proc_data.can_only_proc_from_class_abilities ),
     can_proc_from_procs( proc_data.can_proc_from_procs ),
@@ -2478,7 +2479,7 @@ void buff_t::bump( int stacks, double value )
   // Current implementation splits helpful PF2_LANDED into PF1_HIT and PF1_CRIT so we only need to trigger PF1_HIT
   // TODO: assumption is that PROC1_NONE_HELPFUL actually applies to all aura application, whether hostile or not
   // NOTE: scheduled as event to ensure buff is fully processed
-  if ( !constant && ( !suppress_caster_procs || enable_proc_from_suppressed ) && source &&
+  if ( proc_callbacks && !constant && ( !suppress_caster_procs || enable_proc_from_suppressed ) && source &&
        !source->callbacks.procs[ PROC1_NONE_HELPFUL ][ PROC2_HIT ].empty() )
   {
     make_event( *sim, [ this ] { source->trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_HIT, this ); } );

@@ -99,6 +99,8 @@ public:
 
   int reverse_stack_reduction; /// Number of stacks reduced when reverse = true
 
+  bool proc_callbacks;  // set false to disable triggering proc callbacks
+
   proc_data_t proc_data;
   bool& can_only_proc_from_class_abilities;
   bool& can_proc_from_procs;
@@ -430,6 +432,7 @@ public:
   buff_t* set_tick_time_behavior( buff_tick_time_behavior b ) { tick_time_behavior = b; return this; }
   buff_t* set_rppm( rppm_scale_e scale = RPPM_NONE, double freq = -1, double mod = -1);
   buff_t* set_trigger_spell( const spell_data_t* s );
+  buff_t* set_proc_callbacks( bool v ) { proc_callbacks = v; return this; }
   buff_t* set_stack_change_callback( const buff_stack_change_callback_t& cb );
   buff_t* add_stack_change_callback( const buff_stack_change_callback_t& cb );
   buff_t* set_expire_callback( const buff_expire_callback_t& cb );
