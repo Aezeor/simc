@@ -1035,6 +1035,7 @@ struct evoker_t : public player_t
   vector_with_callback<player_t*> allies_with_my_ebon;
   vector_with_callback<player_t*> allies_with_my_prescience;
   vector_with_callback<player_t*> allies_with_my_shifting_sands;
+  mutable std::vector<buff_t*> active_infernos_blessings;
   mutable std::vector<buff_t*> allied_ebons_on_me;
   std::map<player_t*, buff_t*> allied_major_cds;
   player_t* last_scales_target;
@@ -4495,6 +4496,14 @@ public:
         pet->adjust_duration( pet_extend );
       }
     }
+
+    if ( p()->talent.mighty_inferno.enabled() )
+    {
+      for ( auto& b : p()->active_infernos_blessings )
+      {
+        b->extend_duration( extend );
+      }
+    }
   }
 
   void update_stat( stat_buff_t* ebon, double _ebon_int )
@@ -4981,6 +4990,14 @@ struct fire_breath_t : public empowered_charge_spell_t
 
       if ( p()->talent.infernos_blessing.ok() )
       {
+        if ( p()->bugs )
+        {
+          for ( auto& b : p()->active_infernos_blessings )
+          {
+            b->cancel();
+          }
+        }
+
         if ( p()->buff.ebon_might_self_buff->check() )
         {
           p()->get_target_data( p() )->buffs.infernos_blessing->trigger();
@@ -8653,12 +8670,18 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
     auto infernos_blessing_cb = new infernos_blessing_cb_t( target, *infernos_blessing_effect, evoker );
 
-    buffs.infernos_blessing->set_stack_change_callback( [ infernos_blessing_cb ]( buff_t*, int, int new_ ) {
+    buffs.infernos_blessing->set_stack_change_callback( [ evoker ]( buff_t* b, int, int new_ ) {
       if ( new_ )
-        infernos_blessing_cb->activate();
+      {
+        evoker->active_infernos_blessings.push_back( b );
+      }
       else
-        infernos_blessing_cb->deactivate();
+      {
+        range::erase_remove( evoker->active_infernos_blessings, b );
+      }
     } );
+
+    infernos_blessing_cb->activate_with_buff( buffs.infernos_blessing );
   }
 }
 
@@ -8668,6 +8691,7 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
     allies_with_my_prescience(),
     allies_with_my_shifting_sands(),
     allied_ebons_on_me(),
+    active_infernos_blessings(),
     allied_major_cds(),
     last_scales_target( nullptr ),
     was_empowering( false ),
@@ -10072,7 +10096,8 @@ void evoker_t::create_buffs()
   buff.iridescence_blue_disintegrate =
       MBF( talent.iridescence.ok(), this, "iridescence_blue_disintegrate", find_spell( 399370 ) )
           ->set_quiet( true )
-          ->set_default_value( buff.iridescence_blue->default_value );
+          ->set_default_value( buff.iridescence_blue->default_value )
+          ->set_proc_callbacks( false );
 
   buff.iridescence_red = MBF( talent.iridescence.ok(), this, "iridescence_red", find_spell( 386353 ) )
                            ->set_default_value_from_effect( 1 )
@@ -10242,7 +10267,8 @@ void evoker_t::create_buffs()
                                        talent.scalecommander.mass_disintegrate_buff );
   buff.mass_disintegrate_ticks  = MBF( talent.scalecommander.mass_disintegrate.ok(), this, "mass_disintegrate_ticks",
                                        talent.scalecommander.mass_disintegrate_buff )
-                                     ->set_max_stack( 8 );
+                                     ->set_max_stack( 8 )
+                                     ->set_proc_callbacks( false );
 
   buff.mass_eruption_stacks = MBF( talent.scalecommander.mass_eruption.ok(), this, "mass_eruption_stacks",
                                    talent.scalecommander.mass_eruption_buff );
