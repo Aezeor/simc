@@ -4673,7 +4673,7 @@ struct rip_t final : public trigger_thriving_growth_t<use_dot_list_t<cp_spender_
   {
     base_t::tick( d );
 
-    auto c = apex_pct / std::pow( p()->get_active_dots( d ), apex_exp );
+    auto c = apex_pct / std::pow( as<double>( p()->dot_lists.rip.size() ), apex_exp );
 
     if ( rng().roll( c ) )
       p()->buff.apex_predators_craving->trigger();
@@ -13337,6 +13337,22 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name )
 
   if ( util::str_compare_ci( name, "combo_points" ) )
     return make_ref_expr( "combo_points", resources.current[ RESOURCE_COMBO_POINT ] );
+
+  if ( util::str_compare_ci( splits[ 0 ], "active_dot" ) && splits.size() == 2 )
+  {
+    if ( util::str_compare_ci( splits[ 1 ], "moonfire" ) )
+      return make_fn_expr( name, [ this ]() { return dot_lists.moonfire.size(); } );
+    else if ( util::str_compare_ci( splits[ 1 ], "sunfire" ) )
+      return make_fn_expr( name, [ this ]() { return dot_lists.sunfire.size(); } );
+    else if ( util::str_compare_ci( splits[ 1 ], "rake" ) )
+      return make_fn_expr( name, [ this ]() { return dot_lists.rake.size(); } );
+    else if ( util::str_compare_ci( splits[ 1 ], "rip" ) )
+      return make_fn_expr( name, [ this ]() { return dot_lists.rip.size(); } );
+    else if ( util::str_compare_ci( splits[ 1 ], "thrash" ) )
+      return make_fn_expr( name, [ this ]() { return dot_lists.thrash.size(); } );
+    else if ( util::str_compare_ci( splits[ 1 ], "dreadful_wound" ) )
+      return make_fn_expr( name, [ this ]() { return dot_lists.dreadful_wound.size(); } );
+  }
 
   if ( specialization() == DRUID_BALANCE )
   {
