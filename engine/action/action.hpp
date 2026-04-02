@@ -1124,6 +1124,8 @@ public:
 
   virtual void html_customsection( report::sc_html_stream& ) {}
 
+  virtual void sequence_add_fn( std::string& a_str, std::string& t_str ) const;
+
   // ================
   // Static functions
   // ================

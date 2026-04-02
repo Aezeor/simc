@@ -179,6 +179,15 @@ bool sequence_t::target_ready( player_t* target )
          sub_actions[ current_action ]->target_ready( target );
 }
 
+// sequence_t::sequence_add_fn ==============================================
+
+void sequence_t::sequence_add_fn( std::string& a_str, std::string& t_str ) const
+{
+  // current_action is advanced in schedule_execute so we need to use current_action - 1
+  a_str = fmt::format( "SEQ {}[{}]:{}", name_str, current_action - 1, sub_actions[ current_action - 1 ]->name_str );
+  t_str = target->name_str;
+}
+
 // ==========================================================================
 // Strict Sequence Action
 // ==========================================================================

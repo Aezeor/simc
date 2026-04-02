@@ -830,24 +830,23 @@ void dot_t::schedule_tick()
       // FIXME: We can probably use "source" instead of "action->player"
 
       current_action->player->channeling = nullptr;
-      current_action->player->gcd_ready =
-          sim.current_time() + current_action->gcd();
+      current_action->player->gcd_ready = sim.current_time() + current_action->gcd();
       current_action->set_target( target );
+
       if ( !current_action->quiet )
-      {
-        current_action->player->sequence_add( current_action, target, [ this ]( std::string&, std::string& t_str ) {
-          t_str = current_action->target->name_str;
-        } );
-      }
+        current_action->player->sequence_add( current_action, target );
+
       current_action->execute();
-      if ( current_action->result_is_hit(
-               current_action->execute_state->result ) )
+
+      if ( current_action->result_is_hit( current_action->execute_state->result ) )
       {
         current_action->player->channeling = current_action;
         current_action->player->schedule_cwc_ready( 0_ms );
       }
       else
+      {
         cancel();
+      }
     }
     else
     {

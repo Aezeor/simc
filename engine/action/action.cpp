@@ -70,9 +70,7 @@ void do_execute( action_t* action, execute_type type )
     {
       action->player->iteration_executed_foreground_actions++;
       action->total_executions++;
-      action->player->sequence_add( action, action->target, [ action ]( std::string&, std::string& t_str ) {
-        t_str = action->target->name_str;
-      } );
+      action->player->sequence_add( action, action->target );
     }
     action->execute();
     action->line_cooldown->start();
@@ -5526,4 +5524,9 @@ void action_t::print_parsed_effects( report::sc_html_stream& os ) const
   }
 
   print_custom_parsed_effects( os );
+}
+
+void action_t::sequence_add_fn( std::string&, std::string& t_str ) const
+{
+  t_str = target->name_str;
 }

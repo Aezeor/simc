@@ -6341,8 +6341,7 @@ void player_t::sequence_add_wait( timespan_t wait )
   }
 }
 
-void player_t::sequence_add( const action_t* a, const player_t* t,
-                             std::function<void( std::string&, std::string& )> fn )
+void player_t::sequence_add( const action_t* a, const player_t* t )
 {
   // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
   if ( ( sim->iterations <= 1 && sim->current_iteration == 0 ) || ( sim->iterations > 1 && nth_iteration() == 1 ) )
@@ -6352,14 +6351,12 @@ void player_t::sequence_add( const action_t* a, const player_t* t,
       if ( a->is_precombat )
       {
         auto& data = collected_data.action_sequence_precombat.emplace_back( a, t, sim->current_time(), this );
-        if ( fn )
-          fn( data.action_reporting, data.target_reporting );
+        a->sequence_add_fn( data.action_reporting, data.target_reporting );
       }
       else
       {
         auto& data = collected_data.action_sequence.emplace_back( a, t, sim->current_time(), this );
-        if ( fn )
-          fn( data.action_reporting, data.target_reporting );
+        a->sequence_add_fn( data.action_reporting, data.target_reporting );
       }
     }
     else
@@ -6408,9 +6405,7 @@ void player_t::combat_begin()
           if ( first_cast )
           {
             if ( !is_enemy() )
-              sequence_add( action, action->target, [ action ]( std::string&, std::string& t_str ) {
-                t_str = action->target->name_str;
-              } );
+              sequence_add( action, action->target );
 
             action->execute();
             first_cast = false;
@@ -6423,9 +6418,7 @@ void player_t::combat_begin()
         else
         {
           if ( !is_enemy() )
-            sequence_add( action, action->target, [ action ]( std::string&, std::string& t_str ) {
-              t_str = action->target->name_str; 
-            } );
+            sequence_add( action, action->target );
 
           action->execute();
         }
@@ -7680,9 +7673,7 @@ action_t* player_t::execute_action()
         off_gcdactions.push_back( action );
 
       if ( !is_enemy() )
-        sequence_add( action, action->target, [ action ]( std::string&, std::string& t_str ) {
-          t_str = action->target->name_str;
-        } );
+        sequence_add( action, action->target );
     }
   }
 
