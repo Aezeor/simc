@@ -1157,11 +1157,7 @@ buff_t* buff_t::modify_cooldown( timespan_t duration )
 
 buff_t* buff_t::set_period( timespan_t period )
 {
-  if ( period > timespan_t::zero() )
-  {
-    buff_period = period;
-  }
-  else
+  if ( period == timespan_t::min() )
   {
     for ( size_t i = 1; i <= s_data->effect_count(); i++ )
     {
@@ -1196,6 +1192,10 @@ buff_t* buff_t::set_period( timespan_t period )
           break;
       }
     }
+  }
+  else
+  {
+    buff_period = period;
   }
 
   // Recheck tick behaviour, which is dependent on buff_period.
