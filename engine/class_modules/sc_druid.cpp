@@ -10783,7 +10783,7 @@ void druid_t::create_buffs()
     ->set_cooldown( 0_ms )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-    ->set_tick_behavior( buff_tick_behavior::NONE );
+    ->set_tick_behavior( buff_tick_behavior::DISABLED );
   if ( talent.brambles.ok() )
     buff.barkskin->set_tick_behavior( buff_tick_behavior::REFRESH );
   if ( talent.ward_of_the_forest.ok() )
@@ -11464,8 +11464,7 @@ void druid_t::create_buffs()
 
   buff.root_network = make_fallback( talent.root_network.ok(), this, "root_network", find_spell( 439887 ) )
     // TODO: confirm updating behavior where all stacks are decreased at once then recalibrated on tick
-    ->set_period( 0_ms )
-    ->set_tick_behavior( buff_tick_behavior::NONE );
+    ->set_tick_behavior( buff_tick_behavior::DISABLED );
 
   buff.ruthless_aggression = make_fallback( talent.ruthless_aggression.ok(),
     this, "ruthless_aggression", find_trigger( talent.ruthless_aggression ).trigger() )

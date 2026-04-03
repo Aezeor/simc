@@ -15432,7 +15432,7 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
                                      p.talent.frost.arctic_assault->ok() || p.has_runeforge( RUNEFORGE_RAZORICE ),
                                  *this, "razorice", p.runeforge_spell.razorice_debuff )
                         ->set_default_value_from_effect( 1 )
-                        ->disable_ticking( true );
+                        ->set_disable_tick_effects( true );
 
   debuff.apocalypse_death = make_debuff( p.has_runeforge( RUNEFORGE_APOCALYPSE ), *this, "death",
                                          p.runeforge_spell.apocalypse_death_debuff );  // Effect not implemented

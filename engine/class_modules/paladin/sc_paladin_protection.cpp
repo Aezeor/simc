@@ -34,7 +34,7 @@ namespace paladin {
     // Sentinel starts at max stacks
     set_initial_stack( max_stack() );
 
-    disable_ticking( true );
+    set_disable_tick_effects( true );
 
     // let the ability handle the cooldown
     cooldown->duration = 0_ms;

@@ -2508,7 +2508,7 @@ void wandering_soul( special_effect_t& effect )
     }
     else
     {
-      buff -> disable_ticking( true ); // disable ticking
+      buff -> set_disable_tick_effects( true ); // disable ticking
     }
   }
 

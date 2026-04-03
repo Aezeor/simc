@@ -10334,7 +10334,7 @@ void rogue_t::create_buffs()
   buffs.envenom = make_buff( this, "envenom", spec.envenom )
     ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_PROC_CHANCE )
     ->set_duration( timespan_t::min() )
-    ->disable_ticking( true )
+    ->set_disable_tick_effects( true )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
       if ( new_ == 0 && talent.assassination.implacable_1->ok() )
