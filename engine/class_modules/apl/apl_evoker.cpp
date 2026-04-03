@@ -191,7 +191,7 @@ void augmentation( player_t* p )
   precombat->add_action( "variable,name=ebon_might_pandemic_threshold,op=reset,default=0.4" );
   precombat->add_action( "variable,name=enforce_timings,op=reset,default=0" );
   precombat->add_action( "variable,name=spam_on_use_trinket,op=reset,default=1" );
-  precombat->add_action( "variable,name=crit_fish,op=reset,default=1" );
+  precombat->add_action( "variable,name=crit_fish,op=reset,default=0" );
   precombat->add_action( "use_item,name=aberrant_spellforge" );
   precombat->add_action( "blistering_scales,target_if=target.role.tank" );
   precombat->add_action( "living_flame" );
