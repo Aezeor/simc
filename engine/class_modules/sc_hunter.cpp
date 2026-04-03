@@ -1501,10 +1501,14 @@ public:
   {
     ab::tick( dot );
 
-    if ( p()->rng().roll( dire_beast_chance ) && p()->cooldowns.dire_beast->up() )
+    // 2026-04-03: Dire Beast seems to start it's internal cooldown on any bleed tick if the ICD isn't already running regardless of proc or not.
+    if ( p()->cooldowns.dire_beast->up() && dire_beast_chance > 0 )
     {
-      p()->spawn_dire_beast( p()->talents.dire_beast_summon->duration() );
       p()->cooldowns.dire_beast->start();
+      if ( p()->rng().roll( dire_beast_chance ) )
+      {
+        p()->spawn_dire_beast( p()->talents.dire_beast_summon->duration() );
+      }
     }
   }
 
@@ -2681,10 +2685,14 @@ public:
   {
     ab::tick( dot );
 
-    if ( o()->rng().roll( dire_beast_chance ) && o()->cooldowns.dire_beast->up() )
+    // 2026-04-03: Dire Beast seems to start it's internal cooldown on any bleed tick if the ICD isn't already running regardless of proc or not.
+    if ( o()->cooldowns.dire_beast->up() && dire_beast_chance > 0 )
     {
-      o()->spawn_dire_beast( o()->talents.dire_beast_summon->duration() );
       o()->cooldowns.dire_beast->start();
+      if ( o()->rng().roll( dire_beast_chance ) )
+      {
+        o()->spawn_dire_beast( o()->talents.dire_beast_summon->duration() );
+      }
     }
   }
 
