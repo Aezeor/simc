@@ -1,11 +1,11 @@
 action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 action_priority_list_t* def = get_action_priority_list( "default" );
-action_priority_list_t* opener_aoe = get_action_priority_list( "opener_aoe" );
-action_priority_list_t* opener_kotg = get_action_priority_list( "opener_kotg" );
-action_priority_list_t* opener_ec = get_action_priority_list( "opener_ec" );
 action_priority_list_t* aoe = get_action_priority_list( "aoe" );
 action_priority_list_t* ec_st = get_action_priority_list( "ec_st" );
 action_priority_list_t* kotg_st = get_action_priority_list( "kotg_st" );
+action_priority_list_t* opener_aoe = get_action_priority_list( "opener_aoe" );
+action_priority_list_t* opener_ec = get_action_priority_list( "opener_ec" );
+action_priority_list_t* opener_kotg = get_action_priority_list( "opener_kotg" );
 
 precombat->add_action( "variable,name=no_cd_talent,value=!talent.celestial_alignment&!talent.incarnation_chosen_of_elune|druid.no_cds","Snapshot raid buffed stats before combat begins and pre-potting is done." );
 precombat->add_action( "variable,name=opener,op=set,value=1" );
@@ -40,32 +40,6 @@ def->add_action( "run_action_list,name=ec_st,if=hero_tree.elunes_chosen&spell_ta
 def->add_action( "run_action_list,name=kotg_st,if=spell_targets=1" );
 def->add_action( "run_action_list,name=aoe,if=spell_targets>1" );
 
-opener_aoe->add_action( "moonfire,target_if=refreshable" );
-opener_aoe->add_action( "sunfire,if=refreshable" );
-opener_aoe->add_action( "eclipse" );
-opener_aoe->add_action( "starfall,if=buff.ascendant_stars.up&(action.starfall.cost>1|buff.touch_the_cosmos.react)" );
-opener_aoe->add_action( "starfire,if=buff.ascendant_stars.up" );
-opener_aoe->add_action( "sunfire,line_cd=10" );
-opener_aoe->add_action( "fury_of_elune" );
-opener_aoe->add_action( "force_of_nature" );
-opener_aoe->add_action( "celestial_alignment" );
-
-opener_kotg->add_action( "sunfire,target_if=refreshable" );
-opener_kotg->add_action( "moonfire,target_if=refreshable&!talent.natures_balance&!talent.convoke_the_spirits" );
-opener_kotg->add_action( "eclipse,if=!talent.natures_balance&!talent.convoke_the_spirits" );
-opener_kotg->add_action( "wrath,if=astral_power<100-20*talent.fury_of_elune&!talent.natures_balance&!talent.convoke_the_spirits" );
-opener_kotg->add_action( "fury_of_elune" );
-opener_kotg->add_action( "force_of_nature" );
-opener_kotg->add_action( "celestial_alignment" );
-
-opener_ec->add_action( "moonfire,target_if=remains<2|refreshable&variable.eclipse_down" );
-opener_ec->add_action( "sunfire,target_if=remains<2|refreshable&variable.eclipse_down" );
-opener_ec->add_action( "eclipse" );
-opener_ec->add_action( "starsurge,if=(action.starsurge.cost>1|buff.touch_the_cosmos.react)&talent.convoke_the_spirits" );
-opener_ec->add_action( "starfire,if=astral_power<80&!talent.convoke_the_spirits" );
-opener_ec->add_action( "fury_of_elune" );
-opener_ec->add_action( "celestial_alignment" );
-
 aoe->add_action( "celestial_alignment,if=prev_gcd.1.force_of_nature&!variable.ec|variable.ec&prev_gcd.1.fury_of_elune&buff.eclipse.down&(variable.on_use_trinket=0|trinket.1.cooldown.remains>60|trinket.1.cooldown.ready|fight_remains<trinket.1.cooldown.remains|trinket.2.cooldown.remains>60|trinket.2.cooldown.ready|fight_remains<trinket.2.cooldown.remains)|fight_remains<20" );
 aoe->add_action( "moonfire,target_if=remains<2|refreshable&variable.eclipse_down","Dots" );
 aoe->add_action( "sunfire,target_if=remains<2|refreshable&variable.eclipse_down" );
@@ -76,10 +50,10 @@ aoe->add_action( "force_of_nature,if=((buff.eclipse.down&!talent.early_spring|ta
 aoe->add_action( "solar_eclipse,if=cooldown.solar_eclipse.charges_fractional>1.5&variable.cd_window|cooldown.solar_eclipse.ready&variable.cd_window_narrow|fight_remains<15","Enter Solar" );
 aoe->add_action( "lunar_eclipse,if=!variable.prio&spell_targets>2&!variable.ec&(cooldown.lunar_eclipse.charges_fractional>1.5&variable.cd_window|cooldown.lunar_eclipse.ready&variable.cd_window_narrow)|variable.ec&(cooldown.ca_inc.full_recharge_time>15)|fight_remains<15","Enter Lunar" );
 aoe->add_action( "convoke_the_spirits,if=buff.ca_inc.up&astral_power<40|cooldown.ca_inc.remains>50&buff.harmony_of_the_grove.up&buff.ca_inc.down","Convoke" );
-aoe->add_action( "wrath,if=!talent.convoke_the_spirits&spell_targets<3&buff.ascendant_stars.down&astral_power<80&variable.no_weaver_procs&cooldown.force_of_nature.remains<15","Cast Wrath if Going Solar" );
+aoe->add_action( "wrath,if=!variable.ec&!talent.convoke_the_spirits&spell_targets<3&buff.ascendant_stars.down&astral_power<80&variable.no_weaver_procs&cooldown.force_of_nature.remains<15","Cast Wrath if Going Solar" );
 aoe->add_action( "sunfire,target_if=!talent.aetherial_kindling&dot.sunfire.remains<10&variable.ca_soon&cooldown.force_of_nature.remains<3,line_cd=10","Cast Sunfire Before Cooldowns" );
-aoe->add_action( "starfall,if=(astral_power>80|buff.eclipse.up&action.starfall.cost>1|buff.touch_the_cosmos.react|!buff.starweavers_weft.react)&target.time_to_die>5","Spenders" );
-aoe->add_action( "starsurge,if=buff.starweavers_weft.react" );
+aoe->add_action( "starsurge,if=buff.starweavers_weft.react","Spenders" );
+aoe->add_action( "starfall,if=(astral_power>80|buff.eclipse.up&action.starfall.cost>1|buff.touch_the_cosmos.react|!buff.starweavers_weft.react)&target.time_to_die>5" );
 aoe->add_action( "starfire,if=buff.ascendant_fires.up&buff.eclipse_lunar.up","Builders" );
 aoe->add_action( "new_moon,if=astral_power.deficit>energize_amount&debuff.atmospheric_exposure.remains<execute_time+0.5" );
 aoe->add_action( "half_moon,if=astral_power.deficit>energize_amount&debuff.atmospheric_exposure.remains<execute_time+0.5" );
@@ -113,11 +87,39 @@ kotg_st->add_action( "force_of_nature,if=((buff.eclipse.down&!talent.early_sprin
 kotg_st->add_action( "convoke_the_spirits,if=buff.ca_inc.up&astral_power<40|cooldown.ca_inc.remains>50&buff.harmony_of_the_grove.up&buff.ca_inc.down&astral_power<50|fight_remains<action.convoke_the_spirits.execute_time+1","Convoke" );
 kotg_st->add_action( "wrath,if=!talent.convoke_the_spirits&buff.ascendant_stars.down&astral_power<80&variable.no_weaver_procs&cooldown.force_of_nature.remains<15","Cast Wrath if Going Solar" );
 kotg_st->add_action( "sunfire,target_if=dot.sunfire.remains<10&variable.ca_soon&cooldown.force_of_nature.remains<3,line_cd=10","Cast Sunfire Before Cooldowns" );
-kotg_st->add_action( "starfall,if=buff.starweavers_warp.react","Spenders" );
-kotg_st->add_action( "starsurge,if=buff.eclipse.down&astral_power.deficit<20|buff.eclipse.up&action.starsurge.cost>1&(buff.eclipse.remains>5|astral_power.deficit<20)|buff.touch_the_cosmos.react|buff.starweavers_weft.react" );
-kotg_st->add_action( "starfire,if=buff.ascendant_fires.up&buff.eclipse_lunar.up","Instant Builder" );
+kotg_st->add_action( "starfall,if=buff.starweavers_warp.react|talent.aetherial_kindling&talent.meteorites&buff.touch_the_cosmos.react","Spenders" );
+kotg_st->add_action( "starsurge,if=buff.eclipse.down&astral_power.deficit<20|buff.eclipse.up&action.starsurge.cost>1&(buff.eclipse.remains>5|astral_power.deficit<20)|(!talent.meteorites|!talent.aetherial_kindling)&buff.touch_the_cosmos.react|buff.starweavers_weft.react" );
+kotg_st->add_action( "starfire,if=buff.ascendant_fires.up&buff.eclipse_lunar.up","Instant Builder&" );
 kotg_st->add_action( "new_moon,if=astral_power.deficit>energize_amount","Builders" );
 kotg_st->add_action( "half_moon,if=astral_power.deficit>energize_amount" );
 kotg_st->add_action( "full_moon,if=astral_power.deficit>energize_amount" );
 kotg_st->add_action( "wild_mushroom,if=buff.eclipse.up|cooldown.wild_mushroom.full_recharge_time<cooldown.ca_inc.remains" );
 kotg_st->add_action( "wrath" );
+
+opener_aoe->add_action( "moonfire,target_if=refreshable" );
+opener_aoe->add_action( "sunfire,target_if=refreshable" );
+opener_aoe->add_action( "eclipse" );
+opener_aoe->add_action( "starsurge,if=buff.starweavers_weft.react&buff.ascendant_stars.up" );
+opener_aoe->add_action( "starfall,if=buff.ascendant_stars.up&(action.starfall.cost>1|buff.touch_the_cosmos.react)" );
+opener_aoe->add_action( "starfire,if=buff.ascendant_stars.up" );
+opener_aoe->add_action( "sunfire,line_cd=10,target_if=!talent.aetherial_kindling|remains<5" );
+opener_aoe->add_action( "fury_of_elune" );
+opener_aoe->add_action( "force_of_nature" );
+opener_aoe->add_action( "celestial_alignment" );
+
+opener_ec->add_action( "moonfire,target_if=remains<2|refreshable&variable.eclipse_down" );
+opener_ec->add_action( "sunfire,target_if=remains<2|refreshable&variable.eclipse_down" );
+opener_ec->add_action( "eclipse" );
+opener_ec->add_action( "starfall,if=buff.starweavers_warp.react" );
+opener_ec->add_action( "starsurge,if=(action.starsurge.cost>1|buff.touch_the_cosmos.react)&talent.convoke_the_spirits" );
+opener_ec->add_action( "starfire,if=astral_power<80&!talent.convoke_the_spirits" );
+opener_ec->add_action( "fury_of_elune" );
+opener_ec->add_action( "celestial_alignment" );
+
+opener_kotg->add_action( "sunfire,target_if=refreshable" );
+opener_kotg->add_action( "moonfire,target_if=refreshable&!talent.natures_balance&!talent.convoke_the_spirits" );
+opener_kotg->add_action( "eclipse,if=!talent.natures_balance&!talent.convoke_the_spirits" );
+opener_kotg->add_action( "wrath,if=astral_power<100-20*talent.fury_of_elune&!talent.natures_balance&!talent.convoke_the_spirits" );
+opener_kotg->add_action( "fury_of_elune" );
+opener_kotg->add_action( "force_of_nature" );
+opener_kotg->add_action( "celestial_alignment" );
