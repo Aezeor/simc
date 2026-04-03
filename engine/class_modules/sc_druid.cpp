@@ -11980,42 +11980,42 @@ void druid_t::apl_default()
 // Action Priority Lists ========================================
 void druid_t::apl_feral()
 {
-#include "class_modules/apl/feral_apl.inc"
+#include "class_modules/apl/druid/feral_apl.inc"
 }
 
 void druid_t::apl_feral_ptr()
 {
-#include "class_modules/apl/feral_apl_ptr.inc"
+#include "class_modules/apl/druid/feral_apl_ptr.inc"
 }
 
 void druid_t::apl_balance()
 {
-#include "class_modules/apl/balance_apl.inc"
+#include "class_modules/apl/druid/balance_apl.inc"
 }
 
 void druid_t::apl_balance_ptr()
 {
-#include "class_modules/apl/balance_apl_ptr.inc"
+#include "class_modules/apl/druid/balance_apl_ptr.inc"
 }
 
 void druid_t::apl_guardian()
 {
-#include "class_modules/apl/guardian_apl.inc"
+#include "class_modules/apl/druid/guardian_apl.inc"
 }
 
 void druid_t::apl_guardian_ptr()
 {
-#include "class_modules/apl/guardian_apl_ptr.inc"
+#include "class_modules/apl/druid/guardian_apl_ptr.inc"
 }
 
 void druid_t::apl_restoration()
 {
-#include "class_modules/apl/restoration_druid_apl.inc"
+#include "class_modules/apl/druid/restoration_druid_apl.inc"
 }
 
 void druid_t::apl_restoration_ptr()
 {
-#include "class_modules/apl/restoration_druid_apl_ptr.inc"
+#include "class_modules/apl/druid/restoration_druid_apl_ptr.inc"
 }
 
 // druid_t::init_scaling ====================================================
