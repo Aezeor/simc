@@ -1391,7 +1391,7 @@ judgment_base_t::judgment_base_t( paladin_t* p, util::string_view name, util::st
 {
   parse_options(options_str);
   triggers_higher_calling     = true;
-  triggers_highlords_judgment = p->specialization() == PALADIN_RETRIBUTION && ( s->id() != 24275 || !p->bugs );
+  triggers_highlords_judgment = p->specialization() == PALADIN_RETRIBUTION;
   if ( p->talents.lightsmith.hammer_and_anvil->ok() )
   {
     hammer_and_anvil = new hammer_and_anvil_t( p, "hammer_and_anvil_" + name_str );
