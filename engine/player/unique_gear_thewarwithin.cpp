@@ -10050,6 +10050,8 @@ void voidglass_shards( special_effect_t& effect )
 
     void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
     {
+      if ( !s ) return;
+
       if ( s->result_type == result_amount_type::DMG_DIRECT || s->result_type == result_amount_type::DMG_OVER_TIME )
       {
         damage->execute_on_target( t );
