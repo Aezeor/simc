@@ -6939,7 +6939,7 @@ public:
 
   void schedule_execute( action_state_t* s ) override
   {
-    dreamstate = p()->buff.dreamstate->check();
+    dreamstate = p()->buff.dreamstate->check() && !p()->buff.ascendant_fires->check();
 
     druid_spell_t::schedule_execute( s );
   }
