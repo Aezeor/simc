@@ -6888,13 +6888,13 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( !is_variant( spell_variant::NORMAL ) )
     {
-      aoe = -1;
       background = true;
       base_execute_time = 0_s;
       cooldown->duration = 0_s;
 
       if ( is_variant( spell_variant::ASCENDANCE ) )
       {
+        aoe = 6;
         auto asc_action = p()->find_action( "ascendance" );
         if ( p()->talent.ascendance->ok() && asc_action )
         {
@@ -6904,7 +6904,13 @@ struct lava_burst_t : public shaman_spell_t
 
       if ( is_variant( spell_variant::PURGING_FLAMES ) )
       {
-        aoe = 5;
+        // If anyone knows which spelldata to use here, that would be great.
+        // Currently there exists a stackable ingame bug to apply this ms gain 
+        // to the base lvb cast AND ALSO with additional stacks decrease ms 
+        // gain further to 1 and 0. Which makes me believe this would need to 
+        // be an ms gain multiplier instead of a fixed value. But this is now 
+        // still better than not lowering ms gain.
+        maelstrom_gain = 2;
         if ( auto vb = p()->find_action( "voltaic_blaze" ) )
         {
           vb->add_child( this );
