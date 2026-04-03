@@ -191,6 +191,7 @@ void augmentation( player_t* p )
   precombat->add_action( "variable,name=ebon_might_pandemic_threshold,op=reset,default=0.4" );
   precombat->add_action( "variable,name=enforce_timings,op=reset,default=0" );
   precombat->add_action( "variable,name=spam_on_use_trinket,op=reset,default=1" );
+  precombat->add_action( "variable,name=crit_fish,op=reset,default=1" );
   precombat->add_action( "use_item,name=aberrant_spellforge" );
   precombat->add_action( "blistering_scales,target_if=target.role.tank" );
   precombat->add_action( "living_flame" );
@@ -199,7 +200,7 @@ void augmentation( player_t* p )
   default_->add_action( "cancel_buff,name=tip_the_scales,if=cooldown.upheaval.remains>0&(talent.energy_cycles|talent.temporal_burst)" );
   default_->add_action( "hover,use_off_gcd=1,if=gcd.remains>=0.5&(!raid_event.movement.exists|raid_event.movement.in<=6)" );
   default_->add_action( "invoke_external_buff,name=power_infusion,if=buff.duplicate.up" );
-  default_->add_action( "ebon_might,if=((buff.ebon_might_self.remains-cast_time)<=buff.ebon_might_self.duration*variable.ebon_might_pandemic_threshold)&(active_enemies>0|raid_event.adds.in<=3)&(buff.ebon_might_self.value<=0.05|(buff.ebon_might_self.remains-cast_time)<=buff.ebon_might_self.duration*0.3)" );
+  default_->add_action( "ebon_might,if=((buff.ebon_might_self.remains-cast_time)<=buff.ebon_might_self.duration*variable.ebon_might_pandemic_threshold)&(active_enemies>0|raid_event.adds.in<=3)&(buff.ebon_might_self.value<=0.05&variable.crit_fish>=1|(buff.ebon_might_self.remains-cast_time)<=buff.ebon_might_self.duration*0.3)|buff.ebon_might_self.value<=0.05&talent.doubletime&variable.crit_fish>=1" );
   default_->add_action( "prescience,target_if=min:(debuff.prescience.remains-200*(target.role.attack|target.role.spell|target.role.dps)+50*target.spec.augmentation),if=debuff.prescience.remains<gcd.max*2&time<=8" );
   default_->add_action( "potion,if=variable.eons_remains<=0|cooldown.breath_of_eons.remains>=90|fight_remains<=30&!fight_style.dungeonroute" );
   default_->add_action( "call_action_list,name=items" );
