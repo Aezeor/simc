@@ -9349,6 +9349,27 @@ struct student_of_suffering_buff_t : public demon_hunter_buff_t<buff_t>
   }
 };
 
+struct impending_apocalypse_buff_t : public demon_hunter_buff_t<buff_t>
+{
+  impending_apocalypse_buff_t( demon_hunter_t* p ) : base_t(*p, "impending_apocalypse", p->spec.impending_apocalypse_buff )
+  {
+    set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+    set_tick_behavior( buff_tick_behavior::NONE );
+    disable_ticking( true );
+  }
+
+  void increment(int stacks, double value, timespan_t duration) override
+  {
+    if ( !dh()->buff.metamorphosis->up() )
+    {
+      cancel();
+      return;
+    }
+
+    base_t::increment(stacks, value, duration);
+  }
+};
+
 }  // end namespace buffs
 
 // Namespace Actions post buffs
@@ -9838,15 +9859,7 @@ void demon_hunter_t::create_buffs()
                                        spec.emptiness_buff->max_stacks() );
   }
 
-  buff.impending_apocalypse = make_buff( this, "impending_apocalypse", spec.impending_apocalypse_buff )
-                                  ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-                                  ->set_tick_behavior( buff_tick_behavior::NONE )
-                                  ->set_stack_change_callback( [ this ]( buff_t* b, int old, int new_ ) {
-                                    if ( !buff.metamorphosis->up() )
-                                    {
-                                      b->cancel();
-                                    }
-                                  } );
+  buff.impending_apocalypse = make_buff<impending_apocalypse_buff_t>( this );
     
 
   buff.collapsing_star = make_buff( this, "collapsing_star", spec.collapsing_star_buff )
