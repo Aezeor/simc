@@ -9329,11 +9329,11 @@ struct voidfall_spending_buff_t : public demon_hunter_buff_t<buff_t>
   }
 };
 
-struct student_of_suffering_t : public demon_hunter_buff_t<buff_t>
+struct student_of_suffering_buff_t : public demon_hunter_buff_t<buff_t>
 {
   actions::demon_hunter_energize_t* energize;
 
-  student_of_suffering_t( demon_hunter_t* p )
+  student_of_suffering_buff_t( demon_hunter_t* p )
     : base_t( *p, "student_of_suffering", p->hero_spec.student_of_suffering_buff )
   {
     energize = p->get_background_action<actions::demon_hunter_energize_t>(
@@ -10090,7 +10090,7 @@ void demon_hunter_t::create_buffs()
                 // TOCHECK - Does this need to floor if it's not a whole number
                 b->current_value = resources.current[ RESOURCE_FURY ] * speed_per_fury;
               } );
-  buff.student_of_suffering = make_buff<student_of_suffering_t>( this );
+  buff.student_of_suffering = make_buff<student_of_suffering_buff_t>( this );
 
   for ( demonsurge_ability ability : demonsurge_abilities )
   {
