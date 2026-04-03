@@ -4413,17 +4413,6 @@ struct garrote_t : public rogue_attack_t
     trigger_deathstalkers_mark_debuff( execute_state );
   }
 
-  virtual void update_state( action_state_t* s, unsigned flags, result_amount_type rt ) override
-  {
-    // 2026-03-24 -- Improved Garrote causes the entire damage calculation to snapshot
-    if ( p()->talent.assassination.improved_garrote->ok() && s->persistent_multiplier > 1.0 )
-    {
-      flags &= ~( STATE_AP | STATE_VERSATILITY | STATE_MUL_TA );
-    }
-
-    rogue_attack_t::update_state( s, flags, rt );
-  }
-
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
   {
     if ( p()->talent.assassination.improved_garrote->ok() &&
