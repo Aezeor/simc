@@ -9355,7 +9355,7 @@ struct impending_apocalypse_buff_t : public demon_hunter_buff_t<buff_t>
   {
     set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
     set_tick_behavior( buff_tick_behavior::NONE );
-    disable_ticking( true );
+    set_period( 0_ms );
   }
 
   void increment(int stacks, double value, timespan_t duration) override
