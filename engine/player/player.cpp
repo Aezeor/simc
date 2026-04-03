@@ -12478,6 +12478,8 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
       {
         sim->print_debug( "{} cooldown '{}' not found, creating placeholder.", *this, splits[ 1 ] );
         _cooldown = get_cooldown( splits[ 1 ] );
+        _cooldown->duration = timespan_t::min();
+        _cooldown->base_duration = timespan_t::min();
       }
 
       return _cooldown->create_expression( splits[ 2 ] );
