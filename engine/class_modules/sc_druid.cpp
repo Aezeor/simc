@@ -11464,6 +11464,7 @@ void druid_t::create_buffs()
 
   buff.root_network = make_fallback( talent.root_network.ok(), this, "root_network", find_spell( 439887 ) )
     // TODO: confirm updating behavior where all stacks are decreased at once then recalibrated on tick
+    ->set_period( 0_ms )
     ->set_tick_behavior( buff_tick_behavior::NONE );
 
   buff.ruthless_aggression = make_fallback( talent.ruthless_aggression.ok(),
