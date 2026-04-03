@@ -1666,20 +1666,22 @@ timespan_t buff_t::refresh_duration( timespan_t new_duration ) const
     {
       assert( tick_event );
       timespan_t residual = remains() % static_cast<tick_t*>( tick_event )->tick_time;
-      sim->print_debug(
-            "{} {} carryover duration from ongoing tick: {}, refresh_duration={} new_duration={}",
-            *player, *this,
-            residual, new_duration, ( new_duration + residual ) );
+      if ( sim->debug )
+      {
+        sim->print_debug( "{} {} carryover duration from ongoing tick: {}, refresh_duration={} new_duration={}",
+                          *player, *this, residual, new_duration, ( new_duration + residual ) );
+      }
 
       return new_duration + residual;
     }
     case buff_refresh_behavior::PANDEMIC:
     {
       timespan_t residual = std::min( new_duration * 0.3, remains() );
-      sim->print_debug(
-            "{} {} carryover duration from ongoing tick: {}, refresh_duration={} new_duration={}",
-            *player, *this,
-            residual, new_duration, ( new_duration + residual ) );
+      if ( sim->debug )
+      {
+        sim->print_debug( "{} {} carryover from ongoing buff: {}, refresh_duration={} new_duration={}",
+                          *player, *this, residual, new_duration, ( new_duration + residual ) );
+      }
 
       return new_duration + residual;
     }
