@@ -10400,6 +10400,7 @@ void rogue_t::create_buffs()
   if ( talent.outlaw.deadly_pursuit->ok() )
   {
     buffs.deadly_pursuit_tracker
+      ->set_proc_callbacks( false )
       ->set_max_stack( as<int>( talent.outlaw.deadly_pursuit->effectN( 1 ).base_value() ) )
       ->set_expire_at_max_stack( true )
       ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
@@ -10629,13 +10630,16 @@ void rogue_t::create_buffs()
 
   buffs.implacable = make_buff( this, "implacable", spec.implacable_buff );
   buffs.implacable_tracker = make_buff( this, "implacable_tracker", spec.implacable_tracker_buff )
+    ->set_proc_callbacks( false )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_duration( sim->max_time / 2 ); // Set to 14s in spell data to match Envenom, makes timing easier this way
 
   // Part of the Envenom buff in effects 8-10 but entirely scripted in-game, handle as a distinct buff in sims for tracking
   // Use the Envenom whitelists for the damage buff and sync up on trigger and expire
   buffs.inspiring_strike = make_buff<damage_buff_t>( this, "inspiring_strike", talent.assassination.inspiring_strike, false );
-  buffs.inspiring_strike->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  buffs.inspiring_strike
+    ->set_proc_callbacks( false )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION );
   if ( talent.assassination.inspiring_strike->ok() )
   {
     const double talent_value = talent.assassination.inspiring_strike->effectN( 1 ).percent();
@@ -10717,6 +10721,7 @@ void rogue_t::create_buffs()
     ->set_duration( sim->max_time / 2 );
 
   buffs.secret_technique = make_buff( this, "secret_technique", spec.secret_technique )
+    ->set_proc_callbacks( false )
     ->set_cooldown( timespan_t::zero() )
     ->set_quiet( true );
 
