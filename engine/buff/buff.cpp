@@ -1210,7 +1210,7 @@ buff_t* buff_t::modify_period( timespan_t duration )
   return this;
 }
 
-buff_t* buff_t::set_disable_tick_effects( bool v )
+buff_t* buff_t::disable_ticking( bool v )
 {
   disable_tick_effects = v;
   return this;
@@ -2225,7 +2225,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
   }
 
   timespan_t period = tick_time();
-  if ( tick_behavior != buff_tick_behavior::DISABLED && period > timespan_t::zero() && ( period <= d || d == 0_ms ) )
+  if ( tick_behavior != buff_tick_behavior::NONE && period > timespan_t::zero() && ( period <= d || d == 0_ms ) )
   {
     // non-async or the first async stack should not have an existing tick_event
     assert( !tick_event || ( stack_behavior == buff_stack_behavior::ASYNCHRONOUS && current_stack > 1 ) );

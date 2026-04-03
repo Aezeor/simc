@@ -7981,7 +7981,7 @@ void warrior_t::create_buffs()
 
   buff.bladestorm =
       make_buff( this, "bladestorm", talents.slayer.unrelenting_onslaught->ok() && talents.shared.bladestorm.ok() ? find_spell( 446035 ) : talents.shared.bladestorm )
-      ->set_disable_tick_effects( true )
+      ->disable_ticking( true )
       ->set_cooldown( timespan_t::zero() );
 
   buff.battle_stance = make_buff( this, "battle_stance", talents.warrior.battle_stance )

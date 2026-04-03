@@ -8925,8 +8925,8 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
     : base_t( *p, "immolation_aura", p->spell.immolation_aura ), immos(), undying_embers_proc_chance( 0.0 )
   {
     set_cooldown( timespan_t::zero() );
-    set_tick_behavior( buff_tick_behavior::DISABLED );
-    set_disable_tick_effects( true );
+    set_tick_behavior( buff_tick_behavior::NONE );
+    disable_ticking( true );
 
     set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS );
 
@@ -9053,7 +9053,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 
     if ( p->specialization() != DEMON_HUNTER_DEVOURER )
     {
-      set_disable_tick_effects( true );
+      disable_ticking( true );
     }
     else
     {
@@ -9286,7 +9286,7 @@ struct voidfall_building_buff_t : public demon_hunter_buff_t<buff_t>
   voidfall_building_buff_t( demon_hunter_t* p ) : base_t( *p, "voidfall_building", p->hero_spec.voidfall_building_buff )
   {
     base_t::set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
-    set_disable_tick_effects( true );
+    disable_ticking( true );
     set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   }
 
@@ -9308,7 +9308,7 @@ struct voidfall_spending_buff_t : public demon_hunter_buff_t<buff_t>
 {
   voidfall_spending_buff_t( demon_hunter_t* p ) : base_t( *p, "voidfall_spending", p->hero_spec.voidfall_spending_buff )
   {
-    set_disable_tick_effects( true );
+    disable_ticking( true );
     set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   }
 
@@ -9354,7 +9354,7 @@ struct impending_apocalypse_buff_t : public demon_hunter_buff_t<buff_t>
   impending_apocalypse_buff_t( demon_hunter_t* p ) : base_t(*p, "impending_apocalypse", p->spec.impending_apocalypse_buff )
   {
     set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-    set_tick_behavior( buff_tick_behavior::DISABLED );
+    set_tick_behavior( buff_tick_behavior::NONE );
     set_period( 0_ms );
   }
 
@@ -9482,7 +9482,7 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
       debuffs.devourers_bite = make_buff( *this, "devourers_bite", p.spec.devourers_bite_debuff )
                                    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                                   ->set_disable_tick_effects( true );
+                                   ->disable_ticking( true );
       break;
     case DEMON_HUNTER_HAVOC:
       debuffs.essence_break = make_buff( *this, "essence_break", p.spec.essence_break_debuff )
@@ -9502,7 +9502,7 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
       debuffs.frailty  = make_buff( *this, "frailty", p.spec.frailty_debuff )
                             ->set_default_value_from_effect( 1 )
                             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                            ->set_disable_tick_effects( true );
+                            ->disable_ticking( true );
       break;
     default:
       break;
@@ -9837,7 +9837,7 @@ void demon_hunter_t::create_buffs()
   buff.feast_of_souls = make_buff( this, "feast_of_souls", spec.feast_of_souls_buff )
                             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-                            ->set_disable_tick_effects( true )
+                            ->disable_ticking( true )
                             ->set_activated( true )
                             ->set_disable_async_expire_events_removal( true );
 
@@ -9846,8 +9846,8 @@ void demon_hunter_t::create_buffs()
       make_buff( this, "moment_of_craving", spec.moment_of_craving_buff )->set_default_value_from_effect( 1 );
   buff.void_metamorphosis_stack = make_buff( this, "void_metamorphosis_stack", spec.void_metamorphosis_stack )
                                       ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-                                      ->set_disable_tick_effects( true );
-  buff.rolling_torment = make_buff( this, "rolling_torment", spec.rolling_torment_buff )->set_disable_tick_effects( true );
+                                      ->disable_ticking( true );
+  buff.rolling_torment = make_buff( this, "rolling_torment", spec.rolling_torment_buff )->disable_ticking( true );
 
   buff.emptiness = make_buff( this, "emptiness", spec.emptiness_buff )
                        ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
@@ -9959,7 +9959,7 @@ void demon_hunter_t::create_buffs()
   buff.painbringer = make_buff( this, "painbringer", spec.painbringer_buff )
                          ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
                          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                         ->set_disable_tick_effects( true );
+                         ->disable_ticking( true );
 
   buff.soul_barrier = make_buff<absorb_buff_t>( this, "soul_barrier", talent.vengeance.soul_barrier );
   buff.soul_barrier->set_absorb_source( get_stats( "soul_barrier" ) )
@@ -10050,7 +10050,7 @@ void demon_hunter_t::create_buffs()
                                  ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                  ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-                                 ->set_disable_tick_effects( true );
+                                 ->disable_ticking( true );
   buff.dark_matter         = make_buff( this, "dark_matter", hero_spec.dark_matter_buff );
   buff.doomsayer_in_combat = make_buff( this, "doomsayer_in_combat", hero_spec.doomsayer_in_combat_buff )
                                  ->set_quiet( true )

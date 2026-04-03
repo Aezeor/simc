@@ -4093,7 +4093,7 @@ void item::chaos_talisman( special_effect_t& effect )
   const spell_data_t* buff_spell = effect.driver() -> effectN( 1 ).trigger();
   effect.custom_buff = make_buff<stat_buff_t>( effect.player, "chaotic_energy", buff_spell, effect.item )
     ->add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI ), buff_spell -> effectN( 1 ).average( effect.item ) )
-    ->set_disable_tick_effects( true ); // disable ticking
+    ->disable_ticking( true ); // disable ticking
 
   new dbc_proc_callback_t( effect.item, effect );
 }

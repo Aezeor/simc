@@ -8211,7 +8211,7 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
   temporal_wound_buff_t( evoker_td_t& td, util::string_view name, const spell_data_t* s )
     : evoker_buff_t<buff_t>( td, name, s ), eon_actions{ false }
   {
-    set_disable_tick_effects( true );
+    disable_ticking( true );
 
     auto temporal_wound_effect      = new special_effect_t( p() );
     temporal_wound_effect->name_str = "temporal_wound_" + p()->name_str;
@@ -8344,7 +8344,7 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
       bombardments_external_chance( p()->specialization() == EVOKER_DEVASTATION ? 0.875 : 0.925 )
   {
     if ( !p()->option.simulate_bombardments )
-      set_disable_tick_effects( true );
+      disable_ticking( true );
 
     set_refresh_behavior( buff_refresh_behavior::EXTEND );
     set_tick_behavior( buff_tick_behavior::REFRESH );
@@ -8476,7 +8476,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
                                                          evoker->naszuro ? evoker->naszuro->item : nullptr );
   if ( make_unbound_surge )
   {
-    buffs.unbound_surge->set_disable_tick_effects( true );
+    buffs.unbound_surge->disable_ticking( true );
 
     switch ( evoker->specialization() )
     {
@@ -8573,7 +8573,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
     debug_cast<stat_buff_t*>( buffs.ebon_might )->set_stat_from_effect( 2, 0 );
 
     buffs.ebon_might->set_cooldown( 0_ms )
-        ->set_disable_tick_effects( true )
+        ->disable_ticking( true )
         ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
         ->add_invalidate( CACHE_STR_AGI_INT )
         ->set_stack_change_callback( [ target, evoker ]( buff_t* b, int, int new_ ) {

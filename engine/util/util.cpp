@@ -2748,7 +2748,6 @@ const char* util::buff_tick_behavior_string( buff_tick_behavior behavior )
   switch ( behavior )
   {
     case buff_tick_behavior::NONE: return "none";
-    case buff_tick_behavior::DISABLED: return "disabled";
     case buff_tick_behavior::CLIP: return "clip";
     case buff_tick_behavior::REFRESH: return "refresh";
     default: return "unknown";

@@ -128,10 +128,7 @@ enum class buff_constant_behavior
 
 enum class buff_tick_behavior
 {
-  NONE = -1,
-
-  // disable tick events entirely
-  DISABLED,
+  NONE,
 
   // tick timer is reset on refresh of the dot/buff (next tick is rescheduled)
   CLIP,

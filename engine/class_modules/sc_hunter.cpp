@@ -7203,7 +7203,7 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
     outland_venom_value /= 2; // 2026-01-24: Outland Venom is only giving half of its value.
   debuffs.outland_venom = make_buff( *this, "outland_venom", p->talents.outland_venom_debuff )
     ->set_default_value( outland_venom_value )
-    ->set_disable_tick_effects( true );
+    ->disable_ticking( true );
 
   debuffs.spotters_mark = make_buff( *this, "spotters_mark", p->specs.spotters_mark_debuff )
     ->set_default_value( p->specs.spotters_mark_debuff->effectN( 1 ).percent() );
@@ -7981,7 +7981,7 @@ void hunter_t::create_buffs()
   buffs.volley =
     make_buff( this, "volley", talents.volley_data )
       -> set_cooldown( 0_ms )
-      -> set_disable_tick_effects( true ) // disable ticks as an optimization
+      -> disable_ticking( true ) // disable ticks as an optimization
       -> set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buffs.focus_fire = 
