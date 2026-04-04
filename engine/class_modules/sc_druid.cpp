@@ -12386,9 +12386,9 @@ void druid_t::init_special_effects()
     callbacks.register_callback_trigger_function(
       driver->spell_id, trigger_type::CONDITION, []( auto, const auto&, auto, action_state_t* s, auto ) {
         auto tmp = dynamic_cast<druid_action_data_t*>( s->action );
-        assert( tmp && "Non-Druid action attempting to proc Ascendant Eclipses." );
+        // assert( tmp && "Non-Druid action attempting to proc Ascendant Eclipses." );
 
-        return !tmp->has_flag( flag_e::SYLVAN );
+        return tmp && !tmp->has_flag( flag_e::SYLVAN );
       } );
 
     auto _damage = get_secondary_action<residual_action::residual_periodic_action_t<druid_spell_t>>(
