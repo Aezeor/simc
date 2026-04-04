@@ -528,8 +528,10 @@ void arcanoweave_lining( special_effect_t& effect )
       if ( effect.player->sim->player_non_sleeping_list.size() > 1 && !effect.player->sim->single_actor_batch )
       {
         auto allies = effect.player->sim->player_non_sleeping_list.data();  // make a copy
-        range::erase_remove( allies, effect.player );
-        get_debuff( rng().range( allies ) )->trigger();
+        range::erase_remove( allies, [ p = effect.player ]( player_t* t ) { return t->is_pet() || t == p; } );
+
+        if ( !allies.empty() )
+          get_debuff( rng().range( allies ) )->trigger();
       }
     }
   };
