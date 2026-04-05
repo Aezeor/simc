@@ -8467,7 +8467,7 @@ std::string warrior_t::default_food() const
                                     : "disabled";
 
   std::string arms_food = ( true_level > 80 )
-                              ? "blooming_feast"
+                              ? "harandar_celebration"
                               : ( true_level > 70 )
                                     ? "the_sushi_specia"
                                     : "disabled";
