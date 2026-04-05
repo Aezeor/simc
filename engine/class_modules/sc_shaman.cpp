@@ -1888,6 +1888,7 @@ public:
     rng::deck_rng_wrapper_t<rng::dre_deck_rng_t> tempest_enh;
     rng::deck_rng_wrapper_t<rng::dre_deck_rng_t> tempest_ele;
     rng::deck_rng_wrapper_t<rng::dre_deck_rng_t> storm_unleashed;
+    rng::deck_rng_wrapper_t<rng::dre_deck_rng_t> asc_dw;
 
     rng_obj_t( shaman_t* s ) :
       awakening_storms( nullptr ), lively_totems( nullptr ), totemic_rebound( nullptr ),
@@ -1896,7 +1897,8 @@ public:
         deeply_rooted_elements( "dre", s ),
         tempest_enh( "tempest", s ),
         tempest_ele( "tempest_ele", s ),
-        storm_unleashed( "storm_unleashed", s )
+        storm_unleashed( "storm_unleashed", s ),
+        asc_dw( "asc_dw", s )
     { }
   } rng_obj;
 
@@ -11525,19 +11527,28 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
     }
   }
 
-  // TODO-midnight-talent: What RNG process to use here?
   if ( talent.ascendance.ok() && !buff.ascendance->check() && stacks > 0 )
   {
-    double proc_chance = spell.ascendance_mw_passive->effectN( 1 ).base_value() * 0.1 * 0.01 * stacks;
-    sim->print_debug("{} attempts to proc doom_winds on {}, mw_stacks={}, proc_chance={}%",
-      name(), state->action->name(), stacks, proc_chance * 100.0 );
-    if ( rng().roll( proc_chance ) )
+    auto success = false;
+    for ( auto draw = 0U; draw < as<unsigned>( stacks ); ++draw )
+    {
+      if ( rng_obj.asc_dw.trigger() )
+      {
+        assert( !success );
+        success = true;
+      }
+    }
+
+    sim->print_debug("{} attempts to proc doom_winds on {}, mw_stacks={}, success={}",
+      name(), state->action->name(), stacks, success );
+
+    if ( success )
     {
       action.doom_winds_asc->execute_on_target( state->target );
     }
   }
 
-  if ( talent.storm_unleashed_1.ok() )
+  if ( talent.storm_unleashed_1.ok() && stacks > 0 )
   {
     auto success = false;
     for ( auto draw = 0U; draw < as<unsigned>( stacks ); ++draw )
@@ -12702,7 +12713,19 @@ void shaman_t::init_rng()
           return std::make_tuple( n_total, n_draws, 10U );
         } )
         .build();
+  }
 
+  if ( talent.ascendance.ok() )
+  {
+    rng_obj.asc_dw
+        .set_param_fn( []( rng::deck_rng_wrapper_t<rng::dre_deck_rng_t>& obj ) {
+          // Default: 3 successful procs per deck
+          auto n_draws = obj.opt_success() != -1 ? as<unsigned>( obj.opt_success() ) : 3U;
+          // Default: 600 total cards
+          auto n_total = obj.opt_total() > 0 ? obj.opt_total() : 600U;
+          return std::make_tuple( n_total, n_draws, 10U );
+        } )
+        .build();
   }
 }
 
