@@ -415,7 +415,7 @@ void survival( player_t* p )
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
-  precombat->add_action( "wildfire_bomb" );
+  precombat->add_action( "wildfire_bomb,if=active_enemies=1" );
 
   default_->add_action( "auto_attack" );
   default_->add_action( "call_action_list,name=cds" );
@@ -498,7 +498,7 @@ void survival_ptr( player_t* p )
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
-  precombat->add_action( "wildfire_bomb" );
+  precombat->add_action( "wildfire_bomb,if=active_enemies=1" );
 
   default_->add_action( "auto_attack" );
   default_->add_action( "call_action_list,name=cds" );
