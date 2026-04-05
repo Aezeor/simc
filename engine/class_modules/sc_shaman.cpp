@@ -1887,6 +1887,7 @@ public:
     rng::deck_rng_wrapper_t<rng::dre_deck_rng_t> deeply_rooted_elements;
     rng::deck_rng_wrapper_t<rng::dre_deck_rng_t> tempest_enh;
     rng::deck_rng_wrapper_t<rng::dre_deck_rng_t> tempest_ele;
+    rng::deck_rng_wrapper_t<rng::dre_deck_rng_t> storm_unleashed;
 
     rng_obj_t( shaman_t* s ) :
       awakening_storms( nullptr ), lively_totems( nullptr ), totemic_rebound( nullptr ),
@@ -1894,7 +1895,8 @@ public:
       lively_totems_ptr( nullptr ),
         deeply_rooted_elements( "dre", s ),
         tempest_enh( "tempest", s ),
-        tempest_ele( "tempest_ele", s )
+        tempest_ele( "tempest_ele", s ),
+        storm_unleashed( "storm_unleashed", s )
     { }
   } rng_obj;
 
@@ -6905,10 +6907,10 @@ struct lava_burst_t : public shaman_spell_t
       if ( is_variant( spell_variant::PURGING_FLAMES ) )
       {
         // If anyone knows which spelldata to use here, that would be great.
-        // Currently there exists a stackable ingame bug to apply this ms gain 
-        // to the base lvb cast AND ALSO with additional stacks decrease ms 
-        // gain further to 1 and 0. Which makes me believe this would need to 
-        // be an ms gain multiplier instead of a fixed value. But this is now 
+        // Currently there exists a stackable ingame bug to apply this ms gain
+        // to the base lvb cast AND ALSO with additional stacks decrease ms
+        // gain further to 1 and 0. Which makes me believe this would need to
+        // be an ms gain multiplier instead of a fixed value. But this is now
         // still better than not lowering ms gain.
         maelstrom_gain = 2;
         if ( auto vb = p()->find_action( "voltaic_blaze" ) )
@@ -11527,7 +11529,7 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
   if ( talent.ascendance.ok() && !buff.ascendance->check() && stacks > 0 )
   {
     double proc_chance = spell.ascendance_mw_passive->effectN( 1 ).base_value() * 0.1 * 0.01 * stacks;
-    sim->print_debug(" {} attempts to proc doom_winds on {}, mw_stacks={}, proc_chance={}%",
+    sim->print_debug("{} attempts to proc doom_winds on {}, mw_stacks={}, proc_chance={}%",
       name(), state->action->name(), stacks, proc_chance * 100.0 );
     if ( rng().roll( proc_chance ) )
     {
@@ -11535,10 +11537,22 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
     }
   }
 
-  if ( talent.storm_unleashed_1.ok() &&
-    rng().roll( talent.storm_unleashed_1->effectN( 1 ).base_value() * 0.1 * 0.01 * stacks ) )
+  if ( talent.storm_unleashed_1.ok() )
   {
-    buff.storm_unleashed->trigger();
+    auto success = false;
+    for ( auto draw = 0U; draw < as<unsigned>( stacks ); ++draw )
+    {
+      if ( rng_obj.storm_unleashed.trigger() )
+      {
+        assert( !success );
+        success = true;
+      }
+    }
+
+    if ( success )
+    {
+      buff.storm_unleashed->trigger();
+    }
   }
 
   if ( talent.totemic_momentum.ok() && stacks > 0 && buff.hot_hand->check() )
@@ -12661,7 +12675,7 @@ void shaman_t::init_rng()
         .build();
   }
 
-    if ( talent.tempest.ok() && specialization() == SHAMAN_ELEMENTAL )
+  if ( talent.tempest.ok() && specialization() == SHAMAN_ELEMENTAL )
   {
       unsigned int successes_per_deck = 2;
       double tempest_chance           = talent.tempest->effectN( 1 ).percent() * 0.01;
@@ -12675,6 +12689,20 @@ void shaman_t::init_rng()
           return std::make_tuple( n_total, n_draws, 90U );
         } )
         .build();
+  }
+
+  if ( talent.storm_unleashed_1.ok() )
+  {
+    rng_obj.storm_unleashed
+        .set_param_fn( []( rng::deck_rng_wrapper_t<rng::dre_deck_rng_t>& obj ) {
+          // Default: 5 successful procs per deck
+          auto n_draws = obj.opt_success() != -1 ? as<unsigned>( obj.opt_success() ) : 5U;
+          // Default: 250 total cards
+          auto n_total = obj.opt_total() > 0 ? obj.opt_total() : 250U;
+          return std::make_tuple( n_total, n_draws, 10U );
+        } )
+        .build();
+
   }
 }
 
