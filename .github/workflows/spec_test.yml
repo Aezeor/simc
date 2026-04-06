@@ -29,7 +29,7 @@ jobs:
       UBSAN_OPTIONS: print_stacktrace=1
       SIMC_ARGS: output=/dev/null threads=4 profileset_work_threads=2 iterations=10 cleanup_threads=1 allow_experimental_specializations=1
       PLAYER_ARGS: load_default_gear=1
-      MT_ARGS: desired_targets=10
+      MT_ARGS: desired_targets=10 max_time=60
       DS_ARGS: fight_style=DungeonSlice
 
     steps:
