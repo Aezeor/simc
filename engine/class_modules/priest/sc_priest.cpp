@@ -1173,11 +1173,11 @@ public:
       // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1385
       if ( priest().bugs )
       {
-        ea = std::round( ea * priest().talents.shadow.deaths_torment->effectN( 2 ).percent() );
+        ea = std::round( ea * priest().talents.shared.deaths_torment->effectN( 2 ).percent() );
       }
       else
       {
-        ea *= priest().talents.shadow.deaths_torment->effectN( 2 ).percent();
+        ea *= priest().talents.shared.deaths_torment->effectN( 2 ).percent();
       }
     }
 
@@ -1190,7 +1190,7 @@ public:
 
     if ( cast_state( s )->chain_number > 0 )
     {
-      m *= priest().talents.shadow.deaths_torment->effectN( 2 ).percent();
+      m *= priest().talents.shared.deaths_torment->effectN( 2 ).percent();
     }
 
     if ( s->target->health_percentage() < execute_percent )
@@ -1243,11 +1243,19 @@ public:
     if ( priest().talents.shared.inescapable_torment.enabled() )
     {
       auto mod = 1.0;
-      if ( cast_state( s )->chain_number > 0 )
+      if ( priest().specialization() == PRIEST_SHADOW )
       {
-        mod *= priest().talents.shadow.deaths_torment->effectN( 2 ).percent();
+        if ( cast_state( s )->chain_number > 0 )
+        {
+          mod *= priest().talents.shared.deaths_torment->effectN( 2 ).percent();
+        }
+        priest().trigger_inescapable_torment( s->target, cast_state( s )->chain_number > 0, mod );
       }
-      priest().trigger_inescapable_torment( s->target, cast_state( s )->chain_number > 0, mod );
+      else
+      {
+        // Discipline does not get any negative malus from Death's Torment.
+        priest().trigger_inescapable_torment( s->target, false, 1.0 );
+      }
     }
 
     if ( result_is_hit( s->result ) )
@@ -1260,7 +1268,7 @@ public:
 
         if ( cast_state( s )->chain_number > 0 )
         {
-          chance *= priest().talents.shadow.deaths_torment->effectN( 2 ).percent();
+          chance *= priest().talents.shared.deaths_torment->effectN( 2 ).percent();
         }
 
         if ( ( save_health_percentage <= execute_percent ) && rng().roll( chance ) )
@@ -1270,7 +1278,7 @@ public:
         }
       }
 
-      if ( priest().talents.shadow.deaths_torment.enabled() )
+      if ( priest().talents.shared.deaths_torment.enabled() )
       {
         int number_of_chains;
         state_t* curr_state = cast_state( s );
@@ -1280,7 +1288,7 @@ public:
         }
         else
         {
-          number_of_chains = as<int>( priest().talents.shadow.deaths_torment->effectN( 1 ).base_value() );
+          number_of_chains = as<int>( priest().talents.shared.deaths_torment->effectN( 1 ).base_value() );
         }
 
         sim->print_debug( "{} shadow_word_death_state: chain_number: {}, max_chain: {}", player->name(),
@@ -2866,6 +2874,7 @@ void priest_t::init_spells()
   talents.shared.mindbender          = ST( "Mindbender" );
   talents.shared.inescapable_torment = ST( "Inescapable Torment" );
   talents.shared.shadowfiend         = ST( "Shadowfiend" );
+  talents.shared.deaths_torment      = ST( "Death's Torment" );
 
   // Generic Spells
   specs.levitate_buff     = find_spell( 111759 );
@@ -2995,19 +3004,24 @@ void priest_t::init_spells()
   talents.archon.divine_halo              = HT( "Divine Halo" );
 
   // Oracle Hero Talents (Holy/Discipline)
-  talents.oracle.guiding_light         = HT( "Guiding Light" );  // NYI
+  talents.oracle.guiding_light         = HT( "Guiding Light" );
   talents.oracle.preventive_measures   = HT( "Preventive Measures" );
-  talents.oracle.preemptive_care       = HT( "Preemptive Care" );        // NYI
-  talents.oracle.waste_no_time         = HT( "Waste No Time" );          // NYI
+  talents.oracle.preemptive_care       = HT( "Preemptive Care" );
+  talents.oracle.waste_no_time         = HT( "Waste No Time" );
+  talents.oracle.words_of_the_wise     = HT( "Words of the Wise" );
   talents.oracle.assured_safety        = HT( "Assured Safety" );         // NYI
   talents.oracle.divine_feathers       = HT( "Divine Feathers" );        // NYI
   talents.oracle.save_the_day          = HT( "Save the Day" );           // NYI
-  talents.oracle.forseen_circumstances = HT( "Forseen Circumstances" );  // NYI
+  talents.oracle.forseen_circumstances = HT( "Forseen Circumstances" );
+  talents.oracle.prophets_insight      = HT( "Prophets Insight" );       // NYI
   talents.oracle.prophets_will         = HT( "Prophets Will" );          // NYI
   talents.oracle.desperate_measures    = HT( "Desperate Measures" );     // NYI
   talents.oracle.prompt_prognosis      = HT( "Prompt Prognosis" );       // NYI
   talents.oracle.piety                 = HT( "Piety" );                  // NYI
+  talents.oracle.unfolding_vision      = HT( "Unfolding Vision" );       // NYI
   talents.oracle.twinsight             = HT( "Twinsight" );              // NYI
+  talents.oracle.twinsight_healing     = find_spell( 1232567 );
+  talents.oracle.twinsight_damage      = find_spell( 1232571 );
 
   // Voidweaver Hero Talents (Discipline/Shadow)
   talents.voidweaver.void_torrent           = HT( "Void Torrent" );   // Shadow Only

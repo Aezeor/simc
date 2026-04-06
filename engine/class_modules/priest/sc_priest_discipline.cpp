@@ -735,7 +735,6 @@ void priest_t::init_spells_discipline()
   // Row 4
   talents.discipline.bright_pupil          = ST( "Bright Pupil" );
   talents.discipline.enduring_luminescence = ST( "Enduring Luminescence" );
-  talents.discipline.plea                  = ST( "Plea" );  // NYI
   talents.discipline.shield_discipline     = ST( "Shield Discipline" );
   talents.discipline.ultimate_penitence    = ST( "Ultimate Penitence" );
   talents.discipline.power_word_barrier    = ST( "Power Word: Barrier" );
@@ -743,43 +742,56 @@ void priest_t::init_spells_discipline()
   talents.discipline.revel_in_darkness     = ST( "Revel in Darkness" );
   // Row 5
   talents.discipline.holy_ray            = ST( "Holy Ray" );  // NYI
+  talents.discipline.holy_ray_buff       = find_spell( 1235193 );
   talents.discipline.lenience            = ST( "Lenience" );
   talents.discipline.shadow_tap          = ST( "Shadow Tap" );  // NYI
   talents.discipline.encroaching_shadows = ST( "Encroaching Shadows" );
   // Row 6
   talents.discipline.purge_the_wicked   = ST( "Purge the Wicked" );
-  talents.discipline.divine_procession  = ST( "Divine Procession" );
+  talents.discipline.castigation        = ST( "Castigation" );
   talents.discipline.indemnity          = ST( "Indemnity" );
   talents.discipline.pain_and_suffering = ST( "Pain and Suffering" );
   talents.discipline.occultist          = ST( "Occultist" );  // NYI
   // Row 7
-  talents.discipline.borrowed_time   = ST( "Borrowed Time" );
-  talents.discipline.evangelism      = ST( "Evangelism" );
-  talents.discipline.abyssal_reverie = ST( "Abyssal Reverie" );
-  // Row 8
-  talents.discipline.inner_focus = ST( "Inner Focus" );
-  talents.discipline.castigation = ST( "Castigation" );
-  talents.discipline.shadow_mend = ST( "Shadow Mend" );  // NYI
-  // Row 9
-  talents.discipline.divine_aegis          = ST( "Divine Aegis" );
-  talents.discipline.divine_aegis_buff     = find_spell( 47753 );
-  talents.discipline.blaze_of_light        = ST( "Blaze of Light" );
-  talents.discipline.greater_smite         = ST( "Greater Smite" );  // NYI
-  talents.discipline.weal_and_woe          = ST( "Weal and Woe" );
-  talents.discipline.weal_and_woe_buff     = find_spell( 390787 );
   talents.discipline.harsh_discipline      = ST( "Harsh Discipline" );
   talents.discipline.harsh_discipline_buff = find_spell( 373183 );
-  talents.discipline.expiation             = ST( "Expiation" );
+  talents.discipline.evangelism            = ST( "Evangelism" );
+  talents.discipline.abyssal_reverie       = ST( "Abyssal Reverie" );
+  // Row 8
+  talents.discipline.divine_procession = ST( "Divine Procession" );
+  talents.discipline.inner_focus       = ST( "Inner Focus" );
+  talents.discipline.archangel         = ST( "Archangel" );
+  talents.discipline.shadow_mend       = ST( "Shadow Mend" );  // NYI
+  // Row 9
+  talents.discipline.greater_smite      = ST( "Greater Smite" );  // NYI
+  talents.discipline.greater_smite_buff = find_spell( 1253725 );
+  talents.discipline.divine_aegis       = ST( "Divine Aegis" );
+  talents.discipline.divine_aegis_buff  = find_spell( 47753 );
+  talents.discipline.borrowed_time      = ST( "Borrowed Time" );
+  talents.discipline.blaze_of_light     = ST( "Blaze of Light" );
   // Row 10
-  talents.discipline.eternal_barrier = ST( "Eternal Barrier" );
-  talents.discipline.inner_light     = ST( "Inner Light" );  // NYI
+  talents.discipline.eternal_barrier   = ST( "Eternal Barrier" );
+  talents.discipline.weal_and_woe      = ST( "Weal and Woe" );
+  talents.discipline.weal_and_woe_buff = find_spell( 390787 );
+  talents.discipline.searing_light     = ST( "Searing Light" );  // NYI
+  talents.discipline.searing_light_dot = find_spell( 1280134 );
+  talents.discipline.expiation         = ST( "Expiation" );
   // Apex
-  talents.discipline.master_the_darkness = ST( "Master the Darkness" );  // NYI
+  talents.discipline.master_the_darkness_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1253591 );
+  talents.discipline.void_shield           = find_spell( 1253593 );
+  talents.discipline.void_shield_reflect   = find_spell( 1253828 );
+  talents.discipline.master_the_darkness_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1253845 );
+  talents.discipline.master_the_darkness_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1253827 );
 
   // General Spells
   specs.penance         = find_spell( 47540 );
   specs.penance_channel = find_spell( 47758 );   // Channel spell, triggered by 47540, executes 47666 every tick
   specs.penance_tick    = find_spell( 47666 );   // Not triggered from 47540, only 47758
+
+  specs.plea = find_spell( 200829 );
+
+  specs.contrition_heal      = find_spell( 270501 );
+  specs.contrition_heal_crit = find_spell( 281469 );
 }
 
 action_t* priest_t::create_action_discipline( util::string_view name, util::string_view options_str )

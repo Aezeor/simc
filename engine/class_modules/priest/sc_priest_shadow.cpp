@@ -2133,7 +2133,7 @@ void priest_t::init_spells_shadow()
   talents.shadow.maddening_tentacles          = ST( "Maddening Tentacles" );
   // Row 9
   talents.shadow.madness_weaving     = ST( "Madness Weaving" );
-  talents.shadow.deaths_torment      = ST( "Death's Torment" );
+  // Deaths Torment (Shared)
   talents.shadow.screams_of_the_void = ST( "Screams of the Void" );
   talents.shadow.tormented_spirits   = ST( "Tormented Spirits" );
   talents.shadow.insidious_ire       = ST( "Insidious Ire" );
