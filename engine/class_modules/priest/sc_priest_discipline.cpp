@@ -16,8 +16,8 @@ struct power_word_radiance_t final : public priest_heal_t
 {
   timespan_t atonement_duration;
 
-  power_word_radiance_t( priest_t& p, util::string_view options_str )
-    : priest_heal_t( "power_word_radiance", p, p.talents.discipline.power_word_radiance )
+  power_word_radiance_t( priest_t& p, std::string_view name, util::string_view options_str )
+    : priest_heal_t( name, p, p.talents.discipline.power_word_radiance )
   {
     parse_options( options_str );
     harmful      = false;
@@ -26,6 +26,11 @@ struct power_word_radiance_t final : public priest_heal_t
     aoe = 1 + as<int>( data().effectN( 3 ).base_value() );
 
     atonement_duration = data().effectN( 4 ).percent() * p.talents.discipline.atonement_buff->duration();
+  }
+
+  power_word_radiance_t( priest_t& p, util::string_view options_str )
+    : power_word_radiance_t( p, "power_word_radiance", options_str )
+  {
   }
 
   void execute() override
@@ -147,58 +152,35 @@ struct pain_suppression_t final : public priest_spell_t
 
 struct evangelism_t final : public priest_heal_t
 {
-  timespan_t atonement_extend;
+  action_t* evangelism_radiance;
+  double radiance_effectiveness;
   evangelism_t( priest_t& p, util::string_view options_str )
     : priest_heal_t( "evangelism", p, p.talents.discipline.evangelism ),
-      atonement_extend( timespan_t::from_seconds( p.talents.discipline.evangelism->effectN( 2 ).base_value() ) )
+      radiance_effectiveness( data().effectN( 2 ).percent() )
   {
     parse_options( options_str );
 
-    target = &p;
+    harmful = false;
 
-    harmful          = false;
-    split_aoe_damage = 1;
-    aoe              = -1;
-  }
+    evangelism_radiance =
+        priest().get_secondary_action<power_word_radiance_t>( "evangelism_radiance", "evangelism_radiance" );
 
-  int num_targets() const override
-  {
-    return std::max( 1, as<int>( p().allies_with_atonement.size() ) );
-  }
-
-  size_t available_targets( std::vector<player_t*>& target_list ) const override
-  {
-    target_list.clear();
-
-    for ( auto t : p().allies_with_atonement )
+    if ( !evangelism_radiance->stats->parent )
     {
-      target_list.push_back( t );
-    }
-
-    if ( target_list.size() == 0 )
-      target_list.push_back( player );
-
-    return target_list.size();
-  }
-
-  void activate() override
-  {
-    priest_heal_t::activate();
-
-    priest().allies_with_atonement.register_callback( [ this ]( player_t* ) { target_cache.is_valid = false; } );
-  }
-
-  void execute() override
-  {
-    priest_heal_t::execute();
-
-    target->buffs.pain_suppression->trigger();
-
-    for ( auto ally : p().allies_with_atonement )
-    {
-      p().find_target_data( ally )->buffs.atonement->extend_duration( atonement_extend );
+      evangelism_radiance->proc = true;
+      evangelism_radiance->base_multiplier *= radiance_effectiveness;
+      add_child( evangelism_radiance );
     }
   }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_heal_t::impact( s );
+    if ( result_is_hit( s->result ) )
+    {
+      evangelism_radiance->execute_on_target( s->target );
+    }
+  };
 };
 
 // Purge the wicked
