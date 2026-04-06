@@ -1902,7 +1902,7 @@ struct atonement_t final : public priest_heal_t
     disc_mastery                                = true;
     divine_aegis                                = false;
 
-    reduced_aoe_targets = data().effectN( 2 ).base_value();
+    reduced_aoe_targets = p.talents.discipline.atonement->effectN( 2 ).base_value();
   }
 
   void init() override
