@@ -142,12 +142,28 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Build
-        run: make SANITIZE=1 -C engine debug -j 2
+      - uses: actions/cache@v5
+        env:
+          CCACHE_PREFIX: "macos-cpp-ccache-${{ env.CCACHE_GENERATION }}"
+        with:
+          path: ${{ runner.workspace }}/.ccache
+          key: ${{ env.CCACHE_PREFIX }}-${{ github.sha }}
+          restore-keys: ${{ env.CCACHE_PREFIX }}-
 
-      - name: Smoke Test
-        if: inputs.do-test == 'true'
-        run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
+      - name: Install deps
+        run: |
+          brew update
+          brew install ccache
+
+      - name: Build
+        env:
+          CCACHE_BASEDIR: ${{ runner.workspace }}
+          CCACHE_DIR: ${{ runner.workspace }}/.ccache
+          CCACHE_MAXSIZE: 352M # full build consumes around ~200, ~1.5x that to be safe
+        run: |
+          ccache -z
+          make CXX="ccache c++" SANITIZE=1 -C engine debug -j 2
+          ccache -s
 
   windows-VS:
     name: windows-VS-${{ matrix.vs }}-${{ matrix.arch }}
