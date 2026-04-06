@@ -30,22 +30,37 @@ void effect_callbacks_t::add_callback( proc_types type, proc_types2 type2, actio
     ::add_callback( pet_procs[ type ][ type2 ], cb );
 }
 
-void effect_callbacks_t::add_proc_callback( proc_types type, uint64_t flags, action_callback_t* cb )
+void effect_callbacks_t::add_proc_callback( proc_types type, uint64_t flags2, action_callback_t* cb )
 {
+  // Aura applications (none_helpful and non_helpful_taken) are always treated as landed, since they have no "amount"
+  // nor do they have a scheduled travel since they trigger on application from the action/etc.
+  // TODO: Does this hold true for "proc only on crit" triggers that also have NONE_HELPFUL?
+  if ( type == PROC1_NONE_HELPFUL || type == PROC1_NONE_HELPFUL_TAKEN )
+  {
+    add_callback( type, PROC2_LANDED, cb );
+    if ( sim->debug )
+    {
+      sim->print_debug( "Registering procs: {}{}{}", util::proc_type_string( type ),
+                        util::proc_type2_string( PROC2_LANDED ), cb->allow_pet_procs ? "(+pet) " : "" );
+    }
+
+    return;
+  }
+
   std::string s;
   if ( sim->debug )
     s += "Registering procs: ";
 
   // Setup the proc-on-X types for the proc
-  for ( proc_types2 pt = PROC2_TYPE_MIN; pt < PROC2_TYPE_MAX; pt++ )
+  for ( proc_types2 pt2 = PROC2_TYPE_MIN; pt2 < PROC2_TYPE_MAX; pt2++ )
   {
-    if ( !( flags & ( UINT64_C( 1 ) << pt ) ) )
+    if ( !( flags2 & ( UINT64_C( 1 ) << pt2 ) ) )
       continue;
 
     // Healing and ticking spells all require "an amount" on landing, so
     // automatically convert a "proc on spell landed" type to "proc on
     // hit/crit".
-    if ( pt == PROC2_LANDED &&
+    if ( pt2 == PROC2_LANDED &&
          ( type == PROC1_PERIODIC || type == PROC1_PERIODIC_TAKEN || type == PROC1_HELPFUL_PERIODIC ||
            type == PROC1_HELPFUL_PERIODIC_TAKEN || type == PROC1_MAGIC_HEAL ) )
     {
@@ -60,9 +75,9 @@ void effect_callbacks_t::add_proc_callback( proc_types type, uint64_t flags, act
     // Do normal registration based on the existence of the flag
     else
     {
-      add_callback( type, pt, cb );
+      add_callback( type, pt2, cb );
       if ( cb->listener->sim->debug )
-        s.append( util::proc_type_string( type ) ).append( util::proc_type2_string( pt ) ).append( " " );
+        s.append( util::proc_type_string( type ) ).append( util::proc_type2_string( pt2 ) ).append( " " );
     }
   }
 
