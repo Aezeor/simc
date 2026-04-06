@@ -34,9 +34,12 @@ void effect_callbacks_t::add_proc_callback( proc_types type, uint64_t flags2, ac
 {
   // Aura applications (none_helpful and non_helpful_taken) are always treated as landed, since they have no "amount"
   // nor do they have a scheduled travel since they trigger on application from the action/etc.
-  // TODO: Does this hold true for "proc only on crit" triggers that also have NONE_HELPFUL?
   if ( type == PROC1_NONE_HELPFUL || type == PROC1_NONE_HELPFUL_TAKEN )
   {
+    // PF2_CRIT and PF2_GLANCE require amounts, if they are the sole proc2 flags don't register aura applied callbacks
+    if ( flags2 && !( flags2 & ~( PF2_CRIT | PF2_GLANCE ) ) )
+      return;
+
     add_callback( type, PROC2_LANDED, cb );
     if ( sim->debug )
     {
