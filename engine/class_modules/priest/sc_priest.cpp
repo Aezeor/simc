@@ -1884,7 +1884,13 @@ struct power_word_shield_t final : public priest_absorb_t
 // ==========================================================================
 struct atonement_t final : public priest_heal_t
 {
-  atonement_t( priest_t& p ) : priest_heal_t( "atonement", p, p.talents.discipline.atonement_spell )
+  int max_hp_targets;
+  int missing_hp_targets;
+
+  atonement_t( priest_t& p )
+    : priest_heal_t( "atonement", p, p.talents.discipline.atonement_spell ),
+      max_hp_targets( 0 ),
+      missing_hp_targets( 0 )
   {
     aoe       = -1;
     may_dodge = may_parry = may_block = harmful = false;
@@ -1892,6 +1898,8 @@ struct atonement_t final : public priest_heal_t
     base_crit_bonus                             = 0.0;
     disc_mastery                                = true;
     divine_aegis                                = false;
+
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
   }
 
   void init() override
@@ -1904,6 +1912,87 @@ struct atonement_t final : public priest_heal_t
   int num_targets() const override
   {
     return as<int>( p().allies_with_atonement.size() );
+  }
+
+  double calculate_direct_amount( action_state_t* state ) const override
+  {
+    double amount = base_da_max( state );
+
+    if ( round_base_dmg )
+      amount = floor( amount + 0.5 );
+
+    if ( amount == 0 )
+      return 0;
+
+    amount *= state->composite_da_multiplier();
+
+    // AoE with static reduced damage per target
+    if ( state->chain_target > 0 )
+      amount *= base_aoe_multiplier;
+
+    // Spell splits damage across all targets equally
+    if ( state->action->split_aoe_damage )
+      amount /= state->n_targets;
+
+    if ( missing_hp_targets > reduced_aoe_targets && state->target->health_percentage() <= 100.0 )
+    {
+      amount *= std::sqrt( reduced_aoe_targets / missing_hp_targets );
+    }
+
+    amount *= composite_aoe_multiplier( state );
+
+    // Record initial amount to state
+    state->result_raw = amount;
+
+    if ( !sim->average_range )
+      amount = floor( amount + rng().real() );
+
+    if ( amount < 0 )
+    {
+      amount = 0;
+    }
+
+    if ( sim->debug )
+    {
+      sim->print_debug(
+          "{} direct amount for {}: amount={:.6f} initial_amount={:.6f} s_mod={:.7g} "
+          "s_power={:.7g} a_mod={:.7g} a_power={:.7g} mult={:.7g}",
+          *player, *this, amount, state->result_raw, spell_direct_power_coefficient( state ),
+          state->composite_spell_power(), attack_direct_power_coefficient( state ), state->composite_attack_power(),
+          state->composite_da_multiplier() );
+    }
+
+    // Record total amount to state
+    if ( result_is_miss( state->result ) )
+    {
+      state->result_total = 0.0;
+      return 0.0;
+    }
+    else
+    {
+      state->result_total = amount;
+      return amount;
+    }
+  }
+
+  void execute() override
+  {
+    max_hp_targets     = 0;
+    missing_hp_targets = 0;
+
+    for ( auto& t : target_list() )
+    {
+      if ( t->health_percentage() >= 100.0 )
+      {
+        max_hp_targets++;
+      }
+      else
+      {
+        missing_hp_targets++;
+      }
+    }
+
+    priest_heal_t::execute();
   }
 
   size_t available_targets( std::vector<player_t*>& target_list ) const override
