@@ -168,6 +168,7 @@ struct evangelism_t final : public priest_heal_t
     if ( !evangelism_radiance->stats->parent )
     {
       evangelism_radiance->proc = true;
+      evangelism_radiance->dual = true;
       evangelism_radiance->base_multiplier *= radiance_effectiveness;
       add_child( evangelism_radiance );
     }
