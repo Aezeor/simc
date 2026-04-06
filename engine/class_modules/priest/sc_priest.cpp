@@ -743,7 +743,10 @@ struct smite_base_t : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    priest().buffs.weal_and_woe->expire();
+    if ( priest().talents.discipline.greater_smite.enabled() )
+    {
+      priest().buffs.greater_smite->trigger();
+    }
 
     if ( priest().talents.surge_of_light.enabled() )
       priest().buffs.surge_of_light->trigger();

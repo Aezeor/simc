@@ -192,6 +192,10 @@ public:
     propagate_const<buff_t*> train_of_thought;
     propagate_const<buff_t*> wrath_unleashed;
     propagate_const<buff_t*> weal_and_woe;
+    propagate_const<buff_t*> evangelism;
+    propagate_const<buff_t*> archangel;
+    propagate_const<buff_t*> holy_ray;
+    propagate_const<buff_t*> greater_smite;
 
     // Holy
     propagate_const<buff_t*> apotheosis;
@@ -439,6 +443,7 @@ public:
       player_talent_t divine_procession;
       player_talent_t inner_focus;
       player_talent_t archangel;
+      const spell_data_t* archangel_buff; // 81700
       // Mindbender (Shared)
       player_talent_t shadow_mend;
       // Shadowfiend (Shared)
@@ -1202,6 +1207,10 @@ public:
     if ( p().specialization() == PRIEST_DISCIPLINE )
     {
       parse_effects( p().buffs.weal_and_woe );
+      parse_effects( p().buffs.archangel );
+      parse_effects( p().buffs.holy_ray );
+      parse_effects( p().buffs.evangelism );
+      parse_effects( p().buffs.greater_smite );
     }
 
     // HOLY BUFF EFFECTS

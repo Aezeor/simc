@@ -182,6 +182,23 @@ struct evangelism_t final : public priest_heal_t
       evangelism_radiance->execute_on_target( s->target );
     }
   };
+
+  void execute() override
+  {
+    priest_heal_t::execute();
+
+    priest().buffs.evangelism->trigger();
+
+    if ( priest().talents.discipline.archangel.enabled() )
+    {
+      priest().buffs.archangel->trigger();
+    }
+
+    if ( priest().talents.shared.mindbender.enabled() )
+    {
+      priest().pets.mindbender.spawn();
+    }
+  }
 };
 
 // Purge the wicked
@@ -285,6 +302,16 @@ protected:
       priest_td_t& td = get_td( s->target );
       td.dots.shadow_word_pain->adjust_duration( dot_extension );
       td.dots.purge_the_wicked->adjust_duration( dot_extension );
+    }
+
+    void execute() override
+    {
+      priest_spell_t::execute();
+
+      if ( priest().talents.discipline.holy_ray.enabled() )
+      {
+        priest().buffs.holy_ray->trigger();
+      }
     }
   };
 
@@ -541,6 +568,7 @@ public:
 
   void execute() override
   {
+    priest().buffs.holy_ray->expire();
     priest_spell_t::execute();
 
     priest().buffs.power_of_the_dark_side->expire();
@@ -681,6 +709,17 @@ void priest_t::create_buffs_discipline()
   }
 
   buffs.weal_and_woe = make_buff( this, "weal_and_woe", talents.discipline.weal_and_woe_buff );
+
+  buffs.archangel = make_buff( this, "archangel", talents.discipline.archangel_buff );
+
+  buffs.holy_ray = make_buff( this, "holy_ray", talents.discipline.holy_ray_buff );
+
+  buffs.evangelism = make_buff( this, "evangelism", talents.discipline.evangelism )
+                         ->set_cooldown( 0_s )
+                         ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                         ->set_initial_stack_to_max_stack();
+
+  buffs.greater_smite = make_buff( this, "greater_smite", talents.discipline.greater_smite_buff );
 }
 
 void priest_t::init_rng_discipline()
@@ -744,6 +783,7 @@ void priest_t::init_spells_discipline()
   talents.discipline.divine_procession = ST( "Divine Procession" );
   talents.discipline.inner_focus       = ST( "Inner Focus" );
   talents.discipline.archangel         = ST( "Archangel" );
+  talents.discipline.archangel_buff    = find_spell( 81700 );
   talents.discipline.shadow_mend       = ST( "Shadow Mend" );  // NYI
   // Row 9
   talents.discipline.greater_smite      = ST( "Greater Smite" );  // NYI
