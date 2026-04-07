@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66709 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66838 Live
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Talent Entry     : Generic [tree=class, row=5, col=6, max_rank=1, req_points=8, select_idx=200, replace="Roll" (id=109132)]
 Class            : Monk, Evoker
@@ -5180,7 +5180,6 @@ Effects          :
 #3 (id=1316373)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 2448 (Category) | Radius: 100 yards | Target: Raid in Area (56)
                    Affected Spells (Category): Shift (1234796)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Fel Rush and Infernal Strike reduced by $s1%.
 
@@ -11056,6 +11055,7 @@ Effects          :
 Description      : Fire Breath $?c1[reaches its][and Dream Breath reach their] maximum empower level $s1% faster.
 
 Name             : Consume Flame (desc=Red) (id=444088) [Spell Family (224), Passive, Hidden] 
+Hotfixed         : Description
 Talent Entry     : Flameshaper (Devastation, Preservation) [tree=hero, row=5, col=3, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Physical
@@ -11075,14 +11075,18 @@ Effects          :
                    Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
                    Modified By: Preservation Evoker (356810 effect#17)
 #4 (id=1275546)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 115 | Scaled Value: 115 | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | Target: Self (1)
+Hotfixed         : Base Value (115 -> 150)
 #5 (id=1275591)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
 #6 (id=1278179)  : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
+#7 (id=1317265)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 115 | Scaled Value: 115 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : $?c1[Disintegrate damage consumes ${$s2/1000}.1 sec of Fire Breath from enemies it damages, detonating it for $s4% of the amount consumed.
 
-Pyre damage consumes ${$s3/1000} sec of Fire Breath from enemies it damages, detonating it for $s4% of the amount consumed.][Verdant Embrace healing consumes ${$s5/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.
+Pyre damage consumes ${$s3/1000} sec of Fire Breath from enemies it damages, detonating it for $s7% of the amount consumed.][Verdant Embrace healing consumes ${$s5/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.
 
 Emerald Blossom healing consumes ${$s1/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.]
 

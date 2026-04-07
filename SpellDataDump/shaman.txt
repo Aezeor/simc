@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66709 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66838 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -650,13 +650,14 @@ Labels           : 16: Class Spells
 Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
-Affecting Spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Mastery: Elemental Overload (168534 effects: #3, #4), Converging Storms (198300 effect#1), Stormsurge (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Molten Weapon (224125 effects: #3, #4), Icy Edge (224126 effects: #3, #4), Crackling Surge (224127 effects: #3, #4), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Lightning Strikes (384451 effect#1), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Enhancement Shaman (1214207 effects: #1, #2), Winning Streak! (1218616 effect#1), Elemental Shaman (1231772 effects: #1, #2), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4), Elemental Resonance (1258895 effect#1), Shaman Enhancement 12.0 Class Set 2pc (1264864 effect#1), Feedback Loop (1270062 effect#1), Shaman - Midnight PrePatch - 11.2 Class Set 2pc (1283655 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc (1283656 effects: #1, #2)
+Affecting Spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Mastery: Elemental Overload (168534 effects: #3, #4), Converging Storms (198300 effect#1), Stormsurge (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Molten Weapon (224125 effects: #3, #4), Icy Edge (224126 effects: #3, #4), Crackling Surge (224127 effects: #3, #4), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Lightning Strikes (384451 effect#1), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Enhancement Shaman (1214207 effects: #1, #2, #13), Winning Streak! (1218616 effect#1), Elemental Shaman (1231772 effects: #1, #2), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4), Elemental Resonance (1258895 effect#1), Shaman Enhancement 12.0 Class Set 2pc (1264864 effect#1), Feedback Loop (1270062 effect#1), Shaman - Midnight PrePatch - 11.2 Class Set 2pc (1283655 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc (1283656 effects: #1, #2)
 Triggered By     : Stormstrike (17364)
 Family Flags     : 39, 58, 76
 Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=21915)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.66408 | PvP Coefficient: 1.67 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.06369 | PvP Coefficient: 1.67 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (2.66408 -> 3.06369)
 #2 (id=172084)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc17364
@@ -671,13 +672,14 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Mastery: Elemental Overload (168534 effects: #3, #4), Converging Storms (198300 effect#1), Stormsurge (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Molten Weapon (224125 effects: #3, #4), Icy Edge (224126 effects: #3, #4), Crackling Surge (224127 effects: #3, #4), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Lightning Strikes (384451 effect#1), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Enhancement Shaman (1214207 effects: #1, #2), Winning Streak! (1218616 effect#1), Elemental Shaman (1231772 effects: #1, #2), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4), Elemental Resonance (1258895 effect#1), Shaman Enhancement 12.0 Class Set 2pc (1264864 effect#1), Feedback Loop (1270062 effect#1), Shaman - Midnight PrePatch - 11.2 Class Set 2pc (1283655 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc (1283656 effects: #1, #2)
+Affecting Spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Mastery: Elemental Overload (168534 effects: #3, #4), Converging Storms (198300 effect#1), Stormsurge (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Molten Weapon (224125 effects: #3, #4), Icy Edge (224126 effects: #3, #4), Crackling Surge (224127 effects: #3, #4), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Lightning Strikes (384451 effect#1), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Enhancement Shaman (1214207 effects: #1, #2, #13), Winning Streak! (1218616 effect#1), Elemental Shaman (1231772 effects: #1, #2), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4), Elemental Resonance (1258895 effect#1), Shaman Enhancement 12.0 Class Set 2pc (1264864 effect#1), Feedback Loop (1270062 effect#1), Shaman - Midnight PrePatch - 11.2 Class Set 2pc (1283655 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc (1283656 effects: #1, #2)
 Triggered By     : Stormstrike (17364)
 Family Flags     : 39, 58, 76
 Attributes       : Is Ability (4), Do Not Sheath (18), Not a Proc (105), Requires Off-Hand Weapon (120), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=21916)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.66408 | PvP Coefficient: 1.67 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.06369 | PvP Coefficient: 1.67 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (2.66408 -> 3.06369)
 #2 (id=172085)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc17364
@@ -1773,7 +1775,8 @@ Family Flags     : 41, 80
 Attributes       : Not Shapeshifted (16), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 13.6458 | PvP Coefficient: 1.518 | Target: Chain Heal Ally (45)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 13.6458 | PvP Coefficient: 1.82 | Target: Chain Heal Ally (45)
+Hotfixed         : PvP Coefficient (1.518 -> 1.82)
 Description      : An efficient wave of healing energy that restores $s1 of a friendly target’s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
@@ -2172,7 +2175,6 @@ Effects          :
 Description      : $@spelldesc1219480
 
 Name             : Ascendance (id=114051) [Spell Family (11)] 
-Hotfixed         : Attributes
 Talent Entry     : Enhancement [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=200, replace="Doom Winds" (id=384352)]
 Class            : Shaman
 School           : Nature
@@ -2225,7 +2227,6 @@ Tooltip          : Transformed into a powerful Air Ascendant. Auto attacks have 
 Generating $384411s1 $lstack:stacks; of Maelstrom Weapon every $384437t1 sec.][]
 
 Name             : Ascendance (id=114052) [Spell Family (11)] 
-Hotfixed         : Attributes
 Talent Entry     : Restoration [tree=spec, row=3, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Shaman
 School           : Nature
@@ -2402,13 +2403,14 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
 Proc Chance      : 101%
-Affecting Spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Mastery: Elemental Overload (168534 effects: #3, #4), Converging Storms (198300 effect#1), Stormsurge (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Molten Weapon (224125 effects: #3, #4), Icy Edge (224126 effects: #3, #4), Crackling Surge (224127 effects: #3, #4), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Lightning Strikes (384451 effect#1), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Enhancement Shaman (1214207 effects: #1, #2), Winning Streak! (1218616 effect#1), Elemental Shaman (1231772 effects: #1, #2), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4), Elemental Resonance (1258895 effect#1), Shaman Enhancement 12.0 Class Set 2pc (1264864 effect#1), Feedback Loop (1270062 effect#1), Shaman - Midnight PrePatch - 11.2 Class Set 2pc (1283655 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc (1283656 effects: #1, #2)
+Affecting Spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Mastery: Elemental Overload (168534 effects: #3, #4), Converging Storms (198300 effect#1), Stormsurge (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Molten Weapon (224125 effects: #3, #4), Icy Edge (224126 effects: #3, #4), Crackling Surge (224127 effects: #3, #4), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Lightning Strikes (384451 effect#1), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Enhancement Shaman (1214207 effects: #1, #2, #13), Winning Streak! (1218616 effect#1), Elemental Shaman (1231772 effects: #1, #2), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4), Elemental Resonance (1258895 effect#1), Shaman Enhancement 12.0 Class Set 2pc (1264864 effect#1), Feedback Loop (1270062 effect#1), Shaman - Midnight PrePatch - 11.2 Class Set 2pc (1283655 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc (1283656 effects: #1, #2)
 Triggered By     : Windstrike (115356)
 Family Flags     : 39, 58, 76
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=129139)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.90628 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.34222 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (2.90628 -> 3.34222)
 #2 (id=197633)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc115356
@@ -2424,13 +2426,14 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Mastery: Elemental Overload (168534 effects: #3, #4), Converging Storms (198300 effect#1), Stormsurge (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Molten Weapon (224125 effects: #3, #4), Icy Edge (224126 effects: #3, #4), Crackling Surge (224127 effects: #3, #4), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Lightning Strikes (384451 effect#1), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Enhancement Shaman (1214207 effects: #1, #2), Winning Streak! (1218616 effect#1), Elemental Shaman (1231772 effects: #1, #2), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4), Elemental Resonance (1258895 effect#1), Shaman Enhancement 12.0 Class Set 2pc (1264864 effect#1), Feedback Loop (1270062 effect#1), Shaman - Midnight PrePatch - 11.2 Class Set 2pc (1283655 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc (1283656 effects: #1, #2)
+Affecting Spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Mastery: Elemental Overload (168534 effects: #3, #4), Converging Storms (198300 effect#1), Stormsurge (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Molten Weapon (224125 effects: #3, #4), Icy Edge (224126 effects: #3, #4), Crackling Surge (224127 effects: #3, #4), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Lightning Strikes (384451 effect#1), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Enhancement Shaman (1214207 effects: #1, #2, #13), Winning Streak! (1218616 effect#1), Elemental Shaman (1231772 effects: #1, #2), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4), Elemental Resonance (1258895 effect#1), Shaman Enhancement 12.0 Class Set 2pc (1264864 effect#1), Feedback Loop (1270062 effect#1), Shaman - Midnight PrePatch - 11.2 Class Set 2pc (1283655 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc (1283656 effects: #1, #2)
 Triggered By     : Windstrike (115356)
 Family Flags     : 39, 58, 76
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Not a Proc (105), Requires Off-Hand Weapon (120), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=129143)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.90628 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.34222 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (2.90628 -> 3.34222)
 #2 (id=197634)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc115356
@@ -2979,13 +2982,15 @@ Effects          :
                    Affected Spells: Flame Shock (188389), Flame Shock (470411)
                    Family Flags: 28
 #24 (id=1166446) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -28 | Scaled Value: -28 | Target: Self (1)
+                   Base Value: -22 | Scaled Value: -22 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0
+Hotfixed         : Base Value (-28 -> -22)
 #25 (id=1172978) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -33 | Scaled Value: -33 | Target: Self (1)
+                   Base Value: -14 | Scaled Value: -14 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443), Chain Lightning (211094)
                    Family Flags: 1
+Hotfixed         : Base Value (-33 -> -14)
 #26 (id=1174461) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -15 | Scaled Value: -15 | Target: Self (1)
                    Affected Spells: Tempest (452201)
@@ -3591,7 +3596,8 @@ Family Flags     : 39, 56, 85, 126
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=274038)   : School Damage (2): nature | Attributes: Suppress Points Stacking (6), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.53014 | PvP Coefficient: 1.8 | Radius: 8 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.83617 | PvP Coefficient: 1.8 | Radius: 8 yards | Target: Enemies in Cone to Targeted Enemy (104)
+Hotfixed         : AP Coefficient (1.53014 -> 1.83617)
 #2 (id=739957)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
 Description      : Electrocutes all enemies in front of you, dealing $s1 Nature damage. 
@@ -4350,7 +4356,8 @@ Family Flags     : 39, 56, 85, 126
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=287112)   : School Damage (2): nature | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.88872 | Radius: 8 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.977592 | Radius: 8 yards | Target: Enemies in Cone to Targeted Enemy (104)
+Hotfixed         : AP Coefficient (0.88872 -> 0.977592)
 Description      : $@spelldesc187874
 
 Name             : Frost Shock (id=196840) [Spell Family (11)] 
@@ -8041,7 +8048,6 @@ Channel Interrupt: Damage (2), Attacking (13)
 Effects          :
 #1 (id=782727)   : Apply Aura (6) | Periodic Damage (3): nature every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.7 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (1.4 -> 7.7)
 Description      : $@spelldesc305483
 Tooltip          : Suffering $w1 Nature damage every $t1 sec.
 
@@ -8063,7 +8069,6 @@ Channel Interrupt: Damage (2), Attacking (13)
 Effects          :
 #1 (id=782730)   : Apply Aura (6) | Periodic Damage (3): nature every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.7 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (1.4 -> 7.7)
 #2 (id=782731)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Stun | Target: Targeted Enemy (6)
 Description      : $@spelldesc305483
@@ -13065,12 +13070,10 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.25 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Riptide (61295)
                    Family Flags: 68
-Hotfixed         : PvP Coefficient (0.5 -> 1.25)
 #4 (id=1144387)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.25 | Target: Self (1)
                    Affected Spells: Riptide (61295)
                    Family Flags: 68
-Hotfixed         : PvP Coefficient (0.5 -> 1.25)
 #5 (id=1144388)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1228 (Category) | Target: Self (1)
                    Affected Spells (Category): Riptide (61295)
@@ -16075,7 +16078,6 @@ Description      : $@spelldesc201845
 Tooltip          : Stormstrike cooldown has been reset$?$?a319930[ and will deal $319930w1% additional damage as Nature][].
 
 Name             : Doom Winds (id=466772) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : Melee
@@ -16696,13 +16698,15 @@ Effects          :
                    Affected Spells: Earth Shield (379)
                    Family Flags: 70
 #6 (id=1213820)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Base Value: 86 | Scaled Value: 86 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0
+Hotfixed         : Base Value (100 -> 86)
 #7 (id=1213821)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: 33 | Scaled Value: 33 | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443), Chain Lightning (211094)
                    Family Flags: 1
+Hotfixed         : Base Value (33 -> 7)
 #8 (id=1213843)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Elemental Blast (117014)
@@ -16711,11 +16715,21 @@ Effects          :
                    Base Value: -28 | Scaled Value: -28 | Target: Self (1)
                    Affected Spells: Tempest (452201)
                    Family Flags: 107
-Hotfixed         : Base Value (-15 -> -28)
 #10 (id=1213848) : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Frost Shock (196840)
                    Family Flags: 31
+#11 (id=1317296) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
+                   Base Value: -16 | Scaled Value: -16 | Misc Value 2: 1183 (Label) | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#12 (id=1317297) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
+                   Base Value: -9 | Scaled Value: -9 | Misc Value 2: 4620 (Label) | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#13 (id=1317298) : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
+                   Base Value: -13 | Scaled Value: -13 | Target: Self (1)
+                   Affected Spells: Stormstrike (32175), Stormstrike Off-Hand (32176), Windstrike (115357), Windstrike Off-Hand (115360)
+                   Family Flags: 76
+Hotfixed         : NEW EFFECT
 
 Name             : Shaman Restoration 11.1 Class Set 2pc (id=1215538) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -17173,7 +17187,6 @@ Effects          :
 Description      : $@spelldesc187880
 
 Name             : Ascendance (id=1219480) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Fire
 Spell Type       : None
@@ -17675,7 +17688,8 @@ Family Flags     : 39, 56, 85, 126
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1257585)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.765072 | PvP Coefficient: 1.8 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.918086 | PvP Coefficient: 1.8 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (0.765072 -> 0.918086)
 Description      : $@spelldesc1252373
 
 Name             : Crash Lightning (id=1252433) [Spell Family (11)] 
