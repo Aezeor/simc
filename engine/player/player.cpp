@@ -10781,8 +10781,8 @@ struct use_items_t : public action_t
 
       if ( sim->debug )
       {
-        sim->out_debug.printf( "%s use_items creating proxy action for %s (slot=%s)", player->name(),
-                               item.full_name().c_str(), item.slot_name() );
+        sim->print_debug( "{} use_items in action list '{}' creating proxy action for {} (slot={})", *player,
+                          action_list->name_str, item.full_name(), item.slot_name() );
       }
 
       auto use_action = new use_item_t( player, std::string( "slot=" ) + item.slot_name() );
