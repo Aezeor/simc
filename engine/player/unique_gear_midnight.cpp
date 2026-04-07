@@ -3490,6 +3490,34 @@ void voidlight_bindings( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Umbra-Weaver's Portent
+// 253819 Driver
+// 1290152 Equip Driver
+// 253826 Mastery Buff
+void umbral_shift( special_effect_t& effect)
+{
+  auto equip = find_special_effects( effect.player, 1290152 );
+  assert( !equip.empty() && "Umbra-Weaver's Portent missing equip effect" );
+
+  auto buff = effect.driver()->effectN( 1 ).trigger();
+  auto stat_buff = create_buff<stat_buff_t>( effect.player, buff );
+
+  const bool has_3pc = effect.player->sets->has_set_bonus(
+    effect.player->specialization(), MID_UWP, B3 );
+
+  // 3pc is required for the buff to grant mastery
+  if ( has_3pc )
+  {
+    range::for_each( equip, [ stat_buff ]( auto effect ) {
+        auto stat_coeff = effect->driver()->effectN( 2 ).average( *effect );
+        stat_buff->add_stat_from_effect_type( A_MOD_RATING, stat_coeff );
+      } );
+  }
+
+  effect.custom_buff = stat_buff;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // 1241262 driver
 // 1241227 coeff (unused?)
 // 1241289 buff
@@ -3716,6 +3744,8 @@ void register_special_effects()
   register_special_effect( 1241262, sets::arcanoweave_trappings );
   register_special_effect( 1270977, sets::sunfire_silk_trappings );
   register_special_effect( 1253358, DISABLED_EFFECT );  // torments duality
+  register_special_effect( 253819, sets::umbral_shift );
+  register_special_effect( 1290152, DISABLED_EFFECT ); // umbral shift equip effect
 }
 
 void register_target_data_initializers( sim_t& )
