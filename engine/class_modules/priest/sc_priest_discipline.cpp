@@ -724,6 +724,7 @@ void priest_t::create_buffs_discipline()
 
 void priest_t::init_rng_discipline()
 {
+  deck_rng.master_of_darkness = get_shuffled_rng( "master_of_darkness", 1, 3 );
 }
 
 void priest_t::init_background_actions_discipline()
