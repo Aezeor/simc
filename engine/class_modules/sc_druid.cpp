@@ -3908,6 +3908,7 @@ struct bloodseeker_vines_t final : public cat_attack_t
       twin_pct( p->talent.twin_sprouts->effectN( 1 ).percent() ),
       rampancy_pct( p->talent.rampancy->effectN( 1 ).percent() )
   {
+    proc = true;
     dot_max_stack = 1;
 
     dot_name = "bloodseeker_vines";
@@ -7476,6 +7477,7 @@ struct lunar_bolt_t final : public druid_spell_t
 
   lunar_bolt_t( druid_t* p ) : druid_spell_t( "lunar_bolt", p, p->find_spell( 1261700 ) )
   {
+    proc = true;
     range = p->talent.ascendant_eclipses_3->effectN( 1 ).base_value();
     impact_action = p->get_secondary_action<lunar_bolt_damage_t>( "lunar_bolt_damage", find_trigger( this ).trigger() );
 
@@ -8145,6 +8147,7 @@ struct solar_bolt_t final : public druid_spell_t
 {
   solar_bolt_t( druid_t* p ) : druid_spell_t( "solar_bolt", p, p->find_spell( 1261573 ) )
   {
+    proc = true;
     range = p->talent.ascendant_eclipses_3->effectN ( 1 ).base_value();
   }
 
@@ -11743,11 +11746,15 @@ void druid_t::create_actions()
   }
 
   if ( talent.memory_of_ysera.ok() )
+  {
     active.memory_of_ysera_heal = get_secondary_action<druid_heal_t>( "memory_of_ysera", this, find_spell( 1250913 ) );
+    active.memory_of_ysera_heal->proc = true;
+  }
 
   if ( talent.sundering_roar.ok() )
   {
     auto sr_thrash = get_secondary_action<bear_attack_t>( "sundering_roar_thrash", this, find_spell( 1253982 ) );
+    sr_thrash->proc = true;
     sr_thrash->name_str_reporting = "Thrash";
     active.sundering_roar_thrash = sr_thrash;
   }
@@ -11757,6 +11764,7 @@ void druid_t::create_actions()
     active.waking_nightmare = new waking_nightmare_t( this );
 
     auto pulse = get_secondary_action<druid_spell_t>( "waking_nightmare_pulse", this, find_spell( 1253488 ) );
+    pulse->proc = true;
     pulse->name_str_reporting = "Pulse";
     active.waking_nightmare_pulse = pulse;
     active.waking_nightmare->add_child( pulse );
