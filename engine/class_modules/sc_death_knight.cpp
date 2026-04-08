@@ -8665,10 +8665,6 @@ struct blood_boil_t final : public death_knight_spell_t
 
     if ( p()->buffs.boiling_point->up() )
     {
-      // If boiling point echo is already up, we expire it to force it to fire, and queue up a new one
-      // Of note, this means the casting BB, as well as the expired echo BB benefit from the buff
-      if( p()->buffs.boiling_point_echo->up() )
-        p()->buffs.boiling_point_echo->expire();
       p()->buffs.boiling_point->expire();
       p()->buffs.boiling_point_echo->trigger();
     }
@@ -12686,6 +12682,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
   // Procs from runes spent
   if ( resource_type == RESOURCE_RUNE && action )
   {
+    int base_cost = as<int>( action->base_costs.at( RESOURCE_RUNE ).value() );
     // Gathering Storm triggers a stack and extends RW duration by 0.5s
     // for each spell cast that normally consumes a rune (even if it ended up free)
     // But it doesn't count the original Relentless Winter cast
@@ -12693,21 +12690,21 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
          ( buffs.remorseless_winter->check() || buffs.frozen_dominion_remorseless_winter->check() ) &&
          action->data().id() != spec.remorseless_winter->id() )
     {
-      unsigned consumed = static_cast<unsigned>( action->base_costs[ RESOURCE_RUNE ] );
-      buffs.gathering_storm->trigger( consumed );
+      buffs.gathering_storm->trigger( base_cost );
       timespan_t base_extension =
           timespan_t::from_seconds( talent.frost.gathering_storm->effectN( 1 ).base_value() * 0.1 );
-      buffs.remorseless_winter->extend_duration( base_extension * consumed );
-      buffs.frozen_dominion_remorseless_winter->extend_duration( base_extension * consumed );
+      buffs.remorseless_winter->extend_duration( base_extension * base_cost );
+      buffs.frozen_dominion_remorseless_winter->extend_duration( base_extension * base_cost );
     }
 
     if ( talent.rune_mastery.ok() )
       buffs.rune_mastery->trigger();
 
-    if ( talent.rider.nazgrims_conquest.ok() && buffs.apocalyptic_conquest->check() )
+    // Scourge Strike with blighted uses base cost rather than actual spend.
+    if ( talent.rider.nazgrims_conquest.ok() && buffs.apocalyptic_conquest->check() &&
+         action->data().id() == talent.unholy.scourge_strike->id() )
     {
-      debug_cast<buffs::apocalyptic_conquest_buff_t*>( buffs.apocalyptic_conquest )->nazgrims_conquest +=
-          as<int>( amount );
+      debug_cast<buffs::apocalyptic_conquest_buff_t*>( buffs.apocalyptic_conquest )->nazgrims_conquest += base_cost;
       invalidate_cache( CACHE_STRENGTH );
     }
 
@@ -12718,6 +12715,14 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // Effects that require the player to actually spend runes
     if ( actual_amount > 0 )
     {
+      std::array<unsigned, 2> ignored_actions = { spec.remorseless_winter->id(), talent.unholy.scourge_strike->id() };
+      bool uses_actual_amount = action && !range::contains( ignored_actions, action->data().id() );
+      if ( talent.rider.nazgrims_conquest.ok() && buffs.apocalyptic_conquest->check() && uses_actual_amount )
+      {
+        debug_cast<buffs::apocalyptic_conquest_buff_t*>( buffs.apocalyptic_conquest )->nazgrims_conquest +=
+            as<int>( actual_amount );
+        invalidate_cache( CACHE_STRENGTH );
+      }
     }
   }
 
