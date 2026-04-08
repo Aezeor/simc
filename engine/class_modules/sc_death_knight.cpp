@@ -7595,6 +7595,7 @@ struct dread_plague_death_t final : public death_knight_spell_t
     : death_knight_spell_t( name, p, p->spell.dread_plague_death_damage )
   {
     background = true;
+    aoe        = -1;
     may_miss = may_dodge = may_parry = false;
   }
 };
@@ -12743,7 +12744,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
 
     // If an action is linked, fetch its base cost.
     if ( action )
-      base_rp_cost = action->base_costs[ RESOURCE_RUNIC_POWER ];
+      base_rp_cost = action->base_costs.at( RESOURCE_RUNIC_POWER ).value();
 
     double calc_rp_cost = std::max( base_rp_cost, actual_amount );
 
