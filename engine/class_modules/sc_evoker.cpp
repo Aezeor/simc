@@ -10274,7 +10274,8 @@ void evoker_t::create_buffs()
                                    talent.scalecommander.mass_eruption_buff );
   buff.unrelenting_siege    = MBF( talent.scalecommander.unrelenting_siege.ok(), this, "unrelenting_siege",
                                    talent.scalecommander.unrelenting_siege_buff )
-                               ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+                               ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                               ->set_proc_callbacks( false );
 
   buff.azure_sweep =
       MBF( talent.azure_sweep.ok(), this, "azure_sweep", talent.azure_sweep_buff )->set_consume_all_stacks( false );
