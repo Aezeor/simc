@@ -34,7 +34,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 2
+          sparse-checkout: |
+            engine
+          fetch-depth: 0
 
       - name: Select Specs From Changed Files
         id: select
