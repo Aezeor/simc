@@ -2663,12 +2663,10 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
         auto _entries = trait_data_t::data( trait_obj->id_node, util::class_id( player->type ), tree, player->is_ptr() );
         for ( const auto& trait : _entries )
         {
-          auto allocated = std::min( ranks, trait.max_ranks );
+          auto allocated = !ranks ? ranks : std::min( ranks, trait.max_ranks );
           allocate_trait( player, &trait, tree, allocated );
 
           ranks -= allocated;
-          if ( !ranks )
-            break;
         }
       }
       else
