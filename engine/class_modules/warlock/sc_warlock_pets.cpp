@@ -37,13 +37,16 @@ void warlock_pet_t::create_buffs()
   pet_t::create_buffs();
 
   // Demonology
-  buffs.imp_gang_boss = make_buff( this, "imp_gang_boss", o()->talents.imp_gang_boss_buff )
+  buffs.imp_gang_boss = make_buff( actor_pair_t( this, o() ), "imp_gang_boss", o()->talents.imp_gang_boss_buff )
                             ->set_default_value_from_effect( 2 );
 
-  buffs.unstable_soul = make_buff( this, "unstable_soul", o()->talents.unstable_soul_buff )
+  buffs.infernal_command = make_buff( actor_pair_t( this, o() ), "infernal_command", o()->warlock_base.infernal_command_buff )
+                               ->set_default_value( o()->warlock_base.infernal_command_buff->effectN( 1 ).percent() );
+
+  buffs.unstable_soul = make_buff( actor_pair_t( this, o() ), "unstable_soul", o()->talents.unstable_soul_buff )
                             ->set_default_value_from_effect( 1 );
 
-  buffs.ferocity_of_fharg = make_buff( this, "ferocity_of_fharg", o()->talents.ferocity_of_fharg_buff );
+  buffs.flametouched = make_buff( this, "ferocity_of_fharg", o()->talents.flametouched_buff );
 
   buffs.demonic_power = make_buff( this, "demonic_power", o()->talents.demonic_power_buff )
                             ->set_default_value_from_effect( 1 );
@@ -70,12 +73,14 @@ void warlock_pet_t::create_buffs()
                                 o()->buffs.pet_movement->trigger();
                               else if ( cur < prev )
                                 o()->buffs.pet_movement->decrement();
-                            } );
+                            } )
+                          ->set_proc_callbacks( false );
 
   // These buffs are needed for operational purposes but serve little to no reporting purpose
   buffs.imp_gang_boss->quiet = true;
+  buffs.infernal_command->quiet = true;
   buffs.unstable_soul->quiet = true;
-  buffs.ferocity_of_fharg->quiet = true;
+  buffs.flametouched->quiet = true;
   buffs.grimoire_of_service->quiet = true;
   buffs.embers->quiet = true;
 }
@@ -141,8 +146,8 @@ double warlock_pet_t::composite_melee_haste() const
 {
   double m = pet_t::composite_melee_haste();
 
-  if ( buffs.ferocity_of_fharg->check() )
-    m *= 1.0 + buffs.ferocity_of_fharg->data().effectN( 1 ).percent();
+  if ( buffs.flametouched->check() )
+    m *= 1.0 + buffs.flametouched->data().effectN( 1 ).percent();
 
   return m;
 }
@@ -151,8 +156,8 @@ double warlock_pet_t::composite_melee_auto_attack_speed() const
 {
   double m = pet_t::composite_melee_auto_attack_speed();
 
-  if ( buffs.ferocity_of_fharg->check() )
-    m /= 1.0 + buffs.ferocity_of_fharg->data().effectN( 1 ).percent();
+  if ( buffs.flametouched->check() )
+    m /= 1.0 + buffs.flametouched->data().effectN( 1 ).percent();
 
   return m;
 }
@@ -774,6 +779,10 @@ void wild_imp_pet_t::arise()
   if ( bugs && o()->talents.hellbent_commander.ok() )
     o()->buffs.hellbent_commander->trigger();
 
+  // Set initial timers for Infernal Command buff sequence of events
+  infernal_command_ev_ts = sim->current_time() + 5045_ms;
+  infernal_command_ev_offset = o()->wild_imp_ic_shared_offset;
+
   // Start casting fel firebolts
   firebolt->set_target( o()->target );
   firebolt->schedule_execute();
@@ -788,6 +797,8 @@ void wild_imp_pet_t::demise()
     buffs.imp_gang_boss->expire();
 
     buffs.unstable_soul->expire();
+
+    buffs.infernal_command->expire();
 
     if ( o()->talents.summon_demonic_tyrant.ok() )
     {
@@ -868,7 +879,7 @@ double wild_imp_pet_t::composite_player_multiplier( school_e school ) const
 
 dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "dreadstalker", PET_DREADSTALKER, true )
 {
-  npc_id = owner->talents.call_dreadstalkers_2->effectN( 1 ).misc_value1();
+  npc_id = owner->talents.call_dreadstalkers_summon_1->effectN( 1 ).misc_value1();
 
   action_list_str = "leap/travel/dreadbite";
   resource_regeneration  = regen_type::DISABLED;
@@ -885,7 +896,7 @@ dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "drea
 dreadstalker_t::dreadstalker_t( warlock_t* owner, util::string_view pet_name, pet_e pet_type )
   : warlock_pet_t( owner, pet_name, pet_type, true )
 {
-  npc_id = owner->talents.call_dreadstalkers_2->effectN( 1 ).misc_value1();
+  npc_id = owner->talents.call_dreadstalkers_summon_1->effectN( 1 ).misc_value1();
 
   action_list_str = "leap/travel/dreadbite";
   resource_regeneration  = regen_type::DISABLED;
@@ -1054,7 +1065,7 @@ void dreadstalker_t::arise()
   }
 
   if ( o()->talents.flametouched.ok() )
-    buffs.ferocity_of_fharg->trigger();
+    buffs.flametouched->trigger();
 
   dreadbite_executes = 1;
 
@@ -1101,8 +1112,8 @@ double dreadstalker_t::composite_melee_crit_chance() const
 {
   double m = warlock_pet_t::composite_melee_crit_chance();
 
-  if ( buffs.ferocity_of_fharg->check() )
-    m += buffs.ferocity_of_fharg->data().effectN( 2 ).percent();
+  if ( buffs.flametouched->check() )
+    m += buffs.flametouched->data().effectN( 2 ).percent();
 
   return m;
 }
@@ -1111,8 +1122,8 @@ double dreadstalker_t::composite_spell_crit_chance() const
 {
   double m = warlock_pet_t::composite_spell_crit_chance();
 
-  if ( buffs.ferocity_of_fharg->check() )
-    m += buffs.ferocity_of_fharg->data().effectN( 2 ).percent();
+  if ( buffs.flametouched->check() )
+    m += buffs.flametouched->data().effectN( 2 ).percent();
 
   return m;
 }
@@ -1268,9 +1279,11 @@ void vilefiend_t::create_buffs()
 {
   warlock_simple_pet_t::create_buffs();
 
-  mark_of_shatug = make_buff<buff_t>( this, "mark_of_shatug" );
+  mark_of_shatug = make_buff<buff_t>( this, "mark_of_shatug", o()->talents.mark_of_shatug )
+                       ->set_proc_callbacks( false );
 
-  mark_of_fharg = make_buff<buff_t>( this, "mark_of_fharg" );
+  mark_of_fharg = make_buff<buff_t>( this, "mark_of_fharg", o()->talents.mark_of_fharg )
+                      ->set_proc_callbacks( false );
 
   auto damage = new infernal_presence_t( this );
 
@@ -1959,9 +1972,9 @@ void infernal_t::demise()
 
   if ( o()->hero.abyssal_dominion.ok() && type == MAIN )
     make_event( sim, [ this ] {
-      // Random extra duration time between 0_ms and 820_ms following a uniform distribution
-      const timespan_t dur_adjust = timespan_t::from_millis( rng().range( 0.0, 820.0 ) );
-      o()->warlock_pet_list.fragments.spawn( o()->hero.infernal_fragmentation->duration() + dur_adjust, 2u );
+      // Summon two infernal fragments
+      o()->summons.fragment->execute();
+      o()->summons.fragment->execute();
     } );
 }
 
@@ -2191,7 +2204,7 @@ action_t* chaos_tear_t::create_action( util::string_view name, util::string_view
 /// Overfiend Begin
 
 overfiend_t::overfiend_t( warlock_t* owner, util::string_view name )
-  : warlock_pet_t( owner, name, PET_WARLOCK, true )
+  : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true )
 {
   npc_id = owner->talents.summon_overfiend->effectN( 1 ).misc_value1();
 
@@ -2343,6 +2356,64 @@ action_t* darkglare_t::create_action( util::string_view name, util::string_view 
 }
 
 /// Darkglare End
+
+/// Desperate Soul Begin
+
+desperate_soul_t::desperate_soul_t( warlock_t* owner, util::string_view name )
+  : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true )
+{
+  npc_id = owner->talents.summon_desperate_soul->effectN( 1 ).misc_value1();
+
+  action_list_str = "wrath_of_nathreza";
+}
+
+struct wrath_of_nathreza_t : public warlock_pet_spell_t
+{
+  wrath_of_nathreza_t( warlock_pet_t* p )
+    : warlock_pet_spell_t( "Wrath of Nathreza", p, p->o()->talents.wrath_of_nathreza_impact )
+  {
+    aoe = -1;
+    reduced_aoe_targets = as<int>( p->o()->talents.wrath_of_nathreza->effectN( 2 ).base_value() );
+  }
+
+  bool ready() override
+  {
+    if ( debug_cast<desperate_soul_t*>( p() )->wraths <= 0 )
+      return false;
+
+    return warlock_pet_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    if ( p()->o()->haunt_target && !p()->o()->haunt_target->is_sleeping() )
+      target = p()->o()->haunt_target;
+
+    warlock_pet_spell_t::execute();
+
+    debug_cast<desperate_soul_t*>( p() )->wraths--;
+
+    if ( debug_cast<desperate_soul_t*>( p() )->wraths <= 0 )
+      make_event( sim, 0_ms, [ this ]() { player->cast_pet()->dismiss(); } );
+  }
+};
+
+void desperate_soul_t::arise()
+{
+  warlock_pet_t::arise();
+
+  wraths = 1;
+};
+
+action_t* desperate_soul_t::create_action( util::string_view name, util::string_view options_str )
+{
+  if ( name == "wrath_of_nathreza" )
+    return new wrath_of_nathreza_t( this );
+
+  return warlock_pet_t::create_action( name, options_str );
+}
+
+/// Desperate_Soul End
 
 }  // namespace affliction
 
@@ -2663,6 +2734,9 @@ namespace diabolist
       warlock_pet_spell_t::execute();
 
       debug_cast<diabolic_imp_t*>( p() )->bolts--;
+
+      if ( debug_cast<diabolic_imp_t*>( p() )->bolts <= 0 )
+        make_event( sim, 0_ms, [ this ]() { player->cast_pet()->dismiss(); } );
     }
   };
 
