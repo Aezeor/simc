@@ -428,6 +428,10 @@ struct halo_spell_t final : public priest_spell_t
 
   void impact( action_state_t* s ) override
   {
+    if ( returning && !rng().roll( p().options.archon_halo_return_hit_chance ) ||
+         !returning && !rng().roll( p().options.archon_halo_outgoing_hit_chance ) )
+      return;
+
     priest_spell_t::impact( s );
 
     if ( p().talents.archon.resonant_energy.enabled() )
@@ -442,11 +446,6 @@ struct halo_spell_t final : public priest_spell_t
 
   void execute() override
   {
-    if ( returning && !rng().roll( p().options.archon_halo_return_hit_chance ) )
-    {
-      return;
-    }
-
     priest_spell_t::execute();
 
     if ( p().talents.archon.divine_halo.enabled() && !returning && return_spell )
@@ -3808,6 +3807,7 @@ void priest_t::create_options()
                          0.0, 1.0 ) );
   add_option( opt_float( "priest.synergistic_brewterializer_barrel_hit_chance",
                          options.synergistic_brewterializer_barrel_hit_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "priest.archon_halo_outgoing_hit_chance", options.archon_halo_outgoing_hit_chance, 0.0, 1.0 ) );
   add_option( opt_float( "priest.archon_halo_return_hit_chance", options.archon_halo_return_hit_chance, 0.0, 1.0 ) );
 }
 

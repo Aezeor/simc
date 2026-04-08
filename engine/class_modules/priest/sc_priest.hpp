@@ -897,6 +897,8 @@ public:
     // ~20% damage penalty to account for GCD. ~10% Miss general chance.
     double synergistic_brewterializer_barrel_hit_chance = 0.75;
 
+    // Chance for outgoing Halo damage pulses to hit (Divine Halo / Archon).
+    double archon_halo_outgoing_hit_chance = 0.5;
     // Chance for returning Halo damage pulses to hit (Divine Halo / Archon).
     double archon_halo_return_hit_chance = 0.5;
   } options;
