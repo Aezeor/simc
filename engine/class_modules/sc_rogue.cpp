@@ -7135,14 +7135,16 @@ struct shadow_dance_t : public stealth_like_buff_t<buff_t>
       bd += rogue->spec.the_first_dance_buff->effectN( 1 ).time_value();
     }
 
-    // MIDNIGHT TOCHECK -- Is this just rating? Or base+rating? Is this before or after The First Dance?
+    // Current testing is that this applies the rating tooltip percentage value after TfD
     if ( rogue->talent.subtlety.deepening_shadows->ok() )
     {
       double h = std::max( 0.0, rogue->composite_melee_haste_rating() ) / rogue->current.rating.attack_haste;
-      h = rogue->apply_combat_rating_dr( RATING_MELEE_HASTE, h );
-      h = 1.0 / ( 1.0 + h );
-      h *= rogue->current.melee_haste;
-      bd *= 1.0 + rogue->spec.deepening_shadows_buff->effectN( 3 ).percent() * ( 1.0 - h);
+      // 2026-04-08 -- Currently doesn't appear to use diminishing returns
+      if ( !rogue->bugs )
+      {
+        h = rogue->apply_combat_rating_dr( RATING_MELEE_HASTE, h );
+      }
+      bd *= 1.0 + rogue->spec.deepening_shadows_buff->effectN( 3 ).percent() * h;
     }
 
     return bd;
