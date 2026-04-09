@@ -623,7 +623,16 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
         return dot->max_stack;
       } );
   }
+  else if ( name_str == "n_dotted_targets" )
+  {
+    return make_dot_expr( "dot_n_dotted_targets", 
+      []( dot_t* dot ) {
+      if ( !dot || !dot->current_action )
+        return 0u;
 
+      return dot->source->get_active_dots( dot->current_action->get_dot( nullptr ) );
+    } );
+  }
 
   return nullptr;
 }
