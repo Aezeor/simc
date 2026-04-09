@@ -53,7 +53,7 @@ void shadow( player_t* p )
   precombat->add_action( "variable,name=trinket_1_buffs,value=(trinket.1.has_buff.intellect|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit|trinket.1.is.signet_of_the_priory)&(trinket.1.cooldown.duration>=20)" );
   precombat->add_action( "variable,name=trinket_2_buffs,value=(trinket.2.has_buff.intellect|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit|trinket.2.is.signet_of_the_priory)&(trinket.2.cooldown.duration>=20)" );
   precombat->add_action( "variable,name=dr_force_prio,default=0,op=reset" );
-  precombat->add_action( "variable,name=me_force_prio,default=1,op=reset" );
+  precombat->add_action( "variable,name=me_force_prio,default=0,op=reset" );
   precombat->add_action( "variable,name=max_vts,default=12,op=reset" );
   precombat->add_action( "variable,name=is_vt_possible,default=0,op=reset" );
   precombat->add_action( "arcane_torrent" );
@@ -132,7 +132,7 @@ void shadow_ptr( player_t* p )
   precombat->add_action( "variable,name=trinket_1_buffs,value=(trinket.1.has_buff.intellect|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit|trinket.1.is.signet_of_the_priory)&(trinket.1.cooldown.duration>=20)" );
   precombat->add_action( "variable,name=trinket_2_buffs,value=(trinket.2.has_buff.intellect|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit|trinket.2.is.signet_of_the_priory)&(trinket.2.cooldown.duration>=20)" );
   precombat->add_action( "variable,name=dr_force_prio,default=0,op=reset" );
-  precombat->add_action( "variable,name=me_force_prio,default=1,op=reset" );
+  precombat->add_action( "variable,name=me_force_prio,default=0,op=reset" );
   precombat->add_action( "variable,name=max_vts,default=12,op=reset" );
   precombat->add_action( "variable,name=is_vt_possible,default=0,op=reset" );
   precombat->add_action( "arcane_torrent" );
