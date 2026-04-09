@@ -3978,19 +3978,28 @@ struct crimson_tempest_t : public rogue_attack_t
     size_t num_copies = std::min( tl.size(), as<size_t>( data().effectN( 2 ).base_value() ) );
 
     range::sort( tl, [ this, dot_selector ]( player_t* l, player_t* r ) {
-      auto lr = dot_selector( td( l ) )->remains();
-      auto rr = dot_selector( td( r ) )->remains();
-      if ( lr == rr )
-        return l < r;
+      dot_t* ld = dot_selector( td( l ) );
+      dot_t* rd = dot_selector( td( r ) );
+      // Sort equal remains by last refreshed time
+      if ( ld->remains() == rd->remains() )
+        if ( ld->end_event && rd->end_event )
+          return ld->end_event->id < rd->end_event->id;
+        else
+          return l < r; // Fallback to target pointer
       else
-        return lr < rr;
+        return ld->remains() < rd->remains();
     } );
 
     for ( size_t i = 0; i < num_copies; ++i )
     {
       auto source_dot = dot_selector( td( tl.back() ) );
       auto target_dot = dot_selector( td( tl[ i ] ) );
-      if ( !source_dot->is_ticking() || source_dot->remains() <= target_dot->remains() )
+
+      if ( source_dot == target_dot )
+        continue;
+
+      // 2026-04-08 -- DoTs still apply even if the source and target remains are equal, relevant for Internal Bleeding
+      if ( !source_dot->is_ticking() || source_dot->remains() < target_dot->remains() )
         break;
 
       if ( target_dot->is_ticking() )
@@ -4004,13 +4013,15 @@ struct crimson_tempest_t : public rogue_attack_t
         source_dot->copy( tl[ i ], DOT_COPY_START );
       }
 
+      p()->sim->print_log( "{} {} cloning {} from {} to {} with remains={:.3f}",
+                           *p(), *this, *source_dot, *tl.back(), *tl[ i ], source_dot->remains().total_seconds() );
+
       if ( internal_bleeding && p()->active.internal_bleeding )
       {
         p()->active.internal_bleeding->trigger_secondary_action( tl[ i ], cast_state( source_dot->state )->get_combo_points() );
+        p()->sim->print_log( "{} {} clone of {} triggered internal_bleeding on {} with {} cp",
+                             *p(), *this, *source_dot, *tl[ i ], cast_state( source_dot->state )->get_combo_points() );
       }
-      
-      p()->sim->print_log( "{} {} cloning {} from {} to {} with remains={:.3f}",
-                           *p(), *this, *source_dot, *tl.back(), *tl[ i ], source_dot->remains().total_seconds() );
     }
   }
 
