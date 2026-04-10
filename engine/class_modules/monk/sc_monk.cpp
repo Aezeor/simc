@@ -1578,7 +1578,7 @@ struct fists_of_fury_t : monk_melee_attack_t
             .set_eff( &effect );
     }
 
-    double composite_aoe_multiplier( const action_state_t *state ) const
+    double composite_aoe_multiplier( const action_state_t *state ) const override
     {
       double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
 
@@ -4012,7 +4012,7 @@ void gift_of_the_ox_t::spawn_orb( int count )
   if ( is_fallback )
     return;
 
-  for ( size_t i = 0; i < count; ++i )
+  for ( size_t i = 0; i < as<unsigned>( count ); ++i )
     player->trigger_aura_applied_callbacks( proc_data, player );
 
   int available = as<int>( queue.size() );
@@ -5899,9 +5899,24 @@ struct self_damage_override : stagger_impl::self_damage_t<monk_t>
   }
 };
 
-struct training_of_niuzao_buff : buffs::monk_buff_t<>
+struct debuff_override_t : stagger_impl::debuff_t<monk_t>
 {
-  training_of_niuzao_buff( monk_t *player )
+  using base_t = stagger_impl::debuff_t<monk_t>;
+  debuff_override_t( monk_t *player, const stagger_data_t *parent_data, const level_data_t *data )
+    : base_t( player, parent_data, data )
+  {
+    set_stack_change_callback( [ player ]( buff_t *, int old_, int new_ ) {
+      if ( old_ )
+        player->buff.training_of_niuzao->expire();
+      if ( new_ )
+        player->buff.training_of_niuzao->trigger();
+    } );
+  }
+};
+
+struct training_of_niuzao_buff_t : buffs::monk_buff_t<>
+{
+  training_of_niuzao_buff_t( monk_t *player )
     : buffs::monk_buff_t<>( player, "training_of_niuzao", player->talent.brewmaster.training_of_niuzao )
   {
     set_default_value( 0.0 );
@@ -5918,7 +5933,7 @@ struct training_of_niuzao_buff : buffs::monk_buff_t<>
 
 void monk_t::create_buffs()
 {
-  create_stagger<stagger_impl::debuff_t<monk_t>, self_damage_override>(
+  create_stagger<debuff_override_t, self_damage_override>(
       { baseline.brewmaster.stagger_self_damage,
         { { baseline.brewmaster.light_stagger, 0.0 },
           { baseline.brewmaster.moderate_stagger, 0.2 },
@@ -5990,8 +6005,8 @@ void monk_t::create_buffs()
                                                          talent.monk.yulons_grace_buff );
 
   // Brewmaster
-  buff.training_of_niuzao = make_buff_fallback<training_of_niuzao_buff>( talent.brewmaster.training_of_niuzao->ok(),
-                                                                         this, "training_of_niuzao" );
+  buff.training_of_niuzao = make_buff_fallback<training_of_niuzao_buff_t>( talent.brewmaster.training_of_niuzao->ok(),
+                                                                           this, "training_of_niuzao" );
   buff.ox_stance =
       make_buff_fallback( talent.brewmaster.ox_stance->ok(), this, "ox_stance", talent.brewmaster.ox_stance_buff );
 
