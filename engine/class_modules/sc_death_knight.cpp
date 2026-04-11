@@ -3613,14 +3613,19 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
   {
     base_ghoul_pet_t::init_base_stats();
     owner_coeff.ap_from_ap = base_ap_from_ap;
+
+    if ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+    {
+      owner_coeff.ap_from_ap *= 0.83;
+      if ( dk()->talent.rider.unholy_armaments.ok() )
+      {
+        owner_coeff.sp_from_ap *= 1.0 + dk()->talent.rider.unholy_armaments->effectN( 6 ).percent();
+        owner_coeff.ap_from_ap *= 1.0 + dk()->talent.rider.unholy_armaments->effectN( 5 ).percent();
+      }
+    }
+
     if ( name_str == "army_ghoul" )
       owner_coeff.ap_from_ap *= 1.75;
-
-    if ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) && dk()->talent.rider.unholy_armaments.ok() )
-    {
-      owner_coeff.sp_from_ap *= 1.0 + dk()->talent.rider.unholy_armaments->effectN( 6 ).percent();
-      owner_coeff.ap_from_ap *= 1.0 + dk()->talent.rider.unholy_armaments->effectN( 5 ).percent();
-    }
   }
 
   void init_gains() override
