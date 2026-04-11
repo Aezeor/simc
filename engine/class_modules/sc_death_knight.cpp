@@ -12251,6 +12251,9 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     trigger_disease_effects( state, td, td->dot.virulent_plague );
     trigger_disease_effects( state, td, td->dot.dread_plague );
 
+    if ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) && !td->dot.virulent_plague->is_ticking() )
+      p()->background_actions.virulent_plague->execute_on_target( state->target );
+
     if ( p()->talent.rider.trollbanes_icy_fury.ok() && td->debuff.chains_of_ice_trollbane_slow->check() &&
          p()->pets.trollbane.active_pet() != nullptr )
     {
