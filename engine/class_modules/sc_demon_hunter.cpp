@@ -1686,6 +1686,11 @@ struct soul_fragment_t
       frag->activate   = nullptr;
       frag->expiration = make_event<fragment_expiration_t>( sim(), frag );
       frag->dh->activate_soul_fragment( frag );
+      // Devourer souls automatically get picked up if they activate inside the pickup range
+      if ( ( frag->dh->specialization() == DEMON_HUNTER_DEVOURER ) && ( frag->get_distance( frag->dh ) <= 4.0 ) )
+      {
+        frag->consume();
+      }
     }
   };
 
