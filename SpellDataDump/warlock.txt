@@ -12353,7 +12353,7 @@ Effects          :
 #2 (id=1124695)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #3 (id=1124696)  : Apply Aura (6) | Modify Pet Stat (382)
-                   Base Value: 40 | Scaled Value: 40 | Stat: Attack Power (3) | NPC ID: 89 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Stat: Spell Power Inheritence (3) | NPC ID: 89 | Target: Self (1)
 #4 (id=1131611)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #5 (id=1160404)  : Apply Aura (6) | Dummy (4)
