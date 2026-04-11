@@ -12332,7 +12332,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     if ( splits[ 0 ] == "set_bonus" )
       return sets->create_expression( this, splits[ 1 ] );
 
-    if ( splits[ 0 ] == "active_dot" )
+    if ( splits[ 0 ] == "active_dot" || splits[ 0 ] == "active_dots" )
     {
       action_t* action = find_action( splits[ 1 ] );
       if ( action )

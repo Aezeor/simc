@@ -13344,7 +13344,8 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name )
   if ( util::str_compare_ci( name, "combo_points" ) )
     return make_ref_expr( "combo_points", resources.current[ RESOURCE_COMBO_POINT ] );
 
-  if ( util::str_compare_ci( splits[ 0 ], "active_dot" ) && splits.size() == 2 )
+  if ( ( util::str_compare_ci( splits[ 0 ], "active_dot" ) || util::str_compare_ci( splits[ 0 ], "active_dots" ) ) &&
+       splits.size() == 2 )
   {
     if ( util::str_compare_ci( splits[ 1 ], "moonfire" ) )
       return make_fn_expr( name, [ this ]() { return dot_lists.moonfire.size(); } );
