@@ -12830,15 +12830,12 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     trigger_runic_empowerment( calc_rp_cost );
     trigger_runic_corruption( procs.rp_runic_corruption, calc_rp_cost, false );
 
-    if ( talent.unholy.summon_gargoyle.ok() )
+    if ( talent.unholy.summon_gargoyle.ok() && pets.gargoyle.active_pet() != nullptr )
     {
       // 2019-02-12 Death Strike buffs gargoyle as if it had its full cost, even though it received a -10rp cost in 8.1
       // Assuming it's a bug for now, using base_costs instead of last_resource_cost won't affect free spells here
       // Free Death Coils are still handled in the action
-      for ( auto& gargoyle : pets.gargoyle )
-      {
-        gargoyle->increase_power( calc_rp_cost );
-      }
+      pets.gargoyle.active_pet()->increase_power( calc_rp_cost );
     }
 
     if ( talent.icy_talons.ok() )
@@ -14522,7 +14519,7 @@ void death_knight_t::create_pets()
       pets.risen_skulker.set_replacement_strategy( spawner::pet_replacement_strategy::NO_REPLACE );
     }
 
-    if ( talent.unholy.army_of_the_dead.ok() && !talent.unholy.raise_abomination.ok() )
+    if ( talent.unholy.army_of_the_dead.ok() )
     {
       pets.lesser_ghoul_army.set_creation_callback(
           []( death_knight_t* p ) { return new pets::lesser_ghoul_pet_t( p, "army_ghoul" ); } );
@@ -16079,7 +16076,8 @@ void death_knight_t::create_buffs()
   buffs.festering_scythe =
       make_fallback( talent.unholy.festering_scythe.ok(), this, "festering_scythe", spell.festering_scythe_buff );
 
-  buffs.pestilence = make_fallback( talent.unholy.pestilence.ok(), this, "pestilence", spell.pestilence_buff );
+  buffs.pestilence = make_fallback( talent.unholy.pestilence.ok(), this,
+                                    sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) ? "blightfall" : "pestilence", spell.pestilence_buff );
 
   buffs.forbidden_sacrifice =
       make_fallback( talent.unholy.forbidden_knowledge_2.ok(), this, "forbidden_sacrifice", spell.forbidden_sacrifice )
