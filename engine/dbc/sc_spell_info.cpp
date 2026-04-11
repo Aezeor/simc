@@ -1831,11 +1831,11 @@ static constexpr auto _scaling_class_strings = util::make_static_map<int, std::s
 } );
 
 static constexpr auto _pet_stat_strings = util::make_static_map<int, std::string_view>( {
-    { 1, "Health"       },
-    { 2, "Spell Power"  },
-    { 3, "Attack Power" },
-    { 24, "Unknown"     },
-    { 28, "Unknown"     },
+    { 1, "Health"                   },
+    { 2, "Attack Power Inheritence" },
+    { 3, "Spell Power Inheritence"  },
+    { 24, "Unknown"                 },
+    { 28, "Health Regen Rate"       },
 } );
 
 std::string label_str( int label, const dbc_t& dbc, size_t wrap )
