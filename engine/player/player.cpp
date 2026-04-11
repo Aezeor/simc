@@ -5326,7 +5326,7 @@ double player_t::composite_attack_power_multiplier() const
 {
   if ( is_pet() || is_enemy() || type == HEALING_ENEMY || current.attack_power_per_spell_power > 0 )
   {
-    return current.attack_power_multiplier;
+    return 1.0;
   }
 
   double m = current.attack_power_multiplier;
@@ -5629,7 +5629,7 @@ double player_t::composite_spell_power_multiplier() const
 {
   if ( is_pet() || is_enemy() || type == HEALING_ENEMY || current.spell_power_per_attack_power > 0 )
   {
-    return std::round( current.spell_power_multiplier * 1000 ) * 0.001;
+    return 1.0;
   }
 
   // multiplier is rounded to 3 digits

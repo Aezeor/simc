@@ -3362,8 +3362,8 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     base_ghoul_pet_t::init_base_stats();
     if ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) && dk()->talent.rider.unholy_armaments.ok() )
     {
-      base.attack_power_multiplier *= 1.0 + dk()->talent.rider.unholy_armaments->effectN( 4 ).percent();
-      base.spell_power_multiplier *= 1.0 + dk()->talent.rider.unholy_armaments->effectN( 3 ).percent();
+      owner_coeff.sp_from_ap *= 1.0 + dk()->talent.rider.unholy_armaments->effectN( 4 ).percent();
+      owner_coeff.ap_from_ap *= 1.0 + dk()->talent.rider.unholy_armaments->effectN( 3 ).percent();
     }
   }
 
@@ -3618,8 +3618,8 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
 
     if ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) && dk()->talent.rider.unholy_armaments.ok() )
     {
-      base.attack_power_multiplier *= 1.0 + dk()->talent.rider.unholy_armaments->effectN( 6 ).percent();
-      base.spell_power_multiplier *= 1.0 + dk()->talent.rider.unholy_armaments->effectN( 5 ).percent();
+      owner_coeff.sp_from_ap *= 1.0 + dk()->talent.rider.unholy_armaments->effectN( 6 ).percent();
+      owner_coeff.ap_from_ap *= 1.0 + dk()->talent.rider.unholy_armaments->effectN( 5 ).percent();
     }
   }
 
@@ -4024,8 +4024,8 @@ struct risen_skulker_pet_t : public death_knight_pet_t
 
     if ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) && dk()->talent.rider.unholy_armaments.ok() )
     {
-      base.attack_power_multiplier *= 1.0 + dk()->talent.rider.unholy_armaments->effectN( 8 ).percent();
-      base.spell_power_multiplier *= 1.0 + dk()->talent.rider.unholy_armaments->effectN( 7 ).percent();
+      owner_coeff.sp_from_ap *= 1.0 + dk()->talent.rider.unholy_armaments->effectN( 8 ).percent();
+      owner_coeff.ap_from_ap *= 1.0 + dk()->talent.rider.unholy_armaments->effectN( 7 ).percent();
     }
   }
 
