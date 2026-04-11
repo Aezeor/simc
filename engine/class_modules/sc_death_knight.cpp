@@ -887,6 +887,7 @@ public:
     propagate_const<buff_t*> forbidden_ritual;
     propagate_const<buff_t*> scythe_of_decay;
     propagate_const<buff_t*> reaping;
+    propagate_const<buff_t*> blightfall;
     // Tier Sets
     propagate_const<buff_t*> blighted;
 
@@ -1018,6 +1019,7 @@ public:
     propagate_const<action_t*> putrefy_fk_st;
     propagate_const<action_t*> putrefy_fk_aoe;
     propagate_const<action_t*> dread_plague_death;
+    propagate_const<action_t*> disease_cloud;
   } background_actions;
 
   struct runeforge_actions_t
@@ -1346,6 +1348,7 @@ public:
       player_talent_t magus_of_the_dead;
       player_talent_t infected_claws;
       // Row 6
+      player_talent_t cycle_of_death;
       player_talent_t ebon_fever;
       player_talent_t scythe_of_decay;
       player_talent_t coil_of_devastation;
@@ -1595,6 +1598,7 @@ public:
     const spell_data_t* forbidden_sacrifice;
     const spell_data_t* forbidden_ritual;
     const spell_data_t* scythe_of_decay_buff;
+    const spell_data_t* disease_cloud_damage;
 
     // Unholy Summon Spells
     const spell_data_t* summon_gargoyle;
@@ -3353,6 +3357,16 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     }
   }
 
+  void init_base_stats() override
+  {
+    base_ghoul_pet_t::init_base_stats();
+    if ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) && dk()->talent.rider.unholy_armaments.ok() )
+    {
+      base.attack_power_multiplier *= 1.0 + dk()->talent.rider.unholy_armaments->effectN( 4 ).percent();
+      base.spell_power_multiplier *= 1.0 + dk()->talent.rider.unholy_armaments->effectN( 3 ).percent();
+    }
+  }
+
   double composite_player_multiplier( school_e school ) const override
   {
     double m = base_ghoul_pet_t::composite_player_multiplier( school );
@@ -3601,6 +3615,12 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     owner_coeff.ap_from_ap = base_ap_from_ap;
     if ( name_str == "army_ghoul" )
       owner_coeff.ap_from_ap *= 1.75;
+
+    if ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) && dk()->talent.rider.unholy_armaments.ok() )
+    {
+      base.attack_power_multiplier *= 1.0 + dk()->talent.rider.unholy_armaments->effectN( 6 ).percent();
+      base.spell_power_multiplier *= 1.0 + dk()->talent.rider.unholy_armaments->effectN( 5 ).percent();
+    }
   }
 
   void init_gains() override
@@ -4001,6 +4021,12 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     death_knight_pet_t::init_base_stats();
 
     owner_coeff.ap_from_ap = 0.75;
+
+    if ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) && dk()->talent.rider.unholy_armaments.ok() )
+    {
+      base.attack_power_multiplier *= 1.0 + dk()->talent.rider.unholy_armaments->effectN( 8 ).percent();
+      base.spell_power_multiplier *= 1.0 + dk()->talent.rider.unholy_armaments->effectN( 7 ).percent();
+    }
   }
 
   void create_buffs() override
@@ -5206,12 +5232,17 @@ struct abomination_pet_t : public death_knight_pet_t
       if ( pet->is_sleeping() )
         return;
 
-      for ( auto& target : pet->sim->target_non_sleeping_list )
+      if ( pet->dk()->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
       {
-        auto td = pet->dk()->get_target_data( target );
-        if ( !td->debuff.disease_cloud->check() )
-          td->debuff.disease_cloud->trigger();
+        for ( auto& target : pet->sim->target_non_sleeping_list )
+        {
+          auto td = pet->dk()->get_target_data( target );
+          if ( !td->debuff.disease_cloud->check() )
+            td->debuff.disease_cloud->trigger();
+        }
       }
+      else
+        pet->dk()->background_actions.disease_cloud->execute();
 
       make_event<disease_cloud_event_t>( *pet->sim, pet, period );
     }
@@ -5231,28 +5262,39 @@ struct abomination_pet_t : public death_knight_pet_t
     owner_coeff.ap_from_ap            = 2.34;
     resource_regeneration             = regen_type::DISABLED;
 
-    register_on_combat_state_callback( [ this ]( player_t* /* p */, bool in_combat ) {
-      if ( in_combat && dk()->pets.abomination.active_pet() != nullptr )
-      {
-        for ( auto& target : sim->target_non_sleeping_list )
+    if ( sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
+    {
+      register_on_combat_state_callback( [ this ]( player_t* /* p */, bool in_combat ) {
+        if ( in_combat && dk()->pets.abomination.active_pet() != nullptr )
         {
-          auto td = dk()->get_target_data( target );
-          if ( !td->debuff.disease_cloud->check() )
-            td->debuff.disease_cloud->trigger();
+          for ( auto& target : sim->target_non_sleeping_list )
+          {
+            auto td = dk()->get_target_data( target );
+            if ( !td->debuff.disease_cloud->check() )
+              td->debuff.disease_cloud->trigger();
+          }
         }
-      }
-    } );
+      } );
+    }
   }
 
   void arise() override
   {
     // Period information hasnt been found in data, hard coding for now.
-    make_event<disease_cloud_event_t>( *sim, this, 2_s );
-    for ( auto& target : sim->target_non_sleeping_list )
+    timespan_t period =
+        sim->dbc->wowv() < wowv_t( 12, 0, 5 )
+            ? 2_s
+            : timespan_t::from_seconds( dk()->talent.unholy.raise_abomination->effectN( 1 ).base_value() );
+
+    make_event<disease_cloud_event_t>( *sim, this, period );
+    if ( sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
     {
-      auto td = dk()->get_target_data( target );
-      if ( !td->debuff.disease_cloud->check() )
-        td->debuff.disease_cloud->trigger();
+      for ( auto& target : sim->target_non_sleeping_list )
+      {
+        auto td = dk()->get_target_data( target );
+        if ( !td->debuff.disease_cloud->check() )
+          td->debuff.disease_cloud->trigger();
+      }
     }
     death_knight_pet_t::arise();
     // Assume precombat abominations have to walk far further than normal
@@ -7766,6 +7808,18 @@ struct virulent_plague_t final : public death_knight_disease_t
   }
 };
 
+// Disease Cloud =======================================================
+struct disease_cloud_t final : public death_knight_spell_t
+{
+  disease_cloud_t( std::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->spell.disease_cloud_damage )
+  {
+    background = true;
+    aoe        = -1;
+    may_miss = may_dodge = may_parry = false;
+  }
+};
+
 // ==========================================================================
 // Rider of the Apocalypse Abilities
 // ==========================================================================
@@ -8330,6 +8384,75 @@ struct abomination_limb_t : public death_knight_spell_t
 };
 
 // Dark Transformation ======================================================
+// Pestilence
+struct pestilence_t final : public death_knight_spell_t
+{
+  pestilence_t( std::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->spell.pestilence ), damage_mult( 1.0 ), duration_mult( 1.0 )
+  {
+    aoe                    = -1;
+    damage_mult            = p->talent.unholy.pestilence->effectN( 2 ).percent();
+    duration_mult          = p->talent.unholy.pestilence->effectN( 1 ).percent();
+    target_filter_callback = unholy_diseases_only();
+
+    if ( !p->options.wcl_reporting_mode )
+    {
+      add_child( p->background_actions.virulent_plague_erupt_pest );
+      add_child( p->background_actions.dread_plague_erupt_pest );
+    }
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+    p()->cooldown.putrefy->reset( false );
+    p()->buffs.pestilence->expire();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_spell_t::impact( s );
+    death_knight_td_t* td = get_td( s->target );
+    dot_t* vp             = td->dot.virulent_plague;
+    dot_t* dp             = td->dot.dread_plague;
+    double damage         = 0.0;
+    if ( vp->is_ticking() )
+    {
+      if ( p()->options.extra_unholy_reporting )
+        p()->sample_data.pest_vp_dur->add( vp->remains().total_seconds() );
+
+      if ( duration_mult == 1.0 )
+        damage = vp->tick_damage_over_remaining_time() * damage_mult;
+      else
+        damage = vp->tick_damage_over_time( vp->remains() * duration_mult ) * damage_mult;
+      if ( !p()->options.wcl_reporting_mode )
+        p()->background_actions.virulent_plague_erupt_pest->execute_on_target( s->target, damage );
+      else
+        p()->background_actions.virulent_plague_erupt->execute_on_target( s->target, damage );
+      vp->cancel();
+    }
+    if ( dp->is_ticking() )
+    {
+      if ( p()->options.extra_unholy_reporting )
+        p()->sample_data.pest_dp_dur->add( dp->remains().total_seconds() );
+
+      if ( duration_mult == 1.0 )
+        damage = dp->tick_damage_over_remaining_time() * damage_mult;
+      else
+        damage = dp->tick_damage_over_time( dp->remains() * duration_mult ) * damage_mult;
+      if ( !p()->options.wcl_reporting_mode )
+        p()->background_actions.dread_plague_erupt_pest->execute_on_target( s->target, damage );
+      else
+        p()->background_actions.dread_plague_erupt->execute_on_target( s->target, damage );
+      dp->cancel();
+    }
+  }
+
+private:
+  double damage_mult;
+  double duration_mult;
+};
+
 struct dark_transformation_t : public death_knight_spell_t
 {
   dark_transformation_t( std::string_view n, death_knight_t* p, std::string_view options_str = "" )
@@ -8353,6 +8476,9 @@ struct dark_transformation_t : public death_knight_spell_t
       add_child( p->pet_summon.blood_beast );
       p->pet_summon.blood_beast->add_child( p->background_actions.the_blood_is_life );
     }
+
+    if ( p->talent.unholy.pestilence.ok() && p->sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+      set_replacement_action( new pestilence_t( "blightfall", p ), p->buffs.pestilence );
   }
 
   void execute() override
@@ -9207,6 +9333,9 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
       return;
 
     death_knight_spell_t::impact( s );
+
+    if ( p()->talent.unholy.cycle_of_death.ok() && s->chain_target <= 10 )
+      p()->cooldown.putrefy->adjust( -p()->talent.unholy.cycle_of_death->effectN( 2 ).time_value() );
   }
 
 public:
@@ -11521,75 +11650,6 @@ private:
 };
 
 // Outbreak ================================================================
-// Pestilence
-struct pestilence_t final : public death_knight_spell_t
-{
-  pestilence_t( std::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->spell.pestilence ), damage_mult( 1.0 ), duration_mult( 1.0 )
-  {
-    aoe                    = -1;
-    damage_mult            = p->talent.unholy.pestilence->effectN( 2 ).percent();
-    duration_mult          = p->talent.unholy.pestilence->effectN( 1 ).percent();
-    target_filter_callback = unholy_diseases_only();
-
-    if ( !p->options.wcl_reporting_mode )
-    {
-      add_child( p->background_actions.virulent_plague_erupt_pest );
-      add_child( p->background_actions.dread_plague_erupt_pest );
-    }
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-    p()->cooldown.putrefy->reset( false );
-    p()->buffs.pestilence->expire();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    death_knight_spell_t::impact( s );
-    death_knight_td_t* td = get_td( s->target );
-    dot_t* vp             = td->dot.virulent_plague;
-    dot_t* dp             = td->dot.dread_plague;
-    double damage         = 0.0;
-    if ( vp->is_ticking() )
-    {
-      if ( p()->options.extra_unholy_reporting )
-        p()->sample_data.pest_vp_dur->add( vp->remains().total_seconds() );
-
-      if ( duration_mult == 1.0 )
-        damage = vp->tick_damage_over_remaining_time() * damage_mult;
-      else
-        damage = vp->tick_damage_over_time( vp->remains() * duration_mult ) * damage_mult;
-      if( !p()->options.wcl_reporting_mode )
-        p()->background_actions.virulent_plague_erupt_pest->execute_on_target( s->target, damage );
-      else
-        p()->background_actions.virulent_plague_erupt->execute_on_target( s->target, damage );
-      vp->cancel();
-    }
-    if ( dp->is_ticking() )
-    {
-      if( p()->options.extra_unholy_reporting)
-        p()->sample_data.pest_dp_dur->add( dp->remains().total_seconds() );
-
-      if ( duration_mult == 1.0 )
-        damage = dp->tick_damage_over_remaining_time() * damage_mult;
-      else
-        damage = dp->tick_damage_over_time( dp->remains() * duration_mult ) * damage_mult;
-      if ( !p()->options.wcl_reporting_mode )
-        p()->background_actions.dread_plague_erupt_pest->execute_on_target( s->target, damage );
-      else
-        p()->background_actions.dread_plague_erupt->execute_on_target( s->target, damage );
-      dp->cancel();
-    }
-  }
-
-private:
-  double damage_mult;
-  double duration_mult;
-};
-
 struct outbreak_aoe_t final : public death_knight_spell_t
 {
   outbreak_aoe_t( std::string_view name, death_knight_t* p )
@@ -11625,7 +11685,7 @@ struct outbreak_t final : public death_knight_spell_t
       add_child( p->background_actions.dread_plague );
     }
 
-    if ( p->talent.unholy.pestilence.ok() )
+    if ( p->talent.unholy.pestilence.ok() && p->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
       set_replacement_action( new pestilence_t( "pestilence", p ), p->buffs.pestilence );
   }
 
@@ -11858,6 +11918,16 @@ struct putrefy_t final : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p()->pet_summon.putrefy_ghoul->execute();
+
+    if( p()->talent.unholy.cycle_of_death.ok() )
+      p()->cooldown.death_and_decay_dynamic->adjust( -p()->talent.unholy.cycle_of_death->effectN( 1 ).time_value() );
+
+    if ( p()->sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) && p()->talent.unholy.putrid_echoes.ok() &&
+         std::floor( cooldown->charges_fractional() ) > 1 )
+    {
+      p()->pet_summon.putrefy_ghoul->execute();
+      cooldown->start( this );
+    }
   }
 };
 
@@ -12326,7 +12396,7 @@ struct soul_reaper_t final : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
     p()->buffs.reaping->decrement();
-    int charges               = as<int>( std::floor( p()->cooldown.putrefy->charges_fractional() ) );
+    int charges = std::min( 2, as<int>( std::floor( p()->cooldown.putrefy->charges_fractional() ) ) );
     for ( int i = 0; i < charges; i++ )
       p()->background_actions.putrefy_sr->execute();
   }
@@ -13594,7 +13664,7 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
             if ( tracker != active_dnds.front() )
               break;
 
-            if ( !talent.sanlayn.desecrate.ok() )
+            if ( !talent.sanlayn.desecrate.ok() || sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
               break;
             {
               int n_dots = 0;
@@ -13972,6 +14042,9 @@ void death_knight_t::create_actions()
     if ( talent.unholy.army_of_the_dead.ok() )
       pet_summon.army_ghoul = get_action<summon_lesser_ghoul_t>( "army_ghoul", this, spell.summon_army_ghoul,
                                                                  lesser_ghoul_e::LESSER_ARMY_OF_THE_DEAD );
+
+    if ( talent.unholy.raise_abomination.ok() )
+      background_actions.disease_cloud = get_action<disease_cloud_t>( "disease_cloud", this );
 
     if ( talent.unholy.infected_claws.ok() )
       background_actions.infected_claws = get_action<infected_claws_t>( "infected_claws", this );
@@ -14816,6 +14889,7 @@ void death_knight_t::init_spells()
   talent.unholy.magus_of_the_dead = find_talent_spell( talent_tree::SPECIALIZATION, "Magus of the Dead" );
   talent.unholy.infected_claws    = find_talent_spell( talent_tree::SPECIALIZATION, "Infected Claws" );
   // Row 6
+  talent.unholy.cycle_of_death      = find_talent_spell( talent_tree::SPECIALIZATION, "Cycle of Death" );
   talent.unholy.ebon_fever          = find_talent_spell( talent_tree::SPECIALIZATION, "Ebon Fever" );
   talent.unholy.scythe_of_decay     = find_talent_spell( talent_tree::SPECIALIZATION, "Scythe of Decay" );
   talent.unholy.coil_of_devastation = find_talent_spell( talent_tree::SPECIALIZATION, "Coil of Devastation" );
@@ -14841,7 +14915,8 @@ void death_knight_t::init_spells()
   talent.unholy.unholy_aura           = find_talent_spell( talent_tree::SPECIALIZATION, "Unholy Aura" );
   talent.unholy.commander_of_the_dead = find_talent_spell( talent_tree::SPECIALIZATION, "Commander of the Dead" );
   // Row 10
-  talent.unholy.pestilence  = find_talent_spell( talent_tree::SPECIALIZATION, "Pestilence" );
+  talent.unholy.pestilence =
+      find_talent_spell( talent_tree::SPECIALIZATION, sim->dbc->wowv() < wowv_t( 12, 0, 5 ) ? "Pestilence" : "Blightfall" );
   talent.unholy.reanimation = find_talent_spell( talent_tree::SPECIALIZATION, "Reanimation" );
   talent.unholy.outnumber   = find_talent_spell( talent_tree::SPECIALIZATION, "Outnumber" );
   // Apex
@@ -15119,6 +15194,7 @@ void death_knight_t::spell_lookups()
   spell.pestilence_damage               = conditional_spell_lookup( talent.unholy.pestilence.ok(), 1272116 );
   spell.scythe_of_decay_buff            = conditional_spell_lookup( talent.unholy.scythe_of_decay.ok(), 1282565 );
   spell.reaping_buff                    = conditional_spell_lookup( talent.unholy.reaping.ok(), 1242654 );
+  spell.disease_cloud_damage            = conditional_spell_lookup( talent.unholy.raise_abomination.ok(), 1244347 );
   // Unholy Apex
   spell.forbidden_knowledge_buff = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 1242223 );
   spell.necrotic_coil_action     = conditional_spell_lookup( talent.unholy.forbidden_knowledge_1.ok(), 1242174 );

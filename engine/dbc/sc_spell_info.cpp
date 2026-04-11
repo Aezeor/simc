@@ -1830,6 +1830,14 @@ static constexpr auto _scaling_class_strings = util::make_static_map<int, std::s
   { -10, "Restore Mana"            },
 } );
 
+static constexpr auto _pet_stat_strings = util::make_static_map<int, std::string_view>( {
+    { 1, "Health"       },
+    { 2, "Spell Power"  },
+    { 3, "Attack Power" },
+    { 24, "Unknown"     },
+    { 28, "Unknown"     },
+} );
+
 std::string label_str( int label, const dbc_t& dbc, size_t wrap )
 {
   auto it = _label_strings.find( label );
@@ -2245,6 +2253,10 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
 
       tokens.emplace_back( fmt::format( "Race: {}", fmt::join( _strs, ", " ) ) );
     }
+    else if ( e->subtype() == A_MOD_PET_STAT )
+    {
+      tokens.emplace_back( fmt::format( "Stat: {}", map_string( _pet_stat_strings, e->misc_value1() ) ) );
+    }
     else
     {
       tokens.emplace_back( fmt::format( "Misc Value: {}", e->misc_value1() ) );
@@ -2281,6 +2293,9 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
       break;
     case A_TRIGGER_SPELL_ON_STACK_AMOUNT:
       tokens.emplace_back( fmt::format( "Max Stack Count: {}", e->misc_value2() ) );
+      break;
+    case A_MOD_PET_STAT:
+      tokens.emplace_back( fmt::format( "NPC ID: {}", e->misc_value2() ) );
       break;
     default: tokens.emplace_back( fmt::format( "Misc Value 2: {}", e->misc_value2() ) );
       break;
