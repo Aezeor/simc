@@ -1543,6 +1543,8 @@ struct evoker_t : public player_t
     propagate_const<action_t*> consume_flame;
   } background_actions;
 
+  proc_data_t background_proc_data;
+
   evoker_t( sim_t* sim, std::string_view name, race_e r = RACE_DRACTHYR_HORDE );
 
   // Character Definitions
@@ -6274,6 +6276,8 @@ struct disintegrate_t : public essence_spell_t
   {
     essence_spell_t::tick( d );
 
+    p()->trigger_aura_applied_callbacks( proc_data, p() );
+
     if ( current_dots[ 0 ] == d )
     {
       p()->buff.mass_disintegrate_ticks->decrement();
@@ -9398,6 +9402,20 @@ void evoker_t::init_finished()
     } );
   }
 
+  // I hate gaze.
+  // This might be shifting sands but it seems to get slightly too many from sands.
+  // This is about right, though.
+  if ( specialization() == EVOKER_AUGMENTATION )
+  {
+    register_combat_begin( [ this ]( player_t* ) {
+      make_event( sim, timespan_t::from_millis( rng().range( 0, 1250 ) ), [ this ] {
+        trigger_aura_applied_callbacks( background_proc_data, this );
+        make_repeating_event( sim, 1.25_s,
+                              [ this ]() { trigger_aura_applied_callbacks( background_proc_data, this ); } );
+      } );
+    } );
+  }
+
   if ( talent.scalecommander.onslaught.enabled() )
   {
     register_on_combat_state_callback( [ this ]( player_t*, bool in_combat ) {
@@ -9551,6 +9569,8 @@ void evoker_t::init_items()
 void evoker_t::init_spells()
 {
   player_t::init_spells();
+
+  background_proc_data = find_spell( 364342 ); // Blessing of the Bronze
 
   // Evoker Specialization Spells
   spec.evoker               = find_spell( 353167 );  // TODO: confirm this is the class aura
