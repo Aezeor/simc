@@ -807,6 +807,7 @@ public:
       player_talent_t systemic_failure;
       player_talent_t venomous_wounds;
       player_talent_t amplifying_poison;
+      player_talent_t negotiable_contract;
       
       player_talent_t blindside;
       player_talent_t kingsbane;
@@ -1089,6 +1090,7 @@ public:
     int initial_supercharged_cp = 0;
     bool rogue_ready_trigger = true;
     bool priority_rotation = false;
+    double the_first_dance_trigger_rate = 0.75;
   } options;
 
   rogue_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF ) :
@@ -5391,8 +5393,8 @@ struct shadow_dance_t : public rogue_spell_t
 
   bool ready() override
   {
-    // Cannot dance during stealth. Vanish works.
-    if ( p()->buffs.stealth->check() )
+    // Cannot dance during basic stealth and cannot refresh. Vanish works.
+    if ( p()->buffs.stealth->check() || p()->buffs.shadow_dance->check() )
       return false;
 
     return rogue_spell_t::ready();
@@ -8698,6 +8700,26 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
       }
     } );
   }
+
+  // Negotiable Contract DoT Trigger
+  if ( source->talent.assassination.negotiable_contract->ok() )
+  {
+    target->register_on_demise_callback( source, [ this, source ]( player_t* target ) {
+      if ( dots.deathmark->is_ticking() )
+      {
+        for ( auto* t : source->sim->target_non_sleeping_list )
+        {
+          if ( !t->is_enemy() || t == target )
+            continue;
+
+          dots.deathmark->copy( t, DOT_COPY_START );
+          source->sim->print_log( "{} replicated {} on {} to {} with remaining duration of {}",
+                                  *source, *dots.deathmark, *target, *t, dots.deathmark->remains() );
+          break;
+        }
+      }
+    } );
+  }
 }
 
 // ==========================================================================
@@ -9678,6 +9700,7 @@ void rogue_t::init_spells()
   talent.assassination.kingsbane = find_talent_spell( talent_tree::SPECIALIZATION, "Kingsbane" );
   talent.assassination.lethal_dose = find_talent_spell( talent_tree::SPECIALIZATION, "Lethal Dose" );
   talent.assassination.motivated_murderer = find_talent_spell( talent_tree::SPECIALIZATION, "Motivated Murderer" );
+  talent.assassination.negotiable_contract = find_talent_spell( talent_tree::SPECIALIZATION, "Negotiable Contract" );
   talent.assassination.path_of_blood = find_talent_spell( talent_tree::SPECIALIZATION, "Path of Blood" );
   talent.assassination.poison_bomb = find_talent_spell( talent_tree::SPECIALIZATION, "Poison Bomb" );
   talent.assassination.poisoners_drive = find_talent_spell( talent_tree::SPECIALIZATION, "Poisoner's Drive" );
@@ -10754,7 +10777,6 @@ void rogue_t::create_buffs()
 
   buffs.the_first_dance = make_buff( this, "the_first_dance", spec.the_first_dance_buff )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-  // TODO -- Add register_on_combat_state_callback out of combat behavior
 
   buffs.the_rotten = make_buff<damage_buff_t>( this, "the_rotten", talent.subtlety.the_rotten->effectN( 1 ).trigger() )
     ->set_is_stacking_mod( false );
@@ -10866,6 +10888,7 @@ void rogue_t::create_options()
   add_option( opt_int( "fixed_rtb", options.fixed_rtb, 0, 4 ) );
   add_option( opt_func( "fixed_rtb_odds", parse_fixed_rtb_odds ) );
   add_option( opt_bool( "priority_rotation", options.priority_rotation ) );
+  add_option( opt_float( "the_first_dance_trigger_rate", options.the_first_dance_trigger_rate, 0, 1 ) );
 }
 
 // rogue_t::copy_from =======================================================
@@ -10895,6 +10918,8 @@ void rogue_t::copy_from( player_t* source )
   options.fixed_rtb_odds = rogue->options.fixed_rtb_odds;
   options.rogue_ready_trigger = rogue->options.rogue_ready_trigger;
   options.priority_rotation = rogue->options.priority_rotation;
+
+  options.the_first_dance_trigger_rate = rogue->options.the_first_dance_trigger_rate;
 }
 
 // rogue_t::create_profile  =================================================
@@ -11157,6 +11182,17 @@ void rogue_t::activate()
   player_t::activate();
 
   sim->target_non_sleeping_list.register_callback( restealth_callback_t( this ) );
+
+  if ( talent.subtlety.the_first_dance->ok() )
+  {
+    // Technically speaking this is a 6s timer but % chance makes more sense for composite dungeon sims
+    register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
+      if ( !c && rng().roll( options.the_first_dance_trigger_rate ) )
+      {
+        buffs.the_first_dance->trigger();
+      }
+    } );
+  }
 }
 
 // rogue_t::break_stealth ===================================================
