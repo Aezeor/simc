@@ -421,12 +421,12 @@ public:
       player_talent_t vengeful_retreat;
       player_talent_t felblade;
       player_talent_t voidblade;
-      player_talent_t sigil_of_misery;  // NYI
+      player_talent_t sigil_of_misery;  // No Implementation
 
       player_talent_t vengeful_bonds;  // No Implementation
       player_talent_t unrestrained_fury;
       player_talent_t shattered_restoration;
-      player_talent_t improved_sigil_of_misery;
+      player_talent_t improved_sigil_of_misery; // No Implementation
 
       player_talent_t bouncing_glaives;
       player_talent_t imprison;           // No Implementation
@@ -770,7 +770,6 @@ public:
     const spell_data_t* demonic_wards;
     const spell_data_t* metamorphosis;
     const spell_data_t* metamorphosis_buff;
-    const spell_data_t* sigil_of_misery_debuff;
     const spell_data_t* shattered_souls;
     const spell_data_t* the_hunt;
     const spell_data_t* the_hunt_impact;
@@ -881,7 +880,6 @@ public:
     const spell_data_t* thick_skin;
     const spell_data_t* demon_spikes_buff;
     const spell_data_t* painbringer_buff;
-    const spell_data_t* calcified_spikes_buff;
     const spell_data_t* immolation_aura_cdr;
     const spell_data_t* soul_fragments_buff;
     const spell_data_t* retaliation_damage;
@@ -1199,6 +1197,10 @@ public:
     action_t* burning_blades = nullptr;
     action_t* demonsurge     = nullptr;
     action_t* voidsurge      = nullptr;
+
+    // Sigils
+    spell_t* sigil_of_flame   = nullptr;
+    spell_t* sigil_of_spite   = nullptr;
   } active;
 
   // Pets
@@ -1393,15 +1395,12 @@ public:
     int drain_stacks;
     demon_hunter_t* actor;
     double meta_drain_multiplier = 1.0;
-    double initial_drain      = 15.0;
-    double exp_factor         = 1.455;
-    double exp_power          = 0.075;
+    double initial_drain         = 15.0;
+    double exp_factor            = 1.455;
+    double exp_power             = 0.075;
 
     fury_state_t( demon_hunter_t* a )
-      : start_time( timespan_t::min() ),
-        next_drain_event( nullptr ),
-        drain_stacks( 0 ),
-        actor( a )
+      : start_time( timespan_t::min() ), next_drain_event( nullptr ), drain_stacks( 0 ), actor( a )
     {
     }
 
@@ -1409,17 +1408,18 @@ public:
     {
       if ( dh()->talent.devourer.soul_glutton.enabled() )
       {
-        // Why separate multiplier - Easier to find stuff in the future. 
+        // Why separate multiplier - Easier to find stuff in the future.
         meta_drain_multiplier /= 1 + dh()->talent.devourer.soul_glutton->effectN( 2 ).percent();
       }
 
       dh()->sim->print_debug( "{} applying overall drain multiplier of {} to initial drain of {}, result: {}", *dh(),
-                             meta_drain_multiplier, initial_drain, initial_drain * meta_drain_multiplier );
+                              meta_drain_multiplier, initial_drain, initial_drain * meta_drain_multiplier );
 
       dh()->sim->print_debug( "{} applying overall drain multiplier of {} to exp_factor of {}, result: {}", *dh(),
-                             meta_drain_multiplier, exp_factor, exp_factor * meta_drain_multiplier );
+                              meta_drain_multiplier, exp_factor, exp_factor * meta_drain_multiplier );
 
-      // Handled here to do less runtime math later - If formula changes, may need to move Drain Multiplier into the calculation.
+      // Handled here to do less runtime math later - If formula changes, may need to move Drain Multiplier into the
+      // calculation.
       initial_drain *= meta_drain_multiplier;
       exp_factor *= meta_drain_multiplier;
     }
@@ -2371,7 +2371,7 @@ public:
     if ( affected_by.chaos_theory && dh()->buff.chaos_theory->up() )
     {
       const double bonus = dh()->rng().range( dh()->talent.havoc.chaos_theory->effectN( 1 ).percent(),
-                                             dh()->talent.havoc.chaos_theory->effectN( 2 ).percent() );
+                                              dh()->talent.havoc.chaos_theory->effectN( 2 ).percent() );
       c += bonus;
     }
 
@@ -2460,8 +2460,8 @@ public:
       double time_ = ( ab::sim->current_time() - ab::cooldown->last_charged ).total_seconds();
       if ( dh()->sim->debug )
       {
-        dh()->sim->out_debug.printf( "%s %s cooldown waste tracking waste=%.3f exec_time=%.3f", dh()->name(), ab::name(),
-                                    time_, ab::time_to_execute.total_seconds() );
+        dh()->sim->out_debug.printf( "%s %s cooldown waste tracking waste=%.3f exec_time=%.3f", dh()->name(),
+                                     ab::name(), time_, ab::time_to_execute.total_seconds() );
       }
       time_ -= ab::time_to_execute.total_seconds();
 
@@ -2908,19 +2908,19 @@ struct wounded_quarry_accumulator_t : public BASE
       da *= BASE::dh()->talent.aldrachi_reaver.wounded_quarry->effectN( 1 ).percent();
       BASE::dh()->wounded_quarry_accumulator += da;
       BASE::dh()->sim->print_debug( "{} accumulates Wounded Quarry from {} on target {}: da={} total={}",
-                                   BASE::dh()->name(), s->action->name(), s->target->name(), da,
-                                   BASE::dh()->wounded_quarry_accumulator );
+                                    BASE::dh()->name(), s->action->name(), s->target->name(), da,
+                                    BASE::dh()->wounded_quarry_accumulator );
       if ( BASE::dh()->cooldown.wounded_quarry_trigger_icd->up() )
       {
         BASE::dh()->sim->print_debug( "{} triggers Wounded Quarry from {} on target {}: {}", BASE::dh()->name(),
-                                     s->action->name(), BASE::dh()->last_reavers_mark_applied->name(),
-                                     BASE::dh()->wounded_quarry_accumulator );
+                                      s->action->name(), BASE::dh()->last_reavers_mark_applied->name(),
+                                      BASE::dh()->wounded_quarry_accumulator );
         if ( s->target->debuffs.chaos_brand->up() )
         {
           BASE::dh()->wounded_quarry_accumulator *= 1.0 + BASE::dh()->spell.chaos_brand->effectN( 1 ).percent();
         }
         BASE::dh()->active.wounded_quarry->execute_on_target( BASE::dh()->last_reavers_mark_applied,
-                                                             BASE::dh()->wounded_quarry_accumulator );
+                                                              BASE::dh()->wounded_quarry_accumulator );
         BASE::dh()->wounded_quarry_accumulator = 0.0;
         // per dev communication, it's batched per second
         BASE::dh()->cooldown.wounded_quarry_trigger_icd->start( 1_s );
@@ -3430,7 +3430,7 @@ struct shattered_souls_trigger_t : public BASE
     if ( BASE::rng().roll( chance ) )
     {
       BASE::dh()->sim->print_debug( "{} proc-ed Shattered Souls with {} ({}) chance: {:.3f}", BASE::dh()->name(),
-                                   BASE::name(), BASE::data().id(), chance );
+                                    BASE::name(), BASE::data().id(), chance );
       BASE::dh()->spawn_soul_fragment( BASE::dh()->proc.soul_fragment_from_shattered_souls, soul_fragment::LESSER, 1 );
       shattered_souls_proc->occur();
     }
@@ -4190,7 +4190,7 @@ struct fel_devastation_t : public final_breath_trigger_t<demon_hunter_spell_t>
       double fury_refund         = rng().range( minimum_fury_refund, maximum_fury_refund );
 
       dh()->sim->print_debug( "{} rolled {}s of CDR on {} from Darkglare Boon", *dh(), cdr_reduction.total_seconds(),
-                             name_str );
+                              name_str );
       dh()->cooldown.fel_devastation->adjust( -cdr_reduction );
       dh()->resource_gain( RESOURCE_FURY, fury_refund, dh()->gain.darkglare_boon );
     }
@@ -4444,15 +4444,13 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
     }
   };
 
-  sigil_of_flame_damage_t* sigil;
-
   sigil_of_flame_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "sigil_of_flame", p, p->spec.sigil_of_flame, options_str ), sigil( nullptr )
+    : demon_hunter_spell_t( "sigil_of_flame", p, p->spec.sigil_of_flame, options_str )
   {
-    if ( p->spec.sigil_of_flame_damage->ok() )
+    if ( data().ok() && !p->active.sigil_of_flame )
     {
-      sigil = p->get_background_action<sigil_of_flame_damage_t>( "sigil_of_flame_damage" );
-      add_child( sigil );
+      p->active.sigil_of_flame = p->get_background_action<sigil_of_flame_damage_t>( "sigil_of_flame_damage" );
+      add_child( p->active.sigil_of_flame );
     }
 
     may_miss = false;
@@ -4482,19 +4480,13 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::execute();
 
-    if ( sigil )
-    {
-      sigil->place_sigil( execute_state->target );
-    }
+    debug_cast<demon_hunter_sigil_t*>( dh()->active.sigil_of_flame )->place_sigil( execute_state->target );
   }
 
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
   {
-    if ( sigil )
-    {
-      if ( auto e = sigil->create_sigil_expression( name ) )
-        return e;
-    }
+    if ( auto e = debug_cast<demon_hunter_sigil_t*>( dh()->active.sigil_of_flame )->create_sigil_expression( name ) )
+      return e;
 
     return demon_hunter_spell_t::create_expression( name );
   }
@@ -4742,8 +4734,8 @@ struct immolation_aura_t : public demon_hunter_spell_t
              dh()->cooldown.volatile_flameblood_icd->up() )
         {
           dh()->resource_gain( RESOURCE_FURY, dh()->talent.vengeance.volatile_flameblood->effectN( 1 ).base_value(),
-                              dh()->talent.vengeance.volatile_flameblood->effectN( 1 ).m_delta(),
-                              dh()->gain.volatile_flameblood );
+                               dh()->talent.vengeance.volatile_flameblood->effectN( 1 ).m_delta(),
+                               dh()->gain.volatile_flameblood );
           dh()->cooldown.volatile_flameblood_icd->start(
               dh()->talent.vengeance.volatile_flameblood->internal_cooldown() );
         }
@@ -5393,20 +5385,18 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
     {
       demon_hunter_sigil_t::execute();
       dh()->spawn_soul_fragment( dh()->proc.soul_fragment_from_sigil_of_spite, soul_fragment::LESSER,
-                                soul_fragments_to_spawn );
+                                 soul_fragments_to_spawn );
     }
   };
 
-  sigil_of_spite_sigil_t* sigil;
-
   sigil_of_spite_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "sigil_of_spite", p, p->talent.vengeance.sigil_of_spite, options_str ), sigil( nullptr )
+    : demon_hunter_spell_t( "sigil_of_spite", p, p->talent.vengeance.sigil_of_spite, options_str )
   {
-    if ( p->talent.vengeance.sigil_of_spite->ok() )
+    if ( data().ok() && !p->active.sigil_of_spite )
     {
-      sigil = p->get_background_action<sigil_of_spite_sigil_t>( "sigil_of_spite_sigil", p->spec.sigil_of_spite_damage,
-                                                                ground_aoe_duration );
-      add_child( sigil );
+      p->active.sigil_of_spite = p->get_background_action<sigil_of_spite_sigil_t>(
+          "sigil_of_spite_sigil", p->spec.sigil_of_spite_damage, ground_aoe_duration );
+      add_child( p->active.sigil_of_spite );
     }
   }
 
@@ -5424,17 +5414,14 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
   void execute() override
   {
     demon_hunter_spell_t::execute();
-    sigil->place_sigil( target );
+    debug_cast<demon_hunter_sigil_t*>( dh()->active.sigil_of_spite )->place_sigil( target );
     dh()->buff.reavers_glaive->trigger();
   }
 
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
   {
-    if ( sigil )
-    {
-      if ( auto e = sigil->create_sigil_expression( name ) )
-        return e;
-    }
+    if ( auto e = debug_cast<demon_hunter_sigil_t*>( dh()->active.sigil_of_spite )->create_sigil_expression( name ) )
+      return e;
 
     return demon_hunter_spell_t::create_expression( name );
   }
@@ -5548,145 +5535,6 @@ struct the_hunt_t : public the_hunt_base_t
   }
 };
 
-struct sigil_of_misery_t : public demon_hunter_spell_t
-{
-  struct sigil_of_misery_sigil_t : public demon_hunter_sigil_t
-  {
-    sigil_of_misery_sigil_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, timespan_t delay )
-      : demon_hunter_sigil_t( name, p, s, delay )
-    {
-    }
-
-    void execute() override
-    {
-      demon_hunter_sigil_t::execute();
-    }
-  };
-
-  sigil_of_misery_sigil_t* sigil;
-
-  sigil_of_misery_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "sigil_of_misery", p, p->talent.demon_hunter.sigil_of_misery, options_str ),
-      sigil( nullptr )
-  {
-    if ( data().ok() )
-    {
-      sigil = p->get_background_action<sigil_of_misery_sigil_t>( "sigil_of_misery_sigil",
-                                                                 p->spec.sigil_of_misery_debuff, ground_aoe_duration );
-      add_child( sigil );
-    }
-  }
-
-  void execute() override
-  {
-    demon_hunter_spell_t::execute();
-    sigil->place_sigil( target );
-  }
-
-  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
-  {
-    if ( sigil )
-    {
-      if ( auto e = sigil->create_sigil_expression( name ) )
-        return e;
-    }
-
-    return demon_hunter_spell_t::create_expression( name );
-  }
-};
-
-struct sigil_of_silence_t : public demon_hunter_spell_t
-{
-  struct sigil_of_silence_sigil_t : public demon_hunter_sigil_t
-  {
-    sigil_of_silence_sigil_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, timespan_t delay )
-      : demon_hunter_sigil_t( name, p, s, delay )
-    {
-    }
-
-    void execute() override
-    {
-      demon_hunter_sigil_t::execute();
-    }
-  };
-
-  sigil_of_silence_sigil_t* sigil;
-
-  sigil_of_silence_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "sigil_of_silence", p, p->spec.sigil_of_silence, options_str ), sigil( nullptr )
-  {
-    if ( data().ok() )
-    {
-      sigil = p->get_background_action<sigil_of_silence_sigil_t>(
-          "sigil_of_silence_sigil", p->spec.sigil_of_silence_debuff, ground_aoe_duration );
-      add_child( sigil );
-    }
-  }
-
-  void execute() override
-  {
-    demon_hunter_spell_t::execute();
-    sigil->place_sigil( target );
-  }
-
-  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
-  {
-    if ( sigil )
-    {
-      if ( auto e = sigil->create_sigil_expression( name ) )
-        return e;
-    }
-
-    return demon_hunter_spell_t::create_expression( name );
-  }
-};
-
-struct sigil_of_chains_t : public demon_hunter_spell_t
-{
-  struct sigil_of_chains_sigil_t : public demon_hunter_sigil_t
-  {
-    sigil_of_chains_sigil_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, timespan_t delay )
-      : demon_hunter_sigil_t( name, p, s, delay )
-    {
-    }
-
-    void execute() override
-    {
-      demon_hunter_sigil_t::execute();
-    }
-  };
-
-  sigil_of_chains_sigil_t* sigil;
-
-  sigil_of_chains_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "sigil_of_chains", p, p->spec.sigil_of_chains, options_str ), sigil( nullptr )
-  {
-    if ( data().ok() )
-    {
-      sigil = p->get_background_action<sigil_of_chains_sigil_t>( "sigil_of_chains_sigil",
-                                                                 p->spec.sigil_of_chains_debuff, ground_aoe_duration );
-      add_child( sigil );
-    }
-  }
-
-  void execute() override
-  {
-    demon_hunter_spell_t::execute();
-    sigil->place_sigil( target );
-  }
-
-  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
-  {
-    if ( sigil )
-    {
-      if ( auto e = sigil->create_sigil_expression( name ) )
-        return e;
-    }
-
-    return demon_hunter_spell_t::create_expression( name );
-  }
-};
-
 struct surge_base_t : public demon_hunter_spell_t
 {
   surge_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : demon_hunter_spell_t( n, p, s )
@@ -5759,7 +5607,7 @@ struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigg
     if ( dh()->talent.devourer.predators_thirst->ok() )
     {
       dh()->spawn_soul_fragment( soul_fragment_generation_proc, soul_fragment::LESSER,
-                                as<unsigned int>( dh()->spec.shattered_souls->effectN( 3 ).base_value() ) );
+                                 as<unsigned int>( dh()->spec.shattered_souls->effectN( 3 ).base_value() ) );
     }
   }
 };
@@ -6401,8 +6249,8 @@ struct void_ray_t
   {
     tick_action        = dh()->buff.metamorphosis->up() ? tick_meta : tick;
     cooldown->duration = dh()->buff.metamorphosis->up() ? dh()->spec.void_metamorphosis->effectN( 8 ).time_value() +
-                                                             dh()->talent.devourer.voidpurge->effectN( 1 ).time_value()
-                                                       : dh()->talent.devourer.void_ray->cooldown();
+                                                              dh()->talent.devourer.voidpurge->effectN( 1 ).time_value()
+                                                        : dh()->talent.devourer.void_ray->cooldown();
 
     base_t::execute();
     dh()->devourer_fury_state.reschedule_drain();
@@ -6433,7 +6281,7 @@ struct void_ray_t
 
     // Void Ray costs 5 Fury per tick outside of Meta, 0 in Meta
     return dh()->buff.metamorphosis->check() ? dh()->spec.void_ray_tick_meta->cost( POWER_FURY )
-                                            : dh()->spec.void_ray_tick->cost( POWER_FURY );
+                                             : dh()->spec.void_ray_tick->cost( POWER_FURY );
   }
 
   result_amount_type amount_type( const action_state_t*, bool ) const override
@@ -6486,7 +6334,7 @@ struct collapsing_star_t : public demon_hunter_spell_t
       {
         unsigned fragments_to_spawn = as<unsigned>( dh()->talent.devourer.star_fragments->effectN( 1 ).base_value() );
         dh()->spawn_soul_fragment( dh()->proc.soul_fragment_from_star_fragments, soul_fragment::LESSER,
-                                  fragments_to_spawn );
+                                   fragments_to_spawn );
       }
 
       if ( dh()->talent.devourer.voidrush->ok() )
@@ -6599,7 +6447,7 @@ struct world_killer_t : public voidfall_meteor_base_t
     {
       case DEMON_HUNTER_DEVOURER:
         dh()->spawn_soul_fragment( dh()->proc.soul_fragment_from_world_killer, soul_fragment::LESSER,
-                                  as<int>( dh()->talent.annihilator.world_killer->effectN( 4 ).base_value() ) );
+                                   as<int>( dh()->talent.annihilator.world_killer->effectN( 4 ).base_value() ) );
         break;
       case DEMON_HUNTER_VENGEANCE:
         dh()->cooldown.metamorphosis->adjust(
@@ -7471,7 +7319,7 @@ struct chaos_strike_base_t
         if ( dh()->cooldown.chaos_strike_refund_icd->up() && dh()->rng().roll( this->get_refund_proc_chance() ) )
         {
           dh()->resource_gain( RESOURCE_FURY, dh()->spec.chaos_strike_fury->effectN( 1 ).resource( RESOURCE_FURY ),
-                              parent->gain );
+                               parent->gain );
           dh()->cooldown.chaos_strike_refund_icd->start( dh()->spec.chaos_strike_refund->internal_cooldown() );
         }
 
@@ -7715,7 +7563,7 @@ struct burning_wound_t : public demon_hunter_spell_t
 
         auto tdata = td( lowest_duration );
         dh()->sim->print_debug( "{} removes burning_wound on {} with duration {}", *dh(), *lowest_duration,
-                               tdata->dots.burning_wound->remains().total_seconds() );
+                                tdata->dots.burning_wound->remains().total_seconds() );
         tdata->debuffs.burning_wound->cancel();
         tdata->dots.burning_wound->cancel();
 
@@ -7975,7 +7823,8 @@ struct fracture_t : public voidfall_building_trigger_t<
     {
       demon_hunter_attack_t::impact( s );
 
-      dh()->spawn_soul_fragment( dh()->proc.soul_fragment_from_fracture, soul_fragment::LESSER, soul_fragments_to_spawn );
+      dh()->spawn_soul_fragment( dh()->proc.soul_fragment_from_fracture, soul_fragment::LESSER,
+                                 soul_fragments_to_spawn );
     }
   };
 
@@ -8639,7 +8488,7 @@ struct soul_carver_t : public demon_hunter_attack_t
       return;
 
     dh()->spawn_soul_fragment( dh()->proc.soul_fragment_from_soul_carver, soul_fragment::LESSER,
-                              as<unsigned int>( data().effectN( 3 ).base_value() ) );
+                               as<unsigned int>( data().effectN( 3 ).base_value() ) );
   }
 
   void tick( dot_t* d ) override
@@ -8647,7 +8496,7 @@ struct soul_carver_t : public demon_hunter_attack_t
     demon_hunter_attack_t::tick( d );
 
     dh()->spawn_soul_fragment( dh()->proc.soul_fragment_from_soul_carver, soul_fragment::LESSER,
-                              as<unsigned int>( data().effectN( 4 ).base_value() ) );
+                               as<unsigned int>( data().effectN( 4 ).base_value() ) );
   }
 };
 
@@ -8888,7 +8737,8 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
         s->growing_inferno_multiplier = 1 + growing_inferno_ticks * growing_inferno_multiplier;
         s->immolation_aura            = this;
 
-        dh()->active.immolation_aura_initial->snapshot_state( s, dh()->active.immolation_aura_initial->amount_type( s ) );
+        dh()->active.immolation_aura_initial->snapshot_state( s,
+                                                              dh()->active.immolation_aura_initial->amount_type( s ) );
         dh()->active.immolation_aura_initial->schedule_execute( s );
       }
 
@@ -9146,7 +8996,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       dh()->buff.collapsing_star_stack->trigger(
           as<int>( dh()->talent.devourer.collapsing_star->effectN( 1 ).base_value() ) );
       dh()->spawn_soul_fragment( dh()->proc.soul_fragment_from_void_metamorphosis, soul_fragment::LESSER,
-                                as<unsigned int>( dh()->talent.devourer.midnight3->effectN( 1 ).base_value() ) );
+                                 as<unsigned int>( dh()->talent.devourer.midnight3->effectN( 1 ).base_value() ) );
     }
 
     if ( ( sim->dbc->wowv() >= wowv_t( 12, 0, 1 ) || dh()->specialization() == DEMON_HUNTER_HAVOC ) &&
@@ -9349,14 +9199,15 @@ struct student_of_suffering_buff_t : public demon_hunter_buff_t<buff_t>
 
 struct impending_apocalypse_buff_t : public demon_hunter_buff_t<buff_t>
 {
-  impending_apocalypse_buff_t( demon_hunter_t* p ) : base_t(*p, "impending_apocalypse", p->spec.impending_apocalypse_buff )
+  impending_apocalypse_buff_t( demon_hunter_t* p )
+    : base_t( *p, "impending_apocalypse", p->spec.impending_apocalypse_buff )
   {
     set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
     set_tick_behavior( buff_tick_behavior::NONE );
     set_period( 0_ms );
   }
 
-  void increment(int stacks, double value, timespan_t duration) override
+  void increment( int stacks, double value, timespan_t duration ) override
   {
     if ( !dh()->buff.metamorphosis->up() )
     {
@@ -9364,7 +9215,7 @@ struct impending_apocalypse_buff_t : public demon_hunter_buff_t<buff_t>
       return;
     }
 
-    base_t::increment(stacks, value, duration);
+    base_t::increment( stacks, value, duration );
   }
 };
 
@@ -9703,12 +9554,6 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new the_hunt_t( this, options_str );
   if ( name == "predators_wake" )
     return new predators_wake_t( this, options_str );
-  if ( name == "sigil_of_misery" )
-    return new sigil_of_misery_t( this, options_str );
-  if ( name == "sigil_of_silence" )
-    return new sigil_of_silence_t( this, options_str );
-  if ( name == "sigil_of_chains" )
-    return new sigil_of_chains_t( this, options_str );
   if ( name == "devour" )
     return new devour_t( this, options_str );
   if ( name == "consume" )
@@ -9869,7 +9714,6 @@ void demon_hunter_t::create_buffs()
   }
 
   buff.impending_apocalypse = make_buff<impending_apocalypse_buff_t>( this );
-    
 
   buff.collapsing_star = make_buff( this, "collapsing_star", spec.collapsing_star_buff )
                              ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
@@ -10272,6 +10116,41 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
             return !( buff.doomsayer_in_combat->check() || buff.doomsayer_out_of_combat->check() );
           } );
         }
+      }
+    }
+
+    if ( util::str_compare_ci( splits[ 0 ], "action" ) )
+    {
+      if ( util::str_compare_ci( splits[ 1 ], "sigil_of_flame" ) )
+      {
+        auto sof_action = find_action( "sigil_of_flame" );
+
+        if (!sof_action)
+          return expr_t::create_constant( name_str, false );
+
+        auto expr = sof_action->create_expression( util::string_join( util::make_span( splits ).subspan( 2 ), "." ) );
+        if (expr)
+          return expr;
+
+        auto tail = name_str.substr( splits[ 0 ].length() + splits[ 1 ].length() + 2 );
+
+        throw sc_invalid_apl_argument( fmt::format( "Unsupported sigil_of_flame expression '{}'.", tail ) );
+      }
+
+      if ( util::str_compare_ci( splits[ 1 ], "sigil_of_spite" ) )
+      {
+        auto sosp_action = find_action( "sigil_of_spite" );
+
+        if (!sosp_action)
+          return expr_t::create_constant( name_str, false );
+
+        auto expr = sosp_action->create_expression( util::string_join( util::make_span( splits ).subspan( 2 ), "." ) );
+        if (expr)
+          return expr;
+
+        auto tail = name_str.substr( splits[ 0 ].length() + splits[ 1 ].length() + 2 );
+
+        throw sc_invalid_apl_argument( fmt::format( "Unsupported sigil_of_spite expression '{}'.", tail ) );
       }
     }
   }
@@ -11016,7 +10895,6 @@ void demon_hunter_t::init_spells()
   spell.felblade_damage        = talent_spell_lookup( talent.demon_hunter.felblade, 213243 );
   spell.infernal_armor_damage  = talent_spell_lookup( talent.demon_hunter.infernal_armor, 320334 );
   spell.immolation_aura_damage = conditional_spell_lookup( spell.immolation_aura_2->ok(), 258921 );
-  spec.sigil_of_misery_debuff  = talent_spell_lookup( talent.demon_hunter.sigil_of_misery, 207685 );
 
   // Spec Background Spells
   spec.feast_of_souls_buff      = talent_spell_lookup( talent.devourer.feast_of_souls, 1232310 );
@@ -11086,6 +10964,7 @@ void demon_hunter_t::init_spells()
   spec.eternal_hunt_buff                         = talent_spell_lookup( talent.havoc.eternal_hunt_3, 1271092 );
 
   spec.demon_spikes_buff               = find_spell( 203819, DEMON_HUNTER_VENGEANCE );
+  spec.sigil_of_flame                  = find_spell( 204596, DEMON_HUNTER_VENGEANCE );
   spec.sigil_of_flame_damage           = find_spell( 204598, DEMON_HUNTER_VENGEANCE );
   spec.sigil_of_flame_fury             = find_spell( 389787, DEMON_HUNTER_VENGEANCE );
   spec.fiery_brand_debuff              = talent_spell_lookup( talent.vengeance.fiery_brand, 207771 );
@@ -11231,7 +11110,6 @@ void demon_hunter_t::init_spells()
       break;
   }
 
-  spec.sigil_of_flame        = find_spell( 204596, DEMON_HUNTER_VENGEANCE );
   spec.sigil_of_spite_damage = talent_spell_lookup( talent.vengeance.sigil_of_spite, 389860 );
   spec.sigil_of_silence      = talent.vengeance.sigil_of_silence;
   spec.sigil_of_chains       = talent.vengeance.sigil_of_chains;
@@ -12409,7 +12287,7 @@ void demon_hunter_t::fury_state_t::reschedule_drain()
 void demon_hunter_t::fury_state_t::clear_state()
 {
   drain_stacks = 0;
-  start_time = timespan_t::min();
+  start_time   = timespan_t::min();
 }
 
 void demon_hunter_t::fury_state_t::stop()
@@ -12425,7 +12303,6 @@ void demon_hunter_t::fury_state_t::reset()
 
 void demon_hunter_t::fury_state_t::drain()
 {
-
   dh()->active.void_buildup->stats->add_execute( 0_s, dh() );
   dh()->active.void_buildup->consume_resource();
 
