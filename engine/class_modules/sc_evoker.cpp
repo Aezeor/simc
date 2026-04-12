@@ -375,28 +375,28 @@ struct simplified_player_t : public player_t
 
   std::map<std::string, bob_settings_t> bob_settings = {
       { "default", 
-        { ROLE_SPELL, 31.4, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, 0.1, 0.2,
+        { ROLE_SPELL, 29.4, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, 0.1, 0.2,
           {
             { "dps_pot", 695.0, 30_s, 300_s, 3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY }
           } 
         } 
       },
       { "tank", 
-        { ROLE_TANK, 22.2, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, 0, 0,
+        { ROLE_TANK, 20.9, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, 0, 0,
           {
             { "dps_pot", 695.0, 30_s, 300_s, 3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY }
           } 
         } 
       },
       { "healer", 
-        { ROLE_HEAL, 5, true, 1.5_s, 0.25, -1, 5, 1, 0.0, 20000.0, 0.0011, 0, 0,
+        { ROLE_HEAL, 5.4, true, 1.5_s, 0.25, -1, 5, 1, 0.0, 20000.0, 0.0011, 0, 0,
           {
             { "dps_pot", 695.0, 30_s, 300_s, 3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY }
           } 
         } 
       },
       { "shadow_archon", 
-        { ROLE_SPELL, 20, true, 1.5_s, 0.6, -1, 12, 1, -0.1, 20000.0, 0.0011, 0.1, 0.35,
+        { ROLE_SPELL, 19.1, true, 1.5_s, 0.6, -1, 12, 1, -0.1, 20000.0, 0.0011, 0.1, 0.35,
           { 
             { "trinket", 0.2, 15_s, 120_s, 0_s, bob_buff_type_e::BUFF_MAST },
             { "pi", 0.2, 15_s, 120_s, 3_s, bob_buff_type_e::BUFF_HASTE },
@@ -409,7 +409,7 @@ struct simplified_player_t : public player_t
         }
       },
       { "shadow",
-        { ROLE_SPELL, 22, true, 1.5_s, 0.6, -1, 12, 1, -0.1,  20000.0, 0.0011, 0.1, 0.35,
+        { ROLE_SPELL, 21.0, true, 1.5_s, 0.6, -1, 12, 1, -0.1,  20000.0, 0.0011, 0.1, 0.35,
           { 
             { "trinket", 0.2, 15_s, 120_s, 0_s, bob_buff_type_e::BUFF_MAST },
             { "pi", 0.2, 15_s, 120_s, 3_s, bob_buff_type_e::BUFF_HASTE },
@@ -420,7 +420,7 @@ struct simplified_player_t : public player_t
         }
       },
       { "bm",
-        { ROLE_SPELL, 17.5, true, 1.5_s, 0.45, -1, 8, 1, -0.1, 14000.0, 0.0011, 0, 0,
+        { ROLE_SPELL, 16.4, true, 1.5_s, 0.45, -1, 8, 1, -0.1, 14000.0, 0.0011, 0, 0,
           { 
             { "trinket",            0.2, 15_s, 120_s, 0_s, bob_buff_type_e::BUFF_MAST },
             { "beastial_wrath",     0.8, 16_s,  30_s, 1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
@@ -431,7 +431,7 @@ struct simplified_player_t : public player_t
         }
       },
       { "assa",
-        { ROLE_SPELL, 14.3, false, 1_s, 0.5, -1, 8, 1, 0.8, 11100.0, 0.0011, 0.25, 0.35,
+        { ROLE_SPELL, 13.5, false, 1_s, 0.5, -1, 8, 1, 0.8, 11100.0, 0.0011, 0.25, 0.35,
           { 
             { "two_mins_cds", 0.9, 20_s, 120_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "one_mins_cds", 0.65, 14_s, 60_s, 4_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
@@ -440,7 +440,7 @@ struct simplified_player_t : public player_t
         }
       },
       { "unh",
-        { ROLE_SPELL, 21.0, true, 1.5_s, 0.5, -1, 8, 1, 0, 18000.0, 0.0011, 0.1, 0.35,
+        { ROLE_SPELL, 19.6, true, 1.5_s, 0.5, -1, 8, 1, 0, 18000.0, 0.0011, 0.1, 0.35,
           { 
             { "90s_cds", 0.8, 20_s, 90_s, 6_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "45s_cds", 0.55, 20_s, 45_s, 7_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
@@ -450,7 +450,7 @@ struct simplified_player_t : public player_t
         } 
       },
       { "demo",
-        { ROLE_SPELL, 20.0, true, 1.5_s, 0.5, -1, 8, 1, -0.2, 9000.0, 0.0011, 0.1, 0.35,
+        { ROLE_SPELL, 19.0, true, 1.5_s, 0.5, -1, 8, 1, -0.2, 9000.0, 0.0011, 0.1, 0.35,
           { 
             { "60s_cds_p1", 0.2,  30_s,  60_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "60s_cds_p2", 0.2,  30_s,  60_s,  7_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
@@ -465,7 +465,7 @@ struct simplified_player_t : public player_t
         } 
       },
       { "arcane",
-        { ROLE_SPELL, 17.5, true, 1.5_s, 0.45, -1,  8, 1, 0.0, 20000.0, 0.0011, 0.15, 0.35,
+        { ROLE_SPELL, 16.4, true, 1.5_s, 0.45, -1,  8, 1, 0.0, 20000.0, 0.0011, 0.15, 0.35,
           { 
             { "90s_cds", 1.2, 15_s, 90_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "45s_cds", 0.8, 12_s, 45_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
@@ -474,7 +474,7 @@ struct simplified_player_t : public player_t
         }
       },
       { "dk_frost",
-        { ROLE_SPELL, 17.0, true, 1.5_s, 0.45, -1, 8, 1, 0, 6900.0, 0.0011, 0.05, 0.35,
+        { ROLE_SPELL, 16.2, true, 1.5_s, 0.45, -1, 8, 1, 0, 6900.0, 0.0011, 0.05, 0.35,
           { { "nerf_lust",                 -0.2,     8_s,  600_s,  0_s, bob_buff_type_e::BUFF_HASTE },
             { "90s_trinket",                0.15,   20_s,   90_s,  1_s, bob_buff_type_e::BUFF_HASTE },
             { "funny_dragon",               0.10,    3_s,   90_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
@@ -820,22 +820,26 @@ struct simplified_player_t : public player_t
   {
     int item_level = option.item_level;
 
+    const int crafted_item_ilvl_loss = 4;
+
     std::map<slot_e, std::string> default_items = {
-        { SLOT_HEAD, fmt::format( ",id=195476,ilevel={}", item_level ) },
-        { SLOT_NECK, fmt::format( ",id=207163,ilevel={}", item_level ) },
+        { SLOT_HEAD, fmt::format( ",id=195476,gem_id=240983,ilevel={}", item_level ) },
+        { SLOT_NECK, fmt::format( ",id=207163,gem_id=240900,ilevel={}", item_level ) },
         { SLOT_SHOULDERS, fmt::format( ",id=193637,ilevel={}", item_level ) },
         { SLOT_BACK, fmt::format( ",id=195482,ilevel={}", item_level ) },
         { SLOT_CHEST, fmt::format( ",id=193801,ilevel={},enchant_id=7987", item_level ) },
-        { SLOT_WRISTS, fmt::format( ",id=193812,ilevel={}", item_level ) },
+        { SLOT_WRISTS,
+          fmt::format( ",id=193812,gem_id=240900,ilevel={},enchant=23int", item_level - crafted_item_ilvl_loss ) },
         { SLOT_HANDS, fmt::format( ",id=193818,ilevel={}", item_level ) },
-        { SLOT_WAIST, fmt::format( ",id=207144,ilevel={}", item_level ) },
+        { SLOT_WAIST,
+          fmt::format( ",id=207144,gem_id=240900,ilevel={},enchant=23int", item_level - crafted_item_ilvl_loss ) },
         { SLOT_LEGS, fmt::format( ",id=193759,ilevel={},enchant_id=7935", item_level ) },
         { SLOT_FEET, fmt::format( ",id=207139,ilevel={}", item_level ) },
-        { SLOT_FINGER_1, fmt::format( ",id=207159,ilevel={},enchant_id=7997", item_level ) },
-        { SLOT_FINGER_2, fmt::format( ",id=237570,ilevel={},enchant_id=7997", item_level ) },
+        { SLOT_FINGER_1, fmt::format( ",id=207159,gem_id=240900,ilevel={},enchant_id=7997", item_level ) },
+        { SLOT_FINGER_2, fmt::format( ",id=237570,gem_id=240900,ilevel={},enchant_id=7997", item_level ) },
         { SLOT_TRINKET_1, fmt::format( ",id=153816,ilevel={}", item_level ) },
         { SLOT_TRINKET_2, fmt::format( ",id=153819,ilevel={}", item_level ) },
-        { SLOT_MAIN_HAND, fmt::format( ",id=202565,ilevel={}", item_level ) },
+        { SLOT_MAIN_HAND, fmt::format( ",id=202565,ilevel={},enchant=39int", item_level ) },
     };
 
     for ( const auto& [ slot, item_str ] : default_items )
