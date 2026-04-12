@@ -8420,6 +8420,13 @@ struct pestilence_t final : public death_knight_spell_t
     }
   }
 
+  void init_finished() override
+  {
+    death_knight_spell_t::init_finished();
+    cooldown->set_max_charges( 1 );
+    cooldown->duration = 0_ms;
+  }
+
   void execute() override
   {
     death_knight_spell_t::execute();
@@ -8490,7 +8497,7 @@ struct dark_transformation_t : public death_knight_spell_t
 
     if ( p->talent.sanlayn.the_blood_is_life.ok() )
     {
-      p->pets.blood_beast.set_creation_event_callback( pets::parent_pet_action_fn( p->pet_summon.blood_beast ) );
+      p->pets.blood_beast.set_creation_event_callback( pets::parent_pet_action_fn( p->pet_summon.blood_beast ) ); 
       add_child( p->pet_summon.blood_beast );
       p->pet_summon.blood_beast->add_child( p->background_actions.the_blood_is_life );
     }
@@ -8502,6 +8509,8 @@ struct dark_transformation_t : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
+    if ( was_replaced )
+      return;
 
     p()->pets.ghoul_pet.active_pet()->resource_gain( RESOURCE_ENERGY,
                                                      p()->talent.unholy.dark_transformation->effectN( 4 ).resource(),
@@ -8539,6 +8548,9 @@ struct dark_transformation_t : public death_knight_spell_t
 
   bool ready() override
   {
+    if ( p()->buffs.pestilence->check() && p()->sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+      return death_knight_spell_t::ready();
+
     if ( p()->pets.ghoul_pet.active_pet() == nullptr || p()->pets.ghoul_pet.active_pet()->is_sleeping() )
       return false;
 
