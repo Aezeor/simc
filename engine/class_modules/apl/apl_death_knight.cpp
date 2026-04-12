@@ -338,7 +338,10 @@ void unholy( player_t* p )
   else
     cooldowns->add_action( "soul_reaper,target_if=min:health.pct,if=!talent.blightfall&(!debuff.soul_reaper_debuff.up|!variable.cds_active&cooldown.dark_transformation.remains>cooldown.soul_reaper.duration-1|cooldown.dark_transformation.remains<gcd.max&talent.reaping)|talent.blightfall&talent.infliction_of_sorrow&(buff.dark_transformation.remains<5|buff.reaping.remains<=gcd.max)" );
   cooldowns->add_action( "putrefy,if=(variable.st_planning|variable.adds_remain)*(target.health.pct>35|!talent.soul_reaper)&(charges=max_charges&!buff.sudden_doom.react&(cooldown.dark_transformation.remains>9|!talent.reaping)|buff.dark_transformation.up)|fight_remains<cooldown.soul_reaper.remains|raid_event.adds.exists&raid_event.adds.remains<3" );
-  cooldowns->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&pet.lesser_ghoul_army.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead" );
+  if ( p->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
+    cooldowns->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&pet.lesser_ghoul_army.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead" );
+  else
+    cooldowns->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&!buff.blightfall.up&(pet.lesser_ghoul_army.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead)|buff.blightfall.up&buff.dark_transformation.remains<4" );
 
   racials->add_action( "ancestral_call,if=variable.cds_active", "Racials" );
   racials->add_action( "arcane_pulse,if=runic_power<20&rune<2" );
