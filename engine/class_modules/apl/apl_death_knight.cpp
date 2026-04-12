@@ -319,7 +319,10 @@ void unholy( player_t* p )
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_->add_action( "call_action_list,name=single_target,if=active_enemies<4" );
 
-  aoe->add_action( "death_and_decay,if=!death_and_decay.ticking&talent.desecrate", "Aoe Rotation" );
+  if ( p->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
+    aoe->add_action( "death_and_decay,if=!death_and_decay.ticking&talent.desecrate", "Aoe Rotation" );
+  else
+    aoe->add_action( "death_and_decay,if=!death_and_decay.ticking&(talent.desecrate|talent.cycle_of_death&!(cooldown.putrefy.charges=cooldown.putrefy.max_charges))", "Aoe Rotation" );
   aoe->add_action( "festering_strike,target_if=min:health.pct,if=talent.festering_scythe&(fight_remains>3|raid_event.adds.exists&raid_event.adds.remains>3)&(buff.festering_scythe.up&(buff.festering_scythe.remains<=3|debuff.festering_scythe_debuff.remains<3)|!buff.festering_scythe.up&debuff.festering_scythe_debuff.remains<3)" );
   aoe->add_action( "epidemic,if=variable.spending_rp&variable.epidemic_prio" );
   aoe->add_action( "death_coil,target_if=min:health.pct,if=variable.spending_rp&!variable.epidemic_prio" );
