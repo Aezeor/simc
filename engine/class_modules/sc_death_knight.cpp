@@ -4747,6 +4747,9 @@ struct mograine_pet_t final : public horseman_pet_t
       if ( !dots.empty() )
         for ( auto& dot : dots )
           dot->adjust_duration( dur );
+
+      if ( dk()->talent.unholy.cycle_of_death.ok() && s->chain_target < 10 )
+        dk()->cooldown.putrefy->adjust( -dk()->talent.unholy.cycle_of_death->effectN( 2 ).time_value() );
     }
   };
 
@@ -9339,7 +9342,7 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
 
     death_knight_spell_t::impact( s );
 
-    if ( p()->talent.unholy.cycle_of_death.ok() && s->chain_target <= 10 )
+    if ( p()->talent.unholy.cycle_of_death.ok() && s->chain_target < 10 )
       p()->cooldown.putrefy->adjust( -p()->talent.unholy.cycle_of_death->effectN( 2 ).time_value() );
   }
 
