@@ -16283,6 +16283,9 @@ void death_knight_t::init_finished()
   if ( off_hand_weapon.type != WEAPON_NONE && oh_runeforge == RUNEFORGE_NONE )
     sim->error( TRIVIAL, "Player {} has no Off-Hand Runeforge enchanted.", name() );
 
+  if ( specialization() == DEATH_KNIGHT_UNHOLY && mh_runeforge != RUNEFORGE_APOCALYPSE )
+    sim->error( TRIVIAL, "Player {} has a Main-Hand Runeforge that is not Apocalypse enchanted.", name() );
+
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
     magus_active = 0;
 
