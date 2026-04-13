@@ -821,6 +821,8 @@ struct simplified_player_t : public player_t
     int item_level = option.item_level;
 
     const int crafted_item_ilvl_loss = 4;
+    bool void_event           = ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) && sim->dbc->wowv() < wowv_t( 12, 1, 0 ) );
+    const int void_event_ilvl = void_event ? item_level + 9 : item_level;
 
     std::map<slot_e, std::string> default_items = {
         { SLOT_HEAD, fmt::format( ",id=195476,gem_id=240983,ilevel={}", item_level ) },
@@ -837,9 +839,9 @@ struct simplified_player_t : public player_t
         { SLOT_FEET, fmt::format( ",id=207139,ilevel={}", item_level ) },
         { SLOT_FINGER_1, fmt::format( ",id=207159,gem_id=240900,ilevel={},enchant_id=7997", item_level ) },
         { SLOT_FINGER_2, fmt::format( ",id=237570,gem_id=240900,ilevel={},enchant_id=7997", item_level ) },
-        { SLOT_TRINKET_1, fmt::format( ",id=153816,ilevel={}", item_level ) },
-        { SLOT_TRINKET_2, fmt::format( ",id=153819,ilevel={}", item_level ) },
-        { SLOT_MAIN_HAND, fmt::format( ",id=202565,ilevel={},enchant=39int", item_level ) },
+        { SLOT_TRINKET_1, fmt::format( ",id=153816,ilevel={}", void_event_ilvl ) },
+        { SLOT_TRINKET_2, fmt::format( ",id=153819,ilevel={}", void_event_ilvl ) },
+        { SLOT_MAIN_HAND, fmt::format( ",id=202565,ilevel={},enchant=39int", void_event_ilvl ) },
     };
 
     for ( const auto& [ slot, item_str ] : default_items )
@@ -7916,19 +7918,9 @@ public:
     if ( p( s )->talent.scalecommander.wingleader.ok() && s->chain_target == 0 )
     {
       cooldown_t* cd = get_cd_for_player( p( s ) );
-      timespan_t cdr;
-      if ( sim->dbc->wowv() < wowv_t( 12, 0, 1 ) )
-      {
-        cdr = -timespan_t::from_seconds(
-            std::min( p( s )->talent.scalecommander.wingleader->effectN( 1 ).base_value() * s->n_targets,
-                      p( s )->talent.scalecommander.wingleader->effectN( 2 ).base_value() ) );
-      }
-      else
-      {
-        size_t idx = p( s )->specialization() == EVOKER_AUGMENTATION ? 3 : 1;
-        cdr        = -std::min( p( s )->talent.scalecommander.wingleader->effectN( idx ).time_value() * s->n_targets,
-                                p( s )->talent.scalecommander.wingleader->effectN( idx + 1 ).time_value() );
-      }
+      size_t idx     = p( s )->specialization() == EVOKER_AUGMENTATION ? 3 : 1;
+      timespan_t cdr = -std::min( p( s )->talent.scalecommander.wingleader->effectN( idx ).time_value() * s->n_targets,
+                                  p( s )->talent.scalecommander.wingleader->effectN( idx + 1 ).time_value() );
       cd->adjust( cdr );
     }
   }
