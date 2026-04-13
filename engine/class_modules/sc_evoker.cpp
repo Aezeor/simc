@@ -4497,17 +4497,15 @@ public:
 
   double ebon_int_post_dr()
   {
-    auto amount = ebon_int() * p()->spec.ebon_might->effectN( 3 ).base_value();
+    auto amount = ebon_int();
 
-    if ( p()->option.nerf_em_for_external_sims &&
-         ( p()->option.force_raid ||
-           p()->allies_with_my_ebon.size() > p()->spec.ebon_might->effectN( 3 ).base_value() ) )
+    if ( p()->option.nerf_em_for_external_sims )
     {
-      amount /= p()->option.estimated_raid_dps_allies;
+      amount *= p()->spec.ebon_might->effectN( 3 ).base_value() / p()->option.estimated_raid_dps_allies;
     }
     else if ( p()->allies_with_my_ebon.size() > p()->spec.ebon_might->effectN( 3 ).base_value() )
     {
-      amount /= p()->allies_with_my_ebon.size();
+      amount *= p()->spec.ebon_might->effectN( 3 ).base_value() / p()->allies_with_my_ebon.size();
     }
 
     if ( p()->talent.duplicate2.enabled() && p()->buff.duplicate->check() )
