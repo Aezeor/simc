@@ -820,7 +820,7 @@ struct simplified_player_t : public player_t
   {
     int item_level = option.item_level;
 
-    const int crafted_item_ilvl_loss = 4;
+    const int crafted_item_ilvl = item_level - 4;
     bool void_event           = ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) && sim->dbc->wowv() < wowv_t( 12, 1, 0 ) );
     const int void_event_ilvl = void_event ? item_level + 9 : item_level;
 
@@ -830,11 +830,9 @@ struct simplified_player_t : public player_t
         { SLOT_SHOULDERS, fmt::format( ",id=193637,ilevel={}", item_level ) },
         { SLOT_BACK, fmt::format( ",id=195482,ilevel={}", item_level ) },
         { SLOT_CHEST, fmt::format( ",id=193801,ilevel={},enchant_id=7987", item_level ) },
-        { SLOT_WRISTS,
-          fmt::format( ",id=193812,gem_id=240900,ilevel={},enchant=23int", item_level - crafted_item_ilvl_loss ) },
+        { SLOT_WRISTS, fmt::format( ",id=193812,gem_id=240900,ilevel={},enchant=23int", crafted_item_ilvl ) },
         { SLOT_HANDS, fmt::format( ",id=193818,ilevel={}", item_level ) },
-        { SLOT_WAIST,
-          fmt::format( ",id=207144,gem_id=240900,ilevel={},enchant=23int", item_level - crafted_item_ilvl_loss ) },
+        { SLOT_WAIST, fmt::format( ",id=207144,gem_id=240900,ilevel={},enchant=23int", crafted_item_ilvl ) },
         { SLOT_LEGS, fmt::format( ",id=193759,ilevel={},enchant_id=7935", item_level ) },
         { SLOT_FEET, fmt::format( ",id=207139,ilevel={}", item_level ) },
         { SLOT_FINGER_1, fmt::format( ",id=207159,gem_id=240900,ilevel={},enchant_id=7997", item_level ) },
