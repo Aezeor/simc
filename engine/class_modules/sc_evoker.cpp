@@ -4883,8 +4883,8 @@ struct living_flame_base_t : public Base
 struct living_flame_damage_t : public living_flame_base_t<evoker_spell_t>
 {
   chrono_flame_damage_t* chrono_flame;
-  living_flame_damage_t( evoker_t* p, std::string_view name = "living_flame", bool st_only = false )
-    : base_t( std::string( name ) + "_damage", p, p->spec.living_flame_damage, st_only ), chrono_flame( nullptr )
+  living_flame_damage_t( evoker_t* p, std::string_view name = "living_flame", bool afterimage = false )
+    : base_t( std::string( name ) + "_damage", p, p->spec.living_flame_damage, afterimage ), chrono_flame( nullptr )
   {
     if ( p->talent.chronowarden.chrono_flame.enabled() )
     {
@@ -4911,8 +4911,9 @@ struct living_flame_damage_t : public living_flame_base_t<evoker_spell_t>
 
     da *= 1.0 + p()->buff.iridescence_red->check_value();
 
-    // TODO: Require Instant Cast.
-    da *= 1.0 + p()->talent.chronowarden.chronal_dynamo->effectN( 2 ).percent();
+    // Afterimage
+    if ( !st_only )
+      da *= 1.0 + p()->talent.chronowarden.chronal_dynamo->effectN( 2 ).percent();
 
     return da;
   }
