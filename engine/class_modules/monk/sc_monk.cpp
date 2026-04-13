@@ -391,8 +391,25 @@ void monk_action_t<Base>::consume_resource()
   if ( !base_t::execute_state )  // Fixes rare crashes at combat_end.
     return;
 
-  if ( current_resource() == RESOURCE_CHI && p()->talent.windwalker.dance_of_chiji->ok() )
-    p()->buff.dance_of_chiji->trigger();
+  if ( current_resource() == RESOURCE_CHI )
+  {
+    if ( p()->talent.windwalker.dance_of_chiji->ok() )
+      p()->buff.dance_of_chiji->trigger();
+
+    if ( p()->wowv_ge( wowv_t( 12, 0, 5 ) ) && p()->talent.windwalker.tigereye_brew_1->ok() )
+    {
+      double current_value =
+          p()->buff.tigereye_brew_1_accumulator->stack_value() + base_t::base_costs[ RESOURCE_CHI ].base;
+      double trigger_amount = p()->talent.windwalker.tigereye_brew_1->effectN( 2 ).base_value();
+      if ( current_value >= trigger_amount )
+      {
+        p()->buff.tigereye_brew_1->trigger();
+        current_value -= trigger_amount;
+      }
+
+      p()->buff.tigereye_brew_1_accumulator->trigger( 1, current_value );
+    }
+  }
 
   // Chi Savings on Dodge & Parry & Miss
   if ( base_t::last_resource_cost > 0 )
@@ -888,7 +905,7 @@ struct rising_sun_kick_t : monk_melee_attack_t
       {
         timespan_t value = -1 * p()->talent.windwalker.xuens_battlegear->effectN( 2 ).time_value();
         p()->cooldown.fists_of_fury->adjust( value, true );
-        p()->proc.xuens_battlegear_reduction->occur();
+        p()->proc.xuens_battlegear_rsk_reduction->occur();
       }
     }
   };
@@ -1508,6 +1525,14 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if ( jade_ignition )
       jade_ignition->execute();
+
+    if ( p()->wowv_ge( wowv_t( 12, 0, 5 ) ) && p()->talent.windwalker.xuens_battlegear->ok() )
+    {
+      timespan_t base_reduction = p()->talent.windwalker.xuens_battlegear->effectN( 4 ).time_value() * num_targets_hit;
+      timespan_t max_reduction  = p()->talent.windwalker.xuens_battlegear->effectN( 5 ).time_value();
+      p()->cooldown.fists_of_fury->adjust( -1 * std::min( base_reduction, max_reduction ), true );
+      p()->proc.xuens_battlegear_sck_reduction->occur();
+    }
   }
 };
 
@@ -1532,7 +1557,8 @@ struct fists_of_fury_t : monk_melee_attack_t
                 [ & ]( double ) { return ( ( 1.0 / p()->composite_melee_haste() ) - 1.0 ) * effect.percent(); } )
             .set_eff( &effect );
 
-      parse_effects( player->buff.tigereye_brew_3 );
+      if ( player->wowv_l( wowv_t( 12, 0, 5 ) ) )
+        parse_effects( player->buff.tigereye_brew_3 );
 
       add_parse_entry( da_multiplier_effects )
           .set_value( player->talent.windwalker.fists_of_fury->effectN( 6 ).percent() - 1.0 )
@@ -1556,7 +1582,7 @@ struct fists_of_fury_t : monk_melee_attack_t
       monk_melee_attack_t::impact( state );
 
       p()->buff.momentum_boost_damage->trigger();
-      if ( p()->rng().roll( p()->composite_melee_crit_chance() ) )
+      if ( p()->wowv_l( wowv_t( 12, 0, 5 ) ) && p()->rng().roll( p()->composite_melee_crit_chance() ) )
         p()->buff.tigereye_brew_3->trigger();
     }
   };
@@ -1719,7 +1745,8 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
       make_event<events::delayed_cb_event_t>( *p()->sim, p(), i * base_tick_time, [ i, this ] { aoe->execute( !i ); } );
 
     p()->buff.heart_of_the_jade_serpent->trigger();
-    p()->buff.inner_compass_serpent_stance->trigger();
+    if ( p()->wowv_l( { 12, 0, 5 } ) )
+      p()->buff.inner_compass_serpent_stance->trigger();
 
     if ( const player_talent_t &talent = p()->talent.windwalker.knowledge_of_the_broken_temple; talent->ok() )
       p()->buff.teachings_of_the_monastery->trigger( as<unsigned>( talent->effectN( 1 ).base_value() ) );
@@ -1834,7 +1861,8 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
       main_hand->execute();
 
     p()->buff.heart_of_the_jade_serpent->trigger();
-    p()->buff.inner_compass_serpent_stance->trigger();
+    if ( p()->wowv_l( { 12, 0, 5 } ) )
+      p()->buff.inner_compass_serpent_stance->trigger();
 
     if ( const player_talent_t &talent = p()->talent.windwalker.knowledge_of_the_broken_temple; talent->ok() )
       p()->buff.teachings_of_the_monastery->trigger( as<unsigned>( talent->effectN( 1 ).base_value() ) );
@@ -3385,7 +3413,8 @@ struct courage_of_the_white_tiger_t : conduit_of_the_celestials_container_t
       if ( source == BASE )
       {
         p()->buff.strength_of_the_black_ox->trigger();
-        p()->buff.inner_compass_tiger_stance->trigger();
+        if ( p()->wowv_l( { 12, 0, 5 } ) )
+          p()->buff.inner_compass_tiger_stance->trigger();
         p()->buff.courage_of_the_white_tiger->expire();
       }
 
@@ -3494,7 +3523,8 @@ struct strength_of_the_black_ox_t : conduit_of_the_celestials_container_t
           return;
 
         p()->buff.strength_of_the_black_ox->expire();
-        p()->buff.inner_compass_ox_stance->trigger();
+        if ( p()->wowv_l( { 12, 0, 5 } ) )
+          p()->buff.inner_compass_ox_stance->trigger();
       }
 
       monk_spell_t::execute();
@@ -3696,32 +3726,88 @@ struct celestial_conduit_t : public monk_spell_t
   }
 };
 
-struct zenith_t : public monk_spell_t
+struct zenith_stomp_t : monk_spell_t
 {
-  struct zenith_stomp_t : public monk_spell_t
+  enum source_e
   {
-    zenith_stomp_t( monk_t *player ) : monk_spell_t( player, "zenith_stomp", player->talent.monk.zenith_stomp_damage )
-    {
-      aoe                 = -1;
-      reduced_aoe_targets = player->talent.monk.zenith_stomp->effectN( 1 ).base_value();
-      ww_mastery          = true;
-    }
+    ZENITH_STOMP_CAST,
+    ZENITH_STOMP_TRIGGER
   };
 
+  source_e source;
+
+  zenith_stomp_t( monk_t *player, source_e source, std::string_view options_str )
+    : monk_spell_t( player, fmt::format( "zenith_stomp_{}", source == ZENITH_STOMP_CAST ? "cast" : "trigger" ),
+                    player->talent.monk.zenith_stomp_damage ),
+      source( source )
+  {
+    if ( player->wowv_l( { 12, 0, 5 } ) && source == ZENITH_STOMP_CAST )
+      return;
+
+    parse_options( options_str );
+
+    if ( source == ZENITH_STOMP_TRIGGER )
+    {
+      background = dual = true;
+      trigger_gcd       = 0_ms;
+    }
+
+    aoe                 = -1;
+    reduced_aoe_targets = player->talent.monk.zenith_stomp->effectN( 1 ).base_value();
+    may_combo_strike    = false;
+    ww_mastery          = true;
+  }
+
+  void init() override
+  {
+    monk_spell_t::init();
+
+    if ( auto *zenith = p()->find_action( "zenith" ); zenith )
+      zenith->add_child( this );
+  }
+
+  bool ready() override
+  {
+    if ( source == ZENITH_STOMP_TRIGGER )
+      return true;
+
+    if ( p()->buff.zenith_stomp->check() )
+      return monk_spell_t::ready();
+
+    return false;
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    p()->buff.zenith_stomp->decrement();
+  }
+};
+
+struct zenith_t : public monk_spell_t
+{
   action_t *zenith_stomp;
 
   zenith_t( monk_t *player, std::string_view options_str )
     : monk_spell_t( player, "zenith", player->talent.windwalker.zenith ), zenith_stomp( nullptr )
   {
     parse_options( options_str );
-
     may_combo_strike = true;
 
     if ( player->talent.monk.zenith_stomp->ok() )
     {
-      zenith_stomp = new zenith_stomp_t( player );
+      zenith_stomp = new zenith_stomp_t( player, zenith_stomp_t::ZENITH_STOMP_TRIGGER, "" );
       add_child( zenith_stomp );
     }
+  }
+
+  bool ready() override
+  {
+    if ( p()->buff.zenith_stomp->check() )
+      return false;
+
+    return monk_spell_t::ready();
   }
 
   void execute() override
@@ -3729,6 +3815,9 @@ struct zenith_t : public monk_spell_t
     p()->buff.heart_of_the_jade_serpent_yulons_avatar->trigger();
 
     monk_spell_t::execute();
+
+    if ( p()->wowv_ge( { 12, 0, 5 } ) )
+      p()->buff.zenith_stomp->trigger();
 
     p()->buff.zenith->trigger();
     p()->cooldown.rising_sun_kick->reset( true );
@@ -5057,6 +5146,7 @@ void monk_t::parse_player_effects()
   parse_effects( buff.inner_compass_ox_stance );
   parse_effects( buff.inner_compass_serpent_stance );
   parse_effects( buff.inner_compass_tiger_stance );
+  parse_effects( buff.inner_compass_crane_stance );
 
   effect_mask_t em = talent.conduit_of_the_celestials.flowing_wisdom->ok() ? effect_mask_t( true )
                                                                            : effect_mask_t( true ).disable( 8 );
@@ -5158,6 +5248,8 @@ action_t *monk_t::create_action( std::string_view name, std::string_view options
     return new whirling_dragon_punch_t( this, options_str );
   if ( name == "zenith" )
     return new zenith_t( this, options_str );
+  if ( name == "zenith_stomp" )
+    return new zenith_stomp_t( this, zenith_stomp_t::ZENITH_STOMP_CAST, options_str );
 
   // Conduit of the Celestials
   if ( name == "celestial_conduit" )
@@ -5437,6 +5529,7 @@ void monk_t::init_spells()
     talent.monk.summon_black_ox_statue       = _CT( "Summon Black Ox Statue" );
     talent.monk.zenith_stomp                 = _CT( "Zenith Stomp" );
     talent.monk.zenith_stomp_damage          = find_spell( 1272696 );
+    talent.monk.zenith_stomp_buff            = find_spell( 1291484 );
     talent.monk.ironshell_brew               = _CT( "Ironshell Brew" );
     talent.monk.expeditious_fortification    = _CT( "Expeditious Fortification" );
     talent.monk.diffuse_magic                = _CT( "Diffuse Magic" );
@@ -5661,6 +5754,7 @@ void monk_t::init_spells()
     talent.conduit_of_the_celestials.inner_compass_ox_stance_buff      = find_spell( 443574 );
     talent.conduit_of_the_celestials.inner_compass_tiger_stance_buff   = find_spell( 443575 );
     talent.conduit_of_the_celestials.inner_compass_serpent_stance_buff = find_spell( 443576 );
+    talent.conduit_of_the_celestials.inner_compass_crane_stance_buff   = find_spell( 443572 );
     talent.conduit_of_the_celestials.flowing_wisdom                    = _HT( "Flowing Wisdom" );
     talent.conduit_of_the_celestials.unity_within                      = _HT( "Unity Within" );
     talent.conduit_of_the_celestials.unity_within_buff                 = find_spell( 443592 );
@@ -6160,12 +6254,25 @@ void monk_t::create_buffs()
 
   buff.zenith = make_buff_fallback<buffs::zenith_t>( talent.windwalker.zenith->ok(), this, "zenith" );
 
+  buff.zenith_stomp =
+      make_buff_fallback( talent.monk.zenith_stomp->ok(), this, "zenith_stomp", talent.monk.zenith_stomp_buff )
+          ->modify_initial_stack( as<int>( talent.windwalker.tigereye_brew_3->ok()
+                                               ? talent.windwalker.tigereye_brew_3->effectN( 1 ).base_value()
+                                               : 0 ) );
+
   buff.rushing_wind_kick = make_buff_fallback( talent.windwalker.rushing_wind_kick->ok(), this, "rushing_wind_kick",
                                                talent.windwalker.rushing_wind_kick_buff );
 
   buff.tigereye_brew_1 = make_buff_fallback( talent.windwalker.tigereye_brew_1->ok(), this, "tigereye_brew_1",
                                              talent.windwalker.tigereye_brew_1_buff )
                              ->set_default_value( talent.windwalker.tigereye_brew_1_buff->effectN( 1 ).percent() );
+
+  buff.tigereye_brew_1_accumulator =
+      make_buff_fallback( talent.windwalker.tigereye_brew_1->ok(), this, "tigereye_brew_1_accumulator" )
+          ->set_quiet( true )
+          ->set_cooldown( 0_ms )
+          ->set_duration( 6000_s )
+          ->set_max_stack( 1 );
 
   buff.tigereye_brew_3 = make_buff_fallback( talent.windwalker.tigereye_brew_3->ok(), this, "tigereye_brew_3",
                                              talent.windwalker.tigereye_brew_3_buff )
@@ -6197,12 +6304,17 @@ void monk_t::create_buffs()
               buff.heart_of_the_jade_serpent->expire();
           } );
 
+  buff.inner_compass_crane_stance =
+      make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this, "crane_stance",
+                          talent.conduit_of_the_celestials.inner_compass_crane_stance_buff );
+
   buff.inner_compass_ox_stance =
       make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this, "ox_stance",
                           talent.conduit_of_the_celestials.inner_compass_ox_stance_buff )
           ->set_stack_change_callback( [ this ]( buff_t *, int old_, int ) {
-            if ( old_ == 0 )
+            if ( old_ == 0 && wowv_l( { 12, 0, 5 } ) )
             {
+              buff.inner_compass_crane_stance->expire();
               buff.inner_compass_serpent_stance->expire();
               buff.inner_compass_tiger_stance->expire();
             }
@@ -6212,8 +6324,9 @@ void monk_t::create_buffs()
       make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this, "serpent_stance",
                           talent.conduit_of_the_celestials.inner_compass_serpent_stance_buff )
           ->set_stack_change_callback( [ this ]( buff_t *, int old_, int ) {
-            if ( old_ == 0 )
+            if ( old_ == 0 && wowv_l( { 12, 0, 5 } ) )
             {
+              buff.inner_compass_crane_stance->expire();
               buff.inner_compass_ox_stance->expire();
               buff.inner_compass_tiger_stance->expire();
             }
@@ -6223,8 +6336,9 @@ void monk_t::create_buffs()
       make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this, "tiger_stance",
                           talent.conduit_of_the_celestials.inner_compass_tiger_stance_buff )
           ->set_stack_change_callback( [ this ]( buff_t *, int old_, int ) {
-            if ( old_ == 0 )
+            if ( old_ == 0 && wowv_l( { 12, 0, 5 } ) )
             {
+              buff.inner_compass_crane_stance->expire();
               buff.inner_compass_ox_stance->expire();
               buff.inner_compass_serpent_stance->expire();
             }
@@ -6295,16 +6409,17 @@ void monk_t::init_procs()
 {
   base_t::init_procs();
 
-  proc.anvil_and_stave            = get_proc( "Anvil & Stave" );
-  proc.blackout_combo_tiger_palm  = get_proc( "Blackout Combo - Tiger Palm" );
-  proc.blackout_combo_keg_smash   = get_proc( "Blackout Combo - Keg Smash" );
-  proc.charred_passions           = get_proc( "Charred Passions" );
-  proc.elusive_footwork_proc      = get_proc( "Elusive Footwork" );
-  proc.salsalabims_strength       = get_proc( "Sal'salabim Breath of Fire Reset" );
-  proc.tranquil_spirit_expel_harm = get_proc( "Tranquil Spirit - Expel Harm" );
-  proc.tranquil_spirit_goto       = get_proc( "Tranquil Spirit - Gift of the Ox" );
-  proc.xuens_battlegear_reduction = get_proc( "Xuen's Battlegear CD Reduction" );
-  proc.elusive_brawler_preserved  = get_proc( "Elusive Brawler Stacks Preserved" );
+  proc.anvil_and_stave                = get_proc( "Anvil & Stave" );
+  proc.blackout_combo_tiger_palm      = get_proc( "Blackout Combo - Tiger Palm" );
+  proc.blackout_combo_keg_smash       = get_proc( "Blackout Combo - Keg Smash" );
+  proc.charred_passions               = get_proc( "Charred Passions" );
+  proc.elusive_footwork_proc          = get_proc( "Elusive Footwork" );
+  proc.salsalabims_strength           = get_proc( "Sal'salabim Breath of Fire Reset" );
+  proc.tranquil_spirit_expel_harm     = get_proc( "Tranquil Spirit - Expel Harm" );
+  proc.tranquil_spirit_goto           = get_proc( "Tranquil Spirit - Gift of the Ox" );
+  proc.xuens_battlegear_rsk_reduction = get_proc( "Xuen's Battlegear CD RSK Reduction" );
+  proc.xuens_battlegear_sck_reduction = get_proc( "Xuen's Battlegear CD SCK Reduction" );
+  proc.elusive_brawler_preserved      = get_proc( "Elusive Brawler Stacks Preserved" );
 }
 
 monk_effect_callback_t::monk_effect_callback_t( const special_effect_t &effect, monk_t *player )
@@ -6906,13 +7021,15 @@ void monk_t::combat_begin()
     make_repeating_event( sim, talent.monk.chi_wave->effectN( 1 ).period(), [ this ]() { buff.chi_wave->trigger(); } );
   }
 
+  // This is just for easier cleanup later
   if ( talent.windwalker.tigereye_brew_1->ok() )
   {
     const auto period_fn = []( monk_t *player ) -> timespan_t {
       return player->talent.windwalker.tigereye_brew_1->effectN( 1 ).period() * player->composite_melee_haste();
     };
     const auto callback = []( monk_t *player ) -> void {
-      player->buff.tigereye_brew_1->trigger();
+      if ( player->wowv_l( { 12, 0, 5 } ) )
+        player->buff.tigereye_brew_1->trigger();
 
       if ( !player->sim->active_enemies && player->buff.tigereye_brew_1->stack() <
                                                player->talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() )
@@ -6922,6 +7039,26 @@ void monk_t::combat_begin()
 
     if ( !buff.tigereye_brew_1->check() )
       buff.tigereye_brew_1->trigger( as<int>( talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() ) );
+  }
+
+  if ( talent.conduit_of_the_celestials.inner_compass->ok() && wowv_ge( { 12, 0, 5 } ) )
+  {
+    const std::array<buff_t *, 4> stances = { buff.inner_compass_crane_stance, buff.inner_compass_ox_stance,
+                                              buff.inner_compass_tiger_stance, buff.inner_compass_serpent_stance };
+
+    // Select a random stance to begin the iteration.
+    rng().range( stances )->trigger();
+
+    make_repeating_event(
+        sim, talent.conduit_of_the_celestials.inner_compass->effectN( 1 ).period(), [ this, stances ]() {
+          auto current_stance =
+              std::find_if( stances.begin(), stances.end(), []( auto &stance ) { return stance->check(); } );
+          ( *current_stance )->expire();
+          if ( std::next( current_stance ) != stances.end() )
+            ( *std::next( current_stance ) )->trigger();
+          else
+            ( *stances.begin() )->trigger();
+        } );
   }
 
   if ( specialization() == MONK_WINDWALKER )
