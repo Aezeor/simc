@@ -398,8 +398,10 @@ void monk_action_t<Base>::consume_resource()
 
     if ( p()->wowv_ge( wowv_t( 12, 0, 5 ) ) && p()->talent.windwalker.tigereye_brew_1->ok() )
     {
-      double current_value =
-          p()->buff.tigereye_brew_1_accumulator->stack_value() + base_t::base_costs[ RESOURCE_CHI ].base;
+      double base_cost = base_t::base_costs[ RESOURCE_CHI ].base;
+      if ( base_t::id == 100784 )  // Blackout Kick
+        base_cost = base_t::base_costs[ RESOURCE_CHI ];
+      double current_value = p()->buff.tigereye_brew_1_accumulator->stack_value() + base_cost;
       double trigger_amount = p()->talent.windwalker.tigereye_brew_1->effectN( 2 ).base_value();
       if ( current_value >= trigger_amount )
       {
