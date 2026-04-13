@@ -1126,7 +1126,9 @@ struct evoker_t : public player_t
     int upheaval_default_rank                                  = 0;
     bool allow_precombat_buffs_for_debug                       = false;
     int estimated_raid_dps_allies                              = 13;
+    bool nerf_em_for_external_sims                             = false;
     bool patchwerk_in_dungeon                                  = false;
+    bool force_raid                                            = false;
   } option;
 
   // Action pointers
@@ -4495,11 +4497,17 @@ public:
 
   double ebon_int_post_dr()
   {
-    auto amount = ebon_int();
+    auto amount = ebon_int() * p()->spec.ebon_might->effectN( 3 ).base_value();
 
-    if ( p()->allies_with_my_ebon.size() > p()->spec.ebon_might->effectN( 3 ).base_value() )
+    if ( p()->option.nerf_em_for_external_sims &&
+         ( p()->option.force_raid ||
+           p()->allies_with_my_ebon.size() > p()->spec.ebon_might->effectN( 3 ).base_value() ) )
     {
-      amount *= p()->spec.ebon_might->effectN( 3 ).base_value() / p()->allies_with_my_ebon.size();
+      amount /= p()->option.estimated_raid_dps_allies;
+    }
+    else if ( p()->allies_with_my_ebon.size() > p()->spec.ebon_might->effectN( 3 ).base_value() )
+    {
+      amount /= p()->allies_with_my_ebon.size();
     }
 
     if ( p()->talent.duplicate2.enabled() && p()->buff.duplicate->check() )
@@ -7195,7 +7203,8 @@ public:
 
     // Depower Breath of Eons in Raid Encounters
     if ( p( s ) == s->action->player && player_count > p( s )->spec.ebon_might->effectN( 3 ).base_value() &&
-         p( s )->option.estimated_raid_dps_allies > player_count )
+             p( s )->option.estimated_raid_dps_allies > player_count ||
+         p( s )->option.force_raid )
     {
       player_count = p( s )->option.estimated_raid_dps_allies;
     }
@@ -10396,6 +10405,8 @@ void evoker_t::create_options()
   add_option( opt_bool( "evoker.allow_precombat_buffs_for_debug", option.allow_precombat_buffs_for_debug ) );
   add_option( opt_int( "evoker.estimated_raid_dps_allies", option.estimated_raid_dps_allies ) );
   add_option( opt_bool( "evoker.patchwerk_in_dungeon", option.patchwerk_in_dungeon ) );
+  add_option( opt_bool( "evoker.nerf_em_for_external_sims", option.nerf_em_for_external_sims ) );
+  add_option( opt_bool( "evoker.force_raid", option.force_raid ) );
 }
 
 void evoker_t::analyze( sim_t& sim )
