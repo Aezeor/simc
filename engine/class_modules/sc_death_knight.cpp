@@ -12797,7 +12797,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
   // Procs from runes spent
   if ( resource_type == RESOURCE_RUNE && action )
   {
-    int base_cost = as<int>( action->base_costs.at( RESOURCE_RUNE ).value() );
+    int base_cost = as<int>( action->base_costs[ RESOURCE_RUNE ].base );
     // Gathering Storm triggers a stack and extends RW duration by 0.5s
     // for each spell cast that normally consumes a rune (even if it ended up free)
     // But it doesn't count the original Relentless Winter cast
@@ -12854,7 +12854,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
 
     // If an action is linked, fetch its base cost.
     if ( action )
-      base_rp_cost = action->base_costs.at( RESOURCE_RUNIC_POWER ).value();
+      base_rp_cost = action->base_costs[ RESOURCE_RUNIC_POWER ].base;
 
     double calc_rp_cost = std::max( base_rp_cost, actual_amount );
 
