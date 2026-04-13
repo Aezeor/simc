@@ -4435,8 +4435,18 @@ struct zenith_t : monk_buff_t<>
   bool trigger( int stacks = -1, double = DEFAULT_VALUE(), double chance = -1.0,
                 timespan_t duration = timespan_t::min() ) override
   {
-    double value = p().buff.tigereye_brew_1->stack_value();
-    p().buff.tigereye_brew_1->expire();
+    double value = 0;
+    if ( p().wowv_l( { 12, 0, 5 } ) )
+    {
+      value = p().buff.tigereye_brew_1->stack_value();
+      p().buff.tigereye_brew_1->expire();
+    }
+    else {
+      int stack = std::min( p().buff.tigereye_brew_1->stack(),
+                               as<int>( p().talent.windwalker.tigereye_brew_1->effectN( 3 ).base_value() ) );
+      value          = p().buff.tigereye_brew_1->value() * stack;
+      p().buff.tigereye_brew_1->decrement( stack );
+    }
     return monk_buff_t::trigger( stacks, value, chance, duration );
   }
 };
