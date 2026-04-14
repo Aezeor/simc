@@ -8506,13 +8506,16 @@ struct dark_transformation_t : public death_knight_spell_t
 
     if ( p->talent.sanlayn.the_blood_is_life.ok() )
     {
-      p->pets.blood_beast.set_creation_event_callback( pets::parent_pet_action_fn( p->pet_summon.blood_beast ) ); 
+      p->pets.blood_beast.set_creation_event_callback( pets::parent_pet_action_fn( p->pet_summon.blood_beast ) );
       add_child( p->pet_summon.blood_beast );
       p->pet_summon.blood_beast->add_child( p->background_actions.the_blood_is_life );
     }
 
     if ( p->talent.unholy.pestilence.ok() && p->sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
       set_replacement_action( new pestilence_t( "blightfall", p ), p->buffs.pestilence );
+
+    if ( !p->talent.unholy.pestilence.ok() )
+      trigger_gcd = 0_ms;  // in data as 1.5s, only triggers this gcd if blightfall is talented.
   }
 
   void execute() override
