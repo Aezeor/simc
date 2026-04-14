@@ -8321,6 +8321,8 @@ struct reapers_mark_t final : public death_knight_spell_t
     {
       add_child( p->background_actions.exterminate );
     }
+    if ( p->talent.deathbringer.echoing_fury.ok() )
+      exterm_stacks = as<int>( p->talent.deathbringer.echoing_fury->effectN( 1 ).base_value() );
   }
 
   void impact( action_state_t* state ) override
@@ -8373,7 +8375,17 @@ struct reapers_mark_t final : public death_knight_spell_t
 
     if ( p()->talent.deathbringer.deathly_blows.ok() && sim->dbc->wowv() >= wowv_t( 12, 0, 1 ) )
       p()->trigger_bonegrinder( ( as<int>( p()->talent.deathbringer.deathly_blows->effectN( 4 ).base_value() ) ) );
+
+    if ( p()->specialization() == DEATH_KNIGHT_FROST && p()->talent.deathbringer.echoing_fury.ok() && p()->sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+    {
+      p()->buffs.exterminate->trigger( exterm_stacks );
+      debug_cast<exterminate_t*>( p()->background_actions.exterminate )->empowered         = exterm_stacks;
+      debug_cast<exterminate_aoe_t*>( p()->background_actions.exterminate_aoe )->empowered = exterm_stacks;
+    }  
   }
+
+private:
+  int exterm_stacks;
 };
 
 // ==========================================================================
@@ -10397,8 +10409,12 @@ struct fwf_action_base_t : public death_knight_spell_t
     if ( p->talent.deathbringer.echoing_fury.ok() )
       exterm_stacks = as<int>( p->talent.deathbringer.echoing_fury->effectN( 1 ).base_value() );
 
-    if ( p->talent.frost.chosen_of_frostbrood_1.ok() )
+    if ( p->talent.frost.chosen_of_frostbrood_1.ok() ) 
+    {
       haste_val = p->spell.chosen_of_frostbrood_haste_buff->effectN( 1 ).percent();
+      haste_duration = p->spell.chosen_of_frostbrood_haste_buff->duration();
+    }
+      
 
     if ( p->talent.frost.chosen_of_frostbrood_2.ok() )
       pillar_extension = p->talent.frost.chosen_of_frostbrood_2->effectN( 1 ).time_value();
@@ -10427,13 +10443,14 @@ struct fwf_action_base_t : public death_knight_spell_t
     if ( p()->talent.rider.apocalypse_now.ok() )
       p()->summon_rider( rider_dur, rider_of_the_apocalypse_e::ALL_RIDERS );
 
-    if ( p()->talent.deathbringer.echoing_fury.ok() ) {
+    if ( p()->talent.deathbringer.echoing_fury.ok() && p()->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
+    {
       p()->buffs.exterminate->trigger( exterm_stacks );
       debug_cast<exterminate_t*>( p()->background_actions.exterminate )->empowered = exterm_stacks;
       debug_cast<exterminate_aoe_t*>( p()->background_actions.exterminate_aoe )->empowered = exterm_stacks;
     }      
 
-    if ( p()->talent.frost.chosen_of_frostbrood_1.ok() )
+    if ( p()->talent.frost.chosen_of_frostbrood_1.ok() && p()->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
     {
       if ( p()->buffs.chosen_of_frostbrood_haste->check() )
         p()->buffs.chosen_of_frostbrood_haste->expire();
@@ -10441,6 +10458,14 @@ struct fwf_action_base_t : public death_knight_spell_t
       p()->invalidate_cache( CACHE_HASTE );
       p()->buffs.chosen_of_frostbrood_haste->set_default_value( haste_val );
       p()->buffs.chosen_of_frostbrood_haste->trigger();
+    }
+
+    if ( p()->talent.frost.chosen_of_frostbrood_1.ok() && p()->sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+    {
+      p()->invalidate_cache( CACHE_HASTE );
+      p()->buffs.chosen_of_frostbrood_haste->set_refresh_behavior( buff_refresh_behavior::EXTEND );
+      p()->buffs.chosen_of_frostbrood_haste->trigger( haste_duration );
+      
     }
 
     if ( p()->talent.frost.chosen_of_frostbrood_2.ok() && p()->buffs.pillar_of_frost->check() )
@@ -10451,6 +10476,7 @@ public:
   timespan_t rider_dur;
   int exterm_stacks;
   double haste_val;
+  timespan_t haste_duration;
   timespan_t pillar_extension;
   action_t* fwf_damage;
 };
@@ -10466,7 +10492,10 @@ struct chosen_of_frostbrood_fwf_t final : public fwf_action_base_t
     rider_dur *= chosen_mult;
     exterm_stacks = as<int>(chosen_mult * exterm_stacks);
     haste_val *= chosen_mult;
+    haste_duration *= chosen_mult;
     pillar_extension *= chosen_mult;
+    if ( p->sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+      min_gcd = trigger_gcd = 0_ms;
   }
 
   void execute() override
@@ -16051,9 +16080,11 @@ void death_knight_t::create_buffs()
           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
           ->set_disable_async_expire_events_removal( true );
 
-  buffs.chosen_of_frostbrood_haste = make_fallback<chosen_of_frostbrood_haste_buff_t>(
-      talent.frost.chosen_of_frostbrood_1.ok(), this, "chosen_of_frostbrood_haste",
-      spell.chosen_of_frostbrood_haste_buff );
+  buffs.chosen_of_frostbrood_haste =
+      make_fallback<chosen_of_frostbrood_haste_buff_t>( talent.frost.chosen_of_frostbrood_1.ok(), this,
+                                                        "chosen_of_frostbrood_haste",
+                                                        spell.chosen_of_frostbrood_haste_buff )
+          ->set_default_value( spell.chosen_of_frostbrood_haste_buff->effectN( 1 ).percent() );
 
   buffs.chosen_of_frostbrood_fwf = make_fallback( talent.frost.chosen_of_frostbrood_3.ok(), this,
                                                   "chosen_of_frostbrood_fwf", spell.chosen_of_frostbrood_fwf_buff )
