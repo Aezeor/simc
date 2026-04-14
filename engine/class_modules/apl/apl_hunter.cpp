@@ -8,7 +8,7 @@ std::string potion( const player_t* p )
   // Spec-specific logic for Level 90 Potions
   std::string lvl90_potion = ( p -> specialization() == HUNTER_SURVIVAL )      ? "lights_potential_2" :
                              ( p -> specialization() == HUNTER_MARKSMANSHIP )  ? "lights_potential_2" :
-                             "draught_of_rampant_abandon_2"; // Beast Mastery
+                             "lights_potential_2"; // Beast Mastery
 
   return ( p -> true_level > 80 ) ? lvl90_potion :
          ( p -> true_level > 70 ) ? "tempered_potion_3" : 
