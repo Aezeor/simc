@@ -3230,7 +3230,10 @@ struct bloodshed_t : hunter_pet_attack_t<hunter_main_pet_base_t>
 
     // 2026-02-12: Bloodshed is bugged and cannot proc Dire Beasts.
     if ( o()->bugs )
+    {
       dire_beast_chance = 0;
+      sim->print_debug( "{} action {} updated to trigger Dire Beast with {}% chance", player->name(), name(), dire_beast_chance * 100 );
+    }
   }
 };
 
