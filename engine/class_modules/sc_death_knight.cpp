@@ -3704,6 +3704,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       bool reanimation_triggered          = rng().roll( dk()->talent.unholy.reanimation->effectN( 1 ).percent() );
       action_t* magus_summon_action       = dk()->pet_summon.reanimation_magus;
       timespan_t unholy_devotion_duration = dk()->pet_spell.unholy_devotion_buff->duration();
+      timespan_t cycle_of_death_cdr       = -dk()->talent.unholy.cycle_of_death->effectN( 1 ).time_value();
 
       switch ( source )
       {
@@ -3714,11 +3715,14 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
           dk()->background_actions.putrefy_fk_st->execute_on_target( dk()->target );
           magus_summon_action = dk()->pet_summon.fk_reanimation_magus;
           unholy_devotion_duration *= dk()->talent.unholy.forbidden_knowledge_3->effectN( 2 ).percent();
+          cycle_of_death_cdr *= dk()->talent.unholy.forbidden_knowledge_3->effectN( 2 ).percent();
           break;
         default:
           dk()->background_actions.putrefy->execute_on_target( dk()->target );
           break;
       }
+
+      dismiss( false );
 
       if ( dk()->talent.unholy.reanimation.ok() && reanimation_triggered && magus_summon_action )
         magus_summon_action->execute();
@@ -3729,14 +3733,15 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       if ( dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, MID1, B4 ) )
         dk()->buffs.blighted->trigger();
 
-      dismiss( false );
-
       if ( dk()->talent.unholy.forbidden_knowledge_2.ok() )
       {
         dk()->buffs.lesser_ghoul_ready->trigger(
             as<int>( dk()->talent.unholy.forbidden_knowledge_2->effectN( 2 ).base_value() ) );
         dk()->buffs.forbidden_sacrifice->trigger();
       }
+
+      if ( dk()->talent.unholy.cycle_of_death.ok() )
+        dk()->cooldown.death_and_decay_dynamic->adjust( cycle_of_death_cdr );
     } );
   }
 
@@ -11827,10 +11832,10 @@ struct putrefy_aoe_t final : public death_knight_spell_t
 
         dk_td->dot.virulent_plague->adjust_duration( blightburst_dur );
       }
-
-      // TODO: Does the ST hit apply these too?
-      p()->trigger_rune_of_the_apocalypse( s->target );
     }
+
+    // TODO: Does the ST hit apply these too?
+    p()->trigger_rune_of_the_apocalypse( s->target );
   }
 
 public:
@@ -11860,7 +11865,7 @@ struct putrefy_st_t final : public death_knight_spell_t
           add_child( p->background_actions.dread_plague_erupt_bb );
         break;
       case PUTREFY_SOURCE_SOUL_REAPER:
-          execute_action = p->background_actions.putrefy_sr_aoe;
+        execute_action = p->background_actions.putrefy_sr_aoe;
         break;
       case PUTREFY_SOURCE_FORBIDDEN_KNOWLEDGE:
         execute_action = p->background_actions.putrefy_fk_aoe;
@@ -11952,9 +11957,6 @@ struct putrefy_t final : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p()->pet_summon.putrefy_ghoul->execute();
-
-    if( p()->talent.unholy.cycle_of_death.ok() )
-      p()->cooldown.death_and_decay_dynamic->adjust( -p()->talent.unholy.cycle_of_death->effectN( 1 ).time_value() );
 
     if ( p()->sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) && p()->talent.unholy.putrid_echoes.ok() &&
          std::floor( cooldown->charges_fractional() ) > 1 )
