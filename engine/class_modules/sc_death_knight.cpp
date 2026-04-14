@@ -10462,7 +10462,6 @@ struct fwf_action_base_t : public death_knight_spell_t
 
     if ( p()->talent.frost.chosen_of_frostbrood_1.ok() && p()->sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
     {
-      p()->invalidate_cache( CACHE_HASTE );
       p()->buffs.chosen_of_frostbrood_haste->set_refresh_behavior( buff_refresh_behavior::EXTEND );
       p()->buffs.chosen_of_frostbrood_haste->trigger( haste_duration );
       
