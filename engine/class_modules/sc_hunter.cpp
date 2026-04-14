@@ -540,6 +540,7 @@ public:
 
     proc_t* windrunner_quiver;
     proc_t* precision_detonation;
+    proc_t* eagles_mark;
 
     proc_t* dire_beast_spawn;
     proc_t* dark_minion_spawn;
@@ -3738,6 +3739,8 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
     auto td = get_target_data( target );
     sentinel ? td->debuffs.sentinels_mark->trigger() : td->debuffs.spotters_mark->trigger();
 
+    procs.eagles_mark->occur();
+
     cooldowns.aimed_shot->adjust( -talents.moons_blessing->effectN( 2 ).time_value() );
     cooldowns.wildfire_bomb->adjust( -talents.moons_blessing->effectN( 3 ).time_value() );
 
@@ -3775,6 +3778,8 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
   {
     auto td = get_target_data( target );
     sentinel ? td->debuffs.sentinels_mark->trigger() : td->debuffs.spotters_mark->trigger();
+
+    procs.eagles_mark->occur();
 
     cooldowns.aimed_shot->adjust( -talents.moons_blessing->effectN( 2 ).time_value() );
     cooldowns.wildfire_bomb->adjust( -talents.moons_blessing->effectN( 3 ).time_value() );
@@ -8518,6 +8523,11 @@ void hunter_t::init_procs()
 
   if ( talents.deathblow_buff.ok() )
     procs.deathblow = get_proc( "Deathblow" );
+
+  if ( talents.sentinels_mark.ok() )
+    procs.eagles_mark = get_proc( "Sentinel's Mark" );
+  else if ( specs.spotters_mark_data.ok() )
+    procs.eagles_mark = get_proc( "Spotter's Mark" );
 
   if ( talents.windrunner_quiver.ok() && sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
     procs.windrunner_quiver = get_proc( "Windrunner Quiver" );
