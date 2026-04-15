@@ -406,6 +406,11 @@ public:
     }
   } pets;
 
+  struct proc_data_entries_t
+  {
+    proc_data_t lethal_barbs_energize;
+  } proc_data_entries;
+
   struct tier_sets_t
   {
     // Midnight Season 1 - Whatever the raid is called
@@ -4062,6 +4067,7 @@ struct auto_shot_base_t : public auto_attack_base_t<ranged_attack_t>
       double amount = p()->talents.lethal_barbs_energize->effectN( 1 ).base_value();
 
       p()->resource_gain( RESOURCE_FOCUS, amount, p()->gains.lethal_barbs, this );
+      p()->trigger_aura_applied_callbacks( p()->proc_data_entries.lethal_barbs_energize, p() );
       for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion ) )
         pet->resource_gain( RESOURCE_FOCUS, amount, p()->gains.lethal_barbs, this );
     }
@@ -8028,6 +8034,7 @@ void hunter_t::init_spells()
     talents.hogstrider_buff                               = talents.hogstrider.ok() ? find_spell( 472640 ) : spell_data_t::not_found();
     talents.lethal_barbs                                  = find_talent_spell( talent_tree::HERO, "Lethal Barbs" );
     talents.lethal_barbs_energize                         = talents.lethal_barbs.ok() ? find_spell( 1264783 ) : spell_data_t::not_found();
+    proc_data_entries.lethal_barbs_energize               = talents.lethal_barbs.ok() ? find_spell( 1264783 ) : spell_data_t::not_found();
 
     talents.no_mercy                                      = find_talent_spell( talent_tree::HERO, "No Mercy" );
     talents.hoof_and_blade                                = find_talent_spell( talent_tree::HERO, "Hoof and Blade" );
