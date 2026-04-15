@@ -10780,6 +10780,11 @@ void rogue_t::create_buffs()
 
   buffs.the_rotten = make_buff<damage_buff_t>( this, "the_rotten", talent.subtlety.the_rotten->effectN( 1 ).trigger() )
     ->set_is_stacking_mod( false );
+  if ( talent.subtlety.the_rotten->ok() )
+  {
+    // 2026-04-14 -- Initial stacks on the buff is set to 1, with trigger stacks in the talent spell data
+    buffs.the_rotten->set_initial_stack( as<int>( talent.subtlety.the_rotten->effectN( 1 ).base_value() ) );
+  }
 
   buffs.goremaws_bite = make_buff( this, "goremaws_bite", spec.goremaws_bite_buff )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST_1 )
