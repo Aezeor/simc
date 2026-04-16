@@ -547,7 +547,8 @@ public:
     const spell_data_t* vanish_buff;
 
     // Hero Spells
-    const spell_data_t* cloud_cover_distract;
+    const spell_data_t* cloud_cover_buff;
+    const spell_data_t* cloud_cover_aura;
     const spell_data_t* coup_de_grace;
     const spell_data_t* coup_de_grace_damage_1;
     const spell_data_t* coup_de_grace_damage_2;
@@ -2168,11 +2169,10 @@ public:
 
   double parry_chance( double exp, player_t* target ) const override
   {
+    if ( td( target )->debuffs.fazed->up() )
+      return 0.0;
+
     auto chance = ab::parry_chance(exp, target);
-    if ( chance > 0.0 && td( target )->debuffs.fazed->up() )
-    {
-      chance += td( target )->debuffs.fazed->data().effectN( 2 ).percent();
-    }
     return std::max(0.0, chance);
   }
 
@@ -2202,6 +2202,7 @@ public:
   void trigger_fatal_flourish( const action_state_t* );
   void trigger_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result, timespan_t delay = timespan_t::zero() );
   void trigger_fatebound_edge_case( const action_state_t* state );
+  void trigger_fazed( const action_state_t* state );
   void trigger_find_weakness( const action_state_t* state, timespan_t duration = timespan_t::min() );
   void trigger_hand_of_fate( const action_state_t*, bool biased = false, timespan_t current_delay = timespan_t::zero() );
   void trigger_keep_it_rolling();
@@ -2472,7 +2473,7 @@ public:
 
     if ( affected_by.fazed_damage )
     {
-      m *= tdata->debuffs.fazed->value_direct();
+      m *= tdata->debuffs.fazed->stack_value_direct();
     }
 
     return m;
@@ -2484,7 +2485,7 @@ public:
 
     if ( affected_by.fazed_crit_chance && td( target )->debuffs.fazed->check() )
     {
-      c += td( target )->debuffs.fazed->value_crit_chance();
+      c += td( target )->debuffs.fazed->stack_value_crit_chance();
     }
 
     return c;
@@ -2540,9 +2541,9 @@ public:
   {
     double cm = ab::composite_target_crit_damage_bonus_multiplier( target );
 
-    if ( affected_by.fazed_crit_damage && td( target )->debuffs.fazed->check() )
+    if ( affected_by.fazed_crit_damage )
     {
-      cm *= 1.0 + p()->talent.trickster.surprising_strikes->effectN( 1 ).percent();
+      cm *= 1.0 + p()->talent.trickster.surprising_strikes->effectN( 1 ).percent() * td( target )->debuffs.fazed->check();
     }
 
     return cm;
@@ -3355,7 +3356,7 @@ struct melee_t : public rogue_attack_t
   {
     double m = rogue_attack_t::composite_target_multiplier( target );
 
-    m *= td( target )->debuffs.fazed->value_auto_attack();
+    m *= td( target )->debuffs.fazed->stack_value_auto_attack();
 
     return m;
   }
@@ -3491,6 +3492,11 @@ struct adrenaline_rush_t : public rogue_spell_t
 
     trigger_fatebound_edge_case( execute_state );
     trigger_supercharger();
+
+    if ( p()->is_ptr() && p()->talent.trickster.cloud_cover->ok() )
+    {
+      p()->buffs.cloud_cover->trigger();
+    }
   }
 };
 
@@ -4105,7 +4111,7 @@ struct detection_t : public rogue_spell_t
 struct distract_t : public rogue_spell_t
 {
   distract_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_spell_t( name, p, p->talent.trickster.cloud_cover->ok() ? p->spell.cloud_cover_distract : p->spell.distract, options_str )
+    rogue_spell_t( name, p, p->talent.trickster.cloud_cover->ok() && !p->is_ptr() ? p->spell.cloud_cover_buff : p->spell.distract, options_str)
   {
     harmful = false;
     set_target( p );
@@ -4114,7 +4120,11 @@ struct distract_t : public rogue_spell_t
   void execute() override
   {
     rogue_spell_t::execute();
-    p()->buffs.cloud_cover->trigger();
+
+    if ( !p()->is_ptr() && p()->talent.trickster.cloud_cover->ok() )
+    {
+      p()->buffs.cloud_cover->trigger();
+    }
   }
 };
 
@@ -4561,7 +4571,7 @@ struct killing_spree_tick_t : public rogue_attack_t
 
     if ( p()->talent.trickster.devious_distractions->ok() && weapon != nullptr && weapon->slot == SLOT_MAIN_HAND )
     {
-      p()->get_target_data( state->target )->debuffs.fazed->trigger();
+      trigger_fazed( state );
     }
   }
 
@@ -5238,7 +5248,7 @@ struct secret_technique_t : public rogue_attack_t
 
       if ( p()->talent.trickster.devious_distractions->ok() )
       {
-        p()->get_target_data( state->target )->debuffs.fazed->trigger();
+        trigger_fazed( state );
       }
     }
 
@@ -5365,6 +5375,11 @@ struct shadow_blades_t : public rogue_spell_t
     {
       p()->cooldowns.shadow_blades->adjust( -precombat_seconds, false );
       p()->buffs.shadow_blades->extend_duration( -precombat_seconds );
+    }
+
+    if ( p()->is_ptr() && p()->talent.trickster.cloud_cover->ok() )
+    {
+      p()->buffs.cloud_cover->trigger();
     }
   }
 };
@@ -6404,7 +6419,8 @@ struct unseen_blade_t : public rogue_attack_t
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
-    p()->get_target_data( state->target )->debuffs.fazed->trigger();
+
+    trigger_fazed( state );
 
     if ( p()->talent.trickster.flawless_form->ok() )
     {
@@ -8104,6 +8120,35 @@ void actions::rogue_action_t<Base>::trigger_fatebound_edge_case( const action_st
 }
 
 template <typename Base>
+void actions::rogue_action_t<Base>::trigger_fazed( const action_state_t* state )
+{
+  if ( !p()->talent.trickster.unseen_blade->ok() )
+    return;
+
+  rogue_td_t* tdata = td( state->target );
+
+  if ( p()->is_ptr() )
+  {
+    // The Cloud Cover aura dynamically increases the max stack of the debuff
+    // This only refreshes on application, allowing a higher stack to overhang unless refreshed
+    const int max_stacks = p()->spell.fazed_debuff->max_stacks() +
+      ( p()->buffs.cloud_cover->up() * as<int>( p()->spell.cloud_cover_aura->effectN( 2 ).base_value() ) );
+
+    if ( tdata->debuffs.fazed->max_stack() != max_stacks )
+    {
+      if ( tdata->debuffs.fazed->check() > max_stacks )
+      {
+        tdata->debuffs.fazed->decrement( tdata->debuffs.fazed->check() - max_stacks );
+      }
+
+      tdata->debuffs.fazed->set_max_stack( max_stacks );      
+    }
+  }
+
+  tdata->debuffs.fazed->trigger();
+}
+
+template <typename Base>
 void actions::rogue_action_t<Base>::trigger_relentless_strikes( const action_state_t* state )
 {
   if ( !p()->talent.subtlety.relentless_strikes->ok() || !affected_by.relentless_strikes )
@@ -8367,7 +8412,7 @@ void actions::rogue_action_t<Base>::trigger_cloud_cover( const action_state_t* s
   if ( !p()->buffs.cloud_cover->check() )
     return;
 
-  p()->get_target_data( state->target )->debuffs.fazed->trigger();
+  trigger_fazed( state );
 }
 
 template <typename Base>
@@ -8672,6 +8717,10 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.fazed->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
     return std::min( b->remains() + d, 10_s );  // Capped to 10 seconds, not in spell data
   } );
+  if ( source->is_ptr() )
+  {
+    debuffs.fazed->set_cooldown( 1_ms ); // To avoid refresh spam
+  }
 
   // Type-Based Tracking for Accumulators
   bleeds = { dots.deathmark, dots.garrote, dots.internal_bleeding, dots.rupture, dots.mutilated_flesh };
@@ -9912,7 +9961,8 @@ void rogue_t::init_spells()
   spell.fatebound_lucky_coin_buff = talent.fatebound.lucky_coin->ok() ? find_spell( 1248971 ) : spell_data_t::not_found();
 
   // Trickster
-  spell.cloud_cover_distract = talent.trickster.cloud_cover->ok() ? find_spell( as<unsigned>( talent.trickster.cloud_cover->effectN( 1 ).base_value() ) ) : spell_data_t::not_found();
+  spell.cloud_cover_buff = talent.trickster.cloud_cover->ok() ? find_spell( 441587 ) : spell_data_t::not_found();
+  spell.cloud_cover_aura = talent.trickster.cloud_cover->ok() ? find_spell( 441640 ) : spell_data_t::not_found();
   spell.coup_de_grace = talent.trickster.coup_de_grace->ok() ? find_spell( 441776 ) : spell_data_t::not_found();
   spell.coup_de_grace_damage_1 = talent.trickster.coup_de_grace->ok() ? ( specialization() == ROGUE_SUBTLETY ? find_spell( 462241 ) : find_spell( 462140 ) ) : spell_data_t::not_found();
   spell.coup_de_grace_damage_2 = talent.trickster.coup_de_grace->ok() ? ( specialization() == ROGUE_SUBTLETY ? find_spell( 462242 ) : find_spell( 462239 ) ) : spell_data_t::not_found();
@@ -10632,7 +10682,14 @@ void rogue_t::create_buffs()
 
   // Trickster
 
-  buffs.cloud_cover = make_buff( this, "cloud_cover", spell.cloud_cover_distract );
+  buffs.cloud_cover = make_buff( this, "cloud_cover", spell.cloud_cover_buff );
+  if ( is_ptr() && talent.trickster.cloud_cover->ok() )
+  {
+    timespan_t extra_duration = specialization() == ROGUE_OUTLAW ?
+      talent.trickster.cloud_cover->effectN( 1 ).time_value() :
+      talent.trickster.cloud_cover->effectN( 2 ).time_value();
+    buffs.cloud_cover->set_duration( spell.cloud_cover_buff->duration() + extra_duration );
+  }
 
   // TOCHECK -- Find the proper buff spell someday? Still doesn't seem to exist...
   buffs.disorienting_strikes = make_buff( this, "disorienting_strikes", talent.trickster.disorienting_strikes );
