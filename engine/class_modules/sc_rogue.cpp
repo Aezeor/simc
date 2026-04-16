@@ -8719,7 +8719,15 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   } );
   if ( source->is_ptr() )
   {
-    debuffs.fazed->set_cooldown( 1_ms ); // To avoid refresh spam
+    // Set initial max stack to the max Cloud Cover stacks for stack_uptime tracking
+    // This will be resized dynamically in trigger_fazed()
+    if ( source->talent.trickster.cloud_cover->ok() )
+    {
+      const int max_stacks = source->spell.fazed_debuff->max_stacks() +
+        as<int>( source->spell.cloud_cover_aura->effectN( 2 ).base_value() );
+      debuffs.fazed->set_max_stack( max_stacks );
+      debuffs.fazed->set_cooldown( 1_ms ); // To avoid refresh spam
+    }
   }
 
   // Type-Based Tracking for Accumulators
