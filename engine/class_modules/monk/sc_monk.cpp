@@ -7148,7 +7148,7 @@ void monk_t::combat_begin()
     rng().range( stances )->trigger();
 
     make_repeating_event(
-        sim, talent.conduit_of_the_celestials.inner_compass->effectN( 1 ).period(), [ this, stances ]() {
+        sim, talent.conduit_of_the_celestials.inner_compass->effectN( 1 ).period(), [ stances ]() {
           auto current_stance =
               std::find_if( stances.begin(), stances.end(), []( auto &stance ) { return stance->check(); } );
           ( *current_stance )->expire();

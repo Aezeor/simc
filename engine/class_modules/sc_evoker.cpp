@@ -7201,8 +7201,8 @@ public:
     int player_count = as<int>( p( s )->allies_with_my_ebon.size() );
 
     // Depower Breath of Eons in Raid Encounters
-    if ( p( s ) == s->action->player && player_count > p( s )->spec.ebon_might->effectN( 3 ).base_value() &&
-             p( s )->option.estimated_raid_dps_allies > player_count ||
+    if ( ( p( s ) == s->action->player && player_count > p( s )->spec.ebon_might->effectN( 3 ).base_value() &&
+             p( s )->option.estimated_raid_dps_allies > player_count ) ||
          p( s )->option.force_raid )
     {
       player_count = p( s )->option.estimated_raid_dps_allies;
@@ -8732,8 +8732,8 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
     allies_with_my_ebon(),
     allies_with_my_prescience(),
     allies_with_my_shifting_sands(),
-    allied_ebons_on_me(),
     active_infernos_blessings(),
+    allied_ebons_on_me(),
     allied_major_cds(),
     last_scales_target( nullptr ),
     was_empowering( false ),
@@ -10340,7 +10340,7 @@ void evoker_t::create_buffs()
                                    talent.scalecommander.unrelenting_siege_buff )
                                ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
                                ->set_freeze_stacks( true )
-                               ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+                               ->set_tick_callback( []( buff_t* b, int, timespan_t ) {
                                  if ( !b->at_max_stacks() )
                                    b->bump( 1, b->current_value );
                                } );

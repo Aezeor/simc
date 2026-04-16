@@ -6267,13 +6267,13 @@ struct regrowth_t final : public trigger_thriving_growth_t<use_dot_list_t<druid_
     // dream of cenarius snapshots the hot
     if ( !p->buff.dream_of_cenarius->is_fallback )
     {
-      const auto& eff = find_effect( p->buff.dream_of_cenarius, this, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE );
-      if ( !has_parse_entry( persistent_multiplier_effects, &eff ) )
+      auto eff = &find_effect( p->buff.dream_of_cenarius, this, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE );
+      if ( !has_parse_entry( persistent_multiplier_effects, eff ) )
       {
         add_parse_entry( persistent_multiplier_effects )
           .set_buff( p->buff.dream_of_cenarius )
-          .set_value( eff.percent() )
-          .set_eff( &eff )
+          .set_value( eff->percent() )
+          .set_eff( eff )
           .print_debug( this );
       }
     }
@@ -12599,7 +12599,7 @@ void druid_t::init_special_effects()
           lw_charges( as<int>( p->talent.galactic_guardian->effectN( 2 ).base_value() ) )
       {}
 
-      void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
+      void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e pt ) override
       {
         assert( proc_chance == orig_proc_chance );
 
@@ -12616,7 +12616,7 @@ void druid_t::init_special_effects()
           default: break;
         }
 
-        druid_cb_t::trigger( data, t, s, type );
+        druid_cb_t::trigger( data, t, s, pt );
 
         proc_chance = orig_proc_chance;
       }
@@ -12625,7 +12625,7 @@ void druid_t::init_special_effects()
       {
         p()->active.galactic_guardian->execute_on_target( get_target( t, s, p()->active.galactic_guardian ) );
         p()->buff.galactic_guardian->trigger();
-        p()->buff.lunar_wrath->trigger( lw_charges);
+        p()->buff.lunar_wrath->trigger( lw_charges );
         gg_proc->occur();
       }
     };
@@ -12660,7 +12660,7 @@ void druid_t::init_special_effects()
         moonless = p->get_secondary_action<moonless_night_t>( "moonless_night" );
       }
 
-      void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
+      void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e pt ) override
       {
         if ( !s->target->is_enemy() )
         {
@@ -12691,7 +12691,7 @@ void druid_t::init_special_effects()
         if ( auto td = p()->find_target_data( s->target ); !td || !td->dots.moonfire->is_ticking() )
           return;
 
-        druid_cb_t::trigger( data, t, s, type );
+        druid_cb_t::trigger( data, t, s, pt );
       }
 
       void execute( const spell_data_t*, player_t* t, action_state_t* s ) override

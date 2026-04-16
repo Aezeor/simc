@@ -428,8 +428,8 @@ struct halo_spell_t final : public priest_spell_t
 
   void impact( action_state_t* s ) override
   {
-    if ( returning && !rng().roll( p().options.archon_halo_return_hit_chance ) ||
-         !returning && !rng().roll( p().options.archon_halo_outgoing_hit_chance ) )
+    if ( ( returning && !rng().roll( p().options.archon_halo_return_hit_chance ) ) ||
+         ( !returning && !rng().roll( p().options.archon_halo_outgoing_hit_chance ) ) )
       return;
 
     priest_spell_t::impact( s );

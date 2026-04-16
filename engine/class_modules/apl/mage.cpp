@@ -24,6 +24,7 @@ std::string flask( const player_t* p )
     case MAGE_ARCANE: lvl90_flask = "flask_of_thalassian_resistance_2"; break;
     case MAGE_FIRE: lvl90_flask = "flask_of_the_magisters_2"; break;
     case MAGE_FROST: lvl90_flask = "flask_of_the_shattered_sun_2"; break;
+    default: break;
   }
   
   return p->true_level >= 90 ? lvl90_flask

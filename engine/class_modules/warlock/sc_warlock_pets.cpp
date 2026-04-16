@@ -1447,7 +1447,7 @@ struct burning_cleave_t : public warlock_pet_spell_t
     if ( p()->o()->talents.antoran_armaments.ok() && p()->o()->tyrant_antoran_armaments_target_mul < 1.0 )
     {
       assert( warlock_pet_spell_t::n_targets() == -1 );
-      const int cur_n_targets = target_list().size();
+      const size_t cur_n_targets = target_list().size();
       return std::max( 1, as<int>( std::lround( cur_n_targets * p()->o()->tyrant_antoran_armaments_target_mul ) ) );
     }
     else
