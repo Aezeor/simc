@@ -396,7 +396,7 @@ void monk_action_t<Base>::consume_resource()
     if ( p()->talent.windwalker.dance_of_chiji->ok() )
       p()->buff.dance_of_chiji->trigger();
 
-    if ( p()->wowv_ge( wowv_t( 12, 0, 5 ) ) && p()->talent.windwalker.tigereye_brew_1->ok() )
+    if ( p()->talent.windwalker.tigereye_brew_1->ok() )
     {
       double base_cost = base_t::base_costs[ RESOURCE_CHI ].base;
       if ( base_t::id == 100784 )  // Blackout Kick
@@ -1561,7 +1561,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::last_tick( dot );
 
-    if ( p()->wowv_ge( wowv_t( 12, 0, 5 ) ) && p()->talent.windwalker.xuens_battlegear->ok() )
+    if ( p()->talent.windwalker.xuens_battlegear->ok() )
     {
       std::unordered_set<int> &targets_hit = debug_cast<state_t *>( dot->state )->targets_hit;
       timespan_t reduction_per_target      = p()->talent.windwalker.xuens_battlegear->effectN( 4 ).time_value();
@@ -1637,9 +1637,6 @@ struct fists_of_fury_t : monk_melee_attack_t
                 [ & ]( double ) { return ( ( 1.0 / p()->composite_melee_haste() ) - 1.0 ) * effect.percent(); } )
             .set_eff( &effect );
 
-      if ( player->wowv_l( wowv_t( 12, 0, 5 ) ) )
-        parse_effects( player->buff.tigereye_brew_3 );
-
       add_parse_entry( da_multiplier_effects )
           .set_value( player->talent.windwalker.fists_of_fury->effectN( 6 ).percent() - 1.0 )
           .set_func( [] { return false; } )
@@ -1662,8 +1659,6 @@ struct fists_of_fury_t : monk_melee_attack_t
       monk_melee_attack_t::impact( state );
 
       p()->buff.momentum_boost_damage->trigger();
-      if ( p()->wowv_l( wowv_t( 12, 0, 5 ) ) && p()->rng().roll( p()->composite_melee_crit_chance() ) )
-        p()->buff.tigereye_brew_3->trigger();
     }
   };
 
@@ -1825,8 +1820,6 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
       make_event<events::delayed_cb_event_t>( *p()->sim, p(), i * base_tick_time, [ i, this ] { aoe->execute( !i ); } );
 
     p()->buff.heart_of_the_jade_serpent->trigger();
-    if ( p()->wowv_l( { 12, 0, 5 } ) )
-      p()->buff.inner_compass_serpent_stance->trigger();
 
     if ( const player_talent_t &talent = p()->talent.windwalker.knowledge_of_the_broken_temple; talent->ok() )
       p()->buff.teachings_of_the_monastery->trigger( as<unsigned>( talent->effectN( 1 ).base_value() ) );
@@ -1941,8 +1934,6 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
       main_hand->execute();
 
     p()->buff.heart_of_the_jade_serpent->trigger();
-    if ( p()->wowv_l( { 12, 0, 5 } ) )
-      p()->buff.inner_compass_serpent_stance->trigger();
 
     if ( const player_talent_t &talent = p()->talent.windwalker.knowledge_of_the_broken_temple; talent->ok() )
       p()->buff.teachings_of_the_monastery->trigger( as<unsigned>( talent->effectN( 1 ).base_value() ) );
@@ -3501,8 +3492,6 @@ struct courage_of_the_white_tiger_t : conduit_of_the_celestials_container_t
       if ( source == BASE )
       {
         p()->buff.strength_of_the_black_ox->trigger();
-        if ( p()->wowv_l( { 12, 0, 5 } ) )
-          p()->buff.inner_compass_tiger_stance->trigger();
         p()->buff.courage_of_the_white_tiger->expire();
       }
 
@@ -3611,8 +3600,6 @@ struct strength_of_the_black_ox_t : conduit_of_the_celestials_container_t
           return;
 
         p()->buff.strength_of_the_black_ox->expire();
-        if ( p()->wowv_l( { 12, 0, 5 } ) )
-          p()->buff.inner_compass_ox_stance->trigger();
       }
 
       monk_spell_t::execute();
@@ -3829,9 +3816,6 @@ struct zenith_stomp_t : monk_spell_t
                     player->talent.monk.zenith_stomp_damage ),
       source( source )
   {
-    if ( player->wowv_l( { 12, 0, 5 } ) && source == ZENITH_STOMP_CAST )
-      return;
-
     parse_options( options_str );
 
     if ( source == ZENITH_STOMP_TRIGGER )
@@ -3904,8 +3888,7 @@ struct zenith_t : public monk_spell_t
 
     monk_spell_t::execute();
 
-    if ( p()->wowv_ge( { 12, 0, 5 } ) )
-      p()->buff.zenith_stomp->trigger();
+    p()->buff.zenith_stomp->trigger();
 
     p()->buff.zenith->trigger();
     p()->cooldown.rising_sun_kick->reset( true );
@@ -4524,18 +4507,10 @@ struct zenith_t : monk_buff_t<>
                 timespan_t duration = timespan_t::min() ) override
   {
     double value = 0;
-    if ( p().wowv_l( { 12, 0, 5 } ) )
-    {
-      value = p().buff.tigereye_brew_1->stack_value();
-      p().buff.tigereye_brew_1->expire();
-    }
-    else
-    {
-      int stack = std::min( p().buff.tigereye_brew_1->stack(),
-                            as<int>( p().talent.windwalker.tigereye_brew_1->effectN( 3 ).base_value() ) );
-      value     = p().buff.tigereye_brew_1->value() * stack;
-      p().buff.tigereye_brew_1->decrement( stack );
-    }
+    int stack = std::min( p().buff.tigereye_brew_1->stack(),
+                          as<int>( p().talent.windwalker.tigereye_brew_1->effectN( 3 ).base_value() ) );
+    value     = p().buff.tigereye_brew_1->value() * stack;
+    p().buff.tigereye_brew_1->decrement( stack );
     return monk_buff_t::trigger( stacks, value, chance, duration );
   }
 };
@@ -6409,39 +6384,15 @@ void monk_t::create_buffs()
 
   buff.inner_compass_ox_stance =
       make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this, "ox_stance",
-                          talent.conduit_of_the_celestials.inner_compass_ox_stance_buff )
-          ->set_stack_change_callback( [ this ]( buff_t *, int old_, int ) {
-            if ( old_ == 0 && wowv_l( { 12, 0, 5 } ) )
-            {
-              buff.inner_compass_crane_stance->expire();
-              buff.inner_compass_serpent_stance->expire();
-              buff.inner_compass_tiger_stance->expire();
-            }
-          } );
+                          talent.conduit_of_the_celestials.inner_compass_ox_stance_buff );
 
   buff.inner_compass_serpent_stance =
       make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this, "serpent_stance",
-                          talent.conduit_of_the_celestials.inner_compass_serpent_stance_buff )
-          ->set_stack_change_callback( [ this ]( buff_t *, int old_, int ) {
-            if ( old_ == 0 && wowv_l( { 12, 0, 5 } ) )
-            {
-              buff.inner_compass_crane_stance->expire();
-              buff.inner_compass_ox_stance->expire();
-              buff.inner_compass_tiger_stance->expire();
-            }
-          } );
+                          talent.conduit_of_the_celestials.inner_compass_serpent_stance_buff );
 
   buff.inner_compass_tiger_stance =
       make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this, "tiger_stance",
-                          talent.conduit_of_the_celestials.inner_compass_tiger_stance_buff )
-          ->set_stack_change_callback( [ this ]( buff_t *, int old_, int ) {
-            if ( old_ == 0 && wowv_l( { 12, 0, 5 } ) )
-            {
-              buff.inner_compass_crane_stance->expire();
-              buff.inner_compass_ox_stance->expire();
-              buff.inner_compass_serpent_stance->expire();
-            }
-          } );
+                          talent.conduit_of_the_celestials.inner_compass_tiger_stance_buff );
 
   buff.jade_sanctuary = make_buff_fallback( talent.conduit_of_the_celestials.jade_sanctuary->ok(), this,
                                             "jade_sanctuary", talent.conduit_of_the_celestials.jade_sanctuary_buff );
@@ -7126,9 +7077,6 @@ void monk_t::combat_begin()
       return player->talent.windwalker.tigereye_brew_1->effectN( 1 ).period() * player->composite_melee_haste();
     };
     const auto callback = []( monk_t *player ) -> void {
-      if ( player->wowv_l( { 12, 0, 5 } ) )
-        player->buff.tigereye_brew_1->trigger();
-
       if ( !player->sim->active_enemies && player->buff.tigereye_brew_1->stack() <
                                                player->talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() )
         make_event<events::delayed_buff_trigger_event_t>( *player->sim, player, player->buff.tigereye_brew_1, 2_s );
@@ -7139,7 +7087,7 @@ void monk_t::combat_begin()
       buff.tigereye_brew_1->trigger( as<int>( talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() ) );
   }
 
-  if ( talent.conduit_of_the_celestials.inner_compass->ok() && wowv_ge( { 12, 0, 5 } ) )
+  if ( talent.conduit_of_the_celestials.inner_compass->ok() )
   {
     const std::array<buff_t *, 4> stances = { buff.inner_compass_crane_stance, buff.inner_compass_ox_stance,
                                               buff.inner_compass_tiger_stance, buff.inner_compass_serpent_stance };
