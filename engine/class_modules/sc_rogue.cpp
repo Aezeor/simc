@@ -466,7 +466,9 @@ public:
     cooldown_t* unseen_blade_icd;
     cooldown_t* vanish;
 
+    target_specific_cooldown_t* cloud_cover;
     target_specific_cooldown_t* weaponmaster;
+    
   } cooldowns;
 
   // Gains
@@ -1145,6 +1147,7 @@ public:
     cooldowns.unseen_blade_icd          = get_cooldown( "unseen_blade_icd" );
     cooldowns.vanish                    = get_cooldown( "vanish" );
 
+    cooldowns.cloud_cover               = get_target_specific_cooldown( "cloud_cover" );
     cooldowns.weaponmaster              = get_target_specific_cooldown( "weaponmaster" );
 
     resource_regeneration = regen_type::DYNAMIC;
@@ -8144,6 +8147,15 @@ void actions::rogue_action_t<Base>::trigger_fazed( const action_state_t* state )
 
       tdata->debuffs.fazed->set_max_stack( max_stacks );      
     }
+
+    if ( p()->buffs.cloud_cover->check() )
+    {
+      cooldown_t* tcd = p()->cooldowns.cloud_cover->get_cooldown( state->target );
+      if ( !tcd || tcd->down() )
+        return;
+
+      tcd->start();
+    }
   }
 
   tdata->debuffs.fazed->trigger();
@@ -8727,7 +8739,6 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
       const int max_stacks = source->spell.fazed_debuff->max_stacks() +
         as<int>( source->spell.cloud_cover_aura->effectN( 2 ).base_value() );
       debuffs.fazed->set_max_stack( max_stacks );
-      debuffs.fazed->set_cooldown( 1_ms ); // To avoid refresh spam
     }
   }
 
@@ -10698,6 +10709,7 @@ void rogue_t::create_buffs()
       talent.trickster.cloud_cover->effectN( 1 ).time_value() :
       talent.trickster.cloud_cover->effectN( 2 ).time_value();
     buffs.cloud_cover->set_duration( spell.cloud_cover_buff->duration() + extra_duration );
+    cooldowns.cloud_cover->base_duration = 1_ms; // Prevent refresh spam
   }
 
   // TOCHECK -- Find the proper buff spell someday? Still doesn't seem to exist...
