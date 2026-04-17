@@ -1091,6 +1091,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     rps_gain( 0 ),
     rps_loss( 0 ),
     collected_data( this ),
+    collect_pet_sequence_data( false ),
     // Damage
     iteration_dmg( 0 ),
     priority_iteration_dmg( 0 ),
@@ -7670,7 +7671,7 @@ action_t* player_t::execute_action()
       else
         off_gcdactions.push_back( action );
 
-      if ( !is_enemy() )
+      if ( !is_add() && ( !is_pet() && !collect_pet_sequence_data ) )
         sequence_add( action, action->target );
     }
   }
@@ -13436,6 +13437,7 @@ void player_t::create_options()
   add_option( opt_bool( "disable_hotfixes", disable_hotfixes ) );
   add_option( opt_func( "min_gcd", parse_min_gcd ) );
   add_option( opt_bool( "load_default_gear", load_default_gear ) );
+  add_option( opt_bool( "collect_pet_sequence_data", collect_pet_sequence_data ) );
 
   // Talents
   add_option( opt_string( "class_talents", class_talents_str ) );

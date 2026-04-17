@@ -420,6 +420,8 @@ struct player_t : public actor_t
   auto_dispose<std::vector<sample_data_helper_t*>> sample_data_list;
   std::vector<std::unique_ptr<cooldown_waste_data_t>> cooldown_waste_data_list;
 
+  bool collect_pet_sequence_data;
+
   // All Data collected during / end of combat
   player_collected_data_t collected_data;
 
