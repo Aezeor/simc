@@ -4554,7 +4554,7 @@ struct kill_shot_base_t : hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    if ( debug_cast<state_t*>( s )->empowered_by_precise_shots && !p()->bugs )
+    if ( debug_cast<state_t*>( s )->empowered_by_precise_shots )
       p()->trigger_eagles_mark( s->target, p()->talents.sentinel.ok() );
 
     if ( p()->talents.headshot.ok() )
