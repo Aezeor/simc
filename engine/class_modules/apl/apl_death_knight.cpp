@@ -316,8 +316,8 @@ void unholy( player_t* p )
   default_->add_action( "potion,if=(variable.st_planning|variable.adds_remain)&variable.cds_active&(variable.trinket_priority=1&trinket.1.has_use_buff&!trinket.1.proc.mastery.duration>0|variable.trinket_priority=2&trinket.2.has_use_buff&!trinket.2.proc.mastery.duration>0)" );
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "call_action_list,name=cooldowns" );
-  default_->add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
-  default_->add_action( "call_action_list,name=single_target,if=active_enemies<4" );
+  default_->add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
+  default_->add_action( "call_action_list,name=single_target,if=active_enemies<3" );
 
   if ( p->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
     aoe->add_action( "death_and_decay,if=!death_and_decay.ticking&talent.desecrate", "Aoe Rotation" );
@@ -328,7 +328,6 @@ void unholy( player_t* p )
   aoe->add_action( "death_coil,target_if=min:health.pct,if=variable.spending_rp&!variable.epidemic_prio" );
   aoe->add_action( "festering_strike,target_if=min:health.pct,if=buff.lesser_ghoul_ready.stack=0" );
   aoe->add_action( "scourge_strike,target_if=min:health.pct,if=buff.lesser_ghoul_ready.stack>=1" );
-  aoe->add_action( "putrefy" );
   aoe->add_action( "epidemic,if=variable.epidemic_prio" );
   aoe->add_action( "death_coil,target_if=min:health.pct,if=!variable.epidemic_prio" );
 
@@ -370,7 +369,7 @@ void unholy( player_t* p )
   trinkets->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&(variable.damage_trinket_priority=1|!variable.trinket_2_buffs|!trinket.2.has_cooldown)" );
   trinkets->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&(variable.damage_trinket_priority=2|!variable.trinket_1_buffs|!trinket.1.has_cooldown)" );
 
-  variables->add_action( "variable,name=spending_rp,value=rune<2|buff.forbidden_knowledge.up&(rune<4|active_enemies>=6|pet.gargoyle.active)|buff.sudden_doom.react|active_enemies>=7", "Variables" );
+  variables->add_action( "variable,name=spending_rp,value=rune<2|buff.forbidden_knowledge.up&(rune<4|pet.gargoyle.active)|buff.sudden_doom.react|active_enemies>=3", "Variables" );
   variables->add_action( "variable,name=st_planning,op=setif,value=1,value_else=0,condition=active_enemies=1&(!raid_event.adds.exists|!raid_event.adds.in|raid_event.adds.in>15|!raid_event.pull.exists|raid_event.pull.exists&raid_event.pull.in>15)" );
   variables->add_action( "variable,name=adds_remain,value=active_enemies>=2&((!raid_event.adds.exists|!raid_event.pull.exists)|raid_event.adds.remains>5|raid_event.pull.remains>5)" );
   variables->add_action( "variable,name=cds_active,value=pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up&buff.dark_transformation.remains>5" );
