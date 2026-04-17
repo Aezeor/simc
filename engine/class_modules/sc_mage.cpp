@@ -365,7 +365,7 @@ public:
     double arcane_missiles_chain_relstddev = 0.1;
     timespan_t arcane_missiles_delay = 100_ms;
     unsigned initial_spellfire_spheres = 5;
-    unsigned initial_icicles = 5;
+    unsigned initial_icicles = 0;
     arcane_phoenix_rotation arcane_phoenix_rotation_override = arcane_phoenix_rotation::DEFAULT;
     unsigned clearcasting_blp_threshold = 0;
     unsigned sphere_blp_threshold = 11;
