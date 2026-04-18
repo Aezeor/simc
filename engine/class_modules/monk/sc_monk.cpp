@@ -581,7 +581,7 @@ struct harmonic_surge_t : public base_action_t
         TBase::target_filter_callback = TBase::secondary_targets_only();
       }
 
-      if ( effect.target_1() == 18 && effect.target_2() == 31 )
+      if ( effect.target_1() == T_DESTINATION_CASTER && effect.target_2() == T_UNIT_DESTINATION_AREA_ALLY )
       {
         TBase::aoe = spell_data->effectN( 2 ).base_value();
       }
