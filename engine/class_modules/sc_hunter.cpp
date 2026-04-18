@@ -4400,7 +4400,7 @@ struct explosive_shot_t : public explosive_shot_base_t
 
 struct explosive_shot_background_t : public explosive_shot_base_t
 {
-  explosive_shot_background_t( util::string_view n, hunter_t* p ) : explosive_shot_base_t( n, p, p->talents.explosive_shot )
+  explosive_shot_background_t( util::string_view n, hunter_t* p, const spell_data_t* s ) : explosive_shot_base_t( n, p, s )
   {
     background = dual = proc = true;
   }
@@ -6981,7 +6981,7 @@ struct volley_t : public hunter_spell_t
       if ( p -> talents.salvo.ok() )
       {
         salvo.targets = as<int>( p->talents.salvo->effectN( 1 ).base_value() );
-        salvo.explosive = p->get_background_action<attacks::explosive_shot_background_t>( "explosive_shot" );
+        salvo.explosive = p->get_background_action<attacks::explosive_shot_background_t>( "explosive_shot", p->find_spell( 212431 ) );
       }
     }
 
