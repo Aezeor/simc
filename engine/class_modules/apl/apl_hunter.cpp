@@ -308,10 +308,10 @@ void marksmanship( player_t* p )
   sentst->add_action( "rapid_fire" );
   sentst->add_action( "steady_shot" );
 
-  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&this_trinket.cooldown.duration%%cooldown.trueshot.duration=0&(buff.trueshot.remains>14|this_trinket.is.algethar_puzzle_box&variable.trueshot_ready&cooldown.trueshot.remains<5)" );
-  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&other_trinket.cooldown.duration%%cooldown.trueshot.duration=0&(buff.trueshot.remains>14&other_trinket.cooldown.remains|cooldown.trueshot.remains>20&other_trinket.cooldown.remains<=cooldown.trueshot.remains)" );
-  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&(buff.trueshot.remains>14|buff.trueshot.up&fight_remains<cooldown.trueshot.remains+15|fight_remains<21)" );
-  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage&cooldown.trueshot.remains>20" );
+  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&this_trinket.cooldown.duration%%cooldown.trueshot.duration=0&(buff.trueshot.remains>14|this_trinket.is.algethar_puzzle_box&variable.trueshot_ready&cooldown.trueshot.remains<5)", "A buff trinket that lines up cleanly with Trueshot; use with Trueshot." );
+  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&other_trinket.has_use_buff&other_trinket.cooldown.duration%%cooldown.trueshot.duration=0&(buff.trueshot.remains>14&other_trinket.cooldown.remains|cooldown.trueshot.remains>20&other_trinket.cooldown.remains<=cooldown.trueshot.remains)", "A buff trinket paired with a trinket that matches the above line; use with Trueshot if the other trinket is not ready or use without Trueshot if the other trinket will come up for the next Trueshot." );
+  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&(buff.trueshot.remains>14|buff.trueshot.up&fight_remains<cooldown.trueshot.remains+15|fight_remains<21)", "A buff trinket, use with Trueshot or in the last ~20 seconds of the fight." );
+  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage&cooldown.trueshot.remains>20", "A damage trinket; use when Trueshot has at least 20 seconds remaining on its cooldown." );
 }
 //marksmanship_apl_end
 
@@ -403,10 +403,10 @@ void marksmanship_ptr( player_t* p )
   sentst->add_action( "explosive_shot,if=talent.precision_detonation" );
   sentst->add_action( "steady_shot" );
 
-  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&this_trinket.cooldown.duration%%cooldown.trueshot.duration=0&(buff.trueshot.remains>14|this_trinket.is.algethar_puzzle_box&variable.trueshot_ready&cooldown.trueshot.remains<5)" );
-  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&other_trinket.cooldown.duration%%cooldown.trueshot.duration=0&(buff.trueshot.remains>14&other_trinket.cooldown.remains|cooldown.trueshot.remains>20&other_trinket.cooldown.remains<=cooldown.trueshot.remains)" );
-  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&(buff.trueshot.remains>14|buff.trueshot.up&fight_remains<cooldown.trueshot.remains+15|fight_remains<21)" );
-  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage&cooldown.trueshot.remains>20" );
+  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&this_trinket.cooldown.duration%%cooldown.trueshot.duration=0&(buff.trueshot.remains>14|this_trinket.is.algethar_puzzle_box&variable.trueshot_ready&cooldown.trueshot.remains<5)", "A buff trinket that lines up cleanly with Trueshot; use with Trueshot." );
+  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&other_trinket.has_use_buff&other_trinket.cooldown.duration%%cooldown.trueshot.duration=0&(buff.trueshot.remains>14&other_trinket.cooldown.remains|cooldown.trueshot.remains>20&other_trinket.cooldown.remains<=cooldown.trueshot.remains)", "A buff trinket paired with a trinket that matches the above line; use with Trueshot if the other trinket is not ready or use without Trueshot if the other trinket will come up for the next Trueshot." );
+  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&(buff.trueshot.remains>14|buff.trueshot.up&fight_remains<cooldown.trueshot.remains+15|fight_remains<21)", "A buff trinket, use with Trueshot or in the last ~20 seconds of the fight." );
+  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage&cooldown.trueshot.remains>20", "A damage trinket; use when Trueshot has at least 20 seconds remaining on its cooldown." );
 }
 //marksmanship_ptr_apl_end
 
