@@ -1386,7 +1386,7 @@ struct druid_t final : public parse_player_effects_t
   // secondary actions
   std::vector<action_t*> secondary_action_list;
 
-  template <typename T, typename... Ts>
+  template <typename T, bool PROC = true, typename... Ts>
   T* get_secondary_action( std::string_view n, Ts&&... args );
 
 private:
@@ -3501,7 +3501,7 @@ struct shooting_stars_buff_t final : public druid_buff_t
   _class( druid_t* p, std::string_view n = _name, const spell_data_t* s = nullptr, flag_e f = flag_e::NONE, __VA_ARGS__ ) \
     : _base( n, p, s ? s : _spell, f )
 
-template <typename T, typename... Ts>
+template <typename T, bool PROC, typename... Ts>
 T* druid_t::get_secondary_action( std::string_view n, Ts&&... args )
 {
   if ( auto it = range::find( secondary_action_list, n, &action_t::name_str ); it != secondary_action_list.cend() )
@@ -3523,6 +3523,12 @@ T* druid_t::get_secondary_action( std::string_view n, Ts&&... args )
     static_assert( static_false<T>, "Invalid constructor arguments to get_secondary_action" );
 
   secondary_action_list.push_back( a );
+
+  if constexpr ( PROC )
+  {
+    a->proc = true;
+  }
+
   return a;
 }
 
@@ -3655,6 +3661,9 @@ struct cancel_form_t final : public druid_form_t
 {
   DRUID_ABILITY( cancel_form_t, druid_form_t, "cancelform", spell_data_t::nil() )
   {
+    background = true;
+    callbacks = false;
+
     set_form( NO_FORM );
 
     trigger_gcd = 0_ms;
@@ -4365,7 +4374,7 @@ struct ferocious_bite_t final : public ferocious_bite_base_t
   {
     if ( !p->buff.ravage_fb->is_fallback )
     {
-      ravage = p->get_secondary_action<ravage_ferocious_bite_t>( "ravage_" + name_str, f );
+      ravage = p->get_secondary_action<ravage_ferocious_bite_t, false>( "ravage_" + name_str, f );
       add_child( ravage );
     }
   }
@@ -5750,7 +5759,7 @@ public:
   {
     if ( !p->buff.ravage_maul->is_fallback )
     {
-      ravage = p->get_secondary_action<ravage_maul_t>( "ravage_" + ab::name_str, f );
+      ravage = p->get_secondary_action<ravage_maul_t, false>( "ravage_" + ab::name_str, f );
       ab::add_child( ravage );
     }
   }
@@ -7656,6 +7665,8 @@ struct moon_proxy_t : public druid_spell_t
       half_moon( new half_moon_t( p ) ),
       full_moon( new full_moon_t( p ) )
   {
+    callbacks = false;
+
     set_school( SCHOOL_ASTRAL );
 
     new_moon->action_flags |= flag_e::FOREGROUND;
@@ -7964,6 +7975,8 @@ struct swipe_proxy_t final : public druid_spell_t
       swipe_cat( new cat_attacks::swipe_cat_t( p ) ),
       swipe_bear( new bear_attacks::swipe_bear_t( p ) )
   {
+    callbacks = false;
+
     set_school( SCHOOL_PHYSICAL );
 
     swipe_cat->action_flags |= flag_e::FOREGROUND;
@@ -8776,6 +8789,8 @@ struct wild_mushroom_t final : public druid_spell_t
     fungal_growth_t( druid_t* p, std::string_view n, const spell_data_t* s )
       : druid_spell_t( n, p, s ), uptime( p->get_uptime( "Fungal Growth" ) )
     {
+      background = proc = true;
+
       name_str_reporting = "fungal_growth";
       dot_name = "fungal_growth";
     }
@@ -8982,7 +8997,7 @@ struct heart_of_the_wild_t final : public druid_spell_t
 
   DRUID_ABILITY( heart_of_the_wild_t, druid_spell_t, "heart_of_the_wild", p->talent.heart_of_the_wild )
   {
-    harmful = may_miss = reset_melee_swing = false;
+    harmful = may_miss = reset_melee_swing = callbacks = false;
 
     // validate all version of hotw have the same cd
     assert( p->buff.heart_of_the_wild_bear->is_fallback ||
@@ -9804,6 +9819,8 @@ struct denizen_of_the_dream_t final : public action_t
   denizen_of_the_dream_t( druid_t* p )
     : action_t( action_e::ACTION_OTHER, "denizen_of_the_dream", p, p->talent.denizen_of_the_dream ), druid( p )
   {
+    callbacks = false;
+
     p->pets.denizen_of_the_dream.set_default_duration( p->find_spell( 394076 )->duration() );
     p->pets.denizen_of_the_dream.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
   }
@@ -9829,6 +9846,8 @@ struct sylvan_beckoning_t final : public action_t
   sylvan_beckoning_t( druid_t* p )
     : action_t( action_e::ACTION_OTHER, "sylvan_beckoning", p, p->talent.sylvan_beckoning ), druid( p )
   {
+    callbacks = false;
+
     p->pets.sylvan_beckoning.set_default_duration( p->buff.sylvan_beckoning->buff_duration() );
     p->pets.sylvan_beckoning.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
   }
@@ -9854,6 +9873,8 @@ struct waking_nightmare_t final : public action_t
   waking_nightmare_t( druid_t* p )
     : action_t( action_e::ACTION_OTHER, "waking_nightmare", p, p->talent.waking_nightmare ), druid( p )
   {
+    callbacks = false;
+
     p->pets.dread_shade.set_default_duration( find_trigger( this ).trigger()->duration() + 1_ms );
     p->pets.dread_shade.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
   }
@@ -10869,7 +10890,8 @@ void druid_t::create_buffs()
             adjust_health_pct( mul, false );
         } );
 
-  buff.wild_charge_movement = make_fallback( talent.wild_charge.ok(), this, "wild_charge_movement" );
+  buff.wild_charge_movement = make_fallback( talent.wild_charge.ok(), this, "wild_charge_movement" )
+    ->set_proc_callbacks( false );
 
   // Multi-spec
   // The buff ID in-game is same as the talent, 61336, but the buff effect is in the hidden buff 50322
@@ -10933,18 +10955,16 @@ void druid_t::create_buffs()
   buff.elunes_challenge =
     make_fallback( talent.elunes_challenge.ok(), this, "elunes_challenge", find_spell( 1240285 ) );
 
-  buff.fury_of_elune =
-    make_fallback<fury_of_elune_buff_t>( talent.fury_of_elune.ok() || talent.the_light_of_elune.ok(),
-      this, "fury_of_elune", find_spell( 202770 ) );  // hardcoded for the light of elune
+  buff.fury_of_elune = make_fallback<fury_of_elune_buff_t>( talent.fury_of_elune.ok() || talent.the_light_of_elune.ok(),
+    this, "fury_of_elune", find_spell( 202770 ) );  // hardcoded for the light of elune
 
   buff.lunar_eclipse_override =
     make_fallback( talent.eclipse.ok(), this, "lunar_eclipse_override", find_spell( 1233353 ) )
       ->set_quiet( true );
 
-  buff.sundered_firmament =
-    make_fallback<fury_of_elune_buff_t>( talent.sundered_firmament.ok(),
-      this, "sundered_firmament", find_spell( 394108 ) )
-        ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
+  buff.sundered_firmament = make_fallback<fury_of_elune_buff_t>( talent.sundered_firmament.ok(),
+    this, "sundered_firmament", find_spell( 394108 ) )
+      ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
   buff.parting_skies = make_fallback( talent.sundered_firmament.ok(), this, "parting_skies", find_spell( 395110 ) )
     ->set_reverse( true )
@@ -10978,6 +10998,7 @@ void druid_t::create_buffs()
 
   buff.orbit_breaker = make_fallback( talent.orbit_breaker.ok(), this, "orbit_breaker" )
     ->set_quiet( true )
+    ->set_proc_callbacks( false )
     ->set_cooldown( talent.orbit_breaker->internal_cooldown() )
     ->set_max_stack( std::max( 1, as<int>( talent.orbit_breaker->effectN( 1 ).base_value() ) ) );
 
@@ -11030,16 +11051,15 @@ void druid_t::create_buffs()
   buff.apex_predators_craving = make_fallback( talent.apex_predators_craving.ok(),
     this, "apex_predators_craving", find_trigger( talent.apex_predators_craving ).trigger() );
 
-  buff.berserk_cat =
-    make_fallback( talent.berserk_cat.ok(), this, "berserk_cat", spec.berserk_cat )
-      ->set_name_reporting( "berserk" )
-      ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-        if ( !new_ )
-        {
-          gain.overflowing_power->overflow[ RESOURCE_COMBO_POINT ] += buff.overflowing_power->check();
-          buff.overflowing_power->expire();
-        }
-      } );
+  buff.berserk_cat = make_fallback( talent.berserk_cat.ok(), this, "berserk_cat", spec.berserk_cat )
+    ->set_name_reporting( "berserk" )
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+      if ( !new_ )
+      {
+        gain.overflowing_power->overflow[ RESOURCE_COMBO_POINT ] += buff.overflowing_power->check();
+        buff.overflowing_power->expire();
+      }
+    } );
 
   buff.hunger_for_battle =
     make_fallback( talent.hunger_for_battle.ok(), this, "hunger_for_battle", find_spell( 1244553 ) );
@@ -11370,6 +11390,7 @@ void druid_t::create_buffs()
   buff.blooming_infusion_damage_counter =
     make_fallback( talent.blooming_infusion.ok(), this, "blooming_infusion_damage_counter" )
       //->set_quiet( true )
+      ->set_proc_callbacks( false )
       ->set_name_reporting( "Blooming Infusion Damage Counter" )
       ->set_max_stack( as<int>( talent.blooming_infusion->effectN( 1 ).base_value() ) )
       ->set_expire_at_max_stack( true )
@@ -11382,6 +11403,7 @@ void druid_t::create_buffs()
   buff.blooming_infusion_heal_counter =
     make_fallback( talent.blooming_infusion.ok(), this, "blooming_infusion_heal_counter" )
       //->set_quiet( true )
+      ->set_proc_callbacks( false )
       ->set_name_reporting( "Blooming Infusion Heal Counter" )
       ->set_max_stack( as<int>( talent.blooming_infusion->effectN( 1 ).base_value() ) )
       ->set_expire_at_max_stack( true )
@@ -11546,7 +11568,6 @@ void druid_t::create_actions()
   // General
   active.shift_to_caster = get_secondary_action<cancel_form_t>( "cancel_form_shift" );
   active.shift_to_caster->dual = true;
-  active.shift_to_caster->background = true;
 
   active.shift_to_bear = get_secondary_action<bear_form_t>( "bear_form_shift" );
   active.shift_to_bear->dual = true;
@@ -11565,7 +11586,7 @@ void druid_t::create_actions()
     if ( specialization() == DRUID_GUARDIAN || specialization() == DRUID_RESTORATION )
     {
       // set up cat
-      auto _cat = get_secondary_action<druid_attack_t<melee_attack_t>>(
+      auto _cat = get_secondary_action<druid_attack_t<melee_attack_t>, false>(
         "heart_of_the_wild_cat", this, apply_override( talent.heart_of_the_wild, spec.cat_form ), flag_e::NONE );
       _cat->name_str_reporting = "Cat";
 
@@ -11576,8 +11597,8 @@ void druid_t::create_actions()
       active.hotw_cat = _cat;
 
       // set up owl
-      auto _owl =
-        new action_t( action_e::ACTION_OTHER, "heart_of_the_wild_owl", this, &buff.heart_of_the_wild_owl->data() );
+      auto _owl = get_secondary_action<action_t, false>( "heart_of_the_wild_owl", action_e::ACTION_OTHER,
+        "heart_of_the_wild_owl", this, &buff.heart_of_the_wild_owl->data() );
       _owl->name_str_reporting = "Moonkin";
 
       auto _owl_driver = get_secondary_action<starfall_t::starfall_driver_t>(
