@@ -574,7 +574,7 @@ struct harmonic_surge_t : public base_action_t
       const auto &effect            = spell_data->effectN( effect_index ? effect_index : 1 );
       TBase::spell_power_mod.direct = effect.sp_coeff();
 
-      if ( effect.target_1() == 53 && effect.target_2() == 16 )
+      if ( effect.target_1() == T_DESTINATION_TARGET_ENEMY && effect.target_2() == T_UNIT_DESTINATION_AREA_ENEMY )
       {
         TBase::aoe                    = -1;
         TBase::reduced_aoe_targets    = player->talent.master_of_harmony.harmonic_surge->effectN( 7 ).base_value();
