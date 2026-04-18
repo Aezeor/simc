@@ -4267,10 +4267,7 @@ struct ferocious_bite_base_t : public cp_spender_t
 
       if ( rng().roll( unseen_chance * _cp ) )
       {
-        if ( p()->is_ptr() )
-          trigger_unseen_attack( _cp, _state->energy_mul - 1.0 );  // unseen attacks only do damage based on excess energy
-        else
-          trigger_unseen_attack( as<int>( p()->resources.max[ RESOURCE_COMBO_POINT ] ), 1.0 );
+        trigger_unseen_attack( _cp, _state->energy_mul - 1.0 );  // unseen attacks only do damage based on excess energy
       }
     }
   }
@@ -4855,10 +4852,7 @@ struct unseen_attack_t : public cat_attack_t
     // the first target hit.
     if ( s->chain_target == 0 )
     {
-      auto dur = p()->buff.unseen_predators_craving->buff_duration();
-
-      if ( p()->is_ptr() )
-        dur *= cast_state( s )->combo_points;
+      auto dur = p()->buff.unseen_predators_craving->buff_duration() * cast_state( s )->combo_points;
 
       p()->buff.unseen_predators_craving->trigger( dur );
     }
@@ -4867,13 +4861,10 @@ struct unseen_attack_t : public cat_attack_t
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     auto da = cat_attack_t::composite_da_multiplier( s );
+    auto state = cast_state( s );
 
-    if ( p()->is_ptr() )
-    {
-      auto state = cast_state( s );
-      da *= state->combo_points / p()->resources.max[ RESOURCE_COMBO_POINT ];
-      da *= state->energy_mul;
-    }
+    da *= state->combo_points / p()->resources.max[ RESOURCE_COMBO_POINT ];
+    da *= state->energy_mul;
 
     return da;
   }
@@ -4898,15 +4889,11 @@ struct unseen_slash_t final : public unseen_attack_t
     double composite_rolling_ta_multiplier( const action_state_t* s ) const override
     {
       auto ta = cat_attack_t::composite_rolling_ta_multiplier( s );
+      auto state = cast_state( s );
 
-      if ( p()->is_ptr() )
-      {
-        auto state = cast_state( s );
-
-        // composite rolling ta uses a value of 1.0 to represent the base dot damage. since not having full cp & energy
-        // reduces the base dot amount, we subtract penalty from the composite rolling ta.
-        ta += state->combo_points / p()->resources.max[ RESOURCE_COMBO_POINT ] * state->energy_mul - 1.0;
-      }
+      // composite rolling ta uses a value of 1.0 to represent the base dot damage. since not having full cp & energy
+      // reduces the base dot amount, we subtract penalty from the composite rolling ta.
+      ta += state->combo_points / p()->resources.max[ RESOURCE_COMBO_POINT ] * state->energy_mul - 1.0;
 
       return ta;
     }
@@ -4968,7 +4955,7 @@ public:
         p->talent.memory_of_ysera->effectN( 1 ).percent() * 0.01 / p->talent.memory_of_ysera->effectN( 2 ).base_value();
     }
 
-    if ( p->is_ptr() && p->talent.galactic_guardian.ok() && p->talent.red_moon.ok() )
+    if ( p->talent.galactic_guardian.ok() && p->talent.red_moon.ok() )
       lw_rage_bucket = p->talent.galactic_guardian->effectN( 3 ).base_value();
   }
 
@@ -4978,28 +4965,25 @@ public:
 
     if ( !BASE::proc && BASE::td( s->target )->dots.red_moon->is_ticking() )
     {
-      if ( p_->is_ptr() )
+      if ( lw_rage_bucket )
       {
-        if ( lw_rage_bucket )
+        auto _stacks = static_cast<int>( BASE::last_resource_cost / lw_rage_bucket );
+        if ( p_->buff.lunar_wrath->consume( this, _stacks ) )
         {
-          auto _stacks = static_cast<int>( BASE::last_resource_cost / lw_rage_bucket );
-          if ( p_->buff.lunar_wrath->consume( this, _stacks ) )
+          for ( int i = 0; i < _stacks; ++i )
           {
-            for ( int i = 0; i < _stacks; ++i )
+            if ( p_->bugs )  // only one proc for every 2 stacks
             {
-              if ( p_->bugs )  // only one proc for every 2 stacks
-              {
-                if ( i % 2 == 0 )
-                {
-                  p_->active.lunar_wrath_heal->execute();
-                  p_->active.lunar_wrath->execute_on_target( s->target );
-                }
-              }
-              else
+              if ( i % 2 == 0 )
               {
                 p_->active.lunar_wrath_heal->execute();
                 p_->active.lunar_wrath->execute_on_target( s->target );
               }
+            }
+            else
+            {
+              p_->active.lunar_wrath_heal->execute();
+              p_->active.lunar_wrath->execute_on_target( s->target );
             }
           }
         }
@@ -5606,8 +5590,7 @@ struct maul_base_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
     : base_t( n, p, s, f ),
       hr_rage_threshold( p->talent.harnessed_rage->effectN( 1 ).base_value() ),
       hr_gore_chance_pct( p->talent.harnessed_rage->effectN( 2 ).percent() ),
-      vb_mul( p->is_ptr() ? p->talent.wild_guardian_3->effectN( 1 ).percent()
-                          : p->talent.wild_guardian_2->effectN( 2 ).percent() )
+      vb_mul( p->talent.wild_guardian_3->effectN( 1 ).percent() )
   {
     add_option( opt_bool( "max_rage", max_rage ) );
 
@@ -8755,8 +8738,7 @@ struct wild_guardian_t final : public druid_spell_t
 
   DRUID_ABILITY( wild_guardian_t, druid_spell_t, "wild_guardian",
                  p->talent.wild_guardian_1.ok() ? p->find_spell( 1269658 ) : spell_data_t::not_found() ),
-    dream_charges( as<int>( p->is_ptr() ? p->talent.wild_guardian_2->effectN( 2 ).base_value()
-                                        : p->talent.wild_guardian_3->effectN( 1 ).base_value() ) )
+    dream_charges( as<int>( p->talent.wild_guardian_2->effectN( 2 ).base_value() ) )
   {}
 
   bool ready() override
@@ -11778,7 +11760,7 @@ void druid_t::create_actions()
     active.echo_of_ravage->name_str_reporting.clear();
   }
 
-  if ( is_ptr() ? talent.wild_guardian_3.ok() : talent.wild_guardian_2.ok() )
+  if ( talent.wild_guardian_3.ok() )
     active.vicious_brambles = get_secondary_action<vicious_brambles_t>( "vicious_brambles", this ); 
 
   // Restoration
@@ -14219,8 +14201,6 @@ void druid_t::parse_action_effects( action_t* action )
   }
 
   // snapshots regrowth hot, so disable the effect
-  if ( !is_ptr() )
-    _a->parse_effects( buff.dream_guide, effect_mask_t( true ).disable( 3 ), CONSUME_BUFF );
   _a->parse_effects( buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ), CONSUME_BUFF );
 
   _a->parse_effects( buff.gory_fur, CONSUME_BUFF );
