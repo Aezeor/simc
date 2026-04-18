@@ -6023,6 +6023,7 @@ struct melee_t : public auto_attack_base_t<melee_attack_t>
       double amount = p()->talents.lethal_barbs_energize->effectN( 1 ).base_value();
 
       p()->resource_gain( RESOURCE_FOCUS, amount, p()->gains.lethal_barbs, this );
+      p()->trigger_aura_applied_callbacks( p()->proc_data_entries.lethal_barbs_energize, p() );
       p()->pets.main->resource_gain( RESOURCE_FOCUS, amount, p()->gains.lethal_barbs, this );
     }
   }
