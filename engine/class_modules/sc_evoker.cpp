@@ -1214,7 +1214,7 @@ struct evoker_t : public player_t
     const spell_data_t* evoker;        // evoker class aura
     const spell_data_t* devastation;   // devastation class aura
     const spell_data_t* preservation;  // preservation class aura
-    const spell_data_t* augmentation;  // augmentation_11_0_0 class aura
+    const spell_data_t* augmentation;  // augmentation_12_0_0 class aura
     const spell_data_t* mastery;       // Mastery Spell Data
 
     const spell_data_t* tempered_scales;
@@ -8916,9 +8916,9 @@ void evoker_t::init_action_list()
       break;
     case EVOKER_AUGMENTATION:
       if ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
-        evoker_apl::augmentation_11_0_5( this );
+        evoker_apl::augmentation_12_0_5( this );
       else
-        evoker_apl::augmentation_11_0_0( this );
+        evoker_apl::augmentation_12_0_0( this );
       break;
     default:
       evoker_apl::no_spec( this );

@@ -160,8 +160,8 @@ void preservation( player_t* /*p*/ )
 {
 }
 
-//augmentation_11_0_0_apl_start
-void augmentation_11_0_0( player_t* p )
+//augmentation_12_0_0_apl_start
+void augmentation_12_0_0( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
@@ -235,10 +235,10 @@ void augmentation_11_0_0( player_t* p )
   items->add_action( "use_item,name=bestinslots,use_off_gcd=1,if=buff.ebon_might_self.up&(!variable.trinket_1_buffs|trinket.1.cooldown.duration<=20|trinket.1.cooldown.remains>=10)&(!variable.trinket_2_buffs|trinket.2.cooldown.duration<=20|trinket.2.cooldown.remains>=10)" );
   items->add_action( "use_item,slot=main_hand,use_off_gcd=1,if=gcd.remains>=gcd.max*0.6&!equipped.bestinslots", "Use on use weapons" );
 }
-//augmentation_11_0_0_apl_end
+//augmentation_12_0_0_apl_end
 
-//augmentation_11_0_5_apl_start
-void augmentation_11_0_5( player_t* p )
+//augmentation_12_0_5_apl_start
+void augmentation_12_0_5( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
@@ -267,21 +267,25 @@ void augmentation_11_0_5( player_t* p )
   precombat->add_action( "variable,name=ebon_might_pandemic_threshold,op=reset,default=0.4" );
   precombat->add_action( "variable,name=enforce_timings,op=reset,default=0" );
   precombat->add_action( "variable,name=spam_on_use_trinket,op=reset,default=1" );
-  precombat->add_action( "variable,name=crit_fish,op=reset,default=1" );
+  precombat->add_action( "variable,name=azure_st_filler,op=reset,default=1" );
+  precombat->add_action( "variable,name=bombardments_pooling,op=reset,default=1" );
+  precombat->add_action( "variable,name=crit_fish,op=reset,default=0" );
   precombat->add_action( "use_item,name=aberrant_spellforge" );
   precombat->add_action( "blistering_scales,target_if=target.role.tank" );
   precombat->add_action( "living_flame" );
 
   default_->add_action( "variable,name=eons_remains,op=setif,value=cooldown.allied_virtual_cd_time.remains,value_else=cooldown.breath_of_eons.remains,condition=variable.enforce_timings,if=talent.breath_of_eons" );
-  default_->add_action( "cancel_buff,name=tip_the_scales,if=cooldown.upheaval.remains>0&(talent.temporal_burst)" );
+  default_->add_action( "variable,name=is_bombardments_up,target_if=max:debuff.bombardments.remains,value=debuff.bombardments.up" );
+  default_->add_action( "cancel_buff,name=tip_the_scales,if=cooldown.fire_breath.remains>0&talent.temporal_burst&talent.time_skip&!talent.interwoven_threads" );
   default_->add_action( "hover,use_off_gcd=1,if=gcd.remains>=0.5&(!raid_event.movement.exists|raid_event.movement.in<=6)" );
   default_->add_action( "invoke_external_buff,name=power_infusion,if=buff.duplicate.up" );
+  default_->add_action( "potion,if=consumable.potion_of_recklessness&talent.doubletime" );
   default_->add_action( "ebon_might,if=((buff.ebon_might_self.remains-cast_time)<=buff.ebon_might_self.duration*variable.ebon_might_pandemic_threshold)&(active_enemies>0|raid_event.adds.in<=3)&(buff.ebon_might_self.value<=0.05|variable.crit_fish<1)|buff.ebon_might_self.value<=0.05&talent.doubletime&variable.crit_fish>=1" );
   default_->add_action( "prescience,target_if=min:(debuff.prescience.remains-200*(target.role.attack|target.role.spell|target.role.dps)+50*target.spec.augmentation),if=debuff.prescience.remains<gcd.max*2&time<=8" );
   default_->add_action( "potion,if=variable.eons_remains<=0|cooldown.breath_of_eons.remains>=90|fight_remains<=30&!fight_style.dungeonroute" );
   default_->add_action( "call_action_list,name=items" );
   default_->add_action( "fury_of_the_aspects,if=talent.time_convergence&!buff.time_convergence_intellect.up&(essence>=2|buff.essence_burst.react)&variable.eons_remains>=8" );
-  default_->add_action( "tip_the_scales,if=!cooldown.breath_of_eons.up&(buff.duplicate.up)|talent.temporal_burst&!cooldown.breath_of_eons.up" );
+  default_->add_action( "tip_the_scales,if=!cooldown.breath_of_eons.up&(cooldown.fire_breath.up|talent.temporal_burst&cooldown.fire_breath.remains>gcd.max*2)" );
   default_->add_action( "deep_breath,cancel_if=gcd.remains<=0" );
   default_->add_action( "breath_of_eons,if=target.time_to_die>=20&!variable.enforce_timings|variable.enforce_timings&(evoker.allied_cds_up>0|cooldown.allied_virtual_cd_time.up),cancel_if=gcd.remains<=0" );
   default_->add_action( "fire_breath,target_if=target.time_to_die>duration+0.2,empower_to=4,if=buff.ebon_might_self.up&talent.leaping_flames" );
@@ -290,12 +294,12 @@ void augmentation_11_0_5( player_t* p )
   default_->add_action( "prescience,target_if=min:(debuff.prescience.remains-200*(target.role.attack|target.role.spell|target.role.dps)+50*target.spec.augmentation),if=debuff.prescience.remains<gcd.max*2&(!talent.anachronism|buff.essence_burst.stack<buff.essence_burst.max_stack)|cooldown.time_skip.up&talent.time_skip" );
   default_->add_action( "time_skip,if=!talent.chronoboon&cooldown.breath_of_eons.remains>=15|cooldown.tip_the_scales.remains>=6&!buff.tip_the_scales.up" );
   default_->add_action( "emerald_blossom,if=talent.dream_of_spring&buff.essence_burst.react&(variable.spam_heal=2|variable.spam_heal=1&!buff.ancient_flame.up&talent.ancient_flame)&(buff.ebon_might_self.up|essence.deficit=0|buff.essence_burst.stack=buff.essence_burst.max_stack&cooldown.ebon_might.remains>4)" );
-  default_->add_action( "run_action_list,name=filler,if=buff.mass_eruption_stacks.stack=1&(cooldown.fire_breath.remains<=gcd.max*4|cooldown.upheaval.remains<=gcd.max*4)&buff.essence_burst.react<2" );
-  default_->add_action( "eruption,target_if=min:debuff.bombardments.remains,if=buff.mass_eruption_stacks.up" );
-  default_->add_action( "eruption,target_if=max:debuff.bombardments.remains,if=debuff.bombardments.remains>execute_time|buff.ebon_might_self.remains>execute_time&(buff.essence_burst.react>=1|!talent.bombardments)" );
+  default_->add_action( "run_action_list,name=filler,if=(cooldown.fire_breath.remains<=gcd.max*4|cooldown.upheaval.remains<=gcd.max*4)&talent.extended_battle&buff.essence_burst.react<2&variable.bombardments_pooling" );
+  default_->add_action( "eruption,target_if=min:debuff.bombardments.remains+100*(target.time_to_die<=8),if=buff.mass_eruption_stacks.up" );
+  default_->add_action( "eruption,target_if=max:debuff.bombardments.remains,if=debuff.bombardments.remains>execute_time|buff.ebon_might_self.remains>execute_time&(buff.essence_burst.react>1|!talent.bombardments|!variable.bombardments_pooling)" );
   default_->add_action( "run_action_list,name=filler" );
 
-  filler->add_action( "living_flame,if=(buff.ancient_flame.up|mana>=200000|!talent.dream_of_spring|variable.spam_heal=0)&(talent.pupil_of_alexstrasza&active_enemies>1|!talent.echoing_strike|talent.chrono_flame)|buff.leaping_flames.up" );
+  filler->add_action( "living_flame,if=(buff.ancient_flame.up|mana>=200000|!talent.dream_of_spring|variable.spam_heal=0)&(talent.pupil_of_alexstrasza&active_enemies>1|!talent.echoing_strike&!variable.azure_st_filler|talent.chrono_flame&variable.azure_st_filler<2)|buff.leaping_flames.up" );
   filler->add_action( "azure_strike" );
 
   items->add_action( "use_item,name=vaelgors_final_stare,if=evoker.shifting_buffs>=2|evoker.shifting_buffs>=1&(cooldown.fire_breath.remains<=7|cooldown.upheaval.remains<=7)" );
@@ -309,7 +313,7 @@ void augmentation_11_0_5( player_t* p )
   items->add_action( "use_item,name=bestinslots,use_off_gcd=1,if=buff.ebon_might_self.up&(!variable.trinket_1_buffs|trinket.1.cooldown.duration<=20|trinket.1.cooldown.remains>=10)&(!variable.trinket_2_buffs|trinket.2.cooldown.duration<=20|trinket.2.cooldown.remains>=10)" );
   items->add_action( "use_item,slot=main_hand,use_off_gcd=1,if=gcd.remains>=gcd.max*0.6&!equipped.bestinslots", "Use on use weapons" );
 }
-//augmentation_11_0_5_apl_end
+//augmentation_12_0_5_apl_end
 
 void no_spec( player_t* /*p*/ )
 {
