@@ -1801,7 +1801,7 @@ class SpellDataGenerator(DataGenerator):
             ( 459002, 0 ),          # Outlaw 11.0 Set Bonus damage spell
             ( 467059, 0 ),          # Outlaw Crackshot Dispatch clone damage spell
             ( 1219264, 0 ),         # Assassination TWW2 4pc set bonus buff spell
-            
+
             # Midnight
             ( 1214933, 0 ),         # Roll the Bones - One of a Kind
             ( 1214934, 0 ),         # Roll the Bones - Double Trouble
@@ -5029,7 +5029,7 @@ class ExpectedStatGenerator(DataGenerator):
             length = len(data))
 
         for es in sorted(data, key = lambda e: e.id_parent):
-            fields = es.field('id_parent', 'creature_auto_attack_dps', 'creature_armor',
+            fields = es.field('id_parent', 'creature_health', 'creature_auto_attack_dps', 'creature_armor',
                               'player_primary_stat', 'player_secondary_stat',
                               'armor_constant', 'creature_spell_damage')
             self.output_record(fields)
@@ -5048,7 +5048,7 @@ class ExpectedStatModGenerator(DataGenerator):
             length = len(data))
 
         for esm in sorted(data, key = lambda e: (e[1], e[0].id)):
-            fields = esm[0].field('id', 'mod_creature_auto_attack_dps', 'mod_creature_armor',
+            fields = esm[0].field('id', 'mod_creature_health', 'mod_creature_auto_attack_dps', 'mod_creature_armor',
                                   'mod_player_primary_stat', 'mod_player_secondary_stat',
                                   'mod_armor_constant', 'mod_creature_spell_damage')
             fields += [str(esm[1])]
