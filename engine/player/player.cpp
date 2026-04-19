@@ -12587,6 +12587,41 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     throw sc_invalid_apl_argument( fmt::format( "Invalid talent expression '{}'.", splits[ 2 ] ) );
   }
 
+  if ( splits.size() == 2 && splits[ 0 ] == "potion" )
+  {
+    std::string_view potion_view;
+
+    if ( !potion_str.empty() )
+    {
+      potion_view = potion_str;
+    }
+    else if ( default_potion().empty() )
+    {
+      potion_view = default_potion();
+    }
+    else
+    {
+      return expr_t::create_constant( expression_str, false );
+    }
+
+    if ( util::str_compare_ci( potion_view, splits[ 1 ] ) )
+      return expr_t::create_constant( expression_str, true );
+
+    if ( potion_view.size() < 2 )
+      return expr_t::create_constant( expression_str, false );
+
+    auto last_char = std::prev( potion_view.end() );
+    if ( std::isdigit( *last_char ) && *std::prev( last_char ) == '_' )
+    {
+      potion_view.remove_suffix( 2 );
+
+      if ( util::str_compare_ci( potion_view, splits[ 1 ] ) )
+        return expr_t::create_constant( expression_str, true );
+    }
+
+    return expr_t::create_constant( expression_str, false );
+  }
+
   // trinkets
   if ( !splits.empty() && splits[ 0 ] == "trinket" )
   {
