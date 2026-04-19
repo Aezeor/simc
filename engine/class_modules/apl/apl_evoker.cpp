@@ -275,7 +275,6 @@ void augmentation_12_0_5( player_t* p )
   precombat->add_action( "living_flame" );
 
   default_->add_action( "variable,name=eons_remains,op=setif,value=cooldown.allied_virtual_cd_time.remains,value_else=cooldown.breath_of_eons.remains,condition=variable.enforce_timings,if=talent.breath_of_eons" );
-  default_->add_action( "variable,name=is_bombardments_up,target_if=max:debuff.bombardments.remains,value=debuff.bombardments.up" );
   default_->add_action( "cancel_buff,name=tip_the_scales,if=cooldown.fire_breath.remains>0&talent.temporal_burst&talent.time_skip&!talent.interwoven_threads" );
   default_->add_action( "hover,use_off_gcd=1,if=gcd.remains>=0.5&(!raid_event.movement.exists|raid_event.movement.in<=6)" );
   default_->add_action( "invoke_external_buff,name=power_infusion,if=buff.duplicate.up" );
