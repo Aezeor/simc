@@ -13622,7 +13622,7 @@ public:
   void mw_consumer_stack_header( report::sc_html_stream& os )
   {
     auto columns = std::max( p.buff.maelstrom_weapon->data().max_stacks(),
-      as<unsigned>( p.talent.overflowing_maelstrom->effectN( 1 ).base_value() ) ) + 1;
+      as<unsigned>( p.talent.raging_maelstrom->effectN( 1 ).base_value() ) ) + 1;
 
     os << "<table class=\"sc sort\" style=\"float: left;margin-right: 10px;\">\n"
        << "<thead>\n"
@@ -13641,7 +13641,7 @@ public:
   void mw_consumer_stack_contents( report::sc_html_stream& os )
   {
     auto columns = std::max( p.buff.maelstrom_weapon->data().max_stacks(),
-      as<unsigned>( p.talent.overflowing_maelstrom->effectN( 1 ).base_value() ) ) + 1;
+      as<unsigned>( p.talent.raging_maelstrom->effectN( 1 ).base_value() ) ) + 1;
 
     int row = 0;
     std::vector<double> row_totals( columns, 0.0 );
