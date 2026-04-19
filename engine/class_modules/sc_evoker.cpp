@@ -864,7 +864,7 @@ struct simplified_player_t : public player_t
   // Not actually used, emulated.
   std::string default_potion() const override
   {
-    return "potion_of_lights_potential_2";
+    return "lights_potential_2";
   }
 
   std::string default_flask() const override
