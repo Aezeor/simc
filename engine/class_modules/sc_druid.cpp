@@ -2669,9 +2669,10 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
 
 struct cat_attack_data_t
 {
-  double energy_mul = 0.0;
+  double energy_mod = 0.0;
   int combo_points = 0;
   uint8_t snapshots = 0;
+  bool free = false;
 
   friend void sc_format_to( const cat_attack_data_t& data, fmt::format_context::iterator out )
   {
@@ -2680,8 +2681,8 @@ struct cat_attack_data_t
     if ( data.combo_points )
       str.push_back( fmt::format( "combo_points={}", data.combo_points ) );
 
-    if ( data.energy_mul )
-      str.push_back( fmt::format( "energy_mul={}", data.energy_mul ) );
+    if ( data.energy_mod )
+      str.push_back( fmt::format( "energy_mod={}", data.energy_mod ) );
 
     if ( data.snapshots )
     {
@@ -2692,6 +2693,9 @@ struct cat_attack_data_t
 
       str.push_back( fmt::format( "snapshots={}", fmt::join( snap_str, "|" ) ) );
     }
+
+    if ( data.free )
+      str.push_back( "(free)" );
 
     fmt::format_to( out, "{}{}", str.empty() ? "" : " ", fmt::join( str, " " ) );
   }
@@ -2819,7 +2823,7 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
       snapshot_tracker = benefit_tracker_t::get_tracker<SNAPSHOT_TRACKER>( p(), this );
   }
 
-  void trigger_unseen_attack( int cp, double energy_mul )
+  void trigger_unseen_attack( int cp, double energy_mod )
   {
     assert( p()->active.unseen_slash && p()->active.unseen_swipe );
 
@@ -2831,18 +2835,18 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
 
     if ( p()->active.unseen_swipe->target_list().size() > UNSEEN_SWIPE_TARGETS )
     {
-      snapshot_and_execute( p()->active.unseen_swipe, nullptr, false, [ this, cp, energy_mul ]( auto, auto to ) {
+      snapshot_and_execute( p()->active.unseen_swipe, nullptr, false, [ this, cp, energy_mod ]( auto, auto to ) {
         auto state = cast_state( to );
         state->combo_points = cp;
-        state->energy_mul = energy_mul;
+        state->energy_mod = energy_mod;
       } );
     }
     else
     {
-      snapshot_and_execute( p()->active.unseen_slash, nullptr, false, [ this, cp, energy_mul, _tar ]( auto, auto to ) {
+      snapshot_and_execute( p()->active.unseen_slash, nullptr, false, [ this, cp, energy_mod, _tar ]( auto, auto to ) {
         auto state = cast_state( to );
         state->combo_points = cp;
-        state->energy_mul = energy_mul;
+        state->energy_mod = energy_mod;
         state->target = _tar;
         p()->active.unseen_slash->set_target( _tar );
       } );
@@ -4121,7 +4125,11 @@ struct ferocious_bite_base_t : public cp_spender_t
 {
   struct rampant_ferocity_t final : public cat_attack_t
   {
-    rampant_ferocity_t( druid_t* p, std::string_view n ) : cat_attack_t( n, p, p->find_spell( 391710 ) )
+    double energy_mod_pct;
+
+    rampant_ferocity_t( druid_t* p, std::string_view n )
+      : cat_attack_t( n, p, p->find_spell( 391710 ) ),
+        energy_mod_pct( p->talent.rampant_ferocity->effectN( 2 ).percent() )
     {
       background = proc = true;
       aoe = -1;
@@ -4133,9 +4141,12 @@ struct ferocious_bite_base_t : public cp_spender_t
 
     double composite_da_multiplier( const action_state_t* s ) const override
     {
-      auto state = cast_state( s );
+      auto _state = cast_state( s );
+      auto energy_mul = 1.0;
+      if ( !_state->free )  // free casts don't get any bonus for excess energy
+        energy_mul += _state->energy_mod * energy_mod_pct;
 
-      return cat_attack_t::composite_da_multiplier( s ) * state->combo_points * state->energy_mul;
+      return cat_attack_t::composite_da_multiplier( s ) * _state->combo_points * energy_mul;
     }
   };
 
@@ -4146,7 +4157,6 @@ struct ferocious_bite_base_t : public cp_spender_t
   double excess_energy = 0.0;
   double max_excess_energy;
   double saber_jaws_mul;
-  double rf_energy_mod_pct;
   double unseen_chance;
   double spattered_mul;
   size_t spattered_cap;
@@ -4157,7 +4167,6 @@ struct ferocious_bite_base_t : public cp_spender_t
       orig_stats( stats ),
       max_excess_energy( find_effect( this, E_POWER_BURN ).resource() ),
       saber_jaws_mul( p->talent.saber_jaws->effectN( 1 ).percent() ),
-      rf_energy_mod_pct( p->talent.rampant_ferocity->effectN( 2 ).percent() ),
       unseen_chance( p->talent.unseen_predator_1->effectN( 1 ).percent() ),
       spattered_mul( p->talent.blood_spattered->effectN( 1 ).percent() ),
       spattered_cap( as<size_t>( p->talent.blood_spattered->effectN( 2 ).base_value() ) )
@@ -4261,10 +4270,7 @@ struct ferocious_bite_base_t : public cp_spender_t
       if ( !rampant_ferocity->target_list().empty() )
       {
         snapshot_and_execute( rampant_ferocity, s, false, [ this ]( auto from, auto to ) {
-          auto state = rampant_ferocity->cast_state( to );
-          state->combo_points = cast_state( from )->combo_points;
-          // rampant ferocity from free bites have 0.0 energy mod (unlike free bites themselves which get 1.0)
-          state->energy_mul = 1.0 + ( rf_energy_mod_pct * ( is_free() ? 0.0 : energy_modifier( from, false ) ) );
+          cast_state( to )->copy_data( cast_state( from ) );
         } );
       }
     }
@@ -4275,9 +4281,7 @@ struct ferocious_bite_base_t : public cp_spender_t
       auto _cp = _state->combo_points;
 
       if ( rng().roll( unseen_chance * _cp ) )
-      {
-        trigger_unseen_attack( _cp, _state->energy_mul - 1.0 );  // unseen attacks only do damage based on excess energy
-      }
+        trigger_unseen_attack( _cp, _state->energy_mod );
     }
   }
 
@@ -4324,19 +4328,20 @@ struct ferocious_bite_base_t : public cp_spender_t
       return cp_spender_t::_consumed_combo_points();
   }
 
-  virtual double energy_modifier( const action_state_t*, bool saber ) const
+  virtual double energy_modifier( const action_state_t* ) const
   {
     if ( _is_free() )
       return 1.0;
-    else if ( !saber )
-      return excess_energy / max_excess_energy;
     else
-      return excess_energy / max_excess_energy * ( 1.0 + saber_jaws_mul );
+      return excess_energy / max_excess_energy;
   }
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
-    cast_state( s )->energy_mul = 1.0 + energy_modifier( s, true );
+    if ( _is_free() )
+      cast_state( s )->free = true;
+
+    cast_state( s )->energy_mod = energy_modifier( s );
 
     cp_spender_t::snapshot_state( s, rt );
   }
@@ -4344,10 +4349,14 @@ struct ferocious_bite_base_t : public cp_spender_t
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     auto da = cp_spender_t::composite_da_multiplier( s );
+    auto energy_mul = 1.0 + cast_state( s )->energy_mod;
+
+    if ( saber_jaws_mul && !cast_state( s )->free )
+      energy_mul += cast_state( s )->energy_mod * saber_jaws_mul;
 
     // base spell coeff is for 5CP, so we reduce if lower than 5.
     da *= cast_state( s )->combo_points / p()->resources.max[ RESOURCE_COMBO_POINT ];
-    da *= cast_state( s )->energy_mul;
+    da *= energy_mul;
 
     if ( spattered_mul && s->chain_target == 0 )
       da *= 1.0 + spattered_mul * std::min( spattered_cap, p()->dot_lists.rip.size() );
@@ -4362,9 +4371,9 @@ struct ferocious_bite_t final : public ferocious_bite_base_t
   {
     ravage_ferocious_bite_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->find_spell( 441591 ), f ) {}
 
-    double energy_modifier( const action_state_t* s, bool saber ) const override
+    double energy_modifier( const action_state_t* s ) const override
     {
-      return s->chain_target == 0 ? base_t::energy_modifier( s, saber ) : 0.0;
+      return s->chain_target == 0 ? base_t::energy_modifier( s ) : 0.0;
     }
   };
 
@@ -4873,7 +4882,7 @@ struct unseen_attack_t : public cat_attack_t
     auto state = cast_state( s );
 
     da *= state->combo_points / p()->resources.max[ RESOURCE_COMBO_POINT ];
-    da *= state->energy_mul;
+    da *= state->energy_mod;
 
     return da;
   }
@@ -4902,7 +4911,7 @@ struct unseen_slash_t final : public unseen_attack_t
 
       // composite rolling ta uses a value of 1.0 to represent the base dot damage. since not having full cp & energy
       // reduces the base dot amount, we subtract penalty from the composite rolling ta.
-      ta += state->combo_points / p()->resources.max[ RESOURCE_COMBO_POINT ] * state->energy_mul - 1.0;
+      ta += ( state->combo_points / p()->resources.max[ RESOURCE_COMBO_POINT ] * state->energy_mod ) - 1.0;
 
       return ta;
     }
