@@ -11872,6 +11872,8 @@ void druid_t::create_actions()
       "sylvan_beckoning_starfall_driver", find_trigger( spec.sylvan_beckoning_sf ).trigger(), find_spell( 1264676 ),
       flag_e::SYLVAN );
     driver->name_str_reporting = "starfall";
+    driver->callbacks = false;
+    driver->damage->callbacks = false;
     replace_stats( driver, driver->damage );
     active.sylvan_beckoning->add_child( driver );
     active.sylvan_beckoning_starfall_driver = driver;
@@ -12402,14 +12404,6 @@ void druid_t::init_special_effects()
     driver->spell_id = talent.ascendant_eclipses_2->id();
     driver->proc_flags2_ = PF2_CRIT;
     special_effects.push_back( driver );
-
-    callbacks.register_callback_trigger_function(
-      driver->spell_id, trigger_type::CONDITION, []( auto, const auto&, auto, action_state_t* s, auto ) {
-        auto tmp = dynamic_cast<druid_action_data_t*>( s->action );
-        // assert( tmp && "Non-Druid action attempting to proc Ascendant Eclipses." );
-
-        return tmp && !tmp->has_flag( flag_e::SYLVAN );
-      } );
 
     auto _damage = get_secondary_action<residual_action::residual_periodic_action_t<druid_spell_t>>(
       "astral_smolder", this, find_spell( 1263250 ) );
