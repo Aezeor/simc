@@ -8306,7 +8306,8 @@ struct reapers_mark_t final : public death_knight_spell_t
     }
 
     if ( p()->talent.deathbringer.deathly_blows.ok() )
-      p()->trigger_bonegrinder( ( as<int>( p()->talent.deathbringer.deathly_blows->effectN( 4 ).base_value() ) ) );
+      p()->buffs.bonegrinder_crit->trigger(
+          ( as<int>( p()->talent.deathbringer.deathly_blows->effectN( 4 ).base_value() ) ) );
 
     if ( p()->specialization() == DEATH_KNIGHT_FROST && p()->talent.deathbringer.echoing_fury.ok() )
     {
@@ -13113,6 +13114,12 @@ void death_knight_t::trigger_bonegrinder( int stacks )
 {
   if ( !talent.frost.bonegrinder.ok() )
     return;
+
+  if ( bugs && buffs.bonegrinder_frost->check() && buffs.bonegrinder_crit->check() )
+  {
+    buffs.bonegrinder_frost->trigger();
+    buffs.bonegrinder_crit->expire();
+  }
 
   if ( buffs.bonegrinder_frost->check() )
     return;
