@@ -136,7 +136,8 @@ static constexpr std::array<expected_stat_t, 133> __expected_stat_data { {
 } };
 
 // Expected stat mods, wow build 12.0.1.66838
-static constexpr std::array<expected_stat_mod_t, 15> __expected_stat_mod_data { {
+static constexpr std::array<expected_stat_mod_t, 16> __expected_stat_mod_data { {
+  { 280, 1.837000f, 1.939300f, 1.000000f, 1.000000f, 1.000000f, 1.000000f, 1.939300f, 8 },
   { 391, 1.062530f, 1.056650f, 1.000000f, 1.040410f, 1.070000f, 1.033800f, 1.056650f, 8 },
   { 424, 1.100000f, 1.000000f, 1.000000f, 1.000000f, 1.000000f, 1.000000f, 1.000000f, 8 },
   {  16, 0.920000f, 0.822000f, 1.000000f, 1.000000f, 1.000000f, 1.000000f, 0.822000f, 14 },
