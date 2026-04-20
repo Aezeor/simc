@@ -354,11 +354,12 @@ void marksmanship_ptr( player_t* p )
   draoe->add_action( "black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up" );
   draoe->add_action( "multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&!talent.aspect_of_the_hydra&!prev_gcd.1.multishot|buff.trick_shots.down" );
   draoe->add_action( "trueshot,if=!buff.double_tap.up&variable.trueshot_ready" );
-  draoe->add_action( "rapid_fire,if=buff.trick_shots.remains>execute_time&(!buff.double_tap.up&talent.unload&(talent.no_scope&buff.bulletstorm.stack<10|target.health.pct<20)|buff.bulletstorm.remains<action.aimed_shot.execute_time)" );
+  draoe->add_action( "rapid_fire,if=buff.trick_shots.remains>execute_time&(buff.bulletstorm.remains<action.aimed_shot.execute_time|talent.unload)" );
+  draoe->add_action( "wailing_arrow,if=!cooldown.black_arrow.ready" );
   draoe->add_action( "volley,if=!buff.double_tap.up" );
   draoe->add_action( "aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time" );
-  draoe->add_action( "wailing_arrow" );
-  draoe->add_action( "rapid_fire,if=buff.trick_shots.remains>execute_time" );
+  draoe->add_action( "multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up" );
+  draoe->add_action( "explosive_shot" );
   draoe->add_action( "steady_shot" );
 
   drst->add_action( "black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up" );
@@ -505,7 +506,7 @@ void survival_ptr( player_t* p )
   action_priority_list_t* sentcleave = p->get_action_priority_list( "sentcleave" );
 
   precombat->add_action( "summon_pet" );
-  precombat->add_action( "snapshot_stats" );
+  precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins." );
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
   precombat->add_action( "wildfire_bomb,if=active_enemies=1" );
 
@@ -526,14 +527,12 @@ void survival_ptr( player_t* p )
   cds->add_action( "potion,if=target.time_to_die<25|cooldown.takedown.ready" );
   cds->add_action( "aspect_of_the_eagle,if=target.distance>=6" );
 
-  plst->add_action( "kill_command,if=buff.tip_of_the_spear.stack<2&(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains)", "ST - PL" );
-  plst->add_action( "wildfire_bomb,if=fury_of_the_wyvern_extendable&buff.wyverns_cry.remains<gcd" );
+  plst->add_action( "kill_command,if=buff.tip_of_the_spear.stack<2&howl_summon.ready", "ST - PL" );
   plst->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
-  plst->add_action( "raptor_strike,if=!buff.raptor_swipe.up&cooldown.takedown.remains<gcd" );
-  plst->add_action( "boomstick,if=buff.tip_of_the_spear.up|cooldown.takedown.remains<gcd&talent.twin_fangs" );
   plst->add_action( "takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs" );
   plst->add_action( "flamefang_pitch" );
-  plst->add_action( "wildfire_bomb,if=fury_of_the_wyvern_extendable&buff.tip_of_the_spear.up&!buff.takedown.remains" );
+  plst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.up" );
+  plst->add_action( "boomstick,if=buff.tip_of_the_spear.up" );
   plst->add_action( "raptor_strike,if=(buff.tip_of_the_spear.up|!buff.raptor_swipe.up)" );
   plst->add_action( "kill_command,if=cooldown.takedown.remains" );
   plst->add_action( "wildfire_bomb" );

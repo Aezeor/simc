@@ -27,11 +27,12 @@ actions.draoe=aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,i
 actions.draoe+=/black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
 actions.draoe+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&!talent.aspect_of_the_hydra&!prev_gcd.1.multishot|buff.trick_shots.down
 actions.draoe+=/trueshot,if=!buff.double_tap.up&variable.trueshot_ready
-actions.draoe+=/rapid_fire,if=buff.trick_shots.remains>execute_time&(!buff.double_tap.up&talent.unload&(talent.no_scope&buff.bulletstorm.stack<10|target.health.pct<20)|buff.bulletstorm.remains<action.aimed_shot.execute_time)
+actions.draoe+=/rapid_fire,if=buff.trick_shots.remains>execute_time&(buff.bulletstorm.remains<action.aimed_shot.execute_time|talent.unload)
+actions.draoe+=/wailing_arrow,if=!cooldown.black_arrow.ready
 actions.draoe+=/volley,if=!buff.double_tap.up
 actions.draoe+=/aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time
-actions.draoe+=/wailing_arrow
-actions.draoe+=/rapid_fire,if=buff.trick_shots.remains>execute_time
+actions.draoe+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
+actions.draoe+=/explosive_shot
 actions.draoe+=/steady_shot
 
 actions.drst=black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
