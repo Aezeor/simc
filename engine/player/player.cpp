@@ -9386,7 +9386,7 @@ struct shadowmeld_t : public racial_spell_t
     // Shadowmeld stops autoattacks
     player->cancel_auto_attacks();
 
-    if ( !player->in_boss_encounter )
+    if ( !player->in_boss_encounter || sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE || sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE )
       player->leave_combat();
   }
 };
