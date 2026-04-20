@@ -581,12 +581,21 @@ struct pull_event_t final : raid_event_t
             }
 
             spawn.name   = splits[ 0 ];
-            spawn.health = util::to_double( splits[ 1 ] );
+            spawn.health = parse_health( splits[ 1 ] );
 
             if ( splits.size() > 2 )
               spawn.race = util::parse_race_type( util::tokenize_fn( splits[ 2 ] ) );
+            int clone = 1;
+            if ( splits.size() > 3 )
+              clone = util::to_int( splits[ 3 ] );
 
             spawn_parameters.emplace_back( spawn );
+            for ( int i = 1; i < clone; i++ )
+            {
+              spawn_parameter spawn_copy{ spawn };
+              spawn_copy.name += fmt::format( "_copy{}", i );
+              spawn_parameters.emplace_back( spawn_copy );
+            }
           }
         }
 
@@ -757,6 +766,19 @@ struct pull_event_t final : raid_event_t
       raid_event->reset();
 
     redistribute_event = nullptr;
+  }
+
+  double parse_health( util::string_view str )
+  {
+    double mult = 1.0;
+    if ( str.size() && str.back() == 'c' )
+    {
+      mult = sim->dbc->expected_creature_health( sim->max_player_level ) *
+             sim->dbc->expected_creature_health_mod( difficulty_e::DUNGEON );
+      str.remove_suffix( 1 );
+    }
+
+    return util::to_double( str ) * mult;
   }
 };
 
