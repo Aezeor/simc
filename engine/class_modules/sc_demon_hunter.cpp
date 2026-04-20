@@ -1160,7 +1160,6 @@ public:
     spell_t* collective_anguish          = nullptr;
 
     // Devourer
-    spell_t* spontaneous_immolation = nullptr;
     spell_t* void_buildup           = nullptr;
 
     // Havoc
@@ -3057,64 +3056,6 @@ struct burning_blades_trigger_t : public BASE
   void impact( action_state_t* s ) override
   {
     BASE::impact( s );
-
-    if ( !BASE::dh()->talent.scarred.burning_blades->ok() )
-      return;
-
-    if ( !action_t::result_is_hit( s->result ) )
-      return;
-
-    const double dot_damage = s->result_amount * BASE::dh()->talent.scarred.burning_blades->effectN( 1 ).percent();
-    residual_action::trigger( BASE::dh()->active.burning_blades, s->target, dot_damage );
-  }
-};
-
-template <typename BASE>
-struct burning_blades_live_trigger_t : public BASE
-{
-  using base_t = burning_blades_live_trigger_t<BASE>;
-
-  burning_blades_live_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
-                                 util::string_view o = {} )
-    : BASE( n, p, s, o )
-  {
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    BASE::impact( s );
-
-    if ( BASE::dh()->is_ptr() )
-      return;
-
-    if ( !BASE::dh()->talent.scarred.burning_blades->ok() )
-      return;
-
-    if ( !action_t::result_is_hit( s->result ) )
-      return;
-
-    const double dot_damage = s->result_amount * BASE::dh()->talent.scarred.burning_blades->effectN( 1 ).percent();
-    residual_action::trigger( BASE::dh()->active.burning_blades, s->target, dot_damage );
-  }
-};
-
-template <typename BASE>
-struct burning_blades_ptr_trigger_t : public BASE
-{
-  using base_t = burning_blades_ptr_trigger_t<BASE>;
-
-  burning_blades_ptr_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
-                                util::string_view o = {} )
-    : BASE( n, p, s, o )
-  {
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    BASE::impact( s );
-
-    if ( !BASE::dh()->is_ptr() )
-      return;
 
     if ( !BASE::dh()->talent.scarred.burning_blades->ok() )
       return;
@@ -5467,7 +5408,7 @@ struct the_hunt_base_t
         dh()->spawn_soul_fragment( dh()->proc.soul_fragment_from_broken_spirit, soul_fragment::LESSER );
       }
 
-      if ( s->chain_target == 0 && dh()->specialization() == DEMON_HUNTER_DEVOURER && dh()->is_ptr() &&
+      if ( s->chain_target == 0 && dh()->specialization() == DEMON_HUNTER_DEVOURER &&
            dh()->talent.scarred.violent_transformation->ok() )
       {
         // only resets one charge of Soul Immo
@@ -5674,7 +5615,7 @@ struct consume_t : public consume_base_t
 
 struct voidblade_base_t : public voidrush_trigger_t<hungering_slash_trigger_t<demon_hunter_spell_t>>
 {
-  struct voidblade_damage_t : public burning_blades_ptr_trigger_t<shattered_souls_trigger_t<demon_hunter_spell_t>>
+  struct voidblade_damage_t : public burning_blades_trigger_t<shattered_souls_trigger_t<demon_hunter_spell_t>>
   {
     voidblade_damage_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spec.voidblade )
     {
@@ -5772,92 +5713,6 @@ struct void_buildup_t : public demon_hunter_spell_t
   }
 };
 
-struct soul_immolation_base_t : public demon_hunter_spell_t
-{
-  soul_immolation_base_t( util::string_view n, demon_hunter_t* p, util::string_view o )
-    : demon_hunter_spell_t( n, p, p->talent.devourer.soul_immolation, o )
-  {
-    // self damage doesn't count as DPS
-    stats->type = stats_e::STATS_NEUTRAL;
-
-    tick_energize_action = p->get_background_action<demon_hunter_energize_t>( fmt::format( "{}_energize", name() ),
-                                                                              p->spec.soul_immolation_energize );
-  }
-
-  void execute() override
-  {
-    target = dh();
-    demon_hunter_spell_t::execute();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    assert( s->target == dh() );
-    demon_hunter_spell_t::impact( s );
-  }
-
-  void tick( dot_t* d ) override
-  {
-    demon_hunter_spell_t::tick( d );
-
-    // seems to spawn a soul fragment every other tick, starting with the first tick
-    if ( d->current_tick % 2 == 0 )
-    {
-      dh()->spawn_soul_fragment( dh()->proc.soul_fragment_from_soul_immolation, soul_fragment::LESSER, 1 );
-    }
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    demon_hunter_spell_t::last_tick( d );
-
-    if ( dh()->talent.scarred.undying_embers->ok() &&
-         rng().roll( dh()->talent.scarred.undying_embers->effectN( 2 ).percent() ) )
-    {
-      dh()->proc.undying_embers->occur();
-
-      // retriggers the DoT but doesn't count as a cast/execute
-      action_state_t* undying_embers_state = get_state();
-      undying_embers_state->target         = d->state->target;
-      snapshot_state( undying_embers_state, result_amount_type::DMG_OVER_TIME );
-
-      make_event<undying_embers_event_t>( *sim, dh(), this, undying_embers_state );
-    }
-  }
-};
-
-struct soul_immolation_t : public soul_immolation_base_t
-{
-  soul_immolation_t( demon_hunter_t* p, util::string_view o ) : soul_immolation_base_t( "soul_immolation", p, o )
-  {
-  }
-
-  bool action_ready() override
-  {
-    if ( !dh()->is_ptr() && dh()->talent.devourer.spontaneous_immolation->ok() )
-    {
-      return false;
-    }
-
-    return soul_immolation_base_t::action_ready();
-  }
-};
-
-struct spontaneous_immolation_t : public soul_immolation_base_t
-{
-  spontaneous_immolation_t( util::string_view n, demon_hunter_t* p ) : soul_immolation_base_t( n, p, "" )
-  {
-    cooldown->duration = 0_s;
-  }
-
-  void execute() override
-  {
-    soul_immolation_base_t::execute();
-
-    dh()->proc.spontaneous_immolation->occur();
-  }
-};
-
 struct soul_immolation_heal_t : public demon_hunter_heal_t
 {
   soul_immolation_heal_t( demon_hunter_t* p, util::string_view o )
@@ -5911,7 +5766,7 @@ struct soul_immolation_heal_t : public demon_hunter_heal_t
 
 struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<demon_hunter_spell_t>>
 {
-  struct reap_damage_t : public shattered_souls_trigger_t<burning_blades_live_trigger_t<demon_hunter_spell_t>>
+  struct reap_damage_t : public shattered_souls_trigger_t<demon_hunter_spell_t>
   {
     reap_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : base_t( n, p, s, "" )
     {
@@ -5988,7 +5843,7 @@ struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
 
 struct eradicate_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<demon_hunter_spell_t>>
 {
-  struct eradicate_damage_t : public shattered_souls_trigger_t<burning_blades_live_trigger_t<demon_hunter_spell_t>>
+  struct eradicate_damage_t : public shattered_souls_trigger_t<demon_hunter_spell_t>
   {
     eradicate_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : base_t( n, p, s, "" )
     {
@@ -6520,7 +6375,7 @@ struct meteor_shower_t : public demon_hunter_spell_t
 
 struct hungering_slash_base_t : public demon_hunter_spell_t
 {
-  struct hungering_slash_damage_t : public shattered_souls_trigger_t<burning_blades_ptr_trigger_t<demon_hunter_spell_t>>
+  struct hungering_slash_damage_t : public shattered_souls_trigger_t<burning_blades_trigger_t<demon_hunter_spell_t>>
   {
     int number_of_souls_to_spawn;
     proc_t* soul_generation_proc;
@@ -9418,14 +9273,12 @@ void demon_hunter_td_t::target_demise()
 
   if ( dh().specialization() == DEMON_HUNTER_DEVOURER )
   {
-    if ( dh().talent.devourer.spontaneous_immolation.enabled() && dh().is_ptr() &&
+    if ( dh().talent.devourer.spontaneous_immolation.enabled() &&
          dh().rng().roll( dh().options.proc_from_killing_blow_chance ) )
     {
       dh().cooldown.soul_immolation->reset( true );
       dh().proc.spontaneous_immolation->occur();
     }
-    else
-      return;
   }
   if ( dh().rng().roll( dh().options.proc_from_killing_blow_chance ) )
   {
@@ -9562,10 +9415,8 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new voidblade_t( this, options_str );
   if ( name == "pierce_the_veil" )
     return new pierce_the_veil_t( this, options_str );
-  if ( name == "soul_immolation" && is_ptr() )
+  if ( name == "soul_immolation" )
     return new soul_immolation_heal_t( this, options_str );
-  if ( name == "soul_immolation" && !is_ptr() )
-    return new soul_immolation_t( this, options_str );
   if ( name == "eradicate" )
     return new eradicate_t( this, options_str );
   if ( name == "cull" )
@@ -10389,18 +10240,6 @@ void demon_hunter_t::init_special_effects()
   base_t::init_special_effects();
 
   // Devourer
-  if ( !is_ptr() && talent.devourer.spontaneous_immolation->ok() )
-  {
-    auto effect            = new special_effect_t( this );
-    effect->name_str       = "spontaneous_immolation";
-    effect->spell_id       = talent.devourer.spontaneous_immolation->id();
-    effect->proc_chance_   = talent.devourer.spontaneous_immolation->effectN( 1 ).percent();
-    effect->proc_flags2_   = PF2_CAST_GENERIC | PF2_CAST_DAMAGE;
-    effect->execute_action = active.spontaneous_immolation;
-    special_effects.push_back( effect );
-
-    new demon_hunter_proc_callback_t( *effect );
-  }
 
   // Havoc
   if ( specialization() == DEMON_HUNTER_HAVOC )
@@ -11177,11 +11016,6 @@ void demon_hunter_t::init_spells()
       this, "consume_soul_greater_demon", spec.consume_soul_greater_heal, soul_fragment::GREATER_DEMON );
   active.consume_soul_empowered_demon = new consume_soul_t(
       this, "consume_soul_empowered_demon", spec.consume_soul_greater_heal, soul_fragment::EMPOWERED_DEMON );
-
-  if ( talent.devourer.spontaneous_immolation->ok() && !is_ptr() )
-  {
-    active.spontaneous_immolation = get_background_action<spontaneous_immolation_t>( "soul_immolation_spontaneous" );
-  }
 
   if ( talent.devourer.void_metamorphosis->ok() )
   {
