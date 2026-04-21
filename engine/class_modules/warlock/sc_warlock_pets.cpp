@@ -1916,29 +1916,16 @@ struct soul_barrage_t : public warlock_pet_spell_t
 
 struct soul_barrage_cast_t : public dominion_of_argus_spell_base_t
 {
-  action_t* soul_barrage;
   soul_barrage_cast_t( dominion_of_argus_pet_t* p )
-    : dominion_of_argus_spell_base_t( "Soul Barrage Cast", p, p->find_spell( 1292384 ) ),
-      soul_barrage( nullptr )
+    : dominion_of_argus_spell_base_t( "Soul Barrage Cast", p, p->find_spell( 1292384 ) )
   {
-    soul_barrage = new soul_barrage_t( p );
+    aoe           = data().effectN( 1 ).base_value();
+    impact_action = new soul_barrage_t( p );
+
     // Merge the two actions in the HTML report for cleaner reporting
-    soul_barrage->stats = stats;
-    stats->action_list.push_back( soul_barrage );
+    impact_action->stats = stats;
+    stats->action_list.push_back( impact_action );
     name_str_reporting = "soul_barrage";
-  }
-
-  void execute() override
-  {
-    dominion_of_argus_spell_base_t::execute();
-    int n_hits = 0;
-    for ( auto& target : target_list() )
-    {
-      if ( n_hits >= data().effectN( 1 ).base_value() )
-        break;
-
-      soul_barrage->execute_on_target( target );
-    }
   }
 };
 
