@@ -427,7 +427,7 @@ void survival( player_t* p )
   action_priority_list_t* sentcleave = p->get_action_priority_list( "sentcleave" );
 
   precombat->add_action( "summon_pet" );
-  precombat->add_action( "snapshot_stats" );
+  precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins." );
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
   precombat->add_action( "wildfire_bomb,if=active_enemies=1" );
 
@@ -440,7 +440,7 @@ void survival( player_t* p )
 
   cds->add_action( "blood_fury,if=buff.takedown.up|cooldown.takedown.ready", "CDS" );
   cds->add_action( "use_items,if=buff.takedown.up|cooldown.takedown.ready|!talent.takedown" );
-  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.takedown.up&!buff.power_infusion.up|fight_remains<16" );
+  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.takedown.up&!buff.power_infusion.up" );
   cds->add_action( "ancestral_call,if=buff.takedown.up|cooldown.takedown.ready" );
   cds->add_action( "fireblood,if=buff.takedown.up|cooldown.takedown.ready" );
   cds->add_action( "berserking,if=buff.takedown.up|cooldown.takedown.ready" );
@@ -448,21 +448,19 @@ void survival( player_t* p )
   cds->add_action( "potion,if=target.time_to_die<25|cooldown.takedown.ready" );
   cds->add_action( "aspect_of_the_eagle,if=target.distance>=6" );
 
-  plst->add_action( "kill_command,if=buff.tip_of_the_spear.stack<2&(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains)", "ST - PL" );
-  plst->add_action( "wildfire_bomb,if=fury_of_the_wyvern_extendable&buff.wyverns_cry.remains<gcd" );
+  plst->add_action( "kill_command,if=buff.tip_of_the_spear.stack<2&howl_summon.ready", "ST - PL" );
   plst->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
-  plst->add_action( "raptor_strike,if=!buff.raptor_swipe.up&cooldown.takedown.remains<gcd" );
-  plst->add_action( "boomstick,if=buff.tip_of_the_spear.up|cooldown.takedown.remains<gcd&talent.twin_fangs" );
   plst->add_action( "takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs" );
   plst->add_action( "flamefang_pitch" );
-  plst->add_action( "wildfire_bomb,if=fury_of_the_wyvern_extendable&buff.tip_of_the_spear.up&!buff.takedown.remains" );
+  plst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.up" );
+  plst->add_action( "boomstick,if=buff.tip_of_the_spear.up" );
   plst->add_action( "raptor_strike,if=(buff.tip_of_the_spear.up|!buff.raptor_swipe.up)" );
   plst->add_action( "kill_command,if=cooldown.takedown.remains" );
   plst->add_action( "wildfire_bomb" );
   plst->add_action( "takedown" );
 
   sentst->add_action( "kill_command,if=buff.tip_of_the_spear.stack=0&(cooldown.takedown.remains|!talent.twin_fangs)", "ST - Sent" );
-  sentst->add_action( "boomstick,if=buff.tip_of_the_spear.up&!cooldown.takedown.ready&!debuff.sentinels_mark.remains" );
+  sentst->add_action( "boomstick,if=buff.tip_of_the_spear.up&!debuff.sentinels_mark.remains" );
   sentst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.up&(debuff.sentinels_mark.remains|full_recharge_time<4+gcd)" );
   sentst->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
   sentst->add_action( "takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs" );
@@ -523,7 +521,7 @@ void survival_ptr( player_t* p )
 
   cds->add_action( "blood_fury,if=buff.takedown.up|cooldown.takedown.ready", "CDS" );
   cds->add_action( "use_items,if=buff.takedown.up|cooldown.takedown.ready|!talent.takedown" );
-  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.takedown.up&!buff.power_infusion.up|fight_remains<16" );
+  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.takedown.up&!buff.power_infusion.up" );
   cds->add_action( "ancestral_call,if=buff.takedown.up|cooldown.takedown.ready" );
   cds->add_action( "fireblood,if=buff.takedown.up|cooldown.takedown.ready" );
   cds->add_action( "berserking,if=buff.takedown.up|cooldown.takedown.ready" );
@@ -543,7 +541,7 @@ void survival_ptr( player_t* p )
   plst->add_action( "takedown" );
 
   sentst->add_action( "kill_command,if=buff.tip_of_the_spear.stack=0&(cooldown.takedown.remains|!talent.twin_fangs)", "ST - Sent" );
-  sentst->add_action( "boomstick,if=buff.tip_of_the_spear.up&!cooldown.takedown.ready&!debuff.sentinels_mark.remains" );
+  sentst->add_action( "boomstick,if=buff.tip_of_the_spear.up&!debuff.sentinels_mark.remains" );
   sentst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.up&(debuff.sentinels_mark.remains|full_recharge_time<4+gcd)" );
   sentst->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
   sentst->add_action( "takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs" );
