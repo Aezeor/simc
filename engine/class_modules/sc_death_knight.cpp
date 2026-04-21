@@ -1867,7 +1867,6 @@ public:
     double average_mograines_might_uptime = 0.65;
     bool extra_unholy_reporting           = false;
     bool wcl_reporting_mode               = true;
-    bool disable_cotd_bug                 = false;
   } options;
 
   // Runes
@@ -2606,9 +2605,6 @@ struct death_knight_pet_t : public pet_t
     }
 
     affected_by.mastery_dreadblade_crit = player->mastery.dreadblade_pet_crit->ok();
-    
-    if ( bugs && !player->options.disable_cotd_bug )
-      affected_by.commander_of_the_dead = true;
   }
 
   target_specific_t<death_knight_pet_td_t> target_data;
@@ -12880,7 +12876,6 @@ void death_knight_t::create_options()
       opt_float( "deathknight.average_mograines_might_uptime", options.average_mograines_might_uptime, 0.0, 1.0 ) );
   add_option( opt_bool( "deathknight.extra_unholy_reporting", options.extra_unholy_reporting ) );
   add_option( opt_bool( "deathknight.wcl_reporting_mode", options.wcl_reporting_mode ) );
-  add_option( opt_bool( "deathknight.disable_cotd_bug", options.disable_cotd_bug ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
@@ -15880,19 +15875,7 @@ void death_knight_t::create_buffs()
           ->set_default_value( spell.ghoulish_frenzy_player->effectN( 1 ).percent() );
 
   buffs.commander_of_the_dead = make_fallback( talent.unholy.commander_of_the_dead.ok(), this, "commander_of_the_dead",
-                                               spell.commander_of_the_dead )
-                                    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-                                      if ( bugs )
-                                      {
-                                        if ( new_ > 0 && !options.disable_cotd_bug )
-                                          buffs.commander_of_the_dead_damage->trigger();
-                                        if ( new_ == 0 )
-                                          buffs.commander_of_the_dead_damage->expire();
-                                      }
-                                    } );
-
-  buffs.commander_of_the_dead_damage = make_fallback( bugs && talent.unholy.commander_of_the_dead.ok(), this,
-                                                      "commander_of_the_dead_damage", pet_spell.commander_of_the_dead );
+                                               spell.commander_of_the_dead );
 
   buffs.clawing_shadows =
       make_fallback( talent.unholy.clawing_shadows.ok(), this, "clawing_shadows", spell.clawing_shadows_buff )
@@ -16775,8 +16758,6 @@ void death_knight_t::parse_player_effects()
       parse_effects( mastery.dreadblade );
       parse_effects( buffs.ghoulish_frenzy );
       parse_effects( buffs.lesser_ghoul_counter );
-      if ( bugs )
-        parse_effects( buffs.commander_of_the_dead_damage );
 
       parse_target_effects( d_fn( &death_knight_td_t::dots_t::virulent_plague ), spell.virulent_plague );
       parse_target_effects( d_fn( &death_knight_td_t::dots_t::dread_plague ), spell.dread_plague );
