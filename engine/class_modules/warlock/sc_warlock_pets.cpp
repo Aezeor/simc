@@ -1908,8 +1908,7 @@ void antoran_inquisitor_t::create_actions()
 /// Antoran Jailer Begin
 struct soul_barrage_t : public warlock_pet_spell_t
 {
-  soul_barrage_t( dominion_of_argus_pet_t* p )
-    : warlock_pet_spell_t( "Soul Barrage", p, p->find_spell( 1277099 ) )
+  soul_barrage_t( dominion_of_argus_pet_t* p ) : warlock_pet_spell_t( "Soul Barrage", p, p->find_spell( 1292384 ) )
   {
     background = true;
   }
@@ -1919,7 +1918,7 @@ struct soul_barrage_cast_t : public dominion_of_argus_spell_base_t
 {
   action_t* soul_barrage;
   soul_barrage_cast_t( dominion_of_argus_pet_t* p )
-    : dominion_of_argus_spell_base_t( "Soul Barrage Cast", p, p->find_spell( 1280307 ) ), soul_barrage( nullptr )
+    : dominion_of_argus_spell_base_t( "Soul Barrage Cast", p, p->find_spell( 1292391 ) ), soul_barrage( nullptr )
   {
     soul_barrage = new soul_barrage_t( p );
     // Merge the two actions in the HTML report for cleaner reporting
@@ -1931,18 +1930,13 @@ struct soul_barrage_cast_t : public dominion_of_argus_spell_base_t
   void execute() override
   {
     dominion_of_argus_spell_base_t::execute();
-    // Has an odd behavior where cast times below 1.5s start reducing the number of bolts sent out.
-    auto executes     = std::min( execute_time() / 150_ms, data().effectN( 1 ).base_value() );
-    auto execute_time = 80_ms;  // 80 ms between each bolt
-    for ( int i = 0; i < executes; i++ )
-      make_event( *sim, execute_time * i, [ this ] { soul_barrage->execute_on_target( execute_state->target ); } );
-
+    int n_hits = 0;
     for ( auto& target : target_list() )
     {
-      if ( target == execute_state->target )
-        continue;
-      for ( int i = 0; i < data().effectN( 2 ).base_value(); i++ )
-        soul_barrage->execute_on_target( target );
+      if ( n_hits >= data().effectN( 1 ).base_value() )
+        break;
+
+      soul_barrage->execute_on_target( target );
     }
   }
 };
