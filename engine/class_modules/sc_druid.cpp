@@ -5955,7 +5955,7 @@ struct thrash_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
       }
     }
 
-    if ( hit_any_target && rng().roll( cascade_chance ) )
+    if ( !proc && hit_any_target && rng().roll( cascade_chance ) )
     {
       // technically thrash target order is random, and the starsurge procs on first target hit. simc does not randomize
       // order of thrash targets so we instead randomize the starsurge target
