@@ -2273,6 +2273,8 @@ class SpellDataGenerator(DataGenerator):
           ( 1276283, 0 ),   # Dominion of Argus: Antoran Inquisitor
           ( 1276182, 0 ),   # Dominion of Argus: Antoran Jailer
           ( 1276282, 0 ),   # Dominion of Argus: Doommaiden (Maybe Unused?)
+          ( 1292384, 0 ),   # Dominion of Argus: Antoran Jailer soul barrage
+          ( 1292391, 0 ),   # Dominion of Argus: Antoran Jailer soul barrage
         ),
 
         # Monk:
