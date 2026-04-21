@@ -5538,6 +5538,11 @@ struct aimed_shot_t : public aimed_shot_base_t
       {
         p()->buffs.lock_and_load->decrement();
       }
+
+      // 2026-04-21: Double Tap Aimed Shots can trigger Blighted Arrow casts
+      if ( p()->talents.pact_of_the_hollow.ok() )
+        for ( auto pet : p()->pets.dark_minion.active_pets() )
+          pet->actions.blighted_arrow->execute();
     }
   };
 
