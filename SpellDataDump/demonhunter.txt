@@ -14322,7 +14322,7 @@ Effects          :
 #1 (id=1238387)  : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.3 | Target: Self (1)
 #2 (id=1239241)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Void Ray deals $s1% more damage when damaging a single target.
 
 Name             : Star Fragments (id=1240204) [Spell Family (107), Passive, Hidden] 
