@@ -1908,7 +1908,7 @@ void antoran_inquisitor_t::create_actions()
 /// Antoran Jailer Begin
 struct soul_barrage_t : public warlock_pet_spell_t
 {
-  soul_barrage_t( dominion_of_argus_pet_t* p ) : warlock_pet_spell_t( "Soul Barrage", p, p->find_spell( 1292384 ) )
+  soul_barrage_t( dominion_of_argus_pet_t* p ) : warlock_pet_spell_t( "Soul Barrage", p, p->find_spell( 1292391 ) )
   {
     background = true;
   }
@@ -1918,7 +1918,8 @@ struct soul_barrage_cast_t : public dominion_of_argus_spell_base_t
 {
   action_t* soul_barrage;
   soul_barrage_cast_t( dominion_of_argus_pet_t* p )
-    : dominion_of_argus_spell_base_t( "Soul Barrage Cast", p, p->find_spell( 1292391 ) ), soul_barrage( nullptr )
+    : dominion_of_argus_spell_base_t( "Soul Barrage Cast", p, p->find_spell( 1292384 ) ),
+      soul_barrage( nullptr )
   {
     soul_barrage = new soul_barrage_t( p );
     // Merge the two actions in the HTML report for cleaner reporting
