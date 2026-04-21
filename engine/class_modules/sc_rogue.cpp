@@ -3495,11 +3495,7 @@ struct adrenaline_rush_t : public rogue_spell_t
 
     trigger_fatebound_edge_case( execute_state );
     trigger_supercharger();
-
-    if ( p()->is_ptr() && p()->talent.trickster.cloud_cover->ok() )
-    {
-      p()->buffs.cloud_cover->trigger();
-    }
+    p()->buffs.cloud_cover->trigger();
   }
 };
 
@@ -4115,20 +4111,10 @@ struct detection_t : public rogue_spell_t
 struct distract_t : public rogue_spell_t
 {
   distract_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_spell_t( name, p, p->talent.trickster.cloud_cover->ok() && !p->is_ptr() ? p->spell.cloud_cover_buff : p->spell.distract, options_str)
+    rogue_spell_t( name, p, p->spell.distract, options_str)
   {
     harmful = false;
     set_target( p );
-  }
-
-  void execute() override
-  {
-    rogue_spell_t::execute();
-
-    if ( !p()->is_ptr() && p()->talent.trickster.cloud_cover->ok() )
-    {
-      p()->buffs.cloud_cover->trigger();
-    }
   }
 };
 
@@ -5381,10 +5367,7 @@ struct shadow_blades_t : public rogue_spell_t
       p()->buffs.shadow_blades->extend_duration( -precombat_seconds );
     }
 
-    if ( p()->is_ptr() && p()->talent.trickster.cloud_cover->ok() )
-    {
-      p()->buffs.cloud_cover->trigger();
-    }
+    p()->buffs.cloud_cover->trigger();
   }
 };
 
@@ -8129,33 +8112,29 @@ void actions::rogue_action_t<Base>::trigger_fazed( const action_state_t* state )
   if ( !p()->talent.trickster.unseen_blade->ok() )
     return;
 
+  // The Cloud Cover aura dynamically increases the max stack of the debuff
+  // This only refreshes on application, allowing a higher stack to overhang unless refreshed
+  const int max_stacks = p()->spell.fazed_debuff->max_stacks() +
+    ( p()->buffs.cloud_cover->up() * as<int>( p()->spell.cloud_cover_aura->effectN( 2 ).base_value() ) );
+
   rogue_td_t* tdata = td( state->target );
-
-  if ( p()->is_ptr() )
+  if ( tdata->debuffs.fazed->max_stack() != max_stacks )
   {
-    // The Cloud Cover aura dynamically increases the max stack of the debuff
-    // This only refreshes on application, allowing a higher stack to overhang unless refreshed
-    const int max_stacks = p()->spell.fazed_debuff->max_stacks() +
-      ( p()->buffs.cloud_cover->up() * as<int>( p()->spell.cloud_cover_aura->effectN( 2 ).base_value() ) );
-
-    if ( tdata->debuffs.fazed->max_stack() != max_stacks )
+    if ( tdata->debuffs.fazed->check() > max_stacks )
     {
-      if ( tdata->debuffs.fazed->check() > max_stacks )
-      {
-        tdata->debuffs.fazed->decrement( tdata->debuffs.fazed->check() - max_stacks );
-      }
-
-      tdata->debuffs.fazed->set_max_stack( max_stacks );      
+      tdata->debuffs.fazed->decrement( tdata->debuffs.fazed->check() - max_stacks );
     }
 
-    if ( p()->buffs.cloud_cover->check() )
-    {
-      cooldown_t* tcd = p()->cooldowns.cloud_cover->get_cooldown( state->target );
-      if ( !tcd || tcd->down() )
-        return;
+    tdata->debuffs.fazed->set_max_stack( max_stacks );      
+  }
 
-      tcd->start();
-    }
+  if ( p()->buffs.cloud_cover->check() )
+  {
+    cooldown_t* tcd = p()->cooldowns.cloud_cover->get_cooldown( state->target );
+    if ( !tcd || tcd->down() )
+      return;
+
+    tcd->start();
   }
 
   tdata->debuffs.fazed->trigger();
@@ -8730,16 +8709,13 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.fazed->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
     return std::min( b->remains() + d, 10_s );  // Capped to 10 seconds, not in spell data
   } );
-  if ( source->is_ptr() )
+  // Set initial max stack to the max Cloud Cover stacks for stack_uptime tracking
+  // This will be resized dynamically in trigger_fazed()
+  if ( source->talent.trickster.cloud_cover->ok() )
   {
-    // Set initial max stack to the max Cloud Cover stacks for stack_uptime tracking
-    // This will be resized dynamically in trigger_fazed()
-    if ( source->talent.trickster.cloud_cover->ok() )
-    {
-      const int max_stacks = source->spell.fazed_debuff->max_stacks() +
-        as<int>( source->spell.cloud_cover_aura->effectN( 2 ).base_value() );
-      debuffs.fazed->set_max_stack( max_stacks );
-    }
+    const int max_stacks = source->spell.fazed_debuff->max_stacks() +
+      as<int>( source->spell.cloud_cover_aura->effectN( 2 ).base_value() );
+    debuffs.fazed->set_max_stack( max_stacks );
   }
 
   // Type-Based Tracking for Accumulators
@@ -10703,7 +10679,7 @@ void rogue_t::create_buffs()
   // Trickster
 
   buffs.cloud_cover = make_buff( this, "cloud_cover", spell.cloud_cover_buff );
-  if ( is_ptr() && talent.trickster.cloud_cover->ok() )
+  if ( talent.trickster.cloud_cover->ok() )
   {
     timespan_t extra_duration = specialization() == ROGUE_OUTLAW ?
       talent.trickster.cloud_cover->effectN( 1 ).time_value() :
