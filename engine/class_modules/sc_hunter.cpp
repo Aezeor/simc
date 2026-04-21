@@ -6262,13 +6262,8 @@ struct boomstick_t : public hunter_spell_t
     {
       double dm = hunter_ranged_attack_t::composite_da_multiplier( s );
 
-      // Boomstick has a unique Tip buff and is not affected by base Tip (260286) so apply it here.
-      // On the 12.0.5 PTR, it does not interact with Tip at all, assuming this will be fixed.
-      if ( p()->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) || !p()->bugs )
-      {
-        if ( p()->buffs.tip_of_the_spear_boomstick->up() )
-          dm *= 1 + p()->talents.tip_of_the_spear_boomstick_buff->effectN( 1 ).percent();
-      }
+      if ( p()->buffs.tip_of_the_spear_boomstick->up() )
+        dm *= 1 + p()->talents.tip_of_the_spear_boomstick_buff->effectN( 1 ).percent();
 
       double shellshock_bonus = p()->talents.shellshock->effectN( 1 ).percent();
       if ( s->n_targets > 1 )
@@ -6301,27 +6296,22 @@ struct boomstick_t : public hunter_spell_t
 
   void execute() override
   {
-    // Run before inherited execute() so that tick 0 benefits from the Tip buff.
-    // On the 12.0.5 PTR, it does not interact with Tip at all, assuming this will be fixed.
-    if ( p()->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) || !p()->bugs )
+    if ( p()->buffs.tip_of_the_spear->up() )
     {
-      if ( p()->buffs.tip_of_the_spear->up() )
+      p()->buffs.tip_of_the_spear->decrement();
+      p()->buffs.tip_of_the_spear_boomstick->trigger();
+
+      p()->buffs.stargazer->trigger();
+
+      p()->trigger_eagles_mark( get_random_valid_target( boomstick_tick->aoe ), true );
+
+      if ( p()->cooldowns.strike_as_one->up() )
       {
-        p()->buffs.tip_of_the_spear->decrement();
-        p()->buffs.tip_of_the_spear_boomstick->trigger();
-
-        p()->buffs.stargazer->trigger();
-
-        p()->trigger_eagles_mark( get_random_valid_target( boomstick_tick->aoe ), true );
-
-        if ( p()->cooldowns.strike_as_one->up() )
+        auto pet = p()->pets.main;
+        if ( pet )
         {
-          auto pet = p()->pets.main;
-          if ( pet )
-          {
-            p()->pets.main->actions.strike_as_one->execute_on_target( target );
-            p()->cooldowns.strike_as_one->start();
-          }
+          p()->pets.main->actions.strike_as_one->execute_on_target( target );
+          p()->cooldowns.strike_as_one->start();
         }
       }
     }
