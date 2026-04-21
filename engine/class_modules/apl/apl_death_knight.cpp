@@ -319,10 +319,7 @@ void unholy( player_t* p )
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
   default_->add_action( "call_action_list,name=single_target,if=active_enemies<3" );
 
-  if ( p->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
-    aoe->add_action( "death_and_decay,if=!death_and_decay.ticking&talent.desecrate", "Aoe Rotation" );
-  else
-    aoe->add_action( "death_and_decay,if=!death_and_decay.ticking&(talent.desecrate|talent.cycle_of_death&!(cooldown.putrefy.charges=cooldown.putrefy.max_charges))", "Aoe Rotation" );
+  aoe->add_action( "death_and_decay,if=!death_and_decay.ticking&(talent.desecrate|talent.cycle_of_death&!(cooldown.putrefy.charges=cooldown.putrefy.max_charges))", "Aoe Rotation" );
   aoe->add_action( "festering_strike,target_if=min:health.pct,if=talent.festering_scythe&(fight_remains>3|raid_event.adds.exists&raid_event.adds.remains>3)&(buff.festering_scythe.up&(buff.festering_scythe.remains<=3|debuff.festering_scythe_debuff.remains<3)|!buff.festering_scythe.up&debuff.festering_scythe_debuff.remains<3)" );
   aoe->add_action( "epidemic,if=variable.spending_rp&variable.epidemic_prio" );
   aoe->add_action( "death_coil,target_if=min:health.pct,if=variable.spending_rp&!variable.epidemic_prio" );
@@ -335,15 +332,9 @@ void unholy( player_t* p )
   cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up", "Use<a href = 'https://www.wowhead.com/spell=10060/power-infusion'> Power Infusion</ a> while<a href = 'https://www.wowhead.com/spell=1233448/dark-transformation'> Dark Transformation</ a> is up" );
   cooldowns->add_action( "outbreak,if=(!talent.blightburst|talent.blightburst&(cooldown.putrefy.remains>gcd.max*2|time<5))&(dot.dread_plague.active_dots=0|dot.virulent_plague.active_dots=0)&(fight_remains>gcd.max*2&!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>gcd.max*2)" );
   cooldowns->add_action( "army_of_the_dead,if=(variable.st_planning|variable.adds_remain)&(debuff.festering_scythe_debuff.up|!talent.festering_scythe)" );
-  if ( p->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
-    cooldowns->add_action( "soul_reaper,target_if=min:health.pct,if=!talent.pestilence&(!debuff.soul_reaper_debuff.up|!variable.cds_active&cooldown.dark_transformation.remains>cooldown.soul_reaper.duration-1|cooldown.dark_transformation.remains<gcd.max&talent.reaping)|talent.pestilence&talent.infliction_of_sorrow&(buff.dark_transformation.remains<5|buff.reaping.remains<=gcd.max)" );
-  else
-    cooldowns->add_action( "soul_reaper,target_if=min:health.pct,if=!talent.blightfall&(!debuff.soul_reaper_debuff.up|!variable.cds_active&cooldown.dark_transformation.remains>cooldown.soul_reaper.duration-1|cooldown.dark_transformation.remains<gcd.max&talent.reaping)|talent.blightfall&talent.infliction_of_sorrow&(buff.dark_transformation.remains<5|buff.reaping.remains<=gcd.max)" );
+  cooldowns->add_action( "soul_reaper,target_if=min:health.pct,if=!talent.blightfall&(!debuff.soul_reaper_debuff.up|!variable.cds_active&cooldown.dark_transformation.remains>cooldown.soul_reaper.duration-1|cooldown.dark_transformation.remains<gcd.max&talent.reaping)|talent.blightfall&talent.infliction_of_sorrow&(buff.dark_transformation.remains<5|buff.reaping.remains<=gcd.max)" );
   cooldowns->add_action( "putrefy,if=(variable.st_planning|variable.adds_remain)*(target.health.pct>35|!talent.soul_reaper)&(charges=max_charges&!buff.sudden_doom.react&(cooldown.dark_transformation.remains>9|!talent.reaping|!talent.soul_reaper)|buff.dark_transformation.up)|fight_remains<cooldown.soul_reaper.remains|raid_event.adds.exists&raid_event.adds.remains<3" );
-  if ( p->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
-    cooldowns->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&pet.lesser_ghoul_army.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead" );
-  else
-    cooldowns->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&!buff.blightfall.up&(pet.lesser_ghoul_army.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead)|buff.blightfall.up&buff.dark_transformation.remains<4" );
+  cooldowns->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&!buff.blightfall.up&(pet.lesser_ghoul_army.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead)|buff.blightfall.up&buff.dark_transformation.remains<4" );
 
   racials->add_action( "ancestral_call,if=variable.cds_active", "Racials" );
   racials->add_action( "arcane_pulse,if=runic_power<20&rune<2" );
