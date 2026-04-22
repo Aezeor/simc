@@ -335,9 +335,10 @@ void protection( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
-  action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
-  action_priority_list_t* thane_st = p->get_action_priority_list( "thane_st" );
+  action_priority_list_t* colossus_aoe = p->get_action_priority_list( "colossus_aoe" );
+  action_priority_list_t* thane_aoe = p->get_action_priority_list( "thane_aoe" );
   action_priority_list_t* colossus_st = p->get_action_priority_list( "colossus_st" );
+  action_priority_list_t* thane_st = p->get_action_priority_list( "thane_st" );
   action_priority_list_t* variables = p->get_action_priority_list( "variables" );
 
   precombat->add_action( "snapshot_stats" );
@@ -368,21 +369,43 @@ void protection( player_t* p )
   default_->add_action( "demolish,if=buff.colossal_might.stack>=3" );
   default_->add_action( "shield_charge" );
   default_->add_action( "shield_block,if=buff.shield_block.remains<=10" );
-  default_->add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>=3" );
+  default_->add_action( "run_action_list,name=colossus_aoe,if=hero_tree.colossus&spell_targets.thunder_clap>=3" );
+  default_->add_action( "run_action_list,name=thane_aoe,if=hero_tree.mountain_thane&spell_targets.thunder_clap>=3" );
   default_->add_action( "run_action_list,name=colossus_st,if=talent.demolish" );
   default_->add_action( "run_action_list,name=thane_st,if=talent.lightning_strikes" );
 
-  aoe->add_action( "thunder_blast,if=dot.rend_dot.remains<=1" );
-  aoe->add_action( "thunder_clap,if=dot.rend_dot.remains<=1" );
-  aoe->add_action( "thunder_blast,if=spell_targets.thunder_clap>=2&buff.avatar.up" );
-  aoe->add_action( "execute,if=spell_targets.execute>=2&(rage>=50|buff.sudden_death.up)&talent.heavy_handed.enabled" );
-  aoe->add_action( "thunder_clap,if=spell_targets.thunder_clap>=4&buff.avatar.up&hero_tree.mountain_thane|spell_targets.thunder_clap>6&buff.avatar.up" );
-  aoe->add_action( "revenge,if=rage>=70&spell_targets.revenge>=3" );
-  aoe->add_action( "shield_slam,if=rage<=60|buff.violent_outburst.up" );
-  aoe->add_action( "thunder_blast" );
-  aoe->add_action( "thunder_clap" );
-  aoe->add_action( "revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled" );
+  colossus_aoe->add_action( "thunder_clap,if=dot.rend_dot.remains<=1" );
+  colossus_aoe->add_action( "shield_slam,if=buff.violent_outburst.up&buff.phalanx.up" );
+  colossus_aoe->add_action( "thunder_clap,if=spell_targets.thunder_clap>6&buff.avatar.up" );
+  colossus_aoe->add_action( "revenge,if=rage>=70&spell_targets.revenge>=3" );
+  colossus_aoe->add_action( "shield_slam,if=rage<=60|buff.violent_outburst.up" );
+  colossus_aoe->add_action( "thunder_clap" );
+  colossus_aoe->add_action( "revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled" );
+  colossus_aoe->add_action( "execute,if=spell_targets.execute>=2&(rage>=50|buff.sudden_death.up)&talent.heavy_handed.enabled" );
 
+  thane_aoe->add_action( "thunder_blast,if=dot.rend_dot.remains<=1" );
+  thane_aoe->add_action( "thunder_clap,if=dot.rend_dot.remains<=1" );
+  thane_aoe->add_action( "shield_slam,if=buff.violent_outburst.up&buff.phalanx.up" );
+  thane_aoe->add_action( "thunder_blast,if=spell_targets.thunder_clap>=2&buff.avatar.up" );
+  thane_aoe->add_action( "shield_slam,if=buff.phalanx.up" );
+  thane_aoe->add_action( "thunder_clap,if=spell_targets.thunder_clap>=4&buff.avatar.up" );
+  thane_aoe->add_action( "revenge,if=rage>=70&spell_targets.revenge>=3" );
+  thane_aoe->add_action( "shield_slam,if=rage<=60|buff.violent_outburst.up" );
+  thane_aoe->add_action( "thunder_blast" );
+  thane_aoe->add_action( "thunder_clap" );
+  thane_aoe->add_action( "execute,if=spell_targets.execute>=2&(rage>=50|buff.sudden_death.up)&talent.heavy_handed.enabled" );
+  thane_aoe->add_action( "revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled" );
+
+  colossus_st->add_action( "shield_slam" );
+  colossus_st->add_action( "thunder_clap" );
+  colossus_st->add_action( "revenge,if=buff.ravager.up" );
+  colossus_st->add_action( "execute,if=buff.sudden_death.up&talent.deep_wounds|talent.deep_wounds&rage>=40" );
+  colossus_st->add_action( "thunder_clap,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains)&hero_tree.mountain_thane&rage<=80" );
+  colossus_st->add_action( "revenge,if=rage>=80&!variable.execute_phase|buff.revenge.up&variable.execute_phase&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&!variable.execute_phase" );
+  colossus_st->add_action( "wrecking_throw,if=talent.javelineer.enabled" );
+  colossus_st->add_action( "shattering_throw,if=talent.javelineer.enabled" );
+  colossus_st->add_action( "revenge" );
+  colossus_st->add_action( "devastate" );
 
   thane_st->add_action( "thunder_blast" );
   thane_st->add_action( "thunder_clap,if=buff.ravager.up" );
@@ -395,17 +418,6 @@ void protection( player_t* p )
   thane_st->add_action( "revenge,if=rage>=80&!variable.execute_phase|buff.revenge.up&variable.execute_phase&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&!variable.execute_phase" );
   thane_st->add_action( "revenge" );
   thane_st->add_action( "devastate" );
-
-  colossus_st->add_action( "shield_slam" );
-  colossus_st->add_action( "thunder_clap" );
-  colossus_st->add_action( "revenge,if=buff.ravager.up" );
-  colossus_st->add_action( "execute,if=buff.sudden_death.up&talent.deep_wounds|talent.deep_wounds&rage>=40" );
-  colossus_st->add_action( "thunder_clap,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains)&hero_tree.mountain_thane&rage<=80" );
-  colossus_st->add_action( "revenge,if=rage>=80&!variable.execute_phase|buff.revenge.up&variable.execute_phase&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&!variable.execute_phase" );
-  colossus_st->add_action( "wrecking_throw,if=talent.javelineer.enabled" );
-  colossus_st->add_action( "shattering_throw,if=talent.javelineer.enabled" );
-  colossus_st->add_action( "revenge" );
-  colossus_st->add_action( "devastate" );
 
   variables->add_action( "variable,name=execute_phase,value=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20" );
 }
