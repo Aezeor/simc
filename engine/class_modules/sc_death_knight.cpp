@@ -11802,16 +11802,16 @@ struct putrefy_st_t final : public death_knight_spell_t
       blightburst_mult = p->talent.unholy.blightburst->effectN( 2 ).percent();
     }
 
-    putrefy_aoe_t* aoe = nullptr;
+    action_t* aoe = get_action<putrefy_aoe_t>( "putrefy_aoe", p, s, blightburst_dur, blightburst_mult );
+
     switch ( source )
     {
       case PUTREFY_SOURCE_PUTREFY:
         if ( p->talent.unholy.blightburst.ok() )
           add_child( p->background_actions.dread_plague_erupt_bb );
-        aoe = new putrefy_aoe_t( "putrefy_aoe", p, s, blightburst_dur, blightburst_mult );
         break;
       case PUTREFY_SOURCE_SOUL_REAPER:
-        aoe = new putrefy_aoe_t( p->options.wcl_reporting_mode ? "putrefy_aoe" : "putrefy_sr_aoe", p, s,
+        aoe = get_action<putrefy_aoe_t>( p->options.wcl_reporting_mode ? "putrefy_aoe" : "putrefy_sr_aoe", p, s,
                                  blightburst_dur, blightburst_mult );
         break;
       case PUTREFY_SOURCE_FORBIDDEN_KNOWLEDGE:
@@ -11820,7 +11820,7 @@ struct putrefy_st_t final : public death_knight_spell_t
 
         base_multiplier *= p->talent.unholy.forbidden_knowledge_3->effectN( 2 ).percent();
 
-        aoe = new putrefy_aoe_t( p->options.wcl_reporting_mode ? "putrefy_aoe" : "putrefy_fk_aoe", p, s,
+        aoe = get_action<putrefy_aoe_t>( p->options.wcl_reporting_mode ? "putrefy_aoe" : "putrefy_fk_aoe", p, s,
                                  blightburst_dur, blightburst_mult );
         break;
       default:
