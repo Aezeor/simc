@@ -4786,9 +4786,6 @@ struct black_arrow_base_t : public kill_shot_base_t
       bleak_powder->execute_on_target( s->target );
       p()->cooldowns.bleak_powder->start();
     }
-
-    if ( p()->talents.headshot.ok() )
-      td( s->target )->debuffs.headshot->trigger();
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -5898,6 +5895,11 @@ struct rapid_fire_t: public hunter_ranged_attack_t
     damage -> gain = gain;
     damage -> stats = stats;
     stats -> action_list.push_back( damage );
+  }
+
+  bool ready() override
+  {
+    return hunter_ranged_attack_t::ready() && cooldown->reset_react <= sim->current_time();
   }
 
   void execute() override
