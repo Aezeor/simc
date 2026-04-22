@@ -26,7 +26,7 @@ def->add_action( "use_item,name=wraps_of_cosmic_madness,if=!buff.eclipse.up" );
 def->add_action( "potion,if=buff.harmony_of_the_grove.up&buff.ca_inc.up&!variable.ec|buff.ca_inc.up&variable.ec|variable.opener&prev_gcd.1.solar_eclipse|fight_remains<=30" );
 def->add_action( "berserking,if=buff.ca_inc.up&(buff.harmony_of_the_grove.up|!talent.dream_surge)|fight_remains<cooldown.ca_inc.remains" );
 def->add_action( "invoke_external_buff,name=power_infusion,if=buff.ca_inc.up" );
-def->add_action( "variable,name=passive_asp,value=(2+2*set_bonus.mid1_2pc*buff.eclipse.down)*(dot.moonfire.ticking+dot.sunfire.ticking+buff.solstice.up*((active_dot.moonfire_dmg>4)+(active_dot.moonfire_dmg>16)+(active_dot.sunfire_dmg>4)+(active_dot.sunfire_dmg>16)))%spell_haste+talent.natures_balance+buff.fury_of_elune.up*((floor(buff.fury_of_elune.remains%0.5)>?4)*2.5+talent.the_eternal_moon*(buff.fury_of_elune.remains<2)*6)+buff.sundered_firmament.up*((floor(buff.sundered_firmament.remains%0.5)>?4)*0.6+talent.the_eternal_moon*(buff.sundered_firmament.remains<2)*6)" );
+def->add_action( "variable,name=passive_asp,value=(2+2*set_bonus.mid1_2pc*buff.eclipse.down)*(dot.moonfire.ticking+dot.sunfire.ticking+buff.solstice.up*((active_dots.moonfire>4)+(active_dots.moonfire>16)+(active_dots.sunfire>4)+(active_dots.sunfire>16)))%spell_haste+talent.natures_balance+buff.fury_of_elune.up*((floor(buff.fury_of_elune.remains%0.5)>?4)*2.5+talent.the_eternal_moon*(buff.fury_of_elune.remains<2)*6)+buff.sundered_firmament.up*((floor(buff.sundered_firmament.remains%0.5)>?4)*0.6+talent.the_eternal_moon*(buff.sundered_firmament.remains<2)*6)" );
 def->add_action( "variable,name=inc_charge,op=set,value=1,if=cooldown.ca_inc.charges_fractional<1" );
 def->add_action( "variable,name=opener,op=set,value=0,if=buff.ca_inc.up" );
 def->add_action( "variable,name=eclipse_down,value=!buff.eclipse_lunar.up&!buff.eclipse_solar.up" );
@@ -42,7 +42,7 @@ def->add_action( "run_action_list,name=kotg_st,if=spell_targets=1" );
 def->add_action( "run_action_list,name=aoe,if=spell_targets>1" );
 
 aoe->add_action( "celestial_alignment,if=(prev_gcd.1.force_of_nature&!variable.ec|variable.ec&buff.eclipse.down&(cooldown.eclipse.charges_fractional<1.5|(fight_style.dungeonroute|fight_style.dungeonslice))&(variable.on_use_trinket=0|trinket.1.cooldown.remains>60|trinket.1.cooldown.ready|fight_remains<trinket.1.cooldown.remains|trinket.2.cooldown.remains>60|trinket.2.cooldown.ready|fight_remains<trinket.2.cooldown.remains))&target.time_to_die>(20*talent.incarnation+15*!talent.incarnation)|fight_remains<20" );
-aoe->add_action( "moonfire,target_if=refreshable&(target.time_to_die-remains)>6&active_dot.moonfire<10&(!talent.treants_of_the_moon|spell_targets-active_dot.moonfire_dmg>6|cooldown.force_of_nature.remains>3&!buff.harmony_of_the_grove.up)" );
+aoe->add_action( "moonfire,target_if=refreshable&(target.time_to_die-remains)>6&active_dots.moonfire<10&(!talent.treants_of_the_moon|spell_targets-active_dots.moonfire>6|cooldown.force_of_nature.remains>3&!buff.harmony_of_the_grove.up)" );
 aoe->add_action( "sunfire,target_if=(remains<2|refreshable&variable.eclipse_down)&target.time_to_die>5" );
 aoe->add_action( "fury_of_elune,if=variable.ec|!variable.ec&(buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains<gcd.max|talent.radiant_moonlight&cooldown.force_of_nature.remains>20)" );
 aoe->add_action( "force_of_nature,if=((buff.eclipse.down&!talent.early_spring|talent.early_spring)&(cooldown.eclipse.remains<gcd.max|cooldown.ca_inc.ready&(!talent.convoke_the_spirits|cooldown.convoke_the_spirits.remains<gcd.max*5)))|fight_remains<21" );
@@ -96,7 +96,7 @@ kotg_st->add_action( "wild_mushroom,if=buff.eclipse.up|cooldown.wild_mushroom.fu
 kotg_st->add_action( "wrath" );
 
 opener_aoe->add_action( "eclipse,if=talent.incarnation_chosen_of_elune&(fight_style.dungeonroute|fight_style.dungeonslice)" );
-opener_aoe->add_action( "moonfire,target_if=refreshable&(target.time_to_die-remains)>6&active_dot.moonfire<10&(!talent.treants_of_the_moon|spell_targets-active_dot.moonfire>6)" );
+opener_aoe->add_action( "moonfire,target_if=refreshable&(target.time_to_die-remains)>6&active_dots.moonfire<10&(!talent.treants_of_the_moon|spell_targets-active_dots.moonfire>6)" );
 opener_aoe->add_action( "sunfire,target_if=refreshable" );
 opener_aoe->add_action( "eclipse,if=cooldown.eclipse.charges=2" );
 opener_aoe->add_action( "starsurge,if=buff.starweavers_weft.react&buff.ascendant_stars.up" );
