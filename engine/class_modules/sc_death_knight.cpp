@@ -11866,14 +11866,6 @@ struct putrefy_t final : public death_knight_spell_t
     : death_knight_spell_t( "putrefy", p, p->talent.unholy.putrefy )
   {
     parse_options( options_str );
-    add_child( p->background_actions.putrefy );
-    add_child( p->background_actions.putrefy->execute_action );
-
-    if ( p->talent.unholy.blightburst.ok() && !p->options.wcl_reporting_mode )
-    {
-      add_child( p->background_actions.virulent_plague );
-      add_child( p->background_actions.dread_plague );
-    }
 
     cooldown = p->cooldown.putrefy;
 
@@ -11887,6 +11879,19 @@ struct putrefy_t final : public death_knight_spell_t
     p->pets.lesser_ghoul_putrefy.set_creation_event_callback(
         pets::parent_pet_action_fn( p->pet_summon.putrefy_ghoul ) );
     add_child( p->pet_summon.putrefy_ghoul );
+  }
+
+  void init_finished() override
+  {
+    death_knight_spell_t::init_finished();
+    add_child( p()->background_actions.putrefy );
+    add_child( p()->background_actions.putrefy->execute_action );
+
+    if ( p()->talent.unholy.blightburst.ok() && !p()->options.wcl_reporting_mode )
+    {
+      add_child( p()->background_actions.virulent_plague );
+      add_child( p()->background_actions.dread_plague );
+    }
   }
 
   void execute() override
