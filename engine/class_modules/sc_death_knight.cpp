@@ -4736,8 +4736,7 @@ struct mograine_pet_t final : public horseman_pet_t
       }
       if ( dk->bugs )
       {
-        if ( rng().roll( 0.5 ) )
-          mograine()->dnd_bugged = true;
+        mograine()->dnd_bugged = true;
       }
     }
 
