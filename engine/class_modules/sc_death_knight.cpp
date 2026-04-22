@@ -4734,6 +4734,11 @@ struct mograine_pet_t final : public horseman_pet_t
         dk->buffs.mograines_might->trigger( dur );
         dk->buffs.death_and_decay->trigger( dur + 4_s );
       }
+      if ( dk->bugs )
+      {
+        if ( rng().roll( 0.5 ) )
+          mograine()->dnd_bugged = true;
+      }
     }
 
     mograine_pet_t* mograine() const
@@ -4750,6 +4755,8 @@ struct mograine_pet_t final : public horseman_pet_t
         // Triggers again 100_ms after the buff expires
         make_event( *sim, 100_ms, [ & ]() { trigger(); } );
       }
+      if( mograine()->dnd_bugged)
+        mograine()->dnd_bugged = false;
     }
 
   private:
@@ -4816,6 +4823,7 @@ struct mograine_pet_t final : public horseman_pet_t
 public:
   propagate_const<buff_t*> dnd_aura;
   bool extended_by_apoc_now = false;
+  bool dnd_bugged           = false;
 };
 
 // ==========================================================================
@@ -7661,6 +7669,15 @@ struct dread_plague_t final : public death_knight_disease_t
       p()->pet_summon.fk_ghoul->execute();
   }
 
+  timespan_t tick_time( const action_state_t* s ) const override
+  {
+    timespan_t tt = death_knight_disease_t::tick_time( s );
+    if ( p()->pets.mograine.active_pet() && p()->pets.mograine.active_pet()->dnd_bugged )
+      return 2_s;  // Why it ticks consistently every 2s when this bug triggers... i do not know, but it does, so here
+                   // we are
+    return tt;
+  }
+
 private:
   player_t* last_target;
   action_t* erupt;
@@ -7736,6 +7753,15 @@ struct virulent_plague_t final : public death_knight_disease_t
   {
     if ( p->options.wcl_reporting_mode )
       add_child( p->background_actions.virulent_plague_erupt );
+  }
+
+  timespan_t tick_time( const action_state_t* s ) const override
+  {
+    timespan_t tt = death_knight_disease_t::tick_time( s );
+    if ( p()->pets.mograine.active_pet() && p()->pets.mograine.active_pet()->dnd_bugged )
+      return 2_s;  // Why it ticks consistently every 2s when this bug triggers... i do not know, but it does, so here
+                   // we are
+    return tt;
   }
 };
 
