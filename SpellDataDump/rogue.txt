@@ -4146,6 +4146,8 @@ Description      : Your single-target combo-point generating attacks deal $s1% a
 Name             : Insignia of Ravenholdt (id=209043) [Spell Family (8)] 
 School           : Shadow
 Spell Type       : Melee
+Cone Angle       : 60 degrees
+Line Width       : 10 yards
 Labels           : 160
                  : 161
                  : 162
@@ -15358,6 +15360,7 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 10 yards
 Max Targets      : 1
+Cone Angle       : 90 degrees
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Class Spells
                  : 20: Rogue Spells

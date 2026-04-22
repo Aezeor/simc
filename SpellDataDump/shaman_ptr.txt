@@ -3576,6 +3576,7 @@ Spell Type       : Melee
 Resource         : 0.2% Base Mana (0) (id=215302)
 Spell Level      : 1
 Range            : 5 yards
+Cone Angle       : 120 degrees
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Off Hand
 Charges          : 1 (15 seconds cooldown)
@@ -4343,6 +4344,7 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Max Targets      : 5
+Cone Angle       : 120 degrees
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
@@ -4452,6 +4454,7 @@ Class            : Shaman
 School           : Flamestrike
 Spell Type       : Melee
 Resource         : 1.2% Base Mana (0) (id=215303)
+Line Width       : 4.5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 30 seconds
@@ -16157,6 +16160,7 @@ Name             : Sundering (id=467283) [Spell Family (11)]
 Class            : Shaman
 School           : Flamestrike
 Spell Type       : Melee
+Line Width       : 4.5 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Class Spells
                  : 24: Shaman Spells

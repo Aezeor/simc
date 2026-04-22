@@ -1908,7 +1908,7 @@
       { "data_type": "f", "field": "cone" },
       { "data_type": "b", "field": "max_affected_targets" },
       { "data_type": "I", "field": "max_target_level" },
-      { "data_type": "h", "field": "unk_4" },
+      { "data_type": "h", "field": "allowed_creature_types" },
       { "data_type": "i", "field": "flags" },
       { "data_type": "f", "field": "width" }
     ]

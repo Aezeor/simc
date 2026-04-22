@@ -3402,7 +3402,7 @@ class SpellDataGenerator(DataGenerator):
             spell = self.db('SpellName')[id]
 
             # Unused hotfix IDs: 1, 2, 5, 6, 7, 54
-            # MAX hotfix id: 58
+            # MAX hotfix id: 60
             hotfix = HotfixDataRecord()
             power_count = 0
 
@@ -3472,8 +3472,10 @@ class SpellDataGenerator(DataGenerator):
             fields += category.field('dmg_class')
             hotfix.add(category, ('dmg_class', 47))
 
-            fields += spell.child('SpellTargetRestrictions').field('max_affected_targets')
+            fields += spell.child('SpellTargetRestrictions').field('max_affected_targets', 'cone', 'width')
             hotfix.add(spell.child('SpellTargetRestrictions'), ('max_affected_targets', 48))
+            hotfix.add(spell.child('SpellTargetRestrictions'), ('cone', 59))
+            hotfix.add(spell.child('SpellTargetRestrictions'), ('width', 60))
 
             duration_entry = misc.ref('id_duration')
             fields += duration_entry.field('duration_1')

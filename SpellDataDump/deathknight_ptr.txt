@@ -3141,6 +3141,7 @@ Name             : Breath of Sindragosa (id=155166) [Spell Family (15)]
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
+Cone Angle       : 75 degrees
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 52
@@ -4387,6 +4388,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
+Cone Angle       : 180 degrees
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 45 seconds
@@ -4781,6 +4783,7 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
 Spell Level      : 1
+Cone Angle       : 90 degrees
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 60 seconds
@@ -4870,6 +4873,7 @@ Spell Type       : Melee
 Resource         : 2 Rune (5) (id=310338)
 Spell Level      : 1
 Range            : 8 yards
+Cone Angle       : 120 degrees
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Fist Weapon
 Labels           : 16: Class Spells
@@ -5884,6 +5888,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Range            : 30 yards
+Cone Angle       : 180 degrees
 Travel Time      : 1.2 seconds
 Travel Delay     : 0.35 seconds
 Labels           : 98
@@ -5949,6 +5954,7 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
+Cone Angle       : 90 degrees
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -6818,6 +6824,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Range            : 30 yards
+Cone Angle       : 180 degrees
 Travel Time      : 1.2 seconds
 Travel Delay     : 0.35 seconds
 Labels           : 16: Class Spells
@@ -7369,6 +7376,7 @@ Class            : Death Knight
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 3 yards
 Labels           : 292
                  : 374
                  : 375
@@ -7390,6 +7398,7 @@ Class            : Death Knight
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 3 yards
 Labels           : 292
                  : 374
                  : 375
@@ -7410,6 +7419,7 @@ Class            : Death Knight
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 3 yards
 Duration         : 15 seconds
 Labels           : 292
                  : 374
@@ -7434,6 +7444,7 @@ Class            : Death Knight
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 3 yards
 Duration         : 15 seconds
 Labels           : 292
                  : 374
@@ -7739,6 +7750,7 @@ Class            : Death Knight
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 3 yards
 Duration         : 15 seconds
 Labels           : 292
                  : 374
@@ -11774,11 +11786,9 @@ Triggered By     : Commander of the Dead (390259)
 Attributes       : No Aura Cancel (31), Include In Advanced Combat Log (72), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1026943)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Self (1)
-Hotfixed         : Target 1 (120 -> 1)
-#2 (id=1051086)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Self and Summons in Area (120)
+#2 (id=1051086)  : Apply Party Aura (35) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : Type (35 -> 6)
 #3 (id=1255736)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Festering Wound (195757), Putrefy (390220), Putrefy (1277016)
@@ -11799,13 +11809,11 @@ Labels           : 16: Class Spells
 Attributes       : Include In Advanced Combat Log (72), Allow Aura While Dead (116), Do Not Display Range (126), Do Not Display Duration (170), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1026956)  : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Radius: 100 yards | Target: Self and Summons in Area (120)
                    Affected School(s): All
-Hotfixed         : Target 1 (120 -> 21)
                    Modified By: Commander of the Dead (390259 effect#2)
 #2 (id=1026957)  : Apply Aura (6) | Scale% (Stacking) (61)
-                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
-Hotfixed         : Target 1 (120 -> 21)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 25 yards | Target: Self and Summons in Area (120)
                    Modified By: Commander of the Dead (390259 effect#3)
 Description      : $@spelldesc390259
 Tooltip          : All damage done increased by $s1%.
@@ -13603,6 +13611,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : None
 Range            : 50000 yards
+Cone Angle       : 120 degrees
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -13900,6 +13909,7 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
 Range            : 5 yards
+Cone Angle       : 45 degrees
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -16563,6 +16573,7 @@ Name             : Festering Scythe (id=458128) [Spell Family (15)]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
+Cone Angle       : 120 degrees
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Labels           : 16: Class Spells
@@ -17291,6 +17302,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
 Range            : 100 yards
+Cone Angle       : 90 degrees
 GCD              : 1 seconds
 Duration         : 0.7 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
@@ -17376,6 +17388,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
 Range            : 100 yards
+Cone Angle       : 90 degrees
 GCD              : 1 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Labels           : 16: Class Spells
@@ -17482,6 +17495,7 @@ Spell Type       : Melee
 Resource         : 35 Runic Power (6) (id=310855)
 Spell Level      : 1
 Range            : 40 yards
+Cone Angle       : 180 degrees
 GCD              : 1.5 seconds
 Duration         : 0.75 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Fist Weapon
@@ -17945,6 +17959,7 @@ Name             : Breath of Sindragosa (id=1231316) [Spell Family (15)]
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
+Cone Angle       : 90 degrees
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 52
@@ -18479,6 +18494,7 @@ School           : Frost
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
+Cone Angle       : 120 degrees
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Fist Weapon
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
@@ -19930,6 +19946,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
 Range            : 5 yards
+Cone Angle       : 180 degrees
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells

@@ -1302,6 +1302,7 @@ Spell Type       : Melee
 Resource         : 60 Energy (3) (id=1192)
 Spell Level      : 1
 Range            : 5 yards
+Cone Angle       : 180 degrees
 GCD              : 1 seconds
 Duration         : 12 seconds
 Labels           : 16: Class Spells

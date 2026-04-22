@@ -381,6 +381,7 @@ Class            : Evoker
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
+Cone Angle       : 90 degrees
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Labels           : 16: Class Spells
@@ -733,6 +734,7 @@ Class            : Evoker
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Cone Angle       : 30 degrees
 Duration         : 2 seconds
 Labels           : 16: Class Spells
                  : 292
@@ -2178,6 +2180,7 @@ Class            : Evoker
 School           : Fire
 Spell Type       : None
 Range            : 100 yards
+Cone Angle       : 30 degrees
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
@@ -2193,6 +2196,7 @@ Class            : Evoker
 School           : Fire
 Spell Type       : None
 Range            : 100 yards
+Cone Angle       : 30 degrees
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
@@ -2208,6 +2212,7 @@ Class            : Evoker
 School           : Fire
 Spell Type       : None
 Range            : 100 yards
+Cone Angle       : 30 degrees
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
@@ -3384,6 +3389,7 @@ Class            : Evoker
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
+Cone Angle       : 60 degrees
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 120 seconds
@@ -7418,6 +7424,7 @@ Class            : Evoker
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
+Cone Angle       : 60 degrees
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 120 seconds
@@ -8887,6 +8894,7 @@ Class            : Evoker
 School           : Firestorm
 Spell Type       : None
 Range            : 10 - 40 yards
+Cone Angle       : 60 degrees
 Effects          :
 #1 (id=1083139)  : Force Cast (160): Landslide
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 414255 | Target: Self (1)
@@ -9527,6 +9535,7 @@ Class            : Evoker
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Cone Angle       : 30 degrees
 Duration         : 24 seconds
 Attributes       : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Spell Haste Affects Periodic (173), Aura Icon Only For Caster (Limit 10) (212), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
@@ -11341,6 +11350,7 @@ Class            : Evoker
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Cone Angle       : 30 degrees
 Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 101%
@@ -13679,6 +13689,7 @@ Class            : Evoker
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Cone Angle       : 30 degrees
 Duration         : 24 seconds
 Attributes       : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Spell Haste Affects Periodic (173), Aura Icon Only For Caster (Limit 10) (212), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :

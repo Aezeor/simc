@@ -14903,6 +14903,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
+Line Width       : 8 yards
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 117

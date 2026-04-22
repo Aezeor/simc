@@ -57,6 +57,7 @@ School           : Frost
 Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=27)
 Spell Level      : 18
+Cone Angle       : 90 degrees
 GCD              : 1.5 seconds
 Cooldown         : 25 seconds
 Labels           : 16: Class Spells
@@ -1102,6 +1103,7 @@ School           : Fire
 Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=1267)
 Spell Level      : 27
+Cone Angle       : 90 degrees
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 45 seconds

@@ -1914,6 +1914,7 @@ Class            : Hunter
 School           : Froststorm
 Spell Type       : Melee
 Spell Level      : 14
+Cone Angle       : 60 degrees
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -4078,6 +4079,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : Melee
 Range            : 8 yards
+Cone Angle       : 60 degrees
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -18149,6 +18151,7 @@ School           : Physical
 Spell Type       : None
 Resource         : 50 Focus (2) (id=312325)
 Range            : 20 yards
+Cone Angle       : 120 degrees
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 60 seconds
@@ -18175,6 +18178,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
 Range            : 20 yards
+Cone Angle       : 90 degrees
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -18211,6 +18215,7 @@ School           : Physical
 Spell Type       : Melee
 Resource         : 30 Focus (2) (id=312699)
 Range            : 15 yards
+Cone Angle       : 90 degrees
 GCD              : 1.5 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells

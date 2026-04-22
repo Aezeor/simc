@@ -2817,6 +2817,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
                 spell->max_targets(), spell->max_targets() < 0 ? ")" : "" );
   }
 
+  if( spell->cone_degrees() != 0 )
+    s << "Cone Angle       : " << spell->cone_degrees() << " degrees" << std::endl;
+
+  if ( spell->line_width() != 0 )
+    s << "Line Width       : " << spell->line_width() << " yards" << std::endl;
+
   if ( spell->cast_time() > 0_ms )
     s << "Cast Time        : " << spell->cast_time().total_seconds() << " seconds" << std::endl;
   else if ( spell->cast_time() < 0_ms )

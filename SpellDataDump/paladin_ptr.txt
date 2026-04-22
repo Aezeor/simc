@@ -1221,6 +1221,7 @@ Resource         : 3 Holy Power (9) (id=192485)
 Resource         : 3 - 5 Holy Power (9) (id=312790) w/ Instrument of the Divine (id=1277162)
 Spell Level      : 2
 Range            : 5 yards
+Cone Angle       : 120 degrees
 Requires armor   : Shield 
 Cooldown         : 1 seconds
 Labels           : 16: Class Spells
@@ -6489,6 +6490,7 @@ Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
 Spell Level      : 10
+Cone Angle       : 120 degrees
 GCD              : 1.5 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 2285 (Type 0x1)
@@ -8741,6 +8743,7 @@ Name             : Shadowbreaker, Dawn of the Sun (id=337815) [Spell Family (10)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
+Cone Angle       : 90 degrees
 Duration         : 8 seconds
 Labels           : 931
 Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Confused (178), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
@@ -10755,6 +10758,7 @@ Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
 Resource         : 3 Holy Power (9) (id=265475)
+Cone Angle       : 120 degrees
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 15 seconds
@@ -12911,6 +12915,7 @@ Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
 Spell Level      : 1
+Cone Angle       : 120 degrees
 Duration         : 9 seconds
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
@@ -13284,6 +13289,7 @@ Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
 Spell Level      : 1
+Cone Angle       : 120 degrees
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -13301,6 +13307,7 @@ Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
 Spell Level      : 1
+Cone Angle       : 120 degrees
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -14620,6 +14627,7 @@ Spell Type       : Melee
 Resource         : 3 Holy Power (9) (id=305084)
 Spell Level      : 10
 Range            : 5 yards
+Cone Angle       : 120 degrees
 GCD              : 1.5 seconds
 Requires armor   : Shield 
 Cooldown         : 1 seconds
@@ -16091,6 +16099,7 @@ Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 5 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -16110,6 +16119,7 @@ Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 3 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -20670,6 +20680,7 @@ Name             : Light Within (id=1261160) [Spell Family (10)]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
+Cone Angle       : 60 degrees
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292

@@ -800,6 +800,7 @@ Class            : Monk
 School           : Fire
 Spell Type       : Magic
 Spell Level      : 29
+Cone Angle       : 90 degrees
 GCD              : 1 seconds
 Cooldown         : 15 seconds
 Labels           : 16: Class Spells
@@ -1536,6 +1537,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
+Cone Angle       : 60 degrees
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -1827,6 +1829,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
+Cone Angle       : 60 degrees
 Duration         : 4 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
@@ -2840,6 +2843,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
+Line Width       : 5 yards
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -5116,6 +5120,7 @@ Spell Type       : Magic
 Resource         : 3.8% Base Mana (0) (id=11512) w/ Mistweaver Monk (id=137024)
 Spell Level      : 8
 Range            : 40 yards
+Line Width       : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1 seconds
 Duration         : 6 seconds
@@ -5155,6 +5160,7 @@ Name             : Dragonfire Brew (id=227681) [Spell Family (53)]
 Class            : Monk
 School           : Fire
 Spell Type       : Magic
+Cone Angle       : 90 degrees
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -5282,6 +5288,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
+Cone Angle       : 60 degrees
 Duration         : 4 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
@@ -7846,6 +7853,7 @@ Name             : Yu'lon's Whisper (id=337267) [Spell Family (53), Hidden]
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
+Cone Angle       : 60 degrees
 Duration         : 2 seconds
 Labels           : 931
                  : 1051
@@ -7859,6 +7867,7 @@ Description      : $@spelldesc337225
 Name             : Yu'lon's Whisper (id=337268) [Spell Family (53)] 
 School           : Physical
 Spell Type       : None
+Cone Angle       : 90 degrees
 Labels           : 931
                  : 1051
 Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Dome of Mist (205655 effect#2), Invoke Yu'lon, the Jade Serpent (322118 effects: #8, #9), Invoke Chi-Ji, the Red Crane (325197 effects: #7, #8), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Save Them All (389579 effect#1), Jadefire Brand (395413 effect#1), Chi Harmony (423439 effect#1), Mistweaver Monk (428200 effects: #1, #2), Renewing Mist (448430 effect#2), Lighter Than Air (449609 effect#3), Chi Proficiency (450426 effects: #2, #3), Aspect of Harmony (450769 effect#2), Chi Harmony (457013 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Renewing Mist (1238851 effect#2), Monk - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283666 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283667 effects: #1, #2)
@@ -8606,6 +8615,7 @@ School           : Nature
 Spell Type       : Melee
 Spell Level      : 48
 Range            : 100 yards
+Line Width       : 20 yards
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -9779,6 +9789,7 @@ Name             : Dragonfire Brew (id=387621) [Spell Family (53)]
 Class            : Monk
 School           : Fire
 Spell Type       : Magic
+Cone Angle       : 90 degrees
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -10064,6 +10075,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
+Cone Angle       : 60 degrees
 Duration         : 20 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
@@ -10080,6 +10092,7 @@ Name             : Yu'lon's Whisper (id=388044) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Cone Angle       : 90 degrees
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -10249,6 +10262,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Melee
 Range            : 100 yards
+Line Width       : 20 yards
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -11431,6 +11445,7 @@ School           : Physical
 Spell Type       : Melee
 Resource         : 2 Chi (12) (id=265649)
 Range            : 9 yards
+Line Width       : 10 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
 Cooldown         : 35 seconds
@@ -12125,6 +12140,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : Melee
 Range            : 12 yards
+Line Width       : 10 yards
 Labels           : 16: Class Spells
                  : 22: Monk Spells
 Affecting Spells : Invoke Xuen, the White Tiger (123904 effects: #4, #5), Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effects: #3, #4), Windwalker Monk (137025 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Wind Blows (248101 effect#1), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), Mistweaver Monk (428200 effects: #3, #4), Heart of the Jade Serpent (443421 effect#2), Heart of the Jade Serpent (443616 effect#2), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Communion With Wind (451576 effects: #1, #2), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2), Heart of the Jade Serpent (1238904 effect#2), Zenith (1249625 effects: #2, #4, #7), Brewmaster Monk (1256978 effects: #1, #2), Tigereye Brew (1261844 effect#1), Monk Windwalker12.0 Class Set 2pc (1264842 effect#1), Monk Windwalker12.0 Class Set 4pc (1264843 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
@@ -12141,6 +12157,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : Melee
 Range            : 12 yards
+Line Width       : 10 yards
 Labels           : 16: Class Spells
                  : 22: Monk Spells
 Affecting Spells : Invoke Xuen, the White Tiger (123904 effects: #4, #5), Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effects: #3, #4), Windwalker Monk (137025 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Wind Blows (248101 effect#1), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), Mistweaver Monk (428200 effects: #3, #4), Heart of the Jade Serpent (443421 effect#2), Heart of the Jade Serpent (443616 effect#2), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Communion With Wind (451576 effects: #1, #2), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2), Heart of the Jade Serpent (1238904 effect#2), Zenith (1249625 effects: #2, #4, #7), Brewmaster Monk (1256978 effects: #1, #2), Tigereye Brew (1261844 effect#1), Monk Windwalker12.0 Class Set 2pc (1264842 effect#1), Monk Windwalker12.0 Class Set 4pc (1264843 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
@@ -16207,6 +16224,7 @@ Name             : Flurry of Xuen (id=452130) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
+Cone Angle       : 60 degrees
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -17252,6 +17270,7 @@ Name             : Rushing Wind Kick (id=468179) [Spell Family (53)]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
+Cone Angle       : 50 degrees
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -18374,6 +18393,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 20 yards
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
