@@ -2712,7 +2712,7 @@ struct death_knight_pet_t : public pet_t
   {
     double m = pet_t::composite_player_critical_damage_multiplier( s, school );
 
-    if( grave_mastery->check() )
+    if ( grave_mastery->check() )
       m *= 1.0 + grave_mastery->check_value();
 
     if ( mastery_dreadblade_crit->check() )
@@ -4388,6 +4388,7 @@ struct magus_pet_t : public death_knight_pet_t
   void arise() override
   {
     death_knight_pet_t::arise();
+    trigger_pet_movement( 7 );
     dk()->buffs.unholy_aura_haste->trigger();
     if ( dk()->talent.unholy.forbidden_knowledge_3.ok() )
       dk()->buffs.forbidden_ritual->trigger();
@@ -14433,8 +14434,7 @@ void death_knight_t::init_rng()
                                          ( 1.0 + talent.unholy.ebon_fever->effectN( 1 ).percent() ) ) );
 
   pseudo_random.forbidden_knowledge = get_accumulated_rng(
-      "forbidden_knowledge", prd::find_constant( talent.unholy.forbidden_knowledge_3->effectN( 3 ).percent() ) *
-                                 ( 1.0 + talent.unholy.ebon_fever->effectN( 1 ).percent() ) );
+      "forbidden_knowledge", prd::find_constant( talent.unholy.forbidden_knowledge_3->effectN( 3 ).percent() ) * 0.5 );
 }
 
 // death_knight_t::init_base ================================================
@@ -15871,7 +15871,7 @@ void death_knight_t::create_buffs()
 
   buffs.forbidden_sacrifice =
       make_fallback( talent.unholy.forbidden_knowledge_2.ok(), this, "forbidden_sacrifice", spell.forbidden_sacrifice )
-          ->set_default_value( talent.unholy.forbidden_knowledge_2->effectN( 1 ).base_value() )
+          ->set_default_value( talent.unholy.forbidden_knowledge_2->effectN( 1 ).base_value() / 1.8 )
           ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
           ->add_invalidate( CACHE_MASTERY )
           ->set_disable_async_expire_events_removal( true );
