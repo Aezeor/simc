@@ -3665,7 +3665,6 @@ struct cancel_form_t final : public druid_form_t
 {
   DRUID_ABILITY( cancel_form_t, druid_form_t, "cancelform", spell_data_t::nil() )
   {
-    background = true;
     callbacks = false;
 
     set_form( NO_FORM );
