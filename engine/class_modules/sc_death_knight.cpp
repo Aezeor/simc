@@ -14481,7 +14481,8 @@ void death_knight_t::init_rng()
                                          ( 1.0 + talent.unholy.ebon_fever->effectN( 1 ).percent() ) ) );
 
   pseudo_random.forbidden_knowledge = get_accumulated_rng(
-      "forbidden_knowledge", prd::find_constant( talent.unholy.forbidden_knowledge_3->effectN( 3 ).percent() ) );
+      "forbidden_knowledge", prd::find_constant( talent.unholy.forbidden_knowledge_3->effectN( 3 ).percent() ) *
+                                 ( 1.0 + talent.unholy.ebon_fever->effectN( 1 ).percent() ) );
 }
 
 // death_knight_t::init_base ================================================
