@@ -11865,7 +11865,7 @@ struct putrefy_t final : public death_knight_spell_t
   {
     death_knight_spell_t::init_finished();
     add_child( p()->background_actions.putrefy_st );
-    add_child( p()->background_actions.putrefy_st->execute_action );
+    add_child( p()->background_actions.putrefy_aoe );
 
     if ( p()->talent.unholy.blightburst.ok() && !p()->options.wcl_reporting_mode )
     {
