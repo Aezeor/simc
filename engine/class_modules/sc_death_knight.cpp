@@ -15226,9 +15226,6 @@ std::string death_knight_t::aura_expr_from_spell_id( unsigned int spell_id, bool
   if ( aura_expr == "debuff.reapers_mark" )
     aura_expr.append( "_debuff" );
 
-  if ( aura_expr == "debuff.festering_scythe" )
-    aura_expr.append( "_debuff" );
-
   return aura_expr;
 }
 
