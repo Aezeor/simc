@@ -695,7 +695,6 @@ struct death_knight_td_t : public actor_target_data_t
     propagate_const<buff_t*> frostreaper;
 
     // Unholy
-    propagate_const<buff_t*> festering_scythe;
     propagate_const<buff_t*> soul_reaper;
 
     // Rider of the Apocalypse
@@ -854,6 +853,7 @@ public:
     propagate_const<buff_t*> ancient_power;
     propagate_const<buff_t*> unholy_aura_haste;
     propagate_const<buff_t*> festering_scythe;
+    propagate_const<buff_t*> festering_scythe_tt;
     propagate_const<buff_t*> forbidden_sacrifice;
     propagate_const<buff_t*> forbidden_ritual;
     propagate_const<buff_t*> reaping;
@@ -986,7 +986,6 @@ public:
     propagate_const<action_t*> putrefy_fk_st;
     propagate_const<action_t*> putrefy_fk_aoe;
     propagate_const<action_t*> dread_plague_death;
-    propagate_const<action_t*> disease_cloud;
   } background_actions;
 
   struct runeforge_actions_t
@@ -3344,16 +3343,6 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     return m;
   }
 
-  double composite_melee_haste() const override
-  {
-    double haste = base_ghoul_pet_t::composite_melee_haste();
-
-    if ( unholy_devotion->check() && bugs )
-      haste /= 1.0 + unholy_devotion->check_stack_value();
-
-    return haste;
-  }
-
   double composite_melee_auto_attack_speed() const override
   {
     double haste = base_ghoul_pet_t::composite_melee_auto_attack_speed();
@@ -3361,9 +3350,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     if ( ghoulish_frenzy->check() )
       haste /= 1.0 + ghoulish_frenzy->data().effectN( 1 ).percent();
 
-    // Unholy Devotion appears to give auto attack speed AND haste per stack, causing its auto attack speed increase to
-    // be multiplicative with its haste increase.
-    if ( unholy_devotion->check() && bugs )
+    if ( unholy_devotion->check() )
       haste /= 1.0 + unholy_devotion->check_stack_value();
 
     return haste;
@@ -4732,10 +4719,6 @@ struct mograine_pet_t final : public horseman_pet_t
         dk->buffs.mograines_might->trigger( dur );
         dk->buffs.death_and_decay->trigger( dur + 4_s );
       }
-      if ( dk->bugs )
-      {
-        mograine()->dnd_bugged = true;
-      }
     }
 
     mograine_pet_t* mograine() const
@@ -4752,8 +4735,6 @@ struct mograine_pet_t final : public horseman_pet_t
         // Triggers again 100_ms after the buff expires
         make_event( *sim, 100_ms, [ & ]() { trigger(); } );
       }
-      if( mograine()->dnd_bugged)
-        mograine()->dnd_bugged = false;
     }
 
   private:
@@ -4820,7 +4801,6 @@ struct mograine_pet_t final : public horseman_pet_t
 public:
   propagate_const<buff_t*> dnd_aura;
   bool extended_by_apoc_now = false;
-  bool dnd_bugged           = false;
 };
 
 // ==========================================================================
@@ -5188,6 +5168,17 @@ struct nazgrim_pet_t final : public horseman_pet_t
 // ==========================================================================
 struct abomination_pet_t : public death_knight_pet_t
 {
+  struct disease_cloud_t final : public pet_spell_t<abomination_pet_t>
+  {
+    disease_cloud_t( std::string_view name, abomination_pet_t* p )
+      : pet_spell_t( p, name, p->dk()->spell.disease_cloud_damage )
+    {
+      background = true;
+      aoe        = -1;
+      may_miss = may_dodge = may_parry = false;
+    }
+  };
+
   struct disease_cloud_event_t final : public event_t
   {
     disease_cloud_event_t( abomination_pet_t* p, timespan_t interval )
@@ -5205,7 +5196,7 @@ struct abomination_pet_t : public death_knight_pet_t
       if ( pet->is_sleeping() )
         return;
 
-      pet->dk()->background_actions.disease_cloud->execute();
+      pet->disease_cloud->execute();
 
       make_event<disease_cloud_event_t>( *pet->sim, pet, period );
     }
@@ -5248,6 +5239,9 @@ struct abomination_pet_t : public death_knight_pet_t
   {
     return new auto_attack_melee_t<abomination_pet_t>( this, "auto_attack_mh" );
   }
+
+  public: 
+    propagate_const<action_t*> disease_cloud;
 };
 
 }  // namespace pets
@@ -7486,20 +7480,6 @@ struct death_knight_disease_t : public death_knight_spell_t
     }
   }
 
-  timespan_t tick_time( const action_state_t* s ) const override
-  {
-    timespan_t tt = death_knight_spell_t::tick_time( s );
-
-    if ( p()->talent.unholy.festering_scythe.ok() )
-    {
-      death_knight_td_t* td = get_td( s->target );
-      if ( td->debuff.festering_scythe->check() )
-        tt *= 1.0 + td->debuff.festering_scythe->data().effectN( 1 ).percent();
-    }
-
-    return tt;
-  }
-
   double composite_ta_multiplier( const action_state_t* s ) const override
   {
     double mult = death_knight_spell_t::composite_ta_multiplier( s );
@@ -7656,15 +7636,6 @@ struct dread_plague_t final : public death_knight_disease_t
       p()->pet_summon.fk_ghoul->execute();
   }
 
-  timespan_t tick_time( const action_state_t* s ) const override
-  {
-    timespan_t tt = death_knight_disease_t::tick_time( s );
-    if ( p()->pets.mograine.active_pet() && p()->pets.mograine.active_pet()->dnd_bugged )
-      return 2_s;  // Why it ticks consistently every 2s when this bug triggers... i do not know, but it does, so here
-                   // we are
-    return tt;
-  }
-
 private:
   player_t* last_target;
   action_t* erupt;
@@ -7740,27 +7711,6 @@ struct virulent_plague_t final : public death_knight_disease_t
   {
     if ( p->options.wcl_reporting_mode )
       add_child( p->background_actions.virulent_plague_erupt );
-  }
-
-  timespan_t tick_time( const action_state_t* s ) const override
-  {
-    timespan_t tt = death_knight_disease_t::tick_time( s );
-    if ( p()->pets.mograine.active_pet() && p()->pets.mograine.active_pet()->dnd_bugged )
-      return 2_s;  // Why it ticks consistently every 2s when this bug triggers... i do not know, but it does, so here
-                   // we are
-    return tt;
-  }
-};
-
-// Disease Cloud =======================================================
-struct disease_cloud_t final : public death_knight_spell_t
-{
-  disease_cloud_t( std::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->spell.disease_cloud_damage )
-  {
-    background = true;
-    aoe        = -1;
-    may_miss = may_dodge = may_parry = false;
   }
 };
 
@@ -10170,8 +10120,7 @@ struct festering_scythe_t final : public festering_base_t
   void impact( action_state_t* s ) override
   {
     festering_base_t::impact( s );
-    death_knight_td_t* td = get_td( s->target );
-    td->debuff.festering_scythe->trigger();
+    p()->buffs.festering_scythe_tt->trigger();
   }
 };
 
@@ -13846,9 +13795,6 @@ void death_knight_t::create_actions()
       pet_summon.army_ghoul = get_action<summon_lesser_ghoul_t>( "army_ghoul", this, spell.summon_army_ghoul,
                                                                  lesser_ghoul_e::LESSER_ARMY_OF_THE_DEAD );
 
-    if ( talent.unholy.raise_abomination.ok() )
-      background_actions.disease_cloud = get_action<disease_cloud_t>( "disease_cloud", this );
-
     if ( talent.unholy.infected_claws.ok() )
       background_actions.infected_claws = get_action<infected_claws_t>( "infected_claws", this );
 
@@ -15350,10 +15296,6 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
   // Unholy
   dot.infected_claws = target.get_dot( "infected_claws", &p );
 
-  debuff.festering_scythe = make_debuff( p.talent.unholy.festering_scythe.ok(), *this, "festering_scythe_debuff",
-                                         p.spell.festering_scythe_debuff )
-                                ->set_default_value_from_effect( 1 );
-
   debuff.soul_reaper =
       make_debuff( p.talent.unholy.soul_reaper.ok(), *this, "soul_reaper_debuff", p.spell.soul_reaper_debuff );
 
@@ -15866,6 +15808,9 @@ void death_knight_t::create_buffs()
 
   buffs.festering_scythe =
       make_fallback( talent.unholy.festering_scythe.ok(), this, "festering_scythe", spell.festering_scythe_buff );
+
+  buffs.festering_scythe =
+      make_fallback( talent.unholy.festering_scythe.ok(), this, "festering_scythe", spell.festering_scythe_debuff );
 
   buffs.blightfall = make_fallback( talent.unholy.blightfall.ok(), this, "blightfall", spell.blightfall_buff );
 
