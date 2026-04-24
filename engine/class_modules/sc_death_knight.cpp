@@ -3430,8 +3430,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
                           ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
     unholy_devotion = make_buff( this, "unholy_devotion", dk()->pet_spell.unholy_devotion_buff )
-                          ->set_default_value_from_effect_type( A_HASTE_ALL )
-                          ->add_invalidate( CACHE_HASTE )
+                          ->set_default_value_from_effect_type( A_MOD_ATTACKSPEED_NORMALIZED )
                           ->set_disable_async_expire_events_removal( true );
   }
 
@@ -14380,7 +14379,7 @@ void death_knight_t::init_rng()
                                          ( 1.0 + talent.unholy.ebon_fever->effectN( 1 ).percent() ) ) );
 
   pseudo_random.forbidden_knowledge = get_accumulated_rng(
-      "forbidden_knowledge", prd::find_constant( talent.unholy.forbidden_knowledge_3->effectN( 3 ).percent() ) * 0.5 );
+      "forbidden_knowledge", prd::find_constant( talent.unholy.forbidden_knowledge_3->effectN( 3 ).percent() ) );
 }
 
 // death_knight_t::init_base ================================================
@@ -15809,8 +15808,8 @@ void death_knight_t::create_buffs()
   buffs.festering_scythe =
       make_fallback( talent.unholy.festering_scythe.ok(), this, "festering_scythe", spell.festering_scythe_buff );
 
-  buffs.festering_scythe =
-      make_fallback( talent.unholy.festering_scythe.ok(), this, "festering_scythe", spell.festering_scythe_debuff );
+  buffs.festering_scythe_tt =
+      make_fallback( talent.unholy.festering_scythe.ok(), this, "festering_scythe_tt", spell.festering_scythe_debuff );
 
   buffs.blightfall = make_fallback( talent.unholy.blightfall.ok(), this, "blightfall", spell.blightfall_buff );
 
@@ -16526,6 +16525,7 @@ void death_knight_t::apply_action_effects( action_t* a, bool pet )
       // Sets
       action->parse_effects( buffs.blighted, CONSUME_BUFF );
       action->parse_effects( buffs.forbidden_ritual );
+      action->parse_effects( buffs.festering_scythe_tt );
       break;
     default:
       break;
