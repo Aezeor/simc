@@ -5229,6 +5229,12 @@ struct abomination_pet_t : public death_knight_pet_t
     trigger_pet_movement( dist );
   }
 
+  void create_actions() override
+  {
+    death_knight_pet_t::create_actions();
+    disease_cloud = new disease_cloud_t( "disease_cloud", this );
+  }
+
   resource_e primary_resource() const override
   {
     return RESOURCE_NONE;
