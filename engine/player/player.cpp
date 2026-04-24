@@ -4696,12 +4696,14 @@ void player_t::init_finished()
     if ( c.is_percentage )
     {
       stat_pct_buff_type stat_pct;
+      double stat_amount = c.amount * 0.01;
+
       switch ( convert_hybrid_stat( c.stat ) )
       {
         case STAT_CRIT_RATING:        stat_pct = STAT_PCT_BUFF_CRIT; break;
         case STAT_HASTE_RATING:       stat_pct = STAT_PCT_BUFF_HASTE; break;
         case STAT_VERSATILITY_RATING: stat_pct = STAT_PCT_BUFF_VERSATILITY; break;
-        case STAT_MASTERY_RATING:     stat_pct = STAT_PCT_BUFF_MASTERY; break;
+        case STAT_MASTERY_RATING:     stat_pct = STAT_PCT_BUFF_MASTERY; stat_amount = c.amount; break;
         case STAT_STRENGTH:           stat_pct = STAT_PCT_BUFF_STRENGTH; break;
         case STAT_AGILITY:            stat_pct = STAT_PCT_BUFF_AGILITY; break;
         case STAT_STAMINA:            stat_pct = STAT_PCT_BUFF_STAMINA; break;
@@ -4713,7 +4715,7 @@ void player_t::init_finished()
       }
 
       custom_buff = make_buff( this, buff_name )
-                      ->set_default_value( c.amount * 0.01 )
+                      ->set_default_value( stat_amount )
                       ->set_pct_buff_type( stat_pct )
                       ->set_duration( c.duration );
     }
