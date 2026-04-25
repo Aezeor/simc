@@ -345,6 +345,8 @@ public:
     buff_t* hungering_slash;
     buff_t* voidstep;
     buff_t* voidrush;
+    buff_t* entropy_out_of_combat;
+    buff_t* entropy_in_combat;
 
     // Havoc
     buff_t* blind_fury;
@@ -1082,6 +1084,7 @@ public:
 
     // Devourer
     proc_t* spontaneous_immolation;
+    proc_t* void_metamorphosis_stack_from_entropy;
     proc_t* soul_fragment_from_consume;
     proc_t* soul_fragment_from_devour;
     proc_t* soul_fragment_from_soul_immolation;
@@ -9326,6 +9329,11 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, util::string_view name, race_e r )
   create_benefits();
 
   resource_regeneration = regen_type::DISABLED;
+
+  sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
+    if ( talent.devourer.entropy && !buff.entropy_out_of_combat->check() && !in_combat && !buff.metamorphosis->check() )
+      buff.entropy_out_of_combat->trigger();
+  } );
 }
 
 // ==========================================================================
@@ -9522,6 +9530,19 @@ void demon_hunter_t::activate()
       }
     } );
   }
+
+  if ( talent.devourer.entropy->ok() )
+  {
+    register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
+      if ( c )
+      {
+        buff.entropy_out_of_combat->expire();
+        buff.entropy_in_combat->trigger();
+      }
+      else
+        buff.entropy_in_combat->expire();
+    } );
+  }
 }
 
 // demon_hunter_t::create_buffs =============================================
@@ -9592,6 +9613,36 @@ void demon_hunter_t::create_buffs()
           ->set_refresh_behavior( buff_refresh_behavior::DURATION )
           ->add_stack_change_callback( [ this ]( buff_t*, int, int ) { devourer_fury_state.reschedule_drain(); } );
 
+  buff.entropy_out_of_combat =
+      make_buff( this, "entropy_out_of_combat" )
+          ->set_quiet( true )
+          ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+          ->set_period( 1_s )
+          ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+          ->set_tick_on_application( false )
+          ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+            if ( buff.void_metamorphosis_stack->stack() < talent.devourer.entropy->effectN( 2 ).base_value() )
+            {
+              buff.void_metamorphosis_stack->trigger();
+              proc.void_metamorphosis_stack_from_entropy->occur();
+            }
+          } );
+
+  // Devourer spawns a Soul Fragment every 8s with Entropy talented
+
+  buff.entropy_in_combat = make_buff( this, "entropy_in_combat" )
+                               ->set_quiet( true )
+                               ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+                               ->set_period( talent.devourer.entropy->effectN( 1 ).period() )
+                               ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+                               ->set_tick_on_application( true )
+                               ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+                                 spawn_soul_fragment( proc.soul_fragment_from_entropy, soul_fragment::LESSER, 1 );
+                               } );
+  
+  
+    // timespan_t initial_delay = timespan_t::from_millis( rng().range( 0, 5250 ) );
+    
   // Havoc ==================================================================
 
   buff.out_of_range = make_buff( this, "out_of_range", spell_data_t::nil() )->set_chance( 1.0 );
@@ -10152,6 +10203,7 @@ void demon_hunter_t::init_procs()
 
   // Devourer
   proc.spontaneous_immolation                = get_proc( "Spontaneous Immolation" );
+  proc.void_metamorphosis_stack_from_entropy = get_proc( "Void Metamorphosis Stack from Entropy" );
   proc.soul_fragment_from_consume            = get_proc( "Soul Fragment from Consume" );
   proc.soul_fragment_from_devour             = get_proc( "Soul Fragment from Devour" );
   proc.soul_fragment_from_soul_immolation    = get_proc( "Soul Fragment from Soul Immolation" );
@@ -11652,17 +11704,6 @@ void demon_hunter_t::combat_begin()
   {
     resources.current[ RESOURCE_FURY ] = fury_cap;
     sim->print_debug( "Fury for {} capped at combat start to {} (was {})", *this, fury_cap, current_fury );
-  }
-
-  // Devourer spawns a Soul Fragment every 8s with Entropy talented
-  if ( talent.devourer.entropy->ok() )
-  {
-    timespan_t initial_delay = timespan_t::from_millis( rng().range( 0, 5250 ) );
-    make_event( sim, initial_delay, [ this ] {
-      make_repeating_event( sim, talent.devourer.entropy->effectN( 1 ).period(), [ this ] {
-        spawn_soul_fragment( proc.soul_fragment_from_entropy, soul_fragment::LESSER, 1 );
-      } );
-    } );
   }
 }
 
