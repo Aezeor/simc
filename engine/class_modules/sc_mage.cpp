@@ -7034,15 +7034,10 @@ int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consump
     action->base_multiplier *= shatter_stacks;
     action->execute_on_target( target );
     action->base_multiplier = old_mult;
-  }
 
-  if ( shatter_stacks > 0 )
-  {
     action_t* hof = this->action.hand_of_frost;
     double hof_chance = talents.hand_of_frost_1->effectN( 1 ).percent();
-    // TODO: Seems to be based on actually consumed stacks, so Fingers of Frost doesn't increase
-    // the proc chance at all
-    hof_chance += consume_stacks * 0.1 * talents.hand_of_frost_2->effectN( 1 ).percent();
+    hof_chance += shatter_stacks * 0.1 * talents.hand_of_frost_2->effectN( 1 ).percent();
     if ( hof && rng().roll( hof_chance ) )
       hof->execute_on_target( target );
   }
