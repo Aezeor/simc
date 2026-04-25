@@ -15147,7 +15147,7 @@ parsed_assisted_combat_rule_t death_knight_t::parse_assisted_combat_rule(
       return { "buff.lesser_ghoul_ready.down" };
   }
 
-  if ( rule.condition_type == AC_AURA_ON_TARGET && rule.condition_value_1 == spell.festering_scythe_debuff->id() )
+  if ( rule.condition_type == AC_AURA_MISSING_TARGET && rule.condition_value_1 == spell.festering_scythe_debuff->id() )
   {
     if ( rule.condition_value_2 >= 1 )
       return { "buff.festering_scythe_tt.up" };
