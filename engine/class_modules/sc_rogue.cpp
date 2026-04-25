@@ -2026,8 +2026,9 @@ public:
     const double target_da_multiplier = ( unmitigated && reverse_target_da_multiplier ) ? ( 1.0 / s->target_da_multiplier ) : 1.0;
     // Target crit damage taken multipliers are baked into the result_crit_bonus and result_total
     // Since it's not currently in the action state, fetch this directly from the action to reverse out
+    // Full value in result_total is multiplied by 1.0 + result_crit_bonus so need to factor that out
     const double target_crit_bonus_adjustment = ( unmitigated && reverse_target_da_multiplier && s->result_crit_bonus > 0 ) ?
-      ( 1.0 / s->action->composite_target_crit_damage_bonus_multiplier( s->target ) ) : 1.0;
+      ( 1.0 + s->result_crit_bonus * ( 1.0 / s->action->composite_target_crit_damage_bonus_multiplier( s->target ) ) ) / ( 1.0 + s->result_crit_bonus ) : 1.0;
 
     const double amount = base_damage * multiplier * target_da_multiplier * target_crit_bonus_adjustment;
 
