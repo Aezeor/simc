@@ -8353,17 +8353,18 @@ void actions::rogue_action_t<Base>::trigger_ancient_arts( const action_state_t* 
     if ( !p()->buffs.ancient_arts->check() )
       return;
 
-    const int current_deficit = as<int>( p()->consume_cp_max() - p()->current_cp() );
-    if ( current_deficit == 0 || p()->buffs.shadow_techniques->check() < current_deficit )
+    // TOCHECK -- Does this enforce the 5 stack criteria on the finisher or just buff application? Or both?
+    auto consume_stacks = std::min( p()->buffs.shadow_techniques->check(),
+                                    std::max( 0, as<int>( p()->consume_cp_max() - p()->current_cp() ) ) );
+    if ( consume_stacks == 0 )
       return;
     
-    trigger_combo_point_gain( current_deficit, p()->gains.shadow_techniques_ancient_arts );
-    p()->buffs.shadow_techniques->decrement( current_deficit );
+    trigger_combo_point_gain( consume_stacks, p()->gains.shadow_techniques_ancient_arts );
+    p()->buffs.shadow_techniques->decrement( consume_stacks );
 
-    // MIDNIGHT TOCHECK -- Assume this is intended to trigger off Ancient Arts 3 as well?
     if ( p()->talent.subtlety.ancient_arts_1->ok() )
     {
-      const double trigger_chance = p()->talent.subtlety.ancient_arts_1->effectN( 1 ).percent() * current_deficit;
+      const double trigger_chance = p()->talent.subtlety.ancient_arts_1->effectN( 1 ).percent() * consume_stacks;
       trigger_shadow_clone( ab::execute_state, shadow_clone_attack(), trigger_chance, 500_ms );
     }
 
