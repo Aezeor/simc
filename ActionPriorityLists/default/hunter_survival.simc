@@ -50,11 +50,11 @@ actions.plst=kill_command,if=buff.tip_of_the_spear.stack<2&howl_summon.ready
 actions.plst+=/kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs
 actions.plst+=/takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs
 actions.plst+=/flamefang_pitch
-actions.plst+=/wildfire_bomb,if=buff.tip_of_the_spear.up
+actions.plst+=/wildfire_bomb,if=buff.tip_of_the_spear.up&(talent.lethal_calibration&full_recharge_time<4+gcd|!talent.lethal_calibration)
 actions.plst+=/boomstick,if=buff.tip_of_the_spear.up
 actions.plst+=/raptor_strike,if=(buff.tip_of_the_spear.up|!buff.raptor_swipe.up)
+actions.plst+=/wildfire_bomb,if=buff.tip_of_the_spear.up
 actions.plst+=/kill_command,if=cooldown.takedown.remains
-actions.plst+=/wildfire_bomb
 actions.plst+=/takedown
 
 # AOE - Sent
