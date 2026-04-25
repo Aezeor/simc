@@ -9209,36 +9209,6 @@ struct dark_command_t final : public death_knight_spell_t
 };
 
 // Death and Decay ==========================================================
-
-// Desecrate
-struct desecrate_t final : public death_knight_spell_t
-{
-  desecrate_t( std::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->spell.desecrate_damage ), ticks_remain( 0 )
-  {
-    background      = true;
-    aoe             = -1;
-    unsigned idx    = p->specialization() == DEATH_KNIGHT_UNHOLY ? 1 : 3;
-    base_multiplier = p->talent.sanlayn.desecrate->effectN( idx ).percent();
-    // Currently blood uses 300% from the unholy effectN( 1 ), tested Jan 13 2026
-    if ( p->bugs )
-      base_multiplier = p->talent.sanlayn.desecrate->effectN( 1 ).percent();
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = death_knight_spell_t::composite_da_multiplier( s );
-
-    if( ticks_remain > 0 )
-      m *= ticks_remain;
-
-    return m;
-  }
-
-public:
-  double ticks_remain;
-};
-
 // Death and Decay direct damage spells
 struct death_and_decay_damage_base_t : public death_knight_spell_t
 {
@@ -9306,7 +9276,7 @@ struct death_and_decay_base_t : public death_knight_spell_t
       relish_in_blood = get_action<relish_in_blood_t>( "relish_in_blood", p );
   }
 
-  void init_params()
+  void init_params( player_t* t )
   {
     double n_ticks    = ( data().duration() / compute_tick_time() ) + 1;
     bool partial_tick = std::trunc( n_ticks ) != n_ticks;
@@ -9316,13 +9286,13 @@ struct death_and_decay_base_t : public death_knight_spell_t
       params.expiration_pulse( ground_aoe_params_t::expiration_pulse_type::FULL_EXPIRATION_PULSE );
     }
 
-    params.target( target );
+    params.target( t );
     params.duration( data().duration() );
     params.action( damage );
     params.pulse_time( compute_tick_time() );
     params.n_pulses( as<int>( n_ticks ) );
-    params.x( target->x_position );
-    params.y( target->y_position );
+    params.x( t->x_position );
+    params.y( t->y_position );
 
     params.state_callback(
         [ & ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
@@ -9354,10 +9324,7 @@ struct death_and_decay_base_t : public death_knight_spell_t
   void init_finished() override
   {
     death_knight_spell_t::init_finished();
-    // Merge stats with the damage object
-    damage->stats = stats;
-    stats->action_list.push_back( damage );
-    init_params();
+    add_child( damage );
   }
 
   double runic_power_generation_multiplier( const action_state_t* state ) const override
@@ -9395,6 +9362,7 @@ struct death_and_decay_base_t : public death_knight_spell_t
         p()->buffs.visceral_strength->trigger();
     }
 
+    init_params( target );
     make_event<ground_aoe_event_t>( *sim, p(), params, true /* Immediate pulse */ );
   }
 
@@ -14789,14 +14757,13 @@ void death_knight_t::spell_lookups()
   spell.runic_empowerment_gain = conditional_spell_lookup( spec.frost_death_knight->ok(), 193486 );
   spell.rune_mastery_buff      = conditional_spell_lookup( talent.rune_mastery.ok(), 374585 );
   spell.coldthirst_gain        = conditional_spell_lookup( talent.coldthirst.ok(), 378849 );
-  spell.death_and_decay_damage =
-      conditional_spell_lookup( spec.death_and_decay->ok() || talent.rider.riders_champion.ok(), 52212 );
-  spell.death_coil_damage    = conditional_spell_lookup( spec.death_coil->ok(), 47632 );
-  spell.death_strike_heal    = conditional_spell_lookup( talent.death_strike.ok(), 45470 );
-  spell.anti_magic_zone_buff = conditional_spell_lookup( talent.antimagic_zone.ok(), 396883 );
-  spell.frost_shield_buff    = conditional_spell_lookup( talent.permafrost.ok(), 207203 );
-  spell.blood_draw_damage    = conditional_spell_lookup( talent.blood_draw.ok(), 374606 );
-  spell.blood_draw_cooldown  = conditional_spell_lookup( talent.blood_draw.ok(), 374609 );
+  spell.death_and_decay_damage = conditional_spell_lookup( spec.death_and_decay->ok(), 52212 );
+  spell.death_coil_damage      = conditional_spell_lookup( spec.death_coil->ok(), 47632 );
+  spell.death_strike_heal      = conditional_spell_lookup( talent.death_strike.ok(), 45470 );
+  spell.anti_magic_zone_buff   = conditional_spell_lookup( talent.antimagic_zone.ok(), 396883 );
+  spell.frost_shield_buff      = conditional_spell_lookup( talent.permafrost.ok(), 207203 );
+  spell.blood_draw_damage      = conditional_spell_lookup( talent.blood_draw.ok(), 374606 );
+  spell.blood_draw_cooldown    = conditional_spell_lookup( talent.blood_draw.ok(), 374609 );
 
   // Runeforges
   runeforge_spell.apocalypse_death_debuff  = conditional_spell_lookup( has_runeforge( RUNEFORGE_APOCALYPSE ), 327095 );
