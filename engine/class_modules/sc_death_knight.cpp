@@ -5573,7 +5573,7 @@ struct death_knight_empowered_charge_t : public death_knight_empowered_base_t<BA
     if ( release_target == nullptr )
       return;
 
-    release_spell->set_target( release_target )
+    release_spell->set_target( release_target );
 
     auto emp_state        = release_spell->get_state();
     emp_state->target     = release_target;
