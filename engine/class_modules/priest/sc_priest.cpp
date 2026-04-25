@@ -1301,6 +1301,9 @@ public:
           shadow_word_death_t* child_death          = priest().background_actions.shadow_word_death.get();
           child_death->idol_of_nzoth_execute_stacks = 1;
           state_t* state                            = child_death->cast_state( child_death->get_state() );
+          
+          child_death->set_target( s->target );
+
           state->target                             = s->target;
           state->chain_number                       = curr_state->chain_number + 1;
           state->max_chain                          = number_of_chains;
