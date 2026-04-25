@@ -454,6 +454,8 @@ public:
 
     state_t* s = cast_state( get_state() );
 
+    set_target( target );
+
     s->target         = target;
     s->number_spawned = vts;
 
