@@ -8564,6 +8564,8 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
 
         state_t* s = static_cast<state_t*>( p->active.immolation_aura_tick->get_state() );
 
+        p->active.immolation_aura_tick->set_target( p->target );
+
         s->target                     = p->target;
         s->growing_inferno_multiplier = 1 + growing_inferno_ticks * growing_inferno_multiplier;
         s->immolation_aura            = this;
@@ -8589,6 +8591,9 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
         state_t* s = static_cast<state_t*>( dh()->active.immolation_aura_initial->get_state() );
 
         s->target                     = dh()->target;
+
+        dh()->active.immolation_aura_initial->set_target( dh()->target );
+
         s->growing_inferno_multiplier = 1 + growing_inferno_ticks * growing_inferno_multiplier;
         s->immolation_aura            = this;
 
