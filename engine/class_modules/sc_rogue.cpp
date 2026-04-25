@@ -2024,15 +2024,21 @@ public:
     const double base_damage = unmitigated ? s->result_total : s->result_amount;
     // Target multipliers may not replicate to secondary targets, which requires reversing them out
     const double target_da_multiplier = ( unmitigated && reverse_target_da_multiplier ) ? ( 1.0 / s->target_da_multiplier ) : 1.0;
-    const double amount = base_damage * multiplier * target_da_multiplier;
+    // Target crit damage taken multipliers are baked into the result_crit_bonus and result_total
+    // Since it's not currently in the action state, fetch this directly from the action to reverse out
+    const double target_crit_bonus_adjustment = ( unmitigated && reverse_target_da_multiplier && s->result_crit_bonus > 0 ) ?
+      ( 1.0 / s->action->composite_target_crit_damage_bonus_multiplier( s->target ) ) : 1.0;
+
+    const double amount = base_damage * multiplier * target_da_multiplier * target_crit_bonus_adjustment;
 
     if ( amount <= 0 )
       return;
 
     player_t* primary_target = override_target ? override_target : s->target;
 
-    p()->sim->print_debug( "{} triggers residual {} for {:.2f} damage ({:.2f} * {} * {:.3f}) on {}",
-                           *p(), *this, amount, base_damage, multiplier, target_da_multiplier, *primary_target );
+    p()->sim->print_log( "{} triggers residual {} for {:.2f} damage ({:.2f} * {:.2f} * {:.3f} * {:.3f}) on {}",
+                         *p(), *this, amount, base_damage, multiplier, target_da_multiplier,
+                         target_crit_bonus_adjustment, *primary_target );
 
     if ( !ab::callbacks || !trigger_event )
     {
