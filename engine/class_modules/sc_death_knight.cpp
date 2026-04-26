@@ -8330,6 +8330,21 @@ struct blightfall_t final : public death_knight_spell_t
     p()->buffs.blightfall->expire();
   }
 
+  void consume_dot( dot_t* dot, action_t* erupt )
+  {
+    if ( !dot->is_ticking() )
+      return;
+
+    double damage = 0.0;
+    if ( duration_mult == 1.0 )
+      damage = dot->tick_damage_over_remaining_time() * damage_mult;
+    else
+      damage = dot->tick_damage_over_time( dot->remains() * duration_mult ) * damage_mult;
+
+    erupt->execute_on_target( dot->target, damage );
+    dot->cancel();
+  }
+
   void impact( action_state_t* s ) override
   {
     death_knight_spell_t::impact( s );
@@ -8342,30 +8357,16 @@ struct blightfall_t final : public death_knight_spell_t
       if ( p()->options.extra_unholy_reporting )
         p()->sample_data.blightfall_vp_dur->add( vp->remains().total_seconds() );
 
-      if ( duration_mult == 1.0 )
-        damage = vp->tick_damage_over_remaining_time() * damage_mult;
-      else
-        damage = vp->tick_damage_over_time( vp->remains() * duration_mult ) * damage_mult;
-      if ( !p()->options.wcl_reporting_mode )
-        p()->background_actions.virulent_plague_erupt_pest->execute_on_target( s->target, damage );
-      else
-        p()->background_actions.virulent_plague_erupt->execute_on_target( s->target, damage );
-      vp->cancel();
+      consume_dot( vp, p()->options.wcl_reporting_mode ? p()->background_actions.virulent_plague_erupt
+                                                       : p()->background_actions.virulent_plague_erupt_pest );
     }
     if ( dp->is_ticking() )
     {
       if ( p()->options.extra_unholy_reporting )
         p()->sample_data.blightfall_dp_dur->add( dp->remains().total_seconds() );
 
-      if ( duration_mult == 1.0 )
-        damage = dp->tick_damage_over_remaining_time() * damage_mult;
-      else
-        damage = dp->tick_damage_over_time( dp->remains() * duration_mult ) * damage_mult;
-      if ( !p()->options.wcl_reporting_mode )
-        p()->background_actions.dread_plague_erupt_pest->execute_on_target( s->target, damage );
-      else
-        p()->background_actions.dread_plague_erupt->execute_on_target( s->target, damage );
-      dp->cancel();
+      consume_dot( dp, p()->options.wcl_reporting_mode ? p()->background_actions.dread_plague_erupt
+                                                       : p()->background_actions.dread_plague_erupt_pest );
     }
   }
 
