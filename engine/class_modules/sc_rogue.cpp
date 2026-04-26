@@ -52,6 +52,16 @@ enum stealth_type_e
 struct fatebound_t
 {
   enum coinflip_e { HEADS, TAILS, EDGE };
+  static const char* coinflip_string( coinflip_e coinflip )
+  {
+    switch ( coinflip )
+    {
+      case HEADS: return "heads";
+      case TAILS: return "tails";
+      case EDGE:  return "edge";
+      default:    return "unknown";
+    }
+  }
 };
 
 namespace actions
@@ -6384,6 +6394,10 @@ struct fatebound_coin_tails_t : public rogue_attack_t
 
   bool procs_poison() const override
   { return true; }
+
+  // 2026-04-26 -- Logs indicate that tails crits currently trigger Seal Fate
+  bool procs_seal_fate() const override
+  { return p()->bugs; }
 };
 
 // Trickster ================================================================
@@ -8055,7 +8069,8 @@ template <typename Base>
 void actions::rogue_action_t<Base>::trigger_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result, timespan_t delay )
 {
   auto coin_target = state->target->is_enemy() ? state->target : p()->target;
-  make_event( *p()->sim, delay, [ this, coin_target, result ] {
+  make_event( *p()->sim, delay, [ this, coin_target, result, delay ] {
+    p()->sim->print_log( "{} triggered fatebound coinflip with result '{}' and {} delay", *p(), fatebound_t::coinflip_string( result ), delay );
     if ( result == fatebound_t::coinflip_e::HEADS || result == fatebound_t::coinflip_e::EDGE )
     {
       p()->buffs.fatebound_coin_heads->increment();
@@ -8073,7 +8088,8 @@ void actions::rogue_action_t<Base>::trigger_fatebound_coinflip( const action_sta
       }
       if ( result != fatebound_t::coinflip_e::EDGE )
       {
-        p()->buffs.fatebound_coin_heads->expire();
+        // 2026-04-26 -- Logs suggest that the first tails attack is calculated before this fades
+        p()->buffs.fatebound_coin_heads->expire( !ab::is_precombat ? 1_ms : 0_ms );
       }
     }
   } );
@@ -8293,8 +8309,7 @@ void actions::rogue_action_t<Base>::trigger_scent_of_blood()
 
   if ( current_stacks != desired_stacks )
   {
-    p()->sim->print_log( "{} adjusting Scent of Blood stacks from {} to {}",
-                         *p(), current_stacks, desired_stacks );
+    p()->sim->print_log( "{} adjusting Scent of Blood stacks from {} to {}", *p(), current_stacks, desired_stacks );
   }
 
   if ( desired_stacks < current_stacks )
