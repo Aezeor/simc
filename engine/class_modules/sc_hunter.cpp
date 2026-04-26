@@ -3169,15 +3169,6 @@ struct stomp_t : public hunter_pet_attack_t<hunter_pet_t>
         if ( !tl.empty() )
           o()->actions.wild_instincts->execute_on_target( tl.front() );
       }
-      // 2026-03-04: Nature's Ally pets trigger Wild Instincts on the primary target if any undotted target exists in range
-      else if ( o()->bugs && p() == o()->pets.natures_ally_pet.active_pet() )
-      {
-        bool undotted_exists = range::any_of(
-            tl, [ this ]( player_t* t ) { return !o()->get_target_data( t )->dots.barbed_shot->is_ticking(); } );
-        
-        if ( undotted_exists )
-          o()->actions.wild_instincts->execute_on_target( target );
-      }
     }
   }
 
