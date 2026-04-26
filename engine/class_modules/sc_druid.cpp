@@ -12116,16 +12116,10 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
   switch ( specialization() )
   {
     case DRUID_BALANCE:
-      if ( style == FIGHT_STYLE_PATCHWERK )
-      {
-        if ( sim->desired_targets > 1 )
-        {
-          sim->error( error_level_e::MODERATE,
-                      "Balance APL has not been fully tested for multi-target scenarios. Results may be incorrect." );
-        }
+      if ( style == FIGHT_STYLE_PATCHWERK || style == FIGHT_STYLE_DUNGEON_ROUTE )
         return true;
-      }
-      return false;
+      else
+        return false;
 
     case DRUID_FERAL:
       break;
