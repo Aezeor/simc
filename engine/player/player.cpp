@@ -1,4 +1,4 @@
-// ==========================================================================
+﻿// ==========================================================================
 // Dedmonwakeen's Raid DPS/TPS Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
@@ -63,6 +63,7 @@
 #include "util/io.hpp"
 #include "util/plot_data.hpp"
 #include "util/util.hpp"
+#include "class_modules/class_module.hpp"
 
 #include <cctype>
 #include <cerrno>
@@ -11418,6 +11419,53 @@ action_t* player_t::create_action( util::string_view name, util::string_view opt
     return action;
 
   return consumable::create_action( this, name, options_str );
+}
+
+void player_t::create_permanent_actors()
+{
+  if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE && sim->dungeon_route_simple_dps_members > 0 && is_player() && type != PLAYER_SIMPLIFIED )
+  {
+    // keep it simple and require one input player
+    int players = 0;
+    for ( player_t* p : sim->player_no_pet_list )
+    {
+      if ( p->is_player() && type != PLAYER_SIMPLIFIED )
+      {
+        players++;
+      }
+    }
+
+    if ( players > 1 )
+    {
+      sim->error( "Warning: ignoring dungeon_route_simple_dps_members since more than one player was defined" );
+      sim->dungeon_route_simple_dps_members = 0;
+      return;
+    }
+
+    // make sure we are actually simming the whole party together
+    if ( sim->single_actor_batch )
+    {
+      sim->error( "Warning: ignoring dungeon_route_simple_dps_members since single_actor_batch was enabed" );
+      sim->dungeon_route_simple_dps_members = 0;
+      return;
+    }
+
+    const module_t* module = module_t::get( PLAYER_SIMPLIFIED );
+
+    bool dps_role = primary_role() != ROLE_TANK && primary_role() != ROLE_HEAL && primary_role() != ROLE_HYBRID;
+
+    if ( dps_role && sim->dungeon_route_simple_dps_members > 2 )
+    {
+      sim->error( "Warning: clamping dungeon_route_simple_dps_members to 2 since player is dps" );
+      sim->dungeon_route_simple_dps_members = 2;
+    }
+
+    for ( int i = 1; i <= sim->dungeon_route_simple_dps_members; i++ )
+    {
+      player_t* p = module->create_player( sim, "Dungeon Buddy " + util::to_string( i ) );
+      p->true_level = level();
+    }
+  }
 }
 
 pet_t* player_t::create_pet( util::string_view, util::string_view )

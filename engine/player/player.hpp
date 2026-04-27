@@ -171,7 +171,6 @@ struct player_t : public actor_t
   bool        potion_used;
   double      leech_pool;  // for leech batching
 
-
   std::string talents_str, id_str, target_str;
   std::string region_str, server_str, origin_str;
   std::string race_str, professions_str, position_str;
@@ -1441,7 +1440,7 @@ public:
 
   virtual action_t* create_action( util::string_view name, util::string_view options );
   virtual void      create_pets() { }
-  virtual void      create_permanent_actors() { }
+  virtual void      create_permanent_actors();
 
   virtual pet_t*    create_pet( util::string_view name,  util::string_view type = {} );
 
