@@ -35,7 +35,8 @@ actions.cleave+=/cobra_shot,if=cooldown.wild_thrash.remains>gcd&buff.hogstrider.
 actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage
 actions.cleave+=/cobra_shot,if=talent.beast_cleave&cooldown.wild_thrash.remains>gcd|!talent.beast_cleave
 
-actions.drcleave=bestial_wrath,if=buff.beast_cleave.remains
+actions.drcleave=black_arrow,if=buff.beast_cleave.remains<gcd&cooldown.bestial_wrath.remains<gcd&active_enemies>2
+actions.drcleave+=/bestial_wrath,if=buff.beast_cleave.remains
 actions.drcleave+=/wild_thrash
 actions.drcleave+=/kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up|!apex.3
 actions.drcleave+=/barbed_shot,if=full_recharge_time<1*gcd,target_if=min:dot.barbed_shot.remains|max_prio_damage
