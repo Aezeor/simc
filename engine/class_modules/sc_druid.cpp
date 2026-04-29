@@ -3331,15 +3331,15 @@ struct eclipse_buff_base_t : public druid_buff_t
     p()->buff.cenarius_might->trigger();
     p()->buff.parting_skies->trigger();
 
+    if ( bolt_cd && bolt_cd->up() )
+    {
+      execute_bolt_action();
+      bolt_cd->start();
+    }
+
     // subsequent effects are queued after eclipse application
     make_event( *sim, 1_ms, [ this ] {
       trigger_boat_buff();
-
-      if ( bolt_cd && bolt_cd->up() )
-      {
-        execute_bolt_action();
-        bolt_cd->start();
-      }
 
       p()->buff.ascendant_fires->trigger();
       p()->buff.ascendant_stars->trigger();
