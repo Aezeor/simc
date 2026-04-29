@@ -14086,6 +14086,7 @@ struct shaman_module_t : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.bloodlust = make_buff( p, "bloodlust", p->find_spell( 2825 ) )
+          ->set_cooldown( 0_ms )
           ->set_max_stack( 1 )
           ->set_default_value_from_effect_type( A_HASTE_ALL )
           ->add_invalidate( CACHE_HASTE );
