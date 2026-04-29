@@ -428,7 +428,7 @@ public:
       player_talent_t vengeful_bonds;  // No Implementation
       player_talent_t unrestrained_fury;
       player_talent_t shattered_restoration;
-      player_talent_t improved_sigil_of_misery; // No Implementation
+      player_talent_t improved_sigil_of_misery;  // No Implementation
 
       player_talent_t bouncing_glaives;
       player_talent_t imprison;           // No Implementation
@@ -1163,7 +1163,7 @@ public:
     spell_t* collective_anguish          = nullptr;
 
     // Devourer
-    spell_t* void_buildup           = nullptr;
+    spell_t* void_buildup = nullptr;
 
     // Havoc
     spell_t* burning_wound                                         = nullptr;
@@ -1201,8 +1201,8 @@ public:
     action_t* voidsurge      = nullptr;
 
     // Sigils
-    spell_t* sigil_of_flame   = nullptr;
-    spell_t* sigil_of_spite   = nullptr;
+    spell_t* sigil_of_flame = nullptr;
+    spell_t* sigil_of_spite = nullptr;
   } active;
 
   // Pets
@@ -1227,11 +1227,11 @@ public:
     // Proc rate for Wounded Quarry for Havoc
     double wounded_quarry_chance_havoc = 0.10;
     // How many seconds that Vengeful Retreat locks out Felblade
-    double felblade_lockout_from_vengeful_retreat    = 0.6;
-    bool enable_dungeon_slice                        = false;
-    double proc_from_killing_blow_chance             = 0.4;
-    int entropy_starting_souls                       = -1;
-    int channel_tick_cutoff_benefit                  = 2;
+    double felblade_lockout_from_vengeful_retreat = 0.6;
+    bool enable_dungeon_slice                     = false;
+    double proc_from_killing_blow_chance          = 0.4;
+    int entropy_starting_souls                    = -1;
+    int channel_tick_cutoff_benefit               = 2;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -6515,7 +6515,8 @@ struct rolling_torment_energize_t : demon_hunter_energize_t
 
     int stacks = dh()->buff.collapsing_star_stack->check();
 
-    return e * stacks;
+    // 2026-04-29 -- Celestial Echoes is additive, not multiplicative.
+    return e * stacks + dh()->talent.annihilator.celestial_echoes->effectN( 2 ).base_value();
   }
 };
 
@@ -8593,7 +8594,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
       {
         state_t* s = static_cast<state_t*>( dh()->active.immolation_aura_initial->get_state() );
 
-        s->target                     = dh()->target;
+        s->target = dh()->target;
 
         dh()->active.immolation_aura_initial->set_target( dh()->target );
 
@@ -9639,10 +9640,9 @@ void demon_hunter_t::create_buffs()
                                ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
                                  spawn_soul_fragment( proc.soul_fragment_from_entropy, soul_fragment::LESSER, 1 );
                                } );
-  
-  
-    // timespan_t initial_delay = timespan_t::from_millis( rng().range( 0, 5250 ) );
-    
+
+  // timespan_t initial_delay = timespan_t::from_millis( rng().range( 0, 5250 ) );
+
   // Havoc ==================================================================
 
   buff.out_of_range = make_buff( this, "out_of_range", spell_data_t::nil() )->set_chance( 1.0 );
@@ -10032,11 +10032,11 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
       {
         auto sof_action = find_action( "sigil_of_flame" );
 
-        if (!sof_action)
+        if ( !sof_action )
           return expr_t::create_constant( name_str, false );
 
         auto expr = sof_action->create_expression( util::string_join( util::make_span( splits ).subspan( 2 ), "." ) );
-        if (expr)
+        if ( expr )
           return expr;
 
         auto tail = name_str.substr( splits[ 0 ].length() + splits[ 1 ].length() + 2 );
@@ -10048,11 +10048,11 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
       {
         auto sosp_action = find_action( "sigil_of_spite" );
 
-        if (!sosp_action)
+        if ( !sosp_action )
           return expr_t::create_constant( name_str, false );
 
         auto expr = sosp_action->create_expression( util::string_join( util::make_span( splits ).subspan( 2 ), "." ) );
-        if (expr)
+        if ( expr )
           return expr;
 
         auto tail = name_str.substr( splits[ 0 ].length() + splits[ 1 ].length() + 2 );
@@ -10083,8 +10083,7 @@ void demon_hunter_t::create_options()
   add_option(
       opt_float( "felblade_lockout_from_vengeful_retreat", options.felblade_lockout_from_vengeful_retreat, 0, 1 ) );
   add_option( opt_bool( "enable_dungeon_slice", options.enable_dungeon_slice ) );
-  add_option( opt_float( "proc_from_killing_blow_chance", options.proc_from_killing_blow_chance,
-                         0.0, 1.0 ) );
+  add_option( opt_float( "proc_from_killing_blow_chance", options.proc_from_killing_blow_chance, 0.0, 1.0 ) );
   add_option( opt_int( "entropy_starting_souls", options.entropy_starting_souls, -1, 50 ) );
   add_option( opt_int( "channel_tick_cutoff_benefit", options.channel_tick_cutoff_benefit, 0, 10 ) );
 
@@ -11022,6 +11021,10 @@ void demon_hunter_t::init_spells()
   // Wounded Quarry (442808) is affected by Demon Hide.
   register_passive_affect_list( talent.havoc.demon_hide,
                                 affect_list_t( 1, 3 ).add_spell( hero_spec.wounded_quarry_damage->id() ) );
+
+  // 2026-04-29 -- Celestial Echoes is additive, not multiplicative.
+  register_passive_affect_list( talent.annihilator.celestial_echoes,
+                                affect_list_t( 2 ).remove_spell( spec.rolling_torment_energize->id() ) );
 
   switch ( specialization() )
   {
