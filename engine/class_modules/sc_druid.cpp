@@ -3320,13 +3320,16 @@ struct eclipse_buff_base_t : public druid_buff_t
 
     p()->buff.starlord->expire();
     p()->buff.elunes_challenge->expire();
-    p()->buff.solstice->expire();
 
     if ( p()->active.sylvan_beckoning && !p()->buff.sylvan_beckoning->check() )
     {
       p()->buff.sylvan_beckoning->trigger();
       p()->active.sylvan_beckoning->execute();
     }
+
+    p()->buff.astral_communion->trigger();
+    p()->buff.cenarius_might->trigger();
+    p()->buff.parting_skies->trigger();
 
     // subsequent effects are queued after eclipse application
     make_event( *sim, 1_ms, [ this ] {
@@ -3340,10 +3343,8 @@ struct eclipse_buff_base_t : public druid_buff_t
 
       p()->buff.ascendant_fires->trigger();
       p()->buff.ascendant_stars->trigger();
-      p()->buff.astral_communion->trigger();
-      p()->buff.cenarius_might->trigger();
-      p()->buff.parting_skies->trigger();
 
+      p()->buff.solstice->expire();
       if ( p()->talent.solstice.ok() )
         p()->buff.solstice->trigger();
     } );
