@@ -3294,7 +3294,17 @@ struct eclipse_buff_base_t : public druid_buff_t
     if ( harmony_cur >= harmony_cap )
       return;
 
-    harmony_cur += harmony_val;
+    // harmory is queued after cast
+    make_event( *sim, 1_ms, [ this ] {
+      if ( sim->debug )
+      {
+        sim->print_debug( "{} increasing {} Harmony of the Heavens by {}% from {}% to {}%", *p(), *this,
+                          harmony_val * 100.0, harmony_cur * 100.0,
+                          std::min( harmony_cur + harmony_val, harmony_cap ) * 100.0 );
+      }
+
+      harmony_cur = std::min( harmony_cur + harmony_val, harmony_cap );
+    } );
   }
 
   virtual void trigger_boat_buff() = 0;
@@ -3310,6 +3320,7 @@ struct eclipse_buff_base_t : public druid_buff_t
 
     p()->buff.starlord->expire();
     p()->buff.elunes_challenge->expire();
+    p()->buff.solstice->expire();
 
     if ( p()->active.sylvan_beckoning && !p()->buff.sylvan_beckoning->check() )
     {
@@ -3317,24 +3328,25 @@ struct eclipse_buff_base_t : public druid_buff_t
       p()->active.sylvan_beckoning->execute();
     }
 
-    trigger_boat_buff();
+    // subsequent effects are queued after eclipse application
+    make_event( *sim, 1_ms, [ this ] {
+      trigger_boat_buff();
 
-    if ( bolt_cd && bolt_cd->up() )
-    {
-      execute_bolt_action();
-      bolt_cd->start();
-    }
+      if ( bolt_cd && bolt_cd->up() )
+      {
+        execute_bolt_action();
+        bolt_cd->start();
+      }
 
-    p()->buff.ascendant_fires->trigger();
-    p()->buff.ascendant_stars->trigger();
-    p()->buff.astral_communion->trigger();
-    p()->buff.cenarius_might->trigger();
-    p()->buff.parting_skies->trigger();
+      p()->buff.ascendant_fires->trigger();
+      p()->buff.ascendant_stars->trigger();
+      p()->buff.astral_communion->trigger();
+      p()->buff.cenarius_might->trigger();
+      p()->buff.parting_skies->trigger();
 
-    p()->buff.solstice->expire();
-
-    if ( p()->talent.solstice.ok() )
-      p()->buff.solstice->trigger();
+      if ( p()->talent.solstice.ok() )
+        p()->buff.solstice->trigger();
+    } );
 
     return true;
   }
