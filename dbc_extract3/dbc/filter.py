@@ -326,6 +326,10 @@ class TraitSet(DataSet):
                 for data in _trait_skills
         )
 
+        # 12.0.7 omnium folio
+        if 1186 in self.db('TraitTree'):
+            _trait_trees[1186] = (self.db('TraitTree')[1186], 0)
+
         # Map TraitTreeNodeGroups to "tree indices" based on the trait tree currency used
         _trait_node_group_map = dict()
         for entry in self.db('TraitTreeXTraitCurrency').values():
@@ -469,12 +473,16 @@ class TraitSet(DataSet):
                     for cond in node['cond'] if cond.type == 2
                 )
 
+                # tree type enum: 0 = invald, 1 = class, 2 = spec, 3 = hero, 4 = selection, 5 = max, 6 = omnium
                 # tree selection nodes are type 3
                 if node['node'].type == 3:
                     tree_index = 4
                 # hero tree nodes have a non-zero TraitNode.id_trait_sub_tree
                 elif node['node'].id_trait_sub_tree != 0:
                     tree_index = 3
+                # 12.0.7 omnium folio traits
+                elif node['node'].id_trait_tree == 1186:
+                    tree_index = 6
 
                 for entry, db2_id in node['entries']:
                     key = entry.id
