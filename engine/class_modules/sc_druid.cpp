@@ -3327,9 +3327,7 @@ struct eclipse_buff_base_t : public druid_buff_t
       p()->active.sylvan_beckoning->execute();
     }
 
-    p()->buff.astral_communion->trigger();
-    p()->buff.cenarius_might->trigger();
-    p()->buff.parting_skies->trigger();
+    trigger_boat_buff();
 
     if ( bolt_cd && bolt_cd->up() )
     {
@@ -3337,10 +3335,12 @@ struct eclipse_buff_base_t : public druid_buff_t
       bolt_cd->start();
     }
 
+    p()->buff.astral_communion->trigger();
+    p()->buff.cenarius_might->trigger();
+    p()->buff.parting_skies->trigger();
+
     // subsequent effects are queued after eclipse application
     make_event( *sim, 1_ms, [ this ] {
-      trigger_boat_buff();
-
       p()->buff.ascendant_fires->trigger();
       p()->buff.ascendant_stars->trigger();
 
