@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.67235 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.7.67227 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -7927,7 +7927,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2448 (Category) | Target: Targeted Ally (21)
                    Affected Spells (Category): Shift (1234796)
 Description      : $@spelldesc374968
-Tooltip          : May use $?c2[Infernal Strike][Fel Rush] once, without incurring its cooldown.
+Tooltip          : May use $?c3[Shift]?c2[Infernal Strike][Fel Rush] once, without incurring its cooldown.
 
 Name             : Soulscar (id=388106) [Spell Family (107), Passive] 
 Talent Entry     : Havoc [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=200]

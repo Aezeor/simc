@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.67235 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.7.67227 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -2479,7 +2479,7 @@ Spell Level      : 38
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6), Do Not Log (8), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Attributes       : Passive (6), Do Not Log (8), Can Proc From Procs (122), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=157616)   : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 15 | Target: Self (1)
