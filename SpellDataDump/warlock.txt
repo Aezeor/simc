@@ -10837,6 +10837,7 @@ Effects          :
                    Base Value: -2 | Scaled Value: -2 | Target: Self (1)
 #3 (id=1025921)  : Apply Aura Pet (174) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
                    Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.667 | Misc Value: 32 | Misc Value 2: 2357 (Label) | Radius: 100 yards | Target: Self (1)
+                   Affected Spells (Label): Avoidance (32233)
 Description      : Reduces the chance you will be critically struck by $s1%. All damage your primary demon takes is reduced by $s3%.
 
 Name             : Abyss Walker (id=389609) [Spell Family (5), Passive, Hidden] 
@@ -13025,6 +13026,7 @@ Effects          :
                    Modified By: Destruction Warlock (137046 effect#12), Will of Xalan (441531 effect#2)
 #6 (id=1190450)  : Apply Aura Pet (174) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Misc Value 2: 3844 (Label) | Radius: 60 yards | Target: Self (1)
+                   Affected Spells (Label): Shadow Bolt (394238)
 #7 (id=1313805)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 6 | Scaled Value: 6 | Misc Value 2: 6542 (Label) | Target: Self (1)
                    Affected Spells (Label): Dark Harvest (1257065)
@@ -13033,6 +13035,7 @@ Effects          :
                    Affected Spells (Label): Dark Harvest (1257065)
 #9 (id=1322330)  : Apply Aura Pet (174) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Misc Value 2: 6704 (Label) | Radius: 100 yards | Target: Self and Summons in Area (120)
+                   Affected Spells (Label): Wrath of Nathreza (1278047)
 Hotfixed         : NEW EFFECT
 Description      : Shadow damage dealt by your spells and abilities is increased by $s3% and your Shadow spells gain $s1% more critical strike chance from all sources.
 
@@ -13092,8 +13095,10 @@ Effects          :
                    Modified By: Destruction Warlock (137046 effect#8), Will of Xalan (441531 effect#1)
 #6 (id=1166684)  : Apply Aura Pet (174) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Misc Value 2: 3843 (Label) | Radius: 60 yards | Target: Self (1)
+                   Affected Spells (Label): Immolation (20153)
 #7 (id=1190448)  : Apply Aura Pet (174) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Misc Value 2: 3845 (Label) | Radius: 60 yards | Target: Self (1)
+                   Affected Spells (Label): Chaos Barrage (387985), Chaos Bolt (394246)
 #8 (id=1313804)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 6 | Scaled Value: 6 | Misc Value 2: 6542 (Label) | Target: Self (1)
                    Affected Spells (Label): Dark Harvest (1257065)
