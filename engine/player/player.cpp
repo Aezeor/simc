@@ -7671,10 +7671,9 @@ action_t* player_t::execute_action()
     {
       iteration_executed_foreground_actions++;
       action->total_executions++;
+
       if ( action->trigger_gcd > timespan_t::zero() )
-      {
         prev_gcd_actions.push_back( action );
-      }
       else
         off_gcdactions.push_back( action );
 

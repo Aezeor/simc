@@ -68,10 +68,19 @@ void do_execute( action_t* action, execute_type type )
   {
     if ( !action->quiet )
     {
+      action->player->last_foreground_action = action;
+
       action->player->iteration_executed_foreground_actions++;
       action->total_executions++;
+
+      if ( action->trigger_gcd > timespan_t::zero() )
+        action->player->prev_gcd_actions.push_back( action );
+      else
+        action->player->off_gcdactions.push_back( action );
+
       action->player->sequence_add( action, action->target );
     }
+
     action->execute();
     action->line_cooldown->start();
 
