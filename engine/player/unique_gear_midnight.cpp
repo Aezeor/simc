@@ -3780,7 +3780,9 @@ void register_special_effects()
   register_special_effect( 253819, sets::umbral_shift );
   register_special_effect( 1290152, DISABLED_EFFECT ); // umbral shift equip effect
   // Omnium Folio
+  set_min_version( wowv_t( 12, 0, 7 ) );
   register_special_effect( 1279599, omnium::rune_of_unleashed_fire );
+  reset_version_check();
 }
 
 void register_target_data_initializers( sim_t& )
