@@ -4622,7 +4622,7 @@ void unique_gear::register_special_effects()
   shadowlands::register_special_effects();
   dragonflight::register_special_effects();
   thewarwithin::register_special_effects();
-  midnight:: register_special_effects();
+  midnight::register_special_effects();
 
   /* Legacy Effects, pre-5.0 */
   register_special_effect( 45481,  "ProcOn/hit_45479Trigger"            ); /* Shattered Sun Pendant of Acumen */
