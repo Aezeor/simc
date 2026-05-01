@@ -473,7 +473,7 @@ class TraitSet(DataSet):
                     for cond in node['cond'] if cond.type == 2
                 )
 
-                # tree type enum: 0 = invald, 1 = class, 2 = spec, 3 = hero, 4 = selection, 5 = max, 6 = omnium
+                # tree type enum: 0 = invald, 1 = class, 2 = spec, 3 = hero, 4 = selection, 5 = max, 6 = expansion
                 # tree selection nodes are type 3
                 if node['node'].type == 3:
                     tree_index = 4

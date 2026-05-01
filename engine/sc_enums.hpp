@@ -1488,7 +1488,7 @@ enum class talent_tree : unsigned
   HERO,
   SELECTION,
   MAX,  // Everything below are not player traits
-  OMNIUM
+  EXPANSION  // expansion/patch specific miscellaneous traits
 };
 
 enum trait_definition_op : int

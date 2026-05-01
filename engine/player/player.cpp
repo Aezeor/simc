@@ -2301,8 +2301,7 @@ void player_t::create_special_effects()
   azerite::initialize_azerite_powers( this );
 
   // 12.0.7 omnium folio talents
-  if ( !omnium_talents_str.empty() )
-    unique_gear::midnight::initialize_omnium_talents( this );
+  unique_gear::initialize_expansion_trait_effects( this, omnium_talents_str );
 
   // Once all special effects are first-phase initialized, do a pass to first-phase initialize any
   // potential fallback special effects for the actor.
@@ -2660,7 +2659,8 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
 
     if ( trait_obj->id_spell == 0 )
     {
-      throw std::invalid_argument( fmt::format( "Unable to find talent '{}'.", talent_split[ 0 ] ) );
+      throw std::invalid_argument(
+        fmt::format( "Unable to find {} talent '{}'.", util::talent_tree_string( tree ), talent_split[ 0 ] ) );
     }
     else
     {

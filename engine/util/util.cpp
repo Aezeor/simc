@@ -2803,7 +2803,7 @@ const char* util::talent_tree_string( talent_tree tree )
     case talent_tree::SPECIALIZATION: return "spec";
     case talent_tree::HERO:           return "hero";
     case talent_tree::SELECTION:      return "selection";
-    case talent_tree::OMNIUM:         return "omnium";
+    case talent_tree::EXPANSION:      return "expansion";
     default:                          return "unknown";
   }
 }
