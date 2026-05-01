@@ -175,6 +175,7 @@ struct player_t : public actor_t
   std::string region_str, server_str, origin_str;
   std::string race_str, professions_str, position_str;
   std::string class_talents_str, spec_talents_str, hero_talents_str;
+  std::string omnium_talents_str;
   // Specify in-game time of day to determine Night Elf racial
   enum timeofday_e { NIGHT_TIME, DAY_TIME, } timeofday;
   // Specify which loa Zandalari has chosen to determine racial

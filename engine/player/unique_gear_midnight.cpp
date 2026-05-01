@@ -3589,6 +3589,42 @@ void sunfire_silk_trappings( special_effect_t& effect )
 }
 }  // namespace sets
 
+namespace omnium
+{
+// 1279599 driver
+// 1286970 damage
+// 1263002 heal
+void rune_of_unleashed_fire( special_effect_t& effect )
+{
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Rune of Unleashed Fire: Procs are assumed to target the same unit that triggered them. "
+    "Procs triggered by damage are assumed to proc damage. "
+    "Procs triggered by healing/aura are assumed to proc heal." );
+  effect.player->sim->error( UNVERIFIED_VALUE,
+    "Rune of Unleashed Fire: Damage using placeholder value of 977. Heal using placeholder value of 1465." );
+
+  auto coeff = effect.driver()->effectN( 2 ).trigger();
+
+  // using placeholder values, presumably should be based on coeff->effectN( 1 )
+  auto damage = create_proc_action<generic_proc_t>( "rune_of_unleashed_fire", effect, 1286970 );
+  damage->base_dd_min = damage->base_dd_max = damage->data().effectN( 2 ).base_value();
+
+  auto heal = create_proc_action<generic_heal_t>( "rune_of_unleashed_fire_heal", effect, 1263002 );
+  heal->base_dd_min = heal->base_dd_max = heal->data().effectN( 2 ).base_value();
+  heal->name_str_reporting = "Heal";
+
+  effect.player->callbacks.register_callback_execute_function(
+    effect.spell_id, [ damage, heal ]( auto, auto, player_t* t, auto s ) {
+      if ( t->is_enemy() )
+        damage->execute_on_target( t );
+      else
+        heal->execute_on_target( t );
+    } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+}  // namespace omnium
+
 void register_special_effects()
 {
   // NOTE: use unique_gear:: namespace for static consumables so we don't activate them with enable_all_item_effects
@@ -3743,6 +3779,8 @@ void register_special_effects()
   register_special_effect( 1253358, DISABLED_EFFECT );  // torments duality
   register_special_effect( 253819, sets::umbral_shift );
   register_special_effect( 1290152, DISABLED_EFFECT ); // umbral shift equip effect
+  // Omnium Folio
+  register_special_effect( 1279599, omnium::rune_of_unleashed_fire );
 }
 
 void register_target_data_initializers( sim_t& )
@@ -3762,5 +3800,61 @@ double bandolier_mul( player_t* p )
     return 2.0;  // hardcoded
   else
     return 1.0;
+}
+
+namespace
+{
+void _initialize_omnium_trait( player_t* p, unsigned spell_id )
+{
+  special_effect_t _effect( p );
+  _effect.spell_id = spell_id;
+
+  unique_gear::initialize_special_effect( _effect, spell_id );
+
+  p->special_effects.push_back( new special_effect_t( _effect ) );
+}
+}  // namespace
+
+void initialize_omnium_talents( player_t* p )
+{
+  // ##### format
+  if ( util::is_number( p->omnium_talents_str ) && p->omnium_talents_str.length() == 5 )
+  {
+    std::array<std::vector<const trait_data_t*>, 5> _traits;
+
+    for ( const auto& data : trait_data_t::data( talent_tree::OMNIUM, p->is_ptr() ) )
+      _traits[ data.row - 1 ].push_back( &data );
+
+    for ( size_t i = 0; i < 5; ++i )
+    {
+      auto _idx = p->omnium_talents_str[ i ] - '0';
+      if ( _idx == 0 )
+        continue;
+
+      auto row = _traits[ i ];
+      if ( _idx < 0 || _idx > row.size() )
+      {
+        throw sc_invalid_player_argument(
+          fmt::format( "Invalid choice '{}' for Omnium Folio row {}.", p->omnium_talents_str[ i ], i + 1 ) );
+      }
+
+      _initialize_omnium_trait( p, row[ _idx - 1 ]->id_spell );
+    }
+  }
+  // A/B/C format
+  else
+  {
+    for ( const auto& split : util::string_split( p->omnium_talents_str, "/" ) )
+    {
+      auto _spell = trait_data_t::find( talent_tree::OMNIUM, split, 0, SPEC_NONE, p->is_ptr(), true )->id_spell;
+
+      if ( !_spell )
+      {
+        throw sc_invalid_player_argument( fmt::format( "Unable to find Omnium Folio talent '{}'.", split ) );
+      }
+
+      _initialize_omnium_trait( p, _spell );
+    }
+  }
 }
 }  // namespace unique_gear::midnight

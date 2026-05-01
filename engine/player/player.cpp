@@ -2300,6 +2300,10 @@ void player_t::create_special_effects()
   // initialized here.
   azerite::initialize_azerite_powers( this );
 
+  // 12.0.7 omnium folio talents
+  if ( !omnium_talents_str.empty() )
+    unique_gear::midnight::initialize_omnium_talents( this );
+
   // Once all special effects are first-phase initialized, do a pass to first-phase initialize any
   // potential fallback special effects for the actor.
   unique_gear::initialize_special_effect_fallbacks( this );
@@ -13122,6 +13126,11 @@ std::string player_t::create_profile( save_e stype )
       profile_str += "hero_talents=" + hero_talents_str + term;
     }
 
+    if ( !omnium_talents_str.empty() )
+    {
+      profile_str += "omnium_talents=" + omnium_talents_str + term;
+    }
+
     if ( azerite )
     {
       std::string azerite_overrides = azerite -> overrides_str();
@@ -13407,6 +13416,7 @@ void player_t::copy_from( player_t* source )
   class_talents_str                 = source->class_talents_str;
   spec_talents_str                  = source->spec_talents_str;
   hero_talents_str                  = source->hero_talents_str;
+  omnium_talents_str                = source->omnium_talents_str;
   set_bonus_str                     = source->set_bonus_str;
   player_traits                     = source->player_traits;
   player_sub_trees                  = source->player_sub_trees;
@@ -13531,6 +13541,8 @@ void player_t::create_options()
   add_option( opt_append( "spec_talents+", spec_talents_str ) );
   add_option( opt_string( "hero_talents", hero_talents_str ) );
   add_option( opt_append( "hero_talents+", hero_talents_str ) );
+  add_option( opt_string( "omnium_talents", omnium_talents_str ) );
+  add_option( opt_append( "omnium_talents+", omnium_talents_str ) );
   add_option( opt_bool( "load_default_talents", load_default_talents ) );
 
   // Consumables
