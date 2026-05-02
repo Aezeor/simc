@@ -3591,6 +3591,37 @@ void sunfire_silk_trappings( special_effect_t& effect )
 
 namespace omnium
 {
+// 1287555 driver
+// 1287663 dot
+// 1287665 hot
+void apply_rune_of_lingering( player_t* player, action_t* damage, action_t* heal )
+{
+  if ( find_special_effects( player, 1287555 ).empty() )
+    return;
+
+  player->sim->error( UNVERIFIED_VALUE,
+    "Rune of Lingering: Damage using placeholder value of 977. Heal using placeholder value of 1465." );
+
+  auto coeff = player->find_spell( 1288183 );
+
+  // using placeholder values
+  auto dot = create_proc_action<generic_proc_t>( "rune_of_lingering", player, 1287663 );
+  dot->base_td = dot->data().effectN( 2 ).base_value() / dot->dot_duration.value().total_seconds();
+
+  auto hot = create_proc_action<generic_heal_t>( "rune_of_lingering_hot", player, 1287665 );
+  hot->base_td = hot->data().effectN( 2 ).base_value() / hot->dot_duration.value().total_seconds();
+  hot->name_str_reporting = "Heal";
+
+  damage->impact_action = dot;
+  heal->impact_action = hot;
+
+  if ( !dot->stats->parent )
+    damage->add_child( dot );
+
+  if ( !hot->stats->parent )
+    heal->add_child( hot );
+}
+
 // 1279599 driver
 // 1286970 damage
 // 1263002 heal
@@ -3612,6 +3643,8 @@ void rune_of_unleashed_fire( special_effect_t& effect )
   auto heal = create_proc_action<generic_heal_t>( "rune_of_unleashed_fire_heal", effect, 1263002 );
   heal->base_dd_min = heal->base_dd_max = heal->data().effectN( 2 ).base_value();
   heal->name_str_reporting = "Heal";
+
+  apply_rune_of_lingering( effect.player, damage, heal );
 
   effect.player->callbacks.register_callback_execute_function(
     effect.spell_id, [ damage, heal ]( auto, auto, player_t* t, auto ) {
@@ -3652,6 +3685,8 @@ void rune_of_voidtouched_orbs( special_effect_t& effect )
   auto heal = create_proc_action<generic_heal_t>( "rune_of_voidtouched_orbs_heal", effect, 1286721 );
   heal->base_dd_min = heal->base_dd_max = heal->data().effectN( 2 ).base_value();
   heal->name_str_reporting = "Heal";
+
+  apply_rune_of_lingering( effect.player, damage, heal );
 
   // create orb buff & periodic trigger
   auto orb_buff = create_buff( effect.player, effect.trigger() );
@@ -3855,6 +3890,7 @@ void register_special_effects()
   set_min_version( wowv_t( 12, 0, 7 ) );
   register_special_effect( 1279599, omnium::rune_of_unleashed_fire );
   register_special_effect( 1279596, omnium::rune_of_voidtouched_orbs );
+  register_special_effect( 1287555, DISABLED_EFFECT );  // rune of lingering
   reset_version_check();
 }
 
