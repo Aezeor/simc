@@ -3614,7 +3614,7 @@ void rune_of_unleashed_fire( special_effect_t& effect )
   heal->name_str_reporting = "Heal";
 
   effect.player->callbacks.register_callback_execute_function(
-    effect.spell_id, [ damage, heal ]( auto, auto, player_t* t, auto s ) {
+    effect.spell_id, [ damage, heal ]( auto, auto, player_t* t, auto ) {
       if ( t->is_enemy() )
         damage->execute_on_target( t );
       else
@@ -3622,6 +3622,78 @@ void rune_of_unleashed_fire( special_effect_t& effect )
     } );
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 1279596 driver
+// 1286690 orb1?
+// 1286716 damage
+// 1286721 heal
+// 1287255 orb2?
+// 1287256 orb3?
+// 1287257 orb4?
+// 1287258 orb5?
+// 1287425 orb counter/driver
+void rune_of_voidtouched_orbs( special_effect_t& effect )
+{
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Rune of Voidtouched Orbs: Orbs are assumed to proc on hit and require a damage/healing amount. "
+    "Procs are assumed to target the same unit that triggered them. "
+    "All procs are assumed to fire individually at the same time when triggered. "
+    "Orbs are assumed to stack while out of combat." );
+  effect.player->sim->error( UNVERIFIED_VALUE,
+    "Rune of Voidtouched Orbs: Damage using placeholder value of 977. Heal using placeholder value of 1465." );
+
+  auto coeff = effect.driver()->effectN( 2 ).trigger();
+
+  // using placeholder values, presumably should be based on coeff->effectN( 1 )
+  auto damage = create_proc_action<generic_proc_t>( "rune_of_voidtouched_orbs", effect, 1286716 );
+  damage->base_dd_min = damage->base_dd_max = damage->data().effectN( 2 ).base_value();
+
+  auto heal = create_proc_action<generic_heal_t>( "rune_of_voidtouched_orbs_heal", effect, 1286721 );
+  heal->base_dd_min = heal->base_dd_max = heal->data().effectN( 2 ).base_value();
+  heal->name_str_reporting = "Heal";
+
+  // create orb buff & periodic trigger
+  auto orb_buff = create_buff( effect.player, effect.trigger() );
+  auto period = effect.driver()->effectN( 1 ).period();
+
+  effect.player->register_precombat_begin( [ orb_buff, period ]( player_t* p ) {
+    orb_buff->trigger( orb_buff->max_stack() );
+    make_event( *p->sim, p->rng().range( 1_ms, period ), [ orb_buff, period ] {
+      orb_buff->trigger();
+      make_repeating_event( *orb_buff->sim, period, [ orb_buff ] { orb_buff->trigger(); } );
+    } );
+  } );
+
+  // create damage/heal callback
+  auto orb = new special_effect_t( effect.player );
+  orb->name_str = "rune_of_voidtouched_orbs";
+  orb->spell_id = effect.trigger()->id();
+  orb->proc_flags2_ = PF2_ALL_HIT;  // TODO: confirm
+  effect.player->special_effects.push_back( orb );
+
+  effect.player->callbacks.register_callback_trigger_function(
+    orb->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+    []( auto, const auto&, auto, action_state_t* s, auto ) {
+      return s && s->result_amount > 0.0;  // TODO: confirm only trigger on hits that do damage/healing
+    } );
+
+  effect.player->callbacks.register_callback_execute_function(
+    orb->spell_id, [ orb_buff, damage, heal ]( auto, auto, player_t* t, auto ) {
+      auto stacks = orb_buff->check();
+      orb_buff->expire();
+
+      while ( stacks-- )
+      {
+        if ( t->is_enemy() )
+          damage->execute_on_target( t );
+        else
+          heal->execute_on_target( t );
+      }
+    } );
+
+  auto orb_cb = new dbc_proc_callback_t( effect.player, *orb );
+  orb_cb->activate_with_buff( orb_buff );
 }
 }  // namespace omnium
 
@@ -3782,6 +3854,7 @@ void register_special_effects()
   // Omnium Folio
   set_min_version( wowv_t( 12, 0, 7 ) );
   register_special_effect( 1279599, omnium::rune_of_unleashed_fire );
+  register_special_effect( 1279596, omnium::rune_of_voidtouched_orbs );
   reset_version_check();
 }
 
