@@ -3594,9 +3594,12 @@ namespace omnium
 template <typename BASE>
 struct omnium_core_rune_t : public BASE
 {
-  omnium_core_rune_t( const special_effect_t& e, std::string_view n, unsigned id ) : BASE( e, n, id )
+  stat_buff_t* buff = nullptr;
+  const spell_data_t* coeff;
+
+  omnium_core_rune_t( const special_effect_t& e, std::string_view n, unsigned id )
+    : BASE( e, n, id ), coeff( e.driver()->effectN( 2 ).trigger() )
   {
-    auto coeff = e.driver()->effectN( 2 ).trigger();
     constexpr bool heal = std::is_base_of_v<heal_t, BASE>;
 
     if ( heal )
@@ -3605,10 +3608,7 @@ struct omnium_core_rune_t : public BASE
     // using placeholder values
     BASE::base_dd_min = BASE::base_dd_max = BASE::data().effectN( 2 ).base_value();
 
-    // Rune of Lingering
-    // 1287555 driver
-    // 1287663 dot
-    // 1287665 hot
+    // Rune of Lingering: 1287555 driver, 1287663 dot, 1287665 hot
     if ( !find_special_effects( e.player, 1287555 ).empty() )
     {
       auto dot = create_proc_action<BASE>( fmt::format( "{}_lingering", n ), e, heal ? 1287665 : 1287663 );
@@ -3619,6 +3619,29 @@ struct omnium_core_rune_t : public BASE
 
       BASE::impact_action = dot;
     }
+
+    apply_stat_rune( 1279609, 1287772 );  // Rune of Critical Power
+    apply_stat_rune( 1279610, 1287774 );  // Rune of Burning Haste
+    apply_stat_rune( 1279612, 1287771 );  // Rune of Masterful Cunning
+    apply_stat_rune( 1279613, 1287770 );  // Rune of the Versatile Warrior
+  }
+
+  void apply_stat_rune( unsigned driver_id, unsigned buff_id )
+  {
+    if ( find_special_effects( BASE::player, driver_id ).empty() )
+      return;
+
+    buff = create_buff<stat_buff_t>( BASE::player, BASE::player->find_spell( buff_id ) );
+    // using placeholder values
+    buff->set_stat_from_effect_type( A_MOD_RATING, buff->data().effectN( 2 ).base_value() );
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    if ( buff )
+      buff->trigger();
   }
 };
 
@@ -3885,6 +3908,10 @@ void register_special_effects()
   register_special_effect( 1279599, omnium::rune_of_unleashed_fire );
   register_special_effect( 1279596, omnium::rune_of_voidtouched_orbs );
   register_special_effect( 1287555, DISABLED_EFFECT );  // rune of lingering
+  register_special_effect( 1279609, DISABLED_EFFECT );  // rune of critical power
+  register_special_effect( 1279610, DISABLED_EFFECT );  // rune of burning haste
+  register_special_effect( 1279612, DISABLED_EFFECT );  // rune of masterful cunning
+  register_special_effect( 1279613, DISABLED_EFFECT );  // rune of the versatile warrior
   reset_version_check();
 }
 
