@@ -3591,36 +3591,36 @@ void sunfire_silk_trappings( special_effect_t& effect )
 
 namespace omnium
 {
-// 1287555 driver
-// 1287663 dot
-// 1287665 hot
-void apply_rune_of_lingering( player_t* player, action_t* damage, action_t* heal )
+template <typename BASE>
+struct omnium_core_rune_t : public BASE
 {
-  if ( find_special_effects( player, 1287555 ).empty() )
-    return;
+  omnium_core_rune_t( const special_effect_t& e, std::string_view n, unsigned id ) : BASE( e, n, id )
+  {
+    auto coeff = e.driver()->effectN( 2 ).trigger();
+    constexpr bool heal = std::is_base_of_v<heal_t, BASE>;
 
-  player->sim->error( UNVERIFIED_VALUE,
-    "Rune of Lingering: Damage using placeholder value of 977. Heal using placeholder value of 1465." );
+    if ( heal )
+      BASE::name_str_reporting = "Heal";
 
-  auto coeff = player->find_spell( 1288183 );
+    // using placeholder values
+    BASE::base_dd_min = BASE::base_dd_max = BASE::data().effectN( 2 ).base_value();
 
-  // using placeholder values
-  auto dot = create_proc_action<generic_proc_t>( "rune_of_lingering", player, 1287663 );
-  dot->base_td = dot->data().effectN( 2 ).base_value() / dot->dot_duration.value().total_seconds();
+    // Rune of Lingering
+    // 1287555 driver
+    // 1287663 dot
+    // 1287665 hot
+    if ( !find_special_effects( e.player, 1287555 ).empty() )
+    {
+      auto dot = create_proc_action<BASE>( fmt::format( "{}_lingering", n ), e, heal ? 1287665 : 1287663 );
+      dot->base_td = dot->data().effectN( 2 ).base_value() / dot->dot_duration.value().total_seconds();
+      dot->name_str_reporting = "rune_of_lingering";
+      if ( !dot->stats->parent )
+        BASE::add_child( dot );
 
-  auto hot = create_proc_action<generic_heal_t>( "rune_of_lingering_hot", player, 1287665 );
-  hot->base_td = hot->data().effectN( 2 ).base_value() / hot->dot_duration.value().total_seconds();
-  hot->name_str_reporting = "Heal";
-
-  damage->impact_action = dot;
-  heal->impact_action = hot;
-
-  if ( !dot->stats->parent )
-    damage->add_child( dot );
-
-  if ( !hot->stats->parent )
-    heal->add_child( hot );
-}
+      BASE::impact_action = dot;
+    }
+  }
+};
 
 // 1279599 driver
 // 1286970 damage
@@ -3637,14 +3637,11 @@ void rune_of_unleashed_fire( special_effect_t& effect )
   auto coeff = effect.driver()->effectN( 2 ).trigger();
 
   // using placeholder values, presumably should be based on coeff->effectN( 1 )
-  auto damage = create_proc_action<generic_proc_t>( "rune_of_unleashed_fire", effect, 1286970 );
-  damage->base_dd_min = damage->base_dd_max = damage->data().effectN( 2 ).base_value();
+  auto damage =
+    create_proc_action<omnium_core_rune_t<generic_proc_t>>( "rune_of_unleashed_fire", effect, 1286970 );
 
-  auto heal = create_proc_action<generic_heal_t>( "rune_of_unleashed_fire_heal", effect, 1263002 );
-  heal->base_dd_min = heal->base_dd_max = heal->data().effectN( 2 ).base_value();
-  heal->name_str_reporting = "Heal";
-
-  apply_rune_of_lingering( effect.player, damage, heal );
+  auto heal =
+    create_proc_action<omnium_core_rune_t<generic_heal_t>>( "rune_of_unleashed_fire_heal", effect, 1263002 );
 
   effect.player->callbacks.register_callback_execute_function(
     effect.spell_id, [ damage, heal ]( auto, auto, player_t* t, auto ) {
@@ -3679,14 +3676,11 @@ void rune_of_voidtouched_orbs( special_effect_t& effect )
   auto coeff = effect.driver()->effectN( 2 ).trigger();
 
   // using placeholder values, presumably should be based on coeff->effectN( 1 )
-  auto damage = create_proc_action<generic_proc_t>( "rune_of_voidtouched_orbs", effect, 1286716 );
-  damage->base_dd_min = damage->base_dd_max = damage->data().effectN( 2 ).base_value();
+  auto damage =
+    create_proc_action<omnium_core_rune_t<generic_proc_t>>( "rune_of_voidtouched_orbs", effect, 1286716 );
 
-  auto heal = create_proc_action<generic_heal_t>( "rune_of_voidtouched_orbs_heal", effect, 1286721 );
-  heal->base_dd_min = heal->base_dd_max = heal->data().effectN( 2 ).base_value();
-  heal->name_str_reporting = "Heal";
-
-  apply_rune_of_lingering( effect.player, damage, heal );
+  auto heal =
+    create_proc_action<omnium_core_rune_t<generic_heal_t>>( "rune_of_voidtouched_orbs_heal", effect, 1286721 );
 
   // create orb buff & periodic trigger
   auto orb_buff = create_buff( effect.player, effect.trigger() );
