@@ -314,7 +314,7 @@ struct player_ready_event_t : public player_event_t
   player_ready_event_t( player_t& p, timespan_t delta_time ) : player_event_t( p, delta_time )
   {
     if ( sim().debug )
-      sim().out_debug.printf( "New Player-Ready Event: %s", p.name() );
+      sim().print_debug( "New Player-Ready Event: {}", p.name() );
   }
   const char* name() const override
   {
@@ -7231,7 +7231,7 @@ void player_t::schedule_ready( timespan_t delta_time, bool waiting )
       {
         lag = rng().gauss( sim->channel_lag );
       }
-      else if ( last_foreground_action->gcd() == 0_ms )
+      else if ( last_foreground_action->gcd() == 0_ms && !last_foreground_action->add_queue_lag )
       {
         lag = 0_ms;
       }

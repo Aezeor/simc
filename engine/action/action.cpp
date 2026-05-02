@@ -372,6 +372,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     use_off_gcd(),
     use_while_casting(),
     usable_while_casting(),
+    add_queue_lag(),
     can_have_one_button_penalty(),
     cooldown_allow_casting_success( true ),
     interrupt_auto_attack( true ),
@@ -570,6 +571,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
   add_option( opt_bool( "interrupt_immediate", option.interrupt_immediate ) );
   add_option( opt_bool( "use_off_gcd", use_off_gcd ) );
   add_option( opt_bool( "use_while_casting", use_while_casting ) );
+  add_option( opt_bool( "add_queue_lag", add_queue_lag ) );
   add_option( opt_string( "can_have_one_button_penalty", option.can_have_one_button_penalty_str ) );
   add_option( opt_string( "cooldown_allow_casting_success", option.cooldown_allow_casting_success_str ) );
 }
