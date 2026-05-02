@@ -3609,7 +3609,7 @@ struct omnium_core_rune_t : public BASE
     BASE::base_dd_min = BASE::base_dd_max = BASE::data().effectN( 2 ).base_value();
 
     // Rune of Lingering: 1287555 driver, 1287663 dot, 1287665 hot
-    if ( !find_special_effects( e.player, 1287555 ).empty() )
+    if ( find_special_effect( e.player, 1287555 ) )
     {
       auto dot = create_proc_action<BASE>( fmt::format( "{}_lingering", n ), e, heal ? 1287665 : 1287663 );
       dot->base_td = dot->data().effectN( 2 ).base_value() / dot->dot_duration.value().total_seconds();
@@ -3618,17 +3618,25 @@ struct omnium_core_rune_t : public BASE
         BASE::add_child( dot );
 
       BASE::impact_action = dot;
+
+      // Rune of Residual Energy: 1279615 driver
+      if ( auto residual = find_special_effect( e.player, 1279615 ) )
+        dot->base_multiplier *= 1.0 + residual->driver()->effectN( 1 ).percent();
     }
 
     apply_stat_rune( 1279609, 1287772 );  // Rune of Critical Power
     apply_stat_rune( 1279610, 1287774 );  // Rune of Burning Haste
     apply_stat_rune( 1279612, 1287771 );  // Rune of Masterful Cunning
     apply_stat_rune( 1279613, 1287770 );  // Rune of the Versatile Warrior
+
+    // Rune of Overload: 1279614 driver
+    if ( auto overload = find_special_effect( e.player, 1279614 ) )
+      BASE::base_multiplier *= 1.0 + overload->driver()->effectN( 1 ).percent();
   }
 
   void apply_stat_rune( unsigned driver_id, unsigned buff_id )
   {
-    if ( find_special_effects( BASE::player, driver_id ).empty() )
+    if ( !find_special_effect( BASE::player, driver_id ) )
       return;
 
     buff = create_buff<stat_buff_t>( BASE::player, BASE::player->find_spell( buff_id ) );
@@ -3912,6 +3920,8 @@ void register_special_effects()
   register_special_effect( 1279610, DISABLED_EFFECT );  // rune of burning haste
   register_special_effect( 1279612, DISABLED_EFFECT );  // rune of masterful cunning
   register_special_effect( 1279613, DISABLED_EFFECT );  // rune of the versatile warrior
+  register_special_effect( 1279614, DISABLED_EFFECT );  // rune of overload
+  register_special_effect( 1279615, DISABLED_EFFECT );  // rune of residual energy
   reset_version_check();
 }
 
