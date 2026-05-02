@@ -17205,122 +17205,59 @@ struct death_knight_module_t : public module_t
      */
   }
 
-  /*
+  
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Virulent Plague buffed 15%", 281049,
+    hotfix::register_effect( "Death Knight", "2026-5-1", "Shadow Bolt Nerfed 15%", 803165,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "ap_coefficient" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.2504378 )
-        .verification_value( 0.217772 );
+        .modifier( 0.6587568 )
+        .verification_value( 0.775008 );
 
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Epidemic (main) buffed 10%", 315517,
+    hotfix::register_effect( "Death Knight", "2026-5-1", "Graveyard (main) nerfed 15%", 1015149,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "ap_coefficient" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.6255216 )
-        .verification_value( 0.568656 );
+        .modifier( 0.9546775 )
+        .verification_value( 1.12315 );
 
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Epidemic (AoE) buffed 10%", 872659,
+    hotfix::register_effect( "Death Knight", "2026-5-1", "Graveyard (AoE) nerfed 15%", 1274362,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "ap_coefficient" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.2502115 )
-        .verification_value( 0.227465 );
+        .modifier( 0.3818761 )
+        .verification_value( 0.449266 );
 
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Graveyard (main) buffed 10%", 1015149,
+    hotfix::register_effect( "Death Knight", "2026-5-1", "Whitemane Epidemic (main) nerfed 25%", 1233789,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "ap_coefficient" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 1.123155 )
-        .verification_value( 1.02105 );
+        .modifier( 0.494484 )
+        .verification_value( 0.659312 );
 
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Graveyard (AoE) buffed 10%", 1274362,
+    hotfix::register_effect( "Death Knight", "2026-5-1", "Whitemane Epidemic (AoE) nerfed 25%", 1233790,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "ap_coefficient" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.4492664 )
-        .verification_value( 0.408424 );
+        .modifier( 0.19779525 )
+        .verification_value( 0.263727 );
 
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Direct Damage Aura Nerfed 20%", 179690,
+    hotfix::register_effect( "Death Knight", "2026-5-1", "Trollbanes icy Fury nerfed 25%", 1141463,
                              hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
+        .field( "ap_coefficient" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( -26 )
-        .verification_value( -8 );
+        .modifier( 0.78975 )
+        .verification_value( 1.053 );
 
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Periodic Damage Aura Nerfed 20%", 191170,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( -26 )
-        .verification_value( -8 );
-
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Pet Damage Aura Nerfed 20%", 191171,
+    hotfix::register_effect( "Death Knight", "2026-5-1", "Thrill of Blood DP damage increased to 10%", 1319202,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( -26 )
-        .verification_value( -8 );
-
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Guardian Damage Aura Nerfed 20%", 1032341,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( -26 )
-        .verification_value( -8 );
-    // Blood Hotfixes
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Blood Reaper's mark damage buffed 20%", 1133377,
-                            hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 3.685536 )
-        .verification_value( 3.07125 );
-
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Blood Reaper's mark explosion damage buffed 20%", 1127543,
-                            hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.45348 )
-        .verification_value( 0.3779 );
-
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Blood Exterminate 1st damage buffed 20%", 1135880,
-                            hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 8.58540 )
-        .verification_value( 7.1545 );
-
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Blood Exterminate 2nd damage buffed 20%", 1135882,
-                            hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 4.692 )
-        .verification_value( 3.91 );
-
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Blood Wave of souls damage buffed 20%", 1126738,
-                            hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 2.1192 )
-        .verification_value( 1.766 );
-
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Blood Deathly Blows damage buffed to 12%", 1278009,
-                            hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 12 )
+        .modifier( 10 )
         .verification_value( 5 );
-
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Blood Bind in Darkness blood boil damage buff to 30%", 1183141,
-                            hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 30 )
-        .verification_value( 10 );
   }
-  */
+  
 
   void init( player_t* ) const override
   {
