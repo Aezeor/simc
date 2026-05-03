@@ -1771,6 +1771,7 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
     duration( 0_ms, 0_ms, 0_ms, 0_ms ),
     pull( 0 ),
     pull_target_str(),
+    internal_id( -1 ),
     distance_min( 0 ),
     distance_max( 0 ),
     players_only( false ),
@@ -1811,6 +1812,11 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
   add_option( opt_int( "pull", pull ) );
   add_option( opt_string( "pull_target", pull_target_str ) );
   add_option( opt_func( "timestamps", std::bind( &raid_event_t::parse_timestamps, this, std::placeholders::_3 ) ) );
+}
+
+std::string raid_event_t::log_name() const
+{
+  return fmt::format( "{} (id={})", name.empty() ? type : name, internal_id );
 }
 
 timespan_t raid_event_t::cooldown_time()
@@ -2389,8 +2395,9 @@ void raid_event_t::init( sim_t* sim )
       }
       else
       {
-        sim->print_debug( "Successfully created '{}'.", raid_event->log_name() );
         sim->raid_events.push_back( std::move( raid_event ) );
+        raid_event->internal_id = as<int>( sim->raid_events.size() );
+        sim->print_debug( "Successfully created '{}'.", raid_event->log_name() );
       }
     }
     catch ( const std::exception& )
