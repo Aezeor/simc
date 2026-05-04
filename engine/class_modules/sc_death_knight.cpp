@@ -8522,8 +8522,11 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
 
     harmful = false;
     target  = p;
-    p->pets.lesser_ghoul_army.set_creation_event_callback( pets::parent_pet_action_fn( p->pet_summon.army_ghoul ) );
-    add_child( p->pet_summon.army_ghoul );
+    if ( p->talent.unholy.army_of_the_dead.ok() )
+    {
+      p->pets.lesser_ghoul_army.set_creation_event_callback( pets::parent_pet_action_fn( p->pet_summon.army_ghoul ) );
+      add_child( p->pet_summon.army_ghoul );
+    }
     if ( p->talent.unholy.raise_abomination.ok() )
     {
       summon_abomination = get_action<summon_abomination_t>( "raise_abomination", p );
@@ -14770,13 +14773,12 @@ void death_knight_t::spell_lookups()
   runeforge_spell.apocalypse_death_debuff  = conditional_spell_lookup( has_runeforge( RUNEFORGE_APOCALYPSE ), 327095 );
   runeforge_spell.apocalypse_famine_debuff = conditional_spell_lookup( has_runeforge( RUNEFORGE_APOCALYPSE ), 327092 );
   runeforge_spell.apocalypse_war_debuff    = conditional_spell_lookup( has_runeforge( RUNEFORGE_APOCALYPSE ), 327096 );
-  runeforge_spell.apocalypse_pestilence_damage =
-      conditional_spell_lookup( has_runeforge( RUNEFORGE_APOCALYPSE ), 327093 );
+  runeforge_spell.apocalypse_pestilence_damage = conditional_spell_lookup( has_runeforge( RUNEFORGE_APOCALYPSE ), 327093 );
   runeforge_spell.razorice_damage       = conditional_spell_lookup( has_runeforge( RUNEFORGE_RAZORICE ), 50401 );
   runeforge_spell.razorice_debuff       = conditional_spell_lookup( spec.glacial_advance->ok() || has_runeforge( RUNEFORGE_RAZORICE ), 51714 );
   runeforge_spell.sanguination_cooldown = conditional_spell_lookup( has_runeforge( RUNEFORGE_SANGUINATION ), 326809 );
   runeforge_spell.sanguination_heal     = conditional_spell_lookup( has_runeforge( RUNEFORGE_SANGUINATION ), 326808 );
-  runeforge_spell.spellwarding_absorb   = conditional_spell_lookup( has_runeforge( RUNEFORGE_SPELLWARDING ), 326855 );
+  runeforge_spell.spellwarding_absorb   = conditional_spell_lookup( has_runeforge( RUNEFORGE_SPELLWARDING ), 326867 );
   runeforge_spell.stoneskin_gargoyle = conditional_spell_lookup( has_runeforge( RUNEFORGE_STONESKIN_GARGOYLE ), 62157 );
   runeforge_spell.unending_thirst    = conditional_spell_lookup( has_runeforge( RUNEFORGE_UNENDING_THIRST ), 326984 );
   runeforge_spell.unholy_strength    = conditional_spell_lookup( has_runeforge( RUNEFORGE_FALLEN_CRUSADER ), 53365 );
@@ -17205,7 +17207,7 @@ struct death_knight_module_t : public module_t
      */
   }
 
-  
+  /*
   void register_hotfixes() const override
   {
     hotfix::register_effect( "Death Knight", "2026-5-1", "Shadow Bolt Nerfed 15%", 803165,
@@ -17257,7 +17259,7 @@ struct death_knight_module_t : public module_t
         .modifier( 10 )
         .verification_value( 5 );
   }
-  
+  */
 
   void init( player_t* ) const override
   {
