@@ -378,6 +378,7 @@ public:
     buff_t* felfire_fist_out_of_combat;
     buff_t* untethered_rage;
     buff_t* seething_anger;
+    buff_t* fiery_brand;
 
     // Aldrachi Reaver
     buff_t* reavers_glaive;
@@ -4266,6 +4267,9 @@ struct fiery_brand_t : public demon_hunter_spell_t
       player_t* target = targets[ static_cast<int>( dh()->rng().range( 0, static_cast<double>( targets.size() ) ) ) ];
       this->set_target( target );
       this->schedule_execute();
+
+      // 2026-05-04 -- Burning Alive currently refreshes Fiery Brand on the player
+      dh()->buff.fiery_brand->refresh();
     }
   };
 
@@ -4294,6 +4298,8 @@ struct fiery_brand_t : public demon_hunter_spell_t
     dot_action->snapshot_state( fb_state, result_amount_type::DMG_OVER_TIME );
     fb_state->primary = true;
     dot_action->schedule_execute( fb_state );
+
+    dh()->buff.fiery_brand->trigger();
   }
 
   dot_t* get_dot( player_t* t ) override
@@ -9743,6 +9749,11 @@ void demon_hunter_t::create_buffs()
   buff.seething_anger =
       make_buff( this, "seething_anger", spec.seething_anger_buff )->set_default_value_from_effect( 1 );
 
+  buff.fiery_brand = make_buff( this, "fiery_brand", spec.fiery_brand_debuff )
+                         ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
+                         ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                         ->disable_ticking( true );
+
   // Aldrachi Reaver ========================================================
 
   buff.reavers_glaive = make_buff( this, "reavers_glaive", hero_spec.reavers_glaive_buff )->set_quiet( true );
@@ -11870,13 +11881,6 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
       s->result_amount *= 1.0 + spec.demonic_wards->effectN( 1 ).percent() +
                           spec.demonic_wards_2->effectN( 1 ).percent() + spec.demonic_wards_3->effectN( 1 ).percent();
 
-      s->result_amount *= 1.0 + buff.painbringer->check_value();
-
-      if ( td->dots.fiery_brand && td->dots.fiery_brand->is_ticking() )
-      {
-        s->result_amount *= 1.0 + spec.fiery_brand_debuff->effectN( 1 ).percent();
-      }
-
       if ( td->debuffs.frailty->check() && talent.vengeance.void_reaver->ok() )
       {
         s->result_amount *= 1.0 + spec.frailty_debuff->effectN( 3 ).percent();
@@ -12398,6 +12402,8 @@ void demon_hunter_t::parse_player_effects()
     parse_effects( buff.demon_spikes );
     parse_effects( buff.seething_anger );
     parse_effects( mastery.fel_blood_rank_2 );
+    parse_effects( buff.fiery_brand );
+    parse_effects( buff.painbringer );
   }
 
   // Aldrachi Reaver
