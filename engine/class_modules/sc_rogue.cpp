@@ -2386,10 +2386,17 @@ public:
     // Follow the Blood
     if ( affected_by.follow_the_blood.direct )
     {
-      if ( p()->get_active_dots( td( state->target )->dots.rupture ) >=
-           as<unsigned int>( p()->talent.deathstalker.follow_the_blood->effectN( 2 ).base_value() ) )
+      if ( p()->specialization() == ROGUE_ASSASSINATION )
       {
-        m *= 1.0 + p()->talent.deathstalker.follow_the_blood->effectN( 1 ).percent();
+        if ( p()->get_active_dots( td( state->target )->dots.rupture ) >=
+             as<unsigned int>( p()->talent.deathstalker.follow_the_blood->effectN( 2 ).base_value() ) )
+        {
+          m *= 1.0 + p()->talent.deathstalker.follow_the_blood->effectN( 1 ).percent();
+        }
+      }
+      else if( p()->buffs.find_weakness->check() )
+      {
+        m *= 1.0 + p()->talent.deathstalker.follow_the_blood->effectN( 3 ).percent();
       }
     }
 
@@ -8354,8 +8361,10 @@ void actions::rogue_action_t<Base>::trigger_caustic_spatter( const action_state_
   if ( !td( state->target )->debuffs.caustic_spatter->up() )
     return;
 
+  // 2026-05-04 -- Caustic Spatter no longer reverses out Deathmark as it did previously with Shiv
+  // TOCHECK -- Need to generally see how this works with other damage taken mods
   double multiplier = p()->spec.caustic_spatter_buff->effectN( 1 ).percent();
-  p()->active.caustic_spatter->trigger_residual_action( state, multiplier );
+  p()->active.caustic_spatter->trigger_residual_action( state, multiplier, true, false );
 }
 
 template <typename Base>
