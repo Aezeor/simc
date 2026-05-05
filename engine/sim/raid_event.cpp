@@ -2395,8 +2395,8 @@ void raid_event_t::init( sim_t* sim )
       }
       else
       {
-        sim->raid_events.push_back( std::move( raid_event ) );
         sim->print_debug( "Successfully created '{}'.", raid_event->log_name() );
+        sim->raid_events.push_back( std::move( raid_event ) );
       }
     }
     catch ( const std::exception& )
