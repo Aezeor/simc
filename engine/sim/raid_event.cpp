@@ -1771,7 +1771,7 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
     duration( 0_ms, 0_ms, 0_ms, 0_ms ),
     pull( 0 ),
     pull_target_str(),
-    internal_id( -1 ),
+    internal_id( as<int>( sim->raid_events.size() ) ),
     distance_min( 0 ),
     distance_max( 0 ),
     players_only( false ),
@@ -2396,7 +2396,6 @@ void raid_event_t::init( sim_t* sim )
       else
       {
         sim->raid_events.push_back( std::move( raid_event ) );
-        raid_event->internal_id = as<int>( sim->raid_events.size() );
         sim->print_debug( "Successfully created '{}'.", raid_event->log_name() );
       }
     }
