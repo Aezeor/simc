@@ -3272,7 +3272,7 @@ struct final_breath_trigger_t : public BASE
       tick_state->target = d->target;
       BASE::tick_action->set_target( d->target );
 
-      if ( BASE::dynamic_tick_action )
+      if ( BASE::dynamic_tick_action == TICK_ACTION_UPDATE )
       {
         BASE::tick_action->update_state( tick_state, BASE::amount_type( tick_state, BASE::tick_action->direct_tick ) );
       }

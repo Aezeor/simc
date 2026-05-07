@@ -407,8 +407,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     normalize_weapon_speed(),
     ground_aoe(),
     round_base_dmg( true ),
-    dynamic_tick_action( true ),  // WoD updates everything on tick by default. If you need snapshotted values for a
-                                  // periodic effect, use persistent multipliers.
+    dynamic_tick_action( TICK_ACTION_UPDATE ),
     track_cd_waste(),
     cd_waste_data(),
     interrupt_immediate_occurred(),
@@ -2045,8 +2044,17 @@ void action_t::tick( dot_t* d )
     tick_state->target = d->target;
     tick_action->set_target( d->target );
 
-    if ( dynamic_tick_action )
-      tick_action->update_state( tick_state, amount_type( tick_state, tick_action->direct_tick ) );
+    switch ( dynamic_tick_action )
+    {
+      case TICK_ACTION_UPDATE:
+        tick_action->update_state( tick_state, amount_type( tick_state, tick_action->direct_tick ) );
+        break;
+      case TICK_ACTION_SNAPSHOT:
+        tick_action->snapshot_state( tick_state, amount_type( tick_state, tick_action->direct_tick ) );
+        break;
+      default:
+        break;
+    }
 
     tick_action->schedule_execute( tick_state );
 

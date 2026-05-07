@@ -1725,7 +1725,6 @@ struct essence_of_yulon_driver_t : public spell_t
     travel_speed = 0;
 
     tick_action = new essence_of_yulon_t( player, data() );
-    dynamic_tick_action = true;
   }
 };
 
@@ -2092,7 +2091,8 @@ struct felmouth_frenzy_driver_t : public spell_t
     p( effect.player )
   {
     background = true;
-    may_crit = callbacks = hasted_ticks = dynamic_tick_action = false;
+    may_crit = callbacks = hasted_ticks = false;
+    dynamic_tick_action = TICK_ACTION_NONE;
     // Estimated from logs
     base_tick_time = timespan_t::from_millis( 250 );
     dot_behavior = DOT_EXTEND;
@@ -2699,7 +2699,7 @@ struct felstorm_t : public melee_attack_t
     parse_options( opts );
 
     callbacks = may_miss = may_block = may_parry = false;
-    dynamic_tick_action = hasted_ticks = true;
+    hasted_ticks = true;
     trigger_gcd = timespan_t::from_seconds( 1.0 );
 
     tick_action = new felstorm_tick_t( p );

@@ -496,6 +496,13 @@ enum dot_copy_e
   DOT_COPY_CLONE_NO_REFRESH, // Clone everything from source DoT (tick time, stacks, remaining duration, etc) 
 };
 
+enum dynamic_tick_action_e
+{
+  TICK_ACTION_NONE = 0,  // no state snapshot on parent dot tick
+  TICK_ACTION_UPDATE,    // update state on parent dot tick
+  TICK_ACTION_SNAPSHOT   // snapshot state on parent dot tick
+};
+
 enum attribute_e
 {
   ATTRIBUTE_NONE = 0,

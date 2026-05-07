@@ -274,7 +274,7 @@ public:
   bool round_base_dmg;
 
   /// Used with tick_action, tells tick_action to update state on every tick.
-  bool dynamic_tick_action;
+  dynamic_tick_action_e dynamic_tick_action;
 
   /// Track time spent with fully charged cooldown before the action is used.
   bool track_cd_waste;

@@ -589,7 +589,6 @@ struct felstorm_t : public warlock_pet_melee_attack_t
     may_crit = false;
     channeled = true;
 
-    dynamic_tick_action = true;
     tick_action = new felstorm_tick_t( p, p->find_spell( 89753 ) );
   }
 
