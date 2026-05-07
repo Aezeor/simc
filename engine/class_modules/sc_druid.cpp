@@ -3412,23 +3412,24 @@ struct fury_of_elune_buff_t final : public druid_buff_t
 
     auto power = p->specialization() == DRUID_GUARDIAN ? POWER_RAGE : POWER_ASTRAL_POWER;
     const auto& eff = find_effect( this, A_PERIODIC_ENERGIZE, power );
+    auto r_type = eff.resource_gain_type();
     auto amt = eff.resource();
+    auto gain = p->get_gain( n );
 
     set_default_value( amt / eff.period().total_seconds() );
 
     if ( p->talent.dryads_dance.ok() && p->talent.sylvan_beckoning.ok() )
     {
-      set_tick_callback(
-        [ this, amt, r = eff.resource_gain_type(), g = p->get_gain( n ),
-          mul = 1.0 + find_effect( p->find_spell( 1264618 ), this ).percent() ]
-        ( buff_t*, int, timespan_t ) {
-          player->resource_gain( r, amt * mul, g );
-        } );
+      auto dd_mul = 1.0 + find_effect( p->find_spell( 1264618 ), this ).percent();
+
+      set_tick_callback( [ this, r_type, amt, gain, dd_mul, p = p ]( buff_t*, int, timespan_t ) {
+        player->resource_gain( r_type, p->buff.sylvan_beckoning->check() ? amt * dd_mul : amt, gain );
+      } );
     }
     else
     {
-      set_tick_callback( [ this, amt, r = eff.resource_gain_type(), g = p->get_gain( n ) ]( buff_t*, int, timespan_t ) {
-        player->resource_gain( r, amt, g );
+      set_tick_callback( [ this, r_type, amt, gain ]( buff_t*, int, timespan_t ) {
+        player->resource_gain( r_type, amt, gain );
       } );
     }
   }
@@ -9949,17 +9950,16 @@ void druid_t::activate()
 
   if ( talent.hunger_for_battle.ok() && talent.rip.ok() )
   {
-    register_on_kill_callback(
-      [ this,
-        g = get_gain( "Hunger for Battle" ),
-        amt = find_effect( find_spell( 1244550 ), E_ENERGIZE ).resource( RESOURCE_ENERGY ) ]
-      ( player_t* t ) {
-        if ( auto td = find_target_data( t ); td && td->dots.rip->is_ticking() )
-        {
-          buff.hunger_for_battle->trigger();
-          resource_gain( RESOURCE_ENERGY, amt, g );
-        }
-      } );
+    auto hfb_gain = get_gain( "Hunger for Battle" );
+    auto hfb_amt = find_effect( find_spell( 1244550 ), E_ENERGIZE ).resource( RESOURCE_ENERGY );
+
+    register_on_kill_callback( [ this, hfb_gain, hfb_amt ]( player_t* t ) {
+      if ( auto td = find_target_data( t ); td && td->dots.rip->is_ticking() )
+      {
+        buff.hunger_for_battle->trigger();
+        resource_gain( RESOURCE_ENERGY, hfb_amt, hfb_gain );
+      }
+    } );
   }
 
   if ( talent.resilient_flourishing.ok() && talent.thriving_growth.ok() )
