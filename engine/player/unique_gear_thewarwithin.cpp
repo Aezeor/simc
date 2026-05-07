@@ -5825,7 +5825,7 @@ public:
     return composite_target_multiplier( s );
   }
 
-  virtual double composite_target_armor( const action_state_t* s ) const
+  double composite_target_armor( const action_state_t* s ) const override
   {
     return p( s )->composite_player_target_armor( s->target );
   }

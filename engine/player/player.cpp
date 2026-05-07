@@ -6192,7 +6192,7 @@ double player_t::composite_player_target_armor( player_t* t ) const
   return a;
 }
 
-double player_t::composite_mitigation_multiplier( const action_state_t* s, school_e school, bool direct ) const
+double player_t::composite_mitigation_multiplier( const action_state_t* s, school_e school, bool ) const
 {
   double m = 1.0;
 
@@ -8789,7 +8789,7 @@ void player_t::assess_damage_imminent( school_e, result_amount_type, action_stat
 {
 }
 
-void player_t::target_mitigation( school_e school, result_amount_type dmg_type, action_state_t* s )
+void player_t::target_mitigation( school_e, result_amount_type dmg_type, action_state_t* s )
 {
   if ( s->result_amount == 0 )
     return;

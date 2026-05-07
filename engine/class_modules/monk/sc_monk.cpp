@@ -583,7 +583,7 @@ struct harmonic_surge_t : public base_action_t
 
       if ( effect.target_1() == T_DESTINATION_CASTER && effect.target_2() == T_UNIT_DESTINATION_AREA_ALLY )
       {
-        TBase::aoe = spell_data->effectN( 2 ).base_value();
+        TBase::aoe = as<int>( spell_data->effectN( 2 ).base_value() );
       }
 
       size_t offset = 1;
@@ -915,6 +915,7 @@ struct rising_sun_kick_t : monk_melee_attack_t
         return "rushing_wind_kick";
       default:
         assert( false );
+        return "unknown";
     }
   }
 

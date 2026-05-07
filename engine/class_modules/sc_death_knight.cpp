@@ -8351,7 +8351,7 @@ struct blightfall_t final : public death_knight_spell_t
     death_knight_td_t* td = get_td( s->target );
     dot_t* vp             = td->dot.virulent_plague;
     dot_t* dp             = td->dot.dread_plague;
-    double damage         = 0.0;
+
     if ( vp->is_ticking() )
     {
       if ( p()->options.extra_unholy_reporting )

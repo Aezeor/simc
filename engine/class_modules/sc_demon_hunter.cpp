@@ -9624,7 +9624,7 @@ void demon_hunter_t::create_buffs()
           ->set_period( 1_s )
           ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
           ->set_tick_on_application( false )
-          ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+          ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
             if ( buff.void_metamorphosis_stack->stack() < talent.devourer.entropy->effectN( 2 ).base_value() )
             {
               buff.void_metamorphosis_stack->trigger();
@@ -9640,7 +9640,7 @@ void demon_hunter_t::create_buffs()
                                ->set_period( talent.devourer.entropy->effectN( 1 ).period() )
                                ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
                                ->set_tick_on_application( true )
-                               ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+                               ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                                  spawn_soul_fragment( proc.soul_fragment_from_entropy, soul_fragment::LESSER, 1 );
                                } );
 
@@ -12069,10 +12069,9 @@ double demon_hunter_t::fury_state_t::fury_drain_per_second( int stacks ) const
 {
   double drain = base_fury_drain_per_second( stacks );
 
-  bool has_reduced_drain = !dh()->in_combat || dh()->buff.voidrush->check() ||
+  bool has_reduced_drain = !dh()->in_combat || dh()->buff.voidrush->check() || dh()->buffs.stunned->check() ||
                            ( dh()->executing && dh()->executing->id == dh()->spec.collapsing_star_spell->id() ) ||
-                           ( dh()->channeling && dh()->channeling->id == dh()->talent.devourer.void_ray->id() ||
-                             dh()->buffs.stunned->check() );
+                           ( dh()->channeling && dh()->channeling->id == dh()->talent.devourer.void_ray->id() );
 
   if ( has_reduced_drain )
   {
