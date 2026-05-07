@@ -10490,8 +10490,10 @@ struct frost_strike_base_t : public death_knight_melee_attack_t
 
     // frostbane benefits from IO, and stacks it, but because its damage is delayed it will not get buffed
     // when frostbane procs RE
-    if ( p()->talent.frost.icy_onslaught->ok() && p()->buffs.icy_onslaught->expiration_delay == nullptr )
+    if ( p()->talent.frost.icy_onslaught->ok() && p()->buffs.icy_onslaught->expiration_delay == nullptr && !p()->buffs.icy_onslaught->freeze_stacks )
       p()->buffs.icy_onslaught->trigger();
+    p()->buffs.icy_onslaught->set_freeze_stacks( false );
+
 
     if ( p()->talent.frost.frostreaper.ok() )
     {
@@ -10789,6 +10791,7 @@ struct glacial_advance_t final : public death_knight_spell_t
     {
       p()->buffs.icy_onslaught->trigger();
     }
+    p()->buffs.icy_onslaught->set_freeze_stacks( false );
 
     // 12.0 TODO drive the delay from likely misc values
     make_event<delayed_execute_event_t>( *sim, p(), damage_action, execute_state->target, 100_ms );
@@ -12989,6 +12992,7 @@ void death_knight_t::trigger_runic_empowerment( double rpcost )
 
   if ( talent.frost.icy_onslaught->ok() )
   {
+    buffs.icy_onslaught->set_freeze_stacks( true ); // hacky abuse of bool to stop IO from gaining a stack when RE procs at 0 IO stacks
     buffs.icy_onslaught->expire(
         100_ms );  // Delay needed to push icy_onslaughts expiration to after frost strike is resolved
   }
