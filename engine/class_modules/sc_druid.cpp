@@ -8826,16 +8826,16 @@ struct wild_mushroom_t final : public druid_spell_t
         p->active.fungal_growth = p->get_secondary_action<fungal_growth_t>( "fungal_growth", sd );
     }
 
-    double ap_gain() const
+    double ap_gain( int targets_hit ) const
     {
-      return std::min( ap_max, ( num_targets_hit + 1 ) * WILD_MUSHROOM_AP_PER_HIT );
+      return std::min( ap_max, ( targets_hit + 1 ) * WILD_MUSHROOM_AP_PER_HIT );
     }
 
     void execute() override
     {
       druid_spell_t::execute();
 
-      gain_energize_resource( RESOURCE_ASTRAL_POWER, ap_gain(), gain );
+      gain_energize_resource( RESOURCE_ASTRAL_POWER, ap_gain( num_targets_hit ), gain );
     }
 
     void impact( action_state_t* s ) override
@@ -8881,6 +8881,23 @@ struct wild_mushroom_t final : public druid_spell_t
       .y( target->y_position );
 
     make_event<ground_aoe_event_t>( *sim, p(), params );
+  }
+
+  std::unique_ptr<expr_t> create_expression( std::string_view name ) override
+  {
+    if ( name == "energize_amount" )
+    {
+      if ( !damage )
+        return expr_t::create_constant( name, 0.0 );
+
+      auto spell_targets = damage->create_expression( "spell_targets" );
+
+      return make_fn_expr( name, [ this, spell_targets = std::move( spell_targets ) ] {
+        return damage->ap_gain( spell_targets->evaluate() );
+      } );
+    }
+
+    return druid_spell_t::create_expression( name );
   }
 };
 
