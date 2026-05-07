@@ -1277,7 +1277,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   crit_avoidance( 0 ),
   spell_crit_chance(),
   attack_crit_chance(),
-  block_reduction(),
+  block_value(),
   mastery( 0 ),
   versatility( 0 ),
   all_crit( 0 ),
@@ -1345,7 +1345,7 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " block={}", s.block );
   fmt::format_to( out, " spell_crit_chance={}", s.spell_crit_chance );
   fmt::format_to( out, " attack_crit_chance={}", s.attack_crit_chance );
-  fmt::format_to( out, " block_reduction={}", s.block_reduction );
+  fmt::format_to( out, " block_value={}", s.block_value );
   fmt::format_to( out, " mastery={}", s.mastery );
   fmt::format_to( out, " versatility={}", s.versatility );
   fmt::format_to( out, " all_haste={}", s.all_haste );
@@ -1673,46 +1673,43 @@ void player_t::init_base_stats()
 
   base.dodge = get_passive_player_value( base.dodge, "dodge" );
 
-  // Only Warriors and Paladins (and enemies) can block, defaults to 0
-  if ( type == WARRIOR || type == PALADIN || type == ENEMY || type == TANK_DUMMY )
+  switch ( type )
   {
-    // Base block chance is 3%, increased in warriors' and paladins' class aura and protection warrior's spec aura
-    // Further increased by mastery for both Protection specs
-    base.block = 0.03;
-    base.block = get_passive_player_value( base.block, "block" );
+    // Only Warriors and Paladins can block, defaults to 0
+    case PALADIN:
+    case WARRIOR:
+      // Base block chance is 3%, increased in warriors' and paladins' class aura and protection warrior's spec aura
+      // Further increased by mastery for both Protection specs
+      base.block = 0.03;
+      base.block = get_passive_player_value( base.block, "block" );
 
-    switch ( type )
-    {
-      case WARRIOR:
-      case PALADIN:
-        // Currently block reduction is 2.5x the armor value of the shield
-        if ( items[ SLOT_OFF_HAND ].dbc_inventory_type() == INVTYPE_SHIELD )
-          base.block_reduction = items[ SLOT_OFF_HAND ].stats.armor * 2.5;
-        else
-          base.block_reduction = 0;
-        break;
-      default:
-        base.block_reduction = 0.30;
-        break;
-    }
+      // Currently block reduction is 2.5x the armor value of the shield
+      if ( items[ SLOT_OFF_HAND ].dbc_inventory_type() == INVTYPE_SHIELD )
+        base.block_value = items[ SLOT_OFF_HAND ].stats.armor * 2.5;
+      else
+        base.block_value = 0;
+
+      base.block_value = get_passive_player_value( base.block_value, "block_value" );
+      SC_FALLTHROUGH;
+    // Only certain classes can parry, and get 3% base parry, default is 0
+    case DEATH_KNIGHT:
+      // Parry from base strength isn't affected by diminishing returns and is added here
+      base.parry = ( dbc->race_base( race ).strength + dbc->attribute_base( type, level() ).strength ) * base.parry_per_strength;
+      SC_FALLTHROUGH;
+    case DEMON_HUNTER:
+    case MONK:
+    case ROGUE:
+      base.parry += 0.03;
+      base.parry = get_passive_player_value( base.parry, "parry" );
+      base.parry_rating_per_crit_rating = get_passive_player_value( base.parry_rating_per_crit_rating, "parry_from_crit_rating" );
+      break;
+    case ENEMY:
+    case TANK_DUMMY:
+      base.parry = 0.03;
+      break;
+    default:
+      break;
   }
-
-  base.block_reduction = get_passive_player_value( base.block_reduction, "block_reduction" );
-
-  // Only certain classes can parry, and get 3% base parry, default is 0
-  // Parry from base strength isn't affected by diminishing returns and is added here
-  if ( type == WARRIOR || type == PALADIN || type == ROGUE || type == DEATH_KNIGHT || type == MONK ||
-       type == DEMON_HUNTER )
-  {
-    base.parry = 0.03 + ( dbc->race_base( race ).strength + dbc->attribute_base( type, level() ).strength ) * base.parry_per_strength;
-    base.parry = get_passive_player_value( base.parry, "parry" );
-  }
-  else if ( type == ENEMY || type == TANK_DUMMY )
-  {
-    base.parry = 0.03;
-  }
-
-  base.parry_rating_per_crit_rating = get_passive_player_value( base.parry_rating_per_crit_rating, "parry_from_crit_rating" );
 
   // Movement Speed
   base.movement_speed = 7.0;  // yards per second
@@ -4892,25 +4889,27 @@ void player_t::create_buffs()
   {
     // Racials
     buffs.berserking = make_buff_fallback( race == RACE_TROLL, this, "berserking", find_spell( 26297 ) )
-                           ->add_invalidate( CACHE_HASTE );
+      ->add_invalidate( CACHE_HASTE );
 
-    buffs.stoneform = make_buff_fallback( race == RACE_DWARF, this, "stoneform", find_spell( 65116 ) );
+    buffs.stoneform = make_buff_fallback( race == RACE_DWARF, this, "stoneform", find_spell( 65116 ) )
+      ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
-    buffs.blood_fury = make_buff_fallback<stat_buff_t>( race == RACE_ORC, this, "blood_fury", find_racial_spell( "Blood Fury" ) )
-                           ->add_invalidate( CACHE_SPELL_POWER )
-                           ->add_invalidate( CACHE_ATTACK_POWER );
+    buffs.blood_fury =
+      make_buff_fallback<stat_buff_t>( race == RACE_ORC, this, "blood_fury", find_racial_spell( "Blood Fury" ) )
+        ->add_invalidate( CACHE_SPELL_POWER )
+        ->add_invalidate( CACHE_ATTACK_POWER );
 
     buffs.shadowmeld = make_buff_fallback( race == RACE_NIGHT_ELF, this, "shadowmeld", find_spell( 58984 ) )
-                           ->set_cooldown( 0_ms );
+      ->set_cooldown( 0_ms );
 
-    buffs.ancestral_call[ 0 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC, this,
-                                                                 "rictus_of_the_laughing_skull", find_spell( 274739 ) );
-    buffs.ancestral_call[ 1 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC, this,
-                                                                 "zeal_of_the_burning_blade", find_spell( 274740 ) );
-    buffs.ancestral_call[ 2 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC, this,
-                                                                 "ferocity_of_the_frostwolf", find_spell( 274741 ) );
-    buffs.ancestral_call[ 3 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC, this,
-                                                                 "might_of_the_blackrock", find_spell( 274742 ) );
+    buffs.ancestral_call[ 0 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC,
+      this, "rictus_of_the_laughing_skull", find_spell( 274739 ) );
+    buffs.ancestral_call[ 1 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC,
+      this, "zeal_of_the_burning_blade", find_spell( 274740 ) );
+    buffs.ancestral_call[ 2 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC,
+      this, "ferocity_of_the_frostwolf", find_spell( 274741 ) );
+    buffs.ancestral_call[ 3 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC,
+      this, "might_of_the_blackrock", find_spell( 274742 ) );
 
     if ( race == RACE_DARK_IRON_DWARF )
     {
@@ -5531,16 +5530,9 @@ double player_t::composite_parry() const
   return total_parry;
 }
 
-double player_t::composite_block_reduction( action_state_t* ) const
+double player_t::composite_block_value( const action_state_t* ) const
 {
-  double b = current.block_reduction;
-
-  return b;
-}
-
-double player_t::composite_crit_block() const
-{
-  return 0;
+  return current.block_value;
 }
 
 double player_t::composite_crit_avoidance() const
@@ -5880,7 +5872,12 @@ double player_t::composite_player_absorb_multiplier( const action_state_t* ) con
 
 double player_t::composite_player_healing_received_multiplier() const
 {
-  return current.healing_received_multiplier;
+  auto m = current.healing_received_multiplier;
+
+  if ( buffs.guardian_spirit && buffs.guardian_spirit->up() )
+    m *= 1.0 + buffs.guardian_spirit->check_value();
+
+  return m;
 }
 
 double player_t::composite_player_absorb_received_multiplier() const
@@ -6195,9 +6192,44 @@ double player_t::composite_player_target_armor( player_t* t ) const
   return a;
 }
 
-double player_t::composite_mitigation_multiplier( school_e /* school */ ) const
+double player_t::composite_mitigation_multiplier( const action_state_t* s, school_e school, bool direct ) const
 {
-  return 1.0;
+  double m = 1.0;
+
+  if ( !is_enemy() && type != HEALING_ENEMY )
+  {
+    if ( !is_pet() )
+    {
+      if ( buffs.stoneform && buffs.stoneform->up() && school == SCHOOL_PHYSICAL )
+        m *= 1.0 + buffs.stoneform->check_value();
+
+      if ( buffs.elemental_chaos_earth && buffs.elemental_chaos_earth->up() )
+        m *= 1.0 + buffs.elemental_chaos_earth->check_value();
+
+      if ( buffs.pain_suppression && buffs.pain_suppression->up() )
+        m *= 1.0 + buffs.pain_suppression->check_value();
+    }
+
+    m *= 1.0 - cache.mitigation_versatility();
+
+    if ( sim->debug )
+    {
+      sim->print_debug( "{} {} damage to {} reduced by {:.7g}% from versatility.", *s->action->player, *s->action,
+                        *s->target, cache.mitigation_versatility() * 100 );
+    }
+
+    if ( s->action->is_aoe() )
+      m *= 1.0 - cache.avoidance();
+  }
+
+  return m;
+}
+
+double player_t::composite_mitigation_from_player_multiplier( player_t*, const action_state_t*, school_e, bool ) const
+{
+  double m = 1.0;
+
+  return m;
 }
 
 double player_t::composite_mastery_value() const
@@ -8673,7 +8705,10 @@ void player_t::assess_damage( school_e school, result_amount_type rt, action_sta
   s->result_mitigated = s->result_amount;
 
   if ( sim->debug && s->action && !s->target->is_enemy() && !s->target->is_add() )
-    sim->out_debug.printf( "Damage to %s after all mitigation is %f", s->target->name(), s->result_amount );
+  {
+    sim->print_debug( "{} {} damage to {} after mitigation is {}.", *s->action->player, *s->action, *this,
+                      s->result_amount );
+  }
 
   account_blessing_of_sacrifice( *this, s );
 
@@ -8759,87 +8794,61 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
   if ( s->result_amount == 0 )
     return;
 
-  if ( buffs.pain_suppression && buffs.pain_suppression->up() )
-    s->result_amount *= 1.0 + buffs.pain_suppression->data().effectN( 1 ).percent();
-
-  if ( buffs.stoneform && buffs.stoneform->up() )
-    s->result_amount *= 1.0 + buffs.stoneform->data().effectN( 1 ).percent();
-
-  if ( buffs.elemental_chaos_earth && buffs.elemental_chaos_earth->check() )
-    s->result_amount *= 1.0 + buffs.elemental_chaos_earth->check_value();
-
-  if ( s->action->is_aoe() )
-    s->result_amount *= 1.0 - cache.avoidance();
-
-  // TODO-WOD: Where should this be? Or does it matter?
-  s->result_amount *= 1.0 - cache.mitigation_versatility();
-
   if ( debuffs.invulnerable && debuffs.invulnerable->check() )
   {
     s->result_amount = 0;
+    return;
   }
 
-  if ( school == SCHOOL_PHYSICAL && dmg_type == result_amount_type::DMG_DIRECT )
+  if ( dmg_type == result_amount_type::DMG_OVER_TIME )
   {
-    if ( s->action && !s->target->is_enemy() && !s->target->is_add() )
-      sim->print_debug( "Damage to {} before armor mitigation is {:.6f}", s->target->name(), s->result_amount );
+    s->result_amount *= s->target_mitigation_ta_multiplier;
+  }
+  else if ( dmg_type == result_amount_type::DMG_DIRECT )
+  {
+    s->result_amount *= s->target_mitigation_da_multiplier;
 
-    // Maximum amount of damage reduced by armor
-    double armor_cap = 0.85;
+    if ( !s->action )
+      return;
+
+    // Maximum amount of damage reduced by armor/block
+    static constexpr double armor_cap = 0.85;
 
     // Armor
-    if ( s->action && !s->action->ignores_armor )
+    if ( auto armor = s->target_armor )
     {
-      double armor  = s -> target_armor;
-      double resist = armor / ( armor + s -> action -> player -> base.armor_coeff );
-      resist        = clamp( resist, 0.0, armor_cap );
-      s -> result_amount *= 1.0 - resist;
+      double resist = util::calculate_armor_resist( armor, s->action->player->current.armor_coeff );
+      s->result_amount *= 1.0 - resist;
+
+      if ( sim->debug )
+      {
+        sim->print_debug( "{} {} damage to {} reduced by {:.7g}% from armor (armor={:.7g}, armor coeff={:.7g}).",
+                          *s->action->player, *s->action, *s->target, resist * 100, armor,
+                          s->action->player->current.armor_coeff );
+      }
     }
 
-    if ( s->action && !s->target->is_enemy() && !s->target->is_add() )
+    // Block and Crit Block work in the same manner as armor and are affected by the same cap
+    if ( s->block_result == BLOCK_RESULT_BLOCKED )
     {
-      if ( s->action->ignores_armor )
-        sim->print_debug( "Damage to {} after armor mitigation is {:.6f} (ignores armor)", s->target->name(), s->result_amount );
-      else
-        sim->print_debug( "Damage to {} after armor mitigation is {:.6f} ({:.7g} armor, {:.7g} armor coeff)",
-                          s->target->name(), s->result_amount, s->target_armor, s->action->player->current.armor_coeff );
-    }
-
-    double pre_block_amount = s->result_amount;
-
-    // In BfA, Block and Crit Block work in the same manner as armor and are affected by the same cap
-    if ( s ->action && (s -> block_result == BLOCK_RESULT_BLOCKED || s -> block_result == BLOCK_RESULT_CRIT_BLOCKED ))
-    {
-      double block_reduction = composite_block_reduction( s );
-
-      double block_resist = block_reduction / ( block_reduction + s -> action -> player -> current.armor_coeff );
-
-      if ( s -> block_result == BLOCK_RESULT_CRIT_BLOCKED )
-        block_resist *= 2.0;
+      double block_value = s->target_block_value;
+      double block_resist = util::calculate_armor_resist( block_value, s->action->player->current.armor_coeff );
 
       block_resist = clamp( block_resist, 0.0, armor_cap );
-      s -> result_amount *= 1.0 - block_resist;
+      s->result_amount *= 1.0 - block_resist;
 
-      if ( s -> result_amount <= 0 )
-        return;
+      if ( sim->debug )
+      {
+        sim->print_debug( "{} {} damage to {} reduced by {:.7g}% from block (block value={:.7g}, armor coeff={:.7g}).",
+                          *s->action->player, *s->action, *s->target, block_resist * 100, block_value,
+                          s->action->player->current.armor_coeff );
+      }
     }
-
-    s->blocked_amount = pre_block_amount - s->result_amount;
-
-    if ( sim->debug && s->action && !s->target->is_enemy() && !s->target->is_add() && s->blocked_amount > 0.0 )
-      sim->print_debug( "Damage to {} after blocking is {:.6f}", s->target->name(), s->result_amount );
   }
 }
 
 void player_t::assess_heal( school_e, result_amount_type, action_state_t* s )
 {
-  // Increases to healing taken should modify result_total in order to correctly calculate overhealing
-  // and other effects based on raw healing.
-  if ( buffs.guardian_spirit->up() )
-    s->result_total *= 1.0 + buffs.guardian_spirit->data().effectN( 1 ).percent();
-
-  s->result_total *= composite_player_healing_received_multiplier();
-
   // process heal
   s->result_amount = resource_gain( RESOURCE_HEALTH, s->result_total, nullptr, s->action );
 
@@ -15410,7 +15419,7 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { A_MOD_RECHARGE_TIME_CATEGORY_MASK,        "charge_cooldown"                  },  // 205
   { A_MODIFY_SCHOOL,                          "school"                           },  // 220
   { A_MOD_EXPERTISE,                          "expertise"                        },  // 240
-  { A_MOD_BLOCK_PCT,                          "block_reduction"                  },  // 272
+  { A_MOD_BLOCK_PCT,                          "block_value"                      },  // 272
   { A_MOD_MECHANIC_DAMAGE_DONE_PERCENT,       "mechanic_damage_done"             },  // 276
   { A_MOD_TARGET_ARMOR_PCT,                   "armor_penetration"                },  // 280
   { A_MOD_ALL_CRIT_CHANCE,                    "all_crit"                         },  // 290

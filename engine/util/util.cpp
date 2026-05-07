@@ -977,13 +977,13 @@ const char* util::amount_type_string( result_amount_type type )
 {
   switch ( type )
   {
-    case result_amount_type::NONE: return "none";
-    case result_amount_type::DMG_DIRECT:       return "direct_damage";
-    case result_amount_type::DMG_OVER_TIME:    return "tick_damage";
-    case result_amount_type::HEAL_DIRECT:      return "direct_heal";
-    case result_amount_type::HEAL_OVER_TIME:   return "tick_heal";
-    case result_amount_type::ABSORB:           return "absorb";
-    default:               return "unknown";
+    case result_amount_type::NONE:           return "none";
+    case result_amount_type::DMG_DIRECT:     return "direct_damage";
+    case result_amount_type::DMG_OVER_TIME:  return "tick_damage";
+    case result_amount_type::HEAL_DIRECT:    return "direct_heal";
+    case result_amount_type::HEAL_OVER_TIME: return "tick_heal";
+    case result_amount_type::ABSORB:         return "absorb";
+    default:                                 return "unknown";
   }
 }
 
@@ -1457,6 +1457,7 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_CORRUPTION:               return "corruption";
     case CACHE_CORRUPTION_RESISTANCE:    return "corruption_resistance";
     case CACHE_AVOIDANCE:                return "avoidance";
+    case CACHE_CRIT_AVOIDANCE:           return "crit_avoidance";
     default:                             return "unknown";
   }
 }
@@ -3709,4 +3710,14 @@ double approx_sqrt( double arg )
   return 0.0;
 }
 
+double calculate_armor_resist( double armor, double armor_coeff, double multipler )
+{
+  static constexpr double armor_cap = 0.85;
+
+  double resist = armor / ( armor + armor_coeff );
+  resist *= multipler;
+  resist = clamp( resist, 0.0, armor_cap );
+
+  return resist;
+}
 } // namespace util
