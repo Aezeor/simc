@@ -2513,7 +2513,6 @@ private:
 
 protected:
   using base_t = druid_attack_t<Base>;
-  bool direct_bleed = false;
 
 public:
   druid_attack_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f ) : ab( n, p, s, f )
@@ -2525,15 +2524,10 @@ public:
       if ( ( e.type() == E_SCHOOL_DAMAGE || e.type() == E_WEAPON_PERCENT_DAMAGE ) &&
            ( e.mechanic() == MECHANIC_BLEED || ab::data().mechanic() == MECHANIC_BLEED ) )
       {
-        direct_bleed = true;
+        ab::ignores_armor = true;
         break;
       }
     }
-  }
-
-  double composite_target_armor( const action_state_t* s ) const override
-  {
-    return direct_bleed ? 0.0 : ab::composite_target_armor( s );
   }
 };
 
@@ -4023,33 +4017,23 @@ struct frantic_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, c
 {
   struct frantic_frenzy_tick_t final : public cat_attack_t
   {
-    bool is_direct_damage = false;
-
     frantic_frenzy_tick_t( druid_t* p, std::string_view n, flag_e f ) : cat_attack_t( n, p, p->find_spell( 1244079 ), f )
     {
       background = dual = proc = true;
       aoe = -1;
-      direct_bleed = false;
+      ignores_armor = false;
 
       dot_name = "frantic_frenzy_tick";
     }
 
-    // Small hack to properly report instant ticks from the driver, from actual periodic ticks from the bleed
     result_amount_type report_amount_type( const action_state_t* s ) const override
     {
-      return is_direct_damage ? result_amount_type::DMG_DIRECT : s->result_type;
+      return s->result_type;  // override since tick_action defaults to DMG_OVER_TIME
     }
 
     timespan_t travel_time() const override
     {
       return rng().range( FERAL_FLICKER_DELAY );
-    }
-
-    void execute() override
-    {
-      is_direct_damage = true;
-      cat_attack_t::execute();
-      is_direct_damage = false;
     }
   };
 
@@ -4059,6 +4043,8 @@ struct frantic_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, c
     {
       tick_action = p->get_secondary_action<frantic_frenzy_tick_t>( name_str + "_tick", f );
       replace_stats( this, tick_action, false );
+
+      dynamic_tick_action = TICK_ACTION_SNAPSHOT;
 
       if ( !is_free() )
         track_cd_waste = true;
@@ -4073,6 +4059,14 @@ struct frantic_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, c
       energize_amount = energize_eff.resource( energize_resource );
     }
   }
+
+  void init() override
+  {
+    base_t::init();
+
+    if ( tick_action )
+      tick_action->direct_tick = false;
+  }
 };
 
 struct feral_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, cat_attack_t>
@@ -4080,27 +4074,16 @@ struct feral_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, cat
   // despite generating CP, does not actually proc cp generated related effects
   struct feral_frenzy_tick_t final : public cat_attack_t
   {
-    bool is_direct_damage = false;
-
     feral_frenzy_tick_t( druid_t* p, std::string_view n, flag_e f ) : cat_attack_t( n, p, p->find_spell( 274838 ), f )
     {
       background = dual = proc = true;
-      direct_bleed = false;
 
       dot_name = "feral_frenzy_tick";
     }
 
-    // Small hack to properly report instant ticks from the driver, from actual periodic ticks from the bleed
     result_amount_type report_amount_type( const action_state_t* s ) const override
     {
-      return is_direct_damage ? result_amount_type::DMG_DIRECT : s->result_type;
-    }
-
-    void execute() override
-    {
-      is_direct_damage = true;
-      cat_attack_t::execute();
-      is_direct_damage = false;
+      return s->result_type;  // override since tick_action defaults to DMG_OVER_TIME
     }
   };
 
@@ -4110,6 +4093,8 @@ struct feral_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, cat
     {
       tick_action = p->get_secondary_action<feral_frenzy_tick_t>( name_str + "_tick", f );
       replace_stats( this, tick_action, false );
+
+      dynamic_tick_action = TICK_ACTION_SNAPSHOT;
 
       if ( !is_free() )
         track_cd_waste = true;
@@ -4121,7 +4106,10 @@ struct feral_frenzy_t final : public trigger_aggravate_wounds_t<DRUID_FERAL, cat
     base_t::init();
 
     if ( tick_action )
+    {
       tick_action->gain = gain;
+      tick_action->direct_tick = false;
+    }
   }
 
   bool ready() override
@@ -6785,6 +6773,10 @@ void druid_action_t<Base>::init()
   // ensure secondary actions from convoke actions are also procs
   if ( is_free() )
     ab::proc = true;
+
+  // some actions have both direct & periodic damage effects. we don't need to update direct multipliers.
+  if ( ab::does_periodic_damage() && ab::does_direct_damage() )
+    ab::update_flags &= ~( STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_TGT_MITG_DA | STATE_TGT_ARMOR );
 }
 
 namespace spells
