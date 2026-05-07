@@ -85,6 +85,9 @@ constexpr auto DIMINISHING_RETURN_VERS_MITIG_CR_CURVE = 21035u;
 // Midnight curve from ItemSquishEra.db2
 constexpr auto SQUISH_CURVE_MIDNIGHT = 92181u;
 
+// Maximum damage reduction from armor / block
+constexpr auto MAX_ARMOR_DAMAGE_REDUCTION = 0.85;
+
 // Enable/Disable azerite effects
 enum class azerite_control
 {

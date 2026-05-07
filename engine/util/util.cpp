@@ -3712,11 +3712,9 @@ double approx_sqrt( double arg )
 
 double calculate_armor_resist( double armor, double armor_coeff, double multipler )
 {
-  static constexpr double armor_cap = 0.85;
-
   double resist = armor / ( armor + armor_coeff );
   resist *= multipler;
-  resist = clamp( resist, 0.0, armor_cap );
+  resist = clamp( resist, 0.0, MAX_ARMOR_DAMAGE_REDUCTION );
 
   return resist;
 }

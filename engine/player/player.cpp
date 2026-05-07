@@ -8811,9 +8811,6 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
     if ( !s->action )
       return;
 
-    // Maximum amount of damage reduced by armor/block
-    static constexpr double armor_cap = 0.85;
-
     // Armor
     if ( auto armor = s->target_armor )
     {
@@ -8834,7 +8831,7 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
       double block_value = s->target_block_value;
       double block_resist = util::calculate_armor_resist( block_value, s->action->player->current.armor_coeff );
 
-      block_resist = clamp( block_resist, 0.0, armor_cap );
+      block_resist = clamp( block_resist, 0.0, MAX_ARMOR_DAMAGE_REDUCTION );
       s->result_amount *= 1.0 - block_resist;
 
       if ( sim->debug )
