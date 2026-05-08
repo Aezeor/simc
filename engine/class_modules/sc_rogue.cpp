@@ -256,6 +256,9 @@ class rogue_t : public player_t
 
 public:
 
+  // Event for tracking stance swap latency
+  bool waiting_for_stance_delay_ready_event;
+
   // Venomous Wounds energy refund overflow
   double venomous_wounds_accumulator;
 
@@ -1112,6 +1115,7 @@ public:
   rogue_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
     rogue_ready_trigger_threshold( 25 ),
+    waiting_for_stance_delay_ready_event( false ),
     venomous_wounds_accumulator( 0 ),
     shadow_techniques_counter( 0 ),
     deathstalkers_mark_debuff( nullptr ),
@@ -5414,6 +5418,16 @@ struct shadow_dance_t : public rogue_spell_t
     p()->buffs.the_rotten->trigger();
     trigger_master_of_shadows();
     trigger_supercharger();
+
+    // Stance availability is not immediate after casting Shadow Dance
+    // This check is enforced in rogue_t::stealthed
+    p()->waiting_for_stance_delay_ready_event = true;
+    timespan_t delay = rng().gauss( p()->world_lag );
+    make_event( *p()->sim, delay, [ this, delay ] {
+      p()->sim->print_log( "{} triggering ready from {} stance delay of {}", *p(), *this, delay );
+      p()->waiting_for_stance_delay_ready_event = false;
+      p()->trigger_ready();
+    } );
   }
 
   bool ready() override
@@ -11252,6 +11266,8 @@ void rogue_t::reset()
 {
   player_t::reset();
 
+  waiting_for_stance_delay_ready_event = false;
+
   venomous_wounds_accumulator = 0;
 
   if( options.initial_shadow_techniques >= 0 )
@@ -11429,7 +11445,7 @@ bool rogue_t::stealthed( uint32_t stealth_mask, bool check_lag ) const
     return true;
 
   if ( ( stealth_mask & STEALTH_SHADOW_DANCE ) && buffs.shadow_dance->check() &&
-       ( !check_lag || buffs.shadow_dance->elapsed( sim->current_time() ) > world_lag.mean ) )
+       ( !check_lag || !waiting_for_stance_delay_ready_event ) )
     return true;
 
   if ( ( stealth_mask & STEALTH_SUBTERFUGE ) && buffs.subterfuge->check() )
