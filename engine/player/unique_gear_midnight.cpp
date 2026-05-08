@@ -3393,14 +3393,6 @@ action_t* create_mrm_action( std::string n, const special_effect_t& e, unsigned 
 
 void murder_row_materials( special_effect_t& effect )
 {
-  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
-    "Murder Row Materials: What determines the proc you get (shiv, crystal, tonic) is unknown. "
-    "Currently implemented that single target hits proc shiv, aoe hits proc crystal, and heals proc tonic. "
-    "Crystal (aoe) is assumed to split damage and increase by 30% per target hit." );
-  effect.player->sim->error( UNVERIFIED_VALUE,
-    "Murder Row Materials: What determines the damage/heal value of the procs is unknown. "
-    "Crystal (aoe) is assumed to have the lowest value, then Shiv (ST), and Tonic (heal) has the highest." );
-
   auto equip = find_special_effects( effect.player, 1259297 );
   assert( !equip.empty() && "Murder Row Materials missing equip effect" );
 
@@ -3408,7 +3400,6 @@ void murder_row_materials( special_effect_t& effect )
   double crystal_amount = 0;
   double tonic_amount = 0;
 
-  // TODO: figure out which index corresponds to which proc value
   range::for_each( equip, [ & ]( auto e ) {
     shiv_amount += e->driver()->effectN( 1 ).average( *e );
     crystal_amount += e->driver()->effectN( 2 ).average( *e );
@@ -3417,20 +3408,29 @@ void murder_row_materials( special_effect_t& effect )
 
   auto shiv = create_mrm_action<generic_proc_t, generic_proc_t>(
     "murder_row_shiv", effect, 1259504, shiv_amount );
+
   auto crystal = create_mrm_action<generic_aoe_proc_t, generic_proc_t>(
-    "slightlystabilized_arcanocrystal",effect, 1259503, crystal_amount );
+    "slightlystabilized_arcanocrystal", effect, 1259503, crystal_amount );
+  auto crystal_impact = static_cast<generic_aoe_proc_t*>( crystal->impact_action );
+  crystal_impact->split_aoe_damage = crystal_impact->aoe_damage_increase = false;
+
   auto tonic = create_mrm_action<generic_heal_t, generic_heal_t>(
     "emergency_healing_tonic", effect, 1259508, tonic_amount );
 
   effect.proc_flags2_ = PF2_CRIT;
   effect.player->callbacks.register_callback_execute_function(
-    effect.spell_id, [ shiv, crystal, tonic ]( auto, auto, player_t* t, const action_state_t* s ) {
+    effect.spell_id, [ shiv, crystal, tonic ]( auto, auto, player_t* t, auto ) {
       if ( !t->is_enemy() )
+      {
         tonic->execute_on_target( t );
-      else if ( s->n_targets > 1 )
-        crystal->execute_on_target( t );
+      }
       else
-        shiv->execute_on_target( t );
+      {
+        if ( crystal->target_list().size() > 1 )
+          crystal->execute_on_target( t );
+        else
+          shiv->execute_on_target( t );
+      }
     } );
 
   new dbc_proc_callback_t( effect.player, effect );
