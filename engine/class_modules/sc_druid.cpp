@@ -273,14 +273,12 @@ struct druid_td_t final : public actor_target_data_t
     dot_t* rake;
     dot_t* red_moon;
     dot_t* rip;
-    dot_t* sunfire;
     dot_t* thrash;
   } dots;
 
   struct hots_t
   {
     dot_t* cultivation;
-    dot_t* frenzied_regeneration;
     dot_t* germination;
     dot_t* lifebloom;
     dot_t* regrowth;
@@ -823,6 +821,12 @@ struct druid_t final : public parse_player_effects_t
     buff_t* ca_inc;        // celestial_alignment or incarnation_moonkin
   } buff;
 
+  struct hots_t
+  {
+    dot_t* frenzied_regeneration;
+    dot_t* echo_of_frenzied_regeneration;
+  } hots;
+
   // Cooldowns
   struct cooldowns_t
   {
@@ -1286,6 +1290,7 @@ struct druid_t final : public parse_player_effects_t
       pets( this ),
       caster_form_weapon(),
       buff(),
+      hots(),
       cooldown(),
       rngs(),
       gain(),
@@ -1774,9 +1779,14 @@ public:
 
   const druid_t* p() const { return static_cast<druid_t*>( ab::player ); }
 
+  // non-const target data accessor
   druid_td_t* td( player_t* t ) { return p()->get_target_data( t ); }
 
-  const druid_td_t* td( player_t* t ) const { return p()->find_target_data( t ); }
+  // const target data accessor with creation, typically used to check for dots
+  druid_td_t* get_td( player_t* t ) const { return p()->get_target_data( t ); }
+
+  // const target data accessor without creation, typically used to check for debuffs
+  const druid_td_t* find_td( player_t* t ) const { return p()->find_target_data( t ); }
 
   dot_t* get_dot( player_t* t = nullptr ) override
   {
@@ -2599,36 +2609,19 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
 
   virtual double harmony_multiplier( player_t* t ) const
   {
-    auto mul = p()->cache.mastery_value();
-
-    if ( auto _td = td( t ) )
-      mul *= _td->hots_ticking();
-    
-    return mul;
+    return p()->cache.mastery_value() * get_td( t )->hots_ticking();
   }
 
   double composite_target_multiplier( player_t* t ) const override
   {
     double ctm = base_t::composite_target_multiplier( t );
-    auto _td = td( t );
 
-    if ( p()->mastery.harmony->ok() )
+    if ( p()->specialization() == DRUID_RESTORATION )
+    {
       ctm *= 1.0 + harmony_multiplier( t );
 
-    if ( iron_mul && _td && _td->buff.ironbark->up() )
-      ctm *= 1.0 + iron_mul;
-
-    if ( t == player )
-    {
-      if ( p()->buff.forestwalk->check() )
-        ctm *= 1.0 + forestwalk_mul;
-
-      if ( p()->buff.barkskin->check() || ( _td && _td->hots.frenzied_regeneration->is_ticking() ) )
-        ctm *= 1.0 + imp_fr_mul;
-
-      ctm *= 1.0 + p()->talent.natural_recovery->effectN( 1 ).percent();
-
-      ctm *= 1.0 + p()->talent.bond_with_nature->effectN( 1 ).percent();
+      if ( iron_mul && get_td( t )->buff.ironbark->up() )
+         ctm *= 1.0 + iron_mul;
     }
 
     return ctm;
@@ -2639,7 +2632,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
     auto mul = base_t::tick_time_pct_multiplier( s );
 
     // photo effect is a positive dummy value, so divide here
-    if ( auto _td = td( player ); photo_mul && _td && _td->hots.lifebloom->is_ticking() )
+    if ( photo_mul && get_td( player )->hots.lifebloom->is_ticking() )
       mul /= 1.0 + photo_mul;
 
     return mul;
@@ -3983,7 +3976,7 @@ struct bloodseeker_vines_t final : public cat_attack_t
   {
     auto tm = cat_attack_t::composite_target_multiplier( t );
 
-    if ( auto _td = td( t ) )
+    if ( auto _td = find_td( t ) )
       tm *= _td->debuff.bloodseeker_vines->check();
 
     return tm;
@@ -4550,8 +4543,8 @@ struct rake_t final : public use_fluid_form_t<CAT_FORM, trigger_call_of_the_elde
 
       // sort by remaining duration
       std::sort( start_it, tl.end(), [ this ]( player_t* a, player_t* b ) {
-        auto a_td = td( a );
-        auto b_td = td( b );
+        auto a_td = get_td( a );
+        auto b_td = get_td( b );
 
         return ( a_td ? a_td->dots.rake->remains() : 0_ms ) < ( b_td ? b_td->dots.rake->remains() : 0_ms );
       } );
@@ -6309,7 +6302,7 @@ struct regrowth_t final : public trigger_thriving_growth_t<use_dot_list_t<druid_
   {
     double tcc = base_t::composite_target_crit_chance( t );
 
-    if ( auto _td = td( t ); is_direct && _td->hots.regrowth->is_ticking() )
+    if ( is_direct && get_td( t )->hots.regrowth->is_ticking() )
       tcc += bonus_crit;
 
     return tcc;
@@ -6659,6 +6652,12 @@ struct frenzied_regeneration_t final : public trigger_wild_guardian_echo_base_t<
 
       base_td_multiplier *= p->talent.wild_guardian_1->effectN( 1 ).percent();
     }
+
+    dot_t* get_dot( player_t* t ) override
+    {
+      assert( t == player );
+      return p()->hots.echo_of_frenzied_regeneration;
+    }
   };
 
   action_t* regrowth = nullptr;
@@ -6694,6 +6693,10 @@ struct frenzied_regeneration_t final : public trigger_wild_guardian_echo_base_t<
       echo_action = p->get_secondary_action<echo_of_frenzied_regeneration_t>( "echo_of_frenzied_regeneration" );
       echo_buff = p->buff.gift_of_frenzied_regeneration;
     }
+
+    // verdant heart from FR doesn't apply to FR itself
+    if ( p->talent.verdant_heart.ok() )
+      base_multiplier /= 1.0 + find_effect( &data(), A_MOD_HEALING_RECEIVED_PCT ).percent();
   }
 
   template <typename T>
@@ -6705,6 +6708,12 @@ struct frenzied_regeneration_t final : public trigger_wild_guardian_echo_base_t<
     a->base_multiplier = p()->talent.reinvigoration->effectN( 3 ).percent();
     add_child( a );
     return a;
+  }
+
+  dot_t* get_dot( player_t* t ) override
+  {
+    assert( t == player );
+    return p()->hots.frenzied_regeneration;
   }
 
   resource_e current_resource() const override
@@ -10597,6 +10606,14 @@ void druid_t::init_spells()
   mastery.razor_claws         = find_mastery_spell( DRUID_FERAL );
   mastery.astral_invocation   = find_mastery_spell( DRUID_BALANCE );
 
+  if ( talent.frenzied_regeneration.ok() )
+  {
+    hots.frenzied_regeneration = get_dot( "frenzied_regeneration", this );
+
+    if ( talent.wild_guardian_1.ok() )
+      hots.echo_of_frenzied_regeneration = get_dot( "echo_of_frenzied_regeneration", this );
+  }
+
   // Arcane affinity is bugged with wrath and manually handled in wrath_t
   register_passive_affect_list( talent.arcane_affinity, affect_list_t( 1 ).remove_family_flag( 0 ) );
 
@@ -13747,60 +13764,69 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     dots.red_moon              = target.get_dot( "red_moon", &source );
     dots.rake                  = target.get_dot( "rake", &source );
     dots.rip                   = target.get_dot( "rip", &source );
-    dots.sunfire               = target.get_dot( "sunfire", &source );
     dots.thrash                = target.get_dot( "thrash", &source );
+
+    debuff.atmospheric_exposure = make_debuff( source.talent.atmospheric_exposure.ok(),
+      *this, "atmospheric_exposure", source.spec.atmospheric_exposure )
+        ->set_trigger_spell( source.talent.atmospheric_exposure )
+        ->set_stack_change_callback( [ p = &source ]( auto, int old_, int new_ ) {
+          if ( new_ )
+            p->uptime.atmospheric_exposure->update( true, p->sim->current_time() );
+          else if ( old_ )
+            p->uptime.atmospheric_exposure->update( false, p->sim->current_time() );
+        } );
+
+    debuff.bloodseeker_vines = make_debuff<bloodseeker_vines_debuff_t>( source.talent.thriving_growth.ok(),
+      *this, "bloodseeker_vines", &source );
+
+    debuff.sabertooth = make_debuff( source.talent.sabertooth.ok(), *this, "sabertooth", source.spec.sabertooth )
+      ->set_trigger_spell( source.talent.sabertooth )
+      ->set_max_stack( as<int>( source.resources.base[ RESOURCE_COMBO_POINT ] ) );
+
+    debuff.stellar_amplification = make_debuff( source.talent.stellar_amplification.ok(),
+      *this, "stellar_amplification", source.spec.stellar_amplification )
+        ->set_trigger_spell( source.talent.stellar_amplification )
+        ->set_refresh_duration_callback(
+          [ dur = source.talent.stellar_amplification->effectN( 1 ).time_value() ]( const buff_t* b, timespan_t d ) {
+            return std::min( dur, b->remains() + d );
+          } )
+        ->set_stack_change_callback( [ p = &source ]( auto, int old_, int new_ ) {
+          if ( new_ )
+            p->uptime.stellar_amplification->update( true, p->sim->current_time() );
+          else if ( old_ )
+            p->uptime.stellar_amplification->update( false, p->sim->current_time() );
+        } );
   }
   else
   {
     hots.cultivation           = target.get_dot( "cultivation", &source );
-    hots.frenzied_regeneration = target.get_dot( "frenzied_regeneration", &source );
     hots.germination           = target.get_dot( "germination", &source );
     hots.lifebloom             = target.get_dot( "lifebloom", &source );
     hots.regrowth              = target.get_dot( "regrowth", &source );
     hots.rejuvenation          = target.get_dot( "rejuvenation", &source );
     hots.wild_growth           = target.get_dot( "wild_growth", &source );
+
+    buff.ironbark =
+      make_buff_fallback( source.talent.ironbark.ok() && !target.is_enemy(), *this, "ironbark", source.talent.ironbark )
+        ->set_cooldown( 0_ms );
   }
-
-  debuff.atmospheric_exposure = make_debuff( source.talent.atmospheric_exposure.ok(),
-    *this, "atmospheric_exposure", source.spec.atmospheric_exposure )
-      ->set_trigger_spell( source.talent.atmospheric_exposure )
-      ->set_stack_change_callback( [ p = &source ]( auto, int old_, int new_ ) {
-        if ( new_ )
-          p->uptime.atmospheric_exposure->update( true, p->sim->current_time() );
-        else if ( old_ )
-          p->uptime.atmospheric_exposure->update( false, p->sim->current_time() );
-      } );
-
-  debuff.bloodseeker_vines = make_debuff<bloodseeker_vines_debuff_t>( source.talent.thriving_growth.ok(),
-    *this, "bloodseeker_vines", &source );
-
-  debuff.sabertooth = make_debuff( source.talent.sabertooth.ok(), *this, "sabertooth", source.spec.sabertooth )
-    ->set_trigger_spell( source.talent.sabertooth )
-    ->set_max_stack( as<int>( source.resources.base[ RESOURCE_COMBO_POINT ] ) );
-
-  debuff.stellar_amplification = make_debuff( source.talent.stellar_amplification.ok(),
-    *this, "stellar_amplification", source.spec.stellar_amplification )
-      ->set_trigger_spell( source.talent.stellar_amplification )
-      ->set_refresh_duration_callback(
-        [ dur = source.talent.stellar_amplification->effectN( 1 ).time_value() ]( const buff_t* b, timespan_t d ) {
-          return std::min( dur, b->remains() + d );
-        } )
-      ->set_stack_change_callback( [ p = &source ]( auto, int old_, int new_ ) {
-        if ( new_ )
-          p->uptime.stellar_amplification->update( true, p->sim->current_time() );
-        else if ( old_ )
-          p->uptime.stellar_amplification->update( false, p->sim->current_time() );
-      } );
-
-  buff.ironbark =
-    make_buff_fallback( source.talent.ironbark.ok() && !target.is_enemy(), *this, "ironbark", source.talent.ironbark )
-      ->set_cooldown( 0_ms );
 }
 
 int druid_td_t::hots_ticking() const
 {
-  auto count = hots.cultivation->is_ticking() + hots.germination->is_ticking() + hots.regrowth->is_ticking() +
-               hots.rejuvenation->is_ticking() + hots.wild_growth->is_ticking();
+  unsigned count = 0;
+
+  static constexpr auto hots_list = {
+    &druid_td_t::hots_t::cultivation,
+    &druid_td_t::hots_t::germination,
+    &druid_td_t::hots_t::regrowth,
+    &druid_td_t::hots_t::rejuvenation,
+    &druid_td_t::hots_t::wild_growth
+  };
+
+  for ( const auto& hot_ref : hots_list )
+    if ( hots.*hot_ref && ( hots.*hot_ref )->is_ticking() )
+      count++;
 
   auto lb_mul = 1 + as<int>( static_cast<druid_t*>( source )->talent.harmonious_blooming->effectN( 1 ).base_value() );
   count += lb_mul * hots.lifebloom->is_ticking();
@@ -14215,6 +14241,7 @@ void druid_t::parse_player_effects()
   }
 
   parse_effects( buff.barkskin );
+  parse_effects( buff.forestwalk );
   parse_effects( buff.killing_strikes );
 
   if ( talent.lycaras_inspiration.ok() )
@@ -14239,6 +14266,8 @@ void druid_t::parse_player_effects()
 
   parse_target_effects( d_fn( &druid_td_t::debuffs_t::bloodseeker_vines ), spec.bloodseeker_vines );
   parse_target_effects( d_fn( &druid_td_t::dots_t::dreadful_wound ), spec.dreadful_wound );
+  parse_target_effects( [ this ]( auto ) { return hots.frenzied_regeneration->is_ticking(); },
+                        talent.frenzied_regeneration );
 
   if ( talent.scintillating_moonlight.ok() )
   {
