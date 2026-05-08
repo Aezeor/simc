@@ -15619,7 +15619,8 @@ void death_knight_t::create_buffs()
           ->set_default_value_from_effect( 1 );
 
   buffs.inexorable_assault =
-      make_fallback( talent.frost.inexorable_assault.ok(), this, "inexorable_assault", spell.inexorable_assault_buff );
+      make_fallback( talent.frost.inexorable_assault.ok(), this, "inexorable_assault", spell.inexorable_assault_buff )
+          ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buffs.killing_machine = make_fallback( talent.frost.killing_machine.ok(), this, "killing_machine",
                                          talent.frost.killing_machine->effectN( 1 ).trigger() )
