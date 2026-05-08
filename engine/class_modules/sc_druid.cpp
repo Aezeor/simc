@@ -9954,7 +9954,7 @@ void druid_t::activate()
     auto hfb_amt = find_effect( find_spell( 1244550 ), E_ENERGIZE ).resource( RESOURCE_ENERGY );
 
     register_on_kill_callback( [ this, hfb_gain, hfb_amt ]( player_t* t ) {
-      if ( auto td = find_target_data( t ); td && td->dots.rip->is_ticking() )
+      if ( get_target_data( t )->dots.rip->is_ticking() )
       {
         buff.hunger_for_battle->trigger();
         resource_gain( RESOURCE_ENERGY, hfb_amt, hfb_gain );
@@ -9965,30 +9965,28 @@ void druid_t::activate()
   if ( talent.resilient_flourishing.ok() && talent.thriving_growth.ok() )
   {
     register_on_kill_callback( [ this ]( player_t* t ) {
-      if ( auto td = find_target_data( t ) )
+      auto td = get_target_data( t );
+      auto stacks = td->debuff.bloodseeker_vines->check();
+      auto dur = td->dots.bloodseeker_vines->remains();
+
+      if ( stacks && dur > 0_ms )
       {
-        auto stacks = td->debuff.bloodseeker_vines->check();
-        auto dur = td->dots.bloodseeker_vines->remains();
-
-        if ( stacks && dur > 0_ms )
+        auto vines = debug_cast<cat_attacks::bloodseeker_vines_t*>( active.bloodseeker_vines );
+        const auto& tl = vines->target_list();
+        if ( auto tar = get_smart_target( tl, &druid_td_t::dots_t::bloodseeker_vines, t ) )
         {
-          auto vines = debug_cast<cat_attacks::bloodseeker_vines_t*>( active.bloodseeker_vines );
-          const auto& tl = vines->target_list();
-          if ( auto tar = get_smart_target( tl, &druid_td_t::dots_t::bloodseeker_vines, t ) )
-          {
-            // TODO: ugly hack. possibly use custom action_state
-            auto orig_dur = vines->dot_duration;
+          // TODO: ugly hack. possibly use custom action_state
+          auto orig_dur = vines->dot_duration;
 
-            vines->dot_duration = dur;
-            vines->dual = true;
-            vines->dot_stacks = stacks;
+          vines->dot_duration = dur;
+          vines->dual = true;
+          vines->dot_stacks = stacks;
 
-            vines->execute_on_target( tar );
+          vines->execute_on_target( tar );
 
-            vines->dot_duration = orig_dur;
-            vines->dual = false;
-            vines->dot_stacks = 1;
-          }
+          vines->dot_duration = orig_dur;
+          vines->dual = false;
+          vines->dot_stacks = 1;
         }
       }
     } );
@@ -12690,7 +12688,7 @@ void druid_t::init_special_effects()
               break;    // continue
         }
 
-        if ( auto td = p()->find_target_data( s->target ); !td || !td->dots.moonfire->is_ticking() )
+        if ( !p()->get_target_data( s->target )->dots.moonfire->is_ticking() )
           return;
 
         druid_cb_t::trigger( data, t, s, pt );
@@ -13949,8 +13947,8 @@ player_t* druid_t::get_smart_target( const std::vector<player_t*>& _tl, dot_t* d
     {
       // sort by time remaining
       range::sort( tl, [ this, &dot ]( player_t* a, player_t* b ) {
-        auto td_a = find_target_data( a );
-        auto td_b = find_target_data( b );
+        auto td_a = get_target_data( a );
+        auto td_b = get_target_data( b );
 
         if ( td_a && td_b )
           return std::invoke( dot, td_a->dots )->remains() < std::invoke( dot, td_b->dots )->remains();
@@ -13962,10 +13960,7 @@ player_t* druid_t::get_smart_target( const std::vector<player_t*>& _tl, dot_t* d
     {
       // prioritize undotted over dotted
       std::partition( tl.begin(), tl.end(), [ this, &dot ]( player_t* t ) {
-        if ( auto td = find_target_data( t ) )
-          return !std::invoke( dot, td->dots )->is_ticking();
-        else
-          return true;
+        return !std::invoke( dot, get_target_data( t )->dots )->is_ticking();
       } );
     }
   }
