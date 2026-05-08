@@ -6722,12 +6722,12 @@ struct inexorable_assault_damage_t final : public death_knight_spell_t
     // first stack is decremented by the consuming action, handle extra stacks here
     double m = death_knight_spell_t::composite_da_multiplier( s );
 
-    int extra_stacks = p()->buffs.inexorable_assault->stack();
+    int starting_stacks = p()->buffs.inexorable_assault->stack();
 
     p()->buffs.inexorable_assault->decrement(
         as<int>( p()->talent.frost.inexorable_assault->effectN( 1 ).base_value() ) - 1 );
 
-    int extra_stacks_consumed = extra_stacks - p()->buffs.inexorable_assault->stack();
+    int extra_stacks_consumed = starting_stacks - std::max(p()->buffs.inexorable_assault->stack(), 1);
 
     m *= 1 + extra_stacks_consumed;
 
