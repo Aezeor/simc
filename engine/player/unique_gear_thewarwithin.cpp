@@ -4198,7 +4198,7 @@ void darkmoon_deck_radiance( special_effect_t& effect )
       effect.player->callbacks.register_callback_execute_function(
           454560, [ & ]( auto, auto, player_t* t, const action_state_t* s ) {
             auto target_debuff = get_debuff( t );
-            if ( s->result_amount > 0 && target_debuff->check() )
+            if ( s && s->result_amount > 0 && target_debuff->check() )
             {
               auto debuff = debug_cast<radiant_focus_debuff_t*>( target_debuff );
               debuff->accumulated_damage += s->result_amount;
