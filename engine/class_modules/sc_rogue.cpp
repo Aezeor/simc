@@ -18,7 +18,6 @@ enum class secondary_trigger
 {
   NONE = 0U,
   SINISTER_STRIKE,
-  WEAPONMASTER,
   SECRET_TECHNIQUE,
   SECRET_TECHNIQUE_CLONE,
   INTERNAL_BLEEDING,
@@ -311,7 +310,14 @@ public:
       actions::rogue_attack_t* secret_technique = nullptr;
       actions::rogue_attack_t* shadowstrike = nullptr;
       actions::rogue_attack_t* shuriken_storm = nullptr;
+      actions::rogue_attack_t* shuriken_tornado = nullptr;
       actions::rogue_attack_t* shuriken_toss = nullptr;
+      struct
+      {
+        actions::rogue_attack_t* backstab = nullptr;
+        actions::rogue_attack_t* gloomblade = nullptr;
+        actions::rogue_attack_t* shadowstrike = nullptr;
+      } weaponmaster;
     } shadow_clone_attack;
     struct
     {
@@ -1543,16 +1549,6 @@ public:
     exsanguinated_rate = 1.0;
     exsanguinated = false;
   }
-
-  proc_types2 cast_proc_type2() const override
-  {
-    if( action->secondary_trigger_type == secondary_trigger::WEAPONMASTER )
-    {
-      return PROC2_CAST_DAMAGE;
-    }
-
-    return action_state_t::cast_proc_type2();
-  }
 };
 
 // ==========================================================================
@@ -2255,7 +2251,7 @@ public:
   void trigger_supercharger();
   void trigger_unseen_blade( const action_state_t* state );
   void trigger_venomous_wounds( const action_state_t* );
-  void trigger_weaponmaster( const action_state_t* );
+  void trigger_weaponmaster( const action_state_t*, rogue_attack_t* );
 
   // General Methods ==========================================================
 
@@ -3578,8 +3574,11 @@ struct ambush_t : public rogue_attack_t
 
 struct shadow_clone_t : public rogue_attack_t
 {
-  shadow_clone_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
-    rogue_attack_t( name, p, s )
+  bool trigger_ancient_arts;
+
+  shadow_clone_t( util::string_view name, rogue_t* p, const spell_data_t* s, bool trigger_ancient_arts = true ) :
+    rogue_attack_t( name, p, s ),
+    trigger_ancient_arts( !p->bugs || trigger_ancient_arts )
   {
     base_multiplier = 0.5; // All current triggers default to half damage
     affected_by.mid1_subtlety_2pc = true;
@@ -3600,7 +3599,9 @@ struct shadow_clone_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    if ( p()->talent.subtlety.ancient_arts_2->ok() && rng().roll( p()->talent.subtlety.ancient_arts_2->effectN( 1 ).percent() ) )
+    // 2026-05-08 -- Some clones do not trigger Ancient Arts 2, such as Weaponmaster and Tornado
+    if ( trigger_ancient_arts && p()->talent.subtlety.ancient_arts_2->ok() &&
+         rng().roll( p()->talent.subtlety.ancient_arts_2->effectN( 1 ).percent() ) )
     {
       trigger_shadow_techniques_buff( execute_state );
     }
@@ -3646,17 +3647,11 @@ struct backstab_t : public rogue_attack_t
   {
     rogue_attack_t::init();
 
-    if ( !is_secondary_action() )
+    if ( !is_secondary_action() && !p()->talent.subtlety.gloomblade->ok() )
     {
-      if ( p()->active.lingering_shadow && !p()->talent.subtlety.gloomblade->ok() )
-      {
-        add_child( p()->active.lingering_shadow );
-      }
-
-      if ( p()->active.echoing_reprimand && !p()->talent.subtlety.gloomblade->ok() )
-      {
-        add_child( p()->active.echoing_reprimand );
-      }
+      add_child( p()->active.lingering_shadow );
+      add_child( p()->active.echoing_reprimand );
+      add_child( p()->active.shadow_clone_attack.weaponmaster.backstab );
     }
   }
 
@@ -3677,7 +3672,7 @@ struct backstab_t : public rogue_attack_t
     rogue_attack_t::impact( state );
 
     trigger_unseen_blade( state );
-    trigger_weaponmaster( state );
+    trigger_weaponmaster( state, p()->active.shadow_clone_attack.weaponmaster.backstab );
     trigger_echoing_reprimand( state );
 
     if ( state->result == RESULT_CRIT && p()->talent.subtlety.improved_backstab->ok() && p()->position() == POSITION_BACK )
@@ -3709,10 +3704,7 @@ struct dispatch_t: public rogue_attack_t
     rogue_attack_t( name, p, p->spec.dispatch, options_str )
   {
     affected_by.delivered_doom = true;
-    if ( p->talent.outlaw.gravedigger_2->ok() )
-    {
-      add_child( p->active.scoundrel_strike.dispatch );
-    }
+    add_child( p->active.scoundrel_strike.dispatch );
   }
 
   void execute() override
@@ -4154,10 +4146,7 @@ struct envenom_t : public rogue_attack_t
     affected_by.darkest_night = affected_by.darkest_night_crit = true;
     affected_by.delivered_doom = true;
 
-    if ( p->active.poison_bomb )
-    {
-      add_child( p->active.poison_bomb );
-    }
+    add_child( p->active.poison_bomb );
   }
   
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -4516,17 +4505,11 @@ struct gloomblade_t : public rogue_attack_t
   {
     rogue_attack_t::init();
 
-    if ( !is_secondary_action() )
+    if ( !is_secondary_action() && p()->talent.subtlety.gloomblade->ok() )
     {
-      if ( p()->active.lingering_shadow && p()->talent.subtlety.gloomblade->ok() )
-      {
-        add_child( p()->active.lingering_shadow );
-      }
-
-      if ( p()->active.echoing_reprimand && p()->talent.subtlety.gloomblade->ok() )
-      {
-        add_child( p()->active.echoing_reprimand );
-      }
+      add_child( p()->active.lingering_shadow );
+      add_child( p()->active.echoing_reprimand );
+      add_child( p()->active.shadow_clone_attack.weaponmaster.gloomblade );
     }
   }
 
@@ -4535,7 +4518,7 @@ struct gloomblade_t : public rogue_attack_t
     rogue_attack_t::impact( state );
 
     trigger_unseen_blade( state );
-    trigger_weaponmaster( state );
+    trigger_weaponmaster( state, p()->active.shadow_clone_attack.weaponmaster.gloomblade );
     trigger_echoing_reprimand( state );
 
     if ( state->result == RESULT_CRIT && p()->talent.subtlety.improved_backstab->ok() )
@@ -4827,10 +4810,7 @@ struct pistol_shot_t : public rogue_attack_t
 
     if ( !is_secondary_action() )
     {
-      if ( p()->active.fan_the_hammer )
-      {
-        add_child( p()->active.fan_the_hammer );
-      }
+      add_child( p()->active.fan_the_hammer );
     }
   }
 
@@ -5000,15 +4980,8 @@ struct mutilate_t : public rogue_attack_t
     add_child( mh_strike );
     add_child( oh_strike );
 
-    if ( p->active.doomblade )
-    {
-      add_child( p->active.doomblade );
-    }
-
-    if ( p->active.echoing_reprimand )
-    {
-      add_child( p->active.echoing_reprimand );
-    }
+    add_child( p->active.doomblade );
+    add_child( p->active.echoing_reprimand );
   }
 
   void execute() override
@@ -5492,9 +5465,19 @@ struct shadowstrike_t : public rogue_attack_t
     rogue_attack_t::impact( state );
 
     trigger_unseen_blade( state );
-    trigger_weaponmaster( state );
+    trigger_weaponmaster( state, p()->active.shadow_clone_attack.weaponmaster.shadowstrike );
     trigger_find_weakness( state );
     trigger_deathstalkers_mark_debuff( state );
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    if ( !is_secondary_action() )
+    {
+      add_child( p()->active.shadow_clone_attack.weaponmaster.shadowstrike );
+    }
   }
 
   double action_multiplier() const override
@@ -5647,8 +5630,8 @@ struct shuriken_storm_t: public rogue_attack_t
 {
   struct shuriken_storm_shadow_clone_t : public shadow_clone_t
   {
-    shuriken_storm_shadow_clone_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
-      shadow_clone_t( name, p, s )
+    shuriken_storm_shadow_clone_t( util::string_view name, rogue_t* p, const spell_data_t* s, bool trigger_ancient_arts = true ) :
+      shadow_clone_t( name, p, s, trigger_ancient_arts )
     {
       aoe = -1;
       reduced_aoe_targets = data().effectN( 4 ).base_value();
@@ -5686,6 +5669,16 @@ struct shuriken_storm_t: public rogue_attack_t
     }
   }
 
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    if ( !is_secondary_action() )
+    {
+      add_child( p()->active.shadow_clone_attack.shuriken_tornado );
+    }
+  }
+
   double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
@@ -5704,7 +5697,7 @@ struct shuriken_storm_t: public rogue_attack_t
     
     if ( p()->talent.subtlety.shuriken_tornado->ok() )
     {
-      trigger_shadow_clone( execute_state, shadow_clone_attack(),
+      trigger_shadow_clone( execute_state, p()->active.shadow_clone_attack.shuriken_tornado,
                             p()->talent.subtlety.shuriken_tornado->effectN( 1 ).percent(), 200_ms );
     }
   }
@@ -5796,8 +5789,7 @@ struct sinister_strike_t : public rogue_attack_t
     if ( !is_secondary_action() )
     {
       add_child( extra_attack );
-      if ( p()->active.echoing_reprimand )
-        add_child( p()->active.echoing_reprimand );
+      add_child( p()->active.echoing_reprimand );
     }
   }
 
@@ -6313,11 +6305,7 @@ struct deathstalkers_mark_t : public rogue_attack_t
   void init() override
   {
     rogue_attack_t::init();
-
-    if ( p()->active.deathstalker.mass_casualty )
-    {
-      add_child( p()->active.deathstalker.mass_casualty );
-    }
+    add_child( p()->active.deathstalker.mass_casualty );
   }
 };
 
@@ -6589,15 +6577,8 @@ struct coup_de_grace_t : public rogue_attack_t
       }
     }
 
-    if ( attacks.front()->bonus_attack )
-    {
-      add_child( attacks.front()->bonus_attack );
-    }
-
-    if ( p()->talent.outlaw.gravedigger_2->ok() )
-    {
-      add_child( p()->active.scoundrel_strike.coup_de_grace );
-    }
+    add_child( attacks.front()->bonus_attack );
+    add_child( p()->active.scoundrel_strike.coup_de_grace );
   }
 
   void snapshot_state( action_state_t* state, result_amount_type rt ) override
@@ -7923,12 +7904,11 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques_cp( const action_s
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* state )
+void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* state, actions::rogue_attack_t* action )
 {
   if ( !p()->talent.subtlety.weaponmaster->ok() || !ab::result_is_hit( state->result ) )
     return;
 
-  actions::rogue_attack_t* action = shadow_clone_attack();
   assert( action );
   if ( !action )
     return;
@@ -10250,25 +10230,41 @@ void rogue_t::init_spells()
     active.shadow_blades_attack = get_background_action<actions::shadow_blades_attack_t>( "shadow_blades_attack" );
 
     active.shadow_clone_attack.backstab = get_secondary_trigger_action<actions::shadow_clone_t>(
-      secondary_trigger::SHADOW_CLONE, "shadow_clone_backstab", spec.shadow_clone_backstab_attack );
+      secondary_trigger::SHADOW_CLONE, "backstab_shadow_clone", spec.shadow_clone_backstab_attack );
     active.shadow_clone_attack.black_powder = get_secondary_trigger_action<actions::black_powder_t::black_powder_shadow_clone_t>(
-      secondary_trigger::SHADOW_CLONE, "shadow_clone_black_powder", spec.shadow_clone_black_powder_attack );
+      secondary_trigger::SHADOW_CLONE, "black_powder_shadow_clone", spec.shadow_clone_black_powder_attack );
     active.shadow_clone_attack.coup_de_grace = get_secondary_trigger_action<actions::coup_de_grace_t::coup_de_grace_shadow_clone_t>(
-      secondary_trigger::SHADOW_CLONE, "shadow_clone_coup_de_grace", spec.shadow_clone_eviscerate_attack ); // MIDNIGHT TOCHECK
+      secondary_trigger::SHADOW_CLONE, "coup_de_grace_shadow_clone", spec.shadow_clone_eviscerate_attack );
     active.shadow_clone_attack.eviscerate = get_secondary_trigger_action<actions::shadow_clone_t>(
-      secondary_trigger::SHADOW_CLONE, "shadow_clone_eviscerate", spec.shadow_clone_eviscerate_attack );
+      secondary_trigger::SHADOW_CLONE, "eviscerate_shadow_clone", spec.shadow_clone_eviscerate_attack );
     active.shadow_clone_attack.gloomblade = get_secondary_trigger_action<actions::shadow_clone_t>(
-      secondary_trigger::SHADOW_CLONE, "shadow_clone_gloomblade", spec.shadow_clone_gloomblade_attack );
+      secondary_trigger::SHADOW_CLONE, "gloomblade_shadow_clone", spec.shadow_clone_gloomblade_attack );
     active.shadow_clone_attack.goremaws_bite = get_secondary_trigger_action<actions::shadow_clone_t>(
-      secondary_trigger::SHADOW_CLONE, "shadow_clone_goremaws_bite", spec.shadow_clone_goremaws_bite_attack );
+      secondary_trigger::SHADOW_CLONE, "goremaws_bite_shadow_clone", spec.shadow_clone_goremaws_bite_attack );
     active.shadow_clone_attack.secret_technique = get_secondary_trigger_action<actions::secret_technique_t::secret_technique_shadow_clone_t>(
-      secondary_trigger::SHADOW_CLONE, "shadow_clone_secret_technique", spec.shadow_clone_secret_technique_attack );
+      secondary_trigger::SHADOW_CLONE, "secret_technique_shadow_clone", spec.shadow_clone_secret_technique_attack );
     active.shadow_clone_attack.shadowstrike = get_secondary_trigger_action<actions::shadow_clone_t>(
-      secondary_trigger::SHADOW_CLONE, "shadow_clone_shadowstrike", spec.shadow_clone_shadowstrike_attack );
+      secondary_trigger::SHADOW_CLONE, "shadowstrike_shadow_clone", spec.shadow_clone_shadowstrike_attack );
     active.shadow_clone_attack.shuriken_storm = get_secondary_trigger_action<actions::shuriken_storm_t::shuriken_storm_shadow_clone_t>(
-      secondary_trigger::SHADOW_CLONE, "shadow_clone_shuriken_storm", spec.shadow_clone_shuriken_storm_attack );
+      secondary_trigger::SHADOW_CLONE, "shuriken_storm_shadow_clone", spec.shadow_clone_shuriken_storm_attack );
     active.shadow_clone_attack.shuriken_toss = get_secondary_trigger_action<actions::shadow_clone_t>(
-      secondary_trigger::SHADOW_CLONE, "shadow_clone_shuriken_toss", spec.shadow_clone_shuriken_toss_attack );
+      secondary_trigger::SHADOW_CLONE, "shuriken_toss_shadow_clone", spec.shadow_clone_shuriken_toss_attack );
+
+    if ( talent.subtlety.shuriken_tornado->ok() )
+    {
+      active.shadow_clone_attack.shuriken_tornado = get_secondary_trigger_action<actions::shuriken_storm_t::shuriken_storm_shadow_clone_t>(
+        secondary_trigger::SHADOW_CLONE, "shuriken_storm_tornado_clone", spec.shadow_clone_shuriken_storm_attack, false );
+    }
+
+    if ( talent.subtlety.weaponmaster->ok() )
+    {
+      active.shadow_clone_attack.weaponmaster.backstab = get_secondary_trigger_action<actions::shadow_clone_t>(
+        secondary_trigger::SHADOW_CLONE, "backstab_weaponmaster_clone", spec.shadow_clone_backstab_attack, false );
+      active.shadow_clone_attack.weaponmaster.gloomblade = get_secondary_trigger_action<actions::shadow_clone_t>(
+        secondary_trigger::SHADOW_CLONE, "gloomblade_weaponmaster_clone", spec.shadow_clone_gloomblade_attack, false );
+      active.shadow_clone_attack.weaponmaster.shadowstrike = get_secondary_trigger_action<actions::shadow_clone_t>(
+        secondary_trigger::SHADOW_CLONE, "shadowstrike_weaponmaster_clone", spec.shadow_clone_shadowstrike_attack, false );
+    }
 
     active.shadow_clone_attack.eviscerate->affected_by.darkest_night = true;
     active.shadow_clone_attack.eviscerate->affected_by.darkest_night_crit = true;
