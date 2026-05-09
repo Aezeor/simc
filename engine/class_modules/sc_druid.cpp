@@ -13205,7 +13205,7 @@ double druid_t::composite_armor() const
 
   if ( buff.ironfur->check() || buff.echo_of_ironfur->check() )
   {
-    auto if_val = buff.ironfur->stack_value() + buff.echo_of_ironfur->stack_value();
+    auto if_val = buff.ironfur->check_stack_value() + buff.echo_of_ironfur->check_stack_value();
 
     // TODO: confirm this is dynamic
     if ( buff.killing_strikes->check() )
