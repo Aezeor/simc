@@ -5141,12 +5141,6 @@ item_t* player_t::find_item_by_use_effect_name( util::string_view effect_name )
   return nullptr;
 }
 
-bool player_t::has_t18_class_trinket() const
-{
-  // Class modules should override this with their individual trinket detection
-  return false;
-}
-
 /**
  * Scaled player level.
  *

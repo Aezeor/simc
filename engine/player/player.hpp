@@ -323,7 +323,7 @@ struct player_t : public actor_t
   event_t* off_gcd;
   event_t* cast_while_casting_poll_event; // Periodically check for something to do while casting
   event_t* spell_queue_event;
-  std::vector<std::pair<const cooldown_t*,const cooldown_t*>> off_gcd_cd;
+  std::vector<std::pair<const cooldown_t*, const cooldown_t*>> off_gcd_cd;
   std::vector<std::pair<const cooldown_t*, const cooldown_t*>> cast_while_casting_cd;
   timespan_t off_gcd_ready;
   timespan_t cast_while_casting_ready;
@@ -1462,9 +1462,6 @@ public:
 
   player_t* get_owner_or_self()
   { return const_cast<player_t*>(static_cast<const player_t*>(this) -> get_owner_or_self()); }
-
-  // T18 Hellfire Citadel class trinket detection
-  virtual bool has_t18_class_trinket() const;
 
   // Targetdata stuff
   virtual const actor_target_data_t* find_target_data( const player_t* /* target */ ) const
