@@ -3042,60 +3042,50 @@ struct dawnlight_t : public paladin_spell_t
 
 namespace buffs
 {
-struct blessing_of_sacrifice_t : public buff_t
+struct blessing_of_sacrifice_t : public absorb_buff_t
 {
   paladin_t* source;  // Assumption: Only one paladin can cast HoS per target
-  double source_health_pool;
+  double absorb_pct;
 
   blessing_of_sacrifice_t( player_t* p )
-    : buff_t( p, "blessing_of_sacrifice", p->find_spell( 6940 ) ), source( nullptr ), source_health_pool( 0.0 )
-  {
-  }
+    : absorb_buff_t( p, "blessing_of_sacrifice", p->find_spell( 6940 ) ),
+      source( nullptr ),
+      absorb_pct( data().effectN( 1 ).percent() )
+  {}
 
   // Trigger function for the paladin applying HoS on the target
-  bool trigger_hos( paladin_t& source )
+  bool trigger_hos( paladin_t& paladin )
   {
-    if ( this->source )
+    if ( source )
       return false;
 
-    this->source       = &source;
-    source_health_pool = source.resources.max[ RESOURCE_HEALTH ];
+    source = &paladin;
 
-    return buff_t::trigger( 1 );
+    return absorb_buff_t::trigger( 1, paladin.resources.max[ RESOURCE_HEALTH ] );
   }
 
-  // Misuse functions as the redirect callback for damage onto the source
-  bool trigger( int, double value, double, timespan_t ) override
+  double consume( double amount, action_state_t* s ) override
   {
-    assert( source );
+    return absorb_buff_t::consume( amount * absorb_pct, s );
+  }
 
-    value = std::min( source_health_pool, value );
-    source->active.blessing_of_sacrifice_redirect->trigger( value );
-    source_health_pool -= value;
-
-    // If the health pool is fully consumed, expire the buff early
-    if ( source_health_pool <= 0 )
-    {
-      expire();
-    }
-
-    return true;
+  void absorb_used( double amount, player_t* ) override
+  {
+    source->active.blessing_of_sacrifice_redirect->trigger( amount );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
+    absorb_buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    source             = nullptr;
-    source_health_pool = 0.0;
+    source = nullptr;
   }
 
   void reset() override
   {
-    buff_t::reset();
+    absorb_buff_t::reset();
 
-    source             = nullptr;
-    source_health_pool = 0.0;
+    source = nullptr;
   }
 };
 
@@ -3172,7 +3162,12 @@ void blessing_of_sacrifice_t::execute()
 {
   paladin_spell_t::execute();
 
+  // TODO: convert to dynamic buff creation
   auto* b = debug_cast<buffs::blessing_of_sacrifice_t*>( target->buffs.blessing_of_sacrifice );
+
+  // TODO: confirm HoS applies before absorbs
+  if ( !range::contains( target->absorb_priority, b->data().id() ) )
+    target->absorb_priority.insert( target->absorb_priority.begin(), b->data().id() );
 
   b->trigger_hos( *p() );
 }

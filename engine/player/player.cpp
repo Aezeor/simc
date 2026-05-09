@@ -8455,33 +8455,10 @@ void account_parry_haste( player_t& p, action_state_t* s )
   }
 }
 
-void account_blessing_of_sacrifice( player_t& p, action_state_t* s )
-{
-  if ( p.buffs.blessing_of_sacrifice->check() )
-  {
-    // figure out how much damage gets redirected
-    double redirected_damage = s->result_amount * ( p.buffs.blessing_of_sacrifice->data().effectN( 1 ).percent() );
-
-    // apply that damage to the source paladin
-    double chance = p.buffs.blessing_of_sacrifice->default_chance;
-    if ( chance < 0 )
-      chance = s->action->ppm_proc_chance( -chance );
-
-    p.buffs.blessing_of_sacrifice->trigger( 0, redirected_damage, chance, 0_ms );
-
-    // mitigate that amount from the target.
-    // Slight inaccuracy: We do not get a feedback of paladin health buffer expiration here.
-    s->result_amount -= redirected_damage;
-
-    if ( p.sim->debug && s->action && !s->target->is_enemy() && !s->target->is_add() )
-      p.sim->out_debug.printf( "Damage to %s after Blessing of Sacrifice is %f", s->target->name(), s->result_amount );
-  }
-}
-
 bool absorb_sort( absorb_buff_t* a, absorb_buff_t* b )
 {
   double lv = a->current_value;
-  double rv = a->current_value;
+  double rv = b->current_value;
   if ( lv == rv )
   {
     return a->name_str < b->name_str;
@@ -8703,8 +8680,6 @@ void player_t::assess_damage( school_e school, result_amount_type rt, action_sta
     sim->print_debug( "{} {} damage to {} after mitigation is {}.", *s->action->player, *s->action, *this,
                       s->result_amount );
   }
-
-  account_blessing_of_sacrifice( *this, s );
 
   assess_damage_imminent_pre_absorb( school, rt, s );
 
