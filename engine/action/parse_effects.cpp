@@ -1103,8 +1103,10 @@ double parse_player_effects_t::composite_player_healing_received_multiplier() co
 double parse_player_effects_t::composite_player_absorb_received_multiplier() const
 {
   auto ar = player_t::composite_player_absorb_received_multiplier();
+
   for ( const auto& i : absorb_received_mult_effects )
     ar *= 1.0 + get_effect_value( i );
+
   return ar;
 }
 

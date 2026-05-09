@@ -3440,7 +3440,11 @@ struct matted_fur_buff_t final : public druid_absorb_buff_t
 
   bool trigger( int s, double, double c, timespan_t d ) override
   {
-    return base_t::trigger( s, attack_power() * coeff * ( 1.0 + p()->composite_heal_versatility() ), c, d );
+    auto amount = attack_power() * coeff;
+    amount *= 1.0 + p()->composite_heal_versatility();
+    amount *= 1.0 + p()->composite_player_absorb_received_multiplier();
+
+    return base_t::trigger( s, amount, c, d );
   }
 };
 
@@ -5082,7 +5086,8 @@ public:
     : BASE( n, p, s, f ),
       p_( p ),
       mul( p->talent.ursocs_fury->effectN( 1 ).percent() *
-           ( 1.0 + p->talent.nurturing_instinct->effectN( 1 ).percent() ) )
+           ( 1.0 + p->talent.nurturing_instinct->effectN( 1 ).percent() ) *
+           ( 1.0 + p->talent.natural_recovery->effectN( 1 ).percent() ) )
   {}
 
   void trigger_ursocs_fury( const action_state_t* s )
@@ -6746,9 +6751,9 @@ struct frenzied_regeneration_t final : public trigger_wild_guardian_echo_base_t<
       auto overheal = d->state->result_total - d->state->result_amount;
       if ( overheal > 0 )
       {
-        // initial application gains mastery bonus
+        // initial application gains absorb received bonus
         if ( !p()->buff.natural_resilience->check() )
-          overheal *= p()->cache.mastery_value();
+          overheal *= 1.0 + p()->composite_player_absorb_received_multiplier();
 
         p()->buff.natural_resilience->trigger( 1, overheal );
         p()->buff.natural_resilience->current_value =
@@ -14226,6 +14231,7 @@ void druid_t::parse_action_target_effects( action_t* action )
 
 void druid_t::parse_player_effects()
 {
+  parse_effects( mastery.natures_guardian );
   parse_effects( mastery.natures_guardian_AP );
   parse_effects( talent.thick_hide, PARSE_PASSIVE );
 
