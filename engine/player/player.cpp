@@ -1256,10 +1256,8 @@ player_t::base_initial_current_t::base_initial_current_t() :
   stats(),
   spell_power_per_intellect( 0 ),
   spell_power_per_attack_power( 0 ),
-  spell_crit_per_intellect( 0 ),
   attack_power_per_strength( 0 ),
   attack_power_per_agility( 0 ),
-  attack_crit_per_agility( 0 ),
   attack_power_per_spell_power( 0 ),
   dodge_per_agility( 0 ),
   parry_per_strength( 0 ),
@@ -1329,11 +1327,9 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, "{}", s.stats );
   fmt::format_to( out, " spell_power_per_intellect={}", s.spell_power_per_intellect );
   fmt::format_to( out, " spell_power_per_attack_power={}", s.spell_power_per_attack_power );
-  fmt::format_to( out, " spell_crit_per_intellect={}", s.spell_crit_per_intellect );
   fmt::format_to( out, " attack_power_per_strength={}", s.attack_power_per_strength );
   fmt::format_to( out, " attack_power_per_agility={}", s.attack_power_per_agility );
   fmt::format_to( out, " attack_power_per_spell_power={}", s.attack_power_per_spell_power );
-  fmt::format_to( out, " attack_crit_per_agility={}", s.attack_crit_per_agility );
   fmt::format_to( out, " dodge_per_agility={}", s.dodge_per_agility );
   fmt::format_to( out, " parry_per_strength={}", s.parry_per_strength );
   fmt::format_to( out, " parry_rating_per_crit_rating={}", s.parry_rating_per_crit_rating );
@@ -1538,9 +1534,6 @@ void player_t::init_base_stats()
       base.spell_crit_chance += racials.touch_of_elune->effectN( 1 ).percent();
       base.attack_crit_chance += racials.touch_of_elune->effectN( 1 ).percent();
     }
-
-    base.spell_crit_per_intellect = dbc->spell_crit_scaling( type, level() );
-    base.attack_crit_per_agility  = dbc->melee_crit_scaling( type, level() );
 
     base.mastery     = get_passive_player_value( 8.0, "mastery" );
     base.versatility = get_passive_player_value( base.versatility, "versatility" );
@@ -5344,9 +5337,6 @@ double player_t::composite_melee_crit_chance() const
 
   ac += apply_combat_rating_dr( RATING_MELEE_CRIT, composite_melee_crit_rating() / current.rating.attack_crit );
 
-  if ( current.attack_crit_per_agility )
-    ac += ( cache.agility() / current.attack_crit_per_agility / 100.0 );
-
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
     ac += b->check_stack_value();
 
@@ -5640,11 +5630,6 @@ double player_t::composite_spell_crit_chance() const
   double sc = current.spell_crit_chance;
 
   sc += apply_combat_rating_dr( RATING_SPELL_CRIT, composite_spell_crit_rating() / current.rating.spell_crit );
-
-  if ( current.spell_crit_per_intellect > 0 )
-  {
-    sc += ( cache.intellect() / current.spell_crit_per_intellect / 100.0 );
-  }
 
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
     sc += b->check_stack_value();
@@ -6258,15 +6243,11 @@ void player_t::invalidate_cache( cache_e c )
         invalidate_cache( CACHE_ATTACK_POWER );
       if ( current.dodge_per_agility > 0 )
         invalidate_cache( CACHE_DODGE );
-      if ( current.attack_crit_per_agility > 0 )
-        invalidate_cache( CACHE_ATTACK_CRIT_CHANCE );
       break;
 
     case CACHE_INTELLECT:
       if ( current.spell_power_per_intellect > 0 )
         invalidate_cache( CACHE_SPELL_POWER );
-      if ( current.spell_crit_per_intellect > 0 )
-        invalidate_cache( CACHE_SPELL_CRIT_CHANCE );
       break;
 
     case CACHE_SPELL_POWER:

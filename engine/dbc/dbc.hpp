@@ -363,10 +363,6 @@ public:
   double horizontal_shift( player_e t ) const;
 
   double spell_scaling( player_e t, unsigned level ) const;
-  double melee_crit_scaling( player_e t, unsigned level ) const;
-  double melee_crit_scaling( pet_e t, unsigned level ) const;
-  double spell_crit_scaling( player_e t, unsigned level ) const;
-  double spell_crit_scaling( pet_e t, unsigned level ) const;
   double health_per_stamina( unsigned level ) const;
   double item_socket_cost( unsigned ilevel ) const;
   double armor_mitigation_constant( unsigned level ) const;
