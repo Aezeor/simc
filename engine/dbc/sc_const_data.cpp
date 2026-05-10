@@ -1230,26 +1230,6 @@ double dbc_t::avoid_per_str_agi_by_level( unsigned level ) const
 #endif
 }
 
-double dbc_t::health_base( player_e t, [[maybe_unused]] unsigned level ) const
-{
-  [[maybe_unused]] auto class_id = util::class_id( t );
-
-  #if SC_USE_PTR
-  assert( class_id < ( ptr ? PTR_MAX_CLASS : MAX_CLASS ) && level > 0 && level <= MAX_SCALING_LEVEL );
-#else
-  assert( class_id < MAX_CLASS && level > 0 && level <= MAX_SCALING_LEVEL );
-#endif
-  /*
-#if SC_USE_PTR
-  return ptr ? __ptr_gt_octbase_hpby_class[ class_id ][ level - 1 ]
-             : __gt_octbase_hpby_class[ class_id ][ level - 1 ];
-#else
-  return __gt_octbase_hpby_class[ class_id ][ level - 1 ];
-#endif
-  */
-  return 0;
-}
-
 double dbc_t::resource_base( player_e t, unsigned level ) const
 {
   auto class_id = util::class_id( t );

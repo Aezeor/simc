@@ -1597,7 +1597,6 @@ void player_t::init_base_stats()
       switch ( rt )
       {
         case RESOURCE_HEALTH:
-          rt_base = dbc->health_base( type, level() );
           break;
         case RESOURCE_MANA:  // 1% of base mana as mana regen per second for all classes.
           rt_base = dbc->resource_base( type, level() );
