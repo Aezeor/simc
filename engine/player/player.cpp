@@ -8634,29 +8634,6 @@ void collect_dmg_taken_data( player_t& p, const action_state_t* s, double /* res
     p.incoming_damage.push_back( {p.sim->current_time(), s->result_amount, s->action->get_school()} );
   }
 }
-
-/**
- * Check if Guardian spirit saves the life of the player.
- */
-bool try_guardian_spirit( player_t& p, double actual_amount )
-{
-  // This can only save the target, if the damage is less than 200% of the target's health as of 4.0.6
-  if ( !p.is_enemy() && p.buffs.guardian_spirit->check() &&
-       actual_amount <= ( p.resources.max[ RESOURCE_HEALTH ] * 2 ) )
-  {
-    // Just assume that this is used so rarely that a strcmp hack will do
-    // stats_t* stat = buffs.guardian_spirit -> source ? buffs.guardian_spirit -> source -> get_stats(
-    // "guardian_spirit" ) : 0; double gs_amount = resources.max[ RESOURCE_HEALTH ] * buffs.guardian_spirit ->
-    // data().effectN( 2
-    // ).percent(); resource_gain( RESOURCE_HEALTH, s -> result_amount ); if ( stat ) stat -> add_result( gs_amount,
-    // gs_amount, result_amount_type::HEAL_DIRECT, RESULT_HIT );
-    p.buffs.guardian_spirit->expire();
-    return true;
-  }
-
-  return false;
-}
-
 }  // namespace assess_dmg_helper_functions
 
 }
@@ -8693,15 +8670,12 @@ void player_t::do_damage( action_state_t* incoming_state )
   using namespace assess_dmg_helper_functions;
 
   action_t* incoming_action = incoming_state->action;
-  double actual_amount = 0.0;
 
   collect_dmg_taken_data( *this, incoming_state,
                           incoming_state->result_mitigated - incoming_state->self_absorb_amount );
 
   if ( incoming_state->result_amount > 0.0 )
-  {
-    actual_amount = resource_loss( RESOURCE_HEALTH, incoming_state->result_amount, nullptr, incoming_action );
-  }
+    resource_loss( RESOURCE_HEALTH, incoming_state->result_amount, nullptr, incoming_action );
 
   // New callback system; proc abilities on incoming events.
   if ( incoming_action && incoming_action->callbacks && incoming_action->target_callbacks &&
@@ -8737,16 +8711,13 @@ void player_t::do_damage( action_state_t* incoming_state )
   // Check if target is dying
   if ( !demise_event && health_percentage() <= death_pct && !resources.is_infinite( RESOURCE_HEALTH ) )
   {
-    if ( !try_guardian_spirit( *this, actual_amount ) )
-    {  // Player was not saved by guardian spirit, kill him
-      if ( !current.sleeping )
-      {
-        collected_data.deaths.add( sim->current_time().total_seconds() );
-      }
-      if ( sim->log )
-        sim->out_log.printf( "%s has died.", name() );
-      make_event<player_demise_event_t>( *sim, *this );
-    }
+    if ( !current.sleeping )
+      collected_data.deaths.add( sim->current_time().total_seconds() );
+
+    if ( sim->log )
+      sim->out_log.printf( "%s has died.", name() );
+
+    make_event<player_demise_event_t>( *sim, *this );
   }
 }
 
