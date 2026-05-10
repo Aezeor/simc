@@ -1325,68 +1325,68 @@ player_t::base_initial_current_t::base_initial_current_t() :
 void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "{}", s.stats );
-  fmt::format_to( out, " spell_power_per_intellect={}", s.spell_power_per_intellect );
-  fmt::format_to( out, " spell_power_per_attack_power={}", s.spell_power_per_attack_power );
-  fmt::format_to( out, " attack_power_per_strength={}", s.attack_power_per_strength );
-  fmt::format_to( out, " attack_power_per_agility={}", s.attack_power_per_agility );
-  fmt::format_to( out, " attack_power_per_spell_power={}", s.attack_power_per_spell_power );
-  fmt::format_to( out, " dodge_per_agility={}", s.dodge_per_agility );
-  fmt::format_to( out, " parry_per_strength={}", s.parry_per_strength );
-  fmt::format_to( out, " parry_rating_per_crit_rating={}", s.parry_rating_per_crit_rating );
-  fmt::format_to( out, " health_per_stamina={}", s.health_per_stamina );
+  fmt::format_to( out, " spell_power_per_intellect={:.6g}", s.spell_power_per_intellect );
+  fmt::format_to( out, " spell_power_per_attack_power={:.6g}", s.spell_power_per_attack_power );
+  fmt::format_to( out, " attack_power_per_strength={:.6g}", s.attack_power_per_strength );
+  fmt::format_to( out, " attack_power_per_agility={:.6g}", s.attack_power_per_agility );
+  fmt::format_to( out, " attack_power_per_spell_power={:.6g}", s.attack_power_per_spell_power );
+  fmt::format_to( out, " dodge_per_agility={:.6g}", s.dodge_per_agility );
+  fmt::format_to( out, " parry_per_strength={:.6g}", s.parry_per_strength );
+  fmt::format_to( out, " parry_rating_per_crit_rating={:.6g}", s.parry_rating_per_crit_rating );
+  fmt::format_to( out, " health_per_stamina={:.6g}", s.health_per_stamina );
   // resource_reduction
-  fmt::format_to( out, " miss={}", s.miss );
-  fmt::format_to( out, " dodge={}", s.dodge );
-  fmt::format_to( out, " parry={}", s.parry );
-  fmt::format_to( out, " block={}", s.block );
-  fmt::format_to( out, " spell_crit_chance={}", s.spell_crit_chance );
-  fmt::format_to( out, " attack_crit_chance={}", s.attack_crit_chance );
-  fmt::format_to( out, " block_value={}", s.block_value );
-  fmt::format_to( out, " mastery={}", s.mastery );
-  fmt::format_to( out, " versatility={}", s.versatility );
-  fmt::format_to( out, " all_haste={}", s.all_haste );
-  fmt::format_to( out, " melee_haste={}", s.melee_haste );
-  fmt::format_to( out, " spell_haste={}", s.spell_haste );
-  fmt::format_to( out, " ranged_haste={}", s.ranged_haste );
-  fmt::format_to( out, " leech={}", s.leech );
-  fmt::format_to( out, " expertise={}", s.expertise );
-  fmt::format_to( out, " skill={}", s.skill );
-  fmt::format_to( out, " distance={}", s.distance );
-  fmt::format_to( out, " armor_coeff={}", s.armor_coeff );
+  fmt::format_to( out, " miss={:.6g}", s.miss );
+  fmt::format_to( out, " dodge={:.6g}", s.dodge );
+  fmt::format_to( out, " parry={:.6g}", s.parry );
+  fmt::format_to( out, " block={:.6g}", s.block );
+  fmt::format_to( out, " spell_crit_chance={:.6g}", s.spell_crit_chance );
+  fmt::format_to( out, " attack_crit_chance={:.6g}", s.attack_crit_chance );
+  fmt::format_to( out, " block_value={:.6g}", s.block_value );
+  fmt::format_to( out, " mastery={:.6g}", s.mastery );
+  fmt::format_to( out, " versatility={:.6g}", s.versatility );
+  fmt::format_to( out, " all_haste={:.6g}", s.all_haste );
+  fmt::format_to( out, " melee_haste={:.6g}", s.melee_haste );
+  fmt::format_to( out, " spell_haste={:.6g}", s.spell_haste );
+  fmt::format_to( out, " ranged_haste={:.6g}", s.ranged_haste );
+  fmt::format_to( out, " leech={:.6g}", s.leech );
+  fmt::format_to( out, " expertise={:.6g}", s.expertise );
+  fmt::format_to( out, " skill={:.6g}", s.skill );
+  fmt::format_to( out, " distance={:.6g}", s.distance );
+  fmt::format_to( out, " armor_coeff={:.6g}", s.armor_coeff );
   fmt::format_to( out, " sleeping={}", s.sleeping );
   // attribute_multiplier
   for ( auto i : { ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT } )
   {
-    fmt::format_to( out, " {}_multiplier={}", util::attribute_type_string( i ), s.attribute_multiplier[ i ] );
-    fmt::format_to( out, " matching_armor_{}_multiplier={}", util::attribute_type_string( i ),
+    fmt::format_to( out, " {}_multiplier={:.6g}", util::attribute_type_string( i ), s.attribute_multiplier[ i ] );
+    fmt::format_to( out, " matching_armor_{}_multiplier={:.6g}", util::attribute_type_string( i ),
                     s.matching_armor_multiplier[ i ] );
   }
   // rating_multiplier
   for ( auto i = RATING_BLOCK; i < RATING_MAX; i++ )
-    fmt::format_to( out, " {}_multiplier={}", util::rating_type_string( i ), s.rating_multiplier[ i ] );
+    fmt::format_to( out, " {}_multiplier={:.6g}", util::rating_type_string( i ), s.rating_multiplier[ i ] );
 
-  fmt::format_to( out, " spell_power_multiplier={}", s.spell_power_multiplier );
-  fmt::format_to( out, " attack_power_multiplier={}", s.attack_power_multiplier );
-  fmt::format_to( out, " base_armor_multiplier={}", s.base_armor_multiplier );
-  fmt::format_to( out, " armor_multiplier={}", s.armor_multiplier );
+  fmt::format_to( out, " spell_power_multiplier={:.6g}", s.spell_power_multiplier );
+  fmt::format_to( out, " attack_power_multiplier={:.6g}", s.attack_power_multiplier );
+  fmt::format_to( out, " base_armor_multiplier={:.6g}", s.base_armor_multiplier );
+  fmt::format_to( out, " armor_multiplier={:.6g}", s.armor_multiplier );
   for ( auto school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; ++school )
   {
-    fmt::format_to( out, " {}_damage_multiplier={}", util::school_type_string( school ),
+    fmt::format_to( out, " {}_damage_multiplier={:.6g}", util::school_type_string( school ),
                     s.damage_multiplier[ school ] );
-    fmt::format_to( out, " {}_crit_damage_multiplier={}", util::school_type_string( school ),
+    fmt::format_to( out, " {}_crit_damage_multiplier={:.6g}", util::school_type_string( school ),
                     s.crit_damage_multiplier[ school ] );
   }
-  fmt::format_to( out, " healing_multiplier={}", s.healing_multiplier );
-  fmt::format_to( out, " crit_healing_multiplier={}", s.crit_healing_multiplier );
-  fmt::format_to( out, " attack_speed_multiplier={}", s.attack_speed_multiplier );
-  fmt::format_to( out, " pet_damage_multiplier={}", s.pet_damage_multiplier );
-  fmt::format_to( out, " guardian_damage_multiplier={}", s.guardian_damage_multiplier );
-  fmt::format_to( out, " absorb_multiplier={}", s.absorb_multiplier );
-  fmt::format_to( out, " absorb_received_multiplier={}", s.absorb_received_multiplier );
-  fmt::format_to( out, " healing_received_multiplier={}", s.healing_received_multiplier );
-  fmt::format_to( out, " movement_speed={}_yards/s", s.movement_speed );
-  fmt::format_to( out, " stacking_movement_speed_modifier={}", s.stacking_movement_speed_modifier );
-  fmt::format_to( out, " non_stacking_movement_speed_modifier={}", s.non_stacking_movement_speed_modifier );
+  fmt::format_to( out, " healing_multiplier={:.6g}", s.healing_multiplier );
+  fmt::format_to( out, " crit_healing_multiplier={:.6g}", s.crit_healing_multiplier );
+  fmt::format_to( out, " attack_speed_multiplier={:.6g}", s.attack_speed_multiplier );
+  fmt::format_to( out, " pet_damage_multiplier={:.6g}", s.pet_damage_multiplier );
+  fmt::format_to( out, " guardian_damage_multiplier={:.6g}", s.guardian_damage_multiplier );
+  fmt::format_to( out, " absorb_multiplier={:.6g}", s.absorb_multiplier );
+  fmt::format_to( out, " absorb_received_multiplier={:.6g}", s.absorb_received_multiplier );
+  fmt::format_to( out, " healing_received_multiplier={:.6g}", s.healing_received_multiplier );
+  fmt::format_to( out, " movement_speed={:.6g}_yards/s", s.movement_speed );
+  fmt::format_to( out, " stacking_movement_speed_modifier={:.6g}", s.stacking_movement_speed_modifier );
+  fmt::format_to( out, " non_stacking_movement_speed_modifier={:.6g}", s.non_stacking_movement_speed_modifier );
   fmt::format_to( out, " position={}", s.position );
 }
 
@@ -1706,9 +1706,9 @@ void player_t::init_base_stats()
   // Movement Speed
   base.movement_speed = 7.0;  // yards per second
   base.stacking_movement_speed_modifier =
-    get_passive_player_value( base.stacking_movement_speed_modifier, "stacking_move_speed_modifier" );
+    get_passive_player_value( base.stacking_movement_speed_modifier, "move_speed_modifier_-_stacking" );
   base.non_stacking_movement_speed_modifier =
-    get_passive_player_value( base.non_stacking_movement_speed_modifier, "non_stacking_move_speed_modifier" );
+    get_passive_player_value( base.non_stacking_movement_speed_modifier, "move_speed_modifier_-_exclusive" );
 
   // Extract avoidance DR values from table in sc_extra_data.inc
   def_dr.horizontal_shift       = dbc->horizontal_shift( type );
@@ -15305,6 +15305,7 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { P_TICK_DAMAGE,                            "periodic_damage"                  },  // 22
   { A_MOD_STAT,                               "attribute_value"                  },  // 29
   { P_DOSES,                                  "proc_charges"                     },  // 31
+  { A_MOD_INCREASE_SPEED,                     "move_speed_modifier_-_exclusive"  },  // 31
   { A_MOD_INCREASE_RESOURCE,                  "resource_max"                     },  // 35
   { P_MAX_STACKS,                             "max_stack"                        },  // 37
   { P_PROC_COOLDOWN,                          "internal_cooldown"                },  // 38
@@ -15320,7 +15321,7 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { A_MOD_POWER_REGEN_PERCENT,                "resource_regen"                   },  // 110
   { A_MOD_HEALING_RECEIVED_PCT,               "healing_received_multiplier"      },  // 118
   { A_INCREASE_RESOURCE_PCT,                  "resource_multiplier"              },  // 119
-  { A_MOD_SPEED_ALWAYS,                       "stacking_move_speed_modifier"     },  // 129
+  { A_MOD_SPEED_ALWAYS,                       "move_speed_modifier_-_stacking"   },  // 129
   { A_INCREASE_RESOURCE_PCT,                  "resource_multiplier"              },  // 132
   { A_MOD_HEALING_DONE_PERCENT,               "healing_multiplier"               },  // 136
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "attribute_multiplier"             },  // 137
@@ -15328,7 +15329,6 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { A_MOD_BASE_RESISTANCE_PCT,                "base_armor_multiplier"            },  // 142
   { A_MOD_CRIT_DAMAGE_MULTIPLIER,             "crit_damage_multiplier"           },  // 163
   { A_MOD_ATTACK_POWER_PCT,                   "attack_power_multiplier",         },  // 166
-  { A_MOD_SPEED_NOT_STACK,                    "non_stacking_move_speed_modifier" },  // 171
   { A_MOD_RECHARGE_TIME_PCT_CATEGORY_MASK,    "charge_cooldown"                  },  // 173
   { A_MOD_MAX_MANA_PCT,                       "resource_multiplier"              },  // 178
   { A_MOD_ATTACKER_MELEE_CRIT_CHANCE,         "crit_avoidance"                   },  // 187
@@ -15634,6 +15634,10 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         // parse scaling value if necessary
         flat_val = modifying_eff.average( this );
         break;
+      case A_MOD_INCREASE_SPEED:  // 31
+        id_field = "move_speed_modifier_-_exclusive";
+        flat_val = modifying_eff.average( this ) * 0.01;
+        break;
       case A_MOD_INCREASE_RESOURCE: // 35
       case A_MOD_MAX_RESOURCE:  // 418
         misc_type = util::power_type_to_resource( static_cast<power_e>( modifying_eff.misc_value1() ) );
@@ -15701,7 +15705,6 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       case A_MOD_BLOCK_PERCENT:  // 51
       case A_MOD_SPELL_CRIT_CHANCE:  // 57
       case A_MOD_SPEED_ALWAYS:  // 129
-      case A_MOD_SPEED_NOT_STACK:  // 171
       case A_MOD_ATTACKER_MELEE_CRIT_CHANCE:  // 187
       case A_MOD_EXPERTISE:  // 240
       case A_MOD_BLOCK_PCT:  // 272
@@ -15775,6 +15778,31 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     auto m_it = range::find( misc_expansion_map, id_field, &misc_expansion_t::field );
     if ( m_it == misc_expansion_map.end() )
     {
+      // special handling for A_MOD_INCREASE_SPEED (non_stacking_movement_modifier)
+      if ( sub_type == A_MOD_INCREASE_SPEED )
+      {
+        auto _it = range::find_if( passive_player_modifiers_, []( const auto& mod ) {
+          return mod.id == A_MOD_INCREASE_SPEED;
+        } );
+        if ( _it == passive_player_modifiers_.end() )
+        {
+          passive_player_modifiers_.emplace_back( A_MOD_INCREASE_SPEED, 0, 0 );
+          _it = std::prev( passive_player_modifiers_.end() );
+        }
+
+        auto prev = *_it;  // make a copy
+
+        if ( _it->flat < flat_val )
+          _it->flat = flat_val;
+        else
+          flat_val = 0.0;
+
+        do_debug( "", prev, *_it );
+        add_reporting( 0 );
+
+        return true;
+      }
+
       // no expansion needed, default handling
       auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, id_type, 0, 0, flat_val, pct_val );
 
