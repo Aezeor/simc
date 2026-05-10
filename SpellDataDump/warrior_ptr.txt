@@ -166,7 +166,7 @@ Labels           : 16: Class Spells
                  : 1284
 Affecting Spells : Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Honed Reflexes (391271 effect#1), Demolish (436358 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11, 13
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Aura Points On Client (268), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Aura Points On Client (268), Allow Class Ability Procs (416), Important Spell (491), Big Defensive (512)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=364)      : Apply Aura (6) | Modify Damage Taken% (87)
@@ -1027,7 +1027,7 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Affecting Spells : Neltharion's Fury (203524 effect#4), Rebound (213915 effect#1), Bladestorm (227847 effect#3), Misshapen Mirror (335253 effect#1), Honed Reflexes (391271 effect#1), Demolish (436358 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11, 33
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), No Proc Equip Requirement (97), Can Proc From Procs (122), Allow Proc While Sitting (147), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), No Proc Equip Requirement (97), Can Proc From Procs (122), Allow Proc While Sitting (147), Allow Class Ability Procs (416), Important Spell (491)
 Effects          :
 #1 (id=14130)    : Apply Aura (6) | Spell Reflection (28)
                    Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | Target: Self (1)
@@ -1899,7 +1899,7 @@ Labels           : 16: Class Spells
                  : 771: Strive for Perfection (296320 effect#9)
 Affecting Spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Outburst (364639 effects: #1, #2)
 Family Flags     : 8, 32
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Immunity Purges Effect (47), Immunity to Hostile & Friendly Effects (48), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (465), Important Spell (C_Spell.IsSpellImportant) (491)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Immunity Purges Effect (47), Immunity to Hostile & Friendly Effects (48), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (465), Important Spell (491)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=118390)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -2109,7 +2109,7 @@ Labels           : 16: Class Spells
                  : 1284
 Affecting Spells : Bladestorm (227847 effect#3), Honed Reflexes (391271 effect#1), Demolish (436358 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11, 97
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (491), Big Defensive (512)
 Effects          :
 #1 (id=134224)   : Apply Aura (6) | Modify Parry% (47)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
@@ -2776,7 +2776,7 @@ Labels           : 16: Class Spells
                  : 1284
 Affecting Spells : Bladestorm (227847 effect#3), Invigorating Fury (383468 effect#1), Honed Reflexes (391271 effect#1), Bladestorm (446035 effect#3)
 Family Flags     : 11, 64
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Immunity Purges Effect (47), Immunity to Hostile & Friendly Effects (48), Can't Crit (93), Suppress Caster Procs (112), Allow While Stunned (163), Ignore Healing Modifiers (219), Aura Points On Client (268), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Immunity Purges Effect (47), Immunity to Hostile & Friendly Effects (48), Can't Crit (93), Suppress Caster Procs (112), Allow While Stunned (163), Ignore Healing Modifiers (219), Aura Points On Client (268), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442), Important Spell (491), Big Defensive (512)
 Effects          :
 #1 (id=267211)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f | Target: Self (1)

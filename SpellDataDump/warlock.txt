@@ -2134,7 +2134,7 @@ Labels           : 16: Class Spells
                  : 1284
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Strength of Will (317138 effect#1), Dark Accord (386659 effect#1)
 Family Flags     : 54, 67
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow While Stunned (163), Allow While Fleeing (177), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow While Stunned (163), Allow While Fleeing (177), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (491), Big Defensive (512)
 Aura Interrupt   : Enter World (22), Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=114369)   : Apply Aura (6) | Mechanic Immunity (77)
@@ -4290,7 +4290,7 @@ Labels           : 16: Class Spells
                  : 1387
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Xalan's Cruelty (440040 effect#1), Eye Contract (1279521 effect#1)
 Family Flags     : 88
-Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Ignore Line of Sight (66), Suppress Caster Procs (112), No Harmful Threat (132), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
+Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Ignore Line of Sight (66), Suppress Caster Procs (112), No Harmful Threat (132), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (491)
 Effects          :
 #1 (id=302908)   : Summon Guardian (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 103673 | Misc Value 2: 3766 | Radius: 3 yards | Target: Right of Self (49)
@@ -4705,7 +4705,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 118
                  : 292
-Attributes       : Not Shapeshifted (16), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491)
+Attributes       : Not Shapeshifted (16), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (491)
 Effects          :
 #1 (id=314734)   : Apply Aura (6) | Spell Reflection (28)
                    Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | Target: Self (1)
@@ -5911,7 +5911,7 @@ Labels           : 16: Class Spells
                  : 690: Major Cooldowns
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Soulbound Tyrant (334585 effect#1), Master Summoner (1240189 effect#1), Reign of Tyranny (1276748 effect#1)
 Family Flags     : 81
-Attributes       : Not Shapeshifted (16), No Aura Icon (60), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
+Attributes       : Not Shapeshifted (16), No Aura Icon (60), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Important Spell (491)
 Effects          :
 #1 (id=709184)   : Summon Guardian (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 135002 | Misc Value 2: 4255 | Radius: 5 yards | Target: Front Left of Self (44)
@@ -9221,7 +9221,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 690: Major Cooldowns
-Attributes       : No AutoCast (AI) (49), No Aura Icon (60), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Missile Speed is Delay (in sec) (292), Spellcast Override In Spellbook (310), No Summon Log (326), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
+Attributes       : No AutoCast (AI) (49), No Aura Icon (60), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Missile Speed is Delay (in sec) (292), Spellcast Override In Spellbook (310), No Summon Log (326), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (491)
 Effects          :
 #1 (id=911563)   : Summon Guardian (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 47319 | Misc Value 2: 1881 | Target: at Area (87)

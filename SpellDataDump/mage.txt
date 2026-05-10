@@ -1531,7 +1531,7 @@ Labels           : 16: Class Spells
 Mechanic         : Invulnerable
 Affecting Spells : Cryo-Freeze (382292 effect#1)
 Family Flags     : 39, 67
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity Purges Effect (47), Fail on all targets immune (85), Can't Crit (93), Ignore Healing Modifiers (219), No Client Fail While Stunned, Fleeing, Confused (244), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow While Banished Aura State (299), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity Purges Effect (47), Fail on all targets immune (85), Can't Crit (93), Ignore Healing Modifiers (219), No Client Fail While Stunned, Fleeing, Confused (244), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow While Banished Aura State (299), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442), Important Spell (491), Big Defensive (512)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=37396)    : Apply Aura (6) | Stun (12)
@@ -2156,7 +2156,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 893
 Triggered By     : Alter Time (108978)
-Attributes       : No Immunities (29), No Threat (42), Ignore Line of Sight (66), Ignore Caster & Target Restrictions (124), Cannot Be Stolen (134), Aura Points On Client (268), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
+Attributes       : No Immunities (29), No Threat (42), Ignore Line of Sight (66), Ignore Caster & Target Restrictions (124), Cannot Be Stolen (134), Aura Points On Client (268), Allow Class Ability Procs (416), Important Spell (491)
 Aura Interrupt   : Enter World (22), Change Specialization (38), Exit Vehicle (39), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=123137)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Alter Time overrides Alter Time
@@ -3417,7 +3417,7 @@ Labels           : 16: Class Spells
                  : 690: Major Cooldowns
 Affecting Spells : Fiery Rush (364476 effect#1), Spellfire Sphere (448604 effect#3), Kindling (1254194 effect#1), Burn It All (1254512 effects: #2, #3)
 Family Flags     : 58, 67
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Allow Cast While Casting (135), Extra Initial Period (169), Aura Points On Client (268), Allow Cast While Channeling (308), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Allow Cast While Casting (135), Extra Initial Period (169), Aura Points On Client (268), Allow Cast While Channeling (308), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (491)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=278782)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
@@ -3787,7 +3787,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 690: Major Cooldowns
 Family Flags     : 46
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log on Learn (355), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log on Learn (355), Allow Class Ability Procs (416), Important Spell (491)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=291202)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -8340,7 +8340,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 893
 Triggered By     : Alter Time (342245)
-Attributes       : No Immunities (29), No Threat (42), Ignore Line of Sight (66), Ignore Caster & Target Restrictions (124), Cannot Be Stolen (134), Aura Points On Client (268), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
+Attributes       : No Immunities (29), No Threat (42), Ignore Line of Sight (66), Ignore Caster & Target Restrictions (124), Cannot Be Stolen (134), Aura Points On Client (268), Allow Class Ability Procs (416), Important Spell (491), Big Defensive (512)
 Aura Interrupt   : Enter World (22), Change Specialization (38), Exit Vehicle (39), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=843171)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Alter Time overrides Alter Time
@@ -8975,7 +8975,7 @@ Labels           : 16: Class Spells
                  : 690: Major Cooldowns
 Affecting Spells : Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #3, #4), Mastery: Savant (190740 effect#5), Lonely Winter (205024 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Archmage's Wrath (444968 effect#1), Spellfire Sphere (448604 effects: #1, #2), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Mage Arcane 11.0 Class Set 4pc (453724 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Clarity (1216178 effects: #1, #2), Rollin' Hot (1219035 effects: #1, #2), Nether Flux (1233452 effect#1), Charm of Aegwynn (1244105 effect#1), Arcane Mage (1256909 effects: #1, #2), Fire Mage (1256911 effects: #1, #2), Frost Mage (1256913 effects: #1, #2), Hand of Frost (1263263 effects: #1, #2), Mage Arcane 12.0 Class Set 4pc (1264833 effect#1), Mage - Midnight PrePatch - 11.2 Class Set 2pc (1283634 effects: #1, #2), Mage - Midnight PrePatch - 11.2 Class Set 4pc (1283635 effects: #1, #2)
 Family Flags     : 3, 107
-Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
+Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416), Important Spell (491)
 Effects          :
 #1 (id=906196)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.72 | PvP Coefficient: 1.4 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -9004,7 +9004,7 @@ Labels           : 16: Class Spells
                  : 1394: Mage Arcane 10.1 Class Set 2pc (405532 effect#1), Mage Arcane 10.1 Class Set 2pc (405532 effect#2), Mage Arcane 10.1 Class Set 2pc (405532 effect#3)
 Affecting Spells : Wild Arcanist (184903 effects: #1, #2, #3), Spellfire Sphere (448604 effect#3)
 Family Flags     : 51
-Attributes       : Do Not Sheath (18), No Aura Cancel (31), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491)
+Attributes       : Do Not Sheath (18), No Aura Cancel (31), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (491)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=906209)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -10872,7 +10872,7 @@ Labels           : 16: Class Spells
 Mechanic         : Invulnerable
 Affecting Spells : Cryo-Freeze (382292 effect#1)
 Family Flags     : 39, 67
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity Purges Effect (47), Fail on all targets immune (85), Can't Crit (93), Ignore Healing Modifiers (219), No Client Fail While Stunned, Fleeing, Confused (244), Allow While Banished Aura State (299), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity Purges Effect (47), Fail on all targets immune (85), Can't Crit (93), Ignore Healing Modifiers (219), No Client Fail While Stunned, Fleeing, Confused (244), Allow While Banished Aura State (299), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442), Important Spell (491), Big Defensive (512)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1083946)  : Apply Aura (6) | Dummy (4)

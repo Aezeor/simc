@@ -442,7 +442,7 @@ Labels           : 16: Class Spells
                  : 3595
 Affecting Spells : Soul Rending (204909 effect#2), First of the Illidari (235893 effect#1), Metamorphosis (321068 effect#1), Vengeful Beast (1265818 effect#1)
 Family Flags     : 28
-Attributes       : Is Ability (4), Do Not Sheath (18), No Aura Cancel (31), No AutoCast (AI) (49), Can't Crit (93), Ignore Healing Modifiers (219), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Always Allow Negative Healing Percent Modifiers (442), Prevent Jumping During Precast (448), Important Spell (C_Spell.IsSpellImportant) (491)
+Attributes       : Is Ability (4), Do Not Sheath (18), No Aura Cancel (31), No AutoCast (AI) (49), Can't Crit (93), Ignore Healing Modifiers (219), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Always Allow Negative Healing Percent Modifiers (442), Prevent Jumping During Precast (448), Important Spell (491)
 Aura Interrupt   : Enter World (22), Enter Instance (43)
 Effects          :
 #1 (id=273949)   : Apply Aura (6) | Change Model (56)
@@ -628,7 +628,7 @@ Labels           : 16: Class Spells
 Category Cooldown: 120 seconds
 Affecting Spells : Soul Rending (204909 effect#2), Havoc Demon Hunter (212612 effect#6), Vengeance Demon Hunter (212613 effect#6), First of the Illidari (235893 effect#1), Deadly Dance (363736 effect#3), Devourer Demon Hunter (1213636 effect#5), Demon Hunter Havoc 12.0 Class Set 4pc (1264807 effect#1)
 Family Flags     : 15, 32
-Attributes       : Is Ability (4), Do Not Log (8), Do Not Sheath (18), No Jump Pathing (208), Aura Points On Client (268), Bypass Visibility Check (320), Cheap Missile AOI (374), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
+Attributes       : Is Ability (4), Do Not Log (8), Do Not Sheath (18), No Jump Pathing (208), Aura Points On Client (268), Bypass Visibility Check (320), Cheap Missile AOI (374), Allow Class Ability Procs (416), Important Spell (491)
 Effects          :
 #1 (id=280801)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 (delta=1) | Radius: 5 yards | Target: at Area (87)
@@ -903,7 +903,7 @@ Labels           : 16: Class Spells
                  : 1284
 Affecting Spells : Desperate Instincts (205411 effect#3)
 Family Flags     : 26
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Important Spell (491)
 Effects          :
 #1 (id=291907)   : Trigger Spell (64): Blur
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 212800 | Target: Self (1)
@@ -1734,7 +1734,7 @@ Labels           : 16: Class Spells
                  : 1284
 Affecting Spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Havoc Demon Hunter (212612 effect#6), Vengeance Demon Hunter (212613 effects: #1, #2, #6), Fiery Demise (212818 effect#1), Spirit of the Darkness Flame (235543 effect#1), Frailty (247456 effect#4), Revel in Pain (272985 effect#2), Spirit of the Darkness Flame (337542 effect#1), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effect#5), Luck of the Draw! (1219012 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Blind Focus (1272364 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Family Flags     : 32, 36, 70, 72
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Always Hit (114), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Always Hit (114), Allow Class Ability Procs (416), Important Spell (491)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=301059)   : Dummy (3)
@@ -2348,7 +2348,7 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Spirit of the Darkness Flame (235543 effect#1), Frailty (247456 effect#4), Revel in Pain (272985 effect#2), Spirit of the Darkness Flame (337542 effect#1), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Blind Focus (1272364 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Family Flags     : 36, 70, 72
-Attributes       : Is Ability (4), Can Proc From Procs (122), Do Not Display Range (126), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
+Attributes       : Is Ability (4), Can Proc From Procs (122), Do Not Display Range (126), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Big Defensive (512)
 Effects          :
 #1 (id=307364)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 0x7f | Target: Self (1)
@@ -3143,7 +3143,7 @@ Category Cooldown: 60 seconds
 Affecting Spells : Desperate Instincts (205411 effect#3)
 Triggered By     : Blur (198589)
 Family Flags     : 26
-Attributes       : Is Ability (4), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
+Attributes       : Is Ability (4), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (491), Big Defensive (512)
 Effects          :
 #1 (id=315634)   : Apply Aura (6) | Unknown(288)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
@@ -13276,7 +13276,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Soul Rending (204909 effect#2), Havoc Demon Hunter (212612 effect#6), Vengeance Demon Hunter (212613 effect#6), First of the Illidari (235893 effect#1), Deadly Dance (363736 effect#3), Devourer Demon Hunter (1213636 effect#5), Demon Hunter Havoc 12.0 Class Set 4pc (1264807 effect#1)
 Triggered By     : Void Metamorphosis (1225789), Collapsing Star (1227702)
 Family Flags     : 15, 32
-Attributes       : Is Ability (4), Do Not Log (8), Do Not Sheath (18), No Jump Pathing (208), Aura Points On Client (268), Bypass Visibility Check (320), Cheap Missile AOI (374), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
+Attributes       : Is Ability (4), Do Not Log (8), Do Not Sheath (18), No Jump Pathing (208), Aura Points On Client (268), Bypass Visibility Check (320), Cheap Missile AOI (374), Allow Class Ability Procs (416), Important Spell (491)
 Effects          :
 #1 (id=1201772)  : Trigger Spell (64): Void Metamorphosis
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1217607 | Target: Self (1)
