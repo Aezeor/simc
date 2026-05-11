@@ -11590,8 +11590,8 @@ player_talent_t player_t::find_talent_spell( talent_tree tree, std::string_view 
 
   if ( trait == &trait_data_t::nil() )
   {
-    sim->print_debug( "Player {}: Can't find {} talent with name '{}'.", this->name(),
-        util::talent_tree_string( tree ), name );
+    sim->print_debug( "{} can't find {} talent with name '{}'.", *this, util::talent_tree_string( tree ), name );
+
     return {};  // Invalid trait
   }
 
@@ -11608,10 +11608,11 @@ player_talent_t player_t::find_talent_spell( talent_tree tree, unsigned spell_id
   auto traits =
     trait_data_t::find_by_spell( tree, spell_id, util::class_id( type ), s == SPEC_NONE ? _spec : s, dbc->ptr );
 
-    if ( traits.size() == 0 )
+  if ( traits.empty() )
   {
-    sim->print_debug( "Player {}: Can't find {} talent with spell_id '{}'.", this->name(),
-        util::talent_tree_string( tree ), spell_id );
+    sim->print_debug( "{} can't find {} talent with spell_id '{}'.", *this, util::talent_tree_string( tree ),
+                      spell_id );
+
     return {};  // Invalid trait
   }
 
@@ -11621,10 +11622,11 @@ player_talent_t player_t::find_talent_spell( talent_tree tree, unsigned spell_id
 player_talent_t player_t::find_talent_spell( unsigned trait_node_entry_id ) const
 {
   const trait_data_t* trait = trait_data_t::find( trait_node_entry_id, dbc->ptr );
+
   if ( trait == &trait_data_t::nil() )
   {
-    sim->print_debug( "Player {}: Can't find talent with node_entry_id '{}'.", this->name(),
-        trait_node_entry_id );
+    sim->print_debug( "{} can't find talent with node_entry_id '{}'.", *this, trait_node_entry_id );
+
     return {};  // Invalid trait
   }
 

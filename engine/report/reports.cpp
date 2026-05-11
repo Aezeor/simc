@@ -238,6 +238,10 @@ void print_suite( sim_t* sim )
 
   try
   {
+    // flush buffers first
+    sim->out_log.raw().get_stream()->flush();
+    sim->out_debug.raw().get_stream()->flush();
+
     report::print_text( sim, sim->report_details != 0 );
   }
   catch ( const std::exception& )
