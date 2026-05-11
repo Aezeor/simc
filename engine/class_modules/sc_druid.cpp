@@ -3076,11 +3076,8 @@ struct bear_form_buff_t final : public druid_buff_t, public swap_melee_t
       rage_gain( find_effect( p->find_spell( 17057 ), E_ENERGIZE ).resource( RESOURCE_RAGE ) )
   {
     add_invalidate( CACHE_ARMOR );
-    add_invalidate( CACHE_ATTACK_POWER );
     add_invalidate( CACHE_CRIT_AVOIDANCE );
     add_invalidate( CACHE_EXP );
-    add_invalidate( CACHE_HIT );
-    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_STAMINA );
   }
 
@@ -3131,12 +3128,7 @@ struct bear_form_buff_t final : public druid_buff_t, public swap_melee_t
 // Cat Form =================================================================
 struct cat_form_buff_t final : public druid_buff_t, public swap_melee_t
 {
-  cat_form_buff_t( druid_t* p ) : base_t( p, "cat_form", p->spec.cat_form ), swap_melee_t( p )
-  {
-    add_invalidate( CACHE_ATTACK_POWER );
-    add_invalidate( CACHE_EXP );
-    add_invalidate( CACHE_HIT );
-  }
+  cat_form_buff_t( druid_t* p ) : base_t( p, "cat_form", p->spec.cat_form ), swap_melee_t( p ) {}
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
@@ -3165,8 +3157,6 @@ struct moonkin_form_buff_t final : public druid_buff_t
   moonkin_form_buff_t( druid_t* p ) : base_t( p, "moonkin_form", p->talent.moonkin_form )
   {
     add_invalidate( CACHE_ARMOR );
-    add_invalidate( CACHE_EXP );
-    add_invalidate( CACHE_HIT );
   }
 };
 
@@ -11394,8 +11384,7 @@ void druid_t::create_buffs()
 
   buff.incarnation_tree =
     make_fallback( talent.incarnation_tree.ok(), this, "incarnation_tree_of_life", find_spell( 5420 ) )
-      ->set_duration( find_spell( 117679 )->duration() )  // 117679 is the generic incarnation shift proxy spell
-      ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+      ->set_duration( find_spell( 117679 )->duration() );  // 117679 is the generic incarnation shift proxy spell
 
   buff.natures_swiftness =
     make_fallback( talent.natures_swiftness.ok(), this, "natures_swiftness", talent.natures_swiftness )
