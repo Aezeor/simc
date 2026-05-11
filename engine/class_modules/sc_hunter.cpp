@@ -4378,6 +4378,11 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
   void execute() override
   {
     hunter_ranged_attack_t::execute();
+
+    if ( p()->talents.shrapnel_shot.ok() && p()->rng().roll( p()->talents.shrapnel_shot->effectN( 1 ).percent() ) )
+    {
+      p()->buffs.lock_and_load->trigger();
+    }
   }
 };
 
@@ -4394,16 +4399,6 @@ struct explosive_shot_t : public explosive_shot_base_t
 
     explosion->stats = stats;
     stats->action_list.push_back( explosion );
-  }
-
-  void execute() override
-  {
-    explosive_shot_base_t::execute();
-
-    if ( p()->talents.shrapnel_shot.ok() && p()->rng().roll( p()->talents.shrapnel_shot->effectN( 1 ).percent() ) )
-    {
-      p()->buffs.lock_and_load->trigger();
-    }
   }
 };
 
