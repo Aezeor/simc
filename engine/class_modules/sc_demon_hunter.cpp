@@ -1288,7 +1288,6 @@ public:
   double composite_player_multiplier( school_e ) const override;
   double composite_player_critical_damage_multiplier( const action_state_t*, school_e ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
-  double stacking_movement_modifier() const override;
 
   // overridden player_t combat functions
   void assess_damage( school_e, result_amount_type, action_state_t* s ) override;
@@ -8644,13 +8643,6 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
     set_tick_behavior( buff_tick_behavior::NONE );
     disable_ticking( true );
 
-    set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS );
-
-    if ( p->talent.vengeance.agonizing_flames->ok() )
-    {
-      add_invalidate( CACHE_RUN_SPEED );
-    }
-
     if ( p->talent.demon_hunter.infernal_armor->ok() )
     {
       add_invalidate( CACHE_ARMOR );
@@ -9864,7 +9856,6 @@ void demon_hunter_t::create_buffs()
       make_buff( this, "pursuit_of_angriness", talent.scarred.pursuit_of_angriness )
           ->set_quiet( true )
           ->set_tick_zero( true )
-          ->add_invalidate( CACHE_RUN_SPEED )
           ->set_tick_callback(
               [ this, speed_per_fury = talent.scarred.pursuit_of_angriness->effectN( 1 ).percent() /
                                        talent.scarred.pursuit_of_angriness->effectN( 1 ).base_value() ]( buff_t* b, int,
@@ -11601,30 +11592,6 @@ double demon_hunter_t::matching_gear_multiplier( attribute_e attr ) const
   return base_t::matching_gear_multiplier( attr );
 }
 
-// demon_hunter_t::stacking_movement_modifier ===============================
-
-double demon_hunter_t::stacking_movement_modifier() const
-{
-  double ms = base_t::stacking_movement_modifier();
-
-  if ( talent.demon_hunter.pursuit->ok() )
-  {
-    ms += cache.mastery() * talent.demon_hunter.pursuit->effectN( 1 ).mastery_value();
-  }
-
-  if ( talent.scarred.pursuit_of_angriness->ok() )
-  {
-    ms += buff.pursuit_of_angryness->value();
-  }
-
-  if ( specialization() == DEMON_HUNTER_VENGEANCE )
-  {
-    ms += buff.immolation_aura->value();
-  }
-
-  return ms;
-}
-
 // ==========================================================================
 // overridden player_t combat functions
 // ==========================================================================
@@ -12327,6 +12294,7 @@ void demon_hunter_t::parse_player_effects()
 {
   // Shared
   parse_effects( talent.demon_hunter.illidari_knowledge, PARSE_PASSIVE );
+  parse_effects( talent.demon_hunter.pursuit );
   parse_effects( talent.havoc.demon_hide, PARSE_PASSIVE );
   parse_effects( spec.demonic_wards, PARSE_PASSIVE );
 
@@ -12353,6 +12321,7 @@ void demon_hunter_t::parse_player_effects()
     parse_effects( mastery.fel_blood_rank_2 );
     parse_effects( buff.fiery_brand );
     parse_effects( buff.painbringer );
+    parse_effects( buff.immolation_aura );
 
     if ( talent.vengeance.void_reaver.ok() )
     {
@@ -12370,6 +12339,7 @@ void demon_hunter_t::parse_player_effects()
   parse_effects( buff.voidfall_final_hour );
 
   // Scarred
+  parse_effects( buff.pursuit_of_angryness, USE_CURRENT );
 
   // Set Bonuses
 }

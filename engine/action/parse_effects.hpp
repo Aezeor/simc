@@ -723,6 +723,8 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<player_effect_t> healing_received_effects;
   std::vector<target_effect_t> target_multiplier_effects;
   std::vector<target_effect_t> target_pet_multiplier_effects;
+  std::vector<player_effect_t> non_stacking_movement_effects;
+  std::vector<player_effect_t> stacking_movement_effects;
 
   // Cache Pairing, invalidate first of the pair when the second is invalidated
   std::vector<std::pair<cache_e, cache_e>> invalidate_with_parent;
@@ -762,6 +764,8 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   double composite_mitigation_multiplier( const action_state_t*, school_e, bool direct ) const override;
   double composite_mitigation_from_player_multiplier( player_t*, const action_state_t*, school_e,
                                                       bool direct ) const override;
+  double non_stacking_movement_modifier() const override;
+  double stacking_movement_modifier() const override;
 
   void invalidate_cache( cache_e c ) override;
 

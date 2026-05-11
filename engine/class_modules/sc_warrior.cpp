@@ -248,7 +248,6 @@ public:
     buff_t* frenzy;
     buff_t* heroic_leap_movement;
     buff_t* ignore_pain;
-    buff_t* intercept_movement;
     buff_t* intervene_movement;
     buff_t* into_the_fray;
     buff_t* last_stand;
@@ -898,7 +897,6 @@ public:
   void create_options() override;
   std::string create_profile( save_e type ) override;
   void invalidate_cache( cache_e ) override;
-  double non_stacking_movement_modifier() const override;
 
   void apl_default();
   void init_action_list() override;
@@ -4568,7 +4566,7 @@ struct heroic_leap_t : public warrior_attack_t
   bool ready() override
   {
     if ( p()->buff.intervene_movement->check() || p()->buff.charge_movement->check() ||
-         p()->buff.intercept_movement->check() || p()->buff.shield_charge_movement->check() )
+         p()->buff.shield_charge_movement->check() )
     {
       return false;
     }
@@ -8091,7 +8089,6 @@ void warrior_t::create_buffs()
   buff.heroic_leap_movement   = make_buff( this, "heroic_leap_movement" );
   buff.charge_movement        = make_buff( this, "charge_movement" );
   buff.intervene_movement     = make_buff( this, "intervene_movement" );
-  buff.intercept_movement     = make_buff( this, "intercept_movement" );
   buff.shield_charge_movement = make_buff( this, "shield_charge_movement" );
 
   buff.into_the_fray = make_buff( this, "into_the_fray", find_spell( 202602 ) )
@@ -8776,7 +8773,6 @@ void warrior_t::interrupt()
   buff.charge_movement->expire();
   buff.heroic_leap_movement->expire();
   buff.intervene_movement->expire();
-  buff.intercept_movement->expire();
   buff.shield_charge_movement->expire();
 
   parse_player_effects_t::interrupt();
@@ -9025,41 +9021,6 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
   return parse_player_effects_t::resource_gain( r, a, g, action );
 }
 
-// warrior_t::non_stacking_movement_modifier ================================
-
-double warrior_t::non_stacking_movement_modifier() const
-{
-  double ms = parse_player_effects_t::non_stacking_movement_modifier();
-
-  // These are ordered in the highest speed movement increase to the lowest, there's no reason to check the rest as they
-  // will just be overridden. Also gives correct benefit numbers.
-  if ( buff.heroic_leap_movement->up() )
-  {
-    ms = std::max( buff.heroic_leap_movement->value(), ms );
-  }
-  else if ( buff.charge_movement->up() )
-  {
-    ms = std::max( buff.charge_movement->value(), ms );
-  }
-  else if ( buff.intervene_movement->up() )
-  {
-    ms = std::max( buff.intervene_movement->value(), ms );
-  }
-  else if ( buff.intercept_movement->up() )
-  {
-    ms = std::max( buff.intercept_movement->value(), ms );
-  }
-  else if ( buff.shield_charge_movement->up() )
-  {
-    ms = std::max( buff.shield_charge_movement->value(), ms );
-  }
-  else if ( buff.bounding_stride->up() )
-  {
-    ms = std::max( buff.bounding_stride->value(), ms );
-  }
-  return ms;
-}
-
 // warrior_t::invalidate_cache ==============================================
 
 void warrior_t::invalidate_cache( cache_e c )
@@ -9236,6 +9197,25 @@ void warrior_t::copy_from( player_t* source )
 
 void warrior_t::parse_player_effects()
 {
+  parse_effects( buff.bounding_stride );
+
+  auto parse_movement_proxy_effect = [ this ]( buff_t* b, const spelleffect_data_t& eff )
+  {
+    if ( eff.ok() )
+    {
+      add_parse_entry( non_stacking_movement_effects )
+        .set_buff( b )
+        .set_type( USE_CURRENT )
+        .set_eff( &eff )
+        .print_debug( this );
+    }
+  };
+
+  parse_movement_proxy_effect( buff.heroic_leap_movement, talents.warrior.heroic_leap->effectN( 2 ) );
+  parse_movement_proxy_effect( buff.charge_movement, spell.charge->effectN( 1 ) );
+  parse_movement_proxy_effect( buff.intervene_movement, talents.warrior.intervene->effectN( 1 ) );
+  parse_movement_proxy_effect( buff.shield_charge_movement, talents.protection.shield_charge->effectN( 1 ) );
+
   parse_effects( buff.wild_strikes, talents.warrior.wild_strikes );
 
   parse_effects( buff.battle_stance, effect_mask_t( true ).disable( 4 ) );

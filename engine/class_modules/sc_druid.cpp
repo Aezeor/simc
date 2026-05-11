@@ -1353,8 +1353,6 @@ struct druid_t final : public parse_player_effects_t
   double composite_block() const override { return 0; }
   double composite_dodge_rating() const override;
   double composite_parry() const override { return 0; }
-  double non_stacking_movement_modifier() const override;
-  double stacking_movement_modifier() const override;
   std::unique_ptr<expr_t> create_action_expression(action_t& a, std::string_view name_str) override;
   std::unique_ptr<expr_t> create_expression( std::string_view name ) override;
   action_t* create_action( std::string_view name, std::string_view options ) override;
@@ -13232,47 +13230,6 @@ double druid_t::composite_dodge_rating() const
   return dr;
 }
 
-// Movement =================================================================
-double druid_t::non_stacking_movement_modifier() const
-{
-  double ms = player_t::non_stacking_movement_modifier();
-
-  if ( buff.dash->up() && form == CAT_FORM )
-    ms = std::max( ms, buff.dash->check_value() );
-  else if ( buff.tiger_dash->up() && form == CAT_FORM )
-    ms = std::max( ms, buff.tiger_dash->check_value() );
-
-  if ( buff.wild_charge_movement->check() )
-    ms = std::max( ms, buff.wild_charge_movement->check_value() );
-
-  if ( talent.flower_walk.ok() && buff.barkskin->check() )
-    ms = std::max( ms, talent.flower_walk->effectN( 1 ).percent() );
-
-  ms += talent.front_of_the_pack->effectN( 2 ).percent();
-
-  return ms;
-}
-
-double druid_t::stacking_movement_modifier() const
-{
-  double ms = player_t::stacking_movement_modifier();
-
-  ms += buff.forestwalk->check_value();
-
-  if ( form == CAT_FORM )
-    ms += spec.cat_form_speed->effectN( 1 ).percent();
-
-  ms += talent.feline_swiftness->effectN( 1 ).percent();
-
-  if ( racials.elusiveness->ok() && buff.prowl->check() )
-    ms += racials.elusiveness->effectN( 1 ).percent();
-
-  if ( talent.lycaras_inspiration.ok() && buff.lycaras_teachings_vers->check() )
-    ms += buff.lycaras_teachings_vers->data().effectN( 2 ).percent();
-
-  return ms;
-}
-
 // Expressions ==============================================================
 std::unique_ptr<expr_t> druid_t::create_action_expression( action_t& a, std::string_view name )
 {
@@ -14238,6 +14195,7 @@ void druid_t::parse_player_effects()
   parse_effects( buff.bear_form, effect_mask_t( true ).disable( 13, 14 ) );
   parse_effects( spec.bear_form_passive, [ this ] { return form == BEAR_FORM; } );
   parse_effects( spec.bear_form_passive_2, [ this ] { return form == BEAR_FORM; } );
+  parse_effects( spec.cat_form_speed, [ this ] { return form == CAT_FORM; } );
   parse_effects( buff.moonkin_form, effect_mask_t( true ).disable( 12, 13 ) );
 
   if ( talent.glistening_fur.ok() )
@@ -14247,11 +14205,16 @@ void druid_t::parse_player_effects()
   }
 
   parse_effects( buff.barkskin );
+  parse_effects( buff.dash, [ this ] { return form == CAT_FORM; } );
+  parse_effects( buff.tiger_dash, [ this ] { return form == CAT_FORM; } );
   parse_effects( buff.forestwalk );
   parse_effects( buff.killing_strikes );
 
   if ( talent.lycaras_inspiration.ok() )
+  {
     parse_effects( buff.lycaras_teachings_crit );
+    parse_effects( buff.lycaras_teachings_vers );
+  }
 
   parse_effects( buff.persistence, effect_mask_t( false ).enable( 1 ),  // stamina
                  find_effect( spec.bear_form_passive, A_MOD_TOTAL_STAT_PERCENTAGE ).percent() /
@@ -14259,6 +14222,7 @@ void druid_t::parse_player_effects()
   parse_effects( buff.persistence, effect_mask_t( false ).enable( 2 ),  // armor
                  find_effect( buff.bear_form, A_MOD_BASE_RESISTANCE_PCT ).percent() /
                    buff.persistence->max_stack() );
+  parse_effects( buff.prowl, effect_mask_t( false ).enable( 3 ), racials.elusiveness->effectN( 1 ).percent() );
   parse_effects( buff.ruthless_aggression );
   parse_effects( buff.survival_instincts );
   parse_effects( buff.ursine_vigor, talent.ursine_vigor );
@@ -14282,6 +14246,15 @@ void druid_t::parse_player_effects()
   }
 
   parse_target_effects( d_fn( &druid_td_t::dots_t::thrash ), spec.thrash_bleed );
+
+  if ( talent.wild_charge.ok() )
+  {
+    add_parse_entry( non_stacking_movement_effects )
+      .set_buff( buff.wild_charge_movement )
+      .set_type( USE_CURRENT )
+      .set_eff( &talent.wild_charge->effectN( 2 ) )
+      .print_debug( this );
+  }
 }
 
 /* Report Extension Class

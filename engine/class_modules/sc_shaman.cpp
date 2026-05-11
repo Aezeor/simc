@@ -2124,8 +2124,6 @@ public:
 
   void moving() override;
   void invalidate_cache( cache_e c ) override;
-  double non_stacking_movement_modifier() const override;
-  double stacking_movement_modifier() const override;
   double composite_attribute( attribute_e ) const override;
   double composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
@@ -12742,6 +12740,8 @@ bool shaman_t::validate_actor()
 void shaman_t::apply_player_effects()
 {
   // Shared
+  eff::source_eff_builder_t( buff.ghost_wolf ).build( this );
+  eff::source_eff_builder_t( buff.spirit_walk ).build( this );
 
   // Enhancement
   eff::source_eff_builder_t( buff.flurry ).set_flag( IGNORE_STACKS ).build( this );
@@ -13323,32 +13323,6 @@ void shaman_t::moving()
   {
     halt();
   }
-}
-
-// shaman_t::non_stacking_movement_modifier ========================================
-
-double shaman_t::non_stacking_movement_modifier() const
-{
-  double ms = parse_player_effects_t::non_stacking_movement_modifier();
-
-  if ( buff.spirit_walk->up() )
-    ms = std::max( buff.spirit_walk->data().effectN( 1 ).percent(), ms );
-
-  return ms;
-}
-
-// shaman_t::stacking_movement_modifier ============================================
-
-double shaman_t::stacking_movement_modifier() const
-{
-  double ms = parse_player_effects_t::stacking_movement_modifier();
-
-  if ( buff.ghost_wolf->up() )
-  {
-    ms *= 1.0 + buff.ghost_wolf->data().effectN( 2 ).percent();
-  }
-
-  return ms;
 }
 
 double shaman_t::composite_attribute( attribute_e attr ) const
