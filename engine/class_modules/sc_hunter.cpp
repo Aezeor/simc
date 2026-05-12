@@ -1053,6 +1053,7 @@ public:
     cooldowns.trueshot                  = get_cooldown( "trueshot" );
     cooldowns.volley                    = get_cooldown( "volley" );
     cooldowns.salvo                     = get_cooldown( "salvo_icd" );
+    cooldowns.shrapnel_shot             = get_cooldown( "shrapnel_shot" );
     
     cooldowns.kill_command  = get_cooldown( "kill_command" );
     cooldowns.barbed_shot   = get_cooldown( "barbed_shot" );
