@@ -14145,23 +14145,6 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( std::string_view name
     throw sc_invalid_apl_argument( fmt::format( "Unknown dnd expression '{}'.", splits[ 1 ] ) );
   }
 
-  if ( util::str_compare_ci( splits[ 0 ], "lesser_ghoul" ) )
-  {
-    if ( util::str_compare_ci( splits[ 1 ], "count" ) )
-    {
-      return make_fn_expr( "lesser_ghoul_count", [ this ]() { return active_lesser_ghouls.size(); } );
-    }
-    if ( util::str_compare_ci( splits[ 1 ], "oldest" ) )
-    {
-      if ( util::str_compare_ci( splits[ 2 ], "remains" ) )
-      {
-        return make_fn_expr( "oldest_lesser_ghoul_remains",
-                             [ this ]() { return active_lesser_ghouls[ 0 ]->expiration->remains(); } );
-      }
-    }
-    throw sc_invalid_apl_argument( fmt::format( "Unknown lesser_ghoul expression '{}'.", splits[ 1 ] ) );
-  }
-
   if ( util::str_compare_ci( splits[ 0 ], "runeforge" ) && splits.size() == 2 )
   {
     auto runeforge_expr = create_runeforge_expression( splits[ 1 ], true );
