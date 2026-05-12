@@ -7950,7 +7950,7 @@ void hunter_t::init_spells()
 
   // Cooldowns
   cooldowns.salvo->duration = talents.volley->duration();
-  cooldowns.shrapnel_shot->duration = talents.shrapnel_shot->duration();
+  cooldowns.shrapnel_shot->duration = talents.shrapnel_shot->internal_cooldown();
 
   cooldowns.dire_beast->duration = talents.dire_beast->internal_cooldown();
 
