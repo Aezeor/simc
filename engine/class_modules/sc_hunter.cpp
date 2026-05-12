@@ -504,6 +504,7 @@ public:
     cooldown_t* trueshot;
     cooldown_t* volley;
     cooldown_t* salvo;
+    cooldown_t* shrapnel_shot;
     
     cooldown_t* dire_beast;
     cooldown_t* kill_command;
@@ -4379,9 +4380,12 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    if ( p()->talents.shrapnel_shot.ok() && p()->rng().roll( p()->talents.shrapnel_shot->effectN( 1 ).percent() ) )
+    if ( p()->talents.shrapnel_shot.ok() 
+        && p()->rng().roll( p()->talents.shrapnel_shot->effectN( 1 ).percent() )
+        && p()->cooldowns.shrapnel_shot->up() )
     {
       p()->buffs.lock_and_load->trigger();
+      p()->cooldowns.shrapnel_shot->start();
     }
   }
 };
@@ -7946,6 +7950,7 @@ void hunter_t::init_spells()
 
   // Cooldowns
   cooldowns.salvo->duration = talents.volley->duration();
+  cooldowns.shrapnel_shot->duration = talents.shrapnel_shot->duration();
 
   cooldowns.dire_beast->duration = talents.dire_beast->internal_cooldown();
 
