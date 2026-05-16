@@ -6013,6 +6013,8 @@ void pips_emerald_friendship_badge( special_effect_t& e )
 
     auto _static = create_buff<stat_buff_t>( e.player, data )
       ->set_stat_from_effect( 1, buff_value )
+      ->set_refresh_behavior( buff_refresh_behavior::NONE )
+      ->set_tick_behavior( buff_tick_behavior::NONE )
       ->set_duration( 0_ms );
 
     auto _empowered = create_buff<stat_buff_t>( e.player, _static->name_str + "_empowered", data )
