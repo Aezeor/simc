@@ -3918,7 +3918,7 @@ void sim_t::create_options()
   add_option( opt_float( "scaling_normalized", scaling_normalized ) );
   add_option( opt_bool( "merge_enemy_priority_dmg", merge_enemy_priority_dmg ) );
   add_option( opt_int( "decorated_tooltips", decorated_tooltips ) );
-  add_option( opt_uint( "spell_query_wrap", spell_query_wrap ) );
+  add_option( opt_uint( "spell_query_wrap", spell_query_wrap, 50, UINT_MAX ) );
   // Charts
   add_option( opt_bool( "chart_show_relative_difference", chart_show_relative_difference ) );
   add_option( opt_bool( "chart_show_relative_difference_percent", chart_show_relative_difference_percent ) );

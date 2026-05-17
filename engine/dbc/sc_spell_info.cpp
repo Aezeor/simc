@@ -185,32 +185,45 @@ std::string wrap_concatenate( Range&& data, Callback&& fn, size_t wrap, const st
   if ( data.empty() )
     return "";
 
-  std::stringstream s;
-  size_t len = 0;
+  std::string s;
 
-  for ( auto it = data.begin(); it != data.end(); it++ )
+  s = fn( data.front() );
+
+  if ( !wrap )
   {
-    auto str = fn( *it );
-    auto str_len = str.size();
+    for ( auto it = data.begin() + 1; it != data.end(); ++it )
+    {
+      s += delim;
+      s += fn( *it );
+    }
+  }
+  else
+  {
+    size_t len = s.size();
+    auto delim_len = delim.size();
 
-    if ( it == data.begin() )
+    for ( auto it = data.begin() + 1; it != data.end(); ++it )
     {
-      len = str_len;
-      s << str;
-    }
-    else if ( wrap && len + str_len > wrap )
-    {
-      len = str_len;
-      s << wrap_delim << str;
-    }
-    else
-    {
-      len += str_len;
-      s << delim << str;
+      auto str = fn( *it );
+      auto str_len = str.size();
+      auto new_len = len + delim_len + str_len;
+
+      if ( new_len + 1 >= wrap )
+      {
+        len = str_len;
+        s += wrap_delim;
+        s += str;
+      }
+      else
+      {
+        len += delim_len + str_len;
+        s += delim;
+        s += str;
+      }
     }
   }
 
-  return s.str();
+  return s;
 }
 
 template <typename Range>
@@ -219,7 +232,7 @@ std::string wrap_join( Range&& data, size_t wrap, const std::string& delim = ", 
 {
   return wrap_concatenate( std::forward<Range>( data ), []( std::string_view s ) {
     return s;
-  },wrap, delim, wrap_delim );
+  }, wrap, delim, wrap_delim );
 }
 
 std::streamsize real_ppm_decimals( const spell_data_t* spell, const rppm_modifier_t& modifier )
@@ -2424,12 +2437,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
         if ( auto affected = dbc.spells_by_category( e->misc_value1() ); !affected.empty() )
         {
           s << "                   Affected Spells (Category): ";
-          s << wrap_concatenate(
-            affected,
-            []( const spell_data_t* spell ) {
-              return fmt::format( "{}", *spell );
-            },
-            wrap );
+          s << wrap_concatenate( affected, []( const spell_data_t* s ) { return fmt::format( "{}", *s ); }, wrap );
           s << std::endl;
         }
       }
@@ -3240,9 +3248,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   if ( spell->driver_count() > 0 )
   {
     s << "Triggered By     : ";
-    s << wrap_concatenate( spell->drivers(), []( const spell_data_t* spell ) {
-      return fmt::format( "{}", *spell );
-    }, wrap );
+    s << wrap_concatenate( spell->drivers(), []( const spell_data_t* s ) { return fmt::format( "{}", *s ); }, wrap );
     s << std::endl;
   }
 
