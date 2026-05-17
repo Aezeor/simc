@@ -141,7 +141,6 @@ struct avengers_shield_base_t : public paladin_spell_t
       base_t::init();
       // disable the snapshot_flags for all multipliers
       snapshot_flags = update_flags = 0;
-      snapshot_flags |= STATE_VERSATILITY;
     }
   };
 
