@@ -48,8 +48,12 @@ jobs:
         env:
           MATRIX_SPEC: ${{ matrix.spec }}
         run: |
-          echo "CLASS_STR=${MATRIX_SPEC%%_*}" >> "$GITHUB_ENV"
-          echo "SPEC_STR=${MATRIX_SPEC#*_}" >> "$GITHUB_ENV"
+          CLASS_STR=${MATRIX_SPEC%%_*}
+          CLASS_STR_CAP=${CLASS_STR^}
+          SPEC_STR=${MATRIX_SPEC#*_}
+          echo "CLASS_STR=$CLASS_STR" >> "$GITHUB_ENV"
+          echo "CLASS_STR_CAP=$CLASS_STR_CAP" >> "$GITHUB_ENV"
+          echo "SPEC_STR=$SPEC_STR" >> "$GITHUB_ENV"
 
       - name: Enable PTR
         if: inputs.is-ptr
@@ -353,4 +357,33 @@ jobs:
           path: |
             default/${{ matrix.spec }}.simc
             assisted_combat/${{ matrix.spec }}.simc
+          retention-days: 1
+
+      - name: Generate Profiles
+        id: generate_profiles
+        if: github.event_name == 'push' && !failure() && !inputs.is-ptr
+        shell: bash
+        run: |
+          cd profiles
+          for dir in generators/*; do
+            if [ -d $dir ]; then
+              SEASON=${dir##*/}
+              GENERATOR=${SEASON}_Generate_${{ env.CLASS_STR_CAP }}.simc
+              if [ -f $dir/$GENERATOR ]; then
+                cd $SEASON
+                echo "---$SEASON---${{ env.CLASS_STR_CAP }}---$GENERATOR---"
+                ${{ runner.workspace }}/b/ninja/simc $dir/$GENERATOR
+                cd ..
+              fi
+            fi
+          done
+
+      - name: Upload Profiles
+        if: steps.generate_profiles.outcome == 'success' && !inputs.is-ptr
+        continue-on-error: true
+        uses: actions/upload-artifact@v6
+        with:
+          name: profiles-${{ github.sha }}-${{ matrix.spec }}
+          path: |
+            profiles/*/*_${{ env.CLASS_STR_CAP }}_*.simc
           retention-days: 1
