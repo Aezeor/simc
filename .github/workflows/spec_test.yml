@@ -74,18 +74,6 @@ jobs:
         if: always()
         run: |
           SECONDS=0
-          echo ">>>>> Single Target <<<<<"
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} log=1 debug=1 \
-            enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          echo "Run time: $SECONDS seconds"
-          SECONDS=0
-          echo ">>>>> Multi Target <<<<<"
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} log=1 debug=1 \
-            enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          echo "Run time: $SECONDS seconds"
-          SECONDS=0
           echo ">>>>> Dungeon Slice <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} log=1 debug=1 \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
