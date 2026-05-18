@@ -4270,6 +4270,7 @@ void sim_t::setup( sim_control_t* c )
   {
     fmt::print( "Nothing to sim! " );
     canceled = true;
+    display_build = 2;
     return;
   }
 
