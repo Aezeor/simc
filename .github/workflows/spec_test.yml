@@ -372,7 +372,7 @@ jobs:
               if [ -f $dir/$GENERATOR ]; then
                 cd $SEASON
                 echo "---$SEASON---${{ env.CLASS_STR_CAP }}---$GENERATOR---"
-                ${{ runner.workspace }}/b/ninja/simc $dir/$GENERATOR
+                ${{ runner.workspace }}/b/ninja/simc $dir/$GENERATOR; exit_code=$?; [ $exit_code -eq 1 ] || exit $exit_code
                 cd ..
               fi
             fi
