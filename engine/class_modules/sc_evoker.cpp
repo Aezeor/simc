@@ -9449,12 +9449,15 @@ void evoker_t::init_finished()
   // I hate gaze.
   // This might be shifting sands but it seems to get slightly too many from sands.
   // This is about right, though.
-  if ( specialization() == EVOKER_AUGMENTATION )
+  // Seemingly bugged in keys.
+  if ( specialization() == EVOKER_AUGMENTATION &&
+       ( ( !option.patchwerk_in_dungeon || sim->fight_style != FIGHT_STYLE_PATCHWERK ) &&
+         sim->fight_style != FIGHT_STYLE_DUNGEON_ROUTE && sim->fight_style != FIGHT_STYLE_DUNGEON_SLICE ) )
   {
     register_combat_begin( [ this ]( player_t* ) {
-      make_event( sim, timespan_t::from_millis( rng().range( 0, 1250 ) ), [ this ] {
+      make_event( sim, timespan_t::from_millis( rng().range( 0, 1350 ) ), [ this ] {
         trigger_aura_applied_callbacks( background_proc_data, this );
-        make_repeating_event( sim, 1.25_s,
+        make_repeating_event( sim, 1.35_s,
                               [ this ]() { trigger_aura_applied_callbacks( background_proc_data, this ); } );
       } );
     } );
