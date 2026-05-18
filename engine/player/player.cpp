@@ -2591,106 +2591,6 @@ static void allocate_trait( player_t* player, const trait_data_t* trait, talent_
   }
 }
 
-static void parse_traits( talent_tree tree, const std::string& opt_str, player_t* player )
-{
-  auto talents = util::string_split<std::string_view>( opt_str, "/" );
-  for ( const auto talent : talents )
-  {
-    auto talent_split = util::string_split<std::string_view>( talent, ":" );
-    if ( talent_split.size() != 2 )
-    {
-      throw std::invalid_argument( fmt::format( "'{}' is invalid, format must be '<talent>:<rank>'.", talent ) );
-    }
-
-    bool is_spell_id = false;
-    auto entry_id = 0U;
-    if ( !talent_split[ 0 ].empty() && ( talent_split[ 0 ][ 0 ] == 's' || talent_split[ 0 ][ 0 ] == 'S' ) )
-    {
-      entry_id = util::to_unsigned_ignore_error( talent_split[ 0 ].substr( 1 ), 0 );
-      is_spell_id = true;
-    }
-    else
-    {
-      entry_id = util::to_unsigned_ignore_error( talent_split[ 0 ], 0 );
-    }
-
-    auto ranks = util::to_unsigned( talent_split[ 1 ] );
-    const trait_data_t* trait_obj = nullptr;
-    if ( entry_id != 0 )
-    {
-      if ( is_spell_id )
-      {
-        auto objs = trait_data_t::find_by_spell( tree, entry_id, util::class_id( player->type ),
-                                                 player->specialization(), player->is_ptr() );
-        if ( objs.empty() )
-        {
-          trait_obj = &( trait_data_t::nil() );
-        }
-        else if ( objs.size() > 1U )
-        {
-          throw std::invalid_argument(
-            fmt::format( "Multiple talents for spell id '{}' found.", talent_split[ 0 ].substr( 1 ) ) );
-        }
-        else
-        {
-          trait_obj = objs[ 0 ];
-        }
-      }
-      else
-      {
-        trait_obj = trait_data_t::find( entry_id, player->is_ptr() );
-      }
-    }
-    else
-    {
-      trait_obj = trait_data_t::find( tree, talent_split[ 0 ], util::class_id( player->type ), player->specialization(),
-                                      player->is_ptr(), true );
-    }
-
-    if ( trait_obj->id_spell == 0 )
-    {
-      throw std::invalid_argument(
-        fmt::format( "Unable to find {} talent '{}'.", util::talent_tree_string( tree ), talent_split[ 0 ] ) );
-    }
-    else
-    {
-      if ( !entry_id && trait_obj->node_type == NODE_TIERED )
-      {
-        auto _entries = trait_data_t::data( trait_obj->id_node, util::class_id( player->type ), tree, player->is_ptr() );
-        for ( const auto& trait : _entries )
-        {
-          auto allocated = !ranks ? ranks : std::min( ranks, trait.max_ranks );
-          allocate_trait( player, &trait, tree, allocated );
-
-          ranks -= allocated;
-        }
-      }
-      else
-      {
-        allocate_trait( player, trait_obj, tree, ranks );
-      }
-    }
-  }
-
-  // add any freely granted traits
-  for ( const auto& trait : trait_data_t::data( util::class_id( player->type ), tree, player->is_ptr() ) )
-  {
-    if ( trait_data_t::is_granted( &trait, player->type, player->specialization(), player->is_ptr() ) )
-    {
-      auto id = trait.id_trait_node_entry;
-      auto it = range::find_if( player->player_traits, [ id ]( const auto& e ) { return std::get<1>( e ) == id; } );
-      if ( it == player->player_traits.end() )
-      {
-        player->player_traits.emplace_back( tree, id, 1 );
-
-        player->sim->print_debug( "{} granted free {} talent {} (node={} entry={})", *player,
-                                  util::talent_tree_string( tree ), trait.name, trait.id_node,
-                                  trait.id_trait_node_entry );
-      }
-    }
-  }
-}
-
 // Blizzard in-game talent tree export hash
 static bool generate_tree_nodes( player_t* player,
                                  std::map<unsigned, std::vector<std::pair<const trait_data_t*, unsigned>>>& tree_nodes )
@@ -3048,7 +2948,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
   }
 }
 
-static void enable_all_talents( player_t* player )
+static void enable_all_talents( player_t* player, std::function<bool( const trait_data_t* )> fn = nullptr )
 {
   std::map<unsigned, std::vector<std::pair<const trait_data_t*, unsigned>>> tree_nodes;
 
@@ -3062,6 +2962,9 @@ static void enable_all_talents( player_t* player )
 
       // assume 'off-screen' nodes are invalid
       if ( trait->row <= 0 || trait->col <= 0 || trait->max_ranks <= 0 )
+        continue;
+
+      if ( fn && !fn( trait ) )
         continue;
 
       if ( std::all_of( trait->id_spec.begin(), trait->id_spec.end(), []( unsigned i ) { return i == 0; } ) ||
@@ -3090,7 +2993,7 @@ static void enable_all_talents( player_t* player )
   }
 }
 
-static void enable_default_talents( player_t* player )
+static void enable_default_talents( player_t* player, std::function<bool( const trait_data_t* )> fn = nullptr )
 {
   player->sim->print_debug( "Loading default talents for {}.", *player );
 
@@ -3102,6 +3005,9 @@ static void enable_default_talents( player_t* player )
       i++;
 
     auto trait = trait_data_t::find( traits[ i ].id_trait_node_entry, player->is_ptr() );
+
+    if ( fn && !fn( trait ) )
+      continue;
 
     if ( !trait->id_node )
     {
@@ -3147,6 +3053,124 @@ static void enable_hero_tree( player_t* player, unsigned hero_tree_id )
 
     player->player_traits.emplace_back( talent_tree::HERO, trait.id_trait_node_entry, trait.max_ranks );
     player->sim->print_debug( "{} adding hero talent {}", *player, trait.name );
+  }
+}
+
+static void parse_traits( talent_tree tree, const std::string& opt_str, player_t* player )
+{
+  auto talents = util::string_split<std::string_view>( opt_str, "/" );
+  for ( const auto talent : talents )
+  {
+    // handle special tokens
+    if ( util::str_compare_ci( talent, "all" ) )
+    {
+      enable_all_talents( player, [ tree ]( const trait_data_t* t ) {
+        return static_cast<talent_tree>( t->tree_index ) == tree;
+      } );
+
+      continue;
+    }
+    else if ( util::str_compare_ci( talent, "default" ) )
+    {
+      enable_default_talents( player, [ tree ]( const trait_data_t* t ) {
+        return static_cast<talent_tree>( t->tree_index ) == tree;
+      } );
+
+      continue;
+    }
+
+    auto talent_split = util::string_split<std::string_view>( talent, ":" );
+    if ( talent_split.size() != 2 )
+    {
+      throw std::invalid_argument( fmt::format( "'{}' is invalid, format must be '<talent>:<rank>'.", talent ) );
+    }
+
+    bool is_spell_id = false;
+    auto entry_id = 0U;
+    if ( !talent_split[ 0 ].empty() && ( talent_split[ 0 ][ 0 ] == 's' || talent_split[ 0 ][ 0 ] == 'S' ) )
+    {
+      entry_id = util::to_unsigned_ignore_error( talent_split[ 0 ].substr( 1 ), 0 );
+      is_spell_id = true;
+    }
+    else
+    {
+      entry_id = util::to_unsigned_ignore_error( talent_split[ 0 ], 0 );
+    }
+
+    auto ranks = util::to_unsigned( talent_split[ 1 ] );
+    const trait_data_t* trait_obj = nullptr;
+    if ( entry_id != 0 )
+    {
+      if ( is_spell_id )
+      {
+        auto objs = trait_data_t::find_by_spell( tree, entry_id, util::class_id( player->type ),
+                                                 player->specialization(), player->is_ptr() );
+        if ( objs.empty() )
+        {
+          trait_obj = &( trait_data_t::nil() );
+        }
+        else if ( objs.size() > 1U )
+        {
+          throw std::invalid_argument(
+            fmt::format( "Multiple talents for spell id '{}' found.", talent_split[ 0 ].substr( 1 ) ) );
+        }
+        else
+        {
+          trait_obj = objs[ 0 ];
+        }
+      }
+      else
+      {
+        trait_obj = trait_data_t::find( entry_id, player->is_ptr() );
+      }
+    }
+    else
+    {
+      trait_obj = trait_data_t::find( tree, talent_split[ 0 ], util::class_id( player->type ), player->specialization(),
+                                      player->is_ptr(), true );
+    }
+
+    if ( trait_obj->id_spell == 0 )
+    {
+      throw std::invalid_argument(
+        fmt::format( "Unable to find {} talent '{}'.", util::talent_tree_string( tree ), talent_split[ 0 ] ) );
+    }
+    else
+    {
+      if ( !entry_id && trait_obj->node_type == NODE_TIERED )
+      {
+        auto _entries = trait_data_t::data( trait_obj->id_node, util::class_id( player->type ), tree, player->is_ptr() );
+        for ( const auto& trait : _entries )
+        {
+          auto allocated = !ranks ? ranks : std::min( ranks, trait.max_ranks );
+          allocate_trait( player, &trait, tree, allocated );
+
+          ranks -= allocated;
+        }
+      }
+      else
+      {
+        allocate_trait( player, trait_obj, tree, ranks );
+      }
+    }
+  }
+
+  // add any freely granted traits
+  for ( const auto& trait : trait_data_t::data( util::class_id( player->type ), tree, player->is_ptr() ) )
+  {
+    if ( trait_data_t::is_granted( &trait, player->type, player->specialization(), player->is_ptr() ) )
+    {
+      auto id = trait.id_trait_node_entry;
+      auto it = range::find_if( player->player_traits, [ id ]( const auto& e ) { return std::get<1>( e ) == id; } );
+      if ( it == player->player_traits.end() )
+      {
+        player->player_traits.emplace_back( tree, id, 1 );
+
+        player->sim->print_debug( "{} granted free {} talent {} (node={} entry={})", *player,
+                                  util::talent_tree_string( tree ), trait.name, trait.id_node,
+                                  trait.id_trait_node_entry );
+      }
+    }
   }
 }
 
