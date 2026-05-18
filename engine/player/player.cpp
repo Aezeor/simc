@@ -3194,13 +3194,43 @@ void player_t::init_talents()
   }
   else if ( !talents_str.empty() )
   {
-    try
+    // check for special tokens, clear talents_str if found to force reconstitution of hash for html talent render
+    auto splits = util::string_split( talents_str, "/" );
+
+    for ( auto split : splits )
     {
-      parse_traits_hash( talents_str, this );
-    }
-    catch ( const std::exception& )
-    {
-      std::throw_with_nested( sc_invalid_talent_string( fmt::format( "Hash '{}'", talents_str ) ) );
+      if ( util::str_compare_ci( split, "class" ) )
+      {
+        talents_str.clear();
+        enable_all_talents( this, []( const trait_data_t* t ) {
+          return static_cast<talent_tree>( t->tree_index ) == talent_tree::CLASS;
+        } );
+      }
+      else if ( util::str_compare_ci( split, "spec" ) )
+      {
+        talents_str.clear();
+        enable_all_talents( this, []( const trait_data_t* t ) {
+          return static_cast<talent_tree>( t->tree_index ) == talent_tree::SPECIALIZATION;
+        } );
+      }
+      else if ( auto _id = trait_data_t::get_hero_tree_id( split, is_ptr() );
+                trait_data_t::is_hero_tree_valid( static_cast<hero_tree_e>( _id ), specialization(), is_ptr() ) )
+      {
+        talents_str.clear();
+        enable_hero_tree( this, _id );
+      }
+      else
+      {
+        // if no special tokens are found, parse as hash string
+        try
+        {
+          parse_traits_hash( talents_str, this );
+        }
+        catch ( const std::exception& )
+        {
+          std::throw_with_nested( sc_invalid_talent_string( fmt::format( "Hash '{}'", talents_str ) ) );
+        }
+      }
     }
   }
 
