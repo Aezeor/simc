@@ -10538,6 +10538,8 @@ void shaman_t::create_options()
   rng_obj.tempest_enh.create_options();
   rng_obj.tempest_ele.create_options();
   rng_obj.deeply_rooted_elements.create_options();
+  rng_obj.asc_dw.create_options();
+  rng_obj.storm_unleashed.create_options();
 }
 
 // shaman_t::create_profile ================================================
