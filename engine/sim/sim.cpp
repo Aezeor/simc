@@ -4267,7 +4267,11 @@ void sim_t::setup( sim_control_t* c )
   }
 
   if ( player_list.empty() && spell_query == nullptr && !display_bonus_ids && display_build <= 1 )
-    throw sc_runtime_error( "Nothing to sim!" );
+  {
+    fmt::print( "Nothing to sim! " );
+    canceled = true;
+    return;
+  }
 
   range::for_each( player_list, []( player_t* p ) { p->validate_sim_options(); } );
 
