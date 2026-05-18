@@ -691,15 +691,22 @@ class deck_rng_wrapper_t
   { return m_actor; }
 
   bool trigger() const
-  { assert( m_rng ); return m_rng->trigger(); }
+  {
+      if ( m_rng == nullptr )
+      {
+          return false;
+      }
+
+      return m_rng->trigger();
+  }
 
   void create_options()
   {
     std::string success_str = fmt::format( "shaman.{}_deck_success", m_name );
     std::string total_str = fmt::format( "shaman.{}_deck_total", m_name );
 
-    m_actor->add_option( opt_uint( success_str, m_total, 0U, 10000U ) );
-    m_actor->add_option( opt_int( total_str, m_success, 1U, 10000U ) );
+    m_actor->add_option( opt_uint( total_str, m_total, 0U, 10000U ) );
+    m_actor->add_option( opt_int( success_str, m_success, 0U, 10000U ) );
   }
 
   std::unique_ptr<expr_t> create_expression( util::string_view name ) const
@@ -732,6 +739,11 @@ class deck_rng_wrapper_t
   void build()
   {
     auto params = m_param_fn( *this );
+
+    if ( std::get<1>( params ) == 0 )
+    {
+        return;
+    }
 
     if ( std::get<0>( params ) < std::get<1>( params ) * ( std::get<2>( params ) + 1 ) )
     {
