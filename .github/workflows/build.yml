@@ -63,9 +63,8 @@ jobs:
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
+            ActionPriorityLists
             profiles
-            tests
-            generate_profiles_ci.sh
             .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
@@ -130,9 +129,8 @@ jobs:
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
+            ActionPriorityLists
             profiles
-            tests
-            generate_profiles_ci.sh
             .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 

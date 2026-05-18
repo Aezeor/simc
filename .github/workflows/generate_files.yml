@@ -13,9 +13,8 @@ jobs:
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
+            ActionPriorityLists
             profiles
-            tests
-            generate_profiles_ci.sh
             .git
           key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
 

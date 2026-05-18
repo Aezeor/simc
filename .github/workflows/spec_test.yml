@@ -37,9 +37,8 @@ jobs:
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
+            ActionPriorityLists
             profiles
-            tests
-            generate_profiles_ci.sh
             .git
           key: ${{ inputs.cache-key }}
 
@@ -330,38 +329,50 @@ jobs:
         id: dump_apl_default
         if: github.event_name == 'push' && !failure() && !inputs.is-ptr
         run: |
-          mkdir default
           ${{ runner.workspace }}/b/ninja/simc save_profiles=1 save_full_profile=0 \
             enable_all_talents=1 enable_all_sets=1 \
             allow_experimental_specializations=1  ${{ env.CLASS_STR }}=${{ matrix.spec }} \
             spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
-            save_actions=default/${{ matrix.spec }}.simc
+            save_actions=ActionPriorityLists/default/${{ matrix.spec }}.simc
 
       - name: Dump APL Assisted
         id: dump_apl_assisted
         if: github.event_name == 'push' && !failure() && !inputs.is-ptr
         run: |
-          mkdir assisted_combat
           ${{ runner.workspace }}/b/ninja/simc save_profiles=1 save_full_profile=0 \
             enable_all_talents=1 enable_all_sets=1 \
             allow_experimental_specializations=1  ${{ env.CLASS_STR }}=${{ matrix.spec }} \
             spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} use_blizzard_action_list=1 \
-            save_actions=assisted_combat/${{ matrix.spec }}.simc
+            save_actions=ActionPriorityLists/assisted_combat/${{ matrix.spec }}.simc
+
+      - name: Check APL Changes
+        id: check_apl_changes
+        if: (steps.dump_apl_default.outcome == 'success' || steps.dump_apl_assisted.outcome == 'success')
+        shell: bash
+        run: |
+          CHANGED=$(git status --porcelain -- \
+            ActionPriorityLists/default/${{ matrix.spec }}.simc \
+            ActionPriorityLists/assisted_combat/${{ matrix.spec }}.simc)
+          if [ -n "$CHANGED" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Upload APL
-        if: steps.dump_apl_default.outcome == 'success' || steps.dump_apl_assisted.outcome == 'success'
+        if: steps.check_apl_changes.outputs.changed == 'true'
         continue-on-error: true
         uses: actions/upload-artifact@v6
         with:
           name: apl-${{ github.sha }}-${{ matrix.spec }}
           path: |
-            default/${{ matrix.spec }}.simc
-            assisted_combat/${{ matrix.spec }}.simc
+            ActionPriorityLists/*/${{ matrix.spec }}.simc
           retention-days: 1
 
       - name: Generate Profiles
         id: generate_profiles
         if: github.event_name == 'push' && !failure() && !inputs.is-ptr
+        continue-on-error: true
         shell: bash
         run: |
           cd profiles
@@ -378,8 +389,20 @@ jobs:
             fi
           done
 
+      - name: Check Profile Changes
+        id: check_profile_changes
+        if: steps.generate_profiles.outcome == 'success'
+        shell: bash
+        run: |
+          CHANGED=$(git status --porcelain -- profiles/*/*_${{ env.CLASS_STR_CAP }}_*.simc)
+          if [ -n "$CHANGED" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Upload Profiles
-        if: steps.generate_profiles.outcome == 'success' && !inputs.is-ptr
+        if: steps.check_profile_changes.outputs.changed == 'true'
         continue-on-error: true
         uses: actions/upload-artifact@v6
         with:
