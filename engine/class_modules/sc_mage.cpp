@@ -5328,11 +5328,8 @@ struct splinter_t final : public mage_spell_t
                                p()->talents.infused_splinters->effectN( 1 ).percent() );
 
     auto cd = p()->specialization() == MAGE_FROST ? p()->cooldowns.frozen_orb : p()->cooldowns.arcane_orb;
-    // TODO: This is actually 300 ms (rather than 250), not sure how
+
     auto cdr = p()->talents.spellfrost_teachings->effectN( p()->specialization() == MAGE_FROST ? 2 : 1 ).time_value();
-    if ( p()->bugs )
-      // Best guess: some rounding issue; adjust as needed
-      cdr = 100_ms * std::round( 0.01 * cdr.total_millis() );
     cd->adjust( -cdr, false );
   }
 
