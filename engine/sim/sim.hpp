@@ -513,7 +513,7 @@ struct sim_t : private sc_thread_t
   chrono::wall_clock::duration elapsed_time;
   std::vector<size_t> work_per_thread;
   size_t work_done;
-  double     iteration_dmg, priority_iteration_dmg,  iteration_heal, iteration_absorb;
+  double iteration_dmg, priority_iteration_dmg,  iteration_heal, iteration_absorb;
   simple_sample_data_t total_dmg, raid_hps, total_heal, total_absorb, raid_aps;
   extended_sample_data_t raid_dps, simulation_length;
   chrono::wall_clock::duration merge_time, init_time, analyze_time;
@@ -521,11 +521,13 @@ struct sim_t : private sc_thread_t
   // replayability
   std::vector<iteration_data_entry_t> iteration_data, low_iteration_data, high_iteration_data;
   // Report percent (how many% of lowest/highest iterations reported, default 2.5%)
-  double     report_iteration_data;
+  double report_iteration_data;
   // Minimum number of low/high iterations reported (default 5 of each)
-  int        min_report_iteration_data;
-  int        report_progress;
-  int        bloodlust_percent;
+  int min_report_iteration_data;
+  // Report all iterations in strict thread & iteration order with no sorting. Takes precedence over above 2 options.
+  bool report_strict_iteration_data;
+  int report_progress;
+  int bloodlust_percent;
   timespan_t bloodlust_time;
   std::string reference_player_str;
   std::vector<player_t*> players_by_dps;

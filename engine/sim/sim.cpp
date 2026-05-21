@@ -1513,6 +1513,7 @@ sim_t::sim_t()
     analyze_time(),
     report_iteration_data( 0.025 ),
     min_report_iteration_data( -1 ),
+    report_strict_iteration_data( false ),
     report_progress( 1 ),
     bloodlust_percent( 0 ),
     bloodlust_time( 0_ms ),
@@ -2085,8 +2086,9 @@ void sim_t::datacollection_end()
        current_time() > timespan_t::zero() )
   {
     // TODO: Metric should be selectable
-    iteration_data_entry_t entry( iteration_dmg / current_time().total_seconds(),
-        current_time().total_seconds(), seed, current_iteration );
+    iteration_data_entry_t entry( iteration_dmg / current_time().total_seconds(), current_time().total_seconds(), seed,
+                                  current_iteration, thread_index, single_actor_batch ? as<int>( current_index ) : -1 );
+
     for ( auto* t : target_list )
     {
        // Once we start hitting adds (instead of real enemies), break out as those don't have real
@@ -3041,8 +3043,28 @@ void sim_t::analyze()
 void sim_t::analyze_iteration_data()
 {
   // Only enabled for deterministic simulations for now
-  if ( ! deterministic || report_iteration_data == 0 )
+  if ( !deterministic || ( report_iteration_data == 0 && !report_strict_iteration_data ) )
   {
+    return;
+  }
+
+  if ( report_strict_iteration_data )
+  {
+    if ( single_actor_batch )
+    {
+      range::sort( iteration_data, []( const auto& a, const auto& b ) {
+        return a.actor_index == b.actor_index
+                 ? a.thread_index == b.thread_index ? a.iteration < b.iteration : a.thread_index < b.thread_index
+                 : a.actor_index < b.actor_index;
+      } );
+    }
+    else
+    {
+      range::sort( iteration_data, []( const auto& a, const auto& b ) {
+        return a.thread_index == b.thread_index ? a.iteration < b.iteration : a.thread_index < b.thread_index;
+      } );
+    }
+
     return;
   }
 
@@ -3064,7 +3086,6 @@ void sim_t::analyze_iteration_data()
   std::copy( iteration_data.end() - n_entries, iteration_data.end(), std::back_inserter( high_iteration_data ) );
   range::sort( high_iteration_data, iteration_data_cmp );
 }
-
 
 // sim_t::iterate ===========================================================
 
@@ -3803,6 +3824,7 @@ void sim_t::create_options()
   add_option( opt_bool( "strict_work_queue", strict_work_queue ) );
   add_option( opt_float( "report_iteration_data", report_iteration_data ) );
   add_option( opt_int( "min_report_iteration_data", min_report_iteration_data ) );
+  add_option( opt_bool( "report_strict_iteration_data", report_strict_iteration_data ) );
   add_option( opt_bool( "average_range", average_range ) );
   add_option( opt_bool( "average_gauss", average_gauss ) );
   // Misc
