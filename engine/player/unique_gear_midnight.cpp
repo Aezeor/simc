@@ -1415,24 +1415,18 @@ void solarflare_prism( special_effect_t& effect )
   {
     double hp_inc;
     double max_val;
-    double hp_mult;
 
     solarflare_prism_buff_t( std::string_view n, const special_effect_t& e )
-      : stat_buff_t( e.player, n, e.player->find_spell( 1255504 ) ), hp_inc( 0.0 ), max_val( 0.0 ), hp_mult( 0.0 )
+      : stat_buff_t( e.player, n, e.player->find_spell( 1255504 ) ),
+        hp_inc( e.driver()->effectN( 2 ).average( e ) ),
+        max_val( e.driver()->effectN( 4 ).average( e ) )
     {
-      set_default_value( e.driver()->effectN( 1 ).average( e ) );
-
-      hp_inc  = e.driver()->effectN( 2 ).average( e );
-      max_val = e.driver()->effectN( 4 ).average( e );
+      add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) );
     }
 
-    void bump( int s, double v ) override
+    double buff_stat_stack_amount( const buff_stat_t& stat, int stack ) const override
     {
-      for ( auto& stat : stats )
-      {
-        stat.amount = std::min( default_value + hp_inc * hp_mult, max_val );
-      }
-      stat_buff_t::bump( s, v );
+      return std::min( stat.amount + hp_inc * check_value(), max_val );
     }
   };
 
@@ -1440,16 +1434,14 @@ void solarflare_prism( special_effect_t& effect )
   {
     buff_t* buff;
 
-    solarflare_prism_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), buff( nullptr )
+    solarflare_prism_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
     {
       buff = make_buff<solarflare_prism_buff_t>( "solarflare_prism", e );
     }
 
     void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
-      solarflare_prism_buff_t* sf_buff = debug_cast<solarflare_prism_buff_t*>( buff );
-      sf_buff->hp_mult                 = 100 - t->health_percentage();
-      sf_buff->trigger();
+      buff->trigger( -1, 100.0 - t->health_percentage() );
     }
   };
 
