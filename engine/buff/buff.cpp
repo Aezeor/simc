@@ -3308,9 +3308,9 @@ double stat_buff_t::buff_stat_stack_amount( const buff_stat_t& buff_stat, int s 
   return buff_stat.stack_amount( s );
 }
 
-void stat_buff_t::bump( int stacks, double /* value */ )
+void stat_buff_t::bump( int stacks, double value )
 {
-  buff_t::bump( stacks );
+  buff_t::bump( stacks, value );
 
   for ( auto& buff_stat : stats )
   {
