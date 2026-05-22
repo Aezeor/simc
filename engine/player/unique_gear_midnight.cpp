@@ -3388,6 +3388,63 @@ void sunfire_sash( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// 1285138 driver
+// 1286533 missile
+// 1286135 dot
+// 1286316 remaining damage
+void sporecallers_blooming_loop( special_effect_t& effect )
+{
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Sporecaller's Blooming Loop: Implementation assumes damage for remaining dot triggers when the missile hits." );
+  effect.player->sim->error( UNVERIFIED_VALUE,
+    "Sporecaller's Blooming Loop: Calculation for damage from remaining dot has not been verified." );
+
+  struct rotbloom_missile_t : public generic_proc_t
+  {
+    action_t* dot;
+    action_t* damage;
+
+    rotbloom_missile_t( const special_effect_t& effect ) : generic_proc_t( effect, "rotbloom_missile", 1286533 )
+    {
+      // set up the dot
+      dot = create_proc_action<generic_proc_t>( "rotbloom", effect, 1286135 );
+      auto dot_ticks = dot->dot_duration / dot->base_tick_time;
+      dot->base_td = effect.driver()->effectN( 1 ).average( effect ) / dot_ticks;
+      dot->base_multiplier *= role_mult( effect );
+
+      // set up the remaining damage
+      damage = create_proc_action<generic_proc_t>( "rotbloom_damage", effect, 1286316 );
+      damage->base_multiplier *= effect.driver()->effectN( 2 ).percent();
+
+      // set up reporting
+      dot->dual = damage->dual = true;
+      stats = dot->stats;
+      damage->stats = dot->stats;
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      generic_proc_t::impact( state );
+
+      if ( auto target_dot = dot->find_dot( state->target ); target_dot && target_dot->is_ticking() )
+        damage->execute_on_target( state->target, target_dot->tick_damage_over_remaining_time() );
+      else
+        dot->execute_on_target( state->target );
+    }
+  };
+
+  effect.execute_action = create_proc_action<rotbloom_missile_t>( "rotbloom_missile", effect );
+
+  effect.player->callbacks.register_callback_trigger_function(
+    effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+    []( auto, const auto&, auto, action_state_t* s, auto ) {
+      return dbc::has_common_school( s->action->get_school(), SCHOOL_NATURE );
+    } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace armors
 
 namespace sets
@@ -3928,6 +3985,9 @@ void register_special_effects()
   register_special_effect( 1243903, armors::azerothian_power );
   register_special_effect( 1241529, armors::arcanoweave_cord );
   register_special_effect( 1241503, armors::sunfire_sash );
+  set_min_version( wowv_t( 12, 0, 7 ) );
+  register_special_effect( 1285138, armors::sporecallers_blooming_loop );
+  reset_version_check();
   // Sets
   register_special_effect( 1281574, sets::voidlight_bindings );
   register_special_effect( 1281581, DISABLED_EFFECT );  // voidlight bindings equip effect
