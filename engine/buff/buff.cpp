@@ -3303,9 +3303,31 @@ stat_buff_t* stat_buff_t::set_stat_from_effect_type( effect_subtype_t type, doub
   return add_stat_from_effect_type( type, a, c );
 }
 
-double stat_buff_t::buff_stat_stack_amount( const buff_stat_t& buff_stat, int s ) const
+double stat_buff_t::buff_stat_stack_amount( const buff_stat_t& buff_stat, int stacks ) const
 {
-  return buff_stat.stack_amount( s );
+  return std::max( 1.0, std::fabs( buff_stat.amount ) ) * stacks;
+}
+
+void stat_buff_t::update_player_buff_stat( buff_stat_t& buff_stat, int stacks )
+{
+  // Blizzard likes to use effect coefficients that give (almost) exact values at the
+  // intended level. Small floating point conversion errors can add up to give the wrong
+  // value. We compensate by increasing the absolute value by a tiny bit before truncating.
+  double _val = buff_stat_stack_amount( buff_stat, stacks );
+  _val = std::copysign( std::trunc( _val + stat_fp_epsilon ), buff_stat.amount );
+
+  double delta = _val - buff_stat.current_value;
+
+  if ( delta > 0 )
+  {
+    player->stat_gain( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > 0_ms );
+  }
+  else if ( delta < 0 )
+  {
+    player->stat_loss( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > 0_ms );
+  }
+
+  buff_stat.current_value += delta;
 }
 
 void stat_buff_t::bump( int stacks, double value )
@@ -3317,17 +3339,7 @@ void stat_buff_t::bump( int stacks, double value )
     if ( buff_stat.check_func && !buff_stat.check_func( *this ) )
       continue;
 
-    double delta = buff_stat_stack_amount( buff_stat, current_stack ) - buff_stat.current_value;
-    if ( delta > 0 )
-    {
-      player->stat_gain( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
-    }
-    else if ( delta < 0 )
-    {
-      player->stat_loss( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > timespan_t::zero() );
-    }
-
-    buff_stat.current_value += delta;
+    update_player_buff_stat( buff_stat, current_stack );
   }
 }
 
@@ -3347,17 +3359,9 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
 
     for ( auto& buff_stat : stats )
     {
-      double delta = buff_stat.current_value - buff_stat_stack_amount( buff_stat, new_stack );
-      if ( delta > 0 )
-      {
-        player->stat_loss( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
-      }
-      else if ( delta < 0 )
-      {
-        player->stat_gain( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > timespan_t::zero() );
-      }
-      buff_stat.current_value -= delta;
+      update_player_buff_stat( buff_stat, new_stack );
     }
+
     current_stack -= stacks;
 
     invalidate_cache();

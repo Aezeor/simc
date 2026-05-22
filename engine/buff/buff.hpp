@@ -466,26 +466,17 @@ struct stat_buff_t : public buff_t
     double current_value;
     stat_check_fn check_func;
 
-    buff_stat_t( stat_e s, double a,
-                 std::function<bool( const stat_buff_t& )> c = std::function<bool( const stat_buff_t& )>() )
+    buff_stat_t( stat_e s, double a, std::function<bool( const stat_buff_t& )> c = nullptr )
       : stat( s ), amount( a ), current_value( 0 ), check_func( std::move( c ) )
-    {
-    }
-
-    double stack_amount( int stacks ) const
-    {
-      // Blizzard likes to use effect coefficients that give (almost) exact values at the
-      // intended level. Small floating point conversion errors can add up to give the wrong
-      // value. We compensate by increasing the absolute value by a tiny bit before truncating.
-      double val = std::max( 1.0, std::fabs( amount ) );
-      return std::copysign( std::trunc( stacks * val + 1e-3 ), amount );
-    }
+    {}
   };
+
   std::vector<buff_stat_t> stats;
   gain_t* stat_gain;
   bool manual_stats_added;
 
-  virtual double buff_stat_stack_amount( const buff_stat_t&, int ) const;
+  virtual double buff_stat_stack_amount( const buff_stat_t&, int stacks ) const;
+  void update_player_buff_stat( buff_stat_t&, int stacks );
 
   void bump     ( int stacks = 1, double value = -1.0 ) override;
   void decrement( int stacks = 1, double value = -1.0 ) override;
@@ -500,6 +491,9 @@ struct stat_buff_t : public buff_t
 
   stat_buff_t( actor_pair_t q, util::string_view name );
   stat_buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, const item_t* item = nullptr );
+
+  // floating point compensation before truncating for final amount to apply to player stats
+  static constexpr double stat_fp_epsilon = 1e-3;
 };
 
 struct absorb_buff_t : public buff_t

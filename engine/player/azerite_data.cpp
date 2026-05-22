@@ -5208,7 +5208,10 @@ struct worldvein_resonance_buff_t : public buff_t
 
     if ( lifeblood->check() )
     {
-      double delta = stat_entry.stack_amount( lifeblood->current_stack ) - stat_entry.current_value;
+      double _val = lifeblood->buff_stat_stack_amount( stat_entry, lifeblood->current_stack );
+      _val = std::copysign( std::trunc( _val + stat_buff_t::stat_fp_epsilon ), stat_entry.amount );
+
+      double delta = _val - stat_entry.current_value;
       sim->print_debug( "{} worldvein_resonance {}creases lifeblood stats by {}%,"
                         " stacks={}, old={}, new={} ({}{})",
         player->name(),

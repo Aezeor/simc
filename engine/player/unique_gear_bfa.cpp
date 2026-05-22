@@ -4560,18 +4560,7 @@ void items::ingenious_mana_battery( special_effect_t& effect )
 
         buff_stat.amount = value;
 
-        double delta = buff_stat_stack_amount( buff_stat, current_stack ) - buff_stat.current_value;
-        if ( delta > 0 )
-        {
-          player->stat_gain( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
-        }
-        else if ( delta < 0 )
-        {
-          player->stat_loss( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr,
-                             buff_duration() > timespan_t::zero() );
-        }
-
-        buff_stat.current_value += delta;
+        update_player_buff_stat( buff_stat, current_stack );
       }
     }
 

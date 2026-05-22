@@ -4583,18 +4583,7 @@ public:
       if ( buff_stat.check_func && !buff_stat.check_func( *b ) )
         continue;
 
-      double delta = buff_stat.stack_amount( b->current_stack ) - buff_stat.current_value;
-      if ( delta > 0 )
-      {
-        b->player->stat_gain( buff_stat.stat, delta, b->stat_gain, nullptr, b->buff_duration() > timespan_t::zero() );
-      }
-      else if ( delta < 0 )
-      {
-        b->player->stat_loss( buff_stat.stat, std::fabs( delta ), b->stat_gain, nullptr,
-                              b->buff_duration() > timespan_t::zero() );
-      }
-
-      buff_stat.current_value += delta;
+      b->update_player_buff_stat( buff_stat, b->current_stack );
     }
   }
 
@@ -8132,18 +8121,7 @@ public:
       if ( buff_stat.check_func && !buff_stat.check_func( *b ) )
         continue;
 
-      double delta = buff_stat.stack_amount( b->current_stack ) - buff_stat.current_value;
-      if ( delta > 0 )
-      {
-        b->player->stat_gain( buff_stat.stat, delta, b->stat_gain, nullptr, b->buff_duration() > timespan_t::zero() );
-      }
-      else if ( delta < 0 )
-      {
-        b->player->stat_loss( buff_stat.stat, std::fabs( delta ), b->stat_gain, nullptr,
-                              b->buff_duration() > timespan_t::zero() );
-      }
-
-      buff_stat.current_value += delta;
+      b->update_player_buff_stat( buff_stat, b->current_stack );
     }
   }
 

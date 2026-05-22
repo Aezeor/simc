@@ -1872,12 +1872,12 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
     {}
 
     // values can be off by a +/-2 due to unknown rounding being performed by the in-game script
+    // TODO: confirm truncation happens on final amount, and not per stack amount
     double buff_stat_stack_amount( const buff_stat_t& stat, int s ) const override
     {
-      double val = std::max( 1.0, std::fabs( stat.amount ) );
       double stack = s <= cap ? s : cap + ( s - cap ) * cap_mul;
-      // TODO: confirm truncation happens on final amount, and not per stack amount
-      return std::copysign( std::trunc( stack * val + 1e-3 ), stat.amount );
+
+      return buff_stat_stack_amount( stat, stack );
     }
   };
 
