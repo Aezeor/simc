@@ -537,7 +537,7 @@ struct parse_effects_t : public parse_base_t
 protected:
   player_t* _player;
   std::array<std::vector<parse_cb_t>, PARSE_CALLBACK_MAX> callback_list;
-  std::array<uint32_t, PARSE_CALLBACK_MAX> callback_mask;
+  std::array<uint32_t, PARSE_CALLBACK_MAX> callback_mask{};
   mutable uint32_t callback_idx = 0;
 
 public:
