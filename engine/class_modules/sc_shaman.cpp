@@ -3107,7 +3107,12 @@ public:
           this->p()->gain.aftershock );
       this->p()->proc.aftershock->occur();
     }
-
+  }
+  
+  void impact( action_state_t* s ) override
+  {
+    ab::impact( s );
+    
     if ( ( this->execute_state->action->id == 188389 ) ||
       ( this->is_variant( spell_variant::NORMAL ) && !this->background) )
     {
