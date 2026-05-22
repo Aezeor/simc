@@ -3050,6 +3050,39 @@ void gloomspattered_dreadscale( special_effect_t& effect )
 
   effect.execute_action = create_proc_action<gloomspattered_dreadscale_t>( "gloomspattered_dreadscale", effect );
 }
+
+// 1284696 driver
+// 1284698 buff
+void sporelords_mycelium( special_effect_t& effect )
+{
+  std::unordered_map<stat_e, buff_t*> buffs;
+  auto value = effect.driver()->effectN( 1 ).average( effect );
+
+  create_all_stat_buffs( effect, effect.trigger(), value, [ &buffs, value ]( stat_e s, buff_t* b ) {
+    // don't need a separate leech buff
+    if ( s == STAT_LEECH_RATING )
+      return;
+
+    // add leech stat
+    debug_cast<stat_buff_t*>( b )->add_stat_from_effect( 5, value );
+
+    buffs[ s ] = b;
+  } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+  effect.player->callbacks.register_callback_execute_function(
+    effect.spell_id, [ buffs, p = effect.player ]( auto, auto, auto, auto ) {
+      auto stat = p->rng().range( secondary_ratings );
+      for ( auto [ s, b ] : buffs )
+      {
+        if ( s == stat )
+          b->trigger();
+        else
+          b->expire();
+      }
+    } );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -3881,6 +3914,9 @@ void register_special_effects()
   register_special_effect( 1253112, trinkets::sylvan_wakrapuku );
   register_special_effect( 1260633, trinkets::gloomspattered_dreadscale );
   register_special_effect( 1260627, DISABLED_EFFECT );  // Gloom-Spattered Dreadscale Passive Driver
+  set_min_version( wowv_t( 12, 0, 7 ) );
+  register_special_effect( 1284696, trinkets::sporelords_mycelium );
+  reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );
