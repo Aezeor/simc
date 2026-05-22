@@ -8229,12 +8229,9 @@ public:
   void execute() override
   {
     shaman_spell_t::execute();
-    if ( is_variant( spell_variant::NORMAL ) )
+    if ( p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() )
     {
-      if ( p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() )
-      {
-        p()->summon_ancestor();
-      }
+      p()->summon_ancestor();
     }
   }
 };
