@@ -400,11 +400,10 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
             echo "Changed profile files:"
             echo "$CHANGED"
-            {
-              echo "changed_files<<EOF"
-              echo "$CHANGED"
-              echo "EOF"
-            } >> "$GITHUB_OUTPUT"
+            mkdir -p /tmp/changed_profiles
+            echo "$CHANGED" | while read -r f; do
+              cp --parents "$f" /tmp/changed_profiles/
+            done
           else
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "No profile files changed"
@@ -416,5 +415,5 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: profiles-${{ github.sha }}-${{ matrix.spec }}
-          path: ${{ steps.check_profile_changes.outputs.changed_files }}
+          path: /tmp/changed_profiles/profiles/
           retention-days: 1
