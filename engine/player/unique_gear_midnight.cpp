@@ -3445,6 +3445,41 @@ void sporecallers_blooming_loop( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 1285139 driver
+// 1285161 shield
+// 1285163 aoe
+void rotmires_sporeheart( special_effect_t& effect )
+{
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Rotmire's Sporeheart: Damage is assumed to split and increase by 15% per target hit. "
+    "Shield is assumed to apply immediately and will only burst when depleted by incoming damage. "
+    "What types of triggers can proc the shield has not been verified." );
+
+  struct protective_toadstool_buff_t : public absorb_buff_t
+  {
+    action_t* damage;
+
+    protective_toadstool_buff_t( const special_effect_t& e )
+      : absorb_buff_t( e.player, "protective_toadstools", e.player->find_spell( 1285161 ) )
+    {
+      damage = create_proc_action<generic_aoe_proc_t>( "bursting_toadstools", e, 1285163 );
+      damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 3 ).average( e );
+      damage->base_multiplier *= role_mult( e );
+
+      set_default_value( e.driver()->effectN( 2 ).average( e ) );
+    }
+
+    void absorb_used( double, player_t* t ) override
+    {
+      if ( current_value <= 0 && t )
+        damage->execute_on_target( t );
+    }
+  };
+
+  effect.custom_buff = make_buff<protective_toadstool_buff_t>( effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace armors
 
 namespace sets
@@ -3987,6 +4022,7 @@ void register_special_effects()
   register_special_effect( 1241503, armors::sunfire_sash );
   set_min_version( wowv_t( 12, 0, 7 ) );
   register_special_effect( 1285138, armors::sporecallers_blooming_loop );
+  register_special_effect( 1285139, armors::rotmires_sporeheart );
   reset_version_check();
   // Sets
   register_special_effect( 1281574, sets::voidlight_bindings );
