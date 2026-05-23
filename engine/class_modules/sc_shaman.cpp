@@ -12022,7 +12022,7 @@ void shaman_t::trigger_thunderstrike_ward( const action_state_t* state )
     return;
   }
 
-  if ( !rng().roll( options.thunderstrike_ward_proc_chance ) )
+  if ( !rng().roll( options.thunderstrike_ward_proc_chance * ( 1.0 + talent.storm_infusion->effectN( 2 ).percent()) ) )
   {
     return;
   }
