@@ -8190,6 +8190,8 @@ public:
       double proc_chance =
           std::max( 0.0, 0.6-std::pow(1.16, -2*(p()->lava_surge_attempts_normalized-5)));
 
+      proc_chance *= 1.0 + p()->talent.mystic_knowledge->effectN( 1 ).percent();
+
       if ( p()->spec.restoration_shaman->ok() )
       {
         proc_chance += p()->spec.restoration_shaman->effectN( 7 ).percent();
@@ -11099,7 +11101,7 @@ void shaman_t::init_spells()
 
   talent.maelstrom_supremacy    = find_talent_spell( talent_tree::HERO, "Maelstrom Supremacy" );
   talent.final_calling          = find_talent_spell( talent_tree::HERO, "Final Calling" );
-  talent.mystic_knowledge       = find_talent_spell( talent_tree::HERO, "Mystic Calling" );
+  talent.mystic_knowledge       = find_talent_spell( talent_tree::HERO, "Mystic Knowledge" );
 
   talent.ancestral_swiftness    = find_talent_spell( talent_tree::HERO, "Ancestral Swiftness" );
 
