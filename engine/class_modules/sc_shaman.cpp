@@ -3114,7 +3114,7 @@ public:
     ab::impact( s );
     
     if ( ( this->execute_state->action->id == 188389 ) ||
-      ( this->is_variant( spell_variant::NORMAL ) && !this->background) )
+         ( this->is_variant( spell_variant::NORMAL ) && !this->background && s->chain_target == 0 ) )
     {
       this->p()->trigger_ancestor( ancestor_trigger, this->execute_state );
     }
@@ -6875,6 +6875,7 @@ struct lava_burst_t : public shaman_spell_t
       background = true;
       base_execute_time = 0_s;
       cooldown->duration = 0_s;
+      ancestor_trigger = ancestor_cast::DISABLED;
 
       if ( is_variant( spell_variant::ASCENDANCE ) )
       {
