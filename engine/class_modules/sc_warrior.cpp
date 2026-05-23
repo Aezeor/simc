@@ -2114,7 +2114,7 @@ struct melee_t : public warrior_attack_t
 struct auto_attack_t : public warrior_attack_t
 {
   int sync_weapons;
-  auto_attack_t( warrior_t* p, util::string_view options_str ) : warrior_attack_t( "auto_attack", p )
+  auto_attack_t( warrior_t* p, util::string_view options_str ) : warrior_attack_t( "auto_attack", p ), sync_weapons( 0 )
   {
     add_option( opt_bool( "sync_weapons", sync_weapons ) );
     parse_options( options_str );
