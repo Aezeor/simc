@@ -392,13 +392,22 @@ jobs:
       - name: Check Profile Changes
         id: check_profile_changes
         if: steps.generate_profiles.outcome == 'success'
+        continue-on-error: true
         shell: bash
         run: |
-          CHANGED=$(git status --porcelain -- profiles/*/*_${{ env.CLASS_STR_CAP }}_*.simc)
+          CHANGED=$(git status --porcelain -- profiles/*/*.simc | sed 's/^...//')
           if [ -n "$CHANGED" ]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Changed profile files:"
+            echo "$CHANGED"
+            {
+              echo "changed_files<<EOF"
+              echo "$CHANGED"
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
           else
             echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No profile files changed"
           fi
 
       - name: Upload Profiles
@@ -407,6 +416,5 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: profiles-${{ github.sha }}-${{ matrix.spec }}
-          path: |
-            profiles/*/*_${{ env.CLASS_STR_CAP }}_*.simc
+          path: ${{ steps.check_profile_changes.outputs.changed_files }}
           retention-days: 1
