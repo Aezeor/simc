@@ -26,8 +26,4 @@ Please include any steps necessary to recreate the problem, or include logs/data
 
 * If SimulationCraft is crashing, please include your **dxdiag** file - Instructions here - 
   https://us.battle.net/support/en/article/Obtaining-System-Files
-
-* **simc_gui.simc** file or contents
-  This file is saved in the same folder as SimulationCraft after each simulation. Make sure to run the 
-  simulation that is giving you issues, then include the file here by either uploading to github, 
-  copy/pasting the contents, or using http://pastebin.com/
+  
