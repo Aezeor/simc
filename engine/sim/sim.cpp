@@ -2082,7 +2082,7 @@ void sim_t::datacollection_end()
   total_absorb.add( iteration_absorb );
   raid_aps.add( current_time() != timespan_t::zero() ? iteration_absorb / current_time().total_seconds() : 0 );
 
-  if ( deterministic && report_iteration_data > 0 && current_iteration > 0 &&
+  if ( deterministic && report_iteration_data > 0 && ( iterations == 1 || current_iteration > 0 ) &&
        current_time() > timespan_t::zero() )
   {
     // TODO: Metric should be selectable
