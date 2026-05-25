@@ -544,15 +544,12 @@ struct player_t : public actor_t
 
     // 9.0 class buffs
     buff_t* focus_magic; // Mage talent
-    buff_t* power_infusion; // Priest spell
-    buff_t* rallying_cry; // Warrior spell
 
     // 9.0 Runecarves
     buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving
     buff_t* echo_of_eonar;               // passive self buff
 
     // Trinkets
-    buff_t* soleahs_secret_technique_external;
     buff_t* elegy_of_the_eternals_external;
 
     // 9.2 Sepulcher of the First Ones
@@ -577,7 +574,6 @@ struct player_t : public actor_t
     buff_t* quickwicks_quick_trick_wick_walk;  // quickwick candlestick movement speed buff
     buff_t* building_momentum;  // scroll of momentum counter buff
     buff_t* full_momentum;      // scroll of momentum max buff
-    buff_t* potion_bomb_of_power; // potion bomb of power primary stat
   } buffs;
 
   struct debuffs_t
@@ -1217,7 +1213,7 @@ public:
   virtual void init_uptimes();
   virtual void init_benefits();
   virtual void init_rng();
-  virtual void init_stats();
+  virtual void init_stat_data();
   virtual void init_distance_targeting();
   virtual void init_absorb_priority();
   virtual void init_assessors();
