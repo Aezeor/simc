@@ -4963,28 +4963,6 @@ void player_t::create_buffs()
         }
       }
 
-      if (!external_buffs.tome_of_unstable_power.empty() && external_buffs.tome_of_unstable_power_ilevel)
-      {
-          auto buff_spell = find_spell(388583);
-          auto data_spell = find_spell(391290);
-
-          auto buff = make_buff<stat_buff_t>(this, "tome_of_unstable_power_external", buff_spell);
-
-          auto ilevel = external_buffs.tome_of_unstable_power_ilevel;
-          auto coeff_main_stat = data_spell->effectN(1).m_coefficient();
-          auto coeff_crit = data_spell->effectN(2).m_coefficient();
-          auto points = dbc->random_property(ilevel).p_epic[0];
-          auto mult = dbc->combat_rating_multiplier(ilevel, CR_MULTIPLIER_TRINKET);
-
-          buff->set_duration(find_spell(388559)->duration());
-          buff->manual_stats_added = false;
-          // This is currently scaling class -1, change if this ever changes
-          buff->add_stat(convert_hybrid_stat(STAT_STR_AGI_INT), coeff_main_stat * points);
-          buff->add_stat(STAT_CRIT_RATING, coeff_crit * points * mult);
-
-          buffs.tome_of_unstable_power = buff;
-      }
-
       // 9.2 Jailer raid buff
       // Values are hard-coded because difficulty-specific spell data is not fully extracted.
       buffs.boon_of_azeroth = make_buff<stat_buff_t>( this, "boon_of_azeroth", find_spell( 363338 ) )
@@ -6390,7 +6368,6 @@ void player_t::combat_begin()
 
   add_timed_buff_triggers( external_buffs.boon_of_azeroth, buffs.boon_of_azeroth );
   add_timed_buff_triggers( external_buffs.boon_of_azeroth_mythic, buffs.boon_of_azeroth_mythic );
-  add_timed_buff_triggers( external_buffs.tome_of_unstable_power, buffs.tome_of_unstable_power );
 
   // Trigger registered combat-begin functions
   for ( const auto& f : combat_begin_functions)
@@ -13627,12 +13604,10 @@ void player_t::create_options()
   add_option( opt_external_buff_times( "external_buffs.rallying_cry", external_buffs.rallying_cry ) );
   add_option( opt_external_buff_times( "external_buffs.boon_of_azeroth", external_buffs.boon_of_azeroth ) );
   add_option( opt_external_buff_times( "external_buffs.boon_of_azeroth_mythic", external_buffs.boon_of_azeroth_mythic ) );
-  add_option( opt_external_buff_times( "external_buffs.tome_of_unstable_power", external_buffs.tome_of_unstable_power) );
   add_option( opt_external_buff_times( "external_buffs.potion_bomb_of_power", external_buffs.potion_bomb_of_power ) );
 
   // Additional Options for Timed External Buffs
   add_option( opt_obsoleted( "external_buffs.the_long_summer_rank" ) );
-  add_option(opt_int("external_buffs.tome_of_unstable_power_ilevel", external_buffs.tome_of_unstable_power_ilevel, 1, MAX_ILEVEL));
 
   // Player only options
   if ( !is_enemy() && !is_pet() )
