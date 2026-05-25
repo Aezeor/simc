@@ -546,10 +546,6 @@ struct player_t : public actor_t
     buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving
     buff_t* echo_of_eonar;               // passive self buff
 
-    // 9.2 Sepulcher of the First Ones
-    buff_t* boon_of_azeroth; // Jailer fight buff
-    buff_t* boon_of_azeroth_mythic; // Jailer fight buff (Mythic)
-
     // 10.0 Buffs
     buff_t* chilled_clarity;  // potion of chilled clarity
     buff_t* elemental_chaos_fire;  // phial of elemental chaos
@@ -602,8 +598,6 @@ struct player_t : public actor_t
     std::vector<timespan_t> blessing_of_winter;
     std::vector<timespan_t> blessing_of_spring;
     std::vector<timespan_t> rallying_cry;
-    std::vector<timespan_t> boon_of_azeroth;
-    std::vector<timespan_t> boon_of_azeroth_mythic;
     std::vector<timespan_t> potion_bomb_of_power;
     int soleahs_secret_technique;
   } external_buffs;

@@ -4922,25 +4922,6 @@ void player_t::create_buffs()
     }
 
     buffs.movement = new movement_buff_t( this );
-
-    if ( !is_pet() )
-    {
-      // 9.2 Jailer raid buff
-      // Values are hard-coded because difficulty-specific spell data is not fully extracted.
-      buffs.boon_of_azeroth = make_buff<stat_buff_t>( this, "boon_of_azeroth", find_spell( 363338 ) )
-        ->add_stat( STAT_MASTERY_RATING, 350 )
-        ->set_default_value( 0.1 )
-        ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-        ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
-        ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
-
-      buffs.boon_of_azeroth_mythic = make_buff<stat_buff_t>( this, "boon_of_azeroth_mythic", find_spell( 363338 ) )
-        ->add_stat( STAT_MASTERY_RATING, 418 )
-        ->set_default_value( 0.12 )
-        ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-        ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
-        ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
-    }
   }
   // .. for enemies
   else
@@ -6327,9 +6308,6 @@ void player_t::combat_begin()
       for ( auto t : times )
         make_event( *sim, t, [ buff, duration ] { buff->trigger( duration ); } );
   };
-
-  add_timed_buff_triggers( external_buffs.boon_of_azeroth, buffs.boon_of_azeroth );
-  add_timed_buff_triggers( external_buffs.boon_of_azeroth_mythic, buffs.boon_of_azeroth_mythic );
 
   // Trigger registered combat-begin functions
   for ( const auto& f : combat_begin_functions)
@@ -13559,8 +13537,6 @@ void player_t::create_options()
 
   add_option( opt_external_buff_times( "external_buffs.power_infusion", external_buffs.power_infusion ) );
   add_option( opt_external_buff_times( "external_buffs.rallying_cry", external_buffs.rallying_cry ) );
-  add_option( opt_external_buff_times( "external_buffs.boon_of_azeroth", external_buffs.boon_of_azeroth ) );
-  add_option( opt_external_buff_times( "external_buffs.boon_of_azeroth_mythic", external_buffs.boon_of_azeroth_mythic ) );
   add_option( opt_external_buff_times( "external_buffs.potion_bomb_of_power", external_buffs.potion_bomb_of_power ) );
 
   // Additional Options for Timed External Buffs
