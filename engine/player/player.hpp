@@ -546,9 +546,6 @@ struct player_t : public actor_t
     buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving
     buff_t* echo_of_eonar;               // passive self buff
 
-    // Trinkets
-    buff_t* elegy_of_the_eternals_external;
-
     // 9.2 Sepulcher of the First Ones
     buff_t* boon_of_azeroth; // Jailer fight buff
     buff_t* boon_of_azeroth_mythic; // Jailer fight buff (Mythic)
@@ -610,7 +607,6 @@ struct player_t : public actor_t
     std::vector<timespan_t> boon_of_azeroth_mythic;
     std::vector<timespan_t> potion_bomb_of_power;
     int soleahs_secret_technique;
-    std::string elegy_of_the_eternals;
   } external_buffs;
 
 

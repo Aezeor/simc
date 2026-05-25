@@ -4925,44 +4925,6 @@ void player_t::create_buffs()
 
     if ( !is_pet() )
     {
-      // External trinkets
-      if ( !external_buffs.elegy_of_the_eternals.empty() )
-      {
-        buffs.elegy_of_the_eternals_external =
-            make_buff<stat_buff_t>( this, "elegy_of_the_eternals_external", find_spell( 369439 ) )
-                ->set_duration( 0_ms );
-
-        auto s_data  = find_spell( 367246 );
-        auto coeff   = s_data->effectN( 1 ).m_coefficient() * s_data->effectN( 2 ).percent();
-        auto entries = util::string_split<std::string_view>( external_buffs.elegy_of_the_eternals, "/" );
-
-        for ( auto entry : entries )
-        {
-          auto values = util::string_split<std::string_view>( entry, ":" );
-
-          try
-          {
-            if ( values.size() != 2 )
-              throw std::invalid_argument( "Missing value." );
-
-            auto stat = util::parse_stat_type( values[ 1 ] );
-            if ( stat < STAT_CRIT_RATING || stat > STAT_VERSATILITY_RATING )
-              throw std::invalid_argument( "Invalid stat." );
-
-            auto ilevel = std::clamp( util::to_int( values[ 0 ] ), 0, MAX_ILEVEL );
-            auto points = dbc->random_property( ilevel ).p_epic[ 0 ];
-            auto mult   = dbc->combat_rating_multiplier( ilevel, CR_MULTIPLIER_TRINKET );
-
-            debug_cast<stat_buff_t*>( buffs.elegy_of_the_eternals_external )->add_stat( stat, coeff * points * mult );
-          }
-          catch ( const std::exception& )
-          {
-            std::throw_with_nested( sc_invalid_player_argument(
-              fmt::format( "Invalid 'external_buffs.elegy_of_the_eternals', format is '<ilevel>:<stat:/...'" ) ) );
-          }
-        }
-      }
-
       // 9.2 Jailer raid buff
       // Values are hard-coded because difficulty-specific spell data is not fully extracted.
       buffs.boon_of_azeroth = make_buff<stat_buff_t>( this, "boon_of_azeroth", find_spell( 363338 ) )
@@ -7222,9 +7184,6 @@ void player_t::arise()
 
   arise_time = sim->current_time();
   last_regen = sim->current_time();
-
-  if ( buffs.elegy_of_the_eternals_external )
-    buffs.elegy_of_the_eternals_external->trigger();
 
   if ( buffs.ingest_mineral )
     buffs.ingest_mineral->trigger();
@@ -13578,7 +13537,6 @@ void player_t::create_options()
 
   // Permanent External Buffs
   add_option( opt_int( "external_buffs.soleahs_secret_technique_ilevel", external_buffs.soleahs_secret_technique, 1, MAX_ILEVEL ) );
-  add_option( opt_string( "external_buffs.elegy_of_the_eternals", external_buffs.elegy_of_the_eternals ) );
 
   // Timed External Buffs
   auto opt_external_buff_times = [] ( std::string_view name, std::vector<timespan_t>& times )
