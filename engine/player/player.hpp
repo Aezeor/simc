@@ -601,7 +601,6 @@ struct player_t : public actor_t
     std::vector<timespan_t> blessing_of_autumn;
     std::vector<timespan_t> blessing_of_winter;
     std::vector<timespan_t> blessing_of_spring;
-    std::vector<timespan_t> conquerors_banner;
     std::vector<timespan_t> rallying_cry;
     std::vector<timespan_t> boon_of_azeroth;
     std::vector<timespan_t> boon_of_azeroth_mythic;
