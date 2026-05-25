@@ -9417,10 +9417,7 @@ struct warrior_module_t : public module_t
 
         if ( has_external_rallying )
         {
-          p->register_combat_begin( [ buff ]( player_t* p ) {
-            for ( auto t : p->external_buffs.rallying_cry )
-              make_event( *p->sim, t, [ buff ] { buff->trigger(); } );
-          } );
+          p->register_timed_buff_triggers( buff, p->external_buffs.rallying_cry );
         }
 
         if ( has_talent_rallying )

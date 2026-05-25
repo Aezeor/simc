@@ -6302,13 +6302,6 @@ void player_t::combat_begin()
     collected_data.combat_start_resource[ i ].add( resources.current[ i ] );
   }
 
-  auto add_timed_buff_triggers = [ this ]( const std::vector<timespan_t>& times, buff_t* buff,
-                                           timespan_t duration = timespan_t::min() ) {
-    if ( buff )
-      for ( auto t : times )
-        make_event( *sim, t, [ buff, duration ] { buff->trigger( duration ); } );
-  };
-
   // Trigger registered combat-begin functions
   for ( const auto& f : combat_begin_functions)
   {
@@ -14925,6 +14918,17 @@ void player_t::register_creature_type_buff( buff_t* buff, const spell_data_t* s_
                     fmt::join( _strs, ", " ) );
 
   buffs.creature_type_buffs.emplace_back( buff, effect.misc_value1(), effect.percent() );
+}
+
+void player_t::register_timed_buff_triggers( buff_t* buff, const std::vector<timespan_t>& times, timespan_t duration )
+{
+  if ( !buff || times.empty() )
+    return;
+
+  register_combat_begin( [ buff, &times, duration ]( player_t* p ) {
+    for ( auto t : times )
+      make_event( *p->sim, t, [ buff, duration ] { buff->trigger( duration ); } );
+  } );
 }
 
 spawner::base_actor_spawner_t* player_t::find_spawner( util::string_view id ) const

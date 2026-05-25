@@ -4268,10 +4268,7 @@ struct priest_module_t final : public module_t
 
       if ( !p->external_buffs.power_infusion.empty() )
       {
-        p->register_combat_begin( [ pi_buff ]( player_t* p ) {
-          for ( auto t : p->external_buffs.power_infusion )
-            make_event( *p->sim, t, [ pi_buff ] { pi_buff->trigger(); } );
-        } );
+        p->register_timed_buff_triggers( pi_buff, p->external_buffs.power_infusion );
       }
     }
   }

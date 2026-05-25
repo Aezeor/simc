@@ -12644,10 +12644,7 @@ void register_actor_initializers( sim_t& sim )
       auto buff = make_buff<stat_buff_t>( p, "potion_bomb_of_power_external", buff_spell )
         ->add_stat_from_effect_type( A_MOD_STAT, main_stat_amount );
 
-      p->register_combat_begin( [ buff ]( player_t* p ) {
-        for ( auto t : p->external_buffs.potion_bomb_of_power )
-          make_event( *p->sim, t, [ buff ] { buff->trigger(); });
-      } );
+      p->register_timed_buff_triggers( buff, p->external_buffs.potion_bomb_of_power );
     }
   }, "create_buffs_thewarwithin" );
 }

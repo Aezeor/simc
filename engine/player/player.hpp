@@ -1548,7 +1548,7 @@ public:
   assessor::state_assessor_pipeline_t assessor_out_damage;
 
   /// Start-of-combat effects
-  using combat_begin_fn_t = std::function<void(player_t*)>;
+  using combat_begin_fn_t = std::function<void( player_t* )>;
   std::vector<combat_begin_fn_t> combat_begin_functions;
   std::vector<combat_begin_fn_t> precombat_begin_functions;
 
@@ -1574,6 +1574,9 @@ public:
 
   // buffs that grant increased damage based on target creature type
   void register_creature_type_buff( buff_t*, const spell_data_t* = spell_data_t::nil() );
+
+  // trigger buff at a list of timestamps starting from beginning of combat
+  void register_timed_buff_triggers( buff_t*, const std::vector<timespan_t>&, timespan_t duration = timespan_t::min() );
 
   void update_off_gcd_ready();
   void update_cast_while_casting_ready();
