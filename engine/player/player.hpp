@@ -542,9 +542,6 @@ struct player_t : public actor_t
     buff_t* fathom_hunter; // Follower themed Benthic boots special effect
     buff_t* delirious_frenzy; // Dream's End 1H STR axe attack speed buff
 
-    // 9.0 class buffs
-    buff_t* focus_magic; // Mage talent
-
     // 9.0 Runecarves
     buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving
     buff_t* echo_of_eonar;               // passive self buff
@@ -602,7 +599,6 @@ struct player_t : public actor_t
   {
     std::string pool;
     std::unordered_map<buff_t*, std::vector<cooldown_t*>> invoke_cds;
-    bool focus_magic;
     double blessing_of_summer_duration_multiplier;
     std::vector<timespan_t> power_infusion;
     std::vector<timespan_t> blessing_of_summer;

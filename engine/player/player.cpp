@@ -4925,11 +4925,6 @@ void player_t::create_buffs()
 
     if ( !is_pet() )
     {
-      // 9.0 class buffs
-      buffs.focus_magic = make_buff( this, "focus_magic", find_spell( 321358 ) )
-        ->set_default_value_from_effect( 1 )
-        ->add_invalidate( CACHE_SPELL_CRIT_CHANCE );
-
       // External trinkets
       if ( !external_buffs.elegy_of_the_eternals.empty() )
       {
@@ -5563,9 +5558,6 @@ double player_t::composite_spell_crit_chance() const
 
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
     sc += b->check_stack_value();
-
-  if ( buffs.focus_magic )
-    sc += buffs.focus_magic->check_value();
 
   return sc;
 }
@@ -7253,9 +7245,6 @@ void player_t::arise()
 
   arise_time = sim->current_time();
   last_regen = sim->current_time();
-
-  if ( buffs.focus_magic && external_buffs.focus_magic )
-    buffs.focus_magic->override_buff();
 
   if ( buffs.elegy_of_the_eternals_external )
     buffs.elegy_of_the_eternals_external->trigger();
@@ -13611,7 +13600,6 @@ void player_t::create_options()
   add_option( opt_string( "external_buffs.pool", external_buffs.pool ) );
 
   // Permanent External Buffs
-  add_option( opt_bool( "external_buffs.focus_magic", external_buffs.focus_magic ) );
   add_option( opt_int( "external_buffs.soleahs_secret_technique_ilevel", external_buffs.soleahs_secret_technique, 1, MAX_ILEVEL ) );
   add_option( opt_string( "external_buffs.elegy_of_the_eternals", external_buffs.elegy_of_the_eternals ) );
 
