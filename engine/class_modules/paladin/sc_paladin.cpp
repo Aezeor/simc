@@ -5257,7 +5257,6 @@ struct paladin_module_t : public module_t
 
   void init( player_t* p ) const override
   {
-    p->buffs.beacon_of_light       = make_buff( p, "beacon_of_light", p->find_spell( 53563 ) );
     p->buffs.blessing_of_sacrifice = new buffs::blessing_of_sacrifice_t( p );
     p->debuffs.forbearance         = new buffs::forbearance_t( p, "forbearance" );
   }

@@ -488,7 +488,6 @@ struct player_t : public actor_t
     std::array<std::vector<buff_t*>, STAT_PCT_BUFF_MAX> stat_pct_buffs;
     std::vector<std::tuple<buff_t*, unsigned, double>> creature_type_buffs;
     buff_t* angelic_feather;
-    buff_t* beacon_of_light;
     buff_t* blood_fury;
     buff_t* body_and_soul;
     buff_t* damage_done;
