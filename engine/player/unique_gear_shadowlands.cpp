@@ -5230,8 +5230,8 @@ void register_target_data_initializers( sim_t& sim )
 
 void register_actor_initializers( sim_t& sim )
 {
-  // +9 for wow version 9.x
-  sim.register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + 9, []( player_t* p ) {
+  // 20+9 for wow version 9.x
+  sim.register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + 29, []( player_t* p ) {
     if ( p->external_buffs.soleahs_secret_technique )
     {
       struct soleahs_secret_technique_external_t : public external_special_effect_t

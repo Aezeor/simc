@@ -1212,7 +1212,7 @@ struct movement_event_t final : public raid_event_t
       direction = util::parse_movement_direction( move_direction );
     }
 
-    sim->register_actor_initializer( INIT_ACTOR_MISC + 6, []( player_t* p ) {
+    sim->register_actor_initializer( "scaling", 1, []( player_t* p ) {
       if ( !p->is_pet() && !p->is_enemy() )
         p->scaling->enable( STAT_SPEED_RATING );
     }, "scaling_speed_rating" );
@@ -1538,7 +1538,7 @@ struct damage_done_buff_event_t final : public raid_event_t
     add_option( opt_float( "multiplier", multiplier ) );
     parse_options( options_str );
 
-    sim->register_actor_initializer( "create_buffs", 1, []( player_t* p ) {
+    sim->register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + 40, []( player_t* p ) {
       p->buffs.damage_done = make_buff( p, "damage_done" )
         ->set_max_stack( 1 )
         ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );

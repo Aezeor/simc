@@ -11721,8 +11721,8 @@ void register_hotfixes()
 
 void register_actor_initializers( sim_t& sim )
 {
-  // +10 for wow version 10.x
-  sim.register_actor_initializer( INIT_ACTOR_CREATE_EFFECTS + 10, []( player_t* p ) {
+  // 20+10 for wow version 10.x
+  sim.register_actor_initializer( INIT_ACTOR_CREATE_EFFECTS + 30, []( player_t* p ) {
     if ( p->dragonflight_opts.emerald_coachs_whistle_ally_ilvl > 0 )
     {
       struct emerald_coachs_whistle_ally_t : public external_special_effect_t

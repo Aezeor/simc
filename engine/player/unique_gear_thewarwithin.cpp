@@ -12628,8 +12628,8 @@ void register_target_data_initializers( sim_t& )
 
 void register_actor_initializers( sim_t& sim )
 {
-  // +11 for wow version 11.x
-  sim.register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + 11, []( player_t* p ) {
+  // 20+11 for wow version 11.x
+  sim.register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + 31, []( player_t* p ) {
     // Potion Bomb of Power Primary Stat
     // Buff cannot stack
     // Does not take into account the fire damage on enemies
