@@ -4748,12 +4748,12 @@ void elementium_pocket_anvil( special_effect_t& e )
 // Azure - 401519, Minor - 405611
 void ominous_chromatic_essence( special_effect_t& e )
 {
-  buff_t* buff;
-  buff_t* obsidian_minor;
-  buff_t* ruby_minor;
-  buff_t* bronze_minor;
-  buff_t* azure_minor;
-  buff_t* emerald_minor;
+  buff_t* buff = nullptr;
+  buff_t* obsidian_minor = nullptr;
+  buff_t* ruby_minor = nullptr;
+  buff_t* bronze_minor = nullptr;
+  buff_t* azure_minor = nullptr;
+  buff_t* emerald_minor = nullptr;
   double main_value       = e.driver()->effectN( 1 ).average( e.item );
   double minor_value      = e.driver()->effectN( 2 ).average( e.item );
   const auto& flight      = e.player->dragonflight_opts.ominous_chromatic_essence_dragonflight;

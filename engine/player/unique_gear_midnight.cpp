@@ -1420,7 +1420,7 @@ void solarflare_prism( special_effect_t& effect )
       add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) );
     }
 
-    double buff_stat_stack_amount( const buff_stat_t& stat, int stack ) const override
+    double buff_stat_stack_amount( const buff_stat_t& stat, int ) const override
     {
       return std::min( stat.amount + hp_inc * check_value(), max_val );
     }

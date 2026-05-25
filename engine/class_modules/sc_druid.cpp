@@ -6646,7 +6646,7 @@ struct frenzied_regeneration_t final : public trigger_wild_guardian_echo_base_t<
       base_td_multiplier *= p->talent.wild_guardian_1->effectN( 1 ).percent();
     }
 
-    dot_t* get_dot( player_t* t ) override
+    dot_t* get_dot( [[maybe_unused]] player_t* t ) override
     {
       assert( t == player );
       return p()->hots.echo_of_frenzied_regeneration;
@@ -6703,7 +6703,7 @@ struct frenzied_regeneration_t final : public trigger_wild_guardian_echo_base_t<
     return a;
   }
 
-  dot_t* get_dot( player_t* t ) override
+  dot_t* get_dot( [[maybe_unused]] player_t* t ) override
   {
     assert( t == player );
     return p()->hots.frenzied_regeneration;

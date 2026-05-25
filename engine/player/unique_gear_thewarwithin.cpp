@@ -1873,7 +1873,7 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
     {
       double stack = s <= cap ? s : cap + ( s - cap ) * cap_mul;
 
-      return buff_stat_stack_amount( stat, stack );
+      return stat_buff_t::buff_stat_stack_amount( stat, stack );
     }
   };
 
