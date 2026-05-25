@@ -1212,7 +1212,7 @@ struct movement_event_t final : public raid_event_t
       direction = util::parse_movement_direction( move_direction );
     }
 
-    sim->register_actor_initializer( "scaling", 1, []( player_t* p ) {
+    sim->register_actor_initializer( INIT_ACTOR_MISC + 6, []( player_t* p ) {
       if ( !p->is_pet() && !p->is_enemy() )
         p->scaling->enable( STAT_SPEED_RATING );
     }, "scaling_speed_rating" );
