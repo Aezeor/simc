@@ -4786,10 +4786,17 @@ void sim_t::register_actor_initializer( int priority, std::function<void( player
   for ( const auto& e : actor_initializer )
   {
     std::string_view e_name = std::get<std::string>( e );
+    int e_prio = std::get<int>( e );
 
-    // Don't register duplicate initializers
     if ( !name.empty() && util::str_compare_ci( e_name, name ) )
-      return;
+    {
+      // Don't register duplicate initializers
+      if ( e_prio == priority )
+        return;
+      // Otherwise enforce name uniqueness
+      else
+        throw sc_initialization_error( fmt::format( "Actor initializer '{}' already exists.", name ) );
+    }
 
     // Prevent priority clashes without names to resolve them
     if ( name.empty() && e_name.empty() && std::get<int>( e ) == priority )
