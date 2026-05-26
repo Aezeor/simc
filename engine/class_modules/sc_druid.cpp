@@ -14277,21 +14277,19 @@ struct druid_module_t final : public module_t
     p->report_extension = std::make_unique<druid_report_t>( *p );
     return p;
   }
+
   bool valid() const override { return true; }
-
-  void init( player_t* p ) const override
-  {
-    p->buffs.stampeding_roar = make_buff( p, "stampeding_roar", p->find_spell( 106898 ) )
-      ->set_cooldown( 0_ms )
-      ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED );
-  }
-
-  void static_init() const override {}
 
   void register_hotfixes() const override {}
 
-  void combat_begin( sim_t* ) const override {}
-  void combat_end( sim_t* ) const override {}
+  void register_actor_initializers( sim_t* sim ) const override
+  {
+    sim->register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + DRUID, []( player_t* p ) {
+      p->buffs.stampeding_roar = make_buff( p, "stampeding_roar", p->find_spell( 106898 ) )
+        ->set_cooldown( 0_ms )
+        ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED );
+    }, "create_buffs_druid" );
+  }
 };
 }  // UNNAMED NAMESPACE
 

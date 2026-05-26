@@ -11616,10 +11616,6 @@ public:
   bool valid() const override
   { return true; }
 
-  void static_init() const override
-  {
-  }
-
   void register_hotfixes() const override
   {
     // 2025-07-29 -- Fatebound Lucky Coin expires 15s after leaving combat
@@ -11630,9 +11626,7 @@ public:
         .verification_value( 10 );
   }
 
-  void init( player_t* ) const override {}
-  void combat_begin( sim_t* ) const override {}
-  void combat_end( sim_t* ) const override {}
+  void register_actor_initializers( sim_t* ) const override {}
 };
 
 } // UNNAMED NAMESPACE

@@ -14065,19 +14065,20 @@ struct shaman_module_t : public module_t
     return true;
   }
 
-  void init( player_t* p ) const override
+  void register_actor_initializers( sim_t* sim ) const override
   {
-    p->buffs.bloodlust = make_buff( p, "bloodlust", p->find_spell( 2825 ) )
+    sim->register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + SHAMAN, []( player_t* p ) {
+      p->buffs.bloodlust = make_buff( p, "bloodlust", p->find_spell( 2825 ) )
           ->set_cooldown( 0_ms )
           ->set_max_stack( 1 )
           ->set_default_value_from_effect_type( A_HASTE_ALL )
           ->add_invalidate( CACHE_HASTE );
 
-    p->buffs.exhaustion = make_buff( p, "exhaustion", p->find_spell( 57723 ) )->set_max_stack( 1 )->set_quiet( true );
+      p->buffs.exhaustion = make_buff( p, "exhaustion", p->find_spell( 57723 ) )
+          ->set_max_stack( 1 )
+          ->set_quiet( true );
+    }, "create_buffs_shaman" );
   }
-
-  void static_init() const override
-  { }
 
   void register_hotfixes() const override
   {
@@ -14088,12 +14089,6 @@ struct shaman_module_t : public module_t
       .modifier( 5779 )
       .verification_value( 0 );
   }
-
-  void combat_begin( sim_t* ) const override
-  { }
-
-  void combat_end( sim_t* ) const override
-  { }
 };
 
 shaman_t::pets_t::pets_t( shaman_t* s ) :

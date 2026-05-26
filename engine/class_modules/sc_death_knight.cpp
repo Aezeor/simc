@@ -17253,18 +17253,12 @@ struct death_knight_module_t : public module_t
     //       .verification_value( 6000 );
   }
 
-  void init( player_t* ) const override
+  void register_actor_initializers( sim_t* ) const override
   {
   }
   bool valid() const override
   {
     return true;
-  }
-  void combat_begin( sim_t* ) const override
-  {
-  }
-  void combat_end( sim_t* ) const override
-  {
   }
 };
 

@@ -4243,10 +4243,12 @@ struct priest_module_t final : public module_t
   {
     return true;
   }
-  void init( player_t* p ) const override
+  void register_actor_initializers( sim_t* sim ) const override
   {
-    if ( !p->is_pet() )
-    {
+    sim->register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + PRIEST, []( player_t* p ) {
+      if ( p->is_pet() )
+        return;
+
       p->buffs.body_and_soul = make_buff( p, "body_and_soul", p->find_spell( 65081 ) );
       p->buffs.angelic_feather = make_buff( p, "angelic_feather", p->find_spell( 121557 ) );
       p->buffs.guardian_spirit = make_buff( p, "guardian_spirit", p->find_spell( 47788 ) )
@@ -4270,19 +4272,13 @@ struct priest_module_t final : public module_t
       {
         p->register_timed_buff_triggers( pi_buff, p->external_buffs.power_infusion );
       }
-    }
+    }, "create_buffs_priest" );
   }
   void static_init() const override
   {
     items::init();
   }
   void register_hotfixes() const override
-  {
-  }
-  void combat_begin( sim_t* ) const override
-  {
-  }
-  void combat_end( sim_t* ) const override
   {
   }
 };

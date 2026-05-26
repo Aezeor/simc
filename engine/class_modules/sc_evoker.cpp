@@ -11065,10 +11065,6 @@ struct evoker_module_t : public module_t
     return true;
   }
 
-  void init( player_t* /* p */ ) const override
-  {
-  }
-
   void static_init() const override
   {
     unique_gear::register_special_effect( 394927, karnalex_the_first_light );
@@ -11079,25 +11075,19 @@ struct evoker_module_t : public module_t
   {
   }
 
-  void combat_begin( sim_t* ) const override
+  void register_actor_initializers( sim_t* sim ) const override
   {
-  }
+    sim->register_actor_initializer( INIT_ACTOR_CREATE_ACTIONS + EVOKER, []( player_t* p ) {
+      if ( p->is_enemy() || p->type == HEALING_ENEMY || p->is_pet() )
+        return;
 
-  void create_actions( player_t* p ) const override
-  {
-    if ( p->is_enemy() || p->type == HEALING_ENEMY || p->is_pet() )
-      return;
-
-    new spells::infernos_blessing_t( p );
-    new spells::blistering_scales_damage_t( p );
-    new spells::fate_mirror_damage_t( p );
-    new spells::fate_mirror_heal_t( p );
-    new spells::breath_of_eons_damage_t( p );
-    new spells::bombardments_damage_t( p );
-  }
-
-  void combat_end( sim_t* ) const override
-  {
+      new spells::infernos_blessing_t( p );
+      new spells::blistering_scales_damage_t( p );
+      new spells::fate_mirror_damage_t( p );
+      new spells::fate_mirror_heal_t( p );
+      new spells::breath_of_eons_damage_t( p );
+      new spells::bombardments_damage_t( p );
+    }, "create_actions_evoker" );
   }
 };
 
@@ -11120,27 +11110,11 @@ struct player_simplified_module_t : public module_t
     return true;
   }
 
-  void init( player_t* /* p */ ) const override
-  {
-  }
-
-  void static_init() const override
-  {
-  }
-
   void register_hotfixes() const override
   {
   }
 
-  void combat_begin( sim_t* ) const override
-  {
-  }
-
-  void create_actions( player_t* ) const override
-  {
-  }
-
-  void combat_end( sim_t* ) const override
+  void register_actor_initializers( sim_t* ) const override
   {
   }
 };

@@ -2947,12 +2947,6 @@ void sim_t::register_actor_initializers()
       p->quiet = true;
 #endif
   }, "create_actions" );
-  // Create shared actions provided by modules
-  register_actor_initializer( INIT_ACTOR_CREATE_ACTIONS + 10, []( player_t* p ) {
-    for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
-      if ( auto m = module_t::get( i ) )
-        m->create_actions( p );
-  } );
   // Background actions must be created before actions as some actions can reference them in their constructors
   register_actor_initializer( INIT_ACTOR_CREATE_ACTIONS - 10, &player_t::init_background_actions );
 
@@ -2987,6 +2981,12 @@ void sim_t::register_actor_initializers()
 
   register_actor_initializer( INIT_ACTOR_ASSESSORS, &player_t::init_assessors, "assessors" );
 
+  // Register initializers from class modules
+  for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
+    if ( auto m = module_t::get( i ) )
+      m->register_actor_initializers( this );
+
+  // Register initializers from xpac gear
   unique_gear::register_actor_initializers( *this );
 }
 
@@ -4799,7 +4799,7 @@ void sim_t::register_actor_initializer( int priority, std::function<void( player
     }
 
     // Prevent priority clashes without names to resolve them
-    if ( name.empty() && e_name.empty() && std::get<int>( e ) == priority )
+    if ( name.empty() && e_name.empty() && e_prio == priority )
       throw sc_initialization_error( fmt::format( "Actor initializer with priority {} already exists.", priority ) );
   }
 
