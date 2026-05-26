@@ -2826,14 +2826,12 @@ void relational_normalization_gizmo( special_effect_t& effect )
   auto increase = unique_gear::create_buff<stat_buff_t>( effect.player, "normalization_increase",
       effect.player->find_spell( 280653 ) )
     ->add_stat( STAT_HASTE_RATING, haste_amount )
-    ->add_invalidate( CACHE_RUN_SPEED );
+    ->set_movement_speed_buff_from_data();
 
   auto decrease = unique_gear::create_buff<stat_buff_t>( effect.player, "normalization_decrease",
       effect.player->find_spell( 280654 ) )
     ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), stat_amount )
     ->add_stat( STAT_MAX_HEALTH, health_amount );
-
-  effect.player->buffs.normalization_increase = increase;
 
   new gizmo_cb_t( effect, { decrease, increase } );
 }

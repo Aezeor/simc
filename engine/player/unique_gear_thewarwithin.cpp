@@ -1610,16 +1610,15 @@ void sikrans_endless_arsenal( special_effect_t& effect )
       b_dam->base_multiplier *= role_mult( e.player, e.player->find_spell( 445475 ) );
       add_child( b_dam );
 
-      auto b_speed = create_buff<buff_t>( e.player, e.player->find_spell( 448436 ) )
-        ->add_invalidate( CACHE_RUN_SPEED );
-
-      e.player->buffs.surekian_grace = b_speed;
-
       auto b_stack = create_buff<buff_t>( e.player, e.player->find_spell( 448433 ) );
-      b_stack->set_default_value( data->effectN( 7 ).percent() / b_stack->max_stack() )
-        ->set_expire_callback( [ b_speed ]( buff_t* b, int s, timespan_t ) {
-          b_speed->trigger( 1, b->default_value * s );
-        } );
+
+      auto b_speed = create_buff<buff_t>( e.player, e.player->find_spell( 448436 ) )
+        ->set_max_stack( b_stack->max_stack() )
+        ->set_movement_speed_buff_from_data( data->effectN( 7 ).percent() / b_stack->max_stack() );
+
+      b_stack->set_expire_callback( [ b_speed ]( buff_t*, int, timespan_t ) {
+        b_speed->trigger();
+      } );
 
       e.player->register_movement_callback( [ b_stack ]( bool start ) {
         if ( start )
@@ -4576,12 +4575,8 @@ void shining_arathor_insignia( special_effect_t& effect )
 //  e2: haste
 void quickwick_candlestick( special_effect_t& effect )
 {
-  auto buff = create_buff<stat_buff_t>( effect.player, effect.driver(), effect.item )
-    ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED )
-    ->add_invalidate( CACHE_RUN_SPEED );
-
-  effect.player->buffs.quickwicks_quick_trick_wick_walk = buff;
-  effect.custom_buff = buff;
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.driver(), effect.item )
+    ->set_movement_speed_buff_from_data();
 }
 
 // 455435 driver
@@ -5112,27 +5107,22 @@ void scroll_of_momentum( special_effect_t& effect )
 
   // setup stacking buff + driver
   auto counter = create_buff<buff_t>( effect.player, effect.player->find_spell( 459224 ) )
-    ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED )
-    ->add_invalidate( CACHE_RUN_SPEED )
+    ->set_movement_speed_buff_from_data()
     ->set_expire_at_max_stack( true );
 
-  effect.player->buffs.building_momentum = counter;
   effect.custom_buff = counter;
 
   auto cb = new dbc_proc_callback_t( effect.player, effect );
 
   // setup max buff
   auto max = create_buff<buff_t>( effect.player, effect.player->find_spell( 459228 ) )
-    ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED )
-    ->add_invalidate( CACHE_RUN_SPEED )
+    ->set_movement_speed_buff_from_data()
     ->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
       if ( new_ )
         cb->deactivate();
       else
         cb->activate();
     } );
-
-  effect.player->buffs.full_momentum = max;
 
   counter->set_expire_callback( [ max ]( buff_t*, int, timespan_t ) {
     max->trigger();

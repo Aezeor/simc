@@ -405,9 +405,12 @@ public:
   buff_t* set_schools( unsigned );
   buff_t* set_schools_from_effect( size_t );
   buff_t* add_school( school_e );
-  // Treat the buff's value as stat % increase and apply it automatically
-  // in the relevant player_t functions.
+  // Treat the buff's value as stat % increase and apply it automatically in the relevant player_t functions.
   buff_t* set_pct_buff_type( stat_pct_buff_type );
+  // Movement buffs to calculate automatically in the relevant player_t functions.
+  buff_t* set_movement_speed_buff( bool stacking, double );
+  buff_t* set_movement_speed_buff_from_effect( size_t, double = 0.0 );
+  buff_t* set_movement_speed_buff_from_data( double = 0.0 );
   buff_t* set_default_value( double, size_t = 0 );
   virtual buff_t* set_default_value_from_effect( size_t, double = 0.0 );
   virtual buff_t* set_default_value_from_effect_type( effect_subtype_t a_type,

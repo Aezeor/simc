@@ -4901,8 +4901,6 @@ void player_t::create_buffs()
       buffs.fireblood = buff_t::make_fallback( this, "fireblood", this );
     }
 
-    buffs.darkflight = make_buff_fallback( race == RACE_WORGEN, this, "darkflight", find_racial_spell( "darkflight" ) );
-
     // fallback for ingest mineral isn't necessary as it's a passive effect that should not have any apl interaction
     if ( race == RACE_EARTHEN_HORDE || race == RACE_EARTHEN_ALLIANCE )
     {
@@ -5761,6 +5759,23 @@ double player_t::non_stacking_movement_modifier() const
 {
   double speed = current.non_stacking_movement_speed_modifier;
 
+  // check non-stacking buffs with only a single stack
+  for ( auto [ v, b ] : buffs.movement_speed_buffs[ 1 ] )
+  {
+    if ( speed >= v )
+      break;  // no need to check further as buffs should be sorted
+
+    if ( b->check() )
+    {
+      speed = v;
+      break;  // save a cycle
+    }
+  }
+
+  // check non-stacking buffs with multiple buff stacks
+  for ( auto [ v, b ] : buffs.movement_speed_buffs[ 2 ] )
+    speed = std::max( v * b->check(), speed );
+
   if ( !is_enemy() && type != HEALING_ENEMY )
   {
     if ( buffs.stampeding_roar && buffs.stampeding_roar->check() )
@@ -5769,29 +5784,11 @@ double player_t::non_stacking_movement_modifier() const
 
   if ( !is_enemy() && !is_pet() && type != HEALING_ENEMY )
   {
-    if ( buffs.nitro_boosts && buffs.nitro_boosts->check() )
-      speed = std::max( buffs.nitro_boosts->data().effectN( 1 ).percent(), speed );
-
     if ( buffs.body_and_soul && buffs.body_and_soul->check() )
       speed = std::max( buffs.body_and_soul->data().effectN( 1 ).percent(), speed );
 
     if ( buffs.angelic_feather && buffs.angelic_feather->check() )
       speed = std::max( buffs.angelic_feather->data().effectN( 1 ).percent(), speed );
-
-    if ( buffs.normalization_increase && buffs.normalization_increase->check() )
-      speed = std::max( buffs.normalization_increase->data().effectN( 3 ).percent(), speed );
-
-    if ( buffs.surekian_grace && buffs.surekian_grace->check() )
-      speed = std::max( buffs.surekian_grace->check_value(), speed );
-
-    if ( buffs.quickwicks_quick_trick_wick_walk && buffs.quickwicks_quick_trick_wick_walk->check() )
-      speed = std::max( buffs.quickwicks_quick_trick_wick_walk->check_value(), speed );
-
-    if ( buffs.building_momentum && buffs.building_momentum->check() )
-      speed = std::max( buffs.building_momentum->check_stack_value(), speed );
-
-    if ( buffs.full_momentum && buffs.full_momentum->check() )
-      speed = std::max( buffs.full_momentum->check_value(), speed );
   }
 
   return speed;
@@ -5807,14 +5804,9 @@ double player_t::stacking_movement_modifier() const
   // speed tertiary rating
   speed += composite_run_speed();
 
-  if ( buffs.windwalking_movement_aura )
-    speed += buffs.windwalking_movement_aura->check_value();
-
-  if ( buffs.elemental_chaos_air )
-    speed += buffs.elemental_chaos_air->check_value();
-
-  if ( buffs.darkflight && buffs.darkflight->check() )
-    speed += buffs.darkflight->data().effectN( 1 ).percent();
+  for ( auto [ v, b ] : buffs.movement_speed_buffs[ 0 ] )
+    if ( b->check() )
+      speed += v;
 
   return speed;
 }
@@ -9239,18 +9231,23 @@ struct blood_fury_t : public racial_spell_t
 
 struct darkflight_t : public racial_spell_t
 {
+  buff_t* buff;
+
   darkflight_t( player_t* p, util::string_view options_str ) :
     racial_spell_t( p, "darkflight", p->find_racial_spell( "Darkflight" ) )
   {
     parse_options( options_str );
     target = p;
+
+    if ( data().ok() )
+      buff = make_buff( p, "darkflight", &data() )->set_movement_speed_buff_from_data();
   }
 
   void execute() override
   {
     racial_spell_t::execute();
 
-    player->buffs.darkflight->trigger();
+    buff->trigger();
   }
 };
 

@@ -671,18 +671,19 @@ struct engineering_effect_t : public action_t
 
 struct nitro_boosts_action_t : public engineering_effect_t
 {
+  buff_t* buff;
+
   nitro_boosts_action_t( player_t* p ) :
     engineering_effect_t( p, "nitro_boosts" )
   {
-    if ( !p->buffs.nitro_boosts )
-      p->buffs.nitro_boosts = make_buff( p, "nitro_boosts", p->find_spell( 54861 ) );
+    buff = make_buff( p, "nitro_boosts", p->find_spell( 54861 ) )->set_movement_speed_buff_from_data();
   }
 
   void execute() override
   {
     engineering_effect_t::execute();
 
-    player -> buffs.nitro_boosts-> trigger();
+    buff->trigger();
   }
 };
 

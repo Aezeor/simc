@@ -1271,6 +1271,66 @@ buff_t* buff_t::set_pct_buff_type( stat_pct_buff_type type )
   return this;
 }
 
+buff_t* buff_t::set_movement_speed_buff( bool stacking, double percent )
+{
+  if ( !player || is_fallback )
+    return this;
+
+  if ( stacking )
+  {
+    player->buffs.movement_speed_buffs[ 0 ].emplace_back( percent, this );
+  }
+  else
+  {
+    // non-stacking buffs with a single stack need to be sorted
+    if ( max_stack() <= 1 )
+    {
+      auto& _vec = player->buffs.movement_speed_buffs[ 1 ];
+      auto it = range::upper_bound( _vec, percent, {}, &std::pair<double, buff_t*>::first );
+
+      assert( it == _vec.end() || it->first <= percent );
+
+      _vec.insert( it, { percent, this } );
+    }
+    // non-stacking buffs with multiple stacks will always get checked and don't need sorting
+    else
+    {
+      player->buffs.movement_speed_buffs[ 2 ].emplace_back( percent, this );
+    }
+  }
+
+  add_invalidate( CACHE_RUN_SPEED );
+
+  return this;
+}
+
+buff_t* buff_t::set_movement_speed_buff_from_effect( size_t effect_idx, double percent )
+{
+  if ( !data().ok() )
+    return this;
+
+  const auto& _eff = data().effectN( effect_idx );
+
+  if ( !percent )
+    percent = _eff.percent();
+
+  switch ( _eff.subtype() )
+  {
+    case A_MOD_INCREASE_SPEED: return set_movement_speed_buff( false, percent );
+    case A_MOD_SPEED_ALWAYS:   return set_movement_speed_buff( true, percent );
+    default:                   return this;
+  }
+}
+
+buff_t* buff_t::set_movement_speed_buff_from_data( double percent )
+{
+  for ( const auto& _eff : data().effects() )
+    if ( _eff.subtype() == A_MOD_INCREASE_SPEED || _eff.subtype() == A_MOD_SPEED_ALWAYS )
+      return set_movement_speed_buff_from_effect( _eff.index() + 1, percent );
+
+  return this;
+}
+
 buff_t* buff_t::set_default_value( double value, size_t effect_idx )
 {
   // Ensure we are not errantly overwriting a value that is already set to a given effect

@@ -486,23 +486,22 @@ struct player_t : public actor_t
   struct buffs_t
   {
     std::array<std::vector<buff_t*>, STAT_PCT_BUFF_MAX> stat_pct_buffs;
+    // 0 == stacking, 1 == non-stacking, 2 == non-stacking with multiple buff stacks
+    std::array<std::vector<std::pair<double, buff_t*>>, 3> movement_speed_buffs;
     std::vector<std::tuple<buff_t*, unsigned, double>> creature_type_buffs;
     buff_t* angelic_feather;
     buff_t* blood_fury;
     buff_t* body_and_soul;
     buff_t* damage_done;
-    buff_t* darkflight;
     buff_t* devotion_aura;
     buff_t* entropic_embrace;
     buff_t* exhaustion;
     buff_t* guardian_spirit;
     buff_t* blessing_of_sacrifice;
-    buff_t* nitro_boosts;
     buff_t* pain_suppression;
     buff_t* movement;
     buff_t* stampeding_roar;
     buff_t* shadowmeld;
-    buff_t* windwalking_movement_aura;
     buff_t* stoneform;
     buff_t* stunned;
     buff_t* rooted;
@@ -527,9 +526,6 @@ struct player_t : public actor_t
     buff_t* galeforce_striking; // Gale-Force Striking weapon enchant
     buff_t* torrent_of_elements; // Torrent of Elements weapon enchant
 
-    // Azerite power
-    buff_t* normalization_increase;
-
     /// 8.2 Azerite Essences
     buff_t* memory_of_lucid_dreams;
     buff_t* lucid_dreams; // Versatility Buff from Rank 3
@@ -545,7 +541,6 @@ struct player_t : public actor_t
     // 10.0 Buffs
     buff_t* chilled_clarity;  // potion of chilled clarity
     buff_t* elemental_chaos_fire;  // phial of elemental chaos
-    buff_t* elemental_chaos_air;
     buff_t* elemental_chaos_earth;
     buff_t* elemental_chaos_frost;
     buff_t* way_of_controlled_currents;
@@ -554,11 +549,7 @@ struct player_t : public actor_t
 
     // 11.0 The War Within
     buff_t* ingest_mineral;  // earthen well fed racial
-    buff_t* surekian_grace;  // sik'ran's shadow arsenal barrage movement speed buff
     buff_t* earthen_ire;     // sigil of algari concordance tank buff
-    buff_t* quickwicks_quick_trick_wick_walk;  // quickwick candlestick movement speed buff
-    buff_t* building_momentum;  // scroll of momentum counter buff
-    buff_t* full_momentum;      // scroll of momentum max buff
   } buffs;
 
   struct debuffs_t
