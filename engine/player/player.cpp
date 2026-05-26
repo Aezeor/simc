@@ -5740,10 +5740,6 @@ double player_t::composite_player_critical_damage_multiplier( const action_state
   if ( buffs.seething_rage_essence && buffs.seething_rage_essence->data().effectN( 1 ).has_common_school( school ) )
     m *= 1.0 + buffs.seething_rage_essence->check_value();
 
-  // Critical hit damage buff from follower themed Benthic boots
-  if ( buffs.fathom_hunter && buffs.fathom_hunter->data().effectN( 1 ).has_common_school( school ) )
-    m *= 1.0 + buffs.fathom_hunter->check_value();
-
   return m;
 }
 

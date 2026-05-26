@@ -502,8 +502,6 @@ struct player_t : public actor_t
     buff_t* movement;
     buff_t* stampeding_roar;
     buff_t* shadowmeld;
-    buff_t* close_to_heart_aura;
-    buff_t* generous_pour_aura;
     buff_t* windwalking_movement_aura;
     buff_t* stoneform;
     buff_t* stunned;
@@ -538,7 +536,6 @@ struct player_t : public actor_t
     buff_t* seething_rage_essence; // Blood of the Enemy major - 25% crit dam
 
     // 8.2 misc
-    buff_t* fathom_hunter; // Follower themed Benthic boots special effect
     buff_t* delirious_frenzy; // Dream's End 1H STR axe attack speed buff
 
     // 9.0 Runecarves
@@ -590,17 +587,11 @@ struct player_t : public actor_t
   {
     std::string pool;
     std::unordered_map<buff_t*, std::vector<cooldown_t*>> invoke_cds;
-    double blessing_of_summer_duration_multiplier;
     std::vector<timespan_t> power_infusion;
-    std::vector<timespan_t> blessing_of_summer;
-    std::vector<timespan_t> blessing_of_autumn;
-    std::vector<timespan_t> blessing_of_winter;
-    std::vector<timespan_t> blessing_of_spring;
     std::vector<timespan_t> rallying_cry;
     std::vector<timespan_t> potion_bomb_of_power;
     int soleahs_secret_technique;
   } external_buffs;
-
 
   struct gains_t
   {
