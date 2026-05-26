@@ -1271,6 +1271,70 @@ buff_t* buff_t::set_pct_buff_type( stat_pct_buff_type type )
   return this;
 }
 
+buff_t* buff_t::set_pct_buff_type_from_effect( size_t effect_idx, bool set_default )
+{
+  if ( !data().ok() )
+    return this;
+
+  if ( set_default )
+    set_default_value_from_effect( effect_idx );
+
+  const auto& _eff = data().effectN( effect_idx );
+
+  switch ( _eff.subtype() )
+  {
+    case A_MOD_ALL_CRIT_CHANCE: return set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+    case A_HASTE_ALL:           return set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    case A_MOD_VERSATILITY_PCT: return set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
+    case A_MOD_MASTERY_PCT:     return set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+    case A_MOD_TOTAL_STAT_PERCENTAGE:
+    {
+      auto _misc = _eff.misc_value2();
+
+      for ( auto i = STAT_PCT_BUFF_STRENGTH; i < STAT_PCT_BUFF_MAX; ++i )
+        if ( _misc & ( 0b1 << ( i - STAT_PCT_BUFF_STRENGTH ) ) )
+          set_pct_buff_type( i );
+
+      break;
+    }
+    default: break;
+  }
+
+  return this;
+}
+
+buff_t* buff_t::set_pct_buff_type_from_data( bool set_default )
+{
+  std::vector<double> validation;
+
+  for ( const auto& _eff : data().effects() )
+  {
+    switch ( _eff.subtype() )
+    {
+      case A_MOD_ALL_CRIT_CHANCE:
+      case A_HASTE_ALL:
+      case A_MOD_VERSATILITY_PCT:
+      case A_MOD_MASTERY_PCT:
+      case A_MOD_TOTAL_STAT_PERCENTAGE:
+        set_pct_buff_type_from_effect( _eff.index() + 1, set_default );
+        if ( set_default )
+          validation.push_back( default_value );
+      default: break;
+    }
+  }
+
+  if ( set_default && !validation.empty() && !range::all_of( validation, [ v = validation.front() ]( auto i ) {
+         return i == v;
+       } ) )
+  {
+    throw sc_initialization_error( fmt::format(
+      "set_pct_buff_type_from_data() used on '{}' with applicable effects that have different default values.",
+      *this ) );
+  }
+
+  return this;
+}
+
 buff_t* buff_t::set_movement_speed_buff( bool stacking, double percent )
 {
   if ( !player || is_fallback )

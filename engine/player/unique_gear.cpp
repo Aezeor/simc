@@ -1455,18 +1455,15 @@ void item::spellbound_runic_band( special_effect_t& effect )
   {
     case STAT_STRENGTH:
       buff = create_buff<buff_t>( p, p->find_spell( 177175 ) )
-        ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-        ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+        ->set_pct_buff_type_from_data( true );
       break;
     case STAT_AGILITY:
       buff = create_buff<buff_t>( p, p->find_spell( 177172 ) )
-        ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-        ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
+        ->set_pct_buff_type_from_data( true );
       break;
     case STAT_INTELLECT:
       buff = create_buff<buff_t>( p, p->find_spell( 177176 ) )
-        ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-        ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
+        ->set_pct_buff_type_from_data( true );
       break;
     default:
       break;
@@ -1492,18 +1489,15 @@ void item::spellbound_solium_band( special_effect_t& effect )
   {
     case STAT_STRENGTH:
       buff = create_buff<buff_t>( p, p->find_spell( 177160 ) )
-        ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-        ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+        ->set_pct_buff_type_from_data( true );
       break;
     case STAT_AGILITY:
       buff = create_buff<buff_t>( p, p->find_spell( 177161 ) )
-        ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-        ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
+        ->set_pct_buff_type_from_data( true );
       break;
     case STAT_INTELLECT:
       buff = create_buff<buff_t>( p, p->find_spell( 177159 ) )
-        ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-        ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+        ->set_pct_buff_type_from_data( true );
       break;
     default:
       break;
@@ -3164,8 +3158,7 @@ void racial::zandalari_loa( special_effect_t& effect )
     {
       // Buff spell data contains duration and amount
       paku = make_buff( effect.player, "embrace_of_paku", effect.player->find_spell( 292463 ) )
-                 ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+        ->set_pct_buff_type_from_data( true );
     }
 
     driver->custom_buff = paku;

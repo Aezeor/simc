@@ -407,6 +407,8 @@ public:
   buff_t* add_school( school_e );
   // Treat the buff's value as stat % increase and apply it automatically in the relevant player_t functions.
   buff_t* set_pct_buff_type( stat_pct_buff_type );
+  buff_t* set_pct_buff_type_from_effect( size_t, bool = false );
+  buff_t* set_pct_buff_type_from_data( bool = false );
   // Movement buffs to calculate automatically in the relevant player_t functions.
   buff_t* set_movement_speed_buff( bool stacking, double );
   buff_t* set_movement_speed_buff_from_effect( size_t, double = 0.0 );

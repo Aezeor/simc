@@ -4508,8 +4508,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
       pet_t(p->sim, p, "guardian_of_azeroth", true, true), essence(std::move(ess))
     {
       guardian = make_buff( owner, "guardian_of_azeroth", owner->find_spell( 295855 ) )
-        ->set_default_value_from_effect( 1 )
-        ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+        ->set_pct_buff_type_from_data( true );
     }
 
     action_t* create_action( std::string_view name, std::string_view opt_str ) override
@@ -4914,8 +4913,7 @@ void the_unbound_force(special_effect_t& effect)
   effect.custom_buff = make_buff( effect.player, "reckless_force_counter", effect.player->find_spell( 302917 ) );
 
   auto crit_buff = make_buff( effect.player, "reckless_force", effect.player->find_spell( 302932 ) )
-    ->set_default_value_from_effect( 1 )
-    ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+    ->set_pct_buff_type_from_data( true );
 
   if (essence.rank() >= 3)
     crit_buff->base_buff_duration += timespan_t::from_millis(essence.spell_ref(3U, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).base_value());
