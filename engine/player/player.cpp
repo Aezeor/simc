@@ -4324,7 +4324,7 @@ void player_t::create_actions()
     }
   }
 
-  if ( !is_add() && ( !is_pet() || sim->report_pets_separately ) )
+  if ( sim->collect_action_sequence && !is_add() && ( !is_pet() || sim->report_pets_separately ) )
   {
     int capacity = std::max( 3000, static_cast<int>( sim->max_time.total_seconds() ) );
     collected_data.action_sequence.reserve( capacity );
@@ -6162,6 +6162,9 @@ void invalidate_cache( cache_e ) {}
 
 void player_t::sequence_add_wait( timespan_t wait )
 {
+  if ( !sim->collect_action_sequence )
+    return;
+
   // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
   if ( ( sim->iterations <= 1 && sim->current_iteration == 0 ) || ( sim->iterations > 1 && nth_iteration() == 1 ) )
   {
@@ -6187,6 +6190,9 @@ void player_t::sequence_add_wait( timespan_t wait )
 
 void player_t::sequence_add( const action_t* a, const player_t* t )
 {
+  if ( !sim->collect_action_sequence )
+    return;
+
   // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
   if ( ( sim->iterations <= 1 && sim->current_iteration == 0 ) || ( sim->iterations > 1 && nth_iteration() == 1 ) )
   {

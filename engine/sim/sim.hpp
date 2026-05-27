@@ -553,6 +553,7 @@ struct sim_t : private sc_thread_t
   std::string report_merged_stats;
   bool full_damage_sources_chart;
   bool report_all_variables;
+  bool collect_action_sequence;
   int report_rng;
   int hosted_html;
   int offline;

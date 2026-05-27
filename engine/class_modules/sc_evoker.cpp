@@ -7440,8 +7440,8 @@ public:
         sim->print_debug( "{} had action {} execute on a invalid target. Retargeting action.", *p(), name() );
 
         // Update the sequence datas last executed spell to the new target
-        if ( ( sim->iterations <= 1 && sim->current_iteration == 0 ) ||
-             ( sim->iterations > 1 && player->nth_iteration() == 1 ) )
+        if ( sim->collect_action_sequence && ( ( sim->iterations <= 1 && sim->current_iteration == 0 ) ||
+                                               ( sim->iterations > 1 && player->nth_iteration() == 1 ) ) )
         {
           // Find the last action sequence entry that matches the current action
           auto& seq = player->collected_data.action_sequence;

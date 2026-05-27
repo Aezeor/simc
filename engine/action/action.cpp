@@ -154,8 +154,8 @@ struct queued_action_execute_event_t : public event_t
 
         // If it's the first iteration (where we capture sample sequence) adjust the captured sequence to indicate the
         // queue failed
-        if ( ( sim().iterations <= 1 && sim().current_iteration == 0 ) ||
-             ( sim().iterations > 1 && actor->nth_iteration() == 1 ) )
+        if ( sim().collect_action_sequence && ( ( sim().iterations <= 1 && sim().current_iteration == 0 ) ||
+                                                ( sim().iterations > 1 && actor->nth_iteration() == 1 ) ) )
         {
           // Find the last action sequence entry that matches the current action
           auto& seq = actor->collected_data.action_sequence;
