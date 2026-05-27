@@ -2159,7 +2159,7 @@ void buff_t::decrement( int stacks, double value )
 
     if ( old_stack != current_stack )
     {
-      if ( sim->buff_stack_uptime_timeline )
+      if ( sim->buff_stack_uptime_timeline && !quiet )
         update_stack_uptime_array( sim->current_time(), old_stack );
 
       last_stack_change = sim->current_time();
@@ -2587,7 +2587,7 @@ void buff_t::bump( int stacks, double value )
 
   if ( old_stack != current_stack )
   {
-    if ( sim->buff_stack_uptime_timeline )
+    if ( sim->buff_stack_uptime_timeline && !quiet )
       update_stack_uptime_array( sim->current_time(), old_stack );
 
     last_stack_change = sim->current_time();
@@ -2920,7 +2920,7 @@ void buff_t::merge( const buff_t& other )
   avg_expire.merge( other.avg_expire );
   avg_overflow_count.merge( other.avg_overflow_count );
   avg_overflow_total.merge( other.avg_overflow_total );
-  if ( sim->buff_uptime_timeline )
+  if ( sim->buff_uptime_timeline && !quiet )
     uptime_array.merge( other.uptime_array );
 
 #ifndef NDEBUG
@@ -3188,7 +3188,7 @@ void buff_t::init_haste_type()
 
 void buff_t::update_stack_uptime_array( timespan_t current_time, int old_stacks )
 {
-  if ( !sim->buff_uptime_timeline )
+  if ( !sim->buff_uptime_timeline || quiet )
     return;
 
   // No data collection done on first iteration of multi-iteration sim, as per sim_t::combat_end()
@@ -3497,7 +3497,7 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
 
     if ( old_stack != current_stack )
     {
-      if ( sim->buff_stack_uptime_timeline )
+      if ( sim->buff_stack_uptime_timeline && !quiet )
         update_stack_uptime_array( sim->current_time(), old_stack );
 
       last_stack_change = sim->current_time();
