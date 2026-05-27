@@ -3704,28 +3704,35 @@ void sunfire_silk_trappings( special_effect_t& effect )
 
 namespace omnium
 {
+// Item level used for omnium coeff scaling spell 1288183
+static constexpr unsigned OMNIUM_ITEM_LEVEL = 289;
+
 template <typename BASE>
 struct omnium_core_rune_t : public BASE
 {
   stat_buff_t* buff = nullptr;
   const spell_data_t* coeff;
+  double dmg_coeff;
+  double stat_coeff;
 
   omnium_core_rune_t( const special_effect_t& e, std::string_view n, unsigned id )
-    : BASE( e, n, id ), coeff( e.driver()->effectN( 2 ).trigger() )
+    : BASE( e, n, id ),
+      coeff( e.driver()->effectN( 2 ).trigger() ),
+      dmg_coeff( std::floor( coeff->effectN( 1 ).average_no_item( BASE::player, OMNIUM_ITEM_LEVEL ) ) * 0.01 ),
+      stat_coeff( std::floor( coeff->effectN( 3 ).average_no_item( BASE::player, OMNIUM_ITEM_LEVEL ) ) * 0.01 )
   {
     constexpr bool heal = std::is_base_of_v<heal_t, BASE>;
 
     if ( heal )
       BASE::name_str_reporting = "Heal";
 
-    // using placeholder values
-    BASE::base_dd_min = BASE::base_dd_max = BASE::data().effectN( 2 ).base_value();
+    BASE::base_dd_min = BASE::base_dd_max = dmg_coeff * BASE::data().effectN( 2 ).base_value();
 
     // Rune of Lingering: 1287555 driver, 1287663 dot, 1287665 hot
     if ( find_special_effect( e.player, 1287555 ) )
     {
       auto dot = create_proc_action<BASE>( fmt::format( "{}_lingering", n ), e, heal ? 1287665 : 1287663 );
-      dot->base_td = dot->data().effectN( 2 ).base_value() / dot->dot_duration.value().total_seconds();
+      dot->base_td = dmg_coeff * dot->data().effectN( 2 ).base_value() / dot->dot_duration.value().total_seconds();
       dot->name_str_reporting = "rune_of_lingering";
       if ( !dot->stats->parent )
         BASE::add_child( dot );
@@ -3753,8 +3760,7 @@ struct omnium_core_rune_t : public BASE
       return;
 
     buff = create_buff<stat_buff_t>( BASE::player, BASE::player->find_spell( buff_id ) );
-    // using placeholder values
-    buff->set_stat_from_effect_type( A_MOD_RATING, buff->data().effectN( 2 ).base_value() );
+    buff->set_stat_from_effect_type( A_MOD_RATING, stat_coeff * buff->data().effectN( 2 ).base_value() );
   }
 
   void execute() override
@@ -3775,12 +3781,7 @@ void rune_of_unleashed_fire( special_effect_t& effect )
     "Rune of Unleashed Fire: Procs are assumed to target the same unit that triggered them. "
     "Procs triggered by damage are assumed to proc damage. "
     "Procs triggered by healing/aura are assumed to proc heal." );
-  effect.player->sim->error( UNVERIFIED_VALUE,
-    "Rune of Unleashed Fire: Damage using placeholder value of 977. Heal using placeholder value of 1465." );
 
-  auto coeff = effect.driver()->effectN( 2 ).trigger();
-
-  // using placeholder values, presumably should be based on coeff->effectN( 1 )
   auto damage =
     create_proc_action<omnium_core_rune_t<generic_proc_t>>( "rune_of_unleashed_fire", effect, 1286970 );
 
@@ -3814,12 +3815,7 @@ void rune_of_voidtouched_orbs( special_effect_t& effect )
     "Procs are assumed to target the same unit that triggered them. "
     "All procs are assumed to fire individually at the same time when triggered. "
     "Orbs are assumed to stack while out of combat." );
-  effect.player->sim->error( UNVERIFIED_VALUE,
-    "Rune of Voidtouched Orbs: Damage using placeholder value of 977. Heal using placeholder value of 1465." );
 
-  auto coeff = effect.driver()->effectN( 2 ).trigger();
-
-  // using placeholder values, presumably should be based on coeff->effectN( 1 )
   auto damage =
     create_proc_action<omnium_core_rune_t<generic_proc_t>>( "rune_of_voidtouched_orbs", effect, 1286716 );
 
