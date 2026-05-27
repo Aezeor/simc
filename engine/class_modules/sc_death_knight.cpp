@@ -2697,16 +2697,6 @@ struct death_knight_pet_t : public pet_t
     return 0;
   }
 
-  double composite_mastery_value() const override
-  {
-    return dk()->cache.mastery_value();
-  }
-
-  double composite_mastery() const override
-  {
-    return dk()->cache.mastery();
-  }
-
   double composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const override
   {
     double m = pet_t::composite_player_critical_damage_multiplier( s, school );
