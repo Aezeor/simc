@@ -12661,13 +12661,14 @@ void druid_t::init_special_effects()
         {
           case 164812:  // moonfire
           case 164815:  // sunfire
+          case 274838:  // feral frenzy
           case 400360:  // moonless night
             return;     // end
           case 400254:  // raze
           case 441605:  // ravage
             break;      // continue
           default:
-            if ( s->action->aoe < 0 || s->action->aoe > 1 )
+            if ( s->action->aoe < 0 || s->action->aoe > 1 || s->action->treat_as_area_effect )
               return;   // end
             else
               break;    // continue
