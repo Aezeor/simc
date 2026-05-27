@@ -4277,12 +4277,24 @@ struct ancestor_t : public shaman_pet_t
       background = true;
       base_crit = 1.0;
     }
+
+    double composite_crit_damage_bonus_multiplier() const override
+    {
+      return pet_spell_t::composite_crit_damage_bonus_multiplier() +
+             p()->o()->talent.elemental_fury->effectN( 1 ).percent();
+    }
   };
 
   struct chain_lightning_t : public pet_spell_t<ancestor_t>
   {
     chain_lightning_t( ancestor_t* p ) : super( p, "chain_lightning", p->find_spell( 447425 ) )
     { background = true; }
+
+    double composite_crit_damage_bonus_multiplier() const override
+    {
+      return pet_spell_t::composite_crit_damage_bonus_multiplier() +
+             p()->o()->talent.elemental_fury->effectN( 1 ).percent();
+    }
   };
 
   struct elemental_blast_t : public pet_spell_t<ancestor_t>
@@ -4298,7 +4310,21 @@ struct ancestor_t : public shaman_pet_t
       o()->trigger_elemental_blast_proc();
       pet_spell_t::execute();
     }
+
+    double composite_crit_damage_bonus_multiplier() const override
+    {
+      return pet_spell_t::composite_crit_damage_bonus_multiplier() +
+             p()->o()->talent.elemental_fury->effectN( 1 ).percent();
+    }
   };
+
+  // Somehow this yield too much damage? Would be great if someone could figure out why, fix it,
+  // and remove the crit damage calc overrides from the spells.
+  //double composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const override
+  //{
+  //  return shaman_pet_t::composite_player_critical_damage_multiplier( s, school ) +
+  //         o()->talent.elemental_fury->effectN( 1 ).percent();
+  //}
 
   ancestor_t( shaman_t* owner )
     : shaman_pet_t( owner, "ancestor", true, false ),
