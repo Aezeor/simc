@@ -6044,7 +6044,9 @@ double player_t::composite_mitigation_from_player_multiplier( player_t*, const a
 
 double player_t::composite_mastery_value() const
 {
-  return composite_mastery() * mastery_coefficient();
+  assert( cache.active && "Infinite recursion if base composite_mastery_value() is called without stat cache active." );
+
+  return cache.mastery() * mastery_coefficient();
 }
 
 #if defined( SC_USE_STAT_CACHE )

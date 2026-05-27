@@ -804,7 +804,7 @@ struct simplified_player_t : public player_t
 
   double composite_mastery_value() const override
   {
-    return composite_mastery() * 0.0125;
+    return cache.mastery() * 0.0125;
   }
 
   void init_base_stats() override
