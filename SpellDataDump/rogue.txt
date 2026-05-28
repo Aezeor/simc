@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.5.67602 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.5.67823 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -2562,7 +2562,6 @@ Effects          :
 #13 (id=1297316) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 12 | Misc Value 2: 6280 (Label) | Target: Self (1)
                    Affected Spells (Label): Darkest Night (457280)
-Hotfixed         : Base Value (20 -> 15)
 #14 (id=1305289) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 12 | Misc Value 2: 6419 (Label) | Target: Self (1)
                    Affected Spells (Label): Momentum of Despair (457115)
@@ -2693,7 +2692,6 @@ Effects          :
 #14 (id=1329383) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Misc Value 2: 6279 (Label) | Target: Self (1)
                    Affected Spells (Label): Hunt Them Down (457193)
-Hotfixed         : NEW EFFECT
 
 Name             : Fortitude (id=137593) [Spell Family (8)] 
 School           : Physical
@@ -13692,7 +13690,6 @@ Attributes       : No Active Defense (21), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1161932)  : School Damage (2): shadowstorm
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.56 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (1.2 -> 1.56)
 Description      : $@spelldesc457052
 
 Name             : Symbolic Victory (id=457167) [Spell Family (8)] 
@@ -13800,7 +13797,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Resource: energy | Target: Self (1)
 #2 (id=1162177)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.25 | Target: Self (1)
-Hotfixed         : Base Value (30 -> 35)
                    Modified By: Subtlety Rogue (137035 effect#13)
 #3 (id=1162178)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -15441,7 +15437,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rupture (1943), Rupture (360826), Rupture (394031), Rupture (1270203)
                    Family Flags: 20
-Hotfixed         : Base Value (10 -> 20)
 #2 (id=1294570)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Misc Value 2: 6113 (Label) | Target: Self (1)
                    Affected Spells (Label): Deathstalker's Mark (457157), Deathstalker's Mark (1273061)
@@ -15462,7 +15457,6 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
                    Affected Spells: Fan of Knives (51723), Shuriken Storm (197835), Shuriken Storm (1269340)
                    Family Flags: 50, 127
-Hotfixed         : Base Value (40 -> 60)
 Description      : $?c1[Fan of Knives][Shuriken Storm] damage increased by $s1%.
 
 Name             : Lucky Coin (id=1248970) [Spell Family (8), Passive] 
@@ -17394,7 +17388,6 @@ Attributes       : No Active Defense (21), Always Line of Sight (185), Always AO
 Effects          :
 #1 (id=1286429)  : School Damage (2): shadowstorm
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.56 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
-Hotfixed         : AP Coefficient (1.2 -> 1.56)
 #2 (id=1286438)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
 Description      : $@spelldesc457052

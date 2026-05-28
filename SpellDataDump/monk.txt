@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.5.67602 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.5.67823 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -755,7 +755,6 @@ Effects          :
 Description      : Reduces the cooldown of Roll by ${$m1/-1000} sec and increases its maximum number of charges by $m2.
 
 Name             : Soothing Mist (id=115175) [Spell Family (53)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=1, col=2, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
