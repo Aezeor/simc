@@ -4880,15 +4880,6 @@ void player_t::create_buffs()
     buffs.shadowmeld = make_buff_fallback( race == RACE_NIGHT_ELF, this, "shadowmeld", find_spell( 58984 ) )
       ->set_cooldown( 0_ms );
 
-    buffs.ancestral_call[ 0 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC,
-      this, "rictus_of_the_laughing_skull", find_spell( 274739 ) );
-    buffs.ancestral_call[ 1 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC,
-      this, "zeal_of_the_burning_blade", find_spell( 274740 ) );
-    buffs.ancestral_call[ 2 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC,
-      this, "ferocity_of_the_frostwolf", find_spell( 274741 ) );
-    buffs.ancestral_call[ 3 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC,
-      this, "might_of_the_blackrock", find_spell( 274742 ) );
-
     if ( race == RACE_DARK_IRON_DWARF )
     {
       buffs.fireblood =
@@ -9419,6 +9410,8 @@ struct gift_of_the_naaru : public racial_heal_t
 
 struct ancestral_call_t : public racial_spell_t
 {
+  static constexpr std::array<unsigned, 4> spell_ids = { 274739, 274740, 274741, 274742 };
+
   std::vector<std::tuple<buff_t*, stat_e, double>> stat_values;
 
   ancestral_call_t( player_t* p, util::string_view options_str ) :
@@ -9428,9 +9421,17 @@ struct ancestral_call_t : public racial_spell_t
     harmful = false;
     target = p;
 
-    for ( auto b : p->buffs.ancestral_call )
-      if ( !b->is_fallback )
-        stat_values.emplace_back( b, debug_cast<stat_buff_t*>( b )->stats.front().stat, 0.0 );
+    if ( data().ok() )
+    {
+      for ( auto id : spell_ids )
+      {
+        auto data_ = p->find_spell( id );
+        auto stat_ = util::translate_all_rating_mod( data_->effectN( 1 ).misc_value1() ).front();
+        auto name_ = util::tokenize_fn( data_->name_cstr() );
+
+        stat_values.emplace_back( make_buff<stat_buff_t>( p, name_, data_ ), stat_, 0.0 );
+      }
+    }
   }
 
   void execute() override
@@ -9438,13 +9439,13 @@ struct ancestral_call_t : public racial_spell_t
     racial_spell_t::execute();
 
     for ( auto& stat : stat_values )
-      std::get<2>( stat ) = util::stat_value( player, std::get<1>( stat ) );
+      std::get<double>( stat ) = util::stat_value( player, std::get<stat_e>( stat ) );
 
-    std::sort( stat_values.begin(), stat_values.end(), []( const auto& a, const auto& b ) {
-      return std::get<2>( a ) > std::get<2>( b );
+    range::sort( stat_values, []( const auto& a, const auto& b ) {
+      return std::get<double>( a ) > std::get<double>( b );
     } );
 
-    std::get<0>( stat_values[ rng().range( 2 ) ] )->trigger();
+    std::get<buff_t*>( stat_values[ rng().range( 2 ) ] )->trigger();
   }
 };
 
