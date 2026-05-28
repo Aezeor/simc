@@ -3806,7 +3806,7 @@ struct omnium_core_rune_t : public BASE
     has_echoes = find_special_effect( e.player, 1279616 ) != nullptr;
     if ( has_echoes )
     {
-      echo              = create_proc_action<BASE>( "rune_of_echoes", e, heal ? 1303071 : 1303048 );
+      echo              = create_proc_action<BASE>( fmt::format( "{}_echo", n ), e, heal ? 1303071 : 1303048 );
       echo->base_dd_min = echo->base_dd_max = 1.0;  // actual value is determined by accumulator
       echo_coeff                            = e.player->find_spell( 1279616 )->effectN( 1 ).percent();
       if( !echo->stats->parent )
