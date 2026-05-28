@@ -543,9 +543,6 @@ struct player_t : public actor_t
     buff_t* way_of_controlled_currents;
     buff_t* stormeaters_boon;
     buff_t* heavens_nemesis; // Neltharax, Enemy of the Sky
-
-    // 11.0 The War Within
-    buff_t* ingest_mineral;  // earthen well fed racial
   } buffs;
 
   struct debuffs_t

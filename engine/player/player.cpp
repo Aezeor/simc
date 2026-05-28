@@ -4915,8 +4915,10 @@ void player_t::create_buffs()
         default:                 break;
       }
 
-      buffs.ingest_mineral = make_buff<stat_buff_t>( this, "ingest_mineral", find_spell( _id ) )
+      auto ingest_buff = make_buff<stat_buff_t>( this, "ingest_mineral", find_spell( _id ) )
         ->set_name_reporting( "Ingest Mineral" );
+
+      register_on_arise_callback( this, [ ingest_buff ] { ingest_buff->trigger(); } );
     }
 
     buffs.movement = new movement_buff_t( this );
@@ -7136,9 +7138,6 @@ void player_t::arise()
 
   arise_time = sim->current_time();
   last_regen = sim->current_time();
-
-  if ( buffs.ingest_mineral )
-    buffs.ingest_mineral->trigger();
 
   if ( is_enemy() )
   {
