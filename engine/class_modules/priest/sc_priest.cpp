@@ -343,26 +343,21 @@ struct angelic_feather_t final : public priest_spell_t
   {
     parse_options( options_str );
     harmful = may_hit = may_crit = false;
+
+    target_debuff = p.find_spell( 121557 );
+  }
+
+  buff_t* create_debuff( player_t* t ) override
+  {
+    return priest_spell_t::create_debuff( t )
+      ->set_movement_speed_buff_from_data();
   }
 
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
 
-    if ( s->target->buffs.angelic_feather )
-    {
-      s->target->buffs.angelic_feather->trigger();
-    }
-  }
-
-  bool target_ready( player_t* candidate_target ) override
-  {
-    if ( !candidate_target->buffs.angelic_feather )
-    {
-      return false;
-    }
-
-    return priest_spell_t::target_ready( candidate_target );
+    get_debuff( s->target )->trigger();
   }
 };
 
@@ -1850,12 +1845,14 @@ struct power_word_shield_t final : public priest_absorb_t
 {
   double insanity;
   timespan_t atonement_duration;
+  const spell_data_t* bns_data;
 
   power_word_shield_t( priest_t& p, util::string_view options_str )
     : priest_absorb_t( "power_word_shield", p, p.find_class_spell( "Power Word: Shield" ) ),
       insanity( priest().specs.hallucinations->effectN( 1 ).resource() ),
       atonement_duration( timespan_t::from_seconds( p.talents.discipline.atonement_buff->effectN( 3 ).base_value() +
-                                                    p.talents.discipline.indemnity->effectN( 1 ).base_value() ) )
+                                                    p.talents.discipline.indemnity->effectN( 1 ).base_value() ) ),
+      bns_data( p.talents.body_and_soul.ok() ? p.find_spell( 65081 ) : nullptr )
   {
     parse_options( options_str );
 
@@ -1881,6 +1878,17 @@ struct power_word_shield_t final : public priest_absorb_t
 
     auto buff = make_buff<buffs::power_word_shield_buff_t>( &priest(), s->target );
     buff->set_absorb_source( stats );
+
+    if ( bns_data )
+    {
+      auto bns = make_buff( actor_pair_t( s->target, &priest() ), "body_and_soul", bns_data )
+        ->set_movement_speed_buff_from_data();
+
+      buff->add_stack_change_callback( [ bns ]( buff_t*, int old_, int new_ ) {
+        if ( !old_ && new_ )
+          bns->trigger();
+      } );
+    }
 
     return buff;
   }
@@ -1917,11 +1925,6 @@ struct power_word_shield_t final : public priest_absorb_t
   void impact( action_state_t* s ) override
   {
     priest_absorb_t::impact( s );
-
-    if ( priest().talents.body_and_soul.enabled() && s->target->buffs.body_and_soul )
-    {
-      s->target->buffs.body_and_soul->trigger();
-    }
 
     if ( priest().talents.discipline.atonement.enabled() )
     {
@@ -4246,18 +4249,10 @@ struct priest_module_t final : public module_t
   void register_actor_initializers( sim_t* sim ) const override
   {
     sim->register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + PRIEST, []( player_t* p ) {
-      if ( p->is_pet() )
+      if ( !p->is_player() )
         return;
 
-      p->buffs.body_and_soul = make_buff( p, "body_and_soul", p->find_spell( 65081 ) );
-      p->buffs.angelic_feather = make_buff( p, "angelic_feather", p->find_spell( 121557 ) );
-      p->buffs.guardian_spirit = make_buff( p, "guardian_spirit", p->find_spell( 47788 ) )
-                                    ->set_default_value_from_effect_type( A_MOD_HEALING_RECEIVED_PCT )
-                                    ->set_cooldown( 0_ms );  // Let the ability handle the CD
-      p->buffs.pain_suppression = make_buff( p, "pain_suppression", p->find_spell( 33206 ) )
-                                      ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
-                                      ->set_cooldown( 0_ms );  // Let the ability handle the CD
-
+      // Always create PI as it's a commonly simmed external
       auto pi_buff = make_buff( p, "power_infusion", p->find_spell( 10060 ) )
                         ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                         ->set_default_value_from_effect_type( A_HASTE_ALL )

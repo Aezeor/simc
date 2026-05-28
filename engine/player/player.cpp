@@ -5776,21 +5776,6 @@ double player_t::non_stacking_movement_modifier() const
   for ( auto [ v, b ] : buffs.movement_speed_buffs[ 2 ] )
     speed = std::max( v * b->check(), speed );
 
-  if ( !is_enemy() && type != HEALING_ENEMY )
-  {
-    if ( buffs.stampeding_roar && buffs.stampeding_roar->check() )
-      speed = std::max( buffs.stampeding_roar->check_value(), speed );
-  }
-
-  if ( !is_enemy() && !is_pet() && type != HEALING_ENEMY )
-  {
-    if ( buffs.body_and_soul && buffs.body_and_soul->check() )
-      speed = std::max( buffs.body_and_soul->data().effectN( 1 ).percent(), speed );
-
-    if ( buffs.angelic_feather && buffs.angelic_feather->check() )
-      speed = std::max( buffs.angelic_feather->data().effectN( 1 ).percent(), speed );
-  }
-
   return speed;
 }
 

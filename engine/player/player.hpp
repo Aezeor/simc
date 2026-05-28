@@ -489,9 +489,7 @@ struct player_t : public actor_t
     // 0 == stacking, 1 == non-stacking, 2 == non-stacking with multiple buff stacks
     std::array<std::vector<std::pair<double, buff_t*>>, 3> movement_speed_buffs;
     std::vector<std::tuple<buff_t*, unsigned, double>> creature_type_buffs;
-    buff_t* angelic_feather;
     buff_t* blood_fury;
-    buff_t* body_and_soul;
     buff_t* damage_done;
     buff_t* devotion_aura;
     buff_t* entropic_embrace;
@@ -500,7 +498,6 @@ struct player_t : public actor_t
     buff_t* blessing_of_sacrifice;
     buff_t* pain_suppression;
     buff_t* movement;
-    buff_t* stampeding_roar;
     buff_t* shadowmeld;
     buff_t* stoneform;
     buff_t* stunned;

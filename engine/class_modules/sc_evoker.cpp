@@ -11077,8 +11077,12 @@ struct evoker_module_t : public module_t
 
   void register_actor_initializers( sim_t* sim ) const override
   {
-    sim->register_actor_initializer( INIT_ACTOR_CREATE_ACTIONS + EVOKER, []( player_t* p ) {
-      if ( p->is_enemy() || p->type == HEALING_ENEMY || p->is_pet() )
+    sim->register_actor_initializer( INIT_ACTOR_CREATE_ACTIONS + EVOKER, [ sim ]( player_t* p ) {
+      if ( !p->is_player() )
+        return;
+
+      // Only create if an evoker is in the sim
+      if ( !range::count_if( sim->player_no_pet_list, []( player_t* p ) { return p->type == EVOKER; } ) )
         return;
 
       new spells::infernos_blessing_t( p );

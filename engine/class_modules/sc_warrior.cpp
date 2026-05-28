@@ -9407,7 +9407,7 @@ struct warrior_module_t : public module_t
   void register_actor_initializers( sim_t* sim ) const override
   {
     sim->register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + WARRIOR, []( player_t* p ) {
-      if ( p->is_pet() )
+      if ( !p->is_player() )
         return;
 
       bool has_external_rallying = !p->external_buffs.rallying_cry.empty();

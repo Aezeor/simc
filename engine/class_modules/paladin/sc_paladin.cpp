@@ -5253,8 +5253,14 @@ struct paladin_module_t : public module_t
 
   void register_actor_initializers( sim_t* sim ) const override
   {
-    // use class enum for ordering
-    sim->register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + PALADIN, []( player_t* p ) {
+    sim->register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + PALADIN, [ sim ]( player_t* p ) {
+      if ( !p->is_player() )
+        return;
+
+      // Only create if a paladin is in the sim
+      if ( !range::count_if( sim->player_no_pet_list, []( player_t* p ) { return p->type == PALADIN; } ) )
+        return;
+
       p->buffs.blessing_of_sacrifice = new buffs::blessing_of_sacrifice_t( p );
       p->debuffs.forbearance         = new buffs::forbearance_t( p, "forbearance" );
     }, "create_buffs_paladin" );

@@ -8166,6 +8166,15 @@ struct stampeding_roar_t final : public druid_spell_t
 
     form_mask = BEAR_FORM | CAT_FORM;
     autoshift = p->active.shift_to_bear;
+
+    target_debuff = p->talent.stampeding_roar;
+  }
+
+  buff_t* create_debuff( player_t* t ) override
+  {
+    return druid_spell_t::create_debuff( t )
+      ->set_movement_speed_buff_from_data()
+      ->set_cooldown( 0_ms );
   }
 
   void execute() override
@@ -8173,8 +8182,8 @@ struct stampeding_roar_t final : public druid_spell_t
     druid_spell_t::execute();
 
     // TODO: add target eligibility via radius
-    for ( const auto& actor : sim->player_non_sleeping_list )
-      actor->buffs.stampeding_roar->trigger();
+    for ( auto& t : sim->player_non_sleeping_list )
+      get_debuff( t )->trigger();
   }
 };
 
@@ -14276,14 +14285,7 @@ struct druid_module_t final : public module_t
 
   void register_hotfixes() const override {}
 
-  void register_actor_initializers( sim_t* sim ) const override
-  {
-    sim->register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + DRUID, []( player_t* p ) {
-      p->buffs.stampeding_roar = make_buff( p, "stampeding_roar", p->find_spell( 106898 ) )
-        ->set_cooldown( 0_ms )
-        ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED );
-    }, "create_buffs_druid" );
-  }
+  void register_actor_initializers( sim_t* ) const override {}
 };
 }  // UNNAMED NAMESPACE
 
