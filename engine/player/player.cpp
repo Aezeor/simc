@@ -4869,11 +4869,6 @@ void player_t::create_buffs()
     buffs.stoneform = make_buff_fallback( race == RACE_DWARF, this, "stoneform", find_spell( 65116 ) )
       ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
-    buffs.blood_fury =
-      make_buff_fallback<stat_buff_t>( race == RACE_ORC, this, "blood_fury", find_racial_spell( "Blood Fury" ) )
-        ->add_invalidate( CACHE_SPELL_POWER )
-        ->add_invalidate( CACHE_ATTACK_POWER );
-
     buffs.shadowmeld = make_buff_fallback( race == RACE_NIGHT_ELF, this, "shadowmeld", find_spell( 58984 ) )
       ->set_cooldown( 0_ms );
 
@@ -9180,19 +9175,29 @@ struct berserking_t : public racial_spell_t
 
 struct blood_fury_t : public racial_spell_t
 {
-  blood_fury_t( player_t* p, util::string_view options_str ) :
-    racial_spell_t( p, "blood_fury", p->find_racial_spell( "Blood Fury" ) )
+  buff_t* buff;
+
+  blood_fury_t( player_t* p, util::string_view options_str )
+    : racial_spell_t( p, "blood_fury", p->find_racial_spell( "Blood Fury" ) )
   {
     parse_options( options_str );
     harmful = false;
     target = p;
+
+    if ( data().ok() )
+    {
+      buff = make_buff<stat_buff_t>( p, "blood_fury", &data() )
+        ->add_invalidate( CACHE_SPELL_POWER )
+        ->add_invalidate( CACHE_ATTACK_POWER )
+        ->set_cooldown( 0_ms );
+    }
   }
 
   void execute() override
   {
     racial_spell_t::execute();
 
-    player->buffs.blood_fury->trigger();
+    buff->trigger();
   }
 };
 
