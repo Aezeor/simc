@@ -3712,7 +3712,7 @@ struct rune_of_echoes_debuff_t : public buff_t
   double accumulator;
   action_t* echo;
 
-  rune_of_echoes_debuff_t( const special_effect_t& e, actor_pair_t pair, std::string_view n, const spell_data_t* s,
+  rune_of_echoes_debuff_t( actor_pair_t pair, std::string_view n, const spell_data_t* s,
                            action_t* d )
     : buff_t( pair, n, s ), accumulator( 0 ), echo( d )
   {
@@ -3744,13 +3744,12 @@ struct rune_of_echoes_debuff_t : public buff_t
 template <typename BASE>
 struct lingering_rune_t : public BASE
 {
-  const special_effect_t& eff;
   bool has_echoes;
   double echo_coeff;
   action_t* echo;
 
   lingering_rune_t( const special_effect_t& e, std::string_view n, const spell_data_t* s, bool ech, double coef, action_t* d )
-    : BASE( e, n, s ), eff( e ), has_echoes( ech ), echo_coeff( coef ), echo( d )
+    : BASE( e, n, s ), has_echoes( ech ), echo_coeff( coef ), echo( d )
   {
   }
 
@@ -3759,7 +3758,7 @@ struct lingering_rune_t : public BASE
     auto debuff = buff_t::find( t, "rune_of_echoes_debuff" );
 
     if ( !debuff )
-      debuff = make_buff<rune_of_echoes_debuff_t>( eff, actor_pair_t( t, BASE::player ), "rune_of_echoes_debuff",
+      debuff = make_buff<rune_of_echoes_debuff_t>( actor_pair_t( t, BASE::player ), "rune_of_echoes_debuff",
                                                    BASE::player->find_spell( 1289063 ), echo );
 
     return debuff;
@@ -3780,7 +3779,6 @@ struct lingering_rune_t : public BASE
 template <typename BASE>
 struct omnium_core_rune_t : public BASE
 {
-  const special_effect_t& eff;
   stat_buff_t* buff = nullptr;
   const spell_data_t* coeff;
   double dmg_coeff;
@@ -3791,7 +3789,6 @@ struct omnium_core_rune_t : public BASE
 
   omnium_core_rune_t( const special_effect_t& e, std::string_view n, unsigned id )
     : BASE( e, n, id ),
-      eff( e ),
       coeff( e.driver()->effectN( 2 ).trigger() ),
       dmg_coeff( std::floor( coeff->effectN( 1 ).average_no_item( BASE::player, OMNIUM_ITEM_LEVEL ) ) * 0.01 ),
       stat_coeff( std::floor( coeff->effectN( 3 ).average_no_item( BASE::player, OMNIUM_ITEM_LEVEL ) ) * 0.01 ),
@@ -3867,7 +3864,7 @@ struct omnium_core_rune_t : public BASE
     auto debuff = buff_t::find( t, "rune_of_echoes_debuff" );
 
     if ( !debuff )
-      debuff = make_buff<rune_of_echoes_debuff_t>( eff, actor_pair_t( t, BASE::player ), "rune_of_echoes_debuff",
+      debuff = make_buff<rune_of_echoes_debuff_t>( actor_pair_t( t, BASE::player ), "rune_of_echoes_debuff",
                                                    BASE::player->find_spell( 1289063 ), echo );
 
     return debuff;
