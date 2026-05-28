@@ -502,8 +502,6 @@ struct player_t : public actor_t
     buff_t* stoneform;
     buff_t* stunned;
     buff_t* rooted;
-
-    buff_t* berserking;
     buff_t* bloodlust;
 
     // 7.0 trinket proxy buffs

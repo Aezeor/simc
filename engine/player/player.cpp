@@ -4866,9 +4866,6 @@ void player_t::create_buffs()
   if ( !is_enemy() && type != HEALING_ENEMY )
   {
     // Racials
-    buffs.berserking = make_buff_fallback( race == RACE_TROLL, this, "berserking", find_spell( 26297 ) )
-      ->add_invalidate( CACHE_HASTE );
-
     buffs.stoneform = make_buff_fallback( race == RACE_DWARF, this, "stoneform", find_spell( 65116 ) )
       ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
@@ -5029,9 +5026,6 @@ double player_t::composite_melee_haste() const
 
     if ( buffs.bloodlust->check() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust->check_stack_value() );
-
-    if ( buffs.berserking->check() )
-      h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
 
     if ( timeofday == NIGHT_TIME )
       h *= 1.0 / ( 1.0 + racials.touch_of_elune->effectN( 1 ).percent() );
@@ -5373,9 +5367,6 @@ double player_t::composite_spell_haste() const
 
     if ( buffs.bloodlust->check() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust->check_stack_value() );
-
-    if ( buffs.berserking->check() )
-      h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
 
     if ( timeofday == NIGHT_TIME )
       h *= 1.0 / ( 1.0 + racials.touch_of_elune->effectN( 1 ).percent() );
@@ -9162,19 +9153,26 @@ struct arcane_torrent_t : public racial_spell_t
 
 struct berserking_t : public racial_spell_t
 {
+  buff_t* buff;
+
   berserking_t( player_t* p, util::string_view options_str ) :
     racial_spell_t( p, "berserking", p->find_racial_spell( "Berserking" ) )
   {
     parse_options( options_str );
     harmful = false;
     target = p;
+
+    // Make a fallback since it's possible some APLs may want to use haste buffs like this as a conditional
+    buff = make_buff_fallback( data().ok(), p, "berserking", &data() )
+      ->set_cooldown( 0_ms )
+      ->set_pct_buff_type_from_data( true );
   }
 
   void execute() override
   {
     racial_spell_t::execute();
 
-    player->buffs.berserking->trigger();
+    buff->trigger();
   }
 };
 
