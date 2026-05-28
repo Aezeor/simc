@@ -3808,6 +3808,7 @@ struct omnium_core_rune_t : public BASE
     {
       echo              = create_proc_action<BASE>( fmt::format( "{}_echo", n ), e, heal ? 1303071 : 1303048 );
       echo->base_dd_min = echo->base_dd_max = 1.0;  // actual value is determined by accumulator
+      echo->name_str_reporting               = "rune_of_echoes";
       echo_coeff                            = e.player->find_spell( 1279616 )->effectN( 1 ).percent();
       if( !echo->stats->parent )
         BASE::add_child( echo );
