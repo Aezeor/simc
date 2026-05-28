@@ -3710,16 +3710,12 @@ static constexpr unsigned OMNIUM_ITEM_LEVEL = 289;
 struct rune_of_echoes_debuff_t : public buff_t
 {
   double accumulator;
-  action_t* damage;
-  action_t* heal;
+  action_t* echo;
 
-  rune_of_echoes_debuff_t( const special_effect_t& e, actor_pair_t pair, std::string_view n, const spell_data_t* s )
-    : buff_t( pair, n, s ), accumulator( 0 ), damage( nullptr ), heal( nullptr )
+  rune_of_echoes_debuff_t( const special_effect_t& e, actor_pair_t pair, std::string_view n, const spell_data_t* s,
+                           action_t* d )
+    : buff_t( pair, n, s ), accumulator( 0 ), echo( d )
   {
-    damage = create_proc_action<generic_proc_t>( "rune_of_echoes_damage", e, e.player->find_spell( 1303048 ) );
-    damage->base_dd_min = damage->base_dd_max = 1.0;  // actual damage is determined by accumulator
-    heal   = create_proc_action<generic_heal_t>( "rune_of_echoes_heal", e, e.player->find_spell( 1303049 ) );
-    heal->base_dd_min = heal->base_dd_max = 1.0;  // actual heal is determined by accumulator
   }
 
   void reset() override
@@ -3739,33 +3735,69 @@ struct rune_of_echoes_debuff_t : public buff_t
     buff_t::expire_override( s, d );
     if ( accumulator > 0 )
     {
-      if ( player->is_enemy() )
-        damage->execute_on_target( player, accumulator );
-      else
-        heal->execute_on_target( player, accumulator );
-
+      echo->execute_on_target( player, accumulator );
       accumulator = 0;
     }
   }
 };
 
 template <typename BASE>
+struct lingering_rune_t : public BASE
+{
+  const special_effect_t& eff;
+  bool has_echoes;
+  double echo_coeff;
+  action_t* echo;
+
+  lingering_rune_t( const special_effect_t& e, std::string_view n, const spell_data_t* s, bool ech, double coef, action_t* d )
+    : BASE( e, n, s ), eff( e ), has_echoes( ech ), echo_coeff( coef ), echo( d )
+  {
+  }
+
+  buff_t* create_debuff( player_t* t ) override
+  {
+    auto debuff = buff_t::find( t, "rune_of_echoes_debuff" );
+
+    if ( !debuff )
+      debuff = make_buff<rune_of_echoes_debuff_t>( eff, actor_pair_t( t, BASE::player ), "rune_of_echoes_debuff",
+                                                   BASE::player->find_spell( 1289063 ), echo );
+
+    return debuff;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    BASE::tick( d );
+    if ( !has_echoes )
+      return;
+
+    rune_of_echoes_debuff_t* debuff = debug_cast<rune_of_echoes_debuff_t*>( BASE::get_debuff( d->target ) );
+    if ( debuff->check() )
+      debuff->accumulator += d->state->result_amount * echo_coeff;
+  }
+};
+
+template <typename BASE>
 struct omnium_core_rune_t : public BASE
 {
+  const special_effect_t& eff;
   stat_buff_t* buff = nullptr;
   const spell_data_t* coeff;
   double dmg_coeff;
   double stat_coeff;
   bool has_echoes;
   double echo_coeff;
+  action_t* echo;
 
   omnium_core_rune_t( const special_effect_t& e, std::string_view n, unsigned id )
     : BASE( e, n, id ),
+      eff( e ),
       coeff( e.driver()->effectN( 2 ).trigger() ),
       dmg_coeff( std::floor( coeff->effectN( 1 ).average_no_item( BASE::player, OMNIUM_ITEM_LEVEL ) ) * 0.01 ),
       stat_coeff( std::floor( coeff->effectN( 3 ).average_no_item( BASE::player, OMNIUM_ITEM_LEVEL ) ) * 0.01 ),
       has_echoes( false ),
-      echo_coeff( 0 )
+      echo_coeff( 0 ),
+      echo( nullptr )
   {
     constexpr bool heal = std::is_base_of_v<heal_t, BASE>;
 
@@ -3774,10 +3806,23 @@ struct omnium_core_rune_t : public BASE
 
     BASE::base_dd_min = BASE::base_dd_max = dmg_coeff * BASE::data().effectN( 2 ).base_value();
 
+    has_echoes = find_special_effect( e.player, 1279616 ) != nullptr;
+    if ( has_echoes )
+    {
+      echo              = create_proc_action<BASE>( "rune_of_echoes", e, heal ? 1303071 : 1303048 );
+      echo->base_dd_min = echo->base_dd_max = 1.0;  // actual value is determined by accumulator
+      echo_coeff                            = e.player->find_spell( 1279616 )->effectN( 1 ).percent();
+      BASE::add_child( echo );
+    }
+
     // Rune of Lingering: 1287555 driver, 1287663 dot, 1287665 hot
     if ( find_special_effect( e.player, 1287555 ) )
     {
-      auto dot = create_proc_action<BASE>( fmt::format( "{}_lingering", n ), e, heal ? 1287665 : 1287663 );
+      auto name = fmt::format( "{}_lingering", n );
+      auto dot  = create_proc_action<lingering_rune_t<BASE>>(
+          name, e, name, heal ? e.player->find_spell( 1287665 ) : e.player->find_spell( 1287663 ), has_echoes,
+          echo_coeff, echo );
+
       dot->base_td = dmg_coeff * dot->data().effectN( 2 ).base_value() / dot->dot_duration.value().total_seconds();
       dot->name_str_reporting = "rune_of_lingering";
       if ( !dot->stats->parent )
@@ -3789,10 +3834,6 @@ struct omnium_core_rune_t : public BASE
       if ( auto residual = find_special_effect( e.player, 1279615 ) )
         dot->base_multiplier *= 1.0 + residual->driver()->effectN( 1 ).percent();
     }
-
-    has_echoes = find_special_effect( e.player, 1279616 ) != nullptr;
-    if( has_echoes )
-      echo_coeff = e.player->find_spell( 1279616 )->effectN( 1 ).percent();
 
     apply_stat_rune( 1279609, 1287772 );  // Rune of Critical Power
     apply_stat_rune( 1279610, 1287774 );  // Rune of Burning Haste
@@ -3826,8 +3867,8 @@ struct omnium_core_rune_t : public BASE
     auto debuff = buff_t::find( t, "rune_of_echoes_debuff" );
 
     if ( !debuff )
-      debuff =
-          make_buff<rune_of_echoes_debuff_t>( *BASE::effect, actor_pair_t( t, BASE::player ), "rune_of_echoes_debuff", BASE::player->find_spell( 1289063 ) );
+      debuff = make_buff<rune_of_echoes_debuff_t>( eff, actor_pair_t( t, BASE::player ), "rune_of_echoes_debuff",
+                                                   BASE::player->find_spell( 1289063 ), echo );
 
     return debuff;
   }
