@@ -546,7 +546,6 @@ struct player_t : public actor_t
 
     // 11.0 The War Within
     buff_t* ingest_mineral;  // earthen well fed racial
-    buff_t* earthen_ire;     // sigil of algari concordance tank buff
   } buffs;
 
   struct debuffs_t
