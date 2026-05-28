@@ -3707,6 +3707,48 @@ namespace omnium
 // Item level used for omnium coeff scaling spell 1288183
 static constexpr unsigned OMNIUM_ITEM_LEVEL = 289;
 
+struct rune_of_echoes_debuff_t : public buff_t
+{
+  double accumulator;
+  action_t* damage;
+  action_t* heal;
+
+  rune_of_echoes_debuff_t( const special_effect_t& e, actor_pair_t pair, std::string_view n, const spell_data_t* s )
+    : buff_t( pair, n, s ), accumulator( 0 ), damage( nullptr ), heal( nullptr )
+  {
+    damage = create_proc_action<generic_proc_t>( "rune_of_echoes_damage", e, e.player->find_spell( 1303048 ) );
+    damage->base_dd_min = damage->base_dd_max = 1.0;  // actual damage is determined by accumulator
+    heal   = create_proc_action<generic_heal_t>( "rune_of_echoes_heal", e, e.player->find_spell( 1303049 ) );
+    heal->base_dd_min = heal->base_dd_max = 1.0;  // actual heal is determined by accumulator
+  }
+
+  void reset() override
+  {
+    buff_t::reset();
+    accumulator = 0;
+  }
+
+  void start( int s, double v, timespan_t d ) override
+  {
+    buff_t::start( s, v, d );
+    accumulator = 0;
+  }
+
+  void expire_override( int s, timespan_t d ) override
+  {
+    buff_t::expire_override( s, d );
+    if ( accumulator > 0 )
+    {
+      if ( player->is_enemy() )
+        damage->execute_on_target( player, accumulator );
+      else
+        heal->execute_on_target( player, accumulator );
+
+      accumulator = 0;
+    }
+  }
+};
+
 template <typename BASE>
 struct omnium_core_rune_t : public BASE
 {
@@ -3714,12 +3756,16 @@ struct omnium_core_rune_t : public BASE
   const spell_data_t* coeff;
   double dmg_coeff;
   double stat_coeff;
+  bool has_echoes;
+  double echo_coeff;
 
   omnium_core_rune_t( const special_effect_t& e, std::string_view n, unsigned id )
     : BASE( e, n, id ),
       coeff( e.driver()->effectN( 2 ).trigger() ),
       dmg_coeff( std::floor( coeff->effectN( 1 ).average_no_item( BASE::player, OMNIUM_ITEM_LEVEL ) ) * 0.01 ),
-      stat_coeff( std::floor( coeff->effectN( 3 ).average_no_item( BASE::player, OMNIUM_ITEM_LEVEL ) ) * 0.01 )
+      stat_coeff( std::floor( coeff->effectN( 3 ).average_no_item( BASE::player, OMNIUM_ITEM_LEVEL ) ) * 0.01 ),
+      has_echoes( false ),
+      echo_coeff( 0 )
   {
     constexpr bool heal = std::is_base_of_v<heal_t, BASE>;
 
@@ -3743,6 +3789,10 @@ struct omnium_core_rune_t : public BASE
       if ( auto residual = find_special_effect( e.player, 1279615 ) )
         dot->base_multiplier *= 1.0 + residual->driver()->effectN( 1 ).percent();
     }
+
+    has_echoes = find_special_effect( e.player, 1279616 ) != nullptr;
+    if( has_echoes )
+      echo_coeff = e.player->find_spell( 1279616 )->effectN( 1 ).percent();
 
     apply_stat_rune( 1279609, 1287772 );  // Rune of Critical Power
     apply_stat_rune( 1279610, 1287774 );  // Rune of Burning Haste
@@ -3769,6 +3819,31 @@ struct omnium_core_rune_t : public BASE
 
     if ( buff )
       buff->trigger();
+  }
+
+  buff_t* create_debuff( player_t* t ) override
+  {
+    auto debuff = buff_t::find( t, "rune_of_echoes_debuff" );
+
+    if ( !debuff )
+      debuff =
+          make_buff<rune_of_echoes_debuff_t>( *BASE::effect, actor_pair_t( t, BASE::player ), "rune_of_echoes_debuff", BASE::player->find_spell( 1289063 ) );
+
+    return debuff;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    BASE::impact( s );
+    if ( !has_echoes )
+      return;
+
+    rune_of_echoes_debuff_t* debuff = debug_cast<rune_of_echoes_debuff_t*>( BASE::get_debuff( s->target ) );
+    // TODO: is the accumulator value increased on the initial hit?
+    if ( !debuff->check() )
+      debuff->trigger();
+    else
+      debuff->accumulator += s->result_amount * echo_coeff;
   }
 };
 
@@ -4038,6 +4113,7 @@ void register_special_effects()
   register_special_effect( 1279613, DISABLED_EFFECT );  // rune of the versatile warrior
   register_special_effect( 1279614, DISABLED_EFFECT );  // rune of overload
   register_special_effect( 1279615, DISABLED_EFFECT );  // rune of residual energy
+  register_special_effect( 1279616, DISABLED_EFFECT );  // rune of echoes
   reset_version_check();
 }
 
