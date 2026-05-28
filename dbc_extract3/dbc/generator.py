@@ -1535,6 +1535,8 @@ class SpellDataGenerator(DataGenerator):
          1263768, # Lightspire Core
          1263614, # Wraps of Cosmic Madness
          1255685, 1255687, 1255688, # crucible of erratic energies
+         # 12.0.7
+         1303048, 1303071, # Rune of Echoes
         ),
 
         # Warrior:
