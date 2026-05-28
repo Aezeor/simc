@@ -3809,7 +3809,8 @@ struct omnium_core_rune_t : public BASE
       echo              = create_proc_action<BASE>( "rune_of_echoes", e, heal ? 1303071 : 1303048 );
       echo->base_dd_min = echo->base_dd_max = 1.0;  // actual value is determined by accumulator
       echo_coeff                            = e.player->find_spell( 1279616 )->effectN( 1 ).percent();
-      BASE::add_child( echo );
+      if( !echo->stats->parent )
+        BASE::add_child( echo );
     }
 
     // Rune of Lingering: 1287555 driver, 1287663 dot, 1287665 hot
