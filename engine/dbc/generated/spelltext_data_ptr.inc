@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.7.67808
-static constexpr std::array<spelltext_data_t, 28754> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28755> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -10364,6 +10364,7 @@ static constexpr std::array<spelltext_data_t, 28754> __ptr_spelltext_data { {
   {  273093, "Frost Strike deals an additional ${$s1+($s1/2)} damage if you have at least $s2 empty runes.", 0, 0 },
   {  273095, "When Dark Transformation expires, the unholy energy in your ghoul is expelled, dealing $s1 Shadow damage to all nearby enemies.", 0, 0 },
   {  273096, "$@spelldesc273095", 0, 0 },
+  {  273104, "Increases primary stat by $s1.", "Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $265226w2.", "Racial" },
   {  273130, "Flash of Light on your Beacon of Light target is increased by $s1.", 0, 0 },
   {  273131, "Your Holy Light critical strikes refund $s1 mana during Avenging Wrath.", 0, 0 },
   {  273134, "Aura Mastery also grants your allies $s1 Max Health for its duration.", 0, 0 },

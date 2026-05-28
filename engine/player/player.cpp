@@ -4880,18 +4880,6 @@ void player_t::create_buffs()
     buffs.shadowmeld = make_buff_fallback( race == RACE_NIGHT_ELF, this, "shadowmeld", find_spell( 58984 ) )
       ->set_cooldown( 0_ms );
 
-    if ( race == RACE_DARK_IRON_DWARF )
-    {
-      buffs.fireblood =
-          make_buff<stat_buff_t>( this, "fireblood", find_spell( 265226 ) )
-              ->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ),
-                          util::round( find_spell( 265226 )->effectN( 1 ).average( this, level() ) ) * 3 );
-    }
-    else
-    {
-      buffs.fireblood = buff_t::make_fallback( this, "fireblood", this );
-    }
-
     // fallback for ingest mineral isn't necessary as it's a passive effect that should not have any apl interaction
     if ( race == RACE_EARTHEN_HORDE || race == RACE_EARTHEN_ALLIANCE )
     {
@@ -9453,19 +9441,29 @@ struct ancestral_call_t : public racial_spell_t
 
 struct fireblood_t : public racial_spell_t
 {
+  buff_t* buff;
+
   fireblood_t( player_t* p, util::string_view options_str ) :
     racial_spell_t( p, "fireblood", p->find_racial_spell( "Fireblood" ) )
   {
     parse_options( options_str );
     harmful = false;
     target = p;
+
+    if ( data().ok() )
+    {
+      auto stat_amount = p->find_spell( 265226 )->effectN( 1 ).average( p ) * 3.0;
+
+      buff = make_buff<stat_buff_t>( p, "fireblood", p->find_spell( 273104 ) )
+        ->add_stat( p->convert_hybrid_stat( STAT_STR_AGI_INT ), stat_amount );
+    }
   }
 
   void execute() override
   {
     racial_spell_t::execute();
 
-    player->buffs.fireblood -> trigger();
+    buff->trigger();
   }
 };
 

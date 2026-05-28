@@ -1,5 +1,5 @@
-// Spell text, wow build 12.0.5.67602
-static constexpr std::array<spelltext_data_t, 28696> __spelltext_data { {
+// Spell text, wow build 12.0.5.67823
+static constexpr std::array<spelltext_data_t, 28697> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -10364,6 +10364,7 @@ static constexpr std::array<spelltext_data_t, 28696> __spelltext_data { {
   {  273093, "Frost Strike deals an additional ${$s1+($s1/2)} damage if you have at least $s2 empty runes.", 0, 0 },
   {  273095, "When Dark Transformation expires, the unholy energy in your ghoul is expelled, dealing $s1 Shadow damage to all nearby enemies.", 0, 0 },
   {  273096, "$@spelldesc273095", 0, 0 },
+  {  273104, "Increases primary stat by $s1.", "Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $265226w2.", "Racial" },
   {  273130, "Flash of Light on your Beacon of Light target is increased by $s1.", 0, 0 },
   {  273131, "Your Holy Light critical strikes refund $s1 mana during Avenging Wrath.", 0, 0 },
   {  273134, "Aura Mastery also grants your allies $s1 Max Health for its duration.", 0, 0 },
@@ -28698,11 +28699,11 @@ static constexpr std::array<spelltext_data_t, 28696> __spelltext_data { {
   { 1293918, "$@spelldesc228049", "Immune to all attacks and spells.", "PvP Talent" },
 } };
 
-// spelltext hotfix entries, wow build 12.0.5.67602
+// spelltext hotfix entries, wow build 12.0.5.67823
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 12.0.5.67602
+// Spell description variables, wow build 12.0.5.67823
 static constexpr std::array<spelldesc_vars_data_t, 697> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29403,7 +29404,7 @@ static constexpr std::array<spelldesc_vars_data_t, 697> __spelldesc_vars_data { 
   { 1293610, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.5.67602
+// spelldesc_vars hotfix entries, wow build 12.0.5.67823
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

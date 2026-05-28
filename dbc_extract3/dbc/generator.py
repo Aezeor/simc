@@ -1081,6 +1081,8 @@ class SpellDataGenerator(DataGenerator):
          268954, 268955, 268953,
          # Mag'har Orc Ancestral Call buffs
          274739, 274740, 274741, 274742,
+         # Dark Iron Dwarf Fireblood buff display spell
+         273104,
          # 8.0 Galley Banquet food buffs
          259448, 259449, 259452, 259453,
          # 8.0 Bountiful Captain's Feast food buffs
