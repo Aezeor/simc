@@ -345,7 +345,7 @@ public:
   static buff_t* make_buff_fallback( bool true_buff, Player&& player, std::string_view name, Args&&... args )
   {
     static_assert( std::is_base_of_v<buff_t, Buff>, "Buff must be derived from buff_t" );
-    static_assert( std::is_base_of_v<player_t, std::remove_pointer_t<Player>> ||
+    static_assert( std::is_base_of_v<player_t, std::remove_pointer_t<std::remove_reference_t<Player>>> ||
                    std::is_base_of_v<actor_pair_t, std::remove_reference_t<Player>>,
                    "Player must be derived from player_t or actor_pair_t" );
 
