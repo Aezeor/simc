@@ -1528,11 +1528,6 @@ void player_t::init_base_stats()
     base.all_crit           = get_passive_player_value( dbc->all_crit_base( type, level() ), "all_crit" );
     base.spell_crit_chance  = get_passive_player_value( base.all_crit, "spell_crit" );
     base.attack_crit_chance = base.all_crit;
-    if ( timeofday == DAY_TIME )
-    {
-      base.spell_crit_chance += racials.touch_of_elune->effectN( 1 ).percent();
-      base.attack_crit_chance += racials.touch_of_elune->effectN( 1 ).percent();
-    }
 
     base.mastery     = get_passive_player_value( 8.0, "mastery" );
     base.versatility = get_passive_player_value( base.versatility, "versatility" );
@@ -3365,7 +3360,6 @@ void player_t::init_spells()
   racials.nimble_fingers        = find_racial_spell( "Nimble Fingers" );
   racials.time_is_money         = find_racial_spell( "Time is Money" );
   racials.the_human_spirit      = find_racial_spell( "The Human Spirit" );
-  racials.touch_of_elune        = find_racial_spell( "Touch of Elune" );
   racials.brawn                 = find_racial_spell( "Brawn" );
   racials.endurance             = find_racial_spell( "Endurance" );
   racials.viciousness           = find_racial_spell( "Viciousness" );
@@ -5021,9 +5015,6 @@ double player_t::composite_melee_haste() const
 
     if ( buffs.bloodlust->check() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust->check_stack_value() );
-
-    if ( timeofday == NIGHT_TIME )
-      h *= 1.0 / ( 1.0 + racials.touch_of_elune->effectN( 1 ).percent() );
   }
 
   return h;
@@ -5362,9 +5353,6 @@ double player_t::composite_spell_haste() const
 
     if ( buffs.bloodlust->check() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust->check_stack_value() );
-
-    if ( timeofday == NIGHT_TIME )
-      h *= 1.0 / ( 1.0 + racials.touch_of_elune->effectN( 1 ).percent() );
   }
 
   return h;
@@ -16391,6 +16379,10 @@ void player_t::parse_all_class_passives()
         parse_passive_effects( spell, false, PARSE_SOURCE_RACIAL );
     }
   }
+
+  // handle touch of elune day/night buff
+  if ( find_racial_spell( "Touch of Elune" )->ok() )
+    parse_passive_effects( find_spell( timeofday == DAY_TIME ? 154796 : 154797 ), true, PARSE_SOURCE_RACIAL );
 
   // may as well handle this here
   if ( racials.subterranean_predator->ok() )

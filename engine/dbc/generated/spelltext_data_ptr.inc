@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.7.67808
-static constexpr std::array<spelltext_data_t, 28755> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28757> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -4741,6 +4741,8 @@ static constexpr std::array<spelltext_data_t, 28755> __ptr_spelltext_data { {
   {  154746, "Maximum rage increased by $s1%.", 0, "Racial Passive" },
   {  154747, "Maximum runic power increased by $s1%.", 0, "Racial Passive" },
   {  154748, "Increases your Haste by 1% during the night.\r\n\r\nIncreases your Critical Strike by 1% during the day.", 0, "Racial Passive" },
+  {  154796, "Increases your Critical Strike by 1% during the day.", "Critical Strike chance increased by 1%.", "Racial Passive" },
+  {  154797, "Increases your Haste by 1% during the night.", "Haste increased by 1%.", "Racial Passive" },
   {  154919, "Summon a Miniature Dark Portal for $d to remind those nearby of the Iron Horde's first invasion of Azeroth.", 0, 0 },
   {  155145, "Remove $s1 beneficial effect from all enemies within $A1 yards and restore $s2 Holy Power.", 0, "Racial" },
   {  155158, "$@spelldesc153561", "Burning for $w1 Fire damage every $t1 sec.", 0 },

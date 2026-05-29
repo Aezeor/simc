@@ -610,7 +610,6 @@ struct player_t : public actor_t
     const spell_data_t* nimble_fingers;
     const spell_data_t* time_is_money;
     const spell_data_t* the_human_spirit;
-    const spell_data_t* touch_of_elune;
     const spell_data_t* brawn;
     const spell_data_t* endurance;
     const spell_data_t* viciousness;

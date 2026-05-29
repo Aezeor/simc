@@ -1004,6 +1004,7 @@ class SpellDataGenerator(DataGenerator):
     _spell_id_list = [
         (
          134735,                    # PvP Rules Enabled
+         154797, 154797,            # Touch of Elune (Night Elf racial) day/night spell
          109871, 109869,            # No'Kaled the Elements of Death - LFR
          107785, 107789,            # No'Kaled the Elements of Death - Normal
          109872, 109870,            # No'Kaled the Elements of Death - Heroic
