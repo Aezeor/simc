@@ -14072,7 +14072,7 @@ struct shaman_module_t : public module_t
 
   void register_actor_initializers( sim_t* sim ) const override
   {
-    sim->register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + SHAMAN, []( player_t* p ) {
+    sim->register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + offset(), []( player_t* p ) {
       p->buffs.bloodlust = make_buff( p, "bloodlust", p->find_spell( 2825 ) )
           ->set_cooldown( 0_ms )
           ->set_max_stack( 1 )

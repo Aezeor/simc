@@ -34,6 +34,8 @@ struct module_t
   virtual void combat_begin( sim_t* ) const {}
   virtual void combat_end( sim_t* ) const {}
 
+  int offset() const { return static_cast<int>( type ); }
+
   static const module_t* death_knight();
   static const module_t* demon_hunter();
   static const module_t* druid();

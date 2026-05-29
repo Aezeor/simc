@@ -5253,7 +5253,7 @@ struct paladin_module_t : public module_t
 
   void register_actor_initializers( sim_t* sim ) const override
   {
-    sim->register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + PALADIN, [ sim ]( player_t* p ) {
+    sim->register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + offset(), [ sim ]( player_t* p ) {
       if ( !p->is_player() )
         return;
 
