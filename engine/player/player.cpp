@@ -1130,7 +1130,6 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     procs(),
     uptimes(),
     racials(),
-    passive_values(),
     active_during_iteration( false ),
     spec_spell( spell_data_t::nil() ),
     single_button_assistant( spell_data_t::nil() ),
@@ -5798,31 +5797,7 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
 
 double player_t::composite_rating_multiplier( rating_e rating ) const
 {
-  double v = current.rating_multiplier[ rating ];
-
-  switch ( rating )
-  {
-    case RATING_SPELL_HASTE:
-    case RATING_MELEE_HASTE:
-    case RATING_RANGED_HASTE:
-      v *= 1.0 + passive_values.amplification_1;
-      v *= 1.0 + passive_values.amplification_2;
-      break;
-    case RATING_MASTERY:
-      v *= 1.0 + passive_values.amplification_1;
-      v *= 1.0 + passive_values.amplification_2;
-      break;
-    case RATING_DAMAGE_VERSATILITY:
-    case RATING_HEAL_VERSATILITY:
-    case RATING_MITIGATION_VERSATILITY:
-      v *= 1.0 + passive_values.amplification_1;
-      v *= 1.0 + passive_values.amplification_2;
-      break;
-    default:
-      break;
-  }
-
-  return v;
+  return current.rating_multiplier[ rating ];
 }
 
 double player_t::composite_rating( rating_e rating ) const

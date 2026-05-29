@@ -1838,24 +1838,7 @@ void item::readiness( special_effect_t& effect )
 
 void item::amplification( special_effect_t& effect )
 {
-  maintenance_check( 528 );
-
-  player_t* p      = effect.item->player;
-  double amp_value = 0.1;  // Seems to be 0.1 regardless of level/item level now.
-  if ( !p->passive_values.amplification_1 )
-  {
-    p->passive_values.amplification_1 = amp_value;
-    for ( school_e school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; school++ )
-      p->base.crit_damage_multiplier[ school ] *= 1.0 + amp_value;
-    p->base.crit_healing_multiplier *= 1.0 + amp_value;
-  }
-  else
-  {
-    p->passive_values.amplification_2 = amp_value;
-    for ( school_e school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; school++ )
-      p->base.crit_damage_multiplier[ school ] *= 1.0 + amp_value;
-    p->base.crit_healing_multiplier *= 1.0 + amp_value;
-  }
+  effect.player->parse_passive_item_effect( effect.driver() );
 }
 
 void item::prismatic_prison_of_pride( special_effect_t& effect )
@@ -4714,7 +4697,7 @@ void unique_gear::register_special_effects()
   register_special_effect( 145955, item::readiness                      );
   register_special_effect( 146019, item::readiness                      );
   register_special_effect( 146025, item::readiness                      );
-  register_special_effect( 146051, item::amplification                  );
+  register_special_effect( 146051, item::amplification, false, true     );
   register_special_effect( 146136, item::cleave                         );
 
   register_special_effect( 146183, item::black_blood_of_yshaarj         );

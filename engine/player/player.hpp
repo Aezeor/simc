@@ -603,12 +603,6 @@ struct player_t : public actor_t
     const spell_data_t* brawn;
   } racials;
 
-  struct passives_t
-  {
-    double amplification_1;
-    double amplification_2;
-  } passive_values;
-
   bool active_during_iteration;
   const spell_data_t* spec_spell;
   const spell_data_t* single_button_assistant;
