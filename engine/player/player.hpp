@@ -575,7 +575,6 @@ struct player_t : public actor_t
   {
     std::array<gain_t*, RESOURCE_MAX> resource_regen;
     gain_t* health;
-    gain_t* vampiric_embrace;
   } gains;
 
   struct spells_t

@@ -3378,8 +3378,6 @@ void player_t::init_gains()
 
   if ( !is_pet() )
     gains.health = get_gain( "external_healing" );
-
-  gains.vampiric_embrace = get_gain( "vampiric_embrace" );
 }
 
 void player_t::init_procs()
