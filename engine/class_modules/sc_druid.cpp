@@ -14212,7 +14212,8 @@ void druid_t::parse_player_effects()
   parse_effects( buff.persistence, effect_mask_t( false ).enable( 2 ),  // armor
                  find_effect( buff.bear_form, A_MOD_BASE_RESISTANCE_PCT ).percent() /
                    buff.persistence->max_stack() );
-  parse_effects( buff.prowl, effect_mask_t( false ).enable( 3 ), racials.elusiveness->effectN( 1 ).percent() );
+  parse_effects( buff.prowl, effect_mask_t( false ).enable( 3 ),
+                 find_racial_spell( "Elusiveness" )->effectN( 1 ).percent() );
   parse_effects( buff.ruthless_aggression );
   parse_effects( buff.savage_fury );
   parse_effects( buff.starlord, talent.starlord->effectN( 1 ).percent() );

@@ -559,7 +559,6 @@ struct player_t : public actor_t
 
     // Dragonflight Raid Damage Modifier Debuffs
     buff_t* hunters_mark;
-
   } debuffs;
 
   struct external_buffs_t
@@ -600,28 +599,8 @@ struct player_t : public actor_t
 
   struct racials_t
   {
-    const spell_data_t* quickness;
-    const spell_data_t* elusiveness;
-    const spell_data_t* command;
-    const spell_data_t* arcane_acuity;
-    const spell_data_t* heroic_presence;
     const spell_data_t* might_of_the_mountain;
-    const spell_data_t* expansive_mind;
-    const spell_data_t* nimble_fingers;
-    const spell_data_t* time_is_money;
-    const spell_data_t* the_human_spirit;
     const spell_data_t* brawn;
-    const spell_data_t* endurance;
-    const spell_data_t* viciousness;
-    const spell_data_t* magical_affinity;
-    const spell_data_t* mountaineer;
-    const spell_data_t* brush_it_off;
-    const spell_data_t* awakened;
-    const spell_data_t* azerite_surge;
-    const spell_data_t* titanwrought_frame;
-    const spell_data_t* holy_providence;
-    const spell_data_t* lash_out;
-    const spell_data_t* subterranean_predator;
   } racials;
 
   struct passives_t

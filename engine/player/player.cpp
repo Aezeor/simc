@@ -3350,28 +3350,8 @@ void player_t::init_spells()
   sim->print_debug( "Initializing spells for {}.", *this );
 
   // Racials
-  racials.quickness             = find_racial_spell( "Quickness" );
-  racials.elusiveness           = find_racial_spell( "Elusiveness" );
-  racials.command               = find_racial_spell( "Command" );
-  racials.arcane_acuity         = find_racial_spell( "Arcane Acuity" );
-  racials.heroic_presence       = find_racial_spell( "Heroic Presence" );
   racials.might_of_the_mountain = find_racial_spell( "Might of the Mountain" );
-  racials.expansive_mind        = find_racial_spell( "Expansive Mind" );
-  racials.nimble_fingers        = find_racial_spell( "Nimble Fingers" );
-  racials.time_is_money         = find_racial_spell( "Time is Money" );
-  racials.the_human_spirit      = find_racial_spell( "The Human Spirit" );
   racials.brawn                 = find_racial_spell( "Brawn" );
-  racials.endurance             = find_racial_spell( "Endurance" );
-  racials.viciousness           = find_racial_spell( "Viciousness" );
-  racials.magical_affinity      = find_racial_spell( "Magical Affinity" );
-  racials.mountaineer           = find_racial_spell( "Mountaineer" );
-  racials.brush_it_off          = find_racial_spell( "Brush It Off" );
-  racials.awakened              = find_racial_spell( "Awakened" );
-  racials.azerite_surge         = find_racial_spell( "Azerite Surge" );
-  racials.titanwrought_frame    = find_racial_spell( "Titan-Wrought Frame" );
-  racials.holy_providence       = find_racial_spell( "Holy Providence" );
-  racials.lash_out              = find_racial_spell( "Lash Out" );
-  racials.subterranean_predator = find_racial_spell( "Subterranean Predator" );
 
   if ( is_player() )
   {
@@ -16385,8 +16365,8 @@ void player_t::parse_all_class_passives()
     parse_passive_effects( find_spell( timeofday == DAY_TIME ? 154796 : 154797 ), true, PARSE_SOURCE_RACIAL );
 
   // may as well handle this here
-  if ( racials.subterranean_predator->ok() )
-    register_creature_type_buff( nullptr, racials.subterranean_predator );
+  if ( auto sub_pred = find_racial_spell( "Subterranean Predator" ); sub_pred->ok() )
+    register_creature_type_buff( nullptr, sub_pred );
 }
 
 void player_t::parse_all_passive_talents()
