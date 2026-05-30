@@ -36,7 +36,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     random_weapon_target( nullptr ),
     random_bulwark_target( nullptr ),
     divine_inspiration_next( -1 ),
-    reflection_of_radiance_proc_chance( .2 ) // ToDo Fluttershy: Find out real proc chance
+    reflection_of_radiance_proc_chance( .05 ) // ToDo Fluttershy: Find out real proc chance - Please Blizz bring back the log event for Grand Crusader
 {
   active_consecration = nullptr;
   active_boj_cons = nullptr;
