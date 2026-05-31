@@ -5,7 +5,7 @@ level=90
 race=orc
 role=attack
 position=ranged_back
-talents=C4PAAAAAAAAAAAAAAAAAAAAAAwCMwMGNWGQmBbAAAAAAAAAzYGzwMmZGzgx0MmZmZ222MzMDzMYmZbwsMYGAAwMzMAwMjNmFDwGG
+talents=C4PAAAAAAAAAAAAAAAAAAAAAAYzsMwAGwMsFYWAAAAAAAAAmxMmhZMzMmBjpZMzM22YMzyMzMzMzyYmlBDAAwYmZmZmZAyGMAbMDA
 
 # Default consumables
 potion=lights_potential_2
@@ -100,19 +100,19 @@ actions.trinkets+=/use_items,check_existing=0,slots=trinket1:trinket2,if=this_tr
 
 head=primal_sentrys_maw,id=249988,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240967
 neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=1808,ilevel=289,gem_id=240914/240914
-shoulders=pauldrons_of_the_void_hunter,id=151323,ilevel=289
+shoulder=pauldrons_of_the_void_hunter,id=151323,ilevel=289
 back=imperators_banner,id=249335,ilevel=289
 chest=primal_sentrys_scaleplate,id=249991,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
-wrists=fallen_kings_cuffs,id=249304,bonus_id=1808,ilevel=289,gem_id=240914
+wrist=fallen_kings_cuffs,id=249304,bonus_id=1808,ilevel=289,gem_id=240914
 hands=primal_sentrys_talonguards,id=249989,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
 waist=world_tenders_barkclasp,id=244611,bonus_id=1808/8960/8960/8960/8960/12214/12214/12214,ilevel=285,gem_id=240898
 legs=primal_sentrys_legguards,id=249987,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=8159
 feet=world_tenders_rootslippers,id=244610,bonus_id=8960/8960/8960/8960/12214/12214/12214,ilevel=285
 finger1=signet_of_the_starved_beast,id=249336,bonus_id=1808,ilevel=289,gem_id=240890,enchant_id=7967
 finger2=sindorei_band_of_hope,id=249919,bonus_id=1808,ilevel=289,gem_id=240908,enchant_id=7967
-trinket1=umbral_plume,id=260235,ilevel=289
-trinket2=algethar_puzzle_box,id=193701,ilevel=289
-main_hand=rangercaptains_lethal_recurve,id=249288,ilevel=289,enchant_id=8039
+trinket1=umbral_plume,id=260235,ilevel=298
+trinket2=algethar_puzzle_box,id=193701,ilevel=298
+main_hand=rangercaptains_lethal_recurve,id=249288,ilevel=298,enchant_id=8039
 
 # Gear Summary
 # gear_ilvl=288.47

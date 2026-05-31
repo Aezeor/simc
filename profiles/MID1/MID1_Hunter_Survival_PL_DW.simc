@@ -5,7 +5,7 @@ level=90
 race=pandaren
 role=attack
 position=back
-talents=C8PAAAAAAAAAAAAAAAAAAAAAAMgxMGWILwMM0gFjZmZmxyAAAAAAgZMzMDzYYMDGTzAAAAAAAGLLzMziZmZmZGjBMzGgZxYMjNG
+talents=C8PAAAAAAAAAAAAAAAAAAAAAAMgxMGWgNYGGawiZmZmZYZAAAAAAwMmZmx2MGzYGWGTzAAAAwAAjllZmZxMzMYMGwMbAGGjZmNDA
 
 # Default consumables
 potion=lights_potential_2
@@ -97,22 +97,22 @@ actions.sentst+=/raptor_strike,if=buff.tip_of_the_spear.up|!buff.raptor_swipe.up
 actions.sentst+=/kill_command,if=cooldown.takedown.remains
 actions.sentst+=/takedown
 
-head=primal_sentrys_maw,id=249988,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983
-neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=1808,ilevel=289,gem_id=240914/240890
-shoulders=pauldrons_of_the_void_hunter,id=151323,ilevel=289
-back=draconic_nullcape,id=249370,ilevel=289
-chest=primal_sentrys_scaleplate,id=249991,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
-wrists=farstriders_plated_bracers,id=244584,bonus_id=1808/8790/8960/12214/12214/12214/12214/12214/12384,ilevel=285,gem_id=240908
-hands=primal_sentrys_talonguards,id=249989,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
-waist=scornbane_waistguard,id=249371,bonus_id=1808,ilevel=289,gem_id=240898
-legs=primal_sentrys_legguards,id=249987,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=8159
-feet=darkstrider_treads,id=249377,ilevel=289
-finger1=occlusion_of_void,id=251217,bonus_id=1808,ilevel=289,gem_id=240898,enchant_id=7967
-finger2=omission_of_light,id=251093,bonus_id=1808,ilevel=289,gem_id=240898,enchant_id=7967
-trinket1=radiant_plume,id=249806,ilevel=289
-trinket2=gaze_of_the_alnseer,id=249343,ilevel=289
-main_hand=hungering_victory,id=249925,ilevel=289,enchant_id=8039
-off_hand=farstriders_mercy,id=237837,bonus_id=8791/8960/12214/12693,ilevel=285,enchant_id=8039
+head=,id=249988,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/1808,enchant_id=7961,gem_id=240983,ilevel=289
+neck=,id=250247,bonus_id=1808,gem_id=240892/240892,ilevel=289
+shoulder=,id=151323,enchant_id=8031,ilevel=289
+back=,id=258575,ilevel=289
+chest=,id=249991,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/12806/13335/13336/40/12676,enchant_id=7987
+wrist=,id=249984,bonus_id=1808,gem_id=240892,ilevel=289
+hands=,id=249989,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/12806/13335/13337/40/12675
+waist=,id=244611,bonus_id=8960/12214/1808/8960,gem_id=240892,ilevel=285
+legs=,id=249987,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/12806/13335/13339/40/12676,enchant_id=8159
+feet=,id=244610,bonus_id=8960/12214/8960,enchant_id=8019,ilevel=285
+finger1=,id=249920,bonus_id=1808,enchant_id=7967,gem_id=240892/240892,ilevel=289
+finger2=,id=251093,bonus_id=523,enchant_id=7967,gem_id=240892,ilevel=289
+trinket1=,id=193701,ilevel=298
+trinket2=,id=249343,ilevel=298
+main_hand=,id=251128,enchant_id=7983,ilevel=298
+off_hand=,id=249284,enchant_id=7983,ilevel=298
 
 # Gear Summary
 # gear_ilvl=288.50
