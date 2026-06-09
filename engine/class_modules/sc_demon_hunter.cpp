@@ -3385,7 +3385,8 @@ struct shattered_souls_trigger_t : public BASE
 
   virtual double shattered_souls_chance( action_state_t* )
   {
-    return shattered_souls_base_chance;
+    // 2026-06-09 -- Seems to be +1% from what the spell data indicates
+    return shattered_souls_base_chance + 0.01;
   }
 };
 
