@@ -5995,8 +5995,6 @@ struct void_ray_t
     {
       background = dual = true;
       aoe               = -1;
-
-      shattered_souls_base_chance *= 1.0 + p->talent.devourer.waste_not->effectN( 1 ).percent();
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -6028,6 +6026,8 @@ struct void_ray_t
     double shattered_souls_chance( action_state_t* s ) override
     {
       double m = base_t::shattered_souls_chance( s );
+
+      m *= 1.0 + dh()->talent.devourer.waste_not->effectN( 1 ).percent();
 
       m /= s->n_targets;
 
