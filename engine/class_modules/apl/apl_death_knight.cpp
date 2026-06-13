@@ -31,7 +31,7 @@ std::string flask( const player_t* p )
 {
   std::string frost_flask = ( p->true_level >= 81 ) ? "flask_of_the_shattered_sun_2" : "flask_of_alchemical_chaos_3";
 
-  std::string unholy_flask = ( p->true_level >= 81 ) ? "flask_of_the_shattered_sun_2" : "flask_of_alchemical_chaos_3";
+  std::string unholy_flask = ( p->true_level >= 81 ) ? "flask_of_the_magisters_2" : "flask_of_alchemical_chaos_3";
 
   std::string blood_flask = ( p->true_level >= 81 ) ? "flask_of_the_shattered_sun_2" : "flask_of_alchemical_chaos_3";
 
