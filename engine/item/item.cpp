@@ -1291,7 +1291,7 @@ std::string item_t::encoded_item() const
     s << ",titan_disc_id=" << option_titan_disc_driver_id;
 
   if ( !option_content_tuning_id.empty() )
-    s << ",content_tuning_id=" << option_content_tuning_id;
+    s << ",content_tuning=" << option_content_tuning_id;
 
   return s.str();
 }
