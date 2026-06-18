@@ -1864,7 +1864,7 @@ struct divine_toll_t : public paladin_spell_t
     {
       p()->buffs.templar.divine_hammer->trigger();
     }
-    if (p()->specialization() == PALADIN_PROTECTION && p()->talents.templar.lights_guidance->ok())
+    if (p()->specialization() == PALADIN_PROTECTION && p()->templar())
     {
       p()->buffs.templar.hammer_of_light_ready->trigger();
     }
@@ -2104,7 +2104,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     is_hammer_of_light_main = true;
     is_hammer_of_light_cleave        = true;
     cleave_hammer             = new hammer_of_light_cleave_t( p, options_str );
-    background                = !p->talents.templar.lights_guidance->ok();
+    background                = !p->templar();
     // This is not set by definition, since cost changes by spec
     resource_current = RESOURCE_HOLY_POWER;
     ret_cost         = data().powerN( 1 ).cost();
@@ -2577,7 +2577,7 @@ struct holy_armaments_t : public paladin_spell_t
     parse_options( options_str );
     harmful            = false;
     name_str_reporting = "Holy Armaments";
-    background = !p->talents.lightsmith.holy_armaments->ok();
+    background = !p->lightsmith();
   }
 
   timespan_t execute_time() const override
@@ -3268,7 +3268,7 @@ void paladin_t::create_actions()
 
   // Hero Talents
   //Lightsmith
-  if ( talents.lightsmith.holy_armaments->ok() )
+  if ( lightsmith() )
   {
     auto cb = create_sacred_weapon_callback(this, this);
     cb->activate_with_buff( buffs.lightsmith.sacred_weapon, true );
@@ -3283,7 +3283,7 @@ void paladin_t::create_actions()
     }
   }
   //Templar
-  if (talents.templar.lights_guidance->ok())
+  if (templar())
   {
     active.empyrean_hammer = new empyrean_hammer_t(this);
   }
@@ -3296,7 +3296,7 @@ void paladin_t::create_actions()
     active.divine_hammer_tick = new divine_hammer_tick_t( this );
   }
 
-  if ( talents.herald_of_the_sun.dawnlight->ok() )
+  if ( herald_of_the_sun() )
   {
     active.dawnlight = new dawnlight_t( this );
   }
@@ -4930,6 +4930,19 @@ bool paladin_t::wings_up() const
   return buffs.avenging_wrath->up() || buffs.sentinel->up();
 }
 
+bool paladin_t::templar() const
+{
+  return has_hero_tree( hero_tree_e::HERO_TEMPLAR );
+}
+bool paladin_t::lightsmith() const
+{
+  return has_hero_tree( hero_tree_e::HERO_LIGHTSMITH );
+}
+bool paladin_t::herald_of_the_sun() const
+{
+  return has_hero_tree( hero_tree_e::HERO_HERALD_OF_THE_SUN );
+}
+
 // player_t::create_expression ==============================================
 
 std::unique_ptr<expr_t> paladin_t::create_consecration_expression( util::string_view expr_str )
@@ -5115,7 +5128,7 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
     }
     double evaluate() override
     {
-      if ( paladin.talents.lightsmith.holy_armaments->ok() )
+      if ( paladin.lightsmith() )
         return paladin.next_armament;
       else
         return -1.0;

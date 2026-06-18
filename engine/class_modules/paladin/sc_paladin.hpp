@@ -849,6 +849,9 @@ public:
   void trigger_greater_judgment( paladin_td_t* targetdata );
   bool get_how_availability() const;
   bool wings_up() const;
+  bool templar() const;
+  bool lightsmith() const;
+  bool herald_of_the_sun() const;
 
   std::unique_ptr<expr_t> create_consecration_expression( util::string_view expr_str );
   std::unique_ptr<expr_t> create_aw_expression( util::string_view expr_str );
