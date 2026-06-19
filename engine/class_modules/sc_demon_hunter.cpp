@@ -973,6 +973,8 @@ public:
     // Vengeance
     const spell_data_t* mid1_vengeance_4pc;
     const spell_data_t* explosion_of_the_soul;
+    const spell_data_t* mid2_vengeance_2pc;
+    const spell_data_t* mid2_vengeance_4pc;
     // Auxilliary
   } set_bonuses;
 
@@ -5550,8 +5552,7 @@ struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigg
 {
   struct soulburst_t : public shattered_souls_trigger_t<demon_hunter_spell_t>
   {
-    soulburst_t( util::string_view n, demon_hunter_t* p )
-      : base_t( n, p, p->set_bonuses.soulburst_damage )
+    soulburst_t( util::string_view n, demon_hunter_t* p ) : base_t( n, p, p->set_bonuses.soulburst_damage )
     {
       background = dual = true;
       aoe               = -1;
@@ -5875,7 +5876,7 @@ struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
     // TOCHECK: Is this instant?
     if ( dh()->set_bonuses.mid2_devourer_2pc->ok() &&
          fragments_consumed >= dh()->set_bonuses.mid2_devourer_2pc->effectN( 1 ).base_value() &&
-         rng().roll( dh()->set_bonuses.mid2_devourer_2pc->effectN( 2 ).percent() ))
+         rng().roll( dh()->set_bonuses.mid2_devourer_2pc->effectN( 2 ).percent() ) )
     {
       dh()->buff.soulburst->trigger();
     }
@@ -7855,7 +7856,10 @@ struct soul_cleave_t
   struct soul_cleave_damage_t
     : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<burning_blades_trigger_t<demon_hunter_attack_t>>>
   {
-    soul_cleave_damage_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s ) : base_t( name, p, s )
+    bool extends_sigil_of_flame;
+
+    soul_cleave_damage_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
+      : base_t( name, p, s ), extends_sigil_of_flame( p->set_bonuses.mid2_vengeance_2pc->ok() )
     {
       background = dual = true;
     }
@@ -7864,10 +7868,22 @@ struct soul_cleave_t
     {
       base_t::impact( s );
 
+      demon_hunter_td_t* target_data = td( s->target );
+
       // Soul Cleave can apply Frailty if Frailty is talented
       if ( result_is_hit( s->result ) && dh()->talent.vengeance.frailty->ok() )
       {
-        td( s->target )->debuffs.frailty->trigger();
+        target_data->debuffs.frailty->trigger();
+      }
+
+      if ( result_is_hit( s->result ) && extends_sigil_of_flame )
+      {
+        timespan_t duration_extension = dh()->set_bonuses.mid2_vengeance_2pc->effectN( 2 ).time_value();
+
+        if ( target_data->dots.sigil_of_flame->is_ticking() )
+        {
+          target_data->dots.sigil_of_flame->adjust_duration( duration_extension );
+        }
       }
     }
 
@@ -11086,6 +11102,8 @@ void demon_hunter_t::init_spells()
   set_bonuses.mid2_devourer_2pc  = sets->set( DEMON_HUNTER_DEVOURER, MID2, B2 );
   set_bonuses.mid2_devourer_4pc  = sets->set( DEMON_HUNTER_DEVOURER, MID2, B4 );
   set_bonuses.mid1_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, MID1, B4 );
+  set_bonuses.mid2_vengeance_2pc = sets->set( DEMON_HUNTER_VENGEANCE, MID2, B2 );
+  set_bonuses.mid2_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, MID2, B4 );
 
   // Set Bonus Auxilliary ===================================================
   set_bonuses.stars_fury = conditional_spell_lookup( sets->has_set_bonus( DEMON_HUNTER_DEVOURER, MID1, B4 ),
