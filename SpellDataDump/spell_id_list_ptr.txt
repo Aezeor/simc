@@ -1764,20 +1764,20 @@ Death Knight
 1294261 *Death Order
 1294264  Death Order
 1294480 *Epidemic Order
-1296650 *Death Knight Blood 12.1 Class Set 2pc
-1296651 *Death Knight Blood 12.1 Class Set 4pc
-1296652 *Death Knight Frost 12.1 Class Set 2pc
-1296653 *Death Knight Frost 12.1 Class Set 4pc
-1296654 *Death Knight Unholy 12.1 Class Set 2pc
-1296655 *Death Knight Unholy 12.1 Class Set 4pc
-1297055 *Necrotic Bolt
-1297063 *Death Knight Unholy 12.1 Class Set 2pc
-1297086 *Necrotic Bolt
-1297087 *Death Knight Unholy 12.1 Class Set 2pc
-1297091 *Writhing Grasp
-1297365 *Freezing Tempest
+1296650  Death Knight Blood 12.1 Class Set 2pc
+1296651  Death Knight Blood 12.1 Class Set 4pc
+1296652  Death Knight Frost 12.1 Class Set 2pc
+1296653  Death Knight Frost 12.1 Class Set 4pc
+1296654  Death Knight Unholy 12.1 Class Set 2pc
+1296655  Death Knight Unholy 12.1 Class Set 4pc
+1297055  Necrotic Bolt
+1297063  Death Knight Unholy 12.1 Class Set 2pc
+1297086  Necrotic Bolt
+1297087  Death Knight Unholy 12.1 Class Set 2pc
+1297091  Writhing Grasp
+1297365  Freezing Tempest
 1300330  Epidemic Order
-1300369 *Relentless Rider's Precision
+1300369  Relentless Rider's Precision
 
 Demon Hunter
 1490     Chaos Brand
@@ -3251,14 +3251,14 @@ Demon Hunter
 1287949  Eye Beam
 1288123  Devour
 1292047  Spontaneous Immolation
-1296611 *Demon Hunter Havoc 12.1 Class Set 2pc
-1296612 *Demon Hunter Havoc 12.1 Class Set 4pc
-1296613 *Demon Hunter Vengeance 12.1 Class Set 2pc
-1296614 *Demon Hunter Vengeance 12.1 Class Set 4pc
-1296615 *Demon Hunter Devourer 12.1 Class Set 2pc
-1296616 *Demon Hunter Devourer 12.1 Class Set 4pc
-1297432 *Soulburst
-1297433 *Soulburst
+1296611  Demon Hunter Havoc 12.1 Class Set 2pc
+1296612  Demon Hunter Havoc 12.1 Class Set 4pc
+1296613  Demon Hunter Vengeance 12.1 Class Set 2pc
+1296614  Demon Hunter Vengeance 12.1 Class Set 4pc
+1296615  Demon Hunter Devourer 12.1 Class Set 2pc
+1296616  Demon Hunter Devourer 12.1 Class Set 4pc
+1297432  Soulburst
+1297433  Soulburst
 
 Druid
 99       Incapacitating Roar
@@ -5413,25 +5413,25 @@ Druid
 1286243  Starfall
 1286247  Starfall
 1292031  Dream Guide
-1296603 *Druid Balance 12.1 Class Set 2pc
-1296604 *Druid Balance 12.1 Class Set 4pc
-1296605 *Druid Feral 12.1 Class Set 2pc
-1296606 *Druid Feral 12.1 Class Set 4pc
-1296607 *Druid Guardian 12.1 Class Set 2pc
-1296608 *Druid Guardian 12.1 Class Set 4pc
-1296609 *Druid Restoration 12.1 Class Set 2pc
-1296610 *Druid Restoration 12.1 Class Set 4pc
+1296603  Druid Balance 12.1 Class Set 2pc
+1296604  Druid Balance 12.1 Class Set 4pc
+1296605  Druid Feral 12.1 Class Set 2pc
+1296606  Druid Feral 12.1 Class Set 4pc
+1296607  Druid Guardian 12.1 Class Set 2pc
+1296608  Druid Guardian 12.1 Class Set 4pc
+1296609  Druid Restoration 12.1 Class Set 2pc
+1296610  Druid Restoration 12.1 Class Set 4pc
 1297521  Stellar Protection
-1301157 *Rampant Thorn
-1301286 *Gorestained Claws
+1301157  Rampant Thorn
+1301286  Gorestained Claws
 1301340  Incarnation: Tree of Life
-1301600 *Halazzi's Fury
+1301600  Halazzi's Fury
 1301638 *Symbiotic Relationship
-1301742 *Starfall
-1301747 *Starfall
-1301768 *Akil'zon's Clarity
+1301742  Starfall
+1301747  Starfall
+1301768  Akil'zon's Clarity
 1301989  Overgrowth
-1302255 *Genesis
+1302255  Genesis
 1303480  Orbit Breaker
 1307881 *Gory Fur
 1307916  Wild Guardian
@@ -6292,13 +6292,13 @@ Evoker
 1292322  Unbound Flame
 1292323  Unbound Flame
 1292325  Unbound Flame
-1296637 *Evoker Augmentation 12.1 Class Set 2pc
-1296638 *Evoker Augmentation 12.1 Class Set 4pc
-1296639 *Evoker Devastation 12.1 Class Set 2pc
-1296640 *Evoker Devastation 12.1 Class Set 4pc
-1296641 *Evoker Preservation 12.1 Class Set 2pc
-1296642 *Evoker Preservation 12.1 Class Set 4pc
-1297728 *Magnified Fate
+1296637  Evoker Augmentation 12.1 Class Set 2pc
+1296638  Evoker Augmentation 12.1 Class Set 4pc
+1296639  Evoker Devastation 12.1 Class Set 2pc
+1296640  Evoker Devastation 12.1 Class Set 4pc
+1296641  Evoker Preservation 12.1 Class Set 2pc
+1296642  Evoker Preservation 12.1 Class Set 4pc
+1297728  Magnified Fate
 
 Hunter
 75       Auto Shot
@@ -8850,15 +8850,15 @@ Hunter
 1286400  Scout's Vigil
 1289896  Misdirection
 1292687  Shrapnel Bomb
-1296631 *Hunter Beast Mastery 12.1 Class Set 2pc
-1296632 *Hunter Beast Mastery 12.1 Class Set 4pc
-1296633 *Hunter Marksmanship 12.1 Class Set 2pc
-1296634 *Hunter Marksmanship 12.1 Class Set 4pc
-1296635 *Hunter Survival 12.1 Class Set 2pc
+1296631  Hunter Beast Mastery 12.1 Class Set 2pc
+1296632  Hunter Beast Mastery 12.1 Class Set 4pc
+1296633  Hunter Marksmanship 12.1 Class Set 2pc
+1296634  Hunter Marksmanship 12.1 Class Set 4pc
+1296635  Hunter Survival 12.1 Class Set 2pc
 1296636  Hunter Survival 12.1 Class Set 4pc
 1298446 *Unbreakable Bond
-1299389 *Cobra Fang
-1299409 *Cobra Cleave
+1299389  Cobra Fang
+1299409  Cobra Cleave
 1300701  Lock and Load: Explosive Shot
 1301098  Spotter's Mark: Rapid Fire
 1301406  Incendiary Ammunition
@@ -11210,13 +11210,13 @@ Mage
 1295944  Prismatic Bolt
 1295946  Prismatic Bolt
 1295977  Arcane Pulse
-1296581 *Mage Arcane 12.1 Class Set 2pc
-1296582 *Mage Arcane 12.1 Class Set 4pc
-1296583 *Mage Fire 12.1 Class Set 2pc
-1296584 *Mage Fire 12.1 Class Set 4pc
-1296585 *Mage Frost 12.1 Class Set 2pc
-1296586 *Mage Frost 12.1 Class Set 4pc
-1296930 *Cumulative Power
+1296581  Mage Arcane 12.1 Class Set 2pc
+1296582  Mage Arcane 12.1 Class Set 4pc
+1296583  Mage Fire 12.1 Class Set 2pc
+1296584  Mage Fire 12.1 Class Set 4pc
+1296585  Mage Frost 12.1 Class Set 2pc
+1296586  Mage Frost 12.1 Class Set 4pc
+1296930  Cumulative Power
 1297073  Improved Warding
 1299546 *Ice Armor
 
@@ -13080,20 +13080,20 @@ Monk
 1291484  Zenith Stomp
 1292919  Coalescence
 1292922  Coalescence
-1296617 *Monk Brewmaster 12.1 Class Set 2pc
-1296618 *Monk Brewmaster 12.1 Class Set 4pc
-1296619 *Monk Mistweaver 12.1 Class Set 2pc
-1296620 *Monk Mistweaver 12.1 Class Set 4pc
-1296621 *Monk Windwalker 12.1 Class Set 2pc
-1296624 *Unbroken Rhythm
-1296687 *Rising Sun Kick
-1297033 *Unbroken Rhythm
+1296617  Monk Brewmaster 12.1 Class Set 2pc
+1296618  Monk Brewmaster 12.1 Class Set 4pc
+1296619  Monk Mistweaver 12.1 Class Set 2pc
+1296620  Monk Mistweaver 12.1 Class Set 4pc
+1296621  Monk Windwalker 12.1 Class Set 2pc
+1296624  Unbroken Rhythm
+1296687  Rising Sun Kick
+1297033  Unbroken Rhythm
 1299572  Vital Expenditure
-1301410 *Scorched
-1301417 *In Flames
-1301418 *Aflame
-1301477 *Hot Potato
-1301619 *Fiery Shrapnel
+1301410  Scorched
+1301417  In Flames
+1301418  Aflame
+1301477  Hot Potato
+1301619  Fiery Shrapnel
 
 Paladin
 465      Devotion Aura
@@ -15273,24 +15273,24 @@ Paladin
 1289922  Holy Armament Override
 1289943  Holy Armament Override
 1291678 *Hammer of Wrath
-1296656 *Paladin Holy 12.1 Class Set 2pc
-1296657 *Paladin Holy 12.1 Class Set 4pc
-1296658 *Paladin Protection 12.1 Class Set 2pc
-1296659 *Paladin Protection 12.1 Class Set 4pc
-1296660 *Paladin Retribution 12.1 Class Set 2pc
-1296661 *Paladin Retribution 12.1 Class Set 4pc
+1296656  Paladin Holy 12.1 Class Set 2pc
+1296657  Paladin Holy 12.1 Class Set 4pc
+1296658  Paladin Protection 12.1 Class Set 2pc
+1296659  Paladin Protection 12.1 Class Set 4pc
+1296660  Paladin Retribution 12.1 Class Set 2pc
+1296661  Paladin Retribution 12.1 Class Set 4pc
 1299636 *Art of War
-1300662 *Unrelenting Edict
+1300662  Unrelenting Edict
 1301732  Blessed Word
 1301739  Blessed Word
 1302139  Seal of Reprisal
 1303626 *Surface Tension
 1305063  Protection Paladin
-1305230 *Divine Power
-1306159 *Divine Power: Storm
-1306161 *Divine Power: Storm
-1306162 *Divine Power: Verdict
-1306923 *Divine Arbiter
+1305230  Divine Power
+1306159  Divine Power: Storm
+1306161  Divine Power: Storm
+1306162  Divine Power: Verdict
+1306923  Divine Arbiter
 1307499  Crusading Strikes
 1307639 *Glory of the Vanguard
 
@@ -17266,18 +17266,18 @@ Priest
 1283671  Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing
 1287613  Shadowy Insight
 1289366 *Holy Impact
-1296575 *Priest Holy 12.1 Class Set 2pc
-1296576 *Priest Holy 12.1 Class Set 4pc
-1296577 *Priest Discipline 12.1 Class Set 2pc
-1296578 *Priest Discipline 12.1 Class Set 4pc
-1296579 *Priest Shadow 12.1 Class Set 2pc
-1296580 *Priest Shadow 12.1 Class Set 4pc
+1296575  Priest Holy 12.1 Class Set 2pc
+1296576  Priest Holy 12.1 Class Set 4pc
+1296577  Priest Discipline 12.1 Class Set 2pc
+1296578  Priest Discipline 12.1 Class Set 4pc
+1296579  Priest Shadow 12.1 Class Set 2pc
+1296580  Priest Shadow 12.1 Class Set 4pc
 1298779  Grim Deliverance
 1300008  Power Word: Shield (Unfolding Vision)
 1300009  Void Shield (Unfolding Vision)
 1304485  Ancient Madness
-1306118 *Renewed Haste
-1307795 *Dark Transference
+1306118  Renewed Haste
+1307795  Dark Transference
 
 Rogue
 53       Backstab
@@ -18907,16 +18907,16 @@ Rogue
 1293149  Crimson Vial
 1293340  Mark for Death
 1293579 *Mark for Death Enabler
-1296588 *Rogue Outlaw 12.1 Class Set 2pc
-1296589 *Rogue Outlaw 12.1 Class Set 4pc
-1296590 *Rogue Assassination 12.1 Class Set 2pc
-1296591 *Rogue Assassination 12.1 Class Set 4pc
-1296592 *Rogue Subtlety 12.1 Class Set 2pc
-1296593 *Rogue Subtlety 12.1 Class Set 4pc
+1296588  Rogue Outlaw 12.1 Class Set 2pc
+1296589  Rogue Outlaw 12.1 Class Set 4pc
+1296590  Rogue Assassination 12.1 Class Set 2pc
+1296591  Rogue Assassination 12.1 Class Set 4pc
+1296592  Rogue Subtlety 12.1 Class Set 2pc
+1296593  Rogue Subtlety 12.1 Class Set 4pc
 1298812  Unstable Toxin
 1298826  Thistle Tea
 1298870  Implacable
-1301405 *Fang Strike
+1301405  Fang Strike
 1305994  Secret Technique
 
 Shaman
@@ -20923,18 +20923,18 @@ Shaman
 1283721 *Rumbling Roar
 1283722 *Kapara Smash
 1283723 *Stomp
-1296625 *Shaman Elemental 12.1 Class Set 2pc
-1296626 *Shaman Elemental 12.1 Class Set 4pc
-1296627 *Shaman Enhancement 12.1 Class Set 2pc
-1296628 *Shaman Enhancement 12.1 Class Set 4pc
-1296629 *Shaman Restoration 12.1 Class Set 2pc
-1296630 *Shaman Restoration 12.1 Class Set 4pc
+1296625  Shaman Elemental 12.1 Class Set 2pc
+1296626  Shaman Elemental 12.1 Class Set 4pc
+1296627  Shaman Enhancement 12.1 Class Set 2pc
+1296628  Shaman Enhancement 12.1 Class Set 4pc
+1296629  Shaman Restoration 12.1 Class Set 2pc
+1296630  Shaman Restoration 12.1 Class Set 4pc
 1298679  Healing Rain
-1299975 *Burning Core
-1299991 *Short Circuit
-1300219 *Flowing Elements
-1300222 *Overcharge!
-1300642 *Condensation
+1299975  Burning Core
+1299991  Short Circuit
+1300219  Flowing Elements
+1300222  Overcharge!
+1300642  Condensation
 1307888  Healing Rain
 
 Warlock
@@ -22914,16 +22914,16 @@ Warlock
 1288970 *Recently Demon Has Been Summoned [DNT]
 1292384  Soul Barrage
 1292391  Soul Barrage
-1296568 *Warlock Affliction 12.1 Class Set 2pc
-1296569 *Warlock Affliction 12.1 Class Set 4pc
-1296571 *Warlock Destruction 12.1 Class Set 2pc
-1296572 *Warlock Destruction 12.1 Class Set 4pc
-1296573 *Warlock Demonology 12.1 Class Set 2pc
-1296574 *Warlock Demonology 12.1 Class Set 4pc
-1305711 *Dark Titan's Mark
-1305774 *Unstable Empowerment
-1305798 *Refund Soul Shard
-1306077 *Isolated Implosion
+1296568  Warlock Affliction 12.1 Class Set 2pc
+1296569  Warlock Affliction 12.1 Class Set 4pc
+1296571  Warlock Destruction 12.1 Class Set 2pc
+1296572  Warlock Destruction 12.1 Class Set 4pc
+1296573  Warlock Demonology 12.1 Class Set 2pc
+1296574  Warlock Demonology 12.1 Class Set 4pc
+1305711  Dark Titan's Mark
+1305774  Unstable Empowerment
+1305798  Refund Soul Shard
+1306077  Isolated Implosion
 
 Warrior
 71       Vanguard
@@ -24771,17 +24771,17 @@ Warrior
 1292071  Phalanx
 1293603  Wrecking Throw Highlight
 1293610  Shattering Throw Highlight
-1296643 *Warrior Arms 12.1 Class Set 2pc
-1296644 *Warrior Arms 12.1 Class Set 4pc
-1296645 *Warrior Fury 12.1 Class Set 2pc
-1296646 *Warrior Fury 12.1 Class Set 4pc
-1296647 *Warrior Protection 12.1 Class Set 2pc
-1296648 *Warrior Protection 12.1 Class Set 4pc
+1296643  Warrior Arms 12.1 Class Set 2pc
+1296644  Warrior Arms 12.1 Class Set 4pc
+1296645  Warrior Fury 12.1 Class Set 2pc
+1296646  Warrior Fury 12.1 Class Set 4pc
+1296647  Warrior Protection 12.1 Class Set 2pc
+1296648  Warrior Protection 12.1 Class Set 4pc
 1299025  Storm of Blood
 1299405  Ravaged
 1299944  Rampaging Ruin
 1300463  Carving Blades
-1300660 *Concussive Slam
-1300670 *Winding Up
-1300681 *Vengeful Shield
-1300690 *Bloody Rebuke
+1300660  Concussive Slam
+1300670  Winding Up
+1300681  Vengeful Shield
+1300690  Bloody Rebuke

@@ -20,7 +20,7 @@ Labels           : 16: Class Spells
 Category Cooldown: 7.5 seconds
 Stance Mask      : 0x88000000
 Mechanic         : Shield
-Affecting Spells : Improved Power Word: Shield (24191 effect#1), Archangel (81700 effect#3), Priest (137030 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effects: #3, #21), Shadow Priest (137033 effect#10), Eternal Barrier (238135 effects: #1, #2), Kam Xi'raff (281457 effect#1), Inner Light (355897 effect#1), Weal and Woe (390787 effect#1), Benevolence (415416 effect#3), Preventive Measures (440662 effect#2), Waste No Time (440681 effect#2), Inner Quietus (448278 effect#2), Darkness from Light (455033 effect#2), Holy Priest (1238052 effect#3), Twin Disciplines (1251077 effect#3), Discipline Priest (1256903 effects: #3, #10), Benediction (1262758 effect#4), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effect#3), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effect#3)
+Affecting Spells : Improved Power Word: Shield (24191 effect#1), Archangel (81700 effect#3), Priest (137030 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effects: #3, #21), Shadow Priest (137033 effect#10), Eternal Barrier (238135 effects: #1, #2), Kam Xi'raff (281457 effect#1), Inner Light (355897 effect#1), Weal and Woe (390787 effect#1), Benevolence (415416 effect#3), Preventive Measures (440662 effect#2), Waste No Time (440681 effect#2), Inner Quietus (448278 effect#2), Darkness from Light (455033 effect#2), Holy Priest (1238052 effect#3), Twin Disciplines (1251077 effect#3), Discipline Priest (1256903 effects: #3, #10), Benediction (1262758 effect#4), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effect#3), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effect#3), Dark Transference (1307795 effect#1)
 Family Flags     : 0
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Points On Client (268), Allow Class Ability Procs (416), Non-secret Aura (506)
 Effects          :
@@ -46,7 +46,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 741: Healing Spells
 Stance Mask      : 0x88000000
-Affecting Spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Mastery: Echo of Light (77485 effect#3), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2, #20), Apotheosis (200183 effects: #3, #4), An'juna's Trance (207555 effect#1), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Renewed Faith (341997 effect#1), Inner Light (355897 effect#2), Prismatic Echoes (390967 effect#2), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Preemptive Care (440671 effects: #1, #2), Resonant Energy (453846 effects: #1, #2), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effects: #1, #2)
+Affecting Spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Mastery: Echo of Light (77485 effect#3), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2, #20), Apotheosis (200183 effects: #3, #4), An'juna's Trance (207555 effect#1), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Renewed Faith (341997 effect#1), Inner Light (355897 effect#2), Prismatic Echoes (390967 effect#2), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Preemptive Care (440671 effects: #1, #2), Resonant Energy (453846 effects: #1, #2), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effects: #1, #2), Priest Holy 12.1 Class Set 4pc (1296576 effect#1)
 Family Flags     : 6, 126
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Extra Initial Period (169), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Non-secret Aura (506)
 Effects          :
@@ -1360,7 +1360,7 @@ Velocity         : 40 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Resonant Energy (453850 effects: #1, #2), Devouring Chorus (454638 effects: #1, #2), Holy Ray (1235193 effect#1), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Purge the Wicked (1250218 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Resonant Energy (453850 effects: #1, #2), Devouring Chorus (454638 effects: #1, #2), Holy Ray (1235193 effect#1), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Purge the Wicked (1250218 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2), Priest Discipline 12.1 Class Set 2pc (1296577 effect#1)
 Triggered By     : Penance (47758)
 Family Flags     : 47, 72
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
@@ -1379,7 +1379,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 741: Healing Spells
-Affecting Spells : Renew (139 effect#2), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Inner Focus (390693 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effects: #1, #2), Bankroll (1216601 effects: #1, #2), Holy Ray (1235193 effect#1), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effects: #1, #2)
+Affecting Spells : Renew (139 effect#2), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Inner Focus (390693 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effects: #1, #2), Bankroll (1216601 effects: #1, #2), Holy Ray (1235193 effect#1), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effects: #1, #2), Priest Discipline 12.1 Class Set 2pc (1296577 effect#1)
 Family Flags     : 48, 126
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), No Initial Threat (86), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
@@ -3350,7 +3350,7 @@ Velocity         : 40 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Inner Focus (390693 effect#1), Light Weaving (394609 effect#1), Holy Ray (1235193 effect#1)
+Affecting Spells : Inner Focus (390693 effect#1), Light Weaving (394609 effect#1), Holy Ray (1235193 effect#1), Priest Discipline 12.1 Class Set 2pc (1296577 effect#1)
 Family Flags     : 48
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), No Initial Threat (86), Not a Proc (105), Allow Cast While Casting (135), Not In Spellbook (143), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
@@ -3367,7 +3367,7 @@ Velocity         : 40 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Blaze of Light (215768 effect#1), Contemptuous Homily (278629 effect#2), Light Weaving (394609 effect#1), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Holy Ray (1235193 effect#1), Purge the Wicked (1250218 effect#1)
+Affecting Spells : Blaze of Light (215768 effect#1), Contemptuous Homily (278629 effect#2), Light Weaving (394609 effect#1), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Holy Ray (1235193 effect#1), Purge the Wicked (1250218 effect#1), Priest Discipline 12.1 Class Set 2pc (1296577 effect#1)
 Family Flags     : 47
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), Allow Cast While Casting (135), Not In Spellbook (143), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
@@ -9369,7 +9369,7 @@ Velocity         : 40 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Resonant Energy (453850 effects: #1, #2), Devouring Chorus (454638 effects: #1, #2), Holy Ray (1235193 effect#1), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Purge the Wicked (1250218 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Resonant Energy (453850 effects: #1, #2), Devouring Chorus (454638 effects: #1, #2), Holy Ray (1235193 effect#1), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Purge the Wicked (1250218 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2), Priest Discipline 12.1 Class Set 2pc (1296577 effect#1)
 Triggered By     : Dark Reprimand (373129)
 Family Flags     : 47, 72
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
@@ -11549,7 +11549,7 @@ Duration         : 2 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Castigation (193134 effect#1), The Penitent One (336009 effect#1), Harsh Discipline (373183 effect#1), Inner Focus (390693 effect#1), Light Weaving (394609 effect#1), Holy Ray (1235193 effect#1)
+Affecting Spells : Castigation (193134 effect#1), The Penitent One (336009 effect#1), Harsh Discipline (373183 effect#1), Inner Focus (390693 effect#1), Light Weaving (394609 effect#1), Holy Ray (1235193 effect#1), Priest Discipline 12.1 Class Set 2pc (1296577 effect#1)
 Family Flags     : 48, 71
 Attributes       : Do Not Log (8), Not Shapeshifted (16), No Immunities (29), Is Channelled (34), Is Self Channelled (38), No Reflection (39), No Threat (42), Track Target in Channel (46), Require All Targets (58), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Not In Spellbook (143), Force Display Castbar (155), Spell Haste Affects Periodic (173), Haste Affects Duration (273), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
@@ -11572,7 +11572,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 741: Healing Spells
-Affecting Spells : Renew (139 effect#2), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Inner Focus (390693 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effects: #1, #2), Bankroll (1216601 effects: #1, #2), Holy Ray (1235193 effect#1), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effects: #1, #2)
+Affecting Spells : Renew (139 effect#2), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Inner Focus (390693 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effects: #1, #2), Bankroll (1216601 effects: #1, #2), Holy Ray (1235193 effect#1), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effects: #1, #2), Priest Discipline 12.1 Class Set 2pc (1296577 effect#1)
 Triggered By     : Dark Reprimand (400171)
 Family Flags     : 48, 126
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), No Initial Threat (86), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
@@ -12239,7 +12239,7 @@ Velocity         : 40 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Resonant Energy (453850 effects: #1, #2), Devouring Chorus (454638 effects: #1, #2), Holy Ray (1235193 effect#1), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Purge the Wicked (1250218 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Resonant Energy (453850 effects: #1, #2), Devouring Chorus (454638 effects: #1, #2), Holy Ray (1235193 effect#1), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Purge the Wicked (1250218 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2), Priest Discipline 12.1 Class Set 2pc (1296577 effect#1)
 Family Flags     : 47, 72
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
@@ -12256,7 +12256,7 @@ Velocity         : 40 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Renew (139 effect#2), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Inner Focus (390693 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effects: #1, #2), Bankroll (1216601 effects: #1, #2), Holy Ray (1235193 effect#1), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effects: #1, #2)
+Affecting Spells : Renew (139 effect#2), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Inner Focus (390693 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effects: #1, #2), Bankroll (1216601 effects: #1, #2), Holy Ray (1235193 effect#1), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effects: #1, #2), Priest Discipline 12.1 Class Set 2pc (1296577 effect#1)
 Family Flags     : 48, 126
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
@@ -15066,7 +15066,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 741: Healing Spells
-Affecting Spells : Renew (139 effect#2), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Inner Focus (390693 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effects: #1, #2), Bankroll (1216601 effects: #1, #2), Holy Ray (1235193 effect#1), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effects: #1, #2)
+Affecting Spells : Renew (139 effect#2), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Inner Focus (390693 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effects: #1, #2), Bankroll (1216601 effects: #1, #2), Holy Ray (1235193 effect#1), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effects: #1, #2), Priest Discipline 12.1 Class Set 2pc (1296577 effect#1)
 Family Flags     : 48, 126
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), No Initial Threat (86), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
@@ -15084,7 +15084,7 @@ Velocity         : 40 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Resonant Energy (453850 effects: #1, #2), Devouring Chorus (454638 effects: #1, #2), Holy Ray (1235193 effect#1), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Purge the Wicked (1250218 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Resonant Energy (453850 effects: #1, #2), Devouring Chorus (454638 effects: #1, #2), Holy Ray (1235193 effect#1), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Purge the Wicked (1250218 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2), Priest Discipline 12.1 Class Set 2pc (1296577 effect#1)
 Family Flags     : 47, 72
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
@@ -15101,7 +15101,7 @@ Velocity         : 40 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Resonant Energy (453850 effects: #1, #2), Devouring Chorus (454638 effects: #1, #2), Holy Ray (1235193 effect#1), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Purge the Wicked (1250218 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effect#3), Resonant Energy (453850 effects: #1, #2), Devouring Chorus (454638 effects: #1, #2), Holy Ray (1235193 effect#1), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Purge the Wicked (1250218 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2), Priest Discipline 12.1 Class Set 2pc (1296577 effect#1)
 Family Flags     : 47, 72
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
@@ -15119,7 +15119,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 741: Healing Spells
-Affecting Spells : Renew (139 effect#2), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Inner Focus (390693 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effects: #1, #2), Bankroll (1216601 effects: #1, #2), Holy Ray (1235193 effect#1), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effects: #1, #2)
+Affecting Spells : Renew (139 effect#2), Archangel (81700 effects: #1, #2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Inner Focus (390693 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Resonant Energy (453846 effects: #1, #2), Bankroll (1216601 effects: #1, #2), Holy Ray (1235193 effect#1), Holy Priest (1238052 effects: #1, #2), Angelic Touch (1250565 effect#1), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #1, #2), Benediction (1262758 effects: #2, #3), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effects: #1, #2), Priest Discipline 12.1 Class Set 2pc (1296577 effect#1)
 Family Flags     : 48, 126
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), No Initial Threat (86), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
@@ -15603,7 +15603,7 @@ Labels           : 16: Class Spells
                  : 741: Healing Spells
 Stance Mask      : 0x88000000
 Mechanic         : Shield
-Affecting Spells : Improved Power Word: Shield (24191 effect#1), Archangel (81700 effect#3), Priest (137030 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effects: #3, #21), Shadow Priest (137033 effect#10), Eternal Barrier (238135 effects: #1, #2), Kam Xi'raff (281457 effect#1), Inner Light (355897 effect#1), Weal and Woe (390787 effect#1), Benevolence (415416 effect#3), Preventive Measures (440662 effect#2), Waste No Time (440681 effect#2), Inner Quietus (448278 effect#2), Darkness from Light (455033 effect#2), Holy Priest (1238052 effect#3), Twin Disciplines (1251077 effect#3), Discipline Priest (1256903 effects: #3, #10), Benediction (1262758 effect#4), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effect#3), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effect#3)
+Affecting Spells : Improved Power Word: Shield (24191 effect#1), Archangel (81700 effect#3), Priest (137030 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effects: #3, #21), Shadow Priest (137033 effect#10), Eternal Barrier (238135 effects: #1, #2), Kam Xi'raff (281457 effect#1), Inner Light (355897 effect#1), Weal and Woe (390787 effect#1), Benevolence (415416 effect#3), Preventive Measures (440662 effect#2), Waste No Time (440681 effect#2), Inner Quietus (448278 effect#2), Darkness from Light (455033 effect#2), Holy Priest (1238052 effect#3), Twin Disciplines (1251077 effect#3), Discipline Priest (1256903 effects: #3, #10), Benediction (1262758 effect#4), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effect#3), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effect#3), Dark Transference (1307795 effect#1)
 Family Flags     : 0
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -16186,7 +16186,7 @@ Labels           : 16: Class Spells
 Category Cooldown: 7.5 seconds
 Stance Mask      : 0x88000000
 Mechanic         : Shield
-Affecting Spells : Improved Power Word: Shield (24191 effect#1), Archangel (81700 effect#3), Priest (137030 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effects: #3, #21), Shadow Priest (137033 effect#10), Eternal Barrier (238135 effects: #1, #2), Kam Xi'raff (281457 effect#1), Inner Light (355897 effect#1), Weal and Woe (390787 effect#1), Benevolence (415416 effect#3), Preventive Measures (440662 effect#2), Waste No Time (440681 effect#2), Inner Quietus (448278 effect#2), Darkness from Light (455033 effect#2), Holy Priest (1238052 effect#3), Twin Disciplines (1251077 effect#3), Discipline Priest (1256903 effects: #3, #10), Benediction (1262758 effect#4), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effect#3), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effect#3)
+Affecting Spells : Improved Power Word: Shield (24191 effect#1), Archangel (81700 effect#3), Priest (137030 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effects: #3, #21), Shadow Priest (137033 effect#10), Eternal Barrier (238135 effects: #1, #2), Kam Xi'raff (281457 effect#1), Inner Light (355897 effect#1), Weal and Woe (390787 effect#1), Benevolence (415416 effect#3), Preventive Measures (440662 effect#2), Waste No Time (440681 effect#2), Inner Quietus (448278 effect#2), Darkness from Light (455033 effect#2), Holy Priest (1238052 effect#3), Twin Disciplines (1251077 effect#3), Discipline Priest (1256903 effects: #3, #10), Benediction (1262758 effect#4), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effect#3), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effect#3), Dark Transference (1307795 effect#1)
 Family Flags     : 0
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416), Chain by Most Hit (440), Non-secret Aura (506)
 Effects          :
@@ -17264,6 +17264,111 @@ Effects          :
 Description      : $@spelldesc375888
 Tooltip          : Your next Mind Blast is instant cast.
 
+Name             : Priest Holy 12.1 Class Set 2pc (id=1296575) [Spell Family (6), Passive, Hidden] 
+Class            : Priest
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+                 : 6656
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1319236)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+Description      : Each target affected by your Renew increases your Haste by $1306118s1%, up to ${$1306118s2*$1306118u}%.
+
+Name             : Priest Holy 12.1 Class Set 4pc (id=1296576) [Spell Family (6), Passive, Hidden] 
+Class            : Priest
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+                 : 6656
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1319237)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Affected Spells: Renew (139)
+                   Family Flags: 6
+#2 (id=1333406)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+Description      : Renew healing increased by $s1%. Light's Resurgence now has a $s2% chance to leave a Renew on the first target Prayer of Mending heals.
+
+Name             : Priest Discipline 12.1 Class Set 2pc (id=1296577) [Spell Family (6), Passive, Hidden] 
+Class            : Priest
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+                 : 6656
+Proc Chance      : 101%
+Proc Flags       : Magic Heal
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1319238)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Affected Spells: Penance (47666), Penance (47750), Penance (186723), Penance (186724), Dark Reprimand (373130), Dark Reprimand (400171), Dark Reprimand (400187), Ultimate Penitence (421543), Ultimate Penitence (421544), Penance (1232567), Penance (1232571), Dark Reprimand (1232592), Dark Reprimand (1232615)
+                   Family Flags: 47, 48
+#2 (id=1335958)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 0.5 | Target: Self (1)
+Description      : Penance damage and healing increased by $s1%. Casting Penance reduces the cooldown of Mind Blast by ${$s2/1000}.1 sec.
+
+Name             : Priest Discipline 12.1 Class Set 4pc (id=1296578) [Spell Family (6), Passive, Hidden] 
+Class            : Priest
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+                 : 6656
+Proc Chance      : 101%
+Proc Flags       : Magic Hostile Spell
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1319239)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+Description      : After casting Mind Blast, your next Power Word: Shield or Void Shield absorbs $1307795s1% more damage.
+
+Name             : Priest Shadow 12.1 Class Set 2pc (id=1296579) [Spell Family (6), Passive, Hidden] 
+Class            : Priest
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+                 : 6656
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1319240)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Priest Shadow 12.1 Class Set 4pc (id=1296580) [Spell Family (6), Passive, Hidden] 
+Class            : Priest
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+                 : 6656
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1319241)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+
+Name             : Drain Life (id=1297678) [Hidden] 
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Range            : 50 yards
+Max Targets      : 1
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Do Not Sheath (18), No Active Defense (21), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Riding Vehicle (204), Don't Cause Spell Pushback (230), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1320990)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 50 yards | Target: at Self (18) -> at Enemy in Area (16)
+
 Name             : Grim Deliverance (id=1298779) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Priest
@@ -17307,7 +17412,7 @@ Labels           : 16: Class Spells
 Category Cooldown: 7.5 seconds
 Stance Mask      : 0x88000000
 Mechanic         : Shield
-Affecting Spells : Improved Power Word: Shield (24191 effect#1), Archangel (81700 effect#3), Priest (137030 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effects: #3, #21), Shadow Priest (137033 effect#10), Eternal Barrier (238135 effects: #1, #2), Kam Xi'raff (281457 effect#1), Inner Light (355897 effect#1), Weal and Woe (390787 effect#1), Benevolence (415416 effect#3), Preventive Measures (440662 effect#2), Waste No Time (440681 effect#2), Inner Quietus (448278 effect#2), Darkness from Light (455033 effect#2), Holy Priest (1238052 effect#3), Twin Disciplines (1251077 effect#3), Discipline Priest (1256903 effects: #3, #10), Benediction (1262758 effect#4), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effect#3), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effect#3)
+Affecting Spells : Improved Power Word: Shield (24191 effect#1), Archangel (81700 effect#3), Priest (137030 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effects: #3, #21), Shadow Priest (137033 effect#10), Eternal Barrier (238135 effects: #1, #2), Kam Xi'raff (281457 effect#1), Inner Light (355897 effect#1), Weal and Woe (390787 effect#1), Benevolence (415416 effect#3), Preventive Measures (440662 effect#2), Waste No Time (440681 effect#2), Inner Quietus (448278 effect#2), Darkness from Light (455033 effect#2), Holy Priest (1238052 effect#3), Twin Disciplines (1251077 effect#3), Discipline Priest (1256903 effects: #3, #10), Benediction (1262758 effect#4), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effect#3), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effect#3), Dark Transference (1307795 effect#1)
 Family Flags     : 0
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Points On Client (268), Allow Class Ability Procs (416), Non-secret Aura (506)
 Effects          :
@@ -17339,7 +17444,7 @@ Labels           : 16: Class Spells
 Category Cooldown: 7.5 seconds
 Stance Mask      : 0x88000000
 Mechanic         : Shield
-Affecting Spells : Improved Power Word: Shield (24191 effect#1), Archangel (81700 effect#3), Priest (137030 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effects: #3, #21), Shadow Priest (137033 effect#10), Eternal Barrier (238135 effects: #1, #2), Kam Xi'raff (281457 effect#1), Inner Light (355897 effect#1), Weal and Woe (390787 effect#1), Benevolence (415416 effect#3), Preventive Measures (440662 effect#2), Waste No Time (440681 effect#2), Inner Quietus (448278 effect#2), Darkness from Light (455033 effect#2), Holy Priest (1238052 effect#3), Twin Disciplines (1251077 effect#3), Discipline Priest (1256903 effects: #3, #10), Benediction (1262758 effect#4), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effect#3), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effect#3)
+Affecting Spells : Improved Power Word: Shield (24191 effect#1), Archangel (81700 effect#3), Priest (137030 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effects: #3, #21), Shadow Priest (137033 effect#10), Eternal Barrier (238135 effects: #1, #2), Kam Xi'raff (281457 effect#1), Inner Light (355897 effect#1), Weal and Woe (390787 effect#1), Benevolence (415416 effect#3), Preventive Measures (440662 effect#2), Waste No Time (440681 effect#2), Inner Quietus (448278 effect#2), Darkness from Light (455033 effect#2), Holy Priest (1238052 effect#3), Twin Disciplines (1251077 effect#3), Discipline Priest (1256903 effects: #3, #10), Benediction (1262758 effect#4), Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283670 effect#3), Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283671 effect#3), Dark Transference (1307795 effect#1)
 Family Flags     : 0
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416), Chain by Most Hit (440), Non-secret Aura (506)
 Effects          :
@@ -17370,4 +17475,45 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1231346
 Tooltip          : Haste increased by ${$W1}.1%.
+
+Name             : Renewed Haste (id=1306118) [Spell Family (6)] 
+Class            : Priest
+School           : Holy
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+                 : 6656
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Attributes       : No Aura Cancel (31), Aura Points On Client (268)
+Effects          :
+#1 (id=1333396)  : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.5 | Target: Self (1)
+#2 (id=1334856)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Description      : $@spelldesc1296575
+Tooltip          : Haste increased by ${$s1/$s2}% for each Renew active, up to ${$s1*$u/$s2}%.
+
+Name             : Dark Transference (id=1307795) [Spell Family (6)] 
+Class            : Priest
+School           : Physical
+Spell Type       : None
+Duration         : 30 seconds
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+                 : 6656
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
+Proc Flags       : Magic Heal
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=1335988)  : Apply Aura (6) | Add Percent Modifier (108): Spell Coefficient (24)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.5 | Misc Value: 24 | Target: Self (1)
+                   Affected Spells: Power Word: Shield (17), Power Word: Shield (1246768), Void Shield (1253593), Power Word: Shield (Unfolding Vision) (1300008), Void Shield (Unfolding Vision) (1300009)
+                   Family Flags: 0
+Description      : $@spelldesc1297678
+Tooltip          : Your next Power Word: Shield or Void Shield absorbs $W1% more damage.
 
