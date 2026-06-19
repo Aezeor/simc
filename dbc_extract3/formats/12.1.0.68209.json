@@ -798,7 +798,7 @@
       { "data_type": "i", "field": "id_item_bonus_tree" },
       { "data_type": "i", "field": "unk_2" },
       { "data_type": "i", "field": "unk_3" },
-      { "data_type": "i", "field": "unk_4" }
+      { "data_type": "i", "field": "flags" }
     ]
   },
   "ItemConversionEntry": {
