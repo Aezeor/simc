@@ -48,13 +48,13 @@ class RacialSpellSet(DataSet):
         return list(set(v.id_spell for v in self.get()))
 
 class ActiveClassSpellSet(DataSet):
-    def get_trigger_spells(self, effect, set_):
+    def get_trigger_spells(self, spell_id, effect, set_):
         if effect.trigger_spell == 0:
             return set_
 
         for e in effect.ref('trigger_spell').children('SpellEffect'):
-            if e.trigger_spell not in set_:
-                set_ = self.get_trigger_spells(e, set_)
+            if e.trigger_spell != spell_id and e.trigger_spell not in set_:
+                set_ = self.get_trigger_spells(e.trigger_spell, e, set_)
 
         set_.add(effect.trigger_spell)
         return set_
@@ -95,7 +95,7 @@ class ActiveClassSpellSet(DataSet):
                 continue
 
             for effect in data.ref('spell_id').children('SpellEffect'):
-                trigger_spells = self.get_trigger_spells(effect, trigger_spells)
+                trigger_spells = self.get_trigger_spells(data.spell_id, effect, trigger_spells)
 
             if data.spell_id in trigger_spells:
                 continue
@@ -113,7 +113,7 @@ class ActiveClassSpellSet(DataSet):
                 continue
 
             for effect in data.ref('id_spell').children('SpellEffect'):
-                trigger_spells = self.get_trigger_spells(effect, trigger_spells)
+                trigger_spells = self.get_trigger_spells(data.id_spell, effect, trigger_spells)
 
             if data.id_spell in trigger_spells:
                 continue
@@ -180,7 +180,7 @@ class PetActiveSpellSet(ActiveClassSpellSet):
                 continue
 
             for effect in data.ref('id_spell').children('SpellEffect'):
-                trigger_spells = self.get_trigger_spells(effect, trigger_spells)
+                trigger_spells = self.get_trigger_spells(data.id_spell, effect, trigger_spells)
 
             entry = (class_id, data.id_spell)
 
