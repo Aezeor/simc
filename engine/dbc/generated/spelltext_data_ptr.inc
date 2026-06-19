@@ -1,5 +1,5 @@
 // Spell text, wow build 12.1.0.68209
-static constexpr std::array<spelltext_data_t, 29189> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 29190> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28714,6 +28714,7 @@ static constexpr std::array<spelltext_data_t, 29189> __ptr_spelltext_data { {
   { 1291723, "$?pc150463[Chance to pull enemies to your current target's location, dealing Nature damage. Additionally pulls in Poisoned enemies.][|cnITEM_POOR_COLOR:Chance to pull enemies to your current target's location, dealing Nature damage. Additionally pulls in Poisoned enemies.]", 0, 0 },
   { 1291724, "$?pc150463[Chance during combat to apply Mephitic Cloud to nearby units. Affected allies' attacks Poison their target, dealing additional Nature damage over time, while affected enemies' attacks additionally heal their target.][|cnITEM_POOR_COLOR:Chance during combat to apply Mephitic Cloud to nearby units. Affected allies' attacks Poison their target, dealing additional Nature damage over time, while affected enemies' attacks additionally heal their target.]", 0, 0 },
   { 1291725, "$?pc150463[Dropping to low health petrifies nearby enemies. When they break free, enemies become Poisoned and slowed.][|cnITEM_POOR_COLOR:Dropping to low health petrifies nearby enemies. When they break free, enemies become Poisoned and slowed.]", 0, 0 },
+  { 1291726, "Perfect your Guillotine technique to richochet to a second nearby enemy, dealing $s2% of its damage and applying Venomfang to both targets.", 0, 0 },
   { 1291728, "You have a chance to follow up your attacks with Guillotine, hurling a massive axe in an arc at your target to deal ${$s1*$<rolemult>} Physical damage.\r\n\r\nDamage increased by $s2% for every 1% health the target is missing.", 0, 0 },
   { 1291791, "Restores $s1% of your maximum mana every second over $d. Must remain seated while drinking.", "Restoring $w1% mana every sec.", 0 },
   { 1291824, "Restores $s1% of your maximum health every second over $d. Must remain seated while eating.", "Restoring $s1% health every sec.", 0 },

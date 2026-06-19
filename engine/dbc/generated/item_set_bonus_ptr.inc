@@ -1,5 +1,5 @@
 // Set bonus data, wow build 12.1.0.68209
-static constexpr std::array<item_set_bonus_t, 1170> __ptr_set_bonus_data { {
+static constexpr std::array<item_set_bonus_t, 1183> __ptr_set_bonus_data { {
   // SetBonusName                               , OptName                       , Tier        , EnumID, SetID, Bns, Cls, Spec, TraitTree, SpellID, ItemIDs
   { "Armaments of the Infinite Infantry"        , "shadowlands_season_3"        ,        "SL3",      0,  1506,   2,   1,   73,        -1,  364002, { 188942, 188941, 188940, 188938, 188937,  0 } },
   { "Armaments of the Infinite Infantry"        , "shadowlands_season_3"        ,        "SL3",      0,  1506,   2,   1,   71,        -1,  364553, { 188942, 188941, 188940, 188938, 188937,  0 } },
@@ -1217,4 +1217,18 @@ static constexpr std::array<item_set_bonus_t, 1170> __ptr_set_bonus_data { {
   { "Echo of Calamity"                          , "midnight_season_2"           ,       "MID2",     27,  2058,   4,  13, 1468,        -1, 1296642, { 271504, 271502, 271501, 271500, 271499,  0 } },
   { "Echo of Calamity"                          , "midnight_season_2"           ,       "MID2",     27,  2058,   4,  13, 1467,        -1, 1296640, { 271504, 271502, 271501, 271500, 271499,  0 } },
   { "Echo of Calamity"                          , "midnight_season_2"           ,       "MID2",     27,  2058,   4,  13, 1473,        -1, 1296638, { 271504, 271502, 271501, 271500, 271499,  0 } },
+  { "Bite of Zul'jan"                           , "bite_of_zuljan"              ,    "MID_BOZ",     28,  2070,   2,   1,   -1,        -1, 1291726, { 270173, 268209, 268213,  0 } },
+  { "Bite of Zul'jan"                           , "bite_of_zuljan"              ,    "MID_BOZ",     28,  2070,   2,   2,   -1,        -1, 1291726, { 270173, 268209, 268213,  0 } },
+  { "Bite of Zul'jan"                           , "bite_of_zuljan"              ,    "MID_BOZ",     28,  2070,   2,   3,   -1,        -1, 1291726, { 270173, 268209, 268213,  0 } },
+  { "Bite of Zul'jan"                           , "bite_of_zuljan"              ,    "MID_BOZ",     28,  2070,   2,   4,   -1,        -1, 1291726, { 270173, 268209, 268213,  0 } },
+  { "Bite of Zul'jan"                           , "bite_of_zuljan"              ,    "MID_BOZ",     28,  2070,   2,   5,   -1,        -1, 1291726, { 270173, 268209, 268213,  0 } },
+  // SetBonusName                               , OptName                       , Tier        , EnumID, SetID, Bns, Cls, Spec, TraitTree, SpellID, ItemIDs
+  { "Bite of Zul'jan"                           , "bite_of_zuljan"              ,    "MID_BOZ",     28,  2070,   2,   6,   -1,        -1, 1291726, { 270173, 268209, 268213,  0 } },
+  { "Bite of Zul'jan"                           , "bite_of_zuljan"              ,    "MID_BOZ",     28,  2070,   2,   7,   -1,        -1, 1291726, { 270173, 268209, 268213,  0 } },
+  { "Bite of Zul'jan"                           , "bite_of_zuljan"              ,    "MID_BOZ",     28,  2070,   2,   8,   -1,        -1, 1291726, { 270173, 268209, 268213,  0 } },
+  { "Bite of Zul'jan"                           , "bite_of_zuljan"              ,    "MID_BOZ",     28,  2070,   2,   9,   -1,        -1, 1291726, { 270173, 268209, 268213,  0 } },
+  { "Bite of Zul'jan"                           , "bite_of_zuljan"              ,    "MID_BOZ",     28,  2070,   2,  10,   -1,        -1, 1291726, { 270173, 268209, 268213,  0 } },
+  { "Bite of Zul'jan"                           , "bite_of_zuljan"              ,    "MID_BOZ",     28,  2070,   2,  11,   -1,        -1, 1291726, { 270173, 268209, 268213,  0 } },
+  { "Bite of Zul'jan"                           , "bite_of_zuljan"              ,    "MID_BOZ",     28,  2070,   2,  12,   -1,        -1, 1291726, { 270173, 268209, 268213,  0 } },
+  { "Bite of Zul'jan"                           , "bite_of_zuljan"              ,    "MID_BOZ",     28,  2070,   2,  13,   -1,        -1, 1291726, { 270173, 268209, 268213,  0 } },
 } };

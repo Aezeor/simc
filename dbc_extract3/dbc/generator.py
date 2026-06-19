@@ -4073,6 +4073,11 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'midnight_season_2',
             'bonuses': [ 2055, 2056, 2057, 2058, 2059, 2060, 2061, 2062, 2063, 2064, 2065, 2066, 2067 ],
             'tier'   : 'MID2'
+        },
+        {
+            'name'   : 'bite_of_zuljan',
+            'bonuses': [ 2070 ],
+            'tier'   : 'MID_BOZ'
         }
     ]
 
