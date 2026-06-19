@@ -2259,6 +2259,8 @@ public:
     // Aldrachi Reaver
 
     // Scarred
+
+    // Tier Sets
   }
 
   void init_finished() override
@@ -4623,6 +4625,16 @@ struct immolation_aura_t : public demon_hunter_spell_t
             break;
         }
       }
+
+      if ( p->set_bonuses.mid2_vengeance_4pc->ok() )
+      {
+        const auto& effect = p->set_bonuses.mid2_vengeance_4pc->effectN( 1 );
+
+        auto target_eff = add_parse_entry( target_multiplier_effects )
+                              .set_func( d_fn( &demon_hunter_td_t::dots_t::sigil_of_flame ) )
+                              .set_eff( &effect )
+                              .set_value( effect.percent() );
+      }
     }
 
     action_state_t* new_state() override
@@ -5337,6 +5349,16 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
         soul_fragments_to_spawn( as<unsigned>( p->talent.vengeance.sigil_of_spite->effectN( 3 ).base_value() ) )
     {
       reduced_aoe_targets = p->talent.vengeance.sigil_of_spite->effectN( 1 ).base_value();
+
+      if ( p->set_bonuses.mid2_vengeance_4pc->ok() )
+      {
+        const auto& effect = p->set_bonuses.mid2_vengeance_4pc->effectN( 1 );
+
+        auto target_eff = add_parse_entry( target_multiplier_effects )
+                              .set_func( d_fn( &demon_hunter_td_t::dots_t::sigil_of_flame ) )
+                              .set_eff( &effect )
+                              .set_value( effect.percent() );
+      }
     }
 
     void execute() override
