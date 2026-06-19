@@ -414,6 +414,7 @@ public:
     buff_t* volatile_instinct;
 
     // Set Bonuses
+    buff_t* soulburst;  // MID2 Devourer 2p
   } buff;
 
   // Talents
@@ -962,6 +963,10 @@ public:
   {
     // Devourer
     const spell_data_t* stars_fury;  // MID1 Devourer 4pc Energize
+    const spell_data_t* mid2_devourer_2pc;
+    const spell_data_t* mid2_devourer_4pc;
+    const spell_data_t* soulburst_buff;    // MID2 Devourer 2pc buff
+    const spell_data_t* soulburst_damage;  // MID2 Devourer 2pc damage
 
     // Havoc
 
@@ -1137,6 +1142,7 @@ public:
     proc_t* undying_embers;
 
     // Set Bonuses
+    proc_t* soul_fragment_from_soulburst;
   } proc;
 
   // RPPM objects
@@ -2218,6 +2224,7 @@ public:
     } );
 
     // Tier sets
+    ab::parse_effects( dh()->buff.soulburst );
   }
 
   void apply_debuff_effects()
@@ -5541,12 +5548,41 @@ struct voidsurge_t : public surge_base_t
 
 struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigger_t<demon_hunter_spell_t>>
 {
+  struct soulburst_t : public shattered_souls_trigger_t<demon_hunter_spell_t>
+  {
+    soulburst_t( util::string_view n, demon_hunter_t* p )
+      : base_t( n, p, p->set_bonuses.soulburst_damage )
+    {
+      background = dual = true;
+      aoe               = -1;
+    }
+
+    void execute() override
+    {
+      base_t::execute();
+
+      if ( dh()->set_bonuses.mid2_devourer_4pc->ok() )
+      {
+        dh()->buff.moment_of_craving->trigger();
+        dh()->spawn_soul_fragment( dh()->proc.soul_fragment_from_soulburst, soul_fragment::LESSER,
+                                   as<unsigned int>( dh()->set_bonuses.mid2_devourer_4pc->effectN( 1 ).base_value() ) );
+      }
+    }
+  };
+
   proc_t* soul_fragment_generation_proc;
+  soulburst_t* soulburst;
 
   consume_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
-    : base_t( n, p, s, o ), soul_fragment_generation_proc( nullptr )
+    : base_t( n, p, s, o ), soul_fragment_generation_proc( nullptr ), soulburst( nullptr )
   {
     cooldown = p->cooldown.consume;
+
+    if ( p->set_bonuses.mid2_devourer_2pc->ok() )
+    {
+      soulburst = new soulburst_t( fmt::format( "soulburst_{}", n ), p );
+      add_child( soulburst );
+    }
   }
 
   void execute() override
@@ -5557,6 +5593,12 @@ struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigg
     {
       dh()->spawn_soul_fragment( soul_fragment_generation_proc, soul_fragment::LESSER,
                                  as<unsigned int>( dh()->spec.shattered_souls->effectN( 3 ).base_value() ) );
+    }
+
+    if ( dh()->buff.soulburst->up() && soulburst )
+    {
+      soulburst->execute_on_target( target );
+      dh()->buff.soulburst->expire();
     }
   }
 };
@@ -5829,6 +5871,14 @@ struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
 
     base_t::execute();
     unsigned fragments_consumed = dh()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume() );
+
+    // TOCHECK: Is this instant?
+    if ( dh()->set_bonuses.mid2_devourer_2pc->ok() &&
+         fragments_consumed >= dh()->set_bonuses.mid2_devourer_2pc->effectN( 1 ).base_value() &&
+         rng().roll( dh()->set_bonuses.mid2_devourer_2pc->effectN( 2 ).percent() ))
+    {
+      dh()->buff.soulburst->trigger();
+    }
 
     // TOCHECK: This delay is a guess based on averages in logs as there is no spelldata
     make_event( *dh()->sim, 220_ms, [ this, fragments_consumed ] {
@@ -9888,6 +9938,7 @@ void demon_hunter_t::create_buffs()
   buff.volatile_instinct = make_buff( this, "volatile_instinct", hero_spec.volatile_instinct );
 
   // Set Bonus Items ========================================================
+  buff.soulburst = make_buff( this, "soulburst", set_bonuses.soulburst_buff );
 }
 
 // demon_hunter_t::create_expression ========================================
@@ -10289,6 +10340,7 @@ void demon_hunter_t::init_procs()
   proc.undying_embers = get_proc( "Undying Embers" );
 
   // Set Bonuses
+  proc.soul_fragment_from_soulburst = get_proc( "Soul Fragment from Soulburst (MID2)" );
 }
 
 // demon_hunter_t::init_uptimes =============================================
@@ -11031,11 +11083,17 @@ void demon_hunter_t::init_spells()
 
   // Set Bonus Items ========================================================
 
+  set_bonuses.mid2_devourer_2pc  = sets->set( DEMON_HUNTER_DEVOURER, MID2, B2 );
+  set_bonuses.mid2_devourer_4pc  = sets->set( DEMON_HUNTER_DEVOURER, MID2, B4 );
   set_bonuses.mid1_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, MID1, B4 );
 
   // Set Bonus Auxilliary ===================================================
-  set_bonuses.stars_fury            = conditional_spell_lookup( sets->has_set_bonus( DEMON_HUNTER_DEVOURER, MID1, B4 ),
-                                                                1271663 );  // Stars' Fury (set bonus)
+  set_bonuses.stars_fury = conditional_spell_lookup( sets->has_set_bonus( DEMON_HUNTER_DEVOURER, MID1, B4 ),
+                                                     1271663 );  // Stars' Fury (set bonus)
+  set_bonuses.soulburst_buff =
+      conditional_spell_lookup( sets->has_set_bonus( DEMON_HUNTER_DEVOURER, MID2, B2 ), 1297433 );
+  set_bonuses.soulburst_damage =
+      conditional_spell_lookup( sets->has_set_bonus( DEMON_HUNTER_DEVOURER, MID2, B2 ), 1297432 );
   set_bonuses.explosion_of_the_soul = conditional_spell_lookup( set_bonuses.mid1_vengeance_4pc->ok(), 1276488 );
 
   // Wounded Quarry (442808) is affected by Demon Hide.
@@ -12352,7 +12410,6 @@ void demon_hunter_t::parse_player_effects()
     {
       parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::frailty ), spec.frailty_debuff );
     }
-
   }
 
   // Aldrachi Reaver
