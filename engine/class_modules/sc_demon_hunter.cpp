@@ -11077,6 +11077,9 @@ void demon_hunter_t::init_spells()
   deregister_passive_spell( talent.havoc.know_your_enemy );
   deregister_passive_spell( talent.havoc.tactical_retreat );
 
+  // conditional passive, yippee
+  deregister_passive_spell( talent.havoc.never_say_die );
+
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
