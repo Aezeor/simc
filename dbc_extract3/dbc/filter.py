@@ -780,6 +780,11 @@ class ExpectedStatModSet(DataSet):
         xpac = maps[0].id_expansion
         maps = [m for m in maps if m.id_expansion == xpac]
 
+        # blizzard added The Dummy Dome in the 12.1 PTR, which is a raid instance without an associated journal
+        # so we'll filter that one out for the moment
+        # TODO: make this more elegant
+        maps = [m for m in maps if m.id != 3105]
+
         # assume the latest raid has the highest order index in JournalTierXInstance for the map's JournalInstan ce
         maps.sort(key = lambda e: e.child_ref('JournalInstance').child_refs('JournalTierXInstance')[0].order, reverse = True)
         map_id = maps[0].id
