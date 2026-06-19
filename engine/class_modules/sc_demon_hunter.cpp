@@ -5572,9 +5572,9 @@ struct voidsurge_t : public surge_base_t
 
 struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigger_t<demon_hunter_spell_t>>
 {
-  struct soulburst_t : public shattered_souls_trigger_t<demon_hunter_spell_t>
+  struct soulburst_t : public demon_hunter_spell_t
   {
-    soulburst_t( util::string_view n, demon_hunter_t* p ) : base_t( n, p, p->set_bonuses.soulburst_damage )
+    soulburst_t( util::string_view n, demon_hunter_t* p ) : demon_hunter_spell_t( n, p, p->set_bonuses.soulburst_damage )
     {
       background = dual = true;
       aoe               = -1;
@@ -5582,11 +5582,12 @@ struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigg
 
     void execute() override
     {
-      base_t::execute();
+      demon_hunter_spell_t::execute();
 
       if ( dh()->set_bonuses.mid2_devourer_4pc->ok() )
       {
         dh()->buff.moment_of_craving->trigger();
+        dh()->cooldown.reap->reset( true );
         dh()->spawn_soul_fragment( dh()->proc.soul_fragment_from_soulburst, soul_fragment::LESSER,
                                    as<unsigned int>( dh()->set_bonuses.mid2_devourer_4pc->effectN( 1 ).base_value() ) );
       }
