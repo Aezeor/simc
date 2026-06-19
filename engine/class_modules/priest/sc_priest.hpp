@@ -72,6 +72,7 @@ struct horrific_vision_t;
 struct vision_of_nzoth_t;
 struct void_apparition_spell_t;
 struct void_bolt_t;
+struct shadeburst_t;
 }  // namespace actions::spells
 
 namespace actions::heals
@@ -354,6 +355,8 @@ public:
       player_talent_t improved_voidform;
       player_talent_t ancient_madness;
       player_talent_t phantom_menace;
+      player_talent_t shadeburst;
+      const spell_data_t* shadeburst_spell;
       player_talent_t dark_evangelism;
       player_talent_t shattered_psyche;
       // Row 7
@@ -444,13 +447,13 @@ public:
       player_talent_t divine_procession;
       player_talent_t inner_focus;
       player_talent_t archangel;
-      const spell_data_t* archangel_buff; // 81700
+      const spell_data_t* archangel_buff;  // 81700
       // Mindbender (Shared)
       player_talent_t shadow_mend;
       // Shadowfiend (Shared)
       // Row 9
       player_talent_t greater_smite;
-      const spell_data_t* greater_smite_buff; // 1253725
+      const spell_data_t* greater_smite_buff;  // 1253725
       player_talent_t divine_aegis;
       const spell_data_t* divine_aegis_buff;
       player_talent_t borrowed_time;
@@ -462,7 +465,7 @@ public:
       player_talent_t weal_and_woe;
       const spell_data_t* weal_and_woe_buff;
       player_talent_t searing_light;
-      const spell_data_t* searing_light_dot; // 1280134
+      const spell_data_t* searing_light_dot;  // 1280134
       player_talent_t expiation;
       // Apex
       player_talent_t master_the_darkness_1;
@@ -590,8 +593,8 @@ public:
       player_talent_t piety;
       player_talent_t unfolding_vision;
       player_talent_t twinsight;
-      const spell_data_t* twinsight_healing; // 1232567
-      const spell_data_t* twinsight_damage;  // 1232571
+      const spell_data_t* twinsight_healing;  // 1232567
+      const spell_data_t* twinsight_damage;   // 1232571
     } oracle;
 
     struct
@@ -645,9 +648,9 @@ public:
     const spell_data_t* penance;
     const spell_data_t* penance_channel;
     const spell_data_t* penance_tick;
-    const spell_data_t* contrition_heal; // 270501
-    const spell_data_t* contrition_heal_crit; // 281469
-    const spell_data_t* plea;  // 200829
+    const spell_data_t* contrition_heal;       // 270501
+    const spell_data_t* contrition_heal_crit;  // 281469
+    const spell_data_t* plea;                  // 200829
 
     // Holy
     const spell_data_t* holy_priest;  // General holy data
@@ -824,6 +827,7 @@ public:
     propagate_const<actions::spells::horrific_vision_t*> horrific_vision;
     propagate_const<actions::spells::vision_of_nzoth_t*> vision_of_nzoth;
     propagate_const<actions::spells::void_bolt_t*> void_bolt;
+    propagate_const<actions::spells::shadeburst_t*> shadeburst;
   } background_actions;
 
   // Items
@@ -1006,7 +1010,7 @@ public:
   void trigger_atonement( action_state_t*, double );
   void trigger_divine_aegis( action_state_t* );
   void spawn_idol_of_cthun( action_state_t* );
-  void trigger_shadowy_apparitions( proc_t* proc );
+  void trigger_shadowy_apparitions( proc_t* proc, player_t* target );
   void trigger_psychic_link( action_state_t* );
   void trigger_shadow_weaving( action_state_t* );
   void refresh_insidious_ire_buff( action_state_t* s );

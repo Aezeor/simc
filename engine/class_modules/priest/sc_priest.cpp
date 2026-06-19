@@ -349,8 +349,7 @@ struct angelic_feather_t final : public priest_spell_t
 
   buff_t* create_debuff( player_t* t ) override
   {
-    return priest_spell_t::create_debuff( t )
-      ->set_movement_speed_buff_from_data();
+    return priest_spell_t::create_debuff( t )->set_movement_speed_buff_from_data();
   }
 
   void impact( action_state_t* s ) override
@@ -1343,12 +1342,12 @@ public:
           shadow_word_death_t* child_death          = priest().background_actions.shadow_word_death.get();
           child_death->idol_of_nzoth_execute_stacks = 1;
           state_t* state                            = child_death->cast_state( child_death->get_state() );
-          
+
           child_death->set_target( s->target );
 
-          state->target                             = s->target;
-          state->chain_number                       = curr_state->chain_number + 1;
-          state->max_chain                          = number_of_chains;
+          state->target       = s->target;
+          state->chain_number = curr_state->chain_number + 1;
+          state->max_chain    = number_of_chains;
 
           child_death->snapshot_state( state, child_death->amount_type( state ) );
 
@@ -1882,7 +1881,7 @@ struct power_word_shield_t final : public priest_absorb_t
     if ( bns_data )
     {
       auto bns = make_buff( actor_pair_t( s->target, &priest() ), "body_and_soul", bns_data )
-        ->set_movement_speed_buff_from_data();
+                     ->set_movement_speed_buff_from_data();
 
       buff->add_stack_change_callback( [ bns ]( buff_t*, int old_, int new_ ) {
         if ( !old_ && new_ )
@@ -3981,7 +3980,8 @@ void priest_t::spawn_idol_of_cthun( action_state_t* s )
 
   if ( talents.shadow.void_apparitions_1.enabled() )
   {
-    trigger_shadowy_apparitions( procs.shadowy_apparition_cthun );
+    // BUG: This does not pass through target for Shadeburst currently
+    trigger_shadowy_apparitions( procs.shadowy_apparition_cthun, nullptr );
   }
 }
 
@@ -4248,26 +4248,29 @@ struct priest_module_t final : public module_t
   }
   void register_actor_initializers( sim_t* sim ) const override
   {
-    sim->register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + offset(), []( player_t* p ) {
-      if ( !p->is_player() )
-        return;
+    sim->register_actor_initializer(
+        INIT_ACTOR_CREATE_BUFFS + offset(),
+        []( player_t* p ) {
+          if ( !p->is_player() )
+            return;
 
-      // Always create PI as it's a commonly simmed external
-      auto pi_buff = make_buff( p, "power_infusion", p->find_spell( 10060 ) )
-                        ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                        ->set_default_value_from_effect_type( A_HASTE_ALL )
-                        ->set_cooldown( 0_ms );
+          // Always create PI as it's a commonly simmed external
+          auto pi_buff = make_buff( p, "power_infusion", p->find_spell( 10060 ) )
+                             ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                             ->set_default_value_from_effect_type( A_HASTE_ALL )
+                             ->set_cooldown( 0_ms );
 
-      if ( p->type == PRIEST )
-      {
-        debug_cast<priest_t*>( p )->buffs.power_infusion = pi_buff;
-      }
+          if ( p->type == PRIEST )
+          {
+            debug_cast<priest_t*>( p )->buffs.power_infusion = pi_buff;
+          }
 
-      if ( !p->external_buffs.power_infusion.empty() )
-      {
-        p->register_timed_buff_triggers( pi_buff, p->external_buffs.power_infusion );
-      }
-    }, "create_buffs_priest" );
+          if ( !p->external_buffs.power_infusion.empty() )
+          {
+            p->register_timed_buff_triggers( pi_buff, p->external_buffs.power_infusion );
+          }
+        },
+        "create_buffs_priest" );
   }
   void static_init() const override
   {
