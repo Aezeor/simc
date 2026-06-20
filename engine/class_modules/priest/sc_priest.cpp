@@ -428,7 +428,7 @@ struct halo_spell_t final : public priest_spell_t
 
     priest_spell_t::impact( s );
 
-    if ( p().talents.archon.resonant_energy.enabled() )
+    if ( p().talents.archon.resonant_energy.enabled() && !p().is_ptr() )
     {
       auto td = p().get_target_data( s->target );
       if ( td )
@@ -637,6 +637,15 @@ struct halo_t final : public priest_spell_t
         default:
           break;
       }
+    }
+
+    // PTR version: Resonant Energy is a self-buff and should trigger once per Halo creation.
+    if ( priest().talents.archon.resonant_energy.enabled() && priest().is_ptr() )
+    {
+      if ( priest().specialization() == PRIEST_SHADOW )
+        priest().buffs.resonant_energy_damage->trigger();
+      else if ( priest().specialization() == PRIEST_HOLY )
+        priest().buffs.resonant_energy_healing->trigger();
     }
   }
 
@@ -2260,8 +2269,8 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
                           // size_t idx = std::clamp( as<int>( p.allies_with_atonement.size() ) - 1, 0, 19 );
                         } );
 
-  buffs.resonant_energy = make_buff_fallback( p.talents.archon.resonant_energy.enabled(), *this, "resonant_energy",
-                                              p.talents.archon.resonant_energy_shadow );
+  buffs.resonant_energy = make_buff_fallback( p.talents.archon.resonant_energy.enabled() && !p.is_ptr(), *this,
+                                              "resonant_energy", p.talents.archon.resonant_energy_shadow );
 
   buffs.horrific_visions = make_buff( *this, "horrific_visions", p.talents.shadow.horrific_visions );
 }
@@ -3158,6 +3167,8 @@ void priest_t::init_spells()
   talents.archon.sustained_potency_buff   = find_spell( 454002 );
   talents.archon.resonant_energy          = HT( "Resonant Energy" );
   talents.archon.resonant_energy_shadow   = find_spell( 453850 );
+  talents.archon.resonant_energy_healing  = find_spell( 453846 );
+  talents.archon.resonant_energy_damage   = find_spell( 453850 );
   talents.archon.energy_cycle             = HT( "Energy Cycle" );
   talents.archon.focused_outburst         = HT( "Focused Outburst" );
   talents.archon.divine_halo              = HT( "Divine Halo" );
@@ -3330,6 +3341,13 @@ void priest_t::create_buffs()
 
   buffs.sustained_potency = make_buff_fallback( talents.archon.sustained_potency.enabled(), this, "sustained_potency",
                                                 talents.archon.sustained_potency_buff );
+
+  buffs.resonant_energy_healing =
+      make_buff_fallback( talents.archon.resonant_energy.enabled() && is_ptr(), this, "resonant_energy_healing",
+                          talents.archon.resonant_energy_healing );
+
+  buffs.resonant_energy_damage = make_buff_fallback( talents.archon.resonant_energy.enabled() && is_ptr(), this,
+                                                     "resonant_energy_damage", talents.archon.resonant_energy_damage );
 
   buffs.mind_flay_insanity = make_buff( this, "mind_flay_insanity", talents.archon.mind_flay_insanity_buff );
 

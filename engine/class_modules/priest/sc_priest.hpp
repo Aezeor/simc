@@ -231,6 +231,8 @@ public:
     // Archon
     propagate_const<buff_t*> power_surge;
     propagate_const<buff_t*> sustained_potency;
+    propagate_const<buff_t*> resonant_energy_healing;
+    propagate_const<buff_t*> resonant_energy_damage;
 
     // Voidweaver
     propagate_const<buff_t*> voidheart;
@@ -572,6 +574,8 @@ public:
       const spell_data_t* sustained_potency_buff;
       player_talent_t resonant_energy;
       const spell_data_t* resonant_energy_shadow;
+      const spell_data_t* resonant_energy_healing;
+      const spell_data_t* resonant_energy_damage;
       player_talent_t energy_cycle;
       player_talent_t focused_outburst;
       player_talent_t divine_halo;
@@ -1204,6 +1208,15 @@ public:
     parse_effects( p().buffs.twist_of_fate );
     parse_effects( p().buffs.surge_of_light, IGNORE_STACKS );
 
+    // ARCHON BUFF EFFECTS
+    if ( p().talents.archon.resonant_energy.enabled() && p().is_ptr() )
+    {
+      if ( p().specialization() == PRIEST_SHADOW )
+        parse_effects( p().buffs.resonant_energy_damage );
+      else if ( p().specialization() == PRIEST_HOLY )
+        parse_effects( p().buffs.resonant_energy_healing );
+    }
+
     // SHADOW BUFF EFFECTS
     if ( p().specialization() == PRIEST_SHADOW )
     {
@@ -1242,8 +1255,8 @@ public:
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
   void apply_debuffs_effects()
   {
-    // Archon
-    if ( p().talents.archon.resonant_energy.enabled() )
+    // Archon (non-PTR)
+    if ( p().talents.archon.resonant_energy.enabled() && !p().is_ptr() )
     {
       parse_target_effects( d_fn( &priest_td_t::buffs_t::resonant_energy, true ),
                             p().talents.archon.resonant_energy_shadow );
