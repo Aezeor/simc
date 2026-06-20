@@ -2072,12 +2072,12 @@ void priest_t::create_buffs_shadow()
   buffs.ancient_madness_extension =
       make_buff( this, "ancient_madness_extension", talents.shadow.ancient_madness )
           ->set_duration( timespan_t::zero() )
-          ->set_max_stack( is_ptr() ? buffs.voidform->data().effectN( 13 ).base_value() : 99 );
+        ->set_max_stack( is_ptr() ? as<int>( buffs.voidform->data().effectN( 13 ).base_value() ) : 99 );
 
   if ( is_ptr() )
   {
     buffs.ancient_madness_extension->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-        ->set_default_value( buffs.voidform->data().effectN( 12 ).base_value() );
+        ->set_default_value( buffs.voidform->data().effectN( 12 ).percent() );
 
     buffs.ancient_madness = make_buff( this, "ancient_madness", talents.shadow.ancient_madness_buff )
                                 ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
