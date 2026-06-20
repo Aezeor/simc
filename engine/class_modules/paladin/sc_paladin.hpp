@@ -84,6 +84,7 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* sanctify;
     buff_t* crusaders_resolve;
     buff_t* empyrean_hammer;
+    buff_t* consecration;
   } debuff;
 
   struct
@@ -393,6 +394,7 @@ public:
     const spell_data_t* divine_purpose_buff;
     const spell_data_t* judgment_debuff;
     const spell_data_t* sanctify;
+    const spell_data_t* consecration;
 
     const spell_data_t* sotr_buff;
     const spell_data_t* standing_in_consecration_buff;

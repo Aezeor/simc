@@ -427,6 +427,7 @@ struct consecration_t : public paladin_spell_t
 
     dot_duration = 0_ms;  // the periodic event is handled by ground_aoe_event_t
     may_miss = harmful = false;
+    aoe                = -1;
 
     // technically this doesn't work for characters under level 11?
     if ( p->specialization() == PALADIN_RETRIBUTION )
@@ -454,6 +455,7 @@ struct consecration_t : public paladin_spell_t
     may_miss = harmful = false;
     background = true;
     cooldown->duration = 0_ms;
+    aoe                = -1;
 
     add_child( damage_tick );
   }
@@ -636,6 +638,11 @@ struct consecration_t : public paladin_spell_t
       make_event<ground_aoe_event_t>( *sim, p(), cons_params, true /* Immediate pulse */ );
       damage_tick->execute();
     }
+  }
+  void impact(action_state_t* s) override
+  {
+    paladin_spell_t::impact( s );
+    p()->get_target_data( s->target )->debuff.consecration->execute();
   }
 };
 
@@ -3189,6 +3196,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   debuff.sanctify          = make_buff( *this, "sanctify", paladin->spells.sanctify );
   debuff.crusaders_resolve     = make_buff( *this, "crusaders_resolve", paladin->find_spell( 383843 ) );
   debuff.empyrean_hammer = make_buff( *this, "empyrean_hammer", paladin->find_spell( 431625 ) );
+  debuff.consecration          = make_buff( *this, "consecration", paladin->spells.consecration );
 
   buffs.holy_bulwark = make_buff<buffs::holy_bulwark_buff_t>( this )
     ->set_cooldown( 0_s );
@@ -3879,6 +3887,7 @@ void paladin_t::apply_target_action_effects(action_t* a)
 
   action->parse_target_effects( d_fn( &paladin_td_t::buffs_t::judgment, false ), spells.judgment_debuff );
   action->parse_target_effects( d_fn( &paladin_td_t::buffs_t::sanctify ), spells.sanctify );
+  action->parse_target_effects( d_fn( &paladin_td_t::buffs_t::consecration ), spells.consecration );
 
   action->parse_target_effects( d_fn( &paladin_td_t::dots_t::expurgation ), spells.expurgation );
 }
@@ -4268,6 +4277,7 @@ void paladin_t::init_spells()
   spec.word_of_glory_2          = find_rank_spell( "Word of Glory", "Rank 2" );
   spells.divine_purpose_buff    = find_spell( specialization() == PALADIN_RETRIBUTION ? 408458 : 223819 );
   spells.sanctify               = find_spell( 382538 );
+  spells.consecration           = find_spell( 204242 );
 
   // Hero Talent Spells
   spells.lightsmith.holy_bulwark        = find_spell( 432496 );
