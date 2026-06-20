@@ -439,8 +439,8 @@ public:
 
       auto* apparition_state = cast_state( s );
 
-      if ( priest().is_ptr() && apparition_state->parent_target && apparition_state->parent_target->is_enemy() &&
-           s->target == apparition_state->parent_target )
+      if ( priest().is_ptr() && priest().background_actions.shadeburst && apparition_state->parent_target &&
+           apparition_state->parent_target->is_enemy() && s->target == apparition_state->parent_target )
       {
         player->sim->print_debug( "{} triggering shadeburst from {}. target={} parent={}", priest(),
                                   apparition_state->trigger_source_name, s->target->name(),
