@@ -1377,6 +1377,28 @@ bool trigger_hammer_and_anvil( paladin_t* p, player_t* target, hammer_and_anvil_
   return false;
 }
 
+
+
+unrelenting_edict_t::unrelenting_edict_t( paladin_t* p, util::string_view name ) : paladin_spell_t( std::string(name) + "_ue", p, p->spells.unrelenting_edict )
+{
+
+}
+
+void unrelenting_edict_t::do_execute(action_state_t* s)
+{
+  if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+  {
+    auto b      = p()->sets->set( PALADIN_PROTECTION, MID2, B4 );
+    double perc = b->effectN( 1 ).percent();
+    if ( s->result == result_e::RESULT_CRIT )
+      perc *= 1 + b->effectN( 2 ).percent();
+    base_dd_min = base_dd_max = s->result_amount * perc;
+
+    execute();
+  }
+}
+
+
 // Base Judgment spell ======================================================
 
 judgment_base_t::judgment_base_t( paladin_t* p, util::string_view name, const spell_data_t* s )
@@ -1463,6 +1485,11 @@ judgment_t::judgment_t( paladin_t* p, util::string_view name, const spell_data_t
   may_block = may_parry = may_dodge = false;
   // force effect 1 to be used for direct ratios
   parse_effect_data( data().effectN( 1 ) );
+  if ( p->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+  {
+    ue = new unrelenting_edict_t( p, "judgment" );
+    add_child( ue );
+  }
 }
 
 judgment_t::judgment_t( paladin_t* p, util::string_view name, util::string_view options_str, const spell_data_t* s )
@@ -1473,6 +1500,11 @@ judgment_t::judgment_t( paladin_t* p, util::string_view name, util::string_view 
   may_block = may_parry = may_dodge = false;
   // force effect 1 to be used for direct ratios
   parse_effect_data( data().effectN( 1 ) );
+  if ( p->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+  {
+    ue = new unrelenting_edict_t( p, "judgment" );
+    add_child( ue );
+  }
 
   if ( p->cooldowns.judgment == nullptr )
     p->cooldowns.judgment = cooldown;
@@ -1513,6 +1545,13 @@ void judgment_t::execute()
   {
     trigger_hammer_and_anvil( p(), execute_state->target, hammer_and_anvil, HAA_JUDGMENT );
   }
+}
+
+void judgment_t::impact(action_state_t* s)
+{
+  judgment_base_t::impact( s );
+  if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+    ue->do_execute( s );
 }
 
 bool judgment_t::action_ready()
@@ -4292,6 +4331,10 @@ void paladin_t::init_spells()
   spells.templar.empyrean_hammer_wd     = find_spell( 431625 );
 
   spells.herald_of_the_sun.dawnlight_aoe_metadata = find_spell( 431581 );
+
+  // Tier stuff
+  spells.unrelenting_edict = find_spell( 1300662 );
+
 
   // Add Judgment AoE. Damage still handled manually. Hammer of Wrath also handled manually, since that AoE is 1, instead of 0
   register_passive_affect_list( talents.blessed_champion,

@@ -369,6 +369,7 @@ struct blessed_hammer_t : public paladin_spell_t
   };
 
   blessed_hammer_tick_t* hammer;
+  unrelenting_edict_t* ue;
   double num_strikes;
 
   blessed_hammer_t( paladin_t* p, util::string_view options_str ) :
@@ -397,6 +398,11 @@ struct blessed_hammer_t : public paladin_spell_t
     add_child( hammer );
 
     triggers_higher_calling = true;
+    if ( p->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+    {
+      ue = new unrelenting_edict_t( p, "blessed_hammer" );
+      add_child( ue );
+    }
   }
 
   action_state_t* new_state() override
@@ -445,6 +451,8 @@ struct blessed_hammer_t : public paladin_spell_t
                                       state, true );
     }
     p()->buffs.lightsmith.blessed_assurance->expire();
+    if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+      ue->do_execute( s );
   }
 };
 
@@ -519,6 +527,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
   using state_t = paladin_action_state_t<hammer_of_the_righteous_data_t>;
   struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
   {
+    unrelenting_edict_t* ue;
     hammer_of_the_righteous_aoe_t( paladin_t* p )
       : paladin_melee_attack_t( "hammer_of_the_righteous_aoe", p, p->find_spell( 88263 ) )
     {
@@ -529,6 +538,11 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       aoe                              = -1;
       trigger_gcd                      = 0_ms;  // doesn't incur GCD (HotR does that already)
       target_filter_callback           = secondary_targets_only();
+      if ( p->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+      {
+        ue = new unrelenting_edict_t( p, "hammer_of_the_righteous_aoe" );
+        add_child( ue );
+      }
     }
 
     action_state_t* new_state() override
@@ -544,9 +558,16 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       da *= 1.0 + s_->blessed_assurance_mult;
       return da;
     }
+    void impact(action_state_t* s) override
+    {
+      paladin_melee_attack_t::impact( s );
+      if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+        ue->do_execute( s );
+    }
   };
 
   hammer_of_the_righteous_aoe_t* hotr_aoe;
+  unrelenting_edict_t* ue;
   hammer_of_the_righteous_t( paladin_t* p, util::string_view options_str )
       : paladin_melee_attack_t( "hammer_of_the_righteous", p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Hammer of the Righteous" ) )
   {
@@ -562,6 +583,11 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     cooldown->charges = 2;
     cooldown->hasted        = true;
     triggers_higher_calling = true;
+    if ( p->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+    {
+      ue = new unrelenting_edict_t( p, "hammer_of_the_righteous" );
+      add_child( ue );
+    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -598,6 +624,8 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       hotr_aoe->schedule_execute( state );
     }
     p()->buffs.lightsmith.blessed_assurance->expire();
+    if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+      ue->do_execute( s );
   }
 
   action_state_t* new_state() override

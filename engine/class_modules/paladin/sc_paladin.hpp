@@ -441,6 +441,9 @@ public:
     const spell_data_t* judgment_ret_dt;
     const spell_data_t* hammer_of_wrath_ret;
     const spell_data_t* hammer_of_wrath_ret_dt;
+
+    // Tier stuff
+    const spell_data_t* unrelenting_edict;
   } spells;
 
   struct rppms_t {
@@ -1723,6 +1726,11 @@ struct avenging_wrath_t : public paladin_spell_t
   void execute() override;
   action_state_t* new_state() override;
 };
+struct unrelenting_edict_t : public paladin_spell_t
+{
+  unrelenting_edict_t( paladin_t* p, util::string_view name );
+  void do_execute( action_state_t* s );
+};
 struct hammer_and_anvil_t : public paladin_spell_t
 {
   hammer_and_anvil_t( paladin_t* p, util::string_view name );
@@ -1759,6 +1767,7 @@ public:
 struct judgment_t : public judgment_base_t
 {
   bool triggered_hammer_and_anvil;
+  unrelenting_edict_t* ue;
 
   judgment_t( paladin_t* p, util::string_view name, const spell_data_t* s = spell_data_t::nil() );
   judgment_t( paladin_t* p, util::string_view name, util::string_view options_str,
@@ -1766,6 +1775,7 @@ struct judgment_t : public judgment_base_t
 
   proc_types proc_type() const override;
   void execute() override;
+  void impact(action_state_t* s) override;
   bool action_ready() override;
 };
 
