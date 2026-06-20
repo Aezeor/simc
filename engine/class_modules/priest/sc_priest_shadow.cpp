@@ -309,18 +309,23 @@ struct shadeburst_t final : public priest_spell_t
 struct shadowy_apparition_state_t : public action_state_t
 {
   double number_spawned;
+  double damage_modifier;
   player_t* parent_target;
   std::string trigger_source_name;
 
   shadowy_apparition_state_t( action_t* a, player_t* t )
-    : action_state_t( a, t ), number_spawned( 1.0 ), parent_target( nullptr ), trigger_source_name( "unknown" )
+    : action_state_t( a, t ),
+      number_spawned( 1.0 ),
+      damage_modifier( 1.0 ),
+      parent_target( nullptr ),
+      trigger_source_name( "unknown" )
   {
   }
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
   {
     action_state_t::debug_str( s );
-    fmt::print( s, " number_spawned={}", number_spawned );
+    fmt::print( s, " number_spawned={} damage_modifier={}", number_spawned, damage_modifier );
     return s;
   }
 
@@ -328,6 +333,7 @@ struct shadowy_apparition_state_t : public action_state_t
   {
     action_state_t::initialize();
     number_spawned      = 1.0;
+    damage_modifier     = 1.0;
     parent_target       = nullptr;
     trigger_source_name = "unknown";
   }
@@ -337,6 +343,7 @@ struct shadowy_apparition_state_t : public action_state_t
     action_state_t::copy_state( o );
     auto other_sa_state = debug_cast<const shadowy_apparition_state_t*>( o );
     number_spawned      = other_sa_state->number_spawned;
+    damage_modifier     = other_sa_state->damage_modifier;
     parent_target       = other_sa_state->parent_target;
     trigger_source_name = other_sa_state->trigger_source_name;
   }
@@ -353,7 +360,7 @@ public:
   struct shadowy_apparition_damage_t final : public priest_spell_t
   {
     double insanity_gain;
-    double mod;
+    double base_mod;
 
     shadowy_apparition_damage_t( priest_t& p, std::string name, const spell_data_t* spell, double _mod )
       : priest_spell_t( name, p, spell ),
@@ -365,7 +372,7 @@ public:
       callbacks                  = true;
       may_miss                   = false;
       may_crit                   = true;
-      mod                        = _mod;
+      base_mod                   = _mod;
     }
 
     double composite_target_multiplier( player_t* t ) const override
@@ -379,8 +386,16 @@ public:
           m *= 1 + priest().talents.shadow.spectral_horrors->effectN( 1 ).percent();
       }
 
-      // Apply mod for Void Apparition
-      m *= mod;
+      return m;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m               = priest_spell_t::composite_da_multiplier( s );
+      auto* apparition_state = cast_state( s );
+
+      // Base action variant mod (e.g., Void Apparitions) and trigger-specific mod (e.g., S2 4pc)
+      m *= base_mod * apparition_state->damage_modifier;
 
       return m;
     }
@@ -478,7 +493,7 @@ public:
   }
 
   /** Trigger a shadowy apparition */
-  void trigger( player_t* target, proc_t* proc, int vts, player_t* _parent_target )
+  void trigger( player_t* target, proc_t* proc, int vts, player_t* _parent_target, double damage_modifier = 1.0 )
   {
     player->sim->print_debug( "{} triggered shadowy apparition on target {} from {}. vts_active={} parent={}", priest(),
                               *target, proc ? proc->name_str : "unknown", vts,
@@ -497,8 +512,9 @@ public:
       s->trigger_source_name.erase( 0, source_prefix.size() );
     }
 
-    s->target         = target;
-    s->number_spawned = vts;
+    s->target          = target;
+    s->number_spawned  = vts;
+    s->damage_modifier = damage_modifier;
 
     snapshot_state( s, amount_type( s ) );
 
@@ -777,6 +793,30 @@ struct vampiric_touch_t final : public priest_spell_t
   vampiric_touch_t( priest_t& p, util::string_view options_str ) : vampiric_touch_t( p, true )
   {
     parse_options( options_str );
+  }
+
+  timespan_t execute_time() const override
+  {
+    if ( casted && !background && priest().options.mid_s2_4pc && priest().buffs.mid_s2_4pc_vampiric_touch &&
+         priest().buffs.mid_s2_4pc_vampiric_touch->check() )
+    {
+      return timespan_t::zero();
+    }
+
+    return priest_spell_t::execute_time();
+  }
+
+  void execute() override
+  {
+    if ( casted && !background && priest().options.mid_s2_4pc && priest().buffs.mid_s2_4pc_vampiric_touch &&
+         priest().buffs.mid_s2_4pc_vampiric_touch->check() )
+    {
+      priest().buffs.mid_s2_4pc_vampiric_touch->expire();
+      priest().generate_insanity( 4.0, priest().gains.insanity_mid_s2_4pc_vampiric_touch, this );
+      priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_mid_s2_4pc_vt, target, 2.0 );
+    }
+
+    priest_spell_t::execute();
   }
 
   void impact( action_state_t* s ) override
@@ -1677,6 +1717,12 @@ struct tentacle_slam_t final : public priest_spell_t
 
     idol_of_nzoth_impact_stacks = 6;
     radius                      = priest().talents.shadow.tentacle_slam_damage->effectN( 1 ).radius_max();
+
+    if ( priest().options.mid_s2_2pc )
+    {
+      cooldown->duration -= timespan_t::from_seconds( 3 );
+      tentacle_slam_damage->base_dd_multiplier *= 2.0;
+    }
   }
 
   // TODO: Not found in spelldata, manually tested
@@ -1685,6 +1731,16 @@ struct tentacle_slam_t final : public priest_spell_t
   timespan_t travel_time() const override
   {
     return timespan_t::from_seconds( 0.5 );
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    if ( priest().options.mid_s2_4pc && priest().buffs.mid_s2_4pc_vampiric_touch )
+    {
+      priest().buffs.mid_s2_4pc_vampiric_touch->trigger();
+    }
   }
 
   // Triggers actions that only occur once, not per target hit
@@ -2072,7 +2128,12 @@ void priest_t::create_buffs_shadow()
   buffs.ancient_madness_extension =
       make_buff( this, "ancient_madness_extension", talents.shadow.ancient_madness )
           ->set_duration( timespan_t::zero() )
-        ->set_max_stack( is_ptr() ? as<int>( buffs.voidform->data().effectN( 13 ).base_value() ) : 99 );
+          ->set_max_stack( is_ptr() ? as<int>( buffs.voidform->data().effectN( 13 ).base_value() ) : 99 );
+
+  buffs.mid_s2_4pc_vampiric_touch = make_buff( this, "mid_s2_4pc_vampiric_touch" )
+                                        ->set_duration( timespan_t::zero() )
+                                        ->set_max_stack( 1 )
+                                        ->set_proc_callbacks( false );
 
   if ( is_ptr() )
   {
@@ -2412,7 +2473,7 @@ void priest_t::init_background_actions_shadow()
 // ==========================================================================
 // Trigger Shadowy Apparitions on all targets affected by vampiric touch
 // ==========================================================================
-void priest_t::trigger_shadowy_apparitions( proc_t* proc, player_t* target )
+void priest_t::trigger_shadowy_apparitions( proc_t* proc, player_t* target, double apparition_damage_mod )
 {
   if ( !talents.shadow.shadowy_apparitions.enabled() )
   {
@@ -2445,11 +2506,11 @@ void priest_t::trigger_shadowy_apparitions( proc_t* proc, player_t* target )
            rng().roll( talents.shadow.void_apparitions_2->effectN( 2 ).percent() ) )
       {
         procs.void_apparition->occur();
-        background_actions.void_apparitions->trigger( priest_td->target, proc, vts, target );
+        background_actions.void_apparitions->trigger( priest_td->target, proc, vts, target, apparition_damage_mod );
       }
       else
       {
-        background_actions.shadowy_apparitions->trigger( priest_td->target, proc, vts, target );
+        background_actions.shadowy_apparitions->trigger( priest_td->target, proc, vts, target, apparition_damage_mod );
       }
     }
   }

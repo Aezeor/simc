@@ -227,6 +227,7 @@ public:
     propagate_const<buff_t*> crushing_void;
     propagate_const<buff_t*> ancient_madness_extension;
     propagate_const<buff_t*> ancient_madness;
+    propagate_const<buff_t*> mid_s2_4pc_vampiric_touch;
 
     // Archon
     propagate_const<buff_t*> power_surge;
@@ -751,6 +752,7 @@ public:
     propagate_const<gain_t*> insanity_dark_thoughts;
     propagate_const<gain_t*> insanity_horrific_vision;
     propagate_const<gain_t*> insanity_vision_of_nzoth;
+    propagate_const<gain_t*> insanity_mid_s2_4pc_vampiric_touch;
   } gains;
 
   // Benefits
@@ -775,6 +777,7 @@ public:
     propagate_const<proc_t*> shadowy_apparition_nzoth;
     propagate_const<proc_t*> shadowy_apparition_yogg;
     propagate_const<proc_t*> shadowy_apparition_cthun;
+    propagate_const<proc_t*> shadowy_apparition_mid_s2_4pc_vt;
     propagate_const<proc_t*> mind_devourer;
     propagate_const<proc_t*> void_tendril;
     propagate_const<proc_t*> void_lasher;
@@ -912,6 +915,10 @@ public:
     double archon_halo_outgoing_hit_chance = 0.5;
     // Chance for returning Halo damage pulses to hit (Divine Halo / Archon).
     double archon_halo_return_hit_chance = 0.5;
+
+    // Placeholder options until tier set spells exist
+    bool mid_s2_2pc = false;
+    bool mid_s2_4pc = false;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
@@ -1016,7 +1023,7 @@ public:
   void trigger_atonement( action_state_t*, double );
   void trigger_divine_aegis( action_state_t* );
   void spawn_idol_of_cthun( action_state_t* );
-  void trigger_shadowy_apparitions( proc_t* proc, player_t* target );
+  void trigger_shadowy_apparitions( proc_t* proc, player_t* target, double apparition_damage_mod = 1.0 );
   void trigger_psychic_link( action_state_t* );
   void trigger_shadow_weaving( action_state_t* );
   void trigger_ancient_madness( int stacks );
