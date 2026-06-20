@@ -4215,7 +4215,7 @@ public:
       return;
 
     // Only show this when you are able to extend Voidform
-    if ( p.talents.shadow.ancient_madness.enabled() )
+    if ( p.talents.shadow.ancient_madness.enabled() || p.talents.archon.sustained_potency.enabled() )
     {
       html_customsection_voidform( os );
     }

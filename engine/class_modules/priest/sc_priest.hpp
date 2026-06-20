@@ -225,6 +225,7 @@ public:
     propagate_const<buff_t*> horrific_vision;
     propagate_const<buff_t*> vision_of_nzoth;
     propagate_const<buff_t*> crushing_void;
+    propagate_const<buff_t*> ancient_madness_extension;
     propagate_const<buff_t*> ancient_madness;
 
     // Archon
@@ -354,6 +355,7 @@ public:
       const spell_data_t* maddening_touch_insanity;
       player_talent_t improved_voidform;
       player_talent_t ancient_madness;
+      const spell_data_t* ancient_madness_buff;
       player_talent_t phantom_menace;
       player_talent_t shadeburst;
       const spell_data_t* shadeburst_spell;
@@ -1013,6 +1015,8 @@ public:
   void trigger_shadowy_apparitions( proc_t* proc, player_t* target );
   void trigger_psychic_link( action_state_t* );
   void trigger_shadow_weaving( action_state_t* );
+  void trigger_ancient_madness( int stacks );
+  void trigger_ancient_madness_extension();
   void refresh_insidious_ire_buff( action_state_t* s );
   void spawn_thing_from_beyond();
   void trigger_idol_of_nzoth( player_t* target, int stacks );
