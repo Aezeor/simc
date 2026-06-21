@@ -1719,6 +1719,31 @@ struct delayed_execute_event_t : public event_t
   }
 };
 
+struct delayed_execute_on_target_event_t : public event_t
+{
+  action_t* action;
+  player_t* target;
+  double amount;
+
+  delayed_execute_on_target_event_t(paladin_t* p, action_t* a, player_t* t, double amount, timespan_t delay)
+    : event_t( *p->sim, delay ), action(a), target(t), amount(amount)
+  {
+    assert( action->background );
+  }
+  const char* name() const override
+  {
+    return action->name();
+  }
+
+  void execute() override
+  {
+    if (!target->is_sleeping())
+    {
+      action->execute_on_target( target, amount );
+    }
+  }
+};
+
 struct avenging_wrath_t : public paladin_spell_t
 {
   avenging_wrath_t( paladin_t* p );
