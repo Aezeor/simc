@@ -1397,7 +1397,6 @@ static constexpr auto _effect_type_strings = util::make_static_map<unsigned, std
   { E_LEARN_HOUSING_COMPONENT_TEXTURE,                 "Learn Housing Component Texture"                   },  // 352
   { E_CREATE_AREA_TRIGGER_2,                           "Create Area Trigger"                               },  // 353
   { E_SET_NEIGHBORHOOD_INITIATIVE,                     "Set Neighborhood Initiative"                       },  // 354
-  { E_LEARN_HOUSING_TYPE,                              "Learn Housing Type"                                },  // 355
   { E_APPLY_ITEM_BONUS,                                "Apply Item Bonus"                                  },  // 357
   { E_REMOVE_ITEM_BONUS,                               "Remove Item Bonus"                                 },  // 358
   { E_APPLY_ITEM_CONDITION,                            "Apply Item Condition"                              },  // 359

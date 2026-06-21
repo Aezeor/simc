@@ -1030,7 +1030,6 @@ enum effect_type_t : unsigned {
   E_LEARN_HOUSING_COMPONENT_TEXTURE = 352,
   E_CREATE_AREA_TRIGGER_2 = 353,
   E_SET_NEIGHBORHOOD_INITIATIVE = 354,
-  E_LEARN_HOUSING_TYPE = 355,
   E_APPLY_ITEM_BONUS = 357, // Misc2 contains the bonus id
   E_REMOVE_ITEM_BONUS = 358, // Misc2 contains the bonus id
   E_APPLY_ITEM_CONDITION = 359, // Maybe incorrect, but seems most likely based on the misc value used.
