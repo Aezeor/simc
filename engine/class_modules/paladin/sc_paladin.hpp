@@ -85,6 +85,7 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* crusaders_resolve;
     buff_t* empyrean_hammer;
     buff_t* consecration;
+    buff_t* seal_of_reprisal;
   } debuff;
 
   struct
@@ -395,6 +396,7 @@ public:
     const spell_data_t* judgment_debuff;
     const spell_data_t* sanctify;
     const spell_data_t* consecration;
+    const spell_data_t* seal_of_reprisal;
 
     const spell_data_t* sotr_buff;
     const spell_data_t* standing_in_consecration_buff;
@@ -1226,15 +1228,18 @@ public:
         if ( td->debuff.judgment->up() )
           td->debuff.judgment->decrement();
       }
-      if ( p()->buffs.lightsmith.masterwork_weapon->up() )
+      if ( !p()->is_ptr() )
       {
-        p()->buffs.lightsmith.masterwork_weapon->decrement();
-        p()->cast_lesser_armament( 1, LESSER_WEAPON );
-      }
-      if ( p()->buffs.lightsmith.masterwork_bulwark->up() )
-      {
-        p()->buffs.lightsmith.masterwork_bulwark->decrement();
-        p()->cast_lesser_armament( 1, LESSER_BULWARK );
+        if ( p()->buffs.lightsmith.masterwork_weapon->up() )
+        {
+          p()->buffs.lightsmith.masterwork_weapon->decrement();
+          p()->cast_lesser_armament( 1, LESSER_WEAPON );
+        }
+        if ( p()->buffs.lightsmith.masterwork_bulwark->up() )
+        {
+          p()->buffs.lightsmith.masterwork_bulwark->decrement();
+          p()->cast_lesser_armament( 1, LESSER_BULWARK );
+        }
       }
     }
 
@@ -1780,6 +1785,7 @@ private:
 public:
   bool triggers_second_sunrise   = false;
   bool triggers_divine_resonance = false;
+  unrelenting_edict_t* ue;
   hammer_of_wrath_t( paladin_t* p, util::string_view name, const spell_data_t* s = spell_data_t::nil() );
   hammer_of_wrath_t( paladin_t* p, util::string_view name, util::string_view options_str,
                      const spell_data_t* s = spell_data_t::nil() );

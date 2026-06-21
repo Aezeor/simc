@@ -402,6 +402,8 @@ struct blessed_hammer_t : public paladin_spell_t
       // To Do: Investigate refresh behaviour
       td( s->target )
           ->debuff.blessed_hammer->trigger( 1, s->attack_power * p()->talents.blessed_hammer->effectN( 1 ).percent() );
+      if ( p()->is_ptr() && p()->talents.seal_of_reprisal->ok() )
+        p()->get_target_data( s->target )->debuff.seal_of_reprisal->execute();
     }
   };
 
@@ -461,6 +463,19 @@ struct blessed_hammer_t : public paladin_spell_t
     paladin_spell_t::execute();
     // Grand Crusader can proc on cast, but not on impact
     p()->trigger_grand_crusader();
+    if ( p()->is_ptr() )
+    {
+      if ( p()->buffs.lightsmith.masterwork_weapon->up() )
+      {
+        p()->buffs.lightsmith.masterwork_weapon->decrement();
+        p()->cast_lesser_armament( 1, LESSER_WEAPON );
+      }
+      if ( p()->buffs.lightsmith.masterwork_bulwark->up() )
+      {
+        p()->buffs.lightsmith.masterwork_bulwark->decrement();
+        p()->cast_lesser_armament( 1, LESSER_BULWARK );
+      }
+    }
   }
   void impact( action_state_t* s ) override
   {
@@ -600,6 +615,8 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       paladin_melee_attack_t::impact( s );
       if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
         ue->do_execute( s );
+      if ( p()->is_ptr() && p()->talents.seal_of_reprisal->ok() )
+        p()->get_target_data( s->target )->debuff.seal_of_reprisal->execute();
     }
   };
 
@@ -647,6 +664,19 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       if ( hotr_aoe->target != execute_state->target )
         hotr_aoe->target_cache.is_valid = false;
     }
+    if ( p()->is_ptr() )
+    {
+      if ( p()->buffs.lightsmith.masterwork_weapon->up() )
+      {
+        p()->buffs.lightsmith.masterwork_weapon->decrement();
+        p()->cast_lesser_armament( 1, LESSER_WEAPON );
+      }
+      if ( p()->buffs.lightsmith.masterwork_bulwark->up() )
+      {
+        p()->buffs.lightsmith.masterwork_bulwark->decrement();
+        p()->cast_lesser_armament( 1, LESSER_BULWARK );
+      }
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -663,6 +693,8 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     p()->buffs.lightsmith.blessed_assurance->expire();
     if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
       ue->do_execute( s );
+    if ( p()->is_ptr() && p()->talents.seal_of_reprisal->ok() )
+      p()->get_target_data( s->target )->debuff.seal_of_reprisal->execute();
   }
 
   action_state_t* new_state() override

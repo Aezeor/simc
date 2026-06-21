@@ -1733,6 +1733,11 @@ hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view name, util
   {
     p->cooldowns.hammer_of_wrath = cooldown;
   }
+  if ( !p->bugs && p->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+  {
+    ue = new unrelenting_edict_t( p, "judgment" );
+    add_child( ue );
+  }
 }
 
 void hammer_of_wrath_t::execute()
@@ -1787,6 +1792,8 @@ void hammer_of_wrath_t::impact( action_state_t* s )
       echo->start_action_execute_event( 200_ms );
     }
   }
+  if ( !p()->bugs && p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+    ue->do_execute( s );
 }
 
 double hammer_of_wrath_t::composite_target_multiplier( player_t* target ) const
@@ -3236,10 +3243,12 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   debuff.crusaders_resolve     = make_buff( *this, "crusaders_resolve", paladin->find_spell( 383843 ) );
   debuff.empyrean_hammer = make_buff( *this, "empyrean_hammer", paladin->find_spell( 431625 ) );
   debuff.consecration          = make_buff( *this, "consecration", paladin->spells.consecration );
+  debuff.seal_of_reprisal      = make_buff( *this, "seal_of_reprisal", paladin->spells.seal_of_reprisal );
 
   buffs.holy_bulwark = make_buff<buffs::holy_bulwark_buff_t>( this )
     ->set_cooldown( 0_s );
   buffs.sacred_weapon = make_buff( *this, "sacred_weapon_" + paladin->name_str + "_" + target->name_str, paladin->find_spell( 432502 ) );
+  
 
   if ( !target->is_enemy() && target != paladin )
   {
@@ -3678,27 +3687,45 @@ void paladin_t::create_buffs()
 
   buffs.hammer_of_wrath = make_buff( this, "hammer_of_wrath", find_spell( 1277026 ) );
 
-  buffs.lightsmith.holy_bulwark = make_buff<buffs::holy_bulwark_buff_t>( this )
-                                      ->set_cooldown( 0_s )
-                                      ->set_refresh_duration_callback( [ this ]( const buff_t* b, timespan_t d ) {
-                                        if ( b->remains().total_millis() > 0 )
-                                          trigger_laying_down_arms();
-                                        timespan_t residual = std::min( d * 0.3, b->remains() );
-                                        return residual + d;
-                                      } )
-                                      ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
-                                        trigger_laying_down_arms();
-                                      } );
-  buffs.lightsmith.sacred_weapon = make_buff( this, "sacred_weapon", find_spell( 432502 ) )
-                                       ->set_refresh_duration_callback( [ this ]( const buff_t* b, timespan_t d ) {
-                                         if ( b->remains().total_millis() > 0 )
-                                           trigger_laying_down_arms();
-                                         timespan_t residual = std::min( d * 0.3, b->remains() );
-                                         return residual + d;
-                                       } )
-                                       ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
-                                         trigger_laying_down_arms();
-                                       } );
+  buffs.lightsmith.holy_bulwark =
+      make_buff<buffs::holy_bulwark_buff_t>( this )
+          ->set_cooldown( 0_s )
+          ->set_refresh_duration_callback( [ this ]( const buff_t* b, timespan_t d ) {
+            if ( b->remains().total_millis() > 0 )
+              trigger_laying_down_arms();
+            if ( is_ptr() )
+            {
+              if ( bugs )
+                return d * 2;
+              else
+                return std::min( b->remains() + d, d * 2 );
+            }
+            else
+            {
+              timespan_t residual = std::min( d * 0.3, b->remains() );
+              return residual + d;
+            }
+          } )
+          ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) { trigger_laying_down_arms(); } );
+  buffs.lightsmith.sacred_weapon =
+      make_buff( this, "sacred_weapon", find_spell( 432502 ) )
+          ->set_refresh_duration_callback( [ this ]( const buff_t* b, timespan_t d ) {
+            if ( b->remains().total_millis() > 0 )
+              trigger_laying_down_arms();
+            if ( is_ptr() )
+            {
+              if ( bugs )
+                return d * 2;
+              else
+                return std::min( b->remains() + d, d * 2 );
+            }
+            else
+            {
+              timespan_t residual = std::min( d * 0.3, b->remains() );
+              return residual + d;
+            }
+          } )
+          ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) { trigger_laying_down_arms(); } );
   buffs.lightsmith.masterwork_weapon = make_buff( this, "masterwork_weapon", find_spell( 1271436 ) );
   buffs.lightsmith.masterwork_bulwark = make_buff( this, "masterwork_bulwark", find_spell( 1271383 ) );
   // Not going to implement this "correctly", too much overhead for too little informational gain
@@ -3927,6 +3954,7 @@ void paladin_t::apply_target_action_effects(action_t* a)
   action->parse_target_effects( d_fn( &paladin_td_t::buffs_t::judgment, false ), spells.judgment_debuff );
   action->parse_target_effects( d_fn( &paladin_td_t::buffs_t::sanctify ), spells.sanctify );
   action->parse_target_effects( d_fn( &paladin_td_t::buffs_t::consecration ), spells.consecration );
+  action->parse_target_effects( d_fn( &paladin_td_t::buffs_t::seal_of_reprisal ), spells.seal_of_reprisal );
 
   action->parse_target_effects( d_fn( &paladin_td_t::dots_t::expurgation ), spells.expurgation );
 }
@@ -4317,6 +4345,7 @@ void paladin_t::init_spells()
   spells.divine_purpose_buff    = find_spell( specialization() == PALADIN_RETRIBUTION ? 408458 : 223819 );
   spells.sanctify               = find_spell( 382538 );
   spells.consecration           = find_spell( 204242 );
+  spells.seal_of_reprisal       = find_spell( 1302139 );
 
   // Hero Talent Spells
   spells.lightsmith.holy_bulwark        = find_spell( 432496 );
