@@ -969,12 +969,14 @@ public:
     const spell_data_t* soulburst_damage;  // MID2 Devourer 2pc damage
 
     // Havoc
+    const spell_data_t* mid2_havoc_4pc;
 
     // Vengeance
     const spell_data_t* mid1_vengeance_4pc;
     const spell_data_t* explosion_of_the_soul;
     const spell_data_t* mid2_vengeance_2pc;
     const spell_data_t* mid2_vengeance_4pc;
+
     // Auxilliary
   } set_bonuses;
 
@@ -5574,7 +5576,8 @@ struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigg
 {
   struct soulburst_t : public demon_hunter_spell_t
   {
-    soulburst_t( util::string_view n, demon_hunter_t* p ) : demon_hunter_spell_t( n, p, p->set_bonuses.soulburst_damage )
+    soulburst_t( util::string_view n, demon_hunter_t* p )
+      : demon_hunter_spell_t( n, p, p->set_bonuses.soulburst_damage )
     {
       background = dual = true;
       aoe               = -1;
@@ -7575,6 +7578,16 @@ struct essence_break_t : public demon_hunter_attack_t
       buff_t* debuff = td( s->target )->debuffs.essence_break;
       make_event( *dh()->sim, 250_ms, [ debuff ] { debuff->trigger(); } );
     }
+  }
+
+  timespan_t cooldown_base_duration( const cooldown_t& cd ) const override
+  {
+    if ( dh()->set_bonuses.mid2_havoc_4pc->ok() )
+    {
+      return demon_hunter_attack_t::cooldown_base_duration( cd ) -
+             timespan_t::from_millis( as<int>( dh()->buff.cycle_of_hatred->check_stack_value() ) );
+    }
+    return demon_hunter_attack_t::cooldown_base_duration( cd );
   }
 };
 
@@ -11122,8 +11135,11 @@ void demon_hunter_t::init_spells()
 
   // Set Bonus Items ========================================================
 
-  set_bonuses.mid2_devourer_2pc  = sets->set( DEMON_HUNTER_DEVOURER, MID2, B2 );
-  set_bonuses.mid2_devourer_4pc  = sets->set( DEMON_HUNTER_DEVOURER, MID2, B4 );
+  set_bonuses.mid2_devourer_2pc = sets->set( DEMON_HUNTER_DEVOURER, MID2, B2 );
+  set_bonuses.mid2_devourer_4pc = sets->set( DEMON_HUNTER_DEVOURER, MID2, B4 );
+
+  set_bonuses.mid2_havoc_4pc = sets->set( DEMON_HUNTER_HAVOC, MID2, B4 );
+
   set_bonuses.mid1_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, MID1, B4 );
   set_bonuses.mid2_vengeance_2pc = sets->set( DEMON_HUNTER_VENGEANCE, MID2, B2 );
   set_bonuses.mid2_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, MID2, B4 );
