@@ -6789,29 +6789,29 @@ struct auto_attack_t : public demon_hunter_attack_t
 
 // Blade Dance =============================================================
 
+struct trail_of_ruin_t : public demon_hunter_spell_t
+{
+  trail_of_ruin_t( util::string_view name, demon_hunter_t* p )
+    : demon_hunter_spell_t( name, p, p->talent.havoc.trail_of_ruin->effectN( 1 ).trigger() )
+  {
+    background = dual = true;
+  }
+};
+
 struct blade_dance_base_t
   : public art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>
 {
-  struct trail_of_ruin_dot_t : public demon_hunter_spell_t
-  {
-    trail_of_ruin_dot_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->talent.havoc.trail_of_ruin->effectN( 1 ).trigger() )
-    {
-      background = dual = true;
-    }
-  };
-
   struct blade_dance_damage_first_blood_t : public burning_blades_trigger_t<demon_hunter_attack_t>
   {
     timespan_t delay;
-    action_t* trail_of_ruin_dot;
+    action_t* trail_of_ruin;
     bool last_attack;
 
     blade_dance_damage_first_blood_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s,
                                       const spelleffect_data_t& eff )
       : base_t( n, p, s ),
         delay( timespan_t::from_millis( eff.misc_value1() ) ),
-        trail_of_ruin_dot( nullptr ),
+        trail_of_ruin( nullptr ),
         last_attack( false )
     {
       background = dual = true;
@@ -6831,20 +6831,17 @@ struct blade_dance_base_t
 
       if ( result_is_hit( s->result ) && td( s->target )->debuffs.essence_break->up() )
       {
-        cooldown_t* tcd = dh()->cooldown.essence_break_proc_icd->get_cooldown( s->target );
-        if ( tcd->up() )
+        cooldown_t* icd = dh()->cooldown.essence_break_proc_icd->get_cooldown( s->target );
+        if ( icd->up() )
         {
           dh()->active.essence_break_proc->execute_on_target( s->target );
-          tcd->start();
+          icd->start();
         }
       }
 
-      if ( last_attack )
+      if ( last_attack && trail_of_ruin )
       {
-        if ( trail_of_ruin_dot )
-        {
-          trail_of_ruin_dot->execute_on_target( s->target );
-        }
+        trail_of_ruin->execute_on_target( s->target );
       }
     }
   };
@@ -6852,7 +6849,7 @@ struct blade_dance_base_t
   struct blade_dance_damage_t : public demon_hunter_attack_t
   {
     timespan_t delay;
-    action_t* trail_of_ruin_dot;
+    action_t* trail_of_ruin;
     bool last_attack;
     unsigned glaive_tempest_targets;
 
@@ -6860,7 +6857,7 @@ struct blade_dance_base_t
                           const spell_data_t* first_blood_override = nullptr )
       : demon_hunter_attack_t( name, p, first_blood_override ? first_blood_override : eff.trigger() ),
         delay( timespan_t::from_millis( eff.misc_value1() ) ),
-        trail_of_ruin_dot( nullptr ),
+        trail_of_ruin( nullptr ),
         last_attack( false )
     {
       background = dual      = true;
@@ -6887,9 +6884,9 @@ struct blade_dance_base_t
 
       if ( last_attack )
       {
-        if ( trail_of_ruin_dot )
+        if ( trail_of_ruin )
         {
-          trail_of_ruin_dot->execute_on_target( s->target );
+          trail_of_ruin->execute_on_target( s->target );
         }
 
         // First Blood splits the primary target into a separate single-target hit,
@@ -6907,11 +6904,11 @@ struct blade_dance_base_t
 
   std::vector<blade_dance_damage_t*> attacks;
   std::vector<blade_dance_damage_first_blood_t*> first_blood_attacks;
-  trail_of_ruin_dot_t* trail_of_ruin_dot;
+  trail_of_ruin_t* trail_of_ruin;
   timespan_t ability_cooldown;
 
   blade_dance_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view options_str )
-    : base_t( n, p, s, options_str ), trail_of_ruin_dot( nullptr )
+    : base_t( n, p, s, options_str ), trail_of_ruin( nullptr )
   {
     may_miss = false;
     cooldown = p->cooldown.blade_dance;  // Blade Dance/Death Sweep Category Cooldown
@@ -6931,7 +6928,12 @@ struct blade_dance_base_t
 
     if ( p->talent.havoc.trail_of_ruin->ok() )
     {
-      trail_of_ruin_dot = p->get_background_action<trail_of_ruin_dot_t>( "trail_of_ruin" );
+      trail_of_ruin = p->get_background_action<trail_of_ruin_t>( dh()->is_ptr() ? fmt::format( "trail_of_ruin_{}", n )
+                                                                                : "trail_of_ruin" );
+      if ( dh()->is_ptr() )
+      {
+        add_child( trail_of_ruin );
+      }
     }
   }
 
@@ -6949,9 +6951,9 @@ struct blade_dance_base_t
       attacks.back()->last_attack = true;
 
       // Trail of Ruin is added to the final hit in the attack list
-      if ( dh()->talent.havoc.trail_of_ruin->ok() && trail_of_ruin_dot )
+      if ( dh()->talent.havoc.trail_of_ruin->ok() && trail_of_ruin )
       {
-        attacks.back()->trail_of_ruin_dot = trail_of_ruin_dot;
+        attacks.back()->trail_of_ruin = trail_of_ruin;
       }
     }
 
@@ -6967,9 +6969,9 @@ struct blade_dance_base_t
         first_blood_attacks.back()->last_attack = true;
 
         // Trail of Ruin is added to the final hit in the attack list
-        if ( dh()->talent.havoc.trail_of_ruin->ok() && trail_of_ruin_dot )
+        if ( dh()->talent.havoc.trail_of_ruin->ok() && trail_of_ruin )
         {
-          first_blood_attacks.back()->trail_of_ruin_dot = trail_of_ruin_dot;
+          first_blood_attacks.back()->trail_of_ruin = trail_of_ruin;
         }
       }
     }
