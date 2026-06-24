@@ -3080,6 +3080,23 @@ void sporelords_mycelium( special_effect_t& effect )
     } );
 }
 
+// Wavecaller's Seastone
+// 1295058 Driver
+// 1295057 Tidal Insight Buff
+void wavecallers_seastone( special_effect_t& effect )
+{
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1295057 ) )
+                  ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) )
+                  ->set_stack_change_callback( [ effect ]( buff_t* b, int, int new_ ) {
+                      if ( new_ == b->max_stack() )
+                        make_event( *effect.player->sim, 0_ms, [ b ] { b->set_reverse( true ); } );
+                    } )
+                  ->set_expire_callback( [ effect ]( buff_t* b, int, timespan_t ) {
+                    make_event( *effect.player->sim, 0_ms, [ b ] { b->set_reverse( false ); } );
+                  } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 // Vile Vial of Volatile Venom
 // 1293316 on-use buff (Empowering Venom)
 // 1295123 debuff (Debilitating Venom), applies once the buff fades
@@ -3117,6 +3134,7 @@ void vile_vial_of_volatile_venom( special_effect_t& effect )
   effect.disable_buff();
   effect.has_use_buff_override = true;
   effect.execute_action = create_proc_action<vile_vial_of_volatile_venom_t>( "empowering_venom", effect );
+
 }
 }  // namespace trinkets
 
@@ -4156,6 +4174,7 @@ void register_special_effects()
   register_special_effect( 1284696, trinkets::sporelords_mycelium );
   reset_version_check();
   set_min_version( wowv_t( 12, 1, 0 ) );
+  register_special_effect( 1295058, trinkets::wavecallers_seastone );
   register_special_effect( 1293316, trinkets::vile_vial_of_volatile_venom );
   register_special_effect( 1295179, DISABLED_EFFECT );  // Vile Vial of Volatile Venom equip driver
   reset_version_check();
