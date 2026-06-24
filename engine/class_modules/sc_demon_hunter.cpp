@@ -365,6 +365,7 @@ public:
     buff_t* cycle_of_hatred;
     buff_t* empowered_eye_beam;
     buff_t* eternal_hunt;
+    buff_t* serrated_glaive;
 
     movement_buff_t* fel_rush_move;
     movement_buff_t* vengeful_retreat_move;
@@ -866,6 +867,7 @@ public:
     const spell_data_t* empowered_eye_beam_buff;
     const spell_data_t* empowered_eye_beam_damage;
     const spell_data_t* eternal_hunt_buff;
+    const spell_data_t* serrated_glaive_buff;
 
     // Vengeance
     const spell_data_t* vengeance_demon_hunter;
@@ -2164,6 +2166,7 @@ public:
     ab::parse_effects( dh()->buff.exergy );
     ab::parse_effects( dh()->buff.inertia );
     ab::parse_effects( dh()->buff.empowered_eye_beam );
+    ab::parse_effects( dh()->buff.serrated_glaive, dh()->talent.havoc.serrated_glaive );
 
     // Vengeance
 
@@ -2240,9 +2243,12 @@ public:
 
     // Havoc
     ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::burning_wound ), dh()->spec.burning_wound_debuff );
-    ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::serrated_glaive ),
-                              dh()->talent.havoc.serrated_glaive->effectN( 1 ).trigger(),
-                              dh()->talent.havoc.serrated_glaive );
+    if ( !dh()->is_ptr() )
+    {
+      ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::serrated_glaive ),
+                                dh()->talent.havoc.serrated_glaive->effectN( 1 ).trigger(),
+                                dh()->talent.havoc.serrated_glaive );
+    }
 
     // Vengeance
     if ( dh()->talent.vengeance.vulnerability->ok() )
@@ -7292,7 +7298,14 @@ struct chaos_strike_base_t
       // TOCHECK -- Does the applying Chaos Strike/Annihilation benefit from the debuff?
       if ( dh()->talent.havoc.serrated_glaive->ok() )
       {
-        td( s->target )->debuffs.serrated_glaive->trigger();
+        if ( dh()->is_ptr() )
+        {
+          dh()->buff.serrated_glaive->trigger();
+        }
+        else
+        {
+          td( s->target )->debuffs.serrated_glaive->trigger();
+        }
       }
 
       if ( dh()->talent.aldrachi_reaver.warblades_hunger && dh()->buff.warblades_hunger->up() )
@@ -8045,7 +8058,14 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
         if ( dh()->talent.havoc.serrated_glaive->ok() )
         {
-          td( state->target )->debuffs.serrated_glaive->trigger();
+          if ( dh()->is_ptr() )
+          {
+            dh()->buff.serrated_glaive->trigger();
+          }
+          else
+          {
+            td( state->target )->debuffs.serrated_glaive->trigger();
+          }
         }
       }
     }
@@ -9814,6 +9834,8 @@ void demon_hunter_t::create_buffs()
 
   buff.eternal_hunt = make_buff( this, "eternal_hunt", spec.eternal_hunt_buff );
 
+  buff.serrated_glaive = make_buff( this, "serrated_glaive", spec.serrated_glaive_buff );
+
   // Vengeance ==============================================================
 
   buff.demon_spikes = new buffs::demon_spikes_t( this );
@@ -10983,6 +11005,9 @@ void demon_hunter_t::init_spells()
   spec.empowered_eye_beam_buff                   = talent_spell_lookup( talent.havoc.eternal_hunt_1, 1271144 );
   spec.empowered_eye_beam_damage                 = talent_spell_lookup( talent.havoc.eternal_hunt_1, 1287949 );
   spec.eternal_hunt_buff                         = talent_spell_lookup( talent.havoc.eternal_hunt_3, 1271092 );
+  spec.serrated_glaive_buff                      = is_ptr() && talent.havoc.serrated_glaive->ok()
+                                                       ? talent.havoc.serrated_glaive->effectN( 1 ).trigger()
+                                                       : spell_data_t::not_found();
 
   spec.demon_spikes_buff               = find_spell( 203819, DEMON_HUNTER_VENGEANCE );
   spec.sigil_of_flame                  = find_spell( 204596, DEMON_HUNTER_VENGEANCE );
