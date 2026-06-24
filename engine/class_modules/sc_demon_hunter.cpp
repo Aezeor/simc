@@ -5597,6 +5597,7 @@ struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigg
       {
         dh()->buff.moment_of_craving->trigger();
         dh()->cooldown.reap->reset( true );
+        dh()->buff.soulburst->expire();
         dh()->spawn_soul_fragment( dh()->proc.soul_fragment_from_soulburst, soul_fragment::LESSER,
                                    as<unsigned int>( dh()->set_bonuses.mid2_devourer_4pc->effectN( 1 ).base_value() ) );
       }
@@ -5631,7 +5632,6 @@ struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigg
     if ( dh()->buff.soulburst->up() && soulburst )
     {
       soulburst->execute_on_target( target );
-      dh()->buff.soulburst->expire();
     }
   }
 };
@@ -5900,9 +5900,6 @@ struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
 
   void execute() override
   {
-    dh()->buff.reap->trigger();
-
-    base_t::execute();
     unsigned fragments_consumed = dh()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume() );
 
     // TOCHECK: Is this instant?
@@ -5912,6 +5909,10 @@ struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
     {
       dh()->buff.soulburst->trigger();
     }
+
+    dh()->buff.reap->trigger();
+
+    base_t::execute();
 
     // TOCHECK: This delay is a guess based on averages in logs as there is no spelldata
     make_event( *dh()->sim, 220_ms, [ this, fragments_consumed ] {
@@ -5996,11 +5997,12 @@ struct eradicate_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
 
   void execute() override
   {
+    unsigned fragments_consumed = dh()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume() );
+
     dh()->buff.reap->trigger();
 
     base_t::execute();
 
-    unsigned fragments_consumed = dh()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume() );
     auto damage                 = dh()->buff.metamorphosis->up() ? damage_action_meta : damage_action;
 
     // TOCHECK: This delay is a guess based on averages in logs as there is no spelldata
