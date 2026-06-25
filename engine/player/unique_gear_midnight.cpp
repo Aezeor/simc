@@ -3221,6 +3221,61 @@ void gebbos_bottomless_bag( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// 1297908 driver
+// 1297911 equip driver
+// 1307222 Venom Splatter
+void font_of_venomous_rage( special_effect_t& effect )
+{
+
+  struct font_channel_t : public proc_spell_t
+  {
+    action_t* venom_splatter;
+
+    font_channel_t( const special_effect_t& e ) :
+      proc_spell_t( "font_of_venemous_rage", e.player, e.driver() )
+    {
+      unsigned equip_id = 1297911;
+      auto equip = find_special_effect( e.player, equip_id );
+      assert( equip && "Font of Venomous Rage missing equip effect" );
+
+      channeled = true;
+
+      base_td = equip->driver()->effectN( 1 ).average( e );
+      base_td_multiplier *= role_mult( e );
+
+      venom_splatter = create_proc_action<generic_aoe_proc_t>( "venom_splatter", e, e.player->find_spell( 1307222 ) );
+      venom_splatter->base_dd_min = venom_splatter->base_dd_max = equip->driver()->effectN( 2 ).average( e );
+      venom_splatter->base_multiplier *= role_mult( e );
+      venom_splatter->dual = true;
+      venom_splatter->target_filter_callback = secondary_targets_only();
+      add_child( venom_splatter );
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+      event_t::cancel( player->readying );
+      player->reset_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
+    void tick( dot_t* d ) override
+    {
+      proc_spell_t::tick( d );
+      venom_splatter->execute_on_target( d->target );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+      proc_spell_t::last_tick( d );
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( rng().gauss( sim->channel_lag ) );
+    }
+  };
+
+  effect.execute_action = create_proc_action<font_channel_t>( "font_of_venemous_rage", effect );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -4262,6 +4317,8 @@ void register_special_effects()
   register_special_effect( 1295058, trinkets::wavecallers_seastone );
   register_special_effect( 1293316, trinkets::vile_vial_of_volatile_venom );
   register_special_effect( 1295179, DISABLED_EFFECT );  // Vile Vial of Volatile Venom equip driver
+  register_special_effect( 1297908, trinkets::font_of_venomous_rage );
+  register_special_effect( 1297911, DISABLED_EFFECT );  // Font of Venomous Rage equip driver
   register_special_effect( 1292291, trinkets::gebbos_bottomless_bag );
   reset_version_check();
   // Weapons
